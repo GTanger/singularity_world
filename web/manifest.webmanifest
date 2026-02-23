@@ -1,0 +1,18 @@
+{
+  "name": "奇點世界",
+  "short_name": "奇點世界",
+  "description": "奇點世界 MUD",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1e2328",
+  "theme_color": "#1e2328",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

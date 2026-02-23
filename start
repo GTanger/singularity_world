@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# 奇點世界 — 一鍵啟動：建置、開埠 1721（對應 Cloudflare Tunnel）、啟動伺服器。
+# 用法：在專案根目錄執行 ./start
+
+set -e
+cd "$(dirname "$0")"
+
+# 確保能找到 go（常見安裝路徑）
+export PATH="/usr/local/go/bin:${PATH}"
+
+# 每次啟動都建置，確保改過 chunk_load、handler 等任一 .go 後一定跑新碼
+echo "建置中…"
+mkdir -p bin
+go build -buildvcs=false -o bin/server .
+
+# 建立 DB 目錄
+mkdir -p data
+
+PORT=1721
+# 先結束佔用該埠的 process，避免 address already in use
+if command -v lsof &>/dev/null; then
+  pids=$(lsof -ti :$PORT 2>/dev/null) || true
+  if [[ -n "$pids" ]]; then
+    echo "結束佔用 :$PORT 的 process：$pids"
+    kill $pids 2>/dev/null || true
+    sleep 1
+  fi
+elif command -v fuser &>/dev/null; then
+  if fuser ${PORT}/tcp &>/dev/null; then
+    echo "結束佔用 :$PORT 的 process…"
+    fuser -k ${PORT}/tcp 2>/dev/null || true
+    sleep 1
+  fi
+fi
+
+echo "啟動伺服器（PORT=$PORT，對應 sw.ygggt.com）…"
+exec env PORT=$PORT ./bin/server

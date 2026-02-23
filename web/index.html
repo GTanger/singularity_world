@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<meta name="theme-color" content="#1e2328">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<title>奇點世界</title>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
+	<link rel="apple-touch-icon" href="/icon.svg">
+	<link rel="manifest" href="/manifest.webmanifest">
+	<link rel="stylesheet" href="style.css?v=8.1">
+</head>
+<body>
+	<div id="app">
+		<!-- 頂列：左＝當前地點名稱，右＝遊戲時間＋五個保留鈕 -->
+		<header id="top-bar" class="top-row">
+			<div id="room-name-wrap" class="room-name-wrap">
+				<h1 id="room-name" class="room-name"></h1>
+			</div>
+			<div class="top-bar-right">
+				<span id="game-time" class="game-time">遊戲時間</span>
+				<div class="top-bar-slots">
+					<button type="button" class="slot-btn" disabled>保留</button>
+					<button type="button" class="slot-btn" disabled>保留</button>
+					<button type="button" class="slot-btn" disabled>保留</button>
+					<button type="button" class="slot-btn" disabled>保留</button>
+					<button type="button" class="slot-btn" disabled>保留</button>
+				</div>
+			</div>
+		</header>
+
+		<!-- 房間描述欄：全文寬，【】內為綠色強調 -->
+		<section id="room-desc-panel" class="panel room-desc-panel">
+			<div id="room-desc" class="room-desc"></div>
+		</section>
+
+		<!-- 敘事欄：左側同房人物、右側可擴充 -->
+		<section id="narrative-panel" class="panel narrative-panel">
+			<div id="persons-panel" class="persons-panel">
+				<ul id="entities-list" class="entities-list"></ul>
+			</div>
+			<div id="narrative-right" class="narrative-right">
+				<div id="log" class="log-content" role="log"></div>
+			</div>
+		</section>
+
+		<!-- 移動欄：路徑(出口) + 觀察/保留 -->
+		<section id="movement-panel" class="panel movement-panel">
+			<div class="path-section">
+				<span class="path-label">路徑：</span>
+				<div id="exits-buttons" class="exits-list"></div>
+			</div>
+			<div class="movement-actions">
+				<button type="button" class="action-btn" disabled>保留</button>
+				<button type="button" class="action-btn" id="btn-observe">觀察</button>
+			</div>
+		</section>
+
+		<!-- 狀態欄：姓名 + 四條狀態 -->
+		<section id="status-panel" class="panel status-panel">
+			<div class="status-name-wrap">
+				<div id="player-name" class="player-name">姓名</div>
+				<div class="status-reserved">保留</div>
+			</div>
+			<div class="status-bars">
+				<div class="stat-row">
+					<span class="stat-label">氣血</span>
+					<div class="stat-bar-wrap"><div id="bar-hp" class="stat-bar stat-bar-hp" style="width: 88%"></div></div>
+				</div>
+				<div class="stat-row">
+					<span class="stat-label">精神</span>
+					<div class="stat-bar-wrap"><div id="bar-spirit" class="stat-bar stat-bar-spirit" style="width: 85%"></div></div>
+				</div>
+				<div class="stat-row">
+					<span class="stat-label">內力</span>
+					<div class="stat-bar-wrap"><div id="bar-inner" class="stat-bar stat-bar-inner" style="width: 90%"></div></div>
+				</div>
+				<div class="stat-row">
+					<span class="stat-label">體力</span>
+					<div class="stat-bar-wrap"><div id="bar-stamina" class="stat-bar stat-bar-stamina" style="width: 82%"></div></div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 控制欄：八等分按鈕 -->
+		<nav id="control-bar" class="control-bar">
+			<button type="button" class="ctrl-btn">指令</button>
+			<button type="button" class="ctrl-btn">狀態</button>
+			<button type="button" class="ctrl-btn">背包</button>
+			<button type="button" class="ctrl-btn">裝備</button>
+			<button type="button" class="ctrl-btn">技能</button>
+			<button type="button" class="ctrl-btn">地圖</button>
+			<button type="button" class="ctrl-btn">訊息</button>
+			<button type="button" class="ctrl-btn">設定</button>
+		</nav>
+	</div>
+	<script src="main.js?v=6"></script>
+	<script src="mud-text.js?v=2"></script>
+	<script src="ui.js?v=2"></script>
+	<script>
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', function () {
+				navigator.serviceWorker.register('/sw.js?v=2').then(function (reg) {
+					reg.addEventListener('updatefound', function () {
+						var w = reg.installing;
+						w.addEventListener('statechange', function () {
+							if (w.state === 'installed' && navigator.serviceWorker.controller) {
+								window.location.reload();
+							}
+						});
+					});
+				}).catch(function () {});
+			});
+		}
+	</script>
+</body>
+</html>

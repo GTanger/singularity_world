@@ -1,0 +1,309 @@
+/* 奇點世界 — 依 UI 設計圖：頂欄、房間名、描述、敘事、路徑、狀態、控制欄 */
+* { box-sizing: border-box; }
+
+:root {
+	--bg: #1e2328;
+	--bg-panel: #252b33;
+	--text: #e6edf3;
+	--text-muted: #8b949e;
+	--room-name: #e6a23c;
+	--border: #3d444d;
+	--ctrl-size: clamp(2.5rem, 12vw, 3.5rem);
+	--bar-hp: #f56c6c;
+	--bar-spirit: #b37feb;
+	--bar-inner: #79bbff;
+	--bar-stamina: #e6a23c;
+}
+
+body {
+	margin: 0;
+	font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+	background: var(--bg);
+	color: var(--text);
+	font-size: 14px;
+}
+
+#app {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	min-height: 0;
+	max-width: 640px;
+	margin: 0 auto;
+	padding-bottom: env(safe-area-inset-bottom, 0);
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+/* 頂列：左＝地點名稱（淺灰底）、右＝遊戲時間＋五個保留鈕 */
+.top-row {
+	display: flex;
+	align-items: stretch;
+	justify-content: space-between;
+	border-bottom: 1px solid var(--border);
+	min-height: var(--ctrl-size);
+}
+.room-name-wrap {
+	flex: 1;
+	min-width: 0;
+	padding: 0.4rem 0.6rem;
+	background: var(--bg-panel);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.room-name {
+	margin: 0;
+	font-size: 1.35rem;
+	font-weight: 700;
+	color: var(--room-name);
+	line-height: 1.3;
+	text-align: center;
+}
+.room-name:empty::before { content: "\00a0"; }
+.top-bar-right {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 0.35rem 0.5rem;
+	gap: 0.25rem;
+	border-left: 1px solid var(--border);
+}
+.game-time {
+	color: var(--text);
+	font-size: 0.85rem;
+}
+.top-bar-slots { display: flex; gap: 0.25rem; }
+.slot-btn {
+	width: var(--ctrl-size);
+	height: calc(var(--ctrl-size) * 0.5);
+	padding: 0 0.35rem;
+	font-size: 0.75rem;
+	color: var(--text);
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	cursor: default;
+	box-sizing: border-box;
+}
+
+/* 房間描述欄：全文寬、白字，【】內綠色強調 */
+.room-desc-panel {
+	min-height: calc(var(--ctrl-size) * 2);
+	padding: 0.6rem 0.75rem;
+	background: var(--bg);
+	border-bottom: 1px solid var(--border);
+}
+.room-desc {
+	margin: 0;
+	line-height: 1.7;
+	white-space: pre-wrap;
+	word-break: break-word;
+	color: var(--text);
+}
+.room-desc:empty::before { content: "（請先登入）"; color: var(--text-muted); }
+.room-desc .desc-highlight { color: #7ee787; }
+
+/* 敘事欄：自適應高度填滿剩餘空間，左側人物、右側紀錄；紀錄區超出時捲動並自動滾到底 */
+.narrative-panel {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+	border-bottom: 1px solid var(--border);
+	overflow: hidden;
+}
+.persons-panel {
+	width: calc(var(--ctrl-size) * 1.5);
+	min-width: 6rem;
+	padding: 0.5rem;
+	border-right: 1px solid var(--border);
+	background: rgba(0,0,0,0.15);
+	overflow: auto;
+}
+.panel-label {
+	margin: 0 0 0.35rem 0;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--text-muted);
+}
+.entities-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 0.85rem;
+	line-height: 1.5;
+}
+.entities-list li { padding: 0.15rem 0; }
+.entities-list .you { color: var(--room-name); }
+.narrative-right {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+	overflow: hidden;
+}
+.log-content {
+	flex: 1;
+	min-height: 0;
+	padding: 0.5rem 0.75rem;
+	overflow: auto;
+	white-space: pre-wrap;
+	word-break: break-word;
+	font-size: 0.85rem;
+	line-height: 1.5;
+	color: var(--text-muted);
+}
+.text-muted { color: var(--text-muted); font-size: 0.85rem; }
+
+/* 移動欄：路徑 + 觀察/保留，高度約 2× 控制鈕 */
+.movement-panel {
+	display: flex;
+	align-items: stretch;
+	justify-content: space-between;
+	min-height: calc(var(--ctrl-size) * 2);
+	padding: 0.5rem 0.75rem;
+	gap: 0.75rem;
+	background: var(--bg-panel);
+	border-bottom: 1px solid var(--border);
+}
+.path-section {
+	flex: 1;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.35rem;
+	min-width: 0;
+}
+.path-label { font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.exits-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+}
+.exit-btn {
+	padding: 0.4rem 0.75rem;
+	font-size: 0.9rem;
+	color: var(--text);
+	background: var(--bg);
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	cursor: pointer;
+}
+.exit-btn:hover {
+	background: #2d333b;
+	border-color: var(--room-name);
+	color: var(--room-name);
+}
+.movement-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+.movement-actions .action-btn {
+	width: var(--ctrl-size);
+	height: var(--ctrl-size);
+	padding: 0;
+	font-size: 0.85rem;
+	color: var(--text);
+	background: var(--bg);
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	cursor: pointer;
+}
+.movement-actions .action-btn:hover:not(:disabled) {
+	background: #2d333b;
+}
+.movement-actions .action-btn:disabled {
+	color: var(--text-muted);
+	cursor: default;
+}
+#btn-observe { cursor: pointer; }
+
+/* 狀態欄：左＝姓名／保留（直排），右＝四條狀態 2×2 網格，高度 = 控制欄 */
+.status-panel {
+	display: flex;
+	align-items: stretch;
+	height: var(--ctrl-size);
+	padding: 0 0.5rem;
+	gap: 0;
+	background: var(--bg-panel);
+	border-bottom: 1px solid var(--border);
+}
+.status-name-wrap {
+	width: calc(var(--ctrl-size) * 2);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	border-right: 1px solid var(--border);
+	padding-right: 0.5rem;
+}
+.player-name { font-weight: 600; font-size: 0.9rem; }
+.status-reserved { font-size: 0.7rem; color: var(--text-muted); }
+.status-bars {
+	flex: 1;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	gap: 0;
+	min-width: 0;
+	min-height: 0;
+}
+.stat-row {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.15rem 0.25rem;
+	border: 1px solid var(--border);
+	box-sizing: border-box;
+}
+.stat-label {
+	font-size: 0.7rem;
+	color: var(--text);
+	flex-shrink: 0;
+}
+.stat-bar-wrap {
+	flex: 1;
+	height: 0.5rem;
+	min-width: 0;
+	background: rgba(0,0,0,0.3);
+	border-radius: 2px;
+	overflow: hidden;
+}
+.stat-bar {
+	height: 100%;
+	border-radius: 2px;
+	transition: width 0.2s;
+}
+.stat-bar-hp   { background: var(--bar-hp); }
+.stat-bar-spirit { background: var(--bar-spirit); }
+.stat-bar-inner { background: var(--bar-inner); }
+.stat-bar-stamina { background: var(--bar-stamina); }
+
+/* 控制欄：八等分、按鈕等高寬；body 已設 padding-bottom 避開手機橫條 */
+.control-bar {
+	display: flex;
+	width: 100%;
+	height: var(--ctrl-size);
+	flex-shrink: 0;
+	border-top: 1px solid var(--border);
+	background: var(--bg-panel);
+}
+.ctrl-btn {
+	flex: 1;
+	min-width: 0;
+	height: 100%;
+	padding: 0;
+	font-size: 0.8rem;
+	color: var(--text);
+	background: transparent;
+	border: none;
+	border-right: 1px solid var(--border);
+	cursor: pointer;
+}
+.ctrl-btn:last-child { border-right: none; }
+.ctrl-btn:hover { background: #2d333b; }
+
+.panel { box-sizing: border-box; }

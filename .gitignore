@@ -1,0 +1,32 @@
+# Binaries
+/singularity_world
+/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Data
+/data/*.db
+/data/*.db-journal
+/data/*.db-wal
+/data/*.db-shm
+
+# Env
+.env
+.env.local
+*.local
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Build / cache
+/vendor/
+*.test
+/coverage.out
