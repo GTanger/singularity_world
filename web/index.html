@@ -10,7 +10,7 @@
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
-	<link rel="stylesheet" href="style.css?v=8.1">
+	<link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 	<div id="app">
@@ -96,13 +96,13 @@
 			<button type="button" class="ctrl-btn">設定</button>
 		</nav>
 	</div>
-	<script src="main.js?v=6"></script>
-	<script src="mud-text.js?v=2"></script>
-	<script src="ui.js?v=2"></script>
+	<script src="main.js?v=7"></script>
+	<script src="mud-text.js?v=3.1"></script>
+	<script src="ui.js?v=3"></script>
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=2').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=3').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {

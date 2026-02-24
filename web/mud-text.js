@@ -24,14 +24,11 @@
 		if (listEl) {
 			listEl.innerHTML = '';
 			if (entities && entities.length > 0) {
+				var myId = me && (me.player_id || me.playerID);
 				entities.forEach(function (e) {
+					if (myId && (e.id || e.ID) === myId) return;
 					var li = document.createElement('li');
-					var label = (e.display_char || e.id || e.ID || '?').toString();
-					if (me && (e.id || e.ID) === (me.player_id || me.playerID)) {
-						label += '（你）';
-						li.className = 'you';
-					}
-					li.textContent = label;
+					li.textContent = (e.display_char || e.id || e.ID || '?').toString();
 					listEl.appendChild(li);
 				});
 			}
@@ -52,8 +49,9 @@
 		exits.forEach(function (ex) {
 			var btn = document.createElement('button');
 			btn.type = 'button';
-			btn.textContent = ex.direction;
+			btn.textContent = ex.to_room_name || ex.direction;
 			btn.className = 'exit-btn';
+			btn.title = ex.direction;
 			btn.addEventListener('click', function () {
 				if (typeof onDirection === 'function') onDirection(ex.direction);
 			});

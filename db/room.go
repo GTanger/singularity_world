@@ -9,16 +9,16 @@ import (
 
 // Room 單一房間節點。
 type Room struct {
-	ID          string
-	Name        string
-	Description string
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
 
 // Exit 單一出口：方向 → 目標房間。
 type Exit struct {
-	Direction  string
-	ToRoomID   string
-	ToRoomName string
+	Direction  string `json:"direction"`
+	ToRoomID   string `json:"to_room_id"`
+	ToRoomName string `json:"to_room_name"`
 }
 
 // GetRoom 依 id 查詢房間；若無則回傳 nil, nil。
@@ -89,6 +89,67 @@ func GetEntityRoom(db *sql.DB, entityID string) (string, error) {
 // SetEntityRoom 將實體設為在指定房間（INSERT OR REPLACE）。
 func SetEntityRoom(db *sql.DB, entityID, roomID string) error {
 	_, err := db.Exec("INSERT OR REPLACE INTO entity_room (entity_id, room_id) VALUES (?, ?)", entityID, roomID)
+	return err
+}
+
+// RoomWithExits 房間與其出口列表，供管理 API 使用。
+type RoomWithExits struct {
+	Room  Room  `json:"room"`
+	Exits []Exit `json:"exits"`
+}
+
+// ListAllRooms 回傳所有房間及各自出口。
+func ListAllRooms(db *sql.DB) ([]RoomWithExits, error) {
+	rows, err := db.Query("SELECT id, name, description FROM rooms ORDER BY id")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var list []RoomWithExits
+	for rows.Next() {
+		var r Room
+		if err := rows.Scan(&r.ID, &r.Name, &r.Description); err != nil {
+			return nil, err
+		}
+		exits, _ := GetExitsForRoom(db, r.ID)
+		list = append(list, RoomWithExits{Room: r, Exits: exits})
+	}
+	return list, rows.Err()
+}
+
+// CreateRoom 新增房間。
+func CreateRoom(db *sql.DB, id, name, description string) error {
+	_, err := db.Exec("INSERT INTO rooms (id, name, description) VALUES (?, ?, ?)", id, name, description)
+	return err
+}
+
+// UpdateRoom 更新房間名稱與描述。
+func UpdateRoom(db *sql.DB, id, name, description string) error {
+	_, err := db.Exec("UPDATE rooms SET name = ?, description = ? WHERE id = ?", name, description, id)
+	return err
+}
+
+// DeleteRoom 刪除房間：先刪出口、將房內實體移到大廳、再刪房間。
+func DeleteRoom(db *sql.DB, id string) error {
+	if _, err := db.Exec("DELETE FROM exits WHERE from_room_id = ? OR to_room_id = ?", id, id); err != nil {
+		return err
+	}
+	if _, err := db.Exec("UPDATE entity_room SET room_id = 'lobby' WHERE room_id = ?", id); err != nil {
+		return err
+	}
+	_, err := db.Exec("DELETE FROM rooms WHERE id = ?", id)
+	return err
+}
+
+// AddExit 新增一筆出口。
+func AddExit(db *sql.DB, fromRoomID, direction, toRoomID string) error {
+	_, err := db.Exec("INSERT INTO exits (from_room_id, direction, to_room_id) VALUES (?, ?, ?)", fromRoomID, direction, toRoomID)
+	return err
+}
+
+// RemoveExit 刪除一筆出口。
+func RemoveExit(db *sql.DB, fromRoomID, direction string) error {
+	_, err := db.Exec("DELETE FROM exits WHERE from_room_id = ? AND direction = ?", fromRoomID, direction)
 	return err
 }
 

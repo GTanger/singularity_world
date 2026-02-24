@@ -16,5 +16,8 @@ self.addEventListener('activate', function (e) {
 });
 
 self.addEventListener('fetch', function (e) {
-  // 不攔截，一律走網路（遊戲需 WebSocket 即時連線）
+  if (e.request.mode === 'navigate' || e.request.destination === 'document') {
+    e.respondWith(fetch(e.request, { cache: 'reload' }));
+    return;
+  }
 });

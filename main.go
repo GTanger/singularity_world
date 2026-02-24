@@ -57,6 +57,8 @@ func main() {
 	})
 
 	http.HandleFunc("/api/design-constants", config.ServeDesignConstants)
+	http.HandleFunc("/api/rooms", func(w http.ResponseWriter, r *http.Request) { server.HandleRoomsAPI(database, w, r) })
+	http.Handle("/api/rooms/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.HandleRoomsAPI(database, w, r) }))
 	fs := http.FileServer(http.Dir("web"))
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		p := r.URL.Path
