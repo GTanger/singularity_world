@@ -7,7 +7,7 @@
 - **新增房間**：填 ID、名稱、描述後送出
 - **編輯房間**：點該房間的「編輯」，改名稱或描述後儲存
 - **刪除房間**：點「刪除」（lobby 不可刪），房內的人會自動移到大廳
-- **新增出口**：填「從房間 ID、方向、目標房間 ID」後送出
+- **新增出口**：填「從房間 ID、出口代號（東／天／101…）、目標房間 ID」後送出
 - **刪除出口**：點該出口旁的 ✕
 
 ---
@@ -21,8 +21,14 @@
 | 表 | 說明 |
 |----|------|
 | `rooms` | id（主鍵）, name, description |
-| `exits` | from_room_id, direction, to_room_id（一方向一筆） |
+| `exits` | from_room_id, **direction**（出口代號）, to_room_id（一筆一連接） |
 | `entity_room` | 實體所在房間（entity_id → room_id） |
+
+### 出口代號（direction）可自訂
+
+- **傳統 MUD**：用 東、西、南、北 表示四方連接。
+- **同層多房**：同一走廊接多間房時，代號用「房間代稱」即可。例如客棧二樓走廊接八間包廂，出口代號可設 **天、地、玄、黃、日、月、星、辰**，分別連到天字房、地字房…；或使用 **101、102** 等編號。
+- 遊戲內路徑按鈕會顯示**目標房間名稱**（如「天字房」），代號僅供系統辨識，不限定東西南北。
 
 ---
 
@@ -34,13 +40,16 @@ INSERT INTO rooms (id, name, description) VALUES
   ('新房間id', '顯示名稱', '房間描述文字。');
 ```
 
-**記得加出口**（雙向要各寫一筆）：
+**記得加出口**（雙向要各寫一筆）。`direction` 可為 東/西/南/北 或任意代號（如 天、地、101）：
 
 ```sql
--- 從「大廳」往東到新房間
+-- 傳統四方：從大廳往東到新房間
 INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ('lobby', '東', '新房間id');
--- 從新房間往西回大廳
 INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ('新房間id', '西', 'lobby');
+
+-- 同層多房例：二樓走廊接天字房（代號「天」）
+-- INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ('inn_2f_hall', '天', 'inn_2f_room_tian');
+-- INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ('inn_2f_room_tian', '走廊', 'inn_2f_hall');
 ```
 
 ---

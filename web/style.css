@@ -71,8 +71,40 @@ body {
 	border-left: 1px solid var(--border);
 }
 .game-time {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.35rem;
 	color: var(--text);
-	font-size: 0.85rem;
+	max-width: min(100%, 12rem);
+}
+.game-time-date {
+	font-size: 0.75rem;
+	white-space: nowrap;
+	opacity: 0.95;
+}
+.game-time-svg {
+	width: 2rem;
+	height: 2rem;
+	max-width: 32px;
+	max-height: 32px;
+	flex-shrink: 0;
+	display: block;
+}
+@media (max-width: 480px) {
+	.game-time-svg {
+		width: 28px;
+		height: 28px;
+		max-width: 28px;
+		max-height: 28px;
+	}
+}
+.game-time-face { opacity: 0.9; }
+.game-time-hand { opacity: 1; }
+.game-time-label {
+	font-size: 0.75rem;
+	min-width: 2.5em;
+	opacity: 0.95;
 }
 .top-bar-slots { display: flex; gap: 0.25rem; }
 .slot-btn {

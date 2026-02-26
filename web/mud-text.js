@@ -49,9 +49,9 @@
 		exits.forEach(function (ex) {
 			var btn = document.createElement('button');
 			btn.type = 'button';
-			btn.textContent = ex.to_room_name || ex.direction;
+			btn.textContent = ex.direction;
 			btn.className = 'exit-btn';
-			btn.title = ex.direction;
+			btn.title = ex.to_room_name ? ex.direction + ' → ' + ex.to_room_name : ex.direction;
 			btn.addEventListener('click', function () {
 				if (typeof onDirection === 'function') onDirection(ex.direction);
 			});

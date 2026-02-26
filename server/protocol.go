@@ -3,7 +3,7 @@ package server
 
 // ClientMsg 客戶端送出的 JSON；type 決定行為。
 type ClientMsg struct {
-	Type      string `json:"type"`       // "login" | "move"
+	Type      string `json:"type"`       // "login" | "move" | "ping"
 	PlayerID  string `json:"player_id"`  // login 時必填
 	Direction string `json:"direction"`  // move 時出口方向（例："東"、"西"）
 }
@@ -22,14 +22,17 @@ type ExitView struct {
 	ToRoomName  string `json:"to_room_name"`
 }
 
-// RoomViewMsg 伺服器推送：當前房間描述、出口列表、同房實體。
+// RoomViewMsg 伺服器推送：當前房間描述、出口列表、同房實體、遊戲時間。
 type RoomViewMsg struct {
-	Type       string       `json:"type"`        // "view"
-	RoomID     string       `json:"room_id"`
-	RoomName   string       `json:"room_name"`
-	Description string      `json:"description"`
-	Exits      []ExitView   `json:"exits"`
-	Entities   []ViewEntity `json:"entities"`
+	Type                  string       `json:"type"`
+	RoomID                string       `json:"room_id"`
+	RoomName              string       `json:"room_name"`
+	Description           string       `json:"description"`
+	Exits                 []ExitView   `json:"exits"`
+	Entities              []ViewEntity `json:"entities"`
+	ServerUnix               int64  `json:"server_unix"`                     // 此 view 送出時的真實 Unix 秒，供前端插值
+	GameTimeSecSinceMidnight int    `json:"game_time_sec_since_midnight"`   // 遊戲內當日 0:00 起的秒數（0～86399）
+	GameDaysSinceEpoch       int    `json:"game_days_since_epoch"`           // 自 epoch 起算的遊戲日數，奇點曆用
 }
 
 // MeMsg 伺服器推送：登入成功後回傳玩家 id 與當前房間。
@@ -58,4 +61,9 @@ type ErrorMsg struct {
 type BlockedMsg struct {
 	Type      string `json:"type"`       // "blocked"
 	Direction string `json:"direction"`
+}
+
+// PongMsg 伺服器回覆心跳，供前景 keep-alive 用。
+type PongMsg struct {
+	Type string `json:"type"` // "pong"
 }

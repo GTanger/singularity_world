@@ -25,6 +25,8 @@ func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, s
 		handleLogin(c, &msg, database, cfg, store, hub)
 	case "move":
 		handleMove(c, &msg, database, cfg, store, hub)
+	case "ping":
+		c.Send <- mustJSON(PongMsg{Type: "pong"})
 	default:
 		sendError(c, "unknown type: "+msg.Type)
 	}
@@ -54,7 +56,7 @@ func handleLogin(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server,
 		sendError(c, "load room failed")
 		return
 	}
-	sendRoomView(c, view)
+	sendRoomView(c, view, cfg)
 	sendMe(c, msg.PlayerID, roomID, view.Room.Name)
 }
 
@@ -83,11 +85,11 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 		sendError(c, "load room failed")
 		return
 	}
-	sendRoomView(c, view)
+	sendRoomView(c, view, cfg)
 	hub.Broadcast(mustJSON(MovedMsg{Type: "moved", PlayerID: c.PlayerID, RoomID: newRoomID, RoomName: view.Room.Name}))
 }
 
-func sendRoomView(c *Client, view *game.RoomView) {
+func sendRoomView(c *Client, view *game.RoomView, cfg config.Server) {
 	entities := make([]ViewEntity, 0, len(view.Entities))
 	for _, e := range view.Entities {
 		entities = append(entities, ViewEntity{ID: e.ID, Kind: e.Kind, DisplayChar: e.DisplayChar})
@@ -96,13 +98,18 @@ func sendRoomView(c *Client, view *game.RoomView) {
 	for _, ex := range view.Exits {
 		exits = append(exits, ExitView{Direction: ex.Direction, ToRoomID: ex.ToRoomID, ToRoomName: ex.ToRoomName})
 	}
+	now := game.NowUnix()
+	secSinceMidnight, _, _, daysSinceEpoch := game.GameTimeNow(now, cfg.GameTimeEpochUnix, cfg.GameTimeScale)
 	msg := RoomViewMsg{
-		Type:        "view",
-		RoomID:      view.Room.ID,
-		RoomName:    view.Room.Name,
-		Description: view.Room.Description,
-		Exits:       exits,
-		Entities:    entities,
+		Type:                     "view",
+		RoomID:                   view.Room.ID,
+		RoomName:                 view.Room.Name,
+		Description:              view.Room.Description,
+		Exits:                    exits,
+		Entities:                 entities,
+		ServerUnix:               now,
+		GameTimeSecSinceMidnight: secSinceMidnight,
+		GameDaysSinceEpoch:       daysSinceEpoch,
 	}
 	c.Send <- mustJSON(msg)
 }

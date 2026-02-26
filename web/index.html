@@ -10,7 +10,7 @@
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
-	<link rel="stylesheet" href="style.css?v=9">
+	<link rel="stylesheet" href="style.css?v=9.2">
 </head>
 <body>
 	<div id="app">
@@ -20,7 +20,14 @@
 				<h1 id="room-name" class="room-name"></h1>
 			</div>
 			<div class="top-bar-right">
-				<span id="game-time" class="game-time">遊戲時間</span>
+				<div id="game-time" class="game-time" title="日晷：9→3 為日、3→9 為夜">
+					<span id="game-time-date" class="game-time-date" aria-live="polite"></span>
+					<svg class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
+						<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+						<line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(0 16 16)"/>
+					</svg>
+					<span id="game-time-label" class="game-time-label" aria-live="polite"></span>
+				</div>
 				<div class="top-bar-slots">
 					<button type="button" class="slot-btn" disabled>保留</button>
 					<button type="button" class="slot-btn" disabled>保留</button>
@@ -46,10 +53,10 @@
 			</div>
 		</section>
 
-		<!-- 移動欄：路徑(出口) + 觀察/保留 -->
+		<!-- 移動欄：出口代號 + 觀察/保留 -->
 		<section id="movement-panel" class="panel movement-panel">
 			<div class="path-section">
-				<span class="path-label">路徑：</span>
+				<span class="path-label">出口：</span>
 				<div id="exits-buttons" class="exits-list"></div>
 			</div>
 			<div class="movement-actions">
@@ -96,9 +103,9 @@
 			<button type="button" class="ctrl-btn">設定</button>
 		</nav>
 	</div>
-	<script src="main.js?v=7"></script>
-	<script src="mud-text.js?v=3.1"></script>
-	<script src="ui.js?v=3"></script>
+	<script src="main.js?v=7.9"></script>
+	<script src="mud-text.js?v=3.6"></script>
+	<script src="ui.js?v=3.7"></script>
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {

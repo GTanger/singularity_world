@@ -11,13 +11,16 @@ import (
 
 // Server 存放伺服器與連線可調參數。
 type Server struct {
-	Port                string
-	DBPath              string
-	MaxWebSocketConn    int
-	TickInterval        time.Duration // 遊戲主迴圈 tick 間隔，與前端同步用
-	EconomyTickInterval time.Duration // 經濟引擎獨立 goroutine 的 tick 間隔（§1.1.6）
-	ChunkSize           int           // 單區塊邊長（格數）；預設 151（22,801 格），當前區塊常亮、區塊外黑、越界換區
-	MapsPath            string        // 區塊地圖 .txt 目錄，預設 data/maps；檔名 {cx}_{cy}.txt
+	Port                  string
+	DBPath                string
+	MaxWebSocketConn      int
+	TickInterval          time.Duration // 遊戲主迴圈 tick 間隔，與前端同步用
+	EconomyTickInterval   time.Duration // 經濟引擎獨立 goroutine 的 tick 間隔（§1.1.6）
+	ChunkSize             int           // 單區塊邊長（格數）；預設 151（22,801 格），當前區塊常亮、區塊外黑、越界換區
+	MapsPath              string        // 區塊地圖 .txt 目錄，預設 data/maps；檔名 {cx}_{cy}.txt
+	SessionRetainMinutes  int           // 斷線後同角色／同房間可恢復的觀念時長（分鐘）；實際位置由 DB 持久，重連登入即恢復
+	GameTimeEpochUnix     int64         // 遊戲 0:00 對應的真實 Unix 秒；0＝以 1970-01-01 為起點
+	GameTimeScale         float64       // 1 真實秒 ＝ GameTimeScale 遊戲秒；24 ＝ 1 真實小時 ＝ 1 遊戲日
 }
 
 // Design 為第一版可做清單 1.2.2 設計常數：1 格＝1m＝30px、角色圓 24px、地形字 30px、格線隱藏。供前端對齊。
@@ -55,12 +58,15 @@ func DefaultServer() Server {
 		mapsPath = p
 	}
 	return Server{
-		Port:                port,
-		DBPath:              "data/world.db",
-		MaxWebSocketConn:    10,
-		TickInterval:        200 * time.Millisecond,
-		EconomyTickInterval: time.Second,
-		ChunkSize:           chunkSize,
-		MapsPath:            mapsPath,
+		Port:                 port,
+		DBPath:               "data/world.db",
+		MaxWebSocketConn:     10,
+		TickInterval:         200 * time.Millisecond,
+		EconomyTickInterval:  time.Second,
+		ChunkSize:            chunkSize,
+		MapsPath:             mapsPath,
+		SessionRetainMinutes: 10,
+		GameTimeEpochUnix:     0,
+		GameTimeScale:        24,
 	}
 }

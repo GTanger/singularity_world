@@ -57,6 +57,17 @@
 		</table>
 	</section>
 
+	<section id="section-edit" style="display:none;">
+		<h2>編輯房間</h2>
+		<form id="form-edit">
+			<label>ID（不可改）<input type="text" id="edit-id" readonly class="readonly"></label>
+			<label>名稱<input type="text" id="edit-name"></label>
+			<label>描述<textarea id="edit-desc"></textarea></label>
+			<button type="submit">儲存</button>
+			<button type="button" onclick="document.getElementById('section-edit').style.display='none';">取消</button>
+		</form>
+	</section>
+
 	<script>
 		var API = '/api/rooms';
 		function msg(s, isErr) {
@@ -65,8 +76,10 @@
 			el.className = 'msg ' + (isErr ? 'err' : 'ok');
 			setTimeout(function() { el.textContent = ''; el.className = ''; }, 4000);
 		}
-		function loadRooms() {
-			fetch(API).then(function(r) { return r.json(); }).then(function(data) {
+		function loadRooms(noCache) {
+			var url = API;
+			if (noCache) url += '?_=' + Date.now();
+			fetch(url).then(function(r) { return r.json(); }).then(function(data) {
 				var tbody = document.getElementById('room-list');
 				tbody.innerHTML = '';
 				(data.rooms || []).forEach(function(r) {
@@ -93,6 +106,27 @@
 			var d = document.createElement('div');
 			d.textContent = s;
 			return d.innerHTML;
+		}
+		function updateRoomRowInTable(room, exits) {
+			var tbody = document.getElementById('room-list');
+			var rows = tbody.querySelectorAll('tr');
+			for (var i = 0; i < rows.length; i++) {
+				var code = rows[i].querySelector('td code');
+				if (code && code.textContent === room.id) {
+					var exitsHtml = (exits || []).map(function(e) {
+						return '<span>' + e.direction + '→' + (e.to_room_name || e.to_room_id) + '<span class="del-exit" data-from="' + escapeHtml(room.id) + '" data-dir="' + escapeHtml(e.direction) + '" title="刪除此出口">✕</span></span>';
+					}).join('');
+					rows[i].innerHTML =
+						'<td><code>' + escapeHtml(room.id) + '</code></td>' +
+						'<td>' + escapeHtml(room.name) + '</td>' +
+						'<td class="description" title="' + escapeHtml(room.description) + '">' + escapeHtml(room.description) + '</td>' +
+						'<td class="exits">' + (exitsHtml || '—') + '</td>' +
+						'<td><button class="edit-room btn" data-id="' + escapeHtml(room.id) + '" data-name="' + escapeHtml(room.name) + '" data-desc="' + escapeHtml(room.description) + '">編輯</button> ' +
+						(room.id !== 'lobby' ? '<button class="danger del-room" data-id="' + escapeHtml(room.id) + '">刪除</button>' : '') + '</td>';
+					bindRoomButtons();
+					return;
+				}
+			}
 		}
 		function bindRoomButtons() {
 			document.querySelectorAll('.edit-room').forEach(function(btn) {
@@ -147,30 +181,25 @@
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ name: name, description: desc })
 				}).then(function(r) {
-					if (r.ok) { msg('已更新'); document.getElementById('section-edit').style.display = 'none'; loadRooms(); }
-					else return r.json().then(function(d) { throw new Error(d.error || r.status); });
+					return r.json().then(function(data) {
+						if (r.ok) {
+							msg('已更新');
+							document.getElementById('section-edit').style.display = 'none';
+							if (data.room) { updateRoomRowInTable(data.room, data.exits || []); }
+							else { loadRooms(true); }
+						} else { throw new Error(data.error || r.status); }
+					});
 				}).catch(function(e) { msg(e.message, true); });
 			};
 		}
 		loadRooms();
 	</script>
 
-	<section id="section-edit" style="display:none;">
-		<h2>編輯房間</h2>
-		<form id="form-edit">
-			<label>ID（不可改）<input type="text" id="edit-id" readonly class="readonly"></label>
-			<label>名稱<input type="text" id="edit-name"></label>
-			<label>描述<textarea id="edit-desc"></textarea></label>
-			<button type="submit">儲存</button>
-			<button type="button" onclick="document.getElementById('section-edit').style.display='none';">取消</button>
-		</form>
-	</section>
-
 	<section>
 		<h2>新增出口</h2>
 		<form id="form-exit">
 			<label>從房間（ID）<input type="text" id="exit-from" placeholder="lobby" list="room-ids"></label>
-			<label>方向<input type="text" id="exit-dir" placeholder="東"></label>
+			<label>出口代號（東／天／101…）<input type="text" id="exit-dir" placeholder="東、天、101"></label>
 			<label>目標房間（ID）<input type="text" id="exit-to" placeholder="east_street" list="room-ids"></label>
 			<datalist id="room-ids"></datalist>
 			<button type="submit">新增出口</button>
@@ -193,7 +222,7 @@
 			var from = document.getElementById('exit-from').value.trim();
 			var dir = document.getElementById('exit-dir').value.trim();
 			var to = document.getElementById('exit-to').value.trim();
-			if (!from || !dir || !to) { msg('請填寫從房間、方向、目標房間', true); return; }
+			if (!from || !dir || !to) { msg('請填寫從房間、出口代號、目標房間', true); return; }
 			fetch(API + '/' + encodeURIComponent(from) + '/exits', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },

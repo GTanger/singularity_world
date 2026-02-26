@@ -13,6 +13,7 @@ import (
 // HandleRoomsAPI 處理 /api/rooms 與 /api/rooms/:id、/api/rooms/:id/exits。
 func HandleRoomsAPI(database *sql.DB, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-cache, max-age=0, must-revalidate")
 	path := strings.TrimPrefix(r.URL.Path, "/api/rooms")
 	path = strings.Trim(path, "/")
 	parts := strings.SplitN(path, "/", 3)
@@ -95,7 +96,20 @@ func updateRoom(database *sql.DB, w http.ResponseWriter, r *http.Request, id str
 		return
 	}
 	if err := db.UpdateRoom(database, id, body.Name, body.Description); err != nil {
+		if err == db.ErrRoomNotFound {
+			http.Error(w, `{"error":"room not found"}`, http.StatusNotFound)
+			return
+		}
 		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusBadRequest)
+		return
+	}
+	// 回傳更新後的房間，讓前端直接更新該列，避免快取或列表 API 不同步
+	room, _ := db.GetRoom(database, id)
+	if room != nil {
+		exits, _ := db.GetExitsForRoom(database, id)
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{
+			"id": id, "room": room, "exits": exits,
+		})
 		return
 	}
 	_ = json.NewEncoder(w).Encode(map[string]string{"id": id})

@@ -3,6 +3,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 
 	"singularity_world/entity"
 )
@@ -123,10 +124,20 @@ func CreateRoom(db *sql.DB, id, name, description string) error {
 	return err
 }
 
-// UpdateRoom 更新房間名稱與描述。
+// ErrRoomNotFound 表示找不到要更新的房間（UPDATE 影響 0 列）。
+var ErrRoomNotFound = errors.New("room not found")
+
+// UpdateRoom 更新房間名稱與描述；若 id 不存在則回傳 ErrRoomNotFound。
 func UpdateRoom(db *sql.DB, id, name, description string) error {
-	_, err := db.Exec("UPDATE rooms SET name = ?, description = ? WHERE id = ?", name, description, id)
-	return err
+	result, err := db.Exec("UPDATE rooms SET name = ?, description = ? WHERE id = ?", name, description, id)
+	if err != nil {
+		return err
+	}
+	n, _ := result.RowsAffected()
+	if n == 0 {
+		return ErrRoomNotFound
+	}
+	return nil
 }
 
 // DeleteRoom 刪除房間：先刪出口、將房內實體移到大廳、再刪房間。

@@ -49,7 +49,9 @@ func main() {
 		}
 		onClose := func(c *server.Client) {
 			if c.PlayerID != "" {
-				sessionStore.Remove(c.PlayerID)
+				if s := sessionStore.Get(c.PlayerID); s != nil && s.Client == c {
+					sessionStore.Remove(c.PlayerID)
+				}
 			}
 			hub.Unregister(c)
 		}
@@ -57,8 +59,10 @@ func main() {
 	})
 
 	http.HandleFunc("/api/design-constants", config.ServeDesignConstants)
-	http.HandleFunc("/api/rooms", func(w http.ResponseWriter, r *http.Request) { server.HandleRoomsAPI(database, w, r) })
-	http.Handle("/api/rooms/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.HandleRoomsAPI(database, w, r) }))
+	// 房間 API：/api/rooms（列表）與 /api/rooms/xxx（單一房間操作）皆由同一 handler 處理，避免 PUT /api/rooms/lobby 路由錯誤。
+	roomsAPI := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.HandleRoomsAPI(database, w, r) })
+	http.Handle("/api/rooms/", roomsAPI)
+	http.HandleFunc("/api/rooms", roomsAPI.ServeHTTP)
 	fs := http.FileServer(http.Dir("web"))
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		p := r.URL.Path
