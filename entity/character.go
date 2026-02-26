@@ -19,6 +19,7 @@ type Character struct {
 	Magnesium       int
 	LastObservedAt  *int64
 	CreatedAt       int64
+	Gender          string // "M" | "F"；空字串表示未設
 }
 
 // Sockets 回傳此角色對外開放的動詞清單（插頭插座最小集：Talk, Attack, Look）。

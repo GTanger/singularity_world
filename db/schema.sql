@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS entities (
 	dex INTEGER NOT NULL,
 	magnesium INTEGER NOT NULL,
 	last_observed_at INTEGER,
-	created_at INTEGER NOT NULL
+	created_at INTEGER NOT NULL,
+	gender TEXT
 );
 
 CREATE TABLE IF NOT EXISTS event_log (
@@ -50,4 +51,11 @@ CREATE TABLE IF NOT EXISTS entity_room (
 	room_id TEXT NOT NULL,
 	FOREIGN KEY (entity_id) REFERENCES entities(id),
 	FOREIGN KEY (room_id) REFERENCES rooms(id)
+);
+
+-- 玩家登入密碼（僅 kind=player 有列；決策 006 選項甲）
+CREATE TABLE IF NOT EXISTS entity_auth (
+	entity_id TEXT PRIMARY KEY,
+	password_hash TEXT NOT NULL,
+	FOREIGN KEY (entity_id) REFERENCES entities(id)
 );

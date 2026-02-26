@@ -10,10 +10,48 @@
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
-	<link rel="stylesheet" href="style.css?v=9.4">
+	<link rel="stylesheet" href="style.css?v=9.5.3">
 </head>
 <body>
-	<div id="app">
+	<!-- 登入／創角：未登入時顯示，登入成功後隱藏 -->
+	<div id="auth-screen" class="auth-screen">
+		<div class="auth-box">
+			<h2 class="auth-title">奇點世界</h2>
+			<p class="auth-hint" id="auth-hint">請輸入 ID 與密碼登入</p>
+			<p class="auth-error" id="auth-message" role="alert" aria-live="polite"></p>
+			<form id="auth-form" class="auth-form" autocomplete="off">
+				<div class="auth-field">
+					<label for="auth-id">角色 ID <span class="auth-label-note">（ID 即為角色姓名）</span></label>
+					<input type="text" id="auth-id" name="id" required minlength="2" maxlength="32" placeholder="2～32 字元" autocomplete="username">
+				</div>
+				<div class="auth-field">
+					<label for="auth-password">密碼</label>
+					<input type="password" id="auth-password" name="password" required minlength="6" placeholder="至少 6 字元" autocomplete="current-password">
+				</div>
+				<div class="auth-field auth-field-create" id="auth-display-wrap" hidden>
+					<label for="auth-display-char">顯示字（選填）</label>
+					<input type="text" id="auth-display-char" name="display_char" maxlength="2" placeholder="地圖上顯示一字，預設「我」">
+				</div>
+				<div class="auth-field auth-field-create" id="auth-gender-wrap" hidden>
+					<span class="auth-label">性別</span>
+					<div class="auth-gender-options">
+						<label class="auth-radio"><input type="radio" name="gender" value="男" id="auth-gender-m" checked> 男</label>
+						<label class="auth-radio"><input type="radio" name="gender" value="女" id="auth-gender-f"> 女</label>
+					</div>
+				</div>
+				<div class="auth-actions" id="auth-login-actions">
+					<button type="submit" name="action" value="login" id="auth-btn-login">登入</button>
+					<button type="button" id="auth-btn-switch">沒有帳號？創角</button>
+				</div>
+				<div class="auth-actions auth-actions-create" id="auth-create-actions" hidden>
+					<button type="submit" name="action" value="create" id="auth-btn-create">創角</button>
+					<button type="button" id="auth-btn-back">已有帳號？登入</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="app" class="app-after-login" hidden>
 		<!-- 頂列：左＝當前地點名稱，右＝遊戲時間＋五個保留鈕 -->
 		<header id="top-bar" class="top-row">
 			<div id="room-name-wrap" class="room-name-wrap">
@@ -86,13 +124,13 @@
 			</div>
 		</section>
 	</div>
-	<script src="main.js?v=8.3"></script>
-	<script src="mud-text.js?v=3.7"></script>
-	<script src="ui.js?v=3.7"></script>
+	<script src="main.js?v=8.5"></script>
+	<script src="mud-text.js?v=3.8.5"></script>
+	<script src="ui.js?v=3.8.5"></script>
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=3').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=4').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {

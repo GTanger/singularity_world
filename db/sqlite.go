@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"fmt"
+	"strings"
 
 	_ "modernc.org/sqlite"
 )
@@ -34,6 +35,11 @@ func OpenDB(path string) (*sql.DB, error) {
 	if _, err := db.Exec(schemaSQL); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("exec schema: %w", err)
+	}
+	// 既有 DB 補上 gender 欄位（新 DB 已含於 schema）
+	if _, err := db.Exec("ALTER TABLE entities ADD COLUMN gender TEXT"); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
+		_ = db.Close()
+		return nil, fmt.Errorf("migrate entities.gender: %w", err)
 	}
 	if err := SeedRooms(db); err != nil {
 		_ = db.Close()

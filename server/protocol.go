@@ -3,9 +3,12 @@ package server
 
 // ClientMsg 客戶端送出的 JSON；type 決定行為。
 type ClientMsg struct {
-	Type      string `json:"type"`       // "login" | "move" | "ping"
-	PlayerID  string `json:"player_id"`  // login 時必填
-	Direction string `json:"direction"`  // move 時出口方向（例："東"、"西"）
+	Type        string `json:"type"`         // "login" | "create_character" | "move" | "ping"
+	PlayerID    string `json:"player_id"`    // login 必填；create_character 時為新角色 id
+	Password    string `json:"password"`    // login / create_character 必填
+	DisplayChar string `json:"display_char"` // create_character 選填，預設「我」
+	Gender      string `json:"gender"`      // create_character 選填：「男」→M、「女」→F，預設 M
+	Direction   string `json:"direction"`   // move 時出口方向（例："東"、"西"）
 }
 
 // ViewEntity 房間內單一實體，供前端顯示「誰在這裡」。

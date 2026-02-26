@@ -146,12 +146,7 @@
 		socket = new WebSocket(wsUrl);
 		socket.onopen = function () {
 			if (reconnecting) reconnecting = false;
-			let playerId = options.playerId || (options.reconnect ? (typeof localStorage !== 'undefined' && localStorage.getItem(STORAGE_PLAYER_ID)) : null);
-			if (!playerId) {
-				appendLog('已進入奇點世界');
-				playerId = window.prompt('輸入角色 ID 登入（測試用可填 player1）', 'player1') || 'player1';
-			}
-			send({ type: 'login', player_id: playerId });
+			appendLog('已連線，請登入');
 		};
 		socket.onmessage = function (ev) {
 			try {
@@ -185,8 +180,9 @@
 							room_name: msg.room_name
 						};
 						if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_PLAYER_ID, msg.player_id);
+						showGameAfterLogin();
 						draw();
-						appendLog(options.reconnect ? '已恢復連線：' + msg.player_id + ' @ ' + (msg.room_name || msg.room_id) : '登入成功：' + msg.player_id + ' @ ' + (msg.room_name || msg.room_id));
+						appendLog('登入成功：' + msg.player_id + ' @ ' + (msg.room_name || msg.room_id));
 						startHeartbeat();
 						break;
 					case 'pong':
@@ -204,6 +200,10 @@
 						break;
 					case 'error':
 						appendLog('錯誤：' + msg.message);
+						if (!state.me) {
+							var authMsg = document.getElementById('auth-message');
+							if (authMsg) authMsg.textContent = msg.message;
+						}
 						break;
 					default:
 						appendLog('收到：' + ev.data);
@@ -214,7 +214,9 @@
 		};
 		socket.onclose = function () {
 			stopHeartbeat();
-			appendLog('連線關閉');
+			state.me = null;
+			showAuthScreen();
+			appendLog('連線關閉，請重新登入');
 		};
 		socket.onerror = function () {
 			appendLog('連線錯誤');
@@ -225,8 +227,76 @@
 		if (isConnected()) return;
 		reconnecting = true;
 		appendLog('重新連線中…');
-		const playerId = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_PLAYER_ID) : null;
-		connect({ reconnect: true, playerId: playerId || undefined });
+		connect({ reconnect: true });
+	}
+
+	function showGameAfterLogin() {
+		var authScreen = document.getElementById('auth-screen');
+		var app = document.getElementById('app');
+		if (authScreen) authScreen.setAttribute('hidden', '');
+		if (app) app.removeAttribute('hidden');
+	}
+
+	function showAuthScreen() {
+		var authScreen = document.getElementById('auth-screen');
+		var app = document.getElementById('app');
+		if (authScreen) authScreen.removeAttribute('hidden');
+		if (app) app.setAttribute('hidden', '');
+	}
+
+	function bindAuthForm() {
+		var form = document.getElementById('auth-form');
+		var authScreen = document.getElementById('auth-screen');
+		var app = document.getElementById('app');
+		if (!form) return;
+		if (authScreen && !app.hidden) authScreen.setAttribute('hidden', '');
+		if (app && !state.me) app.setAttribute('hidden', '');
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			var authMsg = document.getElementById('auth-message');
+			if (authMsg) authMsg.textContent = '';
+			var idEl = document.getElementById('auth-id');
+			var pwEl = document.getElementById('auth-password');
+			var id = (idEl && idEl.value) ? idEl.value.trim() : '';
+			var password = pwEl ? pwEl.value : '';
+			if (!id || !password) {
+				if (authMsg) authMsg.textContent = '請填寫 ID 與密碼';
+				return;
+			}
+			if (!socket || socket.readyState !== WebSocket.OPEN) {
+				if (authMsg) authMsg.textContent = '請稍候連線後再登入';
+				return;
+			}
+			// 依目前顯示的區塊判斷（按 Enter 時 submitter 可能是第一個按鈕「登入」，會誤送 login）
+			var createPanel = document.getElementById('auth-create-actions');
+			var isCreate = createPanel && !createPanel.hasAttribute('hidden');
+			if (isCreate) {
+				var displayChar = (document.getElementById('auth-display-char') && document.getElementById('auth-display-char').value) ? document.getElementById('auth-display-char').value.trim() : '';
+				var genderRadio = form.querySelector('input[name="gender"]:checked');
+				var gender = (genderRadio && genderRadio.value) ? genderRadio.value : '男';
+				if (password.length < 6) {
+					if (authMsg) authMsg.textContent = '密碼至少 6 個字元';
+					return;
+				}
+				send({ type: 'create_character', player_id: id, password: password, display_char: displayChar, gender: gender });
+			} else {
+				send({ type: 'login', player_id: id, password: password });
+			}
+		});
+		document.getElementById('auth-btn-switch').addEventListener('click', function () {
+			document.getElementById('auth-hint').textContent = '建立新角色（ID 與密碼登入用）';
+			document.getElementById('auth-display-wrap').removeAttribute('hidden');
+			document.getElementById('auth-gender-wrap').removeAttribute('hidden');
+			document.getElementById('auth-login-actions').setAttribute('hidden', '');
+			document.getElementById('auth-create-actions').removeAttribute('hidden');
+		});
+		document.getElementById('auth-btn-back').addEventListener('click', function () {
+			document.getElementById('auth-hint').textContent = '請輸入 ID 與密碼登入';
+			document.getElementById('auth-display-wrap').setAttribute('hidden', '');
+			document.getElementById('auth-gender-wrap').setAttribute('hidden', '');
+			document.getElementById('auth-login-actions').removeAttribute('hidden');
+			document.getElementById('auth-create-actions').setAttribute('hidden', '');
+		});
 	}
 
 	function send(obj) {
@@ -247,6 +317,10 @@
 	updateGameTimeDisplay();
 	window.gameConnect = connect;
 	window.gameTryReconnect = tryReconnect;
+	if (typeof document !== 'undefined') {
+		if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindAuthForm);
+		else bindAuthForm();
+	}
 	window.gameSend = function (msg) {
 		if (typeof msg === 'object') send(msg);
 		else if (socket && socket.readyState === WebSocket.OPEN) socket.send(msg);

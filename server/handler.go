@@ -23,6 +23,8 @@ func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, s
 	switch msg.Type {
 	case "login":
 		handleLogin(c, &msg, database, cfg, store, hub)
+	case "create_character":
+		handleCreateCharacter(c, &msg, database, cfg, store, hub)
 	case "move":
 		handleMove(c, &msg, database, cfg, store, hub)
 	case "ping":
@@ -34,30 +36,103 @@ func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, s
 
 func handleLogin(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
 	if msg.PlayerID == "" {
-		sendError(c, "player_id required")
+		sendError(c, "請輸入角色 ID")
+		return
+	}
+	if msg.Password == "" {
+		sendError(c, "請輸入密碼")
 		return
 	}
 	ent, err := db.GetEntity(database, msg.PlayerID)
 	if err != nil || ent == nil {
-		sendError(c, "player not found")
+		sendError(c, "角色不存在，請先創角")
 		return
 	}
-	_ = ent
-	roomID, err := game.EnsureEntityInRoom(database, msg.PlayerID, defaultRoomID)
+	if ent.Kind != "player" {
+		sendError(c, "此 ID 非玩家角色")
+		return
+	}
+	ok, err := db.VerifyPassword(database, msg.PlayerID, msg.Password)
 	if err != nil {
-		sendError(c, "room failed")
+		sendError(c, "驗證失敗")
 		return
 	}
-	c.PlayerID = msg.PlayerID
-	store.Set(msg.PlayerID, &Session{Client: c, PlayerID: msg.PlayerID})
+	if !ok {
+		sendError(c, "密碼錯誤")
+		return
+	}
+	loginSuccess(c, msg.PlayerID, database, cfg, store)
+}
 
+func handleCreateCharacter(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
+	if msg.PlayerID == "" {
+		sendError(c, "請輸入角色 ID")
+		return
+	}
+	if msg.Password == "" {
+		sendError(c, "請設定密碼")
+		return
+	}
+	if len(msg.Password) < 6 {
+		sendError(c, "密碼至少 6 個字元")
+		return
+	}
+	if len(msg.PlayerID) < 2 || len(msg.PlayerID) > 32 {
+		sendError(c, "ID 請 2～32 字元")
+		return
+	}
+	existing, err := db.GetEntity(database, msg.PlayerID)
+	if err != nil {
+		sendError(c, "建立失敗")
+		return
+	}
+	if existing != nil {
+		sendError(c, "此 ID 已被使用")
+		return
+	}
+	displayChar := msg.DisplayChar
+	if displayChar == "" {
+		displayChar = "我"
+	}
+	if len([]rune(displayChar)) > 1 {
+		displayChar = string([]rune(displayChar)[:1])
+	}
+	gender := "M"
+	if msg.Gender == "女" {
+		gender = "F"
+	} else if msg.Gender == "男" {
+		gender = "M"
+	}
+	if err := db.InsertEntity(database, msg.PlayerID, displayChar, gender); err != nil {
+		sendError(c, "建立角色失敗")
+		return
+	}
+	if err := db.SetEntityRoom(database, msg.PlayerID, defaultRoomID); err != nil {
+		sendError(c, "放入房間失敗")
+		return
+	}
+	if err := db.CreateAuth(database, msg.PlayerID, msg.Password); err != nil {
+		sendError(c, "設定密碼失敗")
+		return
+	}
+	loginSuccess(c, msg.PlayerID, database, cfg, store)
+}
+
+func loginSuccess(c *Client, playerID string, database *sql.DB, cfg config.Server, store *SessionStore) {
+	roomID, err := game.EnsureEntityInRoom(database, playerID, defaultRoomID)
+	if err != nil {
+		sendError(c, "房間載入失敗")
+		return
+	}
+	c.PlayerID = playerID
+	store.Set(playerID, &Session{Client: c, PlayerID: playerID})
 	view, err := game.GetRoomView(database, roomID)
 	if err != nil {
-		sendError(c, "load room failed")
+		sendError(c, "載入視野失敗")
 		return
 	}
 	sendRoomView(c, view, cfg)
-	sendMe(c, msg.PlayerID, roomID, view.Room.Name)
+	sendMe(c, playerID, roomID, view.Room.Name)
 }
 
 func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
