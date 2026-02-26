@@ -1,4 +1,4 @@
-/* 奇點世界 — 依 UI 設計圖：頂欄、房間名、描述、敘事、路徑、狀態、控制欄 */
+/* 奇點世界 — 頂欄、房間名、描述、敘事、狀態、路徑置底（無控制欄） */
 * { box-sizing: border-box; }
 
 :root {
@@ -196,16 +196,15 @@ body {
 }
 .text-muted { color: var(--text-muted); font-size: 0.85rem; }
 
-/* 移動欄：路徑 + 觀察/保留，高度約 2× 控制鈕 */
+/* 路徑欄：置底，僅出口 */
 .movement-panel {
 	display: flex;
-	align-items: stretch;
-	justify-content: space-between;
-	min-height: calc(var(--ctrl-size) * 2);
+	align-items: center;
+	min-height: var(--ctrl-size);
 	padding: 0.5rem 0.75rem;
-	gap: 0.75rem;
 	background: var(--bg-panel);
-	border-bottom: 1px solid var(--border);
+	border-top: 1px solid var(--border);
+	flex-shrink: 0;
 }
 .path-section {
 	flex: 1;
@@ -235,40 +234,17 @@ body {
 	border-color: var(--room-name);
 	color: var(--room-name);
 }
-.movement-actions {
-	display: flex;
-	flex-direction: column;
-	gap: 0.35rem;
-}
-.movement-actions .action-btn {
-	width: var(--ctrl-size);
-	height: var(--ctrl-size);
-	padding: 0;
-	font-size: 0.85rem;
-	color: var(--text);
-	background: var(--bg);
-	border: 1px solid var(--border);
-	border-radius: 6px;
-	cursor: pointer;
-}
-.movement-actions .action-btn:hover:not(:disabled) {
-	background: #2d333b;
-}
-.movement-actions .action-btn:disabled {
-	color: var(--text-muted);
-	cursor: default;
-}
-#btn-observe { cursor: pointer; }
 
-/* 狀態欄：左＝姓名／保留（直排），右＝四條狀態 2×2 網格，高度 = 控制欄 */
+/* 狀態欄：左＝姓名（與右側四條等高），右＝氣血／精神／內力／體力 2×2 網格，疊在路徑欄上 */
 .status-panel {
 	display: flex;
 	align-items: stretch;
-	height: var(--ctrl-size);
+	min-height: calc(var(--ctrl-size) * 2);
 	padding: 0 0.5rem;
 	gap: 0;
 	background: var(--bg-panel);
 	border-bottom: 1px solid var(--border);
+	flex-shrink: 0;
 }
 .status-name-wrap {
 	width: calc(var(--ctrl-size) * 2);
@@ -280,7 +256,6 @@ body {
 	padding-right: 0.5rem;
 }
 .player-name { font-weight: 600; font-size: 0.9rem; }
-.status-reserved { font-size: 0.7rem; color: var(--text-muted); }
 .status-bars {
 	flex: 1;
 	display: grid;
@@ -320,29 +295,5 @@ body {
 .stat-bar-spirit { background: var(--bar-spirit); }
 .stat-bar-inner { background: var(--bar-inner); }
 .stat-bar-stamina { background: var(--bar-stamina); }
-
-/* 控制欄：八等分、按鈕等高寬；body 已設 padding-bottom 避開手機橫條 */
-.control-bar {
-	display: flex;
-	width: 100%;
-	height: var(--ctrl-size);
-	flex-shrink: 0;
-	border-top: 1px solid var(--border);
-	background: var(--bg-panel);
-}
-.ctrl-btn {
-	flex: 1;
-	min-width: 0;
-	height: 100%;
-	padding: 0;
-	font-size: 0.8rem;
-	color: var(--text);
-	background: transparent;
-	border: none;
-	border-right: 1px solid var(--border);
-	cursor: pointer;
-}
-.ctrl-btn:last-child { border-right: none; }
-.ctrl-btn:hover { background: #2d333b; }
 
 .panel { box-sizing: border-box; }
