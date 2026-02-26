@@ -31,7 +31,7 @@
 
 	function gameSecNow() {
 		if (!state.server_unix) return null;
-		var elapsed = (Date.now() / 1000) - state.server_unix;
+		var elapsed = Math.max(0, (Date.now() / 1000) - state.server_unix);
 		var sec = state.game_time_sec_since_midnight + elapsed * GAME_TIME_SCALE;
 		sec = sec % GAME_SEC_PER_DAY;
 		if (sec < 0) sec += GAME_SEC_PER_DAY;
@@ -40,16 +40,19 @@
 
 	function gameDaysNow() {
 		if (!state.server_unix) return null;
-		var elapsed = (Date.now() / 1000) - state.server_unix;
+		var elapsed = Math.max(0, (Date.now() / 1000) - state.server_unix);
 		var secTotal = state.game_days_since_epoch * GAME_SEC_PER_DAY + state.game_time_sec_since_midnight + elapsed * GAME_TIME_SCALE;
-		return Math.floor(secTotal / GAME_SEC_PER_DAY);
+		return Math.max(0, Math.floor(secTotal / GAME_SEC_PER_DAY));
 	}
 
 	function formatSingularityDate(days) {
+		days = Math.max(0, Math.floor(days));
 		var dayInYear = days % DAYS_PER_YEAR;
 		var year = Math.floor(days / DAYS_PER_YEAR) + 1;
-		var month = Math.floor(dayInYear / DAYS_PER_MONTH) + 1;
+		var month = Math.min(12, Math.floor(dayInYear / DAYS_PER_MONTH) + 1);
 		var day = (dayInYear % DAYS_PER_MONTH) + 1;
+		if (day < 1) day = 1;
+		if (day > 30) day = 30;
 		var yearStr = year === 1 ? '元' : (year + '');
 		var monthStr = month <= 12 ? MONTH_NAMES[month - 1] : month + '';
 		var dayStr = day <= 30 ? DAY_NAMES[day - 1] : day + '';
@@ -158,9 +161,17 @@
 						state.description = msg.description || '';
 						state.exits = Array.isArray(msg.exits) ? msg.exits : [];
 						state.entities = msg.entities || [];
-						if (msg.server_unix != null) state.server_unix = msg.server_unix;
-						if (msg.game_time_sec_since_midnight != null) state.game_time_sec_since_midnight = msg.game_time_sec_since_midnight;
-						if (msg.game_days_since_epoch != null) state.game_days_since_epoch = msg.game_days_since_epoch;
+						if (typeof msg.server_unix === 'number' && typeof msg.game_time_sec_since_midnight === 'number' && typeof msg.game_days_since_epoch === 'number') {
+							var newGameSecAtView = msg.game_days_since_epoch * GAME_SEC_PER_DAY + msg.game_time_sec_since_midnight;
+							var currentGameSec = state.server_unix
+								? (state.game_days_since_epoch * GAME_SEC_PER_DAY + state.game_time_sec_since_midnight + Math.max(0, (Date.now() / 1000 - state.server_unix)) * GAME_TIME_SCALE)
+								: -1;
+							if (currentGameSec < 0 || newGameSecAtView >= currentGameSec - 1) {
+								state.server_unix = msg.server_unix;
+								state.game_time_sec_since_midnight = msg.game_time_sec_since_midnight;
+								state.game_days_since_epoch = msg.game_days_since_epoch;
+							}
+						}
 						startGameTimeTicker();
 						updateGameTimeDisplay();
 						draw();
