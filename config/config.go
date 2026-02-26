@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -41,6 +43,35 @@ func ServeDesignConstants(w http.ResponseWriter, _ *http.Request) {
 	_ = json.NewEncoder(w).Encode(DesignConstants())
 }
 
+const gameEpochPath = "data/game_epoch.unix"
+
+// resolveGameTimeEpoch 決定奇點曆起點：環境變數 > 回滾 > 持久檔 > 現在並寫檔。
+func resolveGameTimeEpoch() int64 {
+	if s := os.Getenv("GAME_TIME_EPOCH_UNIX"); s != "" {
+		if n, err := strconv.ParseInt(s, 10, 64); err == nil && n >= 0 {
+			return n
+		}
+	}
+	now := time.Now().Unix()
+	if os.Getenv("GAME_TIME_EPOCH_ROLLBACK") != "" {
+		writeEpochFile(now)
+		return now
+	}
+	if b, err := os.ReadFile(gameEpochPath); err == nil {
+		if n, err := strconv.ParseInt(strings.TrimSpace(string(b)), 10, 64); err == nil && n >= 0 {
+			return n
+		}
+	}
+	writeEpochFile(now)
+	return now
+}
+
+func writeEpochFile(epoch int64) {
+	dir := filepath.Dir(gameEpochPath)
+	_ = os.MkdirAll(dir, 0755)
+	_ = os.WriteFile(gameEpochPath, []byte(strconv.FormatInt(epoch, 10)), 0644)
+}
+
 // DefaultServer 回傳第一版預設值；若環境變數 PORT 已設則使用該埠（例：Cloudflare Tunnel 用 PORT=1721）。
 func DefaultServer() Server {
 	port := "8080"
@@ -57,6 +88,9 @@ func DefaultServer() Server {
 	if p := os.Getenv("MAPS_PATH"); p != "" {
 		mapsPath = p
 	}
+	// 奇點曆起點：持久於 data/game_epoch.unix，重啟照算；設 GAME_TIME_EPOCH_ROLLBACK=1 才重設為「現在＝元年」。
+	// 若設 GAME_TIME_EPOCH_UNIX 則以該值為準（不讀寫檔案）。
+	gameTimeEpoch := resolveGameTimeEpoch()
 	return Server{
 		Port:                 port,
 		DBPath:               "data/world.db",
@@ -66,7 +100,7 @@ func DefaultServer() Server {
 		ChunkSize:            chunkSize,
 		MapsPath:             mapsPath,
 		SessionRetainMinutes: 10,
-		GameTimeEpochUnix:     0,
+		GameTimeEpochUnix:    gameTimeEpoch,
 		GameTimeScale:        24,
 	}
 }

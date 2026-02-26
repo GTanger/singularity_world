@@ -65,15 +65,17 @@
 		var handEl = document.getElementById('game-time-hand');
 		var labelEl = document.getElementById('game-time-label');
 		var dateEl = document.getElementById('game-time-date');
-		if (!handEl) return;
 		if (sec == null || days == null) {
-			if (labelEl) labelEl.textContent = '';
-			if (dateEl) dateEl.textContent = '';
+			if (dateEl) dateEl.textContent = '奇點曆 —';
+			if (labelEl) labelEl.textContent = '--:--';
+			if (handEl) handEl.setAttribute('transform', 'rotate(0 16 16)');
 			return;
 		}
-		var hourCont = sec / 3600;
-		var angle = (hourCont - 12) * 15;
-		handEl.setAttribute('transform', 'rotate(' + angle + ' 16 16)');
+		if (handEl) {
+			var hourCont = sec / 3600;
+			var angle = (hourCont - 12) * 15;
+			handEl.setAttribute('transform', 'rotate(' + angle + ' 16 16)');
+		}
 		if (dateEl) dateEl.textContent = formatSingularityDate(days);
 		if (labelEl) {
 			var h = Math.floor(sec / 3600) % 24;
@@ -242,6 +244,7 @@
 		send({ type: 'move', direction: direction });
 	}
 
+	updateGameTimeDisplay();
 	window.gameConnect = connect;
 	window.gameTryReconnect = tryReconnect;
 	window.gameSend = function (msg) {
