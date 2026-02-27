@@ -369,11 +369,22 @@ body {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	align-items: flex-start;
+	align-items: center;
 	border-right: 1px solid var(--border);
 	padding-right: 0.5rem;
 }
-.player-name { font-weight: 600; font-size: 0.9rem; }
+.player-name {
+	width: 100%;
+	font-weight: 600;
+	font-size: clamp(0.65rem, 2.2vw + 0.5rem, 0.9rem);
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	cursor: pointer;
+}
+.player-name:hover { opacity: 0.9; }
+.player-name:focus { outline: 1px solid var(--room-name); outline-offset: 2px; }
 .status-bars {
 	flex: 1;
 	display: grid;
@@ -413,5 +424,93 @@ body {
 .stat-bar-spirit { background: var(--bar-spirit); }
 .stat-bar-inner { background: var(--bar-inner); }
 .stat-bar-stamina { background: var(--bar-stamina); }
+
+/* 玩家彈窗：點姓名開啟，寬自適應、高＝log 區（JS 設），四分頁 */
+.player-modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	padding: 1rem;
+	box-sizing: border-box;
+}
+.player-modal-overlay[hidden] { display: none; }
+.player-modal {
+	width: 100%;
+	max-width: 640px;
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	max-height: calc(100vh - 2rem);
+	box-sizing: border-box;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.player-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.6rem 0.75rem;
+	border-bottom: 1px solid var(--border);
+	flex-shrink: 0;
+}
+.player-modal-title {
+	margin: 0;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--text);
+}
+.player-modal-close {
+	width: 2rem;
+	height: 2rem;
+	padding: 0;
+	font-size: 1.5rem;
+	line-height: 1;
+	color: var(--text-muted);
+	background: transparent;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.player-modal-close:hover {
+	color: var(--text);
+	background: rgba(255, 255, 255, 0.08);
+}
+.player-modal-tabs {
+	display: flex;
+	gap: 0;
+	border-bottom: 1px solid var(--border);
+	flex-shrink: 0;
+}
+.player-modal-tab {
+	flex: 1;
+	padding: 0.5rem 0.4rem;
+	font-size: 0.85rem;
+	color: var(--text-muted);
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid transparent;
+	cursor: pointer;
+}
+.player-modal-tab:hover { color: var(--text); }
+.player-modal-tab.active {
+	color: var(--room-name);
+	border-bottom-color: var(--room-name);
+	font-weight: 600;
+}
+.player-modal-body {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	padding: 0.75rem;
+	color: var(--text);
+	font-size: 0.9rem;
+}
+.player-modal-pane { display: block; }
+.player-modal-pane[hidden] { display: none; }
 
 .panel { box-sizing: border-box; }

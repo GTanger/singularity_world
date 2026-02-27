@@ -314,12 +314,79 @@
 		send({ type: 'move', direction: direction });
 	}
 
+	function initPlayerModal() {
+		var overlay = document.getElementById('player-modal-overlay');
+		var modal = document.getElementById('player-modal');
+		var titleEl = document.getElementById('player-modal-title');
+		var playerName = document.getElementById('player-name');
+		var closeBtn = document.getElementById('player-modal-close');
+		var logEl = document.querySelector('.log-content');
+		var tabs = document.querySelectorAll('.player-modal-tab');
+		var panes = document.querySelectorAll('.player-modal-pane');
+		if (!overlay || !modal || !playerName) return;
+
+		function openModal(displayName) {
+			if (titleEl) titleEl.textContent = (displayName && displayName.trim()) ? displayName.trim() : '角色';
+			if (logEl) {
+				var h = logEl.clientHeight;
+				if (h > 0) modal.style.height = h + 'px';
+			}
+			overlay.removeAttribute('hidden');
+			overlay.setAttribute('aria-hidden', 'false');
+			document.body.style.overflow = 'hidden';
+			closeBtn.focus();
+			document.addEventListener('keydown', onModalKeydown);
+		}
+		function closeModal() {
+			overlay.setAttribute('hidden', '');
+			overlay.setAttribute('aria-hidden', 'true');
+			document.body.style.overflow = '';
+			document.removeEventListener('keydown', onModalKeydown);
+			if (playerName) playerName.focus();
+		}
+		function onModalKeydown(e) {
+			if (e.key === 'Escape') closeModal();
+		}
+		playerName.addEventListener('click', function () {
+			openModal(playerName.textContent || (state.me && state.me.player_id) || '');
+		});
+		playerName.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				openModal(playerName.textContent || (state.me && state.me.player_id) || '');
+			}
+		});
+		closeBtn.addEventListener('click', closeModal);
+		overlay.addEventListener('click', function (e) {
+			if (e.target === overlay) closeModal();
+		});
+		tabs.forEach(function (tab) {
+			tab.addEventListener('click', function () {
+				var t = tab.getAttribute('data-tab');
+				tabs.forEach(function (x) {
+					x.classList.toggle('active', x === tab);
+					x.setAttribute('aria-selected', x === tab ? 'true' : 'false');
+				});
+				panes.forEach(function (p) {
+					var on = p.getAttribute('data-tab') === t;
+					p.classList.toggle('active', on);
+					p.hidden = !on;
+				});
+			});
+		});
+		window.openCharacterModal = openModal;
+	}
+
 	updateGameTimeDisplay();
 	window.gameConnect = connect;
 	window.gameTryReconnect = tryReconnect;
 	if (typeof document !== 'undefined') {
-		if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindAuthForm);
-		else bindAuthForm();
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', function () { bindAuthForm(); initPlayerModal(); });
+		} else {
+			bindAuthForm();
+			initPlayerModal();
+		}
 	}
 	window.gameSend = function (msg) {
 		if (typeof msg === 'object') send(msg);
