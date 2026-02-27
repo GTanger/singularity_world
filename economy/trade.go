@@ -1,4 +1,4 @@
-// Package economy 負責交易與鎂流轉，對齊詞盤細規 §一鎂產消。
+// Package economy 負責交易與鎂流轉，對齊經濟彙整 §四 鎂產消閉環。
 package economy
 
 // TransferMagnesium 將 fromID 的 amount 鎂轉給 toID；呼叫方需負責 DB 交易與餘額檢查。
