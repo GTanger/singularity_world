@@ -26,9 +26,25 @@
 			if (entities && entities.length > 0) {
 				var myId = me && (me.player_id || me.playerID);
 				entities.forEach(function (e) {
-					if (myId && (e.id || e.ID) === myId) return;
+					var eid = (e.id || e.ID || '').toString();
+					var dchar = (e.display_char || e.id || e.ID || '?').toString();
+					if (myId && eid === myId) return;
 					var li = document.createElement('li');
-					li.textContent = (e.display_char || e.id || e.ID || '?').toString();
+					li.textContent = dchar;
+					li.setAttribute('role', 'button');
+					li.setAttribute('tabindex', '0');
+					li.setAttribute('data-entity-id', eid);
+					li.setAttribute('data-display-char', dchar);
+					li.title = '點擊查看狀態';
+					li.addEventListener('click', function () {
+						if (window.openCharacterModal) window.openCharacterModal(dchar, eid);
+					});
+					li.addEventListener('keydown', function (ev) {
+						if (ev.key === 'Enter' || ev.key === ' ') {
+							ev.preventDefault();
+							if (window.openCharacterModal) window.openCharacterModal(dchar, eid);
+						}
+					});
 					listEl.appendChild(li);
 				});
 			}

@@ -29,6 +29,8 @@ func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, s
 		handleMove(c, &msg, database, cfg, store, hub)
 	case "ping":
 		c.Send <- mustJSON(PongMsg{Type: "pong"})
+	case "get_entity_status":
+		handleGetEntityStatus(c, &msg, database)
 	default:
 		sendError(c, "unknown type: "+msg.Type)
 	}
@@ -131,8 +133,14 @@ func loginSuccess(c *Client, playerID string, database *sql.DB, cfg config.Serve
 		sendError(c, "載入視野失敗")
 		return
 	}
+	ent, _ := db.GetEntity(database, playerID)
+	vit, qi, dex := 10, 10, 10
+	if ent != nil {
+		vit, qi, dex = ent.Vit, ent.Qi, ent.Dex
+	}
+	rm := db.ComputeResourceMaxes(vit, qi, dex)
 	sendRoomView(c, view, cfg)
-	sendMe(c, playerID, roomID, view.Room.Name)
+	sendMe(c, playerID, roomID, view.Room.Name, vit, qi, dex, rm)
 }
 
 func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
@@ -189,12 +197,56 @@ func sendRoomView(c *Client, view *game.RoomView, cfg config.Server) {
 	c.Send <- mustJSON(msg)
 }
 
-func sendMe(c *Client, playerID, roomID, roomName string) {
-	c.Send <- mustJSON(MeMsg{Type: "me", PlayerID: playerID, RoomID: roomID, RoomName: roomName})
+func sendMe(c *Client, playerID, roomID, roomName string, vit, qi, dex int, rm db.ResourceMaxes) {
+	c.Send <- mustJSON(MeMsg{
+		Type: "me", PlayerID: playerID, RoomID: roomID, RoomName: roomName,
+		Vit: vit, Qi: qi, Dex: dex,
+		HpCur: int(rm.HpCur), HpMax: int(rm.HpMax),
+		InnerCur: int(rm.InnerCur), InnerMax: int(rm.InnerMax),
+		SpiritCur: int(rm.SpiritCur), SpiritMax: int(rm.SpiritMax),
+		StaminaCur: int(rm.StaminaCur), StaminaMax: int(rm.StaminaMax),
+	})
 }
 
 func sendMoved(c *Client, playerID, roomID, roomName string) {
 	c.Send <- mustJSON(MovedMsg{Type: "moved", PlayerID: playerID, RoomID: roomID, RoomName: roomName})
+}
+
+func handleGetEntityStatus(c *Client, msg *ClientMsg, database *sql.DB) {
+	if c.PlayerID == "" {
+		sendError(c, "請先登入")
+		return
+	}
+	entityID := msg.EntityID
+	if entityID == "" {
+		entityID = c.PlayerID
+	}
+	ent, err := db.GetEntity(database, entityID)
+	if err != nil || ent == nil {
+		sendError(c, "找不到該角色")
+		return
+	}
+	isSelf := entityID == c.PlayerID
+	mag := ent.Magnesium
+	var magPtr *int
+	if isSelf {
+		magPtr = &mag
+	}
+	rm := db.ComputeResourceMaxes(ent.Vit, ent.Qi, ent.Dex)
+	c.Send <- mustJSON(EntityStatusMsg{
+		Type:        "entity_status",
+		EntityID:    ent.ID,
+		DisplayChar: ent.DisplayChar,
+		Vit:         ent.Vit,
+		Qi:          ent.Qi,
+		Dex:         ent.Dex,
+		HpCur:       int(rm.HpCur), HpMax: int(rm.HpMax),
+		InnerCur:    int(rm.InnerCur), InnerMax: int(rm.InnerMax),
+		SpiritCur:   int(rm.SpiritCur), SpiritMax: int(rm.SpiritMax),
+		StaminaCur:  int(rm.StaminaCur), StaminaMax: int(rm.StaminaMax),
+		Magnesium:   magPtr,
+		IsSelf:      isSelf,
+	})
 }
 
 func sendError(c *Client, message string) {

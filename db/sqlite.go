@@ -41,6 +41,11 @@ func OpenDB(path string) (*sql.DB, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("migrate entities.gender: %w", err)
 	}
+	// 既有 DB 補上 soul_seed 欄位（創角必存，規格 §2.0）
+	if _, err := db.Exec("ALTER TABLE entities ADD COLUMN soul_seed INTEGER"); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
+		_ = db.Close()
+		return nil, fmt.Errorf("migrate entities.soul_seed: %w", err)
+	}
 	if err := SeedRooms(db); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("seed rooms: %w", err)

@@ -63,6 +63,18 @@ func main() {
 	roomsAPI := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.HandleRoomsAPI(database, w, r) })
 	http.Handle("/api/rooms/", roomsAPI)
 	http.HandleFunc("/api/rooms", roomsAPI.ServeHTTP)
+	http.HandleFunc("/api/admin/wipe-entities", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "POST only", http.StatusMethodNotAllowed)
+			return
+		}
+		if err := db.DeleteAllEntities(database); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"ok":true,"message":"已刪除所有角色"}`))
+	})
 	fs := http.FileServer(http.Dir("web"))
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		p := r.URL.Path

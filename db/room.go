@@ -62,7 +62,7 @@ func GetExitsForRoom(db *sql.DB, fromRoomID string) ([]Exit, error) {
 func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
 	rows, err := db.Query(
 		`SELECT c.id, c.kind, c.display_char, c.x, c.y, c.move_state, c.target_x, c.target_y, c.walk_or_run,
-		 c.move_started_at, c.vit, c.qi, c.dex, c.magnesium, c.last_observed_at, c.created_at, c.gender
+		 c.move_started_at, c.vit, c.qi, c.dex, c.magnesium, c.last_observed_at, c.created_at, c.gender, c.soul_seed
 		 FROM entity_room er JOIN entities c ON c.id = er.entity_id
 		 WHERE er.room_id = ?`,
 		roomID,
@@ -225,10 +225,11 @@ func scanCharacterList(rows *sql.Rows) ([]*entity.Character, error) {
 		var targetX, targetY sql.NullInt64
 		var moveStartedAt, lastObservedAt sql.NullInt64
 		var walkOrRun, gender sql.NullString
+		var soulSeed sql.NullInt64
 		if err := rows.Scan(
 			&c.ID, &c.Kind, &c.DisplayChar, &c.X, &c.Y, &c.MoveState,
 			&targetX, &targetY, &walkOrRun, &moveStartedAt,
-			&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender,
+			&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender, &soulSeed,
 		); err != nil {
 			return nil, err
 		}
@@ -253,6 +254,9 @@ func scanCharacterList(rows *sql.Rows) ([]*entity.Character, error) {
 		}
 		if gender.Valid {
 			c.Gender = gender.String
+		}
+		if soulSeed.Valid {
+			c.SoulSeed = &soulSeed.Int64
 		}
 		list = append(list, &c)
 	}

@@ -1,5 +1,6 @@
 -- 奇點世界第一版 schema，對齊人物角色模板與第一版可做清單 §1.8.3。
 -- entities：玩家／NPC 共用；event_log：觀測與坍縮用事件日誌。
+-- soul_seed：創角時寫入，唯一決定該角色之三軸光譜與 361 拓撲 760 條邊權（見人物屬性彙整 §2.0、361拓撲系統規格 §6.1）。
 
 CREATE TABLE IF NOT EXISTS entities (
 	id TEXT PRIMARY KEY,
@@ -18,7 +19,8 @@ CREATE TABLE IF NOT EXISTS entities (
 	magnesium INTEGER NOT NULL,
 	last_observed_at INTEGER,
 	created_at INTEGER NOT NULL,
-	gender TEXT
+	gender TEXT,
+	soul_seed INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS event_log (

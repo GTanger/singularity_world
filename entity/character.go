@@ -20,6 +20,7 @@ type Character struct {
 	LastObservedAt  *int64
 	CreatedAt       int64
 	Gender          string // "M" | "F"；空字串表示未設
+	SoulSeed        *int64 // 創角時寫入，唯一決定三軸與 760 邊權；nil 表示舊資料
 }
 
 // Sockets 回傳此角色對外開放的動詞清單（插頭插座最小集：Talk, Attack, Look）。

@@ -512,5 +512,12 @@ body {
 }
 .player-modal-pane { display: block; }
 .player-modal-pane[hidden] { display: none; }
+.status-content { padding: 0.5rem 0; }
+.status-dl { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1rem; margin: 0; }
+.status-dl dt { font-weight: 600; }
+.status-dl dd { margin: 0; }
+.status-bars-note { margin: 0.75rem 0 0; font-size: 0.9em; }
+.entities-list li[role="button"] { cursor: pointer; }
+.entities-list li[role="button"]:hover { text-decoration: underline; }
 
 .panel { box-sizing: border-box; }

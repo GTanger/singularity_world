@@ -96,6 +96,24 @@
 		}
 	}
 
+	// 四條狀態欄：滿條＝該屬性最大值，條寬＝當前值/最大值*100%。
+	function updateStatusBars(hpCur, hpMax, innerCur, innerMax, spiritCur, spiritMax, staminaCur, staminaMax) {
+		var pct = function (cur, max) {
+			if (max == null || max <= 0) return 100;
+			var c = Number(cur);
+			var m = Number(max);
+			return m <= 0 ? 100 : Math.min(100, Math.round((c / m) * 100));
+		};
+		var barHp = document.getElementById('bar-hp');
+		var barSpirit = document.getElementById('bar-spirit');
+		var barInner = document.getElementById('bar-inner');
+		var barStamina = document.getElementById('bar-stamina');
+		if (barHp) barHp.style.width = pct(hpCur, hpMax) + '%';
+		if (barSpirit) barSpirit.style.width = pct(spiritCur, spiritMax) + '%';
+		if (barInner) barInner.style.width = pct(innerCur, innerMax) + '%';
+		if (barStamina) barStamina.style.width = pct(staminaCur, staminaMax) + '%';
+	}
+
 	function draw() {
 		if (window.mudUpdateRoomView) {
 			window.mudUpdateRoomView(state.room_name, state.description, state.exits, state.entities, state.me);
@@ -107,6 +125,9 @@
 		}
 		var nameEl = document.getElementById('player-name');
 		if (nameEl) nameEl.textContent = (state.me && state.me.player_id) ? state.me.player_id : '姓名';
+		if (state.me && state.me.hp_max != null) {
+			updateStatusBars(state.me.hp_cur, state.me.hp_max, state.me.inner_cur, state.me.inner_max, state.me.spirit_cur, state.me.spirit_max, state.me.stamina_cur, state.me.stamina_max);
+		}
 	}
 
 	function appendLog(text) {
@@ -177,10 +198,22 @@
 						state.me = {
 							player_id: msg.player_id,
 							room_id: msg.room_id,
-							room_name: msg.room_name
+							room_name: msg.room_name,
+							vit: msg.vit,
+							qi: msg.qi,
+							dex: msg.dex,
+							hp_cur: msg.hp_cur,
+							hp_max: msg.hp_max,
+							inner_cur: msg.inner_cur,
+							inner_max: msg.inner_max,
+							spirit_cur: msg.spirit_cur,
+							spirit_max: msg.spirit_max,
+							stamina_cur: msg.stamina_cur,
+							stamina_max: msg.stamina_max
 						};
 						if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_PLAYER_ID, msg.player_id);
 						showGameAfterLogin();
+						updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
 						draw();
 						appendLog('登入成功：' + msg.player_id + ' @ ' + (msg.room_name || msg.room_id));
 						startHeartbeat();
@@ -197,6 +230,25 @@
 						break;
 					case 'blocked':
 						appendLog('無法往「' + (msg.direction || '') + '」移動');
+						break;
+					case 'entity_status':
+						renderStatusPane(msg);
+						if (msg.is_self && msg.hp_max != null) {
+							updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
+							if (state.me) {
+								state.me.vit = msg.vit;
+								state.me.qi = msg.qi;
+								state.me.dex = msg.dex;
+								state.me.hp_cur = msg.hp_cur;
+								state.me.hp_max = msg.hp_max;
+								state.me.inner_cur = msg.inner_cur;
+								state.me.inner_max = msg.inner_max;
+								state.me.spirit_cur = msg.spirit_cur;
+								state.me.spirit_max = msg.spirit_max;
+								state.me.stamina_cur = msg.stamina_cur;
+								state.me.stamina_max = msg.stamina_max;
+							}
+						}
 						break;
 					case 'error':
 						appendLog('錯誤：' + msg.message);
@@ -314,6 +366,35 @@
 		send({ type: 'move', direction: direction });
 	}
 
+	function fmtNum(x) {
+		if (x == null || x === '') return '—';
+		var n = Number(x);
+		return isNaN(n) ? '—' : Math.round(n);
+	}
+	function renderStatusPane(msg) {
+		var wrap = document.getElementById('status-content');
+		if (!wrap) return;
+		var isSelf = msg.is_self === true;
+		var vit = msg.vit != null ? msg.vit : '—';
+		var qi = msg.qi != null ? msg.qi : '—';
+		var dex = msg.dex != null ? msg.dex : '—';
+		var html = '<dl class="status-dl">';
+		html += '<dt>體質</dt><dd>' + vit + '</dd>';
+		html += '<dt>氣脈</dt><dd>' + qi + '</dd>';
+		html += '<dt>靈敏</dt><dd>' + dex + '</dd>';
+		html += '<dt>氣血</dt><dd>' + fmtNum(msg.hp_cur) + ' / ' + fmtNum(msg.hp_max) + '</dd>';
+		html += '<dt>內力</dt><dd>' + fmtNum(msg.inner_cur) + ' / ' + fmtNum(msg.inner_max) + '</dd>';
+		html += '<dt>精神</dt><dd>' + fmtNum(msg.spirit_cur) + ' / ' + fmtNum(msg.spirit_max) + '</dd>';
+		html += '<dt>體力</dt><dd>' + fmtNum(msg.stamina_cur) + ' / ' + fmtNum(msg.stamina_max) + '</dd>';
+		if (isSelf && msg.magnesium != null) {
+			html += '<dt>鎂</dt><dd>' + msg.magnesium + '</dd>';
+		} else if (!isSelf) {
+			html += '<dt>鎂</dt><dd>—</dd>';
+		}
+		html += '</dl>';
+		wrap.innerHTML = html;
+	}
+
 	function initPlayerModal() {
 		var overlay = document.getElementById('player-modal-overlay');
 		var modal = document.getElementById('player-modal');
@@ -325,8 +406,15 @@
 		var panes = document.querySelectorAll('.player-modal-pane');
 		if (!overlay || !modal || !playerName) return;
 
-		function openModal(displayName) {
+		function openModal(displayName, entityId) {
 			if (titleEl) titleEl.textContent = (displayName && displayName.trim()) ? displayName.trim() : '角色';
+			var id = (entityId && entityId.trim()) ? entityId.trim() : (state.me && state.me.player_id ? state.me.player_id : '');
+			if (id && isConnected()) {
+				send({ type: 'get_entity_status', entity_id: id });
+			} else {
+				var wrap = document.getElementById('status-content');
+				if (wrap) wrap.innerHTML = '<p class="text-muted">請先登入</p>';
+			}
 			if (logEl) {
 				var h = logEl.clientHeight;
 				if (h > 0) modal.style.height = h + 'px';
@@ -348,12 +436,14 @@
 			if (e.key === 'Escape') closeModal();
 		}
 		playerName.addEventListener('click', function () {
-			openModal(playerName.textContent || (state.me && state.me.player_id) || '');
+			var myId = state.me && state.me.player_id;
+			openModal(playerName.textContent || myId || '', myId || '');
 		});
 		playerName.addEventListener('keydown', function (e) {
 			if (e.key === 'Enter' || e.key === ' ') {
 				e.preventDefault();
-				openModal(playerName.textContent || (state.me && state.me.player_id) || '');
+				var myId = state.me && state.me.player_id;
+				openModal(playerName.textContent || myId || '', myId || '');
 			}
 		});
 		closeBtn.addEventListener('click', closeModal);
