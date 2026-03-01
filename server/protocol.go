@@ -3,7 +3,7 @@ package server
 
 // ClientMsg 客戶端送出的 JSON；type 決定行為。
 type ClientMsg struct {
-	Type        string `json:"type"`         // "login" | "create_character" | "move" | "ping" | "get_entity_status"
+	Type        string `json:"type"`         // "login" | "create_character" | "move" | "ping" | "get_entity_status" | "print_topology_debug"
 	PlayerID    string `json:"player_id"`    // login 必填；create_character 時為新角色 id
 	Password    string `json:"password"`     // login / create_character 必填
 	DisplayChar string `json:"display_char"` // create_character 選填，預設「我」
@@ -39,23 +39,29 @@ type RoomViewMsg struct {
 	GameDaysSinceEpoch       int    `json:"game_days_since_epoch"`           // 自 epoch 起算的遊戲日數，奇點曆用
 }
 
-// MeMsg 伺服器推送：登入成功後回傳玩家 id、當前房間、體敏氣與四項資源當前/最大值（滿條＝該屬性最大值）。
+// MeMsg 伺服器推送：登入成功後回傳玩家 id、當前房間、體敏氣與四項資源、命途/本源/星盤用欄位（狀態與星盤分頁規格 §五）。
 type MeMsg struct {
-	Type        string  `json:"type"`
-	PlayerID    string  `json:"player_id"`
-	RoomID      string  `json:"room_id"`
-	RoomName    string  `json:"room_name"`
-	Vit         int     `json:"vit"`
-	Qi          int     `json:"qi"`
-	Dex         int     `json:"dex"`
-	HpCur       int `json:"hp_cur"`
-	HpMax       int `json:"hp_max"`
-	InnerCur    int `json:"inner_cur"`
-	InnerMax    int `json:"inner_max"`
-	SpiritCur   int `json:"spirit_cur"`
-	SpiritMax   int `json:"spirit_max"`
-	StaminaCur  int `json:"stamina_cur"`
-	StaminaMax  int `json:"stamina_max"`
+	Type            string    `json:"type"`
+	PlayerID        string    `json:"player_id"`
+	RoomID          string    `json:"room_id"`
+	RoomName        string    `json:"room_name"`
+	Vit             int       `json:"vit"`
+	Qi              int       `json:"qi"`
+	Dex             int       `json:"dex"`
+	HpCur           int       `json:"hp_cur"`
+	HpMax           int       `json:"hp_max"`
+	InnerCur        int       `json:"inner_cur"`
+	InnerMax        int       `json:"inner_max"`
+	SpiritCur       int       `json:"spirit_cur"`
+	SpiritMax       int       `json:"spirit_max"`
+	StaminaCur      int       `json:"stamina_cur"`
+	StaminaMax      int       `json:"stamina_max"`
+	DisplayTitle    string   `json:"display_title,omitempty"`    // 命途；空則前端顯示「無名之輩」
+	OriginSentence  string   `json:"origin_sentence,omitempty"` // 本源一句話，後端拼句，三軸不傳
+	ActivatedNodes  []string          `json:"activated_nodes,omitempty"` // 星盤已貫通節點 ID
+	TopologyCosts   []float64         `json:"topology_costs,omitempty"` // 760 條 Cost（僅自己，供星盤綁定）
+	EquipmentSlots  map[string]string `json:"equipment_slots,omitempty"` // slot→item_id
+	EquipmentNames  map[string]string `json:"equipment_names,omitempty"` // slot→item_name（前端顯示用）
 }
 
 // MovedMsg 伺服器推送：某角色經出口移動後廣播給所有人。
@@ -83,22 +89,34 @@ type PongMsg struct {
 	Type string `json:"type"` // "pong"
 }
 
-// EntityStatusMsg 伺服器回傳：單一實體狀態分頁用（體敏氣、四項資源當前/最大值、鎂）。
+// TopologyDebugAckMsg 暫時除錯用：print_topology_debug 已於伺服器終端印出，回傳此 ack 供前端得知。
+type TopologyDebugAckMsg struct {
+	Type    string `json:"type"`    // "topology_debug"
+	Message string `json:"message"`
+}
+
+// EntityStatusMsg 伺服器回傳：單一實體狀態分頁用（體敏氣、四項資源、鎂；自己時含命途/本源/星盤）。
 type EntityStatusMsg struct {
-	Type        string  `json:"type"`
-	EntityID    string  `json:"entity_id"`
-	DisplayChar string  `json:"display_char"`
-	Vit         int     `json:"vit"`
-	Qi          int     `json:"qi"`
-	Dex         int     `json:"dex"`
-	HpCur       int  `json:"hp_cur"`
-	HpMax       int  `json:"hp_max"`
-	InnerCur    int  `json:"inner_cur"`
-	InnerMax    int  `json:"inner_max"`
-	SpiritCur   int  `json:"spirit_cur"`
-	SpiritMax   int  `json:"spirit_max"`
-	StaminaCur  int  `json:"stamina_cur"`
-	StaminaMax  int  `json:"stamina_max"`
-	Magnesium   *int `json:"magnesium"`
-	IsSelf      bool `json:"is_self"`
+	Type            string    `json:"type"`
+	EntityID        string    `json:"entity_id"`
+	DisplayChar     string    `json:"display_char"`
+	Vit             int       `json:"vit"`
+	Qi              int       `json:"qi"`
+	Dex             int       `json:"dex"`
+	HpCur           int       `json:"hp_cur"`
+	HpMax           int       `json:"hp_max"`
+	InnerCur        int       `json:"inner_cur"`
+	InnerMax        int       `json:"inner_max"`
+	SpiritCur       int       `json:"spirit_cur"`
+	SpiritMax       int       `json:"spirit_max"`
+	StaminaCur      int       `json:"stamina_cur"`
+	StaminaMax      int       `json:"stamina_max"`
+	Magnesium       *int      `json:"magnesium"`
+	IsSelf          bool      `json:"is_self"`
+	DisplayTitle    string    `json:"display_title,omitempty"`
+	OriginSentence  string    `json:"origin_sentence,omitempty"`
+	ActivatedNodes  []string          `json:"activated_nodes,omitempty"`
+	TopologyCosts   []float64         `json:"topology_costs,omitempty"`
+	EquipmentSlots  map[string]string `json:"equipment_slots,omitempty"`
+	EquipmentNames  map[string]string `json:"equipment_names,omitempty"`
 }

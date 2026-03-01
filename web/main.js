@@ -209,13 +209,20 @@
 							spirit_cur: msg.spirit_cur,
 							spirit_max: msg.spirit_max,
 							stamina_cur: msg.stamina_cur,
-							stamina_max: msg.stamina_max
+							stamina_max: msg.stamina_max,
+							display_title: msg.display_title,
+							origin_sentence: msg.origin_sentence,
+							activated_nodes: msg.activated_nodes || ['N000'],
+							topology_costs: msg.topology_costs,
+							equipment_slots: msg.equipment_slots || {},
+							equipment_names: msg.equipment_names || {}
 						};
 						if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_PLAYER_ID, msg.player_id);
 						showGameAfterLogin();
 						updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
 						draw();
 						appendLog('登入成功：' + msg.player_id + ' @ ' + (msg.room_name || msg.room_id));
+						renderStarplatePane(state.me);
 						startHeartbeat();
 						break;
 					case 'pong':
@@ -233,21 +240,33 @@
 						break;
 					case 'entity_status':
 						renderStatusPane(msg);
-						if (msg.is_self && msg.hp_max != null) {
-							updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
-							if (state.me) {
-								state.me.vit = msg.vit;
-								state.me.qi = msg.qi;
-								state.me.dex = msg.dex;
-								state.me.hp_cur = msg.hp_cur;
-								state.me.hp_max = msg.hp_max;
-								state.me.inner_cur = msg.inner_cur;
-								state.me.inner_max = msg.inner_max;
-								state.me.spirit_cur = msg.spirit_cur;
-								state.me.spirit_max = msg.spirit_max;
-								state.me.stamina_cur = msg.stamina_cur;
-								state.me.stamina_max = msg.stamina_max;
+						renderEquipmentPane(msg);
+						if (msg.is_self) {
+							if (msg.hp_max != null) {
+								updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
+								if (state.me) {
+									state.me.vit = msg.vit;
+									state.me.qi = msg.qi;
+									state.me.dex = msg.dex;
+									state.me.hp_cur = msg.hp_cur;
+									state.me.hp_max = msg.hp_max;
+									state.me.inner_cur = msg.inner_cur;
+									state.me.inner_max = msg.inner_max;
+									state.me.spirit_cur = msg.spirit_cur;
+									state.me.spirit_max = msg.spirit_max;
+									state.me.stamina_cur = msg.stamina_cur;
+									state.me.stamina_max = msg.stamina_max;
+								}
 							}
+							if (state.me) {
+								state.me.display_title = msg.display_title;
+								state.me.origin_sentence = msg.origin_sentence;
+								state.me.activated_nodes = msg.activated_nodes && msg.activated_nodes.length ? msg.activated_nodes : ['N000'];
+								state.me.topology_costs = msg.topology_costs;
+								state.me.equipment_slots = msg.equipment_slots || {};
+								state.me.equipment_names = msg.equipment_names || {};
+							}
+							renderStarplatePane(state.me);
 						}
 						break;
 					case 'error':
@@ -378,21 +397,148 @@
 		var vit = msg.vit != null ? msg.vit : '—';
 		var qi = msg.qi != null ? msg.qi : '—';
 		var dex = msg.dex != null ? msg.dex : '—';
+		var title = (msg.display_title && msg.display_title.trim()) ? msg.display_title.trim() : '無名之輩';
+		var origin = (msg.origin_sentence && msg.origin_sentence.trim()) ? msg.origin_sentence.trim() : '';
 		var html = '<dl class="status-dl">';
-		html += '<dt>體質</dt><dd>' + vit + '</dd>';
-		html += '<dt>氣脈</dt><dd>' + qi + '</dd>';
-		html += '<dt>靈敏</dt><dd>' + dex + '</dd>';
-		html += '<dt>氣血</dt><dd>' + fmtNum(msg.hp_cur) + ' / ' + fmtNum(msg.hp_max) + '</dd>';
-		html += '<dt>內力</dt><dd>' + fmtNum(msg.inner_cur) + ' / ' + fmtNum(msg.inner_max) + '</dd>';
-		html += '<dt>精神</dt><dd>' + fmtNum(msg.spirit_cur) + ' / ' + fmtNum(msg.spirit_max) + '</dd>';
-		html += '<dt>體力</dt><dd>' + fmtNum(msg.stamina_cur) + ' / ' + fmtNum(msg.stamina_max) + '</dd>';
-		if (isSelf && msg.magnesium != null) {
-			html += '<dt>鎂</dt><dd>' + msg.magnesium + '</dd>';
-		} else if (!isSelf) {
-			html += '<dt>鎂</dt><dd>—</dd>';
+		html += '<dt>[ 命途 ]</dt><dd>' + escapeHtml(title) + '</dd>';
+		if (origin) {
+			html += '<dt>[ 本源 ]</dt><dd>「' + escapeHtml(origin) + '」</dd>';
+		}
+		html += '<dt>[ 維度 ]</dt><dd>體質 ' + vit + ' ｜ 氣脈 ' + qi + ' ｜ 靈敏 ' + dex + '</dd>';
+		html += '<dt>[ 四相 ]</dt><dd class="status-four">'
+			+ '<span>氣血 ' + fmtNum(msg.hp_cur) + '/' + fmtNum(msg.hp_max) + '</span>'
+			+ '<span>內力 ' + fmtNum(msg.inner_cur) + '/' + fmtNum(msg.inner_max) + '</span>'
+			+ '<span>精神 ' + fmtNum(msg.spirit_cur) + '/' + fmtNum(msg.spirit_max) + '</span>'
+			+ '<span>體力 ' + fmtNum(msg.stamina_cur) + '/' + fmtNum(msg.stamina_max) + '</span>'
+			+ '</dd>';
+		html += '<dt>[ 持有 ]</dt><dd>鎂：' + (isSelf && msg.magnesium != null ? msg.magnesium : '—') + '</dd>';
+		html += '</dl>';
+		wrap.innerHTML = html;
+	}
+	var EQUIP_SLOTS = [
+		['head', '【首】'], ['face', '【面】'], ['neck', '【頸】'],
+		['body', '【衣】'], ['cloak', '【披】'],
+		['shoulder', '【肩】'], ['arm', '【臂】'], ['wrist', '【腕】'], ['hand', '【掌】'],
+		['waist', '【腰】'], ['legs', '【褲】'], ['feet', '【足】'],
+		['ring_l', '【指】左'], ['ring_r', '【指】右'], ['trinket', '【佩】'],
+		['hold_l', '【持】左'], ['hold_r', '【持】右']
+	];
+	function renderEquipmentPane(msg) {
+		var wrap = document.getElementById('player-modal-pane-equip');
+		if (!wrap) return;
+		var names = msg.equipment_names || {};
+		var html = '<dl class="status-dl equip-dl">';
+		for (var i = 0; i < EQUIP_SLOTS.length; i++) {
+			var code = EQUIP_SLOTS[i][0];
+			var label = EQUIP_SLOTS[i][1];
+			var itemName = names[code];
+			html += '<dt>' + label + '</dt><dd>' + (itemName ? escapeHtml(itemName) : '<span class="text-muted">(空)</span>') + '</dd>';
 		}
 		html += '</dl>';
 		wrap.innerHTML = html;
+	}
+	function escapeHtml(s) {
+		if (!s) return '';
+		var div = document.createElement('div');
+		div.textContent = s;
+		return div.innerHTML;
+	}
+
+	// 二十主樞（361 規格 §2.2）：代碼 N001～N020、名稱
+	var HUB_NAMES = ['天極', '脈衝', '震淵', '游離', '弦絲', '曜核', '凜晶', '淵流', '萬象', '解離', '鎮閾', '衡定', '穹壁', '重塑', '逆熵', '神淵', '識閾', '坍縮', '無相', '越權'];
+	// Cost 文字化五級（狀態與星盤分頁規格 §5.5）
+	function costToLabel(cost) {
+		if (cost == null) return { text: '未知', css: 'cost-unknown' };
+		if (cost <= 7)  return { text: '暢流', css: 'cost-flow' };
+		if (cost <= 11) return { text: '順通', css: 'cost-easy' };
+		if (cost <= 16) return { text: '平穩', css: 'cost-mid' };
+		if (cost <= 21) return { text: '滯澀', css: 'cost-slow' };
+		return { text: '險阻', css: 'cost-hard' };
+	}
+	function costSpan(cost) {
+		var label = costToLabel(cost);
+		var val = cost != null ? ' (' + cost.toFixed(2) + ')' : '';
+		return '<span class="' + label.css + '">' + label.text + val + '</span>';
+	}
+	// 760 邊序（361 §6.1.0）：型 A 0..19，型 B 20..119，型 C 120..419，型 D 420..659，型 E 660..759
+	function getTypeCCosts(costs, hubIndex) {
+		if (!costs || costs.length < 120 + (hubIndex + 1) * 15) return [];
+		return costs.slice(120 + hubIndex * 15, 120 + hubIndex * 15 + 15);
+	}
+	function getCostA(costs, hubIndex) {
+		if (!costs || costs.length <= hubIndex) return null;
+		return costs[hubIndex];
+	}
+	function getCostB(costs, hubIndex, blueIdx) {
+		var i = 20 + hubIndex * 5 + blueIdx;
+		return (costs && costs.length > i) ? costs[i] : null;
+	}
+	function getCostD(costs, hubIndex, greenIdx) {
+		var i = 420 + hubIndex * 12 + greenIdx;
+		return (costs && costs.length > i) ? costs[i] : null;
+	}
+	function getCostE(costs, hubIndex, blueIdx) {
+		var i = 660 + hubIndex * 5 + blueIdx;
+		return (costs && costs.length > i) ? costs[i] : null;
+	}
+	function renderStarplatePane(me) {
+		var wrap = document.getElementById('starplate-content');
+		if (!wrap) return;
+		if (!me || !me.activated_nodes || !Array.isArray(me.activated_nodes)) {
+			wrap.innerHTML = '<p class="text-muted">僅自己可觀看星盤。請先登入並點擊自己開啟。</p>';
+			return;
+		}
+		var activated = me.activated_nodes;
+		var count = activated.length;
+		var costs = me.topology_costs || [];
+		var html = '<div class="starplate-block"><strong>[ 星盤貫通率 ]</strong> ' + count + ' / 360</div>';
+		html += '<div class="starplate-block"><strong>[ 源始 ]</strong> N000 生之奇點 (已點亮)</div>';
+		html += '<div class="starplate-block starplate-hubs"><strong>二十主樞</strong><ul class="starplate-hub-list">';
+		for (var i = 0; i < HUB_NAMES.length; i++) {
+			var nodeId = 'N' + String(i + 1).padStart(3, '0');
+			var lit = activated.indexOf(nodeId) !== -1 ? '1' : '0';
+			var costA = getCostA(costs, i);
+			var adaptStr = costA != null ? costSpan(costA) : '未知';
+			html += '<li data-hub="' + i + '">[' + HUB_NAMES[i] + '] ' + nodeId + ' ｜ 適性：' + adaptStr + ' ｜ 貫通：0/17 ｜ <button type="button" class="btn-inline">進入觀測</button></li>';
+		}
+		html += '</ul></div>';
+		html += '<div id="starplate-observe" class="starplate-observe" hidden></div>';
+		wrap.innerHTML = html;
+		wrap.querySelectorAll('.starplate-hub-list button').forEach(function (btn) {
+			btn.addEventListener('click', function () {
+				var hubIndex = parseInt(btn.closest('li').getAttribute('data-hub'), 10);
+				var observeEl = document.getElementById('starplate-observe');
+				if (!observeEl) return;
+				var typeCCosts = getTypeCCosts(costs, hubIndex);
+				var name = HUB_NAMES[hubIndex];
+				var costA = getCostA(costs, hubIndex);
+				var blueNames = ['起', '承', '轉', '協', '合'];
+				var greenLabels = ['G01 探', 'G02 觸', 'G03 納', 'G04 蓄', 'G05 濾', 'G06 析', 'G07 融', 'G08 衍', 'G09 律', 'G10 束', 'G11 釋', 'G12 散'];
+				var greenShort = ['G01','G02','G03','G04','G05','G06','G07','G08','G09','G10','G11','G12'];
+				var greenIndexPerBlue = [[0, 1, 2], [2, 3, 4], [4, 5, 6], [7, 8, 9], [9, 10, 11]];
+				var greenSharedNote = { 2: ' (與[承]共用)', 4: ' (與[轉]共用)', 9: ' (與[合]共用)' };
+				var lines = ['<strong>🔭 當前觀測：[', name, '] 星系內部</strong>'];
+				lines.push('<div class="starplate-hub-cost">抵達本主樞 ─ ', costSpan(costA), '</div>');
+				var idx = 0;
+				for (var b = 0; b < 5; b++) {
+					var costB = getCostB(costs, hubIndex, b);
+					var nextBlue = blueNames[(b + 1) % 5];
+					var ringE = getCostE(costs, hubIndex, b);
+					lines.push('<div class="starplate-blue">🔵 [', blueNames[b], '] 邏輯閘 ─ ', costSpan(costB), ' (未貫通) <span class="ring-cost">⟳→[', nextBlue, '] ', costSpan(ringE), '</span></div>');
+					for (var g = 0; g < 3; g++) {
+						var greenIdx = greenIndexPerBlue[b][g];
+						var costC = typeCCosts.length > idx ? typeCCosts[idx] : null;
+						var ringD = getCostD(costs, hubIndex, greenIdx);
+						var nextGreen = greenShort[(greenIdx + 1) % 12];
+						var sharedNote = greenSharedNote[greenIdx] || '';
+						lines.push('<div class="starplate-green">　├─ 🟢 ', greenLabels[greenIdx], ' ─ ', costSpan(costC), '：[ 空 ]', sharedNote, ' <span class="ring-cost">⟳→', nextGreen, ' ', costSpan(ringD), '</span></div>');
+						idx++;
+					}
+				}
+				observeEl.innerHTML = lines.join('');
+				observeEl.removeAttribute('hidden');
+			});
+		});
 	}
 
 	function initPlayerModal() {
@@ -409,6 +555,10 @@
 		function openModal(displayName, entityId) {
 			if (titleEl) titleEl.textContent = (displayName && displayName.trim()) ? displayName.trim() : '角色';
 			var id = (entityId && entityId.trim()) ? entityId.trim() : (state.me && state.me.player_id ? state.me.player_id : '');
+			var starplateWrap = document.getElementById('starplate-content');
+			if (starplateWrap && id && state.me && state.me.player_id && id !== state.me.player_id) {
+				starplateWrap.innerHTML = '<p class="text-muted">僅自己可觀看星盤。</p>';
+			}
 			if (id && isConnected()) {
 				send({ type: 'get_entity_status', entity_id: id });
 			} else {

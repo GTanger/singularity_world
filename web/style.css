@@ -513,10 +513,29 @@ body {
 .player-modal-pane { display: block; }
 .player-modal-pane[hidden] { display: none; }
 .status-content { padding: 0.5rem 0; }
-.status-dl { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1rem; margin: 0; }
-.status-dl dt { font-weight: 600; }
-.status-dl dd { margin: 0; }
+.status-dl { display: grid; grid-template-columns: auto 1fr; gap: 0.6rem 1rem; margin: 0; align-items: baseline; }
+.status-dl dt { font-weight: 600; white-space: nowrap; color: var(--room-name); }
+.status-dl dd { margin: 0; line-height: 1.6; }
+.status-four { display: grid; grid-template-columns: 1fr 1fr; gap: 0.2rem 1.5rem; }
 .status-bars-note { margin: 0.75rem 0 0; font-size: 0.9em; }
+.starplate-content { padding: 0.5rem 0; }
+.starplate-block { margin-bottom: 0.75rem; }
+.starplate-hub-list { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+.starplate-hub-list li { margin: 0.35rem 0; }
+.starplate-observe { margin-top: 1rem; padding: 0.5rem; font-size: 0.9em; }
+.starplate-hub-cost { margin-top: 0.25rem; margin-bottom: 0.5rem; font-size: 0.95em; color: var(--text-muted); }
+.starplate-blue { margin-top: 0.5rem; }
+.starplate-green { margin-left: 0.5rem; font-size: 0.95em; }
+/* 環流 Cost 標註 */
+.ring-cost { font-size: 0.85em; opacity: 0.75; margin-left: 0.5rem; }
+/* Cost 五級通暢度（§5.5） */
+.cost-flow    { color: #67c23a; font-weight: 600; }
+.cost-easy    { color: #79bbff; }
+.cost-mid     { color: #8b949e; }
+.cost-slow    { color: #e6a23c; }
+.cost-hard    { color: #f56c6c; font-weight: 600; }
+.cost-unknown { color: #8b949e; font-style: italic; }
+.btn-inline { margin-left: 0.5rem; cursor: pointer; }
 .entities-list li[role="button"] { cursor: pointer; }
 .entities-list li[role="button"]:hover { text-decoration: underline; }
 

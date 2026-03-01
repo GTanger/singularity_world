@@ -55,6 +55,39 @@ func ComputeResourceMaxes(vit, qi, dex int) ResourceMaxes {
 	}
 }
 
+// GenerateOriginSentence 由三軸（能階、時脈、相位）產出一句話語感，供狀態分頁【本源】顯示；三軸不傳前端。規格：狀態與星盤分頁規格 §五.1。
+func GenerateOriginSentence(amp, freq, phase float64) string {
+	ampWord := "綿長"
+	if amp < 1.0 {
+		ampWord = "幽微"
+	} else if amp > 2.0 {
+		ampWord = "霸道"
+	}
+	freqWord := "洞察"
+	if freq < 1.0 {
+		freqWord = "渾厚"
+	} else if freq > 1.6 {
+		freqWord = "敏銳"
+	}
+	phaseWord := "順流"
+	if phase < -0.3 {
+		phaseWord = "混沌"
+	} else if phase > 0.3 {
+		phaseWord = "秩序"
+	}
+	return "你的神識" + ampWord + "且" + freqWord + "，隱隱透著一股" + phaseWord + "的逆流。"
+}
+
+// ExpandSoulSeedToOriginSentence 由 soul_seed 前 3 次 RNG 展開三軸，再呼叫 GenerateOriginSentence 產出一句話；僅後端使用，不傳三軸數字。規格：狀態與星盤分頁規格 §五.1。
+func ExpandSoulSeedToOriginSentence(seed int64) string {
+	rng := rand.New(rand.NewSource(seed))
+	u1, u2, u3 := rng.Float64(), rng.Float64(), rng.Float64()
+	amp := ampMin + u1*(ampMax-ampMin)
+	freq := freqMin + u2*(freqMax-freqMin)
+	phase := phaseMin + u3*(phaseMax-phaseMin)
+	return GenerateOriginSentence(amp, freq, phase)
+}
+
 // ExpandSoulSeedToBaseStats 由 soul_seed 前 3 次 RNG 展開三軸，再映射為基礎體質／氣脈／靈敏（取整並 clamp）。規格：人物屬性彙整 §二。
 func ExpandSoulSeedToBaseStats(seed int64) (vit, qi, dex int) {
 	rng := rand.New(rand.NewSource(seed))
@@ -91,10 +124,11 @@ func InsertEntity(db *sql.DB, id, displayChar, gender string) error {
 	}
 	vit, qi, dex := ExpandSoulSeedToBaseStats(seed)
 	now := time.Now().Unix()
+	equip := StarterEquipment(gender)
 	_, err = db.Exec(
-		`INSERT INTO entities (id, kind, display_char, x, y, move_state, vit, qi, dex, magnesium, created_at, gender, soul_seed)
-		 VALUES (?, 'player', ?, 0, 0, 'idle', ?, ?, ?, 0, ?, ?, ?)`,
-		id, displayChar, vit, qi, dex, now, gender, seed,
+		`INSERT INTO entities (id, kind, display_char, x, y, move_state, vit, qi, dex, magnesium, created_at, gender, soul_seed, equipment_slots)
+		 VALUES (?, 'player', ?, 0, 0, 'idle', ?, ?, ?, 0, ?, ?, ?, ?)`,
+		id, displayChar, vit, qi, dex, now, gender, seed, equip,
 	)
 	return err
 }
@@ -106,18 +140,20 @@ func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
 	var c entity.Character
 	var targetX, targetY sql.NullInt64
 	var moveStartedAt, lastObservedAt sql.NullInt64
-	var walkOrRun, gender sql.NullString
+	var walkOrRun, gender, displayTitle, activatedNodes, equipSlots sql.NullString
 
 	var soulSeed sql.NullInt64
 	err := db.QueryRow(
 		`SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
-		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed
+		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed,
+		 display_title, activated_nodes, equipment_slots
 		 FROM entities WHERE id = ?`,
 		id,
 	).Scan(
 		&c.ID, &c.Kind, &c.DisplayChar, &c.X, &c.Y, &c.MoveState,
 		&targetX, &targetY, &walkOrRun, &moveStartedAt,
 		&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender, &soulSeed,
+		&displayTitle, &activatedNodes, &equipSlots,
 	)
 	if err == sql.ErrNoRows {
 		return nil, nil
@@ -149,6 +185,17 @@ func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
 	}
 	if soulSeed.Valid {
 		c.SoulSeed = &soulSeed.Int64
+	}
+	if displayTitle.Valid && displayTitle.String != "" {
+		c.DisplayTitle = displayTitle.String
+	}
+	if activatedNodes.Valid && activatedNodes.String != "" {
+		c.ActivatedNodes = activatedNodes.String
+	} else {
+		c.ActivatedNodes = `["N000"]`
+	}
+	if equipSlots.Valid && equipSlots.String != "" {
+		c.EquipmentSlots = equipSlots.String
 	}
 	return &c, nil
 }
@@ -192,7 +239,7 @@ func UpdatePositionOnly(db *sql.DB, id string, x, y int) error {
 func GetMovingEntities(db *sql.DB) ([]*entity.Character, error) {
 	rows, err := db.Query(
 		`SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
-		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed
+		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed, equipment_slots
 		 FROM entities WHERE move_state = 'moving' AND target_x IS NOT NULL AND target_y IS NOT NULL`,
 	)
 	if err != nil {
@@ -209,12 +256,13 @@ func scanCharacters(rows *sql.Rows) ([]*entity.Character, error) {
 		var c entity.Character
 		var targetX, targetY sql.NullInt64
 		var moveStartedAt, lastObservedAt sql.NullInt64
-		var walkOrRun, gender sql.NullString
+		var walkOrRun, gender, equipSlots sql.NullString
 		var soulSeed sql.NullInt64
 		if err := rows.Scan(
 			&c.ID, &c.Kind, &c.DisplayChar, &c.X, &c.Y, &c.MoveState,
 			&targetX, &targetY, &walkOrRun, &moveStartedAt,
 			&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender, &soulSeed,
+			&equipSlots,
 		); err != nil {
 			return nil, err
 		}
@@ -243,6 +291,9 @@ func scanCharacters(rows *sql.Rows) ([]*entity.Character, error) {
 		if soulSeed.Valid {
 			c.SoulSeed = &soulSeed.Int64
 		}
+		if equipSlots.Valid {
+			c.EquipmentSlots = equipSlots.String
+		}
 		list = append(list, &c)
 	}
 	return list, rows.Err()
@@ -255,12 +306,12 @@ func GetEntitiesInBox(db *sql.DB, xMin, xMax, yMin, yMax int, kind string) ([]*e
 	var args []interface{}
 	if kind != "" {
 		query = `SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
-		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed
+		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed, equipment_slots
 		 FROM entities WHERE kind = ? AND x >= ? AND x <= ? AND y >= ? AND y <= ?`
 		args = []interface{}{kind, xMin, xMax, yMin, yMax}
 	} else {
 		query = `SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
-		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed
+		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed, equipment_slots
 		 FROM entities WHERE x >= ? AND x <= ? AND y >= ? AND y <= ?`
 		args = []interface{}{xMin, xMax, yMin, yMax}
 	}

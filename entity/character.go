@@ -21,6 +21,9 @@ type Character struct {
 	CreatedAt       int64
 	Gender          string // "M" | "F"；空字串表示未設
 	SoulSeed        *int64 // 創角時寫入，唯一決定三軸與 760 邊權；nil 表示舊資料
+	DisplayTitle    string // 命途稱謂；空則前端顯示「無名之輩」（狀態與星盤分頁規格 §五.2）
+	ActivatedNodes  string // 星盤已貫通節點 ID 之 JSON 陣列，預設 ["N000"]（§五.3）
+	EquipmentSlots  string // 裝備槽位 JSON，key=槽位代碼 value=item_id（裝備分頁規格 §一）
 }
 
 // Sockets 回傳此角色對外開放的動詞清單（插頭插座最小集：Talk, Attack, Look）。

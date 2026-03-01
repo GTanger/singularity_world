@@ -1,6 +1,8 @@
 -- 奇點世界第一版 schema，對齊人物角色模板與第一版可做清單 §1.8.3。
 -- entities：玩家／NPC 共用；event_log：觀測與坍縮用事件日誌。
 -- soul_seed：創角時寫入，唯一決定該角色之三軸光譜與 361 拓撲 760 條邊權（見人物屬性彙整 §2.0、361拓撲系統規格 §6.1）。
+-- display_title：命途稱謂，空則前端顯示「無名之輩」（邏輯閉環 §4.4）。
+-- activated_nodes：星盤已貫通節點 ID 清單，預設僅 N000；前端依此顯示貫通／迷霧（邏輯閉環 §4.2）。
 
 CREATE TABLE IF NOT EXISTS entities (
 	id TEXT PRIMARY KEY,
@@ -20,7 +22,10 @@ CREATE TABLE IF NOT EXISTS entities (
 	last_observed_at INTEGER,
 	created_at INTEGER NOT NULL,
 	gender TEXT,
-	soul_seed INTEGER
+	soul_seed INTEGER,
+	display_title TEXT,
+	activated_nodes TEXT,
+	equipment_slots TEXT
 );
 
 CREATE TABLE IF NOT EXISTS event_log (
@@ -53,6 +58,15 @@ CREATE TABLE IF NOT EXISTS entity_room (
 	room_id TEXT NOT NULL,
 	FOREIGN KEY (entity_id) REFERENCES entities(id),
 	FOREIGN KEY (room_id) REFERENCES rooms(id)
+);
+
+-- 物品定義表（裝備分頁規格 §五）
+CREATE TABLE IF NOT EXISTS items (
+	id TEXT PRIMARY KEY,
+	name TEXT NOT NULL,
+	slot TEXT NOT NULL,
+	attributes TEXT,
+	tokens TEXT
 );
 
 -- 玩家登入密碼（僅 kind=player 有列；決策 006 選項甲）

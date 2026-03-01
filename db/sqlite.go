@@ -46,9 +46,28 @@ func OpenDB(path string) (*sql.DB, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("migrate entities.soul_seed: %w", err)
 	}
+	// 命途稱謂，空則前端顯示「無名之輩」（邏輯閉環 §4.4）
+	if _, err := db.Exec("ALTER TABLE entities ADD COLUMN display_title TEXT"); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
+		_ = db.Close()
+		return nil, fmt.Errorf("migrate entities.display_title: %w", err)
+	}
+	// 星盤已貫通節點 ID 清單，預設僅 N000（邏輯閉環 §4.2）
+	if _, err := db.Exec("ALTER TABLE entities ADD COLUMN activated_nodes TEXT DEFAULT '[\"N000\"]'"); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
+		_ = db.Close()
+		return nil, fmt.Errorf("migrate entities.activated_nodes: %w", err)
+	}
+	// 裝備槽位 JSON（裝備分頁規格 §一）
+	if _, err := db.Exec("ALTER TABLE entities ADD COLUMN equipment_slots TEXT"); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
+		_ = db.Close()
+		return nil, fmt.Errorf("migrate entities.equipment_slots: %w", err)
+	}
 	if err := SeedRooms(db); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("seed rooms: %w", err)
+	}
+	if err := SeedItems(db); err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("seed items: %w", err)
 	}
 	return db, nil
 }
