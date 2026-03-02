@@ -215,7 +215,8 @@
 							activated_nodes: msg.activated_nodes || ['N000'],
 							topology_costs: msg.topology_costs,
 							equipment_slots: msg.equipment_slots || {},
-							equipment_names: msg.equipment_names || {}
+							equipment_names: msg.equipment_names || {},
+							equipment_descs: msg.equipment_descs || {}
 						};
 						if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_PLAYER_ID, msg.player_id);
 						showGameAfterLogin();
@@ -241,6 +242,7 @@
 					case 'entity_status':
 						renderStatusPane(msg);
 						renderEquipmentPane(msg);
+						renderSkillPane(msg);
 						if (msg.is_self) {
 							if (msg.hp_max != null) {
 								updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
@@ -265,17 +267,21 @@
 								state.me.topology_costs = msg.topology_costs;
 								state.me.equipment_slots = msg.equipment_slots || {};
 								state.me.equipment_names = msg.equipment_names || {};
+								state.me.equipment_descs = msg.equipment_descs || {};
 							}
 							renderStarplatePane(state.me);
 						}
 						break;
-					case 'error':
-						appendLog('錯誤：' + msg.message);
-						if (!state.me) {
-							var authMsg = document.getElementById('auth-message');
-							if (authMsg) authMsg.textContent = msg.message;
-						}
-						break;
+				case 'inventory':
+					renderInventoryContent(msg);
+					break;
+				case 'error':
+					appendLog('錯誤：' + msg.message);
+					if (!state.me) {
+						var authMsg = document.getElementById('auth-message');
+						if (authMsg) authMsg.textContent = msg.message;
+					}
+					break;
 					default:
 						appendLog('收到：' + ev.data);
 				}
@@ -423,20 +429,93 @@
 		['ring_l', '【指】左'], ['ring_r', '【指】右'], ['trinket', '【佩】'],
 		['hold_l', '【持】左'], ['hold_r', '【持】右']
 	];
+	var lastEquipMsg = null;
+
 	function renderEquipmentPane(msg) {
+		lastEquipMsg = msg;
 		var wrap = document.getElementById('player-modal-pane-equip');
 		if (!wrap) return;
 		var names = msg.equipment_names || {};
-		var html = '<dl class="status-dl equip-dl">';
+		var slots = msg.equipment_slots || {};
+		var descs = msg.equipment_descs || {};
+		wrap.innerHTML = '';
+		var dl = document.createElement('dl');
+		dl.className = 'status-dl equip-dl';
 		for (var i = 0; i < EQUIP_SLOTS.length; i++) {
-			var code = EQUIP_SLOTS[i][0];
-			var label = EQUIP_SLOTS[i][1];
-			var itemName = names[code];
-			html += '<dt>' + label + '</dt><dd>' + (itemName ? escapeHtml(itemName) : '<span class="text-muted">(空)</span>') + '</dd>';
+			(function (code, label) {
+				var dt = document.createElement('dt');
+				dt.textContent = label;
+				dl.appendChild(dt);
+
+				var dd = document.createElement('dd');
+				var itemName = names[code];
+				var itemID = slots[code];
+				if (itemName && itemID) {
+					dd.className = 'equip-has-item';
+					dd.innerHTML = '\u25b8 ' + escapeHtml(itemName);
+					dd.addEventListener('click', function () {
+						var existing = dl.querySelector('.equip-item-expand');
+						var wasThis = existing && existing.getAttribute('data-slot') === code;
+						if (existing) existing.remove();
+						dl.querySelectorAll('dd.expanded').forEach(function (el) {
+							el.classList.remove('expanded');
+							el.innerHTML = el.innerHTML.replace('\u25be', '\u25b8');
+						});
+						if (wasThis) return;
+
+						dd.classList.add('expanded');
+						dd.innerHTML = dd.innerHTML.replace('\u25b8', '\u25be');
+						var expand = document.createElement('div');
+						expand.className = 'equip-item-expand';
+						expand.setAttribute('data-slot', code);
+						var desc = descs[code] || '';
+						var descHtml = desc ? '<div class="equip-item-desc">\u2503 ' + escapeHtml(desc) + '</div>' : '';
+						var actionsHtml = '<div class="inventory-item-actions">';
+						actionsHtml += '<button type="button" class="inv-action-btn" data-action="unequip">\u8131\u4e0b</button>';
+						actionsHtml += '</div>';
+						expand.innerHTML = descHtml + actionsHtml;
+
+						dd.after(expand);
+
+						expand.querySelector('.inv-action-btn[data-action="unequip"]').addEventListener('click', function (e) {
+							e.stopPropagation();
+							send({ type: 'unequip_item', slot: code });
+						});
+					});
+				} else {
+					dd.innerHTML = '<span class="text-muted">(\u7a7a)</span>';
+				}
+				dl.appendChild(dd);
+			})(EQUIP_SLOTS[i][0], EQUIP_SLOTS[i][1]);
 		}
-		html += '</dl>';
+		wrap.appendChild(dl);
+	}
+	function renderSkillPane(msg) {
+		var wrap = document.getElementById('skill-content');
+		if (!wrap) return;
+		var html = '<div class="skill-section">';
+		html += '<div class="skill-section-title">【 運轉功法 】</div>';
+		html += '<div class="skill-section-body">';
+		html += '<div class="skill-placeholder">▣ 心法：<span class="text-muted">(未習得)</span></div>';
+		html += '<div class="skill-divider"></div>';
+		html += '<div class="skill-placeholder"><span class="text-muted">(尚無外功)</span></div>';
+		html += '</div></div>';
+
+		html += '<div class="skill-section">';
+		html += '<div class="skill-section-title">【 實戰招式池 】</div>';
+		html += '<div class="skill-section-body">';
+		html += '<div class="skill-placeholder"><span class="text-muted">(無招式)</span></div>';
+		html += '</div></div>';
+
+		html += '<div class="skill-section">';
+		html += '<div class="skill-section-title">【 語境推演 】</div>';
+		html += '<div class="skill-section-body">';
+		html += '<div class="skill-placeholder"><span class="text-muted">(無推演)</span></div>';
+		html += '</div></div>';
+
 		wrap.innerHTML = html;
 	}
+
 	function escapeHtml(s) {
 		if (!s) return '';
 		var div = document.createElement('div');
@@ -481,63 +560,218 @@
 		var i = 660 + hubIndex * 5 + blueIdx;
 		return (costs && costs.length > i) ? costs[i] : null;
 	}
+	var BLUE_NAMES = ['\u8d77', '\u627f', '\u8f49', '\u5354', '\u5408'];
+	var GREEN_LABELS = ['G01 \u63a2', 'G02 \u89f8', 'G03 \u7d0d', 'G04 \u84c4', 'G05 \u6ffe', 'G06 \u6790', 'G07 \u878d', 'G08 \u884d', 'G09 \u5f8b', 'G10 \u675f', 'G11 \u91cb', 'G12 \u6563'];
+	var GREEN_SHORT = ['G01','G02','G03','G04','G05','G06','G07','G08','G09','G10','G11','G12'];
+	var GREEN_PER_BLUE = [[0, 1, 2], [2, 3, 4], [4, 5, 6], [7, 8, 9], [9, 10, 11]];
+	var GREEN_SHARED = { 2: ' (\u8207[\u627f]\u5171\u7528)', 4: ' (\u8207[\u8f49]\u5171\u7528)', 9: ' (\u8207[\u5408]\u5171\u7528)' };
+
+	function buildHubExpandHTML(hubIndex, costs) {
+		var costA = getCostA(costs, hubIndex);
+		var typeCCosts = getTypeCCosts(costs, hubIndex);
+		var lines = '<div class="starplate-hub-cost">\u2503 \u62b5\u9054\u672c\u4e3b\u6a1e \u2500 ' + costSpan(costA) + '</div>';
+		var idx = 0;
+		for (var b = 0; b < 5; b++) {
+			var costB = getCostB(costs, hubIndex, b);
+			var nextBlue = BLUE_NAMES[(b + 1) % 5];
+			var ringE = getCostE(costs, hubIndex, b);
+			lines += '<div class="starplate-blue">\u2503 \ud83d\udd35 [' + BLUE_NAMES[b] + '] \u908f\u8f2f\u9598 \u2500 ' + costSpan(costB) + ' (\u672a\u8cab\u901a) <span class="ring-cost">\u27f3\u2192[' + nextBlue + '] ' + costSpan(ringE) + '</span></div>';
+			for (var g = 0; g < 3; g++) {
+				var greenIdx = GREEN_PER_BLUE[b][g];
+				var costC = typeCCosts.length > idx ? typeCCosts[idx] : null;
+				var ringD = getCostD(costs, hubIndex, greenIdx);
+				var nextGreen = GREEN_SHORT[(greenIdx + 1) % 12];
+				var shared = GREEN_SHARED[greenIdx] || '';
+				lines += '<div class="starplate-green">\u2503 \u3000\u251c\u2500 \ud83d\udfe2 ' + GREEN_LABELS[greenIdx] + ' \u2500 ' + costSpan(costC) + '\uff1a[ \u7a7a ]' + shared + ' <span class="ring-cost">\u27f3\u2192' + nextGreen + ' ' + costSpan(ringD) + '</span></div>';
+				idx++;
+			}
+		}
+		return lines;
+	}
+
 	function renderStarplatePane(me) {
 		var wrap = document.getElementById('starplate-content');
 		if (!wrap) return;
 		if (!me || !me.activated_nodes || !Array.isArray(me.activated_nodes)) {
-			wrap.innerHTML = '<p class="text-muted">僅自己可觀看星盤。請先登入並點擊自己開啟。</p>';
+			wrap.innerHTML = '<p class="text-muted">\u50c5\u81ea\u5df1\u53ef\u89c0\u770b\u661f\u76e4\u3002\u8acb\u5148\u767b\u5165\u4e26\u9ede\u64ca\u81ea\u5df1\u958b\u555f\u3002</p>';
 			return;
 		}
 		var activated = me.activated_nodes;
 		var count = activated.length;
 		var costs = me.topology_costs || [];
-		var html = '<div class="starplate-block"><strong>[ 星盤貫通率 ]</strong> ' + count + ' / 360</div>';
-		html += '<div class="starplate-block"><strong>[ 源始 ]</strong> N000 生之奇點 (已點亮)</div>';
-		html += '<div class="starplate-block starplate-hubs"><strong>二十主樞</strong><ul class="starplate-hub-list">';
+
+		wrap.innerHTML = '';
+		var header = document.createElement('div');
+		header.className = 'starplate-block';
+		header.innerHTML = '<strong>[ \u661f\u76e4\u8cab\u901a\u7387 ]</strong> ' + count + ' / 360';
+		wrap.appendChild(header);
+
+		var origin = document.createElement('div');
+		origin.className = 'starplate-block';
+		origin.innerHTML = '<strong>[ \u6e90\u59cb ]</strong> N000 \u751f\u4e4b\u5947\u9ede (\u5df2\u9ede\u4eae)';
+		wrap.appendChild(origin);
+
+		var hubTitle = document.createElement('div');
+		hubTitle.className = 'starplate-block';
+		hubTitle.innerHTML = '<strong>\u4e8c\u5341\u4e3b\u6a1e</strong>';
+		wrap.appendChild(hubTitle);
+
+		var list = document.createElement('ul');
+		list.className = 'starplate-hub-list';
+		wrap.appendChild(list);
+
 		for (var i = 0; i < HUB_NAMES.length; i++) {
-			var nodeId = 'N' + String(i + 1).padStart(3, '0');
-			var lit = activated.indexOf(nodeId) !== -1 ? '1' : '0';
-			var costA = getCostA(costs, i);
-			var adaptStr = costA != null ? costSpan(costA) : '未知';
-			html += '<li data-hub="' + i + '">[' + HUB_NAMES[i] + '] ' + nodeId + ' ｜ 適性：' + adaptStr + ' ｜ 貫通：0/17 ｜ <button type="button" class="btn-inline">進入觀測</button></li>';
-		}
-		html += '</ul></div>';
-		html += '<div id="starplate-observe" class="starplate-observe" hidden></div>';
-		wrap.innerHTML = html;
-		wrap.querySelectorAll('.starplate-hub-list button').forEach(function (btn) {
-			btn.addEventListener('click', function () {
-				var hubIndex = parseInt(btn.closest('li').getAttribute('data-hub'), 10);
-				var observeEl = document.getElementById('starplate-observe');
-				if (!observeEl) return;
-				var typeCCosts = getTypeCCosts(costs, hubIndex);
-				var name = HUB_NAMES[hubIndex];
+			(function (hubIndex) {
+				var nodeId = 'N' + String(hubIndex + 1).padStart(3, '0');
 				var costA = getCostA(costs, hubIndex);
-				var blueNames = ['起', '承', '轉', '協', '合'];
-				var greenLabels = ['G01 探', 'G02 觸', 'G03 納', 'G04 蓄', 'G05 濾', 'G06 析', 'G07 融', 'G08 衍', 'G09 律', 'G10 束', 'G11 釋', 'G12 散'];
-				var greenShort = ['G01','G02','G03','G04','G05','G06','G07','G08','G09','G10','G11','G12'];
-				var greenIndexPerBlue = [[0, 1, 2], [2, 3, 4], [4, 5, 6], [7, 8, 9], [9, 10, 11]];
-				var greenSharedNote = { 2: ' (與[承]共用)', 4: ' (與[轉]共用)', 9: ' (與[合]共用)' };
-				var lines = ['<strong>🔭 當前觀測：[', name, '] 星系內部</strong>'];
-				lines.push('<div class="starplate-hub-cost">抵達本主樞 ─ ', costSpan(costA), '</div>');
-				var idx = 0;
-				for (var b = 0; b < 5; b++) {
-					var costB = getCostB(costs, hubIndex, b);
-					var nextBlue = blueNames[(b + 1) % 5];
-					var ringE = getCostE(costs, hubIndex, b);
-					lines.push('<div class="starplate-blue">🔵 [', blueNames[b], '] 邏輯閘 ─ ', costSpan(costB), ' (未貫通) <span class="ring-cost">⟳→[', nextBlue, '] ', costSpan(ringE), '</span></div>');
-					for (var g = 0; g < 3; g++) {
-						var greenIdx = greenIndexPerBlue[b][g];
-						var costC = typeCCosts.length > idx ? typeCCosts[idx] : null;
-						var ringD = getCostD(costs, hubIndex, greenIdx);
-						var nextGreen = greenShort[(greenIdx + 1) % 12];
-						var sharedNote = greenSharedNote[greenIdx] || '';
-						lines.push('<div class="starplate-green">　├─ 🟢 ', greenLabels[greenIdx], ' ─ ', costSpan(costC), '：[ 空 ]', sharedNote, ' <span class="ring-cost">⟳→', nextGreen, ' ', costSpan(ringD), '</span></div>');
-						idx++;
+				var adaptStr = costA != null ? costSpan(costA) : '\u672a\u77e5';
+
+				var li = document.createElement('li');
+				li.className = 'starplate-hub-row';
+				li.setAttribute('data-hub', hubIndex);
+				li.innerHTML = '\u25b8 [' + HUB_NAMES[hubIndex] + '] ' + nodeId + ' \uff5c \u9069\u6027\uff1a' + adaptStr + ' \uff5c \u8cab\u901a\uff1a0/17';
+				list.appendChild(li);
+
+				li.addEventListener('click', function () {
+					var existing = list.querySelector('.starplate-hub-expand');
+					var wasThis = existing && existing.getAttribute('data-hub') === String(hubIndex);
+					if (existing) {
+						var prevLi = existing.previousElementSibling;
+						if (prevLi) {
+							prevLi.classList.remove('expanded');
+							prevLi.innerHTML = prevLi.innerHTML.replace('\u25be', '\u25b8');
+						}
+						existing.remove();
 					}
-				}
-				observeEl.innerHTML = lines.join('');
-				observeEl.removeAttribute('hidden');
-			});
+					list.querySelectorAll('.starplate-hub-row.expanded').forEach(function (el) {
+						el.classList.remove('expanded');
+						el.innerHTML = el.innerHTML.replace('\u25be', '\u25b8');
+					});
+					if (wasThis) return;
+
+					li.classList.add('expanded');
+					li.innerHTML = li.innerHTML.replace('\u25b8', '\u25be');
+					var expand = document.createElement('li');
+					expand.className = 'starplate-hub-expand';
+					expand.setAttribute('data-hub', hubIndex);
+					expand.innerHTML = buildHubExpandHTML(hubIndex, costs);
+					li.after(expand);
+				});
+			})(i);
+		}
+	}
+
+	var lastInventoryMsg = null;
+
+	function renderInventoryContent(msg) {
+		lastInventoryMsg = msg;
+		var weightEl = document.getElementById('inventory-weight');
+		var listEl = document.getElementById('inventory-list');
+		if (!weightEl || !listEl) return;
+		var cur = msg.current_weight != null ? msg.current_weight.toFixed(1) : '0.0';
+		var max = msg.max_weight != null ? msg.max_weight.toFixed(1) : '0.0';
+		var overweight = msg.current_weight > msg.max_weight;
+		weightEl.innerHTML = '負重：<span class="' + (overweight ? 'inventory-weight-warn' : '') + '">' + cur + ' / ' + max + '</span>';
+		if (!msg.items || msg.items.length === 0) {
+			listEl.innerHTML = '<div class="inventory-empty">（背包空空如也）</div>';
+			return;
+		}
+		listEl.innerHTML = '';
+		var expandedItemId = null;
+		for (var i = 0; i < msg.items.length; i++) {
+			(function (it) {
+				var qtyStr = it.qty > 1 ? (' \u00d7' + it.qty) : '';
+				var wStr = it.sub_total != null ? it.sub_total.toFixed(2) : '\u2014';
+				var row = document.createElement('div');
+				row.className = 'inventory-item';
+				row.innerHTML = '<span class="inventory-item-name">\u25b8 ' + escapeHtml(it.name) + qtyStr + '</span>'
+					+ '<span class="inventory-item-weight">(' + wStr + ')</span>';
+				listEl.appendChild(row);
+
+				row.addEventListener('click', function () {
+					var existing = listEl.querySelector('.inventory-item-expand');
+					var wasThisItem = existing && existing.getAttribute('data-item-id') === it.item_id;
+					if (existing) {
+						var prevRow = existing.previousElementSibling;
+						if (prevRow) {
+							prevRow.classList.remove('expanded');
+							var pn = prevRow.querySelector('.inventory-item-name');
+							if (pn) pn.innerHTML = pn.innerHTML.replace('\u25be', '\u25b8');
+						}
+						existing.remove();
+					}
+					if (wasThisItem) return;
+
+					listEl.querySelectorAll('.inventory-item.expanded').forEach(function (el) {
+						el.classList.remove('expanded');
+						var en = el.querySelector('.inventory-item-name');
+						if (en) en.innerHTML = en.innerHTML.replace('\u25be', '\u25b8');
+					});
+					row.classList.add('expanded');
+					var nameSpan = row.querySelector('.inventory-item-name');
+					if (nameSpan) nameSpan.innerHTML = nameSpan.innerHTML.replace('\u25b8', '\u25be');
+
+					var expand = document.createElement('div');
+					expand.className = 'inventory-item-expand';
+					expand.setAttribute('data-item-id', it.item_id);
+					var desc = it.description || '';
+					var descHtml = desc ? '<div class="inventory-item-desc">\u2503 ' + escapeHtml(desc) + '</div>' : '';
+					var actionsHtml = '<div class="inventory-item-actions">';
+					if (it.item_type === 'equipment' && it.slot) {
+						if (it.slot === 'hold') {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="equip" data-target="hold_l">\u5de6\u624b</button>';
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="equip" data-target="hold_r">\u53f3\u624b</button>';
+						} else {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="equip">\u7a7f\u6234</button>';
+						}
+					}
+					actionsHtml += '<button type="button" class="inv-action-btn" data-action="drop" disabled>\u4e1f\u68c4</button>';
+					actionsHtml += '</div>';
+					expand.innerHTML = descHtml + actionsHtml;
+					row.after(expand);
+
+					expand.querySelectorAll('.inv-action-btn[data-action="equip"]').forEach(function (btn) {
+						btn.addEventListener('click', function (e) {
+							e.stopPropagation();
+							var payload = { type: 'equip_item', item_id: it.item_id };
+							var target = btn.getAttribute('data-target');
+							if (target) payload.target_slot = target;
+							send(payload);
+						});
+					});
+				});
+			})(msg.items[i]);
+		}
+	}
+
+	function initInventoryModal() {
+		var overlay = document.getElementById('inventory-modal-overlay');
+		var closeBtn = document.getElementById('inventory-modal-close');
+		var openBtn = document.getElementById('btn-inventory');
+		if (!overlay || !openBtn) return;
+
+		function openInventory() {
+			if (!state.me) return;
+			overlay.removeAttribute('hidden');
+			overlay.setAttribute('aria-hidden', 'false');
+			document.body.style.overflow = 'hidden';
+			if (closeBtn) closeBtn.focus();
+			document.addEventListener('keydown', onInvKeydown);
+			if (isConnected()) send({ type: 'get_inventory' });
+		}
+		function closeInventory() {
+			overlay.setAttribute('hidden', '');
+			overlay.setAttribute('aria-hidden', 'true');
+			document.body.style.overflow = '';
+			document.removeEventListener('keydown', onInvKeydown);
+		}
+		function onInvKeydown(e) {
+			if (e.key === 'Escape') closeInventory();
+		}
+		openBtn.addEventListener('click', openInventory);
+		if (closeBtn) closeBtn.addEventListener('click', closeInventory);
+		overlay.addEventListener('click', function (e) {
+			if (e.target === overlay) closeInventory();
 		});
 	}
 
@@ -622,10 +856,11 @@
 	window.gameTryReconnect = tryReconnect;
 	if (typeof document !== 'undefined') {
 		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', function () { bindAuthForm(); initPlayerModal(); });
+			document.addEventListener('DOMContentLoaded', function () { bindAuthForm(); initPlayerModal(); initInventoryModal(); });
 		} else {
 			bindAuthForm();
 			initPlayerModal();
+			initInventoryModal();
 		}
 	}
 	window.gameSend = function (msg) {

@@ -30,3 +30,15 @@ Thumbs.db
 /vendor/
 *.test
 /coverage.out
+
+# AI Context
+.cobridge
+
+# .traerules
+.traerules
+
+# .cursorrules
+.cursorrules
+
+# GitHub Copilot Instructions
+.github/copilot-instructions.md

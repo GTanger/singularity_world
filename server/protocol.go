@@ -3,13 +3,16 @@ package server
 
 // ClientMsg 客戶端送出的 JSON；type 決定行為。
 type ClientMsg struct {
-	Type        string `json:"type"`         // "login" | "create_character" | "move" | "ping" | "get_entity_status" | "print_topology_debug"
+	Type        string `json:"type"`         // "login" | "create_character" | "move" | "ping" | "get_entity_status" | "get_inventory" | "equip_item" | "unequip_item" | "print_topology_debug"
 	PlayerID    string `json:"player_id"`    // login 必填；create_character 時為新角色 id
 	Password    string `json:"password"`     // login / create_character 必填
 	DisplayChar string `json:"display_char"` // create_character 選填，預設「我」
 	Gender      string `json:"gender"`       // create_character 選填：「男」→M、「女」→F，預設 M
 	Direction   string `json:"direction"`    // move 時出口方向（例："東"、"西"）
 	EntityID    string `json:"entity_id"`    // get_entity_status 時選填，空則為自己
+	ItemID      string `json:"item_id"`      // equip_item 時背包中的物品 ID
+	TargetSlot  string `json:"target_slot"`  // equip_item 時指定槽位（僅 hold 類需要：hold_l / hold_r）
+	Slot        string `json:"slot"`         // unequip_item 時裝備槽位代碼
 }
 
 // ViewEntity 房間內單一實體，供前端顯示「誰在這裡」。
@@ -95,6 +98,26 @@ type TopologyDebugAckMsg struct {
 	Message string `json:"message"`
 }
 
+// InventoryItemView 背包中一筆物品的前端顯示。
+type InventoryItemView struct {
+	ItemID      string  `json:"item_id"`
+	Name        string  `json:"name"`
+	ItemType    string  `json:"item_type"`
+	Qty         int     `json:"qty"`
+	Weight      float64 `json:"weight"`
+	SubTotal    float64 `json:"sub_total"`
+	Description string  `json:"description,omitempty"`
+	Slot        string  `json:"slot,omitempty"`
+}
+
+// InventoryMsg 伺服器回傳：背包內容與負重（僅自己）。
+type InventoryMsg struct {
+	Type          string              `json:"type"`
+	Items         []InventoryItemView `json:"items"`
+	CurrentWeight float64             `json:"current_weight"`
+	MaxWeight     float64             `json:"max_weight"`
+}
+
 // EntityStatusMsg 伺服器回傳：單一實體狀態分頁用（體敏氣、四項資源、鎂；自己時含命途/本源/星盤）。
 type EntityStatusMsg struct {
 	Type            string    `json:"type"`
@@ -119,4 +142,5 @@ type EntityStatusMsg struct {
 	TopologyCosts   []float64         `json:"topology_costs,omitempty"`
 	EquipmentSlots  map[string]string `json:"equipment_slots,omitempty"`
 	EquipmentNames  map[string]string `json:"equipment_names,omitempty"`
+	EquipmentDescs  map[string]string `json:"equipment_descs,omitempty"`
 }

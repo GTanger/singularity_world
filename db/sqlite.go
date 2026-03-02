@@ -61,6 +61,24 @@ func OpenDB(path string) (*sql.DB, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("migrate entities.equipment_slots: %w", err)
 	}
+	// 背包物品 JSON 陣列（背包規格 §六）
+	if _, err := db.Exec("ALTER TABLE entities ADD COLUMN inventory TEXT DEFAULT '[]'"); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
+		_ = db.Close()
+		return nil, fmt.Errorf("migrate entities.inventory: %w", err)
+	}
+	// items 表擴充：weight, item_type, stackable, denomination（背包規格 §四、§6.1）
+	for _, mig := range []string{
+		"ALTER TABLE items ADD COLUMN item_type TEXT NOT NULL DEFAULT 'equipment'",
+		"ALTER TABLE items ADD COLUMN weight REAL NOT NULL DEFAULT 0",
+		"ALTER TABLE items ADD COLUMN stackable INTEGER NOT NULL DEFAULT 0",
+		"ALTER TABLE items ADD COLUMN denomination INTEGER NOT NULL DEFAULT 0",
+		"ALTER TABLE items ADD COLUMN description TEXT NOT NULL DEFAULT ''",
+	} {
+		if _, err := db.Exec(mig); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
+			_ = db.Close()
+			return nil, fmt.Errorf("migrate items: %w", err)
+		}
+	}
 	if err := SeedRooms(db); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("seed rooms: %w", err)

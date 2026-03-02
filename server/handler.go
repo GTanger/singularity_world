@@ -33,6 +33,12 @@ func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, s
 		c.Send <- mustJSON(PongMsg{Type: "pong"})
 	case "get_entity_status":
 		handleGetEntityStatus(c, &msg, database)
+	case "get_inventory":
+		handleGetInventory(c, database)
+	case "equip_item":
+		handleEquipItem(c, &msg, database)
+	case "unequip_item":
+		handleUnequipItem(c, &msg, database)
 	case "print_topology_debug":
 		handlePrintTopologyDebug(c, database)
 	default:
@@ -246,22 +252,22 @@ func sendMeWithStatus(c *Client, ent *entity.Character, playerID, roomID, roomNa
 			msg.TopologyCosts = db.ExpandSoulSeedToTopologyCosts(*ent.SoulSeed)
 		}
 		msg.ActivatedNodes = parseActivatedNodes(ent.ActivatedNodes)
-		msg.EquipmentSlots, msg.EquipmentNames = parseEquipment(database, ent.EquipmentSlots)
+		msg.EquipmentSlots, msg.EquipmentNames, _ = parseEquipment(database, ent.EquipmentSlots)
 	}
 	c.Send <- mustJSON(msg)
 }
 
-// parseEquipment 解析 equipment_slots JSON 並查 items 表取物品名稱。
-func parseEquipment(database *sql.DB, raw string) (map[string]string, map[string]string) {
+// parseEquipment 解析 equipment_slots JSON 並查 items 表取物品名稱與描述。
+func parseEquipment(database *sql.DB, raw string) (slots, names, descs map[string]string) {
 	if raw == "" {
-		return nil, nil
+		return nil, nil, nil
 	}
-	var slots map[string]string
 	if err := json.Unmarshal([]byte(raw), &slots); err != nil {
-		return nil, nil
+		return nil, nil, nil
 	}
-	names, _ := db.GetItemNames(database, raw)
-	return slots, names
+	names, _ = db.GetItemNames(database, raw)
+	descs = db.GetItemDescs(database, raw)
+	return slots, names, descs
 }
 
 func sendMoved(c *Client, playerID, roomID, roomName string) {
@@ -313,7 +319,7 @@ func handleGetEntityStatus(c *Client, msg *ClientMsg, database *sql.DB) {
 			status.TopologyCosts = db.ExpandSoulSeedToTopologyCosts(*ent.SoulSeed)
 		}
 	}
-	status.EquipmentSlots, status.EquipmentNames = parseEquipment(database, ent.EquipmentSlots)
+	status.EquipmentSlots, status.EquipmentNames, status.EquipmentDescs = parseEquipment(database, ent.EquipmentSlots)
 	c.Send <- mustJSON(status)
 }
 
@@ -348,6 +354,222 @@ func handlePrintTopologyDebug(c *Client, database *sql.DB) {
 	fmt.Printf("  全 760 條連線 Cost 總和: %.4f （規格常數應為 10000）\n", sum)
 	fmt.Println("=============================================")
 	c.Send <- mustJSON(TopologyDebugAckMsg{Type: "topology_debug", Message: "已於伺服器終端印出"})
+}
+
+func handleGetInventory(c *Client, database *sql.DB) {
+	if c.PlayerID == "" {
+		sendError(c, "請先登入")
+		return
+	}
+	ent, err := db.GetEntity(database, c.PlayerID)
+	if err != nil || ent == nil {
+		sendError(c, "找不到角色")
+		return
+	}
+	result := db.GetInventory(database, ent.Inventory, ent.Vit)
+	items := make([]InventoryItemView, 0, len(result.Items))
+	for _, it := range result.Items {
+		items = append(items, InventoryItemView{
+			ItemID:      it.ItemID,
+			Name:        it.Name,
+			ItemType:    it.ItemType,
+			Qty:         it.Qty,
+			Weight:      it.Weight,
+			SubTotal:    it.SubTotal,
+			Description: it.Description,
+			Slot:        it.Slot,
+		})
+	}
+	c.Send <- mustJSON(InventoryMsg{
+		Type:          "inventory",
+		Items:         items,
+		CurrentWeight: result.CurrentWeight,
+		MaxWeight:     result.MaxWeight,
+	})
+}
+
+func handleEquipItem(c *Client, msg *ClientMsg, database *sql.DB) {
+	if c.PlayerID == "" {
+		sendError(c, "請先登入")
+		return
+	}
+	itemID := msg.ItemID
+	if itemID == "" {
+		sendError(c, "未指定物品")
+		return
+	}
+	_, itemType, slot, _, _, err := db.GetItemInfo(database, itemID)
+	if err != nil {
+		sendError(c, "物品不存在")
+		return
+	}
+	if itemType != "equipment" || slot == "" {
+		sendError(c, "此物品無法穿戴")
+		return
+	}
+	targetSlot := slot
+	if slot == "hold" {
+		targetSlot = msg.TargetSlot
+		if targetSlot != "hold_l" && targetSlot != "hold_r" {
+			sendError(c, "請指定左手或右手")
+			return
+		}
+	}
+
+	ent, err := db.GetEntity(database, c.PlayerID)
+	if err != nil || ent == nil {
+		sendError(c, "找不到角色")
+		return
+	}
+
+	var invEntries []db.InventoryEntry
+	if ent.Inventory != "" && ent.Inventory != "[]" {
+		_ = json.Unmarshal([]byte(ent.Inventory), &invEntries)
+	}
+	hasItem := false
+	for _, e := range invEntries {
+		if e.ItemID == itemID && e.Qty > 0 {
+			hasItem = true
+			break
+		}
+	}
+	if !hasItem {
+		sendError(c, "背包中無此物品")
+		return
+	}
+
+	var currentSlots map[string]string
+	if ent.EquipmentSlots != "" {
+		_ = json.Unmarshal([]byte(ent.EquipmentSlots), &currentSlots)
+	}
+	if currentSlots == nil {
+		currentSlots = make(map[string]string)
+	}
+	oldItemID := currentSlots[targetSlot]
+
+	if err := db.RemoveFromInventory(database, c.PlayerID, itemID, 1); err != nil {
+		sendError(c, "背包操作失敗")
+		return
+	}
+	if err := db.UpdateEquipmentSlot(database, c.PlayerID, targetSlot, itemID); err != nil {
+		sendError(c, "裝備操作失敗")
+		return
+	}
+	if oldItemID != "" {
+		if err := db.AddToInventory(database, c.PlayerID, oldItemID, 1); err != nil {
+			sendError(c, "舊裝備回收失敗")
+			return
+		}
+	}
+
+	pushRefresh(c, database)
+}
+
+func handleUnequipItem(c *Client, msg *ClientMsg, database *sql.DB) {
+	if c.PlayerID == "" {
+		sendError(c, "請先登入")
+		return
+	}
+	slotCode := msg.Slot
+	if slotCode == "" {
+		sendError(c, "未指定槽位")
+		return
+	}
+
+	ent, err := db.GetEntity(database, c.PlayerID)
+	if err != nil || ent == nil {
+		sendError(c, "找不到角色")
+		return
+	}
+
+	var currentSlots map[string]string
+	if ent.EquipmentSlots != "" {
+		_ = json.Unmarshal([]byte(ent.EquipmentSlots), &currentSlots)
+	}
+	if currentSlots == nil {
+		sendError(c, "無裝備可脫下")
+		return
+	}
+	itemID := currentSlots[slotCode]
+	if itemID == "" {
+		sendError(c, "該槽位無裝備")
+		return
+	}
+
+	_, _, _, _, weight, wErr := db.GetItemInfo(database, itemID)
+	if wErr != nil {
+		weight = 0
+	}
+	currentWeight := db.InventoryWeight(database, ent.Inventory)
+	maxWeight := float64(ent.Vit) * 10.0
+	if currentWeight+weight > maxWeight {
+		sendError(c, "背包已滿，無法脫下")
+		return
+	}
+
+	if err := db.ClearEquipmentSlot(database, c.PlayerID, slotCode); err != nil {
+		sendError(c, "槽位操作失敗")
+		return
+	}
+	if err := db.AddToInventory(database, c.PlayerID, itemID, 1); err != nil {
+		sendError(c, "背包操作失敗")
+		return
+	}
+
+	pushRefresh(c, database)
+}
+
+func pushRefresh(c *Client, database *sql.DB) {
+	ent, err := db.GetEntity(database, c.PlayerID)
+	if err != nil || ent == nil {
+		return
+	}
+	rm := db.ComputeResourceMaxes(ent.Vit, ent.Qi, ent.Dex)
+	invResult := db.GetInventory(database, ent.Inventory, ent.Vit)
+	items := make([]InventoryItemView, 0, len(invResult.Items))
+	for _, it := range invResult.Items {
+		items = append(items, InventoryItemView{
+			ItemID:      it.ItemID,
+			Name:        it.Name,
+			ItemType:    it.ItemType,
+			Qty:         it.Qty,
+			Weight:      it.Weight,
+			SubTotal:    it.SubTotal,
+			Description: it.Description,
+			Slot:        it.Slot,
+		})
+	}
+	c.Send <- mustJSON(InventoryMsg{
+		Type:          "inventory",
+		Items:         items,
+		CurrentWeight: invResult.CurrentWeight,
+		MaxWeight:     invResult.MaxWeight,
+	})
+
+	isSelf := true
+	mag := ent.Magnesium
+	status := EntityStatusMsg{
+		Type:        "entity_status",
+		EntityID:    ent.ID,
+		DisplayChar: ent.DisplayChar,
+		Vit:         ent.Vit, Qi: ent.Qi, Dex: ent.Dex,
+		HpCur: int(rm.HpCur), HpMax: int(rm.HpMax),
+		InnerCur: int(rm.InnerCur), InnerMax: int(rm.InnerMax),
+		SpiritCur: int(rm.SpiritCur), SpiritMax: int(rm.SpiritMax),
+		StaminaCur: int(rm.StaminaCur), StaminaMax: int(rm.StaminaMax),
+		Magnesium: &mag,
+		IsSelf:    isSelf,
+	}
+	if ent.DisplayTitle != "" {
+		status.DisplayTitle = ent.DisplayTitle
+	}
+	status.ActivatedNodes = parseActivatedNodes(ent.ActivatedNodes)
+	if ent.SoulSeed != nil {
+		status.OriginSentence = db.ExpandSoulSeedToOriginSentence(*ent.SoulSeed)
+		status.TopologyCosts = db.ExpandSoulSeedToTopologyCosts(*ent.SoulSeed)
+	}
+	status.EquipmentSlots, status.EquipmentNames, status.EquipmentDescs = parseEquipment(database, ent.EquipmentSlots)
+	c.Send <- mustJSON(status)
 }
 
 func sendError(c *Client, message string) {

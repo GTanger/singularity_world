@@ -143,17 +143,18 @@ func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
 	var walkOrRun, gender, displayTitle, activatedNodes, equipSlots sql.NullString
 
 	var soulSeed sql.NullInt64
+	var inventory sql.NullString
 	err := db.QueryRow(
 		`SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
 		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed,
-		 display_title, activated_nodes, equipment_slots
+		 display_title, activated_nodes, equipment_slots, inventory
 		 FROM entities WHERE id = ?`,
 		id,
 	).Scan(
 		&c.ID, &c.Kind, &c.DisplayChar, &c.X, &c.Y, &c.MoveState,
 		&targetX, &targetY, &walkOrRun, &moveStartedAt,
 		&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender, &soulSeed,
-		&displayTitle, &activatedNodes, &equipSlots,
+		&displayTitle, &activatedNodes, &equipSlots, &inventory,
 	)
 	if err == sql.ErrNoRows {
 		return nil, nil
@@ -196,6 +197,11 @@ func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
 	}
 	if equipSlots.Valid && equipSlots.String != "" {
 		c.EquipmentSlots = equipSlots.String
+	}
+	if inventory.Valid && inventory.String != "" {
+		c.Inventory = inventory.String
+	} else {
+		c.Inventory = "[]"
 	}
 	return &c, nil
 }

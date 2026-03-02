@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS entities (
 	soul_seed INTEGER,
 	display_title TEXT,
 	activated_nodes TEXT,
-	equipment_slots TEXT
+	equipment_slots TEXT,
+	inventory TEXT DEFAULT '[]'
 );
 
 CREATE TABLE IF NOT EXISTS event_log (
@@ -60,11 +61,16 @@ CREATE TABLE IF NOT EXISTS entity_room (
 	FOREIGN KEY (room_id) REFERENCES rooms(id)
 );
 
--- 物品定義表（裝備分頁規格 §五）
+-- 物品定義表（裝備分頁規格 §五、背包規格 §四、§六）
 CREATE TABLE IF NOT EXISTS items (
 	id TEXT PRIMARY KEY,
 	name TEXT NOT NULL,
 	slot TEXT NOT NULL,
+	item_type TEXT NOT NULL DEFAULT 'equipment',
+	weight REAL NOT NULL DEFAULT 0,
+	stackable INTEGER NOT NULL DEFAULT 0,
+	denomination INTEGER NOT NULL DEFAULT 0,
+	description TEXT NOT NULL DEFAULT '',
 	attributes TEXT,
 	tokens TEXT
 );

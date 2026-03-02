@@ -521,14 +521,21 @@ body {
 .starplate-content { padding: 0.5rem 0; }
 .starplate-block { margin-bottom: 0.75rem; }
 .starplate-hub-list { list-style: none; margin: 0.5rem 0 0; padding: 0; }
-.starplate-hub-list li { margin: 0.35rem 0; }
-.starplate-observe { margin-top: 1rem; padding: 0.5rem; font-size: 0.9em; }
-.starplate-hub-cost { margin-top: 0.25rem; margin-bottom: 0.5rem; font-size: 0.95em; color: var(--text-muted); }
-.starplate-blue { margin-top: 0.5rem; }
+.starplate-hub-row { margin: 0.3rem 0; cursor: pointer; padding: 0.2rem 0.3rem; border-radius: 3px; transition: background 0.15s; }
+.starplate-hub-row:hover { background: rgba(255, 255, 255, 0.04); }
+.starplate-hub-row.expanded { background: rgba(255, 255, 255, 0.06); }
+.starplate-hub-expand {
+	padding: 0.3rem 0.5rem 0.5rem;
+	margin: 0 0 0.35rem;
+	border-left: 2px solid var(--border);
+	background: rgba(0, 0, 0, 0.12);
+	font-size: 0.88rem;
+	line-height: 1.65;
+}
+.starplate-hub-cost { margin-bottom: 0.3rem; font-size: 0.95em; color: var(--text-muted); }
+.starplate-blue { margin-top: 0.25rem; }
 .starplate-green { margin-left: 0.5rem; font-size: 0.95em; }
-/* 環流 Cost 標註 */
 .ring-cost { font-size: 0.85em; opacity: 0.75; margin-left: 0.5rem; }
-/* Cost 五級通暢度（§5.5） */
 .cost-flow    { color: #67c23a; font-weight: 600; }
 .cost-easy    { color: #79bbff; }
 .cost-mid     { color: #8b949e; }
@@ -536,7 +543,170 @@ body {
 .cost-hard    { color: #f56c6c; font-weight: 600; }
 .cost-unknown { color: #8b949e; font-style: italic; }
 .btn-inline { margin-left: 0.5rem; cursor: pointer; }
+
+/* 技能分頁 */
+.skill-content { padding: 0.5rem 0; }
+.skill-section { margin-bottom: 1rem; }
+.skill-section-title {
+	font-weight: 600;
+	color: var(--room-name);
+	font-size: 0.95rem;
+	margin-bottom: 0.4rem;
+	letter-spacing: 0.05em;
+}
+.skill-section-body {
+	padding-left: 0.25rem;
+	line-height: 1.7;
+	font-size: 0.9rem;
+}
+.skill-divider {
+	border-top: 1px dashed var(--border);
+	margin: 0.35rem 0;
+}
+.skill-placeholder { color: var(--text); }
 .entities-list li[role="button"] { cursor: pointer; }
 .entities-list li[role="button"]:hover { text-decoration: underline; }
+
+/* 頂欄啟用按鈕（非 disabled） */
+.slot-btn-active {
+	cursor: pointer;
+	color: var(--room-name);
+	border-color: var(--room-name);
+}
+.slot-btn-active:hover {
+	background: #2d333b;
+}
+
+/* 背包彈窗：獨立於人物彈窗，結構相似 */
+.inventory-modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1100;
+	padding: 1rem;
+	box-sizing: border-box;
+}
+.inventory-modal-overlay[hidden] { display: none; }
+.inventory-modal {
+	width: 100%;
+	max-width: 420px;
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	max-height: calc(100vh - 4rem);
+	box-sizing: border-box;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.inventory-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.6rem 0.75rem;
+	border-bottom: 1px solid var(--border);
+	flex-shrink: 0;
+}
+.inventory-modal-title {
+	margin: 0;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--text);
+}
+.inventory-modal-body {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	padding: 0.75rem;
+	color: var(--text);
+	font-size: 0.9rem;
+}
+.inventory-weight {
+	margin-bottom: 0.6rem;
+	font-size: 0.85rem;
+	color: var(--text-muted);
+}
+.inventory-weight-warn { color: var(--bar-hp); font-weight: 600; }
+.inventory-list {
+	line-height: 1.8;
+}
+.inventory-item {
+	display: flex;
+	justify-content: space-between;
+	padding: 0.15rem 0;
+	border-bottom: 1px solid rgba(61, 68, 77, 0.4);
+}
+.inventory-item-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inventory-item-qty { margin-left: 0.5rem; color: var(--text-muted); flex-shrink: 0; }
+.inventory-item-weight { margin-left: 0.5rem; color: var(--text-muted); flex-shrink: 0; font-size: 0.85em; min-width: 3.5em; text-align: right; }
+.inventory-empty { color: var(--text-muted); font-style: italic; padding: 1rem 0; text-align: center; }
+
+/* 背包/裝備就地展開：手風琴 */
+.inventory-item { cursor: pointer; transition: background 0.15s; }
+.inventory-item:hover { background: rgba(255, 255, 255, 0.04); }
+.inventory-item.expanded { background: rgba(255, 255, 255, 0.06); border-bottom-color: transparent; }
+.inventory-item-expand {
+	padding: 0.3rem 0.6rem 0.5rem;
+	margin-bottom: 0.25rem;
+	border-left: 2px solid var(--border);
+	border-bottom: 1px solid rgba(61, 68, 77, 0.4);
+	background: rgba(0, 0, 0, 0.12);
+	font-size: 0.85rem;
+	line-height: 1.6;
+}
+.inventory-item-desc {
+	color: var(--text-muted);
+	margin-bottom: 0.35rem;
+}
+.inventory-item-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+.inv-action-btn {
+	padding: 0.2rem 0.6rem;
+	font-size: 0.8rem;
+	color: var(--text);
+	background: var(--bg);
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	cursor: pointer;
+	transition: border-color 0.15s, color 0.15s;
+}
+.inv-action-btn:hover {
+	border-color: var(--room-name);
+	color: var(--room-name);
+}
+.inv-action-btn:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+.inv-action-btn:disabled:hover {
+	border-color: var(--border);
+	color: var(--text);
+}
+
+/* 裝備分頁就地展開 */
+.equip-dl dt { cursor: default; }
+.equip-dl dd { cursor: default; }
+.equip-dl dd.equip-has-item { cursor: pointer; transition: background 0.15s; border-radius: 3px; padding: 0 0.25rem; margin: 0 -0.25rem; }
+.equip-dl dd.equip-has-item:hover { background: rgba(255, 255, 255, 0.04); }
+.equip-item-expand {
+	grid-column: 1 / -1;
+	padding: 0.3rem 0.6rem 0.5rem;
+	margin: 0 0 0.25rem;
+	border-left: 2px solid var(--border);
+	background: rgba(0, 0, 0, 0.12);
+	font-size: 0.85rem;
+	line-height: 1.6;
+}
+.equip-item-desc {
+	color: var(--text-muted);
+	margin-bottom: 0.35rem;
+}
+.equip-item-expand .inventory-item-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
 .panel { box-sizing: border-box; }
