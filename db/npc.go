@@ -1,0 +1,84 @@
+package db
+
+import (
+	"database/sql"
+	"time"
+)
+
+// InsertNPC 新增一筆 NPC 實體；流程同玩家（SoulSeed → 屬性 → 穿搭），kind 固定為 "npc"。
+// displayTitle 為房間內顯示的職稱（如「經理」），點擊才會看到 id（真名）。
+func InsertNPC(db *sql.DB, id, displayChar, gender, displayTitle string) error {
+	if displayChar == "" {
+		r := []rune(id)
+		if len(r) > 0 {
+			displayChar = string(r[0:1])
+		} else {
+			displayChar = "人"
+		}
+	}
+	if gender != "M" && gender != "F" {
+		gender = "M"
+	}
+	seed, err := GenerateSoulSeed()
+	if err != nil {
+		return err
+	}
+	vit, qi, dex := ExpandSoulSeedToBaseStats(seed)
+	now := time.Now().Unix()
+	equip := StarterEquipment(gender)
+	_, err = db.Exec(
+		`INSERT INTO entities (id, kind, display_char, x, y, move_state, vit, qi, dex, magnesium, created_at, gender, soul_seed, display_title, equipment_slots)
+		 VALUES (?, 'npc', ?, 0, 0, 'idle', ?, ?, ?, 100, ?, ?, ?, ?, ?)`,
+		id, displayChar, vit, qi, dex, now, gender, seed, displayTitle, equip,
+	)
+	return err
+}
+
+// InsertSchedule 設定 NPC 排班（INSERT OR REPLACE）。
+func InsertSchedule(db *sql.DB, entityID, workRoom, restRoom string, shiftStart, shiftEnd int) error {
+	_, err := db.Exec(
+		"INSERT OR REPLACE INTO npc_schedules (entity_id, work_room, rest_room, shift_start, shift_end) VALUES (?, ?, ?, ?, ?)",
+		entityID, workRoom, restRoom, shiftStart, shiftEnd,
+	)
+	return err
+}
+
+// npcDef 描述一名預設 NPC 的全部資料。
+type npcDef struct {
+	id, displayChar, gender, title string
+	workRoom, restRoom             string
+	shiftStart, shiftEnd           int
+}
+
+// defaultNPCs 全體預設 NPC：日班 06-19、夜班 18-07，重疊 18-19 與 06-07。
+var defaultNPCs = []npcDef{
+	{"陳正明", "陳", "M", "經理", "life_hall", "life_storage", 6, 19},
+	{"林小雯", "林", "F", "服務生", "life_hall", "life_storage", 6, 19},
+	{"張明德", "張", "M", "經理", "life_hall", "life_storage", 18, 7},
+	{"王阿財", "王", "M", "服務生", "life_hall", "life_storage", 18, 7},
+}
+
+// SeedNPCs 逐一檢查預設 NPC，不存在才建立（避免舊 DB 已有部分 NPC 時重複建立）。
+func SeedNPCs(db *sql.DB) error {
+	for _, npc := range defaultNPCs {
+		var exists int
+		if err := db.QueryRow("SELECT COUNT(*) FROM entities WHERE id = ?", npc.id).Scan(&exists); err != nil {
+			return err
+		}
+		if exists > 0 {
+			_ = InsertSchedule(db, npc.id, npc.workRoom, npc.restRoom, npc.shiftStart, npc.shiftEnd)
+			continue
+		}
+		if err := InsertNPC(db, npc.id, npc.displayChar, npc.gender, npc.title); err != nil {
+			return err
+		}
+		if err := SetEntityRoom(db, npc.id, npc.workRoom); err != nil {
+			return err
+		}
+		if err := InsertSchedule(db, npc.id, npc.workRoom, npc.restRoom, npc.shiftStart, npc.shiftEnd); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+

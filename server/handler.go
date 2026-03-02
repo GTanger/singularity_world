@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 
+	"singularity_world/combat"
 	"singularity_world/config"
 	"singularity_world/db"
 	"singularity_world/entity"
@@ -39,6 +41,8 @@ func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, s
 		handleEquipItem(c, &msg, database)
 	case "unequip_item":
 		handleUnequipItem(c, &msg, database)
+	case "do_action":
+		handleDoAction(c, &msg, database, store, hub)
 	case "print_topology_debug":
 		handlePrintTopologyDebug(c, database)
 	default:
@@ -185,7 +189,16 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 func sendRoomView(c *Client, view *game.RoomView, cfg config.Server) {
 	entities := make([]ViewEntity, 0, len(view.Entities))
 	for _, e := range view.Entities {
-		entities = append(entities, ViewEntity{ID: e.ID, Kind: e.Kind, DisplayChar: e.DisplayChar})
+		ve := ViewEntity{ID: e.ID, Kind: e.Kind, DisplayChar: e.DisplayChar}
+		if e.Kind == "npc" && e.DisplayTitle != "" {
+			ve.DisplayName = e.DisplayTitle
+		} else {
+			ve.DisplayName = e.ID
+		}
+		if e.ID != c.PlayerID {
+			ve.Actions = e.Sockets()
+		}
+		entities = append(entities, ve)
 	}
 	exits := make([]ExitView, 0, len(view.Exits))
 	for _, ex := range view.Exits {
@@ -272,6 +285,166 @@ func parseEquipment(database *sql.DB, raw string) (slots, names, descs map[strin
 
 func sendMoved(c *Client, playerID, roomID, roomName string) {
 	c.Send <- mustJSON(MovedMsg{Type: "moved", PlayerID: playerID, RoomID: roomID, RoomName: roomName})
+}
+
+// ── 插頭插座：do_action ──
+
+func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, store *SessionStore, hub *Hub) {
+	if c.PlayerID == "" {
+		sendError(c, "請先登入")
+		return
+	}
+	targetID := msg.EntityID
+	action := msg.Action
+	if targetID == "" || action == "" {
+		sendError(c, "缺少目標或動作")
+		return
+	}
+	if targetID == c.PlayerID {
+		sendError(c, "無法對自己執行此動作")
+		return
+	}
+	playerRoom, _ := db.GetEntityRoom(database, c.PlayerID)
+	targetRoom, _ := db.GetEntityRoom(database, targetID)
+	if playerRoom == "" || targetRoom == "" || playerRoom != targetRoom {
+		sendError(c, "目標不在同一房間")
+		return
+	}
+	target, err := db.GetEntity(database, targetID)
+	if err != nil || target == nil {
+		sendError(c, "找不到目標")
+		return
+	}
+	if !entity.HasSocket((&entity.Character{}).Sockets(), action) {
+		sendError(c, "無法對目標執行「"+action+"」")
+		return
+	}
+	now := game.NowUnix()
+	switch action {
+	case "Look":
+		narrative := buildLookNarrative(target, database)
+		_ = event.Append(database, now, c.PlayerID, event.TypeObserved, targetID)
+		c.Send <- mustJSON(ActionResultMsg{
+			Type: "action_result", Action: "Look",
+			TargetID: target.ID, TargetName: target.ID,
+			Narrative: narrative, Success: true,
+		})
+	case "Talk":
+		narrative := buildTalkNarrative(c.PlayerID, target)
+		_ = event.Append(database, now, c.PlayerID, "talk", targetID)
+		c.Send <- mustJSON(ActionResultMsg{
+			Type: "action_result", Action: "Talk",
+			TargetID: target.ID, TargetName: target.ID,
+			Narrative: narrative, Success: true,
+		})
+	case "Attack":
+		attacker, _ := db.GetEntity(database, c.PlayerID)
+		if attacker == nil {
+			sendError(c, "找不到自身角色")
+			return
+		}
+		narrative := buildAttackNarrative(attacker, target)
+		_ = event.Append(database, now, c.PlayerID, event.TypeCombat, targetID)
+		c.Send <- mustJSON(ActionResultMsg{
+			Type: "action_result", Action: "Attack",
+			TargetID: target.ID, TargetName: target.ID,
+			Narrative: narrative, Success: true,
+		})
+	default:
+		sendError(c, "未知動作："+action)
+	}
+}
+
+func buildLookNarrative(target *entity.Character, database *sql.DB) string {
+	name := target.ID
+	pronoun := "他"
+	if target.Gender == "F" {
+		pronoun = "她"
+	}
+	var physique string
+	switch {
+	case target.Vit >= 20:
+		physique = "體格異常魁梧"
+	case target.Vit >= 15:
+		physique = "體格健壯"
+	case target.Vit >= 10:
+		physique = "身材勻稱"
+	default:
+		physique = "身形消瘦"
+	}
+	var agility string
+	switch {
+	case target.Dex >= 20:
+		agility = "舉止間透著驚人的敏捷"
+	case target.Dex >= 15:
+		agility = "動作輕靈"
+	case target.Dex >= 10:
+		agility = "步履平穩"
+	default:
+		agility = "行動略顯遲緩"
+	}
+	var qiPresence string
+	switch {
+	case target.Qi >= 20:
+		qiPresence = "，周身隱隱有氣勁流轉"
+	case target.Qi >= 15:
+		qiPresence = "，氣息沉穩"
+	case target.Qi >= 10:
+		qiPresence = ""
+	default:
+		qiPresence = "，氣息微弱"
+	}
+	desc := fmt.Sprintf("你仔細打量了【%s】。%s%s，%s%s。", name, pronoun, physique, agility, qiPresence)
+	if target.EquipmentSlots != "" {
+		names, _ := db.GetItemNames(database, target.EquipmentSlots)
+		if len(names) > 0 {
+			pieces := make([]string, 0, 3)
+			for _, n := range names {
+				if len(pieces) >= 3 {
+					break
+				}
+				pieces = append(pieces, n)
+			}
+			desc += " 身上穿戴著" + strings.Join(pieces, "、") + "。"
+		}
+	}
+	return desc
+}
+
+func buildTalkNarrative(playerID string, target *entity.Character) string {
+	name := target.ID
+	responses := []string{
+		"「你好，有什麼事嗎？」",
+		"「這裡最近不太平靜，你小心點。」",
+		"「我只是個路人，別找我麻煩。」",
+		"「你看起來像是個新手。」",
+		"「嗯？」",
+		"「別擋路。」",
+		"「你也是來這裡討生活的？」",
+		"「聽說城外最近出了些怪事。」",
+	}
+	h := 0
+	for _, r := range target.ID {
+		h += int(r)
+	}
+	idx := h % len(responses)
+	return "你向【" + name + "】搭話。" + name + "說道：" + responses[idx]
+}
+
+func buildAttackNarrative(attacker, defender *entity.Character) string {
+	winner, rawLog := combat.Resolve(attacker.Vit, attacker.Dex, defender.Vit, defender.Dex)
+	aName := attacker.ID
+	dName := defender.ID
+	log := strings.ReplaceAll(rawLog, "攻方", "【"+aName+"】")
+	log = strings.ReplaceAll(log, "守方", "【"+dName+"】")
+	prefix := "你向【" + dName + "】發起攻擊！"
+	var suffix string
+	if winner == "attacker" {
+		suffix = "\n你取得了勝利。（戰鬥系統尚未完整實裝，不扣除氣血）"
+	} else {
+		suffix = "\n你敗下陣來。（戰鬥系統尚未完整實裝，不扣除氣血）"
+	}
+	return prefix + log + suffix
 }
 
 func handleGetEntityStatus(c *Client, msg *ClientMsg, database *sql.DB) {

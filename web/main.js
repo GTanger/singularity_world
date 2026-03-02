@@ -131,11 +131,32 @@
 	}
 
 	function appendLog(text) {
-		const el = document.getElementById('log');
-		if (el) {
-			el.textContent += text + '\n';
-			el.scrollTop = el.scrollHeight;
-		}
+		var el = document.getElementById('log');
+		if (!el) return;
+		var div = document.createElement('div');
+		div.className = 'log-entry log-system';
+		div.textContent = text;
+		el.appendChild(div);
+		el.scrollTop = el.scrollHeight;
+	}
+
+	function appendNarrative(html, actionType) {
+		var el = document.getElementById('log');
+		if (!el) return;
+		var div = document.createElement('div');
+		div.className = 'log-entry log-narrative';
+		if (actionType) div.classList.add('log-' + actionType.toLowerCase());
+		div.innerHTML = html;
+		el.appendChild(div);
+		el.scrollTop = el.scrollHeight;
+	}
+
+	function formatNarrative(text) {
+		if (!text) return '';
+		return escapeHtml(text)
+			.replace(/【([^】]*)】/g, '<span class="narr-name">【$1】</span>')
+			.replace(/「([^」]*)」/g, '<span class="narr-dialogue">「$1」</span>')
+			.replace(/\n/g, '<br>');
 	}
 
 	function isConnected() {
@@ -272,6 +293,11 @@
 							renderStarplatePane(state.me);
 						}
 						break;
+				case 'action_result':
+					if (msg.narrative) {
+						appendNarrative(formatNarrative(msg.narrative), msg.action);
+					}
+					break;
 				case 'inventory':
 					renderInventoryContent(msg);
 					break;

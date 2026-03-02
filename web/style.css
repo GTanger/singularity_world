@@ -293,6 +293,32 @@ body {
 }
 .entities-list li { padding: 0.15rem 0; }
 .entities-list .you { color: var(--room-name); }
+
+/* 實體互動：點擊展開動作列（插頭插座） */
+.entity-row { cursor: pointer; transition: color 0.15s; }
+.entity-row:hover { color: var(--room-name); }
+.entity-row.expanded { color: var(--room-name); }
+.entity-npc { color: #b0bec5; }
+.entity-arrow { display: inline-block; width: 0.9em; text-align: center; }
+.entity-actions-expand {
+	padding: 0.2rem 0 0.3rem 1em;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+}
+.entity-action-btn {
+	font-size: 0.75rem;
+	padding: 0.15rem 0.5rem;
+	background: rgba(255,255,255,0.08);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 3px;
+	cursor: pointer;
+	transition: background 0.15s, color 0.15s;
+}
+.entity-action-btn:hover { background: var(--room-name); color: #111; }
+.entity-action-btn[data-action="Attack"] { color: #e57373; border-color: #e57373; }
+.entity-action-btn[data-action="Attack"]:hover { background: #e57373; color: #111; }
 .narrative-right {
 	flex: 1;
 	display: flex;
@@ -306,12 +332,22 @@ body {
 	min-height: 0;
 	padding: 0.5rem 0.75rem;
 	overflow: auto;
-	white-space: pre-wrap;
 	word-break: break-word;
 	font-size: 0.85rem;
-	line-height: 1.5;
+	line-height: 1.6;
 	color: var(--text-muted);
 }
+
+/* 敘事 Log 條目 */
+.log-entry { padding: 0.15rem 0; }
+.log-entry.log-system { color: var(--text-muted); font-size: 0.8rem; }
+.log-entry.log-narrative { color: var(--text); }
+.log-entry.log-look { color: #b0bec5; }
+.log-entry.log-talk { color: #a5d6a7; }
+.log-entry.log-attack { color: #ef9a9a; }
+.log-entry + .log-entry { border-top: 1px solid rgba(255,255,255,0.04); }
+.narr-name { color: var(--room-name); font-weight: 600; }
+.narr-dialogue { color: #e0e0e0; font-style: italic; }
 .text-muted { color: var(--text-muted); font-size: 0.85rem; }
 
 /* 路徑欄：置底，僅出口 */
@@ -564,8 +600,6 @@ body {
 	margin: 0.35rem 0;
 }
 .skill-placeholder { color: var(--text); }
-.entities-list li[role="button"] { cursor: pointer; }
-.entities-list li[role="button"]:hover { text-decoration: underline; }
 
 /* 頂欄啟用按鈕（非 disabled） */
 .slot-btn-active {

@@ -81,3 +81,15 @@ CREATE TABLE IF NOT EXISTS entity_auth (
 	password_hash TEXT NOT NULL,
 	FOREIGN KEY (entity_id) REFERENCES entities(id)
 );
+
+-- NPC 排班表：上班在 work_room、下班移動到 rest_room；shift 可跨午夜
+CREATE TABLE IF NOT EXISTS npc_schedules (
+	entity_id TEXT PRIMARY KEY,
+	work_room TEXT NOT NULL,
+	rest_room TEXT NOT NULL,
+	shift_start INTEGER NOT NULL,
+	shift_end INTEGER NOT NULL,
+	FOREIGN KEY (entity_id) REFERENCES entities(id),
+	FOREIGN KEY (work_room) REFERENCES rooms(id),
+	FOREIGN KEY (rest_room) REFERENCES rooms(id)
+);

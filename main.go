@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"singularity_world/config"
@@ -86,9 +87,17 @@ func main() {
 
 	// 視野內 NPC 即時模擬 ＋ 每 tick 推進移動中實體（§1.2.3、§1.3.3）。
 	obs := &game.Observed{DB: database}
+	var lastScheduleHour = -1
 	// 房間制：無格點移動 tick；視野為當前房間，移動依出口即時完成。
 	go game.Loop(cfg.TickInterval, func() {
 		game.RunViewSimulation(database, func() []game.Pos { return server.GetObserverPositions(sessionStore, database) }, obs)
+
+		// NPC 排班：每遊戲小時檢查一次，上班→工作房間，下班→休息房間
+		_, hour, _, _ := game.GameTimeNow(time.Now().Unix(), cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+		if hour != lastScheduleHour {
+			lastScheduleHour = hour
+			_ = db.ApplySchedules(database, hour)
+		}
 	})
 
 	// 經濟引擎：獨立 goroutine、自有 tick rate，後續可在 onTick 產出事件流／價格／任務報酬（§1.1.6）。

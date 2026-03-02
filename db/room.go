@@ -3,10 +3,29 @@ package db
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
+	"log"
+	"os"
 
 	"singularity_world/entity"
 )
+
+// roomsFile 房間定義檔 JSON 結構。
+type roomsFile struct {
+	Rooms []roomDef `json:"rooms"`
+	Exits []exitDef `json:"exits"`
+}
+type roomDef struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+type exitDef struct {
+	From      string `json:"from"`
+	Direction string `json:"direction"`
+	To        string `json:"to"`
+}
 
 // Room 單一房間節點。
 type Room struct {
@@ -62,7 +81,8 @@ func GetExitsForRoom(db *sql.DB, fromRoomID string) ([]Exit, error) {
 func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
 	rows, err := db.Query(
 		`SELECT c.id, c.kind, c.display_char, c.x, c.y, c.move_state, c.target_x, c.target_y, c.walk_or_run,
-		 c.move_started_at, c.vit, c.qi, c.dex, c.magnesium, c.last_observed_at, c.created_at, c.gender, c.soul_seed
+		 c.move_started_at, c.vit, c.qi, c.dex, c.magnesium, c.last_observed_at, c.created_at, c.gender, c.soul_seed,
+		 c.display_title
 		 FROM entity_room er JOIN entities c ON c.id = er.entity_id
 		 WHERE er.room_id = ?`,
 		roomID,
@@ -164,60 +184,71 @@ func RemoveExit(db *sql.DB, fromRoomID, direction string) error {
 	return err
 }
 
-// SeedRooms 若尚無房間則建立預設房間與出口，並將所有尚無 entity_room 的實體放入預設房間。
-func SeedRooms(db *sql.DB) error {
-	var n int
-	if err := db.QueryRow("SELECT COUNT(*) FROM rooms").Scan(&n); err != nil || n > 0 {
+// SyncRoomsFromFile 讀取 data/rooms.json，將房間與出口同步進 DB。
+// 檔案裡有的房間：不存在就新增，已存在就更新名稱與描述。
+// 檔案裡有的出口：不存在就新增。
+// DB 裡有但檔案沒有的房間/出口不會被刪（admin.html 手動加的不受影響）。
+func SyncRoomsFromFile(database *sql.DB, path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			log.Printf("rooms: %s not found, skip sync", path)
+			return nil
+		}
 		return err
 	}
-	// 預設房間（描述不寫出口，由移動欄顯示）
-	rooms := []struct {
-		id, name, desc string
-	}{
-		{"lobby", "大廳", "寬敞的大廳，幾盞燈映著牆上的地圖。"},
-		{"east_street", "東街", "一條東西向的街道，人來人往。"},
-		{"west_alley", "西巷", "窄巷幽靜，盡頭有扇小門。"},
-		{"south_plaza", "南廣場", "開闊的廣場，中央有噴泉。"},
+	var f roomsFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
 	}
-	for _, r := range rooms {
-		if _, err := db.Exec("INSERT INTO rooms (id, name, description) VALUES (?, ?, ?)", r.id, r.name, r.desc); err != nil {
-			return err
+
+	for _, r := range f.Rooms {
+		var exists int
+		_ = database.QueryRow("SELECT COUNT(*) FROM rooms WHERE id = ?", r.ID).Scan(&exists)
+		if exists > 0 {
+			_, _ = database.Exec("UPDATE rooms SET name = ?, description = ? WHERE id = ?", r.Name, r.Description, r.ID)
+		} else {
+			if _, err := database.Exec("INSERT INTO rooms (id, name, description) VALUES (?, ?, ?)", r.ID, r.Name, r.Description); err != nil {
+				return err
+			}
+			log.Printf("rooms: created %s (%s)", r.ID, r.Name)
 		}
 	}
-	// 出口：節點連接節點
-	exits := []struct{ from, dir, to string }{
-		{"lobby", "東", "east_street"},
-		{"lobby", "西", "west_alley"},
-		{"east_street", "西", "lobby"},
-		{"west_alley", "東", "lobby"},
-		{"west_alley", "南", "south_plaza"},
-		{"south_plaza", "北", "west_alley"},
-	}
-	for _, e := range exits {
-		if _, err := db.Exec("INSERT INTO exits (from_room_id, direction, to_room_id) VALUES (?, ?, ?)", e.from, e.dir, e.to); err != nil {
-			return err
+
+	for _, e := range f.Exits {
+		var exists int
+		_ = database.QueryRow("SELECT COUNT(*) FROM exits WHERE from_room_id = ? AND direction = ?", e.From, e.Direction).Scan(&exists)
+		if exists == 0 {
+			if _, err := database.Exec("INSERT INTO exits (from_room_id, direction, to_room_id) VALUES (?, ?, ?)", e.From, e.Direction, e.To); err != nil {
+				return err
+			}
+			log.Printf("rooms: exit %s -[%s]-> %s", e.From, e.Direction, e.To)
 		}
 	}
-	// 所有實體放入大廳
-	rows, err := db.Query("SELECT id FROM entities")
+
+	// 沒有房間的實體放進 lobby
+	rows, err := database.Query(
+		"SELECT id FROM entities WHERE id NOT IN (SELECT entity_id FROM entity_room)")
 	if err != nil {
 		return err
 	}
 	defer rows.Close()
-	defaultRoom := "lobby"
 	for rows.Next() {
 		var id string
 		if err := rows.Scan(&id); err != nil {
 			return err
 		}
-		if err := SetEntityRoom(db, id, defaultRoom); err != nil {
-			return err
-		}
+		_ = SetEntityRoom(database, id, "lobby")
 	}
 	return rows.Err()
 }
 
-// scanCharacterList 共用：從 entities 的 SELECT 結果掃成 []*entity.Character。
+// SeedRooms 向下相容：讀 data/rooms.json 同步房間。
+func SeedRooms(db *sql.DB) error {
+	return SyncRoomsFromFile(db, "data/rooms.json")
+}
+
+// scanCharacterList 共用：從 entities 的 SELECT 結果（含 display_title）掃成 []*entity.Character。
 func scanCharacterList(rows *sql.Rows) ([]*entity.Character, error) {
 	var list []*entity.Character
 	for rows.Next() {
@@ -226,10 +257,12 @@ func scanCharacterList(rows *sql.Rows) ([]*entity.Character, error) {
 		var moveStartedAt, lastObservedAt sql.NullInt64
 		var walkOrRun, gender sql.NullString
 		var soulSeed sql.NullInt64
+		var displayTitle sql.NullString
 		if err := rows.Scan(
 			&c.ID, &c.Kind, &c.DisplayChar, &c.X, &c.Y, &c.MoveState,
 			&targetX, &targetY, &walkOrRun, &moveStartedAt,
 			&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender, &soulSeed,
+			&displayTitle,
 		); err != nil {
 			return nil, err
 		}
@@ -257,6 +290,9 @@ func scanCharacterList(rows *sql.Rows) ([]*entity.Character, error) {
 		}
 		if soulSeed.Valid {
 			c.SoulSeed = &soulSeed.Int64
+		}
+		if displayTitle.Valid {
+			c.DisplayTitle = displayTitle.String
 		}
 		list = append(list, &c)
 	}

@@ -3,23 +3,37 @@ package server
 
 // ClientMsg 客戶端送出的 JSON；type 決定行為。
 type ClientMsg struct {
-	Type        string `json:"type"`         // "login" | "create_character" | "move" | "ping" | "get_entity_status" | "get_inventory" | "equip_item" | "unequip_item" | "print_topology_debug"
+	Type        string `json:"type"`         // "login" | "create_character" | "move" | "ping" | "get_entity_status" | "get_inventory" | "equip_item" | "unequip_item" | "do_action" | "print_topology_debug"
 	PlayerID    string `json:"player_id"`    // login 必填；create_character 時為新角色 id
 	Password    string `json:"password"`     // login / create_character 必填
 	DisplayChar string `json:"display_char"` // create_character 選填，預設「我」
 	Gender      string `json:"gender"`       // create_character 選填：「男」→M、「女」→F，預設 M
 	Direction   string `json:"direction"`    // move 時出口方向（例："東"、"西"）
-	EntityID    string `json:"entity_id"`    // get_entity_status 時選填，空則為自己
+	EntityID    string `json:"entity_id"`    // get_entity_status / do_action 時目標實體 ID
 	ItemID      string `json:"item_id"`      // equip_item 時背包中的物品 ID
 	TargetSlot  string `json:"target_slot"`  // equip_item 時指定槽位（僅 hold 類需要：hold_l / hold_r）
 	Slot        string `json:"slot"`         // unequip_item 時裝備槽位代碼
+	Action      string `json:"action"`       // do_action 時的動詞（"Look" | "Talk" | "Attack"）
 }
 
-// ViewEntity 房間內單一實體，供前端顯示「誰在這裡」。
+// ViewEntity 房間內單一實體，供前端顯示「誰在這裡」與可執行動作。
+// DisplayName 為 UI 清單顯示名：NPC 顯示職稱（如「經理」），玩家顯示 ID（真名）。
 type ViewEntity struct {
-	ID          string `json:"id"`
-	Kind        string `json:"kind"`
-	DisplayChar string `json:"display_char"`
+	ID          string   `json:"id"`
+	Kind        string   `json:"kind"`
+	DisplayChar string   `json:"display_char"`
+	DisplayName string   `json:"display_name"`
+	Actions     []string `json:"actions,omitempty"`
+}
+
+// ActionResultMsg 伺服器回傳：do_action 的敘事結果。
+type ActionResultMsg struct {
+	Type       string `json:"type"`        // "action_result"
+	Action     string `json:"action"`      // "Look" | "Talk" | "Attack"
+	TargetID   string `json:"target_id"`
+	TargetName string `json:"target_name"`
+	Narrative  string `json:"narrative"`
+	Success    bool   `json:"success"`
 }
 
 // ExitView 單一出口，供前端顯示可點選的出口。
