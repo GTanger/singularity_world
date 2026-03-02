@@ -1,0 +1,66 @@
+{
+  "_說明": "藥師行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。早起採藥，午間坐堂，偶赴田野山林，性情溫和。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 0, "hour_end": 5, "activity": "sleep", "location_pref": ["herb_shop", "home"], "description": "安寢休息"},
+      {"hour_start": 5, "hour_end": 8, "activity": "gather", "location_pref": ["field", "forest", "mountain_path"], "description": "早起採藥，赴田野山林"},
+      {"hour_start": 8, "hour_end": 12, "activity": "work", "location_pref": ["herb_shop", "clinic"], "description": "回鋪整理藥材，開門營業"},
+      {"hour_start": 12, "hour_end": 14, "activity": "work", "location_pref": ["herb_shop"], "description": "午間坐堂，接待病患"},
+      {"hour_start": 14, "hour_end": 17, "activity": "work", "location_pref": ["herb_shop", "clinic"], "description": "下午繼續坐堂"},
+      {"hour_start": 17, "hour_end": 19, "activity": "wander", "location_pref": ["field", "forest", "garden"], "description": "傍晚閒步田野或園林"},
+      {"hour_start": 19, "hour_end": 22, "activity": "rest", "location_pref": ["herb_shop", "home"], "description": "晚間整理藥材，準備歇息"},
+      {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["herb_shop", "home"], "description": "就寢"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["field", "forest", "herb_shop", "garden", "mountain_path"],
+    "wander_chance": 0.35,
+    "max_distance": 4,
+    "leave_texts": [
+      "【{name}】背起藥簍，往{dest}方向緩步而去。",
+      "【{name}】輕聲哼著小調，往{dest}走去。",
+      "【{name}】看了看天色，往{dest}方向行去。",
+      "【{name}】收拾好藥鋤與簍子，往{dest}而去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向走了過來，藥簍裡飄出淡淡的草香。",
+      "【{name}】自{from}緩步而至，面帶溫和笑意。",
+      "【{name}】從{from}走了進來，衣角沾著幾片草葉。",
+      "【{name}】自{from}而來，手中捧著一束剛採的藥草。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 0.9,
+    "sell_markup": 1.4,
+    "preferred_goods": ["金創藥", "止血散", "回氣丹", "安神香", "乾草藥束", "藥材", "靈芝", "人參"],
+    "refused_goods": ["兵器", "毒藥", "贓物"],
+    "haggle_tolerance": 2,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】溫和一笑：「也罷，就當結個善緣。」",
+        "【{name}】點點頭：「看你誠心，便依你吧。」",
+        "【{name}】輕嘆一聲：「好吧，下次可沒這價了。」"
+      ],
+      "reject": [
+        "【{name}】搖頭道：「這價實在虧本，恕難從命。」",
+        "【{name}】溫聲道：「藥材得來不易，不能再低了。」",
+        "【{name}】苦笑：「小本生意，還請體諒。」"
+      ],
+      "counter": [
+        "【{name}】沉吟片刻：「這樣吧，再讓一成如何？」",
+        "【{name}】和氣道：「各退一步，你看可好？」",
+        "【{name}】微笑道：「我出個折中價，如何？」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.1,
+    "friendliness": 0.8,
+    "curiosity": 0.6,
+    "greed": 0.3,
+    "bravery": 0.4,
+    "reaction_to_combat": "避開紛爭，必要時以藥救人",
+    "reaction_to_theft": "嘆息報官，不願與人動粗"
+  }
+}

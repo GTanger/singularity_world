@@ -62,19 +62,13 @@ func setupTestDB(t *testing.T) *sql.DB {
 func TestApplySchedules(t *testing.T) {
 	database := setupTestDB(t)
 
-	npcs := []struct {
-		id   string
-		room string
-	}{
-		{"陳正明", "lobby"},
-		{"林小雯", "lobby"},
-		{"張明德", "lobby"},
-		{"王阿財", "lobby"},
-	}
-	for _, npc := range npcs {
-		room, _ := GetEntityRoom(database, npc.id)
+	workRoom := "life_hall"
+	restRoom := "life_storage"
+
+	for _, id := range []string{"陳正明", "林小雯", "張明德", "王阿財"} {
+		room, _ := GetEntityRoom(database, id)
 		if room == "" {
-			t.Fatalf("NPC %s has no room", npc.id)
+			t.Fatalf("NPC %s has no room", id)
 		}
 	}
 
@@ -87,58 +81,58 @@ func TestApplySchedules(t *testing.T) {
 	}
 
 	// Hour 12: day shift on, night shift off
-	if err := ApplySchedules(database, 12); err != nil {
+	if _, err := ApplySchedules(database, 12); err != nil {
 		t.Fatalf("ApplySchedules(12): %v", err)
 	}
 	for _, id := range []string{"陳正明", "林小雯"} {
 		room, _ := GetEntityRoom(database, id)
-		if room != "lobby" {
-			t.Errorf("hour 12: %s should be in lobby, got %s", id, room)
+		if room != workRoom {
+			t.Errorf("hour 12: %s should be in %s, got %s", id, workRoom, room)
 		}
 	}
 	for _, id := range []string{"張明德", "王阿財"} {
 		room, _ := GetEntityRoom(database, id)
-		if room != "back_storage" {
-			t.Errorf("hour 12: %s should be in back_storage, got %s", id, room)
+		if room != restRoom {
+			t.Errorf("hour 12: %s should be in %s, got %s", id, restRoom, room)
 		}
 	}
 
 	// Hour 22: night shift on, day shift off
-	if err := ApplySchedules(database, 22); err != nil {
+	if _, err := ApplySchedules(database, 22); err != nil {
 		t.Fatalf("ApplySchedules(22): %v", err)
 	}
 	for _, id := range []string{"陳正明", "林小雯"} {
 		room, _ := GetEntityRoom(database, id)
-		if room != "back_storage" {
-			t.Errorf("hour 22: %s should be in back_storage, got %s", id, room)
+		if room != restRoom {
+			t.Errorf("hour 22: %s should be in %s, got %s", id, restRoom, room)
 		}
 	}
 	for _, id := range []string{"張明德", "王阿財"} {
 		room, _ := GetEntityRoom(database, id)
-		if room != "lobby" {
-			t.Errorf("hour 22: %s should be in lobby, got %s", id, room)
+		if room != workRoom {
+			t.Errorf("hour 22: %s should be in %s, got %s", id, workRoom, room)
 		}
 	}
 
 	// Hour 18: overlap - both shifts on
-	if err := ApplySchedules(database, 18); err != nil {
+	if _, err := ApplySchedules(database, 18); err != nil {
 		t.Fatalf("ApplySchedules(18): %v", err)
 	}
 	for _, id := range []string{"陳正明", "林小雯", "張明德", "王阿財"} {
 		room, _ := GetEntityRoom(database, id)
-		if room != "lobby" {
-			t.Errorf("hour 18 (overlap): %s should be in lobby, got %s", id, room)
+		if room != workRoom {
+			t.Errorf("hour 18 (overlap): %s should be in %s, got %s", id, workRoom, room)
 		}
 	}
 
 	// Hour 6: overlap - both shifts on
-	if err := ApplySchedules(database, 6); err != nil {
+	if _, err := ApplySchedules(database, 6); err != nil {
 		t.Fatalf("ApplySchedules(6): %v", err)
 	}
 	for _, id := range []string{"陳正明", "林小雯", "張明德", "王阿財"} {
 		room, _ := GetEntityRoom(database, id)
-		if room != "lobby" {
-			t.Errorf("hour 6 (overlap): %s should be in lobby, got %s", id, room)
+		if room != workRoom {
+			t.Errorf("hour 6 (overlap): %s should be in %s, got %s", id, workRoom, room)
 		}
 	}
 }

@@ -1,0 +1,65 @@
+{
+  "_說明": "賣藝人行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。晚起，午後至傍晚於市集酒肆賣藝，四處尋觀眾，性格戲劇化。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 0, "hour_end": 10, "activity": "sleep", "location_pref": ["inn", "tavern_back", "cheap_lodging"], "description": "酣睡至日上三竿"},
+      {"hour_start": 10, "hour_end": 12, "activity": "prepare", "location_pref": ["inn", "tavern"], "description": "起身梳洗，整理行頭"},
+      {"hour_start": 12, "hour_end": 15, "activity": "perform", "location_pref": ["market", "street_main"], "description": "午後至市集開場"},
+      {"hour_start": 15, "hour_end": 18, "activity": "perform", "location_pref": ["market", "tavern", "plaza"], "description": "市集與酒肆間流轉賣藝"},
+      {"hour_start": 18, "hour_end": 21, "activity": "perform", "location_pref": ["tavern", "plaza", "street_main"], "description": "傍晚酒肆人潮高峰賣藝"},
+      {"hour_start": 21, "hour_end": 23, "activity": "wander", "location_pref": ["tavern", "inn", "street_main"], "description": "收攤後四處閒逛尋觀眾"},
+      {"hour_start": 23, "hour_end": 24, "activity": "rest", "location_pref": ["inn", "tavern_back"], "description": "回棲身處歇息"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["market", "tavern", "plaza", "street_main", "inn"],
+    "wander_chance": 0.5,
+    "max_distance": 5,
+    "leave_texts": [
+      "【{name}】收起傢伙，朗聲道：「諸位，下一處見！」往{dest}而去。",
+      "【{name}】一拱手：「此處人稀，換個地兒試試。」往{dest}走去。",
+      "【{name}】抖了抖衣袖，大步往{dest}方向行去。",
+      "【{name}】高聲道：「好戲在後頭，且隨我來！」往{dest}而去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向大步走來，手中胡琴一晃：「諸位，可要聽一曲？」",
+      "【{name}】自{from}而至，揚聲道：「路過此地，獻醜了！」",
+      "【{name}】從{from}走了進來，目光掃過人群，似在尋觀眾。",
+      "【{name}】自{from}而來，衣袂飄飄，一副要開場的架勢。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 1.2,
+    "sell_markup": 1.3,
+    "preferred_goods": ["胡琴", "竹笛", "面具", "彩帶", "銅鑼", "打賞"],
+    "refused_goods": ["贓物", "違禁品"],
+    "haggle_tolerance": 3,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】哈哈一笑：「爽快！就當交個朋友！」",
+        "【{name}】拱手道：「多謝捧場，他日再會！」",
+        "【{name}】眉開眼笑：「好說好說，成交！」"
+      ],
+      "reject": [
+        "【{name}】誇張地搖頭：「這價？我這手藝可不賤賣！」",
+        "【{name}】擺手道：「不成不成，再添些！」",
+        "【{name}】嘆氣：「唉，這年頭討生活不易啊……」"
+      ],
+      "counter": [
+        "【{name}】眼珠一轉：「這樣吧，你再加兩成，我附送一曲！」",
+        "【{name}】笑道：「各讓一步，如何？我這可是獨門手藝！」",
+        "【{name}】比劃著：「你看，這價如何？包你滿意！」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.2,
+    "friendliness": 0.7,
+    "curiosity": 0.8,
+    "greed": 0.5,
+    "bravery": 0.5,
+    "reaction_to_combat": "避開紛爭，必要時以口才化解",
+    "reaction_to_theft": "大呼小叫引人注意，不願親自動手"
+  }
+}

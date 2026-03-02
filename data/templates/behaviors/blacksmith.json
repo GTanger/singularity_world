@@ -1,0 +1,70 @@
+{
+  "_說明": "鐵匠行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 4, "hour_end": 6, "activity": "wake_up", "location_pref": ["home"], "description": "早起生火，準備開爐"},
+      {"hour_start": 6, "hour_end": 8, "activity": "work", "location_pref": ["forge"], "description": "爐火初旺，開始打鐵"},
+      {"hour_start": 8, "hour_end": 12, "activity": "work", "location_pref": ["forge"], "description": "專心鍛造，錘聲不絕"},
+      {"hour_start": 12, "hour_end": 13, "activity": "rest", "location_pref": ["forge", "inn"], "description": "午間歇息，簡單用膳"},
+      {"hour_start": 13, "hour_end": 18, "activity": "work", "location_pref": ["forge"], "description": "繼續打鐵，完成訂單"},
+      {"hour_start": 18, "hour_end": 20, "activity": "rest", "location_pref": ["tavern", "inn"], "description": "收工後到附近酒館小酌"},
+      {"hour_start": 20, "hour_end": 22, "activity": "idle", "location_pref": ["forge", "home"], "description": "整理工具，收拾爐火"},
+      {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["home"], "description": "就寢安歇"},
+      {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["home"], "description": "沉睡夢鄉"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["forge", "inn", "tavern"],
+    "wander_chance": 0.08,
+    "max_distance": 2,
+    "leave_texts": [
+      "【{name}】放下鐵錘，往{dest}方向走去。",
+      "【{name}】擦了擦額頭的汗，邁步朝{dest}而去。",
+      "【{name}】熄了爐火，轉身往{dest}方向離去。",
+      "【{name}】解下圍裙，往{dest}方向踱去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向走來，渾身帶著煙火氣。",
+      "【{name}】自{from}方向大步而來，粗壯的手臂上沾著煤灰。",
+      "【{name}】從{from}方向走來，目光在鐵器上掃過。",
+      "【{name}】自{from}方向出現，手裡還拎著一壺酒。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 0.5,
+    "sell_markup": 1.3,
+    "preferred_goods": ["鐵礦", "煤炭", "銅錠", "刀劍", "農具"],
+    "refused_goods": ["布匹", "藥草"],
+    "haggle_tolerance": 2,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】點了點頭：「成交。」",
+        "【{name}】哼了一聲：「行，拿去吧。」",
+        "【{name}】擦了擦手：「成，這價我認了。」",
+        "【{name}】粗聲粗氣道：「好，就這麼著。」"
+      ],
+      "reject": [
+        "【{name}】搖搖頭：「這價錢免談。」",
+        "【{name}】把鐵錘往砧上一放：「你當我這鐵是泥捏的？」",
+        "【{name}】瞪了你一眼：「這價連炭火錢都不夠，走吧。」",
+        "【{name}】擺了擺手：「不成，這虧本買賣我不做。」"
+      ],
+      "counter": [
+        "【{name}】伸出手指比了比：「再加點如何？」",
+        "【{name}】敲了敲砧板：「實價在這，少一文都不行。」",
+        "【{name}】皺起眉頭：「這已經是最低價了，再讓我就白忙活了。」",
+        "【{name}】掂了掂手中的鐵器：「這可是好鋼，你再加些。」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.2,
+    "friendliness": 0.5,
+    "curiosity": 0.3,
+    "greed": 0.5,
+    "bravery": 0.6,
+    "reaction_to_combat": "stand_ground",
+    "reaction_to_theft": "confront"
+  }
+}

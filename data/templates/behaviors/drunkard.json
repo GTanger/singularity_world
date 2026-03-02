@@ -1,0 +1,68 @@
+{
+  "_說明": "[酒客]行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 0, "hour_end": 10, "activity": "sleep", "location_pref": ["life_dining", "life_hall", "life_backyard"], "description": "【{name}】醉倒在角落，鼾聲如雷。"},
+      {"hour_start": 10, "hour_end": 12, "activity": "wake_hungover", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】揉著太陽穴醒來，頭疼欲裂。"},
+      {"hour_start": 12, "hour_end": 14, "activity": "head_to_tavern", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】晃晃悠悠往酒肆而去。"},
+      {"hour_start": 14, "hour_end": 18, "activity": "drink_afternoon", "location_pref": ["life_dining", "life_wine_cellar", "life_hall"], "description": "【{name}】舉杯獨酌，一杯接一杯。"},
+      {"hour_start": 18, "hour_end": 22, "activity": "drink_evening", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】醉眼惺忪，與人推杯換盞。"},
+      {"hour_start": 22, "hour_end": 24, "activity": "wander_drunk", "location_pref": ["life_dining", "life_hall", "life_garden", "life_backyard"], "description": "【{name}】醉醺醺地四處晃蕩，腳步踉蹌。"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["life_dining", "life_wine_cellar", "life_hall", "life_backyard"],
+    "wander_chance": 0.85,
+    "max_distance": 2,
+    "leave_texts": [
+      "【{name}】晃著酒壺，踉踉蹌蹌往{dest}走去。",
+      "【{name}】打了個酒嗝，搖搖晃晃往{dest}而去。",
+      "【{name}】含糊道：「再……再找……找酒……」往{dest}方向晃去。",
+      "【{name}】扶著牆，一步三晃地往{dest}走去。",
+      "【{name}】醉眼朦朧，跌跌撞撞往{dest}而去。",
+      "【{name}】喃喃：「酒……酒呢……」往{dest}方向摸索而去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向晃了過來，渾身酒氣。",
+      "【{name}】自{from}踉蹌而入，手裡還拎著酒壺。",
+      "【{name}】從{from}走了進來，打了個響亮的酒嗝。",
+      "【{name}】自{from}方向搖晃而入，醉眼惺忪。",
+      "【{name}】從{from}晃了進來，嘴裡哼著不成調的小曲。",
+      "【{name}】自{from}步入，腳步虛浮，差點絆倒。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 1.4,
+    "sell_markup": 0.6,
+    "preferred_goods": ["酒壺", "骰子", "銅板", "當票"],
+    "refused_goods": [],
+    "haggle_tolerance": 1,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】大著舌頭：「好……好……就……就這樣……」",
+        "【{name}】拍桌：「成……成交！來……來喝酒！」",
+        "【{name}】含糊道：「行……行……你……你說了算……」"
+      ],
+      "reject": [
+        "【{name}】晃著腦袋：「不……不成……你……你當我醉……醉了嗎？」",
+        "【{name}】打嗝：「這……這價……太……太離譜……不……不賣！」",
+        "【{name}】醉眼一瞪：「少……少糊弄……老……老子……」"
+      ],
+      "counter": [
+        "【{name}】含糊：「再……再……便宜……便……便宜點……」",
+        "【{name}】晃著酒壺：「你……你再……再想想……我……我沒醉……」",
+        "【{name}】打嗝：「折……折中……折……折中……如何……」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.4,
+    "friendliness": 0.8,
+    "curiosity": 0.5,
+    "greed": 0.6,
+    "bravery": 0.7,
+    "reaction_to_combat": "【{name}】醉醺醺地揮舞著酒壺，嘴裡嚷嚷著要幫忙。",
+    "reaction_to_theft": "【{name}】迷迷糊糊摸了摸身上：「咦……我……我的……東西呢……」"
+  }
+}

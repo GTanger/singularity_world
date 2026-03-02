@@ -113,6 +113,16 @@ func SetEntityRoom(db *sql.DB, entityID, roomID string) error {
 	return err
 }
 
+// GetRoomName 查詢房間名稱；若無則回傳空字串。
+func GetRoomName(database *sql.DB, roomID string) (string, error) {
+	var name string
+	err := database.QueryRow("SELECT name FROM rooms WHERE id = ?", roomID).Scan(&name)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	return name, err
+}
+
 // RoomWithExits 房間與其出口列表，供管理 API 使用。
 type RoomWithExits struct {
 	Room  Room  `json:"room"`

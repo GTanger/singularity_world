@@ -106,6 +106,12 @@ type PongMsg struct {
 	Type string `json:"type"` // "pong"
 }
 
+// NarrateMsg 伺服器推送：NPC 環境敘事（閒置動作、進房反應、換班、巡邏），顯示在玩家 log 中。
+type NarrateMsg struct {
+	Type string `json:"type"` // "narrate"
+	Text string `json:"text"`
+}
+
 // TopologyDebugAckMsg 暫時除錯用：print_topology_debug 已於伺服器終端印出，回傳此 ack 供前端得知。
 type TopologyDebugAckMsg struct {
 	Type    string `json:"type"`    // "topology_debug"

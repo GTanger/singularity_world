@@ -88,9 +88,6 @@
 								ev.stopPropagation();
 								var action = btn.getAttribute('data-action');
 								var target = btn.getAttribute('data-target');
-								if (action === 'Look' && window.openCharacterModal) {
-									window.openCharacterModal(displayName, target);
-								}
 								if (window.gameSend) {
 									window.gameSend({ type: 'do_action', entity_id: target, action: action });
 								}

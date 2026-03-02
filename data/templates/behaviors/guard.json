@@ -1,0 +1,65 @@
+{
+  "_說明": "守衛行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。嚴格排班，巡邏城門／城牆／街道，不擅離職守，遇威脅時主動對峙。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 0, "hour_end": 4, "activity": "night_watch", "location_pref": ["gate", "wall", "tower"], "description": "夜班值守，巡邏城牆與城門"},
+      {"hour_start": 4, "hour_end": 6, "activity": "shift_change", "location_pref": ["gate", "barracks"], "description": "交接班時段，與下一班交接"},
+      {"hour_start": 6, "hour_end": 12, "activity": "patrol", "location_pref": ["gate", "wall", "street_main"], "description": "上午巡邏，城門至主街"},
+      {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["barracks", "gate_house"], "description": "午間短暫休整"},
+      {"hour_start": 14, "hour_end": 18, "activity": "patrol", "location_pref": ["wall", "street_main", "market_entrance"], "description": "下午巡邏，城牆與市集入口"},
+      {"hour_start": 18, "hour_end": 22, "activity": "patrol", "location_pref": ["gate", "street_main", "tavern_district"], "description": "傍晚巡邏，加強酒肆一帶"},
+      {"hour_start": 22, "hour_end": 24, "activity": "night_watch", "location_pref": ["gate", "wall"], "description": "夜間值守，嚴守城門"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["gate", "wall", "street_main", "tower", "gate_house"],
+    "wander_chance": 0.15,
+    "max_distance": 2,
+    "leave_texts": [
+      "【{name}】按了按腰間佩刀，往{dest}方向巡去。",
+      "【{name}】目光掃過四周，轉身往{dest}走去。",
+      "【{name}】整了整甲冑，邁步往{dest}巡邏。",
+      "【{name}】低聲與同僚交代幾句，往{dest}方向行去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向走了過來，目光銳利地掃視四周。",
+      "【{name}】自{from}巡至，在門前站定。",
+      "【{name}】從{from}緩步而來，手按刀柄。",
+      "【{name}】自{from}巡邏至此，環顧左右。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 0,
+    "sell_markup": 0,
+    "preferred_goods": [],
+    "refused_goods": ["*"],
+    "haggle_tolerance": 0,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】搖頭道：「職責在身，不與人交易。」",
+        "【{name}】正色道：「守城之人，不做買賣。」",
+        "【{name}】擺手道：「去別處問吧。」"
+      ],
+      "reject": [
+        "【{name}】冷冷道：「不賣。」",
+        "【{name}】瞪了你一眼：「莫要妨礙公務。」",
+        "【{name}】沉聲道：「速速離去。」"
+      ],
+      "counter": [
+        "【{name}】皺眉道：「我說了，不交易。」",
+        "【{name}】按了按刀柄：「再糾纏，休怪不客氣。」",
+        "【{name}】喝道：「走！」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.6,
+    "friendliness": 0.2,
+    "curiosity": 0.2,
+    "greed": 0.1,
+    "bravery": 0.9,
+    "reaction_to_combat": "立即拔刀對峙，呼叫同僚支援",
+    "reaction_to_theft": "追捕竊賊，若反抗則格殺勿論"
+  }
+}

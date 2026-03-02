@@ -298,6 +298,11 @@
 						appendNarrative(formatNarrative(msg.narrative), msg.action);
 					}
 					break;
+				case 'narrate':
+					if (msg.text) {
+						appendNarrative(formatNarrative(msg.text), 'ambient');
+					}
+					break;
 				case 'inventory':
 					renderInventoryContent(msg);
 					break;

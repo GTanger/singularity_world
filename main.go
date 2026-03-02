@@ -3,6 +3,7 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -88,15 +89,87 @@ func main() {
 	// 視野內 NPC 即時模擬 ＋ 每 tick 推進移動中實體（§1.2.3、§1.3.3）。
 	obs := &game.Observed{DB: database}
 	var lastScheduleHour = -1
-	// 房間制：無格點移動 tick；視野為當前房間，移動依出口即時完成。
+
+	// NPC 活化：閒置動作 & 巡邏計時器（中頻 5-12 真實秒，即 2-5 遊戲分鐘）
+	db.LoadBehaviors("data/npc_behaviors.json")
+	var idleTickCount int
+	nextIdleTrigger := 25 + rand.Intn(35) // 首次觸發：5-12 秒 ÷ 200ms tick = 25-60 ticks
+
 	go game.Loop(cfg.TickInterval, func() {
 		game.RunViewSimulation(database, func() []game.Pos { return server.GetObserverPositions(sessionStore, database) }, obs)
 
-		// NPC 排班：每遊戲小時檢查一次，上班→工作房間，下班→休息房間
-		_, hour, _, _ := game.GameTimeNow(time.Now().Unix(), cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+		now := time.Now().Unix()
+		_, hour, _, _ := game.GameTimeNow(now, cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+
+		// NPC 排班：每遊戲小時檢查一次，上下班移動 + 換班敘事
 		if hour != lastScheduleHour {
 			lastScheduleHour = hour
-			_ = db.ApplySchedules(database, hour)
+			moves, err := db.ApplySchedules(database, hour)
+			if err == nil {
+				for _, m := range moves {
+					leaveText := db.GetShiftFlavor(m.Title, m.EntityID, false)
+					arriveText := db.GetShiftFlavor(m.Title, m.EntityID, true)
+					server.SendNarrateToRoom(sessionStore, database, m.OldRoom, leaveText)
+					server.SendNarrateToRoom(sessionStore, database, m.NewRoom, arriveText)
+				}
+				if len(moves) > 0 {
+					server.BroadcastRoomViews(sessionStore, database, cfg)
+				}
+			}
+		}
+
+		// NPC 閒置動作 & 巡邏：計時器到期後觸發
+		idleTickCount++
+		if idleTickCount >= nextIdleTrigger {
+			idleTickCount = 0
+			nextIdleTrigger = 25 + rand.Intn(35)
+			period := db.GetTimePeriod(hour)
+
+			playerRooms := server.GetPlayerRoomMap(sessionStore, database)
+			schedules, _ := db.GetAllSchedules(database)
+
+			for _, s := range schedules {
+				if !s.IsOnDuty(hour) {
+					continue
+				}
+				npcRoom, _ := db.GetEntityRoom(database, s.EntityID)
+				title := db.GetNPCTitle(database, s.EntityID)
+
+				// 巡邏：10% 機率移動到 wander_rooms 中的另一房間
+				wanderRooms := db.GetWanderRooms(title)
+				if len(wanderRooms) > 1 && rand.Intn(10) == 0 {
+					var candidates []string
+					for _, wr := range wanderRooms {
+						if wr != npcRoom {
+							candidates = append(candidates, wr)
+						}
+					}
+					if len(candidates) > 0 {
+						dest := candidates[rand.Intn(len(candidates))]
+						destName, _ := db.GetRoomName(database, dest)
+						srcName, _ := db.GetRoomName(database, npcRoom)
+						leaveText := db.GetWanderFlavor(title, s.EntityID, destName, true)
+						arriveText := db.GetWanderFlavor(title, s.EntityID, srcName, false)
+						server.SendNarrateToRoom(sessionStore, database, npcRoom, leaveText)
+						_ = db.SetEntityRoom(database, s.EntityID, dest)
+						server.SendNarrateToRoom(sessionStore, database, dest, arriveText)
+						// 刷新來源和目的房間的視野
+						server.RefreshRoomViews(sessionStore, database, cfg, npcRoom)
+						server.RefreshRoomViews(sessionStore, database, cfg, dest)
+						continue
+					}
+				}
+
+				// 閒置動作：僅對有玩家在場的房間觸發
+				if _, hasPlayer := playerRooms[npcRoom]; !hasPlayer {
+					continue
+				}
+				emote := db.PickIdleEmote(title, period, s.EntityID)
+				if emote != "" {
+					server.SendNarrateToRoom(sessionStore, database, npcRoom, emote)
+					break // 每輪最多一個 NPC 發閒置動作，避免洗版
+				}
+			}
 		}
 	})
 

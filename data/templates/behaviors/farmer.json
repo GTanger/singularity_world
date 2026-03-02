@@ -1,0 +1,67 @@
+{
+  "_說明": "農夫行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。日出前起身，整日田間勞作，傍晚赴市集或客棧，早睡，作息極規律。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["farmhouse", "home"], "description": "酣睡"},
+      {"hour_start": 4, "hour_end": 6, "activity": "wake", "location_pref": ["farmhouse", "field"], "description": "雞鳴即起，準備下田"},
+      {"hour_start": 6, "hour_end": 10, "activity": "work", "location_pref": ["field", "rice_paddy"], "description": "清晨田間勞作"},
+      {"hour_start": 10, "hour_end": 12, "activity": "work", "location_pref": ["field", "rice_paddy", "vegetable_patch"], "description": "上午繼續農活"},
+      {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["field", "farmhouse", "tree_shade"], "description": "田邊或樹下歇晌"},
+      {"hour_start": 14, "hour_end": 18, "activity": "work", "location_pref": ["field", "rice_paddy"], "description": "下午田間勞作"},
+      {"hour_start": 18, "hour_end": 20, "activity": "market", "location_pref": ["market", "inn", "life_hall"], "description": "傍晚赴市集或客棧賣貨歇腳"},
+      {"hour_start": 20, "hour_end": 22, "activity": "rest", "location_pref": ["farmhouse", "home"], "description": "回宅歇息"},
+      {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["farmhouse", "home"], "description": "早睡"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["field", "rice_paddy", "farmhouse", "market", "life_hall", "life_dining"],
+    "wander_chance": 0.2,
+    "max_distance": 3,
+    "leave_texts": [
+      "【{name}】扛起農具，往{dest}方向走去。",
+      "【{name}】拍了拍身上的泥土，往{dest}行去。",
+      "【{name}】看了看日頭，往{dest}方向邁步。",
+      "【{name}】收拾好籮筐，往{dest}而去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向走了過來，身上帶著泥土與稻香。",
+      "【{name}】自{from}而至，肩上還扛著農具。",
+      "【{name}】從{from}走了進來，褲腳沾著泥點。",
+      "【{name}】自{from}而來，手裡提著一籃剛摘的菜。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 1.1,
+    "sell_markup": 1.2,
+    "preferred_goods": ["稻米", "蔬菜", "雞蛋", "粗鹽", "柴火", "豆子", "瓜果"],
+    "refused_goods": ["兵器", "毒藥", "贓物", "奢侈品"],
+    "haggle_tolerance": 1,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】憨厚地點頭：「成，就這麼著。」",
+        "【{name}】搓了搓手：「行吧，都是莊稼人。」",
+        "【{name}】咧嘴笑道：「好說好說，成交。」"
+      ],
+      "reject": [
+        "【{name}】搖頭：「這價不成，俺種地也不容易。」",
+        "【{name}】皺眉：「再低就虧本了，不行。」",
+        "【{name}】擺手：「算了算了，俺不賣了。」"
+      ],
+      "counter": [
+        "【{name}】想了想：「要不你再加點？俺這可是新鮮的。」",
+        "【{name}】撓頭道：「各讓一步，你看成不？」",
+        "【{name}】猶豫道：「那……這個價如何？」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.1,
+    "friendliness": 0.5,
+    "curiosity": 0.3,
+    "greed": 0.4,
+    "bravery": 0.3,
+    "reaction_to_combat": "避開紛爭，不願惹事",
+    "reaction_to_theft": "大呼失竊，求助旁人，不敢獨自追趕"
+  }
+}

@@ -57,3 +57,14 @@ func (st *SessionStore) AllPlayerIDs() []string {
 	}
 	return ids
 }
+
+// AllSessions 回傳目前所有 session 的快照（slice），供外部遍歷推送用。
+func (st *SessionStore) AllSessions() []*Session {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	list := make([]*Session, 0, len(st.sessions))
+	for _, s := range st.sessions {
+		list = append(list, s)
+	}
+	return list
+}

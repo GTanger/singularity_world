@@ -1,0 +1,70 @@
+{
+  "_說明": "[旅人]行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 0, "hour_end": 5, "activity": "sleep", "location_pref": ["life_ri_1", "life_yue_1", "life_ying_1", "life_ze_1"], "description": "【{name}】在客房中沉睡，呼吸均勻。"},
+      {"hour_start": 5, "hour_end": 7, "activity": "wake_prepare", "location_pref": ["life_hall", "life_dining"], "description": "【{name}】拂曉即起，整理行囊準備上路。"},
+      {"hour_start": 7, "hour_end": 10, "activity": "travel", "location_pref": ["life_garden", "life_hall"], "description": "【{name}】趁晨露未乾踏上旅途。"},
+      {"hour_start": 10, "hour_end": 12, "activity": "travel", "location_pref": ["life_garden", "life_hall", "life_backyard"], "description": "【{name}】一路前行，步履不停。"},
+      {"hour_start": 12, "hour_end": 14, "activity": "rest_noon", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】日頭正毒，尋處歇腳用飯。"},
+      {"hour_start": 14, "hour_end": 18, "activity": "travel", "location_pref": ["life_garden", "life_hall", "life_backyard"], "description": "【{name}】午後繼續趕路，行色匆匆。"},
+      {"hour_start": 18, "hour_end": 21, "activity": "arrive_inn", "location_pref": ["life_hall", "life_dining"], "description": "【{name}】黃昏時分尋得客棧落腳。"},
+      {"hour_start": 21, "hour_end": 24, "activity": "rest_evening", "location_pref": ["life_hall", "life_dining", "life_corridor_2f"], "description": "【{name}】在客棧中歇息，明日再上路。"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["life_hall", "life_dining", "life_garden", "life_backyard", "life_corridor_2f"],
+    "wander_chance": 0.65,
+    "max_distance": 8,
+    "leave_texts": [
+      "【{name}】背起行囊，往{dest}方向走去。",
+      "【{name}】拍了拍衣上的風塵，邁步往{dest}而去。",
+      "【{name}】望了望天色，起身往{dest}走去。",
+      "【{name}】喃喃道：「該上路了。」隨即往{dest}方向行去。",
+      "【{name}】整了整斗笠，大步流星往{dest}而去。",
+      "【{name}】輕嘆一聲，往{dest}方向離去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向走了過來，風塵僕僕。",
+      "【{name}】自{from}步入，打量著四周。",
+      "【{name}】從{from}而來，拍了拍衣上的塵土。",
+      "【{name}】自{from}方向現身，步履穩健。",
+      "【{name}】從{from}走了進來，目光掃過在場眾人。",
+      "【{name}】自{from}步入，尋了個角落歇腳。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 1.1,
+    "sell_markup": 0.9,
+    "preferred_goods": ["乾糧", "水囊", "地圖殘頁", "異地特產", "護身符"],
+    "refused_goods": [],
+    "haggle_tolerance": 3,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】點頭：「成交。走江湖的人，不計較這些。」",
+        "【{name}】微微一笑：「好說。就依你。」",
+        "【{name}】抱拳：「爽快。這價錢公道。」"
+      ],
+      "reject": [
+        "【{name}】搖頭：「這價太離譜，恕難從命。」",
+        "【{name}】皺眉：「少俠這是在消遣我？」",
+        "【{name}】擺手：「不成。我還有路要趕。」"
+      ],
+      "counter": [
+        "【{name}】沉吟：「這樣吧，各讓一步如何？」",
+        "【{name}】瞇眼：「少俠再想想？我這價已經很實在。」",
+        "【{name}】嘆氣：「走南闖北的，誰都不容易。折中如何？」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.2,
+    "friendliness": 0.7,
+    "curiosity": 0.8,
+    "greed": 0.3,
+    "bravery": 0.6,
+    "reaction_to_combat": "【{name}】退至一旁，不願捲入紛爭。",
+    "reaction_to_theft": "【{name}】警覺地護住行囊，目光銳利。"
+  }
+}

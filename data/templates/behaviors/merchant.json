@@ -1,0 +1,72 @@
+{
+  "_說明": "商人行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 4, "hour_end": 6, "activity": "wake_up", "location_pref": ["inn", "home"], "description": "早起整裝，清點貨物"},
+      {"hour_start": 6, "hour_end": 8, "activity": "prepare", "location_pref": ["market", "road"], "description": "趕往市集，準備開張"},
+      {"hour_start": 8, "hour_end": 12, "activity": "trade", "location_pref": ["market", "tavern"], "description": "市集擺攤，吆喝叫賣"},
+      {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["tavern", "inn"], "description": "午間歇腳，用膳飲茶"},
+      {"hour_start": 14, "hour_end": 18, "activity": "trade", "location_pref": ["market", "road"], "description": "繼續買賣，四處兜售"},
+      {"hour_start": 18, "hour_end": 20, "activity": "socialize", "location_pref": ["tavern", "inn"], "description": "酒館打聽行情，結識同行"},
+      {"hour_start": 20, "hour_end": 22, "activity": "rest", "location_pref": ["inn", "tavern"], "description": "客棧歇息，盤點帳目"},
+      {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["inn", "home"], "description": "就寢安歇"},
+      {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["inn", "home"], "description": "沉睡夢鄉"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["market", "tavern", "inn", "road"],
+    "wander_chance": 0.25,
+    "max_distance": 5,
+    "leave_texts": [
+      "【{name}】收拾行囊，往{dest}方向走去。",
+      "【{name}】掂了掂包袱，邁步朝{dest}而去。",
+      "【{name}】向四周拱了拱手，轉身往{dest}方向離去。",
+      "【{name}】收好貨物，匆匆往{dest}趕路。",
+      "【{name}】拍了拍衣袖上的塵土，往{dest}方向走去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向走來，四處張望。",
+      "【{name}】風塵僕僕地自{from}而來，打量著周圍。",
+      "【{name}】挑著擔子從{from}方向出現，臉上帶著生意人的笑容。",
+      "【{name}】自{from}方向踱步而來，目光在人群中搜尋著商機。",
+      "【{name}】從{from}方向匆匆趕來，似乎急著找個好位置擺攤。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 0.7,
+    "sell_markup": 1.4,
+    "preferred_goods": ["布匹", "藥草", "茶葉", "瓷器", "香料"],
+    "refused_goods": [],
+    "haggle_tolerance": 3,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】點了點頭：「成交。」",
+        "【{name}】捋了捋鬍鬚：「好，就依你。」",
+        "【{name}】眉開眼笑：「爽快！這買賣做得。」",
+        "【{name}】拍了拍手：「成！咱們下次再合作。」"
+      ],
+      "reject": [
+        "【{name}】搖搖頭：「這價錢免談。」",
+        "【{name}】擺了擺手：「不成不成，這虧本生意做不得。」",
+        "【{name}】皺起眉頭：「你這價砍得太狠了，恕難從命。」",
+        "【{name}】嘆了口氣：「這價錢連本都回不來，請另尋高明吧。」"
+      ],
+      "counter": [
+        "【{name}】伸出手指比了比：「再加點如何？」",
+        "【{name}】沉吟片刻：「這樣吧，咱們各讓一步。」",
+        "【{name}】眼珠一轉：「客官再添些，我就當交個朋友。」",
+        "【{name}】壓低聲音：「實不相瞞，這價已經很公道了，您再斟酌斟酌？」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.1,
+    "friendliness": 0.7,
+    "curiosity": 0.5,
+    "greed": 0.7,
+    "bravery": 0.3,
+    "reaction_to_combat": "flee",
+    "reaction_to_theft": "alert_guard"
+  }
+}

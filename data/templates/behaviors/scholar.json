@@ -1,0 +1,71 @@
+{
+  "_說明": "學者行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 8, "hour_end": 10, "activity": "wake_up", "location_pref": ["home"], "description": "遲起梳洗，晨讀片刻"},
+      {"hour_start": 10, "hour_end": 12, "activity": "study", "location_pref": ["library", "study"], "description": "書齋研讀，抄錄典籍"},
+      {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["tea_house", "study"], "description": "午膳飲茶，小憩養神"},
+      {"hour_start": 14, "hour_end": 18, "activity": "study", "location_pref": ["library", "study"], "description": "繼續研讀，整理筆記"},
+      {"hour_start": 18, "hour_end": 20, "activity": "wander", "location_pref": ["tea_house", "library"], "description": "茶館會友，談經論道"},
+      {"hour_start": 20, "hour_end": 24, "activity": "study", "location_pref": ["study", "library"], "description": "挑燈夜讀，秉燭研習"},
+      {"hour_start": 0, "hour_end": 2, "activity": "study", "location_pref": ["study", "home"], "description": "深夜苦讀，廢寢忘食"},
+      {"hour_start": 2, "hour_end": 8, "activity": "sleep", "location_pref": ["home", "study"], "description": "就寢安歇"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["library", "study", "tea_house"],
+    "wander_chance": 0.12,
+    "max_distance": 3,
+    "leave_texts": [
+      "【{name}】合上書卷，往{dest}方向踱去。",
+      "【{name}】將書冊收入袖中，緩步朝{dest}而去。",
+      "【{name}】捋了捋長衫，往{dest}方向走去。",
+      "【{name}】若有所思地望了望窗外，起身往{dest}方向離去。",
+      "【{name}】輕嘆一聲，收拾紙筆往{dest}方向走去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向走來，四處張望。",
+      "【{name}】自{from}方向緩步而來，手中捧著一卷書。",
+      "【{name}】從{from}方向踱來，目光在書架上流連。",
+      "【{name}】自{from}方向出現，衣袂飄飄，帶著一股書卷氣。",
+      "【{name}】從{from}方向走來，似乎還在思索方才讀到的章句。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 0.6,
+    "sell_markup": 1.2,
+    "preferred_goods": ["典籍", "紙墨", "硯台", "筆", "茶葉"],
+    "refused_goods": ["刀劍", "鐵器"],
+    "haggle_tolerance": 4,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】點了點頭：「成交。」",
+        "【{name}】微微一笑：「君子一言，駟馬難追。」",
+        "【{name}】捋鬚道：「也罷，就依你所言。」",
+        "【{name}】合掌道：「善，此物與你有緣。」"
+      ],
+      "reject": [
+        "【{name}】搖搖頭：「這價錢免談。」",
+        "【{name}】正色道：「此物非俗物，豈可賤賣？」",
+        "【{name}】嘆了口氣：「閣下所出之價，實難從命。」",
+        "【{name}】擺了擺手：「這書乃孤本，恕不議價。」"
+      ],
+      "counter": [
+        "【{name}】伸出手指比了比：「再加點如何？」",
+        "【{name}】沉吟道：「若閣下誠心，不妨再添些許。」",
+        "【{name}】撫卷而嘆：「此物得來不易，還請體諒。」",
+        "【{name}】溫言道：「你我各讓一步，如何？」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.05,
+    "friendliness": 0.6,
+    "curiosity": 0.8,
+    "greed": 0.3,
+    "bravery": 0.2,
+    "reaction_to_combat": "flee",
+    "reaction_to_theft": "alert_guard"
+  }
+}

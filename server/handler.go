@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"strings"
+	"time"
 
 	"singularity_world/combat"
 	"singularity_world/config"
@@ -184,6 +186,27 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 	}
 	sendRoomView(c, view, cfg)
 	hub.Broadcast(mustJSON(MovedMsg{Type: "moved", PlayerID: c.PlayerID, RoomID: newRoomID, RoomName: view.Room.Name}))
+
+	// NPC 進房反應：隨機挑一個同房 NPC 延遲回應
+	go func(playerID, roomID string) {
+		type npcInfo struct{ id, title string }
+		var npcs []npcInfo
+		for _, e := range view.Entities {
+			if e.Kind == "npc" && e.ID != playerID {
+				npcs = append(npcs, npcInfo{e.ID, e.DisplayTitle})
+			}
+		}
+		if len(npcs) == 0 {
+			return
+		}
+		npc := npcs[rand.Intn(len(npcs))]
+		reaction := db.PickEnterReaction(npc.title, npc.id)
+		if reaction == "" {
+			return
+		}
+		time.Sleep(time.Duration(500+rand.Intn(1000)) * time.Millisecond)
+		SendNarrateToRoom(store, database, roomID, reaction)
+	}(c.PlayerID, newRoomID)
 }
 
 func sendRoomView(c *Client, view *game.RoomView, cfg config.Server) {
@@ -757,4 +780,20 @@ func mustJSON(v interface{}) []byte {
 // GetObserverPositions 回傳目前所有已登入玩家的世界座標（格點制時供 RunViewSimulation 用；房間制可留空）。
 func GetObserverPositions(store *SessionStore, database *sql.DB) []game.Pos {
 	return nil
+}
+
+// BroadcastRoomViews 對所有在線玩家推送其當前房間的最新視野。
+// 用於 NPC 排班移動後同步前端人物欄。
+func BroadcastRoomViews(store *SessionStore, database *sql.DB, cfg config.Server) {
+	for _, s := range store.AllSessions() {
+		roomID, _ := db.GetEntityRoom(database, s.PlayerID)
+		if roomID == "" {
+			continue
+		}
+		view, err := game.GetRoomView(database, roomID)
+		if err != nil || view == nil {
+			continue
+		}
+		sendRoomView(s.Client, view, cfg)
+	}
 }

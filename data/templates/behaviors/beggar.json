@@ -1,0 +1,69 @@
+{
+  "_說明": "[乞丐]行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "schedule": {
+    "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
+    "entries": [
+      {"hour_start": 0, "hour_end": 4, "activity": "shelter_sleep", "location_pref": ["life_backyard", "life_storage", "life_garden"], "description": "【{name}】蜷縮在避風處，勉強入睡。"},
+      {"hour_start": 4, "hour_end": 6, "activity": "wake_early", "location_pref": ["life_garden", "life_hall"], "description": "【{name}】天未亮即起，準備討生活。"},
+      {"hour_start": 6, "hour_end": 10, "activity": "beg_gates_markets", "location_pref": ["life_garden", "life_hall"], "description": "【{name}】在門口、市集旁乞討，逢人便討。"},
+      {"hour_start": 10, "hour_end": 12, "activity": "beg_morning", "location_pref": ["life_hall", "life_garden", "life_dining"], "description": "【{name}】繼續在人多處乞討，目光懇切。"},
+      {"hour_start": 12, "hour_end": 16, "activity": "scavenge", "location_pref": ["life_dining", "life_backyard", "life_kitchen", "life_hall"], "description": "【{name}】四處撿拾剩飯殘羹，翻找可用的東西。"},
+      {"hour_start": 16, "hour_end": 20, "activity": "beg_evening", "location_pref": ["life_hall", "life_garden", "life_dining"], "description": "【{name}】趁晚市人潮再討一輪。"},
+      {"hour_start": 20, "hour_end": 24, "activity": "find_shelter", "location_pref": ["life_backyard", "life_storage", "life_garden"], "description": "【{name}】尋覓避風處，準備熬過長夜。"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["life_garden", "life_hall", "life_dining", "life_backyard", "life_kitchen", "life_storage"],
+    "wander_chance": 0.9,
+    "max_distance": 6,
+    "leave_texts": [
+      "【{name}】收拾破碗，往{dest}方向蹣跚而去。",
+      "【{name}】望了望四周，起身往{dest}走去。",
+      "【{name}】喃喃：「這兒討不到，換個地方試試。」往{dest}而去。",
+      "【{name}】拄著竹杖，一瘸一拐往{dest}方向行去。",
+      "【{name}】輕嘆一聲，往{dest}方向離去。",
+      "【{name}】四下張望，悄悄往{dest}摸去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向走了過來，衣衫襤褸。",
+      "【{name}】自{from}步入，目光在眾人身上掃過。",
+      "【{name}】從{from}而來，低聲討著：「行行好……」",
+      "【{name}】自{from}方向現身，拄著竹杖。",
+      "【{name}】從{from}走了進來，破碗裡空空如也。",
+      "【{name}】自{from}步入，尋了個角落蹲下。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 1.0,
+    "sell_markup": 0.5,
+    "preferred_goods": ["破碗", "草繩", "撿來的石頭", "半截蠟燭"],
+    "refused_goods": [],
+    "haggle_tolerance": 5,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】連連點頭：「多謝少俠，小老兒感激不盡。」",
+        "【{name}】抱拳：「少俠仁義，小老兒記下了。」",
+        "【{name}】眼眶微紅：「這世道，肯施捨的少了。多謝。」"
+      ],
+      "reject": [
+        "【{name}】搖頭：「小老兒就這點家當，再低就活不下去了。」",
+        "【{name}】低聲道：「少俠這價……小老兒實在……」",
+        "【{name}】嘆氣：「討生活不易，恕難從命。」"
+      ],
+      "counter": [
+        "【{name}】懇切道：「少俠再添點？小老兒還指望換口飯吃。」",
+        "【{name}】低聲：「各讓一步如何？小老兒實在……」",
+        "【{name}】抱拳：「少俠行行好，這價已經很公道了。」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.1,
+    "friendliness": 0.6,
+    "curiosity": 0.9,
+    "greed": 0.5,
+    "bravery": 0.3,
+    "reaction_to_combat": "【{name}】慌忙躲到角落，護住破碗。",
+    "reaction_to_theft": "【{name}】悲憤道：「小老兒就這點家當，誰忍心……」"
+  }
+}

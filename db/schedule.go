@@ -37,21 +37,43 @@ func GetAllSchedules(db *sql.DB) ([]NPCSchedule, error) {
 	return list, rows.Err()
 }
 
-// ApplySchedules 根據當前遊戲時間移動 NPC 到對應房間（上班→工作房間，下班→休息房間）。
-func ApplySchedules(db *sql.DB, gameHour int) error {
-	schedules, err := GetAllSchedules(db)
+// ScheduleMove 記錄一次排班移動：誰從哪到哪、職稱，供外部推送敘事用。
+type ScheduleMove struct {
+	EntityID string
+	Title    string
+	OldRoom  string
+	NewRoom  string
+}
+
+// GetNPCTitle 查詢 NPC 的 display_title。
+func GetNPCTitle(db *sql.DB, entityID string) string {
+	var title sql.NullString
+	_ = db.QueryRow("SELECT display_title FROM entities WHERE id = ?", entityID).Scan(&title)
+	return title.String
+}
+
+// ApplySchedules 根據當前遊戲時間移動 NPC 到對應房間，並回傳實際發生移動的清單。
+func ApplySchedules(database *sql.DB, gameHour int) ([]ScheduleMove, error) {
+	schedules, err := GetAllSchedules(database)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	var moves []ScheduleMove
 	for _, s := range schedules {
 		targetRoom := s.RestRoom
 		if s.IsOnDuty(gameHour) {
 			targetRoom = s.WorkRoom
 		}
-		currentRoom, _ := GetEntityRoom(db, s.EntityID)
+		currentRoom, _ := GetEntityRoom(database, s.EntityID)
 		if currentRoom != targetRoom {
-			_ = SetEntityRoom(db, s.EntityID, targetRoom)
+			_ = SetEntityRoom(database, s.EntityID, targetRoom)
+			moves = append(moves, ScheduleMove{
+				EntityID: s.EntityID,
+				Title:    GetNPCTitle(database, s.EntityID),
+				OldRoom:  currentRoom,
+				NewRoom:  targetRoom,
+			})
 		}
 	}
-	return nil
+	return moves, nil
 }
