@@ -17,9 +17,11 @@ type roomsFile struct {
 	Exits []exitDef `json:"exits"`
 }
 type roomDef struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Tags        []string `json:"tags"`
+	Zone        string   `json:"zone"`
+	Description string   `json:"description"`
 }
 type exitDef struct {
 	From      string `json:"from"`
@@ -29,9 +31,11 @@ type exitDef struct {
 
 // Room 單一房間節點。
 type Room struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Tags        []string `json:"tags,omitempty"`
+	Zone        string   `json:"zone,omitempty"`
+	Description string   `json:"description"`
 }
 
 // Exit 單一出口：方向 → 目標房間。
@@ -44,14 +48,59 @@ type Exit struct {
 // GetRoom 依 id 查詢房間；若無則回傳 nil, nil。
 func GetRoom(db *sql.DB, id string) (*Room, error) {
 	var r Room
-	err := db.QueryRow("SELECT id, name, description FROM rooms WHERE id = ?", id).Scan(&r.ID, &r.Name, &r.Description)
+	var tagsJSON string
+	err := db.QueryRow("SELECT id, name, description, tags, zone FROM rooms WHERE id = ?", id).Scan(&r.ID, &r.Name, &r.Description, &tagsJSON, &r.Zone)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, err
 	}
+	_ = json.Unmarshal([]byte(tagsJSON), &r.Tags)
 	return &r, nil
+}
+
+// GetRoomsByTag 回傳所有帶有指定 tag 的房間 ID。
+func GetRoomsByTag(database *sql.DB, tag string) ([]string, error) {
+	rows, err := database.Query("SELECT id, tags FROM rooms")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var result []string
+	for rows.Next() {
+		var id, tagsJSON string
+		if err := rows.Scan(&id, &tagsJSON); err != nil {
+			return nil, err
+		}
+		var tags []string
+		_ = json.Unmarshal([]byte(tagsJSON), &tags)
+		for _, t := range tags {
+			if t == tag {
+				result = append(result, id)
+				break
+			}
+		}
+	}
+	return result, rows.Err()
+}
+
+// GetRoomsByZone 回傳指定 zone 中的所有房間 ID。
+func GetRoomsByZone(database *sql.DB, zone string) ([]string, error) {
+	rows, err := database.Query("SELECT id FROM rooms WHERE zone = ?", zone)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var result []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		result = append(result, id)
+	}
+	return result, rows.Err()
 }
 
 // GetExitsForRoom 回傳某房間的所有出口（含目標房間名稱）。
@@ -131,7 +180,7 @@ type RoomWithExits struct {
 
 // ListAllRooms 回傳所有房間及各自出口。
 func ListAllRooms(db *sql.DB) ([]RoomWithExits, error) {
-	rows, err := db.Query("SELECT id, name, description FROM rooms ORDER BY id")
+	rows, err := db.Query("SELECT id, name, description, tags, zone FROM rooms ORDER BY id")
 	if err != nil {
 		return nil, err
 	}
@@ -139,9 +188,11 @@ func ListAllRooms(db *sql.DB) ([]RoomWithExits, error) {
 	var list []RoomWithExits
 	for rows.Next() {
 		var r Room
-		if err := rows.Scan(&r.ID, &r.Name, &r.Description); err != nil {
+		var tagsJSON string
+		if err := rows.Scan(&r.ID, &r.Name, &r.Description, &tagsJSON, &r.Zone); err != nil {
 			return nil, err
 		}
+		_ = json.Unmarshal([]byte(tagsJSON), &r.Tags)
 		exits, _ := GetExitsForRoom(db, r.ID)
 		list = append(list, RoomWithExits{Room: r, Exits: exits})
 	}
@@ -213,12 +264,16 @@ func SyncRoomsFromFile(database *sql.DB, path string) error {
 	}
 
 	for _, r := range f.Rooms {
+		tagsJSON, _ := json.Marshal(r.Tags)
+		if r.Tags == nil {
+			tagsJSON = []byte("[]")
+		}
 		var exists int
 		_ = database.QueryRow("SELECT COUNT(*) FROM rooms WHERE id = ?", r.ID).Scan(&exists)
 		if exists > 0 {
-			_, _ = database.Exec("UPDATE rooms SET name = ?, description = ? WHERE id = ?", r.Name, r.Description, r.ID)
+			_, _ = database.Exec("UPDATE rooms SET name = ?, description = ?, tags = ?, zone = ? WHERE id = ?", r.Name, r.Description, string(tagsJSON), r.Zone, r.ID)
 		} else {
-			if _, err := database.Exec("INSERT INTO rooms (id, name, description) VALUES (?, ?, ?)", r.ID, r.Name, r.Description); err != nil {
+			if _, err := database.Exec("INSERT INTO rooms (id, name, description, tags, zone) VALUES (?, ?, ?, ?, ?)", r.ID, r.Name, r.Description, string(tagsJSON), r.Zone); err != nil {
 				return err
 			}
 			log.Printf("rooms: created %s (%s)", r.ID, r.Name)

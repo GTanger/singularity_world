@@ -93,7 +93,18 @@ func main() {
 	// NPC 活化：閒置動作 & 巡邏計時器（中頻 5-12 真實秒，即 2-5 遊戲分鐘）
 	db.LoadBehaviors("data/npc_behaviors.json")
 	var idleTickCount int
-	nextIdleTrigger := 25 + rand.Intn(35) // 首次觸發：5-12 秒 ÷ 200ms tick = 25-60 ticks
+	nextIdleTrigger := 25 + rand.Intn(35)
+
+	// 尋路引擎：建立房間鄰接圖
+	roomGraph := db.GetGraph()
+	if err := roomGraph.BuildGraph(database); err != nil {
+		log.Printf("[pathfind] build graph failed: %v", err)
+	}
+
+	// 地圖型 NPC 移動管理器
+	travelerMgr := db.NewTravelerManager()
+	var travelTickCount int
+	travelTickInterval := 75 // 每 15 秒推進一步（75 ticks × 200ms）
 
 	go game.Loop(cfg.TickInterval, func() {
 		game.RunViewSimulation(database, func() []game.Pos { return server.GetObserverPositions(sessionStore, database) }, obs)
@@ -115,6 +126,23 @@ func main() {
 				if len(moves) > 0 {
 					server.BroadcastRoomViews(sessionStore, database, cfg)
 				}
+			}
+		}
+
+		// 地圖型 NPC 移動：每 travelTickInterval 推進一步
+		travelTickCount++
+		if travelTickCount >= travelTickInterval {
+			travelTickCount = 0
+			travelSteps := travelerMgr.Tick(database, roomGraph, hour)
+			for _, step := range travelSteps {
+				oldName := roomGraph.RoomName(step.OldRoom)
+				newName := roomGraph.RoomName(step.NewRoom)
+				leaveText := "【" + step.NpcName + "】收拾行裝，往" + newName + "方向離去。"
+				arriveText := "【" + step.NpcName + "】從" + oldName + "方向走了過來。"
+				server.SendNarrateToRoom(sessionStore, database, step.OldRoom, leaveText)
+				server.SendNarrateToRoom(sessionStore, database, step.NewRoom, arriveText)
+				server.RefreshRoomViews(sessionStore, database, cfg, step.OldRoom)
+				server.RefreshRoomViews(sessionStore, database, cfg, step.NewRoom)
 			}
 		}
 
@@ -153,7 +181,6 @@ func main() {
 						server.SendNarrateToRoom(sessionStore, database, npcRoom, leaveText)
 						_ = db.SetEntityRoom(database, s.EntityID, dest)
 						server.SendNarrateToRoom(sessionStore, database, dest, arriveText)
-						// 刷新來源和目的房間的視野
 						server.RefreshRoomViews(sessionStore, database, cfg, npcRoom)
 						server.RefreshRoomViews(sessionStore, database, cfg, dest)
 						continue
@@ -167,7 +194,7 @@ func main() {
 				emote := db.PickIdleEmote(title, period, s.EntityID)
 				if emote != "" {
 					server.SendNarrateToRoom(sessionStore, database, npcRoom, emote)
-					break // 每輪最多一個 NPC 發閒置動作，避免洗版
+					break
 				}
 			}
 		}

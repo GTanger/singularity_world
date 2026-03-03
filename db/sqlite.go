@@ -84,6 +84,16 @@ func OpenDB(path string) (*sql.DB, error) {
 			return nil, fmt.Errorf("migrate items: %w", err)
 		}
 	}
+	// rooms 表補上 tags、zone 欄位（舊 DB 遷移用）
+	for _, mig := range []string{
+		"ALTER TABLE rooms ADD COLUMN tags TEXT NOT NULL DEFAULT '[]'",
+		"ALTER TABLE rooms ADD COLUMN zone TEXT NOT NULL DEFAULT ''",
+	} {
+		if _, err := db.Exec(mig); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
+			_ = db.Close()
+			return nil, fmt.Errorf("migrate rooms: %w", err)
+		}
+	}
 	if err := SeedRooms(db); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("seed rooms: %w", err)

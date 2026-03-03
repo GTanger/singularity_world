@@ -38,10 +38,14 @@ CREATE TABLE IF NOT EXISTS event_log (
 );
 
 -- 傳統 MUD 房間機制：節點連接節點
+-- tags: JSON 陣列，如 ["inn","social"]，供 NPC 尋路決策
+-- zone: 所屬區域名稱，如「浮生客棧」「東城」
 CREATE TABLE IF NOT EXISTS rooms (
 	id TEXT PRIMARY KEY,
 	name TEXT NOT NULL,
-	description TEXT NOT NULL DEFAULT ''
+	description TEXT NOT NULL DEFAULT '',
+	tags TEXT NOT NULL DEFAULT '[]',
+	zone TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS exits (

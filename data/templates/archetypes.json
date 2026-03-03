@@ -1,6 +1,6 @@
 {
   "_說明": "NPC 職業原型定義。每個原型對應一組對話模板和行為模板，NPC 由原型 + SoulSeed 生成。",
-  "_格式": "id: 原型代碼（英文）, name: 職業中文名, dialogue_file/behavior_file: 對應模板路徑, spawn_weight: 生成權重（越高越常見）",
+  "_格式": "movement.type: regional（區域）/ route（路線）/ pathfind（自動尋路）。regional 靠 wander_rooms；route 靠 waypoints；pathfind 靠 destination_tags + BFS。",
 
   "archetypes": {
     "merchant": {
@@ -8,100 +8,160 @@
       "dialogue_file": "templates/dialogues/merchant.json",
       "behavior_file": "templates/behaviors/merchant.json",
       "spawn_weight": 15,
-      "wander_radius": 3,
       "trade_tendency": "buy_low_sell_high",
       "wealth_range": [80, 600],
-      "goods_pool": ["布匹", "藥草", "食材", "雜貨", "香料", "茶葉"]
+      "goods_pool": ["布匹", "藥草", "食材", "雜貨", "香料", "茶葉"],
+      "movement": {
+        "type": "route",
+        "speed": 1,
+        "route_mode": "bounce",
+        "_說明": "行腳商人沿城鎮間的路線巡迴買賣，waypoints 在行為模板中定義。"
+      }
     },
     "blacksmith": {
       "name": "鐵匠",
       "dialogue_file": "templates/dialogues/blacksmith.json",
       "behavior_file": "templates/behaviors/blacksmith.json",
       "spawn_weight": 8,
-      "wander_radius": 1,
       "trade_tendency": "craft_and_sell",
       "wealth_range": [120, 900],
-      "goods_pool": ["鐵劍", "銅刀", "鐵鏈甲", "鐵釘", "農具", "馬蹄鐵"]
+      "goods_pool": ["鐵劍", "銅刀", "鐵鏈甲", "鐵釘", "農具", "馬蹄鐵"],
+      "movement": {
+        "type": "regional",
+        "wander_rooms": ["forge", "home"],
+        "_說明": "鐵匠定點，只在鍛造坊和住處之間移動。"
+      }
     },
     "scholar": {
       "name": "學者",
       "dialogue_file": "templates/dialogues/scholar.json",
       "behavior_file": "templates/behaviors/scholar.json",
       "spawn_weight": 5,
-      "wander_radius": 2,
       "trade_tendency": "collect_knowledge",
       "wealth_range": [30, 300],
-      "goods_pool": ["典籍", "殘卷", "墨錠", "宣紙", "詞元殘片"]
+      "goods_pool": ["典籍", "殘卷", "墨錠", "宣紙", "詞元殘片"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["study", "inn", "social"],
+        "wander_range": 15,
+        "stay_hours": [3, 8],
+        "_說明": "學者在圖書館、茶館、客棧之間隨機遊走。"
+      }
     },
     "traveler": {
       "name": "旅人",
       "dialogue_file": "templates/dialogues/traveler.json",
       "behavior_file": "templates/behaviors/traveler.json",
       "spawn_weight": 12,
-      "wander_radius": 8,
       "trade_tendency": "opportunistic",
       "wealth_range": [20, 400],
-      "goods_pool": ["乾糧", "水囊", "地圖殘頁", "異地特產", "護身符"]
+      "goods_pool": ["乾糧", "水囊", "地圖殘頁", "異地特產", "護身符"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["inn", "tavern", "gate", "social"],
+        "wander_range": 50,
+        "stay_hours": [2, 6],
+        "_說明": "旅人滿世界走，偏好客棧、酒館、城門等地標。"
+      }
     },
     "drunkard": {
       "name": "酒客",
       "dialogue_file": "templates/dialogues/drunkard.json",
       "behavior_file": "templates/behaviors/drunkard.json",
       "spawn_weight": 10,
-      "wander_radius": 2,
       "trade_tendency": "impulsive",
       "wealth_range": [5, 150],
-      "goods_pool": ["酒壺", "骰子", "銅板", "當票"]
+      "goods_pool": ["酒壺", "骰子", "銅板", "當票"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["tavern", "social", "food"],
+        "wander_range": 8,
+        "stay_hours": [2, 10],
+        "_說明": "酒客短程亂晃，偏好酒館和食堂。"
+      }
     },
     "beggar": {
       "name": "乞丐",
       "dialogue_file": "templates/dialogues/beggar.json",
       "behavior_file": "templates/behaviors/beggar.json",
       "spawn_weight": 6,
-      "wander_radius": 4,
       "trade_tendency": "scavenge",
       "wealth_range": [0, 20],
-      "goods_pool": ["破碗", "草繩", "撿來的石頭", "半截蠟燭"]
+      "goods_pool": ["破碗", "草繩", "撿來的石頭", "半截蠟燭"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["gate", "social", "food", "outdoor"],
+        "wander_range": 20,
+        "stay_hours": [1, 4],
+        "_說明": "乞丐在人多處遊蕩乞討，範圍中等。"
+      }
     },
     "guard": {
       "name": "守衛",
       "dialogue_file": "templates/dialogues/guard.json",
       "behavior_file": "templates/behaviors/guard.json",
       "spawn_weight": 8,
-      "wander_radius": 2,
       "trade_tendency": "none",
       "wealth_range": [50, 200],
-      "goods_pool": []
+      "goods_pool": [],
+      "movement": {
+        "type": "route",
+        "speed": 1,
+        "route_mode": "bounce",
+        "_說明": "守衛沿巡邏路線來回，waypoints 在行為模板中定義。"
+      }
     },
     "herbalist": {
       "name": "藥師",
       "dialogue_file": "templates/dialogues/herbalist.json",
       "behavior_file": "templates/behaviors/herbalist.json",
       "spawn_weight": 4,
-      "wander_radius": 3,
       "trade_tendency": "specialized",
       "wealth_range": [60, 500],
-      "goods_pool": ["金創藥", "止血散", "回氣丹", "安神香", "乾草藥束"]
+      "goods_pool": ["金創藥", "止血散", "回氣丹", "安神香", "乾草藥束"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["outdoor", "garden", "food"],
+        "wander_range": 10,
+        "stay_hours": [2, 6],
+        "_說明": "藥師往返於藥鋪、田野和市集採藥賣藥。"
+      }
     },
     "performer": {
       "name": "賣藝人",
       "dialogue_file": "templates/dialogues/performer.json",
       "behavior_file": "templates/behaviors/performer.json",
       "spawn_weight": 3,
-      "wander_radius": 5,
       "trade_tendency": "entertain_for_coin",
       "wealth_range": [10, 100],
-      "goods_pool": ["胡琴", "竹笛", "面具", "彩帶"]
+      "goods_pool": ["胡琴", "竹笛", "面具", "彩帶"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["social", "tavern", "gate", "inn"],
+        "wander_range": 30,
+        "stay_hours": [1, 4],
+        "_說明": "賣藝人追著人群走，哪裡熱鬧往哪去。"
+      }
     },
     "farmer": {
       "name": "農夫",
       "dialogue_file": "templates/dialogues/farmer.json",
       "behavior_file": "templates/behaviors/farmer.json",
       "spawn_weight": 10,
-      "wander_radius": 2,
       "trade_tendency": "sell_produce",
       "wealth_range": [15, 200],
-      "goods_pool": ["稻米", "蔬菜", "雞蛋", "粗鹽", "柴火"]
+      "goods_pool": ["稻米", "蔬菜", "雞蛋", "粗鹽", "柴火"],
+      "movement": {
+        "type": "regional",
+        "wander_rooms": ["field", "home", "market"],
+        "_說明": "農夫定點，在田地、住處和市集之間移動。"
+      }
     }
   }
 }
