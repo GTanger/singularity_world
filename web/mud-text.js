@@ -1,11 +1,17 @@
 // 純文字 MUD：房間制，依 UI 設計圖填入房間名、描述、同房人物、路徑(出口)。
 // 實體清單支援插頭插座：點擊展開動作選單（觀看/對話/攻擊），對齊決策 002。
+// 房間描述內 〔〕 為可互動物件，點擊後在行內浮動下拉展開動作。
 (function () {
 	var ACTION_LABELS = {
 		'Look': '觀看',
 		'Talk': '對話',
-		'Attack': '攻擊'
+		'Attack': '攻擊',
+		'Read': '閱讀',
+		'Smell': '嗅聞'
 	};
+
+	var currentRoomObjects = {}; // id -> { id, name, actions }
+	var activeObjectSpan = null;
 
 	function escapeHtml(s) {
 		if (!s) return '';
@@ -16,18 +22,67 @@
 			.replace(/"/g, '&quot;');
 	}
 
-	function formatDesc(desc) {
+	function formatDesc(desc, objects) {
 		if (!desc) return '';
+		currentRoomObjects = {};
+		if (objects && objects.length) {
+			objects.forEach(function (o) {
+				currentRoomObjects[o.id] = { id: o.id, name: o.name, actions: o.actions || [] };
+			});
+		}
 		var safe = escapeHtml(desc);
-		return safe.replace(/【([^】]*)】/g, '<span class="desc-highlight">【$1】</span>');
+		safe = safe.replace(/【([^】]*)】/g, '<span class="desc-highlight">【$1】</span>');
+		// 全形方頭括號 U+3014 / U+3015：一律產成可點擊 span，有物件資料時才帶 data-object-id
+		safe = safe.replace(/\u3014([^\u3015]*)\u3015/g, function (match, name) {
+			var obj = null;
+			for (var id in currentRoomObjects) {
+				if (currentRoomObjects[id].name === name) {
+					obj = currentRoomObjects[id];
+					break;
+				}
+			}
+			var idAttr = obj ? ' data-object-id="' + escapeHtml(obj.id) + '"' : '';
+			return '<span class="desc-object" data-object-name="' + escapeHtml(name) + '"' + idAttr + ' role="button" tabindex="0">\u3014' + escapeHtml(name) + '\u3015</span>';
+		});
+		// 後備：描述沒有 〔〕 但伺服器有 objects 時，用物件名稱替換成可點擊（DB 舊描述時仍能點）
+		if (objects && objects.length && safe.indexOf('desc-object') === -1) {
+			objects.forEach(function (o) {
+				var name = o.name;
+				if (!name) return;
+				var escapedName = escapeHtml(name);
+				var span = '<span class="desc-object" data-object-id="' + escapeHtml(o.id) + '" data-object-name="' + escapedName + '" role="button" tabindex="0">' + escapedName + '</span>';
+				safe = safe.replace(escapedName, span);
+			});
+		}
+		return safe;
 	}
 
-	function updateRoomView(roomName, description, exits, entities, me) {
+	function findDescObjectAncestor(el) {
+		while (el && el !== document.body) {
+			if (el.classList && el.classList.contains('desc-object')) return el;
+			el = el.parentElement;
+		}
+		return null;
+	}
+
+	// 點擊物件即送「觀看」，觀看敘述與其他動作由 main.js 在 log 中顯示
+	function sendObjectLook(objectEl) {
+		var objectId = objectEl.getAttribute('data-object-id');
+		var objectName = objectEl.getAttribute('data-object-name') || '';
+		if (!objectId && !objectName) return;
+		if (window.gameSend) {
+			window.gameSend({ type: 'do_action', entity_id: objectId || objectName, action: 'Look' });
+		}
+	}
+
+	function updateRoomView(roomName, description, exits, entities, me, objects) {
 		var nameEl = document.getElementById('room-name');
 		var descEl = document.getElementById('room-desc');
 		var listEl = document.getElementById('entities-list');
 		if (nameEl) nameEl.textContent = roomName || '';
-		if (descEl) descEl.innerHTML = description ? formatDesc(description) : '';
+		if (descEl) {
+			descEl.innerHTML = description ? formatDesc(description, objects) : '';
+		}
 		if (listEl) {
 			listEl.innerHTML = '';
 			if (entities && entities.length > 0) {
@@ -37,7 +92,6 @@
 					if (myId && eid === myId) return;
 
 					var displayName = e.display_name || eid;
-					var actions = e.actions || [];
 					var li = document.createElement('li');
 					li.className = 'entity-row';
 					if (e.kind === 'npc') li.classList.add('entity-npc');
@@ -45,54 +99,13 @@
 					li.innerHTML = '<span class="entity-arrow">\u25b8</span> ' + escapeHtml(displayName);
 					li.setAttribute('role', 'button');
 					li.setAttribute('tabindex', '0');
-					li.title = '點擊展開動作';
+					li.title = '點擊觀看';
 					listEl.appendChild(li);
 
 					li.addEventListener('click', function () {
-						var existing = listEl.querySelector('.entity-actions-expand');
-						var wasThis = existing && existing.getAttribute('data-entity-id') === eid;
-						if (existing) {
-							var prev = existing.previousElementSibling;
-							if (prev) {
-								prev.classList.remove('expanded');
-								var arrow = prev.querySelector('.entity-arrow');
-								if (arrow) arrow.textContent = '\u25b8';
-							}
-							existing.remove();
+						if (window.gameSend) {
+							window.gameSend({ type: 'do_action', entity_id: eid, action: 'Look' });
 						}
-						listEl.querySelectorAll('.entity-row.expanded').forEach(function (el) {
-							el.classList.remove('expanded');
-							var a = el.querySelector('.entity-arrow');
-							if (a) a.textContent = '\u25b8';
-						});
-						if (wasThis) return;
-
-						li.classList.add('expanded');
-						var arrow = li.querySelector('.entity-arrow');
-						if (arrow) arrow.textContent = '\u25be';
-
-						var expand = document.createElement('li');
-						expand.className = 'entity-actions-expand';
-						expand.setAttribute('data-entity-id', eid);
-						var btns = '';
-						for (var i = 0; i < actions.length; i++) {
-							var act = actions[i];
-							var label = ACTION_LABELS[act] || act;
-							btns += '<button type="button" class="entity-action-btn" data-action="' + escapeHtml(act) + '" data-target="' + escapeHtml(eid) + '">' + escapeHtml(label) + '</button>';
-						}
-						expand.innerHTML = btns;
-						li.after(expand);
-
-						expand.querySelectorAll('.entity-action-btn').forEach(function (btn) {
-							btn.addEventListener('click', function (ev) {
-								ev.stopPropagation();
-								var action = btn.getAttribute('data-action');
-								var target = btn.getAttribute('data-target');
-								if (window.gameSend) {
-									window.gameSend({ type: 'do_action', entity_id: target, action: action });
-								}
-							});
-						});
 					});
 					li.addEventListener('keydown', function (ev) {
 						if (ev.key === 'Enter' || ev.key === ' ') {
@@ -129,8 +142,18 @@
 		});
 	}
 
-	window.mudUpdateRoomView = function (roomName, description, exits, entities, me) {
-		updateRoomView(roomName, description, exits, entities, me);
+	document.addEventListener('click', function (ev) {
+		var objSpan = findDescObjectAncestor(ev.target);
+		var panel = document.getElementById('room-desc-panel');
+		if (objSpan && panel && panel.contains(objSpan)) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			sendObjectLook(objSpan);
+		}
+	});
+
+	window.mudUpdateRoomView = function (roomName, description, exits, entities, me, objects) {
+		updateRoomView(roomName, description, exits, entities, me, objects);
 	};
 	window.mudRenderExitButtons = renderExitButtons;
 })();

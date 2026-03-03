@@ -245,8 +245,10 @@ body {
 	box-sizing: border-box;
 }
 
-/* 房間描述欄：全文寬、白字，【】內綠色強調 */
+/* 房間描述欄：全文寬、白字，【】內綠色強調；relative 供物件浮動下拉定位；overflow:visible 讓下拉不被裁切 */
 .room-desc-panel {
+	position: relative;
+	overflow: visible;
 	min-height: calc(var(--ctrl-size) * 2);
 	padding: 0.6rem 0.75rem;
 	background: var(--bg);
@@ -261,6 +263,58 @@ body {
 }
 .room-desc:empty::before { content: "（請先登入）"; color: var(--text-muted); }
 .room-desc .desc-highlight { color: #7ee787; }
+
+/* 房間描述內可互動物件 〔〕：琥珀色、點擊浮動下拉 */
+.desc-object {
+	color: #ffb74d;
+	text-decoration: underline;
+	text-decoration-style: dotted;
+	text-underline-offset: 2px;
+	cursor: pointer;
+	transition: color 0.15s, background 0.15s;
+}
+.desc-object:hover {
+	color: #ffa726;
+	text-decoration-style: solid;
+}
+.desc-object-active {
+	color: #ffa726;
+	text-decoration-style: solid;
+	background: rgba(255, 183, 77, 0.1);
+	border-radius: 2px;
+}
+.object-dropdown {
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	padding: 0.35rem 0.5rem;
+	background: rgba(20, 20, 20, 0.95);
+	border: 1px solid #ffb74d;
+	border-radius: 4px;
+	z-index: 20;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+	animation: object-dropdown-in 0.12s ease-out;
+}
+@keyframes object-dropdown-in {
+	from { opacity: 0; transform: translateY(-4px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+.object-action-btn {
+	font-size: 0.95rem;
+	padding: 0.35rem 0.7rem;
+	background: rgba(255, 255, 255, 0.06);
+	color: #ffb74d;
+	border: 1px solid #ffb74d;
+	border-radius: 3px;
+	cursor: pointer;
+	transition: background 0.15s, color 0.15s;
+	white-space: nowrap;
+}
+.object-action-btn:hover {
+	background: #ffb74d;
+	color: #111;
+}
 
 /* 敘事欄：自適應高度填滿剩餘空間，左側人物、右側紀錄；紀錄區超出時捲動並自動滾到底 */
 .narrative-panel {
@@ -347,6 +401,9 @@ body {
 .log-entry.log-attack { color: #ef9a9a; }
 .log-entry.log-ambient { color: #9e9e8e; font-size: 0.9rem; }
 .log-entry + .log-entry { border-top: 1px solid rgba(255,255,255,0.04); }
+.log-entry.log-object-actions { color: var(--text-muted); font-size: 0.95rem; padding-top: 0.1rem; }
+.log-object-action { color: #ffb74d; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; }
+.log-object-action:hover { color: #ffa726; text-decoration-style: solid; }
 .narr-name { color: var(--room-name); font-weight: 600; }
 .narr-dialogue { color: #e0e0e0; font-style: italic; }
 .text-muted { color: var(--text-muted); font-size: 0.85rem; }

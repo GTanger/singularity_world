@@ -8,14 +8,15 @@ import (
 	"singularity_world/entity"
 )
 
-// RoomView 當前房間的視野：房間資訊、出口列表、同房實體。
+// RoomView 當前房間的視野：房間資訊、出口列表、同房實體、同房可互動物件。
 type RoomView struct {
 	Room     db.Room
 	Exits    []db.Exit
 	Entities []*entity.Character
+	Objects  []db.RoomObject
 }
 
-// GetRoomView 依房間 id 載入房間描述、出口與同房實體。
+// GetRoomView 依房間 id 載入房間描述、出口、同房實體與同房物件。
 func GetRoomView(database *sql.DB, roomID string) (*RoomView, error) {
 	room, err := db.GetRoom(database, roomID)
 	if err != nil || room == nil {
@@ -29,7 +30,8 @@ func GetRoomView(database *sql.DB, roomID string) (*RoomView, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &RoomView{Room: *room, Exits: exits, Entities: entities}, nil
+	objects := db.GetObjectsInRoom(roomID)
+	return &RoomView{Room: *room, Exits: exits, Entities: entities, Objects: objects}, nil
 }
 
 // MoveByExit 將實體依出口方向移動到相鄰房間。回傳新房間 id 與 ok；若出口不存在或錯誤則 ok=false。

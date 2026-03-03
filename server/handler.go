@@ -227,6 +227,10 @@ func sendRoomView(c *Client, view *game.RoomView, cfg config.Server) {
 	for _, ex := range view.Exits {
 		exits = append(exits, ExitView{Direction: ex.Direction, ToRoomID: ex.ToRoomID, ToRoomName: ex.ToRoomName})
 	}
+	objects := make([]ViewObject, 0, len(view.Objects))
+	for _, o := range view.Objects {
+		objects = append(objects, ViewObject{ID: o.ID, Name: o.Name, Actions: o.Sockets})
+	}
 	now := game.NowUnix()
 	secSinceMidnight, _, _, daysSinceEpoch := game.GameTimeNow(now, cfg.GameTimeEpochUnix, cfg.GameTimeScale)
 	msg := RoomViewMsg{
@@ -236,6 +240,7 @@ func sendRoomView(c *Client, view *game.RoomView, cfg config.Server) {
 		Description:              view.Room.Description,
 		Exits:                    exits,
 		Entities:                 entities,
+		Objects:                  objects,
 		ServerUnix:               now,
 		GameTimeSecSinceMidnight: secSinceMidnight,
 		GameDaysSinceEpoch:       daysSinceEpoch,
@@ -328,54 +333,88 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, store *SessionS
 		return
 	}
 	playerRoom, _ := db.GetEntityRoom(database, c.PlayerID)
-	targetRoom, _ := db.GetEntityRoom(database, targetID)
-	if playerRoom == "" || targetRoom == "" || playerRoom != targetRoom {
-		sendError(c, "目標不在同一房間")
+	if playerRoom == "" {
+		sendError(c, "無法取得所在房間")
 		return
 	}
+
+	// 先嘗試角色目標
 	target, err := db.GetEntity(database, targetID)
-	if err != nil || target == nil {
+	if err == nil && target != nil {
+		targetRoom, _ := db.GetEntityRoom(database, targetID)
+		if targetRoom == "" || playerRoom != targetRoom {
+			sendError(c, "目標不在同一房間")
+			return
+		}
+		if !entity.HasSocket((&entity.Character{}).Sockets(), action) {
+			sendError(c, "無法對目標執行「"+action+"」")
+			return
+		}
+		now := game.NowUnix()
+		switch action {
+		case "Look":
+			narrative := buildLookNarrative(target, database)
+			_ = event.Append(database, now, c.PlayerID, event.TypeObserved, targetID)
+			c.Send <- mustJSON(ActionResultMsg{
+				Type: "action_result", Action: "Look",
+				TargetID: target.ID, TargetName: target.ID,
+				Narrative: narrative, Success: true,
+			})
+		case "Talk":
+			narrative := buildTalkNarrative(c.PlayerID, target)
+			_ = event.Append(database, now, c.PlayerID, "talk", targetID)
+			c.Send <- mustJSON(ActionResultMsg{
+				Type: "action_result", Action: "Talk",
+				TargetID: target.ID, TargetName: target.ID,
+				Narrative: narrative, Success: true,
+			})
+		case "Attack":
+			attacker, _ := db.GetEntity(database, c.PlayerID)
+			if attacker == nil {
+				sendError(c, "找不到自身角色")
+				return
+			}
+			narrative := buildAttackNarrative(attacker, target)
+			_ = event.Append(database, now, c.PlayerID, event.TypeCombat, targetID)
+			c.Send <- mustJSON(ActionResultMsg{
+				Type: "action_result", Action: "Attack",
+				TargetID: target.ID, TargetName: target.ID,
+				Narrative: narrative, Success: true,
+			})
+		default:
+			sendError(c, "未知動作："+action)
+		}
+		return
+	}
+
+	// 再嘗試房間物件目標：先依 ID 查，再依名稱查（前端可能送「六角宮燈」等名稱）
+	obj, objectRoom := db.GetObjectAndRoom(targetID)
+	if obj == nil {
+		obj, objectRoom = db.GetObjectByNameInRoom(playerRoom, targetID)
+	}
+	if obj == nil {
 		sendError(c, "找不到目標")
 		return
 	}
-	if !entity.HasSocket((&entity.Character{}).Sockets(), action) {
+	if objectRoom != playerRoom {
+		sendError(c, "目標不在同一房間")
+		return
+	}
+	if !db.ObjectHasSocket(obj, action) {
 		sendError(c, "無法對目標執行「"+action+"」")
 		return
 	}
-	now := game.NowUnix()
-	switch action {
-	case "Look":
-		narrative := buildLookNarrative(target, database)
-		_ = event.Append(database, now, c.PlayerID, event.TypeObserved, targetID)
-		c.Send <- mustJSON(ActionResultMsg{
-			Type: "action_result", Action: "Look",
-			TargetID: target.ID, TargetName: target.ID,
-			Narrative: narrative, Success: true,
-		})
-	case "Talk":
-		narrative := buildTalkNarrative(c.PlayerID, target)
-		_ = event.Append(database, now, c.PlayerID, "talk", targetID)
-		c.Send <- mustJSON(ActionResultMsg{
-			Type: "action_result", Action: "Talk",
-			TargetID: target.ID, TargetName: target.ID,
-			Narrative: narrative, Success: true,
-		})
-	case "Attack":
-		attacker, _ := db.GetEntity(database, c.PlayerID)
-		if attacker == nil {
-			sendError(c, "找不到自身角色")
-			return
-		}
-		narrative := buildAttackNarrative(attacker, target)
-		_ = event.Append(database, now, c.PlayerID, event.TypeCombat, targetID)
-		c.Send <- mustJSON(ActionResultMsg{
-			Type: "action_result", Action: "Attack",
-			TargetID: target.ID, TargetName: target.ID,
-			Narrative: narrative, Success: true,
-		})
-	default:
-		sendError(c, "未知動作："+action)
+	narrative := db.ObjectResponse(obj, action)
+	if narrative == "" {
+		narrative = "你對【" + obj.Name + "】執行了「" + action + "」，但似乎沒有什麼特別的反應。"
 	}
+	now := game.NowUnix()
+	_ = event.Append(database, now, c.PlayerID, event.TypeObserved, obj.ID)
+	c.Send <- mustJSON(ActionResultMsg{
+		Type: "action_result", Action: action,
+		TargetID: obj.ID, TargetName: obj.Name,
+		Narrative: narrative, Success: true,
+	})
 }
 
 func buildLookNarrative(target *entity.Character, database *sql.DB) string {

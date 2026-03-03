@@ -116,7 +116,7 @@
 
 	function draw() {
 		if (window.mudUpdateRoomView) {
-			window.mudUpdateRoomView(state.room_name, state.description, state.exits, state.entities, state.me);
+			window.mudUpdateRoomView(state.room_name, state.description, state.exits, state.entities, state.me, state.objects);
 		}
 		if (window.mudRenderExitButtons) {
 			window.mudRenderExitButtons('exits-buttons', state.exits, function (direction) {
@@ -146,6 +146,16 @@
 		var div = document.createElement('div');
 		div.className = 'log-entry log-narrative';
 		if (actionType) div.classList.add('log-' + actionType.toLowerCase());
+		div.innerHTML = html;
+		el.appendChild(div);
+		el.scrollTop = el.scrollHeight;
+	}
+
+	function appendObjectActionsLine(html) {
+		var el = document.getElementById('log');
+		if (!el) return;
+		var div = document.createElement('div');
+		div.className = 'log-entry log-object-actions';
 		div.innerHTML = html;
 		el.appendChild(div);
 		el.scrollTop = el.scrollHeight;
@@ -200,6 +210,7 @@
 						state.description = msg.description || '';
 						state.exits = Array.isArray(msg.exits) ? msg.exits : [];
 						state.entities = msg.entities || [];
+						state.objects = Array.isArray(msg.objects) ? msg.objects : [];
 						if (typeof msg.server_unix === 'number' && typeof msg.game_time_sec_since_midnight === 'number' && typeof msg.game_days_since_epoch === 'number') {
 							var newGameSecAtView = msg.game_days_since_epoch * GAME_SEC_PER_DAY + msg.game_time_sec_since_midnight;
 							var currentGameSec = state.server_unix
@@ -296,6 +307,43 @@
 				case 'action_result':
 					if (msg.narrative) {
 						appendNarrative(formatNarrative(msg.narrative), msg.action);
+						// 觀看後下一行顯示可執行的其他動作（物件：閱讀/嗅聞…；人物：對話/攻擊）
+						if (msg.action === 'Look') {
+							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Attack': '攻擊' };
+							var others = [];
+							var targetId = msg.target_id;
+							var obj = null;
+							if (state.objects && state.objects.length) {
+								for (var i = 0; i < state.objects.length; i++) {
+									if (state.objects[i].id === msg.target_id || state.objects[i].name === msg.target_name) {
+										obj = state.objects[i];
+										break;
+									}
+								}
+							}
+							if (obj && obj.actions) {
+								others = obj.actions.filter(function (a) { return a !== 'Look'; });
+								targetId = obj.id;
+							} else if (state.entities && state.entities.length) {
+								for (var j = 0; j < state.entities.length; j++) {
+									if (state.entities[j].id === msg.target_id) {
+										var ent = state.entities[j];
+										if (ent.actions) {
+											others = ent.actions.filter(function (a) { return a !== 'Look'; });
+											targetId = ent.id;
+										}
+										break;
+									}
+								}
+							}
+							if (others.length) {
+								var parts = others.map(function (act) {
+									var label = actionLabels[act] || act;
+									return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(targetId) + '" data-action="' + escapeHtml(act) + '">' + escapeHtml(label) + '</span>】';
+								});
+								appendObjectActionsLine(parts.join(''));
+							}
+						}
 					}
 					break;
 				case 'narrate':
@@ -885,13 +933,28 @@
 	updateGameTimeDisplay();
 	window.gameConnect = connect;
 	window.gameTryReconnect = tryReconnect;
+	function bindLogObjectActions() {
+		var logEl = document.getElementById('log');
+		if (!logEl) return;
+		logEl.addEventListener('click', function (ev) {
+			var btn = ev.target.closest && ev.target.closest('.log-object-action');
+			if (!btn) return;
+			ev.preventDefault();
+			var id = btn.getAttribute('data-entity-id');
+			var action = btn.getAttribute('data-action');
+			if (id && action && window.gameSend) {
+				window.gameSend({ type: 'do_action', entity_id: id, action: action });
+			}
+		});
+	}
 	if (typeof document !== 'undefined') {
 		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', function () { bindAuthForm(); initPlayerModal(); initInventoryModal(); });
+			document.addEventListener('DOMContentLoaded', function () { bindAuthForm(); initPlayerModal(); initInventoryModal(); bindLogObjectActions(); });
 		} else {
 			bindAuthForm();
 			initPlayerModal();
 			initInventoryModal();
+			bindLogObjectActions();
 		}
 	}
 	window.gameSend = function (msg) {
