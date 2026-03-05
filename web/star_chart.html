@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星盤 — 奇點世界</title>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#c9d1d9;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+header{padding:12px 20px;background:#161b22;border-bottom:1px solid #30363d;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font-size:18px;color:#e6edf3;white-space:nowrap}
+.login-form{display:flex;gap:8px;align-items:center}
+.login-form input{background:#0d1117;border:1px solid #30363d;color:#c9d1d9;padding:5px 10px;border-radius:6px;font-size:13px;width:130px}
+.login-form input::placeholder{color:#484f58}
+.login-form button{background:#238636;color:#fff;border:none;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap}
+.login-form button:hover{background:#2ea043}
+.login-form button:disabled{background:#21262d;color:#484f58;cursor:not-allowed}
+#status{font-size:12px;color:#8b949e;margin-left:auto}
+#error-msg{color:#f85149;font-size:12px}
+.controls{display:flex;gap:8px;align-items:center}
+.controls label{font-size:12px;color:#8b949e;cursor:pointer;user-select:none}
+.controls input[type=checkbox]{accent-color:#238636}
+#mynetwork{flex:1;min-height:0;width:100%;position:relative}
+.legend{position:fixed;bottom:12px;left:12px;background:rgba(22,27,34,0.92);border:1px solid #30363d;border-radius:8px;padding:10px 14px;font-size:11px;line-height:1.8;z-index:10}
+.legend-item{display:flex;align-items:center;gap:6px}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
+.cost-legend{position:fixed;bottom:12px;right:12px;background:rgba(22,27,34,0.92);border:1px solid #30363d;border-radius:8px;padding:10px 14px;font-size:11px;line-height:1.8;z-index:10}
+</style>
+</head>
+<body>
+<header>
+  <h1>☯ 星盤</h1>
+  <div class="login-form" id="loginForm">
+    <input type="text" id="inputId" placeholder="角色 ID" autocomplete="username">
+    <input type="password" id="inputPw" placeholder="密碼" autocomplete="current-password">
+    <button id="btnLoad" onclick="loadTopology()">載入星盤</button>
+  </div>
+  <div class="controls">
+    <label><input type="checkbox" id="chkLabels" checked onchange="toggleEdgeLabels()"> 顯示 Cost</label>
+    <label><input type="checkbox" id="chkPhysics" checked onchange="togglePhysics()"> 物理模擬</label>
+  </div>
+  <span id="error-msg"></span>
+  <span id="status"></span>
+</header>
+<div id="mynetwork"></div>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:#f47067"></span> 生之奇點 (N000)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#d29922"></span> 二十主樞 (Zone 1)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#539bf5"></span> 邏輯閘 (Zone 2)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#57ab5a"></span> 末端接口 (Zone 3)</div>
+  <div style="margin-top:4px;border-top:1px solid #30363d;padding-top:4px">
+    <div class="legend-item"><span class="legend-dot" style="background:#da3633;width:8px;height:8px"></span> 體系</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#a371f7;width:8px;height:8px"></span> 氣系</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#39d353;width:8px;height:8px"></span> 敏系</div>
+  </div>
+</div>
+
+<div class="cost-legend">
+  <div class="legend-item"><span style="color:#67c23a;font-weight:bold">暢流</span> ≤7</div>
+  <div class="legend-item"><span style="color:#79bbff;font-weight:bold">順通</span> 7~11</div>
+  <div class="legend-item"><span style="color:#8b949e;font-weight:bold">平穩</span> 11~16</div>
+  <div class="legend-item"><span style="color:#e6a23c;font-weight:bold">滯澀</span> 16~21</div>
+  <div class="legend-item"><span style="color:#f56c6c;font-weight:bold">險阻</span> &gt;21</div>
+</div>
+
+<script>
+const ZONE_COLORS = {
+  0: '#f47067',
+  1: '#d29922',
+  2: '#539bf5',
+  3: '#57ab5a'
+};
+const SYS_BORDER = {'體':'#da3633','氣':'#a371f7','敏':'#39d353','':'#f47067'};
+const ZONE_SIZE  = {0:30, 1:22, 2:12, 3:8};
+const EDGE_TYPE_COLOR = {
+  'A':'rgba(244,112,103,0.5)',
+  'B':'rgba(210,153,34,0.5)',
+  'C':'rgba(83,155,245,0.4)',
+  'D':'rgba(87,171,90,0.25)',
+  'E':'rgba(83,155,245,0.25)'
+};
+
+const COST_BASE = 10000/760;
+const EDGE_LENGTH_SCALE = 18;
+const EDGE_LENGTH_MIN = 40;
+
+function costLabel(cost) {
+  if (cost <= 7) return '暢流';
+  if (cost <= 11) return '順通';
+  if (cost <= 16) return '平穩';
+  if (cost <= 21) return '滯澀';
+  return '險阻';
+}
+function costColor(cost) {
+  if (cost <= 7) return '#67c23a';
+  if (cost <= 11) return '#79bbff';
+  if (cost <= 16) return '#8b949e';
+  if (cost <= 21) return '#e6a23c';
+  return '#f56c6c';
+}
+
+let network = null;
+let edgesDataset = null;
+let showEdgeLabels = true;
+
+function setStatus(text) { document.getElementById('status').textContent = text; }
+function setError(text) { document.getElementById('error-msg').textContent = text; }
+
+async function loadTopology() {
+  const id = document.getElementById('inputId').value.trim();
+  const pw = document.getElementById('inputPw').value.trim();
+  if (!id || !pw) { setError('請輸入角色 ID 與密碼'); return; }
+  setError('');
+  const btn = document.getElementById('btnLoad');
+  btn.disabled = true;
+  btn.textContent = '載入中…';
+  try {
+    const resp = await fetch('/api/topology?id=' + encodeURIComponent(id) + '&pw=' + encodeURIComponent(pw));
+    if (!resp.ok) {
+      const body = await resp.json().catch(() => ({}));
+      throw new Error(body.error || '載入失敗 (' + resp.status + ')');
+    }
+    const data = await resp.json();
+    renderChart(data);
+    setStatus('節點: ' + data.nodes.length + '  |  連線: ' + data.edges.length + '  |  角色: ' + data.player_id);
+  } catch (e) {
+    setError(e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '載入星盤';
+  }
+}
+
+let rawData = null;
+let edgeIndex = null;
+
+function buildEdgeIndex(edges) {
+  const idx = {};
+  edges.forEach(e => {
+    if (!idx[e.from]) idx[e.from] = [];
+    if (!idx[e.to])   idx[e.to]   = [];
+    idx[e.from].push(e);
+    idx[e.to].push(e);
+  });
+  return idx;
+}
+
+function renderChart(data) {
+  rawData = data;
+  edgeIndex = buildEdgeIndex(data.edges);
+
+  const container = document.getElementById('mynetwork');
+  if (!container.offsetHeight) {
+    container.style.height = (window.innerHeight - container.getBoundingClientRect().top) + 'px';
+  }
+
+  const nodes = data.nodes.map(n => {
+    const zone = n.zone;
+    const sys = n.system;
+    const baseColor = ZONE_COLORS[zone];
+    const borderColor = SYS_BORDER[sys] || baseColor;
+    let label = n.name;
+    if (zone === 0) label = '生之奇點';
+    else if (zone === 1) label = n.name + '\n(' + n.id + ')';
+    else if (zone === 2) label = '【' + n.name + '】' + n.id;
+    else label = n.name + '\n' + n.id;
+
+    const sysName = {'體':'體質','氣':'氣脈','敏':'靈敏'}[sys] || '';
+    const tip = zone === 0
+      ? n.name + ' (' + n.id + ')\n生之奇點 — 靈魂降臨的唯一起點'
+      : n.name + ' (' + n.id + ')\n系屬: ' + sys + ' (' + sysName + ')  Zone ' + zone;
+
+    return {
+      id: n.id,
+      label: label,
+      title: tip,
+      size: ZONE_SIZE[zone],
+      color: { background: baseColor, border: borderColor, highlight: { background: '#e6edf3', border: borderColor }, hover: { background: baseColor, border: '#e6edf3' } },
+      borderWidth: zone <= 1 ? 3 : 2,
+      font: { color: '#c9d1d9', size: zone <= 1 ? 12 : zone === 2 ? 9 : 7 }
+    };
+  });
+
+  const edges = data.edges.map((e, i) => {
+    const len = EDGE_LENGTH_MIN + e.cost * EDGE_LENGTH_SCALE;
+    const lbl = showEdgeLabels && (e.type === 'A' || e.type === 'B') ? costLabel(e.cost) + ' ' + e.cost.toFixed(1) : '';
+    return {
+      id: 'e' + i,
+      from: e.from,
+      to: e.to,
+      length: len,
+      label: lbl,
+      _cost: e.cost,
+      _type: e.type,
+      title: '型' + e.type + '  ' + costLabel(e.cost) + ' (' + e.cost.toFixed(2) + ')',
+      color: { color: EDGE_TYPE_COLOR[e.type] || '#30363d', highlight: costColor(e.cost), hover: costColor(e.cost) },
+      font: { color: costColor(e.cost), size: 8, strokeWidth: 0, align: 'middle' },
+      width: e.type === 'A' ? 2.5 : e.type === 'B' ? 1.8 : 1,
+      arrows: e.type === 'D' || e.type === 'E' ? { to: { enabled: true, scaleFactor: 0.4 } } : undefined,
+      smooth: e.type === 'D' || e.type === 'E' ? { type: 'curvedCW', roundness: 0.15 } : false
+    };
+  });
+
+  const nodesDataset = new vis.DataSet(nodes);
+  edgesDataset = new vis.DataSet(edges);
+
+  const options = {
+    nodes: { shape: 'dot', scaling: { min: 6, max: 30 } },
+    edges: { selectionWidth: 2 },
+    physics: {
+      enabled: true,
+      solver: 'forceAtlas2Based',
+      forceAtlas2Based: {
+        gravitationalConstant: -80,
+        centralGravity: 0.005,
+        springLength: 160,
+        springConstant: 0.04,
+        damping: 0.5,
+        avoidOverlap: 0.2
+      },
+      stabilization: { iterations: 300, updateInterval: 50 },
+      maxVelocity: 30
+    },
+    interaction: { hover: true, tooltipDelay: 150, zoomView: true, dragView: true, navigationButtons: false },
+    layout: { improvedLayout: false }
+  };
+
+  if (network) network.destroy();
+  network = new vis.Network(container, { nodes: nodesDataset, edges: edgesDataset }, options);
+
+  network.on('stabilizationProgress', function(p) {
+    setStatus('佈局中… ' + Math.round(p.iterations/p.total*100) + '%');
+  });
+  network.on('stabilizationIterationsDone', function() {
+    setStatus('節點: ' + data.nodes.length + '  |  連線: ' + data.edges.length + '  |  角色: ' + data.player_id);
+    network.fit();
+  });
+}
+
+function toggleEdgeLabels() {
+  showEdgeLabels = document.getElementById('chkLabels').checked;
+  if (!edgesDataset) return;
+  const updates = [];
+  edgesDataset.forEach(e => {
+    const show = showEdgeLabels && (e._type === 'A' || e._type === 'B');
+    updates.push({ id: e.id, label: show ? costLabel(e._cost) + ' ' + e._cost.toFixed(1) : '' });
+  });
+  edgesDataset.update(updates);
+}
+
+function togglePhysics() {
+  if (!network) return;
+  network.setOptions({ physics: { enabled: document.getElementById('chkPhysics').checked } });
+}
+
+document.getElementById('inputPw').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') loadTopology();
+});
+document.getElementById('inputId').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('inputPw').focus();
+});
+
+const params = new URLSearchParams(window.location.search);
+if (params.get('id')) {
+  document.getElementById('inputId').value = params.get('id');
+  if (params.get('pw')) {
+    document.getElementById('inputPw').value = params.get('pw');
+    loadTopology();
+  }
+}
+</script>
+</body>
+</html>

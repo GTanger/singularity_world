@@ -30,22 +30,38 @@
       font-weight: 600;
       color: #eee;
     }
-    .btn-load {
-      padding: 10px 20px;
+    .login-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .login-form input {
+      background: #1a1a2e;
+      border: 1px solid #0f3460;
+      color: #e8e8e8;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      width: 140px;
+    }
+    .login-form input::placeholder { color: #6b7a8a; }
+    .login-form button {
       background: linear-gradient(180deg, #0f3460 0%, #16213e 100%);
       color: #e8e8e8;
       border: 1px solid #0f3460;
+      padding: 8px 16px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       transition: background 0.2s, border-color 0.2s;
     }
-    .btn-load:hover {
+    .login-form button:hover {
       background: #0f3460;
       border-color: #e94560;
     }
-    .btn-load input[type="file"] {
-      display: none;
+    .login-form button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
     .status {
       flex: 1;
@@ -57,6 +73,7 @@
       color: #a0a0b0;
     }
     .status strong { color: #e8e8e8; }
+    #error-msg { color: #e94560; font-size: 0.85rem; }
     #mynetwork {
       flex: 1;
       min-height: 0;
@@ -68,16 +85,19 @@
 <body>
   <header>
     <h1>浮生地圖檢視器</h1>
-    <label class="btn-load">
-      <input type="file" accept=".json,application/json" id="fileInput" />
-      載入 rooms.json
-    </label>
-    <div class="status" id="status">尚未載入地圖。請點「載入 rooms.json」選擇檔案。</div>
+    <div class="login-form" id="loginForm">
+      <input type="text" id="inputId" placeholder="角色 ID" autocomplete="username" />
+      <input type="password" id="inputPw" placeholder="密碼" autocomplete="current-password" />
+      <button type="button" id="btnLogin">登入並顯示位置</button>
+    </div>
+    <span id="error-msg"></span>
+    <div class="status" id="status">正在載入專案地圖…</div>
   </header>
   <div id="mynetwork"></div>
 
   <script>
     (function () {
+      var DATA_URL = '/data/rooms.json';
       var ZONE_COLORS = {
         '飛霜湖': '#4a90d9',
         '霜林': '#3d8b6e',
@@ -88,12 +108,45 @@
         '界壁': '#6b6b8a'
       };
       var DEFAULT_NODE_COLOR = '#7a7a9e';
+      var PLAYER_GLOW_BORDER = 6;
+      var PLAYER_GLOW_COLOR = 'rgba(233, 69, 96, 0.75)';
+      var PLAYER_NODE_SIZE_FACTOR = 1.4;
 
       function zoneToColor(zone) {
         return ZONE_COLORS[zone] || DEFAULT_NODE_COLOR;
       }
 
-      function buildNodes(rooms) {
+      function buildAliasMap(exits) {
+        var map = {};
+        if (!Array.isArray(exits)) return map;
+        exits.forEach(function (exit) {
+          var target = exit.to || '';
+          var dir = exit.direction || '';
+          if (!target || !dir) return;
+          if (!map[target]) map[target] = {};
+          map[target][dir] = true;
+        });
+        var result = {};
+        Object.keys(map).forEach(function (rid) {
+          result[rid] = Object.keys(map[rid]);
+        });
+        return result;
+      }
+
+      function countExits(exits) {
+        var map = {};
+        if (!Array.isArray(exits)) return map;
+        exits.forEach(function (exit) {
+          var rid = exit.from || '';
+          map[rid] = (map[rid] || 0) + 1;
+        });
+        return map;
+      }
+
+      var NODE_SIZE_MIN = 8;
+      var NODE_SIZE_STEP = 1.5;
+
+      function buildNodes(rooms, aliasMap, exitCounts, playerRoomId) {
         if (!Array.isArray(rooms)) return [];
         return rooms.map(function (room) {
           var id = room.id || '';
@@ -101,84 +154,115 @@
           var zone = room.zone || '';
           var tags = Array.isArray(room.tags) ? room.tags.join('、') : '';
           var desc = room.description || '';
+          var aliases = aliasMap[id] || [];
+          var exits = exitCounts[id] || 0;
           var label = name + '\n(' + id + ')';
           var title = [
             '【' + name + '】',
+            aliases.length ? '出口代稱：' + aliases.join('、') : '',
             '區域：' + zone,
+            '出口數：' + exits,
             tags ? '標籤：' + tags : '',
             desc ? '描述：' + desc : ''
           ].filter(Boolean).join('\n');
-          var size = (id.indexOf('street') !== -1 || id.indexOf('road') !== -1) ? 25 : 15;
+          var size = NODE_SIZE_MIN + (exits - 1) * NODE_SIZE_STEP;
+          if (size < NODE_SIZE_MIN) size = NODE_SIZE_MIN;
+          var isPlayer = playerRoomId && id === playerRoomId;
+          if (isPlayer) size = size * PLAYER_NODE_SIZE_FACTOR;
           var color = zoneToColor(zone);
-          return {
+          var node = {
             id: id,
             label: label,
             title: title,
             size: size,
             color: color
           };
+          if (isPlayer) {
+            node.color = {
+              background: color,
+              border: PLAYER_GLOW_COLOR,
+              highlight: { background: color, border: '#e94560' },
+              hover: { background: color, border: PLAYER_GLOW_COLOR }
+            };
+            node.borderWidth = PLAYER_GLOW_BORDER;
+            node.borderWidthSelected = PLAYER_GLOW_BORDER + 1;
+          }
+          return node;
         });
       }
 
       function buildEdges(exits) {
         if (!Array.isArray(exits)) return [];
-        return exits.map(function (exit, i) {
-          return {
-            id: 'e' + i,
-            from: exit.from,
-            to: exit.to,
-            label: exit.direction || '',
-            arrows: 'to'
-          };
+        var pairSet = {};
+        exits.forEach(function (exit) {
+          var key = exit.from + '|' + exit.to;
+          pairSet[key] = exit;
         });
+        var processed = {};
+        var result = [];
+        var idx = 0;
+        exits.forEach(function (exit) {
+          var fwd = exit.from + '|' + exit.to;
+          var rev = exit.to + '|' + exit.from;
+          if (processed[fwd]) return;
+          if (pairSet[rev]) {
+            processed[fwd] = true;
+            processed[rev] = true;
+            result.push({
+              id: 'e' + idx++,
+              from: exit.from,
+              to: exit.to,
+              arrows: { to: { enabled: true, type: 'arrow' }, from: { enabled: true, type: 'arrow' } },
+              dashes: false,
+              width: 1.5
+            });
+          } else {
+            processed[fwd] = true;
+            result.push({
+              id: 'e' + idx++,
+              from: exit.from,
+              to: exit.to,
+              arrows: { to: { enabled: true, type: 'arrow' } },
+              dashes: [6, 4],
+              width: 1.5
+            });
+          }
+        });
+        return result;
       }
 
-      function updateStatus(nodes, edges, message) {
-        var el = document.getElementById('status');
-        if (message !== undefined) {
-          el.textContent = message;
-          return;
-        }
-        if (!nodes.length && !edges.length) {
-          el.textContent = '尚未載入地圖。請點「載入 rooms.json」或從同源讀取 /data/rooms.json。';
-          return;
-        }
-        el.innerHTML = '已載入：<strong>' + nodes.length + '</strong> 個節點，<strong>' + edges.length + '</strong> 條連線。';
+      function setStatus(text) {
+        document.getElementById('status').textContent = text;
+      }
+      function setError(text) {
+        document.getElementById('error-msg').textContent = text;
       }
 
-      function loadFromJson(json) {
+      function loadFromJson(json, playerRoomId) {
         var rooms = json.rooms;
         var exits = json.exits;
         if (!rooms || !exits) {
-          updateStatus(0, 0, '無效的 rooms.json：需包含 rooms 與 exits 陣列。');
+          setStatus('無效的 rooms.json：需包含 rooms 與 exits 陣列。');
+          setError('');
           return false;
         }
-        var nodes = buildNodes(rooms);
+        var aliasMap = buildAliasMap(exits);
+        var exitCounts = countExits(exits);
+        var nodes = buildNodes(rooms, aliasMap, exitCounts, playerRoomId || null);
         var edges = buildEdges(exits);
         drawGraph(nodes, edges);
-        updateStatus(nodes.length, edges.length);
+        var msg = '已載入：' + nodes.length + ' 個節點，' + edges.length + ' 條連線。';
+        if (playerRoomId) msg += ' 當前位置已標示（外圈光圈）。';
+        setStatus(msg);
+        setError('');
         return true;
-      }
-
-      function fetchDataUrl(url) {
-        url = url || '/data/rooms.json';
-        updateStatus(0, 0, '正在從 ' + url + ' 載入…');
-        fetch(url, { method: 'GET' })
-          .then(function (res) {
-            if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
-            return res.json();
-          })
-          .then(function (json) {
-            if (!loadFromJson(json)) alert('無效的 rooms.json：需包含 rooms 與 exits 陣列。');
-          })
-          .catch(function (err) {
-            updateStatus(0, 0, '尚未載入地圖。請點「載入 rooms.json」或確認同源提供 /data/rooms.json。');
-          });
       }
 
       var network = null;
       var nodesDataset = null;
       var edgesDataset = null;
+      var currentPlayerRoomId = null;
+      var lastJson = null;
 
       function drawGraph(nodes, edges) {
         var container = document.getElementById('mynetwork');
@@ -191,7 +275,6 @@
           nodes.forEach(function (n) { nodesDataset.add(n); });
           edges.forEach(function (e) { edgesDataset.add(e); });
         }
-
         var data = { nodes: nodesDataset, edges: edgesDataset };
         var options = {
           physics: {
@@ -222,12 +305,8 @@
           },
           edges: {
             color: { color: '#4a5568', highlight: '#e94560' },
-            font: {
-              color: '#a0a0b0',
-              size: 10,
-              align: 'middle'
-            },
-            smooth: { type: 'continuous', roundness: 0.2 }
+            smooth: { type: 'continuous', roundness: 0.2 },
+            arrowStrikethrough: false
           },
           interaction: {
             hover: true,
@@ -236,37 +315,83 @@
             tooltipDelay: 100
           }
         };
-
         if (!network) {
           network = new vis.Network(container, data, options);
         } else {
           network.setData(data);
           network.setOptions(options);
         }
+        if (currentPlayerRoomId && network) {
+          network.focus(currentPlayerRoomId, { scale: 1.2, animation: true });
+        }
       }
 
-      document.getElementById('fileInput').addEventListener('change', function (e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        updateStatus(0, 0, '正在讀取檔案…');
-        var reader = new FileReader();
-        reader.onload = function (ev) {
-          try {
-            var json = JSON.parse(ev.target.result);
-            if (!loadFromJson(json)) alert('無效的 rooms.json：需包含 rooms 與 exits 陣列。');
-          } catch (err) {
-            updateStatus(0, 0, '尚未載入地圖。請點「載入 rooms.json」選擇檔案。');
-            alert('解析 JSON 失敗：' + err.message);
-          }
-        };
-        reader.readAsText(file, 'UTF-8');
-        e.target.value = '';
+      function fetchMapOnly() {
+        setStatus('正在載入專案地圖…');
+        setError('');
+        fetch(DATA_URL, { method: 'GET' })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+            return res.json();
+          })
+          .then(function (json) {
+            lastJson = json;
+            if (!loadFromJson(json, currentPlayerRoomId)) {
+              setError('無效的 rooms.json');
+            }
+          })
+          .catch(function (err) {
+            setStatus('無法載入 ' + DATA_URL + '，請確認由專案伺服器開啟。');
+            setError(err.message || '');
+          });
+      }
+
+      function doLogin() {
+        var id = document.getElementById('inputId').value.trim();
+        var pw = document.getElementById('inputPw').value.trim();
+        if (!id || !pw) {
+          setError('請輸入角色 ID 與密碼');
+          return;
+        }
+        setError('');
+        var btn = document.getElementById('btnLogin');
+        btn.disabled = true;
+        btn.textContent = '驗證中…';
+        fetch('/api/player-room?id=' + encodeURIComponent(id) + '&pw=' + encodeURIComponent(pw))
+          .then(function (res) {
+            if (!res.ok) return res.json().then(function (b) { throw new Error(b.error || '驗證失敗'); });
+            return res.json();
+          })
+          .then(function (data) {
+            currentPlayerRoomId = data.room_id || null;
+            if (lastJson) {
+              loadFromJson(lastJson, currentPlayerRoomId);
+            } else {
+              fetch(DATA_URL).then(function (r) { return r.json(); }).then(function (json) {
+                lastJson = json;
+                loadFromJson(json, currentPlayerRoomId);
+              });
+            }
+          })
+          .catch(function (err) {
+            setError(err.message || '登入失敗');
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = '登入並顯示位置';
+          });
+      }
+
+      document.getElementById('btnLogin').addEventListener('click', doLogin);
+      document.getElementById('inputPw').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') doLogin();
+      });
+      document.getElementById('inputId').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('inputPw').focus();
       });
 
       (function init() {
-        var params = new URLSearchParams(window.location.search);
-        var dataUrl = params.get('data') || '/data/rooms.json';
-        fetchDataUrl(dataUrl);
+        fetchMapOnly();
       })();
     })();
   </script>

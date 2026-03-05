@@ -92,6 +92,22 @@ func main() {
 		w.Header().Set("Cache-Control", "no-cache, max-age=0, must-revalidate")
 		http.ServeFile(w, r, filepath.Join("data", "rooms.json"))
 	})
+	// 星盤檢視器
+	http.HandleFunc("/star_chart", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/star_chart" {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Cache-Control", "no-cache, max-age=0, must-revalidate")
+		http.ServeFile(w, r, filepath.Join("web", "star_chart.html"))
+	})
+	http.HandleFunc("/api/topology", func(w http.ResponseWriter, r *http.Request) {
+		server.HandleTopologyAPI(database, w, r)
+	})
+	http.HandleFunc("/api/player-room", func(w http.ResponseWriter, r *http.Request) {
+		server.HandlePlayerRoomAPI(database, w, r)
+	})
 
 	fs := http.FileServer(http.Dir("web"))
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
