@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>浮生地圖檢視器</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+    body {
+      background: #1a1a2e;
+      color: #e8e8e8;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      flex-shrink: 0;
+      padding: 12px 20px;
+      background: #16213e;
+      border-bottom: 1px solid #0f3460;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #eee;
+    }
+    .btn-load {
+      padding: 10px 20px;
+      background: linear-gradient(180deg, #0f3460 0%, #16213e 100%);
+      color: #e8e8e8;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-load:hover {
+      background: #0f3460;
+      border-color: #e94560;
+    }
+    .btn-load input[type="file"] {
+      display: none;
+    }
+    .status {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px 14px;
+      background: #0f3460;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #a0a0b0;
+    }
+    .status strong { color: #e8e8e8; }
+    #mynetwork {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      background: #1a1a2e;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>浮生地圖檢視器</h1>
+    <label class="btn-load">
+      <input type="file" accept=".json,application/json" id="fileInput" />
+      載入 rooms.json
+    </label>
+    <div class="status" id="status">尚未載入地圖。請點「載入 rooms.json」選擇檔案。</div>
+  </header>
+  <div id="mynetwork"></div>
+
+  <script>
+    (function () {
+      var ZONE_COLORS = {
+        '飛霜湖': '#4a90d9',
+        '霜林': '#3d8b6e',
+        '浮生客棧': '#d97b4a',
+        '浮生大街': '#4ad9d9',
+        '飛霜大街': '#4ad9d9',
+        '打鐵巷': '#c94a4a',
+        '界壁': '#6b6b8a'
+      };
+      var DEFAULT_NODE_COLOR = '#7a7a9e';
+
+      function zoneToColor(zone) {
+        return ZONE_COLORS[zone] || DEFAULT_NODE_COLOR;
+      }
+
+      function buildNodes(rooms) {
+        if (!Array.isArray(rooms)) return [];
+        return rooms.map(function (room) {
+          var id = room.id || '';
+          var name = room.name || id;
+          var zone = room.zone || '';
+          var tags = Array.isArray(room.tags) ? room.tags.join('、') : '';
+          var desc = room.description || '';
+          var label = name + '\n(' + id + ')';
+          var title = [
+            '【' + name + '】',
+            '區域：' + zone,
+            tags ? '標籤：' + tags : '',
+            desc ? '描述：' + desc : ''
+          ].filter(Boolean).join('\n');
+          var size = (id.indexOf('street') !== -1 || id.indexOf('road') !== -1) ? 25 : 15;
+          var color = zoneToColor(zone);
+          return {
+            id: id,
+            label: label,
+            title: title,
+            size: size,
+            color: color
+          };
+        });
+      }
+
+      function buildEdges(exits) {
+        if (!Array.isArray(exits)) return [];
+        return exits.map(function (exit, i) {
+          return {
+            id: 'e' + i,
+            from: exit.from,
+            to: exit.to,
+            label: exit.direction || '',
+            arrows: 'to'
+          };
+        });
+      }
+
+      function updateStatus(nodes, edges, message) {
+        var el = document.getElementById('status');
+        if (message !== undefined) {
+          el.textContent = message;
+          return;
+        }
+        if (!nodes.length && !edges.length) {
+          el.textContent = '尚未載入地圖。請點「載入 rooms.json」或從同源讀取 /data/rooms.json。';
+          return;
+        }
+        el.innerHTML = '已載入：<strong>' + nodes.length + '</strong> 個節點，<strong>' + edges.length + '</strong> 條連線。';
+      }
+
+      function loadFromJson(json) {
+        var rooms = json.rooms;
+        var exits = json.exits;
+        if (!rooms || !exits) {
+          updateStatus(0, 0, '無效的 rooms.json：需包含 rooms 與 exits 陣列。');
+          return false;
+        }
+        var nodes = buildNodes(rooms);
+        var edges = buildEdges(exits);
+        drawGraph(nodes, edges);
+        updateStatus(nodes.length, edges.length);
+        return true;
+      }
+
+      function fetchDataUrl(url) {
+        url = url || '/data/rooms.json';
+        updateStatus(0, 0, '正在從 ' + url + ' 載入…');
+        fetch(url, { method: 'GET' })
+          .then(function (res) {
+            if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+            return res.json();
+          })
+          .then(function (json) {
+            if (!loadFromJson(json)) alert('無效的 rooms.json：需包含 rooms 與 exits 陣列。');
+          })
+          .catch(function (err) {
+            updateStatus(0, 0, '尚未載入地圖。請點「載入 rooms.json」或確認同源提供 /data/rooms.json。');
+          });
+      }
+
+      var network = null;
+      var nodesDataset = null;
+      var edgesDataset = null;
+
+      function drawGraph(nodes, edges) {
+        var container = document.getElementById('mynetwork');
+        if (!nodesDataset) {
+          nodesDataset = new vis.DataSet(nodes);
+          edgesDataset = new vis.DataSet(edges);
+        } else {
+          nodesDataset.clear();
+          edgesDataset.clear();
+          nodes.forEach(function (n) { nodesDataset.add(n); });
+          edges.forEach(function (e) { edgesDataset.add(e); });
+        }
+
+        var data = { nodes: nodesDataset, edges: edgesDataset };
+        var options = {
+          physics: {
+            enabled: true,
+            solver: 'forceAtlas2Based',
+            forceAtlas2Based: {
+              gravitationalConstant: -80,
+              centralGravity: 0.01,
+              springLength: 120,
+              springConstant: 0.08,
+              damping: 0.4,
+              avoidOverlap: 0.5
+            },
+            stabilization: {
+              iterations: 200,
+              updateInterval: 25
+            }
+          },
+          nodes: {
+            font: {
+              color: '#e8e8e8',
+              size: 12,
+              face: 'Noto Sans TC, Microsoft JhengHei, sans-serif'
+            },
+            borderWidth: 1,
+            borderWidthSelected: 2,
+            shape: 'dot'
+          },
+          edges: {
+            color: { color: '#4a5568', highlight: '#e94560' },
+            font: {
+              color: '#a0a0b0',
+              size: 10,
+              align: 'middle'
+            },
+            smooth: { type: 'continuous', roundness: 0.2 }
+          },
+          interaction: {
+            hover: true,
+            zoomView: true,
+            dragView: true,
+            tooltipDelay: 100
+          }
+        };
+
+        if (!network) {
+          network = new vis.Network(container, data, options);
+        } else {
+          network.setData(data);
+          network.setOptions(options);
+        }
+      }
+
+      document.getElementById('fileInput').addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        updateStatus(0, 0, '正在讀取檔案…');
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          try {
+            var json = JSON.parse(ev.target.result);
+            if (!loadFromJson(json)) alert('無效的 rooms.json：需包含 rooms 與 exits 陣列。');
+          } catch (err) {
+            updateStatus(0, 0, '尚未載入地圖。請點「載入 rooms.json」選擇檔案。');
+            alert('解析 JSON 失敗：' + err.message);
+          }
+        };
+        reader.readAsText(file, 'UTF-8');
+        e.target.value = '';
+      });
+
+      (function init() {
+        var params = new URLSearchParams(window.location.search);
+        var dataUrl = params.get('data') || '/data/rooms.json';
+        fetchDataUrl(dataUrl);
+      })();
+    })();
+  </script>
+</body>
+</html>
