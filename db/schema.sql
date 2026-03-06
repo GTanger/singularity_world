@@ -97,3 +97,21 @@ CREATE TABLE IF NOT EXISTS npc_schedules (
 	FOREIGN KEY (work_room) REFERENCES rooms(id),
 	FOREIGN KEY (rest_room) REFERENCES rooms(id)
 );
+
+-- 場所：id、名稱、room_ids（JSON 陣列），對齊討論 001 作法 B
+CREATE TABLE IF NOT EXISTS venues (
+	id TEXT PRIMARY KEY,
+	name TEXT NOT NULL,
+	room_ids TEXT NOT NULL DEFAULT '[]'
+);
+
+-- 指派：誰、什麼職業、哪個場所；assigned_by 可空（過渡用）
+CREATE TABLE IF NOT EXISTS assignments (
+	entity_id TEXT NOT NULL,
+	occupation_id TEXT NOT NULL,
+	venue_id TEXT NOT NULL,
+	assigned_by TEXT,
+	PRIMARY KEY (entity_id, occupation_id, venue_id),
+	FOREIGN KEY (entity_id) REFERENCES entities(id),
+	FOREIGN KEY (venue_id) REFERENCES venues(id)
+);

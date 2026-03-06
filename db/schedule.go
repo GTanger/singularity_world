@@ -45,8 +45,11 @@ type ScheduleMove struct {
 	NewRoom  string
 }
 
-// GetNPCTitle 查詢 NPC 的 display_title。
+// GetNPCTitle 依討論 001：先自指派（assignments）推導職稱，無指派時 fallback 查 entities.display_title。
 func GetNPCTitle(db *sql.DB, entityID string) string {
+	if t := GetNPCTitleFromAssignments(db, entityID); t != "" {
+		return t
+	}
 	var title sql.NullString
 	_ = db.QueryRow("SELECT display_title FROM entities WHERE id = ?", entityID).Scan(&title)
 	return title.String

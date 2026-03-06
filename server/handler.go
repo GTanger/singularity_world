@@ -155,7 +155,7 @@ func loginSuccess(c *Client, playerID string, database *sql.DB, cfg config.Serve
 		vit, qi, dex = ent.Vit, ent.Qi, ent.Dex
 	}
 	rm := db.ComputeResourceMaxes(vit, qi, dex)
-	sendRoomView(c, view, cfg)
+	sendRoomView(database, c, view, cfg)
 	sendMeWithStatus(c, ent, playerID, roomID, view.Room.Name, vit, qi, dex, rm, database)
 }
 
@@ -184,7 +184,7 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 		sendError(c, "load room failed")
 		return
 	}
-	sendRoomView(c, view, cfg)
+	sendRoomView(database, c, view, cfg)
 	hub.Broadcast(mustJSON(MovedMsg{Type: "moved", PlayerID: c.PlayerID, RoomID: newRoomID, RoomName: view.Room.Name}))
 
 	// NPC 進房反應：隨機挑一個同房 NPC 延遲回應
@@ -209,7 +209,8 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 	}(c.PlayerID, newRoomID)
 }
 
-func sendRoomView(c *Client, view *game.RoomView, cfg config.Server) {
+func sendRoomView(database *sql.DB, c *Client, view *game.RoomView, cfg config.Server) {
+	roomID := view.Room.ID
 	entities := make([]ViewEntity, 0, len(view.Entities))
 	for _, e := range view.Entities {
 		ve := ViewEntity{ID: e.ID, Kind: e.Kind, DisplayChar: e.DisplayChar}
@@ -219,7 +220,11 @@ func sendRoomView(c *Client, view *game.RoomView, cfg config.Server) {
 			ve.DisplayName = e.ID
 		}
 		if e.ID != c.PlayerID {
-			ve.Actions = e.Sockets()
+			if e.Kind == "npc" {
+				ve.Actions = db.GetSocketsForNPC(database, e.ID, roomID)
+			} else {
+				ve.Actions = e.Sockets()
+			}
 		}
 		entities = append(entities, ve)
 	}
@@ -346,9 +351,26 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, store *SessionS
 			sendError(c, "目標不在同一房間")
 			return
 		}
-		if !entity.HasSocket((&entity.Character{}).Sockets(), action) {
-			sendError(c, "無法對目標執行「"+action+"」")
-			return
+		var targetSockets []string
+		if target.Kind == "npc" {
+			targetSockets = db.GetSocketsForNPC(database, targetID, playerRoom)
+			if !entity.HasSocket(targetSockets, action) {
+				sendError(c, "無法對目標執行「"+action+"」")
+				return
+			}
+			if !db.IsDefaultSocket(action) {
+				inVenue, _ := db.EntityInVenueAtRoom(database, targetID, playerRoom)
+				if !inVenue {
+					sendError(c, "對方此刻不在工作場所，無法執行「"+action+"」。")
+					return
+				}
+			}
+		} else {
+			targetSockets = (&entity.Character{}).Sockets()
+			if !entity.HasSocket(targetSockets, action) {
+				sendError(c, "無法對目標執行「"+action+"」")
+				return
+			}
 		}
 		now := game.NowUnix()
 		switch action {
@@ -833,6 +855,6 @@ func BroadcastRoomViews(store *SessionStore, database *sql.DB, cfg config.Server
 		if err != nil || view == nil {
 			continue
 		}
-		sendRoomView(s.Client, view, cfg)
+		sendRoomView(database, s.Client, view, cfg)
 	}
 }

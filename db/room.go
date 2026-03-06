@@ -127,6 +127,7 @@ func GetExitsForRoom(db *sql.DB, fromRoomID string) ([]Exit, error) {
 }
 
 // GetEntitiesInRoom 回傳指定房間內的所有實體（依 entity_room 與 entities  join）。
+// NPC 的 DisplayTitle 依討論 001 改為自指派推導，無指派時 fallback 為 entities.display_title。
 func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
 	rows, err := db.Query(
 		`SELECT c.id, c.kind, c.display_char, c.x, c.y, c.move_state, c.target_x, c.target_y, c.walk_or_run,
@@ -140,7 +141,16 @@ func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	return scanCharacterList(rows)
+	list, err := scanCharacterList(rows)
+	if err != nil {
+		return nil, err
+	}
+	for _, c := range list {
+		if c.Kind == "npc" {
+			c.DisplayTitle = GetNPCTitle(db, c.ID)
+		}
+	}
+	return list, nil
 }
 
 // GetEntityRoom 回傳實體當前房間 id；若無則回傳空字串, nil。

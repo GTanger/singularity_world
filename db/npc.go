@@ -6,7 +6,7 @@ import (
 )
 
 // InsertNPC 新增一筆 NPC 實體；流程同玩家（SoulSeed → 屬性 → 穿搭），kind 固定為 "npc"。
-// displayTitle 為房間內顯示的職稱（如「經理」），點擊才會看到 id（真名）。
+// displayTitle 可為空：空則不綁職業，職稱改由指派（assignments）推導；非空則寫入 entities 供過渡期 fallback。
 func InsertNPC(db *sql.DB, id, displayChar, gender, displayTitle string) error {
 	if displayChar == "" {
 		r := []rune(id)
@@ -58,8 +58,9 @@ var defaultNPCs = []npcDef{
 	{"王阿財", "王", "M", "服務生", "life_hall", "life_storage", 18, 7},
 }
 
-// SeedNPCs 逐一檢查預設 NPC，不存在才建立（避免舊 DB 已有部分 NPC 時重複建立）。
+// SeedNPCs 逐一檢查預設 NPC，不存在才建立；並為四人建立指派（經理/服務生 @ 浮生客棧），對齊討論 001。
 func SeedNPCs(db *sql.DB) error {
+	const venueLifeInn = "venue_life_inn"
 	for _, npc := range defaultNPCs {
 		var exists int
 		if err := db.QueryRow("SELECT COUNT(*) FROM entities WHERE id = ?", npc.id).Scan(&exists); err != nil {
@@ -67,15 +68,19 @@ func SeedNPCs(db *sql.DB) error {
 		}
 		if exists > 0 {
 			_ = InsertSchedule(db, npc.id, npc.workRoom, npc.restRoom, npc.shiftStart, npc.shiftEnd)
+			_ = InsertAssignment(db, npc.id, npc.title, venueLifeInn, "")
 			continue
 		}
-		if err := InsertNPC(db, npc.id, npc.displayChar, npc.gender, npc.title); err != nil {
+		if err := InsertNPC(db, npc.id, npc.displayChar, npc.gender, ""); err != nil {
 			return err
 		}
 		if err := SetEntityRoom(db, npc.id, npc.workRoom); err != nil {
 			return err
 		}
 		if err := InsertSchedule(db, npc.id, npc.workRoom, npc.restRoom, npc.shiftStart, npc.shiftEnd); err != nil {
+			return err
+		}
+		if err := InsertAssignment(db, npc.id, npc.title, venueLifeInn, ""); err != nil {
 			return err
 		}
 	}

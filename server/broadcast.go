@@ -44,7 +44,7 @@ func RefreshRoomViews(store *SessionStore, database *sql.DB, cfg config.Server, 
 	for _, s := range store.AllSessions() {
 		rid, _ := db.GetEntityRoom(database, s.PlayerID)
 		if rid == roomID {
-			sendRoomView(s.Client, view, cfg)
+			sendRoomView(database, s.Client, view, cfg)
 		}
 	}
 }

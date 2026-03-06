@@ -1,0 +1,17 @@
+{
+  "_說明": "職業型別表，對齊討論 001。僅描述職業對應的對話/動作檔與在場時開放的動作插座；不帶 spawn_weight。",
+  "occupations": {
+    "經理": {
+      "name": "經理",
+      "dialogue_file": "dialogues/manager.json",
+      "behavior_file": "npc_behaviors",
+      "action_sockets": []
+    },
+    "服務生": {
+      "name": "服務生",
+      "dialogue_file": "dialogues/waiter.json",
+      "behavior_file": "npc_behaviors",
+      "action_sockets": []
+    }
+  }
+}

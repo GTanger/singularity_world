@@ -203,6 +203,9 @@ func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
 	} else {
 		c.Inventory = "[]"
 	}
+	if c.Kind == "npc" {
+		c.DisplayTitle = GetNPCTitle(db, id)
+	}
 	return &c, nil
 }
 

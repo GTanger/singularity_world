@@ -102,6 +102,10 @@ func OpenDB(path string) (*sql.DB, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("seed items: %w", err)
 	}
+	if err := SeedVenues(db); err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("seed venues: %w", err)
+	}
 	if err := SeedNPCs(db); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("seed npcs: %w", err)
