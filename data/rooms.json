@@ -13376,6 +13376,11 @@
     },
     {
       "from": "sunstreet",
+      "direction": "梧桐",
+      "to": "wutong_street"
+    },
+    {
+      "from": "sunstreet",
       "direction": "流光採集廣場",
       "to": "sun_lc_01"
     },
@@ -15078,6 +15083,11 @@
       "from": "wutong_street",
       "direction": "飛霜",
       "to": "feishuangstreet"
+    },
+    {
+      "from": "wutong_street",
+      "direction": "向陽",
+      "to": "sunstreet"
     },
     {
       "from": "wutong_street",
