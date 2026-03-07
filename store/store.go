@@ -283,27 +283,35 @@ func (s *Store) loadRooms(path string) error {
 	return nil
 }
 
+// loadRoomsFromDir 遞迴掃描 dir 下所有 .json（含子資料夾，例如 data/rooms/夜鴞巷/xxx.json），每檔一房＋其 exits。
 func (s *Store) loadRoomsFromDir(dir string) error {
-	entries, err := os.ReadDir(dir)
+	var list []roomFileOne
+	err := filepath.WalkDir(dir, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() || filepath.Ext(d.Name()) != ".json" {
+			return nil
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		var one roomFileOne
+		if json.Unmarshal(data, &one) != nil {
+			return nil
+		}
+		list = append(list, one)
+		return nil
+	})
 	if err != nil {
 		return err
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	// 先掃一遍只建房間，再補出口（出口的 ToRoomName 需房間名）
 	nameByID := make(map[string]string)
-	for _, e := range entries {
-		if e.IsDir() || filepath.Ext(e.Name()) != ".json" {
-			continue
-		}
-		data, err := os.ReadFile(filepath.Join(dir, e.Name()))
-		if err != nil {
-			return err
-		}
-		var one roomFileOne
-		if err := json.Unmarshal(data, &one); err != nil {
-			return err
-		}
+	for i := range list {
+		one := &list[i]
 		s.Rooms[one.ID] = &model.Room{
 			ID:          one.ID,
 			Name:        one.Name,
@@ -313,15 +321,8 @@ func (s *Store) loadRoomsFromDir(dir string) error {
 		}
 		nameByID[one.ID] = one.Name
 	}
-	for _, e := range entries {
-		if e.IsDir() || filepath.Ext(e.Name()) != ".json" {
-			continue
-		}
-		data, _ := os.ReadFile(filepath.Join(dir, e.Name()))
-		var one roomFileOne
-		if json.Unmarshal(data, &one) != nil {
-			continue
-		}
+	for i := range list {
+		one := &list[i]
 		for _, ex := range one.Exits {
 			toName := nameByID[ex.To]
 			s.Exits[one.ID] = append(s.Exits[one.ID], model.Exit{

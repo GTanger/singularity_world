@@ -37,7 +37,7 @@
 
 ```
 data/
-├── rooms/                    # 一房一檔（已實作；store.Init("data/rooms", ...) 從此目錄載入）
+├── rooms/                    # 一房一檔（已實作；可分子資料夾，例如依 zone：rooms/夜鴞巷/xxx.json）
 │   ├── lobby.json
 │   ├── life_hall.json
 │   └── ...
@@ -77,7 +77,7 @@ data/
 ## 五、技術要點
 
 - **原子寫入**：先寫 `*.json.tmp`，成功後 `os.Rename` 覆蓋原檔。
-- **Store 單例**：啟動時 `store.Init("data/rooms", "data/runtime", "data")` 從目錄 `data/rooms/`（一房一檔）及 data/runtime、data 載入；`db.GetRoom` / `GetEntityRoom` / `SetEntityRoom` 等皆經由 `store.Default`，main 不開啟 DB。
+- **Store 單例**：啟動時 `store.Init("data/rooms", "data/runtime", "data")` 從目錄 `data/rooms/`（一房一檔，**可分子資料夾如依 zone**）及 data/runtime、data 載入；`db.GetRoom` / `GetEntityRoom` / `SetEntityRoom` 等皆經由 `store.Default`，main 不開啟 DB。
 - **打破 import cycle**：`Room`、`Exit` 型別放在 `model` 包，`store` 只依賴 `model`，不依賴 `db`；`db` 可依賴 `store`。
 - **無 DB**：本專案不以 SQLite 為數據源；所有資料由 JSON 載入、寫回 JSON。
 
