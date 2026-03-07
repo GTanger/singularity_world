@@ -167,6 +167,7 @@ B7(MovementDef) ───┴─ M8(Register 時 Type+Speed)
 
 | 文件 | 用途 |
 |------|------|
+| **`docs/implementation/NPC活化系統—引擎與數據對照.md`** | **每環節拆成 .go 與 .json／數據池；哪些 JSON 已載入、可掌控／生成** |
 | `docs/NPC活化系統.md` | 總覽、架構圖、演進路線、跑穩定義、程式碼速查 |
 | `docs/testing/NPC活化系統模擬測試報告.md` | 已/未實作對照、模擬測試案例與結果 |
 | `docs/discussions/002_NPC需求驅動與求職機制.md` | 馬斯洛、求職、職缺、撮合、離職（未實作） |

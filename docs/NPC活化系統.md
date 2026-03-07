@@ -494,6 +494,7 @@ data/templates/
 |------|------|------|
 | **NPC 活化模擬測試報告** | `docs/testing/NPC活化系統模擬測試報告.md` | 檢索範圍、已／未實作對照（含馬斯洛）、模擬測試案例與結果、代碼註釋建議 |
 | **NPC 活化實作清單與規劃** | `docs/implementation/NPC活化系統—實作清單與規劃.md` | 細部拆解：數據層／實體／soul_seed 展開／行為／移動／主迴圈／互動／未實作（需求驅動）、依賴與驗收、階段排程 |
+| **NPC 活化引擎與數據對照** | `docs/implementation/NPC活化系統—引擎與數據對照.md` | 每環節對應 .go 與 .json／數據池；已載入與否、JSON 可掌控／生成清單 |
 | 模板系統檢索 | `data/templates/README.md` | 模板格式、欄位、佔位符、快速查閱表 |
 | 第一版可做清單 | `docs/第一版可做清單.md` | MVP 進度追蹤（§十 NPC 行為） |
 | 協作約定 | `docs/COLLABORATION.md` | 主管與 AI 的角色分工 |
