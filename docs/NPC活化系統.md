@@ -1,6 +1,6 @@
 # NPC 活化系統
 
-> 最後更新：2026-03-03
+> 最後更新：2026-03-07
 > 目標：**玩家＝NPC＝玩家**，假以亂真
 
 ---
@@ -29,11 +29,11 @@
 | | 對話模板 | `data/templates/dialogues/*.json` | 10 種職業 × ~72 句 = ~716 句 |
 | | 行為模板 | `data/templates/behaviors/*.json` | 10 種職業的日程/巡邏/交易/性格參數 |
 | | 房間標籤 | `data/rooms.json` | 30 個房間 × tags + zone |
-| **引擎層** | 行為讀取 | `db/behavior.go` | 載入快取 npc_behaviors.json，提供 PickIdleEmote 等 API |
-| | 尋路引擎 | `db/pathfind.go` | BFS 鄰接圖，FindPath / FindNearestByTag |
-| | 移動管理 | `db/npc_movement.go` | 三種移動模式：regional / route / pathfind |
-| | 排班系統 | `db/schedule.go` | 上下班移動 + ScheduleMove 回報 |
-| | NPC 建立 | `db/npc.go` | InsertNPC（SoulSeed + 屬性 + 穿搭 + 排班） |
+| **引擎層** | 行為讀取 | `db/behavior.go` | 載入快取 npc_behaviors.json，PickIdleEmote、GetMovementDefForTitle（movement.speed） |
+| | 尋路引擎 | `db/pathfind.go` | BFS 鄰接圖，FindPath / FindRoomsWithinDist |
+| | 移動管理 | `db/npc_movement.go` | 四種移動模式：**schedule** / regional / route / pathfind |
+| | 排班系統 | `db/schedule.go` | GetScheduleTarget、ApplySchedules（只回傳敘事用清單，不傳送）；實際移動由 TravelerManager 排班型尋路 |
+| | NPC 建立 | `db/npc.go` | InsertNPC（SoulSeed + 屬性 + 穿搭）；SeedNPCs 預設為空，OpenDB 時會刪除舊浮生客棧四名 |
 | **推送層** | 敘事廣播 | `server/broadcast.go` | SendNarrateToRoom / RefreshRoomViews |
 | | 訊息協定 | `server/protocol.go` | NarrateMsg（ambient 敘事推送） |
 | **前端** | 敘事渲染 | `web/main.js` | `case 'narrate'` → appendNarrative + ambient 樣式 |
@@ -59,7 +59,7 @@
 │  (文本查詢快取)          (BFS 鄰接圖)         │
 │                                              │
 │  db/schedule.go         db/npc_movement.go   │
-│  (排班上下班)            (三種移動模式)        │
+│  (排班目標/敘事)          (四種移動模式)        │
 │                                              │
 │  db/npc.go                                   │
 │  (NPC 實體建立)                               │
@@ -69,9 +69,9 @@
 ┌──────────────── 主迴圈 ────────────────────┐
 │                                              │
 │  main.go  game.Loop (200ms tick)             │
-│    ├─ 每遊戲小時：ApplySchedules → 換班敘事    │
-│    ├─ 每 5-12 秒：閒置動作 + 區域巡邏          │
-│    └─ 每 15 秒：TravelerManager.Tick → 地圖移動│
+│    ├─ 每遊戲小時：ApplySchedules → 僅發「出發」敘事（不傳送）；排班目標由 Tick 逐格尋路 │
+│    ├─ 每 15 秒：TravelerManager.Tick → 排班/路線/尋路型逐格移動，抵達時發敘事          │
+│    └─ 每 5-12 秒：閒置動作 + 區域巡邏（在班且於 wander_rooms 內時 10% 瞬移）            │
 │                                              │
 └──────────────────────────────────────────────┘
          │
@@ -104,25 +104,20 @@
 
 ## 二、現有 NPC 行為能力
 
-### 2.1 定點 NPC（已上線）
+### 2.1 定點 NPC 與排班（現狀）
 
-當前世界有 4 名定點 NPC，全在浮生客棧：
+**預設種子**：浮生客棧四名（陳正明、林小雯、張明德、王阿財）已從 `defaultNPCs` 移除；OpenDB 時會刪除既有 DB 中該四筆實體與排班。目前 **SeedNPCs 不建立任何預設 NPC**，需手動 `InsertNPC` + `InsertSchedule` + `InsertAssignment` 或日後接模板生成器。
 
-| 姓名 | 職稱 | 班次 | 工作區 | 休息區 |
-|------|------|------|--------|--------|
-| 陳正明 | 經理 | 日班 06-19 | life_hall | life_storage |
-| 林小雯 | 服務生 | 日班 06-19 | life_hall | life_storage |
-| 張明德 | 經理 | 夜班 18-07 | life_hall | life_storage |
-| 王阿財 | 服務生 | 夜班 18-07 | life_hall | life_storage |
+凡在 `npc_schedules` 有排班的 NPC，啟動時會以 **MoveSchedule** 註冊到 TravelerManager：依遊戲小時目標為 work_room（在班）或 rest_room（下班），**BFS 尋路逐格移動**，家可遠在十格外。
 
-這 4 名 NPC 具備以下行為：
+具備以下行為的 NPC（只要在 npc_behaviors 有對應職稱且有排班）：
 
 | 行為 | 觸發條件 | 頻率 | 資料來源 |
 |------|---------|------|---------|
+| **排班上下班** | 依 gameHour 目標 work/rest | 每 15 秒推一步（TravelerManager.Tick） | `npc_schedules` + BFS 尋路；出發敘事每遊戲小時、抵達敘事在真正走到時 |
 | **閒置動作** | 在班 + 有玩家在場 | 每 5~12 秒 | `npc_behaviors.json` → idle → 時段 |
 | **進房反應** | 玩家移動進同房間 | 即時（0.5~1.5s 延遲） | `npc_behaviors.json` → enter_reactions |
-| **換班敘事** | 遊戲每小時排班檢查 | 每遊戲小時 | `npc_behaviors.json` → shift_arrive/leave |
-| **區域巡邏** | 在班 + 10% 機率 | 每 5~12 秒 | `npc_behaviors.json` → wander_rooms |
+| **區域巡邏** | 在班 + 10% 機率 | 每 5~12 秒 | `npc_behaviors.json` → wander_rooms（瞬移一房間） |
 | **時段感知** | 自動 | 隨遊戲時鐘 | morning/noon/evening/night 各有不同閒置台詞 |
 | **前端同步** | 移動後 | 即時 | RefreshRoomViews + NarrateMsg |
 
@@ -138,13 +133,16 @@
 
 ## 三、NPC 移動系統
 
-### 3.1 三種移動模式
+### 3.1 四種移動模式
 
 | 模式 | 代碼 | 說明 | 尋路 | 適用 |
 |------|------|------|------|------|
-| **regional** | `MoveRegional` | 在指定房間列表內隨機跳 | 不需要 | 定點 NPC（經理、服務生、鐵匠、農夫） |
-| **route** | `MoveRoute` | 沿 waypoints 巡迴 | BFS 自動計算 waypoint 間路徑 | 行腳商人、巡邏守衛、信使 |
+| **schedule** | `MoveSchedule` | 依 gameHour 目標 work_room（在班）或 rest_room（下班），BFS 逐格走 | BFS 全自動 | 有排班的 NPC（經理、服務生等）；家可十格外 |
+| **regional** | `MoveRegional` | 在指定房間列表內隨機跳 | 不需要 | 定點 NPC 區域巡邏（wander_rooms） |
+| **route** | `MoveRoute` | 沿 waypoints 巡迴 | BFS waypoint 間路徑 | 行腳商人、巡邏守衛、信使 |
 | **pathfind** | `MovePathfind` | 隨機挑符合 tag 的房間，BFS 走過去 | BFS 全自動 | 旅人、酒客、乞丐、賣藝人 |
+
+移動格幅（每次 tick 走幾「格」房間）：由 `npc_behaviors.json` 各職稱的 `movement.speed` 定義，`GetMovementDefForTitle(title)` 取得；預設 1。
 
 ### 3.2 尋路引擎
 
@@ -163,8 +161,13 @@ rooms := graph.FindRoomsWithinDist("life_hall", []string{"outdoor"}, 5) // → [
 
 ### 3.3 移動管理器
 
+有排班的 NPC 在 **main 啟動時** 會依 `GetAllSchedules` 自動以 `MoveSchedule` 註冊；無需手動 Register。若新增 route/pathfind 型 NPC，可手動註冊：
+
 ```go
 mgr := db.NewTravelerManager()
+// 排班型：由 main 依 npc_schedules 自動註冊，目標 GetScheduleTargetRoom(db, entityID, hour)
+
+// 手動註冊例（pathfind）：
 mgr.Register("老張", db.MovementDef{
     Type:            db.MovePathfind,
     Speed:           1,
@@ -258,7 +261,7 @@ data/templates/
 |------|------|------|
 | 房間標籤（tags/zone） | ✅ | NPC 能按功能找房間 |
 | BFS 尋路引擎 | ✅ | 給起終點自動算路 |
-| 三種移動模式 | ✅ | 定點 / 路線 / 自由遊走 |
+| 四種移動模式（含 schedule） | ✅ | 排班尋路 / 定點 / 路線 / 自由遊走 |
 | 移動管理器整合 game loop | ✅ | 每 15 秒推進一步 |
 | 10 種職業模板（含 movement） | ✅ | 模板定義好，待生成引擎串接 |
 
@@ -337,9 +340,9 @@ data/templates/
 |------|------|------|
 | `db/behavior.go` | ~162 | 載入 npc_behaviors.json、PickIdleEmote、PickEnterReaction、GetShiftFlavor、GetWanderFlavor |
 | `db/pathfind.go` | ~190 | RoomGraph、BuildGraph、FindPath（BFS）、FindNearestByTag、FindRoomsWithinDist |
-| `db/npc_movement.go` | ~230 | TravelerManager、Register/Tick/Unregister、三種移動模式邏輯 |
-| `db/schedule.go` | ~80 | NPCSchedule、ApplySchedules、ScheduleMove |
-| `db/npc.go` | ~84 | InsertNPC、InsertSchedule、SeedNPCs（4 名預設 NPC） |
+| `db/npc_movement.go` | ~280 | TravelerManager、Register/Tick/Unregister、四種移動模式（含 MoveSchedule）邏輯 |
+| `db/schedule.go` | ~125 | NPCSchedule、GetScheduleTarget/GetScheduleTargetRoom、ApplySchedules（只回傳不傳送） |
+| `db/npc.go` | ~88 | InsertNPC、InsertSchedule、SeedNPCs（defaultNPCs 目前為空） |
 | `db/room.go` | ~370 | Room（含 tags/zone）、SyncRoomsFromFile、GetRoomsByTag/Zone |
 | `server/broadcast.go` | ~50 | SendNarrateToRoom、GetPlayerRoomMap、RefreshRoomViews |
 | `server/handler.go` | - | handleMove 中的進房反應 goroutine |
@@ -375,21 +378,37 @@ data/templates/
 │
 ├─ 計算遊戲時間 → hour
 │
-├─ [每遊戲小時] NPC 排班
-│   ├─ ApplySchedules(db, hour) → []ScheduleMove
-│   ├─ 對每個移動：推送 shift_leave / shift_arrive 敘事
-│   └─ 移動發生 → BroadcastRoomViews
+├─ [每遊戲小時] NPC 排班（僅敘事，不傳送）
+│   ├─ ApplySchedules(db, hour) → []ScheduleMove（誰「應」去 work/rest）
+│   ├─ 對每個 move：只推「出發」敘事（shift_leave 或「出門往店裡去了」）到 OldRoom
+│   └─ 不呼叫 SetEntityRoom；實際位置由 TravelerManager 排班型逐格更新
 │
-├─ [每 15 秒] 地圖型 NPC 移動
+├─ [每 15 秒] TravelerManager.Tick（排班/路線/尋路型逐格移動）
 │   ├─ travelerMgr.Tick(db, graph, hour) → []NPCStep
-│   ├─ 對每個移動：推送離開/到達敘事
+│   ├─ 排班型：currentRoom != 目標時 BFS 尋路，依 speed 走若干格，SetEntityRoom
+│   ├─ 抵達排班目標時：推送 shift_arrive 或「回到了住處」
 │   └─ RefreshRoomViews（來源 + 目的房間）
 │
-└─ [每 5-12 秒] 定點 NPC 閒置 & 巡邏
-    ├─ 取所有在班 NPC
-    ├─ 10% 機率巡邏（區域移動 + 敘事 + 刷新視野）
-    └─ 有玩家在場 → 閒置動作敘事（每輪最多一人，避免洗版）
+└─ [每 5-12 秒] 定點 NPC 閒置 & 區域巡邏
+    ├─ 取所有在班 NPC（GetAllSchedules）
+    ├─ 10% 機率巡邏：若 wander_rooms 有多房，瞬移一房 + 敘事 + RefreshRoomViews
+    └─ 有玩家在場 → 閒置動作敘事（每輪最多一人）
 ```
+
+---
+
+## 七點五、邏輯與流程檢核（2026-03-07）
+
+截至目前實作已對齊以下流程，單元測試與啟動煙霧通過：
+
+| 檢核項 | 說明 |
+|--------|------|
+| **排班不傳送** | `ApplySchedules` 只回傳 `[]ScheduleMove`（誰應去哪），不呼叫 `SetEntityRoom`；測試驗證回傳內容且實體仍留原房。 |
+| **排班目標 API** | `GetScheduleTarget(db, entityID, hour)` 回傳 `(Room, IsWork)`；`GetScheduleTargetRoom` 僅回傳房間；有單元測試。 |
+| **MoveSchedule 尋路** | `TravelerManager.Tick` 內對 `MoveSchedule` 呼叫 `GetScheduleTargetRoom` → `FindPath(current, target)` → 依 `Speed` 步進並 `SetEntityRoom`。 |
+| **啟動註冊** | main 啟動時 `GetAllSchedules` → 對每筆 `GetMovementDefForTitle`、`Type=MoveSchedule`、`Register`；無排班時 traveler 數為 0。 |
+| **敘事分離** | 每遊戲小時對 `ApplySchedules` 的 moves 只發「出發」敘事；抵達敘事在 `travelSteps` 中依 `GetScheduleTarget` 判斷是否為 work/rest 再發。 |
+| **閒置與巡邏** | 仍依 `GetAllSchedules` + `IsOnDuty`；在班時 10% 區域巡邏（`SetEntityRoom` 到 wander_rooms 一房）或閒置動作；與排班型可並存（巡邏可能與排班路徑交錯，目前可接受）。 |
 
 ---
 
@@ -401,11 +420,11 @@ data/templates/
 
 | 指標 | 驗收方式 |
 |------|---------|
-| 排班準時 | 日夜班交接時，NPC 確實移動，前端即時更新 |
+| 排班準時 | 日夜班交接時發「出發」敘事，NPC 依尋路逐格走到 work/rest，抵達時發敘事並更新前端 |
 | 閒置不洗版 | 5~12 秒一句，不會連續刷屏 |
 | 進房反應自然 | 延遲 0.5~1.5 秒，不會每次都同一句 |
 | 巡邏後歸位 | NPC 巡邏完能正常回到工作區 |
-| 地圖移動順暢 | route/pathfind NPC 逐格移動，不跳房 |
+| 地圖移動順暢 | schedule/route/pathfind NPC 逐格移動，不跳房（排班型家可十格外） |
 | 前端同步 | NPC 任何移動，玩家的人物欄都即時更新 |
 
 ### 8.2 效能穩定
@@ -431,11 +450,14 @@ data/templates/
 
 ## 九、新增職業速查
 
-### 9.1 新增定點 NPC
+### 9.1 新增定點 NPC（有排班）
 
-1. 在 `db/npc.go` 的 `defaultNPCs` 加一筆
-2. 在 `data/npc_behaviors.json` 的 `roles` 加該職稱的文本
-3. 重啟伺服器
+1. 呼叫 `db.InsertNPC(db, id, displayChar, gender, "")` 建立實體
+2. `db.SetEntityRoom(db, id, workRoom)` 設初始房間
+3. `db.InsertSchedule(db, id, workRoom, restRoom, shiftStart, shiftEnd)` 設排班
+4. `db.InsertAssignment(db, id, title, venueID, "")` 設職稱（可選）
+5. 在 `data/npc_behaviors.json` 的 `roles` 加該職稱的文本（含 `movement.speed` 可選）
+6. 重啟伺服器後，該 NPC 會自動以 MoveSchedule 註冊，依班表尋路上下班
 
 ### 9.2 新增模板職業
 
@@ -470,6 +492,7 @@ data/templates/
 
 | 文檔 | 位置 | 說明 |
 |------|------|------|
+| **NPC 活化模擬測試報告** | `docs/testing/NPC活化系統模擬測試報告.md` | 檢索範圍、已／未實作對照（含馬斯洛）、模擬測試案例與結果、代碼註釋建議 |
 | 模板系統檢索 | `data/templates/README.md` | 模板格式、欄位、佔位符、快速查閱表 |
 | 第一版可做清單 | `docs/第一版可做清單.md` | MVP 進度追蹤（§十 NPC 行為） |
 | 協作約定 | `docs/COLLABORATION.md` | 主管與 AI 的角色分工 |

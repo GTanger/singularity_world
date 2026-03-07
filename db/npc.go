@@ -19,10 +19,12 @@ func InsertNPC(db *sql.DB, id, displayChar, gender, displayTitle string) error {
 	if gender != "M" && gender != "F" {
 		gender = "M"
 	}
+	// 創角即產生 soul_seed，唯一決定三軸與後續展開（體敏氣、本源句、性格、760 邊權）
 	seed, err := GenerateSoulSeed()
 	if err != nil {
 		return err
 	}
+	// 由同一個 seed 展開體質／氣脈／靈敏，寫入 entities，與玩家創角流程一致
 	vit, qi, dex := ExpandSoulSeedToBaseStats(seed)
 	now := time.Now().Unix()
 	equip := StarterEquipment(gender)

@@ -120,7 +120,7 @@ func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int) []
 			}
 		}
 
-		// 走 speed 步
+		// 依 movement.speed 每次走若干格（房間），寫回 entity_room，排班型會多 tick 才抵達
 		stepsToTake := t.MoveDef.Speed
 		if stepsToTake > len(t.PathQueue) {
 			stepsToTake = len(t.PathQueue)
@@ -164,6 +164,7 @@ func (tm *TravelerManager) computeNextPath(t *NPCTraveler, currentRoom string, g
 		return tm.nextRoutePath(t, currentRoom, g)
 	case MovePathfind:
 		return tm.nextPathfindPath(t, currentRoom, g)
+	// 排班型：依 gameHour 目標為 work_room（在班）或 rest_room（下班），BFS 尋路；家可十格外逐格走
 	case MoveSchedule:
 		target, ok := GetScheduleTargetRoom(database, t.EntityID, gameHour)
 		if !ok || target == "" || target == currentRoom {

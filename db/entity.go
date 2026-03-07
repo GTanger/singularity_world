@@ -118,12 +118,14 @@ type Personality struct {
 }
 
 // ExpandSoulSeedToPersonality 由 soul_seed 前 3 次 RNG 展開三軸，正規化為 [0,1] 性格維度。與 BaseStats／OriginSentence 同 RNG 序。
+// 入參：seed 為 entities.soul_seed。回傳：Boldness（強勢度）、Sensitivity（敏感度）、Orderliness（秩序感），供決策引擎與 Talk 選句權重使用。
 func ExpandSoulSeedToPersonality(seed int64) Personality {
 	rng := rand.New(rand.NewSource(seed))
 	u1, u2, u3 := rng.Float64(), rng.Float64(), rng.Float64()
 	amp := ampMin + u1*(ampMax-ampMin)
 	freq := freqMin + u2*(freqMax-freqMin)
 	phase := phaseMin + u3*(phaseMax-phaseMin)
+	// 將三軸線性壓到 [0,1]，越界 clamp
 	norm := func(v, lo, hi float64) float64 {
 		if v < lo {
 			return 0
@@ -240,7 +242,7 @@ func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
 }
 
 // GetPersonalityForEntity 依實體 id 查 soul_seed，若有則展開為 Personality；供決策引擎與對話權重使用。
-// 回傳 (Personality, true) 表示有性格；(零值, false) 表示查無或無 soul_seed。
+// 回傳 (Personality, true) 表示有性格；(零值, false) 表示查無或無 soul_seed（例如舊資料、未創角）。
 func GetPersonalityForEntity(db *sql.DB, entityID string) (Personality, bool) {
 	c, err := GetEntity(db, entityID)
 	if err != nil || c == nil || c.SoulSeed == nil {

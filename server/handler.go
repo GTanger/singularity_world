@@ -517,8 +517,8 @@ func buildTalkNarrative(playerID string, target *entity.Character, personality *
 		h += int(r)
 	}
 	idx := h % len(responses)
+	// 若有性格（來自 target.SoulSeed → ExpandSoulSeedToPersonality），依 Boldness 往後半較強勢句偏移
 	if personality != nil {
-		// Boldness 高則往後半（較強勢）偏移，保持同目標同 session 可重現
 		shift := int(personality.Boldness * float64(len(responses)/2))
 		idx = (idx + shift) % len(responses)
 	}

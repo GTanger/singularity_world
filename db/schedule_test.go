@@ -118,3 +118,33 @@ func TestApplySchedules(t *testing.T) {
 		}
 	}
 }
+
+func TestGetScheduleTarget(t *testing.T) {
+	database := setupTestDB(t)
+	workRoom := "life_hall"
+	restRoom := "life_storage"
+	_ = InsertNPC(database, "試算", "試", "M", "")
+	_ = SetEntityRoom(database, "試算", workRoom)
+	_ = InsertSchedule(database, "試算", workRoom, restRoom, 6, 19)
+
+	target, ok := GetScheduleTarget(database, "試算", 12)
+	if !ok {
+		t.Fatal("GetScheduleTarget(12): want ok true")
+	}
+	if target.Room != workRoom || !target.IsWork {
+		t.Errorf("hour 12: want room=%s isWork=true, got room=%s isWork=%v", workRoom, target.Room, target.IsWork)
+	}
+
+	target, ok = GetScheduleTarget(database, "試算", 22)
+	if !ok {
+		t.Fatal("GetScheduleTarget(22): want ok true")
+	}
+	if target.Room != restRoom || target.IsWork {
+		t.Errorf("hour 22: want room=%s isWork=false, got room=%s isWork=%v", restRoom, target.Room, target.IsWork)
+	}
+
+	_, ok = GetScheduleTarget(database, "不存在", 12)
+	if ok {
+		t.Error("GetScheduleTarget(不存在): want ok false")
+	}
+}

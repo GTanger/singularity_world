@@ -72,6 +72,7 @@ func GetScheduleTargetRoom(database *sql.DB, entityID string, gameHour int) (tar
 }
 
 // GetScheduleTarget 回傳排班目標與是否為上班地（IsWork 供抵達敘事用）。
+// 僅查 npc_schedules 表，不寫入 DB；與 ApplySchedules「只回傳不傳送」一致，實際移動由 TravelerManager 排班型 Tick 執行。
 func GetScheduleTarget(database *sql.DB, entityID string, gameHour int) (t ScheduleTarget, ok bool) {
 	rows, err := database.Query(
 		"SELECT work_room, rest_room, shift_start, shift_end FROM npc_schedules WHERE entity_id = ?",
@@ -96,7 +97,8 @@ func GetScheduleTarget(database *sql.DB, entityID string, gameHour int) (t Sched
 	return ScheduleTarget{Room: restRoom, IsWork: false}, true
 }
 
-// ApplySchedules 根據當前遊戲時間回傳「應前往的房間與敘事用清單」，不傳送；實際移動由 TravelerManager 排班型尋路逐格執行。
+// ApplySchedules 根據當前遊戲時間回傳「應前往的房間與敘事用清單」，不傳送（不呼叫 SetEntityRoom）。
+// 實際移動由 main 迴圈內 TravelerManager.Tick 對排班型 NPC 逐格尋路並寫回 entity_room；家可遠在十格外。
 func ApplySchedules(database *sql.DB, gameHour int) ([]ScheduleMove, error) {
 	schedules, err := GetAllSchedules(database)
 	if err != nil {
