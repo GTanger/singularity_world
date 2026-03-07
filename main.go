@@ -83,7 +83,7 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"ok":true,"message":"已刪除所有角色"}`))
 	})
-	// 地圖檢視器：/map_viewer 與同源 /data/rooms.json
+	// 地圖檢視器：/map_viewer，資料由 /data/rooms.json API 從 store 彙總
 	http.HandleFunc("/map_viewer", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/map_viewer" {
 			http.NotFound(w, r)
@@ -93,12 +93,8 @@ func main() {
 		w.Header().Set("Cache-Control", "no-cache, max-age=0, must-revalidate")
 		http.ServeFile(w, r, filepath.Join("web", "map_viewer.html"))
 	})
-	http.HandleFunc("/data/rooms.json", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.Header().Set("Cache-Control", "no-cache, max-age=0, must-revalidate")
-		http.ServeFile(w, r, filepath.Join("data", "rooms.json"))
-	})
-	// 星盤檢視器
+	http.HandleFunc("/data/rooms.json", server.HandleRoomsDataAPI)
+	// 星盤檢視器：/star_chart，資料由 /api/topology 提供（store）
 	http.HandleFunc("/star_chart", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/star_chart" {
 			http.NotFound(w, r)
