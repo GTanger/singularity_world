@@ -12,5 +12,26 @@
       "direction": "後院",
       "to": "life_backyard"
     }
+  ],
+  "objects": [
+    {
+      "id": "life_wine_cellar_jars",
+      "name": "陶甕",
+      "owner": "inn",
+      "sockets": ["Look", "Smell"],
+      "responses": {
+        "Look": "陶甕沿牆排開，大小不一，甕口以泥封或布帛紮緊，甕身沁著一層涼意與水氣。",
+        "Smell": "你湊近一甕，糧食發酵後的醇厚氣味撲面而來，愈往深處酒香愈濃。"
+      }
+    },
+    {
+      "id": "life_wine_cellar_barrels",
+      "name": "木桶",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "木桶與陶甕交錯排列，桶身箍著鐵環，有的桶蓋半開，露出深色的酒液與撲鼻的酒香。"
+      }
+    }
   ]
 }

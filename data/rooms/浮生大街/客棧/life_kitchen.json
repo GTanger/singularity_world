@@ -16,5 +16,25 @@
       "direction": "後院",
       "to": "life_backyard"
     }
+  ],
+  "objects": [
+    {
+      "id": "life_kitchen_stove",
+      "name": "灶台",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "幾口大鐵鍋架在爐灶上，灶膛裡火光正旺，牆壁被油煙燻得發黑，但灶面擦得乾淨。"
+      }
+    },
+    {
+      "id": "life_kitchen_knives",
+      "name": "刀具架",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "牆上橫著一排木架，插著大小不一的菜刀、剔骨刀、片刀。刀刃被磨得鋥亮，木柄上的油漬滲出了使用者的習慣。"
+      }
+    }
   ]
 }

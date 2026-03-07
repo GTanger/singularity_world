@@ -14,5 +14,27 @@
       "direction": "迴廊",
       "to": "life_corridor_3f"
     }
+  ],
+  "objects": [
+    {
+      "id": "life_xuan_1_scrolls",
+      "name": "捲軸典籍",
+      "owner": "inn",
+      "sockets": ["Look", "Read"],
+      "responses": {
+        "Look": "屋內擺滿了各式各樣的捲軸與殘缺的典籍，有的攤開在案上，有的插在竹筒裡，紙張泛黃卻保存得當。",
+        "Read": "你隨手翻開一冊，字跡工整卻難以全識，似是古時修煉心法或地方志異的抄本，墨香與紙張的氣味混在一起。"
+      }
+    },
+    {
+      "id": "life_xuan_1_incense",
+      "name": "安神香",
+      "owner": "inn",
+      "sockets": ["Look", "Smell"],
+      "responses": {
+        "Look": "屋角燃著一支安神香，細長的香柱頂端一點紅光，青煙緩緩騰起，在古銅色的牆壁前繚繞不散。",
+        "Smell": "你深吸一口氣，安神香的氣味沉靜溫和，帶著一絲藥草與檀木的餘韻，令人心神稍定。"
+      }
+    }
   ]
 }

@@ -22,5 +22,36 @@
       "direction": "上樓",
       "to": "life_corridor_2f"
     }
+  ],
+  "objects": [
+    {
+      "id": "life_hall_lantern",
+      "name": "六角宮燈",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "你抬頭端詳那盞六角宮燈。燈罩以薄絹繃製，繪有松鶴延年的紋樣，燭火搖曳間，六個面輪流明滅，在天花板上投下旋轉的光影。"
+      }
+    },
+    {
+      "id": "life_hall_plaque",
+      "name": "匾額",
+      "owner": "inn",
+      "sockets": ["Look", "Read"],
+      "responses": {
+        "Look": "匾額掛在櫃台正上方，寬約三尺，厚實的檀木板面已被歲月磨出深沉的包漿。",
+        "Read": "匾上以行草寫著【浮生】二字，筆勢蒼勁飛揚，落款處隱約可見一枚朱紅小印，年代已不可考。"
+      }
+    },
+    {
+      "id": "life_hall_board",
+      "name": "佈告欄",
+      "owner": "",
+      "sockets": ["Look", "Read"],
+      "responses": {
+        "Look": "一塊半人高的木板立在角落，邊框已被摸得發黑。上面釘滿了大小不一的紙條，有的已經泛黃捲曲。",
+        "Read": "你湊近端詳紙條上的內容：有尋人啟事、有旅隊招募告示、有一張寫滿咒罵文字的匿名投書……最新的一張寫著「酒窖新到一批陳年桂花釀，欲購從速」。"
+      }
+    }
   ]
 }

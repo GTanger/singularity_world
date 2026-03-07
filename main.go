@@ -126,7 +126,15 @@ func main() {
 	// NPC 活化：閒置動作 & 巡邏計時器（中頻 5-12 真實秒，即 2-5 遊戲分鐘）
 	db.LoadBehaviors("data/npc_behaviors.json")
 	db.LoadOccupations("data/templates/occupations.json")
-	db.LoadRoomObjects("data/room_objects.json")
+	// 房間可互動物件：僅從各房間 JSON 的 objects 欄位載入
+	if store.Default != nil {
+		for _, id := range store.Default.RoomIDs() {
+			r, _ := store.Default.GetRoom(id)
+			if r != nil && len(r.Objects) > 0 {
+				db.SetObjectsForRoom(id, r.Objects)
+			}
+		}
+	}
 	var idleTickCount int
 	nextIdleTrigger := 25 + rand.Intn(35)
 

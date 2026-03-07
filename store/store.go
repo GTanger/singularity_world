@@ -119,14 +119,15 @@ type roomsFile struct {
 	Exits []exitDef `json:"exits"`
 }
 
-// roomFileOne 一房一檔格式（data/rooms/<id>.json）：單一房間含其出口。
+// roomFileOne 一房一檔格式（data/rooms/<id>.json）：單一房間含其出口與可互動物件。
 type roomFileOne struct {
-	ID          string     `json:"id"`
-	Name        string     `json:"name"`
-	Description string     `json:"description"`
-	Tags        []string   `json:"tags"`
-	Zone        string     `json:"zone"`
-	Exits       []exitOut  `json:"exits"`
+	ID          string           `json:"id"`
+	Name        string           `json:"name"`
+	Description string           `json:"description"`
+	Tags        []string         `json:"tags"`
+	Zone        string           `json:"zone"`
+	Exits       []exitOut        `json:"exits"`
+	Objects     []model.RoomObject `json:"objects,omitempty"`
 }
 type exitOut struct {
 	Direction string `json:"direction"`
@@ -318,6 +319,7 @@ func (s *Store) loadRoomsFromDir(dir string) error {
 			Tags:        one.Tags,
 			Zone:        one.Zone,
 			Description: one.Description,
+			Objects:     one.Objects,
 		}
 		nameByID[one.ID] = one.Name
 	}

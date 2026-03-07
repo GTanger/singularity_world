@@ -20,5 +20,34 @@
       "direction": "酒窖",
       "to": "life_wine_cellar"
     }
+  ],
+  "objects": [
+    {
+      "id": "life_backyard_clothesline",
+      "name": "晾衣繩",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "晾衣繩上掛著幾件粗布衣裳隨風擺動，在青石板與老槐樹的陰影間投下晃動的影子。"
+      }
+    },
+    {
+      "id": "life_backyard_firewood",
+      "name": "柴火",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "角落裡堆著劈好的柴火，粗細不一，有的還帶著樹皮的紋路，散發著乾燥的木頭氣味。"
+      }
+    },
+    {
+      "id": "life_backyard_tree",
+      "name": "老槐樹",
+      "owner": "",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "一株老槐樹撐起了半院的陰涼，枝葉繁茂，樹幹上爬滿了歲月的裂紋與青苔。"
+      }
+    }
   ]
 }

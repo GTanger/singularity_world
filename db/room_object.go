@@ -1,73 +1,51 @@
-// Package db 房間非人物件：從 room_objects.json 載入並快取，供 GetRoomView 與 do_action 使用。
+// Package db 房間非人物件：由各房間 JSON 的 objects 欄位載入並快取，供 GetRoomView 與 do_action 使用。
 package db
 
 import (
-	"encoding/json"
-	"log"
-	"os"
 	"sync"
+
+	"singularity_world/model"
 )
 
-// RoomObject 單一房間物件的定義（與 data/room_objects.json 對應）。
-type RoomObject struct {
-	ID        string            `json:"id"`
-	Name      string            `json:"name"`
-	Owner     string            `json:"owner"`
-	Sockets   []string          `json:"sockets"`
-	Responses map[string]string `json:"responses"`
-}
+// RoomObject 與 model.RoomObject 一致，供 db 層快取與查詢。
+type RoomObject = model.RoomObject
 
 var (
-	roomObjectOnce   sync.Once
-	objectsByRoom    map[string][]RoomObject // roomID -> list
-	objectByID       map[string]*RoomObject  // objectID -> object
-	objectRoomByID   map[string]string       // objectID -> roomID
+	objectsByRoom  map[string][]RoomObject // roomID -> list
+	objectByID     map[string]*RoomObject  // objectID -> object
+	objectRoomByID map[string]string       // objectID -> roomID
+	roomObjectMu   sync.RWMutex
 )
 
-// LoadRoomObjects 讀取並快取 room_objects.json；首次呼叫後即從快取返回。啟動時呼叫一次即可。
-func LoadRoomObjects(path string) {
-	roomObjectOnce.Do(func() {
-		data, err := os.ReadFile(path)
-		if err != nil {
-			log.Printf("[room_object] load %s failed: %v", path, err)
-			objectsByRoom = make(map[string][]RoomObject)
-			objectByID = make(map[string]*RoomObject)
-			objectRoomByID = make(map[string]string)
-			return
-		}
-		var raw map[string]json.RawMessage
-		if err := json.Unmarshal(data, &raw); err != nil {
-			log.Printf("[room_object] parse %s failed: %v", path, err)
-			objectsByRoom = make(map[string][]RoomObject)
-			objectByID = make(map[string]*RoomObject)
-			objectRoomByID = make(map[string]string)
-			return
-		}
+// SetObjectsForRoom 設定某房間的可互動物件（來自該房間 JSON 的 objects 欄位）。
+func SetObjectsForRoom(roomID string, objects []RoomObject) {
+	roomObjectMu.Lock()
+	defer roomObjectMu.Unlock()
+	if objectsByRoom == nil {
 		objectsByRoom = make(map[string][]RoomObject)
+	}
+	if objectByID == nil {
 		objectByID = make(map[string]*RoomObject)
+	}
+	if objectRoomByID == nil {
 		objectRoomByID = make(map[string]string)
-		for roomID, rawVal := range raw {
-			if len(roomID) > 0 && roomID[0] == '_' {
-				continue
-			}
-			var list []RoomObject
-			if err := json.Unmarshal(rawVal, &list); err != nil {
-				log.Printf("[room_object] skip room %s: %v", roomID, err)
-				continue
-			}
-			objectsByRoom[roomID] = list
-			for i := range list {
-				obj := &list[i]
-				objectByID[obj.ID] = obj
-				objectRoomByID[obj.ID] = roomID
-			}
-		}
-		log.Printf("[room_object] loaded %d objects in %d rooms from %s", len(objectByID), len(objectsByRoom), path)
-	})
+	}
+	for _, obj := range objectsByRoom[roomID] {
+		delete(objectByID, obj.ID)
+		delete(objectRoomByID, obj.ID)
+	}
+	objectsByRoom[roomID] = objects
+	for i := range objects {
+		obj := &objects[i]
+		objectByID[obj.ID] = obj
+		objectRoomByID[obj.ID] = roomID
+	}
 }
 
-// GetObjectsInRoom 回傳指定房間內的所有可互動物件。
+// GetObjectsInRoom 回傳指定房間內的所有可互動物件（來自各房間 JSON 的 objects 欄位）。
 func GetObjectsInRoom(roomID string) []RoomObject {
+	roomObjectMu.RLock()
+	defer roomObjectMu.RUnlock()
 	if objectsByRoom == nil {
 		return nil
 	}
@@ -76,6 +54,8 @@ func GetObjectsInRoom(roomID string) []RoomObject {
 
 // GetObjectAndRoom 依物件 ID 回傳物件與其所屬房間 ID；若不存在則回傳 nil, ""。
 func GetObjectAndRoom(objectID string) (*RoomObject, string) {
+	roomObjectMu.RLock()
+	defer roomObjectMu.RUnlock()
 	if objectByID == nil || objectRoomByID == nil {
 		return nil, ""
 	}
@@ -89,6 +69,8 @@ func GetObjectAndRoom(objectID string) (*RoomObject, string) {
 
 // GetObjectByNameInRoom 在指定房間內依顯示名稱找物件（前端可能送名稱而非 ID 時用）。
 func GetObjectByNameInRoom(roomID, name string) (*RoomObject, string) {
+	roomObjectMu.RLock()
+	defer roomObjectMu.RUnlock()
 	if objectsByRoom == nil || name == "" {
 		return nil, ""
 	}

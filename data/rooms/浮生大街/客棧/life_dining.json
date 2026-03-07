@@ -17,5 +17,26 @@
       "direction": "廚房",
       "to": "life_kitchen"
     }
+  ],
+  "objects": [
+    {
+      "id": "life_dining_tables",
+      "name": "方桌",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "七八張方桌錯落擺放，桌面被擦得發亮，邊角磨得圓潤。有的桌上還擺著未收的茶盞與筷箸。"
+      }
+    },
+    {
+      "id": "life_dining_steamer",
+      "name": "蒸籠",
+      "owner": "inn",
+      "sockets": ["Look", "Smell"],
+      "responses": {
+        "Look": "牆角的灶台上蒸籠一層疊著一層，白煙嫋嫋從縫隙間鑽出，帶著米麵與餡料的香氣。",
+        "Smell": "你深吸一口氣，蒸氣裡混著包子與饅頭的麥香，還有淡淡的竹篾氣味。"
+      }
+    }
   ]
 }

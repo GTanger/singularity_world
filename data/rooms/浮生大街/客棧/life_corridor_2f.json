@@ -48,5 +48,25 @@
       "direction": "昃二",
       "to": "life_ze_2"
     }
+  ],
+  "objects": [
+    {
+      "id": "life_corridor_2f_railing",
+      "name": "欄杆",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "木質欄杆環繞天井而建，雕著簡樸的雲紋，扶上去微微溫熱，可見常有人憑欄遠眺。"
+      }
+    },
+    {
+      "id": "life_corridor_2f_doors",
+      "name": "門扉",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "兩側排列著客房的門扉，門楣上分別掛著日、月、盈、昃的字牌，漆色已有些斑駁。"
+      }
+    }
   ]
 }

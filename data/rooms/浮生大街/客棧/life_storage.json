@@ -13,5 +13,25 @@
       "direction": "後院",
       "to": "life_backyard"
     }
+  ],
+  "objects": [
+    {
+      "id": "life_storage_beds",
+      "name": "行軍床",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "幾張行軍床擠在庫房角落，鋪著簡單的薄褥，是員工輪班休息的地方。"
+      }
+    },
+    {
+      "id": "life_storage_shelves",
+      "name": "木架",
+      "owner": "inn",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "木架上整齊碼放著米袋、鹽罐與備用的碗碟，蒙著一層薄灰卻不顯凌亂。"
+      }
+    }
   ]
 }
