@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home4_r2",
+  "name": "灶間",
+  "description": "設有泥灶與備用柴火，泥牆被燻成深褐色。熱氣與窗外紛落的街霜形成對比，空氣中瀰漫著焦木香。空間狹窄，案板上放著幾口陶碗與麵粉袋，地面打掃得乾淨。這裡是全屋熱量最集中的地方，環境暖和且乾燥。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂間",
+      "to": "feishuang_home4_r1"
+    }
+  ]
+}

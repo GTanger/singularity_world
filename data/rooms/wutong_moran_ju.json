@@ -1,0 +1,16 @@
+{
+  "id": "wutong_moran_ju",
+  "name": "墨染居",
+  "description": "深色礦物與吸音性質民居。地面與牆面皆由吸光性極強的黑岩組成，表面磨製出鏡面般油脂光澤。空氣冷冽乾燥。自長青公所墨染銜接點可入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "長青公所",
+      "to": "wutong_cq_13"
+    }
+  ]
+}

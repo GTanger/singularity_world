@@ -1,0 +1,24 @@
+{
+  "id": "wutong_cy_15",
+  "name": "翠影銜接點",
+  "description": "位於廣庭東緣的觀景台。地面由整塊青色玉石鋪就，表面刻有對稱的葉脈紋路。上方枝葉低垂，形成天然的門簾。這裡視野開闊，熱輻射穩定，前方銜接著深入林帶的民居。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "翠影閣",
+      "to": "wutong_cuiying_ge"
+    },
+    {
+      "direction": "廣庭核心",
+      "to": "wutong_cy_10"
+    },
+    {
+      "direction": "翠意階道",
+      "to": "wutong_cy_14"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "lifestreet_herbs_r3",
+  "name": "後庫",
+  "description": "堆放原材的昏暗倉庫，牆邊立著幾口一人高的封泥陶罈與數十個大麻布袋。袋口紮得極緊，內部滲出乾燥的草本香。角落放置著幾塊防潮用的生石灰，地面乾燥且平整，是一個典型的物料儲存空間。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "切藥房",
+      "to": "lifestreet_herbs_r2"
+    }
+  ]
+}

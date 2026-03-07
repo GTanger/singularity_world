@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home5_r2",
+  "name": "底室",
+  "description": "空間縮小至僅能容納兩人，牆壁呈圓弧形結構。中心處有一凹陷小坑，坑邊放著木板，室內環境極其乾燥。牆角一盞石燈將光線匯聚在一處，空氣凝滯，是一個極其隱蔽且單純的存放空間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "內窖",
+      "to": "lifestreet_home5_r1"
+    }
+  ]
+}

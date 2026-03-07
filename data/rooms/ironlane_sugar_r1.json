@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_sugar_r1",
+  "name": "準備間",
+  "description": "位於櫃檯後方，設有一座石砌的火灶，灶台邊擺滿了洗淨的湯盅與瓷碗。地面鋪設防滑青磚，一旁的水槽盛滿清水。此處連結著後方的儲料房與起居客廳，整體環境溫暖且充滿香氣。",
+  "tags": [
+    "kitchen",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店舖",
+      "to": "ironlane_sugar"
+    },
+    {
+      "direction": "儲料房",
+      "to": "ironlane_sugar_r2"
+    },
+    {
+      "direction": "生活區",
+      "to": "ironlane_sugar_r3"
+    }
+  ]
+}

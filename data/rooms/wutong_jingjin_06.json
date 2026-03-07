@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jingjin_06",
+  "name": "生活起居室",
+  "description": "家具皆由深色重金屬與緻密黑木結合。大窗正對街道梧桐拱頂，室內光影層次分明。空氣穩重沉香，觸感冰冷平滑。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "鑄鐵宅門戶",
+      "to": "wutong_jingjin_05"
+    },
+    {
+      "direction": "靜謐主臥",
+      "to": "wutong_jingjin_07"
+    }
+  ]
+}

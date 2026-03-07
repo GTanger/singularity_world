@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home3",
+  "name": "前廊門廳",
+  "description": "帶有防霜石槽的石砌入口，門扉由厚實杉木製成。進門後是開闊的前廊，地板由磨平青石鋪就，牆上掛著乾枯根莖。此處遮風擋雪，視線穿過迴廊可直視中央的天井，空氣清爽，環境質感顯得穩固且體面。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "天井",
+      "to": "feishuang_home3_r1"
+    }
+  ]
+}

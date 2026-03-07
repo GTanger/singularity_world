@@ -1,0 +1,20 @@
+{
+  "id": "wutong_feicui_chazhuang",
+  "name": "翡翠茶莊",
+  "description": "白玉石板鋪就的前廳，牆面展示架擺滿翠綠茶晶罐。空氣中清新植物精油味，梧桐綠蔭在門口形成厚實遮蔽，光線飽和。內通沁心軒。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "品茗雅座",
+      "to": "wutong_feicui_02"
+    }
+  ]
+}

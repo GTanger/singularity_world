@@ -1,0 +1,20 @@
+{
+  "id": "wutong_nengliang_08",
+  "name": "多功能活動室",
+  "description": "空間開闊，各類富態化材質休閒器具。窗台正對廣庭煙霧漩渦，室內熱輻射分布均勻。空氣純淨乾燥，淡淡電離感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "溫馨餐廳",
+      "to": "wutong_nengliang_07"
+    },
+    {
+      "direction": "柔紗臥房",
+      "to": "wutong_nengliang_09"
+    }
+  ]
+}

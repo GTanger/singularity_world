@@ -1,0 +1,24 @@
+{
+  "id": "sun_lc_03",
+  "name": "稜鏡水池區",
+  "description": "圓形池座由高反射合金鑄造，池中流動如熔融金屬般的能量液。液面跳躍微細電弧，池邊簇擁金黃色蕨類，葉片肥厚質地緻密。室內安靜。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "導光長廊",
+      "to": "sun_lc_02"
+    },
+    {
+      "direction": "折光林徑",
+      "to": "sun_lc_04"
+    },
+    {
+      "direction": "高台望月區",
+      "to": "sun_lc_08"
+    }
+  ]
+}

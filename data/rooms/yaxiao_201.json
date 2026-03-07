@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_201",
+  "name": "內部走廊",
+  "description": "狹窄氣密牆面發光暖能石。沉香與熟成樹脂香。隱藏式晶簇淡紫光。夜鴞完全屏蔽觸感細膩。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "靜謐起居間",
+      "to": "yaxiao_200"
+    },
+    {
+      "direction": "眠臥小閣",
+      "to": "yaxiao_202"
+    }
+  ]
+}

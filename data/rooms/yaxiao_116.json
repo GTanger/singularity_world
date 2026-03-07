@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_116",
+  "name": "鉛皮門廊",
+  "description": "地面磨損黑石，牆面泛黃隔音鉛皮阻絕夜鴞。濃郁沉香與潮濕地衣，晦暗頻閃燈，平庸生活起居感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "雜亂起居室",
+      "to": "yaxiao_117"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_140",
+  "name": "植栽露台",
+  "description": "密集藤蔓阻隔夜鴞。地表滲熱度水汽濕潤。視野開闊觀測大街能量流。柔和綠光，生物代謝氣味。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "溫馨起居堂",
+      "to": "yaxiao_139"
+    },
+    {
+      "direction": "私密廚膳間",
+      "to": "yaxiao_141"
+    },
+    {
+      "direction": "溫馨起居堂",
+      "to": "yaxiao_139"
+    }
+  ]
+}

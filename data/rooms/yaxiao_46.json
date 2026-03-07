@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_46",
+  "name": "氣密管道墳場",
+  "description": "斷裂氣密管如巨獸殘骸橫陳，管內厚實消音地衣。採光極差，牆縫微弱琥珀光。陳舊樹脂與機油，密實難以通行。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "鏽蝕齒輪區",
+      "to": "yaxiao_45"
+    },
+    {
+      "direction": "沉重金屬廊",
+      "to": "yaxiao_47"
+    }
+  ]
+}

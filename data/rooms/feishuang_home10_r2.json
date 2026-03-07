@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home10_r2",
+  "name": "東側寢室",
+  "description": "設有寬大木床與一只存衣木箱。室內無窗，環境靜謐。厚實石牆表面塗有防潮漆，徹底隔絕外界霜晶與輻射感。空氣中帶著乾爽棉麻氣味，這裡是別墅最隱蔽的避風港，呈現出一種與世無爭的安定感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "圓廳",
+      "to": "feishuang_home10_r1"
+    }
+  ]
+}

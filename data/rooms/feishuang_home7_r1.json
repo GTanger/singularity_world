@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home7_r1",
+  "name": "後間寢室",
+  "description": "位於前間後方的休息格位。設有一張木製床架與一只存衣木箱。室內無窗，環境靜謐，石牆厚實，完全阻絕了街外霜氣。空氣中帶著乾爽的棉麻氣息，這裡是這戶人家最私密的避風港，呈現出一種與世無爭的安定感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "前間",
+      "to": "feishuang_home7"
+    },
+    {
+      "direction": "物料間",
+      "to": "feishuang_home7_r2"
+    }
+  ]
+}

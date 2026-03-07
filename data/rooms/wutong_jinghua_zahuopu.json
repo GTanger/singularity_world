@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jinghua_zahuopu",
+  "name": "晶華雜貨鋪",
+  "description": "層疊貨架擺放具富態化特徵的民生雜物。黑曜石拼成幾何圖案地面，空氣混雜礦物與乾草味。採光充足，色調飽滿。內通寶石居。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "晶簇展示架",
+      "to": "wutong_jinghua_02"
+    }
+  ]
+}

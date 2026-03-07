@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_tailor_r2",
+  "name": "布料庫",
+  "description": "幽暗的空間，木架上整齊堆疊著各類色澤平實的布疋。每捲布料都包覆著吸水紙以防潮，室內通風乾燥。空氣中充滿了乾爽的棉麻味道，角落放著一隻防蟲用的樟腦箱，空間感紮實且穩定。",
+  "tags": [
+    "storage",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "裁縫室",
+      "to": "ironlane_tailor_r1"
+    }
+  ]
+}

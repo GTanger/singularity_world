@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home5_r3",
+  "name": "儲物地窖",
+  "description": "位於通間下方的石砌窖室，溫度恆定且涼爽。存放著醃肉罈子與一箱防輻射藥劑。空氣靜謐，牆壁結有細碎冰晶，完全不透天光。這裡是家中最隱蔽的空間，環境乾燥，為整座民宅提供了穩固的維生物資儲備。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "通間",
+      "to": "feishuang_home5_r1"
+    }
+  ]
+}

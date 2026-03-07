@@ -1,0 +1,16 @@
+{
+  "id": "wutong_cuiying_ge",
+  "name": "翠影閣",
+  "description": "高挑空民居。地面帶葉脈紋路的青色玉石，兩側巨木根系成天然立柱。自翠蔭廣庭翠影銜接點可入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "翠蔭廣庭",
+      "to": "wutong_cy_15"
+    }
+  ]
+}

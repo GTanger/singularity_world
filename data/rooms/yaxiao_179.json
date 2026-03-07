@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_179",
+  "name": "數據緩衝室",
+  "description": "乾燥穩定採光井光。懸浮發光能量微粒。牆面發光晶質屏幕。重壓感隨數據吞吐波動，通往洗錢核心最後屏障。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "沉靜眠室",
+      "to": "yaxiao_178"
+    },
+    {
+      "direction": "數字轉化核心",
+      "to": "yaxiao_180"
+    }
+  ]
+}

@@ -4,6 +4,8 @@ package db
 import (
 	"database/sql"
 	"encoding/json"
+
+	"singularity_world/store"
 )
 
 // StarterEquipment 依性別回傳初始裝備 JSON（裝備分頁規格 §5.1）。
@@ -26,7 +28,7 @@ func IsNaked(equipmentSlots string) bool {
 	return slots["body"] == "" || slots["legs"] == ""
 }
 
-// GetItemNames 依 equipment_slots JSON 查 items 表，回傳 slot→item_name 對照。
+// GetItemNames 依 equipment_slots JSON 查物品名稱；store 啟用時從 store 讀取。
 func GetItemNames(db *sql.DB, equipmentSlots string) (map[string]string, error) {
 	result := make(map[string]string)
 	if equipmentSlots == "" {
@@ -40,6 +42,12 @@ func GetItemNames(db *sql.DB, equipmentSlots string) (map[string]string, error) 
 		if itemID == "" {
 			continue
 		}
+		if store.Default != nil {
+			if it := store.Default.GetItem(itemID); it != nil {
+				result[slot] = it.Name
+			}
+			continue
+		}
 		var name string
 		err := db.QueryRow("SELECT name FROM items WHERE id = ?", itemID).Scan(&name)
 		if err == nil {
@@ -49,7 +57,7 @@ func GetItemNames(db *sql.DB, equipmentSlots string) (map[string]string, error) 
 	return result, nil
 }
 
-// GetItemDescs 依 equipment_slots JSON 查 items 表，回傳 slot→description 對照。
+// GetItemDescs 依 equipment_slots JSON 查物品描述；store 啟用時從 store 讀取。
 func GetItemDescs(db *sql.DB, equipmentSlots string) map[string]string {
 	result := make(map[string]string)
 	if equipmentSlots == "" {
@@ -63,6 +71,12 @@ func GetItemDescs(db *sql.DB, equipmentSlots string) map[string]string {
 		if itemID == "" {
 			continue
 		}
+		if store.Default != nil {
+			if it := store.Default.GetItem(itemID); it != nil {
+				result[slot] = it.Description
+			}
+			continue
+		}
 		var desc string
 		if err := db.QueryRow("SELECT description FROM items WHERE id = ?", itemID).Scan(&desc); err == nil {
 			result[slot] = desc
@@ -71,8 +85,11 @@ func GetItemDescs(db *sql.DB, equipmentSlots string) map[string]string {
 	return result
 }
 
-// SeedItems 初始化 items 表的種子資料（初始裝備＋鎂面額）。使用 REPLACE 以更新既有資料。
+// SeedItems 初始化物品種子；store 啟用時改由 data/items.json 提供，不再寫 DB。
 func SeedItems(db *sql.DB) error {
+	if store.Default != nil {
+		return nil
+	}
 	type seedItem struct {
 		id, name, slot, itemType, description string
 		weight                                float64
@@ -85,7 +102,6 @@ func SeedItems(db *sql.DB) error {
 		{"starter_body_f", "素布衣裙", "body", "equipment", "素色布料裁成的衣裙，樸素但整潔。", 0.7, 0, 0},
 		{"starter_legs_f", "布裳", "legs", "equipment", "普通的布裳，行動尚算方便。", 0.5, 0, 0},
 		{"starter_feet_f", "布鞋", "feet", "equipment", "軟底布鞋，輕便耐走。", 0.2, 0, 0},
-		// 鎂面額（背包規格 §四）
 		{"mg_coin", "鎂幣", "", "currency", "一枚小巧的鎂質錢幣，面值一鎂。", 0.01, 1, 1},
 		{"mg_note", "鎂鈔", "", "currency", "以特殊纖維印製的鈔票，面值十鎂。", 0.005, 1, 10},
 		{"mg_ingot", "鎂錠", "", "currency", "沉甸甸的鎂金屬錠，面值一萬鎂。", 1.0, 1, 10000},

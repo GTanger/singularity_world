@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_04",
+  "name": "繁根交織路",
+  "description": "地面被隆起的巨型根系佔據，根皮呈現出如金屬般的暗灰色。路徑在根系縫隙間穿行，空間感壓抑。空氣中的濕度顯著提升，岩壁滲出帶有熱度的水滴。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "翠浪噴泉池",
+      "to": "wutong_cy_03"
+    },
+    {
+      "direction": "雨霖銜接點",
+      "to": "wutong_cy_05"
+    }
+  ]
+}

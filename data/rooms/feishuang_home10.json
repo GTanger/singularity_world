@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home10",
+  "name": "湖畔廊門",
+  "description": "臨湖的石砌門廊，門檻積著厚霜。地板鋪設粗糙石磚以防打滑，牆角放著收集霜粉的木桶。暖風夾雜湖面霧氣灌入，室內採光較弱。此處提供了一處入戶緩衝，直接連結圓形起居廳，環境質感冷峻。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "路口",
+      "to": "feishuang_lake_road"
+    },
+    {
+      "direction": "圓廳",
+      "to": "feishuang_home10_r1"
+    }
+  ]
+}

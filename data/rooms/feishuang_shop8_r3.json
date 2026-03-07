@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop8_r3",
+  "name": "內宅堂屋",
+  "description": "一家人的起居核心。設有寢具與灶角，地板由平整泥土夯實。此處通往堆間與店面後門，牆上掛著斗笠與布袋。霜晶自門縫偶入即融。環境雖然擁擠但充滿煙火氣，空氣中帶著淡淡的飯菜香味，顯得溫馨且實用。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堆間",
+      "to": "feishuang_shop8_r1"
+    },
+    {
+      "direction": "後臥",
+      "to": "feishuang_shop8_r4"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jingjin_02",
+  "name": "熔爐動力區",
+  "description": "巨大能量晶體轉軸在中心隆隆運轉，噴發熾熱暖煙。牆面耐熱黑岩砌成，石縫流動金色能量。空氣密度極高，強烈電離與重壓感。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_jingjin_duanzaopu"
+    },
+    {
+      "direction": "精密加工台",
+      "to": "wutong_jingjin_03"
+    }
+  ]
+}

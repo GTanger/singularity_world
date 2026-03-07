@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_sugar_r4",
+  "name": "內室",
+  "description": "位於建築最深處，設有一張寬大的雙人床與一組木質衣櫃。地面打磨光滑，牆壁厚實隔音。空氣中帶著淡淡的檀香與穀物甜香味，環境私密且安靜，是店主家人主要的休息空間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "起居廳",
+      "to": "ironlane_sugar_r3"
+    }
+  ]
+}

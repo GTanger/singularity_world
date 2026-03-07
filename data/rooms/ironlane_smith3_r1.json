@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_smith3_r1",
+  "name": "鍛造室",
+  "description": "牆壁由粗糙石塊壘成，縫隙處用泥土填補。中央的小型風爐爐牆已有多處裂紋。工作台上雜亂堆放著鐵鉗與冷水桶，地面積滿了厚厚的炭灰，光線極差，僅能看清爐火映照的輪廓。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "ironlane_smith3"
+    },
+    {
+      "direction": "內屋",
+      "to": "ironlane_smith3_r2"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_home1",
+  "name": "民宅",
+  "description": "單層的石木住宅，門口放著一把缺口的竹椅。門檻是由整塊青石磨成，室內採光較弱。地面是由夯實泥土壓平，門後連接著寬敞的堂屋，牆角靠著幾樣簡單的農具與一副斗笠，空氣中帶著淡淡的乾草氣味。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "堂屋",
+      "to": "ironlane_home1_r1"
+    }
+  ]
+}

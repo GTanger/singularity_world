@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cq_09",
+  "name": "泉響銜接點",
+  "description": "位於水路匯集的小型石潭旁。地面由平整的青石構成，表面覆蓋著厚實的隔熱菌絲毯。環境中充斥著溫潤的蒸汽，能見度略低。視線前方可見一條鑲嵌著晶簇的窄徑，直通民居門檻。",
+  "tags": [
+    "indoor",
+    "admin"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "泉響寓",
+      "to": "wutong_quanxiang_yu"
+    },
+    {
+      "direction": "泉響連接廊",
+      "to": "wutong_cq_08"
+    }
+  ]
+}

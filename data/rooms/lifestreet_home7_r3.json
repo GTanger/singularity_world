@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home7_r3",
+  "name": "內寢",
+  "description": "臥房內設有一張粗木架起的簡易床鋪，鋪著幾層獸皮。牆邊木箱裡裝著針線與碎布，石燈掛在牆頭提供穩定光源。這裡的空間感與入口處的閣樓感一致，環境極其靜謐，阻隔了外界的聲音。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "中室",
+      "to": "lifestreet_home7_r2"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "fs_cabin_04_r1",
+  "name": "晶石大廳",
+  "description": "大廳空間通透，牆壁由半透明的晶石砌成，透入破碎的森林光影。地面由暖色調的石磚鋪就，透過地熱維持舒適溫度。室內擺設著石刻家具與厚實皮墊。此處連通晶刻工坊、琉璃臥室與儲藏間，空氣乾燥清爽，環境氛圍極其穩固。",
+  "tags": [
+    "indoor",
+    "cabin",
+    "residence"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "fs_cabin_04"
+    },
+    {
+      "direction": "工坊",
+      "to": "fs_cabin_04_r2"
+    },
+    {
+      "direction": "臥室",
+      "to": "fs_cabin_04_r3"
+    },
+    {
+      "direction": "儲物",
+      "to": "fs_cabin_04_r4"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "ironlane_carpenter_r5",
+  "name": "私廚",
+  "description": "小巧精緻的廚房，石砌的單孔小灶表面刷有白石灰。木架上擺放著成套的瓷器，一旁的小罈子裝著醃製的梅乾。地面乾爽，空氣中帶著淡淡的木柴火氣。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "後宅客廳",
+      "to": "ironlane_carpenter_r3"
+    }
+  ]
+}

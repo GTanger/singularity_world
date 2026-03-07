@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home5",
+  "name": "民宅入口",
+  "description": "磚石混造的牆體，門板結有薄霜。玄關地面鋪設碎石板，牆角靠著一具手動除霜鏟。室內溫暖，能聽見內屋傳來的爐火嗶啪聲。此處空間簡單，直接引導至中心的通間，空氣中帶著淡淡的石灰粉與乾柴氣息。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "入內",
+      "to": "feishuang_home5_r1"
+    }
+  ]
+}

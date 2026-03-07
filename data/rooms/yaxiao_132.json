@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_132",
+  "name": "後勤過渡區",
+  "description": "看似廢棄能源箱角落，牆面厚重能量屏蔽層。乾燥純淨絕對穩固。熱輻射鎖死頻率掩飾深處運算共鳴。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "維修整備室",
+      "to": "yaxiao_131"
+    },
+    {
+      "direction": "屏蔽緩衝廊",
+      "to": "yaxiao_133"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_129",
+  "name": "貨架緩衝區",
+  "description": "消音粉塵舊化元件架與零件殘骸。多層廢棄鉛板邊界模糊。環境音極低沉重濕潤，石縫滲金屬冷凝液。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "入口坡道",
+      "to": "yaxiao_128"
+    },
+    {
+      "direction": "零件堆卸位",
+      "to": "yaxiao_130"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_130",
+  "name": "零件堆卸位",
+  "description": "緻密黑木檯面雜亂電子零件與密封膠罐。天花板孔洞漏光壓抑沉重。乾燥纖維焦香，隱藏通往中繼站電磁屏蔽門。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "貨架緩衝區",
+      "to": "yaxiao_129"
+    },
+    {
+      "direction": "維修整備室",
+      "to": "yaxiao_131"
+    }
+  ]
+}

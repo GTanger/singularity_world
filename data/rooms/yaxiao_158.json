@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_158",
+  "name": "內部沉睡室",
+  "description": "床座嵌入巨根厚實羊毛織物。天花板暗紅能量晶體恆溫。極靜絕對穩固，沉香凝固，隱藏通往熔煉車間升降起點。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "廚膳起居角",
+      "to": "yaxiao_157"
+    },
+    {
+      "direction": "垂直重力井",
+      "to": "yaxiao_159"
+    },
+    {
+      "direction": "廚膳起居角",
+      "to": "yaxiao_157"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_13",
+  "name": "根系避風穴",
+  "description": "由三株巨木根系拱衛而成的半封閉空間。內部地勢乾燥，鋪墊著層疊的枯葉與木質纖維。這裡隔絕了廣庭中心的回響，環境音極低，適合短暫停留，空氣感穩定。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "萬象環廊",
+      "to": "wutong_cy_09"
+    },
+    {
+      "direction": "翠意階道",
+      "to": "wutong_cy_14"
+    }
+  ]
+}

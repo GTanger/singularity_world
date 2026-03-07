@@ -1,0 +1,16 @@
+{
+  "id": "wutong_weiguang_yu",
+  "name": "微光寓",
+  "description": "螢光植被照明的民居。入口密集螢光蕈類將白玉牆面染成淡紫。地面細碎黑曜石顆粒吸收足音。自翠蔭廣庭微光銜接點可入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "翠蔭廣庭",
+      "to": "wutong_cy_12"
+    }
+  ]
+}

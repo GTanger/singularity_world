@@ -1,0 +1,17 @@
+{
+  "id": "sun_wr_06",
+  "name": "底層儲庫",
+  "description": "牆面由粗糙黑岩組成，環境陰涼且物質密度極高。存放封裝於晶盒內的能量物資，空氣凝滯，帶淡淡石灰與沉水香氣，建築最內側。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "磐石臥房",
+      "to": "sun_wr_05"
+    }
+  ]
+}

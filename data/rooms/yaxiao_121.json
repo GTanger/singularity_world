@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_121",
+  "name": "隱蔽夾層",
+  "description": "看似牆後維修空間，鉛合金板與能量屏蔽膜。乾燥電離感增，紅光規律閃爍。與夜鴞物理同步隱蔽高能反應。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "靜謐臥房",
+      "to": "yaxiao_120"
+    },
+    {
+      "direction": "偽裝隔閡廊",
+      "to": "yaxiao_122"
+    },
+    {
+      "direction": "靜謐臥房",
+      "to": "yaxiao_120"
+    }
+  ]
+}

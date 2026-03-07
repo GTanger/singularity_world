@@ -1,0 +1,21 @@
+{
+  "id": "wutong_nengliang_07",
+  "name": "溫馨餐廳",
+  "description": "中心溫暖石製餐檯，周遭精緻室內蔬果。空氣飄散煮沸油脂香氣，光線明亮柔和，視覺邊界受植被環繞充滿生機。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "柔雲居玄關",
+      "to": "wutong_nengliang_06"
+    },
+    {
+      "direction": "多功能活動室",
+      "to": "wutong_nengliang_08"
+    }
+  ]
+}

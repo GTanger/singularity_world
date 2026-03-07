@@ -1,0 +1,69 @@
+{
+  "id": "ironlane",
+  "name": "打鐵巷",
+  "description": "巷道狹窄，兩側建築皆由深色硬石與粗大木樑構成。地面散落著冷卻後的碎礦渣與炭屑，空氣乾燥且帶著淡淡的焦灼味，道路兩側的牆面因長年受熱而呈現深沉的焦灰色。",
+  "tags": [
+    "street",
+    "outdoor",
+    "craft"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "鐵壹",
+      "to": "ironlane_smith1"
+    },
+    {
+      "direction": "鐵貳",
+      "to": "ironlane_smith2"
+    },
+    {
+      "direction": "鐵叄",
+      "to": "ironlane_smith3"
+    },
+    {
+      "direction": "鐵肆",
+      "to": "ironlane_smith4"
+    },
+    {
+      "direction": "鐵伍",
+      "to": "ironlane_smith5"
+    },
+    {
+      "direction": "糖水",
+      "to": "ironlane_sugar"
+    },
+    {
+      "direction": "小吃",
+      "to": "ironlane_snack"
+    },
+    {
+      "direction": "木工",
+      "to": "ironlane_carpenter"
+    },
+    {
+      "direction": "成衣",
+      "to": "ironlane_tailor"
+    },
+    {
+      "direction": "民一",
+      "to": "ironlane_home1"
+    },
+    {
+      "direction": "民二",
+      "to": "ironlane_home2"
+    },
+    {
+      "direction": "民三",
+      "to": "ironlane_home3"
+    },
+    {
+      "direction": "飛霜",
+      "to": "feishuangstreet"
+    }
+  ]
+}

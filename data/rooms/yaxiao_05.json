@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_05",
+  "name": "工具借用區",
+  "description": "牆上掛滿黑金屬扳手與切削具，金屬表面銀色霜殼。地面粗糙黑岩，重型潤滑油與沉香焦香。邊界銳利，乏人問津陳舊感。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "氣密耗材角",
+      "to": "yaxiao_04"
+    },
+    {
+      "direction": "二手能源箱堆",
+      "to": "yaxiao_06"
+    }
+  ]
+}

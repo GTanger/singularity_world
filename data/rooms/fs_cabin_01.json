@@ -1,0 +1,21 @@
+{
+  "id": "fs_cabin_01",
+  "name": "遺世居入口",
+  "description": "半嵌入石壁的 Villa 別墅。外牆由灰石與深色木樑構成，大面積琉璃窗鑲嵌其中。門口設有自動除霜溫感平台，落下的霜晶觸地即融。質感精緻優雅，與周遭森林景觀形成鮮明對比，通往內部正廳。",
+  "tags": [
+    "outdoor",
+    "cabin",
+    "residence"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "森林",
+      "to": "fs_wood_02_10"
+    },
+    {
+      "direction": "進屋",
+      "to": "fs_cabin_01_r1"
+    }
+  ]
+}

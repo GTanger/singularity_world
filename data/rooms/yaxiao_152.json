@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_152",
+  "name": "寓所秘密出口",
+  "description": "地面銜接大街黑曜石路。莊嚴幾何浮雕，重鉛與溫馨偽裝消散。溫壓接軌，灰霧大街出口。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "產業物流棧",
+      "to": "yaxiao_151"
+    }
+  ]
+}

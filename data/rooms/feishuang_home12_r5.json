@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home12_r5",
+  "name": "頂層露台",
+  "description": "順著旋梯向上的露天平台，石板圍欄。可俯瞰飛霜湖景與環湖路。這裡積霜最厚，暖風在此打轉形成氣旋。地面防滑，邊緣結滿銀白晶體簇。這裡是觀察湖面霧氣與落雪景色的絕佳制高點，環境開闊。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "feishuang_home12_r1"
+    }
+  ]
+}

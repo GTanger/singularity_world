@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_196",
+  "name": "核心維護夾層",
+  "description": "最底層未打磨黑岩陰涼物質密度高。備用運算晶塊與重型導能接頭。凝滯石灰與沉香，穩定節點。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "加密節點群",
+      "to": "yaxiao_195"
+    },
+    {
+      "direction": "聲學屏蔽層",
+      "to": "yaxiao_197"
+    }
+  ]
+}

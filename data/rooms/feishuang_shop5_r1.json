@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_shop5_r1",
+  "name": "窖前間",
+  "description": "樞紐格。負責儲酒與取酒的空間，木架上整齊排放著罈子與長柄提勺。此處陰涼且酒香極濃，地面鋪設乾沙。分別連結店舖、地下的貯酒窖與後方的宅室。空氣靜謐，採光來自高處的採光孔，環境顯得深邃。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "feishuang_shop5"
+    },
+    {
+      "direction": "酒窖",
+      "to": "feishuang_shop5_r2"
+    },
+    {
+      "direction": "宅間",
+      "to": "feishuang_shop5_r3"
+    }
+  ]
+}

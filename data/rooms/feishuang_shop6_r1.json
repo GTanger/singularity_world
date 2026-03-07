@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_shop6_r1",
+  "name": "帳房",
+  "description": "樞紐格。設有寬大書案，整齊擺放著帳冊與算盤。燈火將此處照得通明，牆上掛著幾串庫房鑰匙。此處連結櫃面、庫房與後方的店主寢室。門扇掩合則可隔絕街聲與霜氣，空氣中充滿了乾墨水與老舊紙張的味道。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "櫃面",
+      "to": "feishuang_shop6"
+    },
+    {
+      "direction": "庫房",
+      "to": "feishuang_shop6_r2"
+    },
+    {
+      "direction": "寢室",
+      "to": "feishuang_shop6_r4"
+    }
+  ]
+}

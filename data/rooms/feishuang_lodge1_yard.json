@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_lodge1_yard",
+  "name": "庭院",
+  "description": "入館後的小院，地面鋪石，霜晶落即融。一側通大街門口，一側通大廳。牆角有石燈與矮樹，熱氣自大廳溢出，與街霜對比鮮明。",
+  "tags": [
+    "inn",
+    "outdoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "feishuang_lodge1"
+    },
+    {
+      "direction": "大廳",
+      "to": "feishuang_lodge1_hall"
+    }
+  ]
+}

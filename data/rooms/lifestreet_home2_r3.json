@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home2_r3",
+  "name": "後室",
+  "description": "位於二樓的方正空間，臨街的一面開有兩扇固定的木窗。室內擺設著矮几與木凳，牆角堆疊著幾卷備用墊料。屋樑塗有防腐油脂，整體空間顯得規整且乾燥，角落放著一隻存放雜物的木箱。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "中廊",
+      "to": "lifestreet_home2_r2"
+    }
+  ]
+}

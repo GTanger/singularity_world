@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop5_r2",
+  "name": "貯酒窖",
+  "description": "順著石階向下的地下空間，溫度極低且恆定。牆邊整齊排列著陈年酒罈，罈身積滿了厚灰。室內完全無窗，石壁厚實且透著涼意。空氣中混合著微弱的酒香與泥土味，霜晶絕不入此，是店中最重要的物資存放格。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "窖前",
+      "to": "feishuang_shop5_r1"
+    }
+  ]
+}

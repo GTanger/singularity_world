@@ -1,0 +1,36 @@
+{
+  "_說明": "場所定義；room_ids 為該場所包含的房間 id 列表，供 IsRoomInVenue、動作插座是否生效等使用。",
+  "venues": [
+    {
+      "id": "venue_life_inn",
+      "name": "浮生客棧",
+      "room_ids": [
+        "life_garden",
+        "life_hall",
+        "life_dining",
+        "life_kitchen",
+        "life_backyard",
+        "life_storage",
+        "life_wine_cellar",
+        "life_corridor_2f",
+        "life_corridor_3f",
+        "life_ri_1",
+        "life_ri_2",
+        "life_yue_1",
+        "life_yue_2",
+        "life_ying_1",
+        "life_ying_2",
+        "life_ze_1",
+        "life_ze_2",
+        "life_tian_1",
+        "life_tian_2",
+        "life_di_1",
+        "life_di_2",
+        "life_xuan_1",
+        "life_xuan_2",
+        "life_huang_1",
+        "life_huang_2"
+      ]
+    }
+  ]
+}

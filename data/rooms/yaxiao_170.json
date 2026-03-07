@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_170",
+  "name": "屏蔽核心門",
+  "description": "死路牆面實則重型壓力感應裝置。極度封閉電離感迅速增。吸光黑岩鏡面油脂光澤，非法活動前夕絕對肅穆。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "抗震緩衝區",
+      "to": "yaxiao_169"
+    },
+    {
+      "direction": "核心密談室",
+      "to": "yaxiao_171"
+    }
+  ]
+}

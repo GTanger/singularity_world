@@ -1,0 +1,20 @@
+{
+  "id": "wutong_nengliang_09",
+  "name": "柔紗臥房",
+  "description": "床鋪懸掛巨根結構之間，層疊發光絲織物圍合。環境極度安定，光影隨風搖曳。地面乾燥白木灰，踩踏虛浮安靜，樹脂氣息濃郁。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "多功能活動室",
+      "to": "wutong_nengliang_08"
+    },
+    {
+      "direction": "儲藏閣樓",
+      "to": "wutong_nengliang_10"
+    }
+  ]
+}

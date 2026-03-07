@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home3_r3",
+  "name": "地窖",
+  "description": "位於地下層的石室，四周牆壁皆為原始岩層，觸感冰涼。地中央堆放著幾箱乾燥根莖類食物，牆邊立著盛水石罈。頂部垂下幾條用於綑綁物件的麻繩，整體環境乾燥平整，沒有多餘陳設。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "側間",
+      "to": "lifestreet_home3_r2"
+    }
+  ]
+}

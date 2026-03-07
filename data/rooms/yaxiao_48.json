@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_48",
+  "name": "零件拆解角",
+  "description": "工作台斷裂導能線與燒焦核心部件，混亂貧瘠。牆角高韌性橡膠廢料，金屬加工焦苦味。晦暗灰階，深入無價值轉角。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "沉重金屬廊",
+      "to": "yaxiao_47"
+    },
+    {
+      "direction": "鉛皮壓縮區",
+      "to": "yaxiao_49"
+    }
+  ]
+}

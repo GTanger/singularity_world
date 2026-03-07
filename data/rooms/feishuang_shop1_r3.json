@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_shop1_r3",
+  "name": "宅室客廳",
+  "description": "店主起居的樞紐空間，地板由木板鋪就。室內擺設著方木几與幾張帶軟墊的木凳，几面上放著洗淨的瓷具。此處連結後堂、主臥房與私傢灶間，霜晶極少飄入，室內空氣乾燥清爽，草藥味在此變得淡薄。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "後堂",
+      "to": "feishuang_shop1_r1"
+    },
+    {
+      "direction": "臥房",
+      "to": "feishuang_shop1_r4"
+    },
+    {
+      "direction": "灶間",
+      "to": "feishuang_shop1_r5"
+    }
+  ]
+}

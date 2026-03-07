@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_177",
+  "name": "內部走廊",
+  "description": "狹窄氣密高壓線路與屏蔽金屬網。幽暗冷藍乾燥。安定光影隨能量脈動。從家庭生活進入數字黑市。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "烹飪休息角",
+      "to": "yaxiao_176"
+    },
+    {
+      "direction": "沉靜眠室",
+      "to": "yaxiao_178"
+    },
+    {
+      "direction": "烹飪休息角",
+      "to": "yaxiao_176"
+    }
+  ]
+}

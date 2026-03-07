@@ -1,0 +1,20 @@
+{
+  "id": "sun_yx_06",
+  "name": "映雪臥房",
+  "description": "床鋪位於佈滿柔軟菌絲的半封閉結構，天花板流動虹彩能量波。室內極靜，光影隨熱流律動。空氣純淨乾燥，樹脂氣息濃郁持久。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "晶簇書廊",
+      "to": "sun_yx_05"
+    },
+    {
+      "direction": "洗塵淨室",
+      "to": "sun_yx_07"
+    }
+  ]
+}

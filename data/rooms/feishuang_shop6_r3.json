@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop6_r3",
+  "name": "死當密室",
+  "description": "包覆著鐵皮的厚實木門緊閉。室內放置著幾只上鎖的紅木箱，存放最珍貴的物件。環境極其封閉，牆壁厚實且密不透風。採光僅依賴一盞微弱的石燈，空氣凝滯，與世隔絕、密閉存放。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "庫房",
+      "to": "feishuang_shop6_r2"
+    }
+  ]
+}

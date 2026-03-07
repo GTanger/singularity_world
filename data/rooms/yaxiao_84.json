@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_84",
+  "name": "舒緩淨身間",
+  "description": "黑曜石浴池溫熱煙霧，牆面磨光幾何晶片折射蒸汽。濕度飽和溫暖安定。牆角調光藍色地衣。絕對穩固安寧氛圍。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "沉香餐廳",
+      "to": "yaxiao_83"
+    },
+    {
+      "direction": "暖石廊道",
+      "to": "yaxiao_85"
+    },
+    {
+      "direction": "沉香餐廳",
+      "to": "yaxiao_83"
+    }
+  ]
+}

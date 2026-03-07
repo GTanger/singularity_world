@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home9_r3",
+  "name": "側臥套房",
+  "description": "寢居用途的空間，設有帶帷幔的架子床。木地板因地熱而乾燥，案頭擺放洗淨的瓷具。室內光線柔和，門扇掩合則隔絕中庭霜氣。空氣清新，環境相對寬敞，木質地板走起來發出厚實且穩定的聲響。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "庭院",
+      "to": "feishuang_home9_r1"
+    }
+  ]
+}

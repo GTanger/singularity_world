@@ -1,0 +1,21 @@
+{
+  "id": "feishuang_lodge1_dining",
+  "name": "喫食堂",
+  "description": "七八張方桌錯落，米飯與熱湯香氣四溢。蒸籠與灶台在側，白煙嫋嫋。通大廳與廚房，旅人在此用膳，窗外霜晶飄落。",
+  "tags": [
+    "inn",
+    "indoor",
+    "food"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "feishuang_lodge1_hall"
+    },
+    {
+      "direction": "廚房",
+      "to": "feishuang_lodge1_kitchen"
+    }
+  ]
+}

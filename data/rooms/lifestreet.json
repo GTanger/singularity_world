@@ -1,0 +1,97 @@
+{
+  "id": "lifestreet",
+  "name": "浮生大街",
+  "description": "青石板鋪就的長街人來人往，兩側店招林立，客棧、民宅、茶館、當舖與各色鋪子沿街排開，往東可通往向陽大街，西接梧桐、北通飛霜，另有打鐵巷與夜鴞巷隱在岔路之間。",
+  "tags": [
+    "street",
+    "outdoor",
+    "trade"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "客棧",
+      "to": "life_garden"
+    },
+    {
+      "direction": "民一",
+      "to": "lifestreet_home1"
+    },
+    {
+      "direction": "民二",
+      "to": "lifestreet_home2"
+    },
+    {
+      "direction": "民三",
+      "to": "lifestreet_home3"
+    },
+    {
+      "direction": "民四",
+      "to": "lifestreet_home4"
+    },
+    {
+      "direction": "民五",
+      "to": "lifestreet_home5"
+    },
+    {
+      "direction": "民六",
+      "to": "lifestreet_home6"
+    },
+    {
+      "direction": "民七",
+      "to": "lifestreet_home7"
+    },
+    {
+      "direction": "民八",
+      "to": "lifestreet_home8"
+    },
+    {
+      "direction": "珍寶",
+      "to": "lifestreet_gems"
+    },
+    {
+      "direction": "茶館",
+      "to": "lifestreet_tea"
+    },
+    {
+      "direction": "典當",
+      "to": "lifestreet_pawn"
+    },
+    {
+      "direction": "草藥",
+      "to": "lifestreet_herbs"
+    },
+    {
+      "direction": "酒舖",
+      "to": "lifestreet_liquor"
+    },
+    {
+      "direction": "糕餅",
+      "to": "lifestreet_cake"
+    },
+    {
+      "direction": "雜貨",
+      "to": "lifestreet_general"
+    },
+    {
+      "direction": "打鐵巷",
+      "to": "ironlane"
+    },
+    {
+      "direction": "向陽",
+      "to": "sunstreet"
+    },
+    {
+      "direction": "梧桐",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "飛霜",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "夜鴞",
+      "to": "yaxiaolane"
+    }
+  ]
+}

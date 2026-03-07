@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_178",
+  "name": "沉靜眠室",
+  "description": "柔軟菌絲半封閉結構，天花板淡金能量波極度安定。純淨乾燥。柔軟木質纖維樹脂濃郁，監控洗錢進度核心站。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_177"
+    },
+    {
+      "direction": "數據緩衝室",
+      "to": "yaxiao_179"
+    }
+  ]
+}

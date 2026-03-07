@@ -1,0 +1,25 @@
+{
+  "id": "feishuang_shop4_r3",
+  "name": "灶間",
+  "description": "負責燒水與備茶的工作區。大型石砌爐灶上坐著幾口冒氣的銅壺，水缸深陷地底。此處連結茶堂、雅間與店主寢室，熱氣蒸騰。地面排水石渠清理順暢，雖然忙碌但結構穩固，霜晶完全無法在這種溫熱環境下存留。",
+  "tags": [
+    "shop",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大堂",
+      "to": "feishuang_shop4"
+    },
+    {
+      "direction": "寢室",
+      "to": "feishuang_shop4_r4"
+    },
+    {
+      "direction": "後院",
+      "to": "feishuang_shop4_r5"
+    }
+  ]
+}

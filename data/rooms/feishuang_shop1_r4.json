@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_shop1_r4",
+  "name": "主臥房",
+  "description": "位於建築深處，設有一張穩固的木製床架。床頭擺放著儲物用的箱籠，牆角立著一只洗臉石盆。案頭堆放著幾卷泛黃的藥譜，窗櫺對著安靜的內巷，環境靜謐且避風，是一處維護良好且私密的休息格間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "feishuang_shop1_r3"
+    }
+  ]
+}

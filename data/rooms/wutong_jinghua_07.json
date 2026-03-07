@@ -1,0 +1,21 @@
+{
+  "id": "wutong_jinghua_07",
+  "name": "能量美食區",
+  "description": "專門處理晶質食材的小型吧台。牆面具備冷光源苔蘚，環境明亮精緻。空氣甜美樹脂氣息，質感圓潤飽滿。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "華麗起居堂",
+      "to": "wutong_jinghua_06"
+    },
+    {
+      "direction": "璀璨臥眠區",
+      "to": "wutong_jinghua_08"
+    }
+  ]
+}

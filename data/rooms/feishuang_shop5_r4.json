@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop5_r4",
+  "name": "伙房灶房",
+  "description": "位於宅室側邊的小空間，設有一口單眼泥灶與木製餐具格。地面乾燥，牆上開有窄孔排煙。空氣中瀰漫著木柴燃燒後的乾燥香味，角落放著一桶清澈的井水。這裡是店主家人處理日常膳食的地方，簡單而實用。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "宅室",
+      "to": "feishuang_shop5_r3"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_181",
+  "name": "加密運算矩陣",
+  "description": "數百微型晶體核心液槽旋轉改寫數據權限。溫壓物理極限空氣密度極高。虹彩流光與瓦舍平庸極端反差。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "數字轉化核心",
+      "to": "yaxiao_180"
+    },
+    {
+      "direction": "實體晶塊庫",
+      "to": "yaxiao_182"
+    }
+  ]
+}

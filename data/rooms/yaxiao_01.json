@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_01",
+  "name": "雜貨行店面",
+  "description": "地面帶刮痕黑曜石磚，櫃檯緻密黑木。牆架堆滿二手閥門與能源盒，金屬氧化與沉香味。光線晦暗，僅靠屋頂黃光能量燈照明。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "零件陳列區",
+      "to": "yaxiao_02"
+    }
+  ]
+}

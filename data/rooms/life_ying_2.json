@@ -1,0 +1,16 @@
+{
+  "id": "life_ying_2",
+  "name": "盈字二號房",
+  "description": "這間房堆放了客棧備用的紅木長凳與成捆的柴薪，空間侷促。住在這裏像是身處雜物堆中，卻能感受到一種忙碌過後的真實生活壓力。",
+  "tags": [
+    "room",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_2f"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "yaxiao_64",
+  "name": "元件精密鑄模",
+  "description": "熱壓幾何分形紋路，熟成樹脂與金屬熔液。物件密集飽和。地熱孔穴均勻擴散，岩漿般飽滿深紅。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "高溫切削室",
+      "to": "yaxiao_63"
+    },
+    {
+      "direction": "合金強化池",
+      "to": "yaxiao_65"
+    },
+    {
+      "direction": "合金強化池",
+      "to": "yaxiao_65"
+    }
+  ]
+}

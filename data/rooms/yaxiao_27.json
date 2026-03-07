@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_27",
+  "name": "機械清洗區",
+  "description": "清洗機帶動地板高頻震動，抵消夜鴞穿透。牆面厚實過濾地衣暗綠。舊式螢光管頻閃，空氣沉重濕潤。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "自助洗衣店面",
+      "to": "yaxiao_26"
+    },
+    {
+      "direction": "能量烘乾位",
+      "to": "yaxiao_28"
+    }
+  ]
+}

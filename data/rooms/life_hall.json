@@ -1,0 +1,26 @@
+{
+  "id": "life_hall",
+  "name": "浮生大廳",
+  "description": "挑高的大廳中央懸著一盞〔六角宮燈〕，暖黃的光暈映在兩側的木柱上。櫃台後方掛著一面寫有【浮生】二字的〔匾額〕，墨跡蒼勁。角落立著一塊〔佈告欄〕，上頭釘滿了紙條。來往的旅人在此歇腳、打聽消息，或只是發呆望著門外。",
+  "tags": [
+    "inn",
+    "lobby",
+    "social",
+    "trade"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "庭院",
+      "to": "life_garden"
+    },
+    {
+      "direction": "食堂",
+      "to": "life_dining"
+    },
+    {
+      "direction": "上樓",
+      "to": "life_corridor_2f"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_tailor",
+  "name": "成衣鋪",
+  "description": "櫃檯上擺放著幾捲粗麻布與棉布，牆壁掛著成品的長袍。室內光線明亮，中央有一張大木桌，上面放著剪子、布尺與彩色線軸。空氣中充滿了漿洗布料的味道，門後連接著後方的裁縫工作區。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "裁縫室",
+      "to": "ironlane_tailor_r1"
+    }
+  ]
+}

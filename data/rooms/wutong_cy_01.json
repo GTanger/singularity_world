@@ -1,0 +1,24 @@
+{
+  "id": "wutong_cy_01",
+  "name": "廣庭入口",
+  "description": "地面由平整的白玉石板鋪就，邊緣與大街的黑曜石銜接。兩側梧桐樹冠在此匯聚成天然門廊，厚實的葉片遮蔽了大部分天光。空氣中懸浮著恆定的綠色微粒，地表積聚著一層帶有油脂感的落葉碎屑。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "垂蔭步道",
+      "to": "wutong_cy_02"
+    },
+    {
+      "direction": "靜謐林帶",
+      "to": "wutong_cy_06"
+    }
+  ]
+}

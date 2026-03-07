@@ -1,0 +1,20 @@
+{
+  "id": "wutong_shengji_05",
+  "name": "醫務休息室",
+  "description": "醫館與住宅過渡帶。簡單木質座椅，牆壁微弱熱輻射。空氣流通感增強，清淡礦物味，光線轉化為平穩暗金。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "藥劑配製間",
+      "to": "wutong_shengji_04"
+    },
+    {
+      "direction": "仁安寓玄關",
+      "to": "wutong_shengji_06"
+    }
+  ]
+}

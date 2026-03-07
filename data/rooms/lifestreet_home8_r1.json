@@ -1,0 +1,24 @@
+{
+  "id": "lifestreet_home8_r1",
+  "name": "門廳",
+  "description": "灰色石塊拼接的地坪，邊角處皆打磨得如同外牆般圓潤。天花板挑高，兩側設有門洞通往靜室與法壇。室內空氣流通極佳，牆面上刻有裝飾性的風化橫紋，呈現出線條規整。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "民宅",
+      "to": "lifestreet_home8"
+    },
+    {
+      "direction": "靜室",
+      "to": "lifestreet_home8_r2"
+    },
+    {
+      "direction": "法壇",
+      "to": "lifestreet_home8_r3"
+    }
+  ]
+}

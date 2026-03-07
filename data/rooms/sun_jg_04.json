@@ -1,0 +1,20 @@
+{
+  "id": "sun_jg_04",
+  "name": "彩霓室玄關",
+  "description": "生活區入口，地勢微降。地面鋪設具備消音功能的幾何地毯。空氣清新燥熱，帶生活氣息的沉香餘韻。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "儲藏收納室",
+      "to": "sun_jg_03"
+    },
+    {
+      "direction": "色彩起居室",
+      "to": "sun_jg_05"
+    }
+  ]
+}

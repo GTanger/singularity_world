@@ -1,0 +1,16 @@
+{
+  "id": "sun_cg_05",
+  "name": "最終靜域",
+  "description": "位於建築頂端，白玉地面反射高空密集金光。空氣清冷稀薄，流速極快。視野可俯瞰整條向陽大街，建築最深處。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "熾光寢室",
+      "to": "sun_cg_04"
+    }
+  ]
+}

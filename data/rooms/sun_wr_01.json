@@ -1,0 +1,20 @@
+{
+  "id": "sun_wr_01",
+  "name": "反射玄關",
+  "description": "建築主體嵌入巨型鏡面結構，地面由黑曜石拼嵌集能陣列。入口處充斥恆定熱力，光線被過濾成濃稠金黃色。空氣中瀰漫乾土與沉香味道，視覺邊界受光能溢出影響。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "sunstreet"
+    },
+    {
+      "direction": "集能客廳",
+      "to": "sun_wr_02"
+    }
+  ]
+}

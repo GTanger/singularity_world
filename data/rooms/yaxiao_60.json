@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_60",
+  "name": "隔音工作間",
+  "description": "表面私人愛好室，簡約黑曜石操作台。光線充足穩重琥珀。牆面隱藏隔音抗震層。掩飾腳下武裝組裝區震動。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "私密溫泉間",
+      "to": "yaxiao_59"
+    },
+    {
+      "direction": "核心垂直降",
+      "to": "yaxiao_61"
+    }
+  ]
+}

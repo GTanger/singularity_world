@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith5_r4",
+  "name": "學徒雅宿",
+  "description": "設有獨立的單人木床，床單整潔。每人配有一張書桌與一個封閉式的儲物櫃。地面鋪設木地板，通風良好。牆壁粉刷成乾淨的淡黃色，這是一處提供良好休息品質的居住格間，完全沒有鐵鏽味。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "中庭廊",
+      "to": "ironlane_smith5_r3"
+    }
+  ]
+}

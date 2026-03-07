@@ -1,0 +1,24 @@
+{
+  "id": "wutong_houtu_02",
+  "name": "沉積起居室",
+  "description": "中央整塊黑岩磨製矮台，表面光滑如鏡。牆面鑲嵌帶放射狀紋理能量礦石，維持恆定高溫熱輻射。家具密度極高晶化木材，空氣純淨乾燥，強。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_houtu_ju"
+    },
+    {
+      "direction": "礦粉理療間",
+      "to": "wutong_houtu_03"
+    },
+    {
+      "direction": "灶火熱室",
+      "to": "wutong_houtu_04"
+    }
+  ]
+}

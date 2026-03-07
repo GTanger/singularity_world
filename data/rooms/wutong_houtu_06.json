@@ -1,0 +1,17 @@
+{
+  "id": "wutong_houtu_06",
+  "name": "地穴儲藏庫",
+  "description": "建築最底層，牆面未經加工粗糙黑岩。環境陰涼物質密度極高，存放封裝於晶盒的能量物資。空氣凝滯，淡淡石灰氣息，建築最內側。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "磐石臥房",
+      "to": "wutong_houtu_05"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_liquor_r2",
+  "name": "釀坊",
+  "description": "後半部的生產空間，放置著兩口巨大的石砌發酵池，上方蓋著厚重的稻草蓋。牆邊掛著長柄的木杓與濾袋，幾處排水孔邊緣結有白色的沈澱物。室內濕度較高，空氣中混合著穀物蒸熟後產生的熱氣感。",
+  "tags": [
+    "tavern",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "前舖",
+      "to": "lifestreet_liquor_r1"
+    },
+    {
+      "direction": "窖室",
+      "to": "lifestreet_liquor_r3"
+    }
+  ]
+}

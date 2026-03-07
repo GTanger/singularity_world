@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lake_pavilion",
+  "name": "觀景亭",
+  "description": "石基木頂的六角小亭，可眺湖景與落霜。暖風穿亭而過，霧氣與晶粉紛飛。通環湖路，視野極佳。",
+  "tags": [
+    "outdoor",
+    "scenic"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "路口",
+      "to": "feishuang_lake_road"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_18",
+  "name": "靜滯香徑",
+  "description": "位於廣庭邊陲的窄路。兩側生長著散發濃郁幽香的紫色花卉，花瓣厚實且帶有油脂質感。空氣在此處幾乎凝滯，能量粒子濃度極高，光線被過濾成深琥珀色。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "幾何植栽牆",
+      "to": "wutong_cy_17"
+    },
+    {
+      "direction": "荒蕪與繁茂交界",
+      "to": "wutong_cy_19"
+    }
+  ]
+}

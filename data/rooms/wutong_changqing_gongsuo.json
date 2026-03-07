@@ -1,0 +1,20 @@
+{
+  "id": "wutong_changqing_gongsuo",
+  "name": "長青公所",
+  "description": "街區事務管理中心。打磨至鏡面效果的黑曜石地面，石縫鑲嵌黃銅能量導線。兩側梧桐被精確修剪成對稱立柱形，負責植被過度擴張與民生服務，是街道的行政心臟。",
+  "tags": [
+    "indoor",
+    "admin"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "進入公所",
+      "to": "wutong_cq_01"
+    }
+  ]
+}

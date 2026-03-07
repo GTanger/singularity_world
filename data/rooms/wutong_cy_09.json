@@ -1,0 +1,28 @@
+{
+  "id": "wutong_cy_09",
+  "name": "萬象環廊",
+  "description": "環繞中央廣庭的半開放走廊。立柱由整塊白玉雕琢，其上纏繞著具備幾何美感的藤蔓。地面反射著上方律動的落霜，邊界因充足的光線而顯得銳利清晰。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "垂蔭步道",
+      "to": "wutong_cy_02"
+    },
+    {
+      "direction": "廣庭核心",
+      "to": "wutong_cy_10"
+    },
+    {
+      "direction": "翠意階道",
+      "to": "wutong_cy_14"
+    },
+    {
+      "direction": "根系避風穴",
+      "to": "wutong_cy_13"
+    }
+  ]
+}

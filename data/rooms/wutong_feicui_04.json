@@ -1,0 +1,20 @@
+{
+  "id": "wutong_feicui_04",
+  "name": "內宅通道",
+  "description": "烘房側邊晶化木材窄廊。牆面滲出恆溫露珠，地表覆蓋消音菌絲毯，由嘈雜轉為安靜。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "焙茶烘房",
+      "to": "wutong_feicui_03"
+    },
+    {
+      "direction": "沁心軒客廳",
+      "to": "wutong_feicui_05"
+    }
+  ]
+}

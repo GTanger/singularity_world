@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_23",
+  "name": "走私貨品集散位",
+  "description": "貨架整齊堆疊裝高能電漿黑盒，表面閃爍偽裝民生標籤。地面加強黑岩，物理堅硬。電離焦味與沉香，安靜穩定，地下財富感。",
+  "tags": [
+    "indoor",
+    "storage"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "違禁電池組裝區",
+      "to": "yaxiao_22"
+    },
+    {
+      "direction": "共鳴屏蔽室",
+      "to": "yaxiao_24"
+    }
+  ]
+}

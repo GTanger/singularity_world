@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_pawn_r1",
+  "name": "外櫃",
+  "description": "高聳木櫃檯前端設有粗鐵柵欄，僅留下方一窄口傳遞物品。顧客區地面由粗石鋪設，沒有任何凳子。柵欄後方可見一盞明亮油燈，將光線集中在櫃檯板上，方便朝奉檢視物品。空氣中帶著些許霉味。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "lifestreet_pawn"
+    },
+    {
+      "direction": "帳間",
+      "to": "lifestreet_pawn_r2"
+    }
+  ]
+}

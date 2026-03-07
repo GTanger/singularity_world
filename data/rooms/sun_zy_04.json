@@ -1,0 +1,20 @@
+{
+  "id": "sun_zy_04",
+  "name": "頂層望台",
+  "description": "位於建築最高處，由晶化根柱支撐。視野可俯瞰向陽大街的光學拱頂，強勁熱風在此穩定流動。空氣感清新乾燥，琥珀色大氣在此極其飽和。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "垂直旋梯",
+      "to": "sun_zy_03"
+    },
+    {
+      "direction": "景觀寢宮",
+      "to": "sun_zy_06"
+    }
+  ]
+}

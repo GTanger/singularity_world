@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_182",
+  "name": "實體晶塊庫",
+  "description": "貨架完成轉化能量晶塊冷峻藍光。乾燥穩定導向線照明。凝滯純淨。洗錢物流終點，重壓感隨物資增。",
+  "tags": [
+    "indoor",
+    "storage"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "加密運算矩陣",
+      "to": "yaxiao_181"
+    },
+    {
+      "direction": "最終驗證台",
+      "to": "yaxiao_183"
+    }
+  ]
+}

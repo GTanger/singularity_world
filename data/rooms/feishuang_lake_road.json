@@ -1,0 +1,56 @@
+{
+  "id": "feishuang_lake_road",
+  "name": "環湖路",
+  "description": "沿飛霜湖岸鋪設的石板路，暖霧自湖面升騰，霜晶落即融。兩側別墅與地景格錯落，可通往湖面、碼頭、觀景亭與泵房，亦可經此回飛霜大街。",
+  "tags": [
+    "street",
+    "outdoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "湖面",
+      "to": "feishuang_lake_land"
+    },
+    {
+      "direction": "碼頭",
+      "to": "feishuang_lake_pier"
+    },
+    {
+      "direction": "觀景亭",
+      "to": "feishuang_lake_pavilion"
+    },
+    {
+      "direction": "泵房",
+      "to": "feishuang_lake_pump"
+    },
+    {
+      "direction": "落霞",
+      "to": "feishuang_home8"
+    },
+    {
+      "direction": "晶園",
+      "to": "feishuang_home9"
+    },
+    {
+      "direction": "霧隱",
+      "to": "feishuang_home10"
+    },
+    {
+      "direction": "暖石",
+      "to": "feishuang_home11"
+    },
+    {
+      "direction": "雲頂",
+      "to": "feishuang_home12"
+    },
+    {
+      "direction": "霜林小徑",
+      "to": "fs_trail_01"
+    }
+  ]
+}

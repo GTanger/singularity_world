@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_smith2",
+  "name": "打鐵鋪",
+  "description": "店面門口立著幾架磨石，地面鋪設整齊的黑磚。架上陳列著各類長短刀具，刀鋒在油燈下泛著冷光。櫃檯後方有一道加裝了鐵柵的木門，通往室內的作業大廳，空氣中帶著淡淡的磨石粉末氣味。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "研磨間",
+      "to": "ironlane_smith2_r1"
+    }
+  ]
+}

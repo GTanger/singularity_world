@@ -1,0 +1,21 @@
+{
+  "id": "lifestreet_tea",
+  "name": "茶博士",
+  "description": "幾張寬大的長方形木桌沿牆擺放，木紋細縫中鑲嵌著乾燥的殘餘。長凳表面光亮且平滑，桌面留有斑駁的水漬與陳舊的刀刻痕跡，角落處有一口石砌的水缸，水面平靜地倒映著屋頂。",
+  "tags": [
+    "tavern",
+    "social",
+    "food"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "茶堂",
+      "to": "lifestreet_tea_r1"
+    }
+  ]
+}

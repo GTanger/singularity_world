@@ -1,0 +1,24 @@
+{
+  "id": "lifestreet_home6_r1",
+  "name": "下層",
+  "description": "低於街道水平的石室，粗大原木支撐著屋頂。牆邊排列著三口密封陶罈，壇口封泥壓印著與大門相似的符號標記。木製梯級通向閣樓，牆角有明顯的風化痕跡，透出歲月累積的古樸感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "民宅",
+      "to": "lifestreet_home6"
+    },
+    {
+      "direction": "閣樓",
+      "to": "lifestreet_home6_r2"
+    },
+    {
+      "direction": "內室",
+      "to": "lifestreet_home6_r3"
+    }
+  ]
+}

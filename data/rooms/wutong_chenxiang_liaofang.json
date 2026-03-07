@@ -1,0 +1,20 @@
+{
+  "id": "wutong_chenxiang_liaofang",
+  "name": "沉香理療坊",
+  "description": "黑曜石拼嵌地面，櫃檯由飽滿沉香木增生而成。室內高濃度油脂香氣，牆面掛滿結晶化草本標本，環境溫壓恆定，光線被過濾成濃稠琥珀色。內通棲香居。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "調律診間",
+      "to": "wutong_chenxiang_02"
+    }
+  ]
+}

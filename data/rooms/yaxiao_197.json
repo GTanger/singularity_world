@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_197",
+  "name": "聲學屏蔽層",
+  "description": "最外層物理屏障。傳感器捕捉夜鴞轉內部運算共鳴抵消波。乾燥冷冽絕對穩固。穩重深琥珀，最後聲學隔閡。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "核心維護夾層",
+      "to": "yaxiao_196"
+    },
+    {
+      "direction": "街角出口",
+      "to": "yaxiao_198"
+    }
+  ]
+}

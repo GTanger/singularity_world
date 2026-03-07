@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_tea_r2",
+  "name": "茶室",
+  "description": "由竹編屏風隔出的空間，擺設著幾張精緻的小方桌。這裡的木凳帶有靠背，桌面鋪有乾淨的棉布。角落點著一盤驅趕蚊蟲的乾草熏香，光線透過屏風孔隙灑在地面，整體環境比外堂安靜且乾爽許多。",
+  "tags": [
+    "tavern",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "茶堂",
+      "to": "lifestreet_tea_r1"
+    },
+    {
+      "direction": "爐房",
+      "to": "lifestreet_tea_r3"
+    }
+  ]
+}

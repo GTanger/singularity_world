@@ -1,0 +1,25 @@
+{
+  "id": "yaxiao_103",
+  "name": "溫馨餐廳",
+  "description": "中心溫暖石製餐檯，精緻室內蔬果葉片油脂感。煮沸油脂與茶香，光線明亮柔和。植被環繞生命力，民生範圍能量波動。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "私宅客廳",
+      "to": "yaxiao_102"
+    },
+    {
+      "direction": "靜謐眠室",
+      "to": "yaxiao_104"
+    },
+    {
+      "direction": "私宅客廳",
+      "to": "yaxiao_102"
+    }
+  ]
+}

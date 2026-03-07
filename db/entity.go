@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"singularity_world/entity"
+	"singularity_world/store"
 
 	cryptorand "crypto/rand"
 )
@@ -142,7 +143,7 @@ func ExpandSoulSeedToPersonality(seed int64) Personality {
 	}
 }
 
-// InsertEntity 新增一筆玩家實體（創角用）；id 不可重複。gender 為 "M" 或 "F"，空則預設 "M"。會寫入 soul_seed，並由 seed 展開三軸映射為 vit/qi/dex 寫入。
+// InsertEntity 新增一筆玩家實體（創角用）；store 啟用時寫入 store 並持久化 entities.json。
 func InsertEntity(db *sql.DB, id, displayChar, gender string) error {
 	if displayChar == "" {
 		displayChar = "我"
@@ -157,6 +158,15 @@ func InsertEntity(db *sql.DB, id, displayChar, gender string) error {
 	vit, qi, dex := ExpandSoulSeedToBaseStats(seed)
 	now := time.Now().Unix()
 	equip := StarterEquipment(gender)
+	if store.Default != nil {
+		return store.Default.PutEntity(&store.Entity{
+			ID: id, Kind: "player", DisplayChar: displayChar,
+			X: 0, Y: 0, MoveState: "idle",
+			Vit: vit, Qi: qi, Dex: dex, Magnesium: 0,
+			CreatedAt: now, Gender: gender, SoulSeed: &seed,
+			EquipmentSlots: equip, Inventory: "[]", ActivatedNodes: `["N000"]`,
+		})
+	}
 	_, err = db.Exec(
 		`INSERT INTO entities (id, kind, display_char, x, y, move_state, vit, qi, dex, magnesium, created_at, gender, soul_seed, equipment_slots)
 		 VALUES (?, 'player', ?, 0, 0, 'idle', ?, ?, ?, 0, ?, ?, ?, ?)`,
@@ -165,10 +175,41 @@ func InsertEntity(db *sql.DB, id, displayChar, gender string) error {
 	return err
 }
 
-// GetEntity 依 id 查詢 entities 表，回傳一筆角色；若無則回傳 nil, nil。
-// 參數：db 為資料庫連線，id 為實體 id。
-// 回傳：*entity.Character 與 error；若查無則 (nil, nil)。
+// storeEntityToCharacter 將 store.Entity 轉成 entity.Character；npcDisplayTitle 僅 NPC 時使用（可為空）。
+func storeEntityToCharacter(e *store.Entity, npcDisplayTitle string) *entity.Character {
+	if e == nil {
+		return nil
+	}
+	c := &entity.Character{
+		ID: e.ID, Kind: e.Kind, DisplayChar: e.DisplayChar,
+		X: e.X, Y: e.Y, MoveState: e.MoveState,
+		Vit: e.Vit, Qi: e.Qi, Dex: e.Dex, Magnesium: e.Magnesium,
+		CreatedAt: e.CreatedAt, Gender: e.Gender,
+		DisplayTitle: e.DisplayTitle, ActivatedNodes: e.ActivatedNodes,
+		EquipmentSlots: e.EquipmentSlots, Inventory: e.Inventory,
+		TargetX: e.TargetX, TargetY: e.TargetY, WalkOrRun: e.WalkOrRun,
+		MoveStartedAt: e.MoveStartedAt, LastObservedAt: e.LastObservedAt,
+		SoulSeed: e.SoulSeed,
+	}
+	if c.Kind == "npc" && npcDisplayTitle != "" {
+		c.DisplayTitle = npcDisplayTitle
+	}
+	return c
+}
+
+// GetEntity 依 id 查詢實體；store 啟用時從 store 讀取，否則從 DB。
 func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
+	if store.Default != nil {
+		se := store.Default.GetEntity(id)
+		if se == nil {
+			return nil, nil
+		}
+		title := ""
+		if se.Kind == "npc" {
+			title = GetNPCTitle(db, id)
+		}
+		return storeEntityToCharacter(se, title), nil
+	}
 	var c entity.Character
 	var targetX, targetY sql.NullInt64
 	var moveStartedAt, lastObservedAt sql.NullInt64
@@ -251,16 +292,24 @@ func GetPersonalityForEntity(db *sql.DB, entityID string) (Personality, bool) {
 	return ExpandSoulSeedToPersonality(*c.SoulSeed), true
 }
 
-// UpdateLastObserved 將指定實體的 last_observed_at 更新為 at；用於觀測觸發時標記。
-// 參數：db 為資料庫連線，id 為實體 id，at 為時間戳。
-// 回傳：error。副作用：UPDATE entities 一筆。
+// UpdateLastObserved 將指定實體的 last_observed_at 更新為 at；store 啟用時寫入 store。
 func UpdateLastObserved(db *sql.DB, id string, at int64) error {
+	if store.Default != nil {
+		return store.Default.UpdateEntity(id, func(e *store.Entity) { e.LastObservedAt = &at })
+	}
 	_, err := db.Exec("UPDATE entities SET last_observed_at = ? WHERE id = ?", at, id)
 	return err
 }
 
-// UpdatePosition 將指定實體位置更新為 (x, y)，並設為 idle（清除移動目標）。用於 1.3.1 點擊移動與抵達時。
+// UpdatePosition 將指定實體位置更新為 (x, y)，並設為 idle；store 啟用時寫入 store。
 func UpdatePosition(db *sql.DB, id string, x, y int) error {
+	if store.Default != nil {
+		return store.Default.UpdateEntity(id, func(e *store.Entity) {
+			e.X, e.Y = x, y
+			e.MoveState = "idle"
+			e.TargetX, e.TargetY, e.MoveStartedAt = nil, nil, nil
+		})
+	}
 	_, err := db.Exec(
 		"UPDATE entities SET x = ?, y = ?, move_state = 'idle', target_x = NULL, target_y = NULL, move_started_at = NULL WHERE id = ?",
 		x, y, id,
@@ -268,10 +317,18 @@ func UpdatePosition(db *sql.DB, id string, x, y int) error {
 	return err
 }
 
-// SetMoveTarget 設定移動目標，move_state 設為 moving；供 1.3.3 單擊走雙擊跑、tick 逐步推進。
+// SetMoveTarget 設定移動目標，move_state 設為 moving；store 啟用時寫入 store。
 func SetMoveTarget(db *sql.DB, id string, targetX, targetY int, walkOrRun string, startedAt int64) error {
 	if walkOrRun == "" {
 		walkOrRun = "walk"
+	}
+	if store.Default != nil {
+		return store.Default.UpdateEntity(id, func(e *store.Entity) {
+			e.TargetX, e.TargetY = &targetX, &targetY
+			e.MoveState = "moving"
+			e.WalkOrRun = walkOrRun
+			e.MoveStartedAt = &startedAt
+		})
 	}
 	_, err := db.Exec(
 		"UPDATE entities SET target_x = ?, target_y = ?, move_state = 'moving', walk_or_run = ?, move_started_at = ? WHERE id = ?",
@@ -280,14 +337,33 @@ func SetMoveTarget(db *sql.DB, id string, targetX, targetY int, walkOrRun string
 	return err
 }
 
-// UpdatePositionOnly 僅更新實體座標（用於移動中每 tick 步進），不清除 target。
+// UpdatePositionOnly 僅更新實體座標（用於移動中每 tick 步進）；store 啟用時寫入 store。
 func UpdatePositionOnly(db *sql.DB, id string, x, y int) error {
+	if store.Default != nil {
+		return store.Default.UpdateEntity(id, func(e *store.Entity) { e.X, e.Y = x, y })
+	}
 	_, err := db.Exec("UPDATE entities SET x = ?, y = ? WHERE id = ?", x, y, id)
 	return err
 }
 
-// GetMovingEntities 回傳所有 move_state = 'moving' 的實體，供每 tick 推進位置用。
+// GetMovingEntities 回傳所有 move_state = 'moving' 的實體；store 啟用時從 store 讀取。
 func GetMovingEntities(db *sql.DB) ([]*entity.Character, error) {
+	if store.Default != nil {
+		ids := store.Default.GetMovingEntityIDs()
+		var list []*entity.Character
+		for _, id := range ids {
+			se := store.Default.GetEntity(id)
+			if se == nil {
+				continue
+			}
+			title := ""
+			if se.Kind == "npc" {
+				title = GetNPCTitle(db, id)
+			}
+			list = append(list, storeEntityToCharacter(se, title))
+		}
+		return list, nil
+	}
 	rows, err := db.Query(
 		`SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
 		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed, equipment_slots
@@ -350,9 +426,20 @@ func scanCharacters(rows *sql.Rows) ([]*entity.Character, error) {
 	return list, rows.Err()
 }
 
-// GetEntitiesInBox 查詢座標落在 [xMin,xMax]×[yMin,yMax] 內的實體；kind 為 "npc" 僅 NPC，空字串為全部。
-// 供視野內即時模擬只載入可能進入視野的 NPC 用。
+// GetEntitiesInBox 查詢座標落在 [xMin,xMax]×[yMin,yMax] 內的實體；store 啟用時從 store 讀取。
 func GetEntitiesInBox(db *sql.DB, xMin, xMax, yMin, yMax int, kind string) ([]*entity.Character, error) {
+	if store.Default != nil {
+		sel := store.Default.GetEntitiesInBox(xMin, xMax, yMin, yMax, kind)
+		list := make([]*entity.Character, 0, len(sel))
+		for _, se := range sel {
+			title := ""
+			if se.Kind == "npc" {
+				title = GetNPCTitle(db, se.ID)
+			}
+			list = append(list, storeEntityToCharacter(se, title))
+		}
+		return list, nil
+	}
 	var query string
 	var args []interface{}
 	if kind != "" {
@@ -374,8 +461,11 @@ func GetEntitiesInBox(db *sql.DB, xMin, xMax, yMin, yMax int, kind string) ([]*e
 	return scanCharacters(rows)
 }
 
-// DeleteAllEntities 刪除所有實體（entity_auth、entity_room、entities、event_log 內與實體相關可選）。用於清空角色重測創角等。
+// DeleteAllEntities 刪除所有實體；store 啟用時清空 store 的 entities 與 entity_room 並持久化。
 func DeleteAllEntities(db *sql.DB) error {
+	if store.Default != nil {
+		return store.ClearAllEntities()
+	}
 	if _, err := db.Exec("DELETE FROM entity_auth"); err != nil {
 		return err
 	}

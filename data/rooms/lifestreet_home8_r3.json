@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home8_r3",
+  "name": "法壇",
+  "description": "宅邸最後方的圓形大廳，四周建築稜角極致圓潤。中央設有一座微微凸起的圓形石台，台面光潔如新。這裡是整座房屋光線最明亮的地方，石台周圍空無一物，地面呈現放射狀紋路。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "門廳",
+      "to": "lifestreet_home8_r1"
+    }
+  ]
+}

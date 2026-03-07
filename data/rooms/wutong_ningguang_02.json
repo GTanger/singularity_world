@@ -1,0 +1,21 @@
+{
+  "id": "wutong_ningguang_02",
+  "name": "作品典藏庫",
+  "description": "展廳後方，牆面佈滿能量維持陣列。儲藏架沉重黑金屬製成，表面厚實保護性地衣。環境乾燥穩定，樹脂香與電離感達成平衡。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_ningguang_yilang"
+    },
+    {
+      "direction": "創作工作室",
+      "to": "wutong_ningguang_03"
+    }
+  ]
+}

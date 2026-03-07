@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge1_h1",
+  "name": "華字一號房",
+  "description": "二樓客房，空間較大，圓几與床。窗櫺外霜晶飄落。通二樓迴廊，暖爐餘溫。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "二樓迴廊",
+      "to": "feishuang_lodge1_2f"
+    }
+  ]
+}

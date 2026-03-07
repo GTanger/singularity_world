@@ -1,0 +1,20 @@
+{
+  "id": "wutong_chenxiang_07",
+  "name": "溫潤眠臥",
+  "description": "床座嵌入牆面巨根結構，鋪墊層疊柔軟蠶絲。天花板垂落氣根鑲嵌發光晶體，環境溫暖安靜，空氣中淡淡礦物香，視覺邊界沈穩。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "靜謐起居堂",
+      "to": "wutong_chenxiang_06"
+    },
+    {
+      "direction": "後庭茶寮",
+      "to": "wutong_chenxiang_08"
+    }
+  ]
+}

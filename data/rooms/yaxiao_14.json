@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_14",
+  "name": "絲光眠室",
+  "description": "床鋪懸掛巨根結構間，層疊發光絲織物圍合。環境極安定，光影隨能量脈動搖曳。地面乾燥白木灰，樹脂飽和，視覺邊界深邃幽靜。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "臥室走廊",
+      "to": "yaxiao_13"
+    },
+    {
+      "direction": "盥洗淨室",
+      "to": "yaxiao_15"
+    }
+  ]
+}

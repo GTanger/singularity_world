@@ -1,0 +1,18 @@
+{
+  "id": "life_xuan_1",
+  "name": "玄字一號房",
+  "description": "牆壁被漆成深邃的古銅色，屋內擺滿了各式各樣的〔捲軸典籍〕。屋角燃著一支〔安神香〕，青煙緩緩騰起，空氣中充滿了紙張與墨水的味道。",
+  "tags": [
+    "room",
+    "lodging",
+    "luxury",
+    "study"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_3f"
+    }
+  ]
+}

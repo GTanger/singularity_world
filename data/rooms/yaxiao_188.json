@@ -1,0 +1,29 @@
+{
+  "id": "yaxiao_188",
+  "name": "烹飪隔間",
+  "description": "石製餐檯加熱組件穩定熱輻射。煮沸油脂與焦香。窗台發光晶體串光影柔和。植被環繞生命力，掩飾冷卻泵運作聲。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "雜亂起居廳",
+      "to": "yaxiao_187"
+    },
+    {
+      "direction": "狹小臥房",
+      "to": "yaxiao_189"
+    },
+    {
+      "direction": "雜亂起居廳",
+      "to": "yaxiao_187"
+    },
+    {
+      "direction": "狹小臥房",
+      "to": "yaxiao_189"
+    }
+  ]
+}

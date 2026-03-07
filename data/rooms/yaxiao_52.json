@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_52",
+  "name": "雜物重門庭",
+  "description": "看似廢棄鉛桶死角，實則精密重力鎖重金屬門。模擬自然侵蝕幾何刻痕。封閉電離感增。過門即從廢墟轉極致明亮住宅。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "鏡面碎片倉",
+      "to": "yaxiao_51"
+    },
+    {
+      "direction": "表裡過渡徑",
+      "to": "yaxiao_53"
+    }
+  ]
+}

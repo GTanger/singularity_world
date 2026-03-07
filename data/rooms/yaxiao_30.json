@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_30",
+  "name": "設備維護走廊",
+  "description": "機器後方窄道，震動感應器與液壓表頭。地表抗震橡膠墊，環境音高機械共鳴。機油與沉香，深琥珀光。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "洗劑自動配給站",
+      "to": "yaxiao_29"
+    },
+    {
+      "direction": "後勤整備間",
+      "to": "yaxiao_31"
+    }
+  ]
+}

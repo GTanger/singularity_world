@@ -1,0 +1,17 @@
+{
+  "id": "lifestreet_tea_r3",
+  "name": "爐房",
+  "description": "位於後方的準備空間，中央設有長條形的土灶，上面架著幾把冒著熱氣的銅製茶壺。牆邊堆放著劈好的木柴與幾大袋乾燥的茶葉罈子。地面略顯濕滑，一旁的長板上整齊倒扣著洗淨的粗瓷茶碗。",
+  "tags": [
+    "tavern",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "茶室",
+      "to": "lifestreet_tea_r2"
+    }
+  ]
+}

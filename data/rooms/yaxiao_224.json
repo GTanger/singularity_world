@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_224",
+  "name": "舒眠臥房",
+  "description": "柔軟菌絲半封閉根腔床鋪。天花板淡金能量波極度安定。純淨乾燥電離感與濃郁樹脂，植被包裹深邃幽靜恆溫。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_223"
+    },
+    {
+      "direction": "數據緩衝室",
+      "to": "yaxiao_225"
+    }
+  ]
+}

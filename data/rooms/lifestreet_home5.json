@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home5",
+  "name": "民宅",
+  "description": "空間極其狹窄的石室，低矮的木門緊閉。室內陳設極簡，僅有一張石床與一具木架，牆壁上嵌有幾盞簡易的油燈，提供微弱照明。環境顯得侷促且冷清，地板打磨得十分平整。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "內窖",
+      "to": "lifestreet_home5_r1"
+    }
+  ]
+}

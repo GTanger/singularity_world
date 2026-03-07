@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_98",
+  "name": "點餐收銀台",
+  "description": "櫃檯上方頻閃能量菜單板，地表滲熱度冷凝蒸汽。電離感與強烈香料味，單調有序。空間擠壓貧瘠生活感，掩飾後方路徑。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "客席用餐區",
+      "to": "yaxiao_97"
+    },
+    {
+      "direction": "蒸汽廚房",
+      "to": "yaxiao_99"
+    }
+  ]
+}

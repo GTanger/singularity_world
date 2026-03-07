@@ -1,0 +1,32 @@
+{
+  "id": "yaxiao_190",
+  "name": "管道緩衝室",
+  "description": "乾燥穩定沉重合金牆架精密能量存儲盒。深琥珀光。電離臭氧味地表防滑晶粉，民生與高能運算區隔絕。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "狹小臥房",
+      "to": "yaxiao_189"
+    },
+    {
+      "direction": "算力中心入口",
+      "to": "yaxiao_191"
+    },
+    {
+      "direction": "雜亂起居廳",
+      "to": "yaxiao_187"
+    },
+    {
+      "direction": "狹小臥房",
+      "to": "yaxiao_189"
+    },
+    {
+      "direction": "算力中心入口",
+      "to": "yaxiao_191"
+    }
+  ]
+}

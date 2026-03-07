@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home7_r2",
+  "name": "物料隔間",
+  "description": "後間側邊開闢的小夾縫。存放著備用炭塊、麻繩與幾袋穀物。環境乾燥陰涼，採光完全依賴前間滲入的微弱光線。這裡的光影昏暗，空氣凝滯，體現了底層民居對生存資材的緊湊管理，雖然雜亂但依舊維持通行路徑。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "寢室",
+      "to": "feishuang_home7_r1"
+    }
+  ]
+}

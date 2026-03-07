@@ -1,0 +1,16 @@
+{
+  "id": "wutong_houtu_03",
+  "name": "礦粉理療間",
+  "description": "地面鋪滿細碎發光晶粉，吸收所有外部震動。牆角油脂質感石生植被，葉片肥大質地僵硬。光線過濾成深紅暗影，空氣電離礦物焦味，邊界銳利清晰。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "沉積起居室",
+      "to": "wutong_houtu_02"
+    }
+  ]
+}

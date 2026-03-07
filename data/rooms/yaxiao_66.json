@@ -1,0 +1,27 @@
+{
+  "id": "yaxiao_66",
+  "name": "能量反應堆房",
+  "description": "動力源頭。中央巨大晶體轉子能量灌注沈悶共振。幾何散熱片，溫壓極高。強烈熱輻射極強，光學對比極端。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "合金強化池",
+      "to": "yaxiao_65"
+    },
+    {
+      "direction": "算力控制矩陣",
+      "to": "yaxiao_67"
+    },
+    {
+      "direction": "組裝核心大廳",
+      "to": "yaxiao_62"
+    },
+    {
+      "direction": "算力控制矩陣",
+      "to": "yaxiao_67"
+    }
+  ]
+}

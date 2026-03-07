@@ -1,0 +1,20 @@
+{
+  "id": "life_kitchen",
+  "name": "廚房",
+  "description": "灶火旺盛，鍋鏟碰撞聲不斷。幾口大鐵鍋架在〔灶台〕上，牆壁被油煙燻得發黑，但牆上〔刀具架〕與調料瓶排列得井井有條。",
+  "tags": [
+    "kitchen",
+    "staff"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "食堂",
+      "to": "life_dining"
+    },
+    {
+      "direction": "後院",
+      "to": "life_backyard"
+    }
+  ]
+}

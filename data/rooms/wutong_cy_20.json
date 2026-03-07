@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_20",
+  "name": "林蔭出口",
+  "description": "翠蔭廣庭的另一端出口。地勢重新平緩，銜接回大街的黑曜石磚路。上方遮蔽的綠蔭在此散開，展現出遠方街區的建築輪廓。空氣感重新變得乾燥，光線恢復自然。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "荒蕪與繁茂交界",
+      "to": "wutong_cy_19"
+    }
+  ]
+}

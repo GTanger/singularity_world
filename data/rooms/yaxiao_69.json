@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_69",
+  "name": "重型組裝台",
+  "description": "機械臂能量脈動緩慢旋轉，零件合成違禁武器。高密度物質飽和。鉛皮完美吸音。空氣純淨乾燥，邊界銳利清晰。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "違禁零件庫",
+      "to": "yaxiao_68"
+    },
+    {
+      "direction": "品質複檢站",
+      "to": "yaxiao_70"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "wutong_cy_02",
+  "name": "垂蔭步道",
+  "description": "步道上方懸掛著如瀑布般的流蘇晶簇，與垂落的氣根交織。地面石板因長期受能而生長出細密的紫色結晶。環境音頻被厚實的植被屏障隔絕，呈現出穩定的沈悶感。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "廣庭入口",
+      "to": "wutong_cy_01"
+    },
+    {
+      "direction": "翠浪噴泉池",
+      "to": "wutong_cy_03"
+    },
+    {
+      "direction": "萬象環廊",
+      "to": "wutong_cy_09"
+    }
+  ]
+}

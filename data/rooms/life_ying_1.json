@@ -1,0 +1,16 @@
+{
+  "id": "life_ying_1",
+  "name": "盈字一號房",
+  "description": "房內陳設較多，除了基本的床鋪，還多了一組存放舊物的木架。空氣中混雜著各種乾草與布匹的氣味，雖然擁擠，卻有一種厚實的溫暖感。",
+  "tags": [
+    "room",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_2f"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_smith3_r2",
+  "name": "後室",
+  "description": "既是廚房也是臥室。角落有一口簡易的泥灶，旁邊放著一張鋪著碎布草墊的矮床。牆角堆放著幾袋發潮的糧食與缺口的陶罐。空氣中充斥著油煙與汗水混合的味道，光線陰冷晦暗。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "工作間",
+      "to": "ironlane_smith3_r1"
+    },
+    {
+      "direction": "雜物",
+      "to": "ironlane_smith3_r3"
+    },
+    {
+      "direction": "後院",
+      "to": "ironlane_smith3_r4"
+    }
+  ]
+}

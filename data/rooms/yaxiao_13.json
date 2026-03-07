@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_13",
+  "name": "臥室走廊",
+  "description": "兩側與巨木根系融合，根皮金屬般油脂光澤。地表黃銅導向線，穩重沉香。牆面發光暖能石維恆溫，觸感沈穩具安全感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "沉香書房",
+      "to": "yaxiao_12"
+    },
+    {
+      "direction": "絲光眠室",
+      "to": "yaxiao_14"
+    }
+  ]
+}

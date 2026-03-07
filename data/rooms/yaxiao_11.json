@@ -1,0 +1,21 @@
+{
+  "id": "yaxiao_11",
+  "name": "暖能茶間",
+  "description": "白玉餐檯內嵌加熱組件，穩定能量熱力。煮沸油脂與茶香，視覺飽滿金紅。生活機能完備，窗台精緻室內蔬果，葉片厚實帶微光。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "生活起居堂",
+      "to": "yaxiao_10"
+    },
+    {
+      "direction": "沉香書房",
+      "to": "yaxiao_12"
+    }
+  ]
+}

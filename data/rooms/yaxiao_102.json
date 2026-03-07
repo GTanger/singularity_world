@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_102",
+  "name": "私宅客廳",
+  "description": "平整白玉石板，厚實消音菌絲毯足音消失。溫馨手工木質家具琥珀光暈。高級熟成樹脂香，熱輻射均勻，安穩生活秩序。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "內外過渡廊",
+      "to": "yaxiao_101"
+    },
+    {
+      "direction": "溫馨餐廳",
+      "to": "yaxiao_103"
+    },
+    {
+      "direction": "溫馨餐廳",
+      "to": "yaxiao_103"
+    },
+    {
+      "direction": "根植廊道",
+      "to": "yaxiao_105"
+    }
+  ]
+}

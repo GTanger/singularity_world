@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_45",
+  "name": "鏽蝕齒輪區",
+  "description": "巨大生鏽齒輪，腐蝕性冷凝液。多層廢棄鉛板牆，邊界模糊。環境音極低，金屬氧化辛辣味，腳下碎石微弱電離震動。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "廢料堆門面",
+      "to": "yaxiao_44"
+    },
+    {
+      "direction": "氣密管道墳場",
+      "to": "yaxiao_46"
+    }
+  ]
+}

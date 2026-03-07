@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_shop7_r1",
+  "name": "鍛間",
+  "description": "樞紐格。中心設有小型火爐與生鐵砧，用於修補與打造小件。熱爐輻射出的火光與窗外飄落的霜晶對比鮮明。此處連結店舖、物料庫與住屋，空氣中充滿鐵鏽與煤煙味，地面由壓實的黑土鋪就，質感粗獷。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "feishuang_shop7"
+    },
+    {
+      "direction": "物料庫",
+      "to": "feishuang_shop7_r2"
+    },
+    {
+      "direction": "居家",
+      "to": "feishuang_shop7_r3"
+    }
+  ]
+}

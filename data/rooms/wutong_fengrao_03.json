@@ -1,0 +1,17 @@
+{
+  "id": "wutong_fengrao_03",
+  "name": "露天景觀座",
+  "description": "側邊白玉露台，被密集藤蔓環繞。地表滲出帶熱度水汽，環境濕潤富有生機。視野開闊，可直接觀測大街能量粒子流動。",
+  "tags": [
+    "shop",
+    "outdoor",
+    "food"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大眾用餐區",
+      "to": "wutong_fengrao_02"
+    }
+  ]
+}

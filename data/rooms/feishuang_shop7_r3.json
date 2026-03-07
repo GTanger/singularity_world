@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_shop7_r3",
+  "name": "住屋堂屋",
+  "description": "居家中心。室內地板由碎石混合石灰壓平，設有床灶與簡單家具。此處通往鍛間，牆上掛著幾串乾辣椒。窗戶對著內巷，霜晶飄入窗台即融。生活與營生僅一牆之隔，空氣中殘留著微弱的焦炭香味，環境平實。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "鍛間",
+      "to": "feishuang_shop7_r1"
+    },
+    {
+      "direction": "臥室",
+      "to": "feishuang_shop7_r4"
+    },
+    {
+      "direction": "後院",
+      "to": "feishuang_shop7_r5"
+    }
+  ]
+}

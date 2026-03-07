@@ -1,0 +1,21 @@
+{
+  "id": "life_garden",
+  "name": "假山庭院",
+  "description": "嶙峋的假山錯落有致，陰影層層疊疊遮蔽了來路。幾叢翠竹從石縫間抽出，風過沙沙作響，掩去了一切細碎的腳步聲。",
+  "tags": [
+    "outdoor",
+    "garden",
+    "gate"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "life_hall"
+    },
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    }
+  ]
+}

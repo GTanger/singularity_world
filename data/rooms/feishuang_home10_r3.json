@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home10_r3",
+  "name": "西側寢室",
+  "description": "格局與東側對稱，牆邊設有一座半開木箱。石燈掛在牆頭提供穩定光源。這裡石牆極厚，環境靜謐，阻隔了外界熱流。地板由碎石與石灰混合壓平，表面粗糙但乾燥，床鋪被褥厚實，適合長期投宿。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "圓廳",
+      "to": "feishuang_home10_r1"
+    }
+  ]
+}

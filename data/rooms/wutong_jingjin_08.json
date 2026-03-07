@@ -1,0 +1,17 @@
+{
+  "id": "wutong_jingjin_08",
+  "name": "地下藏酒窖",
+  "description": "地面未經打磨黑岩，環境陰涼濕潤。存放大量裝在晶體瓶中的能量發酵液，空氣充滿陳年木質味，建築區域。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "靜謐主臥",
+      "to": "wutong_jingjin_07"
+    }
+  ]
+}

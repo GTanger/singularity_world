@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_214",
+  "name": "走私物存放大廳",
+  "description": "貨架整齊堆疊高能電漿黑盒。強烈電離感與電離焦味。加強黑岩地面堅硬紮實。安靜穩定。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "重力緩衝間",
+      "to": "yaxiao_213"
+    },
+    {
+      "direction": "能量檢測位",
+      "to": "yaxiao_215"
+    }
+  ]
+}

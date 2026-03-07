@@ -1,0 +1,16 @@
+{
+  "id": "life_wine_cellar",
+  "name": "酒窖",
+  "description": "沿著石階往下走，一股涼意撲面而來。〔陶甕〕與〔木桶〕沿牆排開，空氣中瀰漫著糧食發酵後的醇厚氣味，愈往深處酒香愈濃。",
+  "tags": [
+    "storage",
+    "tavern"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "後院",
+      "to": "life_backyard"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home7_r1",
+  "name": "前廊",
+  "description": "進入宅邸後的過渡空間，地面堆放著與門口相似的舊木料與空罈。牆面由黏土夯實，推開式的木門連接中室。光線從低處的採光孔灑下，照亮了空氣中懸浮的粉塵，環境顯得有些雜亂。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "民宅",
+      "to": "lifestreet_home7"
+    },
+    {
+      "direction": "中室",
+      "to": "lifestreet_home7_r2"
+    }
+  ]
+}

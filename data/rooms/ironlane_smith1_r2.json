@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith1_r2",
+  "name": "淬火房",
+  "description": "位於鍛造廳左側，地面濕滑。數口石製水槽盛滿了深色淬火液，一旁架子擺放著長柄鐵鉗。牆面上方開有排煙天窗，雖然熱氣騰騰，但工具擺放極其整齊，地面設有獨立的排水石渠。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "ironlane_smith1_r1"
+    }
+  ]
+}

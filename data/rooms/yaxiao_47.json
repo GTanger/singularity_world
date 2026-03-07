@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_47",
+  "name": "沉重金屬廊",
+  "description": "厚度驚人黑金屬塊粗糙堆疊，銀色能量霜。未打磨黑岩，重壓沈穩。電離臭氧味，夜鴞鳴叫引導成低頻共振掩蓋內部。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "氣密管道墳場",
+      "to": "yaxiao_46"
+    },
+    {
+      "direction": "零件拆解角",
+      "to": "yaxiao_48"
+    }
+  ]
+}

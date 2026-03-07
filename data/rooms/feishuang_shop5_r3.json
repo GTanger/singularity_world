@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop5_r3",
+  "name": "宅間堂屋",
+  "description": "居家起居空間。設有木製床几與堆放雜物的箱籠。地板由厚木板鋪成，環境清爽。此處通往窖前間，窗戶對著狹窄內巷，霜晶偶爾隨熱風飄入即融。室內溫暖，能聽見前方店舖隱約的喧鬧聲，顯得安靜且穩固。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "窖前",
+      "to": "feishuang_shop5_r1"
+    },
+    {
+      "direction": "灶房",
+      "to": "feishuang_shop5_r4"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_nengliang_05",
+  "name": "成品展示區",
+  "description": "一排排緻密衣架掛滿質地重壓後服飾。地面平整黑岩，採光充足。感高。重門銜接後方居住區。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "設計畫廊",
+      "to": "wutong_nengliang_04"
+    },
+    {
+      "direction": "柔雲居玄關",
+      "to": "wutong_nengliang_06"
+    }
+  ]
+}

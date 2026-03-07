@@ -1,0 +1,15 @@
+{
+  "id": "lobby",
+  "name": "界壁",
+  "description": "四周一片漆黑，伸手不見五指，唯一能見到的就是遠處極亮的光點。",
+  "tags": [
+    "spawn"
+  ],
+  "zone": "界壁",
+  "exits": [
+    {
+      "direction": "光點",
+      "to": "life_garden"
+    }
+  ]
+}

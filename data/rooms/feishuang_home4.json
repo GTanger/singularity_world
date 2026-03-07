@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home4",
+  "name": "民宅入口",
+  "description": "木造平房入口，簷角積著厚霜。門板噴有防腐清漆，地面鋪設乾燥的草編地墊。暖風吹過木構造發出細微聲響，此處作為入戶緩衝，門口放著一把換鞋用的長凳。空氣中帶著松脂香味，直接連通內部的中央客廳。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "進門",
+      "to": "feishuang_home4_r1"
+    }
+  ]
+}

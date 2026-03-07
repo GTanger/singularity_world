@@ -1,0 +1,20 @@
+{
+  "id": "sun_ljg_06",
+  "name": "彩霓臥眠區",
+  "description": "床鋪位於佈滿柔軟菌絲的半封閉結構內，天花板流動虹彩般能量波。室內極靜，光影隨外界熱流律動。空氣純淨乾燥，帶濃郁樹脂香氣。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "鏡面起居堂",
+      "to": "sun_ljg_05"
+    },
+    {
+      "direction": "私密淨身間",
+      "to": "sun_ljg_07"
+    }
+  ]
+}

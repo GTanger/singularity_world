@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_herbs_r2",
+  "name": "切藥房",
+  "description": "位於後方的操作室，中央是一張寬大的厚木桌，上面架著幾柄帶把手的長鍘刀。牆邊掛著幾只編織細密的竹篩，篩內平鋪著正在風乾的根莖與葉片。地面散落著些許植物碎屑，空氣中混雜著泥土的氣息。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "前舖",
+      "to": "lifestreet_herbs_r1"
+    },
+    {
+      "direction": "後庫",
+      "to": "lifestreet_herbs_r3"
+    }
+  ]
+}

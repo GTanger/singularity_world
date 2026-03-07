@@ -1,0 +1,21 @@
+{
+  "id": "lifestreet_pawn_r3",
+  "name": "物庫",
+  "description": "深邃的儲物格間，由數排頂到屋頂的木質貨架組成。架上整齊堆放著用麻繩紮好的布包、舊衣與木箱，每個包裹都繫著一枚竹片標籤。空氣中充斥著一股乾燥木頭與陳舊織物的氣味，走道僅能容一人側身通行。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "帳間",
+      "to": "lifestreet_pawn_r2"
+    },
+    {
+      "direction": "死當庫",
+      "to": "lifestreet_pawn_r4"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "feishuang_lodge1_kitchen",
+  "name": "廚房",
+  "description": "大灶與鐵鍋，刀架與調料齊整。油煙與熱氣蒸騰，與外頭霜景兩界。通喫食堂與後院，為館內供膳之所。",
+  "tags": [
+    "inn",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "喫食堂",
+      "to": "feishuang_lodge1_dining"
+    },
+    {
+      "direction": "後院",
+      "to": "feishuang_lodge1_backyard"
+    }
+  ]
+}

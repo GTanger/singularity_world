@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_122",
+  "name": "偽裝隔閡廊",
+  "description": "舊化零件與廢棄線材最後物理緩衝。牆面恆溫礦物水滴，音頻壓抑沈悶。重壓感掩飾腳底精密脈衝。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "隱蔽夾層",
+      "to": "yaxiao_121"
+    },
+    {
+      "direction": "能量竄改核心",
+      "to": "yaxiao_123"
+    }
+  ]
+}

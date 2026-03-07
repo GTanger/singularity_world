@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_home2_r1",
+  "name": "起居區",
+  "description": "空間侷促，地面鋪著厚實草席，中央擺放矮几與油燈。這裡是全屋的動線交會處，分別設有通向側邊伙房與深處後室的窄門。霜氣自門縫滲入即融，牆壁因地熱而透出微溫，生活器皿堆疊在牆角，整體顯得寒儉且擁擠。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "玄關",
+      "to": "feishuang_home2"
+    },
+    {
+      "direction": "伙房",
+      "to": "feishuang_home2_r2"
+    },
+    {
+      "direction": "後室",
+      "to": "feishuang_home2_r3"
+    }
+  ]
+}

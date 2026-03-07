@@ -1,0 +1,20 @@
+{
+  "id": "wutong_shengji_04",
+  "name": "藥劑配製間",
+  "description": "檯面耐熱黑金屬，排列各種流動金屬質感藥劑。牆面長滿過濾空氣的藍色地衣，環境乾燥有序，質感極端堅實。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "理療康復區",
+      "to": "wutong_shengji_03"
+    },
+    {
+      "direction": "醫務休息室",
+      "to": "wutong_shengji_05"
+    }
+  ]
+}

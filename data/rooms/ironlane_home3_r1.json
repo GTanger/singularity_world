@@ -1,0 +1,28 @@
+{
+  "id": "ironlane_home3_r1",
+  "name": "天井",
+  "description": "位於房屋中心的露天方位，地面鋪設著磨平的石板。中心擺放著一只石製磨盤，旁邊有一口收集雨水的石缸。光線充足，這裡作為樞紐，分別連結著正廳、側廂房與後方的內房，牆壁上掛著幾串紅辣椒。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "前廊",
+      "to": "ironlane_home3"
+    },
+    {
+      "direction": "正廳",
+      "to": "ironlane_home3_r2"
+    },
+    {
+      "direction": "側廂",
+      "to": "ironlane_home3_r3"
+    },
+    {
+      "direction": "內房",
+      "to": "ironlane_home3_r4"
+    }
+  ]
+}

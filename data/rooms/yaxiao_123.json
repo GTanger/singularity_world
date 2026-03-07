@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_123",
+  "name": "能量竄改核心",
+  "description": "撕開偽裝露出高壓線路與擷取接口。跳動霓虹流光，磁場邊界扭曲。電離臭氧味，運算晶簇低頻共振。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "偽裝隔閡廊",
+      "to": "yaxiao_122"
+    },
+    {
+      "direction": "負載監控位",
+      "to": "yaxiao_124"
+    }
+  ]
+}

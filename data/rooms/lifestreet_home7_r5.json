@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home7_r5",
+  "name": "儲間",
+  "description": "室內堆放著各式家用的舊木器與陶片，分類擺放在木架上。角落堆著糧食袋與幾隻空罈，牆角依舊殘留著細微灰塵。這裡雖然物品雜多，但依舊維持著可通行的走道，是典型的生活物資存放區。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "中室",
+      "to": "lifestreet_home7_r2"
+    }
+  ]
+}

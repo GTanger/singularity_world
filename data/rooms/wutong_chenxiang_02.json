@@ -1,0 +1,20 @@
+{
+  "id": "wutong_chenxiang_02",
+  "name": "調律診間",
+  "description": "中心設有溫潤白玉診床，四周環繞緩慢旋轉的能量晶簇。空氣中懸浮細微藥理微粒，熱輻射使邊界略顯模糊，環境音被厚實木質牆面吸收。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_chenxiang_liaofang"
+    },
+    {
+      "direction": "藥油萃取室",
+      "to": "wutong_chenxiang_03"
+    }
+  ]
+}

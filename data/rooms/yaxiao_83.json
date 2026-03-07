@@ -1,0 +1,29 @@
+{
+  "id": "yaxiao_83",
+  "name": "沉香餐廳",
+  "description": "白玉餐檯金色導能紋路，穩定焦香與木質氣息。窗台精緻室內蔬果葉片微光。生活機能完備，懸浮能量閃爍粒子，圓潤生命張力。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "根植起居室",
+      "to": "yaxiao_82"
+    },
+    {
+      "direction": "舒緩淨身間",
+      "to": "yaxiao_84"
+    },
+    {
+      "direction": "根植起居室",
+      "to": "yaxiao_82"
+    },
+    {
+      "direction": "舒緩淨身間",
+      "to": "yaxiao_84"
+    }
+  ]
+}

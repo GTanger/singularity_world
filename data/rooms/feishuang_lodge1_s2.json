@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge1_s2",
+  "name": "霜字二號房",
+  "description": "二樓內側客房，採光稍弱，避開喧囂。床與儲物架，門通迴廊。霜晶在窗外靜落。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "二樓迴廊",
+      "to": "feishuang_lodge1_2f"
+    }
+  ]
+}

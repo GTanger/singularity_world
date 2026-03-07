@@ -1,0 +1,32 @@
+{
+  "id": "feishuang_lodge1_3f",
+  "name": "三樓迴廊",
+  "description": "最高層迴廊，視野開闊，可望遠處屋脊與霜景。門楣掛凝、露字牌。通二樓、四間上房，盡頭茶几藤椅供賞景。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "下樓",
+      "to": "feishuang_lodge1_2f"
+    },
+    {
+      "direction": "凝字一號房",
+      "to": "feishuang_lodge1_n1"
+    },
+    {
+      "direction": "凝字二號房",
+      "to": "feishuang_lodge1_n2"
+    },
+    {
+      "direction": "露字一號房",
+      "to": "feishuang_lodge1_l1"
+    },
+    {
+      "direction": "露字二號房",
+      "to": "feishuang_lodge1_l2"
+    }
+  ]
+}

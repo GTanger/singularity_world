@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop3_r2",
+  "name": "備用窖",
+  "description": "位於倉間下方的半地下室，牆壁由厚石塊砌成。這裡存放著封裝好的乾貨與種子，環境溫差極小。室內無窗，空氣靜謐且寒冷，霜晶完全不至此。地面散落著些許乾燥稻草，主要用於吸收可能產生的微量濕氣。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "倉間",
+      "to": "feishuang_shop3_r1"
+    }
+  ]
+}

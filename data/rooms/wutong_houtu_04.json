@@ -1,0 +1,21 @@
+{
+  "id": "wutong_houtu_04",
+  "name": "灶火熱室",
+  "description": "石製灶台從地表隆起岩層鑿出，熱力從孔隙均勻噴發。牆面熱壓形成幾何分形紋路，充滿熟成樹脂與油脂烘烤香氣。空間狹小但極端穩固。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "沉積起居室",
+      "to": "wutong_houtu_02"
+    },
+    {
+      "direction": "磐石臥房",
+      "to": "wutong_houtu_05"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_50",
+  "name": "廢棄線路間",
+  "description": "雜亂無電導線，牆面恆溫礦物水滴。音頻壓抑沈悶，鴞鳴遙遠。地表消音菌絲，飽滿深褐，隱藏通往內宅轉折點。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "鉛皮壓縮區",
+      "to": "yaxiao_49"
+    },
+    {
+      "direction": "鏡面碎片倉",
+      "to": "yaxiao_51"
+    }
+  ]
+}

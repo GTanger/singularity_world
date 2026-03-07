@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_110",
+  "name": "流金吧台",
+  "description": "金屬光澤晶質木材吧台，後方虹彩光能量液。電離焦味與熟成樹脂香。幾何地毯消音，光線呈琥珀色，能量密度極高沈穩厚實。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "能量牌桌區",
+      "to": "yaxiao_109"
+    },
+    {
+      "direction": "VIP 稜鏡間",
+      "to": "yaxiao_111"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_168",
+  "name": "真空廊廊",
+  "description": "狹窄氣密磨光黑石與鉛層。空氣徹底過濾淡淡電離感。平穩暗金。物理隔離最前線，荒廢與精密切割。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "荒廢石室",
+      "to": "yaxiao_167"
+    },
+    {
+      "direction": "抗震緩衝區",
+      "to": "yaxiao_169"
+    }
+  ]
+}

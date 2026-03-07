@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_shop2_r3",
+  "name": "起居內室",
+  "description": "居家生活樞紐，地板由拼接木板鋪成。中央擺放長榻與几面，角落放著雜物箱籠。此處分別通向工房、寢室與伙房。環境清爽，空氣中帶著淡淡的木頭香氣，窗櫺外對著一小片露天天井，光線較為柔和。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "工房",
+      "to": "feishuang_shop2_r1"
+    },
+    {
+      "direction": "寢室",
+      "to": "feishuang_shop2_r4"
+    },
+    {
+      "direction": "伙房",
+      "to": "feishuang_shop2_r5"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_home2_r1",
+  "name": "起居區",
+  "description": "由屏風隔出的半封閉空間，地板鋪設著幾張編織草席。中央擺放著一張低矮的木几，几面上有一盞油燈與一柄小木梳。牆上懸掛著幾串乾草與乾菜，空氣中帶著淡淡的塵土味，此處連通最深處的後室。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "ironlane_home2"
+    },
+    {
+      "direction": "後室",
+      "to": "ironlane_home2_r2"
+    }
+  ]
+}

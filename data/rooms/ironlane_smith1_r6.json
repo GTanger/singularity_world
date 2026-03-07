@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith1_r6",
+  "name": "師傅房",
+  "description": "寬敞的起居室，地板鋪設細磨青磚。室內設有一張寬大的黑木床架與一組桌椅。案頭擺放著繪圖用的尺規與皮紙，角落有一座取暖用的炭盆。光線透過高窗灑下，整體氛圍安靜且穩固。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "生活廊道",
+      "to": "ironlane_smith1_r4"
+    }
+  ]
+}

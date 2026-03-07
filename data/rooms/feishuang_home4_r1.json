@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_home4_r1",
+  "name": "堂間",
+  "description": "兼作飯廳與過道的中心區域，木樑架構裸露。桌凳擺設簡陋但穩固，這裡是家中的動線焦點，左右兩側分別設有進入灶間與臥房的門口。霜晶隨人帶入即化，牆壁貼有防潮皮紙，生活煙火氣與外部霜氣僅有一牆之隔。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "feishuang_home4"
+    },
+    {
+      "direction": "灶間",
+      "to": "feishuang_home4_r2"
+    },
+    {
+      "direction": "臥房",
+      "to": "feishuang_home4_r3"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "yaxiao_141",
+  "name": "私密廚膳間",
+  "description": "石製餐檯加熱組件穩定熱力，煮沸油脂香。牆面精緻室內蔬果葉片微光。飽滿金紅，冷藏櫃暗門通往地下封裝。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "植栽露台",
+      "to": "yaxiao_140"
+    },
+    {
+      "direction": "閣樓臥房",
+      "to": "yaxiao_142"
+    },
+    {
+      "direction": "溫馨起居堂",
+      "to": "yaxiao_139"
+    }
+  ]
+}

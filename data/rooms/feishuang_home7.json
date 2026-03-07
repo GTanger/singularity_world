@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home7",
+  "name": "前間起居",
+  "description": "窄門低簷，霜晶覆瓦。入門即是兼具灶角的起居空間，地面由黃土夯實，擺放几與席。這裡是全屋的入口與生活中心，直接連通後方的寢室。霜氣入門即化，空氣中帶著淡淡的油脂香味，空間感雖侷促但清理得齊整。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "寢室",
+      "to": "feishuang_home7_r1"
+    }
+  ]
+}

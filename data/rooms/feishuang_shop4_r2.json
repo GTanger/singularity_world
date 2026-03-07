@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop4_r2",
+  "name": "儲茶室",
+  "description": "存放各類茶磚與木盒的空間，牆面塗抹了防潮石灰。室內乾燥陰涼，架子分類明確。此處沒有窗戶，採光完全依賴門口的油燈，空氣中茶香味最為濃縮。地面打掃得乾淨，是一處專門用於保存貴重乾料的格位。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "雅間",
+      "to": "feishuang_shop4_r1"
+    }
+  ]
+}

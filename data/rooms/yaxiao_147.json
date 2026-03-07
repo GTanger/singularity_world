@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_147",
+  "name": "能量藥劑調配",
+  "description": "跳動霓虹導管監控非法能量液。中心白玉調配台光線轉幾何掃描線。磁場輕微扭曲華麗精密。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "低溫封裝大廳",
+      "to": "yaxiao_146"
+    },
+    {
+      "direction": "自動封裝位",
+      "to": "yaxiao_148"
+    }
+  ]
+}

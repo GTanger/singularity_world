@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_05",
+  "name": "雨霖銜接點",
+  "description": "此處地勢微降。地面鋪滿了細碎的晶化石英，有效吸收了上方的滴水聲。前方視線被茂密的藤蔓遮擋，藤蔓後方即是民居入口。環境濕潤，空氣中帶著泥土與能量粒子的混合味。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "雨霖舍",
+      "to": "wutong_yulin_she"
+    },
+    {
+      "direction": "繁根交織路",
+      "to": "wutong_cy_04"
+    }
+  ]
+}

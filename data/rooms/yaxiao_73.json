@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_73",
+  "name": "地下秘密出口",
+  "description": "地面銜接大街黑曜石磚路。牆面莊嚴幾何浮雕。重鉛與廢墟偽裝消散。溫壓與街道接軌，灰霧大街出口，物理性最終回歸。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "共鳴同步室",
+      "to": "yaxiao_72"
+    }
+  ]
+}

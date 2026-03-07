@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home3_r2",
+  "name": "正廳",
+  "description": "待客空間，擺放黑木桌椅與長形茶几，几面設有成套瓷具。窗戶正對天井，能觀察漫天霜降景色。地面鋪設青磚，空氣中帶著淡淡檀香，環境穩固且隔絕了街道燥熱。這裡是宅邸的主要活動區域，氛圍安靜且知性。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "天井",
+      "to": "feishuang_home3_r1"
+    }
+  ]
+}

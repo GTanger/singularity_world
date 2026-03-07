@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop3",
+  "name": "糧行",
+  "description": "袋裝穀麥與雜糧沿牆陳列，櫃檯上的秤與斗齊備。霜晶落門檻即化。後方有一道厚重的木門通向倉間，室內瀰漫著穀粉的清香與麻袋的乾燥氣味。地面鋪設黑磚，採光充足，展現出典型商業經營的穩定質感。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "入倉",
+      "to": "feishuang_shop3_r1"
+    }
+  ]
+}

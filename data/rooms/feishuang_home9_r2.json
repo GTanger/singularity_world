@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home9_r2",
+  "name": "正廳大堂",
+  "description": "擺放流線型黑檀木家具，地板清亮如鏡。窗戶正對中庭的晶簇景觀，視覺反差強烈。環境安靜且穩固，空氣中帶著淡淡檀香。這裡屏蔽了外界熱風，呈現出高品質的生活質感，家具表面纖塵不染。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "庭院",
+      "to": "feishuang_home9_r1"
+    }
+  ]
+}

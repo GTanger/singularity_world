@@ -1,0 +1,20 @@
+{
+  "id": "sun_jh_01",
+  "name": "金漆門廳",
+  "description": "牆面塗抹能量感應金色漆層，隨日照改變光澤深度。地面白玉石鑲嵌金色導線，空氣中懸浮閃爍能量粒子。環境明亮乾燥，光學邊界層次分明，氣息帶淡淡沉香。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "sunstreet"
+    },
+    {
+      "direction": "金輝主廳",
+      "to": "sun_jh_02"
+    }
+  ]
+}

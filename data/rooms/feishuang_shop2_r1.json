@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_shop2_r1",
+  "name": "裁縫工房",
+  "description": "樞紐格。室內設有兩架老舊的縫紉木台與寬大的剪裁桌，地面散落著細碎線頭。牆上釘有數排木勾，掛滿了版樣圖。此處連接著店舖、布料庫房與後方的起居室，充滿了金屬剪刀與布料摩擦的細碎聲響。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "feishuang_shop2"
+    },
+    {
+      "direction": "庫房",
+      "to": "feishuang_shop2_r2"
+    },
+    {
+      "direction": "起居",
+      "to": "feishuang_shop2_r3"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "fs_cabin_03_r1",
+  "name": "煙嵐大廳",
+  "description": "大廳中心設有圓形石砌火塘，熱力由地底銅管均勻擴散。落地琉璃窗外是翻騰的林霧與落雪。室內擺設著柔軟的獸皮長椅與紅木几面，空氣暖和乾燥。此處連通餐廚室、臥房與露台，呈現出極致的居家溫馨，地板觸感溫潤。",
+  "tags": [
+    "indoor",
+    "cabin",
+    "residence"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "fs_cabin_03"
+    },
+    {
+      "direction": "餐廚",
+      "to": "fs_cabin_03_r2"
+    },
+    {
+      "direction": "臥房",
+      "to": "fs_cabin_03_r3"
+    },
+    {
+      "direction": "露台",
+      "to": "fs_cabin_03_r4"
+    }
+  ]
+}

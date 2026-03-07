@@ -1,0 +1,21 @@
+{
+  "id": "feishuang_shop6_r2",
+  "name": "庫房",
+  "description": "質當物堆滿了頂到天花板的木架，每個包裹都繫有麻繩標籤。此處無窗，地面乾燥平整，牆壁由厚石塊砌成。分別通向帳房與深處的死當密室。霜晶與輻射感皆隔於外，環境陰冷且靜謐，走道極其狹窄。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "帳房",
+      "to": "feishuang_shop6_r1"
+    },
+    {
+      "direction": "密室",
+      "to": "feishuang_shop6_r3"
+    }
+  ]
+}

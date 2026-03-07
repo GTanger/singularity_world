@@ -1,0 +1,20 @@
+{
+  "id": "wutong_ningguang_04",
+  "name": "藏光室客廳",
+  "description": "生活區牆面磨製成半透明晶質，透視外部流動綠意。家具簡約且物質密度極高，環境安靜光亮。地表銀灰色地衣，踩踏沈穩。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "創作工作室",
+      "to": "wutong_ningguang_03"
+    },
+    {
+      "direction": "凝光臥房",
+      "to": "wutong_ningguang_05"
+    }
+  ]
+}

@@ -3,10 +3,11 @@ package db
 import (
 	"database/sql"
 	"time"
+
+	"singularity_world/store"
 )
 
-// InsertNPC 新增一筆 NPC 實體；流程同玩家（SoulSeed → 屬性 → 穿搭），kind 固定為 "npc"。
-// displayTitle 可為空：空則不綁職業，職稱改由指派（assignments）推導；非空則寫入 entities 供過渡期 fallback。
+// InsertNPC 新增一筆 NPC 實體；store 啟用時寫入 store 並持久化 entities.json。
 func InsertNPC(db *sql.DB, id, displayChar, gender, displayTitle string) error {
 	if displayChar == "" {
 		r := []rune(id)
@@ -19,15 +20,23 @@ func InsertNPC(db *sql.DB, id, displayChar, gender, displayTitle string) error {
 	if gender != "M" && gender != "F" {
 		gender = "M"
 	}
-	// 創角即產生 soul_seed，唯一決定三軸與後續展開（體敏氣、本源句、性格、760 邊權）
 	seed, err := GenerateSoulSeed()
 	if err != nil {
 		return err
 	}
-	// 由同一個 seed 展開體質／氣脈／靈敏，寫入 entities，與玩家創角流程一致
 	vit, qi, dex := ExpandSoulSeedToBaseStats(seed)
 	now := time.Now().Unix()
 	equip := StarterEquipment(gender)
+	if store.Default != nil {
+		return store.Default.PutEntity(&store.Entity{
+			ID: id, Kind: "npc", DisplayChar: displayChar,
+			X: 0, Y: 0, MoveState: "idle",
+			Vit: vit, Qi: qi, Dex: dex, Magnesium: 100,
+			CreatedAt: now, Gender: gender, SoulSeed: &seed,
+			DisplayTitle: displayTitle, EquipmentSlots: equip,
+			Inventory: "[]", ActivatedNodes: `["N000"]`,
+		})
+	}
 	_, err = db.Exec(
 		`INSERT INTO entities (id, kind, display_char, x, y, move_state, vit, qi, dex, magnesium, created_at, gender, soul_seed, display_title, equipment_slots)
 		 VALUES (?, 'npc', ?, 0, 0, 'idle', ?, ?, ?, 100, ?, ?, ?, ?, ?)`,
@@ -36,8 +45,11 @@ func InsertNPC(db *sql.DB, id, displayChar, gender, displayTitle string) error {
 	return err
 }
 
-// InsertSchedule 設定 NPC 排班（INSERT OR REPLACE）。
+// InsertSchedule 設定 NPC 排班；store 啟用時寫入 store 並持久化 data/schedules.json。
 func InsertSchedule(db *sql.DB, entityID, workRoom, restRoom string, shiftStart, shiftEnd int) error {
+	if store.Default != nil {
+		return store.Default.InsertSchedule(entityID, workRoom, restRoom, shiftStart, shiftEnd)
+	}
 	_, err := db.Exec(
 		"INSERT OR REPLACE INTO npc_schedules (entity_id, work_room, rest_room, shift_start, shift_end) VALUES (?, ?, ?, ?, ?)",
 		entityID, workRoom, restRoom, shiftStart, shiftEnd,

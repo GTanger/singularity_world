@@ -1,0 +1,24 @@
+{
+  "id": "wutong_cy_03",
+  "name": "翠浪噴泉池",
+  "description": "圓形池座由黑曜石刻成，池中流動著帶有金屬光澤的溫潤液體。液體湧動處散發出濃郁的草本香氣。池邊生長著簇擁的藍色蕨類，葉片肥厚且表面覆蓋著微光膜。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "垂蔭步道",
+      "to": "wutong_cy_02"
+    },
+    {
+      "direction": "繁根交織路",
+      "to": "wutong_cy_04"
+    },
+    {
+      "direction": "秋實銜接點",
+      "to": "wutong_cy_08"
+    }
+  ]
+}

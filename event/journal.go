@@ -1,16 +1,18 @@
-// Package event 負責事件日誌寫入與查詢。本檔為寫入與依 entity_id/時間查詢，對齊決策 004 延遲坍縮回推。
+// Package event 負責事件日誌寫入與查詢。store 啟用時寫入/讀取 data/runtime/event_log.json。
 package event
 
 import (
 	"database/sql"
 
 	"singularity_world/db"
+	"singularity_world/store"
 )
 
-// Append 將一筆事件寫入 event_log 表。
-// 參數：db 為 *sql.DB；at 為時間戳；entityID、eventType、payload 為事件內容。
-// 回傳：error。副作用：INSERT 一筆。
+// Append 將一筆事件寫入；store 啟用時寫入 store 並持久化 event_log.json。
 func Append(db *sql.DB, at int64, entityID, eventType, payload string) error {
+	if store.Default != nil {
+		return store.Default.AppendEvent(at, entityID, eventType, payload)
+	}
 	_, err := db.Exec(
 		"INSERT INTO event_log (at, entity_id, event_type, payload) VALUES (?, ?, ?, ?)",
 		at, entityID, eventType, payload,
@@ -18,8 +20,11 @@ func Append(db *sql.DB, at int64, entityID, eventType, payload string) error {
 	return err
 }
 
-// LastByEntity 回傳該實體在 at 之前最近一筆事件的 payload；若無則回傳空字串與 nil error。
+// LastByEntity 回傳該實體在 at 之前最近一筆事件的 payload；store 啟用時從 store 讀取。
 func LastByEntity(database *sql.DB, entityID, eventType string, at int64) (string, error) {
+	if store.Default != nil {
+		return store.Default.LastByEntity(entityID, eventType, at), nil
+	}
 	var payload string
 	err := database.QueryRow(
 		"SELECT payload FROM event_log WHERE entity_id = ? AND event_type = ? AND at <= ? ORDER BY at DESC LIMIT 1",
@@ -51,8 +56,16 @@ type EventRow struct {
 	Payload string
 }
 
-// EventsInRange 回傳該實體在 [fromAt, toAt] 區間內的事件，依 at 升序；供坍縮回推時重放。
+// EventsInRange 回傳該實體在 [fromAt, toAt] 區間內的事件，依 at 升序；store 啟用時從 store 讀取。
 func EventsInRange(database *sql.DB, entityID string, fromAt, toAt int64) ([]EventRow, error) {
+	if store.Default != nil {
+		entries := store.Default.EventsInRange(entityID, fromAt, toAt)
+		out := make([]EventRow, len(entries))
+		for i, e := range entries {
+			out[i] = EventRow{At: e.At, Type: e.EventType, Payload: e.Payload}
+		}
+		return out, nil
+	}
 	rows, err := database.Query(
 		"SELECT at, event_type, payload FROM event_log WHERE entity_id = ? AND at >= ? AND at <= ? ORDER BY at ASC",
 		entityID, fromAt, toAt,
@@ -61,7 +74,6 @@ func EventsInRange(database *sql.DB, entityID string, fromAt, toAt int64) ([]Eve
 		return nil, err
 	}
 	defer rows.Close()
-
 	var out []EventRow
 	for rows.Next() {
 		var r EventRow

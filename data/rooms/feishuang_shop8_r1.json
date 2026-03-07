@@ -1,0 +1,25 @@
+{
+  "id": "feishuang_shop8_r1",
+  "name": "堆間",
+  "description": "樞紐格。作為備貨與雜物堆放處，空間狹窄但分類有序。高聳木架塞滿了木桶、繩索與陶罐。此處連結店舖、後方內宅與地下儲藏格。採光晦暗，空氣中充滿塵土與乾燥木料的氣味，走道僅容一人側身通行。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "feishuang_shop8"
+    },
+    {
+      "direction": "地底儲格",
+      "to": "feishuang_shop8_r2"
+    },
+    {
+      "direction": "內宅",
+      "to": "feishuang_shop8_r3"
+    }
+  ]
+}

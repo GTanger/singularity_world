@@ -1,0 +1,24 @@
+{
+  "id": "sun_sy_06",
+  "name": "生活起居室",
+  "description": "室內家具皆由緻密黑木與白金屬結合而成。大窗捕捉外部街道光影，室內光線層次分明。空氣中瀰漫穩重沉香，觸感冰冷平滑。室內安靜且。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "精密居玄關",
+      "to": "sun_sy_05"
+    },
+    {
+      "direction": "數據處理室",
+      "to": "sun_sy_07"
+    },
+    {
+      "direction": "穩重眠臥室",
+      "to": "sun_sy_08"
+    }
+  ]
+}

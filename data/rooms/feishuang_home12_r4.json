@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home12_r4",
+  "name": "景觀餐室",
+  "description": "小型精緻空間，設有圓形石桌。落地窗正對飛霜湖，能看見白霧在水面翻騰。牆架擺放整齊的瓷具，地面由青石鋪設。這裡空氣清新，陽光穿透晶粉灑入室內，提供住客一個靜謐且具備視覺享受的用餐環境。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "feishuang_home12_r1"
+    }
+  ]
+}

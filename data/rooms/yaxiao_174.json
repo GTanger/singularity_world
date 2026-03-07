@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_174",
+  "name": "瓦舍玄關",
+  "description": "屋頂梧桐葉與晶質膜，地面白石破碎。流通穩定乾燥木質香。音頻壓抑沈悶，與世無爭平庸質感掩飾能量流動。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "生活客堂",
+      "to": "yaxiao_175"
+    }
+  ]
+}

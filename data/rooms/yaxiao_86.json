@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_86",
+  "name": "根穴眠室",
+  "description": "床座嵌入巨根結構，發光織物圍繞。天花板淡金能量波，極度安定。空氣純淨乾燥樹脂濃郁。光線呈琥珀色，生活區盡頭。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "暖石廊道",
+      "to": "yaxiao_85"
+    },
+    {
+      "direction": "機密轉接間",
+      "to": "yaxiao_87"
+    },
+    {
+      "direction": "暖石廊道",
+      "to": "yaxiao_85"
+    }
+  ]
+}

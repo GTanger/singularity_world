@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_carpenter",
+  "name": "木工坊",
+  "description": "店面擺放著幾件成品的圓凳與小桌，木材表面的油漆尚未乾透。室內地板鋪滿了薄細的刨花，散發著新鮮杉木的清香味。櫃檯後方是工作區的入口，牆上整齊懸掛著一排長短不一的鋸子與鑿子。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "製作間",
+      "to": "ironlane_carpenter_r1"
+    }
+  ]
+}

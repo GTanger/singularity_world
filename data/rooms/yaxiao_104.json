@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_104",
+  "name": "靜謐眠室",
+  "description": "床鋪嵌入巨根白玉凹槽，層疊發光蠶絲。天花板淡金能量波極度安定。純淨乾燥電離感與濃郁樹脂，邊界深邃徹底隔絕外界。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "溫馨餐廳",
+      "to": "yaxiao_103"
+    },
+    {
+      "direction": "根植廊道",
+      "to": "yaxiao_105"
+    },
+    {
+      "direction": "根植廊道",
+      "to": "yaxiao_105"
+    }
+  ]
+}

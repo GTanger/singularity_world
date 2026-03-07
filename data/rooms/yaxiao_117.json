@@ -1,0 +1,32 @@
+{
+  "id": "yaxiao_117",
+  "name": "雜亂起居室",
+  "description": "陳舊黑木家具厚實消音布料。窗戶緊閉夜鴞濾成低頻震動。溫暖乾燥，琥珀光影凝滯，飽和壓抑。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "鉛皮門廊",
+      "to": "yaxiao_116"
+    },
+    {
+      "direction": "狹小廚間",
+      "to": "yaxiao_118"
+    },
+    {
+      "direction": "狹小廚間",
+      "to": "yaxiao_118"
+    },
+    {
+      "direction": "陰暗走廊",
+      "to": "yaxiao_119"
+    },
+    {
+      "direction": "靜謐臥房",
+      "to": "yaxiao_120"
+    }
+  ]
+}

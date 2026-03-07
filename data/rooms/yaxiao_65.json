@@ -1,0 +1,23 @@
+{
+  "id": "yaxiao_65",
+  "name": "合金強化池",
+  "description": "黑曜石巨大冷卻池，虹彩光澤強化能量液。牆面磨光晶片折射池底微光。濕度高帶電，肅穆高科技工業美感。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "元件精密鑄模",
+      "to": "yaxiao_64"
+    },
+    {
+      "direction": "能量反應堆房",
+      "to": "yaxiao_66"
+    },
+    {
+      "direction": "元件精密鑄模",
+      "to": "yaxiao_64"
+    }
+  ]
+}

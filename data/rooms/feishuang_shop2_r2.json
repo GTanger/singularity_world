@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop2_r2",
+  "name": "庫房",
+  "description": "布疋與線軸在木架上整齊堆放，每捲布料都包覆著吸水紙。室內無窗，全靠牆上的石燈照明，環境極其乾燥以防潮防蟲。空氣中充滿乾爽的棉麻味道，地面平整，霜晶完全無法進入這處封閉的物資空間。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "工房",
+      "to": "feishuang_shop2_r1"
+    }
+  ]
+}

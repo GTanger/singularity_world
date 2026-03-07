@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_87",
+  "name": "機密轉接間",
+  "description": "眠室衣櫥後隱藏空間，高壓線路與屏蔽金屬網。幽暗冷藍光，乾燥電離感強。修理鋪機械頻率掩蓋晶片重寫儀震動。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "根穴眠室",
+      "to": "yaxiao_86"
+    },
+    {
+      "direction": "核心作業入口",
+      "to": "yaxiao_88"
+    }
+  ]
+}

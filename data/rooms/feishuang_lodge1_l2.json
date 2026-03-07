@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge1_l2",
+  "name": "露字二號房",
+  "description": "三樓迴廊深處上房，隱密安靜。窗外對後院樹影與霜晶。通三樓迴廊。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "三樓迴廊",
+      "to": "feishuang_lodge1_3f"
+    }
+  ]
+}

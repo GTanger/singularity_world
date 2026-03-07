@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop3_r3",
+  "name": "住家堂屋",
+  "description": "店主一家的生活中心。地板由泥土夯實壓平，中央擺放圓木桌與幾張長凳。此處連結倉間與後方的灶房。空氣中穀粉氣與生活煙火氣交織，霜晶自門縫偶入。環境簡單且平實，牆角堆放著幾隻家用的儲物木箱。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "倉間",
+      "to": "feishuang_shop3_r1"
+    },
+    {
+      "direction": "起居",
+      "to": "feishuang_shop3_r4"
+    }
+  ]
+}

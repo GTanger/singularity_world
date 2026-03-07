@@ -1,0 +1,20 @@
+{
+  "id": "wutong_shengji_06",
+  "name": "仁安寓玄關",
+  "description": "門檻整塊白玉刻成，進入後地勢微降。地面具備消音功能的幾何地毯，地面柔軟。牆面鑲嵌小型晶簇，恆定紫色微光。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "醫務休息室",
+      "to": "wutong_shengji_05"
+    },
+    {
+      "direction": "生活起居堂",
+      "to": "wutong_shengji_07"
+    }
+  ]
+}

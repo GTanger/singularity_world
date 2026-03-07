@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop1_r5",
+  "name": "私傢灶間",
+  "description": "小型石砌火灶表面刷有白石灰，牆邊堆放著劈好的木柴。架上整齊擺放著兩套餐具，案板上放著陶製調味罈。空氣中瀰漫著木柴燃燒後的乾燥香味，地面打掃得乾淨，透向客廳的木門厚實，功能分配明確。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "feishuang_shop1_r3"
+    }
+  ]
+}

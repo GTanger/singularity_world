@@ -1,0 +1,20 @@
+{
+  "id": "wutong_houtu_05",
+  "name": "磐石臥房",
+  "description": "床座嵌入地表黑曜石凹槽，內部鋪墊層疊乾燥纖維與菌絲。天花板氣根被晶質封存，散發穩定淡紫微光。環境極安靜，樹脂氣息持久濃稠，物理安寧感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "灶火熱室",
+      "to": "wutong_houtu_04"
+    },
+    {
+      "direction": "地穴儲藏庫",
+      "to": "wutong_houtu_06"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"math/rand"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 	"singularity_world/economy"
 	"singularity_world/game"
 	"singularity_world/server"
+	"singularity_world/store"
 )
 
 func main() {
@@ -25,12 +27,16 @@ func main() {
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		log.Fatalf("mkdir %s: %v", dir, err)
 	}
-
-	database, err := db.OpenDB(cfg.DBPath)
-	if err != nil {
-		log.Fatalf("open db: %v", err)
+	if err := os.MkdirAll("data/runtime", 0755); err != nil {
+		log.Fatalf("mkdir data/runtime: %v", err)
 	}
-	defer database.Close()
+
+	// 全專案以 JSON 為唯一數據源：載入 store（data/rooms 目錄一房一檔 + runtime + data）
+	if err := store.Init("data/rooms", "data/runtime", "data"); err != nil {
+		log.Fatalf("store init: %v", err)
+	}
+
+	var database *sql.DB // nil：不再使用 DB 檔，所有讀寫經由 store
 
 	hub := server.NewHub(cfg.MaxWebSocketConn)
 	sessionStore := server.NewSessionStore()

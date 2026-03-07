@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_172",
+  "name": "安全通訊點",
+  "description": "牆面高純度幾何晶簇冷色調光芒。安靜穩定懸浮發光能量微粒。通透琥珀色。密談數據加密發送點邊界銳利。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "核心密談室",
+      "to": "yaxiao_171"
+    },
+    {
+      "direction": "空置房出口",
+      "to": "yaxiao_173"
+    }
+  ]
+}

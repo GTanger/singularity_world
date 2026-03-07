@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_127",
+  "name": "秘密逃生口",
+  "description": "地面銜接大街黑曜石磚路。莊嚴幾何浮雕，重鉛消散。溫壓與街區接軌，灰霧大街出口。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "最終數據室",
+      "to": "yaxiao_126"
+    }
+  ]
+}

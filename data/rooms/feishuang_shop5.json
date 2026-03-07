@@ -1,0 +1,21 @@
+{
+  "id": "feishuang_shop5",
+  "name": "酒肆",
+  "description": "櫃台堆疊著陶製酒罈，酒氣撲鼻。霜晶落在簷口即化。室內擺設著粗製木桌與瓷碗，地面由黑磚鋪設，色澤因酒液浸潤而深沉。後方連接著窖前與宅間，暖酒的燥熱與街外霜氣對比鮮明，生活與經營共處一室。",
+  "tags": [
+    "shop",
+    "indoor",
+    "food"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "窖前",
+      "to": "feishuang_shop5_r1"
+    }
+  ]
+}

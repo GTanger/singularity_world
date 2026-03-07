@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_lodge1",
+  "name": "霜華館",
+  "description": "如浮生客棧規模的驛館，門面高闊，簷角積著一層霜晶。暖氣自內透出，與街上游離輻射交織。入門為庭院，深處大廳、食堂、後院與樓上廂房俱全，霜晶在窗櫺外靜靜飄落。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "庭院",
+      "to": "feishuang_lodge1_yard"
+    }
+  ]
+}

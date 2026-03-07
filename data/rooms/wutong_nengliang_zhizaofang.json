@@ -1,0 +1,20 @@
+{
+  "id": "wutong_nengliang_zhizaofang",
+  "name": "能量織造坊",
+  "description": "門口懸掛彩色能量絲線編織門簾，隨風發出細微晶體碰撞聲。黑曜石地面磨損出金屬光澤，空氣中乾燥纖維與沉香氣味。內通柔雲居。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "梭織大廳",
+      "to": "wutong_nengliang_02"
+    }
+  ]
+}

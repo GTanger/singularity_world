@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_133",
+  "name": "屏蔽緩衝廊",
+  "description": "極窄氣密通道，高壓線路與屏蔽金屬網。幽暗冷藍，乾燥強烈電離感。多層重疊重壓隨深度增，導向通訊核心。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "後勤過渡區",
+      "to": "yaxiao_132"
+    },
+    {
+      "direction": "匿名通訊機房",
+      "to": "yaxiao_134"
+    }
+  ]
+}

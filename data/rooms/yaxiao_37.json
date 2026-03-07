@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_37",
+  "name": "機房過渡廊",
+  "description": "浴間石壁後極窄通道，高壓線路與屏蔽金屬網。光線幽暗冷藍，空氣乾燥電離。洗衣機頻率掩蓋下方伺服器運算聲。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "舒壓浴間",
+      "to": "yaxiao_36"
+    },
+    {
+      "direction": "伺服器機房入口",
+      "to": "yaxiao_38"
+    }
+  ]
+}

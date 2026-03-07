@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge1_h2",
+  "name": "華字二號房",
+  "description": "二樓單人間，窄床與小几。通迴廊，安靜偏冷，霜景隔窗可見。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "二樓迴廊",
+      "to": "feishuang_lodge1_2f"
+    }
+  ]
+}

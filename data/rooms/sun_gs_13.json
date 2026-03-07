@@ -1,0 +1,21 @@
+{
+  "id": "sun_gs_13",
+  "name": "備用能源倉",
+  "description": "牆面完全由吸光性黑礦石構成，儲存高度壓縮的能量晶塊。空氣密度極高，極靜。熱輻射微弱但恆定，沉香氣息在此凝固。",
+  "tags": [
+    "indoor",
+    "admin",
+    "storage"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "地底電纜室",
+      "to": "sun_gs_12"
+    },
+    {
+      "direction": "檔案複核間",
+      "to": "sun_gs_14"
+    }
+  ]
+}

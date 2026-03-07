@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_smith1",
+  "name": "打鐵鋪",
+  "description": "門口掛著黑色鐵製招牌，櫃檯擺放著精良的砍刀與農具。店面寬敞，地坪鋪設堅硬的黑色石磚。正面有一道寬大的石拱門通向鍛造大廳，空氣中帶著淡淡的煤煙味與乾燥感。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "大廳",
+      "to": "ironlane_smith1_r1"
+    }
+  ]
+}

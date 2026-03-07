@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_229",
+  "name": "窄門出口",
+  "description": "地面銜接大街。莊嚴幾何浮雕，重鉛與平庸偽裝消散。溫壓接軌，灰霧大街出口。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "聲學屏蔽層",
+      "to": "yaxiao_228"
+    }
+  ]
+}

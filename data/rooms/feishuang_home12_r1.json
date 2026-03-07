@@ -1,0 +1,32 @@
+{
+  "id": "feishuang_home12_r1",
+  "name": "中心大廳",
+  "description": "空間方正，中央擺放長條木桌。地面乾燥平整，這裡是宅邸的中心，分別設有通往兩側臥房、餐室與後方旋梯的木門。光線由天窗斜射，機能分配井然有序。空氣中帶著淡淡木頭香味，氛圍安謐且穩固。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "feishuang_home12"
+    },
+    {
+      "direction": "東臥",
+      "to": "feishuang_home12_r2"
+    },
+    {
+      "direction": "西臥",
+      "to": "feishuang_home12_r3"
+    },
+    {
+      "direction": "餐室",
+      "to": "feishuang_home12_r4"
+    },
+    {
+      "direction": "露台",
+      "to": "feishuang_home12_r5"
+    }
+  ]
+}

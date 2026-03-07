@@ -1,0 +1,24 @@
+{
+  "id": "sun_cx_02",
+  "name": "導光主廳",
+  "description": "空間挑高，支撐柱鑲嵌大型稜鏡，將光束折射至角落。家具皆由高密度黑木增生而成，表面閃爍油脂光澤。地表溫熱恆定，光影隨外部能量脈動律動。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "晨光玄關",
+      "to": "sun_cx_01"
+    },
+    {
+      "direction": "映日露台",
+      "to": "sun_cx_03"
+    },
+    {
+      "direction": "暖能廚間",
+      "to": "sun_cx_04"
+    }
+  ]
+}

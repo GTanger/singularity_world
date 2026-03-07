@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_142",
+  "name": "閣樓臥房",
+  "description": "起居室上方夾層緻密黑木支撐。柔軟發光蠶絲，天花板淡紫能量。極靜懸浮能量粒子，通往地下垂直升降起點。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "私密廚膳間",
+      "to": "yaxiao_141"
+    },
+    {
+      "direction": "雜物儲藏間",
+      "to": "yaxiao_143"
+    },
+    {
+      "direction": "溫馨起居堂",
+      "to": "yaxiao_139"
+    }
+  ]
+}

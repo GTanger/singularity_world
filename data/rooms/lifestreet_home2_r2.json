@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home2_r2",
+  "name": "中廊",
+  "description": "連接前後屋室的走廊，光線較暗。走廊兩側的木牆上釘有掛勾，懸掛著幾件寬大袍服與草帽。地面鋪有防滑細沙石，盡頭處的木階向上延伸，通往二樓設有破損窗戶的後方起居室。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "前廳",
+      "to": "lifestreet_home2_r1"
+    },
+    {
+      "direction": "後室",
+      "to": "lifestreet_home2_r3"
+    }
+  ]
+}

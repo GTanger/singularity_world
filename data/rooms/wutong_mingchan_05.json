@@ -1,0 +1,16 @@
+{
+  "id": "wutong_mingchan_05",
+  "name": "靜謐天窗",
+  "description": "臥室上方狹長開口，被透明晶質膜覆蓋。可觀測上方拱頂巨木群湧生長態勢，光線過濾成純粹深綠。空氣流通穩定，淡淡電離感與礦物香，建築深處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "眠繭寢間",
+      "to": "wutong_mingchan_04"
+    }
+  ]
+}

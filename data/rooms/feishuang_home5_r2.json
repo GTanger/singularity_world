@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home5_r2",
+  "name": "後室",
+  "description": "堆放雜物與備用床舖的隔間，無窗，石牆厚實。地面堆疊著幾袋糧食與舊布袋，空氣中充滿了灰塵與陳舊物資的味道。這裡的溫度較低，隔絕了前廳的熱氣，是一個單純用於物資存放與應急住宿的封閉格位。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "通間",
+      "to": "feishuang_home5_r1"
+    }
+  ]
+}

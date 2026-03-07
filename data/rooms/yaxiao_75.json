@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_75",
+  "name": "零件工作台",
+  "description": "緻密黑木檯面，電容器與烙鐵工具。牆面防音鉛皮阻絕校準聲。遮光板暗琥珀色，雜亂電子零件侷促缺乏秩序。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "修理行店面",
+      "to": "yaxiao_74"
+    },
+    {
+      "direction": "舊化元件架",
+      "to": "yaxiao_76"
+    }
+  ]
+}

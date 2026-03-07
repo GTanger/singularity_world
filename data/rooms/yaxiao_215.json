@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_215",
+  "name": "能量檢測位",
+  "description": "白玉檯面高頻激光檢測臂。光線明亮銳利金屬分形。冷峻有序樹脂與礦物染料辛香。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "走私物存放大廳",
+      "to": "yaxiao_214"
+    },
+    {
+      "direction": "精密打包區",
+      "to": "yaxiao_216"
+    }
+  ]
+}

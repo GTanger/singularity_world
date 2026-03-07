@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop6",
+  "name": "當鋪",
+  "description": "高櫃台前裝有鐵柵欄，當字旗在簷下沾滿白霜。室內光線昏暗，沉悶的空氣中帶著霉味。櫃檯磨損嚴重，顧客遞物的小口透出內部油燈的光亮。後方連接著帳房與庫房，陰暗謹嚴，商住合一的結構顯得極具防禦感。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "帳房",
+      "to": "feishuang_shop6_r1"
+    }
+  ]
+}

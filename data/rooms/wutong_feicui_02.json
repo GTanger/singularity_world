@@ -1,0 +1,20 @@
+{
+  "id": "wutong_feicui_02",
+  "name": "品茗雅座",
+  "description": "數座黑曜石茶几，几面流動液態能量。窗外可見群湧流蘇晶簇，環境音低沈平穩。空氣濕潤，溫熱茶漿香氣，水汽使邊界圓潤。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_feicui_chazhuang"
+    },
+    {
+      "direction": "焙茶烘房",
+      "to": "wutong_feicui_03"
+    }
+  ]
+}

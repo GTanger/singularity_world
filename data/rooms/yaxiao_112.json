@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_112",
+  "name": "高額投注區",
+  "description": "牆面跳動霓虹導管監控非法博弈能量流向。地面高壓感應晶網隨賭局頻閃。溫壓極高熱輻射極強，極致銳利幾何輪廓。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "VIP 稜鏡間",
+      "to": "yaxiao_111"
+    },
+    {
+      "direction": "監控與金庫",
+      "to": "yaxiao_113"
+    }
+  ]
+}

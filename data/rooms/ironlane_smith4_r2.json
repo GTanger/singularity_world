@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith4_r2",
+  "name": "物資間",
+  "description": "位於雜活間旁的一個小夾縫，牆壁滲出濕氣。地面堆放著幾綑發霉的乾柴與一堆雜亂的碎鐵皮。空間極窄，幾乎無法同時容納兩人，是店主存放所有生活雜物與廉價材料的地方，散發著淡淡的霉味。",
+  "tags": [
+    "storage",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "雜活間",
+      "to": "ironlane_smith4_r1"
+    }
+  ]
+}

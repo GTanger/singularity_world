@@ -1,0 +1,16 @@
+{
+  "id": "life_yue_1",
+  "name": "月字一號房",
+  "description": "屋內的色調偏冷，微光從高處的通風孔斜射進來。房內空間較大，擺著一張圓形的石几，月光灑在其上呈現出一道銀色的軌跡。",
+  "tags": [
+    "room",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_2f"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_36",
+  "name": "舒壓浴間",
+  "description": "黑曜石圓形浴池溫熱煙霧，池水流金質感。牆面磨光幾何晶片折射蒸汽。濕度飽和溫暖。放鬆核心，通往灰色核心邊界。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "沉靜臥房",
+      "to": "yaxiao_35"
+    },
+    {
+      "direction": "機房過渡廊",
+      "to": "yaxiao_37"
+    },
+    {
+      "direction": "沉靜臥房",
+      "to": "yaxiao_35"
+    }
+  ]
+}

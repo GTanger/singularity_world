@@ -1,0 +1,25 @@
+{
+  "id": "wutong_fengrao_02",
+  "name": "大眾用餐區",
+  "description": "數張沉重長木桌，桌面具備自動保溫功能。窗外落霜緩慢盤旋，室內人聲被厚實植被頂棚吸收。空氣飽和度高，呼吸盡是溫熱食氣。",
+  "tags": [
+    "shop",
+    "indoor",
+    "food"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_fengrao_shitang"
+    },
+    {
+      "direction": "露天景觀座",
+      "to": "wutong_fengrao_03"
+    },
+    {
+      "direction": "忙碌廚間",
+      "to": "wutong_fengrao_04"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home4_r3",
+  "name": "臥房",
+  "description": "設有木床與儲物箱，地板由厚木板拼接。室內無窗，空氣靜謐。牆面夾層嵌有鉛芯屏蔽，徹底隔絕了霜晶與輻射感。這裡的被褥厚實，空氣中帶著淡淡的棉布氣味，是一處能提供高品質睡眠的隱蔽空間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂間",
+      "to": "feishuang_home4_r1"
+    }
+  ]
+}

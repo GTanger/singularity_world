@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_128",
+  "name": "入口坡道",
+  "description": "防滑刻痕黑岩，兩側廢棄氣密管道與鉛皮碎片。採光極差琥珀微光朦朧。金屬氧化與沉香，荒廢不具威脅假象。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "貨架緩衝區",
+      "to": "yaxiao_129"
+    }
+  ]
+}

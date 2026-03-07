@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop2",
+  "name": "布莊",
+  "description": "櫃檯疊放著各色布疋，牆上懸掛著成衣。霜晶沾到門口門簾即化為水漬，空氣中瀰漫著漿洗布料的味道。店面地板鋪設紅毯以吸附碎霜，後方連接著裁縫工房與庫房，前舖後宅的格局清晰，採光十分明亮。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "工房",
+      "to": "feishuang_shop2_r1"
+    }
+  ]
+}

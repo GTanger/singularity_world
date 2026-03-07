@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_175",
+  "name": "生活客堂",
+  "description": "家具簡單整潔地表黃銅集能紋路。採光柔和飽滿金階。清新穩定乾燥紙漿香，牆後細微機械低鳴與鴞鳴交織。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "瓦舍玄關",
+      "to": "yaxiao_174"
+    },
+    {
+      "direction": "烹飪休息角",
+      "to": "yaxiao_176"
+    },
+    {
+      "direction": "烹飪休息角",
+      "to": "yaxiao_176"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "sun_fx_01",
+  "name": "晶質玄關",
+  "description": "採用大量半透明晶質隔屏，光線在室內自由折射。地面鑲嵌黃銅色熱傳導路徑，維持絕對體感溫度。空氣中懸浮極細發光粉塵，環境氛圍明亮。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "sunstreet"
+    },
+    {
+      "direction": "折射起居室",
+      "to": "sun_fx_02"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_35",
+  "name": "沉靜臥房",
+  "description": "床鋪嵌入巨根白玉凹槽，發光蠶絲與乾燥地衣。天花板淡紫能量波恆溫。極靜，懸浮能量閃爍粒子，沉香濃郁。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "私人料理台",
+      "to": "yaxiao_34"
+    },
+    {
+      "direction": "舒壓浴間",
+      "to": "yaxiao_36"
+    },
+    {
+      "direction": "沁水客廳",
+      "to": "yaxiao_33"
+    },
+    {
+      "direction": "舒壓浴間",
+      "to": "yaxiao_36"
+    }
+  ]
+}

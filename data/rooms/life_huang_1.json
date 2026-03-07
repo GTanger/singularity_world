@@ -1,0 +1,17 @@
+{
+  "id": "life_huang_1",
+  "name": "黃字一號房",
+  "description": "臨近樓梯口，佈置得樸實而舒適。窗櫺貼著泛黃的剪紙，擋住了塵土，床鋪鋪著乾淨的靛藍色粗布單，有一種讓人能安心歇腳的氣息。",
+  "tags": [
+    "room",
+    "lodging",
+    "luxury"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_3f"
+    }
+  ]
+}

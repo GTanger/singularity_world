@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_156",
+  "name": "生活休息室",
+  "description": "狹小黑曜石家具一體成型。天花板淡金能量脈衝恆溫。極靜懸浮能量粒子，維護站與熔煉間物理緩衝。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "設備更換位",
+      "to": "yaxiao_155"
+    },
+    {
+      "direction": "廚膳起居角",
+      "to": "yaxiao_157"
+    },
+    {
+      "direction": "廚膳起居角",
+      "to": "yaxiao_157"
+    }
+  ]
+}

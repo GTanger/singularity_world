@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home8_r5",
+  "name": "露天熱浴",
+  "description": "位於廳室側邊的石砌平台，浴池內水汽氤氳。上方霜晶落入溫水中即融，發出細微碎裂聲。池邊設有石製坐墊與扶手。這裡視野通透，能觀察湖面霧氣變化，空氣冷冽但腳下石板通體溫熱。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "正廳",
+      "to": "feishuang_home8_r1"
+    }
+  ]
+}

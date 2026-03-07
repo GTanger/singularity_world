@@ -1,0 +1,20 @@
+{
+  "id": "wutong_chenxiang_03",
+  "name": "藥油萃取室",
+  "description": "金屬導管鑲嵌於黑石牆內，滴落液態金屬質感油脂。室溫極高，空氣乾燥帶電離感。地表佈滿防滑晶粉，呈現精密繁複的物質美感。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "調律診間",
+      "to": "wutong_chenxiang_02"
+    },
+    {
+      "direction": "儲物後廊",
+      "to": "wutong_chenxiang_04"
+    }
+  ]
+}

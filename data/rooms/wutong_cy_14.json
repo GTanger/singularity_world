@@ -1,0 +1,24 @@
+{
+  "id": "wutong_cy_14",
+  "name": "翠意階道",
+  "description": "通往東側高地的石階路。石縫間湧出的能量液體在地表形成淺薄的溪流，流向低處。空氣清爽，帶有強烈的森林氣味。視線可越過下方的灌木叢，看見中央圓心的煙霧。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "翠影銜接點",
+      "to": "wutong_cy_15"
+    },
+    {
+      "direction": "萬象環廊",
+      "to": "wutong_cy_09"
+    },
+    {
+      "direction": "根系避風穴",
+      "to": "wutong_cy_13"
+    }
+  ]
+}

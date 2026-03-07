@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_tailor_r3",
+  "name": "居家廳",
+  "description": "店舖後方的住宅空間，地板由磨光的木板鋪設。室內設有一張長榻與一個小茶几，几上放著一盞精緻石燈。環境清爽無塵，與前方的商業氣息隔離開來。這裡連接著寢室與後院的小廚格。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "工作間",
+      "to": "ironlane_tailor_r1"
+    },
+    {
+      "direction": "寢室",
+      "to": "ironlane_tailor_r4"
+    },
+    {
+      "direction": "灶間",
+      "to": "ironlane_tailor_r5"
+    }
+  ]
+}

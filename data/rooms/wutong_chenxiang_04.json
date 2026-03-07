@@ -1,0 +1,21 @@
+{
+  "id": "wutong_chenxiang_04",
+  "name": "儲物後廊",
+  "description": "牆面由緻密纖維板材構成，存放大量封存於晶盒的藥材。光線微弱，地表鋪設柔軟乾燥地衣，環境穩定安靜。隱蔽圓形木門通往內宅。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "藥油萃取室",
+      "to": "wutong_chenxiang_03"
+    },
+    {
+      "direction": "棲香居玄關",
+      "to": "wutong_chenxiang_05"
+    }
+  ]
+}

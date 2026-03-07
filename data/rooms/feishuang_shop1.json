@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop1",
+  "name": "藥行",
+  "description": "門面設有高大的藥櫃，數百個木屜貼滿標籤。霜晶隨客帶入即融，門口青石板留有微濕印記。櫃台由黑木製成，後方連接著配藥的後堂，室內草藥氣味與街外的暖濕霜氣混合，整體環境顯得穩固且厚重。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "入內",
+      "to": "feishuang_shop1_r1"
+    }
+  ]
+}

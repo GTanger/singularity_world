@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_159",
+  "name": "垂直重力井",
+  "description": "垂直升降旋轉重力抵消場。厚重隔音鉛皮金色導能紋路。低頻震動與夜鴞完美同步，冷峻秩序嚴明。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "內部沉睡室",
+      "to": "yaxiao_158"
+    },
+    {
+      "direction": "重型熔煉車間",
+      "to": "yaxiao_160"
+    }
+  ]
+}

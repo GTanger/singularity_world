@@ -1,0 +1,16 @@
+{
+  "id": "wutong_guigen_she",
+  "name": "歸根舍",
+  "description": "巨大根系結構民居。入口由兩株巨木交錯氣根構成，根皮呈金屬般暗灰光澤。地面粗糙白石鋪就的圓形坪，空氣中濃郁乾燥木質香與地底滲出的溫暖熱氣。自長青公所歸根銜接點可入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "長青公所",
+      "to": "wutong_cq_15"
+    }
+  ]
+}

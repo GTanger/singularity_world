@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_general",
+  "name": "萬寶屋",
+  "description": "室內從地板到天花板都堆滿了各式生活器具與鐵製工具，物品雜亂但依類別劃分。幾盞石燈懸掛在樑柱上，光芒微弱地照亮了鏽跡斑斑的零件，空氣中充滿了塵土與乾柴的味道。",
+  "tags": [
+    "shop",
+    "trade"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "前舖",
+      "to": "lifestreet_general_r1"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "sun_qh_08",
+  "name": "藏香儲物窖",
+  "description": "位於地下層，牆面由未打磨黑岩組成，環境陰涼。存放大量裝在晶盒內的民生物資。空氣凝滯，帶淡淡石灰與沉香氣息，建築最深處。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "私人生活廳",
+      "to": "sun_qh_05"
+    }
+  ]
+}

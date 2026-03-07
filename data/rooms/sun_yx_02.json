@@ -1,0 +1,28 @@
+{
+  "id": "sun_yx_02",
+  "name": "恆溫大廳",
+  "description": "空間開闊，支撐柱由整塊白玉雕琢，表面生長具備調光功能的藍色地衣。家具材質緻密，呈現油脂光澤。地表熱力均勻擴散，光影呈現動態幾何規律，環境氛圍肅穆且物質飽和。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "純白門廳",
+      "to": "sun_yx_01"
+    },
+    {
+      "direction": "聚光露台",
+      "to": "sun_yx_03"
+    },
+    {
+      "direction": "能量廚台",
+      "to": "sun_yx_04"
+    },
+    {
+      "direction": "晶簇書廊",
+      "to": "sun_yx_05"
+    }
+  ]
+}

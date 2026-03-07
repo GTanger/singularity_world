@@ -1,0 +1,20 @@
+{
+  "id": "wutong_nengliang_04",
+  "name": "設計畫廊",
+  "description": "牆面展示複雜分形圖樣，地表鋪滿廢棄絲線碎片。環境安靜，僅機器運作低頻共振。空氣流通穩定，光學穩重琥珀色調。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "染整車間",
+      "to": "wutong_nengliang_03"
+    },
+    {
+      "direction": "成品展示區",
+      "to": "wutong_nengliang_05"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_144",
+  "name": "生活緩衝室",
+  "description": "看似更衣間，牆面厚重能量屏蔽膜。乾燥電離感強。偽裝採光井。重壓感隨結構增，生活區與工業區切割。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "雜物儲藏間",
+      "to": "yaxiao_143"
+    },
+    {
+      "direction": "地下垂直徑",
+      "to": "yaxiao_145"
+    }
+  ]
+}

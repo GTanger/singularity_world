@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_shop2_r4",
+  "name": "寢室",
+  "description": "設有兩張並排的單人木床，被褥鋪設整齊。衣櫃內整齊掛著日常常服，案頭放著一盞微弱油燈。小窗對著靜謐後巷，霜晶偶爾隨風飄入窗台即融。環境安靜且避風，是店主家人主要的休息格位，氣氛恬靜。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "內室",
+      "to": "feishuang_shop2_r3"
+    }
+  ]
+}

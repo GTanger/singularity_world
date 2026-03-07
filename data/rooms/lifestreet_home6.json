@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home6",
+  "name": "民宅",
+  "description": "牆面斑駁的磚木混造住宅，沉重的木門中心刻有一處幾何符號。建築基座嵌入地面深處，邊緣留有風化磨損的刻痕。整體造型古樸，石階因長年踩踏而呈現中心凹陷的弧度。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "下層",
+      "to": "lifestreet_home6_r1"
+    }
+  ]
+}

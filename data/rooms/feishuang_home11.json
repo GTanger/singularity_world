@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home11",
+  "name": "氣密前廳",
+  "description": "門板結有薄霜，厚實土坯牆磨損圓潤。地面鋪設彩色碎石，地底傳來陣陣暖意。此處作為入室緩衝，牆角放著幾隻盛水陶罈。暖風被阻隔在厚門外，光影隨著折射顯得幽微，透出古樸穩重感，通向堂間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "路口",
+      "to": "feishuang_lake_road"
+    },
+    {
+      "direction": "堂間",
+      "to": "feishuang_home11_r1"
+    }
+  ]
+}

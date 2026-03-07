@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home6_r3",
+  "name": "寢室",
+  "description": "設有架子床與大型衣櫃，地板由打磨光滑的木板鋪成。室內無窗，石燈一盞，環境靜謐。厚實牆壁徹底屏蔽了外界霜晶與輻射感，空氣中帶著淡淡的木質香氣。這裡提供了絕對的隱私與安全，氛圍穩固平和。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "feishuang_home6_r1"
+    }
+  ]
+}

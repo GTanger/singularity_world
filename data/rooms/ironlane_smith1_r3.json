@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith1_r3",
+  "name": "儲料室",
+  "description": "位於鍛造廳右側，牆邊堆滿了原礦石與成捆的木炭。石台擺放著尚未加工的生鐵錠與熟鐵塊。室內昏暗乾燥，僅有一盞石燈照明，空氣中充滿了沉重的金屬與泥土混雜的氣味。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "ironlane_smith1_r1"
+    }
+  ]
+}

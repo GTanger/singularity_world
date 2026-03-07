@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_59",
+  "name": "私密溫泉間",
+  "description": "黑曜石浴池溫熱煙霧，池水金屬光澤。牆面磨光晶片折射蒸汽。濕度飽和溫潤。放鬆核心，通往灰色核心最後緩衝。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "晶質眠臥室",
+      "to": "yaxiao_58"
+    },
+    {
+      "direction": "隔音工作間",
+      "to": "yaxiao_60"
+    }
+  ]
+}

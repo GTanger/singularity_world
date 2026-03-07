@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_carpenter_r2",
+  "name": "乾料庫",
+  "description": "存放珍貴木材的空間，牆邊架設著多層通風的木架。每一根木料都貼有手寫標籤，環境極其乾燥且帶有淡淡的松脂香。室內沒有油燈，僅靠通風口的光線，防止火患。",
+  "tags": [
+    "storage",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "製作間",
+      "to": "ironlane_carpenter_r1"
+    }
+  ]
+}

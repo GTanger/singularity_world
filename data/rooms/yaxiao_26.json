@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_26",
+  "name": "自助洗衣店面",
+  "description": "地面防滑黑石磚，門口厚重隔音布簾。黑金屬大型滾筒清洗機規律悶響。溫熱皂香與沉香，蒸汽朦朧平凡。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "機械清洗區",
+      "to": "yaxiao_27"
+    }
+  ]
+}

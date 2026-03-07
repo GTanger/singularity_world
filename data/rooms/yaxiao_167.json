@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_167",
+  "name": "荒廢石室",
+  "description": "地表白石破碎但整潔，流通穩定。牆面油脂感深色地衣。採光極差琥珀微光朦朧。邊界銳利無緩衝，牆後極致隱蔽。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "封死門庭",
+      "to": "yaxiao_166"
+    },
+    {
+      "direction": "真空廊廊",
+      "to": "yaxiao_168"
+    }
+  ]
+}

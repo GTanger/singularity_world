@@ -1,0 +1,24 @@
+{
+  "id": "sun_lj_02",
+  "name": "流金主廳",
+  "description": "地勢平緩，地表佈滿帶油脂感的光能沉澱。家具皆由黑曜石與緻密黑木一體成型，室內安靜溫暖。光線被壓縮成細窄明亮線條，視覺邊界模糊，。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "鱗片門廊",
+      "to": "sun_lj_01"
+    },
+    {
+      "direction": "能量調理室",
+      "to": "sun_lj_03"
+    },
+    {
+      "direction": "沉降臥房",
+      "to": "sun_lj_04"
+    }
+  ]
+}

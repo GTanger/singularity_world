@@ -1,0 +1,20 @@
+{
+  "id": "wutong_nengliang_03",
+  "name": "染整車間",
+  "description": "地表數個盛滿發光染劑白玉池。空氣濕度極高，混合草本與礦物染料辛香。池邊滲出油脂感能量液，環境繁複充滿張力。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "梭織大廳",
+      "to": "wutong_nengliang_02"
+    },
+    {
+      "direction": "設計畫廊",
+      "to": "wutong_nengliang_04"
+    }
+  ]
+}

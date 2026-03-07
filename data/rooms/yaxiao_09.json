@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_09",
+  "name": "私宅玄關",
+  "description": "地面平整白玉石板，牆面柔軟白色菌絲毯。隱藏式晶簇淡紫光。夜鴞啼鳴完全屏蔽，空氣清爽乾燥，高端沉香與熟成樹脂，氛圍安寧。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "雜物間出口",
+      "to": "yaxiao_08"
+    },
+    {
+      "direction": "生活起居堂",
+      "to": "yaxiao_10"
+    }
+  ]
+}

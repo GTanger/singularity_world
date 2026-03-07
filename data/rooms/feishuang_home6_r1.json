@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_home6_r1",
+  "name": "堂屋",
+  "description": "地面鋪設方磚，擺放著桌凳與木製曆牌。這裡是家中的核心格位，分別設有通往灶間與寢室的對稱木門。窗縫可見街景，採光隨白霜紛落而變幻。環境安靜且乾燥，呈現出秩序井然的生活節奏，空間感開闊。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "feishuang_home6"
+    },
+    {
+      "direction": "灶間",
+      "to": "feishuang_home6_r2"
+    },
+    {
+      "direction": "寢室",
+      "to": "feishuang_home6_r3"
+    }
+  ]
+}

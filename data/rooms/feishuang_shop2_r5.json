@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop2_r5",
+  "name": "伙房",
+  "description": "位於天井旁的簡陋廚房。設有單眼灶台，牆壁掛著幾串乾辣椒與蒜頭。架上放著洗淨的碗盤。雖然空間不大，但爐火穩定，充滿了家庭飯菜的溫馨香味，地面乾燥，牆上開有窄孔排煙，結構實用。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "內室",
+      "to": "feishuang_shop2_r3"
+    }
+  ]
+}

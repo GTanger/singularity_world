@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith5_r2",
+  "name": "材料庫",
+  "description": "存放精細礦料的空間，設有數排帶編號的木格架。每個格子內都放著特定的金屬錠或礦石標本。室內裝有通風扇片，維持環境乾燥。角落擺放著一組精準的台秤，材料分類嚴謹。",
+  "tags": [
+    "storage",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "精密間",
+      "to": "ironlane_smith5_r1"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_general_r2",
+  "name": "雜物間",
+  "description": "店鋪中部的狹長走道，兩側架子堆滿了農具、木桶與各類繩索。幾捆乾燥的乾柴被麻繩束起靠在牆角。地面由碎石子壓實而成，行走時會發出細碎聲響。這裡的光線極差，幾乎只能看到貨物的模糊輪廓。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "前舖",
+      "to": "lifestreet_general_r1"
+    },
+    {
+      "direction": "後倉",
+      "to": "lifestreet_general_r3"
+    }
+  ]
+}

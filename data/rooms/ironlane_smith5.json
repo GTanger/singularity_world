@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_smith5",
+  "name": "打鐵鋪",
+  "description": "門面粉刷得相當平整，懸掛著精美的銅製招牌。櫃檯由打磨光亮的紅木製成，展示著幾件小巧精緻的鐵藝擺飾。地面由平滑的青石板鋪設，室內光線明亮，空氣清爽。一扇推拉門通往後方的精密工作室。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "精密間",
+      "to": "ironlane_smith5_r1"
+    }
+  ]
+}

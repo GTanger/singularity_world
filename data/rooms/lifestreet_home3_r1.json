@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home3_r1",
+  "name": "正間",
+  "description": "受門窗封木影響，室內採光僅靠牆縫。進深較長的房間內，兩排石凳由牆腳原始石料簡易修鑿而成。地面覆蓋著一層薄沙，正面石牆開有一處拱門通往側間，側牆嵌有幾塊用於置物的木質隔板。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "民宅",
+      "to": "lifestreet_home3"
+    },
+    {
+      "direction": "側間",
+      "to": "lifestreet_home3_r2"
+    }
+  ]
+}

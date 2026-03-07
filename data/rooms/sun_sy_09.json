@@ -1,0 +1,16 @@
+{
+  "id": "sun_sy_09",
+  "name": "最終靜滯室",
+  "description": "位於建築最末端。牆面完全由吸光黑礦石組成。徹底隔絕外界波動，空氣密度極高，建築最內側。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "穩重眠臥室",
+      "to": "sun_sy_08"
+    }
+  ]
+}

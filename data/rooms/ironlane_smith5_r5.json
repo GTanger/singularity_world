@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith5_r5",
+  "name": "寢居",
+  "description": "位於最深處的主臥室，空間寬敞。設有寬大的架子床與一組厚實的座椅。窗櫺雕刻精美，窗外對著一堵整潔的石牆。室內香氣宜人，空氣中瀰漫著木頭與淡茶的清香，是打鐵巷中難得的高品質居住地。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "中庭廊",
+      "to": "ironlane_smith5_r3"
+    }
+  ]
+}

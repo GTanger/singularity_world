@@ -1,0 +1,16 @@
+{
+  "id": "life_ze_2",
+  "name": "昃字二號房",
+  "description": "位於樓層的死角，光線極其昏暗。影子在角落裡顯得比別處更濃，窗櫺上的木刺有些扎手，充滿了即將整理行囊離去的沉悶氣息。",
+  "tags": [
+    "room",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_2f"
+    }
+  ]
+}

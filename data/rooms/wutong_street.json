@@ -1,0 +1,73 @@
+{
+  "id": "wutong_street",
+  "name": "梧桐大街",
+  "description": "物質富態化下的街區常態。兩側梧桐巨木群湧生長，樹冠交織成天然拱頂，厚實葉片遮蔽天光。地面由黑曜石磚與白玉石板交錯鋪就，縫隙間滲出恆溫熱氣。植被自牆垣與簷角溢出，綠意飽和，空氣中懸浮著綠色微粒與沉香氣息，街道盡頭可見翠蔭廣庭與長青公所，沿街店招與民居掩映在濃蔭之中。",
+  "tags": [
+    "street",
+    "outdoor",
+    "trade"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "飛霜",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "向陽",
+      "to": "sunstreet"
+    },
+    {
+      "direction": "翠蔭廣庭",
+      "to": "wutong_cuiyin_guangting"
+    },
+    {
+      "direction": "長青公所",
+      "to": "wutong_changqing_gongsuo"
+    },
+    {
+      "direction": "沉香理療坊",
+      "to": "wutong_chenxiang_liaofang"
+    },
+    {
+      "direction": "翡翠茶莊",
+      "to": "wutong_feicui_chazhuang"
+    },
+    {
+      "direction": "生機醫館",
+      "to": "wutong_shengji_yiguan"
+    },
+    {
+      "direction": "凝光藝廊",
+      "to": "wutong_ningguang_yilang"
+    },
+    {
+      "direction": "能量織造坊",
+      "to": "wutong_nengliang_zhizaofang"
+    },
+    {
+      "direction": "精金鍛造鋪",
+      "to": "wutong_jingjin_duanzaopu"
+    },
+    {
+      "direction": "豐饒食堂",
+      "to": "wutong_fengrao_shitang"
+    },
+    {
+      "direction": "晶華雜貨鋪",
+      "to": "wutong_jinghua_zahuopu"
+    },
+    {
+      "direction": "厚土居",
+      "to": "wutong_houtu_ju"
+    },
+    {
+      "direction": "鳴蟬室",
+      "to": "wutong_mingchan_shi"
+    }
+  ]
+}

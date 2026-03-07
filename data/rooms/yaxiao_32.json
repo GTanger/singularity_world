@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_32",
+  "name": "內宅門廊",
+  "description": "黑石轉圓潤白玉，牆面沉香木塊吸音。光線淡金，環境音濾淨。空氣清新乾燥，高級熟成樹脂，觸感細膩優渥。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "後勤整備間",
+      "to": "yaxiao_31"
+    },
+    {
+      "direction": "沁水客廳",
+      "to": "yaxiao_33"
+    }
+  ]
+}

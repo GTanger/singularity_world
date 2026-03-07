@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_153",
+  "name": "維護站門廳",
+  "description": "厚重黑金屬板地面，牆面沈重合金扳手。機械油漬與沉香，採光極差壓抑。夜鴞石縫迴盪，勞動質感街道端點。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "工具整備區",
+      "to": "yaxiao_154"
+    }
+  ]
+}

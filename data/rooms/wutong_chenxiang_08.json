@@ -1,0 +1,16 @@
+{
+  "id": "wutong_chenxiang_08",
+  "name": "後庭茶寮",
+  "description": "幾何石柱支撐的半開放空間，地面鋪滿細碎白石。能量粒子濃度極高，光線折射成琥珀色，視野看向深處密集梧桐樹幹。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "溫潤眠臥",
+      "to": "wutong_chenxiang_07"
+    }
+  ]
+}

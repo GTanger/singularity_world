@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_gems",
+  "name": "珍寶閣",
+  "description": "寬闊的黑木櫃檯後方排列著數座貨架，陳列著大小不一的礦石原石與切割過的玉石。室內光線由幾盞懸掛的石燈提供，光影在打磨平整的石面上折射出冷硬的光斑，空氣中帶有細微的石粉乾燥氣味。",
+  "tags": [
+    "shop",
+    "trade"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "前舖",
+      "to": "lifestreet_gems_r1"
+    }
+  ]
+}

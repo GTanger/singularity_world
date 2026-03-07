@@ -1,0 +1,16 @@
+{
+  "id": "wutong_qiushi_ju",
+  "name": "秋實居",
+  "description": "暖色調民居。門楣掛滿飽滿的能量晶果，散發微溫橙光。黑曜石拼嵌幾何地面，石縫滲出金色能量沉澱。自翠蔭廣庭秋實銜接點可入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "翠蔭廣庭",
+      "to": "wutong_cy_08"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_54",
+  "name": "二樓起居廳",
+  "description": "豁然開朗，大型稜鏡採光井金光均勻灑落。無瑕白玉石地面反射明亮。晶化木材家具油脂光澤，溫暖乾燥穩固。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "表裡過渡徑",
+      "to": "yaxiao_53"
+    },
+    {
+      "direction": "暖光用餐區",
+      "to": "yaxiao_55"
+    },
+    {
+      "direction": "暖光用餐區",
+      "to": "yaxiao_55"
+    },
+    {
+      "direction": "能量藏書閣",
+      "to": "yaxiao_56"
+    }
+  ]
+}

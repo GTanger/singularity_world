@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_150",
+  "name": "成品質量檢測",
+  "description": "精密白玉檢測台光線轉幾何掃描線。採光充足穩重琥珀。穩定能量微粒清晰，邊界銳利清晰。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "晶液儲存槽",
+      "to": "yaxiao_149"
+    },
+    {
+      "direction": "產業物流棧",
+      "to": "yaxiao_151"
+    }
+  ]
+}

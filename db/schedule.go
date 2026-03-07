@@ -1,6 +1,10 @@
 package db
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"singularity_world/store"
+)
 
 // NPCSchedule 描述一名 NPC 的排班：工作房間、休息房間、班次起迄（遊戲時 0-23）。
 type NPCSchedule struct {
@@ -19,8 +23,19 @@ func (s *NPCSchedule) IsOnDuty(gameHour int) bool {
 	return gameHour >= s.ShiftStart || gameHour < s.ShiftEnd
 }
 
-// GetAllSchedules 取得所有 NPC 排班。
+// GetAllSchedules 取得所有 NPC 排班；store 啟用時從 store 讀取。
 func GetAllSchedules(db *sql.DB) ([]NPCSchedule, error) {
+	if store.Default != nil {
+		slist := store.Default.GetAllSchedules()
+		list := make([]NPCSchedule, len(slist))
+		for i, s := range slist {
+			list[i] = NPCSchedule{
+				EntityID: s.EntityID, WorkRoom: s.WorkRoom, RestRoom: s.RestRoom,
+				ShiftStart: s.ShiftStart, ShiftEnd: s.ShiftEnd,
+			}
+		}
+		return list, nil
+	}
 	rows, err := db.Query("SELECT entity_id, work_room, rest_room, shift_start, shift_end FROM npc_schedules")
 	if err != nil {
 		return nil, err
@@ -71,9 +86,22 @@ func GetScheduleTargetRoom(database *sql.DB, entityID string, gameHour int) (tar
 	return t.Room, true
 }
 
-// GetScheduleTarget 回傳排班目標與是否為上班地（IsWork 供抵達敘事用）。
-// 僅查 npc_schedules 表，不寫入 DB；與 ApplySchedules「只回傳不傳送」一致，實際移動由 TravelerManager 排班型 Tick 執行。
+// GetScheduleTarget 回傳排班目標與是否為上班地（IsWork 供抵達敘事用）；store 啟用時從 store 讀取。
 func GetScheduleTarget(database *sql.DB, entityID string, gameHour int) (t ScheduleTarget, ok bool) {
+	if store.Default != nil {
+		sch := store.Default.GetSchedule(entityID)
+		if sch == nil {
+			return ScheduleTarget{}, false
+		}
+		s := NPCSchedule{
+			EntityID: sch.EntityID, WorkRoom: sch.WorkRoom, RestRoom: sch.RestRoom,
+			ShiftStart: sch.ShiftStart, ShiftEnd: sch.ShiftEnd,
+		}
+		if s.IsOnDuty(gameHour) {
+			return ScheduleTarget{Room: sch.WorkRoom, IsWork: true}, true
+		}
+		return ScheduleTarget{Room: sch.RestRoom, IsWork: false}, true
+	}
 	rows, err := database.Query(
 		"SELECT work_room, rest_room, shift_start, shift_end FROM npc_schedules WHERE entity_id = ?",
 		entityID,

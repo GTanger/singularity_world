@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_195",
+  "name": "加密節點群",
+  "description": "牆面大量晶體書格數據最終加密與節點跳轉。凝滯純淨肅穆。算力中心核心邏輯區，數據吞吐波動。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "數據處理中樞",
+      "to": "yaxiao_194"
+    },
+    {
+      "direction": "核心維護夾層",
+      "to": "yaxiao_196"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_125",
+  "name": "冷卻排氣道",
+  "description": "幾何分形散熱片，溫壓極高。強烈熱輻射極強，導管油脂光澤液滴。過載時噴發淡金蒸氣掩護灰霧。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "負載監控位",
+      "to": "yaxiao_124"
+    },
+    {
+      "direction": "最終數據室",
+      "to": "yaxiao_126"
+    }
+  ]
+}

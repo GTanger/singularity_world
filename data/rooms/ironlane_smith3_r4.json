@@ -1,0 +1,15 @@
+{
+  "id": "ironlane_smith3_r4",
+  "name": "狹窄後巷",
+  "description": "建築最深處的一處露天縫隙，寬度不足一米。牆根處放著一只木桶與幾塊墊腳石。這裡堆放著一些平時不用的重型廢鐵，空氣中帶著一股潮濕的土腥味與生活廢水的陳舊氣息。",
+  "tags": [
+    "outdoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "後室",
+      "to": "ironlane_smith3_r2"
+    }
+  ]
+}

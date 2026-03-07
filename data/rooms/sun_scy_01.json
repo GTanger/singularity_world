@@ -1,0 +1,20 @@
+{
+  "id": "sun_scy_01",
+  "name": "陽炎門廊",
+  "description": "中心設有微型光能反應池，液態金屬質感熱媒緩慢湧動。地面白玉石鋪就，上方巨木枝葉合圍成採光拱頂。室內空氣密度極高，觸感沈穩，光影呈現動態幾何規律，光線極度飽和。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "sunstreet"
+    },
+    {
+      "direction": "熾陽起居廳",
+      "to": "sun_scy_02"
+    }
+  ]
+}

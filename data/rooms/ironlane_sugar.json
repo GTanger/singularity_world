@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_sugar",
+  "name": "糖水鋪",
+  "description": "店面掛著淺色的布簾，櫃檯擺放著幾罈盛裝紅糖與蜜餞的瓷罈。室內擺設著三張圓形木桌與配套的圓凳，地板打掃得一塵不染。空氣中瀰漫著微甜的豆香味，牆上貼著當日供應的品項皮紙。",
+  "tags": [
+    "shop",
+    "food"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "準備間",
+      "to": "ironlane_sugar_r1"
+    }
+  ]
+}

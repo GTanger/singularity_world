@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_33",
+  "name": "沁水客廳",
+  "description": "中心半透明晶質水景，流動微光能量液。家具高密度黑木，琥珀光暈。導能織物，熱輻射均勻，飽和安定。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "內宅門廊",
+      "to": "yaxiao_32"
+    },
+    {
+      "direction": "私人料理台",
+      "to": "yaxiao_34"
+    },
+    {
+      "direction": "私人料理台",
+      "to": "yaxiao_34"
+    },
+    {
+      "direction": "沉靜臥房",
+      "to": "yaxiao_35"
+    }
+  ]
+}

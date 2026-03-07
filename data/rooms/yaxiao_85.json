@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_85",
+  "name": "暖石廊道",
+  "description": "牆面大量發光暖能石恆溫。地表消音幾何地墊虛浮。空氣乾燥清爽電離感與礦物香。根皮金屬般幾何紋理，導向最深處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "舒緩淨身間",
+      "to": "yaxiao_84"
+    },
+    {
+      "direction": "根穴眠室",
+      "to": "yaxiao_86"
+    },
+    {
+      "direction": "根植起居室",
+      "to": "yaxiao_82"
+    },
+    {
+      "direction": "根穴眠室",
+      "to": "yaxiao_86"
+    }
+  ]
+}

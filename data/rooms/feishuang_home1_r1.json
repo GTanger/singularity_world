@@ -1,0 +1,28 @@
+{
+  "id": "feishuang_home1_r1",
+  "name": "堂屋",
+  "description": "空間方正，中央擺放著長條木桌與凳，幾處窗縫可見街角霜晶。地面乾燥平整，這裡是宅邸的中心，分別設有通往左側臥房、右側客房與後方灶間的厚重木門，光線由天窗斜射，生活機能分配井然有序。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "feishuang_home1"
+    },
+    {
+      "direction": "灶間",
+      "to": "feishuang_home1_r2"
+    },
+    {
+      "direction": "臥房",
+      "to": "feishuang_home1_r3"
+    },
+    {
+      "direction": "客房",
+      "to": "feishuang_home1_r4"
+    }
+  ]
+}

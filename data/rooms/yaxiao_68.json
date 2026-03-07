@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_68",
+  "name": "違禁零件庫",
+  "description": "貨架剛出爐武裝構件，冷峻藍光。加強黑岩地面堅硬。電離焦味與沉香，安靜穩定，地下軍火庫重壓。",
+  "tags": [
+    "indoor",
+    "storage"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "算力控制矩陣",
+      "to": "yaxiao_67"
+    },
+    {
+      "direction": "重型組裝台",
+      "to": "yaxiao_69"
+    }
+  ]
+}

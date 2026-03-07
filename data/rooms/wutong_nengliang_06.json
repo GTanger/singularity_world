@@ -1,0 +1,20 @@
+{
+  "id": "wutong_nengliang_06",
+  "name": "柔雲居玄關",
+  "description": "地面厚實紫色絨毛毯，足音完全消失。牆面柔軟木質鱗片覆蓋，空氣溫潤茶香與地熱氣息，氛圍轉向生活化。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "成品展示區",
+      "to": "wutong_nengliang_05"
+    },
+    {
+      "direction": "溫馨餐廳",
+      "to": "wutong_nengliang_07"
+    }
+  ]
+}

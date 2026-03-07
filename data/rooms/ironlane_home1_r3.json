@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_home1_r3",
+  "name": "臥房",
+  "description": "堂屋右側的休息空間，設有一張穩固的木製床架，上面鋪著厚實的草墊與乾淨的麻布。床頭擺放著一個儲物用的舊木箱。一扇採光用的小高窗緊閉，室內環境安靜且乾燥，是一處單純且實用的休息格間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "ironlane_home1_r1"
+    }
+  ]
+}

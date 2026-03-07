@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home4_r2",
+  "name": "左廂",
+  "description": "室內設有一座固定的石質台座，上方鋪有整潔的草編墊。牆面木製托架擺放著幾盞石燈。窗戶正對天井，視野開闊，室內維持著物品擺放精確，空氣流動緩慢。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "天井",
+      "to": "lifestreet_home4_r1"
+    }
+  ]
+}

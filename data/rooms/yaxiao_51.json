@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_51",
+  "name": "鏡面碎片倉",
+  "description": "大量破碎採光晶體，光線混亂折射干擾視線。厚實消音鉛板，空氣乾燥純淨。白玉門檻透露出內部不同尋常。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "廢棄線路間",
+      "to": "yaxiao_50"
+    },
+    {
+      "direction": "雜物重門庭",
+      "to": "yaxiao_52"
+    }
+  ]
+}

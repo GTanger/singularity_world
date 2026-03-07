@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_199",
+  "name": "平房入口",
+  "description": "簡單石製地表消音幾何地衣。採光極差琥珀微光朦朧。流通穩定乾燥木質香。平凡具安全感街道端點。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "靜謐起居間",
+      "to": "yaxiao_200"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jingjin_duanzaopu",
+  "name": "精金鍛造鋪",
+  "description": "厚重黑金屬板鋪就的前廳，表面佈滿鍛造錘痕。高溫熔融金屬與石焦味，環境色調深紅，質感沉重且具壓迫感。內通鑄鐵宅。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "熔爐動力區",
+      "to": "wutong_jingjin_02"
+    }
+  ]
+}

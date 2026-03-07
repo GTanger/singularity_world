@@ -1,0 +1,32 @@
+{
+  "id": "feishuang_lodge2_r1",
+  "name": "前堂",
+  "description": "原客廳改建，現兼櫃台與茶座。桌几與價目，樓梯通閣樓客室。後通灶間與庫房，居家感濃，霜晶在窗外飄落。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "feishuang_lodge2"
+    },
+    {
+      "direction": "灶間",
+      "to": "feishuang_lodge2_r2"
+    },
+    {
+      "direction": "庫房",
+      "to": "feishuang_lodge2_r3"
+    },
+    {
+      "direction": "客室一",
+      "to": "feishuang_lodge2_r5"
+    },
+    {
+      "direction": "客室二",
+      "to": "feishuang_lodge2_r6"
+    }
+  ]
+}

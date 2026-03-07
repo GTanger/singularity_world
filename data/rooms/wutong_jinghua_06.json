@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jinghua_06",
+  "name": "華麗起居堂",
+  "description": "家具皆由半透明晶質木材與真皮包裹。大片晶牆映照廣庭繁茂景象，室內熱輻射分布均勻。空氣純淨，光學光線呈琥珀色。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "寶石居入口",
+      "to": "wutong_jinghua_05"
+    },
+    {
+      "direction": "能量美食區",
+      "to": "wutong_jinghua_07"
+    }
+  ]
+}

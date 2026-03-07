@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home9_r4",
+  "name": "功能廚格",
+  "description": "牆壁被燻成深褐色，設有單眼泥爐與幾隻木杓。案板擺放陶罈與麵粉袋。地面乾燥平整，上方通風窄孔透入一線光芒。空氣中瀰漫麵粉與燥熱火氣混合的味道，連通中庭，是別墅負責膳食的機能格點。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "庭院",
+      "to": "feishuang_home9_r1"
+    }
+  ]
+}

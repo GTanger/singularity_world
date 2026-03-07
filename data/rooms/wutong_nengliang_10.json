@@ -1,0 +1,17 @@
+{
+  "id": "wutong_nengliang_10",
+  "name": "儲藏閣樓",
+  "description": "住宅最高處，牆面晶化木材構成。存放大量私人珍藏能量織物，空氣乾燥清爽，色調深金與暗紫，空間感極其密實。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "柔紗臥房",
+      "to": "wutong_nengliang_09"
+    }
+  ]
+}

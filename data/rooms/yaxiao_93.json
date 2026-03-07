@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_93",
+  "name": "數據緩衝倉",
+  "description": "貨架完成改寫偽裝晶體，冷峻藍光。乾燥穩定，導向線照明。空氣凝滯純淨石灰與沉香。核心區物流中點，地下秩序。",
+  "tags": [
+    "indoor",
+    "storage"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "權限驗證台",
+      "to": "yaxiao_92"
+    },
+    {
+      "direction": "聲學屏蔽層",
+      "to": "yaxiao_94"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cq_13",
+  "name": "墨染銜接點",
+  "description": "石廊轉折處。牆面增生出大量的幾何晶體圍欄，晶體內部流動著如墨水般的深色能量。環境音波在此被完全吸收，呈現出絕對的死寂感。前方黑岩石壁開裂出一道整齊的門徑，通向民居。",
+  "tags": [
+    "indoor",
+    "admin"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "墨染居",
+      "to": "wutong_moran_ju"
+    },
+    {
+      "direction": "墨染連接廊",
+      "to": "wutong_cq_12"
+    }
+  ]
+}

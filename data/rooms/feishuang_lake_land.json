@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lake_land",
+  "name": "湖面岸邊",
+  "description": "臨水石灘，白霧與落霜交織。湖面平靜，熱氣自水際蒸散。岸邊可回環湖路，視野開闊，霜晶觸地即化。",
+  "tags": [
+    "outdoor",
+    "scenic"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "岸邊",
+      "to": "feishuang_lake_road"
+    }
+  ]
+}

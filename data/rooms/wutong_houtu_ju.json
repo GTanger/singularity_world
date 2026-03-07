@@ -1,0 +1,20 @@
+{
+  "id": "wutong_houtu_ju",
+  "name": "厚土居",
+  "description": "厚重黑曜石拼鑲玄關，石縫滲出金屬質感油脂沉澱。兩側牆面厚實深色地衣，梧桐巨木根系呈現極致物理密度。空氣中濃郁乾土與沉香，琥珀光線沈穩凝滯。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "沉積起居室",
+      "to": "wutong_houtu_02"
+    }
+  ]
+}

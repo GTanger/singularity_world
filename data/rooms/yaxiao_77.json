@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_77",
+  "name": "掃描測試區",
+  "description": "頻閃不定舊式頻譜儀，牆面模擬管道幾何刻痕。亮度極低，防滑黑岩碎塊。夜鴞啼鳴時波形規律共振，極度穩定平庸。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "舊化元件架",
+      "to": "yaxiao_76"
+    },
+    {
+      "direction": "廢棄電纜堆",
+      "to": "yaxiao_78"
+    }
+  ]
+}

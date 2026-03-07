@@ -1,0 +1,24 @@
+{
+  "id": "wutong_cy_06",
+  "name": "靜謐林帶",
+  "description": "遠離主軸的區域。林木生長極為密集，軀幹表面被厚實的綠茸地衣覆蓋。光線在這裡呈現出深邃的翠綠色，地表幾乎看不見石板，完全由群湧的菌絲毯構成。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "廣庭入口",
+      "to": "wutong_cy_01"
+    },
+    {
+      "direction": "苔痕台階",
+      "to": "wutong_cy_07"
+    },
+    {
+      "direction": "鳴葉淺灘",
+      "to": "wutong_cy_16"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_04",
+  "name": "氣密耗材角",
+  "description": "堆放橡膠圈與密封膠罐，牆面細密灰色絨毛地衣。地表濕潤帶油脂感，光線被厚重窗簾遮蔽。夜鴞啼鳴時空氣粒子輕微共振。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "導能線材架",
+      "to": "yaxiao_03"
+    },
+    {
+      "direction": "工具借用區",
+      "to": "yaxiao_05"
+    }
+  ]
+}

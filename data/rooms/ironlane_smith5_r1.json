@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_smith5_r1",
+  "name": "精密間",
+  "description": "室內設有一座小型且乾淨的爐台，案板上整齊排列著各種尺寸的細型鐵鎚與刻刀。地面不見炭屑，地板由耐火石磚鋪就。此處連接著材料庫與中庭廊道，牆上掛著幾幅工整的結構設計圖，環境安靜。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "ironlane_smith5"
+    },
+    {
+      "direction": "材料庫",
+      "to": "ironlane_smith5_r2"
+    },
+    {
+      "direction": "中庭",
+      "to": "ironlane_smith5_r3"
+    }
+  ]
+}

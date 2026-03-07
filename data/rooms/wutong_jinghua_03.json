@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jinghua_03",
+  "name": "能量五金區",
+  "description": "陳列沉重金屬構件與導能工具。地面加強黑岩，物理感堅硬。空氣充滿金屬氧化與沉香，物件密集空間極其飽和。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "晶簇展示架",
+      "to": "wutong_jinghua_02"
+    },
+    {
+      "direction": "物資倉儲間",
+      "to": "wutong_jinghua_04"
+    }
+  ]
+}

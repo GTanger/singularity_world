@@ -1,0 +1,17 @@
+{
+  "id": "life_di_1",
+  "name": "地字一號房",
+  "description": "裝潢沉穩厚重，地面鋪著整塊厚實的羊毛毯。胡桃木家具散發著淡淡的油漆香，牆上掛著一幅寫意的山水圖，門窗閉合後隔音極佳。",
+  "tags": [
+    "room",
+    "lodging",
+    "luxury"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_3f"
+    }
+  ]
+}

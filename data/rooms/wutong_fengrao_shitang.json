@@ -1,0 +1,21 @@
+{
+  "id": "wutong_fengrao_shitang",
+  "name": "豐饒食堂",
+  "description": "開放門面散發油脂與熟成樹脂香。防滑粗糙黑石地面，櫃檯後方可見群湧生長的蔬菜牆。光線溫潤，琥珀色大氣。內通禾香樓。",
+  "tags": [
+    "shop",
+    "indoor",
+    "food"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "大眾用餐區",
+      "to": "wutong_fengrao_02"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_nengliang_02",
+  "name": "梭織大廳",
+  "description": "整齊排列自動化織布機在能量脈動下律動運轉。牆面掛滿厚實富態化蠶絲卷，豐富物理層次。光線被織物過濾，斑駁暗色投影。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_nengliang_zhizaofang"
+    },
+    {
+      "direction": "染整車間",
+      "to": "wutong_nengliang_03"
+    }
+  ]
+}

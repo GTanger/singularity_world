@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home8",
+  "name": "入戶門廊",
+  "description": "門前鋪設磨光的紅砂岩，幾根粗壯石柱支撐著高聳坡頂。大門由包鐵木材製成，門檻積有一層晶瑩粉末。暖風拂過，空氣中帶著湖水潮氣，此處直接連通內部的景觀正廳，光線自上方木柵滲入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "路口",
+      "to": "feishuang_lake_road"
+    },
+    {
+      "direction": "正廳",
+      "to": "feishuang_home8_r1"
+    }
+  ]
+}

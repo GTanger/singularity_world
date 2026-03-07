@@ -1,0 +1,20 @@
+{
+  "id": "wutong_shengji_02",
+  "name": "能量診斷室",
+  "description": "中心發光掃描晶台，牆面密集感應導管。空氣強烈電離感，磁場使邊界輕微透視扭曲，環境精密冰冷。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_shengji_yiguan"
+    },
+    {
+      "direction": "理療康復區",
+      "to": "wutong_shengji_03"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_145",
+  "name": "地下垂直徑",
+  "description": "衣櫥後垂直通道，旋轉重力抵消場。厚重隔音鉛皮金色導能紋路。低頻震動與夜鴞完美同步，冷峻秩序嚴明。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "生活緩衝室",
+      "to": "yaxiao_144"
+    },
+    {
+      "direction": "低溫封裝大廳",
+      "to": "yaxiao_146"
+    }
+  ]
+}

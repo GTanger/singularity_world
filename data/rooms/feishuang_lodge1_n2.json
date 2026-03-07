@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge1_n2",
+  "name": "凝字二號房",
+  "description": "三樓上房，佈置舒適，窗對後巷。霜晶不絕，室內暖而隔音。通三樓迴廊。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "三樓迴廊",
+      "to": "feishuang_lodge1_3f"
+    }
+  ]
+}

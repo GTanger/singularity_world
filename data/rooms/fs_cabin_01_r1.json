@@ -1,0 +1,29 @@
+{
+  "id": "fs_cabin_01_r1",
+  "name": "觀景正廳",
+  "description": "正廳中心寬闊，黑石地板透過地熱保持溫熱。中央石砌壁爐火焰穩定，有效驅散外界霜氣。三面琉璃牆納入整片雪影，光線明亮。此處連通臥寢、私廚與露台，環境靜謐穩定，空氣中瀰漫著木頭與淡茶香味，景觀性極佳。",
+  "tags": [
+    "indoor",
+    "cabin",
+    "residence"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "fs_cabin_01"
+    },
+    {
+      "direction": "臥寢",
+      "to": "fs_cabin_01_r2"
+    },
+    {
+      "direction": "私廚",
+      "to": "fs_cabin_01_r3"
+    },
+    {
+      "direction": "露台",
+      "to": "fs_cabin_01_r4"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home8_r4",
+  "name": "餐廚區",
+  "description": "開放式石檯與爐灶，與正廳相連。架上瓷具與調料齊整，窗外可見湖霧。熱氣與湖風交織，霜晶不入。此處為別墅備膳與簡易用膳的機能格位，動線直通正廳與浴池。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "正廳",
+      "to": "feishuang_home8_r1"
+    }
+  ]
+}

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"log"
 	"sync"
+
+	"singularity_world/store"
 )
 
 // RoomGraph 房間鄰接圖，從 DB exits 表建立，供 BFS 尋路使用。
@@ -33,8 +35,44 @@ func GetGraph() *RoomGraph {
 	return graph
 }
 
-// BuildGraph 從 DB 讀取所有房間與出口建立鄰接表。伺服器啟動時呼叫一次。
+// BuildGraph 從 store（JSON）或 DB 讀取房間與出口建立鄰接表。若 store.Default 已初始化則優先從 JSON 建圖。
 func (g *RoomGraph) BuildGraph(database *sql.DB) error {
+	if store.Default != nil {
+		return g.BuildGraphFromStore()
+	}
+	return g.buildGraphFromDB(database)
+}
+
+// BuildGraphFromStore 從 store.Default（JSON 背板）建圖。store.Init 後由 BuildGraph 自動使用。
+func (g *RoomGraph) BuildGraphFromStore() error {
+	if store.Default == nil {
+		return nil
+	}
+	g.mu.Lock()
+	defer g.mu.Unlock()
+
+	g.adj = store.Default.Adjacency()
+	g.name = store.Default.NameMap()
+	g.zone = store.Default.ZoneMap()
+	g.tags = store.Default.RoomTagsMap()
+	if g.adj == nil {
+		g.adj = make(map[string][]string)
+	}
+	if g.tags == nil {
+		g.tags = make(map[string][]string)
+	}
+	if g.name == nil {
+		g.name = make(map[string]string)
+	}
+	if g.zone == nil {
+		g.zone = make(map[string]string)
+	}
+
+	log.Printf("[pathfind] graph built from JSON: %d rooms, %d edges", len(g.name), g.edgeCount())
+	return nil
+}
+
+func (g *RoomGraph) buildGraphFromDB(database *sql.DB) error {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
@@ -77,7 +115,7 @@ func (g *RoomGraph) BuildGraph(database *sql.DB) error {
 		g.adj[from] = append(g.adj[from], to)
 	}
 
-	log.Printf("[pathfind] graph built: %d rooms, %d edges", len(g.name), g.edgeCount())
+	log.Printf("[pathfind] graph built from DB: %d rooms, %d edges", len(g.name), g.edgeCount())
 	return nil
 }
 

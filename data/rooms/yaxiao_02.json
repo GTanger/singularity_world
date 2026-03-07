@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_02",
+  "name": "零件陳列區",
+  "description": "貨架直抵天花板，氣密接頭與舊化齒輪。牆面防音鉛皮，接縫塞滿黑色乾燥苔蘚。環境音極低，夜鴞啼鳴僅餘細微低頻震動。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "雜貨行店面",
+      "to": "yaxiao_01"
+    },
+    {
+      "direction": "導能線材架",
+      "to": "yaxiao_03"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop8_r2",
+  "name": "地下儲格",
+  "description": "位於堆間下方的封閉空間，牆壁由厚石塊砌成。這裡存放著怕潮的乾貨與油脂罐，環境陰涼且靜謐。室內無窗，僅靠一只盛水石罐調節濕度。霜晶完全不入此處，空氣凝滯，呈現出一種紮實且密封的存放質感。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堆間",
+      "to": "feishuang_shop8_r1"
+    }
+  ]
+}

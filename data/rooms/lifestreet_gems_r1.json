@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_gems_r1",
+  "name": "前舖",
+  "description": "店內空間寬敞，黑木櫃檯橫跨室內，檯面上擺放著幾塊用於墊放玉石的黑色軟布。後方貨架擺放著各式礦石標本，地面由打磨光滑的灰色方磚鋪設。牆角立著一個盛放廢棄石料的木桶，採光均勻。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "lifestreet_gems"
+    },
+    {
+      "direction": "鑑賞室",
+      "to": "lifestreet_gems_r2"
+    }
+  ]
+}

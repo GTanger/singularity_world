@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_smith2_r1",
+  "name": "研磨間",
+  "description": "中央放置著兩座長條形的磨刀台，台邊設有導水槽。牆上掛著不同目數的磨石，幾隻木桶盛滿了冷水。此處分別連接左側的熱鍛房與後方的休息廊，地面乾淨，物件擺放井然有序。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店舖",
+      "to": "ironlane_smith2"
+    },
+    {
+      "direction": "鍛造房",
+      "to": "ironlane_smith2_r2"
+    },
+    {
+      "direction": "後堂",
+      "to": "ironlane_smith2_r3"
+    }
+  ]
+}

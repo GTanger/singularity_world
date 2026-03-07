@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop7",
+  "name": "鐵器行",
+  "description": "農具與鐵器沿牆陳列，打鐵巷湧入的熱氣至此已轉冷。霜晶覆於冷硬的鐵器表面，進門處地面散落著細微晶屑。後方通往鍛間與住屋，炭鐵氣與霜氣在此並存，整體建築呈現出深灰色澤，顯得古樸且沉穩。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "鍛間",
+      "to": "feishuang_shop7_r1"
+    }
+  ]
+}

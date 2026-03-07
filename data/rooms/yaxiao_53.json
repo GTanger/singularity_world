@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_53",
+  "name": "表裡過渡徑",
+  "description": "狹長真空緩衝室，磨光黑曜石與鉛層結合。空氣徹底過濾，電離感與高級樹脂香。暗金調，物理隔離最前線。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "雜物重門庭",
+      "to": "yaxiao_52"
+    },
+    {
+      "direction": "二樓起居廳",
+      "to": "yaxiao_54"
+    }
+  ]
+}

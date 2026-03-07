@@ -1,0 +1,29 @@
+{
+  "id": "yaxiao_157",
+  "name": "廚膳起居角",
+  "description": "白玉餐檯加熱組件穩定熱輻射。煮沸油脂與焦香。牆面乾燥植被標本穩重有序。飽滿琥珀，掩飾下方熱源震動。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "生活休息室",
+      "to": "yaxiao_156"
+    },
+    {
+      "direction": "內部沉睡室",
+      "to": "yaxiao_158"
+    },
+    {
+      "direction": "生活休息室",
+      "to": "yaxiao_156"
+    },
+    {
+      "direction": "內部沉睡室",
+      "to": "yaxiao_158"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_lodge1_storage",
+  "name": "庫房",
+  "description": "米袋、鹽罐與備用碗碟碼放整齊，無窗僅燈火。通後院，乾燥陰涼。霜晶不至此處。",
+  "tags": [
+    "inn",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "後院",
+      "to": "feishuang_lodge1_backyard"
+    }
+  ]
+}

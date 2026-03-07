@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_70",
+  "name": "品質複檢站",
+  "description": "精密白玉檢測台，光線轉幾何掃描線。採光充足穩重琥珀。穩定能量微粒，清晰視覺，陳設精密。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "重型組裝台",
+      "to": "yaxiao_69"
+    },
+    {
+      "direction": "暗門整備區",
+      "to": "yaxiao_71"
+    }
+  ]
+}

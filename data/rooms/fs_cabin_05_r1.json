@@ -1,0 +1,33 @@
+{
+  "id": "fs_cabin_05_r1",
+  "name": "奧所大堂",
+  "description": "挑高十米的圓形廳堂，中心設有持續旋轉的晶石火塘。地面鋪設高級磨砂皮毯，腳感舒適。三面巨大的圓拱琉璃窗俯瞰森林，光線聖潔。此處連通寢宮、書閣、湯池與露台，是整座別墅的機能中心，氛圍尊貴且極其穩固。",
+  "tags": [
+    "indoor",
+    "cabin",
+    "residence"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "fs_cabin_05"
+    },
+    {
+      "direction": "寢宮",
+      "to": "fs_cabin_05_r2"
+    },
+    {
+      "direction": "書閣",
+      "to": "fs_cabin_05_r3"
+    },
+    {
+      "direction": "湯池",
+      "to": "fs_cabin_05_r4"
+    },
+    {
+      "direction": "露台",
+      "to": "fs_cabin_05_r5"
+    }
+  ]
+}

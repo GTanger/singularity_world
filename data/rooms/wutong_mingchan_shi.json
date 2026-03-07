@@ -1,0 +1,20 @@
+{
+  "id": "wutong_mingchan_shi",
+  "name": "鳴蟬室",
+  "description": "入口嵌入兩株巨木交錯枝幹，踏步由晶化木材構成。空氣中高密度微光粒子，隨風吹過葉縫發出規律共鳴。地面細碎半透明纖維，採光在層疊葉影下呈飽滿深綠。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "振鳴大廳",
+      "to": "wutong_mingchan_02"
+    }
+  ]
+}

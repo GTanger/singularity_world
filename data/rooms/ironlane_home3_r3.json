@@ -1,0 +1,17 @@
+{
+  "id": "ironlane_home3_r3",
+  "name": "側廂房",
+  "description": "天井側邊的空間，主要作為儲物與雜務使用。牆邊靠著幾柄木柄石鏟，架上擺放著存放醃菜的陶罐。室內乾燥且陰涼，地板散落著些許稻草。這裡也兼具了次要的休息功能，角落放著一張簡易的竹榻。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "天井",
+      "to": "ironlane_home3_r1"
+    }
+  ]
+}

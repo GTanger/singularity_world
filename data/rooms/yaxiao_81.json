@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_81",
+  "name": "內宅玄關",
+  "description": "平整白玉石板，牆面與梧桐根系融合。溫潤茶香與高級熟成樹脂。隱藏式晶簇淡紫光。夜鴞完全屏蔽，觸感細膩生活秩序。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "門口隔音廊",
+      "to": "yaxiao_80"
+    },
+    {
+      "direction": "根植起居室",
+      "to": "yaxiao_82"
+    }
+  ]
+}

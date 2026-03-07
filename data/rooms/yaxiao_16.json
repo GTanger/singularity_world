@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_16",
+  "name": "後勤通道",
+  "description": "臥室衣櫥後隱藏門扉。地勢陡降，牆面能量竄改刻痕。光線幽暗暗紫，空氣乾燥電離。多層重疊結構將核心震動導引至地底。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "盥洗淨室",
+      "to": "yaxiao_15"
+    },
+    {
+      "direction": "地下重力梯",
+      "to": "yaxiao_17"
+    }
+  ]
+}

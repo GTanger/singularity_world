@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cq_07",
+  "name": "雲岫銜接點",
+  "description": "走廊盡頭。牆面轉為圓潤的白玉材質，表面刻有流動的雲紋符號。空氣中沉香氣息轉濃，水汽冷凝在玉石表面形成均勻的露珠。前方是一扇沈重的紅木門扉，銜接內部居住空間。",
+  "tags": [
+    "indoor",
+    "admin"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "雲岫宅",
+      "to": "wutong_yunxiu_zhai"
+    },
+    {
+      "direction": "雲岫連接廊",
+      "to": "wutong_cq_06"
+    }
+  ]
+}

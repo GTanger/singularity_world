@@ -1,0 +1,17 @@
+{
+  "id": "ironlane_smith1_r7",
+  "name": "伙房",
+  "description": "提供全店膳食的空間。設有雙孔大灶，牆邊堆放著大量的麵粉袋與鹹菜罈。長條形木桌表面油亮，整齊扣著一排粗瓷大碗。空氣中瀰漫著木柴燃燒的味道，地板略有水漬但維持整潔。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "生活廊道",
+      "to": "ironlane_smith1_r4"
+    }
+  ]
+}

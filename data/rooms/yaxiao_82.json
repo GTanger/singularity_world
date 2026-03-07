@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_82",
+  "name": "根植起居室",
+  "description": "中心粗壯氣根交織支撐柱，油脂光澤。黑曜石家具一體成型，柔軟蠶絲。幾何分形織物，熱輻射均勻，飽和安定物質富態化。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "內宅玄關",
+      "to": "yaxiao_81"
+    },
+    {
+      "direction": "沉香餐廳",
+      "to": "yaxiao_83"
+    },
+    {
+      "direction": "沉香餐廳",
+      "to": "yaxiao_83"
+    },
+    {
+      "direction": "暖石廊道",
+      "to": "yaxiao_85"
+    }
+  ]
+}

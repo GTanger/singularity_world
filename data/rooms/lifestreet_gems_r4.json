@@ -1,0 +1,17 @@
+{
+  "id": "lifestreet_gems_r4",
+  "name": "藏庫",
+  "description": "位於店鋪最深處，入口是包覆鐵皮的厚實木門。室內沒有窗戶，僅靠角落一盞長明燈維持基本視線。兩側牆壁挖有壁龕，內部整齊碼放著帶有編號的小木盒，牆壁由厚石塊砌成，環境顯得陰冷且密封。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "加工間",
+      "to": "lifestreet_gems_r3"
+    }
+  ]
+}

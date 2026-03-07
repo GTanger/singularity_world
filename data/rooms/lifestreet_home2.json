@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home2",
+  "name": "民宅",
+  "description": "兩層結構的木造民居，外牆掛著些許乾枯的藤蔓。二樓窗櫺略顯歪斜，牆角的木料因長年風雨顯得乾燥灰白。入口處是幾級低矮的木階，門板上留有長年推拉摩擦的油亮痕跡。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "前廳",
+      "to": "lifestreet_home2_r1"
+    }
+  ]
+}

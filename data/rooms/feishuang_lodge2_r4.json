@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge2_r4",
+  "name": "主家房",
+  "description": "民宿主人自住，不開放。床几與私物，門僅通灶間。改建後保留的自家寢室，與客區隔開。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "灶間",
+      "to": "feishuang_lodge2_r2"
+    }
+  ]
+}

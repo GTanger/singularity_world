@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_99",
+  "name": "蒸汽廚房",
+  "description": "高溫噴發能量水霧能見度極低。黑曜石灶台碳化油脂沉澱。辛辣草本與金屬焦味，氣密管道噪音覆蓋。繁忙紮實極強偽裝性。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "點餐收銀台",
+      "to": "yaxiao_98"
+    },
+    {
+      "direction": "冷藏儲物間",
+      "to": "yaxiao_100"
+    }
+  ]
+}

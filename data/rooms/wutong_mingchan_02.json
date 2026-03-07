@@ -1,0 +1,24 @@
+{
+  "id": "wutong_mingchan_02",
+  "name": "振鳴大廳",
+  "description": "天花板由交織薄片狀晶質木材構成，能放大並反射外界植被律動聲。地面柔軟綠茸地衣，踩踏沈穩。空氣濕潤，濃郁草本清香，視覺邊界溫潤飽滿。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_mingchan_shi"
+    },
+    {
+      "direction": "採光露台",
+      "to": "wutong_mingchan_03"
+    },
+    {
+      "direction": "眠繭寢間",
+      "to": "wutong_mingchan_04"
+    }
+  ]
+}

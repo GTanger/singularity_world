@@ -1,0 +1,20 @@
+{
+  "id": "wutong_ningguang_yilang",
+  "name": "凝光藝廊",
+  "description": "地面光滑如鏡，牆面深黑礦石構成。展台陳列具幾何分形特徵的能量雕塑，光線在晶體間往復折射。氛圍肅穆，空氣中懸浮極細發光微粒。內通藏光室。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "作品典藏庫",
+      "to": "wutong_ningguang_02"
+    }
+  ]
+}

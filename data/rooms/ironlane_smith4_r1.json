@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_smith4_r1",
+  "name": "雜活間",
+  "description": "牆壁由粗糙石塊壘成，中央的小型風爐爐牆已有多處裂紋。工作台上雜亂堆放著鐵鉗與冷水桶，地面積滿了厚厚的炭灰。此處同時連往後方的大通鋪與側邊的物資間，光線極差，空氣中飄散著細微粉塵。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店舖",
+      "to": "ironlane_smith4"
+    },
+    {
+      "direction": "雜物室",
+      "to": "ironlane_smith4_r2"
+    },
+    {
+      "direction": "居所",
+      "to": "ironlane_smith4_r3"
+    }
+  ]
+}

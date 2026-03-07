@@ -1,0 +1,20 @@
+{
+  "id": "wutong_fengrao_05",
+  "name": "禾香樓玄關",
+  "description": "廚房後方私人入口，地面鋪設淺色地衣毯。空氣流通感強，熱氣消散轉為清爽沉香。牆面精緻木雕，氛圍寧靜生活化。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "忙碌廚間",
+      "to": "wutong_fengrao_04"
+    },
+    {
+      "direction": "私人生活區",
+      "to": "wutong_fengrao_06"
+    }
+  ]
+}

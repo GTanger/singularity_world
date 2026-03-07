@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home3_r5",
+  "name": "儲藏地窖",
+  "description": "廚房下方的低溫儲藏空間，牆壁由天然岩塊砌成，存放著四季衣物與醃製品。環境乾燥且極其陰涼，完全不透天光。空氣靜謐，充滿了乾燥布料與泥土的味道，是這座宅邸物資儲備的堅固後盾，防輻射能力極強。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "廚房",
+      "to": "feishuang_home3_r4"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "yaxiao_63",
+  "name": "高溫切削室",
+  "description": "整塊黑曜石檯面高頻振盪工具。光線銳利金屬分形幾何。音頻高昂與夜鴞聲學同步隱蔽。樹脂烘烤焦香，堅實飽滿。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "組裝核心大廳",
+      "to": "yaxiao_62"
+    },
+    {
+      "direction": "元件精密鑄模",
+      "to": "yaxiao_64"
+    },
+    {
+      "direction": "組裝核心大廳",
+      "to": "yaxiao_62"
+    }
+  ]
+}

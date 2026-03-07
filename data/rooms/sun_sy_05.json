@@ -1,0 +1,20 @@
+{
+  "id": "sun_sy_05",
+  "name": "精密居玄關",
+  "description": "住宅入口，地面轉為光滑白玉石。空氣溫壓驟降，代之以清爽礦物氣息。牆面掛滿精緻幾何裝飾品，氛圍莊嚴且秩序井然。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "元件儲存間",
+      "to": "sun_sy_04"
+    },
+    {
+      "direction": "生活起居室",
+      "to": "sun_sy_06"
+    }
+  ]
+}

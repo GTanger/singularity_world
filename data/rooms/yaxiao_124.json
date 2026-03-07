@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_124",
+  "name": "負載監控位",
+  "description": "晶質屏幕實時顯示全街區能量赤字。地面複雜黃銅導線，熱輻射極強。飽滿深琥珀，與破舊民宅極致反差。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "能量竄改核心",
+      "to": "yaxiao_123"
+    },
+    {
+      "direction": "冷卻排氣道",
+      "to": "yaxiao_125"
+    }
+  ]
+}

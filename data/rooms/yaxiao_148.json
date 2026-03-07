@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_148",
+  "name": "自動封裝位",
+  "description": "機械臂能量脈動將液態電漿封入密封晶瓶。厚實能量隔離地衣吸音。光影強烈對比飽和暴力美感。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "能量藥劑調配",
+      "to": "yaxiao_147"
+    },
+    {
+      "direction": "晶液儲存槽",
+      "to": "yaxiao_149"
+    }
+  ]
+}

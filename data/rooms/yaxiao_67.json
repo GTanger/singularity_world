@@ -1,0 +1,23 @@
+{
+  "id": "yaxiao_67",
+  "name": "算力控制矩陣",
+  "description": "數百晶質屏幕顯示武裝零件物理數值。地面複雜黃銅線路維磁場。發光能量微粒，沈穩金屬質感，秩序巔峰。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "能量反應堆房",
+      "to": "yaxiao_66"
+    },
+    {
+      "direction": "違禁零件庫",
+      "to": "yaxiao_68"
+    },
+    {
+      "direction": "能量反應堆房",
+      "to": "yaxiao_66"
+    }
+  ]
+}

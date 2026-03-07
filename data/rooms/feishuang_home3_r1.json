@@ -1,0 +1,28 @@
+{
+  "id": "feishuang_home3_r1",
+  "name": "天井",
+  "description": "露天的中庭是全屋的核心，上方霜晶隨暖風紛落，觸地即化。此處採光充足，四周迴廊分別引導至正位的正廳、側方的臥房與後方的廚房。牆根擺放著石磨與盛水缸，地面石板排水順暢，展現出完整的居家格局與生活感。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "前廊",
+      "to": "feishuang_home3"
+    },
+    {
+      "direction": "正廳",
+      "to": "feishuang_home3_r2"
+    },
+    {
+      "direction": "側房",
+      "to": "feishuang_home3_r3"
+    },
+    {
+      "direction": "廚房",
+      "to": "feishuang_home3_r4"
+    }
+  ]
+}

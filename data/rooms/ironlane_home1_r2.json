@@ -1,0 +1,17 @@
+{
+  "id": "ironlane_home1_r2",
+  "name": "灶間",
+  "description": "位於堂屋後方的狹窄空間，嵌有一座單孔石灶，灶台邊堆放著幾捆整齊的乾柴。一旁有深陷地面的儲水石槽，槽邊懸掛著幾隻木勺。牆面上方開有通風用的窄孔，空氣中瀰漫著木柴燃燒後的乾燥微煙味。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "ironlane_home1_r1"
+    }
+  ]
+}

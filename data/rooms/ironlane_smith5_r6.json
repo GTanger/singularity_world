@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith5_r6",
+  "name": "淨室",
+  "description": "這是一處專門用於盥洗與存放乾淨衣物的空間。地面鋪著吸水的細砂石，中心有一座大型的洗臉台與木桶。牆上掛著幾套漿洗整齊的常服。環境濕潤但通氣良好，體現了店主對生活細節的極致要求。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "中庭廊",
+      "to": "ironlane_smith5_r3"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_191",
+  "name": "算力中心入口",
+  "description": "牆面密佈流動光學纖維束溫壓驟升。強烈電離臭氧味磁場輕微扭曲。精密冷峻，光線轉穩定幾何線條與布藝劇烈反差。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "管道緩衝室",
+      "to": "yaxiao_190"
+    },
+    {
+      "direction": "垂直冷卻井",
+      "to": "yaxiao_192"
+    },
+    {
+      "direction": "管道緩衝室",
+      "to": "yaxiao_190"
+    }
+  ]
+}

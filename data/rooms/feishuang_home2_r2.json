@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home2_r2",
+  "name": "伙房區",
+  "description": "牆縫間的烹飪格位，泥灶上坐著缺口鐵鍋，牆角堆放著幾捆沾霜的木柴。熱火升騰，空氣中充滿煙燻味與煮豆香氣。地面油亮且不平整，雖然狹小，但灶台與水桶擺放位置明確，是維持全屋暖意的核心來源。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "前室",
+      "to": "feishuang_home2_r1"
+    }
+  ]
+}

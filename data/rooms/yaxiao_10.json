@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_10",
+  "name": "生活起居堂",
+  "description": "空間開闊，下沉式座區鋪墊層疊發光蠶絲。家具黑曜石與緻密黑木一體成型，琥珀色光暈。幾何分形織物，熱輻射均勻，物質富態化奢華秩序。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "私宅玄關",
+      "to": "yaxiao_09"
+    },
+    {
+      "direction": "暖能茶間",
+      "to": "yaxiao_11"
+    },
+    {
+      "direction": "沉香書房",
+      "to": "yaxiao_12"
+    }
+  ]
+}

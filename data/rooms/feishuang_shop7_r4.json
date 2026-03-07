@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_shop7_r4",
+  "name": "內房臥室",
+  "description": "位於建築深處的隔間。設有一張由厚木架起的簡易床鋪，鋪著幾層乾淨的獸皮。牆邊設有一座半開木箱，石燈掛在牆頭提供穩定光源。這裡的石牆極厚，環境極其靜謐，阻隔了前方鍛間的敲擊聲，適合休息。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "feishuang_shop7_r3"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_164",
+  "name": "違禁品存放庫",
+  "description": "吸光黑礦石牆偽裝晶盒內精密零件。空氣密度極高絕對穩固。熱輻射微弱恆定，穩定節點。",
+  "tags": [
+    "indoor",
+    "storage"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "零件打磨站",
+      "to": "yaxiao_163"
+    },
+    {
+      "direction": "維護站出口",
+      "to": "yaxiao_165"
+    }
+  ]
+}

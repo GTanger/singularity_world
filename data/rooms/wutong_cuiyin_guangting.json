@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cuiyin_guangting",
+  "name": "翠蔭廣庭",
+  "description": "大街中心的巨型開放廣場。梧桐樹在此群湧生長成天然拱頂，白玉石板與黑曜石銜接，兩側梧桐門廊厚實葉片遮蔽天光。空氣中懸浮著恆定的綠色微粒，地表積聚帶油脂感的落葉碎屑，提供居民集會與休憩，是街區綠化的核心。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "進入廣庭",
+      "to": "wutong_cy_01"
+    }
+  ]
+}

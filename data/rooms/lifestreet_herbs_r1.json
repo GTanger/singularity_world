@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_herbs_r1",
+  "name": "前舖",
+  "description": "牆面嵌滿貼有紙標籤的小木屜。櫃檯上擺放著一柄黃銅小秤與一具石製藥臼。地面由乾硬的黃泥土鋪平，牆角堆著幾疊包裝藥材用的吸水粗紙。空氣中苦澀的藥味極其濃郁，地面打掃得尚算整潔。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "lifestreet_herbs"
+    },
+    {
+      "direction": "切藥房",
+      "to": "lifestreet_herbs_r2"
+    }
+  ]
+}

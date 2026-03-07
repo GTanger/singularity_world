@@ -1,0 +1,32 @@
+{
+  "id": "yaxiao_139",
+  "name": "溫馨起居堂",
+  "description": "生活氣息黑曜石家具琥珀光暈。落地窗梧桐拱頂光影分明。穩重沉香與熱食香，觸感沈穩掩飾下方祕密。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "寓所玄關",
+      "to": "yaxiao_138"
+    },
+    {
+      "direction": "植栽露台",
+      "to": "yaxiao_140"
+    },
+    {
+      "direction": "植栽露台",
+      "to": "yaxiao_140"
+    },
+    {
+      "direction": "私密廚膳間",
+      "to": "yaxiao_141"
+    },
+    {
+      "direction": "閣樓臥房",
+      "to": "yaxiao_142"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_ningguang_03",
+  "name": "創作工作室",
+  "description": "室中心未加工巨大原石，四周散落精密切削工具。空氣充滿石粉與高溫熔融金屬混合味，熱輻射強，色調飽滿深琥珀。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "作品典藏庫",
+      "to": "wutong_ningguang_02"
+    },
+    {
+      "direction": "藏光室客廳",
+      "to": "wutong_ningguang_04"
+    }
+  ]
+}

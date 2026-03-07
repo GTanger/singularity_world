@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_57",
+  "name": "植萃休憩角",
+  "description": "繁茂室內植被，葉片厚實油脂感，旺盛生命張力。幾何地毯消音，濕潤安穩。斑駁暖色投影，民生機能物質飽和。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "能量藏書閣",
+      "to": "yaxiao_56"
+    },
+    {
+      "direction": "晶質眠臥室",
+      "to": "yaxiao_58"
+    }
+  ]
+}

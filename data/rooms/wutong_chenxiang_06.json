@@ -1,0 +1,20 @@
+{
+  "id": "wutong_chenxiang_06",
+  "name": "靜謐起居堂",
+  "description": "空間寬敞，家具由黑曜石與沉香木一體成型。落地窗正對後院群湧植被，室內恆定能量場，光影隨外部葉片律動，陳設整齊。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "棲香居玄關",
+      "to": "wutong_chenxiang_05"
+    },
+    {
+      "direction": "溫潤眠臥",
+      "to": "wutong_chenxiang_07"
+    }
+  ]
+}

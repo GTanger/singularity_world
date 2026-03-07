@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_home3_r4",
+  "name": "內房",
+  "description": "位於建築最深處的臥房，設有一張紅木製成的堅固床架。窗櫺對著後方的靜謐狹巷，通風良好。室內擺放著一只大型木質衣櫃與一盞石燈，空氣清新且帶有木頭香味，是一處維護良好且相對寬敞的休息空間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "天井",
+      "to": "ironlane_home3_r1"
+    }
+  ]
+}

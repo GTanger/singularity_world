@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_smith4_r3",
+  "name": "大通鋪",
+  "description": "這是一個兼具廚房與臥室的功能空間。角落有一口簡易的泥灶，旁邊橫放著一張長條形木板床，上面堆著幾床破損的棉被。牆角堆放著幾袋發潮的糧食，空氣中充斥著油煙與汗水混合的味道，環境十分寒酸。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "工作室",
+      "to": "ironlane_smith4_r1"
+    },
+    {
+      "direction": "後巷",
+      "to": "ironlane_smith4_r4"
+    }
+  ]
+}

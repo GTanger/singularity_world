@@ -1,0 +1,32 @@
+{
+  "id": "yaxiao_187",
+  "name": "雜亂起居廳",
+  "description": "陳舊黑木家具厚實消音布料。溫暖乾燥琥珀光影凝滯。沉香與熟成樹脂濃厚，光能飽和平庸和諧圓潤。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "布藝玄關",
+      "to": "yaxiao_186"
+    },
+    {
+      "direction": "烹飪隔間",
+      "to": "yaxiao_188"
+    },
+    {
+      "direction": "布藝玄關",
+      "to": "yaxiao_186"
+    },
+    {
+      "direction": "烹飪隔間",
+      "to": "yaxiao_188"
+    },
+    {
+      "direction": "管道緩衝室",
+      "to": "yaxiao_190"
+    }
+  ]
+}

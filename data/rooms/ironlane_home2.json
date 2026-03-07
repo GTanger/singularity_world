@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_home2",
+  "name": "民宅",
+  "description": "低矮的磚房，屋頂鋪設著整齊黑瓦。門後有一處狹長玄關，放著盛裝食水的陶罈。室內空間被屏風分割開來，地板由粗糙的磚塊鋪就。這裡的光線極其晦暗，連接著後方的起居區，環境顯得有些冷清且侷促。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "起居區",
+      "to": "ironlane_home2_r1"
+    }
+  ]
+}

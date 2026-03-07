@@ -9,7 +9,13 @@ import (
 	"os"
 
 	"singularity_world/entity"
+	"singularity_world/model"
+	"singularity_world/store"
 )
+
+// 與 model 一致，供既有程式與 JSON 使用；store 只依賴 model 以打破 import cycle。
+type Room = model.Room
+type Exit = model.Exit
 
 // roomsFile 房間定義檔 JSON 結構。
 type roomsFile struct {
@@ -29,24 +35,11 @@ type exitDef struct {
 	To        string `json:"to"`
 }
 
-// Room 單一房間節點。
-type Room struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	Tags        []string `json:"tags,omitempty"`
-	Zone        string   `json:"zone,omitempty"`
-	Description string   `json:"description"`
-}
-
-// Exit 單一出口：方向 → 目標房間。
-type Exit struct {
-	Direction  string `json:"direction"`
-	ToRoomID   string `json:"to_room_id"`
-	ToRoomName string `json:"to_room_name"`
-}
-
-// GetRoom 依 id 查詢房間；若無則回傳 nil, nil。
-func GetRoom(db *sql.DB, id string) (*Room, error) {
+// GetRoom 依 id 查詢房間；若 store 已啟用則從 JSON 背板讀取，否則從 DB。
+func GetRoom(db *sql.DB, id string) (*model.Room, error) {
+	if store.Default != nil {
+		return store.Default.GetRoom(id)
+	}
 	var r Room
 	var tagsJSON string
 	err := db.QueryRow("SELECT id, name, description, tags, zone FROM rooms WHERE id = ?", id).Scan(&r.ID, &r.Name, &r.Description, &tagsJSON, &r.Zone)
@@ -60,8 +53,11 @@ func GetRoom(db *sql.DB, id string) (*Room, error) {
 	return &r, nil
 }
 
-// GetRoomsByTag 回傳所有帶有指定 tag 的房間 ID。
+// GetRoomsByTag 回傳所有帶有指定 tag 的房間 ID；store 啟用時從 JSON 背板讀取。
 func GetRoomsByTag(database *sql.DB, tag string) ([]string, error) {
+	if store.Default != nil {
+		return store.Default.GetRoomsByTag(tag), nil
+	}
 	rows, err := database.Query("SELECT id, tags FROM rooms")
 	if err != nil {
 		return nil, err
@@ -85,8 +81,11 @@ func GetRoomsByTag(database *sql.DB, tag string) ([]string, error) {
 	return result, rows.Err()
 }
 
-// GetRoomsByZone 回傳指定 zone 中的所有房間 ID。
+// GetRoomsByZone 回傳指定 zone 中的所有房間 ID；store 啟用時從 JSON 背板讀取。
 func GetRoomsByZone(database *sql.DB, zone string) ([]string, error) {
+	if store.Default != nil {
+		return store.Default.GetRoomsByZone(zone), nil
+	}
 	rows, err := database.Query("SELECT id FROM rooms WHERE zone = ?", zone)
 	if err != nil {
 		return nil, err
@@ -103,8 +102,11 @@ func GetRoomsByZone(database *sql.DB, zone string) ([]string, error) {
 	return result, rows.Err()
 }
 
-// GetExitsForRoom 回傳某房間的所有出口（含目標房間名稱）。
+// GetExitsForRoom 回傳某房間的所有出口（含目標房間名稱）；store 啟用時從 JSON 背板讀取。
 func GetExitsForRoom(db *sql.DB, fromRoomID string) ([]Exit, error) {
+	if store.Default != nil {
+		return store.Default.GetExitsForRoom(fromRoomID)
+	}
 	rows, err := db.Query(
 		`SELECT e.direction, e.to_room_id, r.name
 		 FROM exits e JOIN rooms r ON r.id = e.to_room_id
@@ -126,10 +128,31 @@ func GetExitsForRoom(db *sql.DB, fromRoomID string) ([]Exit, error) {
 	return list, rows.Err()
 }
 
-// GetEntitiesInRoom 回傳指定房間內的所有實體（依 entity_room 與 entities  join）。
+// GetEntitiesInRoom 回傳指定房間內的所有實體；store 啟用時從 store 取房內 entity_id 再自 DB 查 entities。
 // NPC 的 DisplayTitle 依討論 001 改為自指派推導，無指派時 fallback 為 entities.display_title。
 func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
-	rows, err := db.Query(
+	var rows *sql.Rows
+	var err error
+	if store.Default != nil {
+		ids := store.Default.EntityIDsInRoom(roomID)
+		if len(ids) == 0 {
+			return nil, nil
+		}
+		var list []*entity.Character
+		for _, id := range ids {
+			se := store.Default.GetEntity(id)
+			if se == nil {
+				continue
+			}
+			title := ""
+			if se.Kind == "npc" {
+				title = GetNPCTitle(db, id)
+			}
+			list = append(list, storeEntityToCharacter(se, title))
+		}
+		return list, nil
+	}
+	rows, err = db.Query(
 		`SELECT c.id, c.kind, c.display_char, c.x, c.y, c.move_state, c.target_x, c.target_y, c.walk_or_run,
 		 c.move_started_at, c.vit, c.qi, c.dex, c.magnesium, c.last_observed_at, c.created_at, c.gender, c.soul_seed,
 		 c.display_title
@@ -141,7 +164,8 @@ func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	list, err := scanCharacterList(rows)
+	var list []*entity.Character
+	list, err = scanCharacterList(rows)
 	if err != nil {
 		return nil, err
 	}
@@ -153,8 +177,11 @@ func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
 	return list, nil
 }
 
-// GetEntityRoom 回傳實體當前房間 id；若無則回傳空字串, nil。
+// GetEntityRoom 回傳實體當前房間 id；store 啟用時從 JSON 背板讀取並可即時覆寫。
 func GetEntityRoom(db *sql.DB, entityID string) (string, error) {
+	if store.Default != nil {
+		return store.Default.GetEntityRoom(entityID)
+	}
 	var roomID string
 	err := db.QueryRow("SELECT room_id FROM entity_room WHERE entity_id = ?", entityID).Scan(&roomID)
 	if err == sql.ErrNoRows {
@@ -166,14 +193,20 @@ func GetEntityRoom(db *sql.DB, entityID string) (string, error) {
 	return roomID, nil
 }
 
-// SetEntityRoom 將實體設為在指定房間（INSERT OR REPLACE）。
+// SetEntityRoom 將實體設為在指定房間；store 啟用時寫入記憶體並原子寫回 runtime/entity_rooms.json。
 func SetEntityRoom(db *sql.DB, entityID, roomID string) error {
+	if store.Default != nil {
+		return store.Default.SetEntityRoom(entityID, roomID)
+	}
 	_, err := db.Exec("INSERT OR REPLACE INTO entity_room (entity_id, room_id) VALUES (?, ?)", entityID, roomID)
 	return err
 }
 
-// GetRoomName 查詢房間名稱；若無則回傳空字串。
+// GetRoomName 查詢房間名稱；store 啟用時從 JSON 背板讀取。
 func GetRoomName(database *sql.DB, roomID string) (string, error) {
+	if store.Default != nil {
+		return store.Default.GetRoomName(roomID), nil
+	}
 	var name string
 	err := database.QueryRow("SELECT name FROM rooms WHERE id = ?", roomID).Scan(&name)
 	if err == sql.ErrNoRows {
@@ -188,8 +221,20 @@ type RoomWithExits struct {
 	Exits []Exit `json:"exits"`
 }
 
-// ListAllRooms 回傳所有房間及各自出口。
+// ListAllRooms 回傳所有房間及各自出口；store 啟用時從 JSON 背板讀取。
 func ListAllRooms(db *sql.DB) ([]RoomWithExits, error) {
+	if store.Default != nil {
+		var list []RoomWithExits
+		for _, id := range store.Default.RoomIDs() {
+			r, _ := store.Default.GetRoom(id)
+			if r == nil {
+				continue
+			}
+			exits, _ := store.Default.GetExitsForRoom(id)
+			list = append(list, RoomWithExits{Room: *r, Exits: exits})
+		}
+		return list, nil
+	}
 	rows, err := db.Query("SELECT id, name, description, tags, zone FROM rooms ORDER BY id")
 	if err != nil {
 		return nil, err

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_213",
+  "name": "重力緩衝間",
+  "description": "乾燥穩定沉重合金牆架精密能量存儲盒。深琥珀光。電離臭氧味，民生與重型走私區隔絕，熱輻射鎖死掩飾震動。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "沉降眠室",
+      "to": "yaxiao_212"
+    },
+    {
+      "direction": "走私物存放大廳",
+      "to": "yaxiao_214"
+    }
+  ]
+}

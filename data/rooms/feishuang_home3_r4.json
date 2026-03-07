@@ -1,0 +1,21 @@
+{
+  "id": "feishuang_home3_r4",
+  "name": "家宅廚房",
+  "description": "雙灶大爐火光紅亮，水缸深陷地底。地面鋪設吸水磚，整潔有序。架上瓷器齊全，空氣中瀰漫著木柴與食物香氣。牆上開有通風孔，導引煙氣排向天井上方。此處連結天井與地窖，是這座宅邸維繫營生的主要機能格位。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "天井",
+      "to": "feishuang_home3_r1"
+    },
+    {
+      "direction": "下窖",
+      "to": "feishuang_home3_r5"
+    }
+  ]
+}

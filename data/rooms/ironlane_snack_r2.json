@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_snack_r2",
+  "name": "雜物室",
+  "description": "狹窄且低矮的空間，塞滿了備用的柴火、大鐵鍋與幾袋散裝的麵粉。牆壁上掛著幾盞預備用的油燈與草帽。光線晦暗，空氣中混雜著柴火味與陳舊油脂的味道，幾乎沒有多餘的轉身空間。",
+  "tags": [
+    "storage",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "後廚",
+      "to": "ironlane_snack_r1"
+    }
+  ]
+}

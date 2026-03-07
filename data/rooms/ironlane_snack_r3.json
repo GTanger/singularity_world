@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_snack_r3",
+  "name": "隔間房",
+  "description": "廚房後方的休息空間，設有一張上下鋪的木床與一個儲物木箱。中間擺放著一張圓形小桌，几面上放著幾盞洗淨的茶杯。雖然環境侷促且有油煙味，但生活用品擺放得井然有序，顯示出實用的生活風格。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "後廚",
+      "to": "ironlane_snack_r1"
+    },
+    {
+      "direction": "天井",
+      "to": "ironlane_snack_r4"
+    }
+  ]
+}

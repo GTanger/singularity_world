@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_186",
+  "name": "布藝玄關",
+  "description": "厚重布藝隔簾音被吸收殆盡。地表消音幾何地毯。採光極差琥珀微光朦朧。乾燥純淨，物件密集侷促掩飾運算共鳴。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "街角門廊",
+      "to": "yaxiao_185"
+    },
+    {
+      "direction": "雜亂起居廳",
+      "to": "yaxiao_187"
+    },
+    {
+      "direction": "雜亂起居廳",
+      "to": "yaxiao_187"
+    }
+  ]
+}

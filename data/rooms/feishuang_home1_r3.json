@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home1_r3",
+  "name": "臥房",
+  "description": "主人的休息空間，設有帶木欄的床架與一只儲物箱籠。室內無窗，全靠牆上的油燈照明，厚實石牆徹底隔絕了街外的霜氣。環境安靜且穩固，空氣中帶著乾爽的棉麻氣味，是一處與外界紛擾徹底隔離的休憩格位。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "feishuang_home1_r1"
+    }
+  ]
+}

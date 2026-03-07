@@ -1,0 +1,21 @@
+{
+  "id": "lifestreet_cake_r2",
+  "name": "後廚",
+  "description": "中央有一張巨大的揉麵木桌，桌面殘留著薄薄的一層白粉。後牆嵌有一座大型石砌烤爐，爐台邊堆放著幾袋麵粉與盛裝油脂的陶罈。地面打掃得乾淨，空氣溫熱且乾燥，充滿了穀物烘烤後的香味。",
+  "tags": [
+    "shop",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "前舖",
+      "to": "lifestreet_cake_r1"
+    },
+    {
+      "direction": "存放間",
+      "to": "lifestreet_cake_r3"
+    }
+  ]
+}

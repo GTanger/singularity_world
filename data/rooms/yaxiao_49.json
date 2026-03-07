@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_49",
+  "name": "鉛皮壓縮區",
+  "description": "老舊液壓壓縮機幾何排列，牆面油脂感厚重鉛層。濕度極高，泥土與沉香。黃銅散熱導線，極強。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "零件拆解角",
+      "to": "yaxiao_48"
+    },
+    {
+      "direction": "廢棄線路間",
+      "to": "yaxiao_50"
+    }
+  ]
+}

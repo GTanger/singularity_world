@@ -1,0 +1,28 @@
+{
+  "id": "sun_zy_02",
+  "name": "照影大廳",
+  "description": "天花板極高，由晶質化梧桐根系構成圓潤拱頂。地表黑曜石反射外界群湧生長的林影，家具皆由緻密黑木一體成型。環境溫壓恆定，光影層次分明，展現物質富態化的重壓感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "導光影廊",
+      "to": "sun_zy_01"
+    },
+    {
+      "direction": "垂直旋梯",
+      "to": "sun_zy_03"
+    },
+    {
+      "direction": "內嵌食區",
+      "to": "sun_zy_05"
+    },
+    {
+      "direction": "根穴窖藏",
+      "to": "sun_zy_08"
+    }
+  ]
+}

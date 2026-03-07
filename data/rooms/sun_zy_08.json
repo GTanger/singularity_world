@@ -1,0 +1,17 @@
+{
+  "id": "sun_zy_08",
+  "name": "根穴窖藏",
+  "description": "位於地下層，地表由未打磨黑岩組成。環境陰涼濕潤，存放裝在晶瓶內的發酵能量液。空氣中充滿陳年木質味，建築最深處。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "照影大廳",
+      "to": "sun_zy_02"
+    }
+  ]
+}

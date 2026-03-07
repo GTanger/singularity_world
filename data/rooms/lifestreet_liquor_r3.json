@@ -1,0 +1,17 @@
+{
+  "id": "lifestreet_liquor_r3",
+  "name": "窖室",
+  "description": "向下延伸的陰涼地窖，四周牆壁由厚石塊砌成。兩側架子上整齊排列著陳年酒罈，罈身覆蓋著薄薄的灰塵。地面鋪設乾沙以保持濕度，空氣靜謐且寒冷，透出一股純粹且沉久的酒麴氣息。",
+  "tags": [
+    "tavern",
+    "indoor",
+    "storage"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "釀坊",
+      "to": "lifestreet_liquor_r2"
+    }
+  ]
+}

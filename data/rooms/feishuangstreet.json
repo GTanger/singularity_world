@@ -1,0 +1,100 @@
+{
+  "id": "feishuangstreet",
+  "name": "飛霜大街",
+  "description": "長街寬闊，打鐵巷熱氣隨地形至此散溢，受混沌游離輻射影響，常時有霜雪般結晶飄落，氣候雖暖仍見霜晶覆瓦，規模勝浮生大街，兩側館舍與民宅櫛比。",
+  "tags": [
+    "street",
+    "outdoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "打鐵巷",
+      "to": "ironlane"
+    },
+    {
+      "direction": "霜華館",
+      "to": "feishuang_lodge1"
+    },
+    {
+      "direction": "凝霜閣",
+      "to": "feishuang_lodge2"
+    },
+    {
+      "direction": "藥行",
+      "to": "feishuang_shop1"
+    },
+    {
+      "direction": "布莊",
+      "to": "feishuang_shop2"
+    },
+    {
+      "direction": "糧行",
+      "to": "feishuang_shop3"
+    },
+    {
+      "direction": "茶樓",
+      "to": "feishuang_shop4"
+    },
+    {
+      "direction": "酒肆",
+      "to": "feishuang_shop5"
+    },
+    {
+      "direction": "當鋪",
+      "to": "feishuang_shop6"
+    },
+    {
+      "direction": "鐵器行",
+      "to": "feishuang_shop7"
+    },
+    {
+      "direction": "雜貨鋪",
+      "to": "feishuang_shop8"
+    },
+    {
+      "direction": "宅一",
+      "to": "feishuang_home1"
+    },
+    {
+      "direction": "宅二",
+      "to": "feishuang_home2"
+    },
+    {
+      "direction": "宅三",
+      "to": "feishuang_home3"
+    },
+    {
+      "direction": "宅四",
+      "to": "feishuang_home4"
+    },
+    {
+      "direction": "宅五",
+      "to": "feishuang_home5"
+    },
+    {
+      "direction": "宅六",
+      "to": "feishuang_home6"
+    },
+    {
+      "direction": "宅七",
+      "to": "feishuang_home7"
+    },
+    {
+      "direction": "環湖路",
+      "to": "feishuang_lake_road"
+    },
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "梧桐",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "向陽",
+      "to": "sunstreet"
+    }
+  ]
+}

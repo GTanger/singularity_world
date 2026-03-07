@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_78",
+  "name": "廢棄電纜堆",
+  "description": "厚重電纜交錯堆疊天然隔閡。牆面金屬光澤黑色地衣吸聲。空氣凝滯重型潤滑油。灰階光影，隱蔽後方通往私宅隱藏門。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "掃描測試區",
+      "to": "yaxiao_77"
+    },
+    {
+      "direction": "修理行庫房",
+      "to": "yaxiao_79"
+    }
+  ]
+}

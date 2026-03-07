@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_58",
+  "name": "晶質眠臥室",
+  "description": "床座嵌入巨根結構，發光蠶絲與乾燥菌絲。天花板暗紅能量晶體恆溫。極靜，懸浮發光微粒，沉香安神，邊界深邃穩固。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "植萃休憩角",
+      "to": "yaxiao_57"
+    },
+    {
+      "direction": "私密溫泉間",
+      "to": "yaxiao_59"
+    }
+  ]
+}

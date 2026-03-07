@@ -1,0 +1,20 @@
+{
+  "id": "wutong_shengji_08",
+  "name": "溫馨臥眠區",
+  "description": "牆面被柔軟菌絲織物完全覆蓋，床鋪嵌入溫潤石質凹槽。光影隨能量規律律動，環境極安靜，樹脂氣息持久安神。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "生活起居堂",
+      "to": "wutong_shengji_07"
+    },
+    {
+      "direction": "私密浴室",
+      "to": "wutong_shengji_09"
+    }
+  ]
+}

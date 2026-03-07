@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_126",
+  "name": "最終數據室",
+  "description": "最深處吸光黑石牆，非法改寫能量標籤。隔絕外界波動，空氣密度極高絕對穩固。冷峻肅穆，能量網路終點。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "冷卻排氣道",
+      "to": "yaxiao_125"
+    },
+    {
+      "direction": "秘密逃生口",
+      "to": "yaxiao_127"
+    }
+  ]
+}

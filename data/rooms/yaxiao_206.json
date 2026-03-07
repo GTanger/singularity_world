@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_206",
+  "name": "封裝成品倉",
+  "description": "貨架完成稀釋彩色晶瓶。吸光黑礦石牆。乾燥穩定導向線照明。空氣密度極高沉香凝固，絕對穩固高壓秩序。",
+  "tags": [
+    "indoor",
+    "storage"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "封裝檢測台",
+      "to": "yaxiao_205"
+    },
+    {
+      "direction": "平房出口",
+      "to": "yaxiao_207"
+    }
+  ]
+}

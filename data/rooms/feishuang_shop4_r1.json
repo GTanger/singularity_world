@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop4_r1",
+  "name": "雅間",
+  "description": "樞紐格。隔間小室設有竹編屏風與低矮几面，桌面擺放成套茶具。窗戶對著大街，能將霜雪紛飛的景色盡收眼底。此處連接著大堂與後方的儲茶室。環境相對安靜，空氣中點著淡淡的檀香，呈現出一種閒適氛圍。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大堂",
+      "to": "feishuang_shop4"
+    },
+    {
+      "direction": "茶庫",
+      "to": "feishuang_shop4_r2"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "yaxiao_55",
+  "name": "暖光用餐區",
+  "description": "白玉餐檯金色導能紋路，穩定熱輻射。油脂與熟成樹脂清香，飽滿琥珀色。光學轉換器呈現明亮景觀，虛擬舒適。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "二樓起居廳",
+      "to": "yaxiao_54"
+    },
+    {
+      "direction": "能量藏書閣",
+      "to": "yaxiao_56"
+    },
+    {
+      "direction": "二樓起居廳",
+      "to": "yaxiao_54"
+    }
+  ]
+}

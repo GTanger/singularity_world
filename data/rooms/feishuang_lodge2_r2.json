@@ -1,0 +1,21 @@
+{
+  "id": "feishuang_lodge2_r2",
+  "name": "灶間",
+  "description": "原住家廚房，現供客人簡單早膳。灶台與碗櫃，通前堂與主家房。主人由此進出自住處，霜晶不入。",
+  "tags": [
+    "inn",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "前堂",
+      "to": "feishuang_lodge2_r1"
+    },
+    {
+      "direction": "主家房",
+      "to": "feishuang_lodge2_r4"
+    }
+  ]
+}

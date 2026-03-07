@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_80",
+  "name": "門口隔音廊",
+  "description": "極窄氣密通道，層疊鉛合金板。光線平穩琥珀，空氣徹底過濾電離感與高級沉香。多層重疊沈穩安全。過此重門即精緻住宅。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "修理行庫房",
+      "to": "yaxiao_79"
+    },
+    {
+      "direction": "內宅玄關",
+      "to": "yaxiao_81"
+    }
+  ]
+}

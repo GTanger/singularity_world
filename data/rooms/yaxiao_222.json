@@ -1,0 +1,29 @@
+{
+  "id": "yaxiao_222",
+  "name": "能量調理台",
+  "description": "白玉餐檯加熱組件穩定熱力。穩定焦香與木質氣息。精密秩序井然強光邊界銳利厚實。隱藏通往地下註冊區機密隔板。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "昏暗起居室",
+      "to": "yaxiao_221"
+    },
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_223"
+    },
+    {
+      "direction": "昏暗起居室",
+      "to": "yaxiao_221"
+    },
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_223"
+    }
+  ]
+}

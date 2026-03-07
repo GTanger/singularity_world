@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge1_n1",
+  "name": "凝字一號房",
+  "description": "三樓上房，視野佳，床几齊整。可俯瞰飛霜大街屋瓦與常時霜晶。通三樓迴廊。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "三樓迴廊",
+      "to": "feishuang_lodge1_3f"
+    }
+  ]
+}

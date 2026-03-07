@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith2_r4",
+  "name": "學徒房",
+  "description": "設有兩張穩固的木製床架，鋪著厚實的草墊。床頭擺放著儲物的木箱，案頭上放著一盞油燈。地面打磨得十分平亮，牆角立著一只洗臉石盆。空間雖然不算寬闊，但每個學徒都有獨立的存放位置。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "休息廊",
+      "to": "ironlane_smith2_r3"
+    }
+  ]
+}

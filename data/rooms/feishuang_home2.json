@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home2",
+  "name": "民宅玄關",
+  "description": "低矮磚房入口，簷下長年結有晶瑩霜柱。地板鋪設紅磚，牆角放著收集生活廢水的鐵桶。暖風吹動門簾發出細響，此處作為入室緩衝，直接連結中段的起居區，空氣中帶著些許街道飄入的乾燥粉塵味，光影晦暗。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "起居",
+      "to": "feishuang_home2_r1"
+    }
+  ]
+}

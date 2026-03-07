@@ -1,0 +1,20 @@
+{
+  "id": "sun_xr_04",
+  "name": "芳華樓玄關",
+  "description": "廚房後方私人入口，地面鋪設淺色地衣毯。空氣流通感強，熱氣消散轉為清爽沉香氣息。牆面裝飾精緻木雕，氛圍寧靜生活化。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "向陽用餐大廳",
+      "to": "sun_xr_02"
+    },
+    {
+      "direction": "主人起居室",
+      "to": "sun_xr_05"
+    }
+  ]
+}

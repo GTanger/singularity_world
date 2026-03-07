@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home6",
+  "name": "民宅入口",
+  "description": "石基木構的穩固住宅，簷下霜晶常積。大門設有雙重門閂，地面由平整青磚鋪就。暖風在門外盤旋，室內採光幽微，空氣清爽。此處提供了一處完整的入戶緩衝，直接連結後方的正廳，整體格局方正且給人安全感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "正廳",
+      "to": "feishuang_home6_r1"
+    }
+  ]
+}

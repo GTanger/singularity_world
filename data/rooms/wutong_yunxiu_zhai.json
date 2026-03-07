@@ -1,0 +1,16 @@
+{
+  "id": "wutong_yunxiu_zhai",
+  "name": "雲岫宅",
+  "description": "高海拔質感民居。地面純白玉石鋪就，牆面滲出恆溫乳白熱氣。梧桐根系被晶質完全包裹，空氣中清冷礦物香與高密度能量粒子。自長青公所雲岫銜接點可入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "長青公所",
+      "to": "wutong_cq_07"
+    }
+  ]
+}

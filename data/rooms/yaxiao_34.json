@@ -1,0 +1,25 @@
+{
+  "id": "yaxiao_34",
+  "name": "私人料理台",
+  "description": "石檯高頻感應加熱圈，懸掛發光晶體球。煮沸油脂與香料，室內植被葉片厚實。能量波動民生範圍。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "沁水客廳",
+      "to": "yaxiao_33"
+    },
+    {
+      "direction": "沉靜臥房",
+      "to": "yaxiao_35"
+    },
+    {
+      "direction": "沁水客廳",
+      "to": "yaxiao_33"
+    }
+  ]
+}

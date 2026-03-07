@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home11_r2",
+  "name": "開放廚台",
+  "description": "大型木製島台橫在中央，上面擺放銅製鍋具。牆邊有儲水石缸，地面由紅磚鋪設。空氣中瀰漫木柴燃燒與烘烤麥餅的香味。這裡與堂間相通，整體環境乾爽，能觀察到天井落霜堆積的景象，機能分配明確。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "堂間",
+      "to": "feishuang_home11_r1"
+    }
+  ]
+}

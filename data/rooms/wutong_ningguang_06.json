@@ -1,0 +1,16 @@
+{
+  "id": "wutong_ningguang_06",
+  "name": "靜謐天台",
+  "description": "藝廊頂端，可觀測梧桐大街琥珀色天際線。空氣清冷，強風被周遭繁茂葉群阻絕。地面整塊無瑕白玉，絕對平穩與物質豐富度。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "凝光臥房",
+      "to": "wutong_ningguang_05"
+    }
+  ]
+}

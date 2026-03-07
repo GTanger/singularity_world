@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_189",
+  "name": "狹小臥房",
+  "description": "柔軟菌絲半封閉結構天花板虹彩能量波。極度安定光影隨熱流律動。純淨乾燥樹脂濃郁，牆角通往地下算力中心氣密門。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "烹飪隔間",
+      "to": "yaxiao_188"
+    },
+    {
+      "direction": "管道緩衝室",
+      "to": "yaxiao_190"
+    },
+    {
+      "direction": "烹飪隔間",
+      "to": "yaxiao_188"
+    },
+    {
+      "direction": "管道緩衝室",
+      "to": "yaxiao_190"
+    }
+  ]
+}

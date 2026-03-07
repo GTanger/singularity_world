@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_pawn",
+  "name": "卍當舖",
+  "description": "高聳的木質長櫃檯後方是幽深貨架，堆放著被麻繩捆綁的各式包裹。室內光線極其昏暗，沉悶空氣中不時傳來細微的木料擠壓聲，鐵製圍欄將內外空間徹底隔絕，櫃檯板處磨損嚴重。",
+  "tags": [
+    "shop",
+    "trade"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "外櫃",
+      "to": "lifestreet_pawn_r1"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "sun_lc_01",
+  "name": "廣場入口",
+  "description": "地面由拋光白玉組成，反射高空垂落的密集金光。兩側建築採用大面積稜鏡外牆，將採集光能導入地表。空氣中充滿溫潤沉香與能量微粒，視覺質感極度飽和。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "sunstreet"
+    },
+    {
+      "direction": "導光長廊",
+      "to": "sun_lc_02"
+    },
+    {
+      "direction": "靜謐光域",
+      "to": "sun_lc_06"
+    }
+  ]
+}

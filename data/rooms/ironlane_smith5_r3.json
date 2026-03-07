@@ -1,0 +1,27 @@
+{
+  "id": "ironlane_smith5_r3",
+  "name": "中庭廊",
+  "description": "一條明亮的走廊，地板由防腐處理過的木材鋪設。廊道一側開有高窗，可以看到外界的天光。這裡連結了師傅房、學徒雅宿與廚房，環境非常整潔，牆邊點綴著幾盆簡單的草本植物。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "精密間",
+      "to": "ironlane_smith5_r1"
+    },
+    {
+      "direction": "學徒",
+      "to": "ironlane_smith5_r4"
+    },
+    {
+      "direction": "主臥",
+      "to": "ironlane_smith5_r5"
+    },
+    {
+      "direction": "淨室",
+      "to": "ironlane_smith5_r6"
+    }
+  ]
+}

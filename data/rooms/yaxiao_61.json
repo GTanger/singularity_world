@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_61",
+  "name": "核心垂直降",
+  "description": "書架後重型升降機，吸能鉛皮與金色導線。幽暗暗紫光，乾燥強烈電離感。重壓感隨深度增，冷峻工業秩序。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "隔音工作間",
+      "to": "yaxiao_60"
+    },
+    {
+      "direction": "組裝核心大廳",
+      "to": "yaxiao_62"
+    }
+  ]
+}

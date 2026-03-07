@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home1_r4",
+  "name": "客房",
+  "description": "面積略小於主臥，擺放著簡易竹榻與木几，牆上掛著幾件防寒用的厚麻袍。地面鋪設乾燥的草編墊，通風孔經過特殊設計，能引入微弱熱風卻阻擋霜晶。環境顯得平實且安靜，是專門用於接待投宿親友的整潔空間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "feishuang_home1_r1"
+    }
+  ]
+}

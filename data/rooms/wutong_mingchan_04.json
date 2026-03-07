@@ -1,0 +1,20 @@
+{
+  "id": "wutong_mingchan_04",
+  "name": "眠繭寢間",
+  "description": "牆面由柔軟木質纖維與發光絲線編織，圓潤橢圓形空間。床座懸掛於兩根粗壯氣根之間，隨能量脈動輕微晃動。環境安靜穩定，溫暖沉香與樹脂氣味，光影層次豐富。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "振鳴大廳",
+      "to": "wutong_mingchan_02"
+    },
+    {
+      "direction": "靜謐天窗",
+      "to": "wutong_mingchan_05"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "life_tian_1",
+  "name": "天字一號房",
+  "description": "頂層視野最開闊的房間。紅木大床掛著輕柔的湖縐紗幔，臨窗設有一張獨立的雕花書案，可在此俯瞰半座城鎮的青瓦屋頂與遠處燈火。",
+  "tags": [
+    "room",
+    "lodging",
+    "luxury"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_3f"
+    }
+  ]
+}

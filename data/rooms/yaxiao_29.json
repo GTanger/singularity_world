@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_29",
+  "name": "洗劑自動配給站",
+  "description": "牆面密集金屬管道輸送光學亮彩藥劑。地面濕滑，石縫滲彩色流體。電離感與香精味，單調有序。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "能量烘乾位",
+      "to": "yaxiao_28"
+    },
+    {
+      "direction": "設備維護走廊",
+      "to": "yaxiao_30"
+    }
+  ]
+}

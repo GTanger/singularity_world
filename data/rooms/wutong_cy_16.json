@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_16",
+  "name": "鳴葉淺灘",
+  "description": "步道旁的一處積水區。水質清澈且帶有微溫，池底佈滿了圓潤的黑石。微風掠過繁茂的葉片，發出如浪潮般的重疊聲響。地表水膜反射著上方綠色的穹頂，。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "靜謐林帶",
+      "to": "wutong_cy_06"
+    },
+    {
+      "direction": "幾何植栽牆",
+      "to": "wutong_cy_17"
+    }
+  ]
+}

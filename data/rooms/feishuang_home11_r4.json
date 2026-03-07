@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home11_r4",
+  "name": "右側寢室",
+  "description": "格局對稱，室內設有一張靠窗木椅。透過窄窗可以看見環湖路的落霜，地板打磨光滑。這裡光線柔和，被褥疊放整齊。空氣中帶著淡淡松木香氣，是別墅中主要提供給賓客的休息格位，環境穩定且安靜。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "堂間",
+      "to": "feishuang_home11_r1"
+    }
+  ]
+}

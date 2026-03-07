@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_home3_r2",
+  "name": "正廳",
+  "description": "天井正面的大房間，地板由平整的青磚鋪就。室內擺放著兩張高背椅與一尊長形茶几，几面上設有成套的瓷具。牆面潔淨。環境顯得穩固且體面，是這戶民宅招待客人的主要場所。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "天井",
+      "to": "ironlane_home3_r1"
+    }
+  ]
+}

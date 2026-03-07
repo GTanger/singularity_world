@@ -1,0 +1,17 @@
+{
+  "id": "life_di_2",
+  "name": "地字二號房",
+  "description": "配有一座厚實的石砌臉盆架，水盆旁備有乾淨的棉布。房內的線條簡單卻紮實，大型木櫃透著木頭本身的微香，透出一種不容質疑的穩定感。",
+  "tags": [
+    "room",
+    "lodging",
+    "luxury"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_3f"
+    }
+  ]
+}

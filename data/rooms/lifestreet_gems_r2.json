@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_gems_r2",
+  "name": "鑑賞室",
+  "description": "由布幔隔出的獨立空間，中央擺放一張黑色圓桌與幾張木凳。桌面上設有一盞加強照明的小型油燈與一柄黃銅框的琉璃放大鏡，用於細觀礦石紋理。環境相對安靜，牆面懸掛著幾幅簡單的礦脈分佈圖。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "前舖",
+      "to": "lifestreet_gems_r1"
+    },
+    {
+      "direction": "加工間",
+      "to": "lifestreet_gems_r3"
+    }
+  ]
+}

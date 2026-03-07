@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_138",
+  "name": "寓所玄關",
+  "description": "平整白玉，牆面幾何木雕與消音鉛飾。隱藏式晶簇溫潤淡金。清新濕潤高級沉香，厚實結構吸音。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "溫馨起居堂",
+      "to": "yaxiao_139"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_44",
+  "name": "廢料堆門面",
+  "description": "入口被鉛皮廢料塔擠壓，地面沉香鐵鏽黑沃土。晶質粉塵，光線被懸掛物切碎。夜鴞金屬空腔迴盪，荒廢不具威脅假象。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "鏽蝕齒輪區",
+      "to": "yaxiao_45"
+    }
+  ]
+}

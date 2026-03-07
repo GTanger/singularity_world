@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_41",
+  "name": "加密訊號中繼站",
+  "description": "牆面跳動霓虹導管，加密數據轉無法追蹤脈衝。乾燥冷冽，深琥珀與冷藍交織。電離焦味，地表防滑晶粉。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "暗網數據中心",
+      "to": "yaxiao_40"
+    },
+    {
+      "direction": "核心維護夾層",
+      "to": "yaxiao_42"
+    }
+  ]
+}

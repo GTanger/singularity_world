@@ -1,0 +1,52 @@
+{
+  "id": "life_corridor_2f",
+  "name": "二樓迴廊",
+  "description": "木質迴廊環繞天井而建，〔欄杆〕上雕著簡樸的雲紋。腳下的地板踩上去微微作響，兩側排列著客房的〔門扉〕，門楣上分別掛著日、月、盈、昃的字牌。",
+  "tags": [
+    "corridor",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "下樓",
+      "to": "life_hall"
+    },
+    {
+      "direction": "上樓",
+      "to": "life_corridor_3f"
+    },
+    {
+      "direction": "日一",
+      "to": "life_ri_1"
+    },
+    {
+      "direction": "日二",
+      "to": "life_ri_2"
+    },
+    {
+      "direction": "月一",
+      "to": "life_yue_1"
+    },
+    {
+      "direction": "月二",
+      "to": "life_yue_2"
+    },
+    {
+      "direction": "盈一",
+      "to": "life_ying_1"
+    },
+    {
+      "direction": "盈二",
+      "to": "life_ying_2"
+    },
+    {
+      "direction": "昃一",
+      "to": "life_ze_1"
+    },
+    {
+      "direction": "昃二",
+      "to": "life_ze_2"
+    }
+  ]
+}

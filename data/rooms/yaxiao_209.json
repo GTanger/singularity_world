@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_209",
+  "name": "重壓起居間",
+  "description": "黑曜石家具一體成型牆面滲恆溫水滴。熱輻射均勻。乾燥純淨飽和安定，光影隨能量脈動，掩飾深處重壓。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "側室門廊",
+      "to": "yaxiao_208"
+    },
+    {
+      "direction": "雜亂物資站",
+      "to": "yaxiao_210"
+    },
+    {
+      "direction": "雜亂物資站",
+      "to": "yaxiao_210"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_home1_r1",
+  "name": "堂屋",
+  "description": "室內空間方正，中央擺放著一張老舊的方木桌與兩張長凳。牆上掛著一個木製的曆牌，地面乾燥平整。此處同時連結後方的灶間與右側的臥房，光線由門口透入，照亮了桌面上整齊擺放的粗瓷茶碗。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "玄關",
+      "to": "ironlane_home1"
+    },
+    {
+      "direction": "灶間",
+      "to": "ironlane_home1_r2"
+    },
+    {
+      "direction": "臥房",
+      "to": "ironlane_home1_r3"
+    }
+  ]
+}

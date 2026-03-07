@@ -1,0 +1,29 @@
+{
+  "id": "fs_cabin_02_r1",
+  "name": "音律大堂",
+  "description": "大堂呈圓形構造，天花板懸掛木質擴音板。落霜拍打琉璃窗的細響在此會被放大，形成規律的律動。此處連通冥想室、茶間與共鳴陽台。地板由紅杉木鋪就，回聲清脆，氛圍空靈寂靜，充滿沈思質感，完全阻隔了街外雜音。",
+  "tags": [
+    "indoor",
+    "cabin",
+    "residence"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "玄關",
+      "to": "fs_cabin_02"
+    },
+    {
+      "direction": "冥想",
+      "to": "fs_cabin_02_r2"
+    },
+    {
+      "direction": "茶間",
+      "to": "fs_cabin_02_r3"
+    },
+    {
+      "direction": "陽台",
+      "to": "fs_cabin_02_r4"
+    }
+  ]
+}

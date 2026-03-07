@@ -1,0 +1,21 @@
+{
+  "id": "wutong_jinghua_04",
+  "name": "物資倉儲間",
+  "description": "牆面鑲嵌大型能量穩定器。貨物整齊堆放至天花板。光線幽暗，地表消音乾燥菌絲，環境沈穩不帶波動。玉石門銜接住宅。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "能量五金區",
+      "to": "wutong_jinghua_03"
+    },
+    {
+      "direction": "寶石居入口",
+      "to": "wutong_jinghua_05"
+    }
+  ]
+}

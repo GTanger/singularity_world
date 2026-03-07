@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_cake_r1",
+  "name": "前舖",
+  "description": "櫃檯內擺放著幾層竹編托盤，整齊排列著剛出爐的糕點。店內牆壁刷有淡色的泥石漆，光線明亮。空氣中微甜的麵香撲鼻，櫃檯後方設有一道通往後廚的半開小門，不時傳來木材燃燒的嗶啪聲。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "lifestreet_cake"
+    },
+    {
+      "direction": "後廚",
+      "to": "lifestreet_cake_r2"
+    }
+  ]
+}

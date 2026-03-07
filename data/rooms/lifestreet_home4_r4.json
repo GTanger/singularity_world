@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home4_r4",
+  "name": "後廳",
+  "description": "宅邸最深處的房間，地面比天井高出一階。中央擺放著打磨光滑的長石凳，牆上設有一處內凹石龕。室內石壁厚實，光線略顯幽暗，與院落整體的封閉感契合，提供了一個安靜的獨立空間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "天井",
+      "to": "lifestreet_home4_r1"
+    }
+  ]
+}

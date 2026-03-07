@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_56",
+  "name": "能量藏書閣",
+  "description": "牆面大量晶體書格，天花板採光井。空氣凝滯純淨厚實。石製桌檯光滑如鏡倒映微光。肅穆安靜，隔絕夜鴞與廢墟氣味。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "暖光用餐區",
+      "to": "yaxiao_55"
+    },
+    {
+      "direction": "植萃休憩角",
+      "to": "yaxiao_57"
+    },
+    {
+      "direction": "二樓起居廳",
+      "to": "yaxiao_54"
+    }
+  ]
+}

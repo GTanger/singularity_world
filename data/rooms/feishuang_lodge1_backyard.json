@@ -1,0 +1,28 @@
+{
+  "id": "feishuang_lodge1_backyard",
+  "name": "後院",
+  "description": "天井鋪石，霜晶落水缸與柴堆。熱氣自廚房溢出。通大廳、廚房、庫房與酒窖，格局類浮生客棧後院。",
+  "tags": [
+    "inn",
+    "outdoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "feishuang_lodge1_hall"
+    },
+    {
+      "direction": "廚房",
+      "to": "feishuang_lodge1_kitchen"
+    },
+    {
+      "direction": "庫房",
+      "to": "feishuang_lodge1_storage"
+    },
+    {
+      "direction": "酒窖",
+      "to": "feishuang_lodge1_cellar"
+    }
+  ]
+}

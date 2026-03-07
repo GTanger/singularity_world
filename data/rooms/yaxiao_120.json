@@ -1,0 +1,32 @@
+{
+  "id": "yaxiao_120",
+  "name": "靜謐臥房",
+  "description": "床座嵌入巨根，乾燥纖維安定感。天花板淡紫能量脈衝恆溫。極靜凝滯沉香濃稠，牆角氣密小門。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "陰暗走廊",
+      "to": "yaxiao_119"
+    },
+    {
+      "direction": "隱蔽夾層",
+      "to": "yaxiao_121"
+    },
+    {
+      "direction": "雜亂起居室",
+      "to": "yaxiao_117"
+    },
+    {
+      "direction": "陰暗走廊",
+      "to": "yaxiao_119"
+    },
+    {
+      "direction": "隱蔽夾層",
+      "to": "yaxiao_121"
+    }
+  ]
+}

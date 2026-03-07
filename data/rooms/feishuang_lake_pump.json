@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lake_pump",
+  "name": "泵房",
+  "description": "岸邊小型石砌泵房，機械低鳴。門檻積霜，暖氣自縫隙溢出。可回環湖路，為湖區供水樞紐。",
+  "tags": [
+    "outdoor",
+    "utility"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "路口",
+      "to": "feishuang_lake_road"
+    }
+  ]
+}

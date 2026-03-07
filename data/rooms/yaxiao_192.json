@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_192",
+  "name": "垂直冷卻井",
+  "description": "垂直升降旋轉重力抵消場。厚重隔音鉛皮。震動與夜鴞頻率完美同步冷峻。電離感強磁場邊界抖動。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "算力中心入口",
+      "to": "yaxiao_191"
+    },
+    {
+      "direction": "晶質運算矩陣",
+      "to": "yaxiao_193"
+    }
+  ]
+}

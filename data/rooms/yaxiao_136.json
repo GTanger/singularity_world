@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_136",
+  "name": "終端連線位",
+  "description": "通訊站末端精密白玉操作台。採光充足穩重琥珀。穩定能量微粒清晰。中繼站邏輯終點，邊界銳利。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "數據加密矩陣",
+      "to": "yaxiao_135"
+    },
+    {
+      "direction": "雜物間出口",
+      "to": "yaxiao_137"
+    }
+  ]
+}

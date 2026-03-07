@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_31",
+  "name": "後勤整備間",
+  "description": "看似廢棄清洗筒堆放處，牆面厚重隔音鉛層。整塊黑曜石吸收電磁洩漏。空氣乾燥純淨，後方晶質門扉銜接內宅。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "設備維護走廊",
+      "to": "yaxiao_30"
+    },
+    {
+      "direction": "內宅門廊",
+      "to": "yaxiao_32"
+    }
+  ]
+}

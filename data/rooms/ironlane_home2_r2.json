@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_home2_r2",
+  "name": "後室",
+  "description": "建築最深處的小室，僅能容納一張簡易木床。牆角堆疊著幾卷破損的墊料與幾件換洗的粗麻衣物。室內沒有窗戶，採光完全依賴外室滲入的微弱燈火。空間狹小且安靜，空氣中瀰漫著布料發霉的陳舊感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "前室",
+      "to": "ironlane_home2_r1"
+    }
+  ]
+}

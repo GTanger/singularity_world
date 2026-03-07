@@ -1,0 +1,21 @@
+{
+  "id": "yaxiao_97",
+  "name": "客席用餐區",
+  "description": "沈重黑木長桌刻滿集熱導線維溫。牆面鉛皮與防霉地衣吸收交談聲。夜鴞透過氣密窗沈悶遙遠，琥珀燈光晦暗侷促。",
+  "tags": [
+    "shop",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "小店店面",
+      "to": "yaxiao_96"
+    },
+    {
+      "direction": "點餐收銀台",
+      "to": "yaxiao_98"
+    }
+  ]
+}

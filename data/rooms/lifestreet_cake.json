@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_cake",
+  "name": "糕夫人",
+  "description": "淺色的木質櫃檯內陳列著幾層方形糕點，表皮呈現均勻的焦黃色澤。空氣中飄散著穀物經過烘烤後產生的平實微甜香氣，後方石爐尚餘一絲溫熱，幾縷白煙從煙囪孔處溢出。",
+  "tags": [
+    "shop",
+    "food"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "前舖",
+      "to": "lifestreet_cake_r1"
+    }
+  ]
+}

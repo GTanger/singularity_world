@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home4_r3",
+  "name": "右廂",
+  "description": "起居用途的空間，角落整齊疊放著獸皮墊。石製窗框邊緣嚴密咬合。室內擺設著一組石製器皿，牆面潔淨無瑕，沒有任何裝飾，陳設單純，室內安靜。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "天井",
+      "to": "lifestreet_home4_r1"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_203",
+  "name": "毒劑加工預備",
+  "description": "溫暖乾燥高透光聚能晶體與導能絲線。乾燥純淨淡淡沉香。充足能量粒子圓潤飽和，生活區進藥劑區最後緩衝。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "眠臥小閣",
+      "to": "yaxiao_202"
+    },
+    {
+      "direction": "毒劑稀釋工作間",
+      "to": "yaxiao_204"
+    }
+  ]
+}

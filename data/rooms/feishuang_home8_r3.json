@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home8_r3",
+  "name": "湖景客房",
+  "description": "設有兩張並排的單人床位，環境乾燥平整。大型窗戶對著環湖路，能觀察漫天霜晶隨風旋轉。地面鋪設乾燥的草編地墊，牆角立著一只洗臉石盆，通風良好且避風，提供給親友優質的睡眠環境。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "正廳",
+      "to": "feishuang_home8_r1"
+    }
+  ]
+}

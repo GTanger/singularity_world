@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_169",
+  "name": "抗震緩衝區",
+  "description": "抗震橡膠墊與能量緩衝材料重壓感增。音頻壓抑沈悶，鴞鳴徹底消除。淡淡礦物香，光能溢出邊界沈穩凝滯。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "真空廊廊",
+      "to": "yaxiao_168"
+    },
+    {
+      "direction": "屏蔽核心門",
+      "to": "yaxiao_170"
+    }
+  ]
+}

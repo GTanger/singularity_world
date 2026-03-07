@@ -1,0 +1,17 @@
+{
+  "id": "life_huang_2",
+  "name": "黃字二號房",
+  "description": "位於三樓走廊深處，窗外正對著後院的樹冠。雖然是高層最普通的房間，卻因其隱密性而深受歡迎，牆角擺著一盆生機盎然的小型綠植。",
+  "tags": [
+    "room",
+    "lodging",
+    "luxury"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_3f"
+    }
+  ]
+}

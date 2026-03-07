@@ -1,0 +1,17 @@
+{
+  "id": "life_storage",
+  "name": "庫房",
+  "description": "堆滿雜物的庫房，幾張〔行軍床〕擠在角落，是員工輪班休息的地方。〔木架〕上整齊碼放著米袋、鹽罐與備用的碗碟。",
+  "tags": [
+    "storage",
+    "staff",
+    "rest"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "後院",
+      "to": "life_backyard"
+    }
+  ]
+}

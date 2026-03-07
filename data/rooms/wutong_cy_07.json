@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_07",
+  "name": "苔痕台階",
+  "description": "向上的緩坡台階。每級石階都長滿了質感如絲絨的苔蘚，地面鬆軟且沈穩。兩側石壁鑲嵌著恆定的發光晶簇，提供微弱但穩定的照明。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "靜謐林帶",
+      "to": "wutong_cy_06"
+    },
+    {
+      "direction": "秋實銜接點",
+      "to": "wutong_cy_08"
+    }
+  ]
+}

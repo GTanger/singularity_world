@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge2_r5",
+  "name": "客室一",
+  "description": "閣樓改建的客房，床榻與小几。窗對街角霜晶，安靜。原為住家儲間，現供一客歇宿。通前堂樓梯口。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "前堂",
+      "to": "feishuang_lodge2_r1"
+    }
+  ]
+}

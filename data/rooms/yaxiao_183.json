@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_183",
+  "name": "最終驗證台",
+  "description": "數百晶質屏幕洗錢後數據覆蓋率。地面複雜黃銅線路維磁場。穩定能量微粒肅穆，產業核心權威節點。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "實體晶塊庫",
+      "to": "yaxiao_182"
+    },
+    {
+      "direction": "瓦舍出口",
+      "to": "yaxiao_184"
+    }
+  ]
+}

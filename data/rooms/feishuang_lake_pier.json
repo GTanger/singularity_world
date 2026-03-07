@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lake_pier",
+  "name": "碼頭",
+  "description": "木樁與石板搭成的簡易碼頭，伸向湖面。霜晶覆於欄杆即融，暖霧繚繞。可回環湖路，偶有扁舟繫纜。",
+  "tags": [
+    "outdoor",
+    "scenic"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "路口",
+      "to": "feishuang_lake_road"
+    }
+  ]
+}

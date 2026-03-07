@@ -1,0 +1,28 @@
+{
+  "id": "wutong_cq_02",
+  "name": "萬年青大廳",
+  "description": "公所的幾何中心。挑高數十米的空間被巨大的木質拱樑支撐，拱樑表面長滿了色澤鮮豔、整齊排布的紅地衣。大廳中央設有一座白玉製成的接待環台，檯面懸浮著半透明的能量投影地圖。",
+  "tags": [
+    "indoor",
+    "admin"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "入所門廊",
+      "to": "wutong_cq_01"
+    },
+    {
+      "direction": "植務管理室",
+      "to": "wutong_cq_03"
+    },
+    {
+      "direction": "雲岫連接廊",
+      "to": "wutong_cq_06"
+    },
+    {
+      "direction": "能量配發中樞",
+      "to": "wutong_cq_11"
+    }
+  ]
+}

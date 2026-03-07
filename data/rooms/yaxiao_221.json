@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_221",
+  "name": "昏暗起居室",
+  "description": "挑高空間高密度晶化木材家具。窗外巷道鉛皮牆。熱輻射均勻。溫潤茶香與高級樹脂，掩飾晶體雕刻機震動安定。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "窄門玄關",
+      "to": "yaxiao_220"
+    },
+    {
+      "direction": "能量調理台",
+      "to": "yaxiao_222"
+    },
+    {
+      "direction": "能量調理台",
+      "to": "yaxiao_222"
+    }
+  ]
+}

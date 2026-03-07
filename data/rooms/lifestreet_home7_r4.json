@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home7_r4",
+  "name": "藥房",
+  "description": "牆面嵌有數排木製抽屜，部分抽屜拉手有明顯磨痕。石製藥槽旁放著曬乾根莖，空氣中草木味最重。室內設有一張高腳桌，用於處理從街上收回來的乾燥材料，空間狹小但功能標記清晰。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "中室",
+      "to": "lifestreet_home7_r2"
+    }
+  ]
+}

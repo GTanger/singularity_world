@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_210",
+  "name": "雜亂物資站",
+  "description": "牆面熱壓幾何分形紋路機油與沉香。物件密集飽和。地熱孔隙均勻擴散飽滿深紅。隱藏通往地下走私倉重型升降機。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "重壓起居間",
+      "to": "yaxiao_209"
+    },
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_211"
+    },
+    {
+      "direction": "重壓起居間",
+      "to": "yaxiao_209"
+    },
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_211"
+    }
+  ]
+}

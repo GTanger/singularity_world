@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_101",
+  "name": "內外過渡廊",
+  "description": "極窄真空緩衝通道，磨光黑石與鉛合金。空氣精密過濾轉清爽乾燥礦物香。黃光切換暗金調，過此重門即舒適私人居所。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "冷藏儲物間",
+      "to": "yaxiao_100"
+    },
+    {
+      "direction": "私宅客廳",
+      "to": "yaxiao_102"
+    }
+  ]
+}

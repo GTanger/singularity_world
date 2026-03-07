@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jinghua_02",
+  "name": "晶簇展示架",
+  "description": "高品質發光晶簇與能量石。牆面被晶質完全包裹，折射無數移動光斑。環境乾燥，電離感強，每步都有細微靜電。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_jinghua_zahuopu"
+    },
+    {
+      "direction": "能量五金區",
+      "to": "wutong_jinghua_03"
+    }
+  ]
+}

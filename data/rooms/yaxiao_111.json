@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_111",
+  "name": "VIP 稜鏡間",
+  "description": "牆面磨光幾何晶片拆分精準光譜。空氣凝滯純淨絕對穩固。石製桌檯倒映律動微光，質感厚實。肅穆且喧囂非法社交深度。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "流金吧台",
+      "to": "yaxiao_110"
+    },
+    {
+      "direction": "高額投注區",
+      "to": "yaxiao_112"
+    }
+  ]
+}

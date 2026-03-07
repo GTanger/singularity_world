@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home1",
+  "name": "民宅入口",
+  "description": "由厚實石塊與防腐木構成的單層住宅，門檻積著一層薄霜。門口設有清掃霜粉的長柄刷，室內地面由平整石板鋪設。暖風被阻隔在玄關之後，採光昏暗，空氣中帶著淡淡的木頭香味，通向內部的核心堂屋。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "進屋",
+      "to": "feishuang_home1_r1"
+    }
+  ]
+}

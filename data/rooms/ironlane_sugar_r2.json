@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_sugar_r2",
+  "name": "儲料房",
+  "description": "堆放乾貨的乾燥空間。木架上整齊疊放著一袋袋麵粉、豆料與一塊塊封裝好的糖磚。牆角放著幾只防潮用的石灰罈子。室內光線較弱，但空氣極其乾爽，完全沒有打鐵巷街道上的油煙感。",
+  "tags": [
+    "storage",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "準備間",
+      "to": "ironlane_sugar_r1"
+    }
+  ]
+}

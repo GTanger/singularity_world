@@ -1,0 +1,32 @@
+{
+  "id": "wutong_cq_11",
+  "name": "能量配發中樞",
+  "description": "公所內部的核心設施區。地面中心有一座巨大的晶體轉軸，在能量脈動下緩慢旋轉，發出沈悶的低頻共振聲。牆面密佈著能量輸送管道，管道表面佈滿了細小的冷凝孔，空氣乾燥且帶有電離感。",
+  "tags": [
+    "indoor",
+    "admin"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "泉響連接廊",
+      "to": "wutong_cq_08"
+    },
+    {
+      "direction": "墨染連接廊",
+      "to": "wutong_cq_12"
+    },
+    {
+      "direction": "歸根連接廊",
+      "to": "wutong_cq_14"
+    },
+    {
+      "direction": "萬年青大廳",
+      "to": "wutong_cq_02"
+    },
+    {
+      "direction": "事務官辦公區",
+      "to": "wutong_cq_10"
+    }
+  ]
+}

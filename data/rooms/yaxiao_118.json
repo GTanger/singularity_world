@@ -1,0 +1,25 @@
+{
+  "id": "yaxiao_118",
+  "name": "狹小廚間",
+  "description": "白玉碎塊灶台油脂碳化沉澱，熟成樹脂味。牆面吸音黑色苔蘚，濕潤流通極差。侷促擠壓，民生遮蔽。",
+  "tags": [
+    "residence",
+    "indoor",
+    "food"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "雜亂起居室",
+      "to": "yaxiao_117"
+    },
+    {
+      "direction": "陰暗走廊",
+      "to": "yaxiao_119"
+    },
+    {
+      "direction": "雜亂起居室",
+      "to": "yaxiao_117"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_home5_r1",
+  "name": "通間",
+  "description": "生活與起居混用的核心空間。角落設有床鋪，中央則是泥爐與灶台並存。這裡是宅邸的動線交會處，通向門口、後室與地窖。霜氣與煙氣在半空混合，光線由側牆的高窗透入，環境顯得沉悶但踏實，體現了高效率的空間利用。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "feishuang_home5"
+    },
+    {
+      "direction": "後室",
+      "to": "feishuang_home5_r2"
+    },
+    {
+      "direction": "地窖",
+      "to": "feishuang_home5_r3"
+    }
+  ]
+}

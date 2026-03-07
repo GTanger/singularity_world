@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home6_r2",
+  "name": "灶間",
+  "description": "設有單孔石灶與儲水槽，牆邊堆放著劈好的乾柴。火光紅亮，與窗外霜晶隔著一扇厚窗。空氣中瀰漫著木柴燃燒的清香，地面乾燥平整。這裡是負責全家飲食的機能格點，牆架上整齊擺放著調味罈，結構十分齊整。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "feishuang_home6_r1"
+    }
+  ]
+}

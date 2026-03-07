@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_135",
+  "name": "數據加密矩陣",
+  "description": "數百微型晶體核心加密數據轉無法追蹤脈衝。乾燥冷冽深琥珀色。電離焦味，數據吞吐波動。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "匿名通訊機房",
+      "to": "yaxiao_134"
+    },
+    {
+      "direction": "終端連線位",
+      "to": "yaxiao_136"
+    }
+  ]
+}

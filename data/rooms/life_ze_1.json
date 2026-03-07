@@ -1,0 +1,16 @@
+{
+  "id": "life_ze_1",
+  "name": "昃字一號房",
+  "description": "殘餘的紅光透過木窗將整間屋子染成暗橘色，能隱約聽到樓下後院傳來的馬嘶聲。牆上掛著一面灰暗的銅鏡，鏡面有些模糊。",
+  "tags": [
+    "room",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_2f"
+    }
+  ]
+}

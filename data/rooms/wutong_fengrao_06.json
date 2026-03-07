@@ -1,0 +1,20 @@
+{
+  "id": "wutong_fengrao_06",
+  "name": "私人生活區",
+  "description": "空間小巧玲瓏，舒適布藝家具。窗台掛著發光晶體串，室內光影柔和。空氣微弱能量脈動，生活機能完備。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "禾香樓玄關",
+      "to": "wutong_fengrao_05"
+    },
+    {
+      "direction": "溫暖眠居",
+      "to": "wutong_fengrao_07"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "ironlane_tailor_r5",
+  "name": "小灶間",
+  "description": "僅供家庭使用的微型廚房，設有一座單孔小石灶。架上整齊擺放著兩套精緻的瓷具。牆上開有窄孔排煙。地面乾燥，空氣中帶著淡淡的木柴火氣，體現了精緻且自給自足的生活方式。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "居家廳",
+      "to": "ironlane_tailor_r3"
+    }
+  ]
+}

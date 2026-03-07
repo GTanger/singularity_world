@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_113",
+  "name": "監控與金庫",
+  "description": "數百晶質屏幕顯示博弈場數據流。貨架高能電漿黑盒賭資籌碼。乾燥穩定幽暗。空氣凝滯石灰與沉香。",
+  "tags": [
+    "indoor",
+    "storage"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "高額投注區",
+      "to": "yaxiao_112"
+    },
+    {
+      "direction": "聲學同步室",
+      "to": "yaxiao_114"
+    }
+  ]
+}

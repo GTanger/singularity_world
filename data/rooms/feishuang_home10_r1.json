@@ -1,0 +1,28 @@
+{
+  "id": "feishuang_home10_r1",
+  "name": "起居圓廳",
+  "description": "空間開闊，地板鋪設磨平砂岩。圓形木几擺在中央，牆面嵌有幾盞明亮石燈。這裡是宅邸的動線交會處，分別設有通往兩側寢室與後方灶間的拱門。霜氣入門即融，空氣中帶著淡淡的湖水腥香與乾燥木料氣味。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "門廊",
+      "to": "feishuang_home10"
+    },
+    {
+      "direction": "東臥",
+      "to": "feishuang_home10_r2"
+    },
+    {
+      "direction": "西臥",
+      "to": "feishuang_home10_r3"
+    },
+    {
+      "direction": "灶間",
+      "to": "feishuang_home10_r4"
+    }
+  ]
+}

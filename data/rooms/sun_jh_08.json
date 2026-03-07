@@ -1,0 +1,17 @@
+{
+  "id": "sun_jh_08",
+  "name": "地下金窖",
+  "description": "地面由未打磨黑岩組成，環境陰涼。存放大量裝在晶盒內的能量晶塊，空氣凝滯。熱輻射微弱但恆定，沉香在此凝固，建築最內側。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "金輝主廳",
+      "to": "sun_jh_02"
+    }
+  ]
+}

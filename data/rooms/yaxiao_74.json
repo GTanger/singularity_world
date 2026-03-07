@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_74",
+  "name": "修理行店面",
+  "description": "地面油漬黑石磚，櫃檯拆解一半舊能源顯示器。牆面交叉測試導線，強烈電離焦味與沉香。昏暗，夜鴞透過氣密天窗，平凡破舊。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "零件工作台",
+      "to": "yaxiao_75"
+    }
+  ]
+}

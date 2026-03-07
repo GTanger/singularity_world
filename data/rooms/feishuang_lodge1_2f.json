@@ -1,0 +1,36 @@
+{
+  "id": "feishuang_lodge1_2f",
+  "name": "二樓迴廊",
+  "description": "木質迴廊環繞天井而建，欄杆雕簡樸雲紋。兩側客房門楣掛霜、華字牌。窗外飛霜大街屋瓦與霜晶。通大廳樓梯、上三樓與四間客房。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "feishuang_lodge1_hall"
+    },
+    {
+      "direction": "上樓",
+      "to": "feishuang_lodge1_3f"
+    },
+    {
+      "direction": "霜字一號房",
+      "to": "feishuang_lodge1_s1"
+    },
+    {
+      "direction": "霜字二號房",
+      "to": "feishuang_lodge1_s2"
+    },
+    {
+      "direction": "華字一號房",
+      "to": "feishuang_lodge1_h1"
+    },
+    {
+      "direction": "華字二號房",
+      "to": "feishuang_lodge1_h2"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "lifestreet_pawn_r4",
+  "name": "死當庫",
+  "description": "位於當舖最深處的封閉石室，入口包覆著厚重的鐵皮，門軸處塗有厚實的油脂。室內整齊碼放著幾只帶鎖的紅木箱，架上的包裹積著一層未經驚動的灰塵。牆壁厚實且密不透風，空氣乾燥且靜謐，與外頭的擁擠感截然不同。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "物庫",
+      "to": "lifestreet_pawn_r3"
+    }
+  ]
+}

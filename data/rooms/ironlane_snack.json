@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_snack",
+  "name": "小吃店",
+  "description": "臨街處設有一個大木台，擺滿了熱氣騰騰的蒸籠。室內擺放著幾張長條形粗木桌，地面略顯油亮。牆上掛著幾串乾辣椒，空氣中充滿了油脂與大火烹煮的味道。櫃檯後方是狹長的開放式廚房。",
+  "tags": [
+    "shop",
+    "food"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "後廚",
+      "to": "ironlane_snack_r1"
+    }
+  ]
+}

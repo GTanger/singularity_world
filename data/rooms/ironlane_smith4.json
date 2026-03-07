@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_smith4",
+  "name": "打鐵鋪",
+  "description": "門口堆放著大量的廢鐵料與生鏽的鋤頭。店內狹窄，木架上塞滿了各種粗製農具。櫃檯桌面覆蓋著一層洗不掉的煤灰，地坪是由碎石子壓實而成。室內瀰漫著一股沈悶的炭火味，空間顯得極其侷促。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "工作室",
+      "to": "ironlane_smith4_r1"
+    }
+  ]
+}

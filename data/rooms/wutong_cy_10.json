@@ -1,0 +1,24 @@
+{
+  "id": "wutong_cy_10",
+  "name": "廣庭核心：萬象圓心",
+  "description": "翠蔭廣庭的物理中心。地面是一塊巨大的圓形黑曜石，中心處有一道直徑數米的熱力噴發孔，暖煙呈螺旋狀升騰。上方巨木拱頂在此達到最高點，落霜在氣流帶動下形成規律的圓周運動。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "晶絲密林",
+      "to": "wutong_cy_11"
+    },
+    {
+      "direction": "翠影銜接點",
+      "to": "wutong_cy_15"
+    },
+    {
+      "direction": "萬象環廊",
+      "to": "wutong_cy_09"
+    }
+  ]
+}

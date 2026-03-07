@@ -1,0 +1,24 @@
+{
+  "id": "sun_xr_05",
+  "name": "主人起居室",
+  "description": "空間小巧玲瓏，充滿舒適布藝家具。窗台掛著發光晶體串，室內光影柔和。空氣中帶微弱能量脈動，生活機能完備。地面由溫潤白玉構成。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "芳華樓玄關",
+      "to": "sun_xr_04"
+    },
+    {
+      "direction": "靜謐書房",
+      "to": "sun_xr_06"
+    },
+    {
+      "direction": "芬芳臥眠室",
+      "to": "sun_xr_07"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "lifestreet_home4_r1",
+  "name": "天井",
+  "description": "石牆圍合出的露天區域，地面鋪設與入口一致的青石板。中心有一口石砌水池，池邊放著木桶與打掃工具。左右兩側分別對應廂房，正前方是進入後廳的沉重石門，環境打掃得極其整潔。",
+  "tags": [
+    "residence",
+    "indoor",
+    "outdoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "民宅",
+      "to": "lifestreet_home4"
+    },
+    {
+      "direction": "左廂",
+      "to": "lifestreet_home4_r2"
+    },
+    {
+      "direction": "右廂",
+      "to": "lifestreet_home4_r3"
+    },
+    {
+      "direction": "後廳",
+      "to": "lifestreet_home4_r4"
+    }
+  ]
+}

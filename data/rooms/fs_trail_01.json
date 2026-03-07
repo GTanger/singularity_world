@@ -1,0 +1,32 @@
+{
+  "id": "fs_trail_01",
+  "name": "霜林入徑處",
+  "description": "這是通往深林的門戶。回頭望去，還能看見飛霜湖的微光。地面由細碎的白霜與枯葉交織，腳步聲尚顯輕盈。兩側樹木雖然扭曲，但仍保有人間森林的輪廓。空氣中帶著湖水飄來的濕潤熱氣，這也是最後一段能感受到溫柔水汽的路徑。",
+  "tags": [
+    "outdoor",
+    "path"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "環湖路",
+      "to": "feishuang_lake_road"
+    },
+    {
+      "direction": "前方",
+      "to": "fs_trail_02"
+    },
+    {
+      "direction": "左側(深入)",
+      "to": "fs_wood_01_01"
+    },
+    {
+      "direction": "荒徑(探索)",
+      "to": "fs_wood_01_05"
+    },
+    {
+      "direction": "攀爬(銜接)",
+      "to": "fs_wood_01_10"
+    }
+  ]
+}

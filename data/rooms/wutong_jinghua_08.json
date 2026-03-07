@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jinghua_08",
+  "name": "璀璨臥眠區",
+  "description": "臥室天花板佈滿向下延伸流蘇晶簇，隨能量規律律動。床鋪柔軟絲質纖維層疊，環境安靜祥和。空氣濕度適中，樹脂氣息濃郁持久。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "能量美食區",
+      "to": "wutong_jinghua_07"
+    },
+    {
+      "direction": "靜心後花園",
+      "to": "wutong_jinghua_09"
+    }
+  ]
+}

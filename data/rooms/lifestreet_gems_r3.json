@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_gems_r3",
+  "name": "加工間",
+  "description": "工作室內擺放著一組石製磨盤與幾把精細的刻刀。地面散落著些許打磨產生的碎屑與冷卻用的水漬。一旁的木架上整齊排列著數罐拋光用的細砂與油脂，室內溫度因磨石的摩擦而略高，空氣較為乾燥。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "鑑賞室",
+      "to": "lifestreet_gems_r2"
+    },
+    {
+      "direction": "藏庫",
+      "to": "lifestreet_gems_r4"
+    }
+  ]
+}

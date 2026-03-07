@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_11",
+  "name": "晶絲密林",
+  "description": "光線極暗的區域。巨木枝頭垂下的晶絲密集如雨，隨氣流產生細微的金屬撞擊聲。地面佈滿了細小的晶粉，吸收了所有足音。空氣燥熱，充斥著高密度的粒子電壓感。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "廣庭核心",
+      "to": "wutong_cy_10"
+    },
+    {
+      "direction": "微光銜接點",
+      "to": "wutong_cy_12"
+    }
+  ]
+}

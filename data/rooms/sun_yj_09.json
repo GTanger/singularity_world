@@ -1,0 +1,17 @@
+{
+  "id": "sun_yj_09",
+  "name": "深處藏金室",
+  "description": "位於建築最末端。牆面完全由吸光深黑色礦石組成，表面塗抹油脂狀能量漆。隔絕一切波動，空氣密度極高，建築最內側。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "安穩主臥室",
+      "to": "sun_yj_08"
+    }
+  ]
+}

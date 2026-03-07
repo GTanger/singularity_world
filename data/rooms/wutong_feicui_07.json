@@ -1,0 +1,16 @@
+{
+  "id": "wutong_feicui_07",
+  "name": "觀景露台",
+  "description": "向外延伸平台，巨根交錯支撐。空氣清冷帶高空礦物感。落霜在平台上方緩慢盤旋，形成規律圓周運動，環境絕對平穩。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "靜心臥房",
+      "to": "wutong_feicui_06"
+    }
+  ]
+}

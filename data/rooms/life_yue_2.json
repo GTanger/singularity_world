@@ -1,0 +1,16 @@
+{
+  "id": "life_yue_2",
+  "name": "月字二號房",
+  "description": "這是一個極窄的單人間，僅容下一張窄床與小几。家具的影子被油燈拉得極長且歪斜，空氣中帶著一絲經年不散的寒意。",
+  "tags": [
+    "room",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_2f"
+    }
+  ]
+}

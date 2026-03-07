@@ -1,0 +1,17 @@
+{
+  "id": "lifestreet_home1_r2",
+  "name": "灶間",
+  "description": "位於堂屋後方的狹窄空間，石牆角落嵌有一座雙孔爐台，爐口旁堆放著幾捆整齊乾柴。一旁有深陷石地面的儲水槽，牆面上方開有通風窄孔，空氣中瀰漫著淡淡的乾燥煙燻氣味。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "lifestreet_home1_r1"
+    }
+  ]
+}

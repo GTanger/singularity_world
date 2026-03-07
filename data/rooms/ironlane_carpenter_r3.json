@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_carpenter_r3",
+  "name": "後宅客廳",
+  "description": "穿過工作間後的居家空間，地板由剩餘的木料拼接，色澤溫暖。室內擺放著一組長榻與低矮木几。几面上放著幾盞洗淨的茶具，牆上掛著幾幅簡單的風景畫，環境顯得恬靜整齊。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "工坊",
+      "to": "ironlane_carpenter_r1"
+    },
+    {
+      "direction": "寢室",
+      "to": "ironlane_carpenter_r4"
+    },
+    {
+      "direction": "伙房",
+      "to": "ironlane_carpenter_r5"
+    }
+  ]
+}

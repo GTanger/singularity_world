@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith2_r5",
+  "name": "主屋",
+  "description": "店主起居的空間，地板由細石灰混合石碎壓實，表面鋪有一塊麻織地毯。室內擺放著一組寬大的床架與黑木几，几上整齊擺放著茶具。高窗透入自然光照，室內環境清爽，陳設體面。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "休息廊",
+      "to": "ironlane_smith2_r3"
+    }
+  ]
+}

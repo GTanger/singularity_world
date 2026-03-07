@@ -1,0 +1,20 @@
+{
+  "id": "wutong_shengji_07",
+  "name": "生活起居堂",
+  "description": "佈置溫馨，充滿手工雕琢木質構件。窗台色彩鮮豔花卉，花瓣厚實油脂感。空氣飄散熱食香氣，富態化下生活感安穩。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "仁安寓玄關",
+      "to": "wutong_shengji_06"
+    },
+    {
+      "direction": "溫馨臥眠區",
+      "to": "wutong_shengji_08"
+    }
+  ]
+}

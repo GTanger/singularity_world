@@ -1,0 +1,28 @@
+{
+  "id": "feishuang_home11_r1",
+  "name": "暖石堂間",
+  "description": "挑高屋頂橫跨粗壯杉木樑，中央有一座取暖火塘。擺放長木凳與羊毛墊，此處連接著開放式廚房與側邊的兩間臥室。光線由上方透明天井投射，溫馨生活氣息在空間流動，環境乾爽寬敞，地熱感均勻。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "feishuang_home11"
+    },
+    {
+      "direction": "廚台",
+      "to": "feishuang_home11_r2"
+    },
+    {
+      "direction": "左寢",
+      "to": "feishuang_home11_r3"
+    },
+    {
+      "direction": "右寢",
+      "to": "feishuang_home11_r4"
+    }
+  ]
+}

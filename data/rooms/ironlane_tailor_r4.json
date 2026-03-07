@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_tailor_r4",
+  "name": "寢室",
+  "description": "臥房內設有一張鋪著軟墊的木床，床頭櫃放著幾本皮紙書冊。一扇小窗對著靜謐的後巷。室內裝潢簡約整潔，空氣清新，是一個功能齊全且維護良好的休息空間。牆上懸掛著幾件常用的外掛。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "居家廳",
+      "to": "ironlane_tailor_r3"
+    }
+  ]
+}

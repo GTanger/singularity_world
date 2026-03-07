@@ -1,0 +1,48 @@
+{
+  "id": "life_corridor_3f",
+  "name": "三樓迴廊",
+  "description": "最高層的迴廊視野開闊，探頭便能望見遠處的屋脊與街巷。迴廊盡頭擺著一張長條茶几，幾把藤椅供客人在此賞景閒坐。門楣上掛著天、地、玄、黃的字牌。",
+  "tags": [
+    "corridor",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "下樓",
+      "to": "life_corridor_2f"
+    },
+    {
+      "direction": "天一",
+      "to": "life_tian_1"
+    },
+    {
+      "direction": "天二",
+      "to": "life_tian_2"
+    },
+    {
+      "direction": "地一",
+      "to": "life_di_1"
+    },
+    {
+      "direction": "地二",
+      "to": "life_di_2"
+    },
+    {
+      "direction": "玄一",
+      "to": "life_xuan_1"
+    },
+    {
+      "direction": "玄二",
+      "to": "life_xuan_2"
+    },
+    {
+      "direction": "黃一",
+      "to": "life_huang_1"
+    },
+    {
+      "direction": "黃二",
+      "to": "life_huang_2"
+    }
+  ]
+}

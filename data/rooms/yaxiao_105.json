@@ -1,0 +1,32 @@
+{
+  "id": "yaxiao_105",
+  "name": "根植廊道",
+  "description": "牆面與梧桐根系融合，地表黃銅導向線。構造完全吸音穩定安寧。礦物香，牆面暖能石恆溫，導向建築最深處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "靜謐眠室",
+      "to": "yaxiao_104"
+    },
+    {
+      "direction": "舒壓浴間",
+      "to": "yaxiao_106"
+    },
+    {
+      "direction": "私宅客廳",
+      "to": "yaxiao_102"
+    },
+    {
+      "direction": "靜謐眠室",
+      "to": "yaxiao_104"
+    },
+    {
+      "direction": "舒壓浴間",
+      "to": "yaxiao_106"
+    }
+  ]
+}

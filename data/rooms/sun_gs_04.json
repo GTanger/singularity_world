@@ -1,0 +1,21 @@
+{
+  "id": "sun_gs_04",
+  "name": "數據封存間",
+  "description": "牆架由沉重黑金屬鑄造，存放大量記錄能量波動的晶質存儲盒。環境採光極暗，僅靠地面發光線條照明。空氣凝滯且純淨。",
+  "tags": [
+    "indoor",
+    "admin",
+    "storage"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "能量監控室",
+      "to": "sun_gs_03"
+    },
+    {
+      "direction": "側門緩衝區",
+      "to": "sun_gs_05"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_163",
+  "name": "零件打磨站",
+  "description": "懸浮極細金屬粉塵光下閃爍如星。地表細碎晶粉吸部分打磨聲。乾燥明亮堅實，飽滿深紅精密打磨秩序。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "合金冷卻池",
+      "to": "yaxiao_162"
+    },
+    {
+      "direction": "違禁品存放庫",
+      "to": "yaxiao_164"
+    }
+  ]
+}

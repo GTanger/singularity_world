@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home12",
+  "name": "入戶玄關",
+  "description": "寬大門廊地面由拋光大理石鋪設，門口設有自動除霜石槽。室內採光極佳，空氣清新。此處連接著內部的中心大廳，呈現出一種冷峻通透的質感。牆掛幾套防霜服，暖風被擋在門外，展現高品質的生活體面。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "路口",
+      "to": "feishuang_lake_road"
+    },
+    {
+      "direction": "大廳",
+      "to": "feishuang_home12_r1"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith2_r2",
+  "name": "熱鍛房",
+  "description": "室內溫度較高，設有一座中型風爐，爐壁由耐火磚加固。鐵砧表面光滑，一旁的鐵架上掛滿了不同規格的長柄鉗。牆壁上方開有大型通風孔，地面雖然散落著炭屑，但每日都會清理，環境維持得相當穩固。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "研磨間",
+      "to": "ironlane_smith2_r1"
+    }
+  ]
+}

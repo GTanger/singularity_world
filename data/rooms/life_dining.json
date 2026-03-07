@@ -1,0 +1,21 @@
+{
+  "id": "life_dining",
+  "name": "喫食堂",
+  "description": "七八張〔方桌〕錯落擺放，桌面被擦得發亮。空氣裡飄著米飯與滷肉的香氣，牆角的灶台上〔蒸籠〕一層疊著一層，白煙嫋嫋。",
+  "tags": [
+    "tavern",
+    "food",
+    "social"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "life_hall"
+    },
+    {
+      "direction": "廚房",
+      "to": "life_kitchen"
+    }
+  ]
+}

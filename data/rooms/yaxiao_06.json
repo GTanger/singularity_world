@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_06",
+  "name": "二手能源箱堆",
+  "description": "鏽蝕能量箱幾何堆疊，冷卻液管道斷續吞嚥聲。環境極暗灰階。鉛皮牆板涼意，空氣停滯，重壓感掩飾牆後機械共振。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "工具借用區",
+      "to": "yaxiao_05"
+    },
+    {
+      "direction": "店內隱蔽轉角",
+      "to": "yaxiao_07"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "life_backyard",
+  "name": "後院",
+  "description": "一方不大的天井，地面鋪著青石板。〔晾衣繩〕上掛著幾件粗布衣裳隨風擺動，角落裡堆著劈好的〔柴火〕，一株〔老槐樹〕撐起了半院的陰涼。",
+  "tags": [
+    "outdoor",
+    "staff"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "廚房",
+      "to": "life_kitchen"
+    },
+    {
+      "direction": "庫房",
+      "to": "life_storage"
+    },
+    {
+      "direction": "酒窖",
+      "to": "life_wine_cellar"
+    }
+  ]
+}

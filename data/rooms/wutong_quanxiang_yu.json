@@ -1,0 +1,16 @@
+{
+  "id": "wutong_quanxiang_yu",
+  "name": "泉響寓",
+  "description": "流動熱液與金屬質感民居。入口兩側半開放水路，流動帶金屬光澤的溫熱能量液。地面黑曜石因液體震動而低頻共鳴。自長青公所泉響銜接點可入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "長青公所",
+      "to": "wutong_cq_09"
+    }
+  ]
+}

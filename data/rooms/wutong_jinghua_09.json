@@ -1,0 +1,16 @@
+{
+  "id": "wutong_jinghua_09",
+  "name": "靜心後花園",
+  "description": "巨根與黑曜石壁圍合的小型露天空間。地面鋪滿發光能量碎屑，環境清冷。仰頭可見繁盛枝葉框架出的琥珀色天空。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "璀璨臥眠區",
+      "to": "wutong_jinghua_08"
+    }
+  ]
+}

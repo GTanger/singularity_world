@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_liquor_r1",
+  "name": "前舖",
+  "description": "室內中央設有一木製櫃檯，後方酒架擺滿了大小不一的酒瓶與瓷碗。牆角堆放著幾口尚未開封的封泥酒罈。地面由黑磚鋪設，局部區域因長年灑出的酒液而顯得色澤深沉。發酵產生的酸甜氣息在此處最為明顯。",
+  "tags": [
+    "tavern",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "lifestreet_liquor"
+    },
+    {
+      "direction": "釀坊",
+      "to": "lifestreet_liquor_r2"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home4",
+  "name": "民宅",
+  "description": "結構嚴整的石牆院落，地面由磨平的青石板鋪就。院內打掃得乾淨整潔，牆頭長有幾株粗壯的乾草，石製門栓從內部緊鎖，外觀封閉穩固。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "天井",
+      "to": "lifestreet_home4_r1"
+    }
+  ]
+}

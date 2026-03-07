@@ -1,0 +1,19 @@
+{
+  "id": "yaxiao_165",
+  "name": "維護站出口",
+  "description": "地面銜接大街黑曜石磚路。莊嚴幾何浮雕，重鉛與勞動偽裝消散。溫壓接軌，灰霧大街出口，物理性最終回歸。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "違禁品存放庫",
+      "to": "yaxiao_164"
+    }
+  ]
+}

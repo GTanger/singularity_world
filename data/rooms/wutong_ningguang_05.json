@@ -1,0 +1,20 @@
+{
+  "id": "wutong_ningguang_05",
+  "name": "凝光臥房",
+  "description": "床座位於突出晶質露台，四周能量脈衝光。光線亮度可調，環境溫暖乾燥，沉香氣息濃稠。牆角氣根呈現完美幾何對稱。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "藏光室客廳",
+      "to": "wutong_ningguang_04"
+    },
+    {
+      "direction": "靜謐天台",
+      "to": "wutong_ningguang_06"
+    }
+  ]
+}

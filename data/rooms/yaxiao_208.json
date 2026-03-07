@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_208",
+  "name": "側室門廊",
+  "description": "建築嵌入巷道岩層未打磨黑岩。採光極差琥珀微光朦朧。金屬氧化與沉香，極端堅實封閉。夜鴞石縫迴盪極高隱蔽。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "重壓起居間",
+      "to": "yaxiao_209"
+    }
+  ]
+}

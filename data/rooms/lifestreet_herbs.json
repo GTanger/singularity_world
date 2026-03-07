@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_herbs",
+  "name": "神農氏",
+  "description": "整個牆面嵌滿了貼有標籤的小型木屜，不少抽屜邊緣已呈現乾裂狀態。空氣中充滿了苦澀且濃郁的乾燥草木氣息，幾捆尚未處理的根莖被隨意堆放在石製藥槽旁，顯得雜亂但功能明確。",
+  "tags": [
+    "shop",
+    "herbs"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "前舖",
+      "to": "lifestreet_herbs_r1"
+    }
+  ]
+}

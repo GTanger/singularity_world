@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_154",
+  "name": "工具整備區",
+  "description": "緻密黑木檯面氣密管道零件。防音鉛皮阻絕校準聲。暗琥珀光，乾燥流通緩慢樹脂焦香，地表金屬冷凝液。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "維護站門廳",
+      "to": "yaxiao_153"
+    },
+    {
+      "direction": "設備更換位",
+      "to": "yaxiao_155"
+    },
+    {
+      "direction": "設備更換位",
+      "to": "yaxiao_155"
+    }
+  ]
+}

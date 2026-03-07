@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_155",
+  "name": "設備更換位",
+  "description": "牆面熱壓幾何分形紋路，機油與沉香。物件密集飽和。地熱孔隙均勻擴散飽滿深紅，陳設整齊冷峻。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "工具整備區",
+      "to": "yaxiao_154"
+    },
+    {
+      "direction": "生活休息室",
+      "to": "yaxiao_156"
+    },
+    {
+      "direction": "工具整備區",
+      "to": "yaxiao_154"
+    }
+  ]
+}

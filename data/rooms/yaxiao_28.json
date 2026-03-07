@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_28",
+  "name": "能量烘乾位",
+  "description": "幾何陣列熱能烘乾櫃，櫃體滲油脂熱冷凝液。溫壓極高，地表黃銅導熱路徑。乾燥纖維焦香，熱浪邊界抖動。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "機械清洗區",
+      "to": "yaxiao_27"
+    },
+    {
+      "direction": "洗劑自動配給站",
+      "to": "yaxiao_29"
+    }
+  ]
+}

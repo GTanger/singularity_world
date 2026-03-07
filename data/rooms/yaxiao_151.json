@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_151",
+  "name": "產業物流棧",
+  "description": "偽裝晶盒內成品藥劑準備外送。吸光黑礦石牆整齊有序。空氣密度極高絕對穩固，非法產物送往表面。",
+  "tags": [
+    "indoor",
+    "storage"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "成品質量檢測",
+      "to": "yaxiao_150"
+    },
+    {
+      "direction": "寓所秘密出口",
+      "to": "yaxiao_152"
+    }
+  ]
+}

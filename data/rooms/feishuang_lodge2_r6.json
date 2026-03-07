@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge2_r6",
+  "name": "客室二",
+  "description": "閣樓第二間客房，略窄但整潔。霜晶隔窗可見。改建後增設，與客室一並列。通前堂樓梯口。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "前堂",
+      "to": "feishuang_lodge2_r1"
+    }
+  ]
+}

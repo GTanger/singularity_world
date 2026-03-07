@@ -1,0 +1,20 @@
+{
+  "id": "sun_yx_05",
+  "name": "晶簇書廊",
+  "description": "廊道牆面嵌有大量幾何晶簇，內部封存流動金色能量。環境安靜，空氣凝滯且純淨。石製桌檯倒映天花板律動微光粒子，視覺質感厚實。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "恆溫大廳",
+      "to": "sun_yx_02"
+    },
+    {
+      "direction": "映雪臥房",
+      "to": "sun_yx_06"
+    }
+  ]
+}

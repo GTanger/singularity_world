@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_lodge1_l1",
+  "name": "露字一號房",
+  "description": "三樓上房，裝潢沉穩，毯與家具紮實。門窗閉合後隔音佳，霜晶與輻射感皆擋於外。通三樓迴廊。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "三樓迴廊",
+      "to": "feishuang_lodge1_3f"
+    }
+  ]
+}

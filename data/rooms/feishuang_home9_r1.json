@@ -1,0 +1,28 @@
+{
+  "id": "feishuang_home9_r1",
+  "name": "晶簇庭院",
+  "description": "房屋的核心空間。中央簇擁著數根天然的半透明晶體，上方落霜觸地即融。此處採光極佳，四周迴廊分別引導至正廳、臥室與功能間。地面石板排水順暢，空氣中充滿潮濕熱意與清冷的微粒感。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "前廳",
+      "to": "feishuang_home9"
+    },
+    {
+      "direction": "大堂",
+      "to": "feishuang_home9_r2"
+    },
+    {
+      "direction": "側臥",
+      "to": "feishuang_home9_r3"
+    },
+    {
+      "direction": "廚格",
+      "to": "feishuang_home9_r4"
+    }
+  ]
+}

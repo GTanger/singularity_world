@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_200",
+  "name": "靜謐起居間",
+  "description": "家具簡單整潔牆面沉香木。乾燥清爽。桌面發光能量石深金。音極低能量波動，堅硬。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "平房入口",
+      "to": "yaxiao_199"
+    },
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_201"
+    }
+  ]
+}

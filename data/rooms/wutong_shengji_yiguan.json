@@ -1,0 +1,20 @@
+{
+  "id": "wutong_shengji_yiguan",
+  "name": "生機醫館",
+  "description": "高挑空間內黑曜石地面映射天花板幾何支架，乳白玉石櫃檯，充斥消毒能量液與草本混合味。環境肅穆，微光粒子密度極高。內通仁安寓。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "能量診斷室",
+      "to": "wutong_shengji_02"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_smith1_r5",
+  "name": "學徒寢",
+  "description": "狹窄的隔間，擺放著三張上下層木床，草墊整齊且乾燥。床邊有一只公用的洗臉石盆與幾隻儲物木箱。地面由夯實的黃土壓平，牆角懸掛著幾雙草鞋，空間雖然擁擠，但打掃得十分乾淨。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "生活廊道",
+      "to": "ironlane_smith1_r4"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "wutong_mingchan_03",
+  "name": "採光露台",
+  "description": "向外延伸木質平台，四周厚實梧桐葉簇擁。落霜在平台上方緩慢旋轉形成規律幾何圓周。熱氣流從下方穩定湧上，空氣清新燥熱。可觀測大街琥珀色大氣。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "振鳴大廳",
+      "to": "wutong_mingchan_02"
+    }
+  ]
+}

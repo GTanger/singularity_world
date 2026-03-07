@@ -4,6 +4,8 @@ package db
 import (
 	"database/sql"
 	"encoding/json"
+
+	"singularity_world/store"
 )
 
 // Venue 場所：id、名稱、room_ids（JSON 陣列）。
@@ -21,8 +23,11 @@ type Assignment struct {
 	AssignedBy   sql.NullString
 }
 
-// SeedVenues 確保預設場所存在（浮生客棧）。
+// SeedVenues 確保預設場所存在（浮生客棧）。store 啟用時改由 data/venues.json 提供，不再寫 DB。
 func SeedVenues(db *sql.DB) error {
+	if store.Default != nil {
+		return nil
+	}
 	roomIDs := lifeInnRoomIDs()
 	raw, _ := json.Marshal(roomIDs)
 	_, err := db.Exec(
@@ -42,8 +47,11 @@ func lifeInnRoomIDs() []string {
 	}
 }
 
-// InsertAssignment 新增一筆指派；已存在則忽略。assignedBy 可空。
+// InsertAssignment 新增一筆指派；已存在則忽略。store 啟用時寫入 store 並持久化 data/assignments.json。
 func InsertAssignment(db *sql.DB, entityID, occupationID, venueID, assignedBy string) error {
+	if store.Default != nil {
+		return store.Default.InsertAssignment(entityID, occupationID, venueID, assignedBy)
+	}
 	var ab interface{}
 	if assignedBy != "" {
 		ab = assignedBy
@@ -57,8 +65,19 @@ func InsertAssignment(db *sql.DB, entityID, occupationID, venueID, assignedBy st
 	return err
 }
 
-// GetAssignmentsForEntity 取得某實體的全部指派（職業＋場所）。
+// GetAssignmentsForEntity 取得某實體的全部指派（職業＋場所）；store 啟用時從 store 讀取。
 func GetAssignmentsForEntity(db *sql.DB, entityID string) ([]Assignment, error) {
+	if store.Default != nil {
+		slist := store.Default.GetAssignmentsForEntity(entityID)
+		list := make([]Assignment, len(slist))
+		for i, a := range slist {
+			list[i] = Assignment{
+				EntityID: a.EntityID, OccupationID: a.OccupationID, VenueID: a.VenueID,
+				AssignedBy: sql.NullString{String: a.AssignedBy, Valid: a.AssignedBy != ""},
+			}
+		}
+		return list, nil
+	}
 	rows, err := db.Query(
 		`SELECT entity_id, occupation_id, venue_id, assigned_by FROM assignments WHERE entity_id = ?`,
 		entityID,
@@ -91,8 +110,11 @@ func GetNPCTitleFromAssignments(db *sql.DB, entityID string) string {
 	return list[0].OccupationID
 }
 
-// IsRoomInVenue 判斷房間是否在該場所的 room_ids 內。
+// IsRoomInVenue 判斷房間是否在該場所的 room_ids 內；store 啟用時從 store 讀取。
 func IsRoomInVenue(db *sql.DB, roomID, venueID string) (bool, error) {
+	if store.Default != nil {
+		return store.Default.IsRoomInVenue(roomID, venueID), nil
+	}
 	var raw string
 	if err := db.QueryRow("SELECT room_ids FROM venues WHERE id = ?", venueID).Scan(&raw); err != nil {
 		if err == sql.ErrNoRows {

@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home2_r1",
+  "name": "前廳",
+  "description": "地板由灰白色的厚木板拼接而成，牆邊立著一座兩層高的儲物木櫃。室內中央垂掛著一盞老舊油燈，地面中心處鋪設著一塊長方形的編織草席，右側有一道通往中廊的木門，通風良好。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "民宅",
+      "to": "lifestreet_home2"
+    },
+    {
+      "direction": "中廊",
+      "to": "lifestreet_home2_r2"
+    }
+  ]
+}

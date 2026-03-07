@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home6_r3",
+  "name": "內室",
+  "description": "位於下層後方的隔間，牆面由老磚砌成。中央擺放著一組石製磨盤，磨盤旁放著布袋。室內設有一座簡易木几，几面上擺放著一卷皮紙，空氣中充滿了塵土與陳舊木料混合的味道。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "下層",
+      "to": "lifestreet_home6_r1"
+    }
+  ]
+}

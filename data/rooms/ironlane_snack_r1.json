@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_snack_r1",
+  "name": "後廚",
+  "description": "牆面被煙燻成深褐色，中央設有一座強力的柴火大灶。案板上堆滿了切好的食材與揉好的麵團，地面略顯濕滑但排水通暢。一旁有一道通往雜物室與隔間房的窄門，空間利用率極高。",
+  "tags": [
+    "kitchen",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店舖",
+      "to": "ironlane_snack"
+    },
+    {
+      "direction": "雜物室",
+      "to": "ironlane_snack_r2"
+    },
+    {
+      "direction": "隔間房",
+      "to": "ironlane_snack_r3"
+    }
+  ]
+}

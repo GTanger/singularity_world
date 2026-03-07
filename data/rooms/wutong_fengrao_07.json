@@ -1,0 +1,16 @@
+{
+  "id": "wutong_fengrao_07",
+  "name": "溫暖眠居",
+  "description": "床鋪位於佈滿柔軟菌絲的半封閉根腔內。天花板流動淡金色能量，環境極度安定。空氣純淨乾燥，視覺邊界受植被包裹深邃幽靜。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "私人生活區",
+      "to": "wutong_fengrao_06"
+    }
+  ]
+}

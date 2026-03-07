@@ -1,0 +1,20 @@
+{
+  "id": "wutong_feicui_05",
+  "name": "沁心軒客廳",
+  "description": "家具皆為翡翠色調晶質木材。牆角高大室內植被，葉片肥厚帶微光。採光充足，通透綠意，物質富態化下空間感極其密實。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "內宅通道",
+      "to": "wutong_feicui_04"
+    },
+    {
+      "direction": "靜心臥房",
+      "to": "wutong_feicui_06"
+    }
+  ]
+}

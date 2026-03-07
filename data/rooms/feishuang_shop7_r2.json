@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop7_r2",
+  "name": "物料庫",
+  "description": "存放鐵錠、木柄與炭塊的空間。牆角堆放著幾捆乾燥的柴禾，環境乾燥。沒有窗戶，光線由門口透入，空氣沉悶且帶著強烈的金屬土腥味。地面散落著些許碎鐵皮，物品分類擺放，是支撐店舖營運的資材格位。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "鍛間",
+      "to": "feishuang_shop7_r1"
+    }
+  ]
+}

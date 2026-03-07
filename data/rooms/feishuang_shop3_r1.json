@@ -1,0 +1,25 @@
+{
+  "id": "feishuang_shop3_r1",
+  "name": "倉間",
+  "description": "樞紐格。大袋糧食整齊堆疊，地面鋪有木質隔板以防潮。此處環境乾燥陰涼，門口設有防鼠的鐵皮門檻。分別連結店舖、後方的住家與一處地下的備用窖室。光線昏暗，空氣中充滿濃郁的穀物顆粒香氣。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "feishuang_shop3"
+    },
+    {
+      "direction": "地窖",
+      "to": "feishuang_shop3_r2"
+    },
+    {
+      "direction": "堂屋",
+      "to": "feishuang_shop3_r3"
+    }
+  ]
+}

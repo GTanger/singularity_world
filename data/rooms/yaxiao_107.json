@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_107",
+  "name": "核心轉接間",
+  "description": "浴間石壁後隱藏空間，高壓線路與屏蔽金屬網。幽暗冷藍，空氣乾燥。廚房排氣共振掩蓋下方博弈場喧囂。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "舒壓浴間",
+      "to": "yaxiao_106"
+    },
+    {
+      "direction": "博弈場大廳",
+      "to": "yaxiao_108"
+    }
+  ]
+}

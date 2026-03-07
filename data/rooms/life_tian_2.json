@@ -1,0 +1,17 @@
+{
+  "id": "life_tian_2",
+  "name": "天字二號房",
+  "description": "佈置更偏向休憩。窗邊配有一張極大的觀景靠椅，案几上擺著全套冰裂紋瓷器。陽光透過精緻的鏤空窗花，在牆上投下複雜的幾何影子。",
+  "tags": [
+    "room",
+    "lodging",
+    "luxury"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_3f"
+    }
+  ]
+}

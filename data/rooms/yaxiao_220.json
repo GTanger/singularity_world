@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_220",
+  "name": "窄門玄關",
+  "description": "僅容一人窄門後重疊消音地毯。拋光黑玉地面牆面精密稜鏡。明亮乾燥穩定琥珀色。厚實構造吸音平凡隱蔽起點。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "昏暗起居室",
+      "to": "yaxiao_221"
+    }
+  ]
+}

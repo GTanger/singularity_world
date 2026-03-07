@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_lodge2_r3",
+  "name": "庫房",
+  "description": "存糧與雜物，狹小乾燥。一門通前堂，無窗。改建時保留的儲物空間。",
+  "tags": [
+    "inn",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "前堂",
+      "to": "feishuang_lodge2_r1"
+    }
+  ]
+}

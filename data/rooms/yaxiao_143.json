@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_143",
+  "name": "雜物儲藏間",
+  "description": "晶盒內民生物資，乾燥冷冽。牆面厚實乾燥菌絲吸震。凝滯沉香與石灰味，地表隱蔽黃銅導向線。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "閣樓臥房",
+      "to": "yaxiao_142"
+    },
+    {
+      "direction": "生活緩衝室",
+      "to": "yaxiao_144"
+    }
+  ]
+}

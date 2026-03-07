@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_17",
+  "name": "幾何植栽牆",
+  "description": "人為引導生長的植被牆。藤蔓在支架上形成了完美的正方形矩陣，葉片大小均一，展現出高度受控的富態化生長。空氣流通感強，帶有淡淡的金屬氧化味。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "鳴葉淺灘",
+      "to": "wutong_cy_16"
+    },
+    {
+      "direction": "靜滯香徑",
+      "to": "wutong_cy_18"
+    }
+  ]
+}

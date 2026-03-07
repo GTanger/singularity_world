@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_liquor",
+  "name": "神仙醉",
+  "description": "牆角有序地堆疊著兩層陶製酒罈，罈口的封泥上印有模糊記號。室內瀰漫著一股濃烈且陳久的發酵香氣，木製酒櫃上擺放著幾隻粗製瓷碗，幾滴殘酒在桌面上乾涸成了深色的圓斑。",
+  "tags": [
+    "tavern",
+    "food"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "前舖",
+      "to": "lifestreet_liquor_r1"
+    }
+  ]
+}

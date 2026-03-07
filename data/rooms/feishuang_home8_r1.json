@@ -1,0 +1,32 @@
+{
+  "id": "feishuang_home8_r1",
+  "name": "景觀正廳",
+  "description": "正廳設有整面琉璃落地窗，可俯瞰湖面升騰的白霧。地面鋪設溫熱的黑石板，中央擺放長條形軟榻。此處分別連向主臥、客房、餐廚區與露天浴池，環境明亮開闊，空氣中瀰漫著木頭乾燥後的清香。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "門廊",
+      "to": "feishuang_home8"
+    },
+    {
+      "direction": "主臥",
+      "to": "feishuang_home8_r2"
+    },
+    {
+      "direction": "客房",
+      "to": "feishuang_home8_r3"
+    },
+    {
+      "direction": "餐廚",
+      "to": "feishuang_home8_r4"
+    },
+    {
+      "direction": "浴池",
+      "to": "feishuang_home8_r5"
+    }
+  ]
+}

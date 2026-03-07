@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_home9",
+  "name": "石牆前廳",
+  "description": "高大石牆表面漆有防護塗層，門扉開合聲沉穩。玄關地面鋪設碎石板，牆角掛著幾套防霜斗篷。暖風被阻隔在厚門之外，室內光影幽微，透出一種穩定的安全感，直接通向內部環繞的晶簇庭院。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "路口",
+      "to": "feishuang_lake_road"
+    },
+    {
+      "direction": "庭院",
+      "to": "feishuang_home9_r1"
+    }
+  ]
+}

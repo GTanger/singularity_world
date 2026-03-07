@@ -1,0 +1,28 @@
+{
+  "id": "wutong_cy_08",
+  "name": "秋實銜接點",
+  "description": "位於台階頂端的小型平台。上方掛滿了飽滿的、帶有半透明果肉感的能量晶果。空氣中瀰漫著熟成的果香味與沉香。一側石壁開鑿有精緻的拱門，通向內部的居住空間。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "翠浪噴泉池",
+      "to": "wutong_cy_03"
+    },
+    {
+      "direction": "秋實居",
+      "to": "wutong_qiushi_ju"
+    },
+    {
+      "direction": "翠浪噴泉池",
+      "to": "wutong_cy_03"
+    },
+    {
+      "direction": "苔痕台階",
+      "to": "wutong_cy_07"
+    }
+  ]
+}

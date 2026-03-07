@@ -1,0 +1,17 @@
+{
+  "id": "sun_lj_06",
+  "name": "終極藏室",
+  "description": "位於建築最深處，牆面由吸光黑岩組成。室內極靜，存放封存於晶盒內的精密能量物資。空氣凝滯，帶淡淡石灰與沉香氣息，建築最內側。",
+  "tags": [
+    "residence",
+    "indoor",
+    "storage"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "靜謐書間",
+      "to": "sun_lj_05"
+    }
+  ]
+}

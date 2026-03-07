@@ -1,0 +1,17 @@
+{
+  "id": "lifestreet_general_r3",
+  "name": "後倉",
+  "description": "位於店鋪最後方的露天區域，上方蓋有簡易的草棚。一側堆放著長短不一的木料，另一側則擺放著幾個裝滿煤炭與石灰的大罈子。地面散落著稻草墊與廢棄木片，空氣乾燥，透出一股長期存放雜物的沈悶感。",
+  "tags": [
+    "shop",
+    "indoor",
+    "storage"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "雜物間",
+      "to": "lifestreet_general_r2"
+    }
+  ]
+}

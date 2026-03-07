@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home11_r3",
+  "name": "左側寢室",
+  "description": "臥房空間方正，設有木製床鋪與一只衣櫃。牆上掛著幾件常服，案頭放著油燈。地板由厚木板拼接，走起來發出沉穩聲響。室內環境靜謐，霜晶極少飄入，厚實牆壁屏蔽了街道輻射感，是一處優質休息區。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "堂間",
+      "to": "feishuang_home11_r1"
+    }
+  ]
+}

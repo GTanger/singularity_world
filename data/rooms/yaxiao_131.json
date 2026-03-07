@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_131",
+  "name": "維修整備室",
+  "description": "老舊頻譜儀器，牆面模擬管道維修幾何刻痕。亮度極低防滑黑岩碎塊。極度穩定平庸，機油與沉香高度隱蔽。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "零件堆卸位",
+      "to": "yaxiao_130"
+    },
+    {
+      "direction": "後勤過渡區",
+      "to": "yaxiao_132"
+    }
+  ]
+}

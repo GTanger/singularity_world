@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_166",
+  "name": "封死門庭",
+  "description": "門窗緊閉封死，地面厚實消音粉塵。能量粒子濃度極低荒廢冰冷。隔音層徹底阻絕，光影停滯時間停滯錯覺。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "荒廢石室",
+      "to": "yaxiao_167"
+    }
+  ]
+}

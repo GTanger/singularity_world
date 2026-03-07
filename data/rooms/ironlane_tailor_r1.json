@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_tailor_r1",
+  "name": "裁縫室",
+  "description": "設有兩架老舊的木製縫紉台，几面上堆滿了碎布。牆上釘著數排木勾，掛滿了各式版樣圖。此處光線充足，分別通向布料庫與居家客廳。地面積累了些許細碎線頭，環境整潔安靜。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店舖",
+      "to": "ironlane_tailor"
+    },
+    {
+      "direction": "布庫",
+      "to": "ironlane_tailor_r2"
+    },
+    {
+      "direction": "客廳",
+      "to": "ironlane_tailor_r3"
+    }
+  ]
+}

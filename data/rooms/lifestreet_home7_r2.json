@@ -1,0 +1,28 @@
+{
+  "id": "lifestreet_home7_r2",
+  "name": "中室",
+  "description": "核心活動區域，中心設有一座積滿灰燼的圓形火塘。幾根粗壯木柱支撐著低矮的天花板，分別導向不同的功能區。空間內瀰漫著乾燥草木氣息，牆角堆放著幾隻待修理的木製器具，生活感濃厚。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "前廊",
+      "to": "lifestreet_home7_r1"
+    },
+    {
+      "direction": "內寢",
+      "to": "lifestreet_home7_r3"
+    },
+    {
+      "direction": "藥房",
+      "to": "lifestreet_home7_r4"
+    },
+    {
+      "direction": "儲間",
+      "to": "lifestreet_home7_r5"
+    }
+  ]
+}

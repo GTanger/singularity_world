@@ -1,0 +1,28 @@
+{
+  "id": "ironlane_smith1_r1",
+  "name": "鍛造廳",
+  "description": "此處為建築核心，挑高五米，三座石砌風爐同時運作。地面散落著冷卻的炭屑與鐵皮。中心處有一座巨大的生鐵砧，周圍環繞著數柄長短不一的鐵錘。這裡分別連接淬火房、儲料室與後方廊道。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "ironlane_smith1"
+    },
+    {
+      "direction": "淬火",
+      "to": "ironlane_smith1_r2"
+    },
+    {
+      "direction": "儲料",
+      "to": "ironlane_smith1_r3"
+    },
+    {
+      "direction": "後堂",
+      "to": "ironlane_smith1_r4"
+    }
+  ]
+}

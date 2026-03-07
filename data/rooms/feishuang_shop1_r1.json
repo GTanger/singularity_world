@@ -1,0 +1,24 @@
+{
+  "id": "feishuang_shop1_r1",
+  "name": "後堂",
+  "description": "作為切藥與配藥的樞紐，擺放著寬大的長木桌與黃銅秤。牆邊架上整齊排列著陶罐與麻袋，空氣中充滿苦澀的植物纖維味。此處採取一連多結構，分別通往店面、烘藥間與後方的居家生活區，光線由天窗斜射。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "feishuang_shop1"
+    },
+    {
+      "direction": "烘藥間",
+      "to": "feishuang_shop1_r2"
+    },
+    {
+      "direction": "宅室",
+      "to": "feishuang_shop1_r3"
+    }
+  ]
+}

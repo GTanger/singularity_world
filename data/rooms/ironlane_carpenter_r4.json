@@ -1,0 +1,16 @@
+{
+  "id": "ironlane_carpenter_r4",
+  "name": "寢室",
+  "description": "位於建築深處，床架由厚實的紅木製成，鋪著素色的棉布床單。窗櫺外是一堵厚石牆，阻絕了打鐵巷的喧鬧。案頭堆放著幾卷圖紙，空氣清爽乾淨，是一處極具質感的休息空間。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "後宅客廳",
+      "to": "ironlane_carpenter_r3"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "wutong_feicui_03",
+  "name": "焙茶烘房",
+  "description": "中央導熱金屬爐台，散發強烈乾焦木質香。地面鑲嵌導向能量黃銅線，空氣乾燥帶電離感，空間充斥紅色微光粒子。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "品茗雅座",
+      "to": "wutong_feicui_02"
+    },
+    {
+      "direction": "內宅通道",
+      "to": "wutong_feicui_04"
+    }
+  ]
+}

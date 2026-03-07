@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_lodge2",
+  "name": "凝霜閣",
+  "description": "原為住家改建的民宿，門匾「凝霜」。簷下霜晶不絕，門內仍帶居家氣息，前堂兼櫃台與茶座，僅二三客房，規模小而親切。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "前堂",
+      "to": "feishuang_lodge2_r1"
+    }
+  ]
+}

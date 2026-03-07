@@ -1,0 +1,20 @@
+{
+  "id": "feishuang_shop8",
+  "name": "雜貨鋪",
+  "description": "日用雜貨與鐵器小件堆滿店面，櫃檯上擺著幾盞未點燃的石燈。霜晶落門即化，地面微濕。空氣中混合著乾柴與老舊麻布的味道。後方通過一道窄門連結堆間與內宅，物品雖然雜亂但依類別劃分，充滿市井生活感。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "堆間",
+      "to": "feishuang_shop8_r1"
+    }
+  ]
+}

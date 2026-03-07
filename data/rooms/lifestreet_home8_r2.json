@@ -1,0 +1,16 @@
+{
+  "id": "lifestreet_home8_r2",
+  "name": "靜室",
+  "description": "完全封閉的長方形空間，牆面平整且極厚。地中心圓形凹槽盛放著細碎灰色石粉，色澤與外牆一致。室內沒有家具，僅有一只盛水石罐。環境安靜且隔音效果極好，地板打磨得十分光滑。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "門廳",
+      "to": "lifestreet_home8_r1"
+    }
+  ]
+}

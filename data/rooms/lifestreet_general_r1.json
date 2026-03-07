@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_general_r1",
+  "name": "前舖",
+  "description": "店內空間擁擠，門後堆放著幾捆粗麻繩與幾口鐵鍋。櫃檯上擺滿了鐵釘、小刀等零碎物件。樑柱上掛著幾盞石燈，光芒昏暗。空氣中混合著老舊鐵鏽、塵土與麻布袋的粗糙氣味，物品質感厚重。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "lifestreet_general"
+    },
+    {
+      "direction": "雜物間",
+      "to": "lifestreet_general_r2"
+    }
+  ]
+}

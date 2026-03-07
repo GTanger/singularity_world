@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_smith3",
+  "name": "打鐵鋪",
+  "description": "店面昏暗狹窄，門口隨意擺放著幾件鏽跡斑斑的鐵料。櫃檯桌面凹凸不平，覆蓋著一層洗不掉的煤灰。地坪是由碎石子壓實而成，室內瀰漫著一股沈悶的炭火味與鐵鏽氣息，空間侷促。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "鍛造室",
+      "to": "ironlane_smith3_r1"
+    }
+  ]
+}

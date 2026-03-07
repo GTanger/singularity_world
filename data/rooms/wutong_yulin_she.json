@@ -1,0 +1,16 @@
+{
+  "id": "wutong_yulin_she",
+  "name": "雨霖舍",
+  "description": "高濕度民居。地面帶防滑刻痕的白玉石，牆角與天花板被細密集水藤蔓覆蓋。空氣清新濕潤，帶淡淡泥土芳香。自翠蔭廣庭雨霖銜接點可入。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "翠蔭廣庭",
+      "to": "wutong_cy_05"
+    }
+  ]
+}

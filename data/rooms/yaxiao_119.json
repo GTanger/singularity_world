@@ -1,0 +1,28 @@
+{
+  "id": "yaxiao_119",
+  "name": "陰暗走廊",
+  "description": "狹長過道，緻密黑金屬隔板防音。地表吸音菌絲毯踩踏無聲。黃銅導能線光，乾燥纖維焦香，導向深處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "狹小廚間",
+      "to": "yaxiao_118"
+    },
+    {
+      "direction": "靜謐臥房",
+      "to": "yaxiao_120"
+    },
+    {
+      "direction": "雜亂起居室",
+      "to": "yaxiao_117"
+    },
+    {
+      "direction": "靜謐臥房",
+      "to": "yaxiao_120"
+    }
+  ]
+}

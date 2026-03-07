@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_home3",
+  "name": "民宅",
+  "description": "房門由厚實的杉木製成，進門後是一處室內前廊，地板由碎石與石灰混合壓平。牆角堆放著幾袋雜糧。此處連接著中央的天井，空氣中帶著淡淡的草灰味，光線隨著天井的開啟而顯得比鄰宅明亮。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "巷道",
+      "to": "ironlane"
+    },
+    {
+      "direction": "天井",
+      "to": "ironlane_home3_r1"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "id": "sunstreet",
+  "name": "向陽大街",
+  "description": "街道極其寬闊且平坦，兩側建築的間距較大，視野向遠方延伸。此處背景光霧顯得較為稀薄，空氣流動速度較快，路面的石板色澤明亮且整潔，隱約能看見地表能量流動後留下的淺色紋路。",
+  "tags": [
+    "street",
+    "outdoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "飛霜",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "梧桐",
+      "to": "wutong_street"
+    },
+    {
+      "direction": "流光採集廣場",
+      "to": "sun_lc_01"
+    },
+    {
+      "direction": "光樞管理處",
+      "to": "sun_gs_01"
+    },
+    {
+      "direction": "光譜調律工坊",
+      "to": "sun_gt_01"
+    },
+    {
+      "direction": "稜鏡精品閣",
+      "to": "sun_ljg_01"
+    },
+    {
+      "direction": "陽炎融合金鋪",
+      "to": "sun_yj_01"
+    },
+    {
+      "direction": "織光纖維苑",
+      "to": "sun_zg_01"
+    },
+    {
+      "direction": "向日植本餐館",
+      "to": "sun_xr_01"
+    },
+    {
+      "direction": "極光藝法館",
+      "to": "sun_jg_01"
+    },
+    {
+      "direction": "昇陽儀器行",
+      "to": "sun_sy_01"
+    },
+    {
+      "direction": "清輝沐浴齋",
+      "to": "sun_qh_01"
+    },
+    {
+      "direction": "晨曦居",
+      "to": "sun_cx_01"
+    },
+    {
+      "direction": "破曉舍",
+      "to": "sun_px_01"
+    },
+    {
+      "direction": "映雪寓",
+      "to": "sun_yx_01"
+    },
+    {
+      "direction": "照影閣",
+      "to": "sun_zy_01"
+    },
+    {
+      "direction": "望日廬",
+      "to": "sun_wr_01"
+    },
+    {
+      "direction": "拂曉軒",
+      "to": "sun_fx_01"
+    },
+    {
+      "direction": "金輝宅",
+      "to": "sun_jh_01"
+    },
+    {
+      "direction": "燦陽寓",
+      "to": "sun_scy_01"
+    },
+    {
+      "direction": "流金居",
+      "to": "sun_lj_01"
+    },
+    {
+      "direction": "熾光舍",
+      "to": "sun_cg_01"
+    }
+  ]
+}

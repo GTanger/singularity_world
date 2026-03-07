@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_shop4_r4",
+  "name": "店主寢室",
+  "description": "臥房空間方正，設有木製床鋪與一只衣櫃。牆上掛著幾件常服，案頭放著一盞洗淨的茶具。此處通往灶間，門扇厚實，掩門則可隔絕前方茶堂的喧囂。室內環境靜謐，霜晶極少飄入，展現出樸實的居家質感。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "灶間",
+      "to": "feishuang_shop4_r3"
+    }
+  ]
+}

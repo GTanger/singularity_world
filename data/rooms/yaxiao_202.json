@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_202",
+  "name": "眠臥小閣",
+  "description": "柔軟菌絲半封閉根腔床鋪。天花板淡金能量波極度安定。純淨乾燥電離感與濃郁樹脂，隱藏通往藥劑間旋轉牆。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_201"
+    },
+    {
+      "direction": "毒劑加工預備",
+      "to": "yaxiao_203"
+    }
+  ]
+}

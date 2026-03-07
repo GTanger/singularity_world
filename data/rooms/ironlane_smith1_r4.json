@@ -1,0 +1,28 @@
+{
+  "id": "ironlane_smith1_r4",
+  "name": "生活廊道",
+  "description": "穿過鍛造廳後的狹長過道，地板由厚木板鋪設。牆上掛著幾件乾淨的工作圍裙。此過道同時連結學徒寢室、師傅房與後院廚房，是店鋪與住宅功能的交界點，環境逐漸安靜。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "ironlane_smith1_r1"
+    },
+    {
+      "direction": "學徒",
+      "to": "ironlane_smith1_r5"
+    },
+    {
+      "direction": "主臥",
+      "to": "ironlane_smith1_r6"
+    },
+    {
+      "direction": "伙房",
+      "to": "ironlane_smith1_r7"
+    }
+  ]
+}

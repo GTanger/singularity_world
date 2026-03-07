@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_185",
+  "name": "街角門廊",
+  "description": "極窄陰暗牆角發光紫色蕈類。防滑凸點黑石磚。溫潤皂香與沉香，隔音層徹底阻絕。晦暗灰階。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "布藝玄關",
+      "to": "yaxiao_186"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_pawn_r2",
+  "name": "帳間",
+  "description": "櫃檯後方的工作區，靠牆設有整面的木格架，擺滿了厚重的布皮帳冊。桌面上整齊擺放著算盤、墨硯與幾支毛筆。一盞罩著琉璃殼的油燈垂在中央，牆面貼有幾張泛黃的當票存根，環境安靜且壓抑。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "外櫃",
+      "to": "lifestreet_pawn_r1"
+    },
+    {
+      "direction": "物庫",
+      "to": "lifestreet_pawn_r3"
+    }
+  ]
+}

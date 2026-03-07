@@ -1,0 +1,25 @@
+{
+  "id": "feishuang_shop4",
+  "name": "茶樓",
+  "description": "茶桌與長凳擺放整齊，壺盞間熱氣氤氳。霜晶在窗外飄落，室內暖茶驅散了冷意。店面寬敞，地坪鋪設青磚。後方引導至雅間、灶間與寢室，商住合一。空氣中混合著煮沸的開水味與粗茶葉的澀香，充滿市井氣息。",
+  "tags": [
+    "shop",
+    "indoor",
+    "food"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "feishuangstreet"
+    },
+    {
+      "direction": "雅間",
+      "to": "feishuang_shop4_r1"
+    },
+    {
+      "direction": "灶間",
+      "to": "feishuang_shop4_r3"
+    }
+  ]
+}

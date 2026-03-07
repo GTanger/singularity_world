@@ -1,0 +1,32 @@
+{
+  "id": "sun_jh_02",
+  "name": "金輝主廳",
+  "description": "家具由重壓黑木與晶簇一體成型，環境氛圍肅穆穩定。沉香氣息在熱力催化下極為濃郁，呈現高度文明化的物質飽和。大窗透視外部向陽拱頂，室內光影層次分明。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "金漆門廳",
+      "to": "sun_jh_01"
+    },
+    {
+      "direction": "光感工作室",
+      "to": "sun_jh_03"
+    },
+    {
+      "direction": "資源存儲間",
+      "to": "sun_jh_04"
+    },
+    {
+      "direction": "內嵌食府",
+      "to": "sun_jh_05"
+    },
+    {
+      "direction": "地下金窖",
+      "to": "sun_jh_08"
+    }
+  ]
+}

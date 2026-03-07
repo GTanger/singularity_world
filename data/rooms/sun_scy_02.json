@@ -1,0 +1,24 @@
+{
+  "id": "sun_scy_02",
+  "name": "熾陽起居廳",
+  "description": "挑高空間佈滿導光絲線，家具由高密度晶化木材製成。窗外可見光樞管理處宏大輪廓，室內熱輻射分布均勻。空氣中瀰漫穩重沉香，質感厚實，視覺色調呈現飽滿金紅色。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "陽炎門廊",
+      "to": "sun_scy_01"
+    },
+    {
+      "direction": "溫室餐區",
+      "to": "sun_scy_03"
+    },
+    {
+      "direction": "璀璨書齋",
+      "to": "sun_scy_05"
+    }
+  ]
+}

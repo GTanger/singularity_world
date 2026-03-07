@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_carpenter_r1",
+  "name": "製作間",
+  "description": "寬大的長木案橫在中央，上面固定著幾件待加工的木料。光線從大型天窗射入，空氣中漂浮著細微木塵。地角堆放著一綑捆紮好的廢料。此處連結著乾料庫與後方的家宅，功能劃分明確。",
+  "tags": [
+    "workshop",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "店面",
+      "to": "ironlane_carpenter"
+    },
+    {
+      "direction": "料庫",
+      "to": "ironlane_carpenter_r2"
+    },
+    {
+      "direction": "宅內",
+      "to": "ironlane_carpenter_r3"
+    }
+  ]
+}

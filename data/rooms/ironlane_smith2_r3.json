@@ -1,0 +1,24 @@
+{
+  "id": "ironlane_smith2_r3",
+  "name": "休息廊",
+  "description": "過道地板由平整的杉木拼接而成，牆上掛著幾件乾淨的粗麻袍與草帽。此處同時連結學徒房與主屋，一旁設有一座石砌的洗手台。光線充足，與前方的鍛造區域相比，氛圍顯得安靜且乾燥。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "研磨間",
+      "to": "ironlane_smith2_r1"
+    },
+    {
+      "direction": "學徒房",
+      "to": "ironlane_smith2_r4"
+    },
+    {
+      "direction": "主屋",
+      "to": "ironlane_smith2_r5"
+    }
+  ]
+}

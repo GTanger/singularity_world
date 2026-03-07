@@ -1,0 +1,20 @@
+{
+  "id": "wutong_chenxiang_05",
+  "name": "棲香居玄關",
+  "description": "進入私人區域，地面轉為光滑青色玉石。牆角生長幾簇螢光地衣，散發淡紫微光。空氣清新燥熱，帶生活氣息的沉香餘韻，觸感細膩。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "儲物後廊",
+      "to": "wutong_chenxiang_04"
+    },
+    {
+      "direction": "靜謐起居堂",
+      "to": "wutong_chenxiang_06"
+    }
+  ]
+}

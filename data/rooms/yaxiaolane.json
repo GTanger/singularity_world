@@ -1,0 +1,77 @@
+{
+  "id": "yaxiaolane",
+  "name": "夜鴞巷",
+  "description": "極其狹窄的石縫巷道，兩側牆壁距離極近，光影在其中顯得晦暗不明。巷道深處被厚重的灰白色氣體完全覆蓋，幾乎無法辨識遠方的路徑，腳下的碎石在能量輻射下散發著不穩定的微弱頻率。",
+  "tags": [
+    "street",
+    "outdoor",
+    "shadow"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "雜貨行店面",
+      "to": "yaxiao_01"
+    },
+    {
+      "direction": "自助洗衣店面",
+      "to": "yaxiao_26"
+    },
+    {
+      "direction": "廢料堆門面",
+      "to": "yaxiao_44"
+    },
+    {
+      "direction": "修理行店面",
+      "to": "yaxiao_74"
+    },
+    {
+      "direction": "小店店面",
+      "to": "yaxiao_96"
+    },
+    {
+      "direction": "鉛皮門廊",
+      "to": "yaxiao_116"
+    },
+    {
+      "direction": "入口坡道",
+      "to": "yaxiao_128"
+    },
+    {
+      "direction": "寓所玄關",
+      "to": "yaxiao_138"
+    },
+    {
+      "direction": "維護站門廳",
+      "to": "yaxiao_153"
+    },
+    {
+      "direction": "封死門庭",
+      "to": "yaxiao_166"
+    },
+    {
+      "direction": "瓦舍玄關",
+      "to": "yaxiao_174"
+    },
+    {
+      "direction": "街角門廊",
+      "to": "yaxiao_185"
+    },
+    {
+      "direction": "平房入口",
+      "to": "yaxiao_199"
+    },
+    {
+      "direction": "側室門廊",
+      "to": "yaxiao_208"
+    },
+    {
+      "direction": "窄門玄關",
+      "to": "yaxiao_220"
+    }
+  ]
+}

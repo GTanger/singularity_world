@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home1_r1",
+  "name": "堂屋",
+  "description": "室內地面由不規則石塊鋪設，正對門口處擺放著長條形石桌，桌上整齊疊放著陶碗。左側靠牆處有一張與牆體相連的石製床架，床頭立著一根支撐屋樑的粗石柱，表面磨損圓潤。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "民宅",
+      "to": "lifestreet_home1"
+    },
+    {
+      "direction": "灶間",
+      "to": "lifestreet_home1_r2"
+    }
+  ]
+}

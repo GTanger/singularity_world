@@ -1,0 +1,16 @@
+{
+  "id": "wutong_shengji_09",
+  "name": "私密浴室",
+  "description": "黑曜石砌成浴池不斷冒出溫熱煙霧。牆面鑲嵌反射溫潤光澤晶片，空氣濕度飽和。建築最深處，極靜。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "溫馨臥眠區",
+      "to": "wutong_shengji_08"
+    }
+  ]
+}

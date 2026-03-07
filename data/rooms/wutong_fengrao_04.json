@@ -1,0 +1,21 @@
+{
+  "id": "wutong_fengrao_04",
+  "name": "忙碌廚間",
+  "description": "石製灶台噴發穩定熱輻射，檯面整齊排列富態化食材。空氣充滿焦香與草本味，地面溫熱，石縫有金屬沉澱，質感繁忙紮實。",
+  "tags": [
+    "shop",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "大眾用餐區",
+      "to": "wutong_fengrao_02"
+    },
+    {
+      "direction": "禾香樓玄關",
+      "to": "wutong_fengrao_05"
+    }
+  ]
+}

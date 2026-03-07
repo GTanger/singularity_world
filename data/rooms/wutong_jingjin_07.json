@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jingjin_07",
+  "name": "靜謐主臥",
+  "description": "床座嵌入金屬質感根穴中，鋪墊厚實羊毛織物。天花板鑲嵌暗紅色能量晶體，維持恆溫熱輻射。環境極安靜，絕對。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "生活起居室",
+      "to": "wutong_jingjin_06"
+    },
+    {
+      "direction": "地下藏酒窖",
+      "to": "wutong_jingjin_08"
+    }
+  ]
+}

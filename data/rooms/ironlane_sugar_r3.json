@@ -1,0 +1,20 @@
+{
+  "id": "ironlane_sugar_r3",
+  "name": "起居廳",
+  "description": "店舖後方的生活空間，地板由木材鋪成。室內擺放著一張矮几與幾隻軟墊靠枕。几面上放著一盞油燈與一柄小木梳。窗櫺外對著一小片露天的天井，環境恬靜整潔，是典型的前店後家格局。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "打鐵巷",
+  "exits": [
+    {
+      "direction": "準備間",
+      "to": "ironlane_sugar_r1"
+    },
+    {
+      "direction": "內室",
+      "to": "ironlane_sugar_r4"
+    }
+  ]
+}

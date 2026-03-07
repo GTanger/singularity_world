@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home10_r4",
+  "name": "石窖灶間",
+  "description": "位於廳室後方，單灶結構火光紅亮，牆壁掛著煙燻過的肉條。地面由青磚鋪就，一側堆放劈好的乾柴。熱氣與門外的霧霜對比鮮明，空氣中瀰漫著焦木香，是別墅負責飲食與維持室內熱力的重要來源。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "圓廳",
+      "to": "feishuang_home10_r1"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "feishuang_home12_r3",
+  "name": "西側臥室",
+  "description": "擺放簡易竹榻與木几，牆上掛幾件防寒厚麻袍。地面鋪設乾燥草編墊，通風孔經過特殊設計，引入微弱熱風並阻擋霜晶。環境平實安靜，採光來自對向的高窗，提供來訪親友良好的睡眠與休息環境。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "飛霜湖",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "feishuang_home12_r1"
+    }
+  ]
+}

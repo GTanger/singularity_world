@@ -1,0 +1,27 @@
+{
+  "id": "yaxiao_62",
+  "name": "組裝核心大廳",
+  "description": "巨大黑金屬樑柱，地面金色導能紋路。精密機床律動，熔融金屬與電離辛香。紅色霓虹標記生產單元，高熱邊界扭曲。",
+  "tags": [
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "核心垂直降",
+      "to": "yaxiao_61"
+    },
+    {
+      "direction": "高溫切削室",
+      "to": "yaxiao_63"
+    },
+    {
+      "direction": "高溫切削室",
+      "to": "yaxiao_63"
+    },
+    {
+      "direction": "能量反應堆房",
+      "to": "yaxiao_66"
+    }
+  ]
+}

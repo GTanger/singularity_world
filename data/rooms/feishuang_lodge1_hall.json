@@ -1,0 +1,28 @@
+{
+  "id": "feishuang_lodge1_hall",
+  "name": "大廳",
+  "description": "挑高廳堂，壁爐常燃，櫃台與茶桌長凳齊備。通庭院、喫食堂、上樓迴廊與後院。霜晶在窗外紛飛，室內暖意融融，與浮生大廳規模相當。",
+  "tags": [
+    "inn",
+    "indoor"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "庭院",
+      "to": "feishuang_lodge1_yard"
+    },
+    {
+      "direction": "喫食堂",
+      "to": "feishuang_lodge1_dining"
+    },
+    {
+      "direction": "上樓",
+      "to": "feishuang_lodge1_2f"
+    },
+    {
+      "direction": "後院",
+      "to": "feishuang_lodge1_backyard"
+    }
+  ]
+}

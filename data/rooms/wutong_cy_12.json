@@ -1,0 +1,20 @@
+{
+  "id": "wutong_cy_12",
+  "name": "微光銜接點",
+  "description": "林間的一處開闊地。地表生長著大量發光的螢光蕈類，將周遭染成柔和的淡紫色。環境中的沉香氣息最為濃稠，水汽冷凝在葉片尖端，規律滴落。前方可見通往民居的玉石門檻。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "微光寓",
+      "to": "wutong_weiguang_yu"
+    },
+    {
+      "direction": "晶絲密林",
+      "to": "wutong_cy_11"
+    }
+  ]
+}

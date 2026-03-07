@@ -1,0 +1,14 @@
+{
+  "_說明": "物品定義；裝備分頁與背包規格。slot 為裝備槽位，item_type 為 equipment/currency 等。",
+  "items": [
+    {"id": "starter_body_m", "name": "粗布短褂", "slot": "body", "item_type": "equipment", "weight": 0.8, "stackable": 0, "denomination": 0, "description": "一件簡陋的短褂，聊勝於無。"},
+    {"id": "starter_legs_m", "name": "粗布長褲", "slot": "legs", "item_type": "equipment", "weight": 0.6, "stackable": 0, "denomination": 0, "description": "粗糙的麻布長褲，勉強遮體。"},
+    {"id": "starter_feet_m", "name": "草鞋", "slot": "feet", "item_type": "equipment", "weight": 0.3, "stackable": 0, "denomination": 0, "description": "稻草編成的簡單鞋履，走久了會磨腳。"},
+    {"id": "starter_body_f", "name": "素布衣裙", "slot": "body", "item_type": "equipment", "weight": 0.7, "stackable": 0, "denomination": 0, "description": "素色布料裁成的衣裙，樸素但整潔。"},
+    {"id": "starter_legs_f", "name": "布裳", "slot": "legs", "item_type": "equipment", "weight": 0.5, "stackable": 0, "denomination": 0, "description": "普通的布裳，行動尚算方便。"},
+    {"id": "starter_feet_f", "name": "布鞋", "slot": "feet", "item_type": "equipment", "weight": 0.2, "stackable": 0, "denomination": 0, "description": "軟底布鞋，輕便耐走。"},
+    {"id": "mg_coin", "name": "鎂幣", "slot": "", "item_type": "currency", "weight": 0.01, "stackable": 1, "denomination": 1, "description": "一枚小巧的鎂質錢幣，面值一鎂。"},
+    {"id": "mg_note", "name": "鎂鈔", "slot": "", "item_type": "currency", "weight": 0.005, "stackable": 1, "denomination": 10, "description": "以特殊纖維印製的鈔票，面值十鎂。"},
+    {"id": "mg_ingot", "name": "鎂錠", "slot": "", "item_type": "currency", "weight": 1.0, "stackable": 1, "denomination": 10000, "description": "沉甸甸的鎂金屬錠，面值一萬鎂。"}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "life_ri_2",
+  "name": "日字二號房",
+  "description": "採光稍弱，僅有一束斜光打在床頭。房間位於走廊內側，避開了街上的喧囂，顯得較為靜謐，牆角橫著兩根結實的木杆供人懸掛衣物。",
+  "tags": [
+    "room",
+    "lodging"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_2f"
+    }
+  ]
+}

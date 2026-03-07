@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_212",
+  "name": "沉降眠室",
+  "description": "柔軟菌絲半封閉結構天花板虹彩能量波。極度安定光影隨熱流律動。純淨乾燥樹脂濃郁，邊界銳利。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "內部走廊",
+      "to": "yaxiao_211"
+    },
+    {
+      "direction": "重力緩衝間",
+      "to": "yaxiao_213"
+    }
+  ]
+}

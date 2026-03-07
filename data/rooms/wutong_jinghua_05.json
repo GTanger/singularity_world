@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jinghua_05",
+  "name": "寶石居入口",
+  "description": "進入後視野豁然開朗，地面整塊平整白玉。牆壁鑲嵌精緻紫晶裝飾，空氣溫潤水汽與沉香，氛圍尊貴生活化。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "物資倉儲間",
+      "to": "wutong_jinghua_04"
+    },
+    {
+      "direction": "華麗起居堂",
+      "to": "wutong_jinghua_06"
+    }
+  ]
+}

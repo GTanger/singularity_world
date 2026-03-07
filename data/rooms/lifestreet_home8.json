@@ -1,0 +1,20 @@
+{
+  "id": "lifestreet_home8",
+  "name": "民宅",
+  "description": "由灰色堅固石材建成的房屋，建築稜角因長年受風沙沖刷而顯得圓潤。大門由兩塊厚實的橫板鎖閉，門板上留有深淺不一的刻痕，石縫間填補著乾硬的黏土，建築外觀厚實穩重。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "浮生",
+      "to": "lifestreet"
+    },
+    {
+      "direction": "門廳",
+      "to": "lifestreet_home8_r1"
+    }
+  ]
+}

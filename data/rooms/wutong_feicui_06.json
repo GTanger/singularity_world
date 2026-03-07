@@ -1,0 +1,20 @@
+{
+  "id": "wutong_feicui_06",
+  "name": "靜心臥房",
+  "description": "床位後方鑲嵌巨大透明晶牆，可觀外界根脈幾何脈動。熱輻射穩定，沉香氣息清淡。地面柔軟白色地衣，地面鬆軟。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "沁心軒客廳",
+      "to": "wutong_feicui_05"
+    },
+    {
+      "direction": "觀景露台",
+      "to": "wutong_feicui_07"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "yaxiao_12",
+  "name": "沉香書房",
+  "description": "牆面大量晶體書格，天花板偽裝採光井。空氣凝滯純淨，物理厚實。石製桌檯光滑如鏡，倒映律動微光。環境音極低。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "暖能茶間",
+      "to": "yaxiao_11"
+    },
+    {
+      "direction": "臥室走廊",
+      "to": "yaxiao_13"
+    },
+    {
+      "direction": "生活起居堂",
+      "to": "yaxiao_10"
+    }
+  ]
+}

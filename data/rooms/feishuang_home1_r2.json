@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_home1_r2",
+  "name": "灶間",
+  "description": "位於堂屋後方的狹窄空間，設有單孔石灶與深陷地面的水槽。柴火燃燒的熱氣與牆縫滲入的霜氣交織，空氣中瀰漫著麵粉與煙燻味。地面由青磚鋪設，牆架上整齊排列著瓷碗，後牆開有窄孔排煙，環境齊整。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "feishuang_home1_r1"
+    }
+  ]
+}

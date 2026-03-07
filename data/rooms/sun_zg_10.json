@@ -1,0 +1,16 @@
+{
+  "id": "sun_zg_10",
+  "name": "後庭曬光台",
+  "description": "位於建築頂端，白玉地面反射高空垂落的密集金光。空氣清冷稀薄，視野可俯瞰向陽大街。建築最深處。",
+  "tags": [
+    "residence",
+    "outdoor"
+  ],
+  "zone": "向陽大街",
+  "exits": [
+    {
+      "direction": "柔光臥眠間",
+      "to": "sun_zg_09"
+    }
+  ]
+}

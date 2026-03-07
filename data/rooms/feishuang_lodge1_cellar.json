@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_lodge1_cellar",
+  "name": "酒窖",
+  "description": "石階向下，陶甕與木桶沿牆，糧食發酵的醇厚氣味。愈深愈涼，霜晶與輻射感皆隔絕。通後院。",
+  "tags": [
+    "inn",
+    "indoor",
+    "storage"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "後院",
+      "to": "feishuang_lodge1_backyard"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "yaxiao_96",
+  "name": "小店店面",
+  "description": "地面油漬黑石磚，厚重沉香防音隔簾。櫃檯低劣碎裂白玉拼湊粘稠微光。熟成樹脂與廉價油脂烘烤，視覺極度平庸。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "夜鴞巷",
+  "exits": [
+    {
+      "direction": "夜巷",
+      "to": "yaxiaolane"
+    },
+    {
+      "direction": "客席用餐區",
+      "to": "yaxiao_97"
+    }
+  ]
+}

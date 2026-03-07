@@ -1,0 +1,20 @@
+{
+  "id": "wutong_jingjin_05",
+  "name": "鑄鐵宅門戶",
+  "description": "進入後地勢抬升，地面轉為穩定白玉石。空氣溫壓驟降，清爽礦物氣息。牆面掛滿精美鍛造裝飾品，環境莊嚴秩序井然。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "梧桐大街",
+  "exits": [
+    {
+      "direction": "磨光打磨間",
+      "to": "wutong_jingjin_04"
+    },
+    {
+      "direction": "生活起居室",
+      "to": "wutong_jingjin_06"
+    }
+  ]
+}

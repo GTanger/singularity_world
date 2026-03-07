@@ -1,0 +1,17 @@
+{
+  "id": "feishuang_shop3_r4",
+  "name": "灶房寢居",
+  "description": "混合功能的空間。角落設有火灶，另一側則是鋪有厚軟墊的床鋪。牆邊架上放著餐具與衣物。窗櫺外是石砌圍牆，阻絕了街道熱風。整體環境雖然擁擠但打理得井然有序，充滿了自給自足的生活厚重感。",
+  "tags": [
+    "residence",
+    "indoor",
+    "kitchen"
+  ],
+  "zone": "飛霜大街",
+  "exits": [
+    {
+      "direction": "堂屋",
+      "to": "feishuang_shop3_r3"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "life_xuan_2",
+  "name": "玄字二號房",
+  "description": "極其空曠，除了中央一張漆黑的蒲團外別無他物。光線在此被壓縮到極致，是一個安靜到讓人能聽見自己心跳的修煉之所。",
+  "tags": [
+    "room",
+    "lodging",
+    "luxury"
+  ],
+  "zone": "浮生大街",
+  "exits": [
+    {
+      "direction": "迴廊",
+      "to": "life_corridor_3f"
+    }
+  ]
+}
