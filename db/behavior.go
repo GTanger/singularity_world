@@ -15,6 +15,11 @@ type BehaviorData struct {
 	Roles       map[string]RoleBehavior    `json:"roles"`
 }
 
+// RoleMovementConfig 單一職稱的移動參數（來自 npc_behaviors.json）。
+type RoleMovementConfig struct {
+	Speed int `json:"speed"` // 每次移動走幾格（房間圖上幾段），預設 1
+}
+
 // RoleBehavior 單一職稱的行為定義。
 type RoleBehavior struct {
 	Idle           map[string][]string `json:"idle"`
@@ -24,6 +29,7 @@ type RoleBehavior struct {
 	WanderRooms    []string            `json:"wander_rooms"`
 	WanderLeave    string              `json:"wander_leave"`
 	WanderArrive   string              `json:"wander_arrive"`
+	Movement       *RoleMovementConfig `json:"movement"`
 }
 
 var (
@@ -132,6 +138,25 @@ func GetShiftFlavor(title, npcName string, arriving bool) string {
 		return replacePlaceholders(role.ShiftArrive, npcName, nil)
 	}
 	return replacePlaceholders(role.ShiftLeave, npcName, nil)
+}
+
+// GetMovementDefForTitle 依職稱取得移動定義（含移動格幅 speed）；供新生成 NPC 註冊 TravelerManager 時使用。
+// 若該職稱無 movement 或 speed ≤ 0，則 Speed 為 1；WanderRooms 來自同職稱的 wander_rooms。
+func GetMovementDefForTitle(title string) MovementDef {
+	bd := GetBehaviors()
+	role, ok := bd.Roles[title]
+	if !ok {
+		return MovementDef{Type: MoveRegional, Speed: 1}
+	}
+	speed := 1
+	if role.Movement != nil && role.Movement.Speed > 0 {
+		speed = role.Movement.Speed
+	}
+	return MovementDef{
+		Type:        MoveRegional,
+		Speed:        speed,
+		WanderRooms: role.WanderRooms,
+	}
 }
 
 // GetWanderRooms 取得指定職稱的巡邏房間列表。

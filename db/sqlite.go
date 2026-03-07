@@ -106,6 +106,13 @@ func OpenDB(path string) (*sql.DB, error) {
 		_ = db.Close()
 		return nil, fmt.Errorf("seed venues: %w", err)
 	}
+	// 移除浮生客棧舊四名 NPC（若存在）：先刪關聯表再刪 entities
+	for _, id := range []string{"陳正明", "林小雯", "張明德", "王阿財"} {
+		_, _ = db.Exec("DELETE FROM assignments WHERE entity_id = ?", id)
+		_, _ = db.Exec("DELETE FROM npc_schedules WHERE entity_id = ?", id)
+		_, _ = db.Exec("DELETE FROM entity_room WHERE entity_id = ?", id)
+		_, _ = db.Exec("DELETE FROM entities WHERE id = ?", id)
+	}
 	if err := SeedNPCs(db); err != nil {
 		_ = db.Close()
 		return nil, fmt.Errorf("seed npcs: %w", err)

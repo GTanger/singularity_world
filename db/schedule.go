@@ -55,7 +55,48 @@ func GetNPCTitle(db *sql.DB, entityID string) string {
 	return title.String
 }
 
-// ApplySchedules 根據當前遊戲時間移動 NPC 到對應房間，並回傳實際發生移動的清單。
+// ScheduleTarget 排班目標房間與是否為上班地（供敘事用）。
+type ScheduleTarget struct {
+	Room   string
+	IsWork bool
+}
+
+// GetScheduleTargetRoom 依排班與遊戲小時回傳該 NPC 應前往的房間（在班→work_room，下班→rest_room）。
+// 若無排班則 ok=false。供排班型移動尋路用，家可遠在十格外也逐格走。
+func GetScheduleTargetRoom(database *sql.DB, entityID string, gameHour int) (targetRoom string, ok bool) {
+	t, ok := GetScheduleTarget(database, entityID, gameHour)
+	if !ok {
+		return "", false
+	}
+	return t.Room, true
+}
+
+// GetScheduleTarget 回傳排班目標與是否為上班地（IsWork 供抵達敘事用）。
+func GetScheduleTarget(database *sql.DB, entityID string, gameHour int) (t ScheduleTarget, ok bool) {
+	rows, err := database.Query(
+		"SELECT work_room, rest_room, shift_start, shift_end FROM npc_schedules WHERE entity_id = ?",
+		entityID,
+	)
+	if err != nil {
+		return ScheduleTarget{}, false
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return ScheduleTarget{}, false
+	}
+	var workRoom, restRoom string
+	var shiftStart, shiftEnd int
+	if err := rows.Scan(&workRoom, &restRoom, &shiftStart, &shiftEnd); err != nil {
+		return ScheduleTarget{}, false
+	}
+	s := NPCSchedule{EntityID: entityID, WorkRoom: workRoom, RestRoom: restRoom, ShiftStart: shiftStart, ShiftEnd: shiftEnd}
+	if s.IsOnDuty(gameHour) {
+		return ScheduleTarget{Room: workRoom, IsWork: true}, true
+	}
+	return ScheduleTarget{Room: restRoom, IsWork: false}, true
+}
+
+// ApplySchedules 根據當前遊戲時間回傳「應前往的房間與敘事用清單」，不傳送；實際移動由 TravelerManager 排班型尋路逐格執行。
 func ApplySchedules(database *sql.DB, gameHour int) ([]ScheduleMove, error) {
 	schedules, err := GetAllSchedules(database)
 	if err != nil {
@@ -69,7 +110,6 @@ func ApplySchedules(database *sql.DB, gameHour int) ([]ScheduleMove, error) {
 		}
 		currentRoom, _ := GetEntityRoom(database, s.EntityID)
 		if currentRoom != targetRoom {
-			_ = SetEntityRoom(database, s.EntityID, targetRoom)
 			moves = append(moves, ScheduleMove{
 				EntityID: s.EntityID,
 				Title:    GetNPCTitle(database, s.EntityID),

@@ -13,6 +13,7 @@ const (
 	MoveRegional MovementType = "regional" // 區域型：在 wander_rooms 內隨機跳
 	MoveRoute    MovementType = "route"    // 路線型：沿 waypoints 巡迴
 	MovePathfind MovementType = "pathfind" // 尋路型：給定目標，BFS 自動尋路
+	MoveSchedule MovementType = "schedule" // 排班型：依 gameHour 目標為 work_room 或 rest_room，尋路逐格移動
 )
 
 // Waypoint 路線型 NPC 的途經點。
@@ -113,7 +114,7 @@ func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int) []
 
 		// 如果 path queue 為空，需要決定下一個目標
 		if len(t.PathQueue) == 0 {
-			t.PathQueue = tm.computeNextPath(t, currentRoom, g)
+			t.PathQueue = tm.computeNextPath(t, currentRoom, g, database, gameHour)
 			if len(t.PathQueue) == 0 {
 				continue
 			}
@@ -157,12 +158,18 @@ func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int) []
 	return steps
 }
 
-func (tm *TravelerManager) computeNextPath(t *NPCTraveler, currentRoom string, g *RoomGraph) []string {
+func (tm *TravelerManager) computeNextPath(t *NPCTraveler, currentRoom string, g *RoomGraph, database *sql.DB, gameHour int) []string {
 	switch t.MoveDef.Type {
 	case MoveRoute:
 		return tm.nextRoutePath(t, currentRoom, g)
 	case MovePathfind:
 		return tm.nextPathfindPath(t, currentRoom, g)
+	case MoveSchedule:
+		target, ok := GetScheduleTargetRoom(database, t.EntityID, gameHour)
+		if !ok || target == "" || target == currentRoom {
+			return nil
+		}
+		return g.FindPath(currentRoom, target)
 	default:
 		return nil
 	}

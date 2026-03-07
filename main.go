@@ -135,8 +135,15 @@ func main() {
 		log.Printf("[pathfind] build graph failed: %v", err)
 	}
 
-	// 地圖型 NPC 移動管理器
+	// 地圖型 NPC 移動管理器（排班型：經理等依 work_room/rest_room 尋路逐格移動，家可遠在十格外）
 	travelerMgr := db.NewTravelerManager()
+	schedules, _ := db.GetAllSchedules(database)
+	for _, s := range schedules {
+		title := db.GetNPCTitle(database, s.EntityID)
+		def := db.GetMovementDefForTitle(title)
+		def.Type = db.MoveSchedule
+		travelerMgr.Register(s.EntityID, def)
+	}
 	var travelTickCount int
 	travelTickInterval := 75 // 每 15 秒推進一步（75 ticks × 200ms）
 
@@ -146,16 +153,20 @@ func main() {
 		now := time.Now().Unix()
 		_, hour, _, _ := game.GameTimeNow(now, cfg.GameTimeEpochUnix, cfg.GameTimeScale)
 
-		// NPC 排班：每遊戲小時檢查一次，上下班移動 + 換班敘事
+		// NPC 排班：每遊戲小時僅發「出發」敘事；實際移動由 TravelerManager 排班型尋路逐格執行（家可十格外）
 		if hour != lastScheduleHour {
 			lastScheduleHour = hour
 			moves, err := db.ApplySchedules(database, hour)
 			if err == nil {
 				for _, m := range moves {
-					leaveText := db.GetShiftFlavor(m.Title, m.EntityID, false)
-					arriveText := db.GetShiftFlavor(m.Title, m.EntityID, true)
+					target, _ := db.GetScheduleTarget(database, m.EntityID, hour)
+					var leaveText string
+					if target.Room == m.NewRoom && target.IsWork {
+						leaveText = "【" + m.EntityID + "】出門往店裡去了。"
+					} else {
+						leaveText = db.GetShiftFlavor(m.Title, m.EntityID, false)
+					}
 					server.SendNarrateToRoom(sessionStore, database, m.OldRoom, leaveText)
-					server.SendNarrateToRoom(sessionStore, database, m.NewRoom, arriveText)
 				}
 				if len(moves) > 0 {
 					server.BroadcastRoomViews(sessionStore, database, cfg)
@@ -163,7 +174,7 @@ func main() {
 			}
 		}
 
-		// 地圖型 NPC 移動：每 travelTickInterval 推進一步
+		// 地圖型 NPC 移動：每 travelTickInterval 推進一步（排班型會逐格走到 work/rest）
 		travelTickCount++
 		if travelTickCount >= travelTickInterval {
 			travelTickCount = 0
@@ -173,6 +184,13 @@ func main() {
 				newName := roomGraph.RoomName(step.NewRoom)
 				leaveText := "【" + step.NpcName + "】收拾行裝，往" + newName + "方向離去。"
 				arriveText := "【" + step.NpcName + "】從" + oldName + "方向走了過來。"
+				if target, ok := db.GetScheduleTarget(database, step.EntityID, hour); ok && target.Room == step.NewRoom {
+					if target.IsWork {
+						arriveText = db.GetShiftFlavor(db.GetNPCTitle(database, step.EntityID), step.EntityID, true)
+					} else {
+						arriveText = "【" + step.NpcName + "】回到了住處。"
+					}
+				}
 				server.SendNarrateToRoom(sessionStore, database, step.OldRoom, leaveText)
 				server.SendNarrateToRoom(sessionStore, database, step.NewRoom, arriveText)
 				server.RefreshRoomViews(sessionStore, database, cfg, step.OldRoom)

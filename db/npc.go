@@ -50,13 +50,8 @@ type npcDef struct {
 	shiftStart, shiftEnd           int
 }
 
-// defaultNPCs 全體預設 NPC：日班 06-19、夜班 18-07，重疊 18-19 與 06-07。
-var defaultNPCs = []npcDef{
-	{"陳正明", "陳", "M", "經理", "life_hall", "life_storage", 6, 19},
-	{"林小雯", "林", "F", "服務生", "life_hall", "life_storage", 6, 19},
-	{"張明德", "張", "M", "經理", "life_hall", "life_storage", 18, 7},
-	{"王阿財", "王", "M", "服務生", "life_hall", "life_storage", 18, 7},
-}
+// defaultNPCs 全體預設 NPC；浮生客棧四名已移除，目前為空。
+var defaultNPCs = []npcDef{}
 
 // SeedNPCs 逐一檢查預設 NPC，不存在才建立；並為四人建立指派（經理/服務生 @ 浮生客棧），對齊討論 001。
 func SeedNPCs(db *sql.DB) error {

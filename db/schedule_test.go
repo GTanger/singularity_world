@@ -65,12 +65,18 @@ func TestApplySchedules(t *testing.T) {
 	workRoom := "life_hall"
 	restRoom := "life_storage"
 
+	// 預設四名 NPC 已從 seed 移除，測試內手動建立實體與排班（ApplySchedules 只回傳「應前往」清單，不傳送）
 	for _, id := range []string{"陳正明", "林小雯", "張明德", "王阿財"} {
-		room, _ := GetEntityRoom(database, id)
-		if room == "" {
-			t.Fatalf("NPC %s has no room", id)
+		if err := InsertNPC(database, id, string([]rune(id)[0]), "M", ""); err != nil {
+			t.Fatalf("InsertNPC %s: %v", id, err)
 		}
+		_ = SetEntityRoom(database, id, workRoom)
 	}
+	// 日班 06-19、夜班 18-07
+	_ = InsertSchedule(database, "陳正明", workRoom, restRoom, 6, 19)
+	_ = InsertSchedule(database, "林小雯", workRoom, restRoom, 6, 19)
+	_ = InsertSchedule(database, "張明德", workRoom, restRoom, 18, 7)
+	_ = InsertSchedule(database, "王阿財", workRoom, restRoom, 18, 7)
 
 	schedules, err := GetAllSchedules(database)
 	if err != nil {
@@ -80,59 +86,35 @@ func TestApplySchedules(t *testing.T) {
 		t.Fatalf("expected 4 schedules, got %d", len(schedules))
 	}
 
-	// Hour 12: day shift on, night shift off
-	if _, err := ApplySchedules(database, 12); err != nil {
+	// Hour 12: 日班應在 work、夜班應在 rest；所有人目前在 work，故夜班兩人會進 moves（應前往 rest）
+	moves, err := ApplySchedules(database, 12)
+	if err != nil {
 		t.Fatalf("ApplySchedules(12): %v", err)
 	}
-	for _, id := range []string{"陳正明", "林小雯"} {
-		room, _ := GetEntityRoom(database, id)
-		if room != workRoom {
-			t.Errorf("hour 12: %s should be in %s, got %s", id, workRoom, room)
+	if len(moves) != 2 {
+		t.Errorf("hour 12: expected 2 moves (night shift to rest), got %d", len(moves))
+	}
+	for _, m := range moves {
+		if m.NewRoom != restRoom {
+			t.Errorf("hour 12 move: %s NewRoom want %s, got %s", m.EntityID, restRoom, m.NewRoom)
 		}
 	}
-	for _, id := range []string{"張明德", "王阿財"} {
-		room, _ := GetEntityRoom(database, id)
-		if room != restRoom {
-			t.Errorf("hour 12: %s should be in %s, got %s", id, restRoom, room)
-		}
-	}
-
-	// Hour 22: night shift on, day shift off
-	if _, err := ApplySchedules(database, 22); err != nil {
-		t.Fatalf("ApplySchedules(22): %v", err)
-	}
-	for _, id := range []string{"陳正明", "林小雯"} {
-		room, _ := GetEntityRoom(database, id)
-		if room != restRoom {
-			t.Errorf("hour 22: %s should be in %s, got %s", id, restRoom, room)
-		}
-	}
+	// 不傳送：實體仍留在原房間
 	for _, id := range []string{"張明德", "王阿財"} {
 		room, _ := GetEntityRoom(database, id)
 		if room != workRoom {
-			t.Errorf("hour 22: %s should be in %s, got %s", id, workRoom, room)
+			t.Errorf("hour 12 (no teleport): %s should still be in %s, got %s", id, workRoom, room)
 		}
 	}
 
-	// Hour 18: overlap - both shifts on
-	if _, err := ApplySchedules(database, 18); err != nil {
-		t.Fatalf("ApplySchedules(18): %v", err)
+	// Hour 22: 夜班應在 work、日班應在 rest；若仍在 work 則日班兩人進 moves
+	moves22, _ := ApplySchedules(database, 22)
+	if len(moves22) != 2 {
+		t.Errorf("hour 22: expected 2 moves (day shift to rest), got %d", len(moves22))
 	}
-	for _, id := range []string{"陳正明", "林小雯", "張明德", "王阿財"} {
-		room, _ := GetEntityRoom(database, id)
-		if room != workRoom {
-			t.Errorf("hour 18 (overlap): %s should be in %s, got %s", id, workRoom, room)
-		}
-	}
-
-	// Hour 6: overlap - both shifts on
-	if _, err := ApplySchedules(database, 6); err != nil {
-		t.Fatalf("ApplySchedules(6): %v", err)
-	}
-	for _, id := range []string{"陳正明", "林小雯", "張明德", "王阿財"} {
-		room, _ := GetEntityRoom(database, id)
-		if room != workRoom {
-			t.Errorf("hour 6 (overlap): %s should be in %s, got %s", id, workRoom, room)
+	for _, m := range moves22 {
+		if m.NewRoom != restRoom {
+			t.Errorf("hour 22 move: %s NewRoom want %s, got %s", m.EntityID, restRoom, m.NewRoom)
 		}
 	}
 }

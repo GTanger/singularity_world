@@ -1,5 +1,5 @@
 {
-  "_說明": "NPC 行為文本定義檔。伺服器啟動時載入快取，改完重啟即生效。{name} 替換為 NPC 真名，{dest}/{from} 替換為房間名。",
+  "_說明": "NPC 行為文本定義檔。伺服器啟動時載入快取，改完重啟即生效。{name} 替換為 NPC 真名，{dest}/{from} 替換為房間名。movement.speed：每次移動走幾格（房間圖上幾段），預設 1。",
 
   "time_periods": {
     "morning": [6, 12],
@@ -46,7 +46,8 @@
       "shift_leave":  "【{name}】合上帳本，朝後院走去。",
       "wander_rooms": ["life_hall", "life_dining"],
       "wander_leave":  "【{name}】起身往{dest}方向走去。",
-      "wander_arrive": "【{name}】從{from}方向走了過來，在櫃台前站定。"
+      "wander_arrive": "【{name}】從{from}方向走了過來，在櫃台前站定。",
+      "movement": { "speed": 1 }
     },
 
     "服務生": {
@@ -86,7 +87,8 @@
       "shift_leave":  "【{name}】解下圍裙搭在肩上，往後院走去。",
       "wander_rooms": ["life_hall", "life_dining", "life_kitchen"],
       "wander_leave":  "【{name}】端著托盤往{dest}走去。",
-      "wander_arrive": "【{name}】端著托盤從{from}走了進來。"
+      "wander_arrive": "【{name}】端著托盤從{from}走了進來。",
+      "movement": { "speed": 1 }
     }
   }
 }
