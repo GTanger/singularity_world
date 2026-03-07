@@ -169,7 +169,7 @@ data/
 | `data/npc_behaviors.json` | 經理、服務生閒置/進房/換班/巡邏文本 | 已上線，依職業 key 使用 |
 | `data/rooms.json` | 房間 + tags/zone | 已更新 |
 | `data/templates/occupations.json` | 職業型別表（對話/行為檔、action_sockets） | 已上線 |
-| DB 表 venues / assignments | 場所 room_ids、誰任職何場所 | 已上線 |
+| store（venues/assignments） | data/venues.json、data/assignments.json；場所 room_ids、誰任職何場所 | 已上線 |
 | `db/assignment.go` | Venue、Assignment、GetNPCTitleFromAssignments、EntityInVenueAtRoom | 已上線 |
 | `db/occupation.go` | LoadOccupations、GetSocketsForNPC、IsDefaultSocket | 已上線 |
 | `db/pathfind.go` | BFS 尋路 | 已上線 |
@@ -214,4 +214,4 @@ Talk、Attack、Look。其餘為職業 action_sockets，僅在綁定場所內由
 
 ### 場所「浮生客棧」room_ids（範例）
 
-由 SeedVenues 寫入 DB，涵蓋 life_garden、life_hall、life_dining、life_kitchen、life_backyard、life_storage、life_wine_cellar、life_corridor_2f/3f、各客房 life_ri_1/2、life_yue_1/2、… 等。擴建地圖時需維護 venues.room_ids 或由程式依規則更新。
+由 SeedVenues 寫入 store（或 DB），涵蓋 life_garden、life_hall、life_dining、life_kitchen、life_backyard、life_storage、life_wine_cellar、life_corridor_2f/3f、各客房 life_ri_1/2、life_yue_1/2、… 等。擴建地圖時需維護 venues.room_ids 或由程式依規則更新。

@@ -138,7 +138,7 @@ func TestSim_ScheduleAndTravelerTick(t *testing.T) {
 	if steps[0].OldRoom != "sim_room_a" || steps[0].NewRoom != "sim_room_b" {
 		t.Errorf("預期一步 sim_room_a → sim_room_b，got %s → %s", steps[0].OldRoom, steps[0].NewRoom)
 	}
-	// 實體應已寫回 DB
+	// 實體應已寫回 store 或 DB
 	room, _ := GetEntityRoom(db, "模擬班")
 	if room != "sim_room_b" {
 		t.Errorf("Tick 後實體應在 sim_room_b，got %s", room)

@@ -33,7 +33,7 @@
 | | 尋路引擎 | `db/pathfind.go` | BFS 鄰接圖，FindPath / FindRoomsWithinDist |
 | | 移動管理 | `db/npc_movement.go` | 四種移動模式：**schedule** / regional / route / pathfind |
 | | 排班系統 | `db/schedule.go` | GetScheduleTarget、ApplySchedules（只回傳敘事用清單，不傳送）；實際移動由 TravelerManager 排班型尋路 |
-| | NPC 建立 | `db/npc.go` | InsertNPC（SoulSeed + 屬性 + 穿搭）；SeedNPCs 預設為空，OpenDB 時會刪除舊浮生客棧四名 |
+| | NPC 建立 | `db/npc.go` | InsertNPC（SoulSeed + 屬性 + 穿搭）；SeedNPCs 預設為空，資料由 store（JSON）提供 |
 | **推送層** | 敘事廣播 | `server/broadcast.go` | SendNarrateToRoom / RefreshRoomViews |
 | | 訊息協定 | `server/protocol.go` | NarrateMsg（ambient 敘事推送） |
 | **前端** | 敘事渲染 | `web/main.js` | `case 'narrate'` → appendNarrative + ambient 樣式 |
@@ -49,7 +49,7 @@
 │                        ├ dialogues/*.json     │
 │                        └ behaviors/*.json     │
 │                                              │
-│  rooms.json (tags + zone)                    │
+│  data/rooms/*.json (tags + zone)             │
 └──────────────────────────────────────────────┘
          │                    │
          ▼                    ▼
@@ -106,7 +106,7 @@
 
 ### 2.1 定點 NPC 與排班（現狀）
 
-**預設種子**：浮生客棧四名（陳正明、林小雯、張明德、王阿財）已從 `defaultNPCs` 移除；OpenDB 時會刪除既有 DB 中該四筆實體與排班。目前 **SeedNPCs 不建立任何預設 NPC**，需手動 `InsertNPC` + `InsertSchedule` + `InsertAssignment` 或日後接模板生成器。
+**預設種子**：浮生客棧四名（陳正明、林小雯、張明德、王阿財）已從 `defaultNPCs` 移除。目前 **SeedNPCs 不建立任何預設 NPC**，需手動 `InsertNPC` + `InsertSchedule` + `InsertAssignment` 或日後接模板生成器。資料皆由 store（JSON）讀寫。
 
 凡在 `npc_schedules` 有排班的 NPC，啟動時會以 **MoveSchedule** 註冊到 TravelerManager：依遊戲小時目標為 work_room（在班）或 rest_room（下班），**BFS 尋路逐格移動**，家可遠在十格外。
 
@@ -147,7 +147,7 @@
 ### 3.2 尋路引擎
 
 - **演算法**：BFS（廣度優先搜尋），O(V+E)
-- **資料結構**：`RoomGraph` — 啟動時從 DB 建立鄰接表 + tags/zone/name 快取
+- **資料結構**：`RoomGraph` — 啟動時從 store（data/rooms/*.json）建立鄰接表 + tags/zone/name 快取
 - **效能**：100 房 < 0.1ms，10,000 房 ~5ms
 - **API**：
 
@@ -494,11 +494,10 @@ data/templates/
 |------|------|------|
 | **NPC 活化模擬測試報告** | `docs/testing/NPC活化系統模擬測試報告.md` | 檢索範圍、已／未實作對照（含馬斯洛）、模擬測試案例與結果、代碼註釋建議 |
 | **NPC 活化實作清單與規劃** | `docs/implementation/NPC活化系統—實作清單與規劃.md` | 細部拆解：數據層／實體／soul_seed 展開／行為／移動／主迴圈／互動／未實作（需求驅動）、依賴與驗收、階段排程 |
-| **NPC 活化引擎與數據對照** | `docs/implementation/NPC活化系統—引擎與數據對照.md` | 每環節對應 .go 與 .json／數據池；已載入與否、JSON 可掌控／生成清單 |
 | 模板系統檢索 | `data/templates/README.md` | 模板格式、欄位、佔位符、快速查閱表 |
 | 第一版可做清單 | `docs/第一版可做清單.md` | MVP 進度追蹤（§十 NPC 行為） |
 | 協作約定 | `docs/COLLABORATION.md` | 主管與 AI 的角色分工 |
-| 技術約束 | `docs/技術約束規則.md` | Go / SQLite / WebSocket 等約束 |
+| 技術約束 | `docs/技術約束規則.md` | Go／原生前端／WebSocket；執行期數據源為 JSON/store |
 | 人物角色模板 | `docs/reference/人物角色模板.md` | 玩家/NPC 共用結構定義 |
 
 ---

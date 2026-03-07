@@ -1,4 +1,4 @@
-// Package db 負責 SQLite 連線與 schema 載入，對齊第一版可做清單 §1.8.3。
+// Package db 提供 SQLite 連線與 schema（OpenDB）；執行期 main 不呼叫 OpenDB，數據由 store 提供。僅測試或離線工具可選用 OpenDB。
 // 不包含 init()，由呼叫方傳入路徑並呼叫 OpenDB。
 package db
 

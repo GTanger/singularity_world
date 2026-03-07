@@ -83,4 +83,17 @@ data/
 
 ---
 
+## 六、殘餘 DB 檢查（已處理）
+
+| 項目 | 狀態 |
+|------|------|
+| **實體 .db 檔** | 專案內不納入 .db；data/ 下若有 world.db 已被 .gitignore。備份檔 *.db.*.bak 不追蹤。 |
+| **main** | 已不呼叫 OpenDB；`database` 為 nil，建目錄改為固定 `data`、`data/runtime`，不依賴 cfg.DBPath。 |
+| **cmd/wipe_entities** | 已改為 store.Init + store.ClearAllEntities，不再 OpenDB。 |
+| **db 包** | 仍接受 `*sql.DB` 參數以相容呼叫方；執行期 store.Default != nil 時一律走 store，傳 nil 不觸碰 DB。 |
+| **測試** | db/schedule_test、npc_activation_simulation_test 使用 temp 目錄的 test.db/sim.db，僅測試用，保留。 |
+| **文件** | README、rooms_manage、NPC 相關已改為「JSON/store、不開 DB」。config 仍含 DBPath 欄位（未使用，可保留或日後移除）。 |
+
+---
+
 *DB 轉 JSON 遷移規劃 v1.1 — 全 JSON、房間拆檔、無 DB*

@@ -22,8 +22,8 @@
 | D2 | 職業原型 | 10 種職業的屬性與移動模式定義 | `data/templates/archetypes.json` | ✅ | — | 模板存在，待生成引擎讀取 |
 | D3 | 對話模板 | 各職業 greet/idle/talk/trade_announce 等句庫 | `data/templates/dialogues/*.json` | ✅ | — | ~716 句，Talk 尚未從此抽句 |
 | D4 | 行為模板 | 各職業 schedule/wander/trade/personality 參數 | `data/templates/behaviors/*.json` | ✅ | — | 與 archetypes 對齊 |
-| D5 | 房間與標籤 | 房間 id/name、**tags**、**zone**，供尋路與 NPC 決策 | `data/rooms.json`、DB `rooms` 表 | ✅ | — | rooms 有 tags/zone；SyncRoomsFromFile 可載入 |
-| D6 | 場所與職缺 | 場所 id、名稱、room_ids；**max_staff**（職缺上限） | DB `venues` 表、討論 002 | 🟡 | — | venues 有；max_staff 與求職邏輯 ⬜ |
+| D5 | 房間與標籤 | 房間 id/name、**tags**、**zone**，供尋路與 NPC 決策 | `data/rooms/*.json`（store 載入） | ✅ | — | 一房一檔，store 有 tags/zone |
+| D6 | 場所與職缺 | 場所 id、名稱、room_ids；**max_staff**（職缺上限） | `data/venues.json`（store）、討論 002 | 🟡 | — | venues 有；max_staff 與求職邏輯 ⬜ |
 
 ---
 
@@ -34,7 +34,7 @@
 | E1 | NPC 創角與 soul_seed | 創角時產生 **soul_seed**，寫入 entities；體敏氣由同 seed 展開寫入 | `db/npc.go` InsertNPC | ✅ | — | InsertNPC 後 GetEntity 必有 SoulSeed；vit/qi/dex 與 ExpandSoulSeedToBaseStats 一致 |
 | E2 | 玩家創角與 soul_seed | 同上，kind=player | `db/entity.go` InsertEntity | ✅ | — | 同上 |
 | E3 | 職稱來自指派 | 職稱先查 **assignments**（entity_id + occupation_id + venue_id），無則 fallback entities.display_title | `db/assignment.go` GetNPCTitleFromAssignments；`db/schedule.go` GetNPCTitle | ✅ | D5 | GetNPCTitle(無指派) 回傳空或 display_title |
-| E4 | 排班表 | 誰、工作房、休息房、班次起迄（gameHour） | DB `npc_schedules`；`db/schedule.go` NPCSchedule、GetAllSchedules | ✅ | E1 | 有排班則 main 會註冊 MoveSchedule |
+| E4 | 排班表 | 誰、工作房、休息房、班次起迄（gameHour） | `data/schedules.json`（store）；`db/schedule.go` GetAllSchedules | ✅ | E1 | 有排班則 main 會註冊 MoveSchedule |
 | E5 | 鎂欄位 | 實體當前鎂餘額，供狀態與未來消耗／求職 | `entities.magnesium`、entity.Character.Magnesium | ✅ | — | 讀寫存在；**無消耗、無閾值**（見需求驅動） |
 
 ---
@@ -71,7 +71,7 @@
 
 | 編號 | 項目 | 說明 | 位置 | 狀態 | 依賴 | 驗收 |
 |------|------|------|------|------|------|------|
-| M1 | 房間圖 | 從 DB rooms + exits 建鄰接表與 tags/zone/name 快取 | `db/pathfind.go` RoomGraph、BuildGraph | ✅ | D5 | 啟動時 BuildGraph；FindPath 可用 |
+| M1 | 房間圖 | 從 store（rooms + exits）建鄰接表與 tags/zone/name 快取 | `db/pathfind.go` RoomGraph、BuildGraph | ✅ | D5 | 啟動時 BuildGraph；FindPath 可用 |
 | M2 | BFS 尋路 | 起點→終點最短路徑（不含起點） | FindPath(from, to) | ✅ | M1 | 不可達回傳 nil；TestSim_ScheduleAndTravelerTick 依此走一步 |
 | M3 | 依 tag/距離查房 | FindNearestByTag、FindRoomsWithinDist（pathfind 型用） | `db/pathfind.go` | ✅ | M1 | pathfind 型選目標房時使用 |
 | M4 | 四種移動模式 | **schedule**（排班目標 work/rest）、regional、route、pathfind | `db/npc_movement.go` MovementType、computeNextPath | ✅ | M1, E4, B7 | schedule 用 GetScheduleTargetRoom；其餘用 waypoints/tags |
@@ -167,7 +167,6 @@ B7(MovementDef) ───┴─ M8(Register 時 Type+Speed)
 
 | 文件 | 用途 |
 |------|------|
-| **`docs/implementation/NPC活化系統—引擎與數據對照.md`** | **每環節拆成 .go 與 .json／數據池；哪些 JSON 已載入、可掌控／生成** |
 | `docs/NPC活化系統.md` | 總覽、架構圖、演進路線、跑穩定義、程式碼速查 |
 | `docs/testing/NPC活化系統模擬測試報告.md` | 已/未實作對照、模擬測試案例與結果 |
 | `docs/discussions/002_NPC需求驅動與求職機制.md` | 馬斯洛、求職、職缺、撮合、離職（未實作） |

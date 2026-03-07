@@ -23,9 +23,8 @@ import (
 func main() {
 	cfg := config.DefaultServer()
 
-	dir := filepath.Dir(cfg.DBPath)
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		log.Fatalf("mkdir %s: %v", dir, err)
+	if err := os.MkdirAll("data", 0755); err != nil {
+		log.Fatalf("mkdir data: %v", err)
 	}
 	if err := os.MkdirAll("data/runtime", 0755); err != nil {
 		log.Fatalf("mkdir data/runtime: %v", err)

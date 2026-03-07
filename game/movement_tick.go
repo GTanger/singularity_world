@@ -16,7 +16,7 @@ type MovedResult struct {
 	Y  int
 }
 
-// AdvanceMovement 對所有 move_state=moving 的實體依 walk/run 步進一或二格，寫回 DB 並回傳有變動的 (id,x,y)。
+// AdvanceMovement 對所有 move_state=moving 的實體依 walk/run 步進一或二格，寫回 store 或 DB 並回傳有變動的 (id,x,y)。
 // 若中途撞牆則停止並寫入 blocked 事件；抵達目標則寫入 arrived 事件。
 func AdvanceMovement(database *sql.DB, mapsPath string, now int64) ([]MovedResult, error) {
 	list, err := db.GetMovingEntities(database)

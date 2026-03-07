@@ -555,7 +555,7 @@ func (s *Store) RoomTagsMap() map[string][]string {
 	return out
 }
 
-// EntityIDsInRoom 回傳在指定房間內的所有實體 ID（供 GetEntitiesInRoom 從 DB 查 entities 用）。
+// EntityIDsInRoom 回傳在指定房間內的所有實體 ID（供 GetEntitiesInRoom 查 entities 用）。
 func (s *Store) EntityIDsInRoom(roomID string) []string {
 	if s == nil {
 		return nil

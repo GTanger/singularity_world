@@ -22,8 +22,8 @@ singularity_world/
 ├── economy/              # 經濟引擎、交易與鎂流轉（對齊經濟彙整 §四）
 ├── combat/               # 戰鬥判定與 log
 ├── event/                # 事件日誌寫入／查詢
-├── db/                   # SQLite、schema、entity／room／auth
-├── data/                 # 執行期資料：world.db、game_epoch.unix、maps/
+├── db/                   # 數據介面（執行期由 store 提供，不開 DB 檔）
+├── data/                 # 執行期資料：JSON（rooms/、entities、runtime/）、game_epoch.unix、maps/
 │   └── maps/             # 區塊地形字 .txt，檔名 {cx}_{cy}.txt
 └── web/                  # 前端：index.html, style.css, main.js, canvas.js, ui.js, mud-text.js
 ```
@@ -47,7 +47,7 @@ singularity_world/
 
 ### 協作與約束
 - [協作約定](docs/COLLABORATION.md) — 主管與 AI 協作原則（最高意志、全方位支援）。
-- [技術約束規則](docs/技術約束規則.md) — Go／原生前端／SQLite／WebSocket；程式碼風格、協作流程、禁止事項。
+- [技術約束規則](docs/技術約束規則.md) — Go／原生前端／JSON/store／WebSocket；程式碼風格、協作流程、禁止事項。
 
 ### 設計與決策
 - [文檔索引](docs/文檔索引.md) — 設計、決策、規格、參考之完整索引。

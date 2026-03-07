@@ -14,7 +14,7 @@ import (
 // Server 存放伺服器與連線可調參數。
 type Server struct {
 	Port                  string
-	DBPath                string
+	DBPath                string // 已不使用；保留欄位相容，執行期數據源為 store（JSON）
 	MaxWebSocketConn      int
 	TickInterval          time.Duration // 遊戲主迴圈 tick 間隔，與前端同步用
 	EconomyTickInterval   time.Duration // 經濟引擎獨立 goroutine 的 tick 間隔（§1.1.6）
@@ -93,7 +93,7 @@ func DefaultServer() Server {
 	gameTimeEpoch := resolveGameTimeEpoch()
 	return Server{
 		Port:                 port,
-		DBPath:               "data/world.db",
+		DBPath:               "data/world.db", // 未使用；僅相容
 		MaxWebSocketConn:     10,
 		TickInterval:         200 * time.Millisecond,
 		EconomyTickInterval:  time.Second,

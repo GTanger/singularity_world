@@ -9,7 +9,7 @@ import (
 	"singularity_world/store"
 )
 
-// RoomGraph 房間鄰接圖，從 DB exits 表建立，供 BFS 尋路使用。
+// RoomGraph 房間鄰接圖，從 store（或 DB）的 rooms＋exits 建立，供 BFS 尋路使用。
 type RoomGraph struct {
 	mu   sync.RWMutex
 	adj  map[string][]string

@@ -12,17 +12,9 @@
 
 ---
 
-## 方式二：SQL 命令列
+## 方式二：直接編輯 JSON（進階）
 
-房間與出口存在 SQLite 的 `data/world.db`，也可用命令列或任一 SQL 工具操作。
-
-## 資料表
-
-| 表 | 說明 |
-|----|------|
-| `rooms` | id（主鍵）, name, description |
-| `exits` | from_room_id, **direction**（出口代號）, to_room_id（一筆一連接） |
-| `entity_room` | 實體所在房間（entity_id → room_id） |
+房間與出口以 **JSON 為唯一數據源**，位於 `data/rooms/`（一房一檔 `&lt;id&gt;.json`）。每檔含該房 id、name、description、tags、zone 與其 **exits**（direction、to）。實體所在房間在 `data/runtime/entity_rooms.json`。建議日常用 **Web 管理頁**；需批次或版控時再直接改 JSON。
 
 ### 出口代號（direction）可自訂
 
@@ -36,80 +28,39 @@
 
 ---
 
-## 1. 新增房間
+## 1. 新增房間（JSON 範例）
 
-```sql
--- 新增一間房
-INSERT INTO rooms (id, name, description) VALUES
-  ('新房間id', '顯示名稱', '房間描述文字。');
+在 `data/rooms/` 新增一檔 `新房間id.json`：
+
+```json
+{
+  "id": "新房間id",
+  "name": "顯示名稱",
+  "description": "房間描述文字。",
+  "tags": [],
+  "zone": "區域名",
+  "exits": [
+    { "direction": "西", "to": "lobby" }
+  ]
+}
 ```
 
-**記得加出口**（雙向要各寫一筆）。`direction` 可為 東/西/南/北 或任意代號（如 天、地、101）：
-
-```sql
--- 傳統四方：從大廳往東到新房間
-INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ('lobby', '東', '新房間id');
-INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ('新房間id', '西', 'lobby');
-
--- 同層多房例：二樓走廊接天字房（代號「天」）
--- INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ('inn_2f_hall', '天', 'inn_2f_room_tian');
--- INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ('inn_2f_room_tian', '走廊', 'inn_2f_hall');
-```
+大廳 `lobby.json` 的 `exits` 需手動加入 `{ "direction": "東", "to": "新房間id" }`。重啟伺服器後生效。
 
 ---
 
 ## 2. 修改房間
 
-```sql
--- 改名稱與描述（id 不變）
-UPDATE rooms SET name = '新名稱', description = '新描述。' WHERE id = '房間id';
-```
+直接編輯 `data/rooms/&lt;id&gt;.json` 的 name、description、tags、zone 或 exits，存檔後重啟。
 
 ---
 
 ## 3. 刪除房間
 
-先處理**出口**與**實體所在房間**，再刪房間：
-
-```sql
--- 1) 刪掉所有與此房有關的出口
-DELETE FROM exits WHERE from_room_id = '房間id' OR to_room_id = '房間id';
-
--- 2) 把還在這間房的人移到大廳（或其它房）
-UPDATE entity_room SET room_id = 'lobby' WHERE room_id = '房間id';
-
--- 3) 刪除房間
-DELETE FROM rooms WHERE id = '房間id';
-```
+刪除 `data/rooms/&lt;id&gt;.json`；並在其它房間的 `exits` 中移除指向該 id 的出口。`data/runtime/entity_rooms.json` 內若有人在此房，需改到 lobby 或其它房。重啟後生效。
 
 ---
 
-## 4. 用命令列執行
+## 4. 房間來源
 
-專案目錄下：
-
-```bash
-# 進入 sqlite3（資料庫路徑依你實際的 data/world.db）
-sqlite3 data/world.db
-```
-
-在 sqlite3 裡貼上上面的 SQL，或把 SQL 存成檔再用：
-
-```bash
-sqlite3 data/world.db < 你的.sql
-```
-
----
-
-## 5. 預設房間一覽（SeedRooms）
-
-程式第一次建立房間時會寫入（見 `db/room.go` SeedRooms）：
-
-| id | name |
-|----|------|
-| lobby | 大廳 |
-| east_street | 東街 |
-| west_alley | 西巷 |
-| south_plaza | 南廣場 |
-
-**注意**：SeedRooms 只在 `rooms` 表為空時執行；之後新增、修改、刪除都要自己用 SQL（或寫管理工具）處理。
+房間來自 `data/rooms/*.json`，啟動時由 store 載入。新增、修改、刪除請用 **Web 管理頁**（/admin.html）或直接編輯 JSON 後重啟。

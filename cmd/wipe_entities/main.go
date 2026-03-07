@@ -1,27 +1,20 @@
-// 刪除所有現有角色（entity_auth、entity_room、entities）。離線執行，不需啟動伺服器。
+// 刪除所有現有角色（auth、entity_room、entities、event_log）。離線執行，不需啟動伺服器。
+// 以 JSON 為唯一數據源：載入 store 後清空並寫回對應 JSON，不使用 DB。
 package main
 
 import (
 	"fmt"
 	"log"
-	"os"
 
-	"singularity_world/config"
-	"singularity_world/db"
+	"singularity_world/store"
 )
 
 func main() {
-	cfg := config.DefaultServer()
-	if p := os.Getenv("DB_PATH"); p != "" {
-		cfg.DBPath = p
+	if err := store.Init("data/rooms", "data/runtime", "data"); err != nil {
+		log.Fatalf("store init: %v", err)
 	}
-	database, err := db.OpenDB(cfg.DBPath)
-	if err != nil {
-		log.Fatalf("open db: %v", err)
+	if err := store.ClearAllEntities(); err != nil {
+		log.Fatalf("clear entities: %v", err)
 	}
-	defer database.Close()
-	if err := db.DeleteAllEntities(database); err != nil {
-		log.Fatalf("delete entities: %v", err)
-	}
-	fmt.Println("已刪除所有角色。")
+	fmt.Println("已刪除所有角色（已寫回 data/runtime/*.json、data/entities.json）。")
 }
