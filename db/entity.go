@@ -110,6 +110,36 @@ func ExpandSoulSeedToBaseStats(seed int64) (vit, qi, dex int) {
 	return clamp(v), clamp(q), clamp(d)
 }
 
+// Personality 由三軸推導的性格維度，皆 [0,1]。供決策／對話權重使用。規格：三軸推導性格—實作規劃。
+type Personality struct {
+	Boldness    float64 // 強勢度／敢衝 ← Amplitude
+	Sensitivity float64 // 敏感度／反應 ← Frequency
+	Orderliness float64 // 秩序感／守規 ← Phase
+}
+
+// ExpandSoulSeedToPersonality 由 soul_seed 前 3 次 RNG 展開三軸，正規化為 [0,1] 性格維度。與 BaseStats／OriginSentence 同 RNG 序。
+func ExpandSoulSeedToPersonality(seed int64) Personality {
+	rng := rand.New(rand.NewSource(seed))
+	u1, u2, u3 := rng.Float64(), rng.Float64(), rng.Float64()
+	amp := ampMin + u1*(ampMax-ampMin)
+	freq := freqMin + u2*(freqMax-freqMin)
+	phase := phaseMin + u3*(phaseMax-phaseMin)
+	norm := func(v, lo, hi float64) float64 {
+		if v < lo {
+			return 0
+		}
+		if v > hi {
+			return 1
+		}
+		return (v - lo) / (hi - lo)
+	}
+	return Personality{
+		Boldness:    norm(amp, ampMin, ampMax),
+		Sensitivity: norm(freq, freqMin, freqMax),
+		Orderliness: norm(phase, phaseMin, phaseMax),
+	}
+}
+
 // InsertEntity 新增一筆玩家實體（創角用）；id 不可重複。gender 為 "M" 或 "F"，空則預設 "M"。會寫入 soul_seed，並由 seed 展開三軸映射為 vit/qi/dex 寫入。
 func InsertEntity(db *sql.DB, id, displayChar, gender string) error {
 	if displayChar == "" {
@@ -207,6 +237,16 @@ func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
 		c.DisplayTitle = GetNPCTitle(db, id)
 	}
 	return &c, nil
+}
+
+// GetPersonalityForEntity 依實體 id 查 soul_seed，若有則展開為 Personality；供決策引擎與對話權重使用。
+// 回傳 (Personality, true) 表示有性格；(零值, false) 表示查無或無 soul_seed。
+func GetPersonalityForEntity(db *sql.DB, entityID string) (Personality, bool) {
+	c, err := GetEntity(db, entityID)
+	if err != nil || c == nil || c.SoulSeed == nil {
+		return Personality{}, false
+	}
+	return ExpandSoulSeedToPersonality(*c.SoulSeed), true
 }
 
 // UpdateLastObserved 將指定實體的 last_observed_at 更新為 at；用於觀測觸發時標記。

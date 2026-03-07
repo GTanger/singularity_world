@@ -383,7 +383,12 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, store *SessionS
 				Narrative: narrative, Success: true,
 			})
 		case "Talk":
-			narrative := buildTalkNarrative(c.PlayerID, target)
+			var p *db.Personality
+			if target.SoulSeed != nil {
+				pp := db.ExpandSoulSeedToPersonality(*target.SoulSeed)
+				p = &pp
+			}
+			narrative := buildTalkNarrative(c.PlayerID, target, p)
 			_ = event.Append(database, now, c.PlayerID, "talk", targetID)
 			c.Send <- mustJSON(ActionResultMsg{
 				Type: "action_result", Action: "Talk",
@@ -495,7 +500,7 @@ func buildLookNarrative(target *entity.Character, database *sql.DB) string {
 	return desc
 }
 
-func buildTalkNarrative(playerID string, target *entity.Character) string {
+func buildTalkNarrative(playerID string, target *entity.Character, personality *db.Personality) string {
 	name := target.ID
 	responses := []string{
 		"「你好，有什麼事嗎？」",
@@ -512,6 +517,11 @@ func buildTalkNarrative(playerID string, target *entity.Character) string {
 		h += int(r)
 	}
 	idx := h % len(responses)
+	if personality != nil {
+		// Boldness 高則往後半（較強勢）偏移，保持同目標同 session 可重現
+		shift := int(personality.Boldness * float64(len(responses)/2))
+		idx = (idx + shift) % len(responses)
+	}
 	return "你向【" + name + "】搭話。" + name + "說道：" + responses[idx]
 }
 
