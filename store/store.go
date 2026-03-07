@@ -283,7 +283,7 @@ func (s *Store) loadRooms(path string) error {
 	return nil
 }
 
-// loadRoomsFromDir 遞迴掃描 dir 下所有 .json（含子資料夾，例如 data/rooms/夜鴞巷/xxx.json），每檔一房＋其 exits。
+// loadRoomsFromDir 遞迴掃描 dir 下所有 .json（含任意層子資料夾，例 data/rooms/浮生大街/民宅/xxx.json），每檔一房＋其 exits。
 func (s *Store) loadRoomsFromDir(dir string) error {
 	var list []roomFileOne
 	err := filepath.WalkDir(dir, func(path string, d os.DirEntry, err error) error {

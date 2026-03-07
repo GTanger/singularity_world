@@ -37,7 +37,7 @@
 
 ```
 data/
-├── rooms/                    # 一房一檔（已實作；可分子資料夾，例如依 zone：rooms/夜鴞巷/xxx.json）
+├── rooms/                    # 一房一檔（已實作；可多層子資料夾，例 data/rooms/浮生大街/民宅/xxx.json）
 │   ├── lobby.json
 │   ├── life_hall.json
 │   └── ...

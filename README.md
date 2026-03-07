@@ -23,8 +23,7 @@ singularity_world/
 ├── combat/               # 戰鬥判定與 log
 ├── event/                # 事件日誌寫入／查詢
 ├── db/                   # 數據介面（執行期由 store 提供，不開 DB 檔）
-├── data/                 # 執行期資料：JSON（rooms/、entities、runtime/）、game_epoch.unix、maps/
-│   └── maps/             # 區塊地形字 .txt，檔名 {cx}_{cy}.txt
+├── data/                 # 執行期資料：JSON（rooms/、entities、runtime/）、game_epoch.unix
 └── web/                  # 前端：index.html, style.css, main.js, canvas.js, ui.js, mud-text.js
 ```
 

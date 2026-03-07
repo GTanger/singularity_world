@@ -1,4 +1,4 @@
-// Package world 區塊地圖載入：從 data/maps/{cx}_{cy}.txt 讀取 151×151 地形字。對齊 data/maps/README.txt。
+// Package world 區塊地圖載入：從 MapsPath/{cx}_{cy}.txt 讀取 151×151 地形字；檔不存在則回傳整塊草。
 package world
 
 import (
