@@ -170,6 +170,24 @@
 			.replace(/\n/g, '<br>');
 	}
 
+	// 敘事中的 〔物件名〕 或 【物件名】 若為當前房間物件則變為可點擊（執行 Move 或 Look）
+	function formatNarrativeWithClickableObjects(html, objects) {
+		if (!html || !objects || !objects.length) return html;
+		function escapeRegex(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+		var sorted = objects.slice().sort(function (a, b) { return (b.name || '').length - (a.name || '').length; });
+		sorted.forEach(function (o) {
+			if (!o.name) return;
+			var nameEsc = escapeHtml(o.name);
+			var hasLook = o.actions && o.actions.indexOf('Look') !== -1;
+			var hasMove = o.actions && o.actions.indexOf('Move') !== -1;
+			var action = (hasMove && !hasLook) ? 'Move' : 'Look';
+			var span = '<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(o.id) + '" data-action="' + escapeHtml(action) + '">' + nameEsc + '</span>';
+			var nameRe = escapeRegex(o.name);
+			html = html.replace(new RegExp('[\u3010\u3014]' + nameRe + '[\u3011\u3015]', 'g'), span);
+		});
+		return html;
+	}
+
 	function isConnected() {
 		return socket && socket.readyState === WebSocket.OPEN;
 	}
@@ -307,7 +325,9 @@
 						break;
 				case 'action_result':
 					if (msg.narrative) {
-						appendNarrative(formatNarrative(msg.narrative), msg.action);
+						var narrativeHtml = formatNarrative(msg.narrative);
+						narrativeHtml = formatNarrativeWithClickableObjects(narrativeHtml, state.objects);
+						appendNarrative(narrativeHtml, msg.action);
 						// 觀看後下一行顯示可執行的其他動作（物件：閱讀/嗅聞…；人物：對話/攻擊）
 						if (msg.action === 'Look') {
 							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Attack': '攻擊', 'Move': '移動' };

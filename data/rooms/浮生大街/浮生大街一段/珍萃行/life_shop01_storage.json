@@ -13,13 +13,15 @@
       "id": "life_shop01_storage_exit_main",
       "name": "珍萃行",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_main"
+      "move_to_room_id": "life_shop01_main",
+      "responses": { "Move": "你循來路回到店面前方。" }
     },
     {
       "id": "life_shop01_storage_exit_hallway",
       "name": "內走廊",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_hallway"
+      "move_to_room_id": "life_shop01_hallway",
+      "responses": { "Move": "你沿格架旁的小徑往深處走去，進入內走廊。" }
     },
     {
       "id": "life_shop01_storage_obj_jar",

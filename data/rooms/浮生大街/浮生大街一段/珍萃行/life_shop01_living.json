@@ -14,19 +14,22 @@
       "id": "life_shop01_living_exit_hallway",
       "name": "內走廊",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_hallway"
+      "move_to_room_id": "life_shop01_hallway",
+      "responses": { "Move": "你離開圓桌，朝內走廊方向走去。" }
     },
     {
       "id": "life_shop01_living_exit_bedroom",
       "name": "私人臥室",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_bedroom"
+      "move_to_room_id": "life_shop01_bedroom",
+      "responses": { "Move": "你推開側門，步入私人臥室。" }
     },
     {
       "id": "life_shop01_living_exit_garden",
       "name": "內庭院",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_garden"
+      "move_to_room_id": "life_shop01_garden",
+      "responses": { "Move": "你穿過後門，踏入內庭院。" }
     },
     {
       "id": "life_shop01_living_obj_cup",

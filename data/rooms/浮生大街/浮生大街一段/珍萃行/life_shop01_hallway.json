@@ -13,13 +13,15 @@
       "id": "life_shop01_hallway_exit_storage",
       "name": "儲物間",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_storage"
+      "move_to_room_id": "life_shop01_storage",
+      "responses": { "Move": "你朝前方折返，回到儲物間。" }
     },
     {
       "id": "life_shop01_hallway_exit_living",
       "name": "生活起居室",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_living"
+      "move_to_room_id": "life_shop01_living",
+      "responses": { "Move": "你順著菌絲微光往深處走，進入生活起居室。" }
     },
     {
       "id": "life_shop01_hallway_obj_rope",

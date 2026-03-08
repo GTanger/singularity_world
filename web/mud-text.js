@@ -43,7 +43,8 @@
 				}
 			}
 			var idAttr = obj ? ' data-object-id="' + escapeHtml(obj.id) + '"' : '';
-			return '<span class="desc-object" data-object-name="' + escapeHtml(name) + '"' + idAttr + ' role="button" tabindex="0">\u3014' + escapeHtml(name) + '\u3015</span>';
+			var actionsAttr = obj && obj.actions && obj.actions.length ? ' data-object-actions="' + escapeHtml(obj.actions.join(',')) + '"' : '';
+			return '<span class="desc-object" data-object-name="' + escapeHtml(name) + '"' + idAttr + actionsAttr + ' role="button" tabindex="0">\u3014' + escapeHtml(name) + '\u3015</span>';
 		});
 		// 後備：描述沒有 〔〕 但伺服器有 objects 時，用物件名稱替換成可點擊（DB 舊描述時仍能點）
 		if (objects && objects.length && safe.indexOf('desc-object') === -1) {
@@ -51,7 +52,8 @@
 				var name = o.name;
 				if (!name) return;
 				var escapedName = escapeHtml(name);
-				var span = '<span class="desc-object" data-object-id="' + escapeHtml(o.id) + '" data-object-name="' + escapedName + '" role="button" tabindex="0">' + escapedName + '</span>';
+				var actionsAttr = o.actions && o.actions.length ? ' data-object-actions="' + escapeHtml((o.actions || []).join(',')) + '"' : '';
+				var span = '<span class="desc-object" data-object-id="' + escapeHtml(o.id) + '" data-object-name="' + escapedName + '"' + actionsAttr + ' role="button" tabindex="0">' + escapedName + '</span>';
 				safe = safe.replace(escapedName, span);
 			});
 		}
@@ -66,13 +68,18 @@
 		return null;
 	}
 
-	// 點擊物件即送「觀看」，觀看敘述與其他動作由 main.js 在 log 中顯示
-	function sendObjectLook(objectEl) {
+	// 點擊物件：若僅有 Move（無 Look）則直接移動；否則送觀看，其他動作由 main.js 在 log 顯示
+	function sendObjectClick(objectEl) {
 		var objectId = objectEl.getAttribute('data-object-id');
 		var objectName = objectEl.getAttribute('data-object-name') || '';
+		var actionsStr = objectEl.getAttribute('data-object-actions') || '';
+		var actions = actionsStr ? actionsStr.split(',') : [];
+		var hasLook = actions.indexOf('Look') !== -1;
+		var hasMove = actions.indexOf('Move') !== -1;
+		var action = (hasMove && !hasLook) ? 'Move' : 'Look';
 		if (!objectId && !objectName) return;
 		if (window.gameSend) {
-			window.gameSend({ type: 'do_action', entity_id: objectId || objectName, action: 'Look' });
+			window.gameSend({ type: 'do_action', entity_id: objectId || objectName, action: action });
 		}
 	}
 
@@ -149,7 +156,7 @@
 		if (objSpan && panel && panel.contains(objSpan)) {
 			ev.preventDefault();
 			ev.stopPropagation();
-			sendObjectLook(objSpan);
+			sendObjectClick(objSpan);
 		}
 	});
 

@@ -12,7 +12,8 @@
       "id": "life_shop01_bedroom_exit_living",
       "name": "生活起居室",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_living"
+      "move_to_room_id": "life_shop01_living",
+      "responses": { "Move": "你離開臥室，回到生活起居室。" }
     },
     {
       "id": "life_shop01_bedroom_obj_lamp",

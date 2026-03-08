@@ -13,13 +13,15 @@
       "id": "life_shop01_main_exit_st1",
       "name": "浮生大街一段",
       "sockets": ["Move"],
-      "move_to_room_id": "lifestreet_st1"
+      "move_to_room_id": "lifestreet_st1",
+      "responses": { "Move": "你經櫃檯一側步出店門，回到浮生大街一段。" }
     },
     {
       "id": "life_shop01_main_exit_storage",
       "name": "儲物間",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_storage"
+      "move_to_room_id": "life_shop01_storage",
+      "responses": { "Move": "你朝後方通道走去，進入儲物間。" }
     },
     {
       "id": "life_shop01_main_obj_scale",

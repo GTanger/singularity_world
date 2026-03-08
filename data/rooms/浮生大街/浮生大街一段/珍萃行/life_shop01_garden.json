@@ -12,7 +12,8 @@
       "id": "life_shop01_garden_exit_living",
       "name": "生活起居室",
       "sockets": ["Move"],
-      "move_to_room_id": "life_shop01_living"
+      "move_to_room_id": "life_shop01_living",
+      "responses": { "Move": "你自庭院回到室內，進入生活起居室。" }
     },
     {
       "id": "life_shop01_garden_obj_tree",

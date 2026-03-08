@@ -402,8 +402,9 @@ body {
 .log-entry.log-ambient { color: #9e9e8e; font-size: 0.9rem; }
 .log-entry + .log-entry { border-top: 1px solid rgba(255,255,255,0.04); }
 .log-entry.log-object-actions { color: var(--text-muted); font-size: 0.95rem; padding-top: 0.1rem; }
-.log-object-action { color: #ffb74d; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; }
+.log-object-action { color: #ffb74d; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; pointer-events: auto; }
 .log-object-action:hover { color: #ffa726; text-decoration-style: solid; }
+.log-entry .log-object-action { color: #ffb74d; }
 .narr-name { color: var(--room-name); font-weight: 600; }
 .narr-dialogue { color: #e0e0e0; font-style: italic; }
 .text-muted { color: var(--text-muted); font-size: 0.85rem; }
