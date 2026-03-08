@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"singularity_world/model"
@@ -292,6 +293,9 @@ func (s *Store) loadRoomsFromDir(dir string) error {
 			return err
 		}
 		if d.IsDir() || filepath.Ext(d.Name()) != ".json" {
+			return nil
+		}
+		if strings.HasPrefix(strings.TrimSuffix(d.Name(), filepath.Ext(d.Name())), "_") {
 			return nil
 		}
 		data, err := os.ReadFile(path)

@@ -1,3 +1,22 @@
 {
-  "entities": null
+  "entities": [
+    {
+      "id": "葉卅",
+      "kind": "player",
+      "display_char": "葉",
+      "x": 0,
+      "y": 0,
+      "move_state": "idle",
+      "vit": 10,
+      "qi": 11,
+      "dex": 10,
+      "magnesium": 0,
+      "created_at": 1772893063,
+      "gender": "M",
+      "soul_seed": 5644210104510896729,
+      "activated_nodes": "[\"N000\"]",
+      "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
+      "inventory": "[]"
+    }
+  ]
 }
