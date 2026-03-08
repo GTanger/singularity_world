@@ -42,3 +42,6 @@ Thumbs.db
 
 # GitHub Copilot Instructions
 .github/copilot-instructions.md
+
+# 更新日記（不納入版控、不 push）
+docs/更新日記/
