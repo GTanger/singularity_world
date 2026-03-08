@@ -27,7 +27,7 @@
       "id": "life_shop03_storage_obj_tube",
       "name": "陶筒",
       "sockets": ["Look"],
-      "responses": { "Look": "筒口為膠質所封，與陶身渾然一體，表面細小符號刻入胎體，邊緣泛淡紫。指觸溫潤，略黏。" }
+      "responses": { "Look": "筒口為膠質所封，與陶身一體成形，表面細小符號刻入胎體，邊緣泛淡紫。指觸溫潤，略黏。" }
     }
   ]
 }

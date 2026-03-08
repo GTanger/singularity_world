@@ -1,11 +1,15 @@
 {
   "id": "lifestreet_st4",
   "name": "浮生大街四段",
-  "description": "暗紫路面延伸至此，兩側玉質脈絡自縫隙沁出，淡紫與琥珀色微光浮動。建築尚未建置，唯見脈絡與沉降的粉塵，靜謐中竟有盎然生意。目前可經〔浮生大街三段〕折返。",
+  "description": "暗紫路面延伸至此，兩側玉質脈絡自縫隙沁出，淡紫與琥珀光色沉澱。路側〔墨痕軒〕灰石門面沉穩、〔礫石宅〕礫牆嵌合玉質，各據一隅；岔入〔打鐵一巷〕可見鍛造鋪與巷內宅，爐火餘溫浮動。可經〔浮生大街三段〕折返，或朝〔浮生大街五段〕延伸。",
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "lifestreet_st3", "to": "lifestreet_st3", "ui_hidden": true }
+    { "direction": "lifestreet_st3", "to": "lifestreet_st3", "ui_hidden": true },
+    { "direction": "lifestreet_st5", "to": "lifestreet_st5", "ui_hidden": true },
+    { "direction": "ironland_lane1", "to": "ironland_lane1", "ui_hidden": true },
+    { "direction": "life_shop07_main", "to": "life_shop07_main", "ui_hidden": true },
+    { "direction": "life_home06_main", "to": "life_home06_main", "ui_hidden": true }
   ],
   "objects": [
     {
@@ -14,6 +18,46 @@
       "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st3",
       "responses": { "Move": "你朝浮生大街三段方向折返。" }
+    },
+    {
+      "id": "st4_exit_st5",
+      "name": "浮生大街五段",
+      "sockets": ["Move"],
+      "move_to_room_id": "lifestreet_st5",
+      "responses": { "Move": "你朝浮生大街五段方向走去。" }
+    },
+    {
+      "id": "st4_exit_ironlane",
+      "name": "打鐵一巷",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_lane1",
+      "responses": { "Move": "你岔入打鐵一巷。" }
+    },
+    {
+      "id": "st4_obj_shop07",
+      "name": "墨痕軒",
+      "sockets": ["Look"],
+      "responses": { "Look": "灰石門面沉厚，石縫沁出玉質脈絡，門口垂著一道〔布簾〕。" }
+    },
+    {
+      "id": "st4_obj_shop07_door",
+      "name": "布簾",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_shop07_main",
+      "responses": { "Move": "你掀開布簾，進入墨痕軒。" }
+    },
+    {
+      "id": "st4_obj_home06",
+      "name": "礫石宅",
+      "sockets": ["Look"],
+      "responses": { "Look": "牆面礫石與玉質脈絡嵌合，門前石階覆著絨狀菌絲。入口是一扇半掩的〔木門〕。" }
+    },
+    {
+      "id": "st4_obj_home06_door",
+      "name": "木門",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home06_main",
+      "responses": { "Move": "你推開木門，進入礫石宅。" }
     }
   ]
 }

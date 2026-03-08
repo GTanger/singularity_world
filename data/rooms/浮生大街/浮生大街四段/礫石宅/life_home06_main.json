@@ -1,0 +1,15 @@
+{
+  "id": "life_home06_main",
+  "name": "門廳",
+  "description": "礫石宅門廳，牆面礫石與玉質脈絡嵌合，淡紫微光自縫隙沁出，石階覆著絨狀菌絲。此處光線穿過〔木門〕灑入四段，內側導向〔礫廊〕通往各室。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "lifestreet_st4", "to": "lifestreet_st4", "ui_hidden": true },
+    { "direction": "life_home06_hallway", "to": "life_home06_hallway", "ui_hidden": true }
+  ],
+  "objects": [
+    {"id": "life_home06_main_exit_st4", "name": "木門", "sockets": ["Move"], "move_to_room_id": "lifestreet_st4", "responses": {"Move": "你推開木門，回到浮生大街四段。"}},
+    {"id": "life_home06_main_exit_hallway", "name": "礫廊", "sockets": ["Move"], "move_to_room_id": "life_home06_hallway", "responses": {"Move": "你朝內側走去，進入礫廊。"}}
+  ]
+}

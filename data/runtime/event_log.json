@@ -1025,6 +1025,54 @@
       "entity_id": "葉卅",
       "event_type": "observed",
       "payload": "life_mega_gate_exit_front"
+    },
+    {
+      "at": 1772987913,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_front_exit_main"
+    },
+    {
+      "at": 1772987916,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_main_exit_east"
+    },
+    {
+      "at": 1772987924,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_east_hall_exit_01"
+    },
+    {
+      "at": 1772987928,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_east_01_exit"
+    },
+    {
+      "at": 1772987930,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_east_hall_exit_front"
+    },
+    {
+      "at": 1772987933,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_front_exit_main"
+    },
+    {
+      "at": 1772987935,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_main_exit_front"
+    },
+    {
+      "at": 1772987938,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_front_exit_gate"
     }
   ]
 }

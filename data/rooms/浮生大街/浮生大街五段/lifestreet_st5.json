@@ -1,0 +1,30 @@
+{
+  "id": "lifestreet_st5",
+  "name": "浮生大街五段",
+  "description": "暗紫路面延伸至此，兩側玉質脈絡自縫隙沁出，淡紫與琥珀光色沉澱。路側〔藥香居〕〔膠寮〕〔鏡石軒〕三店與〔簷根宅〕〔脈絡宅〕二宅，各據一隅。可經〔浮生大街四段〕折返，或朝〔浮生大街六段〕延伸。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "lifestreet_st4", "to": "lifestreet_st4", "ui_hidden": true },
+    { "direction": "lifestreet_st6", "to": "lifestreet_st6", "ui_hidden": true },
+    { "direction": "life_shop08_main", "to": "life_shop08_main", "ui_hidden": true },
+    { "direction": "life_shop09_main", "to": "life_shop09_main", "ui_hidden": true },
+    { "direction": "life_shop10_main", "to": "life_shop10_main", "ui_hidden": true },
+    { "direction": "life_home07_main", "to": "life_home07_main", "ui_hidden": true },
+    { "direction": "life_home08_main", "to": "life_home08_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "st5_exit_st4", "name": "浮生大街四段", "sockets": ["Move"], "move_to_room_id": "lifestreet_st4", "responses": { "Move": "你朝浮生大街四段方向折返。" }},
+    { "id": "st5_exit_st6", "name": "浮生大街六段", "sockets": ["Move"], "move_to_room_id": "lifestreet_st6", "responses": { "Move": "你朝浮生大街六段方向走去。" }},
+    { "id": "st5_obj_shop08", "name": "藥香居", "sockets": ["Look"], "responses": { "Look": "木格架倚牆，琉璃瓶與陶罐盛裝藥草根鬚，門前垂著一道〔布簾〕。" }},
+    { "id": "st5_obj_shop08_door", "name": "布簾", "sockets": ["Move"], "move_to_room_id": "life_shop08_main", "responses": { "Move": "你掀開布簾，進入藥香居。" }},
+    { "id": "st5_obj_shop09", "name": "膠寮", "sockets": ["Look"], "responses": { "Look": "石檯沉厚，檯緣膠質凝結，封口陶罐陳列。門口垂著一道〔厚簾〕。" }},
+    { "id": "st5_obj_shop09_door", "name": "厚簾", "sockets": ["Move"], "move_to_room_id": "life_shop09_main", "responses": { "Move": "你掀開厚簾，進入膠寮。" }},
+    { "id": "st5_obj_shop10", "name": "鏡石軒", "sockets": ["Look"], "responses": { "Look": "牆面嵌著打磨過的鏡石，折射淡紫與琥珀光色。門口垂著一道〔布簾〕。" }},
+    { "id": "st5_obj_shop10_door", "name": "布簾", "sockets": ["Move"], "move_to_room_id": "life_shop10_main", "responses": { "Move": "你掀開布簾，進入鏡石軒。" }},
+    { "id": "st5_obj_home07", "name": "簷根宅", "sockets": ["Look"], "responses": { "Look": "簷角根鬚自石縫垂落纏樑，門前石階覆著絨狀菌絲。入口是一扇半掩的〔板門〕。" }},
+    { "id": "st5_obj_home07_door", "name": "板門", "sockets": ["Move"], "move_to_room_id": "life_home07_main", "responses": { "Move": "你推開板門，進入簷根宅。" }},
+    { "id": "st5_obj_home08", "name": "脈絡宅", "sockets": ["Look"], "responses": { "Look": "牆面玉質脈絡自縫隙蔓延而出，門前石階覆著絨狀菌絲。入口是一扇半掩的〔木門〕。" }},
+    { "id": "st5_obj_home08_door", "name": "木門", "sockets": ["Move"], "move_to_room_id": "life_home08_main", "responses": { "Move": "你推開木門，進入脈絡宅。" }}
+  ]
+}
