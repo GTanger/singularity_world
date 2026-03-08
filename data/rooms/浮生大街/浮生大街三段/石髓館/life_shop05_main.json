@@ -1,0 +1,18 @@
+{
+  "id": "life_shop05_main",
+  "name": "石髓館",
+  "description": "灰石櫃檯沉厚，石縫沁出琥珀色脈絡，成綑礦石與石片蒙著粉塵。此處通外側〔浮生大街三段〕與後方〔儲物間〕、側邊〔工坊〕。櫃面擱著一具〔石槌〕。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "lifestreet_st3", "to": "lifestreet_st3", "ui_hidden": true },
+    { "direction": "life_shop05_storage", "to": "life_shop05_storage", "ui_hidden": true },
+    { "direction": "life_shop05_workshop", "to": "life_shop05_workshop", "ui_hidden": true }
+  ],
+  "objects": [
+    {"id": "life_shop05_main_exit_st3", "name": "浮生大街三段", "sockets": ["Move"], "move_to_room_id": "lifestreet_st3", "responses": {"Move": "你掀開厚簾，回到浮生大街三段。"}},
+    {"id": "life_shop05_main_exit_storage", "name": "儲物間", "sockets": ["Move"], "move_to_room_id": "life_shop05_storage", "responses": {"Move": "你朝後方走去，進入儲物間。"}},
+    {"id": "life_shop05_main_exit_workshop", "name": "工坊", "sockets": ["Move"], "move_to_room_id": "life_shop05_workshop", "responses": {"Move": "你轉入工坊。"}},
+    {"id": "life_shop05_main_obj_hammer", "name": "石槌", "sockets": ["Look"], "responses": {"Look": "槌頭自礦脈切削而成，握柄纏著纖維繩，沾著石粉與琥珀色脈絡。觸手溫潤略黏，沉甸甸的，專作敲鑿石片與礦坯之用。"}}
+  ]
+}

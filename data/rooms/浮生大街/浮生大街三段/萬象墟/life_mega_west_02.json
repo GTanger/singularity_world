@@ -1,0 +1,1 @@
+{"id":"life_mega_west_02","name":"西二室","description":"窄室一隅，牆根菌絲蔓延，淡綠微光浮動，粉塵在靜謐中沉降。此處唯一出口為〔西廊〕，可循廊折返前庭或主廊。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_west_hall","to":"life_mega_west_hall","ui_hidden":true}],"objects":[{"id":"life_mega_west_02_exit","name":"西廊","sockets":["Move"],"move_to_room_id":"life_mega_west_hall","responses":{"Move":"你步出西二室，回到西廊。"}}]}

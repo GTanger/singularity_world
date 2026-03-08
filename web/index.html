@@ -10,7 +10,7 @@
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
-	<link rel="stylesheet" href="style.css?v=9.23">
+	<link rel="stylesheet" href="style.css?v=9.24">
 </head>
 <body>
 	<!-- 登入／創角：未登入時顯示，登入成功後隱藏 -->
@@ -55,7 +55,10 @@
 		<!-- 頂列：左＝當前地點名稱，右＝遊戲時間＋五個保留鈕 -->
 		<header id="top-bar" class="top-row">
 			<div id="room-name-wrap" class="room-name-wrap">
-				<h1 id="room-name" class="room-name"></h1>
+				<h1 id="room-name" class="room-name" aria-label="">
+					<span class="room-name-line1" id="room-name-line1"></span>
+					<span class="room-name-line2" id="room-name-line2"></span>
+				</h1>
 			</div>
 			<div class="top-bar-right">
 				<div id="game-time" class="game-time" title="日晷：9→3 為日、3→9 為夜">
@@ -160,7 +163,7 @@
 	</div>
 
 	<script src="main.js?v=8.33"></script>
-	<script src="mud-text.js?v=4.9"></script>
+	<script src="mud-text.js?v=4.10"></script>
 	<script src="ui.js?v=3.9"></script>
 	<script>
 		if ('serviceWorker' in navigator) {

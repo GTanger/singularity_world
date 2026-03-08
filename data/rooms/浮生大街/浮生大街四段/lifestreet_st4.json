@@ -1,0 +1,19 @@
+{
+  "id": "lifestreet_st4",
+  "name": "浮生大街四段",
+  "description": "暗紫路面延伸至此，兩側玉質脈絡自縫隙沁出，淡紫與琥珀色微光浮動。建築尚未建置，唯見脈絡與沉降的粉塵，靜謐中竟有盎然生意。目前可經〔浮生大街三段〕折返。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "lifestreet_st3", "to": "lifestreet_st3", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "st4_exit_st3",
+      "name": "浮生大街三段",
+      "sockets": ["Move"],
+      "move_to_room_id": "lifestreet_st3",
+      "responses": { "Move": "你朝浮生大街三段方向折返。" }
+    }
+  ]
+}

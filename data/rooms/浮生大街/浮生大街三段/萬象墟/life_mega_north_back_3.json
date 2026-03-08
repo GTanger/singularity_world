@@ -1,0 +1,1 @@
+{"id":"life_mega_north_back_3","name":"北廳後三","description":"後室盡頭，膠質凝結於壁，琥珀色光暈沉靜，觸手略黏。此處唯一出口為〔北廳〕，可循北廳折返中庭。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_north_hall","to":"life_mega_north_hall","ui_hidden":true}],"objects":[{"id":"life_mega_north_back_3_exit","name":"北廳","sockets":["Move"],"move_to_room_id":"life_mega_north_hall","responses":{"Move":"你回到北廳。"}}]}

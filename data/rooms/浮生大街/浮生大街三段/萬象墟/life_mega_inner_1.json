@@ -1,0 +1,1 @@
+{"id":"life_mega_inner_1","name":"內堂一","description":"密室一隅，脈絡自頂沁下，如呼吸浮動，粉塵無聲沉降。此處唯一出口為〔內堂〕，可循內堂折返中庭。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_inner","to":"life_mega_inner","ui_hidden":true}],"objects":[{"id":"life_mega_inner_1_exit","name":"內堂","sockets":["Move"],"move_to_room_id":"life_mega_inner","responses":{"Move":"你回到內堂。"}}]}

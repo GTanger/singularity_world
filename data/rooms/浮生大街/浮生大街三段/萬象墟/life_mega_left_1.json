@@ -1,0 +1,1 @@
+{"id":"life_mega_left_1","name":"左廂一","description":"小室極靜，石几伏貼於地，壁面玉質脈絡沁出淡紫，粉塵無聲沉降。此處唯一出口為〔左廂〕，可循廂廊折返中庭。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_left_wing","to":"life_mega_left_wing","ui_hidden":true}],"objects":[{"id":"life_mega_left_1_exit","name":"左廂","sockets":["Move"],"move_to_room_id":"life_mega_left_wing","responses":{"Move":"你回到左廂。"}}]}

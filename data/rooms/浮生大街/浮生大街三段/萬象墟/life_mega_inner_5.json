@@ -1,0 +1,1 @@
+{"id":"life_mega_inner_5","name":"內堂五","description":"密室最深，藤鬚纏柱，竟成支撐，微光沉靜，粉塵無聲沉降。此處唯一出口為〔內堂〕，可循內堂折返中庭。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_inner","to":"life_mega_inner","ui_hidden":true}],"objects":[{"id":"life_mega_inner_5_exit","name":"內堂","sockets":["Move"],"move_to_room_id":"life_mega_inner","responses":{"Move":"你回到內堂。"}}]}

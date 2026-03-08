@@ -1,0 +1,1 @@
+{"id":"life_mega_east_03","name":"東三室","description":"室內石格架倚牆，格隙琥珀色微光浮動，空氣中礦物粉塵沉澱。此處唯一出口為〔東廊〕，可循廊折返前庭或主廊。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_east_hall","to":"life_mega_east_hall","ui_hidden":true}],"objects":[{"id":"life_mega_east_03_exit","name":"東廊","sockets":["Move"],"move_to_room_id":"life_mega_east_hall","responses":{"Move":"你步出東三室，回到東廊。"}}]}

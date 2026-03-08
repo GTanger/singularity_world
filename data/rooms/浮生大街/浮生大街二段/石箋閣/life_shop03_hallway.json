@@ -1,0 +1,33 @@
+{
+  "id": "life_shop03_hallway",
+  "name": "內走廊",
+  "description": "狹長通道壁面石縫間菌絲蔓延，淡綠微光浮動，腳下石板平滑，粉塵無聲沉降。此處通向前方〔儲物間〕與深處〔生活起居室〕。牆角一疊〔粗紙〕蒙塵。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "life_shop03_storage", "to": "life_shop03_storage", "ui_hidden": true },
+    { "direction": "life_shop03_living", "to": "life_shop03_living", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "life_shop03_hallway_exit_storage",
+      "name": "儲物間",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_shop03_storage",
+      "responses": { "Move": "你朝前方折返，回到儲物間。" }
+    },
+    {
+      "id": "life_shop03_hallway_exit_living",
+      "name": "生活起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_shop03_living",
+      "responses": { "Move": "你順著微光往深處走，進入生活起居室。" }
+    },
+    {
+      "id": "life_shop03_hallway_obj_paper",
+      "name": "粗紙",
+      "sockets": ["Look"],
+      "responses": { "Look": "紙面纖維粗礪，其間細小晶體沉積，邊緣泛淡紫。指腹拂過，略黏滯，似有呼吸。" }
+    }
+  ]
+}

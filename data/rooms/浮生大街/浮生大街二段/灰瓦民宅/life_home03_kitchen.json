@@ -1,0 +1,25 @@
+{
+  "id": "life_home03_kitchen",
+  "name": "灶間",
+  "description": "石砌灶台與牆體渾然一體，火口凝固的暗紅熔岩縫隙間脈動隱現。一旁〔儲水石缸〕缸壁菌絲蔓延，淡紫微光浮動。此處僅通向側邊〔生息室〕，牆根水氣凝聚。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "life_home03_living", "to": "life_home03_living", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "life_home03_kitchen_exit_living",
+      "name": "生息室",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home03_living",
+      "responses": { "Move": "你離開灶台旁，回到生息室。" }
+    },
+    {
+      "id": "life_home03_kitchen_obj_vat",
+      "name": "儲水石缸",
+      "sockets": ["Look"],
+      "responses": { "Look": "缸內清澈液體，底部發光紫色砂礫沉積，缸壁菌絲攀附，透出微光。竟不顯穢亂，反有沉靜。" }
+    }
+  ]
+}

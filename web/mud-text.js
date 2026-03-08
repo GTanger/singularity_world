@@ -84,10 +84,26 @@
 	}
 
 	function updateRoomView(roomName, description, exits, entities, me, objects) {
-		var nameEl = document.getElementById('room-name');
+		var line1El = document.getElementById('room-name-line1');
+		var line2El = document.getElementById('room-name-line2');
+		var nameWrap = document.getElementById('room-name');
 		var descEl = document.getElementById('room-desc');
 		var listEl = document.getElementById('entities-list');
-		if (nameEl) nameEl.textContent = roomName || '';
+		// 房間名稱上四下四：若為「X段」則上排 X、下排 N段（置中）
+		var name = roomName || '';
+		if (line1El && line2El && nameWrap) {
+			var match = name.match(/^(.+?)([一二三四五六七八九十百]+段)$/);
+			if (match) {
+				line1El.textContent = match[1];
+				line2El.textContent = match[2];
+				line2El.classList.remove('room-name-line2-empty');
+			} else {
+				line1El.textContent = name;
+				line2El.textContent = '';
+				line2El.classList.add('room-name-line2-empty');
+			}
+			nameWrap.setAttribute('aria-label', name);
+		}
 		if (descEl) {
 			descEl.innerHTML = description ? formatDesc(description, objects) : '';
 		}

@@ -1,0 +1,23 @@
+{
+  "id": "life_mega_inner",
+  "name": "內堂",
+  "description": "內堂深闊，石柱與脈絡渾然一體，四周可見〔內堂一〕〔內堂二〕〔內堂三〕〔內堂四〕〔內堂五〕門洞，粉塵無聲沉降。此處出口通回〔中庭〕，亦可步入五間內室。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "life_mega_court", "to": "life_mega_court", "ui_hidden": true },
+    { "direction": "life_mega_inner_1", "to": "life_mega_inner_1", "ui_hidden": true },
+    { "direction": "life_mega_inner_2", "to": "life_mega_inner_2", "ui_hidden": true },
+    { "direction": "life_mega_inner_3", "to": "life_mega_inner_3", "ui_hidden": true },
+    { "direction": "life_mega_inner_4", "to": "life_mega_inner_4", "ui_hidden": true },
+    { "direction": "life_mega_inner_5", "to": "life_mega_inner_5", "ui_hidden": true }
+  ],
+  "objects": [
+    {"id": "life_mega_inner_exit_court", "name": "中庭", "sockets": ["Move"], "move_to_room_id": "life_mega_court", "responses": {"Move": "你回到中庭。"}},
+    {"id": "life_mega_inner_exit_1", "name": "內堂一", "sockets": ["Move"], "move_to_room_id": "life_mega_inner_1", "responses": {"Move": "你步入內堂一。"}},
+    {"id": "life_mega_inner_exit_2", "name": "內堂二", "sockets": ["Move"], "move_to_room_id": "life_mega_inner_2", "responses": {"Move": "你步入內堂二。"}},
+    {"id": "life_mega_inner_exit_3", "name": "內堂三", "sockets": ["Move"], "move_to_room_id": "life_mega_inner_3", "responses": {"Move": "你步入內堂三。"}},
+    {"id": "life_mega_inner_exit_4", "name": "內堂四", "sockets": ["Move"], "move_to_room_id": "life_mega_inner_4", "responses": {"Move": "你步入內堂四。"}},
+    {"id": "life_mega_inner_exit_5", "name": "內堂五", "sockets": ["Move"], "move_to_room_id": "life_mega_inner_5", "responses": {"Move": "你步入內堂五。"}}
+  ]
+}

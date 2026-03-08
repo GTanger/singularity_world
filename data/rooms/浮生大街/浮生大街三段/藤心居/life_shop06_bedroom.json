@@ -1,0 +1,1 @@
+{"id":"life_shop06_bedroom","name":"私人臥室","description":"床架自地增生，藤毯覆之，簷角脈絡如呼吸浮動，粉塵無聲沉降。此處唯一出口為〔生活起居室〕，可循原路返回。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_shop06_living","to":"life_shop06_living","ui_hidden":true}],"objects":[{"id":"life_shop06_bedroom_exit","name":"生活起居室","sockets":["Move"],"move_to_room_id":"life_shop06_living","responses":{"Move":"你回到生活起居室。"}}]}

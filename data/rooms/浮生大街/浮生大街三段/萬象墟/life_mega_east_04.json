@@ -1,0 +1,1 @@
+{"id":"life_mega_east_04","name":"東四室","description":"小室極靜，簷角藤鬚垂落，竟將樑木纏得更牢，微光自縫隙浮動。此處唯一出口為〔東廊〕，可循廊折返前庭或主廊。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_east_hall","to":"life_mega_east_hall","ui_hidden":true}],"objects":[{"id":"life_mega_east_04_exit","name":"東廊","sockets":["Move"],"move_to_room_id":"life_mega_east_hall","responses":{"Move":"你步出東四室，回到東廊。"}}]}
