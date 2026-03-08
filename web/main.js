@@ -118,7 +118,8 @@
 		if (window.mudUpdateRoomView) {
 			window.mudUpdateRoomView(state.room_name, state.description, state.exits, state.entities, state.me, state.objects);
 		}
-		if (window.mudRenderExitButtons) {
+		// 出口欄已移除，改由描述內 〔〕 物件點擊觸發 Move；若存在容器則仍可渲染（如 Debug 用）
+		if (window.mudRenderExitButtons && document.getElementById('exits-buttons')) {
 			window.mudRenderExitButtons('exits-buttons', state.exits, function (direction) {
 				if (window.gameSendMoveDirection) window.gameSendMoveDirection(direction);
 			});
@@ -309,7 +310,7 @@
 						appendNarrative(formatNarrative(msg.narrative), msg.action);
 						// 觀看後下一行顯示可執行的其他動作（物件：閱讀/嗅聞…；人物：對話/攻擊）
 						if (msg.action === 'Look') {
-							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Attack': '攻擊' };
+							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Attack': '攻擊', 'Move': '移動' };
 							var others = [];
 							var targetId = msg.target_id;
 							var obj = null;

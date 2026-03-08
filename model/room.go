@@ -2,12 +2,14 @@
 package model
 
 // RoomObject 房間內可互動物件（Look/Read/Smell 等），name 須與房間描述中 〔〕 一致。
+// MoveToRoomID 為選填：當 sockets 含 Move 時，執行 Move 會將玩家切換到該房間。
 type RoomObject struct {
-	ID        string            `json:"id"`
-	Name      string            `json:"name"`
-	Owner     string            `json:"owner"`
-	Sockets   []string          `json:"sockets"`
-	Responses map[string]string `json:"responses"`
+	ID            string            `json:"id"`
+	Name          string            `json:"name"`
+	Owner         string            `json:"owner"`
+	Sockets       []string          `json:"sockets"`
+	Responses     map[string]string `json:"responses"`
+	MoveToRoomID  string            `json:"move_to_room_id,omitempty"`
 }
 
 // Room 單一房間節點。

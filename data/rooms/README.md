@@ -1,12 +1,15 @@
 # 房間資料 (data/rooms)
 
-一房一檔：每個 `.json` 對應一個房間。檔名不限，以內容的 `id` 為準。**檔名以 `_` 開頭的 JSON（如 `_template.json`）不會被載入**，僅供參考或複製使用。
+**封存說明**：重構地圖前，原房間檔案已移至 **`data/rooms_archive/`**（界壁、浮生大街、向陽大街、夜鴞巷、打鐵巷、梧桐大街、霜林、飛霜大街、飛霜湖等）。本目錄供新地圖使用。
+
+一房一檔：每個 `.json` 對應一個房間。檔名不限，以內容的 `id` 為準。**檔名以 `_` 開頭的 JSON 不會被載入**，僅供參考。
 
 ---
 
-## 房間生成模板
+## id 規則與出口融合
 
-複製 `_template.json` 並重新命名（例如 `my_room.json`），再依下方欄位說明填寫。
+- **id 規則**：前綴第一層 = zone 的英文代碼（例：浮生大街→lifestreet）；前綴第二層 = 該建築/場所的英文名（例：綠意別墅→green）。同一建築內所有格子的 id 皆為 `zone_place_` 開頭，例：`lifestreet_green_大廳`、`lifestreet_green_r1`。
+- **出口融合**：`exits` 保留完整供 NPC 尋路；可選 `ui_hidden: true` 讓前端不顯示按鈕。玩家改由描述內 `〔物件名〕` 點擊觸發移動，該物件需在 `objects` 中且設 `move_to_room_id`。見 `docs/房間非人物件互動.md` §2.3。
 
 ---
 
@@ -28,8 +31,11 @@
 
 | 欄位 | 型別 | 說明 |
 |------|------|------|
-| **direction** | string | 出口方向／選項文字（玩家輸入或點選的內容）。 |
+| **direction** | string | 出口方向／選項文字，供 NPC 尋路與對應。 |
 | **to** | string | 目標房間的 **id**，須與某個房間的 `id` 一致。 |
+| **ui_hidden** | boolean | 選填。若為 `true`，前端不將此出口渲染為按鈕（出口欄已移除後仍可保留，供未來或 Debug 用）。玩家改由描述內 `〔物件名〕` 點擊觸發移動。 |
+
+**說明**：`exits` 一律保留完整，供 NPC 尋路；玩家移動改由描述中的可點擊物件（`objects` 內具 `Move` 或 `Look`+`Move`）觸發，見 `docs/房間非人物件互動.md` §2.3。
 
 ### objects[] 每個可互動物件
 
@@ -38,8 +44,9 @@
 | **id** | string | 物件唯一識別碼，全域不可重複。建議格式：`房間id_物件簡稱`。 |
 | **name** | string | 物件顯示名稱，**須與 description 中 〔〕 內文字一致**，前端才能對應。 |
 | **owner** | string | 所屬場所或擁有者標記，可留空 `""`。 |
-| **sockets** | string[] | 該物件支援的動詞，例如 `["Look", "Read", "Smell"]`。 |
+| **sockets** | string[] | 該物件支援的動詞，如 `["Look", "Read", "Smell"]`。導航用：巷道／路段可僅 `["Move"]`；建築門戶可 `["Look", "Move"]` 或 `["Look", "Enter"]`。 |
 | **responses** | object | 動詞 → 回應文字。key 為動詞名（須在 `sockets` 內），value 為玩家執行該動詞時顯示的敘事。 |
+| **move_to_room_id** | string | 選填。當此物件可觸發移動時，填目標房間的 **id**；後端對該物件執行 `Move` 時依此切房。須與本房 `exits[].to` 之一對應。 |
 
 ---
 
@@ -51,7 +58,47 @@
 
 ---
 
-## 範例片段
+## 完整範本（複製後改 id / name / description / exits / objects）
+
+```json
+{
+  "id": "zone_place_房間代碼",
+  "name": "房間顯示名稱",
+  "description": "房間敘述。可互動物件用〔名稱〕標記，與 objects[].name 一致。出口可寫進描述（例：延伸向〔大街三段〕的坡道、左側〔焦黑木門〕），對應 objects 中具 Move 或 Look+Move 的物件。",
+  "tags": ["tag1", "tag2"],
+  "zone": "所屬區域名稱（與 id 第一層前綴對應）",
+  "exits": [
+    {
+      "direction": "出口方向（供 NPC 尋路與對應）",
+      "to": "目標房間的 id",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "zone_place_房間代碼_object_1",
+      "name": "物件顯示名稱（須與 description 中 〔〕 內一致）",
+      "owner": "所屬場所或留空",
+      "sockets": ["Look", "Read", "Smell"],
+      "responses": {
+        "Look": "玩家對該物件執行 Look 時的回應文字。",
+        "Read": "玩家對該物件執行 Read 時的回應文字。"
+      }
+    },
+    {
+      "id": "zone_place_房間代碼_exit_1",
+      "name": "大街三段",
+      "sockets": ["Move"],
+      "move_to_room_id": "zone_place_目標房間id",
+      "responses": {
+        "Move": "你朝坡道走去。"
+      }
+    }
+  ]
+}
+```
+
+### 簡短範例（浮生大廳）
 
 ```json
 {

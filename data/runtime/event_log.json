@@ -71,6 +71,48 @@
       "entity_id": "葉卅",
       "event_type": "observed",
       "payload": "life_dining_steamer"
+    },
+    {
+      "at": 1772960113,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "start_boundary_obj_singularity"
+    },
+    {
+      "at": 1772960119,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "start_boundary_obj_singularity"
+    },
+    {
+      "at": 1772960125,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "start_boundary_obj_singularity"
+    },
+    {
+      "at": 1772960360,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "start_boundary_obj_singularity"
+    },
+    {
+      "at": 1772960363,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "start_boundary_obj_singularity"
+    },
+    {
+      "at": 1772960410,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4z_obj_vine"
+    },
+    {
+      "at": 1772960533,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4z_obj_vine"
     }
   ]
 }

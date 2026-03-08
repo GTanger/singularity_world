@@ -215,6 +215,31 @@ func GetRoomName(database *sql.DB, roomID string) (string, error) {
 	return name, err
 }
 
+// SpawnRoomName 創生預設格之唯一名稱；讀到這個名稱即為玩家創生預設房間。
+const SpawnRoomName = "界壁"
+
+// GetRoomIDByName 依房間名稱回傳第一個符合的房間 id；若無則空字串。
+func GetRoomIDByName(database *sql.DB, name string) (string, error) {
+	if store.Default != nil {
+		return store.Default.GetRoomIDByName(name), nil
+	}
+	var id string
+	err := database.QueryRow("SELECT id FROM rooms WHERE name = ? LIMIT 1", name).Scan(&id)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	return id, err
+}
+
+// GetSpawnRoomID 回傳創生預設房間 id（名稱為「界壁」的房間）；若無則回傳 "lobby" 以相容舊資料。
+func GetSpawnRoomID(database *sql.DB) string {
+	id, _ := GetRoomIDByName(database, SpawnRoomName)
+	if id == "" {
+		return "lobby"
+	}
+	return id
+}
+
 // RoomWithExits 房間與其出口列表，供管理 API 使用。
 type RoomWithExits struct {
 	Room  Room  `json:"room"`
@@ -276,12 +301,13 @@ func UpdateRoom(db *sql.DB, id, name, description string) error {
 	return nil
 }
 
-// DeleteRoom 刪除房間：先刪出口、將房內實體移到大廳、再刪房間。
+// DeleteRoom 刪除房間：先刪出口、將房內實體移到創生格（界壁）、再刪房間。
 func DeleteRoom(db *sql.DB, id string) error {
 	if _, err := db.Exec("DELETE FROM exits WHERE from_room_id = ? OR to_room_id = ?", id, id); err != nil {
 		return err
 	}
-	if _, err := db.Exec("UPDATE entity_room SET room_id = 'lobby' WHERE room_id = ?", id); err != nil {
+	spawnID := GetSpawnRoomID(db)
+	if _, err := db.Exec("UPDATE entity_room SET room_id = ? WHERE room_id = ?", spawnID, id); err != nil {
 		return err
 	}
 	_, err := db.Exec("DELETE FROM rooms WHERE id = ?", id)
@@ -346,7 +372,8 @@ func SyncRoomsFromFile(database *sql.DB, path string) error {
 		}
 	}
 
-	// 沒有房間的實體放進 lobby
+	// 沒有房間的實體放進創生格（名稱為界壁的房間）
+	spawnID := GetSpawnRoomID(database)
 	rows, err := database.Query(
 		"SELECT id FROM entities WHERE id NOT IN (SELECT entity_id FROM entity_room)")
 	if err != nil {
@@ -358,7 +385,7 @@ func SyncRoomsFromFile(database *sql.DB, path string) error {
 		if err := rows.Scan(&id); err != nil {
 			return err
 		}
-		_ = SetEntityRoom(database, id, "lobby")
+		_ = SetEntityRoom(database, id, spawnID)
 	}
 	return rows.Err()
 }

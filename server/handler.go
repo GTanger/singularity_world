@@ -17,7 +17,7 @@ import (
 	"singularity_world/game"
 )
 
-const defaultRoomID = "lobby"
+// 創生預設格：以房間名稱「界壁」解析 id，見 db.GetSpawnRoomID。
 
 // HandleMessage 解析客戶端 JSON 並執行 login 或 move；傳入 sessionStore 與 hub 以綁定 session 與廣播。
 func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
@@ -44,7 +44,7 @@ func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, s
 	case "unequip_item":
 		handleUnequipItem(c, &msg, database)
 	case "do_action":
-		handleDoAction(c, &msg, database, store, hub)
+		handleDoAction(c, &msg, database, cfg, store, hub)
 	case "print_topology_debug":
 		handlePrintTopologyDebug(c, database)
 	default:
@@ -125,7 +125,7 @@ func handleCreateCharacter(c *Client, msg *ClientMsg, database *sql.DB, cfg conf
 		sendError(c, "建立角色失敗")
 		return
 	}
-	if err := db.SetEntityRoom(database, msg.PlayerID, defaultRoomID); err != nil {
+	if err := db.SetEntityRoom(database, msg.PlayerID, db.GetSpawnRoomID(database)); err != nil {
 		sendError(c, "放入房間失敗")
 		return
 	}
@@ -137,7 +137,7 @@ func handleCreateCharacter(c *Client, msg *ClientMsg, database *sql.DB, cfg conf
 }
 
 func loginSuccess(c *Client, playerID string, database *sql.DB, cfg config.Server, store *SessionStore) {
-	roomID, err := game.EnsureEntityInRoom(database, playerID, defaultRoomID)
+	roomID, err := game.EnsureEntityInRoom(database, playerID, db.GetSpawnRoomID(database))
 	if err != nil {
 		sendError(c, "房間載入失敗")
 		return
@@ -148,6 +148,17 @@ func loginSuccess(c *Client, playerID string, database *sql.DB, cfg config.Serve
 	if err != nil {
 		sendError(c, "載入視野失敗")
 		return
+	}
+	// 若玩家上次所在房間已不存在（如地圖重構後 lobby 被移除），改放到創生格並重試
+	if view == nil {
+		spawnID := db.GetSpawnRoomID(database)
+		_ = db.SetEntityRoom(database, playerID, spawnID)
+		roomID = spawnID
+		view, err = game.GetRoomView(database, roomID)
+		if err != nil || view == nil {
+			sendError(c, "載入視野失敗")
+			return
+		}
 	}
 	ent, _ := db.GetEntity(database, playerID)
 	vit, qi, dex := 10, 10, 10
@@ -180,7 +191,7 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 		return
 	}
 	view, err := game.GetRoomView(database, newRoomID)
-	if err != nil {
+	if err != nil || view == nil {
 		sendError(c, "load room failed")
 		return
 	}
@@ -210,6 +221,9 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 }
 
 func sendRoomView(database *sql.DB, c *Client, view *game.RoomView, cfg config.Server) {
+	if view == nil {
+		return
+	}
 	roomID := view.Room.ID
 	entities := make([]ViewEntity, 0, len(view.Entities))
 	for _, e := range view.Entities {
@@ -322,7 +336,7 @@ func sendMoved(c *Client, playerID, roomID, roomName string) {
 
 // ── 插頭插座：do_action ──
 
-func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, store *SessionStore, hub *Hub) {
+func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
 	if c.PlayerID == "" {
 		sendError(c, "請先登入")
 		return
@@ -437,6 +451,23 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, store *SessionS
 	}
 	now := game.NowUnix()
 	_ = event.Append(database, now, c.PlayerID, event.TypeObserved, obj.ID)
+
+	// 物件具 move_to_room_id 時，Move 動作執行切房
+	if action == "Move" && obj.MoveToRoomID != "" {
+		view, err := game.GetRoomView(database, obj.MoveToRoomID)
+		if err != nil || view == nil {
+			sendError(c, "無法前往該處")
+			return
+		}
+		if err := db.SetEntityRoom(database, c.PlayerID, obj.MoveToRoomID); err != nil {
+			sendError(c, "移動失敗")
+			return
+		}
+		sendRoomView(database, c, view, cfg)
+		sendMoved(c, c.PlayerID, obj.MoveToRoomID, view.Room.Name)
+		hub.Broadcast(mustJSON(MovedMsg{Type: "moved", PlayerID: c.PlayerID, RoomID: obj.MoveToRoomID, RoomName: view.Room.Name}))
+	}
+
 	c.Send <- mustJSON(ActionResultMsg{
 		Type: "action_result", Action: action,
 		TargetID: obj.ID, TargetName: obj.Name,

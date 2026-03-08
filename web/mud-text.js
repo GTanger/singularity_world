@@ -7,7 +7,8 @@
 		'Talk': '對話',
 		'Attack': '攻擊',
 		'Read': '閱讀',
-		'Smell': '嗅聞'
+		'Smell': '嗅聞',
+		'Move': '移動'
 	};
 
 	var currentRoomObjects = {}; // id -> { id, name, actions }

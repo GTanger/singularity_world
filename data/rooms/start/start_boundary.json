@@ -1,0 +1,26 @@
+{
+  "id": "start_boundary",
+  "name": "界壁",
+  "description": "漆黑向所有維度延伸，無任何反射介面。視野中心懸浮一處〔光點〕，光軌在虛無中交疊。該微小發光體維持高頻震盪，為此座標內唯一可辨識的光學標記。",
+  "tags": [],
+  "zone": "start",
+  "exits": [
+    {
+      "direction": "out",
+      "to": "street4zone",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "start_boundary_obj_singularity",
+      "name": "光點",
+      "sockets": ["Look", "Move"],
+      "move_to_room_id": "street4zone",
+      "responses": {
+        "Look": "光束在邊緣重疊，形成環狀交錯的波紋。",
+        "Move": "視野隨光點擴大而迅速收窄。"
+      }
+    }
+  ]
+}

@@ -10,7 +10,7 @@
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
-	<link rel="stylesheet" href="style.css?v=9.21">
+	<link rel="stylesheet" href="style.css?v=9.22">
 </head>
 <body>
 	<!-- 登入／創角：未登入時顯示，登入成功後隱藏 -->
@@ -91,7 +91,7 @@
 			</div>
 		</section>
 
-		<!-- 狀態欄：姓名 + 四條狀態，疊在路徑欄上方 -->
+		<!-- 狀態欄：姓名 + 四條狀態，置底（出口欄已移除，改由描述內物件點擊移動） -->
 		<section id="status-panel" class="panel status-panel">
 			<div class="status-name-wrap">
 				<div id="player-name" class="player-name" role="button" tabindex="0" title="點擊開啟角色">姓名</div>
@@ -113,14 +113,6 @@
 					<span class="stat-label">體力</span>
 					<div class="stat-bar-wrap"><div id="bar-stamina" class="stat-bar stat-bar-stamina" style="width: 82%"></div></div>
 				</div>
-			</div>
-		</section>
-
-		<!-- 路徑欄：置底，僅出口 -->
-		<section id="movement-panel" class="panel movement-panel">
-			<div class="path-section">
-				<span class="path-label">出口：</span>
-				<div id="exits-buttons" class="exits-list"></div>
 			</div>
 		</section>
 	</div>
@@ -167,7 +159,7 @@
 		</div>
 	</div>
 
-	<script src="main.js?v=8.29"></script>
+	<script src="main.js?v=8.30"></script>
 	<script src="mud-text.js?v=4.7"></script>
 	<script src="ui.js?v=3.9"></script>
 	<script>

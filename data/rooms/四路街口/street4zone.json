@@ -1,0 +1,51 @@
+{
+  "id": "street4zone",
+  "name": "四路街口",
+  "description": "暗綠厚苔覆蓋石階，縫隙擠出類玉晶體。灰白鋪石呈放射狀路徑，分別導向〔飛霜大街九段〕、〔梧桐大街一段〕、〔浮生大街一段〕與〔向陽大街九段〕。街角〔厚實藤蔓〕自簷口垂落，遮蔽後方牆隅，形成物理死角。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "feistreet_st9", "to": "feistreet_st9", "ui_hidden": true },
+    { "direction": "wustreet_st1", "to": "wustreet_st1", "ui_hidden": true },
+    { "direction": "lifestreet_st1", "to": "lifestreet_st1", "ui_hidden": true },
+    { "direction": "sunstreet_st9", "to": "sunstreet_st9", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "st4z_exit_fei",
+      "name": "飛霜大街九段",
+      "sockets": ["Move"],
+      "move_to_room_id": "feistreet_st9",
+      "responses": { "Move": "你朝飛霜大街方向走去。" }
+    },
+    {
+      "id": "st4z_exit_wu",
+      "name": "梧桐大街一段",
+      "sockets": ["Move"],
+      "move_to_room_id": "wustreet_st1",
+      "responses": { "Move": "你朝梧桐大街方向走去。" }
+    },
+    {
+      "id": "st4z_exit_life",
+      "name": "浮生大街一段",
+      "sockets": ["Move"],
+      "move_to_room_id": "lifestreet_st1",
+      "responses": { "Move": "你朝浮生大街方向走去。" }
+    },
+    {
+      "id": "st4z_exit_sun",
+      "name": "向陽大街九段",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunstreet_st9",
+      "responses": { "Move": "你朝向陽大街方向走去。" }
+    },
+    {
+      "id": "st4z_obj_vine",
+      "name": "厚實藤蔓",
+      "sockets": ["Look"],
+      "responses": {
+        "Look": "葉片肥厚且覆蓋細密絨毛，後方存在約半米深的陰影空隙。"
+      }
+    }
+  ]
+}

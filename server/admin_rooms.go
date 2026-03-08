@@ -116,8 +116,8 @@ func updateRoom(database *sql.DB, w http.ResponseWriter, r *http.Request, id str
 }
 
 func deleteRoom(database *sql.DB, w http.ResponseWriter, id string) {
-	if id == "lobby" {
-		http.Error(w, `{"error":"cannot delete lobby"}`, http.StatusBadRequest)
+	if id == db.GetSpawnRoomID(database) {
+		http.Error(w, `{"error":"cannot delete spawn room (界壁)"}`, http.StatusBadRequest)
 		return
 	}
 	if err := db.DeleteRoom(database, id); err != nil {

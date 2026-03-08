@@ -415,6 +415,21 @@ func (s *Store) GetRoomName(roomID string) string {
 	return r.Name
 }
 
+// GetRoomIDByName 依房間名稱回傳第一個符合的房間 id；若無則空字串。創生預設格以名稱「界壁」唯一識別。
+func (s *Store) GetRoomIDByName(name string) string {
+	if s == nil || name == "" {
+		return ""
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	for id, r := range s.Rooms {
+		if r.Name == name {
+			return id
+		}
+	}
+	return ""
+}
+
 // GetRoomsByTag 回傳所有帶有指定 tag 的房間 ID。
 func (s *Store) GetRoomsByTag(tag string) []string {
 	if s == nil {
