@@ -284,7 +284,6 @@
 							state.me.room_id = msg.room_id;
 							state.me.room_name = msg.room_name;
 						}
-						appendLog('移動到：' + (msg.room_name || msg.room_id));
 						draw();
 						break;
 					case 'blocked':

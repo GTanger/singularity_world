@@ -464,7 +464,6 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 			return
 		}
 		sendRoomView(database, c, view, cfg)
-		sendMoved(c, c.PlayerID, obj.MoveToRoomID, view.Room.Name)
 		hub.Broadcast(mustJSON(MovedMsg{Type: "moved", PlayerID: c.PlayerID, RoomID: obj.MoveToRoomID, RoomName: view.Room.Name}))
 	}
 
