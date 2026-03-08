@@ -1,0 +1,35 @@
+{
+  "id": "life_home02_corridor",
+  "name": "根鬚廊道",
+  "description": "狹窄廊道兩側垂落細密鬚根，末梢懸掛發光孢子。地表隆起呈波浪狀，路徑連通〔門廳〕、側方的〔生息室〕與深處的〔盤根臥房〕。牆面滲出透明膠質。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "life_home02_main", "to": "life_home02_main", "ui_hidden": true },
+    { "direction": "life_home02_living", "to": "life_home02_living", "ui_hidden": true },
+    { "direction": "life_home02_bedroom", "to": "life_home02_bedroom", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "home02_corridor_exit_main",
+      "name": "門廳",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home02_main",
+      "responses": { "Move": "你循來路回到門廳。" }
+    },
+    {
+      "id": "home02_corridor_exit_living",
+      "name": "生息室",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home02_living",
+      "responses": { "Move": "你朝側方走去，進入生息室。" }
+    },
+    {
+      "id": "home02_corridor_exit_bedroom",
+      "name": "盤根臥房",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home02_bedroom",
+      "responses": { "Move": "你往深處走去，步入盤根臥房。" }
+    }
+  ]
+}

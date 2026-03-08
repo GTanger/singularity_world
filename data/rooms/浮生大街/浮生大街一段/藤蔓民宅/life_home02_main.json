@@ -1,0 +1,33 @@
+{
+  "id": "life_home02_main",
+  "name": "門廳",
+  "description": "牆壁由交錯肥厚根系構成，葉內滲出淡綠黏液。暗綠苔蘚鋪滿地面，踩踏具彈性。光線穿過〔垂簾入口〕灑入，內側導向〔根鬚廊道〕。牆角立著一個〔石製燈架〕。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "lifestreet_st1", "to": "lifestreet_st1", "ui_hidden": true },
+    { "direction": "life_home02_corridor", "to": "life_home02_corridor", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "home02_main_exit_st1",
+      "name": "垂簾入口",
+      "sockets": ["Move"],
+      "move_to_room_id": "lifestreet_st1",
+      "responses": { "Move": "你撥開垂簾，回到浮生大街一段。" }
+    },
+    {
+      "id": "home02_main_exit_corridor",
+      "name": "根鬚廊道",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home02_corridor",
+      "responses": { "Move": "你朝內側通道走去，進入根鬚廊道。" }
+    },
+    {
+      "id": "home02_main_obj_stand",
+      "name": "石製燈架",
+      "sockets": ["Look"],
+      "responses": { "Look": "粗糙石柱表面被蔓延的藤蔓纏繞，頂端嵌入一顆持續散發冷白光的玉質晶體。" }
+    }
+  ]
+}

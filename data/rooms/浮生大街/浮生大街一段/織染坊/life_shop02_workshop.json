@@ -1,0 +1,33 @@
+{
+  "id": "life_shop02_workshop",
+  "name": "織造間",
+  "description": "三座巨大的〔石製織機〕佔據中心，機件銜接處長出透明膠質。室內充斥規律的機械震動聲與草木氣味。光線穿過高窗落入，此處連接前方的〔織染坊〕與後方的〔樓梯間〕。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "life_shop02_main", "to": "life_shop02_main", "ui_hidden": true },
+    { "direction": "life_shop02_stairwell_1f", "to": "life_shop02_stairwell_1f", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "life_shop02_workshop_exit_main",
+      "name": "織染坊",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_shop02_main",
+      "responses": { "Move": "你離開織機旁，回到織染坊前廳。" }
+    },
+    {
+      "id": "life_shop02_workshop_exit_stairs",
+      "name": "樓梯間",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_shop02_stairwell_1f",
+      "responses": { "Move": "你朝後方通道走去，進入樓梯間。" }
+    },
+    {
+      "id": "life_shop02_workshop_obj_loom",
+      "name": "石製織機",
+      "sockets": ["Look"],
+      "responses": { "Look": "梭子由一塊完整的紫色水晶磨製而成，正自動在經緯線間穿梭，不留任何摩擦餘熱。" }
+    }
+  ]
+}

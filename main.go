@@ -45,6 +45,9 @@ func main() {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Printf("upgrade: %v", err)
+			if strings.Contains(err.Error(), "upgrade") && strings.Contains(err.Error(), "Connection") {
+				log.Printf("[ws] 提示：若經由 Cloudflare Tunnel/反向代理，請確認已轉傳 Connection: Upgrade 與 Upgrade: websocket")
+			}
 			return
 		}
 		client := server.NewClient(conn)

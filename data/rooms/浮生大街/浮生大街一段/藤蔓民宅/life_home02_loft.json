@@ -1,0 +1,33 @@
+{
+  "id": "life_home02_loft",
+  "name": "綠蔭閣樓",
+  "description": "頂層被巨型葉片覆蓋，光線呈半透明暗綠。地表堆放著數個〔編織草篋〕。此處連通下方的〔生息室〕與後側的〔露天葉台〕。空氣中濕度極高。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "life_home02_living", "to": "life_home02_living", "ui_hidden": true },
+    { "direction": "life_home02_balcony", "to": "life_home02_balcony", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "home02_loft_exit_living",
+      "name": "生息室",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home02_living",
+      "responses": { "Move": "你順階而下，回到生息室。" }
+    },
+    {
+      "id": "home02_loft_exit_balcony",
+      "name": "露天葉台",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home02_balcony",
+      "responses": { "Move": "你穿過葉隙，踏上露天葉台。" }
+    },
+    {
+      "id": "home02_loft_obj_chest",
+      "name": "編織草篋",
+      "sockets": ["Look"],
+      "responses": { "Look": "由乾枯的韌質纖維編結而成，表面塗抹著防水的玉質塗層，觸感堅硬。" }
+    }
+  ]
+}

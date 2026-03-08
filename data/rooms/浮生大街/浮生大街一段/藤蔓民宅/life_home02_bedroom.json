@@ -1,0 +1,25 @@
+{
+  "id": "life_home02_bedroom",
+  "name": "盤根臥房",
+  "description": "牆面與床鋪由柔韌藤蔓織就，質地滑順且具微溫。一盞〔發光菌燈〕固定在側。路徑僅導向回〔根鬚廊道〕，地面鋪設厚實的纖維墊，靜謐無聲。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    { "direction": "life_home02_corridor", "to": "life_home02_corridor", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "home02_bedroom_exit_corridor",
+      "name": "根鬚廊道",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home02_corridor",
+      "responses": { "Move": "你離開臥房，回到根鬚廊道。" }
+    },
+    {
+      "id": "home02_bedroom_obj_fungi",
+      "name": "發光菌燈",
+      "sockets": ["Look"],
+      "responses": { "Look": "數簇半透明菌絲叢聚在石槽內，散發穩定的螢黃色光，菌柄內部可見液體搏動。" }
+    }
+  ]
+}

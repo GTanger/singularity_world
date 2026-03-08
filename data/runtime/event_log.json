@@ -335,6 +335,324 @@
       "entity_id": "葉卅",
       "event_type": "observed",
       "payload": "life_shop01_main_exit_storage"
+    },
+    {
+      "at": 1772977510,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop01_storage_exit_main"
+    },
+    {
+      "at": 1772977515,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop01_main_exit_st1"
+    },
+    {
+      "at": 1772977521,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st1_obj_shop02"
+    },
+    {
+      "at": 1772977525,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st1_obj_shop02_door"
+    },
+    {
+      "at": 1772977550,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_main_exit_workshop"
+    },
+    {
+      "at": 1772977554,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_workshop_obj_loom"
+    },
+    {
+      "at": 1772977564,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_workshop_exit_main"
+    },
+    {
+      "at": 1772977566,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_main_exit_yard"
+    },
+    {
+      "at": 1772977570,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_yard_obj_vat"
+    },
+    {
+      "at": 1772977577,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_yard_exit_main"
+    },
+    {
+      "at": 1772977580,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_main_exit_workshop"
+    },
+    {
+      "at": 1772977582,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_workshop_exit_stairs"
+    },
+    {
+      "at": 1772977606,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_stairs_exit_up"
+    },
+    {
+      "at": 1772977611,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_stairs_2f_exit_down"
+    },
+    {
+      "at": 1772977719,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_stairs_exit_up"
+    },
+    {
+      "at": 1772977726,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_stairs_2f_obj_rug"
+    },
+    {
+      "at": 1772977732,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_stairs_2f_exit_living"
+    },
+    {
+      "at": 1772977737,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_living_obj_table"
+    },
+    {
+      "at": 1772977744,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_living_exit_platform"
+    },
+    {
+      "at": 1772977750,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_stairs_2f_exit_living"
+    },
+    {
+      "at": 1772977753,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_living_exit_kitchen"
+    },
+    {
+      "at": 1772977756,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_kitchen_obj_urn"
+    },
+    {
+      "at": 1772977757,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_kitchen_exit_living"
+    },
+    {
+      "at": 1772977759,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_living_exit_bedroom"
+    },
+    {
+      "at": 1772977761,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_bedroom_obj_lamp"
+    },
+    {
+      "at": 1772977765,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_bedroom_exit_living"
+    },
+    {
+      "at": 1772977767,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_living_exit_platform"
+    },
+    {
+      "at": 1772977768,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_stairs_2f_exit_down"
+    },
+    {
+      "at": 1772977770,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_stairs_exit_workshop"
+    },
+    {
+      "at": 1772977773,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_workshop_exit_main"
+    },
+    {
+      "at": 1772977778,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop02_main_exit_st1"
+    },
+    {
+      "at": 1772978083,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st1_obj_home02"
+    },
+    {
+      "at": 1772978085,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st1_obj_home02_door"
+    },
+    {
+      "at": 1772978093,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_main_obj_stand"
+    },
+    {
+      "at": 1772978096,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_main_exit_corridor"
+    },
+    {
+      "at": 1772978107,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_corridor_exit_living"
+    },
+    {
+      "at": 1772978111,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_living_obj_bud"
+    },
+    {
+      "at": 1772978116,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_living_exit_corridor"
+    },
+    {
+      "at": 1772978118,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_corridor_exit_bedroom"
+    },
+    {
+      "at": 1772978123,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_bedroom_obj_fungi"
+    },
+    {
+      "at": 1772978130,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_bedroom_exit_corridor"
+    },
+    {
+      "at": 1772978132,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_corridor_exit_living"
+    },
+    {
+      "at": 1772978134,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_living_exit_loft"
+    },
+    {
+      "at": 1772978139,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_loft_obj_chest"
+    },
+    {
+      "at": 1772978145,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_loft_exit_balcony"
+    },
+    {
+      "at": 1772978154,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_balcony_exit_loft"
+    },
+    {
+      "at": 1772978155,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_loft_exit_living"
+    },
+    {
+      "at": 1772978159,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_living_exit_corridor"
+    },
+    {
+      "at": 1772978161,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_corridor_exit_main"
+    },
+    {
+      "at": 1772978163,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "home02_main_exit_st1"
+    },
+    {
+      "at": 1772978460,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st1_obj_home01"
+    },
+    {
+      "at": 1772978462,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st1_obj_home01_door"
+    },
+    {
+      "at": 1772978482,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_home01_main_obj_stand"
     }
   ]
 }
