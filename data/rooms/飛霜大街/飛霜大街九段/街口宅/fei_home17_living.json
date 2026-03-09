@@ -1,0 +1,35 @@
+{
+  "id": "fei_home17_living",
+  "name": "起居室",
+  "description": "一几兩凳，火盆已冷；牆上有掛鉤與空釘。日常起居都在這兒，灶間在左、臥房在深處。此處通〔廊道〕、〔灶間〕與〔內臥房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_home17_hallway", "to": "fei_home17_hallway", "ui_hidden": true },
+    { "direction": "fei_home17_kitchen", "to": "fei_home17_kitchen", "ui_hidden": true },
+    { "direction": "fei_home17_bedroom", "to": "fei_home17_bedroom", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_home17_living_exit_hallway",
+      "name": "廊道",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home17_hallway",
+      "responses": { "Move": "你回到廊道。" }
+    },
+    {
+      "id": "fei_home17_living_exit_kitchen",
+      "name": "灶間",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home17_kitchen",
+      "responses": { "Move": "你步入灶間。" }
+    },
+    {
+      "id": "fei_home17_living_exit_bedroom",
+      "name": "內臥房",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home17_bedroom",
+      "responses": { "Move": "你步入內臥房。" }
+    }
+  ]
+}

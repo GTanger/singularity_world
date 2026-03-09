@@ -1,0 +1,23 @@
+{
+  "id": "ironland_shop05_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣、牆根脈絡；簷擋住巷風，院裡仍帶工間餘熱。此處僅通〔焰心鋪〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop05_main",
+      "to": "ironland_shop05_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop05_courtyard_exit",
+      "name": "焰心鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop05_main",
+      "responses": { "Move": "你回到店面前方。" }
+    }
+  ]
+}

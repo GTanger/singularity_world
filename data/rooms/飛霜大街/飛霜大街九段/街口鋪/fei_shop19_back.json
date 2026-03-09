@@ -1,0 +1,27 @@
+{
+  "id": "fei_shop19_back",
+  "name": "後間",
+  "description": "雜箱與破簍堆到牆根，牆縫沁出細紋、觸手冰涼。沒有窗，只靠通道漏進的一線光辨路。此處通〔儲物間〕與〔工間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_shop19_storage", "to": "fei_shop19_storage", "ui_hidden": true },
+    { "direction": "fei_shop19_workshop", "to": "fei_shop19_workshop", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_shop19_back_exit_storage",
+      "name": "儲物間",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop19_storage",
+      "responses": { "Move": "你回到儲物間。" }
+    },
+    {
+      "id": "fei_shop19_back_exit_workshop",
+      "name": "工間",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop19_workshop",
+      "responses": { "Move": "你往工間走去。" }
+    }
+  ]
+}

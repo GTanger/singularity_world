@@ -1,0 +1,27 @@
+{
+  "id": "fei_shop20_warehouse",
+  "name": "庫房",
+  "description": "成箱乾貨與罈罐抵到樑下，高窗透進的只剩街燈的昏黃。腳步一停，連自己的呼吸都聽得見。此處通〔儲物間〕與〔帳房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_shop20_storage", "to": "fei_shop20_storage", "ui_hidden": true },
+    { "direction": "fei_shop20_office", "to": "fei_shop20_office", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_shop20_warehouse_exit_storage",
+      "name": "儲物間",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop20_storage",
+      "responses": { "Move": "你回到儲物間。" }
+    },
+    {
+      "id": "fei_shop20_warehouse_exit_office",
+      "name": "帳房",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop20_office",
+      "responses": { "Move": "你步入帳房。" }
+    }
+  ]
+}

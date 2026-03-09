@@ -1,0 +1,13 @@
+{
+  "id": "ironland_shop02_kitchen",
+  "name": "灶間",
+  "description": "石砌灶台砌入牆體，爐口餘溫與工間熱氣隱約傳來。此處僅通〔生活起居室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    { "direction": "ironland_shop02_living", "to": "ironland_shop02_living", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "ironland_shop02_kitchen_exit", "name": "生活起居室", "sockets": ["Move"], "move_to_room_id": "ironland_shop02_living", "responses": { "Move": "你回到生活起居室。" }}
+  ]
+}

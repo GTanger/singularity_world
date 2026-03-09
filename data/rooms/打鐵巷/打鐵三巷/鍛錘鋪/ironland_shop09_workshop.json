@@ -1,0 +1,19 @@
+{
+  "id": "ironland_shop09_workshop",
+  "name": "工間",
+  "description": "大砧大錘，敲擊聲沉、地面微震；爐床砌入牆體，餘燼暗紅。熱浪與巷風交織。此處通向〔鍛錘鋪〕〔生活起居室〕〔爐房〕與〔工具間〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    { "direction": "ironland_shop09_main", "to": "ironland_shop09_main", "ui_hidden": true },
+    { "direction": "ironland_shop09_living", "to": "ironland_shop09_living", "ui_hidden": true },
+    { "direction": "ironland_shop09_kiln", "to": "ironland_shop09_kiln", "ui_hidden": true },
+    { "direction": "ironland_shop09_toolroom", "to": "ironland_shop09_toolroom", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "ironland_shop09_workshop_exit_main", "name": "鍛錘鋪", "sockets": ["Move"], "move_to_room_id": "ironland_shop09_main", "responses": { "Move": "你循來路回到店面前方。" } },
+    { "id": "ironland_shop09_workshop_exit_living", "name": "生活起居室", "sockets": ["Move"], "move_to_room_id": "ironland_shop09_living", "responses": { "Move": "你往後方通道走去，進入生活起居室。" } },
+    { "id": "ironland_shop09_workshop_exit_kiln", "name": "爐房", "sockets": ["Move"], "move_to_room_id": "ironland_shop09_kiln", "responses": { "Move": "你步入爐房。" } },
+    { "id": "ironland_shop09_workshop_exit_toolroom", "name": "工具間", "sockets": ["Move"], "move_to_room_id": "ironland_shop09_toolroom", "responses": { "Move": "你步入工具間。" } }
+  ]
+}

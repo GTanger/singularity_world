@@ -1,0 +1,35 @@
+{
+  "id": "ironland_shop07_storage",
+  "name": "儲物間",
+  "description": "鐵筐盛生料與廢鑄，牆面焦痕與滴跡；焦土與金屬味濃、空氣悶。此處通〔熔流鋪〕與〔生活起居室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop07_main",
+      "to": "ironland_shop07_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop07_living",
+      "to": "ironland_shop07_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop07_storage_exit_main",
+      "name": "熔流鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop07_main",
+      "responses": { "Move": "你循來路回到店面前方。" }
+    },
+    {
+      "id": "ironland_shop07_storage_exit_living",
+      "name": "生活起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop07_living",
+      "responses": { "Move": "你沿側道走去，進入生活起居室。" }
+    }
+  ]
+}

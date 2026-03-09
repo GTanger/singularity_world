@@ -1,0 +1,13 @@
+{
+  "id": "ironland_shop03_kiln",
+  "name": "爐房",
+  "description": "獨立爐膛砌入牆體，高溫餘燼與暗紅脈動自縫隙透出；熱浪與巷內風道貫入的氣流交織，非常熱。此處僅通〔工間〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    { "direction": "ironland_shop03_workshop", "to": "ironland_shop03_workshop", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "ironland_shop03_kiln_exit", "name": "工間", "sockets": ["Move"], "move_to_room_id": "ironland_shop03_workshop", "responses": { "Move": "你回到工間。" }}
+  ]
+}

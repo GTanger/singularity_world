@@ -78,16 +78,20 @@
 
   <script>
     (function () {
+      // 高對比（深色底上飽和亮色）
       var ZONE_COLORS = {
-        '飛霜湖': '#4a90d9',
-        '霜林': '#3d8b6e',
-        '浮生客棧': '#d97b4a',
-        '浮生大街': '#4ad9d9',
-        '飛霜大街': '#4ad9d9',
-        '打鐵巷': '#c94a4a',
-        '界壁': '#6b6b8a'
+        'ironland': '#ff5252',
+        'lifestreet': '#00e5ff',
+        'feistreet': '#b388ff',
+        '飛霜湖': '#00e676',
+        '霜林': '#76ff03',
+        '浮生客棧': '#ff8c42',
+        '浮生大街': '#00e5ff',
+        '飛霜大街': '#b388ff',
+        '打鐵巷': '#ff5252',
+        '界壁': '#b0b0c0'
       };
-      var DEFAULT_NODE_COLOR = '#7a7a9e';
+      var DEFAULT_NODE_COLOR = '#9e9eb8';
 
       function zoneToColor(zone) {
         return ZONE_COLORS[zone] || DEFAULT_NODE_COLOR;

@@ -1,0 +1,23 @@
+{
+  "id": "ironland_shop08_kitchen",
+  "name": "灶間",
+  "description": "石灶嵌牆、爐口餘溫；工間靜、唯灶上微光。此處僅通〔生活起居室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop08_living",
+      "to": "ironland_shop08_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop08_kitchen_exit",
+      "name": "生活起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop08_living",
+      "responses": { "Move": "你回到生活起居室。" }
+    }
+  ]
+}

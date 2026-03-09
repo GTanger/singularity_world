@@ -1,0 +1,23 @@
+{
+  "id": "ironland_shop04_kiln",
+  "name": "爐房",
+  "description": "爐膛專燒脊件用料，火口窄長、餘燼暗紅；牆體脈絡粗、熱浪撲面，巷風灌入時火苗微晃。此處僅通〔工間〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop04_workshop",
+      "to": "ironland_shop04_workshop",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop04_kiln_exit",
+      "name": "工間",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop04_workshop",
+      "responses": { "Move": "你回到工間。" }
+    }
+  ]
+}

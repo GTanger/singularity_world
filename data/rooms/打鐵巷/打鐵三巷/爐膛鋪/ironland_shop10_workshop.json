@@ -1,0 +1,47 @@
+{
+  "id": "ironland_shop10_workshop",
+  "name": "工間",
+  "description": "爐膛深、火口大，做大型件；熱浪與煙道低鳴、室內極熱。牆縫脈動。此處通向〔爐膛鋪〕〔生活起居室〕與〔爐房〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop10_main",
+      "to": "ironland_shop10_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop10_living",
+      "to": "ironland_shop10_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop10_kiln",
+      "to": "ironland_shop10_kiln",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop10_workshop_exit_main",
+      "name": "爐膛鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop10_main",
+      "responses": { "Move": "你循來路回到店面前方。" }
+    },
+    {
+      "id": "ironland_shop10_workshop_exit_living",
+      "name": "生活起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop10_living",
+      "responses": { "Move": "你往後方通道走去，進入生活起居室。" }
+    },
+    {
+      "id": "ironland_shop10_workshop_exit_kiln",
+      "name": "爐房",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop10_kiln",
+      "responses": { "Move": "你步入爐房。" }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "fei_shop21_warehouse",
+  "name": "庫房",
+  "description": "箱籠堆到頂，高窗漏下一條灰光，照見浮塵。門一關，外頭聲息全斷。此處通〔儲物間〕與〔帳房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_shop21_storage", "to": "fei_shop21_storage", "ui_hidden": true },
+    { "direction": "fei_shop21_office", "to": "fei_shop21_office", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_shop21_warehouse_exit_storage",
+      "name": "儲物間",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop21_storage",
+      "responses": { "Move": "你回到儲物間。" }
+    },
+    {
+      "id": "fei_shop21_warehouse_exit_office",
+      "name": "帳房",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop21_office",
+      "responses": { "Move": "你步入帳房。" }
+    }
+  ]
+}

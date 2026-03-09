@@ -1,0 +1,23 @@
+{
+  "id": "ironland_home03_bedroom",
+  "name": "內臥房",
+  "description": "石床菌絲毯，牆角燈台淡紫光；隔牆灶煙隱約，一室無聲。此處僅通〔生息室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_home03_living",
+      "to": "ironland_home03_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home03_bedroom_exit_living",
+      "name": "生息室",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_home03_living",
+      "responses": { "Move": "你離開臥房，回到生息室。" }
+    }
+  ]
+}

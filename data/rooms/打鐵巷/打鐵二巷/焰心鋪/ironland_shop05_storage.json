@@ -1,0 +1,35 @@
+{
+  "id": "ironland_shop05_storage",
+  "name": "儲物間",
+  "description": "鐵筐盛刃坯與磨石，牆縫透光；炭味與鐵腥混在一起，店頭熱氣灌入、室內悶。此處通〔焰心鋪〕與〔生活起居室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop05_main",
+      "to": "ironland_shop05_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop05_living",
+      "to": "ironland_shop05_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop05_storage_exit_main",
+      "name": "焰心鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop05_main",
+      "responses": { "Move": "你循來路回到店面前方。" }
+    },
+    {
+      "id": "ironland_shop05_storage_exit_living",
+      "name": "生活起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop05_living",
+      "responses": { "Move": "你沿側道走去，進入生活起居室。" }
+    }
+  ]
+}

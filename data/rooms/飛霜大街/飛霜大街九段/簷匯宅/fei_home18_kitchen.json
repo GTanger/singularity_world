@@ -1,0 +1,19 @@
+{
+  "id": "fei_home18_kitchen",
+  "name": "灶間",
+  "description": "小灶與破舊的鍋鏟；牆角有裂縫，透進一絲風。久未生火，空氣乾冷。此處僅通〔起居室〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_home18_living", "to": "fei_home18_living", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_home18_kitchen_exit_living",
+      "name": "起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home18_living",
+      "responses": { "Move": "你回到起居室。" }
+    }
+  ]
+}

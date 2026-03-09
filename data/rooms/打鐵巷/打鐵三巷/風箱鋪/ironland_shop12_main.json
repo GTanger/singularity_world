@@ -1,0 +1,89 @@
+{
+  "id": "ironland_shop12_main",
+  "name": "風箱鋪",
+  "description": "風箱鋪店頭，風箱顯眼、拉風聲自工間傳來；簾子被氣流吹動。爐火靠風旺，空氣流動強。此處通外側〔打鐵三巷〕、側邊〔工間〕〔工間二〕、後方〔儲物間〕與〔小院〕；風箱爐房在店頭可見、可直入。櫃上擱著一具〔鐵鉗〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_lane3",
+      "to": "ironland_lane3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop12_workshop",
+      "to": "ironland_shop12_workshop",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop12_workshop2",
+      "to": "ironland_shop12_workshop2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop12_storage",
+      "to": "ironland_shop12_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop12_courtyard",
+      "to": "ironland_shop12_courtyard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop12_kiln",
+      "to": "ironland_shop12_kiln",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop12_main_exit_lane",
+      "name": "打鐵三巷",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_lane3",
+      "responses": { "Move": "你掀開厚簾，回到打鐵三巷。" }
+    },
+    {
+      "id": "ironland_shop12_main_exit_workshop",
+      "name": "工間",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop12_workshop",
+      "responses": { "Move": "你朝側邊工間走去。" }
+    },
+    {
+      "id": "ironland_shop12_main_exit_workshop2",
+      "name": "工間二",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop12_workshop2",
+      "responses": { "Move": "你朝另一側工間二走去。" }
+    },
+    {
+      "id": "ironland_shop12_main_exit_storage",
+      "name": "儲物間",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop12_storage",
+      "responses": { "Move": "你往後方走去，進入儲物間。" }
+    },
+    {
+      "id": "ironland_shop12_main_exit_courtyard",
+      "name": "小院",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop12_courtyard",
+      "responses": { "Move": "你往內側小院走去。" }
+    },
+    {
+      "id": "ironland_shop12_main_exit_kiln",
+      "name": "風箱爐房",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop12_kiln",
+      "responses": { "Move": "你步入風箱爐房。" }
+    },
+    {
+      "id": "ironland_shop12_main_obj_tongs",
+      "name": "鐵鉗",
+      "sockets": ["Look"],
+      "responses": { "Look": "鉗身覆著炭灰與氧化斑，握柄纏緊鐵身，觸手微溫。經年爐火沉入肌理，竟似活物。" }
+    }
+  ]
+}

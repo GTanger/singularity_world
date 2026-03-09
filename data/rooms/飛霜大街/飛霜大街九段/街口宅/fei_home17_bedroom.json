@@ -1,0 +1,19 @@
+{
+  "id": "fei_home17_bedroom",
+  "name": "臥房",
+  "description": "一榻一櫃，被褥疊在榻尾。門一掩，街聲幾乎聽不見。此處僅通〔起居室〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_home17_living", "to": "fei_home17_living", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_home17_bedroom_exit_living",
+      "name": "起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home17_living",
+      "responses": { "Move": "你回到起居室。" }
+    }
+  ]
+}

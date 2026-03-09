@@ -1,0 +1,19 @@
+{
+  "id": "fei_home17_courtyard",
+  "name": "小院",
+  "description": "小天井，抬頭見簷與天；地上一角曬不到日頭，長了青苔。水甕擱在牆邊。此處僅通〔廊道〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_home17_hallway", "to": "fei_home17_hallway", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_home17_courtyard_exit_hallway",
+      "name": "廊道",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home17_hallway",
+      "responses": { "Move": "你回到廊道。" }
+    }
+  ]
+}

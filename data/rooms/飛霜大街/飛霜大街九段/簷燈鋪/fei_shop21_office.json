@@ -1,0 +1,27 @@
+{
+  "id": "fei_shop21_office",
+  "name": "帳房",
+  "description": "小案上記著流水帳，銅錢串掛在釘上。一盞小燈，只夠照見數字。此處通〔側間〕與〔庫房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_shop21_side", "to": "fei_shop21_side", "ui_hidden": true },
+    { "direction": "fei_shop21_warehouse", "to": "fei_shop21_warehouse", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_shop21_office_exit_side",
+      "name": "側間",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop21_side",
+      "responses": { "Move": "你回到側間。" }
+    },
+    {
+      "id": "fei_shop21_office_exit_warehouse",
+      "name": "庫房",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop21_warehouse",
+      "responses": { "Move": "你步入庫房。" }
+    }
+  ]
+}

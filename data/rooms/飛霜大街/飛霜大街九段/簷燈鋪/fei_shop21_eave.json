@@ -1,0 +1,19 @@
+{
+  "id": "fei_shop21_eave",
+  "name": "簷下",
+  "description": "簷下一截，頭頂吊著招牌用的燈籠；往外看是街，往內是鋪裡燈火。霜落在簷緣，燈照得發亮。此處僅通〔店頭〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_shop21_main", "to": "fei_shop21_main", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_shop21_eave_exit_main",
+      "name": "店頭",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop21_main",
+      "responses": { "Move": "你回到店頭。" }
+    }
+  ]
+}

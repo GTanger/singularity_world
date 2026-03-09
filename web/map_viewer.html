@@ -98,20 +98,23 @@
   <script>
     (function () {
       var DATA_URL = '/data/rooms.json';
-      // 每 zone 一色，色相分散、不相近（HSL 約每隔 36°）
+      // 每 zone 一色，高對比（深色底 #1a1a2e 上飽和亮色、色相分散）
       var ZONE_COLORS = {
-        '界壁': '#636e72',
-        '浮生客棧': '#e17055',
-        '浮生大街': '#0984e3',
-        '飛霜湖': '#00cec9',
-        '霜林': '#00b894',
-        '飛霜大街': '#6c5ce7',
-        '打鐵巷': '#d63031',
-        '夜鴞巷': '#a29bfe',
-        '向陽大街': '#fdcb6e',
-        '梧桐大街': '#e84393'
+        'ironland': '#ff5252',
+        'lifestreet': '#00e5ff',
+        'feistreet': '#b388ff',
+        '界壁': '#b0b0c0',
+        '浮生客棧': '#ff8c42',
+        '浮生大街': '#00e5ff',
+        '飛霜湖': '#00e676',
+        '霜林': '#76ff03',
+        '飛霜大街': '#b388ff',
+        '打鐵巷': '#ff5252',
+        '夜鴞巷': '#e040fb',
+        '向陽大街': '#ffeb3b',
+        '梧桐大街': '#ff4081'
       };
-      var DEFAULT_NODE_COLOR = '#7a7a9e';
+      var DEFAULT_NODE_COLOR = '#9e9eb8';
       var PLAYER_GLOW_BORDER = 6;
       var PLAYER_GLOW_COLOR = 'rgba(233, 69, 96, 0.75)';
       var PLAYER_NODE_SIZE_FACTOR = 1.4;

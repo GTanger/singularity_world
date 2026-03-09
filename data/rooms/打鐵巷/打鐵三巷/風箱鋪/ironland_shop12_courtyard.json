@@ -1,0 +1,23 @@
+{
+  "id": "ironland_shop12_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣、牆根脈絡；巷風與工間氣流交錯、簾動。此處僅通〔風箱鋪〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop12_main",
+      "to": "ironland_shop12_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop12_courtyard_exit",
+      "name": "風箱鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop12_main",
+      "responses": { "Move": "你回到店面前方。" }
+    }
+  ]
+}

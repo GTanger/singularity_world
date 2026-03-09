@@ -1,0 +1,23 @@
+{
+  "id": "ironland_shop06_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣、牆根脈絡細碎；簷擋巷熱，院裡砧聲隱約。此處僅通〔砧聲鋪〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop06_main",
+      "to": "ironland_shop06_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop06_courtyard_exit",
+      "name": "砧聲鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop06_main",
+      "responses": { "Move": "你回到店面前方。" }
+    }
+  ]
+}

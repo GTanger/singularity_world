@@ -1,0 +1,35 @@
+{
+  "id": "ironland_shop12_workshop2",
+  "name": "工間二",
+  "description": "副爐亦有小風箱；氣流自工間灌入、室內風動。此處通〔風箱鋪〕與〔工具間〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop12_main",
+      "to": "ironland_shop12_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop12_toolroom",
+      "to": "ironland_shop12_toolroom",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop12_workshop2_exit_main",
+      "name": "風箱鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop12_main",
+      "responses": { "Move": "你回到店面前方。" }
+    },
+    {
+      "id": "ironland_shop12_workshop2_exit_toolroom",
+      "name": "工具間",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop12_toolroom",
+      "responses": { "Move": "你步入工具間。" }
+    }
+  ]
+}

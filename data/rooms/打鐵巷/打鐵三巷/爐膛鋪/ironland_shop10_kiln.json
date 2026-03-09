@@ -1,0 +1,35 @@
+{
+  "id": "ironland_shop10_kiln",
+  "name": "爐房",
+  "description": "主爐膛、火口極大；熱浪與煙道低鳴撲面，巷風灌入時火勢竄高。此處通〔工間〕與〔煙道間〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop10_workshop",
+      "to": "ironland_shop10_workshop",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop10_flue_room",
+      "to": "ironland_shop10_flue_room",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop10_kiln_exit_workshop",
+      "name": "工間",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop10_workshop",
+      "responses": { "Move": "你回到工間。" }
+    },
+    {
+      "id": "ironland_shop10_kiln_exit_flue",
+      "name": "煙道間",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop10_flue_room",
+      "responses": { "Move": "你步入煙道間。" }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "fei_home17_hallway",
+  "name": "廊道",
+  "description": "一條短廊，左通門廳、右通內室；牆根有鞋跡與水痕。門廳那頭漏進街光，內側較暗。此處通〔門廳〕、〔起居室〕與〔小院〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_home17_main", "to": "fei_home17_main", "ui_hidden": true },
+    { "direction": "fei_home17_living", "to": "fei_home17_living", "ui_hidden": true },
+    { "direction": "fei_home17_courtyard", "to": "fei_home17_courtyard", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_home17_hallway_exit_main",
+      "name": "門廳",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home17_main",
+      "responses": { "Move": "你回到門廳。" }
+    },
+    {
+      "id": "fei_home17_hallway_exit_living",
+      "name": "起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home17_living",
+      "responses": { "Move": "你步入起居室。" }
+    },
+    {
+      "id": "fei_home17_hallway_exit_courtyard",
+      "name": "小院",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home17_courtyard",
+      "responses": { "Move": "你步入小院。" }
+    }
+  ]
+}

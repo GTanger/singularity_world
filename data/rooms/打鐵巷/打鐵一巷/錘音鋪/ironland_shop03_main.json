@@ -1,0 +1,21 @@
+{
+  "id": "ironland_shop03_main",
+  "name": "錘音鋪",
+  "description": "鐵架石槽圍出櫃區，牆面沁出暗紅脈絡，爐口餘溫與鐵腥沉澱；巷內熱氣自簾隙灌入，非常熱。此處通外側〔打鐵一巷〕、側邊〔工間〕〔工間二〕、後方〔儲物間〕與〔小院〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    { "direction": "ironland_lane1", "to": "ironland_lane1", "ui_hidden": true },
+    { "direction": "ironland_shop03_workshop", "to": "ironland_shop03_workshop", "ui_hidden": true },
+    { "direction": "ironland_shop03_workshop2", "to": "ironland_shop03_workshop2", "ui_hidden": true },
+    { "direction": "ironland_shop03_storage", "to": "ironland_shop03_storage", "ui_hidden": true },
+    { "direction": "ironland_shop03_courtyard", "to": "ironland_shop03_courtyard", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "ironland_shop03_main_exit_lane", "name": "打鐵一巷", "sockets": ["Move"], "move_to_room_id": "ironland_lane1", "responses": { "Move": "你掀開厚簾，回到打鐵一巷。" }},
+    { "id": "ironland_shop03_main_exit_workshop", "name": "工間", "sockets": ["Move"], "move_to_room_id": "ironland_shop03_workshop", "responses": { "Move": "你朝側邊工間走去。" }},
+    { "id": "ironland_shop03_main_exit_workshop2", "name": "工間二", "sockets": ["Move"], "move_to_room_id": "ironland_shop03_workshop2", "responses": { "Move": "你朝另一側工間二走去。" }},
+    { "id": "ironland_shop03_main_exit_storage", "name": "儲物間", "sockets": ["Move"], "move_to_room_id": "ironland_shop03_storage", "responses": { "Move": "你往後方走去，進入儲物間。" }},
+    { "id": "ironland_shop03_main_exit_courtyard", "name": "小院", "sockets": ["Move"], "move_to_room_id": "ironland_shop03_courtyard", "responses": { "Move": "你往內側小院走去。" }}
+  ]
+}

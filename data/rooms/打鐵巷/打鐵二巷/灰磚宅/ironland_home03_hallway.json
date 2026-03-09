@@ -1,0 +1,47 @@
+{
+  "id": "ironland_home03_hallway",
+  "name": "廊道",
+  "description": "廊道短，灰磚壁、縫隙少苔；幽光自脈絡沁出。門廳灶煙與巷熱滲入。此處通〔門廳〕、〔生息室〕與〔小院〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_home03_main",
+      "to": "ironland_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home03_living",
+      "to": "ironland_home03_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home03_courtyard",
+      "to": "ironland_home03_courtyard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home03_hallway_exit_main",
+      "name": "門廳",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_home03_main",
+      "responses": { "Move": "你循來路回到門廳。" }
+    },
+    {
+      "id": "ironland_home03_hallway_exit_living",
+      "name": "生息室",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_home03_living",
+      "responses": { "Move": "你朝通道深處走去，進入生息室。" }
+    },
+    {
+      "id": "ironland_home03_hallway_exit_courtyard",
+      "name": "小院",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_home03_courtyard",
+      "responses": { "Move": "你踏入小院。" }
+    }
+  ]
+}

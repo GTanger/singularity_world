@@ -1,0 +1,83 @@
+{
+  "id": "feistreet_st3",
+  "name": "飛霜大街三段",
+  "description": "霜白結晶長年飄落，路面冷調，簷角細霜；過渡段動線清晰。路側〔霜晶雜貨〕與〔簷下茶舖〕簷角積霜、牆面玉質脈絡沁出，對向〔冷簷宅〕與〔霜紋宅〕門廊覆著細霜。可經〔飛霜大街二段〕折返，或朝〔飛霜大街四段〕延伸。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "feistreet_st2", "to": "feistreet_st2", "ui_hidden": true },
+    { "direction": "feistreet_st4", "to": "feistreet_st4", "ui_hidden": true },
+    { "direction": "fei_shop04_main", "to": "fei_shop04_main", "ui_hidden": true },
+    { "direction": "fei_shop05_main", "to": "fei_shop05_main", "ui_hidden": true },
+    { "direction": "fei_home04_main", "to": "fei_home04_main", "ui_hidden": true },
+    { "direction": "fei_home05_main", "to": "fei_home05_main", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_st3_exit_st2",
+      "name": "飛霜大街二段",
+      "sockets": ["Move"],
+      "move_to_room_id": "feistreet_st2",
+      "responses": { "Move": "你朝飛霜大街二段方向折返。" }
+    },
+    {
+      "id": "fei_st3_exit_st4",
+      "name": "飛霜大街四段",
+      "sockets": ["Move"],
+      "move_to_room_id": "feistreet_st4",
+      "responses": { "Move": "你朝飛霜大街四段方向走去。" }
+    },
+    {
+      "id": "fei_st3_obj_shop04",
+      "name": "霜晶雜貨",
+      "sockets": ["Look"],
+      "responses": { "Look": "簷角積霜、格架陳列雜貨與霜晶小物；〔店門〕可入內。" }
+    },
+    {
+      "id": "fei_st3_obj_shop04_door",
+      "name": "店門",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop04_main",
+      "responses": { "Move": "你推門進入霜晶雜貨。" }
+    },
+    {
+      "id": "fei_st3_obj_shop05",
+      "name": "簷下茶舖",
+      "sockets": ["Look"],
+      "responses": { "Look": "簷下霜晶成串、簾隙透出茶氣；〔門簾〕通往內室。" }
+    },
+    {
+      "id": "fei_st3_obj_shop05_door",
+      "name": "門簾",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop05_main",
+      "responses": { "Move": "你掀簾進入簷下茶舖。" }
+    },
+    {
+      "id": "fei_st3_obj_home04",
+      "name": "冷簷宅",
+      "sockets": ["Look"],
+      "responses": { "Look": "門廊冷調、簷角細霜密佈；〔窄門〕半掩。" }
+    },
+    {
+      "id": "fei_st3_obj_home04_door",
+      "name": "窄門",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home04_main",
+      "responses": { "Move": "你推門進入冷簷宅。" }
+    },
+    {
+      "id": "fei_st3_obj_home05",
+      "name": "霜紋宅",
+      "sockets": ["Look"],
+      "responses": { "Look": "牆面霜紋與玉質脈絡交錯；〔門洞〕內光線幽微。" }
+    },
+    {
+      "id": "fei_st3_obj_home05_door",
+      "name": "門洞",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home05_main",
+      "responses": { "Move": "你步入霜紋宅。" }
+    }
+  ]
+}

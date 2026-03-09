@@ -1,0 +1,82 @@
+{
+  "id": "feistreet_st1",
+  "name": "飛霜大街一段",
+  "description": "路面自飛霜湖端延伸而來，冷調石紋、霜晶沉降，暗色未深；霜晶與湖氣交會，空氣沉靜。路側〔觀霜茶寮〕與〔湖景歇腳〕簷角積霜、牆面沁出玉質脈絡，對向〔臨湖宅〕與〔簷霜居〕門廊覆著細霜。大街由此導向〔飛霜大街二段〕，或經〔湖岸〕往飛霜湖。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "feistreet_st2", "to": "feistreet_st2", "ui_hidden": true },
+    { "direction": "fei_shop01_main", "to": "fei_shop01_main", "ui_hidden": true },
+    { "direction": "fei_shop02_main", "to": "fei_shop02_main", "ui_hidden": true },
+    { "direction": "fei_home01_main", "to": "fei_home01_main", "ui_hidden": true },
+    { "direction": "fei_home02_main", "to": "fei_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_st1_exit_lake",
+      "name": "湖岸",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_lake",
+      "responses": { "Move": "你朝飛霜湖方向走去。" }
+    },
+    {
+      "id": "fei_st1_exit_st2",
+      "name": "飛霜大街二段",
+      "sockets": ["Move"],
+      "move_to_room_id": "feistreet_st2",
+      "responses": { "Move": "你沿大街往飛霜大街二段走去。" }
+    },
+    {
+      "id": "fei_st1_obj_shop01",
+      "name": "觀霜茶寮",
+      "sockets": ["Look"],
+      "responses": { "Look": "簷角積霜、簾隙透出暖光，門側立著一塊木牌；〔店門〕可入內。" }
+    },
+    {
+      "id": "fei_st1_obj_shop01_door",
+      "name": "店門",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop01_main",
+      "responses": { "Move": "你推門進入觀霜茶寮。" }
+    },
+    {
+      "id": "fei_st1_obj_shop02",
+      "name": "湖景歇腳",
+      "sockets": ["Look"],
+      "responses": { "Look": "窄門面、簷下霜晶成串，櫃檯可見〔門簾〕通往內室。" }
+    },
+    {
+      "id": "fei_st1_obj_shop02_door",
+      "name": "門簾",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop02_main",
+      "responses": { "Move": "你掀簾進入湖景歇腳。" }
+    },
+    {
+      "id": "fei_st1_obj_home01",
+      "name": "臨湖宅",
+      "sockets": ["Look"],
+      "responses": { "Look": "門廊冷調、簷角積霜，牆面玉質脈絡隱約；〔窄門〕半掩。" }
+    },
+    {
+      "id": "fei_st1_obj_home01_door",
+      "name": "窄門",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home01_main",
+      "responses": { "Move": "你推門進入臨湖宅。" }
+    },
+    {
+      "id": "fei_st1_obj_home02",
+      "name": "簷霜居",
+      "sockets": ["Look"],
+      "responses": { "Look": "簷下霜白結晶垂落，石階冷調；〔門洞〕內光線幽微。" }
+    },
+    {
+      "id": "fei_st1_obj_home02_door",
+      "name": "門洞",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home02_main",
+      "responses": { "Move": "你步入簷霜居。" }
+    }
+  ]
+}

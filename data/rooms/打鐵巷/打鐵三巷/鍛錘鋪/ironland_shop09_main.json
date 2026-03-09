@@ -1,0 +1,65 @@
+{
+  "id": "ironland_shop09_main",
+  "name": "鍛錘鋪",
+  "description": "櫃區多農具與粗件，大錘擱在槽邊；砧大、敲擊聲沉。牆面脈絡暗紅，巷熱自簾隙入。此處通外側〔打鐵三巷〕、側邊〔工間〕、後方〔儲物間〕與〔小院〕；一大工間、工具間自工間入。櫃上擱著一具〔鐵鉗〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_lane3",
+      "to": "ironland_lane3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop09_workshop",
+      "to": "ironland_shop09_workshop",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop09_storage",
+      "to": "ironland_shop09_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop09_courtyard",
+      "to": "ironland_shop09_courtyard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop09_main_exit_lane",
+      "name": "打鐵三巷",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_lane3",
+      "responses": { "Move": "你掀開厚簾，回到打鐵三巷。" }
+    },
+    {
+      "id": "ironland_shop09_main_exit_workshop",
+      "name": "工間",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop09_workshop",
+      "responses": { "Move": "你朝側邊工間走去。" }
+    },
+    {
+      "id": "ironland_shop09_main_exit_storage",
+      "name": "儲物間",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop09_storage",
+      "responses": { "Move": "你往後方走去，進入儲物間。" }
+    },
+    {
+      "id": "ironland_shop09_main_exit_courtyard",
+      "name": "小院",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop09_courtyard",
+      "responses": { "Move": "你往內側小院走去。" }
+    },
+    {
+      "id": "ironland_shop09_main_obj_tongs",
+      "name": "鐵鉗",
+      "sockets": ["Look"],
+      "responses": { "Look": "鉗身覆著炭灰與氧化斑，握柄纏緊鐵身，觸手微溫。經年爐火沉入肌理，竟似活物。" }
+    }
+  ]
+}

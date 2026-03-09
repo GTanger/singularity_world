@@ -1,0 +1,23 @@
+{
+  "id": "ironland_home03_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣少、灰磚牆根脈絡沁出；簷擋巷熱，院裡灶煙淡。此處僅通〔廊道〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_home03_hallway",
+      "to": "ironland_home03_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home03_courtyard_exit",
+      "name": "廊道",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_home03_hallway",
+      "responses": { "Move": "你回到廊道。" }
+    }
+  ]
+}

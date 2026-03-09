@@ -1,0 +1,95 @@
+{
+  "id": "ironland_lane1",
+  "name": "打鐵一巷",
+  "description": "窄巷自浮生大街四段岔入，打鐵巷因多數鍛造產業群居於此而命名。一巷三商二宅：〔鍛造鋪〕〔爐火鋪〕〔錘音鋪〕與〔巷內宅〕〔石磚宅〕。兩側牆面沁出暗紅脈絡，簾隙漏出爐光、鍛造聲自簾後傳來；巷身狹長成風道，熱風自浮生端貫入、往飛霜端帶，鐵腥與礦粉隨風沉澱。可經〔巷口〕回浮生大街四段，或順風往〔打鐵二巷〕深入。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "lifestreet_st4",
+      "to": "lifestreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_lane2",
+      "to": "ironland_lane2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop01_main",
+      "to": "ironland_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop02_main",
+      "to": "ironland_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop03_main",
+      "to": "ironland_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home01_main",
+      "to": "ironland_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home02_main",
+      "to": "ironland_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_lane1_exit_st4",
+      "name": "巷口",
+      "sockets": ["Move"],
+      "move_to_room_id": "lifestreet_st4",
+      "responses": { "Move": "你循巷子走出，回到浮生大街四段。" }
+    },
+    {
+      "id": "ironland_lane1_exit_lane2",
+      "name": "打鐵二巷",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_lane2",
+      "responses": { "Move": "你順著熱風往飛霜方向走去，進入打鐵二巷。" }
+    },
+    {
+      "id": "ironland_lane1_exit_shop01",
+      "name": "鍛造鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop01_main",
+      "responses": { "Move": "你掀開厚簾，步入鍛造鋪。" }
+    },
+    {
+      "id": "ironland_lane1_exit_shop02",
+      "name": "爐火鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop02_main",
+      "responses": { "Move": "你掀開厚簾，步入爐火鋪。" }
+    },
+    {
+      "id": "ironland_lane1_exit_shop03",
+      "name": "錘音鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop03_main",
+      "responses": { "Move": "你掀開厚簾，步入錘音鋪。" }
+    },
+    {
+      "id": "ironland_lane1_exit_home01",
+      "name": "巷內宅",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_home01_main",
+      "responses": { "Move": "你推開板門，進入巷內宅。" }
+    },
+    {
+      "id": "ironland_lane1_exit_home02",
+      "name": "石磚宅",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_home02_main",
+      "responses": { "Move": "你推開板門，進入石磚宅。" }
+    }
+  ]
+}

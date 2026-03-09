@@ -1,0 +1,19 @@
+{
+  "id": "fei_shop20_eave",
+  "name": "簷下",
+  "description": "簷外即街，燈籠與人影晃動；霜晶落在簷緣、一吹就散。可在此站一站再進店。此處僅通〔店頭〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_shop20_main", "to": "fei_shop20_main", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_shop20_eave_exit_main",
+      "name": "店頭",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop20_main",
+      "responses": { "Move": "你回到店頭。" }
+    }
+  ]
+}

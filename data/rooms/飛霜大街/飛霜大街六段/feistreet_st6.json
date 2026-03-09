@@ -1,0 +1,111 @@
+{
+  "id": "feistreet_st6",
+  "name": "飛霜大街六段",
+  "description": "霜白結晶飄落、路面冷調，簷線高低錯落；一側多商、一側多宅。路側〔霜簾鋪〕〔冷閣〕〔簷角行〕簷角積霜，對向〔霜牆宅〕〔玉霜宅〕〔冷簾宅〕門廊覆著細霜。可經〔飛霜大街五段〕折返，或朝〔飛霜大街七段〕延伸。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "feistreet_st5", "to": "feistreet_st5", "ui_hidden": true },
+    { "direction": "feistreet_st7", "to": "feistreet_st7", "ui_hidden": true },
+    { "direction": "fei_shop11_main", "to": "fei_shop11_main", "ui_hidden": true },
+    { "direction": "fei_shop12_main", "to": "fei_shop12_main", "ui_hidden": true },
+    { "direction": "fei_shop13_main", "to": "fei_shop13_main", "ui_hidden": true },
+    { "direction": "fei_home10_main", "to": "fei_home10_main", "ui_hidden": true },
+    { "direction": "fei_home11_main", "to": "fei_home11_main", "ui_hidden": true },
+    { "direction": "fei_home12_main", "to": "fei_home12_main", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_st6_exit_st5",
+      "name": "飛霜大街五段",
+      "sockets": ["Move"],
+      "move_to_room_id": "feistreet_st5",
+      "responses": { "Move": "你朝飛霜大街五段方向折返。" }
+    },
+    {
+      "id": "fei_st6_exit_st7",
+      "name": "飛霜大街七段",
+      "sockets": ["Move"],
+      "move_to_room_id": "feistreet_st7",
+      "responses": { "Move": "你朝飛霜大街七段方向走去。" }
+    },
+    {
+      "id": "fei_st6_obj_shop11",
+      "name": "霜簾鋪",
+      "sockets": ["Look"],
+      "responses": { "Look": "簷角積霜、簾隙透光；〔店門〕可入內。" }
+    },
+    {
+      "id": "fei_st6_obj_shop11_door",
+      "name": "店門",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop11_main",
+      "responses": { "Move": "你推門進入霜簾鋪。" }
+    },
+    {
+      "id": "fei_st6_obj_shop12",
+      "name": "冷閣",
+      "sockets": ["Look"],
+      "responses": { "Look": "簷下冷調、牆面玉質脈絡沁出；〔門簾〕通往內室。" }
+    },
+    {
+      "id": "fei_st6_obj_shop12_door",
+      "name": "門簾",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop12_main",
+      "responses": { "Move": "你掀簾進入冷閣。" }
+    },
+    {
+      "id": "fei_st6_obj_shop13",
+      "name": "簷角行",
+      "sockets": ["Look"],
+      "responses": { "Look": "簷角霜晶成串、格架陳列；〔窄門〕半掩。" }
+    },
+    {
+      "id": "fei_st6_obj_shop13_door",
+      "name": "窄門",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop13_main",
+      "responses": { "Move": "你推門進入簷角行。" }
+    },
+    {
+      "id": "fei_st6_obj_home10",
+      "name": "霜牆宅",
+      "sockets": ["Look"],
+      "responses": { "Look": "牆面霜紋密佈；〔門洞〕內光線幽微。" }
+    },
+    {
+      "id": "fei_st6_obj_home10_door",
+      "name": "門洞",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home10_main",
+      "responses": { "Move": "你步入霜牆宅。" }
+    },
+    {
+      "id": "fei_st6_obj_home11",
+      "name": "玉霜宅",
+      "sockets": ["Look"],
+      "responses": { "Look": "門廊玉質脈絡與霜晶交錯；〔窄門〕可入內。" }
+    },
+    {
+      "id": "fei_st6_obj_home11_door",
+      "name": "窄門",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home11_main",
+      "responses": { "Move": "你推門進入玉霜宅。" }
+    },
+    {
+      "id": "fei_st6_obj_home12",
+      "name": "冷簾宅",
+      "sockets": ["Look"],
+      "responses": { "Look": "簷下冷簾垂落、積霜覆階；〔門簾〕可入內。" }
+    },
+    {
+      "id": "fei_st6_obj_home12_door",
+      "name": "門簾",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home12_main",
+      "responses": { "Move": "你掀簾進入冷簾宅。" }
+    }
+  ]
+}

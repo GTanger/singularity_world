@@ -1,0 +1,19 @@
+{
+  "id": "fei_home18_courtyard",
+  "name": "小院",
+  "description": "院小，四面簷攏著；牆根濕，苔與霜混在一起。一口井已封。此處僅通〔廊道〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_home18_hallway", "to": "fei_home18_hallway", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_home18_courtyard_exit_hallway",
+      "name": "廊道",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_home18_hallway",
+      "responses": { "Move": "你回到廊道。" }
+    }
+  ]
+}

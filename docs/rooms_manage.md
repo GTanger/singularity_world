@@ -61,6 +61,28 @@
 
 ---
 
-## 4. 房間來源
+## 4. 資料夾結構與讀取腳本約定（記憶紀錄）
 
-房間來自 `data/rooms/*.json`，啟動時由 store 載入。新增、修改、刪除請用 **Web 管理頁**（/admin.html）或直接編輯 JSON 後重啟。
+**遊戲辨識房間只認 `room id`，不認檔案路徑。** 以下為專案約定，搬移／新增子資料夾時請維持一致，並可安心搬移（腳本不依路徑）。
+
+### 資料夾結構約定
+
+- **根目錄**：`data/rooms/`。底下可任意分層；所有 `.json` 會被遞迴掃描。
+- **打鐵巷**（`data/rooms/打鐵巷/`）  
+  - 子資料夾：**打鐵一巷**、**打鐵二巷**、**打鐵三巷**。  
+  - 打鐵一巷下再依建築分**中文名稱**資料夾：**鍛造鋪**（ironland_shop01_*）、**爐火鋪**（ironland_shop02_*）、**錘音鋪**（ironland_shop03_*）、**巷內宅**（ironland_home01_*）、**石磚宅**（ironland_home02_*）。
+- **胡同巷**：位於 **浮生大街底下**（`data/rooms/浮生大街/胡同巷/`），zone 為 `lifestreet`，與浮生大街同區。
+
+### 讀取腳本（無需因搬移而改動）
+
+- **merge-rooms-one-per-line.js**：從 `data/rooms` 遞迴掃描所有子目錄的 `.json`，輸出 `data/rooms.json`（一房一行）。搬移或新增子資料夾不影響。
+- **format-rooms-pretty.js**、**format-rooms-compact-single.js**：同上，遞迴掃描 `data/rooms`，只做格式化。
+- **sanitize_descriptions.js**、**gen_yaxiao_exits.js**：讀取 `data/rooms.json`，依 **room id** 處理，與檔案路徑無關。
+
+搬移房間檔案後，若需更新合併檔，執行：`node scripts/merge-rooms-one-per-line.js`。
+
+---
+
+## 5. 房間來源
+
+房間來自 `data/rooms/` 底下遞迴掃描的 `.json`，啟動時由 store 載入。新增、修改、刪除請用 **Web 管理頁**（/admin.html）或直接編輯 JSON 後重啟。

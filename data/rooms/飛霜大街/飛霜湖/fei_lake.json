@@ -1,0 +1,19 @@
+{
+  "id": "fei_lake",
+  "name": "飛霜湖",
+  "description": "湖面與大街一段相接，霜白結晶飄落湖緣、與湖氣交會，游離輻射下熱氣不散，水氣凝成細霜。岸邊冷調石紋、簷角積霜。可經〔湖岸〕折返飛霜大街一段。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "feistreet_st1", "to": "feistreet_st1", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_lake_exit_st1",
+      "name": "湖岸",
+      "sockets": ["Move"],
+      "move_to_room_id": "feistreet_st1",
+      "responses": { "Move": "你沿湖岸步回飛霜大街一段。" }
+    }
+  ]
+}

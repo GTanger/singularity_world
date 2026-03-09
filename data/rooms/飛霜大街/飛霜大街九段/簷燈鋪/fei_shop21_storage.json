@@ -1,0 +1,35 @@
+{
+  "id": "fei_shop21_storage",
+  "name": "儲物間",
+  "description": "店頭燈火照不到這裡，只通道口一點昏黃。箱簍與陶罐沿牆堆高，摸黑得小心腳下。此處通〔店頭〕、〔後間〕與〔庫房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    { "direction": "fei_shop21_main", "to": "fei_shop21_main", "ui_hidden": true },
+    { "direction": "fei_shop21_back", "to": "fei_shop21_back", "ui_hidden": true },
+    { "direction": "fei_shop21_warehouse", "to": "fei_shop21_warehouse", "ui_hidden": true }
+  ],
+  "objects": [
+    {
+      "id": "fei_shop21_storage_exit_main",
+      "name": "店頭",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop21_main",
+      "responses": { "Move": "你循來路回到店頭。" }
+    },
+    {
+      "id": "fei_shop21_storage_exit_back",
+      "name": "後間",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop21_back",
+      "responses": { "Move": "你往後間走去。" }
+    },
+    {
+      "id": "fei_shop21_storage_exit_warehouse",
+      "name": "庫房",
+      "sockets": ["Move"],
+      "move_to_room_id": "fei_shop21_warehouse",
+      "responses": { "Move": "你步入庫房。" }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "ironland_shop06_workshop",
+  "name": "工間",
+  "description": "砧聲清脆、一錘一響；爐口餘燼、牆面細碎脈動。地面鐵屑多、腳下沙沙。此處通向〔砧聲鋪〕〔生活起居室〕與〔爐房〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop06_main",
+      "to": "ironland_shop06_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop06_living",
+      "to": "ironland_shop06_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop06_kiln",
+      "to": "ironland_shop06_kiln",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop06_workshop_exit_main",
+      "name": "砧聲鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop06_main",
+      "responses": { "Move": "你循來路回到店面前方。" }
+    },
+    {
+      "id": "ironland_shop06_workshop_exit_living",
+      "name": "生活起居室",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop06_living",
+      "responses": { "Move": "你往後方通道走去，進入生活起居室。" }
+    },
+    {
+      "id": "ironland_shop06_workshop_exit_kiln",
+      "name": "爐房",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop06_kiln",
+      "responses": { "Move": "你步入爐房。" }
+    }
+  ]
+}

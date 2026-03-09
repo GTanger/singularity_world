@@ -1,0 +1,23 @@
+{
+  "id": "ironland_shop04_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣、牆根脈絡粗硬沁出；簷擋住巷內熱風，院裡比店頭涼。此處僅通〔鐵脊鋪〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop04_main",
+      "to": "ironland_shop04_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop04_courtyard_exit",
+      "name": "鐵脊鋪",
+      "sockets": ["Move"],
+      "move_to_room_id": "ironland_shop04_main",
+      "responses": { "Move": "你回到店面前方。" }
+    }
+  ]
+}
