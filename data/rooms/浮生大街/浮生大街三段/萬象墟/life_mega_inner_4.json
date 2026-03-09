@@ -1,1 +1,27 @@
-{"id":"life_mega_inner_4","name":"內堂四","description":"密室盡頭，石床增生，厚毯覆之，室內如凝結，牆側脈絡隱約。此處僅通〔內堂〕，返身即回中庭。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_inner","to":"life_mega_inner","ui_hidden":true}],"objects":[{"id":"life_mega_inner_4_exit","name":"內堂","sockets":["Move"],"move_to_room_id":"life_mega_inner","responses":{"Move":"你回到內堂。"}}]}
+{
+  "id": "life_mega_inner_4",
+  "name": "內堂四",
+  "description": "密室盡頭，石床增生，厚毯覆之，室內如凝結，牆側脈絡隱約。此處僅通〔內堂〕，返身即回中庭。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_mega_inner",
+      "to": "life_mega_inner",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_mega_inner_4_exit",
+      "name": "內堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_inner",
+      "responses": {
+        "Move": "你回到內堂。"
+      }
+    }
+  ]
+}

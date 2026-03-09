@@ -1,1 +1,27 @@
-{"id":"life_home08_courtyard","name":"小院","description":"泥地苔衣密佈，牆根玉質脈絡沁出，微光自簷角濾下。此處僅通〔脈廊〕，循廊即回門廳或他室。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_home08_hallway","to":"life_home08_hallway","ui_hidden":true}],"objects":[{"id":"life_home08_courtyard_exit","name":"脈廊","sockets":["Move"],"move_to_room_id":"life_home08_hallway","responses":{"Move":"你回到脈廊。"}}]}
+{
+  "id": "life_home08_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣密佈，牆根玉質脈絡沁出，微光自簷角濾下。此處僅通〔脈廊〕，循廊即回門廳或他室。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_home08_hallway",
+      "to": "life_home08_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_home08_courtyard_exit",
+      "name": "脈廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home08_hallway",
+      "responses": {
+        "Move": "你回到脈廊。"
+      }
+    }
+  ]
+}

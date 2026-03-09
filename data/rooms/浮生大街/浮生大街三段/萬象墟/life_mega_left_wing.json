@@ -5,13 +5,55 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_mega_court", "to": "life_mega_court", "ui_hidden": true },
-    { "direction": "life_mega_left_1", "to": "life_mega_left_1", "ui_hidden": true },
-    { "direction": "life_mega_left_2", "to": "life_mega_left_2", "ui_hidden": true }
+    {
+      "direction": "life_mega_court",
+      "to": "life_mega_court",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_left_1",
+      "to": "life_mega_left_1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_left_2",
+      "to": "life_mega_left_2",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    {"id": "life_mega_left_exit_court", "name": "中庭", "sockets": ["Move"], "move_to_room_id": "life_mega_court", "responses": {"Move": "你回到中庭。"}},
-    {"id": "life_mega_left_exit_1", "name": "左廂一", "sockets": ["Move"], "move_to_room_id": "life_mega_left_1", "responses": {"Move": "你步入左廂一。"}},
-    {"id": "life_mega_left_exit_2", "name": "左廂二", "sockets": ["Move"], "move_to_room_id": "life_mega_left_2", "responses": {"Move": "你步入左廂二。"}}
+    {
+      "id": "life_mega_left_exit_court",
+      "name": "中庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_court",
+      "responses": {
+        "Move": "你回到中庭。"
+      }
+    },
+    {
+      "id": "life_mega_left_exit_1",
+      "name": "左廂一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_left_1",
+      "responses": {
+        "Move": "你步入左廂一。"
+      }
+    },
+    {
+      "id": "life_mega_left_exit_2",
+      "name": "左廂二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_left_2",
+      "responses": {
+        "Move": "你步入左廂二。"
+      }
+    }
   ]
 }

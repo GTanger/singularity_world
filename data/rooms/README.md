@@ -6,6 +6,19 @@
 
 ---
 
+## 檔案格式約定
+
+| 用途 | 格式 | 說明 |
+|------|------|------|
+| **一房一檔**（本目錄下各 `.json`） | **段落** | 使用 2 空格縮排、換行（pretty-print），方便閱讀與編輯。 |
+| **合併檔**（`data/rooms.json`） | **一房一行** | 由腳本從一房一檔合併產生；陣列內每個房間為一行，方便快速捲動瀏覽、比對描述與用詞。 |
+
+- 一房一檔為來源，維持段落格式。
+- 合併檔列版控，需更新時執行：`node scripts/merge-rooms-one-per-line.js`
+- 若一房一檔格式跑掉，可執行：`node scripts/format-rooms-pretty.js` 統一重排為段落。
+
+---
+
 ## id 規則與出口融合
 
 - **id 規則**：前綴第一層 = zone 的英文代碼（例：浮生大街→lifestreet）；前綴第二層 = 該建築/場所的英文名（例：綠意別墅→green）。同一建築內所有格子的 id 皆為 `zone_place_` 開頭，例：`lifestreet_green_大廳`、`lifestreet_green_r1`。

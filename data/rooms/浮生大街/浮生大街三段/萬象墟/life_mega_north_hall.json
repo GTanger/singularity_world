@@ -5,15 +5,71 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_mega_court", "to": "life_mega_court", "ui_hidden": true },
-    { "direction": "life_mega_north_back_1", "to": "life_mega_north_back_1", "ui_hidden": true },
-    { "direction": "life_mega_north_back_2", "to": "life_mega_north_back_2", "ui_hidden": true },
-    { "direction": "life_mega_north_back_3", "to": "life_mega_north_back_3", "ui_hidden": true }
+    {
+      "direction": "life_mega_court",
+      "to": "life_mega_court",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_north_back_1",
+      "to": "life_mega_north_back_1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_north_back_2",
+      "to": "life_mega_north_back_2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_north_back_3",
+      "to": "life_mega_north_back_3",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    {"id": "life_mega_north_exit_court", "name": "中庭", "sockets": ["Move"], "move_to_room_id": "life_mega_court", "responses": {"Move": "你回到中庭。"}},
-    {"id": "life_mega_north_exit_1", "name": "北廳後一", "sockets": ["Move"], "move_to_room_id": "life_mega_north_back_1", "responses": {"Move": "你步入北廳後一。"}},
-    {"id": "life_mega_north_exit_2", "name": "北廳後二", "sockets": ["Move"], "move_to_room_id": "life_mega_north_back_2", "responses": {"Move": "你步入北廳後二。"}},
-    {"id": "life_mega_north_exit_3", "name": "北廳後三", "sockets": ["Move"], "move_to_room_id": "life_mega_north_back_3", "responses": {"Move": "你步入北廳後三。"}}
+    {
+      "id": "life_mega_north_exit_court",
+      "name": "中庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_court",
+      "responses": {
+        "Move": "你回到中庭。"
+      }
+    },
+    {
+      "id": "life_mega_north_exit_1",
+      "name": "北廳後一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_north_back_1",
+      "responses": {
+        "Move": "你步入北廳後一。"
+      }
+    },
+    {
+      "id": "life_mega_north_exit_2",
+      "name": "北廳後二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_north_back_2",
+      "responses": {
+        "Move": "你步入北廳後二。"
+      }
+    },
+    {
+      "id": "life_mega_north_exit_3",
+      "name": "北廳後三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_north_back_3",
+      "responses": {
+        "Move": "你步入北廳後三。"
+      }
+    }
   ]
 }

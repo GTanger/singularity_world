@@ -1,0 +1,43 @@
+{
+  "id": "lifestreet_st8",
+  "name": "浮生大街八段",
+  "description": "暗紫路面延伸至此，兩側玉質脈絡自縫隙沁出，淡紫與琥珀光色沉澱。建築尚未建置，唯見脈絡與簷角沉靜。可經〔浮生大街七段〕折返，或朝〔浮生大街九段〕延伸。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "lifestreet_st7",
+      "to": "lifestreet_st7",
+      "ui_hidden": true
+    },
+    {
+      "direction": "lifestreet_st9",
+      "to": "lifestreet_st9",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "st8_exit_st7",
+      "name": "浮生大街七段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "lifestreet_st7",
+      "responses": {
+        "Move": "你朝浮生大街七段方向折返。"
+      }
+    },
+    {
+      "id": "st8_exit_st9",
+      "name": "浮生大街九段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "lifestreet_st9",
+      "responses": {
+        "Move": "你朝浮生大街九段方向走去。"
+      }
+    }
+  ]
+}

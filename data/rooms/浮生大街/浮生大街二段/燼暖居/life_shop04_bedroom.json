@@ -5,15 +5,23 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_shop04_living", "to": "life_shop04_living", "ui_hidden": true }
+    {
+      "direction": "life_shop04_living",
+      "to": "life_shop04_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_shop04_bedroom_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop04_living",
-      "responses": { "Move": "你離開臥室，回到生活起居室。" }
+      "responses": {
+        "Move": "你離開臥室，回到生活起居室。"
+      }
     }
   ]
 }

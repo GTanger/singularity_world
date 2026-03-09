@@ -1,1 +1,43 @@
-{"id":"ironland_shop01_storage","name":"儲物間","description":"牆角鐵筐與礦石堆疊，縫隙間透出琥珀光，空氣乾燥，鐵腥與礦物粉塵沉澱。此處通向前方〔鍛造鋪〕與側邊〔生活起居室〕，可回店頭或往起居處。","tags":[],"zone":"lifestreet","exits":[{"direction":"ironland_shop01_main","to":"ironland_shop01_main","ui_hidden":true},{"direction":"ironland_shop01_living","to":"ironland_shop01_living","ui_hidden":true}],"objects":[{"id":"ironland_shop01_storage_exit_main","name":"鍛造鋪","sockets":["Move"],"move_to_room_id":"ironland_shop01_main","responses":{"Move":"你循來路回到店面前方。"}},{"id":"ironland_shop01_storage_exit_living","name":"生活起居室","sockets":["Move"],"move_to_room_id":"ironland_shop01_living","responses":{"Move":"你沿側道走去，進入生活起居室。"}}]}
+{
+  "id": "ironland_shop01_storage",
+  "name": "儲物間",
+  "description": "牆角鐵筐與礦石堆疊，縫隙間透出琥珀光，空氣乾燥，鐵腥與礦物粉塵沉澱。此處通向前方〔鍛造鋪〕與側邊〔生活起居室〕，可回店頭或往起居處。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "ironland_shop01_main",
+      "to": "ironland_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop01_living",
+      "to": "ironland_shop01_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop01_storage_exit_main",
+      "name": "鍛造鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop01_main",
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
+    },
+    {
+      "id": "ironland_shop01_storage_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop01_living",
+      "responses": {
+        "Move": "你沿側道走去，進入生活起居室。"
+      }
+    }
+  ]
+}

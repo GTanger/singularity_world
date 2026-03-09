@@ -1,0 +1,43 @@
+{
+  "id": "life_shop12_living",
+  "name": "生活起居室",
+  "description": "石製圓桌伏貼於地，桌緣半透明地衣攀附石面，牆側木格架倚牆。此處通向〔內廊〕與〔私人臥室〕，可回店頭或歇息。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_shop12_hallway",
+      "to": "life_shop12_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop12_bedroom",
+      "to": "life_shop12_bedroom",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop12_living_exit_hallway",
+      "name": "內廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop12_hallway",
+      "responses": {
+        "Move": "你回到內廊。"
+      }
+    },
+    {
+      "id": "life_shop12_living_exit_bedroom",
+      "name": "私人臥室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop12_bedroom",
+      "responses": {
+        "Move": "你步入私人臥室。"
+      }
+    }
+  ]
+}

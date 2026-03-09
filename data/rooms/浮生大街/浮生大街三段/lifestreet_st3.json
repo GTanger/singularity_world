@@ -5,79 +5,143 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "lifestreet_st2", "to": "lifestreet_st2", "ui_hidden": true },
-    { "direction": "lifestreet_st4", "to": "lifestreet_st4", "ui_hidden": true },
-    { "direction": "life_mega_gate", "to": "life_mega_gate", "ui_hidden": true },
-    { "direction": "life_shop05_main", "to": "life_shop05_main", "ui_hidden": true },
-    { "direction": "life_shop06_main", "to": "life_shop06_main", "ui_hidden": true },
-    { "direction": "life_home05_main", "to": "life_home05_main", "ui_hidden": true }
+    {
+      "direction": "lifestreet_st2",
+      "to": "lifestreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "lifestreet_st4",
+      "to": "lifestreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_gate",
+      "to": "life_mega_gate",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop05_main",
+      "to": "life_shop05_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop06_main",
+      "to": "life_shop06_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home05_main",
+      "to": "life_home05_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "st3_exit_st2",
       "name": "浮生大街二段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st2",
-      "responses": { "Move": "你朝浮生大街二段方向折返。" }
+      "responses": {
+        "Move": "你朝浮生大街二段方向折返。"
+      }
     },
     {
       "id": "st3_exit_st4",
       "name": "浮生大街四段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st4",
-      "responses": { "Move": "你朝浮生大街四段方向走去。" }
+      "responses": {
+        "Move": "你朝浮生大街四段方向走去。"
+      }
     },
     {
       "id": "st3_obj_mega",
       "name": "萬象墟",
-      "sockets": ["Look"],
-      "responses": { "Look": "萬象墟為三段集墟，巨構聳立，墟門高闊，簷角玉質脈絡如血管蔓延至瓦面。廊廂間可易物、歇腳、暫駐，過客與攤商匯聚；門內深不見底，唯見幽光隱約。入口是一道〔墟門〕。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "萬象墟為三段集墟，巨構聳立，墟門高闊，簷角玉質脈絡如血管蔓延至瓦面。廊廂間可易物、歇腳、暫駐，過客與攤商匯聚；門內深不見底，唯見幽光隱約。入口是一道〔墟門〕。"
+      }
     },
     {
       "id": "st3_obj_mega_door",
       "name": "墟門",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_gate",
-      "responses": { "Move": "你穿過墟門，步入萬象墟。" }
+      "responses": {
+        "Move": "你穿過墟門，步入萬象墟。"
+      }
     },
     {
       "id": "st3_obj_shop05",
       "name": "石髓館",
-      "sockets": ["Look"],
-      "responses": { "Look": "灰石門面沉厚，石縫沁出琥珀色脈絡，門口垂著一道〔厚簾〕。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "灰石門面沉厚，石縫沁出琥珀色脈絡，門口垂著一道〔厚簾〕。"
+      }
     },
     {
       "id": "st3_obj_shop05_door",
       "name": "厚簾",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop05_main",
-      "responses": { "Move": "你掀開厚簾，進入石髓館。" }
+      "responses": {
+        "Move": "你掀開厚簾，進入石髓館。"
+      }
     },
     {
       "id": "st3_obj_shop06",
       "name": "藤心居",
-      "sockets": ["Look"],
-      "responses": { "Look": "綠藤攀滿簷面，肥厚根鬚將門框纏得更牢，中央一道〔藤簾〕垂掛，內裡透出淡綠微光。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "綠藤攀滿簷面，肥厚根鬚將門框纏得更牢，中央一道〔藤簾〕垂掛，內裡透出淡綠微光。"
+      }
     },
     {
       "id": "st3_obj_shop06_door",
       "name": "藤簾",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop06_main",
-      "responses": { "Move": "你撥開藤簾，進入藤心居。" }
+      "responses": {
+        "Move": "你撥開藤簾，進入藤心居。"
+      }
     },
     {
       "id": "st3_obj_home05",
       "name": "青苔宅",
-      "sockets": ["Look"],
-      "responses": { "Look": "牆面苔痕密佈，玉質脈絡自苔縫沁出，門前石階覆著絨狀菌絲。入口是一扇半掩的〔木門〕。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "牆面苔痕密佈，玉質脈絡自苔縫沁出，門前石階覆著絨狀菌絲。入口是一扇半掩的〔木門〕。"
+      }
     },
     {
       "id": "st3_obj_home05_door",
       "name": "木門",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home05_main",
-      "responses": { "Move": "你推開木門，進入青苔宅。" }
+      "responses": {
+        "Move": "你推開木門，進入青苔宅。"
+      }
     }
   ]
 }

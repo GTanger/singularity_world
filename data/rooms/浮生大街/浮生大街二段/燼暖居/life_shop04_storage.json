@@ -5,23 +5,39 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_shop04_main", "to": "life_shop04_main", "ui_hidden": true },
-    { "direction": "life_shop04_living", "to": "life_shop04_living", "ui_hidden": true }
+    {
+      "direction": "life_shop04_main",
+      "to": "life_shop04_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop04_living",
+      "to": "life_shop04_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_shop04_storage_exit_main",
       "name": "燼暖居",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop04_main",
-      "responses": { "Move": "你循來路回到店面前方。" }
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
     },
     {
       "id": "life_shop04_storage_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop04_living",
-      "responses": { "Move": "你沿側道走去，進入生活起居室。" }
+      "responses": {
+        "Move": "你沿側道走去，進入生活起居室。"
+      }
     }
   ]
 }

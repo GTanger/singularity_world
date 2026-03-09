@@ -1073,6 +1073,114 @@
       "entity_id": "葉卅",
       "event_type": "observed",
       "payload": "life_mega_front_exit_gate"
+    },
+    {
+      "at": 1772995304,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_mega_gate_exit_st3"
+    },
+    {
+      "at": 1772995307,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st3_exit_st4"
+    },
+    {
+      "at": 1772995311,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4_exit_ironlane"
+    },
+    {
+      "at": 1772995319,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "ironland_lane1_exit_st4"
+    },
+    {
+      "at": 1772995324,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4_obj_home06"
+    },
+    {
+      "at": 1772995326,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4_obj_home06_door"
+    },
+    {
+      "at": 1772995332,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_home06_main_exit_st4"
+    },
+    {
+      "at": 1772995333,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4_exit_st5"
+    },
+    {
+      "at": 1772995337,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st5_exit_st4"
+    },
+    {
+      "at": 1772995339,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4_exit_st5"
+    },
+    {
+      "at": 1772995370,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st5_exit_st6"
+    },
+    {
+      "at": 1772995374,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st6_exit_st5"
+    },
+    {
+      "at": 1772995376,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st5_obj_shop08"
+    },
+    {
+      "at": 1772995377,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st5_obj_shop08_door"
+    },
+    {
+      "at": 1772995384,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop08_main_obj_herb"
+    },
+    {
+      "at": 1772995395,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_shop08_main_exit_st5"
+    },
+    {
+      "at": 1772995405,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st5_obj_shop08"
+    },
+    {
+      "at": 1772995407,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st5_obj_shop08_door"
     }
   ]
 }

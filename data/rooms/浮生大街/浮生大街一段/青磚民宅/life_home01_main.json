@@ -5,29 +5,49 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "lifestreet_st1", "to": "lifestreet_st1", "ui_hidden": true },
-    { "direction": "life_home01_hallway", "to": "life_home01_hallway", "ui_hidden": true }
+    {
+      "direction": "lifestreet_st1",
+      "to": "lifestreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home01_hallway",
+      "to": "life_home01_hallway",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_home01_main_exit_st1",
       "name": "窄木門",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st1",
-      "responses": { "Move": "你推開窄木門，回到浮生大街一段。" }
+      "responses": {
+        "Move": "你推開窄木門，回到浮生大街一段。"
+      }
     },
     {
       "id": "life_home01_main_exit_hallway",
       "name": "廊道",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home01_hallway",
-      "responses": { "Move": "你朝內側走去，進入廊道。" }
+      "responses": {
+        "Move": "你朝內側走去，進入廊道。"
+      }
     },
     {
       "id": "life_home01_main_obj_stand",
       "name": "陶製傘架",
-      "sockets": ["Look"],
-      "responses": { "Look": "傘架邊緣長出透明的細小晶體，內部積聚少量具備黏性的半透明液體。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "傘架邊緣長出透明的細小晶體，內部積聚少量具備黏性的半透明液體。"
+      }
     }
   ]
 }

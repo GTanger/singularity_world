@@ -1,0 +1,69 @@
+{
+  "id": "life_shop12_main",
+  "name": "靜墨齋",
+  "description": "灰石櫃檯沉厚，牆面格架石縫間沁出玉質脈絡，成卷石片與紙卷蒙塵。淡紫光暈沉靜。此處通外側〔胡同巷〕與後方〔儲物間〕、側邊〔內廊〕。櫃面擱著一具〔石刀筆〕。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "hutong_lane1",
+      "to": "hutong_lane1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop12_storage",
+      "to": "life_shop12_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop12_hallway",
+      "to": "life_shop12_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop12_main_exit_lane",
+      "name": "胡同巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "hutong_lane1",
+      "responses": {
+        "Move": "你掀開布簾，回到胡同巷。"
+      }
+    },
+    {
+      "id": "life_shop12_main_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop12_storage",
+      "responses": {
+        "Move": "你朝後方走去，進入儲物間。"
+      }
+    },
+    {
+      "id": "life_shop12_main_exit_hallway",
+      "name": "內廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop12_hallway",
+      "responses": {
+        "Move": "你往內廊走去。"
+      }
+    },
+    {
+      "id": "life_shop12_main_obj_knife",
+      "name": "石刀筆",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "刀鋒自礦脈切削而成，握柄纖維繩纏緊石身，沾著少許紫色墨漬。指腹撫過，溫潤略黏。"
+      }
+    }
+  ]
+}

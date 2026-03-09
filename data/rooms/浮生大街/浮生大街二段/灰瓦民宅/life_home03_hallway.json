@@ -5,37 +5,65 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_home03_main", "to": "life_home03_main", "ui_hidden": true },
-    { "direction": "life_home03_living", "to": "life_home03_living", "ui_hidden": true },
-    { "direction": "life_home03_cellar", "to": "life_home03_cellar", "ui_hidden": true }
+    {
+      "direction": "life_home03_main",
+      "to": "life_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home03_living",
+      "to": "life_home03_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home03_cellar",
+      "to": "life_home03_cellar",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_home03_hallway_exit_main",
       "name": "門廳",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home03_main",
-      "responses": { "Move": "你循來路回到門廳。" }
+      "responses": {
+        "Move": "你循來路回到門廳。"
+      }
     },
     {
       "id": "life_home03_hallway_exit_living",
       "name": "生息室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home03_living",
-      "responses": { "Move": "你朝通道深處走去，進入生息室。" }
+      "responses": {
+        "Move": "你朝通道深處走去，進入生息室。"
+      }
     },
     {
       "id": "life_home03_hallway_exit_cellar",
       "name": "地窖入口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home03_cellar",
-      "responses": { "Move": "你順階而下，進入下沉地窖。" }
+      "responses": {
+        "Move": "你順階而下，進入下沉地窖。"
+      }
     },
     {
       "id": "life_home03_hallway_obj_vine",
       "name": "乾燥藤鬚",
-      "sockets": ["Look"],
-      "responses": { "Look": "藤鬚攀附簷角，質地堅硬如細鐵絲，內裡淡紫色脈動隱約，末梢沁出微量膠質。枯而不朽，反成支撐。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "藤鬚攀附簷角，質地堅硬如細鐵絲，內裡淡紫色脈動隱約，末梢沁出微量膠質。枯而不朽，反成支撐。"
+      }
     }
   ]
 }

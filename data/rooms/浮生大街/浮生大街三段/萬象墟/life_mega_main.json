@@ -5,39 +5,71 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_mega_front", "to": "life_mega_front", "ui_hidden": true },
-    { "direction": "life_mega_east_hall", "to": "life_mega_east_hall", "ui_hidden": true },
-    { "direction": "life_mega_west_hall", "to": "life_mega_west_hall", "ui_hidden": true },
-    { "direction": "life_mega_court", "to": "life_mega_court", "ui_hidden": true }
+    {
+      "direction": "life_mega_front",
+      "to": "life_mega_front",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_east_hall",
+      "to": "life_mega_east_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_west_hall",
+      "to": "life_mega_west_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_court",
+      "to": "life_mega_court",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_mega_main_exit_front",
       "name": "前庭",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_front",
-      "responses": { "Move": "你朝前庭方向折返。" }
+      "responses": {
+        "Move": "你朝前庭方向折返。"
+      }
     },
     {
       "id": "life_mega_main_exit_east",
       "name": "東廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_east_hall",
-      "responses": { "Move": "你轉入東廊。" }
+      "responses": {
+        "Move": "你轉入東廊。"
+      }
     },
     {
       "id": "life_mega_main_exit_west",
       "name": "西廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_west_hall",
-      "responses": { "Move": "你轉入西廊。" }
+      "responses": {
+        "Move": "你轉入西廊。"
+      }
     },
     {
       "id": "life_mega_main_exit_court",
       "name": "中庭",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_court",
-      "responses": { "Move": "你朝中庭深處走去。" }
+      "responses": {
+        "Move": "你朝中庭深處走去。"
+      }
     }
   ]
 }

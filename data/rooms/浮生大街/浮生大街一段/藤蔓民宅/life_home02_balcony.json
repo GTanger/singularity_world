@@ -5,15 +5,23 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_home02_loft", "to": "life_home02_loft", "ui_hidden": true }
+    {
+      "direction": "life_home02_loft",
+      "to": "life_home02_loft",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "home02_balcony_exit_loft",
       "name": "綠蔭閣樓",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home02_loft",
-      "responses": { "Move": "你自葉台退回室內，進入綠蔭閣樓。" }
+      "responses": {
+        "Move": "你自葉台退回室內，進入綠蔭閣樓。"
+      }
     }
   ]
 }

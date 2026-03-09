@@ -5,21 +5,33 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_shop02_living", "to": "life_shop02_living", "ui_hidden": true }
+    {
+      "direction": "life_shop02_living",
+      "to": "life_shop02_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_shop02_kitchen_exit_living",
       "name": "居家客廳",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop02_living",
-      "responses": { "Move": "你離開灶台旁，回到居家客廳。" }
+      "responses": {
+        "Move": "你離開灶台旁，回到居家客廳。"
+      }
     },
     {
       "id": "life_shop02_kitchen_obj_urn",
       "name": "儲水瓦甕",
-      "sockets": ["Look"],
-      "responses": { "Look": "甕身佈滿不規則的龜裂紋，裂縫中透出幽藍色微光，液位維持在八分滿。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "甕身佈滿不規則的龜裂紋，裂縫中透出幽藍色微光，液位維持在八分滿。"
+      }
     }
   ]
 }

@@ -1,1 +1,27 @@
-{"id":"life_mega_inner_3","name":"內堂三","description":"密室窄長，琉璃質凝結於壁，琥珀微光沉靜，空氣中礦物粉塵沉澱。此處僅通〔內堂〕，返身即回中庭。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_inner","to":"life_mega_inner","ui_hidden":true}],"objects":[{"id":"life_mega_inner_3_exit","name":"內堂","sockets":["Move"],"move_to_room_id":"life_mega_inner","responses":{"Move":"你回到內堂。"}}]}
+{
+  "id": "life_mega_inner_3",
+  "name": "內堂三",
+  "description": "密室窄長，琉璃質凝結於壁，琥珀微光沉靜，空氣中礦物粉塵沉澱。此處僅通〔內堂〕，返身即回中庭。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_mega_inner",
+      "to": "life_mega_inner",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_mega_inner_3_exit",
+      "name": "內堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_inner",
+      "responses": {
+        "Move": "你回到內堂。"
+      }
+    }
+  ]
+}

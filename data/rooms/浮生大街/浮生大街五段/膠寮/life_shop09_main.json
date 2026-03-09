@@ -5,14 +5,65 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "lifestreet_st5", "to": "lifestreet_st5", "ui_hidden": true },
-    { "direction": "life_shop09_storage", "to": "life_shop09_storage", "ui_hidden": true },
-    { "direction": "life_shop09_hallway", "to": "life_shop09_hallway", "ui_hidden": true }
+    {
+      "direction": "lifestreet_st5",
+      "to": "lifestreet_st5",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop09_storage",
+      "to": "life_shop09_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop09_hallway",
+      "to": "life_shop09_hallway",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "life_shop09_main_exit_st5", "name": "浮生大街五段", "sockets": ["Move"], "move_to_room_id": "lifestreet_st5", "responses": { "Move": "你掀開厚簾，回到浮生大街五段。" }},
-    { "id": "life_shop09_main_exit_storage", "name": "儲物間", "sockets": ["Move"], "move_to_room_id": "life_shop09_storage", "responses": { "Move": "你朝後方走去，進入儲物間。" }},
-    { "id": "life_shop09_main_exit_hallway", "name": "內廊", "sockets": ["Move"], "move_to_room_id": "life_shop09_hallway", "responses": { "Move": "你往內廊走去。" }},
-    { "id": "life_shop09_main_obj_scraper", "name": "膠質刮刀", "sockets": ["Look"], "responses": { "Look": "石柄前端鑲著半透明膠質刃口，緣口凝結成弧，指觸溫潤略黏。用以刮取、修補膠封，竟與檯面罐緣同源。" }}
+    {
+      "id": "life_shop09_main_exit_st5",
+      "name": "浮生大街五段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "lifestreet_st5",
+      "responses": {
+        "Move": "你掀開厚簾，回到浮生大街五段。"
+      }
+    },
+    {
+      "id": "life_shop09_main_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop09_storage",
+      "responses": {
+        "Move": "你朝後方走去，進入儲物間。"
+      }
+    },
+    {
+      "id": "life_shop09_main_exit_hallway",
+      "name": "內廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop09_hallway",
+      "responses": {
+        "Move": "你往內廊走去。"
+      }
+    },
+    {
+      "id": "life_shop09_main_obj_scraper",
+      "name": "膠質刮刀",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "石柄前端鑲著半透明膠質刃口，緣口凝結成弧，指觸溫潤略黏。用以刮取、修補膠封，竟與檯面罐緣同源。"
+      }
+    }
   ]
 }

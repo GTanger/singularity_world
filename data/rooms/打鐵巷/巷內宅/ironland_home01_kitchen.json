@@ -1,1 +1,27 @@
-{"id":"ironland_home01_kitchen","name":"灶間","description":"石砌灶台砌入牆體，火口暗紅熔岩縫隙間脈動隱現，缸壁菌絲蔓延，淡紫光暈沉靜。此處僅通向側邊〔生息室〕，原路即回共聚處。","tags":[],"zone":"lifestreet","exits":[{"direction":"ironland_home01_living","to":"ironland_home01_living","ui_hidden":true}],"objects":[{"id":"ironland_home01_kitchen_exit_living","name":"生息室","sockets":["Move"],"move_to_room_id":"ironland_home01_living","responses":{"Move":"你回到生息室。"}}]}
+{
+  "id": "ironland_home01_kitchen",
+  "name": "灶間",
+  "description": "石砌灶台砌入牆體，火口暗紅熔岩縫隙間脈動隱現，缸壁菌絲蔓延，淡紫光暈沉靜。此處僅通向側邊〔生息室〕，原路即回共聚處。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "ironland_home01_living",
+      "to": "ironland_home01_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home01_kitchen_exit_living",
+      "name": "生息室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home01_living",
+      "responses": {
+        "Move": "你回到生息室。"
+      }
+    }
+  ]
+}

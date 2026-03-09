@@ -1,1 +1,27 @@
-{"id":"life_mega_right_2","name":"右廂二","description":"窄室盡頭，石床自地增生，厚毯覆之，牆側脈絡隱約。此處僅通〔右廂〕，返身即回中庭。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_mega_right_wing","to":"life_mega_right_wing","ui_hidden":true}],"objects":[{"id":"life_mega_right_2_exit","name":"右廂","sockets":["Move"],"move_to_room_id":"life_mega_right_wing","responses":{"Move":"你回到右廂。"}}]}
+{
+  "id": "life_mega_right_2",
+  "name": "右廂二",
+  "description": "窄室盡頭，石床自地增生，厚毯覆之，牆側脈絡隱約。此處僅通〔右廂〕，返身即回中庭。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_mega_right_wing",
+      "to": "life_mega_right_wing",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_mega_right_2_exit",
+      "name": "右廂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_right_wing",
+      "responses": {
+        "Move": "你回到右廂。"
+      }
+    }
+  ]
+}

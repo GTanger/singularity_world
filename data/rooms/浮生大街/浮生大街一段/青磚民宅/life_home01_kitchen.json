@@ -5,21 +5,33 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_home01_living", "to": "life_home01_living", "ui_hidden": true }
+    {
+      "direction": "life_home01_living",
+      "to": "life_home01_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_home01_kitchen_exit_living",
       "name": "生息室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home01_living",
-      "responses": { "Move": "你離開灶台旁，回到生息室。" }
+      "responses": {
+        "Move": "你離開灶台旁，回到生息室。"
+      }
     },
     {
       "id": "life_home01_kitchen_obj_vat",
       "name": "儲水石缸",
-      "sockets": ["Look"],
-      "responses": { "Look": "缸內盛裝著清澈液體，底部沉積著一層發光的紫色砂礫。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "缸內盛裝著清澈液體，底部沉積著一層發光的紫色砂礫。"
+      }
     }
   ]
 }

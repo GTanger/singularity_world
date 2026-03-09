@@ -5,21 +5,33 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_home04_living", "to": "life_home04_living", "ui_hidden": true }
+    {
+      "direction": "life_home04_living",
+      "to": "life_home04_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_home04_bedroom_exit_living",
       "name": "生息室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home04_living",
-      "responses": { "Move": "你離開臥房，回到生息室。" }
+      "responses": {
+        "Move": "你離開臥房，回到生息室。"
+      }
     },
     {
       "id": "life_home04_bedroom_obj_lamp",
       "name": "石製燈台",
-      "sockets": ["Look"],
-      "responses": { "Look": "燈芯玉質化枯木，頂端晶體自轉，淡紫冷光浮動。粉塵在光暈旁無聲沉降，竟似時間在此凝結。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "燈芯玉質化枯木，頂端晶體自轉，淡紫冷光浮動。粉塵在光暈旁無聲沉降，竟似時間在此凝結。"
+      }
     }
   ]
 }

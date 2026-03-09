@@ -5,29 +5,49 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_shop03_main", "to": "life_shop03_main", "ui_hidden": true },
-    { "direction": "life_shop03_hallway", "to": "life_shop03_hallway", "ui_hidden": true }
+    {
+      "direction": "life_shop03_main",
+      "to": "life_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop03_hallway",
+      "to": "life_shop03_hallway",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_shop03_storage_exit_main",
       "name": "石箋閣",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop03_main",
-      "responses": { "Move": "你循來路回到店面前方。" }
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
     },
     {
       "id": "life_shop03_storage_exit_hallway",
       "name": "內走廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop03_hallway",
-      "responses": { "Move": "你沿格架旁往深處走去，進入內走廊。" }
+      "responses": {
+        "Move": "你沿格架旁往深處走去，進入內走廊。"
+      }
     },
     {
       "id": "life_shop03_storage_obj_tube",
       "name": "陶筒",
-      "sockets": ["Look"],
-      "responses": { "Look": "筒口為膠質所封，與陶身一體成形，表面細小符號刻入胎體，邊緣泛淡紫。指觸溫潤，略黏。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "筒口為膠質所封，與陶身一體成形，表面細小符號刻入胎體，邊緣泛淡紫。指觸溫潤，略黏。"
+      }
     }
   ]
 }

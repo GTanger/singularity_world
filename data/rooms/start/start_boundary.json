@@ -15,7 +15,10 @@
     {
       "id": "start_boundary_obj_singularity",
       "name": "光點",
-      "sockets": ["Look", "Move"],
+      "sockets": [
+        "Look",
+        "Move"
+      ],
       "move_to_room_id": "street4zone",
       "responses": {
         "Look": "光束在邊緣重疊，形成環狀交錯的波紋。",

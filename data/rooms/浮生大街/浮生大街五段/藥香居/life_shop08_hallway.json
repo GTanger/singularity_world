@@ -1,1 +1,43 @@
-{"id":"life_shop08_hallway","name":"內廊","description":"狹長通道壁面石縫間菌絲蔓延，根鬚自簷角垂落，淡綠光暈低浮，腳下石板平滑。此處通向前方〔儲物間〕與深處〔生活起居室〕，可回店頭或往起居處。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_shop08_storage","to":"life_shop08_storage","ui_hidden":true},{"direction":"life_shop08_living","to":"life_shop08_living","ui_hidden":true}],"objects":[{"id":"life_shop08_hallway_exit_storage","name":"儲物間","sockets":["Move"],"move_to_room_id":"life_shop08_storage","responses":{"Move":"你回到儲物間。"}},{"id":"life_shop08_hallway_exit_living","name":"生活起居室","sockets":["Move"],"move_to_room_id":"life_shop08_living","responses":{"Move":"你步入生活起居室。"}}]}
+{
+  "id": "life_shop08_hallway",
+  "name": "內廊",
+  "description": "狹長通道壁面石縫間菌絲蔓延，根鬚自簷角垂落，淡綠光暈低浮，腳下石板平滑。此處通向前方〔儲物間〕與深處〔生活起居室〕，可回店頭或往起居處。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_shop08_storage",
+      "to": "life_shop08_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop08_living",
+      "to": "life_shop08_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop08_hallway_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop08_storage",
+      "responses": {
+        "Move": "你回到儲物間。"
+      }
+    },
+    {
+      "id": "life_shop08_hallway_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop08_living",
+      "responses": {
+        "Move": "你步入生活起居室。"
+      }
+    }
+  ]
+}

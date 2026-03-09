@@ -5,11 +5,39 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "lifestreet_st5", "to": "lifestreet_st5", "ui_hidden": true },
-    { "direction": "life_home07_hallway", "to": "life_home07_hallway", "ui_hidden": true }
+    {
+      "direction": "lifestreet_st5",
+      "to": "lifestreet_st5",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home07_hallway",
+      "to": "life_home07_hallway",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "life_home07_main_exit_st5", "name": "板門", "sockets": ["Move"], "move_to_room_id": "lifestreet_st5", "responses": { "Move": "你推開板門，回到浮生大街五段。" }},
-    { "id": "life_home07_main_exit_hallway", "name": "簷廊", "sockets": ["Move"], "move_to_room_id": "life_home07_hallway", "responses": { "Move": "你朝內側走去，進入簷廊。" }}
+    {
+      "id": "life_home07_main_exit_st5",
+      "name": "板門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "lifestreet_st5",
+      "responses": {
+        "Move": "你推開板門，回到浮生大街五段。"
+      }
+    },
+    {
+      "id": "life_home07_main_exit_hallway",
+      "name": "簷廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home07_hallway",
+      "responses": {
+        "Move": "你朝內側走去，進入簷廊。"
+      }
+    }
   ]
 }

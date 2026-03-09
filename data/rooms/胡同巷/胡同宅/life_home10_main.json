@@ -1,0 +1,43 @@
+{
+  "id": "life_home10_main",
+  "name": "門廳",
+  "description": "胡同宅門廳，牆面沉石與玉質脈絡嵌合，淡紫光暈自縫隙沁出，石階覆著絨狀菌絲。此處光線穿過〔板門〕灑入胡同巷，內側導向〔胡廊〕通往各室。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "hutong_lane1",
+      "to": "hutong_lane1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home10_hallway",
+      "to": "life_home10_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_home10_main_exit_lane",
+      "name": "板門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "hutong_lane1",
+      "responses": {
+        "Move": "你推開板門，回到胡同巷。"
+      }
+    },
+    {
+      "id": "life_home10_main_exit_hallway",
+      "name": "胡廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home10_hallway",
+      "responses": {
+        "Move": "你朝內側走去，進入胡廊。"
+      }
+    }
+  ]
+}

@@ -5,37 +5,65 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "lifestreet_st2", "to": "lifestreet_st2", "ui_hidden": true },
-    { "direction": "life_shop04_workshop", "to": "life_shop04_workshop", "ui_hidden": true },
-    { "direction": "life_shop04_storage", "to": "life_shop04_storage", "ui_hidden": true }
+    {
+      "direction": "lifestreet_st2",
+      "to": "lifestreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop04_workshop",
+      "to": "life_shop04_workshop",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop04_storage",
+      "to": "life_shop04_storage",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_shop04_main_exit_st2",
       "name": "浮生大街二段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st2",
-      "responses": { "Move": "你推開鐵框門步出店門，回到浮生大街二段。" }
+      "responses": {
+        "Move": "你推開鐵框門步出店門，回到浮生大街二段。"
+      }
     },
     {
       "id": "life_shop04_main_exit_workshop",
       "name": "工間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop04_workshop",
-      "responses": { "Move": "你朝側邊通道走去，進入工間。" }
+      "responses": {
+        "Move": "你朝側邊通道走去，進入工間。"
+      }
     },
     {
       "id": "life_shop04_main_exit_storage",
       "name": "儲物間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop04_storage",
-      "responses": { "Move": "你往後方走去，進入儲物間。" }
+      "responses": {
+        "Move": "你往後方走去，進入儲物間。"
+      }
     },
     {
       "id": "life_shop04_main_obj_tongs",
       "name": "銅火箸",
-      "sockets": ["Look"],
-      "responses": { "Look": "箸身覆著炭灰與氧化斑，握柄纖維繩纏緊銅身，觸手微溫，略黏。經年火氣沉入肌理，竟似活物。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "箸身覆著炭灰與氧化斑，握柄纖維繩纏緊銅身，觸手微溫，略黏。經年火氣沉入肌理，竟似活物。"
+      }
     }
   ]
 }

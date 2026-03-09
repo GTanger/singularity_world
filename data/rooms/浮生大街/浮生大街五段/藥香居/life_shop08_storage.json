@@ -1,1 +1,43 @@
-{"id":"life_shop08_storage","name":"儲物間","description":"牆面格架為增生石灰質所固，成捆藥草與琉璃瓶堆疊，縫隙透出琥珀光。此處通向前方〔藥香居〕與深處〔內廊〕，可回店頭或往起居處。","tags":[],"zone":"lifestreet","exits":[{"direction":"life_shop08_main","to":"life_shop08_main","ui_hidden":true},{"direction":"life_shop08_hallway","to":"life_shop08_hallway","ui_hidden":true}],"objects":[{"id":"life_shop08_storage_exit_main","name":"藥香居","sockets":["Move"],"move_to_room_id":"life_shop08_main","responses":{"Move":"你回到店面前方。"}},{"id":"life_shop08_storage_exit_hallway","name":"內廊","sockets":["Move"],"move_to_room_id":"life_shop08_hallway","responses":{"Move":"你往內廊走去。"}}]}
+{
+  "id": "life_shop08_storage",
+  "name": "儲物間",
+  "description": "牆面格架為增生石灰質所固，成捆藥草與琉璃瓶堆疊，縫隙透出琥珀光。此處通向前方〔藥香居〕與深處〔內廊〕，可回店頭或往起居處。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_shop08_main",
+      "to": "life_shop08_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop08_hallway",
+      "to": "life_shop08_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop08_storage_exit_main",
+      "name": "藥香居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop08_main",
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
+    },
+    {
+      "id": "life_shop08_storage_exit_hallway",
+      "name": "內廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop08_hallway",
+      "responses": {
+        "Move": "你往內廊走去。"
+      }
+    }
+  ]
+}

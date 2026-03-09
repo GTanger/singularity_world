@@ -5,11 +5,39 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "lifestreet_st4", "to": "lifestreet_st4", "ui_hidden": true },
-    { "direction": "life_home06_hallway", "to": "life_home06_hallway", "ui_hidden": true }
+    {
+      "direction": "lifestreet_st4",
+      "to": "lifestreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home06_hallway",
+      "to": "life_home06_hallway",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    {"id": "life_home06_main_exit_st4", "name": "木門", "sockets": ["Move"], "move_to_room_id": "lifestreet_st4", "responses": {"Move": "你推開木門，回到浮生大街四段。"}},
-    {"id": "life_home06_main_exit_hallway", "name": "礫廊", "sockets": ["Move"], "move_to_room_id": "life_home06_hallway", "responses": {"Move": "你朝內側走去，進入礫廊。"}}
+    {
+      "id": "life_home06_main_exit_st4",
+      "name": "木門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "lifestreet_st4",
+      "responses": {
+        "Move": "你推開木門，回到浮生大街四段。"
+      }
+    },
+    {
+      "id": "life_home06_main_exit_hallway",
+      "name": "礫廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home06_hallway",
+      "responses": {
+        "Move": "你朝內側走去，進入礫廊。"
+      }
+    }
   ]
 }

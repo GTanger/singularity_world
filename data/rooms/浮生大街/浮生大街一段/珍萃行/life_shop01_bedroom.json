@@ -5,21 +5,33 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_shop01_living", "to": "life_shop01_living", "ui_hidden": true }
+    {
+      "direction": "life_shop01_living",
+      "to": "life_shop01_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_shop01_bedroom_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop01_living",
-      "responses": { "Move": "你離開臥室，回到生活起居室。" }
+      "responses": {
+        "Move": "你離開臥室，回到生活起居室。"
+      }
     },
     {
       "id": "life_shop01_bedroom_obj_lamp",
       "name": "油質燈具",
-      "sockets": ["Look"],
-      "responses": { "Look": "容器內裝填著膠狀的發光液體，燈芯呈焦黑色，持續散發微溫。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "容器內裝填著膠狀的發光液體，燈芯呈焦黑色，持續散發微溫。"
+      }
     }
   ]
 }

@@ -5,29 +5,49 @@
   "tags": [],
   "zone": "lifestreet",
   "exits": [
-    { "direction": "life_shop04_main", "to": "life_shop04_main", "ui_hidden": true },
-    { "direction": "life_shop04_living", "to": "life_shop04_living", "ui_hidden": true }
+    {
+      "direction": "life_shop04_main",
+      "to": "life_shop04_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop04_living",
+      "to": "life_shop04_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "life_shop04_workshop_exit_main",
       "name": "燼暖居",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop04_main",
-      "responses": { "Move": "你循來路回到店面前方。" }
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
     },
     {
       "id": "life_shop04_workshop_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop04_living",
-      "responses": { "Move": "你往後方通道走去，進入生活起居室。" }
+      "responses": {
+        "Move": "你往後方通道走去，進入生活起居室。"
+      }
     },
     {
       "id": "life_shop04_workshop_obj_coal",
       "name": "琉璃炭",
-      "sockets": ["Look"],
-      "responses": { "Look": "炭塊表面半透明琉璃質，內裡暗紅脈動隱約可見，邊緣沁出淡紫玉質。觸手微溫，竟似仍有生命沉眠其中。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "炭塊表面半透明琉璃質，內裡暗紅脈動隱約可見，邊緣沁出淡紫玉質。觸手微溫，竟似仍有生命沉眠其中。"
+      }
     }
   ]
 }
