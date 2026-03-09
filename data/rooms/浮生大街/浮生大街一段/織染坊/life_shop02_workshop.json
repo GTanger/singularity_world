@@ -20,34 +20,22 @@
     {
       "id": "life_shop02_workshop_exit_main",
       "name": "織染坊",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop02_main",
-      "responses": {
-        "Move": "你離開織機旁，回到織染坊前廳。"
-      }
+      "responses": { "Move": "你離開織機旁，回到織染坊前廳。" }
     },
     {
       "id": "life_shop02_workshop_exit_stairs",
       "name": "樓梯間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop02_stairwell_1f",
-      "responses": {
-        "Move": "你朝後方通道走去，進入樓梯間。"
-      }
+      "responses": { "Move": "你朝後方通道走去，進入樓梯間。" }
     },
     {
       "id": "life_shop02_workshop_obj_loom",
       "name": "石製織機",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "梭子由一塊完整的紫色水晶磨製而成，正自動在經緯線間穿梭，不留任何摩擦餘熱。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "梭子由一塊完整的紫色水晶磨製而成，正自動在經緯線間穿梭，不留任何摩擦餘熱。" }
     }
   ]
 }

@@ -25,45 +25,29 @@
     {
       "id": "life_shop12_main_exit_lane",
       "name": "胡同巷",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "hutong_lane1",
-      "responses": {
-        "Move": "你掀開布簾，回到胡同巷。"
-      }
+      "responses": { "Move": "你掀開布簾，回到胡同巷。" }
     },
     {
       "id": "life_shop12_main_exit_storage",
       "name": "儲物間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop12_storage",
-      "responses": {
-        "Move": "你朝後方走去，進入儲物間。"
-      }
+      "responses": { "Move": "你朝後方走去，進入儲物間。" }
     },
     {
       "id": "life_shop12_main_exit_hallway",
       "name": "內廊",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop12_hallway",
-      "responses": {
-        "Move": "你往內廊走去。"
-      }
+      "responses": { "Move": "你往內廊走去。" }
     },
     {
       "id": "life_shop12_main_obj_knife",
       "name": "石刀筆",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "刀鋒自礦脈切削而成，握柄纖維繩纏緊石身，沾著少許紫色墨漬。指腹撫過，溫潤略黏。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "刀鋒自礦脈切削而成，握柄纖維繩纏緊石身，沾著少許紫色墨漬。指腹撫過，溫潤略黏。" }
     }
   ]
 }

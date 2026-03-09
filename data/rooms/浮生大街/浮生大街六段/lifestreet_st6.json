@@ -1,7 +1,7 @@
 {
   "id": "lifestreet_st6",
   "name": "浮生大街六段",
-  "description": "暗紫路面延伸至此，兩側玉質脈絡自縫隙沁出，淡紫與琥珀光色沉澱。路側〔茶寮〕石檯陶壺、〔瓦松宅〕簷角瓦松攀生，各據一隅；岔入〔胡同巷〕可見靜墨齋與胡同宅。可經〔浮生大街五段〕折返，或朝〔浮生大街七段〕延伸。",
+  "description": "路漸靜，兩側簷角瓦松與菌絲增多，玉質脈絡自縫隙沁出、與砌石咬合漸顯，淡紫琥珀光色沉在簷下。路側〔茶寮〕石檯陶壺、〔瓦松宅〕簷角瓦松攀生，各據一隅；岔入〔胡同巷〕可見靜墨齋與胡同宅。可經〔浮生大街五段〕折返，或朝〔浮生大街七段〕延伸。",
   "tags": [],
   "zone": "lifestreet",
   "exits": [
@@ -35,87 +35,55 @@
     {
       "id": "st6_exit_st5",
       "name": "浮生大街五段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st5",
-      "responses": {
-        "Move": "你朝浮生大街五段方向折返。"
-      }
+      "responses": { "Move": "你朝浮生大街五段方向折返。" }
     },
     {
       "id": "st6_exit_st7",
       "name": "浮生大街七段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st7",
-      "responses": {
-        "Move": "你朝浮生大街七段方向走去。"
-      }
+      "responses": { "Move": "你朝浮生大街七段方向走去。" }
     },
     {
       "id": "st6_obj_shop11",
       "name": "茶寮",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "石檯沉厚，檯面陶壺與琉璃盞陳列，茶湯餘溫自壺口沁出淡香。門前垂著一道〔布簾〕。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "石檯沉厚，檯面陶壺與琉璃盞陳列，茶湯餘溫自壺口沁出淡香。門前垂著一道〔布簾〕。" }
     },
     {
       "id": "st6_obj_shop11_door",
       "name": "布簾",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop11_main",
-      "responses": {
-        "Move": "你掀開布簾，進入茶寮。"
-      }
+      "responses": { "Move": "你掀開布簾，進入茶寮。" }
     },
     {
       "id": "st6_obj_home09",
       "name": "瓦松宅",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "簷角瓦松自石縫攀生，絨狀葉片覆住簷緣，門前石階覆著絨狀菌絲。入口是一扇半掩的〔木門〕。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "簷角瓦松自石縫攀生，絨狀葉片覆住簷緣，門前石階覆著絨狀菌絲。入口是一扇半掩的〔木門〕。" }
     },
     {
       "id": "st6_obj_home09_door",
       "name": "木門",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home09_main",
-      "responses": {
-        "Move": "你推開木門，進入瓦松宅。"
-      }
+      "responses": { "Move": "你推開木門，進入瓦松宅。" }
     },
     {
       "id": "st6_obj_hutong",
       "name": "胡同巷",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "窄巷岔入，兩側牆面玉質脈絡沁出，巷內可見靜墨齋與胡同宅。入口即〔巷口〕。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "窄巷岔入，兩側牆面玉質脈絡沁出，巷內可見靜墨齋與胡同宅。入口即〔巷口〕。" }
     },
     {
       "id": "st6_obj_hutong_door",
       "name": "巷口",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "hutong_lane1",
-      "responses": {
-        "Move": "你岔入胡同巷。"
-      }
+      "responses": { "Move": "你岔入胡同巷。" }
     }
   ]
 }

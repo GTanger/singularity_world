@@ -25,35 +25,23 @@
     {
       "id": "life_home05_living_exit_hallway",
       "name": "苔廊",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home05_hallway",
-      "responses": {
-        "Move": "你回到苔廊。"
-      }
+      "responses": { "Move": "你回到苔廊。" }
     },
     {
       "id": "life_home05_living_exit_kitchen",
       "name": "灶間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home05_kitchen",
-      "responses": {
-        "Move": "你步入灶間。"
-      }
+      "responses": { "Move": "你步入灶間。" }
     },
     {
       "id": "life_home05_living_exit_bedroom",
       "name": "內臥房",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home05_bedroom",
-      "responses": {
-        "Move": "你步入內臥房。"
-      }
+      "responses": { "Move": "你步入內臥房。" }
     }
   ]
 }

@@ -25,35 +25,23 @@
     {
       "id": "home02_corridor_exit_main",
       "name": "門廳",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home02_main",
-      "responses": {
-        "Move": "你循來路回到門廳。"
-      }
+      "responses": { "Move": "你循來路回到門廳。" }
     },
     {
       "id": "home02_corridor_exit_living",
       "name": "生息室",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home02_living",
-      "responses": {
-        "Move": "你朝側方走去，進入生息室。"
-      }
+      "responses": { "Move": "你朝側方走去，進入生息室。" }
     },
     {
       "id": "home02_corridor_exit_bedroom",
       "name": "盤根臥房",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home02_bedroom",
-      "responses": {
-        "Move": "你往深處走去，步入盤根臥房。"
-      }
+      "responses": { "Move": "你往深處走去，步入盤根臥房。" }
     }
   ]
 }

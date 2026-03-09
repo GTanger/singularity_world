@@ -15,13 +15,9 @@
     {
       "id": "life_home05_courtyard_exit",
       "name": "苔廊",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home05_hallway",
-      "responses": {
-        "Move": "你回到苔廊。"
-      }
+      "responses": { "Move": "你回到苔廊。" }
     }
   ]
 }

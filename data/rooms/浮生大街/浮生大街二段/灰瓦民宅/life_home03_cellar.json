@@ -15,23 +15,15 @@
     {
       "id": "life_home03_cellar_exit_hallway",
       "name": "地窖入口",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home03_hallway",
-      "responses": {
-        "Move": "你順階而上，回到廊道。"
-      }
+      "responses": { "Move": "你順階而上，回到廊道。" }
     },
     {
       "id": "life_home03_cellar_obj_box",
       "name": "封口木箱",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "木箱表面增生結晶裹住箱身，縫隙透出微弱琥珀色光。觸手略黏，竟似箱與晶體共生了。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "木箱表面增生結晶裹住箱身，縫隙透出微弱琥珀色光。觸手略黏，竟似箱與晶體共生了。" }
     }
   ]
 }

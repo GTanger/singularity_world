@@ -25,45 +25,29 @@
     {
       "id": "life_shop10_main_exit_st5",
       "name": "浮生大街五段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st5",
-      "responses": {
-        "Move": "你掀開布簾，回到浮生大街五段。"
-      }
+      "responses": { "Move": "你掀開布簾，回到浮生大街五段。" }
     },
     {
       "id": "life_shop10_main_exit_storage",
       "name": "儲物間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop10_storage",
-      "responses": {
-        "Move": "你朝後方走去，進入儲物間。"
-      }
+      "responses": { "Move": "你朝後方走去，進入儲物間。" }
     },
     {
       "id": "life_shop10_main_exit_hallway",
       "name": "內廊",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop10_hallway",
-      "responses": {
-        "Move": "你往內廊走去。"
-      }
+      "responses": { "Move": "你往內廊走去。" }
     },
     {
       "id": "life_shop10_main_obj_mirror",
       "name": "手持鏡石",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "玉質礦石打磨成橢圓鏡面，緣口嵌在石框內，照面時淡紫與琥珀光色交疊。指觸溫潤，竟似將室內微光攏於一掌。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "玉質礦石打磨成橢圓鏡面，緣口嵌在石框內，照面時淡紫與琥珀光色交疊。指觸溫潤，竟似將室內微光攏於一掌。" }
     }
   ]
 }

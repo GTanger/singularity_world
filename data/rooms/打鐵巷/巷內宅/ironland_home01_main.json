@@ -20,24 +20,16 @@
     {
       "id": "ironland_home01_main_exit_lane",
       "name": "板門",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "ironland_lane1",
-      "responses": {
-        "Move": "你推開板門，回到打鐵一巷。"
-      }
+      "responses": { "Move": "你推開板門，回到打鐵一巷。" }
     },
     {
       "id": "ironland_home01_main_exit_hallway",
       "name": "廊道",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "ironland_home01_hallway",
-      "responses": {
-        "Move": "你朝內側走去，進入廊道。"
-      }
+      "responses": { "Move": "你朝內側走去，進入廊道。" }
     }
   ]
 }

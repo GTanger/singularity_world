@@ -20,24 +20,16 @@
     {
       "id": "life_home05_main_exit_st3",
       "name": "木門",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st3",
-      "responses": {
-        "Move": "你推開木門，回到浮生大街三段。"
-      }
+      "responses": { "Move": "你推開木門，回到浮生大街三段。" }
     },
     {
       "id": "life_home05_main_exit_hallway",
       "name": "苔廊",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home05_hallway",
-      "responses": {
-        "Move": "你朝內側走去，進入苔廊。"
-      }
+      "responses": { "Move": "你朝內側走去，進入苔廊。" }
     }
   ]
 }

@@ -15,23 +15,15 @@
     {
       "id": "life_shop01_garden_exit_living",
       "name": "生活起居室",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop01_living",
-      "responses": {
-        "Move": "你自庭院回到室內，進入生活起居室。"
-      }
+      "responses": { "Move": "你自庭院回到室內，進入生活起居室。" }
     },
     {
       "id": "life_shop01_garden_obj_tree",
       "name": "變異古木",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "樹皮呈現琉璃質感，枝條末梢懸掛著半透明、緩慢舒張的肉質花苞。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "樹皮呈現琉璃質感，枝條末梢懸掛著半透明、緩慢舒張的肉質花苞。" }
     }
   ]
 }

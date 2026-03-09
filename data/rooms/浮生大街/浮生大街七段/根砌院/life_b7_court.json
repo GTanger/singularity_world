@@ -1,0 +1,59 @@
+{
+  "id": "life_b7_court",
+  "name": "中庭",
+  "description": "院心敞庭，根鬚自砌石縫沁出，天光為簷角脈絡所濾，淡紫與琥珀交織。此處三向廊廂匯聚：〔東廊〕〔西廊〕〔後堂〕，欲出院可經〔主廊〕折返前庭、再循院門回七段。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_b7_main",
+      "to": "life_b7_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_b7_east_hall",
+      "to": "life_b7_east_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_b7_west_hall",
+      "to": "life_b7_west_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_b7_back",
+      "to": "life_b7_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_b7_court_exit_main",
+      "name": "主廊",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_b7_main",
+      "responses": { "Move": "你回到主廊。" }
+    },
+    {
+      "id": "life_b7_court_exit_east",
+      "name": "東廊",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_b7_east_hall",
+      "responses": { "Move": "你步入東廊。" }
+    },
+    {
+      "id": "life_b7_court_exit_west",
+      "name": "西廊",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_b7_west_hall",
+      "responses": { "Move": "你步入西廊。" }
+    },
+    {
+      "id": "life_b7_court_exit_back",
+      "name": "後堂",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_b7_back",
+      "responses": { "Move": "你朝後堂走去。" }
+    }
+  ]
+}

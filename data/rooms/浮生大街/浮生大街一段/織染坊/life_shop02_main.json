@@ -25,35 +25,23 @@
     {
       "id": "life_shop02_main_exit_st1",
       "name": "浮生大街一段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st1",
-      "responses": {
-        "Move": "你穿過垂簾，回到浮生大街一段。"
-      }
+      "responses": { "Move": "你穿過垂簾，回到浮生大街一段。" }
     },
     {
       "id": "life_shop02_main_exit_workshop",
       "name": "織造間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop02_workshop",
-      "responses": {
-        "Move": "你朝側邊通道走去，進入織造間。"
-      }
+      "responses": { "Move": "你朝側邊通道走去，進入織造間。" }
     },
     {
       "id": "life_shop02_main_exit_yard",
       "name": "染坊後院",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop02_dye_yard",
-      "responses": {
-        "Move": "你往後方院落走去，踏入染坊後院。"
-      }
+      "responses": { "Move": "你往後方院落走去，踏入染坊後院。" }
     }
   ]
 }

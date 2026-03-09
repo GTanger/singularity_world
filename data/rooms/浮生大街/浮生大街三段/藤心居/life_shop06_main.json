@@ -25,35 +25,23 @@
     {
       "id": "life_shop06_main_exit_st3",
       "name": "浮生大街三段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st3",
-      "responses": {
-        "Move": "你撥開藤簾，回到浮生大街三段。"
-      }
+      "responses": { "Move": "你撥開藤簾，回到浮生大街三段。" }
     },
     {
       "id": "life_shop06_main_exit_hallway",
       "name": "內廊",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop06_hallway",
-      "responses": {
-        "Move": "你往內廊走去。"
-      }
+      "responses": { "Move": "你往內廊走去。" }
     },
     {
       "id": "life_shop06_main_exit_storage",
       "name": "儲藏間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop06_storage",
-      "responses": {
-        "Move": "你步入儲藏間。"
-      }
+      "responses": { "Move": "你步入儲藏間。" }
     }
   ]
 }

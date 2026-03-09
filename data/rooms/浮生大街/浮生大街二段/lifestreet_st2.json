@@ -1,7 +1,7 @@
 {
   "id": "lifestreet_st2",
   "name": "浮生大街二段",
-  "description": "暗紫路面在此略為抬升，兩側簷角為細藤所覆，玉質脈絡自瓦縫沁出，靜謐中唯見微光與沉降的粉塵。路左〔石箋閣〕灰石門面沉穩，石縫間蔓延淡紫紋理；〔燼暖居〕窄窗透出暗紅暖光，門邊琉璃容器隱約可見炭塊脈動。對向〔灰瓦民宅〕深灰瓦片層疊至簷，簷下螢火般的微光自縫隙浮現；〔紅泥民宅〕赭色泥漿裹住石塊，裂處沁出玉質，竟不顯頹敗，反有沉澱後的穩重。遠處延伸向〔浮生大街一段〕與〔浮生大街三段〕。",
+  "description": "路面在此略為抬升，暗紫漸顯，兩側簷角為細藤所覆，玉質脈絡自瓦縫沁出。靜謐中唯見微光與沉降的粉塵。路左〔石箋閣〕灰石門面沉穩、石縫間蔓延淡紫紋理，〔燼暖居〕窄窗透出暗紅暖光、門邊琉璃容器隱約可見炭塊脈動；對向〔灰瓦民宅〕深灰瓦片層疊至簷、簷下螢火般微光自縫隙浮現，〔紅泥民宅〕赭色泥漿裹住石塊、裂處沁出玉質，反有沉澱後的穩重。遠處延伸向〔浮生大街一段〕與〔浮生大街三段〕。",
   "tags": [],
   "zone": "lifestreet",
   "exits": [
@@ -40,108 +40,68 @@
     {
       "id": "st2_exit_st1",
       "name": "浮生大街一段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st1",
-      "responses": {
-        "Move": "你朝浮生大街一段方向走去。"
-      }
+      "responses": { "Move": "你朝浮生大街一段方向走去。" }
     },
     {
       "id": "st2_exit_st3",
       "name": "浮生大街三段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st3",
-      "responses": {
-        "Move": "你朝浮生大街三段方向走去。"
-      }
+      "responses": { "Move": "你朝浮生大街三段方向走去。" }
     },
     {
       "id": "st2_obj_shop03",
       "name": "石箋閣",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "灰石門框沉厚，石縫間沁出玉質脈絡，框內成疊石片與紙卷蒙著一層粉塵。門口垂掛刻有符號的〔木牌〕，布簾邊緣竟攀著細密菌絲，在暗處泛淡紫微光。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "灰石門框沉厚，石縫間沁出玉質脈絡，框內成疊石片與紙卷蒙著一層粉塵。門口垂掛刻有符號的〔木牌〕，布簾邊緣竟攀著細密菌絲，在暗處泛淡紫微光。" }
     },
     {
       "id": "st2_obj_shop03_door",
       "name": "木牌",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop03_main",
-      "responses": {
-        "Move": "你掀開木牌旁的布簾，進入石箋閣。"
-      }
+      "responses": { "Move": "你掀開木牌旁的布簾，進入石箋閣。" }
     },
     {
       "id": "st2_obj_shop04",
       "name": "燼暖居",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "窄窗透出暗紅暖光，門邊琉璃容器盛著半透明炭塊，內裡暗紅脈動如呼吸。鐵架石槽圍出入口，〔鐵框門〕框緣沁出玉質，與石牆嵌合。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "窄窗透出暗紅暖光，門邊琉璃容器盛著半透明炭塊，內裡暗紅脈動如呼吸。鐵架石槽圍出入口，〔鐵框門〕框緣沁出玉質，與石牆嵌合。" }
     },
     {
       "id": "st2_obj_shop04_door",
       "name": "鐵框門",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop04_main",
-      "responses": {
-        "Move": "你推開鐵框門，進入燼暖居。"
-      }
+      "responses": { "Move": "你推開鐵框門，進入燼暖居。" }
     },
     {
       "id": "st2_obj_home03",
       "name": "灰瓦民宅",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "深灰瓦片層疊至簷，簷下脈絡自縫隙蔓延而出，螢火般的幽光隱約。門前石階伏貼於地，中央半掩的〔板門〕木紋沁出淡紫膠質，觸手當是溫潤。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "深灰瓦片層疊至簷，簷下脈絡自縫隙蔓延而出，螢火般的幽光隱約。門前石階伏貼於地，中央半掩的〔板門〕木紋沁出淡紫膠質，觸手當是溫潤。" }
     },
     {
       "id": "st2_obj_home03_door",
       "name": "板門",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home03_main",
-      "responses": {
-        "Move": "你推開板門，進入灰瓦民宅。"
-      }
+      "responses": { "Move": "你推開板門，進入灰瓦民宅。" }
     },
     {
       "id": "st2_obj_home04",
       "name": "紅泥民宅",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "赭色泥漿裹住底層石塊，裂處玉質沁出，淡紫微光沉靜。入口一道〔竹簾〕垂掛，簾緣細藤攀附牆面，竟將門框纏得更牢。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "赭色泥漿裹住底層石塊，裂處玉質沁出，淡紫微光沉靜。入口一道〔竹簾〕垂掛，簾緣細藤攀附牆面，竟將門框纏得更牢。" }
     },
     {
       "id": "st2_obj_home04_door",
       "name": "竹簾",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home04_main",
-      "responses": {
-        "Move": "你撥開竹簾，進入紅泥民宅。"
-      }
+      "responses": { "Move": "你撥開竹簾，進入紅泥民宅。" }
     }
   ]
 }

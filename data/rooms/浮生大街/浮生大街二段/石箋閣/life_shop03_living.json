@@ -20,34 +20,22 @@
     {
       "id": "life_shop03_living_exit_hallway",
       "name": "內走廊",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop03_hallway",
-      "responses": {
-        "Move": "你離開圓桌，朝內走廊走去。"
-      }
+      "responses": { "Move": "你離開圓桌，朝內走廊走去。" }
     },
     {
       "id": "life_shop03_living_exit_bedroom",
       "name": "私人臥室",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop03_bedroom",
-      "responses": {
-        "Move": "你推開側門，步入私人臥室。"
-      }
+      "responses": { "Move": "你推開側門，步入私人臥室。" }
     },
     {
       "id": "life_shop03_living_obj_shelf",
       "name": "木格架",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "格架深色木料與石榫咬合牢固，表面一層玉質粉塵沉積，縫隙沁出淡紫微光。歲月與增生共築，反更穩當。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "格架深色木料與石榫咬合牢固，表面一層玉質粉塵沉積，縫隙沁出淡紫微光。歲月與增生共築，反更穩當。" }
     }
   ]
 }

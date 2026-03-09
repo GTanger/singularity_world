@@ -20,24 +20,16 @@
     {
       "id": "life_shop05_back_exit_kiln",
       "name": "窯間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop05_kiln",
-      "responses": {
-        "Move": "你回到窯間。"
-      }
+      "responses": { "Move": "你回到窯間。" }
     },
     {
       "id": "life_shop05_back_exit_living",
       "name": "生活起居室",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop05_living",
-      "responses": {
-        "Move": "你步入生活起居室。"
-      }
+      "responses": { "Move": "你步入生活起居室。" }
     }
   ]
 }

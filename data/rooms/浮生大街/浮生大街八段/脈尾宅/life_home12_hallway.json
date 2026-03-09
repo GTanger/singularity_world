@@ -1,0 +1,47 @@
+{
+  "id": "life_home12_hallway",
+  "name": "脈廊",
+  "description": "廊道兩壁脈絡自簷角垂落、與石縫咬合，淡紫與琥珀光暈沉靜。此處通〔門廳〕〔生息室〕與〔小院〕，可出街、入室或至院中。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_home12_main",
+      "to": "life_home12_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home12_living",
+      "to": "life_home12_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home12_courtyard",
+      "to": "life_home12_courtyard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_home12_hallway_exit_main",
+      "name": "門廳",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home12_main",
+      "responses": { "Move": "你回到門廳。" }
+    },
+    {
+      "id": "life_home12_hallway_exit_living",
+      "name": "生息室",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home12_living",
+      "responses": { "Move": "你步入生息室。" }
+    },
+    {
+      "id": "life_home12_hallway_exit_courtyard",
+      "name": "小院",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home12_courtyard",
+      "responses": { "Move": "你踏入小院。" }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "id": "lifestreet_st9",
   "name": "浮生大街九段",
-  "description": "暗紫路面延伸至街尾，兩側玉質脈絡自縫隙沁出，淡紫與琥珀光色沉澱。此處為大街盡頭，建築尚未建置，唯見脈絡與簷角沉靜。可經〔浮生大街八段〕折返。",
+  "description": "路止於此。前方玉質脈絡自地縫與簷角垂落、與砌石交纏成壁，藤狀菌絲與石屑覆滿路面，淡紫琥珀光色在障壁後隱約流轉。大街被環境阻斷，唯能經〔浮生大街八段〕折返。",
   "tags": [],
   "zone": "lifestreet",
   "exits": [
@@ -15,13 +15,15 @@
     {
       "id": "st9_exit_st8",
       "name": "浮生大街八段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st8",
-      "responses": {
-        "Move": "你朝浮生大街八段方向折返。"
-      }
+      "responses": { "Move": "你朝浮生大街八段方向折返。" }
+    },
+    {
+      "id": "st9_obj_stone",
+      "name": "脈絡匯石",
+      "sockets": ["Look"],
+      "responses": { "Look": "一方矮石踞於路側，玉質脈絡自石縫沁出、與石面咬合，淡紫琥珀光色隱約流轉，似匯聚又似待延。" }
     }
   ]
 }

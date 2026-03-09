@@ -1,0 +1,23 @@
+{
+  "id": "life_home12_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣密佈，簷角脈絡垂至牆根、與砌石咬合，淡紫琥珀微光自縫隙濾下。此處僅通〔脈廊〕，循廊即回門廳或他室。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_home12_hallway",
+      "to": "life_home12_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_home12_courtyard_exit",
+      "name": "脈廊",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_home12_hallway",
+      "responses": { "Move": "你回到脈廊。" }
+    }
+  ]
+}

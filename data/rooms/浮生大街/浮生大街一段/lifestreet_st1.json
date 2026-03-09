@@ -1,7 +1,7 @@
 {
   "id": "lifestreet_st1",
   "name": "浮生大街一段",
-  "description": "暗紫路面導向〔四路街口〕與〔浮生大街二段〕。路側〔珍萃行〕與〔織染坊〕牆面覆蓋玉質紋理。對向為〔青磚民宅〕與〔藤蔓民宅〕，門廊嵌入增生植被。空氣沉靜。",
+  "description": "路面自〔四路街口〕延伸而來，尚見石紋與微塵，暗紫未深。路側〔珍萃行〕與〔織染坊〕牆面覆蓋玉質紋理，對向〔青磚民宅〕與〔藤蔓民宅〕門廊嵌入增生植被。大街由此導向〔浮生大街二段〕，空氣沉靜。",
   "tags": [],
   "zone": "lifestreet",
   "exits": [
@@ -40,108 +40,68 @@
     {
       "id": "st1_exit_st4z",
       "name": "四路街口",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "street4zone",
-      "responses": {
-        "Move": "你朝四路街口方向走去。"
-      }
+      "responses": { "Move": "你朝四路街口方向走去。" }
     },
     {
       "id": "st1_exit_st2",
       "name": "浮生大街二段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st2",
-      "responses": {
-        "Move": "你朝浮生大街二段方向走去。"
-      }
+      "responses": { "Move": "你朝浮生大街二段方向走去。" }
     },
     {
       "id": "st1_obj_shop01",
       "name": "珍萃行",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "櫃檯由翡翠質礦石切削而成，後方設有一處通往內部的〔側門〕。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "櫃檯由翡翠質礦石切削而成，後方設有一處通往內部的〔側門〕。" }
     },
     {
       "id": "st1_obj_shop01_door",
       "name": "側門",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop01_main",
-      "responses": {
-        "Move": "你推開了側門，進入珍萃行。"
-      }
+      "responses": { "Move": "你推開了側門，進入珍萃行。" }
     },
     {
       "id": "st1_obj_shop02",
       "name": "織染坊",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "外牆掛滿流動紫光軌跡的絲綢，門戶位置垂掛一張〔厚重布簾〕。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "外牆掛滿流動紫光軌跡的絲綢，門戶位置垂掛一張〔厚重布簾〕。" }
     },
     {
       "id": "st1_obj_shop02_door",
       "name": "厚重布簾",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop02_main",
-      "responses": {
-        "Move": "你拉開了厚重布簾，進入織染坊。"
-      }
+      "responses": { "Move": "你拉開了厚重布簾，進入織染坊。" }
     },
     {
       "id": "st1_obj_home01",
       "name": "青磚民宅",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "牆面青磚滲出紫色膠質，中心位置設有一扇半掩的〔窄木門〕。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "牆面青磚滲出紫色膠質，中心位置設有一扇半掩的〔窄木門〕。" }
     },
     {
       "id": "st1_obj_home01_door",
       "name": "窄木門",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home01_main",
-      "responses": {
-        "Move": "你推開了窄木門，進入青磚民宅。"
-      }
+      "responses": { "Move": "你推開了窄木門，進入青磚民宅。" }
     },
     {
       "id": "st1_obj_home02",
       "name": "藤蔓民宅",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "肥厚根系覆蓋建築輪廓，撥開葉叢可見一個〔垂簾入口〕。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "肥厚根系覆蓋建築輪廓，撥開葉叢可見一個〔垂簾入口〕。" }
     },
     {
       "id": "st1_obj_home02_door",
       "name": "垂簾入口",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home02_main",
-      "responses": {
-        "Move": "你拉開了垂簾，進入藤蔓民宅。"
-      }
+      "responses": { "Move": "你拉開了垂簾，進入藤蔓民宅。" }
     }
   ]
 }

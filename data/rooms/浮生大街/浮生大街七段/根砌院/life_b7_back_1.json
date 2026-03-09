@@ -1,0 +1,23 @@
+{
+  "id": "life_b7_back_1",
+  "name": "後一室",
+  "description": "後室一隅，壁面脈絡沁出淡紫，石几伏貼於地。此處僅通〔後堂〕，返身即回中庭。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_b7_back",
+      "to": "life_b7_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_b7_back_1_exit",
+      "name": "後堂",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_b7_back",
+      "responses": { "Move": "你回到後堂。" }
+    }
+  ]
+}

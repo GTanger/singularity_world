@@ -25,45 +25,29 @@
     {
       "id": "life_shop04_living_exit_workshop",
       "name": "工間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop04_workshop",
-      "responses": {
-        "Move": "你朝工間方向走去。"
-      }
+      "responses": { "Move": "你朝工間方向走去。" }
     },
     {
       "id": "life_shop04_living_exit_storage",
       "name": "儲物間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop04_storage",
-      "responses": {
-        "Move": "你往儲物間走去。"
-      }
+      "responses": { "Move": "你往儲物間走去。" }
     },
     {
       "id": "life_shop04_living_exit_bedroom",
       "name": "私人臥室",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop04_bedroom",
-      "responses": {
-        "Move": "你推開側門，步入私人臥室。"
-      }
+      "responses": { "Move": "你推開側門，步入私人臥室。" }
     },
     {
       "id": "life_shop04_living_obj_jar",
       "name": "陶暖壺",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "壺身厚實，表面淡紫玉質沁入陶胎，內可盛炭火。觸手微溫略黏，冬日當是良伴。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "壺身厚實，表面淡紫玉質沁入陶胎，內可盛炭火。觸手微溫略黏，冬日當是良伴。" }
     }
   ]
 }

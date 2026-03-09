@@ -20,24 +20,16 @@
     {
       "id": "life_shop05_workshop_exit_main",
       "name": "石髓館",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop05_main",
-      "responses": {
-        "Move": "你回到店面前方。"
-      }
+      "responses": { "Move": "你回到店面前方。" }
     },
     {
       "id": "life_shop05_workshop_exit_back",
       "name": "窯間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop05_kiln",
-      "responses": {
-        "Move": "你步入窯間。"
-      }
+      "responses": { "Move": "你步入窯間。" }
     }
   ]
 }

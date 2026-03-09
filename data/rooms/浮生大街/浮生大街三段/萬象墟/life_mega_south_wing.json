@@ -25,35 +25,23 @@
     {
       "id": "life_mega_south_exit_court",
       "name": "中庭",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_mega_court",
-      "responses": {
-        "Move": "你回到中庭。"
-      }
+      "responses": { "Move": "你回到中庭。" }
     },
     {
       "id": "life_mega_south_exit_1",
       "name": "南軒一",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_mega_south_1",
-      "responses": {
-        "Move": "你步入南軒一。"
-      }
+      "responses": { "Move": "你步入南軒一。" }
     },
     {
       "id": "life_mega_south_exit_2",
       "name": "南軒二",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_mega_south_2",
-      "responses": {
-        "Move": "你步入南軒二。"
-      }
+      "responses": { "Move": "你步入南軒二。" }
     }
   ]
 }

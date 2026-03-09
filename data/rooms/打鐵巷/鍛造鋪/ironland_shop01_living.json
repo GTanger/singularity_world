@@ -25,35 +25,23 @@
     {
       "id": "ironland_shop01_living_exit_workshop",
       "name": "工間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "ironland_shop01_workshop",
-      "responses": {
-        "Move": "你朝工間方向走去。"
-      }
+      "responses": { "Move": "你朝工間方向走去。" }
     },
     {
       "id": "ironland_shop01_living_exit_storage",
       "name": "儲物間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "ironland_shop01_storage",
-      "responses": {
-        "Move": "你往儲物間走去。"
-      }
+      "responses": { "Move": "你往儲物間走去。" }
     },
     {
       "id": "ironland_shop01_living_exit_bedroom",
       "name": "私人臥室",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "ironland_shop01_bedroom",
-      "responses": {
-        "Move": "你推開側門，步入私人臥室。"
-      }
+      "responses": { "Move": "你推開側門，步入私人臥室。" }
     }
   ]
 }

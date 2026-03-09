@@ -15,23 +15,15 @@
     {
       "id": "life_home01_bedroom_exit_living",
       "name": "生息室",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home01_living",
-      "responses": {
-        "Move": "你離開臥房，回到生息室。"
-      }
+      "responses": { "Move": "你離開臥房，回到生息室。" }
     },
     {
       "id": "life_home01_bedroom_obj_lamp",
       "name": "石製燈台",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "燈芯由一段玉質化的枯木構成，頂端懸浮著一顆自轉的高能 Token 晶體。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "燈芯由一段玉質化的枯木構成，頂端懸浮著一顆自轉的高能 Token 晶體。" }
     }
   ]
 }

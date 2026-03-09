@@ -1,7 +1,7 @@
 {
   "id": "lifestreet_st7",
   "name": "浮生大街七段",
-  "description": "暗紫路面延伸至此，兩側玉質脈絡自縫隙沁出，淡紫與琥珀光色沉澱。建築尚未建置，唯見脈絡與簷角沉靜。可經〔浮生大街六段〕折返，或朝〔浮生大街八段〕延伸。",
+  "description": "路至此為大建築所據，兩側脈絡自地縫攀上牆面、與根鬚砌石咬合，淡紫琥珀光色沉在門洞高闊的陰影前。路側矗立〔根砌院〕，門洞高闊，牆面根鬚與砌石咬合。可經〔浮生大街六段〕折返，或朝〔浮生大街八段〕延伸。",
   "tags": [],
   "zone": "lifestreet",
   "exits": [
@@ -14,30 +14,40 @@
       "direction": "lifestreet_st8",
       "to": "lifestreet_st8",
       "ui_hidden": true
+    },
+    {
+      "direction": "life_b7_gate",
+      "to": "life_b7_gate",
+      "ui_hidden": true
     }
   ],
   "objects": [
     {
       "id": "st7_exit_st6",
       "name": "浮生大街六段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st6",
-      "responses": {
-        "Move": "你朝浮生大街六段方向折返。"
-      }
+      "responses": { "Move": "你朝浮生大街六段方向折返。" }
     },
     {
       "id": "st7_exit_st8",
       "name": "浮生大街八段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st8",
-      "responses": {
-        "Move": "你朝浮生大街八段方向走去。"
-      }
+      "responses": { "Move": "你朝浮生大街八段方向走去。" }
+    },
+    {
+      "id": "st7_obj_b7",
+      "name": "根砌院",
+      "sockets": ["Look"],
+      "responses": { "Look": "根砌院為七段大建築，門洞高闊，牆面根鬚自石縫沁出與砌石咬合，簷角脈絡垂落。入口即〔院門〕。" }
+    },
+    {
+      "id": "st7_obj_b7_door",
+      "name": "院門",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_b7_gate",
+      "responses": { "Move": "你步入院門，進入根砌院。" }
     }
   ]
 }

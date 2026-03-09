@@ -1,0 +1,23 @@
+{
+  "id": "life_b7_east_1",
+  "name": "東一室",
+  "description": "小室四方，壁面根鬚自砌石縫沁出，石几伏貼於地，室內極靜。此處僅通〔東廊〕，循廊即回前庭或中庭。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_b7_east_hall",
+      "to": "life_b7_east_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_b7_east_1_exit",
+      "name": "東廊",
+      "sockets": ["Move"],
+      "move_to_room_id": "life_b7_east_hall",
+      "responses": { "Move": "你步出東一室，回到東廊。" }
+    }
+  ]
+}

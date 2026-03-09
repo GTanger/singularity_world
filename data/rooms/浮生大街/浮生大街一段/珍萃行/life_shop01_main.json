@@ -20,34 +20,22 @@
     {
       "id": "life_shop01_main_exit_st1",
       "name": "浮生大街一段",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "lifestreet_st1",
-      "responses": {
-        "Move": "你經櫃檯一側步出店門，回到浮生大街一段。"
-      }
+      "responses": { "Move": "你經櫃檯一側步出店門，回到浮生大街一段。" }
     },
     {
       "id": "life_shop01_main_exit_storage",
       "name": "儲物間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_shop01_storage",
-      "responses": {
-        "Move": "你朝後方通道走去，進入儲物間。"
-      }
+      "responses": { "Move": "你朝後方通道走去，進入儲物間。" }
     },
     {
       "id": "life_shop01_main_obj_scale",
       "name": "黃銅天平",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "橫桿兩端懸掛著淺平盤，底座已被暗綠色琉璃質固定在櫃面上。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "橫桿兩端懸掛著淺平盤，底座已被暗綠色琉璃質固定在櫃面上。" }
     }
   ]
 }

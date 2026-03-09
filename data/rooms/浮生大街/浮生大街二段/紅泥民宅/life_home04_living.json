@@ -25,45 +25,29 @@
     {
       "id": "life_home04_living_exit_corridor",
       "name": "泥廊道",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home04_corridor",
-      "responses": {
-        "Move": "你離開石几旁，回到泥廊道。"
-      }
+      "responses": { "Move": "你離開石几旁，回到泥廊道。" }
     },
     {
       "id": "life_home04_living_exit_kitchen",
       "name": "灶間",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home04_kitchen",
-      "responses": {
-        "Move": "你朝側方走去，進入灶間。"
-      }
+      "responses": { "Move": "你朝側方走去，進入灶間。" }
     },
     {
       "id": "life_home04_living_exit_bedroom",
       "name": "內臥房",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home04_bedroom",
-      "responses": {
-        "Move": "你推開後方門扉，步入內臥房。"
-      }
+      "responses": { "Move": "你推開後方門扉，步入內臥房。" }
     },
     {
       "id": "life_home04_living_obj_table",
       "name": "石几",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "石几表面粗獷紋路深刻，凹槽內半透明綠色結晶沉積，觸手溫潤。歲月與增生共築，反更沉穩。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "石几表面粗獷紋路深刻，凹槽內半透明綠色結晶沉積，觸手溫潤。歲月與增生共築，反更沉穩。" }
     }
   ]
 }

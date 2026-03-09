@@ -15,13 +15,9 @@
     {
       "id": "life_mega_north_back_3_exit",
       "name": "北廳",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_mega_north_hall",
-      "responses": {
-        "Move": "你回到北廳。"
-      }
+      "responses": { "Move": "你回到北廳。" }
     }
   ]
 }

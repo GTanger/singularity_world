@@ -25,45 +25,29 @@
     {
       "id": "life_home04_corridor_exit_main",
       "name": "門廳",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home04_main",
-      "responses": {
-        "Move": "你循來路回到門廳。"
-      }
+      "responses": { "Move": "你循來路回到門廳。" }
     },
     {
       "id": "life_home04_corridor_exit_living",
       "name": "生息室",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home04_living",
-      "responses": {
-        "Move": "你朝側方走去，進入生息室。"
-      }
+      "responses": { "Move": "你朝側方走去，進入生息室。" }
     },
     {
       "id": "life_home04_corridor_exit_courtyard",
       "name": "小院",
-      "sockets": [
-        "Move"
-      ],
+      "sockets": ["Move"],
       "move_to_room_id": "life_home04_courtyard",
-      "responses": {
-        "Move": "你穿過後門，踏入小院。"
-      }
+      "responses": { "Move": "你穿過後門，踏入小院。" }
     },
     {
       "id": "life_home04_corridor_obj_herb",
       "name": "乾燥藥草",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "草束纖維間細小晶體沉積，散發淡淡礦物氣味，末梢沁出微量膠質。枯而不朽，反成支撐。"
-      }
+      "sockets": ["Look"],
+      "responses": { "Look": "草束纖維間細小晶體沉積，散發淡淡礦物氣味，末梢沁出微量膠質。枯而不朽，反成支撐。" }
     }
   ]
 }
