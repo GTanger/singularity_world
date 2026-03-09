@@ -15,9 +15,13 @@
     {
       "id": "life_mega_west_05_exit",
       "name": "西廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_west_hall",
-      "responses": { "Move": "你步出西五室，回到西廊。" }
+      "responses": {
+        "Move": "你步出西五室，回到西廊。"
+      }
     }
   ]
 }

@@ -5,11 +5,39 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_shop03_main", "to": "ironland_shop03_main", "ui_hidden": true },
-    { "direction": "ironland_shop03_living", "to": "ironland_shop03_living", "ui_hidden": true }
+    {
+      "direction": "ironland_shop03_main",
+      "to": "ironland_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop03_living",
+      "to": "ironland_shop03_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_shop03_storage_exit_main", "name": "錘音鋪", "sockets": ["Move"], "move_to_room_id": "ironland_shop03_main", "responses": { "Move": "你循來路回到店面前方。" }},
-    { "id": "ironland_shop03_storage_exit_living", "name": "生活起居室", "sockets": ["Move"], "move_to_room_id": "ironland_shop03_living", "responses": { "Move": "你沿側道走去，進入生活起居室。" }}
+    {
+      "id": "ironland_shop03_storage_exit_main",
+      "name": "錘音鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop03_main",
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
+    },
+    {
+      "id": "ironland_shop03_storage_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop03_living",
+      "responses": {
+        "Move": "你沿側道走去，進入生活起居室。"
+      }
+    }
   ]
 }

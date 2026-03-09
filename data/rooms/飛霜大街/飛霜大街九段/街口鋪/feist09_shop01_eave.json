@@ -1,0 +1,27 @@
+{
+  "id": "feist09_shop01_eave",
+  "name": "簷下",
+  "description": "街口鋪簷下一條窄廊，探頭即見街面人來人往、霜晶落在肩頭即化；風從街口灌進來，袖口生寒，可在此站一站再進店。此處僅通〔店頭〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_shop01_main",
+      "to": "feist09_shop01_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_shop01_eave_exit_main",
+      "name": "店頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop01_main",
+      "responses": {
+        "Move": "你回到店頭。"
+      }
+    }
+  ]
+}

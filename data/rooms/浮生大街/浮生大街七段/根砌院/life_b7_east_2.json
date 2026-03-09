@@ -15,9 +15,13 @@
     {
       "id": "life_b7_east_2_exit",
       "name": "東廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_east_hall",
-      "responses": { "Move": "你步出東二室，回到東廊。" }
+      "responses": {
+        "Move": "你步出東二室，回到東廊。"
+      }
     }
   ]
 }

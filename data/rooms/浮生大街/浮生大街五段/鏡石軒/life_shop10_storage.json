@@ -20,16 +20,24 @@
     {
       "id": "life_shop10_storage_exit_main",
       "name": "鏡石軒",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop10_main",
-      "responses": { "Move": "你回到店面前方。" }
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
     },
     {
       "id": "life_shop10_storage_exit_hallway",
       "name": "內廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop10_hallway",
-      "responses": { "Move": "你往內廊走去。" }
+      "responses": {
+        "Move": "你往內廊走去。"
+      }
     }
   ]
 }

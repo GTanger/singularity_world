@@ -1,0 +1,27 @@
+{
+  "id": "feist02_shop02_yard",
+  "name": "小天井",
+  "description": "風爐鋪小天井三面高牆、煙囪餘燼與霜晶同落，熱氣自巷尾升騰、與簷角霜晶在頭頂交織成霧，石地沁涼、堆著爐料與碎炭；游離輻射下熱霧不散，二段熱氣釋出端的天空在此壓成一方，一門通〔內廊〕。此處僅通〔內廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_hall",
+      "to": "feist02_shop02_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_y_exit_hall",
+      "name": "內廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_hall",
+      "responses": {
+        "Move": "你退回內廊。"
+      }
+    }
+  ]
+}

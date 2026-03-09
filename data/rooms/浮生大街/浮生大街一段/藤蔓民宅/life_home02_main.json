@@ -20,22 +20,34 @@
     {
       "id": "home02_main_exit_st1",
       "name": "垂簾入口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st1",
-      "responses": { "Move": "你撥開垂簾，回到浮生大街一段。" }
+      "responses": {
+        "Move": "你撥開垂簾，回到浮生大街一段。"
+      }
     },
     {
       "id": "home02_main_exit_corridor",
       "name": "根鬚廊道",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home02_corridor",
-      "responses": { "Move": "你朝內側通道走去，進入根鬚廊道。" }
+      "responses": {
+        "Move": "你朝內側通道走去，進入根鬚廊道。"
+      }
     },
     {
       "id": "home02_main_obj_stand",
       "name": "石製燈架",
-      "sockets": ["Look"],
-      "responses": { "Look": "粗糙石柱表面被蔓延的藤蔓纏繞，頂端嵌入一顆持續散發冷白光的玉質晶體。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "粗糙石柱表面被蔓延的藤蔓纏繞，頂端嵌入一顆持續散發冷白光的玉質晶體。"
+      }
     }
   ]
 }

@@ -15,9 +15,13 @@
     {
       "id": "ironland_shop04_kitchen_exit",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop04_living",
-      "responses": { "Move": "你回到生活起居室。" }
+      "responses": {
+        "Move": "你回到生活起居室。"
+      }
     }
   ]
 }

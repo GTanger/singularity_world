@@ -20,16 +20,24 @@
     {
       "id": "life_shop10_hallway_exit_storage",
       "name": "儲物間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop10_storage",
-      "responses": { "Move": "你回到儲物間。" }
+      "responses": {
+        "Move": "你回到儲物間。"
+      }
     },
     {
       "id": "life_shop10_hallway_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop10_living",
-      "responses": { "Move": "你步入生活起居室。" }
+      "responses": {
+        "Move": "你步入生活起居室。"
+      }
     }
   ]
 }

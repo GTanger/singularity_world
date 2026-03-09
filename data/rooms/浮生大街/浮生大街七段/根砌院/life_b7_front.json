@@ -20,16 +20,24 @@
     {
       "id": "life_b7_front_exit_gate",
       "name": "院門",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_gate",
-      "responses": { "Move": "你朝院門走去，步出根砌院。" }
+      "responses": {
+        "Move": "你朝院門走去，步出根砌院。"
+      }
     },
     {
       "id": "life_b7_front_exit_main",
       "name": "主廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_main",
-      "responses": { "Move": "你朝主廊走去。" }
+      "responses": {
+        "Move": "你朝主廊走去。"
+      }
     }
   ]
 }

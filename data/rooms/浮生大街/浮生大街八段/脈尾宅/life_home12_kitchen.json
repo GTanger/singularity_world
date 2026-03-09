@@ -15,9 +15,13 @@
     {
       "id": "life_home12_kitchen_exit",
       "name": "生息室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home12_living",
-      "responses": { "Move": "你回到生息室。" }
+      "responses": {
+        "Move": "你回到生息室。"
+      }
     }
   ]
 }

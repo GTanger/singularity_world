@@ -1,0 +1,91 @@
+{
+  "id": "feist07_shop02_hall",
+  "name": "過廳",
+  "description": "簷下茶住家過廳：一廳連四向，〔起居〕在左、〔灶間〕在右，正面兩扇門各通〔臥一〕〔臥二〕。火盆餘灰未清、鞋跡印在磚上，簾外小天井漏進霜氣與一點天光。此處通〔小天井〕、〔起居〕、〔灶間〕、〔臥一〕、〔臥二〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_shop02_yard",
+      "to": "feist07_shop02_yard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_shop02_living",
+      "to": "feist07_shop02_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_shop02_kitchen",
+      "to": "feist07_shop02_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_shop02_bed1",
+      "to": "feist07_shop02_bed1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_shop02_bed2",
+      "to": "feist07_shop02_bed2",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_shop02_h_exit_yard",
+      "name": "小天井",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_yard",
+      "responses": {
+        "Move": "你退回小天井。"
+      }
+    },
+    {
+      "id": "feist07_shop02_h_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_living",
+      "responses": {
+        "Move": "你往起居。"
+      }
+    },
+    {
+      "id": "feist07_shop02_h_exit_kitchen",
+      "name": "灶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_kitchen",
+      "responses": {
+        "Move": "你往灶間。"
+      }
+    },
+    {
+      "id": "feist07_shop02_h_exit_bed1",
+      "name": "臥一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_bed1",
+      "responses": {
+        "Move": "你入臥一。"
+      }
+    },
+    {
+      "id": "feist07_shop02_h_exit_bed2",
+      "name": "臥二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_bed2",
+      "responses": {
+        "Move": "你入臥二。"
+      }
+    }
+  ]
+}

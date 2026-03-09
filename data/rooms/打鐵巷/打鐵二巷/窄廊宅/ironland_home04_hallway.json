@@ -5,11 +5,39 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_home04_main", "to": "ironland_home04_main", "ui_hidden": true },
-    { "direction": "ironland_home04_living", "to": "ironland_home04_living", "ui_hidden": true }
+    {
+      "direction": "ironland_home04_main",
+      "to": "ironland_home04_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home04_living",
+      "to": "ironland_home04_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_home04_hallway_exit_main", "name": "門廳", "sockets": ["Move"], "move_to_room_id": "ironland_home04_main", "responses": { "Move": "你循來路回到門廳。" } },
-    { "id": "ironland_home04_hallway_exit_living", "name": "生息室", "sockets": ["Move"], "move_to_room_id": "ironland_home04_living", "responses": { "Move": "你朝通道深處走去，進入生息室。" } }
+    {
+      "id": "ironland_home04_hallway_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home04_main",
+      "responses": {
+        "Move": "你循來路回到門廳。"
+      }
+    },
+    {
+      "id": "ironland_home04_hallway_exit_living",
+      "name": "生息室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home04_living",
+      "responses": {
+        "Move": "你朝通道深處走去，進入生息室。"
+      }
+    }
   ]
 }

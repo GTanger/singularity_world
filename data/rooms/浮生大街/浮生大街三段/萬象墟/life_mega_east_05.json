@@ -15,9 +15,13 @@
     {
       "id": "life_mega_east_05_exit",
       "name": "東廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_east_hall",
-      "responses": { "Move": "你步出東五室，回到東廊。" }
+      "responses": {
+        "Move": "你步出東五室，回到東廊。"
+      }
     }
   ]
 }

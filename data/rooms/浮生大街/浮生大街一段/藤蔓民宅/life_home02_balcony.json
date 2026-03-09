@@ -15,9 +15,13 @@
     {
       "id": "home02_balcony_exit_loft",
       "name": "綠蔭閣樓",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home02_loft",
-      "responses": { "Move": "你自葉台退回室內，進入綠蔭閣樓。" }
+      "responses": {
+        "Move": "你自葉台退回室內，進入綠蔭閣樓。"
+      }
     }
   ]
 }

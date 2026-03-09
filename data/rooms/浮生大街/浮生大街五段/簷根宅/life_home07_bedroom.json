@@ -15,9 +15,13 @@
     {
       "id": "life_home07_bedroom_exit",
       "name": "生息室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home07_living",
-      "responses": { "Move": "你回到生息室。" }
+      "responses": {
+        "Move": "你回到生息室。"
+      }
     }
   ]
 }

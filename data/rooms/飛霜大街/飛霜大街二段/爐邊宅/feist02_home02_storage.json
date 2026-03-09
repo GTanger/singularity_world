@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home02_storage",
+  "name": "倉",
+  "description": "倉內堆置雜物與存糧，熱氣自巷尾滲入、與室內霜氣在狹隙交織，塵埃與霜晶同浮；無窗、僅門縫漏光，游離輻射下二段熱霧不散、鐵腥隱約，爐邊宅的積存在此沉入寂靜。此處僅通〔廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home02_hallway",
+      "to": "feist02_home02_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home02_s_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home02_hallway",
+      "responses": {
+        "Move": "你退回廊。"
+      }
+    }
+  ]
+}

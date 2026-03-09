@@ -1,0 +1,75 @@
+{
+  "id": "feist05_home01_hallway",
+  "name": "廊",
+  "description": "簷影宅廊子半折，一頭往門廳、一頭往起居與臥房；側門推開即小院，牆皮斑駁、石階緣磨得圓滑，簷下陰影與積霜交錯、掌心貼牆一片沁涼，盡頭書齋在左、五段燈火從門廳漏進一線。此處通〔門廳〕、〔起居〕、〔小院〕、〔書齋〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist05_home01_main",
+      "to": "feist05_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_home01_living",
+      "to": "feist05_home01_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_home01_courtyard",
+      "to": "feist05_home01_courtyard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_home01_study",
+      "to": "feist05_home01_study",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_home01_h_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    },
+    {
+      "id": "feist05_home01_h_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_living",
+      "responses": {
+        "Move": "你往起居。"
+      }
+    },
+    {
+      "id": "feist05_home01_h_exit_court",
+      "name": "小院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_courtyard",
+      "responses": {
+        "Move": "你往小院。"
+      }
+    },
+    {
+      "id": "feist05_home01_h_exit_study",
+      "name": "書齋",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_study",
+      "responses": {
+        "Move": "你往書齋。"
+      }
+    }
+  ]
+}

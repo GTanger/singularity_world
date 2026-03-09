@@ -40,50 +40,78 @@
     {
       "id": "ironland_shop12_main_exit_lane",
       "name": "打鐵三巷",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_lane3",
-      "responses": { "Move": "你掀開厚簾，回到打鐵三巷。" }
+      "responses": {
+        "Move": "你掀開厚簾，回到打鐵三巷。"
+      }
     },
     {
       "id": "ironland_shop12_main_exit_workshop",
       "name": "工間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop12_workshop",
-      "responses": { "Move": "你朝側邊工間走去。" }
+      "responses": {
+        "Move": "你朝側邊工間走去。"
+      }
     },
     {
       "id": "ironland_shop12_main_exit_workshop2",
       "name": "工間二",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop12_workshop2",
-      "responses": { "Move": "你朝另一側工間二走去。" }
+      "responses": {
+        "Move": "你朝另一側工間二走去。"
+      }
     },
     {
       "id": "ironland_shop12_main_exit_storage",
       "name": "儲物間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop12_storage",
-      "responses": { "Move": "你往後方走去，進入儲物間。" }
+      "responses": {
+        "Move": "你往後方走去，進入儲物間。"
+      }
     },
     {
       "id": "ironland_shop12_main_exit_courtyard",
       "name": "小院",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop12_courtyard",
-      "responses": { "Move": "你往內側小院走去。" }
+      "responses": {
+        "Move": "你往內側小院走去。"
+      }
     },
     {
       "id": "ironland_shop12_main_exit_kiln",
       "name": "風箱爐房",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop12_kiln",
-      "responses": { "Move": "你步入風箱爐房。" }
+      "responses": {
+        "Move": "你步入風箱爐房。"
+      }
     },
     {
       "id": "ironland_shop12_main_obj_tongs",
       "name": "鐵鉗",
-      "sockets": ["Look"],
-      "responses": { "Look": "鉗身覆著炭灰與氧化斑，握柄纏緊鐵身，觸手微溫。經年爐火沉入肌理，竟似活物。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "鉗身覆著炭灰與氧化斑，握柄纏緊鐵身，觸手微溫。經年爐火沉入肌理，竟似活物。"
+      }
     }
   ]
 }

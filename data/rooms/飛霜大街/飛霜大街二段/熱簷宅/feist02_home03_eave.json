@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home03_eave",
+  "name": "簷下",
+  "description": "熱簷宅簷角熱氣與霜白相融，打鐵巷釋出的熱霧在此與簷角細霜交織、長年不散，石階沁涼、簾外路面冷調；二段呼吸間冷熱交錯，人聲與鐵砧聲在霧裡隱約，簷線低壓。此處僅通〔門廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home03_main",
+      "to": "feist02_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home03_e_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home03_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    }
+  ]
+}

@@ -15,9 +15,13 @@
     {
       "id": "life_mega_inner_3_exit",
       "name": "內堂",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_inner",
-      "responses": { "Move": "你回到內堂。" }
+      "responses": {
+        "Move": "你回到內堂。"
+      }
     }
   ]
 }

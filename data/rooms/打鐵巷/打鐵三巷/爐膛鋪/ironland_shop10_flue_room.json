@@ -5,9 +5,23 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_shop10_kiln", "to": "ironland_shop10_kiln", "ui_hidden": true }
+    {
+      "direction": "ironland_shop10_kiln",
+      "to": "ironland_shop10_kiln",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_shop10_flue_room_exit", "name": "爐房", "sockets": ["Move"], "move_to_room_id": "ironland_shop10_kiln", "responses": { "Move": "你回到爐房。" } }
+    {
+      "id": "ironland_shop10_flue_room_exit",
+      "name": "爐房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop10_kiln",
+      "responses": {
+        "Move": "你回到爐房。"
+      }
+    }
   ]
 }

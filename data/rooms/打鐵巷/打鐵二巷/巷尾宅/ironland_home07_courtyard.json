@@ -5,11 +5,39 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_home07_main", "to": "ironland_home07_main", "ui_hidden": true },
-    { "direction": "ironland_home07_living", "to": "ironland_home07_living", "ui_hidden": true }
+    {
+      "direction": "ironland_home07_main",
+      "to": "ironland_home07_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home07_living",
+      "to": "ironland_home07_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_home07_courtyard_exit_main", "name": "門廳", "sockets": ["Move"], "move_to_room_id": "ironland_home07_main", "responses": { "Move": "你回到門廳。" } },
-    { "id": "ironland_home07_courtyard_exit_living", "name": "生息室", "sockets": ["Move"], "move_to_room_id": "ironland_home07_living", "responses": { "Move": "你步入生息室。" } }
+    {
+      "id": "ironland_home07_courtyard_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home07_main",
+      "responses": {
+        "Move": "你回到門廳。"
+      }
+    },
+    {
+      "id": "ironland_home07_courtyard_exit_living",
+      "name": "生息室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home07_living",
+      "responses": {
+        "Move": "你步入生息室。"
+      }
+    }
   ]
 }

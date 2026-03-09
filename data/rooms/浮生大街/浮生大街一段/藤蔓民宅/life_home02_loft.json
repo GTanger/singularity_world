@@ -20,22 +20,34 @@
     {
       "id": "home02_loft_exit_living",
       "name": "生息室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home02_living",
-      "responses": { "Move": "你順階而下，回到生息室。" }
+      "responses": {
+        "Move": "你順階而下，回到生息室。"
+      }
     },
     {
       "id": "home02_loft_exit_balcony",
       "name": "露天葉台",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home02_balcony",
-      "responses": { "Move": "你穿過葉隙，踏上露天葉台。" }
+      "responses": {
+        "Move": "你穿過葉隙，踏上露天葉台。"
+      }
     },
     {
       "id": "home02_loft_obj_chest",
       "name": "編織草篋",
-      "sockets": ["Look"],
-      "responses": { "Look": "由乾枯的韌質纖維編結而成，表面塗抹著防水的玉質塗層，觸感堅硬。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "由乾枯的韌質纖維編結而成，表面塗抹著防水的玉質塗層，觸感堅硬。"
+      }
     }
   ]
 }

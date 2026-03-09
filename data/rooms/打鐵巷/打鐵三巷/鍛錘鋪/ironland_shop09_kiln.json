@@ -15,9 +15,13 @@
     {
       "id": "ironland_shop09_kiln_exit",
       "name": "工間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop09_workshop",
-      "responses": { "Move": "你回到工間。" }
+      "responses": {
+        "Move": "你回到工間。"
+      }
     }
   ]
 }

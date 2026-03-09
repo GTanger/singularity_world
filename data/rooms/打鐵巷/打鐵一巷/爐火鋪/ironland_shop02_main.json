@@ -5,17 +5,87 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_lane1", "to": "ironland_lane1", "ui_hidden": true },
-    { "direction": "ironland_shop02_workshop", "to": "ironland_shop02_workshop", "ui_hidden": true },
-    { "direction": "ironland_shop02_workshop2", "to": "ironland_shop02_workshop2", "ui_hidden": true },
-    { "direction": "ironland_shop02_storage", "to": "ironland_shop02_storage", "ui_hidden": true },
-    { "direction": "ironland_shop02_courtyard", "to": "ironland_shop02_courtyard", "ui_hidden": true }
+    {
+      "direction": "ironland_lane1",
+      "to": "ironland_lane1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop02_workshop",
+      "to": "ironland_shop02_workshop",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop02_workshop2",
+      "to": "ironland_shop02_workshop2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop02_storage",
+      "to": "ironland_shop02_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop02_courtyard",
+      "to": "ironland_shop02_courtyard",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_shop02_main_exit_lane", "name": "打鐵一巷", "sockets": ["Move"], "move_to_room_id": "ironland_lane1", "responses": { "Move": "你掀開厚簾，回到打鐵一巷。" }},
-    { "id": "ironland_shop02_main_exit_workshop", "name": "工間", "sockets": ["Move"], "move_to_room_id": "ironland_shop02_workshop", "responses": { "Move": "你朝側邊工間走去。" }},
-    { "id": "ironland_shop02_main_exit_workshop2", "name": "工間二", "sockets": ["Move"], "move_to_room_id": "ironland_shop02_workshop2", "responses": { "Move": "你朝另一側工間二走去。" }},
-    { "id": "ironland_shop02_main_exit_storage", "name": "儲物間", "sockets": ["Move"], "move_to_room_id": "ironland_shop02_storage", "responses": { "Move": "你往後方走去，進入儲物間。" }},
-    { "id": "ironland_shop02_main_exit_courtyard", "name": "小院", "sockets": ["Move"], "move_to_room_id": "ironland_shop02_courtyard", "responses": { "Move": "你往內側小院走去。" }}
+    {
+      "id": "ironland_shop02_main_exit_lane",
+      "name": "打鐵一巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_lane1",
+      "responses": {
+        "Move": "你掀開厚簾，回到打鐵一巷。"
+      }
+    },
+    {
+      "id": "ironland_shop02_main_exit_workshop",
+      "name": "工間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop02_workshop",
+      "responses": {
+        "Move": "你朝側邊工間走去。"
+      }
+    },
+    {
+      "id": "ironland_shop02_main_exit_workshop2",
+      "name": "工間二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop02_workshop2",
+      "responses": {
+        "Move": "你朝另一側工間二走去。"
+      }
+    },
+    {
+      "id": "ironland_shop02_main_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop02_storage",
+      "responses": {
+        "Move": "你往後方走去，進入儲物間。"
+      }
+    },
+    {
+      "id": "ironland_shop02_main_exit_courtyard",
+      "name": "小院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop02_courtyard",
+      "responses": {
+        "Move": "你往內側小院走去。"
+      }
+    }
   ]
 }

@@ -1,0 +1,59 @@
+{
+  "id": "feist08_home01_gate",
+  "name": "門洞",
+  "description": "矮門一道，門檻高過腳踝；跨進去便是〔內庭〕，門一掩、街聲即斷。頭頂簷板壓得低，進門得略低頭。此處連接〔飛霜大街八段〕，內側為〔內庭〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st8",
+      "to": "feistreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home01_inner_court",
+      "to": "feist08_home01_inner_court",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home01_gate_shadow",
+      "to": "feist08_home01_gate_shadow",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_home01_g_exit_st8",
+      "name": "飛霜大街八段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st8",
+      "responses": {
+        "Move": "你步出門洞，回到飛霜大街八段。"
+      }
+    },
+    {
+      "id": "feist08_home01_g_exit_court",
+      "name": "內庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home01_inner_court",
+      "responses": {
+        "Move": "你步入內庭。"
+      }
+    },
+    {
+      "id": "feist08_home01_g_exit_shadow",
+      "name": "門簷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home01_gate_shadow",
+      "responses": {
+        "Move": "你步向門簷下。"
+      }
+    }
+  ]
+}

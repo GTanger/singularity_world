@@ -25,29 +25,45 @@
     {
       "id": "st7_exit_st6",
       "name": "浮生大街六段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st6",
-      "responses": { "Move": "你朝浮生大街六段方向折返。" }
+      "responses": {
+        "Move": "你朝浮生大街六段方向折返。"
+      }
     },
     {
       "id": "st7_exit_st8",
       "name": "浮生大街八段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st8",
-      "responses": { "Move": "你朝浮生大街八段方向走去。" }
+      "responses": {
+        "Move": "你朝浮生大街八段方向走去。"
+      }
     },
     {
       "id": "st7_obj_b7",
       "name": "根砌院",
-      "sockets": ["Look"],
-      "responses": { "Look": "根砌院為七段大建築，門洞高闊，牆面根鬚自石縫沁出與砌石咬合，簷角脈絡垂落。入口即〔院門〕。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "根砌院為七段大建築，門洞高闊，牆面根鬚自石縫沁出與砌石咬合，簷角脈絡垂落。入口即〔院門〕。"
+      }
     },
     {
       "id": "st7_obj_b7_door",
       "name": "院門",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_gate",
-      "responses": { "Move": "你步入院門，進入根砌院。" }
+      "responses": {
+        "Move": "你步入院門，進入根砌院。"
+      }
     }
   ]
 }

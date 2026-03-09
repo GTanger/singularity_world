@@ -1,0 +1,59 @@
+{
+  "id": "feist04_home02_main",
+  "name": "門廳",
+  "description": "冷階宅門洞一開，四段霜氣與人聲湧入；門廊冷階、霜紋覆牆，腳下石階沁涼、簷角積霜壓額，往內〔廊〕幽深、光線稀微，側邊〔簷下〕可望街景。此處連接〔飛霜大街四段〕，內側為〔廊〕與〔簷下〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st4",
+      "to": "feistreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home02_hallway",
+      "to": "feist04_home02_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home02_eave",
+      "to": "feist04_home02_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_home02_m_exit_st4",
+      "name": "門洞",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st4",
+      "responses": {
+        "Move": "你步出，回到飛霜大街四段。"
+      }
+    },
+    {
+      "id": "feist04_home02_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home02_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    },
+    {
+      "id": "feist04_home02_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home02_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

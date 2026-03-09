@@ -20,22 +20,34 @@
     {
       "id": "life_home04_main_exit_st2",
       "name": "竹簾",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st2",
-      "responses": { "Move": "你撥開竹簾，回到浮生大街二段。" }
+      "responses": {
+        "Move": "你撥開竹簾，回到浮生大街二段。"
+      }
     },
     {
       "id": "life_home04_main_exit_corridor",
       "name": "泥廊道",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home04_corridor",
-      "responses": { "Move": "你朝內側通道走去，進入泥廊道。" }
+      "responses": {
+        "Move": "你朝內側通道走去，進入泥廊道。"
+      }
     },
     {
       "id": "life_home04_main_obj_jar",
       "name": "陶甕",
-      "sockets": ["Look"],
-      "responses": { "Look": "甕身泥漿覆住陶質，口緣玉質脈絡沁入甕身，透出淡紫微光。觸手溫潤，竟不顯粗陋，反有沉澱後的穩重。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "甕身泥漿覆住陶質，口緣玉質脈絡沁入甕身，透出淡紫微光。觸手溫潤，竟不顯粗陋，反有沉澱後的穩重。"
+      }
     }
   ]
 }

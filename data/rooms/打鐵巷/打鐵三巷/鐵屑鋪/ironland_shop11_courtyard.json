@@ -15,9 +15,13 @@
     {
       "id": "ironland_shop11_courtyard_exit",
       "name": "鐵屑鋪",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop11_main",
-      "responses": { "Move": "你回到店面前方。" }
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
     }
   ]
 }

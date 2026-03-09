@@ -1,0 +1,59 @@
+{
+  "id": "feist01_home04_main",
+  "name": "門廳",
+  "description": "霜靜宅小門一推，一段空氣沉靜、簷下霜晶沉降撲面；門框窄而深、腳下石板冰涼、牆面玉質脈絡隱約，往內〔穿堂〕幽深、側邊〔簷下〕可望湖端街景，冷調無鐵砧無爐煙。此處連接〔飛霜大街一段〕，內側為〔穿堂〕與〔簷下〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st1",
+      "to": "feistreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home04_passage",
+      "to": "feist01_home04_passage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home04_eave",
+      "to": "feist01_home04_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home04_m_exit_st1",
+      "name": "小門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st1",
+      "responses": {
+        "Move": "你步出，回到飛霜大街一段。"
+      }
+    },
+    {
+      "id": "feist01_home04_m_exit_passage",
+      "name": "穿堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_passage",
+      "responses": {
+        "Move": "你步入穿堂。"
+      }
+    },
+    {
+      "id": "feist01_home04_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

@@ -5,21 +5,81 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_lane2", "to": "ironland_lane2", "ui_hidden": true },
-    { "direction": "ironland_shop08_workshop", "to": "ironland_shop08_workshop", "ui_hidden": true },
-    { "direction": "ironland_shop08_storage", "to": "ironland_shop08_storage", "ui_hidden": true },
-    { "direction": "ironland_shop08_courtyard", "to": "ironland_shop08_courtyard", "ui_hidden": true }
+    {
+      "direction": "ironland_lane2",
+      "to": "ironland_lane2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop08_workshop",
+      "to": "ironland_shop08_workshop",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop08_storage",
+      "to": "ironland_shop08_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop08_courtyard",
+      "to": "ironland_shop08_courtyard",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_shop08_main_exit_lane", "name": "打鐵二巷", "sockets": ["Move"], "move_to_room_id": "ironland_lane2", "responses": { "Move": "你掀開厚簾，回到打鐵二巷。" } },
-    { "id": "ironland_shop08_main_exit_workshop", "name": "工間", "sockets": ["Move"], "move_to_room_id": "ironland_shop08_workshop", "responses": { "Move": "你朝側邊工間走去。" } },
-    { "id": "ironland_shop08_main_exit_storage", "name": "儲物間", "sockets": ["Move"], "move_to_room_id": "ironland_shop08_storage", "responses": { "Move": "你往後方走去，進入儲物間。" } },
-    { "id": "ironland_shop08_main_exit_courtyard", "name": "小院", "sockets": ["Move"], "move_to_room_id": "ironland_shop08_courtyard", "responses": { "Move": "你往內側小院走去。" } },
+    {
+      "id": "ironland_shop08_main_exit_lane",
+      "name": "打鐵二巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_lane2",
+      "responses": {
+        "Move": "你掀開厚簾，回到打鐵二巷。"
+      }
+    },
+    {
+      "id": "ironland_shop08_main_exit_workshop",
+      "name": "工間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop08_workshop",
+      "responses": {
+        "Move": "你朝側邊工間走去。"
+      }
+    },
+    {
+      "id": "ironland_shop08_main_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop08_storage",
+      "responses": {
+        "Move": "你往後方走去，進入儲物間。"
+      }
+    },
+    {
+      "id": "ironland_shop08_main_exit_courtyard",
+      "name": "小院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop08_courtyard",
+      "responses": {
+        "Move": "你往內側小院走去。"
+      }
+    },
     {
       "id": "ironland_shop08_main_obj_tongs",
       "name": "鐵鉗",
-      "sockets": ["Look"],
-      "responses": { "Look": "鉗身覆著炭灰與氧化斑，握柄纏緊鐵身，觸手微溫。經年爐火沉入肌理，竟似活物。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "鉗身覆著炭灰與氧化斑，握柄纏緊鐵身，觸手微溫。經年爐火沉入肌理，竟似活物。"
+      }
     }
   ]
 }

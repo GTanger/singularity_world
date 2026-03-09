@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home01_eave",
+  "name": "簷下",
+  "description": "臨湖宅簷下霜白結晶垂落、與湖氣交會成霧，簾外一段路面冷調、霜晶沉降，湖端空氣沉靜、人聲稀薄；簷角積霜成串，玉質脈絡在牆面隱約，一腳站定便覺遠離街塵。此處僅通〔門廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home01_main",
+      "to": "feist01_home01_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home01_e_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    }
+  ]
+}

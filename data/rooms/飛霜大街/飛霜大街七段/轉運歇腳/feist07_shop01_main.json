@@ -1,0 +1,59 @@
+{
+  "id": "feist07_shop01_main",
+  "name": "鋪面",
+  "description": "轉運歇腳門內桌椅沿牆、茶壺與粗碗擱在案上；擔夫剛離座，杯底還溫、簾外霜晶沾衣即化。人聲與腳步聲在簷下來去，此地是七段往街口的歇腳處。此處連接〔飛霜大街七段〕，往裡是〔櫃前〕，側邊〔簷下〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st7",
+      "to": "feistreet_st7",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_shop01_counter",
+      "to": "feist07_shop01_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_shop01_eave",
+      "to": "feist07_shop01_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_shop01_m_exit_st7",
+      "name": "飛霜大街七段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st7",
+      "responses": {
+        "Move": "你步出，回到飛霜大街七段。"
+      }
+    },
+    {
+      "id": "feist07_shop01_m_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop01_counter",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    },
+    {
+      "id": "feist07_shop01_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop01_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

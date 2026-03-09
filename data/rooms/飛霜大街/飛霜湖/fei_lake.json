@@ -5,15 +5,23 @@
   "tags": [],
   "zone": "feistreet",
   "exits": [
-    { "direction": "feistreet_st1", "to": "feistreet_st1", "ui_hidden": true }
+    {
+      "direction": "feistreet_st1",
+      "to": "feistreet_st1",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "fei_lake_exit_st1",
       "name": "湖岸",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "feistreet_st1",
-      "responses": { "Move": "你沿湖岸步回飛霜大街一段。" }
+      "responses": {
+        "Move": "你沿湖岸步回飛霜大街一段。"
+      }
     }
   ]
 }

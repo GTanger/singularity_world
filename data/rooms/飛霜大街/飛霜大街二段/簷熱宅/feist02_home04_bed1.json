@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home04_bed1",
+  "name": "寢間",
+  "description": "簷熱宅寢間最小、一榻一簾而已，熱氣自牆縫滲入、與簷角霜晶在窗隙交織成霧；游離輻射下二段熱霧不散、呼吸見白，冷熱交錯的長夜在此收束，鐵砧聲在霧外隱約。此處僅通〔廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home04_living",
+      "to": "feist02_home04_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home04_b1_exit_living",
+      "name": "廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home04_living",
+      "responses": {
+        "Move": "你退回廳。"
+      }
+    }
+  ]
+}

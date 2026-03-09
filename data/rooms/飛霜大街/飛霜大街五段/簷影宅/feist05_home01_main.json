@@ -1,0 +1,59 @@
+{
+  "id": "feist05_home01_main",
+  "name": "門廳",
+  "description": "簷影宅門洞一開，五段人聲與霜氣湧入；簷下陰影與積霜交錯，腳下石板冰涼、簷板壓額，呼吸見白，往內〔廊〕幽深、鞋聲入內即吞。此處連接〔飛霜大街五段〕，內側為〔廊〕與〔簷下〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st5",
+      "to": "feistreet_st5",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_home01_hallway",
+      "to": "feist05_home01_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_home01_eave",
+      "to": "feist05_home01_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_home01_m_exit_st5",
+      "name": "門洞",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st5",
+      "responses": {
+        "Move": "你步出，回到飛霜大街五段。"
+      }
+    },
+    {
+      "id": "feist05_home01_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    },
+    {
+      "id": "feist05_home01_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

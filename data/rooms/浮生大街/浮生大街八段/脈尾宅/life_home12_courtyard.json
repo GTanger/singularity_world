@@ -15,9 +15,13 @@
     {
       "id": "life_home12_courtyard_exit",
       "name": "脈廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home12_hallway",
-      "responses": { "Move": "你回到脈廊。" }
+      "responses": {
+        "Move": "你回到脈廊。"
+      }
     }
   ]
 }

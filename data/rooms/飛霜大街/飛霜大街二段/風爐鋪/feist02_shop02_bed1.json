@@ -1,0 +1,27 @@
+{
+  "id": "feist02_shop02_bed1",
+  "name": "寢間一",
+  "description": "寢間一窄榻貼牆、簾幕低垂，熱氣自牆縫滲入、與簷角霜晶在窗隙交織成霧；游離輻射下室內霧氣不散、呼吸見白，街外鐵砧聲隱約，二段冷熱交錯的長夜在此收束。此處僅通〔居間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_living",
+      "to": "feist02_shop02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_b1_exit_living",
+      "name": "居間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_living",
+      "responses": {
+        "Move": "你退回居間。"
+      }
+    }
+  ]
+}

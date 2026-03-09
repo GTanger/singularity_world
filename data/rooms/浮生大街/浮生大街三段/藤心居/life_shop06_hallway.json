@@ -20,16 +20,24 @@
     {
       "id": "life_shop06_hallway_exit_main",
       "name": "藤心居",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop06_main",
-      "responses": { "Move": "你回到店面前方。" }
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
     },
     {
       "id": "life_shop06_hallway_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop06_living",
-      "responses": { "Move": "你步入生活起居室。" }
+      "responses": {
+        "Move": "你步入生活起居室。"
+      }
     }
   ]
 }

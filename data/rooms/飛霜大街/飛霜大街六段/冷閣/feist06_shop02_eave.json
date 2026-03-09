@@ -1,0 +1,27 @@
+{
+  "id": "feist06_shop02_eave",
+  "name": "簷下",
+  "description": "冷閣鋪門外一截窄簷，簷緣積霜、牆面玉質脈絡沁出；茶氣從簾縫鑽出、與街面霜氣交混，可望六段行人與往五段、七段方向的人跡，風灌進來袖口生寒。此處僅通〔鋪面〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist06_shop02_main",
+      "to": "feist06_shop02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_shop02_e_exit_main",
+      "name": "鋪面",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_shop02_main",
+      "responses": {
+        "Move": "你退回鋪面。"
+      }
+    }
+  ]
+}

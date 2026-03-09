@@ -15,9 +15,13 @@
     {
       "id": "ironland_shop10_courtyard_exit",
       "name": "爐膛鋪",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop10_main",
-      "responses": { "Move": "你回到店面前方。" }
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
     }
   ]
 }

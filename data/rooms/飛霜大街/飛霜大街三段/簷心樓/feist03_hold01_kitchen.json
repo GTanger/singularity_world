@@ -1,0 +1,43 @@
+{
+  "id": "feist03_hold01_kitchen",
+  "name": "灶間",
+  "description": "簷心樓灶間爐冷餘灰、鍋碗疊在石檯，簷下霜氣自窗隙沁進、牆面玉質脈絡在煙燻處隱約；一門通〔起居〕、一門通〔灶院〕，茶氣與煙氣沉在樑下、掌心貼檯一片沁涼。此處通〔起居〕、〔灶院〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist03_hold01_living",
+      "to": "feist03_hold01_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist03_hold01_kitchen_yard",
+      "to": "feist03_hold01_kitchen_yard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist03_hold01_k_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_hold01_living",
+      "responses": {
+        "Move": "你退回起居。"
+      }
+    },
+    {
+      "id": "feist03_hold01_k_exit_yard",
+      "name": "灶院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_hold01_kitchen_yard",
+      "responses": {
+        "Move": "你往灶院。"
+      }
+    }
+  ]
+}

@@ -1,63 +1,215 @@
 {
   "id": "feistreet_st2",
   "name": "飛霜大街二段",
-  "description": "路面與打鐵三巷巷尾相接，打鐵巷風道衝出的熱氣在此釋出、匯往大街上空；游離輻射下熱氣不散，霜白結晶與熱氣交織、長年飄落，路面冷調、鐵腥隱約。路側〔鐵器行〕簷角霜晶與爐光並存，對向〔巷口宅〕門廊積霜。可經〔打鐵三巷〕折返打鐵巷，或沿大街往〔飛霜大街一段〕、〔飛霜大街三段〕。",
+  "description": "路面與打鐵三巷巷尾相接，打鐵巷風道衝出的熱氣在此釋出、匯往大街上空；游離輻射下熱氣不散，霜白結晶與熱氣交織、長年飄落，路面冷調、鐵腥隱約。路側〔鐵器行〕簷角霜晶與爐光並存，〔風爐鋪〕簾隙透出爐紅；對向〔巷口宅〕門廊積霜，〔爐邊宅〕〔熱簷宅〕〔簷熱宅〕簷下霜晶與熱氣交錯。可經〔打鐵三巷〕折返打鐵巷，或沿大街往〔飛霜大街一段〕、〔飛霜大街三段〕。",
   "tags": [],
   "zone": "feistreet",
   "exits": [
-    { "direction": "ironland_lane3", "to": "ironland_lane3", "ui_hidden": true },
-    { "direction": "feistreet_st1", "to": "feistreet_st1", "ui_hidden": true },
-    { "direction": "feistreet_st3", "to": "feistreet_st3", "ui_hidden": true },
-    { "direction": "fei_shop03_main", "to": "fei_shop03_main", "ui_hidden": true },
-    { "direction": "fei_home03_main", "to": "fei_home03_main", "ui_hidden": true }
+    {
+      "direction": "ironland_lane3",
+      "to": "ironland_lane3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feistreet_st1",
+      "to": "feistreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feistreet_st3",
+      "to": "feistreet_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop01_main",
+      "to": "feist02_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop02_main",
+      "to": "feist02_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home01_main",
+      "to": "feist02_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home02_main",
+      "to": "feist02_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home03_main",
+      "to": "feist02_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home04_main",
+      "to": "feist02_home04_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "feistreet_st2_exit_lane3",
       "name": "打鐵三巷",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_lane3",
-      "responses": { "Move": "你朝打鐵三巷巷尾走去，熱氣撲面而來。" }
+      "responses": {
+        "Move": "你朝打鐵三巷巷尾走去，熱氣撲面而來。"
+      }
     },
     {
       "id": "feistreet_st2_exit_st1",
       "name": "飛霜大街一段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "feistreet_st1",
-      "responses": { "Move": "你沿大街往飛霜大街一段走去。" }
+      "responses": {
+        "Move": "你沿大街往飛霜大街一段走去。"
+      }
     },
     {
       "id": "feistreet_st2_exit_st3",
       "name": "飛霜大街三段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "feistreet_st3",
-      "responses": { "Move": "你沿大街往飛霜大街三段走去。" }
+      "responses": {
+        "Move": "你沿大街往飛霜大街三段走去。"
+      }
     },
     {
-      "id": "fei_st2_obj_shop03",
+      "id": "fei_st2_obj_shop01",
       "name": "鐵器行",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷角霜晶與簾隙爐光交織，門側陳列鐵器；〔店門〕可入內。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷角霜晶與簾隙爐光交織，門側陳列鐵器；〔店門〕可入內。"
+      }
     },
     {
-      "id": "fei_st2_obj_shop03_door",
+      "id": "fei_st2_obj_shop01_door",
       "name": "店門",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_shop03_main",
-      "responses": { "Move": "你推門進入鐵器行。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_main",
+      "responses": {
+        "Move": "你推門進入鐵器行。"
+      }
+    },
+    {
+      "id": "fei_st2_obj_shop02",
+      "name": "風爐鋪",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簾隙透出爐紅、簷下熱氣與霜晶交織；〔鋪門〕可入內。"
+      }
+    },
+    {
+      "id": "fei_st2_obj_shop02_door",
+      "name": "鋪門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_main",
+      "responses": {
+        "Move": "你推門進入風爐鋪。"
+      }
+    },
+    {
+      "id": "fei_st2_obj_home01",
+      "name": "巷口宅",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "門廊積霜、牆面暗紅脈絡隱約，與打鐵巷熱氣呼應；〔窄門〕半掩。"
+      }
+    },
+    {
+      "id": "fei_st2_obj_home01_door",
+      "name": "窄門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home01_main",
+      "responses": {
+        "Move": "你推門進入巷口宅。"
+      }
+    },
+    {
+      "id": "fei_st2_obj_home02",
+      "name": "爐邊宅",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷下霜晶與爐煙交錯，門框暗紅；〔門〕可入內。"
+      }
+    },
+    {
+      "id": "fei_st2_obj_home02_door",
+      "name": "門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home02_main",
+      "responses": {
+        "Move": "你推門進入爐邊宅。"
+      }
     },
     {
       "id": "fei_st2_obj_home03",
-      "name": "巷口宅",
-      "sockets": ["Look"],
-      "responses": { "Look": "門廊積霜、牆面暗紅脈絡隱約，與打鐵巷熱氣呼應；〔窄門〕半掩。" }
+      "name": "熱簷宅",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷角熱氣與霜白相融，石階沁涼；〔板門〕可入內。"
+      }
     },
     {
       "id": "fei_st2_obj_home03_door",
-      "name": "窄門",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_home03_main",
-      "responses": { "Move": "你推門進入巷口宅。" }
+      "name": "板門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home03_main",
+      "responses": {
+        "Move": "你推門進入熱簷宅。"
+      }
+    },
+    {
+      "id": "fei_st2_obj_home04",
+      "name": "簷熱宅",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷下霜晶沾熱即化、門廊窄而深；〔小門〕可入內。"
+      }
+    },
+    {
+      "id": "fei_st2_obj_home04_door",
+      "name": "小門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home04_main",
+      "responses": {
+        "Move": "你推門進入簷熱宅。"
+      }
     }
   ]
 }

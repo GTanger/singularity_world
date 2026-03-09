@@ -30,30 +30,46 @@
     {
       "id": "life_mega_gate_exit_st3",
       "name": "浮生大街三段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st3",
-      "responses": { "Move": "你步出墟門，回到浮生大街三段。" }
+      "responses": {
+        "Move": "你步出墟門，回到浮生大街三段。"
+      }
     },
     {
       "id": "life_mega_gate_exit_front",
       "name": "前庭",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_front",
-      "responses": { "Move": "你穿過門洞，踏入前庭。" }
+      "responses": {
+        "Move": "你穿過門洞，踏入前庭。"
+      }
     },
     {
       "id": "life_mega_gate_exit_east",
       "name": "東側廊口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_east_hall",
-      "responses": { "Move": "你朝東側廊口走去，進入東廊。" }
+      "responses": {
+        "Move": "你朝東側廊口走去，進入東廊。"
+      }
     },
     {
       "id": "life_mega_gate_exit_west",
       "name": "西側廊口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_west_hall",
-      "responses": { "Move": "你朝西側廊口走去，進入西廊。" }
+      "responses": {
+        "Move": "你朝西側廊口走去，進入西廊。"
+      }
     }
   ]
 }

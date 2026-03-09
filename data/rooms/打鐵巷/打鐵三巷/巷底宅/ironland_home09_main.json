@@ -5,13 +5,55 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_lane3", "to": "ironland_lane3", "ui_hidden": true },
-    { "direction": "ironland_home09_living", "to": "ironland_home09_living", "ui_hidden": true },
-    { "direction": "ironland_home09_courtyard", "to": "ironland_home09_courtyard", "ui_hidden": true }
+    {
+      "direction": "ironland_lane3",
+      "to": "ironland_lane3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home09_living",
+      "to": "ironland_home09_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home09_courtyard",
+      "to": "ironland_home09_courtyard",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_home09_main_exit_lane", "name": "板門", "sockets": ["Move"], "move_to_room_id": "ironland_lane3", "responses": { "Move": "你推開板門，回到打鐵三巷。" } },
-    { "id": "ironland_home09_main_exit_living", "name": "生息室", "sockets": ["Move"], "move_to_room_id": "ironland_home09_living", "responses": { "Move": "你朝內側走去，進入生息室。" } },
-    { "id": "ironland_home09_main_exit_courtyard", "name": "小院", "sockets": ["Move"], "move_to_room_id": "ironland_home09_courtyard", "responses": { "Move": "你步入小院。" } }
+    {
+      "id": "ironland_home09_main_exit_lane",
+      "name": "板門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_lane3",
+      "responses": {
+        "Move": "你推開板門，回到打鐵三巷。"
+      }
+    },
+    {
+      "id": "ironland_home09_main_exit_living",
+      "name": "生息室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home09_living",
+      "responses": {
+        "Move": "你朝內側走去，進入生息室。"
+      }
+    },
+    {
+      "id": "ironland_home09_main_exit_courtyard",
+      "name": "小院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home09_courtyard",
+      "responses": {
+        "Move": "你步入小院。"
+      }
+    }
   ]
 }

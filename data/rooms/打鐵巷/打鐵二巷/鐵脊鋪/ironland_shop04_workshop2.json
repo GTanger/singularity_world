@@ -20,16 +20,24 @@
     {
       "id": "ironland_shop04_workshop2_exit_main",
       "name": "鐵脊鋪",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop04_main",
-      "responses": { "Move": "你回到店面前方。" }
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
     },
     {
       "id": "ironland_shop04_workshop2_exit_toolroom",
       "name": "工具間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop04_toolroom",
-      "responses": { "Move": "你步入工具間。" }
+      "responses": {
+        "Move": "你步入工具間。"
+      }
     }
   ]
 }

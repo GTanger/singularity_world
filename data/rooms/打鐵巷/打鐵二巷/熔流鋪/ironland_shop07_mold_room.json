@@ -5,9 +5,23 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_shop07_workshop", "to": "ironland_shop07_workshop", "ui_hidden": true }
+    {
+      "direction": "ironland_shop07_workshop",
+      "to": "ironland_shop07_workshop",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_shop07_mold_room_exit", "name": "鑄區工間", "sockets": ["Move"], "move_to_room_id": "ironland_shop07_workshop", "responses": { "Move": "你回到工間。" } }
+    {
+      "id": "ironland_shop07_mold_room_exit",
+      "name": "鑄區工間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop07_workshop",
+      "responses": {
+        "Move": "你回到工間。"
+      }
+    }
   ]
 }

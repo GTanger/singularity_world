@@ -1,0 +1,27 @@
+{
+  "id": "feist08_home02_storage",
+  "name": "倉房",
+  "description": "霜尾宅廊道盡頭窄門一推，舊箱與破簍抵著牆、只容側身；灰撲撲的，打噴嚏的衝動壓在鼻根，無窗、門一開才漏進廊道的光。此處僅通〔廊道〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_home02_hallway",
+      "to": "feist08_home02_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_home02_s_exit_hall",
+      "name": "廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home02_hallway",
+      "responses": {
+        "Move": "你退回廊道。"
+      }
+    }
+  ]
+}

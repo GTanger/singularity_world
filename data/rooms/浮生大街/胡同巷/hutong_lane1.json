@@ -25,23 +25,35 @@
     {
       "id": "hutong_lane1_exit_st6",
       "name": "巷口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st6",
-      "responses": { "Move": "你循巷子走出，回到浮生大街六段。" }
+      "responses": {
+        "Move": "你循巷子走出，回到浮生大街六段。"
+      }
     },
     {
       "id": "hutong_lane1_exit_shop12",
       "name": "靜墨齋",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop12_main",
-      "responses": { "Move": "你掀開布簾，步入靜墨齋。" }
+      "responses": {
+        "Move": "你掀開布簾，步入靜墨齋。"
+      }
     },
     {
       "id": "hutong_lane1_exit_home10",
       "name": "胡同宅",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home10_main",
-      "responses": { "Move": "你推開板門，進入胡同宅。" }
+      "responses": {
+        "Move": "你推開板門，進入胡同宅。"
+      }
     }
   ]
 }

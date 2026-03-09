@@ -15,9 +15,13 @@
     {
       "id": "life_b7_west_2_exit",
       "name": "西廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_west_hall",
-      "responses": { "Move": "你步出西二室，回到西廊。" }
+      "responses": {
+        "Move": "你步出西二室，回到西廊。"
+      }
     }
   ]
 }

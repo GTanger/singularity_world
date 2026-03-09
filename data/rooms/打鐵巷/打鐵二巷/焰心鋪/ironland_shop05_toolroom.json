@@ -15,9 +15,13 @@
     {
       "id": "ironland_shop05_toolroom_exit",
       "name": "工間二",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop05_workshop2",
-      "responses": { "Move": "你回到工間二。" }
+      "responses": {
+        "Move": "你回到工間二。"
+      }
     }
   ]
 }

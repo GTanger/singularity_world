@@ -1,0 +1,27 @@
+{
+  "id": "feist06_shop01_bed1",
+  "name": "臥一",
+  "description": "霜簾鋪臥一：簾在榻頭、櫃擋門側，簾外即過廳；案頭燈滅、窗上霜紋像茶湯漬，杯盞聲歇即靜，簾隙漏進鋪面一點人語、其餘只聞樑角耗子窸窣。此處僅通〔過廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist06_shop01_hall",
+      "to": "feist06_shop01_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_shop01_b1_exit_hall",
+      "name": "過廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_shop01_hall",
+      "responses": {
+        "Move": "你出臥一回過廳。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "feist02_shop01_counter",
+  "name": "櫃前",
+  "description": "櫃前狹長，檯面鐵器與帳簿並列，簾隙透進的熱氣與霜晶在此交織成細霧、沾檯即化；牆面玉質脈絡隱約、腳下石地沁涼，後門通往〔後間〕，爐煙與冷氣在鼻端交錯。此處僅通〔店頭〕與〔後間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop01_main",
+      "to": "feist02_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop01_back",
+      "to": "feist02_shop01_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop01_c_exit_main",
+      "name": "店頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_main",
+      "responses": {
+        "Move": "你退回店頭。"
+      }
+    },
+    {
+      "id": "feist02_shop01_c_exit_back",
+      "name": "後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_back",
+      "responses": {
+        "Move": "你經後門往後間。"
+      }
+    }
+  ]
+}

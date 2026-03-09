@@ -1,0 +1,59 @@
+{
+  "id": "feist02_shop01_back",
+  "name": "後間",
+  "description": "後間昏暗，熱氣自牆縫滲入、與室內霜氣交織，貨架與半成鐵器靠牆，地面潮氣與鐵屑混雜；一側通〔居間〕，一側通〔倉〕，游離輻射下熱霧不散、呼吸見白。此處僅通〔櫃前〕、〔居間〕與〔倉〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop01_counter",
+      "to": "feist02_shop01_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop01_living",
+      "to": "feist02_shop01_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop01_storage",
+      "to": "feist02_shop01_storage",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop01_b_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_counter",
+      "responses": {
+        "Move": "你退回櫃前。"
+      }
+    },
+    {
+      "id": "feist02_shop01_b_exit_living",
+      "name": "居間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_living",
+      "responses": {
+        "Move": "你往居間走去。"
+      }
+    },
+    {
+      "id": "feist02_shop01_b_exit_storage",
+      "name": "倉",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_storage",
+      "responses": {
+        "Move": "你推門入倉。"
+      }
+    }
+  ]
+}

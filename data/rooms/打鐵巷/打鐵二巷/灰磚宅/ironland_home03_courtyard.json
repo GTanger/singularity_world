@@ -15,9 +15,13 @@
     {
       "id": "ironland_home03_courtyard_exit",
       "name": "廊道",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_home03_hallway",
-      "responses": { "Move": "你回到廊道。" }
+      "responses": {
+        "Move": "你回到廊道。"
+      }
     }
   ]
 }

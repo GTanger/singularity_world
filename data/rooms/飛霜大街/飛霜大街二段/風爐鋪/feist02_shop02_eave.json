@@ -1,0 +1,27 @@
+{
+  "id": "feist02_shop02_eave",
+  "name": "簷下",
+  "description": "風爐鋪簷下爐紅與霜白並存，打鐵巷熱氣在此釋出、與簷角霜晶交織成霧，簾外路面冷調、街景在熱霧間浮動；二段長年熱氣不散，呼吸間冷熱交錯、鐵砧聲隱約。此處僅通〔鋪面〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_main",
+      "to": "feist02_shop02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_e_exit_main",
+      "name": "鋪面",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_main",
+      "responses": {
+        "Move": "你退回鋪面。"
+      }
+    }
+  ]
+}

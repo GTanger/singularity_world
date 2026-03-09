@@ -25,23 +25,35 @@
     {
       "id": "ironland_shop01_workshop_exit_main",
       "name": "鍛造鋪",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop01_main",
-      "responses": { "Move": "你循來路回到店面前方。" }
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
     },
     {
       "id": "ironland_shop01_workshop_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop01_living",
-      "responses": { "Move": "你往後方通道走去，進入生活起居室。" }
+      "responses": {
+        "Move": "你往後方通道走去，進入生活起居室。"
+      }
     },
     {
       "id": "ironland_shop01_workshop_exit_kiln",
       "name": "爐房",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop01_kiln",
-      "responses": { "Move": "你步入爐房。" }
+      "responses": {
+        "Move": "你步入爐房。"
+      }
     }
   ]
 }

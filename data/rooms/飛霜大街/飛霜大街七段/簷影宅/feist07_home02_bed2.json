@@ -1,0 +1,27 @@
+{
+  "id": "feist07_home02_bed2",
+  "name": "臥二",
+  "description": "簷影宅臥二更窄、榻腳抵門，簾外後院天光一線、窗上霜紋如冰花；無倉無簷下、宅盡於此，七段霜晶飄落、路面冷調，宅內靜得只聞簷溜滴答。此處僅通〔起居〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_home02_living",
+      "to": "feist07_home02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_home02_b2_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home02_living",
+      "responses": {
+        "Move": "你出臥二回起居。"
+      }
+    }
+  ]
+}

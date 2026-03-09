@@ -1,0 +1,27 @@
+{
+  "id": "feist04_shop01_loft_west",
+  "name": "閣樓西",
+  "description": "霜紋閣閣樓西間簷隙漏光、牆面霜紋與玉質脈絡交錯，榻與箱篋靠牆、樓板沁涼；木梯通〔店頭〕，簷下陰影靜止、霜晶沾窗即化，店頭人聲自梯口隱約而上。此處僅通〔店頭〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist04_shop01_main",
+      "to": "feist04_shop01_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_shop01_lw_exit_main",
+      "name": "木梯",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_shop01_main",
+      "responses": {
+        "Move": "你順木梯下店頭。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "feist06_shop03_counter",
+  "name": "櫃前",
+  "description": "簷角行櫃台後即貨架，零嘴與紙包堆到齊眉；簾後即〔後間〕、再往裡便是小天井與過廳，住家從那裡開始，買賣在此成交，簾外鋪面人聲隱約、簷角霜晶成串在簾隙外晃。此處通〔鋪面〕與〔後間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist06_shop03_main",
+      "to": "feist06_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist06_shop03_back",
+      "to": "feist06_shop03_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_shop03_c_exit_main",
+      "name": "鋪面",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_shop03_main",
+      "responses": {
+        "Move": "你退回鋪面。"
+      }
+    },
+    {
+      "id": "feist06_shop03_c_exit_back",
+      "name": "後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_shop03_back",
+      "responses": {
+        "Move": "你掀簾往後間。"
+      }
+    }
+  ]
+}

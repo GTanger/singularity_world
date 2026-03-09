@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home04_kitchen",
+  "name": "灶間",
+  "description": "霜靜宅灶間窄而深、僅一門通廳，簷隙霜晶沉降與湖氣在窄窗交會成霧；爐灶冷清、水甕見底、刀砧收在案下，牆面熏黑與冷調石紋並存，穿堂與後院那側的靜謐壓在樑下、煙火氣在此收束。此處僅通〔廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home04_living",
+      "to": "feist01_home04_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home04_k_exit_living",
+      "name": "廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_living",
+      "responses": {
+        "Move": "你退回廳。"
+      }
+    }
+  ]
+}

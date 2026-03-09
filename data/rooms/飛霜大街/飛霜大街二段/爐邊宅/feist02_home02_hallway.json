@@ -1,0 +1,59 @@
+{
+  "id": "feist02_home02_hallway",
+  "name": "廊",
+  "description": "爐邊宅廊一徑幽深，熱氣自牆縫滲入、與簷角霜氣交織成霧，腳步落進去便沒了聲息；一側通〔廳〕、一側通〔倉〕，游離輻射下二段熱霧不散、玉質脈絡在壁角隱約，鐵腥隱約。此處僅通〔門廳〕、〔廳〕與〔倉〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home02_main",
+      "to": "feist02_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home02_living",
+      "to": "feist02_home02_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home02_storage",
+      "to": "feist02_home02_storage",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home02_h_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home02_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    },
+    {
+      "id": "feist02_home02_h_exit_living",
+      "name": "廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home02_living",
+      "responses": {
+        "Move": "你往廳走去。"
+      }
+    },
+    {
+      "id": "feist02_home02_h_exit_storage",
+      "name": "倉",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home02_storage",
+      "responses": {
+        "Move": "你推門入倉。"
+      }
+    }
+  ]
+}

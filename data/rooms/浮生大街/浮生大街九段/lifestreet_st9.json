@@ -15,15 +15,23 @@
     {
       "id": "st9_exit_st8",
       "name": "浮生大街八段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st8",
-      "responses": { "Move": "你朝浮生大街八段方向折返。" }
+      "responses": {
+        "Move": "你朝浮生大街八段方向折返。"
+      }
     },
     {
       "id": "st9_obj_stone",
       "name": "脈絡匯石",
-      "sockets": ["Look"],
-      "responses": { "Look": "一方矮石踞於路側，玉質脈絡自石縫沁出、與石面咬合，淡紫琥珀光色隱約流轉，似匯聚又似待延。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "一方矮石踞於路側，玉質脈絡自石縫沁出、與石面咬合，淡紫琥珀光色隱約流轉，似匯聚又似待延。"
+      }
     }
   ]
 }

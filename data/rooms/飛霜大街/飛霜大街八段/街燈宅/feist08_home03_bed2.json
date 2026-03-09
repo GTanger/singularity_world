@@ -1,0 +1,43 @@
+{
+  "id": "feist08_home03_bed2",
+  "name": "臥二",
+  "description": "街燈宅臥二窄仄、榻腳抵門，簾外後院天光一線、窗紙結霜紋；八段街燈從簷外透進一層昏黃，街尾感與遠處四路街口人聲並存，霜晶與燈火在此交錯。此處通〔起居〕與〔後院〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_home03_living",
+      "to": "feist08_home03_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home03_court_back",
+      "to": "feist08_home03_court_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_home03_b2_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home03_living",
+      "responses": {
+        "Move": "你出臥二回起居。"
+      }
+    },
+    {
+      "id": "feist08_home03_b2_exit_back",
+      "name": "後院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home03_court_back",
+      "responses": {
+        "Move": "你出臥二往後院。"
+      }
+    }
+  ]
+}

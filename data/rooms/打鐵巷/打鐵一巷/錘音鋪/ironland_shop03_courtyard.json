@@ -5,9 +5,23 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_shop03_main", "to": "ironland_shop03_main", "ui_hidden": true }
+    {
+      "direction": "ironland_shop03_main",
+      "to": "ironland_shop03_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_shop03_courtyard_exit", "name": "錘音鋪", "sockets": ["Move"], "move_to_room_id": "ironland_shop03_main", "responses": { "Move": "你回到店面前方。" }}
+    {
+      "id": "ironland_shop03_courtyard_exit",
+      "name": "錘音鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop03_main",
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
+    }
   ]
 }

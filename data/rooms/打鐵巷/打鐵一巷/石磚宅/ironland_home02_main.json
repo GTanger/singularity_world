@@ -5,11 +5,39 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_lane1", "to": "ironland_lane1", "ui_hidden": true },
-    { "direction": "ironland_home02_hallway", "to": "ironland_home02_hallway", "ui_hidden": true }
+    {
+      "direction": "ironland_lane1",
+      "to": "ironland_lane1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home02_hallway",
+      "to": "ironland_home02_hallway",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_home02_main_exit_lane", "name": "板門", "sockets": ["Move"], "move_to_room_id": "ironland_lane1", "responses": { "Move": "你推開板門，回到打鐵一巷。" }},
-    { "id": "ironland_home02_main_exit_hallway", "name": "廊道", "sockets": ["Move"], "move_to_room_id": "ironland_home02_hallway", "responses": { "Move": "你朝內側走去，進入廊道。" }}
+    {
+      "id": "ironland_home02_main_exit_lane",
+      "name": "板門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_lane1",
+      "responses": {
+        "Move": "你推開板門，回到打鐵一巷。"
+      }
+    },
+    {
+      "id": "ironland_home02_main_exit_hallway",
+      "name": "廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home02_hallway",
+      "responses": {
+        "Move": "你朝內側走去，進入廊道。"
+      }
+    }
   ]
 }

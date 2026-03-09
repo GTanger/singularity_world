@@ -20,16 +20,24 @@
     {
       "id": "life_home10_main_exit_lane",
       "name": "板門",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "hutong_lane1",
-      "responses": { "Move": "你推開板門，回到胡同巷。" }
+      "responses": {
+        "Move": "你推開板門，回到胡同巷。"
+      }
     },
     {
       "id": "life_home10_main_exit_hallway",
       "name": "胡廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home10_hallway",
-      "responses": { "Move": "你朝內側走去，進入胡廊。" }
+      "responses": {
+        "Move": "你朝內側走去，進入胡廊。"
+      }
     }
   ]
 }

@@ -1,0 +1,27 @@
+{
+  "id": "feist08_hold01_well",
+  "name": "井台",
+  "description": "霜脊樓井台石欄斑駁、井繩垂在轆轤上；往下望一片黑，只聽見滴水聲，霜結在欄邊、一握便沾一手濕，灶院那頭柴煙隱約。此處僅通〔灶院〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_hold01_kitchen_yard",
+      "to": "feist08_hold01_kitchen_yard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_hold01_well_exit_ky",
+      "name": "灶院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_hold01_kitchen_yard",
+      "responses": {
+        "Move": "你退回灶院。"
+      }
+    }
+  ]
+}

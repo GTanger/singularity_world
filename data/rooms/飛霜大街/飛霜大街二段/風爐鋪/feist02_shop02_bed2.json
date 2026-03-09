@@ -1,0 +1,27 @@
+{
+  "id": "feist02_shop02_bed2",
+  "name": "寢間二",
+  "description": "寢間二更窄，簷隙霜晶與打鐵巷滲入的熱氣在窗邊交織、沾窗即化，榻貼牆、無多餘物；游離輻射下熱霧不散、鐵腥隱約，二段熱氣釋出端的靜夜在此沉到底。此處僅通〔居間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_living",
+      "to": "feist02_shop02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_b2_exit_living",
+      "name": "居間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_living",
+      "responses": {
+        "Move": "你退回居間。"
+      }
+    }
+  ]
+}

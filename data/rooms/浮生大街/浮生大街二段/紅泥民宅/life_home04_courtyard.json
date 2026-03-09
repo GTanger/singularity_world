@@ -15,15 +15,23 @@
     {
       "id": "life_home04_courtyard_exit_corridor",
       "name": "泥廊道",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home04_corridor",
-      "responses": { "Move": "你穿過後門，回到泥廊道。" }
+      "responses": {
+        "Move": "你穿過後門，回到泥廊道。"
+      }
     },
     {
       "id": "life_home04_courtyard_obj_pot",
       "name": "陶盆",
-      "sockets": ["Look"],
-      "responses": { "Look": "盆身泥漿裹住陶質，內部菌絲與細小晶體織就網狀，透出淡紫微光。增生反令盆與地更穩，不顯頹敗。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "盆身泥漿裹住陶質，內部菌絲與細小晶體織就網狀，透出淡紫微光。增生反令盆與地更穩，不顯頹敗。"
+      }
     }
   ]
 }

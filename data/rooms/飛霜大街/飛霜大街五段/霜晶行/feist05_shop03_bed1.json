@@ -1,0 +1,27 @@
+{
+  "id": "feist05_shop03_bed1",
+  "name": "臥一",
+  "description": "霜晶行唯一臥房：單榻靠牆、木櫃抵角，被褥疊在榻尾；簾子一放鋪面聲息便悶在外頭，簾縫漏進過廳一點燈，鼻端是舊褥與木頭的氣味、簷下霜晶從縫隙沁進一線白，此地即盡頭。此處僅通〔過廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist05_shop03_hall",
+      "to": "feist05_shop03_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_shop03_b1_exit_hall",
+      "name": "過廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop03_hall",
+      "responses": {
+        "Move": "你出臥一回過廳。"
+      }
+    }
+  ]
+}

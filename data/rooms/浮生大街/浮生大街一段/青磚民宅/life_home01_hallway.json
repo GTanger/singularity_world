@@ -25,29 +25,45 @@
     {
       "id": "life_home01_hallway_exit_main",
       "name": "門廳",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home01_main",
-      "responses": { "Move": "你循來路回到門廳。" }
+      "responses": {
+        "Move": "你循來路回到門廳。"
+      }
     },
     {
       "id": "life_home01_hallway_exit_living",
       "name": "生息室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home01_living",
-      "responses": { "Move": "你朝通道深處走去，進入生息室。" }
+      "responses": {
+        "Move": "你朝通道深處走去，進入生息室。"
+      }
     },
     {
       "id": "life_home01_hallway_exit_cellar",
       "name": "地窖入口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home01_cellar",
-      "responses": { "Move": "你順階而下，進入下沉地窖。" }
+      "responses": {
+        "Move": "你順階而下，進入下沉地窖。"
+      }
     },
     {
       "id": "life_home01_hallway_obj_root",
       "name": "纖維根鬚",
-      "sockets": ["Look"],
-      "responses": { "Look": "根鬚質地堅硬如細鐵絲，內部可見微小的淡紫色能量脈動。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "根鬚質地堅硬如細鐵絲，內部可見微小的淡紫色能量脈動。"
+      }
     }
   ]
 }

@@ -20,22 +20,34 @@
     {
       "id": "life_shop03_main_exit_st2",
       "name": "浮生大街二段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st2",
-      "responses": { "Move": "你掀開布簾步出店門，回到浮生大街二段。" }
+      "responses": {
+        "Move": "你掀開布簾步出店門，回到浮生大街二段。"
+      }
     },
     {
       "id": "life_shop03_main_exit_storage",
       "name": "儲物間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop03_storage",
-      "responses": { "Move": "你朝後方通道走去，進入儲物間。" }
+      "responses": {
+        "Move": "你朝後方通道走去，進入儲物間。"
+      }
     },
     {
       "id": "life_shop03_main_obj_knife",
       "name": "石刀筆",
-      "sockets": ["Look"],
-      "responses": { "Look": "刀鋒自礦脈切削而成，握柄纖維繩纏緊石身，沾著少許紫色墨漬。指腹撫過，溫潤略黏，竟似活物沉眠。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "刀鋒自礦脈切削而成，握柄纖維繩纏緊石身，沾著少許紫色墨漬。指腹撫過，溫潤略黏，竟似活物沉眠。"
+      }
     }
   ]
 }

@@ -1,0 +1,91 @@
+{
+  "id": "feist04_home01_hallway",
+  "name": "廊",
+  "description": "石霜宅廊子半折、一頭往門廳一頭往起居與臥房；側門推開即小天井、牆皮斑駁石階緣磨得圓滑，簷下陰影與積霜交錯、掌心貼牆一片沁涼，盡頭書齋在左、倉在右，四段燈火從門廳漏進一線。此處通〔門廳〕、〔起居〕、〔小天井〕、〔書齋〕、〔倉〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist04_home01_main",
+      "to": "feist04_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home01_living",
+      "to": "feist04_home01_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home01_courtyard",
+      "to": "feist04_home01_courtyard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home01_study",
+      "to": "feist04_home01_study",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home01_storage",
+      "to": "feist04_home01_storage",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_home01_h_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home01_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    },
+    {
+      "id": "feist04_home01_h_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home01_living",
+      "responses": {
+        "Move": "你往起居。"
+      }
+    },
+    {
+      "id": "feist04_home01_h_exit_court",
+      "name": "小天井",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home01_courtyard",
+      "responses": {
+        "Move": "你往小天井。"
+      }
+    },
+    {
+      "id": "feist04_home01_h_exit_study",
+      "name": "書齋",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home01_study",
+      "responses": {
+        "Move": "你往書齋。"
+      }
+    },
+    {
+      "id": "feist04_home01_h_exit_storage",
+      "name": "倉",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home01_storage",
+      "responses": {
+        "Move": "你往倉。"
+      }
+    }
+  ]
+}

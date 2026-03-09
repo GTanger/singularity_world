@@ -20,16 +20,24 @@
     {
       "id": "ironland_shop10_kiln_exit_workshop",
       "name": "工間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop10_workshop",
-      "responses": { "Move": "你回到工間。" }
+      "responses": {
+        "Move": "你回到工間。"
+      }
     },
     {
       "id": "ironland_shop10_kiln_exit_flue",
       "name": "煙道間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop10_flue_room",
-      "responses": { "Move": "你步入煙道間。" }
+      "responses": {
+        "Move": "你步入煙道間。"
+      }
     }
   ]
 }

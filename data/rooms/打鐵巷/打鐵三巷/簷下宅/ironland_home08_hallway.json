@@ -25,23 +25,35 @@
     {
       "id": "ironland_home08_hallway_exit_main",
       "name": "門廳",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_home08_main",
-      "responses": { "Move": "你循來路回到門廳。" }
+      "responses": {
+        "Move": "你循來路回到門廳。"
+      }
     },
     {
       "id": "ironland_home08_hallway_exit_living",
       "name": "生息室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_home08_living",
-      "responses": { "Move": "你朝通道深處走去，進入生息室。" }
+      "responses": {
+        "Move": "你朝通道深處走去，進入生息室。"
+      }
     },
     {
       "id": "ironland_home08_hallway_exit_courtyard",
       "name": "小院",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_home08_courtyard",
-      "responses": { "Move": "你踏入小院。" }
+      "responses": {
+        "Move": "你踏入小院。"
+      }
     }
   ]
 }

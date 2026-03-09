@@ -25,23 +25,35 @@
     {
       "id": "life_shop05_living_exit_hallway",
       "name": "內廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop05_hallway",
-      "responses": { "Move": "你回到內廊。" }
+      "responses": {
+        "Move": "你回到內廊。"
+      }
     },
     {
       "id": "life_shop05_living_exit_back",
       "name": "後間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop05_back",
-      "responses": { "Move": "你回到後間。" }
+      "responses": {
+        "Move": "你回到後間。"
+      }
     },
     {
       "id": "life_shop05_living_exit_bedroom",
       "name": "私人臥室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop05_bedroom",
-      "responses": { "Move": "你步入私人臥室。" }
+      "responses": {
+        "Move": "你步入私人臥室。"
+      }
     }
   ]
 }

@@ -30,30 +30,46 @@
     {
       "id": "life_b7_court_exit_main",
       "name": "主廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_main",
-      "responses": { "Move": "你回到主廊。" }
+      "responses": {
+        "Move": "你回到主廊。"
+      }
     },
     {
       "id": "life_b7_court_exit_east",
       "name": "東廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_east_hall",
-      "responses": { "Move": "你步入東廊。" }
+      "responses": {
+        "Move": "你步入東廊。"
+      }
     },
     {
       "id": "life_b7_court_exit_west",
       "name": "西廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_west_hall",
-      "responses": { "Move": "你步入西廊。" }
+      "responses": {
+        "Move": "你步入西廊。"
+      }
     },
     {
       "id": "life_b7_court_exit_back",
       "name": "後堂",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_back",
-      "responses": { "Move": "你朝後堂走去。" }
+      "responses": {
+        "Move": "你朝後堂走去。"
+      }
     }
   ]
 }

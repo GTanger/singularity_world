@@ -1,97 +1,199 @@
 {
   "id": "feistreet_st5",
   "name": "飛霜大街五段",
-  "description": "沿街簷下霜積明顯，路面冷調、霜晶沉降，簷角積霜、簷下陰影交錯。路側〔簷霜鋪〕〔霜積閣〕〔霜晶行〕簷下霜白成串，對向〔簷影宅〕與〔霜階宅〕門廊覆著細霜。可經〔飛霜大街四段〕折返，或朝〔飛霜大街六段〕延伸。",
+  "description": "沿街簷下霜積明顯，路面冷調、霜晶沉降，簷角積霜、簷下陰影交錯；五段人跡略稀。路側〔簷霜鋪〕〔霜積閣〕〔霜晶行〕簷下霜白成串，對向〔簷影宅〕〔霜階宅〕〔簷線宅〕門廊覆著細霜。可經〔飛霜大街四段〕折返，或朝〔飛霜大街六段〕延伸。",
   "tags": [],
   "zone": "feistreet",
   "exits": [
-    { "direction": "feistreet_st4", "to": "feistreet_st4", "ui_hidden": true },
-    { "direction": "feistreet_st6", "to": "feistreet_st6", "ui_hidden": true },
-    { "direction": "fei_shop08_main", "to": "fei_shop08_main", "ui_hidden": true },
-    { "direction": "fei_shop09_main", "to": "fei_shop09_main", "ui_hidden": true },
-    { "direction": "fei_shop10_main", "to": "fei_shop10_main", "ui_hidden": true },
-    { "direction": "fei_home08_main", "to": "fei_home08_main", "ui_hidden": true },
-    { "direction": "fei_home09_main", "to": "fei_home09_main", "ui_hidden": true }
+    {
+      "direction": "feistreet_st4",
+      "to": "feistreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feistreet_st6",
+      "to": "feistreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_shop01_main",
+      "to": "feist05_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_shop02_main",
+      "to": "feist05_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_shop03_main",
+      "to": "feist05_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_home01_main",
+      "to": "feist05_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_home02_main",
+      "to": "feist05_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_home03_main",
+      "to": "feist05_home03_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "fei_st5_exit_st4",
       "name": "飛霜大街四段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "feistreet_st4",
-      "responses": { "Move": "你朝飛霜大街四段方向折返。" }
+      "responses": {
+        "Move": "你朝飛霜大街四段方向折返。"
+      }
     },
     {
       "id": "fei_st5_exit_st6",
       "name": "飛霜大街六段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "feistreet_st6",
-      "responses": { "Move": "你朝飛霜大街六段方向走去。" }
+      "responses": {
+        "Move": "你朝飛霜大街六段方向走去。"
+      }
     },
     {
       "id": "fei_st5_obj_shop08",
       "name": "簷霜鋪",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷下霜積成串、簾隙透光；〔店門〕可入內。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷下霜積成串、簾隙透光；〔店門〕可入內。"
+      }
     },
     {
       "id": "fei_st5_obj_shop08_door",
       "name": "店門",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_shop08_main",
-      "responses": { "Move": "你推門進入簷霜鋪。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop01_main",
+      "responses": {
+        "Move": "你推門進入簷霜鋪。"
+      }
     },
     {
       "id": "fei_st5_obj_shop09",
       "name": "霜積閣",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷角霜積明顯、牆面玉質脈絡沁出；〔門簾〕通往內室。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷角霜積明顯、牆面玉質脈絡沁出；〔門簾〕通往內室。"
+      }
     },
     {
       "id": "fei_st5_obj_shop09_door",
       "name": "門簾",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_shop09_main",
-      "responses": { "Move": "你掀簾進入霜積閣。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop02_main",
+      "responses": {
+        "Move": "你掀簾進入霜積閣。"
+      }
     },
     {
       "id": "fei_st5_obj_shop10",
       "name": "霜晶行",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷下霜晶與格架陳列並存；〔窄門〕半掩。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷下霜晶與格架陳列並存；〔窄門〕半掩。"
+      }
     },
     {
       "id": "fei_st5_obj_shop10_door",
       "name": "窄門",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_shop10_main",
-      "responses": { "Move": "你推門進入霜晶行。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop03_main",
+      "responses": {
+        "Move": "你推門進入霜晶行。"
+      }
     },
     {
-      "id": "fei_st5_obj_home08",
+      "id": "fei_st5_obj_home04",
       "name": "簷影宅",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷下陰影與積霜交錯；〔門洞〕內光線幽微。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷下陰影與積霜交錯；〔門洞〕內光線幽微。"
+      }
     },
     {
-      "id": "fei_st5_obj_home08_door",
+      "id": "fei_st5_obj_home04_door",
       "name": "門洞",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_home08_main",
-      "responses": { "Move": "你步入簷影宅。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_main",
+      "responses": {
+        "Move": "你步入簷影宅。"
+      }
     },
     {
-      "id": "fei_st5_obj_home09",
+      "id": "fei_st5_obj_home05",
       "name": "霜階宅",
-      "sockets": ["Look"],
-      "responses": { "Look": "石階覆霜、門廊冷調；〔窄門〕可入內。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "石階覆霜、門廊冷調；〔窄門〕可入內。"
+      }
     },
     {
-      "id": "fei_st5_obj_home09_door",
+      "id": "fei_st5_obj_home05_door",
       "name": "窄門",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_home09_main",
-      "responses": { "Move": "你推門進入霜階宅。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home02_main",
+      "responses": {
+        "Move": "你推門進入霜階宅。"
+      }
+    },
+    {
+      "id": "fei_st5_obj_home06",
+      "name": "簷線宅",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷線壓低、霜跡成串；〔門簾〕可入內。"
+      }
+    },
+    {
+      "id": "fei_st5_obj_home06_door",
+      "name": "門簾",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home03_main",
+      "responses": {
+        "Move": "你掀簾進入簷線宅。"
+      }
     }
   ]
 }

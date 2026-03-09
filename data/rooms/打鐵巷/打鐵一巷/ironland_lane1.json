@@ -45,51 +45,79 @@
     {
       "id": "ironland_lane1_exit_st4",
       "name": "巷口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st4",
-      "responses": { "Move": "你循巷子走出，回到浮生大街四段。" }
+      "responses": {
+        "Move": "你循巷子走出，回到浮生大街四段。"
+      }
     },
     {
       "id": "ironland_lane1_exit_lane2",
       "name": "打鐵二巷",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_lane2",
-      "responses": { "Move": "你順著熱風往飛霜方向走去，進入打鐵二巷。" }
+      "responses": {
+        "Move": "你順著熱風往飛霜方向走去，進入打鐵二巷。"
+      }
     },
     {
       "id": "ironland_lane1_exit_shop01",
       "name": "鍛造鋪",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop01_main",
-      "responses": { "Move": "你掀開厚簾，步入鍛造鋪。" }
+      "responses": {
+        "Move": "你掀開厚簾，步入鍛造鋪。"
+      }
     },
     {
       "id": "ironland_lane1_exit_shop02",
       "name": "爐火鋪",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop02_main",
-      "responses": { "Move": "你掀開厚簾，步入爐火鋪。" }
+      "responses": {
+        "Move": "你掀開厚簾，步入爐火鋪。"
+      }
     },
     {
       "id": "ironland_lane1_exit_shop03",
       "name": "錘音鋪",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop03_main",
-      "responses": { "Move": "你掀開厚簾，步入錘音鋪。" }
+      "responses": {
+        "Move": "你掀開厚簾，步入錘音鋪。"
+      }
     },
     {
       "id": "ironland_lane1_exit_home01",
       "name": "巷內宅",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_home01_main",
-      "responses": { "Move": "你推開板門，進入巷內宅。" }
+      "responses": {
+        "Move": "你推開板門，進入巷內宅。"
+      }
     },
     {
       "id": "ironland_lane1_exit_home02",
       "name": "石磚宅",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_home02_main",
-      "responses": { "Move": "你推開板門，進入石磚宅。" }
+      "responses": {
+        "Move": "你推開板門，進入石磚宅。"
+      }
     }
   ]
 }

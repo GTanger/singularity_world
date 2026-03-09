@@ -25,29 +25,45 @@
     {
       "id": "st8_exit_st7",
       "name": "浮生大街七段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st7",
-      "responses": { "Move": "你朝浮生大街七段方向折返。" }
+      "responses": {
+        "Move": "你朝浮生大街七段方向折返。"
+      }
     },
     {
       "id": "st8_exit_st9",
       "name": "浮生大街九段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st9",
-      "responses": { "Move": "你朝浮生大街九段方向走去。" }
+      "responses": {
+        "Move": "你朝浮生大街九段方向走去。"
+      }
     },
     {
       "id": "st8_obj_home12",
       "name": "脈尾宅",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷角脈絡自石縫沁出與砌石咬合，淡紫琥珀光色沉靜，門前石階覆著絨狀菌絲。入口是〔板門〕。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷角脈絡自石縫沁出與砌石咬合，淡紫琥珀光色沉靜，門前石階覆著絨狀菌絲。入口是〔板門〕。"
+      }
     },
     {
       "id": "st8_obj_home12_door",
       "name": "板門",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home12_main",
-      "responses": { "Move": "你推開板門，進入脈尾宅。" }
+      "responses": {
+        "Move": "你推開板門，進入脈尾宅。"
+      }
     }
   ]
 }

@@ -15,9 +15,13 @@
     {
       "id": "life_home07_courtyard_exit",
       "name": "簷廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home07_hallway",
-      "responses": { "Move": "你回到簷廊。" }
+      "responses": {
+        "Move": "你回到簷廊。"
+      }
     }
   ]
 }

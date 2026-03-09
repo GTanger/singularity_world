@@ -1,0 +1,59 @@
+{
+  "id": "feist07_home01_living",
+  "name": "起居",
+  "description": "霜階宅方几靠窗、兩凳對坐，火盆餘灰未掏；釘鉤與舊痕在牆，簾外即小院一隅。灶間在左、臥房在盡頭，日常起居都在這兒，無書齋無後院。此處通〔廊〕、〔灶間〕與〔臥房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_home01_hallway",
+      "to": "feist07_home01_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_home01_kitchen",
+      "to": "feist07_home01_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_home01_bedroom",
+      "to": "feist07_home01_bedroom",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_home01_lv_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home01_hallway",
+      "responses": {
+        "Move": "你退回廊。"
+      }
+    },
+    {
+      "id": "feist07_home01_lv_exit_kitchen",
+      "name": "灶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home01_kitchen",
+      "responses": {
+        "Move": "你往灶間。"
+      }
+    },
+    {
+      "id": "feist07_home01_lv_exit_bed",
+      "name": "臥房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home01_bedroom",
+      "responses": {
+        "Move": "你入臥房。"
+      }
+    }
+  ]
+}

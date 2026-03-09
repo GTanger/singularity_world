@@ -15,15 +15,23 @@
     {
       "id": "life_shop02_yard_exit_main",
       "name": "織染坊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop02_main",
-      "responses": { "Move": "你自後院回到室內，進入織染坊。" }
+      "responses": {
+        "Move": "你自後院回到室內，進入織染坊。"
+      }
     },
     {
       "id": "life_shop02_yard_obj_vat",
       "name": "石砌染池",
-      "sockets": ["Look"],
-      "responses": { "Look": "染液內部緩慢翻滾，不時冒出散發檀香味的微小氣泡，池緣已完全被玉質外殼覆蓋。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "染液內部緩慢翻滾，不時冒出散發檀香味的微小氣泡，池緣已完全被玉質外殼覆蓋。"
+      }
     }
   ]
 }

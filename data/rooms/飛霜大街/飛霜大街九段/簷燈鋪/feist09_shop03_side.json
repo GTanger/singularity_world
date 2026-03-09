@@ -1,0 +1,43 @@
+{
+  "id": "feist09_shop03_side",
+  "name": "側間",
+  "description": "簷燈鋪側道靠店頭那側漏進燈光，半明半暗；架上燈油、燈芯與替換罩子排滿，指尖摸到油垢與鐵銹，再往裡即帳房。此處通〔店頭〕與〔帳房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_shop03_main",
+      "to": "feist09_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_shop03_office",
+      "to": "feist09_shop03_office",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_shop03_side_exit_main",
+      "name": "店頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop03_main",
+      "responses": {
+        "Move": "你回到店頭。"
+      }
+    },
+    {
+      "id": "feist09_shop03_side_exit_office",
+      "name": "帳房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop03_office",
+      "responses": {
+        "Move": "你步入帳房。"
+      }
+    }
+  ]
+}

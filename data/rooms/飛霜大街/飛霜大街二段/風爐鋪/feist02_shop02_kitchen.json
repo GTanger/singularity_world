@@ -1,0 +1,27 @@
+{
+  "id": "feist02_shop02_kitchen",
+  "name": "灶間",
+  "description": "風爐鋪灶間爐口與打鐵巷同源、煙道與二段熱霧相接，簷隙霜晶沾熱即化、牆面熏黑；碗櫥靠牆、水甕見底，熱氣與霜氣在窄窗交織長年不散，鐵腥與炭氣並存。此處僅通〔居間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_living",
+      "to": "feist02_shop02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_k_exit_living",
+      "name": "居間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_living",
+      "responses": {
+        "Move": "你退回居間。"
+      }
+    }
+  ]
+}

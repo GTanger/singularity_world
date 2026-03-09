@@ -1,0 +1,43 @@
+{
+  "id": "feist09_shop02_warehouse",
+  "name": "庫房",
+  "description": "匯流閣庫房成箱乾貨與罈罐抵到樑下，高窗透進的只剩街燈昏黃；腳步一停連自己的呼吸都聽得見，茶氣從門縫鑽進來、混著灰塵。此處通〔儲物間〕與〔帳房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_shop02_storage",
+      "to": "feist09_shop02_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_shop02_office",
+      "to": "feist09_shop02_office",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_shop02_warehouse_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop02_storage",
+      "responses": {
+        "Move": "你回到儲物間。"
+      }
+    },
+    {
+      "id": "feist09_shop02_warehouse_exit_office",
+      "name": "帳房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop02_office",
+      "responses": {
+        "Move": "你步入帳房。"
+      }
+    }
+  ]
+}

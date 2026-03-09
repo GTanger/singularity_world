@@ -25,29 +25,45 @@
     {
       "id": "life_shop11_main_exit_st6",
       "name": "浮生大街六段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st6",
-      "responses": { "Move": "你掀開布簾，回到浮生大街六段。" }
+      "responses": {
+        "Move": "你掀開布簾，回到浮生大街六段。"
+      }
     },
     {
       "id": "life_shop11_main_exit_storage",
       "name": "儲物間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop11_storage",
-      "responses": { "Move": "你朝後方走去，進入儲物間。" }
+      "responses": {
+        "Move": "你朝後方走去，進入儲物間。"
+      }
     },
     {
       "id": "life_shop11_main_exit_hallway",
       "name": "內廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop11_hallway",
-      "responses": { "Move": "你往內廊走去。" }
+      "responses": {
+        "Move": "你往內廊走去。"
+      }
     },
     {
       "id": "life_shop11_main_obj_tea",
       "name": "溫茶",
-      "sockets": ["Look"],
-      "responses": { "Look": "琉璃盞盛著琥珀色茶湯，壺身沁出玉質脈絡，觸手溫潤。氣味沉澱，略帶根鬚與菌絲的甘澀。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "琉璃盞盛著琥珀色茶湯，壺身沁出玉質脈絡，觸手溫潤。氣味沉澱，略帶根鬚與菌絲的甘澀。"
+      }
     }
   ]
 }

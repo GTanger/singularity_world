@@ -1,0 +1,43 @@
+{
+  "id": "feist01_home02_foyer",
+  "name": "玄關",
+  "description": "簷霜居玄關一徑短深，霜晶自高窗沉降、與湖氣在腳邊交會；壁面冷調石紋沁涼、無雜物，僅一門通往〔廳〕，空氣沉靜如凝，湖端與世無爭的靜謐在此過渡。此處僅通〔門廳〕與〔廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home02_main",
+      "to": "feist01_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home02_living",
+      "to": "feist01_home02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home02_f_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    },
+    {
+      "id": "feist01_home02_f_exit_living",
+      "name": "廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_living",
+      "responses": {
+        "Move": "你往廳走去。"
+      }
+    }
+  ]
+}

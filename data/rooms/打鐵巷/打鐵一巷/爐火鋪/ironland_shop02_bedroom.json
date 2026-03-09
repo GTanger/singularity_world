@@ -5,9 +5,23 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_shop02_living", "to": "ironland_shop02_living", "ui_hidden": true }
+    {
+      "direction": "ironland_shop02_living",
+      "to": "ironland_shop02_living",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_shop02_bedroom_exit", "name": "生活起居室", "sockets": ["Move"], "move_to_room_id": "ironland_shop02_living", "responses": { "Move": "你離開臥室，回到生活起居室。" }}
+    {
+      "id": "ironland_shop02_bedroom_exit",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop02_living",
+      "responses": {
+        "Move": "你離開臥室，回到生活起居室。"
+      }
+    }
   ]
 }

@@ -15,9 +15,13 @@
     {
       "id": "life_b7_back_1_exit",
       "name": "後堂",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_b7_back",
-      "responses": { "Move": "你回到後堂。" }
+      "responses": {
+        "Move": "你回到後堂。"
+      }
     }
   ]
 }

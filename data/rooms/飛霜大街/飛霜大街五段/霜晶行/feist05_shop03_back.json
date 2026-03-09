@@ -1,0 +1,43 @@
+{
+  "id": "feist05_shop03_back",
+  "name": "後間",
+  "description": "霜晶行鋪與宅交界：雜箱與破簍堆到牆角，牆縫沁出細紋、觸手冰涼，簷下霜晶從隙縫鑽進一線；無窗，只靠通道漏進一線光辨路，一道門通〔過廳〕，住家從那裡開始。此處通〔櫃前〕與〔過廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist05_shop03_counter",
+      "to": "feist05_shop03_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_shop03_hall",
+      "to": "feist05_shop03_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_shop03_b_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop03_counter",
+      "responses": {
+        "Move": "你退回櫃前。"
+      }
+    },
+    {
+      "id": "feist05_shop03_b_exit_hall",
+      "name": "過廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop03_hall",
+      "responses": {
+        "Move": "你步入過廳。"
+      }
+    }
+  ]
+}

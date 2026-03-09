@@ -5,15 +5,71 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_home05_main", "to": "ironland_home05_main", "ui_hidden": true },
-    { "direction": "ironland_home05_living", "to": "ironland_home05_living", "ui_hidden": true },
-    { "direction": "ironland_home05_courtyard", "to": "ironland_home05_courtyard", "ui_hidden": true },
-    { "direction": "ironland_home05_storeroom", "to": "ironland_home05_storeroom", "ui_hidden": true }
+    {
+      "direction": "ironland_home05_main",
+      "to": "ironland_home05_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home05_living",
+      "to": "ironland_home05_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home05_courtyard",
+      "to": "ironland_home05_courtyard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home05_storeroom",
+      "to": "ironland_home05_storeroom",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_home05_hallway_exit_main", "name": "門廳", "sockets": ["Move"], "move_to_room_id": "ironland_home05_main", "responses": { "Move": "你循來路回到門廳。" } },
-    { "id": "ironland_home05_hallway_exit_living", "name": "生息室", "sockets": ["Move"], "move_to_room_id": "ironland_home05_living", "responses": { "Move": "你朝通道深處走去，進入生息室。" } },
-    { "id": "ironland_home05_hallway_exit_courtyard", "name": "小院", "sockets": ["Move"], "move_to_room_id": "ironland_home05_courtyard", "responses": { "Move": "你踏入小院。" } },
-    { "id": "ironland_home05_hallway_exit_storeroom", "name": "簷下儲", "sockets": ["Move"], "move_to_room_id": "ironland_home05_storeroom", "responses": { "Move": "你步入簷下儲。" } }
+    {
+      "id": "ironland_home05_hallway_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home05_main",
+      "responses": {
+        "Move": "你循來路回到門廳。"
+      }
+    },
+    {
+      "id": "ironland_home05_hallway_exit_living",
+      "name": "生息室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home05_living",
+      "responses": {
+        "Move": "你朝通道深處走去，進入生息室。"
+      }
+    },
+    {
+      "id": "ironland_home05_hallway_exit_courtyard",
+      "name": "小院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home05_courtyard",
+      "responses": {
+        "Move": "你踏入小院。"
+      }
+    },
+    {
+      "id": "ironland_home05_hallway_exit_storeroom",
+      "name": "簷下儲",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home05_storeroom",
+      "responses": {
+        "Move": "你步入簷下儲。"
+      }
+    }
   ]
 }

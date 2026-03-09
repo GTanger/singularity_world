@@ -5,9 +5,23 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_home06_main", "to": "ironland_home06_main", "ui_hidden": true }
+    {
+      "direction": "ironland_home06_main",
+      "to": "ironland_home06_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_home06_courtyard_exit", "name": "門廳", "sockets": ["Move"], "move_to_room_id": "ironland_home06_main", "responses": { "Move": "你回到門廳。" } }
+    {
+      "id": "ironland_home06_courtyard_exit",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home06_main",
+      "responses": {
+        "Move": "你回到門廳。"
+      }
+    }
   ]
 }

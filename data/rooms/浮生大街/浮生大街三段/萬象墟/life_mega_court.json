@@ -40,44 +40,68 @@
     {
       "id": "life_mega_court_exit_main",
       "name": "主廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_main",
-      "responses": { "Move": "你朝主廊折返。" }
+      "responses": {
+        "Move": "你朝主廊折返。"
+      }
     },
     {
       "id": "life_mega_court_exit_north",
       "name": "北廳",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_north_hall",
-      "responses": { "Move": "你步入北廳。" }
+      "responses": {
+        "Move": "你步入北廳。"
+      }
     },
     {
       "id": "life_mega_court_exit_south",
       "name": "南軒",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_south_wing",
-      "responses": { "Move": "你步入南軒。" }
+      "responses": {
+        "Move": "你步入南軒。"
+      }
     },
     {
       "id": "life_mega_court_exit_left",
       "name": "左廂",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_left_wing",
-      "responses": { "Move": "你步入左廂。" }
+      "responses": {
+        "Move": "你步入左廂。"
+      }
     },
     {
       "id": "life_mega_court_exit_right",
       "name": "右廂",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_right_wing",
-      "responses": { "Move": "你步入右廂。" }
+      "responses": {
+        "Move": "你步入右廂。"
+      }
     },
     {
       "id": "life_mega_court_exit_inner",
       "name": "內堂",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_inner",
-      "responses": { "Move": "你朝內堂深處走去。" }
+      "responses": {
+        "Move": "你朝內堂深處走去。"
+      }
     }
   ]
 }

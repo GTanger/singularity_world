@@ -1,0 +1,75 @@
+{
+  "id": "feist04_shop02_main",
+  "name": "鋪面",
+  "description": "簷下鋪簷下霜積成串、簾隙透進四段天光，櫃檯橫陳、茶罐與粗碗擱在案上，石面沁涼、簾外霜晶沾衣即化；沿街簷下陰影與霜白交錯，往裡是〔櫃前〕、側邊〔簷廊〕、深處〔內堂〕。此處連接〔飛霜大街四段〕，內側為〔櫃前〕、〔簷廊〕、〔內堂〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st4",
+      "to": "feistreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_shop02_counter",
+      "to": "feist04_shop02_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_shop02_eave",
+      "to": "feist04_shop02_eave",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_shop02_inner",
+      "to": "feist04_shop02_inner",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_shop02_m_exit_st4",
+      "name": "門簾",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st4",
+      "responses": {
+        "Move": "你掀簾步出，回到飛霜大街四段。"
+      }
+    },
+    {
+      "id": "feist04_shop02_m_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_shop02_counter",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    },
+    {
+      "id": "feist04_shop02_m_exit_eave",
+      "name": "簷廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_shop02_eave",
+      "responses": {
+        "Move": "你步向簷廊。"
+      }
+    },
+    {
+      "id": "feist04_shop02_m_exit_inner",
+      "name": "內堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_shop02_inner",
+      "responses": {
+        "Move": "你往內堂。"
+      }
+    }
+  ]
+}

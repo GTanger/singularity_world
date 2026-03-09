@@ -25,29 +25,45 @@
     {
       "id": "life_shop05_main_exit_st3",
       "name": "浮生大街三段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "lifestreet_st3",
-      "responses": { "Move": "你掀開厚簾，回到浮生大街三段。" }
+      "responses": {
+        "Move": "你掀開厚簾，回到浮生大街三段。"
+      }
     },
     {
       "id": "life_shop05_main_exit_storage",
       "name": "儲物間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop05_storage",
-      "responses": { "Move": "你朝後方走去，進入儲物間。" }
+      "responses": {
+        "Move": "你朝後方走去，進入儲物間。"
+      }
     },
     {
       "id": "life_shop05_main_exit_workshop",
       "name": "工坊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop05_workshop",
-      "responses": { "Move": "你轉入工坊。" }
+      "responses": {
+        "Move": "你轉入工坊。"
+      }
     },
     {
       "id": "life_shop05_main_obj_hammer",
       "name": "石槌",
-      "sockets": ["Look"],
-      "responses": { "Look": "槌頭自礦脈切削而成，握柄纏著纖維繩，沾著石粉與琥珀色脈絡。觸手溫潤略黏，沉甸甸的，專作敲鑿石片與礦坯之用。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "槌頭自礦脈切削而成，握柄纏著纖維繩，沾著石粉與琥珀色脈絡。觸手溫潤略黏，沉甸甸的，專作敲鑿石片與礦坯之用。"
+      }
     }
   ]
 }

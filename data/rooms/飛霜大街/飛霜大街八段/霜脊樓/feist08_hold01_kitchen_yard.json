@@ -1,0 +1,43 @@
+{
+  "id": "feist08_hold01_kitchen_yard",
+  "name": "灶院",
+  "description": "霜脊樓灶院露天一角，土灶與水缸靠牆、柴薪疊在簷下；霜落在灶台上不化，指尖一碰冰涼，井台那頭滴水有聲。此處通〔內院〕與〔井台〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_hold01_inner_yard",
+      "to": "feist08_hold01_inner_yard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_hold01_well",
+      "to": "feist08_hold01_well",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_hold01_ky_exit_inner",
+      "name": "內院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_hold01_inner_yard",
+      "responses": {
+        "Move": "你退回內院。"
+      }
+    },
+    {
+      "id": "feist08_hold01_ky_exit_well",
+      "name": "井台",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_hold01_well",
+      "responses": {
+        "Move": "你往井台走去。"
+      }
+    }
+  ]
+}

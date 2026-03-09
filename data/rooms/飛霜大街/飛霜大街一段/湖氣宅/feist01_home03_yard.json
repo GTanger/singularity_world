@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home03_yard",
+  "name": "小院",
+  "description": "湖氣宅小院一方、無草木，霜晶自頭頂沉降、與湖氣交會成霧；石地沁涼、簷溜結霜，一段空氣沉靜、天空在此壓成一方，玉質脈絡在牆角隱約，湖端與大街在此一牆之隔。此處僅通〔前廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home03_corridor",
+      "to": "feist01_home03_corridor",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home03_y_exit_corridor",
+      "name": "前廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home03_corridor",
+      "responses": {
+        "Move": "你退回前廊。"
+      }
+    }
+  ]
+}

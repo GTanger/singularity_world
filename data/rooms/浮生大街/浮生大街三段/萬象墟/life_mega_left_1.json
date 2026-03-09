@@ -15,9 +15,13 @@
     {
       "id": "life_mega_left_1_exit",
       "name": "左廂",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_left_wing",
-      "responses": { "Move": "你回到左廂。" }
+      "responses": {
+        "Move": "你回到左廂。"
+      }
     }
   ]
 }

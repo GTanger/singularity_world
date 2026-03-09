@@ -1,0 +1,43 @@
+{
+  "id": "feist08_shop01_yard",
+  "name": "小天井",
+  "description": "街尾鋪小天井：簷線夾成一條天，缸在角、瓦當滴水敲缸沿；簾後即〔過廳〕燈火與飯香，八段街尾的吆喝隱約，霜氣直直落進缸裡。此處通〔後間〕與〔過廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_shop01_back_room",
+      "to": "feist08_shop01_back_room",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_shop01_hall",
+      "to": "feist08_shop01_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_shop01_y_exit_back",
+      "name": "後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_shop01_back_room",
+      "responses": {
+        "Move": "你退回後間。"
+      }
+    },
+    {
+      "id": "feist08_shop01_y_exit_hall",
+      "name": "過廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_shop01_hall",
+      "responses": {
+        "Move": "你步入過廳。"
+      }
+    }
+  ]
+}

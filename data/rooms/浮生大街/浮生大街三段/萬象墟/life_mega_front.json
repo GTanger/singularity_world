@@ -35,37 +35,57 @@
     {
       "id": "life_mega_front_exit_gate",
       "name": "墟門",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_gate",
-      "responses": { "Move": "你循來路回到墟門。" }
+      "responses": {
+        "Move": "你循來路回到墟門。"
+      }
     },
     {
       "id": "life_mega_front_exit_main",
       "name": "主廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_main",
-      "responses": { "Move": "你朝主廊深處走去。" }
+      "responses": {
+        "Move": "你朝主廊深處走去。"
+      }
     },
     {
       "id": "life_mega_front_exit_east",
       "name": "東廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_east_hall",
-      "responses": { "Move": "你轉入東廊。" }
+      "responses": {
+        "Move": "你轉入東廊。"
+      }
     },
     {
       "id": "life_mega_front_exit_west",
       "name": "西廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_west_hall",
-      "responses": { "Move": "你轉入西廊。" }
+      "responses": {
+        "Move": "你轉入西廊。"
+      }
     },
     {
       "id": "life_mega_front_exit_court",
       "name": "中庭",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_mega_court",
-      "responses": { "Move": "你穿過入口，踏入中庭。" }
+      "responses": {
+        "Move": "你穿過入口，踏入中庭。"
+      }
     }
   ]
 }

@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home04_bed2",
+  "name": "寢間二",
+  "description": "霜靜宅寢間二更窄、枕席簡素貼牆，簷隙霜晶與湖氣在窗邊交會、光線幽微如刀切；後院石地沁涼的靜謐自簾縫沁入，無街口人聲、只聞簷溜偶爾滴答，玉質脈絡在壁角隱約、冷調長夜在此收束。此處僅通〔廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home04_living",
+      "to": "feist01_home04_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home04_b2_exit_living",
+      "name": "廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_living",
+      "responses": {
+        "Move": "你退回廳。"
+      }
+    }
+  ]
+}

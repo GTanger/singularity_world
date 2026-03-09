@@ -20,16 +20,24 @@
     {
       "id": "ironland_shop09_storage_exit_main",
       "name": "鍛錘鋪",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop09_main",
-      "responses": { "Move": "你循來路回到店面前方。" }
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
     },
     {
       "id": "ironland_shop09_storage_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "ironland_shop09_living",
-      "responses": { "Move": "你沿側道走去，進入生活起居室。" }
+      "responses": {
+        "Move": "你沿側道走去，進入生活起居室。"
+      }
     }
   ]
 }

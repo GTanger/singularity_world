@@ -25,23 +25,35 @@
     {
       "id": "life_home12_living_exit_hallway",
       "name": "脈廊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home12_hallway",
-      "responses": { "Move": "你回到脈廊。" }
+      "responses": {
+        "Move": "你回到脈廊。"
+      }
     },
     {
       "id": "life_home12_living_exit_kitchen",
       "name": "灶間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home12_kitchen",
-      "responses": { "Move": "你步入灶間。" }
+      "responses": {
+        "Move": "你步入灶間。"
+      }
     },
     {
       "id": "life_home12_living_exit_bedroom",
       "name": "內臥房",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home12_bedroom",
-      "responses": { "Move": "你步入內臥房。" }
+      "responses": {
+        "Move": "你步入內臥房。"
+      }
     }
   ]
 }

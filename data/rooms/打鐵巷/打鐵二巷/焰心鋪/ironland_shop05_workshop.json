@@ -5,15 +5,71 @@
   "tags": [],
   "zone": "ironland",
   "exits": [
-    { "direction": "ironland_shop05_main", "to": "ironland_shop05_main", "ui_hidden": true },
-    { "direction": "ironland_shop05_living", "to": "ironland_shop05_living", "ui_hidden": true },
-    { "direction": "ironland_shop05_kiln", "to": "ironland_shop05_kiln", "ui_hidden": true },
-    { "direction": "ironland_shop05_quench", "to": "ironland_shop05_quench", "ui_hidden": true }
+    {
+      "direction": "ironland_shop05_main",
+      "to": "ironland_shop05_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop05_living",
+      "to": "ironland_shop05_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop05_kiln",
+      "to": "ironland_shop05_kiln",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop05_quench",
+      "to": "ironland_shop05_quench",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "ironland_shop05_workshop_exit_main", "name": "焰心鋪", "sockets": ["Move"], "move_to_room_id": "ironland_shop05_main", "responses": { "Move": "你循來路回到店面前方。" } },
-    { "id": "ironland_shop05_workshop_exit_living", "name": "生活起居室", "sockets": ["Move"], "move_to_room_id": "ironland_shop05_living", "responses": { "Move": "你往後方通道走去，進入生活起居室。" } },
-    { "id": "ironland_shop05_workshop_exit_kiln", "name": "爐房", "sockets": ["Move"], "move_to_room_id": "ironland_shop05_kiln", "responses": { "Move": "你步入爐房。" } },
-    { "id": "ironland_shop05_workshop_exit_quench", "name": "淬火間", "sockets": ["Move"], "move_to_room_id": "ironland_shop05_quench", "responses": { "Move": "你步入淬火間。" } }
+    {
+      "id": "ironland_shop05_workshop_exit_main",
+      "name": "焰心鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop05_main",
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
+    },
+    {
+      "id": "ironland_shop05_workshop_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop05_living",
+      "responses": {
+        "Move": "你往後方通道走去，進入生活起居室。"
+      }
+    },
+    {
+      "id": "ironland_shop05_workshop_exit_kiln",
+      "name": "爐房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop05_kiln",
+      "responses": {
+        "Move": "你步入爐房。"
+      }
+    },
+    {
+      "id": "ironland_shop05_workshop_exit_quench",
+      "name": "淬火間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop05_quench",
+      "responses": {
+        "Move": "你步入淬火間。"
+      }
+    }
   ]
 }

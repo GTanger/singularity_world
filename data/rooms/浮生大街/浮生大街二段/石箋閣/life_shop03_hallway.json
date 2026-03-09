@@ -20,22 +20,34 @@
     {
       "id": "life_shop03_hallway_exit_storage",
       "name": "儲物間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop03_storage",
-      "responses": { "Move": "你朝前方折返，回到儲物間。" }
+      "responses": {
+        "Move": "你朝前方折返，回到儲物間。"
+      }
     },
     {
       "id": "life_shop03_hallway_exit_living",
       "name": "生活起居室",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop03_living",
-      "responses": { "Move": "你順著微光往深處走，進入生活起居室。" }
+      "responses": {
+        "Move": "你順著微光往深處走，進入生活起居室。"
+      }
     },
     {
       "id": "life_shop03_hallway_obj_paper",
       "name": "粗紙",
-      "sockets": ["Look"],
-      "responses": { "Look": "紙面纖維粗礪，其間細小晶體沉積，邊緣泛淡紫。指腹拂過，略黏滯，似有呼吸。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "紙面纖維粗礪，其間細小晶體沉積，邊緣泛淡紫。指腹拂過，略黏滯，似有呼吸。"
+      }
     }
   ]
 }

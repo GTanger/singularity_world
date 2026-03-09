@@ -20,16 +20,24 @@
     {
       "id": "life_shop05_kiln_exit_workshop",
       "name": "工坊",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop05_workshop",
-      "responses": { "Move": "你回到工坊。" }
+      "responses": {
+        "Move": "你回到工坊。"
+      }
     },
     {
       "id": "life_shop05_kiln_exit_back",
       "name": "後間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_shop05_back",
-      "responses": { "Move": "你步入後間。" }
+      "responses": {
+        "Move": "你步入後間。"
+      }
     }
   ]
 }

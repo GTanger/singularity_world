@@ -20,22 +20,34 @@
     {
       "id": "home02_living_exit_corridor",
       "name": "根鬚廊道",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home02_corridor",
-      "responses": { "Move": "你離開石台旁，回到根鬚廊道。" }
+      "responses": {
+        "Move": "你離開石台旁，回到根鬚廊道。"
+      }
     },
     {
       "id": "home02_living_exit_loft",
       "name": "綠蔭閣樓",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "life_home02_loft",
-      "responses": { "Move": "你順著藤蔓階梯向上，抵達綠蔭閣樓。" }
+      "responses": {
+        "Move": "你順著藤蔓階梯向上，抵達綠蔭閣樓。"
+      }
     },
     {
       "id": "home02_living_obj_bud",
       "name": "肉質花苞",
-      "sockets": ["Look"],
-      "responses": { "Look": "花瓣質地肥厚如軟墊，邊緣佈滿微細震動的纖毛，內部顏色呈深紫色。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "花瓣質地肥厚如軟墊，邊緣佈滿微細震動的纖毛，內部顏色呈深紫色。"
+      }
     }
   ]
 }

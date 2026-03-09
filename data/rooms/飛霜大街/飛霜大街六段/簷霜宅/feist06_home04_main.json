@@ -1,0 +1,43 @@
+{
+  "id": "feist06_home04_main",
+  "name": "門廳",
+  "description": "簷霜宅窄門一開，六段人聲與霜氣撲面；簷緣霜跡成串、石階半截，腳下石板冰涼、簷板壓額，往內〔廊〕深長、足音落下去便沉了。此處連接〔飛霜大街六段〕，內側為〔廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st6",
+      "to": "feistreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist06_home04_hallway",
+      "to": "feist06_home04_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_home04_m_exit_st6",
+      "name": "窄門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st6",
+      "responses": {
+        "Move": "你推門步出，回到飛霜大街六段。"
+      }
+    },
+    {
+      "id": "feist06_home04_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_home04_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    }
+  ]
+}

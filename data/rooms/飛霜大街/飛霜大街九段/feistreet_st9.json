@@ -1,97 +1,173 @@
 {
   "id": "feistreet_st9",
   "name": "飛霜大街九段",
-  "description": "路面在此收束向四路街口，石紋沁涼、霜晶沾衣；擔夫與行人交錯，簷影壓得極低。路側〔街口鋪〕〔匯流閣〕〔簷燈鋪〕門面或簾或板，對向〔街口宅〕〔簷匯宅〕門扉半掩。可經〔飛霜大街八段〕折返，或朝〔四路街口〕匯入人跡。",
+  "description": "路面在此收束向四路街口，石紋沁涼、霜晶沾衣即化；擔夫與行人交錯而過，簷影壓得極低，燈火從鋪面與宅門漏出、在霜氣裡暈開。路側〔街口鋪〕〔匯流閣〕〔簷燈鋪〕門面或簾或板，對向〔街口宅〕〔簷匯宅〕門扉半掩。可經〔飛霜大街八段〕折返，或朝〔四路街口〕匯入人跡。",
   "tags": [],
   "zone": "feistreet",
   "exits": [
-    { "direction": "feistreet_st8", "to": "feistreet_st8", "ui_hidden": true },
-    { "direction": "street4zone", "to": "street4zone", "ui_hidden": true },
-    { "direction": "fei_shop19_main", "to": "fei_shop19_main", "ui_hidden": true },
-    { "direction": "fei_shop20_main", "to": "fei_shop20_main", "ui_hidden": true },
-    { "direction": "fei_shop21_main", "to": "fei_shop21_main", "ui_hidden": true },
-    { "direction": "fei_home17_main", "to": "fei_home17_main", "ui_hidden": true },
-    { "direction": "fei_home18_main", "to": "fei_home18_main", "ui_hidden": true }
+    {
+      "direction": "feistreet_st8",
+      "to": "feistreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "street4zone",
+      "to": "street4zone",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_shop01_main",
+      "to": "feist09_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_shop02_main",
+      "to": "feist09_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_shop03_main",
+      "to": "feist09_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_home01_main",
+      "to": "feist09_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_home02_main",
+      "to": "feist09_home02_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
     {
       "id": "fei_st9_exit_st8",
       "name": "飛霜大街八段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "feistreet_st8",
-      "responses": { "Move": "你朝飛霜大街八段方向折返。" }
+      "responses": {
+        "Move": "你朝飛霜大街八段方向折返。"
+      }
     },
     {
       "id": "fei_st9_exit_st4z",
       "name": "四路街口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "street4zone",
-      "responses": { "Move": "你朝四路街口走去，人跡匯流。" }
+      "responses": {
+        "Move": "你朝四路街口走去，人跡匯流。"
+      }
     },
     {
       "id": "fei_st9_obj_shop19",
       "name": "街口鋪",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷角積霜、人跡往來；〔店門〕可入內。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷角積霜、人跡往來；〔店門〕可入內。"
+      }
     },
     {
       "id": "fei_st9_obj_shop19_door",
       "name": "店門",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_shop19_main",
-      "responses": { "Move": "你推門進入街口鋪。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop01_main",
+      "responses": {
+        "Move": "你推門進入街口鋪。"
+      }
     },
     {
       "id": "fei_st9_obj_shop20",
       "name": "匯流閣",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷下霜晶與街口燈火並存；〔門簾〕通往內室。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷下霜晶與街口燈火並存；〔門簾〕通往內室。"
+      }
     },
     {
       "id": "fei_st9_obj_shop20_door",
       "name": "門簾",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_shop20_main",
-      "responses": { "Move": "你掀簾進入匯流閣。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop02_main",
+      "responses": {
+        "Move": "你掀簾進入匯流閣。"
+      }
     },
     {
       "id": "fei_st9_obj_shop21",
       "name": "簷燈鋪",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷角積霜與門內燈火並存；〔鋪門〕可入內。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷角積霜與門內燈火並存；〔鋪門〕可入內。"
+      }
     },
     {
       "id": "fei_st9_obj_shop21_door",
       "name": "鋪門",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_shop21_main",
-      "responses": { "Move": "你推門進入簷燈鋪。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop03_main",
+      "responses": {
+        "Move": "你推門進入簷燈鋪。"
+      }
     },
     {
       "id": "fei_st9_obj_home17",
       "name": "街口宅",
-      "sockets": ["Look"],
-      "responses": { "Look": "門廊臨街口、人跡匯流處；〔窄門〕半掩。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "門廊臨街口、人跡匯流處；〔窄門〕半掩。"
+      }
     },
     {
       "id": "fei_st9_obj_home17_door",
       "name": "窄門",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_home17_main",
-      "responses": { "Move": "你推門進入街口宅。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_home01_main",
+      "responses": {
+        "Move": "你推門進入街口宅。"
+      }
     },
     {
       "id": "fei_st9_obj_home18",
       "name": "簷匯宅",
-      "sockets": ["Look"],
-      "responses": { "Look": "簷下霜晶、門洞內光線幽微；〔門洞〕可入內。" }
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簷下霜晶、門洞內光線幽微；〔門洞〕可入內。"
+      }
     },
     {
       "id": "fei_st9_obj_home18_door",
       "name": "門洞",
-      "sockets": ["Move"],
-      "move_to_room_id": "fei_home18_main",
-      "responses": { "Move": "你步入簷匯宅。" }
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_home02_main",
+      "responses": {
+        "Move": "你步入簷匯宅。"
+      }
     }
   ]
 }

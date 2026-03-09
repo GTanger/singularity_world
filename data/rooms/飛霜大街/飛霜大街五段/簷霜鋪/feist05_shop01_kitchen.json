@@ -1,0 +1,27 @@
+{
+  "id": "feist05_shop01_kitchen",
+  "name": "灶間",
+  "description": "簷霜鋪灶間：土灶貼牆、水缸在角，簷隙漏下一道斜光、只照得到缸沿一弧；陶甕裡剩半勺鹽，刀砧收在案下，茶氣與油煙從簾上緣往過廳飄、腳底石板沁涼，簷下霜積成串從簾隙沁進、指尖觸缸沿即沾濕。此處僅通〔過廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist05_shop01_hall",
+      "to": "feist05_shop01_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_shop01_k_exit_hall",
+      "name": "過廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop01_hall",
+      "responses": {
+        "Move": "你退回過廳。"
+      }
+    }
+  ]
+}

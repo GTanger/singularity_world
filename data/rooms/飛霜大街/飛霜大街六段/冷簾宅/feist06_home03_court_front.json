@@ -1,0 +1,27 @@
+{
+  "id": "feist06_home03_court_front",
+  "name": "前院",
+  "description": "冷簾宅門廳左手見天的一塊；牆根一叢枯草覆霜、石欄半截，朝街口那側可望見簷線與遠處燈火，霜晶直直落、缸在角，冷簾垂在簷緣隨風輕動。此處僅通〔門廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist06_home03_main",
+      "to": "feist06_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_home03_cf_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_home03_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "feist09_home02_kitchen",
+  "name": "灶間",
+  "description": "簷匯宅灶間：小灶冷著、破鏟掛在鉤上，牆角裂縫透進一絲風、吹得燈苗晃；久未生火，空氣乾冷，指尖摸到鹽罐結了霜。此處僅通〔起居室〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_home02_living",
+      "to": "feist09_home02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_home02_kitchen_exit_living",
+      "name": "起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_home02_living",
+      "responses": {
+        "Move": "你回到起居室。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "feist02_shop02_main",
+  "name": "鋪面",
+  "description": "風爐鋪鋪面簾隙透出爐紅，打鐵巷熱氣自巷尾釋出、與簷角霜晶在此交織成霧，櫃檯與風爐樣品並列、石地沁涼而空氣灼人；二段熱霧與霜白長年不散，一門往〔櫃前〕、一門往〔內廊〕、側邊〔簷下〕可望街景。此處連接〔飛霜大街二段〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st2",
+      "to": "feistreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop02_counter",
+      "to": "feist02_shop02_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop02_hall",
+      "to": "feist02_shop02_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop02_eave",
+      "to": "feist02_shop02_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_m_exit_st2",
+      "name": "鋪門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st2",
+      "responses": {
+        "Move": "你步出鋪面，回到飛霜大街二段。"
+      }
+    },
+    {
+      "id": "feist02_shop02_m_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_counter",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    },
+    {
+      "id": "feist02_shop02_m_exit_hall",
+      "name": "內廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_hall",
+      "responses": {
+        "Move": "你往內廊走去。"
+      }
+    },
+    {
+      "id": "feist02_shop02_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}
