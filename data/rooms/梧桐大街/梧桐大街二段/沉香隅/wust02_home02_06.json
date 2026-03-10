@@ -1,0 +1,46 @@
+{
+  "id": "wust02_home02_06",
+  "name": "茶間",
+  "description": "密林軀幹厚實綠茸地衣，光線深邃翠綠，地表菌絲毯群湧、不見石板，光線篩落、靜謐豐饒，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔大街〕、〔門廳〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wust02_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "門廳",
+      "to": "wust02_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust02_home02_06_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_home02_main",
+      "responses": {
+        "Move": "你往大街方向走去。"
+      }
+    },
+    {
+      "id": "wust02_home02_06_exit_2",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_home02_main",
+      "responses": {
+        "Move": "你往門廳走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "id": "wustreet_st6",
+  "name": "梧桐大街六段",
+  "description": "梧桐大街六段，路面根鬚與磚石嵌合、縫隙菌絲微光，精金鍛造鋪、簷下肆、溫潤宅、葉影軒簷下熱氣隱約，無廢土感。可經〔梧桐大街五段〕折返，或朝〔梧桐大街七段〕延伸。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st5",
+      "to": "wustreet_st5",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wustreet_st7",
+      "to": "wustreet_st7",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust06_shop01_main",
+      "to": "wust06_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust06_shop02_main",
+      "to": "wust06_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust06_home01_main",
+      "to": "wust06_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust06_home02_main",
+      "to": "wust06_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st6_exit_st5",
+      "name": "梧桐大街五段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st5",
+      "responses": {
+        "Move": "你沿梧桐大街往五段走去。"
+      }
+    },
+    {
+      "id": "wu_st6_exit_st7",
+      "name": "梧桐大街七段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st7",
+      "responses": {
+        "Move": "你沿梧桐大街往七段走去。"
+      }
+    },
+    {
+      "id": "wu_st6_obj_jingjin",
+      "name": "精金鍛造鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop01_main",
+      "responses": {
+        "Move": "你步入精金鍛造鋪。"
+      }
+    },
+    {
+      "id": "wu_st6_obj_shop02",
+      "name": "簷下肆",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_main",
+      "responses": {
+        "Move": "你步入簷下肆。"
+      }
+    },
+    {
+      "id": "wu_st6_obj_home01",
+      "name": "溫潤宅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_home01_main",
+      "responses": {
+        "Move": "你步入溫潤宅。"
+      }
+    },
+    {
+      "id": "wu_st6_obj_home02",
+      "name": "葉影軒",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_home02_main",
+      "responses": {
+        "Move": "你步入葉影軒。"
+      }
+    }
+  ]
+}

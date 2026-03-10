@@ -1,0 +1,17 @@
+{
+  "id": "sunst05_shop03_main",
+  "name": "流光肆・櫃前",
+  "description": "店招懸於簷下，室內光線飽和如蜜，稜鏡自拱頂導光、淡金微光與深色金屬檯面對比強烈，白玉鑲邊陳列架沿牆，能量導線隱約脈動，開敞明亮。可經〔向陽大街五段〕離開，或沿環廊往〔左廊〕、〔右廊〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "sunstreet_st5", "to": "sunstreet_st5", "ui_hidden": true },
+    { "direction": "左廊", "to": "sunst05_shop03_02", "ui_hidden": true },
+    { "direction": "右廊", "to": "sunst05_shop03_09", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_shop03_main_st5", "name": "向陽大街五段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st5", "responses": { "Move": "你步出流光肆，回到向陽大街五段。" } },
+    { "id": "sunst05_shop03_main_02", "name": "左廊", "sockets": ["Move"], "move_to_room_id": "sunst05_shop03_02", "responses": { "Move": "你往左廊走去。" } },
+    { "id": "sunst05_shop03_main_09", "name": "右廊", "sockets": ["Move"], "move_to_room_id": "sunst05_shop03_09", "responses": { "Move": "你往右廊走去。" } }
+  ]
+}

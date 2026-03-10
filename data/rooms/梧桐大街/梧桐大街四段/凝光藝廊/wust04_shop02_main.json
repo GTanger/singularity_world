@@ -1,0 +1,46 @@
+{
+  "id": "wust04_shop02_main",
+  "name": "凝光藝廊",
+  "description": "藥室緻密纖維板材、晶盒藥材，光線微弱、地表柔軟地衣，隱蔽木門通往內宅，油脂感與微光並存，油脂感與微光並存。可經〔大街〕、〔櫃前〕前往他處。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wustreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "櫃前",
+      "to": "wust04_shop02_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust04_shop02_main_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st4",
+      "responses": {
+        "Move": "你步出，回到梧桐大街。"
+      }
+    },
+    {
+      "id": "wust04_shop02_main_exit_2",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_shop02_02",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    }
+  ]
+}

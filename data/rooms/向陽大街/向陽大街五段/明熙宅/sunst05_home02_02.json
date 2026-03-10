@@ -1,0 +1,15 @@
+{
+  "id": "sunst05_home02_02",
+  "name": "前棟・一進",
+  "description": "前棟入口，向陽拱頂將金光篩成琥珀色，白玉檯面與黑木架沿牆，地表能量紋路匯向牆角導線，油脂質感皮革椅靠窗，空氣流速較快、光霧稀薄。可經〔門廳〕回到宅門，或往深處〔前棟・二進〕。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "門廳", "to": "sunst05_home02_main", "ui_hidden": true },
+    { "direction": "前棟・二進", "to": "sunst05_home02_03", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_home02_02_main", "name": "門廳", "sockets": ["Move"], "move_to_room_id": "sunst05_home02_main", "responses": { "Move": "你回到門廳。" } },
+    { "id": "sunst05_home02_02_03", "name": "前棟・二進", "sockets": ["Move"], "move_to_room_id": "sunst05_home02_03", "responses": { "Move": "你往前棟二進走去。" } }
+  ]
+}

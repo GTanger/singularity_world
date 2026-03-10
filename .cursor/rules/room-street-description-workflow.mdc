@@ -1,10 +1,12 @@
 ---
 description: 房間與街道先逐段完成再總視整體重修畫面，描述需有漸變不重複
-globs: data/rooms/**/*.json, docs/reference/房間與街道描述*.md
+globs: data/rooms/**/*.json, docs/reference/房間與建築設計規範.md
 alwaysApply: false
 ---
 
-# 房間與街道描述：架構與流程
+# 房間與街道描述：工作流程（節錄）
+
+完整規範見 **docs/reference/房間與建築設計規範.md**（含結構、不重複、文筆、50字、禁止用詞、檢查清單）。
 
 ## 工作流程（必須遵守）
 

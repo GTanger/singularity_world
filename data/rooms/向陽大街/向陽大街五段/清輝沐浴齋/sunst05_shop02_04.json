@@ -1,0 +1,13 @@
+{
+  "id": "sunst05_shop02_04",
+  "name": "沐一室",
+  "description": "沐區單間，高窗將光線裁成斜格，白玉檯面與黑木架沿牆，能量微粒在光柱中緩浮，牆厚隔音、極靜，油脂質感皮革巾架觸手冰冷平滑，溫潤沉香淡淡。可經〔沐區・前廳〕返回。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "沐區・前廳", "to": "sunst05_shop02_02", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_shop02_04_02", "name": "沐區・前廳", "sockets": ["Move"], "move_to_room_id": "sunst05_shop02_02", "responses": { "Move": "你往沐區前廳走回。" } }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "sunst04_shop02_04",
+  "name": "西室",
+  "description": "西側小間，拱頂稜鏡集中、光線飽和如蜜，白玉地面嵌琉璃條，牆面能量導線隱約脈動，黑木矮柜陳列藝法器物，厚牆吸音、極靜。可經〔中廳〕返回。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "中廳", "to": "sunst04_shop02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst04_shop02_04_main", "name": "中廳", "sockets": ["Move"], "move_to_room_id": "sunst04_shop02_main", "responses": { "Move": "你回到中廳。" } }
+  ]
+}

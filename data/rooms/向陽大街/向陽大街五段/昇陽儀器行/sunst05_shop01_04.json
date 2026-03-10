@@ -1,0 +1,15 @@
+{
+  "id": "sunst05_shop01_04",
+  "name": "右翼・陳列",
+  "description": "右翼陳列區，落地窗將光線裁成斜格，白玉檯面嵌琉璃條、儀器泛淡金微光，牆面深色金屬與黑木咬合，能量微粒在光柱中緩浮，溫潤沉香淡淡。可經〔門面〕回到店頭，或往深處〔右翼內間〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "門面", "to": "sunst05_shop01_main", "ui_hidden": true },
+    { "direction": "右翼內間", "to": "sunst05_shop01_09", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_shop01_04_main", "name": "門面", "sockets": ["Move"], "move_to_room_id": "sunst05_shop01_main", "responses": { "Move": "你回到門面。" } },
+    { "id": "sunst05_shop01_04_09", "name": "右翼內間", "sockets": ["Move"], "move_to_room_id": "sunst05_shop01_09", "responses": { "Move": "你往右翼內間走去。" } }
+  ]
+}

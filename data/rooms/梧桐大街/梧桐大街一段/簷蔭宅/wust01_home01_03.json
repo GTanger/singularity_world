@@ -1,0 +1,62 @@
+{
+  "id": "wust01_home01_03",
+  "name": "裡間",
+  "description": "深處一隅黑曜石磚縫鑲嵌黃銅能量導線，枝葉蔽天的綠意將光過濾成低飽和微光，從容不迫，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔前間〕、〔側間〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wust01_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前間",
+      "to": "wust01_home01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "側間",
+      "to": "wust01_home01_04",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust01_home01_03_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_home01_main",
+      "responses": {
+        "Move": "你往大街方向走去。"
+      }
+    },
+    {
+      "id": "wust01_home01_03_exit_2",
+      "name": "前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_home01_02",
+      "responses": {
+        "Move": "你往前間走去。"
+      }
+    },
+    {
+      "id": "wust01_home01_03_exit_3",
+      "name": "側間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_home01_04",
+      "responses": {
+        "Move": "你往側間走去。"
+      }
+    }
+  ]
+}

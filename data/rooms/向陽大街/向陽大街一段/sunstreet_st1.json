@@ -1,0 +1,23 @@
+{
+  "id": "sunstreet_st1",
+  "name": "向陽大街一段",
+  "description": "向陽大街一段，路面寬闊平坦、拋光白玉石板上可見淺色能量紋路，兩側建築間距較大、光霧稀薄，空氣流速快，金光自稜鏡外牆篩落，開敞明亮。可經〔向陽大街二段〕延伸；可經〔光樞管理處〕、〔晨曦居〕、〔破曉舍〕、〔曦光鋪〕、〔曦和居〕進入沿街建築。",
+  "tags": ["street", "outdoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "sunstreet_st2", "to": "sunstreet_st2", "ui_hidden": true },
+    { "direction": "sunst01_hold01_main", "to": "sunst01_hold01_main", "ui_hidden": true },
+    { "direction": "sunst01_home01_main", "to": "sunst01_home01_main", "ui_hidden": true },
+    { "direction": "sunst01_home02_main", "to": "sunst01_home02_main", "ui_hidden": true },
+    { "direction": "sunst01_shop01_main", "to": "sunst01_shop01_main", "ui_hidden": true },
+    { "direction": "sunst01_home03_main", "to": "sunst01_home03_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sun_st1_exit_st2", "name": "向陽大街二段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st2", "responses": { "Move": "你沿向陽大街往二段走去。" } },
+    { "id": "sun_st1_hold01", "name": "光樞管理處", "sockets": ["Look", "Move"], "move_to_room_id": "sunst01_hold01_main", "responses": { "Look": "管理處門面稜鏡林立，白玉階與深色金屬門框咬合。", "Move": "你進入光樞管理處。" } },
+    { "id": "sun_st1_home01", "name": "晨曦居", "sockets": ["Look", "Move"], "move_to_room_id": "sunst01_home01_main", "responses": { "Look": "居口白玉階、稜鏡鑲窗，透出溫潤沉香。", "Move": "你進入晨曦居。" } },
+    { "id": "sun_st1_home02", "name": "破曉舍", "sockets": ["Look", "Move"], "move_to_room_id": "sunst01_home02_main", "responses": { "Look": "舍簷深色金屬與黑木咬合，簷角能量紋路隱約。", "Move": "你進入破曉舍。" } },
+    { "id": "sun_st1_shop01", "name": "曦光鋪", "sockets": ["Look", "Move"], "move_to_room_id": "sunst01_shop01_main", "responses": { "Look": "鋪口稜鏡打亮櫥窗，室內光線飽和如蜜。", "Move": "你進入曦光鋪。" } },
+    { "id": "sun_st1_home03", "name": "曦和居", "sockets": ["Look", "Move"], "move_to_room_id": "sunst01_home03_main", "responses": { "Look": "居窗敞開納光，油脂質感皮革簾垂落。", "Move": "你進入曦和居。" } }
+  ]
+}

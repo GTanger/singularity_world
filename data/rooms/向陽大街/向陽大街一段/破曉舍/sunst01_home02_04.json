@@ -1,0 +1,13 @@
+{
+  "id": "sunst01_home02_04",
+  "name": "西室",
+  "description": "舍內西室，金光自稜鏡一縷縷瀉下、在腳下鋪成斜格，地表淺色流路與導線從縫隙爬出，皮革凳靠牆、白玉檯觸手冰滑，淡金與深色金屬在眼底對撞。可經〔玄關〕返回。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "玄關", "to": "sunst01_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst01_home02_04_main", "name": "玄關", "sockets": ["Move"], "move_to_room_id": "sunst01_home02_main", "responses": { "Move": "你回到玄關。" } }
+  ]
+}

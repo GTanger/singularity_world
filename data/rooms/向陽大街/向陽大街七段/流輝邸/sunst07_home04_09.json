@@ -1,0 +1,25 @@
+{
+  "id": "sunst07_home04_09",
+  "name": "儲間",
+  "description": "儲架沿牆升高，緻密黑木格層擺滿琉璃罐與金屬匣，地表淺色能量紋路延伸至架腳，稜鏡天窗一道金光直落中央走道，空氣乾燥、塵埃極少，光霧稀薄。可經〔廊底〕前往他處。",
+  "tags": ["residence", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "廊底",
+      "to": "sunst07_home04_08",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst07_home04_09_exit_1",
+      "name": "廊底",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst07_home04_08",
+      "responses": {
+        "Move": "你往廊底走去。"
+      }
+    }
+  ]
+}

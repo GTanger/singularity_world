@@ -1,0 +1,31 @@
+{
+  "id": "wust07_shop01_03",
+  "name": "庫房",
+  "description": "吧台晶質食材、冷光源苔蘚牆面，空氣甜美樹脂、質感圓潤飽滿，恆溫熱氣與沉香淡淡，綠廊拱頂、靜謐豐饒，綠廊拱頂、靜謐豐饒。可經〔櫃前〕前往他處。",
+  "tags": [
+    "shop",
+    "outdoor",
+    "food"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "櫃前",
+      "to": "wust07_shop01_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust07_shop01_03_exit_1",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust07_shop01_02",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    }
+  ]
+}

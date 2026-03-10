@@ -1,0 +1,13 @@
+{
+  "id": "sunst05_home02_04",
+  "name": "前棟・三進",
+  "description": "前棟盡頭，拱頂稜鏡集中、光線飽和如蜜，地表淺色紋路與能量導線自縫隙延伸，黑木長榻與白玉嵌條咬合，牆厚隔音、極靜，溫潤沉香淡淡。可經〔前棟・二進〕沿前棟返回。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "前棟・二進", "to": "sunst05_home02_03", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_home02_04_03", "name": "前棟・二進", "sockets": ["Move"], "move_to_room_id": "sunst05_home02_03", "responses": { "Move": "你往前棟二進走回。" } }
+  ]
+}

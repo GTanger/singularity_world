@@ -10,7 +10,7 @@
   "exits": [
     {
       "direction": "大街",
-      "to": "wutong_street"
+      "to": "wustreet_st1"
     },
     {
       "direction": "萬年青大廳",

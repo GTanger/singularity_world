@@ -1,0 +1,91 @@
+{
+  "id": "wustreet_st5",
+  "name": "梧桐大街五段",
+  "description": "梧桐大街五段，大街中心綠廊拱頂、白玉石板與黑曜石銜接，翠蔭廣庭、能量織造坊、濃蔭棧店招掩映，靜謐的豐饒。可經〔梧桐大街四段〕折返，或朝〔梧桐大街六段〕延伸。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st4",
+      "to": "wustreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wustreet_st6",
+      "to": "wustreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust05_hold01_main",
+      "to": "wust05_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust05_shop01_main",
+      "to": "wust05_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust05_shop02_main",
+      "to": "wust05_shop02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st5_exit_st4",
+      "name": "梧桐大街四段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st4",
+      "responses": {
+        "Move": "你沿梧桐大街往四段走去。"
+      }
+    },
+    {
+      "id": "wu_st5_exit_st6",
+      "name": "梧桐大街六段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st6",
+      "responses": {
+        "Move": "你沿梧桐大街往六段走去。"
+      }
+    },
+    {
+      "id": "wu_st5_obj_cuiyin",
+      "name": "翠蔭廣庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_hold01_main",
+      "responses": {
+        "Move": "你步向翠蔭廣庭。"
+      }
+    },
+    {
+      "id": "wu_st5_obj_nengliang",
+      "name": "能量織造坊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_shop01_main",
+      "responses": {
+        "Move": "你步入能量織造坊。"
+      }
+    },
+    {
+      "id": "wu_st5_obj_shop02",
+      "name": "濃蔭棧",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_shop02_main",
+      "responses": {
+        "Move": "你步入濃蔭棧。"
+      }
+    }
+  ]
+}

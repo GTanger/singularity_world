@@ -1,0 +1,39 @@
+{
+  "id": "sunst09_shop01_02",
+  "name": "櫃前",
+  "description": "結帳檯面黑木鑲玉質細線，頭頂向陽拱頂將琥珀色光切成一格一格灑落，金屬收銀盤與稜鏡小燈並置，牆角能量紋路淺淺發亮，光影層次分明。可經〔門廳〕、〔展間〕前往他處。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "門廳",
+      "to": "sunst09_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "展間",
+      "to": "sunst09_shop01_04",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst09_shop01_02_exit_1",
+      "name": "門廳",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst09_shop01_main",
+      "responses": {
+        "Move": "你往門廳走去。"
+      }
+    },
+    {
+      "id": "sunst09_shop01_02_exit_2",
+      "name": "展間",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst09_shop01_04",
+      "responses": {
+        "Move": "你往展間走去。"
+      }
+    }
+  ]
+}

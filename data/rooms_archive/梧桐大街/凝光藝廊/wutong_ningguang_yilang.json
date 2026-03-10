@@ -10,7 +10,7 @@
   "exits": [
     {
       "direction": "大街",
-      "to": "wutong_street"
+      "to": "wustreet_st4"
     },
     {
       "direction": "作品典藏庫",

@@ -1,0 +1,13 @@
+{
+  "id": "sunst01_home02_05",
+  "name": "北室",
+  "description": "舍內北室，落地窗把光裁成斜格，拱頂把光攢在室內、濃得像蜜，黑木長几與深色金屬架貼牆，微粒在光柱裡緩浮，沉香淡淡，室內亮堂、陳設齊整。可經〔玄關〕返回。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "玄關", "to": "sunst01_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst01_home02_05_main", "name": "玄關", "sockets": ["Move"], "move_to_room_id": "sunst01_home02_main", "responses": { "Move": "你回到玄關。" } }
+  ]
+}

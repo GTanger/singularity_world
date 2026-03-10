@@ -1,0 +1,107 @@
+{
+  "id": "wustreet_st7",
+  "name": "梧桐大街七段",
+  "description": "梧桐大街七段，兩側梧桐綠意飽和、落葉與腐殖層溫潤，豐饒食堂、翠脈鋪、廊下居、青脈宅油脂與熟成香氣，從容。可經〔梧桐大街六段〕折返，或朝〔梧桐大街八段〕延伸。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st6",
+      "to": "wustreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wustreet_st8",
+      "to": "wustreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust07_shop01_main",
+      "to": "wust07_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust07_shop02_main",
+      "to": "wust07_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust07_home01_main",
+      "to": "wust07_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust07_home02_main",
+      "to": "wust07_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st7_exit_st6",
+      "name": "梧桐大街六段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st6",
+      "responses": {
+        "Move": "你沿梧桐大街往六段走去。"
+      }
+    },
+    {
+      "id": "wu_st7_exit_st8",
+      "name": "梧桐大街八段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st8",
+      "responses": {
+        "Move": "你沿梧桐大街往八段走去。"
+      }
+    },
+    {
+      "id": "wu_st7_obj_fengrao",
+      "name": "豐饒食堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust07_shop01_main",
+      "responses": {
+        "Move": "你步入豐饒食堂。"
+      }
+    },
+    {
+      "id": "wu_st7_obj_shop02",
+      "name": "翠脈鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust07_shop02_main",
+      "responses": {
+        "Move": "你步入翠脈鋪。"
+      }
+    },
+    {
+      "id": "wu_st7_obj_home01",
+      "name": "廊下居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust07_home01_main",
+      "responses": {
+        "Move": "你步入廊下居。"
+      }
+    },
+    {
+      "id": "wu_st7_obj_home02",
+      "name": "青脈宅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust07_home02_main",
+      "responses": {
+        "Move": "你步入青脈宅。"
+      }
+    }
+  ]
+}

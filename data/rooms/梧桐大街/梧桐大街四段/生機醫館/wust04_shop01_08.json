@@ -1,0 +1,46 @@
+{
+  "id": "wust04_shop01_08",
+  "name": "寢區",
+  "description": "櫃後間陳列架與根鬚咬合，光線篩落、琥珀色調，懸浮微粒與淡淡樹脂氣息，從容不迫，簷角藤蔓撐簷、濃蔭掩映，光線篩落、靜謐豐饒。可經〔理療區〕、〔儲區〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "理療區",
+      "to": "wust04_shop01_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "儲區",
+      "to": "wust04_shop01_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust04_shop01_08_exit_1",
+      "name": "理療區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_shop01_07",
+      "responses": {
+        "Move": "你往理療區走去。"
+      }
+    },
+    {
+      "id": "wust04_shop01_08_exit_2",
+      "name": "儲區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_shop01_09",
+      "responses": {
+        "Move": "你往儲區走去。"
+      }
+    }
+  ]
+}

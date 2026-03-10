@@ -1,0 +1,13 @@
+{
+  "id": "sunst02_home02_07",
+  "name": "前室",
+  "description": "閣內前側小間，稜鏡垂落密集金光、淡金微光與深色金屬對比強烈，白玉檯面與黑木几沿牆，牆面能量導線隱約脈動，油脂質感皮革椅靠窗，室內無雜音。可經〔門廳〕返回。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "門廳", "to": "sunst02_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst02_home02_07_main", "name": "門廳", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_main", "responses": { "Move": "你回到門廳。" } }
+  ]
+}

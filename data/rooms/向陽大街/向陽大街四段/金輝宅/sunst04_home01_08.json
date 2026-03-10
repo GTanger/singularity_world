@@ -1,0 +1,13 @@
+{
+  "id": "sunst04_home01_08",
+  "name": "西廂二室",
+  "description": "西廂小間，單扇稜鏡窗將金光篩成淡琥珀色，地表淺色流路匯向牆角導線，黑木長几靠牆、表面油脂光澤，牆厚隔音、極靜，能量微粒在光簾中緩動。可經〔西廂・前間〕返回。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "西廂・前間", "to": "sunst04_home01_03", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst04_home01_08_03", "name": "西廂・前間", "sockets": ["Move"], "move_to_room_id": "sunst04_home01_03", "responses": { "Move": "你往西廂前間走回。" } }
+  ]
+}

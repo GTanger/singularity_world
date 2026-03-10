@@ -1,0 +1,15 @@
+{
+  "id": "sunst04_shop03_08",
+  "name": "西廊三",
+  "description": "環廊西段接堂口，高窗與稜鏡交錯、光影層次分明，白玉地面與琉璃嵌條對比強烈，牆面能量導線隱約脈動，黑木長几靠牆、表面油脂光澤。可經〔西廊二〕或〔堂口〕沿環廊走。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "西廊二", "to": "sunst04_shop03_07", "ui_hidden": true },
+    { "direction": "堂口", "to": "sunst04_shop03_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst04_shop03_08_07", "name": "西廊二", "sockets": ["Move"], "move_to_room_id": "sunst04_shop03_07", "responses": { "Move": "你往西廊二走去。" } },
+    { "id": "sunst04_shop03_08_main", "name": "堂口", "sockets": ["Move"], "move_to_room_id": "sunst04_shop03_main", "responses": { "Move": "你往堂口走去。" } }
+  ]
+}

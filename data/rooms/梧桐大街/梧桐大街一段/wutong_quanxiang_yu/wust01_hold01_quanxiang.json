@@ -1,0 +1,30 @@
+{
+  "id": "wust01_hold01_quanxiang",
+  "name": "泉響寓",
+  "description": "背光處牆面氣根與石板咬合穩住地磚，空氣中膠質氣味與沉香交織，靜謐豐饒，簷角藤蔓撐簷、濃蔭掩映，簷角藤蔓撐簷、濃蔭掩映。可經〔儲間〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "儲間",
+      "to": "wust01_hold01_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust01_hold01_quanxiang_exit_1",
+      "name": "儲間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_hold01_09",
+      "responses": {
+        "Move": "你往儲間走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "sunstreet_st2",
+  "name": "向陽大街二段",
+  "description": "向陽大街二段，兩側稜鏡外牆將採集光能導入地表，路面明亮整潔、地表能量流路隱約，空氣中溫潤沉香與能量微粒懸浮，光明敞亮、無廢土感。可經〔向陽大街一段〕折返，或朝〔向陽大街三段〕延伸；可經〔光譜調律工坊〕、〔稜鏡精品閣〕、〔映雪寓〕、〔照影閣〕、〔稜輝閣〕、〔稜光寓〕進入沿街建築。",
+  "tags": ["street", "outdoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "sunstreet_st1", "to": "sunstreet_st1", "ui_hidden": true },
+    { "direction": "sunstreet_st3", "to": "sunstreet_st3", "ui_hidden": true },
+    { "direction": "sunst02_shop01_main", "to": "sunst02_shop01_main", "ui_hidden": true },
+    { "direction": "sunst02_shop02_main", "to": "sunst02_shop02_main", "ui_hidden": true },
+    { "direction": "sunst02_home01_main", "to": "sunst02_home01_main", "ui_hidden": true },
+    { "direction": "sunst02_home02_main", "to": "sunst02_home02_main", "ui_hidden": true },
+    { "direction": "sunst02_shop03_main", "to": "sunst02_shop03_main", "ui_hidden": true },
+    { "direction": "sunst02_home03_main", "to": "sunst02_home03_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sun_st2_exit_st1", "name": "向陽大街一段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st1", "responses": { "Move": "你沿向陽大街往一段走去。" } },
+    { "id": "sun_st2_exit_st3", "name": "向陽大街三段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st3", "responses": { "Move": "你沿向陽大街往三段走去。" } },
+    { "id": "sun_st2_shop01", "name": "光譜調律工坊", "sockets": ["Look", "Move"], "move_to_room_id": "sunst02_shop01_main", "responses": { "Look": "工坊門面深色金屬與黑木咬合，櫥窗內調律器泛淡金微光。", "Move": "你進入光譜調律工坊。" } },
+    { "id": "sun_st2_shop02", "name": "稜鏡精品閣", "sockets": ["Look", "Move"], "move_to_room_id": "sunst02_shop02_main", "responses": { "Look": "閣簷稜鏡林立，室內光線飽和如蜜。", "Move": "你進入稜鏡精品閣。" } },
+    { "id": "sun_st2_home01", "name": "映雪寓", "sockets": ["Look", "Move"], "move_to_room_id": "sunst02_home01_main", "responses": { "Look": "寓口白玉階、稜鏡鑲窗，透出溫潤沉香。", "Move": "你進入映雪寓。" } },
+    { "id": "sun_st2_home02", "name": "照影閣", "sockets": ["Look", "Move"], "move_to_room_id": "sunst02_home02_main", "responses": { "Look": "閣門黑木門框，簷角能量紋路隱約。", "Move": "你進入照影閣。" } },
+    { "id": "sun_st2_shop03", "name": "稜輝閣", "sockets": ["Look", "Move"], "move_to_room_id": "sunst02_shop03_main", "responses": { "Look": "閣口稜鏡垂落金光，室內開敞明亮。", "Move": "你進入稜輝閣。" } },
+    { "id": "sun_st2_home03", "name": "稜光寓", "sockets": ["Look", "Move"], "move_to_room_id": "sunst02_home03_main", "responses": { "Look": "寓窗敞開納光，油脂質感皮革簾垂落。", "Move": "你進入稜光寓。" } }
+  ]
+}

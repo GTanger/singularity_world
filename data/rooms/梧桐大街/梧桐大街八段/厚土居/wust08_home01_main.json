@@ -1,0 +1,46 @@
+{
+  "id": "wust08_home01_main",
+  "name": "厚土居",
+  "description": "茶間白玉矮台、能量礦石鑲嵌牆面，恆定熱輻射；晶化木材家具密度高，空氣乾燥，恆溫熱氣與沉香淡淡，油脂感與微光並存。可經〔大街〕、〔前間〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wustreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前間",
+      "to": "wust08_home01_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust08_home01_main_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st8",
+      "responses": {
+        "Move": "你步出，回到梧桐大街。"
+      }
+    },
+    {
+      "id": "wust08_home01_main_exit_2",
+      "name": "前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust08_home01_02",
+      "responses": {
+        "Move": "你往前間走去。"
+      }
+    }
+  ]
+}

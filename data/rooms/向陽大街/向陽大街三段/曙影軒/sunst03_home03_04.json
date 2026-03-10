@@ -1,0 +1,15 @@
+{
+  "id": "sunst03_home03_04",
+  "name": "南廂",
+  "description": "環廊南段，拱頂稜鏡集中、光線飽和如蜜，白玉檯面陳列日用，牆面能量紋路隱約脈動，室內無雜音，能量微粒在光柱中緩浮。可經〔東廂二〕或〔西廂一〕沿環廊走。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "東廂二", "to": "sunst03_home03_03", "ui_hidden": true },
+    { "direction": "西廂一", "to": "sunst03_home03_05", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst03_home03_04_03", "name": "東廂二", "sockets": ["Move"], "move_to_room_id": "sunst03_home03_03", "responses": { "Move": "你往東廂二走去。" } },
+    { "id": "sunst03_home03_04_05", "name": "西廂一", "sockets": ["Move"], "move_to_room_id": "sunst03_home03_05", "responses": { "Move": "你往西廂一走去。" } }
+  ]
+}

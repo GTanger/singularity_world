@@ -10,7 +10,7 @@
   "exits": [
     {
       "direction": "大街",
-      "to": "wutong_street"
+      "to": "wustreet_st8"
     },
     {
       "direction": "晶簇展示架",

@@ -1,0 +1,13 @@
+{
+  "id": "sunst01_shop01_04",
+  "name": "左一間",
+  "description": "鋪內左一間，單扇稜鏡窗把金光篩成淡琥珀，白玉檯與深色金屬架貼牆，地表紋路匯向牆角導線，皮革椅靠牆，淡金與黑木在眼底對撞，厚牆鎖住雜音。可經〔左廂〕返回。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "左廂", "to": "sunst01_shop01_02", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst01_shop01_04_02", "name": "左廂", "sockets": ["Move"], "move_to_room_id": "sunst01_shop01_02", "responses": { "Move": "你回到左廂。" } }
+  ]
+}

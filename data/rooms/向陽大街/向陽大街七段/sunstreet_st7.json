@@ -1,0 +1,109 @@
+{
+  "id": "sunstreet_st7",
+  "name": "向陽大街七段",
+  "description": "向陽大街七段，兩側建築間距仍大、向陽拱頂連綿，拋光地面與淺色紋路咬合，金光自稜鏡垂落、能量微粒懸浮，光明敞亮、文明與光能並存。可經〔向陽大街六段〕折返、〔向陽大街八段〕延伸，或經〔向明居〕、〔照和軒〕、〔光潤舍〕、〔曜明舍〕、〔流輝邸〕入內。",
+  "tags": ["street", "outdoor"],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "sunstreet_st6",
+      "to": "sunstreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunstreet_st8",
+      "to": "sunstreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst07_shop01_main",
+      "to": "sunst07_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst07_home01_main",
+      "to": "sunst07_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst07_home02_main",
+      "to": "sunst07_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst07_home03_main",
+      "to": "sunst07_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst07_home04_main",
+      "to": "sunst07_home04_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sun_st7_exit_st6",
+      "name": "向陽大街六段",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunstreet_st6",
+      "responses": {
+        "Move": "你沿向陽大街往六段走去。"
+      }
+    },
+    {
+      "id": "sun_st7_exit_st8",
+      "name": "向陽大街八段",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunstreet_st8",
+      "responses": {
+        "Move": "你沿向陽大街往八段走去。"
+      }
+    },
+    {
+      "id": "sun_st7_obj_shop01",
+      "name": "向明居",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst07_shop01_main",
+      "responses": {
+        "Move": "你步入向明居。"
+      }
+    },
+    {
+      "id": "sun_st7_obj_home01",
+      "name": "照和軒",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst07_home01_main",
+      "responses": {
+        "Move": "你步入照和軒。"
+      }
+    },
+    {
+      "id": "sun_st7_obj_home02",
+      "name": "光潤舍",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst07_home02_main",
+      "responses": {
+        "Move": "你步入光潤舍。"
+      }
+    },
+    {
+      "id": "sun_st7_obj_home03",
+      "name": "曜明舍",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst07_home03_main",
+      "responses": {
+        "Move": "你步入曜明舍。"
+      }
+    },
+    {
+      "id": "sun_st7_obj_home04",
+      "name": "流輝邸",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst07_home04_main",
+      "responses": {
+        "Move": "你步入流輝邸。"
+      }
+    }
+  ]
+}

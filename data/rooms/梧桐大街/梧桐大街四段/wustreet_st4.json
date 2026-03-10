@@ -1,0 +1,107 @@
+{
+  "id": "wustreet_st4",
+  "name": "梧桐大街四段",
+  "description": "梧桐大街四段，簷角藤蔓撐簷、濃蔭掩映，生機醫館、凝光藝廊、翠廊小築、蔭深居掩映濃蔭，文明與增生並存、從容。可經〔梧桐大街三段〕折返，或朝〔梧桐大街五段〕延伸。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st3",
+      "to": "wustreet_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wustreet_st5",
+      "to": "wustreet_st5",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust04_shop01_main",
+      "to": "wust04_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust04_shop02_main",
+      "to": "wust04_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust04_home01_main",
+      "to": "wust04_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust04_home02_main",
+      "to": "wust04_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st4_exit_st3",
+      "name": "梧桐大街三段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st3",
+      "responses": {
+        "Move": "你沿梧桐大街往三段走去。"
+      }
+    },
+    {
+      "id": "wu_st4_exit_st5",
+      "name": "梧桐大街五段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st5",
+      "responses": {
+        "Move": "你沿梧桐大街往五段走去。"
+      }
+    },
+    {
+      "id": "wu_st4_obj_shengji",
+      "name": "生機醫館",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_shop01_main",
+      "responses": {
+        "Move": "你步入生機醫館。"
+      }
+    },
+    {
+      "id": "wu_st4_obj_ningguang",
+      "name": "凝光藝廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_shop02_main",
+      "responses": {
+        "Move": "你步入凝光藝廊。"
+      }
+    },
+    {
+      "id": "wu_st4_obj_home01",
+      "name": "翠廊小築",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_home01_main",
+      "responses": {
+        "Move": "你步入翠廊小築。"
+      }
+    },
+    {
+      "id": "wu_st4_obj_home02",
+      "name": "蔭深居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_home02_main",
+      "responses": {
+        "Move": "你步入蔭深居。"
+      }
+    }
+  ]
+}

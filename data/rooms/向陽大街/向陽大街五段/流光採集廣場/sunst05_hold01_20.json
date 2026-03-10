@@ -1,0 +1,13 @@
+{
+  "id": "sunst05_hold01_20",
+  "name": "中庭三區",
+  "description": "中庭盡頭，拱頂稜鏡集中、密集金光垂落中央白玉柱，柱面能量紋路隱約脈動，地面淺色流路匯向導光槽，牆厚隔音、極靜，溫潤沉香自通風孔淡淡逸出。可經〔中庭二區〕沿中庭返回。",
+  "tags": ["hold", "indoor", "outdoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "中庭二區", "to": "sunst05_hold01_19", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_hold01_20_19", "name": "中庭二區", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_19", "responses": { "Move": "你沿中庭往中庭二區走回。" } }
+  ]
+}

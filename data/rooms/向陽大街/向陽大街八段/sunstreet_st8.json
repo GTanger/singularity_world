@@ -1,0 +1,123 @@
+{
+  "id": "sunstreet_st8",
+  "name": "向陽大街八段",
+  "description": "向陽大街八段，路面延伸向街尾，白玉石板與能量紋路依舊明亮，稜鏡外牆、向陽拱頂與落地窗納光，空氣流速快、溫潤沉香淡淡，開敞明亮、無廢土感。可經〔向陽大街七段〕折返、〔向陽大街九段〕延伸，或經〔敞亮舍〕、〔潤輝邸〕、〔陽和隅〕、〔和熙閣〕、〔採光隅〕、〔金暉宅〕入內。",
+  "tags": ["street", "outdoor"],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "sunstreet_st7",
+      "to": "sunstreet_st7",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunstreet_st9",
+      "to": "sunstreet_st9",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst08_shop01_main",
+      "to": "sunst08_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst08_home01_main",
+      "to": "sunst08_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst08_home02_main",
+      "to": "sunst08_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst08_home03_main",
+      "to": "sunst08_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst08_home04_main",
+      "to": "sunst08_home04_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst08_home05_main",
+      "to": "sunst08_home05_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sun_st8_exit_st7",
+      "name": "向陽大街七段",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunstreet_st7",
+      "responses": {
+        "Move": "你沿向陽大街往七段走去。"
+      }
+    },
+    {
+      "id": "sun_st8_exit_st9",
+      "name": "向陽大街九段",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunstreet_st9",
+      "responses": {
+        "Move": "你沿向陽大街往九段走去。"
+      }
+    },
+    {
+      "id": "sun_st8_obj_shop01",
+      "name": "敞亮舍",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst08_shop01_main",
+      "responses": {
+        "Move": "你步入敞亮舍。"
+      }
+    },
+    {
+      "id": "sun_st8_obj_home01",
+      "name": "潤輝邸",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst08_home01_main",
+      "responses": {
+        "Move": "你步入潤輝邸。"
+      }
+    },
+    {
+      "id": "sun_st8_obj_home02",
+      "name": "陽和隅",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst08_home02_main",
+      "responses": {
+        "Move": "你步入陽和隅。"
+      }
+    },
+    {
+      "id": "sun_st8_obj_home03",
+      "name": "和熙閣",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst08_home03_main",
+      "responses": {
+        "Move": "你步入和熙閣。"
+      }
+    },
+    {
+      "id": "sun_st8_obj_home04",
+      "name": "採光隅",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst08_home04_main",
+      "responses": {
+        "Move": "你步入採光隅。"
+      }
+    },
+    {
+      "id": "sun_st8_obj_home05",
+      "name": "金暉宅",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst08_home05_main",
+      "responses": {
+        "Move": "你步入金暉宅。"
+      }
+    }
+  ]
+}

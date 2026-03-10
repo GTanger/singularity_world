@@ -1,0 +1,13 @@
+{
+  "id": "sunst01_home02_02",
+  "name": "東室",
+  "description": "舍內東室，單扇稜鏡窗把金光篩成淡琥珀，白玉檯與黑木架貼牆，地表紋路從縫隙爬向牆角導線，金屬几與皮革椅咬合，沉香淡淡，厚牆鎖住雜音。可經〔玄關〕返回。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "玄關", "to": "sunst01_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst01_home02_02_main", "name": "玄關", "sockets": ["Move"], "move_to_room_id": "sunst01_home02_main", "responses": { "Move": "你回到玄關。" } }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "sunst08_home05_06",
+  "name": "茶間",
+  "description": "爐口嵌在牆內，金屬管線沿稜鏡背板延伸，黑木茶桌居中、玉質杯具與琉璃壺並置，向陽拱頂將密集金光切格灑落，溫潤沉香與茶氣混雜，觸手冰冷平滑。可經〔書隅〕前往他處。",
+  "tags": ["residence", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "書隅",
+      "to": "sunst08_home05_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst08_home05_06_exit_1",
+      "name": "書隅",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst08_home05_05",
+      "responses": {
+        "Move": "你往書隅走去。"
+      }
+    }
+  ]
+}

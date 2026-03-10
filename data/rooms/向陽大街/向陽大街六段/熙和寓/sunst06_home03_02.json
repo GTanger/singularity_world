@@ -1,0 +1,39 @@
+{
+  "id": "sunst06_home03_02",
+  "name": "前間",
+  "description": "起居處向陽拱頂將琥珀色光切格灑落，黑木矮几與玉質茶具並置，稜鏡側窗金光斜格落在几面，油脂質感皮革坐墊觸手飽滿，牆面能量導線極細、脈動緩慢，溫潤沉香淡淡。可經〔門廳〕、〔裡間〕前往他處。",
+  "tags": ["residence", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "門廳",
+      "to": "sunst06_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "裡間",
+      "to": "sunst06_home03_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst06_home03_02_exit_1",
+      "name": "門廳",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst06_home03_main",
+      "responses": {
+        "Move": "你往門廳走去。"
+      }
+    },
+    {
+      "id": "sunst06_home03_02_exit_2",
+      "name": "裡間",
+      "sockets": ["Move"],
+      "move_to_room_id": "sunst06_home03_03",
+      "responses": {
+        "Move": "你往裡間走去。"
+      }
+    }
+  ]
+}

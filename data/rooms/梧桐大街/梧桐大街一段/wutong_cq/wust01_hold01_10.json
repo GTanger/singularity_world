@@ -1,0 +1,46 @@
+{
+  "id": "wust01_hold01_10",
+  "name": "廳角",
+  "description": "斗室牆面玉質脈絡與根鬚咬合，光線自簷角篩落，石磚與根鬚嵌合的地面泛著恆溫熱氣，靜謐豐饒，落葉與腐殖層溫潤。可經〔能量配發中樞〕、〔書隅〕前往他處。",
+  "tags": [
+    "indoor",
+    "admin"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "能量配發中樞",
+      "to": "wust01_hold01_11",
+      "ui_hidden": true
+    },
+    {
+      "direction": "書隅",
+      "to": "wust01_hold01_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust01_hold01_10_exit_1",
+      "name": "能量配發中樞",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_hold01_11",
+      "responses": {
+        "Move": "你往能量配發中樞走去。"
+      }
+    },
+    {
+      "id": "wust01_hold01_10_exit_2",
+      "name": "書隅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_hold01_05",
+      "responses": {
+        "Move": "你往書隅走去。"
+      }
+    }
+  ]
+}

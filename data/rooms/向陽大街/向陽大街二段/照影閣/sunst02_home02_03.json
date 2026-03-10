@@ -1,0 +1,13 @@
+{
+  "id": "sunst02_home02_03",
+  "name": "南室",
+  "description": "閣內南側小間，稜鏡垂落金光如簾、光影層次分明，落地窗將光線裁成斜格，深色金屬几與黑木榻咬合，能量微粒在光柱中緩浮，溫潤沉香淡淡。可經〔門廳〕返回。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "門廳", "to": "sunst02_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst02_home02_03_main", "name": "門廳", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_main", "responses": { "Move": "你回到門廳。" } }
+  ]
+}

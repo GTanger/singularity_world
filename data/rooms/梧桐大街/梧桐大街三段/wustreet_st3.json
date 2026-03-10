@@ -1,0 +1,107 @@
+{
+  "id": "wustreet_st3",
+  "name": "梧桐大街三段",
+  "description": "梧桐大街三段，枝葉蔽天、綠意飽和，石磚與根鬚嵌合；翡翠茶莊、玉光坊、根鬚齋、靜謐邸門面翠綠，懸浮微粒與恆溫熱氣。可經〔梧桐大街二段〕折返，或朝〔梧桐大街四段〕延伸。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st2",
+      "to": "wustreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wustreet_st4",
+      "to": "wustreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust03_shop01_main",
+      "to": "wust03_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust03_shop02_main",
+      "to": "wust03_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust03_home01_main",
+      "to": "wust03_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust03_home02_main",
+      "to": "wust03_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st3_exit_st2",
+      "name": "梧桐大街二段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st2",
+      "responses": {
+        "Move": "你沿梧桐大街往二段走去。"
+      }
+    },
+    {
+      "id": "wu_st3_exit_st4",
+      "name": "梧桐大街四段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st4",
+      "responses": {
+        "Move": "你沿梧桐大街往四段走去。"
+      }
+    },
+    {
+      "id": "wu_st3_obj_feicui",
+      "name": "翡翠茶莊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust03_shop01_main",
+      "responses": {
+        "Move": "你步入翡翠茶莊。"
+      }
+    },
+    {
+      "id": "wu_st3_obj_shop02",
+      "name": "玉光坊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust03_shop02_main",
+      "responses": {
+        "Move": "你步入玉光坊。"
+      }
+    },
+    {
+      "id": "wu_st3_obj_home01",
+      "name": "根鬚齋",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust03_home01_main",
+      "responses": {
+        "Move": "你步入根鬚齋。"
+      }
+    },
+    {
+      "id": "wu_st3_obj_home02",
+      "name": "靜謐邸",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust03_home02_main",
+      "responses": {
+        "Move": "你步入靜謐邸。"
+      }
+    }
+  ]
+}

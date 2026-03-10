@@ -1,0 +1,46 @@
+{
+  "id": "wust05_hold01_18",
+  "name": "靜滯香徑",
+  "description": "斗室牆面玉質脈絡與根鬚咬合，光線自簷角篩落，石磚與根鬚嵌合的地面泛著恆溫熱氣，靜，恆溫熱氣與沉香淡淡，樹脂香與電離感平衡。可經〔幾何植栽牆〕、〔荒蕪與繁茂交界〕前往他處。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "幾何植栽牆",
+      "to": "wust05_hold01_17",
+      "ui_hidden": true
+    },
+    {
+      "direction": "荒蕪與繁茂交界",
+      "to": "wust05_hold01_19",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust05_hold01_18_exit_1",
+      "name": "幾何植栽牆",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_hold01_17",
+      "responses": {
+        "Move": "你往幾何植栽牆走去。"
+      }
+    },
+    {
+      "id": "wust05_hold01_18_exit_2",
+      "name": "荒蕪與繁茂交界",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_hold01_19",
+      "responses": {
+        "Move": "你往荒蕪與繁茂交界走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "wust05_hold01_06",
+  "name": "茶間",
+  "description": "門廊打磨鏡面黑曜石、黃銅能量導線石縫鑲嵌，梧桐對稱立柱形、晶質膜葉片，紙漿與沉香，枝葉蔽天、綠廊拱頂感。可經〔廣庭入口〕、〔寢間〕、〔鳴葉淺灘〕前往他處。",
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "廣庭入口",
+      "to": "wust05_hold01_01",
+      "ui_hidden": true
+    },
+    {
+      "direction": "寢間",
+      "to": "wust05_hold01_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "鳴葉淺灘",
+      "to": "wust05_hold01_16",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust05_hold01_06_exit_1",
+      "name": "廣庭入口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_hold01_01",
+      "responses": {
+        "Move": "你往廣庭入口走去。"
+      }
+    },
+    {
+      "id": "wust05_hold01_06_exit_2",
+      "name": "寢間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_hold01_07",
+      "responses": {
+        "Move": "你往寢間走去。"
+      }
+    },
+    {
+      "id": "wust05_hold01_06_exit_3",
+      "name": "鳴葉淺灘",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_hold01_16",
+      "responses": {
+        "Move": "你往鳴葉淺灘走去。"
+      }
+    }
+  ]
+}

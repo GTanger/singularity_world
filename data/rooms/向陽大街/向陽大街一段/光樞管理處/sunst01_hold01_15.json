@@ -1,0 +1,13 @@
+{
+  "id": "sunst01_hold01_15",
+  "name": "中一室",
+  "description": "中廊盡頭，稜鏡把光攢成一股、澆在中央白玉柱上，柱面紋路如脈搏輕跳，淺色流路從腳下匯向導光槽，厚牆鎖靜，沉香自通風孔一縷縷飄出。可經〔中廊口〕沿中廊返回。",
+  "tags": ["hold", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "中廊口", "to": "sunst01_hold01_14", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst01_hold01_15_14", "name": "中廊口", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_14", "responses": { "Move": "你沿中廊往中廊口走回。" } }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "wustreet_st1",
+  "name": "梧桐大街一段",
+  "description": "梧桐大街一段，路面延伸、兩側梧桐成蔭，綠廊拱頂感；路側長青公所、簷蔭宅、桐影居門廊覆蔭，玉質脈絡與根鬚咬合石路，靜謐豐饒。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st2",
+      "to": "wustreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust01_hold01_main",
+      "to": "wust01_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust01_home01_main",
+      "to": "wust01_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust01_home02_main",
+      "to": "wust01_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st1_exit_st2",
+      "name": "梧桐大街二段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st2",
+      "responses": {
+        "Move": "你沿梧桐大街往二段走去。"
+      }
+    },
+    {
+      "id": "wu_st1_obj_changqing",
+      "name": "長青公所",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_hold01_main",
+      "responses": {
+        "Move": "你步入長青公所。"
+      }
+    },
+    {
+      "id": "wu_st1_obj_home01",
+      "name": "簷蔭宅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_home01_main",
+      "responses": {
+        "Move": "你步入簷蔭宅。"
+      }
+    },
+    {
+      "id": "wu_st1_obj_home02",
+      "name": "桐影居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust01_home02_main",
+      "responses": {
+        "Move": "你步入桐影居。"
+      }
+    }
+  ]
+}

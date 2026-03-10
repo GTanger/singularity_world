@@ -1,0 +1,107 @@
+{
+  "id": "wustreet_st2",
+  "name": "梧桐大街二段",
+  "description": "梧桐大街二段，路面與兩側梧桐濃蔭掩映，光線篩落、低飽和微光；沉香理療坊、桐香閣、綠脈軒、沉香隅簷下濃蔭，油脂感與膠質氣味淡淡。可經〔梧桐大街一段〕折返，或朝〔梧桐大街三段〕延伸。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st1",
+      "to": "wustreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wustreet_st3",
+      "to": "wustreet_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust02_shop01_main",
+      "to": "wust02_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust02_shop02_main",
+      "to": "wust02_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust02_home01_main",
+      "to": "wust02_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust02_home02_main",
+      "to": "wust02_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st2_exit_st1",
+      "name": "梧桐大街一段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st1",
+      "responses": {
+        "Move": "你沿梧桐大街往一段走去。"
+      }
+    },
+    {
+      "id": "wu_st2_exit_st3",
+      "name": "梧桐大街三段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st3",
+      "responses": {
+        "Move": "你沿梧桐大街往三段走去。"
+      }
+    },
+    {
+      "id": "wu_st2_obj_chenxiang",
+      "name": "沉香理療坊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_shop01_main",
+      "responses": {
+        "Move": "你步入沉香理療坊。"
+      }
+    },
+    {
+      "id": "wu_st2_obj_shop02",
+      "name": "桐香閣",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_shop02_main",
+      "responses": {
+        "Move": "你步入桐香閣。"
+      }
+    },
+    {
+      "id": "wu_st2_obj_home01",
+      "name": "綠脈軒",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_home01_main",
+      "responses": {
+        "Move": "你步入綠脈軒。"
+      }
+    },
+    {
+      "id": "wu_st2_obj_home02",
+      "name": "沉香隅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_home02_main",
+      "responses": {
+        "Move": "你步入沉香隅。"
+      }
+    }
+  ]
+}

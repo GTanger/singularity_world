@@ -1,0 +1,15 @@
+{
+  "id": "sunst03_home03_05",
+  "name": "西廂一",
+  "description": "環廊西段，落地窗將光線裁成斜格，地表淺色紋路與能量導線自縫隙延伸，黑木矮柜與白玉嵌條對比強烈，室內開敞明亮、無廢土感。可經〔南廂〕或〔西廂二〕沿環廊走。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "南廂", "to": "sunst03_home03_04", "ui_hidden": true },
+    { "direction": "西廂二", "to": "sunst03_home03_06", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst03_home03_05_04", "name": "南廂", "sockets": ["Move"], "move_to_room_id": "sunst03_home03_04", "responses": { "Move": "你往南廂走去。" } },
+    { "id": "sunst03_home03_05_06", "name": "西廂二", "sockets": ["Move"], "move_to_room_id": "sunst03_home03_06", "responses": { "Move": "你往西廂二走去。" } }
+  ]
+}

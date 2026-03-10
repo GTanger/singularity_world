@@ -1,0 +1,123 @@
+{
+  "id": "wustreet_st8",
+  "name": "梧桐大街八段",
+  "description": "梧桐大街八段，玉質脈絡與氣根咬合穩住地磚，晶華雜貨鋪、厚土居、桐光肆、綠影坊、幽蔭舍門廊覆蔭，靜謐豐饒。可經〔梧桐大街七段〕折返，或朝〔梧桐大街九段〕延伸。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st7",
+      "to": "wustreet_st7",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wustreet_st9",
+      "to": "wustreet_st9",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust08_shop01_main",
+      "to": "wust08_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust08_home01_main",
+      "to": "wust08_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust08_shop02_main",
+      "to": "wust08_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust08_shop03_main",
+      "to": "wust08_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust08_home02_main",
+      "to": "wust08_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st8_exit_st7",
+      "name": "梧桐大街七段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st7",
+      "responses": {
+        "Move": "你沿梧桐大街往七段走去。"
+      }
+    },
+    {
+      "id": "wu_st8_exit_st9",
+      "name": "梧桐大街九段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st9",
+      "responses": {
+        "Move": "你沿梧桐大街往九段走去。"
+      }
+    },
+    {
+      "id": "wu_st8_obj_jinghua",
+      "name": "晶華雜貨鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust08_shop01_main",
+      "responses": {
+        "Move": "你步入晶華雜貨鋪。"
+      }
+    },
+    {
+      "id": "wu_st8_obj_houtu",
+      "name": "厚土居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust08_home01_main",
+      "responses": {
+        "Move": "你步入厚土居。"
+      }
+    },
+    {
+      "id": "wu_st8_obj_shop02",
+      "name": "桐光肆",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust08_shop02_main",
+      "responses": {
+        "Move": "你步入桐光肆。"
+      }
+    },
+    {
+      "id": "wu_st8_obj_shop03",
+      "name": "綠影坊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust08_shop03_main",
+      "responses": {
+        "Move": "你步入綠影坊。"
+      }
+    },
+    {
+      "id": "wu_st8_obj_home02",
+      "name": "幽蔭舍",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust08_home02_main",
+      "responses": {
+        "Move": "你步入幽蔭舍。"
+      }
+    }
+  ]
+}

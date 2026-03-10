@@ -1,0 +1,15 @@
+{
+  "id": "sunst05_hold01_06",
+  "name": "西一室",
+  "description": "西廊中段，高窗與稜鏡交錯，光影層次分明，白玉地面嵌琉璃條，能量導線自縫隙延伸至牆角，油脂質感皮革包覆的矮几靠窗，室內開敞明亮。可經〔西廊口〕往回，或往〔西二室〕。",
+  "tags": ["hold", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "西廊口", "to": "sunst05_hold01_05", "ui_hidden": true },
+    { "direction": "西二室", "to": "sunst05_hold01_07", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_hold01_06_05", "name": "西廊口", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_05", "responses": { "Move": "你往西廊口走回。" } },
+    { "id": "sunst05_hold01_06_07", "name": "西二室", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_07", "responses": { "Move": "你往西二室走去。" } }
+  ]
+}

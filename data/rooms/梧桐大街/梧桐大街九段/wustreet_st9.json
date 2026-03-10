@@ -1,0 +1,75 @@
+{
+  "id": "wustreet_st9",
+  "name": "梧桐大街九段",
+  "description": "梧桐大街九段，街尾枝葉蔽天、綠廊拱頂感，鳴蟬室、隅光邸、葉脈居巨木交錯枝幹，低飽和微光、無廢土感，枝葉蔽天、綠廊拱頂感。可經〔梧桐大街八段〕折返。",
+  "tags": [],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "wustreet_st8",
+      "to": "wustreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust09_home01_main",
+      "to": "wust09_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust09_home02_main",
+      "to": "wust09_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "wust09_home03_main",
+      "to": "wust09_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wu_st9_exit_st8",
+      "name": "梧桐大街八段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st8",
+      "responses": {
+        "Move": "你沿梧桐大街往八段走去。"
+      }
+    },
+    {
+      "id": "wu_st9_obj_mingchan",
+      "name": "鳴蟬室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust09_home01_main",
+      "responses": {
+        "Move": "你步入鳴蟬室。"
+      }
+    },
+    {
+      "id": "wu_st9_obj_home02",
+      "name": "隅光邸",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust09_home02_main",
+      "responses": {
+        "Move": "你步入隅光邸。"
+      }
+    },
+    {
+      "id": "wu_st9_obj_home03",
+      "name": "葉脈居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust09_home03_main",
+      "responses": {
+        "Move": "你步入葉脈居。"
+      }
+    }
+  ]
+}

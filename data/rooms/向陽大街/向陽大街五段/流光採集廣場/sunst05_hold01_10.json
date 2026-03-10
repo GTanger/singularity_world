@@ -1,0 +1,15 @@
+{
+  "id": "sunst05_hold01_10",
+  "name": "南一廳",
+  "description": "南廳中段，落地窗佔滿一牆、光線呈琥珀色，地表能量紋路匯向中央導光槽，油脂質感皮革長榻靠窗，簷角能量導線隱約脈動，觸手牆面冰冷平滑。可經〔南廳口〕往回，或往〔南二廳〕。",
+  "tags": ["hold", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "南廳口", "to": "sunst05_hold01_09", "ui_hidden": true },
+    { "direction": "南二廳", "to": "sunst05_hold01_11", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_hold01_10_09", "name": "南廳口", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_09", "responses": { "Move": "你往南廳口走回。" } },
+    { "id": "sunst05_hold01_10_11", "name": "南二廳", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_11", "responses": { "Move": "你往南二廳走去。" } }
+  ]
+}

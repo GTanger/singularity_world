@@ -1,0 +1,19 @@
+{
+  "id": "sunst04_home01_02",
+  "name": "東廂・前間",
+  "description": "東廂入口，向陽拱頂將金光篩成琥珀色，白玉檯面與黑木架沿牆，稜鏡垂落金光如簾、光影層次分明，能量導線隱約脈動，空氣流速較快。可經〔門廳〕回到宅門，或往〔東廂一室〕、〔東廂二室〕、〔東廂三室〕。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "門廳", "to": "sunst04_home01_main", "ui_hidden": true },
+    { "direction": "東廂一室", "to": "sunst04_home01_04", "ui_hidden": true },
+    { "direction": "東廂二室", "to": "sunst04_home01_05", "ui_hidden": true },
+    { "direction": "東廂三室", "to": "sunst04_home01_06", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst04_home01_02_main", "name": "門廳", "sockets": ["Move"], "move_to_room_id": "sunst04_home01_main", "responses": { "Move": "你回到門廳。" } },
+    { "id": "sunst04_home01_02_04", "name": "東廂一室", "sockets": ["Move"], "move_to_room_id": "sunst04_home01_04", "responses": { "Move": "你往東廂一室走去。" } },
+    { "id": "sunst04_home01_02_05", "name": "東廂二室", "sockets": ["Move"], "move_to_room_id": "sunst04_home01_05", "responses": { "Move": "你往東廂二室走去。" } },
+    { "id": "sunst04_home01_02_06", "name": "東廂三室", "sockets": ["Move"], "move_to_room_id": "sunst04_home01_06", "responses": { "Move": "你往東廂三室走去。" } }
+  ]
+}

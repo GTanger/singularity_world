@@ -1,0 +1,13 @@
+{
+  "id": "sunst02_shop02_05",
+  "name": "東廳二室",
+  "description": "東廳小間，落地窗將光線裁成斜格，向陽拱頂低壓、密集金光自稜鏡垂落，白玉檯面與深色金屬架對比強烈，能量微粒在光柱中緩浮，厚牆吸音、極靜。可經〔東廳・前間〕返回。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "東廳・前間", "to": "sunst02_shop02_02", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst02_shop02_05_02", "name": "東廳・前間", "sockets": ["Move"], "move_to_room_id": "sunst02_shop02_02", "responses": { "Move": "你往東廳前間走回。" } }
+  ]
+}

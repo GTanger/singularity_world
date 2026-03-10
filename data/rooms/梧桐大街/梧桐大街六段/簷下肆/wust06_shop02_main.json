@@ -1,0 +1,158 @@
+{
+  "id": "wust06_shop02_main",
+  "name": "簷下肆",
+  "description": "濃蔭棧門面：綠廊拱頂感、櫃前濃蔭掩映，黑曜石與玉質脈絡嵌合，恆溫熱氣與油脂感，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔大街〕、〔櫃前〕、〔庫房〕、〔工坊隅〕、〔展間〕、〔焙間〕、〔理療區〕、〔寢區〕、〔儲區〕前往他處。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wustreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "櫃前",
+      "to": "wust06_shop02_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "庫房",
+      "to": "wust06_shop02_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "工坊隅",
+      "to": "wust06_shop02_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "展間",
+      "to": "wust06_shop02_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "焙間",
+      "to": "wust06_shop02_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "理療區",
+      "to": "wust06_shop02_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "寢區",
+      "to": "wust06_shop02_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "儲區",
+      "to": "wust06_shop02_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust06_shop02_main_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wustreet_st6",
+      "responses": {
+        "Move": "你步出，回到梧桐大街。"
+      }
+    },
+    {
+      "id": "wust06_shop02_main_exit_2",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_02",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    },
+    {
+      "id": "wust06_shop02_main_exit_3",
+      "name": "庫房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_03",
+      "responses": {
+        "Move": "你往庫房走去。"
+      }
+    },
+    {
+      "id": "wust06_shop02_main_exit_4",
+      "name": "工坊隅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_04",
+      "responses": {
+        "Move": "你往工坊隅走去。"
+      }
+    },
+    {
+      "id": "wust06_shop02_main_exit_5",
+      "name": "展間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_05",
+      "responses": {
+        "Move": "你往展間走去。"
+      }
+    },
+    {
+      "id": "wust06_shop02_main_exit_6",
+      "name": "焙間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_06",
+      "responses": {
+        "Move": "你往焙間走去。"
+      }
+    },
+    {
+      "id": "wust06_shop02_main_exit_7",
+      "name": "理療區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_07",
+      "responses": {
+        "Move": "你往理療區走去。"
+      }
+    },
+    {
+      "id": "wust06_shop02_main_exit_8",
+      "name": "寢區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_08",
+      "responses": {
+        "Move": "你往寢區走去。"
+      }
+    },
+    {
+      "id": "wust06_shop02_main_exit_9",
+      "name": "儲區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust06_shop02_09",
+      "responses": {
+        "Move": "你往儲區走去。"
+      }
+    }
+  ]
+}

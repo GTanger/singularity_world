@@ -1,0 +1,17 @@
+{
+  "id": "sunst05_home01_main",
+  "name": "敞軒居・玄關",
+  "description": "敞軒臨街，窗格鑲稜鏡、室內開敞明亮，白玉地面反射淡金微光，深色金屬門框與黑木檻咬合，能量紋路隱約脈動，溫潤沉香淡淡。可經〔向陽大街五段〕離開，或往〔東廂〕、〔西廂〕入內。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "sunstreet_st5", "to": "sunstreet_st5", "ui_hidden": true },
+    { "direction": "東廂", "to": "sunst05_home01_02", "ui_hidden": true },
+    { "direction": "西廂", "to": "sunst05_home01_04", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_home01_main_st5", "name": "向陽大街五段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st5", "responses": { "Move": "你步出敞軒居，回到向陽大街五段。" } },
+    { "id": "sunst05_home01_main_02", "name": "東廂", "sockets": ["Move"], "move_to_room_id": "sunst05_home01_02", "responses": { "Move": "你往東廂走去。" } },
+    { "id": "sunst05_home01_main_04", "name": "西廂", "sockets": ["Move"], "move_to_room_id": "sunst05_home01_04", "responses": { "Move": "你往西廂走去。" } }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "sunstreet_st3",
+  "name": "向陽大街三段",
+  "description": "向陽大街三段，向陽拱頂自簷角延伸，密集金光與琥珀微光垂落，拋光地面反射光影層次分明，縫隙菌絲或能量導線與結構咬合，靜謐光域、從容。可經〔向陽大街二段〕折返，或朝〔向陽大街四段〕延伸；可經〔陽炎融合金鋪〕、〔向日植本餐館〕、〔望日廬〕、〔拂曉軒〕、〔暖陽坊〕、〔曙影軒〕進入沿街建築。",
+  "tags": ["street", "outdoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "sunstreet_st2", "to": "sunstreet_st2", "ui_hidden": true },
+    { "direction": "sunstreet_st4", "to": "sunstreet_st4", "ui_hidden": true },
+    { "direction": "sunst03_shop01_main", "to": "sunst03_shop01_main", "ui_hidden": true },
+    { "direction": "sunst03_shop02_main", "to": "sunst03_shop02_main", "ui_hidden": true },
+    { "direction": "sunst03_home01_main", "to": "sunst03_home01_main", "ui_hidden": true },
+    { "direction": "sunst03_home02_main", "to": "sunst03_home02_main", "ui_hidden": true },
+    { "direction": "sunst03_shop03_main", "to": "sunst03_shop03_main", "ui_hidden": true },
+    { "direction": "sunst03_home03_main", "to": "sunst03_home03_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sun_st3_exit_st2", "name": "向陽大街二段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st2", "responses": { "Move": "你沿向陽大街往二段走去。" } },
+    { "id": "sun_st3_exit_st4", "name": "向陽大街四段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st4", "responses": { "Move": "你沿向陽大街往四段走去。" } },
+    { "id": "sun_st3_shop01", "name": "陽炎融合金鋪", "sockets": ["Look", "Move"], "move_to_room_id": "sunst03_shop01_main", "responses": { "Look": "簷下向陽拱頂、深色金屬與黑木門面，櫥窗泛淡金微光。", "Move": "你進入陽炎融合金鋪。" } },
+    { "id": "sun_st3_shop02", "name": "向日植本餐館", "sockets": ["Look", "Move"], "move_to_room_id": "sunst03_shop02_main", "responses": { "Look": "餐館門面稜鏡鑲窗，室內光線飽和如蜜。", "Move": "你進入向日植本餐館。" } },
+    { "id": "sun_st3_home01", "name": "望日廬", "sockets": ["Look", "Move"], "move_to_room_id": "sunst03_home01_main", "responses": { "Look": "白玉階、黑木門框，簷角能量紋路隱約。", "Move": "你進入望日廬。" } },
+    { "id": "sun_st3_home02", "name": "拂曉軒", "sockets": ["Look", "Move"], "move_to_room_id": "sunst03_home02_main", "responses": { "Look": "軒窗敞開納光，油脂質感皮革簾垂落。", "Move": "你進入拂曉軒。" } },
+    { "id": "sun_st3_shop03", "name": "暖陽坊", "sockets": ["Look", "Move"], "move_to_room_id": "sunst03_shop03_main", "responses": { "Look": "坊口稜鏡林立，室內開敞明亮。", "Move": "你進入暖陽坊。" } },
+    { "id": "sun_st3_home03", "name": "曙影軒", "sockets": ["Look", "Move"], "move_to_room_id": "sunst03_home03_main", "responses": { "Look": "軒簷深色金屬與黑木咬合，透出溫潤沉香。", "Move": "你進入曙影軒。" } }
+  ]
+}

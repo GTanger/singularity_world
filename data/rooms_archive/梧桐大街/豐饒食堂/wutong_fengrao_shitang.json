@@ -11,7 +11,7 @@
   "exits": [
     {
       "direction": "大街",
-      "to": "wutong_street"
+      "to": "wustreet_st7"
     },
     {
       "direction": "大眾用餐區",

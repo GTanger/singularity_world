@@ -1,0 +1,19 @@
+{
+  "id": "sunst01_shop01_02",
+  "name": "左廂",
+  "description": "鋪內左廂，稜鏡把金光織成垂簾、一格格落在白玉檯與黑木架上，地表紋路從縫隙爬向牆角導線，金屬陳列架與皮革凳咬合，沉香隱隱，室內亮堂。可經〔店頭〕返回，或往〔左一間〕〔左二間〕〔左三間〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "店頭", "to": "sunst01_shop01_main", "ui_hidden": true },
+    { "direction": "左一間", "to": "sunst01_shop01_04", "ui_hidden": true },
+    { "direction": "左二間", "to": "sunst01_shop01_05", "ui_hidden": true },
+    { "direction": "左三間", "to": "sunst01_shop01_06", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst01_shop01_02_main", "name": "店頭", "sockets": ["Move"], "move_to_room_id": "sunst01_shop01_main", "responses": { "Move": "你回到店頭。" } },
+    { "id": "sunst01_shop01_02_04", "name": "左一間", "sockets": ["Move"], "move_to_room_id": "sunst01_shop01_04", "responses": { "Move": "你往左一間走去。" } },
+    { "id": "sunst01_shop01_02_05", "name": "左二間", "sockets": ["Move"], "move_to_room_id": "sunst01_shop01_05", "responses": { "Move": "你往左二間走去。" } },
+    { "id": "sunst01_shop01_02_06", "name": "左三間", "sockets": ["Move"], "move_to_room_id": "sunst01_shop01_06", "responses": { "Move": "你往左三間走去。" } }
+  ]
+}

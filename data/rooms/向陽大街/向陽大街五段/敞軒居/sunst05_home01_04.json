@@ -1,0 +1,15 @@
+{
+  "id": "sunst05_home01_04",
+  "name": "西廂・前間",
+  "description": "西廂入口，稜鏡垂落金光如簾、光影層次分明，地表淺色紋路與能量導線自縫隙延伸，黑木長榻與白玉嵌條咬合，室內開敞明亮、無廢土感，溫潤沉香淡淡。可經〔玄關〕回到門廳，或往〔西廂・中間〕。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "玄關", "to": "sunst05_home01_main", "ui_hidden": true },
+    { "direction": "西廂・中間", "to": "sunst05_home01_05", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_home01_04_main", "name": "玄關", "sockets": ["Move"], "move_to_room_id": "sunst05_home01_main", "responses": { "Move": "你回到玄關。" } },
+    { "id": "sunst05_home01_04_05", "name": "西廂・中間", "sockets": ["Move"], "move_to_room_id": "sunst05_home01_05", "responses": { "Move": "你往西廂中間走去。" } }
+  ]
+}

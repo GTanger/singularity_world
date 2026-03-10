@@ -1,0 +1,13 @@
+{
+  "id": "sunst05_hold01_12",
+  "name": "南三廳",
+  "description": "南廳盡頭，單扇高窗將金光裁成狹長一道，地面拋光白玉與淺色流路交錯，黑木矮櫃沿牆、表面油脂光澤，牆厚隔音、極靜，能量微粒在光柱中緩浮。可經〔南二廳〕沿廳返回。",
+  "tags": ["hold", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "南二廳", "to": "sunst05_hold01_11", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst05_hold01_12_11", "name": "南二廳", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_11", "responses": { "Move": "你沿南廳往南二廳走回。" } }
+  ]
+}

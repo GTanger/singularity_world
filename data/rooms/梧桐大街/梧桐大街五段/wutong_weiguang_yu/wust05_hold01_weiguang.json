@@ -1,0 +1,30 @@
+{
+  "id": "wust05_hold01_weiguang",
+  "name": "微光寓",
+  "description": "內廊兩側梧桐被精確修剪成對稱立柱形，葉片覆晶質膜，空氣流通感強、紙漿與沉香淡淡，樹脂香與電離感平衡，懸浮微粒與沉香並存。可經〔翠蔭廣庭〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "翠蔭廣庭",
+      "to": "wust05_hold01_12",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust05_hold01_weiguang_exit_1",
+      "name": "翠蔭廣庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust05_hold01_12",
+      "responses": {
+        "Move": "你往翠蔭廣庭走去。"
+      }
+    }
+  ]
+}

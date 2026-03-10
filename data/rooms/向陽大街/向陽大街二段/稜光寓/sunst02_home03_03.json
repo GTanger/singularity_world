@@ -1,0 +1,13 @@
+{
+  "id": "sunst02_home03_03",
+  "name": "左間・後",
+  "description": "左側盡頭，稜鏡垂落金光如簾、淡金微光與深色金屬對比強烈，白玉地面嵌琉璃條，牆面能量導線隱約脈動，黑木長榻靠牆，厚牆吸音、極靜。可經〔左間・前〕沿左間返回。",
+  "tags": ["home", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "左間・前", "to": "sunst02_home03_02", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst02_home03_03_02", "name": "左間・前", "sockets": ["Move"], "move_to_room_id": "sunst02_home03_02", "responses": { "Move": "你往左間前走回。" } }
+  ]
+}

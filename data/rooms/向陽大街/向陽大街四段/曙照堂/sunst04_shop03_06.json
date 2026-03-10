@@ -1,0 +1,15 @@
+{
+  "id": "sunst04_shop03_06",
+  "name": "西廊一",
+  "description": "環廊西段，向陽拱頂低壓、光線呈琥珀色，白玉地面嵌琉璃條，牆面深色金屬與黑木咬合，油脂質感皮革椅靠牆，厚牆吸音、極靜。可經〔南廊二〕或〔西廊二〕沿環廊走。",
+  "tags": ["shop", "indoor"],
+  "zone": "sunstreet",
+  "exits": [
+    { "direction": "南廊二", "to": "sunst04_shop03_05", "ui_hidden": true },
+    { "direction": "西廊二", "to": "sunst04_shop03_07", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "sunst04_shop03_06_05", "name": "南廊二", "sockets": ["Move"], "move_to_room_id": "sunst04_shop03_05", "responses": { "Move": "你往南廊二走去。" } },
+    { "id": "sunst04_shop03_06_07", "name": "西廊二", "sockets": ["Move"], "move_to_room_id": "sunst04_shop03_07", "responses": { "Move": "你往西廊二走去。" } }
+  ]
+}
