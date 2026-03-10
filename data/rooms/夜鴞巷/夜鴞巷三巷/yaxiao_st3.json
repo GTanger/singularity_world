@@ -1,0 +1,29 @@
+{
+  "id": "yaxiao_st3",
+  "name": "夜鴞巷三巷",
+  "description": "巷道自飛霜六段岔入後收窄成石縫，簷線錯落、兩壁鉛皮夾出細長一線，霜氣與灰白氣絲在腳邊緩流。黑石與磨損石磚沁出淡紫微光，夜鴞啼鳴自簷角疊來，氣密門扉沿路緊閉，黃銅導向線貼牆延伸，沉香與熟成樹脂自門隙漏出一縷。可經〔飛霜大街六段〕回到大街，或沿巷往〔夜鴞巷二巷〕、〔夜鴞巷四巷〕；可經〔底閣〕、〔窄門棧〕、〔氣密茶〕、〔前櫃行〕、〔後窗宅〕、〔側室寓〕入內。",
+  "tags": ["street", "outdoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "feistreet_st6", "to": "feistreet_st6", "ui_hidden": true },
+    { "direction": "yaxiao_st2", "to": "yaxiao_st2", "ui_hidden": true },
+    { "direction": "yaxiao_st4", "to": "yaxiao_st4", "ui_hidden": true },
+    { "direction": "yaxst03_hold01_main", "to": "yaxst03_hold01_main", "ui_hidden": true },
+    { "direction": "yaxst03_shop01_main", "to": "yaxst03_shop01_main", "ui_hidden": true },
+    { "direction": "yaxst03_shop02_main", "to": "yaxst03_shop02_main", "ui_hidden": true },
+    { "direction": "yaxst03_shop03_main", "to": "yaxst03_shop03_main", "ui_hidden": true },
+    { "direction": "yaxst03_home01_main", "to": "yaxst03_home01_main", "ui_hidden": true },
+    { "direction": "yaxst03_home02_main", "to": "yaxst03_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxiao_st3_feistreet_st6", "name": "飛霜大街六段", "sockets": ["Move"], "move_to_room_id": "feistreet_st6", "responses": { "Move": "你拐出巷子，回到飛霜大街六段。" } },
+    { "id": "yaxiao_st3_yaxiao_st2", "name": "夜鴞巷二巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st2", "responses": { "Move": "你沿巷往二巷走去。" } },
+    { "id": "yaxiao_st3_yaxiao_st4", "name": "夜鴞巷四巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st4", "responses": { "Move": "你沿巷往四巷走去。" } },
+    { "id": "yaxiao_st3_hold01", "name": "底閣", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_main", "responses": { "Move": "你推門進入底閣。" } },
+    { "id": "yaxiao_st3_shop01", "name": "窄門棧", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop01_main", "responses": { "Move": "你進入窄門棧。" } },
+    { "id": "yaxiao_st3_shop02", "name": "氣密茶", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop02_main", "responses": { "Move": "你進入氣密茶。" } },
+    { "id": "yaxiao_st3_shop03", "name": "前櫃行", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop03_main", "responses": { "Move": "你進入前櫃行。" } },
+    { "id": "yaxiao_st3_home01", "name": "後窗宅", "sockets": ["Move"], "move_to_room_id": "yaxst03_home01_main", "responses": { "Move": "你進入後窗宅。" } },
+    { "id": "yaxiao_st3_home02", "name": "側室寓", "sockets": ["Move"], "move_to_room_id": "yaxst03_home02_main", "responses": { "Move": "你進入側室寓。" } }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "yaxst03_home02_04",
+  "name": "側室寓・環道三",
+  "description": "環道中段，牆面導能紋路密佈，暖能石嵌在壁縫泛著低溫橘光。頂上晶簇漸密，淡紫與琥珀交織成低飽和光霧，室內無雜音。可經〔環道二〕或〔環道四〕。",
+  "tags": ["home", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst03_home02_03", "to": "yaxst03_home02_03", "ui_hidden": true },
+    { "direction": "yaxst03_home02_05", "to": "yaxst03_home02_05", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst03_home02_04_03", "name": "環道二", "sockets": ["Move"], "move_to_room_id": "yaxst03_home02_03", "responses": { "Move": "你往環道二走回。" } },
+    { "id": "yaxst03_home02_04_05", "name": "環道四", "sockets": ["Move"], "move_to_room_id": "yaxst03_home02_05", "responses": { "Move": "你往環道四走去。" } }
+  ]
+}

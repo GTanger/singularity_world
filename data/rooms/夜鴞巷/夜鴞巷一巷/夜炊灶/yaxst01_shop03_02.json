@@ -1,0 +1,13 @@
+{
+  "id": "yaxst01_shop03_02",
+  "name": "夜炊灶・側室一",
+  "description": "單間側室，鉛皮牆面與暖能石縫泛著低溫橘光，晶簇嵌在頂心、灑下淡紫微光。黑石檯面冰涼，導能紋路沿踢腳圍成一圈，沉香與熟成樹脂氣味自簾縫漏入。可經〔灶前〕回。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_shop03_main", "to": "yaxst01_shop03_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_shop03_02_main", "name": "灶前", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_main", "responses": { "Move": "你掀簾退回灶前。" } }
+  ]
+}

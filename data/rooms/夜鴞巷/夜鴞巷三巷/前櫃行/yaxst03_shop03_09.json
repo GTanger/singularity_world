@@ -1,0 +1,13 @@
+{
+  "id": "yaxst03_shop03_09",
+  "name": "前櫃行・側櫃乙",
+  "description": "側櫃單間，氣密鉛皮鋪到腰高，黃銅導向線自門框延伸至腳邊。頂心晶簇聚成深琥珀，黑石地磚沁著沉香餘韻，極靜。可經〔櫃前〕回。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst03_shop03_main", "to": "yaxst03_shop03_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst03_shop03_09_main", "name": "櫃前", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop03_main", "responses": { "Move": "你退回櫃前。" } }
+  ]
+}

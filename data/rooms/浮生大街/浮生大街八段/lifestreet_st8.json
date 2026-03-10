@@ -1,7 +1,7 @@
 {
   "id": "lifestreet_st8",
   "name": "浮生大街八段",
-  "description": "路幅收束，兩側脈絡垂落、與砌石咬合愈緊，淡紫琥珀光色愈發沉靜，前方簷角與菌絲漸密。路側〔脈尾宅〕簷角脈絡與砌石咬合，門前石階覆著絨狀菌絲。可經〔浮生大街七段〕折返，或朝〔浮生大街九段〕延伸。",
+  "description": "路幅收束，兩側脈絡垂落、與砌石咬合愈緊，淡紫琥珀光色愈發沉靜，前方簷角與菌絲漸密。路側〔脈尾宅〕簷角脈絡與砌石咬合，門前石階覆著絨狀菌絲。可經〔浮生大街七段〕折返，或朝〔浮生大街九段〕延伸，或經〔夜鴞巷四巷〕入巷。",
   "tags": [],
   "zone": "lifestreet",
   "exits": [
@@ -18,6 +18,11 @@
     {
       "direction": "life_home12_main",
       "to": "life_home12_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxiao_st4",
+      "to": "yaxiao_st4",
       "ui_hidden": true
     }
   ],
@@ -63,6 +68,15 @@
       "move_to_room_id": "life_home12_main",
       "responses": {
         "Move": "你推開板門，進入脈尾宅。"
+      }
+    },
+    {
+      "id": "st8_exit_yaxiao_st4",
+      "name": "夜鴞巷四巷",
+      "sockets": ["Move"],
+      "move_to_room_id": "yaxiao_st4",
+      "responses": {
+        "Move": "你拐進夜鴞巷四巷。"
       }
     }
   ]

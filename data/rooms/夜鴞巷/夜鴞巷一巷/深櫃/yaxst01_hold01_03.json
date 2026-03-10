@@ -1,0 +1,15 @@
+{
+  "id": "yaxst01_hold01_03",
+  "name": "深櫃・東翼中",
+  "description": "廊道收窄，兩側壁面導能紋路交錯如枝椏，暖能石嵌在縫隙裡泛著低溫的橘。空氣滯重，沉香與樹脂氣味更濃，腳步聲被厚牆吃盡。可經〔東翼口〕或〔東翼底〕。",
+  "tags": ["hold", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_hold01_02", "to": "yaxst01_hold01_02", "ui_hidden": true },
+    { "direction": "yaxst01_hold01_04", "to": "yaxst01_hold01_04", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_hold01_03_02", "name": "東翼口", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_02", "responses": { "Move": "你往東翼口走回。" } },
+    { "id": "yaxst01_hold01_03_04", "name": "東翼底", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_04", "responses": { "Move": "你往東翼底走去。" } }
+  ]
+}

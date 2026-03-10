@@ -1,0 +1,15 @@
+{
+  "id": "yaxst03_hold01_19",
+  "name": "底閣・北廊最底前",
+  "description": "北廊最底前，牆根導能紋路匯成一股沉入地磚縫隙，黑石磨得發亮。晶簇在頂角聚成淡紫一團，隔音鉛皮吞掉迴響。可經〔北廊盡頭前〕或〔北廊盡頭〕。",
+  "tags": ["hold", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst03_hold01_18", "to": "yaxst03_hold01_18", "ui_hidden": true },
+    { "direction": "yaxst03_hold01_20", "to": "yaxst03_hold01_20", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst03_hold01_19_18", "name": "北廊盡頭前", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_18", "responses": { "Move": "你往北廊盡頭前走回。" } },
+    { "id": "yaxst03_hold01_19_20", "name": "北廊盡頭", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_20", "responses": { "Move": "你走到北廊盡頭。" } }
+  ]
+}

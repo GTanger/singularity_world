@@ -1,0 +1,25 @@
+{
+  "id": "yaxiao_st4",
+  "name": "夜鴞巷四巷",
+  "description": "巷道自浮生八段脈絡垂落處岔入，路幅收束成石縫，兩壁鉛皮與砌石咬合、淡紫琥珀光色愈發沉靜。腳下黑石與磨損磚縫沁出微光，夜鴞啼鳴自巷底疊來，兩側氣密門扉緊閉，黃銅導向線沿牆根延伸至巷尾，門隙漏出沉香與熟成樹脂餘韻。可經〔浮生大街八段〕回到大街，或沿巷往〔夜鴞巷三巷〕；可經〔長燈棧〕、〔隱簾閣〕、〔巷尾灶〕、〔氣密寓所〕、〔雙扉宅〕入內。",
+  "tags": ["street", "outdoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "lifestreet_st8", "to": "lifestreet_st8", "ui_hidden": true },
+    { "direction": "yaxiao_st3", "to": "yaxiao_st3", "ui_hidden": true },
+    { "direction": "yaxst04_shop01_main", "to": "yaxst04_shop01_main", "ui_hidden": true },
+    { "direction": "yaxst04_shop02_main", "to": "yaxst04_shop02_main", "ui_hidden": true },
+    { "direction": "yaxst04_shop03_main", "to": "yaxst04_shop03_main", "ui_hidden": true },
+    { "direction": "yaxst04_home01_main", "to": "yaxst04_home01_main", "ui_hidden": true },
+    { "direction": "yaxst04_home02_main", "to": "yaxst04_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxiao_st4_lifestreet_st8", "name": "浮生大街八段", "sockets": ["Move"], "move_to_room_id": "lifestreet_st8", "responses": { "Move": "你拐出巷子，回到浮生大街八段。" } },
+    { "id": "yaxiao_st4_yaxiao_st3", "name": "夜鴞巷三巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st3", "responses": { "Move": "你沿巷往三巷走去。" } },
+    { "id": "yaxiao_st4_shop01", "name": "長燈棧", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_main", "responses": { "Move": "你進入長燈棧。" } },
+    { "id": "yaxiao_st4_shop02", "name": "隱簾閣", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop02_main", "responses": { "Move": "你進入隱簾閣。" } },
+    { "id": "yaxiao_st4_shop03", "name": "巷尾灶", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop03_main", "responses": { "Move": "你進入巷尾灶。" } },
+    { "id": "yaxiao_st4_home01", "name": "氣密寓所", "sockets": ["Move"], "move_to_room_id": "yaxst04_home01_main", "responses": { "Move": "你進入氣密寓所。" } },
+    { "id": "yaxiao_st4_home02", "name": "雙扉宅", "sockets": ["Move"], "move_to_room_id": "yaxst04_home02_main", "responses": { "Move": "你進入雙扉宅。" } }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "yaxst04_shop01_06",
+  "name": "長燈棧・乙廊一",
+  "description": "乙廊首段，黃銅導向線貼牆延伸進深處，頂角長燈與晶簇灑下琥珀色光。黑石地磚冰涼，沉香與熟成樹脂餘韻沉在空氣裡，巷聲被厚牆擋成模糊底噪。可經〔櫃前〕或往〔乙廊二〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst04_shop01_main", "to": "yaxst04_shop01_main", "ui_hidden": true },
+    { "direction": "yaxst04_shop01_07", "to": "yaxst04_shop01_07", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst04_shop01_06_main", "name": "櫃前", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_main", "responses": { "Move": "你退回櫃前。" } },
+    { "id": "yaxst04_shop01_06_07", "name": "乙廊二", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_07", "responses": { "Move": "你往乙廊二走去。" } }
+  ]
+}

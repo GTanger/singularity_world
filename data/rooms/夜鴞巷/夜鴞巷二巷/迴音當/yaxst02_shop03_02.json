@@ -1,0 +1,15 @@
+{
+  "id": "yaxst02_shop03_02",
+  "name": "迴音當・內廊一",
+  "description": "內廊首段，鉛皮牆面與暖能石縫泛著低溫橘光，導能紋路沿踢腳延伸。晶簇稀疏，黑石地磚沁著沉香餘韻，巷聲被厚牆隔在外頭。可經〔當口〕或往〔內廊二〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst02_shop03_main", "to": "yaxst02_shop03_main", "ui_hidden": true },
+    { "direction": "yaxst02_shop03_03", "to": "yaxst02_shop03_03", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst02_shop03_02_main", "name": "當口", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop03_main", "responses": { "Move": "你退回當口。" } },
+    { "id": "yaxst02_shop03_02_03", "name": "內廊二", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop03_03", "responses": { "Move": "你往內廊二走去。" } }
+  ]
+}

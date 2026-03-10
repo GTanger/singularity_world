@@ -1,0 +1,13 @@
+{
+  "id": "yaxst02_shop01_05",
+  "name": "鉛皮修理行・工間甲側",
+  "description": "工間甲側室，單間窄小，鉛皮牆面與暖能石縫泛著低溫橘光。晶簇嵌在頂心、灑下淡紫微光，黑石檯面冰涼，導能紋路沿踢腳圍成一圈。可經〔工間甲中〕回。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst02_shop01_03", "to": "yaxst02_shop01_03", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst02_shop01_05_03", "name": "工間甲中", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_03", "responses": { "Move": "你退回工間甲中。" } }
+  ]
+}

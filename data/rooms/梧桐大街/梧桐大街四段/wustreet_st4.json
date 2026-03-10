@@ -1,7 +1,7 @@
 {
   "id": "wustreet_st4",
   "name": "梧桐大街四段",
-  "description": "梧桐大街四段，簷角藤蔓撐簷、濃蔭掩映，生機醫館、凝光藝廊、翠廊小築、蔭深居掩映濃蔭，文明與增生並存、從容。可經〔梧桐大街三段〕折返，或朝〔梧桐大街五段〕延伸。",
+  "description": "梧桐大街四段，簷角藤蔓撐簷、濃蔭掩映，生機醫館、凝光藝廊、翠廊小築、蔭深居掩映濃蔭，文明與增生並存、從容。可經〔梧桐大街三段〕折返，或朝〔梧桐大街五段〕延伸，或經〔夜鴞巷二巷〕入巷。",
   "tags": [],
   "zone": "wustreet",
   "exits": [
@@ -33,6 +33,11 @@
     {
       "direction": "wust04_home02_main",
       "to": "wust04_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxiao_st2",
+      "to": "yaxiao_st2",
       "ui_hidden": true
     }
   ],
@@ -101,6 +106,15 @@
       "move_to_room_id": "wust04_home02_main",
       "responses": {
         "Move": "你步入蔭深居。"
+      }
+    },
+    {
+      "id": "wu_st4_exit_yaxiao_st2",
+      "name": "夜鴞巷二巷",
+      "sockets": ["Move"],
+      "move_to_room_id": "yaxiao_st2",
+      "responses": {
+        "Move": "你拐進夜鴞巷二巷。"
       }
     }
   ]

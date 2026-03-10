@@ -1,0 +1,15 @@
+{
+  "id": "yaxst03_hold01_20",
+  "name": "底閣・北廊盡頭",
+  "description": "北廊終點，三面鉛皮牆合圍，頂心晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈後隱入牆底，沉香沉在膝蓋高度，極靜。可經〔北廊最底前〕走回，或徑經〔廳心〕。",
+  "tags": ["hold", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst03_hold01_19", "to": "yaxst03_hold01_19", "ui_hidden": true },
+    { "direction": "yaxst03_hold01_main", "to": "yaxst03_hold01_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst03_hold01_20_19", "name": "北廊最底前", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_19", "responses": { "Move": "你沿北廊往回走。" } },
+    { "id": "yaxst03_hold01_20_main", "name": "廳心", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_main", "responses": { "Move": "你徑直回到廳心。" } }
+  ]
+}

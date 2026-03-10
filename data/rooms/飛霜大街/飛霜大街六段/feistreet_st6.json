@@ -1,7 +1,7 @@
 {
   "id": "feistreet_st6",
   "name": "飛霜大街六段",
-  "description": "霜白結晶飄落、路面冷調，簷線高低錯落；一側多商、一側多宅，六段人跡略稀。路側〔霜簾鋪〕〔冷閣〕〔簷角行〕簷角積霜，對向〔霜牆宅〕〔玉霜宅〕〔冷簾宅〕〔簷霜宅〕門廊或簷緣覆著細霜。可經〔飛霜大街五段〕折返，或朝〔飛霜大街七段〕延伸。",
+  "description": "霜白結晶飄落、路面冷調，簷線高低錯落；一側多商、一側多宅，六段人跡略稀。路側〔霜簾鋪〕〔冷閣〕〔簷角行〕簷角積霜，對向〔霜牆宅〕〔玉霜宅〕〔冷簾宅〕〔簷霜宅〕門廊或簷緣覆著細霜。可經〔飛霜大街五段〕折返，或朝〔飛霜大街七段〕延伸，或經〔夜鴞巷三巷〕入巷。",
   "tags": [],
   "zone": "feistreet",
   "exits": [
@@ -48,6 +48,11 @@
     {
       "direction": "feist06_home04_main",
       "to": "feist06_home04_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxiao_st3",
+      "to": "yaxiao_st3",
       "ui_hidden": true
     }
   ],
@@ -219,6 +224,15 @@
       "move_to_room_id": "feist06_home04_main",
       "responses": {
         "Move": "你推門進入簷霜宅。"
+      }
+    },
+    {
+      "id": "fei_st6_exit_yaxiao_st3",
+      "name": "夜鴞巷三巷",
+      "sockets": ["Move"],
+      "move_to_room_id": "yaxiao_st3",
+      "responses": {
+        "Move": "你拐進夜鴞巷三巷。"
       }
     }
   ]

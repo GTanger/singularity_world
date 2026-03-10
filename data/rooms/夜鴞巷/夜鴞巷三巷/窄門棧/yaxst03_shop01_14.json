@@ -1,0 +1,15 @@
+{
+  "id": "yaxst03_shop01_14",
+  "name": "窄門棧・棧底前",
+  "description": "後段廊將盡，頂心晶簇聚成深琥珀，壁面擱板與黑石檯面冰涼。導能紋路在腳邊圍成閉合一圈後沉入地磚縫隙，無雜音。可經〔後段廊三〕或〔棧底〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst03_shop01_13", "to": "yaxst03_shop01_13", "ui_hidden": true },
+    { "direction": "yaxst03_shop01_15", "to": "yaxst03_shop01_15", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst03_shop01_14_13", "name": "後段廊三", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop01_13", "responses": { "Move": "你往後段廊三走回。" } },
+    { "id": "yaxst03_shop01_14_15", "name": "棧底", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop01_15", "responses": { "Move": "你走到棧底。" } }
+  ]
+}

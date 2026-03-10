@@ -1,0 +1,15 @@
+{
+  "id": "yaxst02_shop01_11",
+  "name": "鉛皮修理行・工間丙中一",
+  "description": "工間丙中段前段，鉛皮牆面與暖能石縫泛著低溫橘光，導能紋路沿地緣延伸。空氣乾燥，沉香與樹脂氣味更濃，厚牆隔絕巷聲。可經〔工間丙口〕或〔工間丙中二〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst02_shop01_10", "to": "yaxst02_shop01_10", "ui_hidden": true },
+    { "direction": "yaxst02_shop01_12", "to": "yaxst02_shop01_12", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst02_shop01_11_10", "name": "工間丙口", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_10", "responses": { "Move": "你往工間丙口走回。" } },
+    { "id": "yaxst02_shop01_11_12", "name": "工間丙中二", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_12", "responses": { "Move": "你往工間丙中二走去。" } }
+  ]
+}

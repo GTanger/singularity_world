@@ -1,0 +1,15 @@
+{
+  "id": "yaxst02_shop01_04",
+  "name": "鉛皮修理行・工間甲底",
+  "description": "工間甲盡頭，三面鉛皮牆合圍，頂心晶簇聚成深琥珀。黑石工作檯與擱板沿牆設置，導能紋路在腳邊圍成閉合一圈後隱入牆底，極靜。可經〔工間甲中〕走回，或徑經〔櫃檯〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst02_shop01_03", "to": "yaxst02_shop01_03", "ui_hidden": true },
+    { "direction": "yaxst02_shop01_main", "to": "yaxst02_shop01_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst02_shop01_04_03", "name": "工間甲中", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_03", "responses": { "Move": "你沿工間甲往回走。" } },
+    { "id": "yaxst02_shop01_04_main", "name": "櫃檯", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_main", "responses": { "Move": "你徑直回到櫃檯。" } }
+  ]
+}

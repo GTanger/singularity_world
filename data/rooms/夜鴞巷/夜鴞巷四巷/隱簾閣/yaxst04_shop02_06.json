@@ -1,0 +1,15 @@
+{
+  "id": "yaxst04_shop02_06",
+  "name": "隱簾閣・簾內四",
+  "description": "簾內道後段，牆根導能紋路匯成一股沉入地磚縫隙，黑石磨得發亮。晶簇在頂角聚成淡紫一團，沉香沉在膝蓋高度。可經〔簾內三〕或〔簾內五〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst04_shop02_04", "to": "yaxst04_shop02_04", "ui_hidden": true },
+    { "direction": "yaxst04_shop02_07", "to": "yaxst04_shop02_07", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst04_shop02_06_04", "name": "簾內三", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop02_04", "responses": { "Move": "你往簾內三走回。" } },
+    { "id": "yaxst04_shop02_06_07", "name": "簾內五", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop02_07", "responses": { "Move": "你往簾內五走去。" } }
+  ]
+}

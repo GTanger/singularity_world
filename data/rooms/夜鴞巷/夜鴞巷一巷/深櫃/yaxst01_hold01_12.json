@@ -1,0 +1,15 @@
+{
+  "id": "yaxst01_hold01_12",
+  "name": "深櫃・西翼底前",
+  "description": "廊底在望，晶簇在頂角聚成淡紫一團，牆根黑石磨得發亮，導能紋路收束成細線沒入地縫。極靜，呼吸聲像被鉛皮吸走。可經〔西翼中〕或〔西翼盡頭〕。",
+  "tags": ["hold", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_hold01_11", "to": "yaxst01_hold01_11", "ui_hidden": true },
+    { "direction": "yaxst01_hold01_13", "to": "yaxst01_hold01_13", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_hold01_12_11", "name": "西翼中", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_11", "responses": { "Move": "你往西翼中走回。" } },
+    { "id": "yaxst01_hold01_12_13", "name": "西翼盡頭", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_13", "responses": { "Move": "你走到西翼盡頭。" } }
+  ]
+}

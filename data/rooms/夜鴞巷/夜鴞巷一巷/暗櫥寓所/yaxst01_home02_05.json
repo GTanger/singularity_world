@@ -1,0 +1,15 @@
+{
+  "id": "yaxst01_home02_05",
+  "name": "暗櫥寓所・環室四",
+  "description": "環道倒數第二間，牆根導能紋路匯成一股沉入地磚縫隙，黑石磨得發亮。晶簇在頂角聚成淡紫一團，沉香沉在膝蓋高度，隔音鉛皮吞掉迴響。可經〔環室三〕或〔環室五〕。",
+  "tags": ["home", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_home02_04", "to": "yaxst01_home02_04", "ui_hidden": true },
+    { "direction": "yaxst01_home02_06", "to": "yaxst01_home02_06", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_home02_05_04", "name": "環室三", "sockets": ["Move"], "move_to_room_id": "yaxst01_home02_04", "responses": { "Move": "你往環室三走回。" } },
+    { "id": "yaxst01_home02_05_06", "name": "環室五", "sockets": ["Move"], "move_to_room_id": "yaxst01_home02_06", "responses": { "Move": "你往環室五走去。" } }
+  ]
+}

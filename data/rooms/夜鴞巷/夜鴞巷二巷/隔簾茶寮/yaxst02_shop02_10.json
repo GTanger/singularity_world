@@ -1,0 +1,15 @@
+{
+  "id": "yaxst02_shop02_10",
+  "name": "隔簾茶寮・右簾盡頭",
+  "description": "右簾內終點，三面厚牆合圍，頂心晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈，隔音鉛皮吞掉迴響。可經〔右簾底前〕走回，或徑經〔簾前〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst02_shop02_09", "to": "yaxst02_shop02_09", "ui_hidden": true },
+    { "direction": "yaxst02_shop02_main", "to": "yaxst02_shop02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst02_shop02_10_09", "name": "右簾底前", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop02_09", "responses": { "Move": "你沿右簾往回走。" } },
+    { "id": "yaxst02_shop02_10_main", "name": "簾前", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop02_main", "responses": { "Move": "你徑直回到簾前。" } }
+  ]
+}

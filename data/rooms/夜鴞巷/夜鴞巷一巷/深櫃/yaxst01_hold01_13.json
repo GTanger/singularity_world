@@ -1,0 +1,15 @@
+{
+  "id": "yaxst01_hold01_13",
+  "name": "深櫃・西翼盡頭",
+  "description": "西翼終點，三面鉛皮牆合圍，頂心晶簇沉成深琥珀，壁面淺龕與黑石檯面冰涼，導能紋路在腳邊圍成一圈後隱入牆底。沉香沉在膝蓋高度，極靜。可經〔西翼底前〕走回廊道，或經〔前檯〕徑回主廳。",
+  "tags": ["hold", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_hold01_12", "to": "yaxst01_hold01_12", "ui_hidden": true },
+    { "direction": "yaxst01_hold01_main", "to": "yaxst01_hold01_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_hold01_13_12", "name": "西翼底前", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_12", "responses": { "Move": "你沿西翼往回走。" } },
+    { "id": "yaxst01_hold01_13_main", "name": "前檯", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_main", "responses": { "Move": "你徑直穿過西翼回到前檯。" } }
+  ]
+}

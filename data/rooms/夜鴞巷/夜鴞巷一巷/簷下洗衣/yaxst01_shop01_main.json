@@ -1,0 +1,19 @@
+{
+  "id": "yaxst01_shop01_main",
+  "name": "簷下洗衣・前廳",
+  "description": "簷口低壓，門內前廳狹長，隔音鉛皮只鋪到腰高、其上斑駁灰牆，黃銅導向線沿門框與踢腳延伸。晶簇嵌在簷角、灑下淡紫與琥珀色光，黑石地磚沁著水氣與沉香餘韻，巷內啼鳴被氣密門擋成遠方嗡鳴。可經〔夜鴞巷一巷〕離開，或往〔左廊〕〔右廊〕〔後間〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxiao_st1", "to": "yaxiao_st1", "ui_hidden": true },
+    { "direction": "yaxst01_shop01_02", "to": "yaxst01_shop01_02", "ui_hidden": true },
+    { "direction": "yaxst01_shop01_06", "to": "yaxst01_shop01_06", "ui_hidden": true },
+    { "direction": "yaxst01_shop01_10", "to": "yaxst01_shop01_10", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_shop01_main_st1", "name": "夜鴞巷一巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st1", "responses": { "Move": "你步出簷下洗衣，回到夜鴞巷一巷。" } },
+    { "id": "yaxst01_shop01_main_02", "name": "左廊", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_02", "responses": { "Move": "你往左廊走去。" } },
+    { "id": "yaxst01_shop01_main_06", "name": "右廊", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_06", "responses": { "Move": "你往右廊走去。" } },
+    { "id": "yaxst01_shop01_main_10", "name": "後間", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_10", "responses": { "Move": "你往後間走去。" } }
+  ]
+}

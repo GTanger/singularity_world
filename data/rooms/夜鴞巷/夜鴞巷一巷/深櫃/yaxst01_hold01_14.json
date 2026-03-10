@@ -1,0 +1,15 @@
+{
+  "id": "yaxst01_hold01_14",
+  "name": "深櫃・北翼口",
+  "description": "北翼廊道起處，氣密門框鑲黃銅導向線，腳下黑石與磨損石磚相接，晶簇自頂角投下淡紫微光。巷外啼鳴被厚牆擋成模糊底噪，室內沉香與樹脂氣味沉在空氣裡。可經〔前檯〕回主廳，或往〔北翼深處〕。",
+  "tags": ["hold", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_hold01_main", "to": "yaxst01_hold01_main", "ui_hidden": true },
+    { "direction": "yaxst01_hold01_15", "to": "yaxst01_hold01_15", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_hold01_14_main", "name": "前檯", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_main", "responses": { "Move": "你退回前檯。" } },
+    { "id": "yaxst01_hold01_14_15", "name": "北翼深處", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_15", "responses": { "Move": "你往北翼深處走。" } }
+  ]
+}

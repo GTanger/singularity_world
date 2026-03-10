@@ -1,0 +1,23 @@
+{
+  "id": "yaxst02_home02_main",
+  "name": "簷角寓・簷下",
+  "description": "簷角低壓，門內簷下窄小，五道門簾自頂緣垂落、黃銅導向線沿簾軌輻射向各室。隔音鉛皮包覆頂壁與腰線，晶簇嵌在簷角、灑下淡紫與琥珀色光，黑石地磚沁著沉香餘韻，巷內啼鳴被氣密門擋成遠方嗡鳴。可經〔夜鴞巷二巷〕離開，或往各〔側室〕。",
+  "tags": ["home", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxiao_st2", "to": "yaxiao_st2", "ui_hidden": true },
+    { "direction": "yaxst02_home02_02", "to": "yaxst02_home02_02", "ui_hidden": true },
+    { "direction": "yaxst02_home02_03", "to": "yaxst02_home02_03", "ui_hidden": true },
+    { "direction": "yaxst02_home02_04", "to": "yaxst02_home02_04", "ui_hidden": true },
+    { "direction": "yaxst02_home02_05", "to": "yaxst02_home02_05", "ui_hidden": true },
+    { "direction": "yaxst02_home02_06", "to": "yaxst02_home02_06", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst02_home02_main_st2", "name": "夜鴞巷二巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st2", "responses": { "Move": "你步出簷角寓，回到夜鴞巷二巷。" } },
+    { "id": "yaxst02_home02_main_02", "name": "側室一", "sockets": ["Move"], "move_to_room_id": "yaxst02_home02_02", "responses": { "Move": "你掀簾進入側室一。" } },
+    { "id": "yaxst02_home02_main_03", "name": "側室二", "sockets": ["Move"], "move_to_room_id": "yaxst02_home02_03", "responses": { "Move": "你掀簾進入側室二。" } },
+    { "id": "yaxst02_home02_main_04", "name": "側室三", "sockets": ["Move"], "move_to_room_id": "yaxst02_home02_04", "responses": { "Move": "你掀簾進入側室三。" } },
+    { "id": "yaxst02_home02_main_05", "name": "側室四", "sockets": ["Move"], "move_to_room_id": "yaxst02_home02_05", "responses": { "Move": "你掀簾進入側室四。" } },
+    { "id": "yaxst02_home02_main_06", "name": "側室五", "sockets": ["Move"], "move_to_room_id": "yaxst02_home02_06", "responses": { "Move": "你掀簾進入側室五。" } }
+  ]
+}

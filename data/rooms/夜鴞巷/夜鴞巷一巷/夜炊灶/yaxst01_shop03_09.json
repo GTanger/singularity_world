@@ -1,0 +1,13 @@
+{
+  "id": "yaxst01_shop03_09",
+  "name": "夜炊灶・側室八",
+  "description": "單間側室，壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈後隱入牆底。頂心晶簇聚光，沉香沉在膝蓋高度。可經〔灶前〕回。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_shop03_main", "to": "yaxst01_shop03_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_shop03_09_main", "name": "灶前", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_main", "responses": { "Move": "你掀簾退回灶前。" } }
+  ]
+}

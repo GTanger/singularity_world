@@ -1,0 +1,17 @@
+{
+  "id": "yaxst04_shop02_03",
+  "name": "隱簾閣・簾內二",
+  "description": "簾內道中段，氣密鉛皮鋪到腰高，黃銅導向線貼地延伸。熟成樹脂與沉香混在空氣裡，黑石吸走足音，布簾垂落隔開側室。可經〔簾內一〕、〔簾內三〕或〔側閣〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst04_shop02_02", "to": "yaxst04_shop02_02", "ui_hidden": true },
+    { "direction": "yaxst04_shop02_04", "to": "yaxst04_shop02_04", "ui_hidden": true },
+    { "direction": "yaxst04_shop02_05", "to": "yaxst04_shop02_05", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst04_shop02_03_02", "name": "簾內一", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop02_02", "responses": { "Move": "你往簾內一走回。" } },
+    { "id": "yaxst04_shop02_03_04", "name": "簾內三", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop02_04", "responses": { "Move": "你往簾內三走去。" } },
+    { "id": "yaxst04_shop02_03_05", "name": "側閣", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop02_05", "responses": { "Move": "你往側閣走去。" } }
+  ]
+}

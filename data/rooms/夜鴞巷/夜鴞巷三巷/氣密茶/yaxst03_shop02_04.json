@@ -1,0 +1,15 @@
+{
+  "id": "yaxst03_shop02_04",
+  "name": "氣密茶・內道三",
+  "description": "內道後段，牆面導能紋路密佈，暖能石嵌在壁縫泛著低溫橘光。頂上晶簇漸密，淡紫與琥珀交織成低飽和光霧，極靜。可經〔內道二〕或〔岔口〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst03_shop02_03", "to": "yaxst03_shop02_03", "ui_hidden": true },
+    { "direction": "yaxst03_shop02_05", "to": "yaxst03_shop02_05", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst03_shop02_04_03", "name": "內道二", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop02_03", "responses": { "Move": "你往內道二走回。" } },
+    { "id": "yaxst03_shop02_04_05", "name": "岔口", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop02_05", "responses": { "Move": "你往岔口走去。" } }
+  ]
+}

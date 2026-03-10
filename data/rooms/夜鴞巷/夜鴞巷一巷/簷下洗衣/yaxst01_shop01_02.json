@@ -1,0 +1,15 @@
+{
+  "id": "yaxst01_shop01_02",
+  "name": "簷下洗衣・左廊口",
+  "description": "左廊起處，鉛皮牆面與灰牆相接，暖能石在壁縫泛著低溫橘光，腳下黑石沁著水氣。導能紋路沿踢腳延伸進深處，晶簇稀疏，巷聲被厚牆隔在外頭。可經〔前廳〕或〔左廊中〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_shop01_main", "to": "yaxst01_shop01_main", "ui_hidden": true },
+    { "direction": "yaxst01_shop01_03", "to": "yaxst01_shop01_03", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_shop01_02_main", "name": "前廳", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_main", "responses": { "Move": "你退回前廳。" } },
+    { "id": "yaxst01_shop01_02_03", "name": "左廊中", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_03", "responses": { "Move": "你往左廊中段走。" } }
+  ]
+}

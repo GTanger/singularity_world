@@ -1,0 +1,27 @@
+{
+  "id": "yaxiao_st2",
+  "name": "夜鴞巷二巷",
+  "description": "巷道自梧桐濃蔭岔入後陡然收窄，兩壁鉛皮與黑石夾出細長一線天，簷角藤蔓垂落、篩掉殘光，腳下磨損石磚沁出琥珀色微光。夜鴞啼鳴自巷尾疊來，氣密門扉沿路緊閉，黃銅導向線貼牆延伸，沉香與熟成樹脂自門縫滲出。可經〔梧桐大街四段〕回到大街，或沿巷往〔夜鴞巷一巷〕、〔夜鴞巷三巷〕；可經〔鉛皮修理行〕、〔隔簾茶寮〕、〔迴音當〕、〔石牆宅〕、〔簷角寓〕入內。",
+  "tags": ["street", "outdoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "wustreet_st4", "to": "wustreet_st4", "ui_hidden": true },
+    { "direction": "yaxiao_st1", "to": "yaxiao_st1", "ui_hidden": true },
+    { "direction": "yaxiao_st3", "to": "yaxiao_st3", "ui_hidden": true },
+    { "direction": "yaxst02_shop01_main", "to": "yaxst02_shop01_main", "ui_hidden": true },
+    { "direction": "yaxst02_shop02_main", "to": "yaxst02_shop02_main", "ui_hidden": true },
+    { "direction": "yaxst02_shop03_main", "to": "yaxst02_shop03_main", "ui_hidden": true },
+    { "direction": "yaxst02_home01_main", "to": "yaxst02_home01_main", "ui_hidden": true },
+    { "direction": "yaxst02_home02_main", "to": "yaxst02_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxiao_st2_wustreet_st4", "name": "梧桐大街四段", "sockets": ["Move"], "move_to_room_id": "wustreet_st4", "responses": { "Move": "你拐出巷子，回到梧桐大街四段。" } },
+    { "id": "yaxiao_st2_yaxiao_st1", "name": "夜鴞巷一巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st1", "responses": { "Move": "你沿巷往一巷走去。" } },
+    { "id": "yaxiao_st2_yaxiao_st3", "name": "夜鴞巷三巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st3", "responses": { "Move": "你沿巷往三巷走去。" } },
+    { "id": "yaxiao_st2_shop01", "name": "鉛皮修理行", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_main", "responses": { "Move": "你推門進入鉛皮修理行。" } },
+    { "id": "yaxiao_st2_shop02", "name": "隔簾茶寮", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop02_main", "responses": { "Move": "你掀簾進入隔簾茶寮。" } },
+    { "id": "yaxiao_st2_shop03", "name": "迴音當", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop03_main", "responses": { "Move": "你進入迴音當。" } },
+    { "id": "yaxiao_st2_home01", "name": "石牆宅", "sockets": ["Move"], "move_to_room_id": "yaxst02_home01_main", "responses": { "Move": "你進入石牆宅。" } },
+    { "id": "yaxiao_st2_home02", "name": "簷角寓", "sockets": ["Move"], "move_to_room_id": "yaxst02_home02_main", "responses": { "Move": "你進入簷角寓。" } }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "yaxst04_home02_06",
+  "name": "雙扉宅・廊口（後扉側）",
+  "description": "自後扉入，廊道窄長，頂角晶簇與暖能石灑下琥珀色光。黃銅導向線貼牆向廊心延伸，黑石地磚冰涼，鉛皮牆面導能紋路沿踢腳繞行，巷聲被厚牆擋在外頭。可經〔後扉〕出宅，或往〔廊中三〕。",
+  "tags": ["home", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst04_home02_main", "to": "yaxst04_home02_main", "ui_hidden": true },
+    { "direction": "yaxst04_home02_05", "to": "yaxst04_home02_05", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst04_home02_06_main", "name": "後扉", "sockets": ["Move"], "move_to_room_id": "yaxst04_home02_main", "responses": { "Move": "你經後扉出宅。" } },
+    { "id": "yaxst04_home02_06_05", "name": "廊中三", "sockets": ["Move"], "move_to_room_id": "yaxst04_home02_05", "responses": { "Move": "你往廊中三走去。" } }
+  ]
+}

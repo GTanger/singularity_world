@@ -1,0 +1,27 @@
+{
+  "id": "yaxiao_st1",
+  "name": "夜鴞巷一巷",
+  "description": "巷道自向陽大街八段岔入後極狹，石縫兩壁夾峙、光影晦暗，腳下黑石與磨損磚縫沁出淡紫微光，夜鴞啼鳴自簷角迴盪、一疊一疊壓進耳裡。氣密鉛皮與暖能石嵌在門面上，巷深處灰白氣絲緩流，沉香與熟成樹脂自門隙漏出一縷。可經〔向陽大街八段〕回到大街，或沿巷往〔夜鴞巷二巷〕；可經〔深櫃〕、〔簷下洗衣〕、〔窄光雜貨〕、〔夜炊灶〕、〔閉門寓〕、〔暗櫥寓所〕入內。",
+  "tags": ["street", "outdoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "sunstreet_st8", "to": "sunstreet_st8", "ui_hidden": true },
+    { "direction": "yaxiao_st2", "to": "yaxiao_st2", "ui_hidden": true },
+    { "direction": "yaxst01_hold01_main", "to": "yaxst01_hold01_main", "ui_hidden": true },
+    { "direction": "yaxst01_shop01_main", "to": "yaxst01_shop01_main", "ui_hidden": true },
+    { "direction": "yaxst01_shop02_main", "to": "yaxst01_shop02_main", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_main", "to": "yaxst01_shop03_main", "ui_hidden": true },
+    { "direction": "yaxst01_home01_main", "to": "yaxst01_home01_main", "ui_hidden": true },
+    { "direction": "yaxst01_home02_main", "to": "yaxst01_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxiao_st1_sunstreet_st8", "name": "向陽大街八段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st8", "responses": { "Move": "你拐出巷子，回到向陽大街八段。" } },
+    { "id": "yaxiao_st1_yaxiao_st2", "name": "夜鴞巷二巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st2", "responses": { "Move": "你沿巷往二巷走去。" } },
+    { "id": "yaxiao_st1_hold01", "name": "深櫃", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_main", "responses": { "Move": "你推門進入深櫃。" } },
+    { "id": "yaxiao_st1_shop01", "name": "簷下洗衣", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_main", "responses": { "Move": "你進入簷下洗衣。" } },
+    { "id": "yaxiao_st1_shop02", "name": "窄光雜貨", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop02_main", "responses": { "Move": "你進入窄光雜貨。" } },
+    { "id": "yaxiao_st1_shop03", "name": "夜炊灶", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_main", "responses": { "Move": "你進入夜炊灶。" } },
+    { "id": "yaxiao_st1_home01", "name": "閉門寓", "sockets": ["Move"], "move_to_room_id": "yaxst01_home01_main", "responses": { "Move": "你進入閉門寓。" } },
+    { "id": "yaxiao_st1_home02", "name": "暗櫥寓所", "sockets": ["Move"], "move_to_room_id": "yaxst01_home02_main", "responses": { "Move": "你進入暗櫥寓所。" } }
+  ]
+}

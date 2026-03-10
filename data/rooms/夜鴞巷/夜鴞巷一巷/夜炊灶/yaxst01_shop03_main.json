@@ -1,0 +1,31 @@
+{
+  "id": "yaxst01_shop03_main",
+  "name": "夜炊灶・灶前",
+  "description": "門內灶前開間不大，隔音鉛皮包覆四壁，晶簇嵌在頂角、灑下淡紫與琥珀色光。黑石檯面與暖能石灶緣冰涼，黃銅導向線自腳下輻射往多道門簾延伸，沉香與熟成樹脂氣味自簾後漏出，巷內啼鳴被氣密門擋在外頭。可經〔夜鴞巷一巷〕離開，或往各間〔側室〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxiao_st1", "to": "yaxiao_st1", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_02", "to": "yaxst01_shop03_02", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_03", "to": "yaxst01_shop03_03", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_04", "to": "yaxst01_shop03_04", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_05", "to": "yaxst01_shop03_05", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_06", "to": "yaxst01_shop03_06", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_07", "to": "yaxst01_shop03_07", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_08", "to": "yaxst01_shop03_08", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_09", "to": "yaxst01_shop03_09", "ui_hidden": true },
+    { "direction": "yaxst01_shop03_10", "to": "yaxst01_shop03_10", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_shop03_main_st1", "name": "夜鴞巷一巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st1", "responses": { "Move": "你步出夜炊灶，回到夜鴞巷一巷。" } },
+    { "id": "yaxst01_shop03_main_02", "name": "側室一", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_02", "responses": { "Move": "你掀簾進入側室一。" } },
+    { "id": "yaxst01_shop03_main_03", "name": "側室二", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_03", "responses": { "Move": "你掀簾進入側室二。" } },
+    { "id": "yaxst01_shop03_main_04", "name": "側室三", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_04", "responses": { "Move": "你掀簾進入側室三。" } },
+    { "id": "yaxst01_shop03_main_05", "name": "側室四", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_05", "responses": { "Move": "你掀簾進入側室四。" } },
+    { "id": "yaxst01_shop03_main_06", "name": "側室五", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_06", "responses": { "Move": "你掀簾進入側室五。" } },
+    { "id": "yaxst01_shop03_main_07", "name": "側室六", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_07", "responses": { "Move": "你掀簾進入側室六。" } },
+    { "id": "yaxst01_shop03_main_08", "name": "側室七", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_08", "responses": { "Move": "你掀簾進入側室七。" } },
+    { "id": "yaxst01_shop03_main_09", "name": "側室八", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_09", "responses": { "Move": "你掀簾進入側室八。" } },
+    { "id": "yaxst01_shop03_main_10", "name": "側室九", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_10", "responses": { "Move": "你掀簾進入側室九。" } }
+  ]
+}

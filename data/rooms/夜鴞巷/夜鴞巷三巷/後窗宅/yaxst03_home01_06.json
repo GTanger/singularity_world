@@ -1,0 +1,13 @@
+{
+  "id": "yaxst03_home01_06",
+  "name": "後窗宅・左枝底",
+  "description": "左枝盡頭，三面厚牆合圍，頂心晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈後隱入牆底，後窗氣密簾隔絕外光，沉香沉在膝蓋高度。可經〔左枝〕走回。",
+  "tags": ["home", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst03_home01_04", "to": "yaxst03_home01_04", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst03_home01_06_04", "name": "左枝", "sockets": ["Move"], "move_to_room_id": "yaxst03_home01_04", "responses": { "Move": "你往左枝走回。" } }
+  ]
+}

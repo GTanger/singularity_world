@@ -1,0 +1,13 @@
+{
+  "id": "yaxst02_home02_05",
+  "name": "簷角寓・側室四",
+  "description": "單間側室，三面鉛皮牆合圍，頂心晶簇聚成深琥珀。黑石擱板與導能紋路在腳邊圍成閉合一圈，極靜，隔音鉛皮吞掉迴響。可經〔簷下〕回。",
+  "tags": ["home", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst02_home02_main", "to": "yaxst02_home02_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst02_home02_05_main", "name": "簷下", "sockets": ["Move"], "move_to_room_id": "yaxst02_home02_main", "responses": { "Move": "你掀簾退回簷下。" } }
+  ]
+}

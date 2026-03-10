@@ -1,0 +1,15 @@
+{
+  "id": "yaxst01_hold01_16",
+  "name": "深櫃・北翼底前",
+  "description": "廊道將盡，頂上晶簇漸密，淡紫與琥珀交織成低飽和光霧。牆根導能紋路匯成一股沉入地磚縫隙，巷內聲響在此已完全屏蔽，極靜。可經〔北翼中〕或〔北翼盡頭〕。",
+  "tags": ["hold", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_hold01_15", "to": "yaxst01_hold01_15", "ui_hidden": true },
+    { "direction": "yaxst01_hold01_17", "to": "yaxst01_hold01_17", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_hold01_16_15", "name": "北翼中", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_15", "responses": { "Move": "你往北翼中走回。" } },
+    { "id": "yaxst01_hold01_16_17", "name": "北翼盡頭", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_17", "responses": { "Move": "你走到北翼盡頭。" } }
+  ]
+}

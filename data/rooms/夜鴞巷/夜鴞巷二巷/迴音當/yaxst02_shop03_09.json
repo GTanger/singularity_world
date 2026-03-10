@@ -1,0 +1,15 @@
+{
+  "id": "yaxst02_shop03_09",
+  "name": "迴音當・橫廊底前",
+  "description": "橫廊將盡，頂心晶簇聚成深琥珀，壁面擱板與黑石檯面冰涼。導能紋路在腳邊圍成閉合一圈後沉入地磚縫隙，沉香沉在膝蓋高度。可經〔橫廊三〕或〔當底〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst02_shop03_08", "to": "yaxst02_shop03_08", "ui_hidden": true },
+    { "direction": "yaxst02_shop03_10", "to": "yaxst02_shop03_10", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst02_shop03_09_08", "name": "橫廊三", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop03_08", "responses": { "Move": "你往橫廊三走回。" } },
+    { "id": "yaxst02_shop03_09_10", "name": "當底", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop03_10", "responses": { "Move": "你走到當底。" } }
+  ]
+}

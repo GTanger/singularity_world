@@ -1,0 +1,19 @@
+{
+  "id": "yaxst04_shop01_11",
+  "name": "長燈棧・匯流口",
+  "description": "甲廊與乙廊在此匯流，黃銅導向線合為一股沿踢腳向棧底延伸。隔音鉛皮包覆三向壁面，長燈與晶簇嵌在頂心、灑下淡紫與深琥珀，黑石地磚冰涼。可經〔甲廊底〕〔乙廊底前〕或〔乙廊底〕入，或往〔棧底廊〕。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst04_shop01_04", "to": "yaxst04_shop01_04", "ui_hidden": true },
+    { "direction": "yaxst04_shop01_09", "to": "yaxst04_shop01_09", "ui_hidden": true },
+    { "direction": "yaxst04_shop01_10", "to": "yaxst04_shop01_10", "ui_hidden": true },
+    { "direction": "yaxst04_shop01_12", "to": "yaxst04_shop01_12", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst04_shop01_11_04", "name": "甲廊底", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_04", "responses": { "Move": "你往甲廊底走回。" } },
+    { "id": "yaxst04_shop01_11_09", "name": "乙廊底前", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_09", "responses": { "Move": "你往乙廊底前走回。" } },
+    { "id": "yaxst04_shop01_11_10", "name": "乙廊底", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_10", "responses": { "Move": "你往乙廊底走回。" } },
+    { "id": "yaxst04_shop01_11_12", "name": "棧底廊", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_12", "responses": { "Move": "你往棧底廊走去。" } }
+  ]
+}

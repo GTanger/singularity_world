@@ -1,0 +1,15 @@
+{
+  "id": "yaxst01_shop01_09",
+  "name": "簷下洗衣・右廊盡頭",
+  "description": "右廊終點，三面牆合圍，頂心晶簇聚成深琥珀，導能紋路在腳邊圍成閉合一圈。水氣與沉香沉在膝蓋高度，隔音鉛皮吞掉迴響。可經〔右廊底前〕走回，或經〔前廳〕徑回。",
+  "tags": ["shop", "indoor"],
+  "zone": "yaxiao",
+  "exits": [
+    { "direction": "yaxst01_shop01_08", "to": "yaxst01_shop01_08", "ui_hidden": true },
+    { "direction": "yaxst01_shop01_main", "to": "yaxst01_shop01_main", "ui_hidden": true }
+  ],
+  "objects": [
+    { "id": "yaxst01_shop01_09_08", "name": "右廊底前", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_08", "responses": { "Move": "你沿右廊往回走。" } },
+    { "id": "yaxst01_shop01_09_main", "name": "前廳", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_main", "responses": { "Move": "你徑直穿過右廊回到前廳。" } }
+  ]
+}
