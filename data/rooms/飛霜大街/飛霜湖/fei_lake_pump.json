@@ -1,0 +1,27 @@
+{
+  "id": "fei_lake_pump",
+  "name": "泵房",
+  "description": "石砌厚牆把湖側濕冷擋在外頭，門檻積霜、暖氣自門縫溢出與湖風相抵。機械低鳴自地板傳上腳底，游離輻射下熱氣滯在室內，石紋自門廊一路鋪進深處。可經〔迴岸〕回到西岸。",
+  "tags": ["indoor"],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "fei_lake_west",
+      "to": "fei_lake_west",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fei_lake_pump_west",
+      "name": "迴岸",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_west",
+      "responses": {
+        "Move": "你離開泵房，沿西岸石灘走去。"
+      }
+    }
+  ]
+}

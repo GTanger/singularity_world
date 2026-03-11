@@ -1,0 +1,27 @@
+{
+  "id": "fei_lake_pier",
+  "name": "碼頭",
+  "description": "棧道探入湖面，木樁與石墩沒入霧際，欄杆沾霜即融、沁出一線線水跡。足底石板沁涼，耳際是水波輕拍樁基的悶響，游離輻射下熱氣自湖心浮升、與東岸飄來的霧絲在樁柱間交纏。可經〔霧起之濱〕回到東岸。",
+  "tags": ["outdoor"],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "fei_lake_east",
+      "to": "fei_lake_east",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fei_lake_pier_east",
+      "name": "霧起之濱",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_east",
+      "responses": {
+        "Move": "你離開碼頭，沿東岸石灘走去。"
+      }
+    }
+  ]
+}

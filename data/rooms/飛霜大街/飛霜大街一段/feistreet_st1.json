@@ -1,13 +1,18 @@
 {
   "id": "feistreet_st1",
   "name": "飛霜大街一段",
-  "description": "路面自飛霜湖端延伸而來，冷調石紋、霜晶沉降，暗色未深；霜晶與湖氣交會、空氣沉靜。路側〔臨湖宅〕〔簷霜居〕〔湖氣宅〕〔霜靜宅〕門廊覆著細霜、簷角積霜與玉質脈絡隱約。大街由此導向〔飛霜大街二段〕，或經〔湖岸〕往飛霜湖。",
+  "description": "路面自飛霜湖端延伸而來，冷調石紋、霜晶沉降，暗色未深；霜晶與湖氣交會、空氣沉靜。路側〔臨湖宅〕〔簷霜居〕〔湖氣宅〕〔霜靜宅〕門廊覆著細霜、簷角積霜與玉質脈絡隱約。可經〔湖岸〕往飛霜湖，或經〔街口湖緣〕沿湖岸至霧起之濱、湖背、迴岸與水際；大街由此導向〔飛霜大街二段〕。",
   "tags": [],
   "zone": "feistreet",
   "exits": [
     {
       "direction": "fei_lake",
       "to": "fei_lake",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_south",
+      "to": "fei_lake_south",
       "ui_hidden": true
     },
     {
@@ -46,6 +51,17 @@
       "move_to_room_id": "fei_lake",
       "responses": {
         "Move": "你朝飛霜湖方向走去。"
+      }
+    },
+    {
+      "id": "fei_st1_exit_lake_south",
+      "name": "街口湖緣",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_south",
+      "responses": {
+        "Move": "你沿湖緣石板路往街口湖緣走去。"
       }
     },
     {

@@ -1,0 +1,27 @@
+{
+  "id": "fei_lake_pavilion",
+  "name": "觀景亭",
+  "description": "六角亭敞向湖心，暖風穿柱而過，霧氣與晶粉在欄杆外紛飛；簷角積霜垂落即融，石紋鋪地、足底沁涼。亭內可眺湖面與落霜交疊，熱氣與湖氣在柱間盤繞不散。可經〔湖背〕回到北岸。",
+  "tags": ["outdoor"],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "fei_lake_north",
+      "to": "fei_lake_north",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fei_lake_pavilion_north",
+      "name": "湖背",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_north",
+      "responses": {
+        "Move": "你步出觀景亭，沿北岸霧岸走去。"
+      }
+    }
+  ]
+}

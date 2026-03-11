@@ -1,0 +1,75 @@
+{
+  "id": "fei_lake_east",
+  "name": "霧起之濱",
+  "description": "東曦最先落在此側：湖東石灘收束成弧，暖霧自湖心往東捲升，霜晶觸石即化、在灘緣拖成一縷縷水痕。石紋冷調、沿岸緣向南北延展，霧絲與湖氣在腳邊糾纏，簷角積霜比街口湖緣薄了一層。可經〔水際〕下到貼水處，或沿岸往〔街口湖緣〕、〔湖背〕，或經〔碼頭〕。",
+  "tags": ["street","outdoor"],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "fei_lake_shore",
+      "to": "fei_lake_shore",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_south",
+      "to": "fei_lake_south",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_north",
+      "to": "fei_lake_north",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_pier",
+      "to": "fei_lake_pier",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fei_lake_east_shore",
+      "name": "水際",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_shore",
+      "responses": {
+        "Move": "你往貼水石灘走去。"
+      }
+    },
+    {
+      "id": "fei_lake_east_south",
+      "name": "街口湖緣",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_south",
+      "responses": {
+        "Move": "你沿湖岸往南側走去。"
+      }
+    },
+    {
+      "id": "fei_lake_east_north",
+      "name": "湖背",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_north",
+      "responses": {
+        "Move": "你沿湖岸往北側走去。"
+      }
+    },
+    {
+      "id": "fei_lake_east_pier",
+      "name": "碼頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_pier",
+      "responses": {
+        "Move": "你朝碼頭走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "fei_lake_shore",
+  "name": "水際",
+  "description": "真正貼水的那條線：霜觸石即化，熱氣自水際蒸散、與湖面霧絲糾纏，游離輻射下熱氣不散。冷調石紋沒入水緣，足底沁涼濕滑，水氣凝成細霜覆在灘石上旋即消融。可經〔街口湖緣〕、〔霧起之濱〕、〔湖背〕、〔迴岸〕回到岸上。",
+  "tags": ["street","outdoor"],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "fei_lake_south",
+      "to": "fei_lake_south",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_east",
+      "to": "fei_lake_east",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_north",
+      "to": "fei_lake_north",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_west",
+      "to": "fei_lake_west",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fei_lake_shore_south",
+      "name": "街口湖緣",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_south",
+      "responses": {
+        "Move": "你拾級而上，回到南岸街口湖緣。"
+      }
+    },
+    {
+      "id": "fei_lake_shore_east",
+      "name": "霧起之濱",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_east",
+      "responses": {
+        "Move": "你沿水緣往東側岸上走去。"
+      }
+    },
+    {
+      "id": "fei_lake_shore_north",
+      "name": "湖背",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_north",
+      "responses": {
+        "Move": "你沿水緣往北側岸上走去。"
+      }
+    },
+    {
+      "id": "fei_lake_shore_west",
+      "name": "迴岸",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_west",
+      "responses": {
+        "Move": "你沿水緣往西側岸上走去。"
+      }
+    }
+  ]
+}

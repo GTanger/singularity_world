@@ -1,0 +1,75 @@
+{
+  "id": "fei_lake_north",
+  "name": "湖背",
+  "description": "背對大街的北側，霧牆最厚、人聲不達，簷角積霜壓在石欄與矮牆緣上，游離輻射下熱氣滯留成一片白濛。石紋自腳下沒入霧裡，風不帶街燈的餘光，足底石面沁涼帶潮。可經〔水際〕下到貼水處，或沿岸往〔霧起之濱〕、〔迴岸〕，或經〔觀景亭〕。",
+  "tags": ["street","outdoor"],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "fei_lake_shore",
+      "to": "fei_lake_shore",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_east",
+      "to": "fei_lake_east",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_west",
+      "to": "fei_lake_west",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_pavilion",
+      "to": "fei_lake_pavilion",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fei_lake_north_shore",
+      "name": "水際",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_shore",
+      "responses": {
+        "Move": "你往貼水石灘走去。"
+      }
+    },
+    {
+      "id": "fei_lake_north_east",
+      "name": "霧起之濱",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_east",
+      "responses": {
+        "Move": "你沿湖岸往東側走去。"
+      }
+    },
+    {
+      "id": "fei_lake_north_west",
+      "name": "迴岸",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_west",
+      "responses": {
+        "Move": "你沿湖岸往西側走去。"
+      }
+    },
+    {
+      "id": "fei_lake_north_pavilion",
+      "name": "觀景亭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_pavilion",
+      "responses": {
+        "Move": "你朝觀景亭走去。"
+      }
+    }
+  ]
+}

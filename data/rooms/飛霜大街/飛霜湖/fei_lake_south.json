@@ -1,0 +1,75 @@
+{
+  "id": "fei_lake_south",
+  "name": "街口湖緣",
+  "description": "石板路自飛霜大街一段延伸至此，霜晶與街燈餘光在湖緣交會，游離輻射下熱氣不散、水氣凝成細霜，冷調石紋沿岸緣沒入霧中。湖氣自水面浮升，簷角積霜在背街一側隱約可見，足底石面沁涼。可經〔飛霜大街一段〕折返大街，或沿岸往〔水際〕、〔霧起之濱〕、〔迴岸〕。",
+  "tags": ["street","outdoor"],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st1",
+      "to": "feistreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_shore",
+      "to": "fei_lake_shore",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_east",
+      "to": "fei_lake_east",
+      "ui_hidden": true
+    },
+    {
+      "direction": "fei_lake_west",
+      "to": "fei_lake_west",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fei_lake_south_st1",
+      "name": "飛霜大街一段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st1",
+      "responses": {
+        "Move": "你沿石板路步回飛霜大街一段。"
+      }
+    },
+    {
+      "id": "fei_lake_south_shore",
+      "name": "水際",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_shore",
+      "responses": {
+        "Move": "你往貼水石灘走去。"
+      }
+    },
+    {
+      "id": "fei_lake_south_east",
+      "name": "霧起之濱",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_east",
+      "responses": {
+        "Move": "你沿湖岸往東側走去。"
+      }
+    },
+    {
+      "id": "fei_lake_south_west",
+      "name": "迴岸",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_west",
+      "responses": {
+        "Move": "你沿湖岸往西側走去。"
+      }
+    }
+  ]
+}
