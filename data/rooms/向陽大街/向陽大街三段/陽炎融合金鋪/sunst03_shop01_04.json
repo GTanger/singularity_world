@@ -2,14 +2,42 @@
   "id": "sunst03_shop01_04",
   "name": "鋪區・中間",
   "description": "鋪區中段，拱頂稜鏡集中、光線飽和如蜜，地表淺色紋路與能量導線自縫隙延伸，白玉檯面與深色金屬架對比強烈，觸手檯面冰冷平滑，溫潤沉香淡淡。可經〔鋪區・前間〕往回，或往盡頭〔鋪區・後間〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "鋪區・前間", "to": "sunst03_shop01_02", "ui_hidden": true },
-    { "direction": "鋪區・後間", "to": "sunst03_shop01_05", "ui_hidden": true }
+    {
+      "direction": "鋪區・前間",
+      "to": "sunst03_shop01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "鋪區・後間",
+      "to": "sunst03_shop01_05",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst03_shop01_04_02", "name": "鋪區・前間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_02", "responses": { "Move": "你往鋪區前間走回。" } },
-    { "id": "sunst03_shop01_04_05", "name": "鋪區・後間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_05", "responses": { "Move": "你往鋪區後間走去。" } }
+    {
+      "id": "sunst03_shop01_04_02",
+      "name": "鋪區・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_02",
+      "responses": {
+        "Move": "你往鋪區前間走回。"
+      }
+    },
+    {
+      "id": "sunst03_shop01_04_05",
+      "name": "鋪區・後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_05",
+      "responses": {
+        "Move": "你往鋪區後間走去。"
+      }
+    }
   ]
 }

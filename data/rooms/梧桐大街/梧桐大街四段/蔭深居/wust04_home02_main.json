@@ -2,10 +2,7 @@
   "id": "wust04_home02_main",
   "name": "蔭深居",
   "description": "蔭深居門廳：深處簷下黑曜石與玉質嵌合，根鬚咬合石路、縫隙菌絲微光，靜謐豐饒，縫隙菌絲或微光，縫隙菌絲或微光。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

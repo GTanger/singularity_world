@@ -2,10 +2,7 @@
   "id": "wust06_home02_main",
   "name": "葉影軒",
   "description": "葉影軒門廳：梧桐葉影篩落、簷角濃蔭掩映，地面根鬚與磚石嵌合，懸浮微粒與沉香淡淡，縫隙菌絲或微光，縫隙菌絲或微光。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

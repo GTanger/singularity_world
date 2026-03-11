@@ -2,22 +2,106 @@
   "id": "sunst01_hold01_main",
   "name": "光樞管理處・大廳",
   "description": "門面稜鏡林立如刀裁光，白玉階與深色金屬門框咬合，拱頂導下的金光在大廳地面淌成淺灘，地表紋路像河脈般匯向牆角導線，廳內一望通透。可經〔向陽大街一段〕離開，或往〔東廊〕、〔南廊〕、〔西廊〕、〔北廊〕、〔中廊〕深入。",
-  "tags": ["hold", "indoor"],
+  "tags": ["hold","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "sunstreet_st1", "to": "sunstreet_st1", "ui_hidden": true },
-    { "direction": "東廊", "to": "sunst01_hold01_02", "ui_hidden": true },
-    { "direction": "南廊", "to": "sunst01_hold01_05", "ui_hidden": true },
-    { "direction": "西廊", "to": "sunst01_hold01_08", "ui_hidden": true },
-    { "direction": "北廊", "to": "sunst01_hold01_11", "ui_hidden": true },
-    { "direction": "中廊", "to": "sunst01_hold01_14", "ui_hidden": true }
+    {
+      "direction": "sunstreet_st1",
+      "to": "sunstreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東廊",
+      "to": "sunst01_hold01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "南廊",
+      "to": "sunst01_hold01_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西廊",
+      "to": "sunst01_hold01_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "北廊",
+      "to": "sunst01_hold01_11",
+      "ui_hidden": true
+    },
+    {
+      "direction": "中廊",
+      "to": "sunst01_hold01_14",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst01_hold01_main_st1", "name": "向陽大街一段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st1", "responses": { "Move": "你步出光樞管理處，回到向陽大街一段。" } },
-    { "id": "sunst01_hold01_main_02", "name": "東廊", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_02", "responses": { "Move": "你往東廊走去。" } },
-    { "id": "sunst01_hold01_main_05", "name": "南廊", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_05", "responses": { "Move": "你往南廊走去。" } },
-    { "id": "sunst01_hold01_main_08", "name": "西廊", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_08", "responses": { "Move": "你往西廊走去。" } },
-    { "id": "sunst01_hold01_main_11", "name": "北廊", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_11", "responses": { "Move": "你往北廊走去。" } },
-    { "id": "sunst01_hold01_main_14", "name": "中廊", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_14", "responses": { "Move": "你往中廊走去。" } }
+    {
+      "id": "sunst01_hold01_main_st1",
+      "name": "向陽大街一段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st1",
+      "responses": {
+        "Move": "你步出光樞管理處，回到向陽大街一段。"
+      }
+    },
+    {
+      "id": "sunst01_hold01_main_02",
+      "name": "東廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_02",
+      "responses": {
+        "Move": "你往東廊走去。"
+      }
+    },
+    {
+      "id": "sunst01_hold01_main_05",
+      "name": "南廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_05",
+      "responses": {
+        "Move": "你往南廊走去。"
+      }
+    },
+    {
+      "id": "sunst01_hold01_main_08",
+      "name": "西廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_08",
+      "responses": {
+        "Move": "你往西廊走去。"
+      }
+    },
+    {
+      "id": "sunst01_hold01_main_11",
+      "name": "北廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_11",
+      "responses": {
+        "Move": "你往北廊走去。"
+      }
+    },
+    {
+      "id": "sunst01_hold01_main_14",
+      "name": "中廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_14",
+      "responses": {
+        "Move": "你往中廊走去。"
+      }
+    }
   ]
 }

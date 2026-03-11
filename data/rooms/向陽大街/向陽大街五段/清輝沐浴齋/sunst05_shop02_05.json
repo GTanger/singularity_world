@@ -2,12 +2,26 @@
   "id": "sunst05_shop02_05",
   "name": "沐二室",
   "description": "沐區單間，拱頂稜鏡集中、光線飽和如蜜，地表淺色紋路與能量導線自縫隙延伸，黑木矮几與白玉盆對比強烈，室內開敞明亮，空氣濕潤。可經〔沐區・前廳〕返回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "沐區・前廳", "to": "sunst05_shop02_02", "ui_hidden": true }
+    {
+      "direction": "沐區・前廳",
+      "to": "sunst05_shop02_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst05_shop02_05_02", "name": "沐區・前廳", "sockets": ["Move"], "move_to_room_id": "sunst05_shop02_02", "responses": { "Move": "你往沐區前廳走回。" } }
+    {
+      "id": "sunst05_shop02_05_02",
+      "name": "沐區・前廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_02",
+      "responses": {
+        "Move": "你往沐區前廳走回。"
+      }
+    }
   ]
 }

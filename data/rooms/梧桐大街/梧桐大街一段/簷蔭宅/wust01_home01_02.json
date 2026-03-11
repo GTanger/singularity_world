@@ -2,10 +2,7 @@
   "id": "wust01_home01_02",
   "name": "前間",
   "description": "茶間白玉矮台、能量礦石鑲嵌牆面，恆定熱輻射；晶化木材家具密度高，空氣乾燥，懸浮微粒與沉香並存，懸浮微粒與沉香並存。可經〔大街〕、〔門廳〕、〔裡間〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

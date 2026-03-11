@@ -2,12 +2,26 @@
   "id": "yaxst01_shop02_04",
   "name": "窄光雜貨・左支底甲",
   "description": "左支盡頭一隅，三面鉛皮牆合圍，頂心晶簇聚成深琥珀。黑石擱板與導能紋路在腳邊圍成閉合一圈，沉香沉在膝蓋高度，極靜。可經〔左支前〕回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst01_shop02_02", "to": "yaxst01_shop02_02", "ui_hidden": true }
+    {
+      "direction": "yaxst01_shop02_02",
+      "to": "yaxst01_shop02_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst01_shop02_04_02", "name": "左支前", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop02_02", "responses": { "Move": "你退回左支前。" } }
+    {
+      "id": "yaxst01_shop02_04_02",
+      "name": "左支前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop02_02",
+      "responses": {
+        "Move": "你退回左支前。"
+      }
+    }
   ]
 }

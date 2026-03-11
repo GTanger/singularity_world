@@ -2,12 +2,26 @@
   "id": "sunst04_shop02_06",
   "name": "上室",
   "description": "階上小間，向陽拱頂低壓、密集金光自稜鏡垂落，白玉檯面陳列極光藝品，牆面能量紋路隱約脈動，油脂質感皮革墊觸感飽滿，空氣流速較快、光霧稀薄。可經〔中廳〕返回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "中廳", "to": "sunst04_shop02_main", "ui_hidden": true }
+    {
+      "direction": "中廳",
+      "to": "sunst04_shop02_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst04_shop02_06_main", "name": "中廳", "sockets": ["Move"], "move_to_room_id": "sunst04_shop02_main", "responses": { "Move": "你回到中廳。" } }
+    {
+      "id": "sunst04_shop02_06_main",
+      "name": "中廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop02_main",
+      "responses": {
+        "Move": "你回到中廳。"
+      }
+    }
   ]
 }

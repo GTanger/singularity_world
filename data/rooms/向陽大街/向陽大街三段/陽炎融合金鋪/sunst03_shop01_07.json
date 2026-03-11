@@ -2,14 +2,42 @@
   "id": "sunst03_shop01_07",
   "name": "居區・中間",
   "description": "居區中段，向陽拱頂低壓、光線呈琥珀色，白玉檯面與黑木架沿牆，牆面能量紋路隱約脈動，油脂質感皮革椅靠窗，室內無雜音，能量微粒在光簾中緩動。可經〔居區・前間〕往回，或往盡頭〔居區・後間〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "居區・前間", "to": "sunst03_shop01_03", "ui_hidden": true },
-    { "direction": "居區・後間", "to": "sunst03_shop01_08", "ui_hidden": true }
+    {
+      "direction": "居區・前間",
+      "to": "sunst03_shop01_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "居區・後間",
+      "to": "sunst03_shop01_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst03_shop01_07_03", "name": "居區・前間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_03", "responses": { "Move": "你往居區前間走回。" } },
-    { "id": "sunst03_shop01_07_08", "name": "居區・後間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_08", "responses": { "Move": "你往居區後間走去。" } }
+    {
+      "id": "sunst03_shop01_07_03",
+      "name": "居區・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_03",
+      "responses": {
+        "Move": "你往居區前間走回。"
+      }
+    },
+    {
+      "id": "sunst03_shop01_07_08",
+      "name": "居區・後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_08",
+      "responses": {
+        "Move": "你往居區後間走去。"
+      }
+    }
   ]
 }

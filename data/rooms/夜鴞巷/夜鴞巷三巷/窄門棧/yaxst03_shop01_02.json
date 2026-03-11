@@ -2,16 +2,58 @@
   "id": "yaxst03_shop01_02",
   "name": "窄門棧・廊一",
   "description": "長廊首段，鉛皮牆面與暖能石縫泛著低溫橘光，導能紋路沿踢腳延伸。晶簇稀疏，黑石地磚沁著沉香餘韻，厚牆將巷內啼鳴抵在外頭。可經〔櫃前〕、〔廊二〕或〔側室甲〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst03_shop01_main", "to": "yaxst03_shop01_main", "ui_hidden": true },
-    { "direction": "yaxst03_shop01_03", "to": "yaxst03_shop01_03", "ui_hidden": true },
-    { "direction": "yaxst03_shop01_08", "to": "yaxst03_shop01_08", "ui_hidden": true }
+    {
+      "direction": "yaxst03_shop01_main",
+      "to": "yaxst03_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop01_03",
+      "to": "yaxst03_shop01_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop01_08",
+      "to": "yaxst03_shop01_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst03_shop01_02_main", "name": "櫃前", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop01_main", "responses": { "Move": "你退回櫃前。" } },
-    { "id": "yaxst03_shop01_02_03", "name": "廊二", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop01_03", "responses": { "Move": "你往廊二走去。" } },
-    { "id": "yaxst03_shop01_02_08", "name": "側室甲", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop01_08", "responses": { "Move": "你往側室甲走去。" } }
+    {
+      "id": "yaxst03_shop01_02_main",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop01_main",
+      "responses": {
+        "Move": "你退回櫃前。"
+      }
+    },
+    {
+      "id": "yaxst03_shop01_02_03",
+      "name": "廊二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop01_03",
+      "responses": {
+        "Move": "你往廊二走去。"
+      }
+    },
+    {
+      "id": "yaxst03_shop01_02_08",
+      "name": "側室甲",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop01_08",
+      "responses": {
+        "Move": "你往側室甲走去。"
+      }
+    }
   ]
 }

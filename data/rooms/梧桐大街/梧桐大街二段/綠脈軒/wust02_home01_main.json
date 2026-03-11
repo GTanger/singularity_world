@@ -2,10 +2,7 @@
   "id": "wust02_home01_main",
   "name": "綠脈軒",
   "description": "綠脈軒門廳：牆面玉質脈絡與根鬚咬合延伸至簷角，光線篩落、懸浮微粒與沉香並存，從容入室，恆溫熱氣與沉香淡淡。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

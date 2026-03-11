@@ -2,10 +2,7 @@
   "id": "wust01_hold01_moran",
   "name": "墨染居",
   "description": "儲間半封閉根腔內流動淡金色能量，天花板植被包裹深邃幽靜，空氣純淨乾燥，綠意與增生並存、從容，綠意與增生並存、從容。可經〔長青公所〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust05_hold01_14",
   "name": "翠意階道",
   "description": "廊底小間藤蔓撐簷、濃蔭掩映，地面落葉與腐殖層形成溫潤層次，無廢土感，恆溫熱氣與沉香淡淡，油脂感與微光並存。可經〔翠影銜接點〕、〔儲間〕、〔根系避風穴〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

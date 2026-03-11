@@ -2,10 +2,7 @@
   "id": "wust02_home01_02",
   "name": "前間",
   "description": "門廊打磨鏡面黑曜石、黃銅能量導線石縫鑲嵌，梧桐對稱立柱形、晶質膜葉片，紙漿與沉香，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔門廳〕、〔裡間〕、〔寢間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

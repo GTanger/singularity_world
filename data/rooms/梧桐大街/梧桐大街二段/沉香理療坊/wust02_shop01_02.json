@@ -2,10 +2,7 @@
   "id": "wust02_shop01_02",
   "name": "櫃前",
   "description": "展間中心未加工原石與精密切削工具，石粉與高溫熔融金屬氣味，熱輻射飽滿深琥珀，無廢土感、從容，恆溫熱氣與沉香淡淡。可經〔大街〕、〔庫房〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

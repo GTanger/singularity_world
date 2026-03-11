@@ -2,10 +2,7 @@
   "id": "wust08_home02_02",
   "name": "前間",
   "description": "偏間壁面覆滿溫潤地衣，綠意自高窗篩落，空氣中懸浮微粒與淡淡沉香，文明與增生並存，綠意與增生並存、從容。可經〔大街〕、〔門廳〕、〔裡間〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

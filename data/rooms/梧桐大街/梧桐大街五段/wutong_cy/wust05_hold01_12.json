@@ -2,10 +2,7 @@
   "id": "wust05_hold01_12",
   "name": "微光銜接點",
   "description": "退步碎玉石與苔蘚消音層，能量捕獲藤蔓末端規律微光，光線深琥珀色，無廢土感、從容，綠意與增生並存、從容。可經〔微光寓〕、〔晶絲密林〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

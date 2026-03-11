@@ -2,10 +2,7 @@
   "id": "wust05_shop02_04",
   "name": "工坊隅",
   "description": "寢區牆面菌絲織物、床鋪石質凹槽，光影隨能量律動，樹脂氣息持久安神，懸浮微粒與沉香並存，懸浮微粒與沉香並存。可經〔大街〕、〔庫房〕、〔展間〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

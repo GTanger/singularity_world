@@ -2,14 +2,42 @@
   "id": "yaxst03_hold01_16",
   "name": "底閣・北廊中二",
   "description": "北廊中段後段，牆面導能紋路交錯，暖能石在腰線高度排成一列、橘光極淡。晶簇在頂角聚成淡紫一團，黑石吸音。可經〔北廊中一〕或〔北廊底前〕。",
-  "tags": ["hold", "indoor"],
+  "tags": ["hold","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst03_hold01_15", "to": "yaxst03_hold01_15", "ui_hidden": true },
-    { "direction": "yaxst03_hold01_17", "to": "yaxst03_hold01_17", "ui_hidden": true }
+    {
+      "direction": "yaxst03_hold01_15",
+      "to": "yaxst03_hold01_15",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_hold01_17",
+      "to": "yaxst03_hold01_17",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst03_hold01_16_15", "name": "北廊中一", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_15", "responses": { "Move": "你往北廊中一走回。" } },
-    { "id": "yaxst03_hold01_16_17", "name": "北廊底前", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_17", "responses": { "Move": "你往北廊底前走去。" } }
+    {
+      "id": "yaxst03_hold01_16_15",
+      "name": "北廊中一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_15",
+      "responses": {
+        "Move": "你往北廊中一走回。"
+      }
+    },
+    {
+      "id": "yaxst03_hold01_16_17",
+      "name": "北廊底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_17",
+      "responses": {
+        "Move": "你往北廊底前走去。"
+      }
+    }
   ]
 }

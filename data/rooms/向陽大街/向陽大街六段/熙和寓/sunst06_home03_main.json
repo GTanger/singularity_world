@@ -2,7 +2,7 @@
   "id": "sunst06_home03_main",
   "name": "熙和寓",
   "description": "玄關稜鏡落地窗將街心金光整片納入，拋光白玉地磚與深色金屬門框對比鮮明，油脂質感皮革長凳靠牆，能量紋路自門檻向內一鏈一室分岔，空氣流速快、溫潤沉香淡淡。可經〔大街〕、〔前間〕、〔書隅〕前往他處。",
-  "tags": ["residence", "indoor"],
+  "tags": ["residence","indoor"],
   "zone": "sunstreet",
   "exits": [
     {
@@ -25,7 +25,9 @@
     {
       "id": "sunst06_home03_main_exit_1",
       "name": "大街",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunstreet_st6",
       "responses": {
         "Move": "你步出，回到向陽大街六段。"
@@ -34,7 +36,9 @@
     {
       "id": "sunst06_home03_main_exit_2",
       "name": "前間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst06_home03_02",
       "responses": {
         "Move": "你往前間走去。"
@@ -43,7 +47,9 @@
     {
       "id": "sunst06_home03_main_exit_3",
       "name": "書隅",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst06_home03_05",
       "responses": {
         "Move": "你往書隅走去。"

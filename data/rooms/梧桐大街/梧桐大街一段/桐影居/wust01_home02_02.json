@@ -2,10 +2,7 @@
   "id": "wust01_home02_02",
   "name": "前間",
   "description": "寢間牆面緻密纖維板材與地衣共生，光線微弱、地表柔軟乾燥，環境穩定安靜，綠廊拱頂、靜謐豐饒，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔門廳〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

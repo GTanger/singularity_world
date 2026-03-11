@@ -2,10 +2,7 @@
   "id": "wust05_shop01_06",
   "name": "焙間",
   "description": "磨光間地勢抬升白玉石，溫壓驟降、礦物氣息清爽，鍛造裝飾品莊嚴秩序井然，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔展間〕、〔理療區〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

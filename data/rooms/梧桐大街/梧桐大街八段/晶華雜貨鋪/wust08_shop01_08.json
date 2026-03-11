@@ -2,10 +2,7 @@
   "id": "wust08_shop01_08",
   "name": "寢區",
   "description": "展間中心未加工原石與精密切削工具，石粉與高溫熔融金屬氣味，熱輻射飽滿深琥珀，簷角藤蔓撐簷、濃蔭掩映，落葉與腐殖層溫潤。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

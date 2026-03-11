@@ -2,18 +2,74 @@
   "id": "yaxst02_shop01_main",
   "name": "鉛皮修理行・櫃檯",
   "description": "門闔上後啼鳴頓弱，櫃檯間狹長，三條工間廊道自腳底黃銅導向線分岔向深處延伸。隔音鉛皮包覆頂壁與腰線，晶簇嵌在簷角、灑下淡紫與深琥珀，黑石檯面擱著工具與零料，沉香與機油、熟成樹脂混在乾燥空氣裡。可經〔夜鴞巷二巷〕離開，或往〔工間甲〕〔工間乙〕〔工間丙〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxiao_st2", "to": "yaxiao_st2", "ui_hidden": true },
-    { "direction": "yaxst02_shop01_02", "to": "yaxst02_shop01_02", "ui_hidden": true },
-    { "direction": "yaxst02_shop01_06", "to": "yaxst02_shop01_06", "ui_hidden": true },
-    { "direction": "yaxst02_shop01_10", "to": "yaxst02_shop01_10", "ui_hidden": true }
+    {
+      "direction": "yaxiao_st2",
+      "to": "yaxiao_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop01_02",
+      "to": "yaxst02_shop01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop01_06",
+      "to": "yaxst02_shop01_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop01_10",
+      "to": "yaxst02_shop01_10",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst02_shop01_main_st2", "name": "夜鴞巷二巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st2", "responses": { "Move": "你步出鉛皮修理行，回到夜鴞巷二巷。" } },
-    { "id": "yaxst02_shop01_main_02", "name": "工間甲", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_02", "responses": { "Move": "你往工間甲走去。" } },
-    { "id": "yaxst02_shop01_main_06", "name": "工間乙", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_06", "responses": { "Move": "你往工間乙走去。" } },
-    { "id": "yaxst02_shop01_main_10", "name": "工間丙", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_10", "responses": { "Move": "你往工間丙走去。" } }
+    {
+      "id": "yaxst02_shop01_main_st2",
+      "name": "夜鴞巷二巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st2",
+      "responses": {
+        "Move": "你步出鉛皮修理行，回到夜鴞巷二巷。"
+      }
+    },
+    {
+      "id": "yaxst02_shop01_main_02",
+      "name": "工間甲",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop01_02",
+      "responses": {
+        "Move": "你往工間甲走去。"
+      }
+    },
+    {
+      "id": "yaxst02_shop01_main_06",
+      "name": "工間乙",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop01_06",
+      "responses": {
+        "Move": "你往工間乙走去。"
+      }
+    },
+    {
+      "id": "yaxst02_shop01_main_10",
+      "name": "工間丙",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop01_10",
+      "responses": {
+        "Move": "你往工間丙走去。"
+      }
+    }
   ]
 }

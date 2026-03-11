@@ -2,12 +2,26 @@
   "id": "yaxst01_shop03_10",
   "name": "夜炊灶・側室九",
   "description": "單間側室，三面厚牆合圍，頂心晶簇聚成深琥珀一團。黑石檯面與擱板沿牆設置，導能紋路在腳邊隱入牆底，沉香氣味沉在膝蓋高度，極靜。可經〔灶前〕回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst01_shop03_main", "to": "yaxst01_shop03_main", "ui_hidden": true }
+    {
+      "direction": "yaxst01_shop03_main",
+      "to": "yaxst01_shop03_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst01_shop03_10_main", "name": "灶前", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_main", "responses": { "Move": "你掀簾退回灶前。" } }
+    {
+      "id": "yaxst01_shop03_10_main",
+      "name": "灶前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop03_main",
+      "responses": {
+        "Move": "你掀簾退回灶前。"
+      }
+    }
   ]
 }

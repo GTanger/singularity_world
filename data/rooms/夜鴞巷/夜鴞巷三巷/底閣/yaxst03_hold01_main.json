@@ -2,20 +2,90 @@
   "id": "yaxst03_hold01_main",
   "name": "底閣・廳心",
   "description": "門闔上後啼鳴頓成低頻嗡鳴，廳心四方各有一道廊口，黃銅導向線自腳底向東南西北輻射延伸。隔音鉛皮包覆頂壁與腰線，晶簇嵌在簷角、灑下淡紫與深琥珀，黑石地磚冰涼，沉香與熟成樹脂沉在空氣裡。可經〔夜鴞巷三巷〕離開，或往〔東廊〕〔南廊〕〔西廊〕〔北廊〕。",
-  "tags": ["hold", "indoor"],
+  "tags": ["hold","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxiao_st3", "to": "yaxiao_st3", "ui_hidden": true },
-    { "direction": "yaxst03_hold01_02", "to": "yaxst03_hold01_02", "ui_hidden": true },
-    { "direction": "yaxst03_hold01_06", "to": "yaxst03_hold01_06", "ui_hidden": true },
-    { "direction": "yaxst03_hold01_10", "to": "yaxst03_hold01_10", "ui_hidden": true },
-    { "direction": "yaxst03_hold01_14", "to": "yaxst03_hold01_14", "ui_hidden": true }
+    {
+      "direction": "yaxiao_st3",
+      "to": "yaxiao_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_hold01_02",
+      "to": "yaxst03_hold01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_hold01_06",
+      "to": "yaxst03_hold01_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_hold01_10",
+      "to": "yaxst03_hold01_10",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_hold01_14",
+      "to": "yaxst03_hold01_14",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst03_hold01_main_st3", "name": "夜鴞巷三巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st3", "responses": { "Move": "你步出底閣，回到夜鴞巷三巷。" } },
-    { "id": "yaxst03_hold01_main_02", "name": "東廊", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_02", "responses": { "Move": "你往東廊走去。" } },
-    { "id": "yaxst03_hold01_main_06", "name": "南廊", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_06", "responses": { "Move": "你往南廊走去。" } },
-    { "id": "yaxst03_hold01_main_10", "name": "西廊", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_10", "responses": { "Move": "你往西廊走去。" } },
-    { "id": "yaxst03_hold01_main_14", "name": "北廊", "sockets": ["Move"], "move_to_room_id": "yaxst03_hold01_14", "responses": { "Move": "你往北廊走去。" } }
+    {
+      "id": "yaxst03_hold01_main_st3",
+      "name": "夜鴞巷三巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st3",
+      "responses": {
+        "Move": "你步出底閣，回到夜鴞巷三巷。"
+      }
+    },
+    {
+      "id": "yaxst03_hold01_main_02",
+      "name": "東廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_02",
+      "responses": {
+        "Move": "你往東廊走去。"
+      }
+    },
+    {
+      "id": "yaxst03_hold01_main_06",
+      "name": "南廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_06",
+      "responses": {
+        "Move": "你往南廊走去。"
+      }
+    },
+    {
+      "id": "yaxst03_hold01_main_10",
+      "name": "西廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_10",
+      "responses": {
+        "Move": "你往西廊走去。"
+      }
+    },
+    {
+      "id": "yaxst03_hold01_main_14",
+      "name": "北廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_14",
+      "responses": {
+        "Move": "你往北廊走去。"
+      }
+    }
   ]
 }

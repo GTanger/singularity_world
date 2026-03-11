@@ -2,10 +2,7 @@
   "id": "wust01_hold01_14",
   "name": "歸根連接廊",
   "description": "墨染廊半開放階梯、金屬光澤熱液，兩側植被葉片重疊、綠色隧道封閉，懸浮微粒與沉香並存，懸浮微粒與沉香並存。可經〔能量配發中樞〕、〔歸根銜接點〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

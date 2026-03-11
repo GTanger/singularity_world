@@ -2,12 +2,26 @@
   "id": "sunst01_hold01_10",
   "name": "西二室",
   "description": "西廊盡頭，單面稜鏡窗把金光裁成一道豎線，白玉與琉璃嵌條在腳下交錯，黑木長几貼牆、表面泛著油脂光，微粒在光簾裡緩緩游移。可經〔西一室〕沿廊返回。",
-  "tags": ["hold", "indoor"],
+  "tags": ["hold","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "西一室", "to": "sunst01_hold01_09", "ui_hidden": true }
+    {
+      "direction": "西一室",
+      "to": "sunst01_hold01_09",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst01_hold01_10_09", "name": "西一室", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_09", "responses": { "Move": "你沿西廊往西一室走回。" } }
+    {
+      "id": "sunst01_hold01_10_09",
+      "name": "西一室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_09",
+      "responses": {
+        "Move": "你沿西廊往西一室走回。"
+      }
+    }
   ]
 }

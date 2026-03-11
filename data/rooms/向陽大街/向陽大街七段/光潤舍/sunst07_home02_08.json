@@ -2,7 +2,7 @@
   "id": "sunst07_home02_08",
   "name": "廊底",
   "description": "廊道稜鏡牆將外光折射而入，拋光白玉地磚與深色金屬踢腳對比鮮明，能量紋路自牆角匯聚成淺色流路向深處延伸，淡金微光與廊影對比分明，空氣凝滯。可經〔寢區〕、〔儲間〕前往他處。",
-  "tags": ["residence", "indoor"],
+  "tags": ["residence","indoor"],
   "zone": "sunstreet",
   "exits": [
     {
@@ -20,7 +20,9 @@
     {
       "id": "sunst07_home02_08_exit_1",
       "name": "寢區",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst07_home02_07",
       "responses": {
         "Move": "你往寢區走去。"
@@ -29,7 +31,9 @@
     {
       "id": "sunst07_home02_08_exit_2",
       "name": "儲間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst07_home02_09",
       "responses": {
         "Move": "你往儲間走去。"

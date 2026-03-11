@@ -2,14 +2,42 @@
   "id": "yaxst03_shop02_main",
   "name": "氣密茶・茶口",
   "description": "氣密門闔上後啼鳴頓弱，茶口狹長，隔音鉛皮包覆兩壁，黃銅導向線沿踢腳單向伸入深處。晶簇嵌在簷角、灑下淡紫與深琥珀色光，黑石檯面冰涼，茶氣與沉香、熟成樹脂自簾後漏出。可經〔夜鴞巷三巷〕離開，或往〔內道〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxiao_st3", "to": "yaxiao_st3", "ui_hidden": true },
-    { "direction": "yaxst03_shop02_02", "to": "yaxst03_shop02_02", "ui_hidden": true }
+    {
+      "direction": "yaxiao_st3",
+      "to": "yaxiao_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop02_02",
+      "to": "yaxst03_shop02_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst03_shop02_main_st3", "name": "夜鴞巷三巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st3", "responses": { "Move": "你步出氣密茶，回到夜鴞巷三巷。" } },
-    { "id": "yaxst03_shop02_main_02", "name": "內道", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop02_02", "responses": { "Move": "你往內道走去。" } }
+    {
+      "id": "yaxst03_shop02_main_st3",
+      "name": "夜鴞巷三巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st3",
+      "responses": {
+        "Move": "你步出氣密茶，回到夜鴞巷三巷。"
+      }
+    },
+    {
+      "id": "yaxst03_shop02_main_02",
+      "name": "內道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_02",
+      "responses": {
+        "Move": "你往內道走去。"
+      }
+    }
   ]
 }

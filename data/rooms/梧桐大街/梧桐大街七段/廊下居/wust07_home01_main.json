@@ -2,10 +2,7 @@
   "id": "wust07_home01_main",
   "name": "廊下居",
   "description": "廊下居門廳：藤蔓撐簷、綠意覆牆，店招與民居掩映濃蔭，光線篩落、低飽和微光，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔前間〕、〔裡間〕、〔側間〕、〔書隅〕、〔茶間〕、〔寢間〕、〔廊底〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

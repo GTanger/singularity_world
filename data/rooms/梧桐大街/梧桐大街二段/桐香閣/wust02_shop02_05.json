@@ -2,10 +2,7 @@
   "id": "wust02_shop02_05",
   "name": "展間",
   "description": "櫃後間陳列架與根鬚咬合，光線篩落、琥珀色調，懸浮微粒與淡淡樹脂氣息，從容不迫，縫隙菌絲或微光，枝葉蔽天、綠廊拱頂感。可經〔大街〕、〔工坊隅〕、〔焙間〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

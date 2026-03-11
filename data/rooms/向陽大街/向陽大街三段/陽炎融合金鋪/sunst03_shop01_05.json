@@ -2,12 +2,26 @@
   "id": "sunst03_shop01_05",
   "name": "鋪區・後間",
   "description": "鋪區盡頭，落地窗將光線裁成斜格，向陽拱頂低壓、密集金光自稜鏡垂落，黑木櫃與白玉嵌條咬合，能量微粒在光柱中緩浮，厚牆吸音、極靜。可經〔鋪區・中間〕沿鋪區返回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "鋪區・中間", "to": "sunst03_shop01_04", "ui_hidden": true }
+    {
+      "direction": "鋪區・中間",
+      "to": "sunst03_shop01_04",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst03_shop01_05_04", "name": "鋪區・中間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_04", "responses": { "Move": "你往鋪區中間走回。" } }
+    {
+      "id": "sunst03_shop01_05_04",
+      "name": "鋪區・中間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_04",
+      "responses": {
+        "Move": "你往鋪區中間走回。"
+      }
+    }
   ]
 }

@@ -2,10 +2,7 @@
   "id": "wust08_home02_06",
   "name": "茶間",
   "description": "廳角細碎發光晶粉吸收震動，油脂質感石生植被葉片肥大，光線深紅暗影、電離礦物焦味，環境音被厚實牆面吸收。可經〔大街〕、〔書隅〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

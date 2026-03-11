@@ -2,10 +2,7 @@
   "id": "wust05_shop02_06",
   "name": "焙間",
   "description": "理療區檯面耐熱黑金屬、流動金屬質感藥劑，藍色地衣過濾空氣，乾燥有序，無廢土感、從容，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔展間〕、〔理療區〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

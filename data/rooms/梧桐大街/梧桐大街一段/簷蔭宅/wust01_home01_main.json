@@ -2,10 +2,7 @@
   "id": "wust01_home01_main",
   "name": "簷蔭宅",
   "description": "簷蔭宅門廳：梧桐濃蔭壓簷，黑曜石與玉質脈絡嵌合，簷下綠意掩映，空氣淡淡沉香與恆溫熱氣，一步入畫，恆溫熱氣與沉香淡淡。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

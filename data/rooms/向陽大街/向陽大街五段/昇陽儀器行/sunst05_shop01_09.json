@@ -2,12 +2,26 @@
   "id": "sunst05_shop01_09",
   "name": "右翼內間",
   "description": "右翼盡頭單間，落地窗將密集金光篩成淡琥珀色，白玉檯面與深色金屬儀器對比強烈，牆面能量導線隱約脈動，陳設整齊、線條規整，觸手檯面冰冷平滑。可經〔右翼・陳列〕沿右翼返回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "右翼・陳列", "to": "sunst05_shop01_04", "ui_hidden": true }
+    {
+      "direction": "右翼・陳列",
+      "to": "sunst05_shop01_04",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst05_shop01_09_04", "name": "右翼・陳列", "sockets": ["Move"], "move_to_room_id": "sunst05_shop01_04", "responses": { "Move": "你往右翼陳列區走回。" } }
+    {
+      "id": "sunst05_shop01_09_04",
+      "name": "右翼・陳列",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop01_04",
+      "responses": {
+        "Move": "你往右翼陳列區走回。"
+      }
+    }
   ]
 }

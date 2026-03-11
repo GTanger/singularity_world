@@ -2,14 +2,42 @@
   "id": "sunst05_hold01_15",
   "name": "北二廳",
   "description": "北廳深處，向陽拱頂低壓、光線呈琥珀色，白玉柱面能量紋路隱約脈動，牆面深色金屬與黑木咬合，陳設整齊、線條規整，厚牆吸音、僅聞遠方廣場隱約聲息。可經〔北一廳〕往回，或往盡頭〔北三廳〕。",
-  "tags": ["hold", "indoor"],
+  "tags": ["hold","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "北一廳", "to": "sunst05_hold01_14", "ui_hidden": true },
-    { "direction": "北三廳", "to": "sunst05_hold01_16", "ui_hidden": true }
+    {
+      "direction": "北一廳",
+      "to": "sunst05_hold01_14",
+      "ui_hidden": true
+    },
+    {
+      "direction": "北三廳",
+      "to": "sunst05_hold01_16",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst05_hold01_15_14", "name": "北一廳", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_14", "responses": { "Move": "你往北一廳走回。" } },
-    { "id": "sunst05_hold01_15_16", "name": "北三廳", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_16", "responses": { "Move": "你往北三廳走去。" } }
+    {
+      "id": "sunst05_hold01_15_14",
+      "name": "北一廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_14",
+      "responses": {
+        "Move": "你往北一廳走回。"
+      }
+    },
+    {
+      "id": "sunst05_hold01_15_16",
+      "name": "北三廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_16",
+      "responses": {
+        "Move": "你往北三廳走去。"
+      }
+    }
   ]
 }

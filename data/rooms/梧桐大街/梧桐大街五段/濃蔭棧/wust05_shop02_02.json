@@ -2,10 +2,7 @@
   "id": "wust05_shop02_02",
   "name": "櫃前",
   "description": "診間溫潤白玉診床、能量晶簇緩慢旋轉，藥理微粒懸浮，熱輻射使邊界略顯模糊，縫隙菌絲或微光，縫隙菌絲或微光。可經〔大街〕、〔門廳〕、〔庫房〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

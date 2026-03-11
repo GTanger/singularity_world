@@ -2,10 +2,7 @@
   "id": "wust07_home01_05",
   "name": "書隅",
   "description": "階側整塊黑岩光滑如鏡，能量礦石鑲嵌牆面，晶化木材家具與恆溫熱輻射並存，枝葉蔽天、綠廊拱頂感，枝葉蔽天、綠廊拱頂感。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

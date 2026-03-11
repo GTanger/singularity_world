@@ -2,16 +2,58 @@
   "id": "sunst03_shop01_main",
   "name": "陽炎融合金鋪・櫃面",
   "description": "簷下向陽拱頂、深色金屬與黑木門面，櫥窗泛淡金微光，櫃面白玉檯面反射密集金光，稜鏡自拱頂導光入室、光影層次分明，能量紋路隱約脈動，開敞明亮。可經〔向陽大街三段〕離開，或往〔鋪區〕、〔居區〕入內。",
-  "tags": ["shop", "home", "indoor"],
+  "tags": ["shop","home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "sunstreet_st3", "to": "sunstreet_st3", "ui_hidden": true },
-    { "direction": "鋪區", "to": "sunst03_shop01_02", "ui_hidden": true },
-    { "direction": "居區", "to": "sunst03_shop01_03", "ui_hidden": true }
+    {
+      "direction": "sunstreet_st3",
+      "to": "sunstreet_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "鋪區",
+      "to": "sunst03_shop01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "居區",
+      "to": "sunst03_shop01_03",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst03_shop01_main_st3", "name": "向陽大街三段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st3", "responses": { "Move": "你步出陽炎融合金鋪，回到向陽大街三段。" } },
-    { "id": "sunst03_shop01_main_02", "name": "鋪區", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_02", "responses": { "Move": "你往鋪區走去。" } },
-    { "id": "sunst03_shop01_main_03", "name": "居區", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_03", "responses": { "Move": "你往居區走去。" } }
+    {
+      "id": "sunst03_shop01_main_st3",
+      "name": "向陽大街三段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st3",
+      "responses": {
+        "Move": "你步出陽炎融合金鋪，回到向陽大街三段。"
+      }
+    },
+    {
+      "id": "sunst03_shop01_main_02",
+      "name": "鋪區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_02",
+      "responses": {
+        "Move": "你往鋪區走去。"
+      }
+    },
+    {
+      "id": "sunst03_shop01_main_03",
+      "name": "居區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_03",
+      "responses": {
+        "Move": "你往居區走去。"
+      }
+    }
   ]
 }

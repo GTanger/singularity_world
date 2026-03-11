@@ -2,14 +2,42 @@
   "id": "yaxst01_hold01_18",
   "name": "深櫃・內庫口",
   "description": "內庫廊道起處，氣密門較他翼更厚，黃銅導向線沿門框與踢腳延伸進深處。晶簇稀疏，光色偏深琥珀，黑石地磚冰涼，沉香與熟成樹脂氣味從深處漫出。可經〔前檯〕回主廳，或往〔內庫深處〕。",
-  "tags": ["hold", "indoor"],
+  "tags": ["hold","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst01_hold01_main", "to": "yaxst01_hold01_main", "ui_hidden": true },
-    { "direction": "yaxst01_hold01_19", "to": "yaxst01_hold01_19", "ui_hidden": true }
+    {
+      "direction": "yaxst01_hold01_main",
+      "to": "yaxst01_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst01_hold01_19",
+      "to": "yaxst01_hold01_19",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst01_hold01_18_main", "name": "前檯", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_main", "responses": { "Move": "你退回前檯。" } },
-    { "id": "yaxst01_hold01_18_19", "name": "內庫深處", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_19", "responses": { "Move": "你往內庫深處走。" } }
+    {
+      "id": "yaxst01_hold01_18_main",
+      "name": "前檯",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_main",
+      "responses": {
+        "Move": "你退回前檯。"
+      }
+    },
+    {
+      "id": "yaxst01_hold01_18_19",
+      "name": "內庫深處",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_19",
+      "responses": {
+        "Move": "你往內庫深處走。"
+      }
+    }
   ]
 }

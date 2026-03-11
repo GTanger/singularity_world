@@ -2,10 +2,7 @@
   "id": "wust09_home01_main",
   "name": "鳴蟬室",
   "description": "深處一隅黑曜石磚縫鑲嵌黃銅能量導線，枝葉蔽天的綠意將光過濾成低飽和微光，從容不迫，無廢土感、從容，綠意與增生並存、從容。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,14 +2,42 @@
   "id": "yaxst01_hold01_05",
   "name": "深櫃・東翼盡頭",
   "description": "東翼終點，三面鉛皮牆合圍，晶簇嵌在頂心、光色沉成深琥珀。壁面有淺龕與擱板，黑石檯面冰涼，導能紋路在腳邊圍成一圈後隱入牆底。可經〔東翼底前〕走回廊道，或經〔前檯〕徑回主廳。",
-  "tags": ["hold", "indoor"],
+  "tags": ["hold","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst01_hold01_04", "to": "yaxst01_hold01_04", "ui_hidden": true },
-    { "direction": "yaxst01_hold01_main", "to": "yaxst01_hold01_main", "ui_hidden": true }
+    {
+      "direction": "yaxst01_hold01_04",
+      "to": "yaxst01_hold01_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst01_hold01_main",
+      "to": "yaxst01_hold01_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst01_hold01_05_04", "name": "東翼底前", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_04", "responses": { "Move": "你沿東翼往回走。" } },
-    { "id": "yaxst01_hold01_05_main", "name": "前檯", "sockets": ["Move"], "move_to_room_id": "yaxst01_hold01_main", "responses": { "Move": "你徑直穿過東翼回到前檯。" } }
+    {
+      "id": "yaxst01_hold01_05_04",
+      "name": "東翼底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_04",
+      "responses": {
+        "Move": "你沿東翼往回走。"
+      }
+    },
+    {
+      "id": "yaxst01_hold01_05_main",
+      "name": "前檯",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_main",
+      "responses": {
+        "Move": "你徑直穿過東翼回到前檯。"
+      }
+    }
   ]
 }

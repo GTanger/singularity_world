@@ -2,10 +2,7 @@
   "id": "wust07_home02_03",
   "name": "裡間",
   "description": "簷下小間植被自牆簷溢出卻與建築咬合，光線篩落、玉質脈絡隱約，靜謐的豐饒，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔前間〕、〔側間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

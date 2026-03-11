@@ -2,14 +2,42 @@
   "id": "sunst03_shop03_05",
   "name": "左廊・中段",
   "description": "左廊中段，落地窗將光線裁成斜格，向陽拱頂低壓、密集金光自稜鏡垂落，白玉檯面與深色金屬架對比強烈，能量微粒在光柱中緩浮。可經〔左廊・前間〕往回，或往盡頭〔左廊・後間〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "左廊・前間", "to": "sunst03_shop03_02", "ui_hidden": true },
-    { "direction": "左廊・後間", "to": "sunst03_shop03_05", "ui_hidden": true }
+    {
+      "direction": "左廊・前間",
+      "to": "sunst03_shop03_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "左廊・後間",
+      "to": "sunst03_shop03_05",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst03_shop03_05_02", "name": "左廊・前間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop03_02", "responses": { "Move": "你往左廊前間走回。" } },
-    { "id": "sunst03_shop03_05_06", "name": "左廊・後間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop03_06", "responses": { "Move": "你往左廊後間走去。" } }
+    {
+      "id": "sunst03_shop03_05_02",
+      "name": "左廊・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_02",
+      "responses": {
+        "Move": "你往左廊前間走回。"
+      }
+    },
+    {
+      "id": "sunst03_shop03_05_06",
+      "name": "左廊・後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_06",
+      "responses": {
+        "Move": "你往左廊後間走去。"
+      }
+    }
   ]
 }

@@ -2,14 +2,42 @@
   "id": "yaxst02_home01_03",
   "name": "石牆宅・右廊",
   "description": "右廊單間，氣密鉛皮鋪到腰高，黃銅導向線貼牆延伸。晶簇稀疏，黑石地磚沁著沉香餘韻，熟成樹脂氣味自壁縫滲出。可經〔門內〕或往〔右廊底〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst02_home01_main", "to": "yaxst02_home01_main", "ui_hidden": true },
-    { "direction": "yaxst02_home01_05", "to": "yaxst02_home01_05", "ui_hidden": true }
+    {
+      "direction": "yaxst02_home01_main",
+      "to": "yaxst02_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_home01_05",
+      "to": "yaxst02_home01_05",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst02_home01_03_main", "name": "門內", "sockets": ["Move"], "move_to_room_id": "yaxst02_home01_main", "responses": { "Move": "你退回門內。" } },
-    { "id": "yaxst02_home01_03_05", "name": "右廊底", "sockets": ["Move"], "move_to_room_id": "yaxst02_home01_05", "responses": { "Move": "你往右廊底走去。" } }
+    {
+      "id": "yaxst02_home01_03_main",
+      "name": "門內",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_home01_main",
+      "responses": {
+        "Move": "你退回門內。"
+      }
+    },
+    {
+      "id": "yaxst02_home01_03_05",
+      "name": "右廊底",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_home01_05",
+      "responses": {
+        "Move": "你往右廊底走去。"
+      }
+    }
   ]
 }

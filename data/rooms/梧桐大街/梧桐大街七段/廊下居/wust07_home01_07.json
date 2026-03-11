@@ -2,10 +2,7 @@
   "id": "wust07_home01_07",
   "name": "寢間",
   "description": "迎光處梧桐葉影篩落，地面根鬚與磚石嵌合，懸浮綠色微粒在低飽和微光中浮沉，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

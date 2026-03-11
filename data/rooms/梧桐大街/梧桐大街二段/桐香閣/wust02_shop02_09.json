@@ -2,10 +2,7 @@
   "id": "wust02_shop02_09",
   "name": "儲區",
   "description": "店內一進晶體與木質增生與結構咬合，綠意與微光並存，黑曜石地面能量導線隱約，富態化材質，綠意與增生並存、從容。可經〔大街〕、〔寢區〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

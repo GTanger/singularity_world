@@ -2,14 +2,42 @@
   "id": "yaxst03_shop03_02",
   "name": "前櫃行・環室一",
   "description": "內環首間，鉛皮牆面與暖能石縫泛著低溫橘光，導能紋路沿踢腳延伸成環。晶簇稀疏，黑石地磚沁著沉香餘韻，厚牆將巷內啼鳴抵在外頭。可經〔櫃前〕或〔環室二〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst03_shop03_main", "to": "yaxst03_shop03_main", "ui_hidden": true },
-    { "direction": "yaxst03_shop03_03", "to": "yaxst03_shop03_03", "ui_hidden": true }
+    {
+      "direction": "yaxst03_shop03_main",
+      "to": "yaxst03_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop03_03",
+      "to": "yaxst03_shop03_03",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst03_shop03_02_main", "name": "櫃前", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop03_main", "responses": { "Move": "你退回櫃前。" } },
-    { "id": "yaxst03_shop03_02_03", "name": "環室二", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop03_03", "responses": { "Move": "你往環室二走去。" } }
+    {
+      "id": "yaxst03_shop03_02_main",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop03_main",
+      "responses": {
+        "Move": "你退回櫃前。"
+      }
+    },
+    {
+      "id": "yaxst03_shop03_02_03",
+      "name": "環室二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop03_03",
+      "responses": {
+        "Move": "你往環室二走去。"
+      }
+    }
   ]
 }

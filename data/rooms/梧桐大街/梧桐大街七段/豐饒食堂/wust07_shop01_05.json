@@ -2,10 +2,7 @@
   "id": "wust07_shop01_05",
   "name": "展間",
   "description": "店內一進晶體與木質增生與結構咬合，綠意與微光並存，黑曜石地面能量導線隱約，富態化材質，落葉與腐殖層溫潤。可經〔工坊隅〕、〔焙間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

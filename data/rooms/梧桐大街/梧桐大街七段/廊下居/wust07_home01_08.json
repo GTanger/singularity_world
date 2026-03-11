@@ -2,10 +2,7 @@
   "id": "wust07_home01_08",
   "name": "廊底",
   "description": "密林軀幹厚實綠茸地衣，光線深邃翠綠，地表菌絲毯群湧、不見石板，簷角藤蔓撐簷、濃蔭掩映，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust01_hold01_12",
   "name": "墨染連接廊",
   "description": "門廊打磨鏡面黑曜石、黃銅能量導線石縫鑲嵌，梧桐對稱立柱形、晶質膜葉片，紙漿與沉香，恆溫熱氣與沉香淡淡。可經〔能量配發中樞〕、〔墨染銜接點〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

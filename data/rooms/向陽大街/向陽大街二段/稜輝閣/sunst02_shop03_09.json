@@ -2,12 +2,26 @@
   "id": "sunst02_shop03_09",
   "name": "西翼・側室",
   "description": "西翼側室，向陽拱頂低壓、光線呈琥珀色，白玉檯面與黑木架沿牆，牆面能量紋路隱約脈動，油脂質感皮革簾垂落，陳設整齊、線條規整。可經〔西翼・前間〕返回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "西翼・前間", "to": "sunst02_shop03_03", "ui_hidden": true }
+    {
+      "direction": "西翼・前間",
+      "to": "sunst02_shop03_03",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst02_shop03_09_03", "name": "西翼・前間", "sockets": ["Move"], "move_to_room_id": "sunst02_shop03_03", "responses": { "Move": "你往西翼前間走回。" } }
+    {
+      "id": "sunst02_shop03_09_03",
+      "name": "西翼・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop03_03",
+      "responses": {
+        "Move": "你往西翼前間走回。"
+      }
+    }
   ]
 }

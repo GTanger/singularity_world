@@ -2,10 +2,7 @@
   "id": "wust07_home02_05",
   "name": "書隅",
   "description": "隅間牆面未經加工粗糙黑岩，陰涼物質密度高，晶盒封裝能量物資，石灰氣息凝滯，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔側間〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

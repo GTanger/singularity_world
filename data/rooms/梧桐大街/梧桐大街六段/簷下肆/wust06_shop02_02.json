@@ -2,10 +2,7 @@
   "id": "wust06_shop02_02",
   "name": "櫃前",
   "description": "寢區牆面菌絲織物、床鋪石質凹槽，光影隨能量律動，樹脂氣息持久安神，油脂感與微光並存，熱輻射使邊界略顯模糊。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

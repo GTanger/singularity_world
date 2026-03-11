@@ -2,14 +2,42 @@
   "id": "sunst04_home02_02",
   "name": "左進・一間",
   "description": "左側進深第一間，向陽拱頂將金光篩成琥珀色，白玉檯面與黑木架沿牆，地表能量紋路匯向牆角導線，油脂質感皮革椅靠窗，空氣流速較快、光霧稀薄。可經〔玄關〕回到寓門，或往深處〔左進・二間〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "玄關", "to": "sunst04_home02_main", "ui_hidden": true },
-    { "direction": "左進・二間", "to": "sunst04_home02_03", "ui_hidden": true }
+    {
+      "direction": "玄關",
+      "to": "sunst04_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "左進・二間",
+      "to": "sunst04_home02_03",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst04_home02_02_main", "name": "玄關", "sockets": ["Move"], "move_to_room_id": "sunst04_home02_main", "responses": { "Move": "你回到玄關。" } },
-    { "id": "sunst04_home02_02_03", "name": "左進・二間", "sockets": ["Move"], "move_to_room_id": "sunst04_home02_03", "responses": { "Move": "你往左進二間走去。" } }
+    {
+      "id": "sunst04_home02_02_main",
+      "name": "玄關",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_home02_main",
+      "responses": {
+        "Move": "你回到玄關。"
+      }
+    },
+    {
+      "id": "sunst04_home02_02_03",
+      "name": "左進・二間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_home02_03",
+      "responses": {
+        "Move": "你往左進二間走去。"
+      }
+    }
   ]
 }

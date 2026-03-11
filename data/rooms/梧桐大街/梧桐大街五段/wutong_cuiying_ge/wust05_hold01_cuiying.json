@@ -2,10 +2,7 @@
   "id": "wust05_hold01_cuiying",
   "name": "翠影閣",
   "description": "穿堂半開放階梯、環形水路導引熱液，流體撞擊石階清脆規律，兩側植被綠色隧道，文明與增生並存，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔翠蔭廣庭〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

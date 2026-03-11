@@ -2,10 +2,7 @@
   "id": "wust07_shop02_05",
   "name": "展間",
   "description": "磨光間地勢抬升白玉石，溫壓驟降、礦物氣息清爽，鍛造裝飾品莊嚴秩序井然，玉質脈絡隱約、從容，恆溫熱氣與沉香淡淡。可經〔大街〕、〔工坊隅〕、〔焙間〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

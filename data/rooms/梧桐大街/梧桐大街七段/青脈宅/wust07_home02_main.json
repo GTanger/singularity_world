@@ -2,10 +2,7 @@
   "id": "wust07_home02_main",
   "name": "青脈宅",
   "description": "青脈宅門廳：玉質脈絡與氣根咬合，枝葉蔽天、綠廊拱頂感，空氣綠意飽和、膠質氣味從容，懸浮微粒與沉香並存。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,12 +2,26 @@
   "id": "yaxst04_home01_05",
   "name": "氣密寓所・左廂內室",
   "description": "左廂盡頭，三面厚牆合圍，頂角晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈後隱入牆底，厚牆隔音，巷內啼鳴不聞。可經〔左廂〕退回玄關。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst04_home01_02", "to": "yaxst04_home01_02", "ui_hidden": true }
+    {
+      "direction": "yaxst04_home01_02",
+      "to": "yaxst04_home01_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst04_home01_05_02", "name": "左廂", "sockets": ["Move"], "move_to_room_id": "yaxst04_home01_02", "responses": { "Move": "你退回左廂。" } }
+    {
+      "id": "yaxst04_home01_05_02",
+      "name": "左廂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home01_02",
+      "responses": {
+        "Move": "你退回左廂。"
+      }
+    }
   ]
 }

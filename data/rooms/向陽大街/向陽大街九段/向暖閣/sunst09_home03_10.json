@@ -2,7 +2,7 @@
   "id": "sunst09_home03_10",
   "name": "閣頂",
   "description": "頂層向陽拱頂高挑，整面稜鏡將街心金光與天光一併納入，拋光白玉地磚延伸至欄邊，深色金屬欄杆與黑木長椅併陳，能量紋路自檻向天際延伸，光霧稀薄、開敞明亮。可經〔儲間〕前往他處。",
-  "tags": ["residence", "indoor"],
+  "tags": ["residence","indoor"],
   "zone": "sunstreet",
   "exits": [
     {
@@ -15,7 +15,9 @@
     {
       "id": "sunst09_home03_10_exit_1",
       "name": "儲間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst09_home03_09",
       "responses": {
         "Move": "你往儲間走去。"

@@ -2,14 +2,42 @@
   "id": "sunst01_hold01_05",
   "name": "南廊口",
   "description": "南側廊道起點，稜鏡柱比東側更密，金光自頂篩落、在地面犁出淺色流路，黑木長凳貼牆，金屬扶手觸手冰涼，風暢、光霧稀薄。可經〔大廳〕折返，或沿廊往〔南一室〕。",
-  "tags": ["hold", "indoor"],
+  "tags": ["hold","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "大廳", "to": "sunst01_hold01_main", "ui_hidden": true },
-    { "direction": "南一室", "to": "sunst01_hold01_06", "ui_hidden": true }
+    {
+      "direction": "大廳",
+      "to": "sunst01_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "南一室",
+      "to": "sunst01_hold01_06",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst01_hold01_05_main", "name": "大廳", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_main", "responses": { "Move": "你回到大廳。" } },
-    { "id": "sunst01_hold01_05_06", "name": "南一室", "sockets": ["Move"], "move_to_room_id": "sunst01_hold01_06", "responses": { "Move": "你往南一室走去。" } }
+    {
+      "id": "sunst01_hold01_05_main",
+      "name": "大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_main",
+      "responses": {
+        "Move": "你回到大廳。"
+      }
+    },
+    {
+      "id": "sunst01_hold01_05_06",
+      "name": "南一室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_06",
+      "responses": {
+        "Move": "你往南一室走去。"
+      }
+    }
   ]
 }

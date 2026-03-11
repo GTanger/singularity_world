@@ -2,10 +2,7 @@
   "id": "wust08_shop01_03",
   "name": "庫房",
   "description": "庫藏間牆面能量維持陣列，黑金屬儲架厚實地衣，環境乾燥穩定、樹脂香與電離感平衡，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

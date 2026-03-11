@@ -73,7 +73,9 @@
     {
       "id": "st8_exit_yaxiao_st4",
       "name": "夜鴞巷四巷",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "yaxiao_st4",
       "responses": {
         "Move": "你拐進夜鴞巷四巷。"

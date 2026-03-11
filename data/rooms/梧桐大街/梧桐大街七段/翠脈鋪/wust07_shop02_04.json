@@ -2,10 +2,7 @@
   "id": "wust07_shop02_04",
   "name": "工坊隅",
   "description": "寶石居整塊平整白玉、紫晶裝飾，溫潤水汽與沉香，尊貴生活化，簷角藤蔓撐簷、濃蔭掩映，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔庫房〕、〔展間〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

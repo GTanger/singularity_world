@@ -2,11 +2,7 @@
   "id": "wust05_shop01_07",
   "name": "理療區",
   "description": "理療區檯面耐熱黑金屬、流動金屬質感藥劑，藍色地衣過濾空氣，乾燥有序，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔焙間〕、〔寢區〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor",
-    "food"
-  ],
+  "tags": ["residence","indoor","food"],
   "zone": "wustreet",
   "exits": [
     {

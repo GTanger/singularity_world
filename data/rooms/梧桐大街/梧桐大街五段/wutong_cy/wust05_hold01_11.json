@@ -2,10 +2,7 @@
   "id": "wust05_hold01_11",
   "name": "晶絲密林",
   "description": "泉響廊環形水路熱液導引，流體撞擊石階清脆，植被綠色隧道，光學穩重琥珀色，縫隙菌絲或微光，縫隙菌絲或微光。可經〔廳角〕、〔微光銜接點〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

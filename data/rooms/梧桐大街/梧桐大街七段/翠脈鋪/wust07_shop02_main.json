@@ -2,10 +2,7 @@
   "id": "wust07_shop02_main",
   "name": "翠脈鋪",
   "description": "簷下肆門面：簷角藤蔓撐簷、店招掩映濃蔭，晶體與木質增生咬合，綠意與低飽和微光，懸浮微粒與沉香並存，懸浮微粒與沉香並存。可經〔大街〕、〔櫃前〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

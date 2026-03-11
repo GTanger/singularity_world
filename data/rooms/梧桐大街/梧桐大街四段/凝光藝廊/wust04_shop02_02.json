@@ -2,11 +2,7 @@
   "id": "wust04_shop02_02",
   "name": "櫃前",
   "description": "櫃後間陳列架與根鬚咬合，光線篩落、琥珀色調，懸浮微粒與淡淡樹脂氣息，從容不迫，無廢土感、從容，熱輻射使邊界略顯模糊。可經〔大街〕、〔庫房〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor",
-    "storage"
-  ],
+  "tags": ["shop","indoor","storage"],
   "zone": "wustreet",
   "exits": [
     {

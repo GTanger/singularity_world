@@ -2,14 +2,42 @@
   "id": "sunst05_hold01_17",
   "name": "中庭口",
   "description": "廣場中庭入口，稜鏡柱環繞成半弧、密集金光自拱頂篩落，白玉地面反射淡金微光，能量微粒懸浮、空氣流速快，深色金屬欄杆與黑木階咬合，開敞明亮。可經〔廣場中央〕折返，或往〔中庭一區〕。",
-  "tags": ["hold", "indoor", "outdoor"],
+  "tags": ["hold","indoor","outdoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "廣場中央", "to": "sunst05_hold01_main", "ui_hidden": true },
-    { "direction": "中庭一區", "to": "sunst05_hold01_18", "ui_hidden": true }
+    {
+      "direction": "廣場中央",
+      "to": "sunst05_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "中庭一區",
+      "to": "sunst05_hold01_18",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst05_hold01_17_main", "name": "廣場中央", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_main", "responses": { "Move": "你回到廣場中央。" } },
-    { "id": "sunst05_hold01_17_18", "name": "中庭一區", "sockets": ["Move"], "move_to_room_id": "sunst05_hold01_18", "responses": { "Move": "你往中庭一區走去。" } }
+    {
+      "id": "sunst05_hold01_17_main",
+      "name": "廣場中央",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_main",
+      "responses": {
+        "Move": "你回到廣場中央。"
+      }
+    },
+    {
+      "id": "sunst05_hold01_17_18",
+      "name": "中庭一區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_18",
+      "responses": {
+        "Move": "你往中庭一區走去。"
+      }
+    }
   ]
 }

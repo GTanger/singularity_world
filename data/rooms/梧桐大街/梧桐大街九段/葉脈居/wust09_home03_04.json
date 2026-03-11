@@ -2,10 +2,7 @@
   "id": "wust09_home03_04",
   "name": "側間",
   "description": "墨染廊半開放階梯、金屬光澤熱液，兩側植被葉片重疊、綠色隧道封閉，樹脂香與電離感平衡，懸浮微粒與沉香並存。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

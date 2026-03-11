@@ -2,10 +2,7 @@
   "id": "wust05_hold01_15",
   "name": "翠影銜接點",
   "description": "出口地勢平緩銜接黑曜石磚路，綠蔭散開現街區輪廓，空氣乾燥光線自然，石磚與根鬚嵌合，綠意與增生並存、從容。可經〔翠影閣〕、〔廳角〕、〔翠意階道〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

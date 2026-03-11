@@ -2,10 +2,7 @@
   "id": "wust07_home02_02",
   "name": "前間",
   "description": "廊底小間藤蔓撐簷、濃蔭掩映，地面落葉與腐殖層形成溫潤層次，無廢土感，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔門廳〕、〔裡間〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

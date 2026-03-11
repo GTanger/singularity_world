@@ -2,10 +2,7 @@
   "id": "wust04_shop02_03",
   "name": "庫房",
   "description": "櫃後間陳列架與根鬚咬合，光線篩落、琥珀色調，懸浮微粒與淡淡樹脂氣息，從容不迫，無廢土感、從容，恆溫熱氣與沉香淡淡。可經〔櫃前〕、〔工坊隅〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,16 +2,58 @@
   "id": "sunst04_shop03_main",
   "name": "曙照堂・堂口",
   "description": "堂口稜鏡林立，室內光線飽和如蜜，白玉地面反射淡金微光，深色金屬檯面與黑木架咬合，能量導線隱約脈動，稜鏡自拱頂導光入室，開敞明亮。可經〔向陽大街四段〕離開，或沿環廊往〔東廊〕、〔西廊〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "sunstreet_st4", "to": "sunstreet_st4", "ui_hidden": true },
-    { "direction": "東廊", "to": "sunst04_shop03_02", "ui_hidden": true },
-    { "direction": "西廊", "to": "sunst04_shop03_08", "ui_hidden": true }
+    {
+      "direction": "sunstreet_st4",
+      "to": "sunstreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東廊",
+      "to": "sunst04_shop03_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西廊",
+      "to": "sunst04_shop03_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst04_shop03_main_st4", "name": "向陽大街四段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st4", "responses": { "Move": "你步出曙照堂，回到向陽大街四段。" } },
-    { "id": "sunst04_shop03_main_02", "name": "東廊", "sockets": ["Move"], "move_to_room_id": "sunst04_shop03_02", "responses": { "Move": "你往東廊走去。" } },
-    { "id": "sunst04_shop03_main_08", "name": "西廊", "sockets": ["Move"], "move_to_room_id": "sunst04_shop03_08", "responses": { "Move": "你往西廊走去。" } }
+    {
+      "id": "sunst04_shop03_main_st4",
+      "name": "向陽大街四段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st4",
+      "responses": {
+        "Move": "你步出曙照堂，回到向陽大街四段。"
+      }
+    },
+    {
+      "id": "sunst04_shop03_main_02",
+      "name": "東廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop03_02",
+      "responses": {
+        "Move": "你往東廊走去。"
+      }
+    },
+    {
+      "id": "sunst04_shop03_main_08",
+      "name": "西廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop03_08",
+      "responses": {
+        "Move": "你往西廊走去。"
+      }
+    }
   ]
 }

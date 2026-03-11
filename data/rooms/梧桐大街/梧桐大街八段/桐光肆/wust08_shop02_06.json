@@ -2,10 +2,7 @@
   "id": "wust08_shop02_06",
   "name": "焙間",
   "description": "工坊隅牆面分形圖樣、地表絲線碎片，低頻共振、空氣流通穩定，光學穩重琥珀色，油脂感與微光並存，文明與增生並存。可經〔大街〕、〔展間〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust08_shop03_07",
   "name": "理療區",
   "description": "理療區檯面耐熱黑金屬、流動金屬質感藥劑，藍色地衣過濾空氣，乾燥有序，簷角藤蔓撐簷、濃蔭掩映，落葉與腐殖層溫潤。可經〔大街〕、〔焙間〕、〔寢區〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

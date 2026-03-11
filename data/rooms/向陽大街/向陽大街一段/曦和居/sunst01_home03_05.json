@@ -2,14 +2,42 @@
   "id": "sunst01_home03_05",
   "name": "丁間",
   "description": "居內環廊丁間，落地窗把光裁成斜格，拱頂壓低、金光自稜鏡傾瀉，深色金屬架與黑木檯貼牆，微粒在光柱裡緩浮，沉香淡淡，室內亮堂、陳設齊整。可經環廊往〔丙間〕或〔戊間〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "丙間", "to": "sunst01_home03_04", "ui_hidden": true },
-    { "direction": "戊間", "to": "sunst01_home03_06", "ui_hidden": true }
+    {
+      "direction": "丙間",
+      "to": "sunst01_home03_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "戊間",
+      "to": "sunst01_home03_06",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst01_home03_05_04", "name": "丙間", "sockets": ["Move"], "move_to_room_id": "sunst01_home03_04", "responses": { "Move": "你往丙間走去。" } },
-    { "id": "sunst01_home03_05_06", "name": "戊間", "sockets": ["Move"], "move_to_room_id": "sunst01_home03_06", "responses": { "Move": "你往戊間走去。" } }
+    {
+      "id": "sunst01_home03_05_04",
+      "name": "丙間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home03_04",
+      "responses": {
+        "Move": "你往丙間走去。"
+      }
+    },
+    {
+      "id": "sunst01_home03_05_06",
+      "name": "戊間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home03_06",
+      "responses": {
+        "Move": "你往戊間走去。"
+      }
+    }
   ]
 }

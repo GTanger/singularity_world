@@ -2,10 +2,7 @@
   "id": "wust01_hold01_04",
   "name": "側間",
   "description": "藤間藤蔓支架正方形矩陣，葉片均一、受控富態化生長，空氣流通、金屬氧化味淡淡，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

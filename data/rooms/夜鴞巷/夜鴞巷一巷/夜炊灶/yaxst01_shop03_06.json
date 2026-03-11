@@ -2,12 +2,26 @@
   "id": "yaxst01_shop03_06",
   "name": "夜炊灶・側室五",
   "description": "單間側室，鉛皮牆面與灰牆相接處導能紋路隱入縫隙。晶簇稀疏，光色偏琥珀，黑石地磚冰涼，熟成樹脂氣味自壁縫滲出。可經〔灶前〕回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst01_shop03_main", "to": "yaxst01_shop03_main", "ui_hidden": true }
+    {
+      "direction": "yaxst01_shop03_main",
+      "to": "yaxst01_shop03_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst01_shop03_06_main", "name": "灶前", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop03_main", "responses": { "Move": "你掀簾退回灶前。" } }
+    {
+      "id": "yaxst01_shop03_06_main",
+      "name": "灶前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop03_main",
+      "responses": {
+        "Move": "你掀簾退回灶前。"
+      }
+    }
   ]
 }

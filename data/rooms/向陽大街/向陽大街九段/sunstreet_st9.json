@@ -2,7 +2,7 @@
   "id": "sunstreet_st9",
   "name": "向陽大街九段",
   "description": "向陽大街九段，街尾接四路街口，拋光白玉地面與稜鏡導光依舊，密集金光與淡金微光垂落，空氣流速快、能量微粒懸浮，光明敞亮、靜謐光域。可經〔向陽大街八段〕折返、經〔四路街口〕往他街，或經〔熙光肆〕、〔亮敞居〕、〔熙光宅〕、〔向暖閣〕、〔暖照廬〕入內。",
-  "tags": ["street", "outdoor"],
+  "tags": ["street","outdoor"],
   "zone": "sunstreet",
   "exits": [
     {
@@ -45,7 +45,9 @@
     {
       "id": "sun_st9_exit_st8",
       "name": "向陽大街八段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunstreet_st8",
       "responses": {
         "Move": "你沿向陽大街往八段走去。"
@@ -54,7 +56,9 @@
     {
       "id": "sun_st9_exit_4zone",
       "name": "四路街口",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "street4zone",
       "responses": {
         "Move": "你步向四路街口。"
@@ -63,7 +67,9 @@
     {
       "id": "sun_st9_obj_shop01",
       "name": "熙光肆",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst09_shop01_main",
       "responses": {
         "Move": "你步入熙光肆。"
@@ -72,7 +78,9 @@
     {
       "id": "sun_st9_obj_home01",
       "name": "亮敞居",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst09_home01_main",
       "responses": {
         "Move": "你步入亮敞居。"
@@ -81,7 +89,9 @@
     {
       "id": "sun_st9_obj_home02",
       "name": "熙光宅",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst09_home02_main",
       "responses": {
         "Move": "你步入熙光宅。"
@@ -90,7 +100,9 @@
     {
       "id": "sun_st9_obj_home03",
       "name": "向暖閣",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst09_home03_main",
       "responses": {
         "Move": "你步入向暖閣。"
@@ -99,7 +111,9 @@
     {
       "id": "sun_st9_obj_home04",
       "name": "暖照廬",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst09_home04_main",
       "responses": {
         "Move": "你步入暖照廬。"

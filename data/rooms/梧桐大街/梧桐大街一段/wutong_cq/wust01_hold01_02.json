@@ -2,10 +2,7 @@
   "id": "wust01_hold01_02",
   "name": "前間",
   "description": "退步碎玉石與苔蘚消音層，能量捕獲藤蔓末端規律微光，光線深琥珀色，綠意與增生並存、從容，綠意與增生並存、從容。可經〔入所門廊〕、〔裡間〕、〔茶間〕、〔能量配發中樞〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

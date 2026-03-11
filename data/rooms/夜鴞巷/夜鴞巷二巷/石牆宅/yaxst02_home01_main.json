@@ -2,16 +2,58 @@
   "id": "yaxst02_home01_main",
   "name": "石牆宅・門內",
   "description": "石牆厚實，門闔上後啼鳴頓弱，門內窄小，隔音鉛皮與黑石牆面夾出左右兩道廊口。晶簇嵌在頂心、灑下淡紫與深琥珀色光，黃銅導向線沿踢腳分向兩側延伸，沉香與熟成樹脂氣味自廊深處漏出。可經〔夜鴞巷二巷〕離開，或往〔左廊〕〔右廊〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxiao_st2", "to": "yaxiao_st2", "ui_hidden": true },
-    { "direction": "yaxst02_home01_02", "to": "yaxst02_home01_02", "ui_hidden": true },
-    { "direction": "yaxst02_home01_03", "to": "yaxst02_home01_03", "ui_hidden": true }
+    {
+      "direction": "yaxiao_st2",
+      "to": "yaxiao_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_home01_02",
+      "to": "yaxst02_home01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_home01_03",
+      "to": "yaxst02_home01_03",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst02_home01_main_st2", "name": "夜鴞巷二巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st2", "responses": { "Move": "你步出石牆宅，回到夜鴞巷二巷。" } },
-    { "id": "yaxst02_home01_main_02", "name": "左廊", "sockets": ["Move"], "move_to_room_id": "yaxst02_home01_02", "responses": { "Move": "你往左廊走去。" } },
-    { "id": "yaxst02_home01_main_03", "name": "右廊", "sockets": ["Move"], "move_to_room_id": "yaxst02_home01_03", "responses": { "Move": "你往右廊走去。" } }
+    {
+      "id": "yaxst02_home01_main_st2",
+      "name": "夜鴞巷二巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st2",
+      "responses": {
+        "Move": "你步出石牆宅，回到夜鴞巷二巷。"
+      }
+    },
+    {
+      "id": "yaxst02_home01_main_02",
+      "name": "左廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_home01_02",
+      "responses": {
+        "Move": "你往左廊走去。"
+      }
+    },
+    {
+      "id": "yaxst02_home01_main_03",
+      "name": "右廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_home01_03",
+      "responses": {
+        "Move": "你往右廊走去。"
+      }
+    }
   ]
 }

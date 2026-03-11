@@ -2,10 +2,7 @@
   "id": "wust06_shop01_05",
   "name": "展間",
   "description": "吧台晶質食材、冷光源苔蘚牆面，空氣甜美樹脂、質感圓潤飽滿，玉質脈絡隱約、從容，簷角藤蔓撐簷、濃蔭掩映。可經〔工坊隅〕、〔焙間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

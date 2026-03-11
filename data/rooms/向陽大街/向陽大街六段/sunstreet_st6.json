@@ -2,7 +2,7 @@
   "id": "sunstreet_st6",
   "name": "向陽大街六段",
   "description": "向陽大街六段，石板色澤明亮、地表能量流路清晰可辨，稜鏡外牆將光能導入地面，空氣流速快、光霧稀薄，琥珀與淡金微光層次分明，靜謐光域、從容。可經〔向陽大街五段〕折返、〔向陽大街七段〕延伸，或經〔流金居〕、〔熾光舍〕、〔採熙閣〕、〔熙和寓〕、〔輝照廬〕入內。",
-  "tags": ["street", "outdoor"],
+  "tags": ["street","outdoor"],
   "zone": "sunstreet",
   "exits": [
     {
@@ -45,7 +45,9 @@
     {
       "id": "sun_st6_exit_st5",
       "name": "向陽大街五段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunstreet_st5",
       "responses": {
         "Move": "你沿向陽大街往五段走去。"
@@ -54,7 +56,9 @@
     {
       "id": "sun_st6_exit_st7",
       "name": "向陽大街七段",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunstreet_st7",
       "responses": {
         "Move": "你沿向陽大街往七段走去。"
@@ -63,7 +67,9 @@
     {
       "id": "sun_st6_obj_home01",
       "name": "流金居",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst06_home01_main",
       "responses": {
         "Move": "你步入流金居。"
@@ -72,7 +78,9 @@
     {
       "id": "sun_st6_obj_home02",
       "name": "熾光舍",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst06_home02_main",
       "responses": {
         "Move": "你步入熾光舍。"
@@ -81,7 +89,9 @@
     {
       "id": "sun_st6_obj_shop01",
       "name": "採熙閣",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst06_shop01_main",
       "responses": {
         "Move": "你步入採熙閣。"
@@ -90,7 +100,9 @@
     {
       "id": "sun_st6_obj_home03",
       "name": "熙和寓",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst06_home03_main",
       "responses": {
         "Move": "你步入熙和寓。"
@@ -99,7 +111,9 @@
     {
       "id": "sun_st6_obj_home04",
       "name": "輝照廬",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst06_home04_main",
       "responses": {
         "Move": "你步入輝照廬。"

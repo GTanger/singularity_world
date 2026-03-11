@@ -2,12 +2,26 @@
   "id": "yaxst01_home01_06",
   "name": "閉門寓・盡頭間",
   "description": "內廊終點，三面鉛皮牆合圍，頂心晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈後隱入牆底。沉香沉在膝蓋高度，極靜。可經〔內廊四〕走回。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst01_home01_05", "to": "yaxst01_home01_05", "ui_hidden": true }
+    {
+      "direction": "yaxst01_home01_05",
+      "to": "yaxst01_home01_05",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst01_home01_06_05", "name": "內廊四", "sockets": ["Move"], "move_to_room_id": "yaxst01_home01_05", "responses": { "Move": "你沿內廊往回走。" } }
+    {
+      "id": "yaxst01_home01_06_05",
+      "name": "內廊四",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_home01_05",
+      "responses": {
+        "Move": "你沿內廊往回走。"
+      }
+    }
   ]
 }

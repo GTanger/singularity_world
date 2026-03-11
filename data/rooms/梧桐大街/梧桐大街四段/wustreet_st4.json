@@ -111,7 +111,9 @@
     {
       "id": "wu_st4_exit_yaxiao_st2",
       "name": "夜鴞巷二巷",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "yaxiao_st2",
       "responses": {
         "Move": "你拐進夜鴞巷二巷。"

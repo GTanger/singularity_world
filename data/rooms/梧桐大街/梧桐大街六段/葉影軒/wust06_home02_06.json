@@ -2,10 +2,7 @@
   "id": "wust06_home02_06",
   "name": "茶間",
   "description": "泉響廊環形水路熱液導引，流體撞擊石階清脆，植被綠色隧道，落葉與腐殖層溫潤，縫隙菌絲或微光，縫隙菌絲或微光。可經〔大街〕、〔書隅〕、〔寢間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

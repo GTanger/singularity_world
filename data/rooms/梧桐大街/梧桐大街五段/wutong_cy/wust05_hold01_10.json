@@ -2,10 +2,7 @@
   "id": "wust05_hold01_10",
   "name": "廳角",
   "description": "斗室牆面玉質脈絡與根鬚咬合，光線自簷角篩落，石磚與根鬚嵌合的地面泛著恆溫熱氣，靜，油脂感與微光並存，靜謐的豐饒。可經〔晶絲密林〕、〔翠影銜接點〕、〔儲間〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,12 +2,26 @@
   "id": "sunst03_shop03_09",
   "name": "中廊・三間",
   "description": "中廊盡頭，拱頂稜鏡集中、光線飽和如蜜，白玉地面嵌琉璃條，牆面能量紋路隱約脈動，黑木長几靠牆、表面油脂光澤，厚牆吸音、極靜。可經〔中廊・二間〕沿中廊返回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "中廊・二間", "to": "sunst03_shop03_08", "ui_hidden": true }
+    {
+      "direction": "中廊・二間",
+      "to": "sunst03_shop03_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst03_shop03_09_08", "name": "中廊・二間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop03_08", "responses": { "Move": "你往中廊二間走回。" } }
+    {
+      "id": "sunst03_shop03_09_08",
+      "name": "中廊・二間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_08",
+      "responses": {
+        "Move": "你往中廊二間走回。"
+      }
+    }
   ]
 }

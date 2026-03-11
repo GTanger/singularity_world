@@ -2,16 +2,58 @@
   "id": "sunst03_shop01_03",
   "name": "居區・前間",
   "description": "居區入口，稜鏡垂落金光如簾、淡金微光與深色金屬對比強烈，白玉地面嵌琉璃條，牆面能量導線隱約脈動，黑木長榻靠牆，室內無雜音。可經〔櫃面〕回到鋪頭，或往深處〔居區・中間〕、〔居區・側室〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "櫃面", "to": "sunst03_shop01_main", "ui_hidden": true },
-    { "direction": "居區・中間", "to": "sunst03_shop01_07", "ui_hidden": true },
-    { "direction": "居區・側室", "to": "sunst03_shop01_09", "ui_hidden": true }
+    {
+      "direction": "櫃面",
+      "to": "sunst03_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "居區・中間",
+      "to": "sunst03_shop01_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "居區・側室",
+      "to": "sunst03_shop01_09",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst03_shop01_03_main", "name": "櫃面", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_main", "responses": { "Move": "你回到櫃面。" } },
-    { "id": "sunst03_shop01_03_07", "name": "居區・中間", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_07", "responses": { "Move": "你往居區中間走去。" } },
-    { "id": "sunst03_shop01_03_09", "name": "居區・側室", "sockets": ["Move"], "move_to_room_id": "sunst03_shop01_09", "responses": { "Move": "你往居區側室走去。" } }
+    {
+      "id": "sunst03_shop01_03_main",
+      "name": "櫃面",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_main",
+      "responses": {
+        "Move": "你回到櫃面。"
+      }
+    },
+    {
+      "id": "sunst03_shop01_03_07",
+      "name": "居區・中間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_07",
+      "responses": {
+        "Move": "你往居區中間走去。"
+      }
+    },
+    {
+      "id": "sunst03_shop01_03_09",
+      "name": "居區・側室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_09",
+      "responses": {
+        "Move": "你往居區側室走去。"
+      }
+    }
   ]
 }

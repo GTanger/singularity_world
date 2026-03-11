@@ -2,10 +2,7 @@
   "id": "wust04_shop01_06",
   "name": "焙間",
   "description": "庫藏間牆面能量維持陣列，黑金屬儲架厚實地衣，環境乾燥穩定、樹脂香與電離感平衡，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔展間〕、〔理療區〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

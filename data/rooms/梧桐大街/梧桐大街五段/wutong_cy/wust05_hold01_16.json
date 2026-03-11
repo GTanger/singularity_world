@@ -2,10 +2,7 @@
   "id": "wust05_hold01_16",
   "name": "鳴葉淺灘",
   "description": "出口地勢平緩銜接黑曜石磚路，綠蔭散開現街區輪廓，空氣乾燥光線自然，靜謐的豐饒，綠意與增生並存、從容，綠意與增生並存、從容。可經〔茶間〕、〔幾何植栽牆〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust09_home03_02",
   "name": "前間",
   "description": "全相隅、翠影閣、雨霖隅、求實居、微光隅等子景點各一句，略，綠意與增生並存、從容，綠廊拱頂、靜謐豐饒，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔門廳〕、〔裡間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust01_hold01_09",
   "name": "儲間",
   "description": "內廊兩側梧桐被精確修剪成對稱立柱形，葉片覆晶質膜，空氣流通感強、紙漿與沉香淡淡，懸浮微粒與沉香並存，懸浮微粒與沉香並存。可經〔泉響寓〕、〔廊底〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

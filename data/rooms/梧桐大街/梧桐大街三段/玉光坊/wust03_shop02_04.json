@@ -2,10 +2,7 @@
   "id": "wust03_shop02_04",
   "name": "工坊隅",
   "description": "鍛造區巨大能量晶體轉軸隆隆運轉熾熱暖煙，耐熱黑岩石縫流動金色能量，電離與重壓感，枝葉蔽天、綠廊拱頂感。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

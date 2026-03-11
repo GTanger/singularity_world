@@ -2,10 +2,7 @@
   "id": "wust08_home02_03",
   "name": "裡間",
   "description": "階側整塊黑岩光滑如鏡，能量礦石鑲嵌牆面，晶化木材家具與恆溫熱輻射並存，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔前間〕、〔側間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

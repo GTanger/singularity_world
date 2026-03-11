@@ -2,14 +2,42 @@
   "id": "yaxst04_shop01_13",
   "name": "長燈棧・棧底廊二",
   "description": "棧底廊中段，氣密鉛皮鋪到腰高，黃銅導向線貼地向棧底延伸。熟成樹脂與沉香混在空氣裡，黑石吸走足音，極靜。可經〔棧底廊一〕或〔棧底廊三〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst04_shop01_12", "to": "yaxst04_shop01_12", "ui_hidden": true },
-    { "direction": "yaxst04_shop01_14", "to": "yaxst04_shop01_14", "ui_hidden": true }
+    {
+      "direction": "yaxst04_shop01_12",
+      "to": "yaxst04_shop01_12",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop01_14",
+      "to": "yaxst04_shop01_14",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst04_shop01_13_12", "name": "棧底廊一", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_12", "responses": { "Move": "你往棧底廊一走回。" } },
-    { "id": "yaxst04_shop01_13_14", "name": "棧底廊三", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_14", "responses": { "Move": "你往棧底廊三走去。" } }
+    {
+      "id": "yaxst04_shop01_13_12",
+      "name": "棧底廊一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop01_12",
+      "responses": {
+        "Move": "你往棧底廊一走回。"
+      }
+    },
+    {
+      "id": "yaxst04_shop01_13_14",
+      "name": "棧底廊三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop01_14",
+      "responses": {
+        "Move": "你往棧底廊三走去。"
+      }
+    }
   ]
 }

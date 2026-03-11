@@ -2,10 +2,7 @@
   "id": "wust09_home01_02",
   "name": "前間",
   "description": "耳房透明晶體牆透視巨木根系，黑曜石磚鑲暖能石維持恆溫，綠意與熱氣並存，低飽和微光、從容，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔裡間〕、〔側間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

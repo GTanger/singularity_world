@@ -2,10 +2,7 @@
   "id": "wust04_shop02_05",
   "name": "展間",
   "description": "展間中心未加工原石與精密切削工具，石粉與高溫熔融金屬氣味，熱輻射飽滿深琥珀，無廢土感、從容，環境音被厚實牆面吸收。可經〔工坊隅〕、〔焙間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

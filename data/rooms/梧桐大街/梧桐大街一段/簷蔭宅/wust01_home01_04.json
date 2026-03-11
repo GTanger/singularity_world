@@ -2,10 +2,7 @@
   "id": "wust01_home01_04",
   "name": "側間",
   "description": "石階路能量液體地表淺溪流向低處，空氣清爽森林氣味，視線越過灌木見中央煙霧，縫隙菌絲或微光，縫隙菌絲或微光。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

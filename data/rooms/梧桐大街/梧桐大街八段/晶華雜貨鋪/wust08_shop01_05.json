@@ -2,10 +2,7 @@
   "id": "wust08_shop01_05",
   "name": "展間",
   "description": "臥眠區巨根與黑曜石壁圍合露天，發光能量碎屑、枝葉框架琥珀色天空，光線篩落、靜謐豐饒，恆溫熱氣與沉香淡淡。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

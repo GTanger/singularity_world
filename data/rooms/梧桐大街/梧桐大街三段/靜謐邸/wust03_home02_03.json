@@ -2,10 +2,7 @@
   "id": "wust03_home02_03",
   "name": "裡間",
   "description": "小廳挑高處枝葉蔽天，綠廊拱頂感；地面石磚與根鬚嵌合，縫隙菌絲或微光，從容，懸浮微粒與沉香並存，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

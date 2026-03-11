@@ -2,10 +2,7 @@
   "id": "wust02_home02_05",
   "name": "書隅",
   "description": "側室玉質脈絡自牆面延伸至地，簷角藤蔓與結構咬合，光線篩落、油脂感溫潤，落葉與腐殖層溫潤，縫隙菌絲或微光。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

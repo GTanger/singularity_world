@@ -2,10 +2,7 @@
   "id": "wust06_home01_main",
   "name": "溫潤宅",
   "description": "溫潤宅門廳：石磚與根鬚嵌合、縫隙菌絲或微光，恆溫熱氣、落葉與腐殖層溫潤，一步入畫，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

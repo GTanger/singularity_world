@@ -2,10 +2,7 @@
   "id": "wust04_home02_04",
   "name": "側間",
   "description": "雲岫廊強化透明晶體牆透視巨木根系，黑曜石磚鑲暖能石，恆溫綠意，空氣流通感強，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

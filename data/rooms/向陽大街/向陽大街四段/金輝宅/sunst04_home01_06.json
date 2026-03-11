@@ -2,12 +2,26 @@
   "id": "sunst04_home01_06",
   "name": "東廂三室",
   "description": "東廂小間，高窗與稜鏡交錯、光線呈琥珀色，地面拋光白玉與琉璃嵌條對比強烈，深色金屬架與黑木柜咬合，陳設整齊、線條規整，室內無雜音。可經〔東廂・前間〕返回。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "東廂・前間", "to": "sunst04_home01_02", "ui_hidden": true }
+    {
+      "direction": "東廂・前間",
+      "to": "sunst04_home01_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst04_home01_06_02", "name": "東廂・前間", "sockets": ["Move"], "move_to_room_id": "sunst04_home01_02", "responses": { "Move": "你往東廂前間走回。" } }
+    {
+      "id": "sunst04_home01_06_02",
+      "name": "東廂・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_home01_02",
+      "responses": {
+        "Move": "你往東廂前間走回。"
+      }
+    }
   ]
 }

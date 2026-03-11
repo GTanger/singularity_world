@@ -2,10 +2,7 @@
   "id": "wust03_home01_06",
   "name": "茶間",
   "description": "大廳幾何中心木質拱樑紅地衣，白玉接待環台懸浮能量投影地圖，簷角藤蔓撐簷、濃蔭掩映，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔書隅〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

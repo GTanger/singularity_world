@@ -2,14 +2,42 @@
   "id": "yaxst03_shop01_main",
   "name": "窄門棧・櫃前",
   "description": "窄門闔上後啼鳴頓弱，櫃前狹長，一道長廊自腳底黃銅導向線伸入深處，隔音鉛皮包覆兩壁。晶簇嵌在簷角、灑下淡紫與琥珀色光，黑石地磚冰涼，沉香與熟成樹脂氣味自廊道漏出。可經〔夜鴞巷三巷〕離開，或往〔廊道〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxiao_st3", "to": "yaxiao_st3", "ui_hidden": true },
-    { "direction": "yaxst03_shop01_02", "to": "yaxst03_shop01_02", "ui_hidden": true }
+    {
+      "direction": "yaxiao_st3",
+      "to": "yaxiao_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop01_02",
+      "to": "yaxst03_shop01_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst03_shop01_main_st3", "name": "夜鴞巷三巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st3", "responses": { "Move": "你步出窄門棧，回到夜鴞巷三巷。" } },
-    { "id": "yaxst03_shop01_main_02", "name": "廊道", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop01_02", "responses": { "Move": "你往廊道走去。" } }
+    {
+      "id": "yaxst03_shop01_main_st3",
+      "name": "夜鴞巷三巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st3",
+      "responses": {
+        "Move": "你步出窄門棧，回到夜鴞巷三巷。"
+      }
+    },
+    {
+      "id": "yaxst03_shop01_main_02",
+      "name": "廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop01_02",
+      "responses": {
+        "Move": "你往廊道走去。"
+      }
+    }
   ]
 }

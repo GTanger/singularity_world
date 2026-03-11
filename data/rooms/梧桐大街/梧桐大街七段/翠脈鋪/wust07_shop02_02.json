@@ -2,10 +2,7 @@
   "id": "wust07_shop02_02",
   "name": "櫃前",
   "description": "鍛造區巨大能量晶體轉軸隆隆運轉熾熱暖煙，耐熱黑岩石縫流動金色能量，電離與重壓感，恆溫熱氣與沉香淡淡，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔門廳〕、〔庫房〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

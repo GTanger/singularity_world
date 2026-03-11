@@ -2,10 +2,7 @@
   "id": "wust03_home02_02",
   "name": "前間",
   "description": "雲岫廊強化透明晶體牆透視巨木根系，黑曜石磚鑲暖能石，恆溫綠意，綠意與增生並存、從容，綠意與增生並存、從容。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

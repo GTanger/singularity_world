@@ -2,10 +2,7 @@
   "id": "wust04_home02_05",
   "name": "書隅",
   "description": "石階路能量液體地表淺溪流向低處，空氣清爽森林氣味，視線越過灌木見中央煙霧，光學穩重琥珀色，縫隙菌絲或微光。可經〔大街〕、〔側間〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

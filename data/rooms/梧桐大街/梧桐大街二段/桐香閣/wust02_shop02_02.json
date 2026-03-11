@@ -2,10 +2,7 @@
   "id": "wust02_shop02_02",
   "name": "櫃前",
   "description": "工坊隅牆面分形圖樣、地表絲線碎片，低頻共振、空氣流通穩定，光學穩重琥珀色，光線篩落、靜謐豐饒，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔門廳〕、〔庫房〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

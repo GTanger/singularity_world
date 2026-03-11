@@ -2,10 +2,7 @@
   "id": "wust02_shop01_main",
   "name": "沉香理療坊",
   "description": "理療區檯面耐熱黑金屬、流動金屬質感藥劑，藍色地衣過濾空氣，乾燥有序，簷角藤蔓撐簷、濃蔭掩映，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔櫃前〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

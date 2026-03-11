@@ -2,18 +2,74 @@
   "id": "yaxst04_home01_main",
   "name": "氣密寓所・玄關",
   "description": "氣密門闔上後巷聲頓消，玄關窄長，頂角晶簇與暖能石灑下琥珀色光。三條黃銅導向線自腳底分向三扇內門延伸，黑石地磚冰涼，牆面鉛皮與導能紋路咬合，沉香餘韻沉在空氣裡。可經〔夜鴞巷四巷〕離開，或往〔左廂〕〔中廳〕〔右廂〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxiao_st4", "to": "yaxiao_st4", "ui_hidden": true },
-    { "direction": "yaxst04_home01_02", "to": "yaxst04_home01_02", "ui_hidden": true },
-    { "direction": "yaxst04_home01_03", "to": "yaxst04_home01_03", "ui_hidden": true },
-    { "direction": "yaxst04_home01_04", "to": "yaxst04_home01_04", "ui_hidden": true }
+    {
+      "direction": "yaxiao_st4",
+      "to": "yaxiao_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_home01_02",
+      "to": "yaxst04_home01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_home01_03",
+      "to": "yaxst04_home01_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_home01_04",
+      "to": "yaxst04_home01_04",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst04_home01_main_st4", "name": "夜鴞巷四巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st4", "responses": { "Move": "你步出氣密寓所，回到夜鴞巷四巷。" } },
-    { "id": "yaxst04_home01_main_02", "name": "左廂", "sockets": ["Move"], "move_to_room_id": "yaxst04_home01_02", "responses": { "Move": "你推門入左廂。" } },
-    { "id": "yaxst04_home01_main_03", "name": "中廳", "sockets": ["Move"], "move_to_room_id": "yaxst04_home01_03", "responses": { "Move": "你推門入中廳。" } },
-    { "id": "yaxst04_home01_main_04", "name": "右廂", "sockets": ["Move"], "move_to_room_id": "yaxst04_home01_04", "responses": { "Move": "你推門入右廂。" } }
+    {
+      "id": "yaxst04_home01_main_st4",
+      "name": "夜鴞巷四巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st4",
+      "responses": {
+        "Move": "你步出氣密寓所，回到夜鴞巷四巷。"
+      }
+    },
+    {
+      "id": "yaxst04_home01_main_02",
+      "name": "左廂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home01_02",
+      "responses": {
+        "Move": "你推門入左廂。"
+      }
+    },
+    {
+      "id": "yaxst04_home01_main_03",
+      "name": "中廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home01_03",
+      "responses": {
+        "Move": "你推門入中廳。"
+      }
+    },
+    {
+      "id": "yaxst04_home01_main_04",
+      "name": "右廂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home01_04",
+      "responses": {
+        "Move": "你推門入右廂。"
+      }
+    }
   ]
 }

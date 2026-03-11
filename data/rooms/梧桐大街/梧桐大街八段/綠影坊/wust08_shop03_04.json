@@ -2,10 +2,7 @@
   "id": "wust08_shop03_04",
   "name": "工坊隅",
   "description": "磨光間地勢抬升白玉石，溫壓驟降、礦物氣息清爽，鍛造裝飾品莊嚴秩序井然，玉質脈絡隱約、從容，文明與增生並存。可經〔大街〕、〔庫房〕、〔展間〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

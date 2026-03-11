@@ -2,10 +2,7 @@
   "id": "wust06_home01_04",
   "name": "側間",
   "description": "廂房金屬質感根穴中鋪墊厚實織物，暗紅能量晶體鑲嵌天花，環境極安靜，石磚與根鬚嵌合，懸浮微粒與沉香並存。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

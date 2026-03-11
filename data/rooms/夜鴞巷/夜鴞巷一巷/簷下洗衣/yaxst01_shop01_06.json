@@ -2,14 +2,42 @@
   "id": "yaxst01_shop01_06",
   "name": "簷下洗衣・右廊口",
   "description": "右廊起處，氣密鉛皮鋪到腰高，其上灰牆斑駁，黃銅導向線沿門框延伸。晶簇自頂角投下淡紫微光，黑石地磚沁著水氣，巷內啼鳴被厚牆擋成模糊底噪。可經〔前廳〕或〔右廊中〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst01_shop01_main", "to": "yaxst01_shop01_main", "ui_hidden": true },
-    { "direction": "yaxst01_shop01_07", "to": "yaxst01_shop01_07", "ui_hidden": true }
+    {
+      "direction": "yaxst01_shop01_main",
+      "to": "yaxst01_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst01_shop01_07",
+      "to": "yaxst01_shop01_07",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst01_shop01_06_main", "name": "前廳", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_main", "responses": { "Move": "你退回前廳。" } },
-    { "id": "yaxst01_shop01_06_07", "name": "右廊中", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_07", "responses": { "Move": "你往右廊中段走。" } }
+    {
+      "id": "yaxst01_shop01_06_main",
+      "name": "前廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_main",
+      "responses": {
+        "Move": "你退回前廳。"
+      }
+    },
+    {
+      "id": "yaxst01_shop01_06_07",
+      "name": "右廊中",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_07",
+      "responses": {
+        "Move": "你往右廊中段走。"
+      }
+    }
   ]
 }

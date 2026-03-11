@@ -2,10 +2,7 @@
   "id": "wust09_home01_04",
   "name": "側間",
   "description": "門廊打磨鏡面黑曜石、黃銅能量導線石縫鑲嵌，梧桐對稱立柱形、晶質膜葉片，紙漿與沉香，玉質脈絡隱約、從容。可經〔前間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

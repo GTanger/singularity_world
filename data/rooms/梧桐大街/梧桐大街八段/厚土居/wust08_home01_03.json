@@ -2,10 +2,7 @@
   "id": "wust08_home01_03",
   "name": "裡間",
   "description": "夾室黑木桌椅、恆定熱輻射球體照明溫控，極細能量微粒懸浮，金屬質感穩重，恆溫熱氣與沉香淡淡，油脂感與微光並存。可經〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

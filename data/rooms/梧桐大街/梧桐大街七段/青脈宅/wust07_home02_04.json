@@ -2,10 +2,7 @@
   "id": "wust07_home02_04",
   "name": "側間",
   "description": "環廊白玉立柱纏繞幾何藤蔓，地面反射律動落霜，邊界銳利清晰，恆溫熱氣與沉香淡淡，恆溫熱氣與沉香淡淡。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

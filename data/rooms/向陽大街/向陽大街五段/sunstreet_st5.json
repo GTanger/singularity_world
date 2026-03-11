@@ -2,26 +2,150 @@
   "id": "sunstreet_st5",
   "name": "向陽大街五段",
   "description": "向陽大街五段，大街中段視野最敞，拋光白玉地面反射密集金光，兩側稜鏡導光、向陽拱頂交織，能量微粒懸浮、溫潤沉香淡淡，開敞明亮、無廢土感。可經〔向陽大街四段〕折返，或朝〔向陽大街六段〕延伸；可經〔流光採集廣場〕、〔昇陽儀器行〕、〔清輝沐浴齋〕、〔流光肆〕、〔敞軒居〕、〔明熙宅〕進入沿街建築。",
-  "tags": ["street", "outdoor"],
+  "tags": ["street","outdoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "sunstreet_st4", "to": "sunstreet_st4", "ui_hidden": true },
-    { "direction": "sunstreet_st6", "to": "sunstreet_st6", "ui_hidden": true },
-    { "direction": "sunst05_hold01_main", "to": "sunst05_hold01_main", "ui_hidden": true },
-    { "direction": "sunst05_shop01_main", "to": "sunst05_shop01_main", "ui_hidden": true },
-    { "direction": "sunst05_shop02_main", "to": "sunst05_shop02_main", "ui_hidden": true },
-    { "direction": "sunst05_shop03_main", "to": "sunst05_shop03_main", "ui_hidden": true },
-    { "direction": "sunst05_home01_main", "to": "sunst05_home01_main", "ui_hidden": true },
-    { "direction": "sunst05_home02_main", "to": "sunst05_home02_main", "ui_hidden": true }
+    {
+      "direction": "sunstreet_st4",
+      "to": "sunstreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunstreet_st6",
+      "to": "sunstreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst05_hold01_main",
+      "to": "sunst05_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst05_shop01_main",
+      "to": "sunst05_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst05_shop02_main",
+      "to": "sunst05_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst05_shop03_main",
+      "to": "sunst05_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst05_home01_main",
+      "to": "sunst05_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "sunst05_home02_main",
+      "to": "sunst05_home02_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sun_st5_exit_st4", "name": "向陽大街四段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st4", "responses": { "Move": "你沿向陽大街往四段走去。" } },
-    { "id": "sun_st5_exit_st6", "name": "向陽大街六段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st6", "responses": { "Move": "你沿向陽大街往六段走去。" } },
-    { "id": "sun_st5_hold01", "name": "流光採集廣場", "sockets": ["Look", "Move"], "move_to_room_id": "sunst05_hold01_main", "responses": { "Look": "廣場入口稜鏡林立，白玉導光柱將金光匯聚成流。", "Move": "你步入流光採集廣場。" } },
-    { "id": "sun_st5_shop01", "name": "昇陽儀器行", "sockets": ["Look", "Move"], "move_to_room_id": "sunst05_shop01_main", "responses": { "Look": "深色金屬與黑木門面，櫥窗內儀器泛淡金微光。", "Move": "你進入昇陽儀器行。" } },
-    { "id": "sun_st5_shop02", "name": "清輝沐浴齋", "sockets": ["Look", "Move"], "move_to_room_id": "sunst05_shop02_main", "responses": { "Look": "門簾垂落，透出溫潤水氣與沉香。", "Move": "你掀簾進入清輝沐浴齋。" } },
-    { "id": "sun_st5_shop03", "name": "流光肆", "sockets": ["Look", "Move"], "move_to_room_id": "sunst05_shop03_main", "responses": { "Look": "店招懸於簷下，室內光線飽和如蜜。", "Move": "你走進流光肆。" } },
-    { "id": "sun_st5_home01", "name": "敞軒居", "sockets": ["Look", "Move"], "move_to_room_id": "sunst05_home01_main", "responses": { "Look": "敞軒臨街，窗格鑲稜鏡，室內開敞明亮。", "Move": "你進入敞軒居。" } },
-    { "id": "sun_st5_home02", "name": "明熙宅", "sockets": ["Look", "Move"], "move_to_room_id": "sunst05_home02_main", "responses": { "Look": "黑木門框、深色金屬門環，簷下能量紋路隱約。", "Move": "你推門進入明熙宅。" } }
+    {
+      "id": "sun_st5_exit_st4",
+      "name": "向陽大街四段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st4",
+      "responses": {
+        "Move": "你沿向陽大街往四段走去。"
+      }
+    },
+    {
+      "id": "sun_st5_exit_st6",
+      "name": "向陽大街六段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st6",
+      "responses": {
+        "Move": "你沿向陽大街往六段走去。"
+      }
+    },
+    {
+      "id": "sun_st5_hold01",
+      "name": "流光採集廣場",
+      "sockets": [
+        "Look",
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_main",
+      "responses": {
+        "Look": "廣場入口稜鏡林立，白玉導光柱將金光匯聚成流。",
+        "Move": "你步入流光採集廣場。"
+      }
+    },
+    {
+      "id": "sun_st5_shop01",
+      "name": "昇陽儀器行",
+      "sockets": [
+        "Look",
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop01_main",
+      "responses": {
+        "Look": "深色金屬與黑木門面，櫥窗內儀器泛淡金微光。",
+        "Move": "你進入昇陽儀器行。"
+      }
+    },
+    {
+      "id": "sun_st5_shop02",
+      "name": "清輝沐浴齋",
+      "sockets": [
+        "Look",
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_main",
+      "responses": {
+        "Look": "門簾垂落，透出溫潤水氣與沉香。",
+        "Move": "你掀簾進入清輝沐浴齋。"
+      }
+    },
+    {
+      "id": "sun_st5_shop03",
+      "name": "流光肆",
+      "sockets": [
+        "Look",
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop03_main",
+      "responses": {
+        "Look": "店招懸於簷下，室內光線飽和如蜜。",
+        "Move": "你走進流光肆。"
+      }
+    },
+    {
+      "id": "sun_st5_home01",
+      "name": "敞軒居",
+      "sockets": [
+        "Look",
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_home01_main",
+      "responses": {
+        "Look": "敞軒臨街，窗格鑲稜鏡，室內開敞明亮。",
+        "Move": "你進入敞軒居。"
+      }
+    },
+    {
+      "id": "sun_st5_home02",
+      "name": "明熙宅",
+      "sockets": [
+        "Look",
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_home02_main",
+      "responses": {
+        "Look": "黑木門框、深色金屬門環，簷下能量紋路隱約。",
+        "Move": "你推門進入明熙宅。"
+      }
+    }
   ]
 }

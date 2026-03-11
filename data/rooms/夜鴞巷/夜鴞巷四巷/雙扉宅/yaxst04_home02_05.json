@@ -2,14 +2,42 @@
   "id": "yaxst04_home02_05",
   "name": "雙扉宅・廊中三",
   "description": "廊道後段，隔音鉛皮包覆頂壁，暖能石在腰線高度排成一列、橘光極淡。導能紋路沿牆根繞行，晶簇漸密，淡紫與琥珀交織成低飽和光霧，熟成樹脂餘韻自壁縫滲出。可經〔廊心〕或〔廊口（後扉側）〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst04_home02_04", "to": "yaxst04_home02_04", "ui_hidden": true },
-    { "direction": "yaxst04_home02_06", "to": "yaxst04_home02_06", "ui_hidden": true }
+    {
+      "direction": "yaxst04_home02_04",
+      "to": "yaxst04_home02_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_home02_06",
+      "to": "yaxst04_home02_06",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst04_home02_05_04", "name": "廊心", "sockets": ["Move"], "move_to_room_id": "yaxst04_home02_04", "responses": { "Move": "你往廊心走回。" } },
-    { "id": "yaxst04_home02_05_06", "name": "廊口（後扉側）", "sockets": ["Move"], "move_to_room_id": "yaxst04_home02_06", "responses": { "Move": "你往後扉側廊口走去。" } }
+    {
+      "id": "yaxst04_home02_05_04",
+      "name": "廊心",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home02_04",
+      "responses": {
+        "Move": "你往廊心走回。"
+      }
+    },
+    {
+      "id": "yaxst04_home02_05_06",
+      "name": "廊口（後扉側）",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home02_06",
+      "responses": {
+        "Move": "你往後扉側廊口走去。"
+      }
+    }
   ]
 }

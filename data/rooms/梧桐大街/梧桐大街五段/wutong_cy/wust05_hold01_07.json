@@ -2,10 +2,7 @@
   "id": "wust05_hold01_07",
   "name": "寢間",
   "description": "廂房金屬質感根穴中鋪墊厚實織物，暗紅能量晶體鑲嵌天花，環境極安靜，低飽和微光、從容，懸浮微粒與沉香並存。可經〔茶間〕、〔廊底〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

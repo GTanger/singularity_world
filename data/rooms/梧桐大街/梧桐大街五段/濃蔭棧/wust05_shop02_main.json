@@ -2,10 +2,7 @@
   "id": "wust05_shop02_main",
   "name": "濃蔭棧",
   "description": "玉光坊門面：凝光藝廊風、展台幾何分形能量雕塑，光線晶體間往復折射，肅穆發光微粒懸浮，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔櫃前〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

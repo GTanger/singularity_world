@@ -2,10 +2,7 @@
   "id": "wust02_shop01_08",
   "name": "寢區",
   "description": "櫃後間陳列架與根鬚咬合，光線篩落、琥珀色調，懸浮微粒與淡淡樹脂氣息，從容不迫，枝葉蔽天、綠廊拱頂感，落葉與腐殖層溫潤。可經〔理療區〕前往他處。",
-  "tags": [
-    "residence",
-    "outdoor"
-  ],
+  "tags": ["residence","outdoor"],
   "zone": "wustreet",
   "exits": [
     {

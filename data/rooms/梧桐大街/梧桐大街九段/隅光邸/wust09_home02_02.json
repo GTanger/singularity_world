@@ -2,10 +2,7 @@
   "id": "wust09_home02_02",
   "name": "前間",
   "description": "簷下小間植被自牆簷溢出卻與建築咬合，光線篩落、玉質脈絡隱約，靜謐的豐饒，恆溫熱氣與沉香淡淡，恆溫熱氣與沉香淡淡。可經〔大街〕、〔門廳〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

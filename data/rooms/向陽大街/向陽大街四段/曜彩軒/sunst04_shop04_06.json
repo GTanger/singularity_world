@@ -2,12 +2,26 @@
   "id": "sunst04_shop04_06",
   "name": "左翼・庫房",
   "description": "左翼庫房，高窗與稜鏡交錯、光線呈琥珀色，黑木架與白玉匣沿牆，地表能量紋路匯向牆角導線，油脂質感皮革包覆的器物匣疊放整齊，室內無雜音。可經〔左翼・前間〕返回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "左翼・內間", "to": "sunst04_shop04_05", "ui_hidden": true }
+    {
+      "direction": "左翼・內間",
+      "to": "sunst04_shop04_05",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst04_shop04_06_05", "name": "左翼・內間", "sockets": ["Move"], "move_to_room_id": "sunst04_shop04_05", "responses": { "Move": "你往左翼內間走回。" } }
+    {
+      "id": "sunst04_shop04_06_05",
+      "name": "左翼・內間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop04_05",
+      "responses": {
+        "Move": "你往左翼內間走回。"
+      }
+    }
   ]
 }

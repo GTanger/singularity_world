@@ -2,10 +2,7 @@
   "id": "wust03_home01_02",
   "name": "前間",
   "description": "書隅牆面厚實深色地衣，梧桐巨木根系呈極致物理密度，沉香與琥珀光沈穩凝滯，綠意與增生並存、從容，綠意與增生並存、從容。可經〔大街〕、〔門廳〕、〔裡間〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

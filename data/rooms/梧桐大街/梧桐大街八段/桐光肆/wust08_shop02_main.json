@@ -2,10 +2,7 @@
   "id": "wust08_shop02_main",
   "name": "桐光肆",
   "description": "翠脈鋪門面：牆面玉質脈絡延伸、櫃前根鬚咬合，光線篩落、懸浮微粒與沉香，從容，綠廊拱頂、靜謐豐饒，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔櫃前〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

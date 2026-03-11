@@ -2,14 +2,42 @@
   "id": "yaxst03_shop02_06",
   "name": "氣密茶・左茶間口",
   "description": "左茶間首間，鉛皮牆面與暖能石縫泛著低溫橘光，導能紋路沿踢腳延伸。晶簇自頂角投下淡紫微光，黑石檯面冰涼。可經〔岔口〕或〔左茶間底〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst03_shop02_05", "to": "yaxst03_shop02_05", "ui_hidden": true },
-    { "direction": "yaxst03_shop02_08", "to": "yaxst03_shop02_08", "ui_hidden": true }
+    {
+      "direction": "yaxst03_shop02_05",
+      "to": "yaxst03_shop02_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop02_08",
+      "to": "yaxst03_shop02_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst03_shop02_06_05", "name": "岔口", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop02_05", "responses": { "Move": "你退回岔口。" } },
-    { "id": "yaxst03_shop02_06_08", "name": "左茶間底", "sockets": ["Move"], "move_to_room_id": "yaxst03_shop02_08", "responses": { "Move": "你往左茶間底走去。" } }
+    {
+      "id": "yaxst03_shop02_06_05",
+      "name": "岔口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_05",
+      "responses": {
+        "Move": "你退回岔口。"
+      }
+    },
+    {
+      "id": "yaxst03_shop02_06_08",
+      "name": "左茶間底",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_08",
+      "responses": {
+        "Move": "你往左茶間底走去。"
+      }
+    }
   ]
 }

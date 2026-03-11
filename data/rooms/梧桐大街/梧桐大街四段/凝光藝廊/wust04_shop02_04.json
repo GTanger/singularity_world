@@ -2,10 +2,7 @@
   "id": "wust04_shop02_04",
   "name": "工坊隅",
   "description": "店內一進晶體與木質增生與結構咬合，綠意與微光並存，黑曜石地面能量導線隱約，富態化材質溫潤，恆溫熱氣與沉香淡淡，縫隙菌絲或微光。可經〔庫房〕、〔展間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

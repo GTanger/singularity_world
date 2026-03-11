@@ -2,11 +2,7 @@
   "id": "wust05_shop01_10",
   "name": "後間",
   "description": "寢區牆面菌絲織物、床鋪石質凹槽，光影隨能量律動，樹脂氣息持久安神，枝葉蔽天、綠廊拱頂感，綠廊拱頂、靜謐豐饒。可經〔儲區〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor",
-    "storage"
-  ],
+  "tags": ["residence","indoor","storage"],
   "zone": "wustreet",
   "exits": [
     {

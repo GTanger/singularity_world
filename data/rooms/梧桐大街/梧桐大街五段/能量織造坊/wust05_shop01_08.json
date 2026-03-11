@@ -2,10 +2,7 @@
   "id": "wust05_shop01_08",
   "name": "寢區",
   "description": "起居區床座嵌入金屬根穴、羊毛織物，暗紅能量晶體天花恆溫，環境極安靜，綠廊拱頂、靜謐豐饒，綠廊拱頂、靜謐豐饒。可經〔理療區〕、〔儲區〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

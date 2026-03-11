@@ -2,10 +2,7 @@
   "id": "wust04_home02_06",
   "name": "茶間",
   "description": "階側整塊黑岩光滑如鏡，能量礦石鑲嵌牆面，晶化木材家具與恆溫熱輻射並存，縫隙菌絲或微光，落葉與腐殖層溫潤。可經〔大街〕、〔書隅〕、〔寢間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

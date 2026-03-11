@@ -2,14 +2,42 @@
   "id": "sunst02_home01_02",
   "name": "東廂一",
   "description": "環廊東段，向陽拱頂將金光篩成琥珀色，白玉檯面與琉璃嵌條咬合，黑木長榻沿牆，油脂質感皮革墊散置，空氣流速較快、光霧稀薄。可經〔寓口〕或〔東廂二〕沿環廊走。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "寓口", "to": "sunst02_home01_main", "ui_hidden": true },
-    { "direction": "東廂二", "to": "sunst02_home01_03", "ui_hidden": true }
+    {
+      "direction": "寓口",
+      "to": "sunst02_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東廂二",
+      "to": "sunst02_home01_03",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst02_home01_02_main", "name": "寓口", "sockets": ["Move"], "move_to_room_id": "sunst02_home01_main", "responses": { "Move": "你往寓口走去。" } },
-    { "id": "sunst02_home01_02_03", "name": "東廂二", "sockets": ["Move"], "move_to_room_id": "sunst02_home01_03", "responses": { "Move": "你往東廂二走去。" } }
+    {
+      "id": "sunst02_home01_02_main",
+      "name": "寓口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home01_main",
+      "responses": {
+        "Move": "你往寓口走去。"
+      }
+    },
+    {
+      "id": "sunst02_home01_02_03",
+      "name": "東廂二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home01_03",
+      "responses": {
+        "Move": "你往東廂二走去。"
+      }
+    }
   ]
 }

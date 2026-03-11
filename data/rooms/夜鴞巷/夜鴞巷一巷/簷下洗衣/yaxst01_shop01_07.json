@@ -2,14 +2,42 @@
   "id": "yaxst01_shop01_07",
   "name": "簷下洗衣・右廊中",
   "description": "右廊中段，鉛皮牆面與暖能石縫泛著低溫橘光，導能紋路沿地緣延伸。熟成樹脂與水氣混在空氣裡，黑石吸走足音，晶簇稀疏。可經〔右廊口〕或〔右廊底〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst01_shop01_06", "to": "yaxst01_shop01_06", "ui_hidden": true },
-    { "direction": "yaxst01_shop01_08", "to": "yaxst01_shop01_08", "ui_hidden": true }
+    {
+      "direction": "yaxst01_shop01_06",
+      "to": "yaxst01_shop01_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst01_shop01_08",
+      "to": "yaxst01_shop01_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst01_shop01_07_06", "name": "右廊口", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_06", "responses": { "Move": "你往右廊口走回。" } },
-    { "id": "yaxst01_shop01_07_08", "name": "右廊底", "sockets": ["Move"], "move_to_room_id": "yaxst01_shop01_08", "responses": { "Move": "你往右廊底走去。" } }
+    {
+      "id": "yaxst01_shop01_07_06",
+      "name": "右廊口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_06",
+      "responses": {
+        "Move": "你往右廊口走回。"
+      }
+    },
+    {
+      "id": "yaxst01_shop01_07_08",
+      "name": "右廊底",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_08",
+      "responses": {
+        "Move": "你往右廊底走去。"
+      }
+    }
   ]
 }

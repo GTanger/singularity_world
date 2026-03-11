@@ -2,10 +2,7 @@
   "id": "wust07_home01_06",
   "name": "茶間",
   "description": "根穴巨型根系根皮金屬暗灰，路徑縫隙間穿行空間壓抑，岩壁滲出帶熱度水滴，懸浮微粒與沉香並存，懸浮微粒與沉香並存。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust01_home02_05",
   "name": "書隅",
   "description": "偏間壁面覆滿溫潤地衣，綠意自高窗篩落，空氣中懸浮微粒與淡淡沉香，文明與增生並存，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔大街〕、〔側間〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

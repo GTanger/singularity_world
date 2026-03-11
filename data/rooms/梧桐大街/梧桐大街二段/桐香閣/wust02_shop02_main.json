@@ -2,10 +2,7 @@
   "id": "wust02_shop02_main",
   "name": "桐香閣",
   "description": "臨街店鋪門面：櫃檯與貨架與梧桐綠意相映，黑曜石地面、能量導線隱約，富態化材質溫潤，一步入畫，枝葉蔽天、綠廊拱頂感。可經〔大街〕、〔櫃前〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

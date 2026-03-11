@@ -2,14 +2,42 @@
   "id": "sunst02_shop01_03",
   "name": "調律區・二間",
   "description": "調律區中段，稜鏡垂落金光如簾、淡金微光與深色金屬對比強烈，白玉地面嵌琉璃條，牆面能量導線隱約脈動，油脂質感皮革凳靠牆，室內無雜音。可經〔調律區・一間〕往回，或往〔調律區・三間〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "調律區・一間", "to": "sunst02_shop01_02", "ui_hidden": true },
-    { "direction": "調律區・三間", "to": "sunst02_shop01_04", "ui_hidden": true }
+    {
+      "direction": "調律區・一間",
+      "to": "sunst02_shop01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "調律區・三間",
+      "to": "sunst02_shop01_04",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst02_shop01_03_02", "name": "調律區・一間", "sockets": ["Move"], "move_to_room_id": "sunst02_shop01_02", "responses": { "Move": "你往調律區一間走回。" } },
-    { "id": "sunst02_shop01_03_04", "name": "調律區・三間", "sockets": ["Move"], "move_to_room_id": "sunst02_shop01_04", "responses": { "Move": "你往調律區三間走去。" } }
+    {
+      "id": "sunst02_shop01_03_02",
+      "name": "調律區・一間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop01_02",
+      "responses": {
+        "Move": "你往調律區一間走回。"
+      }
+    },
+    {
+      "id": "sunst02_shop01_03_04",
+      "name": "調律區・三間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop01_04",
+      "responses": {
+        "Move": "你往調律區三間走去。"
+      }
+    }
   ]
 }

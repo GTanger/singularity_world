@@ -2,10 +2,7 @@
   "id": "wust07_shop02_06",
   "name": "焙間",
   "description": "寢區牆面菌絲織物、床鋪石質凹槽，光影隨能量律動，樹脂氣息持久安神，油脂感與微光並存，落葉與腐殖層溫潤。可經〔大街〕、〔展間〕、〔理療區〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

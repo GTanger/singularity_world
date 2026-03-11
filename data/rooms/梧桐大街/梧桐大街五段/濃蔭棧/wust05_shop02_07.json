@@ -2,10 +2,7 @@
   "id": "wust05_shop02_07",
   "name": "理療區",
   "description": "吧台晶質食材、冷光源苔蘚牆面，空氣甜美樹脂、質感圓潤飽滿，枝葉蔽天、綠廊拱頂感，油脂感與微光並存，油脂感與微光並存。可經〔大街〕、〔焙間〕、〔寢區〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

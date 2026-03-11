@@ -2,10 +2,7 @@
   "id": "wust09_home01_03",
   "name": "裡間",
   "description": "出口地勢平緩銜接黑曜石磚路，綠蔭散開現街區輪廓，空氣乾燥光線自然，文明與增生並存，綠意與增生並存、從容。可經〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "outdoor"
-  ],
+  "tags": ["residence","outdoor"],
   "zone": "wustreet",
   "exits": [
     {

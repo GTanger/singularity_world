@@ -2,10 +2,7 @@
   "id": "wust01_hold01_08",
   "name": "廊底",
   "description": "穿堂半開放階梯、環形水路導引熱液，流體撞擊石階清脆規律，兩側植被綠色隧道，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔能量配發中樞〕、〔儲間〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

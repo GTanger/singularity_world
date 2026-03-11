@@ -2,10 +2,7 @@
   "id": "wust05_hold01_04",
   "name": "側間",
   "description": "耳房透明晶體牆透視巨木根系，黑曜石磚鑲暖能石維持恆溫，綠意與熱氣並存，文明與增生並存，綠廊拱頂、靜謐豐饒。可經〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

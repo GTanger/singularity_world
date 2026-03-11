@@ -2,10 +2,7 @@
   "id": "wust04_shop01_03",
   "name": "庫房",
   "description": "展間中心未加工原石與精密切削工具，石粉與高溫熔融金屬氣味，熱輻射飽滿深琥珀，無廢土感、從容，文明與增生並存。可經〔櫃前〕、〔工坊隅〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

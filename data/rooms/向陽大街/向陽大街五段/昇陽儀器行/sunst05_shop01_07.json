@@ -2,14 +2,42 @@
   "id": "sunst05_shop01_07",
   "name": "中翼內間",
   "description": "中翼盡頭，稜鏡垂落金光如簾、光影層次分明，白玉檯面陳列校準器，牆面琉璃嵌條與深色金屬咬合，能量微粒在光簾中緩動，室內無雜音。可經〔中翼・陳列〕往回，或往最深〔中翼庫房〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "中翼・陳列", "to": "sunst05_shop01_03", "ui_hidden": true },
-    { "direction": "中翼庫房", "to": "sunst05_shop01_08", "ui_hidden": true }
+    {
+      "direction": "中翼・陳列",
+      "to": "sunst05_shop01_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "中翼庫房",
+      "to": "sunst05_shop01_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst05_shop01_07_03", "name": "中翼・陳列", "sockets": ["Move"], "move_to_room_id": "sunst05_shop01_03", "responses": { "Move": "你往中翼陳列區走回。" } },
-    { "id": "sunst05_shop01_07_08", "name": "中翼庫房", "sockets": ["Move"], "move_to_room_id": "sunst05_shop01_08", "responses": { "Move": "你往中翼庫房走去。" } }
+    {
+      "id": "sunst05_shop01_07_03",
+      "name": "中翼・陳列",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop01_03",
+      "responses": {
+        "Move": "你往中翼陳列區走回。"
+      }
+    },
+    {
+      "id": "sunst05_shop01_07_08",
+      "name": "中翼庫房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop01_08",
+      "responses": {
+        "Move": "你往中翼庫房走去。"
+      }
+    }
   ]
 }

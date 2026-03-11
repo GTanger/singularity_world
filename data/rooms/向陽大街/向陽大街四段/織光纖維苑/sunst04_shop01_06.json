@@ -2,14 +2,42 @@
   "id": "sunst04_shop01_06",
   "name": "染間一",
   "description": "高窗與稜鏡交錯、光線呈琥珀色，地表能量紋路匯向中央導光槽，黑木染槽與深色金屬架咬合，牆面能量導線隱約脈動，溫潤沉香自通風孔淡淡逸出。可經〔織間三〕往回，或往〔染間二〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "織間三", "to": "sunst04_shop01_05", "ui_hidden": true },
-    { "direction": "染間二", "to": "sunst04_shop01_07", "ui_hidden": true }
+    {
+      "direction": "織間三",
+      "to": "sunst04_shop01_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "染間二",
+      "to": "sunst04_shop01_07",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst04_shop01_06_05", "name": "織間三", "sockets": ["Move"], "move_to_room_id": "sunst04_shop01_05", "responses": { "Move": "你往織間三走回。" } },
-    { "id": "sunst04_shop01_06_07", "name": "染間二", "sockets": ["Move"], "move_to_room_id": "sunst04_shop01_07", "responses": { "Move": "你往染間二走去。" } }
+    {
+      "id": "sunst04_shop01_06_05",
+      "name": "織間三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop01_05",
+      "responses": {
+        "Move": "你往織間三走回。"
+      }
+    },
+    {
+      "id": "sunst04_shop01_06_07",
+      "name": "染間二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop01_07",
+      "responses": {
+        "Move": "你往染間二走去。"
+      }
+    }
   ]
 }

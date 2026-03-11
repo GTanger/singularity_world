@@ -2,7 +2,7 @@
   "id": "sunst09_shop01_06",
   "name": "理療區",
   "description": "矮榻沿牆一字排開，玉質枕墊與油脂質感皮革併陳，向陽拱頂在頭頂切出整齊光格，能量微粒在光束中緩慢浮沉，牆角一盞稜鏡燈將金光折射成淡琥珀色。可經〔焙間〕前往他處。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
     {
@@ -15,7 +15,9 @@
     {
       "id": "sunst09_shop01_06_exit_1",
       "name": "焙間",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst09_shop01_05",
       "responses": {
         "Move": "你往焙間走去。"

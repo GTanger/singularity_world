@@ -2,14 +2,42 @@
   "id": "yaxst02_shop01_13",
   "name": "鉛皮修理行・工間丙底前",
   "description": "工間丙廊道將盡，頂上晶簇漸密，淡紫與琥珀交織成光霧。牆根導能紋路匯成一股沉入地磚縫隙，機油氣味沉在腳邊。可經〔工間丙中二〕或〔工間丙盡頭〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst02_shop01_12", "to": "yaxst02_shop01_12", "ui_hidden": true },
-    { "direction": "yaxst02_shop01_14", "to": "yaxst02_shop01_14", "ui_hidden": true }
+    {
+      "direction": "yaxst02_shop01_12",
+      "to": "yaxst02_shop01_12",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop01_14",
+      "to": "yaxst02_shop01_14",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst02_shop01_13_12", "name": "工間丙中二", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_12", "responses": { "Move": "你往工間丙中二走回。" } },
-    { "id": "yaxst02_shop01_13_14", "name": "工間丙盡頭", "sockets": ["Move"], "move_to_room_id": "yaxst02_shop01_14", "responses": { "Move": "你走到工間丙盡頭。" } }
+    {
+      "id": "yaxst02_shop01_13_12",
+      "name": "工間丙中二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop01_12",
+      "responses": {
+        "Move": "你往工間丙中二走回。"
+      }
+    },
+    {
+      "id": "yaxst02_shop01_13_14",
+      "name": "工間丙盡頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop01_14",
+      "responses": {
+        "Move": "你走到工間丙盡頭。"
+      }
+    }
   ]
 }

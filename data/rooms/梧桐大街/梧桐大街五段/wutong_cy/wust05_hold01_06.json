@@ -2,10 +2,7 @@
   "id": "wust05_hold01_06",
   "name": "茶間",
   "description": "門廊打磨鏡面黑曜石、黃銅能量導線石縫鑲嵌，梧桐對稱立柱形、晶質膜葉片，紙漿與沉香，枝葉蔽天、綠廊拱頂感。可經〔廣庭入口〕、〔寢間〕、〔鳴葉淺灘〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

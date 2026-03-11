@@ -2,10 +2,7 @@
   "id": "wust09_home03_05",
   "name": "書隅",
   "description": "林隅發光螢光蕈類染成淡紫，沉香氣息濃稠，水汽冷凝葉尖規律滴落，環境音被厚實牆面吸收，枝葉蔽天、綠廊拱頂感。可經〔大街〕、〔側間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

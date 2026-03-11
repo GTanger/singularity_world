@@ -2,14 +2,42 @@
   "id": "sunst05_shop03_09",
   "name": "右廊三",
   "description": "環廊右段接櫃前，拱頂稜鏡將金光篩成淡琥珀色，白玉地面與琉璃嵌條對比強烈，牆面能量導線隱約脈動，黑木長几靠牆、表面油脂光澤。可經〔右廊二〕或〔櫃前〕沿環廊走。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "右廊二", "to": "sunst05_shop03_08", "ui_hidden": true },
-    { "direction": "櫃前", "to": "sunst05_shop03_main", "ui_hidden": true }
+    {
+      "direction": "右廊二",
+      "to": "sunst05_shop03_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "櫃前",
+      "to": "sunst05_shop03_main",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst05_shop03_09_08", "name": "右廊二", "sockets": ["Move"], "move_to_room_id": "sunst05_shop03_08", "responses": { "Move": "你往右廊二走去。" } },
-    { "id": "sunst05_shop03_09_main", "name": "櫃前", "sockets": ["Move"], "move_to_room_id": "sunst05_shop03_main", "responses": { "Move": "你往櫃前走去。" } }
+    {
+      "id": "sunst05_shop03_09_08",
+      "name": "右廊二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop03_08",
+      "responses": {
+        "Move": "你往右廊二走去。"
+      }
+    },
+    {
+      "id": "sunst05_shop03_09_main",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop03_main",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    }
   ]
 }

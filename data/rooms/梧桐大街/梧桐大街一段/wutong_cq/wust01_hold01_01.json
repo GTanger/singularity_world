@@ -2,10 +2,7 @@
   "id": "wust01_hold01_01",
   "name": "入所門廊",
   "description": "斗室牆面玉質脈絡與根鬚咬合，光線自簷角篩落，石磚與根鬚嵌合的地面泛著恆溫熱氣，靜，無廢土感、從容，落葉與腐殖層溫潤。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

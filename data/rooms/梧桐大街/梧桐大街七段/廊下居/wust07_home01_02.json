@@ -2,10 +2,7 @@
   "id": "wust07_home01_02",
   "name": "前間",
   "description": "林隅發光螢光蕈類染成淡紫，沉香氣息濃稠，水汽冷凝葉尖規律滴落，簷角藤蔓撐簷、濃蔭掩映，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

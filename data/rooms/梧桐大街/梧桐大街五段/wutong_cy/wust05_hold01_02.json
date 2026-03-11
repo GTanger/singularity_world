@@ -2,10 +2,7 @@
   "id": "wust05_hold01_02",
   "name": "前間",
   "description": "背光處牆面氣根與石板咬合穩住地磚，空氣中膠質氣味與沉香交織，靜謐豐饒，枝葉蔽天、綠廊拱頂感，枝葉蔽天、綠廊拱頂感。可經〔廣庭入口〕、〔裡間〕、〔儲間〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

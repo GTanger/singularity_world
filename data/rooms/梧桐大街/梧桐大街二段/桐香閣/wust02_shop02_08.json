@@ -2,10 +2,7 @@
   "id": "wust02_shop02_08",
   "name": "寢區",
   "description": "工坊隅牆面分形圖樣、地表絲線碎片，低頻共振、空氣流通穩定，光學穩重琥珀色，縫隙菌絲或微光，縫隙菌絲或微光。可經〔大街〕、〔理療區〕、〔儲區〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

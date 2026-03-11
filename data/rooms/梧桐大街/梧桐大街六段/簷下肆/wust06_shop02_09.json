@@ -2,10 +2,7 @@
   "id": "wust06_shop02_09",
   "name": "儲區",
   "description": "能量區大型能量穩定器、貨物堆至天花，幽暗消音菌絲地表，沈穩不帶波動，落葉與腐殖層溫潤，枝葉蔽天、綠廊拱頂感。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

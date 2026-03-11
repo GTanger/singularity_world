@@ -2,14 +2,42 @@
   "id": "yaxst04_home01_02",
   "name": "氣密寓所・左廂",
   "description": "左廂窄間，氣密牆厚實，壁面導能紋路沿踢腳繞行。暖能石嵌在壁縫泛著低溫橘光，晶簇在頂角稀疏分布，黑石地磚吸音，室內極靜。可經〔玄關〕或往〔左廂內室〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxst04_home01_main", "to": "yaxst04_home01_main", "ui_hidden": true },
-    { "direction": "yaxst04_home01_05", "to": "yaxst04_home01_05", "ui_hidden": true }
+    {
+      "direction": "yaxst04_home01_main",
+      "to": "yaxst04_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_home01_05",
+      "to": "yaxst04_home01_05",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst04_home01_02_main", "name": "玄關", "sockets": ["Move"], "move_to_room_id": "yaxst04_home01_main", "responses": { "Move": "你退回玄關。" } },
-    { "id": "yaxst04_home01_02_05", "name": "左廂內室", "sockets": ["Move"], "move_to_room_id": "yaxst04_home01_05", "responses": { "Move": "你往左廂內室走去。" } }
+    {
+      "id": "yaxst04_home01_02_main",
+      "name": "玄關",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home01_main",
+      "responses": {
+        "Move": "你退回玄關。"
+      }
+    },
+    {
+      "id": "yaxst04_home01_02_05",
+      "name": "左廂內室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home01_05",
+      "responses": {
+        "Move": "你往左廂內室走去。"
+      }
+    }
   ]
 }

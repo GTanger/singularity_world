@@ -2,10 +2,7 @@
   "id": "wust08_home02_main",
   "name": "幽蔭舍",
   "description": "幽蔭舍門廳：簷下小宅黑曜石與玉質嵌合，簷角綠意掩映，恆溫熱氣與淡淡沉香，靜謐豐饒，恆溫熱氣與沉香淡淡。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

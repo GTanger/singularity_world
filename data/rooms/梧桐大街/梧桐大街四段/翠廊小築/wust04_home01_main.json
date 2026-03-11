@@ -2,10 +2,7 @@
   "id": "wust04_home01_main",
   "name": "翠廊小築",
   "description": "翠廊小築門廳：兩側梧桐樹冠匯聚天然門廊，厚實葉片蔽天，綠色微粒懸浮、地表油脂感落葉碎屑，恆溫熱氣與沉香淡淡。可經〔大街〕、〔前間〕、〔裡間〕、〔側間〕、〔書隅〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

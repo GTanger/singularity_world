@@ -2,7 +2,7 @@
   "id": "sunst09_home01_02",
   "name": "前間",
   "description": "起居處黑木矮几與玉質茶具並置，稜鏡側窗將金光切成斜格落在几面，油脂質感皮革坐墊觸手飽滿，牆面能量導線極細、脈動緩慢，溫潤沉香與茶氣混雜。可經〔玄關〕前往他處。",
-  "tags": ["residence", "indoor"],
+  "tags": ["residence","indoor"],
   "zone": "sunstreet",
   "exits": [
     {
@@ -15,7 +15,9 @@
     {
       "id": "sunst09_home01_02_exit_1",
       "name": "玄關",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "sunst09_home01_main",
       "responses": {
         "Move": "你往玄關走去。"

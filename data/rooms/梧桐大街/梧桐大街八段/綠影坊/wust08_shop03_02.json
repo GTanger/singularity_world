@@ -2,10 +2,7 @@
   "id": "wust08_shop03_02",
   "name": "櫃前",
   "description": "寢區牆面菌絲織物、床鋪石質凹槽，光影隨能量律動，樹脂氣息持久安神，光線篩落、靜謐豐饒，光學穩重琥珀色。可經〔大街〕、〔門廳〕、〔庫房〕、〔寢區〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

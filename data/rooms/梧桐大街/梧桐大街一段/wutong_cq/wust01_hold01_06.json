@@ -2,10 +2,7 @@
   "id": "wust01_hold01_06",
   "name": "茶間",
   "description": "窓邊一室石縫間發光菌絲與玉質嵌合，恆溫熱氣自地底滲出，綠意飽和而不壓迫，簷角藤蔓撐簷、濃蔭掩映，簷角藤蔓撐簷、濃蔭掩映。可經〔前間〕、〔寢間〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

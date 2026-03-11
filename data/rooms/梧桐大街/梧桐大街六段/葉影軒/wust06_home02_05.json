@@ -2,10 +2,7 @@
   "id": "wust06_home02_05",
   "name": "書隅",
   "description": "邊點人工鋪面消失，黑土與根網交織，植被群湧頂點、路徑痕跡幾無，生物代謝氣味旺盛，石磚與根鬚嵌合，油脂感與微光並存。可經〔大街〕、〔側間〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,12 +2,26 @@
   "id": "sunst05_shop01_08",
   "name": "中翼庫房",
   "description": "中翼最深處，向陽拱頂低壓、光線呈琥珀色，黑木架與白玉匣沿牆，地表能量紋路匯向中央導光槽，牆厚隔音、僅聞自身呼吸，溫潤沉香自通風孔淡淡逸出。可經〔中翼內間〕沿中翼返回。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "中翼內間", "to": "sunst05_shop01_07", "ui_hidden": true }
+    {
+      "direction": "中翼內間",
+      "to": "sunst05_shop01_07",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst05_shop01_08_07", "name": "中翼內間", "sockets": ["Move"], "move_to_room_id": "sunst05_shop01_07", "responses": { "Move": "你往中翼內間走回。" } }
+    {
+      "id": "sunst05_shop01_08_07",
+      "name": "中翼內間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop01_07",
+      "responses": {
+        "Move": "你往中翼內間走回。"
+      }
+    }
   ]
 }

@@ -2,10 +2,7 @@
   "id": "wust06_home02_03",
   "name": "裡間",
   "description": "灶邊黑岩磨製、放射狀紋理能量礦石維持高溫熱輻射，空氣純淨乾燥、邊界銳利，玉質脈絡隱約、從容，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔前間〕、〔側間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

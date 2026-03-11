@@ -2,14 +2,42 @@
   "id": "sunst01_home01_03",
   "name": "一室",
   "description": "居內一室，稜鏡把金光織成垂簾、一格格落在白玉與琉璃嵌條上，牆面導線靜靜流轉，皮革凳靠牆，厚牆吞掉雜音，只餘自己的腳步。可經〔前間〕往回，或往〔二室〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "前間", "to": "sunst01_home01_02", "ui_hidden": true },
-    { "direction": "二室", "to": "sunst01_home01_04", "ui_hidden": true }
+    {
+      "direction": "前間",
+      "to": "sunst01_home01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "二室",
+      "to": "sunst01_home01_04",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst01_home01_03_02", "name": "前間", "sockets": ["Move"], "move_to_room_id": "sunst01_home01_02", "responses": { "Move": "你往前間走回。" } },
-    { "id": "sunst01_home01_03_04", "name": "二室", "sockets": ["Move"], "move_to_room_id": "sunst01_home01_04", "responses": { "Move": "你往二室走去。" } }
+    {
+      "id": "sunst01_home01_03_02",
+      "name": "前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home01_02",
+      "responses": {
+        "Move": "你往前間走回。"
+      }
+    },
+    {
+      "id": "sunst01_home01_03_04",
+      "name": "二室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home01_04",
+      "responses": {
+        "Move": "你往二室走去。"
+      }
+    }
   ]
 }

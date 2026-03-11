@@ -2,14 +2,42 @@
   "id": "sunst01_home01_main",
   "name": "晨曦居・門廳",
   "description": "居口白玉階、稜鏡鑲窗，門廳裡光自拱頂瀉下、淡金與深色金屬在眼底對撞，地表紋路像細脈匯向牆角，皮革椅靠牆、觸手飽滿，沉香從深處隱隱透出，一室通透。可經〔向陽大街一段〕離開，或往深處〔前間〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "sunstreet_st1", "to": "sunstreet_st1", "ui_hidden": true },
-    { "direction": "前間", "to": "sunst01_home01_02", "ui_hidden": true }
+    {
+      "direction": "sunstreet_st1",
+      "to": "sunstreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前間",
+      "to": "sunst01_home01_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst01_home01_main_st1", "name": "向陽大街一段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st1", "responses": { "Move": "你步出晨曦居，回到向陽大街一段。" } },
-    { "id": "sunst01_home01_main_02", "name": "前間", "sockets": ["Move"], "move_to_room_id": "sunst01_home01_02", "responses": { "Move": "你往前間走去。" } }
+    {
+      "id": "sunst01_home01_main_st1",
+      "name": "向陽大街一段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st1",
+      "responses": {
+        "Move": "你步出晨曦居，回到向陽大街一段。"
+      }
+    },
+    {
+      "id": "sunst01_home01_main_02",
+      "name": "前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home01_02",
+      "responses": {
+        "Move": "你往前間走去。"
+      }
+    }
   ]
 }

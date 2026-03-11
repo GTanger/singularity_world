@@ -2,10 +2,7 @@
   "id": "wust08_shop03_main",
   "name": "綠影坊",
   "description": "桐光肆門面：臨街黑曜石拼嵌、能量導線石縫，梧桐綠意相映、富態化材質溫潤，懸浮微粒與沉香並存，懸浮微粒與沉香並存。可經〔大街〕、〔櫃前〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

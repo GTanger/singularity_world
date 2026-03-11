@@ -229,7 +229,9 @@
     {
       "id": "fei_st6_exit_yaxiao_st3",
       "name": "夜鴞巷三巷",
-      "sockets": ["Move"],
+      "sockets": [
+        "Move"
+      ],
       "move_to_room_id": "yaxiao_st3",
       "responses": {
         "Move": "你拐進夜鴞巷三巷。"

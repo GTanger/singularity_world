@@ -2,10 +2,7 @@
   "id": "wust09_home02_05",
   "name": "書隅",
   "description": "穿堂半開放階梯、環形水路導引熱液，流體撞擊石階清脆規律，兩側植被綠色隧道，懸浮微粒與沉香並存，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔大街〕、〔側間〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

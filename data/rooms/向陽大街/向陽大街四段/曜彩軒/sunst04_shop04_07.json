@@ -2,14 +2,42 @@
   "id": "sunst04_shop04_07",
   "name": "中翼・一間",
   "description": "中翼第一間，向陽拱頂低壓、光線呈琥珀色，白玉檯面與黑木架沿牆，地表能量紋路匯向牆角導線，油脂質感皮革椅靠窗，空氣流速較快、光霧稀薄。可經〔中翼・前間〕往回，或往〔中翼・二間〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "中翼・前間", "to": "sunst04_shop04_03", "ui_hidden": true },
-    { "direction": "中翼・二間", "to": "sunst04_shop04_08", "ui_hidden": true }
+    {
+      "direction": "中翼・前間",
+      "to": "sunst04_shop04_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "中翼・二間",
+      "to": "sunst04_shop04_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst04_shop04_07_03", "name": "中翼・前間", "sockets": ["Move"], "move_to_room_id": "sunst04_shop04_03", "responses": { "Move": "你往中翼前間走回。" } },
-    { "id": "sunst04_shop04_07_08", "name": "中翼・二間", "sockets": ["Move"], "move_to_room_id": "sunst04_shop04_08", "responses": { "Move": "你往中翼二間走去。" } }
+    {
+      "id": "sunst04_shop04_07_03",
+      "name": "中翼・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop04_03",
+      "responses": {
+        "Move": "你往中翼前間走回。"
+      }
+    },
+    {
+      "id": "sunst04_shop04_07_08",
+      "name": "中翼・二間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop04_08",
+      "responses": {
+        "Move": "你往中翼二間走去。"
+      }
+    }
   ]
 }

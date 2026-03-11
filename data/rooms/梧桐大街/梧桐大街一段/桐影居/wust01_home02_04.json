@@ -2,10 +2,7 @@
   "id": "wust01_home02_04",
   "name": "側間",
   "description": "植務室牆面與根鬚咬合，光線篩落；櫃架晶盒藥材，空氣穩定，枝葉蔽天、綠廊拱頂感，枝葉蔽天、綠廊拱頂感。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

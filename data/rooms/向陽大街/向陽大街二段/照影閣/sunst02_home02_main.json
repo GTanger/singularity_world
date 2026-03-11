@@ -2,26 +2,138 @@
   "id": "sunst02_home02_main",
   "name": "照影閣・門廳",
   "description": "閣門黑木門框，簷角能量紋路隱約，門廳白玉地面反射淡金微光，稜鏡自拱頂導光入室、光影層次分明，深色金屬几與黑木榻咬合，開敞明亮。可經〔向陽大街二段〕離開，或往〔東室〕、〔南室〕、〔西室〕、〔北室〕、〔上室〕、〔前室〕、〔後室〕。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "sunstreet_st2", "to": "sunstreet_st2", "ui_hidden": true },
-    { "direction": "東室", "to": "sunst02_home02_02", "ui_hidden": true },
-    { "direction": "南室", "to": "sunst02_home02_03", "ui_hidden": true },
-    { "direction": "西室", "to": "sunst02_home02_04", "ui_hidden": true },
-    { "direction": "北室", "to": "sunst02_home02_05", "ui_hidden": true },
-    { "direction": "上室", "to": "sunst02_home02_06", "ui_hidden": true },
-    { "direction": "前室", "to": "sunst02_home02_07", "ui_hidden": true },
-    { "direction": "後室", "to": "sunst02_home02_08", "ui_hidden": true }
+    {
+      "direction": "sunstreet_st2",
+      "to": "sunstreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東室",
+      "to": "sunst02_home02_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "南室",
+      "to": "sunst02_home02_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西室",
+      "to": "sunst02_home02_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "北室",
+      "to": "sunst02_home02_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "上室",
+      "to": "sunst02_home02_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前室",
+      "to": "sunst02_home02_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "後室",
+      "to": "sunst02_home02_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst02_home02_main_st2", "name": "向陽大街二段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st2", "responses": { "Move": "你步出照影閣，回到向陽大街二段。" } },
-    { "id": "sunst02_home02_main_02", "name": "東室", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_02", "responses": { "Move": "你往東室走去。" } },
-    { "id": "sunst02_home02_main_03", "name": "南室", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_03", "responses": { "Move": "你往南室走去。" } },
-    { "id": "sunst02_home02_main_04", "name": "西室", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_04", "responses": { "Move": "你往西室走去。" } },
-    { "id": "sunst02_home02_main_05", "name": "北室", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_05", "responses": { "Move": "你往北室走去。" } },
-    { "id": "sunst02_home02_main_06", "name": "上室", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_06", "responses": { "Move": "你往上室走去。" } },
-    { "id": "sunst02_home02_main_07", "name": "前室", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_07", "responses": { "Move": "你往前室走去。" } },
-    { "id": "sunst02_home02_main_08", "name": "後室", "sockets": ["Move"], "move_to_room_id": "sunst02_home02_08", "responses": { "Move": "你往後室走去。" } }
+    {
+      "id": "sunst02_home02_main_st2",
+      "name": "向陽大街二段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st2",
+      "responses": {
+        "Move": "你步出照影閣，回到向陽大街二段。"
+      }
+    },
+    {
+      "id": "sunst02_home02_main_02",
+      "name": "東室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home02_02",
+      "responses": {
+        "Move": "你往東室走去。"
+      }
+    },
+    {
+      "id": "sunst02_home02_main_03",
+      "name": "南室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home02_03",
+      "responses": {
+        "Move": "你往南室走去。"
+      }
+    },
+    {
+      "id": "sunst02_home02_main_04",
+      "name": "西室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home02_04",
+      "responses": {
+        "Move": "你往西室走去。"
+      }
+    },
+    {
+      "id": "sunst02_home02_main_05",
+      "name": "北室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home02_05",
+      "responses": {
+        "Move": "你往北室走去。"
+      }
+    },
+    {
+      "id": "sunst02_home02_main_06",
+      "name": "上室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home02_06",
+      "responses": {
+        "Move": "你往上室走去。"
+      }
+    },
+    {
+      "id": "sunst02_home02_main_07",
+      "name": "前室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home02_07",
+      "responses": {
+        "Move": "你往前室走去。"
+      }
+    },
+    {
+      "id": "sunst02_home02_main_08",
+      "name": "後室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home02_08",
+      "responses": {
+        "Move": "你往後室走去。"
+      }
+    }
   ]
 }

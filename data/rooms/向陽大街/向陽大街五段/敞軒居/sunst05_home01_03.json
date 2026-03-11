@@ -2,12 +2,26 @@
   "id": "sunst05_home01_03",
   "name": "東廂・內間",
   "description": "東廂盡頭，落地窗將光線裁成斜格，拱頂稜鏡集中、淡金微光與深色金屬對比強烈，白玉地面嵌琉璃條，牆厚隔音、極靜，觸手檯面冰冷平滑。可經〔東廂・前間〕沿東廂返回。",
-  "tags": ["home", "indoor"],
+  "tags": ["home","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "東廂・前間", "to": "sunst05_home01_02", "ui_hidden": true }
+    {
+      "direction": "東廂・前間",
+      "to": "sunst05_home01_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst05_home01_03_02", "name": "東廂・前間", "sockets": ["Move"], "move_to_room_id": "sunst05_home01_02", "responses": { "Move": "你往東廂前間走回。" } }
+    {
+      "id": "sunst05_home01_03_02",
+      "name": "東廂・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_home01_02",
+      "responses": {
+        "Move": "你往東廂前間走回。"
+      }
+    }
   ]
 }

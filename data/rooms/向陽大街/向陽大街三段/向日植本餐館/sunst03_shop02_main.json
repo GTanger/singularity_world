@@ -2,14 +2,42 @@
   "id": "sunst03_shop02_main",
   "name": "向日植本餐館・門面",
   "description": "餐館門面稜鏡鑲窗，室內光線飽和如蜜，向陽用餐大廳入口白玉地面反射淡金微光，深色金屬檯面與黑木架咬合，能量導線隱約脈動，稜鏡自拱頂導光入室，開敞明亮。可經〔向陽大街三段〕離開，或往深處〔大廳一區〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "sunstreet_st3", "to": "sunstreet_st3", "ui_hidden": true },
-    { "direction": "大廳一區", "to": "sunst03_shop02_02", "ui_hidden": true }
+    {
+      "direction": "sunstreet_st3",
+      "to": "sunstreet_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "大廳一區",
+      "to": "sunst03_shop02_02",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst03_shop02_main_st3", "name": "向陽大街三段", "sockets": ["Move"], "move_to_room_id": "sunstreet_st3", "responses": { "Move": "你步出向日植本餐館，回到向陽大街三段。" } },
-    { "id": "sunst03_shop02_main_02", "name": "大廳一區", "sockets": ["Move"], "move_to_room_id": "sunst03_shop02_02", "responses": { "Move": "你往大廳一區走去。" } }
+    {
+      "id": "sunst03_shop02_main_st3",
+      "name": "向陽大街三段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st3",
+      "responses": {
+        "Move": "你步出向日植本餐館，回到向陽大街三段。"
+      }
+    },
+    {
+      "id": "sunst03_shop02_main_02",
+      "name": "大廳一區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop02_02",
+      "responses": {
+        "Move": "你往大廳一區走去。"
+      }
+    }
   ]
 }

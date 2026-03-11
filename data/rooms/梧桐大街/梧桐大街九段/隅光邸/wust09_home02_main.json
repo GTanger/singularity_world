@@ -2,10 +2,7 @@
   "id": "wust09_home02_main",
   "name": "隅光邸",
   "description": "隅光邸門廳：背街一隅梧桐濃蔭壓簷，根鬚與石咬合、光線篩落，油脂感與微光並存，油脂感與微光並存，油脂感與微光並存。可經〔大街〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

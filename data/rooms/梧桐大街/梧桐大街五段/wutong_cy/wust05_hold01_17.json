@@ -2,10 +2,7 @@
   "id": "wust05_hold01_17",
   "name": "幾何植栽牆",
   "description": "偏間壁面覆滿溫潤地衣，綠意自高窗篩落，空氣中懸浮微粒與淡淡沉香，文明與增生並存，低飽和微光、從容，綠廊拱頂、靜謐豐饒。可經〔鳴葉淺灘〕、〔靜滯香徑〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

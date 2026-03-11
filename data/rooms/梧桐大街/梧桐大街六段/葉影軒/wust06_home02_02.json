@@ -2,10 +2,7 @@
   "id": "wust06_home02_02",
   "name": "前間",
   "description": "靜室三株巨木根系拱衛，枯葉與木質纖維層疊，隔絕回響、環境音極低、空氣穩定，枝葉蔽天、綠廊拱頂感，簷角藤蔓撐簷、濃蔭掩映。可經〔大街〕、〔門廳〕、〔裡間〕、〔寢間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust03_home01_04",
   "name": "側間",
   "description": "出口地勢平緩銜接黑曜石磚路，綠蔭散開現街區輪廓，空氣乾燥光線自然，落葉與腐殖層溫潤，落葉與腐殖層溫潤。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

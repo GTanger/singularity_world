@@ -2,14 +2,42 @@
   "id": "sunst04_shop01_07",
   "name": "染間二",
   "description": "稜鏡垂落密集金光、淡金微光與深色金屬檯面對比強烈，白玉地面與琉璃嵌條咬合，陳設整齊、線條規整，室內無雜音，能量微粒在光簾中緩動。可經〔染間一〕往回，或往〔庫房一〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "sunstreet",
   "exits": [
-    { "direction": "染間一", "to": "sunst04_shop01_06", "ui_hidden": true },
-    { "direction": "庫房一", "to": "sunst04_shop01_08", "ui_hidden": true }
+    {
+      "direction": "染間一",
+      "to": "sunst04_shop01_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "庫房一",
+      "to": "sunst04_shop01_08",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "sunst04_shop01_07_06", "name": "染間一", "sockets": ["Move"], "move_to_room_id": "sunst04_shop01_06", "responses": { "Move": "你往染間一走回。" } },
-    { "id": "sunst04_shop01_07_08", "name": "庫房一", "sockets": ["Move"], "move_to_room_id": "sunst04_shop01_08", "responses": { "Move": "你往庫房一走去。" } }
+    {
+      "id": "sunst04_shop01_07_06",
+      "name": "染間一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop01_06",
+      "responses": {
+        "Move": "你往染間一走回。"
+      }
+    },
+    {
+      "id": "sunst04_shop01_07_08",
+      "name": "庫房一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop01_08",
+      "responses": {
+        "Move": "你往庫房一走去。"
+      }
+    }
   ]
 }

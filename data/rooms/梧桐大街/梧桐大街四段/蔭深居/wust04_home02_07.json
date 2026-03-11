@@ -2,10 +2,7 @@
   "id": "wust04_home02_07",
   "name": "寢間",
   "description": "出口地勢平緩銜接黑曜石磚路，綠蔭散開現街區輪廓，空氣乾燥光線自然，無廢土感、從容，綠意與增生並存、從容。可經〔大街〕、〔茶間〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust07_home02_06",
   "name": "茶間",
   "description": "側室玉質脈絡自牆面延伸至地，簷角藤蔓與結構咬合，光線篩落、油脂感溫潤，恆溫熱氣與沉香淡淡，恆溫熱氣與沉香淡淡。可經〔大街〕、〔書隅〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

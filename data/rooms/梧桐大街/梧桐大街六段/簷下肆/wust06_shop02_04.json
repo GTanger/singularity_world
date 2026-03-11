@@ -2,10 +2,7 @@
   "id": "wust06_shop02_04",
   "name": "工坊隅",
   "description": "庫藏間牆面能量維持陣列，黑金屬儲架厚實地衣，環境乾燥穩定、樹脂香與電離感平衡，恆溫熱氣與沉香淡淡，玉質脈絡隱約、從容。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {

@@ -2,10 +2,7 @@
   "id": "wust01_hold01_main",
   "name": "長青公所",
   "description": "泉響廊環形水路熱液導引，流體撞擊石階清脆，植被綠色隧道，縫隙菌絲或微光，縫隙菌絲或微光。可經〔大街〕、〔進入公所〕前往他處。",
-  "tags": [
-    "indoor",
-    "admin"
-  ],
+  "tags": ["indoor","admin"],
   "zone": "wustreet",
   "exits": [
     {

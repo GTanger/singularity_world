@@ -2,10 +2,7 @@
   "id": "wust05_hold01_01",
   "name": "廣庭入口",
   "description": "全相隅、翠影閣、雨霖隅、求實居、微光隅等子景點各一句，略，無廢土感、從容，綠廊拱頂、靜謐豐饒，綠廊拱頂、靜謐豐饒。可經〔大街〕、〔前間〕、〔茶間〕前往他處。",
-  "tags": [
-    "outdoor",
-    "plaza"
-  ],
+  "tags": ["outdoor","plaza"],
   "zone": "wustreet",
   "exits": [
     {

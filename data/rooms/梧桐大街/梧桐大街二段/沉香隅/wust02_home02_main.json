@@ -2,10 +2,7 @@
   "id": "wust02_home02_main",
   "name": "沉香隅",
   "description": "沉香隅門廳：簷角藤蔓撐簷、濃蔭掩映，地面落葉與腐殖層溫潤層次，室內油脂感與膠質氣味淡淡，油脂感與微光並存。可經〔大街〕、〔前間〕、〔裡間〕、〔側間〕、〔書隅〕、〔茶間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

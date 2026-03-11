@@ -2,10 +2,7 @@
   "id": "wust06_shop01_07",
   "name": "理療區",
   "description": "臥眠區巨根與黑曜石壁圍合露天，發光能量碎屑、枝葉框架琥珀色天空，環境音被厚實牆面吸收，枝葉蔽天、綠廊拱頂感。可經〔焙間〕、〔寢區〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

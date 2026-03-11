@@ -2,10 +2,7 @@
   "id": "wust07_home01_04",
   "name": "側間",
   "description": "暖閣晶體轉軸緩慢旋轉低頻共振，牆面能量輸送管道冷凝孔密佈，空氣乾燥電離感，綠意與增生並存、從容，綠意與增生並存、從容。可經〔大街〕、〔門廳〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

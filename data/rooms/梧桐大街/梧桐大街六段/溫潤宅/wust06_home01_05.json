@@ -2,10 +2,7 @@
   "id": "wust06_home01_05",
   "name": "書隅",
   "description": "斗室牆面玉質脈絡與根鬚咬合，光線自簷角篩落，石磚與根鬚嵌合的地面泛著恆溫熱氣，靜，恆溫熱氣與沉香淡淡，低飽和微光、從容。可經〔大街〕、〔側間〕、〔前間〕前往他處。",
-  "tags": [
-    "residence",
-    "indoor"
-  ],
+  "tags": ["residence","indoor"],
   "zone": "wustreet",
   "exits": [
     {

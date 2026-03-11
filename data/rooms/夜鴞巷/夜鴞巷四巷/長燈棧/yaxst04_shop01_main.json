@@ -2,16 +2,58 @@
   "id": "yaxst04_shop01_main",
   "name": "長燈棧・櫃前",
   "description": "門闔上後啼鳴頓弱，櫃前狹長，兩道廊口自腳底黃銅導向線分向左右深處延伸、於棧底匯流。隔音鉛皮包覆頂壁，晶簇與長燈嵌在簷角、灑下淡紫與深琥珀，黑石地磚冰涼，沉香與熟成樹脂氣味自廊道漏出。可經〔夜鴞巷四巷〕離開，或往〔甲廊口〕〔乙廊口〕。",
-  "tags": ["shop", "indoor"],
+  "tags": ["shop","indoor"],
   "zone": "yaxiao",
   "exits": [
-    { "direction": "yaxiao_st4", "to": "yaxiao_st4", "ui_hidden": true },
-    { "direction": "yaxst04_shop01_02", "to": "yaxst04_shop01_02", "ui_hidden": true },
-    { "direction": "yaxst04_shop01_06", "to": "yaxst04_shop01_06", "ui_hidden": true }
+    {
+      "direction": "yaxiao_st4",
+      "to": "yaxiao_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop01_02",
+      "to": "yaxst04_shop01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop01_06",
+      "to": "yaxst04_shop01_06",
+      "ui_hidden": true
+    }
   ],
   "objects": [
-    { "id": "yaxst04_shop01_main_st4", "name": "夜鴞巷四巷", "sockets": ["Move"], "move_to_room_id": "yaxiao_st4", "responses": { "Move": "你步出長燈棧，回到夜鴞巷四巷。" } },
-    { "id": "yaxst04_shop01_main_02", "name": "甲廊口", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_02", "responses": { "Move": "你往甲廊口走去。" } },
-    { "id": "yaxst04_shop01_main_06", "name": "乙廊口", "sockets": ["Move"], "move_to_room_id": "yaxst04_shop01_06", "responses": { "Move": "你往乙廊口走去。" } }
+    {
+      "id": "yaxst04_shop01_main_st4",
+      "name": "夜鴞巷四巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st4",
+      "responses": {
+        "Move": "你步出長燈棧，回到夜鴞巷四巷。"
+      }
+    },
+    {
+      "id": "yaxst04_shop01_main_02",
+      "name": "甲廊口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop01_02",
+      "responses": {
+        "Move": "你往甲廊口走去。"
+      }
+    },
+    {
+      "id": "yaxst04_shop01_main_06",
+      "name": "乙廊口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop01_06",
+      "responses": {
+        "Move": "你往乙廊口走去。"
+      }
+    }
   ]
 }

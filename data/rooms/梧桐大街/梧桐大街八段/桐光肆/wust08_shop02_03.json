@@ -2,10 +2,7 @@
   "id": "wust08_shop02_03",
   "name": "庫房",
   "description": "寢區牆面菌絲織物、床鋪石質凹槽，光影隨能量律動，樹脂氣息持久安神，光線篩落、靜謐豐饒，恆溫熱氣與沉香淡淡。可經〔大街〕、〔櫃前〕、〔工坊隅〕前往他處。",
-  "tags": [
-    "shop",
-    "indoor"
-  ],
+  "tags": ["shop","indoor"],
   "zone": "wustreet",
   "exits": [
     {
