@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * Copy 霜林 from rooms_archive to data/rooms, fix trail_01→fei_lake_north,
- * add ui_hidden to exits and objects (Move) for each exit.
+ * （已執行完畢）曾用於自 rooms_archive/霜林 複製至 data/rooms/霜林、
+ * 改 trail_01→fei_lake_north、補 ui_hidden 與 objects。舊版封存已刪除，此腳本僅供歷史參考。
  * Run from project root: node scripts/copy-frost-wood-connect.js
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const ARCHIVE = 'data/rooms_archive/霜林';
+const ARCHIVE = 'data/rooms_archive/霜林'; // 已刪除，腳本若再跑會失敗
 const TARGET = 'data/rooms/霜林';
 
 function walkDir(dir, fileList = []) {

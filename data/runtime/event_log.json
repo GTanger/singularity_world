@@ -1421,6 +1421,18 @@
       "entity_id": "葉卅",
       "event_type": "observed",
       "payload": "yaxiao_st3_yaxiao_st2"
+    },
+    {
+      "at": 1773226848,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "yaxiao_st2_shop01"
+    },
+    {
+      "at": 1773226865,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "yaxst02_shop01_main_st2"
     }
   ]
 }
