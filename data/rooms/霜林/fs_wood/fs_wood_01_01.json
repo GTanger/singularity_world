@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_01_01",
+  "name": "湖煙林緣",
+  "description": "導向石柱在霧氣擾動間，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。可經〔順水而行〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "順水而行",
+      "to": "fs_wood_01_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_01_01_to_fs_wood_01_02",
+      "name": "順水而行",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_01_02",
+      "responses": {
+        "Move": "你往順水而行走去。"
+      }
+    }
+  ]
+}

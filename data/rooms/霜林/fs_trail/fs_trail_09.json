@@ -1,0 +1,91 @@
+{
+  "id": "fs_trail_09",
+  "name": "奧所前哨",
+  "description": "遠方奧所建築輪廓浮現，地面由碎晶過渡為整塊黑曜石板，縫隙規整，兩側巨木枝幹垂掛流蘇般細長晶簇、隨熱氣搖曳。沉香油脂味與地底傳來的熱輻射彌漫，足底石面溫潤。可經〔返回〕〔前方〕抵終點白玉坪，或經〔偏轉(邊界)〕〔鑽入(林廊)〕〔前行(銜接)〕探周邊。",
+  "tags": ["outdoor","path"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "返回",
+      "to": "fs_trail_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前方",
+      "to": "fs_trail_10",
+      "ui_hidden": true
+    },
+    {
+      "direction": "偏轉(邊界)",
+      "to": "fs_wood_09_01",
+      "ui_hidden": true
+    },
+    {
+      "direction": "鑽入(林廊)",
+      "to": "fs_wood_09_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前行(銜接)",
+      "to": "fs_wood_09_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_trail_09_to_fs_trail_08",
+      "name": "返回",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_08",
+      "responses": {
+        "Move": "你往返回走去。"
+      }
+    },
+    {
+      "id": "fs_trail_09_to_fs_trail_10",
+      "name": "前方",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_10",
+      "responses": {
+        "Move": "你往前方走去。"
+      }
+    },
+    {
+      "id": "fs_trail_09_to_fs_wood_09_01",
+      "name": "偏轉(邊界)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_09_01",
+      "responses": {
+        "Move": "你往偏轉(邊界)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_09_to_fs_wood_09_02",
+      "name": "鑽入(林廊)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_09_02",
+      "responses": {
+        "Move": "你往鑽入(林廊)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_09_to_fs_wood_09_10",
+      "name": "前行(銜接)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_09_10",
+      "responses": {
+        "Move": "你往前行(銜接)走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "fs_cabin_02",
+  "name": "聽雪室入口",
+  "description": "狹窄石壁間，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。厚霜粉與枯葉鋪地，足底輕軟。可經〔森林〕〔入內〕。",
+  "tags": ["outdoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "森林",
+      "to": "fs_wood_04_10",
+      "ui_hidden": true
+    },
+    {
+      "direction": "入內",
+      "to": "fs_cabin_02_r1",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_02_to_fs_wood_04_10",
+      "name": "森林",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_04_10",
+      "responses": {
+        "Move": "你往森林走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_02_to_fs_cabin_02_r1",
+      "name": "入內",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_02_r1",
+      "responses": {
+        "Move": "你往入內走去。"
+      }
+    }
+  ]
+}

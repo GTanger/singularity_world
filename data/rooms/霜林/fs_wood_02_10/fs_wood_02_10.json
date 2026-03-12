@@ -1,0 +1,43 @@
+{
+  "id": "fs_wood_02_10",
+  "name": "銜接平台",
+  "description": "霧氣與落霜揉雜成雨霧，細碎白霜與枯葉鋪地，地熱自石縫滲出，游離輻射下熱氣不散，足底石面沁涼。熱氣自腳下縫隙浮升。可經〔回歸主徑〕〔遺世居〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "回歸主徑",
+      "to": "fs_trail_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "遺世居",
+      "to": "fs_cabin_01",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_02_10_to_fs_trail_02",
+      "name": "回歸主徑",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_02",
+      "responses": {
+        "Move": "你往回歸主徑走去。"
+      }
+    },
+    {
+      "id": "fs_wood_02_10_to_fs_cabin_01",
+      "name": "遺世居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_01",
+      "responses": {
+        "Move": "你往遺世居走去。"
+      }
+    }
+  ]
+}

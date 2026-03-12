@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_08_06",
+  "name": "鏽蝕鐵鍊殘段",
+  "description": "林道旁枝：霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。厚霜粉與枯葉鋪地，足底輕軟。可經〔躲入穴位〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "躲入穴位",
+      "to": "fs_wood_08_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_08_06_to_fs_wood_08_07",
+      "name": "躲入穴位",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_08_07",
+      "responses": {
+        "Move": "你往躲入穴位走去。"
+      }
+    }
+  ]
+}

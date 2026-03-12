@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_07_06",
+  "name": "折射稜鏡林",
+  "description": "小徑旁岔：霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。此段人跡徑路旁側，林相與主徑有別。可經〔跨越晶脊〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "跨越晶脊",
+      "to": "fs_wood_07_08",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_07_06_to_fs_wood_07_08",
+      "name": "跨越晶脊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_07_08",
+      "responses": {
+        "Move": "你往跨越晶脊走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_08_01",
+  "name": "鋸齒邊緣",
+  "description": "鉛皮與黑岩夾峙的側谷，霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。可經〔避開氣旋〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "避開氣旋",
+      "to": "fs_wood_08_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_08_01_to_fs_wood_08_02",
+      "name": "避開氣旋",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_08_02",
+      "responses": {
+        "Move": "你往避開氣旋走去。"
+      }
+    }
+  ]
+}

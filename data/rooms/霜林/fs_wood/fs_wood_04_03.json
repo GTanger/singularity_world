@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_04_03",
+  "name": "晶塊滑移區",
+  "description": "強風在石縫間往復盤旋，細碎白霜與枯葉鋪地，地熱自石縫滲出，游離輻射下熱氣不散，足底石面沁涼。熱氣自腳下縫隙浮升。可經〔橫向攀爬〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "橫向攀爬",
+      "to": "fs_wood_04_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_04_03_to_fs_wood_04_05",
+      "name": "橫向攀爬",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_04_05",
+      "responses": {
+        "Move": "你往橫向攀爬走去。"
+      }
+    }
+  ]
+}

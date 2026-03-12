@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_08_03",
+  "name": "橫風切削面",
+  "description": "半透明晶體圍欄隆起，霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。可經〔尋找掩體〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "尋找掩體",
+      "to": "fs_wood_08_04",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_08_03_to_fs_wood_08_04",
+      "name": "尋找掩體",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_08_04",
+      "responses": {
+        "Move": "你往尋找掩體走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_10_06",
+  "name": "鈴音晶簇帶",
+  "description": "小徑旁岔：鏽斑與白色晶簇並生，高處偶有晶塊崩落，金屬面傳來沉悶撞擊。熱氣自腳下縫隙浮升。此段人跡徑路旁側，林相與主徑有別。可經〔踏入角落〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "踏入角落",
+      "to": "fs_wood_10_08",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_10_06_to_fs_wood_10_08",
+      "name": "踏入角落",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_10_08",
+      "responses": {
+        "Move": "你往踏入角落走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "fs_cabin_04_r2",
+  "name": "晶刻工坊",
+  "description": "石壁緊縮僅容側身，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。可經〔大廳〕。",
+  "tags": ["indoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "fs_cabin_04_r1",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_04_r2_to_fs_cabin_04_r1",
+      "name": "大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_04_r1",
+      "responses": {
+        "Move": "你往大廳走去。"
+      }
+    }
+  ]
+}

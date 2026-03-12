@@ -1,0 +1,91 @@
+{
+  "id": "fs_trail_01",
+  "name": "霜林入徑處",
+  "description": "人跡自北岸踩進林緣，細碎白霜與枯葉交織成徑，兩側樹木稀疏、仍見飛霜湖方向微光。空氣裡湖水飄來的濕潤熱氣未散，足底輕軟，游離輻射下熱氣貼地浮升。可經〔湖背〕回到北岸，或〔前方〕續行，或經〔左側(深入)〕〔荒徑(探索)〕〔攀爬(銜接)〕探周邊。",
+  "tags": ["outdoor","path"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "湖背",
+      "to": "fei_lake_north",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前方",
+      "to": "fs_trail_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "左側(深入)",
+      "to": "fs_wood_01_01",
+      "ui_hidden": true
+    },
+    {
+      "direction": "荒徑(探索)",
+      "to": "fs_wood_01_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "攀爬(銜接)",
+      "to": "fs_wood_01_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_trail_01_to_fei_lake_north",
+      "name": "湖背",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fei_lake_north",
+      "responses": {
+        "Move": "你往湖背走去。"
+      }
+    },
+    {
+      "id": "fs_trail_01_to_fs_trail_02",
+      "name": "前方",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_02",
+      "responses": {
+        "Move": "你往前方走去。"
+      }
+    },
+    {
+      "id": "fs_trail_01_to_fs_wood_01_01",
+      "name": "左側(深入)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_01_01",
+      "responses": {
+        "Move": "你往左側(深入)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_01_to_fs_wood_01_05",
+      "name": "荒徑(探索)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_01_05",
+      "responses": {
+        "Move": "你往荒徑(探索)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_01_to_fs_wood_01_10",
+      "name": "攀爬(銜接)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_01_10",
+      "responses": {
+        "Move": "你往攀爬(銜接)走去。"
+      }
+    }
+  ]
+}

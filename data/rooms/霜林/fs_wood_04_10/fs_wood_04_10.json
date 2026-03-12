@@ -1,0 +1,43 @@
+{
+  "id": "fs_wood_04_10",
+  "name": "焦黑銜接台",
+  "description": "狹窄石壁間，落霜觸地即融，晶簇在枝幹間隱約，風穿林隙帶礦物味，熱氣與湖氣在此交會。熱氣自腳下縫隙浮升。可經〔回歸主徑〕〔聽雪室〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "回歸主徑",
+      "to": "fs_trail_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "聽雪室",
+      "to": "fs_cabin_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_04_10_to_fs_trail_04",
+      "name": "回歸主徑",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_04",
+      "responses": {
+        "Move": "你往回歸主徑走去。"
+      }
+    },
+    {
+      "id": "fs_wood_04_10_to_fs_cabin_02",
+      "name": "聽雪室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_02",
+      "responses": {
+        "Move": "你往聽雪室走去。"
+      }
+    }
+  ]
+}

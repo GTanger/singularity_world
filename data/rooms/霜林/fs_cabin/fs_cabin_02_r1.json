@@ -1,0 +1,75 @@
+{
+  "id": "fs_cabin_02_r1",
+  "name": "音律大堂",
+  "description": "鉛皮與黑岩夾峙的側谷，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。可經〔玄關〕〔冥想〕〔茶間〕〔陽台〕。",
+  "tags": ["indoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "玄關",
+      "to": "fs_cabin_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "冥想",
+      "to": "fs_cabin_02_r2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "茶間",
+      "to": "fs_cabin_02_r3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "陽台",
+      "to": "fs_cabin_02_r4",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_02_r1_to_fs_cabin_02",
+      "name": "玄關",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_02",
+      "responses": {
+        "Move": "你往玄關走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_02_r1_to_fs_cabin_02_r2",
+      "name": "冥想",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_02_r2",
+      "responses": {
+        "Move": "你往冥想走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_02_r1_to_fs_cabin_02_r3",
+      "name": "茶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_02_r3",
+      "responses": {
+        "Move": "你往茶間走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_02_r1_to_fs_cabin_02_r4",
+      "name": "陽台",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_02_r4",
+      "responses": {
+        "Move": "你往陽台走去。"
+      }
+    }
+  ]
+}

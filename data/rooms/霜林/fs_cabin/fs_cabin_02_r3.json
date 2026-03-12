@@ -1,0 +1,27 @@
+{
+  "id": "fs_cabin_02_r3",
+  "name": "雅緻茶間",
+  "description": "半透明晶體圍欄隆起，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。可經〔大堂〕。",
+  "tags": ["indoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "大堂",
+      "to": "fs_cabin_02_r1",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_02_r3_to_fs_cabin_02_r1",
+      "name": "大堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_02_r1",
+      "responses": {
+        "Move": "你往大堂走去。"
+      }
+    }
+  ]
+}

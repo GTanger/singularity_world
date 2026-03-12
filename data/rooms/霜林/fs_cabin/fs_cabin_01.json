@@ -1,0 +1,43 @@
+{
+  "id": "fs_cabin_01",
+  "name": "遺世居入口",
+  "description": "側枝林緣，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。游離輻射下熱氣不散，霜晶與地熱並存。可經〔森林〕〔進屋〕。",
+  "tags": ["outdoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "森林",
+      "to": "fs_wood_02_10",
+      "ui_hidden": true
+    },
+    {
+      "direction": "進屋",
+      "to": "fs_cabin_01_r1",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_01_to_fs_wood_02_10",
+      "name": "森林",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_02_10",
+      "responses": {
+        "Move": "你往森林走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_01_to_fs_cabin_01_r1",
+      "name": "進屋",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_01_r1",
+      "responses": {
+        "Move": "你往進屋走去。"
+      }
+    }
+  ]
+}

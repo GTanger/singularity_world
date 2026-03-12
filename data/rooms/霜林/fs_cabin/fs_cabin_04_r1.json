@@ -1,0 +1,75 @@
+{
+  "id": "fs_cabin_04_r1",
+  "name": "晶石大廳",
+  "description": "岩壁擠壓成狹長通道，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。可經〔門口〕〔工坊〕〔臥室〕〔儲物〕。",
+  "tags": ["indoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "fs_cabin_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "工坊",
+      "to": "fs_cabin_04_r2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "臥室",
+      "to": "fs_cabin_04_r3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "儲物",
+      "to": "fs_cabin_04_r4",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_04_r1_to_fs_cabin_04",
+      "name": "門口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_04",
+      "responses": {
+        "Move": "你往門口走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_04_r1_to_fs_cabin_04_r2",
+      "name": "工坊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_04_r2",
+      "responses": {
+        "Move": "你往工坊走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_04_r1_to_fs_cabin_04_r3",
+      "name": "臥室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_04_r3",
+      "responses": {
+        "Move": "你往臥室走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_04_r1_to_fs_cabin_04_r4",
+      "name": "儲物",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_04_r4",
+      "responses": {
+        "Move": "你往儲物走去。"
+      }
+    }
+  ]
+}

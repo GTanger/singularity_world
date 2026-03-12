@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_06_03",
+  "name": "沸騰晶穴",
+  "description": "晶體圍欄隆起於地表，落霜觸地即融，晶簇在枝幹間隱約，風穿林隙帶礦物味，熱氣與湖氣在此交會。熱氣自腳下縫隙浮升。可經〔跨越焦木〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "跨越焦木",
+      "to": "fs_wood_06_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_06_03_to_fs_wood_06_05",
+      "name": "跨越焦木",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_06_05",
+      "responses": {
+        "Move": "你往跨越焦木走去。"
+      }
+    }
+  ]
+}

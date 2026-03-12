@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_09_06",
+  "name": "幾何樹根陣",
+  "description": "林緣湖氣猶在，霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。游離輻射下熱氣不散，霜晶與地熱並存。可經〔踏入熱區〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "踏入熱區",
+      "to": "fs_wood_09_08",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_09_06_to_fs_wood_09_08",
+      "name": "踏入熱區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_09_08",
+      "responses": {
+        "Move": "你往踏入熱區走去。"
+      }
+    }
+  ]
+}

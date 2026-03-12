@@ -1,7 +1,7 @@
 {
   "id": "fei_lake_north",
   "name": "湖背",
-  "description": "背對大街的北側，霧牆最厚、人聲不達，簷角積霜壓在石欄與矮牆緣上，游離輻射下熱氣滯留成一片白濛。石紋自腳下沒入霧裡，風不帶街燈的餘光，足底石面沁涼帶潮。可經〔水際〕下到貼水處，或沿岸往〔霧起之濱〕、〔迴岸〕，或經〔觀景亭〕。",
+  "description": "背對大街的北側，霧牆最厚、人聲不達，簷角積霜壓在石欄與矮牆緣上，游離輻射下熱氣滯留成一片白濛。石紋自腳下沒入霧裡，風不帶街燈的餘光，足底石面沁涼帶潮。可經〔水際〕下到貼水處，或沿岸往〔霧起之濱〕、〔迴岸〕，或經〔觀景亭〕，或經〔霜林小徑〕入林。",
   "tags": ["street","outdoor"],
   "zone": "feistreet",
   "exits": [
@@ -69,6 +69,17 @@
       "move_to_room_id": "fei_lake_pavilion",
       "responses": {
         "Move": "你朝觀景亭走去。"
+      }
+    },
+    {
+      "id": "fei_lake_north_trail",
+      "name": "霜林小徑",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_01",
+      "responses": {
+        "Move": "你沿人跡往霜林小徑走去。"
       }
     }
   ]

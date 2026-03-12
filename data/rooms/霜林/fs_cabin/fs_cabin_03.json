@@ -1,0 +1,43 @@
+{
+  "id": "fs_cabin_03",
+  "name": "暖煙閣入口",
+  "description": "巨木枝幹垂掛流蘇般晶簇，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。可經〔林間〕〔進屋〕。",
+  "tags": ["outdoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "林間",
+      "to": "fs_wood_06_10",
+      "ui_hidden": true
+    },
+    {
+      "direction": "進屋",
+      "to": "fs_cabin_03_r1",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_03_to_fs_wood_06_10",
+      "name": "林間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_06_10",
+      "responses": {
+        "Move": "你往林間走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_03_to_fs_cabin_03_r1",
+      "name": "進屋",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_03_r1",
+      "responses": {
+        "Move": "你往進屋走去。"
+      }
+    }
+  ]
+}

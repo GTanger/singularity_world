@@ -1,0 +1,91 @@
+{
+  "id": "fs_trail_07",
+  "name": "絕對靜域",
+  "description": "地熱流轉入深層，空氣驟冷，四周隆起半透明幾何晶體圍欄，地表厚霜粉鬆散乾燥、踏之無聲。光線在晶體棱面間反覆折射，視線所及一片冷白，熱氣自腳下縫隙偶爾浮升。可經〔返回〕〔前方〕續行主徑，或經〔偏轉(圍欄)〕〔涉入(粉潭)〕〔前行(銜接)〕探周邊。",
+  "tags": ["outdoor","path"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "返回",
+      "to": "fs_trail_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前方",
+      "to": "fs_trail_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "偏轉(圍欄)",
+      "to": "fs_wood_07_01",
+      "ui_hidden": true
+    },
+    {
+      "direction": "涉入(粉潭)",
+      "to": "fs_wood_07_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前行(銜接)",
+      "to": "fs_wood_07_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_trail_07_to_fs_trail_06",
+      "name": "返回",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_06",
+      "responses": {
+        "Move": "你往返回走去。"
+      }
+    },
+    {
+      "id": "fs_trail_07_to_fs_trail_08",
+      "name": "前方",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_08",
+      "responses": {
+        "Move": "你往前方走去。"
+      }
+    },
+    {
+      "id": "fs_trail_07_to_fs_wood_07_01",
+      "name": "偏轉(圍欄)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_07_01",
+      "responses": {
+        "Move": "你往偏轉(圍欄)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_07_to_fs_wood_07_02",
+      "name": "涉入(粉潭)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_07_02",
+      "responses": {
+        "Move": "你往涉入(粉潭)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_07_to_fs_wood_07_10",
+      "name": "前行(銜接)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_07_10",
+      "responses": {
+        "Move": "你往前行(銜接)走去。"
+      }
+    }
+  ]
+}

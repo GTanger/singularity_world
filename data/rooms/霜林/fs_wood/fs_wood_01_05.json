@@ -1,0 +1,43 @@
+{
+  "id": "fs_wood_01_05",
+  "name": "荒蕪步道殘跡",
+  "description": "側枝林緣，細碎白霜與枯葉鋪地，地熱自石縫滲出，游離輻射下熱氣不散，足底石面沁涼。熱氣自腳下縫隙浮升。可經〔回歸主徑〕〔尋找避風處〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "回歸主徑",
+      "to": "fs_trail_01",
+      "ui_hidden": true
+    },
+    {
+      "direction": "尋找避風處",
+      "to": "fs_wood_01_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_01_05_to_fs_trail_01",
+      "name": "回歸主徑",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_01",
+      "responses": {
+        "Move": "你往回歸主徑走去。"
+      }
+    },
+    {
+      "id": "fs_wood_01_05_to_fs_wood_01_06",
+      "name": "尋找避風處",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_01_06",
+      "responses": {
+        "Move": "你往尋找避風處走去。"
+      }
+    }
+  ]
+}

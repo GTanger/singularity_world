@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_08_09",
+  "name": "垂直滑落區",
+  "description": "窪地霜粉填平石槽，霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。可經〔滑向終點〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "滑向終點",
+      "to": "fs_wood_08_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_08_09_to_fs_wood_08_10",
+      "name": "滑向終點",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_08_10",
+      "responses": {
+        "Move": "你往滑向終點走去。"
+      }
+    }
+  ]
+}

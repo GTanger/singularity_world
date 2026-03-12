@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_05_05",
+  "name": "霧海邊緣展望點",
+  "description": "巨木枝幹垂掛流蘇般晶簇，落霜觸地即融，晶簇在枝幹間隱約，風穿林隙帶礦物味，熱氣與湖氣在此交會。熱氣自腳下縫隙浮升。可經〔沿壁移動〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "沿壁移動",
+      "to": "fs_wood_05_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_05_05_to_fs_wood_05_07",
+      "name": "沿壁移動",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_05_07",
+      "responses": {
+        "Move": "你往沿壁移動走去。"
+      }
+    }
+  ]
+}

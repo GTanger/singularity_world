@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_04_07",
+  "name": "硫磺煙孔",
+  "description": "林隙深處，落霜觸地即融，晶簇在枝幹間隱約，風穿林隙帶礦物味，熱氣與湖氣在此交會。熱氣自腳下縫隙浮升。可經〔穿越晶簇〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "穿越晶簇",
+      "to": "fs_wood_04_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_04_07_to_fs_wood_04_09",
+      "name": "穿越晶簇",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_04_09",
+      "responses": {
+        "Move": "你往穿越晶簇走去。"
+      }
+    }
+  ]
+}

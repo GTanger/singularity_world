@@ -1,0 +1,91 @@
+{
+  "id": "fs_trail_03",
+  "name": "半山回音段",
+  "description": "徑路越過山腰，兩側岩壁擠壓出狹長通道，路面橫切幾道石製排水槽，槽溝被厚實霜粉與細碎冰屑填平。強風在石縫間往復盤旋，低頻回響沉悶；踩踏乾裂霜粉的摩擦聲往深處遞遠。可經〔返回〕〔前方〕續行主徑，或經〔偏移(入谷)〕〔橫穿(枯林)〕〔攀升(銜接)〕探周邊。",
+  "tags": ["outdoor","path"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "返回",
+      "to": "fs_trail_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前方",
+      "to": "fs_trail_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "偏移(入谷)",
+      "to": "fs_wood_03_01",
+      "ui_hidden": true
+    },
+    {
+      "direction": "橫穿(枯林)",
+      "to": "fs_wood_03_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "攀升(銜接)",
+      "to": "fs_wood_03_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_trail_03_to_fs_trail_02",
+      "name": "返回",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_02",
+      "responses": {
+        "Move": "你往返回走去。"
+      }
+    },
+    {
+      "id": "fs_trail_03_to_fs_trail_04",
+      "name": "前方",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_04",
+      "responses": {
+        "Move": "你往前方走去。"
+      }
+    },
+    {
+      "id": "fs_trail_03_to_fs_wood_03_01",
+      "name": "偏移(入谷)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_03_01",
+      "responses": {
+        "Move": "你往偏移(入谷)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_03_to_fs_wood_03_02",
+      "name": "橫穿(枯林)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_03_02",
+      "responses": {
+        "Move": "你往橫穿(枯林)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_03_to_fs_wood_03_10",
+      "name": "攀升(銜接)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_03_10",
+      "responses": {
+        "Move": "你往攀升(銜接)走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_10_09",
+  "name": "奧所門扉前庭",
+  "description": "樹根盤踞的坡側，鏽斑與白色晶簇並生，高處偶有晶塊崩落，金屬面傳來沉悶撞擊。熱氣自腳下縫隙浮升。此段人跡徑路旁側，林相與主徑有別。可經〔抵達終點〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "抵達終點",
+      "to": "fs_wood_10_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_10_09_to_fs_wood_10_10",
+      "name": "抵達終點",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_10_10",
+      "responses": {
+        "Move": "你往抵達終點走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_07_03",
+  "name": "冰鏡碎裂地",
+  "description": "強風在石縫間往復盤旋，落霜觸地即融，晶簇在枝幹間隱約，風穿林隙帶礦物味，熱氣與湖氣在此交會。熱氣自腳下縫隙浮升。可經〔移向邊緣〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "移向邊緣",
+      "to": "fs_wood_07_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_07_03_to_fs_wood_07_05",
+      "name": "移向邊緣",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_07_05",
+      "responses": {
+        "Move": "你往移向邊緣走去。"
+      }
+    }
+  ]
+}

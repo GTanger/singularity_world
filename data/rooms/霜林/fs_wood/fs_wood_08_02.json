@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_08_02",
+  "name": "溝壑噴發口",
+  "description": "斷層煙氣自腳下溢出，霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。可經〔沿脊攀爬〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "沿脊攀爬",
+      "to": "fs_wood_08_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_08_02_to_fs_wood_08_03",
+      "name": "沿脊攀爬",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_08_03",
+      "responses": {
+        "Move": "你往沿脊攀爬走去。"
+      }
+    }
+  ]
+}

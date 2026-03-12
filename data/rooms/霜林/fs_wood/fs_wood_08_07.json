@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_08_07",
+  "name": "靜電粉末池",
+  "description": "厚霜粉覆地，霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。游離輻射下熱氣不散，霜晶與地熱並存。可經〔鑽出岩穴〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "鑽出岩穴",
+      "to": "fs_wood_08_08",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_08_07_to_fs_wood_08_08",
+      "name": "鑽出岩穴",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_08_08",
+      "responses": {
+        "Move": "你往鑽出岩穴走去。"
+      }
+    }
+  ]
+}

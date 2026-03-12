@@ -1,0 +1,91 @@
+{
+  "id": "fs_cabin_05_r1",
+  "name": "奧所大堂",
+  "description": "林緣湖氣猶在，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。游離輻射下熱氣不散，霜晶與地熱並存。可經〔門口〕〔寢宮〕〔書閣〕〔湯池〕〔露台〕。",
+  "tags": ["indoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "fs_cabin_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "寢宮",
+      "to": "fs_cabin_05_r2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "書閣",
+      "to": "fs_cabin_05_r3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "湯池",
+      "to": "fs_cabin_05_r4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "露台",
+      "to": "fs_cabin_05_r5",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_05_r1_to_fs_cabin_05",
+      "name": "門口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_05",
+      "responses": {
+        "Move": "你往門口走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_05_r1_to_fs_cabin_05_r2",
+      "name": "寢宮",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_05_r2",
+      "responses": {
+        "Move": "你往寢宮走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_05_r1_to_fs_cabin_05_r3",
+      "name": "書閣",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_05_r3",
+      "responses": {
+        "Move": "你往書閣走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_05_r1_to_fs_cabin_05_r4",
+      "name": "湯池",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_05_r4",
+      "responses": {
+        "Move": "你往湯池走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_05_r1_to_fs_cabin_05_r5",
+      "name": "露台",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_05_r5",
+      "responses": {
+        "Move": "你往露台走去。"
+      }
+    }
+  ]
+}

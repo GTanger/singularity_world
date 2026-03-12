@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_09_09",
+  "name": "晶柱殘部廊道",
+  "description": "枝幹垂掛晶簇隨熱氣搖曳，霜粉覆在樹根盤踞的土坎上，空氣乾燥帶嘶嘶細響，導向石柱若隱若現。熱氣自腳下縫隙浮升。可經〔抵達路口〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "抵達路口",
+      "to": "fs_wood_09_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_09_09_to_fs_wood_09_10",
+      "name": "抵達路口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_09_10",
+      "responses": {
+        "Move": "你往抵達路口走去。"
+      }
+    }
+  ]
+}

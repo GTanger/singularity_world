@@ -1,0 +1,43 @@
+{
+  "id": "fs_cabin_05",
+  "name": "霜林奧所入口",
+  "description": "白玉石板鋪地、熱氣均勻，樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。可經〔林徑〕〔進屋〕。",
+  "tags": ["outdoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "林徑",
+      "to": "fs_trail_10",
+      "ui_hidden": true
+    },
+    {
+      "direction": "進屋",
+      "to": "fs_cabin_05_r1",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_05_to_fs_trail_10",
+      "name": "林徑",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_10",
+      "responses": {
+        "Move": "你往林徑走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_05_to_fs_cabin_05_r1",
+      "name": "進屋",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_05_r1",
+      "responses": {
+        "Move": "你往進屋走去。"
+      }
+    }
+  ]
+}

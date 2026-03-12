@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_05_07",
+  "name": "高壓噴氣孔",
+  "description": "厚霜粉覆地，落霜觸地即融，晶簇在枝幹間隱約，風穿林隙帶礦物味，熱氣與湖氣在此交會。熱氣自腳下縫隙浮升。可經〔鑽入廊道〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "鑽入廊道",
+      "to": "fs_wood_05_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_05_07_to_fs_wood_05_09",
+      "name": "鑽入廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_05_09",
+      "responses": {
+        "Move": "你往鑽入廊道走去。"
+      }
+    }
+  ]
+}

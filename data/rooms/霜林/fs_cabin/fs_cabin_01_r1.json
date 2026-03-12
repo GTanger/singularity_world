@@ -1,0 +1,75 @@
+{
+  "id": "fs_cabin_01_r1",
+  "name": "觀景正廳",
+  "description": "小徑旁岔：樹皮掛滿水滴、與湖面霧氣交織，地表泥土未完全封凍，枯黃草莖滑膩。熱氣自腳下縫隙浮升。此段人跡徑路旁側，林相與主徑有別。可經〔門口〕〔臥寢〕〔私廚〕〔露台〕。",
+  "tags": ["indoor","cabin","residence"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "門口",
+      "to": "fs_cabin_01",
+      "ui_hidden": true
+    },
+    {
+      "direction": "臥寢",
+      "to": "fs_cabin_01_r2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "私廚",
+      "to": "fs_cabin_01_r3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "露台",
+      "to": "fs_cabin_01_r4",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_cabin_01_r1_to_fs_cabin_01",
+      "name": "門口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_01",
+      "responses": {
+        "Move": "你往門口走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_01_r1_to_fs_cabin_01_r2",
+      "name": "臥寢",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_01_r2",
+      "responses": {
+        "Move": "你往臥寢走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_01_r1_to_fs_cabin_01_r3",
+      "name": "私廚",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_01_r3",
+      "responses": {
+        "Move": "你往私廚走去。"
+      }
+    },
+    {
+      "id": "fs_cabin_01_r1_to_fs_cabin_01_r4",
+      "name": "露台",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_01_r4",
+      "responses": {
+        "Move": "你往露台走去。"
+      }
+    }
+  ]
+}

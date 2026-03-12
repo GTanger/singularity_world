@@ -1,0 +1,27 @@
+{
+  "id": "fs_wood_06_07",
+  "name": "赤岩熱裂隙",
+  "description": "側谷霧氣翻騰，落霜觸地即融，晶簇在枝幹間隱約，風穿林隙帶礦物味，熱氣與湖氣在此交會。熱氣自腳下縫隙浮升。可經〔向上觀望〕。",
+  "tags": ["outdoor","forest"],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "向上觀望",
+      "to": "fs_wood_06_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_06_07_to_fs_wood_06_09",
+      "name": "向上觀望",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_06_09",
+      "responses": {
+        "Move": "你往向上觀望走去。"
+      }
+    }
+  ]
+}
