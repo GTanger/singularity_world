@@ -83,7 +83,8 @@
 │    └─ RefreshRoomViews → RoomViewMsg         │
 │                                              │
 │  server/handler.go                           │
-│    └─ handleMove → 進房反應（enter_reaction）  │
+│    ├─ handleMove → 進房反應（enter_reaction）  │
+│    └─ Talk → 背版＋記憶檢索→回覆→寫入（第四階段）│
 │                                              │
 └──────────────────────────────────────────────┘
          │
@@ -126,7 +127,7 @@
 | 動作 | 觸發 | 效果 |
 |------|------|------|
 | **Look** | 玩家點擊 NPC → 觀看 | Log 顯示外觀敘事（不開彈窗） |
-| **Talk** | 玩家點擊 NPC → 交談 | Log 顯示模板對話 |
+| **Talk** | 玩家點擊 NPC → 交談 | Log 顯示模板對話；第四階段將接**背版＋記憶**（見 §五 第四階段）。 |
 | **Attack** | 玩家點擊 NPC → 攻擊 | 戰鬥結算 → Log 顯示結果 |
 
 ---
@@ -278,13 +279,18 @@ data/templates/
 
 ### 第四階段：NPC 有記憶 ⬜ 待做
 
-讓 NPC 記住玩家，產生「這個人認識我」的感覺。
+讓 NPC 記住玩家與對話，產生「這個人認識我」「越聊越立體」的感覺。本階段對齊**對話記憶系統**設計：每 NPC 一 subject（entity_id）、**背版**（blocks）＋**長期記憶**（archival）、Talk 前檢索注入、對話結束 consolidation 寫入。
 
 | 項目 | 狀態 | 效果 | 工作量 |
 |------|------|------|--------|
-| 短期記憶（npc_memory 表） | ⬜ | 見面次數、上次見面、好感度 | 小 |
-| 對話分級（初見/熟客/密友） | ⬜ | 「你是生面孔」→「又是你，老主顧了」 | 小 |
-| 交易記憶 | ⬜ | 「上次的布匹用得還行吧？」 | 小 |
+| **背版（identity）只讀** | ⬜ | 從職稱＋場所組出「你是〇〇，在△△。」；Talk 時帶入 context（模板或 CallAITalk） | 小 |
+| **archival 儲存＋寫入** | ⬜ | 對話結束將本輪 1～3 條精華寫入該 NPC 的長期記憶；節流（本場上限 M 條） | 中 |
+| **archival 檢索（top-k）** | ⬜ | Talk 前用玩家輸入或話題當 query，語意或關鍵字檢索該 NPC 記憶，取 3～5 條注入 prompt | 中 |
+| **可驗收子項** | ⬜ | 記憶1：Talk 前取回背版＋top-k；記憶2：結束寫入 archival；記憶3：再次 Talk 能檢索到前次寫入 | — |
+| **blocks 可更新（選做）** | ⬜ | summary／relationship 由 archival 定期整理寫回；背版「會長大」、token 可控 | 大 |
+
+**術語對照**：背版 = identity／summary／relationship（blocks）；長期記憶 = archival（語意檢索）；寫入時機 = 對話結束 consolidation；與對話池並存（對話池負責口吻，背版＋記憶負責「是誰、發生過什麼」）。  
+**詳細設計與實作步驟**：見 [NPC對話記憶與背版—設計](implementation/NPC對話記憶與背版—設計.md)、[NPC對話記憶與背版—實作步驟與檔案流程](implementation/NPC對話記憶與背版—實作步驟與檔案流程.md)；共識與流程對照見 [對話記憶系統—彙整與探討](reference/對話記憶系統—彙整與探討.md)。
 
 ### 第五階段：NPC 有眼 ⬜ 待做
 
@@ -358,7 +364,18 @@ data/templates/
 | `entity_room` | entity_id, room_id | 實體當前位置 |
 | `npc_schedules` | entity_id, work_room, rest_room, shift_start, shift_end | NPC 排班 |
 
-### 6.3 WebSocket 訊息
+### 6.3 記憶相關（規劃，第四階段）
+
+| 檔案／模組 | 職責 |
+|------------|------|
+| `db/backstory.go` | BuildIdentity(entityID)：從職稱＋場所組出 identity 字串；Talk 前讀取。 |
+| `db/archival.go` | ArchivalEntry、LoadArchival/SaveArchival、InsertArchival、SearchArchival(entityID, query, topK)；依 entity_id 分區。 |
+| `data/npc_archival.json` | 長期記憶持久化（或改由 store 擴充）。 |
+| handler Talk 分支 | 讀背版 → 檢索 top-k 記憶 → 組 prompt → 回覆 → 可選本輪／結束寫入；可接 CallAITalk（007）。 |
+
+設計與步驟見 [NPC對話記憶與背版—設計](implementation/NPC對話記憶與背版—設計.md)、[實作步驟與檔案流程](implementation/NPC對話記憶與背版—實作步驟與檔案流程.md)；共識見 [對話記憶系統—彙整與探討](reference/對話記憶系統—彙整與探討.md)。
+
+### 6.4 WebSocket 訊息
 
 | 類型 | 方向 | 用途 |
 |------|------|------|
@@ -493,12 +510,17 @@ data/templates/
 | 文檔 | 位置 | 說明 |
 |------|------|------|
 | **NPC 活化模擬測試報告** | `docs/testing/NPC活化系統模擬測試報告.md` | 檢索範圍、已／未實作對照（含馬斯洛）、模擬測試案例與結果、代碼註釋建議 |
-| **NPC 活化實作清單與規劃** | `docs/implementation/NPC活化系統—實作清單與規劃.md` | 細部拆解：數據層／實體／soul_seed 展開／行為／移動／主迴圈／互動／未實作（需求驅動）、依賴與驗收、階段排程 |
+| **NPC 活化實作清單與規劃** | `docs/implementation/NPC活化系統—實作清單與規劃.md` | 細部拆解：數據層／實體／soul_seed 展開／行為／移動／主迴圈／互動／未實作（需求驅動）、依賴與驗收、階段排程；§十「四、有記憶」含可驗收子項 |
+| **對話記憶系統—彙整與探討** | `docs/reference/對話記憶系統—彙整與探討.md` | 共識與最適作法、人類記憶類比、AI Web Chat/Cursor 對照、遊戲 NPC 背版＋archival 流程、收斂與延伸建議 |
+| **NPC 對話記憶與背版—設計** | `docs/implementation/NPC對話記憶與背版—設計.md` | 背版 blocks、archival、資料流、與 007／對話池／三軸接點、實作階段建議 |
+| **NPC 對話記憶與背版—實作步驟與檔案流程** | `docs/implementation/NPC對話記憶與背版—實作步驟與檔案流程.md` | 粉碎性步驟（階段 1～3）、狀態勾選、檔案清單、可驗收對照 |
+| **NPC 有嘴—設計與實作規劃** | `docs/implementation/NPC有嘴—設計與實作規劃.md` | 第三階段「有嘴」單一入口：I3 抽句、資料來源、性格權重、與 AI 併用、實作順序 |
 | 模板系統檢索 | `data/templates/README.md` | 模板格式、欄位、佔位符、快速查閱表 |
 | 第一版可做清單 | `docs/第一版可做清單.md` | MVP 進度追蹤（§十 NPC 行為） |
 | 協作約定 | `docs/COLLABORATION.md` | 主管與 AI 的角色分工 |
 | 技術約束 | `docs/技術約束規則.md` | Go／原生前端／WebSocket；執行期數據源為 JSON/store |
 | 人物角色模板 | `docs/reference/人物角色模板.md` | 玩家/NPC 共用結構定義 |
+| **玩家視角—NPC 與房間互動** | `docs/reference/玩家視角—NPC 與房間互動.md` | 玩家端：進入房間所見、人物欄、點擊 NPC 流程與各動作結果（對齊 005/002、房間非人物件、有嘴/交易設計） |
 
 ---
 

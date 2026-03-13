@@ -179,6 +179,7 @@ B7(MovementDef) ───┴─ M8(Register 時 Type+Speed)
 | `docs/testing/NPC活化系統模擬測試報告.md` | 已/未實作對照、模擬測試案例與結果 |
 | `docs/discussions/002_NPC需求驅動與求職機制.md` | 馬斯洛、求職、職缺、撮合、離職（未實作） |
 | `docs/implementation/三軸推導性格—實作規劃.md` | Personality、Phase 1–3、Talk 權重規格 |
+| `docs/implementation/NPC有嘴—設計與實作規劃.md` | 第三階段有嘴單一入口：I3、抽句規則、與 AI 併用、實作順序 |
 | `data/templates/README.md` | 模板格式、佔位符、職業一覽 |
 
 ---
