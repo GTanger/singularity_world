@@ -1,0 +1,46 @@
+{
+  "id": "yaxst04_shop03_10",
+  "name": "巷尾灶・長廊盡頭",
+  "description": "長廊盡頭，厚牆三面封死，頂心晶簇攢成一眼深琥珀、幾乎不閃。檯面與擱板觸手冰涼，導能紋在腳邊畫成一圈後隱入牆根，灶氣與沉香壓在膝高以下，無風無響。可經〔長廊底前〕走回，或徑經〔灶前〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst04_shop03_09",
+      "to": "yaxst04_shop03_09",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop03_main",
+      "to": "yaxst04_shop03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst04_shop03_10_09",
+      "name": "長廊底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop03_09",
+      "responses": {
+        "Move": "你沿長廊往回走。"
+      }
+    },
+    {
+      "id": "yaxst04_shop03_10_main",
+      "name": "灶前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop03_main",
+      "responses": {
+        "Move": "你徑直回到灶前。"
+      }
+    }
+  ]
+}

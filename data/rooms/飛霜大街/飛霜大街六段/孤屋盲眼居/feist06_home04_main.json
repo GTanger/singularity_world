@@ -1,0 +1,43 @@
+{
+  "id": "feist06_home04_main",
+  "name": "【孤屋盲眼居】寂靜廳堂",
+  "description": "房屋內部已經徹底結冰。家具保持著原樣，但在極端的低溫下，一切都像是被按下了時間的暫停鍵。退回〔朽木窄門〕至大街。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st6",
+      "to": "feistreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist06_home04_hallway",
+      "to": "feist06_home04_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_home04_m_exit_st6",
+      "name": "飛霜大街六段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st6",
+      "responses": {
+        "Move": "你推門步出，回到飛霜大街六段。"
+      }
+    },
+    {
+      "id": "feist06_home04_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_home04_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    }
+  ]
+}

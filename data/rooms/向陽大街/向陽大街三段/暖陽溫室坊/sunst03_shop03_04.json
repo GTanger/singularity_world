@@ -1,0 +1,46 @@
+{
+  "id": "sunst03_shop03_04",
+  "name": "右廊・前間",
+  "description": "右廊入口，拱頂稜鏡集中、光線飽和如蜜，地表淺色紋路與能量導線自縫隙延伸，黑木陳列檯與白玉嵌條咬合，室內開敞明亮、無廢土感，溫潤沉香淡淡。可經〔坊口〕回到坊頭，或往深處〔右廊・中段〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "坊口",
+      "to": "sunst03_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "右廊・中段",
+      "to": "sunst03_shop03_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_shop03_04_main",
+      "name": "坊口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_main",
+      "responses": {
+        "Move": "你回到坊口。"
+      }
+    },
+    {
+      "id": "sunst03_shop03_04_10",
+      "name": "右廊・中段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_10",
+      "responses": {
+        "Move": "你往右廊後間走去。"
+      }
+    }
+  ]
+}

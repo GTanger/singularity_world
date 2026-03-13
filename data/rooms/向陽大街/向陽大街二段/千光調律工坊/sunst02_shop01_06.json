@@ -1,0 +1,46 @@
+{
+  "id": "sunst02_shop01_06",
+  "name": "工區・一間",
+  "description": "工區入口，高窗與稜鏡交錯、光線呈琥珀色，白玉檯面與黑木工檯沿牆，地表能量紋路匯向中央導光槽，油脂質感皮革墊觸感飽滿，空氣流速較快、光霧稀薄。可經〔門面〕回到坊頭，或往〔工區・二間〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "門面",
+      "to": "sunst02_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "工區・二間",
+      "to": "sunst02_shop01_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_shop01_06_main",
+      "name": "門面",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop01_main",
+      "responses": {
+        "Move": "你回到門面。"
+      }
+    },
+    {
+      "id": "sunst02_shop01_06_07",
+      "name": "工區・二間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop01_07",
+      "responses": {
+        "Move": "你往工區二間走去。"
+      }
+    }
+  ]
+}

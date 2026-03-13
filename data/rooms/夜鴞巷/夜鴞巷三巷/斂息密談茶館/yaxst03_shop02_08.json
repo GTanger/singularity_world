@@ -1,0 +1,30 @@
+{
+  "id": "yaxst03_shop02_08",
+  "name": "氣密茶・左茶間底",
+  "description": "左茶間終點，三面鉛皮牆合圍，頂心晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈後隱入牆底。可經〔左茶間口〕回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_shop02_06",
+      "to": "yaxst03_shop02_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_shop02_08_06",
+      "name": "左茶間口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_06",
+      "responses": {
+        "Move": "你往左茶間口走回。"
+      }
+    }
+  ]
+}

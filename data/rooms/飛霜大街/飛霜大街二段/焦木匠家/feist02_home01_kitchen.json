@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home01_kitchen",
+  "name": "【焦木匠家】狹小廚房",
+  "description": "滿是油煙的小空間，幾乎沒有轉身的餘地。灶台邊堆疊著用來生火的廢木片，空氣裡混合著食物燒焦與木頭碳化的氣味。退回〔破舊起居室〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home01_living",
+      "to": "feist02_home01_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home01_k_exit_living",
+      "name": "破舊起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home01_living",
+      "responses": {
+        "Move": "你退回破舊起居室。"
+      }
+    }
+  ]
+}

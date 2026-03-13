@@ -1,0 +1,46 @@
+{
+  "id": "yaxst03_hold01_08",
+  "name": "底閣・南廊底前",
+  "description": "南廊將盡，頂上晶簇漸密，淡紫與琥珀交織成光霧。牆根導能紋路匯成一股沉入地磚縫隙，巷聲不聞，室內極靜。可經〔南廊中〕或〔南廊盡頭〕。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_hold01_07",
+      "to": "yaxst03_hold01_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_hold01_09",
+      "to": "yaxst03_hold01_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_hold01_08_07",
+      "name": "南廊中",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_07",
+      "responses": {
+        "Move": "你往南廊中走回。"
+      }
+    },
+    {
+      "id": "yaxst03_hold01_08_09",
+      "name": "南廊盡頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_09",
+      "responses": {
+        "Move": "你走到南廊盡頭。"
+      }
+    }
+  ]
+}

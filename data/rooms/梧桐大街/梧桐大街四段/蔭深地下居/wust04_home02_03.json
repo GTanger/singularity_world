@@ -1,0 +1,62 @@
+{
+  "id": "wust04_home02_03",
+  "name": "裡間",
+  "description": "邊點人工鋪面消失，黑土與根網交織，植被群湧頂點、路徑痕跡幾無，生物代謝氣味旺盛，靜謐的豐饒，油脂感與微光並存。可經〔大街〕、〔前間〕、〔側間〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wust04_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前間",
+      "to": "wust04_home02_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "側間",
+      "to": "wust04_home02_04",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust04_home02_03_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_home02_main",
+      "responses": {
+        "Move": "你往大街方向走去。"
+      }
+    },
+    {
+      "id": "wust04_home02_03_exit_2",
+      "name": "前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_home02_02",
+      "responses": {
+        "Move": "你往前間走去。"
+      }
+    },
+    {
+      "id": "wust04_home02_03_exit_3",
+      "name": "側間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_home02_04",
+      "responses": {
+        "Move": "你往側間走去。"
+      }
+    }
+  ]
+}

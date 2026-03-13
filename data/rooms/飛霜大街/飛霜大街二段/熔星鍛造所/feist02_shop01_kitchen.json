@@ -1,0 +1,27 @@
+{
+  "id": "feist02_shop01_kitchen",
+  "name": "【熔星鍛造所】汗水灶間",
+  "description": "勉強利用熔爐廢熱搭設的簡陋廚房。黑鍋裡永遠燉煮著能快速補充體重與鹽分的鹹湯。桌面滿是油漬與刀痕，沒有任何舒適可言。僅能退回〔淬火後堂〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop01_living",
+      "to": "feist02_shop01_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop01_k_exit_living",
+      "name": "熔爐後院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_living",
+      "responses": {
+        "Move": "你退回熔爐後院。"
+      }
+    }
+  ]
+}

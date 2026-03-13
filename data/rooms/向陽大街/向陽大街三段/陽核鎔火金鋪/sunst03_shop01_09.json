@@ -1,0 +1,30 @@
+{
+  "id": "sunst03_shop01_09",
+  "name": "居區・側室",
+  "description": "居區側室，單扇稜鏡窗將金光篩成淡琥珀色，地表能量紋路匯向中央導光槽，深色金屬几與黑木榻咬合，陳設整齊、線條規整，溫潤沉香自通風孔淡淡逸出。可經〔居區・前間〕返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "居區・前間",
+      "to": "sunst03_shop01_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_shop01_09_03",
+      "name": "居區・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_03",
+      "responses": {
+        "Move": "你往居區前間走回。"
+      }
+    }
+  ]
+}

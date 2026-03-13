@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home03_eave",
+  "name": "【暖爐守衛居】滴水簷下",
+  "description": "一段因為金屬門縫洩漏的室內熱氣與外界冷空氣不斷交匯的屋外空間，導致頂部不斷有凝結的水滴落下，將石階鑿出了淺坑。通向〔氣密封閉廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home03_main",
+      "to": "feist02_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home03_e_exit_main",
+      "name": "氣密封閉廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home03_main",
+      "responses": {
+        "Move": "你退回氣密封閉廊。"
+      }
+    }
+  ]
+}

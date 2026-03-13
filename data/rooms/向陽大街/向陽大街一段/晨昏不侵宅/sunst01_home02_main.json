@@ -1,0 +1,94 @@
+{
+  "id": "sunst01_home02_main",
+  "name": "破曉舍・玄關",
+  "description": "舍口玄關，稜鏡鑲窗把晨光裁成斜格，拱頂壓低、金光自頂瀉下，白玉階與深色金屬門框在光裡對撞，地表紋路像河脈匯向四道門，皮革踏墊靠門、吸飽光溫，一室亮堂。可經〔向陽大街一段〕離開，或往〔東室〕〔南室〕〔西室〕〔北室〕任一。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "sunstreet_st1",
+      "to": "sunstreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東室",
+      "to": "sunst01_home02_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "南室",
+      "to": "sunst01_home02_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西室",
+      "to": "sunst01_home02_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "北室",
+      "to": "sunst01_home02_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst01_home02_main_st1",
+      "name": "向陽大街一段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st1",
+      "responses": {
+        "Move": "你步出破曉舍，回到向陽大街一段。"
+      }
+    },
+    {
+      "id": "sunst01_home02_main_02",
+      "name": "東室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home02_02",
+      "responses": {
+        "Move": "你往東室走去。"
+      }
+    },
+    {
+      "id": "sunst01_home02_main_03",
+      "name": "南室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home02_03",
+      "responses": {
+        "Move": "你往南室走去。"
+      }
+    },
+    {
+      "id": "sunst01_home02_main_04",
+      "name": "西室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home02_04",
+      "responses": {
+        "Move": "你往西室走去。"
+      }
+    },
+    {
+      "id": "sunst01_home02_main_05",
+      "name": "北室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home02_05",
+      "responses": {
+        "Move": "你往北室走去。"
+      }
+    }
+  ]
+}

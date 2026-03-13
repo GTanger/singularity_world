@@ -1,0 +1,110 @@
+{
+  "id": "yaxst01_hold01_main",
+  "name": "深櫃・前檯",
+  "description": "氣密門在身後闔上，夜鴞啼鳴頓時收成遠方嗡鳴。前檯狹長，隔音鉛皮包覆四壁，晶簇嵌在頂角、灑下淡紫與深琥珀色光，黑石檯面冰涼，導能紋路自縫隙爬向牆角。沉香與熟成樹脂氣味沉在空氣裡，厚牆吞掉迴音。可經〔夜鴞巷一巷〕離開，或往〔東翼〕〔南翼〕〔西翼〕〔北翼〕〔內庫〕。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxiao_st1",
+      "to": "yaxiao_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東翼",
+      "to": "yaxst01_hold01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "南翼",
+      "to": "yaxst01_hold01_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西翼",
+      "to": "yaxst01_hold01_10",
+      "ui_hidden": true
+    },
+    {
+      "direction": "北翼",
+      "to": "yaxst01_hold01_14",
+      "ui_hidden": true
+    },
+    {
+      "direction": "內庫",
+      "to": "yaxst01_hold01_18",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst01_hold01_main_st1",
+      "name": "夜鴞巷一巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st1",
+      "responses": {
+        "Move": "你步出深櫃，回到夜鴞巷一巷。"
+      }
+    },
+    {
+      "id": "yaxst01_hold01_main_02",
+      "name": "東翼",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_02",
+      "responses": {
+        "Move": "你往東翼走去。"
+      }
+    },
+    {
+      "id": "yaxst01_hold01_main_06",
+      "name": "南翼",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_06",
+      "responses": {
+        "Move": "你往南翼走去。"
+      }
+    },
+    {
+      "id": "yaxst01_hold01_main_10",
+      "name": "西翼",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_10",
+      "responses": {
+        "Move": "你往西翼走去。"
+      }
+    },
+    {
+      "id": "yaxst01_hold01_main_14",
+      "name": "北翼",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_14",
+      "responses": {
+        "Move": "你往北翼走去。"
+      }
+    },
+    {
+      "id": "yaxst01_hold01_main_18",
+      "name": "內庫",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_18",
+      "responses": {
+        "Move": "你往內庫走去。"
+      }
+    }
+  ]
+}

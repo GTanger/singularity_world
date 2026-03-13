@@ -1,0 +1,43 @@
+{
+  "id": "ironland_home06_hallway",
+  "name": "廊道",
+  "description": "階上廊道，通門廳與生息室；小院在階下、自門廳入。脈絡自縫隙沁出，高差分明。此處通〔門廳〕與〔生息室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_home06_main",
+      "to": "ironland_home06_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home06_living",
+      "to": "ironland_home06_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home06_hallway_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home06_main",
+      "responses": {
+        "Move": "你下階回到門廳。"
+      }
+    },
+    {
+      "id": "ironland_home06_hallway_exit_living",
+      "name": "生息室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home06_living",
+      "responses": {
+        "Move": "你朝通道深處走去，進入生息室。"
+      }
+    }
+  ]
+}

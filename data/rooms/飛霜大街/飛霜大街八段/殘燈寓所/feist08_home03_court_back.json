@@ -1,0 +1,75 @@
+{
+  "id": "feist08_home03_court_back",
+  "name": "後院",
+  "description": "街燈宅後院更深一進，簷線四合；柴薪疊在角、〔柴房〕在盡頭，井已封、石欄覆霜，呼吸見白，簾外即廊與起居的燈影。此處通〔廊〕與〔柴房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_home03_hallway",
+      "to": "feist08_home03_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home03_shed",
+      "to": "feist08_home03_shed",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home03_bed1",
+      "to": "feist08_home03_bed1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home03_bed2",
+      "to": "feist08_home03_bed2",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_home03_cb_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home03_hallway",
+      "responses": {
+        "Move": "你退回廊。"
+      }
+    },
+    {
+      "id": "feist08_home03_cb_exit_shed",
+      "name": "柴房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home03_shed",
+      "responses": {
+        "Move": "你往柴房。"
+      }
+    },
+    {
+      "id": "feist08_home03_cb_exit_bed1",
+      "name": "臥一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home03_bed1",
+      "responses": {
+        "Move": "你入臥一。"
+      }
+    },
+    {
+      "id": "feist08_home03_cb_exit_bed2",
+      "name": "臥二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home03_bed2",
+      "responses": {
+        "Move": "你入臥二。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "sunst05_shop02_06",
+  "name": "沐三室",
+  "description": "沐區單間，落地窗將密集金光篩成淡琥珀色，牆面琉璃嵌條與深色金屬咬合，白玉石階觸手冰冷平滑，能量紋路隱約脈動，厚牆吸音、僅聞水聲細碎。可經〔沐區・前廳〕返回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "沐區・前廳",
+      "to": "sunst05_shop02_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst05_shop02_06_02",
+      "name": "沐區・前廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_02",
+      "responses": {
+        "Move": "你往沐區前廳走回。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "yaxst04_shop01_04",
+  "name": "長燈棧・甲廊底",
+  "description": "甲廊盡頭，頂角晶簇漸密，淡紫與琥珀交織成低飽和光霧。牆根導能紋路匯成一股，黑石磨得發亮，長燈在簷角聚成深琥珀。可經〔甲廊二〕或往〔匯流口〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst04_shop01_03",
+      "to": "yaxst04_shop01_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop01_11",
+      "to": "yaxst04_shop01_11",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst04_shop01_04_03",
+      "name": "甲廊二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop01_03",
+      "responses": {
+        "Move": "你往甲廊二走回。"
+      }
+    },
+    {
+      "id": "yaxst04_shop01_04_11",
+      "name": "匯流口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop01_11",
+      "responses": {
+        "Move": "你往匯流口走去。"
+      }
+    }
+  ]
+}

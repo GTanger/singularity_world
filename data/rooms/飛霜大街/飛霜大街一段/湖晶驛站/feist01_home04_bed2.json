@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home04_bed2",
+  "name": "【湖晶驛站】通鋪",
+  "description": "一個塞滿了上下舖鐵架床的大型房間，空氣非常地悶熱不通風。各種體味、劣質菸草與打呼聲在這裡交織成一張密不透風的網。這是底層運貨人的休息地。退回〔歇腳大廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home04_living",
+      "to": "feist01_home04_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home04_b2_exit_living",
+      "name": "歇腳大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_living",
+      "responses": {
+        "Move": "你退回歇腳大廳。"
+      }
+    }
+  ]
+}

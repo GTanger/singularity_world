@@ -1,0 +1,27 @@
+{
+  "id": "feist04_home01_courtyard",
+  "name": "小天井",
+  "description": "石霜宅院心一方、四向簷脊攏著，石臼半埋、霜跡凝在緣口，牆根玉質脈絡隱現、與簷角滴水結成的冰牙相映；呼吸見白、人聲隔牆，霜白結晶自簷緣沉降，僅一門通廊。此處僅通〔廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist04_home01_hallway",
+      "to": "feist04_home01_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_home01_c_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home01_hallway",
+      "responses": {
+        "Move": "你退回廊。"
+      }
+    }
+  ]
+}

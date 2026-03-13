@@ -1,0 +1,46 @@
+{
+  "id": "sunst03_shop03_10",
+  "name": "右廊・中段",
+  "description": "右廊中段，落地窗將光線裁成斜格，向陽拱頂低壓、密集金光自稜鏡垂落，白玉檯面與深色金屬架對比強烈，室內開敞明亮、無廢土感，能量微粒在光柱中緩浮。可經〔坊口〕回到坊頭，或往盡頭〔右廊・後間〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "坊口",
+      "to": "sunst03_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "右廊・後間",
+      "to": "sunst03_shop03_11",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_shop03_10_main",
+      "name": "坊口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_main",
+      "responses": {
+        "Move": "你回到坊口。"
+      }
+    },
+    {
+      "id": "sunst03_shop03_10_11",
+      "name": "右廊・後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_11",
+      "responses": {
+        "Move": "你往右廊後間走去。"
+      }
+    }
+  ]
+}

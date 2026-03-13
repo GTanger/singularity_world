@@ -1,0 +1,91 @@
+{
+  "id": "feist01_home01_hallway",
+  "name": "【霜鏡私邸】深木長廊",
+  "description": "鋪設著昂貴黑木地板的狹長走道，每一踏步都不會發出絲毫雜音。牆面上的晶簇照明被精心調整到了極低的亮度，散發著慵懶的琥珀色微光。這裡是整棟大宅的神經中樞。連接〔湖景前廊〕、〔起居大廳〕、〔觀霜庭院〕與〔藏卷書房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home01_main",
+      "to": "feist01_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home01_living",
+      "to": "feist01_home01_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home01_courtyard",
+      "to": "feist01_home01_courtyard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home01_storage",
+      "to": "feist01_home01_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home01_study",
+      "to": "feist01_home01_study",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home01_h_exit_main",
+      "name": "湖景前廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_main",
+      "responses": {
+        "Move": "你退回湖景前廊。"
+      }
+    },
+    {
+      "id": "feist01_home01_h_exit_living",
+      "name": "起居大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_living",
+      "responses": {
+        "Move": "你往起居大廳走去。"
+      }
+    },
+    {
+      "id": "feist01_home01_h_exit_court",
+      "name": "觀霜庭院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_courtyard",
+      "responses": {
+        "Move": "你步向觀霜庭院。"
+      }
+    },
+    {
+      "id": "feist01_home01_h_exit_storage",
+      "name": "冷庫",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_storage",
+      "responses": {
+        "Move": "你推門入冷庫。"
+      }
+    },
+    {
+      "id": "feist01_home01_h_exit_study",
+      "name": "藏卷書房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_study",
+      "responses": {
+        "Move": "你往藏卷書房走去。"
+      }
+    }
+  ]
+}

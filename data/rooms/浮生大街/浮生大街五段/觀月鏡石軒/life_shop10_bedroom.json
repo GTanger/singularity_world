@@ -1,0 +1,27 @@
+{
+  "id": "life_shop10_bedroom",
+  "name": "私人臥室",
+  "description": "床架自地增生，厚毯覆之，牆角鏡石鑲在石座，折射淡紫幽光。此處唯出口為側邊〔生活起居室〕，原路即回。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_shop10_living",
+      "to": "life_shop10_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop10_bedroom_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop10_living",
+      "responses": {
+        "Move": "你回到生活起居室。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "feist08_hold01_gate",
+  "name": "大門",
+  "description": "雙扉高過人頭，門環銹綠、石階三道覆著霜跡；推開便是前庭，身後街面人聲頓時隔了一層。簷影壓得極低，抬頭只見簷角切開一線天。此處連接〔飛霜大街8段〕，內側為〔前庭〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st8",
+      "to": "feistreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_hold01_front_yard",
+      "to": "feist08_hold01_front_yard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_hold01_gate_exit_st8",
+      "name": "飛霜大街8段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st8",
+      "responses": {
+        "Move": "你步出大門，回到飛霜大街8段。"
+      }
+    },
+    {
+      "id": "feist08_hold01_gate_exit_yard",
+      "name": "前庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_hold01_front_yard",
+      "responses": {
+        "Move": "你穿過門檻，步入前庭。"
+      }
+    }
+  ]
+}

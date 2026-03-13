@@ -1,0 +1,59 @@
+{
+  "id": "feist04_home02_main",
+  "name": "【寒階醫館】分診門廳",
+  "description": "這裡的光線被刻意調得暗淡，以安撫焦躁的傷患。木製長椅上總是坐滿了等待救治的底層傭兵。空氣裡充滿了濃重的血腥味與劣質消毒水混合的氣息，偶爾會有痛楚的哀嚎穿透隔音牆傳來。退回〔幽靜門洞〕至大街。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st4",
+      "to": "feistreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home02_hallway",
+      "to": "feist04_home02_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home02_eave",
+      "to": "feist04_home02_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_home02_m_exit_st4",
+      "name": "飛霜大街四段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st4",
+      "responses": {
+        "Move": "你步出，回到飛霜大街四段。"
+      }
+    },
+    {
+      "id": "feist04_home02_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home02_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    },
+    {
+      "id": "feist04_home02_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home02_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

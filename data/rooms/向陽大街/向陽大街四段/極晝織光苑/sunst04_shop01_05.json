@@ -1,0 +1,46 @@
+{
+  "id": "sunst04_shop01_05",
+  "name": "織間三",
+  "description": "落地窗將光線裁成斜格，向陽拱頂低壓、密集金光自稜鏡垂落，白玉地面嵌琉璃條，織架沿牆、油脂質感皮革墊觸感飽滿，室內開敞明亮、無廢土感。可經〔織間二〕往回，或往〔染間一〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "織間二",
+      "to": "sunst04_shop01_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "染間一",
+      "to": "sunst04_shop01_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst04_shop01_05_04",
+      "name": "織間二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop01_04",
+      "responses": {
+        "Move": "你往織間二走回。"
+      }
+    },
+    {
+      "id": "sunst04_shop01_05_06",
+      "name": "染間一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop01_06",
+      "responses": {
+        "Move": "你往染間一走去。"
+      }
+    }
+  ]
+}

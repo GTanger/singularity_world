@@ -1,0 +1,75 @@
+{
+  "id": "life_mega_main",
+  "name": "主廊",
+  "description": "深闊長廊，兩壁玉質脈絡自頂蔓延至腳，琥珀色微光沉靜，腳步聲在石面輕響。往外出墟須經前方〔前庭〕再循墟門回大街；左右各有一道〔東廊〕〔西廊〕岔口，深處〔中庭〕入口幽光隱約，廊廂匯聚。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_mega_front",
+      "to": "life_mega_front",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_east_hall",
+      "to": "life_mega_east_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_west_hall",
+      "to": "life_mega_west_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_court",
+      "to": "life_mega_court",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_mega_main_exit_front",
+      "name": "前庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_front",
+      "responses": {
+        "Move": "你朝前庭方向折返。"
+      }
+    },
+    {
+      "id": "life_mega_main_exit_east",
+      "name": "東廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_east_hall",
+      "responses": {
+        "Move": "你轉入東廊。"
+      }
+    },
+    {
+      "id": "life_mega_main_exit_west",
+      "name": "西廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_west_hall",
+      "responses": {
+        "Move": "你轉入西廊。"
+      }
+    },
+    {
+      "id": "life_mega_main_exit_court",
+      "name": "中庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_court",
+      "responses": {
+        "Move": "你朝中庭深處走去。"
+      }
+    }
+  ]
+}

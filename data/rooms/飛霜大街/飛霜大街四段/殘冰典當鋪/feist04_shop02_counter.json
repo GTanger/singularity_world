@@ -1,0 +1,43 @@
+{
+  "id": "feist04_shop02_counter",
+  "name": "櫃前",
+  "description": "簷下鋪櫃台後貨架齊眉、茶罐與零嘴排到簾際；簾後即〔內堂〕、簾外鋪面人聲與杯盞聲隱約，簷下霜積從簾隙漏進一線白、掌心貼檯沁涼，買賣在此成交。此處通〔鐵柵櫃前〕與〔內堂〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist04_shop02_main",
+      "to": "feist04_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_shop02_inner",
+      "to": "feist04_shop02_inner",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_shop02_c_exit_main",
+      "name": "鐵柵櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_shop02_main",
+      "responses": {
+        "Move": "你退回鐵柵櫃前。"
+      }
+    },
+    {
+      "id": "feist04_shop02_c_exit_inner",
+      "name": "內堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_shop02_inner",
+      "responses": {
+        "Move": "你掀簾往內堂。"
+      }
+    }
+  ]
+}

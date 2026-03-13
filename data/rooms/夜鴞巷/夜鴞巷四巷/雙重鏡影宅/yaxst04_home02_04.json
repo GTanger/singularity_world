@@ -1,0 +1,46 @@
+{
+  "id": "yaxst04_home02_04",
+  "name": "雙扉宅・廊心",
+  "description": "廊道中央，黃銅導向線自兩端匯於腳下後分向延伸。頂心晶簇聚成淡紫一團，四面鉛皮牆合圍，黑石地磚磨得發亮，導能紋路在牆根匯成一股，無雜音。可經〔廊中一〕或〔廊中三〕。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst04_home02_03",
+      "to": "yaxst04_home02_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_home02_05",
+      "to": "yaxst04_home02_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst04_home02_04_03",
+      "name": "廊中一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home02_03",
+      "responses": {
+        "Move": "你往廊中一走回。"
+      }
+    },
+    {
+      "id": "yaxst04_home02_04_05",
+      "name": "廊中三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_home02_05",
+      "responses": {
+        "Move": "你往廊中三走去。"
+      }
+    }
+  ]
+}

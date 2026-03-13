@@ -1,0 +1,46 @@
+{
+  "id": "sunst03_shop03_08",
+  "name": "中廊・二間",
+  "description": "中廊第二間，稜鏡垂落金光如簾、光影層次分明，地表淺色紋路與能量導線自縫隙延伸，深色金屬几與黑木榻咬合，觸手檯面冰冷平滑，溫潤沉香淡淡。可經〔中廊・一間〕往回，或往盡頭〔中廊・三間〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "中廊・一間",
+      "to": "sunst03_shop03_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "中廊・三間",
+      "to": "sunst03_shop03_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_shop03_08_07",
+      "name": "中廊・一間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_07",
+      "responses": {
+        "Move": "你往中廊一間走回。"
+      }
+    },
+    {
+      "id": "sunst03_shop03_08_09",
+      "name": "中廊・三間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_09",
+      "responses": {
+        "Move": "你往中廊三間走去。"
+      }
+    }
+  ]
+}

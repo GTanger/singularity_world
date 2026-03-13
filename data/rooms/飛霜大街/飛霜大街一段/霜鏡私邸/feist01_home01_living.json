@@ -1,0 +1,75 @@
+{
+  "id": "feist01_home01_living",
+  "name": "【霜鏡私邸】起居大廳",
+  "description": "挑高的向陽拱頂結構，將微弱的環境光完美地引入室內。家具多為油脂質感飽滿的重金屬與皮革製成，擺設一絲不苟。室內溫度宜人，空氣中瀰漫著高階陣法運轉時產生的微量臭氧氣息。連接通向各處的〔深木長廊〕、〔溫爐灶間〕、以及主客休息的〔主臥〕與〔次臥〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home01_hallway",
+      "to": "feist01_home01_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home01_kitchen",
+      "to": "feist01_home01_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home01_bed1",
+      "to": "feist01_home01_bed1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home01_bed2",
+      "to": "feist01_home01_bed2",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home01_lv_exit_hall",
+      "name": "深木長廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_hallway",
+      "responses": {
+        "Move": "你退回深木長廊。"
+      }
+    },
+    {
+      "id": "feist01_home01_lv_exit_kitchen",
+      "name": "溫爐灶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_kitchen",
+      "responses": {
+        "Move": "你往溫爐灶間走去。"
+      }
+    },
+    {
+      "id": "feist01_home01_lv_exit_bed1",
+      "name": "主臥",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_bed1",
+      "responses": {
+        "Move": "你往主臥走去。"
+      }
+    },
+    {
+      "id": "feist01_home01_lv_exit_bed2",
+      "name": "次臥",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_bed2",
+      "responses": {
+        "Move": "你往次臥走去。"
+      }
+    }
+  ]
+}

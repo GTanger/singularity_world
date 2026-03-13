@@ -1,0 +1,59 @@
+{
+  "id": "ironland_home06_main",
+  "name": "門廳",
+  "description": "石階宅門廳，入門即見內側石階上抬、與小院高差分明；階緣玉質脈絡沁出。巷熱自門縫入。門口〔板門〕通往打鐵二巷，內側〔廊道〕延伸至各室。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_lane2",
+      "to": "ironland_lane2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home06_hallway",
+      "to": "ironland_home06_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home06_courtyard",
+      "to": "ironland_home06_courtyard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home06_main_exit_lane",
+      "name": "板門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_lane2",
+      "responses": {
+        "Move": "你推開板門，回到打鐵二巷。"
+      }
+    },
+    {
+      "id": "ironland_home06_main_exit_hallway",
+      "name": "廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home06_hallway",
+      "responses": {
+        "Move": "你上階往廊道走去。"
+      }
+    },
+    {
+      "id": "ironland_home06_main_exit_courtyard",
+      "name": "小院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home06_courtyard",
+      "responses": {
+        "Move": "你自門廳步入小院。"
+      }
+    }
+  ]
+}

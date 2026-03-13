@@ -1,0 +1,27 @@
+{
+  "id": "feist03_home03_eave",
+  "name": "簷下",
+  "description": "簷線宅門旁一截窄簷、簷線低壓垂成串，簷下陰影與積霜交錯、可望三段行人與簷角霜紋；階前薄霜沾鞋即化、風灌進來袖口生寒。此處僅通〔擁擠走廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist03_home03_main",
+      "to": "feist03_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist03_home03_e_exit_main",
+      "name": "擁擠走廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_home03_main",
+      "responses": {
+        "Move": "你退回擁擠走廊。"
+      }
+    }
+  ]
+}

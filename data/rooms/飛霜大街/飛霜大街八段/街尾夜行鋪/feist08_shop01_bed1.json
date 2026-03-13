@@ -1,0 +1,27 @@
+{
+  "id": "feist08_shop01_bed1",
+  "name": "臥一",
+  "description": "街尾鋪臥一：過廳左側一間，榻頭朝簾、櫃在門邊；簾外買賣人聲隱約，此地只聞自家呼吸與樑角耗子窸窣，門一掩鋪面杯盞聲便遠了。此處僅通〔過廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_shop01_hall",
+      "to": "feist08_shop01_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_shop01_b1_exit_hall",
+      "name": "過廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_shop01_hall",
+      "responses": {
+        "Move": "你出臥一回過廳。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "feist02_shop02_eave",
+  "name": "【餘燼火籠行】避風簷下",
+  "description": "店鋪外一處內凹的玄關空間，上方懸掛著幾盞照明用的防風提燈。偶爾有不想進店的旅人會站在這裡借取店內透出的暖意。退回〔展售前堂〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_main",
+      "to": "feist02_shop02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_e_exit_main",
+      "name": "展售前堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_main",
+      "responses": {
+        "Move": "你退回展售前堂。"
+      }
+    }
+  ]
+}

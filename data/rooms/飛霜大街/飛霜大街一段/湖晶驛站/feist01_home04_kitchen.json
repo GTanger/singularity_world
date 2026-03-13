@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home04_kitchen",
+  "name": "【湖晶驛站】後廚",
+  "description": "充滿了濃烈的肉湯與辛香料氣味。幾個巨大的生鐵鍋在猛火上烹煮著能夠快速補充體力的粗糙食物。地面的防滑紋路裡積滿了油垢，空氣炙熱而渾濁。只能退回〔過道〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home04_living",
+      "to": "feist01_home04_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home04_k_exit_living",
+      "name": "歇腳大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_living",
+      "responses": {
+        "Move": "你退回歇腳大廳。"
+      }
+    }
+  ]
+}

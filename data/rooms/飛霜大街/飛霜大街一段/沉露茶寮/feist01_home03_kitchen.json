@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home03_kitchen",
+  "name": "【沉露茶寮】煮茶小灶",
+  "description": "茶寮的火力心臟。數個紫銅大壺在訂製的熱能爐上翻滾著沸水，高溫與濃郁的茶香幾乎實體化般地充滿整個空間。牆體因為長期的熱輻射而呈現一種琉璃化的晶瑩質感。退回〔水汽後廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home03_living",
+      "to": "feist01_home03_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home03_k_exit_living",
+      "name": "內室雅座",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home03_living",
+      "responses": {
+        "Move": "你退回內室雅座。"
+      }
+    }
+  ]
+}

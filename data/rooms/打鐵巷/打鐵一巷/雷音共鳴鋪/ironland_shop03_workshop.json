@@ -1,0 +1,59 @@
+{
+  "id": "ironland_shop03_workshop",
+  "name": "工間",
+  "description": "石砌爐床砌入牆體，爐口暗紅餘燼未熄，熱浪與巷內風道貫入的氣流交織，非常熱。此處通向〔錘音鋪〕〔生活起居室〕與〔爐房〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop03_main",
+      "to": "ironland_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop03_living",
+      "to": "ironland_shop03_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop03_kiln",
+      "to": "ironland_shop03_kiln",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop03_workshop_exit_main",
+      "name": "錘音鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop03_main",
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
+    },
+    {
+      "id": "ironland_shop03_workshop_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop03_living",
+      "responses": {
+        "Move": "你往後方通道走去，進入生活起居室。"
+      }
+    },
+    {
+      "id": "ironland_shop03_workshop_exit_kiln",
+      "name": "爐房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop03_kiln",
+      "responses": {
+        "Move": "你步入爐房。"
+      }
+    }
+  ]
+}

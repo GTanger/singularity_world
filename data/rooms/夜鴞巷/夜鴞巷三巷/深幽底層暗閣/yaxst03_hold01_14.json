@@ -1,0 +1,46 @@
+{
+  "id": "yaxst03_hold01_14",
+  "name": "底閣・北廊口",
+  "description": "北廊起處，氣密門較他廊更厚，黃銅導向線沿門框與踢腳延伸進深處。晶簇稀疏、光色偏深琥珀，黑石地磚冰涼，沉香與熟成樹脂氣味從深處漫出。可經〔廳心〕或往〔北廊深處〕。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_hold01_main",
+      "to": "yaxst03_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_hold01_15",
+      "to": "yaxst03_hold01_15",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_hold01_14_main",
+      "name": "廳心",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_main",
+      "responses": {
+        "Move": "你退回廳心。"
+      }
+    },
+    {
+      "id": "yaxst03_hold01_14_15",
+      "name": "北廊深處",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_15",
+      "responses": {
+        "Move": "你往北廊深處走。"
+      }
+    }
+  ]
+}

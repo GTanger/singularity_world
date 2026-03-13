@@ -1,0 +1,46 @@
+{
+  "id": "sunst03_home03_06",
+  "name": "西廂二",
+  "description": "環廊西段接軒口，向陽拱頂低壓、光線呈琥珀色，白玉地面與琉璃嵌條對比強烈，牆面能量導線隱約脈動，黑木長几靠牆、表面油脂光澤。可經〔西廂一〕或〔軒口〕沿環廊走。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "西廂一",
+      "to": "sunst03_home03_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "軒口",
+      "to": "sunst03_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_home03_06_05",
+      "name": "西廂一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_home03_05",
+      "responses": {
+        "Move": "你往西廂一走去。"
+      }
+    },
+    {
+      "id": "sunst03_home03_06_main",
+      "name": "軒口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_home03_main",
+      "responses": {
+        "Move": "你往軒口走去。"
+      }
+    }
+  ]
+}

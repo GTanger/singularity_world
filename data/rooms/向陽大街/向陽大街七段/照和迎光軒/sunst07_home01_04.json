@@ -1,0 +1,30 @@
+{
+  "id": "sunst07_home01_04",
+  "name": "側間",
+  "description": "窄廊一側稜鏡牆將外光折射而入，拋光白玉檯面嵌在深色金屬框內，琉璃瓶與金屬器皿排成一行，光影層次分明，牆角能量紋路淺淺發亮，空氣流速快、無積塵。可經〔前間〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "前間",
+      "to": "sunst07_home01_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst07_home01_04_exit_1",
+      "name": "前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst07_home01_02",
+      "responses": {
+        "Move": "你往前間走去。"
+      }
+    }
+  ]
+}

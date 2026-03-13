@@ -17,10 +17,11 @@ type OccupationDef struct {
 	ActionSockets []string `json:"action_sockets"`
 }
 
+// defaultSockets 為 Agent 預設插座（無須指派即具備）；身份由指派＋在場推導，見 docs/reference/狀態_指派_身份_核心概念.md。
 var (
 	occupationOnce   sync.Once
 	occupationCache  map[string]OccupationDef
-	defaultSockets   = []string{"Talk", "Attack", "Look"}
+	defaultSockets   = []string{"Talk", "Attack", "Look", "Trade"}
 )
 
 // LoadOccupations 讀取並快取 occupations.json；首次呼叫後即從快取返回。

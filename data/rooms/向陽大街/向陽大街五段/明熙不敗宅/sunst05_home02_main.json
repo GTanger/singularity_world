@@ -1,0 +1,62 @@
+{
+  "id": "sunst05_home02_main",
+  "name": "明熙宅・門廳",
+  "description": "黑木門框、深色金屬門環，簷下能量紋路隱約，白玉地面反射淡金微光，稜鏡自拱頂導光入室、光影層次分明，溫潤沉香淡淡，開敞明亮。可經〔向陽大街五段〕離開，或往〔前棟〕、〔後棟〕入內。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "sunstreet_st5",
+      "to": "sunstreet_st5",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前棟",
+      "to": "sunst05_home02_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "後棟",
+      "to": "sunst05_home02_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst05_home02_main_st5",
+      "name": "向陽大街五段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st5",
+      "responses": {
+        "Move": "你步出明熙宅，回到向陽大街五段。"
+      }
+    },
+    {
+      "id": "sunst05_home02_main_02",
+      "name": "前棟",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_home02_02",
+      "responses": {
+        "Move": "你往前棟走去。"
+      }
+    },
+    {
+      "id": "sunst05_home02_main_05",
+      "name": "後棟",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_home02_05",
+      "responses": {
+        "Move": "你往後棟走去。"
+      }
+    }
+  ]
+}

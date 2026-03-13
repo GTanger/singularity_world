@@ -1,0 +1,46 @@
+{
+  "id": "yaxst03_shop03_06",
+  "name": "前櫃行・環室五",
+  "description": "內環第五間，三面鉛皮牆合圍，頂心晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈。可經〔環室四〕或〔環室六〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_shop03_05",
+      "to": "yaxst03_shop03_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop03_07",
+      "to": "yaxst03_shop03_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_shop03_06_05",
+      "name": "環室四",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop03_05",
+      "responses": {
+        "Move": "你往環室四走回。"
+      }
+    },
+    {
+      "id": "yaxst03_shop03_06_07",
+      "name": "環室六",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop03_07",
+      "responses": {
+        "Move": "你往環室六走去。"
+      }
+    }
+  ]
+}

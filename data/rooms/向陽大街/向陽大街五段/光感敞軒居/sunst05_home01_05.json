@@ -1,0 +1,46 @@
+{
+  "id": "sunst05_home01_05",
+  "name": "西廂・中間",
+  "description": "西廂中段，向陽拱頂低壓、光線飽和如蜜，白玉檯面陳列日用，牆面能量紋路隱約脈動，油脂質感皮革凳靠牆，室內無雜音，能量微粒在光柱中緩浮。可經〔西廂・前間〕往回，或往盡頭〔西廂・內間〕。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "西廂・前間",
+      "to": "sunst05_home01_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西廂・內間",
+      "to": "sunst05_home01_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst05_home01_05_04",
+      "name": "西廂・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_home01_04",
+      "responses": {
+        "Move": "你往西廂前間走回。"
+      }
+    },
+    {
+      "id": "sunst05_home01_05_06",
+      "name": "西廂・內間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_home01_06",
+      "responses": {
+        "Move": "你往西廂內間走去。"
+      }
+    }
+  ]
+}

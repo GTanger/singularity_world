@@ -1,0 +1,59 @@
+{
+  "id": "feist07_home02_hallway",
+  "name": "【隱巷流民居】廊",
+  "description": "簷影宅廊子半折，一頭往門廳、一頭往起居與臥房；側門推開即後院，牆皮斑駁、石階緣磨得圓滑，掌心貼牆一片沁涼。此處通〔門廳〕、〔起居〕與〔後院〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_home02_main",
+      "to": "feist07_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_home02_living",
+      "to": "feist07_home02_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_home02_court_back",
+      "to": "feist07_home02_court_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_home02_h_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home02_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    },
+    {
+      "id": "feist07_home02_h_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home02_living",
+      "responses": {
+        "Move": "你往起居。"
+      }
+    },
+    {
+      "id": "feist07_home02_h_exit_back",
+      "name": "後院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home02_court_back",
+      "responses": {
+        "Move": "你往後院。"
+      }
+    }
+  ]
+}

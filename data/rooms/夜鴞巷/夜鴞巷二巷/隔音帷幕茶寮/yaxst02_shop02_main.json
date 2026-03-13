@@ -1,0 +1,62 @@
+{
+  "id": "yaxst02_shop02_main",
+  "name": "隔簾茶寮・簾前",
+  "description": "門內簾前窄長，左右兩道布簾垂落、黃銅導向線沿簾軌分向兩側深處延伸。隔音鉛皮包覆頂壁，晶簇嵌在簷角、灑下淡紫與琥珀色光，黑石地磚沁著茶氣與沉香餘韻，巷內啼鳴被氣密門擋成遠方嗡鳴。可經〔夜鴞巷二巷〕離開，或往〔左簾內〕〔右簾內〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxiao_st2",
+      "to": "yaxiao_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop02_02",
+      "to": "yaxst02_shop02_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop02_06",
+      "to": "yaxst02_shop02_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst02_shop02_main_st2",
+      "name": "夜鴞巷二巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st2",
+      "responses": {
+        "Move": "你步出隔簾茶寮，回到夜鴞巷二巷。"
+      }
+    },
+    {
+      "id": "yaxst02_shop02_main_02",
+      "name": "左簾內",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop02_02",
+      "responses": {
+        "Move": "你掀簾往左簾內走去。"
+      }
+    },
+    {
+      "id": "yaxst02_shop02_main_06",
+      "name": "右簾內",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop02_06",
+      "responses": {
+        "Move": "你掀簾往右簾內走去。"
+      }
+    }
+  ]
+}

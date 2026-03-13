@@ -1,0 +1,53 @@
+{
+  "id": "life_shop02_stairwell_2f",
+  "name": "二樓平台",
+  "description": "螺旋石階在此終止，地表平鋪著淡紫色琉璃質。此處光線較為柔和，路徑通向下方的〔樓梯間〕與側邊的〔居家客廳〕。牆面上掛著一張〔乾枯葉毯〕。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_shop02_stairwell_1f",
+      "to": "life_shop02_stairwell_1f",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop02_living",
+      "to": "life_shop02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop02_stairs_2f_exit_down",
+      "name": "樓梯間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop02_stairwell_1f",
+      "responses": {
+        "Move": "你沿螺旋石階向下，回到樓梯間。"
+      }
+    },
+    {
+      "id": "life_shop02_stairs_2f_exit_living",
+      "name": "居家客廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop02_living",
+      "responses": {
+        "Move": "你步入側邊通道，進入居家客廳。"
+      }
+    },
+    {
+      "id": "life_shop02_stairs_2f_obj_rug",
+      "name": "乾枯葉毯",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "由數百片脈絡分明的褐色巨葉編織而成，纖維質地堅硬如金屬絲。"
+      }
+    }
+  ]
+}

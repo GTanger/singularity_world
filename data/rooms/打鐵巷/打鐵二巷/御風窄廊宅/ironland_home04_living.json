@@ -1,0 +1,59 @@
+{
+  "id": "ironland_home04_living",
+  "name": "生息室",
+  "description": "石几貼地，琉璃質淡綠微光；牆縫晶礦。自窄廊擠入後空間稍寬。此處通〔廊道〕、〔灶間〕與〔內臥房〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_home04_hallway",
+      "to": "ironland_home04_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home04_kitchen",
+      "to": "ironland_home04_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_home04_bedroom",
+      "to": "ironland_home04_bedroom",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home04_living_exit_hallway",
+      "name": "廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home04_hallway",
+      "responses": {
+        "Move": "你回到廊道。"
+      }
+    },
+    {
+      "id": "ironland_home04_living_exit_kitchen",
+      "name": "灶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home04_kitchen",
+      "responses": {
+        "Move": "你步入灶間。"
+      }
+    },
+    {
+      "id": "ironland_home04_living_exit_bedroom",
+      "name": "內臥房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home04_bedroom",
+      "responses": {
+        "Move": "你步入內臥房。"
+      }
+    }
+  ]
+}

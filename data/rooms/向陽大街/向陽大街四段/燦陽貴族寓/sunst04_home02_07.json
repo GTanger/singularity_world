@@ -1,0 +1,30 @@
+{
+  "id": "sunst04_home02_07",
+  "name": "右進・三間",
+  "description": "右側進深盡頭，單扇稜鏡窗將金光篩成淡琥珀色，地面拋光白玉與琉璃嵌條對比強烈，深色金屬几與黑木榻咬合，能量導線隱約脈動，牆厚隔音、僅聞遠方大街隱約人聲，陳設整齊、線條規整。可經〔右進・二間〕沿右進返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "右進・二間",
+      "to": "sunst04_home02_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst04_home02_07_06",
+      "name": "右進・二間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_home02_06",
+      "responses": {
+        "Move": "你往右進二間走回。"
+      }
+    }
+  ]
+}

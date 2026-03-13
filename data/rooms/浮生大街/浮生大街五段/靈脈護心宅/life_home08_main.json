@@ -1,0 +1,43 @@
+{
+  "id": "life_home08_main",
+  "name": "門廳",
+  "description": "脈絡宅門廳，牆面玉質脈絡自石縫蔓延而出，淡紫與琥珀光色沉澱，石階覆著絨狀菌絲。此處光線穿過〔木門〕灑入五段，內側導向〔脈廊〕通往各室。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "lifestreet_st5",
+      "to": "lifestreet_st5",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home08_hallway",
+      "to": "life_home08_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_home08_main_exit_st5",
+      "name": "木門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "lifestreet_st5",
+      "responses": {
+        "Move": "你推開木門，回到浮生大街五段。"
+      }
+    },
+    {
+      "id": "life_home08_main_exit_hallway",
+      "name": "脈廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home08_hallway",
+      "responses": {
+        "Move": "你朝內側走去，進入脈廊。"
+      }
+    }
+  ]
+}

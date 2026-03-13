@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home03_bed2",
+  "name": "【暖爐守衛居】備用物資間",
+  "description": "原本打算作為次臥的空間，現在堆滿了罐頭食品、抗輻射藥劑與武器彈藥箱。空間顯得侷促，有一股機械潤滑油的微弱氣息。退回〔無窗起居室〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home03_living",
+      "to": "feist02_home03_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home03_b2_exit_living",
+      "name": "無窗起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home03_living",
+      "responses": {
+        "Move": "你退回無窗起居室。"
+      }
+    }
+  ]
+}

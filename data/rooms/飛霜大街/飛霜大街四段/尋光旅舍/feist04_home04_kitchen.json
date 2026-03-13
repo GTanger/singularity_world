@@ -1,0 +1,27 @@
+{
+  "id": "feist04_home04_kitchen",
+  "name": "灶間",
+  "description": "簷光宅灶間爐冷餘灰、鍋碗疊在石檯，簷隙漏光自窗隙沁進、簷下陰影與霜色在煙燻處隱約；僅一門通〔起居〕，茶氣與煙氣沉在樑下、掌心貼檯一片沁涼。此處僅通〔起居〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist04_home04_living",
+      "to": "feist04_home04_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_home04_k_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home04_living",
+      "responses": {
+        "Move": "你退回起居。"
+      }
+    }
+  ]
+}

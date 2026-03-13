@@ -1,0 +1,27 @@
+{
+  "id": "feist03_hold01_shop_stock",
+  "name": "庫房",
+  "description": "簷心樓庫房堆著存貨與未上架貨、梁上懸乾貨，牆角霜紋沁出、空氣滯重沁涼；門僅通〔櫃前〕，簷下漏光一線、塵埃與霜晶同浮，三段人聲隔簾而遠。此處僅通〔櫃前〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist03_hold01_shop_counter",
+      "to": "feist03_hold01_shop_counter",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist03_hold01_ss_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_hold01_shop_counter",
+      "responses": {
+        "Move": "你退回櫃前。"
+      }
+    }
+  ]
+}

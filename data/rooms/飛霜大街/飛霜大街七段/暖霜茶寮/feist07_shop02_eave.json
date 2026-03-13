@@ -1,0 +1,27 @@
+{
+  "id": "feist07_shop02_eave",
+  "name": "【暖霜茶寮】簷下",
+  "description": "簷下茶鋪門外一截窄簷，霜落在簷緣、風一吹就撲面；茶氣從簾縫鑽出、與街面霜氣交混，可望七段行人與擔夫歇腳，再往東即八段方向。此處僅通〔鋪面〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_shop02_main",
+      "to": "feist07_shop02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_shop02_e_exit_main",
+      "name": "鋪面",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_main",
+      "responses": {
+        "Move": "你退回鋪面。"
+      }
+    }
+  ]
+}

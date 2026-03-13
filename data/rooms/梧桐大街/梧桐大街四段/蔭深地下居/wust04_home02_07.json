@@ -1,0 +1,62 @@
+{
+  "id": "wust04_home02_07",
+  "name": "寢間",
+  "description": "出口地勢平緩銜接黑曜石磚路，綠蔭散開現街區輪廓，空氣乾燥光線自然，無廢土感、從容，綠意與增生並存、從容。可經〔大街〕、〔茶間〕、〔前間〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wust04_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "茶間",
+      "to": "wust04_home02_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前間",
+      "to": "wust04_home02_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust04_home02_07_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_home02_main",
+      "responses": {
+        "Move": "你往大街方向走去。"
+      }
+    },
+    {
+      "id": "wust04_home02_07_exit_2",
+      "name": "茶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_home02_06",
+      "responses": {
+        "Move": "你往茶間走去。"
+      }
+    },
+    {
+      "id": "wust04_home02_07_exit_3",
+      "name": "前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_home02_02",
+      "responses": {
+        "Move": "你往前間走去。"
+      }
+    }
+  ]
+}

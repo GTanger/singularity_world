@@ -1,0 +1,62 @@
+{
+  "id": "sunst02_home01_main",
+  "name": "映雪寓・寓口",
+  "description": "寓口白玉階、稜鏡鑲窗，透出溫潤沉香，寓口稜鏡自拱頂導光入室、淡金微光與深色金屬對比強烈，地表能量紋路匯向牆角導線，開敞明亮。可經〔向陽大街二段〕離開，或沿環廊往〔東廂〕、〔西廂〕。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "sunstreet_st2",
+      "to": "sunstreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東廂",
+      "to": "sunst02_home01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西廂",
+      "to": "sunst02_home01_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_home01_main_st2",
+      "name": "向陽大街二段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st2",
+      "responses": {
+        "Move": "你步出映雪寓，回到向陽大街二段。"
+      }
+    },
+    {
+      "id": "sunst02_home01_main_02",
+      "name": "東廂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home01_02",
+      "responses": {
+        "Move": "你往東廂走去。"
+      }
+    },
+    {
+      "id": "sunst02_home01_main_07",
+      "name": "西廂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home01_07",
+      "responses": {
+        "Move": "你往西廂走去。"
+      }
+    }
+  ]
+}

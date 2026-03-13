@@ -1,8 +1,11 @@
 {
   "id": "yaxiao_st1",
   "name": "夜鴞巷一巷",
-  "description": "巷道自向陽大街八段岔入後極狹，石縫兩壁夾峙、光影晦暗，腳下黑石與磨損磚縫沁出淡紫微光，夜鴞啼鳴自簷角迴盪、一疊一疊壓進耳裡。氣密鉛皮與暖能石嵌在門面上，巷深處灰白氣絲緩流，沉香與熟成樹脂自門隙漏出一縷。可經〔向陽大街八段〕回到大街，或沿巷往〔夜鴞巷二巷〕；可經〔深櫃〕、〔簷下洗衣〕、〔窄光雜貨〕、〔夜炊灶〕、〔閉門寓〕、〔暗櫥寓所〕入內。",
-  "tags": ["street","outdoor"],
+  "description": "自極度明亮的向陽大街八段岔入，光線在這裡被兩側牆面上密集的噬光陣紋瞬間吞沒。巷道極其狹窄，地面鋪設著能完全吸收腳步聲的消音黑曜石。空氣中不再有外頭的喧囂，只有陣法運轉時發出的細微蜂鳴，以及偶爾從高聳的簷角傳來、經過機關放大的夜鴞啼鳴。這裡是區塊內最高階情報與不見光交易的集散地，門面上鑲嵌著隔絕神識探查的鉛極晶板。路側是專司情報的〔深淵密櫃行〕、洗滌靈物痕跡的〔浣塵陣法屋〕與〔微光秘法鋪〕；對向則是〔夜宴高階膳房〕、絕對隱密的〔閉口禪修室〕與〔暗影櫥窗寓所〕。可退回〔向陽大街八段〕，或深入〔夜鴞巷二巷〕。",
+  "tags": [
+    "street",
+    "outdoor"
+  ],
   "zone": "yaxiao",
   "exits": [
     {
@@ -71,68 +74,68 @@
     },
     {
       "id": "yaxiao_st1_hold01",
-      "name": "深櫃",
+      "name": "深淵密櫃行",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst01_hold01_main",
       "responses": {
-        "Move": "你推門進入深櫃。"
+        "Move": "你將神識探入晶板驗證身分，無聲推開厚重的密櫃大門，步入深淵密櫃行。"
       }
     },
     {
       "id": "yaxiao_st1_shop01",
-      "name": "簷下洗衣",
+      "name": "浣塵陣法屋",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst01_shop01_main",
       "responses": {
-        "Move": "你進入簷下洗衣。"
+        "Move": "你穿過門口那層能洗淨一切氣息探蹤的水波結界，進入浣塵陣法屋。"
       }
     },
     {
       "id": "yaxiao_st1_shop02",
-      "name": "窄光雜貨",
+      "name": "微光秘法鋪",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst01_shop02_main",
       "responses": {
-        "Move": "你進入窄光雜貨。"
+        "Move": "你藉著門縫漏出的一絲珍異紫光，推門進入微光秘法鋪。"
       }
     },
     {
       "id": "yaxiao_st1_shop03",
-      "name": "夜炊灶",
+      "name": "夜宴高階膳房",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst01_shop03_main",
       "responses": {
-        "Move": "你進入夜炊灶。"
+        "Move": "你循著能瞬間補充神魂之力的奇異藥膳香，推開雕花暗門進入夜宴高階膳房。"
       }
     },
     {
       "id": "yaxiao_st1_home01",
-      "name": "閉門寓",
+      "name": "閉口禪修室",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst01_home01_main",
       "responses": {
-        "Move": "你進入閉門寓。"
+        "Move": "你扣響了三重隔音隔絕的機關門把，門扉無聲滑開，進入閉口禪修室。"
       }
     },
     {
       "id": "yaxiao_st1_home02",
-      "name": "暗櫥寓所",
+      "name": "暗影櫥窗寓所",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst01_home02_main",
       "responses": {
-        "Move": "你進入暗櫥寓所。"
+        "Move": "你走進幾乎與黑夜融為一體的門廊，推門進入暗影櫥窗寓所。"
       }
     }
   ]

@@ -1,0 +1,59 @@
+{
+  "id": "feist04_home04_main",
+  "name": "【尋光旅舍】喧鬧玄關",
+  "description": "一個毫無隱私與秩序可言的入口。地上到處是泥濘與融化的髒雪。幾個粗糙的火爐在角落散發出燻人的黑煙與些許熱度。這裡是那些付不起高昂住宿費的流浪者的避風港。退回〔粗糙小門〕至大街。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st4",
+      "to": "feistreet_st4",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home04_hallway",
+      "to": "feist04_home04_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist04_home04_eave",
+      "to": "feist04_home04_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_home04_m_exit_st4",
+      "name": "飛霜大街四段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st4",
+      "responses": {
+        "Move": "你步出，回到飛霜大街四段。"
+      }
+    },
+    {
+      "id": "feist04_home04_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home04_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    },
+    {
+      "id": "feist04_home04_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home04_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

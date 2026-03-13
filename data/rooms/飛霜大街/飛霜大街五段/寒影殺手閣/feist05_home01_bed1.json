@@ -1,0 +1,27 @@
+{
+  "id": "feist05_home01_bed1",
+  "name": "臥一",
+  "description": "簷影宅臥一：裡牆一榻、門側一櫃，枕褥收在榻尾；簾外即廊與小院，人過即靜，案頭燈已熄、窗棂外一片灰白，書齋那頭無聲、簷下陰影從簾隙漏進一線。此處僅通〔起居〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist05_home01_living",
+      "to": "feist05_home01_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_home01_b1_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_living",
+      "responses": {
+        "Move": "你出臥一回起居。"
+      }
+    }
+  ]
+}

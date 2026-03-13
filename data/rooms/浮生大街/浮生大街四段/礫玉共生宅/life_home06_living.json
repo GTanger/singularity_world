@@ -1,0 +1,59 @@
+{
+  "id": "life_home06_living",
+  "name": "生息室",
+  "description": "石几伏貼於地，桌緣琉璃質攀附石面，牆面晶礦鑲在石縫，礦物粉塵沉降。此處通〔礫廊〕〔灶間〕與〔內臥房〕，可往廊、灶頭或歇息處。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_home06_hallway",
+      "to": "life_home06_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home06_kitchen",
+      "to": "life_home06_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home06_bedroom",
+      "to": "life_home06_bedroom",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_home06_living_exit_hallway",
+      "name": "礫廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home06_hallway",
+      "responses": {
+        "Move": "你回到礫廊。"
+      }
+    },
+    {
+      "id": "life_home06_living_exit_kitchen",
+      "name": "灶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home06_kitchen",
+      "responses": {
+        "Move": "你步入灶間。"
+      }
+    },
+    {
+      "id": "life_home06_living_exit_bedroom",
+      "name": "內臥房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home06_bedroom",
+      "responses": {
+        "Move": "你步入內臥房。"
+      }
+    }
+  ]
+}

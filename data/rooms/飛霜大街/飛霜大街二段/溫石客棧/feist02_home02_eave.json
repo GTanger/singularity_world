@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home02_eave",
+  "name": "【溫石客棧】客棧簷下",
+  "description": "一個隨時都有人蹲著抽煙的戶外角落。簷下堆著幾個空的大木桶。門口溢出的熱氣在這邊與街上的霜晶相遇，化為一陣白霧。通向〔嘈雜門廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home02_main",
+      "to": "feist02_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home02_e_exit_main",
+      "name": "嘈雜門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home02_main",
+      "responses": {
+        "Move": "你退回嘈雜門廳。"
+      }
+    }
+  ]
+}

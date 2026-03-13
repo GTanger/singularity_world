@@ -1,0 +1,30 @@
+{
+  "id": "sunst02_shop01_08",
+  "name": "工區・三間",
+  "description": "工區盡頭，單扇稜鏡窗將金光篩成淡琥珀色，地面拋光白玉與琉璃嵌條對比強烈，黑木長几靠牆、表面油脂光澤，能量紋路隱約脈動，牆厚隔音、僅聞遠方大街隱約人聲，陳設整齊、線條規整。可經〔工區・二間〕沿工區返回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "工區・二間",
+      "to": "sunst02_shop01_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_shop01_08_07",
+      "name": "工區・二間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop01_07",
+      "responses": {
+        "Move": "你往工區二間走回。"
+      }
+    }
+  ]
+}

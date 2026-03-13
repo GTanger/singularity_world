@@ -1,0 +1,75 @@
+{
+  "id": "feist03_home04_living",
+  "name": "起居",
+  "description": "簷角宅一几兩凳、火盆冷了一夜，簷角積霜自窗棂切進、簷下陰影與霜色在牆上交錯；左通〔灶間〕、正面兩門各是〔臥一〕〔臥二〕，無窗對院、簾外即廊的腳步聲。此處通〔廊〕、〔灶間〕、〔臥一〕、〔臥二〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist03_home04_hallway",
+      "to": "feist03_home04_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist03_home04_kitchen",
+      "to": "feist03_home04_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist03_home04_bed1",
+      "to": "feist03_home04_bed1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist03_home04_bed2",
+      "to": "feist03_home04_bed2",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist03_home04_lv_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_home04_hallway",
+      "responses": {
+        "Move": "你退回廊。"
+      }
+    },
+    {
+      "id": "feist03_home04_lv_exit_kitchen",
+      "name": "灶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_home04_kitchen",
+      "responses": {
+        "Move": "你往灶間。"
+      }
+    },
+    {
+      "id": "feist03_home04_lv_exit_bed1",
+      "name": "臥一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_home04_bed1",
+      "responses": {
+        "Move": "你入臥一。"
+      }
+    },
+    {
+      "id": "feist03_home04_lv_exit_bed2",
+      "name": "臥二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_home04_bed2",
+      "responses": {
+        "Move": "你入臥二。"
+      }
+    }
+  ]
+}

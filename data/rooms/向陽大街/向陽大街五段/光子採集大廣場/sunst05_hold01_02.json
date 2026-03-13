@@ -1,0 +1,46 @@
+{
+  "id": "sunst05_hold01_02",
+  "name": "東廊口",
+  "description": "東側廊道起點，稜鏡嵌牆、光線自高窗斜切而入，拋光白玉地面映出淡金微光，牆面能量導線與縫隙菌絲隱約咬合，空氣流速略快，觸手廊柱冰冷平滑。可經〔廣場中央〕折返，或沿廊往〔東一室〕。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "廣場中央",
+      "to": "sunst05_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東一室",
+      "to": "sunst05_hold01_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst05_hold01_02_main",
+      "name": "廣場中央",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_main",
+      "responses": {
+        "Move": "你回到廣場中央。"
+      }
+    },
+    {
+      "id": "sunst05_hold01_02_03",
+      "name": "東一室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_03",
+      "responses": {
+        "Move": "你沿東廊往東一室走去。"
+      }
+    }
+  ]
+}

@@ -1,8 +1,11 @@
 {
   "id": "fei_lake_shore",
-  "name": "水際",
-  "description": "真正貼水的那條線：霜觸石即化，熱氣自水際蒸散、與湖面霧絲糾纏，游離輻射下熱氣不散。冷調石紋沒入水緣，足底沁涼濕滑，水氣凝成細霜覆在灘石上旋即消融。可經〔街口湖緣〕、〔霧起之濱〕、〔湖背〕、〔迴岸〕回到岸上。",
-  "tags": ["street","outdoor"],
+  "name": "【飛霜湖】沉霜水際",
+  "description": "這裡是真正與湖水接壤的危險地帶。湖水表面由於游離輻射的影響，不時閃爍著幽藍色的螢光。霜晶甚至還未觸及水面便被蒸騰的熱氣融化，化作帶著微毒的水滴。冷調的石紋台階一直向水下延伸，表面佈滿了濕滑且具有腐蝕性的變異藻類。站在這裡，耳邊滿是湖水拍打岸石的沉悶聲響，讓人心生敬畏。可經此回到南岸的〔街口碎冰灘〕、東岸的〔東岸霧起之濱〕、北岸的〔北岸孤冷湖背〕與西岸的〔西岸寂靜迴岸〕。",
+  "tags": [
+    "street",
+    "outdoor"
+  ],
   "zone": "feistreet",
   "exits": [
     {
@@ -29,18 +32,18 @@
   "objects": [
     {
       "id": "fei_lake_shore_south",
-      "name": "街口湖緣",
+      "name": "街口碎冰灘",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "fei_lake_south",
       "responses": {
-        "Move": "你拾級而上，回到南岸街口湖緣。"
+        "Move": "你拾級而上，回到南岸街口碎冰灘。"
       }
     },
     {
       "id": "fei_lake_shore_east",
-      "name": "霧起之濱",
+      "name": "東岸霧起之濱",
       "sockets": [
         "Move"
       ],
@@ -51,7 +54,7 @@
     },
     {
       "id": "fei_lake_shore_north",
-      "name": "湖背",
+      "name": "北岸孤冷湖背",
       "sockets": [
         "Move"
       ],
@@ -62,7 +65,7 @@
     },
     {
       "id": "fei_lake_shore_west",
-      "name": "迴岸",
+      "name": "西岸寂靜迴岸",
       "sockets": [
         "Move"
       ],

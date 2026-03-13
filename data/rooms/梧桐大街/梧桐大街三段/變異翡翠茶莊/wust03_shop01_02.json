@@ -1,0 +1,46 @@
+{
+  "id": "wust03_shop01_02",
+  "name": "櫃前",
+  "description": "寶石居整塊平整白玉、紫晶裝飾，溫潤水汽與沉香，尊貴生活化，縫隙菌絲或微光，縫隙菌絲或微光，縫隙菌絲或微光。可經〔大街〕、〔庫房〕前往他處。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wust03_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "庫房",
+      "to": "wust03_shop01_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust03_shop01_02_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust03_shop01_main",
+      "responses": {
+        "Move": "你往大街走去。"
+      }
+    },
+    {
+      "id": "wust03_shop01_02_exit_2",
+      "name": "庫房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust03_shop01_03",
+      "responses": {
+        "Move": "你往庫房走去。"
+      }
+    }
+  ]
+}

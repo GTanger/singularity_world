@@ -1,0 +1,75 @@
+{
+  "id": "feist06_home03_main",
+  "name": "【寒氣封存庫】檢疫氣閘室",
+  "description": "一個標準的除輻射與溫度鎖定空間。兩側牆壁上滿是正在瘋狂閃爍的警告讀數。退回〔封條門簾〕至大街。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st6",
+      "to": "feistreet_st6",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist06_home03_hallway",
+      "to": "feist06_home03_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist06_home03_court_front",
+      "to": "feist06_home03_court_front",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist06_home03_eave",
+      "to": "feist06_home03_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_home03_m_exit_st6",
+      "name": "飛霜大街六段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st6",
+      "responses": {
+        "Move": "你掀簾步出，回到飛霜大街六段。"
+      }
+    },
+    {
+      "id": "feist06_home03_m_exit_hall",
+      "name": "廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_home03_hallway",
+      "responses": {
+        "Move": "你步入廊道。"
+      }
+    },
+    {
+      "id": "feist06_home03_m_exit_court",
+      "name": "前院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_home03_court_front",
+      "responses": {
+        "Move": "你往前院。"
+      }
+    },
+    {
+      "id": "feist06_home03_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_home03_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

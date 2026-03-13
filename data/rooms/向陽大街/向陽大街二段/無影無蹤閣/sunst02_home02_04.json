@@ -1,0 +1,30 @@
+{
+  "id": "sunst02_home02_04",
+  "name": "西室",
+  "description": "閣內西側小間，拱頂稜鏡集中、光線飽和如蜜，白玉地面嵌琉璃條，牆面能量導線隱約脈動，油脂質感皮革凳靠牆，厚牆吸音、極靜。可經〔門廳〕返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "門廳",
+      "to": "sunst02_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_home02_04_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home02_main",
+      "responses": {
+        "Move": "你回到門廳。"
+      }
+    }
+  ]
+}

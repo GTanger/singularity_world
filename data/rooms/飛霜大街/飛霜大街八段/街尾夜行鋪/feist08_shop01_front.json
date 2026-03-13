@@ -1,0 +1,59 @@
+{
+  "id": "feist08_shop01_front",
+  "name": "【街尾夜行鋪】前堂",
+  "description": "門簾一掀，茶氣與乾貨的氣味撲面；櫃台橫在眼前，零嘴與雜貨排滿格架，有人剛留下的半杯茶還冒著熱。此處連接〔飛霜大街8段〕，往裡是〔櫃前〕，側邊〔簷下〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st8",
+      "to": "feistreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_shop01_counter",
+      "to": "feist08_shop01_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_shop01_eave",
+      "to": "feist08_shop01_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_shop01_f_exit_st8",
+      "name": "飛霜大街8段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st8",
+      "responses": {
+        "Move": "你掀簾步出，回到飛霜大街8段。"
+      }
+    },
+    {
+      "id": "feist08_shop01_f_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_shop01_counter",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    },
+    {
+      "id": "feist08_shop01_f_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_shop01_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

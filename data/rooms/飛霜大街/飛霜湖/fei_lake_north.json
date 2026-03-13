@@ -1,8 +1,11 @@
 {
   "id": "fei_lake_north",
-  "name": "湖背",
-  "description": "背對大街的北側，霧牆最厚、人聲不達，簷角積霜壓在石欄與矮牆緣上，游離輻射下熱氣滯留成一片白濛。石紋自腳下沒入霧裡，風不帶街燈的餘光，足底石面沁涼帶潮。可經〔水際〕下到貼水處，或沿岸往〔霧起之濱〕、〔迴岸〕，或經〔觀景亭〕，或經〔霜林小徑〕入林。",
-  "tags": ["street","outdoor"],
+  "name": "【飛霜湖北岸】孤冷湖背",
+  "description": "背對著繁華大街的北側，這裡的光線被徹底阻絕，霧牆極端厚重，彷彿能吸走所有的聲音與生氣。人跡罕至，沿岸的石欄與矮牆緣上結滿了張牙舞爪的厚重積冰。游離輻射在此處的反應相對微弱，導致熱氣滯留成一片死寂的白濛。足底的石面沁涼帶潮，透著一股森冷的寒意。可經〔沉霜水際〕下行，或沿岸往東側的〔東岸霧起之濱〕、西側的〔西岸寂靜迴岸〕前進，也可進入湖上的〔風化觀景亭〕，或循足跡走入充滿未知的〔霜林小徑〕。",
+  "tags": [
+    "street",
+    "outdoor"
+  ],
   "zone": "feistreet",
   "exits": [
     {
@@ -29,7 +32,7 @@
   "objects": [
     {
       "id": "fei_lake_north_shore",
-      "name": "水際",
+      "name": "沉霜水際",
       "sockets": [
         "Move"
       ],
@@ -40,7 +43,7 @@
     },
     {
       "id": "fei_lake_north_east",
-      "name": "霧起之濱",
+      "name": "東岸霧起之濱",
       "sockets": [
         "Move"
       ],
@@ -51,7 +54,7 @@
     },
     {
       "id": "fei_lake_north_west",
-      "name": "迴岸",
+      "name": "西岸寂靜迴岸",
       "sockets": [
         "Move"
       ],
@@ -62,13 +65,13 @@
     },
     {
       "id": "fei_lake_north_pavilion",
-      "name": "觀景亭",
+      "name": "風化觀景亭",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "fei_lake_pavilion",
       "responses": {
-        "Move": "你朝觀景亭走去。"
+        "Move": "你朝風化觀景亭走去。"
       }
     },
     {

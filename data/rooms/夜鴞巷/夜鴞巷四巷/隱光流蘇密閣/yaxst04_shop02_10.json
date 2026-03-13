@@ -1,0 +1,30 @@
+{
+  "id": "yaxst04_shop02_10",
+  "name": "隱簾閣・簾底",
+  "description": "簾內道終點，三面厚牆合圍，頂心晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈，隔音鉛皮吞掉迴響。可經〔簾底前〕走回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst04_shop02_09",
+      "to": "yaxst04_shop02_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst04_shop02_10_09",
+      "name": "簾底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop02_09",
+      "responses": {
+        "Move": "你沿簾內道往回走。"
+      }
+    }
+  ]
+}

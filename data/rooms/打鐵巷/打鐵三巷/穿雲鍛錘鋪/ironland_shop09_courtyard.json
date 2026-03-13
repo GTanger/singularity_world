@@ -1,0 +1,27 @@
+{
+  "id": "ironland_shop09_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣、牆根脈絡；簷擋巷熱，院裡錘聲沉。此處僅通〔鍛錘鋪〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop09_main",
+      "to": "ironland_shop09_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop09_courtyard_exit",
+      "name": "鍛錘鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop09_main",
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
+    }
+  ]
+}

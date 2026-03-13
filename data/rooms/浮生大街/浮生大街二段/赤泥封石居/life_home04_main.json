@@ -1,0 +1,53 @@
+{
+  "id": "life_home04_main",
+  "name": "門廳",
+  "description": "赭色泥漿裹住底層石塊，裂處玉質沁出，淡紫微光沉靜。光線穿過〔竹簾〕灑入，內側導向〔泥廊道〕。地面石板伏貼，牆角〔陶甕〕倚牆，壺身沁出脈絡。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "lifestreet_st2",
+      "to": "lifestreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home04_corridor",
+      "to": "life_home04_corridor",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_home04_main_exit_st2",
+      "name": "竹簾",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "lifestreet_st2",
+      "responses": {
+        "Move": "你撥開竹簾，回到浮生大街二段。"
+      }
+    },
+    {
+      "id": "life_home04_main_exit_corridor",
+      "name": "泥廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home04_corridor",
+      "responses": {
+        "Move": "你朝內側通道走去，進入泥廊道。"
+      }
+    },
+    {
+      "id": "life_home04_main_obj_jar",
+      "name": "陶甕",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "甕身泥漿覆住陶質，口緣玉質脈絡沁入甕身，透出淡紫微光。觸手溫潤，竟不顯粗陋，反有沉澱後的穩重。"
+      }
+    }
+  ]
+}

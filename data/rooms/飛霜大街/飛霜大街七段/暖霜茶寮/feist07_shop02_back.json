@@ -1,0 +1,43 @@
+{
+  "id": "feist07_shop02_back",
+  "name": "後間",
+  "description": "簷下茶鋪與宅交界：未拆的貨與家常物堆在角，爐子冷著、空氣裡茶渣與昨日煙氣混在一起；一道門通〔小天井〕，住家從那裡開始。此處通〔櫃前〕與〔小天井〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_shop02_counter",
+      "to": "feist07_shop02_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_shop02_yard",
+      "to": "feist07_shop02_yard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_shop02_b_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_counter",
+      "responses": {
+        "Move": "你退回櫃前。"
+      }
+    },
+    {
+      "id": "feist07_shop02_b_exit_yard",
+      "name": "小天井",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_yard",
+      "responses": {
+        "Move": "你推門進小天井。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "fs_wood_06_10",
+  "name": "【迷霧霜林】象限 6-10",
+  "description": "你身處在霜林深處一處幽暗的林地。四周的樹幹如同扭曲的囚籠般將視線切割得支離破碎。腳下的積霜極厚，每走一步都需要拔出深陷的靴子。游離輻射在這裡形成了一種微弱但致命的溫差，導致樹皮表面不斷爆裂。你的正前方橫亙著幾具被凍硬的不知名獸屍。空氣中沒有任何活物的氣息，只有令人窒息的靜謐。 你必須在迷失方向前做出選擇。",
+  "tags": [
+    "outdoor",
+    "forest"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "回歸主徑",
+      "to": "fs_trail_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "暖煙閣",
+      "to": "fs_cabin_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_wood_06_10_to_fs_trail_06",
+      "name": "回歸主徑",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_06",
+      "responses": {
+        "Move": "你往回歸主徑走去。"
+      }
+    },
+    {
+      "id": "fs_wood_06_10_to_fs_cabin_03",
+      "name": "暖煙閣",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_03",
+      "responses": {
+        "Move": "你往暖煙閣走去。"
+      }
+    }
+  ]
+}

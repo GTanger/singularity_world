@@ -27,8 +27,8 @@ type Character struct {
 	Inventory       string // 背包物品 JSON 陣列，每元素 {"item_id":"xxx","qty":1}（背包規格 §六）
 }
 
-// Sockets 回傳此角色對外開放的動詞清單（插頭插座最小集：Talk, Attack, Look）。
-// 參數：無。回傳：[]string。無副作用。
+// Sockets 回傳此角色對外開放的動詞清單（Agent 預設插座：Talk, Attack, Look, Trade）。
+// 玩家與 NPC 皆可因行為湧現身份（如在 A 買、B 賣即為行腳商），見 狀態_指派_身份_核心概念。
 func (c *Character) Sockets() []string {
-	return []string{"Talk", "Attack", "Look"}
+	return []string{"Talk", "Attack", "Look", "Trade"}
 }

@@ -1,0 +1,91 @@
+{
+  "id": "feist01_home02_living",
+  "name": "【寒鴉棚戶】低矮起居室",
+  "description": "天花板極低，幾乎觸手可及。室內擺放著幾張歪斜的木凳和一張邊角嚴重磨損的短桌。光線極度昏暗，勉強能看清角落堆放的撿拾物與雜物。這裡安靜得出奇，外界的夜鴞與風雪聲被厚實的雜物層層吸收。連接著〔擠壓門廳〕、〔煙燻灶坑〕以及兩處起居空間〔木板通鋪〕與〔雜物臥房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home02_foyer",
+      "to": "feist01_home02_foyer",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home02_kitchen",
+      "to": "feist01_home02_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home02_bed1",
+      "to": "feist01_home02_bed1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home02_bed2",
+      "to": "feist01_home02_bed2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home02_side",
+      "to": "feist01_home02_side",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home02_lv_exit_foyer",
+      "name": "擠壓門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_foyer",
+      "responses": {
+        "Move": "你退回擠壓門廳。"
+      }
+    },
+    {
+      "id": "feist01_home02_lv_exit_kitchen",
+      "name": "煙燻灶坑",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_kitchen",
+      "responses": {
+        "Move": "你往煙燻灶坑走去。"
+      }
+    },
+    {
+      "id": "feist01_home02_lv_exit_bed1",
+      "name": "木板通鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_bed1",
+      "responses": {
+        "Move": "你往木板通鋪走去。"
+      }
+    },
+    {
+      "id": "feist01_home02_lv_exit_bed2",
+      "name": "雜物臥房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_bed2",
+      "responses": {
+        "Move": "你往雜物臥房走去。"
+      }
+    },
+    {
+      "id": "feist01_home02_lv_exit_side",
+      "name": "逼仄側間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_side",
+      "responses": {
+        "Move": "你往逼仄側間走去。"
+      }
+    }
+  ]
+}

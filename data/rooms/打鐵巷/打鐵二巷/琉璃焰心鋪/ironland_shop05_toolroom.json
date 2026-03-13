@@ -1,0 +1,27 @@
+{
+  "id": "ironland_shop05_toolroom",
+  "name": "工具間",
+  "description": "牆架掛細口鉗、小錘與刃模；炭灰沾滿架緣。此處僅通〔工間二〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop05_workshop2",
+      "to": "ironland_shop05_workshop2",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop05_toolroom_exit",
+      "name": "工間二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop05_workshop2",
+      "responses": {
+        "Move": "你回到工間二。"
+      }
+    }
+  ]
+}

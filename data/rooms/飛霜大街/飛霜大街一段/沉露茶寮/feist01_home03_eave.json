@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home03_eave",
+  "name": "【沉露茶寮】簷下等候區",
+  "description": "店外一處被刻意挑高的飛簷覆蓋的區域。玉質的簷角在微弱的光線下反射著冰冷的光芒，阻擋了大部分飄落的霜晶。偶爾會有等待空位的客人在此徘徊。通向〔賞霜座席〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home03_main",
+      "to": "feist01_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home03_e_exit_main",
+      "name": "賞霜座席",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home03_main",
+      "responses": {
+        "Move": "你退回賞霜座席。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home01_bed1",
+  "name": "【霜鏡私邸】主臥",
+  "description": "私密且極具奢華感的空間。覆蓋著防霉地衣的隔音牆面確保了絕對的寧靜。一張懸浮著微光帳蔓的巨型軟床佔據了中央。空氣裡有股使人安心的淡淡安神香氣味。僅能退回〔起居大廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home01_living",
+      "to": "feist01_home01_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home01_b1_exit_living",
+      "name": "起居大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_living",
+      "responses": {
+        "Move": "你退回起居大廳。"
+      }
+    }
+  ]
+}

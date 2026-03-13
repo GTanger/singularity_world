@@ -1,0 +1,46 @@
+{
+  "id": "yaxst03_shop02_07",
+  "name": "氣密茶・右茶間口",
+  "description": "右茶間首間，氣密鉛皮鋪到腰高，黃銅導向線貼牆延伸。晶簇稀疏，黑石地磚沁著茶氣與沉香餘韻，厚牆隔絕巷聲。可經〔岔口〕或〔右茶間中〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_shop02_05",
+      "to": "yaxst03_shop02_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop02_09",
+      "to": "yaxst03_shop02_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_shop02_07_05",
+      "name": "岔口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_05",
+      "responses": {
+        "Move": "你退回岔口。"
+      }
+    },
+    {
+      "id": "yaxst03_shop02_07_09",
+      "name": "右茶間中",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_09",
+      "responses": {
+        "Move": "你往右茶間中走去。"
+      }
+    }
+  ]
+}

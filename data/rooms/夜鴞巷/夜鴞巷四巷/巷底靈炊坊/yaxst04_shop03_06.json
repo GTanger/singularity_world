@@ -1,0 +1,46 @@
+{
+  "id": "yaxst04_shop03_06",
+  "name": "巷尾灶・長廊一",
+  "description": "長廊首段，黃銅導向線貼牆延伸進深處，頂角晶簇與暖能石灑下琥珀色光。黑石地磚冰涼，灶氣與沉香餘韻沉在空氣裡，巷聲被厚牆擋成模糊底噪。可經〔灶前〕或往〔長廊二〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst04_shop03_main",
+      "to": "yaxst04_shop03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop03_07",
+      "to": "yaxst04_shop03_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst04_shop03_06_main",
+      "name": "灶前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop03_main",
+      "responses": {
+        "Move": "你退回灶前。"
+      }
+    },
+    {
+      "id": "yaxst04_shop03_06_07",
+      "name": "長廊二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop03_07",
+      "responses": {
+        "Move": "你往長廊二走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "feist05_shop03_kitchen",
+  "name": "灶間",
+  "description": "霜晶行灶間門洞深、光只到簾口，土灶矮、水缸裂了一道補過的縫；柴薪疊在門邊、簷下霜白成串自簾隙沁進一線，五段人跡略稀、牆角煙燻發黑，刀砧收在案下、腳下石板沁涼，簾外即過廳的聲息。此處僅通〔過廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist05_shop03_hall",
+      "to": "feist05_shop03_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_shop03_k_exit_hall",
+      "name": "過廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop03_hall",
+      "responses": {
+        "Move": "你退回過廳。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "id": "feist08_hold01_west_wing",
+  "name": "西廂",
+  "description": "霜脊樓西廂與東廂對稱，陳設更空；一張破席、一隻缺腳的凳，牆角有漏水的痕，窗外即內院、霜晶沾在窗格上。此處通〔前庭〕、〔正廳〕、〔內院〕，盡頭小門是〔倉廩〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_hold01_front_yard",
+      "to": "feist08_hold01_front_yard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_hold01_main_hall",
+      "to": "feist08_hold01_main_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_hold01_inner_yard",
+      "to": "feist08_hold01_inner_yard",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_hold01_storage",
+      "to": "feist08_hold01_storage",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_hold01_ww_exit_yard",
+      "name": "前庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_hold01_front_yard",
+      "responses": {
+        "Move": "你出西廂往前庭。"
+      }
+    },
+    {
+      "id": "feist08_hold01_ww_exit_hall",
+      "name": "正廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_hold01_main_hall",
+      "responses": {
+        "Move": "你轉往正廳。"
+      }
+    },
+    {
+      "id": "feist08_hold01_ww_exit_inner",
+      "name": "內院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_hold01_inner_yard",
+      "responses": {
+        "Move": "你往內院。"
+      }
+    },
+    {
+      "id": "feist08_hold01_ww_exit_storage",
+      "name": "倉廩",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_hold01_storage",
+      "responses": {
+        "Move": "你推門入倉廩。"
+      }
+    }
+  ]
+}

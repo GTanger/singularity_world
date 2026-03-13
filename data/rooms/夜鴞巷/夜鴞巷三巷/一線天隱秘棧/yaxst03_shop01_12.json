@@ -1,0 +1,46 @@
+{
+  "id": "yaxst03_shop01_12",
+  "name": "窄門棧・後段廊二",
+  "description": "後段廊中段，氣密鉛皮鋪到腰高，黃銅導向線貼地延伸。沉香與樹脂混在空氣裡，黑石吸走足音，厚牆隔絕巷聲，極靜。可經〔後段廊一〕或〔後段廊三〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_shop01_11",
+      "to": "yaxst03_shop01_11",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop01_13",
+      "to": "yaxst03_shop01_13",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_shop01_12_11",
+      "name": "後段廊一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop01_11",
+      "responses": {
+        "Move": "你往後段廊一走回。"
+      }
+    },
+    {
+      "id": "yaxst03_shop01_12_13",
+      "name": "後段廊三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop01_13",
+      "responses": {
+        "Move": "你往後段廊三走去。"
+      }
+    }
+  ]
+}

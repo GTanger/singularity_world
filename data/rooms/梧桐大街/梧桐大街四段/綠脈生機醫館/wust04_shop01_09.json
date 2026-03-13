@@ -1,0 +1,30 @@
+{
+  "id": "wust04_shop01_09",
+  "name": "儲區",
+  "description": "藥室緻密纖維板材、晶盒藥材，光線微弱、地表柔軟地衣，隱蔽木門通往內宅，綠意與增生並存、從容，玉質脈絡隱約、從容。可經〔寢區〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "寢區",
+      "to": "wust04_shop01_08",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust04_shop01_09_exit_1",
+      "name": "寢區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust04_shop01_08",
+      "responses": {
+        "Move": "你往寢區走去。"
+      }
+    }
+  ]
+}

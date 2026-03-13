@@ -1,0 +1,30 @@
+{
+  "id": "sunst02_shop02_04",
+  "name": "東廳一室",
+  "description": "東廳小間，拱頂稜鏡集中、光線飽和如蜜，地表淺色紋路與能量導線自縫隙延伸，深色金屬架與黑木檯咬合，觸手檯面冰冷平滑，溫潤沉香淡淡。可經〔東廳・前間〕返回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "東廳・前間",
+      "to": "sunst02_shop02_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_shop02_04_02",
+      "name": "東廳・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop02_02",
+      "responses": {
+        "Move": "你往東廳前間走回。"
+      }
+    }
+  ]
+}

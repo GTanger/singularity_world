@@ -1,0 +1,46 @@
+{
+  "id": "sunst01_hold01_09",
+  "name": "西一室",
+  "description": "西廊中段，拱頂壓低、光像蜜一樣稠，地表淺色流路與導線從縫隙爬出，金屬架與白玉嵌條咬合，陳設齊整，厚牆吞掉所有回音。可經〔西廊口〕往回，或往盡頭〔西二室〕。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "西廊口",
+      "to": "sunst01_hold01_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西二室",
+      "to": "sunst01_hold01_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst01_hold01_09_08",
+      "name": "西廊口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_08",
+      "responses": {
+        "Move": "你往西廊口走回。"
+      }
+    },
+    {
+      "id": "sunst01_hold01_09_10",
+      "name": "西二室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_10",
+      "responses": {
+        "Move": "你往西二室走去。"
+      }
+    }
+  ]
+}

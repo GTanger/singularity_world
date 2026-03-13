@@ -1,0 +1,43 @@
+{
+  "id": "feist09_shop02_back",
+  "name": "後間",
+  "description": "匯流閣後間爐灶餘溫未散，鐵鍋與蒸籠掛在鉤上；牆角柴與炭疊齊，空氣裡茶渣與煙氣混在一起、嗆得想咳，簾外即儲物間。此處通〔儲物間〕與〔工間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_shop02_storage",
+      "to": "feist09_shop02_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_shop02_workshop",
+      "to": "feist09_shop02_workshop",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_shop02_back_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop02_storage",
+      "responses": {
+        "Move": "你回到儲物間。"
+      }
+    },
+    {
+      "id": "feist09_shop02_back_exit_workshop",
+      "name": "工間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop02_workshop",
+      "responses": {
+        "Move": "你往工間走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "sunst03_shop01_08",
+  "name": "居區・後間",
+  "description": "居區盡頭，稜鏡垂落密集金光、淡金微光與深色金屬對比強烈，地面拋光白玉與琉璃嵌條對比強烈，黑木長榻靠牆、表面油脂光澤，牆厚隔音、僅聞遠方大街隱約人聲。可經〔居區・中間〕沿居區返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "居區・中間",
+      "to": "sunst03_shop01_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_shop01_08_07",
+      "name": "居區・中間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop01_07",
+      "responses": {
+        "Move": "你往居區中間走回。"
+      }
+    }
+  ]
+}

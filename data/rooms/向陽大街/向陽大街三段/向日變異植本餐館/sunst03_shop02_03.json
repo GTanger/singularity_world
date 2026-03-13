@@ -1,0 +1,46 @@
+{
+  "id": "sunst03_shop02_03",
+  "name": "大廳二區",
+  "description": "稜鏡垂落金光如簾、光影層次分明，植本陳列與餐檯交錯，牆面能量紋路隱約脈動，白玉地面嵌琉璃條，室內無雜音，能量微粒在光柱中緩浮。可經〔大廳一區〕往回，或往〔大廳三區〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "大廳一區",
+      "to": "sunst03_shop02_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "大廳三區",
+      "to": "sunst03_shop02_04",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_shop02_03_02",
+      "name": "大廳一區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop02_02",
+      "responses": {
+        "Move": "你往大廳一區走回。"
+      }
+    },
+    {
+      "id": "sunst03_shop02_03_04",
+      "name": "大廳三區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop02_04",
+      "responses": {
+        "Move": "你往大廳三區走去。"
+      }
+    }
+  ]
+}

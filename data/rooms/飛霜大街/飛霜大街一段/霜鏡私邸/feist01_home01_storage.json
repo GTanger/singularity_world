@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home01_storage",
+  "name": "【霜鏡私邸】冷庫",
+  "description": "這個房間的牆壁幾乎由整塊的冷岩切削而成，沒有安裝任何保暖裝置，直接引入地底的寒氣。昏暗中只能依稀辨認出存放的大型木桶與冰封的肉類。退回〔溫爐灶間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home01_hallway",
+      "to": "feist01_home01_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home01_s_exit_hall",
+      "name": "深木長廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_hallway",
+      "responses": {
+        "Move": "你退回深木長廊。"
+      }
+    }
+  ]
+}

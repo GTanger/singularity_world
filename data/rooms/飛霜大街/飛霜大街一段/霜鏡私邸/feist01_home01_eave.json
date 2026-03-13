@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home01_eave",
+  "name": "【霜鏡私邸】臨湖簷下",
+  "description": "大宅外側一處寬敞的遮蔽空間。玉質的簷角延伸得極遠，將飛霜湖吹來的寒風切割開來。站在這裡可以清晰地聽見湖水拍擊岸邊的低沉聲響。可退回〔湖景前廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home01_main",
+      "to": "feist01_home01_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home01_e_exit_main",
+      "name": "湖景前廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_main",
+      "responses": {
+        "Move": "你退回湖景前廊。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "sunst03_home01_06",
+  "name": "上室",
+  "description": "廬內階上小間，向陽拱頂低壓、密集金光自稜鏡垂落，地面拋光白玉與琉璃嵌條對比強烈，深色金屬架與黑木柜咬合，能量紋路隱約脈動，僅聞遠方大街隱約人聲。可經〔門廳〕返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "門廳",
+      "to": "sunst03_home01_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_home01_06_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_home01_main",
+      "responses": {
+        "Move": "你回到門廳。"
+      }
+    }
+  ]
+}

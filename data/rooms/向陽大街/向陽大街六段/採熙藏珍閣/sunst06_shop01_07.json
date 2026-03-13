@@ -1,0 +1,46 @@
+{
+  "id": "sunst06_shop01_07",
+  "name": "工坊隅",
+  "description": "工作檯面深色金屬與黑木咬合，工具掛架沿稜鏡牆面排成弧線，地表能量紋路匯聚至中央排水槽，天窗一道密集金光直落檯心，空氣流速快、屑末不積。可經〔理療區〕、〔寢區〕前往他處。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "理療區",
+      "to": "sunst06_shop01_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "寢區",
+      "to": "sunst06_shop01_08",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst06_shop01_07_exit_1",
+      "name": "理療區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst06_shop01_06",
+      "responses": {
+        "Move": "你往理療區走去。"
+      }
+    },
+    {
+      "id": "sunst06_shop01_07_exit_2",
+      "name": "寢區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst06_shop01_08",
+      "responses": {
+        "Move": "你往寢區走去。"
+      }
+    }
+  ]
+}

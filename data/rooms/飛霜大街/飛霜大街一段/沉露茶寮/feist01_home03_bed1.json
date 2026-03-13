@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home03_bed1",
+  "name": "【沉露茶寮】掌櫃臥房",
+  "description": "佈置簡單但用料考究的私人休息室。地面的石板鋪著厚實的絨毯，牆邊有一張堅固的黑木大床。室內空氣中留有一股淡淡的算盤潤滑油氣味。連接〔水汽後廊〕與〔伙計通鋪〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home03_living",
+      "to": "feist01_home03_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home03_b1_exit_living",
+      "name": "內室雅座",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home03_living",
+      "responses": {
+        "Move": "你退回內室雅座。"
+      }
+    }
+  ]
+}

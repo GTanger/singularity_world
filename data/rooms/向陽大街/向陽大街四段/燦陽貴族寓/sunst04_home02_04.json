@@ -1,0 +1,30 @@
+{
+  "id": "sunst04_home02_04",
+  "name": "左進・三間",
+  "description": "左側進深盡頭，拱頂稜鏡集中、光線飽和如蜜，白玉地面嵌琉璃條，牆面能量紋路隱約脈動，黑木長榻靠牆、表面油脂光澤，厚牆吸音、極靜。可經〔左進・二間〕沿左進返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "左進・二間",
+      "to": "sunst04_home02_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst04_home02_04_03",
+      "name": "左進・二間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_home02_03",
+      "responses": {
+        "Move": "你往左進二間走回。"
+      }
+    }
+  ]
+}

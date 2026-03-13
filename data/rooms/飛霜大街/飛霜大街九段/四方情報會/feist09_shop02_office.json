@@ -1,0 +1,43 @@
+{
+  "id": "feist09_shop02_office",
+  "name": "帳房",
+  "description": "匯流閣帳房矮案上帳本攤開、算盤擱在一邊，墨跡未乾；窗外街燈晃動，照得數字忽明忽暗，店頭茶氣與笑語從簾縫漏進來。此處通〔側間〕與〔庫房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_shop02_side",
+      "to": "feist09_shop02_side",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_shop02_warehouse",
+      "to": "feist09_shop02_warehouse",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_shop02_office_exit_side",
+      "name": "側間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop02_side",
+      "responses": {
+        "Move": "你回到側間。"
+      }
+    },
+    {
+      "id": "feist09_shop02_office_exit_warehouse",
+      "name": "庫房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop02_warehouse",
+      "responses": {
+        "Move": "你步入庫房。"
+      }
+    }
+  ]
+}

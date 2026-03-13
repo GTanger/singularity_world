@@ -1,0 +1,46 @@
+{
+  "id": "sunst08_home04_03",
+  "name": "裡間",
+  "description": "內室密集金光自稜鏡天窗直落，深色金屬架與黑木櫃貼牆，地表白玉磚縫有淺色流路延伸至櫃腳，能量微粒在光束中緩慢浮沉，油脂質感皮革褥墊觸手飽滿。可經〔玄關〕、〔書隅〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "玄關",
+      "to": "sunst08_home04_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "書隅",
+      "to": "sunst08_home04_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst08_home04_03_exit_1",
+      "name": "玄關",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst08_home04_main",
+      "responses": {
+        "Move": "你往玄關走去。"
+      }
+    },
+    {
+      "id": "sunst08_home04_03_exit_2",
+      "name": "書隅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst08_home04_05",
+      "responses": {
+        "Move": "你往書隅走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "id": "life_shop01_main",
+  "name": "紫微珍萃行",
+  "description": "翡翠質櫃檯礦脈緩慢搏動，石壁格架陳列著琥珀色結晶。冷色光自側門灑入，地表鋪設平滑石板。此處連接外部的〔浮生大街一段〕與後方的〔儲物間〕。櫃檯上有一個〔黃銅天平〕。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "lifestreet_st1",
+      "to": "lifestreet_st1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop01_storage",
+      "to": "life_shop01_storage",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop01_main_exit_st1",
+      "name": "浮生大街一段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "lifestreet_st1",
+      "responses": {
+        "Move": "你經櫃檯一側步出店門，回到浮生大街一段。"
+      }
+    },
+    {
+      "id": "life_shop01_main_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop01_storage",
+      "responses": {
+        "Move": "你朝後方通道走去，進入儲物間。"
+      }
+    },
+    {
+      "id": "life_shop01_main_obj_scale",
+      "name": "黃銅天平",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "橫桿兩端懸掛著淺平盤，底座已被暗綠色琉璃質固定在櫃面上。"
+      }
+    }
+  ]
+}

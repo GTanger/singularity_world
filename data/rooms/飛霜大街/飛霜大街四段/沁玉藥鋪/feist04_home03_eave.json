@@ -1,0 +1,27 @@
+{
+  "id": "feist04_home03_eave",
+  "name": "簷下",
+  "description": "玉脈宅門旁一截窄簷、牆面玉脈在簷隙光裡隱現，簷下陰影與積霜交錯、可望四段行人與簷角霜紋；階前薄霜沾鞋即化、風灌進來袖口生寒。此處僅通〔抓藥前堂〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist04_home03_main",
+      "to": "feist04_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist04_home03_e_exit_main",
+      "name": "抓藥前堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist04_home03_main",
+      "responses": {
+        "Move": "你退回抓藥前堂。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "feist06_home04_bed1",
+  "name": "臥一",
+  "description": "簷霜宅臥一：榻靠裡牆、櫃擋門側，簾外即起居與小院；六段人聲隱約，門一掩街聲便遠了，簷緣霜跡在窗格上結成細紋、透進一絲灰白，鼻端是舊褥與簷霜的冷氣。此處僅通〔起居〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist06_home04_living",
+      "to": "feist06_home04_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_home04_b1_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_home04_living",
+      "responses": {
+        "Move": "你出臥一回起居。"
+      }
+    }
+  ]
+}

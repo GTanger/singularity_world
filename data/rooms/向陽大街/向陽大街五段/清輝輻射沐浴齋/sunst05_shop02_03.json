@@ -1,0 +1,62 @@
+{
+  "id": "sunst05_shop02_03",
+  "name": "浴區・前廳",
+  "description": "浴區入口，稜鏡垂落金光如簾、光影層次分明，地表能量紋路匯向牆角導線，白玉石階與深色金屬欄杆咬合，水氣淡淡、沉香逸出，室內無廢土感。可經〔櫃前〕回到齋頭，或往〔浴一室〕、〔浴二室〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "櫃前",
+      "to": "sunst05_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "浴一室",
+      "to": "sunst05_shop02_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "浴二室",
+      "to": "sunst05_shop02_08",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst05_shop02_03_main",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_main",
+      "responses": {
+        "Move": "你回到櫃前。"
+      }
+    },
+    {
+      "id": "sunst05_shop02_03_07",
+      "name": "浴一室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_07",
+      "responses": {
+        "Move": "你往浴一室走去。"
+      }
+    },
+    {
+      "id": "sunst05_shop02_03_08",
+      "name": "浴二室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_08",
+      "responses": {
+        "Move": "你往浴二室走去。"
+      }
+    }
+  ]
+}

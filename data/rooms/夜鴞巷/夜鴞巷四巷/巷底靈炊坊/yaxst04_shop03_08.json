@@ -1,0 +1,46 @@
+{
+  "id": "yaxst04_shop03_08",
+  "name": "巷尾灶・長廊三",
+  "description": "長廊後段，牆面導能紋路交錯，暖能石在腰線高度排成一列、橘光極淡。頂上晶簇漸密，淡紫與琥珀交織成光霧。可經〔長廊二〕或〔長廊底前〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst04_shop03_07",
+      "to": "yaxst04_shop03_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop03_09",
+      "to": "yaxst04_shop03_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst04_shop03_08_07",
+      "name": "長廊二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop03_07",
+      "responses": {
+        "Move": "你往長廊二走回。"
+      }
+    },
+    {
+      "id": "yaxst04_shop03_08_09",
+      "name": "長廊底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop03_09",
+      "responses": {
+        "Move": "你往長廊底前走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "yaxst01_hold01_20",
+  "name": "深櫃・內庫底",
+  "description": "內庫終點，三面鉛皮牆合圍，頂心晶簇聚成深琥珀一團，壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈後隱入牆底。沉香沉在膝蓋高度，極靜。可經〔內庫中〕走回廊道。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst01_hold01_19",
+      "to": "yaxst01_hold01_19",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst01_hold01_20_19",
+      "name": "內庫中",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_19",
+      "responses": {
+        "Move": "你沿內庫往回走。"
+      }
+    }
+  ]
+}

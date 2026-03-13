@@ -1,7 +1,7 @@
 {
   "id": "feistreet_st9",
   "name": "飛霜大街九段",
-  "description": "路面在此收束向四路街口，石紋沁涼、霜晶沾衣即化；擔夫與行人交錯而過，簷影壓得極低，燈火從鋪面與宅門漏出、在霜氣裡暈開。路側〔街口鋪〕〔匯流閣〕〔簷燈鋪〕門面或簾或板，對向〔街口宅〕〔簷匯宅〕門扉半掩。可經〔飛霜大街八段〕折返，或朝〔四路街口〕匯入人跡。",
+  "description": "飛霜大街的最終段，路幅在此處收束並匯入繁華的四路街口。石紋上的寒意被龐大的人流與無數的暖能爐硬生生壓制，霜晶沾衣即化，化作細密的濕氣。這裡沒有純粹的寧靜，簷影被街口漏出的五光十色壓得極低，燈火在迷濛的霜氣中暈開成一片片光斑。路側是生意興隆的〔匯流雜散鋪〕、販賣各路消息的〔四方情報會〕與24小時營業的〔暖燈長夜客棧〕；對向則是佔據著絕佳地段的〔望街高第〕與被高牆層層保護的〔融雪私邸〕。可退回〔飛霜大街八段〕，或直接匯入前方的〔四路街口〕。",
   "tags": [],
   "zone": "feistreet",
   "exits": [
@@ -44,13 +44,13 @@
   "objects": [
     {
       "id": "fei_st9_exit_st8",
-      "name": "飛霜大街八段",
+      "name": "飛霜大街8段",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feistreet_st8",
       "responses": {
-        "Move": "你朝飛霜大街八段方向折返。"
+        "Move": "你朝飛霜大街8段方向折返。"
       }
     },
     {
@@ -66,107 +66,107 @@
     },
     {
       "id": "fei_st9_obj_shop19",
-      "name": "街口鋪",
+      "name": "匯流雜散鋪",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "簷角積霜、人跡往來；〔店門〕可入內。"
+        "Look": "沾染了街口的繁華，店面異常寬闊。簷角的積霜被特製的高溫探照燈烤化以吸引客流；〔黃銅店門〕人進人出。"
       }
     },
     {
       "id": "fei_st9_obj_shop19_door",
-      "name": "店門",
+      "name": "黃銅店門",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist09_shop01_main",
       "responses": {
-        "Move": "你推門進入街口鋪。"
+        "Move": "你推開黃銅店門，進入匯流雜散鋪。"
       }
     },
     {
       "id": "fei_st9_obj_shop20",
-      "name": "匯流閣",
+      "name": "四方情報會",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "簷下霜晶與街口燈火並存；〔門簾〕通往內室。"
+        "Look": "建築外觀看似低調，但門前的石階上卻佈滿了昂貴的防滑陣法，簷下的霜晶在特製的光源下呈現出五彩斑斕的折射；〔絲絨門簾〕通往內室。"
       }
     },
     {
       "id": "fei_st9_obj_shop20_door",
-      "name": "門簾",
+      "name": "絲絨門簾",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist09_shop02_main",
       "responses": {
-        "Move": "你掀簾進入匯流閣。"
+        "Move": "你掀開絲絨門簾，進入四方情報會。"
       }
     },
     {
       "id": "fei_st9_obj_shop21",
-      "name": "簷燈鋪",
+      "name": "暖燈長夜客棧",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "簷角積霜與門內燈火並存；〔鋪門〕可入內。"
+        "Look": "門口掛滿了高階的暖能石燈籠，將門廊照得如同白晝，積霜在這裡是不存在的；〔厚實鋪門〕頻繁開合。"
       }
     },
     {
       "id": "fei_st9_obj_shop21_door",
-      "name": "鋪門",
+      "name": "厚實鋪門",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist09_shop03_main",
       "responses": {
-        "Move": "你推門進入簷燈鋪。"
+        "Move": "你推開厚實鋪門，進入暖燈長夜客棧。"
       }
     },
     {
       "id": "fei_st9_obj_home17",
-      "name": "街口宅",
+      "name": "望街高第",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "門廊臨街口、人跡匯流處；〔窄門〕半掩。"
+        "Look": "一棟裝飾極其華麗的高階住宅，門廊直面街口的人流，卻用一層看不見的能量屏障隔絕了所有的喧囂與寒氣；〔精彫窄門〕緊閉。"
       }
     },
     {
       "id": "fei_st9_obj_home17_door",
-      "name": "窄門",
+      "name": "精彫窄門",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist09_home01_main",
       "responses": {
-        "Move": "你推門進入街口宅。"
+        "Move": "你推開精彫窄門，進入望街高第。"
       }
     },
     {
       "id": "fei_st9_obj_home18",
-      "name": "簷匯宅",
+      "name": "融雪私邸",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "簷下霜晶、門洞內光線幽微；〔門洞〕可入內。"
+        "Look": "這棟私邸的設計極其奢侈，利用地底的熱脈將整棟房子的外牆維持在常溫，簷下根本看不見霜白結晶；〔石拱門洞〕低調且奢華。"
       }
     },
     {
       "id": "fei_st9_obj_home18_door",
-      "name": "門洞",
+      "name": "石拱門洞",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist09_home02_main",
       "responses": {
-        "Move": "你步入簷匯宅。"
+        "Move": "你步入融雪私邸。"
       }
     }
   ]

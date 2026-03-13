@@ -1,0 +1,75 @@
+{
+  "id": "feist02_home01_living",
+  "name": "【焦木匠家】破舊起居室",
+  "description": "家具多是由下腳料拼湊而成，顯得很不協調。角落裡一個漏風的舊火爐勉強維持著室內的溫度。牆角長滿了乾燥的灰色菌絲。連接著〔半戶外廊道〕、〔狹小廚房〕與唯一的一間〔臥室〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home01_main",
+      "to": "feist02_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home01_kitchen",
+      "to": "feist02_home01_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home01_bed1",
+      "to": "feist02_home01_bed1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home01_courtyard",
+      "to": "feist02_home01_courtyard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home01_lv_exit_main",
+      "name": "半戶外廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home01_main",
+      "responses": {
+        "Move": "你退回半戶外廊道。"
+      }
+    },
+    {
+      "id": "feist02_home01_lv_exit_kitchen",
+      "name": "狹小廚房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home01_kitchen",
+      "responses": {
+        "Move": "你往狹小廚房走去。"
+      }
+    },
+    {
+      "id": "feist02_home01_lv_exit_bed1",
+      "name": "乾燥臥房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home01_bed1",
+      "responses": {
+        "Move": "你往乾燥臥房走去。"
+      }
+    },
+    {
+      "id": "feist02_home01_lv_exit_court",
+      "name": "堆木天井",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home01_courtyard",
+      "responses": {
+        "Move": "你步向堆木天井。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "feist02_shop02_yard",
+  "name": "【餘燼火籠行】石砌後院",
+  "description": "半封閉的小院子，地面由整齊的白玉石板鋪成。角落堆放著測試報廢的焦黑爐殼。寒風偶爾從上方漏下，與院子裡微弱的熱源產生拉鋸。連接〔組裝裡間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_hall",
+      "to": "feist02_shop02_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_y_exit_hall",
+      "name": "火籠展示間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_hall",
+      "responses": {
+        "Move": "你退回火籠展示間。"
+      }
+    }
+  ]
+}

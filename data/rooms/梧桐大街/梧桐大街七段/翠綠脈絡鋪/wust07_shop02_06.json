@@ -1,0 +1,62 @@
+{
+  "id": "wust07_shop02_06",
+  "name": "焙間",
+  "description": "寢區牆面菌絲織物、床鋪石質凹槽，光影隨能量律動，樹脂氣息持久安神，油脂感與微光並存，落葉與腐殖層溫潤。可經〔大街〕、〔展間〕、〔理療區〕前往他處。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wust07_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "展間",
+      "to": "wust07_shop02_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "理療區",
+      "to": "wust07_shop02_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust07_shop02_06_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust07_shop02_main",
+      "responses": {
+        "Move": "你往大街方向走去。"
+      }
+    },
+    {
+      "id": "wust07_shop02_06_exit_2",
+      "name": "展間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust07_shop02_05",
+      "responses": {
+        "Move": "你往展間走去。"
+      }
+    },
+    {
+      "id": "wust07_shop02_06_exit_3",
+      "name": "理療區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust07_shop02_07",
+      "responses": {
+        "Move": "你往理療區走去。"
+      }
+    }
+  ]
+}

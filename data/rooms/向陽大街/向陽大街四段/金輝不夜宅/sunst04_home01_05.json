@@ -1,0 +1,30 @@
+{
+  "id": "sunst04_home01_05",
+  "name": "東廂二室",
+  "description": "東廂小間，向陽拱頂低壓、密集金光自稜鏡垂落，黑木長榻與白玉嵌條對比強烈，地表能量紋路匯向中央導光槽，能量微粒在光柱中緩浮，溫潤沉香淡淡。可經〔東廂・前間〕返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "東廂・前間",
+      "to": "sunst04_home01_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst04_home01_05_02",
+      "name": "東廂・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_home01_02",
+      "responses": {
+        "Move": "你往東廂前間走回。"
+      }
+    }
+  ]
+}

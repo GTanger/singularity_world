@@ -1,0 +1,59 @@
+{
+  "id": "feist01_home03_corridor",
+  "name": "【沉露茶寮】水汽後廊",
+  "description": "一條連接營業區與後勤區的短廊。地面因為頻繁端送熱茶而顯得有些濕滑。牆上的玉質脈絡在此處顯得特別活躍，似乎貪婪地吸收著彌漫在空氣中的溫熱水氣。連接〔賞霜座席〕、〔露天茶座〕、〔煮茶小灶〕與〔茶磚庫房〕、通向員工區的〔掌櫃臥房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home03_main",
+      "to": "feist01_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home03_living",
+      "to": "feist01_home03_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home03_yard",
+      "to": "feist01_home03_yard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home03_c_exit_main",
+      "name": "賞霜座席",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home03_main",
+      "responses": {
+        "Move": "你退回賞霜座席。"
+      }
+    },
+    {
+      "id": "feist01_home03_c_exit_living",
+      "name": "內室雅座",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home03_living",
+      "responses": {
+        "Move": "你往內室雅座走去。"
+      }
+    },
+    {
+      "id": "feist01_home03_c_exit_yard",
+      "name": "露天茶座",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home03_yard",
+      "responses": {
+        "Move": "你步向露天茶座。"
+      }
+    }
+  ]
+}

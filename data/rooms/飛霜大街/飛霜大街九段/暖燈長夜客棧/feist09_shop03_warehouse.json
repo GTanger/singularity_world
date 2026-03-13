@@ -1,0 +1,43 @@
+{
+  "id": "feist09_shop03_warehouse",
+  "name": "庫房",
+  "description": "簷燈鋪庫房箱籠堆到頂，高窗漏下一條灰光、照見浮塵與蛛絲；門一關外頭聲息全斷，燈油與鐵銹的氣味壓在鼻根。此處通〔儲物間〕與〔帳房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_shop03_storage",
+      "to": "feist09_shop03_storage",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist09_shop03_office",
+      "to": "feist09_shop03_office",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_shop03_warehouse_exit_storage",
+      "name": "儲物間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop03_storage",
+      "responses": {
+        "Move": "你回到儲物間。"
+      }
+    },
+    {
+      "id": "feist09_shop03_warehouse_exit_office",
+      "name": "帳房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop03_office",
+      "responses": {
+        "Move": "你步入帳房。"
+      }
+    }
+  ]
+}

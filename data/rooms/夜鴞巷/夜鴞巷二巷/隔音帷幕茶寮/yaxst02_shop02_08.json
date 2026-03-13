@@ -1,0 +1,46 @@
+{
+  "id": "yaxst02_shop02_08",
+  "name": "隔簾茶寮・右簾三",
+  "description": "右簾內後段，牆面導能紋路密佈，頂上晶簇漸密，淡紫與琥珀交織成光霧。牆根導能紋路匯成一股沉入地磚縫隙，極靜。可經〔右簾二〕或〔右簾底前〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst02_shop02_07",
+      "to": "yaxst02_shop02_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop02_09",
+      "to": "yaxst02_shop02_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst02_shop02_08_07",
+      "name": "右簾二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop02_07",
+      "responses": {
+        "Move": "你往右簾二走回。"
+      }
+    },
+    {
+      "id": "yaxst02_shop02_08_09",
+      "name": "右簾底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop02_09",
+      "responses": {
+        "Move": "你往右簾底前走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "yaxst01_shop03_07",
+  "name": "夜炊灶・側室六",
+  "description": "單間側室，暖能石在腰線高度排成一列、橘光極淡。導能紋路沿地緣延伸，黑石吸走足音，沉香與樹脂氣味沉在空氣裡。可經〔灶前〕回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst01_shop03_main",
+      "to": "yaxst01_shop03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst01_shop03_07_main",
+      "name": "灶前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop03_main",
+      "responses": {
+        "Move": "你掀簾退回灶前。"
+      }
+    }
+  ]
+}

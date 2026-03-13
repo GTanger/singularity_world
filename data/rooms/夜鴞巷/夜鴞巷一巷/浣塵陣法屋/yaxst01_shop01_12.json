@@ -1,0 +1,46 @@
+{
+  "id": "yaxst01_shop01_12",
+  "name": "簷下洗衣・後間底前",
+  "description": "後間廊道將盡，頂上晶簇漸密，淡紫與琥珀交織成低飽和光霧。牆根導能紋路匯成一股沉入地磚縫隙，水氣略重，極靜。可經〔後間中〕或〔後間盡頭〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst01_shop01_11",
+      "to": "yaxst01_shop01_11",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst01_shop01_13",
+      "to": "yaxst01_shop01_13",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst01_shop01_12_11",
+      "name": "後間中",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_11",
+      "responses": {
+        "Move": "你往後間中走回。"
+      }
+    },
+    {
+      "id": "yaxst01_shop01_12_13",
+      "name": "後間盡頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_13",
+      "responses": {
+        "Move": "你走到後間盡頭。"
+      }
+    }
+  ]
+}

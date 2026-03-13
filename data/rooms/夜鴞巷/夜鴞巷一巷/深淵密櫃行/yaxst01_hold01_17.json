@@ -1,0 +1,46 @@
+{
+  "id": "yaxst01_hold01_17",
+  "name": "深櫃・北翼盡頭",
+  "description": "北翼終點，三面厚牆合圍，頂心晶簇聚光，黑石檯面與擱板沿牆設置，導能紋路在腳邊圍成閉合一圈。沉香氣味沉在膝蓋高度，隔音鉛皮吞掉一切迴響。可經〔北翼底前〕走回廊道，或經〔前檯〕徑回主廳。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst01_hold01_16",
+      "to": "yaxst01_hold01_16",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst01_hold01_main",
+      "to": "yaxst01_hold01_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst01_hold01_17_16",
+      "name": "北翼底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_16",
+      "responses": {
+        "Move": "你沿北翼往回走。"
+      }
+    },
+    {
+      "id": "yaxst01_hold01_17_main",
+      "name": "前檯",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_hold01_main",
+      "responses": {
+        "Move": "你徑直穿過北翼回到前檯。"
+      }
+    }
+  ]
+}

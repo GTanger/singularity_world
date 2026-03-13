@@ -1,0 +1,30 @@
+{
+  "id": "sunst03_home02_05",
+  "name": "後室",
+  "description": "軒內後側小間，單扇稜鏡窗將金光篩成淡琥珀色，地面拋光白玉與琉璃嵌條對比強烈，黑木長几靠牆、表面油脂光澤，牆厚隔音、極靜，開敞明亮、無廢土感。可經〔玄關〕返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "玄關",
+      "to": "sunst03_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_home02_05_main",
+      "name": "玄關",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_home02_main",
+      "responses": {
+        "Move": "你回到玄關。"
+      }
+    }
+  ]
+}

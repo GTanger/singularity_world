@@ -1,0 +1,62 @@
+{
+  "id": "sunst02_shop02_main",
+  "name": "稜鏡精品閣・櫃前",
+  "description": "閣簷稜鏡林立，室內光線飽和如蜜，櫃前白玉地面反射淡金微光，深色金屬檯面與黑木架咬合，稜鏡自拱頂導光入室、光影層次分明，能量紋路隱約脈動，開敞明亮。可經〔向陽大街二段〕離開，或往〔東廳〕、〔西廳〕入內。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "sunstreet_st2",
+      "to": "sunstreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東廳",
+      "to": "sunst02_shop02_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西廳",
+      "to": "sunst02_shop02_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_shop02_main_st2",
+      "name": "向陽大街二段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st2",
+      "responses": {
+        "Move": "你步出稜鏡精品閣，回到向陽大街二段。"
+      }
+    },
+    {
+      "id": "sunst02_shop02_main_02",
+      "name": "東廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop02_02",
+      "responses": {
+        "Move": "你往東廳走去。"
+      }
+    },
+    {
+      "id": "sunst02_shop02_main_03",
+      "name": "西廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop02_03",
+      "responses": {
+        "Move": "你往西廳走去。"
+      }
+    }
+  ]
+}

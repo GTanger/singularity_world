@@ -1,0 +1,46 @@
+{
+  "id": "sunst01_home03_06",
+  "name": "戊間",
+  "description": "居內環廊戊間，單扇稜鏡窗把金光篩成淡琥珀，黑木長几與深色金屬架貼牆，地表紋路匯向牆角導線，牆面導線靜靜流轉，厚牆吞掉回音，只餘廳口隱約人聲，陳設齊整。可經環廊往〔丁間〕或〔廳口〕。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "丁間",
+      "to": "sunst01_home03_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "廳口",
+      "to": "sunst01_home03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst01_home03_06_05",
+      "name": "丁間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home03_05",
+      "responses": {
+        "Move": "你往丁間走去。"
+      }
+    },
+    {
+      "id": "sunst01_home03_06_main",
+      "name": "廳口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home03_main",
+      "responses": {
+        "Move": "你往廳口走去。"
+      }
+    }
+  ]
+}

@@ -6,6 +6,7 @@
 		'Look': '觀看',
 		'Talk': '對話',
 		'Attack': '攻擊',
+		'Trade': '交易',
 		'Read': '閱讀',
 		'Smell': '嗅聞',
 		'Move': '移動'

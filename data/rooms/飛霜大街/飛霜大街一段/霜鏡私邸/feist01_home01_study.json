@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home01_study",
+  "name": "【霜鏡私邸】藏卷書房",
+  "description": "四壁皆是被書籍與數據匣填滿的深色書架。空氣極度乾燥，牆體內部夾有防潮去輻射的特製鉛層，以保護脆弱的紙本資料。有一種近乎圖書館般的絕對安寧感。只連接著〔深木長廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home01_hallway",
+      "to": "feist01_home01_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home01_sy_exit_hall",
+      "name": "深木長廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_hallway",
+      "responses": {
+        "Move": "你退回深木長廊。"
+      }
+    }
+  ]
+}

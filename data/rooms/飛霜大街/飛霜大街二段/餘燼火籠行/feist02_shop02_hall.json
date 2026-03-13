@@ -1,0 +1,75 @@
+{
+  "id": "feist02_shop02_hall",
+  "name": "【餘燼火籠行】火籠展示間",
+  "description": "這裡陳列著最昂貴、使用高階晶簇運轉的豪華暖具。地面鋪設著名貴的獸皮地毯，空氣乾燥卻不刺鼻。牆角安放著微弱震動的聲學儀器以抵消打鐵巷傳來的噪音。連接〔展售前堂〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_main",
+      "to": "feist02_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop02_back",
+      "to": "feist02_shop02_back",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop02_living",
+      "to": "feist02_shop02_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop02_yard",
+      "to": "feist02_shop02_yard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_h_exit_main",
+      "name": "展售前堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_main",
+      "responses": {
+        "Move": "你退回展售前堂。"
+      }
+    },
+    {
+      "id": "feist02_shop02_h_exit_back",
+      "name": "組裝裡間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_back",
+      "responses": {
+        "Move": "你退回組裝裡間。"
+      }
+    },
+    {
+      "id": "feist02_shop02_h_exit_living",
+      "name": "居間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_living",
+      "responses": {
+        "Move": "你往居間走去。"
+      }
+    },
+    {
+      "id": "feist02_shop02_h_exit_yard",
+      "name": "石砌後院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_yard",
+      "responses": {
+        "Move": "你步向石砌後院。"
+      }
+    }
+  ]
+}

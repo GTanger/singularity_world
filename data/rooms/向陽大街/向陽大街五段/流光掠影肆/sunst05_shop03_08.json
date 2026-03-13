@@ -1,0 +1,46 @@
+{
+  "id": "sunst05_shop03_08",
+  "name": "右廊二",
+  "description": "環廊右段，高窗與稜鏡交錯、光影層次分明，白玉檯面與黑木架沿牆，能量微粒在光簾中緩動，觸手廊柱冰冷平滑，室內無雜音。可經〔右廊一〕或〔右廊三〕沿環廊走。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "右廊一",
+      "to": "sunst05_shop03_07",
+      "ui_hidden": true
+    },
+    {
+      "direction": "右廊三",
+      "to": "sunst05_shop03_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst05_shop03_08_07",
+      "name": "右廊一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop03_07",
+      "responses": {
+        "Move": "你往右廊一走去。"
+      }
+    },
+    {
+      "id": "sunst05_shop03_08_09",
+      "name": "右廊三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop03_09",
+      "responses": {
+        "Move": "你往右廊三走去。"
+      }
+    }
+  ]
+}

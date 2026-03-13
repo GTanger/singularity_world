@@ -1,0 +1,27 @@
+{
+  "id": "ironland_shop11_courtyard",
+  "name": "小院",
+  "description": "泥地苔衣、牆根脈絡；院裡無屑、簷擋巷熱。此處僅通〔鐵屑鋪〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop11_main",
+      "to": "ironland_shop11_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop11_courtyard_exit",
+      "name": "鐵屑鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop11_main",
+      "responses": {
+        "Move": "你回到店面前方。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "sunst02_shop03_04",
+  "name": "東翼・中間",
+  "description": "東翼中段，拱頂稜鏡集中、光線飽和如蜜，地表淺色紋路與能量導線自縫隙延伸，黑木檯與白玉嵌條咬合，溫潤沉香淡淡，厚牆吸音、極靜。可經〔東翼・前間〕往回，或往盡頭〔東翼・後間〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "東翼・前間",
+      "to": "sunst02_shop03_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "東翼・後間",
+      "to": "sunst02_shop03_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_shop03_04_02",
+      "name": "東翼・前間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop03_02",
+      "responses": {
+        "Move": "你往東翼前間走回。"
+      }
+    },
+    {
+      "id": "sunst02_shop03_04_05",
+      "name": "東翼・後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop03_05",
+      "responses": {
+        "Move": "你往東翼後間走去。"
+      }
+    }
+  ]
+}

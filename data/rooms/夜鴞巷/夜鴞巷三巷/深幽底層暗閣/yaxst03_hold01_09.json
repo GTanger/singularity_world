@@ -1,0 +1,46 @@
+{
+  "id": "yaxst03_hold01_09",
+  "name": "底閣・南廊盡頭",
+  "description": "南廊終點，三面厚牆合圍，頂心晶簇聚成深琥珀。黑石檯面與擱板沿牆設置，導能紋路在腳邊圍成閉合一圈，沉香沉在膝蓋高度。可經〔南廊底前〕走回，或徑經〔廳心〕。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_hold01_08",
+      "to": "yaxst03_hold01_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_hold01_main",
+      "to": "yaxst03_hold01_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_hold01_09_08",
+      "name": "南廊底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_08",
+      "responses": {
+        "Move": "你沿南廊往回走。"
+      }
+    },
+    {
+      "id": "yaxst03_hold01_09_main",
+      "name": "廳心",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_hold01_main",
+      "responses": {
+        "Move": "你徑直回到廳心。"
+      }
+    }
+  ]
+}

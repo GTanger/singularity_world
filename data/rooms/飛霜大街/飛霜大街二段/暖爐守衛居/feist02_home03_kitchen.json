@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home03_kitchen",
+  "name": "【暖爐守衛居】應急灶台",
+  "description": "相比於一般的廚房，這裡更像是一個化學實驗站。金屬檯面上排列著管線與過濾裝置。只提供最基本的加熱功能，不產生多餘的煙霧或氣味。退回〔無窗起居室〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home03_living",
+      "to": "feist02_home03_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home03_k_exit_living",
+      "name": "無窗起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home03_living",
+      "responses": {
+        "Move": "你退回無窗起居室。"
+      }
+    }
+  ]
+}

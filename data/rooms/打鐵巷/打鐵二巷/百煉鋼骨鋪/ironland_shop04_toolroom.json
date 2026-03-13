@@ -1,0 +1,27 @@
+{
+  "id": "ironland_shop04_toolroom",
+  "name": "工具間",
+  "description": "牆架掛滿彎口鉗、脊形模與扣環鑿；礦光自縫隙透出，鐵腥混礦粉、空氣乾。此處僅通〔工間二〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop04_workshop2",
+      "to": "ironland_shop04_workshop2",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop04_toolroom_exit",
+      "name": "工間二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop04_workshop2",
+      "responses": {
+        "Move": "你回到工間二。"
+      }
+    }
+  ]
+}

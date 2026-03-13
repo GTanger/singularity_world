@@ -1,0 +1,27 @@
+{
+  "id": "ironland_home08_kitchen",
+  "name": "灶間",
+  "description": "石灶火口脈動，缸壁菌絲淡紫；簷角滴水槽近、牆根潮。此處僅通〔生息室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_home08_living",
+      "to": "ironland_home08_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home08_kitchen_exit_living",
+      "name": "生息室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home08_living",
+      "responses": {
+        "Move": "你回到生息室。"
+      }
+    }
+  ]
+}

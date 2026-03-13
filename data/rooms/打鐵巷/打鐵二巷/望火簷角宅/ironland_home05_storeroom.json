@@ -1,0 +1,27 @@
+{
+  "id": "ironland_home05_storeroom",
+  "name": "簷下儲",
+  "description": "簷下窄間，雜物與儲架；牆根潮、苔綠，簷角滴水槽聲隱約。此處僅通〔廊道〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_home05_hallway",
+      "to": "ironland_home05_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_home05_storeroom_exit",
+      "name": "廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_home05_hallway",
+      "responses": {
+        "Move": "你回到廊道。"
+      }
+    }
+  ]
+}

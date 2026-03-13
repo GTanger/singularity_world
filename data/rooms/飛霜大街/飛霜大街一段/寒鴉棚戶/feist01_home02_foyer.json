@@ -1,0 +1,43 @@
+{
+  "id": "feist01_home02_foyer",
+  "name": "【寒鴉棚戶】擠壓門廳",
+  "description": "這裡與其說是門廳，不如說是個勉強能轉身的狹窄過道。牆體是由各種廢棄金屬板與粗糙石塊拼湊而成，接縫處長著灰白色的防霉地衣。即便如此，這裡依然頑強地阻擋了飛霜大街的刺骨寒意。往裡走可通向〔低矮起居室〕，往外退回〔避風玄關〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home02_main",
+      "to": "feist01_home02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home02_living",
+      "to": "feist01_home02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home02_f_exit_main",
+      "name": "避風玄關",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_main",
+      "responses": {
+        "Move": "你退回避風玄關。"
+      }
+    },
+    {
+      "id": "feist01_home02_f_exit_living",
+      "name": "低矮起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_living",
+      "responses": {
+        "Move": "你往低矮起居室走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "wust09_home03_04",
+  "name": "側間",
+  "description": "墨染廊半開放階梯、金屬光澤熱液，兩側植被葉片重疊、綠色隧道封閉，樹脂香與電離感平衡，懸浮微粒與沉香並存。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wust09_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "裡間",
+      "to": "wust09_home03_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "書隅",
+      "to": "wust09_home03_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust09_home03_04_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust09_home03_main",
+      "responses": {
+        "Move": "你往大街方向走去。"
+      }
+    },
+    {
+      "id": "wust09_home03_04_exit_2",
+      "name": "裡間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust09_home03_03",
+      "responses": {
+        "Move": "你往裡間走去。"
+      }
+    },
+    {
+      "id": "wust09_home03_04_exit_3",
+      "name": "書隅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust09_home03_05",
+      "responses": {
+        "Move": "你往書隅走去。"
+      }
+    }
+  ]
+}

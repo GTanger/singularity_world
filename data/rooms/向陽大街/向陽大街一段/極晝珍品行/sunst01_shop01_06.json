@@ -1,0 +1,30 @@
+{
+  "id": "sunst01_shop01_06",
+  "name": "左三間",
+  "description": "鋪內左三間，落地窗把光裁成斜格，拱頂壓低、金光自稜鏡傾瀉，深色金屬架與黑木檯貼牆，牆面導線靜靜流轉，厚牆吞掉回音，陳設齊整。可經〔左廂〕返回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "左廂",
+      "to": "sunst01_shop01_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst01_shop01_06_02",
+      "name": "左廂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_shop01_02",
+      "responses": {
+        "Move": "你回到左廂。"
+      }
+    }
+  ]
+}

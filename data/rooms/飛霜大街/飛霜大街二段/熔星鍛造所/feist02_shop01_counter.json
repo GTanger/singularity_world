@@ -1,0 +1,43 @@
+{
+  "id": "feist02_shop01_counter",
+  "name": "【熔星鍛造所】高台櫃槽",
+  "description": "接待大堂角落一個被高聳鐵柵欄護住的收銀與驗證空間。桌面鑲嵌著能檢測鎂與貨幣純度的光學陣列，是整個鍛造所最安全也沒有油煙的地方。連接著〔接待大堂〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop01_main",
+      "to": "feist02_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop01_back",
+      "to": "feist02_shop01_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop01_c_exit_main",
+      "name": "接待大堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_main",
+      "responses": {
+        "Move": "你退回接待大堂。"
+      }
+    },
+    {
+      "id": "feist02_shop01_c_exit_back",
+      "name": "淬火後堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop01_back",
+      "responses": {
+        "Move": "你經後門往淬火後堂。"
+      }
+    }
+  ]
+}

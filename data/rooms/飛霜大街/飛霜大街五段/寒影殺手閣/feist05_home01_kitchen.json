@@ -1,0 +1,27 @@
+{
+  "id": "feist05_home01_kitchen",
+  "name": "灶間",
+  "description": "簷影宅灶間石灶靠牆、案上刀砧收得齊；窄窗一道、亮處只及案頭餘皆暗，簾外聽得見起居的聲息，柴煙順簷隙往上走、不嗆，簷下陰影與積霜從簾隙沁進一絲冷。此處僅通〔起居〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist05_home01_living",
+      "to": "feist05_home01_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_home01_k_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_home01_living",
+      "responses": {
+        "Move": "你退回起居。"
+      }
+    }
+  ]
+}

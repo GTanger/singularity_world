@@ -1,0 +1,46 @@
+{
+  "id": "yaxst03_home01_main",
+  "name": "後窗宅・門內",
+  "description": "門闔上後啼鳴頓弱，門內窄小，隔音鉛皮包覆兩壁，黃銅導向線沿踢腳單向伸入深處。晶簇嵌在頂心、灑下淡紫與深琥珀色光，黑石地磚冰涼，沉香與熟成樹脂氣味自廊道漏出，後窗一帶氣密簾垂落。可經〔夜鴞巷三巷〕離開，或往〔內廊〕。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxiao_st3",
+      "to": "yaxiao_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_home01_02",
+      "to": "yaxst03_home01_02",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_home01_main_st3",
+      "name": "夜鴞巷三巷",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxiao_st3",
+      "responses": {
+        "Move": "你步出後窗宅，回到夜鴞巷三巷。"
+      }
+    },
+    {
+      "id": "yaxst03_home01_main_02",
+      "name": "內廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_home01_02",
+      "responses": {
+        "Move": "你往內廊走去。"
+      }
+    }
+  ]
+}

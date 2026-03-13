@@ -1,0 +1,46 @@
+{
+  "id": "yaxst02_shop03_03",
+  "name": "迴音當・內廊二",
+  "description": "內廊中前段，氣密鉛皮鋪到腰高，黃銅導向線貼地延伸。熟成樹脂與沉香混在空氣裡，黑石吸走足音，晶簇自頂角投下淡紫微光。可經〔內廊一〕或〔內廊三〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst02_shop03_02",
+      "to": "yaxst02_shop03_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop03_04",
+      "to": "yaxst02_shop03_04",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst02_shop03_03_02",
+      "name": "內廊一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop03_02",
+      "responses": {
+        "Move": "你往內廊一走回。"
+      }
+    },
+    {
+      "id": "yaxst02_shop03_03_04",
+      "name": "內廊三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop03_04",
+      "responses": {
+        "Move": "你往內廊三走去。"
+      }
+    }
+  ]
+}

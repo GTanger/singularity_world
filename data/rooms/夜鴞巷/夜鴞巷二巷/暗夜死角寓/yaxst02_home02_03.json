@@ -1,0 +1,30 @@
+{
+  "id": "yaxst02_home02_03",
+  "name": "簷角寓・側室二",
+  "description": "單間側室，氣密鉛皮鋪到腰高，黃銅導向線自門框延伸至腳邊。頂心晶簇聚成深琥珀，黑石地磚沁著沉香餘韻，厚牆隔絕巷聲。可經〔簷下〕回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst02_home02_main",
+      "to": "yaxst02_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst02_home02_03_main",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_home02_main",
+      "responses": {
+        "Move": "你掀簾退回簷下。"
+      }
+    }
+  ]
+}

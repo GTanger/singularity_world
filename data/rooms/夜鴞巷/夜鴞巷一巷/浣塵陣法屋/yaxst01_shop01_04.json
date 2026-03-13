@@ -1,0 +1,46 @@
+{
+  "id": "yaxst01_shop01_04",
+  "name": "簷下洗衣・左廊底前",
+  "description": "左廊將盡，頂角晶簇漸密，淡紫與琥珀交織成低飽和光霧。牆根導能紋路匯成一股，黑石磨得發亮，水氣沉在腳邊。可經〔左廊中〕或〔左廊盡頭〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst01_shop01_03",
+      "to": "yaxst01_shop01_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst01_shop01_05",
+      "to": "yaxst01_shop01_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst01_shop01_04_03",
+      "name": "左廊中",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_03",
+      "responses": {
+        "Move": "你往左廊中走回。"
+      }
+    },
+    {
+      "id": "yaxst01_shop01_04_05",
+      "name": "左廊盡頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_05",
+      "responses": {
+        "Move": "你走到左廊盡頭。"
+      }
+    }
+  ]
+}

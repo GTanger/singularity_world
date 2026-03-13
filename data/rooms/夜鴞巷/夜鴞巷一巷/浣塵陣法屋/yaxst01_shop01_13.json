@@ -1,0 +1,46 @@
+{
+  "id": "yaxst01_shop01_13",
+  "name": "簷下洗衣・後間盡頭前",
+  "description": "後間深處，廊道再往前收束，晶簇在頂角聚成淡紫一團，黑石磨得發亮。導能紋路收束成細線沒入地縫，沉香沉在膝蓋高度。可經〔後間底前〕或〔後間最底〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst01_shop01_12",
+      "to": "yaxst01_shop01_12",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst01_shop01_14",
+      "to": "yaxst01_shop01_14",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst01_shop01_13_12",
+      "name": "後間底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_12",
+      "responses": {
+        "Move": "你往後間底前走回。"
+      }
+    },
+    {
+      "id": "yaxst01_shop01_13_14",
+      "name": "後間最底",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst01_shop01_14",
+      "responses": {
+        "Move": "你走到後間最底。"
+      }
+    }
+  ]
+}

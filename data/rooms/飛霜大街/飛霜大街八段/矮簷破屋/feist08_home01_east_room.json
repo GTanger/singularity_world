@@ -1,0 +1,43 @@
+{
+  "id": "feist08_home01_east_room",
+  "name": "東室",
+  "description": "簷角宅東室一榻一几、簾子垂著，推窗即見內庭、窗格凝了一層霜像毛玻璃；木梯靠牆、往上通閣樓，八段街燈從簾隙漏進一線即斷、腳下樓板沁涼，此地即宅內最靜一隅。此處通〔內庭〕與〔閣樓〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_home01_inner_court",
+      "to": "feist08_home01_inner_court",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home01_loft",
+      "to": "feist08_home01_loft",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_home01_er_exit_court",
+      "name": "內庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home01_inner_court",
+      "responses": {
+        "Move": "你退回內庭。"
+      }
+    },
+    {
+      "id": "feist08_home01_er_exit_loft",
+      "name": "閣樓",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home01_loft",
+      "responses": {
+        "Move": "你攀梯上閣樓。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "feist02_home02_bed1",
+  "name": "【溫石客棧】擁擠大通鋪",
+  "description": "整個房間幾乎被大面積的木製通鋪塞滿，能同時容納十幾個疲勞的工人。屋頂低矮，混合著各種難以忍受的體味與皮革發酸的氣息。退回〔暗紅走廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_home02_living",
+      "to": "feist02_home02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home02_b1_exit_living",
+      "name": "熱湯大堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home02_living",
+      "responses": {
+        "Move": "你退回熱湯大堂。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "id": "feist02_home04_main",
+  "name": "【烘瓦平房】紅磚玄關",
+  "description": "低矮得讓人必須低頭的玄關，兩側是用劣質紅磚堆砌而成的牆垣。這間平房距離地底熱脈太近，連地面的石板都呈現一種烘烤過後的微紅與發燙的觸感。空氣中充滿了焦土味。退回〔矮小入口〕至大街；內部通往〔悶熱客堂〕與〔窄簷下〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st2",
+      "to": "feistreet_st2",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home04_living",
+      "to": "feist02_home04_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_home04_eave",
+      "to": "feist02_home04_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_home04_m_exit_st2",
+      "name": "飛霜大街二段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st2",
+      "responses": {
+        "Move": "你步出，回到飛霜大街二段。"
+      }
+    },
+    {
+      "id": "feist02_home04_m_exit_living",
+      "name": "悶熱客堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home04_living",
+      "responses": {
+        "Move": "你步入悶熱客堂。"
+      }
+    },
+    {
+      "id": "feist02_home04_m_exit_eave",
+      "name": "窄簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_home04_eave",
+      "responses": {
+        "Move": "你步向窄簷下。"
+      }
+    }
+  ]
+}

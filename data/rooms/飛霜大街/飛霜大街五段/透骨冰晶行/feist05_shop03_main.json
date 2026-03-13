@@ -1,0 +1,59 @@
+{
+  "id": "feist05_shop03_main",
+  "name": "【透骨冰晶行】冷櫃前廳",
+  "description": "甚至比大街還要寒冷的工作室。四周擺滿了厚重的鉛皮櫃，用來存放那些具有強烈放射性的變異冰晶。退回〔加厚窄門〕至大街。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st5",
+      "to": "feistreet_st5",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_shop03_counter",
+      "to": "feist05_shop03_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_shop03_eave",
+      "to": "feist05_shop03_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_shop03_m_exit_st5",
+      "name": "飛霜大街五段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st5",
+      "responses": {
+        "Move": "你推門步出，回到飛霜大街五段。"
+      }
+    },
+    {
+      "id": "feist05_shop03_m_exit_counter",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop03_counter",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    },
+    {
+      "id": "feist05_shop03_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop03_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

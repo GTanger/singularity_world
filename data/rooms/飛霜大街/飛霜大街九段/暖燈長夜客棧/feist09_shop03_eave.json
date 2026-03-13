@@ -1,0 +1,27 @@
+{
+  "id": "feist09_shop03_eave",
+  "name": "【暖燈長夜客棧】簷下",
+  "description": "簷燈鋪簷下一截，頭頂吊著招牌燈籠；往外是街面行人與霜氣，往內是鋪裡燈火，霜落在簷緣被燈照得發亮、一碰即化。此處僅通〔店頭〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_shop03_main",
+      "to": "feist09_shop03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_shop03_eave_exit_main",
+      "name": "店頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop03_main",
+      "responses": {
+        "Move": "你回到店頭。"
+      }
+    }
+  ]
+}

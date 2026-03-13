@@ -1,0 +1,46 @@
+{
+  "id": "yaxst04_shop01_09",
+  "name": "長燈棧・乙廊底前",
+  "description": "乙廊將盡，牆根導能紋路匯成一股沉入地磚縫隙，黑石磨得發亮。長燈在頂角聚成淡紫一團，沉香沉在膝蓋高度。可經〔乙廊三〕或〔匯流口〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst04_shop01_08",
+      "to": "yaxst04_shop01_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop01_11",
+      "to": "yaxst04_shop01_11",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst04_shop01_09_08",
+      "name": "乙廊三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop01_08",
+      "responses": {
+        "Move": "你往乙廊三走回。"
+      }
+    },
+    {
+      "id": "yaxst04_shop01_09_11",
+      "name": "匯流口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop01_11",
+      "responses": {
+        "Move": "你往匯流口走去。"
+      }
+    }
+  ]
+}

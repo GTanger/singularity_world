@@ -1,0 +1,30 @@
+{
+  "id": "yaxst03_shop03_08",
+  "name": "前櫃行・側櫃甲",
+  "description": "側櫃單間，鉛皮牆面與暖能石縫泛著低溫橘光，晶簇嵌在頂心、灑下淡紫微光。黑石檯面冰涼，導能紋路沿踢腳圍成一圈。可經〔櫃前〕回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_shop03_main",
+      "to": "yaxst03_shop03_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_shop03_08_main",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop03_main",
+      "responses": {
+        "Move": "你退回櫃前。"
+      }
+    }
+  ]
+}

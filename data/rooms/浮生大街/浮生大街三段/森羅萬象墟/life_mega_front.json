@@ -1,0 +1,91 @@
+{
+  "id": "life_mega_front",
+  "name": "前庭",
+  "description": "萬象墟前庭敞闊，地面石板為玉質脈絡所鑲，縫隙沁出淡紫微光，簷角濾下的天光沉靜，身後〔墟門〕即為來路，出門即回浮生大街三段；正前〔主廊〕深闊通往內裡，兩側〔東廊〕〔西廊〕廊口幽深，中央一道〔中庭〕入口，微光自深處浮動。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_mega_gate",
+      "to": "life_mega_gate",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_main",
+      "to": "life_mega_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_east_hall",
+      "to": "life_mega_east_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_west_hall",
+      "to": "life_mega_west_hall",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_court",
+      "to": "life_mega_court",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_mega_front_exit_gate",
+      "name": "墟門",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_gate",
+      "responses": {
+        "Move": "你循來路回到墟門。"
+      }
+    },
+    {
+      "id": "life_mega_front_exit_main",
+      "name": "主廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_main",
+      "responses": {
+        "Move": "你朝主廊深處走去。"
+      }
+    },
+    {
+      "id": "life_mega_front_exit_east",
+      "name": "東廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_east_hall",
+      "responses": {
+        "Move": "你轉入東廊。"
+      }
+    },
+    {
+      "id": "life_mega_front_exit_west",
+      "name": "西廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_west_hall",
+      "responses": {
+        "Move": "你轉入西廊。"
+      }
+    },
+    {
+      "id": "life_mega_front_exit_court",
+      "name": "中庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_court",
+      "responses": {
+        "Move": "你穿過入口，踏入中庭。"
+      }
+    }
+  ]
+}

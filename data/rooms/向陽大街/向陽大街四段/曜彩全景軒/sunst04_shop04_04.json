@@ -1,0 +1,46 @@
+{
+  "id": "sunst04_shop04_04",
+  "name": "右翼・前間",
+  "description": "右翼入口，拱頂稜鏡集中、光線飽和如蜜，地表淺色紋路與能量導線自縫隙延伸，黑木陳列檯與白玉嵌條咬合，室內開敞明亮、無廢土感，溫潤沉香淡淡。可經〔軒口〕回到軒頭，或往〔右翼・一間〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "軒口",
+      "to": "sunst04_shop04_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "右翼・一間",
+      "to": "sunst04_shop04_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst04_shop04_04_main",
+      "name": "軒口",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop04_main",
+      "responses": {
+        "Move": "你回到軒口。"
+      }
+    },
+    {
+      "id": "sunst04_shop04_04_10",
+      "name": "右翼・一間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst04_shop04_10",
+      "responses": {
+        "Move": "你往右翼一間走去。"
+      }
+    }
+  ]
+}

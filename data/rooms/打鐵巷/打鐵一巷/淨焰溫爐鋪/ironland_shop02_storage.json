@@ -1,0 +1,43 @@
+{
+  "id": "ironland_shop02_storage",
+  "name": "儲物間",
+  "description": "牆角鐵筐與礦石堆疊，縫隙間透出琥珀光，鐵腥與礦物粉塵沉澱；店頭熱氣自通道滲入，室內微悶。此處通〔爐火鋪〕與〔生活起居室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop02_main",
+      "to": "ironland_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop02_living",
+      "to": "ironland_shop02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop02_storage_exit_main",
+      "name": "爐火鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop02_main",
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
+    },
+    {
+      "id": "ironland_shop02_storage_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop02_living",
+      "responses": {
+        "Move": "你沿側道走去，進入生活起居室。"
+      }
+    }
+  ]
+}

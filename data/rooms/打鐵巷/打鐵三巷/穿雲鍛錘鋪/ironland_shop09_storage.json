@@ -1,0 +1,43 @@
+{
+  "id": "ironland_shop09_storage",
+  "name": "儲物間",
+  "description": "鐵筐盛粗料與農具坯，牆縫琥珀光；鐵腥重，店頭熱氣灌入。此處通〔鍛錘鋪〕與〔生活起居室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop09_main",
+      "to": "ironland_shop09_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "ironland_shop09_living",
+      "to": "ironland_shop09_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop09_storage_exit_main",
+      "name": "鍛錘鋪",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop09_main",
+      "responses": {
+        "Move": "你循來路回到店面前方。"
+      }
+    },
+    {
+      "id": "ironland_shop09_storage_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop09_living",
+      "responses": {
+        "Move": "你沿側道走去，進入生活起居室。"
+      }
+    }
+  ]
+}

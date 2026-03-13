@@ -1,0 +1,62 @@
+{
+  "id": "wust02_home01_04",
+  "name": "側間",
+  "description": "茶間白玉矮台、能量礦石鑲嵌牆面，恆定熱輻射；晶化木材家具密度高，空氣乾燥，油脂感與微光並存，油脂感與微光並存。可經〔大街〕、〔裡間〕、〔書隅〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "wustreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "wust02_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "裡間",
+      "to": "wust02_home01_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "書隅",
+      "to": "wust02_home01_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "wust02_home01_04_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_home01_main",
+      "responses": {
+        "Move": "你往大街方向走去。"
+      }
+    },
+    {
+      "id": "wust02_home01_04_exit_2",
+      "name": "裡間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_home01_03",
+      "responses": {
+        "Move": "你往裡間走去。"
+      }
+    },
+    {
+      "id": "wust02_home01_04_exit_3",
+      "name": "書隅",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "wust02_home01_05",
+      "responses": {
+        "Move": "你往書隅走去。"
+      }
+    }
+  ]
+}

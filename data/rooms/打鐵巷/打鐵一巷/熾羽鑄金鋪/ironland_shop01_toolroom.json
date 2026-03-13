@@ -1,0 +1,27 @@
+{
+  "id": "ironland_shop01_toolroom",
+  "name": "工具間",
+  "description": "鐵鉗、錘具與模具掛滿牆架，縫隙間透出琥珀光，鐵腥與礦物粉塵沉澱。此處僅通〔工間二〕，原路即回。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop01_workshop2",
+      "to": "ironland_shop01_workshop2",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop01_toolroom_exit",
+      "name": "工間二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop01_workshop2",
+      "responses": {
+        "Move": "你回到工間二。"
+      }
+    }
+  ]
+}

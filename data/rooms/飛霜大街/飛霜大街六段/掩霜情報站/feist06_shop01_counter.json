@@ -1,0 +1,43 @@
+{
+  "id": "feist06_shop01_counter",
+  "name": "櫃前",
+  "description": "霜簾鋪櫃台後即貨架，茶罐與零嘴排到齊眉；一道簾隔開鋪面與住家，簾後即〔後間〕、住家從那裡開始，買賣在此成交，簾外鋪面人聲與杯盞聲隱約、再往裡便靜了。此處通〔滅音交誼室〕與〔後間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist06_shop01_main",
+      "to": "feist06_shop01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist06_shop01_back",
+      "to": "feist06_shop01_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist06_shop01_c_exit_main",
+      "name": "滅音交誼室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_shop01_main",
+      "responses": {
+        "Move": "你退回滅音交誼室。"
+      }
+    },
+    {
+      "id": "feist06_shop01_c_exit_back",
+      "name": "後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist06_shop01_back",
+      "responses": {
+        "Move": "你掀簾往後間。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "sunst05_shop02_02",
+  "name": "沐區・前廳",
+  "description": "沐區入口，向陽拱頂將金光篩成琥珀色，白玉地面與琉璃嵌條咬合，水氣氤氳、溫潤沉香略濃，黑木長凳沿牆，油脂質感皮革墊觸感飽滿，空氣濕潤。可經〔櫃前〕回到齋頭，或往〔沐一室〕、〔沐二室〕、〔沐三室〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "櫃前",
+      "to": "sunst05_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "沐一室",
+      "to": "sunst05_shop02_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "沐二室",
+      "to": "sunst05_shop02_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "沐三室",
+      "to": "sunst05_shop02_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst05_shop02_02_main",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_main",
+      "responses": {
+        "Move": "你回到櫃前。"
+      }
+    },
+    {
+      "id": "sunst05_shop02_02_04",
+      "name": "沐一室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_04",
+      "responses": {
+        "Move": "你往沐一室走去。"
+      }
+    },
+    {
+      "id": "sunst05_shop02_02_05",
+      "name": "沐二室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_05",
+      "responses": {
+        "Move": "你往沐二室走去。"
+      }
+    },
+    {
+      "id": "sunst05_shop02_02_06",
+      "name": "沐三室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_shop02_06",
+      "responses": {
+        "Move": "你往沐三室走去。"
+      }
+    }
+  ]
+}

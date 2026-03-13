@@ -1,0 +1,30 @@
+{
+  "id": "sunst06_home02_03",
+  "name": "裡間",
+  "description": "內室密集金光自稜鏡天窗直落，深色金屬架與黑木櫃貼牆，地表白玉磚縫有淺色流路延伸至櫃腳，能量微粒在光束中緩慢浮沉，室內極靜。可經〔門廳〕前往他處。",
+  "tags": [
+    "residence",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "門廳",
+      "to": "sunst06_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst06_home02_03_exit_1",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst06_home02_main",
+      "responses": {
+        "Move": "你往門廳走去。"
+      }
+    }
+  ]
+}

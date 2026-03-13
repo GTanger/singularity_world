@@ -1,0 +1,30 @@
+{
+  "id": "sunst01_hold01_07",
+  "name": "南二室",
+  "description": "南廊盡頭，拱頂稜鏡把光收成單束、澆在中央白玉柱上，柱面紋路如呼吸般明滅，深色金屬與黑木咬合滿牆，厚牆鎖住雜音，沉香自通風孔一絲絲逸出。可經〔南一室〕沿廊返回。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "南一室",
+      "to": "sunst01_hold01_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst01_hold01_07_06",
+      "name": "南一室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_06",
+      "responses": {
+        "Move": "你沿南廊往南一室走回。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "yaxst03_shop02_05",
+  "name": "氣密茶・岔口",
+  "description": "內道盡頭處岔成兩路，黃銅導向線分向左右延伸，鉛皮牆面與暖能石縫泛著低溫橘光。晶簇在頂角聚成淡紫一團，茶氣與沉香沉在膝蓋高度。可經〔內道三〕、〔左茶間〕或〔右茶間〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst03_shop02_04",
+      "to": "yaxst03_shop02_04",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop02_06",
+      "to": "yaxst03_shop02_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst03_shop02_07",
+      "to": "yaxst03_shop02_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst03_shop02_05_04",
+      "name": "內道三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_04",
+      "responses": {
+        "Move": "你往內道三走回。"
+      }
+    },
+    {
+      "id": "yaxst03_shop02_05_06",
+      "name": "左茶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_06",
+      "responses": {
+        "Move": "你往左茶間走去。"
+      }
+    },
+    {
+      "id": "yaxst03_shop02_05_07",
+      "name": "右茶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst03_shop02_07",
+      "responses": {
+        "Move": "你往右茶間走去。"
+      }
+    }
+  ]
+}

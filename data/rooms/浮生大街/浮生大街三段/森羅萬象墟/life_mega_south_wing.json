@@ -1,0 +1,59 @@
+{
+  "id": "life_mega_south_wing",
+  "name": "南軒",
+  "description": "南軒敞亮，簷角脈絡濾光，可見〔南軒一〕〔南軒二〕門洞。此處出口通回〔中庭〕，亦可步入兩側軒室。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_mega_court",
+      "to": "life_mega_court",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_south_1",
+      "to": "life_mega_south_1",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_mega_south_2",
+      "to": "life_mega_south_2",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_mega_south_exit_court",
+      "name": "中庭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_court",
+      "responses": {
+        "Move": "你回到中庭。"
+      }
+    },
+    {
+      "id": "life_mega_south_exit_1",
+      "name": "南軒一",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_south_1",
+      "responses": {
+        "Move": "你步入南軒一。"
+      }
+    },
+    {
+      "id": "life_mega_south_exit_2",
+      "name": "南軒二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_mega_south_2",
+      "responses": {
+        "Move": "你步入南軒二。"
+      }
+    }
+  ]
+}

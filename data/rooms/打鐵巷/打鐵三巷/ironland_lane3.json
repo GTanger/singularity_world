@@ -1,7 +1,7 @@
 {
   "id": "ironland_lane3",
   "name": "打鐵三巷",
-  "description": "巷尾即風道出口，自一巷沿風道流瀉而來的熱氣在此散出、往飛霜大街二段而去；風勢略緩、兩側牆面暗紅脈絡轉為隱約。可經〔打鐵二巷〕折返，或自〔巷尾〕步出至飛霜大街二段；亦可入三巷四商二宅：〔鍛錘鋪〕〔爐膛鋪〕〔鐵屑鋪〕〔風箱鋪〕、〔簷下宅〕〔巷底宅〕。",
+  "description": "來到打鐵巷的尾端，也是這條天然風道的出口段。匯聚而來的熱能與純淨的靈焰餘韻在此處化作溫暖的氣流，朝著飛霜大街散去。風勢變得柔和，牆上的導熱陣紋也轉為隱約的琥珀色微光。這裡的高溫褪去狂熱，轉為一種適合精細雕琢的穩定熱源。路側是專司精工的〔穿雲鍛錘鋪〕、〔恆溫深淵鋪〕、〔星塵靈屑鋪〕與〔御氣風箱鋪〕；對向則是風格清雅的〔青瓦散熱宅〕與〔隱士尋真宅〕。可退回〔打鐵二巷〕，或從〔巷尾出口〕步出，讓清冷的冰霜氣息擁抱你，進入飛霜大街二段。",
   "tags": [],
   "zone": "ironland",
   "exits": [
@@ -71,68 +71,68 @@
     },
     {
       "id": "ironland_lane3_exit_ironland_shop09_main",
-      "name": "鍛錘鋪",
+      "name": "穿雲鍛錘鋪",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "ironland_shop09_main",
       "responses": {
-        "Move": "你步入鍛錘鋪。"
+        "Move": "你掀開墜著玉石風鈴的門簾，進入穿雲鍛錘鋪。"
       }
     },
     {
       "id": "ironland_lane3_exit_ironland_shop10_main",
-      "name": "爐膛鋪",
+      "name": "恆溫深淵鋪",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "ironland_shop10_main",
       "responses": {
-        "Move": "你步入爐膛鋪。"
+        "Move": "你迎著穩定且舒適的暖風，進入恆溫深淵鋪。"
       }
     },
     {
       "id": "ironland_lane3_exit_ironland_shop11_main",
-      "name": "鐵屑鋪",
+      "name": "星塵靈屑鋪",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "ironland_shop11_main",
       "responses": {
-        "Move": "你步入鐵屑鋪。"
+        "Move": "你看著滿地如星光般閃爍的靈礦碎屑，進入星塵靈屑鋪。"
       }
     },
     {
       "id": "ironland_lane3_exit_ironland_shop12_main",
-      "name": "風箱鋪",
+      "name": "御氣風箱鋪",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "ironland_shop12_main",
       "responses": {
-        "Move": "你步入風箱鋪。"
+        "Move": "你感受著門口陣法吐出的清新微風，進入御氣風箱鋪。"
       }
     },
     {
       "id": "ironland_lane3_exit_ironland_home08_main",
-      "name": "簷下宅",
+      "name": "青瓦散熱宅",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "ironland_home08_main",
       "responses": {
-        "Move": "你走向簷下宅。"
+        "Move": "你推開散發著淡淡木香的雙葉門，進入青瓦散熱宅。"
       }
     },
     {
       "id": "ironland_lane3_exit_ironland_home09_main",
-      "name": "巷底宅",
+      "name": "隱士尋真宅",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "ironland_home09_main",
       "responses": {
-        "Move": "你走向巷底宅。"
+        "Move": "你掀起繡著八卦圖紋的素雅布簾，進入隱士尋真宅。"
       }
     }
   ]

@@ -1,0 +1,27 @@
+{
+  "id": "feist03_hold01_warehouse",
+  "name": "大庫",
+  "description": "簷心樓大庫堆著存貨與未上架貨、梁上懸乾貨，牆角霜紋沁出、空氣滯重沁涼；門僅通〔西廂〕，簷下漏光一線、塵埃與霜晶同浮，三段人聲隔牆而遠。此處僅通〔西廂〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist03_hold01_west_wing",
+      "to": "feist03_hold01_west_wing",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist03_hold01_wh_exit_wing",
+      "name": "西廂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_hold01_west_wing",
+      "responses": {
+        "Move": "你退回西廂。"
+      }
+    }
+  ]
+}

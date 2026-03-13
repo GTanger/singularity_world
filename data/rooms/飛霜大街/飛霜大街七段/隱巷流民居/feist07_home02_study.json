@@ -1,0 +1,27 @@
+{
+  "id": "feist07_home02_study",
+  "name": "書齋",
+  "description": "簷影宅一案一架，架上幾冊舊書、案上筆墨已乾；窄窗一道亮處只及案頭、餘皆暗，簾外即起居的聲息，此地無第二進院。此處僅通〔起居〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_home02_living",
+      "to": "feist07_home02_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_home02_s_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home02_living",
+      "responses": {
+        "Move": "你退回起居。"
+      }
+    }
+  ]
+}

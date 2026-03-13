@@ -1,0 +1,27 @@
+{
+  "id": "feist08_home02_courtyard",
+  "name": "小院",
+  "description": "霜尾宅小院：廊道側一方露地，石階一級、簷角壓低；無缸，磚縫薄冰腳踩略滑，牆根霜與青苔一線、八段人聲從巷口漏進來。此處僅通〔廊道〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist08_home02_hallway",
+      "to": "feist08_home02_hallway",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_home02_c_exit_hall",
+      "name": "廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home02_hallway",
+      "responses": {
+        "Move": "你退回廊道。"
+      }
+    }
+  ]
+}

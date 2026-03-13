@@ -1,0 +1,37 @@
+{
+  "id": "life_shop03_bedroom",
+  "name": "私人臥室",
+  "description": "床架自地面岩石增生而起，厚實菌絲毯覆於其上，室內極靜，唯燈暈與沉降的粉塵。牆側〔膠質燈〕鑲在石座，淡紫微光如呼吸。唯一路徑通往側邊〔生活起居室〕。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_shop03_living",
+      "to": "life_shop03_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop03_bedroom_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop03_living",
+      "responses": {
+        "Move": "你離開臥室，回到生活起居室。"
+      }
+    },
+    {
+      "id": "life_shop03_bedroom_obj_lamp",
+      "name": "膠質燈",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "燈體盛著膠狀發光液，燈芯焦黑，微溫與淡紫光持續浮動。粉塵在光暈旁無聲沉降，竟似時間在此凝結。"
+      }
+    }
+  ]
+}

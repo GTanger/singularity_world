@@ -1,7 +1,7 @@
 {
   "id": "feistreet_st8",
   "name": "飛霜大街八段",
-  "description": "街尾感；霜晶與遠處街口燈火並存，路面冷調、簷角積霜。路側〔霜脊樓〕雙扉高聳、簷脊切天，〔街尾鋪〕簷下霜白、簾隙透出茶氣；對向〔街燈宅〕門廊朝街口、〔霜尾宅〕門洞幽深、〔簷角宅〕矮門簷角積霜。可經〔飛霜大街七段〕折返，或朝〔飛霜大街九段〕往四路街口延伸。",
+  "description": "已經可以看見飛霜大街的盡頭與四路街口的交會處。霜晶的飄落與遠處街口的繁華燈火相互輝映，路面的冷調石板上反射出五顏六色的街面霓虹。這一段的建築出現了極端的階級反差：路側高聳入雲的〔凜冬哨塔〕以雙扉切天之勢俯瞰整條大街，旁邊卻是做著下九流生意的〔街尾夜行鋪〕。對向的建築群已經開始被街口的繁華遺棄，包含靠著路燈取暖的〔殘燈寓所〕、門洞幽深的〔死角廢宅〕與門檻被霜雪淹沒的〔矮簷破屋〕。可退回〔飛霜大街七段〕，或朝四路街口所在的〔飛霜大街九段〕前進。",
   "tags": [],
   "zone": "feistreet",
   "exits": [
@@ -44,129 +44,129 @@
   "objects": [
     {
       "id": "fei_st8_exit_st7",
-      "name": "飛霜大街七段",
+      "name": "飛霜大街7段",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feistreet_st7",
       "responses": {
-        "Move": "你朝飛霜大街七段方向折返。"
+        "Move": "你朝飛霜大街7段方向折返。"
       }
     },
     {
       "id": "fei_st8_exit_st9",
-      "name": "飛霜大街九段",
+      "name": "飛霜大街9段",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feistreet_st9",
       "responses": {
-        "Move": "你朝飛霜大街九段方向走去，街口燈火漸近。"
+        "Move": "你朝飛霜大街9段方向走去，街口燈火漸近。"
       }
     },
     {
       "id": "fei_st8_obj_hold01",
-      "name": "霜脊樓",
+      "name": "凜冬哨塔",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "雙扉高聳、簷脊切天；〔大門〕可入內。"
+        "Look": "一棟兼具軍事警戒與商貿管理功能的巨型建築，雙扉高聳如刃，簷脊的設計足以切開暴風雪；厚實的〔巨型大門〕緊閉。"
       }
     },
     {
       "id": "fei_st8_obj_hold01_door",
-      "name": "大門",
+      "name": "巨型大門",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist08_hold01_gate",
       "responses": {
-        "Move": "你推門進入霜脊樓。"
+        "Move": "你推開沉重的巨型大門，進入凜冬哨塔。"
       }
     },
     {
       "id": "fei_st8_obj_shop17",
-      "name": "街尾鋪",
+      "name": "街尾夜行鋪",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "簷下霜白、簾隙透出茶氣與燈火；〔店門〕可入內。"
+        "Look": "外觀極其不起眼，但簷下卻刻意用高溫暖石融化了積霜以利通行，簾隙透出一股迷幻的甜香茶氣與暗紅燈火；〔重磅門簾〕可入內。"
       }
     },
     {
       "id": "fei_st8_obj_shop17_door",
-      "name": "店門",
+      "name": "重磅門簾",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist08_shop01_front",
       "responses": {
-        "Move": "你掀簾進入街尾鋪。"
+        "Move": "你掀開重磅門簾，進入街尾夜行鋪。"
       }
     },
     {
       "id": "fei_st8_obj_home15",
-      "name": "街燈宅",
+      "name": "殘燈寓所",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "門廊朝街口、燈火隱約；〔窄門〕半掩。"
+        "Look": "這棟住宅的門廊刻意向外延伸，貪婪地汲取著大街上公共街燈的光芒與微弱熱度；〔斑駁窄門〕半掩著。"
       }
     },
     {
       "id": "fei_st8_obj_home15_door",
-      "name": "窄門",
+      "name": "斑駁窄門",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist08_home03_main",
       "responses": {
-        "Move": "你推門進入街燈宅。"
+        "Move": "你推開斑駁窄門，進入殘燈寓所。"
       }
     },
     {
       "id": "fei_st8_obj_home16",
-      "name": "霜尾宅",
+      "name": "死角廢宅",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "街尾簷角積霜、門洞內光線幽微；〔門洞〕可入。"
+        "Look": "位於街區交界處的視覺死角，簷角積霜如冰柱般懸掛，門洞幽深且散發著霉味；〔陰暗門洞〕內不見人影。"
       }
     },
     {
       "id": "fei_st8_obj_home16_door",
-      "name": "門洞",
+      "name": "破裂門洞",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist08_home02_main",
       "responses": {
-        "Move": "你步入霜尾宅。"
+        "Move": "你步入矮簷破屋。"
       }
     },
     {
       "id": "fei_st8_obj_home14",
-      "name": "簷角宅",
+      "name": "矮簷破屋",
       "sockets": [
         "Look"
       ],
       "responses": {
-        "Look": "矮門簷角積霜、門檻高過腳踝；〔門洞〕可入。"
+        "Look": "低矮得幾乎要被周遭建築吞噬的破屋，門檻被厚重的積霜與泥土掩埋，屋簷的冰柱甚至與地面相連；〔破裂門洞〕勉強可入。"
       }
     },
     {
       "id": "fei_st8_obj_home14_door",
-      "name": "門洞",
+      "name": "破裂門洞",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "feist08_home01_gate",
       "responses": {
-        "Move": "你步入簷角宅。"
+        "Move": "你步入矮簷破屋。"
       }
     }
   ]

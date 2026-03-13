@@ -1,0 +1,46 @@
+{
+  "id": "sunst01_hold01_11",
+  "name": "北廊口",
+  "description": "北側廊道起點，稜鏡柱環成半弧、金光自頂傾瀉，白玉地反射淡金，微粒在氣流裡浮沉、風比廳口暢，金屬欄杆與黑木階咬合。可經〔大廳〕折返，或沿廊往〔北一室〕。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "sunst01_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "北一室",
+      "to": "sunst01_hold01_12",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst01_hold01_11_main",
+      "name": "大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_main",
+      "responses": {
+        "Move": "你回到大廳。"
+      }
+    },
+    {
+      "id": "sunst01_hold01_11_12",
+      "name": "北一室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_hold01_12",
+      "responses": {
+        "Move": "你往北一室走去。"
+      }
+    }
+  ]
+}

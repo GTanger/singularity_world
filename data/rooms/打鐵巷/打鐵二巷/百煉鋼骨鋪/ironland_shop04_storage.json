@@ -1,0 +1,27 @@
+{
+  "id": "ironland_shop04_storage",
+  "name": "儲物間",
+  "description": "鐵筐裡脊條半成品與礦料分堆，牆根脈絡粗、礦光隱約；粉塵厚、一腳踩下微微揚起，鐵腥與礦石味重。此處僅通〔生活起居室〕；回店頭須經生活起居室、工間。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop04_living",
+      "to": "ironland_shop04_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop04_storage_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop04_living",
+      "responses": {
+        "Move": "你沿側道走去，進入生活起居室。"
+      }
+    }
+  ]
+}

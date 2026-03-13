@@ -1,0 +1,30 @@
+{
+  "id": "yaxst02_shop03_10",
+  "name": "迴音當・當底",
+  "description": "橫廊終點即當底，三面鉛皮牆合圍，頂心晶簇聚成深琥珀。壁面擱板與黑石檯面冰涼，導能紋路在腳邊圍成閉合一圈後隱入牆底，隔音鉛皮吞掉一切迴響，極靜。可經〔橫廊底前〕走回。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst02_shop03_09",
+      "to": "yaxst02_shop03_09",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst02_shop03_10_09",
+      "name": "橫廊底前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop03_09",
+      "responses": {
+        "Move": "你沿橫廊往回走。"
+      }
+    }
+  ]
+}

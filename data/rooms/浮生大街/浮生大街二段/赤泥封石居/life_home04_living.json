@@ -1,0 +1,69 @@
+{
+  "id": "life_home04_living",
+  "name": "生息室",
+  "description": "中心〔石几〕伏貼於地，桌緣琉璃質攀附石面，淡綠微光在暗處浮動。室內通向〔泥廊道〕、側方〔灶間〕與後方〔內臥房〕。牆面泥漿沁出玉質脈絡，礦物氣息沉澱。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_home04_corridor",
+      "to": "life_home04_corridor",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home04_kitchen",
+      "to": "life_home04_kitchen",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_home04_bedroom",
+      "to": "life_home04_bedroom",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_home04_living_exit_corridor",
+      "name": "泥廊道",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home04_corridor",
+      "responses": {
+        "Move": "你離開石几旁，回到泥廊道。"
+      }
+    },
+    {
+      "id": "life_home04_living_exit_kitchen",
+      "name": "灶間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home04_kitchen",
+      "responses": {
+        "Move": "你朝側方走去，進入灶間。"
+      }
+    },
+    {
+      "id": "life_home04_living_exit_bedroom",
+      "name": "內臥房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_home04_bedroom",
+      "responses": {
+        "Move": "你推開後方門扉，步入內臥房。"
+      }
+    },
+    {
+      "id": "life_home04_living_obj_table",
+      "name": "石几",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "石几表面粗獷紋路深刻，凹槽內半透明綠色結晶沉積，觸手溫潤。歲月與增生共築，反更沉穩。"
+      }
+    }
+  ]
+}

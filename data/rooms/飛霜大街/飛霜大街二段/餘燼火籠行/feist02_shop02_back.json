@@ -1,0 +1,43 @@
+{
+  "id": "feist02_shop02_back",
+  "name": "【餘燼火籠行】組裝裡間",
+  "description": "工作區的氣氛截然不同，桌面上散落著銅線、散熱鰭片與加工到一半的暖能石原木。空氣中飄著淡淡的臭氧與金屬焊燒的氣味。這裡是匠人進行客製化改裝的場所。連接〔展售前堂〕、〔石砌後院〕、廚房與〔學徒臥房〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist02_shop02_counter",
+      "to": "feist02_shop02_counter",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist02_shop02_hall",
+      "to": "feist02_shop02_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist02_shop02_b_exit_counter",
+      "name": "結帳高櫃",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_counter",
+      "responses": {
+        "Move": "你退回結帳高櫃。"
+      }
+    },
+    {
+      "id": "feist02_shop02_b_exit_hall",
+      "name": "火籠展示間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist02_shop02_hall",
+      "responses": {
+        "Move": "你往火籠展示間走去。"
+      }
+    }
+  ]
+}

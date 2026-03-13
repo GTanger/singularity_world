@@ -1,8 +1,11 @@
 {
   "id": "fei_lake_west",
-  "name": "迴岸",
-  "description": "繞湖一匝將盡：西側石灘再往前便是街口湖緣。霜晶與暖霧纏在腳踝，水氣凝成細霜落在灘石上旋即化開，湖氣自水緣一陣陣浮來。簷角積霜堆在日影照不到的西側，足底石面沁涼。可經〔水際〕下到貼水處，或沿岸往〔湖背〕、〔街口湖緣〕，或經〔泵房〕。",
-  "tags": ["street","outdoor"],
+  "name": "【飛霜湖西岸】寂靜迴岸",
+  "description": "繞湖的動線在此處即將回到起點。西側的石灘因為缺乏日照，積霜堆疊得異常厚實，踩上去發出令人牙酸的嘎吱聲。湖面上終年不散的暖霧在這裡與冷空氣交匯，形成一個個微型的白霧氣旋。空氣中混雜著湖水的腥味與地下機械管線的鏽味。可經〔沉霜水際〕下探，或沿岸折返〔北岸孤冷湖背〕與〔街口碎冰灘〕，或前往發出低沉噪音的〔轟鳴泵房〕。",
+  "tags": [
+    "street",
+    "outdoor"
+  ],
   "zone": "feistreet",
   "exits": [
     {
@@ -29,7 +32,7 @@
   "objects": [
     {
       "id": "fei_lake_west_shore",
-      "name": "水際",
+      "name": "沉霜水際",
       "sockets": [
         "Move"
       ],
@@ -40,7 +43,7 @@
     },
     {
       "id": "fei_lake_west_north",
-      "name": "湖背",
+      "name": "北岸孤冷湖背",
       "sockets": [
         "Move"
       ],
@@ -51,7 +54,7 @@
     },
     {
       "id": "fei_lake_west_south",
-      "name": "街口湖緣",
+      "name": "街口碎冰灘",
       "sockets": [
         "Move"
       ],
@@ -62,13 +65,13 @@
     },
     {
       "id": "fei_lake_west_pump",
-      "name": "泵房",
+      "name": "轟鳴泵房",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "fei_lake_pump",
       "responses": {
-        "Move": "你朝泵房走去。"
+        "Move": "你朝轟鳴泵房走去。"
       }
     }
   ]

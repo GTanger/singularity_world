@@ -1,0 +1,46 @@
+{
+  "id": "sunst08_shop01_09",
+  "name": "儲區",
+  "description": "儲架頂天立地，琉璃罐與金屬箱分格碼放，地表淺色流路延伸至牆角匯聚，頭頂無天窗、僅牆面稜鏡將外光折射而入，淡金微光與深色架影對比分明，空氣凝滯。可經〔寢區〕、〔後間〕前往他處。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "寢區",
+      "to": "sunst08_shop01_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "後間",
+      "to": "sunst08_shop01_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst08_shop01_09_exit_1",
+      "name": "寢區",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst08_shop01_08",
+      "responses": {
+        "Move": "你往寢區走去。"
+      }
+    },
+    {
+      "id": "sunst08_shop01_09_exit_2",
+      "name": "後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst08_shop01_10",
+      "responses": {
+        "Move": "你往後間走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "ironland_shop11_bedroom",
+  "name": "私人臥室",
+  "description": "石床鐵架、厚毯；室內無屑、無沙沙聲。此處唯通〔生活起居室〕。",
+  "tags": [],
+  "zone": "ironland",
+  "exits": [
+    {
+      "direction": "ironland_shop11_living",
+      "to": "ironland_shop11_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "ironland_shop11_bedroom_exit_living",
+      "name": "生活起居室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "ironland_shop11_living",
+      "responses": {
+        "Move": "你離開臥室，回到生活起居室。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home02_eave",
+  "name": "【寒鴉棚戶】霜凍簷下",
+  "description": "建築外側一處勉強能遮風擋雨的畸零地。頂上粗糙的木簷結滿了沉甸甸的霜白結晶，偶爾會有一小塊碎冰砸落在冷調的石板上。這裡空氣乾冷，風勢稍弱。可通向〔避風玄關〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home02_main",
+      "to": "feist01_home02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home02_e_exit_main",
+      "name": "避風玄關",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home02_main",
+      "responses": {
+        "Move": "你退回避風玄關。"
+      }
+    }
+  ]
+}

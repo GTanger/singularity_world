@@ -1,0 +1,27 @@
+{
+  "id": "feist07_shop02_bed1",
+  "name": "臥一",
+  "description": "簷下茶臥一：榻頭朝簾、櫃在門邊，簾外即過廳與小天井；杯盞聲歇即靜，案頭燈滅、窗上霜紋像茶渣漬，茶氣從門縫鑽進來。此處僅通〔過廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_shop02_hall",
+      "to": "feist07_shop02_hall",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_shop02_b1_exit_hall",
+      "name": "過廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_shop02_hall",
+      "responses": {
+        "Move": "你出臥一回過廳。"
+      }
+    }
+  ]
+}

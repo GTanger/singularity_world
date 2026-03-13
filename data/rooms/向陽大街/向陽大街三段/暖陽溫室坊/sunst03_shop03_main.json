@@ -1,0 +1,78 @@
+{
+  "id": "sunst03_shop03_main",
+  "name": "暖陽坊・坊口",
+  "description": "坊口稜鏡林立，室內開敞明亮，白玉地面反射淡金微光，稜鏡自拱頂導光入室、光影層次分明，深色金屬檯面與黑木架咬合，能量紋路隱約脈動，溫潤沉香淡淡。可經〔向陽大街三段〕離開，或往〔左廊〕、〔中廊〕、〔右廊〕入內。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "sunstreet_st3",
+      "to": "sunstreet_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "左廊",
+      "to": "sunst03_shop03_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "中廊",
+      "to": "sunst03_shop03_03",
+      "ui_hidden": true
+    },
+    {
+      "direction": "右廊",
+      "to": "sunst03_shop03_04",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst03_shop03_main_st3",
+      "name": "向陽大街三段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st3",
+      "responses": {
+        "Move": "你步出暖陽坊，回到向陽大街三段。"
+      }
+    },
+    {
+      "id": "sunst03_shop03_main_02",
+      "name": "左廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_02",
+      "responses": {
+        "Move": "你往左廊走去。"
+      }
+    },
+    {
+      "id": "sunst03_shop03_main_03",
+      "name": "中廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_03",
+      "responses": {
+        "Move": "你往中廊走去。"
+      }
+    },
+    {
+      "id": "sunst03_shop03_main_04",
+      "name": "右廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst03_shop03_04",
+      "responses": {
+        "Move": "你往右廊走去。"
+      }
+    }
+  ]
+}

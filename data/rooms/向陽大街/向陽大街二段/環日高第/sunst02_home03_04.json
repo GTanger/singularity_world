@@ -1,0 +1,46 @@
+{
+  "id": "sunst02_home03_04",
+  "name": "右間・前",
+  "description": "右側第一間，拱頂稜鏡集中、光線飽和如蜜，地表淺色紋路與能量導線自縫隙延伸，深色金屬几與黑木榻咬合，室內開敞明亮、無廢土感，溫潤沉香淡淡。可經〔玄關〕回到寓門，或往盡頭〔右間・後〕。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "玄關",
+      "to": "sunst02_home03_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "右間・後",
+      "to": "sunst02_home03_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_home03_04_main",
+      "name": "玄關",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home03_main",
+      "responses": {
+        "Move": "你回到玄關。"
+      }
+    },
+    {
+      "id": "sunst02_home03_04_05",
+      "name": "右間・後",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_home03_05",
+      "responses": {
+        "Move": "你往右間後走去。"
+      }
+    }
+  ]
+}

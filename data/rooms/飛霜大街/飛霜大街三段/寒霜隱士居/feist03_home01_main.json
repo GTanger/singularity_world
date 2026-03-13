@@ -1,0 +1,59 @@
+{
+  "id": "feist03_home01_main",
+  "name": "【寒霜隱士居】陣法玄關",
+  "description": "空氣中瀰漫著濃烈的臭氧與香料混合氣味，地面雕刻著繁複的防禦陣紋。這裡極端安靜，外界的聲音被陣法完全扭曲抹除。只有主人允許的客人才能安然站在此處。退回〔防護窄門〕至大街；內部通往過道。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st3",
+      "to": "feistreet_st3",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist03_home01_hallway",
+      "to": "feist03_home01_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist03_home01_eave",
+      "to": "feist03_home01_eave",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist03_home01_m_exit_st3",
+      "name": "飛霜大街三段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st3",
+      "responses": {
+        "Move": "你步出，回到飛霜大街三段。"
+      }
+    },
+    {
+      "id": "feist03_home01_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_home01_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    },
+    {
+      "id": "feist03_home01_m_exit_eave",
+      "name": "簷下",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist03_home01_eave",
+      "responses": {
+        "Move": "你步向簷下。"
+      }
+    }
+  ]
+}

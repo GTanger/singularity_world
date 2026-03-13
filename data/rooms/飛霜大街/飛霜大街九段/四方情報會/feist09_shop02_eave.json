@@ -1,0 +1,27 @@
+{
+  "id": "feist09_shop02_eave",
+  "name": "【四方情報會】簷下",
+  "description": "匯流閣簷外即街，燈籠與人影晃動、擔夫與行人交錯而過；霜晶落在簷緣、風一吹就撲面沾衣即化，茶氣從簾縫鑽出、與街面霜氣交混成霧，九段匯流之象在此一簷收束。此處僅通〔店頭〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist09_shop02_main",
+      "to": "feist09_shop02_main",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist09_shop02_eave_exit_main",
+      "name": "店頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist09_shop02_main",
+      "responses": {
+        "Move": "你回到店頭。"
+      }
+    }
+  ]
+}

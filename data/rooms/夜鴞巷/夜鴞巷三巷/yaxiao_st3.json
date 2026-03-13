@@ -1,8 +1,11 @@
 {
   "id": "yaxiao_st3",
   "name": "夜鴞巷三巷",
-  "description": "巷道自飛霜六段岔入後收窄成石縫，簷線錯落、兩壁鉛皮夾出細長一線，霜氣與灰白氣絲在腳邊緩流。黑石與磨損石磚沁出淡紫微光，夜鴞啼鳴自簷角疊來，氣密門扉沿路緊閉，黃銅導向線貼牆延伸，沉香與熟成樹脂自門隙漏出一縷。可經〔飛霜大街六段〕回到大街，或沿巷往〔夜鴞巷二巷〕、〔夜鴞巷四巷〕；可經〔底閣〕、〔窄門棧〕、〔氣密茶〕、〔前櫃行〕、〔後窗宅〕、〔側室寓〕入內。",
-  "tags": ["street","outdoor"],
+  "description": "自飛霜大街六段岔入，極寒的霜氣在這裡被阻熱陣法攔截，化作巷底緩緩流淌的灰白冷霧。這一段的巷道宛如被巨刃劈出的石縫，兩側的防護晶板夾峙，讓所有的聲音在這裡變得黏稠且遲緩。腳下的黑石沁出幽冷的淡紫微光，夜鴞的啼鳴在此處疊加出令人神魂發冷的迴音。這裡是處理最危險、最見不得光的契約與物品的極陰之地。路側是〔深幽底層暗閣〕、〔一線天隱秘棧〕與〔斂息密談茶館〕；對向則是〔前線斥候總櫃〕、〔無窗靈視宅〕與〔偏門側室寓〕。可退回〔飛霜大街六段〕，或通往〔夜鴞巷二巷〕與〔夜鴞巷四巷〕。",
+  "tags": [
+    "street",
+    "outdoor"
+  ],
   "zone": "yaxiao",
   "exits": [
     {
@@ -87,68 +90,68 @@
     },
     {
       "id": "yaxiao_st3_hold01",
-      "name": "底閣",
+      "name": "深幽底層暗閣",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst03_hold01_main",
       "responses": {
-        "Move": "你推門進入底閣。"
+        "Move": "你沿著被霧氣籠罩的防滑階梯向下，推開寒氣逼人的鐵門進入深幽底層暗閣。"
       }
     },
     {
       "id": "yaxiao_st3_shop01",
-      "name": "窄門棧",
+      "name": "一線天隱秘棧",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst03_shop01_main",
       "responses": {
-        "Move": "你進入窄門棧。"
+        "Move": "你側身擠過僅容一人通過的防禦性窄門，進入一線天隱秘棧。"
       }
     },
     {
       "id": "yaxiao_st3_shop02",
-      "name": "氣密茶",
+      "name": "斂息密談茶館",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst03_shop02_main",
       "responses": {
-        "Move": "你進入氣密茶。"
+        "Move": "你穿過兩道用於氣壓與氣味隔離的氣密艙門，進入斂息密談茶館。"
       }
     },
     {
       "id": "yaxiao_st3_shop03",
-      "name": "前櫃行",
+      "name": "前線斥候總櫃",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst03_shop03_main",
       "responses": {
-        "Move": "你進入前櫃行。"
+        "Move": "你向門口的暗影護衛出示信物，隨後大門開啟，進入前線斥候總櫃。"
       }
     },
     {
       "id": "yaxiao_st3_home01",
-      "name": "後窗宅",
+      "name": "無窗靈視宅",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst03_home01_main",
       "responses": {
-        "Move": "你進入後窗宅。"
+        "Move": "這棟建築完全沒有窗戶，你憑藉神識摸索到隱形門把，推門進入無窗靈視宅。"
       }
     },
     {
       "id": "yaxiao_st3_home02",
-      "name": "側室寓",
+      "name": "偏門側室寓",
       "sockets": [
         "Move"
       ],
       "move_to_room_id": "yaxst03_home02_main",
       "responses": {
-        "Move": "你進入側室寓。"
+        "Move": "你繞過虛假的正面裝飾，從極度隱蔽的側邊暗門進入偏門側室寓。"
       }
     }
   ]

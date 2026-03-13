@@ -1,0 +1,46 @@
+{
+  "id": "yaxst02_home01_04",
+  "name": "石牆宅・左廊底",
+  "description": "左廊盡頭，三面石牆與鉛皮合圍，頂心晶簇聚成深琥珀。黑石擱板與導能紋路在腳邊圍成閉合一圈，沉香沉在膝蓋高度，極靜。可經〔左廊〕或往〔通間〕。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst02_home01_02",
+      "to": "yaxst02_home01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_home01_06",
+      "to": "yaxst02_home01_06",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst02_home01_04_02",
+      "name": "左廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_home01_02",
+      "responses": {
+        "Move": "你往左廊走回。"
+      }
+    },
+    {
+      "id": "yaxst02_home01_04_06",
+      "name": "通間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_home01_06",
+      "responses": {
+        "Move": "你往通間走去。"
+      }
+    }
+  ]
+}

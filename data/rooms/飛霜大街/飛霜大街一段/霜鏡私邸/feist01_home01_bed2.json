@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home01_bed2",
+  "name": "【霜鏡私邸】次臥",
+  "description": "佈置相對標準但依然舒適的客房。地面鋪設的白玉石板上覆蓋了柔軟的動物毛皮。窗外隱約可見庭院中飄落的霜晶，但室內依然保持著恆溫。僅能退回〔起居大廳〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home01_living",
+      "to": "feist01_home01_living",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home01_b2_exit_living",
+      "name": "起居大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home01_living",
+      "responses": {
+        "Move": "你退回起居大廳。"
+      }
+    }
+  ]
+}

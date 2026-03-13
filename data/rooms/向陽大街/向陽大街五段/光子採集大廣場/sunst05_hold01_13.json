@@ -1,0 +1,46 @@
+{
+  "id": "sunst05_hold01_13",
+  "name": "北廳口",
+  "description": "北側廳區入口，稜鏡柱較南側疏朗、光線層次分明，白玉地面反射密集金光，空氣流速較快、光霧稀薄，深色金屬扶手與黑木簷咬合，油脂質感皮革凳散置。可經〔廣場中央〕折返，或往〔北一廳〕。",
+  "tags": [
+    "hold",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "廣場中央",
+      "to": "sunst05_hold01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "北一廳",
+      "to": "sunst05_hold01_14",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst05_hold01_13_main",
+      "name": "廣場中央",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_main",
+      "responses": {
+        "Move": "你回到廣場中央。"
+      }
+    },
+    {
+      "id": "sunst05_hold01_13_14",
+      "name": "北一廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst05_hold01_14",
+      "responses": {
+        "Move": "你往北一廳走去。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "id": "feist07_home02_main",
+  "name": "【隱巷流民居】玄關",
+  "description": "簷影宅〔飛霜大街7段〕矮而深，跨過門檻得走幾步才到廳心；背後七段街燈把影子拉長貼在腳下，眼前〔廊〕吞掉大半光，左手〔前院〕見天、石板吸音一步一沉。此處連接〔飛霜大街七段〕，內側為〔廊〕與〔前院〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st7",
+      "to": "feistreet_st7",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_home02_hallway",
+      "to": "feist07_home02_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_home02_court_front",
+      "to": "feist07_home02_court_front",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_home02_m_exit_st7",
+      "name": "飛霜大街7段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st7",
+      "responses": {
+        "Move": "你步出飛霜大街7段，回到飛霜大街七段。"
+      }
+    },
+    {
+      "id": "feist07_home02_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home02_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    },
+    {
+      "id": "feist07_home02_m_exit_court",
+      "name": "前院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home02_court_front",
+      "responses": {
+        "Move": "你往前院。"
+      }
+    }
+  ]
+}

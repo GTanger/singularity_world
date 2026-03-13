@@ -329,7 +329,7 @@
 						appendNarrative(narrativeHtml, msg.action);
 						// 觀看後下一行顯示可執行的其他動作（物件：閱讀/嗅聞…；人物：對話/攻擊）
 						if (msg.action === 'Look') {
-							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Attack': '攻擊', 'Move': '移動' };
+							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Attack': '攻擊', 'Trade': '交易', 'Move': '移動' };
 							var others = [];
 							var targetId = msg.target_id;
 							var obj = null;

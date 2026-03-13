@@ -1,0 +1,59 @@
+{
+  "id": "feist08_home03_main",
+  "name": "【殘燈寓所】玄關",
+  "description": "街燈宅〔飛霜大街8段〕一開，街口燈火與霜氣一併擠進來；腳下石板冰涼，簷線壓在眉際，正前是〔廊〕、左手〔前院〕見天，八段人聲在門外。此處連接〔飛霜大街八段〕，內側為〔廊〕與〔前院〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feistreet_st8",
+      "to": "feistreet_st8",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home03_hallway",
+      "to": "feist08_home03_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist08_home03_court_front",
+      "to": "feist08_home03_court_front",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist08_home03_m_exit_st8",
+      "name": "飛霜大街8段",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feistreet_st8",
+      "responses": {
+        "Move": "你推門步出，回到飛霜大街八段。"
+      }
+    },
+    {
+      "id": "feist08_home03_m_exit_hall",
+      "name": "廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home03_hallway",
+      "responses": {
+        "Move": "你步入廊。"
+      }
+    },
+    {
+      "id": "feist08_home03_m_exit_court",
+      "name": "前院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist08_home03_court_front",
+      "responses": {
+        "Move": "你往前院。"
+      }
+    }
+  ]
+}

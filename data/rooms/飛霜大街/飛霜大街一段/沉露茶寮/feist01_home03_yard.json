@@ -1,0 +1,27 @@
+{
+  "id": "feist01_home03_yard",
+  "name": "【沉露茶寮】露天茶座",
+  "description": "半開放的庭院空間，地面鋪設著純白的玉石地磚，縫隙間湧動著隱約的能量流光。頭頂沒有遮蔽，霜白結晶會直接飄落，但桌椅下方埋有強力的暖能裝置，讓客人能在微寒的空氣中品茗賞霜。連接著〔賞霜座席〕與〔水汽後廊〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home03_corridor",
+      "to": "feist01_home03_corridor",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home03_y_exit_corridor",
+      "name": "水汽後廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home03_corridor",
+      "responses": {
+        "Move": "你退回水汽後廊。"
+      }
+    }
+  ]
+}

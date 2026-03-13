@@ -1,0 +1,62 @@
+{
+  "id": "sunst09_shop01_main",
+  "name": "熙光綜合肆",
+  "description": "門面稜鏡落地窗將街心金光整片納入，拋光白玉檯面與深色金屬架錯落，油脂質感皮革椅靠牆一字排開，空氣流速快、溫潤沉香與能量微粒浮動，開敞明亮。可經〔大街〕、〔櫃前〕、〔庫房〕前往他處。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "sunstreet_st9",
+      "ui_hidden": true
+    },
+    {
+      "direction": "櫃前",
+      "to": "sunst09_shop01_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "庫房",
+      "to": "sunst09_shop01_03",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst09_shop01_main_exit_1",
+      "name": "大街",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunstreet_st9",
+      "responses": {
+        "Move": "你步出，回到向陽大街九段。"
+      }
+    },
+    {
+      "id": "sunst09_shop01_main_exit_2",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst09_shop01_02",
+      "responses": {
+        "Move": "你往櫃前走去。"
+      }
+    },
+    {
+      "id": "sunst09_shop01_main_exit_3",
+      "name": "庫房",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst09_shop01_03",
+      "responses": {
+        "Move": "你往庫房走去。"
+      }
+    }
+  ]
+}

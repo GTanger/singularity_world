@@ -1,0 +1,46 @@
+{
+  "id": "yaxst02_shop03_06",
+  "name": "迴音當・橫廊一",
+  "description": "拐角後橫廊首段，鉛皮牆面與暖能石縫泛著低溫橘光，導能紋路沿踢腳延伸。晶簇稀疏，沉香沉在膝蓋高度，厚牆隔絕巷聲。可經〔拐角〕或往〔橫廊二〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst02_shop03_05",
+      "to": "yaxst02_shop03_05",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst02_shop03_07",
+      "to": "yaxst02_shop03_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst02_shop03_06_05",
+      "name": "拐角",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop03_05",
+      "responses": {
+        "Move": "你往拐角走回。"
+      }
+    },
+    {
+      "id": "yaxst02_shop03_06_07",
+      "name": "橫廊二",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst02_shop03_07",
+      "responses": {
+        "Move": "你往橫廊二走去。"
+      }
+    }
+  ]
+}

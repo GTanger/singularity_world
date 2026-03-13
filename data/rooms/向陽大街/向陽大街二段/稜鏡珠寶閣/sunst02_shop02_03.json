@@ -1,0 +1,62 @@
+{
+  "id": "sunst02_shop02_03",
+  "name": "西廳・前間",
+  "description": "西廳入口，稜鏡垂落金光如簾、淡金微光與深色金屬對比強烈，白玉地面嵌琉璃條，牆面能量導線隱約脈動，黑木長榻靠牆，室內無雜音。可經〔櫃前〕回到閣頭，或往〔西廳一室〕、〔西廳二室〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "櫃前",
+      "to": "sunst02_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西廳一室",
+      "to": "sunst02_shop02_06",
+      "ui_hidden": true
+    },
+    {
+      "direction": "西廳二室",
+      "to": "sunst02_shop02_07",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst02_shop02_03_main",
+      "name": "櫃前",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop02_main",
+      "responses": {
+        "Move": "你回到櫃前。"
+      }
+    },
+    {
+      "id": "sunst02_shop02_03_06",
+      "name": "西廳一室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop02_06",
+      "responses": {
+        "Move": "你往西廳一室走去。"
+      }
+    },
+    {
+      "id": "sunst02_shop02_03_07",
+      "name": "西廳二室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst02_shop02_07",
+      "responses": {
+        "Move": "你往西廳二室走去。"
+      }
+    }
+  ]
+}

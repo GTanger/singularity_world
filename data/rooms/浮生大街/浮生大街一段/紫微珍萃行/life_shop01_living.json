@@ -1,0 +1,69 @@
+{
+  "id": "life_shop01_living",
+  "name": "生活起居室",
+  "description": "石製圓桌位於室中心，邊緣長出一圈半透明地衣。此空間分別導向〔內走廊〕、〔私人臥室〕與後方的〔內庭院〕。桌上放置一只〔青瓷茶杯〕。",
+  "tags": [],
+  "zone": "lifestreet",
+  "exits": [
+    {
+      "direction": "life_shop01_hallway",
+      "to": "life_shop01_hallway",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop01_bedroom",
+      "to": "life_shop01_bedroom",
+      "ui_hidden": true
+    },
+    {
+      "direction": "life_shop01_garden",
+      "to": "life_shop01_garden",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_shop01_living_exit_hallway",
+      "name": "內走廊",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop01_hallway",
+      "responses": {
+        "Move": "你離開圓桌，朝內走廊方向走去。"
+      }
+    },
+    {
+      "id": "life_shop01_living_exit_bedroom",
+      "name": "私人臥室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop01_bedroom",
+      "responses": {
+        "Move": "你推開側門，步入私人臥室。"
+      }
+    },
+    {
+      "id": "life_shop01_living_exit_garden",
+      "name": "內庭院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "life_shop01_garden",
+      "responses": {
+        "Move": "你穿過後門，踏入內庭院。"
+      }
+    },
+    {
+      "id": "life_shop01_living_obj_cup",
+      "name": "青瓷茶杯",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "杯壁滲出玉質紋理，內部留有少量乾涸的暗紫色沉澱物。"
+      }
+    }
+  ]
+}

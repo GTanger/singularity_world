@@ -1,0 +1,43 @@
+{
+  "id": "feist05_shop02_counter",
+  "name": "櫃前",
+  "description": "霜積閣櫃台後即貨架，茶罐與紙包堆到齊眉；簾後即〔後間〕、再往裡便是小天井與過廳，住家從那裡開始，買賣在此成交，簾外鋪面人聲隱約、玉質脈絡在磚縫沁出一線。此處通〔薰香迷陣〕與〔後間〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist05_shop02_main",
+      "to": "feist05_shop02_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist05_shop02_back",
+      "to": "feist05_shop02_back",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist05_shop02_c_exit_main",
+      "name": "薰香迷陣",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop02_main",
+      "responses": {
+        "Move": "你退回薰香迷陣。"
+      }
+    },
+    {
+      "id": "feist05_shop02_c_exit_back",
+      "name": "後間",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist05_shop02_back",
+      "responses": {
+        "Move": "你掀簾往後間。"
+      }
+    }
+  ]
+}

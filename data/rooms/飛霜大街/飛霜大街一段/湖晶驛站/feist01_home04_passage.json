@@ -1,0 +1,59 @@
+{
+  "id": "feist01_home04_passage",
+  "name": "【湖晶驛站】過道",
+  "description": "一條寬敞但缺乏照明的物流通道。牆面的石磚縫隙中長滿了不會發光的灰色菌絲。偶爾能聽見從深處傳來的沉重搬運聲。連接著〔卸貨前堂〕、〔歇腳大廳〕、〔堆貨露台〕與提供熱食的〔後廚〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist01_home04_main",
+      "to": "feist01_home04_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home04_living",
+      "to": "feist01_home04_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist01_home04_backyard",
+      "to": "feist01_home04_backyard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist01_home04_p_exit_main",
+      "name": "卸貨前堂",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_main",
+      "responses": {
+        "Move": "你退回卸貨前堂。"
+      }
+    },
+    {
+      "id": "feist01_home04_p_exit_living",
+      "name": "歇腳大廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_living",
+      "responses": {
+        "Move": "你往歇腳大廳走去。"
+      }
+    },
+    {
+      "id": "feist01_home04_p_exit_backyard",
+      "name": "堆貨露台",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist01_home04_backyard",
+      "responses": {
+        "Move": "你步向堆貨露台。"
+      }
+    }
+  ]
+}

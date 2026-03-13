@@ -1,0 +1,46 @@
+{
+  "id": "yaxst04_shop03_09",
+  "name": "巷尾灶・長廊底前",
+  "description": "長廊將盡，牆根導能紋路匯成一股沉入地磚縫隙，黑石磨得發亮。晶簇在頂角聚成淡紫一團，隔音鉛皮吞掉迴響。可經〔長廊三〕或〔長廊盡頭〕。",
+  "tags": [
+    "shop",
+    "indoor"
+  ],
+  "zone": "yaxiao",
+  "exits": [
+    {
+      "direction": "yaxst04_shop03_08",
+      "to": "yaxst04_shop03_08",
+      "ui_hidden": true
+    },
+    {
+      "direction": "yaxst04_shop03_10",
+      "to": "yaxst04_shop03_10",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "yaxst04_shop03_09_08",
+      "name": "長廊三",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop03_08",
+      "responses": {
+        "Move": "你往長廊三走回。"
+      }
+    },
+    {
+      "id": "yaxst04_shop03_09_10",
+      "name": "長廊盡頭",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "yaxst04_shop03_10",
+      "responses": {
+        "Move": "你走到長廊盡頭。"
+      }
+    }
+  ]
+}

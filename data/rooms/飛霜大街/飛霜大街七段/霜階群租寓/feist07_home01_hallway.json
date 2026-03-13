@@ -1,0 +1,59 @@
+{
+  "id": "feist07_home01_hallway",
+  "name": "【霜階群租寓】廊",
+  "description": "霜階宅短廊一折，左通門廳、右通起居，側邊一門即小院；階沿有鞋跡與水痕，門廳那頭漏進七段燈火、越往裡越暗，盡頭只聞自家腳步。此處通〔門廳〕、〔起居〕與〔小院〕。",
+  "tags": [],
+  "zone": "feistreet",
+  "exits": [
+    {
+      "direction": "feist07_home01_main",
+      "to": "feist07_home01_main",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_home01_living",
+      "to": "feist07_home01_living",
+      "ui_hidden": true
+    },
+    {
+      "direction": "feist07_home01_courtyard",
+      "to": "feist07_home01_courtyard",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "feist07_home01_h_exit_main",
+      "name": "門廳",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home01_main",
+      "responses": {
+        "Move": "你退回門廳。"
+      }
+    },
+    {
+      "id": "feist07_home01_h_exit_living",
+      "name": "起居",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home01_living",
+      "responses": {
+        "Move": "你往起居。"
+      }
+    },
+    {
+      "id": "feist07_home01_h_exit_court",
+      "name": "小院",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "feist07_home01_courtyard",
+      "responses": {
+        "Move": "你往小院。"
+      }
+    }
+  ]
+}

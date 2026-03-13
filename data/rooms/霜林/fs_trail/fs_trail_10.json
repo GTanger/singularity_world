@@ -1,0 +1,94 @@
+{
+  "id": "fs_trail_10",
+  "name": "【霜林小徑】風暴邊緣",
+  "description": "霜林小徑的盡頭。眼前的景色豁然開朗，但卻是另外一種令人絕望的空曠。風暴在這裡毫無阻擋地肆虐，地面的冰層平滑如鏡，倒映著天空中翻湧的輻射雲層。 可嘗試往深處探索，或尋找退路。",
+  "tags": [
+    "outdoor",
+    "path"
+  ],
+  "zone": "霜林",
+  "exits": [
+    {
+      "direction": "返回",
+      "to": "fs_trail_09",
+      "ui_hidden": true
+    },
+    {
+      "direction": "偏轉(邊界)",
+      "to": "fs_wood_10_01",
+      "ui_hidden": true
+    },
+    {
+      "direction": "仰望(拱頂)",
+      "to": "fs_wood_10_02",
+      "ui_hidden": true
+    },
+    {
+      "direction": "前行(銜接)",
+      "to": "fs_wood_10_10",
+      "ui_hidden": true
+    },
+    {
+      "direction": "奧所",
+      "to": "fs_cabin_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "fs_trail_10_to_fs_trail_09",
+      "name": "返回",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_trail_09",
+      "responses": {
+        "Move": "你往返回走去。"
+      }
+    },
+    {
+      "id": "fs_trail_10_to_fs_wood_10_01",
+      "name": "偏轉(邊界)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_10_01",
+      "responses": {
+        "Move": "你往偏轉(邊界)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_10_to_fs_wood_10_02",
+      "name": "仰望(拱頂)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_10_02",
+      "responses": {
+        "Move": "你往仰望(拱頂)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_10_to_fs_wood_10_10",
+      "name": "前行(銜接)",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_wood_10_10",
+      "responses": {
+        "Move": "你往前行(銜接)走去。"
+      }
+    },
+    {
+      "id": "fs_trail_10_to_fs_cabin_05",
+      "name": "奧所",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "fs_cabin_05",
+      "responses": {
+        "Move": "你往奧所走去。"
+      }
+    }
+  ]
+}

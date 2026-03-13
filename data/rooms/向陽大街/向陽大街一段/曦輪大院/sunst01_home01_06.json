@@ -1,0 +1,30 @@
+{
+  "id": "sunst01_home01_06",
+  "name": "後間",
+  "description": "居內盡頭，單扇稜鏡窗把金光篩成淡琥珀，白玉與琉璃嵌條在腳下交錯，黑木長几貼牆、表面泛著油脂光，紋路在牆角靜靜流動，厚牆外只剩大街隱約人聲，陳設齊整。可經〔三室〕沿廊返回。",
+  "tags": [
+    "home",
+    "indoor"
+  ],
+  "zone": "sunstreet",
+  "exits": [
+    {
+      "direction": "三室",
+      "to": "sunst01_home01_05",
+      "ui_hidden": true
+    }
+  ],
+  "objects": [
+    {
+      "id": "sunst01_home01_06_05",
+      "name": "三室",
+      "sockets": [
+        "Move"
+      ],
+      "move_to_room_id": "sunst01_home01_05",
+      "responses": {
+        "Move": "你往三室走回。"
+      }
+    }
+  ]
+}
