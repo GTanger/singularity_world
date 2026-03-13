@@ -100,7 +100,7 @@
 |------|------|------|------|------|------|------|
 | I1 | Look | 玩家對 NPC 觀看 → 外觀敘事（不開彈窗） | server/handler handleDoAction；buildLookNarrative | ✅ | — | 回傳 action_result + Narrative |
 | I2 | Talk（固定句＋性格權重） | 玩家對 NPC 交談 → 8 句固定池，有 soul_seed 時依 **Boldness** 偏移選句 | buildTalkNarrative；handler 傳入 Personality | ✅ | S4, S5 | 同 NPC 同 session 可重現；高 Boldness 偏後半句 |
-| I3 | Talk 串接對話模板 | 玩家點 Talk → 從 **dialogues/*.json** 依職業/key 抽句（未做） | — | ⬜ | D3, E3 | 需定義 key（greet/talk 等）與抽選規則 |
+| I3 | Talk 串接對話模板 | 玩家點 Talk → 從 **dialogues/*.json** 依職業/key 抽句（未做）；同一池可兼作 **AI 提示詞**（決策 007 §5.4.1） | — | ⬜ | D3, E3 | 需定義 key（greet/talk 等）與抽選規則；CallAITalk 可抽數句入 system 與 fallback |
 | I4 | Attack | 玩家對 NPC 攻擊 → 戰鬥公式、Log 結果 | buildAttackNarrative；combat.Resolve | ✅ | — | 勝負敘事；第一版不扣血 |
 | I5 | Trade | 出價→議價→成交/拒絕（未做） | — | ⬜ | 經濟/鎂、物品 | 討論 002／經濟彙整 |
 | I6 | NPC 插座列表 | 預設 Talk/Attack/Look；有指派時依場所加職業插座 | GetSocketsForNPC(entityID, roomID) | ✅ | E3, db/occupation.go | 前端依此顯示可點動作 |
@@ -142,10 +142,18 @@
 | **一、有呼吸** | 閒置、進房反應、換班敘事、區域巡邏、前端同步 | ✅ | 維持回歸測試 |
 | **二、有腳** | 房間標籤、BFS、四種移動、排班尋路、移動格幅、主迴圈 Tick | ✅ | 同上 |
 | **三、有嘴** | Talk 固定句+性格 ✅；**Talk 串接 dialogues 模板** ⬜；Trade ⬜；模板 NPC 生成器 ⬜；NPC 喊價 ⬜ | 🟡 | 先做 I3（Talk 串接模板），再排 Trade |
-| **四、有記憶** | npc_memory 表、對話分級、交易記憶 | ⬜ | 依產品優先級 |
+| **四、有記憶** | NPC 背版 + 對話記憶（archival）；每次 Talk 累積記憶點，背版越聊越立體；見 [NPC對話記憶與背版—設計](NPC對話記憶與背版—設計.md)。可驗收子項見下表。 | ⬜ | 007 §6、I3；依產品優先級 |
 | **五、有眼** | 戰鬥/偷竊反應、NPC 間互動、觀測坍縮 | ⬜ | 依產品優先級 |
 | **六、有心** | 情緒狀態機、情緒影響對話、性格偏移（SoulSeed 已部分用於 Talk） | 🟡 | 可先擴充 I2 用 Sensitivity |
 | **需求驅動** | N1–N7（鎂消耗、閾值、職缺、撮合、離職、決策引擎、性格權重） | 📄 | 單獨規劃「求職與需求」專案 |
+
+**四、有記憶 — 可驗收子項**
+
+| 編號 | 驗收項目 | 狀態 | 依賴 |
+|------|----------|------|------|
+| 記憶1 | Talk 前能依 `entity_id` 取回該 NPC 背版＋語意檢索 top-k 記憶 | ⬜ | 記憶／背版讀取 API、embedding |
+| 記憶2 | 對話結束（或本輪）能將 1～3 條精華寫入該 NPC 的 archival | ⬜ | 記憶寫入 API、consolidation |
+| 記憶3 | 同一 `entity_id` 再次 Talk 時，能檢索到前次寫入的記憶並帶入 prompt | ⬜ | 記憶1、記憶2 |
 
 ---
 
