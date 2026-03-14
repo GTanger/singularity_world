@@ -402,7 +402,7 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 				pp := db.ExpandSoulSeedToPersonality(*target.SoulSeed)
 				p = &pp
 			}
-			narrative := buildTalkNarrative(c.PlayerID, target, p)
+			narrative := buildTalkNarrative(database, playerRoom, target, p, cfg)
 			_ = event.Append(database, now, c.PlayerID, "talk", targetID)
 			c.Send <- mustJSON(ActionResultMsg{
 				Type: "action_result", Action: "Talk",
@@ -530,8 +530,31 @@ func buildLookNarrative(target *entity.Character, database *sql.DB) string {
 	return desc
 }
 
-func buildTalkNarrative(playerID string, target *entity.Character, personality *db.Personality) string {
+func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Character, personality *db.Personality, cfg config.Server) string {
 	name := target.ID
+	// 優先從職業對話檔抽句並填佔位符（{name}、{room}、{time}、{mood}、{verb}、{thing}、{goods}）
+	assignments, _ := db.GetAssignmentsForEntity(database, target.ID)
+	if len(assignments) > 0 {
+		roomName, _ := db.GetRoomName(database, playerRoom)
+		timeLabel := ""
+		if now := game.NowUnix(); cfg.GameTimeEpochUnix != 0 {
+			_, hour, _, _ := game.GameTimeNow(now, cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+			if hour >= 5 && hour < 10 {
+				timeLabel = "清晨"
+			} else if hour >= 10 && hour < 14 {
+				timeLabel = "正午"
+			} else if hour >= 14 && hour < 18 {
+				timeLabel = "傍晚"
+			} else {
+				timeLabel = "夜裡"
+			}
+		}
+		line := db.PickFromDialogue(database, target.ID, playerRoom, assignments[0].OccupationID, "talk", personality, "", roomName, timeLabel, "")
+		if line != "" {
+			return "你向【" + name + "】搭話。" + line
+		}
+	}
+	// 無指派或無對話檔時 fallback 固定句
 	responses := []string{
 		"「你好，有什麼事嗎？」",
 		"「這裡最近不太平靜，你小心點。」",
@@ -547,7 +570,6 @@ func buildTalkNarrative(playerID string, target *entity.Character, personality *
 		h += int(r)
 	}
 	idx := h % len(responses)
-	// 若有性格（來自 target.SoulSeed → ExpandSoulSeedToPersonality），依 Boldness 往後半較強勢句偏移
 	if personality != nil {
 		shift := int(personality.Boldness * float64(len(responses)/2))
 		idx = (idx + shift) % len(responses)

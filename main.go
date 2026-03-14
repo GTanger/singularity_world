@@ -11,14 +11,72 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/websocket"
 	"singularity_world/config"
 	"singularity_world/db"
 	"singularity_world/economy"
 	"singularity_world/game"
 	"singularity_world/server"
 	"singularity_world/store"
+
+	"github.com/gorilla/websocket"
 )
+
+// brainArrivalNarrative 腦驅動 NPC 抵達意圖目標時發送的敘事。
+func brainArrivalNarrative(npcName string, intent db.IntentType) string {
+	switch intent {
+	case db.IntentBeg:
+		return "【" + npcName + "】在此地向路人乞討。"
+	case db.IntentGather:
+		return "【" + npcName + "】開始在附近採集。"
+	case db.IntentSeekJob:
+		return "【" + npcName + "】前來打聽是否有活可做。"
+	case db.IntentTrade:
+		return "【" + npcName + "】在此地擺開貨物。"
+	default:
+		return ""
+	}
+}
+
+// maxAssignmentsPerVenue 求職撮合時，單一場所最多指派數（無 max_staff 時用此常數）。
+const maxAssignmentsPerVenue = 2
+
+// buildActiveRoomIDs 回傳「觀測圈」：有玩家的房間＋其鄰房；僅這些房內的 NPC 會被腦／移動驅動。無人時回傳空 map。
+func buildActiveRoomIDs(sessionStore *server.SessionStore, database *sql.DB, roomGraph *db.RoomGraph) map[string]bool {
+	playerRooms := server.GetPlayerRoomMap(sessionStore, database)
+	out := make(map[string]bool)
+	for rid := range playerRooms {
+		out[rid] = true
+		for _, nb := range roomGraph.Neighbors(rid) {
+			out[nb] = true
+		}
+	}
+	return out
+}
+
+// applyBrainArrivalEffects 依意圖套用真實效果：Beg 加鎂、Gather 加物品、SeekJob 嘗試寫入指派。
+func applyBrainArrivalEffects(database *sql.DB, entityID, roomID string, intent db.IntentType) {
+	switch intent {
+	case db.IntentBeg:
+		amount := 3 + rand.Intn(8) // 3～10 鎂
+		_ = db.AddMagnesium(database, entityID, amount)
+	case db.IntentGather:
+		_ = db.AddToInventory(database, entityID, "wild_herb", 1)
+	case db.IntentSeekJob:
+		assignments, _ := db.GetAssignmentsForEntity(database, entityID)
+		if len(assignments) > 0 {
+			return
+		}
+		venueIDs, _ := db.GetVenueIDsForRoom(database, roomID)
+		for _, vid := range venueIDs {
+			n, _ := db.GetAssignmentCountByVenue(database, vid)
+			if n < maxAssignmentsPerVenue {
+				if err := db.InsertAssignment(database, entityID, "服務生", vid, ""); err == nil {
+					break
+				}
+			}
+		}
+	}
+}
 
 func main() {
 	cfg := config.DefaultServer()
@@ -34,6 +92,13 @@ func main() {
 	if err := store.Init("data/rooms", "data/runtime", "data"); err != nil {
 		log.Fatalf("store init: %v", err)
 	}
+	defer func() {
+		if store.Default != nil {
+			if err := store.Default.FlushEntities(); err != nil {
+				log.Printf("flush entities on exit: %v", err)
+			}
+		}
+	}()
 
 	var database *sql.DB // nil：不再使用 DB 檔，所有讀寫經由 store
 
@@ -147,14 +212,23 @@ func main() {
 		log.Printf("[pathfind] build graph failed: %v", err)
 	}
 
-	// 地圖型 NPC 移動管理器（排班型：經理等依 work_room/rest_room 尋路逐格移動，家可遠在十格外）
+	// 地圖型 NPC 移動管理器：排班型（經理等）＋腦驅動型（無排班 NPC 依 Decide→Intent 尋路）
 	travelerMgr := db.NewTravelerManager()
 	schedules, _ := db.GetAllSchedules(database)
+	scheduledIDs := make(map[string]bool)
 	for _, s := range schedules {
+		scheduledIDs[s.EntityID] = true
 		title := db.GetNPCTitle(database, s.EntityID)
 		def := db.GetMovementDefForTitle(title)
 		def.Type = db.MoveSchedule
 		travelerMgr.Register(s.EntityID, def)
+	}
+	npcIDs, _ := db.GetNPCIDsWithRoom(database)
+	for _, id := range npcIDs {
+		if scheduledIDs[id] {
+			continue
+		}
+		travelerMgr.Register(id, db.MovementDef{Type: db.MoveBrain, Speed: 1})
 	}
 	var travelTickCount int
 	travelTickInterval := 75 // 每 15 秒推進一步（75 ticks × 200ms）
@@ -186,11 +260,16 @@ func main() {
 			}
 		}
 
-		// 地圖型 NPC 移動：每 travelTickInterval 推進一步（排班型會逐格走到 work/rest）
+		// 地圖型 NPC 移動：每 travelTickInterval 推進一步；僅驅動「觀測圈」內 NPC（玩家房＋鄰房）
 		travelTickCount++
 		if travelTickCount >= travelTickInterval {
 			travelTickCount = 0
-			travelSteps := travelerMgr.Tick(database, roomGraph, hour)
+			activeRoomIDs := buildActiveRoomIDs(sessionStore, database, roomGraph)
+			if len(activeRoomIDs) == 0 {
+				// 無人觀測：事實仍持續。排班者依 gameHour 朝 work/rest 走一步；無排班者抽樣加鎂／採集／求職／隨機鄰房。不發敘事。
+				db.RunUnobservedWorldTick(database, roomGraph, hour, db.UnobservedMaxNPCsPerTick)
+			}
+			travelSteps := travelerMgr.Tick(database, roomGraph, hour, activeRoomIDs)
 			for _, step := range travelSteps {
 				oldName := roomGraph.RoomName(step.OldRoom)
 				newName := roomGraph.RoomName(step.NewRoom)
@@ -205,6 +284,14 @@ func main() {
 				}
 				server.SendNarrateToRoom(sessionStore, database, step.OldRoom, leaveText)
 				server.SendNarrateToRoom(sessionStore, database, step.NewRoom, arriveText)
+				// 腦驅動到達後行為：敘事＋真實效果（Beg 加鎂、Gather 加物品、SeekJob 撮合）
+				if step.ArrivalIntent != "" {
+					arrivalNarrative := brainArrivalNarrative(step.NpcName, step.ArrivalIntent)
+					if arrivalNarrative != "" {
+						server.SendNarrateToRoom(sessionStore, database, step.NewRoom, arrivalNarrative)
+					}
+					applyBrainArrivalEffects(database, step.EntityID, step.NewRoom, step.ArrivalIntent)
+				}
 				server.RefreshRoomViews(sessionStore, database, cfg, step.OldRoom)
 				server.RefreshRoomViews(sessionStore, database, cfg, step.NewRoom)
 			}

@@ -148,6 +148,8 @@ data/
 | `{name}` | NPC 真名 |
 | `{goods}` | 販賣品類（若從 goods_pool 抽） |
 
+未來可擴充 `{room}`、`{time}`、`{mood}`、`{verb}` 等，使同一句依情境產生多種組合；見 [對話池—從固定句到組合句](../docs/implementation/對話池—從固定句到組合句.md)。
+
 ### 公共對話
 
 建議存在 **public_dialogue.json**，結構同上，供無職業或無命中關鍵字時 fallback。對話介面未來可接**關鍵字檢索**（display→keyword→pool）、自由輸入與點選並存。

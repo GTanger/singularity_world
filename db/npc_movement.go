@@ -14,6 +14,7 @@ const (
 	MoveRoute    MovementType = "route"    // 路線型：沿 waypoints 巡迴
 	MovePathfind MovementType = "pathfind" // 尋路型：給定目標，BFS 自動尋路
 	MoveSchedule MovementType = "schedule" // 排班型：依 gameHour 目標為 work_room 或 rest_room，尋路逐格移動
+	MoveBrain    MovementType = "brain"    // 腦驅動：每當 path 空時呼叫 Decide(state, context) 產生意圖，再依意圖尋路
 )
 
 // Waypoint 路線型 NPC 的途經點。
@@ -45,6 +46,7 @@ type NPCTraveler struct {
 	RouteForward  bool     // route bounce 模式：正向 or 反向
 	StayUntilHour int      // 到達後停留到此遊戲小時（-1 = 不停留）
 	Active        bool
+	LastIntent    Intent   // 腦驅動型：產生當前 path 的意圖，到達目標房時供「到達後行為」用
 }
 
 // TravelerManager 管理所有正在進行地圖級移動的 NPC。
@@ -82,17 +84,19 @@ func (tm *TravelerManager) Unregister(entityID string) {
 	delete(tm.travelers, entityID)
 }
 
-// NPCStep 一次移動步驟的結果：誰從哪到哪。
+// NPCStep 一次移動步驟的結果：誰從哪到哪；腦驅動抵達目標時帶 ArrivalIntent 供主迴圈觸發敘事／插座。
 type NPCStep struct {
-	EntityID string
-	OldRoom  string
-	NewRoom  string
-	NpcName  string
+	EntityID      string
+	OldRoom       string
+	NewRoom       string
+	NpcName       string
+	ArrivalIntent IntentType // 非空表示此步為腦驅動「抵達意圖目標」，主迴圈可發敘事或執行對應行為
 }
 
-// Tick 每次呼叫推進所有 traveler 一步。回傳實際發生移動的列表。
+// Tick 每次呼叫推進 traveler 一步。回傳實際發生移動的列表。
 // gameHour 用於判斷停留期限和選擇下一個目標。
-func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int) []NPCStep {
+// activeRoomIDs 若非 nil：僅驅動「當前房間在此集合內」的 NPC（觀測驅動）；空集合表示無人觀測、不驅動任何人；nil 表示驅動全部（相容舊行為）。
+func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int, activeRoomIDs map[string]bool) []NPCStep {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
@@ -102,6 +106,17 @@ func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int) []
 			continue
 		}
 
+		currentRoom, _ := GetEntityRoom(database, t.EntityID)
+		// 觀測驅動：只驅動在「活躍房」內的 NPC；無人觀測時不跑任何腦／移動
+		if activeRoomIDs != nil {
+			if len(activeRoomIDs) == 0 {
+				continue
+			}
+			if !activeRoomIDs[currentRoom] {
+				continue
+			}
+		}
+
 		// 停留中
 		if t.StayUntilHour >= 0 {
 			if gameHour != t.StayUntilHour {
@@ -109,8 +124,6 @@ func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int) []
 			}
 			t.StayUntilHour = -1
 		}
-
-		currentRoom, _ := GetEntityRoom(database, t.EntityID)
 
 		// 如果 path queue 為空，需要決定下一個目標
 		if len(t.PathQueue) == 0 {
@@ -139,12 +152,17 @@ func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int) []
 			if npcName == "" {
 				npcName = t.EntityID
 			}
-			steps = append(steps, NPCStep{
+			step := NPCStep{
 				EntityID: t.EntityID,
 				OldRoom:  oldRoom,
 				NewRoom:  currentRoom,
 				NpcName:  npcName,
-			})
+			}
+			if len(t.PathQueue) == 0 && t.MoveDef.Type == MoveBrain && t.LastIntent.Type != "" {
+				step.ArrivalIntent = t.LastIntent.Type
+				t.LastIntent = Intent{}
+			}
+			steps = append(steps, step)
 		}
 
 		// 到達 waypoint / 目的地 → 計算停留
@@ -171,6 +189,16 @@ func (tm *TravelerManager) computeNextPath(t *NPCTraveler, currentRoom string, g
 			return nil
 		}
 		return g.FindPath(currentRoom, target)
+	// 腦驅動：Decide(state, context) -> Intent，再 ResolveBrainPath 得到 path；存 LastIntent 供到達後行為
+	case MoveBrain:
+		state, err := BuildDecisionState(database, t.EntityID)
+		if err != nil {
+			return nil
+		}
+		ctx := BuildDecisionContext(database, g, currentRoom, 20)
+		intent := Decide(state, ctx)
+		t.LastIntent = intent
+		return ResolveBrainPath(g, intent, currentRoom, &ctx, 25)
 	default:
 		return nil
 	}

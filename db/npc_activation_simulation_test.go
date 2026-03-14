@@ -131,7 +131,7 @@ func TestSim_ScheduleAndTravelerTick(t *testing.T) {
 	def.Type = MoveSchedule
 	mgr.Register("模擬班", def)
 	// 遊戲時 12 → 在班 → 目標 work_room = sim_room_b
-	steps := mgr.Tick(db, g, 12)
+	steps := mgr.Tick(db, g, 12, nil)
 	if len(steps) != 1 {
 		t.Fatalf("預期 Tick 後產生 1 步（A→B），got %d 步", len(steps))
 	}

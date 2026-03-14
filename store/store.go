@@ -10,9 +10,13 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"singularity_world/model"
 )
+
+// entitiesWriteDebounce 實體寫回防抖間隔：此時間內多次更新只觸發一次寫入。
+const entitiesWriteDebounce = 3 * time.Second
 
 // Default 全域 store；Init 後 db 的房間／entity_room 會優先由此提供。
 var Default *Store
@@ -45,28 +49,28 @@ type Schedule struct {
 
 // Entity 實體（玩家/NPC）與 entity.Character 對齊，供 JSON 背板。
 type Entity struct {
-	ID             string  `json:"id"`
-	Kind           string  `json:"kind"`
-	DisplayChar    string  `json:"display_char"`
-	X              int     `json:"x"`
-	Y              int     `json:"y"`
-	MoveState      string  `json:"move_state"`
-	TargetX        *int    `json:"target_x,omitempty"`
-	TargetY        *int    `json:"target_y,omitempty"`
-	WalkOrRun      string  `json:"walk_or_run,omitempty"`
-	MoveStartedAt  *int64  `json:"move_started_at,omitempty"`
-	Vit            int     `json:"vit"`
-	Qi             int     `json:"qi"`
-	Dex            int     `json:"dex"`
-	Magnesium      int     `json:"magnesium"`
-	LastObservedAt *int64  `json:"last_observed_at,omitempty"`
-	CreatedAt      int64   `json:"created_at"`
-	Gender         string  `json:"gender,omitempty"`
-	SoulSeed       *int64  `json:"soul_seed,omitempty"`
-	DisplayTitle   string  `json:"display_title,omitempty"`
-	ActivatedNodes string  `json:"activated_nodes,omitempty"`
-	EquipmentSlots string  `json:"equipment_slots,omitempty"`
-	Inventory      string  `json:"inventory,omitempty"`
+	ID             string `json:"id"`
+	Kind           string `json:"kind"`
+	DisplayChar    string `json:"display_char"`
+	X              int    `json:"x"`
+	Y              int    `json:"y"`
+	MoveState      string `json:"move_state"`
+	TargetX        *int   `json:"target_x,omitempty"`
+	TargetY        *int   `json:"target_y,omitempty"`
+	WalkOrRun      string `json:"walk_or_run,omitempty"`
+	MoveStartedAt  *int64 `json:"move_started_at,omitempty"`
+	Vit            int    `json:"vit"`
+	Qi             int    `json:"qi"`
+	Dex            int    `json:"dex"`
+	Magnesium      int    `json:"magnesium"`
+	LastObservedAt *int64 `json:"last_observed_at,omitempty"`
+	CreatedAt      int64  `json:"created_at"`
+	Gender         string `json:"gender,omitempty"`
+	SoulSeed       *int64 `json:"soul_seed,omitempty"`
+	DisplayTitle   string `json:"display_title,omitempty"`
+	ActivatedNodes string `json:"activated_nodes,omitempty"`
+	EquipmentSlots string `json:"equipment_slots,omitempty"`
+	Inventory      string `json:"inventory,omitempty"`
 }
 
 // Item 物品定義（與 items 表對齊）。
@@ -91,27 +95,31 @@ type EventEntry struct {
 
 // Store 記憶體中的房間、出口、實體、場所、指派、排班、物品、事件日誌、密碼。
 type Store struct {
-	mu               sync.RWMutex
-	Rooms            map[string]*model.Room   // id -> Room
-	Exits            map[string][]model.Exit // from_room_id -> 出口列表
-	EntityRooms      map[string]string        // entity_id -> room_id
-	Venues           map[string]*Venue       // id -> Venue
-	Assignments      map[string][]Assignment // entity_id -> 指派列表
-	Schedules        map[string]*Schedule    // entity_id -> 排班
-	Entities         map[string]*Entity     // id -> Entity
-	Items            map[string]*Item       // id -> Item
-	EventLog         []EventEntry            // 事件日誌（append）
-	Auth             map[string]string       // entity_id -> password_hash
-	runtimeDir       string
-	entityRoomsPath  string
-	assignmentsPath  string
-	schedulesPath    string
-	venuesPath       string
-	entitiesPath     string
-	itemsPath        string
-	eventLogPath     string
-	authPath         string
-	roomsPath        string // 房間來源：目錄 data/rooms 或單檔
+	mu              sync.RWMutex
+	Rooms           map[string]*model.Room  // id -> Room
+	Exits           map[string][]model.Exit // from_room_id -> 出口列表
+	EntityRooms     map[string]string       // entity_id -> room_id
+	Venues          map[string]*Venue       // id -> Venue
+	Assignments     map[string][]Assignment // entity_id -> 指派列表
+	Schedules       map[string]*Schedule    // entity_id -> 排班
+	Entities        map[string]*Entity      // id -> Entity
+	Items           map[string]*Item        // id -> Item
+	EventLog        []EventEntry            // 事件日誌（append）
+	Auth            map[string]string       // entity_id -> password_hash
+	runtimeDir      string
+	entityRoomsPath string
+	assignmentsPath string
+	schedulesPath   string
+	venuesPath      string
+	entitiesPath    string
+	itemsPath       string
+	eventLogPath    string
+	authPath        string
+	roomsPath       string // 房間來源：目錄 data/rooms 或單檔
+	// entities 寫回防抖：避免每筆更新就寫整份 JSON
+	entitiesDirty   bool
+	entitiesTimer   *time.Timer
+	entitiesTimerMu sync.Mutex
 }
 
 // roomsFile 單檔格式（舊版 data/rooms.json：rooms + exits 陣列）。
@@ -122,17 +130,17 @@ type roomsFile struct {
 
 // roomFileOne 一房一檔格式（data/rooms/<id>.json）：單一房間含其出口與可互動物件。
 type roomFileOne struct {
-	ID          string           `json:"id"`
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Tags        []string         `json:"tags"`
-	Zone        string           `json:"zone"`
-	Exits       []exitOut        `json:"exits"`
+	ID          string             `json:"id"`
+	Name        string             `json:"name"`
+	Description string             `json:"description"`
+	Tags        []string           `json:"tags"`
+	Zone        string             `json:"zone"`
+	Exits       []exitOut          `json:"exits"`
 	Objects     []model.RoomObject `json:"objects,omitempty"`
 }
 type exitOut struct {
 	Direction string `json:"direction"`
-	To       string `json:"to"`
+	To        string `json:"to"`
 }
 
 type roomDef struct {
@@ -194,25 +202,25 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 	defer defaultMu.Unlock()
 
 	s := &Store{
-		Rooms:            make(map[string]*model.Room),
-		Exits:            make(map[string][]model.Exit),
-		EntityRooms:      make(map[string]string),
-		Venues:           make(map[string]*Venue),
-		Assignments:      make(map[string][]Assignment),
-		Schedules:        make(map[string]*Schedule),
-		Entities:         make(map[string]*Entity),
-		Items:            make(map[string]*Item),
-		EventLog:         nil,
-		Auth:             make(map[string]string),
-		runtimeDir:       runtimeDir,
-		entityRoomsPath:  filepath.Join(runtimeDir, "entity_rooms.json"),
-		assignmentsPath:  filepath.Join(dataDir, "assignments.json"),
-		schedulesPath:    filepath.Join(dataDir, "schedules.json"),
-		venuesPath:       filepath.Join(dataDir, "venues.json"),
-		entitiesPath:     filepath.Join(dataDir, "entities.json"),
-		itemsPath:        filepath.Join(dataDir, "items.json"),
-		eventLogPath:     filepath.Join(runtimeDir, "event_log.json"),
-		authPath:         filepath.Join(runtimeDir, "auth.json"),
+		Rooms:           make(map[string]*model.Room),
+		Exits:           make(map[string][]model.Exit),
+		EntityRooms:     make(map[string]string),
+		Venues:          make(map[string]*Venue),
+		Assignments:     make(map[string][]Assignment),
+		Schedules:       make(map[string]*Schedule),
+		Entities:        make(map[string]*Entity),
+		Items:           make(map[string]*Item),
+		EventLog:        nil,
+		Auth:            make(map[string]string),
+		runtimeDir:      runtimeDir,
+		entityRoomsPath: filepath.Join(runtimeDir, "entity_rooms.json"),
+		assignmentsPath: filepath.Join(dataDir, "assignments.json"),
+		schedulesPath:   filepath.Join(dataDir, "schedules.json"),
+		venuesPath:      filepath.Join(dataDir, "venues.json"),
+		entitiesPath:    filepath.Join(dataDir, "entities.json"),
+		itemsPath:       filepath.Join(dataDir, "items.json"),
+		eventLogPath:    filepath.Join(runtimeDir, "event_log.json"),
+		authPath:        filepath.Join(runtimeDir, "auth.json"),
 	}
 
 	if err := s.loadRooms(roomsPath); err != nil {
@@ -475,6 +483,24 @@ func (s *Store) GetEntityRoom(entityID string) (string, error) {
 	return s.EntityRooms[entityID], nil
 }
 
+// GetNPCIDsWithRoom 回傳所有有房間的 NPC 實體 ID（供主迴圈註冊腦驅動用）。
+func (s *Store) GetNPCIDsWithRoom() []string {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	var out []string
+	for eid := range s.EntityRooms {
+		e, ok := s.Entities[eid]
+		if !ok || e == nil || e.Kind != "npc" {
+			continue
+		}
+		out = append(out, eid)
+	}
+	return out
+}
+
 // SetEntityRoom 設定實體所在房間，並原子寫回 runtime/entity_rooms.json。
 func (s *Store) SetEntityRoom(entityID, roomID string) error {
 	if s == nil {
@@ -696,6 +722,83 @@ func (s *Store) IsRoomInVenue(roomID, venueID string) bool {
 		}
 	}
 	return false
+}
+
+// GetVenueIDsForRoom 回傳包含該房間的所有場所 ID，供求職撮合用。
+func (s *Store) GetVenueIDsForRoom(roomID string) []string {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	var out []string
+	for vid, v := range s.Venues {
+		if v == nil {
+			continue
+		}
+		for _, rid := range v.RoomIDs {
+			if rid == roomID {
+				out = append(out, vid)
+				break
+			}
+		}
+	}
+	return out
+}
+
+// GetAssignmentCountByVenue 回傳該場所目前的指派數量（與 max_staff 比對可判斷是否有缺）。
+func (s *Store) GetAssignmentCountByVenue(venueID string) int {
+	if s == nil {
+		return 0
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	n := 0
+	for _, list := range s.Assignments {
+		for _, a := range list {
+			if a.VenueID == venueID {
+				n++
+			}
+		}
+	}
+	return n
+}
+
+// GetAllVenueIDs 回傳所有場所 ID（供未觀測背景模擬隨機求職撮合用）。
+func (s *Store) GetAllVenueIDs() []string {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	out := make([]string, 0, len(s.Venues))
+	for id := range s.Venues {
+		out = append(out, id)
+	}
+	return out
+}
+
+// GetAllVenueRoomIDs 回傳所有場所涵蓋的房間 ID（去重），供決策引擎 SeekJob 意圖尋路用。
+func (s *Store) GetAllVenueRoomIDs() []string {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	seen := make(map[string]bool)
+	var out []string
+	for _, v := range s.Venues {
+		if v == nil {
+			continue
+		}
+		for _, rid := range v.RoomIDs {
+			if !seen[rid] {
+				seen[rid] = true
+				out = append(out, rid)
+			}
+		}
+	}
+	return out
 }
 
 // GetAssignmentsForEntity 回傳某實體的全部指派。
@@ -954,7 +1057,7 @@ func (s *Store) GetEntity(id string) *Entity {
 	return &cp
 }
 
-// PutEntity 新增或覆寫一筆實體並持久化 entities.json。
+// PutEntity 新增或覆寫一筆實體，並排程防抖寫回 entities.json（見 entitiesWriteDebounce）。
 func (s *Store) PutEntity(e *Entity) error {
 	if s == nil || e == nil {
 		return nil
@@ -969,10 +1072,11 @@ func (s *Store) PutEntity(e *Entity) error {
 	}
 	s.Entities[e.ID] = &cp
 	s.mu.Unlock()
-	return s.persistEntities()
+	s.scheduleEntitiesPersist()
+	return nil
 }
 
-// UpdateEntity 對指定實體執行 fn，然後持久化。若實體不存在則不寫入。
+// UpdateEntity 對指定實體執行 fn，並排程防抖寫回 entities.json。若實體不存在則不寫入。
 func (s *Store) UpdateEntity(id string, fn func(*Entity)) error {
 	if s == nil {
 		return nil
@@ -988,6 +1092,51 @@ func (s *Store) UpdateEntity(id string, fn func(*Entity)) error {
 	fn(&cp)
 	s.Entities[id] = &cp
 	s.mu.Unlock()
+	s.scheduleEntitiesPersist()
+	return nil
+}
+
+// scheduleEntitiesPersist 標記 entities 為髒並在 debounce 後寫回；若已排程則只重設計時器。
+func (s *Store) scheduleEntitiesPersist() {
+	if s == nil || s.entitiesPath == "" {
+		return
+	}
+	s.entitiesTimerMu.Lock()
+	defer s.entitiesTimerMu.Unlock()
+	s.entitiesDirty = true
+	if s.entitiesTimer == nil {
+		s.entitiesTimer = time.AfterFunc(entitiesWriteDebounce, s.entitiesPersistFired)
+	} else {
+		s.entitiesTimer.Reset(entitiesWriteDebounce)
+	}
+}
+
+// entitiesPersistFired 由防抖計時器呼叫：執行一次 entities 寫回並清除排程。
+func (s *Store) entitiesPersistFired() {
+	s.entitiesTimerMu.Lock()
+	s.entitiesDirty = false
+	if s.entitiesTimer != nil {
+		s.entitiesTimer.Stop()
+		s.entitiesTimer = nil
+	}
+	s.entitiesTimerMu.Unlock()
+	if err := s.persistEntities(); err != nil {
+		log.Printf("[store] persist entities: %v", err)
+	}
+}
+
+// FlushEntities 立即寫回 entities.json 並取消尚未執行的防抖排程。關機前應呼叫以確保不遺失未寫入的變更。
+func (s *Store) FlushEntities() error {
+	if s == nil {
+		return nil
+	}
+	s.entitiesTimerMu.Lock()
+	if s.entitiesTimer != nil {
+		s.entitiesTimer.Stop()
+		s.entitiesTimer = nil
+	}
+	s.entitiesDirty = false
+	s.entitiesTimerMu.Unlock()
 	return s.persistEntities()
 }
 
@@ -1254,4 +1403,3 @@ func (s *Store) persistAuth() error {
 	}
 	return nil
 }
-

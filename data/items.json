@@ -9,6 +9,7 @@
     {"id": "starter_feet_f", "name": "布鞋", "slot": "feet", "item_type": "equipment", "weight": 0.2, "stackable": 0, "denomination": 0, "description": "軟底布鞋，輕便耐走。"},
     {"id": "mg_coin", "name": "鎂幣", "slot": "", "item_type": "currency", "weight": 0.01, "stackable": 1, "denomination": 1, "description": "一枚小巧的鎂質錢幣，面值一鎂。"},
     {"id": "mg_note", "name": "鎂鈔", "slot": "", "item_type": "currency", "weight": 0.005, "stackable": 1, "denomination": 10, "description": "以特殊纖維印製的鈔票，面值十鎂。"},
-    {"id": "mg_ingot", "name": "鎂錠", "slot": "", "item_type": "currency", "weight": 1.0, "stackable": 1, "denomination": 10000, "description": "沉甸甸的鎂金屬錠，面值一萬鎂。"}
+    {"id": "mg_ingot", "name": "鎂錠", "slot": "", "item_type": "currency", "weight": 1.0, "stackable": 1, "denomination": 10000, "description": "沉甸甸的鎂金屬錠，面值一萬鎂。"},
+    {"id": "wild_herb", "name": "野草", "slot": "", "item_type": "misc", "weight": 0.1, "stackable": 1, "denomination": 0, "description": "路邊採得的野草，可入藥或餵畜。"}
   ]
 }

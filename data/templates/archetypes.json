@@ -4,7 +4,7 @@
 
   "archetypes": {
     "merchant": {
-      "name": "商人",
+      "name": "行腳商",
       "dialogue_file": "templates/dialogues/merchant.json",
       "behavior_file": "templates/behaviors/merchant.json",
       "spawn_weight": 15,

@@ -265,6 +265,19 @@ func (g *RoomGraph) Neighbors(roomID string) []string {
 	return dst
 }
 
+// RoomTags 取得房間的標籤列表；供決策引擎情境匹配用。
+func (g *RoomGraph) RoomTags(roomID string) []string {
+	g.mu.RLock()
+	defer g.mu.RUnlock()
+	tags := g.tags[roomID]
+	if len(tags) == 0 {
+		return nil
+	}
+	dst := make([]string, len(tags))
+	copy(dst, tags)
+	return dst
+}
+
 // RoomCount 回傳圖中房間總數。
 func (g *RoomGraph) RoomCount() int {
 	g.mu.RLock()

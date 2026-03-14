@@ -1439,6 +1439,78 @@
       "entity_id": "葉卅",
       "event_type": "observed",
       "payload": "yaxiao_st2_wustreet_st4"
+    },
+    {
+      "at": 1773477986,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "wu_st4_exit_st3"
+    },
+    {
+      "at": 1773477992,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "wu_st3_exit_st2"
+    },
+    {
+      "at": 1773477998,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "wu_st2_exit_st1"
+    },
+    {
+      "at": 1773478451,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "wu_st1_exit_st4z"
+    },
+    {
+      "at": 1773478460,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4z_obj_vine"
+    },
+    {
+      "at": 1773478952,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4z_exit_life"
+    },
+    {
+      "at": 1773478954,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st1_exit_st4z"
+    },
+    {
+      "at": 1773478956,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4z_exit_sun"
+    },
+    {
+      "at": 1773478959,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "sun_st9_exit_4zone"
+    },
+    {
+      "at": 1773478961,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4z_exit_fei"
+    },
+    {
+      "at": 1773478965,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "fei_st9_exit_st4z"
+    },
+    {
+      "at": 1773478970,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "st4z_exit_life"
     }
   ]
 }

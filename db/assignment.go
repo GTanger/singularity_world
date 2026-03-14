@@ -151,3 +151,95 @@ func EntityInVenueAtRoom(db *sql.DB, entityID, roomID string) (bool, error) {
 	}
 	return false, nil
 }
+
+// GetVenueIDsForRoom 回傳包含該房間的所有場所 ID；store 啟用時從 store 讀取。
+func GetVenueIDsForRoom(db *sql.DB, roomID string) ([]string, error) {
+	if store.Default != nil {
+		return store.Default.GetVenueIDsForRoom(roomID), nil
+	}
+	rows, err := db.Query("SELECT id, room_ids FROM venues")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []string
+	for rows.Next() {
+		var id, raw string
+		if err := rows.Scan(&id, &raw); err != nil {
+			return nil, err
+		}
+		var ids []string
+		if err := json.Unmarshal([]byte(raw), &ids); err != nil {
+			continue
+		}
+		for _, rid := range ids {
+			if rid == roomID {
+				out = append(out, id)
+				break
+			}
+		}
+	}
+	return out, rows.Err()
+}
+
+// GetAssignmentCountByVenue 回傳該場所目前的指派數量；store 啟用時從 store 讀取。
+func GetAssignmentCountByVenue(db *sql.DB, venueID string) (int, error) {
+	if store.Default != nil {
+		return store.Default.GetAssignmentCountByVenue(venueID), nil
+	}
+	var n int
+	err := db.QueryRow("SELECT COUNT(*) FROM assignments WHERE venue_id = ?", venueID).Scan(&n)
+	return n, err
+}
+
+// GetAllVenueIDs 回傳所有場所 ID；store 啟用時從 store 讀取。
+func GetAllVenueIDs(db *sql.DB) ([]string, error) {
+	if store.Default != nil {
+		return store.Default.GetAllVenueIDs(), nil
+	}
+	rows, err := db.Query("SELECT id FROM venues")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		out = append(out, id)
+	}
+	return out, rows.Err()
+}
+
+// GetAllVenueRoomIDs 回傳所有場所涵蓋的房間 ID（供決策引擎 SeekJob 意圖尋路用）。store 啟用時從 store 讀取。
+func GetAllVenueRoomIDs(db *sql.DB) ([]string, error) {
+	if store.Default != nil {
+		return store.Default.GetAllVenueRoomIDs(), nil
+	}
+	rows, err := db.Query("SELECT room_ids FROM venues")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []string
+	seen := make(map[string]bool)
+	for rows.Next() {
+		var raw string
+		if err := rows.Scan(&raw); err != nil {
+			return nil, err
+		}
+		var ids []string
+		if err := json.Unmarshal([]byte(raw), &ids); err != nil {
+			continue
+		}
+		for _, id := range ids {
+			if !seen[id] {
+				seen[id] = true
+				out = append(out, id)
+			}
+		}
+	}
+	return out, rows.Err()
+}

@@ -12,6 +12,30 @@
       "dialogue_file": "dialogues/waiter.json",
       "behavior_file": "npc_behaviors",
       "action_sockets": []
+    },
+    "乞丐": {
+      "name": "乞丐",
+      "dialogue_file": "dialogues/beggar.json",
+      "behavior_file": "npc_behaviors",
+      "action_sockets": ["Beg"]
+    },
+    "拾荒者": {
+      "name": "拾荒者",
+      "dialogue_file": "dialogues/gatherer.json",
+      "behavior_file": "npc_behaviors",
+      "action_sockets": ["Gather"]
+    },
+    "守衛": {
+      "name": "守衛",
+      "dialogue_file": "dialogues/guard.json",
+      "behavior_file": "npc_behaviors",
+      "action_sockets": []
+    },
+    "行腳商": {
+      "name": "行腳商",
+      "dialogue_file": "dialogues/merchant.json",
+      "behavior_file": "npc_behaviors",
+      "action_sockets": ["Trade"]
     }
   }
 }

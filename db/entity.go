@@ -346,6 +346,26 @@ func UpdatePositionOnly(db *sql.DB, id string, x, y int) error {
 	return err
 }
 
+// AddMagnesium 增減實體鎂（delta 可正可負）；用於乞討獲得、消費等。結果會 clamp 至 >= 0。
+func AddMagnesium(db *sql.DB, entityID string, delta int) error {
+	if store.Default != nil {
+		return store.Default.UpdateEntity(entityID, func(e *store.Entity) {
+			e.Magnesium += delta
+			if e.Magnesium < 0 {
+				e.Magnesium = 0
+			}
+		})
+	}
+	_, err := db.Exec(`UPDATE entities SET magnesium = magnesium + ? WHERE id = ?`, delta, entityID)
+	if err != nil {
+		return err
+	}
+	if delta < 0 {
+		_, _ = db.Exec(`UPDATE entities SET magnesium = 0 WHERE id = ? AND magnesium < 0`, entityID)
+	}
+	return nil
+}
+
 // GetMovingEntities 回傳所有 move_state = 'moving' 的實體；store 啟用時從 store 讀取。
 func GetMovingEntities(db *sql.DB) ([]*entity.Character, error) {
 	if store.Default != nil {
