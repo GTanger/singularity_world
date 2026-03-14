@@ -1,0 +1,67 @@
+{
+  "_說明": "掮客/情報販子行為模板。出沒於夜鴞巷、酒館、茶樓，作息多為夜行",
+  "schedule": {
+    "entries": [
+      {"hour_start": 6, "hour_end": 14, "activity": "sleep", "location_pref": ["home", "tavern"], "description": "白天在隱蔽的地方睡覺，或假裝成普通賭徒"},
+      {"hour_start": 14, "hour_end": 18, "activity": "work", "location_pref": ["tavern", "market"], "description": "在茶館或市集收集白天的情報，建立關係網"},
+      {"hour_start": 18, "hour_end": 22, "activity": "work", "location_pref": ["outdoor", "gate"], "description": "夜幕降臨，開始在街角暗處與各方人士接頭"},
+      {"hour_start": 22, "hour_end": 4, "activity": "trade", "location_pref": ["tavern", "outdoor"], "description": "深夜才是真正大宗情報交易的黃金時間"},
+      {"hour_start": 4, "hour_end": 6, "activity": "socialize", "location_pref": ["tavern", "home"], "description": "盤點今晚的收穫，準備撤離隱藏"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["tavern", "gate", "indoor", "outdoor"],
+    "wander_chance": 0.4,
+    "max_distance": 15,
+    "leave_texts": [
+      "【{name}】拉低帽簷，如同一個幽靈般沒入了前往{dest}的陰影中。",
+      "【{name}】警惕地掃視了一眼四周，轉身向著{dest}走去。",
+      "【{name}】在桌上留下幾個銅板，悄無聲息地離開前往{dest}。",
+      "【{name}】將雙手籠在袖子裡，快步朝著{dest}的方向移動。",
+      "【{name}】似乎得到了什麼暗號，點點頭往{dest}方向消失了。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向的陰暗處緩緩浮現出來。",
+      "【{name}】無聲無息地從{from}方向走來，彷彿一陣夜風。",
+      "【{name}】自{from}方向出現，眼神像鷹一樣打量著周圍的每一個人。",
+      "【{name}】從{from}走來，走到牆角一塊最不起眼的陰影裡站定。",
+      "【{name}】跟在幾個路人身後從{from}方向混了進來，隨即脫離人群。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 0.5,
+    "sell_markup": 2.0,
+    "preferred_goods": ["信件", "玉簡", "鑰匙", "毒藥", "偽造的通關諜報"],
+    "refused_goods": ["重型武器", "發光物品"],
+    "haggle_tolerance": 4,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】微微點頭：「成交，但我從沒見過你。」",
+        "【{name}】收下錢：「這份情報現在是你的了，後果自負。」",
+        "【{name}】露出狡詐的笑容：「合作愉快。」",
+        "【{name}】將東西遞給你：「立刻離開，別讓別人看到。」"
+      ],
+      "reject": [
+        "【{name}】冷冷地說：「這個價格，只能買到一句遺言。」",
+        "【{name}】收回手：「看來你對這份情報的價值一無所知。」",
+        "【{name}】眼底閃過一絲不屑：「出門右轉，那邊有五鎂一條的市井傳聞適合你。」",
+        "【{name}】搖了搖頭：「這筆交易太危險，錢少了我不幹。」"
+      ],
+      "counter": [
+        "【{name}】一隻手按在武器上：「這個秘密會把城主府惹毛，得加兩倍。」",
+        "【{name}】伸出五根手指：「少於這個數，你什麼都別想知道。」",
+        "【{name}】似笑非笑：「你想買的可是別人的命，這點錢夠買幾寸？」",
+        "【{name}】壓低聲音：「再加一點，我免費送你一條逃生路線。」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.3,
+    "friendliness": 0.4,
+    "curiosity": 0.9,
+    "greed": 0.9,
+    "bravery": 0.2,
+    "reaction_to_combat": "flee",
+    "reaction_to_theft": "watch"
+  }
+}

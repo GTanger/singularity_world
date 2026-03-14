@@ -64,8 +64,11 @@ type npcDef struct {
 	shiftStart, shiftEnd           int
 }
 
-// defaultNPCs 全體預設 NPC；浮生客棧四名已移除，目前為空。
-var defaultNPCs = []npcDef{}
+// defaultNPCs 全體預設 NPC；先人後嘴用：至少 1 名在創生房，供 Talk（I3）驗收。
+// work_room/rest_room 使用創生房 id（界壁 = start_boundary），與新玩家同房。
+var defaultNPCs = []npcDef{
+	{id: "試話", displayChar: "試", gender: "M", title: "", workRoom: "start_boundary", restRoom: "start_boundary", shiftStart: 0, shiftEnd: 24},
+}
 
 // SeedNPCs 逐一檢查預設 NPC，不存在才建立；並為四人建立指派（經理/服務生 @ 浮生客棧），對齊討論 001。
 func SeedNPCs(db *sql.DB) error {

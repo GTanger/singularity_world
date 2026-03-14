@@ -1,0 +1,69 @@
+{
+  "_說明": "苦力/搬運工行為模板。底層勞動力，工作時間長，性情麻木或暴躁。",
+  "schedule": {
+    "entries": [
+      {"hour_start": 4, "hour_end": 6, "activity": "wake_up", "location_pref": ["outdoor", "gate"], "description": "在街角或破棚子裡醒來，吃乾糧"},
+      {"hour_start": 6, "hour_end": 12, "activity": "work", "location_pref": ["market", "trade"], "description": "四處找活，抗大包扛重物"},
+      {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["outdoor", "shadow"], "description": "在屋簷下或陰涼處癱坐休息"},
+      {"hour_start": 14, "hour_end": 19, "activity": "work", "location_pref": ["market", "trade"], "description": "忍著酷熱與疲憊繼續搬運"},
+      {"hour_start": 19, "hour_end": 22, "activity": "socialize", "location_pref": ["tavern", "outdoor"], "description": "在便宜小酒館喝劣質燒酒或蹲在街邊"},
+      {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["outdoor", "gate"], "description": "找個擋風的角落和衣而睡"},
+      {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["outdoor", "gate"], "description": "沉睡夢鄉（或做惡夢）"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["market", "gate", "tavern", "outdoor"],
+    "wander_chance": 0.2,
+    "max_distance": 10,
+    "leave_texts": [
+      "【{name}】扛起扁擔，一瘸一拐地往{dest}走去。",
+      "【{name}】吐了口唾沫，轉身拖著沉重的步子去了{dest}。",
+      "【{name}】被工頭吼了一聲，急忙往{dest}方向快步離去。",
+      "【{name}】拍了拍滿是灰塵的褲腿，朝著{dest}移動。",
+      "【{name}】歎了口氣，步履蹣跚地向{dest}走去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向搖搖晃晃地走來，滿頭大汗。",
+      "【{name}】自{from}方向出現，肩上壓著一個比他人還高的麻袋。",
+      "【{name}】從{from}走來，一屁股坐在地上大口喘氣。",
+      "【{name}】風塵僕僕地從{from}方向走來，眼神麻木。",
+      "【{name}】跟著一隊商車從{from}方向過來，準備卸貨。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 1.0,
+    "sell_markup": 1.0,
+    "preferred_goods": [],
+    "refused_goods": [],
+    "haggle_tolerance": 1,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】木然地點點頭：「行吧，只收你這點。」",
+        "【{name}】接過錢：「就這樣吧。」",
+        "【{name}】嘟噥了一句：「算我倒楣。」",
+        "【{name}】將錢塞進鞋底：「成交。」"
+      ],
+      "reject": [
+        "【{name}】把拳頭捏得咔咔作響：「這點錢你打發叫花子呢？」",
+        "【{name}】冷笑一聲：「滾，老子不幹。」",
+        "【{name}】像看白痴一樣看著你：「你當我是喝風長大的？」",
+        "【{name}】一把推開你：「不給足錢免談。」"
+      ],
+      "counter": [
+        "【{name}】伸出一根粗壯的手指：「再加點，不然不幹。」",
+        "【{name}】語氣僵硬：「這活兒太累，得加錢。」",
+        "【{name}】皺眉道：「看在我是個苦命人的份上，多給兩個銅板吧？」",
+        "【{name}】不耐煩地說：「別囉嗦，一口價，不行拉倒。」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.6,
+    "friendliness": 0.2,
+    "curiosity": 0.1,
+    "greed": 0.8,
+    "bravery": 0.4,
+    "reaction_to_combat": "watch",
+    "reaction_to_theft": "ignore"
+  }
+}

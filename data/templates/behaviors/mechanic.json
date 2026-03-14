@@ -1,0 +1,69 @@
+{
+  "_說明": "技工/修繕工行為模板。經常出沒於有幫浦、陣法、稜鏡的地方",
+  "schedule": {
+    "entries": [
+      {"hour_start": 6, "hour_end": 8, "activity": "wake_up", "location_pref": ["home", "tavern"], "description": "在工坊角落醒來，或是從便宜的通鋪爬起"},
+      {"hour_start": 8, "hour_end": 13, "activity": "work", "location_pref": ["inn", "outdoor", "gate"], "description": "拿著工具箱到處檢修，敲敲打打"},
+      {"hour_start": 13, "hour_end": 14, "activity": "rest", "location_pref": ["tavern", "food"], "description": "隨便抓點東西吃，手都沒洗乾淨"},
+      {"hour_start": 14, "hour_end": 19, "activity": "work", "location_pref": ["indoor", "outdoor"], "description": "處理一天的緊急派單，暴躁地辱罵報修者"},
+      {"hour_start": 19, "hour_end": 22, "activity": "socialize", "location_pref": ["tavern", "market"], "description": "在酒館炫耀自己修好了一個多難的靈壓閥，或者去黑市買零件"},
+      {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["home", "indoor"], "description": "回到工坊盤點工具並睡下"},
+      {"hour_start": 0, "hour_end": 6, "activity": "sleep", "location_pref": ["home", "indoor"], "description": "被各種器械包圍沉睡"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["outdoor", "gate", "road", "tavern"],
+    "wander_chance": 0.3,
+    "max_distance": 8,
+    "leave_texts": [
+      "【{name}】把扳手往腰帶上一插，罵罵咧咧地走向{dest}。",
+      "【{name}】提起沉重的工具箱，步履匆匆地朝著{dest}趕去。",
+      "【{name}】看了一眼手裡的維修工單，無奈地嘆口氣往{dest}走去。",
+      "【{name}】用搭在肩上的髒毛巾擦了擦手，動身前往{dest}。",
+      "【{name}】聽見{dest}方向傳來一陣不正常的嗡鳴，立刻衝了過去。"
+    ],
+    "arrive_texts": [
+      "【{name}】一隻手提著工具箱，從{from}方向大步流星地走來。",
+      "【{name}】自{from}方向出現，一邊走一邊警惕地聽著周圍機器的聲音。",
+      "【{name}】從{from}走來，臉上蹭著一塊機油黑印，滿頭大汗。",
+      "【{name}】風風火火地從{from}方向趕來，嘴裡還叼著半根菸。",
+      "【{name}】跟著一聲清脆的金屬碰撞聲，從{from}方向走入你的視線。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 0.8,
+    "sell_markup": 1.2,
+    "preferred_goods": ["廢品", "晶體碎片", "銅鐵零件", "防護服"],
+    "refused_goods": [],
+    "haggle_tolerance": 2,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】點點頭：「行吧，這點料夠我補個鍋了。」",
+        "【{name}】接過東西：「算你走運，我今天剛好缺這個型號。」",
+        "【{name}】粗聲粗氣地說：「成交，放桌上自己拿錢。」",
+        "【{name}】把錢往你手裡一拍：「就這樣定了。」"
+      ],
+      "reject": [
+        "【{name}】冷笑一聲：「這破爛你想賣這個價？當我瞎？」",
+        "【{name}】把東西推回去：「去去去，我還不想破產。」",
+        "【{name}】翻了個白眼：「你懂不懂行規？這個價免談。」",
+        "【{name}】揮舞著扳手：「滾蛋，別來消遣老子。」"
+      ],
+      "counter": [
+        "【{name}】皺著眉頭：「這玩意兒磨損太嚴重了，再降兩成我就收。」",
+        "【{name}】拿著零件對著光照了照：「有點瑕疵，不過還能用……再便宜點。」",
+        "【{name}】不耐煩地討價還價：「就這個價！多一個子兒我都不要。」",
+        "【{name}】嘖了一聲：「大家都是混口飯吃，價錢再商量商量。」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.5,
+    "friendliness": 0.3,
+    "curiosity": 0.6,
+    "greed": 0.6,
+    "bravery": 0.5,
+    "reaction_to_combat": "watch",
+    "reaction_to_theft": "alert_guard"
+  }
+}

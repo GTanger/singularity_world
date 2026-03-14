@@ -162,6 +162,91 @@
         "wander_rooms": ["field", "home", "market"],
         "_說明": "農夫定點，在田地、住處和市集之間移動。"
       }
+    },
+    "laborer": {
+      "name": "苦力",
+      "dialogue_file": "templates/dialogues/laborer.json",
+      "behavior_file": "templates/behaviors/laborer.json",
+      "spawn_weight": 15,
+      "trade_tendency": "none",
+      "wealth_range": [0, 50],
+      "goods_pool": ["粗麵饅頭", "破布", "濁水", "劣質菸草", "散錢"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["market", "gate", "outdoor", "tavern"],
+        "wander_range": 30,
+        "stay_hours": [4, 10],
+        "_說明": "搬運工在各個卸貨點和便宜酒館、廣場隨機遊走等活。"
+      }
+    },
+    "mechanic": {
+      "name": "技工",
+      "dialogue_file": "templates/dialogues/mechanic.json",
+      "behavior_file": "templates/behaviors/mechanic.json",
+      "spawn_weight": 8,
+      "trade_tendency": "opportunistic",
+      "wealth_range": [30, 250],
+      "goods_pool": ["廢棄陣盤", "潤滑油", "保險絲", "扳手", "銅管", "晶體碎片"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["outdoor", "indoor", "market"],
+        "wander_range": 20,
+        "stay_hours": [2, 6],
+        "_說明": "修繕工會四處奔走尋找壞掉的設備，偶爾在酒館出沒。"
+      }
+    },
+    "broker": {
+      "name": "掮客",
+      "dialogue_file": "templates/dialogues/broker.json",
+      "behavior_file": "templates/behaviors/broker.json",
+      "spawn_weight": 6,
+      "trade_tendency": "opportunistic",
+      "wealth_range": [100, 1000],
+      "goods_pool": ["密信", "毒藥", "偽造的通關文牒", "夜行衣", "解毒丸", "地圖測繪本"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["tavern", "outdoor", "indoor"],
+        "wander_range": 40,
+        "stay_hours": [1, 5],
+        "_說明": "情報販子大範圍活動，出沒地點隱密且極不固定。"
+      }
+    },
+    "martial_artist": {
+      "name": "武師",
+      "dialogue_file": "templates/dialogues/martial_artist.json",
+      "behavior_file": "templates/behaviors/martial_artist.json",
+      "spawn_weight": 7,
+      "trade_tendency": "opportunistic",
+      "wealth_range": [50, 400],
+      "goods_pool": ["大還丹", "鐵砂", "生鏽的兵刃", "護腕", "跌打藥酒"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["outdoor", "gate", "road"],
+        "wander_range": 15,
+        "stay_hours": [2, 8],
+        "_說明": "武師通常在特定區域的室外練功或巡邏，偶爾去酒館。"
+      }
+    },
+    "scout": {
+      "name": "探子",
+      "dialogue_file": "templates/dialogues/scout.json",
+      "behavior_file": "templates/behaviors/scout.json",
+      "spawn_weight": 5,
+      "trade_tendency": "scavenge",
+      "wealth_range": [0, 80],
+      "goods_pool": ["廢棄晶片", "奇異草藥", "變異獸骨", "破衣爛衫", "手繪地圖"],
+      "movement": {
+        "type": "pathfind",
+        "speed": 1,
+        "destination_tags": ["outdoor", "gate", "road"],
+        "wander_range": 50,
+        "stay_hours": [1, 4],
+        "_說明": "拾荒者活動範圍極廣，多在城外與城市邊緣遊走。"
+      }
     }
   }
 }

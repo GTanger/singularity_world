@@ -1433,6 +1433,12 @@
       "entity_id": "葉卅",
       "event_type": "observed",
       "payload": "yaxst02_shop01_main_st2"
+    },
+    {
+      "at": 1773419727,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "yaxiao_st2_wustreet_st4"
     }
   ]
 }

@@ -1,0 +1,69 @@
+{
+  "_說明": "探子/拾荒者行為模板。多出沒於邊緣地帶和人煙稀少的廢墟，生存能力極強。",
+  "schedule": {
+    "entries": [
+      {"hour_start": 4, "hour_end": 7, "activity": "work", "location_pref": ["outdoor", "gate"], "description": "趁著清晨的光線撿拾荒野裡的廢棄物"},
+      {"hour_start": 7, "hour_end": 12, "activity": "work", "location_pref": ["outdoor", "gate"], "description": "在城市邊緣徘徊，尋找有價值的遺落物品或死人財"},
+      {"hour_start": 12, "hour_end": 15, "activity": "rest", "location_pref": ["outdoor", "indoor"], "description": "躲進極端隱蔽的地下廢墟或陰影中躲避中午的高溫"},
+      {"hour_start": 15, "hour_end": 19, "activity": "work", "location_pref": ["market", "tavern"], "description": "把一天的收穫拿去黑市或當舖換取劣質食物"},
+      {"hour_start": 19, "hour_end": 22, "activity": "socialize", "location_pref": ["outdoor", "tavern"], "description": "在難民營或便宜酒館角落與同行交換野外的生存情報"},
+      {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["outdoor", "home"], "description": "蜷縮在自己搭建的廢品堡壘中淺睡"},
+      {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["outdoor", "home"], "description": "與老鼠和蟲子為伴度過寒夜"}
+    ]
+  },
+  "wander": {
+    "preferred_locations": ["gate", "outdoor", "road"],
+    "wander_chance": 0.5,
+    "max_distance": 25,
+    "leave_texts": [
+      "【{name}】像一隻受驚的兔子一樣，躥進了通往{dest}的巷道裡。",
+      "【{name}】警惕地四處看了看，然後弓著腰朝{dest}溜去。",
+      "【{name}】把身上的破斗篷緊了緊，向著{dest}的方向消失在視線中。",
+      "【{name}】似乎嗅到了什麼危險的氣息，急忙轉身往{dest}趕路。",
+      "【{name}】拖著一個破爛的麻袋，一瘸一拐地往{dest}走去。"
+    ],
+    "arrive_texts": [
+      "【{name}】從{from}方向的陰影中鑽了出來，眼睛滴溜溜地轉著。",
+      "【{name}】神不知鬼不覺地從{from}方向出現，像極了一抹在白天活動的幽靈。",
+      "【{name}】自{from}方向走來，手裡還緊緊抓著幾塊碎鐵片。",
+      "【{name}】身上帶著濃重的荒野泥土味，從{from}方向進入了這裡。",
+      "【{name}】從{from}走來，雖然累得直喘氣，但眼神依舊如野獸般銳利。"
+    ]
+  },
+  "trade": {
+    "buy_markup": 0.3,
+    "sell_markup": 3.0,
+    "preferred_goods": ["廢品", "異獸晶核", "奇怪的草藥", "地圖測繪本", "報廢陣盤", "毒蟲"],
+    "refused_goods": ["高級法寶", "華麗衣物", "任何太乾淨的東西"],
+    "haggle_tolerance": 5,
+    "haggle_texts": {
+      "accept": [
+        "【{name}】一把搶過錢：「給老子，明天我還能活一天！」",
+        "【{name}】露出難看的笑容：「成交。希望你能用得上。」",
+        "【{name}】咬了咬銀幣確認真假：「好，東西歸你。」",
+        "【{name}】神經質地說：「賣了賣了，免得留在身上招來殺身之禍。」"
+      ],
+      "reject": [
+        "【{name}】把東西死死抱在懷裡：「不賣！這點錢連個半個乾饅頭都買不到！」",
+        "【{name}】朝地上淬了一口：「想騙老子？門都沒有！」",
+        "【{name}】像護食的野狗一樣怒吼：「滾！再說這個價我就咬你！」",
+        "【{name}】翻了個白眼，轉身就走：「買不起就別耽誤老子找活路。」"
+      ],
+      "counter": [
+        "【{name}】可憐巴巴地看著你：「大老爺，這是我拿命換來的，再加點吧……就一兩個子兒也行。」",
+        "【{name}】眼底閃過精光：「這可是古代遺跡裡刨出來的，再加三成不虧你！」",
+        "【{name}】咬牙切齒：「再添幾文銅板，不然我寧願把它砸了！」",
+        "【{name}】拉住你的衣角：「行行好，我三天沒吃飯了，這個價再抬一抬吧。」"
+      ]
+    }
+  },
+  "personality": {
+    "aggression": 0.4,
+    "friendliness": 0.1,
+    "curiosity": 0.8,
+    "greed": 1.0,
+    "bravery": 0.1,
+    "reaction_to_combat": "flee",
+    "reaction_to_theft": "watch"
+  }
+}
