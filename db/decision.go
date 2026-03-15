@@ -112,38 +112,83 @@ func hasTag(tags []string, want ...string) bool {
 	return false
 }
 
-// Decide 產出單一意圖。V1：固定優先序 生存 > 安定 > 閒逛；不產出 Attack；性格僅預留。
+// candidate 候選行為與權重（供性格加權選擇）。
+type candidate struct {
+	intent Intent
+	weight float64
+}
+
+// personalityWeightedSelect 依性格加權隨機選一意圖。Boldness 高→Gather/Trade↑ Beg↓；Orderliness 高→SeekJob↑；Sensitivity 高→Beg↑。
+func personalityWeightedSelect(candidates []candidate, p Personality, hasPers bool) Intent {
+	if len(candidates) == 0 {
+		return Intent{Type: IntentWander}
+	}
+	if len(candidates) == 1 || !hasPers {
+		return candidates[0].intent
+	}
+	for i := range candidates {
+		switch candidates[i].intent.Type {
+		case IntentSeekJob:
+			candidates[i].weight *= 0.5 + p.Orderliness
+		case IntentBeg:
+			candidates[i].weight *= 1.5 - p.Boldness
+			candidates[i].weight *= 0.5 + p.Sensitivity
+		case IntentGather:
+			candidates[i].weight *= 0.5 + p.Boldness
+			candidates[i].weight *= 1.5 - p.Orderliness
+		case IntentTrade:
+			candidates[i].weight *= 0.5 + p.Boldness
+		case IntentWander:
+			candidates[i].weight *= 1.5 - p.Orderliness
+		}
+	}
+	total := 0.0
+	for _, c := range candidates {
+		total += c.weight
+	}
+	if total <= 0 {
+		return candidates[0].intent
+	}
+	r := rand.Float64() * total
+	for _, c := range candidates {
+		r -= c.weight
+		if r <= 0 {
+			return c.intent
+		}
+	}
+	return candidates[len(candidates)-1].intent
+}
+
+// Decide 產出單一意圖。生存 > 安定 > 閒逛；生存/安定分支依性格加權選擇。
 func Decide(state DecisionState, ctx DecisionContext) Intent {
-	// 1. 生存未滿足（鎂低於閾值）
 	survivalUrgency := urgencySurvival(state.Magnesium)
 	if survivalUrgency > 0 {
-		if !state.HasAssignment && len(ctx.VenueRoomIDsInRange) > 0 {
-			return Intent{Type: IntentSeekJob, TargetRoomID: pickRandom(ctx.VenueRoomIDsInRange)}
+		var candidates []candidate
+		if len(ctx.VenueRoomIDsInRange) > 0 {
+			candidates = append(candidates, candidate{Intent{Type: IntentSeekJob, TargetRoomID: pickRandom(ctx.VenueRoomIDsInRange)}, 1.0})
 		}
 		if hasTag(ctx.RoomTags, "gate", "social") {
-			return Intent{Type: IntentBeg}
-		}
-		if len(ctx.SocialOrGateInRange) > 0 {
-			return Intent{Type: IntentBeg, TargetRoomID: pickRandom(ctx.SocialOrGateInRange)}
+			candidates = append(candidates, candidate{Intent{Type: IntentBeg}, 1.0})
+		} else if len(ctx.SocialOrGateInRange) > 0 {
+			candidates = append(candidates, candidate{Intent{Type: IntentBeg, TargetRoomID: pickRandom(ctx.SocialOrGateInRange)}, 1.0})
 		}
 		if len(ctx.WildernessOutdoorInRange) > 0 {
-			return Intent{Type: IntentGather, TargetRoomID: pickRandom(ctx.WildernessOutdoorInRange)}
+			candidates = append(candidates, candidate{Intent{Type: IntentGather, TargetRoomID: pickRandom(ctx.WildernessOutdoorInRange)}, 1.0})
 		}
 		if len(ctx.VenueRoomIDsInRange) > 0 {
-			return Intent{Type: IntentSeekJob, TargetRoomID: pickRandom(ctx.VenueRoomIDsInRange)}
+			candidates = append(candidates, candidate{Intent{Type: IntentSeekJob, TargetRoomID: pickRandom(ctx.VenueRoomIDsInRange)}, 1.0})
 		}
-		return Intent{Type: IntentWander}
+		candidates = append(candidates, candidate{Intent{Type: IntentWander}, 1.0})
+		return personalityWeightedSelect(candidates, state.Personality, state.HasPersonality)
 	}
-
-	// 2. 安定未滿足（無職）
 	if !state.HasAssignment {
+		var candidates []candidate
 		if len(ctx.VenueRoomIDsInRange) > 0 {
-			return Intent{Type: IntentSeekJob, TargetRoomID: pickRandom(ctx.VenueRoomIDsInRange)}
+			candidates = append(candidates, candidate{Intent{Type: IntentSeekJob, TargetRoomID: pickRandom(ctx.VenueRoomIDsInRange)}, 1.0})
 		}
-		return Intent{Type: IntentWander}
+		candidates = append(candidates, candidate{Intent{Type: IntentWander}, 1.0})
+		return personalityWeightedSelect(candidates, state.Personality, state.HasPersonality)
 	}
-
-	// 3. 生存與安定皆滿足 → 閒逛
 	return Intent{Type: IntentWander}
 }
 

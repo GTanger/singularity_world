@@ -158,15 +158,20 @@ func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int, ac
 				NewRoom:  currentRoom,
 				NpcName:  npcName,
 			}
+			// 腦驅動抵達：先算停留（此時 LastIntent 尚在），再寫 step 與清空，否則 computeStay 的 MoveBrain 分支只會進 default
 			if len(t.PathQueue) == 0 && t.MoveDef.Type == MoveBrain && t.LastIntent.Type != "" {
+				stay := tm.computeStay(t, gameHour)
+				if stay > 0 {
+					t.StayUntilHour = (gameHour + stay) % 24
+				}
 				step.ArrivalIntent = t.LastIntent.Type
 				t.LastIntent = Intent{}
 			}
 			steps = append(steps, step)
 		}
 
-		// 到達 waypoint / 目的地 → 計算停留
-		if len(t.PathQueue) == 0 {
+		// 到達 waypoint / 目的地 → 計算停留（非 MoveBrain；MoveBrain 已在上方處理）
+		if len(t.PathQueue) == 0 && t.MoveDef.Type != MoveBrain {
 			stay := tm.computeStay(t, gameHour)
 			if stay > 0 {
 				t.StayUntilHour = (gameHour + stay) % 24
@@ -280,6 +285,21 @@ func (tm *TravelerManager) computeStay(t *NPCTraveler, gameHour int) int {
 		}
 	case MovePathfind:
 		stayRange = t.MoveDef.StayHours
+	case MoveBrain:
+		switch t.LastIntent.Type {
+		case IntentBeg:
+			stayRange = [2]int{2, 4}
+		case IntentGather:
+			stayRange = [2]int{1, 3}
+		case IntentSeekJob:
+			stayRange = [2]int{1, 2}
+		case IntentTrade:
+			stayRange = [2]int{2, 5}
+		case IntentWander:
+			stayRange = [2]int{1, 4}
+		default:
+			stayRange = [2]int{1, 2}
+		}
 	}
 
 	if stayRange[1] <= 0 {

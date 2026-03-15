@@ -103,8 +103,8 @@ func pickRandom(list []string) string {
 	return list[rand.Intn(len(list))]
 }
 
-// PickIdleEmote 隨機選一條指定職稱、時段的閒置動作，替換 {name}。
-func PickIdleEmote(title, period, npcName string) string {
+// PickIdleEmote 隨機選一條指定職稱、時段的閒置動作，替換 {name}。disposition 預留（未來可依心境偏正面/負面句）。
+func PickIdleEmote(title, period, npcName string, disposition int) string {
 	bd := GetBehaviors()
 	role, ok := bd.Roles[title]
 	if !ok {

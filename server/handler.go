@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"singularity_world/ai"
 	"singularity_world/combat"
 	"singularity_world/config"
 	"singularity_world/db"
@@ -397,18 +398,37 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 				Narrative: narrative, Success: true,
 			})
 		case "Talk":
-			var p *db.Personality
-			if target.SoulSeed != nil {
-				pp := db.ExpandSoulSeedToPersonality(*target.SoulSeed)
-				p = &pp
+			playerInput := msg.PlayerInput
+			if playerInput == "" {
+				playerInput = "（搭話）"
 			}
-			narrative := buildTalkNarrative(database, playerRoom, target, p, cfg)
+			backstory := db.BuildIdentity(database, targetID)
+			snippets := db.SearchArchival(targetID, msg.PlayerInput, 5)
+			styleExamples := db.PickStyleExamples(database, targetID, 3)
+			reply, err := ai.CallAITalk(playerInput, backstory, snippets, styleExamples)
+			var narrative, npcReply string
+			if err != nil || reply == "" {
+				var p *db.Personality
+				if target.SoulSeed != nil {
+					pp := db.ExpandSoulSeedToPersonality(*target.SoulSeed)
+					p = &pp
+				}
+				narrative = buildTalkNarrative(database, playerRoom, target, p, cfg)
+				npcReply = narrative
+				if i := strings.Index(narrative, "搭話。"); i >= 0 {
+					npcReply = narrative[i+len("搭話。"):]
+				}
+			} else {
+				narrative = "你向【" + target.ID + "】搭話。" + reply
+				npcReply = reply
+			}
 			_ = event.Append(database, now, c.PlayerID, "talk", targetID)
 			c.Send <- mustJSON(ActionResultMsg{
 				Type: "action_result", Action: "Talk",
 				TargetID: target.ID, TargetName: target.ID,
 				Narrative: narrative, Success: true,
 			})
+			_ = db.InsertArchival(targetID, "玩家說："+playerInput+"；NPC回："+npcReply, "event")
 		case "Attack":
 			attacker, _ := db.GetEntity(database, c.PlayerID)
 			if attacker == nil {

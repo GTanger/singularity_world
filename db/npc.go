@@ -2,6 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
+	"math/rand"
+	"strconv"
 	"time"
 
 	"singularity_world/store"
@@ -70,7 +73,7 @@ var defaultNPCs = []npcDef{
 	{id: "試話", displayChar: "試", gender: "M", title: "", workRoom: "start_boundary", restRoom: "start_boundary", shiftStart: 0, shiftEnd: 24},
 }
 
-// SeedNPCs 逐一檢查預設 NPC，不存在才建立；並為四人建立指派（經理/服務生 @ 浮生客棧），對齊討論 001。
+// SeedNPCs 逐一檢查預設 NPC，不存在才建立；並建立排班與指派（SQLite 模式用）。依 DB 查 entities 表。
 func SeedNPCs(db *sql.DB) error {
 	const venueLifeInn = "venue_life_inn"
 	for _, npc := range defaultNPCs {
@@ -99,3 +102,99 @@ func SeedNPCs(db *sql.DB) error {
 	return nil
 }
 
+// SeedNPCsForStore 在 store 模式（無 DB）下確保預設 NPC 存在；不存在則建立並設房間／排班／指派。main 啟動時 store.Init 後呼叫。
+func SeedNPCsForStore(db *sql.DB) error {
+	if store.Default == nil {
+		return nil
+	}
+	const venueLifeInn = "venue_life_inn"
+	for _, npc := range defaultNPCs {
+		if store.Default.GetEntity(npc.id) != nil {
+			_ = InsertSchedule(db, npc.id, npc.workRoom, npc.restRoom, npc.shiftStart, npc.shiftEnd)
+			_ = InsertAssignment(db, npc.id, npc.title, venueLifeInn, "")
+			continue
+		}
+		if err := InsertNPC(db, npc.id, npc.displayChar, npc.gender, ""); err != nil {
+			return err
+		}
+		if err := SetEntityRoom(db, npc.id, npc.workRoom); err != nil {
+			return err
+		}
+		if err := InsertSchedule(db, npc.id, npc.workRoom, npc.restRoom, npc.shiftStart, npc.shiftEnd); err != nil {
+			return err
+		}
+		if err := InsertAssignment(db, npc.id, npc.title, venueLifeInn, ""); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetNPCGenderCounts 回傳有房間的 NPC 中男(M)、女(F) 的數量，供生成時男女持平用。
+func GetNPCGenderCounts(db *sql.DB) (male, female int) {
+	if store.Default != nil {
+		for _, eid := range store.Default.GetNPCIDsWithRoom() {
+			e := store.Default.GetEntity(eid)
+			if e == nil {
+				continue
+			}
+			switch e.Gender {
+			case "M":
+				male++
+			case "F":
+				female++
+			}
+		}
+		return male, female
+	}
+	rows, err := db.Query(
+		`SELECT e.gender FROM entity_room er JOIN entities e ON e.id = er.entity_id WHERE e.kind = 'npc'`)
+	if err != nil {
+		return 0, 0
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var g sql.NullString
+		if err := rows.Scan(&g); err != nil {
+			continue
+		}
+		if g.Valid {
+			switch g.String {
+			case "M":
+				male++
+			case "F":
+				female++
+			}
+		}
+	}
+	return male, female
+}
+
+// SpawnOneNPCFromPool 生成一名新 NPC 並放入指定房間（無排班、腦驅動）。用於 NPC 池自動補滿。回傳 entityID。
+// 名字為姓＋名 2～4 字（見 GenerateNPCName），DisplayTitle 即該名，DisplayChar 取名字首字。性別依男女數持平擇一。
+func SpawnOneNPCFromPool(db *sql.DB, spawnRoomID string) (string, error) {
+	id := fmt.Sprintf("npc_%s", strconv.FormatInt(time.Now().UnixNano(), 36))
+	if store.Default != nil {
+		for store.Default.GetEntity(id) != nil {
+			id = fmt.Sprintf("npc_%d_%s", time.Now().UnixNano(), strconv.FormatInt(time.Now().UnixNano()%10000, 36))
+		}
+	}
+	name := GenerateNPCName("")
+	displayChar := FirstRune(name)
+	male, female := GetNPCGenderCounts(db)
+	gender := "M"
+	if male > female {
+		gender = "F"
+	} else if female > male {
+		gender = "M"
+	} else if rand.Intn(2) == 1 {
+		gender = "F"
+	}
+	if err := InsertNPC(db, id, displayChar, gender, name); err != nil {
+		return "", err
+	}
+	if err := SetEntityRoom(db, id, spawnRoomID); err != nil {
+		return id, err // 已建立實體，僅房間設定失敗
+	}
+	return id, nil
+}

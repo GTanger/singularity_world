@@ -14,6 +14,7 @@ type ClientMsg struct {
 	TargetSlot  string `json:"target_slot"`  // equip_item 時指定槽位（僅 hold 類需要：hold_l / hold_r）
 	Slot        string `json:"slot"`         // unequip_item 時裝備槽位代碼
 	Action      string `json:"action"`       // do_action 時的動詞（"Look" | "Talk" | "Attack"）
+	PlayerInput string `json:"player_input"` // Talk 時玩家輸入（可選；供 CallAITalk 與記憶檢索）
 }
 
 // ViewEntity 房間內單一實體，供前端顯示「誰在這裡」與可執行動作。

@@ -321,3 +321,43 @@ func PickFromDialogue(database *sql.DB, entityID, roomID, occupationID, key stri
 	filled := FillPlaceholders(line, ctx, slots, seed+1)
 	return ApplyMicroVariants(filled, seed+31)
 }
+
+// PickStyleExamples 從該 NPC 的對話池抽 n 句作為口吻範例（不填佔位符），供 CallAITalk 當 style 範例。
+func PickStyleExamples(database *sql.DB, entityID string, n int) []string {
+	assignments, _ := GetAssignmentsForEntity(database, entityID)
+	if len(assignments) == 0 {
+		return nil
+	}
+	occID := assignments[0].OccupationID
+	occs := LoadOccupations(filepath.Join(defaultTemplatesBase, "occupations.json"))
+	occ, ok := occs[occID]
+	if !ok || occ.DialogueFile == "" {
+		return nil
+	}
+	d, err := LoadDialogue(defaultTemplatesBase, occ.DialogueFile)
+	if err != nil || d == nil {
+		return nil
+	}
+	var lines []string
+	lines = append(lines, d.Talk.Lines...)
+	lines = append(lines, d.Greet.Lines...)
+	if len(lines) == 0 {
+		return nil
+	}
+	var p *Personality
+	if pers, has := GetPersonalityForEntity(database, entityID); has {
+		p = &pers
+	}
+	seed := int64(0)
+	for _, r := range entityID {
+		seed = seed*31 + int64(r)
+	}
+	var out []string
+	for i := 0; i < n; i++ {
+		line := PickLineWeighted(lines, seed+int64(i)*7, p, "", "")
+		if line != "" {
+			out = append(out, line)
+		}
+	}
+	return out
+}

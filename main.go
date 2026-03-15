@@ -3,6 +3,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -53,14 +54,18 @@ func buildActiveRoomIDs(sessionStore *server.SessionStore, database *sql.DB, roo
 	return out
 }
 
-// applyBrainArrivalEffects 依意圖套用真實效果：Beg 加鎂、Gather 加物品、SeekJob 嘗試寫入指派。
+// applyBrainArrivalEffects 依意圖套用真實效果：Beg 加鎂、Gather 加物品、SeekJob 嘗試寫入指派；並記事件與心境。
 func applyBrainArrivalEffects(database *sql.DB, entityID, roomID string, intent db.IntentType) {
 	switch intent {
 	case db.IntentBeg:
 		amount := 3 + rand.Intn(8) // 3～10 鎂
 		_ = db.AddMagnesium(database, entityID, amount)
+		db.LogNPCEvent(entityID, db.EvtBeg, fmt.Sprintf("在%s乞討，得%d鎂", roomID, amount))
+		db.AdjustDisposition(database, entityID, db.DispBegSuccess)
 	case db.IntentGather:
 		_ = db.AddToInventory(database, entityID, "wild_herb", 1)
+		db.LogNPCEvent(entityID, db.EvtGather, fmt.Sprintf("在%s採集野草", roomID))
+		db.AdjustDisposition(database, entityID, db.DispGather)
 	case db.IntentSeekJob:
 		assignments, _ := db.GetAssignmentsForEntity(database, entityID)
 		if len(assignments) > 0 {
@@ -71,6 +76,8 @@ func applyBrainArrivalEffects(database *sql.DB, entityID, roomID string, intent 
 			n, _ := db.GetAssignmentCountByVenue(database, vid)
 			if n < maxAssignmentsPerVenue {
 				if err := db.InsertAssignment(database, entityID, "服務生", vid, ""); err == nil {
+					db.LogNPCEvent(entityID, db.EvtHired, fmt.Sprintf("在%s獲得%s職位", roomID, "服務生"))
+					db.AdjustDisposition(database, entityID, db.DispHired)
 					break
 				}
 			}
@@ -91,6 +98,10 @@ func main() {
 	// 全專案以 JSON 為唯一數據源：載入 store（data/rooms 目錄一房一檔 + runtime + data）
 	if err := store.Init("data/rooms", "data/runtime", "data"); err != nil {
 		log.Fatalf("store init: %v", err)
+	}
+	// store 模式下確保預設 NPC 存在（試話等）；若 data/entities.json 無則建立並寫入 store
+	if err := db.SeedNPCsForStore(nil); err != nil {
+		log.Printf("seed npcs for store: %v", err)
 	}
 	defer func() {
 		if store.Default != nil {
@@ -190,6 +201,8 @@ func main() {
 	// 視野內 NPC 即時模擬 ＋ 每 tick 推進移動中實體（§1.2.3、§1.3.3）。
 	obs := &game.Observed{DB: database}
 	var lastScheduleHour = -1
+	var lastExpenseDay = -1
+	var lastSpawnCheck = time.Now()
 
 	// NPC 活化：閒置動作 & 巡邏計時器（中頻 5-12 真實秒，即 2-5 遊戲分鐘）
 	db.LoadBehaviors("data/npc_behaviors.json")
@@ -237,7 +250,27 @@ func main() {
 		game.RunViewSimulation(database, func() []game.Pos { return server.GetObserverPositions(sessionStore, database) }, obs)
 
 		now := time.Now().Unix()
-		_, hour, _, _ := game.GameTimeNow(now, cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+		_, hour, _, gameDay := game.GameTimeNow(now, cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+
+		// NPC 每日消耗：每遊戲日扣食宿鎂（第四個回傳值為 gameDay，勿與 min 搞混）
+		if gameDay != lastExpenseDay {
+			lastExpenseDay = gameDay
+			db.DeductDailyExpense(database)
+		}
+
+		// NPC 池：總量＝玩家＋NPC；固定間隔檢查，未滿則生成一名並註冊腦驅動（男女數持平）
+		if cfg.NPCPoolSize > 0 && cfg.NPCSpawnIntervalSec > 0 && time.Since(lastSpawnCheck) >= time.Duration(cfg.NPCSpawnIntervalSec)*time.Second {
+			lastSpawnCheck = time.Now()
+			npcIDs, _ := db.GetNPCIDsWithRoom(database)
+			playerIDs, _ := db.GetPlayerIDsWithRoom(database)
+			totalInWorld := len(npcIDs) + len(playerIDs)
+			if totalInWorld < cfg.NPCPoolSize {
+				spawnRoom := db.GetSpawnRoomID(database)
+				if newID, err := db.SpawnOneNPCFromPool(database, spawnRoom); err == nil && newID != "" {
+					travelerMgr.Register(newID, db.MovementDef{Type: db.MoveBrain, Speed: 1})
+				}
+			}
+		}
 
 		// NPC 排班：每遊戲小時僅發「出發」敘事；實際移動由 TravelerManager 排班型尋路逐格執行（家可十格外）
 		if hour != lastScheduleHour {
@@ -307,6 +340,15 @@ func main() {
 			playerRooms := server.GetPlayerRoomMap(sessionStore, database)
 			schedules, _ := db.GetAllSchedules(database)
 
+			// NPC-NPC 微互動：每次閒置 tick 有 15% 機率在某一有玩家房間觸發，每輪最多一次
+			for roomID := range playerRooms {
+				social := db.PickMicroInteraction(database, roomID, 15)
+				if social != "" {
+					server.SendNarrateToRoom(sessionStore, database, roomID, social)
+					break
+				}
+			}
+
 			for _, s := range schedules {
 				if !s.IsOnDuty(hour) {
 					continue
@@ -342,7 +384,8 @@ func main() {
 				if _, hasPlayer := playerRooms[npcRoom]; !hasPlayer {
 					continue
 				}
-				emote := db.PickIdleEmote(title, period, s.EntityID)
+				disp := db.GetDisposition(database, s.EntityID)
+				emote := db.PickIdleEmote(title, period, s.EntityID, disp)
 				if emote != "" {
 					server.SendNarrateToRoom(sessionStore, database, npcRoom, emote)
 					break

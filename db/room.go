@@ -224,6 +224,28 @@ func GetNPCIDsWithRoom(db *sql.DB) ([]string, error) {
 	return out, rows.Err()
 }
 
+// GetPlayerIDsWithRoom 回傳所有有房間的玩家實體 ID；池總量計入玩家時使用。
+func GetPlayerIDsWithRoom(db *sql.DB) ([]string, error) {
+	if store.Default != nil {
+		return store.Default.GetPlayerIDsWithRoom(), nil
+	}
+	rows, err := db.Query(
+		`SELECT er.entity_id FROM entity_room er JOIN entities e ON e.id = er.entity_id WHERE e.kind = 'player'`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		out = append(out, id)
+	}
+	return out, rows.Err()
+}
+
 // GetRoomName 查詢房間名稱；store 啟用時從 JSON 背板讀取。
 func GetRoomName(database *sql.DB, roomID string) (string, error) {
 	if store.Default != nil {

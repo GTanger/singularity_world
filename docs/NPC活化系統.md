@@ -268,16 +268,20 @@ data/templates/
 | 移動管理器整合 game loop | ✅ | 每 15 秒推進一步 |
 | 10 種職業模板（含 movement） | ✅ | 模板定義好，待生成引擎串接 |
 
-### 第二點五階段：NPC 有腦（決策引擎）⬜ 待做
+### 第二點五階段：NPC 有腦（決策引擎）🟡 V1 已實作
 
 讓 NPC 有「為什麼現在要做這件事」的決策層，而不是只靠排班與玩家觸發。
 
-| 項目 | 狀態 | 效果 | 工作量 |
-|------|------|------|--------|
-| **需求掃描** | ⬜ | 依馬斯洛（生存／安定／社交…）算各層緊迫度 | 中 |
-| **意圖選擇** | ⬜ | 依 SoulSeed 三軸（大膽／敏感／秩序）在候選意圖中加權選一 | 中 |
-| **行為映射** | ⬜ | 意圖 → 具體動作（求職／乞討／Gather／Trade／移動目標房） | 中 |
-| **主迴圈介面** | ⬜ | `Decide(state, context) -> Intent`，由 main 或 TravelerManager 每 tick 呼叫並執行 | 小 |
+| 項目 | 狀態 | 效果 | 檔案 |
+|------|------|------|------|
+| **需求掃描** | ✅ | 生存層（鎂閾值 50）＋安定層（有無指派） | `db/decision.go` urgencySurvival |
+| **意圖選擇** | 🟡 | V1 固定優先序（生存>安定>閒逛）；三軸已傳入但**未加權** | `db/decision.go` Decide |
+| **行為映射** | ✅ | 7 種意圖（seek_job/beg/gather/trade/wander/work/idle）→ BFS 尋路 | `db/decision.go` ResolveBrainPath |
+| **主迴圈介面** | ✅ | MoveBrain 型 NPC 每 tick 自動 Decide → 尋路 → 到達後敘事＋效果 | `db/npc_movement.go` + `main.go` |
+| **觀測驅動** | ✅ | 僅玩家房＋鄰房的 NPC 才跑決策；無人時背景模擬 | `main.go` buildActiveRoomIDs + `db/unobserved.go` |
+| **到達效果** | ✅ | Beg 加鎂、Gather 加物品、SeekJob 撮合指派 | `main.go` applyBrainArrivalEffects |
+
+**V1 限制**：(1) 鎂只增不減，生存層一次性觸發後不再啟動；(2) 性格三軸未參與決策；(3) Brain 型到達後不停留。**改進計畫**見 [NPC活化突破模板線—實作計畫](implementation/NPC活化突破模板線—實作計畫.md)。
 
 **設計與介面**：見 [奇點決策引擎架構](reference/奇點決策引擎架構.md)（需求權重→性格偏移→情境匹配→插座執行）；實作時決策引擎產出**意圖**，不直接寫 DB 或發送，由上層負責移動／寫 assignment／觸發插座。
 
@@ -526,6 +530,7 @@ data/templates/
 |------|------|------|
 | **NPC 活化模擬測試報告** | `docs/testing/NPC活化系統模擬測試報告.md` | 檢索範圍、已／未實作對照（含馬斯洛）、模擬測試案例與結果、代碼註釋建議 |
 | **NPC 活化實作清單與規劃** | `docs/implementation/NPC活化系統—實作清單與規劃.md` | 細部拆解：數據層／實體／soul_seed 展開／行為／移動／主迴圈／互動／未實作（需求驅動）、依賴與驗收、階段排程；§十「四、有記憶」含可驗收子項 |
+| **NPC 活化突破模板線—實作計畫** | `docs/implementation/NPC活化突破模板線—實作計畫.md` | 六階段突破計畫：鎂消耗、Brain 停留、性格偏移、事件日誌、心境值、NPC-NPC 微互動；供 Cursor auto-execution |
 | **對話記憶系統—彙整與探討** | `docs/reference/對話記憶系統—彙整與探討.md` | 共識與最適作法、人類記憶類比、AI Web Chat/Cursor 對照、遊戲 NPC 背版＋archival 流程、收斂與延伸建議 |
 | **NPC 對話記憶與背版—設計** | `docs/implementation/NPC對話記憶與背版—設計.md` | 背版 blocks、archival、資料流、與 007／對話池／三軸接點、實作階段建議 |
 | **NPC 對話記憶與背版—實作步驟與檔案流程** | `docs/implementation/NPC對話記憶與背版—實作步驟與檔案流程.md` | 粉碎性步驟（階段 1～3）、狀態勾選、檔案清單、可驗收對照 |

@@ -71,6 +71,7 @@ type Entity struct {
 	ActivatedNodes string `json:"activated_nodes,omitempty"`
 	EquipmentSlots string `json:"equipment_slots,omitempty"`
 	Inventory      string `json:"inventory,omitempty"`
+	Disposition    int    `json:"disposition,omitempty"` // 心境 -100~+100，0=中性
 }
 
 // Item 物品定義（與 items 表對齊）。
@@ -93,6 +94,14 @@ type EventEntry struct {
 	Payload   string `json:"payload"`
 }
 
+// ArchivalEntry NPC 長期記憶一條（依 entity_id 分區）。定義在 store 包，避免 store↔db 循環依賴。
+type ArchivalEntry struct {
+	EntityID  string `json:"entity_id"`
+	Content   string `json:"content"`
+	Tag       string `json:"tag"`
+	CreatedAt int64  `json:"created_at"`
+}
+
 // Store 記憶體中的房間、出口、實體、場所、指派、排班、物品、事件日誌、密碼。
 type Store struct {
 	mu              sync.RWMutex
@@ -105,8 +114,10 @@ type Store struct {
 	Entities        map[string]*Entity      // id -> Entity
 	Items           map[string]*Item        // id -> Item
 	EventLog        []EventEntry            // 事件日誌（append）
+	Archival        []ArchivalEntry         // NPC 長期記憶（依 entity_id 查詢）
 	Auth            map[string]string       // entity_id -> password_hash
 	runtimeDir      string
+	archivalPath    string
 	entityRoomsPath string
 	assignmentsPath string
 	schedulesPath   string
@@ -220,6 +231,7 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 		entitiesPath:    filepath.Join(dataDir, "entities.json"),
 		itemsPath:       filepath.Join(dataDir, "items.json"),
 		eventLogPath:    filepath.Join(runtimeDir, "event_log.json"),
+		archivalPath:    filepath.Join(runtimeDir, "npc_archival.json"),
 		authPath:        filepath.Join(runtimeDir, "auth.json"),
 	}
 
@@ -235,6 +247,7 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 		_ = s.loadEntities()
 		_ = s.loadItems()
 		_ = s.loadEventLog()
+		_ = s.loadArchival()
 		_ = s.loadAuth()
 	}
 
@@ -494,6 +507,24 @@ func (s *Store) GetNPCIDsWithRoom() []string {
 	for eid := range s.EntityRooms {
 		e, ok := s.Entities[eid]
 		if !ok || e == nil || e.Kind != "npc" {
+			continue
+		}
+		out = append(out, eid)
+	}
+	return out
+}
+
+// GetPlayerIDsWithRoom 回傳所有有房間的玩家實體 ID（池總量計入玩家時使用）。
+func (s *Store) GetPlayerIDsWithRoom() []string {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	var out []string
+	for eid := range s.EntityRooms {
+		e, ok := s.Entities[eid]
+		if !ok || e == nil || e.Kind != "player" {
 			continue
 		}
 		out = append(out, eid)
@@ -1327,6 +1358,22 @@ func (s *Store) EventsInRange(entityID string, fromAt, toAt int64) []EventEntry 
 	return out
 }
 
+// RecentByEntity 取得某 entity 最近 n 筆事件（由新到舊），供 NPC 背版／Talk 引用。
+func (s *Store) RecentByEntity(entityID string, n int) []EventEntry {
+	if s == nil || n <= 0 {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	var out []EventEntry
+	for i := len(s.EventLog) - 1; i >= 0 && len(out) < n; i-- {
+		if s.EventLog[i].EntityID == entityID {
+			out = append(out, s.EventLog[i])
+		}
+	}
+	return out
+}
+
 func (s *Store) persistEventLog() error {
 	if s.eventLogPath == "" {
 		return nil
@@ -1353,6 +1400,90 @@ func (s *Store) persistEventLog() error {
 		return err
 	}
 	return nil
+}
+
+type archivalFile struct {
+	Entries []ArchivalEntry `json:"entries"`
+}
+
+func (s *Store) loadArchival() error {
+	if s.archivalPath == "" {
+		return nil
+	}
+	data, err := os.ReadFile(s.archivalPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			s.Archival = []ArchivalEntry{}
+			return nil
+		}
+		return err
+	}
+	var f archivalFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
+	}
+	if f.Entries == nil {
+		f.Entries = []ArchivalEntry{}
+	}
+	s.mu.Lock()
+	s.Archival = f.Entries
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *Store) persistArchival() error {
+	if s.archivalPath == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(s.archivalPath), 0755); err != nil {
+		return err
+	}
+	s.mu.RLock()
+	entries := s.Archival
+	if entries == nil {
+		entries = []ArchivalEntry{}
+	}
+	s.mu.RUnlock()
+	raw, err := json.MarshalIndent(archivalFile{Entries: entries}, "", "  ")
+	if err != nil {
+		return err
+	}
+	tmpPath := s.archivalPath + ".tmp"
+	if err := os.WriteFile(tmpPath, raw, 0644); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.archivalPath); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+	return nil
+}
+
+// AppendArchival 追加一筆 NPC 長期記憶並持久化。
+func (s *Store) AppendArchival(entry ArchivalEntry) error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	s.Archival = append(s.Archival, entry)
+	s.mu.Unlock()
+	return s.persistArchival()
+}
+
+// GetArchivalByEntity 回傳該 entity 的全部記憶條目（由新到舊）。
+func (s *Store) GetArchivalByEntity(entityID string) []ArchivalEntry {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	var out []ArchivalEntry
+	for i := len(s.Archival) - 1; i >= 0; i-- {
+		if s.Archival[i].EntityID == entityID {
+			out = append(out, s.Archival[i])
+		}
+	}
+	return out
 }
 
 // SetAuth 設定 entity 密碼雜湊並持久化 auth.json。

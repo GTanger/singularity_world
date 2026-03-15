@@ -25,6 +25,7 @@ type Character struct {
 	ActivatedNodes  string // 星盤已貫通節點 ID 之 JSON 陣列，預設 ["N000"]（§五.3）
 	EquipmentSlots  string // 裝備槽位 JSON，key=槽位代碼 value=item_id（裝備分頁規格 §一）
 	Inventory       string // 背包物品 JSON 陣列，每元素 {"item_id":"xxx","qty":1}（背包規格 §六）
+	Disposition     int    // 心境 -100~+100，0=中性（閒置口吻、Talk 口吻用）
 }
 
 // Sockets 回傳此角色對外開放的動詞清單（Agent 預設插座：Talk, Attack, Look, Trade）。

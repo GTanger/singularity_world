@@ -23,6 +23,8 @@ type Server struct {
 	SessionRetainMinutes  int           // 斷線後同角色／同房間可恢復的觀念時長（分鐘）；實際位置由 DB 持久，重連登入即恢復
 	GameTimeEpochUnix     int64         // 遊戲 0:00 對應的真實 Unix 秒；0＝以 1970-01-01 為起點
 	GameTimeScale         float64       // 1 真實秒 ＝ GameTimeScale 遊戲秒；24 ＝ 1 真實小時 ＝ 1 遊戲日
+	NPCPoolSize           int           // NPC 池總量（有房間的 NPC 數上限）；0＝不自動補
+	NPCSpawnIntervalSec   int           // 每隔幾秒檢查一次並在未滿時生成一名 NPC；0＝不自動生成
 }
 
 // Design 為第一版可做清單 1.2.2 設計常數：1 格＝1m＝30px、角色圓 24px、地形字 30px、格線隱藏。供前端對齊。
@@ -91,7 +93,7 @@ func DefaultServer() Server {
 	// 奇點曆起點：持久於 data/game_epoch.unix，重啟照算；設 GAME_TIME_EPOCH_ROLLBACK=1 才重設為「現在＝元年」。
 	// 若設 GAME_TIME_EPOCH_UNIX 則以該值為準（不讀寫檔案）。
 	gameTimeEpoch := resolveGameTimeEpoch()
-	return Server{
+	cfg := Server{
 		Port:                 port,
 		DBPath:               "data/world.db", // 未使用；僅相容
 		MaxWebSocketConn:     10,
@@ -102,5 +104,18 @@ func DefaultServer() Server {
 		SessionRetainMinutes: 10,
 		GameTimeEpochUnix:    gameTimeEpoch,
 		GameTimeScale:        24,
+		NPCPoolSize:          20,
+		NPCSpawnIntervalSec:  120,
 	}
+	if s := os.Getenv("NPC_POOL_SIZE"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n >= 0 {
+			cfg.NPCPoolSize = n
+		}
+	}
+	if s := os.Getenv("NPC_SPAWN_INTERVAL_SEC"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n >= 0 {
+			cfg.NPCSpawnIntervalSec = n
+		}
+	}
+	return cfg
 }

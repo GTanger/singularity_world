@@ -189,7 +189,7 @@ func storeEntityToCharacter(e *store.Entity, npcDisplayTitle string) *entity.Cha
 		EquipmentSlots: e.EquipmentSlots, Inventory: e.Inventory,
 		TargetX: e.TargetX, TargetY: e.TargetY, WalkOrRun: e.WalkOrRun,
 		MoveStartedAt: e.MoveStartedAt, LastObservedAt: e.LastObservedAt,
-		SoulSeed: e.SoulSeed,
+		SoulSeed: e.SoulSeed, Disposition: e.Disposition,
 	}
 	if c.Kind == "npc" && npcDisplayTitle != "" {
 		c.DisplayTitle = npcDisplayTitle
