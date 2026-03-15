@@ -24,23 +24,27 @@
       "id": "sunst04_shop03_05_04",
       "name": "南廊一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop03_04",
       "responses": {
+        "Look": "此處可通往南廊一。",
         "Move": "你往南廊一走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop03_04"
     },
     {
       "id": "sunst04_shop03_05_06",
       "name": "西廊一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop03_06",
       "responses": {
+        "Look": "此處可通往西廊一。",
         "Move": "你往西廊一走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop03_06"
     }
   ]
 }

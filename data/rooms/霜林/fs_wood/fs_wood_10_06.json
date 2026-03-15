@@ -19,12 +19,14 @@
       "id": "fs_wood_10_06_to_fs_wood_10_08",
       "name": "踏入角落",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_10_08",
       "responses": {
+        "Look": "此處可通往踏入角落。",
         "Move": "你往踏入角落走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_10_08"
     }
   ]
 }

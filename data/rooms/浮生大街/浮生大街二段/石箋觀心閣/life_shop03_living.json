@@ -2,7 +2,6 @@
   "id": "life_shop03_living",
   "name": "生活起居室",
   "description": "石製圓桌伏貼於地，桌緣半透明地衣攀附石面，螢火般的微光在暗處浮動。此處通向〔內走廊〕與〔私人臥室〕。牆側〔木格架〕倚牆而立，架上數卷石片蒙著玉質粉塵。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop03_living_exit_hallway",
       "name": "內走廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop03_hallway",
       "responses": {
+        "Look": "此處可通往內走廊。",
         "Move": "你離開圓桌，朝內走廊走去。"
-      }
+      },
+      "move_to_room_id": "life_shop03_hallway"
     },
     {
       "id": "life_shop03_living_exit_bedroom",
       "name": "私人臥室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop03_bedroom",
       "responses": {
+        "Look": "此處可通往私人臥室。",
         "Move": "你推開側門，步入私人臥室。"
-      }
+      },
+      "move_to_room_id": "life_shop03_bedroom"
     },
     {
       "id": "life_shop03_living_obj_shelf",

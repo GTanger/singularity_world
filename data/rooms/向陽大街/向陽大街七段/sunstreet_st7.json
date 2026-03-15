@@ -51,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st6",
       "responses": {
         "Move": "你沿向陽大街往六段走去。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st6"
     },
     {
       "id": "sun_st7_exit_st8",
@@ -62,65 +62,75 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st8",
       "responses": {
         "Move": "你沿向陽大街往八段走去。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st8"
     },
     {
       "id": "sun_st7_obj_shop01",
       "name": "向明望塔居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_shop01_main",
       "responses": {
+        "Look": "此處可通往向明望塔居。",
         "Move": "建築的設計極為瘦高，彷彿要竭力突破向陽拱頂的限制去接觸真正的天空，底層的門面卻顯得很窄小；〔狹長金屬門〕半掩。"
-      }
+      },
+      "move_to_room_id": "sunst07_shop01_main"
     },
     {
       "id": "sun_st7_obj_home01",
       "name": "照和迎光軒",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home01_main",
       "responses": {
+        "Look": "此處可通往照和迎光軒。",
         "Move": "門廊處種植了許多變異的發光植物，柔和的植物螢光與街上的金光相互輝映，有一種奇異的自然美感；〔藤蔓掩映門〕可入。"
-      }
+      },
+      "move_to_room_id": "sunst07_home01_main"
     },
     {
       "id": "sun_st7_obj_home02",
       "name": "光潤工匠舍",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home02_main",
       "responses": {
+        "Look": "此處可通往光潤工匠舍。",
         "Move": "這棟住宅的底層被改造成了小型的加工作坊，空氣中飄散著潤滑油與加熱白玉的氣味；〔斑駁鐵門〕敝開著。"
-      }
+      },
+      "move_to_room_id": "sunst07_home02_main"
     },
     {
       "id": "sun_st7_obj_home03",
       "name": "曜明群租寓",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home03_main",
       "responses": {
+        "Look": "此處可通往曜明群租寓。",
         "Move": "外牆的稜鏡有幾塊明顯是劣質的替代品，折射出的光線略顯渾濁。這裡住著一群勉強擠進向陽大街的市民；〔厚重木門〕開著。"
-      }
+      },
+      "move_to_room_id": "sunst07_home03_main"
     },
     {
       "id": "sun_st7_obj_home04",
       "name": "流輝大宅邸",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home04_main",
       "responses": {
+        "Look": "此處可通往流輝大宅邸。",
         "Move": "這一段街區少數的頂級豪宅，門前的白玉階梯兩側甚至有小型的人工光瀑布在循環流動；〔水晶雕花門〕緊閉。"
-      }
+      },
+      "move_to_room_id": "sunst07_home04_main"
     }
   ]
 }

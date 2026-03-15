@@ -2,7 +2,10 @@
   "id": "wust05_hold01_19",
   "name": "荒蕪與繁茂交界",
   "description": "斗室牆面玉質脈絡與根鬚咬合，光線自簷角篩落，石磚與根鬚嵌合的地面泛著恆溫熱氣，靜，光線篩落、靜謐豐饒，熱輻射使邊界略顯模糊。可經〔靜滯香徑〕、〔林蔭出口〕前往他處。",
-  "tags": ["outdoor","plaza"],
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -21,23 +24,27 @@
       "id": "wust05_hold01_19_exit_1",
       "name": "靜滯香徑",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_18",
       "responses": {
+        "Look": "此處可通往靜滯香徑。",
         "Move": "你往靜滯香徑走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_18"
     },
     {
       "id": "wust05_hold01_19_exit_2",
       "name": "林蔭出口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_20",
       "responses": {
+        "Look": "此處可通往林蔭出口。",
         "Move": "你往林蔭出口走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_20"
     }
   ]
 }

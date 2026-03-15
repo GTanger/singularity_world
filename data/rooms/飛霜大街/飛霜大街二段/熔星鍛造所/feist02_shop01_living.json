@@ -2,7 +2,6 @@
   "id": "feist02_shop01_living",
   "name": "【熔星鍛造所】熔爐後院",
   "description": "露天的院落，但幾乎被中心的巨型熔爐佔滿。這座熔爐是鍛造所的心臟，噴吐著足以融化寒霜的致命高溫。地面散落著滾燙的礦渣，半空中飄浮著未能燃盡的煤灰與火星。退回〔接待大堂〕或〔淬火後堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist02_shop01_lv_exit_back",
       "name": "淬火後堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop01_back",
       "responses": {
+        "Look": "此處可通往淬火後堂。",
         "Move": "你退回淬火後堂。"
-      }
+      },
+      "move_to_room_id": "feist02_shop01_back"
     },
     {
       "id": "feist02_shop01_lv_exit_kitchen",
       "name": "汗水灶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop01_kitchen",
       "responses": {
+        "Look": "此處可通往汗水灶間。",
         "Move": "你往汗水灶間走去。"
-      }
+      },
+      "move_to_room_id": "feist02_shop01_kitchen"
     },
     {
       "id": "feist02_shop01_lv_exit_bed1",
       "name": "學徒通鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop01_bed1",
       "responses": {
+        "Look": "此處可通往學徒通鋪。",
         "Move": "你往學徒通鋪走去。"
-      }
+      },
+      "move_to_room_id": "feist02_shop01_bed1"
     }
   ]
 }

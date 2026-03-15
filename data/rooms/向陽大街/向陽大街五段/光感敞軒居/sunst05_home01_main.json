@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st5",
       "responses": {
         "Move": "你步出敞軒居，回到向陽大街五段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st5"
     },
     {
       "id": "sunst05_home01_main_02",
       "name": "東廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_home01_02",
       "responses": {
+        "Look": "此處可通往東廂。",
         "Move": "你往東廂走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_home01_02"
     },
     {
       "id": "sunst05_home01_main_04",
       "name": "西廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_home01_04",
       "responses": {
+        "Look": "此處可通往西廂。",
         "Move": "你往西廂走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_home01_04"
     }
   ]
 }

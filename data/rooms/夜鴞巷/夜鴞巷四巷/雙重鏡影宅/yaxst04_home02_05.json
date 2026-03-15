@@ -24,12 +24,14 @@
       "id": "yaxst04_home02_05_04",
       "name": "廊心",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home02_04",
       "responses": {
+        "Look": "此處可通往廊心。",
         "Move": "你往廊心走回。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home02_04"
     },
     {
       "id": "yaxst04_home02_05_06",
@@ -37,10 +39,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home02_06",
       "responses": {
         "Move": "你往後扉側廊口走去。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home02_06"
     }
   ]
 }

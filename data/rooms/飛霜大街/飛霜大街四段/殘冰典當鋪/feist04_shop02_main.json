@@ -2,7 +2,6 @@
   "id": "feist04_shop02_main",
   "name": "【殘冰典當鋪】鐵柵櫃前",
   "description": "空間極其壓抑狹小。客人與當鋪掌櫃之間被一道粗大的防彈鐵柵欄隔開。唯一的光源來自櫃檯內側鑑定物品用的一盞刺眼白燈。空氣中有著陳舊物品散發的腐朽與金屬鏽味。退回〔隔霜門簾〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -33,21 +32,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st4",
       "responses": {
         "Move": "你掀簾步出，回到飛霜大街四段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st4"
     },
     {
       "id": "feist04_shop02_m_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop02_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "feist04_shop02_counter"
     },
     {
       "id": "feist04_shop02_m_exit_eave",
@@ -55,21 +56,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist04_shop02_eave",
       "responses": {
         "Move": "你步向簷廊。"
-      }
+      },
+      "move_to_room_id": "feist04_shop02_eave"
     },
     {
       "id": "feist04_shop02_m_exit_inner",
       "name": "內堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop02_inner",
       "responses": {
+        "Look": "此處可通往內堂。",
         "Move": "你往內堂。"
-      }
+      },
+      "move_to_room_id": "feist04_shop02_inner"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist05_shop01_main",
   "name": "【踏霜鞋靴鋪】縫線前堂",
   "description": "堆滿了各類獸皮與合成橡膠的店舖，空氣裡充滿了刺鼻的黏合劑氣味。退回〔厚皮推門〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st5",
       "responses": {
         "Move": "你步出鋪面，回到飛霜大街五段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st5"
     },
     {
       "id": "feist05_shop01_m_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_shop01_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "feist05_shop01_counter"
     },
     {
       "id": "feist05_shop01_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist05_shop01_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist05_shop01_eave"
     }
   ]
 }

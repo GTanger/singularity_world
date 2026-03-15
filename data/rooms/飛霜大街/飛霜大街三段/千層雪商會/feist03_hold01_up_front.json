@@ -2,7 +2,6 @@
   "id": "feist03_hold01_up_front",
   "name": "樓上前",
   "description": "簷心樓樓上前間低梁壓頂、簷角積霜從瓦隙沁進一線白，一几兩凳、火盆冷了一夜；木梯通〔樓梯〕，兩門各通〔樓東〕〔樓西〕、一門通〔閣樓〕，簷下陰影與霜紋靜止。此處通〔樓梯〕、〔樓東〕、〔樓西〕、〔閣樓〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -31,45 +30,53 @@
       "id": "feist03_hold01_uf_exit_stairs",
       "name": "樓梯",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_stairs",
       "responses": {
+        "Look": "此處可通往樓梯。",
         "Move": "你順木梯下樓。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_stairs"
     },
     {
       "id": "feist03_hold01_uf_exit_east",
       "name": "樓東",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_up_east",
       "responses": {
+        "Look": "此處可通往樓東。",
         "Move": "你入樓東。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_up_east"
     },
     {
       "id": "feist03_hold01_uf_exit_west",
       "name": "樓西",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_up_west",
       "responses": {
+        "Look": "此處可通往樓西。",
         "Move": "你入樓西。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_up_west"
     },
     {
       "id": "feist03_hold01_uf_exit_loft",
       "name": "閣樓",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_loft",
       "responses": {
+        "Look": "此處可通往閣樓。",
         "Move": "你往閣樓。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_loft"
     }
   ]
 }

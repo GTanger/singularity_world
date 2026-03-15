@@ -19,12 +19,14 @@
       "id": "fs_wood_09_03_to_fs_wood_09_05",
       "name": "移向平台",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_05",
       "responses": {
+        "Look": "此處可通往移向平台。",
         "Move": "你往移向平台走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_05"
     }
   ]
 }

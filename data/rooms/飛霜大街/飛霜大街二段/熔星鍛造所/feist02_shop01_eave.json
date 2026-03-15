@@ -2,7 +2,6 @@
   "id": "feist02_shop01_eave",
   "name": "【熔星鍛造所】灼熱簷下",
   "description": "鍛造所外一處被沉重金屬簷延伸覆蓋的區域。熱氣在這裡盤旋不去，即使在最冷的季節，站在此處也會讓人熱得想脫去外套。通向〔接待大堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist02_shop01_e_exit_main",
       "name": "接待大堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop01_main",
       "responses": {
+        "Look": "此處可通往接待大堂。",
         "Move": "你退回接待大堂。"
-      }
+      },
+      "move_to_room_id": "feist02_shop01_main"
     }
   ]
 }

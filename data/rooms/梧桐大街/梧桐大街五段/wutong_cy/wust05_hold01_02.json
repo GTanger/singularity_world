@@ -2,7 +2,10 @@
   "id": "wust05_hold01_02",
   "name": "前間",
   "description": "背光處牆面氣根與石板咬合穩住地磚，空氣中膠質氣味與沉香交織，靜謐豐饒，枝葉蔽天、綠廊拱頂感，枝葉蔽天、綠廊拱頂感。可經〔廣庭入口〕、〔裡間〕、〔儲間〕前往他處。",
-  "tags": ["outdoor","plaza"],
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -28,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_01",
       "responses": {
         "Move": "你往廣庭入口走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_01"
     },
     {
       "id": "wust05_hold01_02_exit_2",
       "name": "裡間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_03",
       "responses": {
+        "Look": "此處可通往裡間。",
         "Move": "你往裡間走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_03"
     },
     {
       "id": "wust05_hold01_02_exit_3",
       "name": "儲間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_09",
       "responses": {
+        "Look": "此處可通往儲間。",
         "Move": "你往儲間走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_09"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "ironland_shop06_kiln",
   "name": "爐房",
   "description": "爐膛餘燼、牆縫脈動細碎；熱浪撲面，巷風灌入時砧聲自工間傳來。此處僅通〔工間〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_shop06_kiln_exit",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop06_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你回到工間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop06_workshop"
     }
   ]
 }

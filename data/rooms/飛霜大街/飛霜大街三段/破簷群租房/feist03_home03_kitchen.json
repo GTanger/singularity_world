@@ -2,7 +2,6 @@
   "id": "feist03_home03_kitchen",
   "name": "灶間",
   "description": "簷線宅灶間爐冷餘灰、鍋碗疊在石檯，簷下霜氣自窗隙沁進、簷線低壓自簾隙漏進一線；僅一門通〔起居〕，茶氣與煙氣沉在樑下、掌心貼檯一片沁涼。此處僅通〔起居〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist03_home03_k_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_home03_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你退回起居。"
-      }
+      },
+      "move_to_room_id": "feist03_home03_living"
     }
   ]
 }

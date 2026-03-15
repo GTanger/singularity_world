@@ -24,23 +24,27 @@
       "id": "yaxst04_shop01_13_12",
       "name": "棧底廊一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_12",
       "responses": {
+        "Look": "此處可通往棧底廊一。",
         "Move": "你往棧底廊一走回。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_12"
     },
     {
       "id": "yaxst04_shop01_13_14",
       "name": "棧底廊三",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_14",
       "responses": {
+        "Look": "此處可通往棧底廊三。",
         "Move": "你往棧底廊三走去。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_14"
     }
   ]
 }

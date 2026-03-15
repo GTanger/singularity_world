@@ -25,23 +25,27 @@
       "id": "sunst05_hold01_18_17",
       "name": "中庭口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_17",
       "responses": {
+        "Look": "此處可通往中庭口。",
         "Move": "你往中庭口走回。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_17"
     },
     {
       "id": "sunst05_hold01_18_19",
       "name": "中庭二區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_19",
       "responses": {
+        "Look": "此處可通往中庭二區。",
         "Move": "你往中庭二區走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_19"
     }
   ]
 }

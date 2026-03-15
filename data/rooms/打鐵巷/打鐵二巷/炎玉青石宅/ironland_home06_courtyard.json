@@ -2,7 +2,6 @@
   "id": "ironland_home06_courtyard",
   "name": "小院",
   "description": "小院與門廳同階、低階上廊一階；泥地苔衣、牆根脈絡，階緣玉質沁出。此處僅通〔門廳〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -18,10 +17,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_home06_main",
       "responses": {
         "Move": "你回到門廳。"
-      }
+      },
+      "move_to_room_id": "ironland_home06_main"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_shop02_stairwell_2f",
   "name": "二樓平台",
   "description": "螺旋石階在此終止，地表平鋪著淡紫色琉璃質。此處光線較為柔和，路徑通向下方的〔樓梯間〕與側邊的〔居家客廳〕。牆面上掛著一張〔乾枯葉毯〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop02_stairs_2f_exit_down",
       "name": "樓梯間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_stairwell_1f",
       "responses": {
+        "Look": "此處可通往樓梯間。",
         "Move": "你沿螺旋石階向下，回到樓梯間。"
-      }
+      },
+      "move_to_room_id": "life_shop02_stairwell_1f"
     },
     {
       "id": "life_shop02_stairs_2f_exit_living",
       "name": "居家客廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_living",
       "responses": {
+        "Look": "此處可通往居家客廳。",
         "Move": "你步入側邊通道，進入居家客廳。"
-      }
+      },
+      "move_to_room_id": "life_shop02_living"
     },
     {
       "id": "life_shop02_stairs_2f_obj_rug",

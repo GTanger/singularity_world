@@ -2,7 +2,6 @@
   "id": "feist06_shop03_kitchen",
   "name": "灶間",
   "description": "簷角行灶間門洞深、光只到簾口，土灶矮、水缸裂了一道補過的縫；柴薪疊在門邊、簷角積霜自簾隙沁進一線冷，六段一側多商一側多宅、人聲隔簾而遠，牆角煙燻發黑、掌心貼檯一片沁涼，簾外即過廳的聲息。此處僅通〔過廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist06_shop03_k_exit_hall",
       "name": "過廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop03_hall",
       "responses": {
+        "Look": "此處可通往過廳。",
         "Move": "你退回過廳。"
-      }
+      },
+      "move_to_room_id": "feist06_shop03_hall"
     }
   ]
 }

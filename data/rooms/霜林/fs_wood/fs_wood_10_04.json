@@ -19,12 +19,14 @@
       "id": "fs_wood_10_04_to_fs_wood_10_06",
       "name": "聆聽音波",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_10_06",
       "responses": {
+        "Look": "此處可通往聆聽音波。",
         "Move": "你往聆聽音波走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_10_06"
     }
   ]
 }

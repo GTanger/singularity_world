@@ -19,12 +19,14 @@
       "id": "fs_wood_08_09_to_fs_wood_08_10",
       "name": "滑向終點",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_10",
       "responses": {
+        "Look": "此處可通往滑向終點。",
         "Move": "你往滑向終點走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_10"
     }
   ]
 }

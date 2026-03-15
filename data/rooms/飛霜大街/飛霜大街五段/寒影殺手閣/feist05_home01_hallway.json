@@ -2,7 +2,6 @@
   "id": "feist05_home01_hallway",
   "name": "廊",
   "description": "簷影宅廊子半折，一頭往門廳、一頭往起居與臥房；側門推開即小院，牆皮斑駁、石階緣磨得圓滑，簷下陰影與積霜交錯、掌心貼牆一片沁涼，盡頭書齋在左、五段燈火從門廳漏進一線。此處通〔無光過道〕、〔起居〕、〔小院〕、〔書齋〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -31,45 +30,53 @@
       "id": "feist05_home01_h_exit_main",
       "name": "無光過道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home01_main",
       "responses": {
+        "Look": "此處可通往無光過道。",
         "Move": "你退回無光過道。"
-      }
+      },
+      "move_to_room_id": "feist05_home01_main"
     },
     {
       "id": "feist05_home01_h_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home01_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你往起居。"
-      }
+      },
+      "move_to_room_id": "feist05_home01_living"
     },
     {
       "id": "feist05_home01_h_exit_court",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home01_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往小院。"
-      }
+      },
+      "move_to_room_id": "feist05_home01_courtyard"
     },
     {
       "id": "feist05_home01_h_exit_study",
       "name": "書齋",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home01_study",
       "responses": {
+        "Look": "此處可通往書齋。",
         "Move": "你往書齋。"
-      }
+      },
+      "move_to_room_id": "feist05_home01_study"
     }
   ]
 }

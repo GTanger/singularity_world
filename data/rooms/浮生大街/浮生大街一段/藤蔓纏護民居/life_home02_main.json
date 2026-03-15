@@ -2,7 +2,6 @@
   "id": "life_home02_main",
   "name": "門廳",
   "description": "牆壁由交錯肥厚根系構成，葉內滲出淡綠黏液。暗綠苔蘚鋪滿地面，踩踏具彈性。光線穿過〔垂簾入口〕灑入，內側導向〔根鬚廊道〕。牆角立著一個〔石製燈架〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st1",
       "responses": {
         "Move": "你撥開垂簾，回到浮生大街一段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st1"
     },
     {
       "id": "home02_main_exit_corridor",
       "name": "根鬚廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home02_corridor",
       "responses": {
+        "Look": "此處可通往根鬚廊道。",
         "Move": "你朝內側通道走去，進入根鬚廊道。"
-      }
+      },
+      "move_to_room_id": "life_home02_corridor"
     },
     {
       "id": "home02_main_obj_stand",

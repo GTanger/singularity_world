@@ -24,23 +24,27 @@
       "id": "wust03_shop01_04_exit_1",
       "name": "庫房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust03_shop01_03",
       "responses": {
+        "Look": "此處可通往庫房。",
         "Move": "你往庫房走去。"
-      }
+      },
+      "move_to_room_id": "wust03_shop01_03"
     },
     {
       "id": "wust03_shop01_04_exit_2",
       "name": "展間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust03_shop01_05",
       "responses": {
+        "Look": "此處可通往展間。",
         "Move": "你往展間走去。"
-      }
+      },
+      "move_to_room_id": "wust03_shop01_05"
     }
   ]
 }

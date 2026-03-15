@@ -2,7 +2,6 @@
   "id": "feist05_home02_main",
   "name": "【破冰驛站】泥濘門廊",
   "description": "充斥著汗水與酒精味的過渡空間，地上滿是從長筒靴上刮下來的輻射冰泥。退回〔粗木窄門〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st5",
       "responses": {
         "Move": "你推門步出，回到飛霜大街五段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st5"
     },
     {
       "id": "feist05_home02_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist05_home02_hallway"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist08_hold01_office",
   "name": "帳房",
   "description": "霜脊樓帳房一案一櫃，帳冊疊齊、算盤擱在邊上；窗小、光只照到案角餘皆昏昧，簾外穿堂腳步聲偶爾經過、樓內人聲隔簾而遠，掌心貼案一片沁涼、此地即樓內最靜一隅。此處通〔穿堂〕與〔耳房〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist08_hold01_off_exit_corr",
       "name": "穿堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_hold01_corridor",
       "responses": {
+        "Look": "此處可通往穿堂。",
         "Move": "你出帳房回穿堂。"
-      }
+      },
+      "move_to_room_id": "feist08_hold01_corridor"
     },
     {
       "id": "feist08_hold01_off_exit_annex",
       "name": "耳房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_hold01_annex",
       "responses": {
+        "Look": "此處可通往耳房。",
         "Move": "你往耳房。"
-      }
+      },
+      "move_to_room_id": "feist08_hold01_annex"
     }
   ]
 }

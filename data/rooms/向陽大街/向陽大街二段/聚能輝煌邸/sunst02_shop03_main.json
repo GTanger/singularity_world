@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st2",
       "responses": {
         "Move": "你步出稜輝閣，回到向陽大街二段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st2"
     },
     {
       "id": "sunst02_shop03_main_02",
       "name": "東翼",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop03_02",
       "responses": {
+        "Look": "此處可通往東翼。",
         "Move": "你往東翼走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop03_02"
     },
     {
       "id": "sunst02_shop03_main_03",
       "name": "西翼",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop03_03",
       "responses": {
+        "Look": "此處可通往西翼。",
         "Move": "你往西翼走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop03_03"
     }
   ]
 }

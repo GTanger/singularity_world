@@ -2,7 +2,6 @@
   "id": "wustreet_st9",
   "name": "梧桐大街九段",
   "description": "梧桐大街的最終段，但這裡沒有走向四路街口的繁華，反而像是一頭扎進了更深的原始森林。街尾的枝葉蔽天不見日，巨木交錯的枝幹甚至將天空徹底縫死。這裡的光線呈現一種極低飽和度的幽綠，空氣中瀰漫著濃重的濕氣與土腥味。沒有廢土的死寂，只有瘋狂的生長與不可名狀的壓迫感。這一段完全是為了追求極端自然環境的人而準備的隱居民宿區：包含在樹冠層發出低鳴的〔夏日鳴蟬室〕、位於採光死角的〔深陷隅光邸〕以及被樹葉完全包裹的〔無盡葉脈居〕。可退回〔梧桐大街八段〕。",
-  "tags": [],
   "zone": "wustreet",
   "exits": [
     {
@@ -33,43 +32,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "wustreet_st8",
       "responses": {
         "Move": "你沿梧桐大街往八段走去。"
-      }
+      },
+      "move_to_room_id": "wustreet_st8"
     },
     {
       "id": "wu_st9_obj_mingchan",
       "name": "夏日鳴蟬室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust09_home01_main",
       "responses": {
+        "Look": "此處可通往夏日鳴蟬室。",
         "Move": "這棟建築彷彿一個被架在巨大樹杈上的鳥巢，室內模擬了舊時代夏日的蟬鳴聲與恆溫，令人昏昏欲睡；〔木梯活板門〕可入內。"
-      }
+      },
+      "move_to_room_id": "wust09_home01_main"
     },
     {
       "id": "wu_st9_obj_home02",
       "name": "深陷隅光邸",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust09_home02_main",
       "responses": {
+        "Look": "此處可通往深陷隅光邸。",
         "Move": "位於四面巨木的視覺死角，這裡終年不見天日，只能依靠特製的螢光真菌提供照明，氣氛極度陰森；〔朽木陰門〕半敞。"
-      }
+      },
+      "move_to_room_id": "wust09_home02_main"
     },
     {
       "id": "wu_st9_obj_home03",
       "name": "無盡葉脈居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust09_home03_main",
       "responses": {
+        "Look": "此處可通往無盡葉脈居。",
         "Move": "整棟房子的外牆是由無數片經過防腐處理的巨大變異梧桐葉拼貼而成，踩在門廊上有種踩在落葉堆裡的錯覺；〔落葉隱門〕隨風搖曳。"
-      }
+      },
+      "move_to_room_id": "wust09_home03_main"
     }
   ]
 }

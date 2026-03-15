@@ -2,7 +2,6 @@
   "id": "feist08_hold01_eave",
   "name": "【凜冬哨塔】簷下",
   "description": "霜脊樓簷下貼牆一條窄廊，簷外即街；霜落在簷緣、風一吹就撲面沾衣即化，茶氣與街面霜氣在鼻端交混，可望見八段行人與遠處四路街口燈火、簷脊切天如刀。此處僅通〔前庭〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist08_hold01_eave_exit_yard",
       "name": "前庭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_hold01_front_yard",
       "responses": {
+        "Look": "此處可通往前庭。",
         "Move": "你退回前庭。"
-      }
+      },
+      "move_to_room_id": "feist08_hold01_front_yard"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "ironland_shop10_courtyard",
   "name": "小院",
   "description": "泥地苔衣、牆根脈絡；簷擋巷熱，院裡仍帶爐膛餘熱。此處僅通〔爐膛鋪〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_shop10_courtyard_exit",
       "name": "爐膛鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_main",
       "responses": {
+        "Look": "此處可通往爐膛鋪。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_main"
     }
   ]
 }

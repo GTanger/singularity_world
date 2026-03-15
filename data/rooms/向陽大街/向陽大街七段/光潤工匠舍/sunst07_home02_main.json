@@ -29,34 +29,40 @@
       "id": "sunst07_home02_main_exit_1",
       "name": "大街",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st7",
       "responses": {
+        "Look": "此處可通往大街。",
         "Move": "你步出，回到向陽大街七段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st7"
     },
     {
       "id": "sunst07_home02_main_exit_2",
       "name": "前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home02_02",
       "responses": {
+        "Look": "此處可通往前間。",
         "Move": "你往前間走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_home02_02"
     },
     {
       "id": "sunst07_home02_main_exit_3",
       "name": "儲間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home02_09",
       "responses": {
+        "Look": "此處可通往儲間。",
         "Move": "你往儲間走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_home02_09"
     }
   ]
 }

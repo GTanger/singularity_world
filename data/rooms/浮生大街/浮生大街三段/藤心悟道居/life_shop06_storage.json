@@ -2,7 +2,6 @@
   "id": "life_shop06_storage",
   "name": "儲藏間",
   "description": "藤根與格架盤結，陶罐與織物堆疊，縫隙沁出微光。此處通〔藤心居〕與〔生活起居室〕，可回店頭或往起居處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop06_storage_exit_main",
       "name": "藤心居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop06_main",
       "responses": {
+        "Look": "此處可通往藤心居。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop06_main"
     },
     {
       "id": "life_shop06_storage_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop06_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你步入生活起居室。"
-      }
+      },
+      "move_to_room_id": "life_shop06_living"
     }
   ]
 }

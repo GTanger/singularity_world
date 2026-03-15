@@ -34,23 +34,27 @@
       "id": "fei_lake_west_shore",
       "name": "沉霜水際",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_shore",
       "responses": {
+        "Look": "此處可通往沉霜水際。",
         "Move": "你往貼水石灘走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_shore"
     },
     {
       "id": "fei_lake_west_north",
       "name": "北岸孤冷湖背",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_north",
       "responses": {
+        "Look": "此處可通往北岸孤冷湖背。",
         "Move": "你沿湖岸往北側走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_north"
     },
     {
       "id": "fei_lake_west_south",
@@ -58,21 +62,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "fei_lake_south",
       "responses": {
         "Move": "你沿湖岸往南側走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_south"
     },
     {
       "id": "fei_lake_west_pump",
       "name": "轟鳴泵房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_pump",
       "responses": {
+        "Look": "此處可通往轟鳴泵房。",
         "Move": "你朝轟鳴泵房走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_pump"
     }
   ]
 }

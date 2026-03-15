@@ -36,43 +36,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st1",
       "responses": {
         "Move": "你沿石板路步回飛霜大街一段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st1"
     },
     {
       "id": "fei_lake_south_shore",
       "name": "沉霜水際",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_shore",
       "responses": {
+        "Look": "此處可通往沉霜水際。",
         "Move": "你往貼水石灘走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_shore"
     },
     {
       "id": "fei_lake_south_east",
       "name": "東岸霧起之濱",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_east",
       "responses": {
+        "Look": "此處可通往東岸霧起之濱。",
         "Move": "你沿湖岸往東側走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_east"
     },
     {
       "id": "fei_lake_south_west",
       "name": "西岸寂靜迴岸",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_west",
       "responses": {
+        "Look": "此處可通往西岸寂靜迴岸。",
         "Move": "你沿湖岸往西側走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_west"
     }
   ]
 }

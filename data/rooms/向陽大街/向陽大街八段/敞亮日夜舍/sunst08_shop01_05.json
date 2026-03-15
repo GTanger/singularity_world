@@ -24,23 +24,27 @@
       "id": "sunst08_shop01_05_exit_1",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst08_shop01_02",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_shop01_02"
     },
     {
       "id": "sunst08_shop01_05_exit_2",
       "name": "理療區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst08_shop01_06",
       "responses": {
+        "Look": "此處可通往理療區。",
         "Move": "你往理療區走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_shop01_06"
     }
   ]
 }

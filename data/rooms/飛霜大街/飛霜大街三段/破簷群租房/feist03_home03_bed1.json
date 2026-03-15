@@ -2,7 +2,6 @@
   "id": "feist03_home03_bed1",
   "name": "臥一",
   "description": "簷線宅臥一榻靠牆、簷隙漏光切在枕畔，簷線低壓自瓦隙沁進、榻沿沁涼；門僅通〔起居〕，簷下陰影靜止、簾外即廊的聲息。此處僅通〔起居〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist03_home03_b1_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_home03_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你退回起居。"
-      }
+      },
+      "move_to_room_id": "feist03_home03_living"
     }
   ]
 }

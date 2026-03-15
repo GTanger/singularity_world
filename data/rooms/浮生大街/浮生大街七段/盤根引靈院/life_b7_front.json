@@ -2,7 +2,6 @@
   "id": "life_b7_front",
   "name": "前庭",
   "description": "敞庭一方，根鬚自砌石縫沁出，淡紫光暈沉靜。前方〔主廊〕深處通往中庭，欲出院可經〔院門〕回七段。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_b7_gate",
       "responses": {
         "Move": "你朝院門走去，步出根砌院。"
-      }
+      },
+      "move_to_room_id": "life_b7_gate"
     },
     {
       "id": "life_b7_front_exit_main",
       "name": "主廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_b7_main",
       "responses": {
+        "Look": "此處可通往主廊。",
         "Move": "你朝主廊走去。"
-      }
+      },
+      "move_to_room_id": "life_b7_main"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist07_shop02_cellar",
   "name": "地窖",
   "description": "簷下茶土階到底，冷氣從腳底竄上；罈罈罐罐與麻袋堆在暗處，只有頭頂板縫漏下一線光，霉味混著茶渣氣、呼吸聲放大。此處僅通〔貨間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist07_shop02_cell_exit_stock",
       "name": "貨間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_stock",
       "responses": {
+        "Look": "此處可通往貨間。",
         "Move": "你上階回貨間。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_stock"
     }
   ]
 }

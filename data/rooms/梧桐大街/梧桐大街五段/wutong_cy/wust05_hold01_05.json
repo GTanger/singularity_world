@@ -2,7 +2,10 @@
   "id": "wust05_hold01_05",
   "name": "書隅",
   "description": "斗室牆面玉質脈絡與根鬚咬合，光線自簷角篩落，石磚與根鬚嵌合的地面泛著恆溫熱氣，靜，油脂感與微光並存，石磚與根鬚嵌合。可經〔雨霖舍〕、〔側間〕前往他處。",
-  "tags": ["outdoor","plaza"],
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -21,23 +24,27 @@
       "id": "wust05_hold01_05_exit_1",
       "name": "雨霖舍",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_yulin",
       "responses": {
+        "Look": "此處可通往雨霖舍。",
         "Move": "你往雨霖舍走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_yulin"
     },
     {
       "id": "wust05_hold01_05_exit_2",
       "name": "側間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_04",
       "responses": {
+        "Look": "此處可通往側間。",
         "Move": "你往側間走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_04"
     }
   ]
 }

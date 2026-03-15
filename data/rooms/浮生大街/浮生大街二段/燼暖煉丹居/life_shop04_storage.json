@@ -2,7 +2,6 @@
   "id": "life_shop04_storage",
   "name": "儲物間",
   "description": "牆角琉璃容器與鐵筐堆疊，各色炭塊與礦渣沉積其中，縫隙間透出琥珀光。空氣乾燥，硫味與礦物粉塵沉澱。路徑通向前方〔燼暖居〕與側邊〔生活起居室〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop04_storage_exit_main",
       "name": "燼暖居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop04_main",
       "responses": {
+        "Look": "此處可通往燼暖居。",
         "Move": "你循來路回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop04_main"
     },
     {
       "id": "life_shop04_storage_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop04_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你沿側道走去，進入生活起居室。"
-      }
+      },
+      "move_to_room_id": "life_shop04_living"
     }
   ]
 }

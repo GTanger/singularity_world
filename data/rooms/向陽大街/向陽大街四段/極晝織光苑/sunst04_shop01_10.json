@@ -19,12 +19,14 @@
       "id": "sunst04_shop01_10_09",
       "name": "庫房二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop01_09",
       "responses": {
+        "Look": "此處可通往庫房二。",
         "Move": "你往庫房二走回。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop01_09"
     }
   ]
 }

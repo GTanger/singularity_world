@@ -19,12 +19,14 @@
       "id": "fs_wood_02_08_to_fs_wood_02_10",
       "name": "向上銜接",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_10",
       "responses": {
+        "Look": "此處可通往向上銜接。",
         "Move": "你往向上銜接走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_10"
     }
   ]
 }

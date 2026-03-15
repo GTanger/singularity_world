@@ -2,7 +2,6 @@
   "id": "ironland_shop10_main",
   "name": "恆溫深淵鋪",
   "description": "爐膛鋪店頭，櫃區後方即見深爐膛、火口大；熱氣最重，煙道低鳴隱約。牆面脈絡暗紅。此處通外側〔打鐵三巷〕、側邊〔工間〕〔工間二〕、後方〔儲物間〕與〔小院〕。櫃上擱著一具〔鐵鉗〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -38,54 +37,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane3",
       "responses": {
         "Move": "你掀開厚簾，回到打鐵三巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane3"
     },
     {
       "id": "ironland_shop10_main_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你朝側邊工間走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_workshop"
     },
     {
       "id": "ironland_shop10_main_exit_workshop2",
       "name": "工間二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_workshop2",
       "responses": {
+        "Look": "此處可通往工間二。",
         "Move": "你朝另一側工間二走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_workshop2"
     },
     {
       "id": "ironland_shop10_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你往後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_storage"
     },
     {
       "id": "ironland_shop10_main_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往內側小院走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_courtyard"
     },
     {
       "id": "ironland_shop10_main_obj_tongs",

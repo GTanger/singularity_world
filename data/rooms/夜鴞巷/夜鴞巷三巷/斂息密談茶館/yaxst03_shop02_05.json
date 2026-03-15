@@ -29,34 +29,40 @@
       "id": "yaxst03_shop02_05_04",
       "name": "內道三",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop02_04",
       "responses": {
+        "Look": "此處可通往內道三。",
         "Move": "你往內道三走回。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop02_04"
     },
     {
       "id": "yaxst03_shop02_05_06",
       "name": "左茶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop02_06",
       "responses": {
+        "Look": "此處可通往左茶間。",
         "Move": "你往左茶間走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop02_06"
     },
     {
       "id": "yaxst03_shop02_05_07",
       "name": "右茶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop02_07",
       "responses": {
+        "Look": "此處可通往右茶間。",
         "Move": "你往右茶間走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop02_07"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "ironland_shop12_main",
   "name": "御氣風箱鋪",
   "description": "風箱鋪店頭，風箱顯眼、拉風聲自工間傳來；簾子被氣流吹動。爐火靠風旺，空氣流動強。此處通外側〔打鐵三巷〕、側邊〔工間〕〔工間二〕、後方〔儲物間〕與〔小院〕；風箱爐房在店頭可見、可直入。櫃上擱著一具〔鐵鉗〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -43,65 +42,75 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane3",
       "responses": {
         "Move": "你掀開厚簾，回到打鐵三巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane3"
     },
     {
       "id": "ironland_shop12_main_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你朝側邊工間走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_workshop"
     },
     {
       "id": "ironland_shop12_main_exit_workshop2",
       "name": "工間二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_workshop2",
       "responses": {
+        "Look": "此處可通往工間二。",
         "Move": "你朝另一側工間二走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_workshop2"
     },
     {
       "id": "ironland_shop12_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你往後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_storage"
     },
     {
       "id": "ironland_shop12_main_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往內側小院走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_courtyard"
     },
     {
       "id": "ironland_shop12_main_exit_kiln",
       "name": "風箱爐房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_kiln",
       "responses": {
+        "Look": "此處可通往風箱爐房。",
         "Move": "你步入風箱爐房。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_kiln"
     },
     {
       "id": "ironland_shop12_main_obj_tongs",

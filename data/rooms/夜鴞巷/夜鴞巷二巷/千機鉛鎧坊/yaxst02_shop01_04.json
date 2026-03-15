@@ -24,23 +24,27 @@
       "id": "yaxst02_shop01_04_03",
       "name": "工間甲中",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop01_03",
       "responses": {
+        "Look": "此處可通往工間甲中。",
         "Move": "你沿工間甲往回走。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop01_03"
     },
     {
       "id": "yaxst02_shop01_04_main",
       "name": "櫃檯",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop01_main",
       "responses": {
+        "Look": "此處可通往櫃檯。",
         "Move": "你徑直回到櫃檯。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop01_main"
     }
   ]
 }

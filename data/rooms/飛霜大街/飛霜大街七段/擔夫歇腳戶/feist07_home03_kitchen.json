@@ -2,7 +2,6 @@
   "id": "feist07_home03_kitchen",
   "name": "灶間",
   "description": "擔前宅灶間石灶、水缸、柴薪靠牆；灶口積灰，聞得到舊煙味，沒有窗、只有從起居室漏進的一點光，檯緣沾著油垢與麵粉。此處僅通〔起居〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist07_home03_k_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_home03_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你退回起居。"
-      }
+      },
+      "move_to_room_id": "feist07_home03_living"
     }
   ]
 }

@@ -37,43 +37,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_01",
       "responses": {
         "Move": "你往門口走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_01"
     },
     {
       "id": "fs_cabin_01_r1_to_fs_cabin_01_r2",
       "name": "臥寢",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_01_r2",
       "responses": {
+        "Look": "此處可通往臥寢。",
         "Move": "你往臥寢走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_01_r2"
     },
     {
       "id": "fs_cabin_01_r1_to_fs_cabin_01_r3",
       "name": "私廚",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_01_r3",
       "responses": {
+        "Look": "此處可通往私廚。",
         "Move": "你往私廚走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_01_r3"
     },
     {
       "id": "fs_cabin_01_r1_to_fs_cabin_01_r4",
       "name": "露台",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_01_r4",
       "responses": {
+        "Look": "此處可通往露台。",
         "Move": "你往露台走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_01_r4"
     }
   ]
 }

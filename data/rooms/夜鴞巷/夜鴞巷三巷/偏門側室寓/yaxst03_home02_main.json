@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st3",
       "responses": {
         "Move": "你步出側室寓，回到夜鴞巷三巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st3"
     },
     {
       "id": "yaxst03_home02_main_02",
       "name": "環道一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home02_02",
       "responses": {
+        "Look": "此處可通往環道一。",
         "Move": "你往環道一走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home02_02"
     },
     {
       "id": "yaxst03_home02_main_06",
       "name": "環道五",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home02_06",
       "responses": {
+        "Look": "此處可通往環道五。",
         "Move": "你往環道六走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home02_06"
     }
   ]
 }

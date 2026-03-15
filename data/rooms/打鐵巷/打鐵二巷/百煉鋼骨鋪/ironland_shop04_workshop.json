@@ -2,7 +2,6 @@
   "id": "ironland_shop04_workshop",
   "name": "工間",
   "description": "爐床專燒脊件與扣環，砧上擱著彎成弧的鍛坯；牆體脈絡粗、暗紅光隨爐火明滅。熱浪與巷風交織，鐵腥混礦粉。此處通向〔鐵脊鋪〕〔生活起居室〕與〔爐房〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "ironland_shop04_workshop_exit_main",
       "name": "鐵脊鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop04_main",
       "responses": {
+        "Look": "此處可通往鐵脊鋪。",
         "Move": "你循來路回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop04_main"
     },
     {
       "id": "ironland_shop04_workshop_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop04_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你往後方通道走去，進入生活起居室。"
-      }
+      },
+      "move_to_room_id": "ironland_shop04_living"
     },
     {
       "id": "ironland_shop04_workshop_exit_kiln",
       "name": "爐房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop04_kiln",
       "responses": {
+        "Look": "此處可通往爐房。",
         "Move": "你步入爐房。"
-      }
+      },
+      "move_to_room_id": "ironland_shop04_kiln"
     }
   ]
 }

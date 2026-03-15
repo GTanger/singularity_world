@@ -19,12 +19,14 @@
       "id": "yaxst04_home01_06_04",
       "name": "右廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home01_04",
       "responses": {
+        "Look": "此處可通往右廂。",
         "Move": "你退回右廂。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home01_04"
     }
   ]
 }

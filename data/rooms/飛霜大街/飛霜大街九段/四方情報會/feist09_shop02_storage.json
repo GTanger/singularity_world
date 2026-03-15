@@ -2,7 +2,6 @@
   "id": "feist09_shop02_storage",
   "name": "儲物間",
   "description": "匯流閣儲物間茶罐成列、蒸籠與竹篩疊在架旁，麵粉與糖霜沾在檯緣；通道那頭傳來店頭人聲與杯盞聲，此地只有自己的腳步與呼吸。此處通〔店頭〕、〔後間〕與〔庫房〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist09_shop02_storage_exit_main",
       "name": "店頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_main",
       "responses": {
+        "Look": "此處可通往店頭。",
         "Move": "你循來路回到店頭。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_main"
     },
     {
       "id": "feist09_shop02_storage_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你往後間走去。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_back"
     },
     {
       "id": "feist09_shop02_storage_exit_warehouse",
       "name": "庫房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_warehouse",
       "responses": {
+        "Look": "此處可通往庫房。",
         "Move": "你步入庫房。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_warehouse"
     }
   ]
 }

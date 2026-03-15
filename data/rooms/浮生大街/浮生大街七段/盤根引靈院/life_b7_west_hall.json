@@ -2,7 +2,6 @@
   "id": "life_b7_west_hall",
   "name": "西廊",
   "description": "狹長西廊，壁面根鬚與砌石嵌合，兩側可見〔西一室〕〔西二室〕門洞。廊端通回〔前庭〕〔主廊〕與〔中庭〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -36,56 +35,66 @@
       "id": "life_b7_west_hall_exit_gate",
       "name": "前庭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_b7_gate",
       "responses": {
+        "Look": "此處可通往前庭。",
         "Move": "你循廊折返前庭。"
-      }
+      },
+      "move_to_room_id": "life_b7_gate"
     },
     {
       "id": "life_b7_west_hall_exit_main",
       "name": "主廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_b7_main",
       "responses": {
+        "Look": "此處可通往主廊。",
         "Move": "你回到主廊。"
-      }
+      },
+      "move_to_room_id": "life_b7_main"
     },
     {
       "id": "life_b7_west_hall_exit_court",
       "name": "中庭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_b7_court",
       "responses": {
+        "Look": "此處可通往中庭。",
         "Move": "你朝中庭走去。"
-      }
+      },
+      "move_to_room_id": "life_b7_court"
     },
     {
       "id": "life_b7_west_hall_exit_1",
       "name": "西一室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_b7_west_1",
       "responses": {
+        "Look": "此處可通往西一室。",
         "Move": "你步入西一室。"
-      }
+      },
+      "move_to_room_id": "life_b7_west_1"
     },
     {
       "id": "life_b7_west_hall_exit_2",
       "name": "西二室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_b7_west_2",
       "responses": {
+        "Look": "此處可通往西二室。",
         "Move": "你步入西二室。"
-      }
+      },
+      "move_to_room_id": "life_b7_west_2"
     }
   ]
 }

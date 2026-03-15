@@ -2,7 +2,10 @@
   "id": "wust01_hold01_08",
   "name": "廊底",
   "description": "穿堂半開放階梯、環形水路導引熱液，流體撞擊石階清脆規律，兩側植被綠色隧道，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔能量配發中樞〕、〔儲間〕前往他處。",
-  "tags": ["indoor","admin"],
+  "tags": [
+    "indoor",
+    "admin"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -21,23 +24,27 @@
       "id": "wust01_hold01_08_exit_1",
       "name": "能量配發中樞",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_11",
       "responses": {
+        "Look": "此處可通往能量配發中樞。",
         "Move": "你往能量配發中樞走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_11"
     },
     {
       "id": "wust01_hold01_08_exit_2",
       "name": "儲間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_09",
       "responses": {
+        "Look": "此處可通往儲間。",
         "Move": "你往儲間走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_09"
     }
   ]
 }

@@ -24,12 +24,14 @@
       "id": "yaxst01_home02_06_05",
       "name": "環室四",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home02_05",
       "responses": {
+        "Look": "此處可通往環室四。",
         "Move": "你往環室四走回。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home02_05"
     },
     {
       "id": "yaxst01_home02_06_main",
@@ -37,10 +39,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home02_main",
       "responses": {
         "Move": "你沿環道回到門廳。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home02_main"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist04_shop02_up_hall",
   "name": "二樓廳",
   "description": "簷下鋪二樓廳低梁壓頂、簷角積霜從瓦隙沁進一線白，一几兩凳、火盆冷了一夜；木梯通〔內堂〕，兩門各通〔東間〕〔西間〕，簷下陰影與霜紋靜止、四段人聲隔樓板而遠。此處通〔內堂〕、〔東間〕、〔西間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist04_shop02_uh_exit_inner",
       "name": "木梯",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop02_inner",
       "responses": {
+        "Look": "此處可通往木梯。",
         "Move": "你順木梯下內堂。"
-      }
+      },
+      "move_to_room_id": "feist04_shop02_inner"
     },
     {
       "id": "feist04_shop02_uh_exit_east",
       "name": "東間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop02_up_east",
       "responses": {
+        "Look": "此處可通往東間。",
         "Move": "你入東間。"
-      }
+      },
+      "move_to_room_id": "feist04_shop02_up_east"
     },
     {
       "id": "feist04_shop02_uh_exit_west",
       "name": "西間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop02_up_west",
       "responses": {
+        "Look": "此處可通往西間。",
         "Move": "你入西間。"
-      }
+      },
+      "move_to_room_id": "feist04_shop02_up_west"
     }
   ]
 }

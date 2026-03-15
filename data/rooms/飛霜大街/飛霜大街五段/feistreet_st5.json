@@ -2,7 +2,6 @@
   "id": "feistreet_st5",
   "name": "飛霜大街五段",
   "description": "大街來到五段後人跡開始稀少，兩側簷下的霜白結晶越積越厚，形成如同鐘乳石般的冰稜。這裡的光線因為高大的建築而顯得終日冷暗，空氣中有一股刺骨的乾燥感。路側的商業活動轉向低調且專精：專營防滑保暖的〔踏霜鞋靴鋪〕、散發詭異氣味的〔凝脂香料行〕與採集危險素材的〔透骨冰晶行〕。對向則是隱密的〔寒影殺手閣〕以及為長途跋涉者提供短暫休息的〔破冰驛站〕與〔垂霜客寓〕。可經此退回〔飛霜大街四段〕，或朝更加冷僻的〔飛霜大街六段〕前進。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -53,10 +52,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st4",
       "responses": {
         "Move": "你朝飛霜大街四段方向折返。"
-      }
+      },
+      "move_to_room_id": "feistreet_st4"
     },
     {
       "id": "fei_st5_exit_st6",
@@ -64,10 +63,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st6",
       "responses": {
         "Move": "你朝飛霜大街六段方向走去。"
-      }
+      },
+      "move_to_room_id": "feistreet_st6"
     },
     {
       "id": "fei_st5_obj_shop08",
@@ -83,12 +82,14 @@
       "id": "fei_st5_obj_shop08_door",
       "name": "縫線前堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_shop01_main",
       "responses": {
+        "Look": "此處可通往縫線前堂。",
         "Move": "你推門進入簷霜鋪。"
-      }
+      },
+      "move_to_room_id": "feist05_shop01_main"
     },
     {
       "id": "fei_st5_obj_shop09",
@@ -104,12 +105,14 @@
       "id": "fei_st5_obj_shop09_door",
       "name": "薰香迷陣",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_shop02_main",
       "responses": {
+        "Look": "此處可通往薰香迷陣。",
         "Move": "你掀簾進入霜積閣。"
-      }
+      },
+      "move_to_room_id": "feist05_shop02_main"
     },
     {
       "id": "fei_st5_obj_shop10",
@@ -125,12 +128,14 @@
       "id": "fei_st5_obj_shop10_door",
       "name": "冷櫃前廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_shop03_main",
       "responses": {
+        "Look": "此處可通往冷櫃前廳。",
         "Move": "你推門進入霜晶行。"
-      }
+      },
+      "move_to_room_id": "feist05_shop03_main"
     },
     {
       "id": "fei_st5_obj_home04",
@@ -146,12 +151,14 @@
       "id": "fei_st5_obj_home04_door",
       "name": "無光過道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home01_main",
       "responses": {
+        "Look": "此處可通往無光過道。",
         "Move": "你步入簷影宅。"
-      }
+      },
+      "move_to_room_id": "feist05_home01_main"
     },
     {
       "id": "fei_st5_obj_home05",
@@ -169,10 +176,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist05_home02_main",
       "responses": {
         "Move": "你推門進入霜階宅。"
-      }
+      },
+      "move_to_room_id": "feist05_home02_main"
     },
     {
       "id": "fei_st5_obj_home06",
@@ -188,12 +195,14 @@
       "id": "fei_st5_obj_home06_door",
       "name": "漏風接待處",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home03_main",
       "responses": {
+        "Look": "此處可通往漏風接待處。",
         "Move": "你掀簾進入簷線宅。"
-      }
+      },
+      "move_to_room_id": "feist05_home03_main"
     }
   ]
 }

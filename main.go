@@ -244,7 +244,7 @@ func main() {
 		travelerMgr.Register(id, db.MovementDef{Type: db.MoveBrain, Speed: 1})
 	}
 	var travelTickCount int
-	travelTickInterval := 75 // 每 15 秒推進一步（75 ticks × 200ms）
+	travelTickInterval := 30 // 每 15 秒推進一步（30 ticks × 500ms）
 
 	go game.Loop(cfg.TickInterval, func() {
 		game.RunViewSimulation(database, func() []game.Pos { return server.GetObserverPositions(sessionStore, database) }, obs)
@@ -334,7 +334,7 @@ func main() {
 		idleTickCount++
 		if idleTickCount >= nextIdleTrigger {
 			idleTickCount = 0
-			nextIdleTrigger = 25 + rand.Intn(35)
+			nextIdleTrigger = 60 + rand.Intn(60)
 			period := db.GetTimePeriod(hour)
 
 			playerRooms := server.GetPlayerRoomMap(sessionStore, database)

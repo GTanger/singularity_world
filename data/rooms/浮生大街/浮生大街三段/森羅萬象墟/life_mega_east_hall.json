@@ -2,7 +2,6 @@
   "id": "life_mega_east_hall",
   "name": "東廊",
   "description": "狹長東廊，壁面脈絡沁出淡綠微光，兩側依次可見〔東一室〕〔東二室〕〔東三室〕〔東四室〕〔東五室〕〔東六室〕門洞。廊端通回〔前庭〕與〔主廊〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -51,89 +50,105 @@
       "id": "life_mega_east_hall_exit_front",
       "name": "前庭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_front",
       "responses": {
+        "Look": "此處可通往前庭。",
         "Move": "你循廊折返前庭。"
-      }
+      },
+      "move_to_room_id": "life_mega_front"
     },
     {
       "id": "life_mega_east_hall_exit_main",
       "name": "主廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_main",
       "responses": {
+        "Look": "此處可通往主廊。",
         "Move": "你回到主廊。"
-      }
+      },
+      "move_to_room_id": "life_mega_main"
     },
     {
       "id": "life_mega_east_hall_exit_01",
       "name": "東一室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_east_01",
       "responses": {
+        "Look": "此處可通往東一室。",
         "Move": "你步入東一室。"
-      }
+      },
+      "move_to_room_id": "life_mega_east_01"
     },
     {
       "id": "life_mega_east_hall_exit_02",
       "name": "東二室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_east_02",
       "responses": {
+        "Look": "此處可通往東二室。",
         "Move": "你步入東二室。"
-      }
+      },
+      "move_to_room_id": "life_mega_east_02"
     },
     {
       "id": "life_mega_east_hall_exit_03",
       "name": "東三室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_east_03",
       "responses": {
+        "Look": "此處可通往東三室。",
         "Move": "你步入東三室。"
-      }
+      },
+      "move_to_room_id": "life_mega_east_03"
     },
     {
       "id": "life_mega_east_hall_exit_04",
       "name": "東四室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_east_04",
       "responses": {
+        "Look": "此處可通往東四室。",
         "Move": "你步入東四室。"
-      }
+      },
+      "move_to_room_id": "life_mega_east_04"
     },
     {
       "id": "life_mega_east_hall_exit_05",
       "name": "東五室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_east_05",
       "responses": {
+        "Look": "此處可通往東五室。",
         "Move": "你步入東五室。"
-      }
+      },
+      "move_to_room_id": "life_mega_east_05"
     },
     {
       "id": "life_mega_east_hall_exit_06",
       "name": "東六室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_east_06",
       "responses": {
+        "Look": "此處可通往東六室。",
         "Move": "你步入東六室。"
-      }
+      },
+      "move_to_room_id": "life_mega_east_06"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist07_home04_living",
   "name": "起居",
   "description": "街口宅一几兩凳，火盆已冷；牆上有掛鉤與空釘。日常起居都在這兒，灶間在左、臥房在深處，窗對小院、玻璃上蒙一層霜透進朦朧光，無第二臥無倉房。此處通〔廊〕、〔灶間〕與〔臥房〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist07_home04_lv_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_home04_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你退回廊。"
-      }
+      },
+      "move_to_room_id": "feist07_home04_hallway"
     },
     {
       "id": "feist07_home04_lv_exit_kitchen",
       "name": "灶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_home04_kitchen",
       "responses": {
+        "Look": "此處可通往灶間。",
         "Move": "你往灶間。"
-      }
+      },
+      "move_to_room_id": "feist07_home04_kitchen"
     },
     {
       "id": "feist07_home04_lv_exit_bed",
       "name": "臥房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_home04_bedroom",
       "responses": {
+        "Look": "此處可通往臥房。",
         "Move": "你入臥房。"
-      }
+      },
+      "move_to_room_id": "feist07_home04_bedroom"
     }
   ]
 }

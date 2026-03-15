@@ -2,7 +2,6 @@
   "id": "life_mega_inner_1",
   "name": "內堂一",
   "description": "密室一隅，脈絡自頂沁下，隱約低浮。此處僅通〔內堂〕，返身即回中庭。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_inner_1_exit",
       "name": "內堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_inner",
       "responses": {
+        "Look": "此處可通往內堂。",
         "Move": "你回到內堂。"
-      }
+      },
+      "move_to_room_id": "life_mega_inner"
     }
   ]
 }

@@ -24,23 +24,27 @@
       "id": "sunst09_home03_09_exit_1",
       "name": "廊底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_home03_08",
       "responses": {
+        "Look": "此處可通往廊底。",
         "Move": "你往廊底走去。"
-      }
+      },
+      "move_to_room_id": "sunst09_home03_08"
     },
     {
       "id": "sunst09_home03_09_exit_2",
       "name": "閣頂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_home03_10",
       "responses": {
+        "Look": "此處可通往閣頂。",
         "Move": "你往閣頂走去。"
-      }
+      },
+      "move_to_room_id": "sunst09_home03_10"
     }
   ]
 }

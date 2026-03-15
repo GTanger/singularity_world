@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home02_main",
       "responses": {
         "Move": "你經前扉出宅。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home02_main"
     },
     {
       "id": "yaxst04_home02_02_03",
       "name": "廊中一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home02_03",
       "responses": {
+        "Look": "此處可通往廊中一。",
         "Move": "你往廊中一走去。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home02_03"
     }
   ]
 }

@@ -24,23 +24,27 @@
       "id": "sunst09_home03_06_exit_1",
       "name": "書隅",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_home03_05",
       "responses": {
+        "Look": "此處可通往書隅。",
         "Move": "你往書隅走去。"
-      }
+      },
+      "move_to_room_id": "sunst09_home03_05"
     },
     {
       "id": "sunst09_home03_06_exit_2",
       "name": "寢區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_home03_07",
       "responses": {
+        "Look": "此處可通往寢區。",
         "Move": "你往寢區走去。"
-      }
+      },
+      "move_to_room_id": "sunst09_home03_07"
     }
   ]
 }

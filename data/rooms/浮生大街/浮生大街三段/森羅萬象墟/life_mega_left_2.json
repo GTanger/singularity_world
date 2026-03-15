@@ -2,7 +2,6 @@
   "id": "life_mega_left_2",
   "name": "左廂二",
   "description": "窄室盡頭，膠質凝壁，琥珀微光沉靜。此處僅通〔左廂〕，返身即回中庭。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_left_2_exit",
       "name": "左廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_left_wing",
       "responses": {
+        "Look": "此處可通往左廂。",
         "Move": "你回到左廂。"
-      }
+      },
+      "move_to_room_id": "life_mega_left_wing"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_shop09_storage",
   "name": "儲物間",
   "description": "牆角鐵筐與陶甕堆疊，甕口膠質封合，縫隙透出琥珀光，空氣乾燥。此處通向前方〔膠寮〕與側邊〔內廊〕，可回店頭或往起居處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop09_storage_exit_main",
       "name": "膠寮",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop09_main",
       "responses": {
+        "Look": "此處可通往膠寮。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop09_main"
     },
     {
       "id": "life_shop09_storage_exit_hallway",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop09_hallway",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走去。"
-      }
+      },
+      "move_to_room_id": "life_shop09_hallway"
     }
   ]
 }

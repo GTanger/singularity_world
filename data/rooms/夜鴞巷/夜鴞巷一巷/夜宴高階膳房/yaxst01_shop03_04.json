@@ -19,12 +19,14 @@
       "id": "yaxst01_shop03_04_main",
       "name": "灶前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop03_main",
       "responses": {
+        "Look": "此處可通往灶前。",
         "Move": "你掀簾退回灶前。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop03_main"
     }
   ]
 }

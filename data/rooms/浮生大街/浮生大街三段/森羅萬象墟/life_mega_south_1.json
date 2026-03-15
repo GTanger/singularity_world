@@ -2,7 +2,6 @@
   "id": "life_mega_south_1",
   "name": "南軒一",
   "description": "小室四方，壁面沁出淡紫微光，石几伏貼於地。此處僅通〔南軒〕，返身即回中庭。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_south_1_exit",
       "name": "南軒",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_south_wing",
       "responses": {
+        "Look": "此處可通往南軒。",
         "Move": "你回到南軒。"
-      }
+      },
+      "move_to_room_id": "life_mega_south_wing"
     }
   ]
 }

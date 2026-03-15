@@ -2,7 +2,6 @@
   "id": "ironland_home02_courtyard",
   "name": "小院",
   "description": "泥地苔衣密佈，牆根脈絡沁出，簷牆稍隔巷內熱氣，院中較門廳涼些。此處僅通〔廊道〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_home02_courtyard_exit",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你回到廊道。"
-      }
+      },
+      "move_to_room_id": "ironland_home02_hallway"
     }
   ]
 }

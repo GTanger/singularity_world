@@ -39,56 +39,66 @@
       "id": "fs_trail_06_to_fs_trail_05",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_05",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_05"
     },
     {
       "id": "fs_trail_06_to_fs_trail_07",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_07",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_07"
     },
     {
       "id": "fs_trail_06_to_fs_wood_06_01",
       "name": "偏左(下墜感)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_06_01",
       "responses": {
+        "Look": "此處可通往偏左(下墜感)。",
         "Move": "你往偏左(下墜感)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_06_01"
     },
     {
       "id": "fs_trail_06_to_fs_wood_06_02",
       "name": "深入(迷途)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_06_02",
       "responses": {
+        "Look": "此處可通往深入(迷途)。",
         "Move": "你往深入(迷途)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_06_02"
     },
     {
       "id": "fs_trail_06_to_fs_wood_06_10",
       "name": "前行(石柱)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_06_10",
       "responses": {
+        "Look": "此處可通往前行(石柱)。",
         "Move": "你往前行(石柱)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_06_10"
     }
   ]
 }

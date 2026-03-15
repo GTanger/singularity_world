@@ -2,7 +2,6 @@
   "id": "life_shop05_living",
   "name": "生活起居室",
   "description": "石桌伏貼於地，桌緣地衣攀附，牆側脈絡隱約。此處通〔內廊〕〔後間〕與〔私人臥室〕，可往儲物、窯區或歇息。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "life_shop05_living_exit_hallway",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_hallway",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你回到內廊。"
-      }
+      },
+      "move_to_room_id": "life_shop05_hallway"
     },
     {
       "id": "life_shop05_living_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你回到後間。"
-      }
+      },
+      "move_to_room_id": "life_shop05_back"
     },
     {
       "id": "life_shop05_living_exit_bedroom",
       "name": "私人臥室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_bedroom",
       "responses": {
+        "Look": "此處可通往私人臥室。",
         "Move": "你步入私人臥室。"
-      }
+      },
+      "move_to_room_id": "life_shop05_bedroom"
     }
   ]
 }

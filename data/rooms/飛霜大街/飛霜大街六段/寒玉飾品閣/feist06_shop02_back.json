@@ -2,7 +2,6 @@
   "id": "feist06_shop02_back",
   "name": "後間",
   "description": "冷閣鋪與宅交界：未拆的貨與家常物堆在角，爐子冷著、空氣裡茶渣與昨日煙氣混在一起，貨間那頭一盞燈把影子拉得老長；一道門通〔過廳〕，住家從那裡開始。此處通〔櫃前〕與〔過廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist06_shop02_b_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop02_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你退回櫃前。"
-      }
+      },
+      "move_to_room_id": "feist06_shop02_counter"
     },
     {
       "id": "feist06_shop02_b_exit_hall",
       "name": "過廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop02_hall",
       "responses": {
+        "Look": "此處可通往過廳。",
         "Move": "你步入過廳。"
-      }
+      },
+      "move_to_room_id": "feist06_shop02_hall"
     }
   ]
 }

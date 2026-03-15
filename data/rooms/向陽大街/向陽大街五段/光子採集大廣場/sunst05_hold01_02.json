@@ -24,23 +24,27 @@
       "id": "sunst05_hold01_02_main",
       "name": "廣場中央",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_main",
       "responses": {
+        "Look": "此處可通往廣場中央。",
         "Move": "你回到廣場中央。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_main"
     },
     {
       "id": "sunst05_hold01_02_03",
       "name": "東一室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_03",
       "responses": {
+        "Look": "此處可通往東一室。",
         "Move": "你沿東廊往東一室走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_03"
     }
   ]
 }

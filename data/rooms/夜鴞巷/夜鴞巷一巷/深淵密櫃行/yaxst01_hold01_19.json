@@ -24,23 +24,27 @@
       "id": "yaxst01_hold01_19_18",
       "name": "內庫口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_18",
       "responses": {
+        "Look": "此處可通往內庫口。",
         "Move": "你往內庫口走回。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_18"
     },
     {
       "id": "yaxst01_hold01_19_20",
       "name": "內庫底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_20",
       "responses": {
+        "Look": "此處可通往內庫底。",
         "Move": "你往內庫底走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_20"
     }
   ]
 }

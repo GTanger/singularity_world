@@ -19,12 +19,14 @@
       "id": "yaxst02_shop01_05_03",
       "name": "工間甲中",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop01_03",
       "responses": {
+        "Look": "此處可通往工間甲中。",
         "Move": "你退回工間甲中。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop01_03"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_mega_west_01",
   "name": "西一室",
   "description": "小室四方，壁面玉質脈絡沁出淡紫，石几伏貼於地，空氣沉靜。此處僅通〔西廊〕，循廊即回前庭或主廊。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_west_01_exit",
       "name": "西廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_west_hall",
       "responses": {
+        "Look": "此處可通往西廊。",
         "Move": "你步出西一室，回到西廊。"
-      }
+      },
+      "move_to_room_id": "life_mega_west_hall"
     }
   ]
 }

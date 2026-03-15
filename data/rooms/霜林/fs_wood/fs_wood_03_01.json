@@ -19,12 +19,14 @@
       "id": "fs_wood_03_01_to_fs_wood_03_03",
       "name": "追逐聲響",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_03",
       "responses": {
+        "Look": "此處可通往追逐聲響。",
         "Move": "你往追逐聲響走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_03"
     }
   ]
 }

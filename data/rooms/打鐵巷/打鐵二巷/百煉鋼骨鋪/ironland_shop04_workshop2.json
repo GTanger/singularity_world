@@ -2,7 +2,6 @@
   "id": "ironland_shop04_workshop2",
   "name": "工間二",
   "description": "副砧與彎模靠牆，用來冷作脊條；牆面脈絡粗硬、琥珀光自縫隙透出。工間熱氣滲入，空氣乾燥。此處通〔鐵脊鋪〕與〔工具間〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "ironland_shop04_workshop2_exit_main",
       "name": "鐵脊鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop04_main",
       "responses": {
+        "Look": "此處可通往鐵脊鋪。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop04_main"
     },
     {
       "id": "ironland_shop04_workshop2_exit_toolroom",
       "name": "工具間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop04_toolroom",
       "responses": {
+        "Look": "此處可通往工具間。",
         "Move": "你步入工具間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop04_toolroom"
     }
   ]
 }

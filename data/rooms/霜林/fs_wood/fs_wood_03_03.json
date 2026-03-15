@@ -19,12 +19,14 @@
       "id": "fs_wood_03_03_to_fs_wood_03_05",
       "name": "側行(崖邊)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_05",
       "responses": {
+        "Look": "此處可通往側行(崖邊)。",
         "Move": "你往側行(崖邊)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_05"
     }
   ]
 }

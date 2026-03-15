@@ -2,7 +2,6 @@
   "id": "feist09_shop02_main",
   "name": "匯流閣",
   "description": "匯流閣門簾一掀，茶氣與街口人聲一併湧入；幾張矮桌靠牆，櫃上茶食、果脯與小碟排開，有人剛離座、杯底還溫，簾外霜晶沾衣即化。此處連接〔飛霜大街9段〕，內側可往〔儲物間〕、〔側間〕或〔簷下〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -33,32 +32,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st9",
       "responses": {
         "Move": "你掀簾步出，回到飛霜大街9段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st9"
     },
     {
       "id": "feist09_shop02_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你朝後方通道走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_storage"
     },
     {
       "id": "feist09_shop02_main_exit_side",
       "name": "側間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_side",
       "responses": {
+        "Look": "此處可通往側間。",
         "Move": "你往側間走去。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_side"
     },
     {
       "id": "feist09_shop02_main_exit_eave",
@@ -66,10 +69,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_eave"
     }
   ]
 }

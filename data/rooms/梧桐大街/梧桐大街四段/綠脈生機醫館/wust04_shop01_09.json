@@ -19,12 +19,14 @@
       "id": "wust04_shop01_09_exit_1",
       "name": "寢區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust04_shop01_08",
       "responses": {
+        "Look": "此處可通往寢區。",
         "Move": "你往寢區走去。"
-      }
+      },
+      "move_to_room_id": "wust04_shop01_08"
     }
   ]
 }

@@ -19,12 +19,14 @@
       "id": "sunst05_hold01_12_11",
       "name": "南二廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_11",
       "responses": {
+        "Look": "此處可通往南二廳。",
         "Move": "你沿南廳往南二廳走回。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_11"
     }
   ]
 }

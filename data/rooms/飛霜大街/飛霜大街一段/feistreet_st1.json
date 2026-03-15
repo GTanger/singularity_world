@@ -2,7 +2,6 @@
   "id": "feistreet_st1",
   "name": "飛霜大街一段",
   "description": "路面自飛霜湖端延伸而來，冷調石紋上覆蓋著薄薄的霜晶，暗色未深卻透著涼意。湖氣與霜白結晶在此處交會，空氣顯得格外沉靜且透明。路側可見氣派的〔霜鏡私邸〕與極其低矮的〔寒鴉棚戶〕形成強烈對比，對向則是飄散茶香的〔沉露茶寮〕與轉運物流的〔湖晶驛站〕。游離輻射讓此地的低溫經年不散，簷角積著沉甸甸的霜體，隱約可見建築自身的玉質脈絡正貪婪地與之咬合。可經〔湖岸〕前往飛霜湖，或經〔街口湖緣〕沿湖岸至霧起之濱；大街由此導向〔飛霜大街二段〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -46,12 +45,14 @@
       "id": "fei_st1_exit_lake",
       "name": "湖岸",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake",
       "responses": {
+        "Look": "此處可通往湖岸。",
         "Move": "你朝飛霜湖方向走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake"
     },
     {
       "id": "fei_st1_exit_lake_south",
@@ -59,10 +60,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "fei_lake_south",
       "responses": {
         "Move": "你沿湖緣石板路往街口湖緣走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_south"
     },
     {
       "id": "fei_st1_exit_st2",
@@ -70,10 +71,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st2",
       "responses": {
         "Move": "你沿大街往飛霜大街二段走去。"
-      }
+      },
+      "move_to_room_id": "feistreet_st2"
     },
     {
       "id": "fei_st1_obj_home01",
@@ -91,11 +92,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist01_home01_main",
       "responses": {
-        "Move": "你推門進入霜鏡私邸。",
-        "Look": "你推開沉重的實木大門，進入霜鏡私邸。"
-      }
+        "Move": "你推門進入霜鏡私邸。"
+      },
+      "move_to_room_id": "feist01_home01_main"
     },
     {
       "id": "fei_st1_obj_home02",
@@ -113,11 +113,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist01_home02_main",
       "responses": {
-        "Move": "你步入寒鴉棚戶。",
-        "Look": "你低頭鑽進破舊門洞，步入寒鴉棚戶。"
-      }
+        "Move": "你步入寒鴉棚戶。"
+      },
+      "move_to_room_id": "feist01_home02_main"
     },
     {
       "id": "fei_st1_obj_home03",
@@ -135,11 +134,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_main",
       "responses": {
-        "Move": "你推門進入沉露茶寮。",
-        "Look": "你推開雕花板門，進入沉露茶寮。"
-      }
+        "Move": "你推門進入沉露茶寮。"
+      },
+      "move_to_room_id": "feist01_home03_main"
     },
     {
       "id": "fei_st1_obj_home04",
@@ -157,11 +155,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist01_home04_main",
       "responses": {
-        "Move": "你推門進入湖晶驛站。",
-        "Look": "你推開粗木小門，進入湖晶驛站。"
-      }
+        "Move": "你推門進入湖晶驛站。"
+      },
+      "move_to_room_id": "feist01_home04_main"
     }
   ]
 }

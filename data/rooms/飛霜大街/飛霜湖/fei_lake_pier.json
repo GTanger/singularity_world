@@ -18,12 +18,14 @@
       "id": "fei_lake_pier_east",
       "name": "東岸霧起之濱",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_east",
       "responses": {
+        "Look": "此處可通往東岸霧起之濱。",
         "Move": "你離開碼頭，沿東岸石灘走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_east"
     }
   ]
 }

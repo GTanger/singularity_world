@@ -19,12 +19,14 @@
       "id": "sunst02_shop03_08_07",
       "name": "西翼・中間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop03_07",
       "responses": {
+        "Look": "此處可通往西翼・中間。",
         "Move": "你往西翼中間走回。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop03_07"
     }
   ]
 }

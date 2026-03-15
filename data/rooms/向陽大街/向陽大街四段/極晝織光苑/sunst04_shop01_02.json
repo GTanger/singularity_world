@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop01_main",
       "responses": {
         "Move": "你回到門面。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop01_main"
     },
     {
       "id": "sunst04_shop01_02_03",
       "name": "織間一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop01_03",
       "responses": {
+        "Look": "此處可通往織間一。",
         "Move": "你往織間一走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop01_03"
     }
   ]
 }

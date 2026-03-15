@@ -2,7 +2,6 @@
   "id": "feist07_shop02_counter",
   "name": "櫃前",
   "description": "簷下茶櫃台後方即貨架，茶罐與紙包堆到齊眉；一道窄門通〔貨間〕，簾子後是〔後間〕。買賣在此成交，再往裡便是住家；簾外鋪面杯盞聲與笑語隱約。此處通〔鋪面〕、〔貨間〕與〔後間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist07_shop02_c_exit_main",
       "name": "鋪面",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_main",
       "responses": {
+        "Look": "此處可通往鋪面。",
         "Move": "你退回鋪面。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_main"
     },
     {
       "id": "feist07_shop02_c_exit_stock",
       "name": "貨間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_stock",
       "responses": {
+        "Look": "此處可通往貨間。",
         "Move": "你往貨間。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_stock"
     },
     {
       "id": "feist07_shop02_c_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你掀簾往後間。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_back"
     }
   ]
 }

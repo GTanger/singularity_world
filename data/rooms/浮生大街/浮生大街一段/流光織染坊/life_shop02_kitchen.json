@@ -2,7 +2,6 @@
   "id": "life_shop02_kitchen",
   "name": "廚炊間",
   "description": "牆面設有石砌灶台，火口凝固著暗紅色的熔岩質。一旁〔儲水瓦甕〕滲出細微水汽，地表存在幾處被熱能琉璃化的斑點。此處僅通向側邊的〔居家客廳〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_shop02_kitchen_exit_living",
       "name": "居家客廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_living",
       "responses": {
+        "Look": "此處可通往居家客廳。",
         "Move": "你離開灶台旁，回到居家客廳。"
-      }
+      },
+      "move_to_room_id": "life_shop02_living"
     },
     {
       "id": "life_shop02_kitchen_obj_urn",

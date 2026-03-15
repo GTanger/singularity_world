@@ -19,12 +19,14 @@
       "id": "fs_wood_02_02_to_fs_wood_02_03",
       "name": "跨越溝壑",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_03",
       "responses": {
+        "Look": "此處可通往跨越溝壑。",
         "Move": "你往跨越溝壑走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_03"
     }
   ]
 }

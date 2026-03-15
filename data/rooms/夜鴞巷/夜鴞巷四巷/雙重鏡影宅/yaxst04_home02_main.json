@@ -31,10 +31,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st4",
       "responses": {
         "Move": "你步出雙扉宅，回到夜鴞巷四巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st4"
     },
     {
       "id": "yaxst04_home02_main_02",
@@ -42,10 +42,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home02_02",
       "responses": {
         "Move": "你推前扉入內。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home02_02"
     },
     {
       "id": "yaxst04_home02_main_06",
@@ -53,10 +53,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home02_06",
       "responses": {
         "Move": "你推後扉入內。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home02_06"
     }
   ]
 }

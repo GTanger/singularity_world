@@ -2,7 +2,6 @@
   "id": "feist05_home02_courtyard",
   "name": "小院",
   "description": "霜階宅廊側一方露地，石階一級、簷角壓得低；無缸，磚縫積水結薄冰、腳踩略滑，牆根青苔與霜糾成一線，石階覆霜、呼吸見白，五段人聲從門洞漏進來。此處僅通〔廊〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist05_home02_c_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你退回廊。"
-      }
+      },
+      "move_to_room_id": "feist05_home02_hallway"
     }
   ]
 }

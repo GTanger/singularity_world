@@ -29,34 +29,40 @@
       "id": "yaxst03_home01_03_02",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home01_02",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走回。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home01_02"
     },
     {
       "id": "yaxst03_home01_03_04",
       "name": "左枝",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home01_04",
       "responses": {
+        "Look": "此處可通往左枝。",
         "Move": "你往左枝走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home01_04"
     },
     {
       "id": "yaxst03_home01_03_05",
       "name": "右枝",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home01_05",
       "responses": {
+        "Look": "此處可通往右枝。",
         "Move": "你往右枝走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home01_05"
     }
   ]
 }

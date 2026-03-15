@@ -2,7 +2,6 @@
   "id": "ironland_shop07_main",
   "name": "金砂熔流鋪",
   "description": "櫃區擺滿模具與鑄坯，空氣裡金屬液與焦土氣味；牆根有凝住的滴痕、暗沉發亮。簾隙灌入巷熱。此處通外側〔打鐵二巷〕、側邊〔工間〕（鑄區）、後方〔儲物間〕與〔小院〕；模房自工間入。櫃上擱著一具〔鐵鉗〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -33,43 +32,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane2",
       "responses": {
         "Move": "你掀開厚簾，回到打鐵二巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane2"
     },
     {
       "id": "ironland_shop07_main_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你朝側邊工間走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_workshop"
     },
     {
       "id": "ironland_shop07_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你往後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_storage"
     },
     {
       "id": "ironland_shop07_main_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往內側小院走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_courtyard"
     },
     {
       "id": "ironland_shop07_main_obj_tongs",

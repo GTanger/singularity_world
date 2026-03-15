@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st2",
       "responses": {
         "Move": "你步出映雪寓，回到向陽大街二段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st2"
     },
     {
       "id": "sunst02_home01_main_02",
       "name": "東廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_home01_02",
       "responses": {
+        "Look": "此處可通往東廂。",
         "Move": "你往東廂走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_home01_02"
     },
     {
       "id": "sunst02_home01_main_07",
       "name": "西廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_home01_07",
       "responses": {
+        "Look": "此處可通往西廂。",
         "Move": "你往西廂走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_home01_07"
     }
   ]
 }

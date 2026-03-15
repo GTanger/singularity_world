@@ -2,7 +2,6 @@
   "id": "feist03_hold01_living",
   "name": "起居",
   "description": "簷心樓東廂起居一几兩凳、火盆冷了一夜，牆上有掛鉤與舊畫痕；左通〔灶間〕、正面〔書齋〕，簷下陰影與積霜從簾隙漏進、簾外即東廂的腳步聲，窗對內院、窗棂結著細霜。此處通〔東廂〕、〔灶間〕、〔書齋〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist03_hold01_lv_exit_wing",
       "name": "東廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_east_wing",
       "responses": {
+        "Look": "此處可通往東廂。",
         "Move": "你退回東廂。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_east_wing"
     },
     {
       "id": "feist03_hold01_lv_exit_kitchen",
       "name": "灶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_kitchen",
       "responses": {
+        "Look": "此處可通往灶間。",
         "Move": "你往灶間。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_kitchen"
     },
     {
       "id": "feist03_hold01_lv_exit_study",
       "name": "書齋",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_study",
       "responses": {
+        "Look": "此處可通往書齋。",
         "Move": "你往書齋。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_study"
     }
   ]
 }

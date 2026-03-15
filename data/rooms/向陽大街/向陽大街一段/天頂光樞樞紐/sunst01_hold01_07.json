@@ -19,12 +19,14 @@
       "id": "sunst01_hold01_07_06",
       "name": "南一室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_hold01_06",
       "responses": {
+        "Look": "此處可通往南一室。",
         "Move": "你沿南廊往南一室走回。"
-      }
+      },
+      "move_to_room_id": "sunst01_hold01_06"
     }
   ]
 }

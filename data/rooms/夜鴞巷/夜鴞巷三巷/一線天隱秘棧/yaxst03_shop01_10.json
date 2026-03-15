@@ -19,12 +19,14 @@
       "id": "yaxst03_shop01_10_06",
       "name": "廊五",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop01_06",
       "responses": {
+        "Look": "此處可通往廊五。",
         "Move": "你退回廊五。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop01_06"
     }
   ]
 }

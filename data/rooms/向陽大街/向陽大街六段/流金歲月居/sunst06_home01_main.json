@@ -24,23 +24,27 @@
       "id": "sunst06_home01_main_exit_1",
       "name": "大街",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st6",
       "responses": {
+        "Look": "此處可通往大街。",
         "Move": "你步出，回到向陽大街六段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st6"
     },
     {
       "id": "sunst06_home01_main_exit_2",
       "name": "前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst06_home01_02",
       "responses": {
+        "Look": "此處可通往前間。",
         "Move": "你往前間走去。"
-      }
+      },
+      "move_to_room_id": "sunst06_home01_02"
     }
   ]
 }

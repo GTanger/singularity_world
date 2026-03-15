@@ -178,9 +178,8 @@
 		sorted.forEach(function (o) {
 			if (!o.name) return;
 			var nameEsc = escapeHtml(o.name);
-			var hasLook = o.actions && o.actions.indexOf('Look') !== -1;
 			var hasMove = o.actions && o.actions.indexOf('Move') !== -1;
-			var action = (hasMove && !hasLook) ? 'Move' : 'Look';
+			var action = hasMove ? 'Move' : 'Look';
 			var span = '<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(o.id) + '" data-action="' + escapeHtml(action) + '">' + nameEsc + '</span>';
 			var nameRe = escapeRegex(o.name);
 			html = html.replace(new RegExp('[\u3010\u3014]' + nameRe + '[\u3011\u3015]', 'g'), span);
@@ -323,43 +322,70 @@
 						}
 						break;
 				case 'action_result':
-					if (msg.narrative) {
+					if (msg.action === 'Talk') {
+						removeLogPendingTalk();
+						var narrative = msg.narrative;
+						if (!narrative) narrative = '（NPC 無回應）';
+						var narrativeHtml = formatNarrative(narrative);
+						narrativeHtml = formatNarrativeWithClickableObjects(narrativeHtml, state.objects);
+						appendNarrative(narrativeHtml, 'Talk');
+						// 對話回覆後直接顯示【對話】【攻擊】【交易】，不用再點一次角色
+						var talkTargetId = msg.target_id || '';
+						var talkTargetName = msg.target_name || talkTargetId;
+						if (talkTargetId) {
+							var actionLabels = { 'Talk': '對話', 'Attack': '攻擊', 'Trade': '交易' };
+							var talkActions = ['Talk', 'Attack', 'Trade'];
+							var talkParts = talkActions.map(function (act) {
+								var label = actionLabels[act] || act;
+								return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(talkTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(talkTargetName) + '">' + escapeHtml(label) + '</span>】';
+							});
+							appendObjectActionsLine(talkParts.join(''));
+						}
+					} else if (msg.narrative) {
 						var narrativeHtml = formatNarrative(msg.narrative);
 						narrativeHtml = formatNarrativeWithClickableObjects(narrativeHtml, state.objects);
 						appendNarrative(narrativeHtml, msg.action);
-						// 觀看後下一行顯示可執行的其他動作（物件：閱讀/嗅聞…；人物：對話/攻擊）
+						// 觀看後下一行顯示可執行的其他動作（物件：移動/閱讀…；人物：對話/攻擊）
 						if (msg.action === 'Look') {
 							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Attack': '攻擊', 'Trade': '交易', 'Move': '移動' };
 							var others = [];
-							var targetId = msg.target_id;
-							var obj = null;
-							if (state.objects && state.objects.length) {
-								for (var i = 0; i < state.objects.length; i++) {
-									if (state.objects[i].id === msg.target_id || state.objects[i].name === msg.target_name) {
-										obj = state.objects[i];
-										break;
+							var targetId = msg.target_id || '';
+							// 優先使用後端在 action_result 帶上的 actions（建築 Look 後必有【移動】等）
+							if (msg.actions && Array.isArray(msg.actions) && msg.actions.length) {
+								others = msg.actions;
+							} else {
+								var obj = null;
+								if (state.objects && state.objects.length) {
+									for (var i = 0; i < state.objects.length; i++) {
+										if (state.objects[i].id === msg.target_id || state.objects[i].name === msg.target_name) {
+											obj = state.objects[i];
+											break;
+										}
 									}
 								}
-							}
-							if (obj && obj.actions) {
-								others = obj.actions.filter(function (a) { return a !== 'Look'; });
-								targetId = obj.id;
-							} else if (state.entities && state.entities.length) {
-								for (var j = 0; j < state.entities.length; j++) {
-									if (state.entities[j].id === msg.target_id) {
-										var ent = state.entities[j];
-										if (ent.actions) {
-											others = ent.actions.filter(function (a) { return a !== 'Look'; });
-											targetId = ent.id;
+								if (obj && obj.actions) {
+									others = obj.actions.filter(function (a) { return a !== 'Look'; });
+									targetId = obj.id;
+								} else if (state.entities && state.entities.length) {
+									for (var j = 0; j < state.entities.length; j++) {
+										if (state.entities[j].id === msg.target_id) {
+											var ent = state.entities[j];
+											if (ent.actions) {
+												others = ent.actions.filter(function (a) { return a !== 'Look'; });
+												targetId = ent.id;
+											}
+											break;
 										}
-										break;
 									}
 								}
 							}
 							if (others.length) {
+								var targetName = msg.target_name || msg.target_id || '';
 								var parts = others.map(function (act) {
 									var label = actionLabels[act] || act;
-									return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(targetId) + '" data-action="' + escapeHtml(act) + '">' + escapeHtml(label) + '</span>】';
+									// 建築名 Look 後後端帶 move_target_id 時，僅【移動】對該 id 送 do_action（同房的門／簾）
+									var idForAction = (act === 'Move' && msg.move_target_id) ? msg.move_target_id : targetId;
+									return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(idForAction) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(targetName) + '">' + escapeHtml(label) + '</span>】';
 								});
 								appendObjectActionsLine(parts.join(''));
 							}
@@ -375,6 +401,7 @@
 					renderInventoryContent(msg);
 					break;
 				case 'error':
+					removeLogPendingTalk();
 					appendLog('錯誤：' + msg.message);
 					if (!state.me) {
 						var authMsg = document.getElementById('auth-message');
@@ -953,6 +980,63 @@
 	updateGameTimeDisplay();
 	window.gameConnect = connect;
 	window.gameTryReconnect = tryReconnect;
+	function appendLogPendingTalk() {
+		var logEl = document.getElementById('log');
+		if (!logEl) return;
+		var div = document.createElement('div');
+		div.className = 'log-entry log-system log-talk-pending';
+		div.setAttribute('data-pending', 'talk');
+		div.textContent = '對話中…';
+		logEl.appendChild(div);
+	}
+
+	function removeLogPendingTalk() {
+		var logEl = document.getElementById('log');
+		if (!logEl) return;
+		var pending = logEl.querySelectorAll('.log-talk-pending');
+		for (var i = 0; i < pending.length; i++) pending[i].remove();
+	}
+
+	function appendTalkInputRow(entityId, targetName) {
+		var logEl = document.getElementById('log');
+		if (!logEl) return;
+		var wrap = document.createElement('div');
+		wrap.className = 'log-entry log-talk-input';
+		var label = document.createElement('span');
+		label.className = 'log-talk-label';
+		label.textContent = '對 ' + (targetName || entityId) + ' 說：';
+		var input = document.createElement('input');
+		input.type = 'text';
+		input.className = 'log-talk-input-field';
+		input.placeholder = '輸入要說的話，Enter 送出';
+		input.setAttribute('maxlength', '200');
+		input.setAttribute('aria-label', '對 ' + (targetName || entityId) + ' 說');
+		var btn = document.createElement('button');
+		btn.type = 'button';
+		btn.className = 'log-talk-send';
+		btn.textContent = '送出';
+		wrap.appendChild(label);
+		wrap.appendChild(input);
+		wrap.appendChild(btn);
+		logEl.appendChild(wrap);
+		input.focus();
+		function sendTalk() {
+			var text = (input.value || '').trim();
+			wrap.remove();
+			if (window.gameSend) {
+				window.gameSend({ type: 'do_action', entity_id: entityId, action: 'Talk', player_input: text || '（搭話）' });
+				appendLogPendingTalk();
+			}
+		}
+		btn.addEventListener('click', sendTalk);
+		input.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				sendTalk();
+			}
+		});
+	}
+
 	function bindLogObjectActions() {
 		var logEl = document.getElementById('log');
 		if (!logEl) return;
@@ -962,9 +1046,13 @@
 			ev.preventDefault();
 			var id = btn.getAttribute('data-entity-id');
 			var action = btn.getAttribute('data-action');
-			if (id && action && window.gameSend) {
-				window.gameSend({ type: 'do_action', entity_id: id, action: action });
+			var targetName = btn.getAttribute('data-target-name') || '';
+			if (!id || !action || !window.gameSend) return;
+			if (action === 'Talk') {
+				appendTalkInputRow(id, targetName);
+				return;
 			}
+			window.gameSend({ type: 'do_action', entity_id: id, action: action });
 		});
 	}
 	if (typeof document !== 'undefined') {

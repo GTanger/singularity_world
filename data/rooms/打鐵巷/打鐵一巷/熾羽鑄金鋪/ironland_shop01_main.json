@@ -2,7 +2,6 @@
   "id": "ironland_shop01_main",
   "name": "熾羽鑄金鋪",
   "description": "鐵架石槽圍出櫃區，牆面沁出暗紅脈絡，爐口餘溫與鐵腥沉澱；巷內熱氣自簾隙灌入，非常熱。此處通外側〔打鐵一巷〕、側邊〔工間〕〔工間二〕、後方〔儲物間〕與〔小院〕。櫃上擱著一具〔鐵鉗〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -38,54 +37,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane1",
       "responses": {
         "Move": "你掀開厚簾，回到打鐵一巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane1"
     },
     {
       "id": "ironland_shop01_main_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop01_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你朝側邊工間走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop01_workshop"
     },
     {
       "id": "ironland_shop01_main_exit_workshop2",
       "name": "工間二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop01_workshop2",
       "responses": {
+        "Look": "此處可通往工間二。",
         "Move": "你朝另一側工間二走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop01_workshop2"
     },
     {
       "id": "ironland_shop01_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop01_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你往後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop01_storage"
     },
     {
       "id": "ironland_shop01_main_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop01_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往內側小院走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop01_courtyard"
     },
     {
       "id": "ironland_shop01_main_obj_tongs",

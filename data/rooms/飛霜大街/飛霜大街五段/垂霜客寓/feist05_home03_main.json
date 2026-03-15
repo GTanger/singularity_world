@@ -2,7 +2,6 @@
   "id": "feist05_home03_main",
   "name": "【垂霜客寓】漏風接待處",
   "description": "破敗的客棧入口，牆角積著一堆從天花板漏下的融雪。退回〔發霉門簾〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st5",
       "responses": {
         "Move": "你掀簾步出，回到飛霜大街五段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st5"
     },
     {
       "id": "feist05_home03_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home03_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist05_home03_hallway"
     },
     {
       "id": "feist05_home03_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist05_home03_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist05_home03_eave"
     }
   ]
 }

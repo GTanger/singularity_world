@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st4",
       "responses": {
         "Move": "你步出織光纖維苑，回到向陽大街四段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st4"
     },
     {
       "id": "sunst04_shop01_main_02",
       "name": "前廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop01_02",
       "responses": {
+        "Look": "此處可通往前廳。",
         "Move": "你往前廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop01_02"
     }
   ]
 }

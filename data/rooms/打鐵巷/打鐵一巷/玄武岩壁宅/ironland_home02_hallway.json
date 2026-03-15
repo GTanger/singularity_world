@@ -2,7 +2,6 @@
   "id": "ironland_home02_hallway",
   "name": "廊道",
   "description": "狹窄通道壁面石磚砌合，根鬚脈絡自縫隙蔓延，螢火般的幽光隱約；門廳方向滲入巷內熱氣，通道微悶。此處通〔門廳〕、〔生息室〕與〔小院〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_home02_main",
       "responses": {
         "Move": "你循來路回到門廳。"
-      }
+      },
+      "move_to_room_id": "ironland_home02_main"
     },
     {
       "id": "ironland_home02_hallway_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home02_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你朝通道深處走去，進入生息室。"
-      }
+      },
+      "move_to_room_id": "ironland_home02_living"
     },
     {
       "id": "ironland_home02_hallway_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home02_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你踏入小院。"
-      }
+      },
+      "move_to_room_id": "ironland_home02_courtyard"
     }
   ]
 }

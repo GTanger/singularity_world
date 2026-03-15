@@ -19,12 +19,14 @@
       "id": "fs_wood_08_01_to_fs_wood_08_02",
       "name": "避開氣旋",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_02",
       "responses": {
+        "Look": "此處可通往避開氣旋。",
         "Move": "你往避開氣旋走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_02"
     }
   ]
 }

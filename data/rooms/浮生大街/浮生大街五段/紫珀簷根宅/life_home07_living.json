@@ -2,7 +2,6 @@
   "id": "life_home07_living",
   "name": "生息室",
   "description": "石几伏貼於地，桌緣地衣攀附石面，牆側根鬚自簷角沁下，礦物粉塵沉降。此處通〔簷廊〕〔灶間〕與〔內臥房〕，可往廊、灶頭或歇息處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home07_hallway",
       "responses": {
         "Move": "你回到簷廊。"
-      }
+      },
+      "move_to_room_id": "life_home07_hallway"
     },
     {
       "id": "life_home07_living_exit_kitchen",
       "name": "灶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home07_kitchen",
       "responses": {
+        "Look": "此處可通往灶間。",
         "Move": "你步入灶間。"
-      }
+      },
+      "move_to_room_id": "life_home07_kitchen"
     },
     {
       "id": "life_home07_living_exit_bedroom",
       "name": "內臥房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home07_bedroom",
       "responses": {
+        "Look": "此處可通往內臥房。",
         "Move": "你步入內臥房。"
-      }
+      },
+      "move_to_room_id": "life_home07_bedroom"
     }
   ]
 }

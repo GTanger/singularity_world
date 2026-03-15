@@ -2,7 +2,6 @@
   "id": "feist03_hold01_loft",
   "name": "閣樓",
   "description": "簷心樓閣樓低梁壓頂、簷角積霜從瓦隙沁進一線白，雜物與舊箱堆在角、樓板吱呀；門僅通〔樓上前〕，簷下陰影與霜紋靜止、三段人聲隔樓板而遠。此處僅通〔樓上前〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist03_hold01_lo_exit_front",
       "name": "樓上前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_up_front",
       "responses": {
+        "Look": "此處可通往樓上前。",
         "Move": "你退回樓上前。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_up_front"
     }
   ]
 }

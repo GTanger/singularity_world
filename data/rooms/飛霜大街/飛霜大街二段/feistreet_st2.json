@@ -2,7 +2,6 @@
   "id": "feistreet_st2",
   "name": "飛霜大街二段",
   "description": "路面與打鐵三巷巷尾相接，打鐵巷風道衝出的熱氣在此徹底釋放，與飛霜大街的寒意激烈拉鋸。游離輻射下熱氣經年不散，半融的霜白結晶與高溫金屬的氣味交織。路側是氣氛熾熱的〔熔星鍛造所〕與專售取暖設備的〔餘燼火籠行〕；對向則是工匠與學徒的群居處所，包含〔焦木匠家〕、提供熱食與住宿的〔溫石客棧〕、〔暖爐守衛居〕與〔烘瓦平房〕。可經〔打鐵三巷〕折返感受更強烈的熱浪，或沿大街往〔飛霜大街一段〕、〔飛霜大街三段〕前進。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -58,10 +57,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane3",
       "responses": {
         "Move": "你朝打鐵三巷巷尾走去，熱氣撲面而來。"
-      }
+      },
+      "move_to_room_id": "ironland_lane3"
     },
     {
       "id": "feistreet_st2_exit_st1",
@@ -69,10 +68,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st1",
       "responses": {
         "Move": "你沿大街往飛霜大街一段走去。"
-      }
+      },
+      "move_to_room_id": "feistreet_st1"
     },
     {
       "id": "feistreet_st2_exit_st3",
@@ -80,10 +79,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st3",
       "responses": {
         "Move": "你沿大街往飛霜大街三段走去。"
-      }
+      },
+      "move_to_room_id": "feistreet_st3"
     },
     {
       "id": "fei_st2_obj_shop01",
@@ -101,11 +100,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_shop01_main",
       "responses": {
-        "Move": "你推門進入鐵器行。",
-        "Look": "你跨過高溫的門檻，進入熔星鍛造所。"
-      }
+        "Move": "你推門進入鐵器行。"
+      },
+      "move_to_room_id": "feist02_shop01_main"
     },
     {
       "id": "fei_st2_obj_shop02",
@@ -123,11 +121,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_shop02_main",
       "responses": {
-        "Move": "你推門進入風爐鋪。",
-        "Look": "你掀開沉重的隔熱氈簾，進入餘燼火籠行。"
-      }
+        "Move": "你推門進入風爐鋪。"
+      },
+      "move_to_room_id": "feist02_shop02_main"
     },
     {
       "id": "fei_st2_obj_home01",
@@ -145,11 +142,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_home01_main",
       "responses": {
-        "Move": "你推門進入巷口宅。",
-        "Look": "你推開散發著焦味的焦黑木門，進入焦木匠家。"
-      }
+        "Move": "你推門進入巷口宅。"
+      },
+      "move_to_room_id": "feist02_home01_main"
     },
     {
       "id": "fei_st2_obj_home02",
@@ -167,11 +163,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_home02_main",
       "responses": {
-        "Move": "你推門進入爐邊宅。",
-        "Look": "你推開半掩木門，進入溫石客棧。"
-      }
+        "Move": "你推門進入爐邊宅。"
+      },
+      "move_to_room_id": "feist02_home02_main"
     },
     {
       "id": "fei_st2_obj_home03",
@@ -189,11 +184,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_home03_main",
       "responses": {
-        "Move": "你推門進入熱簷宅。",
-        "Look": "你推開厚重板門，進入暖爐守衛居。"
-      }
+        "Move": "你推門進入熱簷宅。"
+      },
+      "move_to_room_id": "feist02_home03_main"
     },
     {
       "id": "fei_st2_obj_home04",
@@ -211,11 +205,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_home04_main",
       "responses": {
-        "Move": "你推門進入簷熱宅。",
-        "Look": "你低頭彎腰鑽進矮小入口，進入烘瓦平房。"
-      }
+        "Move": "你推門進入簷熱宅。"
+      },
+      "move_to_room_id": "feist02_home04_main"
     }
   ]
 }

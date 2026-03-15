@@ -2,7 +2,6 @@
   "id": "life_shop02_main",
   "name": "流光織染坊",
   "description": "天花板垂掛數匹流動紫光的絲綢，纖維間夾雜微細晶體。石製櫃檯與地面一體成型，表面滲出淡綠玉質。此處連通外部的〔浮生大街一段〕、側邊的〔織造間〕與後方的〔染坊後院〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st1",
       "responses": {
         "Move": "你穿過垂簾，回到浮生大街一段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st1"
     },
     {
       "id": "life_shop02_main_exit_workshop",
       "name": "織造間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_workshop",
       "responses": {
+        "Look": "此處可通往織造間。",
         "Move": "你朝側邊通道走去，進入織造間。"
-      }
+      },
+      "move_to_room_id": "life_shop02_workshop"
     },
     {
       "id": "life_shop02_main_exit_yard",
       "name": "染坊後院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_dye_yard",
       "responses": {
+        "Look": "此處可通往染坊後院。",
         "Move": "你往後方院落走去，踏入染坊後院。"
-      }
+      },
+      "move_to_room_id": "life_shop02_dye_yard"
     }
   ]
 }

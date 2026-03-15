@@ -19,12 +19,14 @@
       "id": "sunst04_shop02_03_main",
       "name": "中廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop02_main",
       "responses": {
+        "Look": "此處可通往中廳。",
         "Move": "你回到中廳。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop02_main"
     }
   ]
 }

@@ -19,12 +19,14 @@
       "id": "fs_wood_07_03_to_fs_wood_07_05",
       "name": "移向邊緣",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_07_05",
       "responses": {
+        "Look": "此處可通往移向邊緣。",
         "Move": "你往移向邊緣走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_07_05"
     }
   ]
 }

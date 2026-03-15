@@ -2,7 +2,6 @@
   "id": "life_home06_hallway",
   "name": "礫廊",
   "description": "廊道兩壁礫石嵌合，菌絲自縫隙蔓延，淡紫光暈沉靜。此處通〔門廳〕〔生息室〕與〔小院〕，可出街、入室或至院中。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home06_main",
       "responses": {
         "Move": "你回到門廳。"
-      }
+      },
+      "move_to_room_id": "life_home06_main"
     },
     {
       "id": "life_home06_hallway_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home06_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你步入生息室。"
-      }
+      },
+      "move_to_room_id": "life_home06_living"
     },
     {
       "id": "life_home06_hallway_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home06_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你踏入小院。"
-      }
+      },
+      "move_to_room_id": "life_home06_courtyard"
     }
   ]
 }

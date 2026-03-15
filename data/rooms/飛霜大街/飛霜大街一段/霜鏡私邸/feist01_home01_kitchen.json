@@ -2,7 +2,6 @@
   "id": "feist01_home01_kitchen",
   "name": "【霜鏡私邸】溫爐灶間",
   "description": "相比於外部的冰冷，這裡是一個溫暖的核心。琉璃化的灶台光潔如新，看不見一絲油垢。高階的能量導線在石磚縫隙間閃爍，提供穩定且無煙的熱源。連接著〔起居大廳〕與存放食材的〔冷庫〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist01_home01_k_exit_living",
       "name": "起居大廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home01_living",
       "responses": {
+        "Look": "此處可通往起居大廳。",
         "Move": "你退回起居大廳。"
-      }
+      },
+      "move_to_room_id": "feist01_home01_living"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist08_home03_kitchen",
   "name": "灶間",
   "description": "一窗對後院，霜跡結在窗棂下緣；石灶靠牆、案上刀砧收得齊，簾那邊是起居的燈影與人聲。柴煙順簷隙往上走，不嗆，餘味像剛熄火不久。此處僅通〔起居〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist08_home03_k_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_home03_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你退回起居。"
-      }
+      },
+      "move_to_room_id": "feist08_home03_living"
     }
   ]
 }

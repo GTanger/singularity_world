@@ -25,23 +25,27 @@
       "id": "fs_cabin_04_to_fs_wood_08_10",
       "name": "林間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_10",
       "responses": {
+        "Look": "此處可通往林間。",
         "Move": "你往林間走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_10"
     },
     {
       "id": "fs_cabin_04_to_fs_cabin_04_r1",
       "name": "進屋",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_04_r1",
       "responses": {
+        "Look": "此處可通往進屋。",
         "Move": "你往進屋走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_04_r1"
     }
   ]
 }

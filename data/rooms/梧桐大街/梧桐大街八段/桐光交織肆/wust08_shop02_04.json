@@ -29,34 +29,40 @@
       "id": "wust08_shop02_04_exit_1",
       "name": "大街",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust08_shop02_main",
       "responses": {
+        "Look": "此處可通往大街。",
         "Move": "你往大街方向走去。"
-      }
+      },
+      "move_to_room_id": "wust08_shop02_main"
     },
     {
       "id": "wust08_shop02_04_exit_2",
       "name": "庫房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust08_shop02_03",
       "responses": {
+        "Look": "此處可通往庫房。",
         "Move": "你往庫房走去。"
-      }
+      },
+      "move_to_room_id": "wust08_shop02_03"
     },
     {
       "id": "wust08_shop02_04_exit_3",
       "name": "展間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust08_shop02_05",
       "responses": {
+        "Look": "此處可通往展間。",
         "Move": "你往展間走去。"
-      }
+      },
+      "move_to_room_id": "wust08_shop02_05"
     }
   ]
 }

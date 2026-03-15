@@ -2,7 +2,6 @@
   "id": "life_home03_hallway",
   "name": "廊道",
   "description": "狹窄通道壁面深灰石灰質，根鬚脈絡自縫隙蔓延而出，螢火般的幽光隱約。此處通向〔門廳〕、〔生息室〕與下沉的〔地窖入口〕。簷角〔乾燥藤鬚〕垂落，竟將樑木纏得更牢。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home03_main",
       "responses": {
         "Move": "你循來路回到門廳。"
-      }
+      },
+      "move_to_room_id": "life_home03_main"
     },
     {
       "id": "life_home03_hallway_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home03_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你朝通道深處走去，進入生息室。"
-      }
+      },
+      "move_to_room_id": "life_home03_living"
     },
     {
       "id": "life_home03_hallway_exit_cellar",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home03_cellar",
       "responses": {
         "Move": "你順階而下，進入下沉地窖。"
-      }
+      },
+      "move_to_room_id": "life_home03_cellar"
     },
     {
       "id": "life_home03_hallway_obj_vine",

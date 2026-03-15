@@ -19,12 +19,14 @@
       "id": "sunst06_home04_07_exit_1",
       "name": "茶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst06_home04_06",
       "responses": {
+        "Look": "此處可通往茶間。",
         "Move": "你往茶間走去。"
-      }
+      },
+      "move_to_room_id": "sunst06_home04_06"
     }
   ]
 }

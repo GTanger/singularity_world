@@ -2,7 +2,6 @@
   "id": "feist09_home01_bedroom",
   "name": "臥房",
   "description": "街口宅最裡一間：單榻靠牆、木櫃抵角，被褥疊在榻尾；簾子一放，街口人聲便悶在外頭，只剩簾縫漏進一點燈與自己的呼吸。此處僅通〔起居室〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist09_home01_bedroom_exit_living",
       "name": "起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_home01_living",
       "responses": {
+        "Look": "此處可通往起居室。",
         "Move": "你回到起居室。"
-      }
+      },
+      "move_to_room_id": "feist09_home01_living"
     }
   ]
 }

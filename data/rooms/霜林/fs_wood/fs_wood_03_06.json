@@ -19,12 +19,14 @@
       "id": "fs_wood_03_06_to_fs_wood_03_08",
       "name": "跌入深處",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_08",
       "responses": {
+        "Look": "此處可通往跌入深處。",
         "Move": "你往跌入深處走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_08"
     }
   ]
 }

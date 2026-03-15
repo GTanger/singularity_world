@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst08_home02_main",
       "responses": {
         "Move": "你往門廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_home02_main"
     },
     {
       "id": "sunst08_home02_02_exit_2",
       "name": "裡間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst08_home02_03",
       "responses": {
+        "Look": "此處可通往裡間。",
         "Move": "你往裡間走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_home02_03"
     }
   ]
 }

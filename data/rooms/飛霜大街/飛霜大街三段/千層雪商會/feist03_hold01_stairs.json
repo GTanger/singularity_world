@@ -2,7 +2,6 @@
   "id": "feist03_hold01_stairs",
   "name": "樓梯",
   "description": "簷心樓木梯貼牆而上、樓板吱呀，簷角積霜從瓦隙沁進一線白、扶手沁涼；下通〔正廳〕、上通〔樓上前〕〔樓上後〕，簷下陰影與霜紋靜止、三段人聲隔樓板而遠。此處通〔正廳〕、〔樓上前〕、〔樓上後〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist03_hold01_st_exit_hall",
       "name": "正廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_main_hall",
       "responses": {
+        "Look": "此處可通往正廳。",
         "Move": "你順木梯下正廳。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_main_hall"
     },
     {
       "id": "feist03_hold01_st_exit_upf",
       "name": "樓上前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_up_front",
       "responses": {
+        "Look": "此處可通往樓上前。",
         "Move": "你上樓往前。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_up_front"
     },
     {
       "id": "feist03_hold01_st_exit_upb",
       "name": "樓上後",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_up_back",
       "responses": {
+        "Look": "此處可通往樓上後。",
         "Move": "你上樓往後。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_up_back"
     }
   ]
 }

@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst07_home01_main",
       "responses": {
         "Move": "你往門廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_home01_main"
     },
     {
       "id": "sunst07_home01_03_exit_2",
       "name": "書隅",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home01_05",
       "responses": {
+        "Look": "此處可通往書隅。",
         "Move": "你往書隅走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_home01_05"
     },
     {
       "id": "sunst07_home01_03_exit_3",
       "name": "茶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home01_06",
       "responses": {
+        "Look": "此處可通往茶間。",
         "Move": "你往茶間走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_home01_06"
     }
   ]
 }

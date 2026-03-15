@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst01_home01_main",
       "responses": {
         "Move": "你回到門廳。"
-      }
+      },
+      "move_to_room_id": "sunst01_home01_main"
     },
     {
       "id": "sunst01_home01_02_03",
       "name": "一室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_home01_03",
       "responses": {
+        "Look": "此處可通往一室。",
         "Move": "你往一室走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_home01_03"
     }
   ]
 }

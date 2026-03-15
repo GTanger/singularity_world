@@ -2,7 +2,6 @@
   "id": "feist09_shop03_storage",
   "name": "儲物間",
   "description": "簷燈鋪儲物間店頭燈火照不到，只通道口一點昏黃；箱簍與陶罐沿牆堆高，摸黑得小心腳下，指尖碰到燈油與鐵銹、黏膩發涼。此處通〔店頭〕、〔後間〕與〔庫房〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist09_shop03_storage_exit_main",
       "name": "店頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop03_main",
       "responses": {
+        "Look": "此處可通往店頭。",
         "Move": "你循來路回到店頭。"
-      }
+      },
+      "move_to_room_id": "feist09_shop03_main"
     },
     {
       "id": "feist09_shop03_storage_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop03_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你往後間走去。"
-      }
+      },
+      "move_to_room_id": "feist09_shop03_back"
     },
     {
       "id": "feist09_shop03_storage_exit_warehouse",
       "name": "庫房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop03_warehouse",
       "responses": {
+        "Look": "此處可通往庫房。",
         "Move": "你步入庫房。"
-      }
+      },
+      "move_to_room_id": "feist09_shop03_warehouse"
     }
   ]
 }

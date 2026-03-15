@@ -19,12 +19,14 @@
       "id": "sunst05_shop01_08_07",
       "name": "中翼內間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop01_07",
       "responses": {
+        "Look": "此處可通往中翼內間。",
         "Move": "你往中翼內間走回。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop01_07"
     }
   ]
 }

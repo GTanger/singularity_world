@@ -24,23 +24,27 @@
       "id": "sunst02_home01_07_06",
       "name": "西廂二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_home01_06",
       "responses": {
+        "Look": "此處可通往西廂二。",
         "Move": "你往西廂二走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_home01_06"
     },
     {
       "id": "sunst02_home01_07_main",
       "name": "寓口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_home01_main",
       "responses": {
+        "Look": "此處可通往寓口。",
         "Move": "你往寓口走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_home01_main"
     }
   ]
 }

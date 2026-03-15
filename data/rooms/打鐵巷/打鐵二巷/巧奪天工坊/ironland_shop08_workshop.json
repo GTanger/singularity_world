@@ -2,7 +2,6 @@
   "id": "ironland_shop08_workshop",
   "name": "工間",
   "description": "小爐小砧、做骨件細工；牆縫礦光為主、爐口餘燼暗。室內安靜、無大響。此處通向〔鍛骨鋪〕與〔生活起居室〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "ironland_shop08_workshop_exit_main",
       "name": "鍛骨鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop08_main",
       "responses": {
+        "Look": "此處可通往鍛骨鋪。",
         "Move": "你循來路回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop08_main"
     },
     {
       "id": "ironland_shop08_workshop_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop08_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你往後方通道走去，進入生活起居室。"
-      }
+      },
+      "move_to_room_id": "ironland_shop08_living"
     }
   ]
 }

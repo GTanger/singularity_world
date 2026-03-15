@@ -2,7 +2,6 @@
   "id": "feist06_shop03_main",
   "name": "【垂冰雜貨行】擁擠鋪面",
   "description": "連個落腳的地方都沒有，到處都塞滿了雜七雜八的維修零件與過期的營養劑。退回〔生鏽窄門〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st6",
       "responses": {
         "Move": "你推門步出，回到飛霜大街六段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st6"
     },
     {
       "id": "feist06_shop03_m_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop03_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "feist06_shop03_counter"
     },
     {
       "id": "feist06_shop03_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist06_shop03_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist06_shop03_eave"
     }
   ]
 }

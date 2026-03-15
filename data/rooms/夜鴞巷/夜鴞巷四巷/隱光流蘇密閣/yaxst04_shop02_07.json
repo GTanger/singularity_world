@@ -26,10 +26,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop02_06",
       "responses": {
         "Move": "你往簾內四走回。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop02_06"
     },
     {
       "id": "yaxst04_shop02_07_08",
@@ -37,10 +37,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop02_08",
       "responses": {
         "Move": "你往簾內六走去。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop02_08"
     }
   ]
 }

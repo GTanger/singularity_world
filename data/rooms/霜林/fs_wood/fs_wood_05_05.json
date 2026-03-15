@@ -19,12 +19,14 @@
       "id": "fs_wood_05_05_to_fs_wood_05_07",
       "name": "沿壁移動",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_05_07",
       "responses": {
+        "Look": "此處可通往沿壁移動。",
         "Move": "你往沿壁移動走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_05_07"
     }
   ]
 }

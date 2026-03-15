@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st4",
       "responses": {
         "Move": "你步出長燈棧，回到夜鴞巷四巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st4"
     },
     {
       "id": "yaxst04_shop01_main_02",
       "name": "甲廊口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_02",
       "responses": {
+        "Look": "此處可通往甲廊口。",
         "Move": "你往甲廊口走去。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_02"
     },
     {
       "id": "yaxst04_shop01_main_06",
       "name": "乙廊口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_06",
       "responses": {
+        "Look": "此處可通往乙廊口。",
         "Move": "你往乙廊口走去。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_06"
     }
   ]
 }

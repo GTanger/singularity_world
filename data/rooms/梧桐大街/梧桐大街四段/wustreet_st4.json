@@ -2,7 +2,6 @@
   "id": "wustreet_st4",
   "name": "梧桐大街四段",
   "description": "進入四段，文明與瘋狂增生的植物達成了一種詭異的平衡。兩側建築的簷角幾乎被粗大的藤蔓撐破，但建築結構卻依然屹立不搖。濃蔭的掩映下，這裡透出一種原始力量與科技結合的從容感。路面上除了根鬚，還能看到一些老舊但運轉良好的地下水管線裸露在外。路側是以植物萃取物進行激進治療的〔綠脈生機醫館〕與展示自然變異之美的〔凝光森態藝廊〕；對向則是住宅群：〔翠廊擁葉小築〕與〔蔭深地下居〕。大街的側邊隱約可見通往〔夜鴞巷二巷〕的幽暗入口。可退回〔梧桐大街三段〕，或朝〔梧桐大街五段〕前進。",
-  "tags": [],
   "zone": "wustreet",
   "exits": [
     {
@@ -48,10 +47,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "wustreet_st3",
       "responses": {
         "Move": "你沿梧桐大街往三段走去。"
-      }
+      },
+      "move_to_room_id": "wustreet_st3"
     },
     {
       "id": "wu_st4_exit_st5",
@@ -59,54 +58,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "wustreet_st5",
       "responses": {
         "Move": "你沿梧桐大街往五段走去。"
-      }
+      },
+      "move_to_room_id": "wustreet_st5"
     },
     {
       "id": "wu_st4_obj_shengji",
       "name": "綠脈生機醫館",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust04_shop01_main",
       "responses": {
+        "Look": "此處可通往綠脈生機醫館。",
         "Move": "門外的空氣中散發著濃烈的藥草與消毒水混合的味道。這裡專治各種因為輻射與改造帶來的基因崩潰；〔自動玻璃門〕閃著綠光。"
-      }
+      },
+      "move_to_room_id": "wust04_shop01_main"
     },
     {
       "id": "wu_st4_obj_ningguang",
       "name": "凝光森態藝廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust04_shop02_main",
       "responses": {
+        "Look": "此處可通往凝光森態藝廊。",
         "Move": "建築的正面是一整片巨大的強化玻璃，裡面展示著被特殊力場瞬間凍結的奇異變異植物標本；〔透明旋轉門〕緩慢轉動。"
-      }
+      },
+      "move_to_room_id": "wust04_shop02_main"
     },
     {
       "id": "wu_st4_obj_home01",
       "name": "翠廊擁葉小築",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust04_home01_main",
       "responses": {
+        "Look": "此處可通往翠廊擁葉小築。",
         "Move": "一棟造型優雅的二層小樓，二樓的陽台已經完全被綠色的藤蔓佔據，成為鳥類變異體的棲息地；〔葉紋鐵門〕半掩。"
-      }
+      },
+      "move_to_room_id": "wust04_home01_main"
     },
     {
       "id": "wu_st4_obj_home02",
       "name": "蔭深地下居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust04_home02_main",
       "responses": {
+        "Look": "此處可通往蔭深地下居。",
         "Move": "這裡的地勢明顯下沉，門廊幾乎低於路面，是一處為了追求極致恆溫與隱私而向地下發展的居所；〔下沉式石門〕緊閉。"
-      }
+      },
+      "move_to_room_id": "wust04_home02_main"
     },
     {
       "id": "wu_st4_exit_yaxiao_st2",
@@ -114,10 +121,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st2",
       "responses": {
         "Move": "你拐進夜鴞巷二巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st2"
     }
   ]
 }

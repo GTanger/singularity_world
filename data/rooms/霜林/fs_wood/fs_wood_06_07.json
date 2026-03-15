@@ -19,12 +19,14 @@
       "id": "fs_wood_06_07_to_fs_wood_06_09",
       "name": "向上觀望",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_06_09",
       "responses": {
+        "Look": "此處可通往向上觀望。",
         "Move": "你往向上觀望走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_06_09"
     }
   ]
 }

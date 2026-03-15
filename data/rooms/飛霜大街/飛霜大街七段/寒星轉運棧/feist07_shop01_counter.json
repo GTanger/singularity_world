@@ -2,7 +2,6 @@
   "id": "feist07_shop01_counter",
   "name": "櫃前",
   "description": "轉運歇腳櫃台後即貨架，茶罐與零嘴排到齊眉；一道簾通〔後間〕，住家從那裡開始，買賣在此成交，簾外鋪面人聲與杯盞聲隱約、再往裡便靜了。此處通〔鋪面〕與〔後間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist07_shop01_c_exit_main",
       "name": "鋪面",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop01_main",
       "responses": {
+        "Look": "此處可通往鋪面。",
         "Move": "你退回鋪面。"
-      }
+      },
+      "move_to_room_id": "feist07_shop01_main"
     },
     {
       "id": "feist07_shop01_c_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop01_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你掀簾往後間。"
-      }
+      },
+      "move_to_room_id": "feist07_shop01_back"
     }
   ]
 }

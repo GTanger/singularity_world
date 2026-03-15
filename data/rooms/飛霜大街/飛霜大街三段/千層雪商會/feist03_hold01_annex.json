@@ -2,7 +2,6 @@
   "id": "feist03_hold01_annex",
   "name": "耳房",
   "description": "簷心樓耳房窄仄、一案一榻，簷下霜氣自窗隙沁進、牆面霜紋隱約；門僅通〔穿堂〕，簷下陰影靜止、正廳人聲自穿堂隱約而來。此處僅通〔穿堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist03_hold01_an_exit_corridor",
       "name": "穿堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_corridor",
       "responses": {
+        "Look": "此處可通往穿堂。",
         "Move": "你退回穿堂。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_corridor"
     }
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "entries": [
+    {
+      "entity_id": "試話",
+      "occupation_id": "",
+      "venue_id": "venue_life_inn"
+    },
+    {
+      "entity_id": "npc_dh374q25g7f7",
+      "occupation_id": "服務生",
+      "venue_id": "venue_life_inn"
+    }
+  ]
+}

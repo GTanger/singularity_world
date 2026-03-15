@@ -2,7 +2,6 @@
   "id": "feist04_home02_storage",
   "name": "倉",
   "description": "冷階宅倉間堆著雜器與存物、梁上懸乾貨，牆角霜紋沁出、門廊冷階自縫隙沁進；門僅通〔廊〕，簷下漏光一線、塵埃與霜晶同浮，腳步落下去便沉了。此處僅通〔廊〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist04_home02_st_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你退回廊。"
-      }
+      },
+      "move_to_room_id": "feist04_home02_hallway"
     }
   ]
 }

@@ -19,12 +19,14 @@
       "id": "fs_wood_04_06_to_fs_wood_04_07",
       "name": "追逐煙霧",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_04_07",
       "responses": {
+        "Look": "此處可通往追逐煙霧。",
         "Move": "你往追逐煙霧走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_04_07"
     }
   ]
 }

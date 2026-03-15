@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst05_home02_main",
       "responses": {
         "Move": "你回到門廳。"
-      }
+      },
+      "move_to_room_id": "sunst05_home02_main"
     },
     {
       "id": "sunst05_home02_05_06",
       "name": "後棟・二進",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_home02_06",
       "responses": {
+        "Look": "此處可通往後棟・二進。",
         "Move": "你往後棟二進走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_home02_06"
     }
   ]
 }

@@ -2,7 +2,10 @@
   "id": "wust05_hold01_09",
   "name": "儲間",
   "description": "歸根銜接點巨木交錯氣根入口，根皮金屬暗灰，白石圓坪、木質香與地底溫熱，懸浮微粒與沉香並存，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔前間〕、〔廳角〕、〔翠意階道〕、〔根系避風穴〕前往他處。",
-  "tags": ["outdoor","plaza"],
+  "tags": [
+    "outdoor",
+    "plaza"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -31,45 +34,53 @@
       "id": "wust05_hold01_09_exit_1",
       "name": "前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_02",
       "responses": {
+        "Look": "此處可通往前間。",
         "Move": "你往前間走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_02"
     },
     {
       "id": "wust05_hold01_09_exit_2",
       "name": "廳角",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_10",
       "responses": {
+        "Look": "此處可通往廳角。",
         "Move": "你往廳角走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_10"
     },
     {
       "id": "wust05_hold01_09_exit_3",
       "name": "翠意階道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_14",
       "responses": {
+        "Look": "此處可通往翠意階道。",
         "Move": "你往翠意階道走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_14"
     },
     {
       "id": "wust05_hold01_09_exit_4",
       "name": "根系避風穴",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_13",
       "responses": {
+        "Look": "此處可通往根系避風穴。",
         "Move": "你往根系避風穴走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_13"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "ironland_shop01_courtyard",
   "name": "小院",
   "description": "泥地苔衣密佈，牆根暗紅脈絡沁出，簷牆稍隔巷內熱氣。此處僅通〔鍛造鋪〕，循來路即回店頭。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_shop01_courtyard_exit",
       "name": "鍛造鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop01_main",
       "responses": {
+        "Look": "此處可通往鍛造鋪。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop01_main"
     }
   ]
 }

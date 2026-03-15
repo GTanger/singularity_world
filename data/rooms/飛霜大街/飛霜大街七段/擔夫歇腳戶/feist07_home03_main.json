@@ -2,7 +2,6 @@
   "id": "feist07_home03_main",
   "name": "【擔夫歇腳戶】玄關",
   "description": "擔前宅〔飛霜大街7段〕深，進門得走幾步才到廳心；光從身後來，眼前是〔廊道〕的暗影，石板吸音、腳步聲沉，七段擔夫與行人喧囂一關門便斷了。此處連接〔飛霜大街七段〕，內側為〔廊道〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st7",
       "responses": {
         "Move": "你步出飛霜大街7段，回到飛霜大街七段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st7"
     },
     {
       "id": "feist07_home03_m_exit_hall",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_home03_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你步入廊道。"
-      }
+      },
+      "move_to_room_id": "feist07_home03_hallway"
     }
   ]
 }

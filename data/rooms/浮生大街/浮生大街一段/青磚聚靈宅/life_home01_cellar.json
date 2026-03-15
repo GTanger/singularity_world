@@ -2,7 +2,6 @@
   "id": "life_home01_cellar",
   "name": "下沉地窖",
   "description": "空間位於地下，牆壁呈現灰白色石灰質地，縫隙滲出濃稠膠質。地面堆放著數個〔封口木箱〕。此處僅能通向上方的〔地窖入口〕，空氣中存在濃重的臭氧氣味。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -18,10 +17,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home01_hallway",
       "responses": {
         "Move": "你順階而上，回到廊道。"
-      }
+      },
+      "move_to_room_id": "life_home01_hallway"
     },
     {
       "id": "life_home01_cellar_obj_box",

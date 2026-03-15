@@ -19,12 +19,14 @@
       "id": "fs_wood_06_02_to_fs_wood_06_04",
       "name": "逆風而行",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_06_04",
       "responses": {
+        "Look": "此處可通往逆風而行。",
         "Move": "你往逆風而行走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_06_04"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_home04_main",
   "name": "門廳",
   "description": "赭色泥漿裹住底層石塊，裂處玉質沁出，淡紫微光沉靜。光線穿過〔竹簾〕灑入，內側導向〔泥廊道〕。地面石板伏貼，牆角〔陶甕〕倚牆，壺身沁出脈絡。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st2",
       "responses": {
         "Move": "你撥開竹簾，回到浮生大街二段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st2"
     },
     {
       "id": "life_home04_main_exit_corridor",
       "name": "泥廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home04_corridor",
       "responses": {
+        "Look": "此處可通往泥廊道。",
         "Move": "你朝內側通道走去，進入泥廊道。"
-      }
+      },
+      "move_to_room_id": "life_home04_corridor"
     },
     {
       "id": "life_home04_main_obj_jar",

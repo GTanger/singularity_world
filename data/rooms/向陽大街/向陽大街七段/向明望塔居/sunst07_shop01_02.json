@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst07_shop01_main",
       "responses": {
         "Move": "你往門廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_shop01_main"
     },
     {
       "id": "sunst07_shop01_02_exit_2",
       "name": "展間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_shop01_04",
       "responses": {
+        "Look": "此處可通往展間。",
         "Move": "你往展間走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_shop01_04"
     }
   ]
 }

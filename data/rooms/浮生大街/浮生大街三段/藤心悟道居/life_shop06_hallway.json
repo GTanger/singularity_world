@@ -2,7 +2,6 @@
   "id": "life_shop06_hallway",
   "name": "內廊",
   "description": "廊道兩壁藤鬚垂落，竟將樑木纏得更牢，淡綠光暈低浮。此處通〔藤心居〕與〔生活起居室〕，可回店頭或往起居處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop06_hallway_exit_main",
       "name": "藤心居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop06_main",
       "responses": {
+        "Look": "此處可通往藤心居。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop06_main"
     },
     {
       "id": "life_shop06_hallway_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop06_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你步入生活起居室。"
-      }
+      },
+      "move_to_room_id": "life_shop06_living"
     }
   ]
 }

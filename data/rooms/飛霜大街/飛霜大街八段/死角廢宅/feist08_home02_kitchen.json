@@ -2,7 +2,6 @@
   "id": "feist08_home02_kitchen",
   "name": "灶間",
   "description": "霜尾宅灶間門洞深、光只到簾口，土灶矮、水缸裂了一道補過的縫；柴薪疊在門邊擋了半條路，煙燻得牆角發黑、八段街尾感與遠處四路街口燈火自簾隙漏進一線，簾外即起居的聲息、霜晶與燈火在此交錯。此處僅通〔起居〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist08_home02_k_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_home02_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你退回起居。"
-      }
+      },
+      "move_to_room_id": "feist08_home02_living"
     }
   ]
 }

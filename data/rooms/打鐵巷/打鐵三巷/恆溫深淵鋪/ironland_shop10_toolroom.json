@@ -2,7 +2,6 @@
   "id": "ironland_shop10_toolroom",
   "name": "工具間",
   "description": "牆架掛大鉗與重錘；爐膛熱滲入、鐵腥重。此處僅通〔工間二〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_shop10_toolroom_exit",
       "name": "工間二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_workshop2",
       "responses": {
+        "Look": "此處可通往工間二。",
         "Move": "你回到工間二。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_workshop2"
     }
   ]
 }

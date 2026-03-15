@@ -19,12 +19,14 @@
       "id": "fs_wood_06_08_to_fs_wood_06_09",
       "name": "鑽出根繭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_06_09",
       "responses": {
+        "Look": "此處可通往鑽出根繭。",
         "Move": "你往鑽出根繭走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_06_09"
     }
   ]
 }

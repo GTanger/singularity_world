@@ -19,12 +19,14 @@
       "id": "yaxst03_shop02_08_06",
       "name": "左茶間口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop02_06",
       "responses": {
+        "Look": "此處可通往左茶間口。",
         "Move": "你往左茶間口走回。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop02_06"
     }
   ]
 }

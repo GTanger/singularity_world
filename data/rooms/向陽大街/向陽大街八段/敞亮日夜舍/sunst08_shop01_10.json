@@ -24,23 +24,27 @@
       "id": "sunst08_shop01_10_exit_1",
       "name": "儲區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst08_shop01_09",
       "responses": {
+        "Look": "此處可通往儲區。",
         "Move": "你往儲區走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_shop01_09"
     },
     {
       "id": "sunst08_shop01_10_exit_2",
       "name": "閣角",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst08_shop01_11",
       "responses": {
+        "Look": "此處可通往閣角。",
         "Move": "你往閣角走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_shop01_11"
     }
   ]
 }

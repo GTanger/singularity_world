@@ -56,10 +56,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st8",
       "responses": {
         "Move": "你拐出巷子，回到向陽大街八段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st8"
     },
     {
       "id": "yaxiao_st1_yaxiao_st2",
@@ -67,76 +67,136 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st2",
       "responses": {
         "Move": "你沿巷往二巷走去。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st2"
     },
     {
       "id": "yaxiao_st1_hold01",
       "name": "深淵密櫃行",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你將神識探入晶板驗證身分，無聲推開厚重的〔密櫃大門〕，步入深淵密櫃行。"
+      }
+    },
+    {
+      "id": "yaxiao_st1_hold01_door",
+      "name": "密櫃大門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_main",
       "responses": {
         "Move": "你將神識探入晶板驗證身分，無聲推開厚重的密櫃大門，步入深淵密櫃行。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_main"
     },
     {
       "id": "yaxiao_st1_shop01",
       "name": "浣塵陣法屋",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你穿過門口那層能洗淨一切氣息探蹤的〔水波結界〕，進入浣塵陣法屋。"
+      }
+    },
+    {
+      "id": "yaxiao_st1_shop01_door",
+      "name": "水波結界",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop01_main",
       "responses": {
         "Move": "你穿過門口那層能洗淨一切氣息探蹤的水波結界，進入浣塵陣法屋。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop01_main"
     },
     {
       "id": "yaxiao_st1_shop02",
       "name": "微光秘法鋪",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你藉著〔側門〕縫漏出的一絲珍異紫光，推門進入微光秘法鋪。"
+      }
+    },
+    {
+      "id": "yaxiao_st1_shop02_door",
+      "name": "側門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop02_main",
       "responses": {
         "Move": "你藉著門縫漏出的一絲珍異紫光，推門進入微光秘法鋪。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop02_main"
     },
     {
       "id": "yaxiao_st1_shop03",
       "name": "夜宴高階膳房",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你循著能瞬間補充神魂之力的奇異藥膳香，推開〔雕花暗門〕進入夜宴高階膳房。"
+      }
+    },
+    {
+      "id": "yaxiao_st1_shop03_door",
+      "name": "雕花暗門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop03_main",
       "responses": {
         "Move": "你循著能瞬間補充神魂之力的奇異藥膳香，推開雕花暗門進入夜宴高階膳房。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop03_main"
     },
     {
       "id": "yaxiao_st1_home01",
       "name": "閉口禪修室",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你扣響了三重隔音隔絕的機關門把，〔門扉〕無聲滑開，進入閉口禪修室。"
+      }
+    },
+    {
+      "id": "yaxiao_st1_home01_door",
+      "name": "門扉",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home01_main",
       "responses": {
         "Move": "你扣響了三重隔音隔絕的機關門把，門扉無聲滑開，進入閉口禪修室。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home01_main"
     },
     {
       "id": "yaxiao_st1_home02",
       "name": "暗影櫥窗寓所",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你走進幾乎與黑夜融為一體的門廊，推開〔窄門〕進入暗影櫥窗寓所。"
+      }
+    },
+    {
+      "id": "yaxiao_st1_home02_door",
+      "name": "窄門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home02_main",
       "responses": {
         "Move": "你走進幾乎與黑夜融為一體的門廊，推門進入暗影櫥窗寓所。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home02_main"
     }
   ]
 }

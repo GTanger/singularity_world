@@ -2,7 +2,6 @@
   "id": "feist02_home02_kitchen",
   "name": "【溫石客棧】高溫廚房",
   "description": "如同地獄般悶熱的工作區。廚子在巨大的火爐前揮汗如雨，地面的排水溝裡流淌著油膩的污水。牆面上有一層厚厚的黑色油垢，空氣令人窒息。退回〔熱湯大堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist02_home02_k_exit_living",
       "name": "熱湯大堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home02_living",
       "responses": {
+        "Look": "此處可通往熱湯大堂。",
         "Move": "你退回熱湯大堂。"
-      }
+      },
+      "move_to_room_id": "feist02_home02_living"
     }
   ]
 }

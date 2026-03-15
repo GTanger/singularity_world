@@ -19,12 +19,14 @@
       "id": "sunst01_shop01_07_03",
       "name": "右廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_shop01_03",
       "responses": {
+        "Look": "此處可通往右廂。",
         "Move": "你回到右廂。"
-      }
+      },
+      "move_to_room_id": "sunst01_shop01_03"
     }
   ]
 }

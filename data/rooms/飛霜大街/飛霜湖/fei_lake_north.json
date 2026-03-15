@@ -34,45 +34,53 @@
       "id": "fei_lake_north_shore",
       "name": "沉霜水際",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_shore",
       "responses": {
+        "Look": "此處可通往沉霜水際。",
         "Move": "你往貼水石灘走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_shore"
     },
     {
       "id": "fei_lake_north_east",
       "name": "東岸霧起之濱",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_east",
       "responses": {
+        "Look": "此處可通往東岸霧起之濱。",
         "Move": "你沿湖岸往東側走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_east"
     },
     {
       "id": "fei_lake_north_west",
       "name": "西岸寂靜迴岸",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_west",
       "responses": {
+        "Look": "此處可通往西岸寂靜迴岸。",
         "Move": "你沿湖岸往西側走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_west"
     },
     {
       "id": "fei_lake_north_pavilion",
       "name": "風化觀景亭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_pavilion",
       "responses": {
+        "Look": "此處可通往風化觀景亭。",
         "Move": "你朝風化觀景亭走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_pavilion"
     },
     {
       "id": "fei_lake_north_trail",
@@ -80,10 +88,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "fs_trail_01",
       "responses": {
         "Move": "你沿人跡往霜林小徑走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_01"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_shop10_main",
   "name": "觀月鏡石軒",
   "description": "牆面嵌著打磨過的玉質與琉璃化礦石，鏡面折射淡紫與琥珀光色，室內光影層疊。石檯沉厚，檯面陳列小鏡石與照面器。此處通外側〔浮生大街五段〕與後方〔儲物間〕、側邊〔內廊〕。檯心擱著一面〔手持鏡石〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st5",
       "responses": {
         "Move": "你掀開布簾，回到浮生大街五段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st5"
     },
     {
       "id": "life_shop10_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop10_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你朝後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "life_shop10_storage"
     },
     {
       "id": "life_shop10_main_exit_hallway",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop10_hallway",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走去。"
-      }
+      },
+      "move_to_room_id": "life_shop10_hallway"
     },
     {
       "id": "life_shop10_main_obj_mirror",

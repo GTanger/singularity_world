@@ -2,7 +2,6 @@
   "id": "life_shop05_hallway",
   "name": "內廊",
   "description": "狹長通道壁面菌絲蔓延，淡綠光暈低浮。此處通〔儲物間〕與〔生活起居室〕，可往庫存或家人起居處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop05_hallway_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你回到儲物間。"
-      }
+      },
+      "move_to_room_id": "life_shop05_storage"
     },
     {
       "id": "life_shop05_hallway_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你步入生活起居室。"
-      }
+      },
+      "move_to_room_id": "life_shop05_living"
     }
   ]
 }

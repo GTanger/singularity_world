@@ -2,7 +2,6 @@
   "id": "lifestreet_st3",
   "name": "浮生大街三段",
   "description": "浮生大街三段，這裡是整條長街的靈脈交匯點與紅塵心臟。路幅瞬間開闊，地縫中沁出的暗紫靈光如粗壯的血管般蔓延向路心，托起了一座宏偉的立體陣法集市——〔森羅萬象墟〕。三層高的集墟被陣法托舉在半空，簷角的靈脈紋理如圖騰般閃爍，來自四面八方的修士與凡人在此熙熙攘攘地交易法寶、靈材與情報。對街則是靜謐的高雅之所：灰石打造的體修武館〔沉淵石髓館〕、綠意盎然的〔藤心悟道居〕與〔青苔靜心宅〕。可退回〔浮生大街二段〕，或朝〔浮生大街四段〕前進。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -43,10 +42,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st2",
       "responses": {
         "Move": "你朝浮生大街二段方向折返。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st2"
     },
     {
       "id": "st3_exit_st4",
@@ -54,10 +53,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st4",
       "responses": {
         "Move": "你朝浮生大街四段方向走去。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st4"
     },
     {
       "id": "st3_obj_mega",
@@ -66,7 +65,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你穿過由純粹靈力凝聚而成的巨大虛空墟門，步入森羅萬象墟。"
+        "Look": "你穿過由純粹靈力凝聚而成的巨大虛空〔墟門〕，步入森羅萬象墟。"
       }
     },
     {
@@ -75,10 +74,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_mega_gate",
       "responses": {
         "Move": "你穿過墟門，步入萬象墟。"
-      }
+      },
+      "move_to_room_id": "life_mega_gate"
     },
     {
       "id": "st3_obj_shop05",
@@ -87,7 +86,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你掀開重達千斤的鎮靈厚簾，踏入沉淵石髓館。"
+        "Look": "你掀開重達千斤的鎮靈〔厚簾〕，踏入沉淵石髓館。"
       }
     },
     {
@@ -96,10 +95,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop05_main",
       "responses": {
         "Move": "你掀開厚簾，進入石髓館。"
-      }
+      },
+      "move_to_room_id": "life_shop05_main"
     },
     {
       "id": "st3_obj_shop06",
@@ -108,7 +107,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你撥開散發著清新草木靈氣的長藤簾，進入藤心悟道居。"
+        "Look": "你撥開散發著清新草木靈氣的長〔藤簾〕，進入藤心悟道居。"
       }
     },
     {
@@ -117,10 +116,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop06_main",
       "responses": {
         "Move": "你撥開藤簾，進入藤心居。"
-      }
+      },
+      "move_to_room_id": "life_shop06_main"
     },
     {
       "id": "st3_obj_home05",
@@ -129,7 +128,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你推開長滿了吸音靈苔的斑駁木門，進入青苔靜心宅。"
+        "Look": "你推開長滿了吸音靈苔的斑駁〔木門〕，進入青苔靜心宅。"
       }
     },
     {
@@ -138,10 +137,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home05_main",
       "responses": {
         "Move": "你推開木門，進入青苔宅。"
-      }
+      },
+      "move_to_room_id": "life_home05_main"
     }
   ]
 }

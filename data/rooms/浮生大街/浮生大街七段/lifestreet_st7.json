@@ -2,7 +2,6 @@
   "id": "lifestreet_st7",
   "name": "浮生大街七段",
   "description": "大街七段，地勢變得開闊，這裡是幾座大型陣法院落的所在地。地下的玉質靈脈在此處展現出強大的生命力，紫玉脈絡從地縫中直接攀上兩側的牆面，與那些古老的根鬚、砌石完美地咬合在一起，形成天然的防禦障壁。高闊的門洞在淡紫與琥珀色的光影交錯下顯得極具威嚴。路側矗立著這片區域最龐大的建築群——〔盤根引靈院〕。可退回〔浮生大街六段〕，或朝〔浮生大街八段〕延伸。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,10 +27,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st6",
       "responses": {
         "Move": "你朝浮生大街六段方向折返。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st6"
     },
     {
       "id": "st7_exit_st8",
@@ -39,10 +38,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st8",
       "responses": {
         "Move": "你朝浮生大街八段方向走去。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st8"
     },
     {
       "id": "st7_obj_b7",
@@ -51,7 +50,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你仰望著高達數丈、由靈脈與青石構築的宏偉院門，緩步進入盤根引靈院。"
+        "Look": "你仰望著高達數丈、由靈脈與青石構築的宏偉〔院門〕，緩步進入盤根引靈院。"
       }
     },
     {
@@ -60,10 +59,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_b7_gate",
       "responses": {
         "Move": "你步入院門，進入根砌院。"
-      }
+      },
+      "move_to_room_id": "life_b7_gate"
     }
   ]
 }

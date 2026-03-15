@@ -39,56 +39,66 @@
       "id": "fs_trail_02_to_fs_trail_01",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_01",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_01"
     },
     {
       "id": "fs_trail_02_to_fs_trail_03",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_03",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_03"
     },
     {
       "id": "fs_trail_02_to_fs_wood_02_01",
       "name": "下沉(探索)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_01",
       "responses": {
+        "Look": "此處可通往下沉(探索)。",
         "Move": "你往下沉(探索)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_01"
     },
     {
       "id": "fs_trail_02_to_fs_wood_02_09",
       "name": "攀登(分支)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_09",
       "responses": {
+        "Look": "此處可通往攀登(分支)。",
         "Move": "你往攀登(分支)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_09"
     },
     {
       "id": "fs_trail_02_to_fs_wood_02_05",
       "name": "側行(展望)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_05",
       "responses": {
+        "Look": "此處可通往側行(展望)。",
         "Move": "你往側行(展望)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_05"
     }
   ]
 }

@@ -1,0 +1,208 @@
+{
+  "entries": [
+    {
+      "entity_id": "npc_dh3911jsvh64",
+      "content": "玩家說：（搭話）；NPC回：npc_dh3911jsvh64說道：「你好，有什麼事嗎？」",
+      "tag": "event",
+      "created_at": 1773572683
+    },
+    {
+      "entity_id": "npc_dh3911jsvh64",
+      "content": "玩家說：（搭話）；NPC回：npc_dh3911jsvh64說道：「你好，有什麼事嗎？」",
+      "tag": "event",
+      "created_at": 1773572692
+    },
+    {
+      "entity_id": "npc_dh39vpdps13i",
+      "content": "玩家說：（搭話）；NPC回：npc_dh39vpdps13i說道：「別擋路。」",
+      "tag": "event",
+      "created_at": 1773572714
+    },
+    {
+      "entity_id": "npc_dh3auylddd5l",
+      "content": "玩家說：（搭話）；NPC回：npc_dh3auylddd5l說道：「我只是個路人，別找我麻煩。」",
+      "tag": "event",
+      "created_at": 1773574108
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我只是個路人，別找我麻煩。」",
+      "tag": "event",
+      "created_at": 1773574165
+    },
+    {
+      "entity_id": "npc_dh37jtho4pqi",
+      "content": "玩家說：（搭話）；NPC回：龍慧志說道：「這裡最近不太平靜，你小心點。」",
+      "tag": "event",
+      "created_at": 1773574171
+    },
+    {
+      "entity_id": "npc_dh3afmrpwi7u",
+      "content": "玩家說：（搭話）；NPC回：劉軍說道：「這裡最近不太平靜，你小心點。」",
+      "tag": "event",
+      "created_at": 1773574175
+    },
+    {
+      "entity_id": "npc_dh398pjxpu46",
+      "content": "玩家說：（搭話）；NPC回：龔志麗說道：「這裡最近不太平靜，你小心點。」",
+      "tag": "event",
+      "created_at": 1773574178
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我只是個路人，別找我麻煩。」",
+      "tag": "event",
+      "created_at": 1773574180
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我只是個路人，別找我麻煩。」",
+      "tag": "event",
+      "created_at": 1773574185
+    },
+    {
+      "entity_id": "npc_dh37jtho4pqi",
+      "content": "玩家說：（搭話）；NPC回：龍慧志說道：「這裡最近不太平靜，你小心點。」",
+      "tag": "event",
+      "created_at": 1773574187
+    },
+    {
+      "entity_id": "npc_dh37jtho4pqi",
+      "content": "玩家說：（搭話）；NPC回：龍慧志說道：「這裡最近不太平靜，你小心點。」",
+      "tag": "event",
+      "created_at": 1773574218
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我只是個路人，別找我麻煩。」",
+      "tag": "event",
+      "created_at": 1773574588
+    },
+    {
+      "entity_id": "npc_dh38qb76wifs",
+      "content": "玩家說：（搭話）；NPC回：賈雅平說道：「有事？」",
+      "tag": "event",
+      "created_at": 1773575051
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我沒什麼好說的。」",
+      "tag": "event",
+      "created_at": 1773575055
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「你問什麼？」",
+      "tag": "event",
+      "created_at": 1773575058
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「路過的人多了，你算一個。」",
+      "tag": "event",
+      "created_at": 1773575064
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「沒。」",
+      "tag": "event",
+      "created_at": 1773575067
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「別惹事。」",
+      "tag": "event",
+      "created_at": 1773575069
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「路過。」",
+      "tag": "event",
+      "created_at": 1773575072
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「嗯哼。」",
+      "tag": "event",
+      "created_at": 1773575075
+    },
+    {
+      "entity_id": "npc_dh37of21b3p6",
+      "content": "玩家說：（搭話）；NPC回：方蘭明說道：「這兒就這樣。」",
+      "tag": "event",
+      "created_at": 1773575085
+    },
+    {
+      "entity_id": "npc_dh3ah5waver6",
+      "content": "玩家說：（搭話）；NPC回：袁美俊說道：「嗯。」",
+      "tag": "event",
+      "created_at": 1773575091
+    },
+    {
+      "entity_id": "npc_dh3ah5waver6",
+      "content": "玩家說：你好；NPC回：袁美俊說道：「有緣再聊，先走了。」",
+      "tag": "event",
+      "created_at": 1773576416
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：你好；NPC回：司空偉說道：「隨便聊聊可以。」",
+      "tag": "event",
+      "created_at": 1773576449
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：請問；NPC回：司空偉說道：「路過的人不少。」",
+      "tag": "event",
+      "created_at": 1773576458
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「最近生意不好做啊。」",
+      "tag": "event",
+      "created_at": 1773576474
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：（搭話）；NPC回：司空偉說道：「別惹事。」",
+      "tag": "event",
+      "created_at": 1773576482
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：我想住宿；NPC回：司空偉說道：「這條街就這樣，熱鬧歸熱鬧，小心點。」",
+      "tag": "event",
+      "created_at": 1773576496
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：你好；NPC回：哎，這客棧裡就沒人跟我說話了，你也夠意思，直接開門見山問好！",
+      "tag": "event",
+      "created_at": 1773578579
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：因為就你站這最久；NPC回：嫌我擋路？滾開點！本少爺在這守著規矩呢，沒得你這群鼠輩來指手畫腳！",
+      "tag": "event",
+      "created_at": 1773578611
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：誰嫌你擋路了，除非你躺下；NPC回：老子是來這鎮上喝酒的，不是讓你來掃地的！再敢把話說得那麼凶，別怪我不講禮數！",
+      "tag": "event",
+      "created_at": 1773578648
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：你那麼凶幹嘛；NPC回：凶個屁！誰讓你們這些沒眼力見的小輩老是把銅板扔我這破招牌上，老子只是不想白嫖而已，懂不懂？",
+      "tag": "event",
+      "created_at": 1773578676
+    },
+    {
+      "entity_id": "試話",
+      "content": "玩家說：哪裡有招牌，我沒看到；NPC回：招牌被俺擋住了！喏，這就是咱浮生客棧，別在那兒杵著了，進來喝口酒，俺跟你講個故事。",
+      "tag": "event",
+      "created_at": 1773578703
+    }
+  ]
+}

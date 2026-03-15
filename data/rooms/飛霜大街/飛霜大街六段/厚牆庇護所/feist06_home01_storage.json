@@ -2,7 +2,6 @@
   "id": "feist06_home01_storage",
   "name": "倉房",
   "description": "霜牆宅廊盡頭窄門一推，舊箱與破簍抵著牆、只容側身；灰撲撲的，打噴嚏的衝動壓在鼻根，無窗、門一開才漏進廊道的光，牆面霜紋密佈、指尖一觸沁涼。此處僅通〔廊〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist06_home01_s_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home01_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你退回廊。"
-      }
+      },
+      "move_to_room_id": "feist06_home01_hallway"
     }
   ]
 }

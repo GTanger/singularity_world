@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home01_main",
       "responses": {
         "Move": "你退回門內。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home01_main"
     },
     {
       "id": "yaxst03_home01_02_03",
       "name": "岔口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home01_03",
       "responses": {
+        "Look": "此處可通往岔口。",
         "Move": "你往岔口走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home01_03"
     }
   ]
 }

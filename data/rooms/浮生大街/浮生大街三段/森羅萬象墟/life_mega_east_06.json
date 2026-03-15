@@ -2,7 +2,6 @@
   "id": "life_mega_east_06",
   "name": "東六室",
   "description": "窄室盡頭，膠質自縫隙沁出，凝結成琥珀色光暈，觸手略黏。此處僅通〔東廊〕，循廊即回前庭或主廊。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_east_06_exit",
       "name": "東廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_east_hall",
       "responses": {
+        "Look": "此處可通往東廊。",
         "Move": "你步出東六室，回到東廊。"
-      }
+      },
+      "move_to_room_id": "life_mega_east_hall"
     }
   ]
 }

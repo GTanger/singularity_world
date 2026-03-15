@@ -2,7 +2,6 @@
   "id": "ironland_shop10_workshop2",
   "name": "工間二",
   "description": "副爐同樣深、餘溫高；主爐熱氣與煙道聲滲入。此處通〔爐膛鋪〕與〔工具間〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "ironland_shop10_workshop2_exit_main",
       "name": "爐膛鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_main",
       "responses": {
+        "Look": "此處可通往爐膛鋪。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_main"
     },
     {
       "id": "ironland_shop10_workshop2_exit_toolroom",
       "name": "工具間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_toolroom",
       "responses": {
+        "Look": "此處可通往工具間。",
         "Move": "你步入工具間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_toolroom"
     }
   ]
 }

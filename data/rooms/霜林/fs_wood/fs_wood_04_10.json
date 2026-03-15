@@ -24,23 +24,27 @@
       "id": "fs_wood_04_10_to_fs_trail_04",
       "name": "回歸主徑",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_04",
       "responses": {
+        "Look": "此處可通往回歸主徑。",
         "Move": "你往回歸主徑走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_04"
     },
     {
       "id": "fs_wood_04_10_to_fs_cabin_02",
       "name": "聽雪室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_02",
       "responses": {
+        "Look": "此處可通往聽雪室。",
         "Move": "你往聽雪室走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_02"
     }
   ]
 }

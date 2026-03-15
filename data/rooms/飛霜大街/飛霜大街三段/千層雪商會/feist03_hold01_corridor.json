@@ -2,7 +2,6 @@
   "id": "feist03_hold01_corridor",
   "name": "穿堂",
   "description": "簷心樓穿堂一徑深長、兩頭昏黑，左通〔東廂〕住家、右通〔西廂〕倉作，盡頭〔內院〕與〔倉間〕〔耳房〕分岔；簷下霜積從牆縫沁進一絲冷、足音入堂即吞，三段霜晶飄落、此樓即過渡段樞紐。此處通〔正廳〕、〔東廂〕、〔西廂〕、〔內院〕、〔倉間〕、〔耳房〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -41,67 +40,79 @@
       "id": "feist03_hold01_c_exit_hall",
       "name": "正廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_main_hall",
       "responses": {
+        "Look": "此處可通往正廳。",
         "Move": "你退回正廳。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_main_hall"
     },
     {
       "id": "feist03_hold01_c_exit_east",
       "name": "東廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_east_wing",
       "responses": {
+        "Look": "此處可通往東廂。",
         "Move": "你轉往東廂。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_east_wing"
     },
     {
       "id": "feist03_hold01_c_exit_west",
       "name": "西廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_west_wing",
       "responses": {
+        "Look": "此處可通往西廂。",
         "Move": "你轉往西廂。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_west_wing"
     },
     {
       "id": "feist03_hold01_c_exit_yard",
       "name": "內院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_inner_yard",
       "responses": {
+        "Look": "此處可通往內院。",
         "Move": "你往內院。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_inner_yard"
     },
     {
       "id": "feist03_hold01_c_exit_storage",
       "name": "倉間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_storage",
       "responses": {
+        "Look": "此處可通往倉間。",
         "Move": "你往倉間。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_storage"
     },
     {
       "id": "feist03_hold01_c_exit_annex",
       "name": "耳房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_annex",
       "responses": {
+        "Look": "此處可通往耳房。",
         "Move": "你往耳房。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_annex"
     }
   ]
 }

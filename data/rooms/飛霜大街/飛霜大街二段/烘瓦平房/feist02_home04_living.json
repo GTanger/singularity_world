@@ -2,7 +2,6 @@
   "id": "feist02_home04_living",
   "name": "【烘瓦平房】悶熱客堂",
   "description": "天花板極低，由於屋頂的瓦片被常年烘烤而發燙，這裡的體感溫度異常之高。角落裡幾乎沒有什麼家具，只有幾把編織粗糙的草蒲團散落在地上。連接著〔紅磚玄關〕、〔火爐間〕與一間小小的〔臥室〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist02_home04_lv_exit_main",
       "name": "紅磚玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home04_main",
       "responses": {
+        "Look": "此處可通往紅磚玄關。",
         "Move": "你退回紅磚玄關。"
-      }
+      },
+      "move_to_room_id": "feist02_home04_main"
     },
     {
       "id": "feist02_home04_lv_exit_kitchen",
       "name": "火爐間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home04_kitchen",
       "responses": {
+        "Look": "此處可通往火爐間。",
         "Move": "你往火爐間走去。"
-      }
+      },
+      "move_to_room_id": "feist02_home04_kitchen"
     },
     {
       "id": "feist02_home04_lv_exit_bed1",
       "name": "炙熱臥房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home04_bed1",
       "responses": {
+        "Look": "此處可通往炙熱臥房。",
         "Move": "你往炙熱臥房走去。"
-      }
+      },
+      "move_to_room_id": "feist02_home04_bed1"
     }
   ]
 }

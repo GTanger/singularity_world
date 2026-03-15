@@ -24,23 +24,27 @@
       "id": "yaxst03_hold01_12_11",
       "name": "西廊中",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_11",
       "responses": {
+        "Look": "此處可通往西廊中。",
         "Move": "你往西廊中走回。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_11"
     },
     {
       "id": "yaxst03_hold01_12_13",
       "name": "西廊盡頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_13",
       "responses": {
+        "Look": "此處可通往西廊盡頭。",
         "Move": "你走到西廊盡頭。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_13"
     }
   ]
 }

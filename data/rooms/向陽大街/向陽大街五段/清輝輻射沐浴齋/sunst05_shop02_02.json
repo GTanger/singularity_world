@@ -34,45 +34,53 @@
       "id": "sunst05_shop02_02_main",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop02_main",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你回到櫃前。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop02_main"
     },
     {
       "id": "sunst05_shop02_02_04",
       "name": "沐一室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop02_04",
       "responses": {
+        "Look": "此處可通往沐一室。",
         "Move": "你往沐一室走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop02_04"
     },
     {
       "id": "sunst05_shop02_02_05",
       "name": "沐二室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop02_05",
       "responses": {
+        "Look": "此處可通往沐二室。",
         "Move": "你往沐二室走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop02_05"
     },
     {
       "id": "sunst05_shop02_02_06",
       "name": "沐三室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop02_06",
       "responses": {
+        "Look": "此處可通往沐三室。",
         "Move": "你往沐三室走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop02_06"
     }
   ]
 }

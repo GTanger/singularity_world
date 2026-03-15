@@ -19,12 +19,14 @@
       "id": "fs_wood_09_01_to_fs_wood_09_03",
       "name": "深入流蘇",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_03",
       "responses": {
+        "Look": "此處可通往深入流蘇。",
         "Move": "你往深入流蘇走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_03"
     }
   ]
 }

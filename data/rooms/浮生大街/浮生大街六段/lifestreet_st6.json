@@ -2,7 +2,6 @@
   "id": "lifestreet_st6",
   "name": "浮生大街六段",
   "description": "來到大街六段，紅塵的熱鬧漸漸轉為市井的清雅。兩側簷角的瓦松與會發光的靈藤變得更加茂盛，地下的玉質脈絡已經不僅僅是沁出光芒，而是實體化地與青石路面咬合在一起。淡紫與琥珀色的光暈沉澱在每一處屋簷下，讓此地充滿了東方奇幻的韻味。這裡的居民步調緩慢，沉浸在靈氣的滋養中。路側是提供靈泉香茗的〔忘憂茶寮〕與佈滿多肉靈植的〔琥珀瓦松宅〕。從這裡岔入〔胡同巷〕，更可尋得那些隱遁於市的居所與書齋。可退回〔浮生大街五段〕，或朝〔浮生大街七段〕延伸。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -38,10 +37,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st5",
       "responses": {
         "Move": "你朝浮生大街五段方向折返。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st5"
     },
     {
       "id": "st6_exit_st7",
@@ -49,10 +48,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st7",
       "responses": {
         "Move": "你朝浮生大街七段方向走去。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st7"
     },
     {
       "id": "st6_obj_shop11",
@@ -61,7 +60,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你掀開散發著淡淡茶香的麻布簾，進入忘憂茶寮。"
+        "Look": "你掀開散發著淡淡茶香的麻〔布簾〕，進入忘憂茶寮。"
       }
     },
     {
@@ -70,10 +69,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop11_main",
       "responses": {
         "Move": "你掀開布簾，進入茶寮。"
-      }
+      },
+      "move_to_room_id": "life_shop11_main"
     },
     {
       "id": "st6_obj_home09",
@@ -82,7 +81,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你推開兩側爬滿發光瓦松的木門，進入琥珀瓦松宅。"
+        "Look": "你推開兩側爬滿發光瓦松的〔木門〕，進入琥珀瓦松宅。"
       }
     },
     {
@@ -91,10 +90,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home09_main",
       "responses": {
         "Move": "你推開木門，進入瓦松宅。"
-      }
+      },
+      "move_to_room_id": "life_home09_main"
     },
     {
       "id": "st6_obj_hutong",
@@ -112,10 +111,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "hutong_lane1",
       "responses": {
         "Move": "你岔入胡同巷。"
-      }
+      },
+      "move_to_room_id": "hutong_lane1"
     }
   ]
 }

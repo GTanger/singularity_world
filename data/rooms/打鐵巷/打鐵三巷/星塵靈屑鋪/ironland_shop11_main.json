@@ -2,7 +2,6 @@
   "id": "ironland_shop11_main",
   "name": "星塵靈屑鋪",
   "description": "鐵屑鋪店頭，地面鐵屑掃成小丘、腳下沙沙；櫃區做修補與零活，碎料多。牆面脈絡暗紅，巷熱自簾隙入。此處通外側〔打鐵三巷〕、側邊〔工間〕、後方〔儲物間〕與〔小院〕；零活一工間。櫃上擱著一具〔鐵鉗〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -33,43 +32,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane3",
       "responses": {
         "Move": "你掀開厚簾，回到打鐵三巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane3"
     },
     {
       "id": "ironland_shop11_main_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop11_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你朝側邊工間走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop11_workshop"
     },
     {
       "id": "ironland_shop11_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop11_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你往後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop11_storage"
     },
     {
       "id": "ironland_shop11_main_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop11_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往內側小院走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop11_courtyard"
     },
     {
       "id": "ironland_shop11_main_obj_tongs",

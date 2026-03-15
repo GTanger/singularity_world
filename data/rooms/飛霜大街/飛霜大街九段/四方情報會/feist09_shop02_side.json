@@ -2,7 +2,6 @@
   "id": "feist09_shop02_side",
   "name": "側間",
   "description": "匯流閣側間窄長一溜，靠牆備用茶碗與小碟疊齊；簾外店頭燈火把影子拉長，杯盞輕碰與人聲隱約，再往裡即帳房。此處通〔店頭〕與〔帳房〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist09_shop02_side_exit_main",
       "name": "店頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_main",
       "responses": {
+        "Look": "此處可通往店頭。",
         "Move": "你回到店頭。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_main"
     },
     {
       "id": "feist09_shop02_side_exit_office",
       "name": "帳房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_office",
       "responses": {
+        "Look": "此處可通往帳房。",
         "Move": "你步入帳房。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_office"
     }
   ]
 }

@@ -19,12 +19,14 @@
       "id": "sunst02_shop01_05_04",
       "name": "調律區・三間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop01_04",
       "responses": {
+        "Look": "此處可通往調律區・三間。",
         "Move": "你往調律區三間走回。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop01_04"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist02_home04_bed1",
   "name": "【烘瓦平房】炙熱臥房",
   "description": "在這樣的環境下睡覺簡直是一種折磨。木板床被強烈的高溫烤得幾乎要失去水分脆化。牆根處的牆皮嚴重剝落，露出了裡面焦黑的結構。退回〔悶熱客堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist02_home04_b1_exit_living",
       "name": "悶熱客堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home04_living",
       "responses": {
+        "Look": "此處可通往悶熱客堂。",
         "Move": "你退回悶熱客堂。"
-      }
+      },
+      "move_to_room_id": "feist02_home04_living"
     }
   ]
 }

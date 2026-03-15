@@ -2,7 +2,6 @@
   "id": "feist08_home01_loft",
   "name": "閣樓",
   "description": "樓板低，得彎腰；雜物與舊簍堆在角，一扇小窗對著街簷。窗玻璃蒙著一層霜、像冰花，往下望見內庭的缸與簷。此處僅通〔東室〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist08_home01_loft_exit_east",
       "name": "東室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_home01_east_room",
       "responses": {
+        "Look": "此處可通往東室。",
         "Move": "你下梯回東室。"
-      }
+      },
+      "move_to_room_id": "feist08_home01_east_room"
     }
   ]
 }

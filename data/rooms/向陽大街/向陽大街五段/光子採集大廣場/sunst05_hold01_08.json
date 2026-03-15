@@ -19,12 +19,14 @@
       "id": "sunst05_hold01_08_07",
       "name": "西二室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_07",
       "responses": {
+        "Look": "此處可通往西二室。",
         "Move": "你沿西廊往西二室走回。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_07"
     }
   ]
 }

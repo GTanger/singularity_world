@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st4",
       "responses": {
         "Move": "你步出燦陽寓，回到向陽大街四段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st4"
     },
     {
       "id": "sunst04_home02_main_02",
       "name": "左進",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home02_02",
       "responses": {
+        "Look": "此處可通往左進。",
         "Move": "你往左進走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_home02_02"
     },
     {
       "id": "sunst04_home02_main_05",
       "name": "右進",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home02_05",
       "responses": {
+        "Look": "此處可通往右進。",
         "Move": "你往右進走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_home02_05"
     }
   ]
 }

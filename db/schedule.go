@@ -61,9 +61,30 @@ type ScheduleMove struct {
 }
 
 // GetNPCTitle 依討論 001：先自指派（assignments）推導職稱，無指派時 fallback 查 entities.display_title。
+// store 啟用或 db 為 nil 時從 store 讀取 display_title，避免 nil 指標。
+// 若 NPC 無 display_title，自動產生姓名並寫回 store，避免畫面顯示 npc_xxx 編號。
 func GetNPCTitle(db *sql.DB, entityID string) string {
 	if t := GetNPCTitleFromAssignments(db, entityID); t != "" {
 		return t
+	}
+	if store.Default != nil {
+		if e := store.Default.GetEntity(entityID); e != nil {
+			if e.DisplayTitle != "" {
+				return e.DisplayTitle
+			}
+			// 補上顯示名並寫回，避免顯示 npc_xxx
+			if e.Kind == "npc" {
+				name := GenerateNPCName(e.Gender)
+				e.DisplayTitle = name
+				_ = store.Default.PutEntity(e)
+				return name
+			}
+			return ""
+		}
+		return ""
+	}
+	if db == nil {
+		return ""
 	}
 	var title sql.NullString
 	_ = db.QueryRow("SELECT display_title FROM entities WHERE id = ?", entityID).Scan(&title)

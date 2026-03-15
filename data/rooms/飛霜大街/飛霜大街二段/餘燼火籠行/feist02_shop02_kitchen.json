@@ -2,7 +2,6 @@
   "id": "feist02_shop02_kitchen",
   "name": "【餘燼火籠行】簡潔灶房",
   "description": "極其乾淨的廚房，使用的灶具與店內販售的高階產品使用了相似的無煙加熱技術。牆面上掛著幾串風乾的香料。退回〔組裝裡間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist02_shop02_k_exit_living",
       "name": "居間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop02_living",
       "responses": {
+        "Look": "此處可通往居間。",
         "Move": "你退回居間。"
-      }
+      },
+      "move_to_room_id": "feist02_shop02_living"
     }
   ]
 }

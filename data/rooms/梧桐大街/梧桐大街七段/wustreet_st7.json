@@ -2,7 +2,6 @@
   "id": "wustreet_st7",
   "name": "梧桐大街七段",
   "description": "隨著步伐進入七段，大自然的氣息再次占據了主導。兩側梧桐的綠意飽和度極高，路面上甚至積累了一層並不髒亂、反而透著溫潤氣息的腐殖層。踩在上面有種奇異的彈性。這裡的空氣中充滿了令人食指大動的油脂與食材熟成的香氣，混合著梧桐葉特有的清苦味，營造出一種極度從容的生活步調。路側是著名的〔豐饒大地食堂〕與專營新鮮植物素材的〔翠綠脈絡鋪〕；對向則是飄散著煙火氣的住宅：〔深廊炊煙居〕與〔青脈長青宅〕。可退回〔梧桐大街六段〕，或朝〔梧桐大街八段〕延伸。",
-  "tags": [],
   "zone": "wustreet",
   "exits": [
     {
@@ -43,10 +42,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "wustreet_st6",
       "responses": {
         "Move": "你沿梧桐大街往六段走去。"
-      }
+      },
+      "move_to_room_id": "wustreet_st6"
     },
     {
       "id": "wu_st7_exit_st8",
@@ -54,54 +53,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "wustreet_st8",
       "responses": {
         "Move": "你沿梧桐大街往八段走去。"
-      }
+      },
+      "move_to_room_id": "wustreet_st8"
     },
     {
       "id": "wu_st7_obj_fengrao",
       "name": "豐饒大地食堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust07_shop01_main",
       "responses": {
+        "Look": "此處可通往豐饒大地食堂。",
         "Move": "一家規模龐大的餐廳，廚房似乎永遠都在熬煮著某種充滿了高能營養的濃湯，香氣讓人無法抗拒；〔香木雙開門〕人聲鼎沸。"
-      }
+      },
+      "move_to_room_id": "wust07_shop01_main"
     },
     {
       "id": "wu_st7_obj_shop02",
       "name": "翠綠脈絡鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust07_shop02_main",
       "responses": {
+        "Look": "此處可通往翠綠脈絡鋪。",
         "Move": "店鋪內陳列著各種剛剛從未知的變異林區採集來的珍稀植物，牆面爬滿了用以保鮮的冷卻藤蔓；〔保鮮屏障門〕透出一絲涼意。"
-      }
+      },
+      "move_to_room_id": "wust07_shop02_main"
     },
     {
       "id": "wu_st7_obj_home01",
       "name": "深廊炊煙居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust07_home01_main",
       "responses": {
+        "Look": "此處可通往深廊炊煙居。",
         "Move": "門廊被設計得極深，幾乎成了一個半開放的廚房，一排排燻肉與風乾的變異果實掛在簷下；〔木柴堆旁門〕半掩著。"
-      }
+      },
+      "move_to_room_id": "wust07_home01_main"
     },
     {
       "id": "wu_st7_obj_home02",
       "name": "青脈長青宅",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust07_home02_main",
       "responses": {
+        "Look": "此處可通往青脈長青宅。",
         "Move": "這棟建築的外觀看起來非常低調，但門前的台階上卻刻意保留了幾條粗壯且充滿活力的青色樹根；〔雕根木門〕緊閉。"
-      }
+      },
+      "move_to_room_id": "wust07_home02_main"
     }
   ]
 }

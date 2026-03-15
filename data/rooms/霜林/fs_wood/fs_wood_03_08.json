@@ -19,12 +19,14 @@
       "id": "fs_wood_03_08_to_fs_wood_03_09",
       "name": "費力爬出",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_09",
       "responses": {
+        "Look": "此處可通往費力爬出。",
         "Move": "你往費力爬出走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_09"
     }
   ]
 }

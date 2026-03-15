@@ -2,7 +2,6 @@
   "id": "life_home01_hallway",
   "name": "廊道",
   "description": "狹窄通道壁面長出玉質脈絡，微弱螢光自縫隙透出。此處連通〔門廳〕、〔生息室〕與下沉的〔地窖入口〕。天花板垂下數條〔纖維根鬚〕，末梢呈乾縮狀態。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home01_main",
       "responses": {
         "Move": "你循來路回到門廳。"
-      }
+      },
+      "move_to_room_id": "life_home01_main"
     },
     {
       "id": "life_home01_hallway_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home01_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你朝通道深處走去，進入生息室。"
-      }
+      },
+      "move_to_room_id": "life_home01_living"
     },
     {
       "id": "life_home01_hallway_exit_cellar",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home01_cellar",
       "responses": {
         "Move": "你順階而下，進入下沉地窖。"
-      }
+      },
+      "move_to_room_id": "life_home01_cellar"
     },
     {
       "id": "life_home01_hallway_obj_root",

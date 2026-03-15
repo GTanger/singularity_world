@@ -24,23 +24,27 @@
       "id": "yaxst01_home01_03_02",
       "name": "內廊一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home01_02",
       "responses": {
+        "Look": "此處可通往內廊一。",
         "Move": "你往內廊一走回。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home01_02"
     },
     {
       "id": "yaxst01_home01_03_04",
       "name": "內廊三",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home01_04",
       "responses": {
+        "Look": "此處可通往內廊三。",
         "Move": "你往內廊三走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home01_04"
     }
   ]
 }

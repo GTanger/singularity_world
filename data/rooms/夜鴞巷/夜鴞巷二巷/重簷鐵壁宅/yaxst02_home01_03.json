@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst02_home01_main",
       "responses": {
         "Move": "你退回門內。"
-      }
+      },
+      "move_to_room_id": "yaxst02_home01_main"
     },
     {
       "id": "yaxst02_home01_03_05",
       "name": "右廊底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_home01_05",
       "responses": {
+        "Look": "此處可通往右廊底。",
         "Move": "你往右廊底走去。"
-      }
+      },
+      "move_to_room_id": "yaxst02_home01_05"
     }
   ]
 }

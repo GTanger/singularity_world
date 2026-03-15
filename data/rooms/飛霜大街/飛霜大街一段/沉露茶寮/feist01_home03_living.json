@@ -2,7 +2,6 @@
   "id": "feist01_home03_living",
   "name": "【沉露茶寮】內室雅座",
   "description": "用以招待貴客的隱密包廂。牆面覆蓋著精緻的隔音皮革，徹底隔絕了前堂的喧囂與大街的風響。室內僅靠幾枚高品質的紫水晶簇提供溫潤照明，觸感乾燥且平滑。僅連接著〔賞霜座席〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -36,56 +35,66 @@
       "id": "feist01_home03_lv_exit_corridor",
       "name": "水汽後廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_corridor",
       "responses": {
+        "Look": "此處可通往水汽後廊。",
         "Move": "你退回水汽後廊。"
-      }
+      },
+      "move_to_room_id": "feist01_home03_corridor"
     },
     {
       "id": "feist01_home03_lv_exit_kitchen",
       "name": "煮茶小灶",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_kitchen",
       "responses": {
+        "Look": "此處可通往煮茶小灶。",
         "Move": "你往煮茶小灶走去。"
-      }
+      },
+      "move_to_room_id": "feist01_home03_kitchen"
     },
     {
       "id": "feist01_home03_lv_exit_bed1",
       "name": "掌櫃臥房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_bed1",
       "responses": {
+        "Look": "此處可通往掌櫃臥房。",
         "Move": "你往掌櫃臥房走去。"
-      }
+      },
+      "move_to_room_id": "feist01_home03_bed1"
     },
     {
       "id": "feist01_home03_lv_exit_bed2",
       "name": "伙計通鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_bed2",
       "responses": {
+        "Look": "此處可通往伙計通鋪。",
         "Move": "你往伙計通鋪走去。"
-      }
+      },
+      "move_to_room_id": "feist01_home03_bed2"
     },
     {
       "id": "feist01_home03_lv_exit_storage",
       "name": "茶磚庫房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_storage",
       "responses": {
+        "Look": "此處可通往茶磚庫房。",
         "Move": "你往茶磚庫房走去。"
-      }
+      },
+      "move_to_room_id": "feist01_home03_storage"
     }
   ]
 }

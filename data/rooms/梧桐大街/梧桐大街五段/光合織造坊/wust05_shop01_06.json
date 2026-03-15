@@ -24,23 +24,27 @@
       "id": "wust05_shop01_06_exit_1",
       "name": "展間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_shop01_05",
       "responses": {
+        "Look": "此處可通往展間。",
         "Move": "你往展間走去。"
-      }
+      },
+      "move_to_room_id": "wust05_shop01_05"
     },
     {
       "id": "wust05_shop01_06_exit_2",
       "name": "理療區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_shop01_07",
       "responses": {
+        "Look": "此處可通往理療區。",
         "Move": "你往理療區走去。"
-      }
+      },
+      "move_to_room_id": "wust05_shop01_07"
     }
   ]
 }

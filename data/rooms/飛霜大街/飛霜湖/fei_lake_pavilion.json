@@ -18,12 +18,14 @@
       "id": "fei_lake_pavilion_north",
       "name": "北岸孤冷湖背",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_north",
       "responses": {
+        "Look": "此處可通往北岸孤冷湖背。",
         "Move": "你步出觀景亭，沿北岸霧岸走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_north"
     }
   ]
 }

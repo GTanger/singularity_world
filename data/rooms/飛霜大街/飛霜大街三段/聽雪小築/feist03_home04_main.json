@@ -2,7 +2,6 @@
   "id": "feist03_home04_main",
   "name": "【聽雪小築】賞雪雅座",
   "description": "一個設計得極具詩意的半開放空間。透過刻意留空的窗櫺，可以觀賞大街上的飛霜而不用忍受寒風。室內焚著靜心的高階沉香，氣氛平和。退回〔精彫小門〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st3",
       "responses": {
         "Move": "你步出，回到飛霜大街三段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st3"
     },
     {
       "id": "feist03_home04_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_home04_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist03_home04_hallway"
     },
     {
       "id": "feist03_home04_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist03_home04_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist03_home04_eave"
     }
   ]
 }

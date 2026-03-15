@@ -2,7 +2,6 @@
   "id": "feist08_home02_main",
   "name": "【死角廢宅】玄關",
   "description": "霜尾宅〔飛霜大街8段〕深，進門得走幾步才到廳心；光從身後來，眼前是〔廊道〕的暗影，石板吸音、腳步聲沉，八段街尾的喧囂一關門便斷了。此處連接〔飛霜大街八段〕，內側為〔廊道〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st8",
       "responses": {
         "Move": "你步出飛霜大街8段，回到飛霜大街八段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st8"
     },
     {
       "id": "feist08_home02_m_exit_hall",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你步入廊道。"
-      }
+      },
+      "move_to_room_id": "feist08_home02_hallway"
     },
     {
       "id": "feist08_home02_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist08_home02_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist08_home02_eave"
     }
   ]
 }

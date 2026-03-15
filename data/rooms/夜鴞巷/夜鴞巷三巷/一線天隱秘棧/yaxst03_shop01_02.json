@@ -29,34 +29,40 @@
       "id": "yaxst03_shop01_02_main",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop01_main",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你退回櫃前。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop01_main"
     },
     {
       "id": "yaxst03_shop01_02_03",
       "name": "廊二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop01_03",
       "responses": {
+        "Look": "此處可通往廊二。",
         "Move": "你往廊二走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop01_03"
     },
     {
       "id": "yaxst03_shop01_02_08",
       "name": "側室甲",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop01_08",
       "responses": {
+        "Look": "此處可通往側室甲。",
         "Move": "你往側室甲走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop01_08"
     }
   ]
 }

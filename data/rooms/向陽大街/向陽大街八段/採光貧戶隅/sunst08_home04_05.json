@@ -19,12 +19,14 @@
       "id": "sunst08_home04_05_exit_1",
       "name": "裡間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst08_home04_03",
       "responses": {
+        "Look": "此處可通往裡間。",
         "Move": "你往裡間走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_home04_03"
     }
   ]
 }

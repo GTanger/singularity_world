@@ -2,7 +2,10 @@
   "id": "wust01_hold01_15",
   "name": "歸根銜接點",
   "description": "小廳挑高處枝葉蔽天，綠廊拱頂感；地面石磚與根鬚嵌合，縫隙菌絲或微光，從容，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔歸根舍〕、〔歸根連接廊〕前往他處。",
-  "tags": ["indoor","admin"],
+  "tags": [
+    "indoor",
+    "admin"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -21,23 +24,27 @@
       "id": "wust01_hold01_15_exit_1",
       "name": "歸根舍",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_guigen",
       "responses": {
+        "Look": "此處可通往歸根舍。",
         "Move": "你往歸根舍走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_guigen"
     },
     {
       "id": "wust01_hold01_15_exit_2",
       "name": "歸根連接廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_14",
       "responses": {
+        "Look": "此處可通往歸根連接廊。",
         "Move": "你往歸根連接廊走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_14"
     }
   ]
 }

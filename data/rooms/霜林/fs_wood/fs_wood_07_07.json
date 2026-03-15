@@ -19,12 +19,14 @@
       "id": "fs_wood_07_07_to_fs_wood_07_09",
       "name": "追逐冰塵",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_07_09",
       "responses": {
+        "Look": "此處可通往追逐冰塵。",
         "Move": "你往追逐冰塵走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_07_09"
     }
   ]
 }

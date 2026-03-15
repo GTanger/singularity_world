@@ -19,12 +19,14 @@
       "id": "fs_wood_02_03_to_fs_wood_02_04",
       "name": "探索岩隙",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_04",
       "responses": {
+        "Look": "此處可通往探索岩隙。",
         "Move": "你往探索岩隙走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_04"
     }
   ]
 }

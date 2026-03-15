@@ -2,7 +2,6 @@
   "id": "feist02_home01_main",
   "name": "【焦木匠家】半戶外廊道",
   "description": "一條兼具工作與通行的過道，地面鋪滿了木屑與焦黑的木炭殘渣。牆面上安裝了許多用來乾燥木材的導熱管道，令此處的空氣極端乾燥且刺鼻。退回〔焦黑木門〕至大街；內部通向〔堆木天井〕與〔破舊起居室〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st2",
       "responses": {
         "Move": "你步出，回到飛霜大街二段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st2"
     },
     {
       "id": "feist02_home01_m_exit_living",
       "name": "破舊起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home01_living",
       "responses": {
+        "Look": "此處可通往破舊起居室。",
         "Move": "你步入破舊起居室。"
-      }
+      },
+      "move_to_room_id": "feist02_home01_living"
     },
     {
       "id": "feist02_home01_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_home01_eave",
       "responses": {
         "Move": "你步向木屑簷下。"
-      }
+      },
+      "move_to_room_id": "feist02_home01_eave"
     }
   ]
 }

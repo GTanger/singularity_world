@@ -2,7 +2,6 @@
   "id": "life_shop10_storage",
   "name": "儲物間",
   "description": "牆面格架為石灰質所固，未打磨礦石與成品鏡石堆疊，縫隙透出琥珀光。此處通向前方〔鏡石軒〕與深處〔內廊〕，可回店頭或往起居處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop10_storage_exit_main",
       "name": "鏡石軒",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop10_main",
       "responses": {
+        "Look": "此處可通往鏡石軒。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop10_main"
     },
     {
       "id": "life_shop10_storage_exit_hallway",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop10_hallway",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走去。"
-      }
+      },
+      "move_to_room_id": "life_shop10_hallway"
     }
   ]
 }

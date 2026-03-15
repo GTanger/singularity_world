@@ -2,7 +2,6 @@
   "id": "feist09_home02_courtyard",
   "name": "小院",
   "description": "簷匯宅院心一方，四向簷脊攏著、天空壓成一口井；地角濕、苔與霜糾成一團，井已封、石欄覆霜、指頭一碰冰得發麻，呼吸見白、簷溜偶爾滴答，街口人聲隔牆而遠。此處僅通〔廊道〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist09_home02_courtyard_exit_hallway",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你回到廊道。"
-      }
+      },
+      "move_to_room_id": "feist09_home02_hallway"
     }
   ]
 }

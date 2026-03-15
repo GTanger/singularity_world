@@ -2,7 +2,6 @@
   "id": "life_home02_balcony",
   "name": "露天葉台",
   "description": "平台由數片硬化葉片延伸而成，邊緣長滿玉質利齒狀突起。下方可見大街一隅。僅能退回內部〔綠蔭閣樓〕，風聲吹過葉尖發出乾澀的摩擦聲。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "home02_balcony_exit_loft",
       "name": "綠蔭閣樓",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home02_loft",
       "responses": {
+        "Look": "此處可通往綠蔭閣樓。",
         "Move": "你自葉台退回室內，進入綠蔭閣樓。"
-      }
+      },
+      "move_to_room_id": "life_home02_loft"
     }
   ]
 }

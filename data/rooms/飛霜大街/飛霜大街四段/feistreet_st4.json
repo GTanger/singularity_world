@@ -2,7 +2,6 @@
   "id": "feistreet_st4",
   "name": "飛霜大街四段",
   "description": "這裡是大街上的深寒區段，霜白結晶長年飄落，路面冷調如沁，空氣乾燥得幾乎要割裂皮膚。路側是掌控著地下物流與珍稀物資的〔凝霜拍賣行〕，以及收取各類見不得光物件的〔殘冰典當鋪〕；這兩棟建築的簷角積霜成紋、牆面玉質脈絡強烈沁出。對向則是充斥著暴力與治療產業的建築群：包含傳出陣陣喝斥聲的〔堅冰武館〕、終日彌漫藥苦味的〔寒階醫館〕與〔沁玉藥鋪〕，最後是為來往客商提供廉價庇護的〔尋光旅舍〕。可沿大街退回〔飛霜大街三段〕，或深入〔飛霜大街五段〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -53,10 +52,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st3",
       "responses": {
         "Move": "你朝飛霜大街三段方向折返。"
-      }
+      },
+      "move_to_room_id": "feistreet_st3"
     },
     {
       "id": "fei_st4_exit_st5",
@@ -64,10 +63,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st5",
       "responses": {
         "Move": "你朝飛霜大街五段方向走去。"
-      }
+      },
+      "move_to_room_id": "feistreet_st5"
     },
     {
       "id": "fei_st4_obj_shop04",
@@ -83,12 +82,14 @@
       "id": "fei_st4_obj_shop04_door",
       "name": "驗證大堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_main",
       "responses": {
+        "Look": "此處可通往驗證大堂。",
         "Move": "你推門進入霜紋閣。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_main"
     },
     {
       "id": "fei_st4_obj_shop05",
@@ -104,12 +105,14 @@
       "id": "fei_st4_obj_shop05_door",
       "name": "鐵柵櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop02_main",
       "responses": {
+        "Look": "此處可通往鐵柵櫃前。",
         "Move": "你掀簾進入簷下鋪。"
-      }
+      },
+      "move_to_room_id": "feist04_shop02_main"
     },
     {
       "id": "fei_st4_obj_home01",
@@ -125,12 +128,14 @@
       "id": "fei_st4_obj_home01_door",
       "name": "演武前廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home01_main",
       "responses": {
+        "Look": "此處可通往演武前廊。",
         "Move": "你推門進入石霜宅。"
-      }
+      },
+      "move_to_room_id": "feist04_home01_main"
     },
     {
       "id": "fei_st4_obj_home02",
@@ -148,10 +153,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist04_home02_main",
       "responses": {
         "Move": "你步入冷階宅。"
-      }
+      },
+      "move_to_room_id": "feist04_home02_main"
     },
     {
       "id": "fei_st4_obj_home03",
@@ -167,12 +172,14 @@
       "id": "fei_st4_obj_home03_door",
       "name": "抓藥前堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home03_main",
       "responses": {
+        "Look": "此處可通往抓藥前堂。",
         "Move": "你推開抓藥前堂進入玉脈宅。"
-      }
+      },
+      "move_to_room_id": "feist04_home03_main"
     },
     {
       "id": "fei_st4_obj_home04",
@@ -188,12 +195,14 @@
       "id": "fei_st4_obj_home04_door",
       "name": "喧鬧玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home04_main",
       "responses": {
+        "Look": "此處可通往喧鬧玄關。",
         "Move": "你經喧鬧玄關進入簷光宅。"
-      }
+      },
+      "move_to_room_id": "feist04_home04_main"
     }
   ]
 }

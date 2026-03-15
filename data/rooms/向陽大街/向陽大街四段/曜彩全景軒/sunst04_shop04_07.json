@@ -24,23 +24,27 @@
       "id": "sunst04_shop04_07_03",
       "name": "中翼・前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop04_03",
       "responses": {
+        "Look": "此處可通往中翼・前間。",
         "Move": "你往中翼前間走回。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop04_03"
     },
     {
       "id": "sunst04_shop04_07_08",
       "name": "中翼・二間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop04_08",
       "responses": {
+        "Look": "此處可通往中翼・二間。",
         "Move": "你往中翼二間走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop04_08"
     }
   ]
 }

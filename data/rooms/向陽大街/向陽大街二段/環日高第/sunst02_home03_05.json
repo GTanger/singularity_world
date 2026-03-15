@@ -19,12 +19,14 @@
       "id": "sunst02_home03_05_04",
       "name": "右間・前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_home03_04",
       "responses": {
+        "Look": "此處可通往右間・前。",
         "Move": "你往右間前走回。"
-      }
+      },
+      "move_to_room_id": "sunst02_home03_04"
     }
   ]
 }

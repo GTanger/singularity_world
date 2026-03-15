@@ -39,56 +39,66 @@
       "id": "fs_trail_03_to_fs_trail_02",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_02",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_02"
     },
     {
       "id": "fs_trail_03_to_fs_trail_04",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_04",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_04"
     },
     {
       "id": "fs_trail_03_to_fs_wood_03_01",
       "name": "偏移(入谷)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_01",
       "responses": {
+        "Look": "此處可通往偏移(入谷)。",
         "Move": "你往偏移(入谷)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_01"
     },
     {
       "id": "fs_trail_03_to_fs_wood_03_02",
       "name": "橫穿(枯林)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_02",
       "responses": {
+        "Look": "此處可通往橫穿(枯林)。",
         "Move": "你往橫穿(枯林)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_02"
     },
     {
       "id": "fs_trail_03_to_fs_wood_03_10",
       "name": "攀升(銜接)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_10",
       "responses": {
+        "Look": "此處可通往攀升(銜接)。",
         "Move": "你往攀升(銜接)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_10"
     }
   ]
 }

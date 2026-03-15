@@ -24,23 +24,27 @@
       "id": "sunst01_home03_05_04",
       "name": "丙間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_home03_04",
       "responses": {
+        "Look": "此處可通往丙間。",
         "Move": "你往丙間走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_home03_04"
     },
     {
       "id": "sunst01_home03_05_06",
       "name": "戊間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_home03_06",
       "responses": {
+        "Look": "此處可通往戊間。",
         "Move": "你往戊間走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_home03_06"
     }
   ]
 }

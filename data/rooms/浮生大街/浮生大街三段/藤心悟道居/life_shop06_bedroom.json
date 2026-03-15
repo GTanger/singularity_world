@@ -2,7 +2,6 @@
   "id": "life_shop06_bedroom",
   "name": "私人臥室",
   "description": "床架自地增生，藤毯覆之，簷角脈絡隱約。此處僅通〔生活起居室〕，原路即回。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_shop06_bedroom_exit",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop06_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你回到生活起居室。"
-      }
+      },
+      "move_to_room_id": "life_shop06_living"
     }
   ]
 }

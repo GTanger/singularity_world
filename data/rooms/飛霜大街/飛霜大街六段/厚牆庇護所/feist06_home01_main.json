@@ -2,7 +2,6 @@
   "id": "feist06_home01_main",
   "name": "【厚牆庇護所】加固玄關",
   "description": "牆壁採用了高強度的複合岩層，室內安靜得出奇，與外面惡劣的飛霜環境完全隔絕。退回〔沉重石門洞〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st6",
       "responses": {
         "Move": "你步出，回到飛霜大街六段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st6"
     },
     {
       "id": "feist06_home01_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home01_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist06_home01_hallway"
     }
   ]
 }

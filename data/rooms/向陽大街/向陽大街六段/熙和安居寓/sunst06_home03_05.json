@@ -21,10 +21,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst06_home03_main",
       "responses": {
         "Move": "你往門廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst06_home03_main"
     }
   ]
 }

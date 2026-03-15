@@ -24,23 +24,27 @@
       "id": "yaxst02_shop03_02_main",
       "name": "當口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop03_main",
       "responses": {
+        "Look": "此處可通往當口。",
         "Move": "你退回當口。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop03_main"
     },
     {
       "id": "yaxst02_shop03_02_03",
       "name": "內廊二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop03_03",
       "responses": {
+        "Look": "此處可通往內廊二。",
         "Move": "你往內廊二走去。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop03_03"
     }
   ]
 }

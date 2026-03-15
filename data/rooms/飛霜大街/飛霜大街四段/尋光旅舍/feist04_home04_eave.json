@@ -2,7 +2,6 @@
   "id": "feist04_home04_eave",
   "name": "簷下",
   "description": "簷光宅門旁一截簷、簷隙漏光切在石階上，簷下陰影與霜色交錯、可望四段行人與簷角霜紋；霜白結晶沾簷即化、風灌進來袖口生寒，小門內光線幽微。此處僅通〔喧鬧玄關〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist04_home04_e_exit_main",
       "name": "喧鬧玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home04_main",
       "responses": {
+        "Look": "此處可通往喧鬧玄關。",
         "Move": "你退回喧鬧玄關。"
-      }
+      },
+      "move_to_room_id": "feist04_home04_main"
     }
   ]
 }

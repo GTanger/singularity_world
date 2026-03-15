@@ -414,6 +414,14 @@ body {
 .log-object-action { color: #ffb74d; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; pointer-events: auto; }
 .log-object-action:hover { color: #ffa726; text-decoration-style: solid; }
 .log-entry .log-object-action { color: #ffb74d; }
+
+.log-entry.log-talk-input { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.5rem; padding: 0.35rem 0; color: var(--text-muted); font-size: 0.95rem; }
+.log-talk-input .log-talk-label { flex-shrink: 0; }
+.log-talk-input .log-talk-input-field { flex: 1; min-width: 8rem; max-width: 20rem; padding: 0.25rem 0.5rem; font-size: 0.95rem; color: var(--text); background: var(--bg-input, #2a2e33); border: 1px solid rgba(255,255,255,0.12); border-radius: 4px; }
+.log-talk-input .log-talk-input-field::placeholder { color: var(--text-muted); }
+.log-talk-input .log-talk-send { flex-shrink: 0; padding: 0.25rem 0.6rem; font-size: 0.9rem; color: #1e2328; background: #ffb74d; border: none; border-radius: 4px; cursor: pointer; }
+.log-talk-input .log-talk-send:hover { background: #ffa726; }
+
 .narr-name { color: var(--room-name); font-weight: 600; }
 .narr-dialogue { color: #e0e0e0; font-style: italic; }
 .text-muted { color: var(--text-muted); font-size: 0.85rem; }

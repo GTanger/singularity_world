@@ -18,12 +18,14 @@
       "id": "fei_lake_pump_west",
       "name": "西岸寂靜迴岸",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_west",
       "responses": {
+        "Look": "此處可通往西岸寂靜迴岸。",
         "Move": "你離開泵房，沿西岸石灘走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_west"
     }
   ]
 }

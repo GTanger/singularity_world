@@ -2,7 +2,6 @@
   "id": "ironland_shop12_living",
   "name": "生活起居室",
   "description": "石桌暖爐槽微溫；工間拉風聲隱約、氣流微動。陶壺牆角、淡紫脈絡。此處通向〔工間〕、〔儲物間〕、〔私人臥室〕與〔灶間〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -31,45 +30,53 @@
       "id": "ironland_shop12_living_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你朝工間方向走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_workshop"
     },
     {
       "id": "ironland_shop12_living_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你往儲物間走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_storage"
     },
     {
       "id": "ironland_shop12_living_exit_bedroom",
       "name": "私人臥室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_bedroom",
       "responses": {
+        "Look": "此處可通往私人臥室。",
         "Move": "你推開側門，步入私人臥室。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_bedroom"
     },
     {
       "id": "ironland_shop12_living_exit_kitchen",
       "name": "灶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_kitchen",
       "responses": {
+        "Look": "此處可通往灶間。",
         "Move": "你步入灶間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_kitchen"
     }
   ]
 }

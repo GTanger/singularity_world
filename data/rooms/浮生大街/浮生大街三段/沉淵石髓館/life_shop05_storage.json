@@ -2,7 +2,6 @@
   "id": "life_shop05_storage",
   "name": "儲物間",
   "description": "牆面格架為石灰質所固，礦石與石片堆疊，縫隙透出琥珀光暈。此處通〔石髓館〕與〔內廊〕，可回店頭或往生活區。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop05_storage_exit_main",
       "name": "石髓館",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_main",
       "responses": {
+        "Look": "此處可通往石髓館。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop05_main"
     },
     {
       "id": "life_shop05_storage_exit_hallway",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_hallway",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走去。"
-      }
+      },
+      "move_to_room_id": "life_shop05_hallway"
     }
   ]
 }

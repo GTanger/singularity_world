@@ -46,65 +46,75 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st2",
       "responses": {
         "Move": "你步出簷角寓，回到夜鴞巷二巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st2"
     },
     {
       "id": "yaxst02_home02_main_02",
       "name": "側室一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_home02_02",
       "responses": {
+        "Look": "此處可通往側室一。",
         "Move": "你掀簾進入側室一。"
-      }
+      },
+      "move_to_room_id": "yaxst02_home02_02"
     },
     {
       "id": "yaxst02_home02_main_03",
       "name": "側室二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_home02_03",
       "responses": {
+        "Look": "此處可通往側室二。",
         "Move": "你掀簾進入側室二。"
-      }
+      },
+      "move_to_room_id": "yaxst02_home02_03"
     },
     {
       "id": "yaxst02_home02_main_04",
       "name": "側室三",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_home02_04",
       "responses": {
+        "Look": "此處可通往側室三。",
         "Move": "你掀簾進入側室三。"
-      }
+      },
+      "move_to_room_id": "yaxst02_home02_04"
     },
     {
       "id": "yaxst02_home02_main_05",
       "name": "側室四",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_home02_05",
       "responses": {
+        "Look": "此處可通往側室四。",
         "Move": "你掀簾進入側室四。"
-      }
+      },
+      "move_to_room_id": "yaxst02_home02_05"
     },
     {
       "id": "yaxst02_home02_main_06",
       "name": "側室五",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_home02_06",
       "responses": {
+        "Look": "此處可通往側室五。",
         "Move": "你掀簾進入側室五。"
-      }
+      },
+      "move_to_room_id": "yaxst02_home02_06"
     }
   ]
 }

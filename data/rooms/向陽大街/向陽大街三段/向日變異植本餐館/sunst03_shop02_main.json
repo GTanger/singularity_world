@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st3",
       "responses": {
         "Move": "你步出向日植本餐館，回到向陽大街三段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st3"
     },
     {
       "id": "sunst03_shop02_main_02",
       "name": "大廳一區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst03_shop02_02",
       "responses": {
+        "Look": "此處可通往大廳一區。",
         "Move": "你往大廳一區走去。"
-      }
+      },
+      "move_to_room_id": "sunst03_shop02_02"
     }
   ]
 }

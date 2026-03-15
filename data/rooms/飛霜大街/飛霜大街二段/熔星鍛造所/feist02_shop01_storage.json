@@ -2,7 +2,6 @@
   "id": "feist02_shop01_storage",
   "name": "【熔星鍛造所】鐵料庫房",
   "description": "厚重的鉛皮門背後，堆積著如山般的原礦與金屬錠。由於此處刻意阻絕了熔爐的熱度以防礦物變質，空氣顯得異常冰冷乾燥。只能退回〔淬火後堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist02_shop01_s_exit_back",
       "name": "淬火後堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop01_back",
       "responses": {
+        "Look": "此處可通往淬火後堂。",
         "Move": "你退回淬火後堂。"
-      }
+      },
+      "move_to_room_id": "feist02_shop01_back"
     }
   ]
 }

@@ -24,23 +24,27 @@
       "id": "yaxst03_shop03_07_06",
       "name": "環室六",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop03_06",
       "responses": {
+        "Look": "此處可通往環室六。",
         "Move": "你往環室六走回。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop03_06"
     },
     {
       "id": "yaxst03_shop03_07_02",
       "name": "環室一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop03_02",
       "responses": {
+        "Look": "此處可通往環室一。",
         "Move": "你沿內環回到環室一。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop03_02"
     }
   ]
 }

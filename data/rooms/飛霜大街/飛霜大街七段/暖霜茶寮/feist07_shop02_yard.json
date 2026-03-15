@@ -2,7 +2,6 @@
   "id": "feist07_shop02_yard",
   "name": "小天井",
   "description": "簷下茶鋪與宅之間一隙地，簷線攏天、一口缸在角；霜跡浮在缸沿，簾後即〔過廳〕燈火與飯香，甕緣滴水有聲、茶氣混著灶煙。此處通〔後間〕與〔過廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist07_shop02_y_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你退回後間。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_back"
     },
     {
       "id": "feist07_shop02_y_exit_hall",
       "name": "過廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_hall",
       "responses": {
+        "Look": "此處可通往過廳。",
         "Move": "你步入過廳。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_hall"
     }
   ]
 }

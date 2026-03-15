@@ -29,34 +29,40 @@
       "id": "sunst02_shop03_03_main",
       "name": "閣口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop03_main",
       "responses": {
+        "Look": "此處可通往閣口。",
         "Move": "你回到閣口。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop03_main"
     },
     {
       "id": "sunst02_shop03_03_07",
       "name": "西翼・中間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop03_07",
       "responses": {
+        "Look": "此處可通往西翼・中間。",
         "Move": "你往西翼中間走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop03_07"
     },
     {
       "id": "sunst02_shop03_03_09",
       "name": "西翼・側室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop03_09",
       "responses": {
+        "Look": "此處可通往西翼・側室。",
         "Move": "你往西翼側室走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop03_09"
     }
   ]
 }

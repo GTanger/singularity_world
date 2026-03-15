@@ -2,7 +2,6 @@
   "id": "feist04_shop02_eave",
   "name": "簷廊",
   "description": "簷下鋪簷廊靠街一側、簷角積霜垂成串，簾隙漏進四段天光、石階沁涼；行人與擔夫自簾外過、人聲隱約，背靠鋪面與櫃前、簷下陰影與霜白交錯靜止。此處通〔鐵柵櫃前〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist04_shop02_e_exit_main",
       "name": "鐵柵櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop02_main",
       "responses": {
+        "Look": "此處可通往鐵柵櫃前。",
         "Move": "你退回鐵柵櫃前。"
-      }
+      },
+      "move_to_room_id": "feist04_shop02_main"
     }
   ]
 }

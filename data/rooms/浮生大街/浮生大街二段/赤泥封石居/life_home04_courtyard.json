@@ -2,7 +2,6 @@
   "id": "life_home04_courtyard",
   "name": "小院",
   "description": "泥地小院，牆根玉質脈絡自石塊縫隙蔓延而出，淡紫光暈沉靜。角落〔陶盆〕半埋泥中，盆內菌絲網狀攀附陶身。此處僅能經〔泥廊道〕返回室內。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_home04_courtyard_exit_corridor",
       "name": "泥廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home04_corridor",
       "responses": {
+        "Look": "此處可通往泥廊道。",
         "Move": "你穿過後門，回到泥廊道。"
-      }
+      },
+      "move_to_room_id": "life_home04_corridor"
     },
     {
       "id": "life_home04_courtyard_obj_pot",

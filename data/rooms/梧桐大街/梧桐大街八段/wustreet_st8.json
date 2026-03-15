@@ -2,7 +2,6 @@
   "id": "wustreet_st8",
   "name": "梧桐大街八段",
   "description": "梧桐大街八段，地面的玉質脈絡與氣根的咬合達到了某種狂熱的極致。這不是破壞，而是自然與人造物的完美共生。路面上的石板被植物的力量穩穩托起，彷彿浮在半空中。兩側建築的門廊完全被濃蔭覆蓋，營造出一種與世隔絕的靜謐豐饒感。這裡是享受安寧與交易奇特物品的隱密地帶。路側是塞滿了奇珍異寶的〔晶華萬象雜貨鋪〕、〔厚土扎根居〕；對向則是透著神秘微光的〔桐光交織肆〕、〔深綠幽影坊〕與〔幽林庇蔭舍〕。可退回〔梧桐大街七段〕，或朝盡頭的〔梧桐大街九段〕前進。",
-  "tags": [],
   "zone": "wustreet",
   "exits": [
     {
@@ -48,10 +47,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "wustreet_st7",
       "responses": {
         "Move": "你沿梧桐大街往七段走去。"
-      }
+      },
+      "move_to_room_id": "wustreet_st7"
     },
     {
       "id": "wu_st8_exit_st9",
@@ -59,65 +58,75 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "wustreet_st9",
       "responses": {
         "Move": "你沿梧桐大街往九段走去。"
-      }
+      },
+      "move_to_room_id": "wustreet_st9"
     },
     {
       "id": "wu_st8_obj_jinghua",
       "name": "晶華萬象雜貨鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust08_shop01_main",
       "responses": {
+        "Look": "此處可通往晶華萬象雜貨鋪。",
         "Move": "櫥窗內堆滿了從各大街收集來的小玩意，甚至還有一些散發著微光的高純度輻射結晶體充當照明；〔雜物掩映門〕半掩。"
-      }
+      },
+      "move_to_room_id": "wust08_shop01_main"
     },
     {
       "id": "wu_st8_obj_houtu",
       "name": "厚土扎根居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust08_home01_main",
       "responses": {
+        "Look": "此處可通往厚土扎根居。",
         "Move": "這棟住宅的地基比街面低了近半米，彷彿是故意要讓房子的一半埋進泥土裡，吸收大地的養分；〔下沉階磚門〕緊閉。"
-      }
+      },
+      "move_to_room_id": "wust08_home01_main"
     },
     {
       "id": "wu_st8_obj_shop02",
       "name": "桐光交織肆",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust08_shop02_main",
       "responses": {
+        "Look": "此處可通往桐光交織肆。",
         "Move": "一家極端低調的私人會所，依靠梧桐樹葉篩落的天然光斑作為室內唯一的照明，極具情調；〔葉影光柵門〕虛掩。"
-      }
+      },
+      "move_to_room_id": "wust08_shop02_main"
     },
     {
       "id": "wu_st8_obj_shop03",
       "name": "深綠幽影坊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust08_shop03_main",
       "responses": {
+        "Look": "此處可通往深綠幽影坊。",
         "Move": "一間專門研發並販售利用變異植物毒素製成的高階神經迷幻劑的工坊，空氣中有一股甜膩的死寂味；〔防毒氣密門〕緊閉。"
-      }
+      },
+      "move_to_room_id": "wust08_shop03_main"
     },
     {
       "id": "wu_st8_obj_home02",
       "name": "幽林庇蔭舍",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust08_home02_main",
       "responses": {
+        "Look": "此處可通往幽林庇蔭舍。",
         "Move": "門前種植了幾棵巨大得超乎尋常的蕨類植物，將整個門廊徹底遮蔽在陰影之中；〔蕨葉掩藏門〕極難辨認。"
-      }
+      },
+      "move_to_room_id": "wust08_home02_main"
     }
   ]
 }

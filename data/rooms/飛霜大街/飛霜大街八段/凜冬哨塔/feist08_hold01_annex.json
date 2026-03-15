@@ -2,7 +2,6 @@
   "id": "feist08_hold01_annex",
   "name": "耳房",
   "description": "霜脊樓耳房：窄得一榻即滿，地角泛潮、牆根有霉氣；門簾破了一角，透進帳房那頭的昏光與算盤聲，枕褥收在榻尾。此處僅通〔帳房〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist08_hold01_annex_exit_office",
       "name": "帳房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_hold01_office",
       "responses": {
+        "Look": "此處可通往帳房。",
         "Move": "你退回帳房。"
-      }
+      },
+      "move_to_room_id": "feist08_hold01_office"
     }
   ]
 }

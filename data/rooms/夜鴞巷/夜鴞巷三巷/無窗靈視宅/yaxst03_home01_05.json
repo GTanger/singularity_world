@@ -19,12 +19,14 @@
       "id": "yaxst03_home01_05_03",
       "name": "岔口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home01_03",
       "responses": {
+        "Look": "此處可通往岔口。",
         "Move": "你往岔口走回。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home01_03"
     }
   ]
 }

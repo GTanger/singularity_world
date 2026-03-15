@@ -24,23 +24,27 @@
       "id": "fs_wood_01_03_to_fs_wood_01_04",
       "name": "繞過倒木",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_04",
       "responses": {
+        "Look": "此處可通往繞過倒木。",
         "Move": "你往繞過倒木走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_04"
     },
     {
       "id": "fs_wood_01_03_to_fs_wood_01_07",
       "name": "衝入迷霧",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_07",
       "responses": {
+        "Look": "此處可通往衝入迷霧。",
         "Move": "你往衝入迷霧走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_07"
     }
   ]
 }

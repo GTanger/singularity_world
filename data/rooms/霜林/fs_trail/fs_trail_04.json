@@ -39,56 +39,66 @@
       "id": "fs_trail_04_to_fs_trail_03",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_03",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_03"
     },
     {
       "id": "fs_trail_04_to_fs_trail_05",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_05",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_05"
     },
     {
       "id": "fs_trail_04_to_fs_wood_04_01",
       "name": "偏轉(下陷)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_04_01",
       "responses": {
+        "Look": "此處可通往偏轉(下陷)。",
         "Move": "你往偏轉(下陷)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_04_01"
     },
     {
       "id": "fs_trail_04_to_fs_wood_04_02",
       "name": "橫越(夾縫)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_04_02",
       "responses": {
+        "Look": "此處可通往橫越(夾縫)。",
         "Move": "你往橫越(夾縫)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_04_02"
     },
     {
       "id": "fs_trail_04_to_fs_wood_04_10",
       "name": "攀登(銜接)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_04_10",
       "responses": {
+        "Look": "此處可通往攀登(銜接)。",
         "Move": "你往攀登(銜接)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_04_10"
     }
   ]
 }

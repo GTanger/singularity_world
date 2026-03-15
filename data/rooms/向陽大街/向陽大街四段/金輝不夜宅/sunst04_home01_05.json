@@ -19,12 +19,14 @@
       "id": "sunst04_home01_05_02",
       "name": "東廂・前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home01_02",
       "responses": {
+        "Look": "此處可通往東廂・前間。",
         "Move": "你往東廂前間走回。"
-      }
+      },
+      "move_to_room_id": "sunst04_home01_02"
     }
   ]
 }

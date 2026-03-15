@@ -19,12 +19,14 @@
       "id": "sunst08_shop01_11_exit_1",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst08_shop01_10",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你往後間走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_shop01_10"
     }
   ]
 }

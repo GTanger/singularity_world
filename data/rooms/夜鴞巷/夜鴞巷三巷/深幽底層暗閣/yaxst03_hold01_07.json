@@ -24,23 +24,27 @@
       "id": "yaxst03_hold01_07_06",
       "name": "南廊口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_06",
       "responses": {
+        "Look": "此處可通往南廊口。",
         "Move": "你往南廊口走回。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_06"
     },
     {
       "id": "yaxst03_hold01_07_08",
       "name": "南廊底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_08",
       "responses": {
+        "Look": "此處可通往南廊底。",
         "Move": "你往南廊底走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_08"
     }
   ]
 }

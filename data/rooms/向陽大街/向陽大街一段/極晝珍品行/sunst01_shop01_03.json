@@ -29,34 +29,40 @@
       "id": "sunst01_shop01_03_main",
       "name": "店頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_shop01_main",
       "responses": {
+        "Look": "此處可通往店頭。",
         "Move": "你回到店頭。"
-      }
+      },
+      "move_to_room_id": "sunst01_shop01_main"
     },
     {
       "id": "sunst01_shop01_03_07",
       "name": "右一間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_shop01_07",
       "responses": {
+        "Look": "此處可通往右一間。",
         "Move": "你往右一間走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_shop01_07"
     },
     {
       "id": "sunst01_shop01_03_08",
       "name": "右二間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_shop01_08",
       "responses": {
+        "Look": "此處可通往右二間。",
         "Move": "你往右二間走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_shop01_08"
     }
   ]
 }

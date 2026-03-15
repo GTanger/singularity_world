@@ -2,7 +2,6 @@
   "id": "ironland_shop06_main",
   "name": "巨山震聲鋪",
   "description": "櫃上多半成品與訂件、繫著繩結標記；地面鐵屑掃成小堆，牆面脈絡細碎像敲痕。簾外巷熱灌入，遠處砧聲清脆。此處通外側〔打鐵二巷〕、側邊〔工間〕、後方〔儲物間〕與〔小院〕；工具在工間一角。櫃上擱著一具〔鐵鉗〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -33,43 +32,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane2",
       "responses": {
         "Move": "你掀開厚簾，回到打鐵二巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane2"
     },
     {
       "id": "ironland_shop06_main_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop06_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你朝側邊工間走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop06_workshop"
     },
     {
       "id": "ironland_shop06_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop06_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你往後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop06_storage"
     },
     {
       "id": "ironland_shop06_main_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop06_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往內側小院走去。"
-      }
+      },
+      "move_to_room_id": "ironland_shop06_courtyard"
     },
     {
       "id": "ironland_shop06_main_obj_tongs",

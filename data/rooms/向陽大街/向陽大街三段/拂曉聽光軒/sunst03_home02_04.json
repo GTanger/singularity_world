@@ -19,12 +19,14 @@
       "id": "sunst03_home02_04_main",
       "name": "玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst03_home02_main",
       "responses": {
+        "Look": "此處可通往玄關。",
         "Move": "你回到玄關。"
-      }
+      },
+      "move_to_room_id": "sunst03_home02_main"
     }
   ]
 }

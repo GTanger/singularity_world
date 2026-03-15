@@ -19,12 +19,14 @@
       "id": "fs_wood_02_05_to_fs_wood_02_06",
       "name": "深入密林",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_06",
       "responses": {
+        "Look": "此處可通往深入密林。",
         "Move": "你往深入密林走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_06"
     }
   ]
 }

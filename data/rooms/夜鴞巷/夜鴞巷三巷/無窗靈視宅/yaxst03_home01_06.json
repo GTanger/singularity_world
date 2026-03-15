@@ -19,12 +19,14 @@
       "id": "yaxst03_home01_06_04",
       "name": "左枝",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home01_04",
       "responses": {
+        "Look": "此處可通往左枝。",
         "Move": "你往左枝走回。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home01_04"
     }
   ]
 }

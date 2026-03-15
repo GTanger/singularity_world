@@ -2,7 +2,6 @@
   "id": "feist08_home01_west_room",
   "name": "西室",
   "description": "簷角宅西室無梯無几，席榻貼牆、破櫃在角；門簾一放即與內庭隔成兩界，窗格凝了一層霜、推開即見內庭的缸與簷。此處僅通〔內庭〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist08_home01_wr_exit_court",
       "name": "內庭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_home01_inner_court",
       "responses": {
+        "Look": "此處可通往內庭。",
         "Move": "你退回內庭。"
-      }
+      },
+      "move_to_room_id": "feist08_home01_inner_court"
     }
   ]
 }

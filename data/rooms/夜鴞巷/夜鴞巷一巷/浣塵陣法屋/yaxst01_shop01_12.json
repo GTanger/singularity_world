@@ -24,23 +24,27 @@
       "id": "yaxst01_shop01_12_11",
       "name": "後間中",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop01_11",
       "responses": {
+        "Look": "此處可通往後間中。",
         "Move": "你往後間中走回。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop01_11"
     },
     {
       "id": "yaxst01_shop01_12_13",
       "name": "後間盡頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop01_13",
       "responses": {
+        "Look": "此處可通往後間盡頭。",
         "Move": "你走到後間盡頭。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop01_13"
     }
   ]
 }

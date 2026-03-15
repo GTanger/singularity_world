@@ -2,7 +2,6 @@
   "id": "lifestreet_st8",
   "name": "浮生大街八段",
   "description": "隨著步伐進入八段，路幅再次收束。地底的靈脈已經徹底溢出地表，粗壯的暗紫晶體脈絡從兩側牆面與簷角垂落，將青磚與砌石死死咬合。空氣中的靈氣濃度高得令人髮指，淡紫與琥珀色的光芒在這裡變得極其沉靜，猶如深海般不可見底。這一段路面與石階上覆蓋著厚厚的、散發著螢光的絨狀菌絲，踩踏無聲。路側是與靈脈融為一體的〔紫晶脈尾宅〕。從這裡岔入〔夜鴞巷四巷〕，便是通往地下黑市與情報網的秘密通道。可退回〔浮生大街七段〕，或走向大街的終點——〔浮生大街九段〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -33,10 +32,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st7",
       "responses": {
         "Move": "你朝浮生大街七段方向折返。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st7"
     },
     {
       "id": "st8_exit_st9",
@@ -44,10 +43,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st9",
       "responses": {
         "Move": "你朝浮生大街九段方向走去。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st9"
     },
     {
       "id": "st8_obj_home12",
@@ -56,7 +55,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你踏上覆蓋著發光絨菌的石階，推開沉重的紫木板門，進入紫晶脈尾宅。"
+        "Look": "你踏上覆蓋著發光絨菌的石階，推開沉重的紫木〔板門〕，進入紫晶脈尾宅。"
       }
     },
     {
@@ -65,10 +64,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home12_main",
       "responses": {
         "Move": "你推開板門，進入脈尾宅。"
-      }
+      },
+      "move_to_room_id": "life_home12_main"
     },
     {
       "id": "st8_exit_yaxiao_st4",
@@ -76,10 +75,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st4",
       "responses": {
         "Move": "你拐進夜鴞巷四巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st4"
     }
   ]
 }

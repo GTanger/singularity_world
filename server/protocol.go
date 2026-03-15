@@ -28,13 +28,16 @@ type ViewEntity struct {
 }
 
 // ActionResultMsg 伺服器回傳：do_action 的敘事結果。
+// Actions 為選填：對物件 Look 時帶上該物件其餘可執行動作，前端據此顯示可點的【移動】等。
 type ActionResultMsg struct {
-	Type       string `json:"type"`        // "action_result"
-	Action     string `json:"action"`      // "Look" | "Talk" | "Attack"
-	TargetID   string `json:"target_id"`
-	TargetName string `json:"target_name"`
-	Narrative  string `json:"narrative"`
-	Success    bool   `json:"success"`
+	Type       string   `json:"type"`        // "action_result"
+	Action     string   `json:"action"`      // "Look" | "Talk" | "Attack"
+	TargetID   string   `json:"target_id"`
+	TargetName string   `json:"target_name"`
+	Narrative  string   `json:"narrative"`
+	Success    bool     `json:"success"`
+	Actions       []string `json:"actions,omitempty"`       // 該目標其餘可執行動詞（不含剛執行的），供 Log 下一行顯示
+	MoveTargetID  string   `json:"move_target_id,omitempty"` // Look 建築名時若該物件無 Move，改由同房「門」物件代為進入；前端點【移動】時用此 id 送 do_action
 }
 
 // ExitView 單一出口，供前端顯示可點選的出口。

@@ -2,7 +2,6 @@
   "id": "ironland_shop12_workshop",
   "name": "工間",
   "description": "風箱拉動聲響、爐火隨之竄高；熱浪與氣流交織，簾子微晃。此處通向〔風箱鋪〕〔生活起居室〕與〔爐房〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "ironland_shop12_workshop_exit_main",
       "name": "風箱鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_main",
       "responses": {
+        "Look": "此處可通往風箱鋪。",
         "Move": "你循來路回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_main"
     },
     {
       "id": "ironland_shop12_workshop_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你往後方通道走去，進入生活起居室。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_living"
     },
     {
       "id": "ironland_shop12_workshop_exit_kiln",
       "name": "爐房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop12_kiln",
       "responses": {
+        "Look": "此處可通往爐房。",
         "Move": "你步入爐房。"
-      }
+      },
+      "move_to_room_id": "ironland_shop12_kiln"
     }
   ]
 }

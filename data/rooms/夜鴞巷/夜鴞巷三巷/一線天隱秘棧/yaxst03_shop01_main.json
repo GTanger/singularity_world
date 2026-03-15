@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st3",
       "responses": {
         "Move": "你步出窄門棧，回到夜鴞巷三巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st3"
     },
     {
       "id": "yaxst03_shop01_main_02",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop01_02",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你往廊道走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop01_02"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "ironland_home04_hallway",
   "name": "廊道",
   "description": "廊道僅容一人側身，牆高、光從簷隙一線照入；根鬚脈絡螢火般。巷熱自門廳滲入。窄廊無院，此處通〔門廳〕與〔生息室〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_home04_main",
       "responses": {
         "Move": "你循來路回到門廳。"
-      }
+      },
+      "move_to_room_id": "ironland_home04_main"
     },
     {
       "id": "ironland_home04_hallway_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home04_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你朝通道深處走去，進入生息室。"
-      }
+      },
+      "move_to_room_id": "ironland_home04_living"
     }
   ]
 }

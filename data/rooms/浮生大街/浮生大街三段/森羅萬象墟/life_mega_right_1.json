@@ -2,7 +2,6 @@
   "id": "life_mega_right_1",
   "name": "右廂一",
   "description": "小室四方，菌絲攀壁，光暈低浮，石几伏貼於地。此處僅通〔右廂〕，返身即回中庭。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_right_1_exit",
       "name": "右廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_right_wing",
       "responses": {
+        "Look": "此處可通往右廂。",
         "Move": "你回到右廂。"
-      }
+      },
+      "move_to_room_id": "life_mega_right_wing"
     }
   ]
 }

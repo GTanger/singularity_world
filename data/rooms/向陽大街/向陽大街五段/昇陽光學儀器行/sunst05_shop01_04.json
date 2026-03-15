@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop01_main",
       "responses": {
         "Move": "你回到門面。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop01_main"
     },
     {
       "id": "sunst05_shop01_04_09",
       "name": "右翼內間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop01_09",
       "responses": {
+        "Look": "此處可通往右翼內間。",
         "Move": "你往右翼內間走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop01_09"
     }
   ]
 }

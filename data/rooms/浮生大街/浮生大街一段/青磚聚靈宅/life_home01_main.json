@@ -2,7 +2,6 @@
   "id": "life_home01_main",
   "name": "門廳",
   "description": "青磚牆面滲出網狀紫色膠質，向內延伸至〔廊道〕。地面鋪設平滑石板，光線自門口的〔窄木門〕漏入。角落立著一只〔陶製傘架〕，表面覆蓋一層乾燥的石灰質粉塵。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st1",
       "responses": {
         "Move": "你推開窄木門，回到浮生大街一段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st1"
     },
     {
       "id": "life_home01_main_exit_hallway",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home01_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你朝內側走去，進入廊道。"
-      }
+      },
+      "move_to_room_id": "life_home01_hallway"
     },
     {
       "id": "life_home01_main_obj_stand",

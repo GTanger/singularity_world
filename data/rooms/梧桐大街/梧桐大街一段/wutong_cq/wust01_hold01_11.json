@@ -2,7 +2,10 @@
   "id": "wust01_hold01_11",
   "name": "能量配發中樞",
   "description": "歸根銜接點巨木交錯氣根入口，根皮金屬暗灰，白石圓坪、木質香與地底溫熱，玉質脈絡與根鬚咬合、光線篩落，靜謐豐饒、無廢土感。可經〔廊底〕、〔墨染連接廊〕、〔歸根連接廊〕、〔前間〕、〔廳角〕前往他處。",
-  "tags": ["indoor","admin"],
+  "tags": [
+    "indoor",
+    "admin"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -36,56 +39,66 @@
       "id": "wust01_hold01_11_exit_1",
       "name": "廊底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_08",
       "responses": {
+        "Look": "此處可通往廊底。",
         "Move": "你往廊底走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_08"
     },
     {
       "id": "wust01_hold01_11_exit_2",
       "name": "墨染連接廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_12",
       "responses": {
+        "Look": "此處可通往墨染連接廊。",
         "Move": "你往墨染連接廊走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_12"
     },
     {
       "id": "wust01_hold01_11_exit_3",
       "name": "歸根連接廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_14",
       "responses": {
+        "Look": "此處可通往歸根連接廊。",
         "Move": "你往歸根連接廊走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_14"
     },
     {
       "id": "wust01_hold01_11_exit_4",
       "name": "前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_02",
       "responses": {
+        "Look": "此處可通往前間。",
         "Move": "你往前間走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_02"
     },
     {
       "id": "wust01_hold01_11_exit_5",
       "name": "廳角",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_10",
       "responses": {
+        "Look": "此處可通往廳角。",
         "Move": "你往廳角走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_10"
     }
   ]
 }

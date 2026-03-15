@@ -19,12 +19,14 @@
       "id": "fs_wood_04_05_to_fs_wood_04_08",
       "name": "避開強風",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_04_08",
       "responses": {
+        "Look": "此處可通往避開強風。",
         "Move": "你往避開強風走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_04_08"
     }
   ]
 }

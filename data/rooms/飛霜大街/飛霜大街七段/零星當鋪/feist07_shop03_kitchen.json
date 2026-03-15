@@ -2,7 +2,6 @@
   "id": "feist07_shop03_kitchen",
   "name": "灶間",
   "description": "小鋪灶間門洞深、光只到簾口，土灶矮、水缸裂了一道補過的縫；柴薪疊在門邊擋了半條路，煙燻得牆角發黑、掌心貼檯一片沁涼，簾外七段人跡漸多、擔夫與行人聲隔簾而遠，一腳踩下去是黏鞋底的油漬。此處僅通〔過廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist07_shop03_k_exit_hall",
       "name": "過廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop03_hall",
       "responses": {
+        "Look": "此處可通往過廳。",
         "Move": "你退回過廳。"
-      }
+      },
+      "move_to_room_id": "feist07_shop03_hall"
     }
   ]
 }

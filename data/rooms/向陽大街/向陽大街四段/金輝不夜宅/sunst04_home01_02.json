@@ -36,43 +36,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst04_home01_main",
       "responses": {
         "Move": "你回到門廳。"
-      }
+      },
+      "move_to_room_id": "sunst04_home01_main"
     },
     {
       "id": "sunst04_home01_02_04",
       "name": "東廂一室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home01_04",
       "responses": {
+        "Look": "此處可通往東廂一室。",
         "Move": "你往東廂一室走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_home01_04"
     },
     {
       "id": "sunst04_home01_02_05",
       "name": "東廂二室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home01_05",
       "responses": {
+        "Look": "此處可通往東廂二室。",
         "Move": "你往東廂二室走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_home01_05"
     },
     {
       "id": "sunst04_home01_02_06",
       "name": "東廂三室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home01_06",
       "responses": {
+        "Look": "此處可通往東廂三室。",
         "Move": "你往東廂三室走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_home01_06"
     }
   ]
 }

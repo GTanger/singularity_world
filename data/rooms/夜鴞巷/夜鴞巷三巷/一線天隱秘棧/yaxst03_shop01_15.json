@@ -19,12 +19,14 @@
       "id": "yaxst03_shop01_15_14",
       "name": "棧底前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop01_14",
       "responses": {
+        "Look": "此處可通往棧底前。",
         "Move": "你沿後段廊往回走。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop01_14"
     }
   ]
 }

@@ -39,56 +39,66 @@
       "id": "fs_trail_05_to_fs_trail_04",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_04",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_04"
     },
     {
       "id": "fs_trail_05_to_fs_trail_06",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_06",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_06"
     },
     {
       "id": "fs_trail_05_to_fs_wood_05_01",
       "name": "側移(裂隙)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_05_01",
       "responses": {
+        "Look": "此處可通往側移(裂隙)。",
         "Move": "你往側移(裂隙)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_05_01"
     },
     {
       "id": "fs_trail_05_to_fs_wood_05_03",
       "name": "鑽入(根底)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_05_03",
       "responses": {
+        "Look": "此處可通往鑽入(根底)。",
         "Move": "你往鑽入(根底)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_05_03"
     },
     {
       "id": "fs_trail_05_to_fs_wood_05_10",
       "name": "直行(窄口)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_05_10",
       "responses": {
+        "Look": "此處可通往直行(窄口)。",
         "Move": "你往直行(窄口)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_05_10"
     }
   ]
 }

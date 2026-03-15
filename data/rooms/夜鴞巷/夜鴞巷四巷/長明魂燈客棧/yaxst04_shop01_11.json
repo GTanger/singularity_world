@@ -34,45 +34,53 @@
       "id": "yaxst04_shop01_11_04",
       "name": "甲廊底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_04",
       "responses": {
+        "Look": "此處可通往甲廊底。",
         "Move": "你往甲廊底走回。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_04"
     },
     {
       "id": "yaxst04_shop01_11_09",
       "name": "乙廊底前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_09",
       "responses": {
+        "Look": "此處可通往乙廊底前。",
         "Move": "你往乙廊底前走回。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_09"
     },
     {
       "id": "yaxst04_shop01_11_10",
       "name": "乙廊底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_10",
       "responses": {
+        "Look": "此處可通往乙廊底。",
         "Move": "你往乙廊底走回。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_10"
     },
     {
       "id": "yaxst04_shop01_11_12",
       "name": "棧底廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_12",
       "responses": {
+        "Look": "此處可通往棧底廊。",
         "Move": "你往棧底廊走去。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_12"
     }
   ]
 }

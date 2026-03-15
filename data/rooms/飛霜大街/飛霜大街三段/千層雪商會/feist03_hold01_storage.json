@@ -2,7 +2,6 @@
   "id": "feist03_hold01_storage",
   "name": "倉間",
   "description": "簷心樓倉間堆著雜器與存物、梁上懸乾貨，簷隙漏光一線、塵埃與霜晶同浮；門僅通〔穿堂〕，雙扉高聳外的三段街面人聲隔簷而遠，簷下陰影與霜色在牆角交錯、空氣滯重沁涼，腳步落下去便沉了。此處僅通〔穿堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist03_hold01_sg_exit_corridor",
       "name": "穿堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_corridor",
       "responses": {
+        "Look": "此處可通往穿堂。",
         "Move": "你退回穿堂。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_corridor"
     }
   ]
 }

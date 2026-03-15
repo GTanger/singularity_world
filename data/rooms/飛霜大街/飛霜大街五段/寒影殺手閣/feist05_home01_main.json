@@ -2,7 +2,6 @@
   "id": "feist05_home01_main",
   "name": "【寒影殺手閣】無光過道",
   "description": "一個沒有任何光源的絕對黑暗區帶。空氣沉悶，只有牆面玉質脈絡的微弱流動能勉強辨認方向。退回〔幽暗門洞〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st5",
       "responses": {
         "Move": "你步出，回到飛霜大街五段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st5"
     },
     {
       "id": "feist05_home01_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home01_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist05_home01_hallway"
     },
     {
       "id": "feist05_home01_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist05_home01_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist05_home01_eave"
     }
   ]
 }

@@ -41,54 +41,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st3",
       "responses": {
         "Move": "你步出前櫃行，回到夜鴞巷三巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st3"
     },
     {
       "id": "yaxst03_shop03_main_02",
       "name": "內環口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop03_02",
       "responses": {
+        "Look": "此處可通往內環口。",
         "Move": "你往內環口走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop03_02"
     },
     {
       "id": "yaxst03_shop03_main_08",
       "name": "側櫃甲",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop03_08",
       "responses": {
+        "Look": "此處可通往側櫃甲。",
         "Move": "你往側櫃甲走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop03_08"
     },
     {
       "id": "yaxst03_shop03_main_09",
       "name": "側櫃乙",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop03_09",
       "responses": {
+        "Look": "此處可通往側櫃乙。",
         "Move": "你往側櫃乙走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop03_09"
     },
     {
       "id": "yaxst03_shop03_main_10",
       "name": "側櫃丙",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop03_10",
       "responses": {
+        "Look": "此處可通往側櫃丙。",
         "Move": "你往側櫃丙走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop03_10"
     }
   ]
 }

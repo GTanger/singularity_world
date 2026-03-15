@@ -2,7 +2,11 @@
   "id": "lifestreet_st1",
   "name": "浮生大街一段",
   "description": "大街自繁華的四路街口延伸而來，瞬間從喧鬧的凡塵踏入了靈光流轉的修真市井。街道被千萬人的腳步打磨得如青銅古鏡般光滑，地底深處古老的玉質靈脈在此浮露，暗紫色的微光如呼吸般沿著青石縫隙流動。空氣中瀰漫著丹藥的清香與靈氣交織的沉靜氣息。這裡的居民深諳與靈脈共生之道，門廊間攀附著能吸收靈氣而發光的奇花異草。路側是專售珍稀靈草的〔紫微珍萃行〕與編織法衣的〔流光織染坊〕；對向則是溢滿生活氣息的〔青磚聚靈宅〕與〔藤蔓纏護民居〕。可經〔四路街口〕折返，或朝〔浮生大街二段〕的熱鬧處延伸。",
-  "tags": ["street", "outdoor", "wilderness"],
+  "tags": [
+    "street",
+    "outdoor",
+    "wilderness"
+  ],
   "zone": "lifestreet",
   "exits": [
     {
@@ -43,10 +47,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "street4zone",
       "responses": {
         "Move": "你朝四路街口方向走去。"
-      }
+      },
+      "move_to_room_id": "street4zone"
     },
     {
       "id": "st1_exit_st2",
@@ -54,10 +58,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st2",
       "responses": {
         "Move": "你朝浮生大街二段方向走去。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st2"
     },
     {
       "id": "st1_obj_shop01",
@@ -66,7 +70,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你推開散發著濃郁藥香的沉香木門，步入紫微珍萃行。"
+        "Look": "你推開散發著濃郁藥香的〔側門〕，步入紫微珍萃行。"
       }
     },
     {
@@ -75,10 +79,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop01_main",
       "responses": {
         "Move": "你推開了側門，進入珍萃行。"
-      }
+      },
+      "move_to_room_id": "life_shop01_main"
     },
     {
       "id": "st1_obj_shop02",
@@ -87,7 +91,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你掀開閃爍著微弱陣法流光的厚重防風布簾，進入流光織染坊。"
+        "Look": "你掀開閃爍著微弱陣法流光的〔厚重布簾〕，進入流光織染坊。"
       }
     },
     {
@@ -96,10 +100,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop02_main",
       "responses": {
         "Move": "你拉開了厚重布簾，進入織染坊。"
-      }
+      },
+      "move_to_room_id": "life_shop02_main"
     },
     {
       "id": "st1_obj_home01",
@@ -108,7 +112,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你推開刻有小型聚靈陣的厚實窄木門，進入青磚聚靈宅。"
+        "Look": "你推開刻有小型聚靈陣的厚實〔窄木門〕，進入青磚聚靈宅。"
       }
     },
     {
@@ -117,10 +121,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home01_main",
       "responses": {
         "Move": "你推開了窄木門，進入青磚民宅。"
-      }
+      },
+      "move_to_room_id": "life_home01_main"
     },
     {
       "id": "st1_obj_home02",
@@ -129,7 +133,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你撥開交織成天然防護網的發光藤蔓垂簾，步入藤蔓纏護民居。"
+        "Look": "你撥開交織成天然防護網的〔垂簾入口〕，步入藤蔓纏護民居。"
       }
     },
     {
@@ -138,10 +142,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home02_main",
       "responses": {
         "Move": "你拉開了垂簾，進入藤蔓民宅。"
-      }
+      },
+      "move_to_room_id": "life_home02_main"
     }
   ]
 }

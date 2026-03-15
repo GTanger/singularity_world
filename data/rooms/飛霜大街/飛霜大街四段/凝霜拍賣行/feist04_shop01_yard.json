@@ -2,7 +2,6 @@
   "id": "feist04_shop01_yard",
   "name": "小院",
   "description": "霜紋閣後小院一方：石縫沁霜、簷角滴水結成冰牙，曬竿空懸、牆根枯藤纏著舊霜紋；天光從簷隙切下、冷調靜止，一門通〔後間〕、一門通〔倉〕，四段人聲遠在牆外。此處通〔後間〕、〔倉〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist04_shop01_y_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你退回後間。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_back"
     },
     {
       "id": "feist04_shop01_y_exit_storage",
       "name": "倉",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_storage",
       "responses": {
+        "Look": "此處可通往倉。",
         "Move": "你往倉。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_storage"
     }
   ]
 }

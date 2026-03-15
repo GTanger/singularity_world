@@ -2,7 +2,6 @@
   "id": "ironland_shop03_workshop2",
   "name": "工間二",
   "description": "副爐與鐵砧靠牆，牆面沁出暗紅脈絡，鍛造餘溫沉澱。此處通〔錘音鋪〕與〔工具間〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "ironland_shop03_workshop2_exit_main",
       "name": "錘音鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop03_main",
       "responses": {
+        "Look": "此處可通往錘音鋪。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop03_main"
     },
     {
       "id": "ironland_shop03_workshop2_exit_toolroom",
       "name": "工具間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop03_toolroom",
       "responses": {
+        "Look": "此處可通往工具間。",
         "Move": "你步入工具間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop03_toolroom"
     }
   ]
 }

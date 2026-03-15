@@ -24,23 +24,27 @@
       "id": "fs_wood_01_05_to_fs_trail_01",
       "name": "回歸主徑",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_01",
       "responses": {
+        "Look": "此處可通往回歸主徑。",
         "Move": "你往回歸主徑走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_01"
     },
     {
       "id": "fs_wood_01_05_to_fs_wood_01_06",
       "name": "尋找避風處",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_06",
       "responses": {
+        "Look": "此處可通往尋找避風處。",
         "Move": "你往尋找避風處走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_06"
     }
   ]
 }

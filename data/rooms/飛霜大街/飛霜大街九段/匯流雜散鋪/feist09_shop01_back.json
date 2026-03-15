@@ -2,7 +2,6 @@
   "id": "feist09_shop01_back",
   "name": "後間",
   "description": "街口鋪後間雜箱與破簍堆到牆角，牆縫沁出細紋、觸手冰涼；無窗，只靠通道漏進一線光辨路，腳下石板泛潮、霉味壓鼻。此處通〔儲物間〕與〔工間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist09_shop01_back_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop01_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你回到儲物間。"
-      }
+      },
+      "move_to_room_id": "feist09_shop01_storage"
     },
     {
       "id": "feist09_shop01_back_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop01_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你往工間走去。"
-      }
+      },
+      "move_to_room_id": "feist09_shop01_workshop"
     }
   ]
 }

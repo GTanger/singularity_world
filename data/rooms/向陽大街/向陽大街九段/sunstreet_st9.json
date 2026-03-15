@@ -51,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st8",
       "responses": {
         "Move": "你沿向陽大街往八段走去。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st8"
     },
     {
       "id": "sun_st9_exit_4zone",
@@ -62,65 +62,75 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "street4zone",
       "responses": {
         "Move": "你步向四路街口。"
-      }
+      },
+      "move_to_room_id": "street4zone"
     },
     {
       "id": "sun_st9_obj_shop01",
       "name": "熙光綜合肆",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_shop01_main",
       "responses": {
+        "Look": "此處可通往熙光綜合肆。",
         "Move": "一棟佔據了極佳轉角位置的大型雜貨商場，門前的全息招牌大得幾乎要蓋住半條街，門口人聲鼎沸；〔自動寬推門〕常開。"
-      }
+      },
+      "move_to_room_id": "sunst09_shop01_main"
     },
     {
       "id": "sun_st9_obj_home01",
       "name": "無眠亮敞居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_home01_main",
       "responses": {
+        "Look": "此處可通往無眠亮敞居。",
         "Move": "這棟建築的每一扇窗戶都透出24小時不滅的刺眼白光，似乎是某些需要極端光源的地下加工廠或者是賭場；〔隔音厚門〕緊閉。"
-      }
+      },
+      "move_to_room_id": "sunst09_home01_main"
     },
     {
       "id": "sun_st9_obj_home02",
       "name": "熙光當舖宅",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_home02_main",
       "responses": {
+        "Look": "此處可通往熙光當舖宅。",
         "Move": "門廊極深，門口的警衛武裝到了牙齒。這是一間專門處理從四路街口流入的來路不明高價值物品的黑當鋪；〔防爆窄門〕半掩。"
-      }
+      },
+      "move_to_room_id": "sunst09_home02_main"
     },
     {
       "id": "sun_st9_obj_home03",
       "name": "向暖歡場閣",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_home03_main",
       "responses": {
+        "Look": "此處可通往向暖歡場閣。",
         "Move": "門外的空氣中飄散著濃烈的迷幻劑與劣質香水味，霓虹光暈將建築的輪廓勾勒得極具誘惑力；〔紅絲絨門簾〕隨風舞動。"
-      }
+      },
+      "move_to_room_id": "sunst09_home03_main"
     },
     {
       "id": "sun_st9_obj_home04",
       "name": "暖照旅人廬",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst09_home04_main",
       "responses": {
+        "Look": "此處可通往暖照旅人廬。",
         "Move": "一間專門為剛剛完成長途跋涉、急需光能補充的旅人提供床位與低階光療的廉價客棧，大廳裡擠滿了人；〔敞開的木板門〕人進人出。"
-      }
+      },
+      "move_to_room_id": "sunst09_home04_main"
     }
   ]
 }

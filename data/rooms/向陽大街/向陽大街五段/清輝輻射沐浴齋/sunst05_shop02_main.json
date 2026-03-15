@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st5",
       "responses": {
         "Move": "你掀簾步出清輝沐浴齋，回到向陽大街五段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st5"
     },
     {
       "id": "sunst05_shop02_main_02",
       "name": "沐區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop02_02",
       "responses": {
+        "Look": "此處可通往沐區。",
         "Move": "你往沐區走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop02_02"
     },
     {
       "id": "sunst05_shop02_main_03",
       "name": "浴區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop02_03",
       "responses": {
+        "Look": "此處可通往浴區。",
         "Move": "你往浴區走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop02_03"
     }
   ]
 }

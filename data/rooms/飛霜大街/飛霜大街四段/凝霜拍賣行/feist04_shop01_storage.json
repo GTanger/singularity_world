@@ -2,7 +2,6 @@
   "id": "feist04_shop01_storage",
   "name": "倉",
   "description": "霜紋閣倉間堆著存貨與雜器、梁上懸乾貨，牆角霜紋沁出、空氣滯重沁涼；門僅通〔小院〕，簷下漏光一線、塵埃與霜晶同浮，腳步落下去便沉了。此處僅通〔小院〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist04_shop01_s_exit_yard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_yard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你退回小院。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_yard"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_shop09_bedroom",
   "name": "私人臥室",
   "description": "床架自地面岩石增生而起，厚實菌絲毯覆於其上，室內極靜，牆側膠質燈鑲在石座，淡紫光暈沉靜。此處唯出口為側邊〔生活起居室〕，原路即回。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_shop09_bedroom_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop09_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你回到生活起居室。"
-      }
+      },
+      "move_to_room_id": "life_shop09_living"
     }
   ]
 }

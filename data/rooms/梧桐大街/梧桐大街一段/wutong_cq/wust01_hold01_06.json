@@ -2,7 +2,10 @@
   "id": "wust01_hold01_06",
   "name": "茶間",
   "description": "窓邊一室石縫間發光菌絲與玉質嵌合，恆溫熱氣自地底滲出，綠意飽和而不壓迫，簷角藤蔓撐簷、濃蔭掩映，簷角藤蔓撐簷、濃蔭掩映。可經〔前間〕、〔寢間〕前往他處。",
-  "tags": ["indoor","admin"],
+  "tags": [
+    "indoor",
+    "admin"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -21,23 +24,27 @@
       "id": "wust01_hold01_06_exit_1",
       "name": "前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_02",
       "responses": {
+        "Look": "此處可通往前間。",
         "Move": "你往前間走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_02"
     },
     {
       "id": "wust01_hold01_06_exit_2",
       "name": "寢間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_07",
       "responses": {
+        "Look": "此處可通往寢間。",
         "Move": "你往寢間走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_07"
     }
   ]
 }

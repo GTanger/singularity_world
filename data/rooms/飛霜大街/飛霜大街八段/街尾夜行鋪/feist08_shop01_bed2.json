@@ -2,7 +2,6 @@
   "id": "feist08_shop01_bed2",
   "name": "臥二",
   "description": "街尾鋪臥二：更小一間，榻貼牆、櫃擠在角；簾外是過廳的燈影與碗筷聲，偶有腳步聲經過，窗紙透進一點天光、枕褥疊在榻尾。此處僅通〔過廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist08_shop01_b2_exit_hall",
       "name": "過廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_shop01_hall",
       "responses": {
+        "Look": "此處可通往過廳。",
         "Move": "你出臥二回過廳。"
-      }
+      },
+      "move_to_room_id": "feist08_shop01_hall"
     }
   ]
 }

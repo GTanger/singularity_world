@@ -19,12 +19,14 @@
       "id": "fs_wood_09_07_to_fs_wood_09_09",
       "name": "鑽出石穴",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_09",
       "responses": {
+        "Look": "此處可通往鑽出石穴。",
         "Move": "你往鑽出石穴走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_09"
     }
   ]
 }

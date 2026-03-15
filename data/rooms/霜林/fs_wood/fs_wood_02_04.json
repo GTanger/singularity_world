@@ -19,12 +19,14 @@
       "id": "fs_wood_02_04_to_fs_wood_02_05",
       "name": "攀上高地",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_05",
       "responses": {
+        "Look": "此處可通往攀上高地。",
         "Move": "你往攀上高地走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_05"
     }
   ]
 }

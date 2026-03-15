@@ -2,7 +2,6 @@
   "id": "ironland_shop10_kitchen",
   "name": "灶間",
   "description": "石灶嵌牆；工間爐熱隱約、灶煙壓過。此處僅通〔生活起居室〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_shop10_kitchen_exit",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop10_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你回到生活起居室。"
-      }
+      },
+      "move_to_room_id": "ironland_shop10_living"
     }
   ]
 }

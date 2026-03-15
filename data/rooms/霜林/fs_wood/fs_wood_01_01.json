@@ -19,12 +19,14 @@
       "id": "fs_wood_01_01_to_fs_wood_01_02",
       "name": "順水而行",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_02",
       "responses": {
+        "Look": "此處可通往順水而行。",
         "Move": "你往順水而行走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_02"
     }
   ]
 }

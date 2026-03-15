@@ -2,7 +2,6 @@
   "id": "ironland_home02_main",
   "name": "門廳",
   "description": "石磚宅門廳，石磚砌牆、深灰石灰質覆住縫隙，脈絡自縫隙沁出淡紫微光；巷內熱風自門縫灌入，室內仍帶燥熱。門口〔板門〕通往打鐵一巷，內側〔廊道〕延伸至各室。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane1",
       "responses": {
         "Move": "你推開板門，回到打鐵一巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane1"
     },
     {
       "id": "ironland_home02_main_exit_hallway",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你朝內側走去，進入廊道。"
-      }
+      },
+      "move_to_room_id": "ironland_home02_hallway"
     }
   ]
 }

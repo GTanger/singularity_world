@@ -2,7 +2,6 @@
   "id": "life_home07_kitchen",
   "name": "灶間",
   "description": "石砌灶台砌入牆體，缸壁菌絲蔓延，淡紫幽光隱約。此處僅通〔生息室〕，原路即回共聚處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_home07_kitchen_exit",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home07_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你回到生息室。"
-      }
+      },
+      "move_to_room_id": "life_home07_living"
     }
   ]
 }

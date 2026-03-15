@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st1",
       "responses": {
         "Move": "你步出暗櫥寓所，回到夜鴞巷一巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st1"
     },
     {
       "id": "yaxst01_home02_main_02",
       "name": "左環",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home02_02",
       "responses": {
+        "Look": "此處可通往左環。",
         "Move": "你往左環走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home02_02"
     },
     {
       "id": "yaxst01_home02_main_06",
       "name": "右環",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home02_06",
       "responses": {
+        "Look": "此處可通往右環。",
         "Move": "你往右環走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home02_06"
     }
   ]
 }

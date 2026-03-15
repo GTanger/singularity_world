@@ -21,10 +21,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop02_09",
       "responses": {
         "Move": "你沿簾內道往回走。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop02_09"
     }
   ]
 }

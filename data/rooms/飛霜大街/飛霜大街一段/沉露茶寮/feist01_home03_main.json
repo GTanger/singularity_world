@@ -2,7 +2,6 @@
   "id": "feist01_home03_main",
   "name": "【沉露茶寮】賞霜座席",
   "description": "茶寮的前堂十分開闊，幾張油脂光澤飽滿的深色黑木桌椅錯落有致。來自飛霜湖的寒氣在此被精巧的室內佈局與暖能石溫柔地抵擋在外。空氣中飄散著濃郁的高級沉香與剛沏好的茶湯熱氣，給人一種從容不迫的靜謐感。可經〔雕花板門〕回到大街；內部連通〔水汽後廊〕、〔露天茶座〕與〔內室雅座〕，外側則有〔簷下等候區〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st1",
       "responses": {
         "Move": "你步出，回到飛霜大街一段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st1"
     },
     {
       "id": "feist01_home03_m_exit_corridor",
       "name": "水汽後廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_corridor",
       "responses": {
+        "Look": "此處可通往水汽後廊。",
         "Move": "你步入水汽後廊。"
-      }
+      },
+      "move_to_room_id": "feist01_home03_corridor"
     },
     {
       "id": "feist01_home03_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_eave",
       "responses": {
         "Move": "你步向簷下等候區。"
-      }
+      },
+      "move_to_room_id": "feist01_home03_eave"
     }
   ]
 }

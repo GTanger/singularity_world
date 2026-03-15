@@ -2,7 +2,6 @@
   "id": "feist07_shop02_main",
   "name": "【暖霜茶寮】沸水堂",
   "description": "煙霧繚繞，廉價茶葉在滾水裡翻騰出酸澀卻溫暖的氣味。退回〔油膩門簾〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st7",
       "responses": {
         "Move": "你掀簾步出，回到飛霜大街7段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st7"
     },
     {
       "id": "feist07_shop02_m_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_counter"
     },
     {
       "id": "feist07_shop02_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_eave"
     }
   ]
 }

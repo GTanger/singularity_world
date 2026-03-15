@@ -24,23 +24,27 @@
       "id": "sunst01_hold01_12_11",
       "name": "北廊口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_hold01_11",
       "responses": {
+        "Look": "此處可通往北廊口。",
         "Move": "你往北廊口走回。"
-      }
+      },
+      "move_to_room_id": "sunst01_hold01_11"
     },
     {
       "id": "sunst01_hold01_12_13",
       "name": "北二室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_hold01_13",
       "responses": {
+        "Look": "此處可通往北二室。",
         "Move": "你往北二室走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_hold01_13"
     }
   ]
 }

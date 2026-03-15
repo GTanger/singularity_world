@@ -2,7 +2,6 @@
   "id": "feist03_hold01_shop_front",
   "name": "鋪面",
   "description": "簷心樓鋪面櫃檯橫陳、格架陳列雜貨與霜晶小物，簷角積霜從簾隙沁進一線白、石地沁涼；簾外三段人聲隱約，往裡是〔櫃前〕、身後即正廳，霜白結晶沾簾即化。此處通〔正廳〕、〔櫃前〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist03_hold01_sf_exit_hall",
       "name": "正廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_main_hall",
       "responses": {
+        "Look": "此處可通往正廳。",
         "Move": "你退回正廳。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_main_hall"
     },
     {
       "id": "feist03_hold01_sf_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_shop_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_shop_counter"
     }
   ]
 }

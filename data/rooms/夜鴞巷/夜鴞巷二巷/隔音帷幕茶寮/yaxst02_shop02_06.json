@@ -26,10 +26,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop02_main",
       "responses": {
         "Move": "你退回簾前。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop02_main"
     },
     {
       "id": "yaxst02_shop02_06_07",
@@ -37,10 +37,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop02_07",
       "responses": {
         "Move": "你往右簾二走去。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop02_07"
     }
   ]
 }

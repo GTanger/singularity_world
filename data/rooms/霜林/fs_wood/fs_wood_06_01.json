@@ -19,12 +19,14 @@
       "id": "fs_wood_06_01_to_fs_wood_06_03",
       "name": "循聲移動",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_06_03",
       "responses": {
+        "Look": "此處可通往循聲移動。",
         "Move": "你往循聲移動走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_06_03"
     }
   ]
 }

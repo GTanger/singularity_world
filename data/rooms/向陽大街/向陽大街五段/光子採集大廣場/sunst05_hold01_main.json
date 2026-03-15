@@ -47,65 +47,75 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st5",
       "responses": {
         "Move": "你步出廣場，回到向陽大街五段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st5"
     },
     {
       "id": "sunst05_hold01_main_east",
       "name": "東廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_02",
       "responses": {
+        "Look": "此處可通往東廊。",
         "Move": "你朝東廊走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_02"
     },
     {
       "id": "sunst05_hold01_main_west",
       "name": "西廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_05",
       "responses": {
+        "Look": "此處可通往西廊。",
         "Move": "你朝西廊走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_05"
     },
     {
       "id": "sunst05_hold01_main_south",
       "name": "南廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_09",
       "responses": {
+        "Look": "此處可通往南廳。",
         "Move": "你朝南廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_09"
     },
     {
       "id": "sunst05_hold01_main_north",
       "name": "北廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_13",
       "responses": {
+        "Look": "此處可通往北廳。",
         "Move": "你朝北廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_13"
     },
     {
       "id": "sunst05_hold01_main_court",
       "name": "中庭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_17",
       "responses": {
+        "Look": "此處可通往中庭。",
         "Move": "你朝中庭走去。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_17"
     }
   ]
 }

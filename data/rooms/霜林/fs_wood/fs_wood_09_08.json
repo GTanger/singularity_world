@@ -19,12 +19,14 @@
       "id": "fs_wood_09_08_to_fs_wood_09_09",
       "name": "沿柱而行",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_09",
       "responses": {
+        "Look": "此處可通往沿柱而行。",
         "Move": "你往沿柱而行走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_09"
     }
   ]
 }

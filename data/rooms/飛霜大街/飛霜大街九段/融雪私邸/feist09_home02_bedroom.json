@@ -2,7 +2,6 @@
   "id": "feist09_home02_bedroom",
   "name": "臥房",
   "description": "簷匯宅盡頭臥房：一榻貼牆、無几無櫃，簾子垂下即與起居室隔成兩界；簾外燈影與杯盞聲隱約，此地只聞樑角耗子窸窣。此處僅通〔起居室〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist09_home02_bedroom_exit_living",
       "name": "起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_home02_living",
       "responses": {
+        "Look": "此處可通往起居室。",
         "Move": "你回到起居室。"
-      }
+      },
+      "move_to_room_id": "feist09_home02_living"
     }
   ]
 }

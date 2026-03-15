@@ -19,12 +19,14 @@
       "id": "yaxst02_shop03_10_09",
       "name": "橫廊底前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop03_09",
       "responses": {
+        "Look": "此處可通往橫廊底前。",
         "Move": "你沿橫廊往回走。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop03_09"
     }
   ]
 }

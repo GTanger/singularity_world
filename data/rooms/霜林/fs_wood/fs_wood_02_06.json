@@ -19,12 +19,14 @@
       "id": "fs_wood_02_06_to_fs_wood_02_07",
       "name": "追逐熱源",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_07",
       "responses": {
+        "Look": "此處可通往追逐熱源。",
         "Move": "你往追逐熱源走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_07"
     }
   ]
 }

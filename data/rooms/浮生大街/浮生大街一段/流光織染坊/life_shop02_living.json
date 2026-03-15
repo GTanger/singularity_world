@@ -2,7 +2,6 @@
   "id": "life_shop02_living",
   "name": "居家客廳",
   "description": "中心擺放一張〔低矮石几〕，周圍地面鋪設柔軟的肉質菌毯。此空間為生活區的核心，分別導向〔二樓平台〕、〔私人臥房〕與側邊的〔廚炊間〕。空氣中瀰漫著淡淡的檀香味。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "life_shop02_living_exit_platform",
       "name": "二樓平台",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_stairwell_2f",
       "responses": {
+        "Look": "此處可通往二樓平台。",
         "Move": "你離開客廳，回到二樓平台。"
-      }
+      },
+      "move_to_room_id": "life_shop02_stairwell_2f"
     },
     {
       "id": "life_shop02_living_exit_bedroom",
       "name": "私人臥房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_bedroom",
       "responses": {
+        "Look": "此處可通往私人臥房。",
         "Move": "你推開側門，步入私人臥房。"
-      }
+      },
+      "move_to_room_id": "life_shop02_bedroom"
     },
     {
       "id": "life_shop02_living_exit_kitchen",
       "name": "廚炊間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_kitchen",
       "responses": {
+        "Look": "此處可通往廚炊間。",
         "Move": "你朝側邊走去，進入廚炊間。"
-      }
+      },
+      "move_to_room_id": "life_shop02_kitchen"
     },
     {
       "id": "life_shop02_living_obj_table",

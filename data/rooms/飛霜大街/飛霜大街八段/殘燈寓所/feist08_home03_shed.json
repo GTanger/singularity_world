@@ -2,7 +2,6 @@
   "id": "feist08_home03_shed",
   "name": "柴房",
   "description": "街燈宅柴房後院盡頭一間偏屋，柴捆疊到樑、鋤耙靠牆；推門即乾草與朽木氣，頭頂一道縫漏下灰濛濛的光，腳下踩到碎枝。此處僅通〔後院〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist08_home03_sh_exit_back",
       "name": "後院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist08_home03_court_back",
       "responses": {
+        "Look": "此處可通往後院。",
         "Move": "你退回後院。"
-      }
+      },
+      "move_to_room_id": "feist08_home03_court_back"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_shop03_storage",
   "name": "儲物間",
   "description": "牆面格架為增生石灰質所固，石磚縫隙蔓延琥珀色微光。成卷石片與封口〔陶筒〕堆疊至頂，空氣裡礦物粉塵與墨味沉澱。路徑通向前方〔石箋閣〕與深處〔內走廊〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop03_storage_exit_main",
       "name": "石箋閣",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop03_main",
       "responses": {
+        "Look": "此處可通往石箋閣。",
         "Move": "你循來路回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop03_main"
     },
     {
       "id": "life_shop03_storage_exit_hallway",
       "name": "內走廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop03_hallway",
       "responses": {
+        "Look": "此處可通往內走廊。",
         "Move": "你沿格架旁往深處走去，進入內走廊。"
-      }
+      },
+      "move_to_room_id": "life_shop03_hallway"
     },
     {
       "id": "life_shop03_storage_obj_tube",

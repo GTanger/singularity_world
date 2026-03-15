@@ -2,7 +2,6 @@
   "id": "life_shop09_main",
   "name": "紫玉膠寮",
   "description": "石檯與牆體嵌合，檯面擺滿封口陶罐與琉璃皿，半透明膠質凝結於緣口，觸手略黏。壁面沁出淡紫脈絡，琥珀光暈沉靜。此處通外側〔浮生大街五段〕與後方〔儲物間〕、側邊〔內廊〕。檯角擱著一具〔膠質刮刀〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st5",
       "responses": {
         "Move": "你掀開厚簾，回到浮生大街五段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st5"
     },
     {
       "id": "life_shop09_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop09_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你朝後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "life_shop09_storage"
     },
     {
       "id": "life_shop09_main_exit_hallway",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop09_hallway",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走去。"
-      }
+      },
+      "move_to_room_id": "life_shop09_hallway"
     },
     {
       "id": "life_shop09_main_obj_scraper",

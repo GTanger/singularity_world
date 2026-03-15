@@ -19,12 +19,14 @@
       "id": "fs_wood_04_01_to_fs_wood_04_03",
       "name": "繞行碎石",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_04_03",
       "responses": {
+        "Look": "此處可通往繞行碎石。",
         "Move": "你往繞行碎石走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_04_03"
     }
   ]
 }

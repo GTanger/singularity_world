@@ -2,7 +2,6 @@
   "id": "ironland_home08_main",
   "name": "門廳",
   "description": "簷下宅門廳，簷深、門廳在簷下；簷角滴水槽明顯。石磚脈絡淡紫，巷熱自門縫入，牆根較潮、苔綠。門口〔板門〕通往打鐵三巷，內側〔廊道〕延伸至各室。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane3",
       "responses": {
         "Move": "你推開板門，回到打鐵三巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane3"
     },
     {
       "id": "ironland_home08_main_exit_hallway",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home08_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你朝內側走去，進入廊道。"
-      }
+      },
+      "move_to_room_id": "ironland_home08_hallway"
     }
   ]
 }

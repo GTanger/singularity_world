@@ -2,7 +2,6 @@
   "id": "ironland_shop07_workshop",
   "name": "工間",
   "description": "澆鑄槽與熔爐佔滿一側，空氣灼熱、金屬液氣味重；牆面滴痕多、脈絡被燻得發黑。此處通向〔熔流鋪〕〔生活起居室〕〔爐房〕與〔模房〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -31,45 +30,53 @@
       "id": "ironland_shop07_workshop_exit_main",
       "name": "熔流鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_main",
       "responses": {
+        "Look": "此處可通往熔流鋪。",
         "Move": "你循來路回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_main"
     },
     {
       "id": "ironland_shop07_workshop_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你往後方通道走去，進入生活起居室。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_living"
     },
     {
       "id": "ironland_shop07_workshop_exit_kiln",
       "name": "爐房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_kiln",
       "responses": {
+        "Look": "此處可通往爐房。",
         "Move": "你步入爐房。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_kiln"
     },
     {
       "id": "ironland_shop07_workshop_exit_mold",
       "name": "模房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_mold_room",
       "responses": {
+        "Look": "此處可通往模房。",
         "Move": "你步入模房。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_mold_room"
     }
   ]
 }

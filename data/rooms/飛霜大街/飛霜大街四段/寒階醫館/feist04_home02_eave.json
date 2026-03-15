@@ -2,7 +2,6 @@
   "id": "feist04_home02_eave",
   "name": "簷下",
   "description": "冷階宅門廊旁一截簷、簷緣霜紋垂成串，簷下陰影與積霜交錯、可望四段路面冷調與行人；風灌進來袖口生寒、門廊冷階自背後沁來，霜白結晶沾簷即落。此處僅通〔分診門廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -18,10 +17,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist04_home02_main",
       "responses": {
         "Move": "你退回分診門廳。"
-      }
+      },
+      "move_to_room_id": "feist04_home02_main"
     }
   ]
 }

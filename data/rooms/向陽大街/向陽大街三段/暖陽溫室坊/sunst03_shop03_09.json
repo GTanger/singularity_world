@@ -19,12 +19,14 @@
       "id": "sunst03_shop03_09_08",
       "name": "中廊・二間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst03_shop03_08",
       "responses": {
+        "Look": "此處可通往中廊・二間。",
         "Move": "你往中廊二間走回。"
-      }
+      },
+      "move_to_room_id": "sunst03_shop03_08"
     }
   ]
 }

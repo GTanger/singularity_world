@@ -36,43 +36,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st4",
       "responses": {
         "Move": "你步出氣密寓所，回到夜鴞巷四巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st4"
     },
     {
       "id": "yaxst04_home01_main_02",
       "name": "左廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home01_02",
       "responses": {
+        "Look": "此處可通往左廂。",
         "Move": "你推門入左廂。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home01_02"
     },
     {
       "id": "yaxst04_home01_main_03",
       "name": "中廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home01_03",
       "responses": {
+        "Look": "此處可通往中廳。",
         "Move": "你推門入中廳。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home01_03"
     },
     {
       "id": "yaxst04_home01_main_04",
       "name": "右廂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home01_04",
       "responses": {
+        "Look": "此處可通往右廂。",
         "Move": "你推門入右廂。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home01_04"
     }
   ]
 }

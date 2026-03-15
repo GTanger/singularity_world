@@ -2,7 +2,6 @@
   "id": "feist02_shop02_living",
   "name": "居間",
   "description": "風爐鋪居間窄長，熱氣自內廊滲入、與簷隙霜晶在窗邊交織，方桌條凳靠牆、牆面暗紅脈絡隱約、爐灶冷清；游離輻射下室內霧氣不散，一門往〔灶間〕、兩門分往〔寢間一〕〔寢間二〕，鐵腥與生活氣並存。此處僅通〔內廊〕、〔灶間〕、〔寢間一〕與〔寢間二〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -31,45 +30,53 @@
       "id": "feist02_shop02_lv_exit_hall",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop02_hall",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你退回內廊。"
-      }
+      },
+      "move_to_room_id": "feist02_shop02_hall"
     },
     {
       "id": "feist02_shop02_lv_exit_kitchen",
       "name": "灶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop02_kitchen",
       "responses": {
+        "Look": "此處可通往灶間。",
         "Move": "你往灶間走去。"
-      }
+      },
+      "move_to_room_id": "feist02_shop02_kitchen"
     },
     {
       "id": "feist02_shop02_lv_exit_bed1",
       "name": "寢間一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop02_bed1",
       "responses": {
+        "Look": "此處可通往寢間一。",
         "Move": "你往寢間一走去。"
-      }
+      },
+      "move_to_room_id": "feist02_shop02_bed1"
     },
     {
       "id": "feist02_shop02_lv_exit_bed2",
       "name": "寢間二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop02_bed2",
       "responses": {
+        "Look": "此處可通往寢間二。",
         "Move": "你往寢間二走去。"
-      }
+      },
+      "move_to_room_id": "feist02_shop02_bed2"
     }
   ]
 }

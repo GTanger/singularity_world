@@ -19,12 +19,14 @@
       "id": "fs_wood_10_10_to_fs_trail_10",
       "name": "回歸主徑",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_10",
       "responses": {
+        "Look": "此處可通往回歸主徑。",
         "Move": "你往回歸主徑走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_10"
     }
   ]
 }

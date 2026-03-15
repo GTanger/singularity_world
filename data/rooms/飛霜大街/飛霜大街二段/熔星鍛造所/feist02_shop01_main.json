@@ -2,7 +2,6 @@
   "id": "feist02_shop01_main",
   "name": "【熔星鍛造所】接待大堂",
   "description": "寬闊但極其凌亂的空間，牆面掛滿了剛打磨好、正散發著餘溫的重型裝備與農具。地面的黑岩被無數次的金屬敲擊震得佈滿裂紋。空氣中彌漫著濃烈的機油、汗水與鐵鏽味，角落的巨大風箱發出沉重的呼吸聲。退回〔寬闊鐵門〕可至大街；連結著內部核心的〔熔爐後院〕與〔淬火後堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st2",
       "responses": {
         "Move": "你步出店頭，回到飛霜大街二段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st2"
     },
     {
       "id": "feist02_shop01_m_exit_counter",
       "name": "高台櫃槽",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop01_counter",
       "responses": {
+        "Look": "此處可通往高台櫃槽。",
         "Move": "你往高台櫃槽走去。"
-      }
+      },
+      "move_to_room_id": "feist02_shop01_counter"
     },
     {
       "id": "feist02_shop01_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_shop01_eave",
       "responses": {
         "Move": "你步向灼熱簷下。"
-      }
+      },
+      "move_to_room_id": "feist02_shop01_eave"
     }
   ]
 }

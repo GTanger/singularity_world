@@ -24,23 +24,27 @@
       "id": "sunst04_shop01_03_02",
       "name": "前廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop01_02",
       "responses": {
+        "Look": "此處可通往前廳。",
         "Move": "你往前廳走回。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop01_02"
     },
     {
       "id": "sunst04_shop01_03_04",
       "name": "織間二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop01_04",
       "responses": {
+        "Look": "此處可通往織間二。",
         "Move": "你往織間二走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop01_04"
     }
   ]
 }

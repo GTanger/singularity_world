@@ -19,12 +19,14 @@
       "id": "fs_wood_09_05_to_fs_wood_09_07",
       "name": "尋找避所",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_07",
       "responses": {
+        "Look": "此處可通往尋找避所。",
         "Move": "你往尋找避所走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_07"
     }
   ]
 }

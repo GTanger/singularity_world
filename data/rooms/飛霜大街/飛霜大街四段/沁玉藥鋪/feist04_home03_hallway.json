@@ -2,7 +2,6 @@
   "id": "feist04_home03_hallway",
   "name": "廊",
   "description": "玉脈宅廊子半折、一頭往門廳一頭往起居；側門推開即小天井、牆面玉脈隱現，簷下陰影與積霜交錯、掌心貼牆一片沁涼，無書齋無倉、四段燈火從門廳漏進一線。此處通〔抓藥前堂〕、〔起居〕、〔小天井〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist04_home03_h_exit_main",
       "name": "抓藥前堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home03_main",
       "responses": {
+        "Look": "此處可通往抓藥前堂。",
         "Move": "你退回抓藥前堂。"
-      }
+      },
+      "move_to_room_id": "feist04_home03_main"
     },
     {
       "id": "feist04_home03_h_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home03_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你往起居。"
-      }
+      },
+      "move_to_room_id": "feist04_home03_living"
     },
     {
       "id": "feist04_home03_h_exit_court",
       "name": "小天井",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home03_courtyard",
       "responses": {
+        "Look": "此處可通往小天井。",
         "Move": "你往小天井。"
-      }
+      },
+      "move_to_room_id": "feist04_home03_courtyard"
     }
   ]
 }

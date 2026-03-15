@@ -19,12 +19,14 @@
       "id": "fs_wood_07_04_to_fs_wood_07_06",
       "name": "穿過晶叢",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_07_06",
       "responses": {
+        "Look": "此處可通往穿過晶叢。",
         "Move": "你往穿過晶叢走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_07_06"
     }
   ]
 }

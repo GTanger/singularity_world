@@ -2,7 +2,6 @@
   "id": "feist09_home01_hallway",
   "name": "廊道",
   "description": "短廊一折，左通門廳、右通內室，側邊一門即小院；階沿有鞋跡與水痕，門廳那頭漏進街口燈火、越往裡越暗，盡頭只聞自家腳步。此處通〔門廳〕、〔起居室〕與〔小院〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist09_home01_main",
       "responses": {
         "Move": "你回到門廳。"
-      }
+      },
+      "move_to_room_id": "feist09_home01_main"
     },
     {
       "id": "feist09_home01_hallway_exit_living",
       "name": "起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_home01_living",
       "responses": {
+        "Look": "此處可通往起居室。",
         "Move": "你步入起居室。"
-      }
+      },
+      "move_to_room_id": "feist09_home01_living"
     },
     {
       "id": "feist09_home01_hallway_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_home01_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你步入小院。"
-      }
+      },
+      "move_to_room_id": "feist09_home01_courtyard"
     }
   ]
 }

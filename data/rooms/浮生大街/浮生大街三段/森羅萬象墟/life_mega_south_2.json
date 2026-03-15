@@ -2,7 +2,6 @@
   "id": "life_mega_south_2",
   "name": "南軒二",
   "description": "窄室一隅，藤鬚攀簷，微光沉靜，牆根菌絲蔓延。此處僅通〔南軒〕，返身即回中庭。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_south_2_exit",
       "name": "南軒",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_south_wing",
       "responses": {
+        "Look": "此處可通往南軒。",
         "Move": "你回到南軒。"
-      }
+      },
+      "move_to_room_id": "life_mega_south_wing"
     }
   ]
 }

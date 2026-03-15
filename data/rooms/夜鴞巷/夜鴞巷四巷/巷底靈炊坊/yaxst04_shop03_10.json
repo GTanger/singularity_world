@@ -24,23 +24,27 @@
       "id": "yaxst04_shop03_10_09",
       "name": "長廊底前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop03_09",
       "responses": {
+        "Look": "此處可通往長廊底前。",
         "Move": "你沿長廊往回走。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop03_09"
     },
     {
       "id": "yaxst04_shop03_10_main",
       "name": "灶前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop03_main",
       "responses": {
+        "Look": "此處可通往灶前。",
         "Move": "你徑直回到灶前。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop03_main"
     }
   ]
 }

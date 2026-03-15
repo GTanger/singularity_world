@@ -19,12 +19,14 @@
       "id": "fs_wood_02_01_to_fs_wood_02_02",
       "name": "順坡下滑",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_02",
       "responses": {
+        "Look": "此處可通往順坡下滑。",
         "Move": "你往順坡下滑走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_02"
     }
   ]
 }

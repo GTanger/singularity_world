@@ -2,7 +2,6 @@
   "id": "life_mega_north_back_2",
   "name": "北廳後二",
   "description": "後室窄長，菌絲自牆根蔓延，幽光隱約，空氣中礦物氣息沉澱。此處僅通〔北廳〕，返身即回中庭。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_north_back_2_exit",
       "name": "北廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_north_hall",
       "responses": {
+        "Look": "此處可通往北廳。",
         "Move": "你回到北廳。"
-      }
+      },
+      "move_to_room_id": "life_mega_north_hall"
     }
   ]
 }

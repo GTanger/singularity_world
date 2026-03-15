@@ -2,7 +2,6 @@
   "id": "feist05_shop03_counter",
   "name": "櫃前",
   "description": "霜晶行櫃台後即貨架，零嘴與紙包堆到齊眉；簾後即〔後間〕，住家從那裡開始，買賣在此成交，無貨間無地窖、再往裡便是過廳，簾外鋪面人聲隱約、簷下霜晶從簾隙漏進。此處通〔冷櫃前廳〕與〔後間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist05_shop03_c_exit_main",
       "name": "冷櫃前廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_shop03_main",
       "responses": {
+        "Look": "此處可通往冷櫃前廳。",
         "Move": "你退回冷櫃前廳。"
-      }
+      },
+      "move_to_room_id": "feist05_shop03_main"
     },
     {
       "id": "feist05_shop03_c_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_shop03_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你掀簾往後間。"
-      }
+      },
+      "move_to_room_id": "feist05_shop03_back"
     }
   ]
 }

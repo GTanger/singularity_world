@@ -24,23 +24,27 @@
       "id": "sunst03_shop03_08_07",
       "name": "中廊・一間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst03_shop03_07",
       "responses": {
+        "Look": "此處可通往中廊・一間。",
         "Move": "你往中廊一間走回。"
-      }
+      },
+      "move_to_room_id": "sunst03_shop03_07"
     },
     {
       "id": "sunst03_shop03_08_09",
       "name": "中廊・三間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst03_shop03_09",
       "responses": {
+        "Look": "此處可通往中廊・三間。",
         "Move": "你往中廊三間走去。"
-      }
+      },
+      "move_to_room_id": "sunst03_shop03_09"
     }
   ]
 }

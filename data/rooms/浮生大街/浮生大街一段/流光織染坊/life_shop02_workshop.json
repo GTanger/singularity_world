@@ -2,7 +2,6 @@
   "id": "life_shop02_workshop",
   "name": "織造間",
   "description": "三座巨大的〔石製織機〕佔據中心，機件銜接處長出透明膠質。室內充斥規律的機械震動聲與草木氣味。光線穿過高窗落入，此處連接前方的〔織染坊〕與後方的〔樓梯間〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop02_workshop_exit_main",
       "name": "織染坊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_main",
       "responses": {
+        "Look": "此處可通往織染坊。",
         "Move": "你離開織機旁，回到織染坊前廳。"
-      }
+      },
+      "move_to_room_id": "life_shop02_main"
     },
     {
       "id": "life_shop02_workshop_exit_stairs",
       "name": "樓梯間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_stairwell_1f",
       "responses": {
+        "Look": "此處可通往樓梯間。",
         "Move": "你朝後方通道走去，進入樓梯間。"
-      }
+      },
+      "move_to_room_id": "life_shop02_stairwell_1f"
     },
     {
       "id": "life_shop02_workshop_obj_loom",

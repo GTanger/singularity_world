@@ -2,7 +2,6 @@
   "id": "life_mega_inner_2",
   "name": "內堂二",
   "description": "密室極靜，石几與地衣攀附，粉塵沉降，壁面沁出淡紫微光。此處僅通〔內堂〕，返身即回中庭。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_mega_inner_2_exit",
       "name": "內堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_mega_inner",
       "responses": {
+        "Look": "此處可通往內堂。",
         "Move": "你回到內堂。"
-      }
+      },
+      "move_to_room_id": "life_mega_inner"
     }
   ]
 }

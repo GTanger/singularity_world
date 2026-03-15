@@ -19,12 +19,14 @@
       "id": "fs_wood_03_02_to_fs_wood_03_04",
       "name": "穿過林帶",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_04",
       "responses": {
+        "Look": "此處可通往穿過林帶。",
         "Move": "你往穿過林帶走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_04"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_shop11_storage",
   "name": "儲物間",
   "description": "牆面格架為石灰質所固，成罐茶葉與陶壺堆疊，縫隙透出琥珀光。此處通向前方〔茶寮〕與深處〔內廊〕，可回店頭或往起居處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop11_storage_exit_main",
       "name": "茶寮",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop11_main",
       "responses": {
+        "Look": "此處可通往茶寮。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop11_main"
     },
     {
       "id": "life_shop11_storage_exit_hallway",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop11_hallway",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走去。"
-      }
+      },
+      "move_to_room_id": "life_shop11_hallway"
     }
   ]
 }

@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home02_main",
       "responses": {
         "Move": "你往門廳走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home02_main"
     },
     {
       "id": "yaxst01_home02_02_03",
       "name": "環室二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home02_03",
       "responses": {
+        "Look": "此處可通往環室二。",
         "Move": "你往環室二走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home02_03"
     }
   ]
 }

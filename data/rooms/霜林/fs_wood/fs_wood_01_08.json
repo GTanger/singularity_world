@@ -19,12 +19,14 @@
       "id": "fs_wood_01_08_to_fs_wood_01_09",
       "name": "向上攀爬",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_09",
       "responses": {
+        "Look": "此處可通往向上攀爬。",
         "Move": "你往向上攀爬走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_09"
     }
   ]
 }

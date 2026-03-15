@@ -2,7 +2,6 @@
   "id": "feist07_home02_court_back",
   "name": "後院",
   "description": "簷影宅更深一進，簷線四合攏住一方天；柴薪疊在角、井已封、石欄覆霜如刀切，呼吸見白、腳步落下去便沒入寂靜，簾外即廊與起居的燈影、七段人聲隔牆而遠。此處通〔廊〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist07_home02_cb_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你退回廊。"
-      }
+      },
+      "move_to_room_id": "feist07_home02_hallway"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist04_shop01_counter",
   "name": "櫃前",
   "description": "霜紋閣櫃台後貨架齊眉、茶罐與零嘴排成霜紋閣一脈陳設；簾外店頭人聲隱約、簷角積霜從簾隙沁進一線白，牆面玉質脈絡在昏光裡隱現，成交與找零都在此完成、掌心貼檯一片沁涼。此處通〔驗證大堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist04_shop01_c_exit_main",
       "name": "驗證大堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_main",
       "responses": {
+        "Look": "此處可通往驗證大堂。",
         "Move": "你退回驗證大堂。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_main"
     }
   ]
 }

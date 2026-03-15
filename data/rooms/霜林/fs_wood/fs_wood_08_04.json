@@ -19,12 +19,14 @@
       "id": "fs_wood_08_04_to_fs_wood_08_05",
       "name": "攀上脊頂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_05",
       "responses": {
+        "Look": "此處可通往攀上脊頂。",
         "Move": "你往攀上脊頂走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_05"
     }
   ]
 }

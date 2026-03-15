@@ -2,7 +2,6 @@
   "id": "life_home07_main",
   "name": "門廳",
   "description": "簷根宅門廳，簷角根鬚自石縫垂落，竟將樑木纏得更牢，淡紫光暈自縫隙沁出。牆面深灰石灰質，地面石板伏貼。此處光線穿過〔板門〕灑入五段，內側導向〔簷廊〕通往各室。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,10 +22,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st5",
       "responses": {
         "Move": "你推開板門，回到浮生大街五段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st5"
     },
     {
       "id": "life_home07_main_exit_hallway",
@@ -34,10 +33,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home07_hallway",
       "responses": {
         "Move": "你朝內側走去，進入簷廊。"
-      }
+      },
+      "move_to_room_id": "life_home07_hallway"
     }
   ]
 }

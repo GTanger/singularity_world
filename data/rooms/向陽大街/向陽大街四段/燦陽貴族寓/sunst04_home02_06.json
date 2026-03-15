@@ -24,23 +24,27 @@
       "id": "sunst04_home02_06_05",
       "name": "右進・一間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home02_05",
       "responses": {
+        "Look": "此處可通往右進・一間。",
         "Move": "你往右進一間走回。"
-      }
+      },
+      "move_to_room_id": "sunst04_home02_05"
     },
     {
       "id": "sunst04_home02_06_07",
       "name": "右進・三間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home02_07",
       "responses": {
+        "Look": "此處可通往右進・三間。",
         "Move": "你往右進三間走去。"
-      }
+      },
+      "move_to_room_id": "sunst04_home02_07"
     }
   ]
 }

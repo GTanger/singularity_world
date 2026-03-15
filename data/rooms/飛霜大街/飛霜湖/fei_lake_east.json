@@ -34,12 +34,14 @@
       "id": "fei_lake_east_shore",
       "name": "沉霜水際",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_shore",
       "responses": {
+        "Look": "此處可通往沉霜水際。",
         "Move": "你往貼水石灘走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_shore"
     },
     {
       "id": "fei_lake_east_south",
@@ -47,32 +49,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "fei_lake_south",
       "responses": {
         "Move": "你沿湖岸往南側走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_south"
     },
     {
       "id": "fei_lake_east_north",
       "name": "北岸孤冷湖背",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_north",
       "responses": {
+        "Look": "此處可通往北岸孤冷湖背。",
         "Move": "你沿湖岸往北側走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_north"
     },
     {
       "id": "fei_lake_east_pier",
       "name": "輻射木碼頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_pier",
       "responses": {
+        "Look": "此處可通往輻射木碼頭。",
         "Move": "你朝輻射木碼頭走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_pier"
     }
   ]
 }

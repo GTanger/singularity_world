@@ -19,12 +19,14 @@
       "id": "fs_wood_04_02_to_fs_wood_04_04",
       "name": "深入岩壁",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_04_04",
       "responses": {
+        "Look": "此處可通往深入岩壁。",
         "Move": "你往深入岩壁走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_04_04"
     }
   ]
 }

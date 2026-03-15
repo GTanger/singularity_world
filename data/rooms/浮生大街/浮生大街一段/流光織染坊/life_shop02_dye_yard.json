@@ -2,7 +2,6 @@
   "id": "life_shop02_dye_yard",
   "name": "染坊後院",
   "description": "露天院落擺放數個〔石砌染池〕，池內液體呈高濃度的紫黑色，表面漂浮著發光菌落。牆角生長著幾株枝條垂地的變異灌木。此處僅通向前方的〔織染坊〕，空氣中濕度飽和。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_shop02_yard_exit_main",
       "name": "織染坊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_main",
       "responses": {
+        "Look": "此處可通往織染坊。",
         "Move": "你自後院回到室內，進入織染坊。"
-      }
+      },
+      "move_to_room_id": "life_shop02_main"
     },
     {
       "id": "life_shop02_yard_obj_vat",

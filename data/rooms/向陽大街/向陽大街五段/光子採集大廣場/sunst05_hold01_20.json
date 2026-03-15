@@ -20,12 +20,14 @@
       "id": "sunst05_hold01_20_19",
       "name": "中庭二區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_hold01_19",
       "responses": {
+        "Look": "此處可通往中庭二區。",
         "Move": "你沿中庭往中庭二區走回。"
-      }
+      },
+      "move_to_room_id": "sunst05_hold01_19"
     }
   ]
 }

@@ -19,12 +19,14 @@
       "id": "sunst02_shop02_07_03",
       "name": "西廳・前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop02_03",
       "responses": {
+        "Look": "此處可通往西廳・前間。",
         "Move": "你往西廳前間走回。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop02_03"
     }
   ]
 }

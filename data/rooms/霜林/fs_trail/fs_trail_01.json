@@ -39,56 +39,66 @@
       "id": "fs_trail_01_to_fei_lake_north",
       "name": "湖背",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_north",
       "responses": {
+        "Look": "此處可通往湖背。",
         "Move": "你往湖背走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_north"
     },
     {
       "id": "fs_trail_01_to_fs_trail_02",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_02",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_02"
     },
     {
       "id": "fs_trail_01_to_fs_wood_01_01",
       "name": "左側(深入)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_01",
       "responses": {
+        "Look": "此處可通往左側(深入)。",
         "Move": "你往左側(深入)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_01"
     },
     {
       "id": "fs_trail_01_to_fs_wood_01_05",
       "name": "荒徑(探索)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_05",
       "responses": {
+        "Look": "此處可通往荒徑(探索)。",
         "Move": "你往荒徑(探索)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_05"
     },
     {
       "id": "fs_trail_01_to_fs_wood_01_10",
       "name": "攀爬(銜接)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_10",
       "responses": {
+        "Look": "此處可通往攀爬(銜接)。",
         "Move": "你往攀爬(銜接)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_10"
     }
   ]
 }

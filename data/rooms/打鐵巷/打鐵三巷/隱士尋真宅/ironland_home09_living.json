@@ -2,7 +2,6 @@
   "id": "ironland_home09_living",
   "name": "生息室",
   "description": "石几貼地，琉璃質淡綠微光；巷尾熱風在背、室內涼。牆縫晶礦。此處通〔門廳〕、〔灶間〕、〔內臥房〕與〔小院〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -33,43 +32,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_home09_main",
       "responses": {
         "Move": "你回到門廳。"
-      }
+      },
+      "move_to_room_id": "ironland_home09_main"
     },
     {
       "id": "ironland_home09_living_exit_kitchen",
       "name": "灶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home09_kitchen",
       "responses": {
+        "Look": "此處可通往灶間。",
         "Move": "你步入灶間。"
-      }
+      },
+      "move_to_room_id": "ironland_home09_kitchen"
     },
     {
       "id": "ironland_home09_living_exit_bedroom",
       "name": "內臥房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home09_bedroom",
       "responses": {
+        "Look": "此處可通往內臥房。",
         "Move": "你步入內臥房。"
-      }
+      },
+      "move_to_room_id": "ironland_home09_bedroom"
     },
     {
       "id": "ironland_home09_living_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home09_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你步入小院。"
-      }
+      },
+      "move_to_room_id": "ironland_home09_courtyard"
     }
   ]
 }

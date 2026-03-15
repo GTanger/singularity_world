@@ -2,7 +2,6 @@
   "id": "ironland_home07_main",
   "name": "門廳",
   "description": "巷尾宅門廳，靠二巷盡頭、風道聲自牆外隱約；門板薄、風灌得進，牆面熱氣殘留少、較涼。無廊道，門口〔板門〕通往打鐵二巷，內側直通〔生息室〕與〔小院〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_lane2",
       "responses": {
         "Move": "你推開板門，回到打鐵二巷。"
-      }
+      },
+      "move_to_room_id": "ironland_lane2"
     },
     {
       "id": "ironland_home07_main_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home07_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你朝內側走去，進入生息室。"
-      }
+      },
+      "move_to_room_id": "ironland_home07_living"
     },
     {
       "id": "ironland_home07_main_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home07_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你步入小院。"
-      }
+      },
+      "move_to_room_id": "ironland_home07_courtyard"
     }
   ]
 }

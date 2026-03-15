@@ -2,7 +2,6 @@
   "id": "feistreet_st6",
   "name": "飛霜大街六段",
   "description": "這段大街成為了連接灰色地帶的樞紐，人跡更加稀少，但每一個出現的身影都透著詭異的警惕。霜白結晶的飄落速度在這裡似乎變緩，但溫度卻降至冰點以下。一側是以情報與黑市交易為主的商店：〔掩霜情報站〕、專售玉質能量飾品的〔寒玉飾品閣〕與收購各類來源不明物件的〔垂冰雜貨行〕。對向則是防禦性極強的住宅群：〔厚牆庇護所〕、〔沁玉雕刻家〕、危險的〔寒氣封存庫〕與隱密至極的〔孤屋盲眼居〕。可沿大街退回〔飛霜大街五段〕，或朝〔飛霜大街七段〕前進，亦可從隱密的岔路拐進灰產雲集的〔夜鴞巷三巷〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -63,10 +62,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st5",
       "responses": {
         "Move": "你朝飛霜大街五段方向折返。"
-      }
+      },
+      "move_to_room_id": "feistreet_st5"
     },
     {
       "id": "fei_st6_exit_st7",
@@ -74,10 +73,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st7",
       "responses": {
         "Move": "你朝飛霜大街七段方向走去。"
-      }
+      },
+      "move_to_room_id": "feistreet_st7"
     },
     {
       "id": "fei_st6_obj_shop11",
@@ -93,12 +92,14 @@
       "id": "fei_st6_obj_shop11_door",
       "name": "滅音交誼室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop01_main",
       "responses": {
+        "Look": "此處可通往滅音交誼室。",
         "Move": "你推門進入霜簾鋪。"
-      }
+      },
+      "move_to_room_id": "feist06_shop01_main"
     },
     {
       "id": "fei_st6_obj_shop12",
@@ -114,12 +115,14 @@
       "id": "fei_st6_obj_shop12_door",
       "name": "流光展廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop02_main",
       "responses": {
+        "Look": "此處可通往流光展廳。",
         "Move": "你掀簾進入冷閣。"
-      }
+      },
+      "move_to_room_id": "feist06_shop02_main"
     },
     {
       "id": "fei_st6_obj_shop13",
@@ -135,12 +138,14 @@
       "id": "fei_st6_obj_shop13_door",
       "name": "擁擠鋪面",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop03_main",
       "responses": {
+        "Look": "此處可通往擁擠鋪面。",
         "Move": "你推門進入簷角行。"
-      }
+      },
+      "move_to_room_id": "feist06_shop03_main"
     },
     {
       "id": "fei_st6_obj_home06",
@@ -156,12 +161,14 @@
       "id": "fei_st6_obj_home06_door",
       "name": "加固玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home01_main",
       "responses": {
+        "Look": "此處可通往加固玄關。",
         "Move": "你步入霜牆宅。"
-      }
+      },
+      "move_to_room_id": "feist06_home01_main"
     },
     {
       "id": "fei_st6_obj_home07",
@@ -177,12 +184,14 @@
       "id": "fei_st6_obj_home07_door",
       "name": "粉塵前庭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home02_main",
       "responses": {
+        "Look": "此處可通往粉塵前庭。",
         "Move": "你推門進入玉霜宅。"
-      }
+      },
+      "move_to_room_id": "feist06_home02_main"
     },
     {
       "id": "fei_st6_obj_home08",
@@ -198,12 +207,14 @@
       "id": "fei_st6_obj_home08_door",
       "name": "檢疫氣閘室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home03_main",
       "responses": {
+        "Look": "此處可通往檢疫氣閘室。",
         "Move": "你掀簾進入冷簾宅。"
-      }
+      },
+      "move_to_room_id": "feist06_home03_main"
     },
     {
       "id": "fei_st6_obj_home09",
@@ -219,12 +230,14 @@
       "id": "fei_st6_obj_home09_door",
       "name": "寂靜廳堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home04_main",
       "responses": {
+        "Look": "此處可通往寂靜廳堂。",
         "Move": "你推門進入簷霜宅。"
-      }
+      },
+      "move_to_room_id": "feist06_home04_main"
     },
     {
       "id": "fei_st6_exit_yaxiao_st3",
@@ -232,10 +245,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st3",
       "responses": {
         "Move": "你拐進夜鴞巷三巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st3"
     }
   ]
 }

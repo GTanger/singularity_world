@@ -2,7 +2,6 @@
   "id": "life_b7_east_2",
   "name": "東二室",
   "description": "窄室一隅，牆根菌絲蔓延，根鬚自砌石沁出，淡綠幽光隱約。此處僅通〔東廊〕，循廊即回前庭或中庭。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_b7_east_2_exit",
       "name": "東廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_b7_east_hall",
       "responses": {
+        "Look": "此處可通往東廊。",
         "Move": "你步出東二室，回到東廊。"
-      }
+      },
+      "move_to_room_id": "life_b7_east_hall"
     }
   ]
 }

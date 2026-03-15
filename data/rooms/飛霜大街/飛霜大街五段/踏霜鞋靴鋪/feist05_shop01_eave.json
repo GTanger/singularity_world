@@ -2,7 +2,6 @@
   "id": "feist05_shop01_eave",
   "name": "簷下",
   "description": "簷霜鋪鋪門外一截窄簷，簷下霜積成串、風一吹就撲面；茶氣從簾縫鑽出、與街面霜氣交混，可望五段行人與往四段、六段方向的人跡，沿街簷下陰影交錯。此處僅通〔縫線前堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist05_shop01_e_exit_main",
       "name": "縫線前堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_shop01_main",
       "responses": {
+        "Look": "此處可通往縫線前堂。",
         "Move": "你退回縫線前堂。"
-      }
+      },
+      "move_to_room_id": "feist05_shop01_main"
     }
   ]
 }

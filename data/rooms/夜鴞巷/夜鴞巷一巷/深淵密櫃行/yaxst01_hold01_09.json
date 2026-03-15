@@ -24,23 +24,27 @@
       "id": "yaxst01_hold01_09_08",
       "name": "南翼底前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_08",
       "responses": {
+        "Look": "此處可通往南翼底前。",
         "Move": "你沿南翼往回走。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_08"
     },
     {
       "id": "yaxst01_hold01_09_main",
       "name": "前檯",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_main",
       "responses": {
+        "Look": "此處可通往前檯。",
         "Move": "你徑直穿過南翼回到前檯。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_main"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_home03_main",
   "name": "門廳",
   "description": "灰瓦簷下脈絡自縫隙沁出，淡紫光暈沉靜。牆面深灰石灰質覆住石磚，向內延伸至〔廊道〕。地面石板伏貼，門口〔板門〕通往街面。角落〔陶製傘架〕倚牆而立，表面蒙著礦物粉塵。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st2",
       "responses": {
         "Move": "你推開板門，回到浮生大街二段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st2"
     },
     {
       "id": "life_home03_main_exit_hallway",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home03_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你朝內側走去，進入廊道。"
-      }
+      },
+      "move_to_room_id": "life_home03_hallway"
     },
     {
       "id": "life_home03_main_obj_stand",

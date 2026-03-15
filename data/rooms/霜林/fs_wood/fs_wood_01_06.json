@@ -19,12 +19,14 @@
       "id": "fs_wood_01_06_to_fs_wood_01_07",
       "name": "深入迷霧",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_07",
       "responses": {
+        "Look": "此處可通往深入迷霧。",
         "Move": "你往深入迷霧走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_07"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feistreet_st7",
   "name": "飛霜大街七段",
   "description": "隨著步伐接近四路街口，大街的生氣開始逐漸復甦。路面的冷調石板上，霜晶被頻繁來往的車輪與擔夫的草鞋踩成了一層灰白色的冰泥。路側是專為長途跋涉者提供服務的〔寒星轉運棧〕、飄散著熱茶與汗水味的〔暖霜茶寮〕以及夾縫中的低階〔零星當鋪〕。對向則是底層勞動者的聚居地：〔霜階群租寓〕、缺乏光照的〔隱巷流民居〕、〔擔夫歇腳戶〕與專門出售小道消息的〔街角包打聽〕。可經此退回冷清的〔飛霜大街六段〕，或朝越發熱鬧的〔飛霜大街八段〕延伸。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -58,10 +57,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st6",
       "responses": {
         "Move": "你朝飛霜大街6段方向折返。"
-      }
+      },
+      "move_to_room_id": "feistreet_st6"
     },
     {
       "id": "fei_st7_exit_st8",
@@ -69,10 +68,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st8",
       "responses": {
         "Move": "你朝飛霜大街8段方向走去。"
-      }
+      },
+      "move_to_room_id": "feistreet_st8"
     },
     {
       "id": "fei_st7_obj_shop14",
@@ -90,10 +89,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_shop01_main",
       "responses": {
         "Move": "你推開沉重的棧門，進入寒星轉運棧。"
-      }
+      },
+      "move_to_room_id": "feist07_shop01_main"
     },
     {
       "id": "fei_st7_obj_shop15",
@@ -111,10 +110,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_shop02_main",
       "responses": {
         "Move": "你掀開油膩門簾，進入暖霜茶寮。"
-      }
+      },
+      "move_to_room_id": "feist07_shop02_main"
     },
     {
       "id": "fei_st7_obj_shop16",
@@ -132,10 +131,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_shop03_main",
       "responses": {
         "Move": "你推開虛掩窄門，進入街角包打聽。"
-      }
+      },
+      "move_to_room_id": "feist07_shop03_main"
     },
     {
       "id": "fei_st7_obj_home10",
@@ -153,10 +152,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_home01_main",
       "responses": {
         "Move": "你推開虛掩窄門，進入街角包打聽。"
-      }
+      },
+      "move_to_room_id": "feist07_home01_main"
     },
     {
       "id": "fei_st7_obj_home11",
@@ -174,10 +173,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_home02_main",
       "responses": {
         "Move": "你走進無門門洞，進入擔夫歇腳戶。"
-      }
+      },
+      "move_to_room_id": "feist07_home02_main"
     },
     {
       "id": "fei_st7_obj_home12",
@@ -195,10 +194,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_home03_main",
       "responses": {
         "Move": "你走進無門門洞，進入擔夫歇腳戶。"
-      }
+      },
+      "move_to_room_id": "feist07_home03_main"
     },
     {
       "id": "fei_st7_obj_home13",
@@ -216,10 +215,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_home04_main",
       "responses": {
         "Move": "你推開虛掩窄門，進入街角包打聽。"
-      }
+      },
+      "move_to_room_id": "feist07_home04_main"
     }
   ]
 }

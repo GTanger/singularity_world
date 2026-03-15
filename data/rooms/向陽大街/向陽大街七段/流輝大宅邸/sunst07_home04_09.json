@@ -19,12 +19,14 @@
       "id": "sunst07_home04_09_exit_1",
       "name": "廊底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_home04_08",
       "responses": {
+        "Look": "此處可通往廊底。",
         "Move": "你往廊底走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_home04_08"
     }
   ]
 }

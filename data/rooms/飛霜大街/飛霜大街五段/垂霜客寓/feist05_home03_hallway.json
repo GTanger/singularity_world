@@ -2,7 +2,6 @@
   "id": "feist05_home03_hallway",
   "name": "廊",
   "description": "簷線宅廊子轉了半折，一頭往門廳、一頭往起居；側邊一道門通〔小院〕，牆皮斑駁、簷線壓低霜跡成串，石階邊緣磨得圓滑，無倉房無書齋、五段燈火從門廳漏進一線。此處通〔漏風接待處〕、〔起居〕、〔小院〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "feist05_home03_h_exit_main",
       "name": "漏風接待處",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home03_main",
       "responses": {
+        "Look": "此處可通往漏風接待處。",
         "Move": "你退回漏風接待處。"
-      }
+      },
+      "move_to_room_id": "feist05_home03_main"
     },
     {
       "id": "feist05_home03_h_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home03_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你往起居。"
-      }
+      },
+      "move_to_room_id": "feist05_home03_living"
     },
     {
       "id": "feist05_home03_h_exit_court",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_home03_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往小院。"
-      }
+      },
+      "move_to_room_id": "feist05_home03_courtyard"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist06_home03_bed1",
   "name": "臥一",
   "description": "冷簾宅臥一：榻靠裡牆、櫃擋門側，枕褥收在榻尾；簾外即廊與後院，人過即靜，案頭燈已熄、窗棂外一片灰白，冷簾垂在門邊、透進一絲六段街光。此處僅通〔起居〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist06_home03_b1_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home03_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你出臥一回起居。"
-      }
+      },
+      "move_to_room_id": "feist06_home03_living"
     }
   ]
 }

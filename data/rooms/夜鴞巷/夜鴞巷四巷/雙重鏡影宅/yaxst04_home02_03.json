@@ -24,23 +24,27 @@
       "id": "yaxst04_home02_03_02",
       "name": "廊口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home02_02",
       "responses": {
+        "Look": "此處可通往廊口。",
         "Move": "你往廊口走回。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home02_02"
     },
     {
       "id": "yaxst04_home02_03_04",
       "name": "廊中二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home02_04",
       "responses": {
+        "Look": "此處可通往廊中二。",
         "Move": "你往廊中二走去。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home02_04"
     }
   ]
 }

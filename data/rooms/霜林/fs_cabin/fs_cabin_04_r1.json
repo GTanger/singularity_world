@@ -37,43 +37,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_04",
       "responses": {
         "Move": "你往門口走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_04"
     },
     {
       "id": "fs_cabin_04_r1_to_fs_cabin_04_r2",
       "name": "工坊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_04_r2",
       "responses": {
+        "Look": "此處可通往工坊。",
         "Move": "你往工坊走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_04_r2"
     },
     {
       "id": "fs_cabin_04_r1_to_fs_cabin_04_r3",
       "name": "臥室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_04_r3",
       "responses": {
+        "Look": "此處可通往臥室。",
         "Move": "你往臥室走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_04_r3"
     },
     {
       "id": "fs_cabin_04_r1_to_fs_cabin_04_r4",
       "name": "儲物",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_04_r4",
       "responses": {
+        "Look": "此處可通往儲物。",
         "Move": "你往儲物走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_04_r4"
     }
   ]
 }

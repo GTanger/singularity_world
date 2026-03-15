@@ -2,7 +2,6 @@
   "id": "ironland_shop05_kiln",
   "name": "爐房",
   "description": "爐膛焰色藍紫、火勢最猛；熱浪撲面，巷風灌入時火舌竄高。此處僅通〔工間〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_shop05_kiln_exit",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop05_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你回到工間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop05_workshop"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist01_home02_kitchen",
   "name": "【寒鴉棚戶】煙燻灶坑",
   "description": "牆面被常年累積的油煙與熱氣燻得發黑，帶有一種油膩的平滑觸感。角落裡一個粗糙的石砌灶坑正散發著微弱的熱力，空氣中有一股難以名狀的食物混雜氣味，這是棚戶裡最溫暖的角落。僅能退回〔低矮起居室〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist01_home02_k_exit_living",
       "name": "低矮起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home02_living",
       "responses": {
+        "Look": "此處可通往低矮起居室。",
         "Move": "你退回低矮起居室。"
-      }
+      },
+      "move_to_room_id": "feist01_home02_living"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_home09_courtyard",
   "name": "小院",
   "description": "泥地苔衣密佈，簷角瓦松垂至牆根，微光自縫隙濾下。此處僅通〔松廊〕，循廊即回門廳或他室。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_home09_courtyard_exit",
       "name": "松廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home09_hallway",
       "responses": {
+        "Look": "此處可通往松廊。",
         "Move": "你回到松廊。"
-      }
+      },
+      "move_to_room_id": "life_home09_hallway"
     }
   ]
 }

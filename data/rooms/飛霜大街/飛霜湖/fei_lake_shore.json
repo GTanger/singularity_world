@@ -36,43 +36,49 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "fei_lake_south",
       "responses": {
         "Move": "你拾級而上，回到南岸街口碎冰灘。"
-      }
+      },
+      "move_to_room_id": "fei_lake_south"
     },
     {
       "id": "fei_lake_shore_east",
       "name": "東岸霧起之濱",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_east",
       "responses": {
+        "Look": "此處可通往東岸霧起之濱。",
         "Move": "你沿水緣往東側岸上走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_east"
     },
     {
       "id": "fei_lake_shore_north",
       "name": "北岸孤冷湖背",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_north",
       "responses": {
+        "Look": "此處可通往北岸孤冷湖背。",
         "Move": "你沿水緣往北側岸上走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_north"
     },
     {
       "id": "fei_lake_shore_west",
       "name": "西岸寂靜迴岸",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fei_lake_west",
       "responses": {
+        "Look": "此處可通往西岸寂靜迴岸。",
         "Move": "你沿水緣往西側岸上走去。"
-      }
+      },
+      "move_to_room_id": "fei_lake_west"
     }
   ]
 }

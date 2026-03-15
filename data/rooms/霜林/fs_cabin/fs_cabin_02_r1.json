@@ -35,45 +35,53 @@
       "id": "fs_cabin_02_r1_to_fs_cabin_02",
       "name": "玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_02",
       "responses": {
+        "Look": "此處可通往玄關。",
         "Move": "你往玄關走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_02"
     },
     {
       "id": "fs_cabin_02_r1_to_fs_cabin_02_r2",
       "name": "冥想",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_02_r2",
       "responses": {
+        "Look": "此處可通往冥想。",
         "Move": "你往冥想走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_02_r2"
     },
     {
       "id": "fs_cabin_02_r1_to_fs_cabin_02_r3",
       "name": "茶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_02_r3",
       "responses": {
+        "Look": "此處可通往茶間。",
         "Move": "你往茶間走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_02_r3"
     },
     {
       "id": "fs_cabin_02_r1_to_fs_cabin_02_r4",
       "name": "陽台",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_02_r4",
       "responses": {
+        "Look": "此處可通往陽台。",
         "Move": "你往陽台走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_02_r4"
     }
   ]
 }

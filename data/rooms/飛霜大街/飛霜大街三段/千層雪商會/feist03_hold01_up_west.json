@@ -2,7 +2,6 @@
   "id": "feist03_hold01_up_west",
   "name": "樓西",
   "description": "簷心樓樓西間簷隙漏光、牆面霜紋與玉質脈絡交錯，榻與箱篋靠牆、樓板沁涼；門僅通〔樓上前〕，簷下陰影靜止、霜晶沾窗即化，正廳人聲自梯口隱約而上。此處僅通〔樓上前〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist03_hold01_uw_exit_front",
       "name": "樓上前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_up_front",
       "responses": {
+        "Look": "此處可通往樓上前。",
         "Move": "你退回樓上前。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_up_front"
     }
   ]
 }

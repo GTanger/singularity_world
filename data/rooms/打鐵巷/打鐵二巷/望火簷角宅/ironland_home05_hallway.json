@@ -2,7 +2,6 @@
   "id": "ironland_home05_hallway",
   "name": "廊道",
   "description": "通道壁面根鬚脈絡、幽光隱約；簷低、光線暗。巷熱自門廳滲入。此處通〔門廳〕、〔生息室〕、〔小院〕與〔簷下儲〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -33,32 +32,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_home05_main",
       "responses": {
         "Move": "你循來路回到門廳。"
-      }
+      },
+      "move_to_room_id": "ironland_home05_main"
     },
     {
       "id": "ironland_home05_hallway_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home05_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你朝通道深處走去，進入生息室。"
-      }
+      },
+      "move_to_room_id": "ironland_home05_living"
     },
     {
       "id": "ironland_home05_hallway_exit_courtyard",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home05_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你踏入小院。"
-      }
+      },
+      "move_to_room_id": "ironland_home05_courtyard"
     },
     {
       "id": "ironland_home05_hallway_exit_storeroom",
@@ -66,10 +69,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_home05_storeroom",
       "responses": {
         "Move": "你步入簷下儲。"
-      }
+      },
+      "move_to_room_id": "ironland_home05_storeroom"
     }
   ]
 }

@@ -69,15 +69,14 @@
 		return null;
 	}
 
-	// 點擊物件：若僅有 Move（無 Look）則直接移動；否則送觀看，其他動作由 main.js 在 log 顯示
+	// 點擊物件：有 Move 則直接移動（如〔厚重竹簾〕）；無 Move 才送觀看
 	function sendObjectClick(objectEl) {
 		var objectId = objectEl.getAttribute('data-object-id');
 		var objectName = objectEl.getAttribute('data-object-name') || '';
 		var actionsStr = objectEl.getAttribute('data-object-actions') || '';
 		var actions = actionsStr ? actionsStr.split(',') : [];
-		var hasLook = actions.indexOf('Look') !== -1;
 		var hasMove = actions.indexOf('Move') !== -1;
-		var action = (hasMove && !hasLook) ? 'Move' : 'Look';
+		var action = hasMove ? 'Move' : 'Look';
 		if (!objectId && !objectName) return;
 		if (window.gameSend) {
 			window.gameSend({ type: 'do_action', entity_id: objectId || objectName, action: action });

@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst08_shop01_main",
       "responses": {
         "Move": "你往門廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_shop01_main"
     },
     {
       "id": "sunst08_shop01_02_exit_2",
       "name": "焙間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst08_shop01_05",
       "responses": {
+        "Look": "此處可通往焙間。",
         "Move": "你往焙間走去。"
-      }
+      },
+      "move_to_room_id": "sunst08_shop01_05"
     }
   ]
 }

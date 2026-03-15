@@ -19,12 +19,14 @@
       "id": "fs_wood_07_02_to_fs_wood_07_04",
       "name": "尋找掩體",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_07_04",
       "responses": {
+        "Look": "此處可通往尋找掩體。",
         "Move": "你往尋找掩體走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_07_04"
     }
   ]
 }

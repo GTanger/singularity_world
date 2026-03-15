@@ -2,7 +2,6 @@
   "id": "feist08_home02_eave",
   "name": "【死角廢宅】簷下",
   "description": "霜尾宅門洞邊一條貼牆簷廊；街尾人稀，風從巷口灌進來、簷口冰棱偶爾墜地有聲，可望八段行人與遠處街口燈火。此處僅通〔門廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -18,10 +17,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist08_home02_main",
       "responses": {
         "Move": "你退回門廳。"
-      }
+      },
+      "move_to_room_id": "feist08_home02_main"
     }
   ]
 }

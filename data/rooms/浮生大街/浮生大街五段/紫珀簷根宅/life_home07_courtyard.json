@@ -2,7 +2,6 @@
   "id": "life_home07_courtyard",
   "name": "小院",
   "description": "泥地苔衣密佈，簷角根鬚垂落至牆根，微光自縫隙濾下。此處僅通〔簷廊〕，循廊即回門廳或他室。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -18,10 +17,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home07_hallway",
       "responses": {
         "Move": "你回到簷廊。"
-      }
+      },
+      "move_to_room_id": "life_home07_hallway"
     }
   ]
 }

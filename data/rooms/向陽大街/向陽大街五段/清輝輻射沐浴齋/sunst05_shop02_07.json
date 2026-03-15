@@ -19,12 +19,14 @@
       "id": "sunst05_shop02_07_03",
       "name": "浴區・前廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_shop02_03",
       "responses": {
+        "Look": "此處可通往浴區・前廳。",
         "Move": "你往浴區前廳走回。"
-      }
+      },
+      "move_to_room_id": "sunst05_shop02_03"
     }
   ]
 }

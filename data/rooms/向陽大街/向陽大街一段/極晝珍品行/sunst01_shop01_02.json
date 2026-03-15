@@ -34,45 +34,53 @@
       "id": "sunst01_shop01_02_main",
       "name": "店頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_shop01_main",
       "responses": {
+        "Look": "此處可通往店頭。",
         "Move": "你回到店頭。"
-      }
+      },
+      "move_to_room_id": "sunst01_shop01_main"
     },
     {
       "id": "sunst01_shop01_02_04",
       "name": "左一間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_shop01_04",
       "responses": {
+        "Look": "此處可通往左一間。",
         "Move": "你往左一間走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_shop01_04"
     },
     {
       "id": "sunst01_shop01_02_05",
       "name": "左二間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_shop01_05",
       "responses": {
+        "Look": "此處可通往左二間。",
         "Move": "你往左二間走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_shop01_05"
     },
     {
       "id": "sunst01_shop01_02_06",
       "name": "左三間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_shop01_06",
       "responses": {
+        "Look": "此處可通往左三間。",
         "Move": "你往左三間走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_shop01_06"
     }
   ]
 }

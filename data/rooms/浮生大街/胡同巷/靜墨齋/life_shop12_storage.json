@@ -2,7 +2,6 @@
   "id": "life_shop12_storage",
   "name": "儲物間",
   "description": "牆面格架為增生石灰質所固，成卷石片與陶筒堆疊，縫隙透出琥珀光。此處通向前方〔靜墨齋〕與深處〔內廊〕，可回店頭或往起居處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop12_storage_exit_main",
       "name": "靜墨齋",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop12_main",
       "responses": {
+        "Look": "此處可通往靜墨齋。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop12_main"
     },
     {
       "id": "life_shop12_storage_exit_hallway",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop12_hallway",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走去。"
-      }
+      },
+      "move_to_room_id": "life_shop12_hallway"
     }
   ]
 }

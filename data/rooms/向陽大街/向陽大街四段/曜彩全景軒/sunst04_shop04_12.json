@@ -19,12 +19,14 @@
       "id": "sunst04_shop04_12_11",
       "name": "右翼・二間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_shop04_11",
       "responses": {
+        "Look": "此處可通往右翼・二間。",
         "Move": "你往右翼二間走回。"
-      }
+      },
+      "move_to_room_id": "sunst04_shop04_11"
     }
   ]
 }

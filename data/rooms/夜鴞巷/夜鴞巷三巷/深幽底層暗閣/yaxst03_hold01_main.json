@@ -41,54 +41,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st3",
       "responses": {
         "Move": "你步出底閣，回到夜鴞巷三巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st3"
     },
     {
       "id": "yaxst03_hold01_main_02",
       "name": "東廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_02",
       "responses": {
+        "Look": "此處可通往東廊。",
         "Move": "你往東廊走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_02"
     },
     {
       "id": "yaxst03_hold01_main_06",
       "name": "南廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_06",
       "responses": {
+        "Look": "此處可通往南廊。",
         "Move": "你往南廊走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_06"
     },
     {
       "id": "yaxst03_hold01_main_10",
       "name": "西廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_10",
       "responses": {
+        "Look": "此處可通往西廊。",
         "Move": "你往西廊走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_10"
     },
     {
       "id": "yaxst03_hold01_main_14",
       "name": "北廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_14",
       "responses": {
+        "Look": "此處可通往北廊。",
         "Move": "你往北廊走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_14"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "ironland_shop07_courtyard",
   "name": "小院",
   "description": "泥地苔衣、牆根有燻痕；簷擋巷熱，院裡熔料味淡。此處僅通〔熔流鋪〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_shop07_courtyard_exit",
       "name": "熔流鋪",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_main",
       "responses": {
+        "Look": "此處可通往熔流鋪。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_main"
     }
   ]
 }

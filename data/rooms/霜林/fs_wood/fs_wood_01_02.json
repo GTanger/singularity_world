@@ -19,12 +19,14 @@
       "id": "fs_wood_01_02_to_fs_wood_01_03",
       "name": "密林穿行",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_03",
       "responses": {
+        "Look": "此處可通往密林穿行。",
         "Move": "你往密林穿行走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_03"
     }
   ]
 }

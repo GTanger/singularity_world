@@ -24,23 +24,27 @@
       "id": "yaxst02_shop03_07_06",
       "name": "橫廊一",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop03_06",
       "responses": {
+        "Look": "此處可通往橫廊一。",
         "Move": "你往橫廊一走回。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop03_06"
     },
     {
       "id": "yaxst02_shop03_07_08",
       "name": "橫廊三",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop03_08",
       "responses": {
+        "Look": "此處可通往橫廊三。",
         "Move": "你往橫廊三走去。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop03_08"
     }
   ]
 }

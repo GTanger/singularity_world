@@ -19,12 +19,14 @@
       "id": "yaxst03_shop03_09_main",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop03_main",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你退回櫃前。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop03_main"
     }
   ]
 }

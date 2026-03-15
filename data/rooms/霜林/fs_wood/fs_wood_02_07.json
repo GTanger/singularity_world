@@ -19,12 +19,14 @@
       "id": "fs_wood_02_07_to_fs_wood_02_08",
       "name": "進入靜域",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_02_08",
       "responses": {
+        "Look": "此處可通往進入靜域。",
         "Move": "你往進入靜域走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_02_08"
     }
   ]
 }

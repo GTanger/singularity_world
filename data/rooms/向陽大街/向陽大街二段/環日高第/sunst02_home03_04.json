@@ -24,23 +24,27 @@
       "id": "sunst02_home03_04_main",
       "name": "玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_home03_main",
       "responses": {
+        "Look": "此處可通往玄關。",
         "Move": "你回到玄關。"
-      }
+      },
+      "move_to_room_id": "sunst02_home03_main"
     },
     {
       "id": "sunst02_home03_04_05",
       "name": "右間・後",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_home03_05",
       "responses": {
+        "Look": "此處可通往右間・後。",
         "Move": "你往右間後走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_home03_05"
     }
   ]
 }

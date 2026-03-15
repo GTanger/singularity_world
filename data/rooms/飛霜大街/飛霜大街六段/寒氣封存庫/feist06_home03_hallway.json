@@ -2,7 +2,6 @@
   "id": "feist06_home03_hallway",
   "name": "廊道",
   "description": "冷簾宅廊子轉了半折，一頭往門廳、一頭往起居；側邊兩道門各通〔前院〕〔後院〕，盡頭窄門是〔書齋〕，牆皮斑駁、冷簾垂在簷緣，石階邊緣磨得圓滑。此處通〔檢疫氣閘室〕、〔起居〕、〔前院〕、〔後院〕、〔書齋〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -36,56 +35,66 @@
       "id": "feist06_home03_h_exit_main",
       "name": "檢疫氣閘室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home03_main",
       "responses": {
+        "Look": "此處可通往檢疫氣閘室。",
         "Move": "你退回檢疫氣閘室。"
-      }
+      },
+      "move_to_room_id": "feist06_home03_main"
     },
     {
       "id": "feist06_home03_h_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home03_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你往起居。"
-      }
+      },
+      "move_to_room_id": "feist06_home03_living"
     },
     {
       "id": "feist06_home03_h_exit_front",
       "name": "前院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home03_court_front",
       "responses": {
+        "Look": "此處可通往前院。",
         "Move": "你往前院。"
-      }
+      },
+      "move_to_room_id": "feist06_home03_court_front"
     },
     {
       "id": "feist06_home03_h_exit_back",
       "name": "後院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home03_court_back",
       "responses": {
+        "Look": "此處可通往後院。",
         "Move": "你往後院。"
-      }
+      },
+      "move_to_room_id": "feist06_home03_court_back"
     },
     {
       "id": "feist06_home03_h_exit_study",
       "name": "書齋",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home03_study",
       "responses": {
+        "Look": "此處可通往書齋。",
         "Move": "你往書齋。"
-      }
+      },
+      "move_to_room_id": "feist06_home03_study"
     }
   ]
 }

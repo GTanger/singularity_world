@@ -2,7 +2,6 @@
   "id": "feist03_home02_main",
   "name": "【雕晶藝戶】碎冰前堂",
   "description": "滿地都是雕刻時留下的碎冰與玉屑。工作檯上放著幾把散發著微光的特殊刻刀。由於需要保持作品不化，室內的溫度甚至比大街上還要低上幾度。退回〔刻花門洞〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st3",
       "responses": {
         "Move": "你步出，回到飛霜大街三段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st3"
     },
     {
       "id": "feist03_home02_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist03_home02_hallway"
     },
     {
       "id": "feist03_home02_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist03_home02_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist03_home02_eave"
     }
   ]
 }

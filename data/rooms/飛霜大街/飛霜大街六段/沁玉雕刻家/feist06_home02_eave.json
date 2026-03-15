@@ -2,7 +2,6 @@
   "id": "feist06_home02_eave",
   "name": "簷下",
   "description": "玉霜宅門洞旁一截窄廊，簷緣滴水結成冰棱；可望六段行人與擔夫、往五段七段方向人跡漸分，風灌進來袖口生寒，玉質脈絡在簷下沁出、門廊冷調。此處僅通〔粉塵前庭〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist06_home02_e_exit_main",
       "name": "粉塵前庭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home02_main",
       "responses": {
+        "Look": "此處可通往粉塵前庭。",
         "Move": "你退回粉塵前庭。"
-      }
+      },
+      "move_to_room_id": "feist06_home02_main"
     }
   ]
 }

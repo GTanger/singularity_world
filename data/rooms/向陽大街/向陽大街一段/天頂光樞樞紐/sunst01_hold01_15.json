@@ -19,12 +19,14 @@
       "id": "sunst01_hold01_15_14",
       "name": "中廊口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_hold01_14",
       "responses": {
+        "Look": "此處可通往中廊口。",
         "Move": "你沿中廊往中廊口走回。"
-      }
+      },
+      "move_to_room_id": "sunst01_hold01_14"
     }
   ]
 }

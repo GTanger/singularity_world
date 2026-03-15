@@ -19,12 +19,14 @@
       "id": "fs_wood_09_04_to_fs_wood_09_06",
       "name": "循路觀察",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_06",
       "responses": {
+        "Look": "此處可通往循路觀察。",
         "Move": "你往循路觀察走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_06"
     }
   ]
 }

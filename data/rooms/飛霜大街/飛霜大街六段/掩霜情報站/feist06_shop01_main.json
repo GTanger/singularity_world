@@ -2,7 +2,6 @@
   "id": "feist06_shop01_main",
   "name": "【掩霜情報站】滅音交誼室",
   "description": "室內加裝了與夜鴞巷同款的聲學抵消裝置。這裡的客人全都壓低了帽沿，用極輕微的氣音交換著價值不菲的座標與情報。退回〔不透光門簾〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st6",
       "responses": {
         "Move": "你步出鋪面，回到飛霜大街六段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st6"
     },
     {
       "id": "feist06_shop01_m_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop01_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "feist06_shop01_counter"
     },
     {
       "id": "feist06_shop01_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist06_shop01_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist06_shop01_eave"
     }
   ]
 }

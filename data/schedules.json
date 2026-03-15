@@ -1,0 +1,11 @@
+{
+  "entries": [
+    {
+      "entity_id": "試話",
+      "work_room": "start_boundary",
+      "rest_room": "start_boundary",
+      "shift_start": 0,
+      "shift_end": 24
+    }
+  ]
+}

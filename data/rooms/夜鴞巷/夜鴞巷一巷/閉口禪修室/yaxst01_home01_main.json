@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st1",
       "responses": {
         "Move": "你步出閉門寓，回到夜鴞巷一巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st1"
     },
     {
       "id": "yaxst01_home01_main_02",
       "name": "內廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home01_02",
       "responses": {
+        "Look": "此處可通往內廊。",
         "Move": "你往內廊走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home01_02"
     }
   ]
 }

@@ -24,23 +24,27 @@
       "id": "wust06_shop01_03_exit_1",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust06_shop01_02",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "wust06_shop01_02"
     },
     {
       "id": "wust06_shop01_03_exit_2",
       "name": "工坊隅",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust06_shop01_04",
       "responses": {
+        "Look": "此處可通往工坊隅。",
         "Move": "你往工坊隅走去。"
-      }
+      },
+      "move_to_room_id": "wust06_shop01_04"
     }
   ]
 }

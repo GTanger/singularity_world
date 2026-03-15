@@ -42,54 +42,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_05",
       "responses": {
         "Move": "你往門口走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_05"
     },
     {
       "id": "fs_cabin_05_r1_to_fs_cabin_05_r2",
       "name": "寢宮",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_05_r2",
       "responses": {
+        "Look": "此處可通往寢宮。",
         "Move": "你往寢宮走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_05_r2"
     },
     {
       "id": "fs_cabin_05_r1_to_fs_cabin_05_r3",
       "name": "書閣",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_05_r3",
       "responses": {
+        "Look": "此處可通往書閣。",
         "Move": "你往書閣走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_05_r3"
     },
     {
       "id": "fs_cabin_05_r1_to_fs_cabin_05_r4",
       "name": "湯池",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_05_r4",
       "responses": {
+        "Look": "此處可通往湯池。",
         "Move": "你往湯池走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_05_r4"
     },
     {
       "id": "fs_cabin_05_r1_to_fs_cabin_05_r5",
       "name": "露台",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_05_r5",
       "responses": {
+        "Look": "此處可通往露台。",
         "Move": "你往露台走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_05_r5"
     }
   ]
 }

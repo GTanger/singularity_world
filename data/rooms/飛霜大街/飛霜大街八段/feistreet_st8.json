@@ -2,7 +2,6 @@
   "id": "feistreet_st8",
   "name": "飛霜大街八段",
   "description": "已經可以看見飛霜大街的盡頭與四路街口的交會處。霜晶的飄落與遠處街口的繁華燈火相互輝映，路面的冷調石板上反射出五顏六色的街面霓虹。這一段的建築出現了極端的階級反差：路側高聳入雲的〔凜冬哨塔〕以雙扉切天之勢俯瞰整條大街，旁邊卻是做著下九流生意的〔街尾夜行鋪〕。對向的建築群已經開始被街口的繁華遺棄，包含靠著路燈取暖的〔殘燈寓所〕、門洞幽深的〔死角廢宅〕與門檻被霜雪淹沒的〔矮簷破屋〕。可退回〔飛霜大街七段〕，或朝四路街口所在的〔飛霜大街九段〕前進。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -48,10 +47,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st7",
       "responses": {
         "Move": "你朝飛霜大街7段方向折返。"
-      }
+      },
+      "move_to_room_id": "feistreet_st7"
     },
     {
       "id": "fei_st8_exit_st9",
@@ -59,10 +58,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st9",
       "responses": {
         "Move": "你朝飛霜大街9段方向走去，街口燈火漸近。"
-      }
+      },
+      "move_to_room_id": "feistreet_st9"
     },
     {
       "id": "fei_st8_obj_hold01",
@@ -80,10 +79,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist08_hold01_gate",
       "responses": {
         "Move": "你推開沉重的巨型大門，進入凜冬哨塔。"
-      }
+      },
+      "move_to_room_id": "feist08_hold01_gate"
     },
     {
       "id": "fei_st8_obj_shop17",
@@ -101,10 +100,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist08_shop01_front",
       "responses": {
         "Move": "你掀開重磅門簾，進入街尾夜行鋪。"
-      }
+      },
+      "move_to_room_id": "feist08_shop01_front"
     },
     {
       "id": "fei_st8_obj_home15",
@@ -122,10 +121,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist08_home03_main",
       "responses": {
         "Move": "你推開斑駁窄門，進入殘燈寓所。"
-      }
+      },
+      "move_to_room_id": "feist08_home03_main"
     },
     {
       "id": "fei_st8_obj_home16",
@@ -143,10 +142,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist08_home02_main",
       "responses": {
         "Move": "你步入矮簷破屋。"
-      }
+      },
+      "move_to_room_id": "feist08_home02_main"
     },
     {
       "id": "fei_st8_obj_home14",
@@ -164,10 +163,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist08_home01_gate",
       "responses": {
         "Move": "你步入矮簷破屋。"
-      }
+      },
+      "move_to_room_id": "feist08_home01_gate"
     }
   ]
 }

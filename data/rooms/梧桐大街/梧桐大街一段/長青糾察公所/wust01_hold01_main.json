@@ -24,23 +24,27 @@
       "id": "wust01_hold01_main_exit_1",
       "name": "大街",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wustreet_st1",
       "responses": {
+        "Look": "此處可通往大街。",
         "Move": "你步出，回到梧桐大街。"
-      }
+      },
+      "move_to_room_id": "wustreet_st1"
     },
     {
       "id": "wust01_hold01_main_exit_2",
       "name": "進入公所",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust01_hold01_01",
       "responses": {
+        "Look": "此處可通往進入公所。",
         "Move": "你往進入公所走去。"
-      }
+      },
+      "move_to_room_id": "wust01_hold01_01"
     }
   ]
 }

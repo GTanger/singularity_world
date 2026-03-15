@@ -2,7 +2,6 @@
   "id": "feist03_hold01_west_wing",
   "name": "西廂",
   "description": "簷心樓西廂倉作所在、未拆的貨與家常物堆在角，爐子冷著、空氣裡還有昨日的茶氣與煙氣；一門通〔後間〕、一門通〔大庫〕、一門通〔工間〕，簷下霜積從牆縫沁進一絲冷。此處通〔穿堂〕、〔後間〕、〔大庫〕、〔工間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -31,45 +30,53 @@
       "id": "feist03_hold01_ww_exit_corridor",
       "name": "穿堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_corridor",
       "responses": {
+        "Look": "此處可通往穿堂。",
         "Move": "你退回穿堂。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_corridor"
     },
     {
       "id": "feist03_hold01_ww_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_back_room",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你往後間。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_back_room"
     },
     {
       "id": "feist03_hold01_ww_exit_warehouse",
       "name": "大庫",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_warehouse",
       "responses": {
+        "Look": "此處可通往大庫。",
         "Move": "你往大庫。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_warehouse"
     },
     {
       "id": "feist03_hold01_ww_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_hold01_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你往工間。"
-      }
+      },
+      "move_to_room_id": "feist03_hold01_workshop"
     }
   ]
 }

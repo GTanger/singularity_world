@@ -19,12 +19,14 @@
       "id": "yaxst04_shop01_05_03",
       "name": "甲廊二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop01_03",
       "responses": {
+        "Look": "此處可通往甲廊二。",
         "Move": "你退回甲廊二。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop01_03"
     }
   ]
 }

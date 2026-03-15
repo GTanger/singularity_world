@@ -19,12 +19,14 @@
       "id": "fs_wood_03_04_to_fs_wood_03_06",
       "name": "鑽入縫隙",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_06",
       "responses": {
+        "Look": "此處可通往鑽入縫隙。",
         "Move": "你往鑽入縫隙走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_06"
     }
   ]
 }

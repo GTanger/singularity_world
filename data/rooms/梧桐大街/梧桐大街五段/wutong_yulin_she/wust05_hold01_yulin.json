@@ -2,7 +2,10 @@
   "id": "wust05_hold01_yulin",
   "name": "雨霖舍",
   "description": "茶間白玉矮台、能量礦石鑲嵌牆面，恆定熱輻射；晶化木材家具密度高，空氣乾燥，熱輻射使邊界略顯模糊，油脂感與微光並存。可經〔書隅〕前往他處。",
-  "tags": ["residence","indoor"],
+  "tags": [
+    "residence",
+    "indoor"
+  ],
   "zone": "wustreet",
   "exits": [
     {
@@ -16,12 +19,14 @@
       "id": "wust05_hold01_yulin_exit_1",
       "name": "書隅",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust05_hold01_05",
       "responses": {
+        "Look": "此處可通往書隅。",
         "Move": "你往書隅走去。"
-      }
+      },
+      "move_to_room_id": "wust05_hold01_05"
     }
   ]
 }

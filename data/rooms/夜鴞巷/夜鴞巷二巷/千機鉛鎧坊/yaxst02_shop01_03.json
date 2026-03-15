@@ -29,34 +29,40 @@
       "id": "yaxst02_shop01_03_02",
       "name": "工間甲口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop01_02",
       "responses": {
+        "Look": "此處可通往工間甲口。",
         "Move": "你往工間甲口走回。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop01_02"
     },
     {
       "id": "yaxst02_shop01_03_04",
       "name": "工間甲底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop01_04",
       "responses": {
+        "Look": "此處可通往工間甲底。",
         "Move": "你往工間甲底走去。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop01_04"
     },
     {
       "id": "yaxst02_shop01_03_05",
       "name": "工間甲側",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst02_shop01_05",
       "responses": {
+        "Look": "此處可通往工間甲側。",
         "Move": "你往工間甲側室走去。"
-      }
+      },
+      "move_to_room_id": "yaxst02_shop01_05"
     }
   ]
 }

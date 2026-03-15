@@ -24,23 +24,27 @@
       "id": "sunst03_shop02_05_04",
       "name": "大廳三區",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst03_shop02_04",
       "responses": {
+        "Look": "此處可通往大廳三區。",
         "Move": "你往大廳三區走回。"
-      }
+      },
+      "move_to_room_id": "sunst03_shop02_04"
     },
     {
       "id": "sunst03_shop02_05_06",
       "name": "廚前二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst03_shop02_06",
       "responses": {
+        "Look": "此處可通往廚前二。",
         "Move": "你往廚前二走去。"
-      }
+      },
+      "move_to_room_id": "sunst03_shop02_06"
     }
   ]
 }

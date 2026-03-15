@@ -2,7 +2,6 @@
   "id": "feistreet_st9",
   "name": "飛霜大街九段",
   "description": "飛霜大街的最終段，路幅在此處收束並匯入繁華的四路街口。石紋上的寒意被龐大的人流與無數的暖能爐硬生生壓制，霜晶沾衣即化，化作細密的濕氣。這裡沒有純粹的寧靜，簷影被街口漏出的五光十色壓得極低，燈火在迷濛的霜氣中暈開成一片片光斑。路側是生意興隆的〔匯流雜散鋪〕、販賣各路消息的〔四方情報會〕與24小時營業的〔暖燈長夜客棧〕；對向則是佔據著絕佳地段的〔望街高第〕與被高牆層層保護的〔融雪私邸〕。可退回〔飛霜大街八段〕，或直接匯入前方的〔四路街口〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -48,10 +47,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st8",
       "responses": {
         "Move": "你朝飛霜大街8段方向折返。"
-      }
+      },
+      "move_to_room_id": "feistreet_st8"
     },
     {
       "id": "fei_st9_exit_st4z",
@@ -59,10 +58,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "street4zone",
       "responses": {
         "Move": "你朝四路街口走去，人跡匯流。"
-      }
+      },
+      "move_to_room_id": "street4zone"
     },
     {
       "id": "fei_st9_obj_shop19",
@@ -80,10 +79,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist09_shop01_main",
       "responses": {
         "Move": "你推開黃銅店門，進入匯流雜散鋪。"
-      }
+      },
+      "move_to_room_id": "feist09_shop01_main"
     },
     {
       "id": "fei_st9_obj_shop20",
@@ -101,10 +100,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_main",
       "responses": {
         "Move": "你掀開絲絨門簾，進入四方情報會。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_main"
     },
     {
       "id": "fei_st9_obj_shop21",
@@ -122,10 +121,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist09_shop03_main",
       "responses": {
         "Move": "你推開厚實鋪門，進入暖燈長夜客棧。"
-      }
+      },
+      "move_to_room_id": "feist09_shop03_main"
     },
     {
       "id": "fei_st9_obj_home17",
@@ -143,10 +142,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist09_home01_main",
       "responses": {
         "Move": "你推開精彫窄門，進入望街高第。"
-      }
+      },
+      "move_to_room_id": "feist09_home01_main"
     },
     {
       "id": "fei_st9_obj_home18",
@@ -164,10 +163,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist09_home02_main",
       "responses": {
         "Move": "你步入融雪私邸。"
-      }
+      },
+      "move_to_room_id": "feist09_home02_main"
     }
   ]
 }

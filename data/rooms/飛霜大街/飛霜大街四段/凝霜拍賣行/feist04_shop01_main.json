@@ -2,7 +2,6 @@
   "id": "feist04_shop01_main",
   "name": "【凝霜拍賣行】驗證大堂",
   "description": "極其寬敞且戒備森嚴的大堂。牆面上鑲嵌著高階的防具與武器做展示，四周站著配備精良武器的守衛。地面由抗打擊的金屬板拼接而成。空氣中有一種劍拔弩張與金錢交易混合的緊張感。退回〔厚金屬店門〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -38,54 +37,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st4",
       "responses": {
         "Move": "你步出店頭，回到飛霜大街四段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st4"
     },
     {
       "id": "feist04_shop01_m_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_counter"
     },
     {
       "id": "feist04_shop01_m_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你經後門往後間。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_back"
     },
     {
       "id": "feist04_shop01_m_exit_loft_east",
       "name": "閣樓東",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_loft_east",
       "responses": {
+        "Look": "此處可通往閣樓東。",
         "Move": "你順木梯上閣樓東。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_loft_east"
     },
     {
       "id": "feist04_shop01_m_exit_loft_west",
       "name": "閣樓西",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_shop01_loft_west",
       "responses": {
+        "Look": "此處可通往閣樓西。",
         "Move": "你順木梯上閣樓西。"
-      }
+      },
+      "move_to_room_id": "feist04_shop01_loft_west"
     }
   ]
 }

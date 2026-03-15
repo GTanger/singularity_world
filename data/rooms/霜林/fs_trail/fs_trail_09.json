@@ -39,56 +39,66 @@
       "id": "fs_trail_09_to_fs_trail_08",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_08",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_08"
     },
     {
       "id": "fs_trail_09_to_fs_trail_10",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_10",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_10"
     },
     {
       "id": "fs_trail_09_to_fs_wood_09_01",
       "name": "偏轉(邊界)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_01",
       "responses": {
+        "Look": "此處可通往偏轉(邊界)。",
         "Move": "你往偏轉(邊界)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_01"
     },
     {
       "id": "fs_trail_09_to_fs_wood_09_02",
       "name": "鑽入(林廊)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_02",
       "responses": {
+        "Look": "此處可通往鑽入(林廊)。",
         "Move": "你往鑽入(林廊)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_02"
     },
     {
       "id": "fs_trail_09_to_fs_wood_09_10",
       "name": "前行(銜接)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_09_10",
       "responses": {
+        "Look": "此處可通往前行(銜接)。",
         "Move": "你往前行(銜接)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_09_10"
     }
   ]
 }

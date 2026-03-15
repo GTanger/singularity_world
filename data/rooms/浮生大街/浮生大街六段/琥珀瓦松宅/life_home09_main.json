@@ -2,7 +2,6 @@
   "id": "life_home09_main",
   "name": "門廳",
   "description": "瓦松宅門廳，簷角瓦松自石縫攀生，絨狀葉片覆住簷緣，淡紫光暈自縫隙沁出。牆面沉石質、地面石板伏貼。此處光線穿過〔木門〕灑入六段，內側導向〔松廊〕通往各室。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st6",
       "responses": {
         "Move": "你推開木門，回到浮生大街六段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st6"
     },
     {
       "id": "life_home09_main_exit_hallway",
       "name": "松廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home09_hallway",
       "responses": {
+        "Look": "此處可通往松廊。",
         "Move": "你朝內側走去，進入松廊。"
-      }
+      },
+      "move_to_room_id": "life_home09_hallway"
     }
   ]
 }

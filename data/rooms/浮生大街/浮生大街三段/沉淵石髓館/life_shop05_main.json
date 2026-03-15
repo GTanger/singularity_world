@@ -2,7 +2,6 @@
   "id": "life_shop05_main",
   "name": "沉淵石髓館",
   "description": "灰石櫃檯沉厚，石縫沁出琥珀色脈絡，成綑礦石與石片蒙著粉塵。此處通外側〔浮生大街三段〕與後方〔儲物間〕、側邊〔工坊〕。櫃面擱著一具〔石槌〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -28,32 +27,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st3",
       "responses": {
         "Move": "你掀開厚簾，回到浮生大街三段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st3"
     },
     {
       "id": "life_shop05_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你朝後方走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "life_shop05_storage"
     },
     {
       "id": "life_shop05_main_exit_workshop",
       "name": "工坊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_workshop",
       "responses": {
+        "Look": "此處可通往工坊。",
         "Move": "你轉入工坊。"
-      }
+      },
+      "move_to_room_id": "life_shop05_workshop"
     },
     {
       "id": "life_shop05_main_obj_hammer",

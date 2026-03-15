@@ -31,32 +31,36 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st2",
       "responses": {
         "Move": "你步出稜鏡精品閣，回到向陽大街二段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st2"
     },
     {
       "id": "sunst02_shop02_main_02",
       "name": "東廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop02_02",
       "responses": {
+        "Look": "此處可通往東廳。",
         "Move": "你往東廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop02_02"
     },
     {
       "id": "sunst02_shop02_main_03",
       "name": "西廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop02_03",
       "responses": {
+        "Look": "此處可通往西廳。",
         "Move": "你往西廳走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop02_03"
     }
   ]
 }

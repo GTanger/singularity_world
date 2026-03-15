@@ -2,7 +2,6 @@
   "id": "feist09_home01_kitchen",
   "name": "灶間",
   "description": "街口宅灶間：石灶靠牆、灶口積灰，柴煙的舊味壓在鼻根；沒有窗，只靠簾縫漏進起居室一點燈影，刀砧收在案下、檯緣沾油。此處僅通〔起居室〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist09_home01_kitchen_exit_living",
       "name": "起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_home01_living",
       "responses": {
+        "Look": "此處可通往起居室。",
         "Move": "你回到起居室。"
-      }
+      },
+      "move_to_room_id": "feist09_home01_living"
     }
   ]
 }

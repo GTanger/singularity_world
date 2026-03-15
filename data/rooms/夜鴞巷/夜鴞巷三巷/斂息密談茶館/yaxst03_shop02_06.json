@@ -24,23 +24,27 @@
       "id": "yaxst03_shop02_06_05",
       "name": "岔口",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop02_05",
       "responses": {
+        "Look": "此處可通往岔口。",
         "Move": "你退回岔口。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop02_05"
     },
     {
       "id": "yaxst03_shop02_06_08",
       "name": "左茶間底",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop02_08",
       "responses": {
+        "Look": "此處可通往左茶間底。",
         "Move": "你往左茶間底走去。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop02_08"
     }
   ]
 }

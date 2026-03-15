@@ -24,23 +24,27 @@
       "id": "yaxst04_shop03_04_03",
       "name": "短廊二",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop03_03",
       "responses": {
+        "Look": "此處可通往短廊二。",
         "Move": "你往短廊二走回。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop03_03"
     },
     {
       "id": "yaxst04_shop03_04_05",
       "name": "短廊盡頭",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_shop03_05",
       "responses": {
+        "Look": "此處可通往短廊盡頭。",
         "Move": "你走到短廊盡頭。"
-      }
+      },
+      "move_to_room_id": "yaxst04_shop03_05"
     }
   ]
 }

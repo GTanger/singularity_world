@@ -39,56 +39,66 @@
       "id": "fs_trail_10_to_fs_trail_09",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_09",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_09"
     },
     {
       "id": "fs_trail_10_to_fs_wood_10_01",
       "name": "偏轉(邊界)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_10_01",
       "responses": {
+        "Look": "此處可通往偏轉(邊界)。",
         "Move": "你往偏轉(邊界)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_10_01"
     },
     {
       "id": "fs_trail_10_to_fs_wood_10_02",
       "name": "仰望(拱頂)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_10_02",
       "responses": {
+        "Look": "此處可通往仰望(拱頂)。",
         "Move": "你往仰望(拱頂)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_10_02"
     },
     {
       "id": "fs_trail_10_to_fs_wood_10_10",
       "name": "前行(銜接)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_10_10",
       "responses": {
+        "Look": "此處可通往前行(銜接)。",
         "Move": "你往前行(銜接)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_10_10"
     },
     {
       "id": "fs_trail_10_to_fs_cabin_05",
       "name": "奧所",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_05",
       "responses": {
+        "Look": "此處可通往奧所。",
         "Move": "你往奧所走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_05"
     }
   ]
 }

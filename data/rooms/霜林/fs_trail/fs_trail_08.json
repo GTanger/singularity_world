@@ -39,56 +39,66 @@
       "id": "fs_trail_08_to_fs_trail_07",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_07",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_07"
     },
     {
       "id": "fs_trail_08_to_fs_trail_09",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_09",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_09"
     },
     {
       "id": "fs_trail_08_to_fs_wood_08_01",
       "name": "偏移(邊緣)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_01",
       "responses": {
+        "Look": "此處可通往偏移(邊緣)。",
         "Move": "你往偏移(邊緣)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_01"
     },
     {
       "id": "fs_trail_08_to_fs_wood_08_08",
       "name": "蹲下(穿行)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_08",
       "responses": {
+        "Look": "此處可通往蹲下(穿行)。",
         "Move": "你往蹲下(穿行)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_08"
     },
     {
       "id": "fs_trail_08_to_fs_wood_08_10",
       "name": "前行(銜接)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_10",
       "responses": {
+        "Look": "此處可通往前行(銜接)。",
         "Move": "你往前行(銜接)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_10"
     }
   ]
 }

@@ -19,12 +19,14 @@
       "id": "sunst07_shop01_08_exit_1",
       "name": "工坊隅",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst07_shop01_07",
       "responses": {
+        "Look": "此處可通往工坊隅。",
         "Move": "你往工坊隅走去。"
-      }
+      },
+      "move_to_room_id": "sunst07_shop01_07"
     }
   ]
 }

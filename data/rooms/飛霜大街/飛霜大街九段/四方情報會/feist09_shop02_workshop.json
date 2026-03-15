@@ -2,7 +2,6 @@
   "id": "feist09_shop02_workshop",
   "name": "工間",
   "description": "匯流閣工間小灶、茶銚、砧板與刀；檯面濕痕未乾、指尖摸到麵粉與糖渣，沒有窗只靠門洞一點光，茶渣與蒸氣味嗆鼻。此處僅通〔後間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist09_shop02_workshop_exit_back",
       "name": "後間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop02_back",
       "responses": {
+        "Look": "此處可通往後間。",
         "Move": "你回到後間。"
-      }
+      },
+      "move_to_room_id": "feist09_shop02_back"
     }
   ]
 }

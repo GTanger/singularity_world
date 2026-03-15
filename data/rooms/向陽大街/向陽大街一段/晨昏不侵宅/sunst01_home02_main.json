@@ -41,54 +41,62 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st1",
       "responses": {
         "Move": "你步出破曉舍，回到向陽大街一段。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st1"
     },
     {
       "id": "sunst01_home02_main_02",
       "name": "東室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_home02_02",
       "responses": {
+        "Look": "此處可通往東室。",
         "Move": "你往東室走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_home02_02"
     },
     {
       "id": "sunst01_home02_main_03",
       "name": "南室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_home02_03",
       "responses": {
+        "Look": "此處可通往南室。",
         "Move": "你往南室走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_home02_03"
     },
     {
       "id": "sunst01_home02_main_04",
       "name": "西室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_home02_04",
       "responses": {
+        "Look": "此處可通往西室。",
         "Move": "你往西室走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_home02_04"
     },
     {
       "id": "sunst01_home02_main_05",
       "name": "北室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_home02_05",
       "responses": {
+        "Look": "此處可通往北室。",
         "Move": "你往北室走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_home02_05"
     }
   ]
 }

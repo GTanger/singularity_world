@@ -2,7 +2,6 @@
   "id": "feist07_home02_court_front",
   "name": "前院",
   "description": "簷影宅門廳左手見天的一塊；牆根一叢枯草覆霜、石欄半截，朝街口那側可望見簷線與遠處燈火，霜晶直直落進缸裡、缸在角。此處僅通〔門廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -18,10 +17,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist07_home02_main",
       "responses": {
         "Move": "你退回門廳。"
-      }
+      },
+      "move_to_room_id": "feist07_home02_main"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist03_home03_main",
   "name": "【破簷群租房】擁擠走廊",
   "description": "一條寬度不足一米的幽暗走道，兩側擠滿了用廉價木板隔出的破舊房間。空氣中混雜著劣質菸草、汗水與食物餿掉的味道，偶爾還能聽見漏水與孩童的哭鬧聲。退回〔破舊板門〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st3",
       "responses": {
         "Move": "你步出，回到飛霜大街三段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st3"
     },
     {
       "id": "feist03_home03_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist03_home03_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist03_home03_hallway"
     },
     {
       "id": "feist03_home03_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist03_home03_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist03_home03_eave"
     }
   ]
 }

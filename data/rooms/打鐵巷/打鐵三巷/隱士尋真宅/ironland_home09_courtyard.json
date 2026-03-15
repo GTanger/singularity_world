@@ -2,7 +2,6 @@
   "id": "ironland_home09_courtyard",
   "name": "小院",
   "description": "泥地苔衣、牆根脈絡；門朝飛霜、院中風大而涼。此處通〔門廳〕與〔生息室〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "ironland_home09_main",
       "responses": {
         "Move": "你回到門廳。"
-      }
+      },
+      "move_to_room_id": "ironland_home09_main"
     },
     {
       "id": "ironland_home09_courtyard_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home09_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你步入生息室。"
-      }
+      },
+      "move_to_room_id": "ironland_home09_living"
     }
   ]
 }

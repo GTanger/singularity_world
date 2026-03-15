@@ -39,56 +39,66 @@
       "id": "yaxst01_shop02_03_main",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop02_main",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你退回櫃前。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop02_main"
     },
     {
       "id": "yaxst01_shop02_03_07",
       "name": "右支中甲",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop02_07",
       "responses": {
+        "Look": "此處可通往右支中甲。",
         "Move": "你往右支中甲走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop02_07"
     },
     {
       "id": "yaxst01_shop02_03_08",
       "name": "右支中乙",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop02_08",
       "responses": {
+        "Look": "此處可通往右支中乙。",
         "Move": "你往右支中乙走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop02_08"
     },
     {
       "id": "yaxst01_shop02_03_09",
       "name": "右支中丙",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop02_09",
       "responses": {
+        "Look": "此處可通往右支中丙。",
         "Move": "你往右支中丙走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop02_09"
     },
     {
       "id": "yaxst01_shop02_03_10",
       "name": "右支中丁",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop02_10",
       "responses": {
+        "Look": "此處可通往右支中丁。",
         "Move": "你往右支中丁走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop02_10"
     }
   ]
 }

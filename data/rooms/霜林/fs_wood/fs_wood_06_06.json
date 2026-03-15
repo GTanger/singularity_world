@@ -19,12 +19,14 @@
       "id": "fs_wood_06_06_to_fs_wood_06_07",
       "name": "探索地表",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_06_07",
       "responses": {
+        "Look": "此處可通往探索地表。",
         "Move": "你往探索地表走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_06_07"
     }
   ]
 }

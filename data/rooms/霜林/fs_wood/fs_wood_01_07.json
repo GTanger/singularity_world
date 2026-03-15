@@ -19,12 +19,14 @@
       "id": "fs_wood_01_07_to_fs_wood_01_08",
       "name": "追逐晶光",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_08",
       "responses": {
+        "Look": "此處可通往追逐晶光。",
         "Move": "你往追逐晶光走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_08"
     }
   ]
 }

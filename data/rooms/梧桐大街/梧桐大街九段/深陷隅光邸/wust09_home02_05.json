@@ -29,34 +29,40 @@
       "id": "wust09_home02_05_exit_1",
       "name": "大街",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust09_home02_main",
       "responses": {
+        "Look": "此處可通往大街。",
         "Move": "你往大街方向走去。"
-      }
+      },
+      "move_to_room_id": "wust09_home02_main"
     },
     {
       "id": "wust09_home02_05_exit_2",
       "name": "側間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust09_home02_04",
       "responses": {
+        "Look": "此處可通往側間。",
         "Move": "你往側間走去。"
-      }
+      },
+      "move_to_room_id": "wust09_home02_04"
     },
     {
       "id": "wust09_home02_05_exit_3",
       "name": "前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "wust09_home02_02",
       "responses": {
+        "Look": "此處可通往前間。",
         "Move": "你往前間走去。"
-      }
+      },
+      "move_to_room_id": "wust09_home02_02"
     }
   ]
 }

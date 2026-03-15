@@ -19,12 +19,14 @@
       "id": "fs_wood_03_07_to_fs_wood_03_09",
       "name": "尋找路標",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_03_09",
       "responses": {
+        "Look": "此處可通往尋找路標。",
         "Move": "你往尋找路標走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_03_09"
     }
   ]
 }

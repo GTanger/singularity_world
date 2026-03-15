@@ -2,7 +2,6 @@
   "id": "feist09_shop03_back",
   "name": "後間",
   "description": "簷燈鋪最裡一間無燈，雜物與空箱擋路、只容側身；牆角濕氣重、指尖摸到霉斑，只能憑來時方向摸回通道，呼吸聲放大。此處通〔儲物間〕與〔工間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "feist09_shop03_back_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop03_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你回到儲物間。"
-      }
+      },
+      "move_to_room_id": "feist09_shop03_storage"
     },
     {
       "id": "feist09_shop03_back_exit_workshop",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist09_shop03_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你往工間走去。"
-      }
+      },
+      "move_to_room_id": "feist09_shop03_workshop"
     }
   ]
 }

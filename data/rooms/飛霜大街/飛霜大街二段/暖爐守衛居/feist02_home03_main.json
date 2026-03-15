@@ -2,7 +2,6 @@
   "id": "feist02_home03_main",
   "name": "【暖爐守衛居】氣密封閉廊",
   "description": "為了徹底隔絕外部的極端熱浪與寒冷，走廊裝設了帶有氣密膠條的厚重金屬板門。牆面平滑，塗有一層防高溫的灰色塗層。空氣靜止得令人耳鳴，只有微弱的心跳聲。退回〔厚重板門〕至大街；連接〔無窗起居室〕與外側的〔滴水簷下〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st2",
       "responses": {
         "Move": "你步出，回到飛霜大街二段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st2"
     },
     {
       "id": "feist02_home03_m_exit_living",
       "name": "無窗起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home03_living",
       "responses": {
+        "Look": "此處可通往無窗起居室。",
         "Move": "你步入無窗起居室。"
-      }
+      },
+      "move_to_room_id": "feist02_home03_living"
     },
     {
       "id": "feist02_home03_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist02_home03_eave",
       "responses": {
         "Move": "你步向滴水簷下。"
-      }
+      },
+      "move_to_room_id": "feist02_home03_eave"
     }
   ]
 }

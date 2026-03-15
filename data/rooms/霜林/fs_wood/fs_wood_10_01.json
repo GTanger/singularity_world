@@ -19,12 +19,14 @@
       "id": "fs_wood_10_01_to_fs_wood_10_03",
       "name": "觀察律動",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_10_03",
       "responses": {
+        "Look": "此處可通往觀察律動。",
         "Move": "你往觀察律動走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_10_03"
     }
   ]
 }

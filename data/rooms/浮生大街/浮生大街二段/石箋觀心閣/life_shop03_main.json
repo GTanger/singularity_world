@@ -2,7 +2,6 @@
   "id": "life_shop03_main",
   "name": "石箋觀心閣",
   "description": "灰石櫃檯沉厚，牆面格架石縫間沁出玉質脈絡，淡紫光暈沉靜。櫃上成綑石片與紙卷蒙著粉塵，靜謐中唯聞自己的腳步。此處連通外側〔浮生大街二段〕與後方〔儲物間〕。櫃面擱著一具〔石刀筆〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st2",
       "responses": {
         "Move": "你掀開布簾步出店門，回到浮生大街二段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st2"
     },
     {
       "id": "life_shop03_main_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop03_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你朝後方通道走去，進入儲物間。"
-      }
+      },
+      "move_to_room_id": "life_shop03_storage"
     },
     {
       "id": "life_shop03_main_obj_knife",

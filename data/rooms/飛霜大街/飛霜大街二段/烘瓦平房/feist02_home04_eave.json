@@ -2,7 +2,6 @@
   "id": "feist02_home04_eave",
   "name": "【烘瓦平房】窄簷下",
   "description": "幾乎貼合著建築牆面的一小段遮蔽區。房頂的高溫讓落下來的飛霜瞬間變成蒸氣，在此形成了一層終年不散的白霧屏障。通向〔紅磚玄關〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist02_home04_e_exit_main",
       "name": "紅磚玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home04_main",
       "responses": {
+        "Look": "此處可通往紅磚玄關。",
         "Move": "你退回紅磚玄關。"
-      }
+      },
+      "move_to_room_id": "feist02_home04_main"
     }
   ]
 }

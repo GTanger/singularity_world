@@ -2,7 +2,6 @@
   "id": "ironland_shop07_kiln",
   "name": "爐房",
   "description": "熔爐火口大、金屬液光晃動；牆面燻黑、滴痕密佈，熱浪與焦土氣撲面。此處僅通〔工間〕。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "ironland_shop07_kiln_exit",
       "name": "工間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_shop07_workshop",
       "responses": {
+        "Look": "此處可通往工間。",
         "Move": "你回到工間。"
-      }
+      },
+      "move_to_room_id": "ironland_shop07_workshop"
     }
   ]
 }

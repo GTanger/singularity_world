@@ -26,21 +26,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop01_main",
       "responses": {
         "Move": "你回到門面。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop01_main"
     },
     {
       "id": "sunst02_shop01_02_03",
       "name": "調律區・二間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop01_03",
       "responses": {
+        "Look": "此處可通往調律區・二間。",
         "Move": "你往調律區二間走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop01_03"
     }
   ]
 }

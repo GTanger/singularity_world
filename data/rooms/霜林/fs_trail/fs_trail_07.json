@@ -39,56 +39,66 @@
       "id": "fs_trail_07_to_fs_trail_06",
       "name": "返回",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_06",
       "responses": {
+        "Look": "此處可通往返回。",
         "Move": "你往返回走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_06"
     },
     {
       "id": "fs_trail_07_to_fs_trail_08",
       "name": "前方",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_trail_08",
       "responses": {
+        "Look": "此處可通往前方。",
         "Move": "你往前方走去。"
-      }
+      },
+      "move_to_room_id": "fs_trail_08"
     },
     {
       "id": "fs_trail_07_to_fs_wood_07_01",
       "name": "偏轉(圍欄)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_07_01",
       "responses": {
+        "Look": "此處可通往偏轉(圍欄)。",
         "Move": "你往偏轉(圍欄)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_07_01"
     },
     {
       "id": "fs_trail_07_to_fs_wood_07_02",
       "name": "涉入(粉潭)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_07_02",
       "responses": {
+        "Look": "此處可通往涉入(粉潭)。",
         "Move": "你往涉入(粉潭)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_07_02"
     },
     {
       "id": "fs_trail_07_to_fs_wood_07_10",
       "name": "前行(銜接)",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_07_10",
       "responses": {
+        "Look": "此處可通往前行(銜接)。",
         "Move": "你往前行(銜接)走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_07_10"
     }
   ]
 }

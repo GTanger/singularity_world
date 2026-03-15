@@ -19,12 +19,14 @@
       "id": "fs_wood_07_09_to_fs_wood_07_10",
       "name": "抵達平地",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_07_10",
       "responses": {
+        "Look": "此處可通往抵達平地。",
         "Move": "你往抵達平地走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_07_10"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_shop04_bedroom",
   "name": "私人臥室",
   "description": "床架石與鐵架相撐，厚實毯褥覆於其上，室內極靜。牆角小爐槽餘燼暗紅脈動，微溫浮動。唯一路徑通往側邊〔生活起居室〕。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "life_shop04_bedroom_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop04_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你離開臥室，回到生活起居室。"
-      }
+      },
+      "move_to_room_id": "life_shop04_living"
     }
   ]
 }

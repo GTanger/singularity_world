@@ -19,12 +19,14 @@
       "id": "yaxst04_home01_03_main",
       "name": "玄關",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst04_home01_main",
       "responses": {
+        "Look": "此處可通往玄關。",
         "Move": "你退回玄關。"
-      }
+      },
+      "move_to_room_id": "yaxst04_home01_main"
     }
   ]
 }

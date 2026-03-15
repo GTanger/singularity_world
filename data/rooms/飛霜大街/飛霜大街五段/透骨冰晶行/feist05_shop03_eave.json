@@ -2,7 +2,6 @@
   "id": "feist05_shop03_eave",
   "name": "簷下",
   "description": "霜晶行鋪門外一截矮簷，簷緣積霜、人站直便頂到簷板；簷下霜晶與格架陳列並存、街面在腳前，可望五段行人與擔夫，霜落在簷緣一碰即化，窄門內即鋪面。此處僅通〔冷櫃前廳〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist05_shop03_e_exit_main",
       "name": "冷櫃前廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist05_shop03_main",
       "responses": {
+        "Look": "此處可通往冷櫃前廳。",
         "Move": "你退回冷櫃前廳。"
-      }
+      },
+      "move_to_room_id": "feist05_shop03_main"
     }
   ]
 }

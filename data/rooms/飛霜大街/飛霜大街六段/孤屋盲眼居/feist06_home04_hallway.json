@@ -2,7 +2,6 @@
   "id": "feist06_home04_hallway",
   "name": "廊",
   "description": "簷霜宅廊子轉了半折，一頭往門廳、一頭往起居；側邊一道門通〔小院〕，盡頭窄門是〔倉房〕，牆皮斑駁、簷緣霜跡成串，石階邊緣磨得圓滑，無書齋無簷下。此處通〔寂靜廳堂〕、〔起居〕、〔小院〕、〔倉房〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -31,45 +30,53 @@
       "id": "feist06_home04_h_exit_main",
       "name": "寂靜廳堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home04_main",
       "responses": {
+        "Look": "此處可通往寂靜廳堂。",
         "Move": "你退回寂靜廳堂。"
-      }
+      },
+      "move_to_room_id": "feist06_home04_main"
     },
     {
       "id": "feist06_home04_h_exit_living",
       "name": "起居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home04_living",
       "responses": {
+        "Look": "此處可通往起居。",
         "Move": "你往起居。"
-      }
+      },
+      "move_to_room_id": "feist06_home04_living"
     },
     {
       "id": "feist06_home04_h_exit_court",
       "name": "小院",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home04_courtyard",
       "responses": {
+        "Look": "此處可通往小院。",
         "Move": "你往小院。"
-      }
+      },
+      "move_to_room_id": "feist06_home04_courtyard"
     },
     {
       "id": "feist06_home04_h_exit_storage",
       "name": "倉房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home04_storage",
       "responses": {
+        "Look": "此處可通往倉房。",
         "Move": "你往倉房。"
-      }
+      },
+      "move_to_room_id": "feist06_home04_storage"
     }
   ]
 }

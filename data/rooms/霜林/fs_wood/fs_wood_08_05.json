@@ -19,12 +19,14 @@
       "id": "fs_wood_08_05_to_fs_wood_08_06",
       "name": "抓握鐵鍊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_06",
       "responses": {
+        "Look": "此處可通往抓握鐵鍊。",
         "Move": "你往抓握鐵鍊走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_06"
     }
   ]
 }

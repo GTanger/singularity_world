@@ -19,12 +19,14 @@
       "id": "fs_wood_08_02_to_fs_wood_08_03",
       "name": "沿脊攀爬",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_03",
       "responses": {
+        "Look": "此處可通往沿脊攀爬。",
         "Move": "你往沿脊攀爬走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_03"
     }
   ]
 }

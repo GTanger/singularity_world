@@ -2,7 +2,6 @@
   "id": "feist07_home01_main",
   "name": "【霜階群租寓】玄關",
   "description": "霜階宅窄門一開，七段人聲與霜氣湧入；腳下石板冰涼、簷板壓額，往內〔廊〕一徑幽深、腳步入內即沒了聲息。此處連接〔飛霜大街七段〕，內側為〔廊〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st7",
       "responses": {
         "Move": "你推門步出，回到飛霜大街七段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st7"
     },
     {
       "id": "feist07_home01_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist07_home01_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist07_home01_hallway"
     }
   ]
 }

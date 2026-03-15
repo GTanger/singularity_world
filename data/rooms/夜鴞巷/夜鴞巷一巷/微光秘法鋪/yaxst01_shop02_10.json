@@ -19,12 +19,14 @@
       "id": "yaxst01_shop02_10_03",
       "name": "右支前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_shop02_03",
       "responses": {
+        "Look": "此處可通往右支前。",
         "Move": "你退回右支前。"
-      }
+      },
+      "move_to_room_id": "yaxst01_shop02_03"
     }
   ]
 }

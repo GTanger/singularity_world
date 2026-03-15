@@ -2,7 +2,6 @@
   "id": "ironland_home01_living",
   "name": "生息室",
   "description": "石几伏貼於地，桌緣琉璃質攀附石面，淡綠微光在暗處浮動。此處通〔廊道〕、側方〔灶間〕與後方〔內臥房〕，可往廊、灶頭或歇息處。牆面晶礦鑲在石磚縫隙。",
-  "tags": [],
   "zone": "ironland",
   "exits": [
     {
@@ -26,34 +25,40 @@
       "id": "ironland_home01_living_exit_hallway",
       "name": "廊道",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home01_hallway",
       "responses": {
+        "Look": "此處可通往廊道。",
         "Move": "你回到廊道。"
-      }
+      },
+      "move_to_room_id": "ironland_home01_hallway"
     },
     {
       "id": "ironland_home01_living_exit_kitchen",
       "name": "灶間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home01_kitchen",
       "responses": {
+        "Look": "此處可通往灶間。",
         "Move": "你步入灶間。"
-      }
+      },
+      "move_to_room_id": "ironland_home01_kitchen"
     },
     {
       "id": "ironland_home01_living_exit_bedroom",
       "name": "內臥房",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "ironland_home01_bedroom",
       "responses": {
+        "Look": "此處可通往內臥房。",
         "Move": "你步入內臥房。"
-      }
+      },
+      "move_to_room_id": "ironland_home01_bedroom"
     }
   ]
 }

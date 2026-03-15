@@ -2,7 +2,6 @@
   "id": "feist02_home01_bed1",
   "name": "【焦木匠家】乾燥臥房",
   "description": "空間逼仄，木板床緊貼著發熱的牆面。因為臨近乾燥管道，睡在這裡必須忍受口乾舌燥的不適。牆壁縫隙裡塞滿了破布與膠質以防止寒風入侵。退回〔破舊起居室〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist02_home01_b1_exit_living",
       "name": "破舊起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_home01_living",
       "responses": {
+        "Look": "此處可通往破舊起居室。",
         "Move": "你退回破舊起居室。"
-      }
+      },
+      "move_to_room_id": "feist02_home01_living"
     }
   ]
 }

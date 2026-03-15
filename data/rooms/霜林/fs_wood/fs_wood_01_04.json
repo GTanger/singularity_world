@@ -19,12 +19,14 @@
       "id": "fs_wood_01_04_to_fs_wood_01_05",
       "name": "循路跡前進",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_01_05",
       "responses": {
+        "Look": "此處可通往循路跡前進。",
         "Move": "你往循路跡前進走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_01_05"
     }
   ]
 }

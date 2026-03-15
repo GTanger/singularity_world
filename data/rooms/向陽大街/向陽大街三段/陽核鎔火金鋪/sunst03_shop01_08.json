@@ -19,12 +19,14 @@
       "id": "sunst03_shop01_08_07",
       "name": "居區・中間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst03_shop01_07",
       "responses": {
+        "Look": "此處可通往居區・中間。",
         "Move": "你往居區中間走回。"
-      }
+      },
+      "move_to_room_id": "sunst03_shop01_07"
     }
   ]
 }

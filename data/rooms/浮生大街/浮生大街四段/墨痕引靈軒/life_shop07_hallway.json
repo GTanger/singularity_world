@@ -2,7 +2,6 @@
   "id": "life_shop07_hallway",
   "name": "內廊",
   "description": "狹長通道壁面石縫間菌絲蔓延，淡綠光暈低浮，腳下石板平滑。此處通向前方〔儲物間〕與深處〔生活起居室〕，可回店頭或往起居處。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop07_hallway_exit_storage",
       "name": "儲物間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop07_storage",
       "responses": {
+        "Look": "此處可通往儲物間。",
         "Move": "你回到儲物間。"
-      }
+      },
+      "move_to_room_id": "life_shop07_storage"
     },
     {
       "id": "life_shop07_hallway_exit_living",
       "name": "生活起居室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop07_living",
       "responses": {
+        "Look": "此處可通往生活起居室。",
         "Move": "你步入生活起居室。"
-      }
+      },
+      "move_to_room_id": "life_shop07_living"
     }
   ]
 }

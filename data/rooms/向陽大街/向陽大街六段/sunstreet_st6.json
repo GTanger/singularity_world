@@ -51,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st5",
       "responses": {
         "Move": "你沿向陽大街往五段走去。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st5"
     },
     {
       "id": "sun_st6_exit_st7",
@@ -62,65 +62,75 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "sunstreet_st7",
       "responses": {
         "Move": "你沿向陽大街往七段走去。"
-      }
+      },
+      "move_to_room_id": "sunstreet_st7"
     },
     {
       "id": "sun_st6_obj_home01",
       "name": "流金歲月居",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst06_home01_main",
       "responses": {
+        "Look": "此處可通往流金歲月居。",
         "Move": "這棟住宅的牆面上佈滿了仿古的機械鐘錶裝飾，金光在齒輪間流轉，彷彿時間在這裡被實體化；〔黃銅齒輪門〕半掩著。"
-      }
+      },
+      "move_to_room_id": "sunst06_home01_main"
     },
     {
       "id": "sun_st6_obj_home02",
       "name": "熾光療養舍",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst06_home02_main",
       "responses": {
+        "Look": "此處可通往熾光療養舍。",
         "Move": "建築周遭的溫度異常飆高，門廊處甚至能看到空氣因為高溫而扭曲，這裡是富豪們進行激進光熱療法的地點；〔隔熱防爆門〕緊閉。"
-      }
+      },
+      "move_to_room_id": "sunst06_home02_main"
     },
     {
       "id": "sun_st6_obj_shop01",
       "name": "採熙藏珍閣",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst06_shop01_main",
       "responses": {
+        "Look": "此處可通往採熙藏珍閣。",
         "Move": "外觀看起來像是個不起眼的倉庫，但牆壁上隱約透出的高強度能量陣紋顯示裡面藏著價值連城的光學古董；〔低調鐵門〕緊閉。"
-      }
+      },
+      "move_to_room_id": "sunst06_shop01_main"
     },
     {
       "id": "sun_st6_obj_home03",
       "name": "熙和安居寓",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst06_home03_main",
       "responses": {
+        "Look": "此處可通往熙和安居寓。",
         "Move": "一棟造型中規中矩的中產階級公寓，門口的白玉石階被擦拭得一塵不染，透著一種平凡的安寧；〔木板大門〕敞開。"
-      }
+      },
+      "move_to_room_id": "sunst06_home03_main"
     },
     {
       "id": "sun_st6_obj_home04",
       "name": "輝照大觀廬",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst06_home04_main",
       "responses": {
+        "Look": "此處可通往輝照大觀廬。",
         "Move": "這棟建築的屋頂幾乎完全透明，巨大的採光井將大量的琥珀色光芒直接引入建築中心；〔白玉拱門〕氣場柔和。"
-      }
+      },
+      "move_to_room_id": "sunst06_home04_main"
     }
   ]
 }

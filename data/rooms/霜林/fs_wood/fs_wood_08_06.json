@@ -19,12 +19,14 @@
       "id": "fs_wood_08_06_to_fs_wood_08_07",
       "name": "躲入穴位",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_08_07",
       "responses": {
+        "Look": "此處可通往躲入穴位。",
         "Move": "你往躲入穴位走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_08_07"
     }
   ]
 }

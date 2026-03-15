@@ -2,7 +2,6 @@
   "id": "feist06_home02_main",
   "name": "【沁玉雕刻家】粉塵前庭",
   "description": "雖然是在室內，但四處飄揚著細微的防凍液與玉石粉末。地上散落著幾把磨損嚴重的雷射切割刀。退回〔刻花木門〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st6",
       "responses": {
         "Move": "你推門步出，回到飛霜大街六段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st6"
     },
     {
       "id": "feist06_home02_m_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_home02_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你步入廊。"
-      }
+      },
+      "move_to_room_id": "feist06_home02_hallway"
     },
     {
       "id": "feist06_home02_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist06_home02_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist06_home02_eave"
     }
   ]
 }

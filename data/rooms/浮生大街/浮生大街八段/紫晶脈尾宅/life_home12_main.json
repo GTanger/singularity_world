@@ -2,7 +2,6 @@
   "id": "life_home12_main",
   "name": "門廳",
   "description": "脈尾宅門廳，簷角脈絡自石縫沁出、與砌石咬合，淡紫與琥珀光色沉靜。牆面沉石質、地面石板伏貼。此處光線穿過〔板門〕灑入八段，內側導向〔脈廊〕通往各室。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -23,21 +22,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st8",
       "responses": {
         "Move": "你推開板門，回到浮生大街八段。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st8"
     },
     {
       "id": "life_home12_main_exit_hallway",
       "name": "脈廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home12_hallway",
       "responses": {
+        "Look": "此處可通往脈廊。",
         "Move": "你朝內側走去，進入脈廊。"
-      }
+      },
+      "move_to_room_id": "life_home12_hallway"
     }
   ]
 }

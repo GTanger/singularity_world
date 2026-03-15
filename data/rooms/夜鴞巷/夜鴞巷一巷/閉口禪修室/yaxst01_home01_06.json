@@ -19,12 +19,14 @@
       "id": "yaxst01_home01_06_05",
       "name": "內廊四",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_home01_05",
       "responses": {
+        "Look": "此處可通往內廊四。",
         "Move": "你沿內廊往回走。"
-      }
+      },
+      "move_to_room_id": "yaxst01_home01_05"
     }
   ]
 }

@@ -19,12 +19,14 @@
       "id": "fs_wood_05_04_to_fs_wood_05_06",
       "name": "攀上斜坡",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_wood_05_06",
       "responses": {
+        "Look": "此處可通往攀上斜坡。",
         "Move": "你往攀上斜坡走去。"
-      }
+      },
+      "move_to_room_id": "fs_wood_05_06"
     }
   ]
 }

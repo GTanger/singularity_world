@@ -2,7 +2,6 @@
   "id": "life_home02_loft",
   "name": "綠蔭閣樓",
   "description": "頂層被巨型葉片覆蓋，光線呈半透明暗綠。地表堆放著數個〔編織草篋〕。此處連通下方的〔生息室〕與後側的〔露天葉台〕。空氣中濕度極高。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "home02_loft_exit_living",
       "name": "生息室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home02_living",
       "responses": {
+        "Look": "此處可通往生息室。",
         "Move": "你順階而下，回到生息室。"
-      }
+      },
+      "move_to_room_id": "life_home02_living"
     },
     {
       "id": "home02_loft_exit_balcony",
       "name": "露天葉台",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_home02_balcony",
       "responses": {
+        "Look": "此處可通往露天葉台。",
         "Move": "你穿過葉隙，踏上露天葉台。"
-      }
+      },
+      "move_to_room_id": "life_home02_balcony"
     },
     {
       "id": "home02_loft_obj_chest",

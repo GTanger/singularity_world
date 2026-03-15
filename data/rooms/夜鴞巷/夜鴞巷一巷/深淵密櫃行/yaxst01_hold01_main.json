@@ -46,65 +46,75 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st1",
       "responses": {
         "Move": "你步出深櫃，回到夜鴞巷一巷。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st1"
     },
     {
       "id": "yaxst01_hold01_main_02",
       "name": "東翼",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_02",
       "responses": {
+        "Look": "此處可通往東翼。",
         "Move": "你往東翼走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_02"
     },
     {
       "id": "yaxst01_hold01_main_06",
       "name": "南翼",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_06",
       "responses": {
+        "Look": "此處可通往南翼。",
         "Move": "你往南翼走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_06"
     },
     {
       "id": "yaxst01_hold01_main_10",
       "name": "西翼",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_10",
       "responses": {
+        "Look": "此處可通往西翼。",
         "Move": "你往西翼走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_10"
     },
     {
       "id": "yaxst01_hold01_main_14",
       "name": "北翼",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_14",
       "responses": {
+        "Look": "此處可通往北翼。",
         "Move": "你往北翼走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_14"
     },
     {
       "id": "yaxst01_hold01_main_18",
       "name": "內庫",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "yaxst01_hold01_18",
       "responses": {
+        "Look": "此處可通往內庫。",
         "Move": "你往內庫走去。"
-      }
+      },
+      "move_to_room_id": "yaxst01_hold01_18"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "life_shop05_workshop",
   "name": "工坊",
   "description": "石砧自牆體延伸，地面碎屑與玉質粉塵沉積，窯火餘溫自深處浮動。此處通〔石髓館〕與〔窯間〕，可回店頭或入窯燒製。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop05_workshop_exit_main",
       "name": "石髓館",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_main",
       "responses": {
+        "Look": "此處可通往石髓館。",
         "Move": "你回到店面前方。"
-      }
+      },
+      "move_to_room_id": "life_shop05_main"
     },
     {
       "id": "life_shop05_workshop_exit_back",
       "name": "窯間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop05_kiln",
       "responses": {
+        "Look": "此處可通往窯間。",
         "Move": "你步入窯間。"
-      }
+      },
+      "move_to_room_id": "life_shop05_kiln"
     }
   ]
 }

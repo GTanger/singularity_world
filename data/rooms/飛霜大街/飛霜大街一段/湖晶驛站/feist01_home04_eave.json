@@ -2,7 +2,6 @@
   "id": "feist01_home04_eave",
   "name": "【湖晶驛站】避風簷下",
   "description": "沿著建築外牆搭建的臨時擋板下空間。幾根粗大的金屬支柱撐起了厚重的鉛皮屋頂。這裡通常聚集著等待派活的散工，地上散落著被踩熄的煙蒂。通向〔卸貨前堂〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist01_home04_e_exit_main",
       "name": "卸貨前堂",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home04_main",
       "responses": {
+        "Look": "此處可通往卸貨前堂。",
         "Move": "你退回卸貨前堂。"
-      }
+      },
+      "move_to_room_id": "feist01_home04_main"
     }
   ]
 }

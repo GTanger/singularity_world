@@ -61,10 +61,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st6",
       "responses": {
         "Move": "你拐出巷子，回到飛霜大街六段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st6"
     },
     {
       "id": "yaxiao_st3_yaxiao_st2",
@@ -72,10 +72,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st2",
       "responses": {
         "Move": "你沿巷往二巷走去。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st2"
     },
     {
       "id": "yaxiao_st3_yaxiao_st4",
@@ -83,65 +83,115 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxiao_st4",
       "responses": {
         "Move": "你沿巷往四巷走去。"
-      }
+      },
+      "move_to_room_id": "yaxiao_st4"
     },
     {
       "id": "yaxiao_st3_hold01",
       "name": "深幽底層暗閣",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你沿著被霧氣籠罩的防滑階梯向下，推開寒氣逼人的〔鐵門〕進入深幽底層暗閣。"
+      }
+    },
+    {
+      "id": "yaxiao_st3_hold01_door",
+      "name": "鐵門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst03_hold01_main",
       "responses": {
         "Move": "你沿著被霧氣籠罩的防滑階梯向下，推開寒氣逼人的鐵門進入深幽底層暗閣。"
-      }
+      },
+      "move_to_room_id": "yaxst03_hold01_main"
     },
     {
       "id": "yaxiao_st3_shop01",
       "name": "一線天隱秘棧",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你側身擠過僅容一人通過的〔防禦性窄門〕，進入一線天隱秘棧。"
+      }
+    },
+    {
+      "id": "yaxiao_st3_shop01_door",
+      "name": "防禦性窄門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop01_main",
       "responses": {
         "Move": "你側身擠過僅容一人通過的防禦性窄門，進入一線天隱秘棧。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop01_main"
     },
     {
       "id": "yaxiao_st3_shop02",
       "name": "斂息密談茶館",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你穿過兩道用於氣壓與氣味隔離的〔氣密艙門〕，進入斂息密談茶館。"
+      }
+    },
+    {
+      "id": "yaxiao_st3_shop02_door",
+      "name": "氣密艙門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop02_main",
       "responses": {
         "Move": "你穿過兩道用於氣壓與氣味隔離的氣密艙門，進入斂息密談茶館。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop02_main"
     },
     {
       "id": "yaxiao_st3_shop03",
       "name": "前線斥候總櫃",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "你向門口的暗影護衛出示信物，隨後〔大門〕開啟，進入前線斥候總櫃。"
+      }
+    },
+    {
+      "id": "yaxiao_st3_shop03_door",
+      "name": "大門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst03_shop03_main",
       "responses": {
         "Move": "你向門口的暗影護衛出示信物，隨後大門開啟，進入前線斥候總櫃。"
-      }
+      },
+      "move_to_room_id": "yaxst03_shop03_main"
     },
     {
       "id": "yaxiao_st3_home01",
       "name": "無窗靈視宅",
       "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "這棟建築完全沒有窗戶，你憑藉神識摸索到隱形門把，推開〔隱形門〕進入無窗靈視宅。"
+      }
+    },
+    {
+      "id": "yaxiao_st3_home01_door",
+      "name": "隱形門",
+      "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home01_main",
       "responses": {
         "Move": "這棟建築完全沒有窗戶，你憑藉神識摸索到隱形門把，推門進入無窗靈視宅。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home01_main"
     },
     {
       "id": "yaxiao_st3_home02",
@@ -149,10 +199,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "yaxst03_home02_main",
       "responses": {
         "Move": "你繞過虛假的正面裝飾，從極度隱蔽的側邊暗門進入偏門側室寓。"
-      }
+      },
+      "move_to_room_id": "yaxst03_home02_main"
     }
   ]
 }

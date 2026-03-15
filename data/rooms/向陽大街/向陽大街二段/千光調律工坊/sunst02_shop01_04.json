@@ -24,23 +24,27 @@
       "id": "sunst02_shop01_04_03",
       "name": "調律區・二間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop01_03",
       "responses": {
+        "Look": "此處可通往調律區・二間。",
         "Move": "你往調律區二間走回。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop01_03"
     },
     {
       "id": "sunst02_shop01_04_05",
       "name": "調律區・四間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst02_shop01_05",
       "responses": {
+        "Look": "此處可通往調律區・四間。",
         "Move": "你往調律區四間走去。"
-      }
+      },
+      "move_to_room_id": "sunst02_shop01_05"
     }
   ]
 }

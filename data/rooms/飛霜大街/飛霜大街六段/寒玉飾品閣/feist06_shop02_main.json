@@ -2,7 +2,6 @@
   "id": "feist06_shop02_main",
   "name": "【寒玉飾品閣】流光展廳",
   "description": "高階暖能石與紫晶簇將這裡照耀得如同白晝，展示櫃裡漂浮著打磨完美的玉質化生物骨骼雕刻。退回〔珠串門簾〕至大街。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -28,21 +27,23 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feistreet_st6",
       "responses": {
         "Move": "你掀簾步出，回到飛霜大街六段。"
-      }
+      },
+      "move_to_room_id": "feistreet_st6"
     },
     {
       "id": "feist06_shop02_m_exit_counter",
       "name": "櫃前",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop02_counter",
       "responses": {
+        "Look": "此處可通往櫃前。",
         "Move": "你往櫃前走去。"
-      }
+      },
+      "move_to_room_id": "feist06_shop02_counter"
     },
     {
       "id": "feist06_shop02_m_exit_eave",
@@ -50,10 +51,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "feist06_shop02_eave",
       "responses": {
         "Move": "你步向簷下。"
-      }
+      },
+      "move_to_room_id": "feist06_shop02_eave"
     }
   ]
 }

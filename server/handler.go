@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/rand"
 	"strings"
 	"time"
@@ -338,6 +339,12 @@ func sendMoved(c *Client, playerID, roomID, roomName string) {
 // ── 插頭插座：do_action ──
 
 func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("[do_action] panic: %v", r)
+			sendError(c, "執行動作時發生錯誤")
+		}
+	}()
 	if c.PlayerID == "" {
 		sendError(c, "請先登入")
 		return
@@ -392,9 +399,13 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 		case "Look":
 			narrative := buildLookNarrative(target, database)
 			_ = event.Append(database, now, c.PlayerID, event.TypeObserved, targetID)
+			lookTargetName := target.DisplayTitle
+			if lookTargetName == "" {
+				lookTargetName = target.ID
+			}
 			c.Send <- mustJSON(ActionResultMsg{
 				Type: "action_result", Action: "Look",
-				TargetID: target.ID, TargetName: target.ID,
+				TargetID: target.ID, TargetName: lookTargetName,
 				Narrative: narrative, Success: true,
 			})
 		case "Talk":
@@ -402,12 +413,16 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 			if playerInput == "" {
 				playerInput = "（搭話）"
 			}
+			log.Printf("[Talk] target=%q player_input=%q", targetID, playerInput)
 			backstory := db.BuildIdentity(database, targetID)
 			snippets := db.SearchArchival(targetID, msg.PlayerInput, 5)
 			styleExamples := db.PickStyleExamples(database, targetID, 3)
-			reply, err := ai.CallAITalk(playerInput, backstory, snippets, styleExamples)
+			reply, err := ai.CallAITalk(cfg.OllamaBaseURL, cfg.OllamaModel, playerInput, backstory, snippets, styleExamples)
 			var narrative, npcReply string
 			if err != nil || reply == "" {
+				if err != nil {
+					log.Printf("[Talk] Ollama fallback: %v", err)
+				}
 				var p *db.Personality
 				if target.SoulSeed != nil {
 					pp := db.ExpandSoulSeedToPersonality(*target.SoulSeed)
@@ -419,15 +434,25 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 					npcReply = narrative[i+len("搭話。"):]
 				}
 			} else {
-				narrative = "你向【" + target.ID + "】搭話。" + reply
+				talkName := target.DisplayTitle
+				if talkName == "" {
+					talkName = target.ID
+				}
+				narrative = "你向【" + talkName + "】搭話。" + talkName + "說道：「" + reply + "」"
 				npcReply = reply
 			}
 			_ = event.Append(database, now, c.PlayerID, "talk", targetID)
-			c.Send <- mustJSON(ActionResultMsg{
+			targetName := target.DisplayTitle
+			if targetName == "" {
+				targetName = target.ID
+			}
+			out := ActionResultMsg{
 				Type: "action_result", Action: "Talk",
-				TargetID: target.ID, TargetName: target.ID,
+				TargetID: target.ID, TargetName: targetName,
 				Narrative: narrative, Success: true,
-			})
+			}
+			log.Printf("[Talk] sending narrative len=%d", len(narrative))
+			c.Send <- mustJSON(out)
 			_ = db.InsertArchival(targetID, "玩家說："+playerInput+"；NPC回："+npcReply, "event")
 		case "Attack":
 			attacker, _ := db.GetEntity(database, c.PlayerID)
@@ -437,9 +462,13 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 			}
 			narrative := buildAttackNarrative(attacker, target)
 			_ = event.Append(database, now, c.PlayerID, event.TypeCombat, targetID)
+			attackTargetName := target.DisplayTitle
+			if attackTargetName == "" {
+				attackTargetName = target.ID
+			}
 			c.Send <- mustJSON(ActionResultMsg{
 				Type: "action_result", Action: "Attack",
-				TargetID: target.ID, TargetName: target.ID,
+				TargetID: target.ID, TargetName: attackTargetName,
 				Narrative: narrative, Success: true,
 			})
 		default:
@@ -487,15 +516,63 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 		hub.Broadcast(mustJSON(MovedMsg{Type: "moved", PlayerID: c.PlayerID, RoomID: obj.MoveToRoomID, RoomName: view.Room.Name}))
 	}
 
+	// 回傳該物件其餘可執行動詞（不含剛執行的），讓前端在 Look 後顯示【移動】等可點
+	others := make([]string, 0, len(obj.Sockets))
+	for _, s := range obj.Sockets {
+		if s != action {
+			others = append(others, s)
+		}
+	}
+	moveTargetID := ""
+	// Look 建築名時若該物件本身無 Move，同房常有「門／簾」物件可進入：找同房具 Move 的物件，讓【移動】改對其送 do_action（偏好緊接在當前物件之後的門）
+	if action == "Look" && len(others) == 0 {
+		roomObjs := db.GetObjectsInRoom(playerRoom)
+		idx := -1
+		for i := range roomObjs {
+			if roomObjs[i].ID == obj.ID {
+				idx = i
+				break
+			}
+		}
+		if idx >= 0 {
+			for _, delta := range []struct{ start, end int }{{idx + 1, len(roomObjs)}, {0, idx}} {
+				for i := delta.start; i < delta.end; i++ {
+					o := &roomObjs[i]
+					if o.MoveToRoomID != "" && db.ObjectHasSocket(o, "Move") {
+						moveTargetID = o.ID
+						break
+					}
+				}
+				if moveTargetID != "" {
+					break
+				}
+			}
+		} else {
+			for i := range roomObjs {
+				o := &roomObjs[i]
+				if o.MoveToRoomID != "" && db.ObjectHasSocket(o, "Move") {
+					moveTargetID = o.ID
+					break
+				}
+			}
+		}
+		if moveTargetID != "" {
+			others = []string{"Move"}
+		}
+	}
 	c.Send <- mustJSON(ActionResultMsg{
 		Type: "action_result", Action: action,
 		TargetID: obj.ID, TargetName: obj.Name,
 		Narrative: narrative, Success: true,
+		Actions: others, MoveTargetID: moveTargetID,
 	})
 }
 
 func buildLookNarrative(target *entity.Character, database *sql.DB) string {
-	name := target.ID
+	name := target.DisplayTitle
+	if name == "" {
+		name = target.ID
+	}
 	pronoun := "他"
 	if target.Gender == "F" {
 		pronoun = "她"
@@ -551,7 +628,10 @@ func buildLookNarrative(target *entity.Character, database *sql.DB) string {
 }
 
 func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Character, personality *db.Personality, cfg config.Server) string {
-	name := target.ID
+	name := target.DisplayTitle
+	if name == "" {
+		name = target.ID
+	}
 	// 優先從職業對話檔抽句並填佔位符（{name}、{room}、{time}、{mood}、{verb}、{thing}、{goods}）
 	assignments, _ := db.GetAssignmentsForEntity(database, target.ID)
 	if len(assignments) > 0 {
@@ -574,7 +654,7 @@ func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Char
 			return "你向【" + name + "】搭話。" + line
 		}
 	}
-	// 無指派或無對話檔時 fallback 固定句
+	// 無指派或無對話檔時 fallback 提示詞池（也算對話提示詞，擴充以降低重複率）
 	responses := []string{
 		"「你好，有什麼事嗎？」",
 		"「這裡最近不太平靜，你小心點。」",
@@ -584,23 +664,188 @@ func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Char
 		"「別擋路。」",
 		"「你也是來這裡討生活的？」",
 		"「聽說城外最近出了些怪事。」",
+		"「有事快說，我還有活要幹。」",
+		"「這條街什麼人都有，自己多留神。」",
+		"「想打聽事？找別人吧。」",
+		"「靈脈這幾日不穩，少往地縫邊湊。」",
+		"「買東西往那頭，我這兒不賣。」",
+		"「路過就路過，別瞎瞧。」",
+		"「……你誰啊？」",
+		"「有緣再聊，先走了。」",
+		"「城裡規矩多，別亂闖。」",
+		"「丹藥鋪在東邊，兵器在西邊。」",
+		"「沒見過你，新來的？」",
+		"「天快黑了，早點找地方落腳。」",
+		"「最近生意不好做啊。」",
+		"「修行之人，少管閒事。」",
+		"「要問路的話，前頭有告示。」",
+		"「沒什麼好說的。」",
+		"「嗯，怎麼了？」",
+		"「這兒不興白打聽，要問拿誠意來。」",
+		"「你身上氣息挺雜的，哪條道上的？」",
+		"「閒話少說，我忙。」",
+		"「初來乍到？先摸清地頭再說。」",
+		"「別擋著光。」",
+		"「有事說事。」",
+		"「……唔。」",
+		"「今日不宜多話。」",
+		"「你找錯人了。」",
+		"「街上人多口雜，別亂搭話。」",
+		"「哦。」",
+		"「沒見過像你這樣問的。」",
+		"「要歇腳往客棧去。」",
+		"「靈氣稀薄處少待，傷身。」",
+		"「說完了？那我走了。」",
+		"「你問的我不清楚。」",
+		"「路還長，省點力氣吧。」",
+		"「……隨便你。」",
+		"「這年頭誰都不容易。」",
+		"「別扯上我。」",
+		"「有那閒心不如多練兩手。」",
+		"「嗯，聽著呢。」",
+		"「話多招禍。」",
+		"「你問別人吧。」",
+		"「沒什麼，隨便聊聊也行。」",
+		"「初來？先找個地方住下。」",
+		"「這兒就這樣，習慣就好。」",
+		"「別耽誤我做事。」",
+		"「……有事？」",
+		"「風大，聽不清。」",
+		"「你自便。」",
+		"「少打聽，多做事。」",
+		"「今日不順，別惹我。」",
+		"「哦，然後呢？」",
+		"「路過的？路過就快走。」",
+		"「沒什麼好聊的。」",
+		"「你誰？」",
+		"「嗯。」",
+		"「說吧，我聽著。」",
+		"「這條街就這樣，熱鬧歸熱鬧，小心點。」",
+		"「修行要緊，別瞎晃。」",
+		"「……怎麼？」",
+		"「有事明日再說。」",
+		"「你找別人問去。」",
+		"「沒空。」",
+		"「隨便。」",
+		"「唔。」",
+		"「罷了，你說。」",
+		"「聽過就忘，別外傳。」",
+		"「這兒人多，不方便說。」",
+		"「你倒是會挑人問。」",
+		"「算了，當我沒說。」",
+		"「……行吧。」",
+		"「有什麼事？」",
+		"「別礙事。」",
+		"「嗯，你說。」",
+		"「今日不宜久談。」",
+		"「路過的人多了，你算一個。」",
+		"「要幫手？找掌櫃。」",
+		"「我沒什麼好說的。」",
+		"「你問的我不懂。」",
+		"「少來套近乎。」",
+		"「……何事？」",
+		"「聽著呢。」",
+		"「有事快說。」",
+		"「這地兒就這樣。」",
+		"「別亂打聽。」",
+		"「嗯哼。」",
+		"「你自求多福。」",
+		"「沒什麼。」",
+		"「說。」",
+		"「……哦。」",
+		"「隨便聊聊可以。」",
+		"「別耽誤工夫。」",
+		"「今日沒興致。」",
+		"「你問別人。」",
+		"「聽到了。」",
+		"「嗯，然後？」",
+		"「有事？」",
+		"「少廢話。」",
+		"「……說完了？」",
+		"「你忙你的。」",
+		"「這條街規矩多。」",
+		"「別惹事。」",
+		"「唔，好吧。」",
+		"「聽著。」",
+		"「沒什麼好問的。」",
+		"「你問吧。」",
+		"「今日不宜多言。」",
+		"「路過。」",
+		"「……嗯。」",
+		"「有事說。」",
+		"「別擋道。」",
+		"「隨便你。」",
+		"「聽你的。」",
+		"「沒空聊。」",
+		"「你誰啊？」",
+		"「嗯。」",
+		"「說來聽聽。」",
+		"「這兒不興多問。」",
+		"「別多事。」",
+		"「……好。」",
+		"「有事？」",
+		"「聽著呢。」",
+		"「沒什麼。」",
+		"「你說。」",
+		"「今日事多。」",
+		"「路過的都這樣問。」",
+		"「……唔。」",
+		"「有事快說。」",
+		"「別礙著。」",
+		"「隨便。」",
+		"「聽到了。」",
+		"「沒興趣。」",
+		"「你問什麼？」",
+		"「嗯。」",
+		"「說吧。」",
+		"「這地兒雜。」",
+		"「別亂來。」",
+		"「……哦。」",
+		"「有事？」",
+		"「聽著。」",
+		"「沒啥。」",
+		"「你說說看。」",
+		"「今日忙。」",
+		"「路過的人不少。」",
+		"「……嗯。」",
+		"「有事說事。」",
+		"「別擋。」",
+		"「隨你。」",
+		"「聽。」",
+		"「沒。」",
+		"「你講。」",
+		"「嗯。」",
+		"「說。」",
+		"「這兒就這樣。」",
+		"「別。」",
+		"「……。」",
 	}
 	h := 0
 	for _, r := range target.ID {
 		h += int(r)
 	}
-	idx := h % len(responses)
+	now := game.NowUnix()
+	// 用遊戲時間 + NPC ID  hash 做 seed，同一刻同一 NPC 固定，不同時刻或不同 NPC 則分散，降低重複感
+	seed := int64(now)*1000 + int64(h)
+	rng := rand.New(rand.NewSource(seed))
+	idx := rng.Intn(len(responses))
 	if personality != nil {
-		shift := int(personality.Boldness * float64(len(responses)/2))
-		idx = (idx + shift) % len(responses)
+		shift := int(personality.Boldness * float64(len(responses) / 2))
+		idx = (idx + shift + len(responses)) % len(responses)
 	}
 	return "你向【" + name + "】搭話。" + name + "說道：" + responses[idx]
 }
 
 func buildAttackNarrative(attacker, defender *entity.Character) string {
 	winner, rawLog := combat.Resolve(attacker.Vit, attacker.Dex, defender.Vit, defender.Dex)
-	aName := attacker.ID
-	dName := defender.ID
+	aName := attacker.DisplayTitle
+	if aName == "" {
+		aName = attacker.ID
+	}
+	dName := defender.DisplayTitle
+	if dName == "" {
+		dName = defender.ID
+	}
 	log := strings.ReplaceAll(rawLog, "攻方", "【"+aName+"】")
 	log = strings.ReplaceAll(log, "守方", "【"+dName+"】")
 	prefix := "你向【" + dName + "】發起攻擊！"

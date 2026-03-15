@@ -2,7 +2,6 @@
   "id": "lifestreet_st5",
   "name": "浮生大街五段",
   "description": "浮生大街五段，路面在密集的店鋪與住宅之間蜿蜒穿行。兩側建築的飛簷重重交疊，幾乎遮蔽了天空。地面的玉質靈脈從白玉地磚與牆壁的縫隙中大量沁出，將淡紫色與琥珀色的靈光交織在簷下，宛如一層溫柔的光幕。這裡沒有大商行的喧囂，多是販售獨特靈物與生活所需的溫馨小鋪。路側是藥香四溢的〔玄庭藥香居〕、以陣法凝膠聞名的〔紫玉膠寮〕與販賣法寶鑑體的〔觀月鏡石軒〕；住宅區則有〔紫珀簷根宅〕與〔靈脈護心宅〕。可退回〔浮生大街四段〕，或朝〔浮生大街六段〕延伸。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -48,10 +47,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st4",
       "responses": {
         "Move": "你朝浮生大街四段方向折返。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st4"
     },
     {
       "id": "st5_exit_st6",
@@ -59,10 +58,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st6",
       "responses": {
         "Move": "你朝浮生大街六段方向走去。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st6"
     },
     {
       "id": "st5_obj_shop08",
@@ -71,7 +70,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你掀開繪有百草圖的防塵布簾，進入玄庭藥香居。"
+        "Look": "你掀開繪有百草圖的防塵〔布簾〕，進入玄庭藥香居。"
       }
     },
     {
@@ -80,10 +79,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop08_main",
       "responses": {
         "Move": "你掀開布簾，進入藥香居。"
-      }
+      },
+      "move_to_room_id": "life_shop08_main"
     },
     {
       "id": "st5_obj_shop09",
@@ -92,7 +91,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你推開半掩的厚實皮簾，進入紫玉膠寮。"
+        "Look": "你推開半掩的〔厚簾〕，進入紫玉膠寮。"
       }
     },
     {
@@ -101,10 +100,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop09_main",
       "responses": {
         "Move": "你掀開厚簾，進入膠寮。"
-      }
+      },
+      "move_to_room_id": "life_shop09_main"
     },
     {
       "id": "st5_obj_shop10",
@@ -113,7 +112,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你穿過掛滿琉璃風鈴的布簾，進入觀月鏡石軒。"
+        "Look": "你穿過掛滿琉璃風鈴的〔布簾〕，進入觀月鏡石軒。"
       }
     },
     {
@@ -122,10 +121,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop10_main",
       "responses": {
         "Move": "你掀開布簾，進入鏡石軒。"
-      }
+      },
+      "move_to_room_id": "life_shop10_main"
     },
     {
       "id": "st5_obj_home07",
@@ -134,7 +133,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你推開刻有辟邪紋的古樸板門，進入紫珀簷根宅。"
+        "Look": "你推開刻有辟邪紋的古樸〔板門〕，進入紫珀簷根宅。"
       }
     },
     {
@@ -143,10 +142,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home07_main",
       "responses": {
         "Move": "你推開板門，進入簷根宅。"
-      }
+      },
+      "move_to_room_id": "life_home07_main"
     },
     {
       "id": "st5_obj_home08",
@@ -155,7 +154,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你扣響了溫潤的木門環，推門進入靈脈護心宅。"
+        "Look": "你扣響了溫潤的〔木門〕環，推門進入靈脈護心宅。"
       }
     },
     {
@@ -164,10 +163,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home08_main",
       "responses": {
         "Move": "你推開木門，進入脈絡宅。"
-      }
+      },
+      "move_to_room_id": "life_home08_main"
     }
   ]
 }

@@ -2,7 +2,6 @@
   "id": "feist04_home03_courtyard",
   "name": "小天井",
   "description": "玉脈宅院心一方、四向簷脊攏著，牆面玉脈在牆根隱現、石縫沁霜；簷下陰影與積霜交錯、呼吸見白，霜白結晶從簷緣直直落、無缸無苔，僅一方冷調靜止。此處僅通〔廊〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist04_home03_c_exit_hall",
       "name": "廊",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist04_home03_hallway",
       "responses": {
+        "Look": "此處可通往廊。",
         "Move": "你退回廊。"
-      }
+      },
+      "move_to_room_id": "feist04_home03_hallway"
     }
   ]
 }

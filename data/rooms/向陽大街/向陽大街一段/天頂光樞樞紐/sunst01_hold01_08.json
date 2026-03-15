@@ -24,23 +24,27 @@
       "id": "sunst01_hold01_08_main",
       "name": "大廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_hold01_main",
       "responses": {
+        "Look": "此處可通往大廳。",
         "Move": "你回到大廳。"
-      }
+      },
+      "move_to_room_id": "sunst01_hold01_main"
     },
     {
       "id": "sunst01_hold01_08_09",
       "name": "西一室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_hold01_09",
       "responses": {
+        "Look": "此處可通往西一室。",
         "Move": "你往西一室走去。"
-      }
+      },
+      "move_to_room_id": "sunst01_hold01_09"
     }
   ]
 }

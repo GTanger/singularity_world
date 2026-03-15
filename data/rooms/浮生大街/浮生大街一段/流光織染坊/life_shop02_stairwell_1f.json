@@ -2,7 +2,6 @@
   "id": "life_shop02_stairwell_1f",
   "name": "樓梯間",
   "description": "牆壁鑲嵌著規律排列的發光晶礦。一道〔螺旋石階〕沿著牆面向上延伸，石材表面覆蓋著厚實、具備彈性的暗綠苔蘚。此處連接前方的〔織造間〕與上方的二樓平台。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -21,23 +20,27 @@
       "id": "life_shop02_stairs_exit_workshop",
       "name": "織造間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_workshop",
       "responses": {
+        "Look": "此處可通往織造間。",
         "Move": "你順著通道回到織造間。"
-      }
+      },
+      "move_to_room_id": "life_shop02_workshop"
     },
     {
       "id": "life_shop02_stairs_exit_up",
       "name": "螺旋石階",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "life_shop02_stairwell_2f",
       "responses": {
+        "Look": "此處可通往螺旋石階。",
         "Move": "你沿著石階向上，抵達二樓平台。"
-      }
+      },
+      "move_to_room_id": "life_shop02_stairwell_2f"
     }
   ]
 }

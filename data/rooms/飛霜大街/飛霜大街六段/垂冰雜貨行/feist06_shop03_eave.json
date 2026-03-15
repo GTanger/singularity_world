@@ -2,7 +2,6 @@
   "id": "feist06_shop03_eave",
   "name": "簷下",
   "description": "簷角行鋪門外一截矮簷，簷緣積霜、人站直便頂到簷板；街面在腳前，可望六段行人與擔夫，霜落在簷緣一碰即化，簷角霜晶成串、窄門內即鋪面。此處僅通〔擁擠鋪面〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist06_shop03_e_exit_main",
       "name": "擁擠鋪面",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist06_shop03_main",
       "responses": {
+        "Look": "此處可通往擁擠鋪面。",
         "Move": "你退回擁擠鋪面。"
-      }
+      },
+      "move_to_room_id": "feist06_shop03_main"
     }
   ]
 }

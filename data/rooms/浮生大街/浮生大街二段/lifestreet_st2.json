@@ -2,7 +2,6 @@
   "id": "lifestreet_st2",
   "name": "浮生大街二段",
   "description": "路面在此略為抬升，地底靈脈的波動也隨之增強。原本隱約的暗紫微光現在變得清晰可見，與兩側簷角垂落的發光細藤交織出一片靜謐的琥珀色光暈。這裡少了街口的喧囂，多了一份沉澱後的穩重。空氣中的微塵在靈光映照下宛如緩慢飄落的星屑。路左是保存古老玉簡與功法的〔石箋觀心閣〕，以及透出丹火暖光與藥石脈動的〔燼暖煉丹居〕；對向則是〔飛簷灰瓦民宅〕與〔赤泥封石居〕，紅泥與灰瓦中皆沁出溫潤的玉質，顯得古樸而堅固。可退回〔浮生大街一段〕，或朝前方的市集中心〔浮生大街三段〕延伸。",
-  "tags": [],
   "zone": "lifestreet",
   "exits": [
     {
@@ -43,10 +42,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st1",
       "responses": {
         "Move": "你朝浮生大街一段方向走去。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st1"
     },
     {
       "id": "st2_exit_st3",
@@ -54,10 +53,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "lifestreet_st3",
       "responses": {
         "Move": "你朝浮生大街三段方向走去。"
-      }
+      },
+      "move_to_room_id": "lifestreet_st3"
     },
     {
       "id": "st2_obj_shop03",
@@ -66,7 +65,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你輕觸門前懸掛的感應木牌，灰石大門緩緩開啟，進入石箋觀心閣。"
+        "Look": "你輕觸門前懸掛的感應〔木牌〕，灰石大門緩緩開啟，進入石箋觀心閣。"
       }
     },
     {
@@ -75,10 +74,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop03_main",
       "responses": {
         "Move": "你掀開木牌旁的布簾，進入石箋閣。"
-      }
+      },
+      "move_to_room_id": "life_shop03_main"
     },
     {
       "id": "st2_obj_shop04",
@@ -87,7 +86,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你推開被爐火烤得微微發燙的鐵框門，步入燼暖煉丹居。"
+        "Look": "你推開被爐火烤得微微發燙的〔鐵框門〕，步入燼暖煉丹居。"
       }
     },
     {
@@ -96,10 +95,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_shop04_main",
       "responses": {
         "Move": "你推開鐵框門，進入燼暖居。"
-      }
+      },
+      "move_to_room_id": "life_shop04_main"
     },
     {
       "id": "st2_obj_home03",
@@ -108,7 +107,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你推開雕刻著辟邪圖騰的堅實板門，進入飛簷灰瓦民宅。"
+        "Look": "你推開雕刻著辟邪圖騰的堅實〔板門〕，進入飛簷灰瓦民宅。"
       }
     },
     {
@@ -117,10 +116,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home03_main",
       "responses": {
         "Move": "你推開板門，進入灰瓦民宅。"
-      }
+      },
+      "move_to_room_id": "life_home03_main"
     },
     {
       "id": "st2_obj_home04",
@@ -129,7 +128,7 @@
         "Look"
       ],
       "responses": {
-        "Look": "你捲起用以阻絕寒氣的厚重竹簾，進入赤泥封石居。"
+        "Look": "你捲起用以阻絕寒氣的厚重〔竹簾〕，進入赤泥封石居。"
       }
     },
     {
@@ -138,10 +137,10 @@
       "sockets": [
         "Move"
       ],
-      "move_to_room_id": "life_home04_main",
       "responses": {
         "Move": "你撥開竹簾，進入紅泥民宅。"
-      }
+      },
+      "move_to_room_id": "life_home04_main"
     }
   ]
 }

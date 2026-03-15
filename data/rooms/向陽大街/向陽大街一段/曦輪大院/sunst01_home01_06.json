@@ -19,12 +19,14 @@
       "id": "sunst01_home01_06_05",
       "name": "三室",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst01_home01_05",
       "responses": {
+        "Look": "此處可通往三室。",
         "Move": "你往三室走回。"
-      }
+      },
+      "move_to_room_id": "sunst01_home01_05"
     }
   ]
 }

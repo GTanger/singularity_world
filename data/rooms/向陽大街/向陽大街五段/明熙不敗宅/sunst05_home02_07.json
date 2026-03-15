@@ -19,12 +19,14 @@
       "id": "sunst05_home02_07_06",
       "name": "後棟・二進",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst05_home02_06",
       "responses": {
+        "Look": "此處可通往後棟・二進。",
         "Move": "你往後棟二進走回。"
-      }
+      },
+      "move_to_room_id": "sunst05_home02_06"
     }
   ]
 }

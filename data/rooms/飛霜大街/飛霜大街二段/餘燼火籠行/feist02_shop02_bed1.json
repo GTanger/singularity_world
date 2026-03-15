@@ -2,7 +2,6 @@
   "id": "feist02_shop02_bed1",
   "name": "【餘燼火籠行】老闆私室",
   "description": "鋪設著木質地板且防護森嚴的私人房間，設有重重門鎖。室內溫度被精準控制，角落的一盞玉雕風爐正靜靜燃燒，照亮了一張舒適的大床。連接〔組裝裡間〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist02_shop02_b1_exit_living",
       "name": "居間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist02_shop02_living",
       "responses": {
+        "Look": "此處可通往居間。",
         "Move": "你退回居間。"
-      }
+      },
+      "move_to_room_id": "feist02_shop02_living"
     }
   ]
 }

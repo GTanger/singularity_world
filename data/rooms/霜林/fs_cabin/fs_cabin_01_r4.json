@@ -20,12 +20,14 @@
       "id": "fs_cabin_01_r4_to_fs_cabin_01_r1",
       "name": "正廳",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "fs_cabin_01_r1",
       "responses": {
+        "Look": "此處可通往正廳。",
         "Move": "你往正廳走去。"
-      }
+      },
+      "move_to_room_id": "fs_cabin_01_r1"
     }
   ]
 }

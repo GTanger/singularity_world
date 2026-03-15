@@ -2,7 +2,6 @@
   "id": "feist01_home03_storage",
   "name": "【沉露茶寮】茶磚庫房",
   "description": "乾燥、冷冽的密閉空間，四周牆壁加裝了鉛皮以阻擋游離輻射對高價茶磚的影響。貨架上整齊地碼放著用油紙層層包裹的貨物。這裡極其安靜，連一絲風聲也聽不見。退回〔水汽後廊〕。",
-  "tags": [],
   "zone": "feistreet",
   "exits": [
     {
@@ -16,12 +15,14 @@
       "id": "feist01_home03_s_exit_living",
       "name": "內室雅座",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "feist01_home03_living",
       "responses": {
+        "Look": "此處可通往內室雅座。",
         "Move": "你退回內室雅座。"
-      }
+      },
+      "move_to_room_id": "feist01_home03_living"
     }
   ]
 }

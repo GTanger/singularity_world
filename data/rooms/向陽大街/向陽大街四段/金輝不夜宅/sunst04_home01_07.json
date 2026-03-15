@@ -19,12 +19,14 @@
       "id": "sunst04_home01_07_03",
       "name": "西廂・前間",
       "sockets": [
+        "Look",
         "Move"
       ],
-      "move_to_room_id": "sunst04_home01_03",
       "responses": {
+        "Look": "此處可通往西廂・前間。",
         "Move": "你往西廂前間走回。"
-      }
+      },
+      "move_to_room_id": "sunst04_home01_03"
     }
   ]
 }
