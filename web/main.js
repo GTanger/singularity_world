@@ -1022,9 +1022,12 @@
 		input.focus();
 		function sendTalk() {
 			var text = (input.value || '').trim();
+			var sayText = text || '（搭話）';
 			wrap.remove();
+			var playerLine = '你對【' + (targetName || entityId) + '】說：「' + sayText + '」';
+			appendNarrative(formatNarrative(playerLine), 'Talk');
 			if (window.gameSend) {
-				window.gameSend({ type: 'do_action', entity_id: entityId, action: 'Talk', player_input: text || '（搭話）' });
+				window.gameSend({ type: 'do_action', entity_id: entityId, action: 'Talk', player_input: sayText });
 				appendLogPendingTalk();
 			}
 		}
