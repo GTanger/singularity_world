@@ -1,23 +1,16 @@
 #!/usr/bin/env bash
-# 奇點世界 — 一鍵啟動：建置、開埠 1721（對應 Cloudflare Tunnel）、啟動伺服器。
+# 奇點世界 — 一鍵啟動：先殺現有，建置並啟動奇點 + Chatmery（Telegram + Web）。
 # 用法：在專案根目錄執行 ./start
 
 set -e
 cd "$(dirname "$0")"
+SW_DIR="$(pwd)"
+CHATMERY_DIR="${CHATMERY_DIR:-$SW_DIR/../chatmery}"
 
-# 確保能找到 go（常見安裝路徑）
 export PATH="/usr/local/go/bin:${PATH}"
 
-# 每次啟動都建置，確保改過 chunk_load、handler 等任一 .go 後一定跑新碼
-echo "建置中…"
-mkdir -p bin
-go build -buildvcs=false -o bin/server .
-
-# 建立 DB 目錄
-mkdir -p data
-
 PORT=1721
-# 先結束佔用該埠的 process，避免 address already in use
+# 1) 先殺佔用 1721、chatmery、chatmery-web
 if command -v lsof &>/dev/null; then
   pids=$(lsof -ti :$PORT 2>/dev/null) || true
   if [[ -n "$pids" ]]; then
@@ -32,6 +25,33 @@ elif command -v fuser &>/dev/null; then
     sleep 1
   fi
 fi
+pkill -x chatmery-web 2>/dev/null || true
+sleep 1
 
-echo "啟動伺服器（PORT=$PORT，對應 sw.ygggt.com）…"
-exec env PORT=$PORT ./bin/server
+# 2) 建置奇點
+echo "建置奇點…"
+mkdir -p bin data
+go build -buildvcs=false -o bin/server .
+
+# 3) 建置並啟動 Chatmery Web（若目錄存在）
+if [[ -d "$CHATMERY_DIR" ]]; then
+  echo "建置 Chatmery Web…"
+  ( cd "$CHATMERY_DIR" && go build -o chatmery-web ./cmd/chatmery-web )
+  echo "啟動 Chatmery Web（:1722）…"
+  (
+    cd "$CHATMERY_DIR"
+    if [[ -f .env ]]; then
+      set -a
+      source .env 2>/dev/null || true
+      set +a
+    fi
+    nohup env CHATMERY_WEB_PORT=1722 ./chatmery-web >> chatmery-web.log 2>&1
+  ) &
+  sleep 0.5
+fi
+
+# 4) 啟動奇點（後台，對應 sw.ygggt.com）
+echo "啟動奇點（PORT=$PORT）…"
+nohup env PORT=$PORT ./bin/server >> sw.log 2>&1 &
+sleep 2
+echo "已啟動，可關閉終端。奇點 log：$SW_DIR/sw.log；Chatmery Web log：$CHATMERY_DIR/chatmery-web.log"

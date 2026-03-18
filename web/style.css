@@ -362,7 +362,6 @@ body {
 .entity-row:hover { color: var(--room-name); }
 .entity-row.expanded { color: var(--room-name); }
 .entity-npc { color: #b0bec5; }
-.entity-arrow { display: inline-block; width: 0.9em; text-align: center; }
 .entity-actions-expand {
 	padding: 0.3rem 0 0.4rem 1em;
 	display: flex;

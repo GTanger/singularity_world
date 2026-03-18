@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# 奇點 + Chatmery Web 一鍵啟動：先殺現有 process，再建置並啟動。
+# 開機自動啟動請用 systemd：見下方 --install 或 doc/開機啟動.md
+# 用法：在奇點專案根目錄執行 ./start-with-chatmery
+
+set -e
+SW_DIR="$(cd "$(dirname "$0")" && pwd)"
+CHATMERY_DIR="${CHATMERY_DIR:-$SW_DIR/../chatmery}"
+export PATH="/usr/local/go/bin:${PATH}"
+
+ts() { date '+%Y-%m-%d %H:%M:%S'; }
+
+# --install：寫入 systemd user 服務並 enable（開機自動啟動）
+if [[ "$1" == "--install" ]]; then
+  mkdir -p ~/.config/systemd/user
+  cat << EOF > ~/.config/systemd/user/sw-with-chatmery.service
+[Unit]
+Description=奇點世界 + Chatmery Web（先殺現有再啟動）
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=$SW_DIR
+Environment=CHATMERY_DIR=$CHATMERY_DIR
+EnvironmentFile=-$CHATMERY_DIR/.env
+ExecStart=$SW_DIR/start-with-chatmery
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target
+EOF
+  systemctl --user daemon-reload
+  systemctl --user enable sw-with-chatmery
+  echo "[$(ts)] 已設定開機自動啟動（sw-with-chatmery）。執行 systemctl --user start sw-with-chatmery 啟動。"
+  exit 0
+fi
+
+# 1) 先殺佔用 1721 的 process（奇點）
+PORT=1721
+if command -v lsof &>/dev/null; then
+  pids=$(lsof -ti :$PORT 2>/dev/null) || true
+  if [[ -n "$pids" ]]; then
+    echo "[$(ts)] 結束佔用 :$PORT 的 process：$pids"
+    kill $pids 2>/dev/null || true
+    sleep 1
+  fi
+elif command -v fuser &>/dev/null; then
+  if fuser ${PORT}/tcp &>/dev/null; then
+    echo "[$(ts)] 結束佔用 :$PORT 的 process…"
+    fuser -k ${PORT}/tcp 2>/dev/null || true
+    sleep 1
+  fi
+fi
+
+# 2) 殺現有 chatmery-web
+pkill -x chatmery-web 2>/dev/null || true
+sleep 1
+
+# 3) 建置奇點
+echo "[$(ts)] 建置奇點…"
+mkdir -p "$SW_DIR/bin" "$SW_DIR/data"
+( cd "$SW_DIR" && go build -buildvcs=false -o bin/server . )
+
+# 4) 建置 Chatmery Web
+if [[ -d "$CHATMERY_DIR" ]]; then
+  echo "[$(ts)] 建置 Chatmery Web…"
+  ( cd "$CHATMERY_DIR" && go build -o chatmery-web ./cmd/chatmery-web )
+  [[ -f "$CHATMERY_DIR/.env" ]] && set -a && source "$CHATMERY_DIR/.env" && set +a
+else
+  echo "[$(ts)] 略過 Chatmery Web（CHATMERY_DIR 不存在：$CHATMERY_DIR）"
+fi
+
+# 5) 啟動奇點（1721）
+echo "[$(ts)] 啟動奇點（PORT=1721）…"
+( cd "$SW_DIR" && env PORT=1721 ./bin/server ) &
+PID_SW=$!
+
+# 6) 啟動 Chatmery Web（1722）
+if [[ -d "$CHATMERY_DIR" && -x "$CHATMERY_DIR/chatmery-web" ]]; then
+  sleep 0.5
+  echo "[$(ts)] 啟動 Chatmery Web（PORT=1722）…"
+  ( cd "$CHATMERY_DIR" && env CHATMERY_WEB_PORT=1722 ./chatmery-web ) &
+  PID_WEB=$!
+  wait $PID_SW $PID_WEB
+else
+  wait $PID_SW
+fi

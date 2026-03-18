@@ -417,16 +417,24 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 			backstory := db.BuildIdentity(database, targetID)
 			snippets := db.SearchArchival(targetID, msg.PlayerInput, 5)
 			styleExamples := db.PickStyleExamples(database, targetID, 3)
-			reply, err := ai.CallAITalk(cfg.OllamaBaseURL, cfg.OllamaModel, playerInput, backstory, snippets, styleExamples)
+			var p *db.Personality
+			if target.SoulSeed != nil {
+				pp := db.ExpandSoulSeedToPersonality(*target.SoulSeed)
+				p = &pp
+			}
+			sensitivityHint := ""
+			if p != nil {
+				if p.Sensitivity > 0.6 {
+					sensitivityHint = "此角色較熱絡，可多說一兩句。"
+				} else if p.Sensitivity < 0.3 {
+					sensitivityHint = "此角色較冷淡，回覆簡短。"
+				}
+			}
+			reply, err := ai.CallAITalk(cfg.OllamaBaseURL, cfg.OllamaModel, playerInput, backstory, snippets, styleExamples, sensitivityHint)
 			var narrative, npcReply string
 			if err != nil || reply == "" {
 				if err != nil {
 					log.Printf("[Talk] Ollama fallback: %v", err)
-				}
-				var p *db.Personality
-				if target.SoulSeed != nil {
-					pp := db.ExpandSoulSeedToPersonality(*target.SoulSeed)
-					p = &pp
 				}
 				narrative = buildTalkNarrative(database, playerRoom, target, p, cfg)
 				npcReply = narrative
@@ -453,7 +461,9 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 			}
 			log.Printf("[Talk] sending narrative len=%d", len(narrative))
 			c.Send <- mustJSON(out)
-			_ = db.InsertArchival(targetID, "玩家說："+playerInput+"；NPC回："+npcReply, "event")
+			// Talk 的長期記憶僅由此處寫入：逾時 2 分鐘後下一句 Talk 時，上一場整場壓成 1～3 條 consolidation 寫入 archival（見 conversation_buffer.go）
+			FlushConversationAndAppend(c.PlayerID, targetID, playerInput, npcReply, now)
+			store.UpdateLastTalkAt(c.PlayerID) // 同房玩家優先 LLM：有對話行為時不觸發 NPC 間對話
 		case "Attack":
 			attacker, _ := db.GetEntity(database, c.PlayerID)
 			if attacker == nil {
@@ -831,6 +841,12 @@ func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Char
 	idx := rng.Intn(len(responses))
 	if personality != nil {
 		shift := int(personality.Boldness * float64(len(responses) / 2))
+		// Sensitivity 高→偏後（較多話／熱絡感）、低→偏前（較短／冷淡）
+		if personality.Sensitivity > 0.6 {
+			shift += len(responses) / 4
+		} else if personality.Sensitivity < 0.3 {
+			shift -= len(responses) / 4
+		}
 		idx = (idx + shift + len(responses)) % len(responses)
 	}
 	return "你向【" + name + "】搭話。" + name + "說道：" + responses[idx]

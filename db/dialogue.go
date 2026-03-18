@@ -228,17 +228,27 @@ func PickLineWeighted(lines []string, seed int64, personality *Personality, time
 	for i, w := range weights {
 		x -= w
 		if x <= 0 {
-			if personality != nil && personality.Boldness > 0 {
+			if personality != nil {
 				shift := int(personality.Boldness * float64(len(lines)/2))
-				i = (i + shift) % len(lines)
+				if personality.Sensitivity > 0.6 {
+					shift += len(lines) / 4
+				} else if personality.Sensitivity < 0.3 {
+					shift -= len(lines) / 4
+				}
+				i = (i + shift + len(lines)) % len(lines)
 			}
 			return lines[i]
 		}
 	}
 	idx := rng.Intn(len(lines))
-	if personality != nil && personality.Boldness > 0 {
+	if personality != nil {
 		shift := int(personality.Boldness * float64(len(lines)/2))
-		idx = (idx + shift) % len(lines)
+		if personality.Sensitivity > 0.6 {
+			shift += len(lines) / 4
+		} else if personality.Sensitivity < 0.3 {
+			shift -= len(lines) / 4
+		}
+		idx = (idx + shift + len(lines)) % len(lines)
 	}
 	return lines[idx]
 }

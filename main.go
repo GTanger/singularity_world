@@ -7,13 +7,17 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
+	"singularity_world/ai"
 	"singularity_world/config"
 	"singularity_world/db"
+	"singularity_world/entity"
 	"singularity_world/economy"
 	"singularity_world/game"
 	"singularity_world/server"
@@ -40,6 +44,78 @@ func brainArrivalNarrative(npcName string, intent db.IntentType) string {
 
 // maxAssignmentsPerVenue 求職撮合時，單一場所最多指派數（無 max_staff 時用此常數）。
 const maxAssignmentsPerVenue = 2
+
+// truncRune 截斷為最多 n 個 rune，超出補「…」。
+func truncRune(s string, n int) string {
+	r := []rune(s)
+	if len(r) <= n {
+		return s
+	}
+	return string(r[:n]) + "…"
+}
+
+// tryTriggerNpcNpcInRoom 在指定房嘗試觸發一次 NPC 間 AI 對話；topicHint 可為「交班」等或空。成功則寫入記憶並回傳 true。
+func tryTriggerNpcNpcInRoom(database *sql.DB, sessionStore *server.SessionStore, cfg config.Server, roomID, topicHint string) bool {
+	if cfg.OllamaBaseURL == "" || cfg.OllamaModel == "" {
+		return false
+	}
+	if sessionStore.RoomHasPlayerWithRecentTalk(database, roomID, 60*time.Second) {
+		return false
+	}
+	entities, _ := db.GetEntitiesInRoom(database, roomID)
+	var npcs []*entity.Character
+	for _, e := range entities {
+		if e != nil && e.Kind == "npc" {
+			npcs = append(npcs, e)
+		}
+	}
+	if len(npcs) < 2 {
+		return false
+	}
+	i := rand.Intn(len(npcs))
+	j := i
+	for j == i {
+		j = rand.Intn(len(npcs))
+	}
+	A, B := npcs[i], npcs[j]
+	nameA, nameB := A.DisplayTitle, B.DisplayTitle
+	if nameA == "" {
+		nameA = A.ID
+	}
+	if nameB == "" {
+		nameB = B.ID
+	}
+	roomName, _ := db.GetRoomName(database, roomID)
+	hour := 12
+	if cfg.GameTimeEpochUnix != 0 {
+		_, hour, _, _ = game.GameTimeNow(time.Now().Unix(), cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+	}
+	timeLabel := "此時"
+	if hour >= 5 && hour < 10 {
+		timeLabel = "清晨"
+	} else if hour >= 10 && hour < 14 {
+		timeLabel = "正午"
+	} else if hour >= 14 && hour < 18 {
+		timeLabel = "傍晚"
+	} else {
+		timeLabel = "夜裡"
+	}
+	backstoryA := db.BuildIdentity(database, A.ID)
+	backstoryB := db.BuildIdentity(database, B.ID)
+	npcNpcMemory := db.GetNpcNpcConversationSummary(A.ID, B.ID)
+	lineA, lineB, err := ai.CallAITalkNPCToNPC(cfg.OllamaBaseURL, cfg.OllamaModel, nameA, nameB, backstoryA, backstoryB, roomName, timeLabel, npcNpcMemory, topicHint)
+	if err != nil || lineA == "" || lineB == "" {
+		return false
+	}
+	summary := "在" + roomName + "：" + nameA + "說「" + truncRune(lineA, 25) + "」" + nameB + "回「" + truncRune(lineB, 25) + "」"
+	_ = db.SetNpcNpcConversationSummary(A.ID, B.ID, summary)
+	if sessionStore.RoomHasPlayerWithRecentTalk(database, roomID, 15*time.Second) {
+		return true // 已寫記憶，不播
+	}
+	text := "【" + nameA + "】對【" + nameB + "】說：「" + lineA + "」【" + nameB + "】說：「" + lineB + "」"
+	server.SendNarrateToRoom(sessionStore, database, roomID, text)
+	return true
+}
 
 // buildActiveRoomIDs 回傳「觀測圈」：有玩家的房間＋其鄰房；僅這些房內的 NPC 會被腦／移動驅動。無人時回傳空 map。
 func buildActiveRoomIDs(sessionStore *server.SessionStore, database *sql.DB, roomGraph *db.RoomGraph) map[string]bool {
@@ -189,6 +265,19 @@ func main() {
 		server.HandlePlayerRoomAPI(database, w, r)
 	})
 
+	// Chatmery Web：/chatmery 轉發至 localhost:1722（Tunnel 只指 1721 時由奇點代轉）
+	if chatmeryURL, err := url.Parse("http://127.0.0.1:1722"); err == nil {
+		chatmeryProxy := httputil.NewSingleHostReverseProxy(chatmeryURL)
+		http.HandleFunc("/chatmery", func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != "/chatmery" {
+				chatmeryProxy.ServeHTTP(w, r)
+				return
+			}
+			http.Redirect(w, r, "/chatmery/", http.StatusFound)
+		})
+		http.Handle("/chatmery/", chatmeryProxy)
+	}
+
 	fs := http.FileServer(http.Dir("web"))
 	http.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		p := r.URL.Path
@@ -207,6 +296,7 @@ func main() {
 	// NPC 活化：閒置動作 & 巡邏計時器（中頻 5-12 真實秒，即 2-5 遊戲分鐘）
 	db.LoadBehaviors("data/npc_behaviors.json")
 	db.LoadOccupations("data/templates/occupations.json")
+	db.LoadNpcNpcTopics("data/npc_to_npc_topics.json")
 	// 房間可互動物件：僅從各房間 JSON 的 objects 欄位載入
 	if store.Default != nil {
 		for _, id := range store.Default.RoomIDs() {
@@ -218,6 +308,7 @@ func main() {
 	}
 	var idleTickCount int
 	nextIdleTrigger := 25 + rand.Intn(35)
+	var randomNpcDialogueTicksLeft int = 80 + rand.Intn(40) // 觸發－輕：隨機時點觸發 NPC 間對話
 
 	// 尋路引擎：建立房間鄰接圖
 	roomGraph := db.GetGraph()
@@ -251,6 +342,25 @@ func main() {
 
 		now := time.Now().Unix()
 		_, hour, _, gameDay := game.GameTimeNow(now, cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+
+		// 觸發－輕：隨機時點在某一有玩家的房觸發 NPC 間對話
+		randomNpcDialogueTicksLeft--
+		if randomNpcDialogueTicksLeft <= 0 && cfg.OllamaBaseURL != "" && cfg.OllamaModel != "" {
+			randomNpcDialogueTicksLeft = 80 + rand.Intn(40)
+			playerRoomsForRandom := server.GetPlayerRoomMap(sessionStore, database)
+			if len(playerRoomsForRandom) > 0 {
+				rooms := make([]string, 0, len(playerRoomsForRandom))
+				for r := range playerRoomsForRandom {
+					rooms = append(rooms, r)
+				}
+				roomID := rooms[rand.Intn(len(rooms))]
+				topicHint := ""
+				if t := db.PickRandomNpcNpcTopic(); t != nil {
+					topicHint = t.Hint
+				}
+				tryTriggerNpcNpcInRoom(database, sessionStore, cfg, roomID, topicHint)
+			}
+		}
 
 		// NPC 每日消耗：每遊戲日扣食宿鎂（第四個回傳值為 gameDay，勿與 min 搞混）
 		if gameDay != lastExpenseDay {
@@ -289,6 +399,21 @@ func main() {
 				}
 				if len(moves) > 0 {
 					server.BroadcastRoomViews(sessionStore, database, cfg)
+					// 觸發－中：排班時段有動靜的房，試觸發一次 NPC 間對話（主題：交班）
+					topicHint := ""
+					if t := db.GetNpcNpcTopicByID("交班"); t != nil {
+						topicHint = t.Hint
+					}
+					roomIDsWithActivity := make(map[string]bool)
+					for _, m := range moves {
+						roomIDsWithActivity[m.OldRoom] = true
+						roomIDsWithActivity[m.NewRoom] = true
+					}
+					for roomID := range roomIDsWithActivity {
+						if tryTriggerNpcNpcInRoom(database, sessionStore, cfg, roomID, topicHint) {
+							break
+						}
+					}
 				}
 			}
 		}
@@ -340,12 +465,28 @@ func main() {
 			playerRooms := server.GetPlayerRoomMap(sessionStore, database)
 			schedules, _ := db.GetAllSchedules(database)
 
-			// NPC-NPC 微互動：每次閒置 tick 有 15% 機率在某一有玩家房間觸發，每輪最多一次
-			for roomID := range playerRooms {
-				social := db.PickMicroInteraction(database, roomID, 15)
-				if social != "" {
-					server.SendNarrateToRoom(sessionStore, database, roomID, social)
-					break
+			// 觸發－重：閒置 tick 時同房兩 NPC 一來一往（主題劇本＋AI、寫記憶）
+			npcDialogueDone := false
+			if cfg.OllamaBaseURL != "" && cfg.OllamaModel != "" {
+				topicHint := ""
+				if t := db.PickRandomNpcNpcTopic(); t != nil {
+					topicHint = t.Hint
+				}
+				for roomID := range playerRooms {
+					if tryTriggerNpcNpcInRoom(database, sessionStore, cfg, roomID, topicHint) {
+						npcDialogueDone = true
+						break
+					}
+				}
+			}
+			if !npcDialogueDone {
+				// Fallback：微互動（15% 機率），每輪最多一次
+				for roomID := range playerRooms {
+					social := db.PickMicroInteraction(database, roomID, 15)
+					if social != "" {
+						server.SendNarrateToRoom(sessionStore, database, roomID, social)
+						break
+					}
 				}
 			}
 

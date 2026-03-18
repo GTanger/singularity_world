@@ -120,7 +120,7 @@
 					li.className = 'entity-row';
 					if (e.kind === 'npc') li.classList.add('entity-npc');
 					li.setAttribute('data-entity-id', eid);
-					li.innerHTML = '<span class="entity-arrow">\u25b8</span> ' + escapeHtml(displayName);
+					li.textContent = displayName;
 					li.setAttribute('role', 'button');
 					li.setAttribute('tabindex', '0');
 					li.title = '點擊觀看';

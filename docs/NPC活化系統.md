@@ -73,7 +73,7 @@
 │  main.go  game.Loop (200ms tick)             │
 │    ├─ 每遊戲小時：ApplySchedules → 僅發「出發」敘事（不傳送）；排班目標由 Tick 逐格尋路 │
 │    ├─ 每 15 秒：TravelerManager.Tick → 排班/路線/尋路型逐格移動，抵達時發敘事          │
-│    └─ 每 5-12 秒：閒置動作 + 區域巡邏（在班且於 wander_rooms 內時 10% 瞬移）            │
+│    └─ 每 5-12 秒：閒置動作 + 區域巡邏 + NPC 間 AI 對話（003；閒置／排班／隨機觸發，失敗 fallback 微互動）│
 │                                              │
 └──────────────────────────────────────────────┘
          │
@@ -129,7 +129,8 @@
 | 動作 | 觸發 | 效果 |
 |------|------|------|
 | **Look** | 玩家點擊 NPC → 觀看 | Log 顯示外觀敘事（不開彈窗） |
-| **Talk** | 玩家點擊 NPC → 交談 | Log 顯示模板對話；第四階段將接**背版＋記憶**（見 §五 第四階段）。 |
+| **Talk** | 玩家點擊 NPC → 交談 | Log 顯示背版＋記憶＋LLM 回覆（第四階段）；見 §五 第四階段。 |
+| **NPC 間對話** | 主迴圈觸發（閒置／排班／隨機） | 同房 ≥2 NPC 時可觸發 AI 一來一往（[003](discussions/003_NPC交互對話系統.md)）；失敗 fallback 微互動（F）。 |
 | **Attack** | 玩家點擊 NPC → 攻擊 | 戰鬥結算 → Log 顯示結果 |
 
 ---
@@ -296,20 +297,21 @@ data/templates/
 | 模板 NPC 生成器 | ⬜ | 讀 archetypes.json → 批量生成 NPC 個體 | 中 |
 | NPC 喊價 | ⬜ | NPC 主動在 log 喊 trade_announce | 小 |
 
-### 第四階段：NPC 有記憶 ⬜ 待做
+### 第四階段：NPC 有記憶 🟡 部分完成
 
-讓 NPC 記住玩家與對話，產生「這個人認識我」「越聊越立體」的感覺。本階段對齊**對話記憶系統**設計：每 NPC 一 subject（entity_id）、**背版**（blocks）＋**長期記憶**（archival）、Talk 前檢索注入、對話結束 consolidation 寫入。
+讓 NPC 記住玩家與對話，產生「這個人認識我」「越聊越立體」的感覺。本階段對齊**對話記憶系統**設計：每 NPC 一 subject（entity_id）、**背版**（blocks）＋**長期記憶**（archival）、Talk 前檢索注入、寫入節流與 per-NPC 上限已實作；對話結束 consolidation、語意檢索、blocks 可更新尚未做。
 
 | 項目 | 狀態 | 效果 | 工作量 |
 |------|------|------|--------|
-| **背版（identity）只讀** | ⬜ | 從職稱＋場所組出「你是〇〇，在△△。」；Talk 時帶入 context（模板或 CallAITalk） | 小 |
-| **archival 儲存＋寫入** | ⬜ | 對話結束將本輪 1～3 條精華寫入該 NPC 的長期記憶；節流（本場上限 M 條） | 中 |
-| **archival 檢索（top-k）** | ⬜ | Talk 前用玩家輸入或話題當 query，語意或關鍵字檢索該 NPC 記憶，取 3～5 條注入 prompt | 中 |
-| **可驗收子項** | ⬜ | 記憶1：Talk 前取回背版＋top-k；記憶2：結束寫入 archival；記憶3：再次 Talk 能檢索到前次寫入 | — |
+| **背版（identity）只讀** | ✅ | 從職稱＋場所＋性格＋心境＋事件組出 identity；Talk 時帶入（BuildIdentity → CallAITalk） | 小 |
+| **archival 儲存＋寫入** | ✅ | 每輪 Talk 後寫入 1 條；節流：每 NPC 每 10 分鐘最多 3 條；每 NPC 總量上限 100 條 | 中 |
+| **archival 檢索（top-k）** | ✅ | Talk 前以玩家輸入當 query，關鍵字檢索該 NPC 記憶，取 5 條注入 prompt（語意檢索 ⬜） | 中 |
+| **可驗收子項** | ✅／🟡 | 記憶1：Talk 前背版＋top-k ✅；記憶2：每輪寫入 ✅（設計為結束 consolidation 寫 1～3 條 ⬜）；記憶3：再 Talk 可檢索到 ✅ | — |
 | **blocks 可更新（選做）** | ⬜ | summary／relationship 由 archival 定期整理寫回；背版「會長大」、token 可控 | 大 |
 
-**術語對照**：背版 = identity／summary／relationship（blocks）；長期記憶 = archival（語意檢索）；寫入時機 = 對話結束 consolidation；與對話池並存（對話池負責口吻，背版＋記憶負責「是誰、發生過什麼」）。  
-**詳細設計與實作步驟**：見 [NPC對話記憶與背版—設計](implementation/NPC對話記憶與背版—設計.md)、[NPC對話記憶與背版—實作步驟與檔案流程](implementation/NPC對話記憶與背版—實作步驟與檔案流程.md)；共識與流程對照見 [對話記憶系統—彙整與探討](reference/對話記憶系統—彙整與探討.md)。
+**術語對照**：背版 = identity／summary／relationship（blocks）；長期記憶 = archival（目前關鍵字檢索；語意檢索未做）；寫入 = 每輪＋節流，設計的「對話結束 consolidation」未實作。  
+**詳細設計與實作步驟**：見 [NPC對話記憶與背版—設計](implementation/NPC對話記憶與背版—設計.md)、[NPC對話記憶與背版—實作步驟與檔案流程](implementation/NPC對話記憶與背版—實作步驟與檔案流程.md)；共識與流程對照見 [對話記憶系統—彙整與探討](reference/對話記憶系統—彙整與探討.md)。  
+**記憶系統與活化系統對照**：見 [記憶系統對照NPC活化系統](reference/記憶系統對照NPC活化系統.md)。
 
 ### 第五階段：NPC 有眼 ⬜ 待做
 
@@ -319,7 +321,7 @@ data/templates/
 |------|------|------|--------|
 | 戰鬥反應 | ⬜ | 看到打架→逃跑/圍觀/報官 | 小 |
 | 偷竊反應 | ⬜ | 看到偷東西→喊叫/攔截 | 小 |
-| NPC 之間互動 | ⬜ | 商人聊價格、守衛趕乞丐 | 中 |
+| **NPC 之間互動** | **✅** | **同房兩 NPC AI 一來一往＋主題劇本＋記憶（[003](discussions/003_NPC交互對話系統.md)）；活化突破線 F 微互動為 fallback** | — |
 | 觀測坍縮整合 | ⬜ | 進房觸發觀測、離開恢復 | 中 |
 
 ### 第六階段：NPC 有心 ⬜ 待做
@@ -370,8 +372,10 @@ data/templates/
 | `db/npc.go` | ~88 | InsertNPC、InsertSchedule、SeedNPCs（defaultNPCs 目前為空） |
 | `db/room.go` | ~370 | Room（含 tags/zone）、SyncRoomsFromFile、GetRoomsByTag/Zone |
 | `server/broadcast.go` | ~50 | SendNarrateToRoom、GetPlayerRoomMap、RefreshRoomViews |
-| `server/handler.go` | - | handleMove 中的進房反應 goroutine |
-| `main.go` | ~200 | game loop 整合排班 + 閒置 + 巡邏 + 地圖移動 |
+| `server/handler.go` | - | handleMove 進房反應、Talk（背版＋記憶→CallAITalk）、UpdateLastTalkAt |
+| `main.go` | - | game loop：排班＋閒置＋巡邏＋**NPC 間 AI 對話**（tryTriggerNpcNpcInRoom，見 [003](discussions/003_NPC交互對話系統.md)） |
+| `ai/talk.go` | - | CallAITalk（玩家↔NPC）、CallAITalkNPCToNPC（NPC 間一來一往，帶背版／topic／記憶） |
+| `db/npc_topics.go` | - | NPC 間對話主題劇本：LoadNpcNpcTopics、PickRandomNpcNpcTopic、GetNpcNpcTopicByID（交班／閒聊／打聽） |
 
 ### 6.2 資料表
 
@@ -383,16 +387,16 @@ data/templates/
 | `entity_room` | entity_id, room_id | 實體當前位置 |
 | `npc_schedules` | entity_id, work_room, rest_room, shift_start, shift_end | NPC 排班 |
 
-### 6.3 記憶相關（規劃，第四階段）
+### 6.3 記憶相關（第四階段，已實作節流與上限）
 
 | 檔案／模組 | 職責 |
 |------------|------|
-| `db/backstory.go` | BuildIdentity(entityID)：從職稱＋場所組出 identity 字串；Talk 前讀取。 |
-| `db/archival.go` | ArchivalEntry、LoadArchival/SaveArchival、InsertArchival、SearchArchival(entityID, query, topK)；依 entity_id 分區。 |
-| `data/npc_archival.json` | 長期記憶持久化（或改由 store 擴充）。 |
-| handler Talk 分支 | 讀背版 → 檢索 top-k 記憶 → 組 prompt → 回覆 → 可選本輪／結束寫入；可接 CallAITalk（007）。 |
+| `db/backstory.go` | BuildIdentity(entityID)：從職稱＋場所＋性格＋心境＋事件組 identity；Talk 前讀取。 |
+| `db/archival.go` | InsertArchival（內含節流：每 NPC 每 10 分鐘最多 3 條）、SearchArchival(entityID, query, topK)；store 負責 AppendArchival、GetArchivalByEntity、trimArchivalPerEntity(100)。 |
+| `data/runtime/npc_archival.json` | 長期記憶持久化（store 載入／寫回）。 |
+| handler Talk 分支 | 讀背版 → SearchArchival top-5 → CallAITalk → 回覆後 InsertArchival；fallback 為 buildTalkNarrative。 |
 
-設計與步驟見 [NPC對話記憶與背版—設計](implementation/NPC對話記憶與背版—設計.md)、[實作步驟與檔案流程](implementation/NPC對話記憶與背版—實作步驟與檔案流程.md)；共識見 [對話記憶系統—彙整與探討](reference/對話記憶系統—彙整與探討.md)。
+設計與步驟見 [NPC對話記憶與背版—設計](implementation/NPC對話記憶與背版—設計.md)、[實作步驟與檔案流程](implementation/NPC對話記憶與背版—實作步驟與檔案流程.md)；共識見 [對話記憶系統—彙整與探討](reference/對話記憶系統—彙整與探討.md)。**對照活化系統**見 [記憶系統對照NPC活化系統](reference/記憶系統對照NPC活化系統.md)。
 
 ### 6.4 WebSocket 訊息
 
@@ -542,6 +546,8 @@ data/templates/
 | 人物角色模板 | `docs/reference/人物角色模板.md` | 玩家/NPC 共用結構定義 |
 | **玩家視角—NPC 與房間互動** | `docs/reference/玩家視角—NPC 與房間互動.md` | 玩家端：進入房間所見、人物欄、點擊 NPC 流程與各動作結果（對齊 005/002、房間非人物件、有嘴/交易設計） |
 | **奇點馬斯洛需求系統** | `docs/reference/奇點馬斯洛需求系統.md` | 需求層級（生存／安定／可選社交與成就）、狀態變數與閾值、需求→行為意圖與決策優先序；決策引擎與需求驅動實作對齊 |
+| **記憶系統對照 NPC 活化** | `docs/reference/記憶系統對照NPC活化系統.md` | 第四階段記憶流程與突破線 G–H 對照；**NPC 間對話**與 F／第五階段對照。 |
+| **NPC 交互對話系統（003）** | `docs/discussions/003_NPC交互對話系統.md` | NPC 間 AI 對話：觸發（閒置／排班／隨機）、主題劇本、NpcNpcSummaries 記憶、玩家優先；對應活化 **F**（微互動 fallback）與**第五階段「NPC 之間互動」**。 |
 
 ---
 

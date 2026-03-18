@@ -28,7 +28,7 @@
 | **C** | 性格偏移決策 | 同境不同命，個體差異 | ✅ | `decision.go` personalityWeightedSelect、Decide 候選加權 |
 | **D** | NPC 個人事件日誌 | NPC 有「過去」，可供對話引用 | ✅ | `db/npc_events.go`、store.RecentByEntity、main LogNPCEvent |
 | **E** | disposition（心境值） | NPC 情緒影響閒置文本口吻 | ✅ | store.Entity.Disposition、`db/disposition.go`、PickIdleEmote(disposition) |
-| **F** | NPC-NPC 微互動 | NPC 之間會打招呼、閒聊 | ✅ | `db/npc_social.go`、main 閒置 tick 前 PickMicroInteraction(15) |
+| **F** | NPC-NPC 微互動／NPC 間 AI 對話 | NPC 之間會打招呼、閒聊；**已擴充**：閒置／排班／隨機觸發、CallAITalkNPCToNPC、主題劇本、NpcNpcSummaries 記憶；微互動為 fallback | ✅ | `db/npc_social.go`、`ai/talk.go` CallAITalkNPCToNPC、`db/npc_topics.go`、main tryTriggerNpcNpcInRoom；見 [003](discussions/003_NPC交互對話系統.md) |
 | **G** | 背版組裝（identity） | Talk 時帶入「我是誰」| ✅ | `db/backstory.go` BuildIdentity、職稱／場所／性格／心境／事件 |
 | **H** | archival 記憶（寫入+檢索）| NPC 記住跟玩家的過去 | ✅ | store.ArchivalEntry、AppendArchival、GetArchivalByEntity、`db/archival.go` |
 | **I** | CallAITalk 接入 | LLM 優先＋模板 fallback | ✅ | `ai/talk.go` stub、handler Talk 接線、PickStyleExamples、InsertArchival 寫回 |

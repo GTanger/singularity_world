@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -116,7 +117,11 @@ type Store struct {
 	EventLog        []EventEntry            // 事件日誌（append）
 	Archival        []ArchivalEntry         // NPC 長期記憶（依 entity_id 查詢）
 	Auth            map[string]string       // entity_id -> password_hash
+	NpcSummaries    map[string]string       // entity_id -> 與玩家的最近印象（背版用）
+	NpcNpcSummaries map[string]string       // "idA|idB"（idA<idB）-> A 與 B 的最近交談摘要，供長碰面不重複
 	runtimeDir      string
+	summariesPath   string
+	npcNpcSummariesPath string
 	archivalPath    string
 	entityRoomsPath string
 	assignmentsPath string
@@ -233,6 +238,10 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 		eventLogPath:    filepath.Join(runtimeDir, "event_log.json"),
 		archivalPath:    filepath.Join(runtimeDir, "npc_archival.json"),
 		authPath:        filepath.Join(runtimeDir, "auth.json"),
+		summariesPath:   filepath.Join(runtimeDir, "npc_summaries.json"),
+		npcNpcSummariesPath: filepath.Join(runtimeDir, "npc_npc_summaries.json"),
+		NpcSummaries:    make(map[string]string),
+		NpcNpcSummaries: make(map[string]string),
 	}
 
 	if err := s.loadRooms(roomsPath); err != nil {
@@ -249,6 +258,8 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 		_ = s.loadEventLog()
 		_ = s.loadArchival()
 		_ = s.loadAuth()
+		_ = s.loadSummaries()
+		_ = s.loadNpcNpcSummaries()
 	}
 
 	Default = s
@@ -1459,15 +1470,40 @@ func (s *Store) persistArchival() error {
 	return nil
 }
 
-// AppendArchival 追加一筆 NPC 長期記憶並持久化。
+// ArchivalMaxPerEntity 單一 NPC 最多保留條數，超過則刪最舊（與 db.ArchivalMaxPerEntity 同步）。
+const ArchivalMaxPerEntity = 100
+
+// AppendArchival 追加一筆 NPC 長期記憶並持久化；若任一新舊條數超過 ArchivalMaxPerEntity 會先修剪再寫回。
 func (s *Store) AppendArchival(entry ArchivalEntry) error {
 	if s == nil {
 		return nil
 	}
 	s.mu.Lock()
 	s.Archival = append(s.Archival, entry)
+	s.trimArchivalPerEntity(ArchivalMaxPerEntity)
 	s.mu.Unlock()
 	return s.persistArchival()
+}
+
+// trimArchivalPerEntity 保留每 entity 最多 max 條（取最新），其餘從 s.Archival 移除；呼叫方需持有 mu。
+func (s *Store) trimArchivalPerEntity(max int) {
+	if max <= 0 || len(s.Archival) == 0 {
+		return
+	}
+	byEntity := make(map[string][]ArchivalEntry)
+	for _, e := range s.Archival {
+		byEntity[e.EntityID] = append(byEntity[e.EntityID], e)
+	}
+	var out []ArchivalEntry
+	for _, entries := range byEntity {
+		if len(entries) <= max {
+			out = append(out, entries...)
+			continue
+		}
+		sort.Slice(entries, func(i, j int) bool { return entries[i].CreatedAt > entries[j].CreatedAt })
+		out = append(out, entries[:max]...)
+	}
+	s.Archival = out
 }
 
 // GetArchivalByEntity 回傳該 entity 的全部記憶條目（由新到舊）。
@@ -1484,6 +1520,187 @@ func (s *Store) GetArchivalByEntity(entityID string) []ArchivalEntry {
 		}
 	}
 	return out
+}
+
+type summariesFile struct {
+	Summaries map[string]string `json:"summaries"`
+}
+
+func (s *Store) loadSummaries() error {
+	if s == nil || s.summariesPath == "" {
+		return nil
+	}
+	data, err := os.ReadFile(s.summariesPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			s.mu.Lock()
+			if s.NpcSummaries == nil {
+				s.NpcSummaries = make(map[string]string)
+			}
+			s.mu.Unlock()
+			return nil
+		}
+		return err
+	}
+	var f summariesFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	if f.Summaries != nil {
+		s.NpcSummaries = f.Summaries
+	} else if s.NpcSummaries == nil {
+		s.NpcSummaries = make(map[string]string)
+	}
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *Store) persistSummaries() error {
+	if s == nil || s.summariesPath == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(s.summariesPath), 0755); err != nil {
+		return err
+	}
+	s.mu.RLock()
+	summaries := s.NpcSummaries
+	if summaries == nil {
+		summaries = make(map[string]string)
+	}
+	s.mu.RUnlock()
+	raw, err := json.MarshalIndent(summariesFile{Summaries: summaries}, "", "  ")
+	if err != nil {
+		return err
+	}
+	tmpPath := s.summariesPath + ".tmp"
+	if err := os.WriteFile(tmpPath, raw, 0644); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.summariesPath); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+	return nil
+}
+
+// GetNpcSummary 回傳該 NPC 的「與玩家最近印象」；背版用，空則無。
+func (s *Store) GetNpcSummary(entityID string) string {
+	if s == nil || s.NpcSummaries == nil {
+		return ""
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.NpcSummaries[entityID]
+}
+
+// SetNpcSummary 設定該 NPC 的最近印象並持久化。
+func (s *Store) SetNpcSummary(entityID, summary string) error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	if s.NpcSummaries == nil {
+		s.NpcSummaries = make(map[string]string)
+	}
+	s.NpcSummaries[entityID] = summary
+	s.mu.Unlock()
+	return s.persistSummaries()
+}
+
+// npcNpcSummariesFile 持久化格式。
+type npcNpcSummariesFile struct {
+	Summaries map[string]string `json:"summaries"`
+}
+
+func (s *Store) loadNpcNpcSummaries() error {
+	if s == nil || s.npcNpcSummariesPath == "" {
+		return nil
+	}
+	data, err := os.ReadFile(s.npcNpcSummariesPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			s.mu.Lock()
+			if s.NpcNpcSummaries == nil {
+				s.NpcNpcSummaries = make(map[string]string)
+			}
+			s.mu.Unlock()
+			return nil
+		}
+		return err
+	}
+	var f npcNpcSummariesFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	if f.Summaries != nil {
+		s.NpcNpcSummaries = f.Summaries
+	} else if s.NpcNpcSummaries == nil {
+		s.NpcNpcSummaries = make(map[string]string)
+	}
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *Store) persistNpcNpcSummaries() error {
+	if s == nil || s.npcNpcSummariesPath == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(s.npcNpcSummariesPath), 0755); err != nil {
+		return err
+	}
+	s.mu.RLock()
+	summaries := s.NpcNpcSummaries
+	if summaries == nil {
+		summaries = make(map[string]string)
+	}
+	s.mu.RUnlock()
+	raw, err := json.MarshalIndent(npcNpcSummariesFile{Summaries: summaries}, "", "  ")
+	if err != nil {
+		return err
+	}
+	tmpPath := s.npcNpcSummariesPath + ".tmp"
+	if err := os.WriteFile(tmpPath, raw, 0644); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.npcNpcSummariesPath); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+	return nil
+}
+
+// canonicalNpcNpcKey 回傳 idA、idB 的標準鍵（idA <= idB 字典序）。
+func canonicalNpcNpcKey(idA, idB string) string {
+	if idA > idB {
+		return idB + "|" + idA
+	}
+	return idA + "|" + idB
+}
+
+// GetNpcNpcSummary 回傳 A 與 B 的最近交談摘要，供下次觸發時帶入 context、避免重複。
+func (s *Store) GetNpcNpcSummary(idA, idB string) string {
+	if s == nil || s.NpcNpcSummaries == nil {
+		return ""
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.NpcNpcSummaries[canonicalNpcNpcKey(idA, idB)]
+}
+
+// SetNpcNpcSummary 寫入 A 與 B 的最近交談摘要並持久化。
+func (s *Store) SetNpcNpcSummary(idA, idB, summary string) error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	if s.NpcNpcSummaries == nil {
+		s.NpcNpcSummaries = make(map[string]string)
+	}
+	s.NpcNpcSummaries[canonicalNpcNpcKey(idA, idB)] = summary
+	s.mu.Unlock()
+	return s.persistNpcNpcSummaries()
 }
 
 // SetAuth 設定 entity 密碼雜湊並持久化 auth.json。

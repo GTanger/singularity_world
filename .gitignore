@@ -26,6 +26,9 @@
 .DS_Store
 Thumbs.db
 
+# Logs（./start 後台執行時寫入）
+sw.log
+
 # Build / cache
 /vendor/
 *.test

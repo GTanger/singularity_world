@@ -39,6 +39,9 @@ func BuildIdentity(database *sql.DB, entityID string) string {
 	for _, e := range events {
 		result += e.Payload + "。"
 	}
+	if sum := GetNpcSummary(entityID); sum != "" {
+		result += "與玩家的最近印象：" + sum
+	}
 	return result
 }
 
@@ -55,6 +58,12 @@ func personalityToSentence(p Personality) string {
 	}
 	if p.Orderliness < 0.3 {
 		parts = append(parts, "不太受規矩約束")
+	}
+	if p.Sensitivity > 0.6 {
+		parts = append(parts, "對人較敏感、口吻較熱絡")
+	}
+	if p.Sensitivity < 0.3 {
+		parts = append(parts, "較冷淡、話少")
 	}
 	if len(parts) == 0 {
 		return ""

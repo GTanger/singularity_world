@@ -29,6 +29,8 @@ singularity_world/
 
 **一鍵啟動**：在專案根目錄執行 `./start`（建置、開埠 1721、啟動伺服器；對應 Cloudflare Tunnel 與 https://sw.ygggt.com）。
 
+**奇點 + Chatmery Web 一起啟動／開機自動啟動**：執行 `./start`（先殺現有再建置並啟動奇點、Chatmery Web）或 `./start-with-chatmery`；開機自動啟動請執行 `./start-with-chatmery --install`，見 [docs/開機啟動.md](docs/開機啟動.md)。
+
 手動建置：`go build -o bin/server .`。手動執行：`./bin/server`（預設埠 8080）；經 Tunnel 對外則 `PORT=1721 ./bin/server`。
 
 ---
