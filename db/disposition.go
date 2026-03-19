@@ -16,6 +16,7 @@ const (
 	DispGather     = +5  // 採集成功
 	DispTalked     = +5  // 與人交談
 	DispDaily      = -2  // 每日自然衰減（回歸中性）
+	DispSubdued    = -15 // 被制伏
 )
 
 // AdjustDisposition 調整心境值，clamp [-100, +100]。

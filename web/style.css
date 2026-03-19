@@ -20,7 +20,7 @@ body {
 	font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
 	background: var(--bg);
 	color: var(--text);
-	font-size: 14px;
+	font-size: 16px;
 }
 
 [hidden] { display: none !important; }
@@ -269,9 +269,39 @@ body {
 	white-space: pre-wrap;
 	word-break: break-word;
 	color: var(--text);
+	font-size: 1.02rem;
 }
 .room-desc:empty::before { content: "（請先登入）"; color: var(--text-muted); }
 .room-desc .desc-highlight { color: #7ee787; }
+.room-presence {
+	margin-top: 0.45rem;
+	padding-top: 0.35rem;
+	border-top: 1px dashed rgba(255, 255, 255, 0.12);
+	font-size: 0.98rem;
+	line-height: 1.65;
+}
+.room-presence-label {
+	color: var(--text-muted);
+	margin-right: 0.3rem;
+}
+.room-presence-entity {
+	color: var(--room-name);
+	text-decoration: underline;
+	text-decoration-style: dotted;
+	cursor: pointer;
+}
+.room-presence-entity:hover {
+	text-decoration-style: solid;
+}
+.room-presence-entity:focus {
+	outline: 1px solid var(--room-name);
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+.room-presence-sep {
+	color: var(--text-muted);
+	margin: 0 0.15rem;
+}
 
 /* 房間描述內可互動物件 〔〕：琥珀色、點擊浮動下拉 */
 .desc-object {
@@ -325,62 +355,13 @@ body {
 	color: #111;
 }
 
-/* 敘事欄：自適應高度填滿剩餘空間，左側人物、右側紀錄；紀錄區超出時捲動並自動滾到底 */
+/* 敘事欄：自適應高度填滿剩餘空間；紀錄區超出時捲動並自動滾到底 */
 .narrative-panel {
-	display: flex;
 	flex: 1;
 	min-height: 0;
 	border-bottom: 1px solid var(--border);
 	overflow: hidden;
 }
-.persons-panel {
-	width: calc(var(--ctrl-size) * 1.5);
-	min-width: 6rem;
-	padding: 0.5rem;
-	border-right: 1px solid var(--border);
-	background: rgba(0,0,0,0.15);
-	overflow: auto;
-}
-.panel-label {
-	margin: 0 0 0.35rem 0;
-	font-size: 0.8rem;
-	font-weight: 600;
-	color: var(--text-muted);
-}
-.entities-list {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	font-size: 1.05rem;
-	line-height: 1.8;
-}
-.entities-list li { padding: 0.25rem 0; }
-.entities-list .you { color: var(--room-name); }
-
-/* 實體互動：點擊展開動作列（插頭插座） */
-.entity-row { cursor: pointer; transition: color 0.15s; }
-.entity-row:hover { color: var(--room-name); }
-.entity-row.expanded { color: var(--room-name); }
-.entity-npc { color: #b0bec5; }
-.entity-actions-expand {
-	padding: 0.3rem 0 0.4rem 1em;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.4rem;
-}
-.entity-action-btn {
-	font-size: 0.95rem;
-	padding: 0.35rem 0.7rem;
-	background: rgba(255,255,255,0.08);
-	color: var(--text);
-	border: 1px solid var(--border);
-	border-radius: 3px;
-	cursor: pointer;
-	transition: background 0.15s, color 0.15s;
-}
-.entity-action-btn:hover { background: var(--room-name); color: #111; }
-.entity-action-btn[data-action="Attack"] { color: #e57373; border-color: #e57373; }
-.entity-action-btn[data-action="Attack"]:hover { background: #e57373; color: #111; }
 .narrative-right {
 	flex: 1;
 	display: flex;
@@ -395,14 +376,14 @@ body {
 	padding: 0.5rem 0.75rem;
 	overflow: auto;
 	word-break: break-word;
-	font-size: 0.85rem;
+	font-size: 0.98rem;
 	line-height: 1.6;
 	color: var(--text-muted);
 }
 
 /* 敘事 Log 條目 */
 .log-entry { padding: 0.15rem 0; }
-.log-entry.log-system { color: var(--text-muted); font-size: 0.8rem; }
+.log-entry.log-system { color: var(--text-muted); font-size: 0.9rem; }
 .log-entry.log-narrative { color: var(--text); }
 .log-entry.log-look { color: #b0bec5; }
 .log-entry.log-talk { color: #a5d6a7; }
@@ -423,7 +404,7 @@ body {
 
 .narr-name { color: var(--room-name); font-weight: 600; }
 .narr-dialogue { color: #e0e0e0; font-style: italic; }
-.text-muted { color: var(--text-muted); font-size: 0.85rem; }
+.text-muted { color: var(--text-muted); font-size: 0.92rem; }
 
 /* 路徑欄已移除：出口改由描述內 〔〕 物件點擊觸發 Move（見房間非人物件互動 §2.3） */
 .exits-list { display: flex; flex-wrap: wrap; gap: 0.35rem; }

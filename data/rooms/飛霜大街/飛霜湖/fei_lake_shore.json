@@ -1,6 +1,6 @@
 {
   "id": "fei_lake_shore",
-  "name": "【飛霜湖】沉霜水際",
+  "name": "飛霜湖",
   "description": "這裡是真正與湖水接壤的危險地帶。湖水表面由於游離輻射的影響，不時閃爍著幽藍色的螢光。霜晶甚至還未觸及水面便被蒸騰的熱氣融化，化作帶著微毒的水滴。冷調的石紋台階一直向水下延伸，表面佈滿了濕滑且具有腐蝕性的變異藻類。站在這裡，耳邊滿是湖水拍打岸石的沉悶聲響，讓人心生敬畏。可經此回到南岸的〔街口碎冰灘〕、東岸的〔東岸霧起之濱〕、北岸的〔北岸孤冷湖背〕與西岸的〔西岸寂靜迴岸〕。",
   "tags": [
     "street",
@@ -10,40 +10,37 @@
   "exits": [
     {
       "direction": "fei_lake_south",
-      "to": "fei_lake_south",
-      "ui_hidden": true
+      "to": "fei_lake_south"
     },
     {
       "direction": "fei_lake_east",
-      "to": "fei_lake_east",
-      "ui_hidden": true
+      "to": "fei_lake_east"
     },
     {
       "direction": "fei_lake_north",
-      "to": "fei_lake_north",
-      "ui_hidden": true
+      "to": "fei_lake_north"
     },
     {
       "direction": "fei_lake_west",
-      "to": "fei_lake_west",
-      "ui_hidden": true
+      "to": "fei_lake_west"
     }
   ],
   "objects": [
     {
       "id": "fei_lake_shore_south",
       "name": "街口碎冰灘",
+      "owner": "",
       "sockets": [
         "Move"
       ],
       "responses": {
         "Move": "你拾級而上，回到南岸街口碎冰灘。"
-      },
-      "move_to_room_id": "fei_lake_south"
+      }
     },
     {
       "id": "fei_lake_shore_east",
       "name": "東岸霧起之濱",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -51,12 +48,12 @@
       "responses": {
         "Look": "此處可通往東岸霧起之濱。",
         "Move": "你沿水緣往東側岸上走去。"
-      },
-      "move_to_room_id": "fei_lake_east"
+      }
     },
     {
       "id": "fei_lake_shore_north",
       "name": "北岸孤冷湖背",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -64,12 +61,12 @@
       "responses": {
         "Look": "此處可通往北岸孤冷湖背。",
         "Move": "你沿水緣往北側岸上走去。"
-      },
-      "move_to_room_id": "fei_lake_north"
+      }
     },
     {
       "id": "fei_lake_shore_west",
       "name": "西岸寂靜迴岸",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -77,8 +74,7 @@
       "responses": {
         "Look": "此處可通往西岸寂靜迴岸。",
         "Move": "你沿水緣往西側岸上走去。"
-      },
-      "move_to_room_id": "fei_lake_west"
+      }
     }
   ]
 }

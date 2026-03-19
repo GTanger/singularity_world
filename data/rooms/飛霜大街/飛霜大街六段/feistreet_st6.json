@@ -6,59 +6,54 @@
   "exits": [
     {
       "direction": "feistreet_st5",
-      "to": "feistreet_st5",
-      "ui_hidden": true
+      "to": "feistreet_st5"
     },
     {
       "direction": "feistreet_st7",
-      "to": "feistreet_st7",
-      "ui_hidden": true
+      "to": "feistreet_st7"
     },
     {
       "direction": "feist06_shop01_main",
-      "to": "feist06_shop01_main",
-      "ui_hidden": true
+      "to": "feist06_shop01_main"
     },
     {
       "direction": "feist06_shop02_main",
-      "to": "feist06_shop02_main",
-      "ui_hidden": true
+      "to": "feist06_shop02_main"
     },
     {
       "direction": "feist06_shop03_main",
-      "to": "feist06_shop03_main",
-      "ui_hidden": true
+      "to": "feist06_shop03_main"
     },
     {
       "direction": "feist06_home01_main",
-      "to": "feist06_home01_main",
-      "ui_hidden": true
+      "to": "feist06_home01_main"
     },
     {
       "direction": "feist06_home02_main",
-      "to": "feist06_home02_main",
-      "ui_hidden": true
+      "to": "feist06_home02_main"
     },
     {
       "direction": "feist06_home03_main",
-      "to": "feist06_home03_main",
-      "ui_hidden": true
+      "to": "feist06_home03_main"
     },
     {
       "direction": "feist06_home04_main",
-      "to": "feist06_home04_main",
-      "ui_hidden": true
+      "to": "feist06_home04_main"
     },
     {
-      "direction": "yaxiao_st3",
-      "to": "yaxiao_st3",
-      "ui_hidden": true
+      "direction": "西",
+      "to": "yaxiao_st1"
+    },
+    {
+      "direction": "東",
+      "to": "yaxiao_st4"
     }
   ],
   "objects": [
     {
       "id": "fei_st6_exit_st5",
       "name": "飛霜大街五段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -70,6 +65,7 @@
     {
       "id": "fei_st6_exit_st7",
       "name": "飛霜大街七段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -81,6 +77,7 @@
     {
       "id": "fei_st6_obj_shop11",
       "name": "掩霜情報站",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -91,6 +88,7 @@
     {
       "id": "fei_st6_obj_shop11_door",
       "name": "滅音交誼室",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -104,6 +102,7 @@
     {
       "id": "fei_st6_obj_shop12",
       "name": "寒玉飾品閣",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -114,6 +113,7 @@
     {
       "id": "fei_st6_obj_shop12_door",
       "name": "流光展廳",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -127,6 +127,7 @@
     {
       "id": "fei_st6_obj_shop13",
       "name": "垂冰雜貨行",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -137,6 +138,7 @@
     {
       "id": "fei_st6_obj_shop13_door",
       "name": "擁擠鋪面",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -150,6 +152,7 @@
     {
       "id": "fei_st6_obj_home06",
       "name": "厚牆庇護所",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -160,6 +163,7 @@
     {
       "id": "fei_st6_obj_home06_door",
       "name": "加固玄關",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -173,6 +177,7 @@
     {
       "id": "fei_st6_obj_home07",
       "name": "沁玉雕刻家",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -183,6 +188,7 @@
     {
       "id": "fei_st6_obj_home07_door",
       "name": "粉塵前庭",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -196,6 +202,7 @@
     {
       "id": "fei_st6_obj_home08",
       "name": "寒氣封存庫",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -206,6 +213,7 @@
     {
       "id": "fei_st6_obj_home08_door",
       "name": "檢疫氣閘室",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -219,6 +227,7 @@
     {
       "id": "fei_st6_obj_home09",
       "name": "孤屋盲眼居",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -229,6 +238,7 @@
     {
       "id": "fei_st6_obj_home09_door",
       "name": "寂靜廳堂",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -242,6 +252,7 @@
     {
       "id": "fei_st6_exit_yaxiao_st3",
       "name": "夜鴞巷三巷",
+      "owner": "",
       "sockets": [
         "Move"
       ],

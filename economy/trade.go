@@ -1,10 +1,13 @@
 // Package economy 負責交易與鎂流轉，對齊經濟彙整 §四 鎂產消閉環。
 package economy
 
-// TransferMagnesium 將 fromID 的 amount 鎂轉給 toID；呼叫方需負責 DB 交易與餘額檢查。
-// 第一版可由 db 層實作：讀兩邊 magnesium，扣加後寫回。此處定義介面供 combat/任務 等呼叫。
-func TransferMagnesium(fromID, toID string, amount int) {
-	_ = fromID
-	_ = toID
-	_ = amount
+import (
+	"database/sql"
+
+	"singularity_world/db"
+)
+
+// TransferMagnesium 將 fromID 的 amount 鎂轉給 toID；實作於 db（store／SQL 雙路徑原子扣加）。
+func TransferMagnesium(database *sql.DB, fromID, toID string, amount int) error {
+	return db.TransferMagnesium(database, fromID, toID, amount)
 }

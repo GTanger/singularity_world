@@ -21,7 +21,7 @@ type OccupationDef struct {
 var (
 	occupationOnce   sync.Once
 	occupationCache  map[string]OccupationDef
-	defaultSockets   = []string{"Talk", "Attack", "Look", "Trade"}
+	defaultSockets   = []string{"Talk", "Borrow", "Subdue", "Slay", "Look", "Trade"}
 )
 
 // LoadOccupations 讀取並快取 occupations.json；首次呼叫後即從快取返回。

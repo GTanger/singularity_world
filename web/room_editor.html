@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>房間心智圖編輯器</title>
+  <style>
+    :root { --bg:#0f1117; --panel:#161a23; --muted:#8f9bb3; --line:#2a3040; --text:#e7ebf5; --acc:#7dd3fc; --warn:#fb7185; --ok:#86efac; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family: "Noto Sans TC", "PingFang TC", sans-serif; }
+    .app { display:grid; grid-template-columns: 320px 1fr; height:100vh; }
+    .panel { background:var(--panel); border-right:1px solid var(--line); padding:12px; overflow:auto; }
+    .canvas-wrap { position:relative; overflow:auto; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+    button { border:1px solid var(--line); background:#1f2634; color:var(--text); border-radius:8px; padding:6px 10px; cursor:pointer; }
+    button.active { border-color:var(--acc); box-shadow:0 0 0 1px var(--acc) inset; }
+    button.danger { border-color:#5c1d26; color:#fecdd3; }
+    .hint { color:var(--muted); font-size:12px; line-height:1.5; margin:8px 0; }
+    .section { border-top:1px solid var(--line); margin-top:10px; padding-top:10px; }
+    .section h3 { margin:0 0 8px; font-size:14px; }
+    .field { display:flex; flex-direction:column; gap:4px; margin:8px 0; }
+    .field label { color:var(--muted); font-size:12px; }
+    input, textarea { width:100%; border:1px solid var(--line); background:#0d1220; color:var(--text); border-radius:6px; padding:8px; }
+    textarea { min-height:80px; resize:vertical; }
+    .status {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      font-size:12px;
+      color:#dbeafe;
+      background:#111a2a;
+      border:1px solid #274060;
+      border-radius:8px;
+      padding:8px 10px;
+      margin-bottom:10px;
+      min-height:18px;
+    }
+    .obj-row { border:1px solid var(--line); border-radius:8px; padding:8px; margin:8px 0; }
+    .obj-head { display:flex; gap:6px; margin-bottom:6px; }
+    .obj-head input { flex:1; }
+    .obj-head button { white-space:nowrap; }
+    #map { position:relative; width:2400px; height:1600px; background:
+      linear-gradient(0deg, transparent 24%, rgba(70,78,97,.15) 25%, rgba(70,78,97,.15) 26%, transparent 27%, transparent 74%, rgba(70,78,97,.15) 75%, rgba(70,78,97,.15) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(70,78,97,.15) 25%, rgba(70,78,97,.15) 26%, transparent 27%, transparent 74%, rgba(70,78,97,.15) 75%, rgba(70,78,97,.15) 76%, transparent 77%, transparent);
+      background-size:48px 48px;
+    }
+    svg { position:absolute; inset:0; width:100%; height:100%; pointer-events:auto; }
+    .node { position:absolute; width:50px; height:50px; border:1px solid var(--line); background:#121827; border-radius:8px; padding:0; cursor:move; user-select:none; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+    .node.selected { border-color:var(--acc); box-shadow:0 0 0 1px var(--acc) inset; }
+    .node .name { font-size:20px; line-height:1; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .line { stroke:#6b7280; stroke-width:2; opacity:.8; }
+    .line-both { stroke:#93c5fd; }
+    .line-selected { stroke:#fb7185; stroke-width:3; opacity:1; }
+    .ghost { stroke:#fbbf24; stroke-dasharray:5 4; }
+    .marquee { position:absolute; border:1px dashed #7dd3fc; background:rgba(125,211,252,.12); pointer-events:none; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="panel">
+      <div class="status" id="status"></div>
+      <div class="toolbar">
+        <button id="btn-refresh">重新載入</button>
+        <button id="btn-add">新增房格</button>
+        <button id="btn-copy">複製房格</button>
+        <button id="btn-delete" class="danger">刪除房格</button>
+        <button id="btn-normalize">重整座標</button>
+      </div>
+      <div class="toolbar">
+        <button id="mode-one">單向連線</button>
+        <button id="mode-two">雙向連線</button>
+        <button id="mode-off" class="active">一般拖曳</button>
+      </div>
+      <div class="hint">拖曳房格可移動。切到連線模式後，從 A 房格按住滑鼠拖到 B 房格即可建線，系統會依相對位置自動預設東西南北方向（可覆寫）。雙向會自動建立 A↔B。一般模式可在空白處框選多房格一起移動；右鍵線段可刪線。地圖區可直接滾輪縮放；中鍵按住可平移視窗。</div>
+
+      <div class="section">
+        <h3>房間資料</h3>
+        <div class="field"><label>房間 ID</label><input id="f-id" disabled /></div>
+        <div class="field"><label>名稱</label><input id="f-name" /></div>
+        <div class="field"><label>區域 zone</label><input id="f-zone" placeholder="street / alley / ..." /></div>
+        <div class="field"><label>標籤 tags（逗號分隔）</label><input id="f-tags" /></div>
+        <div class="field"><label>描述</label><textarea id="f-desc"></textarea></div>
+      </div>
+
+      <div class="section">
+        <h3>可互動物件（表單）</h3>
+        <div class="hint">用表單新增物件與後續互動；每個物件可設定 sockets 與 responses。下方仍保留 JSON 進階模式。</div>
+        <div class="toolbar">
+          <button id="btn-add-object">新增物件</button>
+          <button id="btn-template">插入模板</button>
+        </div>
+        <div id="objects-form"></div>
+        <div class="field">
+          <label>進階 JSON（可手動編修）</label>
+          <textarea id="f-objects" placeholder='[{"id":"obj_tea","name":"茶壺","sockets":["Look","Talk"],"responses":{"Look":"茶香未散。"}}]'></textarea>
+        </div>
+        <div class="toolbar" style="margin-top:8px;">
+          <button id="btn-save" style="border-color:#14532d;">儲存房間</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="canvas-wrap" id="wrap">
+      <div id="map">
+        <svg id="edges"></svg>
+      </div>
+    </main>
+  </div>
+
+  <script src="/room_editor.js?v=17"></script>
+</body>
+</html>

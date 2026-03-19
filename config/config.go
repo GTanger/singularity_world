@@ -27,6 +27,9 @@ type Server struct {
 	NPCSpawnIntervalSec  int           // 每隔幾秒檢查一次並在未滿時生成一名 NPC；0＝不自動生成
 	OllamaBaseURL        string        // NPC 對話 LLM（Ollama）位址；空＝不呼叫，走 fallback 模板
 	OllamaModel          string        // Ollama 模型名，例如 qwen-4b-slim；空且 BaseURL 有設時預設 qwen2.5:3b
+	// 10.15 求職撮合
+	SeekJobMgThreshold   int  // 鎂低於此值才參與撮合；0＝沿用程式常數 50
+	JobMatchWhenStable   bool // 為 true 時，無職且鎂≥閾值者也有機率參與撮合（安定需求）
 }
 
 // Design 為第一版可做清單 1.2.2 設計常數：1 格＝1m＝30px、角色圓 24px、地形字 30px、格線隱藏。供前端對齊。
@@ -133,6 +136,14 @@ func DefaultServer() Server {
 	}
 	if cfg.OllamaBaseURL != "" && cfg.OllamaModel == "" {
 		cfg.OllamaModel = "qwen-4b-slim"
+	}
+	if s := os.Getenv("SEEK_JOB_MG_THRESHOLD"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n >= 0 {
+			cfg.SeekJobMgThreshold = n
+		}
+	}
+	if os.Getenv("JOB_MATCH_WHEN_STABLE") == "1" || strings.ToLower(os.Getenv("JOB_MATCH_WHEN_STABLE")) == "true" {
+		cfg.JobMatchWhenStable = true
 	}
 	return cfg
 }

@@ -19,9 +19,10 @@ func CallAITalk(baseURL, model, playerInput, npcBackstory string, npcMemorySnipp
 	}
 	baseURL = strings.TrimSuffix(baseURL, "/")
 
-	// system：強調「針對玩家剛說的話」回覆，避免每次都套版問候
+	// system：強調「針對玩家剛說的話」回覆，並一律使用繁體中文
 	sb := strings.Builder{}
 	sb.WriteString("你是修真市井世界裡的一名 NPC。請「根據玩家剛剛說的那句話」直接回覆，不要無視玩家內容，不要每次都說「你好／有什麼事嗎」這類套話。可以反問、接話、敷衍、吐槽、簡短感嘆，語氣像真人隨口回應，一兩句即可。只輸出 NPC 會說的那句話，不要加「他說」或引號外的說明。\n")
+	sb.WriteString("請一律使用繁體中文（台灣用字）回覆，輸出內容僅限繁體中文。\n")
 	if npcBackstory != "" {
 		sb.WriteString("你的身份與背景：")
 		sb.WriteString(npcBackstory)
@@ -105,6 +106,7 @@ func CallAITalkNPCToNPC(baseURL, model, speakerName, listenerName, speakerBackst
 	sb.WriteString("你是修真市井世界中的旁白，要生成「兩名 NPC 之間的一來一往對話」。\n")
 	sb.WriteString("請根據以下兩人身份與所在情境，生成：第一句是「說話者」對「聽者」說的一句話，第二句是「聽者」的回應。\n")
 	sb.WriteString("要求：口吻像真人隨口交談，一兩句即可；不要加「他說」「她說」或引號外的說明。\n")
+	sb.WriteString("請一律使用繁體中文（台灣用字）輸出，兩行台詞僅限繁體中文。\n")
 	sb.WriteString("輸出格式：嚴格兩行。第一行只有說話者的台詞，第二行只有聽者的台詞。每行不要包「」\n\n")
 	sb.WriteString("說話者：" + speakerName + "\n")
 	if speakerBackstory != "" {

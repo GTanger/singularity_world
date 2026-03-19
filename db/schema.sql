@@ -115,3 +115,14 @@ CREATE TABLE IF NOT EXISTS assignments (
 	FOREIGN KEY (entity_id) REFERENCES entities(id),
 	FOREIGN KEY (venue_id) REFERENCES venues(id)
 );
+
+-- NPC 短期記憶（10.18）：見面次數、對該玩家的好感度；entity_id=NPC，subject_id=玩家 entity_id
+CREATE TABLE IF NOT EXISTS npc_memory (
+	entity_id TEXT NOT NULL,
+	subject_id TEXT NOT NULL,
+	meet_count INTEGER NOT NULL DEFAULT 0,
+	favorability INTEGER NOT NULL DEFAULT 0,
+	PRIMARY KEY (entity_id, subject_id),
+	FOREIGN KEY (entity_id) REFERENCES entities(id),
+	FOREIGN KEY (subject_id) REFERENCES entities(id)
+);

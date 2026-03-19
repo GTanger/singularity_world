@@ -13,8 +13,8 @@ type ClientMsg struct {
 	ItemID      string `json:"item_id"`      // equip_item 時背包中的物品 ID
 	TargetSlot  string `json:"target_slot"`  // equip_item 時指定槽位（僅 hold 類需要：hold_l / hold_r）
 	Slot        string `json:"slot"`         // unequip_item 時裝備槽位代碼
-	Action      string `json:"action"`       // do_action 時的動詞（"Look" | "Talk" | "Attack"）
-	PlayerInput string `json:"player_input"` // Talk 時玩家輸入（可選；供 CallAITalk 與記憶檢索）
+	Action      string `json:"action"`       // do_action：Look、Talk、Borrow、Subdue、Slay（舊 Attack→後端視為 Slay）、Trade…
+	PlayerInput string `json:"player_input"` // Talk：對白；Trade：出價（鎂，整數）或「拒絕」
 }
 
 // ViewEntity 房間內單一實體，供前端顯示「誰在這裡」與可執行動作。
@@ -31,7 +31,7 @@ type ViewEntity struct {
 // Actions 為選填：對物件 Look 時帶上該物件其餘可執行動作，前端據此顯示可點的【移動】等。
 type ActionResultMsg struct {
 	Type       string   `json:"type"`        // "action_result"
-	Action     string   `json:"action"`      // "Look" | "Talk" | "Attack"
+	Action     string   `json:"action"`      // Look、Talk、Borrow、Subdue、Slay、Trade…
 	TargetID   string   `json:"target_id"`
 	TargetName string   `json:"target_name"`
 	Narrative  string   `json:"narrative"`

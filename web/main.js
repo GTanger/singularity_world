@@ -27,7 +27,11 @@
 	const DAYS_PER_MONTH = 30;
 	const MONTH_NAMES = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
 	const DAY_NAMES = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
+	/** 同房實體互動：對齊後端 Borrow / Subdue / Slay（舊 Attack＝送行，後端已映射） */
+	const ENTITY_INTERACT_LABELS = { Talk: '對話', Borrow: '借物', Subdue: '留人', Slay: '送行', Trade: '交易', Attack: '攻擊' };
+	const ENTITY_INTERACT_ORDER = ['Talk', 'Borrow', 'Trade', 'Subdue', 'Slay'];
 	let gameTimeTicker = null;
+	var entityNameCache = {}; // name/id -> entity_id（用於 log 人名點擊）
 
 	function gameSecNow() {
 		if (!state.server_unix) return null;
@@ -162,10 +166,41 @@
 		el.scrollTop = el.scrollHeight;
 	}
 
+	function indexEntityNameCache(entities) {
+		(entities || []).forEach(function (e) {
+			var eid = (e.id || e.ID || '').toString();
+			if (!eid) return;
+			var dname = (e.display_name || '').toString();
+			entityNameCache[eid] = eid;
+			if (dname) entityNameCache[dname] = eid;
+		});
+	}
+
+	function resolveEntityIDByName(name) {
+		if (!name) return '';
+		if (entityNameCache[name]) return entityNameCache[name];
+		if (state.entities && state.entities.length) {
+			for (var i = 0; i < state.entities.length; i++) {
+				var e = state.entities[i];
+				var eid = (e.id || e.ID || '').toString();
+				var dname = (e.display_name || '').toString();
+				if (name === eid || (dname && name === dname)) return eid;
+			}
+		}
+		return '';
+	}
+
 	function formatNarrative(text) {
 		if (!text) return '';
 		return escapeHtml(text)
-			.replace(/【([^】]*)】/g, '<span class="narr-name">【$1】</span>')
+			.replace(/【([^】]*)】/g, function (_m, rawName) {
+				var name = rawName || '';
+				var eid = resolveEntityIDByName(name);
+				if (eid) {
+					return '【<span class="log-object-action narr-name" role="button" tabindex="0" data-entity-id="' + escapeHtml(eid) + '" data-action="Look" data-target-type="entity" data-target-name="' + escapeHtml(name) + '">' + escapeHtml(name) + '</span>】';
+				}
+				return '<span class="narr-name">【' + escapeHtml(name) + '】</span>';
+			})
 			.replace(/「([^」]*)」/g, '<span class="narr-dialogue">「$1」</span>')
 			.replace(/\n/g, '<br>');
 	}
@@ -228,6 +263,7 @@
 						state.description = msg.description || '';
 						state.exits = Array.isArray(msg.exits) ? msg.exits : [];
 						state.entities = msg.entities || [];
+						indexEntityNameCache(state.entities);
 						state.objects = Array.isArray(msg.objects) ? msg.objects : [];
 						if (typeof msg.server_unix === 'number' && typeof msg.game_time_sec_since_midnight === 'number' && typeof msg.game_days_since_epoch === 'number') {
 							var newGameSecAtView = msg.game_days_since_epoch * GAME_SEC_PER_DAY + msg.game_time_sec_since_midnight;
@@ -333,13 +369,42 @@
 						var talkTargetId = msg.target_id || '';
 						var talkTargetName = msg.target_name || talkTargetId;
 						if (talkTargetId) {
-							var actionLabels = { 'Talk': '對話', 'Attack': '攻擊', 'Trade': '交易' };
-							var talkActions = ['Talk', 'Attack', 'Trade'];
-							var talkParts = talkActions.map(function (act) {
-								var label = actionLabels[act] || act;
+							var talkParts = ENTITY_INTERACT_ORDER.map(function (act) {
+								var label = ENTITY_INTERACT_LABELS[act] || act;
 								return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(talkTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(talkTargetName) + '">' + escapeHtml(label) + '</span>】';
 							});
 							appendObjectActionsLine(talkParts.join(''));
+						}
+					} else if (msg.action === 'Trade') {
+						removeLogPendingTrade();
+						var tNarrative = msg.narrative;
+						if (!tNarrative) tNarrative = '（交易無回應）';
+						var tHtml = formatNarrative(tNarrative);
+						tHtml = formatNarrativeWithClickableObjects(tHtml, state.objects);
+						appendNarrative(tHtml, 'Trade');
+						var tradeTargetId = msg.target_id || '';
+						var tradeTargetName = msg.target_name || tradeTargetId;
+						if (tradeTargetId) {
+							var tParts = ENTITY_INTERACT_ORDER.map(function (act) {
+								var lab = ENTITY_INTERACT_LABELS[act] || act;
+								return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(tradeTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(tradeTargetName) + '">' + escapeHtml(lab) + '</span>】';
+							});
+							appendObjectActionsLine(tParts.join(''));
+						}
+					} else if (msg.action === 'Borrow') {
+						var bNarrative = msg.narrative;
+						if (!bNarrative) bNarrative = '（借物無回應）';
+						var bHtml = formatNarrative(bNarrative);
+						bHtml = formatNarrativeWithClickableObjects(bHtml, state.objects);
+						appendNarrative(bHtml, 'Borrow');
+						var borrowTargetId = msg.target_id || '';
+						var borrowTargetName = msg.target_name || borrowTargetId;
+						if (borrowTargetId) {
+							var bParts = ENTITY_INTERACT_ORDER.map(function (act) {
+								var bl = ENTITY_INTERACT_LABELS[act] || act;
+								return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(borrowTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(borrowTargetName) + '">' + escapeHtml(bl) + '</span>】';
+							});
+							appendObjectActionsLine(bParts.join(''));
 						}
 					} else if (msg.narrative) {
 						var narrativeHtml = formatNarrative(msg.narrative);
@@ -347,7 +412,7 @@
 						appendNarrative(narrativeHtml, msg.action);
 						// 觀看後下一行顯示可執行的其他動作（物件：移動/閱讀…；人物：對話/攻擊）
 						if (msg.action === 'Look') {
-							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Attack': '攻擊', 'Trade': '交易', 'Move': '移動' };
+							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Borrow': '借物', 'Subdue': '留人', 'Slay': '送行', 'Trade': '交易', 'Attack': '攻擊', 'Move': '移動' };
 							var others = [];
 							var targetId = msg.target_id || '';
 							// 優先使用後端在 action_result 帶上的 actions（建築 Look 後必有【移動】等）
@@ -389,6 +454,16 @@
 								});
 								appendObjectActionsLine(parts.join(''));
 							}
+						} else if (msg.action === 'Subdue' || msg.action === 'Slay') {
+							var combatTid = msg.target_id || '';
+							var combatTname = msg.target_name || combatTid;
+							if (combatTid) {
+								var combatParts = ENTITY_INTERACT_ORDER.map(function (act) {
+									var cx = ENTITY_INTERACT_LABELS[act] || act;
+									return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(combatTid) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(combatTname) + '">' + escapeHtml(cx) + '</span>】';
+								});
+								appendObjectActionsLine(combatParts.join(''));
+							}
 						}
 					}
 					break;
@@ -402,6 +477,7 @@
 					break;
 				case 'error':
 					removeLogPendingTalk();
+					removeLogPendingTrade();
 					appendLog('錯誤：' + msg.message);
 					if (!state.me) {
 						var authMsg = document.getElementById('auth-message');
@@ -997,6 +1073,23 @@
 		for (var i = 0; i < pending.length; i++) pending[i].remove();
 	}
 
+	function appendLogPendingTrade() {
+		var logEl = document.getElementById('log');
+		if (!logEl) return;
+		var div = document.createElement('div');
+		div.className = 'log-entry log-system log-trade-pending';
+		div.setAttribute('data-pending', 'trade');
+		div.textContent = '交易中…';
+		logEl.appendChild(div);
+	}
+
+	function removeLogPendingTrade() {
+		var logEl = document.getElementById('log');
+		if (!logEl) return;
+		var pending = logEl.querySelectorAll('.log-trade-pending');
+		for (var j = 0; j < pending.length; j++) pending[j].remove();
+	}
+
 	function appendTalkInputRow(entityId, targetName) {
 		var logEl = document.getElementById('log');
 		if (!logEl) return;
@@ -1040,6 +1133,50 @@
 		});
 	}
 
+	function appendTradeInputRow(entityId, targetName) {
+		var logEl = document.getElementById('log');
+		if (!logEl) return;
+		var wrap = document.createElement('div');
+		wrap.className = 'log-entry log-trade-input';
+		var label = document.createElement('span');
+		label.className = 'log-trade-label';
+		label.textContent = '與 ' + (targetName || entityId) + ' 交易：';
+		var input = document.createElement('input');
+		input.type = 'text';
+		input.className = 'log-trade-input-field';
+		input.placeholder = '輸入出價（鎂，整數）或「拒絕」；若尚未報價可留空再送出以開價';
+		input.setAttribute('maxlength', '32');
+		input.setAttribute('aria-label', '與 ' + (targetName || entityId) + ' 交易出價');
+		var btn = document.createElement('button');
+		btn.type = 'button';
+		btn.className = 'log-trade-send';
+		btn.textContent = '送出';
+		wrap.appendChild(label);
+		wrap.appendChild(input);
+		wrap.appendChild(btn);
+		logEl.appendChild(wrap);
+		input.focus();
+		function sendTrade() {
+			var text = (input.value || '').trim();
+			wrap.remove();
+			if (text) {
+				var playerLine = '你向【' + (targetName || entityId) + '】出價：「' + text + '」';
+				appendNarrative(formatNarrative(playerLine), 'Trade');
+			}
+			if (window.gameSend) {
+				window.gameSend({ type: 'do_action', entity_id: entityId, action: 'Trade', player_input: text });
+				appendLogPendingTrade();
+			}
+		}
+		btn.addEventListener('click', sendTrade);
+		input.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				sendTrade();
+			}
+		});
+	}
+
 	function bindLogObjectActions() {
 		var logEl = document.getElementById('log');
 		if (!logEl) return;
@@ -1049,10 +1186,28 @@
 			ev.preventDefault();
 			var id = btn.getAttribute('data-entity-id');
 			var action = btn.getAttribute('data-action');
+			var targetType = btn.getAttribute('data-target-type') || '';
 			var targetName = btn.getAttribute('data-target-name') || '';
 			if (!id || !action || !window.gameSend) return;
+			if (targetType === 'entity') {
+				var stillHere = false;
+				for (var i = 0; i < (state.entities || []).length; i++) {
+					if (((state.entities[i].id || '') + '') === (id + '')) {
+						stillHere = true;
+						break;
+					}
+				}
+				if (!stillHere) {
+					appendLog('對方已不在此處。');
+					return;
+				}
+			}
 			if (action === 'Talk') {
 				appendTalkInputRow(id, targetName);
+				return;
+			}
+			if (action === 'Trade') {
+				appendTradeInputRow(id, targetName);
 				return;
 			}
 			window.gameSend({ type: 'do_action', entity_id: id, action: action });

@@ -3,8 +3,8 @@
 > 本文件整合 **「NPC活化系統—實作清單與規劃」** 與 **「NPC活化突破模板線—實作計畫」** 為一份。
 > - **目標**：讓 NPC 從「參數差異化的模板」進化為「有軌跡、有情緒、有社交、有記憶的個體」。
 > - **用途**：清單可勾選、可依賴；突破線 A–I 供 Cursor auto-execution，步驟精確到檔案、函式、行為。
-> - 產出／修訂：2026-03-07（清單）、2026-03-15（計畫）、整合日見檔頭。
-> - **目前實作狀況**：突破線 A–I **均已實作**（見下方總覽表「狀態」欄）；CallAITalk 為 stub，接上 LLM API 即可啟用。
+> - 產出／修訂：2026-03-07（清單）、2026-03-15（計畫）、2026-03-20（更新 CallAITalk 實作狀態）。
+> - **目前實作狀況**：突破線 A–I **均已實作**（見下方總覽表「狀態」欄）；CallAITalk 已接 Ollama（`/api/chat`），LLM 對話功能線上運作中。
 >
 > 整合文件：[NPC對話記憶與背版—設計](NPC對話記憶與背版—設計.md)、[NPC對話記憶與背版—實作步驟](NPC對話記憶與背版—實作步驟與檔案流程.md)、[NPC有嘴—設計與實作規劃](NPC有嘴—設計與實作規劃.md)
 
@@ -31,7 +31,7 @@
 | **F** | NPC-NPC 微互動／NPC 間 AI 對話 | NPC 之間會打招呼、閒聊；**已擴充**：閒置／排班／隨機觸發、CallAITalkNPCToNPC、主題劇本、NpcNpcSummaries 記憶；微互動為 fallback | ✅ | `db/npc_social.go`、`ai/talk.go` CallAITalkNPCToNPC、`db/npc_topics.go`、main tryTriggerNpcNpcInRoom；見 [003](discussions/003_NPC交互對話系統.md) |
 | **G** | 背版組裝（identity） | Talk 時帶入「我是誰」| ✅ | `db/backstory.go` BuildIdentity、職稱／場所／性格／心境／事件 |
 | **H** | archival 記憶（寫入+檢索）| NPC 記住跟玩家的過去 | ✅ | store.ArchivalEntry、AppendArchival、GetArchivalByEntity、`db/archival.go` |
-| **I** | CallAITalk 接入 | LLM 優先＋模板 fallback | ✅ | `ai/talk.go` stub、handler Talk 接線、PickStyleExamples、InsertArchival 寫回 |
+| **I** | CallAITalk 接入 | LLM 優先＋模板 fallback | ✅ | `ai/talk.go` 完整實作（Ollama `/api/chat`）、handler Talk 接線、PickStyleExamples、InsertArchival 寫回 |
 
 > [!IMPORTANT]
 > **A-C 是「齒輪」**：讓決策引擎真正運轉。
@@ -73,7 +73,7 @@ graph LR
 | **行為引擎** | 行為檔載入、閒置/進房/換班/巡邏敘事、移動定義、時段 | B1–B8：`db/behavior.go`、PickIdleEmote、GetShiftFlavor、GetWanderFlavor、GetMovementDefForTitle | ✅ |
 | **尋路與移動** | 房間圖、BFS、四種移動模式、排班目標、TravelerManager、排班不傳送、啟動註冊 | M1–M8：`db/pathfind.go`、`db/npc_movement.go`、main 註冊 | ✅ |
 | **主迴圈時序** | 遊戲時間、每小時排班敘事、每 15 秒 Tick、閒置＋巡邏、視野內模擬 | L1–L5：game.GameTimeNow、ApplySchedules、Tick、RunViewSimulation | ✅ |
-| **玩家與 NPC 互動** | Look、Talk 固定句+性格權重、Talk 串接對話模板⬜、Attack、Trade⬜、插座列表、進房反應 | I1–I7：handler、buildTalkNarrative、GetSocketsForNPC | ✅～⬜ |
+| **玩家與 NPC 互動** | Look、Talk 固定句+性格權重、Talk 串接對話模板⬜、Attack、Trade⬜（延後，依[世界物流規格](reference/世界物流規格—草稿.md)實作）、插座列表、進房反應；戰鬥／偷竊反應（第五階段）延後，待戰鬥與偷竊規則定版 | I1–I7：handler、buildTalkNarrative、GetSocketsForNPC | ✅～⬜ |
 | **推送與前端** | 敘事廣播、房間視野更新、narrate 渲染 | P1–P3：SendNarrateToRoom、RefreshRoomViews、web | ✅ |
 
 > 未實作／需求驅動項（N1–N8）與階段 A–I 的對照見文末「未實作／需求驅動對照」。

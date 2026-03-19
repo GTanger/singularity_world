@@ -6,29 +6,30 @@
   "exits": [
     {
       "direction": "lifestreet_st7",
-      "to": "lifestreet_st7",
-      "ui_hidden": true
+      "to": "lifestreet_st7"
     },
     {
       "direction": "lifestreet_st9",
-      "to": "lifestreet_st9",
-      "ui_hidden": true
+      "to": "lifestreet_st9"
     },
     {
       "direction": "life_home12_main",
-      "to": "life_home12_main",
-      "ui_hidden": true
+      "to": "life_home12_main"
     },
     {
       "direction": "yaxiao_st4",
-      "to": "yaxiao_st4",
-      "ui_hidden": true
+      "to": "yaxiao_st4"
+    },
+    {
+      "direction": "南",
+      "to": "yaxiao_st3"
     }
   ],
   "objects": [
     {
       "id": "st8_exit_st7",
       "name": "浮生大街七段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -40,6 +41,7 @@
     {
       "id": "st8_exit_st9",
       "name": "浮生大街九段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -51,6 +53,7 @@
     {
       "id": "st8_obj_home12",
       "name": "紫晶脈尾宅",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -61,6 +64,7 @@
     {
       "id": "st8_obj_home12_door",
       "name": "板門",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -72,6 +76,7 @@
     {
       "id": "st8_exit_yaxiao_st4",
       "name": "夜鴞巷四巷",
+      "owner": "",
       "sockets": [
         "Move"
       ],

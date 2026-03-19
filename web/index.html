@@ -10,7 +10,7 @@
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
-	<link rel="stylesheet" href="style.css?v=9.25">
+	<link rel="stylesheet" href="style.css?v=9.26">
 </head>
 <body>
 	<!-- 登入／創角：未登入時顯示，登入成功後隱藏 -->
@@ -79,16 +79,14 @@
 			</div>
 		</header>
 
-		<!-- 房間描述欄：全文寬，【】內為綠色強調 -->
+		<!-- 房間描述欄：全文寬，【】內為綠色強調；附「在場名單」 -->
 		<section id="room-desc-panel" class="panel room-desc-panel">
 			<div id="room-desc" class="room-desc"></div>
+			<div id="room-presence" class="room-presence" aria-live="polite"></div>
 		</section>
 
-		<!-- 敘事欄：左側同房人物、右側可擴充 -->
+		<!-- 敘事欄：紀錄區 -->
 		<section id="narrative-panel" class="panel narrative-panel">
-			<div id="persons-panel" class="persons-panel">
-				<ul id="entities-list" class="entities-list"></ul>
-			</div>
 			<div id="narrative-right" class="narrative-right">
 				<div id="log" class="log-content" role="log"></div>
 			</div>
@@ -162,8 +160,8 @@
 		</div>
 	</div>
 
-	<script src="main.js?v=8.33"></script>
-	<script src="mud-text.js?v=4.11"></script>
+	<script src="main.js?v=8.34"></script>
+	<script src="mud-text.js?v=4.12"></script>
 	<script src="ui.js?v=3.9"></script>
 	<script>
 		if ('serviceWorker' in navigator) {

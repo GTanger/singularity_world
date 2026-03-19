@@ -110,6 +110,58 @@ func GetNPCTitleFromAssignments(db *sql.DB, entityID string) string {
 	return list[0].OccupationID
 }
 
+// RemoveAssignmentsForEntity 移除某實體的全部指派（死亡除名用）。store 啟用時寫入 store 並持久化。
+func RemoveAssignmentsForEntity(db *sql.DB, entityID string) error {
+	if store.Default != nil {
+		return store.Default.RemoveAssignmentsForEntity(entityID)
+	}
+	_, err := db.Exec("DELETE FROM assignments WHERE entity_id = ?", entityID)
+	return err
+}
+
+// GetVenueMaxStaff 回傳該場所職缺上限（10.15 細目 2）；store 啟用時從 Venue.MaxStaff 讀取，0 用 defaultMax；無 store 時回傳 defaultMax。
+func GetVenueMaxStaff(db *sql.DB, venueID string, defaultMax int) int {
+	if store.Default != nil {
+		return store.Default.GetVenueMaxStaff(venueID, defaultMax)
+	}
+	return defaultMax
+}
+
+// GetFirstOccupationIDForVenue 回傳該場所既有指派中的第一個職業 ID（10.15 撮合時「場所對應職業」）；無則空字串，呼叫方 fallback DefaultOccupationForHire。
+func GetFirstOccupationIDForVenue(db *sql.DB, venueID string) string {
+	if store.Default != nil {
+		return store.Default.GetFirstOccupationIDForVenue(venueID)
+	}
+	var occ string
+	if err := db.QueryRow("SELECT occupation_id FROM assignments WHERE venue_id = ? LIMIT 1", venueID).Scan(&occ); err != nil {
+		return ""
+	}
+	return occ
+}
+
+// GetRoomIDsForVenue 回傳該場所涵蓋的房間 ID 列表；供死亡區域事件廣播用。store 啟用時從 store 讀取。
+func GetRoomIDsForVenue(db *sql.DB, venueID string) ([]string, error) {
+	if store.Default != nil {
+		v := store.Default.GetVenue(venueID)
+		if v == nil {
+			return nil, nil
+		}
+		return v.RoomIDs, nil
+	}
+	var raw string
+	if err := db.QueryRow("SELECT room_ids FROM venues WHERE id = ?", venueID).Scan(&raw); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	var ids []string
+	if err := json.Unmarshal([]byte(raw), &ids); err != nil {
+		return nil, err
+	}
+	return ids, nil
+}
+
 // IsRoomInVenue 判斷房間是否在該場所的 room_ids 內；store 啟用時從 store 讀取。
 func IsRoomInVenue(db *sql.DB, roomID, venueID string) (bool, error) {
 	if store.Default != nil {

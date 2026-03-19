@@ -103,14 +103,24 @@ func pickRandom(list []string) string {
 	return list[rand.Intn(len(list))]
 }
 
-// PickIdleEmote 隨機選一條指定職稱、時段的閒置動作，替換 {name}。disposition 預留（未來可依心境偏正面/負面句）。
+// PickIdleEmote 隨機選一條指定職稱、時段的閒置動作，替換 {name}。
+// disposition < -30 → 用 night 文本（疲憊/鬱悶）；disposition > 30 → 用 morning 文本（愉快）；否則用實際時段。
 func PickIdleEmote(title, period, npcName string, disposition int) string {
 	bd := GetBehaviors()
 	role, ok := bd.Roles[title]
 	if !ok {
 		return ""
 	}
-	emotes := role.Idle[period]
+	effectivePeriod := period
+	if disposition < -30 {
+		effectivePeriod = "night"
+	} else if disposition > 30 {
+		effectivePeriod = "morning"
+	}
+	emotes := role.Idle[effectivePeriod]
+	if len(emotes) == 0 {
+		emotes = role.Idle[period] // 回退到實際時段避免空字串
+	}
 	if len(emotes) == 0 {
 		return ""
 	}

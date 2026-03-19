@@ -7,6 +7,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"strings"
 
 	"singularity_world/entity"
 	"singularity_world/model"
@@ -51,6 +52,24 @@ func GetRoom(db *sql.DB, id string) (*model.Room, error) {
 	}
 	_ = json.Unmarshal([]byte(tagsJSON), &r.Tags)
 	return &r, nil
+}
+
+// TerrainFromRoom 依房間 tags／zone 回傳戰鬥地形標籤（lush／chaos／silent／grip），供 combat.CombatOpt 使用；無則空字串。
+func TerrainFromRoom(db *sql.DB, roomID string) string {
+	room, err := GetRoom(db, roomID)
+	if err != nil || room == nil {
+		return ""
+	}
+	for _, t := range room.Tags {
+		switch strings.ToLower(strings.TrimSpace(t)) {
+		case "lush", "chaos", "silent", "grip":
+			return strings.ToLower(strings.TrimSpace(t))
+		}
+	}
+	if strings.ToLower(strings.TrimSpace(room.Zone)) == "chaos" {
+		return "chaos"
+	}
+	return ""
 }
 
 // GetRoomsByTag 回傳所有帶有指定 tag 的房間 ID；store 啟用時從 JSON 背板讀取。
@@ -141,7 +160,7 @@ func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
 		var list []*entity.Character
 		for _, id := range ids {
 			se := store.Default.GetEntity(id)
-			if se == nil {
+			if se == nil || se.Vit <= 0 {
 				continue
 			}
 			title := ""
@@ -157,7 +176,7 @@ func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
 		 c.move_started_at, c.vit, c.qi, c.dex, c.magnesium, c.last_observed_at, c.created_at, c.gender, c.soul_seed,
 		 c.display_title
 		 FROM entity_room er JOIN entities c ON c.id = er.entity_id
-		 WHERE er.room_id = ?`,
+		 WHERE er.room_id = ? AND c.vit > 0`,
 		roomID,
 	)
 	if err != nil {
@@ -202,13 +221,13 @@ func SetEntityRoom(db *sql.DB, entityID, roomID string) error {
 	return err
 }
 
-// GetNPCIDsWithRoom 回傳所有「有房間」的 NPC 實體 ID（供主迴圈註冊腦驅動 Traveler 用）。
+// GetNPCIDsWithRoom 回傳所有「有房間」且 Vit>0（存活）的 NPC 實體 ID（供主迴圈註冊腦驅動 Traveler 用）。死亡（Vit≤0）NPC 不參與。
 func GetNPCIDsWithRoom(db *sql.DB) ([]string, error) {
 	if store.Default != nil {
 		return store.Default.GetNPCIDsWithRoom(), nil
 	}
 	rows, err := db.Query(
-		`SELECT er.entity_id FROM entity_room er JOIN entities e ON e.id = er.entity_id WHERE e.kind = 'npc'`)
+		`SELECT er.entity_id FROM entity_room er JOIN entities e ON e.id = er.entity_id WHERE e.kind = 'npc' AND e.vit > 0`)
 	if err != nil {
 		return nil, err
 	}

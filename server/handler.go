@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,6 +21,12 @@ import (
 )
 
 // 創生預設格：以房間名稱「界壁」解析 id，見 db.GetSpawnRoomID。
+
+// defaultObserver 供 §七 7.1：房間制觀測改經 Observer 介面；main 啟動時 SetDefaultObserver(obs)。
+var defaultObserver game.Observer
+
+// SetDefaultObserver 設定全域 Observer，sendRoomView 會對同房 NPC 呼叫 OnObserve（若非 nil）；否則沿用 ObserveRoom。
+func SetDefaultObserver(o game.Observer) { defaultObserver = o }
 
 // HandleMessage 解析客戶端 JSON 並執行 login 或 move；傳入 sessionStore 與 hub 以綁定 session 與廣播。
 func HandleMessage(c *Client, raw []byte, database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
@@ -169,6 +176,12 @@ func loginSuccess(c *Client, playerID string, database *sql.DB, cfg config.Serve
 	}
 	rm := db.ComputeResourceMaxes(vit, qi, dex)
 	sendRoomView(database, c, view, cfg)
+	// 10.18 短期記憶：登入時與當前房內每位 NPC 計一次見面
+	for _, e := range view.Entities {
+		if e.Kind == "npc" && e.ID != playerID {
+			_ = db.RecordMeet(database, e.ID, playerID)
+		}
+	}
 	sendMeWithStatus(c, ent, playerID, roomID, view.Room.Name, vit, qi, dex, rm, database)
 }
 
@@ -181,6 +194,7 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 		sendError(c, "direction required")
 		return
 	}
+	oldRoomID, _ := db.GetEntityRoom(database, c.PlayerID)
 	newRoomID, ok, err := game.MoveByExit(database, c.PlayerID, msg.Direction)
 	if err != nil {
 		sendError(c, "move failed")
@@ -192,6 +206,8 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 		c.Send <- mustJSON(BlockedMsg{Type: "blocked", Direction: msg.Direction})
 		return
 	}
+	// §七 7.3：離開房間 → 若該房已無其他玩家，該房 NPC 恢復未觀測狀態
+	onLeaveRoom(database, store, oldRoomID, c.PlayerID)
 	view, err := game.GetRoomView(database, newRoomID)
 	if err != nil || view == nil {
 		sendError(c, "load room failed")
@@ -199,6 +215,12 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 	}
 	sendRoomView(database, c, view, cfg)
 	hub.Broadcast(mustJSON(MovedMsg{Type: "moved", PlayerID: c.PlayerID, RoomID: newRoomID, RoomName: view.Room.Name}))
+	// 10.18 短期記憶：玩家進房時記錄與該房每位 NPC 的「見面」一次
+	for _, e := range view.Entities {
+		if e.Kind == "npc" && e.ID != c.PlayerID {
+			_ = db.RecordMeet(database, e.ID, c.PlayerID)
+		}
+	}
 
 	// NPC 進房反應：隨機挑一個同房 NPC 延遲回應
 	go func(playerID, roomID string) {
@@ -220,6 +242,28 @@ func handleMove(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Server, 
 		time.Sleep(time.Duration(500+rand.Intn(1000)) * time.Millisecond)
 		SendNarrateToRoom(store, database, roomID, reaction)
 	}(c.PlayerID, newRoomID)
+}
+
+// onLeaveRoom 當玩家離開某房時，若該房已無其他玩家，則將該房內所有 NPC 的 last_observed_at 清空（恢復未觀測）。
+func onLeaveRoom(database *sql.DB, store *SessionStore, roomID, leftPlayerID string) {
+	if roomID == "" {
+		return
+	}
+	for _, s := range store.AllSessions() {
+		if s.PlayerID == "" || s.PlayerID == leftPlayerID {
+			continue
+		}
+		r, _ := db.GetEntityRoom(database, s.PlayerID)
+		if r == roomID {
+			return // 仍有其他玩家在該房，不清
+		}
+	}
+	entities, _ := db.GetEntitiesInRoom(database, roomID)
+	for _, e := range entities {
+		if e.Kind == "npc" {
+			_ = db.ClearLastObserved(database, e.ID)
+		}
+	}
 }
 
 func sendRoomView(database *sql.DB, c *Client, view *game.RoomView, cfg config.Server) {
@@ -265,6 +309,16 @@ func sendRoomView(database *sql.DB, c *Client, view *game.RoomView, cfg config.S
 		ServerUnix:               now,
 		GameTimeSecSinceMidnight: secSinceMidnight,
 		GameDaysSinceEpoch:       daysSinceEpoch,
+	}
+	// §七 7.1／7.2：進入房間觸發觀測 — 經 Observer 介面或 fallback ObserveRoom
+	if defaultObserver != nil {
+		for _, e := range view.Entities {
+			if e.Kind == "npc" {
+				defaultObserver.OnObserve(e.ID, c.PlayerID, now)
+			}
+		}
+	} else {
+		game.ObserveRoom(database, roomID, c.PlayerID, now)
 	}
 	c.Send <- mustJSON(msg)
 }
@@ -351,6 +405,9 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 	}
 	targetID := msg.EntityID
 	action := msg.Action
+	if action == "Attack" {
+		action = "Slay" // 向後相容：舊「攻擊」＝送行（致死意圖）
+	}
 	if targetID == "" || action == "" {
 		sendError(c, "缺少目標或動作")
 		return
@@ -414,7 +471,7 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 				playerInput = "（搭話）"
 			}
 			log.Printf("[Talk] target=%q player_input=%q", targetID, playerInput)
-			backstory := db.BuildIdentity(database, targetID)
+			backstory := db.BuildIdentity(database, targetID) + db.FormatNpcMemoryForBackstory(database, targetID, c.PlayerID)
 			snippets := db.SearchArchival(targetID, msg.PlayerInput, 5)
 			styleExamples := db.PickStyleExamples(database, targetID, 3)
 			var p *db.Personality
@@ -430,13 +487,20 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 					sensitivityHint = "此角色較冷淡，回覆簡短。"
 				}
 			}
+			// 10.22 disposition 影響語氣
+			disp := db.GetDisposition(database, targetID)
+			if disp < -30 {
+				sensitivityHint += "此角色心境低落，語氣較冷漠沉鬱。"
+			} else if disp > 30 {
+				sensitivityHint += "此角色心情愉快，語氣較活潑熱情。"
+			}
 			reply, err := ai.CallAITalk(cfg.OllamaBaseURL, cfg.OllamaModel, playerInput, backstory, snippets, styleExamples, sensitivityHint)
 			var narrative, npcReply string
 			if err != nil || reply == "" {
 				if err != nil {
 					log.Printf("[Talk] Ollama fallback: %v", err)
 				}
-				narrative = buildTalkNarrative(database, playerRoom, target, p, cfg)
+				narrative = buildTalkNarrative(database, playerRoom, target, p, cfg, playerInput)
 				npcReply = narrative
 				if i := strings.Index(narrative, "搭話。"); i >= 0 {
 					npcReply = narrative[i+len("搭話。"):]
@@ -464,23 +528,262 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 			// Talk 的長期記憶僅由此處寫入：逾時 2 分鐘後下一句 Talk 時，上一場整場壓成 1～3 條 consolidation 寫入 archival（見 conversation_buffer.go）
 			FlushConversationAndAppend(c.PlayerID, targetID, playerInput, npcReply, now)
 			store.UpdateLastTalkAt(c.PlayerID) // 同房玩家優先 LLM：有對話行為時不觸發 NPC 間對話
-		case "Attack":
+			_ = db.AdjustFavorability(database, targetID, c.PlayerID, db.FavTalk)
+		case "Subdue", "Slay":
 			attacker, _ := db.GetEntity(database, c.PlayerID)
 			if attacker == nil {
 				sendError(c, "找不到自身角色")
 				return
 			}
-			narrative := buildAttackNarrative(attacker, target)
+			subdue := action == "Subdue"
+			narrative, fightWinner, attackerFinalHP, defenderFinalHP := buildAttackNarrative(database, playerRoom, attacker, target, subdue)
+			if target.Kind == "npc" {
+				extra := ""
+				if subdue {
+					if fightWinner == "attacker" {
+						extra = db.NpcBehaviorReactionLine(database, targetID, c.PlayerID, "subdue_victim")
+					} else if fightWinner == "defender" {
+						extra = db.NpcBehaviorReactionLine(database, targetID, c.PlayerID, "lost_subdue")
+					}
+				}
+				if extra != "" {
+					narrative += "\n" + extra
+				}
+			}
 			_ = event.Append(database, now, c.PlayerID, event.TypeCombat, targetID)
 			attackTargetName := target.DisplayTitle
 			if attackTargetName == "" {
 				attackTargetName = target.ID
 			}
+			outAct := "Slay"
+			if subdue {
+				outAct = "Subdue"
+			}
 			c.Send <- mustJSON(ActionResultMsg{
-				Type: "action_result", Action: "Attack",
+				Type: "action_result", Action: outAct,
 				TargetID: target.ID, TargetName: attackTargetName,
 				Narrative: narrative, Success: true,
 			})
+			// 戰鬥結果寫回 DB：雙方 Vit 更新為戰鬥結束後剩餘 HP（≤0 則寫 0，即死亡）
+			_ = db.UpdateVit(database, c.PlayerID, attackerFinalHP)
+			_ = db.UpdateVit(database, targetID, defenderFinalHP)
+			// §七 7.4：寫入 vit 事件供坍縮回推
+			_ = event.Append(database, now, c.PlayerID, event.TypeVit, strconv.Itoa(attackerFinalHP))
+			_ = event.Append(database, now, targetID, event.TypeVit, strconv.Itoa(defenderFinalHP))
+			// 10.18／10.19：NPC 對該玩家好感（留人較輕、送行同舊攻擊）
+			if target.Kind == "npc" {
+				if subdue {
+					_ = db.AdjustFavorability(database, targetID, c.PlayerID, db.FavSubdue)
+					// 10.22 被制伏心境下降
+					if fightWinner == "attacker" {
+						db.AdjustDisposition(database, targetID, db.DispSubdued)
+					}
+				} else {
+					_ = db.AdjustFavorability(database, targetID, c.PlayerID, db.FavSlay)
+				}
+			}
+			// NPC 死亡：僅送行且氣血歸零；留人制伏不觸發除名
+			if target.Kind == "npc" && !subdue && defenderFinalHP <= 0 {
+				deathRoom := playerRoom
+				db.LogNPCEvent(targetID, db.EvtDeath, "在"+deathRoom+"倒下")
+				name := attackTargetName
+				narrateText := "傳來消息：【" + name + "】倒下了。"
+				roomsToNarrate := make(map[string]bool)
+				roomsToNarrate[deathRoom] = true
+				for _, nb := range db.GetGraph().Neighbors(deathRoom) {
+					roomsToNarrate[nb] = true
+				}
+				assignments, _ := db.GetAssignmentsForEntity(database, targetID)
+				for _, a := range assignments {
+					venueRooms, _ := db.GetRoomIDsForVenue(database, a.VenueID)
+					for _, rid := range venueRooms {
+						roomsToNarrate[rid] = true
+					}
+				}
+				for rid := range roomsToNarrate {
+					SendNarrateToRoom(store, database, rid, narrateText)
+				}
+				_ = db.RemoveAssignmentsForEntity(database, targetID)
+				_ = db.RemoveScheduleForEntity(database, targetID)
+			}
+		case "Borrow":
+			borrowName := target.DisplayTitle
+			if borrowName == "" {
+				borrowName = target.ID
+			}
+			itemID, okB := db.PickNPCTradeOffer(target.Inventory)
+			if !okB {
+				c.Send <- mustJSON(ActionResultMsg{
+					Type: "action_result", Action: "Borrow",
+					TargetID: target.ID, TargetName: borrowName,
+					Narrative: "【" + borrowName + "】身無長物可借，你只得作罷。", Success: true,
+				})
+				break
+			}
+			itemDisp := itemID
+			if n, _, _, _, _, err := db.GetItemInfo(database, itemID); err == nil && n != "" {
+				itemDisp = n
+			}
+			r := rand.Float64()
+			var narrative string
+			if r < 0.42 {
+				_ = db.RemoveFromInventory(database, targetID, itemID, 1)
+				_ = db.AddToInventory(database, c.PlayerID, itemID, 1)
+				narrative = "你悄聲「借」得一物——「" + itemDisp + "」已入你手。"
+				_ = event.Append(database, now, c.PlayerID, "borrow", targetID)
+				if target.Kind == "npc" {
+					_ = db.AdjustFavorability(database, targetID, c.PlayerID, db.FavBorrowSuccess)
+					if ex := db.NpcBehaviorReactionLine(database, targetID, c.PlayerID, "borrow_ok"); ex != "" {
+						narrative += "\n" + ex
+					}
+				}
+				pushRefresh(c, database)
+			} else if r < 0.78 {
+				narrative = "你伸手的瞬間被【" + borrowName + "】察覺。"
+				if target.Kind == "npc" {
+					_ = db.AdjustFavorability(database, targetID, c.PlayerID, db.FavBorrowCaught)
+					if ex := db.NpcBehaviorReactionLine(database, targetID, c.PlayerID, "borrow_caught"); ex != "" {
+						narrative += "\n" + ex
+					}
+				}
+				_ = event.Append(database, now, c.PlayerID, "borrow_fail", targetID)
+			} else {
+				narrative = "你試探了一番，未能得手，悻悻收回。"
+				_ = event.Append(database, now, c.PlayerID, "borrow_fail", targetID)
+			}
+			c.Send <- mustJSON(ActionResultMsg{
+				Type: "action_result", Action: "Borrow",
+				TargetID: target.ID, TargetName: borrowName,
+				Narrative: narrative, Success: true,
+			})
+		case "Trade":
+			tradeTargetName := target.DisplayTitle
+			if tradeTargetName == "" {
+				tradeTargetName = target.ID
+			}
+			playerTradeInput := strings.TrimSpace(msg.PlayerInput)
+			if isTradeRejectInput(playerTradeInput) {
+				db.TradeOfferClear(c.PlayerID, targetID)
+				c.Send <- mustJSON(ActionResultMsg{
+					Type: "action_result", Action: "Trade",
+					TargetID: target.ID, TargetName: tradeTargetName,
+					Narrative: "你中止了與【" + tradeTargetName + "】的交易。", Success: true,
+				})
+				break
+			}
+			pending := db.TradeOfferGet(c.PlayerID, targetID)
+			if pending == nil {
+				if playerTradeInput != "" {
+					c.Send <- mustJSON(ActionResultMsg{
+						Type: "action_result", Action: "Trade",
+						TargetID: target.ID, TargetName: tradeTargetName,
+						Narrative: "對方尚未開價。請先點【交易】取得報價，再在輸入欄填寫出價（鎂）。", Success: true,
+					})
+					break
+				}
+				itemID, okOffer := db.PickNPCTradeOffer(target.Inventory)
+				if !okOffer {
+					narrative := "你向【" + tradeTargetName + "】提出交易，對方表示目前暫無可交易之物。"
+					c.Send <- mustJSON(ActionResultMsg{
+						Type: "action_result", Action: "Trade",
+						TargetID: target.ID, TargetName: tradeTargetName,
+						Narrative: narrative, Success: true,
+					})
+					break
+				}
+				ask := db.DefaultTradeAskMg(itemID)
+				floor := db.TradeFloorFromAsk(ask)
+				itemName := itemID
+				if n, _, _, _, _, err := db.GetItemInfo(database, itemID); err == nil && n != "" {
+					itemName = n
+				}
+				db.TradeOfferSet(c.PlayerID, &db.TradePending{
+					NPCID: targetID, ItemID: itemID, ItemQty: 1, AskMg: ask, FloorMg: floor,
+				})
+				narrative := fmt.Sprintf(
+					"【%s】願意向你賣出「%s」一份，開價 %d 鎂（議價底線約 %d 鎂）。請再點【交易】，在欄位輸入你願付的鎂數；達開價則一口價成交，介於底線與開價之間則以你的出價成交。輸入「拒絕」可取消。",
+					tradeTargetName, itemName, ask, floor,
+				)
+				c.Send <- mustJSON(ActionResultMsg{
+					Type: "action_result", Action: "Trade",
+					TargetID: target.ID, TargetName: tradeTargetName,
+					Narrative: narrative, Success: true,
+				})
+				break
+			}
+			if playerTradeInput == "" {
+				c.Send <- mustJSON(ActionResultMsg{
+					Type: "action_result", Action: "Trade",
+					TargetID: target.ID, TargetName: tradeTargetName,
+					Narrative: "請輸入你願付的鎂數（整數），或輸入「拒絕」取消交易。", Success: true,
+				})
+				break
+			}
+			offer, errParseOffer := strconv.Atoi(playerTradeInput)
+			if errParseOffer != nil || offer < 0 {
+				c.Send <- mustJSON(ActionResultMsg{
+					Type: "action_result", Action: "Trade",
+					TargetID: target.ID, TargetName: tradeTargetName,
+					Narrative: "請輸入有效的鎂數（非負整數），或「拒絕」。", Success: true,
+				})
+				break
+			}
+			buyer, _ := db.GetEntity(database, c.PlayerID)
+			if buyer == nil {
+				sendError(c, "找不到自身角色")
+				return
+			}
+			var paid int
+			if offer >= pending.AskMg {
+				paid = pending.AskMg
+			} else if offer >= pending.FloorMg {
+				paid = offer
+			} else {
+				c.Send <- mustJSON(ActionResultMsg{
+					Type: "action_result", Action: "Trade",
+					TargetID: target.ID, TargetName: tradeTargetName,
+					Narrative: fmt.Sprintf("【%s】搖頭：至少要 %d 鎂才肯點頭。", tradeTargetName, pending.FloorMg),
+					Success: true,
+				})
+				break
+			}
+			if buyer.Magnesium < paid {
+				c.Send <- mustJSON(ActionResultMsg{
+					Type: "action_result", Action: "Trade",
+					TargetID: target.ID, TargetName: tradeTargetName,
+					Narrative: "你的鎂不足，無法成交。", Success: true,
+				})
+				break
+			}
+			if err := db.TransferMagnesium(database, c.PlayerID, targetID, paid); err != nil {
+				log.Printf("[Trade] transfer: %v", err)
+				c.Send <- mustJSON(ActionResultMsg{
+					Type: "action_result", Action: "Trade",
+					TargetID: target.ID, TargetName: tradeTargetName,
+					Narrative: "成交時鎂轉帳失敗，請稍後再試。", Success: false,
+				})
+				break
+			}
+			_ = db.AddToInventory(database, c.PlayerID, pending.ItemID, pending.ItemQty)
+			_ = db.RemoveFromInventory(database, targetID, pending.ItemID, pending.ItemQty)
+			db.TradeOfferClear(c.PlayerID, targetID)
+			itemName := pending.ItemID
+			if n, _, _, _, _, err := db.GetItemInfo(database, pending.ItemID); err == nil && n != "" {
+				itemName = n
+			}
+			var narrative string
+			if offer >= pending.AskMg {
+				narrative = fmt.Sprintf("你以開價 %d 鎂買下「%s」。", paid, itemName)
+			} else {
+				narrative = fmt.Sprintf("一番議價後，你以 %d 鎂買下「%s」。", paid, itemName)
+			}
+			_ = event.Append(database, now, c.PlayerID, "trade", targetID)
+			c.Send <- mustJSON(ActionResultMsg{
+				Type: "action_result", Action: "Trade",
+				TargetID: target.ID, TargetName: tradeTargetName,
+				Narrative: narrative, Success: true,
+			})
+			pushRefresh(c, database)
 		default:
 			sendError(c, "未知動作："+action)
 		}
@@ -637,10 +940,21 @@ func buildLookNarrative(target *entity.Character, database *sql.DB) string {
 	return desc
 }
 
-func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Character, personality *db.Personality, cfg config.Server) string {
+func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Character, personality *db.Personality, cfg config.Server, playerInput string) string {
 	name := target.DisplayTitle
 	if name == "" {
 		name = target.ID
+	}
+	seed := int64(0)
+	for _, r := range target.ID {
+		seed = seed*31 + int64(r)
+	}
+	seed += int64(len(playerInput))<<10 + int64(len(playerRoom))<<16
+	// §10.16：玩家有輸入時先做關鍵字檢索
+	if strings.TrimSpace(playerInput) != "" && playerInput != "（搭話）" {
+		if line := db.TryMatchKeyword(playerInput, seed); line != "" {
+			return "你向【" + name + "】搭話。" + strings.ReplaceAll(line, "{name}", name)
+		}
 	}
 	// 優先從職業對話檔抽句並填佔位符（{name}、{room}、{time}、{mood}、{verb}、{thing}、{goods}）
 	assignments, _ := db.GetAssignmentsForEntity(database, target.ID)
@@ -664,7 +978,11 @@ func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Char
 			return "你向【" + name + "】搭話。" + line
 		}
 	}
-	// 無指派或無對話檔時 fallback 提示詞池（也算對話提示詞，擴充以降低重複率）
+	// §10.16：公共 fallback — 公版對話 public_dialogue.json talk.lines
+	if line := db.PickFromPublicTalk(name, seed+1); line != "" {
+		return "你向【" + name + "】搭話。" + line
+	}
+	// 終極 fallback：內建句池
 	responses := []string{
 		"「你好，有什麼事嗎？」",
 		"「這裡最近不太平靜，你小心點。」",
@@ -835,9 +1153,9 @@ func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Char
 		h += int(r)
 	}
 	now := game.NowUnix()
-	// 用遊戲時間 + NPC ID  hash 做 seed，同一刻同一 NPC 固定，不同時刻或不同 NPC 則分散，降低重複感
-	seed := int64(now)*1000 + int64(h)
-	rng := rand.New(rand.NewSource(seed))
+	// 用遊戲時間 + NPC ID hash 做 seed，同一刻同一 NPC 固定，不同時刻或不同 NPC 則分散，降低重複感
+	fallbackSeed := int64(now)*1000 + int64(h)
+	rng := rand.New(rand.NewSource(fallbackSeed))
 	idx := rng.Intn(len(responses))
 	if personality != nil {
 		shift := int(personality.Boldness * float64(len(responses) / 2))
@@ -852,8 +1170,15 @@ func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Char
 	return "你向【" + name + "】搭話。" + name + "說道：" + responses[idx]
 }
 
-func buildAttackNarrative(attacker, defender *entity.Character) string {
-	winner, rawLog := combat.Resolve(attacker.Vit, attacker.Dex, defender.Vit, defender.Dex)
+// buildAttackNarrative 依 combat.ResolveV2 產出戰報（§七 標籤）；subdue=true 為留人（氣血不低於 1）。回傳 winner 供 NPC 反應。
+func buildAttackNarrative(database *sql.DB, roomID string, attacker, defender *entity.Character, subdue bool) (narrative string, winner string, attackerFinalHP, defenderFinalHP int) {
+	opt := &combat.CombatOpt{Subdue: subdue}
+	if roomID != "" {
+		if t := db.TerrainFromRoom(database, roomID); t != "" {
+			opt.Terrain = t
+		}
+	}
+	winner, rawLog, aHP, dHP := combat.ResolveV2(attacker.Vit, attacker.Dex, defender.Vit, defender.Dex, opt)
 	aName := attacker.DisplayTitle
 	if aName == "" {
 		aName = attacker.ID
@@ -864,14 +1189,23 @@ func buildAttackNarrative(attacker, defender *entity.Character) string {
 	}
 	log := strings.ReplaceAll(rawLog, "攻方", "【"+aName+"】")
 	log = strings.ReplaceAll(log, "守方", "【"+dName+"】")
-	prefix := "你向【" + dName + "】發起攻擊！"
+	var prefix string
+	if subdue {
+		prefix = "你對【" + dName + "】出手，意在留人！"
+	} else {
+		prefix = "你對【" + dName + "】出手，意在送行！"
+	}
 	var suffix string
 	if winner == "attacker" {
-		suffix = "\n你取得了勝利。（戰鬥系統尚未完整實裝，不扣除氣血）"
+		if subdue {
+			suffix = "\n你留住了對方。"
+		} else {
+			suffix = "\n你取得了勝利。"
+		}
 	} else {
-		suffix = "\n你敗下陣來。（戰鬥系統尚未完整實裝，不扣除氣血）"
+		suffix = "\n你敗下陣來。"
 	}
-	return prefix + log + suffix
+	return prefix + log + suffix, winner, aHP, dHP
 }
 
 func handleGetEntityStatus(c *Client, msg *ClientMsg, database *sql.DB) {
@@ -1170,6 +1504,16 @@ func pushRefresh(c *Client, database *sql.DB) {
 	}
 	status.EquipmentSlots, status.EquipmentNames, status.EquipmentDescs = parseEquipment(database, ent.EquipmentSlots)
 	c.Send <- mustJSON(status)
+}
+
+func isTradeRejectInput(s string) bool {
+	s = strings.TrimSpace(strings.ToLower(s))
+	switch s {
+	case "拒絕", "取消", "算了", "不要", "no", "n":
+		return true
+	default:
+		return false
+	}
 }
 
 func sendError(c *Client, message string) {

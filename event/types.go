@@ -9,4 +9,5 @@ const (
 	TypeContact   = "contact"   // 與實體接觸（payload 為對方 entity_id）
 	TypeCombat    = "combat"    // 戰鬥
 	TypeTrade     = "trade"     // 交易
+	TypeVit       = "vit"       // 氣血變動（payload 為整數字串，供坍縮回推）
 )

@@ -28,8 +28,8 @@ type Character struct {
 	Disposition     int    // 心境 -100~+100，0=中性（閒置口吻、Talk 口吻用）
 }
 
-// Sockets 回傳此角色對外開放的動詞清單（Agent 預設插座：Talk, Attack, Look, Trade）。
+// Sockets 回傳此角色對外開放的動詞清單（Agent 預設插座：Talk、Borrow、Subdue、Slay、Look、Trade）。
 // 玩家與 NPC 皆可因行為湧現身份（如在 A 買、B 賣即為行腳商），見 狀態_指派_身份_核心概念。
 func (c *Character) Sockets() []string {
-	return []string{"Talk", "Attack", "Look", "Trade"}
+	return []string{"Talk", "Borrow", "Subdue", "Slay", "Look", "Trade"}
 }

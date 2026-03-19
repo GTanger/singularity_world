@@ -78,7 +78,7 @@ func RunViewSimulation(database *sql.DB, getObserverPositions func() []Pos, obs 
 	now := NowUnix()
 	for _, id := range inViewIDs {
 		if obs != nil {
-			obs.OnObserve(id, now)
+			obs.OnObserve(id, "", now)
 		}
 		_ = SimulateOneTick(database, id)
 	}

@@ -5,6 +5,9 @@
 	var ACTION_LABELS = {
 		'Look': '觀看',
 		'Talk': '對話',
+		'Borrow': '借物',
+		'Subdue': '留人',
+		'Slay': '送行',
 		'Attack': '攻擊',
 		'Trade': '交易',
 		'Read': '閱讀',
@@ -88,7 +91,7 @@
 		var line2El = document.getElementById('room-name-line2');
 		var nameWrap = document.getElementById('room-name');
 		var descEl = document.getElementById('room-desc');
-		var listEl = document.getElementById('entities-list');
+		var presenceEl = document.getElementById('room-presence');
 		// 房間名稱上四下四：若為「X段」則上排 X、下排 N段（置中）
 		var name = roomName || '';
 		if (line1El && line2El && nameWrap) {
@@ -107,38 +110,27 @@
 		if (descEl) {
 			descEl.innerHTML = description ? formatDesc(description, objects) : '';
 		}
-		if (listEl) {
-			listEl.innerHTML = '';
-			if (entities && entities.length > 0) {
-				var myId = me && (me.player_id || me.playerID);
-				entities.forEach(function (e) {
-					var eid = (e.id || e.ID || '').toString();
-					if (myId && eid === myId) return;
-
-					var displayName = e.display_name || eid;
-					var li = document.createElement('li');
-					li.className = 'entity-row';
-					if (e.kind === 'npc') li.classList.add('entity-npc');
-					li.setAttribute('data-entity-id', eid);
-					li.textContent = displayName;
-					li.setAttribute('role', 'button');
-					li.setAttribute('tabindex', '0');
-					li.title = '點擊觀看';
-					listEl.appendChild(li);
-
-					li.addEventListener('click', function () {
-						if (window.gameSend) {
-							window.gameSend({ type: 'do_action', entity_id: eid, action: 'Look' });
-						}
-					});
-					li.addEventListener('keydown', function (ev) {
-						if (ev.key === 'Enter' || ev.key === ' ') {
-							ev.preventDefault();
-							li.click();
-						}
-					});
+		if (presenceEl) {
+			presenceEl.innerHTML = '';
+			var myId = me && (me.player_id || me.playerID);
+			var others = [];
+			(entities || []).forEach(function (e) {
+				var eid = (e.id || e.ID || '').toString();
+				if (myId && eid === myId) return;
+				others.push({
+					id: eid,
+					name: e.display_name || eid
 				});
+			});
+			if (!others.length) {
+				presenceEl.innerHTML = '<span class="room-presence-label">你看見：</span><span class="text-muted">此處暫無他人</span>';
+				return;
 			}
+			var html = '<span class="room-presence-label">你看見：</span>';
+			html += others.map(function (x) {
+				return '<span class="room-presence-entity" role="button" tabindex="0" data-entity-id="' + escapeHtml(x.id) + '" data-entity-name="' + escapeHtml(x.name) + '">' + escapeHtml(x.name) + '</span>';
+			}).join('<span class="room-presence-sep">、</span>');
+			presenceEl.innerHTML = html;
 		}
 	}
 
@@ -174,6 +166,23 @@
 			ev.stopPropagation();
 			sendObjectClick(objSpan);
 		}
+	});
+	document.addEventListener('click', function (ev) {
+		var el = ev.target.closest && ev.target.closest('.room-presence-entity');
+		if (!el) return;
+		ev.preventDefault();
+		var entityID = el.getAttribute('data-entity-id');
+		if (!entityID || !window.gameSend) return;
+		window.gameSend({ type: 'do_action', entity_id: entityID, action: 'Look' });
+	});
+	document.addEventListener('keydown', function (ev) {
+		var el = ev.target && ev.target.closest && ev.target.closest('.room-presence-entity');
+		if (!el) return;
+		if (ev.key !== 'Enter' && ev.key !== ' ') return;
+		ev.preventDefault();
+		var entityID = el.getAttribute('data-entity-id');
+		if (!entityID || !window.gameSend) return;
+		window.gameSend({ type: 'do_action', entity_id: entityID, action: 'Look' });
 	});
 
 	window.mudUpdateRoomView = function (roomName, description, exits, entities, me, objects) {

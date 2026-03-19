@@ -9,6 +9,18 @@
       "entity_id": "npc_dh374q25g7f7",
       "occupation_id": "服務生",
       "venue_id": "venue_life_inn"
+    },
+    {
+      "entity_id": "npc_dh3g3nuhrm5i",
+      "occupation_id": "服務生",
+      "venue_id": "venue_life_inn",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dh3i9ngexvnc",
+      "occupation_id": "服務生",
+      "venue_id": "venue_life_inn",
+      "assigned_by": "job_matching"
     }
   ]
 }

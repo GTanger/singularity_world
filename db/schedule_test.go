@@ -82,8 +82,8 @@ func TestApplySchedules(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GetAllSchedules: %v", err)
 	}
-	if len(schedules) != 4 {
-		t.Fatalf("expected 4 schedules, got %d", len(schedules))
+	if len(schedules) < 4 {
+		t.Fatalf("expected at least 4 schedules (test created 4), got %d", len(schedules))
 	}
 
 	// Hour 12: 日班應在 work、夜班應在 rest；所有人目前在 work，故夜班兩人會進 moves（應前往 rest）

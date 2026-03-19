@@ -39,14 +39,15 @@ type MovementDef struct {
 
 // NPCTraveler 管理一個正在移動中的 NPC 的即時狀態（記憶體內）。
 type NPCTraveler struct {
-	EntityID      string
-	MoveDef       MovementDef
-	PathQueue     []string // 剩餘要走的房間 ID 序列
-	WaypointIdx   int      // route 模式：當前目標 waypoint index
-	RouteForward  bool     // route bounce 模式：正向 or 反向
-	StayUntilHour int      // 到達後停留到此遊戲小時（-1 = 不停留）
-	Active        bool
-	LastIntent    Intent   // 腦驅動型：產生當前 path 的意圖，到達目標房時供「到達後行為」用
+	EntityID          string
+	MoveDef           MovementDef
+	PathQueue         []string // 剩餘要走的房間 ID 序列
+	WaypointIdx       int      // route 模式：當前目標 waypoint index
+	RouteForward      bool     // route bounce 模式：正向 or 反向
+	StayUntilHour     int      // 到達後停留到此遊戲小時（-1 = 不停留）
+	Active            bool
+	LastIntent        Intent // 腦驅動型：產生當前 path 的意圖，到達目標房時供「到達後行為」用
+	DepartureNarrative string // 腦驅動型：決定意圖時生成的出發敘事，首次移動時帶出並清空
 }
 
 // TravelerManager 管理所有正在進行地圖級移動的 NPC。
@@ -86,11 +87,12 @@ func (tm *TravelerManager) Unregister(entityID string) {
 
 // NPCStep 一次移動步驟的結果：誰從哪到哪；腦驅動抵達目標時帶 ArrivalIntent 供主迴圈觸發敘事／插座。
 type NPCStep struct {
-	EntityID      string
-	OldRoom       string
-	NewRoom       string
-	NpcName       string
-	ArrivalIntent IntentType // 非空表示此步為腦驅動「抵達意圖目標」，主迴圈可發敘事或執行對應行為
+	EntityID          string
+	OldRoom           string
+	NewRoom           string
+	NpcName           string
+	ArrivalIntent     IntentType // 非空表示此步為腦驅動「抵達意圖目標」，主迴圈可發敘事或執行對應行為
+	DecisionNarrative string     // 非空表示腦驅動決定新意圖時的出發敘事，主迴圈發送到 OldRoom
 }
 
 // Tick 每次呼叫推進 traveler 一步。回傳實際發生移動的列表。
@@ -167,6 +169,11 @@ func (tm *TravelerManager) Tick(database *sql.DB, g *RoomGraph, gameHour int, ac
 				step.ArrivalIntent = t.LastIntent.Type
 				t.LastIntent = Intent{}
 			}
+			// 出發敘事（大腦可見化）：首次移動時帶出，清空避免重複
+			if t.DepartureNarrative != "" {
+				step.DecisionNarrative = t.DepartureNarrative
+				t.DepartureNarrative = ""
+			}
 			steps = append(steps, step)
 		}
 
@@ -203,6 +210,14 @@ func (tm *TravelerManager) computeNextPath(t *NPCTraveler, currentRoom string, g
 		ctx := BuildDecisionContext(database, g, currentRoom, 20)
 		intent := Decide(state, ctx)
 		t.LastIntent = intent
+		// 20% 機率生成出發敘事（大腦可見化），隨首步移動帶到出發房間
+		if rand.Float64() < 0.20 {
+			npcName := GetNPCTitle(database, t.EntityID)
+			if npcName == "" {
+				npcName = t.EntityID
+			}
+			t.DepartureNarrative = buildDepartureNarrative(npcName, intent.Type)
+		}
 		return ResolveBrainPath(g, intent, currentRoom, &ctx, 25)
 	default:
 		return nil
@@ -295,8 +310,12 @@ func (tm *TravelerManager) computeStay(t *NPCTraveler, gameHour int) int {
 			stayRange = [2]int{1, 2}
 		case IntentTrade:
 			stayRange = [2]int{2, 5}
+		case IntentSocialize:
+			stayRange = [2]int{1, 3}
 		case IntentWander:
 			stayRange = [2]int{1, 4}
+		case IntentWork:
+			stayRange = [2]int{3, 6}
 		default:
 			stayRange = [2]int{1, 2}
 		}
@@ -313,6 +332,22 @@ func (tm *TravelerManager) computeStay(t *NPCTraveler, gameHour int) int {
 		return min
 	}
 	return min + rand.Intn(max-min+1)
+}
+
+// buildDepartureNarrative 腦驅動 NPC 決定新意圖時的出發敘事（大腦可見化）。
+// 僅在部分意圖下回傳非空字串；Wander / Idle 等低資訊意圖不敘事。
+func buildDepartureNarrative(npcName string, intentType IntentType) string {
+	switch intentType {
+	case IntentSeekJob:
+		return "【" + npcName + "】望著荷包，拍拍衣袖，打算出門碰碰運氣。"
+	case IntentBeg:
+		return "【" + npcName + "】長嘆一聲，朝熱鬧處走去。"
+	case IntentGather:
+		return "【" + npcName + "】拿起背簍，悄悄往郊外去了。"
+	case IntentSocialize:
+		return "【" + npcName + "】閒不住，往人多的地方晃去。"
+	}
+	return ""
 }
 
 // Count 回傳目前管理中的 traveler 數量。

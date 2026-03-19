@@ -1,6 +1,6 @@
 {
   "id": "fei_lake_west",
-  "name": "【飛霜湖西岸】寂靜迴岸",
+  "name": "飛霜湖西岸",
   "description": "繞湖的動線在此處即將回到起點。西側的石灘因為缺乏日照，積霜堆疊得異常厚實，踩上去發出令人牙酸的嘎吱聲。湖面上終年不散的暖霧在這裡與冷空氣交匯，形成一個個微型的白霧氣旋。空氣中混雜著湖水的腥味與地下機械管線的鏽味。可經〔沉霜水際〕下探，或沿岸折返〔北岸孤冷湖背〕與〔街口碎冰灘〕，或前往發出低沉噪音的〔轟鳴泵房〕。",
   "tags": [
     "street",
@@ -10,29 +10,26 @@
   "exits": [
     {
       "direction": "fei_lake_shore",
-      "to": "fei_lake_shore",
-      "ui_hidden": true
+      "to": "fei_lake_shore"
     },
     {
       "direction": "fei_lake_north",
-      "to": "fei_lake_north",
-      "ui_hidden": true
+      "to": "fei_lake_north"
     },
     {
       "direction": "fei_lake_south",
-      "to": "fei_lake_south",
-      "ui_hidden": true
+      "to": "fei_lake_south"
     },
     {
       "direction": "fei_lake_pump",
-      "to": "fei_lake_pump",
-      "ui_hidden": true
+      "to": "fei_lake_pump"
     }
   ],
   "objects": [
     {
       "id": "fei_lake_west_shore",
       "name": "沉霜水際",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -40,12 +37,12 @@
       "responses": {
         "Look": "此處可通往沉霜水際。",
         "Move": "你往貼水石灘走去。"
-      },
-      "move_to_room_id": "fei_lake_shore"
+      }
     },
     {
       "id": "fei_lake_west_north",
       "name": "北岸孤冷湖背",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -53,23 +50,23 @@
       "responses": {
         "Look": "此處可通往北岸孤冷湖背。",
         "Move": "你沿湖岸往北側走去。"
-      },
-      "move_to_room_id": "fei_lake_north"
+      }
     },
     {
       "id": "fei_lake_west_south",
       "name": "街口碎冰灘",
+      "owner": "",
       "sockets": [
         "Move"
       ],
       "responses": {
         "Move": "你沿湖岸往南側走去。"
-      },
-      "move_to_room_id": "fei_lake_south"
+      }
     },
     {
       "id": "fei_lake_west_pump",
       "name": "轟鳴泵房",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -77,8 +74,7 @@
       "responses": {
         "Look": "此處可通往轟鳴泵房。",
         "Move": "你朝轟鳴泵房走去。"
-      },
-      "move_to_room_id": "fei_lake_pump"
+      }
     }
   ]
 }

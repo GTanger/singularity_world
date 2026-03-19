@@ -61,11 +61,23 @@ func GetNpcNpcTopicByID(id string) *NpcNpcTopic {
 
 // PickRandomNpcNpcTopic 隨機回傳一主題；無主題時回傳 nil。
 func PickRandomNpcNpcTopic() *NpcNpcTopic {
+	return PickRandomNpcNpcTopicExclude("")
+}
+
+// PickRandomNpcNpcTopicExclude 隨機回傳一主題，但排除 excludeID（空字串表示不排除）。用於非職業場所不提示「交班」。
+func PickRandomNpcNpcTopicExclude(excludeID string) *NpcNpcTopic {
 	npcTopicsMu.RLock()
 	list := npcTopicsList
 	npcTopicsMu.RUnlock()
-	if len(list) == 0 {
+	var candidates []int
+	for i := range list {
+		if excludeID != "" && list[i].ID == excludeID {
+			continue
+		}
+		candidates = append(candidates, i)
+	}
+	if len(candidates) == 0 {
 		return nil
 	}
-	return &list[rand.Intn(len(list))]
+	return &list[candidates[rand.Intn(len(candidates))]]
 }

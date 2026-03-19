@@ -43,13 +43,81 @@ type DialogueSlots struct {
 }
 
 var (
-	dialogueMu    sync.RWMutex
-	dialogueCache = make(map[string]*DialogueFile)
-	slotsOnce     sync.Once
-	slotsCache    *DialogueSlots
+	dialogueMu       sync.RWMutex
+	dialogueCache    = make(map[string]*DialogueFile)
+	slotsOnce        sync.Once
+	slotsCache       *DialogueSlots
+	keywordGroupsMu  sync.RWMutex
+	keywordGroups    []keywordGroup
 )
 
+// keywordGroup 一組關鍵詞與對應回應句，供 §10.16 關鍵字檢索。
+type keywordGroup struct {
+	Terms     []string `json:"terms"`
+	Responses []string `json:"responses"`
+}
+
 const defaultTemplatesBase = "data/templates"
+const dialogueKeywordsFilename = "dialogue_keywords.json"
+
+// LoadDialogueKeywords 載入關鍵字對應表（僅執行一次，懶加載）。
+func LoadDialogueKeywords(basePath string) {
+	keywordGroupsMu.Lock()
+	defer keywordGroupsMu.Unlock()
+	if len(keywordGroups) > 0 {
+		return
+	}
+	data, err := os.ReadFile(filepath.Join(basePath, dialogueKeywordsFilename))
+	if err != nil {
+		log.Printf("[dialogue] keywords %s: %v", dialogueKeywordsFilename, err)
+		return
+	}
+	var f struct {
+		Groups []keywordGroup `json:"groups"`
+	}
+	if err := json.Unmarshal(data, &f); err != nil {
+		log.Printf("[dialogue] keywords parse: %v", err)
+		return
+	}
+	keywordGroups = f.Groups
+}
+
+// TryMatchKeyword 若玩家輸入包含任一群組的任一關鍵詞，則從該組隨機回傳一句；否則回傳空字串。
+func TryMatchKeyword(playerInput string, seed int64) string {
+	keywordGroupsMu.RLock()
+	groups := keywordGroups
+	keywordGroupsMu.RUnlock()
+	if len(groups) == 0 {
+		LoadDialogueKeywords(defaultTemplatesBase)
+		keywordGroupsMu.RLock()
+		groups = keywordGroups
+		keywordGroupsMu.RUnlock()
+	}
+	input := strings.TrimSpace(strings.ToLower(playerInput))
+	if input == "" || input == "（搭話）" {
+		return ""
+	}
+	rng := rand.New(rand.NewSource(seed))
+	for _, g := range groups {
+		for _, term := range g.Terms {
+			if strings.Contains(input, strings.ToLower(term)) && len(g.Responses) > 0 {
+				return g.Responses[rng.Intn(len(g.Responses))]
+			}
+		}
+	}
+	return ""
+}
+
+// PickFromPublicTalk 從公版對話 public_dialogue.json 的 talk.lines 抽一句，並將 {name} 替換為 npcName。
+func PickFromPublicTalk(npcName string, seed int64) string {
+	d, err := LoadDialogue(defaultTemplatesBase, "dialogues/public_dialogue.json")
+	if err != nil || d == nil || len(d.Talk.Lines) == 0 {
+		return ""
+	}
+	rng := rand.New(rand.NewSource(seed))
+	line := d.Talk.Lines[rng.Intn(len(d.Talk.Lines))]
+	return strings.ReplaceAll(line, "{name}", npcName)
+}
 
 // 池子混用：talk 時抽到 greet 的機率約 12%、idle 約 8%，其餘為 talk。
 const probGreet = 0.12

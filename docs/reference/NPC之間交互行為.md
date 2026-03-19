@@ -39,7 +39,7 @@
 
 ### 2.1 戰鬥（NPC vs NPC）
 
-- **規則**：戰鬥統一規則（[決策 001](decisions/001_combat_unified_rules.md)），**玩家 vs NPC**、**NPC vs NPC**、**玩家 vs 玩家** 皆用同一套 `combat.Resolve` 與屬性。
+- **規則**：戰鬥統一規則（[決策 001](decisions/001_combat_unified_rules.md)），**玩家 vs NPC**、**NPC vs NPC**、**玩家 vs 玩家** 皆用同一套 `combat.ResolveV2` 與屬性（含地形、γ 暴擊／偏轉）。
 - **現狀**：Attack 流程在 `server/handler.go` 由**玩家**發起（`c.PlayerID` 為攻擊方、`msg.TargetID` 為目標）。**沒有**「NPC 主動對另一 NPC 攻擊」的 tick 或事件（例如仇恨、搶地盤、隨機衝突等）。
 
 ### 2.2 對話（NPC 對 NPC 說話）

@@ -301,6 +301,15 @@ func UpdateLastObserved(db *sql.DB, id string, at int64) error {
 	return err
 }
 
+// ClearLastObserved 將指定實體的 last_observed_at 清為未觀測（NULL）；離開房間且無人在房時用。
+func ClearLastObserved(db *sql.DB, id string) error {
+	if store.Default != nil {
+		return store.Default.UpdateEntity(id, func(e *store.Entity) { e.LastObservedAt = nil })
+	}
+	_, err := db.Exec("UPDATE entities SET last_observed_at = NULL WHERE id = ?", id)
+	return err
+}
+
 // UpdatePosition 將指定實體位置更新為 (x, y)，並設為 idle；store 啟用時寫入 store。
 func UpdatePosition(db *sql.DB, id string, x, y int) error {
 	if store.Default != nil {
@@ -364,6 +373,20 @@ func AddMagnesium(db *sql.DB, entityID string, delta int) error {
 		_, _ = db.Exec(`UPDATE entities SET magnesium = 0 WHERE id = ? AND magnesium < 0`, entityID)
 	}
 	return nil
+}
+
+// UpdateVit 將指定實體的體質（氣血）更新為 newVit；戰鬥結束後寫回用。小於 0 時自動 clamp 為 0（即死亡）。store 啟用時同步更新 store。
+func UpdateVit(db *sql.DB, entityID string, newVit int) error {
+	if newVit < 0 {
+		newVit = 0
+	}
+	if store.Default != nil {
+		if err := store.Default.UpdateEntity(entityID, func(e *store.Entity) { e.Vit = newVit }); err != nil {
+			return err
+		}
+	}
+	_, err := db.Exec("UPDATE entities SET vit = ? WHERE id = ?", newVit, entityID)
+	return err
 }
 
 // GetMovingEntities 回傳所有 move_state = 'moving' 的實體；store 啟用時從 store 讀取。

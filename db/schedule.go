@@ -23,6 +23,37 @@ func (s *NPCSchedule) IsOnDuty(gameHour int) bool {
 	return gameHour >= s.ShiftStart || gameHour < s.ShiftEnd
 }
 
+// RemoveScheduleForEntity 移除某實體的排班（死亡除名用）。store 啟用時寫入 store 並持久化。
+func RemoveScheduleForEntity(db *sql.DB, entityID string) error {
+	if store.Default != nil {
+		return store.Default.RemoveScheduleForEntity(entityID)
+	}
+	_, err := db.Exec("DELETE FROM npc_schedules WHERE entity_id = ?", entityID)
+	return err
+}
+
+// GetScheduleForEntity 取得單一實體的排班；供 10.15 撮合後 main 註冊 MoveSchedule 用。
+func GetScheduleForEntity(db *sql.DB, entityID string) (NPCSchedule, bool) {
+	if store.Default != nil {
+		sch := store.Default.GetSchedule(entityID)
+		if sch == nil {
+			return NPCSchedule{}, false
+		}
+		return NPCSchedule{
+			EntityID: sch.EntityID, WorkRoom: sch.WorkRoom, RestRoom: sch.RestRoom,
+			ShiftStart: sch.ShiftStart, ShiftEnd: sch.ShiftEnd,
+		}, true
+	}
+	var workRoom, restRoom string
+	var shiftStart, shiftEnd int
+	err := db.QueryRow("SELECT work_room, rest_room, shift_start, shift_end FROM npc_schedules WHERE entity_id = ?", entityID).
+		Scan(&workRoom, &restRoom, &shiftStart, &shiftEnd)
+	if err != nil {
+		return NPCSchedule{}, false
+	}
+	return NPCSchedule{EntityID: entityID, WorkRoom: workRoom, RestRoom: restRoom, ShiftStart: shiftStart, ShiftEnd: shiftEnd}, true
+}
+
 // GetAllSchedules 取得所有 NPC 排班；store 啟用時從 store 讀取。
 func GetAllSchedules(db *sql.DB) ([]NPCSchedule, error) {
 	if store.Default != nil {
@@ -155,6 +186,10 @@ func ApplySchedules(database *sql.DB, gameHour int) ([]ScheduleMove, error) {
 	}
 	var moves []ScheduleMove
 	for _, s := range schedules {
+		ent, _ := GetEntity(database, s.EntityID)
+		if ent == nil || ent.Vit <= 0 {
+			continue
+		}
 		targetRoom := s.RestRoom
 		if s.IsOnDuty(gameHour) {
 			targetRoom = s.WorkRoom

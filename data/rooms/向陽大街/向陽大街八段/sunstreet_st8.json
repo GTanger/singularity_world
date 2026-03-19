@@ -10,54 +10,50 @@
   "exits": [
     {
       "direction": "sunstreet_st7",
-      "to": "sunstreet_st7",
-      "ui_hidden": true
+      "to": "sunstreet_st7"
     },
     {
       "direction": "sunstreet_st9",
-      "to": "sunstreet_st9",
-      "ui_hidden": true
+      "to": "sunstreet_st9"
     },
     {
       "direction": "sunst08_shop01_main",
-      "to": "sunst08_shop01_main",
-      "ui_hidden": true
+      "to": "sunst08_shop01_main"
     },
     {
       "direction": "sunst08_home01_main",
-      "to": "sunst08_home01_main",
-      "ui_hidden": true
+      "to": "sunst08_home01_main"
     },
     {
       "direction": "sunst08_home02_main",
-      "to": "sunst08_home02_main",
-      "ui_hidden": true
+      "to": "sunst08_home02_main"
     },
     {
       "direction": "sunst08_home03_main",
-      "to": "sunst08_home03_main",
-      "ui_hidden": true
+      "to": "sunst08_home03_main"
     },
     {
       "direction": "sunst08_home04_main",
-      "to": "sunst08_home04_main",
-      "ui_hidden": true
+      "to": "sunst08_home04_main"
     },
     {
       "direction": "sunst08_home05_main",
-      "to": "sunst08_home05_main",
-      "ui_hidden": true
+      "to": "sunst08_home05_main"
     },
     {
       "direction": "yaxiao_st1",
-      "to": "yaxiao_st1",
-      "ui_hidden": true
+      "to": "yaxiao_st1"
+    },
+    {
+      "direction": "南",
+      "to": "yaxiao_st2"
     }
   ],
   "objects": [
     {
       "id": "sun_st8_exit_st7",
       "name": "向陽大街七段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -69,6 +65,7 @@
     {
       "id": "sun_st8_exit_st9",
       "name": "向陽大街九段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -80,6 +77,7 @@
     {
       "id": "sun_st8_obj_shop01",
       "name": "敞亮日夜舍",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -93,6 +91,7 @@
     {
       "id": "sun_st8_obj_home01",
       "name": "潤輝典當邸",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -106,6 +105,7 @@
     {
       "id": "sun_st8_obj_home02",
       "name": "陽和轉運隅",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -119,6 +119,7 @@
     {
       "id": "sun_st8_obj_home03",
       "name": "和熙交際閣",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -132,6 +133,7 @@
     {
       "id": "sun_st8_obj_home04",
       "name": "採光貧戶隅",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -145,6 +147,7 @@
     {
       "id": "sun_st8_obj_home05",
       "name": "金暉防衛宅",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -158,6 +161,7 @@
     {
       "id": "sun_st8_exit_yaxiao_st1",
       "name": "夜鴞巷一巷",
+      "owner": "",
       "sockets": [
         "Move"
       ],

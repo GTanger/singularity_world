@@ -170,6 +170,53 @@ func GetNPCGenderCounts(db *sql.DB) (male, female int) {
 	return male, female
 }
 
+// EnsureAllNPCsHaveSoulSeed 保證所有 NPC 都有 soul_seed；對缺漏者補寫 GenerateSoulSeed()，不改動 vit/qi/dex。
+// 啟動時呼叫一次即可（store 模式寫回 entities.json，SQL 模式 UPDATE entities）。
+func EnsureAllNPCsHaveSoulSeed(db *sql.DB) (fixed int, err error) {
+	if store.Default != nil {
+		ids := store.Default.NPCIDsWithMissingSoulSeed()
+		for _, id := range ids {
+			seed, e := GenerateSoulSeed()
+			if e != nil {
+				return fixed, e
+			}
+			if store.Default.UpdateEntity(id, func(e *store.Entity) { e.SoulSeed = &seed }) != nil {
+				continue
+			}
+			fixed++
+		}
+		return fixed, nil
+	}
+	rows, err := db.Query("SELECT id FROM entities WHERE kind = 'npc' AND (soul_seed IS NULL OR soul_seed = 0)")
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+	var ids []string
+	for rows.Next() {
+		var id string
+		if rows.Scan(&id) != nil {
+			continue
+		}
+		ids = append(ids, id)
+	}
+	if rows.Err() != nil {
+		return 0, rows.Err()
+	}
+	for _, id := range ids {
+		seed, e := GenerateSoulSeed()
+		if e != nil {
+			return fixed, e
+		}
+		_, e = db.Exec("UPDATE entities SET soul_seed = ? WHERE id = ?", seed, id)
+		if e != nil {
+			return fixed, e
+		}
+		fixed++
+	}
+	return fixed, nil
+}
+
 // SpawnOneNPCFromPool 生成一名新 NPC 並放入指定房間（無排班、腦驅動）。用於 NPC 池自動補滿。回傳 entityID。
 // 名字為姓＋名 2～4 字（見 GenerateNPCName），DisplayTitle 即該名，DisplayChar 取名字首字。性別依男女數持平擇一。
 func SpawnOneNPCFromPool(db *sql.DB, spawnRoomID string) (string, error) {

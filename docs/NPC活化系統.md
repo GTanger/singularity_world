@@ -1,6 +1,6 @@
 # NPC 活化系統
 
-> 最後更新：2026-03-07
+> 最後更新：2026-03-20
 > 目標：**玩家＝NPC＝玩家**，假以亂真
 
 ---
@@ -10,7 +10,7 @@
 奇點世界的 NPC 不是「會說話的路牌」，而是與玩家共用同一套規則的**對等存在**：
 
 - 同樣的 Character 結構（SoulSeed、三軸屬性、裝備、背包、鎂）
-- 同樣的戰鬥公式（combat.Resolve）
+- 同樣的戰鬥公式（combat.ResolveV2，含地形與 γ 暴擊／偏轉）
 - 同樣的房間移動機制（SetEntityRoom）
 - 同樣的插頭插座互動（Look、Talk、Attack、Trade）
 
@@ -282,18 +282,19 @@ data/templates/
 | **觀測驅動** | ✅ | 僅玩家房＋鄰房的 NPC 才跑決策；無人時背景模擬 | `main.go` buildActiveRoomIDs + `db/unobserved.go` |
 | **到達效果** | ✅ | Beg 加鎂、Gather 加物品、SeekJob 撮合指派 | `main.go` applyBrainArrivalEffects |
 
-**V1 限制**：(1) 鎂只增不減，生存層一次性觸發後不再啟動；(2) 性格三軸未參與決策；(3) Brain 型到達後不停留。**改進計畫**見 [NPC活化突破模板線—實作計畫](implementation/NPC活化突破模板線—實作計畫.md)。
+**V1 限制已由突破線 A–C 修正**：(1) 鎂每日扣款（npc_expense.go）→ 生存層持續觸發；(2) 性格偏移加權（personalityWeightedSelect）→ 個體差異；(3) Brain 停留機制（computeStay）→ 到達後不立刻離開。詳見 [實作清單](implementation/NPC活化系統—實作清單與實作計畫.md)。
 
 **設計與介面**：見 [奇點決策引擎架構](reference/奇點決策引擎架構.md)（需求權重→性格偏移→情境匹配→插座執行）；實作時決策引擎產出**意圖**，不直接寫 DB 或發送，由上層負責移動／寫 assignment／觸發插座。
 
-### 第三階段：NPC 有嘴 ⬜ 待做
+### 第三階段：NPC 有嘴 🟡 部分完成
 
 讓 NPC 不只是「看著你微微頷首」，而是能交談和交易。
 
 | 項目 | 狀態 | 效果 | 工作量 |
 |------|------|------|--------|
-| Talk 串接對話模板 | ⬜ | 玩家點 Talk → 從 dialogues/*.json 抽句 | 小 |
-| Trade 交易流程 | ⬜ | 出價 → 議價 → 成交/拒絕 | 中 |
+| Talk 串接 LLM（Ollama） | ✅ | 玩家點 Talk → backstory＋記憶＋口吻範例 → CallAITalk → LLM 回覆；模板為 fallback | — |
+| Talk 模板（無 LLM 備援） | ✅ | dialogues/*.json 抽句，PickStyleExamples | — |
+| Trade 交易流程 | ⬜ | 出價 → 議價 → 成交/拒絕（依[世界物流規格](reference/世界物流規格—草稿.md)延後實作） | 中 |
 | 模板 NPC 生成器 | ⬜ | 讀 archetypes.json → 批量生成 NPC 個體 | 中 |
 | NPC 喊價 | ⬜ | NPC 主動在 log 喊 trade_announce | 小 |
 
@@ -344,7 +345,9 @@ data/templates/
 | 傳聞系統（Gossip） | ⬜ | NPC 傳遞消息，越傳越誇張 | 大 |
 | 生命週期 | ⬜ | 出生、成長、老化、退休/死亡 | 大 |
 | 社會關係 | ⬜ | 朋友/敵人/師徒/買賣夥伴 | 大 |
-| LLM 動態對話 | ⬜ | 重要 NPC 即興回應 | 大 |
+| LLM 動態對話（玩家↔NPC） | ✅ | CallAITalk 已上線（Ollama），見第三、四階段 | — |
+| LLM 社交對話（NPC↔NPC） | ✅ | CallAITalkNPCToNPC 已上線，帶主題劇本＋記憶 | — |
+| 重要 NPC 深度個性化 | ⬜ | 特殊劇情 NPC 專屬 prompt 調校 | 中 |
 
 ### 第八階段：萬人規模 ⬜ 遠期
 

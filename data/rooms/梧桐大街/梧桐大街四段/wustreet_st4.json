@@ -6,44 +6,42 @@
   "exits": [
     {
       "direction": "wustreet_st3",
-      "to": "wustreet_st3",
-      "ui_hidden": true
+      "to": "wustreet_st3"
     },
     {
       "direction": "wustreet_st5",
-      "to": "wustreet_st5",
-      "ui_hidden": true
+      "to": "wustreet_st5"
     },
     {
       "direction": "wust04_shop01_main",
-      "to": "wust04_shop01_main",
-      "ui_hidden": true
+      "to": "wust04_shop01_main"
     },
     {
       "direction": "wust04_shop02_main",
-      "to": "wust04_shop02_main",
-      "ui_hidden": true
+      "to": "wust04_shop02_main"
     },
     {
       "direction": "wust04_home01_main",
-      "to": "wust04_home01_main",
-      "ui_hidden": true
+      "to": "wust04_home01_main"
     },
     {
       "direction": "wust04_home02_main",
-      "to": "wust04_home02_main",
-      "ui_hidden": true
+      "to": "wust04_home02_main"
     },
     {
       "direction": "yaxiao_st2",
-      "to": "yaxiao_st2",
-      "ui_hidden": true
+      "to": "yaxiao_st2"
+    },
+    {
+      "direction": "東",
+      "to": "yaxiao_st3"
     }
   ],
   "objects": [
     {
       "id": "wu_st4_exit_st3",
       "name": "梧桐大街三段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -55,6 +53,7 @@
     {
       "id": "wu_st4_exit_st5",
       "name": "梧桐大街五段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -66,6 +65,7 @@
     {
       "id": "wu_st4_obj_shengji",
       "name": "綠脈生機醫館",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -79,6 +79,7 @@
     {
       "id": "wu_st4_obj_ningguang",
       "name": "凝光森態藝廊",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -92,6 +93,7 @@
     {
       "id": "wu_st4_obj_home01",
       "name": "翠廊擁葉小築",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -105,6 +107,7 @@
     {
       "id": "wu_st4_obj_home02",
       "name": "蔭深地下居",
+      "owner": "",
       "sockets": [
         "Look",
         "Move"
@@ -118,6 +121,7 @@
     {
       "id": "wu_st4_exit_yaxiao_st2",
       "name": "夜鴞巷二巷",
+      "owner": "",
       "sockets": [
         "Move"
       ],

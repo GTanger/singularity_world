@@ -18,6 +18,7 @@ const (
 	EvtTalk    = "talk"     // 與玩家交談
 	EvtMoved   = "moved"    // 到達新房間（僅重要場景）
 	EvtBroke   = "broke"    // 鎂歸零
+	EvtDeath   = "death"    // 死亡（區域事件：該格與職業場所周圍可聽聞）
 )
 
 // LogNPCEvent 記錄一筆 NPC 事件。

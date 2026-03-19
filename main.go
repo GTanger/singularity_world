@@ -17,8 +17,8 @@ import (
 	"singularity_world/ai"
 	"singularity_world/config"
 	"singularity_world/db"
-	"singularity_world/entity"
 	"singularity_world/economy"
+	"singularity_world/entity"
 	"singularity_world/game"
 	"singularity_world/server"
 	"singularity_world/store"
@@ -37,6 +37,10 @@ func brainArrivalNarrative(npcName string, intent db.IntentType) string {
 		return "【" + npcName + "】前來打聽是否有活可做。"
 	case db.IntentTrade:
 		return "【" + npcName + "】在此地擺開貨物。"
+	case db.IntentWork:
+		return "【" + npcName + "】回到崗位，繼續工作。"
+	case db.IntentSocialize:
+		return "【" + npcName + "】找了個角落坐下，悠閒地打量著來往的人。"
 	default:
 		return ""
 	}
@@ -52,6 +56,51 @@ func truncRune(s string, n int) string {
 		return s
 	}
 	return string(r[:n]) + "…"
+}
+
+// stripNpcLineSpeakerPrefix 若台詞開頭為「名字:」或「名字：」，移除之，避免顯示重複（【A】說：「A: 台詞」→「【A】說：「台詞」」）。
+func stripNpcLineSpeakerPrefix(line string, names ...string) string {
+	line = strings.TrimSpace(line)
+	for _, name := range names {
+		if name == "" {
+			continue
+		}
+		if strings.HasPrefix(line, name+":") {
+			line = strings.TrimSpace(line[len(name)+1:])
+			break
+		}
+		if strings.HasPrefix(line, name+"：") {
+			line = strings.TrimSpace(strings.TrimPrefix(line, name+"："))
+			break
+		}
+	}
+	return line
+}
+
+// sanitizeNPCDialogueLine 清洗模型殘留輸出：移除 think/code-fence/自我修正片段與外層重複引號。
+func sanitizeNPCDialogueLine(line string) string {
+	s := strings.TrimSpace(line)
+	if s == "" {
+		return s
+	}
+	low := strings.ToLower(s)
+	// 若整句含有思考或 code fence 痕跡，直接丟棄該句，避免污染房間敘事。
+	if strings.Contains(low, "</think>") || strings.Contains(low, "<think>") || strings.Contains(s, "```") {
+		return ""
+	}
+	// 清除常見模型自我修正段落。
+	if strings.Contains(s, "自我修正") || strings.Contains(s, "根據要求") {
+		return ""
+	}
+	// 去掉外層全形引號（「...」）避免再包一層成 「「...」」。
+	for len(s) >= 2 && strings.HasPrefix(s, "「") && strings.HasSuffix(s, "」") {
+		s = strings.TrimSpace(s[3 : len(s)-3])
+	}
+	// 清掉末尾多餘引號（偶發多一個 」）。
+	for strings.HasSuffix(s, "」」") {
+		s = strings.TrimSuffix(s, "」")
+	}
+	return strings.TrimSpace(s)
 }
 
 // tryTriggerNpcNpcInRoom 在指定房嘗試觸發一次 NPC 間 AI 對話；topicHint 可為「交班」等或空。成功則寫入記憶並回傳 true。
@@ -107,6 +156,14 @@ func tryTriggerNpcNpcInRoom(database *sql.DB, sessionStore *server.SessionStore,
 	if err != nil || lineA == "" || lineB == "" {
 		return false
 	}
+	// 若模型輸出「名字: 台詞」，移除前綴以免顯示成【萬雅芬】說：「萬雅芬: 司空偉啊...」
+	lineA = stripNpcLineSpeakerPrefix(lineA, nameA, nameB)
+	lineB = stripNpcLineSpeakerPrefix(lineB, nameB, nameA)
+	lineA = sanitizeNPCDialogueLine(lineA)
+	lineB = sanitizeNPCDialogueLine(lineB)
+	if lineA == "" || lineB == "" {
+		return false
+	}
 	summary := "在" + roomName + "：" + nameA + "說「" + truncRune(lineA, 25) + "」" + nameB + "回「" + truncRune(lineB, 25) + "」"
 	_ = db.SetNpcNpcConversationSummary(A.ID, B.ID, summary)
 	if sessionStore.RoomHasPlayerWithRecentTalk(database, roomID, 15*time.Second) {
@@ -158,6 +215,9 @@ func applyBrainArrivalEffects(database *sql.DB, entityID, roomID string, intent 
 				}
 			}
 		}
+	case db.IntentSocialize:
+		db.LogNPCEvent(entityID, db.EvtTalk, "社交閒逛")
+		db.AdjustDisposition(database, entityID, db.DispTalked)
 	}
 }
 
@@ -178,6 +238,12 @@ func main() {
 	// store 模式下確保預設 NPC 存在（試話等）；若 data/entities.json 無則建立並寫入 store
 	if err := db.SeedNPCsForStore(nil); err != nil {
 		log.Printf("seed npcs for store: %v", err)
+	}
+	// 保證全部 NPC 都有 soul_seed；缺漏者補寫（僅補 seed，不改 vit/qi/dex）
+	if fixed, err := db.EnsureAllNPCsHaveSoulSeed(nil); err != nil {
+		log.Printf("EnsureAllNPCsHaveSoulSeed: %v", err)
+	} else if fixed > 0 {
+		log.Printf("[npc] 已為 %d 名 NPC 補寫 soul_seed", fixed)
 	}
 	defer func() {
 		if store.Default != nil {
@@ -248,6 +314,19 @@ func main() {
 		http.ServeFile(w, r, filepath.Join("web", "map_viewer.html"))
 	})
 	http.HandleFunc("/data/rooms.json", server.HandleRoomsDataAPI)
+	// 房間心智圖編輯器：/room_editor + /api/room-editor/*
+	http.HandleFunc("/room_editor", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/room_editor" {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Cache-Control", "no-cache, max-age=0, must-revalidate")
+		http.ServeFile(w, r, filepath.Join("web", "room_editor.html"))
+	})
+	roomEditorAPI := http.HandlerFunc(server.HandleRoomEditorAPI)
+	http.Handle("/api/room-editor/", roomEditorAPI)
+	http.HandleFunc("/api/room-editor", roomEditorAPI.ServeHTTP)
 	// 星盤檢視器：/star_chart，資料由 /api/topology 提供（store）
 	http.HandleFunc("/star_chart", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/star_chart" {
@@ -287,8 +366,9 @@ func main() {
 		fs.ServeHTTP(w, r)
 	}))
 
-	// 視野內 NPC 即時模擬 ＋ 每 tick 推進移動中實體（§1.2.3、§1.3.3）。
+	// 視野內 NPC 即時模擬 ＋ 每 tick 推進移動中實體（§1.2.3、§1.3.3）。§七 7.1：房間制觀測經 Observer。
 	obs := &game.Observed{DB: database}
+	server.SetDefaultObserver(obs)
 	var lastScheduleHour = -1
 	var lastExpenseDay = -1
 	var lastSpawnCheck = time.Now()
@@ -309,6 +389,7 @@ func main() {
 	var idleTickCount int
 	nextIdleTrigger := 25 + rand.Intn(35)
 	var randomNpcDialogueTicksLeft int = 80 + rand.Intn(40) // 觸發－輕：隨機時點觸發 NPC 間對話
+	var lastJobMatching time.Time                           // 10.15 求職撮合：每 30 秒跑一輪
 
 	// 尋路引擎：建立房間鄰接圖
 	roomGraph := db.GetGraph()
@@ -321,6 +402,10 @@ func main() {
 	schedules, _ := db.GetAllSchedules(database)
 	scheduledIDs := make(map[string]bool)
 	for _, s := range schedules {
+		c, _ := db.GetEntity(database, s.EntityID)
+		if c == nil || c.Vit <= 0 {
+			continue
+		}
 		scheduledIDs[s.EntityID] = true
 		title := db.GetNPCTitle(database, s.EntityID)
 		def := db.GetMovementDefForTitle(title)
@@ -355,8 +440,15 @@ func main() {
 				}
 				roomID := rooms[rand.Intn(len(rooms))]
 				topicHint := ""
-				if t := db.PickRandomNpcNpcTopic(); t != nil {
-					topicHint = t.Hint
+				venueIDs, _ := db.GetVenueIDsForRoom(database, roomID)
+				if len(venueIDs) > 0 {
+					if t := db.PickRandomNpcNpcTopic(); t != nil {
+						topicHint = t.Hint
+					}
+				} else {
+					if t := db.PickRandomNpcNpcTopicExclude("交班"); t != nil {
+						topicHint = t.Hint
+					}
 				}
 				tryTriggerNpcNpcInRoom(database, sessionStore, cfg, roomID, topicHint)
 			}
@@ -382,9 +474,47 @@ func main() {
 			}
 		}
 
+		// 10.15 求職撮合：無職且鎂低於閾值的 NPC 與有職缺場所匹配，每 30 秒一輪；新入職者註冊排班型移動
+		if time.Since(lastJobMatching) >= 30*time.Second {
+			lastJobMatching = time.Now()
+			mgThreshold := cfg.SeekJobMgThreshold
+			if mgThreshold <= 0 {
+				mgThreshold = db.SeekJobMgThresholdDefault
+			}
+			added := db.RunJobMatchingTick(database, roomGraph, db.JobMatchParams{
+				MaxPerVenue:        maxAssignmentsPerVenue,
+				MgThreshold:        mgThreshold,
+				JobMatchWhenStable: cfg.JobMatchWhenStable,
+			})
+			for _, entityID := range added {
+				if _, ok := db.GetScheduleForEntity(database, entityID); ok {
+					title := db.GetNPCTitle(database, entityID)
+					def := db.GetMovementDefForTitle(title)
+					def.Type = db.MoveSchedule
+					travelerMgr.Register(entityID, def)
+				}
+			}
+		}
+
 		// NPC 排班：每遊戲小時僅發「出發」敘事；實際移動由 TravelerManager 排班型尋路逐格執行（家可十格外）
 		if hour != lastScheduleHour {
 			lastScheduleHour = hour
+			// 10.22 時段 disposition 微調：清晨+1、深夜-1
+			{
+				var dispDelta int
+				if hour >= 6 && hour <= 9 {
+					dispDelta = +1
+				} else if hour >= 0 && hour <= 5 {
+					dispDelta = -1
+				}
+				if dispDelta != 0 {
+					if activeIDs, err := db.GetNPCIDsWithRoom(database); err == nil {
+						for _, nid := range activeIDs {
+							db.AdjustDisposition(database, nid, dispDelta)
+						}
+					}
+				}
+			}
 			moves, err := db.ApplySchedules(database, hour)
 			if err == nil {
 				for _, m := range moves {
@@ -443,6 +573,10 @@ func main() {
 				server.SendNarrateToRoom(sessionStore, database, step.OldRoom, leaveText)
 				server.SendNarrateToRoom(sessionStore, database, step.NewRoom, arriveText)
 				// 腦驅動到達後行為：敘事＋真實效果（Beg 加鎂、Gather 加物品、SeekJob 撮合）
+				// 大腦可見化：NPC 決定新意圖時的出發敘事，發至出發房間
+				if step.DecisionNarrative != "" {
+					server.SendNarrateToRoom(sessionStore, database, step.OldRoom, step.DecisionNarrative)
+				}
 				if step.ArrivalIntent != "" {
 					arrivalNarrative := brainArrivalNarrative(step.NpcName, step.ArrivalIntent)
 					if arrivalNarrative != "" {
@@ -468,11 +602,18 @@ func main() {
 			// 觸發－重：閒置 tick 時同房兩 NPC 一來一往（主題劇本＋AI、寫記憶）
 			npcDialogueDone := false
 			if cfg.OllamaBaseURL != "" && cfg.OllamaModel != "" {
-				topicHint := ""
-				if t := db.PickRandomNpcNpcTopic(); t != nil {
-					topicHint = t.Hint
-				}
 				for roomID := range playerRooms {
+					topicHint := ""
+					venueIDs, _ := db.GetVenueIDsForRoom(database, roomID)
+					if len(venueIDs) > 0 {
+						if t := db.PickRandomNpcNpcTopic(); t != nil {
+							topicHint = t.Hint
+						}
+					} else {
+						if t := db.PickRandomNpcNpcTopicExclude("交班"); t != nil {
+							topicHint = t.Hint
+						}
+					}
 					if tryTriggerNpcNpcInRoom(database, sessionStore, cfg, roomID, topicHint) {
 						npcDialogueDone = true
 						break

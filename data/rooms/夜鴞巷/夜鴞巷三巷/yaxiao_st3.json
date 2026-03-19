@@ -9,55 +9,43 @@
   "zone": "yaxiao",
   "exits": [
     {
-      "direction": "feistreet_st6",
-      "to": "feistreet_st6",
-      "ui_hidden": true
-    },
-    {
-      "direction": "yaxiao_st2",
-      "to": "yaxiao_st2",
-      "ui_hidden": true
-    },
-    {
-      "direction": "yaxiao_st4",
-      "to": "yaxiao_st4",
-      "ui_hidden": true
-    },
-    {
       "direction": "yaxst03_hold01_main",
-      "to": "yaxst03_hold01_main",
-      "ui_hidden": true
+      "to": "yaxst03_hold01_main"
     },
     {
       "direction": "yaxst03_shop01_main",
-      "to": "yaxst03_shop01_main",
-      "ui_hidden": true
+      "to": "yaxst03_shop01_main"
     },
     {
       "direction": "yaxst03_shop02_main",
-      "to": "yaxst03_shop02_main",
-      "ui_hidden": true
+      "to": "yaxst03_shop02_main"
     },
     {
       "direction": "yaxst03_shop03_main",
-      "to": "yaxst03_shop03_main",
-      "ui_hidden": true
+      "to": "yaxst03_shop03_main"
     },
     {
       "direction": "yaxst03_home01_main",
-      "to": "yaxst03_home01_main",
-      "ui_hidden": true
+      "to": "yaxst03_home01_main"
     },
     {
       "direction": "yaxst03_home02_main",
-      "to": "yaxst03_home02_main",
-      "ui_hidden": true
+      "to": "yaxst03_home02_main"
+    },
+    {
+      "direction": "西",
+      "to": "wustreet_st4"
+    },
+    {
+      "direction": "北",
+      "to": "lifestreet_st8"
     }
   ],
   "objects": [
     {
       "id": "yaxiao_st3_feistreet_st6",
       "name": "飛霜大街六段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -69,6 +57,7 @@
     {
       "id": "yaxiao_st3_yaxiao_st2",
       "name": "夜鴞巷二巷",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -80,6 +69,7 @@
     {
       "id": "yaxiao_st3_yaxiao_st4",
       "name": "夜鴞巷四巷",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -91,6 +81,7 @@
     {
       "id": "yaxiao_st3_hold01",
       "name": "深幽底層暗閣",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -101,6 +92,7 @@
     {
       "id": "yaxiao_st3_hold01_door",
       "name": "鐵門",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -112,6 +104,7 @@
     {
       "id": "yaxiao_st3_shop01",
       "name": "一線天隱秘棧",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -122,6 +115,7 @@
     {
       "id": "yaxiao_st3_shop01_door",
       "name": "防禦性窄門",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -133,6 +127,7 @@
     {
       "id": "yaxiao_st3_shop02",
       "name": "斂息密談茶館",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -143,6 +138,7 @@
     {
       "id": "yaxiao_st3_shop02_door",
       "name": "氣密艙門",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -154,6 +150,7 @@
     {
       "id": "yaxiao_st3_shop03",
       "name": "前線斥候總櫃",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -164,6 +161,7 @@
     {
       "id": "yaxiao_st3_shop03_door",
       "name": "大門",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -175,6 +173,7 @@
     {
       "id": "yaxiao_st3_home01",
       "name": "無窗靈視宅",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -185,6 +184,7 @@
     {
       "id": "yaxiao_st3_home01_door",
       "name": "隱形門",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -196,6 +196,7 @@
     {
       "id": "yaxiao_st3_home02",
       "name": "偏門側室寓",
+      "owner": "",
       "sockets": [
         "Move"
       ],

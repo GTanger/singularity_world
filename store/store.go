@@ -5,6 +5,7 @@ package store
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -24,11 +25,12 @@ var Default *Store
 
 var defaultMu sync.RWMutex
 
-// Venue 場所：id、名稱、room_ids（與 db.Venue 對齊，供 JSON 背板）。
+// Venue 場所：id、名稱、room_ids、max_staff（可選；0 表示用全局限額）。
 type Venue struct {
-	ID      string   `json:"id"`
-	Name    string   `json:"name"`
-	RoomIDs []string `json:"room_ids"`
+	ID       string   `json:"id"`
+	Name     string   `json:"name"`
+	RoomIDs  []string `json:"room_ids"`
+	MaxStaff int      `json:"max_staff,omitempty"`
 }
 
 // Assignment 指派：誰、什麼職業、哪個場所（與 db.Assignment 對齊）。
@@ -103,35 +105,45 @@ type ArchivalEntry struct {
 	CreatedAt int64  `json:"created_at"`
 }
 
+// NpcMemory NPC 短期記憶（10.18）：對某位玩家 subject 的見面次數與好感度。
+type NpcMemory struct {
+	EntityID     string `json:"entity_id"`  // NPC
+	SubjectID    string `json:"subject_id"` // 玩家 entity_id
+	MeetCount    int    `json:"meet_count"`
+	Favorability int    `json:"favorability"` // -100～+100，0=普通
+}
+
 // Store 記憶體中的房間、出口、實體、場所、指派、排班、物品、事件日誌、密碼。
 type Store struct {
-	mu              sync.RWMutex
-	Rooms           map[string]*model.Room  // id -> Room
-	Exits           map[string][]model.Exit // from_room_id -> 出口列表
-	EntityRooms     map[string]string       // entity_id -> room_id
-	Venues          map[string]*Venue       // id -> Venue
-	Assignments     map[string][]Assignment // entity_id -> 指派列表
-	Schedules       map[string]*Schedule    // entity_id -> 排班
-	Entities        map[string]*Entity      // id -> Entity
-	Items           map[string]*Item        // id -> Item
-	EventLog        []EventEntry            // 事件日誌（append）
-	Archival        []ArchivalEntry         // NPC 長期記憶（依 entity_id 查詢）
-	Auth            map[string]string       // entity_id -> password_hash
-	NpcSummaries    map[string]string       // entity_id -> 與玩家的最近印象（背版用）
-	NpcNpcSummaries map[string]string       // "idA|idB"（idA<idB）-> A 與 B 的最近交談摘要，供長碰面不重複
-	runtimeDir      string
-	summariesPath   string
+	mu                  sync.RWMutex
+	Rooms               map[string]*model.Room  // id -> Room
+	Exits               map[string][]model.Exit // from_room_id -> 出口列表
+	EntityRooms         map[string]string       // entity_id -> room_id
+	Venues              map[string]*Venue       // id -> Venue
+	Assignments         map[string][]Assignment // entity_id -> 指派列表
+	Schedules           map[string]*Schedule    // entity_id -> 排班
+	Entities            map[string]*Entity      // id -> Entity
+	Items               map[string]*Item        // id -> Item
+	EventLog            []EventEntry            // 事件日誌（append）
+	Archival            []ArchivalEntry         // NPC 長期記憶（依 entity_id 查詢）
+	Auth                map[string]string       // entity_id -> password_hash
+	NpcSummaries        map[string]string       // entity_id -> 與玩家的最近印象（背版用）
+	NpcNpcSummaries     map[string]string       // "idA|idB"（idA<idB）-> A 與 B 的最近交談摘要，供長碰面不重複
+	NpcMemories         map[string]*NpcMemory   // "entity_id|subject_id" -> 短期記憶（見面次數、好感度）
+	runtimeDir          string
+	summariesPath       string
 	npcNpcSummariesPath string
-	archivalPath    string
-	entityRoomsPath string
-	assignmentsPath string
-	schedulesPath   string
-	venuesPath      string
-	entitiesPath    string
-	itemsPath       string
-	eventLogPath    string
-	authPath        string
-	roomsPath       string // 房間來源：目錄 data/rooms 或單檔
+	archivalPath        string
+	npcMemoryPath       string
+	entityRoomsPath     string
+	assignmentsPath     string
+	schedulesPath       string
+	venuesPath          string
+	entitiesPath        string
+	itemsPath           string
+	eventLogPath        string
+	authPath            string
+	roomsPath           string // 房間來源：目錄 data/rooms 或單檔
 	// entities 寫回防抖：避免每筆更新就寫整份 JSON
 	entitiesDirty   bool
 	entitiesTimer   *time.Timer
@@ -218,30 +230,32 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 	defer defaultMu.Unlock()
 
 	s := &Store{
-		Rooms:           make(map[string]*model.Room),
-		Exits:           make(map[string][]model.Exit),
-		EntityRooms:     make(map[string]string),
-		Venues:          make(map[string]*Venue),
-		Assignments:     make(map[string][]Assignment),
-		Schedules:       make(map[string]*Schedule),
-		Entities:        make(map[string]*Entity),
-		Items:           make(map[string]*Item),
-		EventLog:        nil,
-		Auth:            make(map[string]string),
-		runtimeDir:      runtimeDir,
-		entityRoomsPath: filepath.Join(runtimeDir, "entity_rooms.json"),
-		assignmentsPath: filepath.Join(dataDir, "assignments.json"),
-		schedulesPath:   filepath.Join(dataDir, "schedules.json"),
-		venuesPath:      filepath.Join(dataDir, "venues.json"),
-		entitiesPath:    filepath.Join(dataDir, "entities.json"),
-		itemsPath:       filepath.Join(dataDir, "items.json"),
-		eventLogPath:    filepath.Join(runtimeDir, "event_log.json"),
-		archivalPath:    filepath.Join(runtimeDir, "npc_archival.json"),
-		authPath:        filepath.Join(runtimeDir, "auth.json"),
-		summariesPath:   filepath.Join(runtimeDir, "npc_summaries.json"),
+		Rooms:               make(map[string]*model.Room),
+		Exits:               make(map[string][]model.Exit),
+		EntityRooms:         make(map[string]string),
+		Venues:              make(map[string]*Venue),
+		Assignments:         make(map[string][]Assignment),
+		Schedules:           make(map[string]*Schedule),
+		Entities:            make(map[string]*Entity),
+		Items:               make(map[string]*Item),
+		EventLog:            nil,
+		Auth:                make(map[string]string),
+		runtimeDir:          runtimeDir,
+		entityRoomsPath:     filepath.Join(runtimeDir, "entity_rooms.json"),
+		assignmentsPath:     filepath.Join(dataDir, "assignments.json"),
+		schedulesPath:       filepath.Join(dataDir, "schedules.json"),
+		venuesPath:          filepath.Join(dataDir, "venues.json"),
+		entitiesPath:        filepath.Join(dataDir, "entities.json"),
+		itemsPath:           filepath.Join(dataDir, "items.json"),
+		eventLogPath:        filepath.Join(runtimeDir, "event_log.json"),
+		archivalPath:        filepath.Join(runtimeDir, "npc_archival.json"),
+		npcMemoryPath:       filepath.Join(runtimeDir, "npc_memory.json"),
+		authPath:            filepath.Join(runtimeDir, "auth.json"),
+		summariesPath:       filepath.Join(runtimeDir, "npc_summaries.json"),
 		npcNpcSummariesPath: filepath.Join(runtimeDir, "npc_npc_summaries.json"),
-		NpcSummaries:    make(map[string]string),
-		NpcNpcSummaries: make(map[string]string),
+		NpcSummaries:        make(map[string]string),
+		NpcNpcSummaries:     make(map[string]string),
+		NpcMemories:         make(map[string]*NpcMemory),
 	}
 
 	if err := s.loadRooms(roomsPath); err != nil {
@@ -257,6 +271,7 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 		_ = s.loadItems()
 		_ = s.loadEventLog()
 		_ = s.loadArchival()
+		_ = s.loadNpcMemory()
 		_ = s.loadAuth()
 		_ = s.loadSummaries()
 		_ = s.loadNpcNpcSummaries()
@@ -314,6 +329,8 @@ func (s *Store) loadRooms(path string) error {
 			ToRoomName: toName,
 		})
 	}
+	// 需求：僅保留街道/巷道房間，移除其連接建築室內空間。
+	s.pruneNonStreetRoomsLocked()
 	return nil
 }
 
@@ -370,7 +387,69 @@ func (s *Store) loadRoomsFromDir(dir string) error {
 			})
 		}
 	}
+	// 需求：僅保留街道/巷道房間，移除其連接建築室內空間。
+	s.pruneNonStreetRoomsLocked()
 	return nil
+}
+
+func isStreetOrAlleyRoom(r *model.Room) bool {
+	if r == nil {
+		return false
+	}
+	if strings.Contains(r.Name, "大街") || strings.Contains(r.Name, "巷") {
+		return true
+	}
+	for _, t := range r.Tags {
+		lt := strings.ToLower(strings.TrimSpace(t))
+		if lt == "street" || lt == "alley" {
+			return true
+		}
+	}
+	return false
+}
+
+// pruneNonStreetRoomsLocked 僅保留街道/巷道房間，並移除指向刪除房間的出口。
+// 呼叫端需持有 s.mu.Lock()。
+func (s *Store) pruneNonStreetRoomsLocked() {
+	keep := make(map[string]bool, len(s.Rooms))
+	for id, r := range s.Rooms {
+		if isStreetOrAlleyRoom(r) {
+			keep[id] = true
+		}
+	}
+	for id := range s.Rooms {
+		if !keep[id] {
+			delete(s.Rooms, id)
+			delete(s.Exits, id)
+		}
+	}
+	for from, exits := range s.Exits {
+		if !keep[from] {
+			delete(s.Exits, from)
+			continue
+		}
+		var filtered []model.Exit
+		for _, ex := range exits {
+			if keep[ex.ToRoomID] {
+				filtered = append(filtered, ex)
+			}
+		}
+		s.Exits[from] = filtered
+	}
+}
+
+// firstStreetOrAlleyRoomIDLocked 回傳目前保留房間中的第一個 id（排序後），供遷移失效 entity_room 使用。
+// 呼叫端需持有 s.mu.RLock()/s.mu.Lock()。
+func (s *Store) firstStreetOrAlleyRoomIDLocked() string {
+	if len(s.Rooms) == 0 {
+		return ""
+	}
+	ids := make([]string, 0, len(s.Rooms))
+	for id := range s.Rooms {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	return ids[0]
 }
 
 func (s *Store) loadEntityRooms() error {
@@ -387,8 +466,13 @@ func (s *Store) loadEntityRooms() error {
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	fallbackRoomID := s.firstStreetOrAlleyRoomIDLocked()
 	for _, e := range f.Entries {
-		s.EntityRooms[e.EntityID] = e.RoomID
+		if _, ok := s.Rooms[e.RoomID]; ok {
+			s.EntityRooms[e.EntityID] = e.RoomID
+		} else if fallbackRoomID != "" {
+			s.EntityRooms[e.EntityID] = fallbackRoomID
+		}
 	}
 	return nil
 }
@@ -431,6 +515,63 @@ func (s *Store) GetExitsForRoom(fromRoomID string) ([]model.Exit, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.Exits[fromRoomID], nil
+}
+
+// UpsertRoomData 更新或新增單一房間與其出口（供編輯器即時同步記憶體）。
+func (s *Store) UpsertRoomData(room *model.Room, exits []model.Exit) {
+	if s == nil || room == nil || room.ID == "" {
+		return
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	cp := *room
+	s.Rooms[room.ID] = &cp
+	out := make([]model.Exit, 0, len(exits))
+	for _, ex := range exits {
+		if ex.Direction == "" || ex.ToRoomID == "" {
+			continue
+		}
+		ec := ex
+		if ec.ToRoomName == "" {
+			if tr, ok := s.Rooms[ec.ToRoomID]; ok && tr != nil {
+				ec.ToRoomName = tr.Name
+			}
+		}
+		out = append(out, ec)
+	}
+	s.Exits[room.ID] = out
+}
+
+// DeleteRoomData 刪除單一房間並移除指向它的入口（供編輯器即時同步記憶體）。
+func (s *Store) DeleteRoomData(roomID string) {
+	if s == nil || roomID == "" {
+		return
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	delete(s.Rooms, roomID)
+	delete(s.Exits, roomID)
+	for from, list := range s.Exits {
+		filtered := make([]model.Exit, 0, len(list))
+		for _, ex := range list {
+			if ex.ToRoomID == roomID {
+				continue
+			}
+			filtered = append(filtered, ex)
+		}
+		s.Exits[from] = filtered
+	}
+	// 房間被刪時，將該房間內實體遷回第一個可用房間，避免懸空。
+	fallback := s.firstStreetOrAlleyRoomIDLocked()
+	for eid, rid := range s.EntityRooms {
+		if rid == roomID {
+			if fallback != "" {
+				s.EntityRooms[eid] = fallback
+			} else {
+				delete(s.EntityRooms, eid)
+			}
+		}
+	}
 }
 
 // GetRoomName 回傳房間名稱；若無則空字串。
@@ -507,7 +648,7 @@ func (s *Store) GetEntityRoom(entityID string) (string, error) {
 	return s.EntityRooms[entityID], nil
 }
 
-// GetNPCIDsWithRoom 回傳所有有房間的 NPC 實體 ID（供主迴圈註冊腦驅動用）。
+// GetNPCIDsWithRoom 回傳所有有房間且 Vit>0（存活）的 NPC 實體 ID（供主迴圈註冊腦驅動用）。死亡（Vit≤0）NPC 不參與。
 func (s *Store) GetNPCIDsWithRoom() []string {
 	if s == nil {
 		return nil
@@ -517,7 +658,7 @@ func (s *Store) GetNPCIDsWithRoom() []string {
 	var out []string
 	for eid := range s.EntityRooms {
 		e, ok := s.Entities[eid]
-		if !ok || e == nil || e.Kind != "npc" {
+		if !ok || e == nil || e.Kind != "npc" || e.Vit <= 0 {
 			continue
 		}
 		out = append(out, eid)
@@ -788,6 +929,37 @@ func (s *Store) GetVenueIDsForRoom(roomID string) []string {
 	return out
 }
 
+// GetVenueMaxStaff 回傳該場所職缺上限；0 或未設表示用全局限額 defaultMax。
+func (s *Store) GetVenueMaxStaff(venueID string, defaultMax int) int {
+	if s == nil {
+		return defaultMax
+	}
+	s.mu.RLock()
+	v := s.Venues[venueID]
+	s.mu.RUnlock()
+	if v == nil || v.MaxStaff <= 0 {
+		return defaultMax
+	}
+	return v.MaxStaff
+}
+
+// GetFirstOccupationIDForVenue 回傳該場所既有指派中的第一個職業 ID（10.15 撮合用）；無則空字串。
+func (s *Store) GetFirstOccupationIDForVenue(venueID string) string {
+	if s == nil {
+		return ""
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	for _, list := range s.Assignments {
+		for _, a := range list {
+			if a.VenueID == venueID {
+				return a.OccupationID
+			}
+		}
+	}
+	return ""
+}
+
 // GetAssignmentCountByVenue 回傳該場所目前的指派數量（與 max_staff 比對可判斷是否有缺）。
 func (s *Store) GetAssignmentCountByVenue(venueID string) int {
 	if s == nil {
@@ -879,6 +1051,17 @@ func (s *Store) InsertAssignment(entityID, occupationID, venueID, assignedBy str
 	return s.persistAssignments()
 }
 
+// RemoveAssignmentsForEntity 移除某實體的全部指派（死亡除名用）。會寫回 assignments.json。
+func (s *Store) RemoveAssignmentsForEntity(entityID string) error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	delete(s.Assignments, entityID)
+	s.mu.Unlock()
+	return s.persistAssignments()
+}
+
 // GetAllSchedules 回傳所有排班（供 main 註冊 TravelerManager）。
 func (s *Store) GetAllSchedules() []Schedule {
 	if s == nil {
@@ -920,6 +1103,17 @@ func (s *Store) InsertSchedule(entityID, workRoom, restRoom string, shiftStart, 
 		EntityID: entityID, WorkRoom: workRoom, RestRoom: restRoom,
 		ShiftStart: shiftStart, ShiftEnd: shiftEnd,
 	}
+	s.mu.Unlock()
+	return s.persistSchedules()
+}
+
+// RemoveScheduleForEntity 移除某實體的排班（死亡除名用）。會寫回 schedules.json。
+func (s *Store) RemoveScheduleForEntity(entityID string) error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	delete(s.Schedules, entityID)
 	s.mu.Unlock()
 	return s.persistSchedules()
 }
@@ -1084,6 +1278,22 @@ func (s *Store) loadAuth() error {
 	return nil
 }
 
+// NPCIDsWithMissingSoulSeed 回傳所有 kind=npc 且 SoulSeed 為 nil 的實體 ID，供啟動時補寫 soul_seed 用。
+func (s *Store) NPCIDsWithMissingSoulSeed() []string {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	var out []string
+	for id, e := range s.Entities {
+		if e != nil && e.Kind == "npc" && e.SoulSeed == nil {
+			out = append(out, id)
+		}
+	}
+	return out
+}
+
 // GetEntity 回傳實體；若無則 nil。
 func (s *Store) GetEntity(id string) *Entity {
 	if s == nil {
@@ -1114,6 +1324,35 @@ func (s *Store) PutEntity(e *Entity) error {
 	}
 	s.Entities[e.ID] = &cp
 	s.mu.Unlock()
+	s.scheduleEntitiesPersist()
+	return nil
+}
+
+// TransferMagnesiumBetween 在同一鎖內將 amount 鎂自 fromID 轉至 toID；餘額不足或實體不存在則回錯。
+// 對齊經濟／物流規格：鎂轉手原子性（第一版 store 路徑單一臨界區）。
+func (s *Store) TransferMagnesiumBetween(fromID, toID string, amount int) error {
+	if s == nil {
+		return fmt.Errorf("store nil")
+	}
+	if amount <= 0 {
+		return fmt.Errorf("轉帳鎂數須為正")
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	fe, ok1 := s.Entities[fromID]
+	te, ok2 := s.Entities[toID]
+	if !ok1 || !ok2 || fe == nil || te == nil {
+		return fmt.Errorf("找不到轉出或轉入實體")
+	}
+	if fe.Magnesium < amount {
+		return fmt.Errorf("鎂不足")
+	}
+	fc := *fe
+	tc := *te
+	fc.Magnesium -= amount
+	tc.Magnesium += amount
+	s.Entities[fromID] = &fc
+	s.Entities[toID] = &tc
 	s.scheduleEntitiesPersist()
 	return nil
 }
@@ -1520,6 +1759,116 @@ func (s *Store) GetArchivalByEntity(entityID string) []ArchivalEntry {
 		}
 	}
 	return out
+}
+
+func npcMemoryKey(entityID, subjectID string) string { return entityID + "|" + subjectID }
+
+// GetNpcMemory 回傳該 NPC 對某玩家的短期記憶；無則 nil。
+func (s *Store) GetNpcMemory(entityID, subjectID string) *NpcMemory {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.NpcMemories[npcMemoryKey(entityID, subjectID)]
+}
+
+// RecordMeet 記錄一次見面：若無則建立 (meet_count=1, favorability=0)，若有則 meet_count+1。會持久化。
+func (s *Store) RecordMeet(entityID, subjectID string) error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	k := npcMemoryKey(entityID, subjectID)
+	if s.NpcMemories[k] == nil {
+		s.NpcMemories[k] = &NpcMemory{EntityID: entityID, SubjectID: subjectID, MeetCount: 1, Favorability: 0}
+	} else {
+		s.NpcMemories[k].MeetCount++
+	}
+	s.mu.Unlock()
+	return s.persistNpcMemory()
+}
+
+// AdjustFavorability 調整該 NPC 對某玩家的好感度，clamp [-100, +100]。會持久化。
+func (s *Store) AdjustFavorability(entityID, subjectID string, delta int) error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	k := npcMemoryKey(entityID, subjectID)
+	if s.NpcMemories[k] == nil {
+		s.NpcMemories[k] = &NpcMemory{EntityID: entityID, SubjectID: subjectID, MeetCount: 0, Favorability: 0}
+	}
+	m := s.NpcMemories[k]
+	m.Favorability += delta
+	if m.Favorability > 100 {
+		m.Favorability = 100
+	}
+	if m.Favorability < -100 {
+		m.Favorability = -100
+	}
+	s.mu.Unlock()
+	return s.persistNpcMemory()
+}
+
+type npcMemoryFile struct {
+	Entries []NpcMemory `json:"entries"`
+}
+
+func (s *Store) loadNpcMemory() error {
+	if s.npcMemoryPath == "" {
+		return nil
+	}
+	data, err := os.ReadFile(s.npcMemoryPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			s.NpcMemories = make(map[string]*NpcMemory)
+			return nil
+		}
+		return err
+	}
+	var f npcMemoryFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	if s.NpcMemories == nil {
+		s.NpcMemories = make(map[string]*NpcMemory)
+	}
+	for i := range f.Entries {
+		e := &f.Entries[i]
+		s.NpcMemories[npcMemoryKey(e.EntityID, e.SubjectID)] = e
+	}
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *Store) persistNpcMemory() error {
+	if s.npcMemoryPath == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(s.npcMemoryPath), 0755); err != nil {
+		return err
+	}
+	s.mu.RLock()
+	var entries []NpcMemory
+	for _, m := range s.NpcMemories {
+		entries = append(entries, *m)
+	}
+	s.mu.RUnlock()
+	raw, err := json.MarshalIndent(npcMemoryFile{Entries: entries}, "", "  ")
+	if err != nil {
+		return err
+	}
+	tmpPath := s.npcMemoryPath + ".tmp"
+	if err := os.WriteFile(tmpPath, raw, 0644); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.npcMemoryPath); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+	return nil
 }
 
 type summariesFile struct {

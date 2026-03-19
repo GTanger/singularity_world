@@ -10,44 +10,34 @@
   "exits": [
     {
       "direction": "lifestreet_st8",
-      "to": "lifestreet_st8",
-      "ui_hidden": true
-    },
-    {
-      "direction": "yaxiao_st3",
-      "to": "yaxiao_st3",
-      "ui_hidden": true
+      "to": "lifestreet_st8"
     },
     {
       "direction": "yaxst04_shop01_main",
-      "to": "yaxst04_shop01_main",
-      "ui_hidden": true
+      "to": "yaxst04_shop01_main"
     },
     {
       "direction": "yaxst04_shop02_main",
-      "to": "yaxst04_shop02_main",
-      "ui_hidden": true
-    },
-    {
-      "direction": "yaxst04_shop03_main",
-      "to": "yaxst04_shop03_main",
-      "ui_hidden": true
+      "to": "yaxst04_shop02_main"
     },
     {
       "direction": "yaxst04_home01_main",
-      "to": "yaxst04_home01_main",
-      "ui_hidden": true
+      "to": "yaxst04_home01_main"
     },
     {
       "direction": "yaxst04_home02_main",
-      "to": "yaxst04_home02_main",
-      "ui_hidden": true
+      "to": "yaxst04_home02_main"
+    },
+    {
+      "direction": "西",
+      "to": "feistreet_st6"
     }
   ],
   "objects": [
     {
       "id": "yaxiao_st4_lifestreet_st8",
       "name": "浮生大街八段",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -59,6 +49,7 @@
     {
       "id": "yaxiao_st4_yaxiao_st3",
       "name": "夜鴞巷三巷",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -70,6 +61,7 @@
     {
       "id": "yaxiao_st4_shop01",
       "name": "長明魂燈客棧",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -80,6 +72,7 @@
     {
       "id": "yaxiao_st4_shop01_door",
       "name": "溫玉大門",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -91,6 +84,7 @@
     {
       "id": "yaxiao_st4_shop02",
       "name": "隱光流蘇密閣",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -101,6 +95,7 @@
     {
       "id": "yaxiao_st4_shop02_door",
       "name": "遮蔽流蘇",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -112,6 +107,7 @@
     {
       "id": "yaxiao_st4_shop03",
       "name": "巷底靈炊坊",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -122,6 +118,7 @@
     {
       "id": "yaxiao_st4_shop03_door",
       "name": "坊門",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -133,6 +130,7 @@
     {
       "id": "yaxiao_st4_home01",
       "name": "絕對氣密行宮",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -143,6 +141,7 @@
     {
       "id": "yaxiao_st4_home01_door",
       "name": "氣密閘",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -154,6 +153,7 @@
     {
       "id": "yaxiao_st4_home02",
       "name": "雙重鏡影宅",
+      "owner": "",
       "sockets": [
         "Look"
       ],
@@ -164,6 +164,7 @@
     {
       "id": "yaxiao_st4_home02_door",
       "name": "暗門",
+      "owner": "",
       "sockets": [
         "Move"
       ],

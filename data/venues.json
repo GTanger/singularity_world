@@ -1,9 +1,10 @@
 {
-  "_說明": "場所定義；room_ids 為該場所包含的房間 id 列表，供 IsRoomInVenue、動作插座是否生效等使用。",
+  "_說明": "場所定義；room_ids 為該場所包含的房間 id 列表。max_staff 可選，表示該場所最多幾人；未設或 0 則用全局限額。",
   "venues": [
     {
       "id": "venue_life_inn",
       "name": "浮生客棧",
+      "max_staff": 4,
       "room_ids": [
         "life_garden",
         "life_hall",
