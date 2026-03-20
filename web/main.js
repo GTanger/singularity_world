@@ -32,6 +32,24 @@
 	const ENTITY_INTERACT_ORDER = ['Talk', 'Borrow', 'Trade', 'Subdue', 'Slay'];
 	let gameTimeTicker = null;
 	var entityNameCache = {}; // name/id -> entity_id（用於 log 人名點擊）
+	let logStickToBottom = true;
+	let logScrollBound = false;
+
+	function ensureLogScrollBehavior(el) {
+		if (!el || logScrollBound) return;
+		logScrollBound = true;
+		el.addEventListener('scroll', function () {
+			var delta = el.scrollHeight - el.clientHeight - el.scrollTop;
+			logStickToBottom = delta <= 32;
+		}, { passive: true });
+	}
+
+	function appendAndMaybeAutoScroll(el, row) {
+		if (!el || !row) return;
+		ensureLogScrollBehavior(el);
+		el.appendChild(row);
+		if (logStickToBottom) el.scrollTop = el.scrollHeight;
+	}
 
 	function gameSecNow() {
 		if (!state.server_unix) return null;
@@ -141,8 +159,7 @@
 		var div = document.createElement('div');
 		div.className = 'log-entry log-system';
 		div.textContent = text;
-		el.appendChild(div);
-		el.scrollTop = el.scrollHeight;
+		appendAndMaybeAutoScroll(el, div);
 	}
 
 	function appendNarrative(html, actionType) {
@@ -152,8 +169,7 @@
 		div.className = 'log-entry log-narrative';
 		if (actionType) div.classList.add('log-' + actionType.toLowerCase());
 		div.innerHTML = html;
-		el.appendChild(div);
-		el.scrollTop = el.scrollHeight;
+		appendAndMaybeAutoScroll(el, div);
 	}
 
 	function appendObjectActionsLine(html) {
@@ -162,8 +178,7 @@
 		var div = document.createElement('div');
 		div.className = 'log-entry log-object-actions';
 		div.innerHTML = html;
-		el.appendChild(div);
-		el.scrollTop = el.scrollHeight;
+		appendAndMaybeAutoScroll(el, div);
 	}
 
 	function indexEntityNameCache(entities) {
