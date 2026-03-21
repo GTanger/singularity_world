@@ -1,0 +1,276 @@
+{
+  "rumors": {
+    "eco|pulse|179": {
+      "id": "eco|pulse|179",
+      "text": "這幾天米鹽又貴了一點，街坊都在精打細算。",
+      "source": "economy",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774050486,
+      "expires_at": 1774055886
+    },
+    "evt|life_dining|arrive|npc_dh7lq371wwmu：從方向到達": {
+      "id": "evt|life_dining|arrive|npc_dh7lq371wwmu：從方向到達",
+      "text": "npc_dh7lq371wwmu：從方向到達",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774049687,
+      "expires_at": 1774051487
+    },
+    "evt|life_dining|shift_leave|npc_dh7lok2gzenv：離開前往lob…": {
+      "id": "evt|life_dining|shift_leave|npc_dh7lok2gzenv：離開前往lob…",
+      "text": "npc_dh7lok2gzenv：離開前往lobby",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 11,
+      "updated_at": 1774051236,
+      "expires_at": 1774053036
+    },
+    "evt|life_hall|leave|npc_dh7lq371wwmu：離開往": {
+      "id": "evt|life_hall|leave|npc_dh7lq371wwmu：離開往",
+      "text": "npc_dh7lq371wwmu：離開往",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774049687,
+      "expires_at": 1774051487
+    },
+    "evt|life_hall|shift_leave|npc_dh7lq371wwmu：離開前往lif…": {
+      "id": "evt|life_hall|shift_leave|npc_dh7lq371wwmu：離開前往lif…",
+      "text": "npc_dh7lq371wwmu：離開前往life_ga…",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774049586,
+      "expires_at": 1774051386
+    },
+    "evt|life_hall|shift_leave|npc_dh7lq371wwmu：離開前往lob…": {
+      "id": "evt|life_hall|shift_leave|npc_dh7lq371wwmu：離開前往lob…",
+      "text": "npc_dh7lq371wwmu：離開前往lobby",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 11,
+      "updated_at": 1774051236,
+      "expires_at": 1774053036
+    },
+    "evt|life_kitchen|shift_leave|npc_dh7lok2gzenv：離開前往lif…": {
+      "id": "evt|life_kitchen|shift_leave|npc_dh7lok2gzenv：離開前往lif…",
+      "text": "npc_dh7lok2gzenv：離開前往life_ga…",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774049586,
+      "expires_at": 1774051386
+    },
+    "evt|lobby|shift_arrive|npc_dh7lok2gzenv：排班抵達": {
+      "id": "evt|lobby|shift_arrive|npc_dh7lok2gzenv：排班抵達",
+      "text": "npc_dh7lok2gzenv：排班抵達",
+      "room_id": "lobby",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 225,
+      "updated_at": 1774051236,
+      "expires_at": 1774053036
+    },
+    "evt|lobby|shift_arrive|npc_dh7lq371wwmu：排班抵達": {
+      "id": "evt|lobby|shift_arrive|npc_dh7lq371wwmu：排班抵達",
+      "text": "npc_dh7lq371wwmu：排班抵達",
+      "room_id": "lobby",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 225,
+      "mention_count": 1,
+      "last_used_at": 1774050150,
+      "updated_at": 1774051236,
+      "expires_at": 1774053036
+    },
+    "evt|start_boundary|shift_arrive|試話：排班抵達": {
+      "id": "evt|start_boundary|shift_arrive|試話：排班抵達",
+      "text": "試話：排班抵達",
+      "room_id": "start_boundary",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 225,
+      "mention_count": 4,
+      "last_used_at": 1774050111,
+      "updated_at": 1774051236,
+      "expires_at": 1774053036
+    },
+    "evt|street4zone|arrive|史梅：從浮生大街方向到達": {
+      "id": "evt|street4zone|arrive|史梅：從浮生大街方向到達",
+      "text": "史梅：從浮生大街方向到達",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774050014,
+      "expires_at": 1774051814
+    },
+    "evt|street4zone|leave|史梅：離開往浮生大街": {
+      "id": "evt|street4zone|leave|史梅：離開往浮生大街",
+      "text": "史梅：離開往浮生大街",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774050044,
+      "expires_at": 1774051844
+    },
+    "evt|street4zone|shift_leave|試話：離開前往start_boundary": {
+      "id": "evt|street4zone|shift_leave|試話：離開前往start_boundary",
+      "text": "試話：離開前往start_boundary",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "room_event",
+      "source_score": 3,
+      "weight": 229,
+      "mention_count": 255,
+      "last_used_at": 1774051236,
+      "updated_at": 1774051236,
+      "expires_at": 1774053036
+    },
+    "evt|street_life_1|arrive|史梅：從四路街口方向到達": {
+      "id": "evt|street_life_1|arrive|史梅：從四路街口方向到達",
+      "text": "史梅：從四路街口方向到達",
+      "room_id": "street_life_1",
+      "zone": "streetlife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774050044,
+      "expires_at": 1774051844
+    },
+    "evt|street_life_1|leave|史梅：離開往四路街口": {
+      "id": "evt|street_life_1|leave|史梅：離開往四路街口",
+      "text": "史梅：離開往四路街口",
+      "room_id": "street_life_1",
+      "zone": "streetlife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774050014,
+      "expires_at": 1774051814
+    },
+    "life_dining||npc_dh7lok2gzenv": {
+      "id": "life_dining||npc_dh7lok2gzenv",
+      "text": "npc_dh7lok2gzenv",
+      "room_id": "life_dining",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774049586,
+      "expires_at": 1774053186
+    },
+    "life_dining||離開前往life_garden": {
+      "id": "life_dining||離開前往life_garden",
+      "text": "離開前往life_garden",
+      "room_id": "life_dining",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774049586,
+      "expires_at": 1774053186
+    },
+    "street4zone|4street|social": {
+      "id": "street4zone|4street|social",
+      "text": "social",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "mention_count": 2,
+      "last_used_at": 1774029636,
+      "updated_at": 1774048536,
+      "expires_at": 1774052136
+    },
+    "street4zone|4street|start_boundary": {
+      "id": "street4zone|4street|start_boundary",
+      "text": "start_boundary",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774048686,
+      "expires_at": 1774052286
+    },
+    "street4zone|4street|street4zone": {
+      "id": "street4zone|4street|street4zone",
+      "text": "street4zone",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "dialogue_anchor",
+      "source_score": 5,
+      "weight": 1,
+      "mention_count": 140,
+      "last_used_at": 1774051236,
+      "updated_at": 1774049286,
+      "expires_at": 1774052886
+    },
+    "street4zone|4street|交接班": {
+      "id": "street4zone|4street|交接班",
+      "text": "交接班",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774047786,
+      "expires_at": 1774051386
+    },
+    "street4zone|4street|街景": {
+      "id": "street4zone|4street|街景",
+      "text": "街景",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774047786,
+      "expires_at": 1774051386
+    },
+    "street_life_1|streetlife|social": {
+      "id": "street_life_1|streetlife|social",
+      "text": "social",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 4,
+      "updated_at": 1774050486,
+      "expires_at": 1774054086
+    },
+    "street_life_1|streetlife|street": {
+      "id": "street_life_1|streetlife|street",
+      "text": "street",
+      "room_id": "street_life_1",
+      "zone": "streetlife",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774050150,
+      "expires_at": 1774053750
+    },
+    "street_life_1|streetlife|street4zone": {
+      "id": "street_life_1|streetlife|street4zone",
+      "text": "street4zone",
+      "room_id": "street4zone",
+      "zone": "4street",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 4,
+      "updated_at": 1774050486,
+      "expires_at": 1774054086
+    }
+  }
+}

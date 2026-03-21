@@ -1,0 +1,30 @@
+{
+  "id": "life_cofe_1",
+  "name": "蕗易沙",
+  "description": "室內裝潢簡約，灰色的牆面搭配質樸的木質長桌與座席。空間的核心是一座沈穩的深色木質〔櫃檯〕，基座穩穩地銜接著亮潔的石質地板。\n落地窗外，浮生大街的人潮熙攘如投影般掠過，與店內的安靜形成明對比。幾盆長勢極好的綠植錯落地擺放在牆角，寬大的葉片在柔和的燈光下顯得生氣勃勃。空氣中充滿了研磨豆子的清香。",
+  "tags": [
+    "coffee",
+    "food"
+  ],
+  "zone": "streetlife",
+  "exits": [
+    {
+      "direction": "大街",
+      "to": "street_life_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "street_life_1",
+      "name": "大街",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生大街」。"
+      },
+      "move_to_room_id": "street_life_1"
+    }
+  ]
+}

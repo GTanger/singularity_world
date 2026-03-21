@@ -45,6 +45,13 @@ const ui = {
   mDel: document.getElementById('m-del'),
   mMode: document.getElementById('m-mode'),
   mPanel: document.getElementById('m-panel'),
+  pathFrom: document.getElementById('path-from'),
+  pathTo: document.getElementById('path-to'),
+  pathDir: document.getElementById('path-dir'),
+  pathReverse: document.getElementById('path-reverse'),
+  pathReverseDir: document.getElementById('path-reverse-dir'),
+  btnAddPath: document.getElementById('btn-add-path'),
+  pathUseSelected: document.getElementById('path-use-selected'),
 };
 
 function setStatus(msg, isError = false) {
@@ -156,49 +163,151 @@ function normalizeObject(obj) {
   return {
     id: String(obj?.id || '').trim(),
     name: String(obj?.name || '').trim(),
+    owner: String(obj?.owner != null ? obj.owner : '').trim(),
     sockets: Array.isArray(obj?.sockets) ? obj.sockets.map((s) => String(s).trim()).filter(Boolean) : [],
     responses: obj?.responses && typeof obj.responses === 'object' ? obj.responses : {},
+    move_to_room_id: String(obj?.move_to_room_id != null ? obj.move_to_room_id : '').trim(),
   };
+}
+
+function sortedRoomIds() {
+  return Array.from(state.nodes.keys()).sort();
+}
+
+/** 填入房間下拉；valueToSelect 若仍存在會保留選取 */
+function fillRoomSelect(selectEl, valueToSelect) {
+  if (!selectEl) return;
+  const prev = valueToSelect || selectEl.value || '';
+  selectEl.innerHTML = '';
+  const empty = document.createElement('option');
+  empty.value = '';
+  empty.textContent = '— 選擇房間 —';
+  selectEl.appendChild(empty);
+  for (const rid of sortedRoomIds()) {
+    const n = state.nodes.get(rid);
+    const opt = document.createElement('option');
+    opt.value = rid;
+    opt.textContent = n && n.name ? `${n.name}（${rid}）` : rid;
+    selectEl.appendChild(opt);
+  }
+  if (prev && state.nodes.has(prev)) selectEl.value = prev;
+}
+
+function refreshPathSelects() {
+  const pf = ui.pathFrom && ui.pathFrom.value;
+  const pt = ui.pathTo && ui.pathTo.value;
+  fillRoomSelect(ui.pathFrom, pf);
+  fillRoomSelect(ui.pathTo, pt);
+  if (ui.pathFrom && !ui.pathFrom.value && state.selectedId && state.nodes.has(state.selectedId)) {
+    ui.pathFrom.value = state.selectedId;
+  }
 }
 
 function renderObjectsForm(objs) {
   ui.objectsForm.innerHTML = '';
+  const roomIds = sortedRoomIds();
   (objs || []).forEach((raw, idx) => {
     const obj = normalizeObject(raw);
     const row = document.createElement('div');
     row.className = 'obj-row';
-    row.innerHTML = `
-      <div class="obj-head">
-        <input data-k="id" placeholder="object id" value="${obj.id.replace(/"/g, '&quot;')}" />
-        <input data-k="name" placeholder="物件名稱" value="${obj.name.replace(/"/g, '&quot;')}" />
-        <button data-act="del">刪除</button>
-      </div>
-      <div class="field"><label>sockets（逗號分隔）</label><input data-k="sockets" value="${obj.sockets.join(', ')}" /></div>
-      <div class="field"><label>responses（JSON 物件）</label><textarea data-k="responses">${JSON.stringify(obj.responses || {}, null, 2)}</textarea></div>
-    `;
-    row.querySelector('[data-act="del"]').addEventListener('click', (ev) => {
+
+    const head = document.createElement('div');
+    head.className = 'obj-head';
+    const inpId = document.createElement('input');
+    inpId.dataset.k = 'id';
+    inpId.placeholder = 'object id';
+    inpId.value = obj.id;
+    const inpName = document.createElement('input');
+    inpName.dataset.k = 'name';
+    inpName.placeholder = '物件名稱';
+    inpName.value = obj.name;
+    const btnDel = document.createElement('button');
+    btnDel.type = 'button';
+    btnDel.dataset.act = 'del';
+    btnDel.textContent = '刪除';
+    head.appendChild(inpId);
+    head.appendChild(inpName);
+    head.appendChild(btnDel);
+    row.appendChild(head);
+
+    const ownLab = document.createElement('div');
+    ownLab.className = 'field';
+    ownLab.innerHTML = '<label>owner（可空）</label>';
+    const inpOwner = document.createElement('input');
+    inpOwner.dataset.k = 'owner';
+    inpOwner.type = 'text';
+    inpOwner.placeholder = '';
+    inpOwner.value = obj.owner;
+    ownLab.appendChild(inpOwner);
+    row.appendChild(ownLab);
+
+    const moveLab = document.createElement('div');
+    moveLab.className = 'field';
+    const moveLbl = document.createElement('label');
+    moveLbl.textContent = '移動目標房 move_to_room_id（玩家執行 Move 時切房）';
+    const selMove = document.createElement('select');
+    selMove.dataset.k = 'move_to_room_id';
+    const optNone = document.createElement('option');
+    optNone.value = '';
+    optNone.textContent = '— 不切換房間 —';
+    selMove.appendChild(optNone);
+    for (const rid of roomIds) {
+      const n = state.nodes.get(rid);
+      const o = document.createElement('option');
+      o.value = rid;
+      o.textContent = n && n.name ? `${n.name}（${rid}）` : rid;
+      if (rid === obj.move_to_room_id) o.selected = true;
+      selMove.appendChild(o);
+    }
+    moveLab.appendChild(moveLbl);
+    moveLab.appendChild(selMove);
+    row.appendChild(moveLab);
+
+    const sockLab = document.createElement('div');
+    sockLab.className = 'field';
+    sockLab.innerHTML = '<label>sockets（逗號分隔）</label>';
+    const inpSock = document.createElement('input');
+    inpSock.dataset.k = 'sockets';
+    inpSock.value = obj.sockets.join(', ');
+    sockLab.appendChild(inpSock);
+    row.appendChild(sockLab);
+
+    const respLab = document.createElement('div');
+    respLab.className = 'field';
+    respLab.innerHTML = '<label>responses（JSON 物件）</label>';
+    const taResp = document.createElement('textarea');
+    taResp.dataset.k = 'responses';
+    taResp.value = JSON.stringify(obj.responses || {}, null, 2);
+    respLab.appendChild(taResp);
+    row.appendChild(respLab);
+
+    btnDel.addEventListener('click', (ev) => {
       ev.preventDefault();
       const list = safeGetObjects();
       list.splice(idx, 1);
       writeObjectsJson(list);
       renderObjectsForm(list);
     });
+
     const sync = () => {
       const list = safeGetObjects();
       const cur = normalizeObject(list[idx]);
-      cur.id = row.querySelector('[data-k="id"]').value.trim();
-      cur.name = row.querySelector('[data-k="name"]').value.trim();
-      cur.sockets = row.querySelector('[data-k="sockets"]').value.split(',').map((s) => s.trim()).filter(Boolean);
+      cur.id = inpId.value.trim();
+      cur.name = inpName.value.trim();
+      cur.owner = inpOwner.value.trim();
+      cur.move_to_room_id = selMove.value.trim();
+      cur.sockets = inpSock.value.split(',').map((s) => s.trim()).filter(Boolean);
       try {
-        const parsed = JSON.parse(row.querySelector('[data-k="responses"]').value || '{}');
+        const parsed = JSON.parse(taResp.value || '{}');
         cur.responses = parsed && typeof parsed === 'object' ? parsed : {};
-      } catch (_) {
-        // 保留原值，等儲存時再報錯
-      }
+      } catch (_) {}
       list[idx] = cur;
       writeObjectsJson(list);
     };
-    row.querySelectorAll('input,textarea').forEach((el) => el.addEventListener('input', sync));
+    row.querySelectorAll('input,textarea,select').forEach((el) => {
+      el.addEventListener('input', sync);
+      el.addEventListener('change', sync);
+    });
     ui.objectsForm.appendChild(row);
   });
 }
@@ -509,6 +618,7 @@ function selectNode(id, additive = false) {
   }
   state.selectedId = id;
   fillEditor(id);
+  refreshPathSelects();
   render();
 }
 
@@ -519,6 +629,7 @@ function setSelectedForTouchStart(id) {
   }
   state.selectedId = id;
   fillEditor(id);
+  refreshPathSelects();
 }
 
 async function completeLink(fromId, toId) {
@@ -625,8 +736,15 @@ function bindNode(el, id) {
   });
 
   el.addEventListener('pointerup', async (ev) => {
+    // 觸控在節點上放開時，不應攔截到讓 document:pointerup 收不到，
+    // 否則 activePointers 會殘留，後續誤判成雙指，導致手機連線失效。
+    if (ev.pointerType === 'touch') {
+      activePointers.delete(ev.pointerId);
+      if (activePointers.size < 2) state.pinch = null;
+      return;
+    }
     ev.stopPropagation();
-    if (!state.linkDrag || ev.pointerType === 'touch') return;
+    if (!state.linkDrag) return;
     if (state.linkDrag.pointerId !== ev.pointerId) return;
     try {
       ui.map.releasePointerCapture(ev.pointerId);
@@ -785,11 +903,27 @@ async function handlePointerUpEnd(ev) {
   }
 
   if (state.linkDrag && state.linkDrag.pointerId === ev.pointerId) {
+    const fromId = state.linkDrag.fromId;
     try {
       ui.map.releasePointerCapture(ev.pointerId);
     } catch (_) {}
     state.linkDrag = null;
     render();
+    // setPointerCapture(map) 時 pointerup 的 target 是 map，節點上的 listener 不會觸發，須用座標找終點房格
+    let toId = '';
+    try {
+      const stack = document.elementsFromPoint(ev.clientX, ev.clientY);
+      for (let i = 0; i < stack.length; i++) {
+        const el = stack[i];
+        if (el.classList && el.classList.contains('node') && el.dataset && el.dataset.id) {
+          toId = el.dataset.id;
+          break;
+        }
+      }
+    } catch (_) {}
+    if (toId && toId !== fromId) {
+      await completeLink(fromId, toId);
+    }
   }
 
   if (state.marquee && state.marquee.pointerId === ev.pointerId) {
@@ -966,6 +1100,7 @@ async function loadGraph(scrollToSelected = true) {
   state.selectedIds = new Set(Array.from(state.selectedIds).filter((id) => state.nodes.has(id)));
 
   if (state.selectedId) fillEditor(state.selectedId);
+  refreshPathSelects();
   render();
 
   if (scrollToSelected && state.selectedId && state.layout[state.selectedId]) {
@@ -1151,7 +1286,7 @@ document.getElementById('btn-template').onclick = () => {
   renderObjectsForm(tpl);
 };
 
-document.getElementById('btn-save').onclick = async () => {
+async function saveCurrentRoom() {
   if (!state.selectedId) {
     setStatus('請先選一個房間', true);
     return;
@@ -1180,7 +1315,80 @@ document.getElementById('btn-save').onclick = async () => {
   } catch (e) {
     setStatus(`儲存失敗：${e.message}`, true);
   }
+}
+
+document.getElementById('btn-save').onclick = () => {
+  saveCurrentRoom();
 };
+
+if (ui.pathUseSelected) {
+  ui.pathUseSelected.addEventListener('click', () => {
+    if (!state.selectedId || !state.nodes.has(state.selectedId)) {
+      setStatus('請先在地圖上選一個房格', true);
+      return;
+    }
+    ui.pathFrom.value = state.selectedId;
+    setStatus(`起點已設為：${state.nodes.get(state.selectedId)?.name || state.selectedId}`);
+  });
+}
+
+if (ui.btnAddPath) {
+  ui.btnAddPath.addEventListener('click', async () => {
+    const from = ui.pathFrom && ui.pathFrom.value;
+    const to = ui.pathTo && ui.pathTo.value;
+    const dir = (ui.pathDir && ui.pathDir.value) || '';
+    const dirTrim = dir.trim();
+    const reverse = ui.pathReverse && ui.pathReverse.checked;
+    let reverseDir = (ui.pathReverseDir && ui.pathReverseDir.value) || '';
+    reverseDir = reverseDir.trim();
+    if (!from || !to) {
+      setStatus('請選擇起點與終點房間', true);
+      return;
+    }
+    if (from === to) {
+      setStatus('起點與終點不可相同', true);
+      return;
+    }
+    if (!dirTrim) {
+      setStatus('請填「此端方向名稱」', true);
+      return;
+    }
+    if (reverse && !reverseDir) {
+      const n = state.nodes.get(from);
+      reverseDir = (n && n.name) || from;
+    }
+    try {
+      await api('/api/room-editor/link', {
+        method: 'POST',
+        body: JSON.stringify({
+          from,
+          to,
+          direction: dirTrim,
+          reverse,
+          reverse_direction: reverseDir,
+        }),
+      });
+      setStatus('路徑已建立（exits + Move／move_to_room_id）');
+      if (ui.pathDir) ui.pathDir.value = '';
+      if (ui.pathReverseDir) ui.pathReverseDir.value = '';
+      await loadGraph(false);
+    } catch (e) {
+      setStatus(`建立路徑失敗：${e.message}`, true);
+    }
+  });
+}
+
+/** Ctrl+S（Windows/Linux）或 Cmd+S（macOS）儲存目前選取的房間 */
+document.addEventListener(
+  'keydown',
+  (e) => {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    if (e.key !== 's' && e.key !== 'S') return;
+    e.preventDefault();
+    saveCurrentRoom();
+  },
+  true
+);
 
 (async () => {
   try {

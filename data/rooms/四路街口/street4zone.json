@@ -1,7 +1,7 @@
 {
   "id": "street4zone",
   "name": "四路街口",
-  "description": "這裡是整座城市的絕對中心——四路街口。四股截然不同、極端強大的修真異象在此處發生了不可思議的碰撞與融合。腳下的廣場被硬生生地撕裂成四個象限：東側是【向陽】極致刺眼的白玉與稜鏡眩光；西側是【梧桐】野蠻生長的遮天巨木與發光氣根；北側是【飛霜】如深淵般幽冷的黑曜石與不化寒霜；南側則是【浮生】滾滾紅塵中湧現的暗紫靈脈與陣法光暈。四種力量在此交界，形成了一個氣流激盪、光影錯亂的奇異真空地帶。灰白鋪石呈放射狀路徑，分別導向〔飛霜大街九段〕、〔梧桐大街一段〕、〔浮生大街一段〕與〔向陽大街九段〕。街角一側，茂密的〔交界靈藤〕自能量衝突的夾縫中垂落，形成了一個極佳的隱蔽死角。",
+  "description": "四方交界，各領風騷。 \n〔向陽〕有光，西街敞柱高簷，滿街樓宇極盡引光。 \n〔梧桐〕有蔭，南街草木繁盛，藤蔓巨樹冠蓋屋舍。 \n〔飛霜〕乘風，北街飛灰冷凝，化作漫天晶霜飄散。 \n〔浮生〕隨遇，東街熙熙攘攘，摩肩接踵湧動不息。",
   "tags": [
     "street",
     "social",
@@ -10,77 +10,26 @@
   "zone": "4street",
   "exits": [
     {
-      "direction": "feistreet_st9",
-      "to": "feistreet_st9"
+      "direction": "浮生",
+      "to": "street_life_1"
     },
     {
-      "direction": "wustreet_st1",
-      "to": "wustreet_st1"
-    },
-    {
-      "direction": "lifestreet_st1",
-      "to": "lifestreet_st1"
-    },
-    {
-      "direction": "sunstreet_st9",
-      "to": "sunstreet_st9"
+      "direction": "西",
+      "to": "street_sun_1"
     }
   ],
   "objects": [
     {
-      "id": "st4z_exit_fei",
-      "name": "飛霜大街九段",
+      "id": "street_life_1",
+      "name": "浮生",
       "owner": "",
       "sockets": [
         "Move"
       ],
       "responses": {
-        "Move": "你迎著刺骨的寒風與冰晶，踏入了幽冷的飛霜大街。"
-      }
-    },
-    {
-      "id": "st4z_exit_wu",
-      "name": "梧桐大街一段",
-      "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你步入濃郁的草木生機之中，走向綠蔭蔽天的梧桐大街。"
-      }
-    },
-    {
-      "id": "st4z_exit_life",
-      "name": "浮生大街一段",
-      "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你順著腳下逐漸亮起的暗紫靈脈，走入繁華喧鬧的浮生大街。"
-      }
-    },
-    {
-      "id": "st4z_exit_sun",
-      "name": "向陽大街九段",
-      "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你半瞇著眼，迎向彷彿能淨化一切的刺眼白光，踏入向陽大街。"
-      }
-    },
-    {
-      "id": "st4z_obj_vine",
-      "name": "交界靈藤",
-      "owner": "",
-      "sockets": [
-        "Look"
-      ],
-      "responses": {
-        "Look": "這株藤蔓在四種極端能量的拉扯下發生了奇異的變異，葉片呈現半透明的琉璃質地。它層層疊疊地垂落，完美遮蔽了後方約半米深的空間，是一個絕佳的藏身死角。"
-      }
+        "Move": "你向著人聲鼎沸的浮生大街走去。"
+      },
+      "move_to_room_id": "street_life_1"
     }
   ]
 }

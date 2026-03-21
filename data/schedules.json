@@ -1,16 +1,16 @@
 {
   "entries": [
     {
-      "entity_id": "npc_dh3g3nuhrm5i",
+      "entity_id": "npc_dh7lq371wwmu",
       "work_room": "life_garden",
-      "rest_room": "start_boundary",
+      "rest_room": "lobby",
       "shift_start": 6,
       "shift_end": 19
     },
     {
-      "entity_id": "npc_dh3i9ngexvnc",
+      "entity_id": "npc_dh7lok2gzenv",
       "work_room": "life_garden",
-      "rest_room": "start_boundary",
+      "rest_room": "lobby",
       "shift_start": 6,
       "shift_end": 19
     },

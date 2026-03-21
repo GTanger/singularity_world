@@ -1,0 +1,51 @@
+{
+  "id": "street_life_1",
+  "name": "浮生大街",
+  "description": "｜〔來喫茶〕｜〔民　宅〕｜〔好布莊〕｜〔民　宅〕｜\n〔←〕人聲鼎沸，摩肩接踵；旗幟搖曳，招手相喚。〔→〕\n｜〔民　宅〕｜〔蕗易沙〕｜〔民　宅〕｜〔民　宅〕｜",
+  "tags": [
+    "street",
+    "social",
+    "outdoor"
+  ],
+  "zone": "streetlife",
+  "exits": [
+    {
+      "direction": "四路街口",
+      "to": "street4zone"
+    },
+    {
+      "direction": "街口",
+      "to": "street4zone"
+    },
+    {
+      "direction": "蕗易沙",
+      "to": "life_cofe_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "street4zone",
+      "name": "←",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你往回走向四路街口。"
+      },
+      "move_to_room_id": "street4zone"
+    },
+    {
+      "id": "life_cofe_1",
+      "name": "蕗易沙",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「蕗易沙」。"
+      },
+      "move_to_room_id": "life_cofe_1"
+    }
+  ]
+}

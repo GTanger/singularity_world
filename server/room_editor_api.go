@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 
@@ -383,6 +384,56 @@ func addOrReplaceExit(list []roomEditorExit, ex roomEditorExit) []roomEditorExit
 	return append(list, ex)
 }
 
+// ensureMoveObjectForExit 為「玩家點物件 Move 能切房」補上 move_to_room_id：與 exits 一併維護。
+// 優先沿用已有 id 或 move_to_room_id 指向 toRoomID 的物件，否則新增（id 預設為目標房 id）。
+func ensureMoveObjectForExit(room *roomEditorRoomFile, toRoomID, direction, targetDisplayName string) {
+	if room == nil || strings.TrimSpace(toRoomID) == "" {
+		return
+	}
+	dir := strings.TrimSpace(direction)
+	if dir == "" {
+		dir = toRoomID
+	}
+	targetName := strings.TrimSpace(targetDisplayName)
+	if targetName == "" {
+		targetName = toRoomID
+	}
+	defaultMoveText := fmt.Sprintf("你前往「%s」。", targetName)
+
+	for i := range room.Objects {
+		o := &room.Objects[i]
+		if o.MoveToRoomID != toRoomID && o.ID != toRoomID {
+			continue
+		}
+		o.MoveToRoomID = toRoomID
+		if o.ID == "" {
+			o.ID = toRoomID
+		}
+		if o.Name == "" {
+			o.Name = dir
+		}
+		if !slices.Contains(o.Sockets, "Move") {
+			o.Sockets = append(o.Sockets, "Move")
+		}
+		if o.Responses == nil {
+			o.Responses = map[string]string{}
+		}
+		if strings.TrimSpace(o.Responses["Move"]) == "" {
+			o.Responses["Move"] = defaultMoveText
+		}
+		return
+	}
+
+	room.Objects = append(room.Objects, model.RoomObject{
+		ID:           toRoomID,
+		Name:         dir,
+		Owner:        "",
+		Sockets:      []string{"Move"},
+		Responses:    map[string]string{"Move": defaultMoveText},
+		MoveToRoomID: toRoomID,
+	})
+}
+
 func handleRoomEditorLinkCreate(w http.ResponseWriter, r *http.Request) {
 	var req roomEditorLinkReq
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil || req.From == "" || req.To == "" {
@@ -394,7 +445,7 @@ func handleRoomEditorLinkCreate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"error":"from room not found"}`, http.StatusNotFound)
 		return
 	}
-	to, _, err := readRoomFileByID(req.To)
+	to, toPath, err := readRoomFileByID(req.To)
 	if err != nil {
 		http.Error(w, `{"error":"to room not found"}`, http.StatusNotFound)
 		return
@@ -404,19 +455,22 @@ func handleRoomEditorLinkCreate(w http.ResponseWriter, r *http.Request) {
 		dir = to.Name
 	}
 	from.Exits = addOrReplaceExit(from.Exits, roomEditorExit{Direction: dir, To: req.To})
+	ensureMoveObjectForExit(from, req.To, dir, to.Name)
 	if err := writeRoomFile(fromPath, from); err != nil {
 		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusInternalServerError)
 		return
 	}
 	ensureStoreRoom(from)
 	if req.Reverse {
-		rev, revPath, err := readRoomFileByID(req.To)
-		if err == nil {
+		rev := to
+		revPath := toPath
+		if rev != nil && revPath != "" {
 			rd := strings.TrimSpace(req.ReverseDir)
 			if rd == "" {
 				rd = from.Name
 			}
 			rev.Exits = addOrReplaceExit(rev.Exits, roomEditorExit{Direction: rd, To: req.From})
+			ensureMoveObjectForExit(rev, req.From, rd, from.Name)
 			_ = writeRoomFile(revPath, rev)
 			ensureStoreRoom(rev)
 		}

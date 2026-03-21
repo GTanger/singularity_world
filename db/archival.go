@@ -155,3 +155,115 @@ func SetNpcNpcConversationSummary(entityIDA, entityIDB, summary string) error {
 	}
 	return store.Default.SetNpcNpcSummary(entityIDA, entityIDB, summary)
 }
+
+// GetNpcNpcThread 取得兩 NPC 的 thread 狀態；不存在回傳 nil。
+func GetNpcNpcThread(entityIDA, entityIDB string) *store.NpcThread {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.GetNpcThread(entityIDA, entityIDB)
+}
+
+// SetNpcNpcThread 寫入兩 NPC 的 thread 狀態。
+func SetNpcNpcThread(entityIDA, entityIDB string, t *store.NpcThread) error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.SetNpcThread(entityIDA, entityIDB, t)
+}
+
+// DeleteNpcNpcThread 刪除兩 NPC 的 thread 狀態。
+func DeleteNpcNpcThread(entityIDA, entityIDB string) error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.DeleteNpcThread(entityIDA, entityIDB)
+}
+
+// GetNpcNpcDyad 取得兩 NPC 的關係狀態；不存在回傳預設值。
+func GetNpcNpcDyad(entityIDA, entityIDB string) *store.NpcDyad {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.GetNpcDyad(entityIDA, entityIDB)
+}
+
+// SetNpcNpcDyad 寫入兩 NPC 的關係狀態。
+func SetNpcNpcDyad(entityIDA, entityIDB string, d *store.NpcDyad) error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.SetNpcDyad(entityIDA, entityIDB, d)
+}
+
+// UpsertNpcRumor 寫入/更新一條傳聞（P4）。
+func UpsertNpcRumor(r *store.NpcRumor) error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.UpsertNpcRumor(r)
+}
+
+// TopNpcRumors 取 room/zone 最相關 topK 傳聞（P4）。
+func TopNpcRumors(roomID, zone string, nowUnix int64, topK int) []store.NpcRumor {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.TopNpcRumors(roomID, zone, nowUnix, topK)
+}
+
+// DecayNpcRumors 衰減並移除過期傳聞（P4）。
+func DecayNpcRumors(nowUnix int64) error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.DecayNpcRumors(nowUnix)
+}
+
+// MarkRumorUsedByText 標記傳聞被引用（P8）。
+func MarkRumorUsedByText(text string, nowUnix int64) error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.MarkRumorUsedByText(text, nowUnix)
+}
+
+// PenalizeRumorByText 對衝突傳聞做降權與短期封鎖（P9）。
+func PenalizeRumorByText(text string, nowUnix int64, reason string) error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.PenalizeRumorByText(text, nowUnix, reason)
+}
+
+// DebugNpcRumors 回傳 room/zone 相關傳聞（含封鎖中）供 debug 使用（P10）。
+func DebugNpcRumors(roomID, zone string, nowUnix int64, limit int) []store.NpcRumor {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.DebugNpcRumors(roomID, zone, nowUnix, limit)
+}
+
+// ResetNpcRumorSignals 清空傳聞的動態訊號（P11）。
+func ResetNpcRumorSignals() error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.ResetNpcRumorSignals()
+}
+
+// BuildNpcRumorDigest 以目前傳聞池建立摘要（P6）。
+func BuildNpcRumorDigest(nowUnix int64) error {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.BuildNpcRumorDigest(nowUnix)
+}
+
+// GetNpcRumorDigest 取得最近一次傳聞摘要（P6）。
+func GetNpcRumorDigest() *store.NpcRumorDigest {
+	if store.Default == nil {
+		return nil
+	}
+	return store.Default.GetNpcRumorDigest()
+}

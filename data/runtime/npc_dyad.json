@@ -1,0 +1,272 @@
+{
+  "dyads": {
+    "npc_dh7ljyggbjh5|npc_dh7llhl1hpd9": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7llhl1hpd9",
+      "familiarity": 16,
+      "sentiment": -10,
+      "updated_at": 1774048836
+    },
+    "npc_dh7ljyggbjh5|npc_dh7ln0pmebvc": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7ln0pmebvc",
+      "familiarity": 14,
+      "sentiment": -1,
+      "updated_at": 1774050936
+    },
+    "npc_dh7ljyggbjh5|npc_dh7lok2gzenv": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7lok2gzenv",
+      "familiarity": 8,
+      "sentiment": 0,
+      "tags": [
+        "同職場"
+      ],
+      "updated_at": 1774022886
+    },
+    "npc_dh7ljyggbjh5|npc_dh7lq371wwmu": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7lq371wwmu",
+      "familiarity": 18,
+      "sentiment": -1,
+      "tags": [
+        "同職場"
+      ],
+      "updated_at": 1774022286
+    },
+    "npc_dh7ljyggbjh5|npc_dh7lub7op7n9": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7lub7op7n9",
+      "familiarity": 12,
+      "sentiment": -1,
+      "updated_at": 1774040436
+    },
+    "npc_dh7ljyggbjh5|npc_dh7lvuc9y0a1": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7lvuc9y0a1",
+      "familiarity": 18,
+      "sentiment": 3,
+      "updated_at": 1774040286
+    },
+    "npc_dh7ljyggbjh5|npc_dh7lxdp40upk": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7lxdp40upk",
+      "familiarity": 4,
+      "sentiment": 0,
+      "updated_at": 1774050486
+    },
+    "npc_dh7ljyggbjh5|npc_dh7lywtpacw1": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7lywtpacw1",
+      "familiarity": 38,
+      "sentiment": -2,
+      "updated_at": 1774050092
+    },
+    "npc_dh7ljyggbjh5|npc_dh7m0fyaaldh": {
+      "a_id": "npc_dh7ljyggbjh5",
+      "b_id": "npc_dh7m0fyaaldh",
+      "familiarity": 24,
+      "sentiment": -3,
+      "updated_at": 1774046286
+    },
+    "npc_dh7llhl1hpd9|npc_dh7ln0pmebvc": {
+      "a_id": "npc_dh7llhl1hpd9",
+      "b_id": "npc_dh7ln0pmebvc",
+      "familiarity": 14,
+      "sentiment": 3,
+      "updated_at": 1774047336
+    },
+    "npc_dh7llhl1hpd9|npc_dh7lok2gzenv": {
+      "a_id": "npc_dh7llhl1hpd9",
+      "b_id": "npc_dh7lok2gzenv",
+      "familiarity": 4,
+      "sentiment": 0,
+      "updated_at": 1774022136
+    },
+    "npc_dh7llhl1hpd9|npc_dh7lub7op7n9": {
+      "a_id": "npc_dh7llhl1hpd9",
+      "b_id": "npc_dh7lub7op7n9",
+      "familiarity": 6,
+      "sentiment": 1,
+      "updated_at": 1774047636
+    },
+    "npc_dh7llhl1hpd9|npc_dh7lvuc9y0a1": {
+      "a_id": "npc_dh7llhl1hpd9",
+      "b_id": "npc_dh7lvuc9y0a1",
+      "familiarity": 22,
+      "sentiment": -6,
+      "updated_at": 1774049286
+    },
+    "npc_dh7llhl1hpd9|npc_dh7lxdp40upk": {
+      "a_id": "npc_dh7llhl1hpd9",
+      "b_id": "npc_dh7lxdp40upk",
+      "familiarity": 20,
+      "sentiment": -11,
+      "updated_at": 1774049436
+    },
+    "npc_dh7llhl1hpd9|npc_dh7lywtpacw1": {
+      "a_id": "npc_dh7llhl1hpd9",
+      "b_id": "npc_dh7lywtpacw1",
+      "familiarity": 44,
+      "sentiment": 2,
+      "updated_at": 1774050636
+    },
+    "npc_dh7llhl1hpd9|npc_dh7m0fyaaldh": {
+      "a_id": "npc_dh7llhl1hpd9",
+      "b_id": "npc_dh7m0fyaaldh",
+      "familiarity": 10,
+      "sentiment": 1,
+      "updated_at": 1774038786
+    },
+    "npc_dh7ln0pmebvc|npc_dh7lok2gzenv": {
+      "a_id": "npc_dh7ln0pmebvc",
+      "b_id": "npc_dh7lok2gzenv",
+      "familiarity": 2,
+      "sentiment": 0,
+      "updated_at": 1774019210
+    },
+    "npc_dh7ln0pmebvc|npc_dh7lq371wwmu": {
+      "a_id": "npc_dh7ln0pmebvc",
+      "b_id": "npc_dh7lq371wwmu",
+      "familiarity": 4,
+      "sentiment": 0,
+      "updated_at": 1774022586
+    },
+    "npc_dh7ln0pmebvc|npc_dh7lub7op7n9": {
+      "a_id": "npc_dh7ln0pmebvc",
+      "b_id": "npc_dh7lub7op7n9",
+      "familiarity": 14,
+      "sentiment": -1,
+      "updated_at": 1774043886
+    },
+    "npc_dh7ln0pmebvc|npc_dh7lvuc9y0a1": {
+      "a_id": "npc_dh7ln0pmebvc",
+      "b_id": "npc_dh7lvuc9y0a1",
+      "familiarity": 12,
+      "sentiment": -1,
+      "updated_at": 1774042086
+    },
+    "npc_dh7ln0pmebvc|npc_dh7lxdp40upk": {
+      "a_id": "npc_dh7ln0pmebvc",
+      "b_id": "npc_dh7lxdp40upk",
+      "familiarity": 38,
+      "sentiment": 3,
+      "updated_at": 1774049136
+    },
+    "npc_dh7ln0pmebvc|npc_dh7lywtpacw1": {
+      "a_id": "npc_dh7ln0pmebvc",
+      "b_id": "npc_dh7lywtpacw1",
+      "familiarity": 4,
+      "sentiment": 0,
+      "updated_at": 1774027536
+    },
+    "npc_dh7ln0pmebvc|npc_dh7m0fyaaldh": {
+      "a_id": "npc_dh7ln0pmebvc",
+      "b_id": "npc_dh7m0fyaaldh",
+      "familiarity": 18,
+      "sentiment": 1,
+      "updated_at": 1774044336
+    },
+    "npc_dh7lok2gzenv|npc_dh7lq371wwmu": {
+      "a_id": "npc_dh7lok2gzenv",
+      "b_id": "npc_dh7lq371wwmu",
+      "familiarity": 42,
+      "sentiment": 1,
+      "tags": [
+        "同職場"
+      ],
+      "updated_at": 1774049586
+    },
+    "npc_dh7lq371wwmu|npc_dh7lub7op7n9": {
+      "a_id": "npc_dh7lq371wwmu",
+      "b_id": "npc_dh7lub7op7n9",
+      "familiarity": 2,
+      "sentiment": 0,
+      "updated_at": 1774021086
+    },
+    "npc_dh7lq371wwmu|npc_dh7lxdp40upk": {
+      "a_id": "npc_dh7lq371wwmu",
+      "b_id": "npc_dh7lxdp40upk",
+      "familiarity": 2,
+      "sentiment": 0,
+      "updated_at": 1774021236
+    },
+    "npc_dh7lq371wwmu|npc_dh7lywtpacw1": {
+      "a_id": "npc_dh7lq371wwmu",
+      "b_id": "npc_dh7lywtpacw1",
+      "familiarity": 2,
+      "sentiment": -2,
+      "updated_at": 1774021386
+    },
+    "npc_dh7lub7op7n9|npc_dh7lvuc9y0a1": {
+      "a_id": "npc_dh7lub7op7n9",
+      "b_id": "npc_dh7lvuc9y0a1",
+      "familiarity": 26,
+      "sentiment": 0,
+      "updated_at": 1774051086
+    },
+    "npc_dh7lub7op7n9|npc_dh7lxdp40upk": {
+      "a_id": "npc_dh7lub7op7n9",
+      "b_id": "npc_dh7lxdp40upk",
+      "familiarity": 12,
+      "sentiment": -2,
+      "updated_at": 1774034586
+    },
+    "npc_dh7lub7op7n9|npc_dh7lywtpacw1": {
+      "a_id": "npc_dh7lub7op7n9",
+      "b_id": "npc_dh7lywtpacw1",
+      "familiarity": 16,
+      "sentiment": 1,
+      "updated_at": 1774050150
+    },
+    "npc_dh7lub7op7n9|npc_dh7m0fyaaldh": {
+      "a_id": "npc_dh7lub7op7n9",
+      "b_id": "npc_dh7m0fyaaldh",
+      "familiarity": 16,
+      "sentiment": 1,
+      "updated_at": 1774050336
+    },
+    "npc_dh7lvuc9y0a1|npc_dh7lxdp40upk": {
+      "a_id": "npc_dh7lvuc9y0a1",
+      "b_id": "npc_dh7lxdp40upk",
+      "familiarity": 16,
+      "sentiment": -1,
+      "updated_at": 1774045836
+    },
+    "npc_dh7lvuc9y0a1|npc_dh7lywtpacw1": {
+      "a_id": "npc_dh7lvuc9y0a1",
+      "b_id": "npc_dh7lywtpacw1",
+      "familiarity": 18,
+      "sentiment": 10,
+      "updated_at": 1774046136
+    },
+    "npc_dh7lvuc9y0a1|npc_dh7m0fyaaldh": {
+      "a_id": "npc_dh7lvuc9y0a1",
+      "b_id": "npc_dh7m0fyaaldh",
+      "familiarity": 42,
+      "sentiment": -3,
+      "updated_at": 1774050786
+    },
+    "npc_dh7lxdp40upk|npc_dh7lywtpacw1": {
+      "a_id": "npc_dh7lxdp40upk",
+      "b_id": "npc_dh7lywtpacw1",
+      "familiarity": 20,
+      "sentiment": -1,
+      "updated_at": 1774044186
+    },
+    "npc_dh7lxdp40upk|npc_dh7m0fyaaldh": {
+      "a_id": "npc_dh7lxdp40upk",
+      "b_id": "npc_dh7m0fyaaldh",
+      "familiarity": 28,
+      "sentiment": 4,
+      "updated_at": 1774051236
+    },
+    "npc_dh7lywtpacw1|npc_dh7m0fyaaldh": {
+      "a_id": "npc_dh7lywtpacw1",
+      "b_id": "npc_dh7m0fyaaldh",
+      "familiarity": 16,
+      "sentiment": -2,
+      "updated_at": 1774036686
+    }
+  }
+}

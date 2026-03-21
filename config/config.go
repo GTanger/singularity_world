@@ -28,8 +28,14 @@ type Server struct {
 	OllamaBaseURL        string        // NPC 對話 LLM（Ollama）位址；空＝不呼叫，走 fallback 模板
 	OllamaModel          string        // Ollama 模型名，例如 qwen-4b-slim；空且 BaseURL 有設時預設 qwen2.5:3b
 	// 10.15 求職撮合
-	SeekJobMgThreshold   int  // 鎂低於此值才參與撮合；0＝沿用程式常數 50
-	JobMatchWhenStable   bool // 為 true 時，無職且鎂≥閾值者也有機率參與撮合（安定需求）
+	SeekJobMgThreshold int  // 鎂低於此值才參與撮合；0＝沿用程式常數 50
+	JobMatchWhenStable bool // 為 true 時，無職且鎂≥閾值者也有機率參與撮合（安定需求）
+	// NPC↔NPC 對話（可選；0 表示用程式內建預設，不必設定）
+	NpcNpcQualityMaxRunes           int // 單句品質閘門最大字數（rune）；0＝52
+	NpcNpcSocialTickMinWithPlayer   int // 有玩家同房時，隨機閒聊計時器重置下限（tick）；0＝115
+	NpcNpcSocialTickExtraWithPlayer int // 加在 min 上的亂數上界（不含）；0＝75 → 實際 min~min+extra-1
+	NpcNpcSocialTickMinNoPlayer     int // 無玩家在线時計時器下限；0＝80
+	NpcNpcSocialTickExtraNoPlayer   int // 無玩家時亂數上界（不含）；0＝40
 }
 
 // Design 為第一版可做清單 1.2.2 設計常數：1 格＝1m＝30px、角色圓 24px、地形字 30px、格線隱藏。供前端對齊。
@@ -109,10 +115,10 @@ func DefaultServer() Server {
 		SessionRetainMinutes: 10,
 		GameTimeEpochUnix:    gameTimeEpoch,
 		GameTimeScale:        24,
-		NPCPoolSize:          500,
+		NPCPoolSize:          10,
 		NPCSpawnIntervalSec:  120,
 		OllamaBaseURL:        "http://127.0.0.1:11434",
-		OllamaModel:          "qwen-4b-slim",
+		OllamaModel:          "sorc/qwen3.5-claude-4.6-opus:2b",
 	}
 	if os.Getenv("OLLAMA_DISABLE") == "1" || os.Getenv("OLLAMA_DISABLE") == "true" {
 		cfg.OllamaBaseURL = ""
@@ -144,6 +150,31 @@ func DefaultServer() Server {
 	}
 	if os.Getenv("JOB_MATCH_WHEN_STABLE") == "1" || strings.ToLower(os.Getenv("JOB_MATCH_WHEN_STABLE")) == "true" {
 		cfg.JobMatchWhenStable = true
+	}
+	if s := os.Getenv("NPC_NPC_QUALITY_MAX_RUNES"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n > 0 {
+			cfg.NpcNpcQualityMaxRunes = n
+		}
+	}
+	if s := os.Getenv("NPC_NPC_SOCIAL_TICK_MIN_WITH_PLAYER"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n > 0 {
+			cfg.NpcNpcSocialTickMinWithPlayer = n
+		}
+	}
+	if s := os.Getenv("NPC_NPC_SOCIAL_TICK_EXTRA_WITH_PLAYER"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n > 0 {
+			cfg.NpcNpcSocialTickExtraWithPlayer = n
+		}
+	}
+	if s := os.Getenv("NPC_NPC_SOCIAL_TICK_MIN_NO_PLAYER"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n > 0 {
+			cfg.NpcNpcSocialTickMinNoPlayer = n
+		}
+	}
+	if s := os.Getenv("NPC_NPC_SOCIAL_TICK_EXTRA_NO_PLAYER"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n > 0 {
+			cfg.NpcNpcSocialTickExtraNoPlayer = n
+		}
 	}
 	return cfg
 }

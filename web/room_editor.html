@@ -16,6 +16,7 @@
     button.active { border-color:var(--acc); box-shadow:0 0 0 1px var(--acc) inset; }
     button.danger { border-color:#5c1d26; color:#fecdd3; }
     .hint { color:var(--muted); font-size:12px; line-height:1.5; margin:8px 0; }
+    kbd { font-family: ui-monospace, monospace; font-size:11px; padding:1px 5px; border:1px solid var(--line); border-radius:4px; background:#0d1220; color:var(--text); }
     .section { border-top:1px solid var(--line); margin-top:10px; padding-top:10px; }
     .section h3 { margin:0 0 8px; font-size:14px; }
     .field { display:flex; flex-direction:column; gap:4px; margin:8px 0; }
@@ -115,7 +116,24 @@
         <button id="mode-two">雙向連線</button>
         <button id="mode-off" class="active">一般拖曳</button>
       </div>
-      <div class="hint">拖曳房格可移動。切到連線模式後，桌機可從 A 房格拖到 B 房格建線；手機可「點起點、再點終點」建線。系統會依相對位置自動預設東西南北方向（可覆寫），雙向會自動建立 A↔B。一般模式可在空白處框選多房格一起移動；右鍵線段可刪線。地圖區可直接滾輪縮放；中鍵按住可平移視窗。</div>
+      <div class="hint">地圖上可拖線連房（單向／雙向模式），或<strong>下方用表單「新增路徑」</strong>（與拖線效果相同）。一般模式可框選多房格、右鍵刪線；滾輪縮放、中鍵平移。</div>
+
+      <div class="section">
+        <h3>新增路徑（出口 + 遊戲內移動）</h3>
+        <p class="hint">建立 <code>exits</code>，並在起點（與雙向時的終點）自動寫入可 <code>Move</code> 的物件與 <code>move_to_room_id</code>。方向名稱會成為物件 <code>name</code>，請與房間描述裡的〔〕一致。</p>
+        <div class="field">
+          <label>起點房間</label>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <select id="path-from" style="flex:1;min-width:0;"></select>
+            <button type="button" id="path-use-selected" title="使用左側目前選取的房格">帶入選取</button>
+          </div>
+        </div>
+        <div class="field"><label>終點房間</label><select id="path-to"></select></div>
+        <div class="field"><label>此端方向名稱（物件顯示名／〔〕）</label><input id="path-dir" type="text" placeholder="例：浮生、東、北小門" /></div>
+        <div class="field"><label><input type="checkbox" id="path-reverse" checked /> 同時建立反向路徑（終點↔起點）</label></div>
+        <div class="field" id="path-rev-wrap"><label>反向方向名稱</label><input id="path-reverse-dir" type="text" placeholder="留空則用起點房「名稱」" /></div>
+        <div class="toolbar"><button type="button" id="btn-add-path" style="border-color:#1e3a5f;">建立路徑</button></div>
+      </div>
 
       <div class="section">
         <h3>房間資料</h3>
@@ -141,6 +159,7 @@
         <div class="toolbar" style="margin-top:8px;">
           <button id="btn-save" style="border-color:#14532d;">儲存房間</button>
         </div>
+        <p class="hint" style="margin-top:6px;">快捷鍵：<kbd>Ctrl</kbd>+<kbd>S</kbd>（macOS：<kbd>⌘</kbd>+<kbd>S</kbd>）與按鈕相同，會儲存目前選取的房間。</p>
       </div>
     </aside>
 
@@ -157,6 +176,6 @@
     <button id="m-panel">面板</button>
   </div>
 
-  <script src="/room_editor.js?v=32"></script>
+  <script src="/room_editor.js?v=0.11.0"></script>
 </body>
 </html>

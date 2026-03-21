@@ -1,6 +1,47 @@
 {
   "id": "singularity_life",
   "name": "界壁",
-  "description": "",
-  "zone": "street4"
+  "description": "視野被純粹的闃黑吞沒。沒有上下，沒有遠近，連同對軀體的感知與空間座標都被徹底切斷。 虛無的盡頭，一抹微弱卻刺目的［熾白］悄然浮現。",
+  "zone": "street4",
+  "exits": [
+    {
+      "direction": "西",
+      "to": "street4zone"
+    }
+  ],
+  "objects": [
+    {
+      "id": "start_light",
+      "name": "熾白",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "白...四周無聲亮起了繁星般的亮點。它們環繞著核心，抹除了距離的透視，宛如一面巨大而無形的羅盤，在黑暗中精確地列出三百六十枚發光的刻度［。。。］"
+      }
+    },
+    {
+      "id": "start_2",
+      "name": "。。。",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "靜止只維持了一瞬。一股無從抗拒的暴烈引力驟然爆發，將意識連同軀殼猛烈拖拽，朝著那團熾白瘋狂［墜落］。"
+      }
+    },
+    {
+      "id": "4steet_go",
+      "name": "墜落",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "穿過重壓，定眼發現置身陰影中。"
+      }
+    }
+  ]
 }

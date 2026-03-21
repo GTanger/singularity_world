@@ -352,11 +352,11 @@ func parseActivatedNodes(raw string) []string {
 // sendMeWithStatus 同 sendMe，並帶入命途／本源／星盤／裝備欄位；ent 可為 nil。
 func sendMeWithStatus(c *Client, ent *entity.Character, playerID, roomID, roomName string, vit, qi, dex int, rm db.ResourceMaxes, database *sql.DB) {
 	msg := MeMsg{
-		Type:       "me", PlayerID: playerID, RoomID: roomID, RoomName: roomName,
-		Vit:        vit, Qi: qi, Dex: dex,
-		HpCur:      int(rm.HpCur), HpMax: int(rm.HpMax),
-		InnerCur:   int(rm.InnerCur), InnerMax: int(rm.InnerMax),
-		SpiritCur:  int(rm.SpiritCur), SpiritMax: int(rm.SpiritMax),
+		Type: "me", PlayerID: playerID, RoomID: roomID, RoomName: roomName,
+		Vit: vit, Qi: qi, Dex: dex,
+		HpCur: int(rm.HpCur), HpMax: int(rm.HpMax),
+		InnerCur: int(rm.InnerCur), InnerMax: int(rm.InnerMax),
+		SpiritCur: int(rm.SpiritCur), SpiritMax: int(rm.SpiritMax),
 		StaminaCur: int(rm.StaminaCur), StaminaMax: int(rm.StaminaMax),
 	}
 	if ent != nil {
@@ -527,7 +527,7 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 			c.Send <- mustJSON(out)
 			// Talk 的長期記憶僅由此處寫入：逾時 2 分鐘後下一句 Talk 時，上一場整場壓成 1～3 條 consolidation 寫入 archival（見 conversation_buffer.go）
 			FlushConversationAndAppend(c.PlayerID, targetID, playerInput, npcReply, now)
-			store.UpdateLastTalkAt(c.PlayerID) // 同房玩家優先 LLM：有對話行為時不觸發 NPC 間對話
+			store.RecordPlayerTalkForRoomEcho(c.PlayerID, playerRoom, playerInput) // 同房玩家優先 LLM＋記錄對白餘音供 NPC 閒聊呼應
 			_ = db.AdjustFavorability(database, targetID, c.PlayerID, db.FavTalk)
 		case "Subdue", "Slay":
 			attacker, _ := db.GetEntity(database, c.PlayerID)
@@ -743,7 +743,7 @@ func handleDoAction(c *Client, msg *ClientMsg, database *sql.DB, cfg config.Serv
 					Type: "action_result", Action: "Trade",
 					TargetID: target.ID, TargetName: tradeTargetName,
 					Narrative: fmt.Sprintf("【%s】搖頭：至少要 %d 鎂才肯點頭。", tradeTargetName, pending.FloorMg),
-					Success: true,
+					Success:   true,
 				})
 				break
 			}
@@ -1158,7 +1158,7 @@ func buildTalkNarrative(database *sql.DB, playerRoom string, target *entity.Char
 	rng := rand.New(rand.NewSource(fallbackSeed))
 	idx := rng.Intn(len(responses))
 	if personality != nil {
-		shift := int(personality.Boldness * float64(len(responses) / 2))
+		shift := int(personality.Boldness * float64(len(responses)/2))
 		// Sensitivity 高→偏後（較多話／熱絡感）、低→偏前（較短／冷淡）
 		if personality.Sensitivity > 0.6 {
 			shift += len(responses) / 4
@@ -1237,11 +1237,11 @@ func handleGetEntityStatus(c *Client, msg *ClientMsg, database *sql.DB) {
 		Qi:          ent.Qi,
 		Dex:         ent.Dex,
 		HpCur:       int(rm.HpCur), HpMax: int(rm.HpMax),
-		InnerCur:    int(rm.InnerCur), InnerMax: int(rm.InnerMax),
-		SpiritCur:   int(rm.SpiritCur), SpiritMax: int(rm.SpiritMax),
-		StaminaCur:  int(rm.StaminaCur), StaminaMax: int(rm.StaminaMax),
-		Magnesium:   magPtr,
-		IsSelf:      isSelf,
+		InnerCur: int(rm.InnerCur), InnerMax: int(rm.InnerMax),
+		SpiritCur: int(rm.SpiritCur), SpiritMax: int(rm.SpiritMax),
+		StaminaCur: int(rm.StaminaCur), StaminaMax: int(rm.StaminaMax),
+		Magnesium: magPtr,
+		IsSelf:    isSelf,
 	}
 	if ent.DisplayTitle != "" {
 		status.DisplayTitle = ent.DisplayTitle

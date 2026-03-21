@@ -1,256 +1,2782 @@
 {
   "entries": [
     {
-      "entity_id": "npc_dh3911jsvh64",
-      "content": "玩家說：（搭話）；NPC回：npc_dh3911jsvh64說道：「你好，有什麼事嗎？」",
-      "tag": "event",
-      "created_at": 1773572683
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：淡然掛上口罩，沒有看他：「你的腳步好慢，連續兩天都這樣。」",
+      "tag": "npc_npc",
+      "created_at": 1774018902
     },
     {
-      "entity_id": "npc_dh3911jsvh64",
-      "content": "玩家說：（搭話）；NPC回：npc_dh3911jsvh64說道：「你好，有什麼事嗎？」",
-      "tag": "event",
-      "created_at": 1773572692
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：這邊可不錯，有機會再來聊天嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774018919
     },
     {
-      "entity_id": "npc_dh39vpdps13i",
-      "content": "玩家說：（搭話）；NPC回：npc_dh39vpdps13i說道：「別擋路。」",
-      "tag": "event",
-      "created_at": 1773572714
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：這邊最近來的客人好少，你有沒有想到要轉到別的街口去？",
+      "tag": "npc_npc",
+      "created_at": 1774018944
     },
     {
-      "entity_id": "npc_dh3auylddd5l",
-      "content": "玩家說：（搭話）；NPC回：npc_dh3auylddd5l說道：「我只是個路人，別找我麻煩。」",
-      "tag": "event",
-      "created_at": 1773574108
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與史梅對話：你這邊的野草好像有點被人撿盡了？",
+      "tag": "npc_npc",
+      "created_at": 1774019504
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我只是個路人，別找我麻煩。」",
-      "tag": "event",
-      "created_at": 1773574165
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與史梅對話：你這邊的野草還是沒人抄過嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774019524
     },
     {
-      "entity_id": "npc_dh37jtho4pqi",
-      "content": "玩家說：（搭話）；NPC回：龍慧志說道：「這裡最近不太平靜，你小心點。」",
-      "tag": "event",
-      "created_at": 1773574171
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與劉紅對話：沒話找話，突然看看你的背包：",
+      "tag": "npc_npc",
+      "created_at": 1774019737
     },
     {
-      "entity_id": "npc_dh3afmrpwi7u",
-      "content": "玩家說：（搭話）；NPC回：劉軍說道：「這裡最近不太平靜，你小心點。」",
-      "tag": "event",
-      "created_at": 1773574175
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與袁寧對話：你這邊也有結算日嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774020186
     },
     {
-      "entity_id": "npc_dh398pjxpu46",
-      "content": "玩家說：（搭話）；NPC回：龔志麗說道：「這裡最近不太平靜，你小心點。」",
-      "tag": "event",
-      "created_at": 1773574178
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：……嗯，結算日那事確實讓人頭疼。",
+      "tag": "npc_npc",
+      "created_at": 1774020338
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我只是個路人，別找我麻煩。」",
-      "tag": "event",
-      "created_at": 1773574180
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：你最近是不是又在四路街口吃虧了？",
+      "tag": "npc_npc",
+      "created_at": 1774020349
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我只是個路人，別找我麻煩。」",
-      "tag": "event",
-      "created_at": 1773574185
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與服務生對話：昨晚結算日，食費真貴。",
+      "tag": "npc_npc",
+      "created_at": 1774022587
     },
     {
-      "entity_id": "npc_dh37jtho4pqi",
-      "content": "玩家說：（搭話）；NPC回：龍慧志說道：「這裡最近不太平靜，你小心點。」",
-      "tag": "event",
-      "created_at": 1773574187
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：嗯，最近結算日費高，你常去哪裡買食？",
+      "tag": "npc_npc",
+      "created_at": 1774022737
     },
     {
-      "entity_id": "npc_dh37jtho4pqi",
-      "content": "玩家說：（搭話）；NPC回：龍慧志說道：「這裡最近不太平靜，你小心點。」",
-      "tag": "event",
-      "created_at": 1773574218
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與服務生對話：唉，結算日也忙得很，每家都亂七八糟。",
+      "tag": "npc_npc",
+      "created_at": 1774023637
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我只是個路人，別找我麻煩。」",
-      "tag": "event",
-      "created_at": 1773574588
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與向偉對話：這天氣實在不對，連天都打算起來鬧氣似的。",
+      "tag": "npc_npc",
+      "created_at": 1774024087
     },
     {
-      "entity_id": "npc_dh38qb76wifs",
-      "content": "玩家說：（搭話）；NPC回：賈雅平說道：「有事？」",
-      "tag": "event",
-      "created_at": 1773575051
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：最近結算日費高。",
+      "tag": "npc_npc",
+      "created_at": 1774024687
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「我沒什麼好說的。」",
-      "tag": "event",
-      "created_at": 1773575055
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與史梅對話：在街角換班，帳我對過了。",
+      "tag": "npc_npc",
+      "created_at": 1774025736
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「你問什麼？」",
-      "tag": "event",
-      "created_at": 1773575058
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與劉紅對話：四路街口，傍晚。",
+      "tag": "npc_npc",
+      "created_at": 1774027536
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「路過的人多了，你算一個。」",
-      "tag": "event",
-      "created_at": 1773575064
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：夜裡四路街口，四方交界各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774028587
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「沒。」",
-      "tag": "event",
-      "created_at": 1773575067
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與史梅對話：嗯，結算日食費高嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774028887
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「別惹事。」",
-      "tag": "event",
-      "created_at": 1773575069
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與服務生對話：嗯，今天換班。",
+      "tag": "npc_npc",
+      "created_at": 1774029037
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「路過。」",
-      "tag": "event",
-      "created_at": 1773575072
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與金玲對話：金玲，你今晚打算去哪？",
+      "tag": "npc_npc",
+      "created_at": 1774029337
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「嗯哼。」",
-      "tag": "event",
-      "created_at": 1773575075
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：嗯，街景不錯，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774032336
     },
     {
-      "entity_id": "npc_dh37of21b3p6",
-      "content": "玩家說：（搭話）；NPC回：方蘭明說道：「這兒就這樣。」",
-      "tag": "event",
-      "created_at": 1773575085
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：嗯，街景不錯，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774032937
     },
     {
-      "entity_id": "npc_dh3ah5waver6",
-      "content": "玩家說：（搭話）；NPC回：袁美俊說道：「嗯。」",
-      "tag": "event",
-      "created_at": 1773575091
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：嗯，街景不錯，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774034436
     },
     {
-      "entity_id": "npc_dh3ah5waver6",
-      "content": "玩家說：你好；NPC回：袁美俊說道：「有緣再聊，先走了。」",
-      "tag": "event",
-      "created_at": 1773576416
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與向偉對話：這天氣實在不對，連天都打算起來鬧氣似的。",
+      "tag": "npc_npc",
+      "created_at": 1774036237
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：你好；NPC回：司空偉說道：「隨便聊聊可以。」",
-      "tag": "event",
-      "created_at": 1773576449
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與向偉對話：這天氣實在不對，連天都打算起來鬧氣似的。",
+      "tag": "npc_npc",
+      "created_at": 1774036987
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：請問；NPC回：司空偉說道：「路過的人不少。」",
-      "tag": "event",
-      "created_at": 1773576458
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：好，四路街口風大，小心滑倒。",
+      "tag": "npc_npc",
+      "created_at": 1774037586
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「最近生意不好做啊。」",
-      "tag": "event",
-      "created_at": 1773576474
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與向偉對話：別說了，我還沒錢吃飯的份兒，更別說賴上別人。",
+      "tag": "npc_npc",
+      "created_at": 1774038637
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：（搭話）；NPC回：司空偉說道：「別惹事。」",
-      "tag": "event",
-      "created_at": 1773576482
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與金玲對話：四路街口，各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774038936
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：我想住宿；NPC回：司空偉說道：「這條街就這樣，熱鬧歸熱鬧，小心點。」",
-      "tag": "event",
-      "created_at": 1773576496
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：嗯，好，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774039086
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：你好；NPC回：哎，這客棧裡就沒人跟我說話了，你也夠意思，直接開門見山問好！",
-      "tag": "event",
-      "created_at": 1773578579
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與史梅對話：嗯，結算日食費高嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774039836
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：因為就你站這最久；NPC回：嫌我擋路？滾開點！本少爺在這守著規矩呢，沒得你這群鼠輩來指手畫腳！",
-      "tag": "event",
-      "created_at": 1773578611
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：嗯，好，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774040136
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：誰嫌你擋路了，除非你躺下；NPC回：老子是來這鎮上喝酒的，不是讓你來掃地的！再敢把話說得那麼凶，別怪我不講禮數！",
-      "tag": "event",
-      "created_at": 1773578648
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與向偉對話：別說了，我還沒錢吃飯的份兒，更別說賴上別人。",
+      "tag": "npc_npc",
+      "created_at": 1774041187
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：你那麼凶幹嘛；NPC回：凶個屁！誰讓你們這些沒眼力見的小輩老是把銅板扔我這破招牌上，老子只是不想白嫖而已，懂不懂？",
-      "tag": "event",
-      "created_at": 1773578676
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與袁寧對話：嗯，附近生意不錯，不過你最近怎麼了？",
+      "tag": "npc_npc",
+      "created_at": 1774042087
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：哪裡有招牌，我沒看到；NPC回：招牌被俺擋住了！喏，這就是咱浮生客棧，別在那兒杵著了，進來喝口酒，俺跟你講個故事。",
-      "tag": "event",
-      "created_at": 1773578703
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與服務生對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774042536
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：我又來了；NPC回：哎，又來了？今兒個這酒……是不是有點貴啊。",
-      "tag": "event",
-      "created_at": 1773586422
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與金玲對話：四路街口，各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774043136
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：不付錢就不用錢；NPC回：客官這嘴真夠毒的，可这浮生客棧規矩是死的，人是我啊！",
-      "tag": "event",
-      "created_at": 1773586437
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：四路街口風大，小心滑倒。",
+      "tag": "npc_npc",
+      "created_at": 1774043586
     },
     {
-      "entity_id": "npc_dh3ckciiuo6v",
-      "content": "玩家說：你好；NPC回：這客套話倒是不打緊，但來我這兒找什麼麻煩？還是真心想聽點新鮮事？",
-      "tag": "event",
-      "created_at": 1773589283
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與史梅對話：嗯，結算日食費高嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774043886
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：晚上好；NPC回：晚上好？這會兒天都黑了，快把錢準備好了，本老闆要開始收賬了！",
-      "tag": "event",
-      "created_at": 1773589322
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與向偉對話：別說了，我還沒錢吃飯的份兒，更別說賴上別人。",
+      "tag": "npc_npc",
+      "created_at": 1774044337
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：兩袖清風；NPC回：哎哟喂，聽這話頭，莫不是想讓我當個不食人間煙火的假神仙？在浮生客棧裡混口飯吃都夠累，別給我整這些虛的！",
-      "tag": "event",
-      "created_at": 1773589342
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與服務生對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774045086
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：我也虛頭巴腦的；NPC回：虚头巴脑也好，真金白银也罢，反正这浮生客栈里，没谁比我还清楚啥是鎂归零了。要不要来壶热酒？",
-      "tag": "event",
-      "created_at": 1773589365
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：嗯，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774046737
     },
     {
-      "entity_id": "試話",
-      "content": "玩家說：只要不用錢都好；NPC回：哼，真夠狠的！那本爺可記著，下次若再要白嫖，你就準備好挨我一拳吧！",
-      "tag": "event",
-      "created_at": 1773589386
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與服務生對話：嗯，先回班去。",
+      "tag": "npc_npc",
+      "created_at": 1774047186
     },
     {
-      "entity_id": "npc_dh3ip0c3ovkr",
-      "content": "玩家說：美女；NPC回：喂！想什麼呢？本大爷才不是那種能隨隨便便就被男人叫住就倒下的柔弱小鳥。",
-      "tag": "event",
-      "created_at": 1773637539
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與金玲對話：四路街口，各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774047336
+    },
+    {
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：四路街口風大，小心滑倒。",
+      "tag": "npc_npc",
+      "created_at": 1774047486
+    },
+    {
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與楊康偉對話：嗯，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774049136
+    },
+    {
+      "entity_id": "npc_dh7ln0pmebvc",
+      "content": "與服務生對話：街燈昏黃，四路街口夜色深重。",
+      "tag": "npc_npc",
+      "created_at": 1774050936
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：你這手紙還沒收好，要先帶回去吧？",
+      "tag": "npc_npc",
+      "created_at": 1774018857
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：你這手紙還沒收好，別亂跑了，等我拿完再說。",
+      "tag": "npc_npc",
+      "created_at": 1774018877
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：\"沒有，剛好我有事出門，這時候來問路也不錯。\"",
+      "tag": "npc_npc",
+      "created_at": 1774019031
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：別說了，明明就想把我這份份子撂下不理。",
+      "tag": "npc_npc",
+      "created_at": 1774019586
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與葉俊對話：還是要把這幾瓶先送給我，別讓我來搶時間找你。",
+      "tag": "npc_npc",
+      "created_at": 1774019887
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：我最近狀態糟到連飯都吃不下，你以為我們能像以前一樣？",
+      "tag": "npc_npc",
+      "created_at": 1774020291
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：我最近狀態糟到連飯都吃不下，你以為我們能像以前一樣……別說了，明明就想把我這份份…",
+      "tag": "npc_npc",
+      "created_at": 1774020337
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774020638
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與史梅對話：唉，真差點忘了我還給你留了那份酒底。",
+      "tag": "npc_npc",
+      "created_at": 1774021086
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與楊康偉對話：結算日食費高，你吃得起嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774021237
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與劉紅對話：好嘞，你忙著。最近結算日食費高，大家手頭都緊了。",
+      "tag": "npc_npc",
+      "created_at": 1774021387
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774021687
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：結算日你對過了沒？",
+      "tag": "npc_npc",
+      "created_at": 1774022287
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯，最近結算日讓人手頭更緊。",
+      "tag": "npc_npc",
+      "created_at": 1774022437
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與葉俊對話：是啊，今晚要還給老板了。",
+      "tag": "npc_npc",
+      "created_at": 1774022587
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：知道了，這下該開始換班了。",
+      "tag": "npc_npc",
+      "created_at": 1774023037
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯，辛苦你。",
+      "tag": "npc_npc",
+      "created_at": 1774024236
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：好嘞，那我先回班了。",
+      "tag": "npc_npc",
+      "created_at": 1774024837
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774025586
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯……知道了。",
+      "tag": "npc_npc",
+      "created_at": 1774026786
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯……知道了。",
+      "tag": "npc_npc",
+      "created_at": 1774027686
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯……知道了。」",
+      "tag": "npc_npc",
+      "created_at": 1774035336
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯……知道了。",
+      "tag": "npc_npc",
+      "created_at": 1774035786
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯……知道了。",
+      "tag": "npc_npc",
+      "created_at": 1774036536
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：今天怎麼沒睡好？",
+      "tag": "npc_npc",
+      "created_at": 1774037287
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯，那就好。",
+      "tag": "npc_npc",
+      "created_at": 1774042237
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯，那就好。",
+      "tag": "npc_npc",
+      "created_at": 1774043437
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯，那就好。」",
+      "tag": "npc_npc",
+      "created_at": 1774044937
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "content": "與服務生對話：嗯，那就好。",
+      "tag": "npc_npc",
+      "created_at": 1774049587
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：不置可否地換了個方向：「難道真的是天氣不對？這邊也有人走得快呢。」",
+      "tag": "npc_npc",
+      "created_at": 1774018902
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：聊天？我好像沒空，別提了。",
+      "tag": "npc_npc",
+      "created_at": 1774018919
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：「轉去哪？你又不算我家門口的客人，真說得出口來。”",
+      "tag": "npc_npc",
+      "created_at": 1774018944
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：你最近是不是又在四路街口吃虧了？",
+      "tag": "npc_npc",
+      "created_at": 1774020338
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯，結算日那事確實讓人頭疼，下次小心點。",
+      "tag": "npc_npc",
+      "created_at": 1774020349
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774020385
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與服務生對話：我付了錢。不過……這附近新來的修士好像有點怪。",
+      "tag": "npc_npc",
+      "created_at": 1774021237
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：你這身裝束……像要去結算日？",
+      "tag": "npc_npc",
+      "created_at": 1774021397
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：這身裝束……像要去結算日？",
+      "tag": "npc_npc",
+      "created_at": 1774021410
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：你這裡聊的話題真隨便，有話好說的嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774021895
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：在四路街口碰見你，今天帳我對過了，有問題再叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774022737
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯，先回班了，晚班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774024687
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：嗯……怕麻煩。今天也過得不好。",
+      "tag": "npc_npc",
+      "created_at": 1774025436
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與袁寧對話：嗯……結算日還遠嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774025887
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與劉紅對話：四路街口？先別急著看，我帶你看看。",
+      "tag": "npc_npc",
+      "created_at": 1774027087
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與袁寧對話：嗯，結算日還遠嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774028137
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：先回了，晚班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774028436
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯，先回班了，晚班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774028587
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：街角燈影搖曳，夜裡有點靜。",
+      "tag": "npc_npc",
+      "created_at": 1774029487
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與袁寧對話：嗯，結算日還遠嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774029637
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與史梅對話：沒關係，吃個宵夜暖暖身子。",
+      "tag": "npc_npc",
+      "created_at": 1774029937
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與劉紅對話：四路街口？先別急著看，我帶你看看。",
+      "tag": "npc_npc",
+      "created_at": 1774030237
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：嗯……怕麻煩。今天也過得不好。",
+      "tag": "npc_npc",
+      "created_at": 1774030836
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與劉紅對話：楊康偉",
+      "tag": "npc_npc",
+      "created_at": 1774032187
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯，先回班了，晚班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774032336
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯，四路街口風大，小心滑倒。",
+      "tag": "npc_npc",
+      "created_at": 1774032937
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與袁寧對話：嗯，結算日還遠嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774033087
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與服務生對話：櫃檯你盯一下。",
+      "tag": "npc_npc",
+      "created_at": 1774033837
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：先回了，晚班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774033987
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與劉紅對話：我知道。這天太熱了。",
+      "tag": "npc_npc",
+      "created_at": 1774034287
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與史梅對話：沒關係，吃個宵夜暖暖身子。",
+      "tag": "npc_npc",
+      "created_at": 1774034586
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與袁寧對話：嗯，結算日還遠嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774035037
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：先回了，晚班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774035186
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與劉紅對話：我知道。這天太熱了。",
+      "tag": "npc_npc",
+      "created_at": 1774035486
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯，街景不錯，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774037586
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：今天也過得不好。",
+      "tag": "npc_npc",
+      "created_at": 1774038036
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：四路街口風大，小心滑倒。",
+      "tag": "npc_npc",
+      "created_at": 1774039086
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與劉紅對話：知道，這天太熱了。",
+      "tag": "npc_npc",
+      "created_at": 1774039237
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：四路街口風大，小心滑倒。",
+      "tag": "npc_npc",
+      "created_at": 1774040136
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：早啊，四路街口。",
+      "tag": "npc_npc",
+      "created_at": 1774040887
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：早啊，西街敞柱高簷。",
+      "tag": "npc_npc",
+      "created_at": 1774041336
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：今天也過得不好。",
+      "tag": "npc_npc",
+      "created_at": 1774041636
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：早啊，西街敞柱高簷。",
+      "tag": "npc_npc",
+      "created_at": 1774043286
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯，好，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774043586
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與劉紅對話：知道，這天太熱了。",
+      "tag": "npc_npc",
+      "created_at": 1774044187
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與袁寧對話：嗯，結算日還遠嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774044786
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：楊康偉",
+      "tag": "npc_npc",
+      "created_at": 1774045687
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與袁寧對話：嗯，結算日還遠嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774045836
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：早啊，西街敞柱高簷。",
+      "tag": "npc_npc",
+      "created_at": 1774045986
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：四路街口風大，小心滑倒。",
+      "tag": "npc_npc",
+      "created_at": 1774046737
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：嗯，注意安全。",
+      "tag": "npc_npc",
+      "created_at": 1774047486
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：楊康偉",
+      "tag": "npc_npc",
+      "created_at": 1774047786
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：早啊，南街草木繁盛。",
+      "tag": "npc_npc",
+      "created_at": 1774048236
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與葉俊對話：街角有光西街敞柱高簷",
+      "tag": "npc_npc",
+      "created_at": 1774049136
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與金玲對話：哦？那裏有光嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774049436
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與服務生對話：楊：這裡很熱鬧啊。",
+      "tag": "npc_npc",
+      "created_at": 1774050487
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "content": "與向偉對話：早啊，南街草木繁盛。",
+      "tag": "npc_npc",
+      "created_at": 1774051236
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：不過既然你這時候在這裡，那麼你是否也覺得，今晚的下雨真算有點夠嚇人了？",
+      "tag": "npc_npc",
+      "created_at": 1774018857
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：這時候的下半場，還真好變數多呢，你是否也覺得？",
+      "tag": "npc_npc",
+      "created_at": 1774018877
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與金玲對話：你沒事就把東西放下來吧，還想還我錢嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774018987
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：我是服務生，最近過得不太好，你怎麼也如此冷清？",
+      "tag": "npc_npc",
+      "created_at": 1774020638
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：嗯，最近結算日讓人手頭更緊。",
+      "tag": "npc_npc",
+      "created_at": 1774020666
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：嗯…最近帳我對過了，有問題再叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774021454
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：喔…那我先去櫃檯盯一下，你忙你的。",
+      "tag": "npc_npc",
+      "created_at": 1774021536
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：嗯，最近結算日讓人手頭更緊。",
+      "tag": "npc_npc",
+      "created_at": 1774021837
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與金玲對話：沒那麼急，先吃一口再說。",
+      "tag": "npc_npc",
+      "created_at": 1774022137
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：知道了，這下該開始換班了。",
+      "tag": "npc_npc",
+      "created_at": 1774022437
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：喔…那我先去櫃檯盯一下，你忙你的。",
+      "tag": "npc_npc",
+      "created_at": 1774022887
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：嗯，最近結算日讓人手頭更緊。",
+      "tag": "npc_npc",
+      "created_at": 1774023037
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：好嘞，那我先回班了。",
+      "tag": "npc_npc",
+      "created_at": 1774024236
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：嗯，辛苦你。",
+      "tag": "npc_npc",
+      "created_at": 1774024837
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：你先回班吧。",
+      "tag": "npc_npc",
+      "created_at": 1774025586
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：先別急著走，這班我替你盯。",
+      "tag": "npc_npc",
+      "created_at": 1774026786
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：先別急著走，這班我替你盯。",
+      "tag": "npc_npc",
+      "created_at": 1774027686
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：先別急著走，這班我替你盯。",
+      "tag": "npc_npc",
+      "created_at": 1774035336
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：先別急著走，這班我替你盯。",
+      "tag": "npc_npc",
+      "created_at": 1774035786
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：櫃檯你盯一下，別急著走。",
+      "tag": "npc_npc",
+      "created_at": 1774036536
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：昨晚太累。",
+      "tag": "npc_npc",
+      "created_at": 1774037287
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：櫃檯你盯一下。",
+      "tag": "npc_npc",
+      "created_at": 1774042237
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：櫃檯你盯一下。",
+      "tag": "npc_npc",
+      "created_at": 1774043437
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：櫃檯你盯一下。",
+      "tag": "npc_npc",
+      "created_at": 1774044937
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "content": "與服務生對話：櫃檯你盯一下。",
+      "tag": "npc_npc",
+      "created_at": 1774049587
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：我只來看看，再過這裡就走。",
+      "tag": "npc_npc",
+      "created_at": 1774019065
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：還是想趕回去趁早睡？",
+      "tag": "npc_npc",
+      "created_at": 1774019101
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：你的日子過得不太順，還有這種結算日嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774019143
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：那邊的葉俊還是沒回來嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774019673
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與金玲對話：你還算是能找到哪裡躲一陣？",
+      "tag": "npc_npc",
+      "created_at": 1774019714
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：最近這結算日，食宿的錢真的是壓得我喘不過氣來呢。",
+      "tag": "npc_npc",
+      "created_at": 1774020036
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與楊康偉對話：這屋裡怎麼這麼靜？楊大哥，你最近過得可還順利？",
+      "tag": "npc_npc",
+      "created_at": 1774020485
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與服務生對話：最近結算日，大家手頭都緊了。",
+      "tag": "npc_npc",
+      "created_at": 1774020885
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與服務生對話：結算日到了，飯錢都付了沒？",
+      "tag": "npc_npc",
+      "created_at": 1774020907
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與金玲對話：嗯，那家店好布莊，你常去嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774021120
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：嗯。走吧。",
+      "tag": "npc_npc",
+      "created_at": 1774021553
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：嗯。走吧.",
+      "tag": "npc_npc",
+      "created_at": 1774021593
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：最近結算日食費高，你手頭緊嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774022227
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：嗯…結算日確實辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774022262
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：最近結算日食費高，你手頭緊嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774022275
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：沒回，早跑了。",
+      "tag": "npc_npc",
+      "created_at": 1774022897
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：最近結算日食費高，你手頭緊嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774023487
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與服務生對話：四路街口？你從哪來的？",
+      "tag": "npc_npc",
+      "created_at": 1774025136
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與楊康偉對話：街角燈影搖曳，今晚過得可算安穩。",
+      "tag": "npc_npc",
+      "created_at": 1774025887
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：街角四處冷風吹，換班交接忙什麼？",
+      "tag": "npc_npc",
+      "created_at": 1774026037
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：最近結算日食費高，你手頭緊嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774027986
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與楊康偉對話：今晚過得安穩。",
+      "tag": "npc_npc",
+      "created_at": 1774028137
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與服務生對話：四路街口？你從哪來的？",
+      "tag": "npc_npc",
+      "created_at": 1774028286
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：街角四處冷風吹，換班交接忙什麼？",
+      "tag": "npc_npc",
+      "created_at": 1774028737
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與葉俊對話：四路街口夜裡，四方交界各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774029187
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與楊康偉對話：今晚過得安穩。",
+      "tag": "npc_npc",
+      "created_at": 1774029637
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：最近結算日食費高，你手頭緊嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774029786
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：街角四處冷風吹，換班交接忙什麼？",
+      "tag": "npc_npc",
+      "created_at": 1774030086
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與服務生對話：### 方案一：JSON 格式（優先級最高）",
+      "tag": "npc_npc",
+      "created_at": 1774030687
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與金玲對話：嗯，那家店好布莊，你常去嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774032487
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：嗯……結算日確實辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774032637
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與楊康偉對話：今晚過得安穩。",
+      "tag": "npc_npc",
+      "created_at": 1774033087
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：四路街口，各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774033237
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：剛試完話，先回宿舍。",
+      "tag": "npc_npc",
+      "created_at": 1774034736
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與楊康偉對話：今晚過得安穩。",
+      "tag": "npc_npc",
+      "created_at": 1774035037
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774035637
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：嗯，先過夜再說，別誤了正事。",
+      "tag": "npc_npc",
+      "created_at": 1774037737
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：今晚結算日，你手頭緊嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774037886
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與金玲對話：街角燈輝，夜色微涼。",
+      "tag": "npc_npc",
+      "created_at": 1774038487
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與服務生對話：嗯，最近帳我對過了，有問題再叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774040287
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：嗯，先過夜再說，別誤了正事。",
+      "tag": "npc_npc",
+      "created_at": 1774041786
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：走吧。夜風涼。",
+      "tag": "npc_npc",
+      "created_at": 1774041936
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與葉俊對話：嗯，這裡確實熱鬧，只是我們不太熟。",
+      "tag": "npc_npc",
+      "created_at": 1774042087
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與楊康偉對話：今晚過得安穩。",
+      "tag": "npc_npc",
+      "created_at": 1774044786
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：嗯，好。",
+      "tag": "npc_npc",
+      "created_at": 1774045237
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與金玲對話：街角燈輝，夜色微涼。",
+      "tag": "npc_npc",
+      "created_at": 1774045387
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與楊康偉對話：嗯，今晚過得安穩。",
+      "tag": "npc_npc",
+      "created_at": 1774045836
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與劉紅對話：今晚結算日，你手頭緊嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774046136
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：嗯。走著瞧。",
+      "tag": "npc_npc",
+      "created_at": 1774046437
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與金玲對話：四路街口早市剛開，人滿為患。",
+      "tag": "npc_npc",
+      "created_at": 1774047937
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：嗯，好。",
+      "tag": "npc_npc",
+      "created_at": 1774048386
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：嗯，走吧。",
+      "tag": "npc_npc",
+      "created_at": 1774048687
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與金玲對話：街角人擠人，像個大鍋煮粥。",
+      "tag": "npc_npc",
+      "created_at": 1774049287
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：嗯，好。",
+      "tag": "npc_npc",
+      "created_at": 1774049736
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與向偉對話：嗯，好。",
+      "tag": "npc_npc",
+      "created_at": 1774050786
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "content": "與史梅對話：嗯，走吧。",
+      "tag": "npc_npc",
+      "created_at": 1774051086
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與葉俊對話：這次結算日，你還有多少貨幣剩下？",
+      "tag": "npc_npc",
+      "created_at": 1774019737
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與史梅對話：這天氣真不算熱，倒也舒服。",
+      "tag": "npc_npc",
+      "created_at": 1774019827
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與史梅對話：你這時候出來幹嘛的？",
+      "tag": "npc_npc",
+      "created_at": 1774019846
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：先別急著接東西，我那邊的結算還沒搞清楚，你若太早走，以後又要麻煩了。",
+      "tag": "npc_npc",
+      "created_at": 1774020406
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：先別急著接東西，我那邊的結算還沒搞清楚，你若太早走…",
+      "tag": "npc_npc",
+      "created_at": 1774020439
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：先別急著接東西，我那邊的結算還沒搞清楚，你若太早走，反手又得被他們問住。",
+      "tag": "npc_npc",
+      "created_at": 1774020462
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：別理我，快滾去換班吧",
+      "tag": "npc_npc",
+      "created_at": 1774021387
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：聽說結算日食費高？",
+      "tag": "npc_npc",
+      "created_at": 1774021785
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：沒那麼誇張。",
+      "tag": "npc_npc",
+      "created_at": 1774021802
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與袁寧對話：嗯…結算日確實辛苦。我剛到這裡，路過四路街口。",
+      "tag": "npc_npc",
+      "created_at": 1774022227
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：結算日食費高？",
+      "tag": "npc_npc",
+      "created_at": 1774022449
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：\"a\": \"結算日？食費真貴啊。\",",
+      "tag": "npc_npc",
+      "created_at": 1774022502
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與袁寧對話：嗯…結算日確實辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774023487
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與史梅對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774024986
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯，確實。這人怎麼這麼窮。",
+      "tag": "npc_npc",
+      "created_at": 1774026337
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：這附近好像很亂。",
+      "tag": "npc_npc",
+      "created_at": 1774027087
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與向偉對話：唉，這哪是結算，分明就是逼死人的日子啊...",
+      "tag": "npc_npc",
+      "created_at": 1774027237
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與葉俊對話：街景不錯，你最近過得如何？",
+      "tag": "npc_npc",
+      "created_at": 1774027536
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯，確實。這人怎麼這麼窮。",
+      "tag": "npc_npc",
+      "created_at": 1774027837
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與袁寧對話：嗯…結算日確實辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774027986
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與袁寧對話：嗯……結算日確實辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774029786
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：街邊有光，西街敞柱高簷。",
+      "tag": "npc_npc",
+      "created_at": 1774030237
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯，剛才那聲乞討聽起來太寒酸了。",
+      "tag": "npc_npc",
+      "created_at": 1774031137
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：結算日？食費真貴啊。",
+      "tag": "npc_npc",
+      "created_at": 1774031287
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與向偉對話：嗯，這哪是結算，分明就是逼死人的日子啊...",
+      "tag": "npc_npc",
+      "created_at": 1774031437
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：劉紅",
+      "tag": "npc_npc",
+      "created_at": 1774032187
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與袁寧對話：今晚結算日，你手頭緊嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774032637
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：結算日？食費真貴啊。",
+      "tag": "npc_npc",
+      "created_at": 1774032786
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與史梅對話：劉紅",
+      "tag": "npc_npc",
+      "created_at": 1774033387
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與向偉對話：嗯，這哪是結算，分明就是逼死人的日子啊...",
+      "tag": "npc_npc",
+      "created_at": 1774033537
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯，確實。這人怎麼這麼窮。",
+      "tag": "npc_npc",
+      "created_at": 1774033687
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：我在街區，過得不太好。",
+      "tag": "npc_npc",
+      "created_at": 1774034287
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：我在街區，過得不太好。",
+      "tag": "npc_npc",
+      "created_at": 1774035486
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯，確實。這人怎麼這麼窮。",
+      "tag": "npc_npc",
+      "created_at": 1774036387
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與向偉對話：嗯，這哪是結算，分明就是逼死人的日子啊...",
+      "tag": "npc_npc",
+      "created_at": 1774036687
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774037136
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與袁寧對話：嗯……結算日確實辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774037886
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：我在街區，過得不太好。",
+      "tag": "npc_npc",
+      "created_at": 1774039237
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：早安！早來好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774039537
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯，確實。這人怎麼這麼窮。",
+      "tag": "npc_npc",
+      "created_at": 1774040587
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：早安！早來好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774041486
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與史梅對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774042686
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：早安！早來好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774042986
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯。早去早好。",
+      "tag": "npc_npc",
+      "created_at": 1774044037
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與楊康偉對話：我在街區，過得不太好。",
+      "tag": "npc_npc",
+      "created_at": 1774044187
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯。早去早好。",
+      "tag": "npc_npc",
+      "created_at": 1774044637
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：早安！早來好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774045536
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與袁寧對話：嗯……結算日確實辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774046136
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：嗯。早去早好。",
+      "tag": "npc_npc",
+      "created_at": 1774047036
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：劉紅",
+      "tag": "npc_npc",
+      "created_at": 1774048536
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與金玲對話：剛在街角撿到點野草，沒啥事。",
+      "tag": "npc_npc",
+      "created_at": 1774048987
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：早安！早來好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774050044
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：早安！早來好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774050049
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "content": "與服務生對話：早安！早來好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774050092
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與葉俊對話：你是葉先生嗎？這客棧這幾日有點不太滿意，我們的收費還是有點抽成太高呢。",
+      "tag": "npc_npc",
+      "created_at": 1774018959
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與服務生對話：\"這邊的方向怎麼樣，這裡有沒有新來的客人留下什麼消息？\"",
+      "tag": "npc_npc",
+      "created_at": 1774019031
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與服務生對話：看你還在這裡，又不見你要走的氣勢？",
+      "tag": "npc_npc",
+      "created_at": 1774019116
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與服務生對話：你這時候真的是不打算跟我換班嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774019586
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與史梅對話：**\"這邊還有空位兒，趕緊坐下吧，看你可真不順眼啊。\"**",
+      "tag": "npc_npc",
+      "created_at": 1774019753
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與史梅對話：人家這邊空位還有，你剛來新店就這樣揮拳打桌子？",
+      "tag": "npc_npc",
+      "created_at": 1774019781
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與服務生對話：別說了，明明就想把我這份份子撂下不理。",
+      "tag": "npc_npc",
+      "created_at": 1774020291
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與袁寧對話：嗯，是啊。你剛從街口來嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774020885
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與袁寧對話：嗯，剛在四路街口。你從哪來？",
+      "tag": "npc_npc",
+      "created_at": 1774020907
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與袁寧對話：四路街口？你從哪來的？",
+      "tag": "npc_npc",
+      "created_at": 1774020943
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與服務生對話：嗯…帳對過了，有問題再叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774021536
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與服務生對話：\"anchors\": [\"結算日食費高\", \"試話離開」],",
+      "tag": "npc_npc",
+      "created_at": 1774021687
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與服務生對話：結算日你對過了沒？有問題再叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774021742
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與服務生對話：有問題再叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774022287
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：沒那麼誇張。",
+      "tag": "npc_npc",
+      "created_at": 1774022449
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774022502
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與葉俊對話：你是葉先生嗎？這客棧這幾日有點不太滿意。",
+      "tag": "npc_npc",
+      "created_at": 1774023637
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與向偉對話：嗯，今晚幾點開門？",
+      "tag": "npc_npc",
+      "created_at": 1774024537
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與袁寧對話：我來過，早到幾分鐘。",
+      "tag": "npc_npc",
+      "created_at": 1774025136
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與金玲對話：老闆，你這班辛苦了。",
+      "tag": "npc_npc",
+      "created_at": 1774025286
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與金玲對話：我沒想太多，怕麻煩。",
+      "tag": "npc_npc",
+      "created_at": 1774026636
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與向偉對話：嗯，今晚幾點開門？",
+      "tag": "npc_npc",
+      "created_at": 1774026937
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與袁寧對話：我來過，早到幾分鐘。",
+      "tag": "npc_npc",
+      "created_at": 1774028286
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與葉俊對話：哦？那今晚你負責嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774029037
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與金玲對話：我沒想太多，怕麻煩。",
+      "tag": "npc_npc",
+      "created_at": 1774030386
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與史梅對話：是時候換班了。",
+      "tag": "npc_npc",
+      "created_at": 1774030537
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與袁寧對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774030687
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯，最近日子過得...",
+      "tag": "npc_npc",
+      "created_at": 1774031287
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與史梅對話：\"a\": \"街角好熱鬧啊！\",",
+      "tag": "npc_npc",
+      "created_at": 1774032039
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯，最近日子過得...不太平。",
+      "tag": "npc_npc",
+      "created_at": 1774032786
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與楊康偉對話：新同事還沒來，我要先先把這些清理乾淨。",
+      "tag": "npc_npc",
+      "created_at": 1774033837
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與向偉對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774036087
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：早安！早來好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774037136
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與金玲對話：沒想太多，怕麻煩。",
+      "tag": "npc_npc",
+      "created_at": 1774038337
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與向偉對話：哦？那今晚換班我負責。",
+      "tag": "npc_npc",
+      "created_at": 1774039386
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774039537
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與金玲對話：四路街口夜裡，四方交界各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774039687
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與袁寧對話：四路街口夜裡，四方交界各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774040287
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與史梅對話：嗨，剛在四路街口過夜，沒錢。",
+      "tag": "npc_npc",
+      "created_at": 1774040436
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與向偉對話：葉卅。昨晚帳對過了？",
+      "tag": "npc_npc",
+      "created_at": 1774040737
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774041486
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與葉俊對話：四路街口夜深了？",
+      "tag": "npc_npc",
+      "created_at": 1774042536
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774042986
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與向偉對話：向偉回：嗯，有問題就叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774043737
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與葉俊對話：四路街口夜深了？",
+      "tag": "npc_npc",
+      "created_at": 1774045086
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774045536
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與向偉對話：向偉回：嗯，有問題就叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774046287
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與葉俊對話：四路街口夜深了？",
+      "tag": "npc_npc",
+      "created_at": 1774047186
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與金玲對話：沒問題。",
+      "tag": "npc_npc",
+      "created_at": 1774048836
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774050044
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774050049
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與劉紅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774050092
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "content": "與葉俊對話：嗯，先回班去。",
+      "tag": "npc_npc",
+      "created_at": 1774050936
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與金玲對話：你這邊人氣真不錯，連我的飯菜都吃光了？",
+      "tag": "npc_npc",
+      "created_at": 1774019239
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與金玲對話：這邊的早班人手又空了，你真不錯，能幫忙接下來幾個輪次嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774019287
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與葉俊對話：野草采集還可以賺點錢嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774019483
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與劉紅對話：沒事找事？別提，我也沒空當個話匣子。",
+      "tag": "npc_npc",
+      "created_at": 1774019846
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：我知道，我們還有幾天時間，不用急著結算吧？",
+      "tag": "npc_npc",
+      "created_at": 1774020036
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與楊康偉對話：是啊，這樣的日子過久了心裡會發慌，不如趁早準備好後路。",
+      "tag": "npc_npc",
+      "created_at": 1774020516
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與楊康偉對話：是啊，這樣的日子過久了心裡會發慌，不如趁早準備好後事。",
+      "tag": "npc_npc",
+      "created_at": 1774020539
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與服務生對話：嗯，那別吃啊。",
+      "tag": "npc_npc",
+      "created_at": 1774021086
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：\"a\": \"最近這結算日，食宿的錢真的是壓得我喘不過氣來呢。\",",
+      "tag": "npc_npc",
+      "created_at": 1774021155
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774021169
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與楊康偉對話：是啊，結算日食費高，咱倆手頭都緊巴巴。",
+      "tag": "npc_npc",
+      "created_at": 1774021707
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與劉紅對話：\"a\": \"劉紅\",",
+      "tag": "npc_npc",
+      "created_at": 1774024986
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與葉俊對話：嗯，結算日食費高嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774025736
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與向偉對話：我也累壞了，只想躲進陰影裡。",
+      "tag": "npc_npc",
+      "created_at": 1774026487
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與葉俊對話：嗯，帳我對過了，沒啥事。",
+      "tag": "npc_npc",
+      "created_at": 1774028887
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與楊康偉對話：街角好冷啊，手寒嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774029937
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與服務生對話：街角好熱鬧啊！",
+      "tag": "npc_npc",
+      "created_at": 1774030537
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與服務生對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774032039
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與劉紅對話：史梅",
+      "tag": "npc_npc",
+      "created_at": 1774033387
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與楊康偉對話：街角好冷啊，手寒嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774034586
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：嗯。走吧，夜風涼。",
+      "tag": "npc_npc",
+      "created_at": 1774034736
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：走吧。夜風涼。",
+      "tag": "npc_npc",
+      "created_at": 1774035637
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與向偉對話：是啊，累壞了。",
+      "tag": "npc_npc",
+      "created_at": 1774038187
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與葉俊對話：嗯，帳我對過了，沒啥事。",
+      "tag": "npc_npc",
+      "created_at": 1774039836
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與服務生對話：街角好熱鬧啊！",
+      "tag": "npc_npc",
+      "created_at": 1774040436
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：嗯。走著瞧。",
+      "tag": "npc_npc",
+      "created_at": 1774041936
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與劉紅對話：\"r1\": \"劉紅\",",
+      "tag": "npc_npc",
+      "created_at": 1774042686
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與葉俊對話：嗯，帳我對過了，沒啥事。",
+      "tag": "npc_npc",
+      "created_at": 1774043886
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與向偉對話：史梅",
+      "tag": "npc_npc",
+      "created_at": 1774044487
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：走吧。夜風涼。",
+      "tag": "npc_npc",
+      "created_at": 1774046437
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與向偉對話：我沒啥，就覺得累。",
+      "tag": "npc_npc",
+      "created_at": 1774046887
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與金玲對話：你別勉強，我還得去street4zone乞討。",
+      "tag": "npc_npc",
+      "created_at": 1774047637
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：好嘞，小心路滑。",
+      "tag": "npc_npc",
+      "created_at": 1774048687
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與劉紅對話：嗯...那地方人多，我不太熟。",
+      "tag": "npc_npc",
+      "created_at": 1774050112
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與劉紅對話：嗯...那地方人多，我不太熟。",
+      "tag": "npc_npc",
+      "created_at": 1774050151
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與向偉對話：沒啥，最近太累了。",
+      "tag": "npc_npc",
+      "created_at": 1774050336
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "content": "與袁寧對話：好嘞，小心路滑。",
+      "tag": "npc_npc",
+      "created_at": 1774051086
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與服務生對話：你這裡有點東西沒吃完？",
+      "tag": "npc_npc",
+      "created_at": 1774018987
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與史梅對話：沒回答，只是輕輕搖頭，轉頭看向店外的天氣。",
+      "tag": "npc_npc",
+      "created_at": 1774019239
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與史梅對話：這事你別勉強，我還是先趕趕路回家。",
+      "tag": "npc_npc",
+      "created_at": 1774019287
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與袁寧對話：沒錢都不敢在這裡買水喝，好麻煩。",
+      "tag": "npc_npc",
+      "created_at": 1774019683
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：剛剛你是否認真聽說了新來的修仙者？還是只是聽漏的話？",
+      "tag": "npc_npc",
+      "created_at": 1774019898
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：你是否也覺得這日子比前幾日壓力大？",
+      "tag": "npc_npc",
+      "created_at": 1774019948
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：這題沒有可選的 JSON 格式，因為你明確要求「只輸出兩行純台詞」且禁止第三行及…",
+      "tag": "npc_npc",
+      "created_at": 1774020587
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：嗯。",
+      "tag": "npc_npc",
+      "created_at": 1774020591
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：我聽說最近結算日大家都拚命省吃儉用，這日子真是過得緊巴啊。",
+      "tag": "npc_npc",
+      "created_at": 1774020626
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與向偉對話：你今晚吃得好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774021313
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與向偉對話：你今晚吃得好嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774021318
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與向偉對話：嗯，還可以。你呢？",
+      "tag": "npc_npc",
+      "created_at": 1774021353
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與服務生對話：好嘞，我慢慢嚼。",
+      "tag": "npc_npc",
+      "created_at": 1774022137
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：{",
+      "tag": "npc_npc",
+      "created_at": 1774022315
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：剛才那聲乞討聽起來太寒酸了。",
+      "tag": "npc_npc",
+      "created_at": 1774022340
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與服務生對話：我沒想太多，只是怕麻煩。",
+      "tag": "npc_npc",
+      "created_at": 1774025286
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與楊康偉對話：四方交界，各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774025436
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：嗯，剛才那聲乞討聽起來太寒酸了。",
+      "tag": "npc_npc",
+      "created_at": 1774026337
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與服務生對話：你這班辛苦啊？",
+      "tag": "npc_npc",
+      "created_at": 1774026636
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：嗯，剛才那聲乞討聽起來太寒酸了。",
+      "tag": "npc_npc",
+      "created_at": 1774027837
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與葉俊對話：去東街走走，看看有没有什麼新開張的攤位。",
+      "tag": "npc_npc",
+      "created_at": 1774029337
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與服務生對話：你這班辛苦啊？",
+      "tag": "npc_npc",
+      "created_at": 1774030386
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與楊康偉對話：四方交界，各領風騷。",
+      "tag": "npc_npc",
+      "created_at": 1774030836
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：嗯，確實。這人怎麼這麼窮。",
+      "tag": "npc_npc",
+      "created_at": 1774031137
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與袁寧對話：嗯，最近結算日吃太貴了。",
+      "tag": "npc_npc",
+      "created_at": 1774032487
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：嗯，剛才那聲乞討聽起來太寒酸了。",
+      "tag": "npc_npc",
+      "created_at": 1774033687
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與向偉對話：好累啊，換班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774035936
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：嗯，剛才那聲乞討聽起來太寒酸了。",
+      "tag": "npc_npc",
+      "created_at": 1774036387
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與楊康偉對話：嗯……怕麻煩。",
+      "tag": "npc_npc",
+      "created_at": 1774038036
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與服務生對話：這班辛苦啊？",
+      "tag": "npc_npc",
+      "created_at": 1774038337
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與袁寧對話：嗯，天色太暗，有點害怕。",
+      "tag": "npc_npc",
+      "created_at": 1774038487
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與向偉對話：好累啊,換班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774038787
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與服務生對話：沒想太多，怕麻煩。金玲：沒問題。",
+      "tag": "npc_npc",
+      "created_at": 1774039687
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：嗯，剛才那聲乞討聽起來太寒酸了。",
+      "tag": "npc_npc",
+      "created_at": 1774040587
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與楊康偉對話：嗯……怕麻煩。",
+      "tag": "npc_npc",
+      "created_at": 1774041636
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與葉俊對話：四方交界，滿街引光。",
+      "tag": "npc_npc",
+      "created_at": 1774043136
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：街角人少，你該走了",
+      "tag": "npc_npc",
+      "created_at": 1774044037
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：街角人少，你該走了",
+      "tag": "npc_npc",
+      "created_at": 1774044637
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與袁寧對話：嗯，天色太暗，有點害怕。",
+      "tag": "npc_npc",
+      "created_at": 1774045387
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與楊康偉對話：金玲",
+      "tag": "npc_npc",
+      "created_at": 1774045687
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：街角人少，你該走了。",
+      "tag": "npc_npc",
+      "created_at": 1774047036
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與葉俊對話：四方交界，滿街引光。",
+      "tag": "npc_npc",
+      "created_at": 1774047336
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與史梅對話：這邊早班人手又空了，你真不錯。",
+      "tag": "npc_npc",
+      "created_at": 1774047637
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與楊康偉對話：金玲",
+      "tag": "npc_npc",
+      "created_at": 1774047786
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與袁寧對話：嗯，人多就好，吵死了。",
+      "tag": "npc_npc",
+      "created_at": 1774047937
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：金玲",
+      "tag": "npc_npc",
+      "created_at": 1774048536
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與服務生對話：沒想太多，怕麻煩。",
+      "tag": "npc_npc",
+      "created_at": 1774048836
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：好呀，你來這裡做什麼？",
+      "tag": "npc_npc",
+      "created_at": 1774048987
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與袁寧對話：嗯，人多就好，吵死了。",
+      "tag": "npc_npc",
+      "created_at": 1774049287
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "content": "與劉紅對話：好呀，你來這裡做什麼？",
+      "tag": "npc_npc",
+      "created_at": 1774050637
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：你這邊的天氣好冷，一出門還不小心全身出汗。",
+      "tag": "npc_npc",
+      "created_at": 1774018998
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：你這裡聊天的地方還真冷，趁還沒人時來問問你有什麼話要說？",
+      "tag": "npc_npc",
+      "created_at": 1774019000
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：我只是想知道四路街口最近有沒有生意好轉？",
+      "tag": "npc_npc",
+      "created_at": 1774019054
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：說得起來，至少沒有要天氣撐腰。",
+      "tag": "npc_npc",
+      "created_at": 1774019623
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：漫不經心撂下：",
+      "tag": "npc_npc",
+      "created_at": 1774019642
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：看樣子是真跑光了，沒說謝，還真有點難為情。",
+      "tag": "npc_npc",
+      "created_at": 1774019673
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與劉紅對話：唉，這哪是結算，分明就是逼死人的日子啊……你還在這裡待著幹什麼？",
+      "tag": "npc_npc",
+      "created_at": 1774020644
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：剛到這裡就遇到結算日，吃什麼花錢多？",
+      "tag": "npc_npc",
+      "created_at": 1774020974
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：結算日人多。",
+      "tag": "npc_npc",
+      "created_at": 1774020988
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：那邊的葉俊還是沒回來嗎？",
+      "tag": "npc_npc",
+      "created_at": 1774021280
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：嗯，今晚幾點開門？",
+      "tag": "npc_npc",
+      "created_at": 1774021847
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：我只是想知道四路街口最近生意好不好轉？",
+      "tag": "npc_npc",
+      "created_at": 1774021895
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：嗯，那走吧。",
+      "tag": "npc_npc",
+      "created_at": 1774022897
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與葉俊對話：別說了，我還沒錢吃飯的份兒，更別說賴上別人。",
+      "tag": "npc_npc",
+      "created_at": 1774024087
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：四路口好熱鬧啊。",
+      "tag": "npc_npc",
+      "created_at": 1774024537
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：嗯，先過夜再說，別誤了正事。",
+      "tag": "npc_npc",
+      "created_at": 1774026037
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與史梅對話：街角風吹過，四處喧囂聲。",
+      "tag": "npc_npc",
+      "created_at": 1774026487
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：四路街口好熱鬧啊！",
+      "tag": "npc_npc",
+      "created_at": 1774026937
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與劉紅對話：你還在這...",
+      "tag": "npc_npc",
+      "created_at": 1774027237
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：街角燈影搖曳，夜裡有點靜。",
+      "tag": "npc_npc",
+      "created_at": 1774028436
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：嗯，先過夜再說，別誤了正事。",
+      "tag": "npc_npc",
+      "created_at": 1774028737
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：先回了，晚班辛苦。",
+      "tag": "npc_npc",
+      "created_at": 1774029487
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：嗯，先過夜再說，別誤了正事。",
+      "tag": "npc_npc",
+      "created_at": 1774030086
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與劉紅對話：四路街口？太吵了。",
+      "tag": "npc_npc",
+      "created_at": 1774031437
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：嗯，先過夜再說，別誤了正事。",
+      "tag": "npc_npc",
+      "created_at": 1774033237
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與劉紅對話：街角好吵，我剛想走。",
+      "tag": "npc_npc",
+      "created_at": 1774033537
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：街角燈影搖曳，夜裡有點靜。",
+      "tag": "npc_npc",
+      "created_at": 1774033987
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：街角燈影搖曳，夜裡有點靜。",
+      "tag": "npc_npc",
+      "created_at": 1774035186
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與金玲對話：嗯，我沒啥事。",
+      "tag": "npc_npc",
+      "created_at": 1774035936
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：### JSON 格式（首選）",
+      "tag": "npc_npc",
+      "created_at": 1774036087
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與葉俊對話：別說了，我還沒錢吃飯的份兒，更別說賴上別人。",
+      "tag": "npc_npc",
+      "created_at": 1774036237
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與劉紅對話：street4zone,人擠得像鬼.",
+      "tag": "npc_npc",
+      "created_at": 1774036687
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與葉俊對話：別說了，我還沒錢吃飯的份兒，更別說賴上別人。",
+      "tag": "npc_npc",
+      "created_at": 1774036987
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：啊？你該不是想睡我？",
+      "tag": "npc_npc",
+      "created_at": 1774037737
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與史梅對話：嗯，走吧，試話。",
+      "tag": "npc_npc",
+      "created_at": 1774038187
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與葉俊對話：這天氣實在不對，連天都打算起來鬧氣似的。",
+      "tag": "npc_npc",
+      "created_at": 1774038637
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與金玲對話：嗯,我沒啥事。",
+      "tag": "npc_npc",
+      "created_at": 1774038787
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：今天帳對過了，有問題再叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774039386
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：嗯，有問題就叫我。",
+      "tag": "npc_npc",
+      "created_at": 1774040737
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：早啊，西街敞柱高簷。",
+      "tag": "npc_npc",
+      "created_at": 1774040887
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與葉俊對話：這天氣實在不對，連天都打算起來鬧氣似的。",
+      "tag": "npc_npc",
+      "created_at": 1774041187
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：啊？你該不是想睡我？",
+      "tag": "npc_npc",
+      "created_at": 1774041786
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：先回過夜再說，別誤了正事。",
+      "tag": "npc_npc",
+      "created_at": 1774042386
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：早啊，四路街口。",
+      "tag": "npc_npc",
+      "created_at": 1774043286
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：服務生說：葉卅。昨晚帳對過了？",
+      "tag": "npc_npc",
+      "created_at": 1774043737
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與葉俊對話：這天氣實在不對，連天都打算起來鬧氣似的。",
+      "tag": "npc_npc",
+      "created_at": 1774044337
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與史梅對話：向偉",
+      "tag": "npc_npc",
+      "created_at": 1774044487
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：我來接你過夜。",
+      "tag": "npc_npc",
+      "created_at": 1774045237
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：早啊，四路街口。",
+      "tag": "npc_npc",
+      "created_at": 1774045986
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與服務生對話：服務生說：葉卅。昨晚帳對過了？",
+      "tag": "npc_npc",
+      "created_at": 1774046287
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與史梅對話：嘿，向偉，最近咋過得這麼苦？",
+      "tag": "npc_npc",
+      "created_at": 1774046887
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：早啊，西街敞柱高簷。",
+      "tag": "npc_npc",
+      "created_at": 1774048236
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：我來接你過夜。",
+      "tag": "npc_npc",
+      "created_at": 1774048386
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：我來接你過夜。",
+      "tag": "npc_npc",
+      "created_at": 1774049736
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與史梅對話：嘿，我也過得苦。",
+      "tag": "npc_npc",
+      "created_at": 1774050336
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與袁寧對話：我來接你過夜。",
+      "tag": "npc_npc",
+      "created_at": 1774050786
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "content": "與楊康偉對話：早啊，西街敞柱高簷。",
+      "tag": "npc_npc",
+      "created_at": 1774051236
     }
   ]
 }

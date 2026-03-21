@@ -113,6 +113,53 @@ type NpcMemory struct {
 	Favorability int    `json:"favorability"` // -100～+100，0=普通
 }
 
+// NpcThread 為兩名 NPC 的短期話題線狀態（P1）。
+type NpcThread struct {
+	ThreadKey     string   `json:"thread_key"`
+	TopicType     string   `json:"topic_type"`
+	Phase         string   `json:"phase"` // opening / elaborate / cooling
+	Anchors       []string `json:"anchors,omitempty"`
+	TurnCount     int      `json:"turn_count"`
+	CooldownUntil int64    `json:"cooldown_until"`
+	UpdatedAt     int64    `json:"updated_at"`
+}
+
+// NpcDyad 為兩名 NPC 的關係狀態（P1 先提供儲存與讀取）。
+type NpcDyad struct {
+	AID         string   `json:"a_id"`
+	BID         string   `json:"b_id"`
+	Familiarity int      `json:"familiarity"`
+	Sentiment   int      `json:"sentiment"`
+	Tags        []string `json:"tags,omitempty"`
+	UpdatedAt   int64    `json:"updated_at"`
+}
+
+// NpcRumor 為可衰減的社會傳聞（P4）。
+type NpcRumor struct {
+	ID                string `json:"id"`
+	Text              string `json:"text"`
+	RoomID            string `json:"room_id,omitempty"`
+	Zone              string `json:"zone,omitempty"`
+	Source            string `json:"source,omitempty"`       // dialogue_anchor / room_event / economy / spawn / job
+	SourceScore       int    `json:"source_score,omitempty"` // 來源基礎權重
+	Weight            int    `json:"weight"`
+	MentionCount      int    `json:"mention_count,omitempty"` // 被挑入 context 次數（P8）
+	LastUsedAt        int64  `json:"last_used_at,omitempty"`  // 最近被挑入 context 時間（P8）
+	BlockedUntil      int64  `json:"blocked_until,omitempty"` // 因衝突暫時封鎖到何時（P9）
+	PenaltyCount      int    `json:"penalty_count,omitempty"` // 反事實懲罰次數（P10）
+	LastPenaltyAt     int64  `json:"last_penalty_at,omitempty"`
+	LastPenaltyReason string `json:"last_penalty_reason,omitempty"`
+	UpdatedAt         int64  `json:"updated_at"`
+	ExpiresAt         int64  `json:"expires_at"`
+}
+
+// NpcRumorDigest 為傳聞池批次摘要（P6）。
+type NpcRumorDigest struct {
+	Text        string `json:"text"`
+	SourceCount int    `json:"source_count"`
+	UpdatedAt   int64  `json:"updated_at"`
+}
+
 // Store 記憶體中的房間、出口、實體、場所、指派、排班、物品、事件日誌、密碼。
 type Store struct {
 	mu                  sync.RWMutex
@@ -130,9 +177,17 @@ type Store struct {
 	NpcSummaries        map[string]string       // entity_id -> 與玩家的最近印象（背版用）
 	NpcNpcSummaries     map[string]string       // "idA|idB"（idA<idB）-> A 與 B 的最近交談摘要，供長碰面不重複
 	NpcMemories         map[string]*NpcMemory   // "entity_id|subject_id" -> 短期記憶（見面次數、好感度）
+	NpcThreads          map[string]*NpcThread   // "idA|idB" -> NPC 對話 thread（P1）
+	NpcDyads            map[string]*NpcDyad     // "idA|idB" -> NPC 關係（P1）
+	NpcRumors           map[string]*NpcRumor    // rumor_id -> 傳聞（P4）
+	NpcRumorDigest      *NpcRumorDigest         // 傳聞摘要（P6）
 	runtimeDir          string
 	summariesPath       string
 	npcNpcSummariesPath string
+	npcThreadPath       string
+	npcDyadPath         string
+	npcRumorPath        string
+	npcRumorDigestPath  string
 	archivalPath        string
 	npcMemoryPath       string
 	entityRoomsPath     string
@@ -253,9 +308,17 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 		authPath:            filepath.Join(runtimeDir, "auth.json"),
 		summariesPath:       filepath.Join(runtimeDir, "npc_summaries.json"),
 		npcNpcSummariesPath: filepath.Join(runtimeDir, "npc_npc_summaries.json"),
+		npcThreadPath:       filepath.Join(runtimeDir, "npc_thread.json"),
+		npcDyadPath:         filepath.Join(runtimeDir, "npc_dyad.json"),
+		npcRumorPath:        filepath.Join(runtimeDir, "npc_rumors.json"),
+		npcRumorDigestPath:  filepath.Join(runtimeDir, "npc_rumor_digest.json"),
 		NpcSummaries:        make(map[string]string),
 		NpcNpcSummaries:     make(map[string]string),
 		NpcMemories:         make(map[string]*NpcMemory),
+		NpcThreads:          make(map[string]*NpcThread),
+		NpcDyads:            make(map[string]*NpcDyad),
+		NpcRumors:           make(map[string]*NpcRumor),
+		NpcRumorDigest:      nil,
 	}
 
 	if err := s.loadRooms(roomsPath); err != nil {
@@ -275,6 +338,10 @@ func Init(roomsPath, runtimeDir, dataDir string) error {
 		_ = s.loadAuth()
 		_ = s.loadSummaries()
 		_ = s.loadNpcNpcSummaries()
+		_ = s.loadNpcThreads()
+		_ = s.loadNpcDyads()
+		_ = s.loadNpcRumors()
+		_ = s.loadNpcRumorDigest()
 	}
 
 	Default = s
@@ -2050,6 +2117,771 @@ func (s *Store) SetNpcNpcSummary(idA, idB, summary string) error {
 	s.NpcNpcSummaries[canonicalNpcNpcKey(idA, idB)] = summary
 	s.mu.Unlock()
 	return s.persistNpcNpcSummaries()
+}
+
+type npcThreadFile struct {
+	Threads map[string]*NpcThread `json:"threads"`
+}
+
+func (s *Store) loadNpcThreads() error {
+	if s == nil || s.npcThreadPath == "" {
+		return nil
+	}
+	data, err := os.ReadFile(s.npcThreadPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			s.mu.Lock()
+			if s.NpcThreads == nil {
+				s.NpcThreads = make(map[string]*NpcThread)
+			}
+			s.mu.Unlock()
+			return nil
+		}
+		return err
+	}
+	var f npcThreadFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	if f.Threads != nil {
+		s.NpcThreads = f.Threads
+	} else if s.NpcThreads == nil {
+		s.NpcThreads = make(map[string]*NpcThread)
+	}
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *Store) persistNpcThreads() error {
+	if s == nil || s.npcThreadPath == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(s.npcThreadPath), 0755); err != nil {
+		return err
+	}
+	s.mu.RLock()
+	threads := s.NpcThreads
+	if threads == nil {
+		threads = make(map[string]*NpcThread)
+	}
+	s.mu.RUnlock()
+	raw, err := json.MarshalIndent(npcThreadFile{Threads: threads}, "", "  ")
+	if err != nil {
+		return err
+	}
+	tmpPath := s.npcThreadPath + ".tmp"
+	if err := os.WriteFile(tmpPath, raw, 0644); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.npcThreadPath); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+	return nil
+}
+
+// GetNpcThread 回傳該 pair 的 thread 狀態（拷貝）；若不存在回傳 nil。
+func (s *Store) GetNpcThread(idA, idB string) *NpcThread {
+	if s == nil {
+		return nil
+	}
+	key := canonicalNpcNpcKey(idA, idB)
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	t := s.NpcThreads[key]
+	if t == nil {
+		return nil
+	}
+	cp := *t
+	if t.Anchors != nil {
+		cp.Anchors = append([]string(nil), t.Anchors...)
+	}
+	return &cp
+}
+
+// SetNpcThread 寫入 pair 的 thread 狀態並持久化。
+func (s *Store) SetNpcThread(idA, idB string, t *NpcThread) error {
+	if s == nil || t == nil {
+		return nil
+	}
+	key := canonicalNpcNpcKey(idA, idB)
+	cp := *t
+	cp.ThreadKey = key
+	if cp.Anchors != nil {
+		cp.Anchors = append([]string(nil), cp.Anchors...)
+	}
+	s.mu.Lock()
+	if s.NpcThreads == nil {
+		s.NpcThreads = make(map[string]*NpcThread)
+	}
+	s.NpcThreads[key] = &cp
+	s.mu.Unlock()
+	return s.persistNpcThreads()
+}
+
+// DeleteNpcThread 刪除 pair 的 thread 並持久化。
+func (s *Store) DeleteNpcThread(idA, idB string) error {
+	if s == nil {
+		return nil
+	}
+	key := canonicalNpcNpcKey(idA, idB)
+	s.mu.Lock()
+	if s.NpcThreads != nil {
+		delete(s.NpcThreads, key)
+	}
+	s.mu.Unlock()
+	return s.persistNpcThreads()
+}
+
+type npcDyadFile struct {
+	Dyads map[string]*NpcDyad `json:"dyads"`
+}
+
+func (s *Store) loadNpcDyads() error {
+	if s == nil || s.npcDyadPath == "" {
+		return nil
+	}
+	data, err := os.ReadFile(s.npcDyadPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			s.mu.Lock()
+			if s.NpcDyads == nil {
+				s.NpcDyads = make(map[string]*NpcDyad)
+			}
+			s.mu.Unlock()
+			return nil
+		}
+		return err
+	}
+	var f npcDyadFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	if f.Dyads != nil {
+		s.NpcDyads = f.Dyads
+	} else if s.NpcDyads == nil {
+		s.NpcDyads = make(map[string]*NpcDyad)
+	}
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *Store) persistNpcDyads() error {
+	if s == nil || s.npcDyadPath == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(s.npcDyadPath), 0755); err != nil {
+		return err
+	}
+	s.mu.RLock()
+	dyads := s.NpcDyads
+	if dyads == nil {
+		dyads = make(map[string]*NpcDyad)
+	}
+	s.mu.RUnlock()
+	raw, err := json.MarshalIndent(npcDyadFile{Dyads: dyads}, "", "  ")
+	if err != nil {
+		return err
+	}
+	tmpPath := s.npcDyadPath + ".tmp"
+	if err := os.WriteFile(tmpPath, raw, 0644); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.npcDyadPath); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+	return nil
+}
+
+// GetNpcDyad 回傳 pair 的關係狀態（拷貝）；若不存在則建立預設值回傳。
+func (s *Store) GetNpcDyad(idA, idB string) *NpcDyad {
+	if s == nil {
+		return nil
+	}
+	key := canonicalNpcNpcKey(idA, idB)
+	aID, bID := idA, idB
+	if aID > bID {
+		aID, bID = bID, aID
+	}
+	s.mu.RLock()
+	d := s.NpcDyads[key]
+	s.mu.RUnlock()
+	if d != nil {
+		cp := *d
+		if d.Tags != nil {
+			cp.Tags = append([]string(nil), d.Tags...)
+		}
+		return &cp
+	}
+	return &NpcDyad{AID: aID, BID: bID, Familiarity: 0, Sentiment: 0}
+}
+
+// SetNpcDyad 寫入 pair 的關係狀態並持久化。
+func (s *Store) SetNpcDyad(idA, idB string, d *NpcDyad) error {
+	if s == nil || d == nil {
+		return nil
+	}
+	key := canonicalNpcNpcKey(idA, idB)
+	aID, bID := idA, idB
+	if aID > bID {
+		aID, bID = bID, aID
+	}
+	cp := *d
+	cp.AID = aID
+	cp.BID = bID
+	if cp.Tags != nil {
+		cp.Tags = append([]string(nil), cp.Tags...)
+	}
+	s.mu.Lock()
+	if s.NpcDyads == nil {
+		s.NpcDyads = make(map[string]*NpcDyad)
+	}
+	s.NpcDyads[key] = &cp
+	s.mu.Unlock()
+	return s.persistNpcDyads()
+}
+
+type npcRumorFile struct {
+	Rumors map[string]*NpcRumor `json:"rumors"`
+}
+
+func (s *Store) loadNpcRumors() error {
+	if s == nil || s.npcRumorPath == "" {
+		return nil
+	}
+	data, err := os.ReadFile(s.npcRumorPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			s.mu.Lock()
+			if s.NpcRumors == nil {
+				s.NpcRumors = make(map[string]*NpcRumor)
+			}
+			s.mu.Unlock()
+			return nil
+		}
+		return err
+	}
+	var f npcRumorFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	if f.Rumors != nil {
+		s.NpcRumors = f.Rumors
+	} else if s.NpcRumors == nil {
+		s.NpcRumors = make(map[string]*NpcRumor)
+	}
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *Store) persistNpcRumors() error {
+	if s == nil || s.npcRumorPath == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(s.npcRumorPath), 0755); err != nil {
+		return err
+	}
+	s.mu.RLock()
+	rumors := s.NpcRumors
+	if rumors == nil {
+		rumors = make(map[string]*NpcRumor)
+	}
+	s.mu.RUnlock()
+	raw, err := json.MarshalIndent(npcRumorFile{Rumors: rumors}, "", "  ")
+	if err != nil {
+		return err
+	}
+	tmpPath := s.npcRumorPath + ".tmp"
+	if err := os.WriteFile(tmpPath, raw, 0644); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.npcRumorPath); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+	return nil
+}
+
+// UpsertNpcRumor 寫入/更新一條傳聞；同 ID 會疊加權重並刷新時間。
+func (s *Store) UpsertNpcRumor(r *NpcRumor) error {
+	if s == nil || r == nil {
+		return nil
+	}
+	id := strings.TrimSpace(r.ID)
+	if id == "" {
+		return nil
+	}
+	now := r.UpdatedAt
+	if now <= 0 {
+		now = time.Now().Unix()
+	}
+	incomingKey := canonicalRumorText(r.Text)
+	s.mu.Lock()
+	if s.NpcRumors == nil {
+		s.NpcRumors = make(map[string]*NpcRumor)
+	}
+	// P7：同文本冷卻去重（10 分鐘）。若近期已有同文本，直接疊加到既有條目，避免洗版。
+	if incomingKey != "" {
+		for oldID, old := range s.NpcRumors {
+			if old == nil {
+				continue
+			}
+			if canonicalRumorText(old.Text) != incomingKey {
+				continue
+			}
+			if old.UpdatedAt > 0 && now-old.UpdatedAt <= 600 {
+				if r.Source != "" {
+					old.Source = r.Source
+				}
+				if r.SourceScore > 0 {
+					old.SourceScore = r.SourceScore
+				}
+				if r.RoomID != "" {
+					old.RoomID = r.RoomID
+				}
+				if r.Zone != "" {
+					old.Zone = r.Zone
+				}
+				old.Weight += max(1, r.Weight)
+				old.UpdatedAt = now
+				if r.ExpiresAt > old.ExpiresAt {
+					old.ExpiresAt = r.ExpiresAt
+				}
+				s.NpcRumors[oldID] = old
+				s.mu.Unlock()
+				return s.persistNpcRumors()
+			}
+		}
+	}
+	if old := s.NpcRumors[id]; old != nil {
+		if strings.TrimSpace(r.Text) != "" {
+			old.Text = r.Text
+		}
+		if r.RoomID != "" {
+			old.RoomID = r.RoomID
+		}
+		if r.Zone != "" {
+			old.Zone = r.Zone
+		}
+		if r.Source != "" {
+			old.Source = r.Source
+		}
+		if r.SourceScore > 0 {
+			old.SourceScore = r.SourceScore
+		}
+		old.Weight += r.Weight
+		if old.Weight < 1 {
+			old.Weight = 1
+		}
+		if r.UpdatedAt > 0 {
+			old.UpdatedAt = r.UpdatedAt
+		}
+		if r.ExpiresAt > old.ExpiresAt {
+			old.ExpiresAt = r.ExpiresAt
+		}
+	} else {
+		cp := *r
+		if cp.Weight <= 0 {
+			cp.Weight = 1
+		}
+		if cp.SourceScore <= 0 {
+			cp.SourceScore = 1
+		}
+		s.NpcRumors[id] = &cp
+	}
+	s.mu.Unlock()
+	return s.persistNpcRumors()
+}
+
+// TopNpcRumors 取指定 room/zone 最相關 topK 傳聞；會略過過期與空文本。
+func (s *Store) TopNpcRumors(roomID, zone string, nowUnix int64, topK int) []NpcRumor {
+	if s == nil || topK <= 0 {
+		return nil
+	}
+	s.mu.RLock()
+	var list []NpcRumor
+	for _, r := range s.NpcRumors {
+		if r == nil || strings.TrimSpace(r.Text) == "" {
+			continue
+		}
+		if r.ExpiresAt > 0 && nowUnix > r.ExpiresAt {
+			continue
+		}
+		if r.BlockedUntil > nowUnix {
+			continue
+		}
+		score := r.Weight + r.SourceScore
+		switch r.Source {
+		case "job":
+			score += 3
+		case "economy":
+			score += 0
+		case "room_event":
+			score += 2
+		case "spawn":
+			score += 1
+		}
+		if roomID != "" && r.RoomID == roomID {
+			score += 5
+		}
+		if zone != "" && r.Zone == zone {
+			score += 2
+		}
+		cp := *r
+		cp.Weight = score
+		list = append(list, cp)
+	}
+	s.mu.RUnlock()
+	sort.Slice(list, func(i, j int) bool {
+		if list[i].Weight == list[j].Weight {
+			return list[i].UpdatedAt > list[j].UpdatedAt
+		}
+		return list[i].Weight > list[j].Weight
+	})
+	// P7：來源配額（每來源先取 1）+ 同文本去重，再補齊到 topK。
+	selected := make([]NpcRumor, 0, topK)
+	usedSource := map[string]int{}
+	usedText := map[string]bool{}
+	rest := make([]NpcRumor, 0, len(list))
+	for _, it := range list {
+		key := canonicalRumorText(it.Text)
+		if key == "" || usedText[key] {
+			continue
+		}
+		src := strings.TrimSpace(it.Source)
+		if src != "" && usedSource[src] >= 1 {
+			rest = append(rest, it)
+			continue
+		}
+		selected = append(selected, it)
+		usedText[key] = true
+		if src != "" {
+			usedSource[src]++
+		}
+		if len(selected) >= topK {
+			return selected
+		}
+	}
+	for _, it := range rest {
+		key := canonicalRumorText(it.Text)
+		if key == "" || usedText[key] {
+			continue
+		}
+		selected = append(selected, it)
+		usedText[key] = true
+		if len(selected) >= topK {
+			break
+		}
+	}
+	return selected
+}
+
+// DecayNpcRumors 依時間衰減權重並移除過期；每次呼叫後持久化。
+func (s *Store) DecayNpcRumors(nowUnix int64) error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	changed := false
+	for id, r := range s.NpcRumors {
+		if r == nil {
+			delete(s.NpcRumors, id)
+			changed = true
+			continue
+		}
+		if r.ExpiresAt > 0 && nowUnix > r.ExpiresAt {
+			delete(s.NpcRumors, id)
+			changed = true
+			continue
+		}
+		// 每 15 分鐘衰減 1 點（最低 1）
+		if r.UpdatedAt > 0 && nowUnix-r.UpdatedAt >= 900 && r.Weight > 1 {
+			r.Weight--
+			changed = true
+		}
+		// P8：長時間未被引用則可信度下修（每小時最多降 1）
+		if r.LastUsedAt > 0 && nowUnix-r.LastUsedAt >= 3600 {
+			if r.SourceScore > 1 {
+				r.SourceScore--
+				changed = true
+			} else if r.Weight > 1 {
+				r.Weight--
+				changed = true
+			}
+		}
+	}
+	s.mu.Unlock()
+	if changed {
+		return s.persistNpcRumors()
+	}
+	return nil
+}
+
+// MarkRumorUsedByText 標記某條傳聞被引用（P8：動態可信度學習）。
+func (s *Store) MarkRumorUsedByText(text string, nowUnix int64) error {
+	if s == nil {
+		return nil
+	}
+	key := canonicalRumorText(text)
+	if key == "" {
+		return nil
+	}
+	s.mu.Lock()
+	changed := false
+	for _, r := range s.NpcRumors {
+		if r == nil {
+			continue
+		}
+		if canonicalRumorText(r.Text) != key {
+			continue
+		}
+		r.MentionCount++
+		r.LastUsedAt = nowUnix
+		// 被反覆引用的傳聞逐步升權（上限避免失控）
+		if r.MentionCount%3 == 0 && r.Weight < 20 {
+			r.Weight++
+		}
+		if r.MentionCount%5 == 0 && r.SourceScore < 8 {
+			r.SourceScore++
+		}
+		changed = true
+		break
+	}
+	s.mu.Unlock()
+	if changed {
+		return s.persistNpcRumors()
+	}
+	return nil
+}
+
+// PenalizeRumorByText 對衝突傳聞做降權與短期封鎖（P9）。
+func (s *Store) PenalizeRumorByText(text string, nowUnix int64, reason string) error {
+	if s == nil {
+		return nil
+	}
+	key := canonicalRumorText(text)
+	if key == "" {
+		return nil
+	}
+	s.mu.Lock()
+	changed := false
+	for _, r := range s.NpcRumors {
+		if r == nil {
+			continue
+		}
+		if canonicalRumorText(r.Text) != key {
+			continue
+		}
+		if r.Weight > 1 {
+			r.Weight -= 2
+			if r.Weight < 1 {
+				r.Weight = 1
+			}
+		}
+		if r.SourceScore > 1 {
+			r.SourceScore--
+		}
+		// 衝突傳聞暫停 15 分鐘，不再注入 prompt
+		r.BlockedUntil = nowUnix + 900
+		r.UpdatedAt = nowUnix
+		r.PenaltyCount++
+		r.LastPenaltyAt = nowUnix
+		r.LastPenaltyReason = strings.TrimSpace(reason)
+		changed = true
+		break
+	}
+	s.mu.Unlock()
+	if changed {
+		return s.persistNpcRumors()
+	}
+	return nil
+}
+
+// DebugNpcRumors 回傳 room/zone 相關傳聞（含封鎖中項目）供觀測面板使用（P10）。
+func (s *Store) DebugNpcRumors(roomID, zone string, nowUnix int64, limit int) []NpcRumor {
+	if s == nil || limit <= 0 {
+		return nil
+	}
+	s.mu.RLock()
+	list := make([]NpcRumor, 0, len(s.NpcRumors))
+	for _, r := range s.NpcRumors {
+		if r == nil || strings.TrimSpace(r.Text) == "" {
+			continue
+		}
+		if r.ExpiresAt > 0 && nowUnix > r.ExpiresAt {
+			continue
+		}
+		if roomID != "" && r.RoomID != "" && r.RoomID != roomID {
+			continue
+		}
+		if zone != "" && r.Zone != "" && r.Zone != zone {
+			continue
+		}
+		cp := *r
+		list = append(list, cp)
+	}
+	s.mu.RUnlock()
+	sort.Slice(list, func(i, j int) bool {
+		si := list[i].Weight + list[i].SourceScore
+		sj := list[j].Weight + list[j].SourceScore
+		if si == sj {
+			return list[i].UpdatedAt > list[j].UpdatedAt
+		}
+		return si > sj
+	})
+	if len(list) > limit {
+		list = list[:limit]
+	}
+	return list
+}
+
+// ResetNpcRumorSignals 清空傳聞的動態訊號（引用/封鎖/懲罰），保留文本與基礎權重。
+func (s *Store) ResetNpcRumorSignals() error {
+	if s == nil {
+		return nil
+	}
+	s.mu.Lock()
+	changed := false
+	for _, r := range s.NpcRumors {
+		if r == nil {
+			continue
+		}
+		if r.MentionCount != 0 || r.LastUsedAt != 0 || r.BlockedUntil != 0 || r.PenaltyCount != 0 || r.LastPenaltyAt != 0 || r.LastPenaltyReason != "" {
+			r.MentionCount = 0
+			r.LastUsedAt = 0
+			r.BlockedUntil = 0
+			r.PenaltyCount = 0
+			r.LastPenaltyAt = 0
+			r.LastPenaltyReason = ""
+			changed = true
+		}
+	}
+	s.mu.Unlock()
+	if changed {
+		return s.persistNpcRumors()
+	}
+	return nil
+}
+
+type npcRumorDigestFile struct {
+	Digest *NpcRumorDigest `json:"digest"`
+}
+
+func (s *Store) loadNpcRumorDigest() error {
+	if s == nil || s.npcRumorDigestPath == "" {
+		return nil
+	}
+	data, err := os.ReadFile(s.npcRumorDigestPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	var f npcRumorDigestFile
+	if err := json.Unmarshal(data, &f); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	s.NpcRumorDigest = f.Digest
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *Store) persistNpcRumorDigest() error {
+	if s == nil || s.npcRumorDigestPath == "" {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(s.npcRumorDigestPath), 0755); err != nil {
+		return err
+	}
+	s.mu.RLock()
+	d := s.NpcRumorDigest
+	s.mu.RUnlock()
+	raw, err := json.MarshalIndent(npcRumorDigestFile{Digest: d}, "", "  ")
+	if err != nil {
+		return err
+	}
+	tmpPath := s.npcRumorDigestPath + ".tmp"
+	if err := os.WriteFile(tmpPath, raw, 0644); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.npcRumorDigestPath); err != nil {
+		_ = os.Remove(tmpPath)
+		return err
+	}
+	return nil
+}
+
+func (s *Store) GetNpcRumorDigest() *NpcRumorDigest {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	if s.NpcRumorDigest == nil {
+		return nil
+	}
+	cp := *s.NpcRumorDigest
+	return &cp
+}
+
+// BuildNpcRumorDigest 用目前傳聞池建立一句摘要並持久化（可離線批次定時執行）。
+func (s *Store) BuildNpcRumorDigest(nowUnix int64) error {
+	if s == nil {
+		return nil
+	}
+	top := s.TopNpcRumors("", "", nowUnix, 5)
+	if len(top) == 0 {
+		return nil
+	}
+	parts := make([]string, 0, 3)
+	for i := 0; i < len(top) && i < 3; i++ {
+		t := strings.TrimSpace(top[i].Text)
+		if t == "" {
+			continue
+		}
+		parts = append(parts, truncToRunes(t, 16))
+	}
+	if len(parts) == 0 {
+		return nil
+	}
+	d := &NpcRumorDigest{
+		Text:        "近日鎮上：" + strings.Join(parts, "；"),
+		SourceCount: len(top),
+		UpdatedAt:   nowUnix,
+	}
+	s.mu.Lock()
+	s.NpcRumorDigest = d
+	s.mu.Unlock()
+	return s.persistNpcRumorDigest()
+}
+
+func truncToRunes(s string, n int) string {
+	r := []rune(s)
+	if len(r) <= n {
+		return s
+	}
+	return string(r[:n]) + "…"
+}
+
+func canonicalRumorText(s string) string {
+	s = strings.TrimSpace(strings.ToLower(s))
+	if s == "" {
+		return ""
+	}
+	replacer := strings.NewReplacer(
+		" ", "", "\t", "", "\n", "",
+		"，", "", "。", "", "！", "", "？", "",
+		",", "", ".", "", "!", "", "?", "",
+		"；", "", ";", "", "：", "", ":", "",
+		"「", "", "」", "", "\"", "", "'", "",
+	)
+	return replacer.Replace(s)
 }
 
 // SetAuth 設定 entity 密碼雜湊並持久化 auth.json。
