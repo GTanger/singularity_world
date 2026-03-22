@@ -18,10 +18,11 @@
 
 ```
 data/
-├── npc_behaviors.json          ← 定點 NPC 行為文本（經理、服務生），依職業 key 使用；啟動時載入
+├── npc_behaviors.json          ← 定點 NPC 行為文本（經理、服務生、店員），依職業 key 使用；啟動時載入
 ├── rooms.json                  ← 房間定義（tags + zone）
 └── templates/                  ← 職業與模板系統（本資料夾）
     ├── README.md               ← 本文件
+    ├── llm_prompts.json        ← NPC 對話 LLM：世界現象級與 system 固定句（玩家↔NPC、NPC↔NPC）；改完重啟
     ├── occupations.json        ← 職業型別表：id → 對話/行為檔、在場時開放的 action_sockets（無 spawn_weight）
     ├── archetypes.json         ← （選用）量產用職業原型 + movement，供未來「由 archetype 生成移動型 NPC」參考
     ├── dialogues/              ← 對話模板：依職業掛載，任時任地可用
@@ -53,7 +54,8 @@ data/
 | occupation_id | 名稱 | action_sockets | 備註 |
 |---------------|------|----------------|------|
 | 經理 | 經理 | `[]` | 行為敘事來自 npc_behaviors.json roles.經理 |
-| 服務生 | 服務生 | `[]` | 同上，roles.服務生 |
+| 服務生 | 服務生 | `[]` | 同上，roles.服務生（區域走動、端盤） |
+| 店員 | 店員 | `[]` | roles.店員；`dialogues/clerk.json`；蕗易沙櫃檯站崗（`wander_rooms` 單間不巡邏） |
 
 後端：`db/occupation.go` 的 `LoadOccupations`、`GetSocketsForNPC(db, entityID, roomID)` 依指派與 **room_ids 在場** 決定是否加上 `action_sockets`。
 
@@ -79,9 +81,9 @@ data/
 | `spawn` | 重生點 | lobby |
 | `inn` | 客棧 | life_hall |
 | `tavern` | 酒館/食堂 | life_dining, life_wine_cellar |
-| `social` | 社交場所 | life_hall, life_dining |
+| `social` | 社交場所（八卦／聚談） | life_hall, life_dining, life_cofe_seat |
 | `trade` | 可交易 | life_hall |
-| `food` | 有食物 | life_dining |
+| `food` | 有食物 | life_dining, life_cofe_1, life_cofe_order, life_cofe_seat |
 | `outdoor` | 戶外 | life_garden, life_backyard |
 | `garden` | 花園/庭院 | life_garden |
 | `gate` | 入口/城門 | life_garden |
@@ -110,7 +112,7 @@ data/
 
 ### 4.1 regional（區域型）
 
-在指定 `wander_rooms` 內隨機跳轉；適用定點 NPC（經理、服務生、鐵匠、農夫）。`npc_behaviors.json` 的 wander_rooms 即此模式。
+在指定 `wander_rooms` 內隨機跳轉；適用定點 NPC（經理、服務生、鐵匠、農夫）。**僅一間房時不觸發巡邏**（店員站櫃）。`npc_behaviors.json` 的 wander_rooms 即此模式。
 
 ### 4.2 route（路線型）
 

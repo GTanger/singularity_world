@@ -2,7 +2,6 @@
 package server
 
 import (
-	"database/sql"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -73,7 +72,7 @@ func NewClient(conn *websocket.Conn) *Client {
 }
 
 // ReadLoop 從 c.Conn 讀取 JSON 訊息並交由 HandleMessage 處理，結束時呼叫 onClose(c)。
-func ReadLoop(c *Client, onClose func(*Client), database *sql.DB, cfg config.Server, store *SessionStore, hub *Hub) {
+func ReadLoop(c *Client, onClose func(*Client), cfg config.Server, store *SessionStore, hub *Hub) {
 	defer onClose(c)
 	for {
 		_, data, err := c.Conn.ReadMessage()
@@ -81,7 +80,7 @@ func ReadLoop(c *Client, onClose func(*Client), database *sql.DB, cfg config.Ser
 			return
 		}
 		if len(data) > 0 {
-			HandleMessage(c, data, database, cfg, store, hub)
+			HandleMessage(c, data, cfg, store, hub)
 		}
 	}
 }

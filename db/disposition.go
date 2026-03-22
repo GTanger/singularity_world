@@ -2,8 +2,6 @@
 package db
 
 import (
-	"database/sql"
-
 	"singularity_world/store"
 )
 
@@ -14,13 +12,14 @@ const (
 	DispBroke      = -20 // 鎂歸零
 	DispBegSuccess = +3  // 乞討成功
 	DispGather     = +5  // 採集成功
+	DispTrade      = +6  // 街頭兜售成功
 	DispTalked     = +5  // 與人交談
 	DispDaily      = -2  // 每日自然衰減（回歸中性）
 	DispSubdued    = -15 // 被制伏
 )
 
 // AdjustDisposition 調整心境值，clamp [-100, +100]。
-func AdjustDisposition(database *sql.DB, entityID string, delta int) {
+func AdjustDisposition(entityID string, delta int) {
 	if store.Default == nil {
 		return
 	}
@@ -33,12 +32,11 @@ func AdjustDisposition(database *sql.DB, entityID string, delta int) {
 			e.Disposition = -100
 		}
 	})
-	_ = database
 }
 
 // GetDisposition 取得心境值；無實體或無 store 時回傳 0。
-func GetDisposition(database *sql.DB, entityID string) int {
-	c, _ := GetEntity(database, entityID)
+func GetDisposition(entityID string) int {
+	c, _ := GetEntity(entityID)
 	if c == nil {
 		return 0
 	}

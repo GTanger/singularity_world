@@ -2,7 +2,6 @@
 package db
 
 import (
-	"database/sql"
 	"encoding/json"
 	"log"
 	"os"
@@ -63,16 +62,16 @@ func GetOccupationActionSockets(occupationID string) []string {
 }
 
 // GetSocketsForNPC 回傳 NPC 在指定房間內的有效插座：預設插座＋僅在綁定場所內時才加的職業動作插座。
-func GetSocketsForNPC(db *sql.DB, entityID, roomID string) []string {
+func GetSocketsForNPC(entityID, roomID string) []string {
 	sockets := make([]string, 0, len(defaultSockets)+8)
 	sockets = append(sockets, defaultSockets...)
-	assignments, err := GetAssignmentsForEntity(db, entityID)
+	assignments, err := GetAssignmentsForEntity(entityID)
 	if err != nil {
 		return sockets
 	}
 	seen := make(map[string]bool)
 	for _, a := range assignments {
-		inVenue, err := IsRoomInVenue(db, roomID, a.VenueID)
+		inVenue, err := IsRoomInVenue(roomID, a.VenueID)
 		if err != nil || !inVenue {
 			continue
 		}

@@ -1,9 +1,11 @@
 package db
 
 import (
-	"database/sql"
 	"os"
+	"path/filepath"
 	"testing"
+
+	"singularity_world/store"
 )
 
 func TestIsOnDuty(t *testing.T) {
@@ -29,7 +31,6 @@ func TestIsOnDuty(t *testing.T) {
 		{"night@06", night, 6, true},
 		{"night@07", night, 7, false},
 		{"night@12", night, 12, false},
-		// Overlap: both on at 18, both on at 06
 		{"overlap_day@18", day, 18, true},
 		{"overlap_night@18", night, 18, true},
 		{"overlap_day@06", day, 6, true},
@@ -45,40 +46,47 @@ func TestIsOnDuty(t *testing.T) {
 	}
 }
 
-func setupTestDB(t *testing.T) *sql.DB {
+// setupTestStore 以專案 data/rooms 與暫存 runtime/data 初始化 store（SQLite 已移除）。
+func setupTestStore(t *testing.T) {
 	t.Helper()
-	path := t.TempDir() + "/test.db"
-	database, err := OpenDB(path)
-	if err != nil {
-		t.Fatalf("OpenDB: %v", err)
+	roomsPath := filepath.Join("..", "data", "rooms")
+	if _, err := os.Stat(roomsPath); err != nil {
+		t.Skip("need ../data/rooms for store tests:", err)
 	}
-	t.Cleanup(func() {
-		database.Close()
-		os.Remove(path)
-	})
-	return database
+	tmp := t.TempDir()
+	rt := filepath.Join(tmp, "runtime")
+	dd := filepath.Join(tmp, "data")
+	if err := os.MkdirAll(rt, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(dd, 0755); err != nil {
+		t.Fatal(err)
+	}
+	old := store.Default
+	if err := store.Init(roomsPath, rt, dd); err != nil {
+		t.Fatalf("store.Init: %v", err)
+	}
+	t.Cleanup(func() { store.Default = old })
 }
 
 func TestApplySchedules(t *testing.T) {
-	database := setupTestDB(t)
+	setupTestStore(t)
 
 	workRoom := "life_hall"
 	restRoom := "life_storage"
 
-	// 預設四名 NPC 已從 seed 移除，測試內手動建立實體與排班（ApplySchedules 只回傳「應前往」清單，不傳送）
 	for _, id := range []string{"陳正明", "林小雯", "張明德", "王阿財"} {
-		if err := InsertNPC(database, id, string([]rune(id)[0]), "M", ""); err != nil {
+		if err := InsertNPC(id, string([]rune(id)[0]), "M", ""); err != nil {
 			t.Fatalf("InsertNPC %s: %v", id, err)
 		}
-		_ = SetEntityRoom(database, id, workRoom)
+		_ = SetEntityRoom(id, workRoom)
 	}
-	// 日班 06-19、夜班 18-07
-	_ = InsertSchedule(database, "陳正明", workRoom, restRoom, 6, 19)
-	_ = InsertSchedule(database, "林小雯", workRoom, restRoom, 6, 19)
-	_ = InsertSchedule(database, "張明德", workRoom, restRoom, 18, 7)
-	_ = InsertSchedule(database, "王阿財", workRoom, restRoom, 18, 7)
+	_ = InsertSchedule("陳正明", workRoom, restRoom, 6, 19)
+	_ = InsertSchedule("林小雯", workRoom, restRoom, 6, 19)
+	_ = InsertSchedule("張明德", workRoom, restRoom, 18, 7)
+	_ = InsertSchedule("王阿財", workRoom, restRoom, 18, 7)
 
-	schedules, err := GetAllSchedules(database)
+	schedules, err := GetAllSchedules()
 	if err != nil {
 		t.Fatalf("GetAllSchedules: %v", err)
 	}
@@ -86,8 +94,7 @@ func TestApplySchedules(t *testing.T) {
 		t.Fatalf("expected at least 4 schedules (test created 4), got %d", len(schedules))
 	}
 
-	// Hour 12: 日班應在 work、夜班應在 rest；所有人目前在 work，故夜班兩人會進 moves（應前往 rest）
-	moves, err := ApplySchedules(database, 12)
+	moves, err := ApplySchedules(12)
 	if err != nil {
 		t.Fatalf("ApplySchedules(12): %v", err)
 	}
@@ -99,16 +106,14 @@ func TestApplySchedules(t *testing.T) {
 			t.Errorf("hour 12 move: %s NewRoom want %s, got %s", m.EntityID, restRoom, m.NewRoom)
 		}
 	}
-	// 不傳送：實體仍留在原房間
 	for _, id := range []string{"張明德", "王阿財"} {
-		room, _ := GetEntityRoom(database, id)
+		room, _ := GetEntityRoom(id)
 		if room != workRoom {
 			t.Errorf("hour 12 (no teleport): %s should still be in %s, got %s", id, workRoom, room)
 		}
 	}
 
-	// Hour 22: 夜班應在 work、日班應在 rest；若仍在 work 則日班兩人進 moves
-	moves22, _ := ApplySchedules(database, 22)
+	moves22, _ := ApplySchedules(22)
 	if len(moves22) != 2 {
 		t.Errorf("hour 22: expected 2 moves (day shift to rest), got %d", len(moves22))
 	}
@@ -120,14 +125,14 @@ func TestApplySchedules(t *testing.T) {
 }
 
 func TestGetScheduleTarget(t *testing.T) {
-	database := setupTestDB(t)
+	setupTestStore(t)
 	workRoom := "life_hall"
 	restRoom := "life_storage"
-	_ = InsertNPC(database, "試算", "試", "M", "")
-	_ = SetEntityRoom(database, "試算", workRoom)
-	_ = InsertSchedule(database, "試算", workRoom, restRoom, 6, 19)
+	_ = InsertNPC("試算", "試", "M", "")
+	_ = SetEntityRoom("試算", workRoom)
+	_ = InsertSchedule("試算", workRoom, restRoom, 6, 19)
 
-	target, ok := GetScheduleTarget(database, "試算", 12)
+	target, ok := GetScheduleTarget("試算", 12)
 	if !ok {
 		t.Fatal("GetScheduleTarget(12): want ok true")
 	}
@@ -135,7 +140,7 @@ func TestGetScheduleTarget(t *testing.T) {
 		t.Errorf("hour 12: want room=%s isWork=true, got room=%s isWork=%v", workRoom, target.Room, target.IsWork)
 	}
 
-	target, ok = GetScheduleTarget(database, "試算", 22)
+	target, ok = GetScheduleTarget("試算", 22)
 	if !ok {
 		t.Fatal("GetScheduleTarget(22): want ok true")
 	}
@@ -143,7 +148,7 @@ func TestGetScheduleTarget(t *testing.T) {
 		t.Errorf("hour 22: want room=%s isWork=false, got room=%s isWork=%v", restRoom, target.Room, target.IsWork)
 	}
 
-	_, ok = GetScheduleTarget(database, "不存在", 12)
+	_, ok = GetScheduleTarget("不存在", 12)
 	if ok {
 		t.Error("GetScheduleTarget(不存在): want ok false")
 	}

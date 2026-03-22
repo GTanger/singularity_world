@@ -1,130 +1,47 @@
 {
   "threads": {
-    "npc_dh7ljyggbjh5|npc_dh7llhl1hpd9": {
-      "thread_key": "npc_dh7ljyggbjh5|npc_dh7llhl1hpd9",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "cooling",
-      "turn_count": 1,
-      "cooldown_until": 1774049286,
-      "updated_at": 1774048986
-    },
-    "npc_dh7ljyggbjh5|npc_dh7ln0pmebvc": {
-      "thread_key": "npc_dh7ljyggbjh5|npc_dh7ln0pmebvc",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "cooling",
-      "turn_count": 1,
-      "cooldown_until": 1774051386,
-      "updated_at": 1774051086
-    },
-    "npc_dh7ljyggbjh5|npc_dh7lok2gzenv": {
-      "thread_key": "npc_dh7ljyggbjh5|npc_dh7lok2gzenv",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "elaborate",
-      "anchors": [
-        "浮生"
-      ],
-      "turn_count": 1,
-      "cooldown_until": 0,
-      "updated_at": 1774022886
-    },
-    "npc_dh7ljyggbjh5|npc_dh7lxdp40upk": {
-      "thread_key": "npc_dh7ljyggbjh5|npc_dh7lxdp40upk",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "elaborate",
-      "anchors": [
-        "street4zone",
-        "social"
-      ],
-      "turn_count": 1,
-      "cooldown_until": 0,
-      "updated_at": 1774050486
-    },
-    "npc_dh7llhl1hpd9|npc_dh7lvuc9y0a1": {
-      "thread_key": "npc_dh7llhl1hpd9|npc_dh7lvuc9y0a1",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "cooling",
-      "anchors": [
-        "street4zone"
-      ],
-      "turn_count": 1,
-      "cooldown_until": 1774051086,
-      "updated_at": 1774050786
-    },
     "npc_dh7llhl1hpd9|npc_dh7lywtpacw1": {
       "thread_key": "npc_dh7llhl1hpd9|npc_dh7lywtpacw1",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "cooling",
-      "turn_count": 1,
-      "cooldown_until": 1774051536,
-      "updated_at": 1774051236
-    },
-    "npc_dh7ln0pmebvc|npc_dh7lq371wwmu": {
-      "thread_key": "npc_dh7ln0pmebvc|npc_dh7lq371wwmu",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "cooling",
-      "anchors": [
-        "street4zone",
-        "浮生客棧"
-      ],
-      "turn_count": 1,
-      "cooldown_until": 1774023036,
-      "updated_at": 1774022736
-    },
-    "npc_dh7lok2gzenv|npc_dh7lq371wwmu": {
-      "thread_key": "npc_dh7lok2gzenv|npc_dh7lq371wwmu",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
+      "topic_type": "打聽消息、問路、問人",
       "phase": "elaborate",
       "anchors": [
-        "npc_dh7lok2gzenv",
-        "離開前往life_garden"
+        "座位區/夜裡/近鄰"
       ],
       "turn_count": 1,
       "cooldown_until": 0,
-      "updated_at": 1774049586
+      "updated_at": 1774151399
     },
-    "npc_dh7lub7op7n9|npc_dh7lvuc9y0a1": {
-      "thread_key": "npc_dh7lub7op7n9|npc_dh7lvuc9y0a1",
+    "npc_dh7llhl1hpd9|npc_dh7m0fyaaldh": {
+      "thread_key": "npc_dh7llhl1hpd9|npc_dh7m0fyaaldh",
+      "topic_type": "天候與環境：低飽和微光、輻射雨、靜謐豐饒下的不適天氣（沃土風，非核冬天）",
+      "phase": "cooling",
+      "anchors": [
+        "咖啡",
+        "輕食"
+      ],
+      "turn_count": 2,
+      "cooldown_until": 1774170548,
+      "updated_at": 1774170248
+    },
+    "npc_dh7ln0pmebvc|npc_dh7lok2gzenv": {
+      "thread_key": "npc_dh7ln0pmebvc|npc_dh7lok2gzenv",
       "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "elaborate",
+      "phase": "cooling",
       "turn_count": 1,
-      "cooldown_until": 0,
-      "updated_at": 1774051086
+      "cooldown_until": 1774173936,
+      "updated_at": 1774173636
     },
     "npc_dh7lub7op7n9|npc_dh7lywtpacw1": {
       "thread_key": "npc_dh7lub7op7n9|npc_dh7lywtpacw1",
       "topic_type": "打聽消息、問路、問人",
       "phase": "cooling",
       "anchors": [
-        "street4zone",
-        "street"
+        "路人",
+        "coffee"
       ],
-      "turn_count": 2,
-      "cooldown_until": 1774051386,
-      "updated_at": 1774051086
-    },
-    "npc_dh7lub7op7n9|npc_dh7m0fyaaldh": {
-      "thread_key": "npc_dh7lub7op7n9|npc_dh7m0fyaaldh",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "elaborate",
       "turn_count": 1,
-      "cooldown_until": 0,
-      "updated_at": 1774050336
-    },
-    "npc_dh7lvuc9y0a1|npc_dh7m0fyaaldh": {
-      "thread_key": "npc_dh7lvuc9y0a1|npc_dh7m0fyaaldh",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "elaborate",
-      "turn_count": 1,
-      "cooldown_until": 0,
-      "updated_at": 1774050786
-    },
-    "npc_dh7lxdp40upk|npc_dh7m0fyaaldh": {
-      "thread_key": "npc_dh7lxdp40upk|npc_dh7m0fyaaldh",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "elaborate",
-      "turn_count": 1,
-      "cooldown_until": 0,
-      "updated_at": 1774051236
+      "cooldown_until": 1774173336,
+      "updated_at": 1774173036
     }
   }
 }

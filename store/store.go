@@ -397,13 +397,18 @@ func (s *Store) loadRooms(path string) error {
 		})
 	}
 	// 需求：僅保留街道/巷道房間，移除其連接建築室內空間。
-	s.pruneNonStreetRoomsLocked()
+	s.pruneNonStreetRoomsLocked(nil)
 	return nil
 }
 
 // loadRoomsFromDir 遞迴掃描 dir 下所有 .json（含任意層子資料夾，例 data/rooms/浮生大街/民宅/xxx.json），每檔一房＋其 exits。
+// data/rooms/editor/ 子目錄下的房間豁免街道篩選，全數保留。
 func (s *Store) loadRoomsFromDir(dir string) error {
-	var list []roomFileOne
+	type fileEntry struct {
+		room     roomFileOne
+		isEditor bool
+	}
+	var list []fileEntry
 	err := filepath.WalkDir(dir, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -422,17 +427,20 @@ func (s *Store) loadRoomsFromDir(dir string) error {
 		if json.Unmarshal(data, &one) != nil {
 			return nil
 		}
-		list = append(list, one)
+		rel, _ := filepath.Rel(dir, path)
+		isEditor := strings.HasPrefix(filepath.ToSlash(rel), "editor/")
+		list = append(list, fileEntry{room: one, isEditor: isEditor})
 		return nil
 	})
 	if err != nil {
 		return err
 	}
+	editorIDs := make(map[string]bool)
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	nameByID := make(map[string]string)
 	for i := range list {
-		one := &list[i]
+		one := &list[i].room
 		s.Rooms[one.ID] = &model.Room{
 			ID:          one.ID,
 			Name:        one.Name,
@@ -442,9 +450,12 @@ func (s *Store) loadRoomsFromDir(dir string) error {
 			Objects:     one.Objects,
 		}
 		nameByID[one.ID] = one.Name
+		if list[i].isEditor && one.ID != "" {
+			editorIDs[one.ID] = true
+		}
 	}
 	for i := range list {
-		one := &list[i]
+		one := &list[i].room
 		for _, ex := range one.Exits {
 			toName := nameByID[ex.To]
 			s.Exits[one.ID] = append(s.Exits[one.ID], model.Exit{
@@ -454,8 +465,8 @@ func (s *Store) loadRoomsFromDir(dir string) error {
 			})
 		}
 	}
-	// 需求：僅保留街道/巷道房間，移除其連接建築室內空間。
-	s.pruneNonStreetRoomsLocked()
+	// 需求：僅保留街道/巷道房間，移除其連接建築室內空間；editor/ 子目錄的房間全數豁免。
+	s.pruneNonStreetRoomsLocked(editorIDs)
 	return nil
 }
 
@@ -476,11 +487,12 @@ func isStreetOrAlleyRoom(r *model.Room) bool {
 }
 
 // pruneNonStreetRoomsLocked 僅保留街道/巷道房間，並移除指向刪除房間的出口。
+// exemptIDs 中的房間不參與篩選（如 editor/ 子目錄的手工房間）。
 // 呼叫端需持有 s.mu.Lock()。
-func (s *Store) pruneNonStreetRoomsLocked() {
+func (s *Store) pruneNonStreetRoomsLocked(exemptIDs map[string]bool) {
 	keep := make(map[string]bool, len(s.Rooms))
 	for id, r := range s.Rooms {
-		if isStreetOrAlleyRoom(r) {
+		if exemptIDs[id] || isStreetOrAlleyRoom(r) {
 			keep[id] = true
 		}
 	}
@@ -865,6 +877,20 @@ func (s *Store) EntityIDsInRoom(roomID string) []string {
 		if rid == roomID {
 			out = append(out, eid)
 		}
+	}
+	return out
+}
+
+// AllEntityIDs 回傳目前載入之所有實體 ID（供 SyncRoomsFromFile 等補齊 entity_room 用）。
+func (s *Store) AllEntityIDs() []string {
+	if s == nil {
+		return nil
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	out := make([]string, 0, len(s.Entities))
+	for id := range s.Entities {
+		out = append(out, id)
 	}
 	return out
 }

@@ -13,6 +13,12 @@
       "behavior_file": "npc_behaviors",
       "action_sockets": []
     },
+    "店員": {
+      "name": "店員",
+      "dialogue_file": "dialogues/clerk.json",
+      "behavior_file": "npc_behaviors",
+      "action_sockets": []
+    },
     "乞丐": {
       "name": "乞丐",
       "dialogue_file": "dialogues/beggar.json",

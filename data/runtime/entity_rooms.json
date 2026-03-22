@@ -1,52 +1,52 @@
 {
   "entries": [
     {
-      "entity_id": "npc_dh7llhl1hpd9",
-      "room_id": "street_life_1"
+      "entity_id": "npc_dh7lxdp40upk",
+      "room_id": "life_cofe_1"
+    },
+    {
+      "entity_id": "試話",
+      "room_id": "city_life_elevator"
     },
     {
       "entity_id": "npc_dh7m0fyaaldh",
-      "room_id": "street_life_1"
-    },
-    {
-      "entity_id": "npc_dh7lywtpacw1",
-      "room_id": "street4zone"
-    },
-    {
-      "entity_id": "npc_dh7lub7op7n9",
-      "room_id": "street4zone"
-    },
-    {
-      "entity_id": "npc_dh7lxdp40upk",
-      "room_id": "street4zone"
-    },
-    {
-      "entity_id": "葉卅",
-      "room_id": "street_life_1"
+      "room_id": "life_cofe_seat"
     },
     {
       "entity_id": "npc_dh7ljyggbjh5",
-      "room_id": "street_life_1"
-    },
-    {
-      "entity_id": "npc_dh7lok2gzenv",
-      "room_id": "life_dining"
+      "room_id": "city_life_1f_tea"
     },
     {
       "entity_id": "npc_dh7ln0pmebvc",
-      "room_id": "street_sun_1"
+      "room_id": "life_dining"
     },
     {
       "entity_id": "npc_dh7lq371wwmu",
       "room_id": "life_hall"
     },
     {
-      "entity_id": "npc_dh7lvuc9y0a1",
-      "room_id": "street_sun_1"
+      "entity_id": "npc_dh7lok2gzenv",
+      "room_id": "life_kitchen"
     },
     {
-      "entity_id": "試話",
-      "room_id": "street4zone"
+      "entity_id": "npc_dh7lub7op7n9",
+      "room_id": "life_cofe_1"
+    },
+    {
+      "entity_id": "葉卅",
+      "room_id": "city_life_1f_tea"
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "room_id": "life_cofe_seat"
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "room_id": "city_life_1f"
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "room_id": "life_cofe_1"
     }
   ]
 }

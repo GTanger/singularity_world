@@ -1,0 +1,302 @@
+{
+  "client_errors": {
+    "login_need_id": "請輸入角色 ID",
+    "login_need_password": "請輸入密碼",
+    "login_not_found": "角色不存在，請先創角",
+    "login_not_player": "此 ID 非玩家角色",
+    "login_verify_failed": "驗證失敗",
+    "login_wrong_password": "密碼錯誤",
+    "create_need_id": "請輸入角色 ID",
+    "create_need_password": "請設定密碼",
+    "create_password_short": "密碼至少 6 個字元",
+    "create_id_len": "ID 請 2～32 字元",
+    "create_failed": "建立失敗",
+    "create_id_taken": "此 ID 已被使用",
+    "create_entity_failed": "建立角色失敗",
+    "create_room_failed": "放入房間失敗",
+    "create_auth_failed": "設定密碼失敗",
+    "load_room_failed": "房間載入失敗",
+    "load_view_failed": "載入視野失敗",
+    "action_error": "執行動作時發生錯誤",
+    "need_login": "請先登入",
+    "missing_target_or_action": "缺少目標或動作",
+    "cannot_self_action": "無法對自己執行此動作",
+    "no_current_room": "無法取得所在房間",
+    "target_not_same_room": "目標不在同一房間",
+    "cannot_action_fmt": "無法對目標執行「%s」",
+    "target_not_at_workplace_fmt": "對方此刻不在工作場所，無法執行「%s」。",
+    "get_self_failed": "找不到自身角色",
+    "unknown_action_fmt": "未知動作：%s",
+    "target_not_found": "找不到目標",
+    "move_cannot_go": "無法前往該處",
+    "move_failed": "移動失敗",
+    "status_need_login": "請先登入",
+    "status_entity_not_found": "找不到該角色",
+    "seed_need_login": "請先登入",
+    "seed_not_found": "找不到角色",
+    "seed_no_soul": "此角色無 soul_seed",
+    "inv_need_login": "請先登入",
+    "inv_no_item": "未指定物品",
+    "inv_item_not_found": "物品不存在",
+    "inv_cannot_equip": "此物品無法穿戴",
+    "inv_hand_slot": "請指定左手或右手",
+    "inv_entity_not_found": "找不到角色",
+    "inv_bag_missing": "背包中無此物品",
+    "inv_bag_fail": "背包操作失敗",
+    "inv_equip_fail": "裝備操作失敗",
+    "inv_unequip_old_fail": "舊裝備回收失敗",
+    "unequip_need_login": "請先登入",
+    "unequip_no_slot": "未指定槽位",
+    "unequip_entity_not_found": "找不到角色",
+    "unequip_nothing": "無裝備可脫下",
+    "unequip_slot_empty": "該槽位無裝備",
+    "unequip_bag_full": "背包已滿，無法脫下",
+    "unequip_slot_fail": "槽位操作失敗",
+    "unequip_bag_fail": "背包操作失敗",
+    "display_char_default": "我",
+    "npc_fallback_um": "嗯。"
+  },
+  "brain_arrival": {
+    "beg": "【%s】在此地向路人乞討。",
+    "gather": "【%s】開始在附近採集。",
+    "seek_job": "【%s】前來打聽是否有活可做。",
+    "trade": "【%s】在此地擺開貨物。",
+    "work": "【%s】回到崗位，繼續工作。",
+    "socialize": "【%s】找了個角落坐下，悠閒地打量著來往的人。"
+  },
+  "dyad_relation": {
+    "nil_dyad": "兩人剛認識，語氣保守、客套",
+    "sentiment_low": "兩人關係緊張，語氣克制但帶刺，避免過分友善",
+    "sentiment_high": "兩人互相欣賞，語氣可更親切自然",
+    "familiarity_high": "兩人是熟人，語氣自然、可簡短接話",
+    "familiarity_mid": "兩人算點頭之交，語氣中性偏熟",
+    "familiarity_low": "兩人不太熟，先試探、語氣留距離"
+  },
+  "time_of_day": [
+    {
+      "min_hour": 0,
+      "max_hour": 5,
+      "label": "夜裡"
+    },
+    {
+      "min_hour": 5,
+      "max_hour": 10,
+      "label": "清晨"
+    },
+    {
+      "min_hour": 10,
+      "max_hour": 14,
+      "label": "正午"
+    },
+    {
+      "min_hour": 14,
+      "max_hour": 18,
+      "label": "傍晚"
+    },
+    {
+      "min_hour": 18,
+      "max_hour": 24,
+      "label": "夜裡"
+    }
+  ],
+  "dyad_tags": {
+    "same_venue": "同職場",
+    "had_quarrel": "曾口角"
+  },
+  "topic_ids": {
+    "gossip": "閒聊",
+    "shift_handover": "交班",
+    "outside_rumor": "城外聞",
+    "weather": "天候"
+  },
+  "npc_social": {
+    "rumor_prefix": "傳聞：",
+    "player_present_context_line": "【現場】附近有路人在旁，兩人說話要短、低聲，像擦肩閒聊。",
+    "known_anchors_prefix": "已知：",
+    "tone_seed_prefix": "口吻種子（勿照抄，僅參考語氣長度）：",
+    "player_gossip_topic_suffix": "（路人在旁，兩句務必極短。）",
+    "rumor_echo_line_fmt": "【餘音】稍早此處有路人搭過話，大意：%s（兩名 NPC 可側面低聲帶過一句，勿整句複誦、勿像轉述公文）",
+    "summary_fmt": "在%s：%s說「%s」%s回「%s」",
+    "archival_with_fmt": "與%s對話：%s",
+    "broadcast_fmt": "【%s】對【%s】說：「%s」【%s】說：「%s」",
+    "newcomer_rumor": "聽說又有新面孔進了這座城。",
+    "job_match_rumor_fmt": "最近鎮上又有人找到差事，約有 %d 人開始新工。"
+  },
+  "runtime_fmt": {
+    "shift_leave_fmt": "【%s】出門去了。",
+    "shift_leave_to_shop_fmt": "【%s】出門往店裡去了。",
+    "shift_arrive": "排班抵達",
+    "travel_leave_fmt": "【%s】收拾行裝，往%s方向離去。",
+    "travel_arrive_fmt": "【%s】從%s方向走了過來。",
+    "push_leave_fmt": "離開往%s",
+    "push_arrive_fmt": "從%s方向到達",
+    "push_shift_leave_detail_fmt": "離開前往%s",
+    "shift_leave_work": "【%s】出門往店裡去了。",
+    "wander_arrive_home": "【%s】回到了住處。"
+  },
+  "brain_effects": {
+    "beg_event_fmt": "在%s乞討，得%d鎂",
+    "gather_event_fmt": "在%s採集野草",
+    "hired_event_fmt": "在%s獲得%s職位",
+    "talk_social": "社交閒逛",
+    "trade_no_stock": "兜售但背包無貨可賣"
+  },
+  "economy_rumor_lines": [
+    "這幾天米鹽又貴了一點，街坊都在精打細算。",
+    "聽說租鋪成本漲了，幾家小攤開始提早收攤。",
+    "近來活錢不寬，茶館裡談的多半是省錢門道。",
+    "有人說東街貨價又動了，買賣人都在觀望。"
+  ],
+  "dialogue_scorer": {
+    "poison": [
+      "�",
+      "street",
+      "zone",
+      "npc_",
+      "entity_",
+      "room_",
+      "---",
+      "```",
+      "作為AI",
+      "作為 AI",
+      "結束對話",
+      "若需繼續"
+    ],
+    "intimate_when_cold": [
+      "老朋友",
+      "好久不見",
+      "想你",
+      "親愛"
+    ],
+    "formal_when_warm": [
+      "請問",
+      "不好意思打擾",
+      "初次見面"
+    ],
+    "pickup_signals": [
+      "嗯",
+      "是啊",
+      "對啊",
+      "沒錯",
+      "什麼",
+      "怎麼",
+      "你說",
+      "聽說",
+      "真的",
+      "難怪",
+      "所以",
+      "不過",
+      "哪裡"
+    ],
+    "question_markers": [
+      "嗎",
+      "？",
+      "呢",
+      "吧"
+    ],
+    "wasteland_markers": [
+      "末世餘生",
+      "世界末日",
+      "核冬天",
+      "核戰後",
+      "文明崩潰",
+      "文明毀滅",
+      "廢土",
+      "荒蕪",
+      "死城",
+      "核戰"
+    ],
+    "relation_cold_markers": [
+      "不太熟",
+      "陌生",
+      "距離",
+      "保守",
+      "剛認識"
+    ],
+    "relation_warm_markers": [
+      "熟人",
+      "自然",
+      "親切"
+    ]
+  },
+  "sanitize": {
+    "think_tokens": ["\u003c/th\u0069nk\u003e", "\u003cth\u0069nk\u003e"],
+    "code_fence": "```",
+    "self_correct_markers": [
+      "自我修正",
+      "根據要求"
+    ],
+    "assistant_markers": [
+      "結束對話",
+      "若需繼續",
+      "換行提問",
+      "情境需求",
+      "更簡短",
+      "請再說",
+      "（若想",
+      "（若需"
+    ]
+  },
+  "quality_gate": {
+    "bad_meta": [
+      "結束對話",
+      "若需繼續",
+      "情境需求",
+      "換行提問",
+      "```",
+      "作為AI",
+      "作為 AI"
+    ]
+  },
+  "narration_dialogue_hints": "",
+  "anchor_negators": [
+    "沒有",
+    "從未",
+    "不曾",
+    "不是",
+    "不找",
+    "別提",
+    "別再提"
+  ],
+  "sentiment": {
+    "shift_or_chat_substrings": [
+      "交班",
+      "閒聊"
+    ],
+    "pry_substring": "打聽",
+    "outside_wild_substrings": [
+      "城外惡地",
+      "富態化巨獸"
+    ],
+    "weather_substring": "天候與環境",
+    "neg_words": [
+      "不必",
+      "少管",
+      "閉嘴",
+      "煩",
+      "緊張",
+      "滾",
+      "別再"
+    ],
+    "pos_words": [
+      "謝謝",
+      "多謝",
+      "辛苦",
+      "麻煩你",
+      "幫我",
+      "好啊"
+    ]
+  },
+  "raw_event_trim_prefixes": [
+    "傳聞：",
+    "【現場】",
+    "【餘音】"
+  ],
+  "default_npc_title": "",
+  "occupation_default_waiter": "服務生",
+  "occupation_clerk": "店員",
+  "admin_wipe_entities_response": "{\"ok\":true,\"message\":\"已刪除所有角色\"}",
+  "default_manager_title": "經理",
+  "debug_pair_tag_same_venue": "tag:同職場 => +2",
+  "dialogue_markers": "你我他她它們咱妳您嗎吧呢喔嘛哦欸嘖哼喂呐呀"
+}

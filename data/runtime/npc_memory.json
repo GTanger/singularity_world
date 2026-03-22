@@ -1,69 +1,69 @@
 {
   "entries": [
     {
-      "entity_id": "npc_dh7lok2gzenv",
-      "subject_id": "葉卅",
-      "meet_count": 5,
-      "favorability": 0
-    },
-    {
-      "entity_id": "npc_dh7lq371wwmu",
-      "subject_id": "葉卅",
-      "meet_count": 3,
-      "favorability": 0
-    },
-    {
-      "entity_id": "npc_dh7lywtpacw1",
-      "subject_id": "葉卅",
-      "meet_count": 10,
-      "favorability": 0
-    },
-    {
-      "entity_id": "npc_dh7ljyggbjh5",
+      "entity_id": "npc_dh7m0fyaaldh",
       "subject_id": "葉卅",
       "meet_count": 13,
       "favorability": 0
     },
     {
-      "entity_id": "npc_dh7lub7op7n9",
-      "subject_id": "葉卅",
-      "meet_count": 7,
-      "favorability": 0
-    },
-    {
-      "entity_id": "npc_dh7m0fyaaldh",
-      "subject_id": "葉卅",
-      "meet_count": 7,
-      "favorability": 0
-    },
-    {
-      "entity_id": "npc_dh7lxdp40upk",
-      "subject_id": "葉卅",
-      "meet_count": 6,
-      "favorability": 0
-    },
-    {
-      "entity_id": "試話",
-      "subject_id": "葉卅",
-      "meet_count": 6,
-      "favorability": 0
-    },
-    {
-      "entity_id": "npc_dh7lvuc9y0a1",
-      "subject_id": "葉卅",
-      "meet_count": 7,
-      "favorability": 0
-    },
-    {
       "entity_id": "npc_dh7ln0pmebvc",
       "subject_id": "葉卅",
-      "meet_count": 8,
+      "meet_count": 16,
+      "favorability": 0
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "subject_id": "葉卅",
+      "meet_count": 13,
+      "favorability": 0
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "subject_id": "葉卅",
+      "meet_count": 13,
+      "favorability": 0
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "subject_id": "葉卅",
+      "meet_count": 12,
+      "favorability": 0
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "subject_id": "葉卅",
+      "meet_count": 19,
+      "favorability": 0
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "subject_id": "葉卅",
+      "meet_count": 15,
       "favorability": 0
     },
     {
       "entity_id": "npc_dh7llhl1hpd9",
       "subject_id": "葉卅",
-      "meet_count": 8,
+      "meet_count": 16,
+      "favorability": 0
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "subject_id": "葉卅",
+      "meet_count": 9,
+      "favorability": 0
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "subject_id": "葉卅",
+      "meet_count": 11,
+      "favorability": 0
+    },
+    {
+      "entity_id": "試話",
+      "subject_id": "葉卅",
+      "meet_count": 4,
       "favorability": 0
     }
   ]

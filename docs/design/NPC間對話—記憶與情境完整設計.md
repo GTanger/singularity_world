@@ -2,7 +2,7 @@
 
 > 目的：回答「為什麼一開始像胡言亂語、跑久了是否自然變準」——在**完整實作**前提下，定義**分層記憶、情境約束、對話管線與驗收標準**。
 > 定位：設計規格（可交給實作拆 phase），**不是**最小改動 patch 清單。
-> 對齊：`docs/NPC活化系統.md`、`docs/implementation/NPC對話記憶與背版—設計.md`、`docs/reference/NPC之間交互行為.md`。
+> 對齊：`docs/NPC活化系統.md`（含 **§零點五** 活化＝持續演進、無最終版、Ollama 模型可換）、`docs/reference/autoresearch_backend.md`、`docs/implementation/NPC對話記憶與背版—設計.md`、`docs/reference/NPC之間交互行為.md`。
 >
 > **v1.1 補充**（Go+SQLite 落地決策）：L1/L2 直接 SQLite 持久化；L0 in-memory 滑窗；Thread 最大 3 輪冷卻 300s；NPC-NPC 對話寫入雙方 archival；配對改為分數化選擇。
 >
@@ -298,7 +298,7 @@ L3 傳聞（P4）：可在「現場」區塊末尾加一條「近日鎮上：{ru
 - **每房 QPS 上限** + **每 NPC 冷卻** + **每對 dyad 冷卻**。  
 - **Token 預算**：對每次 Call 設 `max_context` / `max_output`；L3 傳聞用 **top-K 相關性**（關鍵字或日後向量）。  
 - **背景房間**：可用純規則微互動，不呼叫 LLM。  
-- **離線批次**（可選）：低峰時對 L3 做「日報式摘要」壓縮，供次日使用。
+- **L3 壓縮（若做）**：若需對傳聞做「日報式摘要」，宜在**伺服器運行時**以定時／低峰 tick 執行，**不**另開離線批次程式；與 [autoresearch_backend.md](../reference/autoresearch_backend.md) 共識一致。
 
 ---
 

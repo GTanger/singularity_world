@@ -2,7 +2,6 @@
 package game
 
 import (
-	"database/sql"
 	"math/rand"
 
 	"singularity_world/db"
@@ -20,7 +19,7 @@ type ChunkView struct {
 
 // GetChunkAndEntitiesInView 依觀測者世界座標 (wx, wy) 載入當前區塊地形，並回傳視野內實體。
 // mapsPath 為區塊地圖目錄（例：config.MapsPath）。若區塊檔不存在則回傳整塊草。
-func GetChunkAndEntitiesInView(database *sql.DB, wx, wy int, mapsPath string) (*ChunkView, error) {
+func GetChunkAndEntitiesInView(wx, wy int, mapsPath string) (*ChunkView, error) {
 	cx, cy := ChunkIndex(wx, wy)
 	grid, err := world.LoadChunk(cx, cy, mapsPath)
 	if err != nil {
@@ -30,7 +29,7 @@ func GetChunkAndEntitiesInView(database *sql.DB, wx, wy int, mapsPath string) (*
 	// 視野可能超出當前區塊，用擴大一格的範圍取實體再篩選
 	xMin, xMax := x0-ViewRadius, x1-1+ViewRadius
 	yMin, yMax := y0-ViewRadius, y1-1+ViewRadius
-	list, err := db.GetEntitiesInBox(database, xMin, xMax, yMin, yMax, "")
+	list, err := db.GetEntitiesInBox(xMin, xMax, yMin, yMax, "")
 	if err != nil {
 		return nil, err
 	}

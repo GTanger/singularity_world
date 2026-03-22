@@ -1,0 +1,78 @@
+{
+  "id": "city_life_1f",
+  "name": "浮生城1F",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜座位區｜　　　　　　　　　　　｜遇飯糰｜\n｜蕗易沙｜　　※浮生城１樓※　　｜醫療間｜\n｜來喫茶｜　　　　　　　　　　　｜休息室｜\n｜｜｜｜｜管理室｜門關門｜警衛室｜｜｜｜｜",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "蕗易沙",
+      "to": "life_cofe_1"
+    },
+    {
+      "direction": "上樓梯",
+      "to": "city_life_2f"
+    },
+    {
+      "direction": "電梯間",
+      "to": "city_life_elevator"
+    },
+    {
+      "direction": "來喫茶",
+      "to": "city_life_1f_tea"
+    }
+  ],
+  "objects": [
+    {
+      "id": "life_cofe_1",
+      "name": "蕗易沙",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「蕗易沙」。"
+      },
+      "move_to_room_id": "life_cofe_1"
+    },
+    {
+      "id": "city_life_2f",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城2F」。"
+      },
+      "move_to_room_id": "city_life_2f"
+    },
+    {
+      "id": "city_life_elevator",
+      "name": "電梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「電梯間」。"
+      },
+      "move_to_room_id": "city_life_elevator"
+    },
+    {
+      "id": "city_life_1f_tea",
+      "name": "來喫茶",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「來喫茶」。"
+      },
+      "move_to_room_id": "city_life_1f_tea"
+    }
+  ]
+}

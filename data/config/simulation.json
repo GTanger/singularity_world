@@ -1,0 +1,79 @@
+{
+  "_說明": "主迴圈與 NPC 社交／傳聞等可調數值；修改後重啟伺服器。與 server_defaults.json 分工：此檔不含埠號／Ollama／tick 間隔等伺服器級設定。",
+  "max_assignments_per_venue": 2,
+  "room_event": {
+    "max_events": 5,
+    "ttl_sec": 120,
+    "rumor_ttl_sec": 1800
+  },
+  "quality_gate_default_max_runes": 52,
+  "npc_npc_pair_pick": {
+    "thread_stale_sec": 90,
+    "thread_cooldown_sec": 300,
+    "score_base_noise": 4,
+    "dyad_sentiment_penalty_threshold": -30,
+    "dyad_sentiment_penalty": 2,
+    "same_venue_score_bonus": 3,
+    "pair_last_talk_penalty_sec": 120,
+    "pair_last_talk_penalty": 20,
+    "same_display_name_penalty": 15,
+    "familiarity_score_divisor": 20,
+    "same_dyad_venue_tag_bonus": 2
+  },
+  "npc_npc_social": {
+    "room_recent_player_talk_cooldown_sec": 60,
+    "broadcast_skip_recent_talk_sec": 15,
+    "default_dialogue_score_threshold": 35,
+    "player_gossip_bias_percent": 40,
+    "rumor_top_k_default": 2,
+    "rumor_top_k_player_in_room": 3,
+    "recent_room_events_sliding_max": 3
+  },
+  "dialogue_anchor_rumor": {
+    "min_anchor_runes": 4,
+    "ttl_sec": 3600,
+    "weight": 2,
+    "source_score": 1
+  },
+  "dyad_update": {
+    "familiarity_delta_per_exchange": 2,
+    "sentiment_cap": 100,
+    "quarrel_tag_sentiment_max": -30,
+    "clear_quarrel_sentiment_min": 25
+  },
+  "brain_beg": {
+    "magnesium_min": 3,
+    "magnesium_rand_exclusive": 8
+  },
+  "economy_pulse": {
+    "game_day_modulo": 3,
+    "rumor_ttl_sec": 5400
+  },
+  "spawn_rumor_ttl_sec": 3600,
+  "job_match_rumor_ttl_sec": 7200,
+  "rumor_decay_interval_sec": 30,
+  "rumor_digest_interval_min": 2,
+  "idle": {
+    "first_trigger_min": 25,
+    "first_trigger_span": 35,
+    "interval_min": 60,
+    "interval_span": 60
+  },
+  "random_npc_dialogue_ticks": {
+    "initial_min": 80,
+    "initial_span": 40,
+    "reset_min_with_player": 115,
+    "reset_span_with_player": 75
+  },
+  "job_matching_interval_sec": 30,
+  "travel_tick_interval": 30,
+  "wander_roll_max": 10,
+  "micro_interaction_chance_percent": 15,
+  "disposition_time_of_day": {
+    "dawn_hour_start": 6,
+    "dawn_hour_end": 9,
+    "late_night_hour_end": 5,
+    "dawn_delta": 1,
+    "late_night_delta": -1
+  }
+}

@@ -1,10 +1,10 @@
-// Package db 房間與出口查詢、實體所在房間，供傳統 MUD 節點連接節點機制。
+// Package db 房間與出口查詢、實體所在房間，供傳統 MUD 節點連接節點機制（僅 store／JSON）。
 package db
 
 import (
-	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -36,27 +36,17 @@ type exitDef struct {
 	To        string `json:"to"`
 }
 
-// GetRoom 依 id 查詢房間；若 store 已啟用則從 JSON 背板讀取，否則從 DB。
-func GetRoom(db *sql.DB, id string) (*model.Room, error) {
-	if store.Default != nil {
-		return store.Default.GetRoom(id)
+// GetRoom 依 id 查詢房間。
+func GetRoom(id string) (*model.Room, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	var r Room
-	var tagsJSON string
-	err := db.QueryRow("SELECT id, name, description, tags, zone FROM rooms WHERE id = ?", id).Scan(&r.ID, &r.Name, &r.Description, &tagsJSON, &r.Zone)
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-	if err != nil {
-		return nil, err
-	}
-	_ = json.Unmarshal([]byte(tagsJSON), &r.Tags)
-	return &r, nil
+	return store.Default.GetRoom(id)
 }
 
 // TerrainFromRoom 依房間 tags／zone 回傳戰鬥地形標籤（lush／chaos／silent／grip），供 combat.CombatOpt 使用；無則空字串。
-func TerrainFromRoom(db *sql.DB, roomID string) string {
-	room, err := GetRoom(db, roomID)
+func TerrainFromRoom(roomID string) string {
+	room, err := GetRoom(roomID)
 	if err != nil || room == nil {
 		return ""
 	}
@@ -72,231 +62,109 @@ func TerrainFromRoom(db *sql.DB, roomID string) string {
 	return ""
 }
 
-// GetRoomsByTag 回傳所有帶有指定 tag 的房間 ID；store 啟用時從 JSON 背板讀取。
-func GetRoomsByTag(database *sql.DB, tag string) ([]string, error) {
-	if store.Default != nil {
-		return store.Default.GetRoomsByTag(tag), nil
+// GetRoomsByTag 回傳所有帶有指定 tag 的房間 ID。
+func GetRoomsByTag(tag string) ([]string, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	rows, err := database.Query("SELECT id, tags FROM rooms")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var result []string
-	for rows.Next() {
-		var id, tagsJSON string
-		if err := rows.Scan(&id, &tagsJSON); err != nil {
-			return nil, err
-		}
-		var tags []string
-		_ = json.Unmarshal([]byte(tagsJSON), &tags)
-		for _, t := range tags {
-			if t == tag {
-				result = append(result, id)
-				break
-			}
-		}
-	}
-	return result, rows.Err()
+	return store.Default.GetRoomsByTag(tag), nil
 }
 
-// GetRoomsByZone 回傳指定 zone 中的所有房間 ID；store 啟用時從 JSON 背板讀取。
-func GetRoomsByZone(database *sql.DB, zone string) ([]string, error) {
-	if store.Default != nil {
-		return store.Default.GetRoomsByZone(zone), nil
+// GetRoomsByZone 回傳指定 zone 中的所有房間 ID。
+func GetRoomsByZone(zone string) ([]string, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	rows, err := database.Query("SELECT id FROM rooms WHERE zone = ?", zone)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var result []string
-	for rows.Next() {
-		var id string
-		if err := rows.Scan(&id); err != nil {
-			return nil, err
-		}
-		result = append(result, id)
-	}
-	return result, rows.Err()
+	return store.Default.GetRoomsByZone(zone), nil
 }
 
-// GetExitsForRoom 回傳某房間的所有出口（含目標房間名稱）；store 啟用時從 JSON 背板讀取。
-func GetExitsForRoom(db *sql.DB, fromRoomID string) ([]Exit, error) {
-	if store.Default != nil {
-		return store.Default.GetExitsForRoom(fromRoomID)
+// GetExitsForRoom 回傳某房間的所有出口（含目標房間名稱）。
+func GetExitsForRoom(fromRoomID string) ([]Exit, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	rows, err := db.Query(
-		`SELECT e.direction, e.to_room_id, r.name
-		 FROM exits e JOIN rooms r ON r.id = e.to_room_id
-		 WHERE e.from_room_id = ? ORDER BY e.direction`,
-		fromRoomID,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var list []Exit
-	for rows.Next() {
-		var ex Exit
-		if err := rows.Scan(&ex.Direction, &ex.ToRoomID, &ex.ToRoomName); err != nil {
-			return nil, err
-		}
-		list = append(list, ex)
-	}
-	return list, rows.Err()
+	return store.Default.GetExitsForRoom(fromRoomID)
 }
 
-// GetEntitiesInRoom 回傳指定房間內的所有實體；store 啟用時從 store 取房內 entity_id 再自 DB 查 entities。
-// NPC 的 DisplayTitle 依討論 001 改為自指派推導，無指派時 fallback 為 entities.display_title。
-func GetEntitiesInRoom(db *sql.DB, roomID string) ([]*entity.Character, error) {
-	var rows *sql.Rows
-	var err error
-	if store.Default != nil {
-		ids := store.Default.EntityIDsInRoom(roomID)
-		if len(ids) == 0 {
-			return nil, nil
-		}
-		var list []*entity.Character
-		for _, id := range ids {
-			se := store.Default.GetEntity(id)
-			if se == nil || se.Vit <= 0 {
-				continue
-			}
-			title := ""
-			if se.Kind == "npc" {
-				title = GetNPCTitle(db, id)
-			}
-			list = append(list, storeEntityToCharacter(se, title))
-		}
-		return list, nil
+// GetEntitiesInRoom 回傳指定房間內的所有實體。
+// gameHour 為當前遊戲小時 0–23，供「在職場且當班」顯示「職稱|真名」、下班僅真名；未知時傳 -1（不套用下班規則）。
+func GetEntitiesInRoom(roomID string, gameHour int) ([]*entity.Character, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	rows, err = db.Query(
-		`SELECT c.id, c.kind, c.display_char, c.x, c.y, c.move_state, c.target_x, c.target_y, c.walk_or_run,
-		 c.move_started_at, c.vit, c.qi, c.dex, c.magnesium, c.last_observed_at, c.created_at, c.gender, c.soul_seed,
-		 c.display_title
-		 FROM entity_room er JOIN entities c ON c.id = er.entity_id
-		 WHERE er.room_id = ? AND c.vit > 0`,
-		roomID,
-	)
-	if err != nil {
-		return nil, err
+	ids := store.Default.EntityIDsInRoom(roomID)
+	if len(ids) == 0 {
+		return nil, nil
 	}
-	defer rows.Close()
 	var list []*entity.Character
-	list, err = scanCharacterList(rows)
-	if err != nil {
-		return nil, err
-	}
-	for _, c := range list {
-		if c.Kind == "npc" {
-			c.DisplayTitle = GetNPCTitle(db, c.ID)
+	for _, id := range ids {
+		se := store.Default.GetEntity(id)
+		if se == nil || se.Vit <= 0 {
+			continue
 		}
+		title := ""
+		if se.Kind == "npc" {
+			title = GetNPCTitleInRoomAtHour(id, roomID, gameHour)
+		}
+		list = append(list, storeEntityToCharacter(se, title))
 	}
 	return list, nil
 }
 
-// GetEntityRoom 回傳實體當前房間 id；store 啟用時從 JSON 背板讀取並可即時覆寫。
-func GetEntityRoom(db *sql.DB, entityID string) (string, error) {
-	if store.Default != nil {
-		return store.Default.GetEntityRoom(entityID)
+// GetEntityRoom 回傳實體當前房間 id。
+func GetEntityRoom(entityID string) (string, error) {
+	if store.Default == nil {
+		return "", ErrNoStore
 	}
-	var roomID string
-	err := db.QueryRow("SELECT room_id FROM entity_room WHERE entity_id = ?", entityID).Scan(&roomID)
-	if err == sql.ErrNoRows {
-		return "", nil
-	}
-	if err != nil {
-		return "", err
-	}
-	return roomID, nil
+	return store.Default.GetEntityRoom(entityID)
 }
 
-// SetEntityRoom 將實體設為在指定房間；store 啟用時寫入記憶體並原子寫回 runtime/entity_rooms.json。
-func SetEntityRoom(db *sql.DB, entityID, roomID string) error {
-	if store.Default != nil {
-		return store.Default.SetEntityRoom(entityID, roomID)
+// SetEntityRoom 將實體設為在指定房間；寫入記憶體並原子寫回 runtime/entity_rooms.json。
+func SetEntityRoom(entityID, roomID string) error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	_, err := db.Exec("INSERT OR REPLACE INTO entity_room (entity_id, room_id) VALUES (?, ?)", entityID, roomID)
-	return err
+	return store.Default.SetEntityRoom(entityID, roomID)
 }
 
-// GetNPCIDsWithRoom 回傳所有「有房間」且 Vit>0（存活）的 NPC 實體 ID（供主迴圈註冊腦驅動 Traveler 用）。死亡（Vit≤0）NPC 不參與。
-func GetNPCIDsWithRoom(db *sql.DB) ([]string, error) {
-	if store.Default != nil {
-		return store.Default.GetNPCIDsWithRoom(), nil
+// GetNPCIDsWithRoom 回傳所有「有房間」且 Vit>0（存活）的 NPC 實體 ID。
+func GetNPCIDsWithRoom() ([]string, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	rows, err := db.Query(
-		`SELECT er.entity_id FROM entity_room er JOIN entities e ON e.id = er.entity_id WHERE e.kind = 'npc' AND e.vit > 0`)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var out []string
-	for rows.Next() {
-		var id string
-		if err := rows.Scan(&id); err != nil {
-			return nil, err
-		}
-		out = append(out, id)
-	}
-	return out, rows.Err()
+	return store.Default.GetNPCIDsWithRoom(), nil
 }
 
-// GetPlayerIDsWithRoom 回傳所有有房間的玩家實體 ID；池總量計入玩家時使用。
-func GetPlayerIDsWithRoom(db *sql.DB) ([]string, error) {
-	if store.Default != nil {
-		return store.Default.GetPlayerIDsWithRoom(), nil
+// GetPlayerIDsWithRoom 回傳所有有房間的玩家實體 ID。
+func GetPlayerIDsWithRoom() ([]string, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	rows, err := db.Query(
-		`SELECT er.entity_id FROM entity_room er JOIN entities e ON e.id = er.entity_id WHERE e.kind = 'player'`)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var out []string
-	for rows.Next() {
-		var id string
-		if err := rows.Scan(&id); err != nil {
-			return nil, err
-		}
-		out = append(out, id)
-	}
-	return out, rows.Err()
+	return store.Default.GetPlayerIDsWithRoom(), nil
 }
 
-// GetRoomName 查詢房間名稱；store 啟用時從 JSON 背板讀取。
-func GetRoomName(database *sql.DB, roomID string) (string, error) {
-	if store.Default != nil {
-		return store.Default.GetRoomName(roomID), nil
+// GetRoomName 查詢房間名稱。
+func GetRoomName(roomID string) (string, error) {
+	if store.Default == nil {
+		return "", ErrNoStore
 	}
-	var name string
-	err := database.QueryRow("SELECT name FROM rooms WHERE id = ?", roomID).Scan(&name)
-	if err == sql.ErrNoRows {
-		return "", nil
-	}
-	return name, err
+	return store.Default.GetRoomName(roomID), nil
 }
 
 // SpawnRoomName 創生預設格之唯一名稱；讀到這個名稱即為玩家創生預設房間。
 const SpawnRoomName = "界壁"
 
 // GetRoomIDByName 依房間名稱回傳第一個符合的房間 id；若無則空字串。
-func GetRoomIDByName(database *sql.DB, name string) (string, error) {
-	if store.Default != nil {
-		return store.Default.GetRoomIDByName(name), nil
+func GetRoomIDByName(name string) (string, error) {
+	if store.Default == nil {
+		return "", ErrNoStore
 	}
-	var id string
-	err := database.QueryRow("SELECT id FROM rooms WHERE name = ? LIMIT 1", name).Scan(&id)
-	if err == sql.ErrNoRows {
-		return "", nil
-	}
-	return id, err
+	return store.Default.GetRoomIDByName(name), nil
 }
 
 // GetSpawnRoomID 回傳創生預設房間 id（名稱為「界壁」的房間）；若無則回傳 "lobby" 以相容舊資料。
-func GetSpawnRoomID(database *sql.DB) string {
-	id, _ := GetRoomIDByName(database, SpawnRoomName)
+func GetSpawnRoomID() string {
+	id, _ := GetRoomIDByName(SpawnRoomName)
 	if id == "" {
 		return "lobby"
 	}
@@ -309,91 +177,105 @@ type RoomWithExits struct {
 	Exits []Exit `json:"exits"`
 }
 
-// ListAllRooms 回傳所有房間及各自出口；store 啟用時從 JSON 背板讀取。
-func ListAllRooms(db *sql.DB) ([]RoomWithExits, error) {
-	if store.Default != nil {
-		var list []RoomWithExits
-		for _, id := range store.Default.RoomIDs() {
-			r, _ := store.Default.GetRoom(id)
-			if r == nil {
-				continue
-			}
-			exits, _ := store.Default.GetExitsForRoom(id)
-			list = append(list, RoomWithExits{Room: *r, Exits: exits})
-		}
-		return list, nil
+// ListAllRooms 回傳所有房間及各自出口。
+func ListAllRooms() ([]RoomWithExits, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	rows, err := db.Query("SELECT id, name, description, tags, zone FROM rooms ORDER BY id")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
 	var list []RoomWithExits
-	for rows.Next() {
-		var r Room
-		var tagsJSON string
-		if err := rows.Scan(&r.ID, &r.Name, &r.Description, &tagsJSON, &r.Zone); err != nil {
-			return nil, err
+	for _, id := range store.Default.RoomIDs() {
+		r, _ := store.Default.GetRoom(id)
+		if r == nil {
+			continue
 		}
-		_ = json.Unmarshal([]byte(tagsJSON), &r.Tags)
-		exits, _ := GetExitsForRoom(db, r.ID)
-		list = append(list, RoomWithExits{Room: r, Exits: exits})
+		exits, _ := store.Default.GetExitsForRoom(id)
+		list = append(list, RoomWithExits{Room: *r, Exits: exits})
 	}
-	return list, rows.Err()
+	return list, nil
 }
 
-// CreateRoom 新增房間。
-func CreateRoom(db *sql.DB, id, name, description string) error {
-	_, err := db.Exec("INSERT INTO rooms (id, name, description) VALUES (?, ?, ?)", id, name, description)
-	return err
-}
-
-// ErrRoomNotFound 表示找不到要更新的房間（UPDATE 影響 0 列）。
-var ErrRoomNotFound = errors.New("room not found")
-
-// UpdateRoom 更新房間名稱與描述；若 id 不存在則回傳 ErrRoomNotFound。
-func UpdateRoom(db *sql.DB, id, name, description string) error {
-	result, err := db.Exec("UPDATE rooms SET name = ?, description = ? WHERE id = ?", name, description, id)
-	if err != nil {
-		return err
+// CreateRoom 新增房間（記憶體；持久化依房間編輯器或部署流程）。
+func CreateRoom(id, name, description string) error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	n, _ := result.RowsAffected()
-	if n == 0 {
-		return ErrRoomNotFound
-	}
+	store.Default.UpsertRoomData(&model.Room{ID: id, Name: name, Description: description}, nil)
 	return nil
 }
 
-// DeleteRoom 刪除房間：先刪出口、將房內實體移到創生格（界壁）、再刪房間。
-func DeleteRoom(db *sql.DB, id string) error {
-	if _, err := db.Exec("DELETE FROM exits WHERE from_room_id = ? OR to_room_id = ?", id, id); err != nil {
-		return err
+// ErrRoomNotFound 表示找不到要更新的房間。
+var ErrRoomNotFound = errors.New("room not found")
+
+// UpdateRoom 更新房間名稱與描述；若 id 不存在則回傳 ErrRoomNotFound。
+func UpdateRoom(id, name, description string) error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	spawnID := GetSpawnRoomID(db)
-	if _, err := db.Exec("UPDATE entity_room SET room_id = ? WHERE room_id = ?", spawnID, id); err != nil {
-		return err
+	r, _ := store.Default.GetRoom(id)
+	if r == nil {
+		return ErrRoomNotFound
 	}
-	_, err := db.Exec("DELETE FROM rooms WHERE id = ?", id)
-	return err
+	r.Name = name
+	r.Description = description
+	exits, _ := store.Default.GetExitsForRoom(id)
+	store.Default.UpsertRoomData(r, exits)
+	return nil
+}
+
+// DeleteRoom 刪除房間（store 會將房內實體遷回安全房間）。
+func DeleteRoom(id string) error {
+	if store.Default == nil {
+		return ErrNoStore
+	}
+	store.Default.DeleteRoomData(id)
+	return nil
 }
 
 // AddExit 新增一筆出口。
-func AddExit(db *sql.DB, fromRoomID, direction, toRoomID string) error {
-	_, err := db.Exec("INSERT INTO exits (from_room_id, direction, to_room_id) VALUES (?, ?, ?)", fromRoomID, direction, toRoomID)
-	return err
+func AddExit(fromRoomID, direction, toRoomID string) error {
+	if store.Default == nil {
+		return ErrNoStore
+	}
+	r, _ := store.Default.GetRoom(fromRoomID)
+	if r == nil {
+		return ErrRoomNotFound
+	}
+	exits, _ := store.Default.GetExitsForRoom(fromRoomID)
+	for _, ex := range exits {
+		if ex.Direction == direction {
+			return fmt.Errorf("exit direction %q already exists", direction)
+		}
+	}
+	exits = append(exits, model.Exit{Direction: direction, ToRoomID: toRoomID})
+	store.Default.UpsertRoomData(r, exits)
+	return nil
 }
 
 // RemoveExit 刪除一筆出口。
-func RemoveExit(db *sql.DB, fromRoomID, direction string) error {
-	_, err := db.Exec("DELETE FROM exits WHERE from_room_id = ? AND direction = ?", fromRoomID, direction)
-	return err
+func RemoveExit(fromRoomID, direction string) error {
+	if store.Default == nil {
+		return ErrNoStore
+	}
+	r, _ := store.Default.GetRoom(fromRoomID)
+	if r == nil {
+		return ErrRoomNotFound
+	}
+	exits, _ := store.Default.GetExitsForRoom(fromRoomID)
+	var filtered []model.Exit
+	for _, ex := range exits {
+		if ex.Direction != direction {
+			filtered = append(filtered, ex)
+		}
+	}
+	store.Default.UpsertRoomData(r, filtered)
+	return nil
 }
 
-// SyncRoomsFromFile 讀取 data/rooms.json，將房間與出口同步進 DB。
-// 檔案裡有的房間：不存在就新增，已存在就更新名稱與描述。
-// 檔案裡有的出口：不存在就新增。
-// DB 裡有但檔案沒有的房間/出口不會被刪（admin.html 手動加的不受影響）。
-func SyncRoomsFromFile(database *sql.DB, path string) error {
+// SyncRoomsFromFile 讀取 rooms.json，將房間與出口同步進 store（單檔舊格式）。
+func SyncRoomsFromFile(path string) error {
+	if store.Default == nil {
+		return ErrNoStore
+	}
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -408,103 +290,27 @@ func SyncRoomsFromFile(database *sql.DB, path string) error {
 	}
 
 	for _, r := range f.Rooms {
-		tagsJSON, _ := json.Marshal(r.Tags)
-		if r.Tags == nil {
-			tagsJSON = []byte("[]")
-		}
-		var exists int
-		_ = database.QueryRow("SELECT COUNT(*) FROM rooms WHERE id = ?", r.ID).Scan(&exists)
-		if exists > 0 {
-			_, _ = database.Exec("UPDATE rooms SET name = ?, description = ?, tags = ?, zone = ? WHERE id = ?", r.Name, r.Description, string(tagsJSON), r.Zone, r.ID)
-		} else {
-			if _, err := database.Exec("INSERT INTO rooms (id, name, description, tags, zone) VALUES (?, ?, ?, ?, ?)", r.ID, r.Name, r.Description, string(tagsJSON), r.Zone); err != nil {
-				return err
+		room := &model.Room{ID: r.ID, Name: r.Name, Description: r.Description, Tags: r.Tags, Zone: r.Zone}
+		var exits []model.Exit
+		for _, e := range f.Exits {
+			if e.From == r.ID {
+				exits = append(exits, model.Exit{Direction: e.Direction, ToRoomID: e.To})
 			}
-			log.Printf("rooms: created %s (%s)", r.ID, r.Name)
 		}
+		store.Default.UpsertRoomData(room, exits)
 	}
 
-	for _, e := range f.Exits {
-		var exists int
-		_ = database.QueryRow("SELECT COUNT(*) FROM exits WHERE from_room_id = ? AND direction = ?", e.From, e.Direction).Scan(&exists)
-		if exists == 0 {
-			if _, err := database.Exec("INSERT INTO exits (from_room_id, direction, to_room_id) VALUES (?, ?, ?)", e.From, e.Direction, e.To); err != nil {
-				return err
-			}
-			log.Printf("rooms: exit %s -[%s]-> %s", e.From, e.Direction, e.To)
+	spawnID := GetSpawnRoomID()
+	for _, eid := range store.Default.AllEntityIDs() {
+		rid, _ := store.Default.GetEntityRoom(eid)
+		if rid == "" {
+			_ = store.Default.SetEntityRoom(eid, spawnID)
 		}
 	}
-
-	// 沒有房間的實體放進創生格（名稱為界壁的房間）
-	spawnID := GetSpawnRoomID(database)
-	rows, err := database.Query(
-		"SELECT id FROM entities WHERE id NOT IN (SELECT entity_id FROM entity_room)")
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var id string
-		if err := rows.Scan(&id); err != nil {
-			return err
-		}
-		_ = SetEntityRoom(database, id, spawnID)
-	}
-	return rows.Err()
+	return nil
 }
 
 // SeedRooms 向下相容：讀 data/rooms.json 同步房間。
-func SeedRooms(db *sql.DB) error {
-	return SyncRoomsFromFile(db, "data/rooms.json")
-}
-
-// scanCharacterList 共用：從 entities 的 SELECT 結果（含 display_title）掃成 []*entity.Character。
-func scanCharacterList(rows *sql.Rows) ([]*entity.Character, error) {
-	var list []*entity.Character
-	for rows.Next() {
-		var c entity.Character
-		var targetX, targetY sql.NullInt64
-		var moveStartedAt, lastObservedAt sql.NullInt64
-		var walkOrRun, gender sql.NullString
-		var soulSeed sql.NullInt64
-		var displayTitle sql.NullString
-		if err := rows.Scan(
-			&c.ID, &c.Kind, &c.DisplayChar, &c.X, &c.Y, &c.MoveState,
-			&targetX, &targetY, &walkOrRun, &moveStartedAt,
-			&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender, &soulSeed,
-			&displayTitle,
-		); err != nil {
-			return nil, err
-		}
-		if targetX.Valid {
-			x := int(targetX.Int64)
-			c.TargetX = &x
-		}
-		if targetY.Valid {
-			y := int(targetY.Int64)
-			c.TargetY = &y
-		}
-		if walkOrRun.Valid {
-			c.WalkOrRun = walkOrRun.String
-		}
-		if moveStartedAt.Valid {
-			t := moveStartedAt.Int64
-			c.MoveStartedAt = &t
-		}
-		if lastObservedAt.Valid {
-			t := lastObservedAt.Int64
-			c.LastObservedAt = &t
-		}
-		if gender.Valid {
-			c.Gender = gender.String
-		}
-		if soulSeed.Valid {
-			c.SoulSeed = &soulSeed.Int64
-		}
-		if displayTitle.Valid {
-			c.DisplayTitle = displayTitle.String
-		}
-		list = append(list, &c)
-	}
-	return list, rows.Err()
+func SeedRooms() error {
+	return SyncRoomsFromFile("data/rooms.json")
 }

@@ -26,7 +26,7 @@ type Server struct {
 	NPCPoolSize          int           // NPC 池總量（有房間的 NPC 數上限）；0＝不自動補
 	NPCSpawnIntervalSec  int           // 每隔幾秒檢查一次並在未滿時生成一名 NPC；0＝不自動生成
 	OllamaBaseURL        string        // NPC 對話 LLM（Ollama）位址；空＝不呼叫，走 fallback 模板
-	OllamaModel          string        // Ollama 模型名，例如 qwen-4b-slim；空且 BaseURL 有設時預設 qwen2.5:3b
+	OllamaModel          string        // Ollama 模型 tag（可改，非鎖死）；DefaultServer 預設見程式內；若 BaseURL 非空且 Model 空則 fallback qwen-4b-slim；覆寫用環境變數 OLLAMA_MODEL
 	// 10.15 求職撮合
 	SeekJobMgThreshold int  // 鎂低於此值才參與撮合；0＝沿用程式常數 50
 	JobMatchWhenStable bool // 為 true 時，無職且鎂≥閾值者也有機率參與撮合（安定需求）
@@ -36,6 +36,9 @@ type Server struct {
 	NpcNpcSocialTickExtraWithPlayer int // 加在 min 上的亂數上界（不含）；0＝75 → 實際 min~min+extra-1
 	NpcNpcSocialTickMinNoPlayer     int // 無玩家在线時計時器下限；0＝80
 	NpcNpcSocialTickExtraNoPlayer   int // 無玩家時亂數上界（不含）；0＝40
+	// NPC↔NPC 在線品質分：通過 qualityGate 後再評分，低於門檻不寫入摘要／archival。
+	// 0＝預設門檻 35；正數＝自訂門檻；-1＝關閉評分（等同僅用 qualityGate）。環境變數 NPC_DIALOGUE_SCORE_THRESHOLD。
+	NpcNpcDialogueScoreThreshold int
 }
 
 // Design 為第一版可做清單 1.2.2 設計常數：1 格＝1m＝30px、角色圓 24px、地形字 30px、格線隱藏。供前端對齊。
@@ -43,11 +46,6 @@ type Design struct {
 	CellSizePx    int `json:"cell_size_px"`    // 地圖格 30 px ＝ 1m×1m
 	RoleCirclePx  int `json:"role_circle_px"`  // 角色圓直徑 24 px ≈ 0.8m
 	TerrainFontPx int `json:"terrain_font_px"` // 地形字 30 px
-}
-
-// DesignConstants 回傳第一版設計常數（區塊、視野、尺度等）。
-func DesignConstants() Design {
-	return Design{CellSizePx: 30, RoleCirclePx: 24, TerrainFontPx: 30}
 }
 
 // ServeDesignConstants 處理 GET /api/design-constants，回傳 JSON。供前端讀取常數、避免硬編碼。
@@ -85,40 +83,37 @@ func writeEpochFile(epoch int64) {
 	_ = os.WriteFile(gameEpochPath, []byte(strconv.FormatInt(epoch, 10)), 0644)
 }
 
-// DefaultServer 回傳第一版預設值；若環境變數 PORT 已設則使用該埠（例：Cloudflare Tunnel 用 PORT=1721）。
+// DefaultServer 載入 data/config/server_defaults.json（失敗則用內建預設），再套用環境變數覆寫。
 func DefaultServer() Server {
-	port := "8080"
-	if p := os.Getenv("PORT"); p != "" {
-		port = p
-	}
-	chunkSize := 151
-	if s := os.Getenv("CHUNK_SIZE"); s != "" {
-		if n, err := strconv.Atoi(s); err == nil && n > 0 {
-			chunkSize = n
+	cfg, ok := loadServerDefaultsFromJSON("")
+	if !ok {
+		cfg = Server{
+			Port:                 "8080",
+			DBPath:               "data/world.db",
+			MaxWebSocketConn:     10,
+			TickInterval:         500 * time.Millisecond,
+			EconomyTickInterval:  time.Second,
+			ChunkSize:            151,
+			MapsPath:             "data/maps",
+			SessionRetainMinutes: 10,
+			GameTimeScale:        24,
+			NPCPoolSize:          10,
+			NPCSpawnIntervalSec:  120,
+			OllamaBaseURL:        "http://127.0.0.1:11434",
+			OllamaModel:          "sorc/qwen3.5-claude-4.6-opus:2b",
 		}
 	}
-	mapsPath := "data/maps"
-	if p := os.Getenv("MAPS_PATH"); p != "" {
-		mapsPath = p
+	cfg.GameTimeEpochUnix = resolveGameTimeEpoch()
+	if p := os.Getenv("PORT"); p != "" {
+		cfg.Port = p
 	}
-	// 奇點曆起點：持久於 data/game_epoch.unix，重啟照算；設 GAME_TIME_EPOCH_ROLLBACK=1 才重設為「現在＝元年」。
-	// 若設 GAME_TIME_EPOCH_UNIX 則以該值為準（不讀寫檔案）。
-	gameTimeEpoch := resolveGameTimeEpoch()
-	cfg := Server{
-		Port:                 port,
-		DBPath:               "data/world.db", // 未使用；僅相容
-		MaxWebSocketConn:     10,
-		TickInterval:         500 * time.Millisecond,
-		EconomyTickInterval:  time.Second,
-		ChunkSize:            chunkSize,
-		MapsPath:             mapsPath,
-		SessionRetainMinutes: 10,
-		GameTimeEpochUnix:    gameTimeEpoch,
-		GameTimeScale:        24,
-		NPCPoolSize:          10,
-		NPCSpawnIntervalSec:  120,
-		OllamaBaseURL:        "http://127.0.0.1:11434",
-		OllamaModel:          "sorc/qwen3.5-claude-4.6-opus:2b",
+	if s := os.Getenv("CHUNK_SIZE"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil && n > 0 {
+			cfg.ChunkSize = n
+		}
+	}
+	if p := os.Getenv("MAPS_PATH"); p != "" {
+		cfg.MapsPath = p
 	}
 	if os.Getenv("OLLAMA_DISABLE") == "1" || os.Getenv("OLLAMA_DISABLE") == "true" {
 		cfg.OllamaBaseURL = ""
@@ -174,6 +169,13 @@ func DefaultServer() Server {
 	if s := os.Getenv("NPC_NPC_SOCIAL_TICK_EXTRA_NO_PLAYER"); s != "" {
 		if n, err := strconv.Atoi(s); err == nil && n > 0 {
 			cfg.NpcNpcSocialTickExtraNoPlayer = n
+		}
+	}
+	if s := os.Getenv("NPC_DIALOGUE_SCORE_THRESHOLD"); s != "" {
+		if strings.EqualFold(s, "off") || s == "-1" {
+			cfg.NpcNpcDialogueScoreThreshold = -1
+		} else if n, err := strconv.Atoi(s); err == nil {
+			cfg.NpcNpcDialogueScoreThreshold = n
 		}
 	}
 	return cfg

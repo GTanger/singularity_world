@@ -7,6 +7,7 @@ const state = {
   selectedIds: new Set(),
   selectedEdge: null,
   mode: 'move', // move | link-one | link-two
+  multiSelectMode: false, // 手機多選模式：tap=累加選取、空白拖曳=框選
   drag: null,
   linkDrag: null,
   marquee: null,
@@ -43,6 +44,7 @@ const ui = {
   btnPanelToggle: document.getElementById('btn-panel-toggle'),
   mAdd: document.getElementById('m-add'),
   mDel: document.getElementById('m-del'),
+  mMultiSel: document.getElementById('m-multi-sel'),
   mMode: document.getElementById('m-mode'),
   mPanel: document.getElementById('m-panel'),
   pathFrom: document.getElementById('path-from'),
@@ -263,23 +265,11 @@ function renderObjectsForm(objs) {
     moveLab.appendChild(selMove);
     row.appendChild(moveLab);
 
-    const sockLab = document.createElement('div');
-    sockLab.className = 'field';
-    sockLab.innerHTML = '<label>sockets（逗號分隔）</label>';
-    const inpSock = document.createElement('input');
-    inpSock.dataset.k = 'sockets';
-    inpSock.value = obj.sockets.join(', ');
-    sockLab.appendChild(inpSock);
-    row.appendChild(sockLab);
-
-    const respLab = document.createElement('div');
-    respLab.className = 'field';
-    respLab.innerHTML = '<label>responses（JSON 物件）</label>';
-    const taResp = document.createElement('textarea');
-    taResp.dataset.k = 'responses';
-    taResp.value = JSON.stringify(obj.responses || {}, null, 2);
-    respLab.appendChild(taResp);
-    row.appendChild(respLab);
+    // 行為狀態（取代 sockets + responses 原始輸入）
+    const behState = {
+      sockets: [...obj.sockets],
+      responses: Object.assign({}, obj.responses || {}),
+    };
 
     btnDel.addEventListener('click', (ev) => {
       ev.preventDefault();
@@ -296,18 +286,76 @@ function renderObjectsForm(objs) {
       cur.name = inpName.value.trim();
       cur.owner = inpOwner.value.trim();
       cur.move_to_room_id = selMove.value.trim();
-      cur.sockets = inpSock.value.split(',').map((s) => s.trim()).filter(Boolean);
-      try {
-        const parsed = JSON.parse(taResp.value || '{}');
-        cur.responses = parsed && typeof parsed === 'object' ? parsed : {};
-      } catch (_) {}
+      cur.sockets = behState.sockets;
+      cur.responses = Object.assign({}, behState.responses);
       list[idx] = cur;
       writeObjectsJson(list);
     };
-    row.querySelectorAll('input,textarea,select').forEach((el) => {
+    [inpId, inpName, inpOwner, selMove].forEach((el) => {
       el.addEventListener('input', sync);
       el.addEventListener('change', sync);
     });
+
+    // 行為區塊
+    const behWrap = document.createElement('div');
+    behWrap.className = 'field';
+    const behLbl = document.createElement('label');
+    behLbl.textContent = '行為';
+    behWrap.appendChild(behLbl);
+
+    const behRows = document.createElement('div');
+    behRows.className = 'beh-rows';
+
+    function renderBehRows() {
+      behRows.innerHTML = '';
+      behState.sockets.forEach((sock) => {
+        const brow = document.createElement('div');
+        brow.className = 'beh-row';
+        const lbl = document.createElement('span');
+        lbl.className = 'beh-lbl';
+        lbl.textContent = sock;
+        const ta = document.createElement('textarea');
+        ta.value = behState.responses[sock] || '';
+        ta.rows = 2;
+        ta.addEventListener('input', () => { behState.responses[sock] = ta.value; sync(); });
+        const btnRem = document.createElement('button');
+        btnRem.type = 'button';
+        btnRem.textContent = '✕';
+        btnRem.addEventListener('click', () => {
+          behState.sockets = behState.sockets.filter((s) => s !== sock);
+          delete behState.responses[sock];
+          renderBehRows();
+          sync();
+        });
+        brow.appendChild(lbl);
+        brow.appendChild(ta);
+        brow.appendChild(btnRem);
+        behRows.appendChild(brow);
+      });
+    }
+    renderBehRows();
+
+    const addBar = document.createElement('div');
+    addBar.className = 'beh-add-bar';
+    const BEH_DEFAULTS = { Look: '你看見它。', Read: '（在此填入閱讀內容）' };
+    ['Look', 'Read', 'Use', 'Talk', 'Move'].forEach((beh) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = `＋${beh}`;
+      btn.addEventListener('click', () => {
+        if (!behState.sockets.includes(beh)) {
+          behState.sockets.push(beh);
+          behState.responses[beh] = BEH_DEFAULTS[beh] || '';
+          renderBehRows();
+          sync();
+        }
+      });
+      addBar.appendChild(btn);
+    });
+
+    behWrap.appendChild(behRows);
+    behWrap.appendChild(addBar);
+    row.appendChild(behWrap);
     ui.objectsForm.appendChild(row);
   });
 }
@@ -675,7 +723,11 @@ function bindNode(el, id) {
     const additive = ev.ctrlKey || ev.metaKey;
 
     if (ev.pointerType === 'touch') {
-      setSelectedForTouchStart(id);
+      if (state.multiSelectMode) {
+        selectNode(id, true);
+      } else {
+        setSelectedForTouchStart(id);
+      }
     } else if (additive) {
       selectNode(id, true);
     } else if (!state.selectedIds.has(id)) {
@@ -1040,6 +1092,15 @@ ui.map.addEventListener('pointerdown', (ev) => {
   if (ev.target !== ui.map && ev.target !== ui.svg) return;
 
   if (ev.pointerType === 'touch') {
+    if (state.multiSelectMode && state.mode === 'move') {
+      // 多選模式：空白處拖曳 = 框選（marquee）
+      try { ui.wrap.setPointerCapture(ev.pointerId); } catch (_) {}
+      const p = toMapPoint(ev.clientX, ev.clientY);
+      state.marquee = { x0: p.x, y0: p.y, x1: p.x, y1: p.y, pointerId: ev.pointerId };
+      state.selectedEdge = null;
+      render();
+      return;
+    }
     try {
       ui.wrap.setPointerCapture(ev.pointerId);
     } catch (_) {}
@@ -1156,6 +1217,13 @@ if (ui.btnPanelToggle) ui.btnPanelToggle.onclick = () => ui.panel.classList.togg
 if (ui.mPanel) ui.mPanel.onclick = () => ui.panel.classList.toggle('open');
 if (ui.mAdd) ui.mAdd.onclick = () => document.getElementById('btn-add').click();
 if (ui.mDel) ui.mDel.onclick = () => document.getElementById('btn-delete').click();
+if (ui.mMultiSel) {
+  ui.mMultiSel.onclick = () => {
+    state.multiSelectMode = !state.multiSelectMode;
+    ui.mMultiSel.classList.toggle('active', state.multiSelectMode);
+    setStatus(state.multiSelectMode ? '多選模式：點格累加選取，空白拖曳框選' : '多選模式關閉');
+  };
+}
 if (ui.mMode) {
   ui.mMode.onclick = () => {
     const next = state.mode === 'move' ? 'link-one' : (state.mode === 'link-one' ? 'link-two' : 'move');

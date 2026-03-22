@@ -14,8 +14,8 @@
 | **合併檔**（`data/rooms.json`） | **一房一行** | 由腳本從一房一檔合併產生；陣列內每個房間為一行，方便快速捲動瀏覽、比對描述與用詞。 |
 
 - 一房一檔為來源，維持段落格式。
-- 合併檔列版控，需更新時執行：`node scripts/merge-rooms-one-per-line.js`
-- 若一房一檔格式跑掉，可執行：`node scripts/format-rooms-pretty.js` 統一重排為段落。
+- 合併檔列版控，需更新時執行：`node tools/js/merge-rooms-one-per-line.js`
+- 若一房一檔格式跑掉，可執行：`node tools/js/format-rooms-pretty.js` 統一重排為段落。
 
 ---
 

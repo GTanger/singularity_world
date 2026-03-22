@@ -310673,6 +310673,5364 @@
       "entity_id": "npc_dh7ln0pmebvc",
       "event_type": "observed",
       "payload": "葉卅"
+    },
+    {
+      "at": 1774075686,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "broke",
+      "payload": "鎂歸零"
+    },
+    {
+      "at": 1774107595,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107595,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107597,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "gather",
+      "payload": "在street_life_1採集野草"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107598,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107612,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107612,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107612,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107612,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107612,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107612,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774107613,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "npc_dh7lxdp40upk"
+    },
+    {
+      "at": 1774110657,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110749,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "npc_dh7ljyggbjh5"
+    },
+    {
+      "at": 1774110786,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110905,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110905,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110905,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110905,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110913,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110913,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110913,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110936,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110936,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774110936,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111035,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111035,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111035,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111035,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111035,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111049,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111049,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111049,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111049,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111049,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111049,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111086,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111086,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111086,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111236,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111236,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111236,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111386,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111386,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111386,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111536,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111536,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111536,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111607,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111607,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111607,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111612,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774111612,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111612,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111612,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111612,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111612,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111612,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111612,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111618,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774111618,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111618,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111618,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111621,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774111621,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111621,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111621,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111621,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111621,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111621,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111621,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111624,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111624,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111624,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111624,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111624,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111624,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111624,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111624,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111627,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat"
+    },
+    {
+      "at": 1774111908,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774111908,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111908,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111908,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111908,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111910,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111912,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774111912,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111912,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111912,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111921,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774111921,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111921,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111921,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111921,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111921,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111921,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111921,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111986,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111986,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111986,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111986,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111986,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111986,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774111986,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "試話",
+      "event_type": "trade",
+      "payload": "在life_cofe_1兜售賣出wild_herb，得5鎂"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112136,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112286,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112286,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112286,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112286,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112286,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112286,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112286,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112286,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112436,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112436,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112436,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112436,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112436,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112436,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112436,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112436,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112586,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112586,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112586,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112586,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112586,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112586,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112586,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112586,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112736,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112736,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112736,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112736,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112736,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112736,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112736,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112736,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112886,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112886,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112886,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112886,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112886,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112886,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112886,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774112886,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113036,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113036,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113036,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113036,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113036,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113036,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113036,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113036,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113186,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113186,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113186,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113186,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113186,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113186,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113186,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113186,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113336,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113336,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113336,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113336,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113336,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113336,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113336,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113336,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113486,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113486,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113486,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113486,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113486,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113486,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113486,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113486,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113636,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113636,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113636,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113636,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113636,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113636,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113636,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113636,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113786,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113786,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113786,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113786,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113786,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113786,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113786,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113786,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113936,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113936,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113936,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113936,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113936,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113936,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113936,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774113936,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114086,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114086,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114086,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114086,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114086,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114086,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114086,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114086,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114236,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114236,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114236,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114236,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114236,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114236,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114236,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114236,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114386,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114386,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114386,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114386,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114386,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114386,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114386,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114386,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114536,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114536,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114536,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114536,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114536,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114536,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114536,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114536,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114686,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114686,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114686,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114686,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114686,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114686,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114686,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114686,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114836,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114836,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114836,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114836,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114836,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114836,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114836,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114836,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114986,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114986,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114986,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114986,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114986,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114986,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114986,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774114986,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115136,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115136,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115136,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115136,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115136,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115136,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115136,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115136,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115286,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115286,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115286,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115286,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115286,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115286,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115286,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115286,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115436,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115436,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115436,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115436,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115436,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115436,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115436,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115436,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115586,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115586,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115586,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115586,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115586,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115586,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115586,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115586,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115736,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115736,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115736,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115736,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115736,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115736,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115736,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115736,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115886,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115886,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115886,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115886,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115886,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115886,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115886,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774115886,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116036,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116036,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116036,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116036,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116036,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116036,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116036,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116036,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116186,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116186,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116186,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116186,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116186,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116186,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116186,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116186,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116336,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116336,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116336,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116336,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116336,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116336,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116336,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116336,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116486,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116486,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116486,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116486,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116486,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116486,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116486,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116486,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116636,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116636,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116636,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116636,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116636,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116636,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116636,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116636,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116786,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116786,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116786,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116786,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116786,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116786,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116786,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116786,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116936,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116936,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116936,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116936,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116936,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116936,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116936,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774116936,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117086,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117086,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117086,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117086,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117086,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117086,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117086,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117086,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117189,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774117635,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117637,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774117637,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117637,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117637,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117637,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774117641,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774117641,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119219,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119219,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119219,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119341,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774119341,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119341,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119341,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119341,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119341,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119343,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat"
+    },
+    {
+      "at": 1774119343,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119345,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774119345,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119345,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119345,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119345,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119345,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119350,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119398,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119398,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119398,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119398,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119398,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119398,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119398,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119402,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat"
+    },
+    {
+      "at": 1774119402,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119403,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774119403,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119403,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119403,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119403,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119403,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119403,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119403,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774119405,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774120251,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120251,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120273,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120273,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120273,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120273,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120273,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120276,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120276,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120276,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120276,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120276,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120276,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120277,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_elevator"
+    },
+    {
+      "at": 1774120288,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774120288,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120288,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120288,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120386,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120386,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120386,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120412,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120412,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120458,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120536,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774120686,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774139324,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_elevator"
+    },
+    {
+      "at": 1774139327,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774139331,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_elevator"
+    },
+    {
+      "at": 1774139339,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774139526,
+      "entity_id": "試話",
+      "event_type": "broke",
+      "payload": "鎂歸零"
+    },
+    {
+      "at": 1774139526,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "broke",
+      "payload": "鎂歸零"
+    },
+    {
+      "at": 1774139526,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "broke",
+      "payload": "鎂歸零"
+    },
+    {
+      "at": 1774139526,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "broke",
+      "payload": "鎂歸零"
+    },
+    {
+      "at": 1774139526,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "broke",
+      "payload": "鎂歸零"
+    },
+    {
+      "at": 1774139526,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "broke",
+      "payload": "鎂歸零"
+    },
+    {
+      "at": 1774139526,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "broke",
+      "payload": "鎂歸零"
+    },
+    {
+      "at": 1774140244,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140246,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140246,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140246,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140246,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140246,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140246,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140261,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140261,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140336,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140486,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140636,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774140786,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142091,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142099,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142100,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142432,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142432,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142432,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142436,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142436,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142436,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142444,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142444,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142586,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774142941,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145326,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145326,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145326,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145326,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145326,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145328,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774145332,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat"
+    },
+    {
+      "at": 1774145332,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145336,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat_exit_order"
+    },
+    {
+      "at": 1774145336,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145346,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_obj_coffee"
+    },
+    {
+      "at": 1774145368,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_obj_coffee"
+    },
+    {
+      "at": 1774145390,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_obj_lightmeal"
+    },
+    {
+      "at": 1774145392,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_obj_lightmeal"
+    },
+    {
+      "at": 1774145406,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_exit_seat"
+    },
+    {
+      "at": 1774145406,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145406,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774145410,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat_exit_order"
+    },
+    {
+      "at": 1774151251,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774151259,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order"
+    },
+    {
+      "at": 1774151306,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_cofe"
+    },
+    {
+      "at": 1774151310,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_cofe"
+    },
+    {
+      "at": 1774151314,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151314,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151314,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151314,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151314,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_cofe"
+    },
+    {
+      "at": 1774151316,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_food"
+    },
+    {
+      "at": 1774151318,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_food"
+    },
+    {
+      "at": 1774151322,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat"
+    },
+    {
+      "at": 1774151322,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151322,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151322,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151322,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151322,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151326,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774151326,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151326,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151329,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "beg",
+      "payload": "在life_cofe_seat乞討，得5鎂"
+    },
+    {
+      "at": 1774151333,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat"
+    },
+    {
+      "at": 1774151334,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151334,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151334,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151334,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151334,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151334,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151334,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151424,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774151547,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat"
+    },
+    {
+      "at": 1774151547,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151547,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151547,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151547,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151547,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151547,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151547,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774151549,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774162861,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162865,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774162865,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162865,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162865,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162866,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162867,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_elevator"
+    },
+    {
+      "at": 1774162874,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774162874,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162874,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774162874,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168304,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168304,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168309,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774168309,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168309,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168309,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168386,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168386,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168386,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168390,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774168390,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168390,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168394,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774168394,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168394,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168394,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168536,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168536,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168536,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168686,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168686,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168686,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168836,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168836,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168836,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168884,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_cofe"
+    },
+    {
+      "at": 1774168887,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_cofe"
+    },
+    {
+      "at": 1774168891,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_food"
+    },
+    {
+      "at": 1774168893,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_food"
+    },
+    {
+      "at": 1774168896,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774168896,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168896,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168896,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168896,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168896,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168911,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168911,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168986,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774168986,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169769,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169769,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169769,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169769,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169769,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169771,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774169771,
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169772,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_cofe"
+    },
+    {
+      "at": 1774169775,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_cofe"
+    },
+    {
+      "at": 1774169778,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169778,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169778,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169778,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169778,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774169778,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170209,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774170209,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170209,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170209,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170211,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774170211,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170233,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774170233,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170233,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170233,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170234,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774170236,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774170237,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170237,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170237,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170243,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170258,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170336,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170336,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170336,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170351,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "npc_dh7ln0pmebvc"
+    },
+    {
+      "at": 1774170367,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170367,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170367,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170383,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170383,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170458,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170458,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170458,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170458,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170458,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170461,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774170463,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774170470,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774170470,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170470,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170470,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170481,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170481,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170481,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170481,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170481,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170482,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170482,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170482,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170482,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170482,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170486,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170486,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170486,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170486,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170486,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170494,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774170496,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774170496,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170496,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170496,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170498,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774170555,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774170699,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774170699,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170699,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774170703,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774170709,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774171046,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774171295,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774171295,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171295,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171295,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171295,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171296,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774171298,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774171302,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774171302,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171302,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171302,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171302,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171303,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774171304,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774171304,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171304,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171305,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_1"
+    },
+    {
+      "at": 1774171305,
+      "entity_id": "npc_dh7lywtpacw1",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171305,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171309,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_food"
+    },
+    {
+      "at": 1774171320,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171320,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171320,
+      "entity_id": "npc_dh7lxdp40upk",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171735,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171735,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171739,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_order_cofe"
+    },
+    {
+      "at": 1774171744,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "life_cofe_seat"
+    },
+    {
+      "at": 1774171744,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171744,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "beg",
+      "payload": "在life_cofe_seat乞討，得10鎂"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7llhl1hpd9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7ln0pmebvc",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7lq371wwmu",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171746,
+      "entity_id": "npc_dh7lok2gzenv",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774171748,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea"
+    },
+    {
+      "at": 1774171750,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774171753,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_tea"
+    },
+    {
+      "at": 1774172110,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774172111,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_tea"
+    },
+    {
+      "at": 1774172318,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774172706,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774172706,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774172721,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774172721,
+      "entity_id": "npc_dh7ljyggbjh5",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774172723,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774172834,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774172849,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774173267,
+      "entity_id": "npc_dh7lub7op7n9",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774173269,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_list"
+    },
+    {
+      "at": 1774173270,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_tea"
+    },
+    {
+      "at": 1774173274,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_1f_tea_obj_tea"
     }
   ]
 }

@@ -1,8 +1,6 @@
 package db
 
 import (
-	"database/sql"
-	"encoding/json"
 	"log"
 	"sync"
 
@@ -35,12 +33,9 @@ func GetGraph() *RoomGraph {
 	return graph
 }
 
-// BuildGraph 從 store（JSON）或 DB 讀取房間與出口建立鄰接表。若 store.Default 已初始化則優先從 JSON 建圖。
-func (g *RoomGraph) BuildGraph(database *sql.DB) error {
-	if store.Default != nil {
-		return g.BuildGraphFromStore()
-	}
-	return g.buildGraphFromDB(database)
+// BuildGraph 從 store（JSON）讀取房間與出口建立鄰接表。
+func (g *RoomGraph) BuildGraph() error {
+	return g.BuildGraphFromStore()
 }
 
 // BuildGraphFromStore 從 store.Default（JSON 背板）建圖。store.Init 後由 BuildGraph 自動使用。
@@ -69,53 +64,6 @@ func (g *RoomGraph) BuildGraphFromStore() error {
 	}
 
 	log.Printf("[pathfind] graph built from JSON: %d rooms, %d edges", len(g.name), g.edgeCount())
-	return nil
-}
-
-func (g *RoomGraph) buildGraphFromDB(database *sql.DB) error {
-	g.mu.Lock()
-	defer g.mu.Unlock()
-
-	g.adj = make(map[string][]string)
-	g.tags = make(map[string][]string)
-	g.zone = make(map[string]string)
-	g.name = make(map[string]string)
-
-	rooms, err := database.Query("SELECT id, name, tags, zone FROM rooms")
-	if err != nil {
-		return err
-	}
-	defer rooms.Close()
-	for rooms.Next() {
-		var id, n, tagsJSON, z string
-		if err := rooms.Scan(&id, &n, &tagsJSON, &z); err != nil {
-			return err
-		}
-		g.name[id] = n
-		g.zone[id] = z
-		var t []string
-		if err := json.Unmarshal([]byte(tagsJSON), &t); err == nil {
-			g.tags[id] = t
-		}
-		if _, ok := g.adj[id]; !ok {
-			g.adj[id] = nil
-		}
-	}
-
-	exits, err := database.Query("SELECT from_room_id, to_room_id FROM exits")
-	if err != nil {
-		return err
-	}
-	defer exits.Close()
-	for exits.Next() {
-		var from, to string
-		if err := exits.Scan(&from, &to); err != nil {
-			return err
-		}
-		g.adj[from] = append(g.adj[from], to)
-	}
-
-	log.Printf("[pathfind] graph built from DB: %d rooms, %d edges", len(g.name), g.edgeCount())
 	return nil
 }
 

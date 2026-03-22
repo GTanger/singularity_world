@@ -1,0 +1,46 @@
+{
+  "id": "city_life_2f",
+  "name": "浮生城2F",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜座位區｜　　　　　　　　　　　｜遇飯糰｜\n｜蕗易沙｜　　※浮生城１樓※　　｜醫療間｜\n｜來喫茶｜　　　　　　　　　　　｜休息室｜\n｜｜｜｜｜管理室｜門關門｜警衛室｜｜｜｜｜",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "下樓梯",
+      "to": "city_life_1f"
+    },
+    {
+      "direction": "電梯間",
+      "to": "city_life_elevator"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_1f",
+      "name": "下樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城1F」。"
+      },
+      "move_to_room_id": "city_life_1f"
+    },
+    {
+      "id": "city_life_elevator",
+      "name": "電梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「電梯間」。"
+      },
+      "move_to_room_id": "city_life_elevator"
+    }
+  ]
+}

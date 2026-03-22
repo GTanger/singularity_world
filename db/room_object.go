@@ -67,6 +67,23 @@ func GetObjectAndRoom(objectID string) (*RoomObject, string) {
 	return obj, roomID
 }
 
+// GetObjectByIDInRoom 在指定房間內依物件 ID 找物件。
+// 與 GetObjectAndRoom 不同：不依全域 objectByID（跨房重複 id 時以同房為準）。
+func GetObjectByIDInRoom(roomID, objectID string) (*RoomObject, string) {
+	roomObjectMu.RLock()
+	defer roomObjectMu.RUnlock()
+	if objectsByRoom == nil || roomID == "" || objectID == "" {
+		return nil, ""
+	}
+	list := objectsByRoom[roomID]
+	for i := range list {
+		if list[i].ID == objectID {
+			return &list[i], roomID
+		}
+	}
+	return nil, ""
+}
+
 // GetObjectByNameInRoom 在指定房間內依顯示名稱找物件（前端可能送名稱而非 ID 時用）。
 func GetObjectByNameInRoom(roomID, name string) (*RoomObject, string) {
 	roomObjectMu.RLock()

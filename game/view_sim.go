@@ -2,7 +2,6 @@
 package game
 
 import (
-	"database/sql"
 
 	"singularity_world/db"
 	"singularity_world/entity"
@@ -32,18 +31,14 @@ func InViewEntityIDs(observers []Pos, entities []*entity.Character) []string {
 }
 
 // SimulateOneTick 對單一 NPC 執行一 tick 的即時模擬；第一版為 no-op，後續可接移動／AI。
-// 參數：database 為 *sql.DB；entityID 為 NPC id。
-// 回傳：error。副作用：視後續實作（目前無）。
-func SimulateOneTick(database *sql.DB, entityID string) error {
-	_ = database
+func SimulateOneTick(entityID string) error {
 	_ = entityID
 	return nil
 }
 
 // RunViewSimulation 依觀測者位置只對「視野內 NPC」跑一 tick 模擬，其餘不跑邏輯。
-// 參數：database 為 *sql.DB；getObserverPositions 回傳目前所有觀測者座標（例：連線玩家位置）；obs 為觀測時寫入日誌用，可 nil。
-// 副作用：對每個視野內 NPC 呼叫 OnObserve（若 obs 非 nil）並 SimulateOneTick。
-func RunViewSimulation(database *sql.DB, getObserverPositions func() []Pos, obs Observer) {
+// getObserverPositions 回傳目前所有觀測者座標；obs 為觀測時寫入日誌用，可 nil。
+func RunViewSimulation(getObserverPositions func() []Pos, obs Observer) {
 	observers := getObserverPositions()
 	if len(observers) == 0 {
 		return
@@ -69,7 +64,7 @@ func RunViewSimulation(database *sql.DB, getObserverPositions func() []Pos, obs 
 	yMin -= ViewRadius
 	yMax += ViewRadius
 
-	npcs, err := db.GetEntitiesInBox(database, xMin, xMax, yMin, yMax, "npc")
+	npcs, err := db.GetEntitiesInBox(xMin, xMax, yMin, yMax, "npc")
 	if err != nil || len(npcs) == 0 {
 		return
 	}
@@ -80,6 +75,6 @@ func RunViewSimulation(database *sql.DB, getObserverPositions func() []Pos, obs 
 		if obs != nil {
 			obs.OnObserve(id, "", now)
 		}
-		_ = SimulateOneTick(database, id)
+		_ = SimulateOneTick(id)
 	}
 }

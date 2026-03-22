@@ -2,33 +2,37 @@
 package db
 
 import (
-	"database/sql"
 	"strings"
 
 	"singularity_world/store"
 )
 
-// BuildIdentity 組裝 NPC 的 identity 字串（1～3 句）：職稱、場所、性格、心境、最近事件。
-func BuildIdentity(database *sql.DB, entityID string) string {
-	title := GetNPCTitle(database, entityID)
-	if title == "" {
-		title = entityID
+// BuildIdentity 組裝 NPC 的 identity 字串（1～3 句）：真名、職稱、場所、性格、心境、最近事件。
+func BuildIdentity(entityID string) string {
+	person := GetNPCPersonDisplayName(entityID)
+	if person == "" {
+		person = entityID
 	}
-	result := "你是" + title + "。"
+	occ := GetNPCTitleFromAssignments(entityID)
+	result := "你是" + person + "。"
 	if store.Default != nil {
 		assignments := store.Default.GetAssignmentsForEntity(entityID)
 		if len(assignments) > 0 {
 			venue := store.Default.GetVenue(assignments[0].VenueID)
 			if venue != nil {
-				result = "你是" + title + "，在" + venue.Name + "工作。"
+				if occ != "" {
+					result = "你是" + person + "，職稱是" + occ + "，在" + venue.Name + "工作。"
+				} else {
+					result = "你是" + person + "，在" + venue.Name + "相關場合活動。"
+				}
 			}
 		}
 	}
-	p, hasPers := GetPersonalityForEntity(database, entityID)
+	p, hasPers := GetPersonalityForEntity(entityID)
 	if hasPers {
 		result += personalityToSentence(p)
 	}
-	disp := GetDisposition(database, entityID)
+	disp := GetDisposition(entityID)
 	if disp > 20 {
 		result += "你最近心情不錯。"
 	}

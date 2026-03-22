@@ -33,6 +33,92 @@ func CountArchivalSince(entityID string, sinceUnix int64) int {
 	return n
 }
 
+// RuneLCSSimilarity 以 LCS 正規化相似度：2*LCS/(len(a)+len(b))，供摘要／archival 去重。
+func RuneLCSSimilarity(a, b string) float64 {
+	ra, rb := []rune(a), []rune(b)
+	la, lb := len(ra), len(rb)
+	if la == 0 || lb == 0 {
+		return 0
+	}
+	prev := make([]int, lb+1)
+	cur := make([]int, lb+1)
+	for i := 1; i <= la; i++ {
+		cur[0] = 0
+		for j := 1; j <= lb; j++ {
+			if ra[i-1] == rb[j-1] {
+				cur[j] = prev[j-1] + 1
+			} else if cur[j-1] > prev[j] {
+				cur[j] = cur[j-1]
+			} else {
+				cur[j] = prev[j]
+			}
+		}
+		prev, cur = cur, prev
+	}
+	lcs := prev[lb]
+	return float64(2*lcs) / float64(la+lb)
+}
+
+// stripNpcNpcArchivalLine 從 archival 原文取出對白本體（去掉「與…對話：」前綴）。
+func stripNpcNpcArchivalLine(content string) string {
+	content = strings.TrimSpace(content)
+	if i := strings.Index(content, "對話："); i >= 0 {
+		return strings.TrimSpace(content[i+len("對話："):])
+	}
+	return content
+}
+
+// RecentNpcNpcArchivalLinesForEntity 回傳該 entity 最近 n 條 npc_npc 對白（已由新到舊），供對話品質去重評分。
+func RecentNpcNpcArchivalLinesForEntity(entityID string, n int) []string {
+	if store.Default == nil || n <= 0 {
+		return nil
+	}
+	raw := recentNpcNpcArchivalContents(entityID, n)
+	out := make([]string, 0, len(raw))
+	for _, c := range raw {
+		line := stripNpcNpcArchivalLine(c)
+		if line != "" {
+			out = append(out, line)
+		}
+	}
+	return out
+}
+
+// recentNpcNpcArchivalContents 該 entity 最近 n 條 tag=npc_npc 的 content（已由新到舊）。
+func recentNpcNpcArchivalContents(entityID string, n int) []string {
+	if store.Default == nil || n <= 0 {
+		return nil
+	}
+	entries := store.Default.GetArchivalByEntity(entityID)
+	out := make([]string, 0, n)
+	for _, e := range entries {
+		if e.Tag != "npc_npc" {
+			continue
+		}
+		out = append(out, e.Content)
+		if len(out) >= n {
+			break
+		}
+	}
+	return out
+}
+
+func shouldSkipNpcNpcArchival(entityID, content string) bool {
+	content = strings.TrimSpace(content)
+	if content == "" {
+		return true
+	}
+	for _, old := range recentNpcNpcArchivalContents(entityID, 3) {
+		if old == content {
+			return true
+		}
+		if RuneLCSSimilarity(old, content) >= 0.8 {
+			return true
+		}
+	}
+	return false
+}
+
 // InsertArchival 寫入一條長期記憶。若該 NPC 在時間窗內已達 ArchivalThrottleMax 條則略過（節流）。
 func InsertArchival(entityID, content, tag string) error {
 	if store.Default == nil {
@@ -49,6 +135,35 @@ func InsertArchival(entityID, content, tag string) error {
 		CreatedAt: now,
 	}
 	return store.Default.AppendArchival(entry)
+}
+
+// InsertNpcNpcDialogueArchival 寫入 tag=npc_npc；若與最近 3 條重複或相似度≥0.8 則略過。
+// 回傳 (是否寫入, 是否因去重略過)；節流略過時兩者皆 false。
+func InsertNpcNpcDialogueArchival(entityID, content string) (written bool, skippedDuplicate bool) {
+	if store.Default == nil {
+		return false, false
+	}
+	content = strings.TrimSpace(content)
+	if content == "" {
+		return false, false
+	}
+	if shouldSkipNpcNpcArchival(entityID, content) {
+		return false, true
+	}
+	now := time.Now().Unix()
+	if CountArchivalSince(entityID, now-ArchivalThrottleWindowSec) >= ArchivalThrottleMax {
+		return false, false
+	}
+	entry := store.ArchivalEntry{
+		EntityID:  entityID,
+		Content:   content,
+		Tag:       "npc_npc",
+		CreatedAt: now,
+	}
+	if err := store.Default.AppendArchival(entry); err != nil {
+		return false, false
+	}
+	return true, false
 }
 
 // SearchArchival 依 entity_id 取 topK 條：多關鍵字評分（query 拆詞，命中越多越前），無 query 取最新。回傳 Content 字串 slice。

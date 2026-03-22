@@ -79,7 +79,7 @@
 - **format-rooms-pretty.js**、**format-rooms-compact-single.js**：同上，遞迴掃描 `data/rooms`，只做格式化。
 - **sanitize_descriptions.js**、**gen_yaxiao_exits.js**：讀取 `data/rooms.json`，依 **room id** 處理，與檔案路徑無關。
 
-搬移房間檔案後，若需更新合併檔，執行：`node scripts/merge-rooms-one-per-line.js`。
+搬移房間檔案後，若需更新合併檔，執行：`node tools/js/merge-rooms-one-per-line.js`。
 
 ---
 

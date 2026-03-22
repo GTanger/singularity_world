@@ -1,0 +1,51 @@
+{
+  "id": "city_life_1f_tea",
+  "name": "來喫茶",
+  "description": "橫跨前端的木質櫃檯，上方有幾面發光的價目表，店內是一排整齊的不鏽鋼茶桶，淡淡的現泡茶香向開放空間散溢。店面直接嵌入大廳石面，落地窗外是一片被濃綠填滿的安靜荒野。",
+  "tags": [
+    "tea"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_1f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_1f",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城1F」。"
+      },
+      "move_to_room_id": "city_life_1f"
+    },
+    {
+      "id": "city_life_1f_tea_obj_list",
+      "name": "價目表",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "「來自富態大地新鮮茶葉的手搖飲創始店！！」\n【來喫茶・茶單】\n｜純茶｜奶茶｜特調｜厚乳｜"
+      }
+    },
+    {
+      "id": "city_life_1f_tea_obj_tea",
+      "name": "純茶",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "浮生紅\n沃土綠\n清心烏龍\n晨露青"
+      }
+    }
+  ]
+}

@@ -2,7 +2,6 @@
 package server
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -11,7 +10,7 @@ import (
 )
 
 // HandleRoomsAPI 處理 /api/rooms 與 /api/rooms/:id、/api/rooms/:id/exits。
-func HandleRoomsAPI(database *sql.DB, w http.ResponseWriter, r *http.Request) {
+func HandleRoomsAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-cache, max-age=0, must-revalidate")
 	path := strings.TrimPrefix(r.URL.Path, "/api/rooms")
@@ -21,33 +20,33 @@ func HandleRoomsAPI(database *sql.DB, w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		if path == "" {
-			listRooms(database, w)
+			listRooms(w)
 			return
 		}
 		http.Error(w, `{"error":"not found"}`, http.StatusNotFound)
 	case http.MethodPost:
 		if path == "" {
-			createRoom(database, w, r)
+			createRoom(w, r)
 			return
 		}
 		if len(parts) == 2 && parts[0] != "" && parts[1] == "exits" {
-			addExit(database, w, r, parts[0])
+			addExit(w, r, parts[0])
 			return
 		}
 		http.Error(w, `{"error":"bad request"}`, http.StatusBadRequest)
 	case http.MethodPut:
 		if len(parts) == 1 && parts[0] != "" {
-			updateRoom(database, w, r, parts[0])
+			updateRoom(w, r, parts[0])
 			return
 		}
 		http.Error(w, `{"error":"bad request"}`, http.StatusBadRequest)
 	case http.MethodDelete:
 		if len(parts) == 1 && parts[0] != "" {
-			deleteRoom(database, w, parts[0])
+			deleteRoom(w, parts[0])
 			return
 		}
 		if len(parts) == 3 && parts[0] != "" && parts[1] == "exits" && parts[2] != "" {
-			removeExit(database, w, parts[0], parts[2])
+			removeExit(w, parts[0], parts[2])
 			return
 		}
 		http.Error(w, `{"error":"bad request"}`, http.StatusBadRequest)
@@ -56,8 +55,8 @@ func HandleRoomsAPI(database *sql.DB, w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func listRooms(database *sql.DB, w http.ResponseWriter) {
-	list, err := db.ListAllRooms(database)
+func listRooms(w http.ResponseWriter) {
+	list, err := db.ListAllRooms()
 	if err != nil {
 		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusInternalServerError)
 		return
@@ -65,7 +64,7 @@ func listRooms(database *sql.DB, w http.ResponseWriter) {
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{"rooms": list})
 }
 
-func createRoom(database *sql.DB, w http.ResponseWriter, r *http.Request) {
+func createRoom(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		ID          string `json:"id"`
 		Name        string `json:"name"`
@@ -78,7 +77,7 @@ func createRoom(database *sql.DB, w http.ResponseWriter, r *http.Request) {
 	if body.Name == "" {
 		body.Name = body.ID
 	}
-	if err := db.CreateRoom(database, body.ID, body.Name, body.Description); err != nil {
+	if err := db.CreateRoom(body.ID, body.Name, body.Description); err != nil {
 		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusBadRequest)
 		return
 	}
@@ -86,7 +85,7 @@ func createRoom(database *sql.DB, w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(map[string]string{"id": body.ID})
 }
 
-func updateRoom(database *sql.DB, w http.ResponseWriter, r *http.Request, id string) {
+func updateRoom(w http.ResponseWriter, r *http.Request, id string) {
 	var body struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
@@ -95,7 +94,7 @@ func updateRoom(database *sql.DB, w http.ResponseWriter, r *http.Request, id str
 		http.Error(w, `{"error":"invalid json"}`, http.StatusBadRequest)
 		return
 	}
-	if err := db.UpdateRoom(database, id, body.Name, body.Description); err != nil {
+	if err := db.UpdateRoom(id, body.Name, body.Description); err != nil {
 		if err == db.ErrRoomNotFound {
 			http.Error(w, `{"error":"room not found"}`, http.StatusNotFound)
 			return
@@ -104,9 +103,9 @@ func updateRoom(database *sql.DB, w http.ResponseWriter, r *http.Request, id str
 		return
 	}
 	// 回傳更新後的房間，讓前端直接更新該列，避免快取或列表 API 不同步
-	room, _ := db.GetRoom(database, id)
+	room, _ := db.GetRoom(id)
 	if room != nil {
-		exits, _ := db.GetExitsForRoom(database, id)
+		exits, _ := db.GetExitsForRoom(id)
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
 			"id": id, "room": room, "exits": exits,
 		})
@@ -115,19 +114,19 @@ func updateRoom(database *sql.DB, w http.ResponseWriter, r *http.Request, id str
 	_ = json.NewEncoder(w).Encode(map[string]string{"id": id})
 }
 
-func deleteRoom(database *sql.DB, w http.ResponseWriter, id string) {
-	if id == db.GetSpawnRoomID(database) {
+func deleteRoom(w http.ResponseWriter, id string) {
+	if id == db.GetSpawnRoomID() {
 		http.Error(w, `{"error":"cannot delete spawn room (界壁)"}`, http.StatusBadRequest)
 		return
 	}
-	if err := db.DeleteRoom(database, id); err != nil {
+	if err := db.DeleteRoom(id); err != nil {
 		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusInternalServerError)
 		return
 	}
 	_ = json.NewEncoder(w).Encode(map[string]string{"deleted": id})
 }
 
-func addExit(database *sql.DB, w http.ResponseWriter, r *http.Request, fromID string) {
+func addExit(w http.ResponseWriter, r *http.Request, fromID string) {
 	var body struct {
 		Direction string `json:"direction"`
 		ToRoomID  string `json:"to_room_id"`
@@ -136,7 +135,7 @@ func addExit(database *sql.DB, w http.ResponseWriter, r *http.Request, fromID st
 		http.Error(w, `{"error":"need direction, to_room_id"}`, http.StatusBadRequest)
 		return
 	}
-	if err := db.AddExit(database, fromID, body.Direction, body.ToRoomID); err != nil {
+	if err := db.AddExit(fromID, body.Direction, body.ToRoomID); err != nil {
 		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusBadRequest)
 		return
 	}
@@ -144,8 +143,8 @@ func addExit(database *sql.DB, w http.ResponseWriter, r *http.Request, fromID st
 	_ = json.NewEncoder(w).Encode(map[string]string{"from": fromID, "direction": body.Direction, "to": body.ToRoomID})
 }
 
-func removeExit(database *sql.DB, w http.ResponseWriter, fromID, direction string) {
-	if err := db.RemoveExit(database, fromID, direction); err != nil {
+func removeExit(w http.ResponseWriter, fromID, direction string) {
+	if err := db.RemoveExit(fromID, direction); err != nil {
 		http.Error(w, `{"error":"`+err.Error()+`"}`, http.StatusBadRequest)
 		return
 	}

@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-// 361 拓撲邊權常數（與規格 §6.1.0、cmd/soulseed_demo 一致）
+// 361 拓撲邊權常數（與規格 §6.1.0、tools/go/soulseed_demo 一致）
 const (
 	RawWeightMin   = 0.1
 	RawWeightMax   = 1.0

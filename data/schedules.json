@@ -15,11 +15,11 @@
       "shift_end": 19
     },
     {
-      "entity_id": "試話",
-      "work_room": "start_boundary",
-      "rest_room": "start_boundary",
-      "shift_start": 0,
-      "shift_end": 24
+      "entity_id": "npc_dh7ln0pmebvc",
+      "work_room": "life_garden",
+      "rest_room": "singularity_life",
+      "shift_start": 6,
+      "shift_end": 19
     }
   ]
 }

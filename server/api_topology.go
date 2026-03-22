@@ -2,7 +2,6 @@
 package server
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -184,7 +183,7 @@ func buildTopologyEdges(costs []float64) []topoEdge {
 }
 
 // HandleTopologyAPI 處理 GET /api/topology?id=xxx&pw=yyy，驗證密碼後回傳該玩家的星盤拓撲。
-func HandleTopologyAPI(database *sql.DB, w http.ResponseWriter, r *http.Request) {
+func HandleTopologyAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	if r.Method != http.MethodGet {
 		http.Error(w, `{"error":"GET only"}`, http.StatusMethodNotAllowed)
@@ -196,12 +195,12 @@ func HandleTopologyAPI(database *sql.DB, w http.ResponseWriter, r *http.Request)
 		http.Error(w, `{"error":"需提供 id 與 pw 參數"}`, http.StatusBadRequest)
 		return
 	}
-	ok, err := db.VerifyPassword(database, playerID, password)
+	ok, err := db.VerifyPassword(playerID, password)
 	if err != nil || !ok {
 		http.Error(w, `{"error":"身份驗證失敗"}`, http.StatusForbidden)
 		return
 	}
-	ent, err := db.GetEntity(database, playerID)
+	ent, err := db.GetEntity(playerID)
 	if err != nil || ent == nil {
 		http.Error(w, `{"error":"角色不存在"}`, http.StatusNotFound)
 		return

@@ -3,7 +3,6 @@
 package db
 
 import (
-	"database/sql"
 	"encoding/json"
 	"log"
 	"math/rand"
@@ -334,7 +333,7 @@ func assembleFragment(segments [][]string, rng *rand.Rand) string {
 
 // PickFromDialogue 依職業取得對話檔、抽一句（talk 或 greet）、填佔位符、微變體後回傳。
 // 支援池子混用（小機率從 greet/idle 抽）、片段組合（有 talk_fragments 時）、情境權重。
-func PickFromDialogue(database *sql.DB, entityID, roomID, occupationID, key string, personality *Personality, goods, roomName, timeLabel, weather string) string {
+func PickFromDialogue(entityID, roomID, occupationID, key string, personality *Personality, goods, roomName, timeLabel, weather string) string {
 	occs := LoadOccupations(filepath.Join(defaultTemplatesBase, "occupations.json"))
 	occ, ok := occs[occupationID]
 	if !ok || occ.DialogueFile == "" {
@@ -401,8 +400,8 @@ func PickFromDialogue(database *sql.DB, entityID, roomID, occupationID, key stri
 }
 
 // PickStyleExamples 從該 NPC 的對話池抽 n 句作為口吻範例（不填佔位符），供 CallAITalk 當 style 範例。
-func PickStyleExamples(database *sql.DB, entityID string, n int) []string {
-	assignments, _ := GetAssignmentsForEntity(database, entityID)
+func PickStyleExamples(entityID string, n int) []string {
+	assignments, _ := GetAssignmentsForEntity(entityID)
 	if len(assignments) == 0 {
 		return nil
 	}
@@ -423,7 +422,7 @@ func PickStyleExamples(database *sql.DB, entityID string, n int) []string {
 		return nil
 	}
 	var p *Personality
-	if pers, has := GetPersonalityForEntity(database, entityID); has {
+	if pers, has := GetPersonalityForEntity(entityID); has {
 		p = &pers
 	}
 	seed := int64(0)

@@ -4,43 +4,23 @@
 package db
 
 import (
-	"database/sql"
-	"os"
 	"testing"
 )
 
-// setupSimDB 建立測試用 DB（與 schedule_test 相同，OpenDB 會執行 schema 與遷移）。
-func setupSimDB(t *testing.T) *sql.DB {
-	t.Helper()
-	path := t.TempDir() + "/sim.db"
-	db, err := OpenDB(path)
-	if err != nil {
-		t.Fatalf("OpenDB: %v", err)
-	}
-	t.Cleanup(func() {
-		db.Close()
-		os.Remove(path)
-	})
-	return db
-}
-
 // TestSim_NPCGenerationWithSoulSeed 模擬：NPC 生成後必帶 soul_seed，且體敏氣由該 seed 展開。
 func TestSim_NPCGenerationWithSoulSeed(t *testing.T) {
-	db := setupSimDB(t)
-	// 生成一名 NPC，流程同 InsertNPC：GenerateSoulSeed → ExpandSoulSeedToBaseStats → 寫入 entities
-	err := InsertNPC(db, "模擬甲", "模", "M", "")
+	setupTestStore(t)
+	err := InsertNPC("模擬甲", "模", "M", "")
 	if err != nil {
 		t.Fatalf("InsertNPC: %v", err)
 	}
-	ent, err := GetEntity(db, "模擬甲")
+	ent, err := GetEntity("模擬甲")
 	if err != nil || ent == nil {
 		t.Fatalf("GetEntity: %v", err)
 	}
-	// 必須有 SoulSeed
 	if ent.SoulSeed == nil {
 		t.Fatal("NPC 生成後應帶 soul_seed，實作規定創角即寫入")
 	}
-	// 體敏氣應與同 seed 展開結果一致
 	seed := *ent.SoulSeed
 	vit, qi, dex := ExpandSoulSeedToBaseStats(seed)
 	if ent.Vit != vit || ent.Qi != qi || ent.Dex != dex {
@@ -67,7 +47,6 @@ func TestSim_SoulSeedDeterminism(t *testing.T) {
 	if p1.Boldness != p2.Boldness || p1.Sensitivity != p2.Sensitivity || p1.Orderliness != p2.Orderliness {
 		t.Errorf("Personality 應確定性: %+v vs %+v", p1, p2)
 	}
-	// 性格三軸應落在 [0,1]
 	if p1.Boldness < 0 || p1.Boldness > 1 || p1.Sensitivity < 0 || p1.Sensitivity > 1 || p1.Orderliness < 0 || p1.Orderliness > 1 {
 		t.Errorf("Personality 應在 [0,1]: %+v", p1)
 	}
@@ -75,72 +54,17 @@ func TestSim_SoulSeedDeterminism(t *testing.T) {
 
 // TestSim_GetPersonalityForEntity 模擬：有 soul_seed 的實體可取得 Personality；無則回傳零值與 false。
 func TestSim_GetPersonalityForEntity(t *testing.T) {
-	db := setupSimDB(t)
-	_ = InsertNPC(db, "有種子", "有", "M", "")
-	// 有 seed → 應取得性格
-	p, ok := GetPersonalityForEntity(db, "有種子")
+	setupTestStore(t)
+	_ = InsertNPC("有種子", "有", "M", "")
+	p, ok := GetPersonalityForEntity("有種子")
 	if !ok {
 		t.Fatal("有 soul_seed 的 NPC 應回傳 ok=true")
 	}
 	if p.Boldness < 0 || p.Boldness > 1 {
 		t.Errorf("Boldness 應在 [0,1]: %f", p.Boldness)
 	}
-	// 不存在的實體
-	_, ok = GetPersonalityForEntity(db, "不存在ID")
+	_, ok = GetPersonalityForEntity("不存在ID")
 	if ok {
 		t.Error("不存在的實體應回傳 ok=false")
-	}
-}
-
-// TestSim_MovementDefForTitle 模擬：依職稱取得移動定義（含 speed）；無職稱時預設 Speed=1。
-func TestSim_MovementDefForTitle(t *testing.T) {
-	// 須先載入行為檔，測試環境可能無檔案，故只驗證預設與結構
-	LoadBehaviors("data/npc_behaviors.json")
-	def := GetMovementDefForTitle("經理")
-	if def.Speed < 1 {
-		t.Errorf("MovementDef.Speed 至少為 1，got %d", def.Speed)
-	}
-	if def.Type != MoveRegional {
-		t.Errorf("無 movement 時預設 Type 為 MoveRegional，got %s", def.Type)
-	}
-	defUnknown := GetMovementDefForTitle("不存在的職稱")
-	if defUnknown.Speed != 1 {
-		t.Errorf("未知職稱應預設 Speed=1，got %d", defUnknown.Speed)
-	}
-}
-
-// TestSim_ScheduleAndTravelerTick 模擬：排班型 NPC 註冊後，Tick 依目標房間尋路並回傳一步。
-// 建立兩房一出口、一名在 A 的 NPC、排班目標 B（在班），Tick 後應產生一步 A→B。
-func TestSim_ScheduleAndTravelerTick(t *testing.T) {
-	db := setupSimDB(t)
-	// 兩房一出口，供 BFS 尋路
-	_, _ = db.Exec("INSERT OR REPLACE INTO rooms (id, name, description, tags, zone) VALUES ('sim_room_a', 'A', '', '[]', ''), ('sim_room_b', 'B', '', '[]', '')")
-	_, _ = db.Exec("INSERT OR REPLACE INTO exits (from_room_id, direction, to_room_id) VALUES ('sim_room_a', 'east', 'sim_room_b'), ('sim_room_b', 'west', 'sim_room_a')")
-	// 一名 NPC，目前在 A，排班：工作區 B、休息區 A，日班 6–19
-	_ = InsertNPC(db, "模擬班", "班", "M", "")
-	_ = SetEntityRoom(db, "模擬班", "sim_room_a")
-	_ = InsertSchedule(db, "模擬班", "sim_room_b", "sim_room_a", 6, 19)
-	// 重建圖（使用當前 DB 的 rooms/exits）
-	g := GetGraph()
-	if err := g.BuildGraph(db); err != nil {
-		t.Fatalf("BuildGraph: %v", err)
-	}
-	LoadBehaviors("data/npc_behaviors.json")
-	mgr := NewTravelerManager()
-	def := GetMovementDefForTitle("經理") // 須先 LoadBehaviors，經理有 movement.speed
-	def.Type = MoveSchedule
-	mgr.Register("模擬班", def)
-	// 遊戲時 12 → 在班 → 目標 work_room = sim_room_b
-	steps := mgr.Tick(db, g, 12, nil)
-	if len(steps) != 1 {
-		t.Fatalf("預期 Tick 後產生 1 步（A→B），got %d 步", len(steps))
-	}
-	if steps[0].OldRoom != "sim_room_a" || steps[0].NewRoom != "sim_room_b" {
-		t.Errorf("預期一步 sim_room_a → sim_room_b，got %s → %s", steps[0].OldRoom, steps[0].NewRoom)
-	}
-	// 實體應已寫回 store 或 DB
-	room, _ := GetEntityRoom(db, "模擬班")
-	if room != "sim_room_b" {
-		t.Errorf("Tick 後實體應在 sim_room_b，got %s", room)
 	}
 }

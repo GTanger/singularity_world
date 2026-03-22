@@ -1,8 +1,8 @@
 package server
 
 import (
-	"database/sql"
 	"encoding/json"
+	"time"
 
 	"singularity_world/config"
 	"singularity_world/db"
@@ -10,13 +10,13 @@ import (
 )
 
 // SendNarrateToRoom 對指定房間內所有在線玩家發送 NarrateMsg。
-func SendNarrateToRoom(store *SessionStore, database *sql.DB, roomID, text string) {
+func SendNarrateToRoom(store *SessionStore, roomID, text string) {
 	if text == "" {
 		return
 	}
 	msg, _ := json.Marshal(NarrateMsg{Type: "narrate", Text: text})
 	for _, s := range store.AllSessions() {
-		rid, _ := db.GetEntityRoom(database, s.PlayerID)
+		rid, _ := db.GetEntityRoom(s.PlayerID)
 		if rid == roomID {
 			s.Client.Send <- msg
 		}
@@ -24,10 +24,10 @@ func SendNarrateToRoom(store *SessionStore, database *sql.DB, roomID, text strin
 }
 
 // GetPlayerRoomMap 回傳 roomID → true 的 map，表示哪些房間有玩家在場。
-func GetPlayerRoomMap(store *SessionStore, database *sql.DB) map[string]bool {
+func GetPlayerRoomMap(store *SessionStore) map[string]bool {
 	m := make(map[string]bool)
 	for _, s := range store.AllSessions() {
-		rid, _ := db.GetEntityRoom(database, s.PlayerID)
+		rid, _ := db.GetEntityRoom(s.PlayerID)
 		if rid != "" {
 			m[rid] = true
 		}
@@ -36,15 +36,19 @@ func GetPlayerRoomMap(store *SessionStore, database *sql.DB) map[string]bool {
 }
 
 // RefreshRoomViews 對指定房間內所有在線玩家推送最新房間視野。
-func RefreshRoomViews(store *SessionStore, database *sql.DB, cfg config.Server, roomID string) {
-	view, err := game.GetRoomView(database, roomID)
+func RefreshRoomViews(store *SessionStore, cfg config.Server, roomID string) {
+	gh := 12
+	if cfg.GameTimeEpochUnix != 0 {
+		_, gh, _, _ = game.GameTimeNow(time.Now().Unix(), cfg.GameTimeEpochUnix, cfg.GameTimeScale)
+	}
+	view, err := game.GetRoomView(roomID, gh)
 	if err != nil || view == nil {
 		return
 	}
 	for _, s := range store.AllSessions() {
-		rid, _ := db.GetEntityRoom(database, s.PlayerID)
+		rid, _ := db.GetEntityRoom(s.PlayerID)
 		if rid == roomID {
-			sendRoomView(database, s.Client, view, cfg)
+			sendRoomView(s.Client, view, cfg)
 		}
 	}
 }

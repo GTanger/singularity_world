@@ -2,7 +2,6 @@
 package game
 
 import (
-	"database/sql"
 	"strconv"
 	"time"
 
@@ -17,43 +16,39 @@ type Observer interface {
 	OnObserve(entityID, observerID string, at int64)
 }
 
-// Observed 為 Observer 的具體實作，持有一份 *sql.DB，觀測時寫入 event_log 並更新 entities.last_observed_at。
-type Observed struct {
-	DB *sql.DB
-}
+// Observed 為 Observer 的具體實作；觀測時寫入 event_log 並更新 entities.last_observed_at（經 store）。
+type Observed struct{}
 
 // OnObserve 實作 Observer：寫入 observed 事件並更新該實體的 last_observed_at。
 func (o *Observed) OnObserve(entityID, observerID string, at int64) {
-	_ = event.MarkObserved(o.DB, entityID, observerID, at)
+	_ = event.MarkObserved(entityID, observerID, at)
 }
 
 // ObserveRoom 進入房間觸發觀測：對該房內所有 NPC 寫入 observed 事件並更新 last_observed_at（observerID 為觀測者，如玩家 ID）。
-func ObserveRoom(database *sql.DB, roomID, observerID string, at int64) {
-	entities, err := db.GetEntitiesInRoom(database, roomID)
+func ObserveRoom(roomID, observerID string, at int64) {
+	entities, err := db.GetEntitiesInRoom(roomID, -1)
 	if err != nil {
 		return
 	}
 	for _, e := range entities {
 		if e.Kind == "npc" {
-			_ = event.MarkObserved(database, e.ID, observerID, at)
+			_ = event.MarkObserved(e.ID, observerID, at)
 		}
 	}
 }
 
-// Collapse 從 entities 表與事件日誌回推該實體在 asOf 時點的狀態；依 event.EventsInRange 重放 vit／move 等事件。
-// 參數：database、entityID、asOf（unix 或 tick 時間戳）。
-// 回傳：該實體在 asOf 時點之狀態（Character）、當時所在房間 ID、error。若無該實體則 (nil, "", err)。
-func Collapse(database *sql.DB, entityID string, asOf int64) (*entity.Character, string, error) {
-	c, err := db.GetEntity(database, entityID)
+// Collapse 從 store 與事件日誌回推該實體在 asOf 時點的狀態；依 event.EventsInRange 重放 vit／move 等事件。
+func Collapse(entityID string, asOf int64) (*entity.Character, string, error) {
+	c, err := db.GetEntity(entityID)
 	if err != nil || c == nil {
 		return nil, "", err
 	}
-	roomID, _ := db.GetEntityRoom(database, entityID)
+	roomID, _ := db.GetEntityRoom(entityID)
 	now := NowUnix()
 	if asOf >= now {
 		return c, roomID, nil
 	}
-	rows, err := event.EventsInRange(database, entityID, asOf, now)
+	rows, err := event.EventsInRange(entityID, asOf, now)
 	if err != nil {
 		return c, roomID, nil
 	}

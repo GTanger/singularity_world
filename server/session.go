@@ -2,7 +2,6 @@
 package server
 
 import (
-	"database/sql"
 	"strings"
 	"sync"
 	"time"
@@ -121,7 +120,7 @@ func (st *SessionStore) RecordPlayerTalkForRoomEcho(playerID, roomID, playerInpu
 }
 
 // PlayerTalkEchoForNpcSocial 若該房內有玩家曾在本房 Talk，且已超過 NPC 閒聊冷卻（60s）、未過期（4min），回傳節錄字串供注入 prompt。
-func (st *SessionStore) PlayerTalkEchoForNpcSocial(database *sql.DB, roomID string) string {
+func (st *SessionStore) PlayerTalkEchoForNpcSocial(roomID string) string {
 	if roomID == "" {
 		return ""
 	}
@@ -133,7 +132,7 @@ func (st *SessionStore) PlayerTalkEchoForNpcSocial(database *sql.DB, roomID stri
 		if s == nil || s.LastTalkSnippet == "" || s.LastTalkRoom != roomID {
 			continue
 		}
-		rid, _ := db.GetEntityRoom(database, s.PlayerID)
+		rid, _ := db.GetEntityRoom(s.PlayerID)
 		if rid != roomID {
 			continue
 		}
@@ -150,11 +149,11 @@ func (st *SessionStore) PlayerTalkEchoForNpcSocial(database *sql.DB, roomID stri
 }
 
 // RoomHasPlayer 回傳該房內是否有玩家連線在場（不論是否剛 Talk）。
-func (st *SessionStore) RoomHasPlayer(database *sql.DB, roomID string) bool {
+func (st *SessionStore) RoomHasPlayer(roomID string) bool {
 	st.mu.RLock()
 	defer st.mu.RUnlock()
 	for _, s := range st.sessions {
-		rid, _ := db.GetEntityRoom(database, s.PlayerID)
+		rid, _ := db.GetEntityRoom(s.PlayerID)
 		if rid == roomID {
 			return true
 		}
@@ -163,11 +162,11 @@ func (st *SessionStore) RoomHasPlayer(database *sql.DB, roomID string) bool {
 }
 
 // RoomHasPlayerWithRecentTalk 回傳該房內是否有玩家在 within 時間內執行過 Talk；有則不觸發 NPC 間 AI 對話。
-func (st *SessionStore) RoomHasPlayerWithRecentTalk(database *sql.DB, roomID string, within time.Duration) bool {
+func (st *SessionStore) RoomHasPlayerWithRecentTalk(roomID string, within time.Duration) bool {
 	st.mu.RLock()
 	defer st.mu.RUnlock()
 	for _, s := range st.sessions {
-		rid, _ := db.GetEntityRoom(database, s.PlayerID)
+		rid, _ := db.GetEntityRoom(s.PlayerID)
 		if rid != roomID {
 			continue
 		}

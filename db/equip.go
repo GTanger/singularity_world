@@ -2,7 +2,6 @@
 package db
 
 import (
-	"database/sql"
 	"encoding/json"
 
 	"singularity_world/store"
@@ -28,8 +27,8 @@ func IsNaked(equipmentSlots string) bool {
 	return slots["body"] == "" || slots["legs"] == ""
 }
 
-// GetItemNames 依 equipment_slots JSON 查物品名稱；store 啟用時從 store 讀取。
-func GetItemNames(db *sql.DB, equipmentSlots string) (map[string]string, error) {
+// GetItemNames 依 equipment_slots JSON 查物品名稱。
+func GetItemNames(equipmentSlots string) (map[string]string, error) {
 	result := make(map[string]string)
 	if equipmentSlots == "" {
 		return result, nil
@@ -46,19 +45,13 @@ func GetItemNames(db *sql.DB, equipmentSlots string) (map[string]string, error) 
 			if it := store.Default.GetItem(itemID); it != nil {
 				result[slot] = it.Name
 			}
-			continue
-		}
-		var name string
-		err := db.QueryRow("SELECT name FROM items WHERE id = ?", itemID).Scan(&name)
-		if err == nil {
-			result[slot] = name
 		}
 	}
 	return result, nil
 }
 
-// GetItemDescs 依 equipment_slots JSON 查物品描述；store 啟用時從 store 讀取。
-func GetItemDescs(db *sql.DB, equipmentSlots string) map[string]string {
+// GetItemDescs 依 equipment_slots JSON 查物品描述。
+func GetItemDescs(equipmentSlots string) map[string]string {
 	result := make(map[string]string)
 	if equipmentSlots == "" {
 		return result
@@ -75,45 +68,12 @@ func GetItemDescs(db *sql.DB, equipmentSlots string) map[string]string {
 			if it := store.Default.GetItem(itemID); it != nil {
 				result[slot] = it.Description
 			}
-			continue
-		}
-		var desc string
-		if err := db.QueryRow("SELECT description FROM items WHERE id = ?", itemID).Scan(&desc); err == nil {
-			result[slot] = desc
 		}
 	}
 	return result
 }
 
-// SeedItems 初始化物品種子；store 啟用時改由 data/items.json 提供，不再寫 DB。
-func SeedItems(db *sql.DB) error {
-	if store.Default != nil {
-		return nil
-	}
-	type seedItem struct {
-		id, name, slot, itemType, description string
-		weight                                float64
-		stackable, denomination               int
-	}
-	all := []seedItem{
-		{"starter_body_m", "粗布短褂", "body", "equipment", "一件簡陋的短褂，聊勝於無。", 0.8, 0, 0},
-		{"starter_legs_m", "粗布長褲", "legs", "equipment", "粗糙的麻布長褲，勉強遮體。", 0.6, 0, 0},
-		{"starter_feet_m", "草鞋", "feet", "equipment", "稻草編成的簡單鞋履，走久了會磨腳。", 0.3, 0, 0},
-		{"starter_body_f", "素布衣裙", "body", "equipment", "素色布料裁成的衣裙，樸素但整潔。", 0.7, 0, 0},
-		{"starter_legs_f", "布裳", "legs", "equipment", "普通的布裳，行動尚算方便。", 0.5, 0, 0},
-		{"starter_feet_f", "布鞋", "feet", "equipment", "軟底布鞋，輕便耐走。", 0.2, 0, 0},
-		{"mg_coin", "鎂幣", "", "currency", "一枚小巧的鎂質錢幣，面值一鎂。", 0.01, 1, 1},
-		{"mg_note", "鎂鈔", "", "currency", "以特殊纖維印製的鈔票，面值十鎂。", 0.005, 1, 10},
-		{"mg_ingot", "鎂錠", "", "currency", "沉甸甸的鎂金屬錠，面值一萬鎂。", 1.0, 1, 10000},
-	}
-	for _, it := range all {
-		if _, err := db.Exec(
-			`INSERT OR REPLACE INTO items (id, name, slot, item_type, weight, stackable, denomination, description)
-			 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-			it.id, it.name, it.slot, it.itemType, it.weight, it.stackable, it.denomination, it.description,
-		); err != nil {
-			return err
-		}
-	}
+// SeedItems 初始化物品種子；現由 data/items.json 於 store.Init 載入，此函式為 no-op。
+func SeedItems() error {
 	return nil
 }

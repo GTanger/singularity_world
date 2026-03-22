@@ -10,8 +10,8 @@ import (
 
 // roomsDataResponse 與 map_viewer 期望的格式一致：rooms 陣列 + exits 陣列。
 type roomsDataResponse struct {
-	Rooms []roomDataItem  `json:"rooms"`
-	Exits []exitDataItem  `json:"exits"`
+	Rooms []roomDataItem `json:"rooms"`
+	Exits []exitDataItem `json:"exits"`
 }
 type roomDataItem struct {
 	ID          string   `json:"id"`

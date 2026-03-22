@@ -40,6 +40,12 @@
     .obj-head { display:flex; gap:6px; margin-bottom:6px; }
     .obj-head input { flex:1; }
     .obj-head button { white-space:nowrap; }
+    .beh-rows { display:flex; flex-direction:column; gap:6px; margin:6px 0; }
+    .beh-row { display:flex; gap:6px; align-items:flex-start; }
+    .beh-lbl { min-width:48px; padding:8px 4px 0; color:var(--muted); font-size:12px; font-weight:600; }
+    .beh-row textarea { flex:1; min-height:52px; }
+    .beh-add-bar { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
+    .beh-add-bar button { font-size:12px; padding:4px 8px; }
     #map { position:relative; width:2400px; height:1600px; background:
       linear-gradient(0deg, transparent 24%, rgba(70,78,97,.15) 25%, rgba(70,78,97,.15) 26%, transparent 27%, transparent 74%, rgba(70,78,97,.15) 75%, rgba(70,78,97,.15) 76%, transparent 77%, transparent),
       linear-gradient(90deg, transparent 24%, rgba(70,78,97,.15) 25%, rgba(70,78,97,.15) 26%, transparent 27%, transparent 74%, rgba(70,78,97,.15) 75%, rgba(70,78,97,.15) 76%, transparent 77%, transparent);
@@ -172,10 +178,11 @@
   <div class="mobile-bar" id="mobile-bar">
     <button id="m-add">新增</button>
     <button id="m-del">刪除</button>
+    <button id="m-multi-sel">多選</button>
     <button id="m-mode">一般拖曳</button>
     <button id="m-panel">面板</button>
   </div>
 
-  <script src="/room_editor.js?v=0.11.0"></script>
+  <script src="/room_editor.js?v=0.12.0"></script>
 </body>
 </html>

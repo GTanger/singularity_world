@@ -1,11 +1,6 @@
 {
   "entries": [
     {
-      "entity_id": "試話",
-      "occupation_id": "",
-      "venue_id": "venue_life_inn"
-    },
-    {
       "entity_id": "npc_dh7ljyggbjh5",
       "occupation_id": "服務生",
       "venue_id": "venue_life_inn"
@@ -19,6 +14,12 @@
     {
       "entity_id": "npc_dh7lok2gzenv",
       "occupation_id": "服務生",
+      "venue_id": "venue_life_inn",
+      "assigned_by": "job_matching"
+    },
+    {
+      "entity_id": "npc_dh7ln0pmebvc",
+      "occupation_id": "經理",
       "venue_id": "venue_life_inn",
       "assigned_by": "job_matching"
     }

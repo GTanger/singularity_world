@@ -220,19 +220,27 @@
 			.replace(/\n/g, '<br>');
 	}
 
-	// 敘事中的 〔物件名〕 或 【物件名】 若為當前房間物件則變為可點擊（執行 Move 或 Look）
+	// 敘事中的物件名若為當前房間物件則變為可點擊（執行 Move 或 Look）
+	// 第一輪：替換 【物件名】 或 〔物件名〕；第二輪：替換未被第一輪處理的純文字物件名
 	function formatNarrativeWithClickableObjects(html, objects) {
 		if (!html || !objects || !objects.length) return html;
 		function escapeRegex(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 		var sorted = objects.slice().sort(function (a, b) { return (b.name || '').length - (a.name || '').length; });
-		sorted.forEach(function (o) {
-			if (!o.name) return;
+		function makeSpan(o) {
 			var nameEsc = escapeHtml(o.name);
 			var hasMove = o.actions && o.actions.indexOf('Move') !== -1;
 			var action = hasMove ? 'Move' : 'Look';
-			var span = '<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(o.id) + '" data-action="' + escapeHtml(action) + '">' + nameEsc + '</span>';
-			var nameRe = escapeRegex(o.name);
-			html = html.replace(new RegExp('[\u3010\u3014]' + nameRe + '[\u3011\u3015]', 'g'), span);
+			return '<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(o.id) + '" data-action="' + escapeHtml(action) + '">' + nameEsc + '</span>';
+		}
+		sorted.forEach(function (o) {
+			if (!o.name) return;
+			var nameRe = escapeRegex(escapeHtml(o.name));
+			html = html.replace(new RegExp('[\u3010\u3014]' + nameRe + '[\u3011\u3015]', 'g'), makeSpan(o));
+		});
+		sorted.forEach(function (o) {
+			if (!o.name) return;
+			if (html.indexOf('data-entity-id="' + escapeHtml(o.id) + '"') !== -1) return;
+			html = html.replace(new RegExp(escapeRegex(escapeHtml(o.name)), 'g'), makeSpan(o));
 		});
 		return html;
 	}

@@ -1,0 +1,31 @@
+{
+  "_說明": "伺服器與前端設計預設；環境變數仍可依現有規則覆寫（PORT、OLLAMA_*、NPC_* 等）。game_time_epoch 仍由 data/game_epoch.unix 或 GAME_TIME_EPOCH_UNIX 決定。",
+  "design": {
+    "cell_size_px": 30,
+    "role_circle_px": 24,
+    "terrain_font_px": 30
+  },
+  "server": {
+    "port": "8080",
+    "db_path": "data/world.db",
+    "max_websocket_conn": 10,
+    "tick_interval_ms": 500,
+    "economy_tick_interval_ms": 1000,
+    "chunk_size": 151,
+    "maps_path": "data/maps",
+    "session_retain_minutes": 10,
+    "game_time_scale": 24,
+    "npc_pool_size": 10,
+    "npc_spawn_interval_sec": 120,
+    "ollama_base_url": "http://127.0.0.1:11434",
+    "ollama_model": "sorc/qwen3.5-claude-4.6-opus:2b",
+    "seek_job_mg_threshold": 0,
+    "job_match_when_stable": false,
+    "npc_npc_quality_max_runes": 0,
+    "npc_npc_social_tick_min_with_player": 0,
+    "npc_npc_social_tick_extra_with_player": 0,
+    "npc_npc_social_tick_min_no_player": 0,
+    "npc_npc_social_tick_extra_no_player": 0,
+    "npc_npc_dialogue_score_threshold": 0
+  }
+}

@@ -18,7 +18,7 @@ type ClientMsg struct {
 }
 
 // ViewEntity 房間內單一實體，供前端顯示「誰在這裡」與可執行動作。
-// DisplayName 為 UI 清單顯示名：NPC 顯示職稱（如「經理」），玩家顯示 ID（真名）。
+// DisplayName 為 UI 清單顯示名：NPC 在指派場所且當班時為「職稱|真名」（如 服務生|李大仁），離開場所或下班僅真名；玩家顯示 ID（真名）。
 type ViewEntity struct {
 	ID          string   `json:"id"`
 	Kind        string   `json:"kind"`
@@ -30,21 +30,21 @@ type ViewEntity struct {
 // ActionResultMsg 伺服器回傳：do_action 的敘事結果。
 // Actions 為選填：對物件 Look 時帶上該物件其餘可執行動作，前端據此顯示可點的【移動】等。
 type ActionResultMsg struct {
-	Type       string   `json:"type"`        // "action_result"
-	Action     string   `json:"action"`      // Look、Talk、Borrow、Subdue、Slay、Trade…
-	TargetID   string   `json:"target_id"`
-	TargetName string   `json:"target_name"`
-	Narrative  string   `json:"narrative"`
-	Success    bool     `json:"success"`
-	Actions       []string `json:"actions,omitempty"`       // 該目標其餘可執行動詞（不含剛執行的），供 Log 下一行顯示
-	MoveTargetID  string   `json:"move_target_id,omitempty"` // Look 建築名時若該物件無 Move，改由同房「門」物件代為進入；前端點【移動】時用此 id 送 do_action
+	Type         string   `json:"type"`   // "action_result"
+	Action       string   `json:"action"` // Look、Talk、Borrow、Subdue、Slay、Trade…
+	TargetID     string   `json:"target_id"`
+	TargetName   string   `json:"target_name"`
+	Narrative    string   `json:"narrative"`
+	Success      bool     `json:"success"`
+	Actions      []string `json:"actions,omitempty"`        // 該目標其餘可執行動詞（不含剛執行的），供 Log 下一行顯示
+	MoveTargetID string   `json:"move_target_id,omitempty"` // Look 建築名時若該物件無 Move，改由同房「門」物件代為進入；前端點【移動】時用此 id 送 do_action
 }
 
 // ExitView 單一出口，供前端顯示可點選的出口。
 type ExitView struct {
-	Direction   string `json:"direction"`
-	ToRoomID    string `json:"to_room_id"`
-	ToRoomName  string `json:"to_room_name"`
+	Direction  string `json:"direction"`
+	ToRoomID   string `json:"to_room_id"`
+	ToRoomName string `json:"to_room_name"`
 }
 
 // ViewObject 房間內單一可互動物件，供前端在描述區行內浮動下拉使用。
@@ -70,46 +70,46 @@ type RoomViewMsg struct {
 
 // MeMsg 伺服器推送：登入成功後回傳玩家 id、當前房間、體敏氣與四項資源、命途/本源/星盤用欄位（狀態與星盤分頁規格 §五）。
 type MeMsg struct {
-	Type            string    `json:"type"`
-	PlayerID        string    `json:"player_id"`
-	RoomID          string    `json:"room_id"`
-	RoomName        string    `json:"room_name"`
-	Vit             int       `json:"vit"`
-	Qi              int       `json:"qi"`
-	Dex             int       `json:"dex"`
-	HpCur           int       `json:"hp_cur"`
-	HpMax           int       `json:"hp_max"`
-	InnerCur        int       `json:"inner_cur"`
-	InnerMax        int       `json:"inner_max"`
-	SpiritCur       int       `json:"spirit_cur"`
-	SpiritMax       int       `json:"spirit_max"`
-	StaminaCur      int       `json:"stamina_cur"`
-	StaminaMax      int       `json:"stamina_max"`
-	DisplayTitle    string   `json:"display_title,omitempty"`    // 命途；空則前端顯示「無名之輩」
-	OriginSentence  string   `json:"origin_sentence,omitempty"` // 本源一句話，後端拼句，三軸不傳
-	ActivatedNodes  []string          `json:"activated_nodes,omitempty"` // 星盤已貫通節點 ID
-	TopologyCosts   []float64         `json:"topology_costs,omitempty"` // 760 條 Cost（僅自己，供星盤綁定）
-	EquipmentSlots  map[string]string `json:"equipment_slots,omitempty"` // slot→item_id
-	EquipmentNames  map[string]string `json:"equipment_names,omitempty"` // slot→item_name（前端顯示用）
+	Type           string            `json:"type"`
+	PlayerID       string            `json:"player_id"`
+	RoomID         string            `json:"room_id"`
+	RoomName       string            `json:"room_name"`
+	Vit            int               `json:"vit"`
+	Qi             int               `json:"qi"`
+	Dex            int               `json:"dex"`
+	HpCur          int               `json:"hp_cur"`
+	HpMax          int               `json:"hp_max"`
+	InnerCur       int               `json:"inner_cur"`
+	InnerMax       int               `json:"inner_max"`
+	SpiritCur      int               `json:"spirit_cur"`
+	SpiritMax      int               `json:"spirit_max"`
+	StaminaCur     int               `json:"stamina_cur"`
+	StaminaMax     int               `json:"stamina_max"`
+	DisplayTitle   string            `json:"display_title,omitempty"`   // 命途；空則前端顯示「無名之輩」
+	OriginSentence string            `json:"origin_sentence,omitempty"` // 本源一句話，後端拼句，三軸不傳
+	ActivatedNodes []string          `json:"activated_nodes,omitempty"` // 星盤已貫通節點 ID
+	TopologyCosts  []float64         `json:"topology_costs,omitempty"`  // 760 條 Cost（僅自己，供星盤綁定）
+	EquipmentSlots map[string]string `json:"equipment_slots,omitempty"` // slot→item_id
+	EquipmentNames map[string]string `json:"equipment_names,omitempty"` // slot→item_name（前端顯示用）
 }
 
 // MovedMsg 伺服器推送：某角色經出口移動後廣播給所有人。
 type MovedMsg struct {
-	Type      string `json:"type"`       // "moved"
-	PlayerID  string `json:"player_id"`
-	RoomID    string `json:"room_id"`
-	RoomName  string `json:"room_name"`
+	Type     string `json:"type"` // "moved"
+	PlayerID string `json:"player_id"`
+	RoomID   string `json:"room_id"`
+	RoomName string `json:"room_name"`
 }
 
 // ErrorMsg 伺服器推送：錯誤說明。
 type ErrorMsg struct {
-	Type    string `json:"type"`    // "error"
+	Type    string `json:"type"` // "error"
 	Message string `json:"message"`
 }
 
 // BlockedMsg 伺服器推送：無此出口或移動被阻擋。
 type BlockedMsg struct {
-	Type      string `json:"type"`       // "blocked"
+	Type      string `json:"type"` // "blocked"
 	Direction string `json:"direction"`
 }
 
@@ -126,7 +126,7 @@ type NarrateMsg struct {
 
 // TopologyDebugAckMsg 暫時除錯用：print_topology_debug 已於伺服器終端印出，回傳此 ack 供前端得知。
 type TopologyDebugAckMsg struct {
-	Type    string `json:"type"`    // "topology_debug"
+	Type    string `json:"type"` // "topology_debug"
 	Message string `json:"message"`
 }
 
@@ -152,27 +152,27 @@ type InventoryMsg struct {
 
 // EntityStatusMsg 伺服器回傳：單一實體狀態分頁用（體敏氣、四項資源、鎂；自己時含命途/本源/星盤）。
 type EntityStatusMsg struct {
-	Type            string    `json:"type"`
-	EntityID        string    `json:"entity_id"`
-	DisplayChar     string    `json:"display_char"`
-	Vit             int       `json:"vit"`
-	Qi              int       `json:"qi"`
-	Dex             int       `json:"dex"`
-	HpCur           int       `json:"hp_cur"`
-	HpMax           int       `json:"hp_max"`
-	InnerCur        int       `json:"inner_cur"`
-	InnerMax        int       `json:"inner_max"`
-	SpiritCur       int       `json:"spirit_cur"`
-	SpiritMax       int       `json:"spirit_max"`
-	StaminaCur      int       `json:"stamina_cur"`
-	StaminaMax      int       `json:"stamina_max"`
-	Magnesium       *int      `json:"magnesium"`
-	IsSelf          bool      `json:"is_self"`
-	DisplayTitle    string    `json:"display_title,omitempty"`
-	OriginSentence  string    `json:"origin_sentence,omitempty"`
-	ActivatedNodes  []string          `json:"activated_nodes,omitempty"`
-	TopologyCosts   []float64         `json:"topology_costs,omitempty"`
-	EquipmentSlots  map[string]string `json:"equipment_slots,omitempty"`
-	EquipmentNames  map[string]string `json:"equipment_names,omitempty"`
-	EquipmentDescs  map[string]string `json:"equipment_descs,omitempty"`
+	Type           string            `json:"type"`
+	EntityID       string            `json:"entity_id"`
+	DisplayChar    string            `json:"display_char"`
+	Vit            int               `json:"vit"`
+	Qi             int               `json:"qi"`
+	Dex            int               `json:"dex"`
+	HpCur          int               `json:"hp_cur"`
+	HpMax          int               `json:"hp_max"`
+	InnerCur       int               `json:"inner_cur"`
+	InnerMax       int               `json:"inner_max"`
+	SpiritCur      int               `json:"spirit_cur"`
+	SpiritMax      int               `json:"spirit_max"`
+	StaminaCur     int               `json:"stamina_cur"`
+	StaminaMax     int               `json:"stamina_max"`
+	Magnesium      *int              `json:"magnesium"`
+	IsSelf         bool              `json:"is_self"`
+	DisplayTitle   string            `json:"display_title,omitempty"`
+	OriginSentence string            `json:"origin_sentence,omitempty"`
+	ActivatedNodes []string          `json:"activated_nodes,omitempty"`
+	TopologyCosts  []float64         `json:"topology_costs,omitempty"`
+	EquipmentSlots map[string]string `json:"equipment_slots,omitempty"`
+	EquipmentNames map[string]string `json:"equipment_names,omitempty"`
+	EquipmentDescs map[string]string `json:"equipment_descs,omitempty"`
 }

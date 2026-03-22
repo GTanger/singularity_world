@@ -1,30 +1,72 @@
 {
   "id": "life_cofe_1",
   "name": "蕗易沙",
-  "description": "室內裝潢簡約，灰色的牆面搭配質樸的木質長桌與座席。空間的核心是一座沈穩的深色木質〔櫃檯〕，基座穩穩地銜接著亮潔的石質地板。\n落地窗外，浮生大街的人潮熙攘如投影般掠過，與店內的安靜形成明對比。幾盆長勢極好的綠植錯落地擺放在牆角，寬大的葉片在柔和的燈光下顯得生氣勃勃。空氣中充滿了研磨豆子的清香。",
+  "description": "｜咖啡｜輕食｜\n推開厚重木門，入眼是點餐櫃檯，陣陣焦香撲鼻。右側室內座席錯落，幾簇低語如細沙摩挲。於此方靜謐，偷浮生半閒。",
   "tags": [
     "coffee",
     "food"
   ],
-  "zone": "streetlife",
+  "zone": "citylife",
   "exits": [
     {
-      "direction": "大街",
-      "to": "street_life_1"
+      "direction": "大門",
+      "to": "city_life_1f"
+    },
+    {
+      "direction": "座席",
+      "to": "life_cofe_seat"
     }
   ],
   "objects": [
     {
-      "id": "street_life_1",
-      "name": "大街",
+      "id": "city_life_1f",
+      "name": "木門",
       "owner": "",
       "sockets": [
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生大街」。"
+        "Move": "你前往「浮生城1F」。"
       },
-      "move_to_room_id": "street_life_1"
+      "move_to_room_id": "city_life_1f"
+    },
+    {
+      "id": "life_cofe_seat",
+      "name": "座席",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你端著餐盤走向「座位區」。"
+      },
+      "move_to_room_id": "life_cofe_seat"
+    },
+    {
+      "id": "life_cofe_order_cofe",
+      "name": "咖啡",
+      "owner": "",
+      "sockets": [
+        "Look",
+        "Read"
+      ],
+      "responses": {
+        "Look": "義式、拿鐵、手沖與幾款季節配方，邊角貼著「豆單隨產季更替」。",
+        "Read": "【蕗易沙・飲品】\n義式｜浮生濃縮；金邊長萃；雙份濃縮\n拿鐵｜沃土拿鐵；霜花拿鐵；榛果拿鐵；蜂蜜紅茶那提\n美式｜泡沫美式；向陽冰美式\n手沖｜向陽日晒單品；飛霜拼配；夜鴞深烘\n其他｜抹茶那提；可可歐蕾；本日精選（問店員）"
+      }
+    },
+    {
+      "id": "life_cofe_order_food",
+      "name": "輕食",
+      "owner": "",
+      "sockets": [
+        "Look",
+        "Read"
+      ],
+      "responses": {
+        "Look": "磚壓、瑪芬堡與吐司線稿，葷素以小圖示標在角落。",
+        "Read": "【蕗易沙・輕食】\n義式磚壓｜青醬野菇；火腿起司；燻雞起司；薑汁燒肉\n瑪芬堡｜豬肉起司；豬肉蛋起司；雙層豬肉起司\n法式吐司｜蜂蜜；榛果可可；莓果季節款\n貝果｜鮪魚；燻雞；蜂蜜\n其他｜蔬菜磚壓；雙果優格杯；本日湯品（櫃旁小黑板）"
+      }
     }
   ]
 }

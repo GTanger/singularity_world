@@ -5,6 +5,22 @@
 
 ---
 
+## 零點五、活化＝持續演進（無最終版）
+
+**本專案沒有「NPC 活化的封閉最終版」**，只有**不斷進化的版本**——與你強調的「活化 NPC」一致：世界在變、規則與資料在變、對話與記憶在變。
+
+| 層級 | 演進方式（舉例） |
+|------|------------------|
+| **資料** | `data/npc_behaviors.json`、主題／對話模板、`data/rooms`、NPC 池與指派 |
+| **邏輯** | 行為引擎、排班、微互動與 NPC↔NPC 觸發、`dialogue_scorer.go` 品質門檻 |
+| **Prompt** | `ai/talk.go` 等 LLM 呼叫的 system／user 結構；**隨體感與模型能力調整** |
+| **本地 LLM** | **Ollama**；`config/config.go` 的 `Server.OllamaModel` 為**可替換預設**（環境變數 `OLLAMA_MODEL` 覆寫）。目前程式預設 tag 為 `sorc/qwen3.5-claude-4.6-opus:2b`（**社群命名空間**，常為自訂 Modelfile／合併標籤），**與** [Ollama 官方 Library](https://ollama.com/library) 上的 `qwen3.5:2b` **等**不是同一個字串；**以本機 `ollama list` 為準**。官方與社群會持續上新小模型（Qwen3.5 家族等），**不必把某個模型名當成永恆真理**——與現實社會技術迭代類比。 |
+| **技術棧** | **伺服器與對話邏輯以 Go 為準（Go 全棧）**；不以 Python 作 NPC／對話的正式運行依賴。 |
+
+**對齊文件**：[NPC 間對話—記憶與情境完整設計](design/NPC間對話—記憶與情境完整設計.md)、[在線對話篩選（Autoresearch 概念）](reference/autoresearch_backend.md)、[決策 007：NPC AI 與本地模型](decisions/007_NPC_AI_API與預設使用規則.md)。
+
+---
+
 ## 零、設計哲學
 
 奇點世界的 NPC 不是「會說話的路牌」，而是與玩家共用同一套規則的**對等存在**：

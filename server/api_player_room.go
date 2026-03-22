@@ -2,7 +2,6 @@
 package server
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 
@@ -16,7 +15,7 @@ type PlayerRoomResponse struct {
 }
 
 // HandlePlayerRoomAPI 處理 GET /api/player-room?id=xxx&pw=yyy，驗證密碼後回傳該玩家當前房間 ID。
-func HandlePlayerRoomAPI(database *sql.DB, w http.ResponseWriter, r *http.Request) {
+func HandlePlayerRoomAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	if r.Method != http.MethodGet {
 		http.Error(w, `{"error":"GET only"}`, http.StatusMethodNotAllowed)
@@ -28,12 +27,12 @@ func HandlePlayerRoomAPI(database *sql.DB, w http.ResponseWriter, r *http.Reques
 		http.Error(w, `{"error":"需提供 id 與 pw 參數"}`, http.StatusBadRequest)
 		return
 	}
-	ok, err := db.VerifyPassword(database, playerID, password)
+	ok, err := db.VerifyPassword(playerID, password)
 	if err != nil || !ok {
 		http.Error(w, `{"error":"身份驗證失敗"}`, http.StatusForbidden)
 		return
 	}
-	roomID, err := db.GetEntityRoom(database, playerID)
+	roomID, err := db.GetEntityRoom(playerID)
 	if err != nil {
 		http.Error(w, `{"error":"查詢房間失敗"}`, http.StatusInternalServerError)
 		return

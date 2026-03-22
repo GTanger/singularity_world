@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	conversationGapSec = 120  // 超過 2 分鐘沒對該 NPC 說話視為「上一場結束」
-	maxTurnsPerBuffer  = 20   // 單場最多保留輪數
-	maxConsolidate     = 3    // 整場最多寫入 3 條
+	conversationGapSec = 120 // 超過 2 分鐘沒對該 NPC 說話視為「上一場結束」
+	maxTurnsPerBuffer  = 20  // 單場最多保留輪數
+	maxConsolidate     = 3   // 整場最多寫入 3 條
 )
 
 type conversationTurn struct {
@@ -20,8 +20,8 @@ type conversationTurn struct {
 }
 
 var (
-	bufMu    sync.RWMutex
-	buffers  = make(map[string][]conversationTurn)
+	bufMu   sync.RWMutex
+	buffers = make(map[string][]conversationTurn)
 )
 
 func bufferKey(playerID, npcID string) string {

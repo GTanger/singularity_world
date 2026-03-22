@@ -2,7 +2,6 @@
 package db
 
 import (
-	"database/sql"
 	"encoding/binary"
 	"math"
 	"math/rand"
@@ -14,7 +13,7 @@ import (
 	cryptorand "crypto/rand"
 )
 
-// 三軸區間與映射常數（與人物屬性彙整 §二、cmd/soulseed_demo 一致）
+// 三軸區間與映射常數（與人物屬性彙整 §二、tools/go/soulseed_demo 一致）
 const (
 	ampMin, ampMax     = 0.1, 3.0
 	freqMin, freqMax   = 0.5, 2.0
@@ -143,8 +142,11 @@ func ExpandSoulSeedToPersonality(seed int64) Personality {
 	}
 }
 
-// InsertEntity 新增一筆玩家實體（創角用）；store 啟用時寫入 store 並持久化 entities.json。
-func InsertEntity(db *sql.DB, id, displayChar, gender string) error {
+// InsertEntity 新增一筆玩家實體（創角用）；寫入 store 並持久化 entities.json。
+func InsertEntity(id, displayChar, gender string) error {
+	if store.Default == nil {
+		return ErrNoStore
+	}
 	if displayChar == "" {
 		displayChar = "我"
 	}
@@ -158,21 +160,13 @@ func InsertEntity(db *sql.DB, id, displayChar, gender string) error {
 	vit, qi, dex := ExpandSoulSeedToBaseStats(seed)
 	now := time.Now().Unix()
 	equip := StarterEquipment(gender)
-	if store.Default != nil {
-		return store.Default.PutEntity(&store.Entity{
-			ID: id, Kind: "player", DisplayChar: displayChar,
-			X: 0, Y: 0, MoveState: "idle",
-			Vit: vit, Qi: qi, Dex: dex, Magnesium: 0,
-			CreatedAt: now, Gender: gender, SoulSeed: &seed,
-			EquipmentSlots: equip, Inventory: "[]", ActivatedNodes: `["N000"]`,
-		})
-	}
-	_, err = db.Exec(
-		`INSERT INTO entities (id, kind, display_char, x, y, move_state, vit, qi, dex, magnesium, created_at, gender, soul_seed, equipment_slots)
-		 VALUES (?, 'player', ?, 0, 0, 'idle', ?, ?, ?, 0, ?, ?, ?, ?)`,
-		id, displayChar, vit, qi, dex, now, gender, seed, equip,
-	)
-	return err
+	return store.Default.PutEntity(&store.Entity{
+		ID: id, Kind: "player", DisplayChar: displayChar,
+		X: 0, Y: 0, MoveState: "idle",
+		Vit: vit, Qi: qi, Dex: dex, Magnesium: 0,
+		CreatedAt: now, Gender: gender, SoulSeed: &seed,
+		EquipmentSlots: equip, Inventory: "[]", ActivatedNodes: `["N000"]`,
+	})
 }
 
 // storeEntityToCharacter 將 store.Entity 轉成 entity.Character；npcDisplayTitle 僅 NPC 時使用（可為空）。
@@ -197,329 +191,150 @@ func storeEntityToCharacter(e *store.Entity, npcDisplayTitle string) *entity.Cha
 	return c
 }
 
-// GetEntity 依 id 查詢實體；store 啟用時從 store 讀取，否則從 DB。
-func GetEntity(db *sql.DB, id string) (*entity.Character, error) {
-	if store.Default != nil {
-		se := store.Default.GetEntity(id)
-		if se == nil {
-			return nil, nil
-		}
-		title := ""
-		if se.Kind == "npc" {
-			title = GetNPCTitle(db, id)
-		}
-		return storeEntityToCharacter(se, title), nil
+// GetEntity 依 id 查詢實體（僅 store）。
+func GetEntity(id string) (*entity.Character, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	var c entity.Character
-	var targetX, targetY sql.NullInt64
-	var moveStartedAt, lastObservedAt sql.NullInt64
-	var walkOrRun, gender, displayTitle, activatedNodes, equipSlots sql.NullString
-
-	var soulSeed sql.NullInt64
-	var inventory sql.NullString
-	err := db.QueryRow(
-		`SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
-		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed,
-		 display_title, activated_nodes, equipment_slots, inventory
-		 FROM entities WHERE id = ?`,
-		id,
-	).Scan(
-		&c.ID, &c.Kind, &c.DisplayChar, &c.X, &c.Y, &c.MoveState,
-		&targetX, &targetY, &walkOrRun, &moveStartedAt,
-		&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender, &soulSeed,
-		&displayTitle, &activatedNodes, &equipSlots, &inventory,
-	)
-	if err == sql.ErrNoRows {
+	se := store.Default.GetEntity(id)
+	if se == nil {
 		return nil, nil
 	}
-	if err != nil {
-		return nil, err
+	title := ""
+	if se.Kind == "npc" {
+		title = GetNPCPersonDisplayName(id)
 	}
-	if targetX.Valid {
-		x := int(targetX.Int64)
-		c.TargetX = &x
-	}
-	if targetY.Valid {
-		y := int(targetY.Int64)
-		c.TargetY = &y
-	}
-	if walkOrRun.Valid {
-		c.WalkOrRun = walkOrRun.String
-	}
-	if moveStartedAt.Valid {
-		t := moveStartedAt.Int64
-		c.MoveStartedAt = &t
-	}
-	if lastObservedAt.Valid {
-		t := lastObservedAt.Int64
-		c.LastObservedAt = &t
-	}
-	if gender.Valid {
-		c.Gender = gender.String
-	}
-	if soulSeed.Valid {
-		c.SoulSeed = &soulSeed.Int64
-	}
-	if displayTitle.Valid && displayTitle.String != "" {
-		c.DisplayTitle = displayTitle.String
-	}
-	if activatedNodes.Valid && activatedNodes.String != "" {
-		c.ActivatedNodes = activatedNodes.String
-	} else {
-		c.ActivatedNodes = `["N000"]`
-	}
-	if equipSlots.Valid && equipSlots.String != "" {
-		c.EquipmentSlots = equipSlots.String
-	}
-	if inventory.Valid && inventory.String != "" {
-		c.Inventory = inventory.String
-	} else {
-		c.Inventory = "[]"
-	}
-	if c.Kind == "npc" {
-		c.DisplayTitle = GetNPCTitle(db, id)
-	}
-	return &c, nil
+	return storeEntityToCharacter(se, title), nil
 }
 
 // GetPersonalityForEntity 依實體 id 查 soul_seed，若有則展開為 Personality；供決策引擎與對話權重使用。
 // 回傳 (Personality, true) 表示有性格；(零值, false) 表示查無或無 soul_seed（例如舊資料、未創角）。
-func GetPersonalityForEntity(db *sql.DB, entityID string) (Personality, bool) {
-	c, err := GetEntity(db, entityID)
+func GetPersonalityForEntity(entityID string) (Personality, bool) {
+	c, err := GetEntity(entityID)
 	if err != nil || c == nil || c.SoulSeed == nil {
 		return Personality{}, false
 	}
 	return ExpandSoulSeedToPersonality(*c.SoulSeed), true
 }
 
-// UpdateLastObserved 將指定實體的 last_observed_at 更新為 at；store 啟用時寫入 store。
-func UpdateLastObserved(db *sql.DB, id string, at int64) error {
-	if store.Default != nil {
-		return store.Default.UpdateEntity(id, func(e *store.Entity) { e.LastObservedAt = &at })
+// UpdateLastObserved 將指定實體的 last_observed_at 更新為 at。
+func UpdateLastObserved(id string, at int64) error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	_, err := db.Exec("UPDATE entities SET last_observed_at = ? WHERE id = ?", at, id)
-	return err
+	return store.Default.UpdateEntity(id, func(e *store.Entity) { e.LastObservedAt = &at })
 }
 
-// ClearLastObserved 將指定實體的 last_observed_at 清為未觀測（NULL）；離開房間且無人在房時用。
-func ClearLastObserved(db *sql.DB, id string) error {
-	if store.Default != nil {
-		return store.Default.UpdateEntity(id, func(e *store.Entity) { e.LastObservedAt = nil })
+// ClearLastObserved 將指定實體的 last_observed_at 清為未觀測；離開房間且無人在房時用。
+func ClearLastObserved(id string) error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	_, err := db.Exec("UPDATE entities SET last_observed_at = NULL WHERE id = ?", id)
-	return err
+	return store.Default.UpdateEntity(id, func(e *store.Entity) { e.LastObservedAt = nil })
 }
 
-// UpdatePosition 將指定實體位置更新為 (x, y)，並設為 idle；store 啟用時寫入 store。
-func UpdatePosition(db *sql.DB, id string, x, y int) error {
-	if store.Default != nil {
-		return store.Default.UpdateEntity(id, func(e *store.Entity) {
-			e.X, e.Y = x, y
-			e.MoveState = "idle"
-			e.TargetX, e.TargetY, e.MoveStartedAt = nil, nil, nil
-		})
+// UpdatePosition 將指定實體位置更新為 (x, y)，並設為 idle。
+func UpdatePosition(id string, x, y int) error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	_, err := db.Exec(
-		"UPDATE entities SET x = ?, y = ?, move_state = 'idle', target_x = NULL, target_y = NULL, move_started_at = NULL WHERE id = ?",
-		x, y, id,
-	)
-	return err
+	return store.Default.UpdateEntity(id, func(e *store.Entity) {
+		e.X, e.Y = x, y
+		e.MoveState = "idle"
+		e.TargetX, e.TargetY, e.MoveStartedAt = nil, nil, nil
+	})
 }
 
-// SetMoveTarget 設定移動目標，move_state 設為 moving；store 啟用時寫入 store。
-func SetMoveTarget(db *sql.DB, id string, targetX, targetY int, walkOrRun string, startedAt int64) error {
+// SetMoveTarget 設定移動目標，move_state 設為 moving。
+func SetMoveTarget(id string, targetX, targetY int, walkOrRun string, startedAt int64) error {
 	if walkOrRun == "" {
 		walkOrRun = "walk"
 	}
-	if store.Default != nil {
-		return store.Default.UpdateEntity(id, func(e *store.Entity) {
-			e.TargetX, e.TargetY = &targetX, &targetY
-			e.MoveState = "moving"
-			e.WalkOrRun = walkOrRun
-			e.MoveStartedAt = &startedAt
-		})
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	_, err := db.Exec(
-		"UPDATE entities SET target_x = ?, target_y = ?, move_state = 'moving', walk_or_run = ?, move_started_at = ? WHERE id = ?",
-		targetX, targetY, walkOrRun, startedAt, id,
-	)
-	return err
+	return store.Default.UpdateEntity(id, func(e *store.Entity) {
+		e.TargetX, e.TargetY = &targetX, &targetY
+		e.MoveState = "moving"
+		e.WalkOrRun = walkOrRun
+		e.MoveStartedAt = &startedAt
+	})
 }
 
-// UpdatePositionOnly 僅更新實體座標（用於移動中每 tick 步進）；store 啟用時寫入 store。
-func UpdatePositionOnly(db *sql.DB, id string, x, y int) error {
-	if store.Default != nil {
-		return store.Default.UpdateEntity(id, func(e *store.Entity) { e.X, e.Y = x, y })
+// UpdatePositionOnly 僅更新實體座標（用於移動中每 tick 步進）。
+func UpdatePositionOnly(id string, x, y int) error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	_, err := db.Exec("UPDATE entities SET x = ?, y = ? WHERE id = ?", x, y, id)
-	return err
+	return store.Default.UpdateEntity(id, func(e *store.Entity) { e.X, e.Y = x, y })
 }
 
 // AddMagnesium 增減實體鎂（delta 可正可負）；用於乞討獲得、消費等。結果會 clamp 至 >= 0。
-func AddMagnesium(db *sql.DB, entityID string, delta int) error {
-	if store.Default != nil {
-		return store.Default.UpdateEntity(entityID, func(e *store.Entity) {
-			e.Magnesium += delta
-			if e.Magnesium < 0 {
-				e.Magnesium = 0
-			}
-		})
+func AddMagnesium(entityID string, delta int) error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	_, err := db.Exec(`UPDATE entities SET magnesium = magnesium + ? WHERE id = ?`, delta, entityID)
-	if err != nil {
-		return err
-	}
-	if delta < 0 {
-		_, _ = db.Exec(`UPDATE entities SET magnesium = 0 WHERE id = ? AND magnesium < 0`, entityID)
-	}
-	return nil
+	return store.Default.UpdateEntity(entityID, func(e *store.Entity) {
+		e.Magnesium += delta
+		if e.Magnesium < 0 {
+			e.Magnesium = 0
+		}
+	})
 }
 
-// UpdateVit 將指定實體的體質（氣血）更新為 newVit；戰鬥結束後寫回用。小於 0 時自動 clamp 為 0（即死亡）。store 啟用時同步更新 store。
-func UpdateVit(db *sql.DB, entityID string, newVit int) error {
+// UpdateVit 將指定實體的體質（氣血）更新為 newVit；戰鬥結束後寫回用。小於 0 時自動 clamp 為 0（即死亡）。
+func UpdateVit(entityID string, newVit int) error {
 	if newVit < 0 {
 		newVit = 0
 	}
-	if store.Default != nil {
-		if err := store.Default.UpdateEntity(entityID, func(e *store.Entity) { e.Vit = newVit }); err != nil {
-			return err
-		}
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	_, err := db.Exec("UPDATE entities SET vit = ? WHERE id = ?", newVit, entityID)
-	return err
+	return store.Default.UpdateEntity(entityID, func(e *store.Entity) { e.Vit = newVit })
 }
 
-// GetMovingEntities 回傳所有 move_state = 'moving' 的實體；store 啟用時從 store 讀取。
-func GetMovingEntities(db *sql.DB) ([]*entity.Character, error) {
-	if store.Default != nil {
-		ids := store.Default.GetMovingEntityIDs()
-		var list []*entity.Character
-		for _, id := range ids {
-			se := store.Default.GetEntity(id)
-			if se == nil {
-				continue
-			}
-			title := ""
-			if se.Kind == "npc" {
-				title = GetNPCTitle(db, id)
-			}
-			list = append(list, storeEntityToCharacter(se, title))
-		}
-		return list, nil
+// GetMovingEntities 回傳所有 move_state = 'moving' 的實體。
+func GetMovingEntities() ([]*entity.Character, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
 	}
-	rows, err := db.Query(
-		`SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
-		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed, equipment_slots
-		 FROM entities WHERE move_state = 'moving' AND target_x IS NOT NULL AND target_y IS NOT NULL`,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	return scanCharacters(rows)
-}
-
-// scanCharacters 共用：從 entities 的 SELECT（含 soul_seed）掃成 []*entity.Character。
-func scanCharacters(rows *sql.Rows) ([]*entity.Character, error) {
+	ids := store.Default.GetMovingEntityIDs()
 	var list []*entity.Character
-	for rows.Next() {
-		var c entity.Character
-		var targetX, targetY sql.NullInt64
-		var moveStartedAt, lastObservedAt sql.NullInt64
-		var walkOrRun, gender, equipSlots sql.NullString
-		var soulSeed sql.NullInt64
-		if err := rows.Scan(
-			&c.ID, &c.Kind, &c.DisplayChar, &c.X, &c.Y, &c.MoveState,
-			&targetX, &targetY, &walkOrRun, &moveStartedAt,
-			&c.Vit, &c.Qi, &c.Dex, &c.Magnesium, &lastObservedAt, &c.CreatedAt, &gender, &soulSeed,
-			&equipSlots,
-		); err != nil {
-			return nil, err
+	for _, id := range ids {
+		se := store.Default.GetEntity(id)
+		if se == nil {
+			continue
 		}
-		if targetX.Valid {
-			x := int(targetX.Int64)
-			c.TargetX = &x
+		title := ""
+		if se.Kind == "npc" {
+			title = GetNPCPersonDisplayName(id)
 		}
-		if targetY.Valid {
-			y := int(targetY.Int64)
-			c.TargetY = &y
-		}
-		if walkOrRun.Valid {
-			c.WalkOrRun = walkOrRun.String
-		}
-		if moveStartedAt.Valid {
-			t := moveStartedAt.Int64
-			c.MoveStartedAt = &t
-		}
-		if lastObservedAt.Valid {
-			t := lastObservedAt.Int64
-			c.LastObservedAt = &t
-		}
-		if gender.Valid {
-			c.Gender = gender.String
-		}
-		if soulSeed.Valid {
-			c.SoulSeed = &soulSeed.Int64
-		}
-		if equipSlots.Valid {
-			c.EquipmentSlots = equipSlots.String
-		}
-		list = append(list, &c)
+		list = append(list, storeEntityToCharacter(se, title))
 	}
-	return list, rows.Err()
+	return list, nil
 }
 
-// GetEntitiesInBox 查詢座標落在 [xMin,xMax]×[yMin,yMax] 內的實體；store 啟用時從 store 讀取。
-func GetEntitiesInBox(db *sql.DB, xMin, xMax, yMin, yMax int, kind string) ([]*entity.Character, error) {
-	if store.Default != nil {
-		sel := store.Default.GetEntitiesInBox(xMin, xMax, yMin, yMax, kind)
-		list := make([]*entity.Character, 0, len(sel))
-		for _, se := range sel {
-			title := ""
-			if se.Kind == "npc" {
-				title = GetNPCTitle(db, se.ID)
-			}
-			list = append(list, storeEntityToCharacter(se, title))
+// GetEntitiesInBox 查詢座標落在 [xMin,xMax]×[yMin,yMax] 內的實體。
+func GetEntitiesInBox(xMin, xMax, yMin, yMax int, kind string) ([]*entity.Character, error) {
+	if store.Default == nil {
+		return nil, ErrNoStore
+	}
+	sel := store.Default.GetEntitiesInBox(xMin, xMax, yMin, yMax, kind)
+	list := make([]*entity.Character, 0, len(sel))
+	for _, se := range sel {
+		title := ""
+		if se.Kind == "npc" {
+			title = GetNPCPersonDisplayName(se.ID)
 		}
-		return list, nil
+		list = append(list, storeEntityToCharacter(se, title))
 	}
-	var query string
-	var args []interface{}
-	if kind != "" {
-		query = `SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
-		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed, equipment_slots
-		 FROM entities WHERE kind = ? AND x >= ? AND x <= ? AND y >= ? AND y <= ?`
-		args = []interface{}{kind, xMin, xMax, yMin, yMax}
-	} else {
-		query = `SELECT id, kind, display_char, x, y, move_state, target_x, target_y, walk_or_run,
-		 move_started_at, vit, qi, dex, magnesium, last_observed_at, created_at, gender, soul_seed, equipment_slots
-		 FROM entities WHERE x >= ? AND x <= ? AND y >= ? AND y <= ?`
-		args = []interface{}{xMin, xMax, yMin, yMax}
-	}
-	rows, err := db.Query(query, args...)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	return scanCharacters(rows)
+	return list, nil
 }
 
-// DeleteAllEntities 刪除所有實體；store 啟用時清空 store 的 entities 與 entity_room 並持久化。
-func DeleteAllEntities(db *sql.DB) error {
-	if store.Default != nil {
-		return store.ClearAllEntities()
+// DeleteAllEntities 清空 store 的 entities 與 entity_room 並持久化。
+func DeleteAllEntities() error {
+	if store.Default == nil {
+		return ErrNoStore
 	}
-	if _, err := db.Exec("DELETE FROM entity_auth"); err != nil {
-		return err
-	}
-	if _, err := db.Exec("DELETE FROM entity_room"); err != nil {
-		return err
-	}
-	if _, err := db.Exec("DELETE FROM event_log"); err != nil {
-		return err
-	}
-	if _, err := db.Exec("DELETE FROM entities"); err != nil {
-		return err
-	}
-	return nil
+	return store.ClearAllEntities()
 }

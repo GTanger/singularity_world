@@ -1,0 +1,46 @@
+{
+  "id": "city_life_elevator",
+  "name": "電梯間",
+  "description": "➀ ➁ ➂ ➃ ➄\n➅ ➆ ➇ ➈ ➉",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "➀",
+      "to": "city_life_1f"
+    },
+    {
+      "direction": "➁",
+      "to": "city_life_2f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_1f",
+      "name": "➀",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城1F」。"
+      },
+      "move_to_room_id": "city_life_1f"
+    },
+    {
+      "id": "city_life_2f",
+      "name": "➁",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城2F」。"
+      },
+      "move_to_room_id": "city_life_2f"
+    }
+  ]
+}
