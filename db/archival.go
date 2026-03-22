@@ -5,6 +5,7 @@ import (
 	"sort"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"singularity_world/store"
 )
@@ -166,6 +167,95 @@ func InsertNpcNpcDialogueArchival(entityID, content string) (written bool, skipp
 	return true, false
 }
 
+type archivalRank struct {
+	content string
+	score   int
+	at      int64
+}
+
+// rankArchivalForQuery 依 query 拆詞對條目評分（命中越多越前，同分則較新在前）。
+func rankArchivalForQuery(entries []store.ArchivalEntry, query string) []archivalRank {
+	query = strings.TrimSpace(query)
+	if query == "" {
+		return nil
+	}
+	terms := splitQueryTerms(query)
+	ranked := make([]archivalRank, 0, len(entries))
+	for _, e := range entries {
+		s := 0
+		for _, t := range terms {
+			if t != "" && strings.Contains(e.Content, t) {
+				s++
+			}
+		}
+		ranked = append(ranked, archivalRank{e.Content, s, e.CreatedAt})
+	}
+	sort.Slice(ranked, func(i, j int) bool {
+		if ranked[i].score != ranked[j].score {
+			return ranked[i].score > ranked[j].score
+		}
+		return ranked[i].at > ranked[j].at
+	})
+	return ranked
+}
+
+// talkOmitArchivalFallbackExact 玩家句經輕量正規化後若等於其中一項，且記憶檢索零命中時，不採「取最新幾條」fallback，避免無關節錄（如對帳）污染 Talk。
+var talkOmitArchivalFallbackExact = map[string]struct{}{
+	"你好": {}, "您好": {}, "嗨": {}, "哈囉": {}, "哈喽": {}, "hello": {}, "hi": {},
+	"早": {}, "早安": {}, "午安": {}, "晚安": {}, "在嗎": {}, "在不在": {},
+	"喂": {}, "欸": {}, "嘿": {}, "謝謝": {}, "谢谢": {}, "感恩": {},
+	"再見": {}, "再见": {}, "拜拜": {}, "掰掰": {}, "掰": {},
+	"嗯": {}, "嗯嗯": {}, "喔": {}, "哦": {}, "好": {}, "好啊": {}, "好喔": {}, "好的": {},
+	"收到": {}, "了解": {}, "恩": {}, "噢": {},
+}
+
+// normalizePlayerTalkQueryForGreeting 供寒暄判斷：去首尾空白、ASCII 轉小寫、剝標點與常見句尾語氣字。
+func normalizePlayerTalkQueryForGreeting(q string) string {
+	q = strings.TrimSpace(q)
+	var b strings.Builder
+	b.Grow(len(q))
+	for _, r := range q {
+		if r >= 'A' && r <= 'Z' {
+			r += 'a' - 'A'
+		}
+		b.WriteRune(r)
+	}
+	q = strings.TrimSpace(b.String())
+	for _, ch := range []string{"。", "！", "？", ".", "!", "?", "~", "～", "…"} {
+		q = strings.Trim(q, ch)
+	}
+	for {
+		before := q
+		for _, suf := range []string{"啊", "呀", "喔", "哦", "吧", "呢", "嘛", "啦", "唄", "哈"} {
+			rs := utf8.RuneCountInString(q)
+			ss := utf8.RuneCountInString(suf)
+			if rs > ss && strings.HasSuffix(q, suf) {
+				q = strings.TrimSpace(strings.TrimSuffix(q, suf))
+			}
+		}
+		if q == before {
+			break
+		}
+	}
+	return strings.TrimSpace(q)
+}
+
+func shouldOmitArchivalFallbackForTalkQuery(query string) bool {
+	q := strings.TrimSpace(query)
+	if q == "" {
+		return true
+	}
+	if strings.Contains(q, "搭話") {
+		return true
+	}
+	norm := normalizePlayerTalkQueryForGreeting(q)
+	if norm == "" {
+		return true
+	}
+	_, ok := talkOmitArchivalFallbackExact[norm]
+	return ok
+}
+
 // SearchArchival 依 entity_id 取 topK 條：多關鍵字評分（query 拆詞，命中越多越前），無 query 取最新。回傳 Content 字串 slice。
 func SearchArchival(entityID, query string, topK int) []string {
 	if store.Default == nil {
@@ -183,35 +273,48 @@ func SearchArchival(entityID, query string, topK int) []string {
 		}
 		return out
 	}
-	// 拆成關鍵字：空白分開 + 整句當一詞，讓「不付錢」與「付錢」都能帶出含「錢」的記憶
-	terms := splitQueryTerms(query)
-	type scored struct {
-		content string
-		score   int
-		at      int64
-	}
-	scoredList := make([]scored, 0, len(entries))
-	for _, e := range entries {
-		s := 0
-		for _, t := range terms {
-			if t != "" && strings.Contains(e.Content, t) {
-				s++
-			}
-		}
-		scoredList = append(scoredList, scored{e.Content, s, e.CreatedAt})
-	}
-	// 分數高優先，同分則新的優先
-	sort.Slice(scoredList, func(i, j int) bool {
-		if scoredList[i].score != scoredList[j].score {
-			return scoredList[i].score > scoredList[j].score
-		}
-		return scoredList[i].at > scoredList[j].at
-	})
+	ranked := rankArchivalForQuery(entries, query)
 	out := make([]string, 0, topK)
-	for i := 0; i < len(scoredList) && len(out) < topK; i++ {
-		if scoredList[i].score > 0 {
-			out = append(out, scoredList[i].content)
+	for _, r := range ranked {
+		if r.score > 0 && len(out) < topK {
+			out = append(out, r.content)
 		}
+	}
+	if len(out) == 0 {
+		for i := 0; i < len(entries) && len(out) < topK; i++ {
+			out = append(out, entries[i].Content)
+		}
+	}
+	return out
+}
+
+// SearchArchivalForPlayerTalk 專供玩家↔NPC Talk：評分邏輯同 SearchArchival，但若零命中且玩家這句屬寒暄／占位等低意圖，
+// 則不 fallback 到「最新幾條」，回傳 nil，避免無關對帳、換班等節錄被硬塞進 LLM。
+func SearchArchivalForPlayerTalk(entityID, query string, topK int) []string {
+	if store.Default == nil {
+		return nil
+	}
+	entries := store.Default.GetArchivalByEntity(entityID)
+	if len(entries) == 0 {
+		return nil
+	}
+	query = strings.TrimSpace(query)
+	if query == "" {
+		out := make([]string, 0, topK)
+		for i := 0; i < len(entries) && len(out) < topK; i++ {
+			out = append(out, entries[i].Content)
+		}
+		return out
+	}
+	ranked := rankArchivalForQuery(entries, query)
+	out := make([]string, 0, topK)
+	for _, r := range ranked {
+		if r.score > 0 && len(out) < topK {
+			out = append(out, r.content)
+		}
+	}
+	if len(out) == 0 && shouldOmitArchivalFallbackForTalkQuery(query) {
+		return nil
 	}
 	if len(out) == 0 {
 		for i := 0; i < len(entries) && len(out) < topK; i++ {

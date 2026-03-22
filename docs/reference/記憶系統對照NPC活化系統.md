@@ -11,8 +11,8 @@
 |--------------------------|------------------|:-----:|----------|------|
 | **背版（identity）只讀** | 階段 1：固定背版 | **G** | ✅ | `db/backstory.go` BuildIdentity；Talk 前帶入 |
 | **archival 儲存＋寫入** | 階段 2：archival 寫入 | **H** | ✅ | **對話結束 consolidation**：逾時 2 分鐘視為一場結束，整場壓成 1～3 條寫入；節流＋每 NPC 上限 100 條 |
-| **archival 檢索（top-k）** | 階段 2：檢索注入 | **H** | ✅ | SearchArchival：**多關鍵字評分**（query 拆詞，命中越多越前），無 query 取最新 5 條 |
-| **可驗收：Talk 前背版＋top-k** | 讀取流程 | **G+H** | ✅ | handler：BuildIdentity + SearchArchival → CallAITalk |
+| **archival 檢索（top-k）** | 階段 2：檢索注入 | **H** | ✅ | SearchArchival：**多關鍵字評分**（query 拆詞，命中越多越前），無 query 取最新；**玩家↔NPC Talk** 用 `SearchArchivalForPlayerTalk`：寒暄等零命中時**不** fallback 到無關最新條，避免污染 prompt |
+| **可驗收：Talk 前背版＋top-k** | 讀取流程 | **G+H** | ✅ | handler：BuildIdentity + SearchArchivalForPlayerTalk → CallAITalk／雲端 Talk |
 | **可驗收：結束寫入 archival** | 寫入時機 | **H** | ✅ | 逾時 2 分鐘後下一句 Talk 時，將上一場 1～3 條寫入（`server/conversation_buffer.go`） |
 | **可驗收：再次 Talk 能檢索到** | 檢索驗收 | **H** | ✅ | 同一 entity_id 再 Talk，多關鍵字可帶出相關記憶 |
 | **節流（本場上限 M 條）** | 寫入節流 | — | ✅ | consolidation 每場最多 3 條；另每 NPC 每 10 分鐘最多 3 條、總量上限 100 條 |
@@ -33,7 +33,7 @@
 | 步驟 | 活化／記憶對應 | 檔案／函式 |
 |------|----------------|------------|
 | Talk 前讀背版 | 第四階段「背版只讀」、G | `db/backstory.go` BuildIdentity |
-| Talk 前檢索記憶 | 第四階段「archival 檢索 top-k」、H | `db/archival.go` SearchArchival；store GetArchivalByEntity |
+| Talk 前檢索記憶 | 第四階段「archival 檢索 top-k」、H | `db/archival.go` **SearchArchivalForPlayerTalk**（Talk 專用；一般檢索仍為 SearchArchival）；store GetArchivalByEntity |
 | 組 prompt 送 LLM | 第四階段「可驗收 1」、I | `ai/talk.go` CallAITalk(snippets)；handler 傳 backstory＋snippets＋styleExamples |
 | 回覆後寫入 | 第四階段「archival 儲存＋寫入」、H | `server/conversation_buffer.go` FlushConversationAndAppend；逾時 2 分鐘整場壓 1～3 條 → InsertArchival；並 SetNpcSummary |
 | 持久化 | 6.3 記憶相關 | `npc_archival.json`、`npc_summaries.json`；store load/persist |

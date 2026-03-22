@@ -27,12 +27,12 @@
     "npc_dh7ljyggbjh5|npc_dh7lq371wwmu": {
       "a_id": "npc_dh7ljyggbjh5",
       "b_id": "npc_dh7lq371wwmu",
-      "familiarity": 20,
+      "familiarity": 22,
       "sentiment": -1,
       "tags": [
         "同職場"
       ],
-      "updated_at": 1774140936
+      "updated_at": 1774177836
     },
     "npc_dh7ljyggbjh5|npc_dh7lub7op7n9": {
       "a_id": "npc_dh7ljyggbjh5",
@@ -133,7 +133,7 @@
       "tags": [
         "同職場"
       ],
-      "updated_at": 1774173486
+      "updated_at": 1774177086
     },
     "npc_dh7ln0pmebvc|npc_dh7lq371wwmu": {
       "a_id": "npc_dh7ln0pmebvc",
@@ -143,7 +143,7 @@
       "tags": [
         "同職場"
       ],
-      "updated_at": 1774173336
+      "updated_at": 1774177536
     },
     "npc_dh7ln0pmebvc|npc_dh7lub7op7n9": {
       "a_id": "npc_dh7ln0pmebvc",
@@ -184,11 +184,11 @@
       "a_id": "npc_dh7lok2gzenv",
       "b_id": "npc_dh7lq371wwmu",
       "familiarity": 100,
-      "sentiment": 21,
+      "sentiment": 23,
       "tags": [
         "同職場"
       ],
-      "updated_at": 1774173636
+      "updated_at": 1774177236
     },
     "npc_dh7lok2gzenv|npc_dh7lub7op7n9": {
       "a_id": "npc_dh7lok2gzenv",

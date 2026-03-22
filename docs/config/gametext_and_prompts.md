@@ -8,6 +8,7 @@
 |------|------|
 | `data/config/gametext.json` | 遊戲內與 API 字串：WebSocket 錯誤、NPC 社交前綴、dyad 標籤、對話評分詞表、清理標記、經濟傳聞句、移動文案、大腦到達／事件日誌範本等。啟動時由 `main` 呼叫 `gametext.MustLoad()`。 |
 | `data/templates/llm_prompts.json` | 給 LLM 的 system／user 區塊（玩家↔NPC、NPC↔NPC）、世界現象段落、meta 過濾、折疊分隔符。由 `ai/prompts.go` 延遲載入。 |
+| `data/templates/PLAYER_TALK_WEB_LLM.md` | 玩家↔NPC **分場景回答規則**條列（給企劃／Web 助理對照）；**不**自動進 API，須與 `llm_prompts.json` 同步。語用背景見 [`玩家NPC對話與交際語用.md`](../reference/玩家NPC對話與交際語用.md)。 |
 
 **原則**：可編輯內容放在 JSON；Go 只做載入、`fmt.Sprintf` 與接線。註解僅供人讀，不等於送進模型的提示詞。
 

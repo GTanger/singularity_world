@@ -15,6 +15,7 @@
 | 路徑 | 說明 |
 |------|------|
 | [decisions/008_架構整頓規劃.md](./decisions/008_架構整頓規劃.md) | 架構整頓主文件（含執行進度） |
+| [decisions/009_觀測分級與行程約束.md](./decisions/009_觀測分級與行程約束.md) | **觀測分級**、行程優先於擲骰、在崗決定性、LLM／雲端定位（由討論 005 升格） |
 | [decisions/](./decisions/) | 其餘 ADR |
 | [implementation/](./implementation/) | 實作規劃、遷移說明 |
 | [dev/](./dev/) | 開發入口（含連結至 implementation；008 P8） |
@@ -35,6 +36,7 @@
 |------|------|
 | [archive/gemini概念設計檔/](./archive/gemini概念設計檔/) | 早期概念草稿（維護頻率低） |
 | [discussions/](./discussions/) | 討論稿（多數已轉決策） |
+| [discussions/005_觀測分級與行程約束_雲端與程式模擬.md](./discussions/005_觀測分級與行程約束_雲端與程式模擬.md) | 討論脈絡與筆記；**已定案見 [009](./decisions/009_觀測分級與行程約束.md)**；§五實作待補 |
 
 ## 其他
 

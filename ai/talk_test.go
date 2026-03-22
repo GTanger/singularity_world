@@ -101,7 +101,7 @@ func TestLocalLLM_10Players10Places(t *testing.T) {
 			place := places[idx%len(places)]
 			input := inputs[idx%len(inputs)]
 			reqStart := time.Now()
-			reply, err := CallAITalk(baseURL, model, input, place.backstory, nil, nil, "")
+			reply, err := CallAITalk(baseURL, model, input, place.backstory, nil, nil, "", place.name)
 			durations[idx] = time.Since(reqStart)
 			if err != nil {
 				t.Logf("[地%d %s] 玩家說「%s」 err=%v", idx+1, place.name, input, err)
@@ -179,7 +179,7 @@ func TestLocalLLM_30Players30Places_10Rounds(t *testing.T) {
 					input = fmt.Sprintf("第%d輪：%s", r+1, input)
 				}
 				reqStart := time.Now()
-				reply, err := CallAITalk(baseURL, model, input, place.backstory, nil, nil, "")
+				reply, err := CallAITalk(baseURL, model, input, place.backstory, nil, nil, "", place.name)
 				d := time.Since(reqStart)
 				durations[playerIdx*rounds+r] = d
 				if err != nil || reply == "" {

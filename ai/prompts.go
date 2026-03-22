@@ -15,6 +15,8 @@ type llmPromptsJSON struct {
 	WorldPhenomenaCognition string `json:"world_phenomena_cognition"`
 	PlayerNPC               struct {
 		PersonaLine            string `json:"persona_line"`
+		RoomContextFmt         string `json:"room_context_fmt"`
+		SpaceConsistencyRule   string `json:"space_consistency_rule"`
 		BehaviorRules          string `json:"behavior_rules"`
 		TraditionalChineseRule string `json:"traditional_chinese_rule"`
 		IdentityPrefix         string `json:"identity_prefix"`
@@ -114,7 +116,11 @@ func WorldPhenomenaCognitionPrompt() string {
 }
 
 func playerNPCPersonaLine() string     { return prompts().PlayerNPC.PersonaLine }
-func playerNPCBehaviorRules() string   { return prompts().PlayerNPC.BehaviorRules }
+func playerNPCRoomContextFmt() string { return prompts().PlayerNPC.RoomContextFmt }
+func playerNPCSpaceConsistencyRule() string {
+	return prompts().PlayerNPC.SpaceConsistencyRule
+}
+func playerNPCBehaviorRules() string { return prompts().PlayerNPC.BehaviorRules }
 func playerNPCTraditionalRule() string { return prompts().PlayerNPC.TraditionalChineseRule }
 func playerNPCIdentityPrefix() string  { return prompts().PlayerNPC.IdentityPrefix }
 func playerNPCSensitivityPrefix() string {

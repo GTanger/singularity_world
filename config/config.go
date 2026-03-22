@@ -27,6 +27,11 @@ type Server struct {
 	NPCSpawnIntervalSec  int           // 每隔幾秒檢查一次並在未滿時生成一名 NPC；0＝不自動生成
 	OllamaBaseURL        string        // NPC 對話 LLM（Ollama）位址；空＝不呼叫，走 fallback 模板
 	OllamaModel          string        // Ollama 模型 tag（可改，非鎖死）；DefaultServer 預設見程式內；若 BaseURL 非空且 Model 空則 fallback qwen-4b-slim；覆寫用環境變數 OLLAMA_MODEL
+	OllamaDisable        bool          // true＝關閉 Ollama（NPC↔NPC 與「玩家 Talk 走 Ollama」）；不影響 player_talk_api_* 雲端
+	// 玩家對 NPC Talk 專用：OpenAI 相容 Web API（POST {base}/chat/completions）。base 須為 …/v1，例如 https://api.openai.com/v1
+	PlayerTalkAPIBaseURL string // data/config/server_defaults.json player_talk_api_base_url；環境變數 PLAYER_TALK_API_BASE_URL
+	PlayerTalkAPIModel   string // player_talk_api_model；PLAYER_TALK_API_MODEL
+	PlayerTalkAPIKey     string // 僅環境變數 PLAYER_TALK_API_KEY，缺則試 OPENAI_API_KEY；勿寫入版本庫 JSON
 	// 10.15 求職撮合
 	SeekJobMgThreshold int  // 鎂低於此值才參與撮合；0＝沿用程式常數 50
 	JobMatchWhenStable bool // 為 true 時，無職且鎂≥閾值者也有機率參與撮合（安定需求）
@@ -115,10 +120,6 @@ func DefaultServer() Server {
 	if p := os.Getenv("MAPS_PATH"); p != "" {
 		cfg.MapsPath = p
 	}
-	if os.Getenv("OLLAMA_DISABLE") == "1" || os.Getenv("OLLAMA_DISABLE") == "true" {
-		cfg.OllamaBaseURL = ""
-		cfg.OllamaModel = ""
-	}
 	if s := os.Getenv("NPC_POOL_SIZE"); s != "" {
 		if n, err := strconv.Atoi(s); err == nil && n >= 0 {
 			cfg.NPCPoolSize = n
@@ -137,6 +138,24 @@ func DefaultServer() Server {
 	}
 	if cfg.OllamaBaseURL != "" && cfg.OllamaModel == "" {
 		cfg.OllamaModel = "qwen-4b-slim"
+	}
+	if os.Getenv("OLLAMA_DISABLE") == "1" || strings.EqualFold(os.Getenv("OLLAMA_DISABLE"), "true") {
+		cfg.OllamaDisable = true
+	}
+	if cfg.OllamaDisable {
+		cfg.OllamaBaseURL = ""
+		cfg.OllamaModel = ""
+	}
+	if s := os.Getenv("PLAYER_TALK_API_BASE_URL"); s != "" {
+		cfg.PlayerTalkAPIBaseURL = strings.TrimSuffix(strings.TrimSpace(s), "/")
+	}
+	if s := os.Getenv("PLAYER_TALK_API_MODEL"); s != "" {
+		cfg.PlayerTalkAPIModel = strings.TrimSpace(s)
+	}
+	if k := os.Getenv("PLAYER_TALK_API_KEY"); k != "" {
+		cfg.PlayerTalkAPIKey = strings.TrimSpace(k)
+	} else if k := os.Getenv("OPENAI_API_KEY"); k != "" {
+		cfg.PlayerTalkAPIKey = strings.TrimSpace(k)
 	}
 	if s := os.Getenv("SEEK_JOB_MG_THRESHOLD"); s != "" {
 		if n, err := strconv.Atoi(s); err == nil && n >= 0 {
@@ -179,4 +198,9 @@ func DefaultServer() Server {
 		}
 	}
 	return cfg
+}
+
+// PlayerTalkUsesWebAPI 為 true 時，玩家 Talk 優先走 OpenAI 相容 HTTP API（與 Ollama 無關）。
+func (s Server) PlayerTalkUsesWebAPI() bool {
+	return strings.TrimSpace(s.PlayerTalkAPIBaseURL) != "" && strings.TrimSpace(s.PlayerTalkAPIModel) != ""
 }

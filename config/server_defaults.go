@@ -29,6 +29,9 @@ type serverDefaultsFile struct {
 		NPCSpawnIntervalSec             int     `json:"npc_spawn_interval_sec"`
 		OllamaBaseURL                   string  `json:"ollama_base_url"`
 		OllamaModel                     string  `json:"ollama_model"`
+		OllamaDisable                   bool    `json:"ollama_disable"` // true＝不呼叫 Ollama；玩家 Talk 仍可走 player_talk_api_* 雲端
+		PlayerTalkAPIBaseURL            string  `json:"player_talk_api_base_url"`
+		PlayerTalkAPIModel              string  `json:"player_talk_api_model"`
 		SeekJobMgThreshold              int     `json:"seek_job_mg_threshold"`
 		JobMatchWhenStable              bool    `json:"job_match_when_stable"`
 		NpcNpcQualityMaxRunes           int     `json:"npc_npc_quality_max_runes"`
@@ -93,6 +96,9 @@ func loadServerDefaultsFromJSON(path string) (Server, bool) {
 		NPCSpawnIntervalSec:             s.NPCSpawnIntervalSec,
 		OllamaBaseURL:                   s.OllamaBaseURL,
 		OllamaModel:                     s.OllamaModel,
+		OllamaDisable:                   s.OllamaDisable,
+		PlayerTalkAPIBaseURL:            s.PlayerTalkAPIBaseURL,
+		PlayerTalkAPIModel:              s.PlayerTalkAPIModel,
 		SeekJobMgThreshold:              s.SeekJobMgThreshold,
 		JobMatchWhenStable:              s.JobMatchWhenStable,
 		NpcNpcQualityMaxRunes:           s.NpcNpcQualityMaxRunes,

@@ -390,15 +390,29 @@ body {
 .log-entry { padding: 0.15rem 0; }
 .log-entry.log-system { color: var(--text-muted); font-size: 0.9rem; }
 .log-entry.log-narrative { color: var(--text); }
+/* Look：整段語氣可偏淡；可點名稱不另做按鈕框，維持與正文同一編排節奏 */
 .log-entry.log-look { color: #b0bec5; }
 .log-entry.log-talk { color: #a5d6a7; }
 .log-entry.log-attack { color: #ef9a9a; }
 .log-entry.log-ambient { color: #9e9e8e; font-size: 0.9rem; }
 .log-entry + .log-entry { border-top: 1px solid rgba(255,255,255,0.04); }
 .log-entry.log-object-actions { color: var(--text-muted); font-size: 0.95rem; padding-top: 0.1rem; }
-.log-object-action { color: #ffb74d; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; pointer-events: auto; }
-.log-object-action:hover { color: #ffa726; text-decoration-style: solid; }
-.log-entry .log-object-action { color: #ffb74d; }
+/* 可點物件／人名：內聯字色＋細點底線，不塊狀、不撐行高，避免破壞等寬／純文字編排感 */
+.log-object-action {
+	color: var(--room-name);
+	cursor: pointer;
+	text-decoration: none;
+	border-bottom: 1px dotted rgba(201, 162, 39, 0.55);
+	pointer-events: auto;
+	font-weight: inherit;
+	font-family: inherit;
+}
+.log-object-action:hover {
+	color: #ffb74d;
+	border-bottom-color: #ffb74d;
+}
+.log-entry .log-object-action { color: var(--room-name); }
+.log-entry.log-look .log-object-action { color: var(--room-name); }
 
 .log-entry.log-talk-input { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.5rem; padding: 0.35rem 0; color: var(--text-muted); font-size: 0.95rem; }
 .log-talk-input .log-talk-label { flex-shrink: 0; }

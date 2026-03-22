@@ -11,15 +11,25 @@ import (
 	"unicode/utf8"
 )
 
-func CallAITalk(baseURL, model, playerInput, npcBackstory string, npcMemorySnippets, styleExamples []string, sensitivityHint string) (string, error) {
-	if baseURL == "" || model == "" {
-		return "", errors.New("ollama not configured")
-	}
-	baseURL = strings.TrimSuffix(baseURL, "/")
-
-	sb := strings.Builder{}
+// PlayerNPCTalkBuildPrompts 組出玩家↔NPC Talk 的 system 與 user 字串（Ollama /api/chat 與 OpenAI 相容 /v1/chat/completions 共用）。
+// roomDisplayName 為玩家當前房間顯示名（可空）；非空時依 llm_prompts.json 的 room_context_fmt 注入情境。
+func PlayerNPCTalkBuildPrompts(playerInput, npcBackstory string, npcMemorySnippets, styleExamples []string, sensitivityHint, roomDisplayName string) (systemPrompt, userMsg string) {
+	var sb strings.Builder
+	var user string
 	sb.WriteString(playerNPCPersonaLine())
 	sb.WriteString(WorldPhenomenaCognitionPrompt())
+	roomDisplayName = strings.TrimSpace(roomDisplayName)
+	if roomDisplayName != "" {
+		if fmtLine := strings.TrimSpace(playerNPCRoomContextFmt()); fmtLine != "" {
+			sb.WriteString(fmt.Sprintf(fmtLine, roomDisplayName))
+		}
+		if sc := strings.TrimSpace(playerNPCSpaceConsistencyRule()); sc != "" {
+			if !strings.HasSuffix(sc, "\n") {
+				sc += "\n"
+			}
+			sb.WriteString(sc)
+		}
+	}
 	sb.WriteString(playerNPCBehaviorRules())
 	sb.WriteString(playerNPCTraditionalRule())
 	if npcBackstory != "" {
@@ -41,20 +51,28 @@ func CallAITalk(baseURL, model, playerInput, npcBackstory string, npcMemorySnipp
 			sb.WriteString("\n")
 		}
 	}
-
-	var userMsg string
 	if len(npcMemorySnippets) > 0 {
-		userMsg = fmt.Sprintf(playerNPCUserWithMemoryFmt(), playerInput, strings.Join(npcMemorySnippets, "\n"))
+		user = fmt.Sprintf(playerNPCUserWithMemoryFmt(), playerInput, strings.Join(npcMemorySnippets, "\n"))
 	} else {
-		userMsg = fmt.Sprintf(playerNPCUserPlainFmt(), playerInput)
+		user = fmt.Sprintf(playerNPCUserPlainFmt(), playerInput)
 	}
+	return sb.String(), user
+}
+
+func CallAITalk(baseURL, model, playerInput, npcBackstory string, npcMemorySnippets, styleExamples []string, sensitivityHint, roomDisplayName string) (string, error) {
+	if baseURL == "" || model == "" {
+		return "", errors.New("ollama not configured")
+	}
+	baseURL = strings.TrimSuffix(baseURL, "/")
+
+	systemPrompt, userMsg := PlayerNPCTalkBuildPrompts(playerInput, npcBackstory, npcMemorySnippets, styleExamples, sensitivityHint, roomDisplayName)
 
 	reqBody := map[string]interface{}{
 		"model":  model,
 		"think":  false,
 		"stream": false,
 		"messages": []map[string]string{
-			{"role": "system", "content": sb.String()},
+			{"role": "system", "content": systemPrompt},
 			{"role": "user", "content": userMsg},
 		},
 		"options": map[string]interface{}{

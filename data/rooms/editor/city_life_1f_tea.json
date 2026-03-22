@@ -44,7 +44,40 @@
         "Look"
       ],
       "responses": {
-        "Look": "浮生紅\n沃土綠\n清心烏龍\n晨露青"
+        "Look": "｜浮生紅　　｜\n｜沃土綠　　｜\n｜清心烏龍　｜\n｜晨露青　　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_tea_obj_milk",
+      "name": "奶茶",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜來喫鮮奶茶　　｜\n｜琥珀珍珠奶茶　｜\n｜霜花奶綠　　　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_tea_obj_tt",
+      "name": "特調",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜向陽檸檬綠　　｜\n｜飛霜薄荷青　　｜\n｜微波果茶　　　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_tea_obj_mmiillkk",
+      "name": "厚乳",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜芝士奶蓋紅　　｜\n｜沃土厚乳茶　　｜"
       }
     }
   ]

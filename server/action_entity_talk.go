@@ -19,7 +19,7 @@ func doActionEntityTalk(c *Client, msg *ClientMsg, cfg config.Server, store *Ses
 	}
 	log.Printf("[Talk] target=%q player_input=%q", targetID, playerInput)
 	backstory := db.BuildIdentity(targetID) + db.FormatNpcMemoryForBackstory(targetID, c.PlayerID)
-	snippets := db.SearchArchival(targetID, msg.PlayerInput, 5)
+	snippets := db.SearchArchivalForPlayerTalk(targetID, msg.PlayerInput, 5)
 	styleExamples := db.PickStyleExamples(targetID, 3)
 	var p *db.Personality
 	if target.SoulSeed != nil {
@@ -40,24 +40,58 @@ func doActionEntityTalk(c *Client, msg *ClientMsg, cfg config.Server, store *Ses
 	} else if disp > 30 {
 		sensitivityHint += "此角色心情愉快，語氣較活潑熱情。"
 	}
-	reply, err := ai.CallAITalk(cfg.OllamaBaseURL, cfg.OllamaModel, playerInput, backstory, snippets, styleExamples, sensitivityHint)
+	roomDisplayName, _ := db.GetRoomName(playerRoom)
+	if strings.TrimSpace(roomDisplayName) == "" {
+		roomDisplayName = playerRoom
+	}
+	systemPrompt, userMsg := ai.PlayerNPCTalkBuildPrompts(playerInput, backstory, snippets, styleExamples, sensitivityHint, roomDisplayName)
 	var narrative, npcReply string
-	if err != nil || reply == "" {
-		if err != nil {
-			log.Printf("[Talk] Ollama fallback: %v", err)
+	switch {
+	case cfg.PlayerTalkUsesWebAPI():
+		reply, err := ai.CallOpenAICompatibleChat(cfg.PlayerTalkAPIBaseURL, cfg.PlayerTalkAPIKey, cfg.PlayerTalkAPIModel, systemPrompt, userMsg)
+		if err != nil || reply == "" {
+			if err != nil {
+				log.Printf("[Talk] web API fallback: %v", err)
+			}
+			narrative = buildTalkNarrative(playerRoom, target, p, cfg, playerInput)
+			npcReply = narrative
+			if i := strings.Index(narrative, "搭話。"); i >= 0 {
+				npcReply = narrative[i+len("搭話。"):]
+			}
+		} else {
+			talkName := target.DisplayTitle
+			if talkName == "" {
+				talkName = target.ID
+			}
+			narrative = "你向【" + talkName + "】搭話。" + talkName + "說道：「" + reply + "」"
+			npcReply = reply
 		}
+	case cfg.OllamaBaseURL != "" && cfg.OllamaModel != "":
+		reply, err := ai.CallAITalk(cfg.OllamaBaseURL, cfg.OllamaModel, playerInput, backstory, snippets, styleExamples, sensitivityHint, roomDisplayName)
+		if err != nil || reply == "" {
+			if err != nil {
+				log.Printf("[Talk] Ollama fallback: %v", err)
+			}
+			narrative = buildTalkNarrative(playerRoom, target, p, cfg, playerInput)
+			npcReply = narrative
+			if i := strings.Index(narrative, "搭話。"); i >= 0 {
+				npcReply = narrative[i+len("搭話。"):]
+			}
+		} else {
+			talkName := target.DisplayTitle
+			if talkName == "" {
+				talkName = target.ID
+			}
+			narrative = "你向【" + talkName + "】搭話。" + talkName + "說道：「" + reply + "」"
+			npcReply = reply
+		}
+	default:
+		// 未設定雲端亦未設定 Ollama：模板敘事
 		narrative = buildTalkNarrative(playerRoom, target, p, cfg, playerInput)
 		npcReply = narrative
 		if i := strings.Index(narrative, "搭話。"); i >= 0 {
 			npcReply = narrative[i+len("搭話。"):]
 		}
-	} else {
-		talkName := target.DisplayTitle
-		if talkName == "" {
-			talkName = target.ID
-		}
-		narrative = "你向【" + talkName + "】搭話。" + talkName + "說道：「" + reply + "」"
-		npcReply = reply
 	}
 	_ = event.Append(now, c.PlayerID, "talk", targetID)
 	targetName := target.DisplayTitle

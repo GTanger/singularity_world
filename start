@@ -50,6 +50,14 @@ if [[ -d "$CHATMERY_DIR" ]]; then
   sleep 0.5
 fi
 
+# 3.5) 專案根 .env（PLAYER_TALK_API_KEY、OPENAI_API_KEY 等；已列 .gitignore）
+if [[ -f "$SW_DIR/.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "$SW_DIR/.env"
+  set +a
+fi
+
 # 4) 啟動奇點（後台，對應 sw.ygggt.com）
 echo "啟動奇點（PORT=$PORT）…"
 nohup env PORT=$PORT ./bin/server >> sw.log 2>&1 &

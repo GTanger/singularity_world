@@ -53,8 +53,11 @@ go vet ./...                                           # 靜態檢查
 
 ## NPC 對話系統重點
 - 模型很小（2B~7B），prompt 精準度決定輸出品質
+- **玩家↔NPC Talk 規則（分場景條列，改稿對照）**：`data/templates/PLAYER_TALK_WEB_LLM.md`；**執行時**仍以 `data/templates/llm_prompts.json` 為準，改規則須同步 JSON  
+- **語用背景**（為什麼寒暄不是空話）：`docs/reference/玩家NPC對話與交際語用.md`
 - `qualityGateNpcLine` 是品質門檻，寧嚴勿鬆
 - archival/summary 寫入前必須去重，防止垃圾持久化汙染記憶
+- 玩家 Talk 記憶檢索用 `SearchArchivalForPlayerTalk`（寒暄零命中勿硬塞最新節錄）
 - NPC↔NPC 對話的設計目標：眾口鑠金——NPC 群體透過對話堆疊出世界觀
 
 ## 世界觀關鍵詞

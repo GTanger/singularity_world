@@ -1,13 +1,14 @@
 {
   "summaries": {
     "npc_dh7ljyggbjh5|npc_dh7llhl1hpd9": "在蕗易沙：陶紅玲說「今晚客人都多。」金玲回「嗯，人多眼雜。」",
+    "npc_dh7ljyggbjh5|npc_dh7lq371wwmu": "在浮生城1F：陶紅玲說「早啊，你吃過早餐嗎？」龍霞華回「沒。你呢？」",
     "npc_dh7ljyggbjh5|npc_dh7m0fyaaldh": "在蕗易沙：陶紅玲說「最近有誰來過？」向偉回「嗯，我來。」",
     "npc_dh7llhl1hpd9|npc_dh7lxdp40upk": "在浮生城1F：金玲說「我先回了，晚班辛苦。」楊康偉回「沒問題，你多保重。」",
     "npc_dh7llhl1hpd9|npc_dh7lywtpacw1": "在座位區：金玲說「這位客官什麼來頭？」劉紅回「沒甚事，問路。」",
     "npc_dh7llhl1hpd9|npc_dh7m0fyaaldh": "在蕗易沙：向偉說「好嘞，去坐。」金玲回「嗯，你點什麼？」",
-    "npc_dh7ln0pmebvc|npc_dh7lok2gzenv": "在浮生城1F：葉俊說「我剛把換班表拿給你看。」鄭秀強回「嗨，你去管理室拿新表？」",
-    "npc_dh7ln0pmebvc|npc_dh7lq371wwmu": "在浮生城1F：葉俊說「龍霞華，離開前往 lobby」龍霞華回「嗯，那我去換班。」",
-    "npc_dh7lok2gzenv|npc_dh7lq371wwmu": "在浮生城1F：龍霞華說「那我先去換班。」鄭秀強回「嗯，早啊秀強。」",
+    "npc_dh7ln0pmebvc|npc_dh7lok2gzenv": "在浮生城1F：葉俊說「樓下米鹽貴了，你買嗎？」鄭秀強回「嗯，今晚帳我對過了，有問題再叫你。」",
+    "npc_dh7ln0pmebvc|npc_dh7lq371wwmu": "在浮生城1F：葉俊說「我最近過得不太好，葉卅。」龍霞華回「我在這裡已經很久沒聽到這樣的話了。」",
+    "npc_dh7lok2gzenv|npc_dh7lq371wwmu": "在浮生城1F：龍霞華說「我剛換班，你怎麼又來這裡？」鄭秀強回「沒事，先幫我把桌子收拾乾淨。」",
     "npc_dh7lok2gzenv|npc_dh7lub7op7n9": "在浮生城1F：史梅說「櫃檯你盯一下。」鄭秀強回「嗯，我注意。」",
     "npc_dh7lub7op7n9|npc_dh7lywtpacw1": "在蕗易沙：史梅說「路邊有客人，你該去坐位了。」劉紅回「嗯，那我先去。」",
     "npc_dh7lub7op7n9|試話": "在浮生城1F：史梅說「袁寧從電梯間來過嗎？」司馬麗淑回「嗯，剛走。」"

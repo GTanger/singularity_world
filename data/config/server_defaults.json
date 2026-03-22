@@ -1,5 +1,5 @@
 {
-  "_說明": "伺服器與前端設計預設；環境變數仍可依現有規則覆寫（PORT、OLLAMA_*、NPC_* 等）。game_time_epoch 仍由 data/game_epoch.unix 或 GAME_TIME_EPOCH_UNIX 決定。",
+  "_說明": "伺服器與前端設計預設；環境變數仍可依現有規則覆寫。game_time_epoch 仍由 data/game_epoch.unix 或 GAME_TIME_EPOCH_UNIX 決定。ollama_disable=true 時不呼叫 Ollama（NPC↔NPC 與玩家走 Ollama 皆關）；玩家 Talk 可另設 player_talk_api_base_url（須為 OpenAI 相容 …/v1）+ player_talk_api_model，並設環境變數 PLAYER_TALK_API_KEY 或 OPENAI_API_KEY。",
   "design": {
     "cell_size_px": 30,
     "role_circle_px": 24,
@@ -17,8 +17,11 @@
     "game_time_scale": 24,
     "npc_pool_size": 10,
     "npc_spawn_interval_sec": 120,
+    "ollama_disable": true,
     "ollama_base_url": "http://127.0.0.1:11434",
     "ollama_model": "sorc/qwen3.5-claude-4.6-opus:2b",
+    "player_talk_api_base_url": "https://openrouter.ai/api/v1",
+    "player_talk_api_model": "qwen/qwen3.5-flash-02-23",
     "seek_job_mg_threshold": 0,
     "job_match_when_stable": false,
     "npc_npc_quality_max_runes": 0,

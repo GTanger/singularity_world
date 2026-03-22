@@ -22,7 +22,8 @@ data/
 ├── rooms.json                  ← 房間定義（tags + zone）
 └── templates/                  ← 職業與模板系統（本資料夾）
     ├── README.md               ← 本文件
-    ├── llm_prompts.json        ← NPC 對話 LLM：世界現象級與 system 固定句（玩家↔NPC、NPC↔NPC）；改完重啟
+    ├── llm_prompts.json        ← NPC 對話 LLM（執行時載入）；改完重啟
+    ├── PLAYER_TALK_WEB_LLM.md  ← 玩家↔NPC 分場景回答規則條列（給人／Web 助理讀）；須與 llm_prompts.json 同步
     ├── occupations.json        ← 職業型別表：id → 對話/行為檔、在場時開放的 action_sockets（無 spawn_weight）
     ├── archetypes.json         ← （選用）量產用職業原型 + movement，供未來「由 archetype 生成移動型 NPC」參考
     ├── dialogues/              ← 對話模板：依職業掛載，任時任地可用

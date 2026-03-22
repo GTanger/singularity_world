@@ -221,7 +221,7 @@
 	}
 
 	// 敘事中的物件名若為當前房間物件則變為可點擊（執行 Move 或 Look）
-	// 第一輪：替換 【物件名】 或 〔物件名〕；第二輪：替換未被第一輪處理的純文字物件名
+	// 第一輪：替換 【物件名】 或 〔物件名〕；第二輪：僅在「詞界」替換純文字名（避免「奶茶」命中「琥珀珍珠奶茶」）
 	function formatNarrativeWithClickableObjects(html, objects) {
 		if (!html || !objects || !objects.length) return html;
 		function escapeRegex(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
@@ -237,10 +237,14 @@
 			var nameRe = escapeRegex(escapeHtml(o.name));
 			html = html.replace(new RegExp('[\u3010\u3014]' + nameRe + '[\u3011\u3015]', 'g'), makeSpan(o));
 		});
+		// 第二輪：左側不得為漢字或「>」（避免命中複合詞如琥珀珍珠奶茶；避免在已有 span 內再包一層）
+		// 右側不得為漢字或「<」（避免切到 </span> 前再度替換）
 		sorted.forEach(function (o) {
 			if (!o.name) return;
-			if (html.indexOf('data-entity-id="' + escapeHtml(o.id) + '"') !== -1) return;
-			html = html.replace(new RegExp(escapeRegex(escapeHtml(o.name)), 'g'), makeSpan(o));
+			var nameRe = escapeRegex(escapeHtml(o.name));
+			if (!nameRe) return;
+			var boundaryRe = new RegExp('(?<![\\u4e00-\\u9fff>])' + nameRe + '(?![\\u4e00-\\u9fff<])', 'g');
+			html = html.replace(boundaryRe, function () { return makeSpan(o); });
 		});
 		return html;
 	}
