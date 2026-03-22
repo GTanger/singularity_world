@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOMS_JSON = path.join(__dirname, '../data/rooms.json');
+const ROOMS_JSON = path.join(__dirname, '..', '..', 'data', 'rooms.json');
 
 // 從 rooms 讀取 yaxiao_ 的 name，用於 direction
 const data = JSON.parse(fs.readFileSync(ROOMS_JSON, 'utf8'));

@@ -51,14 +51,19 @@
 			return '<span class="desc-object" data-object-name="' + escapeHtml(name) + '"' + idAttr + actionsAttr + ' role="button" tabindex="0">\u3014' + escapeHtml(name) + '\u3015</span>';
 		});
 		// 後備：描述沒有 〔〕 但伺服器有 objects 時，用物件名稱替換成可點擊（DB 舊描述時仍能點）
+		// 長名先替換（避免短名誤包長名子串）；split/join 取代 replace 單次，讓同一符號在文中出現多次皆可點（如電梯多個 ①–⑤）
 		if (objects && objects.length && safe.indexOf('desc-object') === -1) {
-			objects.forEach(function (o) {
+			var sorted = objects.slice().sort(function (a, b) {
+				return (b.name || '').length - (a.name || '').length;
+			});
+			sorted.forEach(function (o) {
 				var name = o.name;
 				if (!name) return;
 				var escapedName = escapeHtml(name);
+				if (!escapedName) return;
 				var actionsAttr = o.actions && o.actions.length ? ' data-object-actions="' + escapeHtml((o.actions || []).join(',')) + '"' : '';
 				var span = '<span class="desc-object" data-object-id="' + escapeHtml(o.id) + '" data-object-name="' + escapedName + '"' + actionsAttr + ' role="button" tabindex="0">' + escapedName + '</span>';
-				safe = safe.replace(escapedName, span);
+				safe = safe.split(escapedName).join(span);
 			});
 		}
 		return safe;

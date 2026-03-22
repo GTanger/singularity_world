@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOTS_DIR = path.join(__dirname, '..', 'data', 'rooms');
+const ROOTS_DIR = path.join(__dirname, '..', '..', 'data', 'rooms');
 
 function listJsonFiles(dir, acc = []) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });

@@ -37,9 +37,9 @@
 
 ```
 data/
-├── rooms/                    # 一房一檔（已實作；可多層子資料夾，例 data/rooms/浮生大街/民宅/xxx.json）
-│   ├── lobby.json
-│   ├── life_hall.json
+├── rooms/                    # 一房一檔（已實作；可多層子資料夾，例 data/rooms/editor/xxx.json）
+│   ├── editor/
+│   │   └── city_life_1f.json  # 例：實際房檔在子目錄
 │   └── ...
 ├── entities.json             # 實體清單（store 讀寫）
 ├── assignments.json          # 指派清單（store 讀寫）

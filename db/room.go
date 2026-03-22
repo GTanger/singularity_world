@@ -310,7 +310,7 @@ func SyncRoomsFromFile(path string) error {
 	return nil
 }
 
-// SeedRooms 向下相容：讀 data/rooms.json 同步房間。
+// SeedRooms 向下相容：若存在單檔 data/rooms.json（舊格式）則同步進 store；檔案不存在則略過（現行以 data/rooms/ 目錄載入為主）。
 func SeedRooms() error {
 	return SyncRoomsFromFile("data/rooms.json")
 }

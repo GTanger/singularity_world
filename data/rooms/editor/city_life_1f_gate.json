@@ -1,0 +1,72 @@
+{
+  "id": "city_life_1f_gate",
+  "name": "門關門",
+  "description": "三扇等高門洞鑲在同一道弧面牆上，是浮生城對外的正式出入口。正中〔中門〕板門闔死，青銅包邊扣著斜向門閂，門縫不透光，像刻意把城內動線在此掐斷。左右兩扇向外敞著，風從兩側灌入，帶進城外剪短灌木的斷莖味與乾塵。門楣〔門楣告示〕釘著管委會鋼印。門框上緣鑿有導蔓槽，藤鬚沿槽爬行卻被金屬壓條擋在門洞外緣，不越雷池。\n可經〔內側大廳〕回到「浮生城1F」；可經〔門外〕前往關廂外動線。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "gate"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "內側大廳",
+      "to": "city_life_1f"
+    },
+    {
+      "direction": "門外",
+      "to": "city_life_gate_out"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_1f",
+      "name": "內側大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你穿過側開門洞，回到「浮生城1F」公共動線。"
+      },
+      "move_to_room_id": "city_life_1f"
+    },
+    {
+      "id": "city_life_gate_out",
+      "name": "門外",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你從敞開的側門走出，踏上關廂外的連接面。"
+      },
+      "move_to_room_id": "city_life_gate_out"
+    },
+    {
+      "id": "city_life_1f_gate_center",
+      "name": "中門",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "整扇門由內側上了粗閂，門板厚得離譜；小窗孔貼著磨砂片，從這頭望不見外頭。牆邊對講盒紅燈亮著，標籤寫「儀典／貨運／緊急疏散專用，平日勿動中門」。"
+      }
+    },
+    {
+      "id": "city_life_1f_gate_lintel",
+      "name": "門楣告示",
+      "owner": "",
+      "sockets": [
+        "Look",
+        "Read"
+      ],
+      "responses": {
+        "Look": "搪瓷牌白底綠字，邊角有擦痕。",
+        "Read": "「門關門：中閉側開。行人請由左右門洞進出；中門非經管委與警衛聯動不得開啟。浮生城主出入口。」"
+      }
+    }
+  ]
+}

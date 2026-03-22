@@ -1,79 +1,222 @@
 {
   "rumors": {
-    "eco|pulse|191": {
-      "id": "eco|pulse|191",
-      "text": "聽說租鋪成本漲了，幾家小攤開始提早收攤。",
+    "eco|pulse|192": {
+      "id": "eco|pulse|192",
+      "text": "近來活錢不寬，茶館裡談的多半是省錢門道。",
       "source": "economy",
       "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774183482,
-      "expires_at": 1774188882
+      "weight": 9,
+      "updated_at": 1774193984,
+      "expires_at": 1774199384
     },
-    "evt|city_life_1f_tea|leave|楊康偉：離開往浮生城1F": {
-      "id": "evt|city_life_1f_tea|leave|楊康偉：離開往浮生城1F",
-      "text": "楊康偉：離開往浮生城1F",
-      "room_id": "city_life_1f_tea",
+    "evt|city_life_1f_admin|leave|向偉：離開往浮生城1F": {
+      "id": "evt|city_life_1f_admin|leave|向偉：離開往浮生城1F",
+      "text": "向偉：離開往浮生城1F",
+      "room_id": "city_life_1f_admin",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186631,
-      "expires_at": 1774188431
+      "updated_at": 1774193765,
+      "expires_at": 1774195565
     },
-    "evt|city_life_1f_tea|leave|袁寧：離開往浮生城1F": {
-      "id": "evt|city_life_1f_tea|leave|袁寧：離開往浮生城1F",
-      "text": "袁寧：離開往浮生城1F",
-      "room_id": "city_life_1f_tea",
+    "evt|city_life_1f_gate|arrive|史梅：從浮生城1F方向到達": {
+      "id": "evt|city_life_1f_gate|arrive|史梅：從浮生城1F方向到達",
+      "text": "史梅：從浮生城1F方向到達",
+      "room_id": "city_life_1f_gate",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186631,
-      "expires_at": 1774188431
+      "updated_at": 1774193523,
+      "expires_at": 1774195323
     },
-    "evt|city_life_1f|arrive|劉紅：從電梯間方向到達": {
-      "id": "evt|city_life_1f|arrive|劉紅：從電梯間方向到達",
-      "text": "劉紅：從電梯間方向到達",
+    "evt|city_life_1f_gate|arrive|司馬麗淑：從浮生城1F方向到達": {
+      "id": "evt|city_life_1f_gate|arrive|司馬麗淑：從浮生城1F方向到達",
+      "text": "司馬麗淑：從浮生城1F方向到達",
+      "room_id": "life_cofe_1",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1774194298,
+      "expires_at": 1774196098
+    },
+    "evt|city_life_1f_gate|arrive|向偉：從浮生城1F方向到達": {
+      "id": "evt|city_life_1f_gate|arrive|向偉：從浮生城1F方向到達",
+      "text": "向偉：從浮生城1F方向到達",
+      "room_id": "life_cofe_1",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 2,
+      "updated_at": 1774193780,
+      "expires_at": 1774195580
+    },
+    "evt|city_life_1f_gate|arrive|楊康偉：從浮生城1F方向到達": {
+      "id": "evt|city_life_1f_gate|arrive|楊康偉：從浮生城1F方向到達",
+      "text": "楊康偉：從浮生城1F方向到達",
+      "room_id": "city_life_1f_gate",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194283,
+      "expires_at": 1774196083
+    },
+    "evt|city_life_1f_gate|arrive|袁寧：從浮生城1F方向到達": {
+      "id": "evt|city_life_1f_gate|arrive|袁寧：從浮生城1F方向到達",
+      "text": "袁寧：從浮生城1F方向到達",
+      "room_id": "city_life_1f_gate",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194284,
+      "expires_at": 1774196084
+    },
+    "evt|city_life_1f_gate|leave|史梅：離開往浮生城1F": {
+      "id": "evt|city_life_1f_gate|leave|史梅：離開往浮生城1F",
+      "text": "史梅：離開往浮生城1F",
+      "room_id": "city_life_1f_gate",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194283,
+      "expires_at": 1774196083
+    },
+    "evt|city_life_1f_gate|leave|司馬麗淑：離開往浮生城1F": {
+      "id": "evt|city_life_1f_gate|leave|司馬麗淑：離開往浮生城1F",
+      "text": "司馬麗淑：離開往浮生城1F",
+      "room_id": "city_life_1f_gate",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194284,
+      "expires_at": 1774196084
+    },
+    "evt|city_life_1f_gate|leave|楊康偉：離開往浮生城門外": {
+      "id": "evt|city_life_1f_gate|leave|楊康偉：離開往浮生城門外",
+      "text": "楊康偉：離開往浮生城門外",
+      "room_id": "city_life_1f_gate",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194298,
+      "expires_at": 1774196098
+    },
+    "evt|city_life_1f_gate|leave|袁寧：離開往浮生城門外": {
+      "id": "evt|city_life_1f_gate|leave|袁寧：離開往浮生城門外",
+      "text": "袁寧：離開往浮生城門外",
+      "room_id": "city_life_1f_gate",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194298,
+      "expires_at": 1774196098
+    },
+    "evt|city_life_1f_gate|leave|金玲：離開往浮生城門外": {
+      "id": "evt|city_life_1f_gate|leave|金玲：離開往浮生城門外",
+      "text": "金玲：離開往浮生城門外",
+      "room_id": "city_life_1f_gate",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194283,
+      "expires_at": 1774196083
+    },
+    "evt|city_life_1f_gate|leave|陶紅玲：離開往浮生城門外": {
+      "id": "evt|city_life_1f_gate|leave|陶紅玲：離開往浮生城門外",
+      "text": "陶紅玲：離開往浮生城門外",
+      "room_id": "city_life_1f_gate",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194284,
+      "expires_at": 1774196084
+    },
+    "evt|city_life_1f_guard_lounge|leave|劉紅：離開往浮生城1F": {
+      "id": "evt|city_life_1f_guard_lounge|leave|劉紅：離開往浮生城1F",
+      "text": "劉紅：離開往浮生城1F",
+      "room_id": "city_life_1f_guard_lounge",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194148,
+      "expires_at": 1774195948
+    },
+    "evt|city_life_1f|arrive|劉紅：從警衛休息室方向到達": {
+      "id": "evt|city_life_1f|arrive|劉紅：從警衛休息室方向到達",
+      "text": "劉紅：從警衛休息室方向到達",
       "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186631,
-      "expires_at": 1774188431
+      "updated_at": 1774194148,
+      "expires_at": 1774195948
     },
-    "evt|city_life_1f|arrive|楊康偉：從來喫茶方向到達": {
-      "id": "evt|city_life_1f|arrive|楊康偉：從來喫茶方向到達",
-      "text": "楊康偉：從來喫茶方向到達",
+    "evt|city_life_1f|arrive|史梅：從門關門方向到達": {
+      "id": "evt|city_life_1f|arrive|史梅：從門關門方向到達",
+      "text": "史梅：從門關門方向到達",
       "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186631,
-      "expires_at": 1774188431
+      "updated_at": 1774194283,
+      "expires_at": 1774196083
     },
-    "evt|city_life_1f|arrive|袁寧：從來喫茶方向到達": {
-      "id": "evt|city_life_1f|arrive|袁寧：從來喫茶方向到達",
-      "text": "袁寧：從來喫茶方向到達",
+    "evt|city_life_1f|arrive|司馬麗淑：從門關門方向到達": {
+      "id": "evt|city_life_1f|arrive|司馬麗淑：從門關門方向到達",
+      "text": "司馬麗淑：從門關門方向到達",
       "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186631,
-      "expires_at": 1774188431
+      "updated_at": 1774194284,
+      "expires_at": 1774196084
     },
-    "evt|city_life_1f|arrive|金玲：從浮生城2F方向到達": {
-      "id": "evt|city_life_1f|arrive|金玲：從浮生城2F方向到達",
-      "text": "金玲：從浮生城2F方向到達",
+    "evt|city_life_1f|arrive|向偉：從管理室方向到達": {
+      "id": "evt|city_life_1f|arrive|向偉：從管理室方向到達",
+      "text": "向偉：從管理室方向到達",
       "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186631,
-      "expires_at": 1774188431
+      "updated_at": 1774193765,
+      "expires_at": 1774195565
+    },
+    "evt|city_life_1f|arrive|楊康偉：從浮生城2F方向到達": {
+      "id": "evt|city_life_1f|arrive|楊康偉：從浮生城2F方向到達",
+      "text": "楊康偉：從浮生城2F方向到達",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194268,
+      "expires_at": 1774196068
+    },
+    "evt|city_life_1f|arrive|袁寧：從電梯間方向到達": {
+      "id": "evt|city_life_1f|arrive|袁寧：從電梯間方向到達",
+      "text": "袁寧：從電梯間方向到達",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194268,
+      "expires_at": 1774196068
     },
     "evt|city_life_1f|leave|劉紅：離開往蕗易沙": {
       "id": "evt|city_life_1f|leave|劉紅：離開往蕗易沙",
@@ -83,8 +226,30 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186646,
-      "expires_at": 1774188446
+      "updated_at": 1774194163,
+      "expires_at": 1774195963
+    },
+    "evt|city_life_1f|leave|史梅：離開往蕗易沙": {
+      "id": "evt|city_life_1f|leave|史梅：離開往蕗易沙",
+      "text": "史梅：離開往蕗易沙",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194298,
+      "expires_at": 1774196098
+    },
+    "evt|city_life_1f|leave|史梅：離開往門關門": {
+      "id": "evt|city_life_1f|leave|史梅：離開往門關門",
+      "text": "史梅：離開往門關門",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 2,
+      "updated_at": 1774194530,
+      "expires_at": 1774196330
     },
     "evt|city_life_1f|leave|司馬麗淑：離開往蕗易沙": {
       "id": "evt|city_life_1f|leave|司馬麗淑：離開往蕗易沙",
@@ -94,8 +259,19 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186586,
-      "expires_at": 1774188386
+      "updated_at": 1774194298,
+      "expires_at": 1774196098
+    },
+    "evt|city_life_1f|leave|司馬麗淑：離開往門關門": {
+      "id": "evt|city_life_1f|leave|司馬麗淑：離開往門關門",
+      "text": "司馬麗淑：離開往門關門",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 2,
+      "updated_at": 1774193765,
+      "expires_at": 1774195565
     },
     "evt|city_life_1f|leave|向偉：離開往蕗易沙": {
       "id": "evt|city_life_1f|leave|向偉：離開往蕗易沙",
@@ -105,8 +281,19 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186586,
-      "expires_at": 1774188386
+      "updated_at": 1774193780,
+      "expires_at": 1774195580
+    },
+    "evt|city_life_1f|leave|向偉：離開往門關門": {
+      "id": "evt|city_life_1f|leave|向偉：離開往門關門",
+      "text": "向偉：離開往門關門",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774193257,
+      "expires_at": 1774195057
     },
     "evt|city_life_1f|leave|楊康偉：離開往蕗易沙": {
       "id": "evt|city_life_1f|leave|楊康偉：離開往蕗易沙",
@@ -116,8 +303,19 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186646,
-      "expires_at": 1774188446
+      "updated_at": 1774193523,
+      "expires_at": 1774195323
+    },
+    "evt|city_life_1f|leave|楊康偉：離開往門關門": {
+      "id": "evt|city_life_1f|leave|楊康偉：離開往門關門",
+      "text": "楊康偉：離開往門關門",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194283,
+      "expires_at": 1774196083
     },
     "evt|city_life_1f|leave|葉俊：離開往": {
       "id": "evt|city_life_1f|leave|葉俊：離開往",
@@ -127,30 +325,30 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774185469,
-      "expires_at": 1774187269
+      "updated_at": 1774193190,
+      "expires_at": 1774194990
     },
-    "evt|city_life_1f|leave|袁寧：離開往蕗易沙": {
-      "id": "evt|city_life_1f|leave|袁寧：離開往蕗易沙",
-      "text": "袁寧：離開往蕗易沙",
+    "evt|city_life_1f|leave|袁寧：離開往門關門": {
+      "id": "evt|city_life_1f|leave|袁寧：離開往門關門",
+      "text": "袁寧：離開往門關門",
       "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186646,
-      "expires_at": 1774188446
+      "updated_at": 1774194284,
+      "expires_at": 1774196084
     },
     "evt|city_life_1f|leave|鄭秀強：離開往": {
       "id": "evt|city_life_1f|leave|鄭秀強：離開往",
       "text": "鄭秀強：離開往",
-      "room_id": "life_kitchen",
+      "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
-      "weight": 5,
-      "updated_at": 1774186415,
-      "expires_at": 1774188215
+      "weight": 3,
+      "updated_at": 1774193603,
+      "expires_at": 1774195403
     },
     "evt|city_life_1f|leave|金玲：離開往蕗易沙": {
       "id": "evt|city_life_1f|leave|金玲：離開往蕗易沙",
@@ -160,78 +358,151 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186646,
-      "expires_at": 1774188446
+      "updated_at": 1774193523,
+      "expires_at": 1774195323
     },
     "evt|city_life_1f|leave|龍霞華：離開往": {
       "id": "evt|city_life_1f|leave|龍霞華：離開往",
       "text": "龍霞華：離開往",
+      "room_id": "life_kitchen",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774193411,
+      "expires_at": 1774195211
+    },
+    "evt|city_life_1f|shift_leave|葉俊：離開前往singularity_life": {
+      "id": "evt|city_life_1f|shift_leave|葉俊：離開前往singularity_life",
+      "text": "葉俊：離開前往singularity_life",
       "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774185016,
-      "expires_at": 1774186816
+      "weight": 9,
+      "updated_at": 1774194500,
+      "expires_at": 1774196300
     },
-    "evt|city_life_1f|shift_leave|葉俊：離開前往life_garden": {
-      "id": "evt|city_life_1f|shift_leave|葉俊：離開前往life_garden",
-      "text": "葉俊：離開前往life_garden",
-      "room_id": "life_dining",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 1,
-      "weight": 1,
-      "mention_count": 18,
-      "last_used_at": 1774176486,
-      "updated_at": 1774186386,
-      "expires_at": 1774188186
-    },
-    "evt|city_life_1f|shift_leave|鄭秀強：離開前往life_garden": {
-      "id": "evt|city_life_1f|shift_leave|鄭秀強：離開前往life_garden",
-      "text": "鄭秀強：離開前往life_garden",
-      "room_id": "life_kitchen",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 1,
-      "weight": 1,
-      "mention_count": 1,
-      "last_used_at": 1774171308,
-      "updated_at": 1774186386,
-      "expires_at": 1774188186
-    },
-    "evt|city_life_1f|shift_leave|龍霞華：離開前往life_garden": {
-      "id": "evt|city_life_1f|shift_leave|龍霞華：離開前往life_garden",
-      "text": "龍霞華：離開前往life_garden",
-      "room_id": "life_hall",
+    "evt|city_life_1f|shift_leave|龍霞華：離開前往lobby": {
+      "id": "evt|city_life_1f|shift_leave|龍霞華：離開前往lobby",
+      "text": "龍霞華：離開前往lobby",
+      "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
-      "weight": 14,
-      "updated_at": 1774186386,
-      "expires_at": 1774188186
+      "weight": 9,
+      "updated_at": 1774194500,
+      "expires_at": 1774196300
     },
-    "evt|city_life_2f|leave|金玲：離開往浮生城1F": {
-      "id": "evt|city_life_2f|leave|金玲：離開往浮生城1F",
-      "text": "金玲：離開往浮生城1F",
+    "evt|city_life_2f|arrive|楊康偉：從浮生城3F方向到達": {
+      "id": "evt|city_life_2f|arrive|楊康偉：從浮生城3F方向到達",
+      "text": "楊康偉：從浮生城3F方向到達",
       "room_id": "city_life_2f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186631,
-      "expires_at": 1774188431
+      "updated_at": 1774194253,
+      "expires_at": 1774196053
     },
-    "evt|city_life_elevator|leave|劉紅：離開往浮生城1F": {
-      "id": "evt|city_life_elevator|leave|劉紅：離開往浮生城1F",
-      "text": "劉紅：離開往浮生城1F",
+    "evt|city_life_2f|leave|楊康偉：離開往浮生城1F": {
+      "id": "evt|city_life_2f|leave|楊康偉：離開往浮生城1F",
+      "text": "楊康偉：離開往浮生城1F",
+      "room_id": "city_life_2f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194268,
+      "expires_at": 1774196068
+    },
+    "evt|city_life_3f|leave|楊康偉：離開往浮生城2F": {
+      "id": "evt|city_life_3f|leave|楊康偉：離開往浮生城2F",
+      "text": "楊康偉：離開往浮生城2F",
+      "room_id": "city_life_3f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194253,
+      "expires_at": 1774196053
+    },
+    "evt|city_life_4f|leave|袁寧：離開往電梯間": {
+      "id": "evt|city_life_4f|leave|袁寧：離開往電梯間",
+      "text": "袁寧：離開往電梯間",
+      "room_id": "city_life_4f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194253,
+      "expires_at": 1774196053
+    },
+    "evt|city_life_elevator|arrive|袁寧：從浮生城4F方向到達": {
+      "id": "evt|city_life_elevator|arrive|袁寧：從浮生城4F方向到達",
+      "text": "袁寧：從浮生城4F方向到達",
       "room_id": "city_life_elevator",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186631,
-      "expires_at": 1774188431
+      "updated_at": 1774194253,
+      "expires_at": 1774196053
+    },
+    "evt|city_life_elevator|leave|袁寧：離開往浮生城1F": {
+      "id": "evt|city_life_elevator|leave|袁寧：離開往浮生城1F",
+      "text": "袁寧：離開往浮生城1F",
+      "room_id": "city_life_elevator",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194268,
+      "expires_at": 1774196068
+    },
+    "evt|city_life_gate_out|arrive|楊康偉：從門關門方向到達": {
+      "id": "evt|city_life_gate_out|arrive|楊康偉：從門關門方向到達",
+      "text": "楊康偉：從門關門方向到達",
+      "room_id": "city_life_gate_out",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194298,
+      "expires_at": 1774196098
+    },
+    "evt|city_life_gate_out|arrive|袁寧：從門關門方向到達": {
+      "id": "evt|city_life_gate_out|arrive|袁寧：從門關門方向到達",
+      "text": "袁寧：從門關門方向到達",
+      "room_id": "city_life_gate_out",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194298,
+      "expires_at": 1774196098
+    },
+    "evt|city_life_gate_out|arrive|金玲：從門關門方向到達": {
+      "id": "evt|city_life_gate_out|arrive|金玲：從門關門方向到達",
+      "text": "金玲：從門關門方向到達",
+      "room_id": "city_life_gate_out",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194283,
+      "expires_at": 1774196083
+    },
+    "evt|city_life_gate_out|arrive|陶紅玲：從門關門方向到達": {
+      "id": "evt|city_life_gate_out|arrive|陶紅玲：從門關門方向到達",
+      "text": "陶紅玲：從門關門方向到達",
+      "room_id": "city_life_gate_out",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194284,
+      "expires_at": 1774196084
     },
     "evt|life_cofe_1|arrive|劉紅：從浮生城1F方向到達": {
       "id": "evt|life_cofe_1|arrive|劉紅：從浮生城1F方向到達",
@@ -241,30 +512,19 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186646,
-      "expires_at": 1774188446
+      "updated_at": 1774194163,
+      "expires_at": 1774195963
     },
-    "evt|life_cofe_1|arrive|司馬麗淑：從浮生城1F方向到達": {
-      "id": "evt|life_cofe_1|arrive|司馬麗淑：從浮生城1F方向到達",
-      "text": "司馬麗淑：從浮生城1F方向到達",
-      "room_id": "life_cofe_1",
+    "evt|life_cofe_1|arrive|史梅：從浮生城1F方向到達": {
+      "id": "evt|life_cofe_1|arrive|史梅：從浮生城1F方向到達",
+      "text": "史梅：從浮生城1F方向到達",
+      "room_id": "city_life_1f_gate",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186586,
-      "expires_at": 1774188386
-    },
-    "evt|life_cofe_1|arrive|向偉：從浮生城1F方向到達": {
-      "id": "evt|life_cofe_1|arrive|向偉：從浮生城1F方向到達",
-      "text": "向偉：從浮生城1F方向到達",
-      "room_id": "life_cofe_1",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186586,
-      "expires_at": 1774188386
+      "weight": 2,
+      "updated_at": 1774194530,
+      "expires_at": 1774196330
     },
     "evt|life_cofe_1|arrive|楊康偉：從浮生城1F方向到達": {
       "id": "evt|life_cofe_1|arrive|楊康偉：從浮生城1F方向到達",
@@ -274,19 +534,8 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186646,
-      "expires_at": 1774188446
-    },
-    "evt|life_cofe_1|arrive|袁寧：從浮生城1F方向到達": {
-      "id": "evt|life_cofe_1|arrive|袁寧：從浮生城1F方向到達",
-      "text": "袁寧：從浮生城1F方向到達",
-      "room_id": "life_cofe_1",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186646,
-      "expires_at": 1774188446
+      "updated_at": 1774193523,
+      "expires_at": 1774195323
     },
     "evt|life_cofe_1|arrive|金玲：從浮生城1F方向到達": {
       "id": "evt|life_cofe_1|arrive|金玲：從浮生城1F方向到達",
@@ -296,8 +545,8 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186646,
-      "expires_at": 1774188446
+      "updated_at": 1774193523,
+      "expires_at": 1774195323
     },
     "evt|life_cofe_1|leave|劉紅：離開往座位區": {
       "id": "evt|life_cofe_1|leave|劉紅：離開往座位區",
@@ -307,8 +556,19 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186661,
-      "expires_at": 1774188461
+      "updated_at": 1774194283,
+      "expires_at": 1774196083
+    },
+    "evt|life_cofe_1|leave|史梅：離開往座位區": {
+      "id": "evt|life_cofe_1|leave|史梅：離開往座位區",
+      "text": "史梅：離開往座位區",
+      "room_id": "life_cofe_1",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194313,
+      "expires_at": 1774196113
     },
     "evt|life_cofe_1|leave|司馬麗淑：離開往座位區": {
       "id": "evt|life_cofe_1|leave|司馬麗淑：離開往座位區",
@@ -318,8 +578,8 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186601,
-      "expires_at": 1774188401
+      "updated_at": 1774194313,
+      "expires_at": 1774196113
     },
     "evt|life_cofe_1|leave|向偉：離開往座位區": {
       "id": "evt|life_cofe_1|leave|向偉：離開往座位區",
@@ -329,52 +589,8 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186601,
-      "expires_at": 1774188401
-    },
-    "evt|life_cofe_1|leave|楊康偉：離開往座位區": {
-      "id": "evt|life_cofe_1|leave|楊康偉：離開往座位區",
-      "text": "楊康偉：離開往座位區",
-      "room_id": "life_cofe_1",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186661,
-      "expires_at": 1774188461
-    },
-    "evt|life_cofe_1|leave|袁寧：離開往座位區": {
-      "id": "evt|life_cofe_1|leave|袁寧：離開往座位區",
-      "text": "袁寧：離開往座位區",
-      "room_id": "life_cofe_1",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186661,
-      "expires_at": 1774188461
-    },
-    "evt|life_cofe_1|leave|金玲：離開往座位區": {
-      "id": "evt|life_cofe_1|leave|金玲：離開往座位區",
-      "text": "金玲：離開往座位區",
-      "room_id": "life_cofe_1",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186661,
-      "expires_at": 1774188461
-    },
-    "evt|life_cofe_1|leave|陶紅玲：離開往座位區": {
-      "id": "evt|life_cofe_1|leave|陶紅玲：離開往座位區",
-      "text": "陶紅玲：離開往座位區",
-      "room_id": "life_cofe_1",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186586,
-      "expires_at": 1774188386
+      "updated_at": 1774194284,
+      "expires_at": 1774196084
     },
     "evt|life_cofe_seat|arrive|劉紅：從蕗易沙方向到達": {
       "id": "evt|life_cofe_seat|arrive|劉紅：從蕗易沙方向到達",
@@ -384,8 +600,19 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186661,
-      "expires_at": 1774188461
+      "updated_at": 1774194283,
+      "expires_at": 1774196083
+    },
+    "evt|life_cofe_seat|arrive|史梅：從蕗易沙方向到達": {
+      "id": "evt|life_cofe_seat|arrive|史梅：從蕗易沙方向到達",
+      "text": "史梅：從蕗易沙方向到達",
+      "room_id": "life_cofe_seat",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774194313,
+      "expires_at": 1774196113
     },
     "evt|life_cofe_seat|arrive|司馬麗淑：從蕗易沙方向到達": {
       "id": "evt|life_cofe_seat|arrive|司馬麗淑：從蕗易沙方向到達",
@@ -395,8 +622,8 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186601,
-      "expires_at": 1774188401
+      "updated_at": 1774194313,
+      "expires_at": 1774196113
     },
     "evt|life_cofe_seat|arrive|向偉：從蕗易沙方向到達": {
       "id": "evt|life_cofe_seat|arrive|向偉：從蕗易沙方向到達",
@@ -406,191 +633,86 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186601,
-      "expires_at": 1774188401
+      "updated_at": 1774194284,
+      "expires_at": 1774196084
     },
-    "evt|life_cofe_seat|arrive|楊康偉：從蕗易沙方向到達": {
-      "id": "evt|life_cofe_seat|arrive|楊康偉：從蕗易沙方向到達",
-      "text": "楊康偉：從蕗易沙方向到達",
-      "room_id": "life_cofe_seat",
-      "zone": "citylife",
+    "evt|life_dining|arrive|龍霞華：從浮生城1F方向到達": {
+      "id": "evt|life_dining|arrive|龍霞華：從浮生城1F方向到達",
+      "text": "龍霞華：從浮生城1F方向到達",
+      "room_id": "life_hall",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186661,
-      "expires_at": 1774188461
+      "updated_at": 1774193280,
+      "expires_at": 1774195080
     },
-    "evt|life_cofe_seat|arrive|袁寧：從蕗易沙方向到達": {
-      "id": "evt|life_cofe_seat|arrive|袁寧：從蕗易沙方向到達",
-      "text": "袁寧：從蕗易沙方向到達",
-      "room_id": "life_cofe_seat",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186661,
-      "expires_at": 1774188461
-    },
-    "evt|life_cofe_seat|arrive|金玲：從蕗易沙方向到達": {
-      "id": "evt|life_cofe_seat|arrive|金玲：從蕗易沙方向到達",
-      "text": "金玲：從蕗易沙方向到達",
-      "room_id": "life_cofe_seat",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186661,
-      "expires_at": 1774188461
-    },
-    "evt|life_cofe_seat|arrive|陶紅玲：從蕗易沙方向到達": {
-      "id": "evt|life_cofe_seat|arrive|陶紅玲：從蕗易沙方向到達",
-      "text": "陶紅玲：從蕗易沙方向到達",
-      "room_id": "life_cofe_seat",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186586,
-      "expires_at": 1774188386
-    },
-    "evt|life_dining|arrive|葉俊：從浮生城1F方向到達": {
-      "id": "evt|life_dining|arrive|葉俊：從浮生城1F方向到達",
-      "text": "葉俊：從浮生城1F方向到達",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774185469,
-      "expires_at": 1774187269
-    },
-    "evt|life_dining|arrive|龍霞華：從方向到達": {
-      "id": "evt|life_dining|arrive|龍霞華：從方向到達",
-      "text": "龍霞華：從方向到達",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774185704,
-      "expires_at": 1774187504
-    },
-    "evt|life_dining|leave|葉俊：離開往": {
-      "id": "evt|life_dining|leave|葉俊：離開往",
-      "text": "葉俊：離開往",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186415,
-      "expires_at": 1774188215
-    },
-    "evt|life_dining|leave|龍霞華：離開往": {
-      "id": "evt|life_dining|leave|龍霞華：離開往",
-      "text": "龍霞華：離開往",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186313,
-      "expires_at": 1774188113
-    },
-    "evt|life_dining|shift_leave|鄭秀強：離開前往lobby": {
-      "id": "evt|life_dining|shift_leave|鄭秀強：離開前往lobby",
-      "text": "鄭秀強：離開前往lobby",
+    "evt|life_dining|shift_leave|葉俊：離開前往life_garden": {
+      "id": "evt|life_dining|shift_leave|葉俊：離開前往life_garden",
+      "text": "葉俊：離開前往life_garden",
       "room_id": "city_life_1f",
       "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774186686,
-      "expires_at": 1774188486
+      "weight": 15,
+      "updated_at": 1774193586,
+      "expires_at": 1774195386
+    },
+    "evt|life_dining|shift_leave|鄭秀強：離開前往life_garden": {
+      "id": "evt|life_dining|shift_leave|鄭秀強：離開前往life_garden",
+      "text": "鄭秀強：離開前往life_garden",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 15,
+      "updated_at": 1774193586,
+      "expires_at": 1774195386
     },
     "evt|life_garden|shift_arrive|葉俊：排班抵達": {
       "id": "evt|life_garden|shift_arrive|葉俊：排班抵達",
       "text": "葉俊：排班抵達",
       "room_id": "singularity_life",
       "source": "room_event",
-      "source_score": 2,
-      "weight": 2,
+      "source_score": 1,
+      "weight": 1,
       "mention_count": 2,
       "last_used_at": 1774145436,
-      "updated_at": 1774186686,
-      "expires_at": 1774188486
+      "updated_at": 1774194500,
+      "expires_at": 1774196300
     },
     "evt|life_garden|shift_arrive|鄭秀強：排班抵達": {
       "id": "evt|life_garden|shift_arrive|鄭秀強：排班抵達",
       "text": "鄭秀強：排班抵達",
       "room_id": "lobby",
       "source": "room_event",
-      "source_score": 2,
-      "weight": 2,
+      "source_score": 1,
+      "weight": 1,
       "mention_count": 1,
       "last_used_at": 1774145140,
-      "updated_at": 1774186686,
-      "expires_at": 1774188486
+      "updated_at": 1774194500,
+      "expires_at": 1774196300
     },
     "evt|life_garden|shift_arrive|龍霞華：排班抵達": {
       "id": "evt|life_garden|shift_arrive|龍霞華：排班抵達",
       "text": "龍霞華：排班抵達",
       "room_id": "lobby",
       "source": "room_event",
-      "source_score": 2,
-      "weight": 2,
+      "source_score": 1,
+      "weight": 1,
       "mention_count": 18,
       "last_used_at": 1774153086,
-      "updated_at": 1774186686,
-      "expires_at": 1774188486
+      "updated_at": 1774194500,
+      "expires_at": 1774196300
     },
-    "evt|life_hall|arrive|葉俊：從方向到達": {
-      "id": "evt|life_hall|arrive|葉俊：從方向到達",
-      "text": "葉俊：從方向到達",
+    "evt|life_hall|arrive|葉俊：從浮生城1F方向到達": {
+      "id": "evt|life_hall|arrive|葉俊：從浮生城1F方向到達",
+      "text": "葉俊：從浮生城1F方向到達",
       "room_id": "life_hall",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774186415,
-      "expires_at": 1774188215
-    },
-    "evt|life_hall|arrive|鄭秀強：從方向到達": {
-      "id": "evt|life_hall|arrive|鄭秀強：從方向到達",
-      "text": "鄭秀強：從方向到達",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 4,
-      "updated_at": 1774186415,
-      "expires_at": 1774188215
-    },
-    "evt|life_hall|arrive|龍霞華：從方向到達": {
-      "id": "evt|life_hall|arrive|龍霞華：從方向到達",
-      "text": "龍霞華：從方向到達",
-      "room_id": "life_hall",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774186313,
-      "expires_at": 1774188113
-    },
-    "evt|life_hall|shift_leave|葉俊：離開前往singularity_life": {
-      "id": "evt|life_hall|shift_leave|葉俊：離開前往singularity_life",
-      "text": "葉俊：離開前往singularity_life",
-      "room_id": "city_life_1f",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774186686,
-      "expires_at": 1774188486
-    },
-    "evt|life_hall|shift_leave|龍霞華：離開前往lobby": {
-      "id": "evt|life_hall|shift_leave|龍霞華：離開前往lobby",
-      "text": "龍霞華：離開前往lobby",
-      "room_id": "city_life_1f",
-      "zone": "citylife",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774186686,
-      "expires_at": 1774188486
+      "updated_at": 1774193190,
+      "expires_at": 1774194990
     },
     "evt|life_kitchen|arrive|鄭秀強：從浮生城1F方向到達": {
       "id": "evt|life_kitchen|arrive|鄭秀強：從浮生城1F方向到達",
@@ -599,28 +721,40 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774185285,
-      "expires_at": 1774187085
+      "updated_at": 1774193603,
+      "expires_at": 1774195403
     },
-    "evt|life_kitchen|arrive|龍霞華：從浮生城1F方向到達": {
-      "id": "evt|life_kitchen|arrive|龍霞華：從浮生城1F方向到達",
-      "text": "龍霞華：從浮生城1F方向到達",
-      "room_id": "life_kitchen",
+    "evt|life_kitchen|arrive|龍霞華：從方向到達": {
+      "id": "evt|life_kitchen|arrive|龍霞華：從方向到達",
+      "text": "龍霞華：從方向到達",
+      "room_id": "life_dining",
       "source": "room_event",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1774185016,
-      "expires_at": 1774186816
+      "updated_at": 1774193411,
+      "expires_at": 1774195211
     },
-    "evt|life_kitchen|leave|龍霞華：離開往": {
-      "id": "evt|life_kitchen|leave|龍霞華：離開往",
-      "text": "龍霞華：離開往",
-      "room_id": "life_kitchen",
+    "evt|life_kitchen|shift_leave|鄭秀強：離開前往lobby": {
+      "id": "evt|life_kitchen|shift_leave|鄭秀強：離開前往lobby",
+      "text": "鄭秀強：離開前往lobby",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774185704,
-      "expires_at": 1774187504
+      "weight": 9,
+      "updated_at": 1774194500,
+      "expires_at": 1774196300
+    },
+    "evt|life_kitchen|shift_leave|龍霞華：離開前往life_garden": {
+      "id": "evt|life_kitchen|shift_leave|龍霞華：離開前往life_garden",
+      "text": "龍霞華：離開前往life_garden",
+      "room_id": "city_life_1f",
+      "zone": "citylife",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 15,
+      "updated_at": 1774193586,
+      "expires_at": 1774195386
     }
   }
 }

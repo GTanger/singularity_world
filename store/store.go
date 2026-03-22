@@ -401,7 +401,7 @@ func (s *Store) loadRooms(path string) error {
 	return nil
 }
 
-// loadRoomsFromDir 遞迴掃描 dir 下所有 .json（含任意層子資料夾，例 data/rooms/浮生大街/民宅/xxx.json），每檔一房＋其 exits。
+// loadRoomsFromDir 遞迴掃描 dir 下所有 .json（含任意層子資料夾，例 data/rooms/editor/），每檔一房＋其 exits。
 // data/rooms/editor/ 子目錄下的房間豁免街道篩選，全數保留。
 func (s *Store) loadRoomsFromDir(dir string) error {
 	type fileEntry struct {

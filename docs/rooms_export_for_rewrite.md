@@ -1189,7 +1189,7 @@
 |------|------|
 | **名稱** | 飛霜大街 |
 | **id** | feishuangstreet |
-| **描述** | 長街寬闊，打鐵巷熱氣隨地形至此散溢，受混沌游離輻射影響，常時有霜雪般結晶飄落，氣候雖暖仍見霜晶覆瓦，規模勝浮生大街，兩側館舍與民宅櫛比。 |
+| **描述** | 長街寬闊，打鐵巷熱氣隨地形至此散溢，受混沌游離輻射影響，常時有霜雪般結晶飄落，氣候雖暖仍見霜晶覆瓦，規模勝浮生城（舊稱浮生大街街廓），兩側館舍與民宅櫛比。 |
 | **出口** | 打鐵巷 → ironlane；霜華館 → feishuang_lodge1；凝霜閣 → feishuang_lodge2；藥行 → feishuang_shop1；布莊 → feishuang_shop2；糧行 → feishuang_shop3；茶樓 → feishuang_shop4；酒肆 → feishuang_shop5；當鋪 → feishuang_shop6；鐵器行 → feishuang_shop7；雜貨鋪 → feishuang_shop8；宅一 → feishuang_home1；宅二 → feishuang_home2；宅三 → feishuang_home3；宅四 → feishuang_home4；宅五 → feishuang_home5；宅六 → feishuang_home6；宅七 → feishuang_home7；環湖路 → feishuang_lake_road；浮生 → lifestreet；梧桐 → wutong_street；向陽 → sunstreet |
 
 ## 遺世居入口
@@ -3235,11 +3235,11 @@
 | **描述** | 位於樓層的死角，光線極其昏暗。影子在角落裡顯得比別處更濃，窗櫺上的木刺有些扎手，充滿了即將整理行囊離去的沉悶氣息。 |
 | **出口** | 迴廊 → life_corridor_2f |
 
-## 浮生大街
+## 浮生大街（封存匯出；現行東側主體為摩天樓「浮生城」）
 
 | 欄位 | 內容 |
 |------|------|
-| **名稱** | 浮生大街 |
+| **名稱** | 浮生大街（舊版街廓） |
 | **id** | lifestreet |
 | **描述** | 青石板鋪就的長街人來人往，兩側店招林立，客棧、民宅、茶館、當舖與各色鋪子沿街排開，往東可通往向陽大街，西接梧桐、北通飛霜，另有打鐵巷與夜鴞巷隱在岔路之間。 |
 | **出口** | 客棧 → life_garden；民一 → lifestreet_home1；民二 → lifestreet_home2；民三 → lifestreet_home3；民四 → lifestreet_home4；民五 → lifestreet_home5；民六 → lifestreet_home6；民七 → lifestreet_home7；民八 → lifestreet_home8；珍寶 → lifestreet_gems；茶館 → lifestreet_tea；典當 → lifestreet_pawn；草藥 → lifestreet_herbs；酒舖 → lifestreet_liquor；糕餅 → lifestreet_cake；雜貨 → lifestreet_general；打鐵巷 → ironlane；向陽 → sunstreet；梧桐 → wutong_street；飛霜 → feishuangstreet；夜鴞 → yaxiaolane |

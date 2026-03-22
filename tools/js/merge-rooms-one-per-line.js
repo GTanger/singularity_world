@@ -7,8 +7,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOTS_DIR = path.join(__dirname, '..', 'data', 'rooms');
-const OUT_FILE = path.join(__dirname, '..', 'data', 'rooms.json');
+// 專案根目錄（本檔位於 tools/js/）
+const ROOTS_DIR = path.join(__dirname, '..', '..', 'data', 'rooms');
+const OUT_FILE = path.join(__dirname, '..', '..', 'data', 'rooms.json');
 
 function listJsonFiles(dir, acc = []) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });

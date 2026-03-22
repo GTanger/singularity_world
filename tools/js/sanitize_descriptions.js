@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOMS_JSON = path.join(__dirname, '../data/rooms.json');
+const ROOMS_JSON = path.join(__dirname, '..', '..', 'data', 'rooms.json');
 const data = JSON.parse(fs.readFileSync(ROOMS_JSON, 'utf8'));
 
 // 依序套用：先長串再短串，避免殘留片段

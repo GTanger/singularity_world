@@ -423,6 +423,30 @@ body {
 
 .narr-name { color: var(--room-name); font-weight: 600; }
 .narr-dialogue { color: #e0e0e0; font-style: italic; }
+
+/* GFM 表格（敘事內 Markdown）：與 〔〕 可點擊相容 */
+.narrative-md-table {
+	border-collapse: collapse;
+	margin: 0.5rem 0;
+	font-size: 0.95em;
+	width: 100%;
+	max-width: 100%;
+}
+.narrative-md-table th,
+.narrative-md-table td {
+	border: 1px solid var(--border);
+	padding: 0.35rem 0.5rem;
+	text-align: center;
+	vertical-align: middle;
+}
+.narrative-md-table thead th {
+	font-weight: 600;
+	color: var(--room-name);
+	background: rgba(255, 255, 255, 0.04);
+}
+.narrative-md-table .log-object-action {
+	white-space: nowrap;
+}
 .text-muted { color: var(--text-muted); font-size: 0.92rem; }
 
 /* 路徑欄已移除：出口改由描述內 〔〕 物件點擊觸發 Move（見房間非人物件互動 §2.3） */

@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
  * 把 data/rooms 底下每個 .json 一房一檔，全部寫成「有段落的」格式（2 空格縮排），
- * 與 data/rooms/浮生大街/浮生大街一段/青磚民宅/life_home01_bedroom.json 一致。
+ * 與 data/rooms/ 下各一房一檔 .json（例 editor/*.json）格式一致。
  * 不處理 data/rooms.json（合併檔維持一房一行）。
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const ROOTS_DIR = path.join(__dirname, '..', 'data', 'rooms');
+const ROOTS_DIR = path.join(__dirname, '..', '..', 'data', 'rooms');
 
 function listJsonFiles(dir, acc = []) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });

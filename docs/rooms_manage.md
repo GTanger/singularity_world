@@ -71,7 +71,7 @@
 - **打鐵巷**（`data/rooms/打鐵巷/`）  
   - 子資料夾：**打鐵一巷**、**打鐵二巷**、**打鐵三巷**。  
   - 打鐵一巷下再依建築分**中文名稱**資料夾：**鍛造鋪**（ironland_shop01_*）、**爐火鋪**（ironland_shop02_*）、**錘音鋪**（ironland_shop03_*）、**巷內宅**（ironland_home01_*）、**石磚宅**（ironland_home02_*）。
-- **胡同巷**：位於 **浮生大街底下**（`data/rooms/浮生大街/胡同巷/`），zone 為 `lifestreet`，與浮生大街同區。
+- **胡同巷等舊街廓**：若本地已刪除舊房 JSON，請以 `data/rooms/` 實際目錄為準。**現行**東側主體為 **浮生城**（見 `docs/reference/浮生城—建築與用途.md`、`data/rooms/editor/`）。
 
 ### 讀取腳本（無需因搬移而改動）
 

@@ -1,0 +1,46 @@
+{
+  "id": "city_life_5f",
+  "name": "浮生城5f",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜招租中｜　　　　　　　　　　　｜招租中｜\n｜招租中｜　　※浮生城５樓※　　｜招租中｜\n｜招租中｜　　　　　　　　　　　｜招租中｜\n｜｜｜｜｜招租中｜招租中｜招租中｜｜｜｜｜",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "電梯間",
+      "to": "city_life_elevator"
+    },
+    {
+      "direction": "下樓梯",
+      "to": "city_life_4f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_elevator",
+      "name": "電梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「電梯間」。"
+      },
+      "move_to_room_id": "city_life_elevator"
+    },
+    {
+      "id": "city_life_4f",
+      "name": "下樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城4F」。"
+      },
+      "move_to_room_id": "city_life_4f"
+    }
+  ]
+}

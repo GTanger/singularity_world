@@ -23,6 +23,26 @@
     {
       "direction": "來喫茶",
       "to": "city_life_1f_tea"
+    },
+    {
+      "direction": "管理室",
+      "to": "city_life_1f_admin"
+    },
+    {
+      "direction": "警衛室",
+      "to": "city_life_1f_security"
+    },
+    {
+      "direction": "休息室",
+      "to": "city_life_1f_guard_lounge"
+    },
+    {
+      "direction": "醫療間",
+      "to": "city_life_1f_clinic"
+    },
+    {
+      "direction": "門關門",
+      "to": "city_life_1f_gate"
     }
   ],
   "objects": [
@@ -73,6 +93,66 @@
         "Move": "你前往「來喫茶」。"
       },
       "move_to_room_id": "city_life_1f_tea"
+    },
+    {
+      "id": "city_life_1f_admin",
+      "name": "管理室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「管理室」。"
+      },
+      "move_to_room_id": "city_life_1f_admin"
+    },
+    {
+      "id": "city_life_1f_security",
+      "name": "警衛室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入「警衛室」。"
+      },
+      "move_to_room_id": "city_life_1f_security"
+    },
+    {
+      "id": "city_life_1f_guard_lounge",
+      "name": "休息室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入「警衛休息室」。"
+      },
+      "move_to_room_id": "city_life_1f_guard_lounge"
+    },
+    {
+      "id": "city_life_1f_clinic",
+      "name": "醫療間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入「醫療間」。"
+      },
+      "move_to_room_id": "city_life_1f_clinic"
+    },
+    {
+      "id": "city_life_1f_gate",
+      "name": "門關門",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向「門關門」關廂。"
+      },
+      "move_to_room_id": "city_life_1f_gate"
     }
   ]
 }

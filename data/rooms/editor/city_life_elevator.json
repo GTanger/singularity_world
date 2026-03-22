@@ -1,7 +1,7 @@
 {
   "id": "city_life_elevator",
   "name": "電梯間",
-  "description": "➀ ➁ ➂ ➃ ➄\n➅ ➆ ➇ ➈ ➉",
+  "description": "① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ \n⑪ ⑫ ⑬ ⑭ ⑮ ⑯ ⑰ ⑱ ⑲ ⑳",
   "tags": [
     "city",
     "skyscraper"
@@ -9,18 +9,30 @@
   "zone": "citylife",
   "exits": [
     {
-      "direction": "➀",
+      "direction": "①",
       "to": "city_life_1f"
     },
     {
-      "direction": "➁",
+      "direction": "②",
       "to": "city_life_2f"
+    },
+    {
+      "direction": "③",
+      "to": "city_life_3f"
+    },
+    {
+      "direction": "④",
+      "to": "city_life_4f"
+    },
+    {
+      "direction": "⑤",
+      "to": "city_life_5f"
     }
   ],
   "objects": [
     {
       "id": "city_life_1f",
-      "name": "➀",
+      "name": "①",
       "owner": "",
       "sockets": [
         "Move"
@@ -32,7 +44,7 @@
     },
     {
       "id": "city_life_2f",
-      "name": "➁",
+      "name": "②",
       "owner": "",
       "sockets": [
         "Move"
@@ -41,6 +53,42 @@
         "Move": "你前往「浮生城2F」。"
       },
       "move_to_room_id": "city_life_2f"
+    },
+    {
+      "id": "city_life_3f",
+      "name": "③",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城3F」。"
+      },
+      "move_to_room_id": "city_life_3f"
+    },
+    {
+      "id": "city_life_4f",
+      "name": "④",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城4F」。"
+      },
+      "move_to_room_id": "city_life_4f"
+    },
+    {
+      "id": "city_life_5f",
+      "name": "⑤",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城5f」。"
+      },
+      "move_to_room_id": "city_life_5f"
     }
   ]
 }

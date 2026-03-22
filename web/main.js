@@ -205,9 +205,10 @@
 		return '';
 	}
 
-	function formatNarrative(text) {
+	// 單段敘事（表格儲存格不換成 <br>）
+	function formatNarrativeSegment(text, asTableCell) {
 		if (!text) return '';
-		return escapeHtml(text)
+		var esc = escapeHtml(String(text))
 			.replace(/【([^】]*)】/g, function (_m, rawName) {
 				var name = rawName || '';
 				var eid = resolveEntityIDByName(name);
@@ -216,8 +217,31 @@
 				}
 				return '<span class="narr-name">【' + escapeHtml(name) + '】</span>';
 			})
-			.replace(/「([^」]*)」/g, '<span class="narr-dialogue">「$1」</span>')
-			.replace(/\n/g, '<br>');
+			.replace(/「([^」]*)」/g, '<span class="narr-dialogue">「$1」</span>');
+		if (!asTableCell) {
+			esc = esc.replace(/\n/g, '<br>');
+		}
+		return esc;
+	}
+
+	function formatNarrative(text) {
+		if (!text) return '';
+		if (!window.NarrativeMarkdown || !window.NarrativeMarkdown.splitTextAndTables) {
+			return formatNarrativeSegment(text, false);
+		}
+		var blocks = window.NarrativeMarkdown.splitTextAndTables(text);
+		var parts = [];
+		for (var bi = 0; bi < blocks.length; bi++) {
+			var b = blocks[bi];
+			if (b.type === 'table') {
+				parts.push(window.NarrativeMarkdown.renderTableHtml(b.rows, function (cell) {
+					return formatNarrativeSegment(cell, true);
+				}));
+			} else {
+				parts.push(formatNarrativeSegment(b.text, false));
+			}
+		}
+		return parts.join('');
 	}
 
 	// 敘事中的物件名若為當前房間物件則變為可點擊（執行 Move 或 Look）
