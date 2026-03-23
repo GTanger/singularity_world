@@ -531,6 +531,16 @@ func (s *Store) firstStreetOrAlleyRoomIDLocked() string {
 	return ids[0]
 }
 
+// ReloadRooms 清空記憶體中的 Rooms/Exits，從 roomsPath 重新載入。
+// 用於直接修改磁碟 JSON 後強制同步（地圖編輯器「重新整理」觸發）。
+func (s *Store) ReloadRooms() error {
+	s.mu.Lock()
+	s.Rooms = make(map[string]*model.Room)
+	s.Exits = make(map[string][]model.Exit)
+	s.mu.Unlock()
+	return s.loadRooms(s.roomsPath)
+}
+
 func (s *Store) loadEntityRooms() error {
 	data, err := os.ReadFile(s.entityRoomsPath)
 	if err != nil {

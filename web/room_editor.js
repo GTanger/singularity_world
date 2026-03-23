@@ -1240,8 +1240,10 @@ ui.wrap.addEventListener('wheel', (ev) => {
 
 document.getElementById('btn-refresh').onclick = async () => {
   try {
+    // 先從磁碟重新載入（同步 JSON 直接修改的結果），再抓 graph
+    await api('/api/room-editor/reload', { method: 'POST' });
     await loadGraph(false);
-    setStatus('已重新載入');
+    setStatus('已重新載入（含磁碟同步）');
   } catch (e) {
     setStatus(`載入失敗：${e.message}`, true);
   }

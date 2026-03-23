@@ -51,5 +51,9 @@ func HandleRoomEditorAPI(w http.ResponseWriter, r *http.Request) {
 		handleRoomEditorLayout(w, r)
 		return
 	}
+	if path == "reload" && r.Method == http.MethodPost {
+		handleRoomEditorReload(w)
+		return
+	}
 	http.Error(w, `{"error":"not found"}`, http.StatusNotFound)
 }
