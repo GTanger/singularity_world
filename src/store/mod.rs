@@ -1,0 +1,1574 @@
+// store 模組 — 以 JSON 為唯一數據源的記憶體層（無 DB）。
+// 啟動時從指定 JSON 檔與目錄載入全部資料，執行期只讀寫記憶體，必要時原子寫回對應 JSON。
+// 對齊 Go store/store.go。
+
+use std::collections::HashMap;
+use std::fs;
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, RwLock};
+use serde::{Deserialize, Serialize};
+
+use crate::model;
+
+// ── 實體寫回防抖間隔（秒）——Phase 3+ 實作 tokio timer 時使用 ──
+#[allow(dead_code)]
+const ENTITIES_WRITE_DEBOUNCE_SECS: u64 = 3;
+
+// ══════════════════════════════════════
+//  資料型別
+// ══════════════════════════════════════
+
+/// 場所：id、名稱、room_ids、max_staff。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Venue {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub room_ids: Vec<String>,
+    #[serde(default, skip_serializing_if = "is_zero_i32")]
+    pub max_staff: i32,
+}
+
+/// 指派：誰、什麼職業、哪個場所。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Assignment {
+    pub entity_id: String,
+    pub occupation_id: String,
+    pub venue_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub assigned_by: String,
+}
+
+/// 排班：工作房、休息房、班次起迄。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Schedule {
+    pub entity_id: String,
+    pub work_room: String,
+    pub rest_room: String,
+    #[serde(default)]
+    pub shift_start: i32,
+    #[serde(default)]
+    pub shift_end: i32,
+}
+
+/// 實體（玩家/NPC）供 JSON 背板。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Entity {
+    pub id: String,
+    #[serde(default)]
+    pub kind: String,
+    #[serde(default)]
+    pub display_char: String,
+    #[serde(default)]
+    pub x: i32,
+    #[serde(default)]
+    pub y: i32,
+    #[serde(default)]
+    pub move_state: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_x: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_y: Option<i32>,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub walk_or_run: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub move_started_at: Option<i64>,
+    #[serde(default)]
+    pub vit: i32,
+    #[serde(default)]
+    pub qi: i32,
+    #[serde(default)]
+    pub dex: i32,
+    #[serde(default)]
+    pub magnesium: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_observed_at: Option<i64>,
+    #[serde(default)]
+    pub created_at: i64,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub gender: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub soul_seed: Option<i64>,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub display_title: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub activated_nodes: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub equipment_slots: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub inventory: String,
+    #[serde(default, skip_serializing_if = "is_zero_i32")]
+    pub disposition: i32,
+}
+
+/// 物品定義。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Item {
+    pub id: String,
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub slot: String,
+    #[serde(default)]
+    pub item_type: String,
+    #[serde(default)]
+    pub weight: f64,
+    #[serde(default)]
+    pub stackable: i32,
+    #[serde(default)]
+    pub denomination: i32,
+    #[serde(default)]
+    pub description: String,
+}
+
+/// 事件日誌一筆。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EventEntry {
+    pub at: i64,
+    pub entity_id: String,
+    pub event_type: String,
+    pub payload: String,
+}
+
+/// NPC 長期記憶一條。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ArchivalEntry {
+    pub entity_id: String,
+    pub content: String,
+    #[serde(default)]
+    pub tag: String,
+    #[serde(default)]
+    pub created_at: i64,
+}
+
+/// NPC 短期記憶：對某位玩家的見面次數與好感度。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NpcMemory {
+    pub entity_id: String,
+    pub subject_id: String,
+    #[serde(default)]
+    pub meet_count: i32,
+    #[serde(default)]
+    pub favorability: i32,
+}
+
+/// 兩名 NPC 的短期話題線狀態。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NpcThread {
+    pub thread_key: String,
+    #[serde(default)]
+    pub topic_type: String,
+    #[serde(default)]
+    pub phase: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub anchors: Vec<String>,
+    #[serde(default)]
+    pub turn_count: i32,
+    #[serde(default)]
+    pub cooldown_until: i64,
+    #[serde(default)]
+    pub updated_at: i64,
+}
+
+/// 兩名 NPC 的關係狀態。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NpcDyad {
+    pub a_id: String,
+    pub b_id: String,
+    #[serde(default)]
+    pub familiarity: i32,
+    #[serde(default)]
+    pub sentiment: i32,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tags: Vec<String>,
+    #[serde(default)]
+    pub updated_at: i64,
+}
+
+/// 可衰減的社會傳聞。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NpcRumor {
+    pub id: String,
+    #[serde(default)]
+    pub text: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub room_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub zone: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub source: String,
+    #[serde(default, skip_serializing_if = "is_zero_i32")]
+    pub source_score: i32,
+    #[serde(default)]
+    pub weight: i32,
+    #[serde(default, skip_serializing_if = "is_zero_i32")]
+    pub mention_count: i32,
+    #[serde(default, skip_serializing_if = "is_zero_i64")]
+    pub last_used_at: i64,
+    #[serde(default, skip_serializing_if = "is_zero_i64")]
+    pub blocked_until: i64,
+    #[serde(default, skip_serializing_if = "is_zero_i32")]
+    pub penalty_count: i32,
+    #[serde(default, skip_serializing_if = "is_zero_i64")]
+    pub last_penalty_at: i64,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub last_penalty_reason: String,
+    #[serde(default)]
+    pub updated_at: i64,
+    #[serde(default)]
+    pub expires_at: i64,
+}
+
+/// 傳聞池批次摘要。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NpcRumorDigest {
+    #[serde(default)]
+    pub text: String,
+    #[serde(default)]
+    pub source_count: i32,
+    #[serde(default)]
+    pub updated_at: i64,
+}
+
+// ── serde 輔助 ──
+
+fn is_zero_i32(v: &i32) -> bool { *v == 0 }
+fn is_zero_i64(v: &i64) -> bool { *v == 0 }
+
+// ── JSON 載入/寫出輔助結構 ──
+
+#[derive(Deserialize, Default)]
+struct RoomFileOne {
+    #[serde(default)]
+    id: String,
+    #[serde(default)]
+    name: String,
+    #[serde(default)]
+    description: String,
+    #[serde(default)]
+    tags: Vec<String>,
+    #[serde(default)]
+    zone: String,
+    #[serde(default)]
+    exits: Vec<ExitOut>,
+    #[serde(default)]
+    objects: Vec<model::RoomObject>,
+}
+
+#[derive(Deserialize, Default)]
+struct ExitOut {
+    direction: String,
+    to: String,
+}
+
+#[derive(Deserialize, Default)]
+struct RoomsFile {
+    #[serde(default)]
+    rooms: Vec<RoomDef>,
+    #[serde(default)]
+    exits: Vec<ExitDef>,
+}
+
+#[derive(Deserialize, Default)]
+struct RoomDef {
+    id: String,
+    name: String,
+    #[serde(default)]
+    tags: Vec<String>,
+    #[serde(default)]
+    zone: String,
+    #[serde(default)]
+    description: String,
+}
+
+#[derive(Deserialize, Default)]
+struct ExitDef {
+    from: String,
+    direction: String,
+    to: String,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct EntityRoomsFile {
+    #[serde(default)]
+    entries: Vec<EntityRoomEntry>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct EntityRoomEntry {
+    entity_id: String,
+    room_id: String,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct VenuesFile {
+    #[serde(default)]
+    venues: Vec<Venue>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct AssignmentsFile {
+    #[serde(default)]
+    entries: Vec<Assignment>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct SchedulesFile {
+    #[serde(default)]
+    entries: Vec<Schedule>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct EntitiesFile {
+    #[serde(default)]
+    entities: Vec<Entity>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct ItemsFile {
+    #[serde(default)]
+    items: Vec<Item>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct EventLogFile {
+    #[serde(default)]
+    entries: Vec<EventEntry>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct AuthFile {
+    #[serde(default)]
+    entries: Vec<AuthEntry>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct AuthEntry {
+    entity_id: String,
+    password_hash: String,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct ArchivalFile {
+    #[serde(default)]
+    entries: Vec<ArchivalEntry>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct NpcMemoryFile {
+    #[serde(default)]
+    entries: Vec<NpcMemory>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct SummariesFile {
+    #[serde(default)]
+    entries: Vec<SummaryEntry>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct SummaryEntry {
+    entity_id: String,
+    summary: String,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct NpcNpcSummariesFile {
+    #[serde(default)]
+    entries: Vec<NpcNpcSummaryEntry>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct NpcNpcSummaryEntry {
+    key: String,
+    summary: String,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct NpcThreadsFile {
+    #[serde(default)]
+    entries: Vec<NpcThread>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct NpcDyadsFile {
+    #[serde(default)]
+    entries: Vec<NpcDyad>,
+}
+
+#[derive(Serialize, Deserialize, Default)]
+struct NpcRumorsFile {
+    #[serde(default)]
+    entries: Vec<NpcRumor>,
+}
+
+// ══════════════════════════════════════
+//  Store 主結構
+// ══════════════════════════════════════
+
+/// 全域 store：記憶體中的房間、出口、實體、場所等全部資料。
+pub struct Store {
+    pub rooms: HashMap<String, model::Room>,
+    pub exits: HashMap<String, Vec<model::Exit>>,
+    pub entity_rooms: HashMap<String, String>,
+    pub venues: HashMap<String, Venue>,
+    pub assignments: HashMap<String, Vec<Assignment>>,
+    pub schedules: HashMap<String, Schedule>,
+    pub entities: HashMap<String, Entity>,
+    pub items: HashMap<String, Item>,
+    pub event_log: Vec<EventEntry>,
+    pub archival: Vec<ArchivalEntry>,
+    pub auth: HashMap<String, String>,
+    pub npc_summaries: HashMap<String, String>,
+    pub npc_npc_summaries: HashMap<String, String>,
+    pub npc_memories: HashMap<String, NpcMemory>,
+    pub npc_threads: HashMap<String, NpcThread>,
+    pub npc_dyads: HashMap<String, NpcDyad>,
+    pub npc_rumors: HashMap<String, NpcRumor>,
+    pub npc_rumor_digest: Option<NpcRumorDigest>,
+    // 路徑
+    rooms_path: String,
+    #[allow(dead_code)]
+    runtime_dir: String,
+    entity_rooms_path: PathBuf,
+    venues_path: PathBuf,
+    assignments_path: PathBuf,
+    schedules_path: PathBuf,
+    entities_path: PathBuf,
+    items_path: PathBuf,
+    event_log_path: PathBuf,
+    archival_path: PathBuf,
+    npc_memory_path: PathBuf,
+    auth_path: PathBuf,
+    summaries_path: PathBuf,
+    npc_npc_summaries_path: PathBuf,
+    npc_thread_path: PathBuf,
+    npc_dyad_path: PathBuf,
+    npc_rumor_path: PathBuf,
+    npc_rumor_digest_path: PathBuf,
+}
+
+/// 全域 store 實例（RwLock 保護）。
+pub static DEFAULT: RwLock<Option<Arc<RwLock<Store>>>> = RwLock::new(None);
+
+/// 取得全域 store 的 Arc 參照。
+pub fn get_store() -> Option<Arc<RwLock<Store>>> {
+    DEFAULT.read().unwrap().clone()
+}
+
+/// 設定全域 store。
+fn set_store(store: Store) {
+    let mut guard = DEFAULT.write().unwrap();
+    *guard = Some(Arc::new(RwLock::new(store)));
+}
+
+// ══════════════════════════════════════
+//  Init — 從 JSON 載入所有資料
+// ══════════════════════════════════════
+
+/// 從 rooms_path 載入房間與出口，從 runtime_dir 載入 entity_rooms；
+/// 若 data_dir 非空則再載入 venues/assignments/schedules/entities/items/event_log/auth 等。
+/// 完成後設定全域 DEFAULT。
+pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Result<()> {
+    let runtime = PathBuf::from(runtime_dir);
+    let data = PathBuf::from(data_dir);
+
+    let mut s = Store {
+        rooms: HashMap::new(),
+        exits: HashMap::new(),
+        entity_rooms: HashMap::new(),
+        venues: HashMap::new(),
+        assignments: HashMap::new(),
+        schedules: HashMap::new(),
+        entities: HashMap::new(),
+        items: HashMap::new(),
+        event_log: Vec::new(),
+        archival: Vec::new(),
+        auth: HashMap::new(),
+        npc_summaries: HashMap::new(),
+        npc_npc_summaries: HashMap::new(),
+        npc_memories: HashMap::new(),
+        npc_threads: HashMap::new(),
+        npc_dyads: HashMap::new(),
+        npc_rumors: HashMap::new(),
+        npc_rumor_digest: None,
+        rooms_path: rooms_path.to_string(),
+        runtime_dir: runtime_dir.to_string(),
+        entity_rooms_path: runtime.join("entity_rooms.json"),
+        venues_path: data.join("venues.json"),
+        assignments_path: data.join("assignments.json"),
+        schedules_path: data.join("schedules.json"),
+        entities_path: data.join("entities.json"),
+        items_path: data.join("items.json"),
+        event_log_path: runtime.join("event_log.json"),
+        archival_path: runtime.join("npc_archival.json"),
+        npc_memory_path: runtime.join("npc_memory.json"),
+        auth_path: runtime.join("auth.json"),
+        summaries_path: runtime.join("npc_summaries.json"),
+        npc_npc_summaries_path: runtime.join("npc_npc_summaries.json"),
+        npc_thread_path: runtime.join("npc_thread.json"),
+        npc_dyad_path: runtime.join("npc_dyad.json"),
+        npc_rumor_path: runtime.join("npc_rumors.json"),
+        npc_rumor_digest_path: runtime.join("npc_rumor_digest.json"),
+    };
+
+    s.load_rooms(rooms_path)?;
+    let _ = s.load_entity_rooms();
+    if !data_dir.is_empty() {
+        let _ = s.load_venues();
+        let _ = s.load_assignments();
+        let _ = s.load_schedules();
+        let _ = s.load_entities();
+        let _ = s.load_items();
+        let _ = s.load_event_log();
+        let _ = s.load_archival();
+        let _ = s.load_npc_memory();
+        let _ = s.load_auth();
+        let _ = s.load_summaries();
+        let _ = s.load_npc_npc_summaries();
+        let _ = s.load_npc_threads();
+        let _ = s.load_npc_dyads();
+        let _ = s.load_npc_rumors();
+        let _ = s.load_npc_rumor_digest();
+    }
+
+    tracing::info!(
+        "[store] loaded: {} rooms, {} entity_room, {} venues, {} assignments, {} schedules, {} entities, {} items, {} event_log, {} auth",
+        s.rooms.len(),
+        s.entity_rooms.len(),
+        s.venues.len(),
+        s.assignments_count(),
+        s.schedules.len(),
+        s.entities.len(),
+        s.items.len(),
+        s.event_log.len(),
+        s.auth.len(),
+    );
+
+    set_store(s);
+    Ok(())
+}
+
+// ══════════════════════════════════════
+//  載入方法
+// ══════════════════════════════════════
+
+impl Store {
+    fn assignments_count(&self) -> usize {
+        self.assignments.values().map(|v| v.len()).sum()
+    }
+
+    // ── 房間載入 ──
+
+    fn load_rooms(&mut self, path: &str) -> anyhow::Result<()> {
+        let p = Path::new(path);
+        if p.is_dir() {
+            self.load_rooms_from_dir(p)?;
+        } else {
+            self.load_rooms_from_file(p)?;
+        }
+        Ok(())
+    }
+
+    fn load_rooms_from_file(&mut self, path: &Path) -> anyhow::Result<()> {
+        let raw = fs::read_to_string(path)?;
+        let f: RoomsFile = serde_json::from_str(&raw)?;
+        let mut name_by_id: HashMap<String, String> = HashMap::new();
+        for r in &f.rooms {
+            self.rooms.insert(r.id.clone(), model::Room {
+                id: r.id.clone(),
+                name: r.name.clone(),
+                tags: r.tags.clone(),
+                zone: r.zone.clone(),
+                description: r.description.clone(),
+                objects: Vec::new(),
+            });
+            name_by_id.insert(r.id.clone(), r.name.clone());
+        }
+        for e in &f.exits {
+            let to_name = name_by_id.get(&e.to).cloned().unwrap_or_default();
+            self.exits.entry(e.from.clone()).or_default().push(model::Exit {
+                direction: e.direction.clone(),
+                to_room_id: e.to.clone(),
+                to_room_name: to_name,
+            });
+        }
+        self.prune_non_street_rooms(None);
+        Ok(())
+    }
+
+    fn load_rooms_from_dir(&mut self, dir: &Path) -> anyhow::Result<()> {
+        struct FileEntry {
+            room: RoomFileOne,
+            is_editor: bool,
+        }
+        let mut list: Vec<FileEntry> = Vec::new();
+        Self::walk_json_dir(dir, &mut |path, rel_path| {
+            let raw = fs::read_to_string(path)?;
+            if let Ok(one) = serde_json::from_str::<RoomFileOne>(&raw) {
+                let is_editor = rel_path.starts_with("editor/");
+                list.push(FileEntry { room: one, is_editor });
+            }
+            Ok(())
+        })?;
+
+        let mut editor_ids: std::collections::HashSet<String> = std::collections::HashSet::new();
+        let mut name_by_id: HashMap<String, String> = HashMap::new();
+
+        for entry in &list {
+            let one = &entry.room;
+            self.rooms.insert(one.id.clone(), model::Room {
+                id: one.id.clone(),
+                name: one.name.clone(),
+                tags: one.tags.clone(),
+                zone: one.zone.clone(),
+                description: one.description.clone(),
+                objects: one.objects.clone(),
+            });
+            name_by_id.insert(one.id.clone(), one.name.clone());
+            if entry.is_editor && !one.id.is_empty() {
+                editor_ids.insert(one.id.clone());
+            }
+        }
+        for entry in &list {
+            let one = &entry.room;
+            for ex in &one.exits {
+                let to_name = name_by_id.get(&ex.to).cloned().unwrap_or_default();
+                self.exits.entry(one.id.clone()).or_default().push(model::Exit {
+                    direction: ex.direction.clone(),
+                    to_room_id: ex.to.clone(),
+                    to_room_name: to_name,
+                });
+            }
+        }
+        self.prune_non_street_rooms(Some(&editor_ids));
+        Ok(())
+    }
+
+    /// 遞迴掃描 dir 下所有 .json（跳過底線開頭），呼叫 f(path, rel_path)。
+    fn walk_json_dir(dir: &Path, f: &mut dyn FnMut(&Path, &str) -> anyhow::Result<()>) -> anyhow::Result<()> {
+        fn walk_inner(base: &Path, current: &Path, f: &mut dyn FnMut(&Path, &str) -> anyhow::Result<()>) -> anyhow::Result<()> {
+            let entries = match fs::read_dir(current) {
+                Ok(e) => e,
+                Err(_) => return Ok(()),
+            };
+            for entry in entries {
+                let entry = entry?;
+                let path = entry.path();
+                if path.is_dir() {
+                    walk_inner(base, &path, f)?;
+                } else if path.extension().is_some_and(|e| e == "json") {
+                    let name = path.file_stem().unwrap_or_default().to_string_lossy();
+                    if name.starts_with('_') {
+                        continue;
+                    }
+                    let rel = path.strip_prefix(base)
+                        .unwrap_or(&path)
+                        .to_string_lossy()
+                        .replace('\\', "/");
+                    f(&path, &rel)?;
+                }
+            }
+            Ok(())
+        }
+        walk_inner(dir, dir, f)
+    }
+
+    fn is_street_or_alley(room: &model::Room) -> bool {
+        if room.name.contains("大街") || room.name.contains("巷") {
+            return true;
+        }
+        room.tags.iter().any(|t| {
+            let lt = t.trim().to_lowercase();
+            lt == "street" || lt == "alley"
+        })
+    }
+
+    fn prune_non_street_rooms(&mut self, exempt_ids: Option<&std::collections::HashSet<String>>) {
+        let keep: std::collections::HashSet<String> = self.rooms.iter()
+            .filter(|(id, r)| {
+                exempt_ids.is_some_and(|e| e.contains(id.as_str()))
+                    || Self::is_street_or_alley(r)
+            })
+            .map(|(id, _)| id.clone())
+            .collect();
+
+        self.rooms.retain(|id, _| keep.contains(id));
+        self.exits.retain(|id, _| keep.contains(id));
+        for exits in self.exits.values_mut() {
+            exits.retain(|ex| keep.contains(&ex.to_room_id));
+        }
+    }
+
+    fn first_room_id_sorted(&self) -> String {
+        let mut ids: Vec<&String> = self.rooms.keys().collect();
+        ids.sort();
+        ids.first().map(|s| s.to_string()).unwrap_or_default()
+    }
+
+    // ── entity_rooms ──
+
+    fn load_entity_rooms(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.entity_rooms_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: EntityRoomsFile = serde_json::from_str(&raw)?;
+        let fallback = self.first_room_id_sorted();
+        for e in f.entries {
+            if self.rooms.contains_key(&e.room_id) {
+                self.entity_rooms.insert(e.entity_id, e.room_id);
+            } else if !fallback.is_empty() {
+                self.entity_rooms.insert(e.entity_id, fallback.clone());
+            }
+        }
+        Ok(())
+    }
+
+    // ── venues / assignments / schedules ──
+
+    fn load_venues(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.venues_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: VenuesFile = serde_json::from_str(&raw)?;
+        for v in f.venues {
+            self.venues.insert(v.id.clone(), v);
+        }
+        Ok(())
+    }
+
+    fn load_assignments(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.assignments_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: AssignmentsFile = serde_json::from_str(&raw)?;
+        for a in f.entries {
+            self.assignments.entry(a.entity_id.clone()).or_default().push(a);
+        }
+        Ok(())
+    }
+
+    fn load_schedules(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.schedules_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: SchedulesFile = serde_json::from_str(&raw)?;
+        for s in f.entries {
+            self.schedules.insert(s.entity_id.clone(), s);
+        }
+        Ok(())
+    }
+
+    // ── entities / items / event_log / auth ──
+
+    fn load_entities(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.entities_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: EntitiesFile = serde_json::from_str(&raw)?;
+        for e in f.entities {
+            self.entities.insert(e.id.clone(), e);
+        }
+        Ok(())
+    }
+
+    fn load_items(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.items_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: ItemsFile = serde_json::from_str(&raw)?;
+        for it in f.items {
+            self.items.insert(it.id.clone(), it);
+        }
+        Ok(())
+    }
+
+    fn load_event_log(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.event_log_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: EventLogFile = serde_json::from_str(&raw)?;
+        self.event_log = f.entries;
+        Ok(())
+    }
+
+    fn load_auth(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.auth_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: AuthFile = serde_json::from_str(&raw)?;
+        for a in f.entries {
+            self.auth.insert(a.entity_id, a.password_hash);
+        }
+        Ok(())
+    }
+
+    // ── archival / npc_memory / summaries ──
+
+    fn load_archival(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.archival_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: ArchivalFile = serde_json::from_str(&raw)?;
+        self.archival = f.entries;
+        Ok(())
+    }
+
+    fn load_npc_memory(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.npc_memory_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: NpcMemoryFile = serde_json::from_str(&raw)?;
+        for m in f.entries {
+            let key = format!("{}|{}", m.entity_id, m.subject_id);
+            self.npc_memories.insert(key, m);
+        }
+        Ok(())
+    }
+
+    fn load_summaries(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.summaries_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: SummariesFile = serde_json::from_str(&raw)?;
+        for s in f.entries {
+            self.npc_summaries.insert(s.entity_id, s.summary);
+        }
+        Ok(())
+    }
+
+    fn load_npc_npc_summaries(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.npc_npc_summaries_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: NpcNpcSummariesFile = serde_json::from_str(&raw)?;
+        for s in f.entries {
+            self.npc_npc_summaries.insert(s.key, s.summary);
+        }
+        Ok(())
+    }
+
+    // ── npc threads / dyads / rumors ──
+
+    fn load_npc_threads(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.npc_thread_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: NpcThreadsFile = serde_json::from_str(&raw)?;
+        for t in f.entries {
+            self.npc_threads.insert(t.thread_key.clone(), t);
+        }
+        Ok(())
+    }
+
+    fn load_npc_dyads(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.npc_dyad_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: NpcDyadsFile = serde_json::from_str(&raw)?;
+        for d in f.entries {
+            let key = dyad_key(&d.a_id, &d.b_id);
+            self.npc_dyads.insert(key, d);
+        }
+        Ok(())
+    }
+
+    fn load_npc_rumors(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.npc_rumor_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        let f: NpcRumorsFile = serde_json::from_str(&raw)?;
+        for r in f.entries {
+            self.npc_rumors.insert(r.id.clone(), r);
+        }
+        Ok(())
+    }
+
+    fn load_npc_rumor_digest(&mut self) -> anyhow::Result<()> {
+        let raw = match fs::read_to_string(&self.npc_rumor_digest_path) {
+            Ok(r) => r,
+            Err(_) => return Ok(()),
+        };
+        self.npc_rumor_digest = serde_json::from_str(&raw).ok();
+        Ok(())
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — 房間
+    // ══════════════════════════════════════
+
+    pub fn room_ids(&self) -> Vec<String> {
+        self.rooms.keys().cloned().collect()
+    }
+
+    pub fn get_room(&self, id: &str) -> Option<model::Room> {
+        self.rooms.get(id).cloned()
+    }
+
+    pub fn get_room_name(&self, id: &str) -> String {
+        self.rooms.get(id).map(|r| r.name.clone()).unwrap_or_default()
+    }
+
+    pub fn get_room_id_by_name(&self, name: &str) -> String {
+        self.rooms.values()
+            .find(|r| r.name == name)
+            .map(|r| r.id.clone())
+            .unwrap_or_default()
+    }
+
+    pub fn get_rooms_by_tag(&self, tag: &str) -> Vec<String> {
+        let lt = tag.trim().to_lowercase();
+        self.rooms.iter()
+            .filter(|(_, r)| r.tags.iter().any(|t| t.trim().to_lowercase() == lt))
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    pub fn get_rooms_by_zone(&self, zone: &str) -> Vec<String> {
+        let lz = zone.trim().to_lowercase();
+        self.rooms.iter()
+            .filter(|(_, r)| r.zone.trim().to_lowercase() == lz)
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    pub fn get_exits_for_room(&self, from_room_id: &str) -> Vec<model::Exit> {
+        self.exits.get(from_room_id).cloned().unwrap_or_default()
+    }
+
+    pub fn upsert_room_data(&mut self, room: model::Room, exits: Option<Vec<model::Exit>>) {
+        if room.id.is_empty() {
+            return;
+        }
+        let id = room.id.clone();
+        self.rooms.insert(id.clone(), room);
+        if let Some(exits) = exits {
+            let enriched: Vec<model::Exit> = exits.into_iter()
+                .filter(|ex| !ex.direction.is_empty() && !ex.to_room_id.is_empty())
+                .map(|mut ex| {
+                    if ex.to_room_name.is_empty()
+                        && let Some(r) = self.rooms.get(&ex.to_room_id)
+                    {
+                        ex.to_room_name = r.name.clone();
+                    }
+                    ex
+                })
+                .collect();
+            self.exits.insert(id, enriched);
+        }
+    }
+
+    pub fn delete_room_data(&mut self, room_id: &str) {
+        if room_id.is_empty() {
+            return;
+        }
+        self.rooms.remove(room_id);
+        self.exits.remove(room_id);
+        for exits in self.exits.values_mut() {
+            exits.retain(|ex| ex.to_room_id != room_id);
+        }
+    }
+
+    pub fn reload_rooms(&mut self) -> anyhow::Result<()> {
+        self.rooms.clear();
+        self.exits.clear();
+        let path = self.rooms_path.clone();
+        self.load_rooms(&path)
+    }
+
+    pub fn adjacency(&self) -> HashMap<String, Vec<String>> {
+        self.exits.iter()
+            .map(|(from, exs)| (from.clone(), exs.iter().map(|e| e.to_room_id.clone()).collect()))
+            .collect()
+    }
+
+    pub fn name_map(&self) -> HashMap<String, String> {
+        self.rooms.iter().map(|(id, r)| (id.clone(), r.name.clone())).collect()
+    }
+
+    pub fn zone_map(&self) -> HashMap<String, String> {
+        self.rooms.iter().map(|(id, r)| (id.clone(), r.zone.clone())).collect()
+    }
+
+    pub fn room_tags_map(&self) -> HashMap<String, Vec<String>> {
+        self.rooms.iter().map(|(id, r)| (id.clone(), r.tags.clone())).collect()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — entity_rooms
+    // ══════════════════════════════════════
+
+    pub fn get_entity_room(&self, entity_id: &str) -> String {
+        self.entity_rooms.get(entity_id).cloned().unwrap_or_default()
+    }
+
+    pub fn set_entity_room(&mut self, entity_id: &str, room_id: &str) -> anyhow::Result<()> {
+        self.entity_rooms.insert(entity_id.to_string(), room_id.to_string());
+        self.persist_entity_rooms()
+    }
+
+    pub fn entity_ids_in_room(&self, room_id: &str) -> Vec<String> {
+        self.entity_rooms.iter()
+            .filter(|(_, rid)| rid.as_str() == room_id)
+            .map(|(eid, _)| eid.clone())
+            .collect()
+    }
+
+    pub fn all_entity_ids(&self) -> Vec<String> {
+        self.entities.keys().cloned().collect()
+    }
+
+    pub fn get_npc_ids_with_room(&self) -> Vec<String> {
+        self.entity_rooms.keys()
+            .filter(|eid| {
+                self.entities.get(eid.as_str())
+                    .is_some_and(|e| e.kind == "npc" && e.vit > 0)
+            })
+            .cloned()
+            .collect()
+    }
+
+    pub fn get_player_ids_with_room(&self) -> Vec<String> {
+        self.entity_rooms.keys()
+            .filter(|eid| {
+                self.entities.get(eid.as_str())
+                    .is_some_and(|e| e.kind == "player")
+            })
+            .cloned()
+            .collect()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — 實體
+    // ══════════════════════════════════════
+
+    pub fn get_entity(&self, id: &str) -> Option<Entity> {
+        self.entities.get(id).cloned()
+    }
+
+    pub fn put_entity(&mut self, e: Entity) -> anyhow::Result<()> {
+        let mut e = e;
+        if e.activated_nodes.is_empty() {
+            e.activated_nodes = r#"["N000"]"#.to_string();
+        }
+        if e.inventory.is_empty() {
+            e.inventory = "[]".to_string();
+        }
+        self.entities.insert(e.id.clone(), e);
+        self.persist_entities()
+    }
+
+    pub fn update_entity(&mut self, id: &str, f: impl FnOnce(&mut Entity)) -> anyhow::Result<()> {
+        if let Some(e) = self.entities.get_mut(id) {
+            f(e);
+            return self.persist_entities();
+        }
+        Ok(())
+    }
+
+    pub fn transfer_magnesium(&mut self, from_id: &str, to_id: &str, amount: i32) -> anyhow::Result<()> {
+        if amount <= 0 {
+            anyhow::bail!("轉帳鎂數須為正");
+        }
+        let from_mg = self.entities.get(from_id)
+            .ok_or_else(|| anyhow::anyhow!("找不到轉出實體"))?.magnesium;
+        let _to = self.entities.get(to_id)
+            .ok_or_else(|| anyhow::anyhow!("找不到轉入實體"))?;
+        if from_mg < amount {
+            anyhow::bail!("鎂不足");
+        }
+        self.entities.get_mut(from_id).unwrap().magnesium = from_mg - amount;
+        let to_mg = self.entities.get(to_id).unwrap().magnesium;
+        self.entities.get_mut(to_id).unwrap().magnesium = to_mg + amount;
+        self.persist_entities()
+    }
+
+    pub fn get_entities_in_box(&self, x_min: i32, x_max: i32, y_min: i32, y_max: i32, kind: &str) -> Vec<Entity> {
+        self.entities.values()
+            .filter(|e| {
+                (kind.is_empty() || e.kind == kind)
+                    && e.x >= x_min && e.x <= x_max
+                    && e.y >= y_min && e.y <= y_max
+            })
+            .cloned()
+            .collect()
+    }
+
+    pub fn get_moving_entity_ids(&self) -> Vec<String> {
+        self.entities.iter()
+            .filter(|(_, e)| e.move_state == "moving")
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    pub fn npc_ids_with_missing_soul_seed(&self) -> Vec<String> {
+        self.entities.iter()
+            .filter(|(_, e)| e.kind == "npc" && e.soul_seed.is_none())
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    pub fn clear_all_entities(&mut self) -> anyhow::Result<()> {
+        self.entities.clear();
+        self.entity_rooms.clear();
+        self.persist_entities()?;
+        self.persist_entity_rooms()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — Venues / Assignments / Schedules
+    // ══════════════════════════════════════
+
+    pub fn get_venue(&self, id: &str) -> Option<&Venue> {
+        self.venues.get(id)
+    }
+
+    pub fn is_room_in_venue(&self, room_id: &str, venue_id: &str) -> bool {
+        self.venues.get(venue_id)
+            .is_some_and(|v| v.room_ids.iter().any(|r| r == room_id))
+    }
+
+    pub fn get_venue_ids_for_room(&self, room_id: &str) -> Vec<String> {
+        self.venues.iter()
+            .filter(|(_, v)| v.room_ids.iter().any(|r| r == room_id))
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    pub fn get_venue_max_staff(&self, venue_id: &str, default_max: i32) -> i32 {
+        self.venues.get(venue_id)
+            .map(|v| if v.max_staff > 0 { v.max_staff } else { default_max })
+            .unwrap_or(default_max)
+    }
+
+    pub fn get_all_venue_ids(&self) -> Vec<String> {
+        self.venues.keys().cloned().collect()
+    }
+
+    pub fn get_all_venue_room_ids(&self) -> Vec<String> {
+        let mut ids: Vec<String> = self.venues.values()
+            .flat_map(|v| v.room_ids.clone())
+            .collect();
+        ids.sort();
+        ids.dedup();
+        ids
+    }
+
+    pub fn get_assignments_for_entity(&self, entity_id: &str) -> Vec<Assignment> {
+        self.assignments.get(entity_id).cloned().unwrap_or_default()
+    }
+
+    pub fn get_assignment_count_by_venue(&self, venue_id: &str) -> usize {
+        self.assignments.values()
+            .flat_map(|v| v.iter())
+            .filter(|a| a.venue_id == venue_id)
+            .count()
+    }
+
+    pub fn insert_assignment(&mut self, entity_id: &str, occupation_id: &str, venue_id: &str, assigned_by: &str) -> anyhow::Result<()> {
+        self.assignments.entry(entity_id.to_string()).or_default().push(Assignment {
+            entity_id: entity_id.to_string(),
+            occupation_id: occupation_id.to_string(),
+            venue_id: venue_id.to_string(),
+            assigned_by: assigned_by.to_string(),
+        });
+        self.persist_assignments()
+    }
+
+    pub fn remove_assignments_for_entity(&mut self, entity_id: &str) -> anyhow::Result<()> {
+        self.assignments.remove(entity_id);
+        self.persist_assignments()
+    }
+
+    pub fn get_all_schedules(&self) -> Vec<Schedule> {
+        self.schedules.values().cloned().collect()
+    }
+
+    pub fn get_schedule(&self, entity_id: &str) -> Option<&Schedule> {
+        self.schedules.get(entity_id)
+    }
+
+    pub fn insert_schedule(&mut self, entity_id: &str, work_room: &str, rest_room: &str, shift_start: i32, shift_end: i32) -> anyhow::Result<()> {
+        self.schedules.insert(entity_id.to_string(), Schedule {
+            entity_id: entity_id.to_string(),
+            work_room: work_room.to_string(),
+            rest_room: rest_room.to_string(),
+            shift_start,
+            shift_end,
+        });
+        self.persist_schedules()
+    }
+
+    pub fn remove_schedule_for_entity(&mut self, entity_id: &str) -> anyhow::Result<()> {
+        self.schedules.remove(entity_id);
+        self.persist_schedules()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — Items
+    // ══════════════════════════════════════
+
+    pub fn get_item(&self, id: &str) -> Option<&Item> {
+        self.items.get(id)
+    }
+
+    pub fn put_item(&mut self, it: Item) -> anyhow::Result<()> {
+        self.items.insert(it.id.clone(), it);
+        self.persist_items()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — Event Log
+    // ══════════════════════════════════════
+
+    pub fn append_event(&mut self, at: i64, entity_id: &str, event_type: &str, payload: &str) -> anyhow::Result<()> {
+        self.event_log.push(EventEntry {
+            at,
+            entity_id: entity_id.to_string(),
+            event_type: event_type.to_string(),
+            payload: payload.to_string(),
+        });
+        self.persist_event_log()
+    }
+
+    pub fn last_by_entity(&self, entity_id: &str, event_type: &str, at: i64) -> String {
+        self.event_log.iter().rev()
+            .find(|e| e.entity_id == entity_id && e.event_type == event_type && e.at <= at)
+            .map(|e| e.payload.clone())
+            .unwrap_or_default()
+    }
+
+    pub fn events_in_range(&self, entity_id: &str, from_at: i64, to_at: i64) -> Vec<EventEntry> {
+        self.event_log.iter()
+            .filter(|e| e.entity_id == entity_id && e.at >= from_at && e.at <= to_at)
+            .cloned()
+            .collect()
+    }
+
+    pub fn recent_by_entity(&self, entity_id: &str, n: usize) -> Vec<EventEntry> {
+        let mut out: Vec<EventEntry> = self.event_log.iter().rev()
+            .filter(|e| e.entity_id == entity_id)
+            .take(n)
+            .cloned()
+            .collect();
+        out.reverse();
+        out
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — Auth
+    // ══════════════════════════════════════
+
+    pub fn set_auth(&mut self, entity_id: &str, password_hash: &str) -> anyhow::Result<()> {
+        self.auth.insert(entity_id.to_string(), password_hash.to_string());
+        self.persist_auth()
+    }
+
+    pub fn get_auth(&self, entity_id: &str) -> String {
+        self.auth.get(entity_id).cloned().unwrap_or_default()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — Archival
+    // ══════════════════════════════════════
+
+    pub fn append_archival(&mut self, entry: ArchivalEntry) -> anyhow::Result<()> {
+        self.archival.push(entry);
+        self.persist_archival()
+    }
+
+    pub fn get_archival_by_entity(&self, entity_id: &str) -> Vec<ArchivalEntry> {
+        self.archival.iter()
+            .filter(|e| e.entity_id == entity_id)
+            .cloned()
+            .collect()
+    }
+
+    pub fn trim_archival_per_entity(&mut self, max: usize) {
+        let mut counts: HashMap<String, usize> = HashMap::new();
+        for e in &self.archival {
+            *counts.entry(e.entity_id.clone()).or_default() += 1;
+        }
+        let to_trim: HashMap<String, usize> = counts.into_iter()
+            .filter(|(_, count)| *count > max)
+            .map(|(eid, count)| (eid, count - max))
+            .collect();
+        if to_trim.is_empty() {
+            return;
+        }
+        let mut removed: HashMap<String, usize> = HashMap::new();
+        self.archival.retain(|e| {
+            if let Some(&limit) = to_trim.get(&e.entity_id) {
+                let r = removed.entry(e.entity_id.clone()).or_default();
+                if *r < limit {
+                    *r += 1;
+                    return false;
+                }
+            }
+            true
+        });
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — NPC Memory
+    // ══════════════════════════════════════
+
+    pub fn get_npc_memory(&self, entity_id: &str, subject_id: &str) -> Option<&NpcMemory> {
+        let key = format!("{entity_id}|{subject_id}");
+        self.npc_memories.get(&key)
+    }
+
+    pub fn record_meet(&mut self, entity_id: &str, subject_id: &str) -> anyhow::Result<()> {
+        let key = format!("{entity_id}|{subject_id}");
+        let mem = self.npc_memories.entry(key).or_insert_with(|| NpcMemory {
+            entity_id: entity_id.to_string(),
+            subject_id: subject_id.to_string(),
+            meet_count: 0,
+            favorability: 0,
+        });
+        mem.meet_count += 1;
+        self.persist_npc_memory()
+    }
+
+    pub fn adjust_favorability(&mut self, entity_id: &str, subject_id: &str, delta: i32) -> anyhow::Result<()> {
+        let key = format!("{entity_id}|{subject_id}");
+        let mem = self.npc_memories.entry(key).or_insert_with(|| NpcMemory {
+            entity_id: entity_id.to_string(),
+            subject_id: subject_id.to_string(),
+            meet_count: 0,
+            favorability: 0,
+        });
+        mem.favorability = (mem.favorability + delta).clamp(-100, 100);
+        self.persist_npc_memory()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — NPC Summaries
+    // ══════════════════════════════════════
+
+    pub fn get_npc_summary(&self, entity_id: &str) -> String {
+        self.npc_summaries.get(entity_id).cloned().unwrap_or_default()
+    }
+
+    pub fn set_npc_summary(&mut self, entity_id: &str, summary: &str) -> anyhow::Result<()> {
+        self.npc_summaries.insert(entity_id.to_string(), summary.to_string());
+        self.persist_summaries()
+    }
+
+    pub fn get_npc_npc_summary(&self, id_a: &str, id_b: &str) -> String {
+        let key = dyad_key(id_a, id_b);
+        self.npc_npc_summaries.get(&key).cloned().unwrap_or_default()
+    }
+
+    pub fn set_npc_npc_summary(&mut self, id_a: &str, id_b: &str, summary: &str) -> anyhow::Result<()> {
+        let key = dyad_key(id_a, id_b);
+        self.npc_npc_summaries.insert(key, summary.to_string());
+        self.persist_npc_npc_summaries()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — NPC Threads
+    // ══════════════════════════════════════
+
+    pub fn get_npc_thread(&self, id_a: &str, id_b: &str) -> Option<NpcThread> {
+        let key = dyad_key(id_a, id_b);
+        self.npc_threads.get(&key).cloned()
+    }
+
+    pub fn set_npc_thread(&mut self, id_a: &str, id_b: &str, t: NpcThread) -> anyhow::Result<()> {
+        let key = dyad_key(id_a, id_b);
+        self.npc_threads.insert(key, t);
+        self.persist_npc_threads()
+    }
+
+    pub fn delete_npc_thread(&mut self, id_a: &str, id_b: &str) -> anyhow::Result<()> {
+        let key = dyad_key(id_a, id_b);
+        self.npc_threads.remove(&key);
+        self.persist_npc_threads()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — NPC Dyads
+    // ══════════════════════════════════════
+
+    pub fn get_npc_dyad(&self, id_a: &str, id_b: &str) -> Option<NpcDyad> {
+        let key = dyad_key(id_a, id_b);
+        self.npc_dyads.get(&key).cloned()
+    }
+
+    pub fn set_npc_dyad(&mut self, id_a: &str, id_b: &str, d: NpcDyad) -> anyhow::Result<()> {
+        let key = dyad_key(id_a, id_b);
+        self.npc_dyads.insert(key, d);
+        self.persist_npc_dyads()
+    }
+
+    // ══════════════════════════════════════
+    //  CRUD 方法 — NPC Rumors
+    // ══════════════════════════════════════
+
+    pub fn upsert_npc_rumor(&mut self, r: NpcRumor) -> anyhow::Result<()> {
+        let id = r.id.trim().to_string();
+        if id.is_empty() {
+            return Ok(());
+        }
+        if let Some(old) = self.npc_rumors.get_mut(&id) {
+            if !r.text.trim().is_empty() { old.text.clone_from(&r.text); }
+            if !r.room_id.is_empty() { old.room_id.clone_from(&r.room_id); }
+            if !r.zone.is_empty() { old.zone.clone_from(&r.zone); }
+            if !r.source.is_empty() { old.source.clone_from(&r.source); }
+            if r.source_score > 0 { old.source_score = r.source_score; }
+            old.weight += r.weight;
+            if old.weight < 1 { old.weight = 1; }
+            if r.updated_at > 0 { old.updated_at = r.updated_at; }
+            if r.expires_at > old.expires_at { old.expires_at = r.expires_at; }
+        } else {
+            let mut cp = r;
+            cp.id.clone_from(&id);
+            if cp.weight <= 0 { cp.weight = 1; }
+            if cp.source_score <= 0 { cp.source_score = 1; }
+            self.npc_rumors.insert(id, cp);
+        }
+        self.persist_npc_rumors()
+    }
+
+    pub fn get_npc_rumor_digest(&self) -> Option<&NpcRumorDigest> {
+        self.npc_rumor_digest.as_ref()
+    }
+
+    // ══════════════════════════════════════
+    //  持久化方法（原子寫回 JSON）
+    // ══════════════════════════════════════
+
+    fn atomic_write(path: &Path, data: &[u8]) -> anyhow::Result<()> {
+        if let Some(dir) = path.parent() {
+            fs::create_dir_all(dir)?;
+        }
+        let tmp = path.with_extension("json.tmp");
+        fs::write(&tmp, data)?;
+        if fs::rename(&tmp, path).is_err() {
+            let _ = fs::remove_file(&tmp);
+        }
+        Ok(())
+    }
+
+    fn persist_entity_rooms(&self) -> anyhow::Result<()> {
+        let entries: Vec<EntityRoomEntry> = self.entity_rooms.iter()
+            .map(|(eid, rid)| EntityRoomEntry { entity_id: eid.clone(), room_id: rid.clone() })
+            .collect();
+        let raw = serde_json::to_string_pretty(&EntityRoomsFile { entries })?;
+        Self::atomic_write(&self.entity_rooms_path, raw.as_bytes())
+    }
+
+    fn persist_entities(&self) -> anyhow::Result<()> {
+        if self.entities_path.as_os_str().is_empty() {
+            return Ok(());
+        }
+        let list: Vec<Entity> = self.entities.values().cloned().collect();
+        let raw = serde_json::to_string_pretty(&EntitiesFile { entities: list })?;
+        Self::atomic_write(&self.entities_path, raw.as_bytes())
+    }
+
+    fn persist_assignments(&self) -> anyhow::Result<()> {
+        let entries: Vec<Assignment> = self.assignments.values().flatten().cloned().collect();
+        let raw = serde_json::to_string_pretty(&AssignmentsFile { entries })?;
+        Self::atomic_write(&self.assignments_path, raw.as_bytes())
+    }
+
+    fn persist_schedules(&self) -> anyhow::Result<()> {
+        let entries: Vec<Schedule> = self.schedules.values().cloned().collect();
+        let raw = serde_json::to_string_pretty(&SchedulesFile { entries })?;
+        Self::atomic_write(&self.schedules_path, raw.as_bytes())
+    }
+
+    fn persist_items(&self) -> anyhow::Result<()> {
+        let items: Vec<Item> = self.items.values().cloned().collect();
+        let raw = serde_json::to_string_pretty(&ItemsFile { items })?;
+        Self::atomic_write(&self.items_path, raw.as_bytes())
+    }
+
+    fn persist_event_log(&self) -> anyhow::Result<()> {
+        let raw = serde_json::to_string_pretty(&EventLogFile { entries: self.event_log.clone() })?;
+        Self::atomic_write(&self.event_log_path, raw.as_bytes())
+    }
+
+    fn persist_auth(&self) -> anyhow::Result<()> {
+        let entries: Vec<AuthEntry> = self.auth.iter()
+            .map(|(eid, hash)| AuthEntry { entity_id: eid.clone(), password_hash: hash.clone() })
+            .collect();
+        let raw = serde_json::to_string_pretty(&AuthFile { entries })?;
+        Self::atomic_write(&self.auth_path, raw.as_bytes())
+    }
+
+    fn persist_archival(&self) -> anyhow::Result<()> {
+        let raw = serde_json::to_string_pretty(&ArchivalFile { entries: self.archival.clone() })?;
+        Self::atomic_write(&self.archival_path, raw.as_bytes())
+    }
+
+    fn persist_npc_memory(&self) -> anyhow::Result<()> {
+        let entries: Vec<NpcMemory> = self.npc_memories.values().cloned().collect();
+        let raw = serde_json::to_string_pretty(&NpcMemoryFile { entries })?;
+        Self::atomic_write(&self.npc_memory_path, raw.as_bytes())
+    }
+
+    fn persist_summaries(&self) -> anyhow::Result<()> {
+        let entries: Vec<SummaryEntry> = self.npc_summaries.iter()
+            .map(|(eid, s)| SummaryEntry { entity_id: eid.clone(), summary: s.clone() })
+            .collect();
+        let raw = serde_json::to_string_pretty(&SummariesFile { entries })?;
+        Self::atomic_write(&self.summaries_path, raw.as_bytes())
+    }
+
+    fn persist_npc_npc_summaries(&self) -> anyhow::Result<()> {
+        let entries: Vec<NpcNpcSummaryEntry> = self.npc_npc_summaries.iter()
+            .map(|(k, s)| NpcNpcSummaryEntry { key: k.clone(), summary: s.clone() })
+            .collect();
+        let raw = serde_json::to_string_pretty(&NpcNpcSummariesFile { entries })?;
+        Self::atomic_write(&self.npc_npc_summaries_path, raw.as_bytes())
+    }
+
+    fn persist_npc_threads(&self) -> anyhow::Result<()> {
+        let entries: Vec<NpcThread> = self.npc_threads.values().cloned().collect();
+        let raw = serde_json::to_string_pretty(&NpcThreadsFile { entries })?;
+        Self::atomic_write(&self.npc_thread_path, raw.as_bytes())
+    }
+
+    fn persist_npc_dyads(&self) -> anyhow::Result<()> {
+        let entries: Vec<NpcDyad> = self.npc_dyads.values().cloned().collect();
+        let raw = serde_json::to_string_pretty(&NpcDyadsFile { entries })?;
+        Self::atomic_write(&self.npc_dyad_path, raw.as_bytes())
+    }
+
+    fn persist_npc_rumors(&self) -> anyhow::Result<()> {
+        let entries: Vec<NpcRumor> = self.npc_rumors.values().cloned().collect();
+        let raw = serde_json::to_string_pretty(&NpcRumorsFile { entries })?;
+        Self::atomic_write(&self.npc_rumor_path, raw.as_bytes())
+    }
+}
+
+// ══════════════════════════════════════
+//  輔助函式
+// ══════════════════════════════════════
+
+/// 雙向 dyad key：idA < idB 排序後以 "|" 連接。
+pub fn dyad_key(id_a: &str, id_b: &str) -> String {
+    if id_a <= id_b {
+        format!("{id_a}|{id_b}")
+    } else {
+        format!("{id_b}|{id_a}")
+    }
+}
