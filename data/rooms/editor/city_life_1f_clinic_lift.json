@@ -8,7 +8,7 @@
     "indoor",
     "clinic"
   ],
-  "zone": "citylife",
+  "zone": "citylife_1f",
   "exits": [
     {
       "direction": "醫療間",

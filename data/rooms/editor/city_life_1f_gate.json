@@ -8,7 +8,7 @@
     "indoor",
     "gate"
   ],
-  "zone": "citylife",
+  "zone": "citylife_1f",
   "exits": [
     {
       "direction": "內側大廳",

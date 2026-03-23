@@ -9,7 +9,7 @@
     "residential",
     "bedroom"
   ],
-  "zone": "citylife",
+  "zone": "citylife_4f",
   "exits": [
     {
       "direction": "客廳",
@@ -29,24 +29,36 @@
       "id": "city_life_4f_u045_brm_to_city_life_4f_u045_liv",
       "name": "客廳",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你離開主臥，回到了客廳。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開主臥，回到了客廳。"
+      },
       "move_to_room_id": "city_life_4f_u045_liv"
     },
     {
       "id": "city_life_4f_u045_brm_to_city_life_4f_u045_btm",
       "name": "主衛",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你切換進入了專屬的主衛浴。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你切換進入了專屬的主衛浴。"
+      },
       "move_to_room_id": "city_life_4f_u045_btm"
     },
     {
       "id": "city_life_4f_u045_brm_to_city_life_4f_u045_balb",
       "name": "花圃平台",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你拉開玻璃門，步入了充滿植物的花圃平台。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你拉開玻璃門，步入了充滿植物的花圃平台。"
+      },
       "move_to_room_id": "city_life_4f_u045_balb"
     }
   ]

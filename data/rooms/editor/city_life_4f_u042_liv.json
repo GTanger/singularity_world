@@ -8,7 +8,7 @@
     "indoor",
     "residential"
   ],
-  "zone": "citylife",
+  "zone": "citylife_4f",
   "exits": [
     {
       "direction": "大門",
@@ -36,40 +36,60 @@
       "id": "city_life_4f_gate_city_life_4f_u042_liv",
       "name": "大門",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你推開大門，離開這處極簡居所，回到長廊。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開大門，離開這處極簡居所，回到長廊。"
+      },
       "move_to_room_id": "city_life_4f"
     },
     {
       "id": "city_life_4f_u042_liv_to_city_life_4f_u042_brm",
       "name": "主臥",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你按壓隱藏門片，進入了主臥。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你按壓隱藏門片，進入了主臥。"
+      },
       "move_to_room_id": "city_life_4f_u042_brm"
     },
     {
       "id": "city_life_4f_u042_liv_to_city_life_4f_u042_brg",
       "name": "客臥",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你推進了客臥。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推進了客臥。"
+      },
       "move_to_room_id": "city_life_4f_u042_brg"
     },
     {
       "id": "city_life_4f_u042_liv_to_city_life_4f_u042_bat",
       "name": "衛浴",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你推開門，進入了衛浴空間。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開門，進入了衛浴空間。"
+      },
       "move_to_room_id": "city_life_4f_u042_bat"
     },
     {
       "id": "city_life_4f_u042_liv_to_city_life_4f_u042_bal",
       "name": "陽台",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你拉開落地玻璃門，步出陽台。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你拉開落地玻璃門，步出陽台。"
+      },
       "move_to_room_id": "city_life_4f_u042_bal"
     }
   ]

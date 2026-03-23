@@ -6,7 +6,7 @@
     "city",
     "skyscraper"
   ],
-  "zone": "citylife",
+  "zone": "citylife_5f",
   "exits": [
     {
       "direction": "電梯間",

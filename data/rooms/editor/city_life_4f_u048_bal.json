@@ -8,7 +8,7 @@
     "indoor",
     "residential"
   ],
-  "zone": "citylife",
+  "zone": "citylife_4f",
   "exits": [
     {
       "direction": "客廳",
@@ -20,8 +20,12 @@
       "id": "city_life_4f_u048_bal_to_city_life_4f_u048_liv",
       "name": "客廳",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你沿著鋪著防滑磚的中線，退回客廳。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你沿著鋪著防滑磚的中線，退回客廳。"
+      },
       "move_to_room_id": "city_life_4f_u048_liv"
     }
   ]

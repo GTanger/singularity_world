@@ -9,7 +9,7 @@
     "residential",
     "bathroom"
   ],
-  "zone": "citylife",
+  "zone": "citylife_6f",
   "exits": [
     {
       "direction": "主臥",

@@ -6,7 +6,7 @@
     "city",
     "skyscraper"
   ],
-  "zone": "citylife",
+  "zone": "citylife_transit",
   "exits": [
     {
       "direction": "①",

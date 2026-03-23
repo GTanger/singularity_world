@@ -9,7 +9,7 @@
     "residential",
     "bedroom"
   ],
-  "zone": "citylife",
+  "zone": "citylife_4f",
   "exits": [
     {
       "direction": "客廳",
@@ -21,8 +21,12 @@
       "id": "city_life_4f_u043_br2_to_city_life_4f_u043_liv",
       "name": "客廳",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你離開次臥，回到客廳。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開次臥，回到客廳。"
+      },
       "move_to_room_id": "city_life_4f_u043_liv"
     }
   ]

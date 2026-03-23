@@ -8,7 +8,7 @@
     "indoor",
     "residential"
   ],
-  "zone": "citylife",
+  "zone": "citylife_4f",
   "exits": [
     {
       "direction": "主臥",
@@ -20,8 +20,12 @@
       "id": "city_life_4f_u045_balb_to_city_life_4f_u045_brm",
       "name": "主臥",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你離開花圃平台，進入室內的主臥。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開花圃平台，進入室內的主臥。"
+      },
       "move_to_room_id": "city_life_4f_u045_brm"
     }
   ]

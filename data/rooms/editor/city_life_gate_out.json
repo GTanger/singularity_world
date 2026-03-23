@@ -8,7 +8,7 @@
     "outdoor",
     "approach"
   ],
-  "zone": "citylife",
+  "zone": "citylife_gate",
   "exits": [
     {
       "direction": "門關門",

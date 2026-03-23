@@ -9,7 +9,7 @@
     "residential",
     "bedroom"
   ],
-  "zone": "citylife",
+  "zone": "citylife_4f",
   "exits": [
     {
       "direction": "客廳",
@@ -25,16 +25,24 @@
       "id": "city_life_4f_u041_brm_to_city_life_4f_u041_liv",
       "name": "客廳",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你離開主臥，回到客廳。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開主臥，回到客廳。"
+      },
       "move_to_room_id": "city_life_4f_u041_liv"
     },
     {
       "id": "city_life_4f_u041_brm_to_city_life_4f_u041_btm",
       "name": "主衛",
       "owner": "",
-      "sockets": ["Move"],
-      "responses": {"Move": "你走進了專屬的主衛。"},
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走進了專屬的主衛。"
+      },
       "move_to_room_id": "city_life_4f_u041_btm"
     }
   ]

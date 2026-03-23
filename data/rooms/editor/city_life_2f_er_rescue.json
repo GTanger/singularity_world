@@ -8,7 +8,7 @@
     "indoor",
     "clinic"
   ],
-  "zone": "citylife",
+  "zone": "citylife_2f",
   "exits": [
     {
       "direction": "醫療專梯",

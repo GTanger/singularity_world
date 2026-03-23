@@ -7,7 +7,7 @@
     "skyscraper",
     "indoor"
   ],
-  "zone": "citylife",
+  "zone": "citylife_1f",
   "exits": [
     {
       "direction": "門外",
