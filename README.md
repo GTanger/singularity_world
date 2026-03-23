@@ -1,69 +1,132 @@
-# 奇點世界 (Singularity World)
+# 奇點世界（Singularity World）
 
 遊戲專案：**奇點世界**  
 英文專案名：`singularity_world`
 
-**設計核心：從有限框架延伸出無限可能。**
-
-體驗端為手機；**無上架計畫**，目前從未考慮上架。
+**設計核心：從有限框架延伸出無限可能。**  
+體驗端以手機使用情境為主，現階段無上架規劃。
 
 ---
 
-## 專案結構
+## 專案現況
 
+- 後端：Go 服務（`main.go`），以 JSON/store 作為執行期資料來源。
+- 主要資料：`data/rooms/editor/`（一房一檔）、`data/entities.json`、`data/runtime/*`。
+- 前端：文字遊戲主頁 + 管理工具頁（地圖檢視器、房間編輯器、星圖、管理頁）。
+- 浮生城資料已擴展至 `1F~11F`：民居樓層、電梯、公共機能層與多格動線均已落檔。
+
+---
+
+## 快速啟動
+
+### 一鍵啟動（建議）
+
+在專案根目錄執行：
+
+```bash
+./start
 ```
+
+用途：建置並啟動奇點服務（預設使用 1721）。
+
+### 奇點 + Chatmery 一起啟動
+
+```bash
+./start-with-chatmery
+```
+
+安裝 user-level 開機自啟：
+
+```bash
+./start-with-chatmery --install
+```
+
+systemd user 操作（詳見 `docs/開機啟動.md`）：
+
+```bash
+systemctl --user start sw-with-chatmery
+systemctl --user stop sw-with-chatmery
+systemctl --user restart sw-with-chatmery
+systemctl --user status sw-with-chatmery
+```
+
+### 手動建置與執行
+
+```bash
+go build -o bin/server .
+./bin/server
+```
+
+指定埠：
+
+```bash
+PORT=1721 ./bin/server
+```
+
+---
+
+## 常用路由（本機）
+
+- 遊戲主頁：`/`
+- WebSocket：`/ws`
+- 地圖檢視器：`/map_viewer`
+- 房間編輯器：`/room_editor`
+- 星圖：`/star_chart`
+- 管理頁：`/admin`
+- 房間資料 API：`/data/rooms.json`
+- 房編 API：`/api/room-editor/*`
+
+---
+
+## 主要目錄
+
+```text
 singularity_world/
-├── main.go              # 程式入口，啟動伺服器
-├── config/               # 可調參數集中管理（含遊戲時間 epoch）
-├── server/               # WebSocket 連線管理、玩家 session、登錄／創角
-├── game/                 # 遊戲主迴圈、視野區域、觀測坍縮
-├── entity/               # 角色／建築實體、插頭插座匹配
-├── world/                # 地圖格點、地形、阻擋、移動碰撞
-├── economy/              # 經濟引擎、交易與鎂流轉（對齊經濟彙整 §四）
-├── combat/               # 戰鬥判定與 log
-├── event/                # 事件日誌寫入／查詢
-├── db/                   # 數據介面（執行期由 store 提供，不開 DB 檔）
-├── data/                 # 執行期資料：JSON（rooms/、entities、runtime/）、game_epoch.unix
-└── web/                  # 前端：index.html, style.css, main.js, canvas.js, ui.js, mud-text.js
+├── main.go
+├── config/             # 伺服器與遊戲參數（含預設埠）
+├── server/             # HTTP/WS 路由、session、room editor API
+├── game/               # 遊戲主循環與行為流程
+├── entity/             # 實體與屬性模型
+├── economy/            # 經濟與資源流轉
+├── combat/             # 戰鬥判定與事件
+├── event/              # 事件資料處理
+├── store/              # JSON/store 載入與儲存
+├── data/
+│   ├── rooms/          # 房間資料（遞迴載入，主體在 rooms/editor）
+│   ├── runtime/        # 執行期快照（編輯器座標、NPC 狀態等）
+│   └── entities.json
+└── web/                # index/map_viewer/room_editor/star_chart/admin
 ```
-
-**一鍵啟動**：在專案根目錄執行 `./start`（建置、開埠 1721、啟動伺服器；對應 Cloudflare Tunnel 與 https://sw.ygggt.com）。
-
-**奇點 + Chatmery Web 一起啟動／開機自動啟動**：執行 `./start`（先殺現有再建置並啟動奇點、Chatmery Web）或 `./start-with-chatmery`；開機自動啟動請執行 `./start-with-chatmery --install`，見 [docs/開機啟動.md](docs/開機啟動.md)。
-
-手動建置：`go build -o bin/server .`。手動執行：`./bin/server`（預設埠 8080）；經 Tunnel 對外則 `PORT=1721 ./bin/server`。
 
 ---
 
-## 文件
+## 房間資料約定
 
-**完整文檔見 [docs/文檔索引.md](docs/文檔索引.md)。**
+- 一房一檔，實際來源以 `data/rooms/` 遞迴掃描為準。
+- 主編輯目錄：`data/rooms/editor/`。
+- `id` 必須全域唯一，`exits[].to` 必須指向存在的房間 `id`。
+- `objects` 可提供 `Move` 與 `move_to_room_id` 以支援物件式移動。
+- 地圖檢視器顏色依 `zone` 分組；浮生城已使用分層 zone（如 `citylife_4f`、`citylife_11f`）。
 
-**AI 進行專案索引或檢索時，須先閱讀：**
-1. [協作約定](docs/COLLABORATION.md)
-2. [技術約束規則](docs/技術約束規則.md)
-3. [世界觀：Token 降維與生命演化](docs/reference/世界觀：Token降維與生命演化.md) — 撰寫任何敘事、對白、系統日誌或文檔時須符合此定調，避免文不對題。
+---
 
-再依文檔索引查找設計與規格。
+## 文件導覽
 
-### 協作與約束
-- [協作約定](docs/COLLABORATION.md) — 主管與 AI 協作原則（最高意志、全方位支援）。
-- [技術約束規則](docs/技術約束規則.md) — Go／原生前端／JSON/store／WebSocket；程式碼風格、協作流程、禁止事項。
+- 文檔索引：`docs/文檔索引.md`
+- 協作約定：`docs/COLLABORATION.md`
+- 技術約束：`docs/技術約束規則.md`
+- 第一版可做清單：`docs/第一版可做清單.md`
+- 世界觀主參考：`docs/reference/世界觀：Token降維與生命演化.md`
 
-### 設計與決策
-- [文檔索引](docs/文檔索引.md) — 設計、決策、規格、參考之完整索引。
-- [設計關鍵字](docs/DESIGN_KEYWORDS.md) — 視角、世界、移動、角色、戰鬥、經濟等。
-- [決策紀錄](docs/decisions/) — 001 戰鬥統一、002 插頭插座、003 城鎮即大地圖、004 技術棧與架構、005 空間與視野、006 登錄與玩家模板。
-
-### 規格與彙整（單一檔案）
-- [詞盤彙整](docs/reference/詞盤彙整.md) — 詞盤系統：主管設想、本體論、竅穴／詞元對照表、語意邊界；鎂產消見經濟彙整。
-- [經濟彙整](docs/reference/經濟彙整.md) — 經濟：概念、鎂產消閉環、單人×萬名 NPC、規劃建議與實作階段。
-- [人物屬性彙整](docs/reference/人物屬性彙整.md) — 人物屬性：A+B 架構、出身與念紋加權、疊加公式、與詞盤對照表共用。
-- [人物角色模板](docs/reference/人物角色模板.md) — 玩家／NPC 共用實體欄位（識別、位置、屬性、插座、經濟、觀測）。
-- [移動與地圖規格](docs/reference/spec_移動與地圖.md) — 輸入／輸出／狀態／介面。
-
-### 清單與下一步
-- [第一版可做清單](docs/第一版可做清單.md) — MVP 要做／不做、優先順序；**建議下一步**見該檔 § 建議下一步（重新檢視）。決策引擎細項見 [010](docs/implementation/010_需求驅動決策引擎—現況與下一步.md)、架構見 [008](docs/decisions/008_架構整頓規劃.md)。
+決策檔位於 `docs/decisions/`，現有主題包含：
+- 戰鬥統一規則
+- 插頭插座語意
+- 技術棧與架構
+- 空間與視野
+- 登錄與玩家模板
+- NPC/AI API 與預設規則
+- 架構整頓規劃
+- 觀測分級與行程約束
 
 ---
 
