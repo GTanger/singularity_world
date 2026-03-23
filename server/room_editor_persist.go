@@ -16,6 +16,37 @@ func roomEditorLayoutPath() string {
 	return filepath.Join("data", "runtime", "room_editor_layout.json")
 }
 
+func roomEditorGroupsPath() string {
+	return filepath.Join("data", "runtime", "editor_groups.json")
+}
+
+func loadEditorGroups() [][]string {
+	b, err := os.ReadFile(roomEditorGroupsPath())
+	if err != nil {
+		return [][]string{}
+	}
+	var g [][]string
+	if json.Unmarshal(b, &g) != nil {
+		return [][]string{}
+	}
+	return g
+}
+
+func saveEditorGroups(groups [][]string) error {
+	if groups == nil {
+		groups = [][]string{}
+	}
+	path := roomEditorGroupsPath()
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	b, err := json.MarshalIndent(groups, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, b, 0o644)
+}
+
 func loadRoomEditorLayout() map[string]roomEditorPos {
 	path := roomEditorLayoutPath()
 	b, err := os.ReadFile(path)
