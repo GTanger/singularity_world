@@ -1,0 +1,29 @@
+{
+  "id": "city_life_4f_u041_brg",
+  "name": "客臥",
+  "description": "雖然坪數不若主臥那般寬闊，但格局方正且實用。房間內配備了一張標準雙人床與一組緊貼牆面的系統衣櫃，整體色調以乾淨的米白色為主，營造出不受干擾的休息氛圍。窗外雖然被大樓的部份結構遮擋了些許視線，但依舊能讓早上的陽光斜切進室內。床尾的牆面留白，除了頂部的吸頂燈外沒有多餘裝飾，開啟房門便可直接回到熱鬧的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_4f_u041_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_4f_u041_brg_to_city_life_4f_u041_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": ["Move"],
+      "responses": {"Move": "你離開了客臥，回到客廳。"},
+      "move_to_room_id": "city_life_4f_u041_liv"
+    }
+  ]
+}

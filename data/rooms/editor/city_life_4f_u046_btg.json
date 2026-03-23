@@ -1,0 +1,29 @@
+{
+  "id": "city_life_4f_u046_btg",
+  "name": "客衛",
+  "description": "作為公共空間的客用浴廁，也無法倖免於這股強勢的室內綠色浪潮。洗手台的木質鏡櫃上方垂下一長串生長旺盛的常春藤，葉片幾乎要觸及下方的白瓷水槽邊緣。空間採用了耐潮濕的仿木紋磁磚，並在局部牆面點綴著幾塊帶有粗糙岩石質感的文化石，營造出一種置身於戶外叢林邊緣的錯覺。這裡提供給所有訪客與居住者基礎的洗浴與如廁功能，完成生理需求後，唯一的出口便是退回同樣滿是綠意的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bathroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_4f_u046_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_4f_u046_btg_to_city_life_4f_u046_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": ["Move"],
+      "responses": {"Move": "你離開客衛，回到客廳。"},
+      "move_to_room_id": "city_life_4f_u046_liv"
+    }
+  ]
+}

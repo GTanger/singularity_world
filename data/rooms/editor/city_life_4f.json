@@ -90,7 +90,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城５樓」。"
+        "Move": "你前往「浮生城5F」。"
       },
       "move_to_room_id": "city_life_5f"
     },

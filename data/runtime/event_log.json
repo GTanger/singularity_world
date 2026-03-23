@@ -321749,6 +321749,366 @@
       "entity_id": "葉卅",
       "event_type": "observed",
       "payload": "city_life_4f_u049_liv_from_lobby"
+    },
+    {
+      "at": 1774257030,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u049_liv"
+    },
+    {
+      "at": 1774257030,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774257031,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774257031,
+      "entity_id": "試話",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774257031,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_from_lobby"
+    },
+    {
+      "at": 1774257048,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u041_liv"
+    },
+    {
+      "at": 1774257050,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_from_lobby"
+    },
+    {
+      "at": 1774257067,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_to_city_life_4f_u041_bal"
+    },
+    {
+      "at": 1774257071,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_bal_to_liv"
+    },
+    {
+      "at": 1774257078,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_to_city_life_4f_u041_bt1"
+    },
+    {
+      "at": 1774257081,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_bt1_to_liv"
+    },
+    {
+      "at": 1774257097,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_to_city_life_4f_u041_br1"
+    },
+    {
+      "at": 1774257100,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_br1_to_liv"
+    },
+    {
+      "at": 1774257101,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_to_city_life_4f_u041_br2"
+    },
+    {
+      "at": 1774257102,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_br2_to_liv"
+    },
+    {
+      "at": 1774257103,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_to_city_life_4f_u041_bt2"
+    },
+    {
+      "at": 1774257105,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_bt2_to_liv"
+    },
+    {
+      "at": 1774257110,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_to_city_life_4f_u041_bal"
+    },
+    {
+      "at": 1774257112,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_bal_to_liv"
+    },
+    {
+      "at": 1774257113,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u041_liv"
+    },
+    {
+      "at": 1774257131,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_from_lobby"
+    },
+    {
+      "at": 1774258611,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u041_liv"
+    },
+    {
+      "at": 1774258613,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_from_lobby"
+    },
+    {
+      "at": 1774258617,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u042_liv"
+    },
+    {
+      "at": 1774258619,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_from_lobby"
+    },
+    {
+      "at": 1774258620,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u041_liv"
+    },
+    {
+      "at": 1774258621,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_from_lobby"
+    },
+    {
+      "at": 1774258622,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u042_liv"
+    },
+    {
+      "at": 1774258623,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_from_lobby"
+    },
+    {
+      "at": 1774258625,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u041_liv"
+    },
+    {
+      "at": 1774258627,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_from_lobby"
+    },
+    {
+      "at": 1774258632,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_to_city_life_4f_u042_br2"
+    },
+    {
+      "at": 1774258636,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_br2_to_liv"
+    },
+    {
+      "at": 1774258637,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_to_city_life_4f_u042_bal"
+    },
+    {
+      "at": 1774258643,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_bal_to_liv"
+    },
+    {
+      "at": 1774258647,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_to_city_life_4f_u042_br1"
+    },
+    {
+      "at": 1774258648,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_br1_to_liv"
+    },
+    {
+      "at": 1774258662,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_to_city_life_4f_u042_br1"
+    },
+    {
+      "at": 1774258663,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_br1_to_liv"
+    },
+    {
+      "at": 1774258664,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_to_city_life_4f_u042_bat"
+    },
+    {
+      "at": 1774258666,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_bat_to_liv"
+    },
+    {
+      "at": 1774258670,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u042_liv"
+    },
+    {
+      "at": 1774258673,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_from_lobby"
+    },
+    {
+      "at": 1774258675,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u042_liv"
+    },
+    {
+      "at": 1774270234,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_from_lobby"
+    },
+    {
+      "at": 1774270245,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u041_liv"
+    },
+    {
+      "at": 1774270246,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_from_lobby"
+    },
+    {
+      "at": 1774270260,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u042_liv"
+    },
+    {
+      "at": 1774272574,
+      "entity_id": "npc_dh7m0fyaaldh",
+      "event_type": "observed",
+      "payload": "葉卅"
+    },
+    {
+      "at": 1774272576,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_from_lobby"
+    },
+    {
+      "at": 1774272582,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_liv_to_city_life_4f_u041_brm"
+    },
+    {
+      "at": 1774272585,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_brm_to_city_life_4f_u041_btm"
+    },
+    {
+      "at": 1774272588,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_btm_to_city_life_4f_u041_brm"
+    },
+    {
+      "at": 1774272591,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u041_brm_to_city_life_4f_u041_liv"
+    },
+    {
+      "at": 1774272595,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u041_liv"
+    },
+    {
+      "at": 1774272597,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u042_liv_from_lobby"
+    },
+    {
+      "at": 1774272601,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_gate_city_life_4f_u042_liv"
+    },
+    {
+      "at": 1774272602,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u049_liv_from_lobby"
+    },
+    {
+      "at": 1774272615,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u049_liv_to_city_life_4f_u049_bal"
+    },
+    {
+      "at": 1774272628,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_4f_u049_bal_to_city_life_4f_u049_liv"
     }
   ]
 }

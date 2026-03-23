@@ -1,7 +1,7 @@
 {
   "id": "city_life_4f_u042_bal",
-  "name": "戶０４２·陽台",
-  "description": "戶外陽台面積不大，晾衣桿與盆栽併存；遠處可見同棟鄰戶退台的綠意。可經〔客廳〕回到戶內動線。",
+  "name": "陽台",
+  "description": "與室內極簡風格形成對稱，這座陽台去除了常見的複雜欄杆，改用一整片通透的高強度防爆無框玻璃直接抵擋浮生城高空的風切。腳下的地坪選用了與客廳同色系的水泥粉光處理，沒有擺放任何植栽盆器，讓外側那瘋狂蔓延的綠色立面成為最純粹的天然掛畫。你可以站在這處不惹塵埃的觀景前哨，或者退回〔客廳〕之內。",
   "tags": [
     "city",
     "skyscraper",
@@ -17,15 +17,11 @@
   ],
   "objects": [
     {
-      "id": "city_life_4f_u042_bal_to_liv",
+      "id": "city_life_4f_u042_bal_to_city_life_4f_u042_liv",
       "name": "客廳",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你回到戶０４２的客廳。"
-      },
+      "sockets": ["Move"],
+      "responses": {"Move": "你轉身離開陽台，退回戶內的客廳。"},
       "move_to_room_id": "city_life_4f_u042_liv"
     }
   ]

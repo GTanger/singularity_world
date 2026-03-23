@@ -1,12 +1,13 @@
 {
   "id": "city_life_4f_u043_br2",
-  "name": "戶０４３·次臥",
-  "description": "次臥佈置中性，適合來客短住；牆角插座帶有夜燈孔。可經〔客廳〕回到戶內動線。",
+  "name": "次臥",
+  "description": "佔地不小的次級寢室，裝潢風格完美延續了整戶的低調質感。地面鋪設著溫潤的海島型實木地板，中央配置了一張帶有淺灰色布面床頭板的標準雙人床。一旁的系統衣櫃使用了無把手的霧黑烤漆設計，將龐大的收納機能無縫隱藏於牆面之中。這是一個舒適且機能極度完備的長期居住空間，只要推開沉重的隔音木門，就能步入外面的〔客廳〕。",
   "tags": [
     "city",
     "skyscraper",
     "indoor",
-    "residential"
+    "residential",
+    "bedroom"
   ],
   "zone": "citylife",
   "exits": [
@@ -17,15 +18,11 @@
   ],
   "objects": [
     {
-      "id": "city_life_4f_u043_br2_to_liv",
+      "id": "city_life_4f_u043_br2_to_city_life_4f_u043_liv",
       "name": "客廳",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你回到戶０４３的客廳。"
-      },
+      "sockets": ["Move"],
+      "responses": {"Move": "你離開次臥，回到客廳。"},
       "move_to_room_id": "city_life_4f_u043_liv"
     }
   ]

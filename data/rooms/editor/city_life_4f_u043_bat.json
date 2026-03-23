@@ -1,0 +1,29 @@
+{
+  "id": "city_life_4f_u043_bat",
+  "name": "衛浴",
+  "description": "設置於公共動線上的大坪數通用衛浴。空間內使用大尺寸的無接縫淺灰色磁磚，徹底消除了傳統衛浴的視覺切割感。牆面的隱藏式鏡櫃下方透出溫暖的光暈，搭配著全霧黑的五金配件與懸空洗手台，讓這個即使是供多人使用的機能端點，也維持著與客廳一致的高奢水平。使用完畢後，你只能開門退回〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bathroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_4f_u043_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_4f_u043_bat_to_city_life_4f_u043_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": ["Move"],
+      "responses": {"Move": "你離開衛浴，回到客廳。"},
+      "move_to_room_id": "city_life_4f_u043_liv"
+    }
+  ]
+}

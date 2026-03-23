@@ -1,12 +1,13 @@
 {
   "id": "city_life_4f_u048_bat",
-  "name": "戶０４８·衛浴",
-  "description": "唯一衛浴兼作洗衣角，機臺與洗手檯並排；門口地墊邊緣起毛。可經〔客廳〕回到戶內動線。",
+  "name": "衛浴",
+  "description": "這間盥洗室的每個細節都追求著極致的視覺對稱。洗手台上方橫掛著一面無縫的長矩形化妝鏡，兩個一模一樣的金屬水龍頭以相同的間距安裝在純白色的人造石檯面上。空間中央是寬大的淋浴區，而兩側的磨砂玻璃後方分別隱藏著如廁與收納機能，宛如殿堂般的比例分割讓這處私密空間不僅衛生，更帶有強烈的儀式感。唯一打破平衡的，只有那扇單向開啟的房門，由此可退回〔客廳〕。",
   "tags": [
     "city",
     "skyscraper",
     "indoor",
-    "residential"
+    "residential",
+    "bathroom"
   ],
   "zone": "citylife",
   "exits": [
@@ -17,15 +18,11 @@
   ],
   "objects": [
     {
-      "id": "city_life_4f_u048_bat_to_liv",
+      "id": "city_life_4f_u048_bat_to_city_life_4f_u048_liv",
       "name": "客廳",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你回到戶０４８的客廳。"
-      },
+      "sockets": ["Move"],
+      "responses": {"Move": "你離開衛浴空間，回到客廳。"},
       "move_to_room_id": "city_life_4f_u048_liv"
     }
   ]

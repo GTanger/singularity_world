@@ -1,7 +1,7 @@
 {
   "id": "city_life_4f_u042_liv",
-  "name": "戶０４２·客廳",
-  "description": "門內第一進便是客廳；採光自陽台方向渗入，沙發與矮櫃佔去主要視線，另側門洞通往兩間臥室與唯一衛浴。另可回大廳走廊。",
+  "name": "客廳",
+  "description": "整個起居空間貫徹了極致的簡約設計風。牆面僅塗佈了一層消光白漆，沒有任何多餘的壁飾或線條。灰色的無印花布沙發俐落地靠著內牆，前方的茶几由單一塊透亮的強化玻璃彎折而成。大面積的落地窗帶來了充足的採光，也讓室內這個潔淨的留白空間與外部狂野的「沃土」生態形成鮮明對比。這裡是串連整戶的動線中樞，往南可步出〔陽台〕，兩側的隱藏式門片分別掩蓋了通往〔主臥〕、〔客臥〕與〔衛浴〕的通道；若要登出這個極簡生活艙，可以拉開後方的〔大門〕回到長廊。",
   "tags": [
     "city",
     "skyscraper",
@@ -11,16 +11,16 @@
   "zone": "citylife",
   "exits": [
     {
-      "direction": "大廳",
+      "direction": "大門",
       "to": "city_life_4f"
     },
     {
       "direction": "主臥",
-      "to": "city_life_4f_u042_br1"
+      "to": "city_life_4f_u042_brm"
     },
     {
-      "direction": "次臥",
-      "to": "city_life_4f_u042_br2"
+      "direction": "客臥",
+      "to": "city_life_4f_u042_brg"
     },
     {
       "direction": "衛浴",
@@ -34,62 +34,42 @@
   "objects": [
     {
       "id": "city_life_4f_gate_city_life_4f_u042_liv",
-      "name": "大廳",
+      "name": "大門",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你離開戶內，回到「浮生城４樓」走廊大廳。"
-      },
+      "sockets": ["Move"],
+      "responses": {"Move": "你推開大門，離開這處極簡居所，回到長廊。"},
       "move_to_room_id": "city_life_4f"
     },
     {
-      "id": "city_life_4f_u042_liv_to_city_life_4f_u042_br1",
+      "id": "city_life_4f_u042_liv_to_city_life_4f_u042_brm",
       "name": "主臥",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你進入戶０４２的主臥。"
-      },
-      "move_to_room_id": "city_life_4f_u042_br1"
+      "sockets": ["Move"],
+      "responses": {"Move": "你按壓隱藏門片，進入了主臥。"},
+      "move_to_room_id": "city_life_4f_u042_brm"
     },
     {
-      "id": "city_life_4f_u042_liv_to_city_life_4f_u042_br2",
-      "name": "次臥",
+      "id": "city_life_4f_u042_liv_to_city_life_4f_u042_brg",
+      "name": "客臥",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你進入戶０４２的次臥。"
-      },
-      "move_to_room_id": "city_life_4f_u042_br2"
+      "sockets": ["Move"],
+      "responses": {"Move": "你推進了客臥。"},
+      "move_to_room_id": "city_life_4f_u042_brg"
     },
     {
       "id": "city_life_4f_u042_liv_to_city_life_4f_u042_bat",
       "name": "衛浴",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你進入戶０４２的衛浴。"
-      },
+      "sockets": ["Move"],
+      "responses": {"Move": "你推開門，進入了衛浴空間。"},
       "move_to_room_id": "city_life_4f_u042_bat"
     },
     {
       "id": "city_life_4f_u042_liv_to_city_life_4f_u042_bal",
       "name": "陽台",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你進入戶０４２的陽台。"
-      },
+      "sockets": ["Move"],
+      "responses": {"Move": "你拉開落地玻璃門，步出陽台。"},
       "move_to_room_id": "city_life_4f_u042_bal"
     }
   ]

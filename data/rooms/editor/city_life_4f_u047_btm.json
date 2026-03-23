@@ -1,0 +1,29 @@
+{
+  "id": "city_life_4f_u047_btm",
+  "name": "主衛",
+  "description": "猶如都會頂級飯店套房配置的私人水洗空間。地面與側緣牆面統一使用了帶有直條紋理的黑色板岩磚，淋浴區的玻璃隔斷使用了具備電子霧化功能的科技材質。洗手台上方除了一面大尺寸的環形防霧鏡，水龍頭與蓮蓬頭皆為銀色的鍍鉻五金，在一塵不染的冷白光源下閃現著金屬特有的冷硬光芒。這裡只為追求極致的清潔與梳洗效率而存在，使用完畢後，你只能退回專屬的〔主臥〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bathroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "主臥",
+      "to": "city_life_4f_u047_brm"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_4f_u047_btm_to_city_life_4f_u047_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": ["Move"],
+      "responses": {"Move": "你完成洗漱，退回了主臥。"},
+      "move_to_room_id": "city_life_4f_u047_brm"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "id": "city_life_4f_u043_balb",
-  "name": "戶０４３·後陽台",
-  "description": "後陽台較近廚餐動線，常兼作晾曬與雜物角；風向與前陽台略有不同。可經〔客廳〕回到戶內動線。",
+  "name": "花圃平台",
+  "description": "這是僅供主臥室獨享的私人半戶外露台。地面鋪滿了具有良好吸水性的陶土磚，幾座用消光黑金屬打造的植栽槽內，種植著經過精心修剪的昂貴觀葉植物。不同於大樓外部那種狂野無序的植被，這裡的綠意被嚴格地控制與馴化，宛如一座微型的空中御花園。你在這裡唯一能前往的地方，就是退入後方的〔主臥〕。",
   "tags": [
     "city",
     "skyscraper",
@@ -11,22 +11,18 @@
   "zone": "citylife",
   "exits": [
     {
-      "direction": "客廳",
-      "to": "city_life_4f_u043_liv"
+      "direction": "主臥",
+      "to": "city_life_4f_u043_brm"
     }
   ],
   "objects": [
     {
-      "id": "city_life_4f_u043_balb_to_liv",
-      "name": "客廳",
+      "id": "city_life_4f_u043_balb_to_city_life_4f_u043_brm",
+      "name": "主臥",
       "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你回到戶０４３的客廳。"
-      },
-      "move_to_room_id": "city_life_4f_u043_liv"
+      "sockets": ["Move"],
+      "responses": {"Move": "你離開了花圃平台，退回主臥內。"},
+      "move_to_room_id": "city_life_4f_u043_brm"
     }
   ]
 }
