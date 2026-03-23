@@ -100,17 +100,14 @@ function parseTags(s) {
 }
 
 // ── 群組工具 ───────────────────────────────────────────────────────
-const GROUPS_STORAGE_KEY = 'room-editor-groups-v1';
 
-function saveGroups() {
-  try { localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(state.groups)); } catch (_) {}
+async function saveGroups() {
+  try { await api('/api/room-editor/groups', { method: 'POST', body: JSON.stringify(state.groups) }); } catch (_) {}
 }
 
-function loadGroups() {
+async function loadGroups() {
   try {
-    const raw = localStorage.getItem(GROUPS_STORAGE_KEY);
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
+    const parsed = await api('/api/room-editor/groups');
     if (!Array.isArray(parsed)) return;
     // 過濾掉已不存在的 ID
     state.groups = parsed
@@ -1217,7 +1214,7 @@ async function loadGraph(scrollToSelected = true) {
   state.selectedIds = new Set(Array.from(state.selectedIds).filter((id) => state.nodes.has(id)));
 
   // 載入群組並清理已不存在的 ID
-  loadGroups();
+  await loadGroups();
 
   if (state.selectedId) fillEditor(state.selectedId);
   refreshPathSelects();
@@ -1312,7 +1309,7 @@ document.getElementById('btn-normalize').onclick = async () => {
   await normalizeLayoutToTopLeft();
 };
 
-document.getElementById('btn-group-set').onclick = () => {
+document.getElementById('btn-group-set').onclick = async () => {
   const ids = Array.from(state.selectedIds);
   if (ids.length < 2) { setStatus('請先選取 2 個以上房格再設定群組', true); return; }
   // 把這些 ID 從既有群組移除（避免重複歸屬），再建立新群組
@@ -1320,17 +1317,17 @@ document.getElementById('btn-group-set').onclick = () => {
     .map((g) => g.filter((id) => !ids.includes(id)))
     .filter((g) => g.length >= 2);
   state.groups.push(ids);
-  saveGroups();
+  await saveGroups();
   setStatus(`群組已設定（${ids.length} 格）`);
   render();
 };
 
-document.getElementById('btn-group-unlock').onclick = () => {
+document.getElementById('btn-group-unlock').onclick = async () => {
   const ids = state.selectedIds;
   if (ids.size === 0) { setStatus('請先點選群組內任一格', true); return; }
   const before = state.groups.length;
   state.groups = state.groups.filter((g) => !g.some((id) => ids.has(id)));
-  saveGroups();
+  await saveGroups();
   setStatus(state.groups.length < before ? '群組已解鎖' : '選取的格不屬於任何群組');
   render();
 };
@@ -1409,7 +1406,7 @@ document.getElementById('btn-delete').onclick = async () => {
   state.groups = state.groups
     .map((g) => g.filter((id) => !selected.includes(id)))
     .filter((g) => g.length >= 2);
-  saveGroups();
+  await saveGroups();
   state.selectedId = '';
   state.selectedIds.clear();
   await loadGraph(false);

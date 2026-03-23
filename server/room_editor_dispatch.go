@@ -55,5 +55,15 @@ func HandleRoomEditorAPI(w http.ResponseWriter, r *http.Request) {
 		handleRoomEditorReload(w)
 		return
 	}
+	if path == "groups" {
+		switch r.Method {
+		case http.MethodGet:
+			handleRoomEditorGroupsGet(w)
+			return
+		case http.MethodPost:
+			handleRoomEditorGroupsPost(w, r)
+			return
+		}
+	}
 	http.Error(w, `{"error":"not found"}`, http.StatusNotFound)
 }
