@@ -1,0 +1,49 @@
+{
+  "id": "city_life_9f_u099_brm",
+  "name": "主臥",
+  "description": "主人的寢室本身就是一件可供人常居的空間裝置藝術。正中央的雙人床沒有傳統笨重的實體床架，而是被放置在一個發出柔和懸浮底光的白色弧形地台上。床頭背牆是一整面猶如水墨重彩暈染般的巨幅訂製壁布，空氣中飄散著某種難以言喻的高級乾燥木質調與乳香氣息。這裡沒有任何一件講求實用主義的直角家具，所有的衣物收納都被無情地壓縮在與牆面同色的隱形烤漆門板之後，保留了室內極致的視覺留白與呼吸感。你可以推開那扇沒有把手的光滑拉門進入專屬的〔主衛〕，或是像個巡場的藝術鑑賞者般，後退重返外側的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_9f_u099_liv"
+    },
+    {
+      "direction": "主衛",
+      "to": "city_life_9f_u099_btm"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_9f_u099_brm_to_city_life_9f_u099_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開主臥，回到了如藝廊般的客廳。"
+      },
+      "move_to_room_id": "city_life_9f_u099_liv"
+    },
+    {
+      "id": "city_life_9f_u099_brm_to_city_life_9f_u099_btm",
+      "name": "主衛",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你拉開隱藏門，走進了專屬的主衛。"
+      },
+      "move_to_room_id": "city_life_9f_u099_btm"
+    }
+  ]
+}

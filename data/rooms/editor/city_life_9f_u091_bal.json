@@ -1,0 +1,32 @@
+{
+  "id": "city_life_9f_u091_bal",
+  "name": "陽台",
+  "description": "一個向建築體外懸挑出去的半露天平台，腳下是帶有排水縫隙的防腐木質格柵。欄杆是以粗壯的消光黑鑄鐵打造，外側緊緊貼著浮生城大樓表皮上那些瘋狂向上攀爬的強勢藤蔓植物，幾片厚實的綠葉甚至探入了護欄之內。站在這裡，迎面而來的高空風切聲與大自然野性的氣味，與屋內的安逸形成極端強烈的拉鋸感。你可以從這裡直接退回安穩的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_9f_u091_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_9f_u091_bal_to_city_life_9f_u091_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你轉身離開陽台，退回戶內的客廳。"
+      },
+      "move_to_room_id": "city_life_9f_u091_liv"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "id": "city_life_8f_u084_liv",
+  "name": "客廳",
+  "description": "踏入屋內，迎面而來的是未經修飾的粗獷。天花板沒有包覆，直接裸露著銀色的冷氣金屬風管與縱橫交錯的黑色走線。牆面保留了原始的清水模混凝土質感，中央擺著一張略帶磨損痕跡的焦糖色全皮沙發。這是一處極度強調實用與機能性的生活樞紐，粗糙但充滿了真實的居住生命力。你可以由此通往外側的〔陽台〕，或推開沉重的滑軌鐵門進入〔主臥〕、〔客臥〕與〔客衛〕。若要外出，大步邁出後方的〔大門〕即可回到長廊。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大門",
+      "to": "city_life_8f"
+    },
+    {
+      "direction": "主臥",
+      "to": "city_life_8f_u084_brm"
+    },
+    {
+      "direction": "客臥",
+      "to": "city_life_8f_u084_brg"
+    },
+    {
+      "direction": "客衛",
+      "to": "city_life_8f_u084_btg"
+    },
+    {
+      "direction": "陽台",
+      "to": "city_life_8f_u084_bal"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_8f_gate_city_life_8f_u084_liv",
+      "name": "大門",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開大門，離開這處極具工業感的居所。"
+      },
+      "move_to_room_id": "city_life_8f"
+    },
+    {
+      "id": "city_life_8f_u084_liv_to_city_life_8f_u084_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開滑軌門，進入了主臥。"
+      },
+      "move_to_room_id": "city_life_8f_u084_brm"
+    },
+    {
+      "id": "city_life_8f_u084_liv_to_city_life_8f_u084_brg",
+      "name": "客臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走進了客臥。"
+      },
+      "move_to_room_id": "city_life_8f_u084_brg"
+    },
+    {
+      "id": "city_life_8f_u084_liv_to_city_life_8f_u084_btg",
+      "name": "客衛",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入了共用的浴廁空間。"
+      },
+      "move_to_room_id": "city_life_8f_u084_btg"
+    },
+    {
+      "id": "city_life_8f_u084_liv_to_city_life_8f_u084_bal",
+      "name": "陽台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你拉開鐵網落地窗，步出陽台。"
+      },
+      "move_to_room_id": "city_life_8f_u084_bal"
+    }
+  ]
+}

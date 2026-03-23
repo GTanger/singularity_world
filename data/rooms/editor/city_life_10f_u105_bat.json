@@ -1,0 +1,33 @@
+{
+  "id": "city_life_10f_u105_bat",
+  "name": "衛浴",
+  "description": "供全家與訪客共用的標準衛浴空間。整體色調以明亮的鵝黃色與純白色為主，帶來清爽乾淨的視覺感受。洗手台邊緣還放著幾個造型可愛的兒童專用牙刷杯，牆面掛著一條印著卡通圖案的擦手巾，浴缸邊緣甚至散落著幾隻陪洗澡的黃色小鴨，處處流露出家庭共同生活的緊密連結。這處散發著溫馨熱氣的機能節點，唯一對外的動線就是退回〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bathroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_10f_u105_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_10f_u105_bat_to_city_life_10f_u105_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開衛浴空間，回到客廳。"
+      },
+      "move_to_room_id": "city_life_10f_u105_liv"
+    }
+  ]
+}

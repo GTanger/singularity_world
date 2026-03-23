@@ -1,0 +1,206 @@
+{
+  "id": "city_life_8f",
+  "name": "浮生城8F",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜０８１｜　　　　　　　　　　　｜０８９｜\n｜０８２｜　　※浮生城８樓※　　｜０８８｜\n｜０８３｜　　　　　　　　　　　｜０８７｜\n｜｜｜｜｜０８４｜０８５｜０８６｜｜｜｜｜",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "電梯間",
+      "to": "city_life_elevator"
+    },
+    {
+      "direction": "下樓梯",
+      "to": "city_life_7f"
+    },
+    {
+      "direction": "上樓梯",
+      "to": "city_life_9f"
+    },
+    {
+      "direction": "０８１",
+      "to": "city_life_8f_u081_liv"
+    },
+    {
+      "direction": "０８２",
+      "to": "city_life_8f_u082_liv"
+    },
+    {
+      "direction": "０８３",
+      "to": "city_life_8f_u083_liv"
+    },
+    {
+      "direction": "０８４",
+      "to": "city_life_8f_u084_liv"
+    },
+    {
+      "direction": "０８５",
+      "to": "city_life_8f_u085_liv"
+    },
+    {
+      "direction": "０８６",
+      "to": "city_life_8f_u086_liv"
+    },
+    {
+      "direction": "０８７",
+      "to": "city_life_8f_u087_liv"
+    },
+    {
+      "direction": "０８８",
+      "to": "city_life_8f_u088_liv"
+    },
+    {
+      "direction": "０８９",
+      "to": "city_life_8f_u089_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_elevator",
+      "name": "電梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「電梯間」。"
+      },
+      "move_to_room_id": "city_life_elevator"
+    },
+    {
+      "id": "city_life_7f",
+      "name": "下樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城7F」。"
+      },
+      "move_to_room_id": "city_life_7f"
+    },
+    {
+      "id": "city_life_9f",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城9F」。"
+      },
+      "move_to_room_id": "city_life_9f"
+    },
+    {
+      "id": "city_life_8f_u081_liv_from_lobby",
+      "name": "０８１",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８１，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u081_liv"
+    },
+    {
+      "id": "city_life_8f_u082_liv_from_lobby",
+      "name": "０８２",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８２，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u082_liv"
+    },
+    {
+      "id": "city_life_8f_u083_liv_from_lobby",
+      "name": "０８３",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８３，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u083_liv"
+    },
+    {
+      "id": "city_life_8f_u084_liv_from_lobby",
+      "name": "０８４",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８４，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u084_liv"
+    },
+    {
+      "id": "city_life_8f_u085_liv_from_lobby",
+      "name": "０８５",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８５，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u085_liv"
+    },
+    {
+      "id": "city_life_8f_u086_liv_from_lobby",
+      "name": "０８６",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８６，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u086_liv"
+    },
+    {
+      "id": "city_life_8f_u087_liv_from_lobby",
+      "name": "０８７",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８７，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u087_liv"
+    },
+    {
+      "id": "city_life_8f_u088_liv_from_lobby",
+      "name": "０８８",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８８，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u088_liv"
+    },
+    {
+      "id": "city_life_8f_u089_liv_from_lobby",
+      "name": "０８９",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０８９，來到客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u089_liv"
+    }
+  ]
+}

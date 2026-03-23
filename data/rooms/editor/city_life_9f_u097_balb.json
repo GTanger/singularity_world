@@ -1,0 +1,32 @@
+{
+  "id": "city_life_9f_u097_balb",
+  "name": "花圃平台",
+  "description": "即使是專屬私人花圃平台，這裡的植物也被安排得毫無雜亂感且井然有序。地面鋪設著好清理且抗污的戶外型深灰色塑木地板，幾何造型的白色水磨石連盆系統以等距的精確尺寸沿著邊角垂直排列。裡面種植的不是浮生城外層那種隨性生長的蔓藤，而是生長極度緩慢、姿態直挺的常綠耐旱灌木與大型仙人掌，展現出高度的克制力與空間管理手腕。這處冷靜透氣空間唯一的撤退後路，便是退回嚴格管理的〔主臥〕之中。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "主臥",
+      "to": "city_life_9f_u097_brm"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_9f_u097_balb_to_city_life_9f_u097_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開花圃平台，退回主臥內。"
+      },
+      "move_to_room_id": "city_life_9f_u097_brm"
+    }
+  ]
+}

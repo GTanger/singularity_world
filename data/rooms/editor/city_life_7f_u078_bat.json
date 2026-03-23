@@ -1,0 +1,33 @@
+{
+  "id": "city_life_7f_u078_bat",
+  "name": "衛浴",
+  "description": "這間盥洗室的每個細節都追求著極致的視覺對稱。洗手台上方橫掛著一面無縫的長矩形化妝鏡，兩個一模一樣的金屬水龍頭以相同的間距安裝在純白色的人造石檯面上。空間中央是寬大的淋浴區，而兩側的磨砂玻璃後方分別隱藏著如廁與收納機能，宛如殿堂般的比例分割讓這處私密空間不僅衛生，更帶有強烈的儀式感。唯一打破平衡的，只有那扇單向開啟的房門，由此可退回〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bathroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_7f_u078_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_7f_u078_bat_to_city_life_7f_u078_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開衛浴空間，回到客廳。"
+      },
+      "move_to_room_id": "city_life_7f_u078_liv"
+    }
+  ]
+}

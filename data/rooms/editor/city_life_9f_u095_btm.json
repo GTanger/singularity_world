@@ -1,0 +1,33 @@
+{
+  "id": "city_life_9f_u095_btm",
+  "name": "主衛",
+  "description": "主臥專屬的私人衛浴，風格溫暖且明亮。牆面貼著帶有立體窯燒紋路的米白色方磚，乾濕分離的玻璃隔斷被擦拭得一塵不染。洗手台下方的巨大實木百葉收納櫃裡整齊地疊放著柔軟的浴巾與清潔用品，空氣中似乎還飄散著淡淡的柑橘沐浴乳香氣。這是一個能徹底洗刷一整天疲憊的私人空間，使用完畢後只能打開門退回〔主臥〕內。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bathroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "主臥",
+      "to": "city_life_9f_u095_brm"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_9f_u095_btm_to_city_life_9f_u095_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你擦乾水滴，退回了主臥。"
+      },
+      "move_to_room_id": "city_life_9f_u095_brm"
+    }
+  ]
+}

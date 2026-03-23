@@ -1,0 +1,32 @@
+{
+  "id": "city_life_10f_u105_din",
+  "name": "餐廳",
+  "description": "位於客廳一側的開放式用餐區，是凝聚整個家庭向心力的重要場所。一張邊角圓潤的巨大實木長餐桌佔據了中心位置，搭配著幾張款式不同但色調和諧的布面木椅。餐桌上方的三盞暖色藤編吊燈將這裡照耀得極具食慾，一旁的餐邊櫃上擺放著滿是居家感的咖啡機與各種家庭馬克杯。在這裡，彷彿隨時都能聞到剛出爐的烘焙香氣與熱茶味。用餐完畢後，你可以順著動線走回相鄰的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_10f_u105_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_10f_u105_din_to_city_life_10f_u105_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開餐桌，走進了客廳。"
+      },
+      "move_to_room_id": "city_life_10f_u105_liv"
+    }
+  ]
+}

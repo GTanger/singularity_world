@@ -1,0 +1,33 @@
+{
+  "id": "city_life_5f_u056_brg",
+  "name": "客臥",
+  "description": "這間小型的次級居室因為大量的盆栽而顯得有些擁擠，但卻充滿了生機勃勃的厚度。靠窗處層層疊疊地擺滿了各式多肉植物、空氣鳳梨與小型觀葉盆栽，密集的植株幾乎擋住了原本就不大的採光窗。角落安放了一張單人鐵框床，床邊的木質小桌上隨意擱著園藝剪刀、營養劑與噴水壺。對於偶爾留宿的客人來說，這裡更像是一間附帶了床舖的私人植物培育室，充滿了屋主強烈的生活嗜好。拉開結滿露水的玻璃門即可回到〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_5f_u056_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_5f_u056_brg_to_city_life_5f_u056_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開了客臥，回到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u056_liv"
+    }
+  ]
+}

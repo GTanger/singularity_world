@@ -1,0 +1,32 @@
+{
+  "id": "city_life_8f_u085_bala",
+  "name": "陽台",
+  "description": "客廳外的主要陽台，被屋主打造成一個極具濃厚生活氣息的高空前廊。欄杆上掛著幾件正在晾曬的孩童衣物，在浮生城巨型大廈的高空微風中輕輕搖曳。防腐木地面上甚至鋪了一層綠色的人工草皮，放置著一個小型的露營折疊桌與兩張帆布椅，展現了屋主即使身處末世般的浮生城，也極力維持正常家庭休閒與樂觀生存的渴望。從這裡轉身，可以順利退入溫暖熱鬧的〔客廳〕之內。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_8f_u085_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_8f_u085_bala_to_city_life_8f_u085_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你轉身離開陽台，退回戶內的客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u085_liv"
+    }
+  ]
+}

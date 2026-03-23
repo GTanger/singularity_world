@@ -1,0 +1,33 @@
+{
+  "id": "city_life_10f_u109_brg",
+  "name": "客臥",
+  "description": "被這戶主人設計得猶如一間色彩實驗室的次級居室。整個房間大膽地使用了大面積的珊瑚橘色作為牆面與天花板的主色調，與正中央一張孔雀綠的單人高架鐵床形成極端且強烈的美學視覺衝擊。牆面上沒有常規的家庭照片，而是隨意但充滿版面設計感地貼著幾張復古展覽海報與建築攝影明信片。對於偶然入住的訪客或留宿的藝術家來說，這間臥室提供了極具刺激感卻又在色彩上異常和諧的美學體驗。從這充滿活力的感官空間步出，即可回到猶如展廳的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_10f_u109_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_10f_u109_brg_to_city_life_10f_u109_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開了充滿色彩衝擊的客臥，回到客廳。"
+      },
+      "move_to_room_id": "city_life_10f_u109_liv"
+    }
+  ]
+}

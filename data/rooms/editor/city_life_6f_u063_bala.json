@@ -1,0 +1,32 @@
+{
+  "id": "city_life_6f_u063_bala",
+  "name": "陽台",
+  "description": "連接客廳的寬大戶外觀景台。這座陽台的護欄不僅使用了厚實的深色烤漆金屬，頂部還鋪設了一層平滑的黑色大理石石材，讓居住者可以舒適地倚靠著俯瞰城市。腳下的防腐木棧板被保養得極好，幾乎沒有任何風化的白斑。從這裡望出去，浮生城外部狂野的「沃土」生態與屋內的拘謹豪奢形成了兩種截然不同的生存哲學。你可以轉身從這裡退入溫暖的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_6f_u063_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_6f_u063_bala_to_city_life_6f_u063_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開陽台，退回戶內的客廳。"
+      },
+      "move_to_room_id": "city_life_6f_u063_liv"
+    }
+  ]
+}

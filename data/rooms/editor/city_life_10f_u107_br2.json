@@ -1,0 +1,33 @@
+{
+  "id": "city_life_10f_u107_br2",
+  "name": "次臥",
+  "description": "被設定為次級寢室或是極具規模的居家辦公室。靠窗處是一張寬大且沒有任何無用雜物的高級人體工學黑玻辦公桌，配備了隱藏式的電源模組與高支撐網布椅。室內內側的單人床則鋪著深灰色的平整被套，隨時能提供屋主短暫的戰略性恢復睡眠。整間房的燈光配有冷、暖色溫電子切換系統，完美對應高壓工作與絕對休息的雙重精確需求。拉開有著些微金屬厚重感的房門，即可切換回〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_10f_u107_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_10f_u107_br2_to_city_life_10f_u107_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開次臥，回到客廳。"
+      },
+      "move_to_room_id": "city_life_10f_u107_liv"
+    }
+  ]
+}

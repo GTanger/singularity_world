@@ -1,0 +1,96 @@
+{
+  "id": "city_life_9f_u092_liv",
+  "name": "客廳",
+  "description": "整個起居空間貫徹了極致的簡約設計風。牆面僅塗佈了一層消光白漆，沒有任何多餘的壁飾或線條。灰色的無印花布沙發俐落地靠著內牆，前方的茶几由單一塊透亮的強化玻璃彎折而成。大面積的落地窗帶來了充足的採光，也讓室內這個潔淨的留白空間與外部狂野的「沃土」生態形成鮮明對比。這裡是串連整戶的動線中樞，往南可步出〔陽台〕，兩側的隱藏式門片分別掩蓋了通往〔主臥〕、〔客臥〕與〔衛浴〕的通道；若要登出這個極簡生活艙，可以拉開後方的〔大門〕回到長廊。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大門",
+      "to": "city_life_9f"
+    },
+    {
+      "direction": "主臥",
+      "to": "city_life_9f_u092_brm"
+    },
+    {
+      "direction": "客臥",
+      "to": "city_life_9f_u092_brg"
+    },
+    {
+      "direction": "衛浴",
+      "to": "city_life_9f_u092_bat"
+    },
+    {
+      "direction": "陽台",
+      "to": "city_life_9f_u092_bal"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_9f_gate_city_life_9f_u092_liv",
+      "name": "大門",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開大門，離開這處極簡居所，回到長廊。"
+      },
+      "move_to_room_id": "city_life_9f"
+    },
+    {
+      "id": "city_life_9f_u092_liv_to_city_life_9f_u092_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你按壓隱藏門片，進入了主臥。"
+      },
+      "move_to_room_id": "city_life_9f_u092_brm"
+    },
+    {
+      "id": "city_life_9f_u092_liv_to_city_life_9f_u092_brg",
+      "name": "客臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推進了客臥。"
+      },
+      "move_to_room_id": "city_life_9f_u092_brg"
+    },
+    {
+      "id": "city_life_9f_u092_liv_to_city_life_9f_u092_bat",
+      "name": "衛浴",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開門，進入了衛浴空間。"
+      },
+      "move_to_room_id": "city_life_9f_u092_bat"
+    },
+    {
+      "id": "city_life_9f_u092_liv_to_city_life_9f_u092_bal",
+      "name": "陽台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你拉開落地玻璃門，步出陽台。"
+      },
+      "move_to_room_id": "city_life_9f_u092_bal"
+    }
+  ]
+}
