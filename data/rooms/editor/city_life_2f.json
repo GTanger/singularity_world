@@ -1,7 +1,7 @@
 {
   "id": "city_life_2f",
   "name": "浮生城2F",
-  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜招租中｜　　　　　　　　　　　｜招租中｜\n｜招租中｜　　※浮生城２樓※　　｜招租中｜\n｜招租中｜　　　　　　　　　　　｜招租中｜\n｜｜｜｜｜招租中｜招租中｜招租中｜｜｜｜｜",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜內　科｜　　　　　　　　　　　｜外　科｜\n｜骨　科｜　　※浮生城２樓※　　｜皮膚科｜\n｜眼　科｜　　　　　　　　　　　｜耳鼻喉｜\n｜｜｜｜｜復健科｜急診科｜藥事科｜｜｜｜｜",
   "tags": [
     "city",
     "skyscraper"
@@ -19,9 +19,153 @@
     {
       "direction": "上樓梯",
       "to": "city_life_3f"
+    },
+    {
+      "direction": "內　科",
+      "to": "city_life_2f_dept_internal"
+    },
+    {
+      "direction": "外　科",
+      "to": "city_life_2f_dept_surgery"
+    },
+    {
+      "direction": "骨　科",
+      "to": "city_life_2f_dept_ortho"
+    },
+    {
+      "direction": "皮膚科",
+      "to": "city_life_2f_dept_derma"
+    },
+    {
+      "direction": "眼　科",
+      "to": "city_life_2f_dept_eye"
+    },
+    {
+      "direction": "耳鼻喉",
+      "to": "city_life_2f_dept_ent"
+    },
+    {
+      "direction": "復健科",
+      "to": "city_life_2f_dept_rehab"
+    },
+    {
+      "direction": "急診科",
+      "to": "city_life_2f_er_dept"
+    },
+    {
+      "direction": "藥事科",
+      "to": "city_life_2f_dept_pharm"
     }
   ],
   "objects": [
+    {
+      "id": "city_life_2f_dept_internal",
+      "name": "內　科",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入內科診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_internal"
+    },
+    {
+      "id": "city_life_2f_dept_surgery",
+      "name": "外　科",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入外科診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_surgery"
+    },
+    {
+      "id": "city_life_2f_dept_ortho",
+      "name": "骨　科",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入骨科診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_ortho"
+    },
+    {
+      "id": "city_life_2f_dept_derma",
+      "name": "皮膚科",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入皮膚科診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_derma"
+    },
+    {
+      "id": "city_life_2f_dept_eye",
+      "name": "眼　科",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入眼科診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_eye"
+    },
+    {
+      "id": "city_life_2f_dept_ent",
+      "name": "耳鼻喉",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入耳鼻喉診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_ent"
+    },
+    {
+      "id": "city_life_2f_dept_rehab",
+      "name": "復健科",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入復健科診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_rehab"
+    },
+    {
+      "id": "city_life_2f_er_clinic",
+      "name": "急診科",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入「急診科」候診與分診區。"
+      },
+      "move_to_room_id": "city_life_2f_er_dept"
+    },
+    {
+      "id": "city_life_2f_dept_pharm",
+      "name": "藥事科",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入藥事診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_pharm"
+    },
     {
       "id": "city_life_1f",
       "name": "下樓梯",

@@ -1,0 +1,70 @@
+{
+  "id": "city_life_2f_er_dept",
+  "name": "急診科",
+  "description": "這一格是門診大廳急診翼的緩衝區：塑膠椅靠牆排開，〔叫號屏〕紅字跳號時蜂鳴短促。〔分診台〕玻璃後堆著病歷夾，筆筒裡藍黑兩色各半。往內是搶救用的動線，腳底防滑條磨得發亮。\n可經〔大廳〕回到「浮生城2F」門診大廳，或經〔搶救室〕進入後方處置格。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "clinic"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_2f"
+    },
+    {
+      "direction": "搶救室",
+      "to": "city_life_2f_er_rescue"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_er_dept_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城2F」門診大廳。"
+      },
+      "move_to_room_id": "city_life_2f"
+    },
+    {
+      "id": "city_life_2f_er_dept_to_rescue",
+      "name": "搶救室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入後方「搶救室」。"
+      },
+      "move_to_room_id": "city_life_2f_er_rescue"
+    },
+    {
+      "id": "city_life_2f_er_dept_screen",
+      "name": "叫號屏",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "急診序號與門診不同色；邊角貼紙寫「外圍傷勢先沖洗再掛號」，膠已黃。"
+      }
+    },
+    {
+      "id": "city_life_2f_er_dept_triage",
+      "name": "分診台",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "檯面玻璃下壓著檢傷分級色卡，最外一張被人用原子筆圈了「富態螫咬→沖洗液備用」。"
+      }
+    }
+  ]
+}

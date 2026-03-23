@@ -1,0 +1,31 @@
+{
+  "id": "city_life_3f_cor_icu_r01",
+  "name": "加寧房·加護病房01",
+  "description": "多參數監護儀佔據牆面，導線束成一束垂向床側；護士站對講偶爾滋一聲。\n可經〔走廊〕回到「加護病房及安寧病房走廊」。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "走廊",
+      "to": "city_life_3f_cor_icu"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_icu_r01_to_hall",
+      "name": "走廊",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「加護病房及安寧病房走廊」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_icu"
+    }
+  ]
+}

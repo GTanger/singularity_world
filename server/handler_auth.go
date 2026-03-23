@@ -26,6 +26,10 @@ func handleLogin(c *Client, msg *ClientMsg, cfg config.Server, store *SessionSto
 		sendError(c, gametext.Client("login_not_player"))
 		return
 	}
+	if !db.HasPasswordForEntity(msg.PlayerID) {
+		sendError(c, gametext.Client("login_no_password"))
+		return
+	}
 	ok, err := db.VerifyPassword(msg.PlayerID, msg.Password)
 	if err != nil {
 		sendError(c, gametext.Client("login_verify_failed"))

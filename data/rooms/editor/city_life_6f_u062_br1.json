@@ -1,0 +1,32 @@
+{
+  "id": "city_life_6f_u062_br1",
+  "name": "戶０６２·主臥",
+  "description": "主臥簡潔，床與衣櫃各佔一角；窗框邊緣有細小冷凝水痕。可經〔客廳〕回到戶內動線。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_6f_u062_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_6f_u062_br1_to_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到戶０６２的客廳。"
+      },
+      "move_to_room_id": "city_life_6f_u062_liv"
+    }
+  ]
+}

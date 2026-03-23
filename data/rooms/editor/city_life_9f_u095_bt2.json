@@ -1,0 +1,32 @@
+{
+  "id": "city_life_9f_u095_bt2",
+  "name": "戶０９５·次衛",
+  "description": "次衛緊鄰次臥動線，潔具緊湊；排風扇低鳴。可經〔客廳〕回到戶內動線。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_9f_u095_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_9f_u095_bt2_to_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到戶０９５的客廳。"
+      },
+      "move_to_room_id": "city_life_9f_u095_liv"
+    }
+  ]
+}

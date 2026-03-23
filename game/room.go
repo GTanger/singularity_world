@@ -2,6 +2,7 @@
 package game
 
 import (
+	"strings"
 
 	"singularity_world/db"
 	"singularity_world/entity"
@@ -35,7 +36,13 @@ func GetRoomView(roomID string, gameHour int) (*RoomView, error) {
 }
 
 // MoveByExit 將實體依出口方向移動到相鄰房間。回傳新房間 id 與 ok；若出口不存在或錯誤則 ok=false。
+// 比對順序：1) exits（direction 與客端字串皆 TrimSpace）；2) 同房可 Move 物件，object.Name 與 direction 相同且具 move_to_room_id
+// （供民居客廳內門與大廳戶碼等：即使 exits 未載入或與記憶體不同步，仍與出口按鈕／物件名一致時可移動）。
 func MoveByExit(entityID, direction string) (newRoomID string, ok bool, err error) {
+	dir := strings.TrimSpace(direction)
+	if dir == "" {
+		return "", false, nil
+	}
 	roomID, err := db.GetEntityRoom(entityID)
 	if err != nil || roomID == "" {
 		return "", false, err
@@ -45,12 +52,26 @@ func MoveByExit(entityID, direction string) (newRoomID string, ok bool, err erro
 		return "", false, err
 	}
 	for _, ex := range exits {
-		if ex.Direction == direction {
+		if strings.TrimSpace(ex.Direction) == dir {
 			if err := db.SetEntityRoom(entityID, ex.ToRoomID); err != nil {
 				return "", false, err
 			}
 			return ex.ToRoomID, true, nil
 		}
+	}
+	objs := db.GetObjectsInRoom(roomID)
+	for i := range objs {
+		o := &objs[i]
+		if strings.TrimSpace(o.Name) != dir {
+			continue
+		}
+		if o.MoveToRoomID == "" || !db.ObjectHasSocket(o, "Move") {
+			continue
+		}
+		if err := db.SetEntityRoom(entityID, o.MoveToRoomID); err != nil {
+			return "", false, err
+		}
+		return o.MoveToRoomID, true, nil
 	}
 	return "", false, nil
 }

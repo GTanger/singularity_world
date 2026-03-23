@@ -1,0 +1,103 @@
+{
+  "id": "city_life_3f_cor_pcs2",
+  "name": "兒童外科病房二號走廊",
+  "description": "｜兒外206｜兒外204｜兒外202｜\n\n兒童外科病房二號走廊。廊燈偏白，推床防撞條磨得發亮，轉角鏡面貼了「慢行」膠字。\n牆上標示著動線指示：大廳←人→病房\n\n｜兒外205｜兒外203｜兒外201｜",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_3f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_pcs2_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城3F」。"
+      },
+      "move_to_room_id": "city_life_3f"
+    },
+    {
+      "id": "city_life_3f_cor_pcs2_obj_01",
+      "name": "兒外201",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「兒外二·四人病房01」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_pcs2_r01"
+    },
+    {
+      "id": "city_life_3f_cor_pcs2_obj_02",
+      "name": "兒外202",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「兒外二·四人病房02」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_pcs2_r02"
+    },
+    {
+      "id": "city_life_3f_cor_pcs2_obj_03",
+      "name": "兒外203",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「兒外二·四人病房03」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_pcs2_r03"
+    },
+    {
+      "id": "city_life_3f_cor_pcs2_obj_04",
+      "name": "兒外204",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「兒外二·雙人病房04」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_pcs2_r04"
+    },
+    {
+      "id": "city_life_3f_cor_pcs2_obj_05",
+      "name": "兒外205",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「兒外二·雙人病房05」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_pcs2_r05"
+    },
+    {
+      "id": "city_life_3f_cor_pcs2_obj_06",
+      "name": "兒外206",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「兒外二·單人病房06」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_pcs2_r06"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "id": "city_life_3f_cor_surg1",
+  "name": "外科病房一號走廊",
+  "description": "｜外106｜外104｜外102｜\n\n外科病房一號走廊。消毒水味較濃，器械推車靠牆鎖輪，踢腳板邊留著淡黃碘漬。\n牆上標示著動線指示：大廳←人→病房\n\n｜外105｜外103｜外101｜",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_3f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_surg1_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城3F」。"
+      },
+      "move_to_room_id": "city_life_3f"
+    },
+    {
+      "id": "city_life_3f_cor_surg1_obj_01",
+      "name": "外101",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科一·四人病房01」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_surg1_r01"
+    },
+    {
+      "id": "city_life_3f_cor_surg1_obj_02",
+      "name": "外102",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科一·四人病房02」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_surg1_r02"
+    },
+    {
+      "id": "city_life_3f_cor_surg1_obj_03",
+      "name": "外103",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科一·四人病房03」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_surg1_r03"
+    },
+    {
+      "id": "city_life_3f_cor_surg1_obj_04",
+      "name": "外104",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科一·雙人病房04」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_surg1_r04"
+    },
+    {
+      "id": "city_life_3f_cor_surg1_obj_05",
+      "name": "外105",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科一·雙人病房05」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_surg1_r05"
+    },
+    {
+      "id": "city_life_3f_cor_surg1_obj_06",
+      "name": "外106",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科一·單人病房06」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_surg1_r06"
+    }
+  ]
+}

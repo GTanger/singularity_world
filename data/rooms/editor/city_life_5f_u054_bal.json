@@ -1,0 +1,32 @@
+{
+  "id": "city_life_5f_u054_bal",
+  "name": "戶０５４·陽台",
+  "description": "戶外陽台欄杆外是浮生城立面綠被，風從豎井間擠過來；腳下排水格偶爾滴答。可經〔客廳〕回到戶內動線。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_5f_u054_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_5f_u054_bal_to_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到戶０５４的客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u054_liv"
+    }
+  ]
+}

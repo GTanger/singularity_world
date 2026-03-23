@@ -1,0 +1,32 @@
+{
+  "id": "city_life_5f_u058_bat",
+  "name": "戶０５８·衛浴",
+  "description": "唯一衛浴兼作洗衣角，機臺與洗手檯並排；門口地墊邊緣起毛。可經〔客廳〕回到戶內動線。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_5f_u058_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_5f_u058_bat_to_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到戶０５８的客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u058_liv"
+    }
+  ]
+}

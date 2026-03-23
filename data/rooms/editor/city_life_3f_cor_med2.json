@@ -1,0 +1,103 @@
+{
+  "id": "city_life_3f_cor_med2",
+  "name": "內科病房二號走廊",
+  "description": "｜內206｜內204｜內202｜\n\n內科病房二號走廊。燈帶比一號略暗，牆上動線圖邊角捲起，有人用膠帶補了一截。\n牆上標示著動線指示：大廳←人→病房\n\n｜內205｜內203｜內201｜",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_3f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_med2_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城3F」。"
+      },
+      "move_to_room_id": "city_life_3f"
+    },
+    {
+      "id": "city_life_3f_cor_med2_obj_01",
+      "name": "內201",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「內科二·四人病房01」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_med2_r01"
+    },
+    {
+      "id": "city_life_3f_cor_med2_obj_02",
+      "name": "內202",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「內科二·四人病房02」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_med2_r02"
+    },
+    {
+      "id": "city_life_3f_cor_med2_obj_03",
+      "name": "內203",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「內科二·四人病房03」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_med2_r03"
+    },
+    {
+      "id": "city_life_3f_cor_med2_obj_04",
+      "name": "內204",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「內科二·雙人病房04」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_med2_r04"
+    },
+    {
+      "id": "city_life_3f_cor_med2_obj_05",
+      "name": "內205",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「內科二·雙人病房05」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_med2_r05"
+    },
+    {
+      "id": "city_life_3f_cor_med2_obj_06",
+      "name": "內206",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「內科二·單人病房06」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_med2_r06"
+    }
+  ]
+}

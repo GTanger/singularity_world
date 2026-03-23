@@ -21,6 +21,14 @@ func CreateAuth(entityID, password string) error {
 	return store.Default.SetAuth(entityID, string(hash))
 }
 
+// HasPasswordForEntity 若 auth 中有該 entity 的密碼雜湊則為 true；無列或空字串視為未設定。
+func HasPasswordForEntity(entityID string) bool {
+	if store.Default == nil {
+		return false
+	}
+	return store.Default.GetAuth(entityID) != ""
+}
+
 // VerifyPassword 檢查 entity_id 對應之密碼是否正確。
 func VerifyPassword(entityID, password string) (bool, error) {
 	if store.Default == nil {

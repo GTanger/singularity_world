@@ -1,0 +1,32 @@
+{
+  "id": "city_life_8f_u084_br1",
+  "name": "戶０８４·主臥",
+  "description": "主臥不大，床靠內牆，床頭一盞可調角度的閱讀燈；衣櫃滑門軌道輕響，窗外是立面的綠影層疊。可經〔客廳〕回到戶內動線。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_8f_u084_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_8f_u084_br1_to_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到戶０８４的客廳。"
+      },
+      "move_to_room_id": "city_life_8f_u084_liv"
+    }
+  ]
+}

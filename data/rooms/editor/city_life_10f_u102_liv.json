@@ -1,0 +1,96 @@
+{
+  "id": "city_life_10f_u102_liv",
+  "name": "戶１０２·客廳",
+  "description": "門內第一進便是客廳；採光自陽台方向渗入，沙發與矮櫃佔去主要視線，另側門洞通往兩間臥室與唯一衛浴。另可回大廳走廊。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_10f"
+    },
+    {
+      "direction": "主臥",
+      "to": "city_life_10f_u102_br1"
+    },
+    {
+      "direction": "次臥",
+      "to": "city_life_10f_u102_br2"
+    },
+    {
+      "direction": "衛浴",
+      "to": "city_life_10f_u102_bat"
+    },
+    {
+      "direction": "陽台",
+      "to": "city_life_10f_u102_bal"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_10f_gate_city_life_10f_u102_liv",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開戶內，回到「浮生城１０樓」走廊大廳。"
+      },
+      "move_to_room_id": "city_life_10f"
+    },
+    {
+      "id": "city_life_10f_u102_liv_to_city_life_10f_u102_br1",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶１０２的主臥。"
+      },
+      "move_to_room_id": "city_life_10f_u102_br1"
+    },
+    {
+      "id": "city_life_10f_u102_liv_to_city_life_10f_u102_br2",
+      "name": "次臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶１０２的次臥。"
+      },
+      "move_to_room_id": "city_life_10f_u102_br2"
+    },
+    {
+      "id": "city_life_10f_u102_liv_to_city_life_10f_u102_bat",
+      "name": "衛浴",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶１０２的衛浴。"
+      },
+      "move_to_room_id": "city_life_10f_u102_bat"
+    },
+    {
+      "id": "city_life_10f_u102_liv_to_city_life_10f_u102_bal",
+      "name": "陽台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶１０２的陽台。"
+      },
+      "move_to_room_id": "city_life_10f_u102_bal"
+    }
+  ]
+}

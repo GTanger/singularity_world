@@ -1,0 +1,31 @@
+{
+  "id": "city_life_3f_cor_med2_r04",
+  "name": "內科二·雙人病房04",
+  "description": "雙床間隔著可收合屏風，床頭卡夾寫著體溫紀錄時段。\n可經〔走廊〕回到「內科病房二號走廊」。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "走廊",
+      "to": "city_life_3f_cor_med2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_med2_r04_to_hall",
+      "name": "走廊",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「內科病房二號走廊」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_med2"
+    }
+  ]
+}

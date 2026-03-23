@@ -1,0 +1,31 @@
+{
+  "id": "city_life_3f_cor_surg1_r06",
+  "name": "外科一·單人病房06",
+  "description": "單人房門上有觀察窗，室內儀器低鳴混著加濕器的細響。\n可經〔走廊〕回到「外科病房一號走廊」。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "走廊",
+      "to": "city_life_3f_cor_surg1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_surg1_r06_to_hall",
+      "name": "走廊",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「外科病房一號走廊」。"
+      },
+      "move_to_room_id": "city_life_3f_cor_surg1"
+    }
+  ]
+}

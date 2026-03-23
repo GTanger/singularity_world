@@ -1,0 +1,32 @@
+{
+  "id": "city_life_4f_u046_br2",
+  "name": "戶０４６·次臥",
+  "description": "次臥兼作書桌角，層板與線槽收在牆內；空氣裡有紙張與織品混在一起的淡味。可經〔客廳〕回到戶內動線。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_4f_u046_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_4f_u046_br2_to_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到戶０４６的客廳。"
+      },
+      "move_to_room_id": "city_life_4f_u046_liv"
+    }
+  ]
+}

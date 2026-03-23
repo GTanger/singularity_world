@@ -1,0 +1,32 @@
+{
+  "id": "city_life_5f_u052_bal",
+  "name": "戶０５２·陽台",
+  "description": "戶外陽台面積不大，晾衣桿與盆栽併存；遠處可見同棟鄰戶退台的綠意。可經〔客廳〕回到戶內動線。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "city_life_5f_u052_liv"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_5f_u052_bal_to_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到戶０５２的客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u052_liv"
+    }
+  ]
+}

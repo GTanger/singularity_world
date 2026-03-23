@@ -1,7 +1,7 @@
 {
   "id": "city_life_elevator",
   "name": "電梯間",
-  "description": "① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ \n⑪ ⑫ ⑬ ⑭ ⑮ ⑯ ⑰ ⑱ ⑲ ⑳",
+  "description": "① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩\n（浮生城１Ｆ—１０Ｆ停層；⑪—⑳ 為預留標示）",
   "tags": [
     "city",
     "skyscraper"
@@ -27,6 +27,26 @@
     {
       "direction": "⑤",
       "to": "city_life_5f"
+    },
+    {
+      "direction": "⑥",
+      "to": "city_life_6f"
+    },
+    {
+      "direction": "⑦",
+      "to": "city_life_7f"
+    },
+    {
+      "direction": "⑧",
+      "to": "city_life_8f"
+    },
+    {
+      "direction": "⑨",
+      "to": "city_life_9f"
+    },
+    {
+      "direction": "⑩",
+      "to": "city_life_10f"
     }
   ],
   "objects": [
@@ -86,9 +106,69 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城5f」。"
+        "Move": "你前往「浮生城5F」。"
       },
       "move_to_room_id": "city_life_5f"
+    },
+    {
+      "id": "city_life_6f",
+      "name": "⑥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城6F」。"
+      },
+      "move_to_room_id": "city_life_6f"
+    },
+    {
+      "id": "city_life_7f",
+      "name": "⑦",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城7F」。"
+      },
+      "move_to_room_id": "city_life_7f"
+    },
+    {
+      "id": "city_life_8f",
+      "name": "⑧",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城8F」。"
+      },
+      "move_to_room_id": "city_life_8f"
+    },
+    {
+      "id": "city_life_9f",
+      "name": "⑨",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城9F」。"
+      },
+      "move_to_room_id": "city_life_9f"
+    },
+    {
+      "id": "city_life_10f",
+      "name": "⑩",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城10F」。"
+      },
+      "move_to_room_id": "city_life_10f"
     }
   ]
 }

@@ -1,0 +1,52 @@
+{
+  "id": "city_life_2f_dept_ent_exam",
+  "name": "耳鼻喉診間",
+  "description": "診療椅皮革裂了細口，頭燈臂卡在半伸位置。沖洗器軟管捲在托盤裡；牆上〔內視鏡螢幕〕關著，黑面映出門縫一線光。器械盤邊擺著〔音叉組〕絨布盒。\n可經〔候診區〕回到耳鼻喉候診。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "候診區",
+      "to": "city_life_2f_dept_ent"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_ent_exam_wait",
+      "name": "候診區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到耳鼻喉候診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_ent"
+    },
+    {
+      "id": "city_life_2f_dept_ent_exam_tuning",
+      "name": "音叉組",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "三支音叉躺在絨布槽裡，柄端編號磨淡，像常被人拿起又放下。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_ent_exam_screen",
+      "name": "內視鏡螢幕",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "關機狀態黑得映人影；下緣按鍵貼紙寫「勿觸鏡頭」。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "city_life_2f_dept_eye_exam",
+  "name": "眼科診間",
+  "description": "〔裂隙燈〕底座沉重，顎托膠墊磨出凹痕。邊桌〔眼壓計〕螢幕保護貼邊角起泡；旁邊〔點眼藥小碟〕瓷邊留著乾水痕。窗簾拉一半，豎井灰光落在試片盤上。\n可經〔候診區〕回到眼科候診。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "候診區",
+      "to": "city_life_2f_dept_eye"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_eye_exam_wait",
+      "name": "候診區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到眼科候診區。"
+      },
+      "move_to_room_id": "city_life_2f_dept_eye"
+    },
+    {
+      "id": "city_life_2f_dept_eye_exam_slit",
+      "name": "裂隙燈",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "顎托高度尺刻度磨淡，操縱桿底座貼著「先消毒再使用」小條。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_eye_exam_tono",
+      "name": "眼壓計",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "螢幕待機黑，邊角保護貼起泡；噴嘴蓋扣在旁邊小碟裡。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_eye_exam_drops",
+      "name": "點眼藥小碟",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "瓷碟邊留著乾掉的水痕，旁邊丟著幾支空滴管，標籤字小到要瞇眼。"
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "id": "city_life_5f",
-  "name": "浮生城5f",
-  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜招租中｜　　　　　　　　　　　｜招租中｜\n｜招租中｜　　※浮生城５樓※　　｜招租中｜\n｜招租中｜　　　　　　　　　　　｜招租中｜\n｜｜｜｜｜招租中｜招租中｜招租中｜｜｜｜｜",
+  "name": "浮生城5F",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜０５１｜　　　　　　　　　　　｜０５９｜\n｜０５２｜　　※浮生城５樓※　　｜０５８｜\n｜０５３｜　　　　　　　　　　　｜０５７｜\n｜｜｜｜｜０５４｜０５５｜０５６｜｜｜｜｜",
   "tags": [
     "city",
     "skyscraper"
@@ -15,6 +15,46 @@
     {
       "direction": "下樓梯",
       "to": "city_life_4f"
+    },
+    {
+      "direction": "上樓梯",
+      "to": "city_life_6f"
+    },
+    {
+      "direction": "０５１",
+      "to": "city_life_5f_u051_liv"
+    },
+    {
+      "direction": "０５２",
+      "to": "city_life_5f_u052_liv"
+    },
+    {
+      "direction": "０５３",
+      "to": "city_life_5f_u053_liv"
+    },
+    {
+      "direction": "０５４",
+      "to": "city_life_5f_u054_liv"
+    },
+    {
+      "direction": "０５５",
+      "to": "city_life_5f_u055_liv"
+    },
+    {
+      "direction": "０５６",
+      "to": "city_life_5f_u056_liv"
+    },
+    {
+      "direction": "０５７",
+      "to": "city_life_5f_u057_liv"
+    },
+    {
+      "direction": "０５８",
+      "to": "city_life_5f_u058_liv"
+    },
+    {
+      "direction": "０５９",
+      "to": "city_life_5f_u059_liv"
     }
   ],
   "objects": [
@@ -38,9 +78,129 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城4F」。"
+        "Move": "你前往「浮生城４樓」。"
       },
       "move_to_room_id": "city_life_4f"
+    },
+    {
+      "id": "city_life_6f",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城６樓」。"
+      },
+      "move_to_room_id": "city_life_6f"
+    },
+    {
+      "id": "city_life_5f_u051_liv_from_lobby",
+      "name": "０５１",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５１，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u051_liv"
+    },
+    {
+      "id": "city_life_5f_u052_liv_from_lobby",
+      "name": "０５２",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５２，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u052_liv"
+    },
+    {
+      "id": "city_life_5f_u053_liv_from_lobby",
+      "name": "０５３",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５３，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u053_liv"
+    },
+    {
+      "id": "city_life_5f_u054_liv_from_lobby",
+      "name": "０５４",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５４，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u054_liv"
+    },
+    {
+      "id": "city_life_5f_u055_liv_from_lobby",
+      "name": "０５５",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５５，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u055_liv"
+    },
+    {
+      "id": "city_life_5f_u056_liv_from_lobby",
+      "name": "０５６",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５６，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u056_liv"
+    },
+    {
+      "id": "city_life_5f_u057_liv_from_lobby",
+      "name": "０５７",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u057_liv"
+    },
+    {
+      "id": "city_life_5f_u058_liv_from_lobby",
+      "name": "０５８",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５８，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u058_liv"
+    },
+    {
+      "id": "city_life_5f_u059_liv_from_lobby",
+      "name": "０５９",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５９，來到客廳。"
+      },
+      "move_to_room_id": "city_life_5f_u059_liv"
     }
   ]
 }

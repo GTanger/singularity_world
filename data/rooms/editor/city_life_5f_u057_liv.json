@@ -1,0 +1,160 @@
+{
+  "id": "city_life_5f_u057_liv",
+  "name": "戶０５７·客廳",
+  "description": "門內第一進便是客廳；與餐廳以短廊或開口相連，動線寬敞。採光自兩處陽台方向皆可渗入。另可回大廳走廊。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_5f"
+    },
+    {
+      "direction": "餐廳",
+      "to": "city_life_5f_u057_din"
+    },
+    {
+      "direction": "主臥",
+      "to": "city_life_5f_u057_br1"
+    },
+    {
+      "direction": "次臥",
+      "to": "city_life_5f_u057_br2"
+    },
+    {
+      "direction": "客房",
+      "to": "city_life_5f_u057_br3"
+    },
+    {
+      "direction": "主衛",
+      "to": "city_life_5f_u057_bt1"
+    },
+    {
+      "direction": "次衛",
+      "to": "city_life_5f_u057_bt2"
+    },
+    {
+      "direction": "前陽台",
+      "to": "city_life_5f_u057_bala"
+    },
+    {
+      "direction": "後陽台",
+      "to": "city_life_5f_u057_balb"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_5f_gate_city_life_5f_u057_liv",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開戶內，回到「浮生城５樓」走廊大廳。"
+      },
+      "move_to_room_id": "city_life_5f"
+    },
+    {
+      "id": "city_life_5f_u057_liv_to_city_life_5f_u057_din",
+      "name": "餐廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７的餐廳。"
+      },
+      "move_to_room_id": "city_life_5f_u057_din"
+    },
+    {
+      "id": "city_life_5f_u057_liv_to_city_life_5f_u057_br1",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７的主臥。"
+      },
+      "move_to_room_id": "city_life_5f_u057_br1"
+    },
+    {
+      "id": "city_life_5f_u057_liv_to_city_life_5f_u057_br2",
+      "name": "次臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７的次臥。"
+      },
+      "move_to_room_id": "city_life_5f_u057_br2"
+    },
+    {
+      "id": "city_life_5f_u057_liv_to_city_life_5f_u057_br3",
+      "name": "客房",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７的客房。"
+      },
+      "move_to_room_id": "city_life_5f_u057_br3"
+    },
+    {
+      "id": "city_life_5f_u057_liv_to_city_life_5f_u057_bt1",
+      "name": "主衛",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７的主衛。"
+      },
+      "move_to_room_id": "city_life_5f_u057_bt1"
+    },
+    {
+      "id": "city_life_5f_u057_liv_to_city_life_5f_u057_bt2",
+      "name": "次衛",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７的次衛。"
+      },
+      "move_to_room_id": "city_life_5f_u057_bt2"
+    },
+    {
+      "id": "city_life_5f_u057_liv_to_city_life_5f_u057_bala",
+      "name": "前陽台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７的前陽台。"
+      },
+      "move_to_room_id": "city_life_5f_u057_bala"
+    },
+    {
+      "id": "city_life_5f_u057_liv_to_city_life_5f_u057_balb",
+      "name": "後陽台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０５７的後陽台。"
+      },
+      "move_to_room_id": "city_life_5f_u057_balb"
+    }
+  ]
+}
