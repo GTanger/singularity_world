@@ -1,6 +1,9 @@
+const GROUP_COLORS = ['#7c3aed', '#0891b2', '#059669', '#d97706', '#dc2626', '#be185d'];
+
 const state = {
   nodes: new Map(),
   edges: [],
+  groups: [], // Array<string[]> — 每個群組是 room ID 陣列
   layout: {},
   zoom: 1,
   selectedId: '',
@@ -95,6 +98,32 @@ function edgeKey(e) {
 function parseTags(s) {
   return (s || '').split(',').map((t) => t.trim()).filter(Boolean);
 }
+
+// ── 群組工具 ───────────────────────────────────────────────────────
+const GROUPS_STORAGE_KEY = 'room-editor-groups-v1';
+
+function saveGroups() {
+  try { localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(state.groups)); } catch (_) {}
+}
+
+function loadGroups() {
+  try {
+    const raw = localStorage.getItem(GROUPS_STORAGE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return;
+    // 過濾掉已不存在的 ID
+    state.groups = parsed
+      .map((g) => (Array.isArray(g) ? g.filter((id) => state.nodes.has(id)) : []))
+      .filter((g) => g.length >= 2);
+  } catch (_) {}
+}
+
+/** 回傳 id 所屬的群組（沒有則 null）。 */
+function findGroupFor(id) {
+  return state.groups.find((g) => g.includes(id)) || null;
+}
+// ──────────────────────────────────────────────────────────────────
 
 function ensurePos(id, idx) {
   if (state.layout[id]) return state.layout[id];
@@ -509,7 +538,30 @@ function render() {
 
   ui.map.querySelectorAll('.node').forEach((el) => el.remove());
   ui.map.querySelectorAll('.marquee').forEach((el) => el.remove());
+  ui.map.querySelectorAll('.group-hull').forEach((el) => el.remove());
   ui.svg.innerHTML = '';
+
+  // 繪製群組包圍框（在節點下層）
+  const GROUP_PAD = 12;
+  state.groups.forEach((grp, gi) => {
+    const positions = grp.map((id) => state.layout[id]).filter(Boolean);
+    if (positions.length < 1) return;
+    const xs = positions.map((p) => p.x);
+    const ys = positions.map((p) => p.y);
+    const minX = Math.min(...xs);
+    const minY = Math.min(...ys);
+    const maxX = Math.max(...xs) + NODE_SIZE;
+    const maxY = Math.max(...ys) + NODE_SIZE;
+    const hull = document.createElement('div');
+    hull.className = 'group-hull';
+    hull.style.left = `${(minX - GROUP_PAD) * state.zoom}px`;
+    hull.style.top = `${(minY - GROUP_PAD) * state.zoom}px`;
+    hull.style.width = `${(maxX - minX + GROUP_PAD * 2) * state.zoom}px`;
+    hull.style.height = `${(maxY - minY + GROUP_PAD * 2) * state.zoom}px`;
+    hull.style.borderColor = GROUP_COLORS[gi % GROUP_COLORS.length];
+    hull.style.opacity = '0.7';
+    ui.map.appendChild(hull);
+  });
   appendSvgEdgeArrowDefs(ui.svg);
 
   const edgeSet = new Set(state.edges.map(edgeKey));
@@ -662,7 +714,9 @@ function selectNode(id, additive = false) {
     if (state.selectedIds.has(id)) state.selectedIds.delete(id);
     else state.selectedIds.add(id);
   } else {
-    state.selectedIds = new Set([id]);
+    // 非加選時，若此格屬於群組，直接圈選整個群組
+    const grp = findGroupFor(id);
+    state.selectedIds = grp ? new Set(grp) : new Set([id]);
   }
   state.selectedId = id;
   fillEditor(id);
@@ -673,7 +727,9 @@ function selectNode(id, additive = false) {
 function setSelectedForTouchStart(id) {
   state.selectedEdge = null;
   if (!state.selectedIds.has(id)) {
-    state.selectedIds = new Set([id]);
+    // 觸控非加選：同樣展開群組
+    const grp = findGroupFor(id);
+    state.selectedIds = grp ? new Set(grp) : new Set([id]);
   }
   state.selectedId = id;
   fillEditor(id);
@@ -1160,6 +1216,9 @@ async function loadGraph(scrollToSelected = true) {
 
   state.selectedIds = new Set(Array.from(state.selectedIds).filter((id) => state.nodes.has(id)));
 
+  // 載入群組並清理已不存在的 ID
+  loadGroups();
+
   if (state.selectedId) fillEditor(state.selectedId);
   refreshPathSelects();
   render();
@@ -1253,6 +1312,29 @@ document.getElementById('btn-normalize').onclick = async () => {
   await normalizeLayoutToTopLeft();
 };
 
+document.getElementById('btn-group-set').onclick = () => {
+  const ids = Array.from(state.selectedIds);
+  if (ids.length < 2) { setStatus('請先選取 2 個以上房格再設定群組', true); return; }
+  // 把這些 ID 從既有群組移除（避免重複歸屬），再建立新群組
+  state.groups = state.groups
+    .map((g) => g.filter((id) => !ids.includes(id)))
+    .filter((g) => g.length >= 2);
+  state.groups.push(ids);
+  saveGroups();
+  setStatus(`群組已設定（${ids.length} 格）`);
+  render();
+};
+
+document.getElementById('btn-group-unlock').onclick = () => {
+  const ids = state.selectedIds;
+  if (ids.size === 0) { setStatus('請先點選群組內任一格', true); return; }
+  const before = state.groups.length;
+  state.groups = state.groups.filter((g) => !g.some((id) => ids.has(id)));
+  saveGroups();
+  setStatus(state.groups.length < before ? '群組已解鎖' : '選取的格不屬於任何群組');
+  render();
+};
+
 document.getElementById('btn-add').onclick = async () => {
   const id = prompt('新房間 ID（英文數字底線）');
   if (!id) return;
@@ -1323,6 +1405,11 @@ document.getElementById('btn-delete').onclick = async () => {
     }
   }
   await api('/api/room-editor/layout', { method: 'PUT', body: JSON.stringify({ positions: state.layout }) });
+  // 清除已刪房間所在的群組
+  state.groups = state.groups
+    .map((g) => g.filter((id) => !selected.includes(id)))
+    .filter((g) => g.length >= 2);
+  saveGroups();
   state.selectedId = '';
   state.selectedIds.clear();
   await loadGraph(false);

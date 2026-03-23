@@ -64,6 +64,7 @@
     .line-selected { stroke:#e94560; color:#e94560; stroke-width:2.5; opacity:1; }
     .ghost { stroke:#fbbf24; color:#fbbf24; stroke-width:1.5; fill:none; }
     .marquee { position:absolute; z-index:2; border:1px dashed #7dd3fc; background:rgba(125,211,252,.12); pointer-events:none; }
+    .group-hull { position:absolute; z-index:-1; border:2px solid; border-radius:14px; background:rgba(0,0,0,.18); pointer-events:none; }
     .panel-toggle {
       position: fixed;
       top: 10px;
@@ -116,6 +117,8 @@
         <button id="btn-copy">複製房格</button>
         <button id="btn-delete" class="danger">刪除房格</button>
         <button id="btn-normalize">重整座標</button>
+        <button id="btn-group-set">設定群組</button>
+        <button id="btn-group-unlock" class="danger">解鎖群組</button>
       </div>
       <div class="toolbar">
         <button id="mode-one">單向連線</button>
@@ -183,6 +186,6 @@
     <button id="m-panel">面板</button>
   </div>
 
-  <script src="/room_editor.js?v=0.12.0"></script>
+  <script src="/room_editor.js?v=0.12.1"></script>
 </body>
 </html>
