@@ -51,3 +51,6 @@ docs/更新日記/
 
 # 本地解壓參考用之上游 autoresearch 原始碼，勿納入版控
 autoresearch-master/
+
+# 本地工具腳本（不納入版控、不 push）
+tools/
