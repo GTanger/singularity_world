@@ -1,7 +1,7 @@
 {
   "id": "city_life_elevator",
   "name": "電梯間",
-  "description": "① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩\n（浮生城１Ｆ—１０Ｆ停層；⑪—⑳ 為預留標示）",
+  "description": "① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪\n（浮生城１Ｆ—１１Ｆ停層；⑫—⑳ 為預留標示）",
   "tags": [
     "city",
     "skyscraper"
@@ -47,6 +47,10 @@
     {
       "direction": "⑩",
       "to": "city_life_10f"
+    },
+    {
+      "direction": "⑪",
+      "to": "city_life_11f"
     }
   ],
   "objects": [
@@ -169,6 +173,18 @@
         "Move": "你前往「浮生城10F」。"
       },
       "move_to_room_id": "city_life_10f"
+    },
+    {
+      "id": "city_life_11f",
+      "name": "⑪",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城11F」。"
+      },
+      "move_to_room_id": "city_life_11f"
     }
   ]
 }

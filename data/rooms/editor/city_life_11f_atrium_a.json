@@ -1,0 +1,32 @@
+{
+  "id": "city_life_11f_atrium_a",
+  "name": "溫室廊",
+  "description": "溫室廊沿著中庭外圈緩緩展開，植栽標牌和濕度計固定在欄杆邊。細霧噴頭定時吐出淡白水氣，把葉脈上的亮點拖成一條條細線。沿廊折返即可回〔中庭區〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "中庭區",
+      "to": "city_life_11f_atrium"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_atrium_a_to_hub",
+      "name": "中庭區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到〔中庭區〕。"
+      },
+      "move_to_room_id": "city_life_11f_atrium"
+    }
+  ]
+}

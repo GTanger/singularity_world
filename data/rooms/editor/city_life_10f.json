@@ -6,7 +6,7 @@
     "city",
     "skyscraper"
   ],
-  "zone": "citylife",
+  "zone": "citylife_10f",
   "exits": [
     {
       "direction": "電梯間",
@@ -15,6 +15,10 @@
     {
       "direction": "下樓梯",
       "to": "city_life_9f"
+    },
+    {
+      "direction": "上樓梯",
+      "to": "city_life_11f"
     },
     {
       "direction": "１０１",
@@ -77,6 +81,18 @@
         "Move": "你前往「浮生城9F」。"
       },
       "move_to_room_id": "city_life_9f"
+    },
+    {
+      "id": "city_life_11f",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城11F」。"
+      },
+      "move_to_room_id": "city_life_11f"
     },
     {
       "id": "city_life_10f_u101_liv_from_lobby",

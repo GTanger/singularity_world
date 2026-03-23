@@ -1,0 +1,32 @@
+{
+  "id": "city_life_11f_works_b",
+  "name": "檢修間",
+  "description": "檢修間設有防靜電工作臺與可調光檯燈，適合處理細部零件。桌邊標示常見故障代碼，旁邊留有拆件托盤。檢修完可回〔工務室〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "工務室",
+      "to": "city_life_11f_works"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_works_b_to_hub",
+      "name": "工務室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到〔工務室〕。"
+      },
+      "move_to_room_id": "city_life_11f_works"
+    }
+  ]
+}

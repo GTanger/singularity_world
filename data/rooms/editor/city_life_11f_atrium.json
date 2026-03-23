@@ -1,0 +1,64 @@
+{
+  "id": "city_life_11f_atrium",
+  "name": "中庭區",
+  "description": "挑高中庭把十一樓的光線整個撐開。半透明頂棚下垂著導蔓索與滴灌管，葉影隨風在地面慢慢移動；一側是可坐可站的休憩帶，另一側則接往維護用的環廊。這裡是公共層最能讓人放慢呼吸的地方，往〔溫室廊〕與〔風景台〕可各自深入。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_11f"
+    },
+    {
+      "direction": "溫室廊",
+      "to": "city_life_11f_atrium_a"
+    },
+    {
+      "direction": "風景台",
+      "to": "city_life_11f_atrium_b"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_atrium_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城11F」大廳。"
+      },
+      "move_to_room_id": "city_life_11f"
+    },
+    {
+      "id": "city_life_11f_atrium_to_a",
+      "name": "溫室廊",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔溫室廊〕。"
+      },
+      "move_to_room_id": "city_life_11f_atrium_a"
+    },
+    {
+      "id": "city_life_11f_atrium_to_b",
+      "name": "風景台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔風景台〕。"
+      },
+      "move_to_room_id": "city_life_11f_atrium_b"
+    }
+  ]
+}

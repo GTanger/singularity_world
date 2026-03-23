@@ -1,0 +1,64 @@
+{
+  "id": "city_life_11f_storage",
+  "name": "管委倉",
+  "description": "管委倉以厚門與磁扣上鎖，進門就是分格貨架與條碼盤點終端。各類耗材按週期貼了補貨標，從燈具到清潔包都有固定位置。這裡可再分到〔倉一區〕與〔倉二區〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_11f"
+    },
+    {
+      "direction": "倉一區",
+      "to": "city_life_11f_storage_a"
+    },
+    {
+      "direction": "倉二區",
+      "to": "city_life_11f_storage_b"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_storage_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城11F」大廳。"
+      },
+      "move_to_room_id": "city_life_11f"
+    },
+    {
+      "id": "city_life_11f_storage_to_a",
+      "name": "倉一區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔倉一區〕。"
+      },
+      "move_to_room_id": "city_life_11f_storage_a"
+    },
+    {
+      "id": "city_life_11f_storage_to_b",
+      "name": "倉二區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔倉二區〕。"
+      },
+      "move_to_room_id": "city_life_11f_storage_b"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "city_life_11f_duty_b",
+  "name": "交接桌",
+  "description": "交接桌上放著日誌夾、臨時通行證與待辦白板，筆跡一層疊一層。桌邊插座為手持電台集中充電，紅綠燈號整齊排開。交班完成可回〔值勤室〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "值勤室",
+      "to": "city_life_11f_duty"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_duty_b_to_hub",
+      "name": "值勤室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到〔值勤室〕。"
+      },
+      "move_to_room_id": "city_life_11f_duty"
+    }
+  ]
+}

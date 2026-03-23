@@ -1,0 +1,64 @@
+{
+  "id": "city_life_11f_works",
+  "name": "工務室",
+  "description": "工務室是十一樓維保樞紐，工具牆、工單板與檢修台一目了然。牆角有替換件車與線材盤，外勤回來可直接補齊耗材。由此可進〔工具間〕與〔檢修間〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_11f"
+    },
+    {
+      "direction": "工具間",
+      "to": "city_life_11f_works_a"
+    },
+    {
+      "direction": "檢修間",
+      "to": "city_life_11f_works_b"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_works_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城11F」大廳。"
+      },
+      "move_to_room_id": "city_life_11f"
+    },
+    {
+      "id": "city_life_11f_works_to_a",
+      "name": "工具間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔工具間〕。"
+      },
+      "move_to_room_id": "city_life_11f_works_a"
+    },
+    {
+      "id": "city_life_11f_works_to_b",
+      "name": "檢修間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔檢修間〕。"
+      },
+      "move_to_room_id": "city_life_11f_works_b"
+    }
+  ]
+}
