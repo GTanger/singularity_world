@@ -6,6 +6,7 @@ mod assignment;
 mod disposition;
 mod equip;
 mod identity;
+mod inventory;
 mod npc_display;
 mod npc_expense;
 mod npc_names;
@@ -39,6 +40,7 @@ pub use npc_spawn::{
 pub use archival::{insert_npc_npc_dialogue_archival, recent_npc_npc_archival_lines_for_entity};
 pub use disposition::{adjust_disposition, get_disposition, DISP_BROKE, DISP_DAILY};
 pub use identity::build_identity;
+pub use inventory::add_to_inventory;
 pub use npc_expense::{deduct_daily_expense, DAILY_EXPENSE_BASE};
 pub use npc_social::{
     build_npc_rumor_digest, decay_npc_rumors, delete_npc_npc_thread,

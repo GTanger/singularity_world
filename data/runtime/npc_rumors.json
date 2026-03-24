@@ -9,15 +9,25 @@
       "updated_at": 1774320486,
       "expires_at": 1774325886
     },
+    "evt|life_dining|arrive|葉俊：從方向到達": {
+      "id": "evt|life_dining|arrive|葉俊：從方向到達",
+      "text": "葉俊：從方向到達",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1774325603,
+      "expires_at": 1774327403
+    },
     "evt|life_dining|arrive|鄭秀強：從方向到達": {
       "id": "evt|life_dining|arrive|鄭秀強：從方向到達",
       "text": "鄭秀強：從方向到達",
       "room_id": "life_dining",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774325188,
-      "expires_at": 1774326988
+      "weight": 3,
+      "updated_at": 1774325603,
+      "expires_at": 1774327403
     },
     "evt|life_garden|shift_arrive|葉俊：排班抵達": {
       "id": "evt|life_garden|shift_arrive|葉俊：排班抵達",
@@ -28,8 +38,8 @@
       "weight": 1,
       "mention_count": 2,
       "last_used_at": 1774145436,
-      "updated_at": 1774325136,
-      "expires_at": 1774326936
+      "updated_at": 1774325586,
+      "expires_at": 1774327386
     },
     "evt|life_garden|shift_arrive|鄭秀強：排班抵達": {
       "id": "evt|life_garden|shift_arrive|鄭秀強：排班抵達",
@@ -40,8 +50,8 @@
       "weight": 1,
       "mention_count": 1,
       "last_used_at": 1774145140,
-      "updated_at": 1774325136,
-      "expires_at": 1774326936
+      "updated_at": 1774325586,
+      "expires_at": 1774327386
     },
     "evt|life_garden|shift_arrive|龍霞華：排班抵達": {
       "id": "evt|life_garden|shift_arrive|龍霞華：排班抵達",
@@ -52,18 +62,28 @@
       "weight": 1,
       "mention_count": 18,
       "last_used_at": 1774153086,
-      "updated_at": 1774325136,
-      "expires_at": 1774326936
+      "updated_at": 1774325586,
+      "expires_at": 1774327386
     },
     "evt|life_hall|arrive|龍霞華：從方向到達": {
       "id": "evt|life_hall|arrive|龍霞華：從方向到達",
       "text": "龍霞華：從方向到達",
-      "room_id": "life_kitchen",
+      "room_id": "life_dining",
       "source": "room_event",
       "source_score": 2,
-      "weight": 2,
-      "updated_at": 1774325244,
-      "expires_at": 1774327044
+      "weight": 3,
+      "updated_at": 1774325550,
+      "expires_at": 1774327350
+    },
+    "evt|life_hall|leave|葉俊：離開往": {
+      "id": "evt|life_hall|leave|葉俊：離開往",
+      "text": "葉俊：離開往",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1774325603,
+      "expires_at": 1774327403
     },
     "evt|life_hall|leave|鄭秀強：離開往": {
       "id": "evt|life_hall|leave|鄭秀強：離開往",
@@ -71,9 +91,9 @@
       "room_id": "life_hall",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774325188,
-      "expires_at": 1774326988
+      "weight": 3,
+      "updated_at": 1774325603,
+      "expires_at": 1774327403
     },
     "evt|life_hall|shift_leave|葉俊：離開前往life_garden": {
       "id": "evt|life_hall|shift_leave|葉俊：離開前往life_garden",
@@ -81,9 +101,9 @@
       "room_id": "life_hall",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774325136,
-      "expires_at": 1774326936
+      "weight": 6,
+      "updated_at": 1774325586,
+      "expires_at": 1774327386
     },
     "evt|life_hall|shift_leave|葉俊：離開前往singularity_life": {
       "id": "evt|life_hall|shift_leave|葉俊：離開前往singularity_life",
@@ -101,9 +121,9 @@
       "room_id": "life_hall",
       "source": "room_event",
       "source_score": 2,
-      "weight": 2,
-      "updated_at": 1774325136,
-      "expires_at": 1774326936
+      "weight": 5,
+      "updated_at": 1774325586,
+      "expires_at": 1774327386
     },
     "evt|life_hall|shift_leave|鄭秀強：離開前往lobby": {
       "id": "evt|life_hall|shift_leave|鄭秀強：離開前往lobby",
@@ -118,22 +138,22 @@
     "evt|life_kitchen|leave|龍霞華：離開往": {
       "id": "evt|life_kitchen|leave|龍霞華：離開往",
       "text": "龍霞華：離開往",
-      "room_id": "life_hall",
+      "room_id": "life_kitchen",
       "source": "room_event",
       "source_score": 2,
-      "weight": 2,
-      "updated_at": 1774325244,
-      "expires_at": 1774327044
+      "weight": 3,
+      "updated_at": 1774325550,
+      "expires_at": 1774327350
     },
     "evt|life_kitchen|shift_leave|龍霞華：離開前往life_garden": {
       "id": "evt|life_kitchen|shift_leave|龍霞華：離開前往life_garden",
       "text": "龍霞華：離開前往life_garden",
-      "room_id": "life_hall",
+      "room_id": "life_dining",
       "source": "room_event",
       "source_score": 2,
-      "weight": 2,
-      "updated_at": 1774325136,
-      "expires_at": 1774326936
+      "weight": 5,
+      "updated_at": 1774325586,
+      "expires_at": 1774327386
     },
     "evt|life_kitchen|shift_leave|龍霞華：離開前往lobby": {
       "id": "evt|life_kitchen|shift_leave|龍霞華：離開前往lobby",

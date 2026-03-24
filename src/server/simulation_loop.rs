@@ -1,4 +1,4 @@
-//! 主迴圈背景 tick（對齊 Go `simulation_main_loop.go`：視野、傳聞、隨機 NPC↔NPC、遊戲日、NPC 池、求職撮合、排班敘事）。
+//! 主迴圈背景 tick（對齊 Go `simulation_main_loop.go`：視野、傳聞、隨機 NPC↔NPC、遊戲日、NPC 池、求職撮合、排班敘事、無觀測時 `RunUnobservedWorldTick`）。
 
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
@@ -17,13 +17,16 @@ use crate::gametext;
 use crate::game::{game_time_now, run_view_simulation, Pos};
 use crate::npc::{
     get_npc_npc_topic_by_id, get_shift_flavor, pick_random_npc_npc_topic_by_mask, run_job_matching_tick,
-    JobMatchParams, SEEK_JOB_MG_THRESHOLD_DEFAULT,
+    run_unobserved_world_tick, JobMatchParams, SEEK_JOB_MG_THRESHOLD_DEFAULT, UNOBSERVED_MAX_NPCS_PER_TICK,
 };
 use crate::npcnpc::{push_room_event, topic_mask_for_room, try_trigger_npc_npc_in_room};
 use crate::store::NpcRumor;
 
 use super::broadcast::{broadcast_room_views, send_narrate_to_room};
 use super::SessionStore;
+
+/// 對齊 Go `travelTickInterval`：每 30 個 tick 檢查觀測圈；無人時跑未觀測背景步進。
+const TRAVEL_TICK_INTERVAL: i32 = 30;
 
 /// 跨 tick 的計時與狀態（對齊 Go 閉包內變數）。
 struct MainLoopTickState {
@@ -34,6 +37,7 @@ struct MainLoopTickState {
     last_spawn_check: Instant,
     last_job_matching: Option<Instant>,
     last_schedule_hour: i32,
+    travel_tick_count: i32,
 }
 
 /// 間隔到期則更新錨點並回傳 true；`last` 為 `None` 時第一次立即觸發（對齊 Go `time.Time` 零值）。
@@ -384,6 +388,41 @@ fn run_schedule_hour_section(
     }
 }
 
+/// 觀測圈：有玩家的房＋鄰房（對齊 Go `buildActiveRoomIDs`）。
+fn build_active_room_ids(sessions: &SessionStore, g: &crate::db::RoomGraph) -> HashSet<String> {
+    let mut out = HashSet::new();
+    for rid in sessions.player_room_ids() {
+        out.insert(rid.clone());
+        for nb in g.neighbors(&rid) {
+            out.insert(nb);
+        }
+    }
+    out
+}
+
+/// 每 `TRAVEL_TICK_INTERVAL` 次 tick：若觀測圈為空則跑未觀測世界步進（無 `TravelerManager` 時仍對齊 Go 無人分支）。
+fn run_travel_unobserved_section(sessions: &SessionStore, hour: i32, state: &Arc<Mutex<MainLoopTickState>>) {
+    let fire = {
+        let mut st = state.lock().expect("main loop state poisoned");
+        st.travel_tick_count += 1;
+        if st.travel_tick_count >= TRAVEL_TICK_INTERVAL {
+            st.travel_tick_count = 0;
+            true
+        } else {
+            false
+        }
+    };
+    if !fire {
+        return;
+    }
+    with_room_graph(|g| {
+        let active = build_active_room_ids(sessions, g);
+        if active.is_empty() {
+            run_unobserved_world_tick(Some(g), hour, UNOBSERVED_MAX_NPCS_PER_TICK);
+        }
+    });
+}
+
 /// 單次 tick（對齊 Go `game.Loop` 回呼內順序）。
 fn run_simulation_tick(sessions: &SessionStore, cfg: &Server, state: &Arc<Mutex<MainLoopTickState>>) {
     run_view_simulation(Vec::<Pos>::new, None);
@@ -460,6 +499,7 @@ fn run_simulation_tick(sessions: &SessionStore, cfg: &Server, state: &Arc<Mutex<
     run_npc_pool_tick(cfg, now_unix, state);
     run_job_matching_section(sessions, cfg, now_unix, state);
     run_schedule_hour_section(sessions, cfg, hour, state);
+    run_travel_unobserved_section(sessions, hour, state);
 }
 
 /// 在 Tokio runtime 上依 `cfg.tick_interval_ms` 週期執行主迴圈片段（與 Axum 並行）。
@@ -472,6 +512,7 @@ pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
         last_spawn_check: Instant::now(),
         last_job_matching: None,
         last_schedule_hour: -1,
+        travel_tick_count: 0,
     }));
     let tick_ms = cfg.tick_interval_ms.max(1);
     tokio::spawn(async move {

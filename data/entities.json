@@ -1,6 +1,48 @@
 {
   "entities": [
     {
+      "id": "npc_dh7m0fyaaldh",
+      "kind": "npc",
+      "display_char": "向",
+      "x": 0,
+      "y": 0,
+      "move_state": "idle",
+      "vit": 10,
+      "qi": 10,
+      "dex": 9,
+      "magnesium": 53,
+      "last_observed_at": 1774285202,
+      "created_at": 1774009862,
+      "gender": "F",
+      "soul_seed": -8598919778421594824,
+      "display_title": "向偉",
+      "activated_nodes": "[\"N000\"]",
+      "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4261}]",
+      "disposition": -96
+    },
+    {
+      "id": "npc_dh7ljyggbjh5",
+      "kind": "npc",
+      "display_char": "陶",
+      "x": 0,
+      "y": 0,
+      "move_state": "idle",
+      "vit": 13,
+      "qi": 10,
+      "dex": 11,
+      "magnesium": 51,
+      "last_observed_at": 1774285247,
+      "created_at": 1774008570,
+      "gender": "F",
+      "soul_seed": 1432107473493295659,
+      "display_title": "陶紅玲",
+      "activated_nodes": "[\"N000\"]",
+      "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4175}]",
+      "disposition": -96
+    },
+    {
       "id": "npc_dh7ln0pmebvc",
       "kind": "npc",
       "display_char": "葉",
@@ -19,7 +61,7 @@
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
       "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":714}]",
-      "disposition": -98
+      "disposition": -96
     },
     {
       "id": "試話",
@@ -39,8 +81,8 @@
       "display_title": "司馬麗淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":3440}]",
-      "disposition": -98
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":3446}]",
+      "disposition": -96
     },
     {
       "id": "npc_dh7lok2gzenv",
@@ -61,7 +103,7 @@
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
       "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":53}]",
-      "disposition": -98
+      "disposition": -96
     },
     {
       "id": "npc_dh7llhl1hpd9",
@@ -81,8 +123,8 @@
       "display_title": "金玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4112}]",
-      "disposition": -98
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4116}]",
+      "disposition": -96
     },
     {
       "id": "npc_dh7lxdp40upk",
@@ -102,8 +144,8 @@
       "display_title": "楊康偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4178}]",
-      "disposition": -98
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4183}]",
+      "disposition": -96
     },
     {
       "id": "npc_dh7lub7op7n9",
@@ -123,8 +165,8 @@
       "display_title": "史梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4234}]",
-      "disposition": -98
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4237}]",
+      "disposition": -96
     },
     {
       "id": "npc_dh7lq371wwmu",
@@ -145,7 +187,7 @@
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
       "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":62}]",
-      "disposition": -98
+      "disposition": -96
     },
     {
       "id": "npc_dh7lvuc9y0a1",
@@ -165,8 +207,8 @@
       "display_title": "袁寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4118}]",
-      "disposition": -98
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4126}]",
+      "disposition": -96
     },
     {
       "id": "葉卅",
@@ -204,50 +246,8 @@
       "display_title": "劉紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4186}]",
-      "disposition": -98
-    },
-    {
-      "id": "npc_dh7m0fyaaldh",
-      "kind": "npc",
-      "display_char": "向",
-      "x": 0,
-      "y": 0,
-      "move_state": "idle",
-      "vit": 10,
-      "qi": 10,
-      "dex": 9,
-      "magnesium": 53,
-      "last_observed_at": 1774285202,
-      "created_at": 1774009862,
-      "gender": "F",
-      "soul_seed": -8598919778421594824,
-      "display_title": "向偉",
-      "activated_nodes": "[\"N000\"]",
-      "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4255}]",
-      "disposition": -98
-    },
-    {
-      "id": "npc_dh7ljyggbjh5",
-      "kind": "npc",
-      "display_char": "陶",
-      "x": 0,
-      "y": 0,
-      "move_state": "idle",
-      "vit": 13,
-      "qi": 10,
-      "dex": 11,
-      "magnesium": 51,
-      "last_observed_at": 1774285247,
-      "created_at": 1774008570,
-      "gender": "F",
-      "soul_seed": 1432107473493295659,
-      "display_title": "陶紅玲",
-      "activated_nodes": "[\"N000\"]",
-      "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4168}]",
-      "disposition": -98
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4191}]",
+      "disposition": -96
     }
   ]
 }

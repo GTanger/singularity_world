@@ -2,7 +2,7 @@
   "entries": [
     {
       "entity_id": "npc_dh7m0fyaaldh",
-      "room_id": "city_life_7f_u077_liv"
+      "room_id": "city_life_7f_u077_din"
     },
     {
       "entity_id": "npc_dh7lub7op7n9",
@@ -14,15 +14,15 @@
     },
     {
       "entity_id": "npc_dh7ljyggbjh5",
-      "room_id": "city_life_8f_u085_brm"
+      "room_id": "city_life_8f"
     },
     {
       "entity_id": "試話",
-      "room_id": "city_life_8f_u083_din"
+      "room_id": "city_life_8f_u083_liv"
     },
     {
       "entity_id": "npc_dh7lywtpacw1",
-      "room_id": "city_life_6f_u062_liv"
+      "room_id": "city_life_6f_u066_brm"
     },
     {
       "entity_id": "葉卅",
@@ -30,7 +30,7 @@
     },
     {
       "entity_id": "npc_dh7lq371wwmu",
-      "room_id": "life_kitchen"
+      "room_id": "life_dining"
     },
     {
       "entity_id": "npc_dh7lvuc9y0a1",
@@ -42,11 +42,11 @@
     },
     {
       "entity_id": "npc_dh7lxdp40upk",
-      "room_id": "city_life_4f_u047_liv"
+      "room_id": "city_life_4f"
     },
     {
       "entity_id": "npc_dh7ln0pmebvc",
-      "room_id": "life_hall"
+      "room_id": "life_dining"
     }
   ]
 }
