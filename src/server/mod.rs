@@ -8,7 +8,9 @@ mod run;
 mod session;
 mod simulation_loop;
 
-pub use broadcast::{broadcast_room_views, build_room_view_msg, send_narrate_to_room};
+pub use broadcast::{
+    broadcast_room_views, build_room_view_msg, refresh_room_views_for_room, send_narrate_to_room,
+};
 pub use handler::{handle_message, WsConnection};
 pub use hub::{Hub, SEND_BUFFER_SIZE};
 pub use protocol::{

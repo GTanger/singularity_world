@@ -3,9 +3,10 @@
 mod behavior;
 mod job_matching;
 mod topics;
+mod traveler;
 mod unobserved;
 
-pub use behavior::{get_shift_flavor, try_load_npc_behaviors};
+pub use behavior::{get_shift_flavor, movement_speed_for_title, try_load_npc_behaviors};
 pub use job_matching::{
     run_job_matching_tick, JobMatchParams, DEFAULT_OCCUPATION_FOR_HIRE, JOB_MATCH_STABLE_PROBABILITY,
     SEEK_JOB_MG_THRESHOLD_DEFAULT,
@@ -15,6 +16,7 @@ pub use crate::db::{
     insert_npc, is_naked, seed_items, seed_npcs, seed_npcs_for_store, spawn_one_npc_from_pool,
     starter_equipment, DEFAULT_NPCS, NpcDef,
 };
+pub use traveler::{seed_traveler_manager, MovementDef, MovementType, NpcStep, TravelerManager};
 pub use unobserved::{run_unobserved_world_tick, UNOBSERVED_MAX_NPCS_PER_TICK};
 pub use topics::{
     debug_topic_weights_for_pair, find_npc_npc_topic_id_by_hint, get_npc_npc_topic_by_id,

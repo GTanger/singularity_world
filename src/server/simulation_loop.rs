@@ -1,4 +1,4 @@
-//! 主迴圈背景 tick（對齊 Go `simulation_main_loop.go`：視野、傳聞、隨機 NPC↔NPC、遊戲日、NPC 池、求職撮合、排班敘事、無觀測時 `RunUnobservedWorldTick`）。
+//! 主迴圈背景 tick（對齊 Go `simulation_main_loop.go`：視野、傳聞、隨機 NPC↔NPC、遊戲日、NPC 池、求職撮合、排班敘事、`TravelerManager`、無觀測時 `RunUnobservedWorldTick`）。
 
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
@@ -10,19 +10,20 @@ use crate::config::{sim, Server};
 use crate::db::{
     adjust_disposition, apply_schedules, build_npc_rumor_digest, decay_npc_rumors, deduct_daily_expense,
     get_npc_ids_with_room, get_npc_person_display_name, get_npc_title_from_assignments, get_player_ids_with_room,
-    get_room, get_room_name, get_schedule_target, get_spawn_room_id, spawn_one_npc_from_pool, upsert_npc_rumor,
-    with_room_graph,
+    get_room, get_room_name, get_schedule_for_entity, get_schedule_target, get_spawn_room_id,
+    spawn_one_npc_from_pool, upsert_npc_rumor, with_room_graph,
 };
 use crate::gametext;
 use crate::game::{game_time_now, run_view_simulation, Pos};
 use crate::npc::{
-    get_npc_npc_topic_by_id, get_shift_flavor, pick_random_npc_npc_topic_by_mask, run_job_matching_tick,
-    run_unobserved_world_tick, JobMatchParams, SEEK_JOB_MG_THRESHOLD_DEFAULT, UNOBSERVED_MAX_NPCS_PER_TICK,
+    get_npc_npc_topic_by_id, get_shift_flavor, movement_speed_for_title, pick_random_npc_npc_topic_by_mask,
+    run_job_matching_tick, run_unobserved_world_tick, seed_traveler_manager, JobMatchParams, MovementDef,
+    MovementType, NpcStep, TravelerManager, SEEK_JOB_MG_THRESHOLD_DEFAULT, UNOBSERVED_MAX_NPCS_PER_TICK,
 };
 use crate::npcnpc::{push_room_event, topic_mask_for_room, try_trigger_npc_npc_in_room};
 use crate::store::NpcRumor;
 
-use super::broadcast::{broadcast_room_views, send_narrate_to_room};
+use super::broadcast::{broadcast_room_views, refresh_room_views_for_room, send_narrate_to_room};
 use super::SessionStore;
 
 /// 對齊 Go `travelTickInterval`：每 30 個 tick 檢查觀測圈；無人時跑未觀測背景步進。
@@ -150,8 +151,13 @@ fn run_game_day_economy(now_unix: i64, game_day: i32, state: &Arc<Mutex<MainLoop
     }
 }
 
-/// NPC 池補滿（對齊 Go；Traveler 註冊待日後遷移）。
-fn run_npc_pool_tick(cfg: &Server, now_unix: i64, state: &Arc<Mutex<MainLoopTickState>>) {
+/// NPC 池補滿（對齊 Go）；新生成 NPC 註冊為腦驅動 Traveler。
+fn run_npc_pool_tick(
+    cfg: &Server,
+    now_unix: i64,
+    state: &Arc<Mutex<MainLoopTickState>>,
+    traveler_mgr: &Arc<Mutex<TravelerManager>>,
+) {
     let pool = cfg.npc_pool_size;
     let spawn_sec = cfg.npc_spawn_interval_sec;
     if pool <= 0 || spawn_sec <= 0 {
@@ -212,10 +218,25 @@ fn run_npc_pool_tick(cfg: &Server, now_unix: i64, state: &Arc<Mutex<MainLoopTick
     if let Err(e) = upsert_npc_rumor(rumor) {
         tracing::warn!("spawn upsert_npc_rumor: {e}");
     }
+    if let Ok(mut g) = traveler_mgr.lock() {
+        g.register(
+            new_id,
+            MovementDef {
+                kind: MovementType::Brain,
+                speed: 1,
+            },
+        );
+    }
 }
 
-/// 求職撮合 tick（對齊 Go `RunJobMatchingTick` ＋傳聞）。
-fn run_job_matching_section(sessions: &SessionStore, cfg: &Server, now_unix: i64, state: &Arc<Mutex<MainLoopTickState>>) {
+/// 求職撮合 tick（對齊 Go `RunJobMatchingTick` ＋傳聞）；新入職且有排班者註冊排班型 Traveler。
+fn run_job_matching_section(
+    sessions: &SessionStore,
+    cfg: &Server,
+    now_unix: i64,
+    state: &Arc<Mutex<MainLoopTickState>>,
+    traveler_mgr: &Arc<Mutex<TravelerManager>>,
+) {
     let mut jm_sec = sim().job_matching_interval_sec;
     if jm_sec <= 0 {
         jm_sec = 30;
@@ -243,6 +264,24 @@ fn run_job_matching_section(sessions: &SessionStore, cfg: &Server, now_unix: i64
     });
     if added.is_empty() {
         return;
+    }
+    for eid in &added {
+        if get_schedule_for_entity(eid).is_some() {
+            let mut title = get_npc_title_from_assignments(eid);
+            if title.is_empty() {
+                title = gametext::default_manager_title();
+            }
+            let speed = movement_speed_for_title(&title);
+            if let Ok(mut g) = traveler_mgr.lock() {
+                g.register(
+                    eid.clone(),
+                    MovementDef {
+                        kind: MovementType::Schedule,
+                        speed,
+                    },
+                );
+            }
+        }
     }
     broadcast_room_views(sessions, cfg);
     let mut job_ttl = sim().job_match_rumor_ttl_sec;
@@ -273,7 +312,7 @@ fn run_job_matching_section(sessions: &SessionStore, cfg: &Server, now_unix: i64
     }
 }
 
-/// 排班換時：心境時段、`ApplySchedules` 敘事、廣播視野、嘗試交班主題 NPC↔NPC（對齊 Go；實際走路仍待 Traveler）。
+/// 排班換時：心境時段、`ApplySchedules` 敘事、廣播視野、嘗試交班主題 NPC↔NPC（對齊 Go；逐步位移由 `TravelerManager` 處理）。
 fn run_schedule_hour_section(
     sessions: &SessionStore,
     cfg: &Server,
@@ -400,8 +439,67 @@ fn build_active_room_ids(sessions: &SessionStore, g: &crate::db::RoomGraph) -> H
     out
 }
 
-/// 每 `TRAVEL_TICK_INTERVAL` 次 tick：若觀測圈為空則跑未觀測世界步進（無 `TravelerManager` 時仍對齊 Go 無人分支）。
-fn run_travel_unobserved_section(sessions: &SessionStore, hour: i32, state: &Arc<Mutex<MainLoopTickState>>) {
+/// 發佈逐步移動敘事、房間事件與視野刷新（對齊 Go `travelSteps` 迴圈；腦驅動抵達效果仍待遷移）。
+fn apply_travel_steps(
+    sessions: &SessionStore,
+    cfg: &Server,
+    hour: i32,
+    steps: Vec<NpcStep>,
+    g: &crate::db::RoomGraph,
+) {
+    if steps.is_empty() {
+        return;
+    }
+    let rf = gametext::runtime_fmt();
+    for step in steps {
+        let old_name = g.room_name(&step.old_room);
+        let new_name = g.room_name(&step.new_room);
+        let leave_text = sprintf_s(&rf.travel_leave_fmt, &[step.npc_name.as_str(), new_name.as_str()]);
+        let mut arrive_text = sprintf_s(&rf.travel_arrive_fmt, &[step.npc_name.as_str(), old_name.as_str()]);
+        if let Some(target) = get_schedule_target(&step.entity_id, hour)
+            && target.room == step.new_room
+        {
+            if target.is_work {
+                let mut occ = get_npc_title_from_assignments(&step.entity_id);
+                if occ.is_empty() {
+                    occ = gametext::occupation_clerk();
+                }
+                let person = get_npc_person_display_name(&step.entity_id).unwrap_or_default();
+                let fl = get_shift_flavor(&occ, &person, true);
+                if !fl.is_empty() {
+                    arrive_text = fl;
+                }
+            } else {
+                arrive_text = sprintf_s(&rf.wander_arrive_home, &[step.npc_name.as_str()]);
+            }
+        }
+        send_narrate_to_room(sessions, &step.old_room, &leave_text);
+        send_narrate_to_room(sessions, &step.new_room, &arrive_text);
+        push_room_event(
+            &step.old_room,
+            "leave",
+            &step.npc_name,
+            &sprintf_s(&rf.push_leave_fmt, &[new_name.as_str()]),
+        );
+        push_room_event(
+            &step.new_room,
+            "arrive",
+            &step.npc_name,
+            &sprintf_s(&rf.push_arrive_fmt, &[old_name.as_str()]),
+        );
+        refresh_room_views_for_room(sessions, cfg, &step.old_room);
+        refresh_room_views_for_room(sessions, cfg, &step.new_room);
+    }
+}
+
+/// 每 `TRAVEL_TICK_INTERVAL` 次 tick：無觀測則 `RunUnobservedWorldTick`；有觀測則 `TravelerManager.tick`。
+fn run_travel_section(
+    sessions: &SessionStore,
+    cfg: &Server,
+    hour: i32,
+    state: &Arc<Mutex<MainLoopTickState>>,
+    traveler_mgr: &Arc<Mutex<TravelerManager>>,
+) {
     let fire = {
         let mut st = state.lock().expect("main loop state poisoned");
         st.travel_tick_count += 1;
@@ -419,12 +517,23 @@ fn run_travel_unobserved_section(sessions: &SessionStore, hour: i32, state: &Arc
         let active = build_active_room_ids(sessions, g);
         if active.is_empty() {
             run_unobserved_world_tick(Some(g), hour, UNOBSERVED_MAX_NPCS_PER_TICK);
+            return;
         }
+        let steps = traveler_mgr
+            .lock()
+            .expect("traveler mgr poisoned")
+            .tick(g, hour, Some(&active));
+        apply_travel_steps(sessions, cfg, hour, steps, g);
     });
 }
 
 /// 單次 tick（對齊 Go `game.Loop` 回呼內順序）。
-fn run_simulation_tick(sessions: &SessionStore, cfg: &Server, state: &Arc<Mutex<MainLoopTickState>>) {
+fn run_simulation_tick(
+    sessions: &SessionStore,
+    cfg: &Server,
+    state: &Arc<Mutex<MainLoopTickState>>,
+    traveler_mgr: &Arc<Mutex<TravelerManager>>,
+) {
     run_view_simulation(Vec::<Pos>::new, None);
 
     let now_unix = SystemTime::now()
@@ -496,14 +605,18 @@ fn run_simulation_tick(sessions: &SessionStore, cfg: &Server, state: &Arc<Mutex<
     }
 
     run_game_day_economy(now_unix, game_day, state);
-    run_npc_pool_tick(cfg, now_unix, state);
-    run_job_matching_section(sessions, cfg, now_unix, state);
+    run_npc_pool_tick(cfg, now_unix, state, traveler_mgr);
+    run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
     run_schedule_hour_section(sessions, cfg, hour, state);
-    run_travel_unobserved_section(sessions, hour, state);
+    run_travel_section(sessions, cfg, hour, state, traveler_mgr);
 }
 
 /// 在 Tokio runtime 上依 `cfg.tick_interval_ms` 週期執行主迴圈片段（與 Axum 並行）。
 pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
+    let traveler_mgr = Arc::new(Mutex::new(TravelerManager::new()));
+    if let Err(e) = seed_traveler_manager(&traveler_mgr) {
+        tracing::warn!("seed_traveler_manager: {e}");
+    }
     let tick_state = Arc::new(Mutex::new(MainLoopTickState {
         random_dialogue_ticks: initial_random_dialogue_ticks(),
         last_rumor_decay: None,
@@ -522,8 +635,9 @@ pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
             let sessions = Arc::clone(&sessions);
             let cfg = cfg.clone();
             let tick_state = Arc::clone(&tick_state);
+            let tm = Arc::clone(&traveler_mgr);
             let res = tokio::task::spawn_blocking(move || {
-                run_simulation_tick(&sessions, &cfg, &tick_state);
+                run_simulation_tick(&sessions, &cfg, &tick_state, &tm);
             })
             .await;
             if res.is_err() {

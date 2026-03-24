@@ -7,11 +7,19 @@ use std::sync::{OnceLock, RwLock};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Default, Clone)]
+struct RoleMovementJson {
+    #[serde(default)]
+    speed: i32,
+}
+
+#[derive(Debug, Deserialize, Default, Clone)]
 struct RoleBehaviorJson {
     #[serde(default)]
     shift_arrive: String,
     #[serde(default)]
     shift_leave: String,
+    #[serde(default)]
+    movement: Option<RoleMovementJson>,
 }
 
 #[derive(Debug, Deserialize, Default)]
@@ -53,4 +61,21 @@ pub fn get_shift_flavor(title: &str, npc_name: &str, arriving: bool) -> String {
         &role.shift_leave
     };
     s.replace("{name}", npc_name)
+}
+
+/// 依職稱讀取 `movement.speed`（對齊 Go `GetMovementDefForTitle` 之 speed）；無則為 1。
+#[must_use]
+pub fn movement_speed_for_title(title: &str) -> i32 {
+    let g = cache().read().expect("behaviors poisoned");
+    let Some(ref bd) = *g else {
+        return 1;
+    };
+    let Some(role) = bd.roles.get(title) else {
+        return 1;
+    };
+    role.movement
+        .as_ref()
+        .map(|m| m.speed)
+        .filter(|&s| s > 0)
+        .unwrap_or(1)
 }

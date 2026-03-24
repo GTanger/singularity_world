@@ -115,6 +115,26 @@ pub fn send_room_view_to_session(session: &Session, view: &RoomView, viewer_play
 }
 
 /// 對所有在線玩家推送其當前房間視野（對齊 Go `BroadcastRoomViews`）。
+/// 對指定房間內在線玩家推送最新視野（對齊 Go `RefreshRoomViews`）。
+pub fn refresh_room_views_for_room(store: &super::session::SessionStore, cfg: &Server, room_id: &str) {
+    if room_id.is_empty() {
+        return;
+    }
+    let now = game::now_unix();
+    let (_, gh, _, _) = game::game_time_now(now, cfg.game_time_epoch_unix, cfg.game_time_scale);
+    let Ok(Some(view)) = game::get_room_view(room_id, gh) else {
+        return;
+    };
+    for s in store.all_sessions() {
+        let Ok(rid) = db::get_entity_room(&s.player_id) else {
+            continue;
+        };
+        if rid == room_id {
+            send_room_view_to_session(&s, &view, &s.player_id, cfg);
+        }
+    }
+}
+
 pub fn broadcast_room_views(store: &super::session::SessionStore, cfg: &Server) {
     let now = game::now_unix();
     let (_, gh, _, _) = game::game_time_now(now, cfg.game_time_epoch_unix, cfg.game_time_scale);
