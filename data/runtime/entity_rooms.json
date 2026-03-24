@@ -10,7 +10,7 @@
     },
     {
       "entity_id": "npc_dh7lywtpacw1",
-      "room_id": "city_life_15f_storage"
+      "room_id": "city_life_15f"
     },
     {
       "entity_id": "npc_dh7ln0pmebvc",
@@ -18,11 +18,11 @@
     },
     {
       "entity_id": "npc_dh7ljyggbjh5",
-      "room_id": "city_life_10f_u101_liv"
+      "room_id": "city_life_10f_u101_bat"
     },
     {
       "entity_id": "npc_dh7m0fyaaldh",
-      "room_id": "city_life_10f_u103_liv"
+      "room_id": "city_life_10f_u103_balb"
     },
     {
       "entity_id": "npc_dh7lxdp40upk",
@@ -34,11 +34,11 @@
     },
     {
       "entity_id": "試話",
-      "room_id": "city_life_4f_u041_liv"
+      "room_id": "city_life_4f_u041_btm"
     },
     {
       "entity_id": "npc_dh7lvuc9y0a1",
-      "room_id": "city_life_7f_u076_liv"
+      "room_id": "city_life_7f_u076_btm"
     },
     {
       "entity_id": "葉卅",

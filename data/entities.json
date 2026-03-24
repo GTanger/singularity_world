@@ -57,7 +57,7 @@
       "display_title": "向偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4788}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4791}]",
       "disposition": -100
     },
     {
@@ -99,7 +99,7 @@
       "display_title": "司馬麗淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":3986}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":3988}]",
       "disposition": -100
     },
     {
@@ -120,7 +120,7 @@
       "display_title": "金玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4623}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4624}]",
       "disposition": -100
     },
     {
@@ -141,7 +141,7 @@
       "display_title": "袁寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4652}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4653}]",
       "disposition": -100
     },
     {
@@ -162,7 +162,7 @@
       "display_title": "史梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4732}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4734}]",
       "disposition": -100
     },
     {
@@ -183,7 +183,7 @@
       "display_title": "陶紅玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4703}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4708}]",
       "disposition": -100
     },
     {
@@ -204,7 +204,7 @@
       "display_title": "楊康偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4706}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4709}]",
       "disposition": -100
     },
     {
@@ -225,7 +225,7 @@
       "display_title": "劉紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4705}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":4711}]",
       "disposition": -100
     },
     {
