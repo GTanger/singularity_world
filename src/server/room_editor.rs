@@ -415,10 +415,9 @@ pub async fn delete(
             }
         }
     }
-    if let Some(st) = store::get_store() {
-        if let Ok(mut s) = st.write() {
+    if let Some(st) = store::get_store()
+        && let Ok(mut s) = st.write() {
             s.delete_room_data(&id);
-        }
     }
     Json(serde_json::json!({"ok": true, "deleted": id})).into_response()
 }

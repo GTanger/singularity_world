@@ -33,7 +33,7 @@ if [[ ! -f "$CARGO_OUT" ]]; then
   done
 fi
 mkdir -p bin
-cp "$CARGO_OUT" bin/server-rust
+install -m 755 "$CARGO_OUT" bin/server-rust
 
 # 4) 重啟服務
 if [ "$HAS_SYSTEMD" = true ]; then
