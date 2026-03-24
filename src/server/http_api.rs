@@ -14,13 +14,37 @@ pub async fn design_constants() -> impl IntoResponse {
     Json(config::design_constants())
 }
 
+// ── 管理：檢查管理金鑰 ──
+
+#[derive(Deserialize)]
+pub struct AdminQuery {
+    pub mg_key: Option<String>,
+}
+
+fn is_admin_authorized(cfg: &config::Server, query: &AdminQuery) -> bool {
+    // 若未設定管理金鑰，預設開放（相容開發模式）
+    if cfg.management_key.is_empty() {
+        return true;
+    }
+    query.mg_key.as_deref() == Some(&cfg.management_key)
+}
+
 // ── /api/admin/wipe-entities ──
 
-pub async fn wipe_entities() -> impl IntoResponse {
+pub async fn wipe_entities(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權的管理操作"}))).into_response();
+    }
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = st.write().unwrap();
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     if let Err(e) = s.clear_all_entities() {
         return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
     }
@@ -85,7 +109,10 @@ pub async fn rooms_data() -> impl IntoResponse {
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let s = st.read().unwrap();
+    let s = match st.read() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     let ids = s.room_ids();
     let mut rooms = Vec::with_capacity(ids.len());
     let mut exits = Vec::with_capacity(256);
@@ -112,11 +139,20 @@ pub async fn rooms_data() -> impl IntoResponse {
 // ── /api/rooms (admin CRUD) ──
 
 // GET /api/rooms → 列出所有房間
-pub async fn list_rooms() -> impl IntoResponse {
+pub async fn list_rooms(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let s = st.read().unwrap();
+    let s = match st.read() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     let ids = s.room_ids();
     let mut list = Vec::with_capacity(ids.len());
     for id in &ids {
@@ -140,7 +176,14 @@ pub struct CreateRoomReq {
     description: String,
 }
 
-pub async fn create_room(Json(body): Json<CreateRoomReq>) -> impl IntoResponse {
+pub async fn create_room(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+    Json(body): Json<CreateRoomReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     if body.id.trim().is_empty() {
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"need id, name, description"}))).into_response();
     }
@@ -157,7 +200,10 @@ pub async fn create_room(Json(body): Json<CreateRoomReq>) -> impl IntoResponse {
         objects: vec![],
     };
     {
-        let mut s = st.write().unwrap();
+        let mut s = match st.write() {
+            Ok(guard) => guard,
+            Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+        };
         if s.get_room(&body.id).is_some() {
             return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"room id already exists"}))).into_response();
         }
@@ -175,11 +221,22 @@ pub struct UpdateRoomReq {
     description: String,
 }
 
-pub async fn update_room(Path(id): Path<String>, Json(body): Json<UpdateRoomReq>) -> impl IntoResponse {
+pub async fn update_room(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+    Path(id): Path<String>,
+    Json(body): Json<UpdateRoomReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = st.write().unwrap();
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     let Some(mut room) = s.get_room(&id) else {
         return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
     };
@@ -191,14 +248,24 @@ pub async fn update_room(Path(id): Path<String>, Json(body): Json<UpdateRoomReq>
 }
 
 // DELETE /api/rooms/:id → 刪除房間
-pub async fn delete_room(Path(id): Path<String>) -> impl IntoResponse {
+pub async fn delete_room(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+    Path(id): Path<String>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
     if db::get_spawn_room_id() == id {
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"cannot delete spawn room (界壁)"}))).into_response();
     }
-    let mut s = st.write().unwrap();
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     s.delete_room_data(&id);
     Json(serde_json::json!({"deleted": id})).into_response()
 }
@@ -210,14 +277,22 @@ pub struct AddExitReq {
     to_room_id: String,
 }
 
-pub async fn add_exit(Path(id): Path<String>, Json(body): Json<AddExitReq>) -> impl IntoResponse {
-    if body.direction.is_empty() || body.to_room_id.is_empty() {
-        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"need direction, to_room_id"}))).into_response();
+pub async fn add_exit(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+    Path(id): Path<String>,
+    Json(body): Json<AddExitReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
     }
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = st.write().unwrap();
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     let Some(room) = s.get_room(&id) else {
         return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
     };
@@ -239,11 +314,21 @@ pub async fn add_exit(Path(id): Path<String>, Json(body): Json<AddExitReq>) -> i
 }
 
 // DELETE /api/rooms/:from_id/exits/:direction → 移除出口
-pub async fn remove_exit(Path((from_id, direction)): Path<(String, String)>) -> impl IntoResponse {
+pub async fn remove_exit(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+    Path((from_id, direction)): Path<(String, String)>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = st.write().unwrap();
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     let Some(room) = s.get_room(&from_id) else {
         return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
     };

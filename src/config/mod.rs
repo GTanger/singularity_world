@@ -38,6 +38,7 @@ pub struct Server {
     pub npc_npc_social_tick_min_no_player: i32,
     pub npc_npc_social_tick_extra_no_player: i32,
     pub npc_npc_dialogue_score_threshold: i32,
+    pub management_key: String,
 }
 
 /// 設計常數：1 格＝1m＝30px、角色圓 24px、地形字 30px。
@@ -121,7 +122,9 @@ struct ServerJson {
     #[serde(default)]
     npc_npc_social_tick_extra_no_player: i32,
     #[serde(default)]
-    npc_npc_dialogue_score_threshold: i32,
+    pub npc_npc_dialogue_score_threshold: i32,
+    #[serde(default)]
+    pub management_key: String,
 }
 
 /// 從 JSON 檔讀取 server_defaults。
@@ -206,6 +209,7 @@ impl Server {
             npc_npc_social_tick_min_no_player: sj.npc_npc_social_tick_min_no_player,
             npc_npc_social_tick_extra_no_player: sj.npc_npc_social_tick_extra_no_player,
             npc_npc_dialogue_score_threshold: sj.npc_npc_dialogue_score_threshold,
+            management_key: sj.management_key,
         };
 
         // 環境變數覆寫
@@ -298,6 +302,9 @@ impl Server {
             } else if let Ok(n) = s.parse::<i32>() {
                 cfg.npc_npc_dialogue_score_threshold = n;
             }
+        }
+        if let Ok(k) = env::var("MG_KEY") {
+            cfg.management_key = k.trim().to_string();
         }
 
         cfg

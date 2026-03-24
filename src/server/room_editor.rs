@@ -9,7 +9,13 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 
-use crate::{model, store};
+use crate::{model, store, config};
+use crate::server::http_api::{AdminQuery};
+
+fn is_admin_authorized(cfg: &config::Server, query: &AdminQuery) -> bool {
+    if cfg.management_key.is_empty() { return true; }
+    query.mg_key.as_deref() == Some(&cfg.management_key)
+}
 
 // ── 型別（對齊 Go room_editor_types.go） ──
 
@@ -183,7 +189,10 @@ fn normalize_id_for_file(id: &str) -> String {
 
 fn ensure_store_room(room: &RoomEditorRoomFile) {
     let Some(st) = store::get_store() else { return };
-    let mut s = st.write().unwrap();
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => return, // 靜靜失敗
+    };
     let r = model::Room {
         id: room.id.clone(),
         name: room.name.clone(),
@@ -244,11 +253,20 @@ fn ensure_move_object_for_exit(room: &mut RoomEditorRoomFile, to_room_id: &str, 
 // ══════════ Handlers ══════════
 
 // GET /api/room-editor/graph
-pub async fn graph() -> impl IntoResponse {
+pub async fn graph(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let s = st.read().unwrap();
+    let s = match st.read() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     let mut ids = s.room_ids();
     ids.sort();
     let mut nodes = Vec::with_capacity(ids.len());
@@ -286,7 +304,14 @@ pub struct CreateReq {
     clone_from: String,
 }
 
-pub async fn create(Json(req): Json<CreateReq>) -> impl IntoResponse {
+pub async fn create(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+    Json(req): Json<CreateReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     if req.id.trim().is_empty() {
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"invalid request"}))).into_response();
     }
@@ -336,7 +361,15 @@ pub struct UpdateReq {
     objects: Vec<model::RoomObject>,
 }
 
-pub async fn update(AxPath(id): AxPath<String>, Json(req): Json<UpdateReq>) -> impl IntoResponse {
+pub async fn update(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+    AxPath(id): AxPath<String>,
+    Json(req): Json<UpdateReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     let (mut f, path) = match read_room_file_by_id(&id) {
         Ok(v) => v,
         Err(_) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response(),
@@ -354,7 +387,14 @@ pub async fn update(AxPath(id): AxPath<String>, Json(req): Json<UpdateReq>) -> i
 }
 
 // DELETE /api/room-editor/room/:id
-pub async fn delete(AxPath(id): AxPath<String>) -> impl IntoResponse {
+pub async fn delete(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+    AxPath(id): AxPath<String>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     let (_, path) = match read_room_file_by_id(&id) {
         Ok(v) => v,
         Err(_) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response(),
@@ -376,8 +416,9 @@ pub async fn delete(AxPath(id): AxPath<String>) -> impl IntoResponse {
         }
     }
     if let Some(st) = store::get_store() {
-        let mut s = st.write().unwrap();
-        s.delete_room_data(&id);
+        if let Ok(mut s) = st.write() {
+            s.delete_room_data(&id);
+        }
     }
     Json(serde_json::json!({"ok": true, "deleted": id})).into_response()
 }
@@ -395,7 +436,14 @@ pub struct LinkReq {
     reverse_direction: String,
 }
 
-pub async fn link_create(Json(req): Json<LinkReq>) -> impl IntoResponse {
+pub async fn link_create(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+    Json(req): Json<LinkReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     if req.from.is_empty() || req.to.is_empty() {
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"invalid request"}))).into_response();
     }
@@ -426,7 +474,14 @@ pub async fn link_create(Json(req): Json<LinkReq>) -> impl IntoResponse {
 }
 
 // DELETE /api/room-editor/link
-pub async fn link_delete(Json(req): Json<LinkReq>) -> impl IntoResponse {
+pub async fn link_delete(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+    Json(req): Json<LinkReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     if req.from.is_empty() || req.to.is_empty() {
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"invalid request"}))).into_response();
     }
@@ -452,7 +507,14 @@ pub struct LayoutReq {
     positions: HashMap<String, RoomEditorPos>,
 }
 
-pub async fn layout(Json(req): Json<LayoutReq>) -> impl IntoResponse {
+pub async fn layout(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+    Json(req): Json<LayoutReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     if let Err(e) = save_layout(&req.positions) {
         return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
     }
@@ -460,11 +522,20 @@ pub async fn layout(Json(req): Json<LayoutReq>) -> impl IntoResponse {
 }
 
 // POST /api/room-editor/reload
-pub async fn reload() -> impl IntoResponse {
+pub async fn reload(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = st.write().unwrap();
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
     if let Err(e) = s.reload_rooms() {
         return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
     }
@@ -472,12 +543,25 @@ pub async fn reload() -> impl IntoResponse {
 }
 
 // GET /api/room-editor/groups
-pub async fn groups_get() -> impl IntoResponse {
-    Json(load_groups())
+pub async fn groups_get(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
+    Json(load_groups()).into_response()
 }
 
 // POST /api/room-editor/groups
-pub async fn groups_post(Json(groups): Json<Vec<Vec<String>>>) -> impl IntoResponse {
+pub async fn groups_post(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    axum::extract::Query(q): axum::extract::Query<AdminQuery>,
+    Json(groups): Json<Vec<Vec<String>>>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
     if let Err(e) = save_groups(&groups) {
         return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
     }

@@ -132,7 +132,7 @@ fn reset_ticks_no_player(cfg: &Server) -> i32 {
 /// 遊戲日換日時扣鎂並可寫經濟 pulse 傳聞（對齊 Go `lastExpenseDay` 區塊）。
 fn run_game_day_economy(now_unix: i64, game_day: i32, state: &Arc<Mutex<MainLoopTickState>>) {
     let should = {
-        let mut st = state.lock().expect("main loop state poisoned");
+        let Ok(mut st) = state.lock() else { return; };
         if game_day != st.last_expense_game_day {
             st.last_expense_game_day = game_day;
             true
@@ -199,7 +199,7 @@ fn run_npc_pool_tick(
         return;
     }
     let fire = {
-        let mut st = state.lock().expect("main loop state poisoned");
+        let Ok(mut st) = state.lock() else { return; };
         if st.last_spawn_check.elapsed() >= Duration::from_secs(spawn_sec as u64) {
             st.last_spawn_check = Instant::now();
             true
@@ -277,7 +277,7 @@ fn run_job_matching_section(
         jm_sec = 30;
     }
     let fire = {
-        let mut st = state.lock().expect("main loop state poisoned");
+        let Ok(mut st) = state.lock() else { return; };
         periodic_fire(&mut st.last_job_matching, Duration::from_secs(jm_sec as u64))
     };
     if !fire {
@@ -355,7 +355,7 @@ fn run_schedule_hour_section(
     state: &Arc<Mutex<MainLoopTickState>>,
 ) {
     let run = {
-        let mut st = state.lock().expect("main loop state poisoned");
+        let Ok(mut st) = state.lock() else { return; };
         if hour != st.last_schedule_hour {
             st.last_schedule_hour = hour;
             true
@@ -548,7 +548,7 @@ fn run_travel_section(
     traveler_mgr: &Arc<Mutex<TravelerManager>>,
 ) {
     let fire = {
-        let mut st = state.lock().expect("main loop state poisoned");
+        let Ok(mut st) = state.lock() else { return; };
         st.travel_tick_count += 1;
         if st.travel_tick_count >= effective_travel_tick_interval() {
             st.travel_tick_count = 0;
@@ -566,10 +566,10 @@ fn run_travel_section(
             run_unobserved_world_tick(Some(g), hour, UNOBSERVED_MAX_NPCS_PER_TICK);
             return;
         }
-        let steps = traveler_mgr
-            .lock()
-            .expect("traveler mgr poisoned")
-            .tick(g, hour, Some(&active));
+        let steps = match traveler_mgr.lock() {
+            Ok(mut guard) => guard.tick(g, hour, Some(&active)),
+            Err(_) => vec![],
+        };
         apply_travel_steps(sessions, cfg, hour, now_unix, steps, g);
     });
 }
@@ -577,7 +577,7 @@ fn run_travel_section(
 /// 閒置 tick：NPC↔NPC AI、微互動、在職巡邏與閒置動作（對齊 Go 主迴圈末段）。
 fn run_idle_wander_section(sessions: &SessionStore, cfg: &Server, hour: i32, state: &Arc<Mutex<MainLoopTickState>>) {
     let run = {
-        let mut st = state.lock().expect("main loop state poisoned");
+        let Ok(mut st) = state.lock() else { return; };
         st.idle_tick_count += 1;
         if st.idle_tick_count >= st.next_idle_trigger {
             st.idle_tick_count = 0;
@@ -715,7 +715,7 @@ fn run_simulation_tick(
     let digest_dur = Duration::from_secs((rd_min as u64).saturating_mul(60));
 
     let (fire_decay, fire_digest) = {
-        let mut st = state.lock().expect("main loop state poisoned");
+        let Ok(mut st) = state.lock() else { return; };
         let fd = periodic_fire(&mut st.last_rumor_decay, decay_dur);
         let fdi = periodic_fire(&mut st.last_rumor_digest, digest_dur);
         (fd, fdi)
@@ -731,7 +731,7 @@ fn run_simulation_tick(
     let ollama_ready = !cfg.ollama_base_url.is_empty() && !cfg.ollama_model.is_empty();
     let mut do_trigger: Option<(String, i32)> = None;
     {
-        let mut st = state.lock().expect("main loop state poisoned");
+        let Ok(mut st) = state.lock() else { return; };
         st.random_dialogue_ticks -= 1;
         if st.random_dialogue_ticks <= 0 && ollama_ready {
             let room_set = sessions.player_room_ids();
