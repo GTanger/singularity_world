@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # 奇點世界 — Rust 版一鍵啟動：閘門 → 建置 → 啟動。
-# 用法：在專案根目錄執行 ./start-rust
-# 對齊 Go 版 ./start 的流程，替換為 Rust 工具鏈。
+# 用法：./start
 
 set -e
 cd "$(dirname "$0")"
@@ -10,39 +9,25 @@ CHATMERY_DIR="${CHATMERY_DIR:-$SW_DIR/../chatmery}"
 
 PORT=1721
 
-# 1) 先殺佔用 1721 的 process
-if command -v lsof &>/dev/null; then
-  pids=$(lsof -ti :$PORT 2>/dev/null) || true
-  if [[ -n "$pids" ]]; then
-    echo "結束佔用 :$PORT 的 process：$pids"
-    kill $pids 2>/dev/null || true
-    sleep 1
-  fi
-elif command -v fuser &>/dev/null; then
-  if fuser ${PORT}/tcp &>/dev/null; then
-    echo "結束佔用 :$PORT 的 process…"
-    fuser -k ${PORT}/tcp 2>/dev/null || true
-    sleep 1
-  fi
+# 1) 偵測環境與服務
+HAS_SYSTEMD=false
+if systemctl --user list-unit-files singularity.service &>/dev/null; then
+  HAS_SYSTEMD=true
 fi
-pkill -x chatmery-web 2>/dev/null || true
-sleep 1
 
 # 2) 嚴格閘門（Rust 版：clippy → test → checkrooms）
-echo "cargo clippy -D warnings…"
+echo "--- [1/3] 品質檢查 (Clippy) ---"
 cargo clippy -- -D warnings
-echo "cargo test…"
+echo "--- [2/3] 邏輯測試 (Test) ---"
 cargo test
-echo "檢查房間 JSON（checkrooms -brackets -strict）…"
+echo "--- [3/3] 房間契約 (Checkrooms) ---"
 cargo run --bin checkrooms -- -brackets -strict
 
 # 3) 建置奇點（Rust release）
-echo "建置奇點（Rust release）…"
+echo "--- 建置執行檔 (Release) ---"
 cargo build --release
-# 偵測 cargo target 目錄（支援自訂 CARGO_TARGET_DIR）
 CARGO_OUT="${CARGO_TARGET_DIR:-target}/release/singularity_world"
 if [[ ! -f "$CARGO_OUT" ]]; then
-  # 嘗試常見自訂路徑
   for candidate in "$HOME/target_ram/release/singularity_world" "target/release/singularity_world"; do
     if [[ -f "$candidate" ]]; then CARGO_OUT="$candidate"; break; fi
   done
@@ -50,33 +35,28 @@ fi
 mkdir -p bin
 cp "$CARGO_OUT" bin/server-rust
 
-# 4) 建置並啟動 Chatmery Web（若目錄存在）
+# 4) 重啟服務
+if [ "$HAS_SYSTEMD" = true ]; then
+  echo "--- 透過 systemd 重啟服務 ---"
+  systemctl --user restart singularity.service
+  sleep 1
+  systemctl --user status singularity.service | head -n 5
+else
+  echo "--- 手動重啟 (nohup) ---"
+  # 先殺舊的
+  pids=$(lsof -ti :$PORT 2>/dev/null) || true
+  [[ -n "$pids" ]] && kill $pids && sleep 1
+  
+  if [[ -f "$SW_DIR/.env" ]]; then
+    set -a; source "$SW_DIR/.env"; set +a
+  fi
+  
+  nohup env PORT=$PORT ./bin/server-rust >> sw.log 2>&1 &
+  sleep 2
+  echo "已啟動。log：$SW_DIR/sw.log"
+fi
+
+# 5) Chatmery Web（若存在則提示手動或自動啟動，此處保持最小化）
 if [[ -d "$CHATMERY_DIR" ]]; then
-  echo "建置 Chatmery Web…"
-  ( cd "$CHATMERY_DIR" && go build -o chatmery-web ./cmd/chatmery-web )
-  echo "啟動 Chatmery Web（:1722）…"
-  (
-    cd "$CHATMERY_DIR"
-    if [[ -f .env ]]; then
-      set -a
-      source .env 2>/dev/null || true
-      set +a
-    fi
-    nohup env CHATMERY_WEB_PORT=1722 ./chatmery-web >> chatmery-web.log 2>&1
-  ) &
-  sleep 0.5
+  echo "提示：偵測到 Chatmery 目錄，若需同步啟動請使用 ./start-with-chatmery"
 fi
-
-# 5) 專案根 .env
-if [[ -f "$SW_DIR/.env" ]]; then
-  set -a
-  # shellcheck disable=SC1091
-  source "$SW_DIR/.env"
-  set +a
-fi
-
-# 6) 啟動奇點（Rust，後台）
-echo "啟動奇點 Rust（PORT=$PORT）…"
-nohup env PORT=$PORT ./bin/server-rust >> sw.log 2>&1 &
-sleep 2
-echo "已啟動，可關閉終端。奇點 log：$SW_DIR/sw.log"
