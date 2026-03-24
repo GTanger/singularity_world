@@ -4,46 +4,39 @@
 英文專案名：`singularity_world`
 
 **設計核心：從有限框架延伸出無限可能。**  
-體驗端以手機使用情境為主，現階段無上架規劃。
+體驗端以手機使用情境為主，現階段為 PWA 運作模式。
 
 ---
 
 ## 專案現況
 
-- 後端：Go 服務（`main.go`），以 JSON/store 作為執行期資料來源。
-- 主要資料：`data/rooms/editor/`（一房一檔）、`data/entities.json`、`data/runtime/*`。
-- 前端：文字遊戲主頁 + 管理工具頁（地圖檢視器、房間編輯器、星圖、管理頁）。
-- 浮生城資料已擴展至 `1F~15F`：民居樓層、電梯、公共機能層、設備管路層、**13F 物流服務／14F 社區健康／15F 管委行政** 與多格動線均已落檔。
+- **後端：Rust 服務**（Axum 0.8 + Tokio），全面取代原 Go 實作。
+- **資料儲存**：JSON/store 作為唯一執行期資料來源（No DB）。
+- **主要路徑**：`data/rooms/editor/`（房間資料）、`data/entities.json`（實體狀態）、`data/runtime/`（執行期快照）。
+- **前端**：原生 HTML/CSS/JS (PWA)，提供遊戲頁面與管理工具組（房間編輯器、地圖、星圖）。
+- **進度**：Phase 0–5 遷移已全數完成。
 
 ---
 
 ## 快速啟動
 
-### 啟動前嚴格閘門（契約優先）
+### 啟動前嚴格閘門（品質與契約優先）
 
-本專案以 **Go 為實作妥協**，但對 **靜態與契約** 採 **類 Rust `cargo check` 思維**：未通過不得進入可執行檔建置。
+本專案將 **靜態檢查與資料契約** 視為建置前置條件。`./start-rust` 會依序執行：
 
-`./start` 與 `./start-with-chatmery` 在殺舊行程後、建置 `server` 前會依序執行：
+1. **`cargo clippy -- -D warnings`**：程式碼品質檢查（不可有任何警告）。
+2. **`cargo test`**：單元與整合測試。
+3. **`cargo run --bin checkrooms -- -brackets -strict`**：房間 JSON 契約檢查（驗證觸發字與括號對應）。
 
-1. **`go vet ./...`**
-2. **`go test ./... -count=1`**
-3. **`checkrooms -brackets -strict`**（Move／Look 觸發字 + 〔〕必對應物件名）
-
-本機可單獨跑同一套（不必啟動服務）：
-
-```bash
-make verify
-```
-
-### 一鍵啟動（建議）
+### 一鍵啟動 (Rust)
 
 在專案根目錄執行：
 
 ```bash
-./start
+./start-rust
 ```
 
-用途：通過上述閘門後建置並啟動奇點服務（預設使用 1721）。
+用途：通過閘門後，建置 Release 版本並啟動伺服器（預設埠：1721）。
 
 ### 奇點 + Chatmery 一起啟動
 
@@ -51,101 +44,60 @@ make verify
 ./start-with-chatmery
 ```
 
-安裝 user-level 開機自啟：
+安裝 user-level 開機自啟（systemd）：
 
 ```bash
 ./start-with-chatmery --install
 ```
 
-systemd user 操作（詳見 `docs/開機啟動.md`）：
+---
 
-```bash
-systemctl --user start sw-with-chatmery
-systemctl --user stop sw-with-chatmery
-systemctl --user restart sw-with-chatmery
-systemctl --user status sw-with-chatmery
-```
+## 常用路由與 API
 
-### 手動建置與執行
-
-建議仍先 `make verify`。通過後：
-
-```bash
-go build -trimpath -o bin/server .
-./bin/server
-```
-
-指定埠：
-
-```bash
-PORT=1721 ./bin/server
-```
+- **遊戲端**：`/` (Index), `/ws` (WebSocket)
+- **工具端**：`/map_viewer`, `/room_editor`, `/star_chart`, `/admin`
+- **資料 API**：
+    - `/data/rooms.json`：全量地圖資料
+    - `/api/design-constants`：UI 常數同步
+    - `/api/room-editor/graph`：可視化編輯器圖資
+    - `/api/topology`：星圖演化拓撲
 
 ---
 
-## 常用路由（本機）
-
-- 遊戲主頁：`/`
-- WebSocket：`/ws`
-- 地圖檢視器：`/map_viewer`
-- 房間編輯器：`/room_editor`
-- 星圖：`/star_chart`
-- 管理頁：`/admin`
-- 房間資料 API：`/data/rooms.json`
-- 房編 API：`/api/room-editor/*`
-
----
-
-## 主要目錄
+## 主要目錄結構
 
 ```text
 singularity_world/
-├── main.go
-├── config/             # 伺服器與遊戲參數（含預設埠）
-├── server/             # HTTP/WS 路由、session、room editor API
-├── game/               # 遊戲主循環與行為流程
-├── entity/             # 實體與屬性模型
-├── economy/            # 經濟與資源流轉
-├── combat/             # 戰鬥判定與事件
-├── event/              # 事件資料處理
-├── store/              # JSON/store 載入與儲存
-├── data/
-│   ├── rooms/          # 房間資料（遞迴載入，主體在 rooms/editor）
-│   ├── runtime/        # 執行期快照（編輯器座標、NPC 狀態等）
-│   └── entities.json
-└── web/                # index/map_viewer/room_editor/star_chart/admin
+├── src/
+│   ├── main.rs         # 程式進入點
+│   ├── lib.rs          # 模組外括
+│   ├── server/         # Axum 路由、WS Hub、Session、Room Editor API
+│   ├── store/          # JSON 資料載入與 RwLock 狀態管理
+│   ├── db/             # 業務邏輯封裝（密碼驗證、地圖查詢、拓撲計算）
+│   ├── game/           # 遊戲主循環、NPC 模擬、動作分派 (do_action)
+│   ├── world/          # 世界地圖、區塊管理、地形顯示
+│   ├── combat/         # 戰鬥結算判定
+│   ├── npc/            # NPC 決策、話語池、社交觸發
+│   ├── ai/             # Ollama LLM 整合、Prompt 管理、內容過濾
+│   ├── bin/            # 獨立工具（如 checkrooms）
+│   └── roomcheck/      # 房間契約檢查邏輯庫
+├── data/               # 房間 JSON、設定檔、實體快照
+├── web/                # 前端靜態資源 (HTML/CSS/JS)
+├── archive/go/         # 已遷移的 Go 原始碼備份（不納入版控）
+└── docs/               # 設計文獻、遷移進度、API 文法
 ```
-
----
-
-## 房間資料約定
-
-- 一房一檔，實際來源以 `data/rooms/` 遞迴掃描為準。
-- 主編輯目錄：`data/rooms/editor/`。
-- `id` 必須全域唯一，`exits[].to` 必須指向存在的房間 `id`。
-- `objects` 可提供 `Move` 與 `move_to_room_id` 以支援物件式移動。
-- 地圖檢視器顏色依 `zone` 分組；浮生城已使用分層 zone（如 `citylife_4f`、`citylife_11f`、`citylife_12f`、`citylife_13f`、`citylife_14f`、`citylife_15f`）。
 
 ---
 
 ## 文件導覽
 
-- 文檔索引：`docs/文檔索引.md`
-- 協作約定：`docs/COLLABORATION.md`
-- 技術約束：`docs/技術約束規則.md`
-- 第一版可做清單：`docs/第一版可做清單.md`
-- 世界觀主參考：`docs/reference/世界觀：Token降維與生命演化.md`
+- **遷移對帳**：[`docs/migration/README.md`](docs/migration/README.md)
+- **文檔索引**：`docs/文檔索引.md`
+- **技術約束**：`docs/技術約束規則.md`
+- **世界觀主參考**：`docs/reference/世界觀：Token降維與生命演化.md`
 
-決策檔位於 `docs/decisions/`，現有主題包含：
-- 戰鬥統一規則
-- 插頭插座語意
-- 技術棧與架構
-- 空間與視野
-- 登錄與玩家模板
-- NPC/AI API 與預設規則
-- 架構整頓規劃
-- 觀測分級與行程約束
+決策記錄（ADRs）位於 `docs/decisions/`。
 
 ---
 
-*奇點世界專案*
+*奇點世界 — 萬物皆為 Token，演化永不止息。*
