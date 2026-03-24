@@ -6,7 +6,6 @@
 set -e
 SW_DIR="$(cd "$(dirname "$0")" && pwd)"
 CHATMERY_DIR="${CHATMERY_DIR:-$SW_DIR/../chatmery}"
-export PATH="/usr/local/go/bin:${PATH}"
 
 ts() { date '+%Y-%m-%d %H:%M:%S'; }
 
@@ -58,20 +57,27 @@ fi
 pkill -x chatmery-web 2>/dev/null || true
 sleep 1
 
-# 3) 嚴格閘門（vet → test → checkrooms -brackets -strict；失敗則中止）
-echo "[$(ts)] go vet ./…"
-( cd "$SW_DIR" && go vet ./... )
-echo "[$(ts)] go test ./…"
-( cd "$SW_DIR" && go test ./... -count=1 )
+# 3) 嚴格閘門（Rust 版：clippy → test → checkrooms）
+echo "[$(ts)] cargo clippy -D warnings…"
+( cd "$SW_DIR" && cargo clippy -- -D warnings )
+echo "[$(ts)] cargo test…"
+( cd "$SW_DIR" && cargo test )
 echo "[$(ts)] 檢查房間 JSON（checkrooms -brackets -strict）…"
-mkdir -p "$SW_DIR/bin" "$SW_DIR/data"
-( cd "$SW_DIR" && go build -buildvcs=false -trimpath -o bin/checkrooms ./cmd/checkrooms && ./bin/checkrooms -brackets -strict )
+( cd "$SW_DIR" && cargo run --bin checkrooms -- -brackets -strict )
 
-# 4) 建置奇點
-echo "[$(ts)] 建置奇點…"
-( cd "$SW_DIR" && go build -buildvcs=false -trimpath -o bin/server . )
+# 4) 建置奇點（Rust release）
+echo "[$(ts)] 建置奇點（Rust release）…"
+( cd "$SW_DIR" && cargo build --release )
+CARGO_OUT="${CARGO_TARGET_DIR:-target}/release/singularity_world"
+if [[ ! -f "$SW_DIR/$CARGO_OUT" ]]; then
+  for candidate in "$HOME/target_ram/release/singularity_world" "$SW_DIR/target/release/singularity_world"; do
+    if [[ -f "$candidate" ]]; then CARGO_OUT="$candidate"; break; fi
+  done
+fi
+mkdir -p "$SW_DIR/bin"
+cp "$CARGO_OUT" "$SW_DIR/bin/server-rust"
 
-# 4) 建置 Chatmery Web
+# 5) 建置 Chatmery Web
 if [[ -d "$CHATMERY_DIR" ]]; then
   echo "[$(ts)] 建置 Chatmery Web…"
   ( cd "$CHATMERY_DIR" && go build -o chatmery-web ./cmd/chatmery-web )
@@ -80,12 +86,19 @@ else
   echo "[$(ts)] 略過 Chatmery Web（CHATMERY_DIR 不存在：$CHATMERY_DIR）"
 fi
 
-# 6) 啟動奇點（1721）
-echo "[$(ts)] 啟動奇點（PORT=1721）…"
-( cd "$SW_DIR" && env PORT=1721 ./bin/server ) &
+# 6) 專案根 .env
+if [[ -f "$SW_DIR/.env" ]]; then
+  set -a
+  source "$SW_DIR/.env"
+  set +a
+fi
+
+# 7) 啟動奇點（Rust，1721）
+echo "[$(ts)] 啟動奇點 Rust（PORT=1721）…"
+( cd "$SW_DIR" && env PORT=1721 ./bin/server-rust ) &
 PID_SW=$!
 
-# 7) 啟動 Chatmery Web（1722）
+# 8) 啟動 Chatmery Web（1722）
 if [[ -d "$CHATMERY_DIR" && -x "$CHATMERY_DIR/chatmery-web" ]]; then
   sleep 0.5
   echo "[$(ts)] 啟動 Chatmery Web（PORT=1722）…"

@@ -15,6 +15,7 @@ pub mod npcnpc;
 pub mod ai;
 pub mod world;
 pub mod server;
+pub mod roomcheck;
 
 /// 啟動 WebSocket 伺服器（需先 `store::init`、建議先 `gametext::must_load`）。
 pub async fn run_server(cfg: crate::config::Server) -> anyhow::Result<()> {

@@ -283,11 +283,17 @@ pub fn clientf(key: &str, args: &[&str]) -> String {
     })
 }
 
-/// 取得 brain_arrival 敘事模板。
+/// 取得 brain_arrival 敘事模板（支援 `%s` 與 `{}` 占位）。
 pub fn brain_arrival(intent_key: &str, npc_name: &str) -> String {
     with_root(|r| {
         r.brain_arrival.get(intent_key)
-            .map(|tpl| tpl.replace("{}", npc_name))
+            .map(|tpl| {
+                if tpl.contains("{}") {
+                    tpl.replace("{}", npc_name)
+                } else {
+                    tpl.replacen("%s", npc_name, 1)
+                }
+            })
             .unwrap_or_default()
     })
 }
@@ -410,4 +416,13 @@ pub fn dialogue_markers() -> String {
 /// hint 是否包含 subs 中任一子字串。
 pub fn topic_contains_any(hint: &str, subs: &[String]) -> bool {
     subs.iter().any(|s| !s.is_empty() && hint.contains(s.as_str()))
+}
+
+/// 截斷至 n 個 Unicode 字元，超出部分以「…」取代（對齊 Go `gametext.TruncRune`）。
+pub fn trunc_rune(s: &str, n: usize) -> String {
+    let chars: Vec<char> = s.chars().collect();
+    if chars.len() <= n {
+        return s.to_string();
+    }
+    chars[..n].iter().collect::<String>() + "\u{2026}"
 }

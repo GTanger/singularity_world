@@ -1,6 +1,6 @@
 //! 房間鄰接圖與 BFS 尋路（對齊 Go `db/pathfind.go`）。
 
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::{Arc, OnceLock, RwLock};
 
 use crate::store;
@@ -11,7 +11,6 @@ use super::ErrNoStore;
 #[derive(Debug, Clone, Default)]
 pub struct RoomGraph {
     adj: HashMap<String, Vec<String>>,
-    #[allow(dead_code)]
     tags: HashMap<String, Vec<String>>,
     #[allow(dead_code)]
     zone: HashMap<String, String>,
@@ -65,6 +64,100 @@ impl RoomGraph {
     #[must_use]
     pub fn neighbors(&self, room_id: &str) -> Vec<String> {
         self.adj.get(room_id).cloned().unwrap_or_default()
+    }
+
+    /// 房間標籤（複本）；無標籤回空 vec（對齊 Go `RoomTags`）。
+    #[must_use]
+    pub fn room_tags(&self, room_id: &str) -> Vec<String> {
+        self.tags.get(room_id).cloned().unwrap_or_default()
+    }
+
+    /// BFS 找最近帶指定 tag 的房間；`max_dist == 0` 不限深度。不可達回 `None`（對齊 Go `FindNearestByTag`）。
+    #[must_use]
+    pub fn find_nearest_by_tag(&self, origin: &str, tag: &str, max_dist: i32) -> Option<(String, usize)> {
+        #[derive(Clone)]
+        struct BfsNode {
+            id: String,
+            dist: usize,
+        }
+        let mut visited: HashMap<String, bool> = HashMap::new();
+        visited.insert(origin.to_string(), true);
+        let mut queue: VecDeque<BfsNode> = VecDeque::new();
+        queue.push_back(BfsNode {
+            id: origin.to_string(),
+            dist: 0,
+        });
+        while let Some(cur) = queue.pop_front() {
+            for nb in self.adj.get(&cur.id).into_iter().flatten() {
+                if visited.contains_key(nb) {
+                    continue;
+                }
+                visited.insert(nb.clone(), true);
+                let nd = cur.dist + 1;
+                if max_dist > 0 && nd > max_dist as usize {
+                    continue;
+                }
+                if self
+                    .tags
+                    .get(nb)
+                    .into_iter()
+                    .flatten()
+                    .any(|t| t == tag)
+                {
+                    return Some((nb.clone(), nd));
+                }
+                queue.push_back(BfsNode {
+                    id: nb.clone(),
+                    dist: nd,
+                });
+            }
+        }
+        None
+    }
+
+    /// `origin` 周圍 `max_dist` 步內、帶任一指定 tag 的房間（對齊 Go `FindRoomsWithinDist`）。
+    #[must_use]
+    pub fn find_rooms_within_dist(&self, origin: &str, want_tags: &[&str], max_dist: i32) -> Vec<String> {
+        if want_tags.is_empty() || max_dist <= 0 {
+            return Vec::new();
+        }
+        let mut tag_set: HashSet<&str> = HashSet::new();
+        for t in want_tags {
+            tag_set.insert(*t);
+        }
+        #[derive(Clone)]
+        struct BfsNode {
+            id: String,
+            dist: usize,
+        }
+        let mut visited: HashMap<String, bool> = HashMap::new();
+        visited.insert(origin.to_string(), true);
+        let mut queue: VecDeque<BfsNode> = VecDeque::new();
+        let mut result: Vec<String> = Vec::new();
+        queue.push_back(BfsNode {
+            id: origin.to_string(),
+            dist: 0,
+        });
+        while let Some(cur) = queue.pop_front() {
+            for nb in self.adj.get(&cur.id).into_iter().flatten() {
+                if visited.contains_key(nb) {
+                    continue;
+                }
+                visited.insert(nb.clone(), true);
+                let nd = cur.dist + 1;
+                if nd > max_dist as usize {
+                    continue;
+                }
+                if self.tags.get(nb).into_iter().flatten().any(|t| tag_set.contains(t.as_str())) {
+                    result.push(nb.clone());
+                }
+                queue.push_back(BfsNode {
+                    id: nb.clone(),
+                    dist: nd,
+                });
+            }
+        }
+        result
     }
 }
 

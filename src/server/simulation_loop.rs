@@ -19,8 +19,9 @@ use crate::game::{game_time_now, run_view_simulation, Pos};
 use crate::npc::{
     get_npc_npc_topic_by_id, get_shift_flavor, get_time_period, get_wander_flavor, get_wander_rooms,
     movement_speed_for_title, pick_idle_emote, pick_micro_interaction, pick_random_npc_npc_topic_by_mask,
-    run_job_matching_tick, run_unobserved_world_tick, seed_traveler_manager, JobMatchParams, MovementDef,
-    MovementType, NpcStep, TravelerManager, SEEK_JOB_MG_THRESHOLD_DEFAULT, UNOBSERVED_MAX_NPCS_PER_TICK,
+    apply_brain_arrival_effects, run_job_matching_tick, run_unobserved_world_tick, seed_traveler_manager,
+    JobMatchParams, MovementDef, MovementType, NpcStep, TravelerManager,
+    SEEK_JOB_MG_THRESHOLD_DEFAULT, UNOBSERVED_MAX_NPCS_PER_TICK,
 };
 use crate::npcnpc::{push_room_event, topic_mask_for_room, try_trigger_npc_npc_in_room};
 use crate::store::NpcRumor;
@@ -473,11 +474,12 @@ fn build_active_room_ids(sessions: &SessionStore, g: &crate::db::RoomGraph) -> H
     out
 }
 
-/// 發佈逐步移動敘事、房間事件與視野刷新（對齊 Go `travelSteps` 迴圈；腦驅動抵達效果仍待遷移）。
+/// 發佈逐步移動敘事、房間事件與視野刷新（對齊 Go `travelSteps` 迴圈）。
 fn apply_travel_steps(
     sessions: &SessionStore,
     cfg: &Server,
     hour: i32,
+    now_unix: i64,
     steps: Vec<NpcStep>,
     g: &crate::db::RoomGraph,
 ) {
@@ -521,6 +523,16 @@ fn apply_travel_steps(
             &step.npc_name,
             &sprintf_s(&rf.push_arrive_fmt, &[old_name.as_str()]),
         );
+        if !step.decision_narrative.is_empty() {
+            send_narrate_to_room(sessions, &step.old_room, &step.decision_narrative);
+        }
+        if let Some(ai) = step.arrival_intent {
+            let arrival_line = gametext::brain_arrival(ai.as_key(), &step.npc_name);
+            if !arrival_line.is_empty() {
+                send_narrate_to_room(sessions, &step.new_room, &arrival_line);
+            }
+            apply_brain_arrival_effects(now_unix, &step.entity_id, &step.new_room, ai);
+        }
         refresh_room_views_for_room(sessions, cfg, &step.old_room);
         refresh_room_views_for_room(sessions, cfg, &step.new_room);
     }
@@ -531,6 +543,7 @@ fn run_travel_section(
     sessions: &SessionStore,
     cfg: &Server,
     hour: i32,
+    now_unix: i64,
     state: &Arc<Mutex<MainLoopTickState>>,
     traveler_mgr: &Arc<Mutex<TravelerManager>>,
 ) {
@@ -557,7 +570,7 @@ fn run_travel_section(
             .lock()
             .expect("traveler mgr poisoned")
             .tick(g, hour, Some(&active));
-        apply_travel_steps(sessions, cfg, hour, steps, g);
+        apply_travel_steps(sessions, cfg, hour, now_unix, steps, g);
     });
 }
 
@@ -754,7 +767,7 @@ fn run_simulation_tick(
     run_npc_pool_tick(cfg, now_unix, state, traveler_mgr);
     run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
     run_schedule_hour_section(sessions, cfg, hour, state);
-    run_travel_section(sessions, cfg, hour, state, traveler_mgr);
+    run_travel_section(sessions, cfg, hour, now_unix, state, traveler_mgr);
     run_idle_wander_section(sessions, cfg, hour, state);
 }
 

@@ -1,15 +1,21 @@
 // npc 模組 — 與 Go `db/npc.go`、`npc/topics.go` 對齊；建立／種子實作在 `crate::db`。
 
 mod behavior;
+mod reaction;
+mod brain_arrival;
+mod decision;
 mod job_matching;
 mod social;
 mod topics;
 mod traveler;
 mod unobserved;
 
+pub use reaction::npc_behavior_reaction_line;
+pub use brain_arrival::apply_brain_arrival_effects;
+pub use decision::IntentType;
 pub use behavior::{
     get_shift_flavor, get_time_period, get_wander_flavor, get_wander_rooms, movement_speed_for_title,
-    pick_idle_emote, try_load_npc_behaviors,
+    pick_enter_reaction, pick_idle_emote, try_load_npc_behaviors,
 };
 pub use job_matching::{
     run_job_matching_tick, JobMatchParams, DEFAULT_OCCUPATION_FOR_HIRE, JOB_MATCH_STABLE_PROBABILITY,

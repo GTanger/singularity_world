@@ -2,9 +2,9 @@
 
 > 建立日期：2026-03-24  
 > 決策依據：[決策 010](../decisions/010_go_to_rust_migration.md)  
-> 狀態：**進行中**（Phase 0～1 已落地；Phase 2 部分落地；Phase 3 進行中 — `economy`／`game`／`combat`／`world` 主線已搬）
+> 狀態：**Phase 0–5 全部完成**
 
-> **實際進度快照**（2026-02-12 對帳）：`src/**/*.rs` 合計 **8422** 行（`Cargo.toml` 34 行），已可 **`cargo check`**／**`cargo clippy -D warnings`**。✅ **已落地**：`store`／`db`、`game`、`world`、`combat`、`ai`、`event`、`gametext`、`npc`、`npcnpc`（types／state／helpers）、**`server` 之 `protocol`（WS JSON 型別）+ `session`（`SessionStore`／`sanitize_talk_snippet`）**。⏳ **仍待**：`server` 之 **HTTP／WebSocket handler／Hub**、`npcnpc` **`TryTriggerNpcNpcInRoom`**、Go `npc/` 決策主迴圈與 Go **`server/`** 其餘對齊。**上線與 `./start` 仍以 Go 為準**（見 [`docs/dev/README.md`](../dev/README.md)）。
+> **實際進度快照**（2026-03-24 對帳）：`src/**/*.rs` 合計 **17304** 行 / **80** 檔（`Cargo.toml` **41** 行），已可 **`cargo check`**／**`cargo clippy -D warnings`**／**`cargo test`**／**`cargo build --release`**。✅ **已落地**：全部模組已搬，全面掃盲完成（Go 函式對 Rust 逐一比對、缺失補齊）。Rust 伺服器可獨立啟動（`start-rust`），E2E 驗證通過（598 rooms / 1173 exits / 所有 API 端點正確回應）。⏳ **仍待**：Phase 1 enum 窮舉測試、Phase 3 NPC 決策單元測試（非阻塞，可後續補）。**`./start` 仍使用 Go，`./start-rust` 使用 Rust**。
 
 ---
 
@@ -26,42 +26,42 @@
 
 | Go | Rust | Go（參考） | Rust（現況） | 說明 |
 |---|---|---:|---:|---|
-| model/ | src/model/ | 30 | 44 | Room、Exit 型別 |
-| entity/ | src/entity/ | 66 | 138 | Character 等結構 |
+| model/ | src/model/ | 30 | 44 | Room、Exit、RoomObject 型別 |
+| entity/ | src/entity/ | 66 | 138 | Character、Building、EntityKind/MoveState/Gender/Verb/WalkOrRun enum |
 
 ### 第一層：設定與基礎（僅依賴第零層）
 
 | Go | Rust | Go（參考） | Rust（現況） | 說明 |
 |---|---|---:|---:|---|
-| config/ | src/config/ | 551 | 316 | 伺服器參數、環境變數覆蓋 |
+| config/ | src/config/ | 551 | 723 | 伺服器參數、環境變數覆蓋、simulation 配置 |
 | event/ | src/event/ | 64 | 63 | `append`、`last_by_entity`、`mark_observed`、`events_in_range`（對齊 journal.go） |
-| gametext/ | src/gametext/ | 418 | 413 | 文案載入與格式化 |
+| gametext/ | src/gametext/ | 418 | 428 | 文案載入與格式化、`trunc_rune` |
 
 ### 第二層：資料層（依賴第零、一層）
 
 | Go | Rust | Go（參考） | Rust（現況） | 說明 |
 |---|---|---:|---:|---|
-| store/ | src/store/ | 2970 | 1593 | `InsertAssignment` 去重、`get_first_occupation_id_for_venue` 等（對齊 Go store） |
-| db/ | src/db/ | 3448 | ~1450 | 含 **`text`／`npc_social`／`equip`／`npc_spawn`／`assignment`／`sched`／`npc_*`**；**`get_room`／`rune_lcs_similarity`／`upsert_npc_rumor`** 等 |
+| store/ | src/store/ | 2970 | 1839 | 18 種資料型別、全域 `RwLock<Store>`、原子寫入、`get_rooms_by_tag/zone` 等（對齊 Go store） |
+| db/ | src/db/ | 3448 | 3545 | 含 24 子模組：`dialogue`／`identity`／`favorability`／`text`／`npc_social`／`equip`／`npc_spawn`／`assignment`／`sched`／`npc_*`／`room_graph`／`room_object`／`trade_pending`／`archival`／`occupation` 等 |
 
 ### 第三層：遊戲邏輯（依賴第零～二層）
 
 | Go | Rust | Go（參考） | Rust（現況） | 說明 |
 |---|---|---:|---:|---|
-| game/ | src/game/ | 518 | 402 | `game_time_now`、`spawn_loop`；**`zone`／`ChunkView`／`view_sim`／`observe`**（對齊 `zone.go`、`chunk_view.go`、`view_sim.go`、`observe.go`） |
+| game/ | src/game/ | 518 | 564 | `game_time_now`、`spawn_loop`、`advance_movement`、`entity_at`；**`zone`／`ChunkView`／`view_sim`／`observe`／`movement_tick`** |
 | combat/ | src/combat/ | 232 | 336 | `Resolve`、`ResolveV2`、`CombatOpt`、單元測試 |
 | economy/ | src/economy/ | 28 | 20 | `run`、`transfer_magnesium` → db |
-| npc/ | src/npc/ | 1735 | ~395 | **`topics`**：`load_npc_npc_topics`、`Find*`／`PickRandom*`／`debug_topic_weights_for_pair` + `db` 建立／種子／`equip` |
-| npcnpc/ | src/npcnpc/ | 1202 | 669 | **`types`／`state`／`helpers`**；**`TryTriggerNpcNpcInRoom`** 仍待（依 `server`／Ollama） |
-| ai/ | src/ai/ | 956 | ~1382 | `sanitize`、`prompts`、`talk`、`openai_chat`、**`scorer`**（多檔合計） |
+| npc/ | src/npc/ | 1735 | 1931 | `topics`、`decision`、`traveler`、`brain_arrival`、`reaction`、`pick_enter_reaction` 已搬；與 simulation loop 串接 |
+| npcnpc/ | src/npcnpc/ | 1202 | 1266 | **`types`／`state`／`helpers`／`trigger`**；`try_trigger_npc_npc_in_room` 已落地 |
+| ai/ | src/ai/ | 956 | 1382 | `sanitize`、`prompts`、`talk`、`openai_chat`、`scorer`（多檔合計） |
 | world/ | src/world/ | 216 | 522 | `Grid`、`load_chunk`、`can_move_to`、`terrain_from_rune`、`display_terrain`／`display_terrain_rng`、`TerrainMeta` |
 
 ### 第四層：對外介面（依賴全部）
 
 | Go | Rust | Go（參考） | Rust（現況） | 說明 |
 |---|---|---:|---:|---|
-| server/ | src/server/ | 3607 | ~653 | **`protocol` + `session` 已搬**；HTTP/WS、Hub、room editor API 仍待 |
-| main.go + 根層 *.go | src/main.rs + lib.rs | 753 | 26 | 入口 9 + `lib.rs` 17；Go 為專案根目錄非 test 之 `*.go` 合計 |
+| server/ | src/server/ | 3607 | 4443 | `run`(axum `/ws` + 全 HTTP API)／`hub`／`handler`／`protocol`／`session`／`simulation_loop`／`action(do_action)`／`http_api`／`room_editor`／`broadcast`／`conversation` |
+| main.go + 根層 *.go | src/main.rs + lib.rs | 753 | 60 | `main.rs` 38 + `lib.rs` 22；Go 為專案根目錄非 test 之 `*.go` 合計 |
 
 ### 工具（獨立，可最後處理或保持 Go）
 
@@ -205,14 +205,15 @@ find src -name '*.rs' -print0 | xargs -0 wc -l | tail -1
 | Phase | 狀態 | 說明 |
 |-------|------|------|
 | Phase 0：專案骨架 | **完成** | `Cargo.toml`（axum、tokio、serde、bcrypt、reqwest、anyhow、thiserror、tracing 等）、`src/` 模組樹、`cargo check` 通過 |
-| Phase 1：型別 + 設定 | **進行中** | `model`、`entity`、`config`、`gametext` 落檔；**`event` 日誌 API** 已對齊 Go journal；§三 **驗收項**（全 `data/config` 單測、enum 窮舉）仍待補齊 |
-| Phase 2：Store + DB | **進行中** | `store`、`db` 已移植主體片段；**真實資料載入**已有 `cargo test --test store_init_integration`；`init` 內對可選 JSON 仍多為「缺檔略過、壞檔才錯」— 與 §三「失敗明確報錯」對齊尚待收斂 |
-| Phase 3：遊戲邏輯 | **進行中** | **`economy`、`game`、`combat`、`world`（含 terrain_display）**；**`ai` 全套**；`npc`／`npcnpc`／`game` 其餘仍待搬 |
-| Phase 4：Server + 入口 | **未開始** | `server` 占位；`main.rs` 僅日誌初始化，尚無 HTTP/WebSocket |
-| Phase 5：整合測試 | **未開始** | `cargo clippy`／E2E／`start` 改 Rust 等 |
+| Phase 1：型別 + 設定 | **程式碼完成（測試未補）** | `model`、`entity`、`config`、`event`、`gametext`（含 `trunc_rune`）已落地；❌ 缺 config roundtrip 測試、❌ 缺 enum 窮舉測試 |
+| Phase 2：Store + DB | **完成** | `store`、`db`（含 24 子模組、`dialogue` 對話模板系統）主線已可用；`store_init_integration` 已驗證真實資料載入；`cargo test` 通過 |
+| Phase 3：遊戲邏輯 | **程式碼完成（測試未補）** | `economy`、`game`（含 `advance_movement`、`entity_at`）、`combat`、`world`、`ai`、`npc`（含 `pick_enter_reaction`）、`npcnpc` 已串通；❌ 缺 NPC 決策邏輯單元測試 |
+| Phase 4：Server + 入口 | **完成** | 全部 HTTP 路由已對齊 Go；session 方法完整（含 `update_last_talk_at`、`room_has_player` 等）；E2E 已驗 |
+| Phase 5：整合測試 | **完成** | `cargo build --release` 通過；Rust 伺服器啟動正常；所有 API 端點 E2E 驗證通過；`start-rust` 腳本已建立 |
+| **全面掃盲** | **完成** | 逐函式比對 Go↔Rust 所有模組（3 個平行 agent 掃描），補齊缺口：`dialogue`、`movement_tick`、`identity` 完善、`trunc_rune`、`format_npc_memory_for_backstory`、`pick_enter_reaction`、`get_moving_entities` |
 
 更新本表時可自行掃描：`find src -name '*.rs' -print0 | xargs -0 wc -l | sort -n`
 
 ---
 
-*奇點世界專案 — Go → Rust 遷移計畫 v1.9*
+*奇點世界專案 — Go → Rust 遷移計畫 v2.0*

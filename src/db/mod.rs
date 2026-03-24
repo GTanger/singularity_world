@@ -3,18 +3,24 @@
 
 mod archival;
 mod assignment;
+mod dialogue;
 mod disposition;
+mod favorability;
 mod equip;
 mod identity;
 mod inventory;
 mod npc_display;
+mod npc_events;
 mod npc_expense;
 mod npc_names;
+mod npc_trade;
 mod npc_social;
 mod npc_spawn;
 mod occupation;
 mod room_graph;
+mod room_object;
 mod sched;
+mod trade_pending;
 mod text;
 
 use crate::entity::Character;
@@ -37,23 +43,49 @@ pub use npc_spawn::{
     ensure_all_npcs_have_soul_seed, get_npc_gender_counts, insert_npc, seed_npcs, seed_npcs_for_store,
     spawn_one_npc_from_pool, DEFAULT_NPCS, NpcDef,
 };
-pub use archival::{insert_npc_npc_dialogue_archival, recent_npc_npc_archival_lines_for_entity};
-pub use disposition::{adjust_disposition, get_disposition, DISP_BROKE, DISP_DAILY};
+pub use archival::{
+    insert_archival, insert_npc_npc_dialogue_archival, pick_style_examples,
+    recent_npc_npc_archival_lines_for_entity, search_archival, search_archival_for_player_talk,
+    set_npc_summary,
+};
+pub use disposition::{
+    adjust_disposition, get_disposition, DISP_BEG_SUCCESS, DISP_BROKE, DISP_DAILY, DISP_GATHER, DISP_HIRED,
+    DISP_SUBDUED, DISP_TALKED, DISP_TRADE,
+};
+pub use favorability::{
+    adjust_favorability, format_npc_memory_for_backstory,
+    FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, FAV_SLAY, FAV_SUBDUE, FAV_TALK,
+};
 pub use identity::build_identity;
-pub use inventory::add_to_inventory;
+pub use inventory::{
+    add_to_inventory, clear_equipment_slot, default_trade_ask_mg, get_inventory, get_item_def,
+    inventory_has_item, inventory_total_qty, inventory_weight, pick_npc_trade_offer, remove_from_inventory,
+    trade_floor_from_ask, update_equipment_slot,
+};
+pub use npc_events::{
+    get_recent_events, log_npc_event, EVT_BEG, EVT_DEATH, EVT_GATHER, EVT_HIRED, EVT_TALK, EVT_TRADE,
+};
+pub use npc_trade::npc_street_sell_one;
 pub use npc_expense::{deduct_daily_expense, DAILY_EXPENSE_BASE};
 pub use npc_social::{
     build_npc_rumor_digest, decay_npc_rumors, delete_npc_npc_thread,
     get_npc_npc_conversation_summary, get_npc_npc_dyad, get_npc_npc_thread,
     set_npc_npc_conversation_summary, set_npc_npc_dyad, set_npc_npc_thread, upsert_npc_rumor,
 };
-pub use occupation::get_sockets_for_npc;
+pub use occupation::{get_sockets_for_npc, is_default_socket};
 pub use room_graph::{rebuild_room_graph, sync_room_graph_with_store, with_room_graph, RoomGraph};
+pub use room_object::{get_object_and_room, get_object_by_id_in_room, get_object_by_name_in_room, object_response};
+pub use trade_pending::{trade_offer_clear, trade_offer_get, trade_offer_set, TradePending};
 pub use sched::{
     apply_schedules, get_all_schedules, get_schedule_target, get_schedule_target_room, insert_schedule,
     remove_schedule_for_entity, ScheduleMove, ScheduleTarget,
 };
 pub use text::rune_lcs_similarity;
+pub use dialogue::{
+    fill_placeholders, apply_micro_variants, load_dialogue, load_dialogue_keywords,
+    load_dialogue_slots, pick_from_dialogue, pick_from_public_talk, pick_line_weighted,
+    try_match_keyword, DialogueFile, DialogueSlots, PlaceholderCtx,
+};
 
 // ══════════════════════════════════════
 //  錯誤型別
@@ -171,6 +203,7 @@ pub fn expand_soul_seed_to_origin_sentence(seed: i64) -> String {
 }
 
 /// 性格維度（皆 [0,1]），供決策／對話權重使用。
+#[derive(Debug, Clone)]
 pub struct Personality {
     pub boldness: f64,
     pub sensitivity: f64,
@@ -315,6 +348,21 @@ pub fn get_entities_in_box(
                 se = updated;
             }
         }
+        list.push(store_entity_to_character(&se, ""));
+    }
+    Ok(list)
+}
+
+/// 回傳所有 `move_state == "moving"` 的實體（對齊 Go `GetMovingEntities`）。
+pub fn get_moving_entities() -> anyhow::Result<Vec<Character>> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let s = arc.read().unwrap();
+    let ids = s.get_moving_entity_ids();
+    let mut list = Vec::with_capacity(ids.len());
+    for id in ids {
+        let Some(se) = s.get_entity(&id) else {
+            continue;
+        };
         list.push(store_entity_to_character(&se, ""));
     }
     Ok(list)

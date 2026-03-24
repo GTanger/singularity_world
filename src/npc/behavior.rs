@@ -16,6 +16,8 @@ struct RoleMovementJson {
 #[derive(Debug, Deserialize, Default, Clone)]
 struct RoleBehaviorJson {
     #[serde(default)]
+    enter_reactions: Vec<String>,
+    #[serde(default)]
     shift_arrive: String,
     #[serde(default)]
     shift_leave: String,
@@ -118,6 +120,22 @@ fn pick_random_line(lines: &[String]) -> Option<&str> {
     }
     let mut rng = rand::rng();
     Some(lines[rng.random_range(0..lines.len())].as_str())
+}
+
+/// NPC 進房反應（對齊 Go `PickEnterReaction`）。
+#[must_use]
+pub fn pick_enter_reaction(title: &str, npc_name: &str) -> String {
+    let g = cache().read().expect("behaviors poisoned");
+    let Some(ref bd) = *g else {
+        return String::new();
+    };
+    let Some(role) = bd.roles.get(title) else {
+        return String::new();
+    };
+    let Some(line) = pick_random_line(&role.enter_reactions) else {
+        return String::new();
+    };
+    line.replace("{name}", npc_name)
 }
 
 /// 閒置動作一句；`disposition` 極端時改讀 morning／night 池（對齊 Go `PickIdleEmote`）。

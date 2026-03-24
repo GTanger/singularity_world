@@ -56,6 +56,9 @@ autoresearch-master/
 tools/
 
 
+# Go 歸檔（已搬遷至 Rust，保留備查，不納入版控）
+archive/
+
 # Added by cargo
 
 /target

@@ -6,28 +6,35 @@
 - 我不寫程式碼，你是唯一的實作者。我負責設計方向和最終判斷
 
 ## 技術棧（不可更動）
-- 後端：Go（標準庫 + gorilla/websocket），無框架
+- 後端：Rust（axum 0.8 + tokio + serde + bcrypt + reqwest + anyhow/thiserror + tracing + rand + uuid + futures-util + tower-http）
 - 前端：原生 HTML/CSS/JS（PWA），無框架
 - 資料：JSON/store，無資料庫（無 SQLite、無 PostgreSQL）
-- 通訊：WebSocket
-- AI：Ollama 本地模型（透過 HTTP API）
+- 通訊：WebSocket（axum 內建）
+- AI：Ollama 本地模型（透過 HTTP API，reqwest）
 - 部署：單機，Linux Mint，Cloudflare Tunnel
 
 ## 專案結構
 ```
-main.go              — 遊戲主迴圈、NPC 社交觸發、debug API
-ai/talk.go           — LLM 呼叫（玩家對話 + NPC↔NPC 對話）
-config/config.go     — 可調參數（環境變數覆蓋）
-store/store.go       — JSON 記憶體層（唯一資料源）
-db/                  — 資料存取介面（讀寫 store）
-entity/              — 角色實體
-game/                — 遊戲時間、視野
-economy/             — 經濟引擎
-world/               — 地圖格點、移動
-server/              — WebSocket、session
-web/                 — 前端
-data/runtime/        — 執行期 JSON（archival、summaries、threads、dyads、rumors）
-docs/                — 設計文件（修改前必讀相關文件）
+src/main.rs              — 入口：初始化 + 啟動伺服器
+src/lib.rs               — 模組宣告 + run_server() 公開入口
+src/ai/                  — LLM 呼叫（玩家對話 + NPC↔NPC 對話）
+src/config/              — 可調參數（環境變數覆蓋）
+src/store/               — JSON 記憶體層（唯一資料源）
+src/db/                  — 資料存取介面（讀寫 store）
+src/entity/              — 角色實體、枚舉型別
+src/model/               — Room、Exit 等共用結構
+src/game/                — 遊戲時間、視野
+src/economy/             — 經濟引擎
+src/world/               — 地圖格點、移動
+src/npc/                 — NPC 行為（brain、wander、social）
+src/npcnpc/              — NPC↔NPC 對話
+src/combat/              — 戰鬥系統
+src/event/               — 事件常數與紀錄
+src/gametext/            — 文案模板（從 JSON 載入）
+src/server/              — axum HTTP/WebSocket、session、simulation loop
+web/                     — 前端
+data/runtime/            — 執行期 JSON（archival、summaries、threads、dyads、rumors）
+docs/                    — 設計文件（修改前必讀相關文件）
 ```
 
 ## 必讀文件（修改相關系統前先讀）
@@ -38,18 +45,18 @@ docs/                — 設計文件（修改前必讀相關文件）
 
 ## 常用指令
 ```bash
-go build -o bin/server . && PORT=1721 ./bin/server   # 建置並啟動
-./start                                                # 一鍵啟動
-go vet ./...                                           # 靜態檢查
+cargo build --release && PORT=1721 ./target/release/singularity_world   # 建置並啟動
+cargo clippy -- -D warnings                                              # 靜態檢查（零警告）
+cargo test                                                               # 跑測試
 ```
 
 ## 硬規則
 - **不要自作主張**。收到指令就執行，不確定就問。你是鏡子不是駕駛
 - **不要捏造資料**。不確定的事說不確定。寧可少說也不要編造
-- **不要引入新依賴**。除非我明確同意。不加新 go module、不加 npm package
+- **不要引入新依賴**。除非我明確同意。不加新 crate、不加 npm package
 - **不要改 store 結構**。JSON schema 變動影響全局，必須先確認
 - **改動前看 diff 範圍**。能改一行就不改十行。不要重構我沒要求重構的東西
-- **測試再提交**。改完後跑 `go build` 確認能編譯，有 test 的跑 test
+- **測試再提交**。改完後跑 `cargo build` 確認能編譯，`cargo clippy` 零警告，有 test 的跑 test
 
 ## NPC 對話系統重點
 - 模型很小（2B~7B），prompt 精準度決定輸出品質

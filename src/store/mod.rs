@@ -1296,14 +1296,15 @@ impl Store {
             .collect()
     }
 
+    /// 由新到舊（對齊 Go `RecentByEntity`）。
     pub fn recent_by_entity(&self, entity_id: &str, n: usize) -> Vec<EventEntry> {
-        let mut out: Vec<EventEntry> = self.event_log.iter().rev()
+        self.event_log
+            .iter()
+            .rev()
             .filter(|e| e.entity_id == entity_id)
             .take(n)
             .cloned()
-            .collect();
-        out.reverse();
-        out
+            .collect()
     }
 
     // ══════════════════════════════════════

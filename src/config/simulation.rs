@@ -52,6 +52,26 @@ pub struct SimulationParams {
     /// 微互動觸發機率 0–100（對齊 `micro_interaction_chance_percent`）。
     #[serde(default = "default_micro_interaction_chance_percent")]
     pub micro_interaction_chance_percent: i32,
+    /// 腦驅動乞討鎂量（對齊 Go `BrainBeg`）。
+    #[serde(default)]
+    pub brain_beg: BrainBegCfg,
+}
+
+/// 乞討到達效果之鎂隨機範圍（對齊 Go `simulation.BrainBeg`）。
+#[derive(Debug, Clone, Deserialize)]
+#[serde(default)]
+pub struct BrainBegCfg {
+    pub magnesium_min: i32,
+    pub magnesium_rand_exclusive: i32,
+}
+
+impl Default for BrainBegCfg {
+    fn default() -> Self {
+        Self {
+            magnesium_min: 3,
+            magnesium_rand_exclusive: 8,
+        }
+    }
 }
 
 fn default_rumor_decay_interval_sec() -> i32 {
@@ -345,6 +365,7 @@ pub fn default_simulation() -> SimulationParams {
         travel_tick_interval: 30,
         wander_roll_max: 10,
         micro_interaction_chance_percent: 15,
+        brain_beg: BrainBegCfg::default(),
     }
 }
 

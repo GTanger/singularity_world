@@ -1,12 +1,16 @@
 //! HTTP／WebSocket 伺服器層（逐步遷移自 Go `server/`）。
 
+mod action;
 mod broadcast;
+mod conversation;
 mod handler;
 mod hub;
 mod protocol;
 mod run;
 mod session;
 mod simulation_loop;
+pub mod http_api;
+pub mod room_editor;
 
 pub use broadcast::{
     broadcast_room_views, build_room_view_msg, refresh_room_views_for_room, send_narrate_to_room,

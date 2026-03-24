@@ -15,15 +15,24 @@ struct OccupationsFile {
     occupations: std::collections::HashMap<String, OccupationDef>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 struct OccupationDef {
     #[serde(default)]
     action_sockets: Vec<String>,
+    #[serde(default)]
+    dialogue_file: String,
 }
 
-static OCC_CACHE: OnceLock<std::collections::HashMap<String, Vec<String>>> = OnceLock::new();
+/// 快取後的職業資訊。
+#[derive(Debug, Clone)]
+pub(crate) struct OccCached {
+    pub action_sockets: Vec<String>,
+    pub dialogue_file: String,
+}
 
-fn load_occupation_cache() -> &'static std::collections::HashMap<String, Vec<String>> {
+static OCC_CACHE: OnceLock<std::collections::HashMap<String, OccCached>> = OnceLock::new();
+
+pub(crate) fn load_occupation_cache() -> &'static std::collections::HashMap<String, OccCached> {
     OCC_CACHE.get_or_init(|| {
         let path = Path::new("data/templates/occupations.json");
         let raw = match fs::read_to_string(path).or_else(|_| fs::read_to_string(Path::new("..").join(path))) {
@@ -43,17 +52,23 @@ fn load_occupation_cache() -> &'static std::collections::HashMap<String, Vec<Str
         parsed
             .occupations
             .into_iter()
-            .map(|(k, v)| (k, v.action_sockets))
+            .map(|(k, v)| (k, OccCached { action_sockets: v.action_sockets, dialogue_file: v.dialogue_file }))
             .collect()
     })
 }
 
 fn occupation_action_sockets(occupation_id: &str) -> Vec<String> {
     let c = load_occupation_cache();
-    c.get(occupation_id).cloned().unwrap_or_default()
+    c.get(occupation_id).map(|o| o.action_sockets.clone()).unwrap_or_default()
 }
 
 const DEFAULT_SOCKETS: &[&str] = &["Talk", "Borrow", "Subdue", "Slay", "Look", "Trade"];
+
+/// 該動詞是否為預設 Agent 插座（不需在工作場所即可對 NPC 執行），對齊 Go `IsDefaultSocket`。
+#[must_use]
+pub fn is_default_socket(action: &str) -> bool {
+    DEFAULT_SOCKETS.contains(&action)
+}
 
 /// NPC 在指定房間的有效插座（對齊 `GetSocketsForNPC`）。
 #[must_use]

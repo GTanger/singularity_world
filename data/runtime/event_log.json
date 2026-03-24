@@ -322325,6 +322325,54 @@
       "entity_id": "npc_dh7ljyggbjh5",
       "event_type": "observed",
       "payload": "葉卅"
+    },
+    {
+      "at": 1774349914,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_11f_storage_to_lobby"
+    },
+    {
+      "at": 1774349918,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_elevator"
+    },
+    {
+      "at": 1774349925,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_10f"
+    },
+    {
+      "at": 1774349927,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_11f"
+    },
+    {
+      "at": 1774349928,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_12f"
+    },
+    {
+      "at": 1774349929,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_13f"
+    },
+    {
+      "at": 1774349931,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_14f"
+    },
+    {
+      "at": 1774349932,
+      "entity_id": "葉卅",
+      "event_type": "observed",
+      "payload": "city_life_15f"
     }
   ]
 }
