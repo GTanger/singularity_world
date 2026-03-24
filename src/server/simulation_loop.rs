@@ -1,4 +1,4 @@
-//! 主迴圈背景 tick（對齊 Go `simulation_main_loop.go`：視野、傳聞、隨機 NPC↔NPC、遊戲日、NPC 池、求職撮合、排班敘事、`TravelerManager`、無觀測時 `RunUnobservedWorldTick`）。
+//! 主迴圈背景 tick（對齊 Go `simulation_main_loop.go`：視野、傳聞、隨機 NPC↔NPC、遊戲日、NPC 池、求職撮合、排班敘事、`TravelerManager`、未觀測 tick、閒置／微互動／巡邏）。
 
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
@@ -9,14 +9,16 @@ use rand::Rng;
 use crate::config::{sim, Server};
 use crate::db::{
     adjust_disposition, apply_schedules, build_npc_rumor_digest, decay_npc_rumors, deduct_daily_expense,
-    get_npc_ids_with_room, get_npc_person_display_name, get_npc_title_from_assignments, get_player_ids_with_room,
-    get_room, get_room_name, get_schedule_for_entity, get_schedule_target, get_spawn_room_id,
-    spawn_one_npc_from_pool, upsert_npc_rumor, with_room_graph,
+    get_all_schedules, get_disposition, get_entity_room, get_npc_ids_with_room, get_npc_person_display_name,
+    get_npc_title_from_assignments, get_player_ids_with_room, get_room, get_room_name, get_schedule_for_entity,
+    get_schedule_target, get_spawn_room_id, set_entity_room, spawn_one_npc_from_pool, upsert_npc_rumor,
+    with_room_graph,
 };
 use crate::gametext;
 use crate::game::{game_time_now, run_view_simulation, Pos};
 use crate::npc::{
-    get_npc_npc_topic_by_id, get_shift_flavor, movement_speed_for_title, pick_random_npc_npc_topic_by_mask,
+    get_npc_npc_topic_by_id, get_shift_flavor, get_time_period, get_wander_flavor, get_wander_rooms,
+    movement_speed_for_title, pick_idle_emote, pick_micro_interaction, pick_random_npc_npc_topic_by_mask,
     run_job_matching_tick, run_unobserved_world_tick, seed_traveler_manager, JobMatchParams, MovementDef,
     MovementType, NpcStep, TravelerManager, SEEK_JOB_MG_THRESHOLD_DEFAULT, UNOBSERVED_MAX_NPCS_PER_TICK,
 };
@@ -25,9 +27,6 @@ use crate::store::NpcRumor;
 
 use super::broadcast::{broadcast_room_views, refresh_room_views_for_room, send_narrate_to_room};
 use super::SessionStore;
-
-/// 對齊 Go `travelTickInterval`：每 30 個 tick 檢查觀測圈；無人時跑未觀測背景步進。
-const TRAVEL_TICK_INTERVAL: i32 = 30;
 
 /// 跨 tick 的計時與狀態（對齊 Go 閉包內變數）。
 struct MainLoopTickState {
@@ -39,6 +38,9 @@ struct MainLoopTickState {
     last_job_matching: Option<Instant>,
     last_schedule_hour: i32,
     travel_tick_count: i32,
+    idle_tick_count: i32,
+    /// 累積到此 tick 數即觸發閒置／巡邏區塊。
+    next_idle_trigger: i32,
 }
 
 /// 間隔到期則更新錨點並回傳 true；`last` 為 `None` 時第一次立即觸發（對齊 Go `time.Time` 零值）。
@@ -69,6 +71,38 @@ fn sprintf_d(template: &str, n: i32) -> String {
 }
 
 /// 依 `simulation.json` 的 `random_npc_dialogue_ticks` 產生初始倒數。
+/// `simulation.json` 的 `travel_tick_interval`；無效時 30。
+fn effective_travel_tick_interval() -> i32 {
+    let v = sim().travel_tick_interval;
+    if v <= 0 {
+        30
+    } else {
+        v
+    }
+}
+
+/// 首次閒置觸發門檻（對齊 Go `nextIdleTrigger` 初值）。
+fn initial_next_idle_trigger() -> i32 {
+    let idle = &sim().idle;
+    let mut span = idle.first_trigger_span;
+    if span <= 0 {
+        span = 1;
+    }
+    let mut rng = rand::rng();
+    idle.first_trigger_min + rng.random_range(0..span)
+}
+
+/// 之後每次閒置觸發後重骰的間隔 tick。
+fn roll_next_idle_interval() -> i32 {
+    let idle = &sim().idle;
+    let mut span = idle.interval_span;
+    if span <= 0 {
+        span = 1;
+    }
+    let mut rng = rand::rng();
+    idle.interval_min + rng.random_range(0..span)
+}
+
 fn initial_random_dialogue_ticks() -> i32 {
     let rdt = &sim().random_npc_dialogue_ticks;
     let mut span = rdt.initial_span;
@@ -492,7 +526,7 @@ fn apply_travel_steps(
     }
 }
 
-/// 每 `TRAVEL_TICK_INTERVAL` 次 tick：無觀測則 `RunUnobservedWorldTick`；有觀測則 `TravelerManager.tick`。
+/// 每 `travel_tick_interval` 次 tick：無觀測則 `RunUnobservedWorldTick`；有觀測則 `TravelerManager.tick`。
 fn run_travel_section(
     sessions: &SessionStore,
     cfg: &Server,
@@ -503,7 +537,7 @@ fn run_travel_section(
     let fire = {
         let mut st = state.lock().expect("main loop state poisoned");
         st.travel_tick_count += 1;
-        if st.travel_tick_count >= TRAVEL_TICK_INTERVAL {
+        if st.travel_tick_count >= effective_travel_tick_interval() {
             st.travel_tick_count = 0;
             true
         } else {
@@ -525,6 +559,118 @@ fn run_travel_section(
             .tick(g, hour, Some(&active));
         apply_travel_steps(sessions, cfg, hour, steps, g);
     });
+}
+
+/// 閒置 tick：NPC↔NPC AI、微互動、在職巡邏與閒置動作（對齊 Go 主迴圈末段）。
+fn run_idle_wander_section(sessions: &SessionStore, cfg: &Server, hour: i32, state: &Arc<Mutex<MainLoopTickState>>) {
+    let run = {
+        let mut st = state.lock().expect("main loop state poisoned");
+        st.idle_tick_count += 1;
+        if st.idle_tick_count >= st.next_idle_trigger {
+            st.idle_tick_count = 0;
+            st.next_idle_trigger = roll_next_idle_interval();
+            true
+        } else {
+            false
+        }
+    };
+    if !run {
+        return;
+    }
+    let period = get_time_period(hour);
+    let player_room_set = sessions.player_room_ids();
+    let ollama_ready = !cfg.ollama_base_url.is_empty() && !cfg.ollama_model.is_empty();
+    let mut dialogue_done = false;
+    if ollama_ready {
+        for room_id in &player_room_set {
+            let topic_hint = pick_random_npc_npc_topic_by_mask(&topic_mask_for_room(room_id, hour), "")
+                .map(|t| t.hint)
+                .unwrap_or_default();
+            if try_trigger_npc_npc_in_room(sessions, cfg, room_id, &topic_hint, hour) {
+                dialogue_done = true;
+                break;
+            }
+        }
+    }
+    if !dialogue_done {
+        let mut micro_pct = sim().micro_interaction_chance_percent;
+        if micro_pct <= 0 {
+            micro_pct = 15;
+        }
+        for room_id in &player_room_set {
+            let line = pick_micro_interaction(room_id, micro_pct, hour);
+            if !line.is_empty() {
+                send_narrate_to_room(sessions, room_id, &line);
+                break;
+            }
+        }
+    }
+    let Ok(schedules) = get_all_schedules() else {
+        return;
+    };
+    let rf = gametext::runtime_fmt();
+    let mut wmax = sim().wander_roll_max;
+    if wmax <= 0 {
+        wmax = 10;
+    }
+    let mut rng = rand::rng();
+    for sch in schedules {
+        if !sch.is_on_duty(hour) {
+            continue;
+        }
+        let Ok(npc_room) = get_entity_room(&sch.entity_id) else {
+            continue;
+        };
+        let mut title = get_npc_title_from_assignments(&sch.entity_id);
+        if title.is_empty() {
+            title = gametext::default_manager_title();
+        }
+        let person = get_npc_person_display_name(&sch.entity_id).unwrap_or_default();
+        let wander_rooms = get_wander_rooms(&title);
+        if wander_rooms.len() > 1 && rng.random_range(0..wmax) == 0 {
+            let candidates: Vec<String> = wander_rooms
+                .into_iter()
+                .filter(|wr| wr != &npc_room)
+                .collect();
+            if !candidates.is_empty() {
+                let dest = candidates[rng.random_range(0..candidates.len())].clone();
+                let dest_name = get_room_name(&dest).unwrap_or_else(|_| String::new());
+                let src_name = get_room_name(&npc_room).unwrap_or_else(|_| String::new());
+                let leave_text = get_wander_flavor(&title, &person, &dest_name, true);
+                let arrive_text = get_wander_flavor(&title, &person, &src_name, false);
+                if !leave_text.is_empty() {
+                    send_narrate_to_room(sessions, &npc_room, &leave_text);
+                }
+                if set_entity_room(&sch.entity_id, &dest).is_ok() && !arrive_text.is_empty() {
+                    send_narrate_to_room(sessions, &dest, &arrive_text);
+                }
+                push_room_event(
+                    &npc_room,
+                    "leave",
+                    &person,
+                    &sprintf_s(&rf.push_leave_fmt, &[dest_name.as_str()]),
+                );
+                push_room_event(
+                    &dest,
+                    "arrive",
+                    &person,
+                    &sprintf_s(&rf.push_arrive_fmt, &[src_name.as_str()]),
+                );
+                refresh_room_views_for_room(sessions, cfg, &npc_room);
+                refresh_room_views_for_room(sessions, cfg, &dest);
+                continue;
+            }
+        }
+        if !player_room_set.contains(&npc_room) {
+            continue;
+        }
+        let disp = get_disposition(&sch.entity_id);
+        let emote = pick_idle_emote(&title, &period, &person, disp);
+        if !emote.is_empty() {
+            send_narrate_to_room(sessions, &npc_room, &emote);
+            break;
+        }
+    }
 }
 
 /// 單次 tick（對齊 Go `game.Loop` 回呼內順序）。
@@ -609,6 +755,7 @@ fn run_simulation_tick(
     run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
     run_schedule_hour_section(sessions, cfg, hour, state);
     run_travel_section(sessions, cfg, hour, state, traveler_mgr);
+    run_idle_wander_section(sessions, cfg, hour, state);
 }
 
 /// 在 Tokio runtime 上依 `cfg.tick_interval_ms` 週期執行主迴圈片段（與 Axum 並行）。
@@ -626,6 +773,8 @@ pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
         last_job_matching: None,
         last_schedule_hour: -1,
         travel_tick_count: 0,
+        idle_tick_count: 0,
+        next_idle_trigger: initial_next_idle_trigger(),
     }));
     let tick_ms = cfg.tick_interval_ms.max(1);
     tokio::spawn(async move {

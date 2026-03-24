@@ -40,6 +40,18 @@ pub struct SimulationParams {
     /// 黎明／深夜心境微調（對齊 Go `disposition_time_of_day`）。
     #[serde(default)]
     pub disposition_time_of_day: DispositionTimeOfDayCfg,
+    /// 閒置／巡邏計時（對齊 Go `idle`）。
+    #[serde(default)]
+    pub idle: IdleCfg,
+    /// 地圖移動檢查間隔（tick 數，對齊 `travel_tick_interval`）。
+    #[serde(default = "default_travel_tick_interval")]
+    pub travel_tick_interval: i32,
+    /// 在職 NPC 巡邏擲骰上限（對齊 `wander_roll_max`）。
+    #[serde(default = "default_wander_roll_max")]
+    pub wander_roll_max: i32,
+    /// 微互動觸發機率 0–100（對齊 `micro_interaction_chance_percent`）。
+    #[serde(default = "default_micro_interaction_chance_percent")]
+    pub micro_interaction_chance_percent: i32,
 }
 
 fn default_rumor_decay_interval_sec() -> i32 {
@@ -60,6 +72,39 @@ fn default_job_matching_interval_sec() -> i32 {
 
 fn default_job_match_rumor_ttl_sec() -> i64 {
     7200
+}
+
+fn default_travel_tick_interval() -> i32 {
+    30
+}
+
+fn default_wander_roll_max() -> i32 {
+    10
+}
+
+fn default_micro_interaction_chance_percent() -> i32 {
+    15
+}
+
+/// 閒置 tick 首次與後續間隔（對齊 Go `Sim.Idle`）。
+#[derive(Debug, Clone, Deserialize)]
+#[serde(default)]
+pub struct IdleCfg {
+    pub first_trigger_min: i32,
+    pub first_trigger_span: i32,
+    pub interval_min: i32,
+    pub interval_span: i32,
+}
+
+impl Default for IdleCfg {
+    fn default() -> Self {
+        Self {
+            first_trigger_min: 25,
+            first_trigger_span: 35,
+            interval_min: 60,
+            interval_span: 60,
+        }
+    }
 }
 
 /// 特定時段一次性調整全 NPC 心境（對齊 Go）。
@@ -296,6 +341,10 @@ pub fn default_simulation() -> SimulationParams {
         job_matching_interval_sec: 30,
         job_match_rumor_ttl_sec: 7200,
         disposition_time_of_day: DispositionTimeOfDayCfg::default(),
+        idle: IdleCfg::default(),
+        travel_tick_interval: 30,
+        wander_roll_max: 10,
+        micro_interaction_chance_percent: 15,
     }
 }
 
