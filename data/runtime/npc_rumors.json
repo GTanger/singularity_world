@@ -6,19 +6,9 @@
       "room_id": "life_dining",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355586,
-      "expires_at": 1774357386
-    },
-    {
-      "id": "evt|life_dining|leave|鄭秀強：離開往",
-      "text": "鄭秀強：離開往",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355675,
-      "expires_at": 1774357475
+      "weight": 2,
+      "updated_at": 1774357386,
+      "expires_at": 1774359186
     },
     {
       "id": "evt|life_garden|shift_arrive|龍霞華：排班抵達",
@@ -26,9 +16,9 @@
       "room_id": "life_garden",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355586,
-      "expires_at": 1774357386
+      "weight": 2,
+      "updated_at": 1774357386,
+      "expires_at": 1774359186
     },
     {
       "id": "evt|life_dining|arrive|龍霞華：從方向到達",
@@ -51,24 +41,14 @@
       "expires_at": 1774359036
     },
     {
-      "id": "evt|life_hall|arrive|龍霞華：從方向到達",
-      "text": "龍霞華：從方向到達",
-      "room_id": "life_hall",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355584,
-      "expires_at": 1774357384
-    },
-    {
       "id": "evt|life_garden|shift_arrive|葉俊：排班抵達",
       "text": "葉俊：排班抵達",
       "room_id": "life_garden",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355586,
-      "expires_at": 1774357386
+      "weight": 2,
+      "updated_at": 1774357386,
+      "expires_at": 1774359186
     },
     {
       "id": "evt|lobby|shift_arrive|鄭秀強：排班抵達",
@@ -91,6 +71,26 @@
       "expires_at": 1774359036
     },
     {
+      "id": "evt|life_hall|shift_leave|鄭秀強：離開前往life_garden",
+      "text": "鄭秀強：離開前往life_garden",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774357386,
+      "expires_at": 1774359186
+    },
+    {
+      "id": "evt|life_dining|shift_leave|龍霞華：離開前往life_garden",
+      "text": "龍霞華：離開前往life_garden",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774357386,
+      "expires_at": 1774359186
+    },
+    {
       "id": "evt|life_dining|shift_leave|龍霞華：離開前往lobby",
       "text": "龍霞華：離開前往lobby",
       "room_id": "life_dining",
@@ -99,26 +99,6 @@
       "weight": 11,
       "updated_at": 1774357236,
       "expires_at": 1774359036
-    },
-    {
-      "id": "evt|life_dining|shift_leave|鄭秀強：離開前往life_garden",
-      "text": "鄭秀強：離開前往life_garden",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355586,
-      "expires_at": 1774357386
-    },
-    {
-      "id": "evt|life_hall|shift_leave|龍霞華：離開前往life_garden",
-      "text": "龍霞華：離開前往life_garden",
-      "room_id": "life_hall",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355586,
-      "expires_at": 1774357386
     },
     {
       "id": "eco|pulse|207",
@@ -145,19 +125,9 @@
       "room_id": "life_garden",
       "source": "room_event",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355586,
-      "expires_at": 1774357386
-    },
-    {
-      "id": "evt|life_hall|arrive|鄭秀強：從方向到達",
-      "text": "鄭秀強：從方向到達",
-      "room_id": "life_hall",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355675,
-      "expires_at": 1774357475
+      "weight": 2,
+      "updated_at": 1774357386,
+      "expires_at": 1774359186
     },
     {
       "id": "evt|lobby|shift_arrive|龍霞華：排班抵達",
@@ -178,16 +148,6 @@
       "weight": 11,
       "updated_at": 1774357236,
       "expires_at": 1774359036
-    },
-    {
-      "id": "evt|life_kitchen|leave|龍霞華：離開往",
-      "text": "龍霞華：離開往",
-      "room_id": "life_kitchen",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774355584,
-      "expires_at": 1774357384
     }
   ]
 }
