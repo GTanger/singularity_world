@@ -1,0 +1,190 @@
+{
+  "id": "city_life_15f",
+  "name": "浮生城15F",
+  "description": "｜｜｜｜｜續層口｜電梯間｜下樓梯｜｜｜｜｜\n｜檔案庫｜　　　　　　　　　　　｜會議室｜\n｜申訴窗｜　※浮生城１５樓※　　｜文書組｜\n｜複印間｜　　　　　　　　　　　｜閱覽室｜\n｜｜｜｜｜值班台｜儲藏室｜接待廳｜｜｜｜｜",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_15f",
+  "exits": [
+    {
+      "direction": "電梯間",
+      "to": "city_life_elevator"
+    },
+    {
+      "direction": "下樓梯",
+      "to": "city_life_14f"
+    },
+    {
+      "direction": "檔案庫",
+      "to": "city_life_15f_archive"
+    },
+    {
+      "direction": "申訴窗",
+      "to": "city_life_15f_claim"
+    },
+    {
+      "direction": "複印間",
+      "to": "city_life_15f_copy"
+    },
+    {
+      "direction": "會議室",
+      "to": "city_life_15f_meeting"
+    },
+    {
+      "direction": "文書組",
+      "to": "city_life_15f_clerk"
+    },
+    {
+      "direction": "閱覽室",
+      "to": "city_life_15f_reading"
+    },
+    {
+      "direction": "值班台",
+      "to": "city_life_15f_duty"
+    },
+    {
+      "direction": "儲藏室",
+      "to": "city_life_15f_storage"
+    },
+    {
+      "direction": "接待廳",
+      "to": "city_life_15f_recep"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_elevator",
+      "name": "電梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「電梯間」。"
+      },
+      "move_to_room_id": "city_life_elevator"
+    },
+    {
+      "id": "city_life_14f",
+      "name": "下樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城14F」。"
+      },
+      "move_to_room_id": "city_life_14f"
+    },
+    {
+      "id": "city_life_15f_archive_from_lobby",
+      "name": "檔案庫",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔檔案庫〕。"
+      },
+      "move_to_room_id": "city_life_15f_archive"
+    },
+    {
+      "id": "city_life_15f_claim_from_lobby",
+      "name": "申訴窗",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔申訴窗〕。"
+      },
+      "move_to_room_id": "city_life_15f_claim"
+    },
+    {
+      "id": "city_life_15f_copy_from_lobby",
+      "name": "複印間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔複印間〕。"
+      },
+      "move_to_room_id": "city_life_15f_copy"
+    },
+    {
+      "id": "city_life_15f_meeting_from_lobby",
+      "name": "會議室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔會議室〕。"
+      },
+      "move_to_room_id": "city_life_15f_meeting"
+    },
+    {
+      "id": "city_life_15f_clerk_from_lobby",
+      "name": "文書組",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔文書組〕。"
+      },
+      "move_to_room_id": "city_life_15f_clerk"
+    },
+    {
+      "id": "city_life_15f_reading_from_lobby",
+      "name": "閱覽室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔閱覽室〕。"
+      },
+      "move_to_room_id": "city_life_15f_reading"
+    },
+    {
+      "id": "city_life_15f_duty_from_lobby",
+      "name": "值班台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔值班台〕。"
+      },
+      "move_to_room_id": "city_life_15f_duty"
+    },
+    {
+      "id": "city_life_15f_storage_from_lobby",
+      "name": "儲藏室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔儲藏室〕。"
+      },
+      "move_to_room_id": "city_life_15f_storage"
+    },
+    {
+      "id": "city_life_15f_recep_from_lobby",
+      "name": "接待廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔接待廳〕。"
+      },
+      "move_to_room_id": "city_life_15f_recep"
+    }
+  ]
+}

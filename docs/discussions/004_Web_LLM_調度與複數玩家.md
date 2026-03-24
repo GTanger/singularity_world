@@ -93,19 +93,10 @@
   - 任一筆（玩家 Talk 或 NPC-NPC）在跑時，其他請求都需排隊或改走 web；此時「複數玩家在不同地」仍會互搶那一個槽位，需依前述選項（A/B/C/D）決定誰走 web。
 - **實作建議**：config 可提供「本地最大併發數」或「是否允許多筆並行」；忙碌判定改為「當前 in-flight 數 ≥ 該上限」再觸發 web 或排隊。
 
-**壓力測試**（`ai/talk_test.go`）：
-- **十地十玩家**：`TestLocalLLM_10Players10Places` — 10 個並行 `CallAITalk`。執行：`go test ./ai/... -run TestLocalLLM_10Players10Places -v`。
-- **三十地三十玩家連續十輪**：`TestLocalLLM_30Players30Places_10Rounds` — 30 條並行「對話流」，每條連續 10 輪，共 300 次 `CallAITalk`。執行：`go test ./ai/... -run TestLocalLLM_30Players30Places_10Rounds -v -timeout 600s`（需本地 Ollama 運行；設 `OLLAMA_DISABLE=1` 可 Skip）。
+專案內**不再附帶**自動化 Ollama 壓力測試；若需驗證併發，請自行以多客戶端呼叫 `CallAITalk` 或 Ollama API，並以系統監控觀察 GPU／VRAM。
 
 ---
 
-## 六、壓力測試時的資源觀察（btop）
+## 六、高併發時資源觀察（參考）
 
-在三十地三十玩家連續十輪測試期間，以 btop 觀察同一台機（AMD Ryzen 7 9700X、GPU 約 16 GiB VRAM、62 GiB RAM）可得：
-
-- **GPU**：使用率常駐 **100%**，溫度約 72–73°C → 本地 LLM 推論吃滿顯卡算力，瓶頸在**算力**。
-- **VRAM**：約 **8.5–8.8 GiB / 15.9 GiB（54–55%）**，尚有約 7 GiB 餘裕 → 非顯存瓶頸。
-- **CPU**：整體 4–18%，部分核心偶爾 5–7 成 → 非瓶頸。
-- **RAM**：約 20% 使用；`ollama runner` 約 1.4–1.5 GiB → 餘裕充足。
-
-**結論**：目前負載下壓力完全稱得住；瓶頸為 GPU 運算速度而非 VRAM 或 CPU。玩家與 NPC 對話直接併發打本地、NPC 間對話排隊，實務上可行；Web LLM 留作佔位即可，暫不實作。
+若以本機 Ollama 做**手動／自架**高併發抽樣，常見觀察為：瓶頸多在 **GPU 算力**，VRAM 與 CPU 往往仍有餘裕（依機型與模型而異）。玩家與 NPC 對話直接併發打本地、NPC 間對話排隊，實務上可行；Web LLM 留作佔位即可，暫不實作。

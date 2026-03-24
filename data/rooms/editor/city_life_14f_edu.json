@@ -1,0 +1,32 @@
+{
+  "id": "city_life_14f_edu",
+  "name": "衛教室",
+  "description": "投影與模型展示慢病與富態環境下的自保要點；座椅可收合。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_14f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_14f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_14f_edu_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城14F」大廳。"
+      },
+      "move_to_room_id": "city_life_14f"
+    }
+  ]
+}

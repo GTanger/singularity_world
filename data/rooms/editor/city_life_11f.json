@@ -17,6 +17,10 @@
       "to": "city_life_10f"
     },
     {
+      "direction": "上樓梯",
+      "to": "city_life_12f"
+    },
+    {
       "direction": "中庭區",
       "to": "city_life_11f_atrium"
     },
@@ -77,6 +81,18 @@
         "Move": "你前往「浮生城10F」。"
       },
       "move_to_room_id": "city_life_10f"
+    },
+    {
+      "id": "city_life_12f",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城12F」。"
+      },
+      "move_to_room_id": "city_life_12f"
     },
     {
       "id": "city_life_11f_atrium_from_lobby",

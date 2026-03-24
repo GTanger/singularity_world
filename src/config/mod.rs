@@ -1,10 +1,14 @@
 // config 模組 — 伺服器與設計常數，對齊 Go config/config.go + config/server_defaults.go。
 // 載入優先順序：data/config/server_defaults.json → 環境變數覆寫 → 內建預設值。
 
+mod simulation;
+
 use std::env;
 use std::fs;
 use std::path::Path;
 use serde::Deserialize;
+
+pub use simulation::{default_simulation, load_simulation, sim, SimulationParams};
 
 /// 伺服器與連線可調參數。
 #[derive(Debug, Clone)]

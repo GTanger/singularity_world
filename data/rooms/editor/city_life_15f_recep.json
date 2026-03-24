@@ -1,0 +1,32 @@
+{
+  "id": "city_life_15f_recep",
+  "name": "接待廳",
+  "description": "訪客等候與大型會議前簽到；牆面浮生城模型縮景在燈下靜立。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_15f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_15f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_15f_recep_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城15F」大廳。"
+      },
+      "move_to_room_id": "city_life_15f"
+    }
+  ]
+}

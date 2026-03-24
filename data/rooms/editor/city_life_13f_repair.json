@@ -1,0 +1,32 @@
+{
+  "id": "city_life_13f_repair",
+  "name": "修繕處",
+  "description": "管委登記的小型修繕與五金領取在此辦理；牆上釘著「浮生城維保」流程圖。桌角一疊待簽收單。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_13f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_13f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_13f_repair_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城13F」大廳。"
+      },
+      "move_to_room_id": "city_life_13f"
+    }
+  ]
+}

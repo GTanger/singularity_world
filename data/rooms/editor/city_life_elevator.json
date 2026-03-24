@@ -1,7 +1,7 @@
 {
   "id": "city_life_elevator",
   "name": "電梯間",
-  "description": "① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪\n（浮生城１Ｆ—１１Ｆ停層；⑫—⑳ 為預留標示）",
+  "description": "① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪ ⑫ ⑬ ⑭ ⑮\n（浮生城１Ｆ—１５Ｆ停層；⑯—⑳ 為預留標示）",
   "tags": [
     "city",
     "skyscraper"
@@ -51,6 +51,22 @@
     {
       "direction": "⑪",
       "to": "city_life_11f"
+    },
+    {
+      "direction": "⑫",
+      "to": "city_life_12f"
+    },
+    {
+      "direction": "⑬",
+      "to": "city_life_13f"
+    },
+    {
+      "direction": "⑭",
+      "to": "city_life_14f"
+    },
+    {
+      "direction": "⑮",
+      "to": "city_life_15f"
     }
   ],
   "objects": [
@@ -185,6 +201,54 @@
         "Move": "你前往「浮生城11F」。"
       },
       "move_to_room_id": "city_life_11f"
+    },
+    {
+      "id": "city_life_12f",
+      "name": "⑫",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城12F」。"
+      },
+      "move_to_room_id": "city_life_12f"
+    },
+    {
+      "id": "city_life_13f",
+      "name": "⑬",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城13F」。"
+      },
+      "move_to_room_id": "city_life_13f"
+    },
+    {
+      "id": "city_life_14f",
+      "name": "⑭",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城14F」。"
+      },
+      "move_to_room_id": "city_life_14f"
+    },
+    {
+      "id": "city_life_15f",
+      "name": "⑮",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城15F」。"
+      },
+      "move_to_room_id": "city_life_15f"
     }
   ]
 }

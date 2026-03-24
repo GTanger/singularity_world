@@ -1,0 +1,32 @@
+{
+  "id": "city_life_12f_tank",
+  "name": "水箱塔",
+  "description": "立管與穩壓罐佔去大半視野，液位表與溢流管在燈下反著冷光。牆角堆疊備用密封件與水質抽檢紀錄夾；外牆側隱約傳來綠護層滴水的悶響。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "service"
+  ],
+  "zone": "citylife_12f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_12f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_12f_tank_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城12F」大廳。"
+      },
+      "move_to_room_id": "city_life_12f"
+    }
+  ]
+}

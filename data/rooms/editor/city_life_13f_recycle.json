@@ -1,0 +1,32 @@
+{
+  "id": "city_life_13f_recycle",
+  "name": "回收區",
+  "description": "分類桶與壓縮箱佔去半邊，另一邊是待運下樓的可回收捆。告示強調富態環境下包材須封口。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_13f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_13f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_13f_recycle_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城13F」大廳。"
+      },
+      "move_to_room_id": "city_life_13f"
+    }
+  ]
+}

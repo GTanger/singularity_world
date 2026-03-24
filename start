@@ -28,12 +28,21 @@ fi
 pkill -x chatmery-web 2>/dev/null || true
 sleep 1
 
-# 2) 建置奇點
-echo "建置奇點…"
+# 2) 嚴格閘門（類 cargo check：vet → test → 房間契約；任一失敗則中止，不建置 server）
+echo "go vet ./…"
+go vet ./...
+echo "go test ./…"
+go test ./... -count=1
+echo "檢查房間 JSON（checkrooms -brackets -strict）…"
 mkdir -p bin data
-go build -buildvcs=false -o bin/server .
+go build -buildvcs=false -trimpath -o bin/checkrooms ./cmd/checkrooms
+./bin/checkrooms -brackets -strict
 
-# 3) 建置並啟動 Chatmery Web（若目錄存在）
+# 3) 建置奇點
+echo "建置奇點…"
+go build -buildvcs=false -trimpath -o bin/server .
+
+# 4) 建置並啟動 Chatmery Web（若目錄存在）
 if [[ -d "$CHATMERY_DIR" ]]; then
   echo "建置 Chatmery Web…"
   ( cd "$CHATMERY_DIR" && go build -o chatmery-web ./cmd/chatmery-web )
@@ -50,7 +59,7 @@ if [[ -d "$CHATMERY_DIR" ]]; then
   sleep 0.5
 fi
 
-# 3.5) 專案根 .env（PLAYER_TALK_API_KEY、OPENAI_API_KEY 等；已列 .gitignore）
+# 4.5) 專案根 .env（PLAYER_TALK_API_KEY、OPENAI_API_KEY 等；已列 .gitignore）
 if [[ -f "$SW_DIR/.env" ]]; then
   set -a
   # shellcheck disable=SC1091
@@ -58,7 +67,7 @@ if [[ -f "$SW_DIR/.env" ]]; then
   set +a
 fi
 
-# 4) 啟動奇點（後台，對應 sw.ygggt.com）
+# 5) 啟動奇點（後台，對應 sw.ygggt.com）
 echo "啟動奇點（PORT=$PORT）…"
 nohup env PORT=$PORT ./bin/server >> sw.log 2>&1 &
 sleep 2

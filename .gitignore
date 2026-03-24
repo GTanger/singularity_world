@@ -54,3 +54,8 @@ autoresearch-master/
 
 # 本地工具腳本（不納入版控、不 push）
 tools/
+
+
+# Added by cargo
+
+/target

@@ -1,0 +1,32 @@
+{
+  "id": "city_life_13f_coord",
+  "name": "調度室",
+  "description": "牆屏顯示各層物流節點狀態，對講機偶爾爆出短句。地圖上浮生城豎軸被拉成一條發光帶。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_13f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_13f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_13f_coord_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城13F」大廳。"
+      },
+      "move_to_room_id": "city_life_13f"
+    }
+  ]
+}

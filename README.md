@@ -13,11 +13,27 @@
 - 後端：Go 服務（`main.go`），以 JSON/store 作為執行期資料來源。
 - 主要資料：`data/rooms/editor/`（一房一檔）、`data/entities.json`、`data/runtime/*`。
 - 前端：文字遊戲主頁 + 管理工具頁（地圖檢視器、房間編輯器、星圖、管理頁）。
-- 浮生城資料已擴展至 `1F~11F`：民居樓層、電梯、公共機能層與多格動線均已落檔。
+- 浮生城資料已擴展至 `1F~15F`：民居樓層、電梯、公共機能層、設備管路層、**13F 物流服務／14F 社區健康／15F 管委行政** 與多格動線均已落檔。
 
 ---
 
 ## 快速啟動
+
+### 啟動前嚴格閘門（契約優先）
+
+本專案以 **Go 為實作妥協**，但對 **靜態與契約** 採 **類 Rust `cargo check` 思維**：未通過不得進入可執行檔建置。
+
+`./start` 與 `./start-with-chatmery` 在殺舊行程後、建置 `server` 前會依序執行：
+
+1. **`go vet ./...`**
+2. **`go test ./... -count=1`**
+3. **`checkrooms -brackets -strict`**（Move／Look 觸發字 + 〔〕必對應物件名）
+
+本機可單獨跑同一套（不必啟動服務）：
+
+```bash
+make verify
+```
 
 ### 一鍵啟動（建議）
 
@@ -27,7 +43,7 @@
 ./start
 ```
 
-用途：建置並啟動奇點服務（預設使用 1721）。
+用途：通過上述閘門後建置並啟動奇點服務（預設使用 1721）。
 
 ### 奇點 + Chatmery 一起啟動
 
@@ -52,8 +68,10 @@ systemctl --user status sw-with-chatmery
 
 ### 手動建置與執行
 
+建議仍先 `make verify`。通過後：
+
 ```bash
-go build -o bin/server .
+go build -trimpath -o bin/server .
 ./bin/server
 ```
 
@@ -106,7 +124,7 @@ singularity_world/
 - 主編輯目錄：`data/rooms/editor/`。
 - `id` 必須全域唯一，`exits[].to` 必須指向存在的房間 `id`。
 - `objects` 可提供 `Move` 與 `move_to_room_id` 以支援物件式移動。
-- 地圖檢視器顏色依 `zone` 分組；浮生城已使用分層 zone（如 `citylife_4f`、`citylife_11f`）。
+- 地圖檢視器顏色依 `zone` 分組；浮生城已使用分層 zone（如 `citylife_4f`、`citylife_11f`、`citylife_12f`、`citylife_13f`、`citylife_14f`、`citylife_15f`）。
 
 ---
 

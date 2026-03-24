@@ -1,0 +1,32 @@
+{
+  "id": "city_life_15f_clerk",
+  "name": "文書組",
+  "description": "列印、用印與公文分發內勤；紙箱與待簽卷宗堆疊節奏穩定。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_15f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_15f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_15f_clerk_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城15F」大廳。"
+      },
+      "move_to_room_id": "city_life_15f"
+    }
+  ]
+}

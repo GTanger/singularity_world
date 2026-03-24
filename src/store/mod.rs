@@ -2,6 +2,7 @@
 // 啟動時從指定 JSON 檔與目錄載入全部資料，執行期只讀寫記憶體，必要時原子寫回對應 JSON。
 // 對齊 Go store/store.go。
 
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -400,6 +401,12 @@ struct NpcDyadsFile {
 struct NpcRumorsFile {
     #[serde(default)]
     entries: Vec<NpcRumor>,
+}
+
+/// 與 Go `npcRumorDigestFile`、現行 `npc_rumor_digest.json` 包一層 `digest` 對齊。
+#[derive(Serialize, Deserialize)]
+struct NpcRumorDigestFile {
+    digest: NpcRumorDigest,
 }
 
 // ══════════════════════════════════════
@@ -904,7 +911,13 @@ impl Store {
             Ok(r) => r,
             Err(_) => return Ok(()),
         };
-        self.npc_rumor_digest = serde_json::from_str(&raw).ok();
+        if let Ok(w) = serde_json::from_str::<NpcRumorDigestFile>(&raw) {
+            self.npc_rumor_digest = Some(w.digest);
+            return Ok(());
+        }
+        if let Ok(d) = serde_json::from_str::<NpcRumorDigest>(&raw) {
+            self.npc_rumor_digest = Some(d);
+        }
         Ok(())
     }
 
@@ -971,6 +984,7 @@ impl Store {
                 .collect();
             self.exits.insert(id, enriched);
         }
+        crate::db::sync_room_graph_with_store(self);
     }
 
     pub fn delete_room_data(&mut self, room_id: &str) {
@@ -982,13 +996,16 @@ impl Store {
         for exits in self.exits.values_mut() {
             exits.retain(|ex| ex.to_room_id != room_id);
         }
+        crate::db::sync_room_graph_with_store(self);
     }
 
     pub fn reload_rooms(&mut self) -> anyhow::Result<()> {
         self.rooms.clear();
         self.exits.clear();
         let path = self.rooms_path.clone();
-        self.load_rooms(&path)
+        self.load_rooms(&path)?;
+        crate::db::sync_room_graph_with_store(self);
+        Ok(())
     }
 
     pub fn adjacency(&self) -> HashMap<String, Vec<String>> {
@@ -1180,8 +1197,27 @@ impl Store {
             .count()
     }
 
+    /// 該場所既有指派中的第一個職業 ID（對齊 Go `GetFirstOccupationIDForVenue`）。
+    pub fn get_first_occupation_id_for_venue(&self, venue_id: &str) -> String {
+        for list in self.assignments.values() {
+            for a in list {
+                if a.venue_id == venue_id {
+                    return a.occupation_id.clone();
+                }
+            }
+        }
+        String::new()
+    }
+
+    /// 新增指派；同 entity+occupation+venue 已存在則忽略（對齊 Go `InsertAssignment`）。
     pub fn insert_assignment(&mut self, entity_id: &str, occupation_id: &str, venue_id: &str, assigned_by: &str) -> anyhow::Result<()> {
-        self.assignments.entry(entity_id.to_string()).or_default().push(Assignment {
+        let list = self.assignments.entry(entity_id.to_string()).or_default();
+        for a in list.iter() {
+            if a.occupation_id == occupation_id && a.venue_id == venue_id {
+                return Ok(());
+            }
+        }
+        list.push(Assignment {
             entity_id: entity_id.to_string(),
             occupation_id: occupation_id.to_string(),
             venue_id: venue_id.to_string(),
@@ -1450,6 +1486,221 @@ impl Store {
         self.npc_rumor_digest.as_ref()
     }
 
+    /// 依時間移除過期傳聞並衰減權重／可信度（對齊 Go `DecayNpcRumors`）。
+    pub fn decay_npc_rumors(&mut self, now_unix: i64) -> anyhow::Result<()> {
+        let mut changed = false;
+        let mut to_remove: Vec<String> = self
+            .npc_rumors
+            .iter()
+            .filter(|(_, r)| r.expires_at > 0 && now_unix > r.expires_at)
+            .map(|(id, _)| id.clone())
+            .collect();
+        for id in to_remove.drain(..) {
+            self.npc_rumors.remove(&id);
+            changed = true;
+        }
+        for r in self.npc_rumors.values_mut() {
+            if r.updated_at > 0 && now_unix - r.updated_at >= 900 && r.weight > 1 {
+                r.weight -= 1;
+                changed = true;
+            }
+            if r.last_used_at > 0 && now_unix - r.last_used_at >= 3600 {
+                if r.source_score > 1 {
+                    r.source_score -= 1;
+                    changed = true;
+                } else if r.weight > 1 {
+                    r.weight -= 1;
+                    changed = true;
+                }
+            }
+        }
+        if changed {
+            self.persist_npc_rumors()?;
+        }
+        Ok(())
+    }
+
+    /// 由目前傳聞池 top 項組一句摘要並寫入 digest 檔（對齊 Go `BuildNpcRumorDigest`）。
+    pub fn build_npc_rumor_digest(&mut self, now_unix: i64) -> anyhow::Result<()> {
+        let top = self.top_npc_rumors("", "", now_unix, 5);
+        if top.is_empty() {
+            return Ok(());
+        }
+        let mut parts: Vec<String> = Vec::new();
+        for t in top.iter().take(3) {
+            let x = t.text.trim();
+            if x.is_empty() {
+                continue;
+            }
+            parts.push(Self::trunc_to_runes(x, 16));
+        }
+        if parts.is_empty() {
+            return Ok(());
+        }
+        let text = format!("近日鎮上：{}", parts.join("；"));
+        self.npc_rumor_digest = Some(NpcRumorDigest {
+            text,
+            source_count: top.len() as i32,
+            updated_at: now_unix,
+        });
+        self.persist_npc_rumor_digest()
+    }
+
+    /// 正規化傳聞文本鍵（對齊 Go `canonicalRumorText`：小寫、去空白）。
+    fn canonical_rumor_text(text: &str) -> String {
+        text.trim().to_lowercase()
+    }
+
+    fn trunc_to_runes(s: &str, max_runes: usize) -> String {
+        let ch: Vec<char> = s.chars().collect();
+        if ch.len() <= max_runes {
+            return s.to_string();
+        }
+        let head: String = ch[..max_runes].iter().collect();
+        head + "…"
+    }
+
+    /// 取指定 room/zone 最相關 topK 傳聞（對齊 Go `TopNpcRumors`）。
+    #[must_use]
+    pub fn top_npc_rumors(&self, room_id: &str, zone: &str, now_unix: i64, top_k: i32) -> Vec<NpcRumor> {
+        if top_k <= 0 {
+            return Vec::new();
+        }
+        let top_k = top_k as usize;
+        let mut list: Vec<NpcRumor> = self
+            .npc_rumors
+            .values()
+            .filter(|r| !r.text.trim().is_empty())
+            .filter(|r| r.expires_at == 0 || now_unix <= r.expires_at)
+            .filter(|r| r.blocked_until == 0 || now_unix > r.blocked_until)
+            .cloned()
+            .map(|mut r| {
+                let mut score = r.weight + r.source_score;
+                match r.source.as_str() {
+                    "job" => score += 3,
+                    "room_event" => score += 2,
+                    "spawn" => score += 1,
+                    "economy" => {}
+                    _ => {}
+                }
+                if !room_id.is_empty() && r.room_id == room_id {
+                    score += 5;
+                }
+                if !zone.is_empty() && r.zone == zone {
+                    score += 2;
+                }
+                r.weight = score;
+                r
+            })
+            .collect();
+        list.sort_by(|a, b| match b.weight.cmp(&a.weight) {
+            Ordering::Equal => b.updated_at.cmp(&a.updated_at),
+            o => o,
+        });
+        let mut selected: Vec<NpcRumor> = Vec::new();
+        let mut used_source: HashMap<String, i32> = HashMap::new();
+        let mut used_text: HashMap<String, bool> = HashMap::new();
+        let mut rest: Vec<NpcRumor> = Vec::new();
+        for it in list {
+            let key = Self::canonical_rumor_text(&it.text);
+            if key.is_empty() || used_text.get(&key).copied().unwrap_or(false) {
+                continue;
+            }
+            let src = it.source.trim().to_string();
+            if !src.is_empty() && used_source.get(&src).copied().unwrap_or(0) >= 1 {
+                rest.push(it);
+                continue;
+            }
+            used_text.insert(key, true);
+            if !src.is_empty() {
+                *used_source.entry(src).or_default() += 1;
+            }
+            selected.push(it);
+            if selected.len() >= top_k {
+                return selected;
+            }
+        }
+        for it in rest {
+            let key = Self::canonical_rumor_text(&it.text);
+            if key.is_empty() || used_text.get(&key).copied().unwrap_or(false) {
+                continue;
+            }
+            used_text.insert(key, true);
+            selected.push(it);
+            if selected.len() >= top_k {
+                break;
+            }
+        }
+        selected
+    }
+
+    /// 標記傳聞被引用（對齊 Go `MarkRumorUsedByText`）。
+    pub fn mark_rumor_used_by_text(&mut self, text: &str, now_unix: i64) -> anyhow::Result<()> {
+        let key = Self::canonical_rumor_text(text);
+        if key.is_empty() {
+            return Ok(());
+        }
+        let mut changed = false;
+        for r in self.npc_rumors.values_mut() {
+            if Self::canonical_rumor_text(&r.text) != key {
+                continue;
+            }
+            r.mention_count += 1;
+            r.last_used_at = now_unix;
+            if r.mention_count % 3 == 0 && r.weight < 20 {
+                r.weight += 1;
+            }
+            if r.mention_count % 5 == 0 && r.source_score < 8 {
+                r.source_score += 1;
+            }
+            changed = true;
+            break;
+        }
+        if changed {
+            self.persist_npc_rumors()?;
+        }
+        Ok(())
+    }
+
+    /// 衝突降權（對齊 Go `PenalizeRumorByText`）。
+    pub fn penalize_rumor_by_text(
+        &mut self,
+        text: &str,
+        now_unix: i64,
+        reason: &str,
+    ) -> anyhow::Result<()> {
+        let key = Self::canonical_rumor_text(text);
+        if key.is_empty() {
+            return Ok(());
+        }
+        let mut changed = false;
+        for r in self.npc_rumors.values_mut() {
+            if Self::canonical_rumor_text(&r.text) != key {
+                continue;
+            }
+            if r.weight > 1 {
+                r.weight -= 2;
+                if r.weight < 1 {
+                    r.weight = 1;
+                }
+            }
+            if r.source_score > 1 {
+                r.source_score -= 1;
+            }
+            r.blocked_until = now_unix + 900;
+            r.updated_at = now_unix;
+            r.penalty_count += 1;
+            r.last_penalty_at = now_unix;
+            r.last_penalty_reason = reason.trim().to_string();
+            changed = true;
+            break;
+        }
+        if changed {
+            self.persist_npc_rumors()?;
+        }
+        Ok(())
+    }
+
     // ══════════════════════════════════════
     //  持久化方法（原子寫回 JSON）
     // ══════════════════════════════════════
@@ -1557,6 +1808,19 @@ impl Store {
         let entries: Vec<NpcRumor> = self.npc_rumors.values().cloned().collect();
         let raw = serde_json::to_string_pretty(&NpcRumorsFile { entries })?;
         Self::atomic_write(&self.npc_rumor_path, raw.as_bytes())
+    }
+
+    fn persist_npc_rumor_digest(&self) -> anyhow::Result<()> {
+        if self.npc_rumor_digest_path.as_os_str().is_empty() {
+            return Ok(());
+        }
+        let Some(ref d) = self.npc_rumor_digest else {
+            return Ok(());
+        };
+        let raw = serde_json::to_string_pretty(&NpcRumorDigestFile {
+            digest: d.clone(),
+        })?;
+        Self::atomic_write(&self.npc_rumor_digest_path, raw.as_bytes())
     }
 }
 

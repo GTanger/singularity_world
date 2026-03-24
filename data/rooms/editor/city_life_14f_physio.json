@@ -1,0 +1,32 @@
+{
+  "id": "city_life_14f_physio",
+  "name": "理療間",
+  "description": "牽引與熱敷設備收納有序，地板防滑。偶有人低聲數拍子。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_14f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_14f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_14f_physio_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城14F」大廳。"
+      },
+      "move_to_room_id": "city_life_14f"
+    }
+  ]
+}

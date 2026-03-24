@@ -1,0 +1,88 @@
+{
+  "id": "city_life_1f_riceball",
+  "name": "遇飯糰",
+  "description": "位於浮生城一樓大廳邊緣的微型餐飲店鋪。這裡沒有設置任何供人停留的內用座位區，僅有一道由溫潤淺色白蠟木拼組而成的極簡 L 型點餐檯。檯面後方牆面上鑲嵌著一座發出柔和燈光的白底黑色粗體字圓形價目表燈箱。點餐檯後方的作業區牆面，是一整片乾淨的米色防油烤漆玻璃，隱約反射出前台的冷清景象。檯面上整齊排列著幾個不鏽鋼材質的大型保溫盒與多層木製蒸籠，頂部還微微冒著白煙。空氣中瀰漫著剛出爐的白米飯香氣、淡淡的芝麻油與海苔的乾燥氣息。從這處以實用為主的檔口轉身，即可退回廣闊的〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "shop",
+    "food"
+  ],
+  "zone": "citylife_1f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_1f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_1f_riceball_to_city_life_1f",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開了飯糰店鋪，回到一樓大廳。"
+      },
+      "move_to_room_id": "city_life_1f"
+    },
+    {
+      "id": "city_life_1f_riceball_obj_list",
+      "name": "價目表",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "「手工捏製、溫暖你的浮生每一天！」\n【遇飯糰・菜單】\n｜經典｜風味｜炸物｜飲品｜"
+      }
+    },
+    {
+      "id": "city_life_1f_riceball_obj_classic",
+      "name": "經典",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜肉鬆飯糰　　｜\n｜鮪魚飯糰　　｜\n｜梅子飯糰　　｜\n｜海口紫菜糰　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_riceball_obj_flavor",
+      "name": "風味",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜泡菜燒肉　　｜\n｜炙燒明太子　｜\n｜醬燒雪花牛　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_riceball_obj_fried",
+      "name": "炸物",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜唐揚雞飯糰　｜\n｜炸蝦天婦羅　｜\n｜起司豬排糰　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_riceball_obj_drink",
+      "name": "飲品",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜無糖溫豆漿　｜\n｜手採冷泡茶　｜\n｜暖胃味噌湯　｜"
+      }
+    }
+  ]
+}

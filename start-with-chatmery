@@ -58,10 +58,18 @@ fi
 pkill -x chatmery-web 2>/dev/null || true
 sleep 1
 
-# 3) 建置奇點
-echo "[$(ts)] 建置奇點…"
+# 3) 嚴格閘門（vet → test → checkrooms -brackets -strict；失敗則中止）
+echo "[$(ts)] go vet ./…"
+( cd "$SW_DIR" && go vet ./... )
+echo "[$(ts)] go test ./…"
+( cd "$SW_DIR" && go test ./... -count=1 )
+echo "[$(ts)] 檢查房間 JSON（checkrooms -brackets -strict）…"
 mkdir -p "$SW_DIR/bin" "$SW_DIR/data"
-( cd "$SW_DIR" && go build -buildvcs=false -o bin/server . )
+( cd "$SW_DIR" && go build -buildvcs=false -trimpath -o bin/checkrooms ./cmd/checkrooms && ./bin/checkrooms -brackets -strict )
+
+# 4) 建置奇點
+echo "[$(ts)] 建置奇點…"
+( cd "$SW_DIR" && go build -buildvcs=false -trimpath -o bin/server . )
 
 # 4) 建置 Chatmery Web
 if [[ -d "$CHATMERY_DIR" ]]; then
@@ -72,12 +80,12 @@ else
   echo "[$(ts)] 略過 Chatmery Web（CHATMERY_DIR 不存在：$CHATMERY_DIR）"
 fi
 
-# 5) 啟動奇點（1721）
+# 6) 啟動奇點（1721）
 echo "[$(ts)] 啟動奇點（PORT=1721）…"
 ( cd "$SW_DIR" && env PORT=1721 ./bin/server ) &
 PID_SW=$!
 
-# 6) 啟動 Chatmery Web（1722）
+# 7) 啟動 Chatmery Web（1722）
 if [[ -d "$CHATMERY_DIR" && -x "$CHATMERY_DIR/chatmery-web" ]]; then
   sleep 0.5
   echo "[$(ts)] 啟動 Chatmery Web（PORT=1722）…"

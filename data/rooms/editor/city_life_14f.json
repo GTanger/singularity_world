@@ -1,0 +1,206 @@
+{
+  "id": "city_life_14f",
+  "name": "浮生城14F",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜體檢區｜　　　　　　　　　　　｜諮詢台｜\n｜採樣室｜　※浮生城１４樓※　　｜理療間｜\n｜衛教室｜　　　　　　　　　　　｜藥事窗｜\n｜｜｜｜｜復健室｜候診廳｜建檔室｜｜｜｜｜",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_14f",
+  "exits": [
+    {
+      "direction": "電梯間",
+      "to": "city_life_elevator"
+    },
+    {
+      "direction": "下樓梯",
+      "to": "city_life_13f"
+    },
+    {
+      "direction": "上樓梯",
+      "to": "city_life_15f"
+    },
+    {
+      "direction": "體檢區",
+      "to": "city_life_14f_checkup"
+    },
+    {
+      "direction": "採樣室",
+      "to": "city_life_14f_sample"
+    },
+    {
+      "direction": "衛教室",
+      "to": "city_life_14f_edu"
+    },
+    {
+      "direction": "諮詢台",
+      "to": "city_life_14f_consult"
+    },
+    {
+      "direction": "理療間",
+      "to": "city_life_14f_physio"
+    },
+    {
+      "direction": "藥事窗",
+      "to": "city_life_14f_pharma"
+    },
+    {
+      "direction": "復健室",
+      "to": "city_life_14f_rehab"
+    },
+    {
+      "direction": "候診廳",
+      "to": "city_life_14f_lounge"
+    },
+    {
+      "direction": "建檔室",
+      "to": "city_life_14f_records"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_elevator",
+      "name": "電梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「電梯間」。"
+      },
+      "move_to_room_id": "city_life_elevator"
+    },
+    {
+      "id": "city_life_13f",
+      "name": "下樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城13F」。"
+      },
+      "move_to_room_id": "city_life_13f"
+    },
+    {
+      "id": "city_life_15f",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城15F」。"
+      },
+      "move_to_room_id": "city_life_15f"
+    },
+    {
+      "id": "city_life_14f_checkup_from_lobby",
+      "name": "體檢區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔體檢區〕。"
+      },
+      "move_to_room_id": "city_life_14f_checkup"
+    },
+    {
+      "id": "city_life_14f_sample_from_lobby",
+      "name": "採樣室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔採樣室〕。"
+      },
+      "move_to_room_id": "city_life_14f_sample"
+    },
+    {
+      "id": "city_life_14f_edu_from_lobby",
+      "name": "衛教室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔衛教室〕。"
+      },
+      "move_to_room_id": "city_life_14f_edu"
+    },
+    {
+      "id": "city_life_14f_consult_from_lobby",
+      "name": "諮詢台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔諮詢台〕。"
+      },
+      "move_to_room_id": "city_life_14f_consult"
+    },
+    {
+      "id": "city_life_14f_physio_from_lobby",
+      "name": "理療間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔理療間〕。"
+      },
+      "move_to_room_id": "city_life_14f_physio"
+    },
+    {
+      "id": "city_life_14f_pharma_from_lobby",
+      "name": "藥事窗",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔藥事窗〕。"
+      },
+      "move_to_room_id": "city_life_14f_pharma"
+    },
+    {
+      "id": "city_life_14f_rehab_from_lobby",
+      "name": "復健室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔復健室〕。"
+      },
+      "move_to_room_id": "city_life_14f_rehab"
+    },
+    {
+      "id": "city_life_14f_lounge_from_lobby",
+      "name": "候診廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔候診廳〕。"
+      },
+      "move_to_room_id": "city_life_14f_lounge"
+    },
+    {
+      "id": "city_life_14f_records_from_lobby",
+      "name": "建檔室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔建檔室〕。"
+      },
+      "move_to_room_id": "city_life_14f_records"
+    }
+  ]
+}

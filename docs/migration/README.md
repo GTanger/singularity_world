@@ -1,8 +1,10 @@
 # Go → Rust 後端遷移計畫
 
-> 建立日期：2026-03-24
-> 決策依據：[決策 010](../decisions/010_go_to_rust_migration.md)
-> 狀態：**設計中**
+> 建立日期：2026-03-24  
+> 決策依據：[決策 010](../decisions/010_go_to_rust_migration.md)  
+> 狀態：**進行中**（Phase 0～1 已落地；Phase 2 部分落地；Phase 3 進行中 — `economy`／`game`／`combat`／`world` 主線已搬）
+
+> **實際進度快照**（2026-02-12 對帳）：`src/**/*.rs` 合計 **8422** 行（`Cargo.toml` 34 行），已可 **`cargo check`**／**`cargo clippy -D warnings`**。✅ **已落地**：`store`／`db`、`game`、`world`、`combat`、`ai`、`event`、`gametext`、`npc`、`npcnpc`（types／state／helpers）、**`server` 之 `protocol`（WS JSON 型別）+ `session`（`SessionStore`／`sanitize_talk_snippet`）**。⏳ **仍待**：`server` 之 **HTTP／WebSocket handler／Hub**、`npcnpc` **`TryTriggerNpcNpcInRoom`**、Go `npc/` 決策主迴圈與 Go **`server/`** 其餘對齊。**上線與 `./start` 仍以 Go 為準**（見 [`docs/dev/README.md`](../dev/README.md)）。
 
 ---
 
@@ -18,54 +20,68 @@
 
 ## 二、模組對應表
 
+**行數欄位**：**Go（參考）** = 該套件目錄內 `*.go` 合計且**排除 `*_test.go`**（遷移前規模）。**Rust（現況）** = 對應 `src/…` 之 `.rs` 行數；占位模組可能僅 1～2 行。數字會隨提交變動，更新本表請用文末命令對帳。
+
 ### 第零層：型別定義（無依賴）
 
-| Go | Rust | 行數 | 說明 |
-|---|---|---|---|
-| model/ | src/model/ | 30 | Room、Exit 型別 |
-| entity/ | src/entity/ | 66 | Character 結構 |
+| Go | Rust | Go（參考） | Rust（現況） | 說明 |
+|---|---|---:|---:|---|
+| model/ | src/model/ | 30 | 44 | Room、Exit 型別 |
+| entity/ | src/entity/ | 66 | 138 | Character 等結構 |
 
 ### 第一層：設定與基礎（僅依賴第零層）
 
-| Go | Rust | 行數 | 說明 |
-|---|---|---|---|
-| config/ | src/config/ | 551 | 伺服器參數、環境變數覆蓋 |
-| event/ | src/event/ | 64 | 事件日誌 Append/Query |
-| gametext/ | src/gametext/ | 418 | 文案載入與格式化 |
+| Go | Rust | Go（參考） | Rust（現況） | 說明 |
+|---|---|---:|---:|---|
+| config/ | src/config/ | 551 | 316 | 伺服器參數、環境變數覆蓋 |
+| event/ | src/event/ | 64 | 63 | `append`、`last_by_entity`、`mark_observed`、`events_in_range`（對齊 journal.go） |
+| gametext/ | src/gametext/ | 418 | 413 | 文案載入與格式化 |
 
 ### 第二層：資料層（依賴第零、一層）
 
-| Go | Rust | 行數 | 說明 |
-|---|---|---|---|
-| store/ | src/store/ | 2970 | JSON 記憶體層，唯一資料源 |
-| db/ | src/db/ | 3448 | 資料存取介面（讀寫 store） |
+| Go | Rust | Go（參考） | Rust（現況） | 說明 |
+|---|---|---:|---:|---|
+| store/ | src/store/ | 2970 | 1593 | `InsertAssignment` 去重、`get_first_occupation_id_for_venue` 等（對齊 Go store） |
+| db/ | src/db/ | 3448 | ~1450 | 含 **`text`／`npc_social`／`equip`／`npc_spawn`／`assignment`／`sched`／`npc_*`**；**`get_room`／`rune_lcs_similarity`／`upsert_npc_rumor`** 等 |
 
 ### 第三層：遊戲邏輯（依賴第零～二層）
 
-| Go | Rust | 行數 | 說明 |
-|---|---|---|---|
-| game/ | src/game/ | 518 | 遊戲時間、視野、觀測 |
-| combat/ | src/combat/ | 232 | 戰鬥結算 |
-| economy/ | src/economy/ | 28 | 經濟引擎（目前極簡） |
-| npc/ | src/npc/ | 1735 | NPC 決策、移動、行為 |
-| npcnpc/ | src/npcnpc/ | 1202 | NPC 間對話觸發 |
-| ai/ | src/ai/ | 956 | LLM 呼叫、評分 |
-| world/ | src/world/ | 216 | 地圖格點（目前暫封） |
+| Go | Rust | Go（參考） | Rust（現況） | 說明 |
+|---|---|---:|---:|---|
+| game/ | src/game/ | 518 | 402 | `game_time_now`、`spawn_loop`；**`zone`／`ChunkView`／`view_sim`／`observe`**（對齊 `zone.go`、`chunk_view.go`、`view_sim.go`、`observe.go`） |
+| combat/ | src/combat/ | 232 | 336 | `Resolve`、`ResolveV2`、`CombatOpt`、單元測試 |
+| economy/ | src/economy/ | 28 | 20 | `run`、`transfer_magnesium` → db |
+| npc/ | src/npc/ | 1735 | ~395 | **`topics`**：`load_npc_npc_topics`、`Find*`／`PickRandom*`／`debug_topic_weights_for_pair` + `db` 建立／種子／`equip` |
+| npcnpc/ | src/npcnpc/ | 1202 | 669 | **`types`／`state`／`helpers`**；**`TryTriggerNpcNpcInRoom`** 仍待（依 `server`／Ollama） |
+| ai/ | src/ai/ | 956 | ~1382 | `sanitize`、`prompts`、`talk`、`openai_chat`、**`scorer`**（多檔合計） |
+| world/ | src/world/ | 216 | 522 | `Grid`、`load_chunk`、`can_move_to`、`terrain_from_rune`、`display_terrain`／`display_terrain_rng`、`TerrainMeta` |
 
 ### 第四層：對外介面（依賴全部）
 
-| Go | Rust | 行數 | 說明 |
-|---|---|---|---|
-| server/ | src/server/ | 3607 | HTTP/WebSocket、session、room editor API |
-| main.go + 根層 | src/main.rs | 753 | 入口、路由註冊、模擬主迴圈 |
+| Go | Rust | Go（參考） | Rust（現況） | 說明 |
+|---|---|---:|---:|---|
+| server/ | src/server/ | 3607 | ~653 | **`protocol` + `session` 已搬**；HTTP/WS、Hub、room editor API 仍待 |
+| main.go + 根層 *.go | src/main.rs + lib.rs | 753 | 26 | 入口 9 + `lib.rs` 17；Go 為專案根目錄非 test 之 `*.go` 合計 |
 
 ### 工具（獨立，可最後處理或保持 Go）
 
-| Go | 處理方式 | 說明 |
-|---|---|---|
-| cmd/checkrooms | 遷移或保持 Go | 房間資料檢查工具 |
-| cmd/sw-set-password | 遷移 | 密碼設定工具 |
-| internal/roomcheck | 隨 checkrooms | 檢查邏輯 |
+| Go | 處理方式 | Go（參考） | Rust（現況） | 說明 |
+|---|---|---:|---:|---|
+| cmd/checkrooms + internal/roomcheck | 遷移或維持 Go | 377 | — | 房間 JSON 契約檢查（`check.go`+`main.go`+`check_test.go`） |
+| cmd/sw-set-password | 遷移 | 48 | — | 密碼設定工具 |
+
+**對帳命令（專案根）**：
+
+```bash
+# Go：單套件、排除測試（例：db）
+find db -maxdepth 1 -name '*.go' ! -name '*_test.go' -print0 | xargs -0 wc -l | tail -1
+
+# Rust：單模組（例：store）
+wc -l src/store/mod.rs
+
+# Rust：全 src
+find src -name '*.rs' -print0 | xargs -0 wc -l | tail -1
+```
 
 ---
 
@@ -113,6 +129,7 @@
 - 讀取現有 `data/rooms/editor/` 全部 598 間房間無錯誤
 - 讀取現有 `data/entities.json`、`data/runtime/*` 無錯誤
 - store 初始化失敗時，明確報錯而非靜默跳過
+- **已補**：整合測試 `tests/store_init_integration.rs` — 執行 `cargo test --test store_init_integration`（需專案根含完整 `data/`）驗證 `store::init(data/rooms, data/runtime, data)` 成功且房間數 ≥ 598
 
 ---
 
@@ -187,13 +204,15 @@
 
 | Phase | 狀態 | 說明 |
 |-------|------|------|
-| Phase 0：專案骨架 | 未開始 | |
-| Phase 1：型別 + 設定 | 未開始 | |
-| Phase 2：Store + DB | 未開始 | |
-| Phase 3：遊戲邏輯 | 未開始 | |
-| Phase 4：Server + 入口 | 未開始 | |
-| Phase 5：整合測試 | 未開始 | |
+| Phase 0：專案骨架 | **完成** | `Cargo.toml`（axum、tokio、serde、bcrypt、reqwest、anyhow、thiserror、tracing 等）、`src/` 模組樹、`cargo check` 通過 |
+| Phase 1：型別 + 設定 | **進行中** | `model`、`entity`、`config`、`gametext` 落檔；**`event` 日誌 API** 已對齊 Go journal；§三 **驗收項**（全 `data/config` 單測、enum 窮舉）仍待補齊 |
+| Phase 2：Store + DB | **進行中** | `store`、`db` 已移植主體片段；**真實資料載入**已有 `cargo test --test store_init_integration`；`init` 內對可選 JSON 仍多為「缺檔略過、壞檔才錯」— 與 §三「失敗明確報錯」對齊尚待收斂 |
+| Phase 3：遊戲邏輯 | **進行中** | **`economy`、`game`、`combat`、`world`（含 terrain_display）**；**`ai` 全套**；`npc`／`npcnpc`／`game` 其餘仍待搬 |
+| Phase 4：Server + 入口 | **未開始** | `server` 占位；`main.rs` 僅日誌初始化，尚無 HTTP/WebSocket |
+| Phase 5：整合測試 | **未開始** | `cargo clippy`／E2E／`start` 改 Rust 等 |
+
+更新本表時可自行掃描：`find src -name '*.rs' -print0 | xargs -0 wc -l | sort -n`
 
 ---
 
-*奇點世界專案 — Go → Rust 遷移計畫 v1.0*
+*奇點世界專案 — Go → Rust 遷移計畫 v1.9*

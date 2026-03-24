@@ -1,0 +1,32 @@
+{
+  "id": "city_life_12f_mains",
+  "name": "管線廊",
+  "description": "主立管與橫向管廊在此匯合，支架上銘牌標著樓層編號與介質；狹長走道僅容單人側身通過巡檢。燈管偶有閃爍，腳下防滑漆磨出兩道踏痕。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "service"
+  ],
+  "zone": "citylife_12f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_12f"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_12f_mains_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城12F」大廳。"
+      },
+      "move_to_room_id": "city_life_12f"
+    }
+  ]
+}

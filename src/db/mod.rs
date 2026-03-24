@@ -1,8 +1,57 @@
 // db 模組 — 資料存取門面（讀寫 store），對齊 Go db/ 層。
 // store 為唯一資料源；db 提供業務語義的包裝（實體查詢、密碼驗證、soul_seed 展開等）。
 
+mod archival;
+mod assignment;
+mod disposition;
+mod equip;
+mod identity;
+mod npc_display;
+mod npc_expense;
+mod npc_names;
+mod npc_social;
+mod npc_spawn;
+mod occupation;
+mod room_graph;
+mod sched;
+mod text;
+
 use crate::entity::Character;
 use crate::store::{self, Entity};
+
+pub use assignment::{
+    entity_in_venue_at_room, get_all_venue_ids, get_all_venue_room_ids, get_assignment_count_by_venue,
+    get_assignments_for_entity, get_first_occupation_id_for_venue, get_npc_title_from_assignments,
+    get_room_ids_for_venue, get_venue_ids_for_room, get_venue_max_staff, insert_assignment,
+    is_room_in_venue, remove_assignments_for_entity, seed_venues, Assignment, Venue,
+};
+pub use equip::{get_item_descs, get_item_names, is_naked, seed_items, starter_equipment};
+pub use npc_display::{
+    get_npc_display_label_at_hour, get_npc_person_display_name, get_npc_title, get_npc_title_in_room,
+    get_npc_title_in_room_at_hour, get_schedule_for_entity, person_name_from_npc_list_label,
+    split_npc_list_display_label, NpcSchedule,
+};
+pub use npc_names::{first_rune, generate_npc_name};
+pub use npc_spawn::{
+    ensure_all_npcs_have_soul_seed, get_npc_gender_counts, insert_npc, seed_npcs, seed_npcs_for_store,
+    spawn_one_npc_from_pool, DEFAULT_NPCS, NpcDef,
+};
+pub use archival::{insert_npc_npc_dialogue_archival, recent_npc_npc_archival_lines_for_entity};
+pub use disposition::{adjust_disposition, get_disposition, DISP_BROKE, DISP_DAILY};
+pub use identity::build_identity;
+pub use npc_expense::{deduct_daily_expense, DAILY_EXPENSE_BASE};
+pub use npc_social::{
+    build_npc_rumor_digest, decay_npc_rumors, delete_npc_npc_thread,
+    get_npc_npc_conversation_summary, get_npc_npc_dyad, get_npc_npc_thread,
+    set_npc_npc_conversation_summary, set_npc_npc_dyad, set_npc_npc_thread, upsert_npc_rumor,
+};
+pub use occupation::get_sockets_for_npc;
+pub use room_graph::{rebuild_room_graph, sync_room_graph_with_store, with_room_graph, RoomGraph};
+pub use sched::{
+    apply_schedules, get_all_schedules, get_schedule_target, get_schedule_target_room, insert_schedule,
+    remove_schedule_for_entity, ScheduleMove, ScheduleTarget,
+};
+pub use text::rune_lcs_similarity;
 
 // ══════════════════════════════════════
 //  錯誤型別
@@ -228,10 +277,73 @@ pub fn verify_password(entity_id: &str, password: &str) -> anyhow::Result<bool> 
 /// 依 id 查詢實體。
 pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let mut s = arc.write().unwrap();
     let Some(se) = s.get_entity(id) else { return Ok(None) };
-    let title = ""; // Phase 3+ 補 NPC display name 邏輯
-    Ok(Some(store_entity_to_character(&se, title)))
+    if se.kind == "npc" {
+        npc_display::npc_person_display_name_locked(&mut s, id);
+    }
+    let Some(se) = s.get_entity(id) else { return Ok(None) };
+    Ok(Some(store_entity_to_character(&se, "")))
+}
+
+/// 回傳實體當前房間 id（對齊 Go `db.GetEntityRoom`）。
+pub fn get_entity_room(entity_id: &str) -> anyhow::Result<String> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let s = arc.read().unwrap();
+    Ok(s.get_entity_room(entity_id))
+}
+
+/// 查詢座標落在 `[x_min,x_max]×[y_min,y_max]` 內的實體；`kind` 空字串表示不限種類（對齊 Go `GetEntitiesInBox`）。
+pub fn get_entities_in_box(
+    x_min: i32,
+    x_max: i32,
+    y_min: i32,
+    y_max: i32,
+    kind: &str,
+) -> anyhow::Result<Vec<Character>> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    let sel = s.get_entities_in_box(x_min, x_max, y_min, y_max, kind);
+    let mut list = Vec::with_capacity(sel.len());
+    for e in sel {
+        let mut se = e;
+        if se.kind == "npc" {
+            npc_display::npc_person_display_name_locked(&mut s, &se.id);
+            if let Some(updated) = s.get_entity(&se.id) {
+                se = updated;
+            }
+        }
+        list.push(store_entity_to_character(&se, ""));
+    }
+    Ok(list)
+}
+
+/// 回傳指定房間內所有存活實體（對齊 Go `GetEntitiesInRoom`）。
+/// `game_hour` 0–23 供在職場顯示職稱；`-1` 不套用下班規則（職場內一律「職稱|真名」）。
+pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec<Character>> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    let ids = s.entity_ids_in_room(room_id);
+    if ids.is_empty() {
+        return Ok(Vec::new());
+    }
+    let mut list = Vec::new();
+    for id in ids {
+        let Some(se) = s.get_entity(&id) else {
+            continue;
+        };
+        if se.vit <= 0 {
+            continue;
+        }
+        let label = if se.kind == "npc" {
+            npc_display::npc_title_in_room_locked(&mut s, &id, room_id, game_hour)
+        } else {
+            String::new()
+        };
+        let se = s.get_entity(&id).unwrap_or(se);
+        list.push(store_entity_to_character(&se, &label));
+    }
+    Ok(list)
 }
 
 /// 依 id 查 soul_seed 並展開為 Personality。
@@ -296,6 +408,13 @@ pub fn add_magnesium(entity_id: &str, delta: i32) -> anyhow::Result<()> {
     })
 }
 
+/// 將 `amount` 鎂自 `from_id` 轉至 `to_id`（餘額不足或實體不存在則錯）；對齊 Go `db.TransferMagnesium`。
+pub fn transfer_magnesium(from_id: &str, to_id: &str, amount: i32) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    s.transfer_magnesium(from_id, to_id, amount)
+}
+
 /// 更新體質（氣血）。
 pub fn update_vit(entity_id: &str, new_vit: i32) -> anyhow::Result<()> {
     let v = new_vit.max(0);
@@ -319,6 +438,26 @@ pub fn get_spawn_room_id() -> String {
     if id.is_empty() { "lobby".to_string() } else { id }
 }
 
+/// 有房間座標的 NPC id 列表（對齊 Go `GetNPCIDsWithRoom`）。
+#[must_use]
+pub fn get_npc_ids_with_room() -> Vec<String> {
+    let Some(arc) = store::get_store() else {
+        return Vec::new();
+    };
+    let s = arc.read().unwrap();
+    s.get_npc_ids_with_room()
+}
+
+/// 有房間座標的玩家 id 列表（對齊 Go `GetPlayerIDsWithRoom`）。
+#[must_use]
+pub fn get_player_ids_with_room() -> Vec<String> {
+    let Some(arc) = store::get_store() else {
+        return Vec::new();
+    };
+    let s = arc.read().unwrap();
+    s.get_player_ids_with_room()
+}
+
 /// 回傳房間的戰鬥地形標籤。
 pub fn terrain_from_room(room_id: &str) -> String {
     let Some(arc) = store::get_store() else { return String::new() };
@@ -334,6 +473,126 @@ pub fn terrain_from_room(room_id: &str) -> String {
         return "chaos".to_string();
     }
     String::new()
+}
+
+/// 依 id 查房間（對齊 Go `GetRoom`）。
+pub fn get_room(room_id: &str) -> anyhow::Result<Option<crate::model::Room>> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let s = arc.read().unwrap();
+    Ok(s.get_room(room_id))
+}
+
+/// 房間顯示名稱（對齊 Go `GetRoomName`）。
+pub fn get_room_name(room_id: &str) -> anyhow::Result<String> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let s = arc.read().unwrap();
+    Ok(s.get_room_name(room_id))
+}
+
+/// 將實體設為在指定房間（對齊 Go `SetEntityRoom`）。
+pub fn set_entity_room(entity_id: &str, room_id: &str) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    s.set_entity_room(entity_id, room_id)
+}
+
+/// 房間出口列表（對齊 `GetExitsForRoom`）。
+pub fn get_exits_for_room(room_id: &str) -> anyhow::Result<Vec<crate::model::Exit>> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let s = arc.read().unwrap();
+    Ok(s.get_exits_for_room(room_id))
+}
+
+/// 房間內可互動物件（對齊 `GetObjectsInRoom`）。
+pub fn get_objects_in_room(room_id: &str) -> anyhow::Result<Vec<crate::model::RoomObject>> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let s = arc.read().unwrap();
+    Ok(s.get_room(room_id).map(|r| r.objects).unwrap_or_default())
+}
+
+/// 物件是否具備指定動詞插座（對齊 `ObjectHasSocket`）。
+#[must_use]
+pub fn object_has_socket(obj: &crate::model::RoomObject, action: &str) -> bool {
+    obj.sockets.iter().any(|s| s.eq_ignore_ascii_case(action))
+}
+
+/// 新增玩家實體（對齊 `InsertEntity`）。
+pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Result<()> {
+    let mut display_char = display_char.trim().to_string();
+    if display_char.is_empty() {
+        display_char = "我".into();
+    }
+    let gender = if gender == "F" || gender == "女" {
+        "F".to_string()
+    } else {
+        "M".to_string()
+    };
+    let seed = generate_soul_seed();
+    let (vit, qi, dex) = expand_soul_seed_to_base_stats(seed);
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs() as i64;
+    let equip = equip::starter_equipment(&gender);
+    let e = Entity {
+        id: id.to_string(),
+        kind: "player".into(),
+        display_char,
+        x: 0,
+        y: 0,
+        move_state: "idle".into(),
+        target_x: None,
+        target_y: None,
+        walk_or_run: String::new(),
+        move_started_at: None,
+        vit,
+        qi,
+        dex,
+        magnesium: 0,
+        last_observed_at: None,
+        created_at: now,
+        gender,
+        soul_seed: Some(seed),
+        display_title: String::new(),
+        activated_nodes: r#"["N000"]"#.into(),
+        equipment_slots: equip,
+        inventory: "[]".into(),
+        disposition: 0,
+    };
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    s.put_entity(e)
+}
+
+/// 記錄 NPC 與玩家見面（對齊 `RecordMeet`）。
+pub fn record_meet(npc_id: &str, player_id: &str) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    s.record_meet(npc_id, player_id)
+}
+
+/// 傳聞池 top K（對齊 `TopNpcRumors`）。
+#[must_use]
+pub fn top_npc_rumors(room_id: &str, zone: &str, now_unix: i64, top_k: i32) -> Vec<store::NpcRumor> {
+    let Some(arc) = store::get_store() else {
+        return Vec::new();
+    };
+    let s = arc.read().unwrap();
+    s.top_npc_rumors(room_id, zone, now_unix, top_k)
+}
+
+/// 標記傳聞被引用。
+pub fn mark_rumor_used_by_text(text: &str, now_unix: i64) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    s.mark_rumor_used_by_text(text, now_unix)
+}
+
+/// 衝突降權傳聞。
+pub fn penalize_rumor_by_text(text: &str, now_unix: i64, reason: &str) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    s.penalize_rumor_by_text(text, now_unix, reason)
 }
 
 // ══════════════════════════════════════
@@ -362,4 +621,24 @@ impl SimpleLcg {
         let bits = (v as u64) >> 11;
         bits as f64 / (1u64 << 53) as f64
     }
+}
+
+/// 拓撲邊權總量常數（對齊 Go `TotalCostNorm`）。
+pub const TOTAL_TOPOLOGY_COST_NORM: f64 = 10_000.0;
+/// 拓撲邊數（對齊 Go `NumTopologyEdges`）。
+pub const NUM_TOPOLOGY_EDGES: usize = 760;
+
+/// 由 soul_seed 產生 760 條拓撲 Cost（對齊 `ExpandSoulSeedToTopologyCosts` 流程）。
+#[must_use]
+pub fn expand_soul_seed_to_topology_costs(seed: i64) -> Vec<f64> {
+    let mut rng = SimpleLcg::new(seed);
+    let _ = (rng.next_f64(), rng.next_f64(), rng.next_f64());
+    let mut raw = vec![0f64; NUM_TOPOLOGY_EDGES];
+    let mut sum = 0f64;
+    for r in &mut raw {
+        let u = rng.next_f64();
+        *r = 0.1 + u * 0.9;
+        sum += *r;
+    }
+    raw.iter().map(|x| (x / sum) * TOTAL_TOPOLOGY_COST_NORM).collect()
 }
