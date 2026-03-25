@@ -8,6 +8,7 @@ SW_DIR="$(pwd)"
 CHATMERY_DIR="${CHATMERY_DIR:-$SW_DIR/../chatmery}"
 
 PORT=1721
+DATABASE_URL="${DATABASE_URL:-postgres://postgres:singularity@localhost:5432/singularity}"
 
 # 1) 偵測環境與服務
 HAS_SYSTEMD=false
@@ -38,6 +39,8 @@ install -m 755 "$CARGO_OUT" bin/server-rust
 # 4) 重啟服務
 if [ "$HAS_SYSTEMD" = true ]; then
   echo "--- 透過 systemd 重啟服務 ---"
+  # 傳遞環境變數給 systemd service
+  systemctl --user set-environment DATABASE_URL="$DATABASE_URL"
   systemctl --user restart singularity.service
   sleep 1
   systemctl --user status singularity.service | head -n 5
@@ -51,7 +54,7 @@ else
     set -a; source "$SW_DIR/.env"; set +a
   fi
   
-  nohup env PORT=$PORT ./bin/server-rust >> sw.log 2>&1 &
+  nohup env PORT=$PORT DATABASE_URL="$DATABASE_URL" ./bin/server-rust >> sw.log 2>&1 &
   sleep 2
   echo "已啟動。log：$SW_DIR/sw.log"
 fi

@@ -30,10 +30,18 @@ uuid = { version = "1", features = ["v4"] }
 futures-util = "0.3"
 # 靜態檔案服務
 tower-http = { version = "0.6", features = ["fs", "set-header"] }
+rusqlite = { version = "0.39.0", features = ["bundled"] }
+r2d2_sqlite = "0.33.0"
+r2d2_postgres = "0.16"
+r2d2 = "0.8.10"
 
 [[bin]]
 name = "checkrooms"
 path = "src/bin/checkrooms.rs"
+
+[[bin]]
+name = "migrate"
+path = "src/bin/migrate.rs"
 
 [dev-dependencies]
 tempfile = "3"

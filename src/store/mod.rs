@@ -1,6 +1,7 @@
 // store 模組 — 以 JSON 為唯一數據源的記憶體層（無 DB）。
 // 啟動時從指定 JSON 檔與目錄載入全部資料，執行期只讀寫記憶體，必要時原子寫回對應 JSON。
 // 對齊 Go store/store.go。
+#![allow(clippy::collapsible_if)]
 
 use std::cmp::Ordering;
 use std::collections::HashMap;
@@ -10,6 +11,8 @@ use std::sync::{Arc, RwLock};
 use serde::{Deserialize, Serialize};
 
 use crate::model;
+
+pub mod sql;
 
 // ── 實體寫回防抖間隔（秒）——Phase 3+ 實作 tokio timer 時使用 ──
 #[allow(dead_code)]
@@ -331,59 +334,7 @@ struct ItemsFile {
     items: Vec<Item>,
 }
 
-#[derive(Serialize, Deserialize, Default)]
-struct EventLogFile {
-    #[serde(default)]
-    entries: Vec<EventEntry>,
-}
 
-#[derive(Serialize, Deserialize, Default)]
-struct AuthFile {
-    #[serde(default)]
-    entries: Vec<AuthEntry>,
-}
-
-#[derive(Serialize, Deserialize)]
-struct AuthEntry {
-    entity_id: String,
-    password_hash: String,
-}
-
-#[derive(Serialize, Deserialize, Default)]
-struct ArchivalFile {
-    #[serde(default)]
-    entries: Vec<ArchivalEntry>,
-}
-
-#[derive(Serialize, Deserialize, Default)]
-struct NpcMemoryFile {
-    #[serde(default)]
-    entries: Vec<NpcMemory>,
-}
-
-#[derive(Serialize, Deserialize, Default)]
-struct SummariesFile {
-    #[serde(default)]
-    entries: Vec<SummaryEntry>,
-}
-
-#[derive(Serialize, Deserialize)]
-struct SummaryEntry {
-    entity_id: String,
-    summary: String,
-}
-
-#[derive(Serialize, Deserialize, Default)]
-struct NpcNpcSummariesFile {
-    #[serde(default)]
-    entries: Vec<NpcNpcSummaryEntry>,
-}
-
-#[derive(Serialize, Deserialize)]
-struct NpcNpcSummaryEntry {
-    key: String,
-    summary: String,
-}
 
 #[derive(Serialize, Deserialize, Default)]
 struct NpcThreadsFile {
@@ -423,16 +374,11 @@ pub struct Store {
     pub schedules: HashMap<String, Schedule>,
     pub entities: HashMap<String, Entity>,
     pub items: HashMap<String, Item>,
-    pub event_log: Vec<EventEntry>,
-    pub archival: Vec<ArchivalEntry>,
-    pub auth: HashMap<String, String>,
-    pub npc_summaries: HashMap<String, String>,
-    pub npc_npc_summaries: HashMap<String, String>,
-    pub npc_memories: HashMap<String, NpcMemory>,
     pub npc_threads: HashMap<String, NpcThread>,
     pub npc_dyads: HashMap<String, NpcDyad>,
     pub npc_rumors: HashMap<String, NpcRumor>,
     pub npc_rumor_digest: Option<NpcRumorDigest>,
+    pub db_pool: Option<sql::DbPool>,
     // 路徑
     rooms_path: String,
     #[allow(dead_code)]
@@ -443,12 +389,6 @@ pub struct Store {
     schedules_path: PathBuf,
     entities_path: PathBuf,
     items_path: PathBuf,
-    event_log_path: PathBuf,
-    archival_path: PathBuf,
-    npc_memory_path: PathBuf,
-    auth_path: PathBuf,
-    summaries_path: PathBuf,
-    npc_npc_summaries_path: PathBuf,
     npc_thread_path: PathBuf,
     npc_dyad_path: PathBuf,
     npc_rumor_path: PathBuf,
@@ -461,6 +401,14 @@ pub static DEFAULT: RwLock<Option<Arc<RwLock<Store>>>> = RwLock::new(None);
 /// 取得全域 store 的 Arc 參照。
 pub fn get_store() -> Option<Arc<RwLock<Store>>> {
     DEFAULT.read().unwrap().clone()
+}
+
+pub fn get_db_pool() -> Option<sql::DbPool> {
+    if let Some(st) = get_store() {
+        st.read().unwrap().db_pool.clone()
+    } else {
+        None
+    }
 }
 
 /// 設定全域 store。
@@ -489,16 +437,11 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         schedules: HashMap::new(),
         entities: HashMap::new(),
         items: HashMap::new(),
-        event_log: Vec::new(),
-        archival: Vec::new(),
-        auth: HashMap::new(),
-        npc_summaries: HashMap::new(),
-        npc_npc_summaries: HashMap::new(),
-        npc_memories: HashMap::new(),
         npc_threads: HashMap::new(),
         npc_dyads: HashMap::new(),
         npc_rumors: HashMap::new(),
         npc_rumor_digest: None,
+        db_pool: None,
         rooms_path: rooms_path.to_string(),
         runtime_dir: runtime_dir.to_string(),
         entity_rooms_path: runtime.join("entity_rooms.json"),
@@ -507,12 +450,6 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         schedules_path: data.join("schedules.json"),
         entities_path: data.join("entities.json"),
         items_path: data.join("items.json"),
-        event_log_path: runtime.join("event_log.json"),
-        archival_path: runtime.join("npc_archival.json"),
-        npc_memory_path: runtime.join("npc_memory.json"),
-        auth_path: runtime.join("auth.json"),
-        summaries_path: runtime.join("npc_summaries.json"),
-        npc_npc_summaries_path: runtime.join("npc_npc_summaries.json"),
         npc_thread_path: runtime.join("npc_thread.json"),
         npc_dyad_path: runtime.join("npc_dyad.json"),
         npc_rumor_path: runtime.join("npc_rumors.json"),
@@ -521,18 +458,28 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
 
     s.load_rooms(rooms_path)?;
     let _ = s.load_entity_rooms();
+    
+    // PostgreSQL 連線字串，優先讀取環境變數，否則使用預設值
+    let pg_url = std::env::var("DATABASE_URL")
+        .unwrap_or_else(|_| "postgres://postgres:singularity@localhost:5432/singularity".to_string());
+
+    s.db_pool = match sql::init_pool(&pg_url) {
+        Ok(pool) => {
+            tracing::info!("[store] Initialized PostgreSQL Pool at {}", pg_url);
+            Some(pool)
+        }
+        Err(e) => {
+            tracing::error!("[store] Failed to initialize PostgreSQL Pool: {}", e);
+            None
+        }
+    };
+
     if !data_dir.is_empty() {
         let _ = s.load_venues();
         let _ = s.load_assignments();
         let _ = s.load_schedules();
         let _ = s.load_entities();
         let _ = s.load_items();
-        let _ = s.load_event_log();
-        let _ = s.load_archival();
-        let _ = s.load_npc_memory();
-        let _ = s.load_auth();
-        let _ = s.load_summaries();
-        let _ = s.load_npc_npc_summaries();
         let _ = s.load_npc_threads();
         let _ = s.load_npc_dyads();
         let _ = s.load_npc_rumors();
@@ -540,16 +487,14 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     }
 
     tracing::info!(
-        "[store] loaded: {} rooms, {} entity_room, {} venues, {} assignments, {} schedules, {} entities, {} items, {} event_log, {} auth",
+        "[store] loaded: {} rooms, {} entity_room, {} venues, {} assignments, {} schedules, {} entities, {} items",
         s.rooms.len(),
         s.entity_rooms.len(),
         s.venues.len(),
         s.assignments_count(),
         s.schedules.len(),
         s.entities.len(),
-        s.items.len(),
-        s.event_log.len(),
-        s.auth.len(),
+        s.items.len()
     );
 
     set_store(s);
@@ -796,76 +741,10 @@ impl Store {
         Ok(())
     }
 
-    fn load_event_log(&mut self) -> anyhow::Result<()> {
-        let raw = match fs::read_to_string(&self.event_log_path) {
-            Ok(r) => r,
-            Err(_) => return Ok(()),
-        };
-        let f: EventLogFile = serde_json::from_str(&raw)?;
-        self.event_log = f.entries;
-        Ok(())
-    }
 
-    fn load_auth(&mut self) -> anyhow::Result<()> {
-        let raw = match fs::read_to_string(&self.auth_path) {
-            Ok(r) => r,
-            Err(_) => return Ok(()),
-        };
-        let f: AuthFile = serde_json::from_str(&raw)?;
-        for a in f.entries {
-            self.auth.insert(a.entity_id, a.password_hash);
-        }
-        Ok(())
-    }
 
     // ── archival / npc_memory / summaries ──
-
-    fn load_archival(&mut self) -> anyhow::Result<()> {
-        let raw = match fs::read_to_string(&self.archival_path) {
-            Ok(r) => r,
-            Err(_) => return Ok(()),
-        };
-        let f: ArchivalFile = serde_json::from_str(&raw)?;
-        self.archival = f.entries;
-        Ok(())
-    }
-
-    fn load_npc_memory(&mut self) -> anyhow::Result<()> {
-        let raw = match fs::read_to_string(&self.npc_memory_path) {
-            Ok(r) => r,
-            Err(_) => return Ok(()),
-        };
-        let f: NpcMemoryFile = serde_json::from_str(&raw)?;
-        for m in f.entries {
-            let key = format!("{}|{}", m.entity_id, m.subject_id);
-            self.npc_memories.insert(key, m);
-        }
-        Ok(())
-    }
-
-    fn load_summaries(&mut self) -> anyhow::Result<()> {
-        let raw = match fs::read_to_string(&self.summaries_path) {
-            Ok(r) => r,
-            Err(_) => return Ok(()),
-        };
-        let f: SummariesFile = serde_json::from_str(&raw)?;
-        for s in f.entries {
-            self.npc_summaries.insert(s.entity_id, s.summary);
-        }
-        Ok(())
-    }
-
-    fn load_npc_npc_summaries(&mut self) -> anyhow::Result<()> {
-        let raw = match fs::read_to_string(&self.npc_npc_summaries_path) {
-            Ok(r) => r,
-            Err(_) => return Ok(()),
-        };
-        let f: NpcNpcSummariesFile = serde_json::from_str(&raw)?;
-        for s in f.entries {
-            self.npc_npc_summaries.insert(s.key, s.summary);
-        }
-        Ok(())
-    }
+    // SQLite Migrated
 
     // ── npc threads / dyads / rumors ──
 
@@ -895,6 +774,39 @@ impl Store {
     }
 
     fn load_npc_rumors(&mut self) -> anyhow::Result<()> {
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(rows) = conn.query(
+                    "SELECT id, text, room_id, zone, source, source_score, weight, mention_count, 
+                            last_used_at, blocked_until, penalty_count, last_penalty_at, 
+                            last_penalty_reason, updated_at, expires_at FROM npc_rumors",
+                    &[]
+                ) {
+                    for row in rows {
+                        let r = NpcRumor {
+                            id: row.get(0),
+                            text: row.get(1),
+                            room_id: row.get(2),
+                            zone: row.get(3),
+                            source: row.get(4),
+                            source_score: row.get(5),
+                            weight: row.get(6),
+                            mention_count: row.get(7),
+                            last_used_at: row.get(8),
+                            blocked_until: row.get(9),
+                            penalty_count: row.get(10),
+                            last_penalty_at: row.get(11),
+                            last_penalty_reason: row.get(12),
+                            updated_at: row.get(13),
+                            expires_at: row.get(14),
+                        };
+                        self.npc_rumors.insert(r.id.clone(), r);
+                    }
+                    return Ok(());
+                }
+            }
+        
+        // Fallback to JSON
         let raw = match fs::read_to_string(&self.npc_rumor_path) {
             Ok(r) => r,
             Err(_) => return Ok(()),
@@ -1273,51 +1185,105 @@ impl Store {
     // ══════════════════════════════════════
 
     pub fn append_event(&mut self, at: i64, entity_id: &str, event_type: &str, payload: &str) -> anyhow::Result<()> {
-        self.event_log.push(EventEntry {
-            at,
-            entity_id: entity_id.to_string(),
-            event_type: event_type.to_string(),
-            payload: payload.to_string(),
-        });
-        self.persist_event_log()
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            conn.execute(
+                "INSERT INTO event_log (entity_id, event_type, payload, created_at) VALUES ($1, $2, $3, $4)",
+                &[&entity_id, &event_type, &payload, &at],
+            )?;
+        }
+        Ok(())
     }
 
     pub fn last_by_entity(&self, entity_id: &str, event_type: &str, at: i64) -> String {
-        self.event_log.iter().rev()
-            .find(|e| e.entity_id == entity_id && e.event_type == event_type && e.at <= at)
-            .map(|e| e.payload.clone())
-            .unwrap_or_default()
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                let row = conn.query_opt(
+                    "SELECT payload FROM event_log 
+                     WHERE entity_id = $1 AND event_type = $2 AND created_at <= $3 
+                     ORDER BY created_at DESC, id DESC LIMIT 1",
+                    &[&entity_id, &event_type, &at]
+                );
+                if let Ok(Some(row)) = row {
+                    return row.get::<_, String>(0);
+                }
+            }
+        String::new()
     }
 
     pub fn events_in_range(&self, entity_id: &str, from_at: i64, to_at: i64) -> Vec<EventEntry> {
-        self.event_log.iter()
-            .filter(|e| e.entity_id == entity_id && e.at >= from_at && e.at <= to_at)
-            .cloned()
-            .collect()
+        let mut results = Vec::new();
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(rows) = conn.query(
+                    "SELECT created_at, entity_id, event_type, payload FROM event_log 
+                     WHERE entity_id = $1 AND created_at >= $2 AND created_at <= $3 
+                     ORDER BY created_at ASC, id ASC",
+                    &[&entity_id, &from_at, &to_at]
+                ) {
+                    for row in rows {
+                        results.push(EventEntry {
+                            at: row.get(0),
+                            entity_id: row.get(1),
+                            event_type: row.get(2),
+                            payload: row.get(3),
+                        });
+                    }
+                }
+            }
+        results
     }
 
     /// 由新到舊（對齊 Go `RecentByEntity`）。
     pub fn recent_by_entity(&self, entity_id: &str, n: usize) -> Vec<EventEntry> {
-        self.event_log
-            .iter()
-            .rev()
-            .filter(|e| e.entity_id == entity_id)
-            .take(n)
-            .cloned()
-            .collect()
+        let mut results = Vec::new();
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                let n_i64 = n as i64;
+                if let Ok(rows) = conn.query(
+                    "SELECT created_at, entity_id, event_type, payload FROM event_log 
+                     WHERE entity_id = $1 
+                     ORDER BY created_at DESC, id DESC LIMIT $2",
+                    &[&entity_id, &n_i64]
+                ) {
+                    for row in rows {
+                        results.push(EventEntry {
+                            at: row.get(0),
+                            entity_id: row.get(1),
+                            event_type: row.get(2),
+                            payload: row.get(3),
+                        });
+                    }
+                }
+            }
+        results
     }
+
 
     // ══════════════════════════════════════
     //  CRUD 方法 — Auth
     // ══════════════════════════════════════
 
     pub fn set_auth(&mut self, entity_id: &str, password_hash: &str) -> anyhow::Result<()> {
-        self.auth.insert(entity_id.to_string(), password_hash.to_string());
-        self.persist_auth()
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            conn.execute(
+                "INSERT INTO auth (entity_id, password_hash) VALUES ($1, $2) 
+                 ON CONFLICT(entity_id) DO UPDATE SET password_hash=EXCLUDED.password_hash",
+                &[&entity_id, &password_hash],
+            )?;
+        }
+        Ok(())
     }
 
     pub fn get_auth(&self, entity_id: &str) -> String {
-        self.auth.get(entity_id).cloned().unwrap_or_default()
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(Some(row)) = conn.query_opt("SELECT password_hash FROM auth WHERE entity_id = $1", &[&entity_id]) {
+                    return row.get::<_, String>(0);
+                }
+            }
+        String::new()
     }
 
     // ══════════════════════════════════════
@@ -1325,73 +1291,101 @@ impl Store {
     // ══════════════════════════════════════
 
     pub fn append_archival(&mut self, entry: ArchivalEntry) -> anyhow::Result<()> {
-        self.archival.push(entry);
-        self.persist_archival()
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            conn.execute(
+                "INSERT INTO archival (entity_id, content, tag, created_at) VALUES ($1, $2, $3, $4)",
+                &[&entry.entity_id, &entry.content, &entry.tag, &entry.created_at],
+            )?;
+        }
+        Ok(())
     }
 
     pub fn get_archival_by_entity(&self, entity_id: &str) -> Vec<ArchivalEntry> {
-        self.archival.iter()
-            .filter(|e| e.entity_id == entity_id)
-            .cloned()
-            .collect()
+        let mut results = Vec::new();
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(rows) = conn.query(
+                    "SELECT entity_id, content, tag, created_at FROM archival WHERE entity_id = $1 ORDER BY created_at ASC, id ASC",
+                    &[&entity_id]
+                ) {
+                    for row in rows {
+                        results.push(ArchivalEntry {
+                            entity_id: row.get(0),
+                            content: row.get(1),
+                            tag: row.get(2),
+                            created_at: row.get(3),
+                        });
+                    }
+                }
+            }
+        results
     }
 
     pub fn trim_archival_per_entity(&mut self, max: usize) {
-        let mut counts: HashMap<String, usize> = HashMap::new();
-        for e in &self.archival {
-            *counts.entry(e.entity_id.clone()).or_default() += 1;
-        }
-        let to_trim: HashMap<String, usize> = counts.into_iter()
-            .filter(|(_, count)| *count > max)
-            .map(|(eid, count)| (eid, count - max))
-            .collect();
-        if to_trim.is_empty() {
-            return;
-        }
-        let mut removed: HashMap<String, usize> = HashMap::new();
-        self.archival.retain(|e| {
-            if let Some(&limit) = to_trim.get(&e.entity_id) {
-                let r = removed.entry(e.entity_id.clone()).or_default();
-                if *r < limit {
-                    *r += 1;
-                    return false;
-                }
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                let max_i64 = max as i64;
+                let _ = conn.execute(
+                    "DELETE FROM archival WHERE id NOT IN (
+                        SELECT id FROM (
+                            SELECT id, row_number() OVER (PARTITION BY entity_id ORDER BY created_at DESC, id DESC) as rn
+                            FROM archival
+                        ) t WHERE rn <= $1
+                    )",
+                    &[&max_i64],
+                );
             }
-            true
-        });
     }
 
     // ══════════════════════════════════════
     //  CRUD 方法 — NPC Memory
     // ══════════════════════════════════════
 
-    pub fn get_npc_memory(&self, entity_id: &str, subject_id: &str) -> Option<&NpcMemory> {
-        let key = format!("{entity_id}|{subject_id}");
-        self.npc_memories.get(&key)
+    pub fn get_npc_memory(&self, entity_id: &str, subject_id: &str) -> Option<NpcMemory> {
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(Some(row)) = conn.query_opt(
+                    "SELECT meet_count, favorability FROM npc_memories WHERE entity_id = $1 AND subject_id = $2",
+                    &[&entity_id, &subject_id]
+                ) {
+                    return Some(NpcMemory {
+                        entity_id: entity_id.to_string(),
+                        subject_id: subject_id.to_string(),
+                        meet_count: row.get(0),
+                        favorability: row.get(1),
+                    });
+                }
+            }
+        None
     }
 
     pub fn record_meet(&mut self, entity_id: &str, subject_id: &str) -> anyhow::Result<()> {
-        let key = format!("{entity_id}|{subject_id}");
-        let mem = self.npc_memories.entry(key).or_insert_with(|| NpcMemory {
-            entity_id: entity_id.to_string(),
-            subject_id: subject_id.to_string(),
-            meet_count: 0,
-            favorability: 0,
-        });
-        mem.meet_count += 1;
-        self.persist_npc_memory()
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            conn.execute(
+                "INSERT INTO npc_memories (entity_id, subject_id, meet_count) VALUES ($1, $2, 1) 
+                 ON CONFLICT(entity_id, subject_id) DO UPDATE SET meet_count = npc_memories.meet_count + 1",
+                &[&entity_id, &subject_id],
+            )?;
+        }
+        Ok(())
     }
 
     pub fn adjust_favorability(&mut self, entity_id: &str, subject_id: &str, delta: i32) -> anyhow::Result<()> {
-        let key = format!("{entity_id}|{subject_id}");
-        let mem = self.npc_memories.entry(key).or_insert_with(|| NpcMemory {
-            entity_id: entity_id.to_string(),
-            subject_id: subject_id.to_string(),
-            meet_count: 0,
-            favorability: 0,
-        });
-        mem.favorability = (mem.favorability + delta).clamp(-100, 100);
-        self.persist_npc_memory()
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            let old_mem = self.get_npc_memory(entity_id, subject_id);
+            let old_fav = old_mem.map_or(0, |m| m.favorability);
+            let new_fav = (old_fav + delta).clamp(-100, 100);
+            
+            conn.execute(
+                "INSERT INTO npc_memories (entity_id, subject_id, favorability) VALUES ($1, $2, $3)
+                 ON CONFLICT(entity_id, subject_id) DO UPDATE SET favorability = $3",
+                &[&entity_id, &subject_id, &new_fav],
+            )?;
+        }
+        Ok(())
     }
 
     // ══════════════════════════════════════
@@ -1399,23 +1393,49 @@ impl Store {
     // ══════════════════════════════════════
 
     pub fn get_npc_summary(&self, entity_id: &str) -> String {
-        self.npc_summaries.get(entity_id).cloned().unwrap_or_default()
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(Some(row)) = conn.query_opt("SELECT summary FROM npc_summaries WHERE entity_id = $1", &[&entity_id]) {
+                    return row.get(0);
+                }
+            }
+        String::new()
     }
 
     pub fn set_npc_summary(&mut self, entity_id: &str, summary: &str) -> anyhow::Result<()> {
-        self.npc_summaries.insert(entity_id.to_string(), summary.to_string());
-        self.persist_summaries()
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            conn.execute(
+                "INSERT INTO npc_summaries (entity_id, summary) VALUES ($1, $2) 
+                 ON CONFLICT(entity_id) DO UPDATE SET summary=EXCLUDED.summary",
+                &[&entity_id, &summary],
+            )?;
+        }
+        Ok(())
     }
 
     pub fn get_npc_npc_summary(&self, id_a: &str, id_b: &str) -> String {
         let key = dyad_key(id_a, id_b);
-        self.npc_npc_summaries.get(&key).cloned().unwrap_or_default()
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(Some(row)) = conn.query_opt("SELECT summary FROM npc_npc_summaries WHERE dyad_key = $1", &[&key]) {
+                    return row.get(0);
+                }
+            }
+        String::new()
     }
 
     pub fn set_npc_npc_summary(&mut self, id_a: &str, id_b: &str, summary: &str) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
-        self.npc_npc_summaries.insert(key, summary.to_string());
-        self.persist_npc_npc_summaries()
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            conn.execute(
+                "INSERT INTO npc_npc_summaries (dyad_key, summary) VALUES ($1, $2) 
+                 ON CONFLICT(dyad_key) DO UPDATE SET summary=EXCLUDED.summary",
+                &[&key, &summary],
+            )?;
+        }
+        Ok(())
     }
 
     // ══════════════════════════════════════
@@ -1424,17 +1444,57 @@ impl Store {
 
     pub fn get_npc_thread(&self, id_a: &str, id_b: &str) -> Option<NpcThread> {
         let key = dyad_key(id_a, id_b);
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(Some(row)) = conn.query_opt(
+                    "SELECT topic_type, phase, anchors, turn_count, cooldown_until, updated_at 
+                     FROM npc_threads WHERE thread_key = $1",
+                    &[&key]
+                ) {
+                    let anchors_raw: String = row.get(2);
+                    let anchors: Vec<String> = serde_json::from_str(&anchors_raw).unwrap_or_default();
+                    return Some(NpcThread {
+                        thread_key: key,
+                        topic_type: row.get(0),
+                        phase: row.get(1),
+                        anchors,
+                        turn_count: row.get(3),
+                        cooldown_until: row.get(4),
+                        updated_at: row.get(5),
+                    });
+                }
+            }
         self.npc_threads.get(&key).cloned()
     }
 
     pub fn set_npc_thread(&mut self, id_a: &str, id_b: &str, t: NpcThread) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            let anchors_raw = serde_json::to_string(&t.anchors).unwrap_or_else(|_| "[]".to_string());
+            conn.execute(
+                "INSERT INTO npc_threads (thread_key, topic_type, phase, anchors, turn_count, cooldown_until, updated_at)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)
+                 ON CONFLICT(thread_key) DO UPDATE SET 
+                    topic_type=EXCLUDED.topic_type, 
+                    phase=EXCLUDED.phase, 
+                    anchors=EXCLUDED.anchors, 
+                    turn_count=EXCLUDED.turn_count, 
+                    cooldown_until=EXCLUDED.cooldown_until, 
+                    updated_at=EXCLUDED.updated_at",
+                &[&key, &t.topic_type, &t.phase, &anchors_raw, &t.turn_count, &t.cooldown_until, &t.updated_at],
+            )?;
+        }
         self.npc_threads.insert(key, t);
-        self.persist_npc_threads()
+        self.persist_npc_threads() // Keep JSON as fallback for now
     }
 
     pub fn delete_npc_thread(&mut self, id_a: &str, id_b: &str) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            conn.execute("DELETE FROM npc_threads WHERE thread_key = $1", &[&key])?;
+        }
         self.npc_threads.remove(&key);
         self.persist_npc_threads()
     }
@@ -1445,11 +1505,44 @@ impl Store {
 
     pub fn get_npc_dyad(&self, id_a: &str, id_b: &str) -> Option<NpcDyad> {
         let key = dyad_key(id_a, id_b);
+        if let Some(pool) = &self.db_pool
+            && let Ok(mut conn) = pool.get() {
+                if let Ok(Some(row)) = conn.query_opt(
+                    "SELECT a_id, b_id, familiarity, sentiment, tags, updated_at 
+                     FROM npc_dyads WHERE dyad_key = $1",
+                    &[&key]
+                ) {
+                    let tags_raw: String = row.get(4);
+                    let tags: Vec<String> = serde_json::from_str(&tags_raw).unwrap_or_default();
+                    return Some(NpcDyad {
+                        a_id: row.get(0),
+                        b_id: row.get(1),
+                        familiarity: row.get(2),
+                        sentiment: row.get(3),
+                        tags,
+                        updated_at: row.get(5),
+                    });
+                }
+            }
         self.npc_dyads.get(&key).cloned()
     }
 
     pub fn set_npc_dyad(&mut self, id_a: &str, id_b: &str, d: NpcDyad) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            let tags_raw = serde_json::to_string(&d.tags).unwrap_or_else(|_| "[]".to_string());
+            conn.execute(
+                "INSERT INTO npc_dyads (dyad_key, a_id, b_id, familiarity, sentiment, tags, updated_at)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)
+                 ON CONFLICT(dyad_key) DO UPDATE SET 
+                    familiarity=EXCLUDED.familiarity, 
+                    sentiment=EXCLUDED.sentiment, 
+                    tags=EXCLUDED.tags, 
+                    updated_at=EXCLUDED.updated_at",
+                &[&key, &d.a_id, &d.b_id, &d.familiarity, &d.sentiment, &tags_raw, &d.updated_at],
+            )?;
+        }
         self.npc_dyads.insert(key, d);
         self.persist_npc_dyads()
     }
@@ -1753,46 +1846,6 @@ impl Store {
         Self::atomic_write(&self.items_path, raw.as_bytes())
     }
 
-    fn persist_event_log(&self) -> anyhow::Result<()> {
-        let raw = serde_json::to_string_pretty(&EventLogFile { entries: self.event_log.clone() })?;
-        Self::atomic_write(&self.event_log_path, raw.as_bytes())
-    }
-
-    fn persist_auth(&self) -> anyhow::Result<()> {
-        let entries: Vec<AuthEntry> = self.auth.iter()
-            .map(|(eid, hash)| AuthEntry { entity_id: eid.clone(), password_hash: hash.clone() })
-            .collect();
-        let raw = serde_json::to_string_pretty(&AuthFile { entries })?;
-        Self::atomic_write(&self.auth_path, raw.as_bytes())
-    }
-
-    fn persist_archival(&self) -> anyhow::Result<()> {
-        let raw = serde_json::to_string_pretty(&ArchivalFile { entries: self.archival.clone() })?;
-        Self::atomic_write(&self.archival_path, raw.as_bytes())
-    }
-
-    fn persist_npc_memory(&self) -> anyhow::Result<()> {
-        let entries: Vec<NpcMemory> = self.npc_memories.values().cloned().collect();
-        let raw = serde_json::to_string_pretty(&NpcMemoryFile { entries })?;
-        Self::atomic_write(&self.npc_memory_path, raw.as_bytes())
-    }
-
-    fn persist_summaries(&self) -> anyhow::Result<()> {
-        let entries: Vec<SummaryEntry> = self.npc_summaries.iter()
-            .map(|(eid, s)| SummaryEntry { entity_id: eid.clone(), summary: s.clone() })
-            .collect();
-        let raw = serde_json::to_string_pretty(&SummariesFile { entries })?;
-        Self::atomic_write(&self.summaries_path, raw.as_bytes())
-    }
-
-    fn persist_npc_npc_summaries(&self) -> anyhow::Result<()> {
-        let entries: Vec<NpcNpcSummaryEntry> = self.npc_npc_summaries.iter()
-            .map(|(k, s)| NpcNpcSummaryEntry { key: k.clone(), summary: s.clone() })
-            .collect();
-        let raw = serde_json::to_string_pretty(&NpcNpcSummariesFile { entries })?;
-        Self::atomic_write(&self.npc_npc_summaries_path, raw.as_bytes())
-    }
-
     fn persist_npc_threads(&self) -> anyhow::Result<()> {
         let entries: Vec<NpcThread> = self.npc_threads.values().cloned().collect();
         let raw = serde_json::to_string_pretty(&NpcThreadsFile { entries })?;
@@ -1806,6 +1859,28 @@ impl Store {
     }
 
     fn persist_npc_rumors(&self) -> anyhow::Result<()> {
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            for r in self.npc_rumors.values() {
+                conn.execute(
+                    "INSERT INTO npc_rumors (id, text, room_id, zone, source, source_score, weight, mention_count, 
+                                            last_used_at, blocked_until, penalty_count, last_penalty_at, 
+                                            last_penalty_reason, updated_at, expires_at)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+                     ON CONFLICT(id) DO UPDATE SET 
+                        text=EXCLUDED.text, room_id=EXCLUDED.room_id, zone=EXCLUDED.zone, source=EXCLUDED.source, 
+                        source_score=EXCLUDED.source_score, weight=EXCLUDED.weight, mention_count=EXCLUDED.mention_count, 
+                        last_used_at=EXCLUDED.last_used_at, blocked_until=EXCLUDED.blocked_until, 
+                        penalty_count=EXCLUDED.penalty_count, last_penalty_at=EXCLUDED.last_penalty_at, 
+                        last_penalty_reason=EXCLUDED.last_penalty_reason, updated_at=EXCLUDED.updated_at, 
+                        expires_at=EXCLUDED.expires_at",
+                    &[&r.id, &r.text, &r.room_id, &r.zone, &r.source, &r.source_score, &r.weight, &r.mention_count, 
+                      &r.last_used_at, &r.blocked_until, &r.penalty_count, &r.last_penalty_at, 
+                      &r.last_penalty_reason, &r.updated_at, &r.expires_at],
+                )?;
+            }
+        }
+        
         let entries: Vec<NpcRumor> = self.npc_rumors.values().cloned().collect();
         let raw = serde_json::to_string_pretty(&NpcRumorsFile { entries })?;
         Self::atomic_write(&self.npc_rumor_path, raw.as_bytes())

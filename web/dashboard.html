@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇點世界 - 管理控制台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
+                        <path d="M12 2l9 4.91V17.09L12 22l-9-4.91V6.91L12 2z"></path>
+                        <path d="M12 22V12"></path>
+                        <path d="M12 12l8.73-4.78"></path>
+                        <path d="M12 12L3.27 7.22"></path>
+                    </svg>
+                </div>
+                <span class="brand-name">Singularity</span>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-target="section-dashboard">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    <span>儀表板</span>
+                </button>
+                <button class="nav-item" data-target="section-rooms">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>房間列表</span>
+                </button>
+                <button class="nav-item" data-target="section-editor" id="nav-editor" style="display:none;">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <span>編輯器</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="nav-item back-link">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    <span>回遊戲</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <header class="content-header">
+                <h1 id="page-title">儀表板</h1>
+                <div class="header-actions">
+                    <div id="status-badge" class="badge">連線中...</div>
+                    <div class="mg-key-wrap">
+                        <input type="password" id="mg-key-input" placeholder="Management Key">
+                    </div>
+                </div>
+            </header>
+
+            <div id="toast-container"></div>
+
+            <!-- Page Sections -->
+            <div id="section-dashboard" class="page-section active">
+                <div class="grid-layout">
+                    <div class="card glass">
+                        <h2>系統管理</h2>
+                        <p class="card-desc">全域管理操作，請謹慎執行。</p>
+                        <div class="button-group">
+                            <button id="btn-wipe-entities" class="btn btn-danger">Wipe Entities (清除所有實體)</button>
+                        </div>
+                    </div>
+                    <div class="card glass">
+                        <h2>地圖概覽</h2>
+                        <p class="card-desc">查看目前的房間網絡結構。</p>
+                        <div class="button-group">
+                            <a href="map_viewer.html" target="_blank" class="btn btn-primary">開啟 Map Viewer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-rooms" class="page-section">
+                <div class="card glass">
+                    <div class="card-header">
+                        <h2>所有房間</h2>
+                        <div class="search-wrap">
+                            <input type="text" id="room-search" placeholder="搜尋房間 ID 或名稱...">
+                        </div>
+                        <button id="btn-show-add-room" class="btn btn-success">＋ 新增房間</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table id="rooms-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>名稱</th>
+                                    <th>區域</th>
+                                    <th>出口</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rooms-tbody">
+                                <!-- Loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-editor" class="page-section">
+                <div class="editor-grid">
+                    <div class="editor-main">
+                        <div class="card glass">
+                            <h3>基礎屬性</h3>
+                            <div class="form-grid">
+                                <div class="field"><label>房間 ID</label><input id="f-id" disabled></div>
+                                <div class="field"><label>名稱</label><input id="f-name"></div>
+                                <div class="field"><label>區域 zone</label><input id="f-zone" placeholder="street / alley..."></div>
+                                <div class="field"><label>標籤 tags</label><input id="f-tags" placeholder="逗點分隔"></div>
+                                <div class="field full-width"><label>描述</label><textarea id="f-desc"></textarea></div>
+                            </div>
+                        </div>
+
+                        <div class="card glass">
+                            <div class="card-header">
+                                <h3>互動物件</h3>
+                                <div class="toolbar">
+                                    <button id="btn-add-object" class="btn btn-small">＋ 新增物件</button>
+                                </div>
+                            </div>
+                            <div id="objects-form" class="objects-container">
+                                <!-- Form-based object rows -->
+                            </div>
+                            <div class="field" style="margin-top: 1rem;">
+                                <label>進階 JSON</label>
+                                <textarea id="f-objects" class="code-font"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editor-sidebar">
+                        <div class="card glass">
+                            <h3>路徑與出口</h3>
+                            <div id="exits-list" class="exits-list">
+                                <!-- Loaded via JS -->
+                            </div>
+                            <hr class="divider">
+                            <h4>新增路徑</h4>
+                            <div class="field">
+                                <label>目標房間</label>
+                                <select id="path-to"></select>
+                            </div>
+                            <div class="field">
+                                <label>方向名稱</label>
+                                <input id="path-dir" type="text" placeholder="例：東、二樓">
+                            </div>
+                            <div class="field checkbox">
+                                <input type="checkbox" id="path-reverse" checked>
+                                <label for="path-reverse">同時建立反向路徑</label>
+                            </div>
+                            <button id="btn-add-path" class="btn btn-primary full-width">建立出口</button>
+                        </div>
+
+                        <div class="card glass sticky-bottom">
+                            <button id="btn-save-room" class="btn btn-success btn-large full-width">儲存變更 (Ctrl+S)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal for adding room -->
+        <div id="modal-add-room" class="modal">
+            <div class="modal-content glass">
+                <h3>新增房間</h3>
+                <div class="field"><label>ID (英文)</label><input id="add-id" placeholder="new_room"></div>
+                <div class="field"><label>名稱</label><input id="add-name" placeholder="新房間"></div>
+                <div class="field"><label>描述</label><textarea id="add-desc"></textarea></div>
+                <div class="modal-actions">
+                    <button class="btn" onclick="document.getElementById('modal-add-room').classList.remove('active')">取消</button>
+                    <button id="btn-confirm-add-room" class="btn btn-success">新增</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

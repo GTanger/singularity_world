@@ -21,16 +21,16 @@ fn append_and_query_event_log_isolated_runtime() {
 
     store::init(rooms.to_str().unwrap(), rt, &data).expect("init");
 
-    let eid = "event_journal_test_entity";
+    let eid = format!("event_test_{}", std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_micros());
     let t = 1_700_000_000_i64;
 
-    event::append(t, eid, event::types::MOVE, "north").expect("append");
-    event::append(t + 1, eid, event::types::ARRIVED, "room_a").expect("append");
+    event::append(t, &eid, event::types::MOVE, "north").expect("append");
+    event::append(t + 1, &eid, event::types::ARRIVED, "room_a").expect("append");
 
-    let last = event::last_by_entity(eid, event::types::MOVE, t + 2).expect("last");
+    let last = event::last_by_entity(&eid, event::types::MOVE, t + 2).expect("last");
     assert_eq!(last, "north");
 
-    let rows = event::events_in_range(eid, t, t + 1).expect("range");
+    let rows = event::events_in_range(&eid, t, t + 1).expect("range");
     assert_eq!(rows.len(), 2);
     assert_eq!(rows[0].event_type, event::types::MOVE);
     assert_eq!(rows[1].payload, "room_a");

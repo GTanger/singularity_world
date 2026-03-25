@@ -212,6 +212,32 @@ pub async fn create_room(
     (StatusCode::CREATED, Json(serde_json::json!({"id": body.id}))).into_response()
 }
 
+// GET /api/rooms/:id → 取得單一房間詳細資料（包含物件）
+pub async fn get_room_admin(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+    Path(id): Path<String>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
+    let Some(st) = store::get_store() else {
+        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+    };
+    let s = match st.read() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
+    let Some(room) = s.get_room(&id) else {
+        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
+    };
+    let exits = s.get_exits_for_room(&id);
+    Json(serde_json::json!({
+        "room": room,
+        "exits": exits
+    })).into_response()
+}
+
 // PUT /api/rooms/:id → 更新房間
 #[derive(Deserialize)]
 pub struct UpdateRoomReq {

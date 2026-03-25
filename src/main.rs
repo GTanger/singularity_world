@@ -1,3 +1,4 @@
+#![forbid(unsafe_code)]
 // 奇點世界 — Rust 後端入口（可選：以 Rust 跑 `/ws`；生產預設仍見 `docs/dev/README.md`）。
 
 use std::path::Path;

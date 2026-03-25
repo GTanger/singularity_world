@@ -60,7 +60,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/api/topology", get(http_api::topology))
         // 房間管理 CRUD
         .route("/api/rooms", get(http_api::list_rooms).post(http_api::create_room))
-        .route("/api/rooms/{id}", put(http_api::update_room).delete(http_api::delete_room))
+        .route("/api/rooms/{id}", get(http_api::get_room_admin).put(http_api::update_room).delete(http_api::delete_room))
         .route("/api/rooms/{id}/exits", post(http_api::add_exit))
         .route("/api/rooms/{from_id}/exits/{direction}", delete(http_api::remove_exit))
         // 房間心智圖編輯器
@@ -75,6 +75,8 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/map_viewer", get(serve_map_viewer))
         .route("/room_editor", get(serve_room_editor))
         .route("/star_chart", get(serve_star_chart))
+        .route("/dashboard", get(serve_dashboard))
+        .route("/admin", get(serve_admin))
         .with_state(state.clone())
         // 靜態檔案服務 — web/ 目錄（fallback，對齊 Go `http.FileServer`）
         .fallback_service(
@@ -117,6 +119,8 @@ async fn serve_html_page(filename: &str) -> impl IntoResponse {
 async fn serve_map_viewer() -> impl IntoResponse { serve_html_page("map_viewer.html").await }
 async fn serve_room_editor() -> impl IntoResponse { serve_html_page("room_editor.html").await }
 async fn serve_star_chart() -> impl IntoResponse { serve_html_page("star_chart.html").await }
+async fn serve_dashboard() -> impl IntoResponse { serve_html_page("dashboard.html").await }
+async fn serve_admin() -> impl IntoResponse { serve_html_page("admin.html").await }
 
 async fn handle_socket(mut socket: WebSocket, st: AppState) {
     let conn_id = Uuid::new_v4();

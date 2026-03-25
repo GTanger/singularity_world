@@ -1,3 +1,4 @@
+#![forbid(unsafe_code)]
 // 奇點世界 — 模組宣告。
 
 pub mod model;

@@ -1,3 +1,4 @@
+#![forbid(unsafe_code)]
 // checkrooms：房間 JSON 契約檢查（Rust 版，對齊 Go cmd/checkrooms）。
 // 用法：checkrooms [-sockets Move,Look] [-brackets] [-strict] [路徑…]
 
