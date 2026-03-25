@@ -94,7 +94,7 @@ fn room_response_corpus(objects: &[serde_json::Value]) -> String {
 }
 
 /// 檢查單一房間 JSON。
-pub fn check_file(path: &str, data: &[u8], opts: &Options) -> CheckResult {
+pub fn check_file(path: &str, data: &[u8], opts: &Options, all_rooms: &HashSet<String>) -> CheckResult {
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
 
@@ -174,6 +174,18 @@ pub fn check_file(path: &str, data: &[u8], opts: &Options) -> CheckResult {
         let move_trig = opts.trigger_sockets.contains("Move");
         let look_trig = opts.trigger_sockets.contains("Look");
 
+        let move_target = obj
+            .get("move_to_room_id")
+            .and_then(|v| v.as_str())
+            .map(|s| s.trim())
+            .unwrap_or("");
+            
+        if !move_target.is_empty() && !all_rooms.contains(move_target) {
+            errors.push(format!(
+                "{path} [{room_id}] {oid}: 檢查 Move，move_to_room_id「{move_target}」指向不存在的房間（死連結）"
+            ));
+        }
+
         if move_trig && has_move && !desc.contains(name) {
             errors.push(format!(
                 "{path} [{room_id}] {oid}: 檢查 Move，name「{name}」未在 description 出現（無法從主描述點擊移動）"
@@ -222,6 +234,8 @@ pub fn run(roots: &[String], work_dir: &Path, opts: &Options) -> CheckResult {
         roots.to_vec()
     };
 
+    let mut files_data = Vec::new();
+
     for rel in &roots {
         let root = if Path::new(rel).is_absolute() {
             PathBuf::from(rel)
@@ -239,18 +253,33 @@ pub fn run(roots: &[String], work_dir: &Path, opts: &Options) -> CheckResult {
                 continue;
             }
         };
-        for fp in &files {
-            let data = match fs::read(fp) {
+        for fp in files {
+            let data = match fs::read(fp.clone()) {
                 Ok(d) => d,
                 Err(e) => {
                     errors.push(format!("{}: 讀取失敗: {e}", fp.display()));
                     continue;
                 }
             };
-            let r = check_file(&fp.display().to_string(), &data, opts);
-            errors.extend(r.errors);
-            warnings.extend(r.warnings);
+            files_data.push((fp, data));
         }
+    }
+
+    // Pass 1: Collect ALL room IDs
+    let mut all_rooms = HashSet::new();
+    for (_fp, data) in &files_data {
+        if let Ok(top) = serde_json::from_slice::<HashMap<String, serde_json::Value>>(data) {
+            if let Some(id) = top.get("id").and_then(|v| v.as_str()) {
+                all_rooms.insert(id.to_string());
+            }
+        }
+    }
+
+    // Pass 2: Validate against global IDs
+    for (fp, data) in &files_data {
+        let r = check_file(&fp.display().to_string(), data, opts, &all_rooms);
+        errors.extend(r.errors);
+        warnings.extend(r.warnings);
     }
 
     CheckResult { errors, warnings }
