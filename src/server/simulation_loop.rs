@@ -13,7 +13,7 @@ use crate::db::{
     get_npc_title_from_assignments, get_player_ids_with_room, get_room, get_room_name, get_schedule_for_entity,
     get_schedule_target, get_spawn_room_id, set_entity_room, spawn_one_npc_from_pool, upsert_npc_rumor,
     with_room_graph,
-    promote_lexicon_candidates, decay_lexicon,
+    promote_lexicon_candidates, decay_lexicon, get_room_count,
 };
 use crate::gametext;
 use crate::game::{game_time_now, run_view_simulation, Pos};
@@ -279,7 +279,10 @@ fn run_npc_pool_tick(
     state: &Arc<Mutex<MainLoopTickState>>,
     traveler_mgr: &Arc<Mutex<TravelerManager>>,
 ) {
-    let pool = cfg.npc_pool_size;
+    let mut pool = cfg.npc_pool_size;
+    if pool == 0 {
+        pool = (get_room_count() / 2) as i32;
+    }
     let spawn_sec = cfg.npc_spawn_interval_sec;
     if pool <= 0 || spawn_sec <= 0 {
         return;

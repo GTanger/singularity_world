@@ -176,6 +176,15 @@ pub fn get_npc_gender_counts() -> (i32, i32) {
     npc_gender_counts_locked(&s)
 }
 
+/// 獲取當前地圖總格數（房間數）。
+#[must_use]
+pub fn get_room_count() -> usize {
+    let Some(arc) = store::get_store() else {
+        return 0;
+    };
+    arc.read().unwrap().rooms.len()
+}
+
 /// 為缺 `soul_seed` 的 NPC 補寫；不改 vit/qi/dex（對齊 Go `EnsureAllNPCsHaveSoulSeed`）。
 pub fn ensure_all_npcs_have_soul_seed() -> anyhow::Result<i32> {
     let arc = store::get_store().ok_or(ErrNoStore)?;

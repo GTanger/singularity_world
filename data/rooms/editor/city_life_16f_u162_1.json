@@ -17,5 +17,30 @@
       "to": "city_life_16f_u162_3"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_1774446391982",
+      "name": "入口處",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「入口處」。"
+      },
+      "move_to_room_id": "city_life_16f_u162"
+    },
+    {
+      "id": "obj_1774446392292",
+      "name": "飲品區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「飲品區」。"
+      },
+      "move_to_room_id": "city_life_16f_u162_2"
+    }
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u162_3",
-  "name": "福利聯-櫃檯",
-  "description": "｜１６２｜福利聯｜櫃檯｜\n這裡是店內最忙碌的地方。身穿制服的手機員正在熟練地刷取貨品代碼。櫃檯旁堆放著待處理的「點數回饋」明細。由此可回往大廳。",
+  "name": "櫃檯區",
+  "description": "｜飲品區｜櫃檯區｜入口處｜\n這裡是店內最忙碌的地方。身穿制服的手機員正在熟練地刷取貨品代碼。櫃檯旁堆放著待處理的「點數回饋」明細。由此可回往大廳。",
   "tags": [
     "retail",
     "checkout"
@@ -21,5 +21,42 @@
       "to": "city_life_16f"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_1774446996959",
+      "name": "飲品區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「飲品區」。"
+      },
+      "move_to_room_id": "city_life_16f_u162_2"
+    },
+    {
+      "id": "obj_1774446997244",
+      "name": "入口處",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你來到「入口處」。"
+      },
+      "move_to_room_id": "city_life_16f_u162"
+    },
+    {
+      "id": "obj_1774446998519",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城16樓」大廳。"
+      },
+      "move_to_room_id": "city_life_16f"
+    }
+  ]
 }

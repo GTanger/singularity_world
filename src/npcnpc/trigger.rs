@@ -378,6 +378,7 @@ pub fn try_trigger_npc_npc_in_room(
     }
     let score_disabled = cfg.npc_npc_dialogue_score_threshold < 0;
     let mut dialogue_score_ptr = None;
+    tracing::info!("[Dialogue Debug] {} vs {}: \n  -> {}: {}\n  -> {}: {}", room_name, topic_hint, name_a, line_a, name_b, line_b);
     if !score_disabled {
         let recent_lines_a = recent_npc_npc_archival_lines_for_entity(&a.id, 10);
         let recent_lines_b = recent_npc_npc_archival_lines_for_entity(&b.id, 10);

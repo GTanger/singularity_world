@@ -1,44 +1,20 @@
 {
-  "threads": {
-    "npc_dh7ljyggbjh5|npc_dh7lq371wwmu": {
-      "thread_key": "npc_dh7ljyggbjh5|npc_dh7lq371wwmu",
+  "entries": [
+    {
+      "thread_key": "npc_dh7ln0pmebvc|npc_dh7lok2gzenv",
       "topic_type": "換班、交接時的情境，簡短交代或叮囑",
       "phase": "cooling",
-      "turn_count": 1,
-      "cooldown_until": 1774178436,
-      "updated_at": 1774178136
+      "turn_count": 3,
+      "cooldown_until": 1774448617,
+      "updated_at": 1774448317
     },
-    "npc_dh7ln0pmebvc|npc_dh7lq371wwmu": {
-      "thread_key": "npc_dh7ln0pmebvc|npc_dh7lq371wwmu",
+    {
+      "thread_key": "",
       "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "cooling",
-      "anchors": [
-        "city",
-        "skyscraper"
-      ],
+      "phase": "elaborate",
       "turn_count": 1,
-      "cooldown_until": 1774177986,
-      "updated_at": 1774177686
-    },
-    "npc_dh7lok2gzenv|npc_dh7lq371wwmu": {
-      "thread_key": "npc_dh7lok2gzenv|npc_dh7lq371wwmu",
-      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "cooling",
-      "turn_count": 1,
-      "cooldown_until": 1774177686,
-      "updated_at": 1774177386
-    },
-    "npc_dh7lub7op7n9|npc_dh7lywtpacw1": {
-      "thread_key": "npc_dh7lub7op7n9|npc_dh7lywtpacw1",
-      "topic_type": "打聽消息、問路、問人",
-      "phase": "cooling",
-      "anchors": [
-        "路人",
-        "coffee"
-      ],
-      "turn_count": 1,
-      "cooldown_until": 1774173336,
-      "updated_at": 1774173036
+      "cooldown_until": 0,
+      "updated_at": 1774447536
     }
-  }
+  ]
 }

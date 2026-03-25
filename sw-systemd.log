@@ -439,3 +439,133 @@
 [2m2026-03-25T13:36:49.249825Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
 [2m2026-03-25T13:41:16.142240Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
 [2m2026-03-25T13:46:30.147395Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T13:47:32.995743Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T13:51:29.333056Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: extension "vector" already exists, skipping
+[2m2026-03-25T13:51:29.333228Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "auth" already exists, skipping
+[2m2026-03-25T13:51:29.333282Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "event_log" already exists, skipping
+[2m2026-03-25T13:51:29.333454Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_event_log_entity_id" already exists, skipping
+[2m2026-03-25T13:51:29.333511Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "archival" already exists, skipping
+[2m2026-03-25T13:51:29.333571Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_archival_entity_id" already exists, skipping
+[2m2026-03-25T13:51:29.333620Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_memories" already exists, skipping
+[2m2026-03-25T13:51:29.333661Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_summaries" already exists, skipping
+[2m2026-03-25T13:51:29.333702Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_npc_summaries" already exists, skipping
+[2m2026-03-25T13:51:29.333748Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_threads" already exists, skipping
+[2m2026-03-25T13:51:29.333791Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_dyads" already exists, skipping
+[2m2026-03-25T13:51:29.333856Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_rumors" already exists, skipping
+[2m2026-03-25T13:51:29.333904Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "rooms" already exists, skipping
+[2m2026-03-25T13:51:29.333946Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "exits" already exists, skipping
+[2m2026-03-25T13:51:29.333997Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "world_lexicon" already exists, skipping
+[2m2026-03-25T13:51:29.334004Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Initialized PostgreSQL Pool at postgres://postgres:singularity@localhost:5432/singularity
+[2m2026-03-25T13:51:29.334470Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] loaded: 638 rooms, 12 entity_room, 1 venues, 4 assignments, 3 schedules, 12 entities, 10 items
+[2m2026-03-25T13:51:29.334497Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-25T13:51:30.477978Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-25T13:51:30.478084Z[0m [32m INFO[0m [2mnpc_behavior[0m[2m:[0m loaded 18 roles from /home/tanger/Projects/singularity_world/data/npc_behaviors.json
+[2m2026-03-25T13:51:30.478524Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T13:51:30.478640Z[0m [32m INFO[0m [2msingularity_world::server::run[0m[2m:[0m Rust server listening on http://0.0.0.0:1721 (WebSocket /ws)
+[2m2026-03-25T13:51:30.511286Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 城內最近流傳著一個關於地底通道的傳說
+[2m2026-03-25T13:53:42.834587Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T13:54:37.010663Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T13:55:53.984783Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:01:07.060704Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:01:30.987757Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 界壁附近的金屬物件開始微弱地震動
+[2m2026-03-25T14:06:47.353176Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: extension "vector" already exists, skipping
+[2m2026-03-25T14:06:47.353316Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "auth" already exists, skipping
+[2m2026-03-25T14:06:47.353372Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "event_log" already exists, skipping
+[2m2026-03-25T14:06:47.353546Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_event_log_entity_id" already exists, skipping
+[2m2026-03-25T14:06:47.353605Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "archival" already exists, skipping
+[2m2026-03-25T14:06:47.353669Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_archival_entity_id" already exists, skipping
+[2m2026-03-25T14:06:47.353721Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_memories" already exists, skipping
+[2m2026-03-25T14:06:47.353765Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_summaries" already exists, skipping
+[2m2026-03-25T14:06:47.353833Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_npc_summaries" already exists, skipping
+[2m2026-03-25T14:06:47.353895Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_threads" already exists, skipping
+[2m2026-03-25T14:06:47.353945Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_dyads" already exists, skipping
+[2m2026-03-25T14:06:47.354000Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_rumors" already exists, skipping
+[2m2026-03-25T14:06:47.354047Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "rooms" already exists, skipping
+[2m2026-03-25T14:06:47.354095Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "exits" already exists, skipping
+[2m2026-03-25T14:06:47.354147Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "world_lexicon" already exists, skipping
+[2m2026-03-25T14:06:47.354153Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Initialized PostgreSQL Pool at postgres://postgres:singularity@localhost:5432/singularity
+[2m2026-03-25T14:06:47.354615Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] loaded: 638 rooms, 12 entity_room, 1 venues, 4 assignments, 3 schedules, 12 entities, 10 items
+[2m2026-03-25T14:06:47.354647Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-25T14:06:48.510102Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-25T14:06:48.510219Z[0m [32m INFO[0m [2mnpc_behavior[0m[2m:[0m loaded 18 roles from /home/tanger/Projects/singularity_world/data/npc_behaviors.json
+[2m2026-03-25T14:06:48.510669Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:06:48.510790Z[0m [32m INFO[0m [2msingularity_world::server::run[0m[2m:[0m Rust server listening on http://0.0.0.0:1721 (WebSocket /ws)
+[2m2026-03-25T14:06:48.528035Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今天的游離輻射塵好像比平常多一些，空氣裡有淡淡的粉光
+[2m2026-03-25T14:15:49.509606Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: extension "vector" already exists, skipping
+[2m2026-03-25T14:15:49.509770Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "auth" already exists, skipping
+[2m2026-03-25T14:15:49.509825Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "event_log" already exists, skipping
+[2m2026-03-25T14:15:49.510070Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_event_log_entity_id" already exists, skipping
+[2m2026-03-25T14:15:49.510174Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "archival" already exists, skipping
+[2m2026-03-25T14:15:49.510248Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_archival_entity_id" already exists, skipping
+[2m2026-03-25T14:15:49.510305Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_memories" already exists, skipping
+[2m2026-03-25T14:15:49.510351Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_summaries" already exists, skipping
+[2m2026-03-25T14:15:49.510397Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_npc_summaries" already exists, skipping
+[2m2026-03-25T14:15:49.510447Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_threads" already exists, skipping
+[2m2026-03-25T14:15:49.510496Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_dyads" already exists, skipping
+[2m2026-03-25T14:15:49.510555Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_rumors" already exists, skipping
+[2m2026-03-25T14:15:49.510625Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "rooms" already exists, skipping
+[2m2026-03-25T14:15:49.510688Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "exits" already exists, skipping
+[2m2026-03-25T14:15:49.510746Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "world_lexicon" already exists, skipping
+[2m2026-03-25T14:15:49.510755Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Initialized PostgreSQL Pool at postgres://postgres:singularity@localhost:5432/singularity
+[2m2026-03-25T14:15:49.511304Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] loaded: 638 rooms, 12 entity_room, 1 venues, 4 assignments, 3 schedules, 12 entities, 10 items
+[2m2026-03-25T14:15:49.511343Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-25T14:15:50.720277Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-25T14:15:50.720478Z[0m [32m INFO[0m [2mnpc_behavior[0m[2m:[0m loaded 18 roles from /home/tanger/Projects/singularity_world/data/npc_behaviors.json
+[2m2026-03-25T14:15:50.721259Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:15:50.721447Z[0m [32m INFO[0m [2msingularity_world::server::run[0m[2m:[0m Rust server listening on http://0.0.0.0:1721 (WebSocket /ws)
+[2m2026-03-25T14:15:50.759090Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 五樓那戶陽台的根鬚盤得更緊了，看著倒是挺穩的
+[2m2026-03-25T14:16:38.985788Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: extension "vector" already exists, skipping
+[2m2026-03-25T14:16:38.985946Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "auth" already exists, skipping
+[2m2026-03-25T14:16:38.986010Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "event_log" already exists, skipping
+[2m2026-03-25T14:16:38.986218Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_event_log_entity_id" already exists, skipping
+[2m2026-03-25T14:16:38.986284Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "archival" already exists, skipping
+[2m2026-03-25T14:16:38.986352Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_archival_entity_id" already exists, skipping
+[2m2026-03-25T14:16:38.986406Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_memories" already exists, skipping
+[2m2026-03-25T14:16:38.986451Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_summaries" already exists, skipping
+[2m2026-03-25T14:16:38.986501Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_npc_summaries" already exists, skipping
+[2m2026-03-25T14:16:38.986549Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_threads" already exists, skipping
+[2m2026-03-25T14:16:38.986604Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_dyads" already exists, skipping
+[2m2026-03-25T14:16:38.986672Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_rumors" already exists, skipping
+[2m2026-03-25T14:16:38.986723Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "rooms" already exists, skipping
+[2m2026-03-25T14:16:38.986771Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "exits" already exists, skipping
+[2m2026-03-25T14:16:38.986826Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "world_lexicon" already exists, skipping
+[2m2026-03-25T14:16:38.986833Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Initialized PostgreSQL Pool at postgres://postgres:singularity@localhost:5432/singularity
+[2m2026-03-25T14:16:38.987352Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] loaded: 638 rooms, 12 entity_room, 1 venues, 4 assignments, 3 schedules, 12 entities, 10 items
+[2m2026-03-25T14:16:38.987384Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-25T14:16:40.181938Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-25T14:16:40.182091Z[0m [32m INFO[0m [2mnpc_behavior[0m[2m:[0m loaded 18 roles from /home/tanger/Projects/singularity_world/data/npc_behaviors.json
+[2m2026-03-25T14:16:40.182565Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:16:40.182688Z[0m [32m INFO[0m [2msingularity_world::server::run[0m[2m:[0m Rust server listening on http://0.0.0.0:1721 (WebSocket /ws)
+[2m2026-03-25T14:16:40.207055Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 三樓醫療區最近比較忙，好像是採集隊回城的季節
+[2m2026-03-25T14:16:41.061301Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 好，那我先走。
+  -> 鄭秀強: 好，那我先走。
+[2m2026-03-25T14:18:06.896178Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今天帳我對過了，有問題再叫我。
+  -> 鄭秀強: 好，那我先走。
+[2m2026-03-25T14:18:36.504032Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: extension "vector" already exists, skipping
+[2m2026-03-25T14:18:36.504225Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "auth" already exists, skipping
+[2m2026-03-25T14:18:36.504288Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "event_log" already exists, skipping
+[2m2026-03-25T14:18:36.504542Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_event_log_entity_id" already exists, skipping
+[2m2026-03-25T14:18:36.504625Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "archival" already exists, skipping
+[2m2026-03-25T14:18:36.504711Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_archival_entity_id" already exists, skipping
+[2m2026-03-25T14:18:36.504800Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_memories" already exists, skipping
+[2m2026-03-25T14:18:36.504860Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_summaries" already exists, skipping
+[2m2026-03-25T14:18:36.504927Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_npc_summaries" already exists, skipping
+[2m2026-03-25T14:18:36.505001Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_threads" already exists, skipping
+[2m2026-03-25T14:18:36.505062Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_dyads" already exists, skipping
+[2m2026-03-25T14:18:36.505170Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_rumors" already exists, skipping
+[2m2026-03-25T14:18:36.505263Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "rooms" already exists, skipping
+[2m2026-03-25T14:18:36.505350Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "exits" already exists, skipping
+[2m2026-03-25T14:18:36.505443Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "world_lexicon" already exists, skipping
+[2m2026-03-25T14:18:36.505457Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Initialized PostgreSQL Pool at postgres://postgres:singularity@localhost:5432/singularity
+[2m2026-03-25T14:18:36.506034Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] loaded: 638 rooms, 23 entity_room, 1 venues, 4 assignments, 3 schedules, 23 entities, 10 items
+[2m2026-03-25T14:18:36.506079Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-25T14:18:37.697240Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-25T14:18:37.697369Z[0m [32m INFO[0m [2mnpc_behavior[0m[2m:[0m loaded 18 roles from /home/tanger/Projects/singularity_world/data/npc_behaviors.json
+[2m2026-03-25T14:18:37.697826Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:18:37.697948Z[0m [32m INFO[0m [2msingularity_world::server::run[0m[2m:[0m Rust server listening on http://0.0.0.0:1721 (WebSocket /ws)
+[2m2026-03-25T14:18:37.742616Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看
+[2m2026-03-25T14:18:38.488115Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 好，那我先走。
