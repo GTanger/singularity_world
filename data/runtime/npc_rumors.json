@@ -16,9 +16,9 @@
       "room_id": "lobby",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774446036,
-      "expires_at": 1774447836
+      "weight": 5,
+      "updated_at": 1774446336,
+      "expires_at": 1774448136
     },
     {
       "id": "evt|life_dining|leave|鄭秀強：離開往",
@@ -49,16 +49,6 @@
       "weight": 1,
       "updated_at": 1774444986,
       "expires_at": 1774446786
-    },
-    {
-      "id": "evt|life_dining|arrive|鄭秀強：從方向到達",
-      "text": "鄭秀強：從方向到達",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774444525,
-      "expires_at": 1774446325
     },
     {
       "id": "evt|life_hall|shift_leave|葉俊：離開前往life_garden",
@@ -106,9 +96,9 @@
       "room_id": "life_dining",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774446036,
-      "expires_at": 1774447836
+      "weight": 5,
+      "updated_at": 1774446336,
+      "expires_at": 1774448136
     },
     {
       "id": "evt|life_hall|shift_leave|鄭秀強：離開前往life_garden",
@@ -116,7 +106,7 @@
       "room_id": "life_hall",
       "source": "room_event",
       "source_score": 2,
-      "weight": 5,
+      "weight": 2,
       "updated_at": 1774445436,
       "expires_at": 1774447236
     },
@@ -176,7 +166,7 @@
       "room_id": "life_kitchen",
       "source": "room_event",
       "source_score": 2,
-      "weight": 2,
+      "weight": 1,
       "updated_at": 1774445360,
       "expires_at": 1774447160
     },
@@ -196,7 +186,7 @@
       "room_id": "life_kitchen",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
+      "weight": 1,
       "updated_at": 1774445286,
       "expires_at": 1774447086
     },
@@ -216,9 +206,9 @@
       "room_id": "singularity_life",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774446036,
-      "expires_at": 1774447836
+      "weight": 5,
+      "updated_at": 1774446336,
+      "expires_at": 1774448136
     },
     {
       "id": "evt|life_kitchen|shift_leave|鄭秀強：離開前往life_garden",
@@ -236,7 +226,7 @@
       "room_id": "life_hall",
       "source": "room_event",
       "source_score": 2,
-      "weight": 2,
+      "weight": 1,
       "updated_at": 1774445360,
       "expires_at": 1774447160
     },
@@ -246,9 +236,9 @@
       "room_id": "life_hall",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774446036,
-      "expires_at": 1774447836
+      "weight": 5,
+      "updated_at": 1774446336,
+      "expires_at": 1774448136
     },
     {
       "id": "evt|life_kitchen|shift_leave|鄭秀強：離開前往lobby",
@@ -256,9 +246,9 @@
       "room_id": "life_kitchen",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774446036,
-      "expires_at": 1774447836
+      "weight": 5,
+      "updated_at": 1774446336,
+      "expires_at": 1774448136
     },
     {
       "id": "evt|lobby|shift_arrive|鄭秀強：排班抵達",
@@ -266,9 +256,9 @@
       "room_id": "lobby",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774446036,
-      "expires_at": 1774447836
+      "weight": 5,
+      "updated_at": 1774446336,
+      "expires_at": 1774448136
     },
     {
       "id": "evt|life_hall|arrive|鄭秀強：從方向到達",
