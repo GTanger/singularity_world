@@ -268,10 +268,10 @@ pub fn run(roots: &[String], work_dir: &Path, opts: &Options) -> CheckResult {
     // Pass 1: Collect ALL room IDs
     let mut all_rooms = HashSet::new();
     for (_fp, data) in &files_data {
-        if let Ok(top) = serde_json::from_slice::<HashMap<String, serde_json::Value>>(data) {
-            if let Some(id) = top.get("id").and_then(|v| v.as_str()) {
-                all_rooms.insert(id.to_string());
-            }
+        if let Ok(top) = serde_json::from_slice::<HashMap<String, serde_json::Value>>(data)
+            && let Some(id) = top.get("id").and_then(|v| v.as_str())
+        {
+            all_rooms.insert(id.to_string());
         }
     }
 
