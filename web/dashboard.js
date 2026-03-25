@@ -11,7 +11,7 @@ const ui = {
     pageTitle: document.getElementById('page-title'),
     mgKeyInput: document.getElementById('mg-key-input'),
     statusBadge: document.getElementById('status-badge'),
-    roomsTbody: document.getElementById('rooms-tbody'),
+    roomsContainer: document.getElementById('rooms-container'),
     roomSearch: document.getElementById('room-search'),
     toastContainer: document.getElementById('toast-container'),
     
@@ -106,6 +106,15 @@ async function loadRooms() {
     }
 }
 
+ui.roomSearch.oninput = renderRoomsTable;
+
+function toggleZone(zone) {
+    const collapsed = JSON.parse(localStorage.getItem('collapsed_zones') || '{}');
+    collapsed[zone] = !collapsed[zone];
+    localStorage.setItem('collapsed_zones', JSON.stringify(collapsed));
+    renderRoomsTable();
+}
+
 function renderRoomsTable() {
     const search = ui.roomSearch.value.toLowerCase();
     const filtered = state.rooms.filter(r => 
@@ -113,24 +122,73 @@ function renderRoomsTable() {
         r.name.toLowerCase().includes(search)
     );
     
-    ui.roomsTbody.innerHTML = '';
+    // Group by zone
+    const groups = {};
     filtered.forEach(r => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><code>${r.id}</code></td>
-            <td>${r.name}</td>
-            <td><span class="tag-badge">${r.zone || 'None'}</span></td>
-            <td><span class="text-secondary">${r.tags?.length || 0} tags</span></td>
-            <td>
-                <button class="btn btn-small btn-primary" onclick="openEditor('${r.id}')">編輯</button>
-                ${r.id !== 'lobby' && r.id !== '界壁' ? `<button class="btn btn-small btn-danger" onclick="deleteRoom('${r.id}')">刪除</button>` : ''}
-            </td>
-        `;
-        ui.roomsTbody.appendChild(tr);
+        const z = r.zone || '未分類 (Default)';
+        if (!groups[z]) groups[z] = [];
+        groups[z].push(r);
     });
+
+    const collapsed = JSON.parse(localStorage.getItem('collapsed_zones') || '{}');
+    const zoneNames = Object.keys(groups).sort();
+    
+    ui.roomsContainer.innerHTML = '';
+    
+    zoneNames.forEach(z => {
+        const rooms = groups[z];
+        const isCollapsed = collapsed[z] || false;
+        
+        const groupEl = document.createElement('div');
+        groupEl.className = `zone-group ${isCollapsed ? 'collapsed' : ''}`;
+        
+        groupEl.innerHTML = `
+            <div class="zone-header" onclick="toggleZone('${z}')">
+                <div class="zone-title">
+                    <svg class="zone-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <span>${z}</span>
+                    <span class="zone-count">${rooms.length}</span>
+                </div>
+            </div>
+            <div class="zone-content">
+                <div class="table-wrap table-compact">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>名稱</th>
+                                <th>標籤</th>
+                                <th style="width: 120px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rooms.map(r => `
+                                <tr>
+                                    <td><code>${r.id}</code></td>
+                                    <td>${r.name}</td>
+                                    <td><span class="text-secondary" style="font-size: 0.75rem;">${(r.tags || []).join(', ')}</span></td>
+                                    <td>
+                                        <button class="btn btn-small btn-primary" onclick="openEditor('${r.id}')">編輯</button>
+                                        ${r.id !== 'lobby' && r.id !== '界壁' ? `<button class="btn btn-small btn-danger" onclick="deleteRoom('${r.id}')">刪除</button>` : ''}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+        ui.roomsContainer.appendChild(groupEl);
+    });
+
+    if (filtered.length === 0) {
+        ui.roomsContainer.innerHTML = '<div class="card glass" style="text-align:center; padding: 2rem; color: var(--text-secondary);">找不到匹配的房間</div>';
+    }
 }
 
-ui.roomSearch.oninput = renderRoomsTable;
+window.toggleZone = toggleZone;
+window.openEditor = openEditor;
+window.deleteRoom = deleteRoom;
 
 async function deleteRoom(id) {
     if (!confirm(`確定刪除房間 ${id}？\n房內實體將會被移至大廳。`)) return;

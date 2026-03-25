@@ -204,6 +204,23 @@ tr:hover { background-color: rgba(255, 255, 255, 0.02); }
 .tag-badge { background-color: rgba(255, 255, 255, 0.1); padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; margin-right: 0.25rem; }
 code { font-family: ui-monospace, 'Inconsolata', monospace; background: rgba(0,0,0,0.3); padding: 0.1rem 0.3rem; border-radius: 4px; color: var(--accent-color); }
 
+/* Categorized Room List */
+.zone-group { margin-bottom: 0.75rem; border: 1px solid var(--glass-border); border-radius: 0.75rem; overflow: hidden; background: rgba(255, 255, 255, 0.02); }
+.zone-header { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 0.75rem 1.25rem; background: rgba(255, 255, 255, 0.05); 
+    cursor: pointer; user-select: none; transition: background 0.2s;
+}
+.zone-header:hover { background: rgba(255, 255, 255, 0.08); }
+.zone-title { display: flex; align-items: center; gap: 0.75rem; font-weight: 600; font-size: 1rem; }
+.zone-count { font-size: 0.75rem; background: var(--accent-color); color: white; padding: 0.1rem 0.5rem; border-radius: 1rem; }
+.zone-chevron { transition: transform 0.3s; color: var(--text-secondary); }
+.zone-group.collapsed .zone-chevron { transform: rotate(-90deg); }
+.zone-content { overflow: hidden; transition: max-height 0.3s ease-out; }
+.zone-group.collapsed .zone-content { display: none; }
+
+.table-compact th, .table-compact td { padding: 0.75rem 1rem; font-size: 0.875rem; }
+
 /* Room Editor Layout */
 .editor-grid { display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem; }
 .editor-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
