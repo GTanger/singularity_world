@@ -22,6 +22,7 @@ mod room_object;
 mod sched;
 mod trade_pending;
 mod text;
+mod lexicon;
 
 use crate::entity::Character;
 use crate::store::{self, Entity};
@@ -86,6 +87,7 @@ pub use dialogue::{
     load_dialogue_slots, pick_from_dialogue, pick_from_public_talk, pick_line_weighted,
     try_match_keyword, DialogueFile, DialogueSlots, PlaceholderCtx,
 };
+pub use lexicon::{upsert_lexicon_term, promote_lexicon_candidates, decay_lexicon, list_notable_terms};
 
 // ══════════════════════════════════════
 //  錯誤型別

@@ -13,6 +13,7 @@ use crate::db::{
     get_npc_title_from_assignments, get_player_ids_with_room, get_room, get_room_name, get_schedule_for_entity,
     get_schedule_target, get_spawn_room_id, set_entity_room, spawn_one_npc_from_pool, upsert_npc_rumor,
     with_room_graph,
+    promote_lexicon_candidates, decay_lexicon,
 };
 use crate::gametext;
 use crate::game::{game_time_now, run_view_simulation, Pos};
@@ -42,6 +43,10 @@ struct MainLoopTickState {
     idle_tick_count: i32,
     /// 累積到此 tick 數即觸發閒置／巡邏區塊。
     next_idle_trigger: i32,
+    /// 事件種子注入計時器
+    last_event_seed: Option<Instant>,
+    /// 世界詞典維護計時器
+    last_lexicon_maintenance: Option<Instant>,
 }
 
 /// 間隔到期則更新錨點並回傳 true；`last` 為 `None` 時第一次立即觸發（對齊 Go `time.Time` 零值）。
@@ -183,6 +188,87 @@ fn run_game_day_economy(now_unix: i64, game_day: i32, state: &Arc<Mutex<MainLoop
         if let Err(e) = upsert_npc_rumor(rumor) {
             tracing::warn!("economy pulse upsert_npc_rumor: {e}");
         }
+    }
+}
+
+/// 事件種子注入：從 event_seeds.json 隨機挑選一條注入 rumor 系統，防止語義坍縮。
+fn inject_event_seed(now_unix: i64) {
+    use std::sync::OnceLock;
+
+    #[derive(serde::Deserialize)]
+    struct SeedFile {
+        seeds: Vec<Seed>,
+        #[allow(dead_code)]
+        inject_interval_game_hours: Option<i32>,
+    }
+    #[derive(serde::Deserialize, Clone)]
+    struct Seed {
+        #[allow(dead_code)]
+        category: String,
+        text: String,
+    }
+
+    static SEEDS: OnceLock<Vec<Seed>> = OnceLock::new();
+    static USED: Mutex<Vec<i64>> = Mutex::new(Vec::new());
+
+    let seeds = SEEDS.get_or_init(|| {
+        let path = std::path::Path::new("data/config/event_seeds.json");
+        match std::fs::read_to_string(path) {
+            Ok(text) => match serde_json::from_str::<SeedFile>(&text) {
+                Ok(f) => f.seeds,
+                Err(e) => {
+                    tracing::warn!("event_seeds.json 解析失敗: {e}");
+                    vec![]
+                }
+            },
+            Err(_) => vec![],
+        }
+    });
+
+    if seeds.is_empty() {
+        return;
+    }
+
+    let cooldown = 48 * 3600i64;
+    let Ok(mut used) = USED.lock() else { return };
+    if used.len() != seeds.len() {
+        used.resize(seeds.len(), 0);
+    }
+
+    let available: Vec<usize> = (0..seeds.len())
+        .filter(|&i| now_unix - used[i] >= cooldown)
+        .collect();
+
+    if available.is_empty() {
+        return;
+    }
+
+    let mut rng = rand::rng();
+    let pick = available[rng.random_range(0..available.len())];
+    used[pick] = now_unix;
+
+    let seed = &seeds[pick];
+    let rumor = NpcRumor {
+        id: format!("seed|{}|{pick}", now_unix / 600),
+        text: seed.text.clone(),
+        room_id: String::new(),
+        zone: String::new(),
+        source: "event_seed".into(),
+        source_score: 2,
+        weight: 3,
+        mention_count: 0,
+        last_used_at: 0,
+        blocked_until: 0,
+        penalty_count: 0,
+        last_penalty_at: 0,
+        last_penalty_reason: String::new(),
+        updated_at: now_unix,
+        expires_at: now_unix + 3600,
+    };
+    if let Err(e) = upsert_npc_rumor(rumor) {
+        tracing::warn!("event seed upsert_npc_rumor: {e}");
+    } else {
+        tracing::info!("注入事件種子: {}", seed.text);
     }
 }
 
@@ -728,6 +814,25 @@ fn run_simulation_tick(
         tracing::warn!("build_npc_rumor_digest: {e}");
     }
 
+    // 事件種子注入（每 10 分鐘一次）
+    let fire_seed = {
+        let Ok(mut st) = state.lock() else { return };
+        periodic_fire(&mut st.last_event_seed, Duration::from_secs(600))
+    };
+    if fire_seed {
+        inject_event_seed(now_unix);
+    }
+
+    // 世界詞典維護（每 5 分鐘一次）
+    let fire_lexicon = {
+        let Ok(mut st) = state.lock() else { return };
+        periodic_fire(&mut st.last_lexicon_maintenance, Duration::from_secs(300))
+    };
+    if fire_lexicon {
+        promote_lexicon_candidates();
+        decay_lexicon();
+    }
+
     let ollama_ready = !cfg.ollama_base_url.is_empty() && !cfg.ollama_model.is_empty();
     let mut do_trigger: Option<(String, i32)> = None;
     {
@@ -788,6 +893,8 @@ pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
         travel_tick_count: 0,
         idle_tick_count: 0,
         next_idle_trigger: initial_next_idle_trigger(),
+        last_event_seed: None,
+        last_lexicon_maintenance: None,
     }));
     let tick_ms = cfg.tick_interval_ms.max(1);
     tokio::spawn(async move {

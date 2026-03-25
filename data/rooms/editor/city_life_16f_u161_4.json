@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u161_4",
-  "name": "家樂福-結帳處",
-  "description": "｜１６１｜家樂福｜結帳處｜\n這是進入賣場核心的最後一道門戶。多個自動感應閘門正忙碌地處理著大量的交易數據。櫃檯後方隱約可見商業委員會的認證標誌。由此可回往大廳。",
+  "name": "結帳區",
+  "description": "｜生鮮區｜結帳處｜入口處｜\n這是進入賣場核心的最後一道門戶。多個自動感應閘門正忙碌地處理著大量的交易數據。櫃檯後方隱約可見商業委員會的認證標誌。由此可回往大廳。",
   "tags": [
     "retail",
     "checkout"
@@ -17,5 +17,42 @@
       "to": "city_life_16f"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_1774442800487",
+      "name": "生鮮區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「生鮮區」。"
+      },
+      "move_to_room_id": "city_life_16f_u161_1"
+    },
+    {
+      "id": "obj_1774442801077",
+      "name": "入口處",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走到「入口處」。"
+      },
+      "move_to_room_id": "city_life_16f_u161"
+    },
+    {
+      "id": "obj_1774442801677",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你返回「浮生城16樓」大廳。"
+      },
+      "move_to_room_id": "city_life_16f"
+    }
+  ]
 }

@@ -17,9 +17,9 @@
     "game_time_scale": 24,
     "npc_pool_size": 10,
     "npc_spawn_interval_sec": 120,
-    "ollama_disable": true,
+    "ollama_disable": false,
     "ollama_base_url": "http://127.0.0.1:11434",
-    "ollama_model": "sorc/qwen3.5-claude-4.6-opus:2b",
+    "ollama_model": "sorc/qwen3.5-instruct:0.8b",
     "player_talk_api_base_url": "https://openrouter.ai/api/v1",
     "player_talk_api_model": "qwen/qwen3.5-flash-02-23",
     "seek_job_mg_threshold": 0,
@@ -29,6 +29,6 @@
     "npc_npc_social_tick_extra_with_player": 0,
     "npc_npc_social_tick_min_no_player": 0,
     "npc_npc_social_tick_extra_no_player": 0,
-    "npc_npc_dialogue_score_threshold": 0
+    "npc_npc_dialogue_score_threshold": 25
   }
 }

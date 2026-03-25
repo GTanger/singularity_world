@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u166",
   "name": "小北百",
-  "description": "“歡迎光臨小北百獲”\n黃色與藍色的招牌顯得格外出挑。門口擺放著各式便宜又耐用的生活用品。這裡是浮生城百姓與底層維修工程師的天堂，充滿了濃厚的市井生活與工業零件氣息。",
+  "description": "｜工具區｜店門口｜雜貨區｜\n“歡迎光臨小北百獲”\n黃色與藍色的招牌顯得格外出挑。門口擺放著各式便宜又耐用的生活用品，入內可見手繪指引牌。這裡是浮生城百姓與底層維修工程師的天堂，充滿了濃厚的市井生活與工業零件氣息。出門可回到16樓大廳。",
   "tags": [
     "retail",
     "hardware"
@@ -17,5 +17,42 @@
       "to": "city_life_16f_u166_1"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_1774439611928",
+      "name": "雜貨區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「雜貨區」。"
+      },
+      "move_to_room_id": "city_life_16f_u166_1"
+    },
+    {
+      "id": "obj_1774439613027",
+      "name": "工具區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「工具區」。"
+      },
+      "move_to_room_id": "city_life_16f_u166_2"
+    },
+    {
+      "id": "obj_1774439980431",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城16樓」大廳。"
+      },
+      "move_to_room_id": "city_life_16f"
+    }
+  ]
 }

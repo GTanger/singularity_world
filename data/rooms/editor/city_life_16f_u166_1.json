@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u166_1",
-  "name": "小北百-雜貨區",
-  "description": "｜１６６｜小北百｜雜貨區｜\n狹長的廊道兩側堆滿了塑膠盆、不鏽鋼餐具與各種奇異的生活小物。物件擺放得極其密集，每一寸空間都被充分利用。空氣中混合著塑料與淡淡的塵土味。",
+  "name": "雜貨區",
+  "description": "｜店門口｜雜貨區｜工具區｜\n幾排狹長廊道兩側堆滿了塑膠盆、不鏽鋼餐具與各種奇異的生活小物。物件擺放得極其密集，每一寸空間都被充分利用。空氣中混合著塑料與淡淡的塵土味。",
   "tags": [
     "retail",
     "grocery"
@@ -17,5 +17,30 @@
       "to": "city_life_16f_u166_2"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_1774440371460",
+      "name": "店門口",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走到「店門口」。"
+      },
+      "move_to_room_id": "city_life_16f_u166"
+    },
+    {
+      "id": "obj_1774440372289",
+      "name": "工具區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走到「工具區」。"
+      },
+      "move_to_room_id": "city_life_16f_u166_2"
+    }
+  ]
 }

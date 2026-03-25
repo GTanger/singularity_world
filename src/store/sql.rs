@@ -168,6 +168,21 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         )",
         &[],
     )?;
+    // 世界詞典 (World Lexicon) — NPC 對話中自發產出的詞彙
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS world_lexicon (
+            term TEXT PRIMARY KEY,
+            category TEXT NOT NULL DEFAULT '',
+            first_seen BIGINT NOT NULL DEFAULT 0,
+            last_seen BIGINT NOT NULL DEFAULT 0,
+            mention_count INTEGER NOT NULL DEFAULT 1,
+            unique_pairs INTEGER NOT NULL DEFAULT 1,
+            source_rooms TEXT NOT NULL DEFAULT '',
+            status TEXT NOT NULL DEFAULT 'candidate',
+            confirmed_by TEXT NOT NULL DEFAULT ''
+        )",
+        &[],
+    )?;
 
     Ok(())
 }

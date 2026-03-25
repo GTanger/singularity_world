@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u161_2",
-  "name": "家樂福-家電區",
-  "description": "｜１６１｜家樂福｜家電區｜\n各式的高科技電子產品在櫃位上靜靜運作，發出極輕微的嗡鳴。這裡展示著最新的念場增強器與家用機器人。冷色調的燈光映照在光滑的外殼上，顯得秩序井然。",
+  "name": "家電區",
+  "description": "｜入口處｜家電區｜乾貨區｜\n各式的高科技電子產品在櫃位上靜靜運作，發出極輕微的嗡鳴。這裡展示著最新的念場增強器與家用機器人。冷色調的燈光映照在光滑的外殼上，顯得秩序井然。",
   "tags": [
     "retail",
     "electronics"
@@ -17,5 +17,30 @@
       "to": "city_life_16f_u161_3"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_1774441547587",
+      "name": "入口處",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走回「入口處」。"
+      },
+      "move_to_room_id": "city_life_16f_u161"
+    },
+    {
+      "id": "obj_1774441548187",
+      "name": "乾貨區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「乾貨區」。"
+      },
+      "move_to_room_id": "city_life_16f_u161_3"
+    }
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u166_2",
-  "name": "小北百-維修整備區",
-  "description": "｜１６６｜小北百｜維修整備區｜\n各式各樣的螺絲、扳手、焊槍與小型精密工具在此整齊分類。許多老練的工程師會在這裡挑選零件，現場甚至提供基礎的檢測台。由此可回往入口或雜貨區。",
+  "name": "工具區",
+  "description": "｜雜貨區｜工具區｜店門口｜\n各式各樣的螺絲、扳手、焊槍與小型精密工具在此整齊分類。許多老練的工程師會在這裡挑選零件，現場甚至提供基礎的檢測台。",
   "tags": [
     "retail",
     "hardware"
@@ -17,5 +17,30 @@
       "to": "city_life_16f_u166_1"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_1774440687613",
+      "name": "店門口",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走到「店門口」。"
+      },
+      "move_to_room_id": "city_life_16f_u166"
+    },
+    {
+      "id": "obj_1774440688163",
+      "name": "雜貨區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走到「雜貨區」。"
+      },
+      "move_to_room_id": "city_life_16f_u166_1"
+    }
+  ]
 }

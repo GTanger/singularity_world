@@ -14,8 +14,8 @@
     "dyad_sentiment_penalty_threshold": -30,
     "dyad_sentiment_penalty": 2,
     "same_venue_score_bonus": 3,
-    "pair_last_talk_penalty_sec": 120,
-    "pair_last_talk_penalty": 20,
+    "pair_last_talk_penalty_sec": 45,
+    "pair_last_talk_penalty": 10,
     "same_display_name_penalty": 15,
     "familiarity_score_divisor": 20,
     "same_dyad_venue_tag_bonus": 2
@@ -23,7 +23,7 @@
   "npc_npc_social": {
     "room_recent_player_talk_cooldown_sec": 60,
     "broadcast_skip_recent_talk_sec": 15,
-    "default_dialogue_score_threshold": 35,
+    "default_dialogue_score_threshold": 25,
     "player_gossip_bias_percent": 40,
     "rumor_top_k_default": 2,
     "rumor_top_k_player_in_room": 3,
@@ -60,10 +60,10 @@
     "interval_span": 60
   },
   "random_npc_dialogue_ticks": {
-    "initial_min": 80,
-    "initial_span": 40,
-    "reset_min_with_player": 115,
-    "reset_span_with_player": 75
+    "initial_min": 30,
+    "initial_span": 20,
+    "reset_min_with_player": 50,
+    "reset_span_with_player": 30
   },
   "job_matching_interval_sec": 30,
   "travel_tick_interval": 30,

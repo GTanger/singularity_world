@@ -1,0 +1,40 @@
+{
+  "_說明": "事件種子池：系統定期從中隨機抽取一條注入 NPC 對話上下文，防止語義坍縮。同一條種子 48 小時內不重複使用。",
+  "inject_interval_game_hours": 6,
+  "seeds": [
+    { "category": "weather", "text": "城外傳來不明雷鳴，空氣中帶有臭氧味" },
+    { "category": "weather", "text": "今天霧氣特別濃，連三步外的人影都看不清" },
+    { "category": "weather", "text": "天色忽暗忽明，雲層像是被什麼力量攪動" },
+    { "category": "weather", "text": "霜林方向的風帶著一股草木腐敗的氣息" },
+    { "category": "weather", "text": "連日大雨，街道積水已到腳踝" },
+    { "category": "weather", "text": "夜裡罕見的暖風從城外吹來，像春天提前到了" },
+
+    { "category": "economy", "text": "今早糧價漲了三成，攤販們議論紛紛" },
+    { "category": "economy", "text": "有人在南街收購大量鐵礦石，出手非常闊綽" },
+    { "category": "economy", "text": "城內的藥材突然短缺，價格翻了一倍" },
+    { "category": "economy", "text": "打鐵巷最近接單多了，聽說有大筆軍需訂單" },
+    { "category": "economy", "text": "布莊老闆說最近外地來的商隊越來越少了" },
+    { "category": "economy", "text": "有人開始囤積乾糧和淨水，像是在準備什麼" },
+
+    { "category": "security", "text": "巡邏隊在霜林邊緣發現了可疑足跡" },
+    { "category": "security", "text": "昨晚城牆外有人看見閃光，但巡邏隊什麼都沒找到" },
+    { "category": "security", "text": "最近城門口的檢查變嚴格了，排隊等很久" },
+    { "category": "security", "text": "有旅者被盜，懷疑城內混入了不明份子" },
+    { "category": "security", "text": "守衛隊加派了夜班人手，不知道發生了什麼事" },
+    { "category": "security", "text": "聽說東區有人目擊陌生人在觀察城防部署" },
+
+    { "category": "social", "text": "浮生客棧昨夜來了一位不願透露身份的異鄉人" },
+    { "category": "social", "text": "有個流浪吟遊詩人在街角唱著關於舊時代的歌謠" },
+    { "category": "social", "text": "城內最近流傳著一個關於地底通道的傳說" },
+    { "category": "social", "text": "飛霜湖對岸似乎有新的建築工地在施工" },
+    { "category": "social", "text": "商會今天發了公告，但內容模糊不清" },
+    { "category": "social", "text": "有孩子說在廢棄巷弄裡聽見牆壁裡的聲音" },
+
+    { "category": "anomaly", "text": "昨夜天空出現了短暫的綠色極光，持續不到一分鐘" },
+    { "category": "anomaly", "text": "好幾個人的指南針同時失靈了，指針一直轉圈" },
+    { "category": "anomaly", "text": "鐵匠鋪的爐火今天燒出了藍色的火焰" },
+    { "category": "anomaly", "text": "從城外廢墟傳來低沉的嗡鳴聲，間歇性地響了一整天" },
+    { "category": "anomaly", "text": "有人說看見飛霜湖水面浮出了從沒見過的東西" },
+    { "category": "anomaly", "text": "界壁附近的金屬物件開始微弱地震動" }
+  ]
+}

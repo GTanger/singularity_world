@@ -13,6 +13,7 @@ use crate::db::{
     self, build_identity, get_npc_npc_conversation_summary, insert_npc_npc_dialogue_archival,
     mark_rumor_used_by_text, penalize_rumor_by_text, recent_npc_npc_archival_lines_for_entity,
     set_npc_npc_conversation_summary, set_npc_npc_dyad, set_npc_npc_thread, top_npc_rumors, upsert_npc_rumor,
+    upsert_lexicon_term,
 };
 use crate::entity::EntityKind;
 use crate::gametext;
@@ -526,6 +527,9 @@ pub fn try_trigger_npc_npc_in_room(
             updated_at: now_unix,
             expires_at: now_unix + ttl,
         });
+        // 寫入世界詞典
+        let pair_key = format!("{}|{}", a.id, b.id);
+        upsert_lexicon_term(&anchor, room_id, &pair_key);
     }
     set_pair_last_talk(&a.id, &b.id, now_unix);
     if let Some(mut d) = dyad {

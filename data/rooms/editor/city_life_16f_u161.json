@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u161",
-  "name": "家樂福-入口",
-  "description": "｜１６１｜家樂福｜入口｜\n巨大的藍紅標誌在入口處律動，迎風招展。無人機引導系統正不斷發出柔和的提示音。這家賣場的規模宏大，一眼望不到盡頭。前方連接著廣大的購物區。",
+  "name": "加了福",
+  "description": "｜結帳區｜入口處｜家電區｜\n巨大的藍紅標誌在律動，迎風招展。無人機引導系統正不斷發出柔和的提示音。這家賣場的規模宏大，一眼望不到盡頭。前方連接著廣大的購物區。\n回大廳",
   "tags": [
     "retail",
     "hypermarket"
@@ -21,5 +21,42 @@
       "to": "city_life_16f_u161_2"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_1774441015162",
+      "name": "回大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你返回「浮生城16樓」大廳。"
+      },
+      "move_to_room_id": "city_life_16f"
+    },
+    {
+      "id": "obj_1774441016162",
+      "name": "結帳區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「結帳區」。"
+      },
+      "move_to_room_id": "city_life_16f_u161_4"
+    },
+    {
+      "id": "obj_1774441016931",
+      "name": "家電區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走到「家電區」。"
+      },
+      "move_to_room_id": "city_life_16f_u161_2"
+    }
+  ]
 }
