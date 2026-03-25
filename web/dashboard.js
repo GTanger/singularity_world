@@ -23,10 +23,6 @@ const ui = {
     fDesc: document.getElementById('f-desc'),
     fObjects: document.getElementById('f-objects'),
     objectsForm: document.getElementById('objects-form'),
-    exitsList: document.getElementById('exits-list'),
-    pathTo: document.getElementById('path-to'),
-    pathDir: document.getElementById('path-dir'),
-    pathReverse: document.getElementById('path-reverse'),
 };
 
 // --- Utilities ---
@@ -97,7 +93,6 @@ async function loadRooms() {
         const data = await api('/api/rooms');
         state.rooms = data.rooms || [];
         renderRoomsTable();
-        fillPathSelect();
         ui.statusBadge.textContent = '已連線';
         ui.statusBadge.className = 'badge connected';
     } catch (e) {
@@ -222,7 +217,6 @@ async function openEditor(id) {
         
         writeObjectsJson(data.room.objects || []);
         renderObjectsForm(data.room.objects || []);
-        renderExitsList();
         
         document.getElementById('nav-editor').style.display = 'flex';
         switchSection('section-editor');
@@ -232,94 +226,7 @@ async function openEditor(id) {
     }
 }
 
-function renderExitsList() {
-    ui.exitsList.innerHTML = '';
-    if (state.selectedExits.length === 0) {
-        ui.exitsList.innerHTML = '<p class="card-desc">目前無出口</p>';
-        return;
-    }
-    state.selectedExits.forEach(ex => {
-        const item = document.createElement('div');
-        item.className = 'exit-item';
-        item.innerHTML = `
-            <div>
-                <span class="dir">${ex.direction}</span>
-                <span class="to">→ ${ex.to_room_id}</span>
-            </div>
-            <button class="btn-icon" onclick="deleteExit('${ex.direction}')" title="刪除出口">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-        `;
-        ui.exitsList.appendChild(item);
-    });
-}
 
-function fillPathSelect() {
-    const prev = ui.pathTo.value;
-    ui.pathTo.innerHTML = '<option value="">— 選擇目標房 —</option>';
-    state.rooms.sort((a,b) => a.id.localeCompare(b.id)).forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r.id;
-        opt.textContent = `${r.name} (${r.id})`;
-        ui.pathTo.appendChild(opt);
-    });
-    if (prev) ui.pathTo.value = prev;
-}
-
-async function deleteExit(dir) {
-    if (!confirm(`確定刪除出口「${dir}」？`)) return;
-    try {
-        await api(`/api/rooms/${encodeURIComponent(state.selectedId)}/exits/${encodeURIComponent(dir)}`, { method: 'DELETE' });
-        toast('出口已刪除');
-        // Refresh editor data
-        openEditor(state.selectedId);
-    } catch (e) {
-        toast(`刪除出口失敗: ${e.message}`, true);
-    }
-}
-
-document.getElementById('btn-add-path').onclick = async () => {
-    const to = ui.pathTo.value;
-    const dir = document.getElementById('path-dir').value.trim();
-    const reverse = ui.pathReverse.checked;
-    
-    if (!to || !dir) return toast('請填寫目標房間與方向名稱', true);
-    
-    try {
-        // We use the room editor's multi-link helper if available, 
-        // but here we follow standard /api/rooms/:id/exits for simplicity
-        // or check if room_editor link helper exists
-        await api(`/api/rooms/${encodeURIComponent(state.selectedId)}/exits`, {
-            method: 'POST',
-            body: JSON.stringify({ direction: dir, to_room_id: to })
-        });
-        
-        if (reverse) {
-            // Best effort reverse link
-            try {
-                // In a perfect world, we'd have a specialized /api/room-editor/link for this
-                // but we'll do literal double calls if needed, or stick to single if API doesn't support helper
-                // Assuming we want the "room_editor" experience:
-                await api('/api/room-editor/link', {
-                    method: 'POST',
-                    body: JSON.stringify({ 
-                        from: state.selectedId, 
-                        to: to, 
-                        direction: dir, 
-                        reverse: true, 
-                        reverse_direction: state.selectedRoom.name || state.selectedId 
-                    })
-                });
-            } catch(re) { console.warn("Reverse link failed", re); }
-        }
-        
-        toast('出口建立成功');
-        document.getElementById('path-dir').value = '';
-        openEditor(state.selectedId);
-    } catch (e) {
-        toast(`建立出口失敗: ${e.message}`, true);
-    }
-};
 
 // --- Objects Editor (Logic from room_editor.js) ---
 function writeObjectsJson(objs) {

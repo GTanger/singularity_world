@@ -141,15 +141,18 @@
         return ZONE_COLORS[zone] || DEFAULT_NODE_COLOR;
       }
 
-      function buildAliasMap(exits) {
+      function buildAliasMap(rooms) {
         var map = {};
-        if (!Array.isArray(exits)) return map;
-        exits.forEach(function (exit) {
-          var target = exit.to || '';
-          var dir = exit.direction || '';
-          if (!target || !dir) return;
-          if (!map[target]) map[target] = {};
-          map[target][dir] = true;
+        if (!Array.isArray(rooms)) return map;
+        rooms.forEach(function (room) {
+          if (!Array.isArray(room.objects)) return;
+          room.objects.forEach(function (obj) {
+            var target = obj.move_to_room_id || '';
+            var dir = obj.name || '';
+            if (!target || !dir) return;
+            if (!map[target]) map[target] = {};
+            map[target][dir] = true;
+          });
         });
         var result = {};
         Object.keys(map).forEach(function (rid) {
@@ -158,12 +161,16 @@
         return result;
       }
 
-      function countExits(exits) {
+      function countExits(rooms) {
         var map = {};
-        if (!Array.isArray(exits)) return map;
-        exits.forEach(function (exit) {
-          var rid = exit.from || '';
-          map[rid] = (map[rid] || 0) + 1;
+        if (!Array.isArray(rooms)) return map;
+        rooms.forEach(function (room) {
+          if (!Array.isArray(room.objects)) return;
+          room.objects.forEach(function (obj) {
+            if (obj.move_to_room_id) {
+              map[room.id] = (map[room.id] || 0) + 1;
+            }
+          });
         });
         return map;
       }
@@ -216,17 +223,27 @@
         });
       }
 
-      function buildEdges(exits) {
-        if (!Array.isArray(exits)) return [];
+      function buildEdges(rooms) {
+        if (!Array.isArray(rooms)) return [];
+        var paths = [];
+        rooms.forEach(function(room) {
+          if (!Array.isArray(room.objects)) return;
+          room.objects.forEach(function(obj) {
+            if (obj.move_to_room_id) {
+              paths.push({ from: room.id, to: obj.move_to_room_id });
+            }
+          });
+        });
+        
         var pairSet = {};
-        exits.forEach(function (exit) {
+        paths.forEach(function (exit) {
           var key = exit.from + '|' + exit.to;
           pairSet[key] = exit;
         });
         var processed = {};
         var result = [];
         var idx = 0;
-        exits.forEach(function (exit) {
+        paths.forEach(function (exit) {
           var fwd = exit.from + '|' + exit.to;
           var rev = exit.to + '|' + exit.from;
           if (processed[fwd]) return;
@@ -265,16 +282,15 @@
 
       function loadFromJson(json, playerRoomId) {
         var rooms = json.rooms;
-        var exits = json.exits;
-        if (!rooms || !exits) {
-          setStatus('無效的 rooms.json：需包含 rooms 與 exits 陣列。');
+        if (!rooms) {
+          setStatus('無效的資料：需包含 rooms 陣列。');
           setError('');
           return false;
         }
-        var aliasMap = buildAliasMap(exits);
-        var exitCounts = countExits(exits);
+        var aliasMap = buildAliasMap(rooms);
+        var exitCounts = countExits(rooms);
         var nodes = buildNodes(rooms, aliasMap, exitCounts, playerRoomId || null);
-        var edges = buildEdges(exits);
+        var edges = buildEdges(rooms);
         drawGraph(nodes, edges);
         var msg = '已載入：' + nodes.length + ' 個節點，' + edges.length + ' 條連線。';
         if (playerRoomId) msg += ' 當前位置已標示（外圈光圈）。';
