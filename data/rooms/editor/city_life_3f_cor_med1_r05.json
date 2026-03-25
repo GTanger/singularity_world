@@ -1,7 +1,7 @@
 {
   "id": "city_life_3f_cor_med1_r05",
   "name": "內科一·雙人病房05",
-  "description": "雙床間隔著可收合屏風，床頭卡夾寫著體溫紀錄時段。\n可經〔走廊〕回到「內科病房一號走廊」。",
+  "description": "兩床並列，中間隔著一道醫用布簾，窗外透進微弱的都市亮譜。\n可經〔走廊〕回到「內科病房一號走廊」。",
   "tags": [
     "city",
     "skyscraper",
@@ -23,7 +23,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「內科病房一號走廊」。"
+        "Move": "你推開輕巧的病房滑門，回到了內一廊安靜的動線上。"
       },
       "move_to_room_id": "city_life_3f_cor_med1"
     }

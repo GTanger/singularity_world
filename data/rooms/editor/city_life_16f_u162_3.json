@@ -30,7 +30,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「飲品區」。"
+        "Move": "你穿過放滿待處理貨物的小推車，重新回到「飲品區」。"
       },
       "move_to_room_id": "city_life_16f_u162_2"
     },
@@ -42,7 +42,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你來到「入口處」。"
+        "Move": "你繞過櫃檯與忙碌的店員，回到「入口處」。"
       },
       "move_to_room_id": "city_life_16f_u162"
     },

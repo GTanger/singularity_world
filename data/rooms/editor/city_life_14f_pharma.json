@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城14F」大廳。"
+        "Move": "你離開充滿藥劑氣味的窗口，走回寬敞且動線清晰的大廳。"
       },
       "move_to_room_id": "city_life_14f"
     }

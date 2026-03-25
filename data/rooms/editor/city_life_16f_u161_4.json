@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「生鮮區」。"
+        "Move": "你穿過自動感應門，回到翠綠繁茂且充滿生機的「生鮮區」。"
       },
       "move_to_room_id": "city_life_16f_u161_1"
     },
@@ -38,7 +38,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走到「入口處」。"
+        "Move": "你繞過收銀台旁的通道，回到「入口處」。"
       },
       "move_to_room_id": "city_life_16f_u161"
     },

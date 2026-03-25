@@ -484,8 +484,8 @@ pub fn call_ai_talk_npc_to_npc(
             {"role": "user", "content": npc_to_npc_user_message()},
         ],
         "options": {
-            "num_predict": 120,
-            "temperature": 0.68,
+            "num_predict": 250,
+            "temperature": 0.88,
         }
     });
     let client = reqwest::blocking::Client::builder()

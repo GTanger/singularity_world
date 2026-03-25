@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城2F」。"
+        "Move": "你離開氣氛肅穆的外科診區，重新踏入2樓明亮的大廳走廊，聽見不遠處急診室的蜂鳴聲。"
       },
       "move_to_room_id": "city_life_2f"
     },

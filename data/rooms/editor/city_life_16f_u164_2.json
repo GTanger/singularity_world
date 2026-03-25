@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u164_2",
-  "name": "沃而滿-服飾中心",
-  "description": "｜１６４｜沃而滿｜服飾中心｜\n整齊的衣架上掛滿了工業流水線產出的機能服飾。這裡強調的是實用性與通用規格，各種抗初級輻射的纖維布料在此整齊堆疊，展現出極致的效率感。",
+  "name": "服飾區",
+  "description": "｜沃而滿｜服飾區｜百貨區｜\n整齊的衣架上掛滿了工業流水線產出的機能服飾。這裡強調的是實用性與通用規格，各種抗初級輻射的纖維布料在此整齊堆疊，展現出極致的效率感。",
   "tags": [
     "retail",
     "apparel"
@@ -17,5 +17,20 @@
       "to": "city_life_16f_u164_3"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_u164_2_entry",
+      "name": "回入口",
+      "sockets": ["Move"],
+      "responses": { "Move": "你離開機能服飾區，走回賣場入口。" },
+      "move_to_room_id": "city_life_16f_u164"
+    },
+    {
+      "id": "obj_u164_2_home",
+      "name": "百貨區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你穿過成排的衣架，進入居家百貨區。" },
+      "move_to_room_id": "city_life_16f_u164_3"
+    }
+  ]
 }

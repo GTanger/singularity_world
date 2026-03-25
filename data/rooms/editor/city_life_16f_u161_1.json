@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「乾貨區」。"
+        "Move": "你提著籃子離開泥土與根鬚的芬芳，穿過氣簾進入「乾貨區」。"
       },
       "move_to_room_id": "city_life_16f_u161_3"
     },
@@ -38,7 +38,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「結帳區」。"
+        "Move": "你穿過生鮮貨架與翠綠的氣簾，走向「結帳區」。"
       },
       "move_to_room_id": "city_life_16f_u161_4"
     }

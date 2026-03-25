@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城15F」大廳。"
+        "Move": "你走離堆滿卷宗的作業區，回到明亮的大廳長廊。"
       },
       "move_to_room_id": "city_life_15f"
     }

@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城15F」大廳。"
+        "Move": "你推開受理窗口旁的側門，重新回到15樓行政大廳。"
       },
       "move_to_room_id": "city_life_15f"
     }

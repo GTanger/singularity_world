@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u169",
-  "name": "振宇百-入口",
-  "description": "｜１６９｜振宇百｜入口｜\n一個充滿重型工業感的五金行入口。沉重的感應門在開啟時會發出低沉的齒輪轉動聲。這裡專為「振奮宇宙」的高強度工事提供最可靠的工具。門口擺放著幾台大型的手動液壓機作為展示。",
+  "name": "振宇百",
+  "description": "｜往大廳｜振宇百｜工事區｜\n一個充滿重型工業感的五金行入口。沉重的感應門在開啟時會發出低沉的齒輪轉動聲。這裡專為「振奮宇宙」的高強度工事提供最可靠的工具。門口擺放著幾台大型的手動液壓機作為展示。",
   "tags": [
     "retail",
     "hardware"
@@ -21,5 +21,27 @@
       "to": "city_life_16f_u169_2"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_u169_hall",
+      "name": "往大廳",
+      "sockets": ["Move"],
+      "responses": { "Move": "你離開迴盪著齒輪轉動聲的入口，回到16樓大廳。" },
+      "move_to_room_id": "city_life_16f"
+    },
+    {
+      "id": "obj_u169_lighting",
+      "name": "照明區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你步入光線刺眼、牆面排滿防爆燈具的照明區。" },
+      "move_to_room_id": "city_life_16f_u169_1"
+    },
+    {
+      "id": "obj_u169_power",
+      "name": "電動區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你走向堆放著大型電動切削機具的工事區。" },
+      "move_to_room_id": "city_life_16f_u169_2"
+    }
+  ]
 }

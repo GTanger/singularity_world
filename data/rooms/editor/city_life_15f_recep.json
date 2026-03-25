@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城15F」大廳。"
+        "Move": "你走出接待廳的暖光照明，回到15樓繁鎖的行政長廊。"
       },
       "move_to_room_id": "city_life_15f"
     }

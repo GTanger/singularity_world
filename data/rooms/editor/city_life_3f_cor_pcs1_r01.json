@@ -23,7 +23,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「兒童外科病房一號走廊」。"
+        "Move": "你步離病房，回到兒外一那清冷寂靜的長廊動線上。"
       },
       "move_to_room_id": "city_life_3f_cor_pcs1"
     }

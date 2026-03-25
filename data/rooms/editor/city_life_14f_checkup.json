@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城14F」大廳。"
+        "Move": "你離開光線柔和的量測區，步出防火簾回到14樓主大廳。"
       },
       "move_to_room_id": "city_life_14f"
     }

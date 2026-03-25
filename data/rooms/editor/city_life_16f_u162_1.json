@@ -38,7 +38,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「飲品區」。"
+        "Move": "你避開堆放在走道上的特價紙箱，轉向嗡嗡作響的「飲品區」。"
       },
       "move_to_room_id": "city_life_16f_u162_2"
     }

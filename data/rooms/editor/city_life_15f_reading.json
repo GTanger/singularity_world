@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城15F」大廳。"
+        "Move": "你合上手中的資料架，從安靜的閱覽空間回到繁忙的大廳。"
       },
       "move_to_room_id": "city_life_15f"
     }

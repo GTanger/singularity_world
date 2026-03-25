@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「雜貨區」。"
+        "Move": "你側身避開門口堆放的塑膠桶，步入掛滿生活小物的「雜貨區」。"
       },
       "move_to_room_id": "city_life_16f_u166_1"
     },
@@ -38,7 +38,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「工具區」。"
+        "Move": "你繞過手寫的特價告示牌，走向傳出金屬味與切削油味的「工具區」。"
       },
       "move_to_room_id": "city_life_16f_u166_2"
     },
@@ -50,7 +50,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城16樓」大廳。"
+        "Move": "你掀開透明塑膠門簾，回到了寬敞明亮的「浮生城16樓」大廳。"
       },
       "move_to_room_id": "city_life_16f"
     }

@@ -30,7 +30,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走回「家電區」。"
+        "Move": "你感受到空氣變得乾冷且帶著塑料味，走回「家電區」。"
       },
       "move_to_room_id": "city_life_16f_u161_2"
     },
@@ -42,7 +42,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「生鮮區」。"
+        "Move": "嗅到遠處傳來的植物清香味與潮濕感，你步入「生鮮區」。"
       },
       "move_to_room_id": "city_life_16f_u161_1"
     }

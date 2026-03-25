@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城2F」。"
+        "Move": "你告別了尖銳叫號音的耳鼻喉診區，重回2樓中軸大廳，空氣感變得寬敞許多。"
       },
       "move_to_room_id": "city_life_2f"
     },

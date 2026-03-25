@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「日用品區」。"
+        "Move": "你離開冷藏櫃散發的強烈冷氣，回到堆滿民生用品的溫馨「日用區」。"
       },
       "move_to_room_id": "city_life_16f_u162_1"
     },
@@ -38,7 +38,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「櫃檯區」。"
+        "Move": "你走出飲品區，走向「櫃檯區」。"
       },
       "move_to_room_id": "city_life_16f_u162_3"
     }

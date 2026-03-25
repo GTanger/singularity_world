@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城14F」大廳。"
+        "Move": "你告別詳盡的諮詢台，重回14樓的中軸大廳廊道。"
       },
       "move_to_room_id": "city_life_14f"
     }

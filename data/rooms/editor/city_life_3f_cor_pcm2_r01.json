@@ -23,7 +23,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「兒童內科病房二號走廊」。"
+        "Move": "你步離病房，回到兒內二那清冷寂靜的長廊動線上。"
       },
       "move_to_room_id": "city_life_3f_cor_pcm2"
     }

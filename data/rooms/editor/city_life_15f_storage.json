@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城15F」大廳。"
+        "Move": "你推開鐵門並側身走出塞滿物資的空間，回到15樓主大廳。"
       },
       "move_to_room_id": "city_life_15f"
     }

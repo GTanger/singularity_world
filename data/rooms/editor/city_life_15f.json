@@ -66,7 +66,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「電梯間」。"
+        "Move": "你轉身走入閃爍著數字顯示器的電梯間，空氣中帶著淡淡的潤滑油氣味。"
       },
       "move_to_room_id": "city_life_elevator"
     },
@@ -78,7 +78,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城14F」。"
+        "Move": "你踏上平整的石梯緩緩向下走去，進入了14樓區域。"
       },
       "move_to_room_id": "city_life_14f"
     },
@@ -90,7 +90,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔檔案庫〕。"
+        "Move": "你推開厚重的雙扇防火門，步入靜謐且充滿舊紙張味的檔案室。"
       },
       "move_to_room_id": "city_life_15f_archive"
     },
@@ -102,7 +102,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔申訴窗〕。"
+        "Move": "你走向掛著受理中標牌的窗口，這裡瀰漫著嚴肅的辦公氣息。"
       },
       "move_to_room_id": "city_life_15f_claim"
     },
@@ -114,7 +114,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔複印間〕。"
+        "Move": "你循著沉悶的機械運轉聲與臭氧味，踏入了熱氣騰騰的複印室。"
       },
       "move_to_room_id": "city_life_15f_copy"
     },
@@ -126,7 +126,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔會議室〕。"
+        "Move": "你推開裝有隔音條的沉重木門，進入了光線充足的長形桌室。"
       },
       "move_to_room_id": "city_life_15f_meeting"
     },
@@ -138,7 +138,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔文書組〕。"
+        "Move": "你穿過成排的文件櫃陣列，步入正不斷傳出鍵盤敲擊聲的人員作業區。"
       },
       "move_to_room_id": "city_life_15f_clerk"
     },
@@ -150,7 +150,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔閱覽室〕。"
+        "Move": "你步入光線柔和、安靜肅穆的閱覽空間，此地帶著淡淡的咖啡香。"
       },
       "move_to_room_id": "city_life_15f_reading"
     },
@@ -162,7 +162,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔值班台〕。"
+        "Move": "你走向藍色燈光閃爍的值班台，牆上的監控螢幕正無聲地變換著。 "
       },
       "move_to_room_id": "city_life_15f_duty"
     },
@@ -174,7 +174,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔儲藏室〕。"
+        "Move": "你推開略顯沉重的鐵門，進入了堆滿雜物與備用零件的陰暗空間。"
       },
       "move_to_room_id": "city_life_15f_storage"
     },
@@ -186,7 +186,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城16F」。"
+        "Move": "你踏上整潔的旋轉階梯向上攀登，前往16樓商業區。"
       },
       "move_to_room_id": "city_life_16f"
     },
@@ -198,7 +198,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔接待廳〕。"
+        "Move": "你走進鋪著柔軟地毯、裝潢精緻的接待空間，牆上的浮生城模型正微微發光。"
       },
       "move_to_room_id": "city_life_15f_recep"
     }

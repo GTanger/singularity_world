@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u163_3",
-  "name": "好事多-非食品區",
-  "description": "｜１６３｜好事多｜非食品區｜\n這裡展示著各類巨型物品，從十人份的充氣艇到軍規級的儲能站應有盡有。物件的體積感在此達到了巔峰，讓人感受到商業巨獸的雄厚實力。",
+  "name": "用品區",
+  "description": "｜西點區｜用品區｜熟食區｜\n這裡展示著各類巨型物品，從十人份的充氣艇到軍規級的儲能站應有盡有。物件的體積感在此達到了巔峰，讓人感受到商業巨獸的雄厚實力。",
   "tags": [
     "retail",
     "hardware"
@@ -17,5 +17,20 @@
       "to": "city_life_16f_u163_4"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_costco_bakery_back",
+      "name": "西點區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你走回充滿麵粉香的西點區。" },
+      "move_to_room_id": "city_life_16f_u163_2"
+    },
+    {
+      "id": "obj_costco_dining",
+      "name": "熟食區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你來到了香味撲鼻的熟食區。" },
+      "move_to_room_id": "city_life_16f_u163_4"
+    }
+  ]
 }

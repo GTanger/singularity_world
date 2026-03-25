@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u167_3",
-  "name": "大蕒家-生活體驗區",
-  "description": "｜１６７｜大蕒家｜生活體驗區｜\n這裡模擬了各式各樣的小型居家場景，展示著家具與念場控制器的結合。空氣中瀰漫著淡淡的香氛噴霧與新家具的木質氣息。由此可回往各區或出口。",
+  "name": "體驗區",
+  "description": "｜分流區｜體驗區｜往大廳｜\n這裡模擬了各式各樣的小型居家場景，展示著家具與念場控制器的結合。空氣中瀰漫著淡淡的香氛噴霧與新家具的木質氣息。由此可回往各區或出口。",
   "tags": [
     "retail",
     "lifestyle"
@@ -21,5 +21,27 @@
       "to": "city_life_16f"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_u167_3_supplies",
+      "name": "物資區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你離開溫馨的體驗空間，步入物資區。" },
+      "move_to_room_id": "city_life_16f_u167_1"
+    },
+    {
+      "id": "obj_u167_3_apparel",
+      "name": "衣著區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你走出家具展示間，步入衣著美學區。" },
+      "move_to_room_id": "city_life_16f_u167_2"
+    },
+    {
+      "id": "obj_u167_3_hall",
+      "name": "往大廳",
+      "sockets": ["Move"],
+      "responses": { "Move": "你穿過最後的感應閘門，回到16樓大廳。" },
+      "move_to_room_id": "city_life_16f"
+    }
+  ]
 }

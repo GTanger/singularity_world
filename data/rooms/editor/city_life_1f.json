@@ -58,7 +58,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「蕗易沙」。"
+        "Move": "你走進飄散著濃郁研磨咖啡香與烤吐司微焦氣味的連鎖咖啡廳。"
       },
       "move_to_room_id": "life_cofe_1"
     },
@@ -70,7 +70,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城2F」。"
+        "Move": "你踏上整潔的樓梯步步向上，走進了充滿醫療氣息的2樓區域。"
       },
       "move_to_room_id": "city_life_2f"
     },
@@ -82,7 +82,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「電梯間」。"
+        "Move": "你走入數碼跳動且迴盪著輕微機械運作聲的電梯間。"
       },
       "move_to_room_id": "city_life_elevator"
     },
@@ -94,7 +94,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「來喫茶」。"
+        "Move": "你轉入充滿清新茶葉香氣與溫暖乾燥感的茶飲現調舖。"
       },
       "move_to_room_id": "city_life_1f_tea"
     },
@@ -106,7 +106,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你推門進入「管理室」。"
+        "Move": "你推門進入寬敞的管理辦公室，這裡正處理著1樓的各項行政事務。"
       },
       "move_to_room_id": "city_life_1f_admin"
     },
@@ -118,7 +118,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入「警衛室」。"
+        "Move": "你進入光線略顯昏暗、排滿了對講機感應器與戰術裝備的安防中心。"
       },
       "move_to_room_id": "city_life_1f_security"
     },
@@ -130,7 +130,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入「警衛休息室」。"
+        "Move": "你推開側門步入休息室，這裡能聞到淡淡的菸屑與老舊沙發的皮革味。"
       },
       "move_to_room_id": "city_life_1f_guard_lounge"
     },
@@ -142,7 +142,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入「醫療間」。"
+        "Move": "你推開平滑的診療門，步入空氣中帶著淡淡碘酒氣味的基礎醫護間。"
       },
       "move_to_room_id": "city_life_1f_clinic"
     },
@@ -154,7 +154,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向「門關門」關廂。"
+        "Move": "你穿過沉重的氣封雙重閘門，踏入通向城外區域的冷凝過渡室。"
       },
       "move_to_room_id": "city_life_1f_gate"
     },
@@ -166,7 +166,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向「遇飯糰」單點舖。"
+        "Move": "你走向空氣中瀰漫著溫熱米飯甜味與日式海苔香氣的飯糰鋪。"
       },
       "move_to_room_id": "city_life_1f_riceball"
     }

@@ -42,7 +42,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「結帳區」。"
+        "Move": "你走向寬敞的「結帳區」。"
       },
       "move_to_room_id": "city_life_16f_u161_4"
     },
@@ -54,7 +54,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走到「家電區」。"
+        "Move": "你穿過無人機展示架，走入「家電區」。"
       },
       "move_to_room_id": "city_life_16f_u161_2"
     }

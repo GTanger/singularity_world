@@ -28,7 +28,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你穿過側開門洞，回到「浮生城1F」公共動線。"
+        "Move": "你穿過氣封良好的側開門洞，回到了光影明亮的1樓大廳軸心。"
       },
       "move_to_room_id": "city_life_1f"
     },

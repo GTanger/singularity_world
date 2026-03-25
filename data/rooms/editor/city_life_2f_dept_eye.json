@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城2F」。"
+        "Move": "你從光線較暗的眼科廊道走回2樓大廳，短暫適應著明亮的公共照明照射。"
       },
       "move_to_room_id": "city_life_2f"
     },

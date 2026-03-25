@@ -30,7 +30,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「櫃台區」。"
+        "Move": "你走向超市的「櫃檯區」。"
       },
       "move_to_room_id": "city_life_16f_u162_3"
     },
@@ -42,7 +42,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「日用品區」。"
+        "Move": "你穿過走道，走進「日用區」。"
       },
       "move_to_room_id": "city_life_16f_u162_1"
     },

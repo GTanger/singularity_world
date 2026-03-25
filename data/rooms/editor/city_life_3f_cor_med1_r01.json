@@ -23,7 +23,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「內科病房一號走廊」。"
+        "Move": "你推開輕巧的病房滑門，回到了內科一號病房廊道安靜的動線上。"
       },
       "move_to_room_id": "city_life_3f_cor_med1"
     }

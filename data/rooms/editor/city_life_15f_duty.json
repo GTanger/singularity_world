@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城15F」大廳。"
+        "Move": "你告別值班台的藍色燈光，重新回到15樓的中軸大廳。"
       },
       "move_to_room_id": "city_life_15f"
     }

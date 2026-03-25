@@ -66,7 +66,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「電梯間」。"
+        "Move": "你步入數字燈號閃爍的電梯間，空氣中帶著微弱的消毒酒精氣味。"
       },
       "move_to_room_id": "city_life_elevator"
     },
@@ -78,7 +78,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城13F」。"
+        "Move": "你踏上平整的石梯緩緩向下走去，前往13樓區域。"
       },
       "move_to_room_id": "city_life_13f"
     },
@@ -90,7 +90,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城15F」。"
+        "Move": "你踏上整潔的旋轉階梯向上攀登，前往15樓行政長廊。"
       },
       "move_to_room_id": "city_life_15f"
     },
@@ -102,7 +102,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔體檢區〕。"
+        "Move": "你穿過採光柔和的隔簾，進入排列著各類精密測量儀器的體檢區。"
       },
       "move_to_room_id": "city_life_14f_checkup"
     },
@@ -114,7 +114,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔採樣室〕。"
+        "Move": "你推開不鏽鋼手把的診門，步入充滿醫療冷櫃低鳴聲的採樣室。"
       },
       "move_to_room_id": "city_life_14f_sample"
     },
@@ -126,7 +126,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔衛教室〕。"
+        "Move": "你走進牆上貼滿健康宣導海報、帶著淡淡紙張味的的衛教室。"
       },
       "move_to_room_id": "city_life_14f_edu"
     },
@@ -138,7 +138,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔諮詢台〕。"
+        "Move": "你走向擺放著透明隔板的諮詢台，這裡的空氣顯得安靜且專業。"
       },
       "move_to_room_id": "city_life_14f_consult"
     },
@@ -150,7 +150,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔理療間〕。"
+        "Move": "你撥開厚重的遮光布簾，步入播放著低頻療癒音樂的幽暗空間。"
       },
       "move_to_room_id": "city_life_14f_physio"
     },
@@ -162,7 +162,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔藥事窗〕。"
+        "Move": "你走向號碼跳號燈不斷閃爍的窗口，此地聞得到淡淡的藥劑氣味。"
       },
       "move_to_room_id": "city_life_14f_pharma"
     },
@@ -174,7 +174,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔復健室〕。"
+        "Move": "你推開沉重的機械大門，步入擺滿各種金屬復健支架的訓練區。"
       },
       "move_to_room_id": "city_life_14f_rehab"
     },
@@ -186,7 +186,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔候診廳〕。"
+        "Move": "你步入排列著舒適座椅的候診空間，這裡的環境維持得極其靜謐。"
       },
       "move_to_room_id": "city_life_14f_lounge"
     },
@@ -198,7 +198,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走向〔建檔室〕。"
+        "Move": "你進入正在高速掃描檔案的建檔室，能感覺到微弱的硬碟運作聲。"
       },
       "move_to_room_id": "city_life_14f_records"
     }

@@ -1,7 +1,7 @@
 {
   "id": "city_life_3f_cor_med1_r06",
   "name": "內科一·單人病房06",
-  "description": "單人房門上有觀察窗，室內儀器低鳴混著加濕器的細響。\n可經〔走廊〕回到「內科病房一號走廊」。",
+  "description": "獨立隔間，床頭設有氧氣介面與負壓抽吸孔；角落排著一套簡潔的陪病椅。\n可經〔走廊〕回到「內科病房一號走廊」。",
   "tags": [
     "city",
     "skyscraper",
@@ -23,7 +23,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「內科病房一號走廊」。"
+        "Move": "你推開輕巧的病房滑門，回到了內一廊安靜的動線上。"
       },
       "move_to_room_id": "city_life_3f_cor_med1"
     }

@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u164_4",
-  "name": "沃而滿-戶外中心",
-  "description": "｜１６４｜沃而滿｜戶外中心｜\n這裡存放著更大型的物件：攜帶型野戰廚具、多地形帳篷與基礎的載具替換零件。這裡的燈光較為暗淡，營造出一種隨時準備出發前往荒野冒險的緊迫感。",
+  "name": "戶外區",
+  "description": "｜百貨區｜戶外區｜收銀區｜\n這裡存放著更大型的物件：攜帶型野戰廚具、多地形帳篷與基礎的載具替換零件。這裡的燈光較為暗淡，營造出一種隨時準備出發前往荒野冒險的緊迫感。",
   "tags": [
     "retail",
     "outdoors"
@@ -17,5 +17,20 @@
       "to": "city_life_16f_u164_5"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_u164_4_home",
+      "name": "百貨區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你離開幽暗的戶外區，回往百貨區。" },
+      "move_to_room_id": "city_life_16f_u164_3"
+    },
+    {
+      "id": "obj_u164_4_checkout",
+      "name": "收銀區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你走向燈火通明的自動收銀大廳。" },
+      "move_to_room_id": "city_life_16f_u164_5"
+    }
+  ]
 }

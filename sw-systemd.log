@@ -569,3 +569,169 @@
 [2m2026-03-25T14:18:38.488115Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
   -> 葉俊: 今日帳我對過了，有問題再叫我。
   -> 鄭秀強: 好，那我先走。
+[2m2026-03-25T14:20:37.287004Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 排班抵達，三樓醫療區最近比較忙，好像是採集...
+  -> 龍霞華: 今日帳我對過了，有問題再叫我。
+[2m2026-03-25T14:24:33.827081Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: extension "vector" already exists, skipping
+[2m2026-03-25T14:24:33.827267Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "auth" already exists, skipping
+[2m2026-03-25T14:24:33.827341Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "event_log" already exists, skipping
+[2m2026-03-25T14:24:33.827569Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_event_log_entity_id" already exists, skipping
+[2m2026-03-25T14:24:33.827676Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "archival" already exists, skipping
+[2m2026-03-25T14:24:33.827776Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_archival_entity_id" already exists, skipping
+[2m2026-03-25T14:24:33.827863Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_memories" already exists, skipping
+[2m2026-03-25T14:24:33.827950Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_summaries" already exists, skipping
+[2m2026-03-25T14:24:33.828010Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_npc_summaries" already exists, skipping
+[2m2026-03-25T14:24:33.828064Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_threads" already exists, skipping
+[2m2026-03-25T14:24:33.828138Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_dyads" already exists, skipping
+[2m2026-03-25T14:24:33.828199Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_rumors" already exists, skipping
+[2m2026-03-25T14:24:33.828252Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "rooms" already exists, skipping
+[2m2026-03-25T14:24:33.828298Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "exits" already exists, skipping
+[2m2026-03-25T14:24:33.828353Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "world_lexicon" already exists, skipping
+[2m2026-03-25T14:24:33.828361Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Initialized PostgreSQL Pool at postgres://postgres:singularity@localhost:5432/singularity
+[2m2026-03-25T14:24:33.829087Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] loaded: 638 rooms, 57 entity_room, 1 venues, 4 assignments, 3 schedules, 57 entities, 10 items
+[2m2026-03-25T14:24:33.829134Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-25T14:24:35.010820Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-25T14:24:35.010981Z[0m [32m INFO[0m [2mnpc_behavior[0m[2m:[0m loaded 18 roles from /home/tanger/Projects/singularity_world/data/npc_behaviors.json
+[2m2026-03-25T14:24:35.011648Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:24:35.011831Z[0m [32m INFO[0m [2msingularity_world::server::run[0m[2m:[0m Rust server listening on http://0.0.0.0:1721 (WebSocket /ws)
+[2m2026-03-25T14:24:35.091798Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看
+[2m2026-03-25T14:24:36.237387Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 先走了，今晚我來。
+  -> 葉俊: 嗯，好。
+[2m2026-03-25T14:25:27.626135Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: extension "vector" already exists, skipping
+[2m2026-03-25T14:25:27.626297Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "auth" already exists, skipping
+[2m2026-03-25T14:25:27.626371Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "event_log" already exists, skipping
+[2m2026-03-25T14:25:27.626548Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_event_log_entity_id" already exists, skipping
+[2m2026-03-25T14:25:27.626605Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "archival" already exists, skipping
+[2m2026-03-25T14:25:27.626667Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_archival_entity_id" already exists, skipping
+[2m2026-03-25T14:25:27.626737Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_memories" already exists, skipping
+[2m2026-03-25T14:25:27.626792Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_summaries" already exists, skipping
+[2m2026-03-25T14:25:27.626834Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_npc_summaries" already exists, skipping
+[2m2026-03-25T14:25:27.626883Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_threads" already exists, skipping
+[2m2026-03-25T14:25:27.626946Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_dyads" already exists, skipping
+[2m2026-03-25T14:25:27.627001Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_rumors" already exists, skipping
+[2m2026-03-25T14:25:27.627067Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "rooms" already exists, skipping
+[2m2026-03-25T14:25:27.627127Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "exits" already exists, skipping
+[2m2026-03-25T14:25:27.627183Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "world_lexicon" already exists, skipping
+[2m2026-03-25T14:25:27.627193Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Initialized PostgreSQL Pool at postgres://postgres:singularity@localhost:5432/singularity
+[2m2026-03-25T14:25:27.627871Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] loaded: 638 rooms, 62 entity_room, 1 venues, 4 assignments, 3 schedules, 62 entities, 10 items
+[2m2026-03-25T14:25:27.627919Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-25T14:25:28.821725Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-25T14:25:28.821896Z[0m [32m INFO[0m [2mnpc_behavior[0m[2m:[0m loaded 18 roles from /home/tanger/Projects/singularity_world/data/npc_behaviors.json
+[2m2026-03-25T14:25:28.822448Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:25:28.822579Z[0m [32m INFO[0m [2msingularity_world::server::run[0m[2m:[0m Rust server listening on http://0.0.0.0:1721 (WebSocket /ws)
+[2m2026-03-25T14:25:28.902572Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸
+[2m2026-03-25T14:25:30.245378Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 我已經過了今晚，今晚我會繼續去工作，先不回家休息。
+  -> 鄭秀強: 行，那我也沒空回去，先回樓下休息吧，別太累著。
+[2m2026-03-25T14:25:37.480686Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 我已經過了今晚，今晚我會繼續去工作，先不回家休息。
+  -> 鄭秀強: 行，那我也沒空回去，先回樓下休息吧，別太累著。
+[2m2026-03-25T14:28:07.431654Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 司馬梅秀: 今天帳我對過了，有問題再叫我。」
+  -> 程英: 沒事，剛換班。
+[2m2026-03-25T14:30:37.771171Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 三樓醫療區最近比較忙，好像是採集……
+  -> 龍霞華: 今日帳我對過了，有問題再叫我。
+[2m2026-03-25T14:31:09.777693Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:32:03.941629Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:32:54.004007Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:33:26.678721Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:33:44.324887Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:34:09.547524Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:34:20.374173Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:35:29.392877Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 十六樓商區的地面接縫處冒出了細細的礦脈紋路
+[2m2026-03-25T14:35:32.767246Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:35:37.758451Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 萬俟秀偉: 最近城裡新面孔多，你也該留意一下了，換班的事務可先顧上。
+  -> 夏強: 嗯嗯，我也得注意，換班的事務可先顧上。
+[2m2026-03-25T14:36:08.230844Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:36:10.420490Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T14:38:07.988879Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 今晚沒空回去，先回樓下休息吧，別太累著。
+  -> 葉俊: 行，那我也沒空回去，先回樓下休息吧，別太累著。
+[2m2026-03-25T14:40:38.436434Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 戴寧偉: 我這幾天在城裡忙著收拾行裝，怕事嘛，但也得確保大家平安。萬俟秀偉，今晚要是遇著什麼危險，你還是先告訴我。
+  -> 萬俟秀偉: 嗯，那行。不過我剛才聽了龍霞華的排班訊息，今晚我還是先去邊區看看，免得哪個人出事。
+[2m2026-03-25T14:43:09.060172Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 戴寧偉: 你盯一下，龍霞華排班到了，今晚得小心點。
+  -> 魏杰強: 知道了，戴哥，跟緊！
+[2m2026-03-25T14:45:29.917913Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 聽回來的人講，城外的肉質籐蔓又往路邊多蔓了一些
+[2m2026-03-25T14:45:41.760904Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 戴寧偉: 我剛把昨天的報表填妥，看來今天的任務比昨天更難了，你最近是不是又添了新事？
+  -> 姚慧淑: 我聽你講，那晚班辛苦，我也剛回來。
+[2m2026-03-25T14:48:08.955553Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 戴寧偉: 我剛看完龍霞華排班，她說今天城鎮生意正興，但外面那條巷子又有人來取東西，真讓人有點摸不透。
+  -> 杜強: 那就好，我剛準備好收拾東西，今天的事就交給你了。
+[2m2026-03-25T14:50:38.982446Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 戴寧偉: 今晚天黑前我已經準備好，但路上還得小心點，別走太晚。
+  -> 獨孤寧: （點頭）好的，我順道去拿一下那瓶補液。
+[2m2026-03-25T14:53:10.621221Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 你剛才說的那句話，真是讓我驚得下巴都要掉了，你這膽子也太大了，我剛才還怕你走投無路呢。
+  -> 葉俊: 怕啥？我只是怕今晚的帳還沒算好，要是這樣拖到第二天再說，我肯定又要去忙了。
+[2m2026-03-25T14:55:30.450171Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理
+[2m2026-03-25T14:55:39.679750Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你剛從龍霞華的排班抵達，那深層礦脈的氣息似乎就這麼濃縮在空氣里，讓人心頭咯噔一下。
+  -> 魏杰強: 先回吧，晚班辛苦，你最近還在那裡處理什麼呢？
+[2m2026-03-25T15:00:40.075490Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 今日早飯剛好，你從哪來？
+  -> 曾偉: 我來得早，但先問問你，昨晚吃過啥？
+[2m2026-03-25T15:03:08.323817Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: {"a":"「今日帳我對過了，有問題再叫我。」馮志淑。
+  -> 馮志淑: 「今日帳我對過了，有問題再叫我。」龍霞華。"}
+[2m2026-03-25T15:05:30.470184Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快
+[2m2026-03-25T15:08:08.367056Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 今天剛開始的帳還沒算好，你這樣大膽幹事，讓我下巴都掉了，怕你今晚帳還拖到第二天？
+  -> 葉俊: 怕啥？我只是怕今晚的帳還沒算好，要是這樣拖到第二天
+[2m2026-03-25T15:10:38.485356Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 唐玲: 今日帳我對過了，有問題再叫我。
+  -> 羅洋: 嗯，你快去吧，我順路來接你。
+[2m2026-03-25T15:15:30.993035Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 樓梯間的菌絲光昨晚特別亮，是琥珀色的
+[2m2026-03-25T15:25:30.955224Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 最近幾天金屬器具的表面都浮了一層淡淡的礦脈紋路
+[2m2026-03-25T15:35:30.929103Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人在樓下收購琉璃化的礦石碎片，出手很闊綽
+[2m2026-03-25T15:35:42.276274Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"你盯一下，今晚的排班變動得仔細看清楚，莫要讓新的面孔混入。」
+  -> 陸淑華: "b":"好的，我會仔細看。」}
+[2m2026-03-25T15:40:42.536980Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: {"a":"「今晚的帳還得算好，別拖到明天，要是再這樣，第二天就得再算帳。」"}
+  -> 葉俊: {"b":"「怕啥？只是怕帳還沒算好，若再拖到明天，那明天的帳又該算哪了。」"}
+[2m2026-03-25T15:43:12.819081Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 你剛才說的那句話，真是讓我驚得下巴都要掉了，你這膽
+  -> 葉俊: 怕啥？我只是怕今晚的帳還沒算好，要是這樣拖到第二天
+[2m2026-03-25T15:45:31.405446Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今天的游離輻射塵好像比平常多一些，空氣裡有淡淡的粉光
+[2m2026-03-25T15:45:41.232534Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 今天早飯剛好，你從哪來？
+  -> 曾偉: 我來得早，但先問問你，昨晚吃過啥？
+[2m2026-03-25T15:48:11.254401Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你盯一下，今晚的排班變動得仔細看清楚，
+  -> 陸淑華: 好的，我會仔細看。
+[2m2026-03-25T15:50:37.680975Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛才說的那句話，真是讓我驚得下巴都要掉了，你這膽
+  -> 葉俊: 怕啥？我只是怕今晚的帳還沒算好，要是這樣拖到第二天
+[2m2026-03-25T15:55:31.374958Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 遠處的地脈微光今晚比平常亮一些，淡綠色的
+[2m2026-03-25T15:55:40.980791Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你來這裡，是想說些什麼嗎？
+  -> 長孫慧: 嗯，剛才那陣子輻射塵多，我還聽鄭秀強說，最近鎮上又有新面孔進城。
+[2m2026-03-25T15:56:51.356147Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:57:01.483829Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:57:18.848138Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:57:28.663219Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:57:37.790868Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:57:54.426053Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:58:05.807837Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:58:17.008176Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:58:30.815298Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:58:44.134384Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:59:01.697288Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T15:59:12.084408Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T16:00:41.113390Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 昨夜龍霞華排班剛到，你對過帳，今日帳我對過了，有問題再叫我。
+  -> 莫紅: 最近地脈微光亮些，聽說又有新面孔進了這座城，你對過帳，今日帳我對過了，有問題再叫我。
+[2m2026-03-25T16:04:15.375466Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T16:05:31.843276Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣
+[2m2026-03-25T16:05:37.380437Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 你剛才說的那句話，真是讓我驚得下巴都要掉了，你這膽
+  -> 葉俊: 怕啥？我只是怕今晚的帳還沒算好，要是這樣拖到第二天
+[2m2026-03-25T16:05:44.937836Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-25T16:05:46.120208Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-25T16:05:46.120965Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges

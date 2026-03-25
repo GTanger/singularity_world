@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u168",
-  "name": "特例屋-入口",
-  "description": "｜１６８｜特例屋｜入口｜\n充滿木頭清香與切削金屬味的大型建材中心。門口列出了本季最受歡迎的居所改裝模組。這裡是每一位想要在浮生城建立個體化空間（特例）的玩家必經之地。",
+  "name": "特例屋",
+  "description": "｜往大廳｜特例屋｜材料區｜\n充滿木頭清香與切削金屬味的大型建材中心。門口列出了本季最受歡迎的居所改裝模組。這裡是每一位想要在浮生城建立個體化空間（特例）的玩家必經之地。",
   "tags": [
     "retail",
     "building_materials"
@@ -21,5 +21,27 @@
       "to": "city_life_16f_u168_2"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_u168_hall",
+      "name": "往大廳",
+      "sockets": ["Move"],
+      "responses": { "Move": "你離開充滿木材芬芳的入口，回到16樓大廳。" },
+      "move_to_room_id": "city_life_16f"
+    },
+    {
+      "id": "obj_u168_wood",
+      "name": "木材區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你步入高大且充滿木屑氣味的木材結構區。" },
+      "move_to_room_id": "city_life_16f_u168_1"
+    },
+    {
+      "id": "obj_u168_wire",
+      "name": "配線區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你走向閃爍著微弱電火花的導能配線空間。" },
+      "move_to_room_id": "city_life_16f_u168_2"
+    }
+  ]
 }

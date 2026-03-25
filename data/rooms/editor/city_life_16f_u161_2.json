@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走回「入口處」。"
+        "Move": "你離開規整的電子叢林與冷色調燈光，走回「入口處」。"
       },
       "move_to_room_id": "city_life_16f_u161"
     },
@@ -38,7 +38,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「乾貨區」。"
+        "Move": "你繞過最新款念場增強器的展示櫃，走往「乾貨區」。"
       },
       "move_to_room_id": "city_life_16f_u161_3"
     }

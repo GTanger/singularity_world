@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城14F」大廳。"
+        "Move": "你站起身離開候診座椅，重新進入大廳流動的人流之中。"
       },
       "move_to_room_id": "city_life_14f"
     }

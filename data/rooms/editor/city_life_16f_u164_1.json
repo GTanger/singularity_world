@@ -1,7 +1,7 @@
 {
   "id": "city_life_16f_u164_1",
-  "name": "沃而滿-國際品牌區",
-  "description": "｜１６４｜沃而滿｜國際品牌區｜\n這裡陳列著來自浮生城以外、甚至是遙遠大陸的稀有貨品。精緻的包裝上印著各類複雜的認證標章。空氣中帶有一種昂貴的香氛與新型材料的混合氣味。",
+  "name": "品牌區",
+  "description": "｜沃而滿｜品牌區｜百貨區｜\n這裡陳列著來自浮生城以外、甚至是遙遠大陸的稀有貨品。精緻的包裝上印著各類複雜的認證標章。空氣中帶有一種昂貴的香氛與新型材料的混合氣味。",
   "tags": [
     "retail",
     "luxury"
@@ -17,5 +17,20 @@
       "to": "city_life_16f_u164_3"
     }
   ],
-  "objects": []
+  "objects": [
+    {
+      "id": "obj_u164_1_entry",
+      "name": "回入口",
+      "sockets": ["Move"],
+      "responses": { "Move": "你沿著寬敞的走道走回賣場入口。" },
+      "move_to_room_id": "city_life_16f_u164"
+    },
+    {
+      "id": "obj_u164_1_home",
+      "name": "百貨區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你穿過品牌專櫃，進入居家百貨區。" },
+      "move_to_room_id": "city_life_16f_u164_3"
+    }
+  ]
 }

@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城14F」大廳。"
+        "Move": "你離開掛滿衛教海報的空間，重新融入繁忙的行政大廳。"
       },
       "move_to_room_id": "city_life_14f"
     }

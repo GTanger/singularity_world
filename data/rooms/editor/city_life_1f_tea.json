@@ -21,7 +21,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城1F」。"
+        "Move": "你帶著現調茶飲的微涼餘溫，重新步入一樓大廳溫馨的公共區域。"
       },
       "move_to_room_id": "city_life_1f"
     },

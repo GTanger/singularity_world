@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走到「店門口」。"
+        "Move": "你穿過層層堆疊的鍋碗瓢盆，重新回到了顯眼的亮黃色「店門口」。"
       },
       "move_to_room_id": "city_life_16f_u166"
     },
@@ -38,7 +38,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走到「工具區」。"
+        "Move": "你轉過堆滿密封膠的轉角，步入陳列著五金零件的「工具區」。"
       },
       "move_to_room_id": "city_life_16f_u166_2"
     }

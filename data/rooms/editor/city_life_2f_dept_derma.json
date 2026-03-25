@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城2F」。"
+        "Move": "你走出光線均勻的皮膚科診區，回到了2樓人流穿織的大廳空間。"
       },
       "move_to_room_id": "city_life_2f"
     },

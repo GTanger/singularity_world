@@ -27,7 +27,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城1F」公共動線。"
+        "Move": "你推開厚重的警衛室旋門，回到光線明亮且空間感宏大的1樓主大廳。"
       },
       "move_to_room_id": "city_life_1f"
     },

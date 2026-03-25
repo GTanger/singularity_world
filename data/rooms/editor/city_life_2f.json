@@ -66,7 +66,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入內科診區。"
+        "Move": "你步入光線明亮、牆上排滿序號跳號燈的內科門診長廊。"
       },
       "move_to_room_id": "city_life_2f_dept_internal"
     },
@@ -78,7 +78,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入外科診區。"
+        "Move": "你走進氣氛嚴謹肅靜、帶著微弱醫療器材低鳴聲的外科門診區。"
       },
       "move_to_room_id": "city_life_2f_dept_surgery"
     },
@@ -90,7 +90,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入骨科診區。"
+        "Move": "你踏入掛有X光片與人體模型、空氣清冷的骨科門診區域。"
       },
       "move_to_room_id": "city_life_2f_dept_ortho"
     },
@@ -102,7 +102,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入皮膚科診區。"
+        "Move": "你進入光線均勻柔和、帶著淡淡醫療洗劑氣味的皮膚門診區。"
       },
       "move_to_room_id": "city_life_2f_dept_derma"
     },
@@ -114,7 +114,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入眼科診區。"
+        "Move": "你走進光線較暗、設有多個精密驗光暗間的眼科廊道。"
       },
       "move_to_room_id": "city_life_2f_dept_eye"
     },
@@ -126,7 +126,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入耳鼻喉診區。"
+        "Move": "你步入設有隔音隔間與各類抽吸機具的耳鼻喉科診區。"
       },
       "move_to_room_id": "city_life_2f_dept_ent"
     },
@@ -138,7 +138,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入復健科診區。"
+        "Move": "你走入擺放著防滑地墊與多種訓練支撐架的復健門診空間。"
       },
       "move_to_room_id": "city_life_2f_dept_rehab"
     },
@@ -150,7 +150,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入「急診科」候診與分診區。"
+        "Move": "你越過顯眼的紅色感應區，踏入空氣緊張、充滿儀器警報音的急診室。"
       },
       "move_to_room_id": "city_life_2f_er_dept"
     },
@@ -162,7 +162,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你進入藥事診區。"
+        "Move": "你走向正在高速處理各種膠囊與瓶裝藥劑的藥事作業窗口。"
       },
       "move_to_room_id": "city_life_2f_dept_pharm"
     },
@@ -174,7 +174,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城1F」。"
+        "Move": "你沿著厚實的石質台階步下，重新回到熱闊繁忙的1樓大廳。"
       },
       "move_to_room_id": "city_life_1f"
     },
@@ -186,7 +186,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「電梯間」。"
+        "Move": "你步入數字顯示跳動、帶著淡淡冷氣味道的電梯間。"
       },
       "move_to_room_id": "city_life_elevator"
     },
@@ -198,7 +198,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你前往「浮生城3F」。"
+        "Move": "你踏上平整的樓梯向上攀登，前往安靜嚴肅的3樓住院區。"
       },
       "move_to_room_id": "city_life_3f"
     }

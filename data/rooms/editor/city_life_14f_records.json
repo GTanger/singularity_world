@@ -24,7 +24,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你回到「浮生城14F」大廳。"
+        "Move": "你步出正不斷處理數據的建檔室，回到相對寬敞的公共大廳。"
       },
       "move_to_room_id": "city_life_14f"
     }

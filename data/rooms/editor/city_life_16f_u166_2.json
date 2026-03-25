@@ -26,7 +26,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走到「店門口」。"
+        "Move": "你離開規整的金屬零件架，走回充滿市井生活氣息的「店門口」。"
       },
       "move_to_room_id": "city_life_16f_u166"
     },
@@ -38,7 +38,7 @@
         "Move"
       ],
       "responses": {
-        "Move": "你走到「雜貨區」。"
+        "Move": "你繞過擺放扳手的櫃子，步入色彩繽紛的「雜貨區」。"
       },
       "move_to_room_id": "city_life_16f_u166_1"
     }

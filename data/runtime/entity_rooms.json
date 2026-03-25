@@ -1,116 +1,1280 @@
 {
   "entries": [
     {
-      "entity_id": "葉卅",
-      "room_id": "city_life_16f_u166"
+      "entity_id": "npc_dhbxguwvgtka",
+      "room_id": "city_life_10f_u109_brm"
     },
     {
-      "entity_id": "試話",
-      "room_id": "city_life_11f_lounge"
+      "entity_id": "npc_dhbxi1enspyj",
+      "room_id": "city_life_4f"
     },
     {
-      "entity_id": "npc_dh7ln0pmebvc",
-      "room_id": "city_life_10f"
-    },
-    {
-      "entity_id": "npc_dh7lvuc9y0a1",
-      "room_id": "city_life_5f_u054_liv"
-    },
-    {
-      "entity_id": "npc_dhbxf7vh94ei",
-      "room_id": "city_life_10f"
-    },
-    {
-      "entity_id": "npc_dh7m0fyaaldh",
-      "room_id": "city_life_7f_u073_brg"
-    },
-    {
-      "entity_id": "npc_dh7lxdp40upk",
-      "room_id": "city_life_8f_u085_liv"
-    },
-    {
-      "entity_id": "npc_dhbxetn0x1ax",
-      "room_id": "city_life_10f"
-    },
-    {
-      "entity_id": "npc_dhbxeygfw5zh",
-      "room_id": "city_life_10f_u107_liv"
-    },
-    {
-      "entity_id": "npc_dh7lok2gzenv",
-      "room_id": "city_life_10f"
-    },
-    {
-      "entity_id": "npc_dhbxeasqat0d",
-      "room_id": "city_life_10f"
-    },
-    {
-      "entity_id": "npc_dhbxefmld0yc",
-      "room_id": "city_life_10f_u104_liv"
-    },
-    {
-      "entity_id": "npc_dhbxep1eo0iv",
-      "room_id": "city_life_10f_u101_liv"
-    },
-    {
-      "entity_id": "npc_dh7lywtpacw1",
-      "room_id": "city_life_6f_u064_bal"
-    },
-    {
-      "entity_id": "npc_dhbxfo6tcw95",
+      "entity_id": "npc_dhby09q7hpts",
       "room_id": "lobby"
     },
     {
+      "entity_id": "npc_dhbyehpav92z",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxitw0nfwe",
+      "room_id": "city_life_10f_u107_btm"
+    },
+    {
+      "entity_id": "npc_dhby47fj32y9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxjmlnpfzu",
+      "room_id": "city_life_10f_u101_brm"
+    },
+    {
+      "entity_id": "npc_dhbxep1eo0iv",
+      "room_id": "city_life_11f_atrium"
+    },
+    {
+      "entity_id": "npc_dhbxnnd99ss9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxqfz3xzqi",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxikgzomgr",
+      "room_id": "city_life_2f_er_dept"
+    },
+    {
+      "entity_id": "npc_dhbxfo6tcw95",
+      "room_id": "city_life_10f_u108_liv"
+    },
+    {
+      "entity_id": "npc_dhbxu8n7p7vo",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby04vurvou",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby2da1f1l2",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby6bglqr1x",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyanvukmvk",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbycsdgd59g",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbydu9uqbbx",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbybv4ts7xv",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyfyax9ow7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxm33bxkk9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxwpb39qk6",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyaegt81yf",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby23mqmqss",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxltoau63d",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxrls392ue",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby1u7p8k24",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxsnohaqlc",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxtpkvyehc",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby621kkh9p",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxqp5vglks",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxss9v574p",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbya51s7u6s",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxn4j6w88x",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxo1u7iqp6",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyfes1u5mf",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxxd729hab",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxxrframqu",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxtuejhmz7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dh7lok2gzenv",
+      "room_id": "life_dining"
+    },
+    {
+      "entity_id": "npc_dhbxtz86g9pm",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxr36a472x",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby35j4osi6",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxvo3hpq8r",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyb24j8nxn",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxk12m2bly",
+      "room_id": "city_life_10f_u107_liv"
+    },
+    {
+      "entity_id": "npc_dhbxyph836bk",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyfk6doc8s",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxgqbhkicw",
+      "room_id": "city_life_10f_u105_btm"
+    },
+    {
+      "entity_id": "npc_dh7ljyggbjh5",
+      "room_id": "city_life_8f_u087_brm"
+    },
+    {
+      "entity_id": "npc_dhbxx3s1j2su",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxzhgeuhm8",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyf5d0dmw5",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxp8sj11h7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxsj33fq2j",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dh7lxdp40upk",
+      "room_id": "city_life_8f_u083_bat"
+    },
+    {
+      "entity_id": "npc_dhbxeasqat0d",
+      "room_id": "city_life_10f_u108_bal"
+    },
+    {
+      "entity_id": "npc_dhbxz3fzz2s4",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby30xqp7qz",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxkhr6a753",
+      "room_id": "city_life_9f_u093_brm"
+    },
+    {
       "entity_id": "npc_dhbxfxma1h3j",
+      "room_id": "city_life_10f_u102_liv"
+    },
+    {
+      "entity_id": "npc_dhbxne6hcxnq",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby2ripzmgj",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby7ms0xiyt",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxv5hpagl4",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxrqlqlxyh",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxkmckelxx",
+      "room_id": "city_life_9f_u097_bat"
+    },
+    {
+      "entity_id": "npc_dhbxwu4qplsn",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxetn0x1ax",
+      "room_id": "city_life_11f_atrium"
+    },
+    {
+      "entity_id": "npc_dhbxfcp4ijjf",
+      "room_id": "city_life_10f_u105_brm"
+    },
+    {
+      "entity_id": "npc_dhbxsx3isykt",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxva331z4u",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby1z1cqznz",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby935dyg4d",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyfovvt06n",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxmcicuu8y",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyf9yeeqht",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxps34qxg9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxq6btccb7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxqtr9blj7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxud8liznu",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxur90cj64",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby0npxaaxs",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby5x7x7b0u",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbybglhfyzf",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxsehpoqqg",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbydpoglt9r",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbye8a9i2n9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby7hyds99w",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxgzqj1uqm",
+      "room_id": "city_life_6f_u061_brm"
+    },
+    {
+      "entity_id": "npc_dhbxwyye0vbu",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby9vmr5360",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxj84p4jrp",
+      "room_id": "city_life_9f"
+    },
+    {
+      "entity_id": "npc_dhbxyku727z2",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxqkkhoyve",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby6ppacwei",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxfhaifrtr",
+      "room_id": "city_life_9f_u096_liv"
+    },
+    {
+      "entity_id": "npc_dhbxeygfw5zh",
+      "room_id": "city_life_10f_u106_liv"
+    },
+    {
+      "entity_id": "試話",
+      "room_id": "city_life_10f"
+    },
+    {
+      "entity_id": "npc_dhbxkcxj3otk",
+      "room_id": "city_life_10f_u103_brm"
+    },
+    {
+      "entity_id": "npc_dhbxv0o1vv1q",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby0x4yib1w",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby8jus364v",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxy131vn4w",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxwbaoc2n2",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbycx73v8j1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyecvnhdy3",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby3od74esy",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dh7lywtpacw1",
+      "room_id": "city_life_7f_u076_liv"
+    },
+    {
+      "entity_id": "npc_dhbybzw32nj2",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxzma20nei",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxyg8t5g1e",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxk8c534ka",
+      "room_id": "city_life_11f_atrium"
+    },
+    {
+      "entity_id": "npc_dh7lvuc9y0a1",
+      "room_id": "city_life_5f_u057_liv"
+    },
+    {
+      "entity_id": "npc_dhbyftpjg3pw",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby7rlom83y",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby4v38m7b6",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dh7lq371wwmu",
+      "room_id": "life_kitchen"
+    },
+    {
+      "entity_id": "npc_dhbyi1n6gp22",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxtbc7eon6",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxt1x65ga7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbya0ge59lx",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxib1yp2w2",
+      "room_id": "city_life_10f_u108_liv"
+    },
+    {
+      "entity_id": "npc_dhbxnx0k3b7s",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxn9cuclkr",
       "room_id": "lobby"
     },
     {
       "entity_id": "npc_dhbxg2ficdba",
+      "room_id": "city_life_11f"
+    },
+    {
+      "entity_id": "npc_dhby3a4ig56l",
       "room_id": "lobby"
     },
     {
-      "entity_id": "npc_dhbxg795uqyt",
+      "entity_id": "npc_dhbxlkhj83ta",
       "room_id": "lobby"
     },
     {
-      "entity_id": "npc_dh7llhl1hpd9",
-      "room_id": "city_life_7f_u075_liv"
+      "entity_id": "npc_dhbyciyf96vf",
+      "room_id": "lobby"
     },
     {
-      "entity_id": "npc_dh7ljyggbjh5",
-      "room_id": "city_life_8f_u089_liv"
+      "entity_id": "npc_dhbyd20r2t0e",
+      "room_id": "lobby"
     },
     {
-      "entity_id": "npc_dhbxe67cc4et",
-      "room_id": "city_life_10f"
+      "entity_id": "npc_dhbxj3b232sj",
+      "room_id": "city_life_10f_u109_liv"
     },
     {
-      "entity_id": "npc_dhbxfss73x8e",
+      "entity_id": "npc_dhbxuhtza6ah",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxqycn4vbs",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby6l3wlrb7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby0ej5jhuo",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxybkqs353",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyaxj5h6lj",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby97z1cdo8",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxs091klga",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbybqczzs97",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxm7wyvqax",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxq1i5styn",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxhs7vsbgb",
+      "room_id": "city_life_10f_u105_liv"
+    },
+    {
+      "entity_id": "npc_dhbxpwwrt8gm",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxokwjkrfk",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbydkutn4tp",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxyu983l5k",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxpdm6g7d8",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby7wczy5ml",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby5se9m8al",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxp3yvjqxs",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby66v7mooy",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyibahggeo",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbycns2kh70",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyhs859k3x",
       "room_id": "lobby"
     },
     {
       "entity_id": "npc_dhbxf3a2yuwe",
+      "room_id": "city_life_11f_duty_a"
+    },
+    {
+      "entity_id": "npc_dhbxh9dtojyh",
+      "room_id": "city_life_10f_u107_liv"
+    },
+    {
+      "entity_id": "npc_dhbxh4k6hpbr",
       "room_id": "city_life_10f"
     },
     {
-      "entity_id": "npc_dh7lq371wwmu",
-      "room_id": "city_life_10f"
+      "entity_id": "npc_dhbxobhieac7",
+      "room_id": "lobby"
     },
     {
-      "entity_id": "npc_dh7lub7op7n9",
-      "room_id": "city_life_16f_u165_1"
+      "entity_id": "npc_dhby00ah0iqw",
+      "room_id": "lobby"
     },
     {
-      "entity_id": "npc_dhbxekg0klpe",
+      "entity_id": "npc_dhby4c96qqou",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dh7m0fyaaldh",
+      "room_id": "city_life_10f_u105_liv"
+    },
+    {
+      "entity_id": "npc_dhbxtfxl79ni",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxogb5q3jq",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxns6wkicc",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxgc2stply",
+      "room_id": "city_life_6f"
+    },
+    {
+      "entity_id": "npc_dhbxw6pagfyk",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby7d4qe2dr",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxo6nuyp4b",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxjw8yrsk5",
       "room_id": "city_life_elevator"
     },
     {
-      "entity_id": "npc_dhbxfcp4ijjf",
+      "entity_id": "npc_dhbxekg0klpe",
+      "room_id": "city_life_12f"
+    },
+    {
+      "entity_id": "npc_dhbxkx22ysiw",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxtkr8bnvx",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxwkppiotp",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxxhsg8fjx",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby0j4jag3k",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby3ey60dkf",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby8oofo6z1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyd6m51n0h",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbygqbr32m0",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyevxzi5jw",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby5iqyvxhp",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbya9vfec1r",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxmlxdvipe",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxxmm3vgg7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxyyuly9wn",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby3jjjt8qz",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyer4c2krs",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyg7pye9nr",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxs9o2hlj9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxvsovifuq",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyg34kffjc",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxiypo9bnl",
+      "room_id": "city_life_9f"
+    },
+    {
+      "entity_id": "npc_dhbygv5e4qp1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxi68b9tk5",
+      "room_id": "city_life_9f"
+    },
+    {
+      "entity_id": "npc_dhbyblf4y3qb",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxnirvi5kj",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxwg4bml35",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby2i3od0ph",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyi6gu14n1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby9lzgbyi2",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxu3tkn7q5",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby9csoqk56",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby810plu3b",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxrh6pbswm",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby4gukibdx",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby6ucnr2kl",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbygzqs2smw",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxrvfe5dcx",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyhnehuqu2",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxzvp2z15c",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby73pp6fqw",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxf7vh94ei",
+      "room_id": "city_life_9f_u092_liv"
+    },
+    {
+      "entity_id": "npc_dhbxl1ngx9pc",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxjrfb5vr4",
+      "room_id": "city_life_10f_u103_bala"
+    },
+    {
+      "entity_id": "npc_dhby1fz0sg8d",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby42u5b1pv",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby6z4b2dbr",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxifvlnscx",
+      "room_id": "city_life_9f_u091_liv"
+    },
+    {
+      "entity_id": "npc_dhbxlyhxota7",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxpn9hb7g9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxvxa9f13j",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby0sjkowlq",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby2w43shx4",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby5nkm9pqc",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dh7llhl1hpd9",
+      "room_id": "city_life_6f"
+    },
+    {
+      "entity_id": "npc_dhbxuvue7kze",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby8ybqbo49",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbye3ovr1pt",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxe67cc4et",
+      "room_id": "city_life_elevator"
+    },
+    {
+      "entity_id": "npc_dhbxumfd8pg3",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxmhc00f0q",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxy5wpgurg",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby2mp2b1ud",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyaj272mdf",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxlp2x0xjf",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxjhs0gjmw",
+      "room_id": "city_life_2f_dept_ortho"
+    },
+    {
+      "entity_id": "npc_dhbydbfsgg5m",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyc9jdp3j1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyh8xjqcfe",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxggwglkhx",
       "room_id": "city_life_10f"
     },
     {
-      "entity_id": "npc_dhbxfhaifrtr",
-      "room_id": "city_life_10f"
+      "entity_id": "npc_dhby16s8tdmt",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby4lo7g9ad",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxx8dfafyi",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyglqd2egz",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxoz586n5a",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby8ti31b5j",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxs4vdvz9d",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyhikums86",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxjcycur0o",
+      "room_id": "city_life_10f_u103_liv"
+    },
+    {
+      "entity_id": "npc_dhbxkqxy7m93",
+      "room_id": "city_life_11f_lounge_a"
+    },
+    {
+      "entity_id": "npc_dhby85m3llrw",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby4zomn0c0",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dh7ln0pmebvc",
+      "room_id": "life_hall"
+    },
+    {
+      "entity_id": "npc_dhbxglhugc9n",
+      "room_id": "city_life_11f_storage"
+    },
+    {
+      "entity_id": "npc_dhbxrcd239qb",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxzqvfxffg",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyb6y6eow9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby54ia8gef",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxveoguswm",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyced1gkyw",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxt6qt7eqp",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxmqirux2o",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyf0jdax44",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxoubku7t9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby5dxb524w",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxfss73x8e",
+      "room_id": "city_life_1f_riceball"
+    },
+    {
+      "entity_id": "npc_dhbxqb5gsc7y",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby3t6umvmd",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyikxsc1z2",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyc4pqnw7c",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxlfw551ig",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbygcbc8jr1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby1ksnqsp1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby9qt3gagc",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbygh4zafrp",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby8afqmvjx",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby11ylustj",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby28gdqn3o",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxhisv13f4",
+      "room_id": "city_life_10f_u105_liv"
+    },
+    {
+      "entity_id": "npc_dhbxzcv11ro9",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyemixw9ch",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxip2dk5ki",
+      "room_id": "city_life_elevator"
+    },
+    {
+      "entity_id": "npc_dhbydg9fvvd0",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby8f14i4p5",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxhwta0egr",
+      "room_id": "city_life_8f_u083_bat"
+    },
+    {
+      "entity_id": "npc_dhbxlb2i3nm5",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxmzxsvtom",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxpiftvpnx",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby1bdmrlb0",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxhne8tjqd",
+      "room_id": "city_life_10f_u103_liv"
+    },
+    {
+      "entity_id": "npc_dhby3y0i4ps6",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby9he2i7r1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby6gc2q1iq",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxefmld0yc",
+      "room_id": "city_life_10f_u101_liv"
+    },
+    {
+      "entity_id": "npc_dhby1pe1y3jt",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyhx1spaks",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby78cyji36",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxw1vn62wl",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby4q9lnulm",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxg795uqyt",
+      "room_id": "city_life_9f_u099_brm"
+    },
+    {
+      "entity_id": "npc_dhbxr7ro8qz1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxhdz7gbzf",
+      "room_id": "city_life_11f_works"
+    },
+    {
+      "entity_id": "npc_dhbydz3hqerm",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyh4c5u4ba",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxvji3t18i",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyig44x3p5",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyhdr77m4z",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhby593nzrov",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbyasphzdpp",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxz89naazo",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxxw9esf3b",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxmv45rsg1",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxl68uobgl",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dhbxopq6qjs0",
+      "room_id": "lobby"
+    },
+    {
+      "entity_id": "npc_dh7lub7op7n9",
+      "room_id": "city_life_9f_u099_liv"
+    },
+    {
+      "entity_id": "葉卅",
+      "room_id": "city_life_16f_u166"
+    },
+    {
+      "entity_id": "npc_dhbybbru2ivh",
+      "room_id": "lobby"
     }
   ]
 }
