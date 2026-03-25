@@ -115,7 +115,7 @@ function renderRoomsTable() {
     const filtered = state.rooms.filter(r => 
         r.id.toLowerCase().includes(search) || 
         r.name.toLowerCase().includes(search)
-    );
+    ).sort((a, b) => a.id.localeCompare(b.id));
     
     // Group by zone
     const groups = {};
