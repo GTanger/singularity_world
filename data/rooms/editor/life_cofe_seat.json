@@ -7,7 +7,7 @@
     "coffee",
     "food"
   ],
-  "zone": "citylife",
+  "zone": "citylife_1f",
   "exits": [
     {
       "direction": "木門",

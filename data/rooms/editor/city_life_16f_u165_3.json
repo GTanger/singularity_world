@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u165_3",
+  "name": "商委辦-委員會中樞",
+  "description": "｜１６５｜商委辦｜委員會中樞｜\n這裡是權力的節點。高性能的運算終端正在這理匯總全樓層的商業數據。大窗戶可以看到浮生城內部的複雜結構，讓人時刻感受到這座城市的宏大。由此可回往各室。",
+  "tags": [
+    "admin",
+    "core"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "檔案室",
+      "to": "city_life_16f_u165_1"
+    },
+    {
+      "direction": "會議室",
+      "to": "city_life_16f_u165_2"
+    }
+  ],
+  "objects": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u168_2",
+  "name": "特例屋-導能配線區",
+  "description": "｜１６８｜特例屋｜導能配線區｜\n牆面上整齊排列著各規格的黃銅導線、能量繼電器與燈光模組。這裡隨處可見跳動的微弱電流光，充滿了工匠與創造的熱情氛圍。技術感極強。",
+  "tags": [
+    "retail",
+    "hardware"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u168"
+    },
+    {
+      "direction": "庭園景觀",
+      "to": "city_life_16f_u168_3"
+    }
+  ],
+  "objects": []
+}

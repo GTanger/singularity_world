@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u161_1",
+  "name": "家樂福-生鮮區",
+  "description": "｜１６１｜家樂福｜生鮮區｜\n這裡充滿了濃郁的沃土氣息。架上整齊排列著剛從垂直農場採收的蔬菜與水果，它們在特殊的光譜照射下維持著驚人的生命張力。偶爾能聽見細微的根鬚生長聲。",
+  "tags": [
+    "retail",
+    "food"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u161"
+    },
+    {
+      "direction": "乾貨區",
+      "to": "city_life_16f_u161_3"
+    }
+  ],
+  "objects": []
+}

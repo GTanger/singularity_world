@@ -43,6 +43,10 @@ path = "src/bin/checkrooms.rs"
 name = "migrate"
 path = "src/bin/migrate.rs"
 
+[[bin]]
+name = "sw-set-password"
+path = "src/bin/sw-set-password.rs"
+
 [dev-dependencies]
 tempfile = "3"
 

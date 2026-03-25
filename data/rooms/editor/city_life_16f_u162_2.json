@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u162_2",
+  "name": "福利聯-飲品區",
+  "description": "｜１６２｜福利聯｜飲品區｜\n冷藏櫃發出穩定的嗡鳴聲，裡面整齊劃一地排列著各類能量飲料與純淨水。透明的玻璃門上凝結著細微的水霧，在燈光下閃爍著清涼的光澤。",
+  "tags": [
+    "retail",
+    "drinks"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u162"
+    },
+    {
+      "direction": "櫃檯",
+      "to": "city_life_16f_u162_3"
+    }
+  ],
+  "objects": []
+}

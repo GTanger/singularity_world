@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u162_1",
+  "name": "福利聯-日用品",
+  "description": "｜１６２｜福利聯｜日用品｜\n狹窄但整齊的走道，架上塞滿了各式各樣的生活必需品。從生物降解的清潔劑到高效能的防輻射噴霧應有盡有。這裡營造出一種實用且溫馨的氛圍。",
+  "tags": [
+    "retail",
+    "grocery"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u162"
+    },
+    {
+      "direction": "櫃檯",
+      "to": "city_life_16f_u162_3"
+    }
+  ],
+  "objects": []
+}

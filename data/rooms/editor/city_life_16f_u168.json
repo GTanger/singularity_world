@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u168",
+  "name": "特例屋-入口",
+  "description": "｜１６８｜特例屋｜入口｜\n充滿木頭清香與切削金屬味的大型建材中心。門口列出了本季最受歡迎的居所改裝模組。這裡是每一位想要在浮生城建立個體化空間（特例）的玩家必經之地。",
+  "tags": [
+    "retail",
+    "building_materials"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    },
+    {
+      "direction": "木材結構",
+      "to": "city_life_16f_u168_1"
+    },
+    {
+      "direction": "導能配線",
+      "to": "city_life_16f_u168_2"
+    }
+  ],
+  "objects": []
+}

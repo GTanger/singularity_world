@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u165",
+  "name": "商委辦-入口",
+  "description": "｜１６５｜商委辦｜入口｜\n全稱為浮生城商業委員會辦公室。整潔的玻璃門後是忙碌的接待處。公告欄上貼滿了關於 Token 波動與賣場配額的正式公文。這裡是 16 樓運行的心臟，空氣中帶有一種清新而嚴肅的香味。",
+  "tags": [
+    "admin",
+    "commercial"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    },
+    {
+      "direction": "檔案室",
+      "to": "city_life_16f_u165_1"
+    },
+    {
+      "direction": "會議室",
+      "to": "city_life_16f_u165_2"
+    }
+  ],
+  "objects": []
+}

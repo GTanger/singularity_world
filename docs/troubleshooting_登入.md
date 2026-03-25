@@ -15,7 +15,7 @@
 | 請稍候連線後再登入 | WebSocket 尚未 `OPEN` 就送出 |
 | 角色不存在，請先創角 | ID 打錯，或資料裡沒有該 entity |
 | 此 ID 非玩家角色 | 該 ID 是 NPC 等，不能用玩家登入 |
-| **此角色尚未設定登入密碼** | 舊資料：entity 有，但 `auth.json` 沒有該 ID 的雜湊 |
+| **此角色尚未設定登入密碼** | 舊資料：entity 有，但資料庫 `auth` 表沒有該 ID 的雜湊 |
 | 密碼錯誤 | 密碼與當初創角／重設的不一致 |
 | max connections reached | 同時 WebSocket 已達上限（預設 10），請關閉多餘分頁或其它客戶端 |
 
@@ -25,7 +25,7 @@
 2. **沿用舊玩家 ID**：先 **停止** 奇點（避免與執行中的伺服器同時寫檔），在專案根目錄執行：
 
 ```bash
-go run ./cmd/sw-set-password 你的角色ID 新密碼
+cargo run --bin sw-set-password 你的角色ID 新密碼
 ```
 
 密碼至少 6 字元；僅限 `kind` 為玩家的 ID。

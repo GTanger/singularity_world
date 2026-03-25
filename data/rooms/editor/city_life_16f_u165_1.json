@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u165_1",
+  "name": "商委辦-檔案室",
+  "description": "｜１６５｜商委辦｜檔案室｜\n密集的檔案架一直延伸到陰影中。這裡存放著全城店舖的歷史數據與交易契約。紙張的味道混合著電子存儲單元的靜電感，營造出一種沉靜的歷史厚重感。",
+  "tags": [
+    "admin",
+    "archive"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u165"
+    },
+    {
+      "direction": "委員會中樞",
+      "to": "city_life_16f_u165_3"
+    }
+  ],
+  "objects": []
+}

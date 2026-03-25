@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u161_4",
+  "name": "家樂福-結帳處",
+  "description": "｜１６１｜家樂福｜結帳處｜\n這是進入賣場核心的最後一道門戶。多個自動感應閘門正忙碌地處理著大量的交易數據。櫃檯後方隱約可見商業委員會的認證標誌。由此可回往大廳。",
+  "tags": [
+    "retail",
+    "checkout"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "乾貨區",
+      "to": "city_life_16f_u161_3"
+    },
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    }
+  ],
+  "objects": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u164_5",
+  "name": "沃而滿-收銀大廳",
+  "description": "｜１６４｜沃而滿｜收銀大廳｜\n數十個自動收銀台在此形成了一道壯觀的藍色陣列。數據流在螢幕上飛速閃動。這裡的效率極高，幾乎沒有排隊的情況發生。由此可回往大廳。",
+  "tags": [
+    "retail",
+    "checkout"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "戶外中心",
+      "to": "city_life_16f_u164_4"
+    },
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    }
+  ],
+  "objects": []
+}

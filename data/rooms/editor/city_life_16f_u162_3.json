@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u162_3",
+  "name": "福利聯-櫃檯",
+  "description": "｜１６２｜福利聯｜櫃檯｜\n這裡是店內最忙碌的地方。身穿制服的手機員正在熟練地刷取貨品代碼。櫃檯旁堆放著待處理的「點數回饋」明細。由此可回往大廳。",
+  "tags": [
+    "retail",
+    "checkout"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "日用品",
+      "to": "city_life_16f_u162_1"
+    },
+    {
+      "direction": "飲品區",
+      "to": "city_life_16f_u162_2"
+    },
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    }
+  ],
+  "objects": []
+}

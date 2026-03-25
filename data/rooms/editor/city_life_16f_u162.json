@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u162",
+  "name": "福利聯-入口",
+  "description": "｜１６２｜福利聯｜入口｜\n一個充滿親切感的超市入口。門口的海報展示著本週的沃土特產促銷。廣播中正撥放著輕快的節奏，「請支援收銀」的聲音偶爾穿插其中。這裡是浮生城居民最常光顧的物資站。",
+  "tags": [
+    "retail",
+    "supermarket"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    },
+    {
+      "direction": "日用品",
+      "to": "city_life_16f_u162_1"
+    },
+    {
+      "direction": "飲品區",
+      "to": "city_life_16f_u162_2"
+    }
+  ],
+  "objects": []
+}

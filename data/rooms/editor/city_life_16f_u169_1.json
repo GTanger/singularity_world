@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u169_1",
+  "name": "振宇百-工業照明",
+  "description": "｜１６９｜振宇百｜工業照明｜\n各種高強度的探照燈與防爆燈具在牆面上整齊排列。光線在這裡被精確地引導，足以照亮最幽深的地底坑道。空氣中帶著一種因高溫燈管產生的微弱焦香。",
+  "tags": [
+    "retail",
+    "lighting"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u169"
+    },
+    {
+      "direction": "重型電動區",
+      "to": "city_life_16f_u169_2"
+    }
+  ],
+  "objects": []
+}

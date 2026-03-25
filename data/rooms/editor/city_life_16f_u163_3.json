@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u163_3",
+  "name": "好事多-非食品區",
+  "description": "｜１６３｜好事多｜非食品區｜\n這裡展示著各類巨型物品，從十人份的充氣艇到軍規級的儲能站應有盡有。物件的體積感在此達到了巔峰，讓人感受到商業巨獸的雄厚實力。",
+  "tags": [
+    "retail",
+    "hardware"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "西點區",
+      "to": "city_life_16f_u163_2"
+    },
+    {
+      "direction": "熟食區",
+      "to": "city_life_16f_u163_4"
+    }
+  ],
+  "objects": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u163_5",
+  "name": "好事多-結帳出口",
+  "description": "｜１６３｜好事多｜結帳出口｜\n寬敞的出口通道。檢查員正用螢光筆在收據上畫下快速的勾記。手推車輪胎在光滑的地面上發出穩定的摩擦聲，顧客們滿載而歸。由此可回往大廳。",
+  "tags": [
+    "retail",
+    "checkout"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "熟食區",
+      "to": "city_life_16f_u163_4"
+    },
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    }
+  ],
+  "objects": []
+}

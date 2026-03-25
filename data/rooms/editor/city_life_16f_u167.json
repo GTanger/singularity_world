@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u167",
+  "name": "大蕒家-入口",
+  "description": "｜１６７｜大蕒家｜入口｜\n一個充滿現代美學設計感的賣場入口。白色牆面上點綴著律動的「蕒」字樣霓虹燈。這裡標榜「大數據挑選，最懂你的物資」，門口設有快速掃描儀以紀錄流量。前方延伸出精緻的購物空間。",
+  "tags": [
+    "retail",
+    "hypermarket"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    },
+    {
+      "direction": "蕒種物資",
+      "to": "city_life_16f_u167_1"
+    },
+    {
+      "direction": "衣著美學",
+      "to": "city_life_16f_u167_2"
+    }
+  ],
+  "objects": []
+}

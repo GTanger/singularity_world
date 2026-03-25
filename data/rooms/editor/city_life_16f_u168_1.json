@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u168_1",
+  "name": "特例屋-木材結構區",
+  "description": "｜１６８｜特例屋｜木材結構區｜\n巨大的支架上堆放著經過特殊處理的抗壓木材與鋼樑。空氣中飄散著微細的鋸末。這裡甚至提供根據「綠護結構」設計的生物引導格柵，色彩沉穩且堅固。",
+  "tags": [
+    "retail",
+    "building_materials"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u168"
+    },
+    {
+      "direction": "庭園景觀",
+      "to": "city_life_16f_u168_3"
+    }
+  ],
+  "objects": []
+}

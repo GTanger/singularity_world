@@ -1,13 +1,17 @@
 {
   "id": "city_life_15f",
   "name": "浮生城15F",
-  "description": "｜｜｜｜｜續層口｜電梯間｜下樓梯｜｜｜｜｜\n｜檔案庫｜　　　　　　　　　　　｜會議室｜\n｜申訴窗｜　※浮生城１５樓※　　｜文書組｜\n｜複印間｜　　　　　　　　　　　｜閱覽室｜\n｜｜｜｜｜值班台｜儲藏室｜接待廳｜｜｜｜｜",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜檔案庫｜　　　　　　　　　　　｜會議室｜\n｜申訴窗｜　※浮生城１５樓※　　｜文書組｜\n｜複印間｜　　　　　　　　　　　｜閱覽室｜\n｜｜｜｜｜值班台｜儲藏室｜接待廳｜｜｜｜｜",
   "tags": [
     "city",
     "skyscraper"
   ],
   "zone": "citylife_15f",
   "exits": [
+    {
+      "direction": "續層口",
+      "to": "city_life_16f"
+    },
     {
       "direction": "電梯間",
       "to": "city_life_elevator"
@@ -173,6 +177,18 @@
         "Move": "你走向〔儲藏室〕。"
       },
       "move_to_room_id": "city_life_15f_storage"
+    },
+    {
+      "id": "city_life_16f_from_lobby",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城16F」。"
+      },
+      "move_to_room_id": "city_life_16f"
     },
     {
       "id": "city_life_15f_recep_from_lobby",

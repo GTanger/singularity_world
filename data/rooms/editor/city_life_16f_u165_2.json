@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u165_2",
+  "name": "商委辦-會議室",
+  "description": "｜１６５｜商委辦｜會議室｜\n一張巨大的黑曜石圓桌佔據了房間中心。牆上的全息投影正不斷滾動著各大賣場的庫存分析圖表。這裡是精英委員們討論商業策略與資源調度的秘密場所。",
+  "tags": [
+    "admin",
+    "meeting"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u165"
+    },
+    {
+      "direction": "委員會中樞",
+      "to": "city_life_16f_u165_3"
+    }
+  ],
+  "objects": []
+}

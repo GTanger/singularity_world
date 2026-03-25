@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u168_3",
+  "name": "特例屋-庭園景觀區",
+  "description": "｜１６８｜特例屋｜庭園景觀區｜\n這裡展示著能在聚念場內穩定生長的室內植培模組。從自動灌溉的苔蘚牆到模擬夕陽的發光噴泉。水流聲叮咚作響，為乾澀的工業建材中心注入了一絲生機。由此可回往各區或大廳。",
+  "tags": [
+    "retail",
+    "garden"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "木材結構",
+      "to": "city_life_16f_u168_1"
+    },
+    {
+      "direction": "導能配線",
+      "to": "city_life_16f_u168_2"
+    },
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    }
+  ],
+  "objects": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u167_2",
+  "name": "大蕒家-衣著美學區",
+  "description": "｜１６７｜大蕒家｜衣著美學區｜\n這裡展示著各類輕便且具備基礎防禦性能的日常衣物。燈光採用了柔和的暖色調，與賣場其他區域的冰冷感形成反差。這裡甚至是浮生城許多年輕人的社交補給站。",
+  "tags": [
+    "retail",
+    "apparel"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u167"
+    },
+    {
+      "direction": "生活體驗",
+      "to": "city_life_16f_u167_3"
+    }
+  ],
+  "objects": []
+}

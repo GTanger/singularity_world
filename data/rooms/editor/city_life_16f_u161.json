@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u161",
+  "name": "家樂福-入口",
+  "description": "｜１６１｜家樂福｜入口｜\n巨大的藍紅標誌在入口處律動，迎風招展。無人機引導系統正不斷發出柔和的提示音。這家賣場的規模宏大，一眼望不到盡頭。前方連接著廣大的購物區。",
+  "tags": [
+    "retail",
+    "hypermarket"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "city_life_16f"
+    },
+    {
+      "direction": "生鮮區",
+      "to": "city_life_16f_u161_1"
+    },
+    {
+      "direction": "家電區",
+      "to": "city_life_16f_u161_2"
+    }
+  ],
+  "objects": []
+}

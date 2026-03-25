@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u164_3",
+  "name": "沃而滿-居家百貨",
+  "description": "｜１６４｜沃而滿｜居家百貨｜\n從廚具到家居裝飾，這裡提供了數以萬計的生活選項。每一個物件都標示著精確的能源等級。這裡的貨架高度驚人，需要專用的自動升降梯才能取到高處的物品。",
+  "tags": [
+    "retail",
+    "home"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "國際品牌",
+      "to": "city_life_16f_u164_1"
+    },
+    {
+      "direction": "服飾中心",
+      "to": "city_life_16f_u164_2"
+    },
+    {
+      "direction": "戶外中心",
+      "to": "city_life_16f_u164_4"
+    }
+  ],
+  "objects": []
+}

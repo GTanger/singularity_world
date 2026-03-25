@@ -1,0 +1,25 @@
+{
+  "id": "city_life_16f_u161_3",
+  "name": "家樂福-乾貨區",
+  "description": "｜１６１｜家樂福｜乾貨區｜\n高大的貨架上堆滿了各式封存的乾糧與工業零件。標籤上印著精確的 Token 價值。這裡的空氣相對乾燥，帶有一種混合了塑料封裝與紙箱的特殊氣味。",
+  "tags": [
+    "retail",
+    "grocery"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "生鮮區",
+      "to": "city_life_16f_u161_1"
+    },
+    {
+      "direction": "家電區",
+      "to": "city_life_16f_u161_2"
+    },
+    {
+      "direction": "結帳處",
+      "to": "city_life_16f_u161_4"
+    }
+  ],
+  "objects": []
+}

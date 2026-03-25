@@ -1,0 +1,21 @@
+{
+  "id": "city_life_16f_u169_2",
+  "name": "振宇百-重型電動區",
+  "description": "｜１６９｜振宇百｜重型電動區｜\n這裡存放著氣動鑽頭、工業切削機與各式重型手持工具。每一件器材都帶著厚實的震動感與強大的動力美學。這裡是浮生城重工業維修人員的軍械庫。由此可回往入口。",
+  "tags": [
+    "retail",
+    "hardware"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "city_life_16f_u169"
+    },
+    {
+      "direction": "工業照明",
+      "to": "city_life_16f_u169_1"
+    }
+  ],
+  "objects": []
+}
