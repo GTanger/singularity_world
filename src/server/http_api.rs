@@ -96,6 +96,7 @@ struct RoomDataItem {
     description: String,
     tags: Vec<String>,
     zone: String,
+    objects: Vec<model::RoomObject>,
 }
 
 #[derive(Serialize)]
@@ -120,10 +121,11 @@ pub async fn rooms_data() -> impl IntoResponse {
         let Some(room) = s.get_room(id) else { continue };
         rooms.push(RoomDataItem {
             id: room.id.clone(),
-            name: room.name,
-            description: room.description,
-            tags: room.tags,
-            zone: room.zone,
+            name: room.name.clone(),
+            description: room.description.clone(),
+            tags: room.tags.clone(),
+            zone: room.zone.clone(),
+            objects: room.objects.clone(),
         });
         for e in s.get_exits_for_room(id) {
             exits.push(ExitDataItem {
