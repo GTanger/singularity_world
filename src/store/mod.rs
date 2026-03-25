@@ -497,6 +497,11 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         s.items.len()
     );
 
+    // 啟動時同步到 PostgreSQL (確保 AI 批量新增或手動編輯的 JSON 能進入 DB)
+    if let Err(e) = s.sync_all_to_postgresql() {
+        tracing::error!("[store] Startup PostgreSQL sync failed: {}", e);
+    }
+
     set_store(s);
     Ok(())
 }
@@ -995,7 +1000,52 @@ impl Store {
         self.exits.clear();
         let path = self.rooms_path.clone();
         self.load_rooms(&path)?;
+        
+        // 強制同步到 PostgreSQL
+        if let Err(e) = self.sync_all_to_postgresql() {
+            tracing::error!("[store] Failed to sync rooms to PostgreSQL during reload: {}", e);
+        }
+
         crate::db::sync_room_graph_with_store(self);
+        Ok(())
+    }
+
+    /// 將目前內存中所有房間與出口同步到 PostgreSQL (全量更新)
+    pub fn sync_all_to_postgresql(&self) -> anyhow::Result<()> {
+        let Some(pool) = &self.db_pool else { return Ok(()) };
+        let mut conn = pool.get()?;
+        
+        tracing::info!("[store] Syncing all rooms ({}) to PostgreSQL...", self.rooms.len());
+
+        for room in self.rooms.values() {
+            let tags = &room.tags;
+            let objects_json = serde_json::to_string(&room.objects).unwrap_or_else(|_| "[]".to_string());
+            conn.execute(
+                "INSERT INTO rooms (id, name, description, zone, tags, objects)
+                 VALUES ($1, $2, $3, $4, $5, $6)
+                 ON CONFLICT (id) DO UPDATE SET
+                    name = EXCLUDED.name,
+                    description = EXCLUDED.description,
+                    zone = EXCLUDED.zone,
+                    tags = EXCLUDED.tags,
+                    objects = EXCLUDED.objects",
+                &[&room.id, &room.name, &room.description, &room.zone, tags, &objects_json],
+            )?;
+
+            // Sync Exits
+            conn.execute("DELETE FROM exits WHERE from_room_id = $1", &[&room.id])?;
+            if let Some(exs) = self.exits.get(&room.id) {
+                for ex in exs {
+                    conn.execute(
+                        "INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ($1, $2, $3)
+                         ON CONFLICT DO NOTHING",
+                        &[&room.id, &ex.direction, &ex.to_room_id],
+                    )?;
+                }
+            }
+        }
+        
+        tracing::info!("[store] PostgreSQL room sync completed.");
         Ok(())
     }
 

@@ -496,6 +496,16 @@ document.getElementById('btn-wipe-entities').onclick = async () => {
     } catch(e) { toast(`操作失敗: ${e.message}`, true); }
 };
 
+document.getElementById('btn-reload-rooms').onclick = async () => {
+    if (!confirm('!!! 警告 !!!\n確定要從檔案重新載入所有房間嗎？這將會根據 JSON 內容覆蓋資料庫中的資料。')) return;
+    try {
+        toast('正在從檔案同步到資料庫...');
+        await api('/api/room-editor/reload', { method: 'POST' });
+        toast('同步成功！');
+        loadRooms(); // 重新整理列表
+    } catch(e) { toast(`同步失敗: ${e.message}`, true); }
+};
+
 // --- Modal Add Room ---
 document.getElementById('btn-show-add-room').onclick = () => {
     document.getElementById('modal-add-room').classList.add('active');
