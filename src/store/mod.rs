@@ -241,7 +241,7 @@ fn is_zero_i64(v: &i64) -> bool { *v == 0 }
 
 // ── JSON 載入/寫出輔助結構 ──
 
-#[derive(Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 struct RoomFileOne {
     #[serde(default)]
     id: String,
@@ -259,7 +259,7 @@ struct RoomFileOne {
     objects: Vec<model::RoomObject>,
 }
 
-#[derive(Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 struct ExitOut {
     direction: String,
     to: String,
@@ -881,9 +881,11 @@ impl Store {
             return;
         }
         let id = room.id.clone();
-        self.rooms.insert(id.clone(), room);
-        if let Some(exits) = exits {
-            let enriched: Vec<model::Exit> = exits.into_iter()
+        
+        // 1. 更新內存
+        self.rooms.insert(id.clone(), room.clone());
+        if let Some(exits_val) = exits {
+            let enriched: Vec<model::Exit> = exits_val.into_iter()
                 .filter(|ex| !ex.direction.is_empty() && !ex.to_room_id.is_empty())
                 .map(|mut ex| {
                     if ex.to_room_name.is_empty()
@@ -894,8 +896,69 @@ impl Store {
                     ex
                 })
                 .collect();
-            self.exits.insert(id, enriched);
+            self.exits.insert(id.clone(), enriched);
         }
+
+        // 2. 存回 JSON (維持 Editor 相容性)
+        let room_json_path = PathBuf::from(&self.rooms_path).join("editor").join(format!("{}.json", id));
+        let exits_for_json = self.exits.get(&id).cloned().unwrap_or_default();
+        let file_data = RoomFileOne {
+            id: id.clone(),
+            name: room.name.clone(),
+            description: room.description.clone(),
+            tags: room.tags.clone(),
+            zone: room.zone.clone(),
+            exits: exits_for_json.iter().map(|e| ExitOut {
+                direction: e.direction.clone(),
+                to: e.to_room_id.clone(),
+            }).collect(),
+            objects: room.objects.clone(),
+        };
+        if let Ok(json) = serde_json::to_string_pretty(&file_data) {
+            if let Err(e) = std::fs::write(&room_json_path, json) {
+                tracing::error!("[store] Failed to write room JSON to {:?}: {}", room_json_path, e);
+            }
+        }
+
+        // 3. 存入 PostgreSQL (統一地基)
+        if let Some(pool) = &self.db_pool {
+            let mut conn = match pool.get() {
+                Ok(c) => c,
+                Err(e) => {
+                    tracing::error!("[store] Failed to get DB connection: {}", e);
+                    return;
+                }
+            };
+            
+            // Upsert Room
+            let tags = &room.tags;
+            let objects_json = serde_json::to_string(&room.objects).unwrap_or_else(|_| "[]".to_string());
+            let res = conn.execute(
+                "INSERT INTO rooms (id, name, description, zone, tags, objects)
+                 VALUES ($1, $2, $3, $4, $5, $6)
+                 ON CONFLICT (id) DO UPDATE SET
+                    name = EXCLUDED.name,
+                    description = EXCLUDED.description,
+                    zone = EXCLUDED.zone,
+                    tags = EXCLUDED.tags,
+                    objects = EXCLUDED.objects",
+                &[&room.id, &room.name, &room.description, &room.zone, tags, &objects_json],
+            );
+            if let Err(e) = res {
+                tracing::error!("[store] Failed to upsert room {} to DB: {}", room.id, e);
+            }
+
+            // Sync Exits
+            let _ = conn.execute("DELETE FROM exits WHERE from_room_id = $1", &[&room.id]);
+            for ex in self.exits.get(&id).cloned().unwrap_or_default() {
+                let _ = conn.execute(
+                    "INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ($1, $2, $3)
+                     ON CONFLICT DO NOTHING",
+                    &[&room.id, &ex.direction, &ex.to_room_id],
+                );
+            }
+        }
+
         crate::db::sync_room_graph_with_store(self);
     }
 
@@ -903,11 +966,27 @@ impl Store {
         if room_id.is_empty() {
             return;
         }
-        self.rooms.remove(room_id);
-        self.exits.remove(room_id);
+        let id = room_id.to_string();
+        self.rooms.remove(&id);
+        self.exits.remove(&id);
         for exits in self.exits.values_mut() {
-            exits.retain(|ex| ex.to_room_id != room_id);
+            exits.retain(|ex| ex.to_room_id != id);
         }
+
+        // 刪除 JSON
+        let room_json_path = PathBuf::from(&self.rooms_path).join("editor").join(format!("{}.json", id));
+        if room_json_path.exists() {
+            let _ = std::fs::remove_file(room_json_path);
+        }
+
+        // 刪除 PostgreSQL
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute("DELETE FROM rooms WHERE id = $1", &[&id]);
+                let _ = conn.execute("DELETE FROM exits WHERE from_room_id = $1 OR to_room_id = $1", &[&id]);
+            }
+        }
+
         crate::db::sync_room_graph_with_store(self);
     }
 

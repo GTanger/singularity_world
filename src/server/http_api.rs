@@ -245,6 +245,12 @@ pub struct UpdateRoomReq {
     name: String,
     #[serde(default)]
     description: String,
+    #[serde(default)]
+    zone: String,
+    #[serde(default)]
+    tags: Vec<String>,
+    #[serde(default)]
+    objects: Vec<model::RoomObject>,
 }
 
 pub async fn update_room(
@@ -268,6 +274,10 @@ pub async fn update_room(
     };
     room.name = body.name;
     room.description = body.description;
+    room.zone = body.zone;
+    room.tags = body.tags;
+    room.objects = body.objects;
+
     let exits_snapshot: Vec<model::Exit> = s.get_exits_for_room(&id);
     s.upsert_room_data(room, Some(exits_snapshot));
     Json(serde_json::json!({"id": id})).into_response()

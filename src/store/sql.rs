@@ -145,5 +145,29 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         &[],
     )?;
 
+    // 房間 (Rooms)
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS rooms (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            description TEXT NOT NULL,
+            zone TEXT NOT NULL,
+            tags TEXT[] NOT NULL,
+            objects TEXT NOT NULL -- JSON string
+        )",
+        &[],
+    )?;
+
+    // 出口 (Exits)
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS exits (
+            from_room_id TEXT NOT NULL,
+            direction TEXT NOT NULL,
+            to_room_id TEXT NOT NULL,
+            PRIMARY KEY (from_room_id, direction)
+        )",
+        &[],
+    )?;
+
     Ok(())
 }
