@@ -1,7 +1,7 @@
 {
   "id": "zonelife_city_life_16f_u167_0",
   "name": "大蕒家",
-  "description": "｜往大廳｜大蕒家｜分流區｜\n一個充滿現代美學設計感的賣場入口。白色牆面上點綴著律動的「蕒」字樣霓虹燈。這裡標榜「大數據挑選，最懂你的物資」，門口設有快速掃描儀以紀錄流量。前方延伸出精緻的購物空間。",
+  "description": "｜往大廳｜大蕒家｜衣著區｜\n一個充滿現代美學設計感的賣場入口。白色牆面上點綴著律動的「蕒」字樣霓虹燈。這裡標榜「大數據挑選，最懂你的物資」，門口設有快速掃描儀以紀錄流量。前方延伸出精緻的購物空間。",
   "tags": [
     "retail",
     "hypermarket"
@@ -33,18 +33,6 @@
         "Move": "你離開閃爍霓虹燈的大門，回到16樓大廳。"
       },
       "move_to_room_id": "zonelife_city_life_16f_u160_0"
-    },
-    {
-      "id": "obj_u167_supplies",
-      "name": "物資區",
-      "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你步入燈光規整、充滿工業美感的物資區。"
-      },
-      "move_to_room_id": "zonelife_city_life_16f_u167_1"
     },
     {
       "id": "obj_u167_apparel",

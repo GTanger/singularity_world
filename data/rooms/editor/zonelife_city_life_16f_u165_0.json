@@ -1,7 +1,7 @@
 {
   "id": "zonelife_city_life_16f_u165_0",
   "name": "商委辦",
-  "description": "｜往大廳｜商委辦｜內部區｜\n全稱為浮生城商業委員會辦公室。整潔的玻璃門後是忙碌的接待處。公告欄上貼滿了關於 Token 波動與賣場配額的正式公文。這裡是 16 樓運行的心臟，空氣中帶有一種清新而嚴肅的香味。",
+  "description": "｜往大廳｜商委辦｜中樞區｜\n全稱為浮生城商業委員會辦公室。整潔的玻璃門後是忙碌的接待處。公告欄上貼滿了關於 Token 波動與賣場配額的正式公文。這裡是 16 樓運行的心臟，空氣中帶有一種清新而嚴肅的香味。",
   "tags": [
     "admin",
     "commercial"
@@ -35,28 +35,16 @@
       "move_to_room_id": "zonelife_city_life_16f_u160_0"
     },
     {
-      "id": "obj_u165_archive",
-      "name": "檔案室",
+      "id": "obj_1774509205470",
+      "name": "中樞區",
       "owner": "",
       "sockets": [
         "Move"
       ],
       "responses": {
-        "Move": "你通過安檢閘門，步入靜謐的檔案區。"
+        "Move": "過道終點顯眼的標語直入眼。"
       },
-      "move_to_room_id": "zonelife_city_life_16f_u165_1"
-    },
-    {
-      "id": "obj_u165_meeting",
-      "name": "會議室",
-      "owner": "",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你繞過接待處，走向沉穩的會議中心。"
-      },
-      "move_to_room_id": "zonelife_city_life_16f_u165_2"
+      "move_to_room_id": "zonelife_city_life_16f_u165_3"
     }
   ]
 }

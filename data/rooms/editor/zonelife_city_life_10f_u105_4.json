@@ -21,7 +21,7 @@
     },
     {
       "direction": "花圃平台",
-      "to": "zonelife_city_life_10f_u105_12"
+      "to": "zonelife_city_life_10f_u105_8"
     }
   ],
   "objects": [
@@ -59,7 +59,7 @@
       "responses": {
         "Move": "你拉開玻璃門，步入了充滿植物的花圃平台。"
       },
-      "move_to_room_id": "zonelife_city_life_10f_u105_12"
+      "move_to_room_id": "zonelife_city_life_10f_u105_8"
     }
   ]
 }

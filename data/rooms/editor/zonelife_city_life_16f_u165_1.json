@@ -1,7 +1,7 @@
 {
   "id": "zonelife_city_life_16f_u165_1",
   "name": "檔案室",
-  "description": "｜商委辦｜檔案室｜中樞區｜\n密集的檔案架一直延伸到陰影中。這裡存放著全城店舖的歷史數據與交易契約。紙張的味道混合著電子存儲單元的靜電感，營造出一種沉靜的歷史厚重感。",
+  "description": "｜中樞區｜檔案室｜會議室｜\n密集的檔案架一直延伸到陰影中。這裡存放著全城店舖的歷史數據與交易契約。紙張的味道混合著電子存儲單元的靜電感，營造出一種沉靜的歷史厚重感。",
   "tags": [
     "admin",
     "archive"
@@ -19,19 +19,9 @@
   ],
   "objects": [
     {
-      "id": "obj_u165_1_entry",
-      "name": "回入口",
-      "sockets": [
-        "Move"
-      ],
-      "responses": {
-        "Move": "你離開充滿紙張氣味的架位，回到入口處。"
-      },
-      "move_to_room_id": "zonelife_city_life_16f_u165_0"
-    },
-    {
       "id": "obj_u165_1_core",
       "name": "中樞區",
+      "owner": "",
       "sockets": [
         "Move"
       ],
@@ -39,6 +29,18 @@
         "Move": "你穿過厚重的感應門，接近委員會中樞。"
       },
       "move_to_room_id": "zonelife_city_life_16f_u165_3"
+    },
+    {
+      "id": "obj_1774509768526",
+      "name": "會議室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你穿過兩室之間的小門。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u165_2"
     }
   ]
 }

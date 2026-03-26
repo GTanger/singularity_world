@@ -1,12 +1,20 @@
 {
   "entries": [
     {
+      "thread_key": "npc_dh7lq371wwmu|npc_dh7lvuc9y0a1",
+      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
+      "phase": "cooling",
+      "turn_count": 1,
+      "cooldown_until": 1774509186,
+      "updated_at": 1774508886
+    },
+    {
       "thread_key": "npc_dh7ln0pmebvc|npc_dh7lq371wwmu",
       "topic_type": "換班、交接時的情境，簡短交代或叮囑",
       "phase": "cooling",
-      "turn_count": 3,
-      "cooldown_until": 1774508286,
-      "updated_at": 1774507986
+      "turn_count": 1,
+      "cooldown_until": 1774513086,
+      "updated_at": 1774512786
     },
     {
       "thread_key": "npc_dhbxnirvi5kj|npc_dhby4c96qqou",
@@ -25,6 +33,14 @@
       "updated_at": 1774455324
     },
     {
+      "thread_key": "npc_dh7lok2gzenv|npc_dh7lq371wwmu",
+      "topic_type": "換班、交接時的情境，簡短交代或叮囑",
+      "phase": "cooling",
+      "turn_count": 1,
+      "cooldown_until": 1774513986,
+      "updated_at": 1774513686
+    },
+    {
       "thread_key": "",
       "topic_type": "換班、交接時的情境，簡短交代或叮囑",
       "phase": "elaborate",
@@ -41,12 +57,12 @@
       "updated_at": 1774488486
     },
     {
-      "thread_key": "npc_dh7ln0pmebvc|npc_dh7lok2gzenv",
+      "thread_key": "",
       "topic_type": "換班、交接時的情境，簡短交代或叮囑",
-      "phase": "cooling",
-      "turn_count": 2,
-      "cooldown_until": 1774508136,
-      "updated_at": 1774507836
+      "phase": "elaborate",
+      "turn_count": 1,
+      "cooldown_until": 0,
+      "updated_at": 1774515036
     },
     {
       "thread_key": "npc_dhbxh4k6hpbr|npc_dhbxip2dk5ki",

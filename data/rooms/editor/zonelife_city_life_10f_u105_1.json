@@ -23,10 +23,6 @@
       "to": "zonelife_city_life_10f_u105_4"
     },
     {
-      "direction": "次臥",
-      "to": "city_life_10f_u105_br2"
-    },
-    {
       "direction": "客臥",
       "to": "zonelife_city_life_10f_u105_5"
     },
@@ -86,7 +82,7 @@
       "responses": {
         "Move": "你打開了次臥的房門。"
       },
-      "move_to_room_id": "city_life_10f_u105_br2"
+      "move_to_room_id": "zonelife_city_life_10f_u105_9"
     },
     {
       "id": "city_life_10f_u105_liv_to_city_life_10f_u105_brg",

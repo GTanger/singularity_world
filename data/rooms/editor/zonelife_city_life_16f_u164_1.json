@@ -50,8 +50,9 @@
         "Move"
       ],
       "responses": {
-        "Move": ""
-      }
+        "Move": "你穿過通道走向芬芳的服飾區。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u164_2"
     }
   ]
 }

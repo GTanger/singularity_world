@@ -1,13 +1,323 @@
 {
   "entries": [
     {
-      "id": "seed|2957513|4",
-      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
+      "id": "evt|life_hall|leave|鄭秀強：離開往",
+      "text": "鄭秀強：離開往",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513623,
+      "expires_at": 1774515423
+    },
+    {
+      "id": "evt|life_hall|arrive|葉俊：從方向到達",
+      "text": "葉俊：從方向到達",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774514092,
+      "expires_at": 1774515892
+    },
+    {
+      "id": "evt|life_garden|shift_arrive|龍霞華：排班抵達",
+      "text": "龍霞華：排班抵達",
+      "room_id": "life_garden",
+      "source": "room_event",
+      "source_score": 3,
+      "weight": 12,
+      "mention_count": 9,
+      "last_used_at": 1774514886,
+      "updated_at": 1774513986,
+      "expires_at": 1774515786
+    },
+    {
+      "id": "evt|life_hall|shift_leave|鄭秀強：離開前往lobby",
+      "text": "鄭秀強：離開前往lobby",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 7,
+      "updated_at": 1774515036,
+      "expires_at": 1774516836
+    },
+    {
+      "id": "seed|2957522|2",
+      "text": "樓梯間的菌絲光昨晚特別亮，是琥珀色的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513362,
+      "expires_at": 1774516962
+    },
+    {
+      "id": "evt|zonelife_city_life_00f_u000_elevator|leave|鄭秀強：離開往",
+      "text": "鄭秀強：離開往",
+      "room_id": "zonelife_city_life_00f_u000_elevator",
+      "zone": "citylife_transit",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774514005,
+      "expires_at": 1774515805
+    },
+    {
+      "id": "seed|2957521|5",
+      "text": "今天空氣裡的膠質味比平常濃，像要變天了",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774512762,
+      "expires_at": 1774516362
+    },
+    {
+      "id": "evt|zonelife_city_life_00f_u000_elevator|shift_leave|鄭秀強：離開前往life_garden",
+      "text": "鄭秀強：離開前往life_garden",
+      "room_id": "zonelife_city_life_00f_u000_elevator",
+      "zone": "citylife_transit",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513986,
+      "expires_at": 1774515786
+    },
+    {
+      "id": "evt|life_hall|arrive|龍霞華：從方向到達",
+      "text": "龍霞華：從方向到達",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513407,
+      "expires_at": 1774515207
+    },
+    {
+      "id": "evt|life_hall|arrive|鄭秀強：從方向到達",
+      "text": "鄭秀強：從方向到達",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513372,
+      "expires_at": 1774515172
+    },
+    {
+      "id": "life_dining||life_garden",
+      "text": "life_garden",
+      "room_id": "life_dining",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774512186,
+      "expires_at": 1774515786
+    },
+    {
+      "id": "evt|life_kitchen|arrive|鄭秀強：從方向到達",
+      "text": "鄭秀強：從方向到達",
+      "room_id": "life_kitchen",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513623,
+      "expires_at": 1774515423
+    },
+    {
+      "id": "evt|life_dining|leave|龍霞華：離開往",
+      "text": "龍霞華：離開往",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513407,
+      "expires_at": 1774515207
+    },
+    {
+      "id": "evt|life_hall|shift_leave|葉俊：離開前往life_garden",
+      "text": "葉俊：離開前往life_garden",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513686,
+      "expires_at": 1774515486
+    },
+    {
+      "id": "evt|lobby|shift_arrive|龍霞華：排班抵達",
+      "text": "龍霞華：排班抵達",
+      "room_id": "lobby",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 7,
+      "updated_at": 1774515036,
+      "expires_at": 1774516836
+    },
+    {
+      "id": "evt|life_hall|leave|葉俊：離開往",
+      "text": "葉俊：離開往",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513729,
+      "expires_at": 1774515529
+    },
+    {
+      "id": "seed|2957519|26",
+      "text": "今天的游離輻射塵好像比平常多一些，空氣裡有淡淡的粉光",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774511562,
+      "expires_at": 1774515162
+    },
+    {
+      "id": "seed|2957521|8",
+      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774512756,
+      "expires_at": 1774516356
+    },
+    {
+      "id": "evt|life_kitchen|shift_leave|鄭秀強：離開前往life_garden",
+      "text": "鄭秀強：離開前往life_garden",
+      "room_id": "life_kitchen",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513686,
+      "expires_at": 1774515486
+    },
+    {
+      "id": "evt|zonelife_city_life_00f_u000_elevator|shift_leave|葉俊：離開前往life_garden",
+      "text": "葉俊：離開前往life_garden",
+      "room_id": "zonelife_city_life_00f_u000_elevator",
+      "zone": "citylife_transit",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513737,
+      "expires_at": 1774515537
+    },
+    {
+      "id": "seed|2957519|25",
+      "text": "有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774511555,
+      "expires_at": 1774515155
+    },
+    {
+      "id": "seed|2957524|22",
+      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1774507952,
-      "expires_at": 1774511552
+      "updated_at": 1774514938,
+      "expires_at": 1774518538
+    },
+    {
+      "id": "evt|life_dining|shift_leave|葉俊：離開前往life_garden",
+      "text": "葉俊：離開前往life_garden",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513986,
+      "expires_at": 1774515786
+    },
+    {
+      "id": "seed|2957523|9",
+      "text": "加了福的肉質蔬果到貨了，今天特別新鮮",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "mention_count": 2,
+      "last_used_at": 1774514886,
+      "updated_at": 1774514338,
+      "expires_at": 1774517938
+    },
+    {
+      "id": "seed|2957522|10",
+      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513356,
+      "expires_at": 1774516956
+    },
+    {
+      "id": "evt|life_dining|arrive|葉俊：從電梯間方向到達",
+      "text": "葉俊：從電梯間方向到達",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513764,
+      "expires_at": 1774515564
+    },
+    {
+      "id": "evt|zonelife_city_life_00f_u000_elevator|leave|葉俊：離開往",
+      "text": "葉俊：離開往",
+      "room_id": "zonelife_city_life_00f_u000_elevator",
+      "zone": "citylife_transit",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513764,
+      "expires_at": 1774515564
+    },
+    {
+      "id": "evt|life_dining|shift_leave|龍霞華：離開前往life_garden",
+      "text": "龍霞華：離開前往life_garden",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513386,
+      "expires_at": 1774515186
+    },
+    {
+      "id": "evt|life_hall|shift_leave|龍霞華：離開前往life_garden",
+      "text": "龍霞華：離開前往life_garden",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513686,
+      "expires_at": 1774515486
+    },
+    {
+      "id": "eco|pulse|222",
+      "text": "這幾天米鹽又貴了一點，街坊都在精打細算。",
+      "source": "economy",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774514886,
+      "expires_at": 1774520286
+    },
+    {
+      "id": "life_hall||葉俊，從方向到達",
+      "text": "葉俊，從方向到達",
+      "room_id": "life_hall",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774514137,
+      "expires_at": 1774517737
+    },
+    {
+      "id": "evt|life_hall|shift_leave|葉俊：離開前往singularity_life",
+      "text": "葉俊：離開前往singularity_life",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 7,
+      "updated_at": 1774515036,
+      "expires_at": 1774516836
     },
     {
       "id": "evt|singularity_life|shift_arrive|葉俊：排班抵達",
@@ -15,9 +325,19 @@
       "room_id": "singularity_life",
       "source": "room_event",
       "source_score": 2,
-      "weight": 5,
-      "updated_at": 1774507986,
-      "expires_at": 1774509786
+      "weight": 7,
+      "updated_at": 1774515036,
+      "expires_at": 1774516836
+    },
+    {
+      "id": "evt|life_dining|arrive|葉俊：從方向到達",
+      "text": "葉俊：從方向到達",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513729,
+      "expires_at": 1774515529
     },
     {
       "id": "evt|lobby|shift_arrive|鄭秀強：排班抵達",
@@ -25,9 +345,110 @@
       "room_id": "lobby",
       "source": "room_event",
       "source_score": 2,
-      "weight": 5,
-      "updated_at": 1774507986,
-      "expires_at": 1774509786
+      "weight": 7,
+      "updated_at": 1774515036,
+      "expires_at": 1774516836
+    },
+    {
+      "id": "evt|life_hall|arrive|鄭秀強：從電梯間方向到達",
+      "text": "鄭秀強：從電梯間方向到達",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774514005,
+      "expires_at": 1774515805
+    },
+    {
+      "id": "evt|life_dining|leave|鄭秀強：離開往",
+      "text": "鄭秀強：離開往",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513372,
+      "expires_at": 1774515172
+    },
+    {
+      "id": "evt|life_hall|shift_leave|鄭秀強：離開前往life_garden",
+      "text": "鄭秀強：離開前往life_garden",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513536,
+      "expires_at": 1774515336
+    },
+    {
+      "id": "seed|2957520|27",
+      "text": "十六樓的某面牆突然長出了一小片琉璃化的結晶，很漂亮",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774512162,
+      "expires_at": 1774515762
+    },
+    {
+      "id": "evt|life_dining|leave|葉俊：離開往",
+      "text": "葉俊：離開往",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774514092,
+      "expires_at": 1774515892
+    },
+    {
+      "id": "evt|life_garden|shift_arrive|鄭秀強：排班抵達",
+      "text": "鄭秀強：排班抵達",
+      "room_id": "life_garden",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 9,
+      "updated_at": 1774513986,
+      "expires_at": 1774515786
+    },
+    {
+      "id": "evt|zonelife_city_life_00f_u000_elevator|shift_leave|龍霞華：離開前往life_garden",
+      "text": "龍霞華：離開前往life_garden",
+      "room_id": "zonelife_city_life_00f_u000_elevator",
+      "zone": "citylife_transit",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774513986,
+      "expires_at": 1774515786
+    },
+    {
+      "id": "life_hall||鄭秀強，離開前往 lobby",
+      "text": "鄭秀強，離開前往 lobby",
+      "room_id": "life_hall",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1774514137,
+      "expires_at": 1774517737
+    },
+    {
+      "id": "seed|2957522|1",
+      "text": "五樓那戶陽台的根鬚盤得更緊了，看著倒是挺穩的",
+      "source": "event_seed",
+      "source_score": 3,
+      "weight": 1,
+      "mention_count": 7,
+      "last_used_at": 1774514586,
+      "updated_at": 1774513737,
+      "expires_at": 1774517337
+    },
+    {
+      "id": "evt|life_garden|shift_arrive|葉俊：排班抵達",
+      "text": "葉俊：排班抵達",
+      "room_id": "life_garden",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 9,
+      "updated_at": 1774513986,
+      "expires_at": 1774515786
     },
     {
       "id": "evt|zonelife_city_life_00f_u000_elevator|shift_leave|龍霞華：離開前往lobby",
@@ -36,63 +457,9 @@
       "zone": "citylife_transit",
       "source": "room_event",
       "source_score": 2,
-      "weight": 5,
-      "updated_at": 1774507986,
-      "expires_at": 1774509786
-    },
-    {
-      "id": "seed|2957512|23",
-      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
-      "source": "event_seed",
-      "source_score": 3,
-      "weight": 4,
-      "mention_count": 5,
-      "last_used_at": 1774507986,
-      "updated_at": 1774507615,
-      "expires_at": 1774511215
-    },
-    {
-      "id": "evt|lobby|shift_arrive|龍霞華：排班抵達",
-      "text": "龍霞華：排班抵達",
-      "room_id": "lobby",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 5,
-      "updated_at": 1774507986,
-      "expires_at": 1774509786
-    },
-    {
-      "id": "evt|zonelife_city_life_00f_u000_elevator|shift_leave|葉俊：離開前往singularity_life",
-      "text": "葉俊：離開前往singularity_life",
-      "room_id": "zonelife_city_life_00f_u000_elevator",
-      "zone": "citylife_transit",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 5,
-      "updated_at": 1774507986,
-      "expires_at": 1774509786
-    },
-    {
-      "id": "eco|pulse|221",
-      "text": "有人說東街貨價又動了，買賣人都在觀望。",
-      "source": "economy",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774507615,
-      "expires_at": 1774513015
-    },
-    {
-      "id": "evt|zonelife_city_life_00f_u000_elevator|shift_leave|鄭秀強：離開前往lobby",
-      "text": "鄭秀強：離開前往lobby",
-      "room_id": "zonelife_city_life_00f_u000_elevator",
-      "zone": "citylife_transit",
-      "source": "room_event",
-      "source_score": 3,
-      "weight": 6,
-      "mention_count": 5,
-      "last_used_at": 1774507986,
-      "updated_at": 1774507986,
-      "expires_at": 1774509786
+      "weight": 7,
+      "updated_at": 1774515036,
+      "expires_at": 1774516836
     }
   ]
 }
