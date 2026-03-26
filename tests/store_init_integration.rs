@@ -33,8 +33,8 @@ fn init_loads_editor_rooms_and_data_json() {
     let arc = store::get_store().expect("init 後應設定全域 store");
     let st = arc.read().expect("store lock");
 
-    // data/rooms/editor 目前 598 個一房一檔；prune 後總房數仍應 ≥ editor 檔數
-    const MIN_EDITOR_ROOMS: usize = 598;
+    // data/rooms/editor 已遷移至 UNS 規範，約 638 個檔
+    const MIN_EDITOR_ROOMS: usize = 600;
     assert!(
         st.rooms.len() >= MIN_EDITOR_ROOMS,
         "房間數應至少 {}（editor 檔案數），實際 {}",
@@ -42,10 +42,10 @@ fn init_loads_editor_rooms_and_data_json() {
         st.rooms.len()
     );
 
-    // 抽樣：editor 內一間應存在
+    // 抽樣：遷移後的 editor 房間應存在
     assert!(
-        st.get_room("city_life_11f_lounge").is_some(),
-        "預期載入 editor 房間 city_life_11f_lounge"
+        st.get_room("zonelife_city_life_11f_u110_0").is_some(),
+        "預期載入 editor 房間 zonelife_city_life_11f_u110_0"
     );
 
     // data_dir 非空時應嘗試載入 entities（檔案存在則有資料）

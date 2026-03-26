@@ -881,7 +881,12 @@ impl Store {
         self.exits.get(from_room_id).cloned().unwrap_or_default()
     }
 
+    /// 更新房間資料並寫回 JSON 與 PostgreSQL。
     pub fn upsert_room_data(&mut self, room: model::Room, exits: Option<Vec<model::Exit>>) {
+        self.upsert_room_data_internal(room, exits, true);
+    }
+
+    fn upsert_room_data_internal(&mut self, room: model::Room, exits: Option<Vec<model::Exit>>, sync_graph: bool) {
         if room.id.is_empty() {
             return;
         }
@@ -964,7 +969,7 @@ impl Store {
             }
         }
 
-        crate::db::sync_room_graph_with_store(self);
+        if sync_graph { crate::db::sync_room_graph_with_store(self); }
     }
 
     pub fn delete_room_data(&mut self, room_id: &str) {
@@ -1019,7 +1024,7 @@ impl Store {
         // 3. 建立新資料 (這會寫入新 JSON 並 UPSERT DB)
         let mut new_room = room;
         new_room.id = new_id.to_string();
-        self.upsert_room_data(new_room, Some(exits));
+        self.upsert_room_data_internal(new_room, Some(exits), false);
 
         // 4. 全局級聯更新 (物件引用 & 出口引用)
         let mut to_update = Vec::new();
@@ -1060,7 +1065,7 @@ impl Store {
         for rid in to_update {
             if let Some(r) = self.rooms.get(&rid).cloned() {
                 let exs = self.exits.get(&rid).cloned();
-                self.upsert_room_data(r, exs);
+                self.upsert_room_data_internal(r, exs, false);
             }
         }
 
@@ -1102,13 +1107,14 @@ impl Store {
     pub fn sync_all_to_postgresql(&self) -> anyhow::Result<()> {
         let Some(pool) = &self.db_pool else { return Ok(()) };
         let mut conn = pool.get()?;
+        let mut trans = conn.transaction()?;
         
         tracing::info!("[store] Syncing all rooms ({}) to PostgreSQL...", self.rooms.len());
 
         for room in self.rooms.values() {
             let tags = &room.tags;
             let objects_json = serde_json::to_string(&room.objects).unwrap_or_else(|_| "[]".to_string());
-            conn.execute(
+            trans.execute(
                 "INSERT INTO rooms (id, name, description, zone, tags, objects)
                  VALUES ($1, $2, $3, $4, $5, $6)
                  ON CONFLICT (id) DO UPDATE SET
@@ -1121,10 +1127,10 @@ impl Store {
             )?;
 
             // Sync Exits
-            conn.execute("DELETE FROM exits WHERE from_room_id = $1", &[&room.id])?;
+            trans.execute("DELETE FROM exits WHERE from_room_id = $1", &[&room.id])?;
             if let Some(exs) = self.exits.get(&room.id) {
                 for ex in exs {
-                    conn.execute(
+                    trans.execute(
                         "INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ($1, $2, $3)
                          ON CONFLICT DO NOTHING",
                         &[&room.id, &ex.direction, &ex.to_room_id],
@@ -1132,6 +1138,8 @@ impl Store {
                 }
             }
         }
+        
+        trans.commit()?;
         
         tracing::info!("[store] PostgreSQL room sync completed.");
         Ok(())
