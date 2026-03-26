@@ -1888,3 +1888,136 @@
 [2m2026-03-26T08:50:37.133030Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
   -> 葉俊: 從方向到達，今日帳我對過了，有問題再叫我。
   -> 鄭秀強: 離開前往 lobby
+[2m2026-03-26T08:53:07.376322Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 電梯間 vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛準備好，今晚的電梯裡還有個電梯在開門，我來找您交接一下。
+  -> 萬濤: 好，我聽得清楚。
+[2m2026-03-26T08:58:07.147829Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，從方向到達，今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 鄭秀強，離開前往 lobby
+[2m2026-03-26T08:58:58.668340Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣
+[2m2026-03-26T09:03:07.363785Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 電梯間 vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 諸葛燕萍: 你剛才剛跟龍霞華去過生活地園，現在剛從電梯間出來，天色還亮著。
+  -> 萬濤: 我最近工作壓得有點重，但也許能撐過今晚。
+[2m2026-03-26T09:05:37.556033Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 電梯間 vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鍾磊秀: 電梯間很亮，你剛開門，龍霞華還在窗邊看脈動，我注意到最近鎮米鹽又貴了一點，街坊都在精打細算。
+  -> 馬明: 嗯，那得小心點，剛才那台電梯門開了，你剛出來，我看看最近是不是又貴了一點。
+[2m2026-03-26T09:08:07.152745Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 離開前往 lobby
+[2m2026-03-26T09:08:59.177626Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 十六樓的某面牆突然長出了一小片琉璃化的結晶，很漂亮
+[2m2026-03-26T09:13:07.195987Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛忙完這裡的帳，想去找你聊聊天，可你卻走得這麼快，別太着急。
+  -> 龍霞華: 我走，你別回頭，小心路頭。
+[2m2026-03-26T09:18:59.172529Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 市集今天來了一批品相很好的玉質木材，攤販搶著進貨
+[2m2026-03-26T09:20:37.140699Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛忙完這裡的帳，想去找你聊聊天，可你卻走得這麼快。
+  -> 龍霞華: 我走，你別回頭，小心路頭。
+[2m2026-03-26T09:28:59.674774Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 城外商路上的指引石被增生物覆蓋了一半，有隊伍去清理了
+[2m2026-03-26T09:30:38.464324Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，我剛在樓下看到你們，好像剛認識，今天帳我對過了，有問題再叫我。
+  -> 龍霞華: 嗯，我剛在樓下看到你們，好像剛認識，今天帳我對過了，有問題再叫我。
+[2m2026-03-26T09:38:08.312724Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 鄭秀強，今晚的夜路有點冷，你該準備好換好衣服，別讓路頭走得太急。
+  -> 龍霞華: 龍霞華，我走，你別回頭，小心路頭。
+[2m2026-03-26T09:39:00.171991Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看
+[2m2026-03-26T09:40:37.164936Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 我剛在樓下看到你們，好像剛認識，今天帳我對過
+  -> 龍霞華: 嗯，我剛在樓下看到你們，好像剛認識，今天帳我對過了
+[2m2026-03-26T09:45:37.082309Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 夜路有點冷，你該準備好換好衣服，別讓路頭走樣。
+  -> 龍霞華: 我走，你別回頭，小心路頭。
+[2m2026-03-26T09:48:07.411793Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，剛看過你們，好像剛認識，今天帳我對過，最近過得不太好，怕事。
+  -> 龍霞華: 嗯，我剛在樓下看到你們，好像剛認識，今天帳我對過了。
+[2m2026-03-26T09:49:00.668999Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人從低樓層看到遠處林冠線在晃動，可能是大型生物經過
+[2m2026-03-26T09:50:37.057503Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 從方向到達，今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 離開前往 lobby
+[2m2026-03-26T09:53:07.460637Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 你剛走的時候，我忽然發現巷口那棵老樹下，正有人彎腰在擦玻璃，似乎是在整理昨晚收留的行李。
+  -> 龍霞華: 你剛走的時候，我忽然發現巷口那棵老樹下，正有人彎腰在擦玻璃，似乎是在整理昨晚收留的行李。
+[2m2026-03-26T09:55:37.255515Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 剛看到你們，今天帳我對過，你最近過得挺差的。
+  -> 龍霞華: 嗯，我剛在樓下看到你們，好像剛認識，今天帳我對過了
+[2m2026-03-26T09:58:07.018175Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 離開前往 lobby
+[2m2026-03-26T09:59:00.666520Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快
+[2m2026-03-26T10:05:37.310912Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，昨晚剛在樓下看見你，好像剛認識，今天帳我對過，你最近工作挺忙的。
+  -> 龍霞華: 嗯，我剛在樓下看到你們，好像剛認識，今天帳我對過了，最近工作也比較忙。
+[2m2026-03-26T10:09:01.175849Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今天的游離輻射塵好像比平常多一些，空氣裡有淡淡的粉光
+[2m2026-03-26T10:10:37.187469Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 今天行嗎？剛走的那棵老樹下好像有人，你也來看看？
+  -> 龍霞華: 嗯，我也剛走，今天好像輻射塵比以前多了一些。
+[2m2026-03-26T10:13:07.086556Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，你剛在樓下看到我，今天帳我對過了。
+  -> 龍霞華: 嗯，我剛在樓下看到你們，好像剛認識，今天帳我對過了
+[2m2026-03-26T10:18:07.121030Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 剛走的那棵老樹下好像有人，你也來看看？
+  -> 龍霞華: 嗯，我也剛走，今天好像輻射塵比以前多了一些。
+[2m2026-03-26T10:19:01.666030Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 十六樓商區的地面接縫處冒出了細細的礦脈紋路
+[2m2026-03-26T10:28:08.184049Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 龍霞華: 嗯，我剛在樓下看到你們，好像剛認識，今天帳我對過了
+[2m2026-03-26T10:29:01.667853Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 十一樓健身區新添了幾件器材，是用富態化木材做的
+[2m2026-03-26T10:39:02.168134Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 聽說好事多的批發價又調了，最近物流好像不太順
+[2m2026-03-26T10:43:08.152450Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛才看那棵樹下的人，你來找我？」
+  -> 龍霞華: 嗯，我也剛走，今天好像輻射塵比以前多了一些，你也來
+[2m2026-03-26T10:49:02.667324Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸
+[2m2026-03-26T10:58:08.452255Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛從那個樓層出去，樓下那棵樹下的人，你來找我？
+  -> 龍霞華: 嗯，我也剛走，今天好像輻射塵比以前多了一些，你也來
+[2m2026-03-26T10:59:02.667946Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 樓頂的蓄水設施今天開始例行清洗，水量可能會少一會兒
+[2m2026-03-26T11:09:02.700842Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 昨晚牆面的玉質脈絡突然閃了一下暗紫色的光，只持續了幾秒
+[2m2026-03-26T11:10:38.363674Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，我剛才在櫃檯看您，好像剛認識，今天帳我對過。
+  -> 龍霞華: 龍霞華，嗯，我剛在樓下看到你們，好像剛認識，今天帳我對過了。
+[2m2026-03-26T11:10:57.472677Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城7F vs 打聽消息、問路、問人: 
+  -> 田惠: 昨晚牆面突然閃過暗紫色光，我有些慌亂，但鄭秀強還是先走了，看來龍霞華已經到站了。
+  -> 宋萍: 聽說龍霞華剛排班，周圍的人都比較緊張，我下樓跟你們說說看。
+[2m2026-03-26T11:12:07.507495Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城9F vs 打聽消息、問路、問人: 
+  -> 秦霞平: 那個客人怎麼回事？
+  -> 邵娜: 剛認識，沒什麼
+[2m2026-03-26T11:19:02.915389Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今天空氣裡的膠質味比平常濃，像要變天了
+[2m2026-03-26T11:25:28.129474Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城9F vs 打聽消息、問路、問人: 
+  -> 東方建: {"a":"「那個……誰呢？」武玲低聲應道，目光在周圍幾盞燈下晃悠。
+  -> 武玲: b":"「……就是那個。」東方建淡淡道，手裡把著杯沿。"}
+[2m2026-03-26T11:29:03.065823Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 樓梯間的菌絲光昨晚特別亮，是琥珀色的
+[2m2026-03-26T11:33:09.671725Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今晚的菌絲光太亮了，我剛去查了一下，是種了某種特殊的琥珀。
+  -> 鄭秀強: 啊，真的嗎？那我先去走一下路。
+[2m2026-03-26T11:35:39.706929Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今晚的排班表還沒定好，先別急著走，我讓員工把明天到來的訊息都發出去，你幫我盯一下櫃檯。
+  -> 龍霞華: 知道了，葉經理。不過今天先好好休息吧，明天早上再來找我，今天先好好。
+[2m2026-03-26T11:38:09.870197Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 鄭秀強，我剛忙完，現在該去換班了，但樓上菌絲光太亮了些，你來幫我看看嗎？
+  -> 龍霞華: 龍霞華，沒事，我剛去換班，你過來幫我看下吧
+[2m2026-03-26T11:39:03.533740Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 電梯間排了好長的隊，聽說中間幾層在做維護
+[2m2026-03-26T11:45:38.116197Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今晚的排班表還沒定好，先別急著走，我讓員工把明天到，你回去好好休息吧，明天早上再來。
+  -> 龍霞華: 知道了，葉經理。不過今天先好好休息吧，明天早上再來。
+[2m2026-03-26T11:48:08.464841Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 鄭秀強，剛才你幫我看樓上的菌絲光太亮，我剛忙完換班，現在該去去了。
+  -> 龍霞華: 龍霞華，沒事，我剛去換班，你過來幫我看下吧
+[2m2026-03-26T11:49:03.802368Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 藥材價格穩著，但品種比上個月少了幾樣
+[2m2026-03-26T11:53:08.072355Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今晚的排班表還沒定好，先別急著走，我讓員工把明天到
+  -> 龍霞華: 知道了，葉經理。不過今天先好好休息吧，明天早上再來
+[2m2026-03-26T11:55:38.394918Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今晚的菌絲光太亮了，我剛去查了一下，是種了某種特殊，我沒敢再進深層，怕影響生長。
+  -> 鄭秀強: 啊，真的嗎？那我先去走一下路，路難走，我這會兒就走了。
+[2m2026-03-26T11:58:07.223530Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: {"a":"「菌絲光太亮」？這地方太晃眼了，怎麼連夜裡都這麼亮？"}
+  -> 龍霞華: {"b":"「沒事」？剛忙完還來幫我看，你這態度倒是比剛才更緊繃。」}
+[2m2026-03-26T11:59:03.664382Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 最近幾天金屬器具的表面都浮了一層淡淡的礦脈紋路
+[2m2026-03-26T12:09:04.165750Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有住戶搬家了，留下的房間牆上全是根鬚攀痕，挺有意思的
+[2m2026-03-26T12:15:39.313074Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: {"a":"「菌絲光太亮」？這地方太晃眼了，怎麼連龍霞華都來幫我看，你這態度倒挺熱絡，」
+  -> 龍霞華: b":"「沒事」？剛忙完還來幫我看，你這態度倒」
+[2m2026-03-26T12:19:04.669373Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的
+[2m2026-03-26T12:29:05.179516Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人在樓下收購琉璃化的礦石碎片，出手很闊綽
+[2m2026-03-26T12:39:05.169849Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 聽回來的人講，城外的肉質籐蔓又往路邊多蔓了一些
+[2m2026-03-26T12:49:05.667262Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 遠處的地脈微光今晚比平常亮一些，淡綠色的
+[2m2026-03-26T12:59:05.665547Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理

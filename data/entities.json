@@ -17,8 +17,8 @@
       "display_title": "廖美傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":217}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxvsovifuq",
@@ -30,15 +30,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 9,
-      "magnesium": 48,
+      "magnesium": 52,
       "created_at": 1774449591,
       "gender": "M",
       "soul_seed": -6910906108205575294,
       "display_title": "皇甫明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":180}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":221}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxrh6pbswm",
@@ -50,15 +50,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 52,
       "created_at": 1774449252,
       "gender": "M",
       "soul_seed": -3437009407427516879,
       "display_title": "司馬秀",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":168}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":215}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxi68b9tk5",
@@ -70,15 +70,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 10,
-      "magnesium": 51,
+      "magnesium": 45,
       "created_at": 1774448523,
       "gender": "F",
       "soul_seed": 4994332069161850,
       "display_title": "龍軍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":195}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxva331z4u",
@@ -90,15 +90,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 8,
-      "magnesium": 43,
+      "magnesium": 50,
       "created_at": 1774449550,
       "gender": "F",
       "soul_seed": 8331332322059605241,
       "display_title": "白傑洋",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":201}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbycns2kh70",
@@ -110,15 +110,15 @@
       "vit": 13,
       "qi": 12,
       "dex": 8,
-      "magnesium": 50,
+      "magnesium": 52,
       "created_at": 1774450912,
       "gender": "F",
       "soul_seed": 7685745372485176165,
       "display_title": "郭玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":205}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhby3od74esy",
@@ -130,15 +130,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 10,
-      "magnesium": 44,
+      "magnesium": 54,
       "created_at": 1774450208,
       "gender": "F",
       "soul_seed": -5095637672536629084,
       "display_title": "劉國淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":184}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhbxfxma1h3j",
@@ -150,15 +150,15 @@
       "vit": 10,
       "qi": 9,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 51,
       "created_at": 1774448348,
       "gender": "M",
       "soul_seed": 7995098685291392162,
       "display_title": "東方建",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":168}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":210}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbydpoglt9r",
@@ -170,15 +170,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 53,
       "created_at": 1774450995,
       "gender": "M",
       "soul_seed": 6538697291083383506,
       "display_title": "鄧淑雅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":172}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":212}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxf7vh94ei",
@@ -190,15 +190,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 8,
-      "magnesium": 47,
+      "magnesium": 52,
       "created_at": 1774448292,
       "gender": "F",
       "soul_seed": -5623770023642710625,
       "display_title": "周敏磊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":195}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbyehpav92z",
@@ -210,15 +210,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 11,
-      "magnesium": 53,
+      "magnesium": 58,
       "created_at": 1774451056,
       "gender": "F",
       "soul_seed": 3315554807141282483,
       "display_title": "陸淑華",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbya51s7u6s",
@@ -230,15 +230,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 10,
-      "magnesium": 42,
+      "magnesium": 50,
       "created_at": 1774450715,
       "gender": "F",
       "soul_seed": -9030947586162881226,
       "display_title": "雷芬慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":174}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbyaegt81yf",
@@ -250,15 +250,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 10,
-      "magnesium": 54,
+      "magnesium": 58,
       "created_at": 1774450735,
       "gender": "M",
       "soul_seed": -7076750385558236213,
       "display_title": "魏安超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":122}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":165}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbyecvnhdy3",
@@ -270,15 +270,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 12,
-      "magnesium": 54,
+      "magnesium": 52,
       "created_at": 1774451045,
       "gender": "F",
       "soul_seed": 7311139635049253412,
       "display_title": "史麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":134}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":175}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxmlxdvipe",
@@ -297,8 +297,8 @@
       "display_title": "段俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":138}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":171}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxq1i5styn",
@@ -310,15 +310,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 9,
-      "magnesium": 48,
+      "magnesium": 51,
       "created_at": 1774449140,
       "gender": "F",
       "soul_seed": 1071413043622203647,
       "display_title": "金芳",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":155}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":203}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyced1gkyw",
@@ -330,15 +330,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 10,
-      "magnesium": 47,
+      "magnesium": 51,
       "created_at": 1774450892,
       "gender": "F",
       "soul_seed": 6749278780316383706,
       "display_title": "夏志寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":134}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":171}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbyi1n6gp22",
@@ -350,15 +350,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 10,
-      "magnesium": 54,
+      "magnesium": 55,
       "created_at": 1774451334,
       "gender": "F",
       "soul_seed": 5923806734268313198,
       "display_title": "譚平國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":195}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxuhtza6ah",
@@ -370,15 +370,15 @@
       "vit": 13,
       "qi": 9,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 52,
       "created_at": 1774449489,
       "gender": "M",
       "soul_seed": 558246409127690284,
       "display_title": "獨孤蘭",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":152}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":194}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxqtr9blj7",
@@ -390,15 +390,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 10,
-      "magnesium": 43,
+      "magnesium": 54,
       "created_at": 1774449201,
       "gender": "F",
       "soul_seed": 5323788270489951918,
       "display_title": "雷慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":175}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyciyf96vf",
@@ -410,15 +410,15 @@
       "vit": 8,
       "qi": 12,
       "dex": 9,
-      "magnesium": 43,
+      "magnesium": 45,
       "created_at": 1774450902,
       "gender": "M",
       "soul_seed": 1359053495833891979,
       "display_title": "秦蘭明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbxrqlqlxyh",
@@ -430,15 +430,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 10,
-      "magnesium": 44,
+      "magnesium": 53,
       "created_at": 1774449273,
       "gender": "F",
       "soul_seed": 6768729260461635856,
       "display_title": "姚紅軍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":177}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxjhs0gjmw",
@@ -450,15 +450,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 11,
-      "magnesium": 49,
+      "magnesium": 54,
       "created_at": 1774448627,
       "gender": "M",
       "soul_seed": 2356260889913121796,
       "display_title": "吳玲麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":158}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":207}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxy131vn4w",
@@ -470,15 +470,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 10,
-      "magnesium": 44,
+      "magnesium": 50,
       "created_at": 1774449766,
       "gender": "M",
       "soul_seed": 7250382515897667254,
       "display_title": "葉紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby11ylustj",
@@ -490,15 +490,15 @@
       "vit": 13,
       "qi": 9,
       "dex": 12,
-      "magnesium": 47,
+      "magnesium": 51,
       "created_at": 1774450003,
       "gender": "F",
       "soul_seed": 6230289008830881604,
       "display_title": "段玲慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":136}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":178}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby4zomn0c0",
@@ -510,15 +510,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 9,
-      "magnesium": 46,
+      "magnesium": 54,
       "created_at": 1774450311,
       "gender": "F",
       "soul_seed": 9223199346094984882,
       "display_title": "閻淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":161}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxoz586n5a",
@@ -530,15 +530,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 8,
-      "magnesium": 50,
+      "magnesium": 48,
       "created_at": 1774449056,
       "gender": "M",
       "soul_seed": 4947083365722600115,
       "display_title": "秦志俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":155}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":201}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxiypo9bnl",
@@ -550,15 +550,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 10,
-      "magnesium": 51,
+      "magnesium": 53,
       "created_at": 1774448585,
       "gender": "F",
       "soul_seed": -7501177283406951780,
       "display_title": "蔣杰娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":202}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbyhikums86",
@@ -570,15 +570,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 10,
-      "magnesium": 43,
+      "magnesium": 53,
       "created_at": 1774451293,
       "gender": "F",
       "soul_seed": 4678393218325752437,
       "display_title": "李建萍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":118}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxtfxl79ni",
@@ -590,15 +590,15 @@
       "vit": 8,
       "qi": 12,
       "dex": 9,
-      "magnesium": 51,
+      "magnesium": 54,
       "created_at": 1774449406,
       "gender": "F",
       "soul_seed": 6859981381236101280,
       "display_title": "戴寧偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":142}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":193}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxmhc00f0q",
@@ -610,15 +610,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 8,
-      "magnesium": 53,
+      "magnesium": 56,
       "created_at": 1774448861,
       "gender": "F",
       "soul_seed": 155664542827532023,
       "display_title": "韋超強",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxo1u7iqp6",
@@ -630,15 +630,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 53,
       "created_at": 1774448984,
       "gender": "F",
       "soul_seed": 2540209043960877334,
       "display_title": "劉康華",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":180}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":212}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxvo3hpq8r",
@@ -650,15 +650,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 8,
-      "magnesium": 52,
+      "magnesium": 58,
       "created_at": 1774449581,
       "gender": "M",
       "soul_seed": -7350810573652122123,
       "display_title": "萬俟靜芬",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":200}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxtkr8bnvx",
@@ -670,15 +670,15 @@
       "vit": 11,
       "qi": 12,
       "dex": 10,
-      "magnesium": 47,
+      "magnesium": 58,
       "created_at": 1774449417,
       "gender": "M",
       "soul_seed": -6418299258179370663,
       "display_title": "李娜慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":138}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby8ti31b5j",
@@ -690,15 +690,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 12,
-      "magnesium": 47,
+      "magnesium": 52,
       "created_at": 1774450611,
       "gender": "M",
       "soul_seed": -3620705162156112697,
       "display_title": "長孫國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":214}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxwbaoc2n2",
@@ -710,15 +710,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 8,
-      "magnesium": 50,
+      "magnesium": 53,
       "created_at": 1774449631,
       "gender": "F",
       "soul_seed": -633639069617827085,
       "display_title": "孟燕偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby593nzrov",
@@ -730,15 +730,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 8,
-      "magnesium": 43,
+      "magnesium": 51,
       "created_at": 1774450332,
       "gender": "M",
       "soul_seed": 1977592353444030080,
       "display_title": "韓琪國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxqb5gsc7y",
@@ -750,15 +750,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 8,
-      "magnesium": 55,
+      "magnesium": 53,
       "created_at": 1774449161,
       "gender": "M",
       "soul_seed": 8733402627940475593,
       "display_title": "獨孤建偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":179}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":212}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxogb5q3jq",
@@ -777,8 +777,8 @@
       "display_title": "龍娜超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":144}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxsehpoqqg",
@@ -790,15 +790,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 12,
-      "magnesium": 45,
+      "magnesium": 43,
       "created_at": 1774449325,
       "gender": "M",
       "soul_seed": 9002007744795147462,
       "display_title": "高志建",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":151}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":192}]",
+      "disposition": -98
     },
     {
       "id": "葉卅",
@@ -856,8 +856,8 @@
       "display_title": "唐玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":176}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":219}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby73pp6fqw",
@@ -869,15 +869,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 9,
-      "magnesium": 42,
+      "magnesium": 53,
       "created_at": 1774450477,
       "gender": "F",
       "soul_seed": -7524249897933236831,
       "display_title": "陳建",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":208}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxkx22ysiw",
@@ -889,15 +889,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 9,
-      "magnesium": 42,
+      "magnesium": 52,
       "created_at": 1774448738,
       "gender": "F",
       "soul_seed": -4301902516042699544,
       "display_title": "夏強",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":201}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyfovvt06n",
@@ -909,15 +909,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 8,
-      "magnesium": 44,
+      "magnesium": 55,
       "created_at": 1774451150,
       "gender": "F",
       "soul_seed": 7175913499819460230,
       "display_title": "蘇蘭",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxzma20nei",
@@ -929,15 +929,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 11,
-      "magnesium": 44,
+      "magnesium": 43,
       "created_at": 1774449890,
       "gender": "M",
       "soul_seed": 2128740309374521265,
       "display_title": "萬雅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":193}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxh4k6hpbr",
@@ -949,7 +949,7 @@
       "vit": 9,
       "qi": 11,
       "dex": 9,
-      "magnesium": 43,
+      "magnesium": 48,
       "last_observed_at": 1774488597,
       "created_at": 1774448441,
       "gender": "M",
@@ -957,8 +957,8 @@
       "display_title": "羅洋",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":195}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbyig44x3p5",
@@ -970,15 +970,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 9,
-      "magnesium": 48,
+      "magnesium": 53,
       "created_at": 1774451366,
       "gender": "F",
       "soul_seed": -1181534040002336972,
       "display_title": "陳敏偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":135}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":171}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxvji3t18i",
@@ -997,8 +997,8 @@
       "display_title": "聞人志傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":150}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":192}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbya0ge59lx",
@@ -1010,15 +1010,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 11,
-      "magnesium": 48,
+      "magnesium": 51,
       "created_at": 1774450705,
       "gender": "M",
       "soul_seed": -1851619542219070797,
       "display_title": "薛建志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":193}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxj84p4jrp",
@@ -1030,15 +1030,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 8,
-      "magnesium": 43,
+      "magnesium": 59,
       "created_at": 1774448606,
       "gender": "M",
       "soul_seed": 794269348282182154,
       "display_title": "江娜芳",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":151}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":183}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxt6qt7eqp",
@@ -1050,15 +1050,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 11,
-      "magnesium": 43,
+      "magnesium": 50,
       "created_at": 1774449386,
       "gender": "F",
       "soul_seed": -3095822788349167770,
       "display_title": "白梅靜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":158}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxx3s1j2su",
@@ -1070,15 +1070,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 11,
-      "magnesium": 45,
+      "magnesium": 54,
       "created_at": 1774449693,
       "gender": "M",
       "soul_seed": 7389051638187623711,
       "display_title": "曾玲洋",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":139}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxi1enspyj",
@@ -1097,8 +1097,8 @@
       "display_title": "楊俊康",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":158}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbyaj272mdf",
@@ -1110,15 +1110,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 11,
-      "magnesium": 45,
+      "magnesium": 49,
       "created_at": 1774450745,
       "gender": "M",
       "soul_seed": -9019265672763356394,
       "display_title": "邱芬",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":122}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxlyhxota7",
@@ -1130,15 +1130,15 @@
       "vit": 10,
       "qi": 9,
       "dex": 9,
-      "magnesium": 53,
+      "magnesium": 55,
       "created_at": 1774448820,
       "gender": "F",
       "soul_seed": 8524752693515583498,
       "display_title": "姜強",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":140}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby3y0i4ps6",
@@ -1150,15 +1150,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 8,
-      "magnesium": 43,
+      "magnesium": 54,
       "created_at": 1774450229,
       "gender": "M",
       "soul_seed": -171921779201479377,
       "display_title": "上官芬",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":204}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhbxfo6tcw95",
@@ -1170,15 +1170,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 11,
-      "magnesium": 54,
+      "magnesium": 55,
       "created_at": 1774448327,
       "gender": "F",
       "soul_seed": 1701622925686142654,
       "display_title": "吳康",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":222}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbygh4zafrp",
@@ -1190,15 +1190,15 @@
       "vit": 12,
       "qi": 9,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 50,
       "created_at": 1774451211,
       "gender": "M",
       "soul_seed": 6742934279470166254,
       "display_title": "葉濤志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":203}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhby4lo7g9ad",
@@ -1210,15 +1210,15 @@
       "vit": 8,
       "qi": 12,
       "dex": 11,
-      "magnesium": 49,
+      "magnesium": 48,
       "created_at": 1774450281,
       "gender": "F",
       "soul_seed": -554514609931784309,
       "display_title": "田惠",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":144}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":177}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxpiftvpnx",
@@ -1230,15 +1230,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 10,
-      "magnesium": 46,
+      "magnesium": 53,
       "created_at": 1774449098,
       "gender": "M",
       "soul_seed": -9032661965655662754,
       "display_title": "王萍娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":131}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":172}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxkhr6a753",
@@ -1250,15 +1250,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 54,
       "created_at": 1774448705,
       "gender": "M",
       "soul_seed": 5573139159565947949,
       "display_title": "尹傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -81
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":211}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxt1x65ga7",
@@ -1270,15 +1270,15 @@
       "vit": 10,
       "qi": 9,
       "dex": 11,
-      "magnesium": 51,
+      "magnesium": 55,
       "created_at": 1774449376,
       "gender": "F",
       "soul_seed": 3212843910680936663,
       "display_title": "周康",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxzcv11ro9",
@@ -1290,15 +1290,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 12,
-      "magnesium": 42,
+      "magnesium": 49,
       "created_at": 1774449870,
       "gender": "M",
       "soul_seed": 2392086163283309385,
       "display_title": "諸葛燕萍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":138}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":173}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby0j4jag3k",
@@ -1310,15 +1310,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 9,
-      "magnesium": 52,
+      "magnesium": 51,
       "created_at": 1774449962,
       "gender": "F",
       "soul_seed": 2755066825759823831,
       "display_title": "呂美濤",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":198}]",
+      "disposition": -98
     },
     {
       "id": "npc_dh7ljyggbjh5",
@@ -1330,7 +1330,7 @@
       "vit": 13,
       "qi": 10,
       "dex": 11,
-      "magnesium": 42,
+      "magnesium": 54,
       "last_observed_at": 1774285247,
       "created_at": 1774008570,
       "gender": "F",
@@ -1338,7 +1338,7 @@
       "display_title": "陶紅玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6301}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6336}]",
       "disposition": -100
     },
     {
@@ -1351,15 +1351,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 11,
-      "magnesium": 58,
+      "magnesium": 52,
       "created_at": 1774450198,
       "gender": "F",
       "soul_seed": 3074238038621374035,
       "display_title": "姚淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":135}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":171}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhbyikxsc1z2",
@@ -1371,15 +1371,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 10,
-      "magnesium": 52,
+      "magnesium": 50,
       "created_at": 1774451376,
       "gender": "M",
       "soul_seed": 5403245780743751994,
       "display_title": "朱蘭",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":132}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxxmm3vgg7",
@@ -1398,8 +1398,8 @@
       "display_title": "王平玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":171}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxfcp4ijjf",
@@ -1411,15 +1411,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 9,
-      "magnesium": 48,
+      "magnesium": 50,
       "created_at": 1774448302,
       "gender": "M",
       "soul_seed": -2344609088588407479,
       "display_title": "何芳安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":165}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":209}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbye8a9i2n9",
@@ -1431,15 +1431,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 8,
-      "magnesium": 44,
+      "magnesium": 50,
       "created_at": 1774451035,
       "gender": "M",
       "soul_seed": 3272719935961267271,
       "display_title": "余惠俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbyc9jdp3j1",
@@ -1451,15 +1451,15 @@
       "vit": 12,
       "qi": 9,
       "dex": 11,
-      "magnesium": 54,
+      "magnesium": 56,
       "created_at": 1774450881,
       "gender": "F",
       "soul_seed": 2650434748503877932,
       "display_title": "丁強明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":129}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":177}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhby97z1cdo8",
@@ -1471,15 +1471,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 8,
-      "magnesium": 46,
+      "magnesium": 53,
       "created_at": 1774450643,
       "gender": "M",
       "soul_seed": 7201489307321689884,
       "display_title": "聞人梅建",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":134}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":176}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhby1u7p8k24",
@@ -1491,15 +1491,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 9,
-      "magnesium": 47,
+      "magnesium": 51,
       "created_at": 1774450064,
       "gender": "F",
       "soul_seed": -8625277373678079094,
       "display_title": "金國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":167}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxwpb39qk6",
@@ -1511,15 +1511,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 10,
-      "magnesium": 47,
+      "magnesium": 51,
       "created_at": 1774449662,
       "gender": "M",
       "soul_seed": 6547088973174891819,
       "display_title": "趙濤明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":205}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby2ripzmgj",
@@ -1531,15 +1531,15 @@
       "vit": 8,
       "qi": 10,
       "dex": 8,
-      "magnesium": 47,
+      "magnesium": 57,
       "created_at": 1774450137,
       "gender": "F",
       "soul_seed": 3352260873680957884,
       "display_title": "譚安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":135}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhby8afqmvjx",
@@ -1551,15 +1551,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 11,
-      "magnesium": 51,
+      "magnesium": 52,
       "created_at": 1774450570,
       "gender": "M",
       "soul_seed": -6332232607595557279,
       "display_title": "段芳",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":151}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxgzqj1uqm",
@@ -1571,15 +1571,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 52,
       "created_at": 1774448431,
       "gender": "F",
       "soul_seed": 5881300504643958932,
       "display_title": "南宮超國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":198}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby8jus364v",
@@ -1591,15 +1591,15 @@
       "vit": 11,
       "qi": 12,
       "dex": 9,
-      "magnesium": 44,
+      "magnesium": 51,
       "created_at": 1774450590,
       "gender": "F",
       "soul_seed": 9115150513131018964,
       "display_title": "董俊安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxpn9hb7g9",
@@ -1611,15 +1611,15 @@
       "vit": 9,
       "qi": 12,
       "dex": 11,
-      "magnesium": 56,
+      "magnesium": 51,
       "created_at": 1774449109,
       "gender": "F",
       "soul_seed": 1042889507531874439,
       "display_title": "林國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":192}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":226}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxjcycur0o",
@@ -1631,15 +1631,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 9,
-      "magnesium": 53,
+      "magnesium": 44,
       "created_at": 1774448616,
       "gender": "F",
       "soul_seed": -5551455074382494428,
       "display_title": "司徒靜超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":168}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":206}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbydbfsgg5m",
@@ -1651,15 +1651,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 51,
       "created_at": 1774450964,
       "gender": "M",
       "soul_seed": -9069241851948238565,
       "display_title": "尉遲梅麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":136}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":174}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbyhdr77m4z",
@@ -1671,15 +1671,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 11,
-      "magnesium": 50,
+      "magnesium": 58,
       "created_at": 1774451282,
       "gender": "M",
       "soul_seed": -887132719871509235,
       "display_title": "王慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbyftpjg3pw",
@@ -1691,15 +1691,15 @@
       "vit": 11,
       "qi": 12,
       "dex": 12,
-      "magnesium": 42,
+      "magnesium": 49,
       "created_at": 1774451160,
       "gender": "F",
       "soul_seed": 5001818318752095310,
       "display_title": "皇甫美玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":165}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":202}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhby0x4yib1w",
@@ -1711,15 +1711,15 @@
       "vit": 8,
       "qi": 11,
       "dex": 8,
-      "magnesium": 48,
+      "magnesium": 56,
       "created_at": 1774449992,
       "gender": "M",
       "soul_seed": -4810123945621170209,
       "display_title": "段康慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":130}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":180}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxumfd8pg3",
@@ -1731,15 +1731,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 11,
-      "magnesium": 42,
+      "magnesium": 43,
       "created_at": 1774449499,
       "gender": "F",
       "soul_seed": -3738751690552417233,
       "display_title": "杜濤",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":191}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby9qt3gagc",
@@ -1751,15 +1751,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 12,
-      "magnesium": 47,
+      "magnesium": 53,
       "created_at": 1774450684,
       "gender": "F",
       "soul_seed": -3347841332412013567,
       "display_title": "尹琪芳",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":128}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":175}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbygzqs2smw",
@@ -1771,15 +1771,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 52,
       "created_at": 1774451252,
       "gender": "M",
       "soul_seed": 5829781775510119813,
       "display_title": "魏超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxxw9esf3b",
@@ -1791,15 +1791,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 11,
-      "magnesium": 53,
+      "magnesium": 51,
       "created_at": 1774449755,
       "gender": "F",
       "soul_seed": -3170536705492488375,
       "display_title": "莫偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":193}]",
+      "disposition": -98
     },
     {
       "id": "npc_dh7lvuc9y0a1",
@@ -1811,7 +1811,7 @@
       "vit": 12,
       "qi": 9,
       "dex": 9,
-      "magnesium": 51,
+      "magnesium": 55,
       "last_observed_at": 1774274153,
       "created_at": 1774009501,
       "gender": "M",
@@ -1819,7 +1819,7 @@
       "display_title": "袁寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6210}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6253}]",
       "disposition": -100
     },
     {
@@ -1832,15 +1832,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 12,
-      "magnesium": 46,
+      "magnesium": 51,
       "created_at": 1774450777,
       "gender": "M",
       "soul_seed": -5488048138633080414,
       "display_title": "向國美",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":204}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhby1pe1y3jt",
@@ -1852,15 +1852,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 9,
-      "magnesium": 42,
+      "magnesium": 43,
       "created_at": 1774450054,
       "gender": "F",
       "soul_seed": -495831698287201032,
       "display_title": "丁濤",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxzqvfxffg",
@@ -1872,15 +1872,15 @@
       "vit": 14,
       "qi": 12,
       "dex": 9,
-      "magnesium": 51,
+      "magnesium": 50,
       "created_at": 1774449900,
       "gender": "F",
       "soul_seed": 4552948241377198852,
       "display_title": "熊玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":192}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxn4j6w88x",
@@ -1892,15 +1892,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 52,
       "created_at": 1774448911,
       "gender": "M",
       "soul_seed": -824260523858694105,
       "display_title": "鍾磊秀",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":155}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":203}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxy5wpgurg",
@@ -1912,15 +1912,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 9,
-      "magnesium": 53,
+      "magnesium": 59,
       "created_at": 1774449776,
       "gender": "M",
       "soul_seed": 5939591453639764845,
       "display_title": "沈洋",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":167}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxpdm6g7d8",
@@ -1932,15 +1932,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 9,
-      "magnesium": 43,
+      "magnesium": 51,
       "created_at": 1774449088,
       "gender": "F",
       "soul_seed": 390969601849588305,
       "display_title": "司空濤",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":218}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxe67cc4et",
@@ -1952,15 +1952,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 11,
-      "magnesium": 48,
+      "magnesium": 52,
       "created_at": 1774448210,
       "gender": "M",
       "soul_seed": 7918024392771918274,
       "display_title": "陶俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":192}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbycx73v8j1",
@@ -1972,15 +1972,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 11,
-      "magnesium": 46,
+      "magnesium": 56,
       "created_at": 1774450933,
       "gender": "F",
       "soul_seed": -5183370517496791401,
       "display_title": "吳娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":156}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":205}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhby1z1cqznz",
@@ -1992,15 +1992,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 11,
-      "magnesium": 47,
+      "magnesium": 44,
       "created_at": 1774450075,
       "gender": "M",
       "soul_seed": -8575836841486285663,
       "display_title": "諸葛艷敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":144}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":172}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyc4pqnw7c",
@@ -2019,8 +2019,8 @@
       "display_title": "南宮磊傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":191}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbxv5hpagl4",
@@ -2032,15 +2032,15 @@
       "vit": 11,
       "qi": 12,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 58,
       "created_at": 1774449540,
       "gender": "M",
       "soul_seed": 4618048072492464854,
       "display_title": "張萍俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":141}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":177}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxq6btccb7",
@@ -2052,15 +2052,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 8,
-      "magnesium": 47,
+      "magnesium": 52,
       "created_at": 1774449150,
       "gender": "M",
       "soul_seed": 865193555638931648,
       "display_title": "任麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":158}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":195}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxk12m2bly",
@@ -2072,15 +2072,15 @@
       "vit": 12,
       "qi": 9,
       "dex": 8,
-      "magnesium": 43,
+      "magnesium": 56,
       "created_at": 1774448669,
       "gender": "F",
       "soul_seed": 6108202582708321968,
       "display_title": "程英",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":170}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":216}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby23mqmqss",
@@ -2092,15 +2092,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 12,
-      "magnesium": 42,
+      "magnesium": 51,
       "created_at": 1774450085,
       "gender": "F",
       "soul_seed": -8333295532031891680,
       "display_title": "潘洋",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":203}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxltoau63d",
@@ -2112,15 +2112,15 @@
       "vit": 8,
       "qi": 11,
       "dex": 10,
-      "magnesium": 46,
+      "magnesium": 53,
       "created_at": 1774448809,
       "gender": "M",
       "soul_seed": 37343031972090124,
       "display_title": "獨孤康",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":143}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":198}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxw1vn62wl",
@@ -2132,15 +2132,15 @@
       "vit": 10,
       "qi": 9,
       "dex": 8,
-      "magnesium": 50,
+      "magnesium": 51,
       "created_at": 1774449611,
       "gender": "F",
       "soul_seed": 1655255953815946205,
       "display_title": "諸葛偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxm7wyvqax",
@@ -2152,15 +2152,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 9,
-      "magnesium": 54,
+      "magnesium": 42,
       "created_at": 1774448840,
       "gender": "M",
       "soul_seed": -8549588982614794014,
       "display_title": "覃磊淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":155}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":180}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby6ucnr2kl",
@@ -2172,15 +2172,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 8,
-      "magnesium": 46,
+      "magnesium": 50,
       "created_at": 1774450456,
       "gender": "M",
       "soul_seed": -6603403398749561893,
       "display_title": "賈康梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":133}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":173}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxtuejhmz7",
@@ -2192,15 +2192,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 11,
-      "magnesium": 47,
+      "magnesium": 50,
       "created_at": 1774449438,
       "gender": "M",
       "soul_seed": -3769849995459376406,
       "display_title": "余琪杰",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbye3ovr1pt",
@@ -2212,15 +2212,15 @@
       "vit": 8,
       "qi": 9,
       "dex": 10,
-      "magnesium": 46,
+      "magnesium": 56,
       "created_at": 1774451025,
       "gender": "F",
       "soul_seed": -3281892591211964070,
       "display_title": "宋淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":167}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":203}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxtpkvyehc",
@@ -2232,15 +2232,15 @@
       "vit": 14,
       "qi": 9,
       "dex": 11,
-      "magnesium": 51,
+      "magnesium": 50,
       "created_at": 1774449427,
       "gender": "F",
       "soul_seed": -6998122527566589942,
       "display_title": "莫芬敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":215}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbydz3hqerm",
@@ -2252,15 +2252,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 11,
-      "magnesium": 47,
+      "magnesium": 50,
       "created_at": 1774451015,
       "gender": "M",
       "soul_seed": 8169322392029211966,
       "display_title": "司空慧建",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbyf0jdax44",
@@ -2272,15 +2272,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 58,
       "created_at": 1774451097,
       "gender": "F",
       "soul_seed": 9174462339053063012,
       "display_title": "蔣俊超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":132}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":165}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhby7ms0xiyt",
@@ -2292,15 +2292,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 8,
-      "magnesium": 46,
+      "magnesium": 52,
       "created_at": 1774450518,
       "gender": "F",
       "soul_seed": 5959717104883570321,
       "display_title": "林飛",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbyg7pye9nr",
@@ -2312,15 +2312,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 51,
       "created_at": 1774451191,
       "gender": "M",
       "soul_seed": 7254643101444463543,
       "display_title": "呂娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":192}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxss9v574p",
@@ -2332,15 +2332,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 10,
-      "magnesium": 59,
+      "magnesium": 53,
       "created_at": 1774449355,
       "gender": "M",
       "soul_seed": -5227007143649207791,
       "display_title": "范華志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":171}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby42u5b1pv",
@@ -2352,15 +2352,15 @@
       "vit": 13,
       "qi": 12,
       "dex": 10,
-      "magnesium": 57,
+      "magnesium": 54,
       "created_at": 1774450240,
       "gender": "F",
       "soul_seed": 7213733919995947067,
       "display_title": "慕容麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":136}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":183}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbya9vfec1r",
@@ -2372,15 +2372,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 8,
-      "magnesium": 51,
+      "magnesium": 47,
       "created_at": 1774450725,
       "gender": "F",
       "soul_seed": -1744809985971601442,
       "display_title": "任萍強",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":175}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxnnd99ss9",
@@ -2392,15 +2392,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 8,
-      "magnesium": 42,
+      "magnesium": 44,
       "created_at": 1774448952,
       "gender": "M",
       "soul_seed": 3469327092221977366,
       "display_title": "曾偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":174}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":221}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby5x7x7b0u",
@@ -2412,15 +2412,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 11,
-      "magnesium": 52,
+      "magnesium": 53,
       "created_at": 1774450384,
       "gender": "M",
       "soul_seed": -6988233801102831706,
       "display_title": "潘艷俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxkmckelxx",
@@ -2439,8 +2439,8 @@
       "display_title": "萬濤",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -81
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbyfes1u5mf",
@@ -2452,15 +2452,15 @@
       "vit": 8,
       "qi": 10,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 55,
       "created_at": 1774451128,
       "gender": "M",
       "soul_seed": -6137594417158821611,
       "display_title": "廖明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":131}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":167}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxz3fzz2s4",
@@ -2472,15 +2472,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 8,
-      "magnesium": 50,
+      "magnesium": 45,
       "created_at": 1774449849,
       "gender": "F",
       "soul_seed": -1039445284541089119,
       "display_title": "徐建安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby4c96qqou",
@@ -2492,15 +2492,15 @@
       "vit": 10,
       "qi": 12,
       "dex": 12,
-      "magnesium": 42,
+      "magnesium": 54,
       "created_at": 1774450260,
       "gender": "M",
       "soul_seed": 6034631734468494957,
       "display_title": "錢蘭",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":202}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhby6l3wlrb7",
@@ -2512,15 +2512,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 10,
-      "magnesium": 51,
+      "magnesium": 53,
       "created_at": 1774450436,
       "gender": "F",
       "soul_seed": -2672372977932270923,
       "display_title": "傅敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxikgzomgr",
@@ -2532,15 +2532,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 52,
       "created_at": 1774448554,
       "gender": "M",
       "soul_seed": -2757609236884158315,
       "display_title": "司空琪",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":172}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":214}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby2w43shx4",
@@ -2552,15 +2552,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 11,
-      "magnesium": 56,
+      "magnesium": 53,
       "created_at": 1774450147,
       "gender": "F",
       "soul_seed": 607518326371992568,
       "display_title": "湯英",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":152}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhby3ey60dkf",
@@ -2572,15 +2572,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 8,
-      "magnesium": 43,
+      "magnesium": 52,
       "created_at": 1774450188,
       "gender": "M",
       "soul_seed": 8939999454748195156,
       "display_title": "蘇芳",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":200}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhby3t6umvmd",
@@ -2592,15 +2592,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 54,
       "created_at": 1774450219,
       "gender": "M",
       "soul_seed": -715219425243673498,
       "display_title": "王國萍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhbyasphzdpp",
@@ -2612,15 +2612,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 10,
-      "magnesium": 55,
+      "magnesium": 51,
       "created_at": 1774450766,
       "gender": "F",
       "soul_seed": -6122080420994040567,
       "display_title": "諸葛志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":128}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":180}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxw6pagfyk",
@@ -2632,15 +2632,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 11,
-      "magnesium": 56,
+      "magnesium": 52,
       "created_at": 1774449621,
       "gender": "M",
       "soul_seed": -8627596206798411033,
       "display_title": "杜強",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":161}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":202}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxrcd239qb",
@@ -2652,15 +2652,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 10,
-      "magnesium": 42,
+      "magnesium": 50,
       "created_at": 1774449242,
       "gender": "F",
       "soul_seed": -193610748287867024,
       "display_title": "許志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":200}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxib1yp2w2",
@@ -2672,15 +2672,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 10,
-      "magnesium": 42,
+      "magnesium": 53,
       "created_at": 1774448534,
       "gender": "M",
       "soul_seed": -5200946009268259750,
       "display_title": "嚴勇美",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxybkqs353",
@@ -2692,15 +2692,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 10,
-      "magnesium": 44,
+      "magnesium": 53,
       "created_at": 1774449789,
       "gender": "F",
       "soul_seed": 2991233301890852478,
       "display_title": "韓志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":238}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxifvlnscx",
@@ -2712,15 +2712,15 @@
       "vit": 10,
       "qi": 12,
       "dex": 9,
-      "magnesium": 43,
+      "magnesium": 46,
       "created_at": 1774448544,
       "gender": "F",
       "soul_seed": 3068121243170846754,
       "display_title": "石寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":169}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":205}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxlp2x0xjf",
@@ -2732,15 +2732,15 @@
       "vit": 13,
       "qi": 9,
       "dex": 8,
-      "magnesium": 47,
+      "magnesium": 53,
       "created_at": 1774448799,
       "gender": "M",
       "soul_seed": -5716695091510159078,
       "display_title": "史杰霞",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":150}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbybqczzs97",
@@ -2752,15 +2752,15 @@
       "vit": 8,
       "qi": 10,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 51,
       "created_at": 1774450840,
       "gender": "M",
       "soul_seed": -7441024355243559548,
       "display_title": "鄧志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":139}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":173}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbxsj33fq2j",
@@ -2772,15 +2772,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 10,
-      "magnesium": 48,
+      "magnesium": 49,
       "created_at": 1774449335,
       "gender": "F",
       "soul_seed": 5139117028712739522,
       "display_title": "姚燕",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":139}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxqycn4vbs",
@@ -2792,15 +2792,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 9,
-      "magnesium": 51,
+      "magnesium": 56,
       "created_at": 1774449211,
       "gender": "M",
       "soul_seed": -5973704313966910115,
       "display_title": "石偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxpwwrt8gm",
@@ -2812,15 +2812,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 10,
-      "magnesium": 42,
+      "magnesium": 50,
       "created_at": 1774449130,
       "gender": "F",
       "soul_seed": -9170453789401475707,
       "display_title": "鄒蘭",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyb24j8nxn",
@@ -2832,15 +2832,15 @@
       "vit": 9,
       "qi": 12,
       "dex": 10,
-      "magnesium": 46,
+      "magnesium": 54,
       "created_at": 1774450787,
       "gender": "M",
       "soul_seed": -2687103146903230134,
       "display_title": "曾惠芳",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":141}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":178}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxqfz3xzqi",
@@ -2852,15 +2852,15 @@
       "vit": 8,
       "qi": 10,
       "dex": 10,
-      "magnesium": 44,
+      "magnesium": 52,
       "created_at": 1774449171,
       "gender": "F",
       "soul_seed": -5156771544911863417,
       "display_title": "魏杰強",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":207}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxxhsg8fjx",
@@ -2872,15 +2872,15 @@
       "vit": 13,
       "qi": 9,
       "dex": 9,
-      "magnesium": 55,
+      "magnesium": 50,
       "created_at": 1774449724,
       "gender": "F",
       "soul_seed": 2491344205242498154,
       "display_title": "獨孤寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":158}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyi6gu14n1",
@@ -2892,15 +2892,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 10,
-      "magnesium": 42,
+      "magnesium": 51,
       "created_at": 1774451345,
       "gender": "M",
       "soul_seed": -1050079952993135833,
       "display_title": "慕容梅國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":130}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":169}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxwkppiotp",
@@ -2912,15 +2912,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 11,
-      "magnesium": 54,
+      "magnesium": 49,
       "created_at": 1774449652,
       "gender": "F",
       "soul_seed": -9194376398439263162,
       "display_title": "鄧娜志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby935dyg4d",
@@ -2932,15 +2932,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 11,
-      "magnesium": 43,
+      "magnesium": 48,
       "created_at": 1774450632,
       "gender": "F",
       "soul_seed": 7985993436843354144,
       "display_title": "孫志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxyg8t5g1e",
@@ -2952,15 +2952,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 12,
-      "magnesium": 42,
+      "magnesium": 52,
       "created_at": 1774449799,
       "gender": "M",
       "soul_seed": 8097872924860047126,
       "display_title": "莫平志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":194}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxefmld0yc",
@@ -2972,15 +2972,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 53,
       "created_at": 1774448230,
       "gender": "M",
       "soul_seed": -6245488736614401109,
       "display_title": "東方敏英",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":201}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxl1ngx9pc",
@@ -2992,15 +2992,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 8,
-      "magnesium": 55,
+      "magnesium": 50,
       "created_at": 1774448748,
       "gender": "M",
       "soul_seed": -2326556908197170471,
       "display_title": "蕭明志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":233}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxne6hcxnq",
@@ -3012,15 +3012,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 11,
-      "magnesium": 48,
+      "magnesium": 43,
       "created_at": 1774448932,
       "gender": "F",
       "soul_seed": 6610598532843597663,
       "display_title": "杜秀",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":198}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxu3tkn7q5",
@@ -3032,15 +3032,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 9,
-      "magnesium": 58,
+      "magnesium": 49,
       "created_at": 1774449458,
       "gender": "F",
       "soul_seed": 5391757431449189539,
       "display_title": "諸葛勇國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxyyuly9wn",
@@ -3052,15 +3052,15 @@
       "vit": 10,
       "qi": 12,
       "dex": 11,
-      "magnesium": 47,
+      "magnesium": 52,
       "created_at": 1774449839,
       "gender": "M",
       "soul_seed": 4549504554153140913,
       "display_title": "長孫傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":203}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxxrframqu",
@@ -3072,15 +3072,15 @@
       "vit": 8,
       "qi": 11,
       "dex": 11,
-      "magnesium": 47,
+      "magnesium": 53,
       "created_at": 1774449745,
       "gender": "F",
       "soul_seed": -6859856340646520638,
       "display_title": "聞人明紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":206}]",
+      "disposition": -98
     },
     {
       "id": "試話",
@@ -3092,7 +3092,7 @@
       "vit": 12,
       "qi": 10,
       "dex": 10,
-      "magnesium": 55,
+      "magnesium": 45,
       "last_observed_at": 1774257031,
       "created_at": 1774008450,
       "gender": "M",
@@ -3100,7 +3100,7 @@
       "display_title": "司馬麗淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":5550}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":5591}]",
       "disposition": -100
     },
     {
@@ -3113,15 +3113,15 @@
       "vit": 9,
       "qi": 12,
       "dex": 10,
-      "magnesium": 54,
+      "magnesium": 52,
       "created_at": 1774449683,
       "gender": "F",
       "soul_seed": 3163206411723346694,
       "display_title": "石建淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":193}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyemixw9ch",
@@ -3133,15 +3133,15 @@
       "vit": 9,
       "qi": 12,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 52,
       "created_at": 1774451066,
       "gender": "M",
       "soul_seed": -2901966472448325352,
       "display_title": "邱磊超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":183}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhby2i3od0ph",
@@ -3153,15 +3153,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 9,
-      "magnesium": 44,
+      "magnesium": 51,
       "created_at": 1774450116,
       "gender": "F",
       "soul_seed": 8253430855746990074,
       "display_title": "田傑傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":139}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -95
     },
     {
       "id": "npc_dh7lok2gzenv",
@@ -3194,15 +3194,15 @@
       "vit": 8,
       "qi": 12,
       "dex": 11,
-      "magnesium": 50,
+      "magnesium": 51,
       "created_at": 1774449560,
       "gender": "M",
       "soul_seed": -5770124554750219251,
       "display_title": "長孫志杰",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":212}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby47fj32y9",
@@ -3214,15 +3214,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 12,
-      "magnesium": 44,
+      "magnesium": 53,
       "created_at": 1774450250,
       "gender": "F",
       "soul_seed": 39086106481808327,
       "display_title": "龔偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":141}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":176}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxgqbhkicw",
@@ -3234,15 +3234,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 8,
-      "magnesium": 59,
+      "magnesium": 50,
       "created_at": 1774448410,
       "gender": "M",
       "soul_seed": 4325222645872200933,
       "display_title": "吳雅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":179}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":219}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxsnohaqlc",
@@ -3261,8 +3261,8 @@
       "display_title": "司馬洋",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":150}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbycsdgd59g",
@@ -3274,15 +3274,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 8,
-      "magnesium": 42,
+      "magnesium": 52,
       "created_at": 1774450922,
       "gender": "M",
       "soul_seed": -3542076674668692820,
       "display_title": "汪偉平",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":151}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":184}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbyd6m51n0h",
@@ -3294,15 +3294,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 9,
-      "magnesium": 46,
+      "magnesium": 56,
       "created_at": 1774450953,
       "gender": "F",
       "soul_seed": -2439021168945901911,
       "display_title": "龔敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhby7wczy5ml",
@@ -3321,8 +3321,8 @@
       "display_title": "汪志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":198}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhby9he2i7r1",
@@ -3334,15 +3334,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 53,
       "created_at": 1774450663,
       "gender": "M",
       "soul_seed": 1617848417154378348,
       "display_title": "萬俟靜雅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":158}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhby5nkm9pqc",
@@ -3354,15 +3354,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 9,
-      "magnesium": 43,
+      "magnesium": 50,
       "created_at": 1774450363,
       "gender": "M",
       "soul_seed": -2594413524744982978,
       "display_title": "馬華",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxyu983l5k",
@@ -3374,15 +3374,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 9,
-      "magnesium": 42,
+      "magnesium": 54,
       "created_at": 1774449829,
       "gender": "M",
       "soul_seed": 2393140090618376824,
       "display_title": "慕容靜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":162}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":199}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxs4vdvz9d",
@@ -3394,15 +3394,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 10,
-      "magnesium": 43,
+      "magnesium": 50,
       "created_at": 1774449304,
       "gender": "F",
       "soul_seed": -2826362253483537280,
       "display_title": "鍾雅紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":191}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbygv5e4qp1",
@@ -3414,15 +3414,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 8,
-      "magnesium": 50,
+      "magnesium": 49,
       "created_at": 1774451242,
       "gender": "F",
       "soul_seed": 7254050721955673986,
       "display_title": "董艷",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxg2ficdba",
@@ -3434,15 +3434,15 @@
       "vit": 10,
       "qi": 9,
       "dex": 8,
-      "magnesium": 42,
+      "magnesium": 58,
       "created_at": 1774448358,
       "gender": "F",
       "soul_seed": 2073385839065049866,
       "display_title": "馮志淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":234}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxg795uqyt",
@@ -3454,15 +3454,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 11,
-      "magnesium": 56,
+      "magnesium": 51,
       "created_at": 1774448369,
       "gender": "M",
       "soul_seed": -6894166336145312122,
       "display_title": "秦安慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":191}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxn9cuclkr",
@@ -3474,15 +3474,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 11,
-      "magnesium": 44,
+      "magnesium": 54,
       "created_at": 1774448922,
       "gender": "F",
       "soul_seed": 3435786120523779062,
       "display_title": "孔梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxnirvi5kj",
@@ -3494,15 +3494,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 9,
-      "magnesium": 51,
+      "magnesium": 52,
       "created_at": 1774448942,
       "gender": "M",
       "soul_seed": 9076033669123711031,
       "display_title": "黎蘭芬",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":180}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":223}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby8f14i4p5",
@@ -3514,15 +3514,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 11,
-      "magnesium": 44,
+      "magnesium": 51,
       "created_at": 1774450580,
       "gender": "M",
       "soul_seed": 692950922218350073,
       "display_title": "戴芬寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":124}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbyfk6doc8s",
@@ -3534,15 +3534,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 10,
-      "magnesium": 46,
+      "magnesium": 55,
       "created_at": 1774451140,
       "gender": "M",
       "soul_seed": -6988076006487416046,
       "display_title": "宇文玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":130}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxhisv13f4",
@@ -3554,15 +3554,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 9,
-      "magnesium": 44,
+      "magnesium": 50,
       "created_at": 1774448472,
       "gender": "M",
       "soul_seed": -7964099904160990079,
       "display_title": "杜娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":143}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":179}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxz89naazo",
@@ -3574,15 +3574,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 8,
-      "magnesium": 50,
+      "magnesium": 51,
       "created_at": 1774449860,
       "gender": "F",
       "soul_seed": 6819760895466972740,
       "display_title": "陸秀明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":133}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":169}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby04vurvou",
@@ -3594,15 +3594,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 9,
-      "magnesium": 46,
+      "magnesium": 48,
       "created_at": 1774449931,
       "gender": "F",
       "soul_seed": 5571999022255175939,
       "display_title": "王國軍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":203}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxp3yvjqxs",
@@ -3614,15 +3614,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 12,
-      "magnesium": 45,
+      "magnesium": 46,
       "created_at": 1774449067,
       "gender": "F",
       "soul_seed": -1823209900627772449,
       "display_title": "趙華偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":142}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxkqxy7m93",
@@ -3634,15 +3634,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 52,
       "created_at": 1774448725,
       "gender": "M",
       "soul_seed": 8403046509389156513,
       "display_title": "司馬梅秀",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -81
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxh9dtojyh",
@@ -3654,15 +3654,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 8,
-      "magnesium": 46,
+      "magnesium": 55,
       "created_at": 1774448452,
       "gender": "F",
       "soul_seed": 6392840259385045829,
       "display_title": "周華",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxekg0klpe",
@@ -3674,15 +3674,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 9,
-      "magnesium": 44,
+      "magnesium": 51,
       "created_at": 1774448241,
       "gender": "F",
       "soul_seed": -8606373881255737555,
       "display_title": "曾平國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":171}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":209}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxoubku7t9",
@@ -3694,15 +3694,15 @@
       "vit": 12,
       "qi": 9,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 54,
       "created_at": 1774449046,
       "gender": "F",
       "soul_seed": -7021675085221358575,
       "display_title": "諸葛志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":155}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxuvue7kze",
@@ -3714,15 +3714,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 10,
-      "magnesium": 46,
+      "magnesium": 42,
       "created_at": 1774449519,
       "gender": "F",
       "soul_seed": -1927523623986091458,
       "display_title": "高惠萍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":196}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbybzw32nj2",
@@ -3734,15 +3734,15 @@
       "vit": 11,
       "qi": 12,
       "dex": 11,
-      "magnesium": 44,
+      "magnesium": 53,
       "created_at": 1774450860,
       "gender": "F",
       "soul_seed": -2582563826540644645,
       "display_title": "宇文玲安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":152}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":184}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbyfyax9ow7",
@@ -3754,15 +3754,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 10,
-      "magnesium": 44,
+      "magnesium": 50,
       "created_at": 1774451170,
       "gender": "M",
       "soul_seed": 356550269130828195,
       "display_title": "司空寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":192}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxlfw551ig",
@@ -3774,15 +3774,15 @@
       "vit": 9,
       "qi": 12,
       "dex": 9,
-      "magnesium": 42,
+      "magnesium": 51,
       "created_at": 1774448779,
       "gender": "M",
       "soul_seed": 7210876212980328489,
       "display_title": "田偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":150}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":184}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyhs859k3x",
@@ -3794,15 +3794,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 10,
-      "magnesium": 55,
+      "magnesium": 49,
       "created_at": 1774451314,
       "gender": "M",
       "soul_seed": -704687555709427532,
       "display_title": "嚴國志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":150}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxj3b232sj",
@@ -3814,15 +3814,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 11,
-      "magnesium": 43,
+      "magnesium": 54,
       "created_at": 1774448595,
       "gender": "F",
       "soul_seed": 8757040262077038718,
       "display_title": "長孫麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":174}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":207}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby09q7hpts",
@@ -3834,15 +3834,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 11,
-      "magnesium": 44,
+      "magnesium": 50,
       "created_at": 1774449941,
       "gender": "M",
       "soul_seed": 4911706368871825046,
       "display_title": "鄧雅蘭",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":177}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyg34kffjc",
@@ -3854,15 +3854,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 8,
-      "magnesium": 47,
+      "magnesium": 57,
       "created_at": 1774451181,
       "gender": "F",
       "soul_seed": -7780717621805356753,
       "display_title": "龔萍飛",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":133}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":174}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxfss73x8e",
@@ -3874,15 +3874,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 12,
-      "magnesium": 42,
+      "magnesium": 53,
       "created_at": 1774448337,
       "gender": "M",
       "soul_seed": -3341830799219398908,
       "display_title": "馬明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":207}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxns6wkicc",
@@ -3894,15 +3894,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 11,
-      "magnesium": 45,
+      "magnesium": 53,
       "created_at": 1774448963,
       "gender": "F",
       "soul_seed": 3981390347600309577,
       "display_title": "東方敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":167}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":200}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby9csoqk56",
@@ -3914,15 +3914,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 9,
-      "magnesium": 42,
+      "magnesium": 52,
       "created_at": 1774450653,
       "gender": "F",
       "soul_seed": 3992191514988786882,
       "display_title": "司馬寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":179}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxobhieac7",
@@ -3934,15 +3934,15 @@
       "vit": 9,
       "qi": 12,
       "dex": 9,
-      "magnesium": 59,
+      "magnesium": 53,
       "created_at": 1774449005,
       "gender": "F",
       "soul_seed": 971882089240955542,
       "display_title": "范淑美",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":156}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":194}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyibahggeo",
@@ -3954,15 +3954,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 11,
-      "magnesium": 42,
+      "magnesium": 51,
       "created_at": 1774451355,
       "gender": "F",
       "soul_seed": -9200004397058829693,
       "display_title": "王霞",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":184}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhby35j4osi6",
@@ -3974,15 +3974,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 50,
       "created_at": 1774450167,
       "gender": "F",
       "soul_seed": -7871526868395372307,
       "display_title": "聞人濤敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":140}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":171}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhbyglqd2egz",
@@ -3994,15 +3994,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 50,
       "created_at": 1774451221,
       "gender": "F",
       "soul_seed": 4679955289707674168,
       "display_title": "長孫玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":129}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":172}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbybbru2ivh",
@@ -4014,15 +4014,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 12,
-      "magnesium": 46,
+      "magnesium": 51,
       "created_at": 1774450808,
       "gender": "F",
       "soul_seed": 4846180668740715843,
       "display_title": "賀霞",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":132}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxyku727z2",
@@ -4034,15 +4034,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 11,
-      "magnesium": 42,
+      "magnesium": 50,
       "created_at": 1774449809,
       "gender": "F",
       "soul_seed": 4209317697524427241,
       "display_title": "黎慧超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":166}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":209}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby30xqp7qz",
@@ -4054,15 +4054,15 @@
       "vit": 11,
       "qi": 12,
       "dex": 9,
-      "magnesium": 43,
+      "magnesium": 50,
       "created_at": 1774450157,
       "gender": "M",
       "soul_seed": -6506495121324059006,
       "display_title": "唐勇",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhbxnx0k3b7s",
@@ -4074,15 +4074,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 11,
-      "magnesium": 42,
+      "magnesium": 51,
       "created_at": 1774448973,
       "gender": "M",
       "soul_seed": 8755947418149051788,
       "display_title": "尹慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":199}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby8ybqbo49",
@@ -4094,15 +4094,15 @@
       "vit": 13,
       "qi": 12,
       "dex": 11,
-      "magnesium": 42,
+      "magnesium": 52,
       "created_at": 1774450622,
       "gender": "M",
       "soul_seed": 2930265629338722182,
       "display_title": "朱梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":141}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":174}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhby1bdmrlb0",
@@ -4114,15 +4114,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 8,
-      "magnesium": 46,
+      "magnesium": 53,
       "created_at": 1774450023,
       "gender": "M",
       "soul_seed": 1746113732157484715,
       "display_title": "林國寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":183}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby66v7mooy",
@@ -4134,15 +4134,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 11,
-      "magnesium": 46,
+      "magnesium": 51,
       "created_at": 1774450405,
       "gender": "M",
       "soul_seed": -8715023874644923460,
       "display_title": "劉杰",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxrvfe5dcx",
@@ -4161,8 +4161,8 @@
       "display_title": "司馬飛英",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxyph836bk",
@@ -4181,8 +4181,8 @@
       "display_title": "歐陽燕芬",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":143}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxmzxsvtom",
@@ -4201,8 +4201,8 @@
       "display_title": "司徒芳平",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":193}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxeygfw5zh",
@@ -4214,15 +4214,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 11,
-      "magnesium": 48,
+      "magnesium": 53,
       "created_at": 1774448271,
       "gender": "M",
       "soul_seed": 2491659301594324809,
       "display_title": "杜玲飛",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":178}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":205}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxr7ro8qz1",
@@ -4234,15 +4234,15 @@
       "vit": 12,
       "qi": 9,
       "dex": 12,
-      "magnesium": 43,
+      "magnesium": 56,
       "created_at": 1774449232,
       "gender": "M",
       "soul_seed": 9194792076013587559,
       "display_title": "傅志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":141}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby5se9m8al",
@@ -4254,15 +4254,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 10,
-      "magnesium": 47,
+      "magnesium": 52,
       "created_at": 1774450374,
       "gender": "F",
       "soul_seed": -3426997469457107160,
       "display_title": "段偉俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":154}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhby28gdqn3o",
@@ -4274,15 +4274,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 52,
       "created_at": 1774450095,
       "gender": "M",
       "soul_seed": 4361129708460895142,
       "display_title": "石國美",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":150}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhby2da1f1l2",
@@ -4294,15 +4294,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 9,
-      "magnesium": 44,
+      "magnesium": 58,
       "created_at": 1774450106,
       "gender": "M",
       "soul_seed": 2517280584488660281,
       "display_title": "長孫慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":142}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhbxwg4bml35",
@@ -4314,15 +4314,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 8,
-      "magnesium": 48,
+      "magnesium": 51,
       "created_at": 1774449642,
       "gender": "M",
       "soul_seed": -5817165833045401415,
       "display_title": "姚靜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":139}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":183}]",
+      "disposition": -98
     },
     {
       "id": "npc_dh7m0fyaaldh",
@@ -4334,7 +4334,7 @@
       "vit": 10,
       "qi": 10,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 50,
       "last_observed_at": 1774285202,
       "created_at": 1774009862,
       "gender": "F",
@@ -4342,7 +4342,7 @@
       "display_title": "向偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6372}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6410}]",
       "disposition": -100
     },
     {
@@ -4355,15 +4355,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 48,
       "created_at": 1774449672,
       "gender": "M",
       "soul_seed": 6086486342070624230,
       "display_title": "萬俟霞",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":201}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxtbc7eon6",
@@ -4375,15 +4375,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 55,
       "created_at": 1774449396,
       "gender": "M",
       "soul_seed": 3262532457197300442,
       "display_title": "石安平",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":151}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxqkkhoyve",
@@ -4395,15 +4395,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 9,
-      "magnesium": 44,
+      "magnesium": 54,
       "created_at": 1774449181,
       "gender": "M",
       "soul_seed": 4737218272875060936,
       "display_title": "田秀琪",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":201}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxhdz7gbzf",
@@ -4415,15 +4415,15 @@
       "vit": 8,
       "qi": 11,
       "dex": 11,
-      "magnesium": 50,
+      "magnesium": 43,
       "created_at": 1774448462,
       "gender": "M",
       "soul_seed": 6869312672576179161,
       "display_title": "湯傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":226}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby4v38m7b6",
@@ -4442,8 +4442,8 @@
       "display_title": "張萍娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":191}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxx8dfafyi",
@@ -4455,15 +4455,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 52,
       "created_at": 1774449703,
       "gender": "F",
       "soul_seed": -2360106695433671145,
       "display_title": "秦霞平",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":150}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxjrfb5vr4",
@@ -4475,15 +4475,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 10,
-      "magnesium": 50,
+      "magnesium": 48,
       "created_at": 1774448648,
       "gender": "F",
       "soul_seed": 8834711846385211292,
       "display_title": "袁濤安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":192}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":238}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxglhugc9n",
@@ -4495,15 +4495,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 10,
-      "magnesium": 53,
+      "magnesium": 54,
       "created_at": 1774448400,
       "gender": "F",
       "soul_seed": 4372049358608302836,
       "display_title": "熊建",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":218}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby1fz0sg8d",
@@ -4515,15 +4515,15 @@
       "vit": 13,
       "qi": 11,
       "dex": 11,
-      "magnesium": 44,
+      "magnesium": 54,
       "created_at": 1774450033,
       "gender": "F",
       "soul_seed": 3248780080844610858,
       "display_title": "湯志平",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":133}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":172}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxqp5vglks",
@@ -4535,15 +4535,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 53,
       "created_at": 1774449191,
       "gender": "F",
       "soul_seed": -1068852448227599465,
       "display_title": "江玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -98
     },
     {
       "id": "npc_dh7llhl1hpd9",
@@ -4555,7 +4555,7 @@
       "vit": 9,
       "qi": 10,
       "dex": 9,
-      "magnesium": 51,
+      "magnesium": 54,
       "last_observed_at": 1774238950,
       "created_at": 1774008690,
       "gender": "M",
@@ -4563,7 +4563,7 @@
       "display_title": "金玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6214}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6257}]",
       "disposition": -100
     },
     {
@@ -4576,15 +4576,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 11,
-      "magnesium": 45,
+      "magnesium": 53,
       "created_at": 1774450497,
       "gender": "M",
       "soul_seed": -5443212792315622470,
       "display_title": "秦國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":142}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhby6ppacwei",
@@ -4596,15 +4596,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 57,
       "created_at": 1774450446,
       "gender": "M",
       "soul_seed": -2845108705128308931,
       "display_title": "蕭華華",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":174}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbyanvukmvk",
@@ -4616,15 +4616,15 @@
       "vit": 14,
       "qi": 12,
       "dex": 9,
-      "magnesium": 42,
+      "magnesium": 45,
       "created_at": 1774450756,
       "gender": "F",
       "soul_seed": 3582901082930581053,
       "display_title": "陸麗慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":131}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":174}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxmqirux2o",
@@ -4636,15 +4636,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 11,
-      "magnesium": 53,
+      "magnesium": 49,
       "created_at": 1774448881,
       "gender": "F",
       "soul_seed": -5435563761176237587,
       "display_title": "龍華強",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":194}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxhne8tjqd",
@@ -4663,8 +4663,8 @@
       "display_title": "崔惠",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":198}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbygqbr32m0",
@@ -4676,15 +4676,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 51,
       "created_at": 1774451231,
       "gender": "M",
       "soul_seed": -8756956558825271854,
       "display_title": "戴杰",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhby54ia8gef",
@@ -4696,15 +4696,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 12,
-      "magnesium": 47,
+      "magnesium": 52,
       "created_at": 1774450322,
       "gender": "M",
       "soul_seed": 4439062450299379398,
       "display_title": "程慧國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":151}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbyer4c2krs",
@@ -4716,15 +4716,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 54,
       "created_at": 1774451076,
       "gender": "F",
       "soul_seed": 555336562277605725,
       "display_title": "梁艷",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":128}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":166}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxtz86g9pm",
@@ -4736,15 +4736,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 11,
-      "magnesium": 51,
+      "magnesium": 57,
       "created_at": 1774449448,
       "gender": "M",
       "soul_seed": 2583330078134750813,
       "display_title": "諸葛濤",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby5dxb524w",
@@ -4756,15 +4756,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 8,
-      "magnesium": 45,
+      "magnesium": 46,
       "created_at": 1774450342,
       "gender": "F",
       "soul_seed": 8072441812400622535,
       "display_title": "鍾敏娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":134}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":173}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbydkutn4tp",
@@ -4776,15 +4776,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 51,
       "created_at": 1774450984,
       "gender": "F",
       "soul_seed": 3312052439026561006,
       "display_title": "吳勇",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":172}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbxip2dk5ki",
@@ -4796,15 +4796,15 @@
       "vit": 9,
       "qi": 12,
       "dex": 9,
-      "magnesium": 54,
+      "magnesium": 51,
       "created_at": 1774448564,
       "gender": "F",
       "soul_seed": 6905221555947960663,
       "display_title": "馬秀霞",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":127}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":175}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby9vmr5360",
@@ -4816,15 +4816,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 9,
-      "magnesium": 59,
+      "magnesium": 52,
       "created_at": 1774450694,
       "gender": "M",
       "soul_seed": -5412272046210867331,
       "display_title": "王寧玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":168}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxvxa9f13j",
@@ -4836,15 +4836,15 @@
       "vit": 10,
       "qi": 9,
       "dex": 11,
-      "magnesium": 52,
+      "magnesium": 49,
       "created_at": 1774449601,
       "gender": "F",
       "soul_seed": 1799448705708293014,
       "display_title": "邵娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":137}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":184}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby0npxaaxs",
@@ -4856,15 +4856,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 9,
-      "magnesium": 46,
+      "magnesium": 56,
       "created_at": 1774449972,
       "gender": "M",
       "soul_seed": 1949364775075859027,
       "display_title": "雷國紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":128}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":172}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby6z4b2dbr",
@@ -4876,15 +4876,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 9,
-      "magnesium": 48,
+      "magnesium": 54,
       "created_at": 1774450467,
       "gender": "F",
       "soul_seed": 6578616368419616555,
       "display_title": "譚明勇",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":151}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxzvp2z15c",
@@ -4896,15 +4896,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 56,
       "created_at": 1774449911,
       "gender": "M",
       "soul_seed": -9219178232928387705,
       "display_title": "呂軍玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbybv4ts7xv",
@@ -4916,15 +4916,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 11,
-      "magnesium": 43,
+      "magnesium": 53,
       "created_at": 1774450850,
       "gender": "M",
       "soul_seed": -2044947807941455317,
       "display_title": "譚傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":148}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbxgc2stply",
@@ -4936,15 +4936,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 10,
-      "magnesium": 43,
+      "magnesium": 55,
       "created_at": 1774448379,
       "gender": "F",
       "soul_seed": 3770900663207447374,
       "display_title": "蘇國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":158}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":196}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbyf5d0dmw5",
@@ -4956,15 +4956,15 @@
       "vit": 13,
       "qi": 12,
       "dex": 10,
-      "magnesium": 43,
+      "magnesium": 53,
       "created_at": 1774451107,
       "gender": "M",
       "soul_seed": 2324990336999642290,
       "display_title": "呂偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":203}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhby0ej5jhuo",
@@ -4976,15 +4976,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 11,
-      "magnesium": 44,
+      "magnesium": 50,
       "created_at": 1774449952,
       "gender": "F",
       "soul_seed": -7616881642352340770,
       "display_title": "宇文建英",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":133}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":167}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby4q9lnulm",
@@ -4996,15 +4996,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 8,
-      "magnesium": 45,
+      "magnesium": 54,
       "created_at": 1774450291,
       "gender": "M",
       "soul_seed": -186130685653854732,
       "display_title": "黎霞秀",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":141}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":175}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxmcicuu8y",
@@ -5016,15 +5016,15 @@
       "vit": 11,
       "qi": 12,
       "dex": 9,
-      "magnesium": 48,
+      "magnesium": 50,
       "created_at": 1774448850,
       "gender": "M",
       "soul_seed": -4085702203865692691,
       "display_title": "歐陽俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":144}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby5iqyvxhp",
@@ -5036,15 +5036,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 11,
-      "magnesium": 56,
+      "magnesium": 55,
       "created_at": 1774450353,
       "gender": "F",
       "soul_seed": 1516789257925575202,
       "display_title": "萬俟雅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":201}]",
+      "disposition": -94
     },
     {
       "id": "npc_dhbxrls392ue",
@@ -5056,15 +5056,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 8,
-      "magnesium": 48,
+      "magnesium": 42,
       "created_at": 1774449262,
       "gender": "M",
       "soul_seed": -8165500219290880602,
       "display_title": "萬俟志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":144}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyhnehuqu2",
@@ -5076,15 +5076,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 12,
-      "magnesium": 44,
+      "magnesium": 53,
       "created_at": 1774451303,
       "gender": "F",
       "soul_seed": -1287307282516948886,
       "display_title": "鍾傑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":200}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhby9lzgbyi2",
@@ -5096,15 +5096,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 54,
       "created_at": 1774450673,
       "gender": "F",
       "soul_seed": 3827794637403704472,
       "display_title": "武玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":200}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxggwglkhx",
@@ -5116,15 +5116,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 52,
       "created_at": 1774448390,
       "gender": "M",
       "soul_seed": -2998974967277700235,
       "display_title": "崔安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":141}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":184}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbydg9fvvd0",
@@ -5136,15 +5136,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 8,
-      "magnesium": 53,
+      "magnesium": 55,
       "created_at": 1774450974,
       "gender": "M",
       "soul_seed": 2419506729371811589,
       "display_title": "姜玲",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":176}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbyb6y6eow9",
@@ -5156,15 +5156,15 @@
       "vit": 11,
       "qi": 9,
       "dex": 11,
-      "magnesium": 52,
+      "magnesium": 50,
       "created_at": 1774450797,
       "gender": "F",
       "soul_seed": 7569257875681960018,
       "display_title": "段敏超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":206}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhby8oofo6z1",
@@ -5176,15 +5176,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 11,
-      "magnesium": 52,
+      "magnesium": 44,
       "created_at": 1774450601,
       "gender": "F",
       "soul_seed": 4748805352895811732,
       "display_title": "任俊偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":139}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":196}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxm33bxkk9",
@@ -5196,15 +5196,15 @@
       "vit": 8,
       "qi": 10,
       "dex": 9,
-      "magnesium": 42,
+      "magnesium": 51,
       "created_at": 1774448830,
       "gender": "F",
       "soul_seed": -883405129399092544,
       "display_title": "周雅麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":142}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":195}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbybglhfyzf",
@@ -5216,15 +5216,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 49,
       "created_at": 1774450818,
       "gender": "M",
       "soul_seed": 595358980053929782,
       "display_title": "廖娜紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":124}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":152}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbyf9yeeqht",
@@ -5236,15 +5236,15 @@
       "vit": 10,
       "qi": 12,
       "dex": 11,
-      "magnesium": 43,
+      "magnesium": 46,
       "created_at": 1774451117,
       "gender": "F",
       "soul_seed": -4153005898831625863,
       "display_title": "朱建靜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":193}]",
+      "disposition": -91
     },
     {
       "id": "npc_dh7lxdp40upk",
@@ -5256,7 +5256,7 @@
       "vit": 12,
       "qi": 11,
       "dex": 12,
-      "magnesium": 45,
+      "magnesium": 52,
       "last_observed_at": 1774236283,
       "created_at": 1774009622,
       "gender": "M",
@@ -5264,7 +5264,7 @@
       "display_title": "楊康偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6314}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6346}]",
       "disposition": -100
     },
     {
@@ -5277,15 +5277,15 @@
       "vit": 8,
       "qi": 10,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 51,
       "created_at": 1774449314,
       "gender": "M",
       "soul_seed": 8477965884582845940,
       "display_title": "王霞濤",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":127}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":165}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby621kkh9p",
@@ -5304,8 +5304,8 @@
       "display_title": "何洋軍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":169}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":211}]",
+      "disposition": -93
     },
     {
       "id": "npc_dh7lq371wwmu",
@@ -5338,15 +5338,15 @@
       "vit": 9,
       "qi": 10,
       "dex": 8,
-      "magnesium": 43,
+      "magnesium": 51,
       "created_at": 1774448695,
       "gender": "F",
       "soul_seed": 8662618070085779714,
       "display_title": "皇甫艷",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
-      "disposition": -81
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":218}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbyblf4y3qb",
@@ -5358,15 +5358,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 9,
-      "magnesium": 48,
+      "magnesium": 52,
       "created_at": 1774450829,
       "gender": "F",
       "soul_seed": -2826566750132252283,
       "display_title": "萬明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":183}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhby78cyji36",
@@ -5378,15 +5378,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 10,
-      "magnesium": 42,
+      "magnesium": 56,
       "created_at": 1774450487,
       "gender": "M",
       "soul_seed": 5957181403543935933,
       "display_title": "宋萍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":191}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhby16s8tdmt",
@@ -5398,15 +5398,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 11,
-      "magnesium": 45,
+      "magnesium": 53,
       "created_at": 1774450013,
       "gender": "M",
       "soul_seed": -6515629798410228840,
       "display_title": "邱建芳",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":142}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":184}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyevxzi5jw",
@@ -5418,15 +5418,15 @@
       "vit": 8,
       "qi": 10,
       "dex": 8,
-      "magnesium": 48,
+      "magnesium": 57,
       "created_at": 1774451087,
       "gender": "M",
       "soul_seed": -7601988268889071029,
       "display_title": "錢勇",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":156}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhby4gukibdx",
@@ -5438,15 +5438,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 46,
       "created_at": 1774450270,
       "gender": "M",
       "soul_seed": 3516468571430348511,
       "display_title": "皇甫寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -75
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -94
     },
     {
       "id": "npc_dh7lub7op7n9",
@@ -5458,7 +5458,7 @@
       "vit": 11,
       "qi": 11,
       "dex": 9,
-      "magnesium": 47,
+      "magnesium": 50,
       "last_observed_at": 1774274153,
       "created_at": 1774009381,
       "gender": "F",
@@ -5466,7 +5466,7 @@
       "display_title": "史梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6293}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6327}]",
       "disposition": -100
     },
     {
@@ -5479,15 +5479,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 11,
-      "magnesium": 57,
+      "magnesium": 55,
       "created_at": 1774451272,
       "gender": "M",
       "soul_seed": -7440757458696337036,
       "display_title": "孟芳國",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":205}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxv0o1vv1q",
@@ -5499,15 +5499,15 @@
       "vit": 13,
       "qi": 9,
       "dex": 8,
-      "magnesium": 45,
+      "magnesium": 47,
       "created_at": 1774449530,
       "gender": "F",
       "soul_seed": -2462690919759421344,
       "display_title": "龔萍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":200}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbygcbc8jr1",
@@ -5519,15 +5519,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 10,
-      "magnesium": 47,
+      "magnesium": 48,
       "created_at": 1774451201,
       "gender": "F",
       "soul_seed": 3107699868383242766,
       "display_title": "方偉偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":169}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":216}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxps34qxg9",
@@ -5539,15 +5539,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 9,
-      "magnesium": 46,
+      "magnesium": 51,
       "created_at": 1774449119,
       "gender": "M",
       "soul_seed": -8912236652710204217,
       "display_title": "方玲俊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":189}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxsx3isykt",
@@ -5559,15 +5559,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 10,
-      "magnesium": 48,
+      "magnesium": 56,
       "created_at": 1774449365,
       "gender": "M",
       "soul_seed": 4136953201932316018,
       "display_title": "杜志志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":195}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxjmlnpfzu",
@@ -5579,15 +5579,15 @@
       "vit": 14,
       "qi": 10,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 51,
       "created_at": 1774448637,
       "gender": "M",
       "soul_seed": -4818849650241267864,
       "display_title": "石慧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":193}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxeasqat0d",
@@ -5599,15 +5599,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 50,
       "created_at": 1774448220,
       "gender": "F",
       "soul_seed": -1921793117171038896,
       "display_title": "夏慧雅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":165}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":208}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxfhaifrtr",
@@ -5619,15 +5619,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 11,
-      "magnesium": 44,
+      "magnesium": 50,
       "created_at": 1774448312,
       "gender": "F",
       "soul_seed": -4854732621042741905,
       "display_title": "熊麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":156}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":199}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxud8liznu",
@@ -5639,15 +5639,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 54,
       "created_at": 1774449479,
       "gender": "F",
       "soul_seed": -8759265117217576087,
       "display_title": "閻艷",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":127}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxjw8yrsk5",
@@ -5659,15 +5659,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 8,
-      "magnesium": 43,
+      "magnesium": 50,
       "created_at": 1774448658,
       "gender": "M",
       "soul_seed": 2985731960924563922,
       "display_title": "邱建建",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":146}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxep1eo0iv",
@@ -5679,15 +5679,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 9,
-      "magnesium": 43,
+      "magnesium": 54,
       "created_at": 1774448251,
       "gender": "M",
       "soul_seed": -6077616841896719161,
       "display_title": "向傑秀",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":191}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby6bglqr1x",
@@ -5706,8 +5706,8 @@
       "display_title": "莫紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":155}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxxd729hab",
@@ -5719,15 +5719,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 10,
-      "magnesium": 47,
+      "magnesium": 50,
       "created_at": 1774449714,
       "gender": "M",
       "soul_seed": 5815614034393991954,
       "display_title": "姜勇",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":178}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxk8c534ka",
@@ -5739,15 +5739,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 11,
-      "magnesium": 57,
+      "magnesium": 43,
       "created_at": 1774448685,
       "gender": "M",
       "soul_seed": -2519128123106148990,
       "display_title": "龍敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":170}]",
-      "disposition": -81
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":205}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxopq6qjs0",
@@ -5759,15 +5759,15 @@
       "vit": 14,
       "qi": 11,
       "dex": 12,
-      "magnesium": 43,
+      "magnesium": 58,
       "created_at": 1774449036,
       "gender": "M",
       "soul_seed": -7533559225560603156,
       "display_title": "莫梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxu8n7p7vo",
@@ -5779,15 +5779,15 @@
       "vit": 12,
       "qi": 9,
       "dex": 10,
-      "magnesium": 44,
+      "magnesium": 58,
       "created_at": 1774449469,
       "gender": "M",
       "soul_seed": 1500174772779505021,
       "display_title": "呂英淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":200}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxokwjkrfk",
@@ -5799,15 +5799,15 @@
       "vit": 12,
       "qi": 10,
       "dex": 12,
-      "magnesium": 44,
+      "magnesium": 58,
       "created_at": 1774449025,
       "gender": "M",
       "soul_seed": -1052065875412809328,
       "display_title": "莫平飛",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":178}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":207}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxhwta0egr",
@@ -5819,15 +5819,15 @@
       "vit": 12,
       "qi": 9,
       "dex": 11,
-      "magnesium": 54,
+      "magnesium": 58,
       "created_at": 1774448503,
       "gender": "M",
       "soul_seed": 8186489607199372885,
       "display_title": "武萍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":166}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":209}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby7rlom83y",
@@ -5839,15 +5839,15 @@
       "vit": 8,
       "qi": 9,
       "dex": 10,
-      "magnesium": 47,
+      "magnesium": 53,
       "created_at": 1774450529,
       "gender": "M",
       "soul_seed": 6376277112952982844,
       "display_title": "司空志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":202}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbyd20r2t0e",
@@ -5859,15 +5859,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 12,
-      "magnesium": 43,
+      "magnesium": 53,
       "created_at": 1774450943,
       "gender": "M",
       "soul_seed": 1902141367408661813,
       "display_title": "熊娜強",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":158}]",
-      "disposition": -71
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":191}]",
+      "disposition": -90
     },
     {
       "id": "npc_dhbxlb2i3nm5",
@@ -5879,15 +5879,15 @@
       "vit": 12,
       "qi": 12,
       "dex": 12,
-      "magnesium": 44,
+      "magnesium": 45,
       "created_at": 1774448769,
       "gender": "F",
       "soul_seed": -895131486172552824,
       "display_title": "金磊",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":155}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":201}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxhs7vsbgb",
@@ -5899,15 +5899,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 8,
-      "magnesium": 48,
+      "magnesium": 49,
       "created_at": 1774448493,
       "gender": "F",
       "soul_seed": -1837428269785691270,
       "display_title": "皇甫梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":163}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":207}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxo6nuyp4b",
@@ -5919,15 +5919,15 @@
       "vit": 14,
       "qi": 9,
       "dex": 11,
-      "magnesium": 50,
+      "magnesium": 43,
       "created_at": 1774448994,
       "gender": "M",
       "soul_seed": 4110901649774606218,
       "display_title": "萬俟秀偉",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":160}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":202}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby2mp2b1ud",
@@ -5939,15 +5939,15 @@
       "vit": 12,
       "qi": 11,
       "dex": 12,
-      "magnesium": 52,
+      "magnesium": 50,
       "created_at": 1774450126,
       "gender": "M",
       "soul_seed": -2539798187131009602,
       "display_title": "諸葛寧",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhby810plu3b",
@@ -5959,15 +5959,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 9,
-      "magnesium": 47,
+      "magnesium": 50,
       "created_at": 1774450549,
       "gender": "M",
       "soul_seed": 3543226642701514478,
       "display_title": "傅雅超",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":164}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":209}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxf3a2yuwe",
@@ -5979,15 +5979,15 @@
       "vit": 9,
       "qi": 12,
       "dex": 10,
-      "magnesium": 43,
+      "magnesium": 44,
       "created_at": 1774448282,
       "gender": "M",
       "soul_seed": 7615856512663406017,
       "display_title": "唐麗",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":167}]",
-      "disposition": -85
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":190}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhbxlkhj83ta",
@@ -5999,15 +5999,15 @@
       "vit": 13,
       "qi": 9,
       "dex": 11,
-      "magnesium": 46,
+      "magnesium": 53,
       "created_at": 1774448789,
       "gender": "F",
       "soul_seed": -7531048903207468736,
       "display_title": "龍華梅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":149}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbydu9uqbbx",
@@ -6019,15 +6019,15 @@
       "vit": 8,
       "qi": 9,
       "dex": 9,
-      "magnesium": 47,
+      "magnesium": 43,
       "created_at": 1774451005,
       "gender": "F",
       "soul_seed": 5381043307065197513,
       "display_title": "劉偉娜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":173}]",
-      "disposition": -72
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":209}]",
+      "disposition": -91
     },
     {
       "id": "npc_dhbxmv45rsg1",
@@ -6046,8 +6046,8 @@
       "display_title": "雷建",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":134}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":170}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby3a4ig56l",
@@ -6059,15 +6059,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 8,
-      "magnesium": 42,
+      "magnesium": 56,
       "created_at": 1774450177,
       "gender": "M",
       "soul_seed": 3307719506920866475,
       "display_title": "慕容敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":144}]",
-      "disposition": -76
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":182}]",
+      "disposition": -95
     },
     {
       "id": "npc_dhby1ksnqsp1",
@@ -6079,15 +6079,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 11,
-      "magnesium": 42,
+      "magnesium": 51,
       "created_at": 1774450044,
       "gender": "M",
       "soul_seed": 7524561871290222121,
       "display_title": "羅安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":151}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":177}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby0sjkowlq",
@@ -6099,15 +6099,15 @@
       "vit": 13,
       "qi": 9,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 59,
       "created_at": 1774449982,
       "gender": "F",
       "soul_seed": -4289929937215604700,
       "display_title": "戴勇",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":135}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":177}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyh4c5u4ba",
@@ -6119,15 +6119,15 @@
       "vit": 11,
       "qi": 11,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 50,
       "created_at": 1774451262,
       "gender": "F",
       "soul_seed": -6195774087412606537,
       "display_title": "龔軍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":135}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":181}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxr36a472x",
@@ -6139,15 +6139,15 @@
       "vit": 10,
       "qi": 9,
       "dex": 10,
-      "magnesium": 48,
+      "magnesium": 53,
       "created_at": 1774449222,
       "gender": "F",
       "soul_seed": -4697410949535230821,
       "display_title": "雷超勇",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":156}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":195}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxp8sj11h7",
@@ -6159,15 +6159,15 @@
       "vit": 9,
       "qi": 9,
       "dex": 12,
-      "magnesium": 55,
+      "magnesium": 54,
       "created_at": 1774449077,
       "gender": "M",
       "soul_seed": -4868372088527212581,
       "display_title": "張軍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":159}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":197}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby6gc2q1iq",
@@ -6179,15 +6179,15 @@
       "vit": 10,
       "qi": 10,
       "dex": 9,
-      "magnesium": 49,
+      "magnesium": 51,
       "created_at": 1774450426,
       "gender": "M",
       "soul_seed": 569920953996364390,
       "display_title": "長孫建萍",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":143}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxur90cj64",
@@ -6199,15 +6199,15 @@
       "vit": 9,
       "qi": 11,
       "dex": 10,
-      "magnesium": 44,
+      "magnesium": 57,
       "created_at": 1774449509,
       "gender": "M",
       "soul_seed": -8997025540913859986,
       "display_title": "任玲志",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":145}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":187}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbyhx1spaks",
@@ -6219,15 +6219,15 @@
       "vit": 13,
       "qi": 10,
       "dex": 9,
-      "magnesium": 46,
+      "magnesium": 57,
       "created_at": 1774451324,
       "gender": "M",
       "soul_seed": 3137873776604591584,
       "display_title": "韋靜",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":147}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":186}]",
+      "disposition": -93
     },
     {
       "id": "npc_dh7lywtpacw1",
@@ -6239,7 +6239,7 @@
       "vit": 9,
       "qi": 10,
       "dex": 10,
-      "magnesium": 49,
+      "magnesium": 47,
       "last_observed_at": 1774274153,
       "created_at": 1774009742,
       "gender": "F",
@@ -6247,7 +6247,7 @@
       "display_title": "劉紅",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6323}]",
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":6362}]",
       "disposition": -100
     },
     {
@@ -6260,15 +6260,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 10,
-      "magnesium": 45,
+      "magnesium": 53,
       "created_at": 1774450508,
       "gender": "F",
       "soul_seed": 6237074311938976082,
       "display_title": "袁安",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":153}]",
-      "disposition": -74
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -93
     },
     {
       "id": "npc_dhbxs091klga",
@@ -6287,8 +6287,8 @@
       "display_title": "汪敏",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":143}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxl68uobgl",
@@ -6300,15 +6300,15 @@
       "vit": 8,
       "qi": 12,
       "dex": 9,
-      "magnesium": 53,
+      "magnesium": 49,
       "created_at": 1774448758,
       "gender": "F",
       "soul_seed": 5807365172045936695,
       "display_title": "廖芬",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":188}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":229}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhbxzhgeuhm8",
@@ -6320,15 +6320,15 @@
       "vit": 8,
       "qi": 9,
       "dex": 11,
-      "magnesium": 57,
+      "magnesium": 52,
       "created_at": 1774449880,
       "gender": "F",
       "soul_seed": -3551918988157822753,
       "display_title": "湯飛",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":143}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":199}]",
+      "disposition": -98
     },
     {
       "id": "npc_dhby85m3llrw",
@@ -6340,15 +6340,15 @@
       "vit": 11,
       "qi": 10,
       "dex": 11,
-      "magnesium": 51,
+      "magnesium": 49,
       "created_at": 1774450559,
       "gender": "F",
       "soul_seed": -2281131897401842162,
       "display_title": "周秀燕",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":142}]",
-      "disposition": -73
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":185}]",
+      "disposition": -92
     },
     {
       "id": "npc_dhbxguwvgtka",
@@ -6360,15 +6360,15 @@
       "vit": 12,
       "qi": 9,
       "dex": 9,
-      "magnesium": 50,
+      "magnesium": 56,
       "created_at": 1774448420,
       "gender": "F",
       "soul_seed": 4511941142858716180,
       "display_title": "范明",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_f\",\"legs\":\"starter_legs_f\",\"feet\":\"starter_feet_f\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":166}]",
-      "disposition": -83
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":199}]",
+      "disposition": -100
     },
     {
       "id": "npc_dhby00ah0iqw",
@@ -6380,15 +6380,15 @@
       "vit": 10,
       "qi": 11,
       "dex": 9,
-      "magnesium": 45,
+      "magnesium": 57,
       "created_at": 1774449921,
       "gender": "M",
       "soul_seed": 6623232357901755053,
       "display_title": "姚慧淑",
       "activated_nodes": "[\"N000\"]",
       "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":157}]",
-      "disposition": -79
+      "inventory": "[{\"item_id\":\"wild_herb\",\"qty\":208}]",
+      "disposition": -98
     }
   ]
 }
