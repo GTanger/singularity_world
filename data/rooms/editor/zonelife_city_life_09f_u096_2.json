@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_09f_u096_2",
+  "name": "陽台",
+  "description": "這處獨特的陽台徹底模糊了人造建築與外部「沃土」環境的邊界。護欄幾乎已經看不出原本的金屬輪廓，完全被大樓底層一路瘋狂竄生的巨型藤蔓所吞噬。屋主不僅沒有去砍伐它們，反而順勢在陽台上搭建了木質爬架，讓這些強勢的變異植物與家中的溫室長春藤融為一體。腳下的防腐木地板隙縫中甚至長出了幾簇無害的地衣菇類。站在這裡，你可以深深感受到這座浮生城被自然力量反噬的荒誕美感與極限生存的夾縫感。從這極度野性的邊界退後，即可進入受到庇護的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife_9f",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "zonelife_city_life_09f_u096_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_9f_u096_bal_to_city_life_9f_u096_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你轉身離開這處植物過度繁茂的陽台，退回客廳之內。"
+      },
+      "move_to_room_id": "zonelife_city_life_09f_u096_1"
+    }
+  ]
+}

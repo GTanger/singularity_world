@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_wild_outdoor_01",
+  "name": "浮生城門外",
+  "description": "腳下是加寬的接坡，石面刻了細溝防滑，兩側燈柱矮而密，光被樹冠與蔓生綠簾濾成碎點。抬頭仍見身後高聳的立面，門關門三洞像深色傷口嵌在弧牆上，中門一塊特別死寂。遠處街廓與其他建物剪影浸在薄霧裡，風從開闊處來，比城內更乾、更帶土味。\n可經〔門關門〕重新進入浮生城關廂。",
+  "tags": [
+    "wild",
+    "skyscraper",
+    "outdoor",
+    "approach"
+  ],
+  "zone": "citylife_gate",
+  "exits": [
+    {
+      "direction": "門關門",
+      "to": "zonelife_city_life_01f_u013_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "zonelife_city_life_01f_u013_0",
+      "name": "門關門",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你從側開門洞折返，回到「門關門」關廂。"
+      },
+      "move_to_room_id": "zonelife_city_life_01f_u013_0"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "id": "zonelife_city_life_02f_u022_1",
+  "name": "骨科診間",
+  "description": "〔診床〕金屬升降柄擦得發澀，〔牽引配重〕在角落靜靜吃地。長臂燈罩邊聚塵，照在〔石膏繃帶樣品〕上顯出織紋；牆上〔固定示範圖〕釘著角度線。地板接縫嵌著細小石膏粉。\n可經〔候診區〕回到骨科候診。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_2f",
+  "exits": [
+    {
+      "direction": "候診區",
+      "to": "zonelife_city_life_02f_u022_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_ortho_exam_wait",
+      "name": "候診區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到骨科候診區。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u022_0"
+    },
+    {
+      "id": "city_life_2f_dept_ortho_exam_poster",
+      "name": "固定示範圖",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "圖上關節角度用紅線標出，旁註：「富態化跌創先固定再移動，勿硬拉。」"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_ortho_exam_bed",
+      "name": "診床",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "升降桿旁貼著最大承重貼紙，床墊塑膠套邊緣捲起。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_ortho_exam_weight",
+      "name": "牽引配重",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "鐵餅疊在架槽裡，最上一塊寫「5」字漆剝了一角。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_ortho_exam_cast",
+      "name": "石膏繃帶樣品",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "捲邊切齊，外層網眼規則；標籤寫浸水時間與硬化分鐘數。"
+      }
+    }
+  ]
+}

@@ -102,7 +102,13 @@
                         <div class="card glass">
                             <h3>基礎屬性</h3>
                             <div class="form-grid">
-                                <div class="field"><label>房間 ID</label><input id="f-id" disabled></div>
+                                <div class="field">
+                                    <label>房間 ID</label>
+                                    <div class="input-with-action">
+                                        <input id="f-id" disabled>
+                                        <button id="btn-rename-id" class="btn btn-small btn-warning">重命名</button>
+                                    </div>
+                                </div>
                                 <div class="field"><label>名稱</label><input id="f-name"></div>
                                 <div class="field"><label>區域 zone</label><input id="f-zone" placeholder="street / alley..."></div>
                                 <div class="field"><label>標籤 tags</label><input id="f-tags" placeholder="逗點分隔"></div>

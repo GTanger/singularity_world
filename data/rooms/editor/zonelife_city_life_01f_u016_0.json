@@ -1,0 +1,84 @@
+{
+  "id": "zonelife_city_life_01f_u016_0",
+  "name": "來喫茶",
+  "description": "橫跨前端的木質櫃檯，上方有幾面發光的價目表，店內是一排整齊的不鏽鋼茶桶，淡淡的現泡茶香向開放空間散溢。店面直接嵌入大廳石面，落地窗外是一片被濃綠填滿的安靜荒野。",
+  "tags": [
+    "tea"
+  ],
+  "zone": "citylife_1f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_01f_u010_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "zonelife_city_life_01f_u010_0",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你帶著現調茶飲的微涼餘溫，重新步入一樓大廳溫馨的公共區域。"
+      },
+      "move_to_room_id": "zonelife_city_life_01f_u010_0"
+    },
+    {
+      "id": "city_life_1f_tea_obj_list",
+      "name": "價目表",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "「來自富態大地新鮮茶葉的手搖飲創始店！！」\n【來喫茶・茶單】\n｜純茶｜奶茶｜特調｜厚乳｜"
+      }
+    },
+    {
+      "id": "city_life_1f_tea_obj_tea",
+      "name": "純茶",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜浮生紅　　｜\n｜沃土綠　　｜\n｜清心烏龍　｜\n｜晨露青　　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_tea_obj_milk",
+      "name": "奶茶",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜來喫鮮奶茶　　｜\n｜琥珀珍珠奶茶　｜\n｜霜花奶綠　　　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_tea_obj_tt",
+      "name": "特調",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜向陽檸檬綠　　｜\n｜飛霜薄荷青　　｜\n｜微波果茶　　　｜"
+      }
+    },
+    {
+      "id": "city_life_1f_tea_obj_mmiillkk",
+      "name": "厚乳",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "｜芝士奶蓋紅　　｜\n｜沃土厚乳茶　　｜"
+      }
+    }
+  ]
+}

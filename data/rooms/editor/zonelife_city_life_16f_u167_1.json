@@ -1,0 +1,44 @@
+{
+  "id": "zonelife_city_life_16f_u167_1",
+  "name": "物資區",
+  "description": "｜大蕒家｜物資區｜體驗區｜\n這裡陳列著大量根據系統預測產出的基礎物資。從能量方塊到標準化罐頭，每樣商品都經過精確包裝，呈現出一種高度秩序化的工業美感。環境音中帶有柔和的促銷播報聲。",
+  "tags": [
+    "retail",
+    "grocery"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "zonelife_city_life_16f_u167_0"
+    },
+    {
+      "direction": "生活體驗",
+      "to": "zonelife_city_life_16f_u167_3"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_u167_1_entry",
+      "name": "回入口",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開充滿秩序感的物資架，回到賣場門口。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u167_0"
+    },
+    {
+      "id": "obj_u167_1_lifestyle",
+      "name": "體驗區",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你循著淡淡的居家香氛，步入生活體驗區。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u167_3"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "id": "zonelife_city_life_02f_u022_0",
+  "name": "骨　科",
+  "description": "候診區牆上掛著〔骨架圖〕，〔夾板樣品〕與三角巾用細繩綁在展示板邊。角落〔X光片回收桶〕滿到要壓一壓；〔秤台〕踏板磨亮，扶把膠套裂了細紋。\n可經〔大廳〕回「浮生城2F」，或進〔診間〕。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_2f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_02f_u020_0"
+    },
+    {
+      "direction": "診間",
+      "to": "zonelife_city_life_02f_u022_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_ortho_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開掛滿X光片的骨科診區，走回2樓門診大廳，腳步聲在整潔的瓷磚地面上迴盪。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u020_0"
+    },
+    {
+      "id": "city_life_2f_dept_ortho_to_exam",
+      "name": "診間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入骨科診間。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u022_1"
+    },
+    {
+      "id": "city_life_2f_dept_ortho_skeleton",
+      "name": "骨架圖",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "簡化骨線用黑筆勾過，膝與髖用紅圈標「常扭傷位」。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_ortho_splint",
+      "name": "夾板樣品",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "輕木與塑膠兩種，邊角繩結磨鬆；示範綁法圖釘在旁。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_ortho_bin",
+      "name": "X光片回收桶",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "牛皮紙袋口露出條碼邊，桶蓋壓簧吃緊，開蓋會吱一聲。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_ortho_scale",
+      "name": "秤台",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "踏板防滑紋中央磨得最亮；顯示窗貼了「扶欄再站」膠條。"
+      }
+    }
+  ]
+}

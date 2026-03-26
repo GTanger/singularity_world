@@ -1,0 +1,59 @@
+{
+  "id": "zonelife_city_life_16f_u164_3",
+  "name": "百貨區",
+  "description": "｜品牌區｜百貨區｜戶外區｜\n從廚具到家居裝飾，這裡提供了數以萬計的生活選項。每一個物件都標示著精確的能源等級。這裡的貨架高度驚人，需要專用的自動升降梯才能取到高處的物品。",
+  "tags": [
+    "retail",
+    "home"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "國際品牌",
+      "to": "zonelife_city_life_16f_u164_1"
+    },
+    {
+      "direction": "服飾中心",
+      "to": "zonelife_city_life_16f_u164_2"
+    },
+    {
+      "direction": "戶外中心",
+      "to": "zonelife_city_life_16f_u164_4"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_u164_3_brand",
+      "name": "品牌區",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走回充滿昂貴香氣的品牌區。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u164_1"
+    },
+    {
+      "id": "obj_u164_3_apparel",
+      "name": "服飾區",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你跨步走往機能服飾展示區。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u164_2"
+    },
+    {
+      "id": "obj_u164_3_outdoor",
+      "name": "戶外區",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向存放大型器械的戶外中心。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u164_4"
+    }
+  ]
+}

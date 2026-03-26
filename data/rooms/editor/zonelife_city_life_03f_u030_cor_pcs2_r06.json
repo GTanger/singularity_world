@@ -1,0 +1,31 @@
+{
+  "id": "zonelife_city_life_03f_u030_cor_pcs2_r06",
+  "name": "兒外二·單人病房06",
+  "description": "單人房門上有觀察窗，室內儀器低鳴混著加濕器的細響。\n可經〔走廊〕回到「兒童外科病房二號走廊」。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife_3f",
+  "exits": [
+    {
+      "direction": "走廊",
+      "to": "zonelife_city_life_03f_u030_cor_pcs2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_pcs2_r06_to_hall",
+      "name": "走廊",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你步離病房，回到兒外二那清冷寂靜的長廊動線上。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_cor_pcs2"
+    }
+  ]
+}

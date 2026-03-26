@@ -1,0 +1,33 @@
+{
+  "id": "zonelife_city_life_09f_u095_5",
+  "name": "客臥",
+  "description": "為長輩或親友偶爾借宿準備的溫馨客房。設計相較於其他房間更為簡單，但依舊維持著極高的舒適度。房內有一張鋪著乾淨米白色純棉床單的雙人床，以及一個簡單的折疊木質行李架。採光窗檯上放著一盆很好照顧的黃金葛，為這個臨時休息的居室增添了一抹鮮活綠意，讓人有被妥善照顧的感覺。拉開房門，就能聽見外側〔客廳〕傳來的家庭活動聲響。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife_9f",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "zonelife_city_life_09f_u095_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_9f_u095_brg_to_city_life_9f_u095_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開客臥，回到了客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_09f_u095_1"
+    }
+  ]
+}

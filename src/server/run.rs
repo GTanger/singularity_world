@@ -61,6 +61,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         // 房間管理 CRUD
         .route("/api/rooms", get(http_api::list_rooms).post(http_api::create_room))
         .route("/api/rooms/{id}", get(http_api::get_room_admin).put(http_api::update_room).delete(http_api::delete_room))
+        .route("/api/rooms/{id}/rename", post(http_api::rename_room))
         .route("/api/rooms/{id}/exits", post(http_api::add_exit))
         .route("/api/rooms/{from_id}/exits/{direction}", delete(http_api::remove_exit))
         // 房間心智圖編輯器

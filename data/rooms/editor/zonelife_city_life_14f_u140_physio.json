@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_14f_u140_physio",
+  "name": "理療間",
+  "description": "牽引與熱敷設備收納有序，地板防滑。偶有人低聲數拍子。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_14f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_14f_u140_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_14f_physio_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走出安靜幽暗的理療間，重新感受到大廳明亮的公共照明。"
+      },
+      "move_to_room_id": "zonelife_city_life_14f_u140_0"
+    }
+  ]
+}

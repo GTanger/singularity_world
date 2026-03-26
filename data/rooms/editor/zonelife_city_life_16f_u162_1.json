@@ -1,0 +1,46 @@
+{
+  "id": "zonelife_city_life_16f_u162_1",
+  "name": "日用品區",
+  "description": "｜入口處｜日用區｜飲品區｜\n狹窄但整齊的走道，架上塞滿了各式各樣的生活必需品。從生物降解的清潔劑到高效能的防輻射噴霧應有盡有。這裡營造出一種實用且溫馨的氛圍。",
+  "tags": [
+    "retail",
+    "grocery"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "zonelife_city_life_16f_u162_0"
+    },
+    {
+      "direction": "櫃檯",
+      "to": "zonelife_city_life_16f_u162_3"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_1774446391982",
+      "name": "入口處",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「入口處」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u162_0"
+    },
+    {
+      "id": "obj_1774446392292",
+      "name": "飲品區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你避開堆放在走道上的特價紙箱，轉向嗡嗡作響的「飲品區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u162_2"
+    }
+  ]
+}

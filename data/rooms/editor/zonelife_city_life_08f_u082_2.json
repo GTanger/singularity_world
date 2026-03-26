@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_08f_u082_2",
+  "name": "陽台",
+  "description": "與室內極簡風格形成對稱，這座陽台去除了常見的複雜欄杆，改用一整片通透的高強度防爆無框玻璃直接抵擋浮生城高空的風切。腳下的地坪選用了與客廳同色系的水泥粉光處理，沒有擺放任何植栽盆器，讓外側那瘋狂蔓延的綠色立面成為最純粹的天然掛畫。你可以站在這處不惹塵埃的觀景前哨，或者退回〔客廳〕之內。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife_8f",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "zonelife_city_life_08f_u082_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_8f_u082_bal_to_city_life_8f_u082_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你轉身離開陽台，退回戶內的客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u082_1"
+    }
+  ]
+}

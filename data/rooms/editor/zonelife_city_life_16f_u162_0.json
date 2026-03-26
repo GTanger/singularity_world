@@ -1,0 +1,62 @@
+{
+  "id": "zonelife_city_life_16f_u162_0",
+  "name": "福利聯",
+  "description": "｜櫃檯區｜福利聯｜日用區｜\n一個充滿親切感的超市入口。門口的海報展示著本週的沃土特產促銷。廣播中正撥放著輕快的節奏，「請支援收銀」的聲音偶爾穿插其中。這裡是浮生城居民最常光顧的物資站。\n回大廳",
+  "tags": [
+    "retail",
+    "supermarket"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_16f_u160_0"
+    },
+    {
+      "direction": "日用品",
+      "to": "zonelife_city_life_16f_u162_1"
+    },
+    {
+      "direction": "飲品區",
+      "to": "zonelife_city_life_16f_u162_2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_1774445815783",
+      "name": "櫃檯區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向超市的「櫃檯區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u162_3"
+    },
+    {
+      "id": "obj_1774445816448",
+      "name": "日用區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你穿過走道，走進「日用區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u162_1"
+    },
+    {
+      "id": "obj_1774446044439",
+      "name": "回大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你返回「浮生城16樓」大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u160_0"
+    }
+  ]
+}

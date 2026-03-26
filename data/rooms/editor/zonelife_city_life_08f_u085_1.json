@@ -1,0 +1,128 @@
+{
+  "id": "zonelife_city_life_08f_u085_1",
+  "name": "客廳",
+  "description": "這寬敞的起居室瀰漫著濃厚的居家溫馨感。腳下是帶有真實木結紋理的淺色橡木地板，中央擺放著一套觸感極佳的奶茶色棉麻布沙發。沙發周圍散落著幾個色彩柔和的抱枕，牆面的層架上擺滿了相框與生活風格讀物。即使在冰冷的巨型建築內，這裡依舊透過大量的暖黃色光源營造出強烈的安全感。這裡是家庭互動的心臟地帶，你可以穿越玻璃拉門走到〔陽台〕，或走向一旁開放式的〔餐廳〕。兩側的淺色木門分別通往〔主臥〕、〔次臥〕、〔客臥〕與共用的〔衛浴〕。推開〔大門〕，則會離開這個溫暖的避風港，回到外頭的長廊。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife_8f",
+  "exits": [
+    {
+      "direction": "大門",
+      "to": "zonelife_city_life_08f_u080_0"
+    },
+    {
+      "direction": "餐廳",
+      "to": "zonelife_city_life_08f_u085_7"
+    },
+    {
+      "direction": "主臥",
+      "to": "zonelife_city_life_08f_u085_4"
+    },
+    {
+      "direction": "次臥",
+      "to": "zonelife_city_life_08f_u085_22"
+    },
+    {
+      "direction": "客臥",
+      "to": "zonelife_city_life_08f_u085_5"
+    },
+    {
+      "direction": "衛浴",
+      "to": "zonelife_city_life_08f_u085_3"
+    },
+    {
+      "direction": "陽台",
+      "to": "zonelife_city_life_08f_u085_2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_8f_gate_city_life_8f_u085_liv",
+      "name": "大門",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你穿過玄關，推開大門回到長廊。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u080_0"
+    },
+    {
+      "id": "city_life_8f_u085_liv_to_city_life_8f_u085_din",
+      "name": "餐廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向了一旁的餐廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u085_7"
+    },
+    {
+      "id": "city_life_8f_u085_liv_to_city_life_8f_u085_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開木門，進入了主臥。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u085_4"
+    },
+    {
+      "id": "city_life_8f_u085_liv_to_city_life_8f_u085_br2",
+      "name": "次臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你打開了次臥的房門。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u085_22"
+    },
+    {
+      "id": "city_life_8f_u085_liv_to_city_life_8f_u085_brg",
+      "name": "客臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走進了客臥。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u085_5"
+    },
+    {
+      "id": "city_life_8f_u085_liv_to_city_life_8f_u085_bat",
+      "name": "衛浴",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入了共用的衛浴空間。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u085_3"
+    },
+    {
+      "id": "city_life_8f_u085_liv_to_city_life_8f_u085_bala",
+      "name": "陽台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你拉開玻璃門，走向戶外的陽台。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u085_2"
+    }
+  ]
+}

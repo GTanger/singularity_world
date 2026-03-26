@@ -1,0 +1,33 @@
+{
+  "id": "zonelife_city_life_07f_u077_5",
+  "name": "客臥",
+  "description": "為臨時商務訪客或短暫借宿者準備的標準房間。這裡如同國際航空的商務艙般，提供了最純粹且絕不多餘的休息服務。空間內配有一張舒適度極佳的標準雙人床與一個懸浮式的開放鐵件掛衣架，色調為無壓迫感的明亮淺灰色。這座空間的牆面上沒有畫作，只有一個簡單的電子溫濕度鐘不間斷地精確跳動著數字。它是一個毫無感情包袱的完美中繼停靠站，推開門扉即可重新踏入機能明確的〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife_7f",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "zonelife_city_life_07f_u077_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_7f_u077_brg_to_city_life_7f_u077_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開了客臥，回到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_07f_u077_1"
+    }
+  ]
+}

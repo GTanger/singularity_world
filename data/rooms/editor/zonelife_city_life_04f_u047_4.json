@@ -1,0 +1,65 @@
+{
+  "id": "zonelife_city_life_04f_u047_4",
+  "name": "主臥",
+  "description": "主人的寢室延續了那股不帶多餘感情色彩的商務冷調。房內沒有任何冗餘的裝飾品，雙人床鋪著幾乎毫無皺褶的純白色高支數絲光棉床單。床頭背牆是由深黑色的吸音羊毛氈拼接而成，兩側的嵌入式閱讀燈發射出極度精準的光束，完全不干擾周邊視線。這是不容妥協的休息與身體重整區域，所有的機能都被計算得恰到好處。由此，你可以進入同等高規格要求的專屬〔主衛〕，或是拉開電子玻璃門走向〔花圃平台〕進行日常的短暫喘息。推開沉重的隔音木門，即可重新回到〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife_4f",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "zonelife_city_life_04f_u047_1"
+    },
+    {
+      "direction": "主衛",
+      "to": "zonelife_city_life_04f_u047_6"
+    },
+    {
+      "direction": "花圃平台",
+      "to": "zonelife_city_life_04f_u047_12"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_4f_u047_brm_to_city_life_4f_u047_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開主臥，回到了客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u047_1"
+    },
+    {
+      "id": "city_life_4f_u047_brm_to_city_life_4f_u047_btm",
+      "name": "主衛",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你解鎖並進入了高質感的專屬主衛。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u047_6"
+    },
+    {
+      "id": "city_life_4f_u047_brm_to_city_life_4f_u047_balb",
+      "name": "花圃平台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開側門，步入了經過嚴密管理的花圃平台。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u047_12"
+    }
+  ]
+}

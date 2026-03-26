@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_06f_u063_12",
+  "name": "花圃平台",
+  "description": "這是僅供主臥室獨享的私人半戶外露台。地面鋪滿了具有良好吸水性的陶土磚，幾座用消光黑金屬打造的植栽槽內，種植著經過精心修剪的昂貴觀葉植物。不同於大樓外部那種狂野無序的植被，這裡的綠意被嚴格地控制與馴化，宛如一座微型的空中御花園。你在這裡唯一能前往的地方，就是退入後方的〔主臥〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife_6f",
+  "exits": [
+    {
+      "direction": "主臥",
+      "to": "zonelife_city_life_06f_u063_4"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_6f_u063_balb_to_city_life_6f_u063_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開了花圃平台，退回主臥內。"
+      },
+      "move_to_room_id": "zonelife_city_life_06f_u063_4"
+    }
+  ]
+}

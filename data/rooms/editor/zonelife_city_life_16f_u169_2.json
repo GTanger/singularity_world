@@ -1,0 +1,36 @@
+{
+  "id": "zonelife_city_life_16f_u169_2",
+  "name": "電動區",
+  "description": "｜照明區｜電動區｜回入口｜\n這裡存放著氣動鑽頭、工業切削機與各式重型手持工具。每一件器材都帶著厚實的震動感與強大的動力美學。這裡是浮生城重工業維修人員的軍械庫。由此可回往入口。",
+  "tags": [
+    "retail",
+    "hardware"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "zonelife_city_life_16f_u169_0"
+    },
+    {
+      "direction": "工業照明",
+      "to": "zonelife_city_life_16f_u169_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_u169_2_entry",
+      "name": "回入口",
+      "sockets": ["Move"],
+      "responses": { "Move": "你離開排列整齊的鑽機架，回到五金行門口。" },
+      "move_to_room_id": "zonelife_city_life_16f_u169_0"
+    },
+    {
+      "id": "obj_u169_2_lighting",
+      "name": "照明區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你繞過切削母機展示台，步入燈火通明的照明區。" },
+      "move_to_room_id": "zonelife_city_life_16f_u169_1"
+    }
+  ]
+}

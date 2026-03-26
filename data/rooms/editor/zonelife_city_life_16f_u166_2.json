@@ -1,0 +1,46 @@
+{
+  "id": "zonelife_city_life_16f_u166_2",
+  "name": "工具區",
+  "description": "｜雜貨區｜工具區｜店門口｜\n各式各樣的螺絲、扳手、焊槍與小型精密工具在此整齊分類。許多老練的工程師會在這裡挑選零件，現場甚至提供基礎的檢測台。",
+  "tags": [
+    "retail",
+    "hardware"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "zonelife_city_life_16f_u166_0"
+    },
+    {
+      "direction": "雜貨區",
+      "to": "zonelife_city_life_16f_u166_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_1774440687613",
+      "name": "店門口",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開規整的金屬零件架，走回充滿市井生活氣息的「店門口」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u166_0"
+    },
+    {
+      "id": "obj_1774440688163",
+      "name": "雜貨區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你繞過擺放扳手的櫃子，步入色彩繽紛的「雜貨區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u166_1"
+    }
+  ]
+}

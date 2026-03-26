@@ -1,0 +1,50 @@
+{
+  "id": "zonelife_city_life_16f_u164_0",
+  "name": "沃而滿",
+  "description": "｜服飾區｜沃而滿｜品牌區｜\n藍色與白色的招牌發出冷峻的螢光。這裡是帶入全球標準化美學的零售巨頭，賣場內部的走道寬敞到甚至可以讓小型運輸車通行。一名保安正透過虛擬終端掃描著每一位進入者。回大廳可逛其他商場。",
+  "tags": [
+    "retail",
+    "hypermarket"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_16f_u160_0"
+    },
+    {
+      "direction": "國際品牌",
+      "to": "zonelife_city_life_16f_u164_1"
+    },
+    {
+      "direction": "服飾中心",
+      "to": "zonelife_city_life_16f_u164_2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_u164_hall",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "步出賣場大門，你回到了16樓主大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u160_0"
+    },
+    {
+      "id": "obj_u164_brand",
+      "name": "品牌區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你踏入陳列著世界各國貨品的品牌區。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u164_1"
+    }
+  ]
+}

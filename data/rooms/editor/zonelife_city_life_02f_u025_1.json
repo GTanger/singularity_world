@@ -1,0 +1,63 @@
+{
+  "id": "zonelife_city_life_02f_u025_1",
+  "name": "皮膚科診間",
+  "description": "〔放大燈〕臂低低橫過診桌，壁櫃裡〔玻片盒〕鎖著，標籤寫孢子印痕對照。桌邊〔伍德氏燈〕電線在桌腳繞了一圈防絆。水槽邊小瓶沖洗液肩口凝水珠；廢棄手套桶蓋扣緊仍掩不住淡淡藥水氣。\n可經〔候診區〕回到皮膚科候診。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_2f",
+  "exits": [
+    {
+      "direction": "候診區",
+      "to": "zonelife_city_life_02f_u025_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_derma_exam_wait",
+      "name": "候診區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到皮膚科候診區。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u025_0"
+    },
+    {
+      "id": "city_life_2f_dept_derma_exam_uv",
+      "name": "伍德氏燈",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "燈罩蒙塵，開關旁貼紙提醒戴護目；電線在桌腳繞了一圈防絆。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_derma_exam_slides",
+      "name": "玻片盒",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "透明格裡玻片側立，標籤字小到要瞇眼；鎖孔旁貼「非醫勿開」。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_derma_exam_lamp",
+      "name": "放大燈",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "環形燈管邊緣發黃，調焦旋鈕齒紋裡卡著皮屑似的灰。"
+      }
+    }
+  ]
+}

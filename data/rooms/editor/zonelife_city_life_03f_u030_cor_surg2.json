@@ -1,0 +1,103 @@
+{
+  "id": "zonelife_city_life_03f_u030_cor_surg2",
+  "name": "外科病房二號走廊",
+  "description": "｜外206｜外204｜外202｜\n\n外科病房二號走廊。換藥車停在轉角，垃圾袋口打結規矩，標籤寫「敷料／針具」分欄。\n牆上標示著動線指示：大廳←人→病房\n\n｜外205｜外203｜外201｜",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife_3f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_03f_u030_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_surg2_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城3F」。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_0"
+    },
+    {
+      "id": "city_life_3f_cor_surg2_obj_01",
+      "name": "外201",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科二·四人病房01」。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_cor_surg2_r01"
+    },
+    {
+      "id": "city_life_3f_cor_surg2_obj_02",
+      "name": "外202",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科二·四人病房02」。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_cor_surg2_r02"
+    },
+    {
+      "id": "city_life_3f_cor_surg2_obj_03",
+      "name": "外203",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科二·四人病房03」。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_cor_surg2_r03"
+    },
+    {
+      "id": "city_life_3f_cor_surg2_obj_04",
+      "name": "外204",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科二·雙人病房04」。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_cor_surg2_r04"
+    },
+    {
+      "id": "city_life_3f_cor_surg2_obj_05",
+      "name": "外205",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科二·雙人病房05」。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_cor_surg2_r05"
+    },
+    {
+      "id": "city_life_3f_cor_surg2_obj_06",
+      "name": "外206",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推門進入「外科二·單人病房06」。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_cor_surg2_r06"
+    }
+  ]
+}

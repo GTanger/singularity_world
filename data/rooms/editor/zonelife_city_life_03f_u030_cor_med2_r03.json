@@ -1,0 +1,31 @@
+{
+  "id": "zonelife_city_life_03f_u030_cor_med2_r03",
+  "name": "內科二·四人病房03",
+  "description": "四張床擺成兩兩對腳，簾軌在天花拉出橢圓陰影；窗邊留一條窄縫透氣。\n可經〔走廊〕回到「內科病房二號走廊」。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor"
+  ],
+  "zone": "citylife_3f",
+  "exits": [
+    {
+      "direction": "走廊",
+      "to": "zonelife_city_life_03f_u030_cor_med2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_3f_cor_med2_r03_to_hall",
+      "name": "走廊",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開輕巧的病房滑門，回到了內二廊安靜的動線上。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_cor_med2"
+    }
+  ]
+}

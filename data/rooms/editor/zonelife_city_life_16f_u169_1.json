@@ -1,0 +1,36 @@
+{
+  "id": "zonelife_city_life_16f_u169_1",
+  "name": "照明區",
+  "description": "｜振宇百｜照明區｜電動區｜\n各種高強度的探照燈與防爆燈具在牆面上整齊排列。光線在這裡被精確地引導，足以照亮最幽深的地底坑道。空氣中帶著一種因高溫燈管產生的微弱焦香。",
+  "tags": [
+    "retail",
+    "lighting"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "zonelife_city_life_16f_u169_0"
+    },
+    {
+      "direction": "重型電動區",
+      "to": "zonelife_city_life_16f_u169_2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_u169_1_entry",
+      "name": "回入口",
+      "sockets": ["Move"],
+      "responses": { "Move": "你離開略顯灼熱的燈具區，回到五金行入口。" },
+      "move_to_room_id": "zonelife_city_life_16f_u169_0"
+    },
+    {
+      "id": "obj_u169_1_power",
+      "name": "電動區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你穿過強光區，步入充滿機械震動感的電動區。" },
+      "move_to_room_id": "zonelife_city_life_16f_u169_2"
+    }
+  ]
+}

@@ -308,6 +308,34 @@ pub async fn delete_room(
     Json(serde_json::json!({"deleted": id})).into_response()
 }
 
+// POST /api/rooms/:id/rename → 重新命名房間 ID
+#[derive(Deserialize)]
+pub struct RenameRoomReq {
+    pub new_id: String,
+}
+
+pub async fn rename_room(
+    axum::extract::State(state): axum::extract::State<crate::server::run::AppState>,
+    Query(q): Query<AdminQuery>,
+    Path(id): Path<String>,
+    Json(body): Json<RenameRoomReq>,
+) -> impl IntoResponse {
+    if !is_admin_authorized(&state.cfg, &q) {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+    }
+    let Some(st) = store::get_store() else {
+        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+    };
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
+    };
+    if let Err(e) = s.rename_room(&id, &body.new_id) {
+        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+    }
+    Json(serde_json::json!({"ok": true, "old_id": id, "new_id": body.new_id})).into_response()
+}
+
 // POST /api/rooms/:id/exits → 新增出口
 #[derive(Deserialize)]
 pub struct AddExitReq {

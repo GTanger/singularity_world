@@ -1,0 +1,36 @@
+{
+  "id": "zonelife_city_life_16f_u163_4",
+  "name": "熟食區",
+  "description": "｜用品區｜熟食區｜結帳區｜\n充滿活力的用餐區域，長長的紅色桌椅一字排開。空氣中瀰漫著剛出爐的烤雞與牛肉捲香氣。這裡的食物以極高的性價比與巨大的份量而著稱。",
+  "tags": [
+    "retail",
+    "dining"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "非食品區",
+      "to": "zonelife_city_life_16f_u163_3"
+    },
+    {
+      "direction": "結帳出口",
+      "to": "zonelife_city_life_16f_u163_5"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_costco_supplies_back",
+      "name": "用品區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你走回用品區。" },
+      "move_to_room_id": "zonelife_city_life_16f_u163_3"
+    },
+    {
+      "id": "obj_costco_checkout",
+      "name": "結帳區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你來到寬敞的結帳出口區。" },
+      "move_to_room_id": "zonelife_city_life_16f_u163_5"
+    }
+  ]
+}

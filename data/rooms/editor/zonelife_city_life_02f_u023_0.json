@@ -1,0 +1,81 @@
+{
+  "id": "zonelife_city_life_02f_u023_0",
+  "name": "眼　科",
+  "description": "候診區〔視力表〕紙角捲起，小圓凳排成半弧。牆上〔散瞳告示〕被人用螢光筆劃了底線；〔試戴架〕歪了一邊鏡腳，鏡片映出天花板燈管。\n可經〔大廳〕回「浮生城2F」，或進〔診間〕。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_2f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_02f_u020_0"
+    },
+    {
+      "direction": "診間",
+      "to": "zonelife_city_life_02f_u023_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_eye_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你從光線較暗的眼科廊道走回2樓大廳，短暫適應著明亮的公共照明照射。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u020_0"
+    },
+    {
+      "id": "city_life_2f_dept_eye_to_exam",
+      "name": "診間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入眼科診間。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u023_1"
+    },
+    {
+      "id": "city_life_2f_dept_eye_chart",
+      "name": "視力表",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "最底一排 E 字糊成灰點；上緣貼紙寫「三米線」被人用筆改成「二點八」。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_eye_notice",
+      "name": "散瞳告示",
+      "owner": "",
+      "sockets": [
+        "Look",
+        "Read"
+      ],
+      "responses": {
+        "Look": "螢光筆底線劃在「勿駕車」三字下，墨邊晕開一點。",
+        "Read": "「散瞳後六至八小時畏光、視近模糊，勿駕車或操作機械。」"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_eye_rack",
+      "name": "試戴架",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "一排空框鏡腳鬆，有一支鏡腳用膠帶纏過；鼻墊膠泛黃。"
+      }
+    }
+  ]
+}

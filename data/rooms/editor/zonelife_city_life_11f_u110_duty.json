@@ -1,0 +1,64 @@
+{
+  "id": "zonelife_city_life_11f_u110_duty",
+  "name": "值勤室",
+  "description": "值勤室以長桌為核心，牆上掛著當班名單與突發處置流程。桌面並排著對講底座、門禁終端與巡檢平板，亮點在昏色中一格格跳動。由此可進〔監控間〕或〔交接桌〕；由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_11f_u110_0"
+    },
+    {
+      "direction": "監控間",
+      "to": "zonelife_city_life_11f_u110_duty_a"
+    },
+    {
+      "direction": "交接桌",
+      "to": "zonelife_city_life_11f_u110_duty_b"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_duty_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城11F」大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_0"
+    },
+    {
+      "id": "city_life_11f_duty_to_a",
+      "name": "監控間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔監控間〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_duty_a"
+    },
+    {
+      "id": "city_life_11f_duty_to_b",
+      "name": "交接桌",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔交接桌〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_duty_b"
+    }
+  ]
+}

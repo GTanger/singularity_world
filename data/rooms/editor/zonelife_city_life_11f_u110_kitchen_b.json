@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_11f_u110_kitchen_b",
+  "name": "清洗區",
+  "description": "清洗區設有雙槽深盆與高壓噴槍，地面排水溝做了斜面導流。消毒櫃的橘燈時亮時滅，晾架上滴水聲細密而均勻。收尾後可回〔共廚房〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "共廚房",
+      "to": "zonelife_city_life_11f_u110_kitchen"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_kitchen_b_to_hub",
+      "name": "共廚房",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到〔共廚房〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_kitchen"
+    }
+  ]
+}

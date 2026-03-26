@@ -1,0 +1,46 @@
+{
+  "id": "zonelife_city_life_16f_u162_2",
+  "name": "飲品區",
+  "description": "｜日用區｜飲品區｜櫃檯區｜\n冷藏櫃發出穩定的嗡鳴聲，裡面整齊劃一地排列著各類能量飲料與純淨水。透明的玻璃門上凝結著細微的水霧，在燈光下閃爍著清涼的光澤。",
+  "tags": [
+    "retail",
+    "drinks"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "zonelife_city_life_16f_u162_0"
+    },
+    {
+      "direction": "櫃檯",
+      "to": "zonelife_city_life_16f_u162_3"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_1774446877767",
+      "name": "日用區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開冷藏櫃散發的強烈冷氣，回到堆滿民生用品的溫馨「日用區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u162_1"
+    },
+    {
+      "id": "obj_1774446878102",
+      "name": "櫃檯區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走出飲品區，走向「櫃檯區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u162_3"
+    }
+  ]
+}

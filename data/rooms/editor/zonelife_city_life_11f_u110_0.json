@@ -1,0 +1,206 @@
+{
+  "id": "zonelife_city_life_11f_u110_0",
+  "name": "浮生城11F",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜中庭區｜　　　　　　　　　　　｜工務室｜\n｜共廚房｜　※浮生城１１樓※　　｜兒童室｜\n｜洗烘室｜　　　　　　　　　　　｜交娛聽｜\n｜｜｜｜｜管委倉｜值勤室｜健身房｜｜｜｜｜",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "電梯間",
+      "to": "zonelife_city_life_00f_u000_elevator"
+    },
+    {
+      "direction": "下樓梯",
+      "to": "zonelife_city_life_10f_u100_0"
+    },
+    {
+      "direction": "上樓梯",
+      "to": "zonelife_city_life_12f_u120_0"
+    },
+    {
+      "direction": "中庭區",
+      "to": "zonelife_city_life_11f_u110_atrium"
+    },
+    {
+      "direction": "共廚房",
+      "to": "zonelife_city_life_11f_u110_kitchen"
+    },
+    {
+      "direction": "洗烘室",
+      "to": "zonelife_city_life_11f_u110_laundry"
+    },
+    {
+      "direction": "管委倉",
+      "to": "zonelife_city_life_11f_u110_storage"
+    },
+    {
+      "direction": "值勤室",
+      "to": "zonelife_city_life_11f_u110_duty"
+    },
+    {
+      "direction": "健身房",
+      "to": "zonelife_city_life_11f_u110_gym"
+    },
+    {
+      "direction": "交娛聽",
+      "to": "zonelife_city_life_11f_u110_lounge"
+    },
+    {
+      "direction": "兒童室",
+      "to": "zonelife_city_life_11f_u110_kids"
+    },
+    {
+      "direction": "工務室",
+      "to": "zonelife_city_life_11f_u110_works"
+    }
+  ],
+  "objects": [
+    {
+      "id": "zonelife_city_life_00f_u000_elevator",
+      "name": "電梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「電梯間」。"
+      },
+      "move_to_room_id": "zonelife_city_life_00f_u000_elevator"
+    },
+    {
+      "id": "zonelife_city_life_10f_u100_0",
+      "name": "下樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城10F」。"
+      },
+      "move_to_room_id": "zonelife_city_life_10f_u100_0"
+    },
+    {
+      "id": "zonelife_city_life_12f_u120_0",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城12F」。"
+      },
+      "move_to_room_id": "zonelife_city_life_12f_u120_0"
+    },
+    {
+      "id": "city_life_11f_atrium_from_lobby",
+      "name": "中庭區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔中庭區〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_atrium"
+    },
+    {
+      "id": "city_life_11f_kitchen_from_lobby",
+      "name": "共廚房",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔共廚房〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_kitchen"
+    },
+    {
+      "id": "city_life_11f_laundry_from_lobby",
+      "name": "洗烘室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔洗烘室〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_laundry"
+    },
+    {
+      "id": "city_life_11f_storage_from_lobby",
+      "name": "管委倉",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔管委倉〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_storage"
+    },
+    {
+      "id": "city_life_11f_duty_from_lobby",
+      "name": "值勤室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔值勤室〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_duty"
+    },
+    {
+      "id": "city_life_11f_gym_from_lobby",
+      "name": "健身房",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔健身房〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_gym"
+    },
+    {
+      "id": "city_life_11f_lounge_from_lobby",
+      "name": "交娛聽",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔交娛聽〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_lounge"
+    },
+    {
+      "id": "city_life_11f_kids_from_lobby",
+      "name": "兒童室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔兒童室〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_kids"
+    },
+    {
+      "id": "city_life_11f_works_from_lobby",
+      "name": "工務室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔工務室〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_works"
+    }
+  ]
+}

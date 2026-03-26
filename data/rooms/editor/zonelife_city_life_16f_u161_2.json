@@ -1,0 +1,46 @@
+{
+  "id": "zonelife_city_life_16f_u161_2",
+  "name": "家電區",
+  "description": "｜入口處｜家電區｜乾貨區｜\n各式的高科技電子產品在櫃位上靜靜運作，發出極輕微的嗡鳴。這裡展示著最新的念場增強器與家用機器人。冷色調的燈光映照在光滑的外殼上，顯得秩序井然。",
+  "tags": [
+    "retail",
+    "electronics"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "zonelife_city_life_16f_u161_0"
+    },
+    {
+      "direction": "乾貨區",
+      "to": "zonelife_city_life_16f_u161_3"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_1774441547587",
+      "name": "入口處",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開規整的電子叢林與冷色調燈光，走回「入口處」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u161_0"
+    },
+    {
+      "id": "obj_1774441548187",
+      "name": "乾貨區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你繞過最新款念場增強器的展示櫃，走往「乾貨區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u161_3"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_11f_u110_laundry_b",
+  "name": "烘衣區",
+  "description": "烘衣區溫度比外側高一些，熱風循環帶著乾布與柔軟劑的氣味。金屬濾網抽屜按編號管理，旁邊有靜電毛屑回收桶。整理完成後可回〔洗烘室〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "洗烘室",
+      "to": "zonelife_city_life_11f_u110_laundry"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_laundry_b_to_hub",
+      "name": "洗烘室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到〔洗烘室〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_laundry"
+    }
+  ]
+}

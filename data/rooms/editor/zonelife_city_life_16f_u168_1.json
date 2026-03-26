@@ -1,0 +1,36 @@
+{
+  "id": "zonelife_city_life_16f_u168_1",
+  "name": "木材區",
+  "description": "｜特例屋｜木材區｜庭園區｜\n巨大的支架上堆放著經過特殊處理的抗壓木材與鋼樑。空氣中飄散著微細的鋸末。這裡甚至提供根據「綠護結構」設計的生物引導格柵，色彩沉穩且堅固。",
+  "tags": [
+    "retail",
+    "building_materials"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "入口",
+      "to": "zonelife_city_life_16f_u168_0"
+    },
+    {
+      "direction": "庭園景觀",
+      "to": "zonelife_city_life_16f_u168_3"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_u168_1_entry",
+      "name": "回入口",
+      "sockets": ["Move"],
+      "responses": { "Move": "你離開高耸的木料支架，走回建材中心入口。" },
+      "move_to_room_id": "zonelife_city_life_16f_u168_0"
+    },
+    {
+      "id": "obj_u168_1_garden",
+      "name": "庭園區",
+      "sockets": ["Move"],
+      "responses": { "Move": "你穿過木材展示區，步入叮咚作響的庭園區。" },
+      "move_to_room_id": "zonelife_city_life_16f_u168_3"
+    }
+  ]
+}

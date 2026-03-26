@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_13f_u130_staging",
+  "name": "暫存櫃",
+  "description": "一整面智慧櫃與少數大型格位，供住戶暫放、冷鏈取件另有標示。深夜仍有零星燈條亮著。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_13f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_13f_u130_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_13f_staging_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城13F」大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_13f_u130_0"
+    }
+  ]
+}

@@ -1,133 +1,16 @@
 {
   "entries": [
     {
-      "id": "evt|lobby|shift_arrive|鄭秀強：排班抵達",
-      "text": "鄭秀強：排班抵達",
-      "room_id": "lobby",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 11,
-      "updated_at": 1774454436,
-      "expires_at": 1774456236
-    },
-    {
-      "id": "evt|life_hall|shift_leave|鄭秀強：離開前往life_garden",
-      "text": "鄭秀強：離開前往life_garden",
-      "room_id": "life_hall",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 2,
-      "updated_at": 1774454736,
-      "expires_at": 1774456536
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyi1n6gp22",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451334,
-      "expires_at": 1774454934
-    },
-    {
       "id": "evt|life_garden|shift_arrive|葉俊：排班抵達",
       "text": "葉俊：排班抵達",
       "room_id": "life_garden",
       "source": "room_event",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774454736,
-      "expires_at": 1774456536
-    },
-    {
-      "id": "evt|life_kitchen|shift_leave|龍霞華：離開前往life_garden",
-      "text": "龍霞華：離開前往life_garden",
-      "room_id": "life_kitchen",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774454736,
-      "expires_at": 1774456536
-    },
-    {
-      "id": "evt|life_dining|arrive|鄭秀強：從方向到達",
-      "text": "鄭秀強：從方向到達",
-      "room_id": "life_dining",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774454754,
-      "expires_at": 1774456554
-    },
-    {
-      "id": "evt|lobby|shift_arrive|龍霞華：排班抵達",
-      "text": "龍霞華：排班抵達",
-      "room_id": "lobby",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 11,
-      "updated_at": 1774454436,
-      "expires_at": 1774456236
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyglqd2egz",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
       "source_score": 1,
       "weight": 1,
-      "updated_at": 1774451221,
-      "expires_at": 1774454821
-    },
-    {
-      "id": "seed|2957422|26",
-      "text": "今天的游離輻射塵好像比平常多一些，空氣裡有淡淡的粉光",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774453531,
-      "expires_at": 1774457131
-    },
-    {
-      "id": "evt|life_hall|shift_leave|鄭秀強：離開前往lobby",
-      "text": "鄭秀強：離開前往lobby",
-      "room_id": "life_hall",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 11,
-      "updated_at": 1774454436,
-      "expires_at": 1774456236
-    },
-    {
-      "id": "spawn|lobby|npc_dhbygh4zafrp",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451211,
-      "expires_at": 1774454811
-    },
-    {
-      "id": "spawn|lobby|npc_dhbygv5e4qp1",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451242,
-      "expires_at": 1774454842
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyg34kffjc",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451181,
-      "expires_at": 1774454781
+      "mention_count": 2,
+      "last_used_at": 1774487736,
+      "updated_at": 1774501986,
+      "expires_at": 1774503786
     },
     {
       "id": "evt|life_garden|shift_arrive|龍霞華：排班抵達",
@@ -135,283 +18,9 @@
       "room_id": "life_garden",
       "source": "room_event",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774454736,
-      "expires_at": 1774456536
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyh4c5u4ba",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451262,
-      "expires_at": 1774454862
-    },
-    {
-      "id": "eco|pulse|216",
-      "text": "有人說東街貨價又動了，買賣人都在觀望。",
-      "source": "economy",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774450086,
-      "expires_at": 1774455486
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyftpjg3pw",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451160,
-      "expires_at": 1774454760
-    },
-    {
-      "id": "seed|2957421|8",
-      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774452930,
-      "expires_at": 1774456530
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyg7pye9nr",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451191,
-      "expires_at": 1774454791
-    },
-    {
-      "id": "seed|2957420|29",
-      "text": "最近幾天金屬器具的表面都浮了一層淡淡的礦脈紋路",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774452330,
-      "expires_at": 1774455930
-    },
-    {
-      "id": "evt|life_garden|shift_arrive|鄭秀強：排班抵達",
-      "text": "鄭秀強：排班抵達",
-      "room_id": "life_garden",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774454736,
-      "expires_at": 1774456536
-    },
-    {
-      "id": "spawn|lobby|npc_dhbygcbc8jr1",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451201,
-      "expires_at": 1774454801
-    },
-    {
-      "id": "spawn|lobby|npc_dhbygqbr32m0",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451231,
-      "expires_at": 1774454831
-    },
-    {
-      "id": "seed|2957423|17",
-      "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774454131,
-      "expires_at": 1774457731
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyhx1spaks",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451324,
-      "expires_at": 1774454924
-    },
-    {
-      "id": "seed|2957424|28",
-      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1774454731,
-      "expires_at": 1774458331
-    },
-    {
-      "id": "evt|life_kitchen|shift_leave|龍霞華：離開前往lobby",
-      "text": "龍霞華：離開前往lobby",
-      "room_id": "life_kitchen",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 11,
-      "updated_at": 1774454436,
-      "expires_at": 1774456236
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyikxsc1z2",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451376,
-      "expires_at": 1774454976
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyh8xjqcfe",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451272,
-      "expires_at": 1774454872
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyhnehuqu2",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451303,
-      "expires_at": 1774454903
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyig44x3p5",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451366,
-      "expires_at": 1774454966
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyhikums86",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451293,
-      "expires_at": 1774454893
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyibahggeo",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451355,
-      "expires_at": 1774454955
-    },
-    {
-      "id": "spawn|lobby|npc_dhbygzqs2smw",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451252,
-      "expires_at": 1774454852
-    },
-    {
-      "id": "evt|life_hall|leave|鄭秀強：離開往",
-      "text": "鄭秀強：離開往",
-      "room_id": "life_hall",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774454754,
-      "expires_at": 1774456554
-    },
-    {
-      "id": "seed|2957419|2",
-      "text": "樓梯間的菌絲光昨晚特別亮，是琥珀色的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1774451730,
-      "expires_at": 1774455330
-    },
-    {
-      "id": "evt|life_hall|shift_leave|葉俊：離開前往singularity_life",
-      "text": "葉俊：離開前往singularity_life",
-      "room_id": "life_hall",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 11,
-      "updated_at": 1774454436,
-      "expires_at": 1774456236
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyfyax9ow7",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451170,
-      "expires_at": 1774454770
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyhdr77m4z",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451282,
-      "expires_at": 1774454882
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyi6gu14n1",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451345,
-      "expires_at": 1774454945
-    },
-    {
-      "id": "evt|singularity_life|shift_arrive|葉俊：排班抵達",
-      "text": "葉俊：排班抵達",
-      "room_id": "singularity_life",
-      "source": "room_event",
-      "source_score": 2,
-      "weight": 11,
-      "updated_at": 1774454436,
-      "expires_at": 1774456236
-    },
-    {
-      "id": "spawn|lobby|npc_dhbyhs859k3x",
-      "text": "聽說又有新面孔進了這座城。",
-      "room_id": "lobby",
-      "source": "spawn",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1774451314,
-      "expires_at": 1774454914
+      "weight": 6,
+      "updated_at": 1774501986,
+      "expires_at": 1774503786
     },
     {
       "id": "evt|life_hall|shift_leave|葉俊：離開前往life_garden",
@@ -420,8 +29,222 @@
       "source": "room_event",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1774454736,
-      "expires_at": 1774456536
+      "updated_at": 1774501986,
+      "expires_at": 1774503786
+    },
+    {
+      "id": "evt|life_dining|leave|葉俊：離開往",
+      "text": "葉俊：離開往",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774501951,
+      "expires_at": 1774503751
+    },
+    {
+      "id": "evt|singularity_life|shift_arrive|葉俊：排班抵達",
+      "text": "葉俊：排班抵達",
+      "room_id": "singularity_life",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 11,
+      "updated_at": 1774501236,
+      "expires_at": 1774503036
+    },
+    {
+      "id": "evt|life_dining|arrive|葉俊：從方向到達",
+      "text": "葉俊：從方向到達",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774501433,
+      "expires_at": 1774503233
+    },
+    {
+      "id": "seed|2957502|12",
+      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1774501498,
+      "expires_at": 1774505098
+    },
+    {
+      "id": "seed|2957498|20",
+      "text": "樓頂的蓄水設施今天開始例行清洗，水量可能會少一會兒",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774499097,
+      "expires_at": 1774502697
+    },
+    {
+      "id": "evt|life_kitchen|arrive|龍霞華：從方向到達",
+      "text": "龍霞華：從方向到達",
+      "room_id": "life_kitchen",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774502032,
+      "expires_at": 1774503832
+    },
+    {
+      "id": "seed|2957500|10",
+      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774500297,
+      "expires_at": 1774503897
+    },
+    {
+      "id": "evt|lobby|shift_arrive|龍霞華：排班抵達",
+      "text": "龍霞華：排班抵達",
+      "room_id": "lobby",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 11,
+      "updated_at": 1774501236,
+      "expires_at": 1774503036
+    },
+    {
+      "id": "seed|2957501|8",
+      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774500898,
+      "expires_at": 1774504498
+    },
+    {
+      "id": "seed|2957499|19",
+      "text": "有住戶搬家了，留下的房間牆上全是根鬚攀痕，挺有意思的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774499697,
+      "expires_at": 1774503297
+    },
+    {
+      "id": "seed|2957497|11",
+      "text": "藥材價格穩著，但品種比上個月少了幾樣",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774498496,
+      "expires_at": 1774502096
+    },
+    {
+      "id": "evt|life_dining|leave|龍霞華：離開往",
+      "text": "龍霞華：離開往",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774502032,
+      "expires_at": 1774503832
+    },
+    {
+      "id": "evt|life_garden|shift_arrive|鄭秀強：排班抵達",
+      "text": "鄭秀強：排班抵達",
+      "room_id": "life_garden",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 6,
+      "updated_at": 1774501986,
+      "expires_at": 1774503786
+    },
+    {
+      "id": "evt|life_dining|shift_leave|葉俊：離開前往life_garden",
+      "text": "葉俊：離開前往life_garden",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1774501836,
+      "expires_at": 1774503636
+    },
+    {
+      "id": "evt|lobby|shift_arrive|鄭秀強：排班抵達",
+      "text": "鄭秀強：排班抵達",
+      "room_id": "lobby",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 11,
+      "updated_at": 1774501236,
+      "expires_at": 1774503036
+    },
+    {
+      "id": "evt|life_hall|leave|葉俊：離開往",
+      "text": "葉俊：離開往",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774501433,
+      "expires_at": 1774503233
+    },
+    {
+      "id": "evt|life_kitchen|shift_leave|鄭秀強：離開前往lobby",
+      "text": "鄭秀強：離開前往lobby",
+      "room_id": "life_kitchen",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 11,
+      "updated_at": 1774501236,
+      "expires_at": 1774503036
+    },
+    {
+      "id": "evt|life_hall|arrive|葉俊：從方向到達",
+      "text": "葉俊：從方向到達",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1774501951,
+      "expires_at": 1774503751
+    },
+    {
+      "id": "evt|life_dining|shift_leave|龍霞華：離開前往lobby",
+      "text": "龍霞華：離開前往lobby",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 11,
+      "updated_at": 1774501236,
+      "expires_at": 1774503036
+    },
+    {
+      "id": "evt|life_hall|shift_leave|葉俊：離開前往singularity_life",
+      "text": "葉俊：離開前往singularity_life",
+      "room_id": "life_hall",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 11,
+      "updated_at": 1774501236,
+      "expires_at": 1774503036
+    },
+    {
+      "id": "evt|life_kitchen|shift_leave|鄭秀強：離開前往life_garden",
+      "text": "鄭秀強：離開前往life_garden",
+      "room_id": "life_kitchen",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 6,
+      "updated_at": 1774501986,
+      "expires_at": 1774503786
+    },
+    {
+      "id": "evt|life_dining|shift_leave|龍霞華：離開前往life_garden",
+      "text": "龍霞華：離開前往life_garden",
+      "room_id": "life_dining",
+      "source": "room_event",
+      "source_score": 2,
+      "weight": 6,
+      "updated_at": 1774501986,
+      "expires_at": 1774503786
     }
   ]
 }

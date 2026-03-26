@@ -1,0 +1,63 @@
+{
+  "id": "zonelife_city_life_02f_u020_dept_rehab_exam",
+  "name": "復健治療區",
+  "description": "〔平行桿〕金屬腳墊吸在地上，防滑紋磨平兩塊。天花軌道下〔滑輪組〕鋼索垂著，配重塊靜靜吃地。熱敷包堆在保溫箱頂；〔鏡牆〕映出橫桿與吊環，空間顯得比實際深一截。\n可經〔候診區〕回到復健科候診。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_2f",
+  "exits": [
+    {
+      "direction": "候診區",
+      "to": "zonelife_city_life_02f_u020_dept_rehab"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_rehab_exam_wait",
+      "name": "候診區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到復健科候診區。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u020_dept_rehab"
+    },
+    {
+      "id": "city_life_2f_dept_rehab_exam_cable",
+      "name": "滑輪組",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "鋼索穿過滑輪時有細響，配重塊邊貼著手寫磅數，字跡被汗漬晕開一點。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_rehab_exam_bars",
+      "name": "平行桿",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "桿面握把膠磨亮兩段，高度調節栓卡得緊，要兩手才轉得動。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_rehab_exam_mirror",
+      "name": "鏡牆",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "接縫略歪，映出吊環與橫桿重影；下緣有腳印擦過的霧痕。"
+      }
+    }
+  ]
+}

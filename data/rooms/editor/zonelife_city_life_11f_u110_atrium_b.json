@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_11f_u110_atrium_b",
+  "name": "風景台",
+  "description": "風景台朝外挑出半格，腳下是防滑木紋鋪面，欄杆上緣鑲著夜間導光條。從這裡能望見浮生城外圍的綠護立面與遠處街廓燈點，風聲比樓內更直接。停留片刻後可退回〔中庭區〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "中庭區",
+      "to": "zonelife_city_life_11f_u110_atrium"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_atrium_b_to_hub",
+      "name": "中庭區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到〔中庭區〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_atrium"
+    }
+  ]
+}

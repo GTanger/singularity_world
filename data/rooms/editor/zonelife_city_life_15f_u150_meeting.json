@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_15f_u150_meeting",
+  "name": "會議室",
+  "description": "長桌、投影與表決盒；牆上懸浮生城立面示意。例會與住戶代表質詢常在此排程。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_15f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_15f_u150_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_15f_meeting_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你步出肅穆安靜的會議空間，重新感受到大廳的人流節奏。"
+      },
+      "move_to_room_id": "zonelife_city_life_15f_u150_0"
+    }
+  ]
+}

@@ -735,3 +735,972 @@
 [2m2026-03-25T16:05:44.937836Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
 [2m2026-03-25T16:05:46.120208Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
 [2m2026-03-25T16:05:46.120965Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-25T16:10:37.301191Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 今日帳我對過了，有問題再叫我。
+  -> 葉俊: 好，那我先走了。
+[2m2026-03-25T16:14:54.679734Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 天候與環境：低飽和微光、輻射雨、靜謐豐饒下的不適天氣（沃土風，非核冬天）: 
+  -> 夏慧雅: 你剛才看遠處的街燈還亮著嗎？
+  -> 南宮超國: 嗯...那地方燈光很暗，像是被雲遮住了
+[2m2026-03-25T16:15:25.717862Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 天候與環境：低飽和微光、輻射雨、靜謐豐饒下的不適天氣（沃土風，非核冬天）: 
+  -> 夏慧雅: 那地方燈光很暗，像是被雲遮住了
+  -> 南宮超國: 嗯...
+[2m2026-03-25T16:15:32.390402Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 十六樓的某面牆突然長出了一小片琉璃化的結晶，很漂亮
+[2m2026-03-25T16:19:05.208256Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 打聽消息、問路、問人: 
+  -> 羅洋: {"a":"「你剛才怎麼走這麼慢？路邊的人好像也來搭過話了。」"}
+  -> 馬秀霞: {"b":"「是啊，剛從隔壁那間店出來。」"}
+[2m2026-03-25T16:21:48.955364Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 鎮上傳聞城外惡地、霜林、游離輻射或富態化巨獸（非荒蕪末世，而是生機過剩的危險）: 
+  -> 羅洋: 剛到這裡，天色還亮，你怎麼還沒出來？
+  -> 蔣杰娜: 剛到這裡，天色還亮，你怎麼還沒出來？
+[2m2026-03-25T16:21:56.386379Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 打聽消息、問路、問人: 
+  -> 羅洋: 剛到這裡，天色還亮，你怎麼還沒出來？
+  -> 蔣杰娜: 剛到這裡，天色還亮，你怎麼還沒出來？
+[2m2026-03-25T16:22:14.714828Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 鎮上傳聞城外惡地、霜林、游離輻射或富態化巨獸（非荒蕪末世，而是生機過剩的危險）: 
+  -> 羅洋: 剛到這裡，天色還亮，你怎麼還沒出來？
+  -> 蔣杰娜: 剛到這裡，天色還亮，你怎麼還沒出來？
+[2m2026-03-25T16:22:46.843402Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 天候與環境：低飽和微光、輻射雨、靜謐豐饒下的不適天氣（沃土風，非核冬天）: 
+  -> 蔣杰娜: {"a":"「蔣姐，我剛才看窗外，那樹葉上的露珠在閃爍，好像要滴下來一樣，真係很清爽。」"}
+  -> 馬秀霞: {"b":"「哦？這雨小得很，好像還沒下過似的，跟往常不一樣。」"}
+[2m2026-03-25T16:23:07.581745Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 你剛才說的那句話，真是讓我驚得下巴都要掉了，你這膽
+  -> 葉俊: 怕啥？我只是怕今晚的帳還沒算好，要是這樣拖到第二天
+[2m2026-03-25T16:25:32.892259Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 藥材價格穩著，但品種比上個月少了幾樣
+[2m2026-03-25T16:26:28.938695Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 打聽消息、問路、問人: 
+  -> 夏慧雅: {"a":"「夏慧雅：各位朋友，你們看，那邊好像有路人在走，我聽得有點耳熟，你們先別動動。」}
+  -> 蔣杰娜: {"b":"「蔣杰娜：謝謝夏慧雅，你剛才說的那個人我好像還記得，他好像剛從那家開店出來。」}
+[2m2026-03-25T16:26:55.224714Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 鎮上傳聞城外惡地、霜林、游離輻射或富態化巨獸（非荒蕪末世，而是生機過剩的危險）: 
+  -> 夏慧雅: 各位朋友，你們看，那邊好像有
+  -> 蔣杰娜: 謝謝夏慧雅，你剛才說的那個人
+[2m2026-03-25T16:27:29.918316Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城門外 vs 鎮上傳聞城外惡地、霜林、游離輻射或富態化巨獸（非荒蕪末世，而是生機過剩的危險）: 
+  -> 夏慧雅: 各位朋友，你們看，那邊好像有蔣杰娜在跟那個叫葉俊的人說話。
+  -> 蔣杰娜: 謝謝夏慧雅，你剛才說的那個人。
+[2m2026-03-25T16:28:07.679099Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 那我先回，晚班辛苦，你別太累。
+  -> 龍霞華: 行，早點。
+[2m2026-03-25T16:35:32.894700Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 五樓那戶陽台的根鬚盤得更緊了，看著倒是挺穩的
+[2m2026-03-25T16:35:37.473962Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 今日帳我對過了，有問題再叫我。
+  -> 葉俊: 好，那我先走了。
+[2m2026-03-25T16:38:11.069525Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"鄧雅蘭\n\n你盯一下，今晚的排班變動得仔細看清楚，"}
+  -> 陸淑華: {"b":"陸淑華\n\n好的，我會仔細看。」}
+[2m2026-03-25T16:40:40.991570Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華的排班已經到齊，天色也暗了，我們該換班了。
+  -> 呂英淑: 鄭秀強說，今天帳我對過了，有問題再叫我。
+[2m2026-03-25T16:45:32.852920Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 昨晚牆面的玉質脈絡突然閃了一下暗紫色的光，只持續了幾秒
+[2m2026-03-25T16:45:37.359416Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我最近身體有些吃不消，你幫我把櫃檯盯一下，我剛換了班，需要休息。
+  -> 葉俊: 好，那我先走了。
+[2m2026-03-25T16:48:11.232135Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你剛來這裡就喊我來得早，我倒是沒多問你昨晚吃過什麼，只是聽你話就來得早了。
+  -> 曾偉: 我也沒問，只是聽你話就來得早了，不過今晚還是得跟龍霞華換班，你替我記一下嗎？
+[2m2026-03-25T16:50:40.899474Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華，夜色已深，我已經準備好收拾行囊，準備前往下一個班次，請留步。
+  -> 呂英淑: 鄭秀強，天色已暗，我也已經收拾好，現在該去換班了，請放心。
+[2m2026-03-25T16:55:33.339825Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 聽說好事多的批發價又調了，最近物流好像不太順
+[2m2026-03-25T16:55:40.538128Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華：你來這裡，是想說些什麼嗎？
+  -> 長孫慧: 嗯，剛才那陣子輻射塵多，我還聽鄭秀強說，最近鎮上又
+[2m2026-03-25T16:58:07.263156Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了，先回吧，免得被盯上。
+  -> 葉俊: 好，那我先走了。
+[2m2026-03-25T17:00:40.567266Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你盯一下，今晚的排班變動得仔細看清楚，
+  -> 陸淑華: 好的，我會仔細看。
+[2m2026-03-25T17:05:33.334620Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 城外商路上的指引石被增生物覆蓋了一半，有隊伍去清理了
+[2m2026-03-25T17:05:37.211420Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上。
+  -> 葉俊: 好，那我先走了。
+[2m2026-03-25T17:08:07.241982Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 剛開始剛認識你，今天看你臉色不太好，我還是先回房歇息吧。
+  -> 龍霞華: 行，早點。
+[2m2026-03-25T17:13:07.481675Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 龍霞華，剛才你問我，最近過得不太好，我最近也沒好過，你這幾天是否還過得好一點？
+  -> 葉俊: 葉俊，我剛換了班，先回吧，免得被盯上，這幾天我也沒好過，你這幾天是否還過得好一點？
+[2m2026-03-25T17:15:33.340779Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今天空氣裡的膠質味比平常濃，像要變天了
+[2m2026-03-25T17:18:07.469640Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 龍霞華，我剛才話都還沒說完，你就走了，真讓我有點慌，怕你跟不上節奏。
+  -> 葉俊: 葉俊，那就好，不過我剛才也說，你別擔心，我們今天帳都算過了，明天再跟你看清楚。
+[2m2026-03-25T17:25:33.841017Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 加了福的肉質蔬果到貨了，今天特別新鮮
+[2m2026-03-25T17:30:38.283880Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛看那葉俊的排班表，他昨天說今天特別忙，剛忙完就沒空再見你了。
+  -> 龍霞華: 行，早點，別多問我。
+[2m2026-03-25T17:35:34.338641Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 電梯間排了好長的隊，聽說中間幾層在做維護
+[2m2026-03-25T17:35:41.653902Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 我剛剛去龍霞華的班，今天又來了一大堆新水果，正好可以補補。
+  -> 譚傑: 那就好，你先把水果放好了。
+[2m2026-03-25T17:38:10.685397Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華，夜色已深，我已經準備好收拾行囊，準備前往下。
+  -> 呂英淑: 鄭秀強，天色已暗，我也已經收拾好，現在該去換班了，
+[2m2026-03-25T17:40:37.267086Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 剛看完葉俊排班表，他昨天說今天特別忙，剛忙完就來找我交接了。
+  -> 龍霞華: 行，早點，別多問我。
+[2m2026-03-25T17:45:34.337934Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 樓頂的蓄水設施今天開始例行清洗，水量可能會少一會兒
+[2m2026-03-25T17:48:10.760306Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"今晚的排班變動得仔細看清楚，」
+  -> 陸淑華: "b":"好的，我會仔細看。」
+[2m2026-03-25T17:50:40.727129Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 我剛從龍霞華的排班抵達，那深層礦脈的氣息似乎就這麼...
+  -> 魏杰強: 先回吧，晚班辛苦，你最近還在那裡處理什麼呢？
+[2m2026-03-25T17:53:07.268132Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛看那葉俊的排班表，他昨天說今天特別忙，剛忙完就……
+  -> 龍霞華: 行，早點，別多問我。
+[2m2026-03-25T17:55:34.852026Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有住戶搬家了，留下的房間牆上全是根鬚攀痕，挺有意思的
+[2m2026-03-25T17:58:10.910787Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你剛才那間小攤看起來生意不錯，那幾個新開的攤主是不是又來搶貨了？
+  -> 龔偉: 那確實，隔壁店剛進了一批新貨，我也在門口候著呢。
+[2m2026-03-25T18:00:40.891777Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 我剛去龍霞華的班，今天又來了一大堆新水果，正好可放好，你先把水果放好了。
+  -> 譚傑: 那就好，你先把水果放好了。
+[2m2026-03-25T18:05:35.334487Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的
+[2m2026-03-25T18:05:37.327572Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 今天帳我對過了，有問題再叫我。
+  -> 葉俊: 葉俊，我剛換了班，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T18:13:07.088811Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 今日帳我對過了，有問題再叫我。
+  -> 龍霞華: 行，早點，別多問我。
+[2m2026-03-25T18:15:35.339131Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 走廊的老長凳被根鬚纏得更穩了，坐起來比以前舒服
+[2m2026-03-25T18:18:07.247776Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 龍霞華，最近過得不太好，我最近也沒好過。
+  -> 葉俊: 葉俊，我剛換了班，先回吧，免得被盯上，這幾天我也沒。
+[2m2026-03-25T18:25:35.840154Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 三樓醫療區最近比較忙，好像是採集隊回城的季節
+[2m2026-03-25T18:25:38.381558Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 好嘞，我們馬上出發，趕在時間上！
+  -> 葉俊: 那行，早點走，晚班辛苦！
+[2m2026-03-25T18:30:37.745514Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 龍霞華，剛才你問我，最近過得不太好，我最近也沒好過。
+  -> 葉俊: 葉俊，我剛換了班，先回吧，免得被盯上，這幾天我也沒。
+[2m2026-03-25T18:35:36.337863Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人從低樓層看到遠處林冠線在晃動，可能是大型生物經過
+[2m2026-03-25T18:38:07.377154Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 龍霞華，別總是要說早點，今天帳我對過了，有問題再叫我。
+  -> 龍霞華: 行，早點，別多問我。
+[2m2026-03-25T18:40:40.662693Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你剛才那間小攤看起來生意不錯，那幾個新開的攤主是不
+  -> 龔偉: 那確實，隔壁店剛進了一批新貨，我也在門口候著呢。
+[2m2026-03-25T18:45:40.642247Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"「龍霞華」剛抵達，我立刻將排班記錄整理好。你且先看看，林冠線在晃動，這是我剛才才看到的。」}
+  -> 周雅麗: {"b":"「先回了，晚班辛苦。」}
+[2m2026-03-25T18:45:40.660229Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看
+[2m2026-03-25T18:50:37.581623Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 「行，早點，別多問我。」龍霞華的語氣冷淡而嚴謹，隨即轉頭看向鄭秀強，目光在兩人之間來回打量。
+  -> 龍霞華: 鄭秀強微微一愣，隨即爽朗一笑，語氣帶著點熱絡的熱情，「行，別多問，等忙完再叫我。」
+[2m2026-03-25T18:53:10.589468Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你盯一下，今晚的排班變動得仔細看清楚，
+  -> 陸淑華: 好的，我會仔細看。
+[2m2026-03-25T18:55:40.844717Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 今天又是好運，新貨都進來了，你該多休息點，明天還要忙呢。
+  -> 龔偉: 那確實，隔壁店剛進了一批新貨，我也在門口候著呢。
+[2m2026-03-25T18:55:40.861860Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 打鐵巷最近接了不少單，聽說是採集隊的工具要換新
+[2m2026-03-25T18:58:10.719718Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 深層礦脈的氣息似乎就這麼...
+  -> 魏杰強: 先回吧，晚班辛苦，你最近還在那裡處理什麼呢？
+[2m2026-03-25T19:00:41.598298Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你來這裡，是想說些什麼嗎？
+  -> 長孫慧: 「嗯，剛才那陣子輻射塵多，我還聽鄭秀強說，最近鎮上又」。
+[2m2026-03-25T19:03:07.560009Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 龍霞華，我剛想走，鄭秀強卻說要趕著報到，還說打鐵巷的單子很多，得趕緊去一趟。
+  -> 龍霞華: 鄭秀強，謝謝，不過我最近帳本上寫著要過兩天，你幫我轉告一下。
+[2m2026-03-25T19:05:41.333850Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 十一樓健身區新添了幾件器材，是用富態化木材做的
+[2m2026-03-25T19:13:07.126244Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我們馬上出發，趕在時間上！
+  -> 葉俊: 那行，早點走，晚班辛苦！
+[2m2026-03-25T19:15:41.335857Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 市集今天來了一批品相很好的玉質木材，攤販搶著進貨
+[2m2026-03-25T19:23:08.298703Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 鄭秀強，我剛想走，鄭秀強卻說要趕著報到，還說打鐵巷
+  -> 龍霞華: 我先回了，晚班辛苦。
+[2m2026-03-25T19:28:07.183127Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 好嘞，我們馬上出發，趕在時間上！
+  -> 葉俊: 那行，早點走，晚班辛苦！
+[2m2026-03-25T19:30:37.282012Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T19:38:13.040910Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"你盯一下，今晚的排班變動得仔細看清楚，」"
+  -> 陸淑華: "b":"好的，我會仔細看。"}
+[2m2026-03-25T19:40:40.724721Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 我剛從龍霞華排班回來，今晚的夜氣確實有點沉。
+  -> 長孫慧: 嗯，剛說鄭秀強那陣子鎮上輻射塵多，我還聽得聽得清楚呢。
+[2m2026-03-25T19:43:07.265922Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T19:48:11.060051Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 「先回吧，晚班辛苦，你最近還在那裡處理什麼呢？」魏杰強回，語氣保守但帶點關心的客套。
+  -> 魏杰強: 我沒在處理什麼，只是順道跟隨了一下，今晚暫時沒空。
+[2m2026-03-25T19:50:43.303971Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 龍霞華，我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 葉俊，我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T19:55:40.796744Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華，排班抵達，今早市集新貨進來，你該多休息點，明天還要。
+  -> 龔偉: 那確實，隔壁店剛進了一批新貨，我也在門口候著呢。
+[2m2026-03-25T19:58:07.306501Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T20:00:40.759260Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 夜色已深，鄧雅蘭已準備好收拾行囊，前往下班的途中，她神色有些凝重。
+  -> 呂英淑: 鄭秀強，天色已暗，我也已經收拾好，現在該去換班了，
+[2m2026-03-25T20:05:37.307684Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 龍霞華，我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 葉俊，我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T20:23:08.184910Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛要走，你卻說要打鐵巷。
+  -> 龍霞華: 我先回了，晚班辛苦。
+[2m2026-03-25T20:30:37.259689Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T20:35:42.473118Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 「好嘞，我們馬上出發，趕在時間上！」葉俊
+  -> 葉俊: 那行，早點走，晚班辛苦！
+[2m2026-03-25T20:38:07.201704Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我先回了，晚班辛苦。
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒。
+[2m2026-03-25T20:40:43.132974Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 鄭秀強，我剛想走，你卻說要趕著報到，還說打鐵巷，這太危險了。
+  -> 龍霞華: 龍霞華，我先回了，晚班辛苦。
+[2m2026-03-25T20:43:11.636458Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 昨夜你剛來，我剛忙完帳，今天又是你來交班，你怕我擔心嗎？
+  -> 汪偉平: 怕你擔心也沒關係，不過今晚還是先過過眼，明天別太累。
+[2m2026-03-25T20:48:07.635642Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 鄭秀強，你剛說打鐵巷，這夜裡我剛想走，卻還是得趕著報到，還得把東西收拾好。
+  -> 龍霞華: 龍霞華，我先回了，晚班辛苦，但今晚還是先回，等忙完再過來。
+[2m2026-03-25T20:50:37.332486Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T20:53:07.206294Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 「我們馬上出發，趕在時間上！」葉俊
+  -> 葉俊: 「那行，早點走，晚班辛苦！」鄭秀強
+[2m2026-03-25T20:55:37.330797Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛回來了，你剛才說打鐵巷的事，那夜裡我還是得趕著走。
+  -> 龍霞華: 我先回了，晚班辛苦，但今晚還是先回，等忙完
+[2m2026-03-25T20:58:11.604802Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 先回吧，晚班辛苦，你最近還在那裡處理什麼呢？
+  -> 魏杰強: 我沒在處理什麼，只是順道跟隨了一下，今晚暫時沒空。
+[2m2026-03-25T21:00:41.512559Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 龍霞華：龍霞華，我剛剛從東街貨站走回來，東街好像又漲了價，還有人來買東西呢。
+  -> 葉俊: 葉俊，東街漲價的事我沒聽清，你快告訴我，我趕緊趕去檢查一下貨品
+[2m2026-03-25T21:03:07.456927Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 你剛說打鐵巷，這夜裡我剛想走，卻還是得趕著，今天帳我對過了，有問題再叫我。
+  -> 龍霞華: 我先回了，晚班辛苦，但今晚還是先回，等忙完
+[2m2026-03-25T21:05:37.291136Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T21:08:07.200538Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 龍霞華：東街貨價又動了，買賣人都在，你快告訴我。
+  -> 葉俊: 我沒聽清，趕緊趕去
+[2m2026-03-25T21:13:07.228254Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T21:15:37.356326Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 你剛說打鐵巷，這夜裡我剛想走，卻還是得趕著，今天帳我對過了，有問題再叫我。
+  -> 龍霞華: 我先回了，晚班辛苦，但今晚還是先回，等忙完
+[2m2026-03-25T21:20:37.224204Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 「先回吧，免得被盯上，這幾天我也沒。」葉俊
+  -> 葉俊: 「我剛離開，先回吧，免得被盯上，這幾天我也沒。」龍霞華
+[2m2026-03-25T21:25:37.335873Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 龍霞華，今晚路邊有個攤位賣著新烤腸，你剛想走，我還是得趕著。
+  -> 龍霞華: 鄭秀強，我也要去吃那碗面，但老闆還說要排隊。
+[2m2026-03-25T21:30:37.296372Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 龍霞華：東街貨價又動了，買賣人都在，你快告訴我。
+  -> 葉俊: 我沒聽清，趕緊趕去。
+[2m2026-03-25T21:35:41.829362Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 夜色已深，我已經收拾好行囊，準備前往下街，準備先看看今晚的貨價是否動了。
+  -> 呂英淑: 鄭秀強，天色已暗，我也已經收拾好，現在該去換班了，
+[2m2026-03-25T21:38:10.943513Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 昨夜東街夜風冷飢飢，龍霞華排班剛到，你似乎睡意更濃了，想休息嗎？
+  -> 龔偉: 唔，沒問題，今晚我會好好把貨安排，你別太累，我早就不睡了，你也別多說些別的事，先聽我說完，我剛回話呢。
+[2m2026-03-25T21:40:40.680443Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華，排班抵達，今日帳我對過了，有問題再叫我。
+  -> 曾偉: 我也沒問，只是聽你話就來得早了，不過今晚還是得跟龍
+[2m2026-03-25T21:43:11.554389Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛去過東街，龍霞華說貨價又動了，買賣人都在，你快告訴我。
+  -> 葉俊: 我沒聽清，趕緊趕去
+[2m2026-03-25T21:45:40.791047Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 昨夜東街風吹得極烈，龍霞華剛到，你睡意似乎更濃了些。
+  -> 龔偉: 唔，沒問題，今晚我會好好把貨安排，你別太累，我早就。
+[2m2026-03-25T21:50:40.804901Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華：東街貨價又動了，買賣人都…
+  -> 曾偉: 我也沒問，只是聽你話就來得早了，不過今晚還是得跟龍
+[2m2026-03-25T21:53:10.858318Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 昨夜東街夜風冷飢飢，龍霞華排班剛到，你似乎睡意更濃
+  -> 龔偉: 唔，沒問題，今晚我會好好把貨安排，你別太累，我早就
+[2m2026-03-25T21:55:37.355442Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 東街貨價又動了，買賣人都在，你快告訴我，這日我對過了。
+  -> 葉俊: 我沒聽清，趕緊趕去。
+[2m2026-03-25T21:58:10.739478Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華排班已到，貨品又動了，買賣人都在東街，鄭秀強也剛抵達，你盯一下櫃檯。
+  -> 譚傑: 那就好，你先把水果放好了。
+[2m2026-03-25T22:00:40.852673Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 先回吧，晚班辛苦，你最近還在那裡處理什麼呢？
+  -> 魏杰強: 我沒在處理什麼，只是順道跟隨了一下，今晚暫時沒空。
+[2m2026-03-25T22:05:37.512764Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 東街貨價又動了，買賣人都在，我也要去看看，但今晚路邊有個攤位賣著新烤腸，你剛想走，我還想看看。
+  -> 龍霞華: 我也要去吃那碗面，但老闆還說要排隊。
+[2m2026-03-25T22:08:07.539114Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 清晨風起，我剛走出店門，看見龍霞華剛要走，葉俊也跟在後面，周圍人聲嘈杂，我有些緊張地跟在她身邊。
+  -> 葉俊: 我忙著點著，她剛要走，我趕緊趕去，葉俊也跟著，周圍人聲嘈杂，我有些緊張地跟在她身邊。
+[2m2026-03-25T22:10:37.396683Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 東街貨價又動了，買賣人都在，這幾天我也沒。
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒。
+[2m2026-03-25T22:23:08.449347Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 今日帳我對過了，有問題再叫我，最近過得不太好，別太擔心。
+  -> 葉俊: 我忙著點著，她剛要走，我趕緊趕去，葉俊也跟著，周圍風又起了
+[2m2026-03-25T22:35:42.160596Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"「龍霞華」今天剛來，帳本都對過了，你該盯一下櫃檯，看有沒有什麼問題。」
+  -> 曾偉: "b":"「我也沒問，只是聽你話就來得早了，不過今晚還是得跟龍霞華一起睡。」"}
+[2m2026-03-25T22:38:07.316798Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 夜色裡燈籠搖曳，我剛換了班，先回吧，免得被盯上，這幾天我也沒
+  -> 葉俊: 他剛離開，先回吧，免得被盯上，這幾天我也沒
+[2m2026-03-25T22:43:10.708571Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華：「今晚的夜風還挺冷，你睡得可沉？」
+  -> 龔偉: 唔，沒問題，今晚我會好好把貨安排，你別太累，我早就
+[2m2026-03-25T22:45:40.578206Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"鄧雅蘭：「今晚的排班變動得仔細看清楚。」"}
+  -> 陸淑華: {"b":"陸淑華：「好的，我會仔細看。」"}
+[2m2026-03-25T22:48:07.694091Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛換了班，先回吧，免得被盯上，這幾天我也沒。
+  -> 葉俊: 我剛離開，先回吧，免得被盯上，這幾天我也沒。
+[2m2026-03-25T22:55:37.235043Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 龍霞華，你剛說我沒事，我現在確實很沒力氣。
+  -> 葉俊: 葉俊，沒事就好，剛回來就先回吧
+[2m2026-03-25T22:58:10.826045Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 我剛從龍霞華排班回來，今晚的夜氣確實有點沉。
+  -> 長孫慧: 嗯，剛說鄭秀強那陣子鎮上輻射塵多，我還聽得聽得清楚
+[2m2026-03-25T23:00:40.546267Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"「今晚的排班變動，得仔細看清楚。」}
+  -> 陸淑華: {"b":"好的，我會仔細看。"}
+[2m2026-03-25T23:10:37.329874Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我剛從方向來，今天帳我對過了，有問題再叫我，最近過得不太好，別太在意。
+  -> 葉俊: 我忙著趕去，葉俊也跟著，周圍沒什麼特別動靜。
+[2m2026-03-25T23:15:37.303898Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 「東街貨價又動了，買賣人都在，我也要去看看，但今晚路。」龍霞華
+  -> 龍霞華: 「我也要去吃那碗面，但老闆還說要排隊。」鄭秀強
+[2m2026-03-25T23:20:37.252721Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 今日帳我對過了，有問題再叫我，最近過得不太好，別太
+  -> 葉俊: 我忙著點著，她剛要走，我趕緊趕去，葉俊也跟著，周圍
+[2m2026-03-25T23:23:07.407499Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: {"a":"「從這裡到生活花園，你走得真快，我最近也沒那麼快。」葉俊"}
+  -> 葉俊: {"b":"「你剛才說我沒事，我現在確實很沒力氣，剛回來就先回吧。」龍霞華"}
+[2m2026-03-25T23:30:38.408330Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 從這裡到生活花園，你走得真快，我最近」葉俊回「你剛才說我沒事，我現在確實很沒力氣，
+  -> 葉俊: 你剛才說我沒事，我現在確實很沒力氣，
+[2m2026-03-25T23:35:41.783516Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"鄧雅蘭「夜色已深，我已經準備好收拾行囊，準備前往下。」"}
+  -> 呂英淑: {"b":"呂英淑「鄭秀強，天色已暗，我也已經收拾好，現在該去換班了，」"}
+[2m2026-03-25T23:38:10.762749Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 昨夜龍霞華排班剛到，你對過帳，今日帳我對過了，有問。
+  -> 莫紅: 最近地脈微光亮些，聽說又有新面孔進了這座城，你對過。
+[2m2026-03-25T23:40:40.511084Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 我剛到，覺得挺累。
+  -> 魏杰強: 那也沒關係，先回去睡吧。
+[2m2026-03-25T23:43:07.209215Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我今晚要回去，路上很危險，你別擔心。
+  -> 龍霞華: 嗯，那行，我送你，反正你那邊也沒人等你。
+[2m2026-03-25T23:45:40.561409Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"「龍霞華」剛來，帳本對過了，你該」
+  -> 曾偉: b":"「我也沒問，只是聽你話就來得早了，不過今"}
+[2m2026-03-25T23:48:10.999518Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 我剛從龍霞華排班回來，今晚的夜氣確實有點沉。
+  -> 長孫慧: 嗯，剛說鄭秀強那陣子鎮上輻射塵多，我還聽得聽得清楚
+[2m2026-03-25T23:50:40.538970Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你最近過得不好，還得好好照顧自己。
+  -> 王國軍: 別擔心，我多謝你關心。
+[2m2026-03-25T23:53:07.272376Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 「從這裡到生活花園，你走得真快，我最近」葉俊回
+  -> 葉俊: 你剛才說我沒事，我現在確實很沒力氣，
+[2m2026-03-25T23:55:37.315982Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我最近身體有些疲憊，最近過得不太好，別太累，要保重身體。
+  -> 葉俊: 我剛趕到，葉俊也剛趕去，你小心點，注意安全。
+[2m2026-03-25T23:58:10.874317Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華：排班抵達，今晚我會好好把貨安排，你別太累。
+  -> 龔偉: 唔，沒問題，今晚我會好好把貨安排，你別太累。
+[2m2026-03-26T00:00:41.641810Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 「從這裡到生活花園，你走得真快，我最近」葉俊回
+  -> 葉俊: 你剛才說我沒事，我現在確實很沒力氣，
+[2m2026-03-26T00:03:07.237375Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我今晚要回去，路上很危險，你別擔心。
+  -> 龍霞華: 嗯，那行，我送你，反正你那邊也沒人等你。
+[2m2026-03-26T00:05:36.402054Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m connection closed
+[2m2026-03-26T00:05:36.402123Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m db error: FATAL: terminating connection due to administrator command
+[2m2026-03-26T00:05:36.402162Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m db error: FATAL: terminating connection due to administrator command
+[2m2026-03-26T00:05:36.402194Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m db error: FATAL: terminating connection due to administrator command
+[2m2026-03-26T00:05:36.402239Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m connection closed
+[2m2026-03-26T00:05:36.402262Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m db error: FATAL: terminating connection due to administrator command
+[2m2026-03-26T00:05:36.402287Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m db error: FATAL: terminating connection due to administrator command
+[2m2026-03-26T00:05:36.402317Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m db error: FATAL: terminating connection due to administrator command
+[2m2026-03-26T00:05:36.402352Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m connection closed
+[2m2026-03-26T00:05:36.402378Z[0m [31mERROR[0m [2mr2d2[0m[2m:[0m connection closed
+[2m2026-03-26T00:10:37.315658Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 龍霞華：早，你來這該不是為了去哪吧？
+  -> 葉俊: 早，我剛趕到，龍霞華，我來這該不是為了去哪吧？
+[2m2026-03-26T00:14:45.038121Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-26T00:14:46.213294Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-26T00:14:46.214595Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T00:20:38.318541Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 今日帳我對過了，有問題再叫我。
+  -> 葉俊: 早，我剛趕到，龍霞華，我來這該不是為了去哪吧？
+[2m2026-03-26T00:24:23.396789Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T00:25:50.280107Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T00:28:07.180683Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 「從這裡到生活花園，你走得真快，我最近」葉俊回
+  -> 葉俊: 你剛才說我沒事，我現在確實很沒力氣，
+[2m2026-03-26T00:28:32.203467Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (638) to PostgreSQL...
+[2m2026-03-26T00:28:33.370194Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-26T00:28:33.370968Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T00:30:37.224729Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 我今晚要回去，路上很危險，你別擔心。
+  -> 龍霞華: 嗯，那行，我送你，反正你那邊也沒人等你。
+[2m2026-03-26T00:35:08.007179Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T00:35:41.539843Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你盯一下，今晚的排班變動得仔細看清楚，
+  -> 陸淑華: 好的，我會仔細看。
+[2m2026-03-26T00:36:30.170630Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T00:38:10.537306Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 你剛到，覺得挺累，我剛回過頭來。
+  -> 魏杰強: 那也沒關係，先回去睡吧。
+[2m2026-03-26T00:40:19.783266Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T00:40:40.593524Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 最近帳我對過了，有問題再叫我。
+  -> 王國軍: 別擔心，我多謝你關心。
+[2m2026-03-26T00:45:40.834893Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 夜色已深，我已經準備好收拾行囊」呂英淑「鄭秀強，天色已暗，我也已經收拾
+  -> 呂英淑: 昨夜還睡得著嗎？
+[2m2026-03-26T00:48:10.734253Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: {"a":"鄧雅蘭：「我最近也常常覺得，」"}
+  -> 陸淑華: {"b":"陸淑華：「嗯，」"}
+[2m2026-03-26T00:50:40.658317Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 我剛到，覺得挺累，今天這幾天米鹽又貴了一點，街坊都在精…
+  -> 魏杰強: 那也沒關係，先回去睡吧。
+[2m2026-03-26T00:53:11.265812Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 龍霞華 剛來，帳本都對過了，你該說些什麼？
+  -> 曾偉: 我也沒問，只是聽你話就來得早了，不過今
+[2m2026-03-26T00:58:11.305042Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 今晚夜色確實沉悶，龍霞華剛到，鄭秀強那陣子輻射塵多，街坊們說米鹽又貴了一點。
+  -> 長孫慧: 嗯，剛說鄭秀強那陣子輻射塵多，我還聽得聽得清楚
+[2m2026-03-26T01:00:40.706655Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄧雅蘭: 這幾天米鹽又貴了一點，街坊都在精…
+  -> 莫芬敏: 有問題再叫我
+[2m2026-03-26T01:05:01.592833Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:06:03.441252Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:08:07.304325Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 「從這裡到生活花園，你走得真快，我最近」葉俊回
+  -> 葉俊: 你剛才說我沒事，我現在確實很沒力氣，
+[2m2026-03-26T01:10:37.600975Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 鄭秀強: 早，你來這該不是為了去哪吧？」葉俊回「早，我剛趕到，龍霞華，我來這該不是為了去哪吧？
+  -> 葉俊: 龍霞華：「早，我剛趕到，龍霞華，我來這該不是為了去哪吧？」
+[2m2026-03-26T01:14:51.003515Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: extension "vector" already exists, skipping
+[2m2026-03-26T01:14:51.003705Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "auth" already exists, skipping
+[2m2026-03-26T01:14:51.003778Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "event_log" already exists, skipping
+[2m2026-03-26T01:14:51.003960Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_event_log_entity_id" already exists, skipping
+[2m2026-03-26T01:14:51.004068Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "archival" already exists, skipping
+[2m2026-03-26T01:14:51.004188Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "idx_archival_entity_id" already exists, skipping
+[2m2026-03-26T01:14:51.004258Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_memories" already exists, skipping
+[2m2026-03-26T01:14:51.004309Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_summaries" already exists, skipping
+[2m2026-03-26T01:14:51.004359Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_npc_summaries" already exists, skipping
+[2m2026-03-26T01:14:51.004418Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_threads" already exists, skipping
+[2m2026-03-26T01:14:51.004509Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_dyads" already exists, skipping
+[2m2026-03-26T01:14:51.004587Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "npc_rumors" already exists, skipping
+[2m2026-03-26T01:14:51.004654Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "rooms" already exists, skipping
+[2m2026-03-26T01:14:51.004708Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "exits" already exists, skipping
+[2m2026-03-26T01:14:51.004779Z[0m [32m INFO[0m [2mpostgres::connection[0m[2m:[0m NOTICE: relation "world_lexicon" already exists, skipping
+[2m2026-03-26T01:14:51.004790Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Initialized PostgreSQL Pool at postgres://postgres:singularity@localhost:5432/singularity
+[2m2026-03-26T01:14:51.006557Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] loaded: 639 rooms, 319 entity_room, 1 venues, 4 assignments, 3 schedules, 319 entities, 10 items
+[2m2026-03-26T01:14:51.006616Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] Syncing all rooms (639) to PostgreSQL...
+[2m2026-03-26T01:14:52.236479Z[0m [32m INFO[0m [2msingularity_world::store[0m[2m:[0m [store] PostgreSQL room sync completed.
+[2m2026-03-26T01:14:52.236655Z[0m [32m INFO[0m [2mnpc_behavior[0m[2m:[0m loaded 18 roles from /home/tanger/Projects/singularity_world/data/npc_behaviors.json
+[2m2026-03-26T01:14:52.237160Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:14:52.237375Z[0m [32m INFO[0m [2msingularity_world::server::run[0m[2m:[0m Rust server listening on http://0.0.0.0:1721 (WebSocket /ws)
+[2m2026-03-26T01:14:52.259621Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 三樓醫療區最近比較忙，好像是採集隊回城的季節
+[2m2026-03-26T01:14:57.086631Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 錢蘭: 今晚十點，葉俊要來排班，我該帶點什麼去見他。
+  -> 黎蘭芬: 你剛說今晚十點？我剛才還在等，怕你太忙了。
+[2m2026-03-26T01:16:29.184724Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:16:29.186513Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:18:08.974401Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: {"a":"葉俊：「今日帳我對過了，有問題再叫我。」"}
+  -> 龍霞華: {"b":"龍霞華：「你剛才說我沒事，我現在確實很沒力氣。」"}
+[2m2026-03-26T01:20:39.104438Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 錢蘭: 我剛剛才剛回來，剛才葉俊說要趕去生活花園，三樓醫療區最近挺忙的，好像是採集隊回城的季節。
+  -> 嚴國志: 嗯，那我先回去了，晚班辛苦。
+[2m2026-03-26T01:23:09.053829Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 黎蘭芬: 你最近過得好不好？我最近也不太好，怕事吧。
+  -> 嚴國志: 嗯，最近也難受。你盯一下，我來。
+[2m2026-03-26T01:24:52.751301Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 市集今天來了一批品相很好的玉質木材，攤販搶著進貨
+[2m2026-03-26T01:25:37.367444Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 龍霞華，我剛走過這裡，天色烏雲沉沉，路邊那家藥房好像有幾人進出，你打算去哪？
+  -> 鄭秀強: 鄭秀強，我剛走過這裡，天色烏雲沉沉，路邊那家藥房好像有幾人進出，我打算去哪？
+[2m2026-03-26T01:28:07.492904Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 黎蘭芬: 今天帳我對過了，有問題再叫我。」葉俊，離開前往 life_garden。
+  -> 葉俊: 「今日帳我對過了，有問題再叫我。」黎蘭芬，今日帳我對過了，有問題再叫我。
+[2m2026-03-26T01:33:08.211630Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 黎蘭芬: 我剛把剛才的玉木木料調好，準備進店賣，但看到葉俊還在排班，心裡挺慌的。
+  -> 石國美: 你倒是先回，別太急著。
+[2m2026-03-26T01:34:52.750894Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的
+[2m2026-03-26T01:35:37.152566Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 黎蘭芬: 那地方太吵，我先回。
+  -> 慕容敏: 嗯，辛苦啦。
+[2m2026-03-26T01:44:52.750975Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 最近幾天金屬器具的表面都浮了一層淡淡的礦脈紋路
+[2m2026-03-26T01:54:53.248337Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 走廊的老長凳被根鬚纏得更穩了，坐起來比以前舒服
+[2m2026-03-26T01:56:46.142754Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.156411Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.160386Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.167489Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.170457Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.176196Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.179470Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.183478Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.186643Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.192525Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.195739Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.198987Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.202099Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:46.203924Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:56:54.774619Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.547285Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.550138Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.557749Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.560189Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.562676Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.565098Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.570781Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.573010Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.575398Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.577640Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.583581Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.585889Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.588232Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:57:59.590024Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:58:04.016853Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:58:07.625934Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug] 浮生城10F vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 黎蘭芬: 那地方太吵，我先回。
+  -> 慕容敏: 那地方太吵，我先回。
+[2m2026-03-26T01:59:04.265479Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.273101Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.279174Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.280939Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.282697Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.284340Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.286014Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.287596Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.289161Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.291076Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.292573Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.294073Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.299821Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:04.301570Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:06.254229Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.879431Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.881296Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.883022Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.884560Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.890756Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.897638Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.899332Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.900887Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.902395Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.903937Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.905645Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.911396Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.912958Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:45.914472Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T01:59:47.685380Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.171697Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.173677Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.180836Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.182439Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.183985Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.189854Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.191564Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.193108Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.194586Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.196166Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.202064Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.203638Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.205190Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:21.206774Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:00:23.149743Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.271347Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.277614Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.279371Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.286642Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.288296Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.289914Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.291461Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.296977Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.298650Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.300228Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.301845Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.303467Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.314254Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:01:09.315660Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:04:00.926349Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:04:53.260031Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 加了福的肉質蔬果到貨了，今天特別新鮮
+[2m2026-03-26T02:05:02.399897Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.402372Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.418819Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.421217Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.423557Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.425856Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.431652Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.434033Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.436516Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.438876Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.441208Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.443667Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.445981Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.448297Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.450397Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.452773Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.454847Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.456914Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:05:02.458232Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:10:38.411003Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 今天帳我對過了，有問題再叫我。
+  -> 鄭秀強: 我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。
+[2m2026-03-26T02:14:53.756928Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 五樓那戶陽台的根鬚盤得更緊了，看著倒是挺穩的
+[2m2026-03-26T02:15:38.008116Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 龍霞華: 你剛才說我沒事，我現在確實很忙
+[2m2026-03-26T02:18:07.153667Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 早，你來這該不是為了去哪吧？
+[2m2026-03-26T02:18:21.348543Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.354727Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.356898Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.364081Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.365843Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.367859Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.369756Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.371350Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.373262Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.375377Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.377525Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.379259Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:21.381224Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:18:22.692057Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.945705Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.953448Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.957522Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.960800Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.966787Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.970626Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.974828Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.977909Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.983757Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.986820Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:56.989838Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:57.002189Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:57.005332Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:57.006933Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:19:58.226181Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.938691Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.943423Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.946744Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.953800Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.956804Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.960771Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.963885Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.979150Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.982289Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.986223Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.989215Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.992276Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.997936Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:04.999244Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:06.118671Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.256366Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.260665Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.264154Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.271343Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.275424Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.278674Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.284492Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.288301Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.291427Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.294420Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.297497Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.303190Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.306383Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:56.307982Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:21:57.051447Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.174176Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.177729Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.184824Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.187954Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.191112Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.194411Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.197750Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.200788Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.204550Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.208259Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.214010Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.217789Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.223688Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:22.225382Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:22:23.356576Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:23:07.182815Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 龍霞華: 你剛才說我沒事，我現在確實很開心，不過工作還是難過。
+[2m2026-03-26T02:24:11.424778Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.430793Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.436710Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.442573Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.448485Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.453709Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.459313Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.465051Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.470913Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.476737Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.482881Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.488631Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.494017Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.499979Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.505643Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.511280Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.517168Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:11.518893Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:15.759172Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:24:53.757112Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 十六樓商區的地面接縫處冒出了細細的礦脈紋路
+[2m2026-03-26T02:30:38.199824Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 早，你來這該不是為了去哪吧？
+[2m2026-03-26T02:34:54.262781Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 昨晚牆面的玉質脈絡突然閃了一下暗紫色的光，只持續了幾秒
+[2m2026-03-26T02:38:08.170826Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 昨晚的排班通知你聽過沒？
+  -> 鄭秀強: 沒聽過，早班早到，晚班也順手來吧
+[2m2026-03-26T02:38:38.317212Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:38:38.319575Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:38:38.321216Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:38:40.598139Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:39:03.995074Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:44:54.253646Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今天空氣裡的膠質味比平常濃，像要變天了
+[2m2026-03-26T02:45:38.235897Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 你最近身體狀態似乎不太好，我剛去檢查過，請務必注意身體狀況。
+  -> 鄭秀強: 沒聽過，早班早到，晚班也順手來吧。
+[2m2026-03-26T02:53:08.350357Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，這幾天米鹽貴了一點，街坊都在精，空氣裡膠質味也濃了些，你走時注意安全。
+  -> 鄭秀強: 鄭秀強，走！我剛去 check，別走太慢，別看那些細節，快走。
+[2m2026-03-26T02:54:54.748885Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸
+[2m2026-03-26T02:56:16.444544Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:56:16.446966Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:56:16.448640Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T02:56:18.260390Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T03:00:38.163489Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 鄭秀強，走！我剛去 check，別走太慢，別看那些
+[2m2026-03-26T03:04:54.747638Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 電梯間排了好長的隊，聽說中間幾層在做維護
+[2m2026-03-26T03:14:54.753216Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 城外商路上的指引石被增生物覆蓋了一半，有隊伍去清理了
+[2m2026-03-26T03:15:38.583895Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 天色漸暗，正午的餘暉已盡，我來找您來找，這幾天米鹽貴了一點，街坊都在精，空氣裡膠質味，您走，別看那些。
+  -> 鄭秀強: 走！我剛去 check，別走太慢，別看那些。
+[2m2026-03-26T03:24:55.255107Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人從低樓層看到遠處林冠線在晃動，可能是大型生物經過
+[2m2026-03-26T03:25:38.276491Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 葉俊，天色漸暗，正午的餘暉已盡，我來找您來找，這幾天米鹽
+  -> 鄭秀強: 鄭秀強，走！我剛去 check，別走太慢，別看那些。
+[2m2026-03-26T03:30:37.108911Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 龍霞華: 你剛才說我沒事，我現在確實很開心，不過工作還是難過
+[2m2026-03-26T03:34:55.752773Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 聽回來的人講，城外的肉質籐蔓又往路邊多蔓了一些
+[2m2026-03-26T03:43:07.145985Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我最近帳都對過了，有問題再叫我。
+  -> 鄭秀強: 我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。
+[2m2026-03-26T03:44:55.753867Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理
+[2m2026-03-26T03:50:38.371630Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 我剛去趟藥房，天色烏雲沉沉，路邊那家藥房好。
+  -> 鄭秀強: 我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。
+[2m2026-03-26T03:54:55.752353Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看
+[2m2026-03-26T03:58:08.435768Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 剛才老闆讓我去換班，我沒問過你，你走沒走？
+  -> 鄭秀強: 我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。」「我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。
+[2m2026-03-26T04:04:56.258303Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 十一樓健身區新添了幾件器材，是用富態化木材做的
+[2m2026-03-26T04:05:38.470282Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 龍霞華，今天剛到，天色烏雲沉沉，路邊那家藥房好，我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。
+  -> 鄭秀強: 鄭秀強，我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。
+[2m2026-03-26T04:08:07.259538Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: {"a":"龍霞華：「今天帳我對過了，有問題再叫我。」"}
+  -> 鄭秀強: {"b":"鄭秀強：「我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。」"}
+[2m2026-03-26T04:09:24.395492Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:09:24.400914Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:09:24.403110Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:09:24.404767Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:09:26.719511Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:18.095305Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:18.100905Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:18.103018Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:18.104688Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:19.113146Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:32.744984Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:32.747541Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:32.749282Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:10:34.920141Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:38.756647Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:38.762059Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:38.764266Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:38.765911Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:39.667946Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:52.378948Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:52.381673Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:52.383863Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:11:53.494073Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 639 rooms, 1275 directed edges
+[2m2026-03-26T04:12:20.786267Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.732312Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.738561Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.744604Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.750496Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.756558Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.761665Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.767365Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.773355Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.788412Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.794433Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.800291Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.806148Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.811435Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.817407Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.823107Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.828743Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.834515Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:12.836453Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:13:13.643251Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:14:56.749798Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 藥材價格穩著，但品種比上個月少了幾樣
+[2m2026-03-26T04:18:07.145988Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 今日帳我對過了，有問題再叫我。
+  -> 鄭秀強: 我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。
+[2m2026-03-26T04:21:49.822179Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T04:24:57.252601Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 樓頂的蓄水設施今天開始例行清洗，水量可能會少一會兒
+[2m2026-03-26T04:28:07.134353Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 龍霞華: 今天帳我對過了，有問題再叫我。
+  -> 鄭秀強: 我剛走過這裡，天色烏雲沉沉，路邊那家藥房好。
+[2m2026-03-26T04:34:57.751027Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有住戶搬家了，留下的房間牆上全是根鬚攀痕，挺有意思的
+[2m2026-03-26T04:44:57.752448Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 打鐵巷最近接了不少單，聽說是採集隊的工具要換新
+[2m2026-03-26T04:54:58.249089Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有人在樓下收購琉璃化的礦石碎片，出手很闊綽
+[2m2026-03-26T05:04:58.747482Z[0m [32m INFO[0m [2msingularity_world::server::simulation_loop[0m[2m:[0m 注入事件種子: 有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快
+[2m2026-03-26T05:05:38.279406Z[0m [32m INFO[0m [2msingularity_world::npcnpc::trigger[0m[2m:[0m [Dialogue Debug]  vs 換班、交接時的情境，簡短交代或叮囑: 
+  -> 葉俊: 今日帳我對過了，有問題再叫我。
+  -> 龍霞華: 你剛才說我沒事，我現在確實很開心，不過工作還是難過
+[2m2026-03-26T05:14:10.166985Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:10.169681Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:10.175526Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:10.177666Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:10.179825Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:10.181450Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.692032Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.696725Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.712920Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.717279Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.720603Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.724256Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.728577Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.732219Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.735715Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.743700Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.747389Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.751014Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.757382Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.759410Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.793130Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.796844Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.798768Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.822767Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.827625Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.829711Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.853836Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.857974Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.860061Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.884681Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.889516Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.892179Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.894136Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.918737Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.921758Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.924727Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.957711Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.960099Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.967111Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.969356Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.971290Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.973023Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.974488Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:35.998310Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.002147Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.003579Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.027505Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.031141Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.032878Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.056319Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.060045Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.061557Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.085902Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.090090Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.092375Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.118427Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.120971Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.122958Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.129694Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.131489Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.133219Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.134474Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.158787Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.163141Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.164554Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.188108Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.191086Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.192520Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.216479Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.220862Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.222520Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.246204Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.250585Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.251911Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.275772Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.280744Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.282945Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.307891Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.312802Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.314753Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.316709Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.318049Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.342362Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.345234Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.346755Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.370203Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.375385Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.377020Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.403154Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.405815Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.407706Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.409404Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.411209Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.417013Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.428694Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.430694Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.432300Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.455669Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.459623Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.461060Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.484657Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.488217Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.489893Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.513336Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.515431Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.519050Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.520644Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.544478Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.548841Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.550832Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.574099Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.577361Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.579025Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.604582Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.607096Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.613894Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.615716Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.617464Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.619566Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.621082Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.644636Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.649067Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.650468Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.674052Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.676901Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.688106Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.711653Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.716425Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges
+[2m2026-03-26T05:14:36.718240Z[0m [32m INFO[0m [2mpathfind[0m[2m:[0m graph synced from store: 638 rooms, 1275 directed edges

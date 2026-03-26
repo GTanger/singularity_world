@@ -1,1113 +1,1113 @@
 {
-  "city_life_10f_u105_bt1": {
+  "zonelife_city_life_10f_u105_bt1": {
     "x": 260.0,
     "y": 350.0
   },
-  "city_life_7f_u077_liv": {
+  "zonelife_city_life_07f_u077_1": {
     "x": 890.0,
     "y": 3500.0
   },
-  "city_life_9f_u099_brm": {
+  "zonelife_city_life_09f_u099_4": {
     "x": 260.0,
     "y": 4760.0
   },
-  "city_life_4f_u049_liv": {
+  "zonelife_city_life_04f_u049_1": {
     "x": 2852.0357142857133,
     "y": 2565.142857142857
   },
-  "city_life_5f_u053_balb": {
+  "zonelife_city_life_05f_u053_12": {
     "x": 800.0,
     "y": 2060.0
   },
-  "city_life_10f_u107_bt2": {
+  "zonelife_city_life_10f_u107_bt2": {
     "x": 800.0,
     "y": 440.0
   },
-  "city_life_5f_u055_bat": {
+  "zonelife_city_life_05f_u055_3": {
     "x": 440.0,
     "y": 2240.0
   },
-  "city_life_6f_u061_bt2": {
+  "zonelife_city_life_06f_u061_bt2": {
     "x": 260.0,
     "y": 2600.0
   },
-  "city_life_5f_u055_din": {
+  "zonelife_city_life_05f_u055_7": {
     "x": 890.0,
     "y": 2240.0
   },
-  "city_life_11f_gym_b": {
+  "zonelife_city_life_11f_u110_gym_b": {
     "x": 170.0,
     "y": 710.0
   },
-  "city_life_10f_u104_btg": {
+  "zonelife_city_life_10f_u104_32": {
     "x": 440.0,
     "y": 260.0
   },
-  "city_life_6f_u065_bala": {
+  "zonelife_city_life_06f_u065_2": {
     "x": 440.0,
     "y": 2780.0
   },
-  "city_life_4f_u042_bal": {
+  "zonelife_city_life_04f_u042_2": {
     "x": 2341.148268398268,
     "y": 2634.978715728715
   },
-  "city_life_14f_records": {
+  "zonelife_city_life_14f_u140_records": {
     "x": 710.0,
     "y": 1070.0
   },
-  "city_life_15f_meeting": {
+  "zonelife_city_life_15f_u150_meeting": {
     "x": 620.0,
     "y": 1160.0
   },
-  "city_life_7f_u074_br1": {
+  "zonelife_city_life_07f_u074_br1": {
     "x": 170.0,
     "y": 3320.0
   },
-  "city_life_4f_u049_btm": {
+  "zonelife_city_life_04f_u049_6": {
     "x": 2917.749999999998,
     "y": 2501.1249999999995
   },
-  "city_life_6f_u068_bat": {
+  "zonelife_city_life_06f_u068_3": {
     "x": 890.0,
     "y": 2960.0
   },
-  "city_life_9f_u091_bt2": {
+  "zonelife_city_life_09f_u091_bt2": {
     "x": 800.0,
     "y": 4220.0
   },
-  "city_life_3f_cor_med2_r05": {
+  "zonelife_city_life_03f_u030_cor_med2_r05": {
     "x": 2852.5714285714284,
     "y": 3529.4404761904752
   },
-  "city_life_10f_u102_br1": {
+  "zonelife_city_life_10f_u102_br1": {
     "x": 890.0,
     "y": 80.0
   },
-  "city_life_8f_u088_br1": {
+  "zonelife_city_life_08f_u088_br1": {
     "x": 440.0,
     "y": 4130.0
   },
-  "city_life_5f_u056_btm": {
+  "zonelife_city_life_05f_u056_6": {
     "x": 530.0,
     "y": 2330.0
   },
-  "city_life_10f_u109_bat": {
+  "zonelife_city_life_10f_u109_3": {
     "x": 710.0,
     "y": 530.0
   },
-  "city_life_9f_u099_bat": {
+  "zonelife_city_life_09f_u099_3": {
     "x": 80.0,
     "y": 4760.0
   },
-  "city_life_3f_cor_surg1_r06": {
+  "zonelife_city_life_03f_u030_cor_surg1_r06": {
     "x": 3044.293650793651,
     "y": 3860.218253968253
   },
-  "city_life_10f_u105_br1": {
+  "zonelife_city_life_10f_u105_br1": {
     "x": 890.0,
     "y": 260.0
   },
-  "city_life_7f_u075_bat": {
+  "zonelife_city_life_07f_u075_3": {
     "x": 800.0,
     "y": 3320.0
   },
-  "city_life_8f_u087_din": {
+  "zonelife_city_life_08f_u087_7": {
     "x": 80.0,
     "y": 4130.0
   },
-  "city_life_6f_u065_balb": {
+  "zonelife_city_life_06f_u065_12": {
     "x": 530.0,
     "y": 2780.0
   },
-  "city_life_5f_u059_bal": {
+  "zonelife_city_life_05f_u059_2": {
     "x": 170.0,
     "y": 2510.0
   },
-  "city_life_7f_u076_brg": {
+  "zonelife_city_life_07f_u076_5": {
     "x": 620.0,
     "y": 3410.0
   },
-  "city_life_11f_laundry": {
+  "zonelife_city_life_11f_u110_laundry": {
     "x": 800.0,
     "y": 710.0
   },
-  "city_life_12f_mains": {
+  "zonelife_city_life_12f_u120_mains": {
     "x": 530.0,
     "y": 890.0
   },
-  "city_life_6f_u067_br1": {
+  "zonelife_city_life_06f_u067_br1": {
     "x": 170.0,
     "y": 2960.0
   },
-  "city_life_11f_gym": {
+  "zonelife_city_life_11f_u110_gym": {
     "x": 890.0,
     "y": 620.0
   },
-  "city_life_6f_u061_btm": {
+  "zonelife_city_life_06f_u061_6": {
     "x": 260.0,
     "y": 2600.0
   },
-  "city_life_7f_u073_brg": {
+  "zonelife_city_life_07f_u073_5": {
     "x": 530.0,
     "y": 3230.0
   },
-  "city_life_10f_u105_balb": {
+  "zonelife_city_life_10f_u105_12": {
     "x": 800.0,
     "y": 260.0
   },
-  "city_life_9f_u099_btm": {
+  "zonelife_city_life_09f_u099_6": {
     "x": 350.0,
     "y": 4760.0
   },
-  "city_life_5f_u055_balb": {
+  "zonelife_city_life_05f_u055_12": {
     "x": 350.0,
     "y": 2240.0
   },
-  "city_life_4f_u047_din": {
+  "zonelife_city_life_04f_u047_7": {
     "x": 2851.015873015872,
     "y": 2939.359668109668
   },
-  "city_life_13f_collect": {
+  "zonelife_city_life_13f_u130_collect": {
     "x": 260.0,
     "y": 980.0
   },
-  "city_life_13f_desk": {
+  "zonelife_city_life_13f_u130_desk": {
     "x": 440.0,
     "y": 980.0
   },
-  "city_life_5f_u055_liv": {
+  "zonelife_city_life_05f_u055_1": {
     "x": 80.0,
     "y": 2330.0
   },
-  "city_life_6f_u064_br2": {
+  "zonelife_city_life_06f_u064_22": {
     "x": 80.0,
     "y": 2780.0
   },
-  "city_life_14f_consult": {
+  "zonelife_city_life_14f_u140_consult": {
     "x": 260.0,
     "y": 1070.0
   },
-  "city_life_5f_u051_liv": {
+  "zonelife_city_life_05f_u051_1": {
     "x": 170.0,
     "y": 2060.0
   },
-  "city_life_7f_u079_brm": {
+  "zonelife_city_life_07f_u079_4": {
     "x": 800.0,
     "y": 3590.0
   },
-  "city_life_5f_u051_brg": {
+  "zonelife_city_life_05f_u051_5": {
     "x": 800.0,
     "y": 1970.0
   },
-  "city_life_2f_er_rescue": {
+  "zonelife_city_life_02f_u028_1": {
     "x": 2720.3456959706955,
     "y": 4597.694902319901
   },
-  "city_life_4f_u045_bat": {
+  "zonelife_city_life_04f_u045_3": {
     "x": 2564.8823529411748,
     "y": 3032.5294117647054
   },
-  "city_life_8f_u082_br2": {
+  "zonelife_city_life_08f_u082_22": {
     "x": 170.0,
     "y": 3770.0
   },
-  "city_life_6f_u069_bt2": {
+  "zonelife_city_life_06f_u069_bt2": {
     "x": 710.0,
     "y": 3050.0
   },
-  "city_life_10f_u109_br1": {
+  "zonelife_city_life_10f_u109_br1": {
     "x": 710.0,
     "y": 530.0
   },
-  "city_life_6f_u065_br2": {
+  "zonelife_city_life_06f_u065_22": {
     "x": 710.0,
     "y": 2780.0
   },
-  "city_life_4f_u041_btg": {
+  "zonelife_city_life_04f_u041_32": {
     "x": 530.0,
     "y": 890.0
   },
-  "city_life_5f_u058_brg": {
+  "zonelife_city_life_05f_u058_5": {
     "x": 800.0,
     "y": 2420.0
   },
-  "city_life_7f_u073_btm": {
+  "zonelife_city_life_07f_u073_6": {
     "x": 710.0,
     "y": 3230.0
   },
-  "city_life_8f_u085_din": {
+  "zonelife_city_life_08f_u085_7": {
     "x": 530.0,
     "y": 3950.0
   },
-  "city_life_7f_u072_liv": {
+  "zonelife_city_life_07f_u072_1": {
     "x": 80.0,
     "y": 3230.0
   },
-  "city_life_10f_u105_din": {
+  "zonelife_city_life_10f_u105_7": {
     "x": 440.0,
     "y": 350.0
   },
-  "city_life_10f_u107_brm": {
+  "zonelife_city_life_10f_u107_4": {
     "x": 710.0,
     "y": 440.0
   },
-  "city_life_14f_pharma": {
+  "zonelife_city_life_14f_u140_pharma": {
     "x": 530.0,
     "y": 1070.0
   },
-  "city_life_11f_storage_b": {
+  "zonelife_city_life_11f_u110_storage_b": {
     "x": 620.0,
     "y": 800.0
   },
-  "city_life_3f_cor_pcm1": {
+  "zonelife_city_life_03f_u030_cor_pcm1": {
     "x": 2882.9880952380954,
     "y": 3926.5238095238087
   },
-  "city_life_10f_u106_liv": {
+  "zonelife_city_life_10f_u106_1": {
     "x": 170.0,
     "y": 440.0
   },
-  "city_life_4f_u046_br1": {
+  "zonelife_city_life_04f_u046_br1": {
     "x": 3352.321428571427,
     "y": 574.916666666667
   },
-  "city_life_8f_u087_br1": {
+  "zonelife_city_life_08f_u087_br1": {
     "x": 530.0,
     "y": 4040.0
   },
-  "city_life_5f_u051_bt1": {
+  "zonelife_city_life_05f_u051_bt1": {
     "x": 890.0,
     "y": 1970.0
   },
-  "city_life_8f_u082_liv": {
+  "zonelife_city_life_08f_u082_1": {
     "x": 260.0,
     "y": 3770.0
   },
-  "city_life_5f_u057_brm": {
+  "zonelife_city_life_05f_u057_4": {
     "x": 260.0,
     "y": 2420.0
   },
-  "city_life_3f_cor_surg2_r06": {
+  "zonelife_city_life_03f_u030_cor_surg2_r06": {
     "x": 2690.8214285714284,
     "y": 3865.357142857142
   },
-  "city_life_4f_u048_bal": {
+  "zonelife_city_life_04f_u048_2": {
     "x": 2921.9126984126983,
     "y": 2656.9365079365075
   },
-  "city_life_5f_u059_br2": {
+  "zonelife_city_life_05f_u059_22": {
     "x": 350.0,
     "y": 2510.0
   },
-  "city_life_4f_u041_br2": {
+  "zonelife_city_life_04f_u041_22": {
     "x": 2754.3045112781947,
     "y": 71.04041353383485
   },
-  "city_life_5f_u056_liv": {
+  "zonelife_city_life_05f_u056_1": {
     "x": 620.0,
     "y": 2330.0
   },
-  "city_life_5f_u055_br2": {
+  "zonelife_city_life_05f_u055_22": {
     "x": 530.0,
     "y": 2240.0
   },
-  "city_life_6f_u067_balb": {
+  "zonelife_city_life_06f_u067_12": {
     "x": 80.0,
     "y": 2960.0
   },
-  "city_life_10f_u109_brm": {
+  "zonelife_city_life_10f_u109_4": {
     "x": 890.0,
     "y": 530.0
   },
-  "city_life_6f_u061_bt1": {
+  "zonelife_city_life_06f_u061_bt1": {
     "x": 170.0,
     "y": 2600.0
   },
-  "city_life_9f_u092_br2": {
+  "zonelife_city_life_09f_u092_22": {
     "x": 350.0,
     "y": 4310.0
   },
-  "city_life_3f_cor_pcm1_r06": {
+  "zonelife_city_life_03f_u030_cor_pcm1_r06": {
     "x": 2857.4880952380954,
     "y": 4014.5238095238087
   },
-  "city_life_6f_u066_br2": {
+  "zonelife_city_life_06f_u066_22": {
     "x": 530.0,
     "y": 2870.0
   },
-  "city_life_10f_u104_bt1": {
+  "zonelife_city_life_10f_u104_bt1": {
     "x": 440.0,
     "y": 260.0
   },
-  "city_life_7f_u078_bat": {
+  "zonelife_city_life_07f_u078_3": {
     "x": 170.0,
     "y": 3590.0
   },
-  "city_life_9f_u094_liv": {
+  "zonelife_city_life_09f_u094_1": {
     "x": 890.0,
     "y": 4400.0
   },
-  "city_life_6f_u066_btm": {
+  "zonelife_city_life_06f_u066_6": {
     "x": 710.0,
     "y": 2870.0
   },
-  "city_life_15f_reading": {
+  "zonelife_city_life_15f_u150_reading": {
     "x": 710.0,
     "y": 1160.0
   },
-  "city_life_3f_cor_pcm2_r02": {
+  "zonelife_city_life_03f_u030_cor_pcm2_r02": {
     "x": 2994.279761904762,
     "y": 3670.0238095238087
   },
-  "city_life_6f_u063_br3": {
+  "zonelife_city_life_06f_u063_br3": {
     "x": 350.0,
     "y": 2690.0
   },
-  "city_life_8f_u082_brm": {
+  "zonelife_city_life_08f_u082_4": {
     "x": 170.0,
     "y": 3770.0
   },
-  "city_life_5f_u052_liv": {
+  "zonelife_city_life_05f_u052_1": {
     "x": 620.0,
     "y": 2060.0
   },
-  "city_life_5f_u059_bat": {
+  "zonelife_city_life_05f_u059_3": {
     "x": 260.0,
     "y": 2510.0
   },
-  "city_life_9f_u096_bt2": {
+  "zonelife_city_life_09f_u096_bt2": {
     "x": 350.0,
     "y": 4580.0
   },
-  "city_life_9f": {
+  "zonelife_city_life_09f_u090_0": {
     "x": 350.0,
     "y": 4220.0
   },
-  "city_life_10f_u107_br2": {
+  "zonelife_city_life_10f_u107_22": {
     "x": 530.0,
     "y": 440.0
   },
-  "city_life_4f_u047_btm": {
+  "zonelife_city_life_04f_u047_6": {
     "x": 2846.437499999998,
     "y": 2806.8749999999995
   },
-  "city_life_9f_u097_br3": {
+  "zonelife_city_life_09f_u097_br3": {
     "x": 890.0,
     "y": 4580.0
   },
-  "city_life_5f_u052_br1": {
+  "zonelife_city_life_05f_u052_br1": {
     "x": 440.0,
     "y": 2060.0
   },
-  "city_life_3f_cor_pcs1_r04": {
+  "zonelife_city_life_03f_u030_cor_pcs1_r04": {
     "x": 2666.30753968254,
     "y": 3508.593253968253
   },
-  "city_life_11f_duty_b": {
+  "zonelife_city_life_11f_u110_duty_b": {
     "x": 800.0,
     "y": 620.0
   },
-  "city_life_12f_elect": {
+  "zonelife_city_life_12f_u120_elect": {
     "x": 260.0,
     "y": 890.0
   },
-  "city_life_4f_u044_liv": {
+  "zonelife_city_life_04f_u044_1": {
     "x": 2402.374999999999,
     "y": 3016.8630952380945
   },
-  "city_life_11f_atrium_b": {
+  "zonelife_city_life_11f_u110_atrium_b": {
     "x": 530.0,
     "y": 620.0
   },
-  "city_life_1f_clinic": {
+  "zonelife_city_life_01f_u012_0": {
     "x": 1948.34188034188,
     "y": 4096.739316239315
   },
-  "city_life_7f_u074_bt1": {
+  "zonelife_city_life_07f_u074_bt1": {
     "x": 350.0,
     "y": 3320.0
   },
-  "city_life_2f": {
+  "zonelife_city_life_02f_u020_0": {
     "x": 2717.0956959706955,
     "y": 4359.889346764346
   },
-  "city_life_10f_u104_br2": {
+  "zonelife_city_life_10f_u104_22": {
     "x": 350.0,
     "y": 260.0
   },
-  "city_life_6f_u065_btm": {
+  "zonelife_city_life_06f_u065_6": {
     "x": 80.0,
     "y": 2870.0
   },
-  "city_life_7f_u079_bat": {
+  "zonelife_city_life_07f_u079_3": {
     "x": 620.0,
     "y": 3590.0
   },
-  "city_life_10f_u108_br1": {
+  "zonelife_city_life_10f_u108_br1": {
     "x": 350.0,
     "y": 530.0
   },
-  "city_life_8f_u086_btg": {
+  "zonelife_city_life_08f_u086_32": {
     "x": 80.0,
     "y": 4040.0
   },
-  "city_life_15f_storage": {
+  "zonelife_city_life_15f_u150_storage": {
     "x": 890.0,
     "y": 1160.0
   },
-  "city_life_9f_u097_bat": {
+  "zonelife_city_life_09f_u097_3": {
     "x": 710.0,
     "y": 4580.0
   },
-  "city_life_4f_u043_br2": {
+  "zonelife_city_life_04f_u043_22": {
     "x": 2477.191086691085,
     "y": 2859.201465201464
   },
-  "city_life_6f_u069_br2": {
+  "zonelife_city_life_06f_u069_22": {
     "x": 530.0,
     "y": 3050.0
   },
-  "city_life_4f_u045_bt1": {
+  "zonelife_city_life_04f_u045_bt1": {
     "x": 3126.6071428571413,
     "y": 552.6428571428576
   },
-  "city_life_8f_u083_bat": {
+  "zonelife_city_life_08f_u083_3": {
     "x": 530.0,
     "y": 3770.0
   },
-  "city_life_4f_u044_bt1": {
+  "zonelife_city_life_04f_u044_bt1": {
     "x": 3029.749999999999,
     "y": 551.4880952380954
   },
-  "city_life_8f_u089_bt2": {
+  "zonelife_city_life_08f_u089_bt2": {
     "x": 170.0,
     "y": 4220.0
   },
-  "city_life_3f_cor_pcs2_r04": {
+  "zonelife_city_life_03f_u030_cor_pcs2_r04": {
     "x": 2663.587301587301,
     "y": 3670.329365079364
   },
-  "city_life_8f_u085_brm": {
+  "zonelife_city_life_08f_u085_4": {
     "x": 350.0,
     "y": 3950.0
   },
-  "city_life_9f_u093_brm": {
+  "zonelife_city_life_09f_u093_4": {
     "x": 80.0,
     "y": 4400.0
   },
-  "city_life_11f_laundry_a": {
+  "zonelife_city_life_11f_u110_laundry_a": {
     "x": 890.0,
     "y": 710.0
   },
-  "city_life_6f_u063_bat": {
+  "zonelife_city_life_06f_u063_3": {
     "x": 170.0,
     "y": 2690.0
   },
-  "city_life_3f_cor_surg1_r02": {
+  "zonelife_city_life_03f_u030_cor_surg1_r02": {
     "x": 2996.293650793651,
     "y": 3828.218253968253
   },
-  "city_life_7f_u074_bt2": {
+  "zonelife_city_life_07f_u074_bt2": {
     "x": 440.0,
     "y": 3320.0
   },
-  "city_life_3f_cor_med2_r03": {
+  "zonelife_city_life_03f_u030_cor_med2_r03": {
     "x": 2828.5714285714284,
     "y": 3513.4404761904752
   },
-  "city_life_7f_u077_bala": {
+  "zonelife_city_life_07f_u077_2": {
     "x": 170.0,
     "y": 3500.0
   },
-  "city_life_7f_u076_bt2": {
+  "zonelife_city_life_07f_u076_bt2": {
     "x": 890.0,
     "y": 3410.0
   },
-  "city_life_9f_u096_bal": {
+  "zonelife_city_life_09f_u096_2": {
     "x": 890.0,
     "y": 4490.0
   },
-  "city_life_9f_u095_br2": {
+  "zonelife_city_life_09f_u095_22": {
     "x": 350.0,
     "y": 4490.0
   },
-  "city_life_4f_u041_brg": {
+  "zonelife_city_life_04f_u041_5": {
     "x": 2404.7352941176455,
     "y": 2547.4264705882347
   },
-  "city_life_7f_u071_br2": {
+  "zonelife_city_life_07f_u071_22": {
     "x": 260.0,
     "y": 3140.0
   },
-  "city_life_10f_u106_btm": {
+  "zonelife_city_life_10f_u106_6": {
     "x": 80.0,
     "y": 440.0
   },
-  "city_life_4f_u043_din": {
+  "zonelife_city_life_04f_u043_7": {
     "x": 2340.738095238094,
     "y": 2925.825396825396
   },
-  "city_life_4f_u042_br1": {
+  "zonelife_city_life_04f_u042_br1": {
     "x": 2786.2083333333326,
     "y": 283.0972222222225
   },
-  "city_life_6f_u064_bt2": {
+  "zonelife_city_life_06f_u064_bt2": {
     "x": 260.0,
     "y": 2780.0
   },
-  "city_life_10f_u104_bal": {
+  "zonelife_city_life_10f_u104_2": {
     "x": 170.0,
     "y": 260.0
   },
-  "city_life_5f_u051_brm": {
+  "zonelife_city_life_05f_u051_4": {
     "x": 890.0,
     "y": 1970.0
   },
-  "city_life_9f_u099_brg": {
+  "zonelife_city_life_09f_u099_5": {
     "x": 170.0,
     "y": 4760.0
   },
-  "city_life_8f_u085_balb": {
+  "zonelife_city_life_08f_u085_12": {
     "x": 890.0,
     "y": 3860.0
   },
-  "city_life_8f_u089_bat": {
+  "zonelife_city_life_08f_u089_3": {
     "x": 800.0,
     "y": 4130.0
   },
-  "city_life_7f_u071_liv": {
+  "zonelife_city_life_07f_u071_1": {
     "x": 530.0,
     "y": 3140.0
   },
-  "city_life_6f_u066_brg": {
+  "zonelife_city_life_06f_u066_5": {
     "x": 440.0,
     "y": 2870.0
   },
-  "city_life_9f_u097_brg": {
+  "zonelife_city_life_09f_u097_5": {
     "x": 890.0,
     "y": 4580.0
   },
-  "city_life_4f_u045_balb": {
+  "zonelife_city_life_04f_u045_12": {
     "x": 2564.489495798318,
     "y": 2968.8781512605037
   },
-  "city_life_7f_u071_brm": {
+  "zonelife_city_life_07f_u071_4": {
     "x": 350.0,
     "y": 3140.0
   },
-  "city_life_1f": {
+  "zonelife_city_life_01f_u010_0": {
     "x": 1873.3439849624065,
     "y": 4172.45551378446
   },
-  "city_life_10f_u109_bt1": {
+  "zonelife_city_life_10f_u109_bt1": {
     "x": 890.0,
     "y": 530.0
   },
-  "city_life_6f_u067_br2": {
+  "zonelife_city_life_06f_u067_22": {
     "x": 260.0,
     "y": 2960.0
   },
-  "city_life_8f_u088_bat": {
+  "zonelife_city_life_08f_u088_3": {
     "x": 350.0,
     "y": 4130.0
   },
-  "city_life_9f_u091_brm": {
+  "zonelife_city_life_09f_u091_4": {
     "x": 710.0,
     "y": 4220.0
   },
-  "city_life_3f_cor_med2_r06": {
+  "zonelife_city_life_03f_u030_cor_med2_r06": {
     "x": 2864.5714285714284,
     "y": 3537.4404761904752
   },
-  "city_life_7f_u076_br1": {
+  "zonelife_city_life_07f_u076_br1": {
     "x": 620.0,
     "y": 3410.0
   },
-  "city_life_10f_u102_bat": {
+  "zonelife_city_life_10f_u102_3": {
     "x": 800.0,
     "y": 80.0
   },
-  "city_life_10f_u107_br1": {
+  "zonelife_city_life_10f_u107_br1": {
     "x": 440.0,
     "y": 440.0
   },
-  "city_life_3f_cor_surg2_r04": {
+  "zonelife_city_life_03f_u030_cor_surg2_r04": {
     "x": 2666.8214285714284,
     "y": 3849.357142857142
   },
-  "city_life_5f_u057_bala": {
+  "zonelife_city_life_05f_u057_2": {
     "x": 710.0,
     "y": 2330.0
   },
-  "city_life_7f_u073_br3": {
+  "zonelife_city_life_07f_u073_br3": {
     "x": 530.0,
     "y": 3230.0
   },
-  "city_life_7f_u077_bt1": {
+  "zonelife_city_life_07f_u077_bt1": {
     "x": 620.0,
     "y": 3500.0
   },
-  "city_life_10f_u106_btg": {
+  "zonelife_city_life_10f_u106_32": {
     "x": 890.0,
     "y": 350.0
   },
-  "city_life_3f_cor_pcm2_r06": {
+  "zonelife_city_life_03f_u030_cor_pcm2_r06": {
     "x": 3042.279761904762,
     "y": 3702.023809523808
   },
-  "city_life_6f_u066_bal": {
+  "zonelife_city_life_06f_u066_2": {
     "x": 350.0,
     "y": 2870.0
   },
-  "city_life_7f_u074_brg": {
+  "zonelife_city_life_07f_u074_5": {
     "x": 170.0,
     "y": 3320.0
   },
-  "city_life_7f_u076_btg": {
+  "zonelife_city_life_07f_u076_32": {
     "x": 800.0,
     "y": 3410.0
   },
-  "city_life_8f_u087_btm": {
+  "zonelife_city_life_08f_u087_6": {
     "x": 890.0,
     "y": 4040.0
   },
-  "city_life_3f_cor_icu_r02": {
+  "zonelife_city_life_03f_u031_02": {
     "x": 2989.0714285714284,
     "y": 3985.0238095238087
   },
-  "city_life_9f_u095_bt1": {
+  "zonelife_city_life_09f_u095_bt1": {
     "x": 530.0,
     "y": 4490.0
   },
-  "city_life_3f_cor_icu": {
+  "zonelife_city_life_03f_u031_0": {
     "x": 3080.0714285714284,
     "y": 3931.5238095238087
   },
-  "city_life_7f_u073_din": {
+  "zonelife_city_life_07f_u073_7": {
     "x": 800.0,
     "y": 3230.0
   },
-  "city_life_8f_u085_br1": {
+  "zonelife_city_life_08f_u085_br1": {
     "x": 80.0,
     "y": 3950.0
   },
-  "city_life_4f_u043_plat": {
+  "zonelife_city_life_04f_u043_plat": {
     "x": 350.0,
     "y": 1070.0
   },
-  "city_life_9f_u097_bala": {
+  "zonelife_city_life_09f_u097_2": {
     "x": 530.0,
     "y": 4580.0
   },
-  "city_life_8f_u086_brg": {
+  "zonelife_city_life_08f_u086_5": {
     "x": 800.0,
     "y": 3950.0
   },
-  "city_life_8f_u087_liv": {
+  "zonelife_city_life_08f_u087_1": {
     "x": 170.0,
     "y": 4130.0
   },
-  "city_life_11f_storage_a": {
+  "zonelife_city_life_11f_u110_storage_a": {
     "x": 530.0,
     "y": 800.0
   },
-  "city_life_1f_admin": {
+  "zonelife_city_life_01f_u011_0": {
     "x": 1807.4166666666667,
     "y": 4249.638888888888
   },
-  "city_life_9f_u096_bt1": {
+  "zonelife_city_life_09f_u096_bt1": {
     "x": 260.0,
     "y": 4580.0
   },
-  "city_life_7f_u075_btm": {
+  "zonelife_city_life_07f_u075_6": {
     "x": 260.0,
     "y": 3410.0
   },
-  "city_life_11f_works_b": {
+  "zonelife_city_life_11f_u110_works_b": {
     "x": 890.0,
     "y": 800.0
   },
-  "city_life_7f_u076_bal": {
+  "zonelife_city_life_07f_u076_2": {
     "x": 530.0,
     "y": 3410.0
   },
-  "city_life_4f_u046_brm": {
+  "zonelife_city_life_04f_u046_4": {
     "x": 2844.345238095237,
     "y": 3025.119047619047
   },
-  "city_life_13f_coord": {
+  "zonelife_city_life_13f_u130_coord": {
     "x": 350.0,
     "y": 980.0
   },
-  "city_life_14f_lounge": {
+  "zonelife_city_life_14f_u140_lounge": {
     "x": 440.0,
     "y": 1070.0
   },
-  "city_life_14f_physio": {
+  "zonelife_city_life_14f_u140_physio": {
     "x": 620.0,
     "y": 1070.0
   },
-  "city_life_4f_u042_br2": {
+  "zonelife_city_life_04f_u042_22": {
     "x": 2843.7083333333326,
     "y": 281.8472222222225
   },
-  "city_life_11f_lounge_b": {
+  "zonelife_city_life_11f_u110_lounge_b": {
     "x": 350.0,
     "y": 800.0
   },
-  "city_life_5f_u052_brm": {
+  "zonelife_city_life_05f_u052_4": {
     "x": 530.0,
     "y": 2060.0
   },
-  "city_life_2f_er_dept": {
+  "zonelife_city_life_02f_u028_0": {
     "x": 2718.5555555555557,
     "y": 4479.916666666666
   },
-  "city_life_9f_u095_din": {
+  "zonelife_city_life_09f_u095_7": {
     "x": 710.0,
     "y": 4490.0
   },
-  "city_life_5f_u057_br2": {
+  "zonelife_city_life_05f_u057_22": {
     "x": 80.0,
     "y": 2420.0
   },
-  "city_life_9f_u093_bt1": {
+  "zonelife_city_life_09f_u093_bt1": {
     "x": 80.0,
     "y": 4400.0
   },
-  "city_life_4f_u045_bt2": {
+  "zonelife_city_life_04f_u045_bt2": {
     "x": 3195.6071428571413,
     "y": 552.1428571428576
   },
-  "city_life_9f_u093_br1": {
+  "zonelife_city_life_09f_u093_br1": {
     "x": 710.0,
     "y": 4310.0
   },
-  "city_life_4f_u043_bt1": {
+  "zonelife_city_life_04f_u043_bt1": {
     "x": 2709.9325396825393,
     "y": 378.2976190476191
   },
-  "city_life_15f_copy": {
+  "zonelife_city_life_15f_u150_copy": {
     "x": 440.0,
     "y": 1160.0
   },
-  "city_life_4f_u048_brm": {
+  "zonelife_city_life_04f_u048_4": {
     "x": 2787.999999999999,
     "y": 2722.1428571428564
   },
-  "city_life_15f_recep": {
+  "zonelife_city_life_15f_u150_recep": {
     "x": 800.0,
     "y": 1160.0
   },
-  "city_life_4f_u043_br3": {
+  "zonelife_city_life_04f_u043_br3": {
     "x": 2772.154761904761,
     "y": 377.7420634920636
   },
-  "city_life_10f_u108_bal": {
+  "zonelife_city_life_10f_u108_2": {
     "x": 170.0,
     "y": 530.0
   },
-  "city_life_3f": {
+  "zonelife_city_life_03f_u030_0": {
     "x": 2839.0271672771673,
     "y": 3733.9569597069585
   },
-  "city_life_7f_u074_btm": {
+  "zonelife_city_life_07f_u074_6": {
     "x": 440.0,
     "y": 3320.0
   },
-  "city_life_7f_u078_brg": {
+  "zonelife_city_life_07f_u078_5": {
     "x": 260.0,
     "y": 3590.0
   },
-  "city_life_10f_u104_br1": {
+  "zonelife_city_life_10f_u104_br1": {
     "x": 260.0,
     "y": 260.0
   },
-  "city_life_3f_cor_surg2_r02": {
+  "zonelife_city_life_03f_u030_cor_surg2_r02": {
     "x": 2642.8214285714284,
     "y": 3833.357142857142
   },
-  "city_life_4f_u044_btm": {
+  "zonelife_city_life_04f_u044_6": {
     "x": 2473.7070707070707,
     "y": 3088.1792929292924
   },
-  "city_life_4f_u045_bala": {
+  "zonelife_city_life_04f_u045_2": {
     "x": 2564.8718487394935,
     "y": 3095.0252100840335
   },
-  "city_life_8f_u083_bt1": {
+  "zonelife_city_life_08f_u083_bt1": {
     "x": 800.0,
     "y": 3770.0
   },
-  "city_life_6f_u066_bt1": {
+  "zonelife_city_life_06f_u066_bt1": {
     "x": 620.0,
     "y": 2870.0
   },
-  "city_life_10f_u106_brg": {
+  "zonelife_city_life_10f_u106_5": {
     "x": 710.0,
     "y": 350.0
   },
-  "city_life_8f_u088_brm": {
+  "zonelife_city_life_08f_u088_4": {
     "x": 530.0,
     "y": 4130.0
   },
-  "city_life_5f_u056_bal": {
+  "zonelife_city_life_05f_u056_2": {
     "x": 170.0,
     "y": 2330.0
   },
-  "city_life_8f": {
+  "zonelife_city_life_08f_u080_0": {
     "x": 170.0,
     "y": 3680.0
   },
-  "city_life_7f_u077_br1": {
+  "zonelife_city_life_07f_u077_br1": {
     "x": 350.0,
     "y": 3500.0
   },
-  "city_life_8f_u086_brm": {
+  "zonelife_city_life_08f_u086_4": {
     "x": 890.0,
     "y": 3950.0
   },
-  "city_life_5f_u055_bt2": {
+  "zonelife_city_life_05f_u055_bt2": {
     "x": 800.0,
     "y": 2240.0
   },
-  "city_life_5f_u053_br1": {
+  "zonelife_city_life_05f_u053_br1": {
     "x": 890.0,
     "y": 2060.0
   },
-  "city_life_2f_dept_surgery": {
+  "zonelife_city_life_02f_u020_dept_surgery": {
     "x": 2788.7371794871788,
     "y": 4292.292735042734
   },
-  "city_life_7f_u072_br1": {
+  "zonelife_city_life_07f_u072_br1": {
     "x": 800.0,
     "y": 3140.0
   },
-  "city_life_10f_u103_balb": {
+  "zonelife_city_life_10f_u103_12": {
     "x": 350.0,
     "y": 170.0
   },
-  "city_life_13f_staging": {
+  "zonelife_city_life_13f_u130_staging": {
     "x": 800.0,
     "y": 980.0
   },
-  "city_life_5f_u056_brg": {
+  "zonelife_city_life_05f_u056_5": {
     "x": 260.0,
     "y": 2330.0
   },
-  "city_life_3f_cor_surg1_r01": {
+  "zonelife_city_life_03f_u030_cor_surg1_r01": {
     "x": 2984.293650793651,
     "y": 3820.218253968253
   },
-  "city_life_6f_u064_brm": {
+  "zonelife_city_life_06f_u064_4": {
     "x": 80.0,
     "y": 2780.0
   },
-  "city_life_6f_u067_liv": {
+  "zonelife_city_life_06f_u067_1": {
     "x": 710.0,
     "y": 2960.0
   },
-  "city_life_3f_cor_pcs1_r05": {
+  "zonelife_city_life_03f_u030_cor_pcs1_r05": {
     "x": 2678.30753968254,
     "y": 3516.593253968253
   },
-  "city_life_3f_cor_pcm1_r02": {
+  "zonelife_city_life_03f_u030_cor_pcm1_r02": {
     "x": 2809.4880952380954,
     "y": 3982.5238095238087
   },
-  "city_life_1f_guard_lounge": {
+  "zonelife_city_life_01f_u014_1": {
     "x": 1948.1666666666667,
     "y": 4207.833333333332
   },
-  "city_life_12f_fresh": {
+  "zonelife_city_life_12f_u120_fresh": {
     "x": 350.0,
     "y": 890.0
   },
-  "city_life_6f_u068_brm": {
+  "zonelife_city_life_06f_u068_4": {
     "x": 170.0,
     "y": 3050.0
   },
-  "city_life_3f_cor_pcs2_r01": {
+  "zonelife_city_life_03f_u030_cor_pcs2_r01": {
     "x": 2627.587301587301,
     "y": 3646.329365079364
   },
-  "city_life_7f_u071_btm": {
+  "zonelife_city_life_07f_u071_6": {
     "x": 440.0,
     "y": 3140.0
   },
-  "city_life_9f_u097_br1": {
+  "zonelife_city_life_09f_u097_br1": {
     "x": 710.0,
     "y": 4580.0
   },
-  "city_life_6f_u065_liv": {
+  "zonelife_city_life_06f_u065_1": {
     "x": 260.0,
     "y": 2870.0
   },
-  "city_life_6f_u063_brg": {
+  "zonelife_city_life_06f_u063_5": {
     "x": 350.0,
     "y": 2690.0
   },
-  "city_life_8f_u089_br2": {
+  "zonelife_city_life_08f_u089_22": {
     "x": 890.0,
     "y": 4130.0
   },
-  "city_life_3f_cor_pcs1": {
+  "zonelife_city_life_03f_u030_cor_pcs1": {
     "x": 2734.4186507936506,
     "y": 3454.371031746031
   },
-  "city_life_10f_u107_bt1": {
+  "zonelife_city_life_10f_u107_bt1": {
     "x": 710.0,
     "y": 440.0
   },
-  "city_life_5f_u053_btm": {
+  "zonelife_city_life_05f_u053_6": {
     "x": 350.0,
     "y": 2150.0
   },
-  "city_life_4f_u047_br3": {
+  "zonelife_city_life_04f_u047_br3": {
     "x": 3587.599206349205,
     "y": 392.1626984126988
   },
-  "city_life_5f_u059_bt1": {
+  "zonelife_city_life_05f_u059_bt1": {
     "x": 440.0,
     "y": 2510.0
   },
-  "city_life_4f_u046_bal": {
+  "zonelife_city_life_04f_u046_2": {
     "x": 2907.749999999999,
     "y": 3095.8452380952376
   },
-  "city_life_9f_u098_br1": {
+  "zonelife_city_life_09f_u098_br1": {
     "x": 620.0,
     "y": 4670.0
   },
-  "city_life_11f_kids_b": {
+  "zonelife_city_life_11f_u110_kids_b": {
     "x": 440.0,
     "y": 710.0
   },
-  "city_life_12f_pump": {
+  "zonelife_city_life_12f_u120_pump": {
     "x": 710.0,
     "y": 890.0
   },
-  "city_life_3f_cor_pcs2_r02": {
+  "zonelife_city_life_03f_u030_cor_pcs2_r02": {
     "x": 2639.587301587301,
     "y": 3654.329365079364
   },
-  "city_life_2f_dept_ent": {
+  "zonelife_city_life_02f_u024_0": {
     "x": 2792.916666666666,
     "y": 4413.809829059828
   },
-  "city_life_11f_gym_a": {
+  "zonelife_city_life_11f_u110_gym_a": {
     "x": 80.0,
     "y": 710.0
   },
-  "city_life_8f_u085_bala": {
+  "zonelife_city_life_08f_u085_2": {
     "x": 800.0,
     "y": 3860.0
   },
-  "city_life_11f_kitchen": {
+  "zonelife_city_life_11f_u110_kitchen": {
     "x": 530.0,
     "y": 710.0
   },
-  "city_life_5f": {
+  "zonelife_city_life_05f_u050_0": {
     "x": 1185.2206959706962,
     "y": 2332.664529914529
   },
-  "city_life_6f_u066_br1": {
+  "zonelife_city_life_06f_u066_br1": {
     "x": 440.0,
     "y": 2870.0
   },
-  "city_life_3f_cor_med2_r04": {
+  "zonelife_city_life_03f_u030_cor_med2_r04": {
     "x": 2840.5714285714284,
     "y": 3521.4404761904752
   },
-  "city_life_12f_smoke": {
+  "zonelife_city_life_12f_u120_smoke": {
     "x": 800.0,
     "y": 890.0
   },
-  "city_life_5f_u057_brg": {
+  "zonelife_city_life_05f_u057_5": {
     "x": 170.0,
     "y": 2420.0
   },
-  "city_life_5f_u056_brm": {
+  "zonelife_city_life_05f_u056_4": {
     "x": 350.0,
     "y": 2330.0
   },
-  "city_life_4f_u049_bt2": {
+  "zonelife_city_life_04f_u049_bt2": {
     "x": 3561.5357142857133,
     "y": 79.89285714285748
   },
-  "city_life_5f_u051_bat": {
+  "zonelife_city_life_05f_u051_3": {
     "x": 710.0,
     "y": 1970.0
   },
-  "city_life_4f_u043_bal": {
+  "zonelife_city_life_04f_u043_2": {
     "x": 350.0,
     "y": 980.0
   },
-  "city_life_1f_clinic_lift": {
+  "zonelife_city_life_01f_u012_1": {
     "x": 1353.59188034188,
     "y": 4584.18376068376
   },
-  "city_life_10f_u104_brg": {
+  "zonelife_city_life_10f_u104_5": {
     "x": 260.0,
     "y": 260.0
   },
-  "city_life_12f_patrol": {
+  "zonelife_city_life_12f_u120_patrol": {
     "x": 620.0,
     "y": 890.0
   },
-  "city_life_4f_u046_bt1": {
+  "zonelife_city_life_04f_u046_bt1": {
     "x": 3419.821428571427,
     "y": 638.416666666667
   },
-  "city_life_5f_u059_liv": {
+  "zonelife_city_life_05f_u059_1": {
     "x": 620.0,
     "y": 2510.0
   },
-  "city_life_9f_u098_br2": {
+  "zonelife_city_life_09f_u098_22": {
     "x": 710.0,
     "y": 4670.0
   },
-  "city_life_9f_u093_btm": {
+  "zonelife_city_life_09f_u093_6": {
     "x": 170.0,
     "y": 4400.0
   },
-  "city_life_3f_cor_med1_r05": {
+  "zonelife_city_life_03f_u030_cor_med1_r05": {
     "x": 3029.793650793651,
     "y": 3530.829365079364
   },
-  "city_life_7f_u073_bt2": {
+  "zonelife_city_life_07f_u073_bt2": {
     "x": 710.0,
     "y": 3230.0
   },
-  "city_life_6f_u063_brm": {
+  "zonelife_city_life_06f_u063_4": {
     "x": 440.0,
     "y": 2690.0
   },
-  "city_life_9f_u099_bal": {
+  "zonelife_city_life_09f_u099_2": {
     "x": 890.0,
     "y": 4670.0
   },
-  "city_life_3f_cor_surg1_r04": {
+  "zonelife_city_life_03f_u030_cor_surg1_r04": {
     "x": 3020.293650793651,
     "y": 3844.218253968253
   },
-  "city_life_10f_u103_btm": {
+  "zonelife_city_life_10f_u103_6": {
     "x": 800.0,
     "y": 170.0
   },
-  "city_life_8f_u086_btm": {
+  "zonelife_city_life_08f_u086_6": {
     "x": 170.0,
     "y": 4040.0
   },
-  "city_life_7f_u072_brg": {
+  "zonelife_city_life_07f_u072_5": {
     "x": 800.0,
     "y": 3140.0
   },
-  "city_life_13f_wait": {
+  "zonelife_city_life_13f_u130_wait": {
     "x": 890.0,
     "y": 980.0
   },
-  "city_life_9f_u095_liv": {
+  "zonelife_city_life_09f_u095_1": {
     "x": 800.0,
     "y": 4490.0
   },
@@ -1115,1339 +1115,1339 @@
     "x": 1860.0949328449328,
     "y": 3786.161782661781
   },
-  "city_life_2f_dept_eye": {
+  "zonelife_city_life_02f_u023_0": {
     "x": 2621.3333333333326,
     "y": 4425.444444444443
   },
-  "city_life_10f_u103_din": {
+  "zonelife_city_life_10f_u103_7": {
     "x": 890.0,
     "y": 170.0
   },
-  "city_life_4f_u043_bala": {
+  "zonelife_city_life_04f_u043_2": {
     "x": 2405.6269841269827,
     "y": 2927.2420634920627
   },
-  "city_life_10f_u103_br2": {
+  "zonelife_city_life_10f_u103_22": {
     "x": 530.0,
     "y": 170.0
   },
-  "city_life_8f_u085_liv": {
+  "zonelife_city_life_08f_u085_1": {
     "x": 620.0,
     "y": 3950.0
   },
-  "city_life_9f_u096_liv": {
+  "zonelife_city_life_09f_u096_1": {
     "x": 440.0,
     "y": 4580.0
   },
-  "city_life_6f_u066_liv": {
+  "zonelife_city_life_06f_u066_1": {
     "x": 800.0,
     "y": 2870.0
   },
-  "city_life_9f_u094_btg": {
+  "zonelife_city_life_09f_u094_32": {
     "x": 710.0,
     "y": 4400.0
   },
-  "city_life_9f_u096_br1": {
+  "zonelife_city_life_09f_u096_br1": {
     "x": 80.0,
     "y": 4580.0
   },
-  "city_life_9f_u093_brg": {
+  "zonelife_city_life_09f_u093_5": {
     "x": 890.0,
     "y": 4310.0
   },
-  "city_life_6f_u065_br1": {
+  "zonelife_city_life_06f_u065_br1": {
     "x": 620.0,
     "y": 2780.0
   },
-  "city_life_9f_u094_brg": {
+  "zonelife_city_life_09f_u094_5": {
     "x": 530.0,
     "y": 4400.0
   },
-  "city_life_7f_u073_bat": {
+  "zonelife_city_life_07f_u073_3": {
     "x": 350.0,
     "y": 3230.0
   },
-  "city_life_7f_u075_brg": {
+  "zonelife_city_life_07f_u075_5": {
     "x": 80.0,
     "y": 3410.0
   },
-  "city_life_8f_u084_bt1": {
+  "zonelife_city_life_08f_u084_bt1": {
     "x": 530.0,
     "y": 3860.0
   },
-  "city_life_5f_u052_bal": {
+  "zonelife_city_life_05f_u052_2": {
     "x": 260.0,
     "y": 2060.0
   },
-  "city_life_13f_repair": {
+  "zonelife_city_life_13f_u130_repair": {
     "x": 710.0,
     "y": 980.0
   },
-  "city_life_8f_u087_balb": {
+  "zonelife_city_life_08f_u087_12": {
     "x": 440.0,
     "y": 4040.0
   },
-  "city_life_8f_u086_br2": {
+  "zonelife_city_life_08f_u086_22": {
     "x": 890.0,
     "y": 3950.0
   },
-  "city_life_5f_u058_br1": {
+  "zonelife_city_life_05f_u058_br1": {
     "x": 800.0,
     "y": 2420.0
   },
-  "city_life_5f_u053_bt2": {
+  "zonelife_city_life_05f_u053_bt2": {
     "x": 350.0,
     "y": 2150.0
   },
-  "city_life_10f_u103_bala": {
+  "zonelife_city_life_10f_u103_2": {
     "x": 260.0,
     "y": 170.0
   },
-  "city_life_6f_u064_liv": {
+  "zonelife_city_life_06f_u064_1": {
     "x": 350.0,
     "y": 2780.0
   },
-  "city_life_1f_gate": {
+  "zonelife_city_life_01f_u013_0": {
     "x": 1876.3589743589737,
     "y": 4280.846153846152
   },
-  "city_life_10f_u102_br2": {
+  "zonelife_city_life_10f_u102_22": {
     "x": 80.0,
     "y": 170.0
   },
-  "city_life_4f_u047_brg": {
+  "zonelife_city_life_04f_u047_5": {
     "x": 2783.312499999998,
     "y": 2938.1249999999995
   },
-  "city_life_5f_u055_bala": {
+  "zonelife_city_life_05f_u055_2": {
     "x": 260.0,
     "y": 2240.0
   },
-  "city_life_9f_u095_bala": {
+  "zonelife_city_life_09f_u095_2": {
     "x": 80.0,
     "y": 4490.0
   },
-  "city_life_6f_u063_balb": {
+  "zonelife_city_life_06f_u063_12": {
     "x": 80.0,
     "y": 2690.0
   },
-  "city_life_7f_u078_brm": {
+  "zonelife_city_life_07f_u078_4": {
     "x": 350.0,
     "y": 3590.0
   },
-  "city_life_2f_dept_eye_exam": {
+  "zonelife_city_life_02f_u023_1": {
     "x": 2551.5555555555547,
     "y": 4424.944444444443
   },
-  "city_life_5f_u058_liv": {
+  "zonelife_city_life_05f_u058_1": {
     "x": 80.0,
     "y": 2510.0
   },
-  "city_life_4f_u048_brg": {
+  "zonelife_city_life_04f_u048_5": {
     "x": 2851.249999999999,
     "y": 2724.1428571428564
   },
-  "city_life_10f_u101_br1": {
+  "zonelife_city_life_10f_u101_br1": {
     "x": 260.0,
     "y": 80.0
   },
-  "city_life_6f_u069_bt1": {
+  "zonelife_city_life_06f_u069_bt1": {
     "x": 620.0,
     "y": 3050.0
   },
-  "city_life_8f_u081_bat": {
+  "zonelife_city_life_08f_u081_3": {
     "x": 350.0,
     "y": 3680.0
   },
-  "city_life_3f_cor_surg1_r05": {
+  "zonelife_city_life_03f_u030_cor_surg1_r05": {
     "x": 3032.293650793651,
     "y": 3852.218253968253
   },
-  "city_life_5f_u056_bt2": {
+  "zonelife_city_life_05f_u056_bt2": {
     "x": 530.0,
     "y": 2330.0
   },
-  "city_life_3f_cor_pcm1_r03": {
+  "zonelife_city_life_03f_u030_cor_pcm1_r03": {
     "x": 2821.4880952380954,
     "y": 3990.5238095238087
   },
-  "city_life_3f_cor_med2_r01": {
+  "zonelife_city_life_03f_u030_cor_med2_r01": {
     "x": 2804.5714285714284,
     "y": 3497.4404761904752
   },
-  "city_life_4f_u046_btg": {
+  "zonelife_city_life_04f_u046_32": {
     "x": 2780.5357142857133,
     "y": 3094.4047619047615
   },
-  "city_life_7f_u071_bt1": {
+  "zonelife_city_life_07f_u071_bt1": {
     "x": 350.0,
     "y": 3140.0
   },
-  "city_life_7f_u076_brm": {
+  "zonelife_city_life_07f_u076_4": {
     "x": 710.0,
     "y": 3410.0
   },
-  "city_life_6f_u067_brm": {
+  "zonelife_city_life_06f_u067_4": {
     "x": 440.0,
     "y": 2960.0
   },
-  "city_life_10f_u101_bat": {
+  "zonelife_city_life_10f_u101_3": {
     "x": 260.0,
     "y": 80.0
   },
-  "city_life_10f_u105_brm": {
+  "zonelife_city_life_10f_u105_4": {
     "x": 260.0,
     "y": 350.0
   },
-  "city_life_9f_u097_bt2": {
+  "zonelife_city_life_09f_u097_bt2": {
     "x": 170.0,
     "y": 4670.0
   },
-  "city_life_6f_u069_liv": {
+  "zonelife_city_life_06f_u069_1": {
     "x": 800.0,
     "y": 3050.0
   },
-  "city_life_8f_u085_br2": {
+  "zonelife_city_life_08f_u085_22": {
     "x": 170.0,
     "y": 3950.0
   },
-  "city_life_4f_u046_bt2": {
+  "zonelife_city_life_04f_u046_bt2": {
     "x": 3486.321428571427,
     "y": 636.416666666667
   },
-  "city_life_3f_cor_pcm2_r01": {
+  "zonelife_city_life_03f_u030_cor_pcm2_r01": {
     "x": 2982.279761904762,
     "y": 3662.0238095238087
   },
-  "city_life_9f_u091_br1": {
+  "zonelife_city_life_09f_u091_br1": {
     "x": 530.0,
     "y": 4220.0
   },
-  "city_life_4f_u047_san": {
+  "zonelife_city_life_04f_u047_san": {
     "x": 800.0,
     "y": 1340.0
   },
-  "city_life_4f_u042_brg": {
+  "zonelife_city_life_04f_u042_5": {
     "x": 2340.42857142857,
     "y": 2697.392857142857
   },
-  "city_life_10f_u106_bal": {
+  "zonelife_city_life_10f_u106_2": {
     "x": 620.0,
     "y": 350.0
   },
-  "city_life_7f_u075_brm": {
+  "zonelife_city_life_07f_u075_4": {
     "x": 170.0,
     "y": 3410.0
   },
-  "city_life_8f_u083_brm": {
+  "zonelife_city_life_08f_u083_4": {
     "x": 800.0,
     "y": 3770.0
   },
-  "city_life_8f_u084_liv": {
+  "zonelife_city_life_08f_u084_1": {
     "x": 710.0,
     "y": 3860.0
   },
-  "city_life_5f_u059_brm": {
+  "zonelife_city_life_05f_u059_4": {
     "x": 440.0,
     "y": 2510.0
   },
-  "city_life_4f_u047_bala": {
+  "zonelife_city_life_04f_u047_2": {
     "x": 2922.4805194805176,
     "y": 2938.551587301587
   },
-  "city_life_7f_u077_brm": {
+  "zonelife_city_life_07f_u077_4": {
     "x": 620.0,
     "y": 3500.0
   },
-  "city_life_11f_kitchen_b": {
+  "zonelife_city_life_11f_u110_kitchen_b": {
     "x": 710.0,
     "y": 710.0
   },
-  "city_life_1f_security": {
+  "zonelife_city_life_01f_u014_0": {
     "x": 1950.1944444444448,
     "y": 4275.1944444444425
   },
-  "city_life_10f_u108_brg": {
+  "zonelife_city_life_10f_u108_5": {
     "x": 350.0,
     "y": 530.0
   },
-  "city_life_6f_u062_bal": {
+  "zonelife_city_life_06f_u062_2": {
     "x": 440.0,
     "y": 2600.0
   },
-  "city_life_8f_u087_br2": {
+  "zonelife_city_life_08f_u087_22": {
     "x": 620.0,
     "y": 4040.0
   },
-  "city_life_8f_u084_bal": {
+  "zonelife_city_life_08f_u084_2": {
     "x": 260.0,
     "y": 3860.0
   },
-  "city_life_11f_duty_a": {
+  "zonelife_city_life_11f_u110_duty_a": {
     "x": 710.0,
     "y": 620.0
   },
-  "city_life_8f_u081_bal": {
+  "zonelife_city_life_08f_u081_2": {
     "x": 260.0,
     "y": 3680.0
   },
-  "city_life_3f_cor_pcs1_r01": {
+  "zonelife_city_life_03f_u030_cor_pcs1_r01": {
     "x": 2630.30753968254,
     "y": 3484.593253968253
   },
-  "city_life_9f_u096_br2": {
+  "zonelife_city_life_09f_u096_22": {
     "x": 170.0,
     "y": 4580.0
   },
-  "city_life_6f_u064_btm": {
+  "zonelife_city_life_06f_u064_6": {
     "x": 260.0,
     "y": 2780.0
   },
-  "city_life_4f_u041_bt2": {
+  "zonelife_city_life_04f_u041_bt2": {
     "x": 2814.567669172932,
     "y": 129.19830827067693
   },
-  "city_life_7f_u072_brm": {
+  "zonelife_city_life_07f_u072_4": {
     "x": 890.0,
     "y": 3140.0
   },
-  "city_life_3f_cor_surg2_r01": {
+  "zonelife_city_life_03f_u030_cor_surg2_r01": {
     "x": 2630.8214285714284,
     "y": 3825.357142857142
   },
-  "city_life_8f_u087_br3": {
+  "zonelife_city_life_08f_u087_br3": {
     "x": 710.0,
     "y": 4040.0
   },
-  "city_life_15f_archive": {
+  "zonelife_city_life_15f_u150_archive": {
     "x": 170.0,
     "y": 1160.0
   },
-  "city_life_9f_u094_bt1": {
+  "zonelife_city_life_09f_u094_bt1": {
     "x": 710.0,
     "y": 4400.0
   },
-  "city_life_3f_cor_surg1": {
+  "zonelife_city_life_03f_u030_cor_surg1": {
     "x": 3090.746031746032,
     "y": 3779.123015873015
   },
-  "city_life_9f_u093_bat": {
+  "zonelife_city_life_09f_u093_3": {
     "x": 710.0,
     "y": 4310.0
   },
-  "city_life_4f_u049_br2": {
+  "zonelife_city_life_04f_u049_22": {
     "x": 3425.0357142857133,
     "y": 81.39285714285748
   },
-  "city_life_4f_u049_bt1": {
+  "zonelife_city_life_04f_u049_bt1": {
     "x": 3492.5357142857133,
     "y": 78.89285714285748
   },
-  "city_life_2f_dept_surgery_exam": {
+  "zonelife_city_life_02f_u020_dept_surgery_exam": {
     "x": 2864.7094017094014,
     "y": 4290.626068376067
   },
-  "city_life_8f_u084_btg": {
+  "zonelife_city_life_08f_u084_32": {
     "x": 530.0,
     "y": 3860.0
   },
-  "city_life_10f_u106_brm": {
+  "zonelife_city_life_10f_u106_4": {
     "x": 800.0,
     "y": 350.0
   },
-  "city_life_3f_cor_icu_r01": {
+  "zonelife_city_life_03f_u031_01": {
     "x": 2977.0714285714284,
     "y": 3977.0238095238087
   },
-  "city_life_6f_u065_brm": {
+  "zonelife_city_life_06f_u065_4": {
     "x": 890.0,
     "y": 2780.0
   },
-  "city_life_8f_u086_bal": {
+  "zonelife_city_life_08f_u086_2": {
     "x": 710.0,
     "y": 3950.0
   },
-  "city_life_6f_u061_bal": {
+  "zonelife_city_life_06f_u061_2": {
     "x": 800.0,
     "y": 2510.0
   },
-  "city_life_6f_u068_br1": {
+  "zonelife_city_life_06f_u068_br1": {
     "x": 80.0,
     "y": 3050.0
   },
-  "city_life_7f_u077_bat": {
+  "zonelife_city_life_07f_u077_3": {
     "x": 350.0,
     "y": 3500.0
   },
-  "city_life_15f_clerk": {
+  "zonelife_city_life_15f_u150_clerk": {
     "x": 350.0,
     "y": 1160.0
   },
-  "city_life_8f_u089_bt1": {
+  "zonelife_city_life_08f_u089_bt1": {
     "x": 80.0,
     "y": 4220.0
   },
-  "city_life_15f": {
+  "zonelife_city_life_15f_u150_0": {
     "x": 80.0,
     "y": 1160.0
   },
-  "city_life_6f_u063_bt2": {
+  "zonelife_city_life_06f_u063_bt2": {
     "x": 530.0,
     "y": 2690.0
   },
-  "city_life_7f_u072_br2": {
+  "zonelife_city_life_07f_u072_22": {
     "x": 890.0,
     "y": 3140.0
   },
-  "city_life_4f_u046_brg": {
+  "zonelife_city_life_04f_u046_5": {
     "x": 2782.9166666666656,
     "y": 3025.119047619047
   },
-  "city_life_4f_u047_plat": {
+  "zonelife_city_life_04f_u047_plat": {
     "x": 710.0,
     "y": 1340.0
   },
-  "city_life_5f_u058_brm": {
+  "zonelife_city_life_05f_u058_4": {
     "x": 890.0,
     "y": 2420.0
   },
-  "city_life_9f_u093_bt2": {
+  "zonelife_city_life_09f_u093_bt2": {
     "x": 170.0,
     "y": 4400.0
   },
-  "city_life_5f_u057_br3": {
+  "zonelife_city_life_05f_u057_br3": {
     "x": 170.0,
     "y": 2420.0
   },
-  "city_life_6f_u069_brg": {
+  "zonelife_city_life_06f_u069_5": {
     "x": 530.0,
     "y": 3050.0
   },
-  "city_life_5f_u053_br2": {
+  "zonelife_city_life_05f_u053_22": {
     "x": 80.0,
     "y": 2150.0
   },
-  "city_life_7f_u074_btg": {
+  "zonelife_city_life_07f_u074_32": {
     "x": 350.0,
     "y": 3320.0
   },
-  "city_life_6f_u063_bala": {
+  "zonelife_city_life_06f_u063_2": {
     "x": 890.0,
     "y": 2600.0
   },
-  "city_life_4f_u043_btm": {
+  "zonelife_city_life_04f_u043_6": {
     "x": 2341.8749999999995,
     "y": 2800.124999999999
   },
-  "city_life_6f_u061_bat": {
+  "zonelife_city_life_06f_u061_3": {
     "x": 890.0,
     "y": 2510.0
   },
-  "city_life_4f_u045_btm": {
+  "zonelife_city_life_04f_u045_6": {
     "x": 2689.2941176470576,
     "y": 2966.941176470588
   },
-  "city_life_4f_u041_liv": {
+  "zonelife_city_life_04f_u041_1": {
     "x": 2403.567669172931,
     "y": 2484.999999999999
   },
-  "city_life_7f_u079_btm": {
+  "zonelife_city_life_07f_u079_6": {
     "x": 890.0,
     "y": 3590.0
   },
-  "city_life_6f_u069_btm": {
+  "zonelife_city_life_06f_u069_6": {
     "x": 710.0,
     "y": 3050.0
   },
-  "city_life_7f_u076_liv": {
+  "zonelife_city_life_07f_u076_1": {
     "x": 80.0,
     "y": 3500.0
   },
-  "city_life_8f_u089_brm": {
+  "zonelife_city_life_08f_u089_4": {
     "x": 80.0,
     "y": 4220.0
   },
-  "city_life_8f_u088_brg": {
+  "zonelife_city_life_08f_u088_5": {
     "x": 440.0,
     "y": 4130.0
   },
-  "city_life_7f_u075_br3": {
+  "zonelife_city_life_07f_u075_br3": {
     "x": 80.0,
     "y": 3410.0
   },
-  "city_life_14f": {
+  "zonelife_city_life_14f_u140_0": {
     "x": 80.0,
     "y": 1070.0
   },
-  "city_life_10f_u104_liv": {
+  "zonelife_city_life_10f_u104_1": {
     "x": 620.0,
     "y": 260.0
   },
-  "city_life_9f_u099_bt2": {
+  "zonelife_city_life_09f_u099_bt2": {
     "x": 350.0,
     "y": 4760.0
   },
-  "city_life_4f_u045_plat": {
+  "zonelife_city_life_04f_u045_plat": {
     "x": 80.0,
     "y": 1250.0
   },
-  "city_life_2f_dept_pharm_exam": {
+  "zonelife_city_life_02f_u029_1": {
     "x": 2658.4508547008545,
     "y": 4552.079059829059
   },
-  "city_life_6f_u064_brg": {
+  "zonelife_city_life_06f_u064_5": {
     "x": 890.0,
     "y": 2690.0
   },
-  "city_life_8f_u084_brg": {
+  "zonelife_city_life_08f_u084_5": {
     "x": 350.0,
     "y": 3860.0
   },
-  "city_life_9f_u099_br2": {
+  "zonelife_city_life_09f_u099_22": {
     "x": 170.0,
     "y": 4760.0
   },
-  "city_life_9f_u097_br2": {
+  "zonelife_city_life_09f_u097_22": {
     "x": 800.0,
     "y": 4580.0
   },
-  "city_life_6f_u069_brm": {
+  "zonelife_city_life_06f_u069_4": {
     "x": 620.0,
     "y": 3050.0
   },
-  "city_life_8f_u082_brg": {
+  "zonelife_city_life_08f_u082_5": {
     "x": 80.0,
     "y": 3770.0
   },
-  "city_life_8f_u082_bal": {
+  "zonelife_city_life_08f_u082_2": {
     "x": 800.0,
     "y": 3680.0
   },
-  "city_life_10f": {
+  "zonelife_city_life_10f_u100_0": {
     "x": 80.0,
     "y": 80.0
   },
-  "city_life_9f_u091_liv": {
+  "zonelife_city_life_09f_u091_1": {
     "x": 890.0,
     "y": 4220.0
   },
-  "city_life_5f_u052_brg": {
+  "zonelife_city_life_05f_u052_5": {
     "x": 440.0,
     "y": 2060.0
   },
-  "city_life_3f_cor_med1_r03": {
+  "zonelife_city_life_03f_u030_cor_med1_r03": {
     "x": 3005.793650793651,
     "y": 3514.829365079364
   },
-  "city_life_13f_express": {
+  "zonelife_city_life_13f_u130_express": {
     "x": 530.0,
     "y": 980.0
   },
-  "city_life_5f_u058_bat": {
+  "zonelife_city_life_05f_u058_3": {
     "x": 710.0,
     "y": 2420.0
   },
-  "city_life_4f_u049_brg": {
+  "zonelife_city_life_04f_u049_5": {
     "x": 2783.687499999998,
     "y": 2500.8124999999995
   },
-  "city_life_11f_atrium_a": {
+  "zonelife_city_life_11f_u110_atrium_a": {
     "x": 440.0,
     "y": 620.0
   },
-  "city_life_2f_dept_ent_exam": {
+  "zonelife_city_life_02f_u024_1": {
     "x": 2868.9722222222217,
     "y": 4414.309829059828
   },
-  "city_life_6f_u062_br1": {
+  "zonelife_city_life_06f_u062_br1": {
     "x": 620.0,
     "y": 2600.0
   },
-  "city_life_8f_u081_brm": {
+  "zonelife_city_life_08f_u081_4": {
     "x": 530.0,
     "y": 3680.0
   },
-  "city_life_11f_laundry_b": {
+  "zonelife_city_life_11f_u110_laundry_b": {
     "x": 80.0,
     "y": 800.0
   },
-  "city_life_3f_cor_icu_r06": {
+  "zonelife_city_life_03f_u031_06": {
     "x": 3037.0714285714284,
     "y": 4017.0238095238087
   },
-  "city_life_3f_cor_pcs2": {
+  "zonelife_city_life_03f_u030_cor_pcs2": {
     "x": 2730.587301587301,
     "y": 3607.218253968253
   },
-  "city_life_9f_u099_liv": {
+  "zonelife_city_life_09f_u099_1": {
     "x": 440.0,
     "y": 4760.0
   },
-  "city_life_4f_u047_bal": {
+  "zonelife_city_life_04f_u047_2": {
     "x": 710.0,
     "y": 1250.0
   },
-  "city_life_11f_works_a": {
+  "zonelife_city_life_11f_u110_works_a": {
     "x": 800.0,
     "y": 800.0
   },
-  "city_life_8f_u085_brg": {
+  "zonelife_city_life_08f_u085_5": {
     "x": 260.0,
     "y": 3950.0
   },
-  "city_life_5f_u058_bal": {
+  "zonelife_city_life_05f_u058_2": {
     "x": 620.0,
     "y": 2420.0
   },
-  "city_life_9f_u097_liv": {
+  "zonelife_city_life_09f_u097_1": {
     "x": 350.0,
     "y": 4670.0
   },
-  "city_life_7f_u073_bt1": {
+  "zonelife_city_life_07f_u073_bt1": {
     "x": 620.0,
     "y": 3230.0
   },
-  "city_life_7f_u071_bt2": {
+  "zonelife_city_life_07f_u071_bt2": {
     "x": 440.0,
     "y": 3140.0
   },
-  "city_life_10f_u105_bt2": {
+  "zonelife_city_life_10f_u105_bt2": {
     "x": 350.0,
     "y": 350.0
   },
-  "city_life_5f_u058_br2": {
+  "zonelife_city_life_05f_u058_22": {
     "x": 890.0,
     "y": 2420.0
   },
-  "city_life_6f_u066_brm": {
+  "zonelife_city_life_06f_u066_4": {
     "x": 530.0,
     "y": 2870.0
   },
-  "city_life_7f_u079_br1": {
+  "zonelife_city_life_07f_u079_br1": {
     "x": 620.0,
     "y": 3590.0
   },
-  "city_life_2f_dept_ortho": {
+  "zonelife_city_life_02f_u022_0": {
     "x": 2618.931623931623,
     "y": 4355.711538461537
   },
-  "city_life_8f_u087_bala": {
+  "zonelife_city_life_08f_u087_2": {
     "x": 350.0,
     "y": 4040.0
   },
-  "city_life_5f_u054_bal": {
+  "zonelife_city_life_05f_u054_2": {
     "x": 620.0,
     "y": 2150.0
   },
-  "city_life_4f_u049_bat": {
+  "zonelife_city_life_04f_u049_3": {
     "x": 2783.687499999998,
     "y": 2564.8749999999995
   },
-  "city_life_10f_u106_br2": {
+  "zonelife_city_life_10f_u106_22": {
     "x": 800.0,
     "y": 350.0
   },
-  "city_life_6f_u067_bala": {
+  "zonelife_city_life_06f_u067_2": {
     "x": 890.0,
     "y": 2870.0
   },
-  "city_life_6f_u064_br1": {
+  "zonelife_city_life_06f_u064_br1": {
     "x": 890.0,
     "y": 2690.0
   },
-  "city_life_6f_u061_brg": {
+  "zonelife_city_life_06f_u061_5": {
     "x": 80.0,
     "y": 2600.0
   },
-  "city_life_7f_u074_brm": {
+  "zonelife_city_life_07f_u074_4": {
     "x": 260.0,
     "y": 3320.0
   },
-  "city_life_9f_u098_bal": {
+  "zonelife_city_life_09f_u098_2": {
     "x": 440.0,
     "y": 4670.0
   },
-  "city_life_10f_u108_liv": {
+  "zonelife_city_life_10f_u108_1": {
     "x": 530.0,
     "y": 530.0
   },
-  "city_life_14f_rehab": {
+  "zonelife_city_life_14f_u140_rehab": {
     "x": 800.0,
     "y": 1070.0
   },
-  "city_life_4f_u047_balb": {
+  "zonelife_city_life_04f_u047_12": {
     "x": 2922.404761904761,
     "y": 2868.829365079365
   },
-  "city_life_15f_claim": {
+  "zonelife_city_life_15f_u150_claim": {
     "x": 260.0,
     "y": 1160.0
   },
-  "city_life_8f_u081_br2": {
+  "zonelife_city_life_08f_u081_22": {
     "x": 440.0,
     "y": 3680.0
   },
-  "city_life_4f_u044_bal": {
+  "zonelife_city_life_04f_u044_2": {
     "x": 2341.704545454544,
     "y": 3017.5108225108215
   },
-  "city_life_8f_u084_br2": {
+  "zonelife_city_life_08f_u084_22": {
     "x": 440.0,
     "y": 3860.0
   },
-  "city_life_6f_u068_liv": {
+  "zonelife_city_life_06f_u068_1": {
     "x": 260.0,
     "y": 3050.0
   },
-  "city_life_6f_u064_btg": {
+  "zonelife_city_life_06f_u064_32": {
     "x": 170.0,
     "y": 2780.0
   },
-  "city_life_6f_u063_br2": {
+  "zonelife_city_life_06f_u063_22": {
     "x": 260.0,
     "y": 2690.0
   },
-  "city_life_8f_u087_brg": {
+  "zonelife_city_life_08f_u087_5": {
     "x": 710.0,
     "y": 4040.0
   },
-  "city_life_6f_u065_bt1": {
+  "zonelife_city_life_06f_u065_bt1": {
     "x": 890.0,
     "y": 2780.0
   },
-  "city_life_8f_u083_br3": {
+  "zonelife_city_life_08f_u083_br3": {
     "x": 710.0,
     "y": 3770.0
   },
-  "city_life_4f_u049_brm": {
+  "zonelife_city_life_04f_u049_4": {
     "x": 2850.874999999998,
     "y": 2501.1249999999995
   },
-  "city_life_1f_riceball": {
+  "zonelife_city_life_01f_u015_0": {
     "x": 620.0,
     "y": 1250.0
   },
-  "city_life_5f_u054_brg": {
+  "zonelife_city_life_05f_u054_5": {
     "x": 710.0,
     "y": 2150.0
   },
-  "city_life_11f_duty": {
+  "zonelife_city_life_11f_u110_duty": {
     "x": 620.0,
     "y": 620.0
   },
-  "city_life_3f_cor_pcm1_r05": {
+  "zonelife_city_life_03f_u030_cor_pcm1_r05": {
     "x": 2845.4880952380954,
     "y": 4006.5238095238087
   },
-  "city_life_10f_u101_bal": {
+  "zonelife_city_life_10f_u101_2": {
     "x": 170.0,
     "y": 80.0
   },
-  "city_life_6f_u062_liv": {
+  "zonelife_city_life_06f_u062_1": {
     "x": 800.0,
     "y": 2600.0
   },
-  "city_life_2f_dept_derma": {
+  "zonelife_city_life_02f_u025_0": {
     "x": 2791.758547008547,
     "y": 4351.886752136751
   },
-  "city_life_5f_u051_bt2": {
+  "zonelife_city_life_05f_u051_bt2": {
     "x": 80.0,
     "y": 2060.0
   },
-  "city_life_8f_u081_brg": {
+  "zonelife_city_life_08f_u081_5": {
     "x": 440.0,
     "y": 3680.0
   },
-  "city_life_3f_cor_pcm1_r01": {
+  "zonelife_city_life_03f_u030_cor_pcm1_r01": {
     "x": 2797.4880952380954,
     "y": 3974.5238095238087
   },
-  "city_life_10f_u105_bala": {
+  "zonelife_city_life_10f_u105_2": {
     "x": 710.0,
     "y": 260.0
   },
-  "city_life_4f_u045_brg": {
+  "zonelife_city_life_04f_u045_5": {
     "x": 2692.5294117647045,
     "y": 3031.3529411764703
   },
-  "city_life_8f_u083_balb": {
+  "zonelife_city_life_08f_u083_12": {
     "x": 440.0,
     "y": 3770.0
   },
-  "city_life_5f_u053_din": {
+  "zonelife_city_life_05f_u053_7": {
     "x": 440.0,
     "y": 2150.0
   },
-  "city_life_4f_u042_brm": {
+  "zonelife_city_life_04f_u042_4": {
     "x": 2405.67857142857,
     "y": 2632.142857142857
   },
-  "city_life_4f_u045_br2": {
+  "zonelife_city_life_04f_u045_22": {
     "x": 2693.1071428571413,
     "y": 3094.142857142857
   },
-  "city_life_4f_u043_br1": {
+  "zonelife_city_life_04f_u043_br1": {
     "x": 2840.4880952380945,
     "y": 447.1865079365079
   },
-  "city_life_8f_u083_btm": {
+  "zonelife_city_life_08f_u083_6": {
     "x": 890.0,
     "y": 3770.0
   },
-  "city_life_5f_u053_bat": {
+  "zonelife_city_life_05f_u053_3": {
     "x": 890.0,
     "y": 2060.0
   },
-  "city_life_10f_u105_brg": {
+  "zonelife_city_life_10f_u105_5": {
     "x": 170.0,
     "y": 350.0
   },
-  "city_life_6f_u066_bt2": {
+  "zonelife_city_life_06f_u066_bt2": {
     "x": 710.0,
     "y": 2870.0
   },
-  "city_life_8f_u086_liv": {
+  "zonelife_city_life_08f_u086_1": {
     "x": 260.0,
     "y": 4040.0
   },
-  "city_life_7f_u079_br2": {
+  "zonelife_city_life_07f_u079_22": {
     "x": 710.0,
     "y": 3590.0
   },
-  "city_life_2f_dept_ortho_exam": {
+  "zonelife_city_life_02f_u022_1": {
     "x": 2545.4594017094014,
     "y": 4359.461538461537
   },
-  "city_life_7f_u079_brg": {
+  "zonelife_city_life_07f_u079_5": {
     "x": 710.0,
     "y": 3590.0
   },
-  "city_life_6f_u063_bt1": {
+  "zonelife_city_life_06f_u063_bt1": {
     "x": 440.0,
     "y": 2690.0
   },
-  "city_life_6f_u067_din": {
+  "zonelife_city_life_06f_u067_7": {
     "x": 620.0,
     "y": 2960.0
   },
-  "city_life_9f_u099_bt1": {
+  "zonelife_city_life_09f_u099_bt1": {
     "x": 260.0,
     "y": 4760.0
   },
-  "city_life_7f_u075_bt1": {
+  "zonelife_city_life_07f_u075_bt1": {
     "x": 170.0,
     "y": 3410.0
   },
-  "city_life_11f": {
+  "zonelife_city_life_11f_u110_0": {
     "x": 260.0,
     "y": 620.0
   },
-  "city_life_5f_u056_btg": {
+  "zonelife_city_life_05f_u056_32": {
     "x": 440.0,
     "y": 2330.0
   },
-  "city_life_8f_u083_bt2": {
+  "zonelife_city_life_08f_u083_bt2": {
     "x": 890.0,
     "y": 3770.0
   },
-  "city_life_7f_u073_bala": {
+  "zonelife_city_life_07f_u073_2": {
     "x": 170.0,
     "y": 3230.0
   },
-  "city_life_7f_u076_btm": {
+  "zonelife_city_life_07f_u076_6": {
     "x": 890.0,
     "y": 3410.0
   },
-  "city_life_7f_u075_liv": {
+  "zonelife_city_life_07f_u075_1": {
     "x": 440.0,
     "y": 3410.0
   },
-  "city_life_9f_u099_br1": {
+  "zonelife_city_life_09f_u099_br1": {
     "x": 80.0,
     "y": 4760.0
   },
-  "city_life_6f_u065_brg": {
+  "zonelife_city_life_06f_u065_5": {
     "x": 800.0,
     "y": 2780.0
   },
-  "city_life_5f_u055_brm": {
+  "zonelife_city_life_05f_u055_4": {
     "x": 710.0,
     "y": 2240.0
   },
-  "city_life_4f_u049_bal": {
+  "zonelife_city_life_04f_u049_2": {
     "x": 2921.5357142857133,
     "y": 2564.642857142857
   },
-  "city_life_6f_u064_bt1": {
+  "zonelife_city_life_06f_u064_bt1": {
     "x": 170.0,
     "y": 2780.0
   },
-  "city_life_8f_u081_btm": {
+  "zonelife_city_life_08f_u081_6": {
     "x": 620.0,
     "y": 3680.0
   },
-  "city_life_4f_u044_bt2": {
+  "zonelife_city_life_04f_u044_bt2": {
     "x": 2965.749999999999,
     "y": 549.4880952380954
   },
-  "city_life_10f_u109_liv": {
+  "zonelife_city_life_10f_u109_1": {
     "x": 170.0,
     "y": 620.0
   },
-  "city_life_10f_u109_brg": {
+  "zonelife_city_life_10f_u109_5": {
     "x": 800.0,
     "y": 530.0
   },
-  "city_life_10f_u102_liv": {
+  "zonelife_city_life_10f_u102_1": {
     "x": 170.0,
     "y": 170.0
   },
-  "city_life_4f_u043_brg": {
+  "zonelife_city_life_04f_u043_5": {
     "x": 2341.8749999999995,
     "y": 2858.999999999999
   },
-  "city_life_8f_u084_btm": {
+  "zonelife_city_life_08f_u084_6": {
     "x": 620.0,
     "y": 3860.0
   },
-  "city_life_8f_u081_bt1": {
+  "zonelife_city_life_08f_u081_bt1": {
     "x": 530.0,
     "y": 3680.0
   },
-  "city_life_7f_u077_br3": {
+  "zonelife_city_life_07f_u077_br3": {
     "x": 530.0,
     "y": 3500.0
   },
-  "city_life_3f_cor_med1_r04": {
+  "zonelife_city_life_03f_u030_cor_med1_r04": {
     "x": 3017.793650793651,
     "y": 3522.829365079364
   },
-  "city_life_3f_cor_pcm2_r03": {
+  "zonelife_city_life_03f_u030_cor_pcm2_r03": {
     "x": 3006.279761904762,
     "y": 3678.0238095238087
   },
-  "city_life_5f_u059_bt2": {
+  "zonelife_city_life_05f_u059_bt2": {
     "x": 530.0,
     "y": 2510.0
   },
-  "city_life_6f_u064_bal": {
+  "zonelife_city_life_06f_u064_2": {
     "x": 800.0,
     "y": 2690.0
   },
-  "city_life_10f_u104_bt2": {
+  "zonelife_city_life_10f_u104_bt2": {
     "x": 530.0,
     "y": 260.0
   },
-  "city_life_10f_u106_bt1": {
+  "zonelife_city_life_10f_u106_bt1": {
     "x": 890.0,
     "y": 350.0
   },
-  "city_life_12f": {
+  "zonelife_city_life_12f_u120_0": {
     "x": 80.0,
     "y": 890.0
   },
-  "city_life_2f_dept_derma_exam": {
+  "zonelife_city_life_02f_u025_1": {
     "x": 2867.0363247863243,
     "y": 4352.02564102564
   },
-  "city_life_4f_u048_liv": {
+  "zonelife_city_life_04f_u048_1": {
     "x": 2850.246031746032,
     "y": 2655.269841269841
   },
-  "city_life_7f_u074_bal": {
+  "zonelife_city_life_07f_u074_2": {
     "x": 80.0,
     "y": 3320.0
   },
-  "city_life_6f_u063_btm": {
+  "zonelife_city_life_06f_u063_6": {
     "x": 530.0,
     "y": 2690.0
   },
-  "city_life_6f": {
+  "zonelife_city_life_06f_u060_0": {
     "x": 710.0,
     "y": 2510.0
   },
-  "city_life_10f_u101_liv": {
+  "zonelife_city_life_10f_u101_1": {
     "x": 620.0,
     "y": 80.0
   },
-  "city_life_9f_u095_btm": {
+  "zonelife_city_life_09f_u095_6": {
     "x": 620.0,
     "y": 4490.0
   },
-  "city_life_3f_cor_med1_r02": {
+  "zonelife_city_life_03f_u030_cor_med1_r02": {
     "x": 2993.793650793651,
     "y": 3506.829365079364
   },
-  "city_life_8f_u083_brg": {
+  "zonelife_city_life_08f_u083_5": {
     "x": 710.0,
     "y": 3770.0
   },
-  "city_life_9f_u095_br3": {
+  "zonelife_city_life_09f_u095_br3": {
     "x": 440.0,
     "y": 4490.0
   },
-  "city_life_10f_u103_br1": {
+  "zonelife_city_life_10f_u103_br1": {
     "x": 440.0,
     "y": 170.0
   },
-  "city_life_7f_u079_bt1": {
+  "zonelife_city_life_07f_u079_bt1": {
     "x": 800.0,
     "y": 3590.0
   },
-  "city_life_4f_u041_bal": {
+  "zonelife_city_life_04f_u041_2": {
     "x": 2467.2038920831465,
     "y": 2547.85294117647
   },
-  "city_life_3f_cor_icu_r05": {
+  "zonelife_city_life_03f_u031_05": {
     "x": 3025.0714285714284,
     "y": 4009.0238095238087
   },
-  "city_life_7f_u072_bat": {
+  "zonelife_city_life_07f_u072_3": {
     "x": 710.0,
     "y": 3140.0
   },
-  "city_life_3f_cor_surg1_r03": {
+  "zonelife_city_life_03f_u030_cor_surg1_r03": {
     "x": 3008.293650793651,
     "y": 3836.218253968253
   },
-  "city_life_4f_u044_brm": {
+  "zonelife_city_life_04f_u044_4": {
     "x": 2401.0050505050503,
     "y": 3087.295454545454
   },
-  "city_life_3f_cor_med2_r02": {
+  "zonelife_city_life_03f_u030_cor_med2_r02": {
     "x": 2816.5714285714284,
     "y": 3505.4404761904752
   },
-  "city_life_10f_u101_brg": {
+  "zonelife_city_life_10f_u101_5": {
     "x": 350.0,
     "y": 80.0
   },
-  "city_life_4f": {
+  "zonelife_city_life_04f_u040_0": {
     "x": 2633.0561660561652,
     "y": 2856.311355311354
   },
-  "city_life_3f_cor_surg2": {
+  "zonelife_city_life_03f_u030_cor_surg2": {
     "x": 2728.8214285714284,
     "y": 3783.607142857142
   },
-  "city_life_6f_u061_brm": {
+  "zonelife_city_life_06f_u061_4": {
     "x": 170.0,
     "y": 2600.0
   },
-  "city_life_9f_u093_liv": {
+  "zonelife_city_life_09f_u093_1": {
     "x": 350.0,
     "y": 4400.0
   },
-  "city_life_7f_u073_liv": {
+  "zonelife_city_life_07f_u073_1": {
     "x": 890.0,
     "y": 3230.0
   },
-  "city_life_8f_u088_liv": {
+  "zonelife_city_life_08f_u088_1": {
     "x": 620.0,
     "y": 4130.0
   },
-  "city_life_7f_u079_bal": {
+  "zonelife_city_life_07f_u079_2": {
     "x": 530.0,
     "y": 3590.0
   },
-  "city_life_7f_u072_bal": {
+  "zonelife_city_life_07f_u072_2": {
     "x": 620.0,
     "y": 3140.0
   },
-  "city_life_9f_u093_bala": {
+  "zonelife_city_life_09f_u093_2": {
     "x": 530.0,
     "y": 4310.0
   },
-  "city_life_9f_u098_liv": {
+  "zonelife_city_life_09f_u098_1": {
     "x": 800.0,
     "y": 4670.0
   },
-  "city_life_4f_u043_bat": {
+  "zonelife_city_life_04f_u043_3": {
     "x": 2475.7499999999995,
     "y": 2926.124999999999
   },
-  "city_life_11f_kitchen_a": {
+  "zonelife_city_life_11f_u110_kitchen_a": {
     "x": 620.0,
     "y": 710.0
   },
-  "city_life_5f_u053_brm": {
+  "zonelife_city_life_05f_u053_4": {
     "x": 260.0,
     "y": 2150.0
   },
-  "city_life_13f_clean": {
+  "zonelife_city_life_13f_u130_clean": {
     "x": 170.0,
     "y": 980.0
   },
-  "city_life_7f_u074_br2": {
+  "zonelife_city_life_07f_u074_22": {
     "x": 260.0,
     "y": 3320.0
   },
-  "city_life_8f_u083_bala": {
+  "zonelife_city_life_08f_u083_2": {
     "x": 350.0,
     "y": 3770.0
   },
-  "city_life_4f_u043_brm": {
+  "zonelife_city_life_04f_u043_4": {
     "x": 2404.9999999999995,
     "y": 2799.374999999999
   },
-  "city_life_4f_u045_br3": {
+  "zonelife_city_life_04f_u045_br3": {
     "x": 3261.1071428571413,
     "y": 614.1428571428576
   },
-  "city_life_9f_u095_bat": {
+  "zonelife_city_life_09f_u095_3": {
     "x": 260.0,
     "y": 4490.0
   },
-  "city_life_1f_tea": {
+  "zonelife_city_life_01f_u016_0": {
     "x": 1791.7148262813896,
     "y": 4172.865368077054
   },
-  "city_life_10f_u103_brg": {
+  "zonelife_city_life_10f_u103_5": {
     "x": 620.0,
     "y": 170.0
   },
-  "city_life_9f_u092_bat": {
+  "zonelife_city_life_09f_u092_3": {
     "x": 170.0,
     "y": 4310.0
   },
-  "city_life_5f_u052_br2": {
+  "zonelife_city_life_05f_u052_22": {
     "x": 530.0,
     "y": 2060.0
   },
-  "city_life_7f_u079_bt2": {
+  "zonelife_city_life_07f_u079_bt2": {
     "x": 890.0,
     "y": 3590.0
   },
-  "city_life_9f_u095_brm": {
+  "zonelife_city_life_09f_u095_4": {
     "x": 530.0,
     "y": 4490.0
   },
-  "city_life_4f_u047_bt1": {
+  "zonelife_city_life_04f_u047_bt1": {
     "x": 3587.599206349205,
     "y": 461.05158730158774
   },
-  "city_life_10f_u105_br2": {
+  "zonelife_city_life_10f_u105_22": {
     "x": 80.0,
     "y": 350.0
   },
-  "city_life_4f_u047_br1": {
+  "zonelife_city_life_04f_u047_br1": {
     "x": 3732.043650793649,
     "y": 390.4960317460322
   },
-  "city_life_9f_u096_btm": {
+  "zonelife_city_life_09f_u096_6": {
     "x": 350.0,
     "y": 4580.0
   },
-  "city_life_8f_u082_br1": {
+  "zonelife_city_life_08f_u082_br1": {
     "x": 80.0,
     "y": 3770.0
   },
-  "city_life_5f_u055_bt1": {
+  "zonelife_city_life_05f_u055_bt1": {
     "x": 710.0,
     "y": 2240.0
   },
-  "city_life_4f_u046_btm": {
+  "zonelife_city_life_04f_u046_6": {
     "x": 2907.916666666666,
     "y": 3026.071428571428
   },
-  "city_life_9f_u092_bal": {
+  "zonelife_city_life_09f_u092_2": {
     "x": 80.0,
     "y": 4310.0
   },
-  "city_life_9f_u093_din": {
+  "zonelife_city_life_09f_u093_7": {
     "x": 260.0,
     "y": 4400.0
   },
-  "city_life_4f_u048_bat": {
+  "zonelife_city_life_04f_u048_3": {
     "x": 2921.3571428571427,
     "y": 2725.269841269841
   },
-  "city_life_5f_u053_bt1": {
+  "zonelife_city_life_05f_u053_bt1": {
     "x": 260.0,
     "y": 2150.0
   },
-  "city_life_11f_kids_a": {
+  "zonelife_city_life_11f_u110_kids_a": {
     "x": 350.0,
     "y": 710.0
   },
-  "city_life_8f_u081_br1": {
+  "zonelife_city_life_08f_u081_br1": {
     "x": 350.0,
     "y": 3680.0
   },
-  "city_life_11f_storage": {
+  "zonelife_city_life_11f_u110_storage": {
     "x": 440.0,
     "y": 800.0
   },
-  "city_life_6f_u062_brg": {
+  "zonelife_city_life_06f_u062_5": {
     "x": 620.0,
     "y": 2600.0
   },
-  "city_life_10f_u102_brm": {
+  "zonelife_city_life_10f_u102_4": {
     "x": 80.0,
     "y": 170.0
   },
-  "city_life_8f_u089_bal": {
+  "zonelife_city_life_08f_u089_2": {
     "x": 710.0,
     "y": 4130.0
   },
-  "city_life_7f_u078_br1": {
+  "zonelife_city_life_07f_u078_br1": {
     "x": 260.0,
     "y": 3590.0
   },
-  "city_life_5f_u054_br1": {
+  "zonelife_city_life_05f_u054_br1": {
     "x": 710.0,
     "y": 2150.0
   },
-  "city_life_2f_dept_internal_exam": {
+  "zonelife_city_life_02f_u021_1": {
     "x": 2546.309829059828,
     "y": 4292.292735042734
   },
-  "city_life_6f_u067_bt2": {
+  "zonelife_city_life_06f_u067_bt2": {
     "x": 530.0,
     "y": 2960.0
   },
-  "city_life_9f_u096_brg": {
+  "zonelife_city_life_09f_u096_5": {
     "x": 80.0,
     "y": 4580.0
   },
-  "city_life_5f_u055_btm": {
+  "zonelife_city_life_05f_u055_6": {
     "x": 800.0,
     "y": 2240.0
   },
-  "city_life_5f_u057_liv": {
+  "zonelife_city_life_05f_u057_1": {
     "x": 530.0,
     "y": 2420.0
   },
-  "city_life_7f_u071_bat": {
+  "zonelife_city_life_07f_u071_3": {
     "x": 170.0,
     "y": 3140.0
   },
-  "city_life_9f_u091_bal": {
+  "zonelife_city_life_09f_u091_2": {
     "x": 440.0,
     "y": 4220.0
   },
-  "city_life_7f_u077_br2": {
+  "zonelife_city_life_07f_u077_22": {
     "x": 440.0,
     "y": 3500.0
   },
-  "city_life_6f_u063_br1": {
+  "zonelife_city_life_06f_u063_br1": {
     "x": 170.0,
     "y": 2690.0
   },
-  "city_life_5f_u055_br1": {
+  "zonelife_city_life_05f_u055_br1": {
     "x": 440.0,
     "y": 2240.0
   },
-  "city_life_4f_u042_bat": {
+  "zonelife_city_life_04f_u042_3": {
     "x": 2466.386904761904,
     "y": 2694.490079365079
   },
-  "city_life_4f_u045_bal": {
+  "zonelife_city_life_04f_u045_2": {
     "x": 80.0,
     "y": 1160.0
   },
-  "city_life_4f_u048_br1": {
+  "zonelife_city_life_04f_u048_br1": {
     "x": 3492.996031746031,
     "y": 298.98809523809564
   },
-  "city_life_6f_u063_din": {
+  "zonelife_city_life_06f_u063_7": {
     "x": 620.0,
     "y": 2690.0
   },
-  "city_life_5f_u053_bala": {
+  "zonelife_city_life_05f_u053_2": {
     "x": 710.0,
     "y": 2060.0
   },
-  "city_life_10f_u103_bt1": {
+  "zonelife_city_life_10f_u103_bt1": {
     "x": 710.0,
     "y": 170.0
   },
-  "city_life_7f_u078_bal": {
+  "zonelife_city_life_07f_u078_2": {
     "x": 80.0,
     "y": 3590.0
   },
-  "city_life_10f_u105_bat": {
+  "zonelife_city_life_10f_u105_3": {
     "x": 890.0,
     "y": 260.0
   },
-  "city_life_9f_u097_brm": {
+  "zonelife_city_life_09f_u097_4": {
     "x": 80.0,
     "y": 4670.0
   },
-  "city_life_7f_u074_liv": {
+  "zonelife_city_life_07f_u074_1": {
     "x": 530.0,
     "y": 3320.0
   },
-  "city_life_5f_u059_br1": {
+  "zonelife_city_life_05f_u059_br1": {
     "x": 260.0,
     "y": 2510.0
   },
-  "city_life_8f_u084_bt2": {
+  "zonelife_city_life_08f_u084_bt2": {
     "x": 620.0,
     "y": 3860.0
   },
-  "city_life_7f_u077_din": {
+  "zonelife_city_life_07f_u077_7": {
     "x": 800.0,
     "y": 3500.0
   },
-  "city_life_5f_u054_br2": {
+  "zonelife_city_life_05f_u054_22": {
     "x": 800.0,
     "y": 2150.0
   },
-  "city_life_3f_cor_pcs2_r06": {
+  "zonelife_city_life_03f_u030_cor_pcs2_r06": {
     "x": 2687.587301587301,
     "y": 3686.329365079364
   },
-  "city_life_5f_u054_brm": {
+  "zonelife_city_life_05f_u054_4": {
     "x": 800.0,
     "y": 2150.0
   },
-  "city_life_9f_u095_brg": {
+  "zonelife_city_life_09f_u095_5": {
     "x": 440.0,
     "y": 4490.0
   },
-  "city_life_3f_cor_pcs1_r06": {
+  "zonelife_city_life_03f_u030_cor_pcs1_r06": {
     "x": 2690.30753968254,
     "y": 3524.593253968253
   },
-  "city_life_5f_u056_br2": {
+  "zonelife_city_life_05f_u056_22": {
     "x": 350.0,
     "y": 2330.0
   },
-  "city_life_6f_u062_br2": {
+  "zonelife_city_life_06f_u062_22": {
     "x": 710.0,
     "y": 2600.0
   },
-  "city_life_6f_u062_brm": {
+  "zonelife_city_life_06f_u062_4": {
     "x": 710.0,
     "y": 2600.0
   },
-  "city_life_3f_cor_pcs2_r05": {
+  "zonelife_city_life_03f_u030_cor_pcs2_r05": {
     "x": 2675.587301587301,
     "y": 3678.329365079364
   },
-  "city_life_4f_u045_liv": {
+  "zonelife_city_life_04f_u045_1": {
     "x": 2626.107142857141,
     "y": 3031.142857142857
   },
-  "city_life_7f_u077_balb": {
+  "zonelife_city_life_07f_u077_12": {
     "x": 260.0,
     "y": 3500.0
   },
-  "city_life_9f_u096_brm": {
+  "zonelife_city_life_09f_u096_4": {
     "x": 170.0,
     "y": 4580.0
   },
-  "city_life_5f_u054_btm": {
+  "zonelife_city_life_05f_u054_6": {
     "x": 80.0,
     "y": 2240.0
   },
-  "city_life_5f_u051_bal": {
+  "zonelife_city_life_05f_u051_2": {
     "x": 620.0,
     "y": 1970.0
   },
-  "city_life_7f_u075_bt2": {
+  "zonelife_city_life_07f_u075_bt2": {
     "x": 260.0,
     "y": 3410.0
   },
@@ -2455,227 +2455,227 @@
     "x": 1812.025146360028,
     "y": 4106.452272612261
   },
-  "city_life_9f_u096_btg": {
+  "zonelife_city_life_09f_u096_32": {
     "x": 260.0,
     "y": 4580.0
   },
-  "city_life_4f_u049_btg": {
+  "zonelife_city_life_04f_u049_32": {
     "x": 710.0,
     "y": 1430.0
   },
-  "city_life_6f_u067_br3": {
+  "zonelife_city_life_06f_u067_br3": {
     "x": 350.0,
     "y": 2960.0
   },
-  "city_life_4f_u044_btg": {
+  "zonelife_city_life_04f_u044_32": {
     "x": 2471.459595959596,
     "y": 3017.977272727272
   },
-  "city_life_8f_u084_brm": {
+  "zonelife_city_life_08f_u084_4": {
     "x": 440.0,
     "y": 3860.0
   },
-  "city_life_8f_u085_bat": {
+  "zonelife_city_life_08f_u085_3": {
     "x": 80.0,
     "y": 3950.0
   },
-  "city_life_6f_u063_liv": {
+  "zonelife_city_life_06f_u063_1": {
     "x": 710.0,
     "y": 2690.0
   },
-  "city_life_7f_u071_bal": {
+  "zonelife_city_life_07f_u071_2": {
     "x": 80.0,
     "y": 3140.0
   },
-  "city_life_8f_u082_bat": {
+  "zonelife_city_life_08f_u082_3": {
     "x": 890.0,
     "y": 3680.0
   },
-  "city_life_14f_sample": {
+  "zonelife_city_life_14f_u140_sample": {
     "x": 890.0,
     "y": 1070.0
   },
-  "city_life_7f_u075_br2": {
+  "zonelife_city_life_07f_u075_22": {
     "x": 890.0,
     "y": 3320.0
   },
-  "city_life_15f_duty": {
+  "zonelife_city_life_15f_u150_duty": {
     "x": 530.0,
     "y": 1160.0
   },
-  "city_life_11f_lounge_a": {
+  "zonelife_city_life_11f_u110_lounge_a": {
     "x": 260.0,
     "y": 800.0
   },
-  "city_life_5f_u055_br3": {
+  "zonelife_city_life_05f_u055_br3": {
     "x": 620.0,
     "y": 2240.0
   },
-  "city_life_3f_cor_med1_r06": {
+  "zonelife_city_life_03f_u030_cor_med1_r06": {
     "x": 3041.793650793651,
     "y": 3538.829365079364
   },
-  "city_life_12f_hvac": {
+  "zonelife_city_life_12f_u120_hvac": {
     "x": 440.0,
     "y": 890.0
   },
-  "city_life_9f_u094_btm": {
+  "zonelife_city_life_09f_u094_6": {
     "x": 800.0,
     "y": 4400.0
   },
-  "city_life_9f_u097_balb": {
+  "zonelife_city_life_09f_u097_12": {
     "x": 620.0,
     "y": 4580.0
   },
-  "city_life_6f_u061_br1": {
+  "zonelife_city_life_06f_u061_br1": {
     "x": 890.0,
     "y": 2510.0
   },
-  "city_life_4f_u047_bt2": {
+  "zonelife_city_life_04f_u047_bt2": {
     "x": 3589.2658730158714,
     "y": 530.4960317460323
   },
-  "city_life_5f_u055_brg": {
+  "zonelife_city_life_05f_u055_5": {
     "x": 620.0,
     "y": 2240.0
   },
-  "city_life_7f_u076_bt1": {
+  "zonelife_city_life_07f_u076_bt1": {
     "x": 800.0,
     "y": 3410.0
   },
-  "city_life_8f_u087_bt2": {
+  "zonelife_city_life_08f_u087_bt2": {
     "x": 890.0,
     "y": 4040.0
   },
-  "city_life_4f_u044_brg": {
+  "zonelife_city_life_04f_u044_5": {
     "x": 2340.7777777777774,
     "y": 3085.9318181818176
   },
-  "city_life_6f_u068_brg": {
+  "zonelife_city_life_06f_u068_5": {
     "x": 80.0,
     "y": 3050.0
   },
-  "city_life_2f_dept_internal": {
+  "zonelife_city_life_02f_u021_0": {
     "x": 2617.282051282051,
     "y": 4290.070512820512
   },
-  "city_life_9f_u091_bt1": {
+  "zonelife_city_life_09f_u091_bt1": {
     "x": 710.0,
     "y": 4220.0
   },
-  "city_life_7f_u075_br1": {
+  "zonelife_city_life_07f_u075_br1": {
     "x": 800.0,
     "y": 3320.0
   },
-  "city_life_5f_u057_br1": {
+  "zonelife_city_life_05f_u057_br1": {
     "x": 890.0,
     "y": 2330.0
   },
-  "city_life_5f_u057_din": {
+  "zonelife_city_life_05f_u057_7": {
     "x": 440.0,
     "y": 2420.0
   },
-  "city_life_6f_u068_br2": {
+  "zonelife_city_life_06f_u068_22": {
     "x": 170.0,
     "y": 3050.0
   },
-  "city_life_6f_u069_bal": {
+  "zonelife_city_life_06f_u069_2": {
     "x": 350.0,
     "y": 3050.0
   },
-  "city_life_5f_u059_btm": {
+  "zonelife_city_life_05f_u059_6": {
     "x": 530.0,
     "y": 2510.0
   },
-  "city_life_9f_u094_br1": {
+  "zonelife_city_life_09f_u094_br1": {
     "x": 530.0,
     "y": 4400.0
   },
-  "city_life_8f_u089_liv": {
+  "zonelife_city_life_08f_u089_1": {
     "x": 260.0,
     "y": 4220.0
   },
-  "city_life_2f_dept_rehab": {
+  "zonelife_city_life_02f_u020_dept_rehab": {
     "x": 2783.617521367521,
     "y": 4480.081196581195
   },
-  "city_life_10f_u103_brm": {
+  "zonelife_city_life_10f_u103_4": {
     "x": 710.0,
     "y": 170.0
   },
-  "city_life_9f_u093_balb": {
+  "zonelife_city_life_09f_u093_12": {
     "x": 620.0,
     "y": 4310.0
   },
-  "city_life_8f_u081_bt2": {
+  "zonelife_city_life_08f_u081_bt2": {
     "x": 620.0,
     "y": 3680.0
   },
-  "city_life_7f": {
+  "zonelife_city_life_07f_u070_0": {
     "x": 890.0,
     "y": 3050.0
   },
-  "city_life_10f_u101_br2": {
+  "zonelife_city_life_10f_u101_22": {
     "x": 350.0,
     "y": 80.0
   },
-  "city_life_9f_u092_brg": {
+  "zonelife_city_life_09f_u092_5": {
     "x": 260.0,
     "y": 4310.0
   },
-  "city_life_3f_cor_med1": {
+  "zonelife_city_life_03f_u030_cor_med1": {
     "x": 3090.904761904762,
     "y": 3448.6071428571418
   },
-  "city_life_8f_u085_bt2": {
+  "zonelife_city_life_08f_u085_bt2": {
     "x": 440.0,
     "y": 3950.0
   },
-  "city_life_4f_u048_br2": {
+  "zonelife_city_life_04f_u048_22": {
     "x": 3565.2182539682535,
     "y": 165.09920634920672
   },
-  "city_life_8f_u083_br1": {
+  "zonelife_city_life_08f_u083_br1": {
     "x": 530.0,
     "y": 3770.0
   },
-  "city_life_3f_cor_icu_r03": {
+  "zonelife_city_life_03f_u031_03": {
     "x": 3001.0714285714284,
     "y": 3993.0238095238087
   },
-  "city_life_6f_u065_din": {
+  "zonelife_city_life_06f_u065_7": {
     "x": 170.0,
     "y": 2870.0
   },
-  "city_life_9f_u098_brm": {
+  "zonelife_city_life_09f_u098_4": {
     "x": 710.0,
     "y": 4670.0
   },
-  "city_life_10f_u107_bala": {
+  "zonelife_city_life_10f_u107_2": {
     "x": 260.0,
     "y": 440.0
   },
-  "city_life_7f_u071_brg": {
+  "zonelife_city_life_07f_u071_5": {
     "x": 260.0,
     "y": 3140.0
   },
-  "city_life_8f_u088_bal": {
+  "zonelife_city_life_08f_u088_2": {
     "x": 260.0,
     "y": 4130.0
   },
-  "city_life_9f_u097_btm": {
+  "zonelife_city_life_09f_u097_6": {
     "x": 170.0,
     "y": 4670.0
   },
-  "city_life_8f_u085_btm": {
+  "zonelife_city_life_08f_u085_6": {
     "x": 440.0,
     "y": 3950.0
   },
-  "city_life_9f_u092_brm": {
+  "zonelife_city_life_09f_u092_4": {
     "x": 350.0,
     "y": 4310.0
   },
-  "city_life_4f_u045_br1": {
+  "zonelife_city_life_04f_u045_br1": {
     "x": 3197.1071428571413,
     "y": 676.1428571428576
   },
@@ -2683,367 +2683,367 @@
     "x": 1883.047008547008,
     "y": 4408.645299145298
   },
-  "city_life_10f_u106_br1": {
+  "zonelife_city_life_10f_u106_br1": {
     "x": 710.0,
     "y": 350.0
   },
-  "city_life_3f_cor_med2": {
+  "zonelife_city_life_03f_u030_cor_med2": {
     "x": 2908.68253968254,
     "y": 3452.218253968253
   },
-  "city_life_10f_u101_brm": {
+  "zonelife_city_life_10f_u101_4": {
     "x": 440.0,
     "y": 80.0
   },
-  "city_life_7f_u078_br2": {
+  "zonelife_city_life_07f_u078_22": {
     "x": 350.0,
     "y": 3590.0
   },
-  "city_life_4f_u041_btm": {
+  "zonelife_city_life_04f_u041_6": {
     "x": 2337.676470588234,
     "y": 2547.2058823529405
   },
-  "city_life_7f_u077_btm": {
+  "zonelife_city_life_07f_u077_6": {
     "x": 710.0,
     "y": 3500.0
   },
-  "city_life_10f_u109_bt2": {
+  "zonelife_city_life_10f_u109_bt2": {
     "x": 80.0,
     "y": 620.0
   },
-  "city_life_4f_u041_bt1": {
+  "zonelife_city_life_04f_u041_bt1": {
     "x": 2752.7255639097734,
     "y": 130.25093984962433
   },
-  "city_life_10f_u101_btm": {
+  "zonelife_city_life_10f_u101_6": {
     "x": 530.0,
     "y": 80.0
   },
-  "city_life_10f_u107_liv": {
+  "zonelife_city_life_10f_u107_1": {
     "x": 80.0,
     "y": 530.0
   },
-  "city_life_10f_u103_liv": {
+  "zonelife_city_life_10f_u103_1": {
     "x": 80.0,
     "y": 260.0
   },
-  "city_life_13f_recycle": {
+  "zonelife_city_life_13f_u130_recycle": {
     "x": 620.0,
     "y": 980.0
   },
-  "city_life_10f_u109_btm": {
+  "zonelife_city_life_10f_u109_6": {
     "x": 80.0,
     "y": 620.0
   },
-  "city_life_10f_u108_br2": {
+  "zonelife_city_life_10f_u108_22": {
     "x": 440.0,
     "y": 530.0
   },
-  "city_life_10f_u107_btm": {
+  "zonelife_city_life_10f_u107_6": {
     "x": 800.0,
     "y": 440.0
   },
-  "city_life_8f_u083_liv": {
+  "zonelife_city_life_08f_u083_1": {
     "x": 170.0,
     "y": 3860.0
   },
-  "city_life_7f_u079_liv": {
+  "zonelife_city_life_07f_u079_1": {
     "x": 80.0,
     "y": 3680.0
   },
-  "city_life_10f_u107_brg": {
+  "zonelife_city_life_10f_u107_5": {
     "x": 620.0,
     "y": 440.0
   },
-  "city_life_10f_u107_balb": {
+  "zonelife_city_life_10f_u107_12": {
     "x": 350.0,
     "y": 440.0
   },
-  "city_life_5f_u053_brg": {
+  "zonelife_city_life_05f_u053_5": {
     "x": 170.0,
     "y": 2150.0
   },
-  "city_life_9f_u093_br3": {
+  "zonelife_city_life_09f_u093_br3": {
     "x": 890.0,
     "y": 4310.0
   },
-  "city_life_8f_u084_br1": {
+  "zonelife_city_life_08f_u084_br1": {
     "x": 350.0,
     "y": 3860.0
   },
-  "city_life_4f_u045_din": {
+  "zonelife_city_life_04f_u045_7": {
     "x": 2628.0189075630233,
     "y": 3095.995798319327
   },
-  "city_life_6f_u062_bat": {
+  "zonelife_city_life_06f_u062_3": {
     "x": 530.0,
     "y": 2600.0
   },
-  "city_life_9f_u092_br1": {
+  "zonelife_city_life_09f_u092_br1": {
     "x": 260.0,
     "y": 4310.0
   },
-  "city_life_3f_cor_pcm2_r05": {
+  "zonelife_city_life_03f_u030_cor_pcm2_r05": {
     "x": 3030.279761904762,
     "y": 3694.0238095238087
   },
-  "city_life_5f_u057_bat": {
+  "zonelife_city_life_05f_u057_3": {
     "x": 890.0,
     "y": 2330.0
   },
-  "city_life_11f_kids": {
+  "zonelife_city_life_11f_u110_kids": {
     "x": 260.0,
     "y": 710.0
   },
-  "city_life_10f_u101_bt2": {
+  "zonelife_city_life_10f_u101_bt2": {
     "x": 530.0,
     "y": 80.0
   },
-  "city_life_3f_cor_surg2_r05": {
+  "zonelife_city_life_03f_u030_cor_surg2_r05": {
     "x": 2678.8214285714284,
     "y": 3857.357142857142
   },
-  "city_life_11f_works": {
+  "zonelife_city_life_11f_u110_works": {
     "x": 710.0,
     "y": 800.0
   },
-  "city_life_14f_checkup": {
+  "zonelife_city_life_14f_u140_checkup": {
     "x": 170.0,
     "y": 1070.0
   },
-  "city_life_10f_u109_bal": {
+  "zonelife_city_life_10f_u109_2": {
     "x": 620.0,
     "y": 530.0
   },
-  "city_life_9f_u094_bt2": {
+  "zonelife_city_life_09f_u094_bt2": {
     "x": 800.0,
     "y": 4400.0
   },
-  "city_life_9f_u093_br2": {
+  "zonelife_city_life_09f_u093_22": {
     "x": 800.0,
     "y": 4310.0
   },
-  "city_life_5f_u054_liv": {
+  "zonelife_city_life_05f_u054_1": {
     "x": 170.0,
     "y": 2240.0
   },
-  "city_life_4f_u045_brm": {
+  "zonelife_city_life_04f_u045_4": {
     "x": 2623.999999999998,
     "y": 2967.823529411764
   },
-  "city_life_6f_u068_bal": {
+  "zonelife_city_life_06f_u068_2": {
     "x": 800.0,
     "y": 2960.0
   },
-  "city_life_5f_u056_br1": {
+  "zonelife_city_life_05f_u056_br1": {
     "x": 260.0,
     "y": 2330.0
   },
-  "city_life_12f_tank": {
+  "zonelife_city_life_12f_u120_tank": {
     "x": 890.0,
     "y": 890.0
   },
-  "city_life_4f_u042_liv": {
+  "zonelife_city_life_04f_u042_1": {
     "x": 2405.761904761904,
     "y": 2696.490079365079
   },
-  "city_life_6f_u067_bt1": {
+  "zonelife_city_life_06f_u067_bt1": {
     "x": 440.0,
     "y": 2960.0
   },
-  "city_life_8f_u081_liv": {
+  "zonelife_city_life_08f_u081_1": {
     "x": 710.0,
     "y": 3680.0
   },
-  "city_life_8f_u087_bat": {
+  "zonelife_city_life_08f_u087_3": {
     "x": 530.0,
     "y": 4040.0
   },
-  "city_life_10f_u107_din": {
+  "zonelife_city_life_10f_u107_7": {
     "x": 890.0,
     "y": 440.0
   },
-  "city_life_2f_dept_rehab_exam": {
+  "zonelife_city_life_02f_u020_dept_rehab_exam": {
     "x": 2786.117521367521,
     "y": 4550.77564102564
   },
-  "city_life_9f_u091_br2": {
+  "zonelife_city_life_09f_u091_22": {
     "x": 620.0,
     "y": 4220.0
   },
-  "city_life_4f_u044_br2": {
+  "zonelife_city_life_04f_u044_22": {
     "x": 3031.249999999999,
     "y": 612.9880952380954
   },
-  "city_life_10f_u104_btm": {
+  "zonelife_city_life_10f_u104_6": {
     "x": 530.0,
     "y": 260.0
   },
-  "city_life_5f_u054_bt2": {
+  "zonelife_city_life_05f_u054_bt2": {
     "x": 80.0,
     "y": 2240.0
   },
-  "city_life_6f_u067_brg": {
+  "zonelife_city_life_06f_u067_5": {
     "x": 350.0,
     "y": 2960.0
   },
-  "city_life_4f_u047_liv": {
+  "zonelife_city_life_04f_u047_1": {
     "x": 2849.6269841269827,
     "y": 2867.1626984126983
   },
-  "city_life_6f_u069_br1": {
+  "zonelife_city_life_06f_u069_br1": {
     "x": 440.0,
     "y": 3050.0
   },
-  "city_life_10f_u101_bt1": {
+  "zonelife_city_life_10f_u101_bt1": {
     "x": 440.0,
     "y": 80.0
   },
-  "city_life_10f_u107_bat": {
+  "zonelife_city_life_10f_u107_3": {
     "x": 440.0,
     "y": 440.0
   },
-  "city_life_3f_cor_med1_r01": {
+  "zonelife_city_life_03f_u030_cor_med1_r01": {
     "x": 2981.793650793651,
     "y": 3498.829365079364
   },
-  "city_life_7f_u075_bala": {
+  "zonelife_city_life_07f_u075_2": {
     "x": 620.0,
     "y": 3320.0
   },
-  "city_life_8f_u083_din": {
+  "zonelife_city_life_08f_u083_7": {
     "x": 80.0,
     "y": 3860.0
   },
-  "city_life_7f_u076_br2": {
+  "zonelife_city_life_07f_u076_22": {
     "x": 710.0,
     "y": 3410.0
   },
-  "city_life_6f_u065_bat": {
+  "zonelife_city_life_06f_u065_3": {
     "x": 620.0,
     "y": 2780.0
   },
-  "city_life_5f_u051_btm": {
+  "zonelife_city_life_05f_u051_6": {
     "x": 80.0,
     "y": 2060.0
   },
-  "city_life_6f_u067_btm": {
+  "zonelife_city_life_06f_u067_6": {
     "x": 530.0,
     "y": 2960.0
   },
-  "city_life_5f_u056_bt1": {
+  "zonelife_city_life_05f_u056_bt1": {
     "x": 440.0,
     "y": 2330.0
   },
-  "city_life_7f_u078_liv": {
+  "zonelife_city_life_07f_u078_1": {
     "x": 440.0,
     "y": 3590.0
   },
-  "city_life_6f_u069_bat": {
+  "zonelife_city_life_06f_u069_3": {
     "x": 440.0,
     "y": 3050.0
   },
-  "city_life_14f_edu": {
+  "zonelife_city_life_14f_u140_edu": {
     "x": 350.0,
     "y": 1070.0
   },
-  "city_life_6f_u061_br2": {
+  "zonelife_city_life_06f_u061_22": {
     "x": 80.0,
     "y": 2600.0
   },
-  "city_life_3f_cor_surg2_r03": {
+  "zonelife_city_life_03f_u030_cor_surg2_r03": {
     "x": 2654.8214285714284,
     "y": 3841.357142857142
   },
-  "city_life_9f_u094_br2": {
+  "zonelife_city_life_09f_u094_22": {
     "x": 620.0,
     "y": 4400.0
   },
-  "city_life_10f_u108_brm": {
+  "zonelife_city_life_10f_u108_4": {
     "x": 440.0,
     "y": 530.0
   },
-  "city_life_11f_atrium": {
+  "zonelife_city_life_11f_u110_atrium": {
     "x": 350.0,
     "y": 620.0
   },
-  "city_life_4f_u046_br2": {
+  "zonelife_city_life_04f_u046_22": {
     "x": 3352.321428571427,
     "y": 636.416666666667
   },
-  "city_life_5f_u057_bt1": {
+  "zonelife_city_life_05f_u057_bt1": {
     "x": 260.0,
     "y": 2420.0
   },
-  "city_life_8f_u088_br2": {
+  "zonelife_city_life_08f_u088_22": {
     "x": 530.0,
     "y": 4130.0
   },
-  "city_life_8f_u086_bt2": {
+  "zonelife_city_life_08f_u086_bt2": {
     "x": 170.0,
     "y": 4040.0
   },
-  "city_life_5f_u054_bt1": {
+  "zonelife_city_life_05f_u054_bt1": {
     "x": 890.0,
     "y": 2150.0
   },
-  "city_life_3f_cor_pcm2": {
+  "zonelife_city_life_03f_u030_cor_pcm2": {
     "x": 3087.779761904762,
     "y": 3621.5238095238087
   },
-  "city_life_6f_u065_bt2": {
+  "zonelife_city_life_06f_u065_bt2": {
     "x": 80.0,
     "y": 2870.0
   },
-  "city_life_8f_u089_br1": {
+  "zonelife_city_life_08f_u089_br1": {
     "x": 800.0,
     "y": 4130.0
   },
-  "city_life_7f_u077_brg": {
+  "zonelife_city_life_07f_u077_5": {
     "x": 530.0,
     "y": 3500.0
   },
-  "city_life_4f_u043_balb": {
+  "zonelife_city_life_04f_u043_12": {
     "x": 2476.015873015872,
     "y": 2795.7805250305246
   },
-  "city_life_3f_cor_pcm2_r04": {
+  "zonelife_city_life_03f_u030_cor_pcm2_r04": {
     "x": 3018.279761904762,
     "y": 3686.0238095238087
   },
-  "city_life_6f_u066_btg": {
+  "zonelife_city_life_06f_u066_32": {
     "x": 620.0,
     "y": 2870.0
   },
-  "city_life_4f_u047_br2": {
+  "zonelife_city_life_04f_u047_22": {
     "x": 2781.397817460316,
     "y": 2867.926587301587
   },
-  "city_life_4f_u041_brm": {
+  "zonelife_city_life_04f_u041_4": {
     "x": 2335.911764705881,
     "y": 2484.999999999999
   },
-  "city_life_10f_u105_br3": {
+  "zonelife_city_life_10f_u105_br3": {
     "x": 170.0,
     "y": 350.0
   },
-  "city_life_9f_u092_liv": {
+  "zonelife_city_life_09f_u092_1": {
     "x": 440.0,
     "y": 4310.0
   },
-  "city_life_8f_u086_br1": {
+  "zonelife_city_life_08f_u086_br1": {
     "x": 800.0,
     "y": 3950.0
   },
-  "city_life_3f_cor_pcs1_r03": {
+  "zonelife_city_life_03f_u030_cor_pcs1_r03": {
     "x": 2654.30753968254,
     "y": 3500.593253968253
   },
-  "city_life_8f_u083_br2": {
+  "zonelife_city_life_08f_u083_22": {
     "x": 620.0,
     "y": 3770.0
   },
-  "city_life_9f_u098_bat": {
+  "zonelife_city_life_09f_u098_3": {
     "x": 530.0,
     "y": 4670.0
   },
@@ -3051,275 +3051,275 @@
     "x": 1813.4327485380115,
     "y": 4039.262426900584
   },
-  "city_life_8f_u089_brg": {
+  "zonelife_city_life_08f_u089_5": {
     "x": 890.0,
     "y": 4130.0
   },
-  "city_life_9f_u097_bt1": {
+  "zonelife_city_life_09f_u097_bt1": {
     "x": 80.0,
     "y": 4670.0
   },
-  "city_life_9f_u098_brg": {
+  "zonelife_city_life_09f_u098_5": {
     "x": 620.0,
     "y": 4670.0
   },
-  "city_life_5f_u051_br1": {
+  "zonelife_city_life_05f_u051_br1": {
     "x": 710.0,
     "y": 1970.0
   },
-  "city_life_7f_u077_bt2": {
+  "zonelife_city_life_07f_u077_bt2": {
     "x": 710.0,
     "y": 3500.0
   },
-  "city_life_6f_u061_liv": {
+  "zonelife_city_life_06f_u061_1": {
     "x": 350.0,
     "y": 2600.0
   },
-  "city_life_8f_u087_brm": {
+  "zonelife_city_life_08f_u087_4": {
     "x": 800.0,
     "y": 4040.0
   },
-  "city_life_8f_u086_bt1": {
+  "zonelife_city_life_08f_u086_bt1": {
     "x": 80.0,
     "y": 4040.0
   },
-  "city_life_10f_u105_liv": {
+  "zonelife_city_life_10f_u105_1": {
     "x": 530.0,
     "y": 350.0
   },
-  "city_life_3f_cor_pcm1_r04": {
+  "zonelife_city_life_03f_u030_cor_pcm1_r04": {
     "x": 2833.4880952380954,
     "y": 3998.5238095238087
   },
-  "city_life_10f_u103_br3": {
+  "zonelife_city_life_10f_u103_br3": {
     "x": 620.0,
     "y": 170.0
   },
-  "city_life_4f_u047_bat": {
+  "zonelife_city_life_04f_u047_3": {
     "x": 2780.8571428571413,
     "y": 2805.178571428571
   },
-  "city_life_4f_u047_brm": {
+  "zonelife_city_life_04f_u047_4": {
     "x": 2920.812499999998,
     "y": 2804.6874999999995
   },
-  "city_life_4f_u044_br1": {
+  "zonelife_city_life_04f_u044_br1": {
     "x": 3033.249999999999,
     "y": 675.4880952380954
   },
-  "city_life_9f_u091_brg": {
+  "zonelife_city_life_09f_u091_5": {
     "x": 620.0,
     "y": 4220.0
   },
-  "city_life_10f_u103_bat": {
+  "zonelife_city_life_10f_u103_3": {
     "x": 440.0,
     "y": 170.0
   },
-  "city_life_8f_u085_bt1": {
+  "zonelife_city_life_08f_u085_bt1": {
     "x": 350.0,
     "y": 3950.0
   },
-  "city_life_3f_cor_pcs1_r02": {
+  "zonelife_city_life_03f_u030_cor_pcs1_r02": {
     "x": 2642.30753968254,
     "y": 3492.593253968253
   },
-  "city_life_5f_u054_btg": {
+  "zonelife_city_life_05f_u054_32": {
     "x": 890.0,
     "y": 2150.0
   },
-  "city_life_10f_u108_bat": {
+  "zonelife_city_life_10f_u108_3": {
     "x": 260.0,
     "y": 530.0
   },
-  "city_life_10f_u104_brm": {
+  "zonelife_city_life_10f_u104_4": {
     "x": 350.0,
     "y": 260.0
   },
-  "city_life_10f_u105_btm": {
+  "zonelife_city_life_10f_u105_6": {
     "x": 350.0,
     "y": 350.0
   },
-  "city_life_9f_u094_brm": {
+  "zonelife_city_life_09f_u094_4": {
     "x": 620.0,
     "y": 4400.0
   },
-  "city_life_4f_u046_liv": {
+  "zonelife_city_life_04f_u046_1": {
     "x": 2845.249999999999,
     "y": 3094.8452380952376
   },
-  "city_life_2f_dept_pharm": {
+  "zonelife_city_life_02f_u029_0": {
     "x": 2658.728632478632,
     "y": 4483.051282051281
   },
-  "city_life_10f_u109_br2": {
+  "zonelife_city_life_10f_u109_22": {
     "x": 800.0,
     "y": 530.0
   },
-  "city_life_5f_u059_brg": {
+  "zonelife_city_life_05f_u059_5": {
     "x": 350.0,
     "y": 2510.0
   },
-  "city_life_7f_u073_balb": {
+  "zonelife_city_life_07f_u073_12": {
     "x": 260.0,
     "y": 3230.0
   },
-  "city_life_6f_u067_bat": {
+  "zonelife_city_life_06f_u067_3": {
     "x": 170.0,
     "y": 2960.0
   },
-  "city_life_7f_u075_din": {
+  "zonelife_city_life_07f_u075_7": {
     "x": 350.0,
     "y": 3410.0
   },
-  "city_life_10f_u106_bt2": {
+  "zonelife_city_life_10f_u106_bt2": {
     "x": 80.0,
     "y": 440.0
   },
-  "city_life_10f_u103_bt2": {
+  "zonelife_city_life_10f_u103_bt2": {
     "x": 800.0,
     "y": 170.0
   },
-  "city_life_5f_u052_bat": {
+  "zonelife_city_life_05f_u052_3": {
     "x": 350.0,
     "y": 2060.0
   },
-  "city_life_4f_u049_br1": {
+  "zonelife_city_life_04f_u049_br1": {
     "x": 3423.0357142857133,
     "y": 11.89285714285748
   },
-  "city_life_9f_u095_balb": {
+  "zonelife_city_life_09f_u095_12": {
     "x": 170.0,
     "y": 4490.0
   },
-  "city_life_4f_u043_bt2": {
+  "zonelife_city_life_04f_u043_bt2": {
     "x": 2710.4880952380945,
     "y": 450.5198412698413
   },
-  "city_life_9f_u091_btm": {
+  "zonelife_city_life_09f_u091_6": {
     "x": 800.0,
     "y": 4220.0
   },
-  "city_life_5f_u053_liv": {
+  "zonelife_city_life_05f_u053_1": {
     "x": 530.0,
     "y": 2150.0
   },
-  "city_life_9f_u095_br1": {
+  "zonelife_city_life_09f_u095_br1": {
     "x": 260.0,
     "y": 4490.0
   },
-  "city_life_8f_u087_bt1": {
+  "zonelife_city_life_08f_u087_bt1": {
     "x": 800.0,
     "y": 4040.0
   },
-  "city_life_7f_u071_br1": {
+  "zonelife_city_life_07f_u071_br1": {
     "x": 170.0,
     "y": 3140.0
   },
-  "city_life_7f_u073_br2": {
+  "zonelife_city_life_07f_u073_22": {
     "x": 440.0,
     "y": 3230.0
   },
-  "city_life_5f_u051_br2": {
+  "zonelife_city_life_05f_u051_22": {
     "x": 800.0,
     "y": 1970.0
   },
-  "city_life_8f_u085_br3": {
+  "zonelife_city_life_08f_u085_br3": {
     "x": 260.0,
     "y": 3950.0
   },
-  "city_life_3f_cor_pcs2_r03": {
+  "zonelife_city_life_03f_u030_cor_pcs2_r03": {
     "x": 2651.587301587301,
     "y": 3662.329365079364
   },
-  "city_life_7f_u073_brm": {
+  "zonelife_city_life_07f_u073_4": {
     "x": 620.0,
     "y": 3230.0
   },
-  "city_life_12f_comm": {
+  "zonelife_city_life_12f_u120_comm": {
     "x": 170.0,
     "y": 890.0
   },
-  "city_life_3f_cor_icu_r04": {
+  "zonelife_city_life_03f_u031_04": {
     "x": 3013.0714285714284,
     "y": 4001.0238095238087
   },
-  "city_life_9f_u091_bat": {
+  "zonelife_city_life_09f_u091_3": {
     "x": 530.0,
     "y": 4220.0
   },
-  "city_life_7f_u073_br1": {
+  "zonelife_city_life_07f_u073_br1": {
     "x": 350.0,
     "y": 3230.0
   },
-  "city_life_5f_u057_bt2": {
+  "zonelife_city_life_05f_u057_bt2": {
     "x": 350.0,
     "y": 2420.0
   },
-  "city_life_10f_u107_br3": {
+  "zonelife_city_life_10f_u107_br3": {
     "x": 620.0,
     "y": 440.0
   },
-  "city_life_5f_u053_br3": {
+  "zonelife_city_life_05f_u053_br3": {
     "x": 170.0,
     "y": 2150.0
   },
-  "city_life_8f_u089_btm": {
+  "zonelife_city_life_08f_u089_6": {
     "x": 170.0,
     "y": 4220.0
   },
-  "city_life_9f_u095_bt2": {
+  "zonelife_city_life_09f_u095_bt2": {
     "x": 620.0,
     "y": 4490.0
   },
-  "city_life_9f_u094_bal": {
+  "zonelife_city_life_09f_u094_2": {
     "x": 440.0,
     "y": 4400.0
   },
-  "city_life_13f": {
+  "zonelife_city_life_13f_u130_0": {
     "x": 80.0,
     "y": 980.0
   },
-  "city_life_9f_u097_din": {
+  "zonelife_city_life_09f_u097_7": {
     "x": 260.0,
     "y": 4670.0
   },
-  "city_life_10f_u102_bal": {
+  "zonelife_city_life_10f_u102_2": {
     "x": 710.0,
     "y": 80.0
   },
-  "city_life_7f_u075_balb": {
+  "zonelife_city_life_07f_u075_12": {
     "x": 710.0,
     "y": 3320.0
   },
-  "city_life_6f_u065_br3": {
+  "zonelife_city_life_06f_u065_br3": {
     "x": 800.0,
     "y": 2780.0
   },
-  "city_life_5f_u057_balb": {
+  "zonelife_city_life_05f_u057_12": {
     "x": 800.0,
     "y": 2330.0
   },
-  "city_life_4f_u041_br1": {
+  "zonelife_city_life_04f_u041_br1": {
     "x": 2814.5676691729313,
     "y": 33.000000000000014
   },
-  "city_life_10f_u102_brg": {
+  "zonelife_city_life_10f_u102_5": {
     "x": 890.0,
     "y": 80.0
   },
-  "city_life_11f_lounge": {
+  "zonelife_city_life_11f_u110_lounge": {
     "x": 170.0,
     "y": 800.0
   },
-  "city_life_4f_u043_liv": {
+  "zonelife_city_life_04f_u043_1": {
     "x": 2404.071428571427,
     "y": 2859.158730158729
   },
-  "city_life_4f_u041_bat": {
+  "zonelife_city_life_04f_u041_3": {
     "x": 2472.117647058822,
     "y": 2484.999999999999
   },
-  "city_life_5f_u057_btm": {
+  "zonelife_city_life_05f_u057_6": {
     "x": 350.0,
     "y": 2420.0
   }

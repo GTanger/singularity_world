@@ -1,0 +1,59 @@
+{
+  "id": "zonelife_city_life_02f_u028_1",
+  "name": "搶救室",
+  "description": "急診格後方這一格無窗，儀器與〔急救推車〕鎖輪卡在凹槽裡，導線沿踢腳板束成一束。牆上血壓與血氧螢幕關著，黑面映出門口安全燈一點綠；除顫機塑膠柄套仍套著，像剛檢過電未歸位。\n可經〔醫療專梯〕下往1F醫療梯間，或經〔急診廊〕回到「急診科」分診區。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "clinic"
+  ],
+  "zone": "citylife_2f",
+  "exits": [
+    {
+      "direction": "醫療專梯",
+      "to": "zonelife_city_life_01f_u012_1"
+    },
+    {
+      "direction": "急診廊",
+      "to": "zonelife_city_life_02f_u028_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_er_rescue_lift",
+      "name": "醫療專梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "專梯下行，抵1F醫療梯間。"
+      },
+      "move_to_room_id": "zonelife_city_life_01f_u012_1"
+    },
+    {
+      "id": "city_life_2f_er_rescue_lobby",
+      "name": "急診廊",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你沿廊道回到「急診科」分診區。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u028_0"
+    },
+    {
+      "id": "city_life_2f_er_rescue_cart",
+      "name": "急救推車",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "上層抽屜貼著「氣道／循環／包紮」分格，下層氧氣瓶固定帶勒出凹痕；側鉤空著，應是剛被拿走一組。"
+      }
+    }
+  ]
+}

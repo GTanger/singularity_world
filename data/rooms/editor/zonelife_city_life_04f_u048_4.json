@@ -1,0 +1,33 @@
+{
+  "id": "zonelife_city_life_04f_u048_4",
+  "name": "主臥",
+  "description": "主臥室的佈置延續了客廳絕對協調的視覺語彙。一張寬大的雙人床不偏不倚地置於房間的幾何中心，兩側精準配置了相同款式的實木床頭櫃與霧面白瓷小夜燈。所有的衣櫃與收納系統全被巧妙地隱藏在床尾兩側的無把手牆面內，維持著空間左右重量的平衡。這裡的空氣彷彿凝結了一般寧靜，充滿秩序感的佈局非常適合追求絕對心理平衡的居住者。拉開對齊中線的木門，即可退回〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bedroom"
+  ],
+  "zone": "citylife_4f",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "zonelife_city_life_04f_u048_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_4f_u048_brm_to_city_life_4f_u048_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開了平衡對稱的主臥，回到了客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u048_1"
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "id": "zonelife_city_life_04f_u040_0",
+  "name": "浮生城4F",
+  "description": "｜｜｜｜｜上樓梯｜電梯間｜下樓梯｜｜｜｜｜\n｜０４１｜　　　　　　　　　　　｜０４９｜\n｜０４２｜　　※浮生城４樓※　　｜０４８｜\n｜０４３｜　　　　　　　　　　　｜０４７｜\n｜｜｜｜｜０４４｜０４５｜０４６｜｜｜｜｜",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_4f",
+  "exits": [
+    {
+      "direction": "電梯間",
+      "to": "zonelife_city_life_00f_u000_elevator"
+    },
+    {
+      "direction": "下樓梯",
+      "to": "zonelife_city_life_03f_u030_0"
+    },
+    {
+      "direction": "上樓梯",
+      "to": "zonelife_city_life_05f_u050_0"
+    },
+    {
+      "direction": "０４１",
+      "to": "zonelife_city_life_04f_u041_1"
+    },
+    {
+      "direction": "０４２",
+      "to": "zonelife_city_life_04f_u042_1"
+    },
+    {
+      "direction": "０４３",
+      "to": "zonelife_city_life_04f_u043_1"
+    },
+    {
+      "direction": "０４４",
+      "to": "zonelife_city_life_04f_u044_1"
+    },
+    {
+      "direction": "０４５",
+      "to": "zonelife_city_life_04f_u045_1"
+    },
+    {
+      "direction": "０４６",
+      "to": "zonelife_city_life_04f_u046_1"
+    },
+    {
+      "direction": "０４７",
+      "to": "zonelife_city_life_04f_u047_1"
+    },
+    {
+      "direction": "０４８",
+      "to": "zonelife_city_life_04f_u048_1"
+    },
+    {
+      "direction": "０４９",
+      "to": "zonelife_city_life_04f_u049_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "zonelife_city_life_00f_u000_elevator",
+      "name": "電梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「電梯間」。"
+      },
+      "move_to_room_id": "zonelife_city_life_00f_u000_elevator"
+    },
+    {
+      "id": "zonelife_city_life_03f_u030_0",
+      "name": "下樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城3F」。"
+      },
+      "move_to_room_id": "zonelife_city_life_03f_u030_0"
+    },
+    {
+      "id": "zonelife_city_life_05f_u050_0",
+      "name": "上樓梯",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你前往「浮生城5F」。"
+      },
+      "move_to_room_id": "zonelife_city_life_05f_u050_0"
+    },
+    {
+      "id": "city_life_4f_u041_liv_from_lobby",
+      "name": "０４１",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４１，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u041_1"
+    },
+    {
+      "id": "city_life_4f_u042_liv_from_lobby",
+      "name": "０４２",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４２，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u042_1"
+    },
+    {
+      "id": "city_life_4f_u043_liv_from_lobby",
+      "name": "０４３",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４３，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u043_1"
+    },
+    {
+      "id": "city_life_4f_u044_liv_from_lobby",
+      "name": "０４４",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４４，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u044_1"
+    },
+    {
+      "id": "city_life_4f_u045_liv_from_lobby",
+      "name": "０４５",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４５，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u045_1"
+    },
+    {
+      "id": "city_life_4f_u046_liv_from_lobby",
+      "name": "０４６",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４６，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u046_1"
+    },
+    {
+      "id": "city_life_4f_u047_liv_from_lobby",
+      "name": "０４７",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４７，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u047_1"
+    },
+    {
+      "id": "city_life_4f_u048_liv_from_lobby",
+      "name": "０４８",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４８，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u048_1"
+    },
+    {
+      "id": "city_life_4f_u049_liv_from_lobby",
+      "name": "０４９",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入戶０４９，來到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_04f_u049_1"
+    }
+  ]
+}

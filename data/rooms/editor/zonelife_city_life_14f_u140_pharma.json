@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_14f_u140_pharma",
+  "name": "藥事窗",
+  "description": "社區藥事諮詢與長處方覆核窗口，櫃內冷櫃低鳴。取藥動線與付費掃碼分開。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_14f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_14f_u140_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_14f_pharma_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開充滿藥劑氣味的窗口，走回寬敞且動線清晰的大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_14f_u140_0"
+    }
+  ]
+}

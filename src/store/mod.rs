@@ -995,6 +995,94 @@ impl Store {
         crate::db::sync_room_graph_with_store(self);
     }
 
+    /// 重新命名房間 ID，並級聯更新所有引用（出口、物件）。
+    pub fn rename_room(&mut self, old_id: &str, new_id: &str) -> anyhow::Result<()> {
+        if self.rooms.contains_key(new_id) {
+            anyhow::bail!("new id already exists");
+        }
+        let Some(room) = self.rooms.get(old_id).cloned() else {
+            anyhow::bail!("room not found");
+        };
+        let exits = self.get_exits_for_room(old_id);
+
+        // 1. 重命名實體 JSON 檔案
+        let old_path = PathBuf::from(&self.rooms_path).join("editor").join(format!("{}.json", old_id));
+        let new_path = PathBuf::from(&self.rooms_path).join("editor").join(format!("{}.json", new_id));
+        if old_path.exists() {
+            fs::rename(&old_path, &new_path)?;
+        }
+
+        // 2. 移除內存舊資料
+        self.rooms.remove(old_id);
+        self.exits.remove(old_id);
+
+        // 3. 建立新資料 (這會寫入新 JSON 並 UPSERT DB)
+        let mut new_room = room;
+        new_room.id = new_id.to_string();
+        self.upsert_room_data(new_room, Some(exits));
+
+        // 4. 全局級聯更新 (物件引用 & 出口引用)
+        let mut to_update = Vec::new();
+        
+        // 掃描物件
+        for (rid, r) in self.rooms.iter_mut() {
+            let mut changed = false;
+            for obj in &mut r.objects {
+                if obj.move_to_room_id == old_id {
+                    obj.move_to_room_id = new_id.to_string();
+                    changed = true;
+                }
+                if obj.id == old_id {
+                    obj.id = new_id.to_string();
+                    changed = true;
+                }
+            }
+            if changed {
+                to_update.push(rid.clone());
+            }
+        }
+
+        // 掃描出口
+        for (rid, ex_list) in self.exits.iter_mut() {
+            let mut changed = false;
+            for ex in ex_list.iter_mut() {
+                if ex.to_room_id == old_id {
+                    ex.to_room_id = new_id.to_string();
+                    changed = true;
+                }
+            }
+            if changed && !to_update.contains(rid) {
+                to_update.push(rid.clone());
+            }
+        }
+
+        // 寫回所有受影響的房間
+        for rid in to_update {
+            if let Some(r) = self.rooms.get(&rid).cloned() {
+                let exs = self.exits.get(&rid).cloned();
+                self.upsert_room_data(r, exs);
+            }
+        }
+
+        // 5. 更新 NpcRumors 與 EntityRooms
+        for room_id in self.entity_rooms.values_mut() {
+            if room_id == old_id {
+                *room_id = new_id.to_string();
+            }
+        }
+
+        // 6. 清理資料庫舊紀錄
+        if let Some(pool) = &self.db_pool {
+            let mut conn = pool.get()?;
+            conn.execute("UPDATE npc_rumors SET room_id = $1 WHERE room_id = $2", &[&new_id, &old_id])?;
+            conn.execute("DELETE FROM rooms WHERE id = $1", &[&old_id])?;
+            conn.execute("DELETE FROM exits WHERE from_room_id = $1", &[&old_id])?;
+        }
+
+        crate::db::sync_room_graph_with_store(self);
+        Ok(())
+    }
+
     pub fn reload_rooms(&mut self) -> anyhow::Result<()> {
         self.rooms.clear();
         self.exits.clear();

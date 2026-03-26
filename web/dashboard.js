@@ -110,77 +110,134 @@ function toggleZone(zone) {
     renderRoomsTable();
 }
 
+function toggleFolder(path) {
+    const collapsed = JSON.parse(localStorage.getItem('collapsed_folders') || '{}');
+    collapsed[path] = !collapsed[path];
+    localStorage.setItem('collapsed_folders', JSON.stringify(collapsed));
+    renderRoomsTable();
+}
+
+function buildRoomTree(rooms, index = 0) {
+    const node = { _rooms: [], _subs: {} };
+    const groups = {};
+    
+    rooms.forEach(r => {
+        const parts = r.id.split('_');
+        if (index >= parts.length) {
+            node._rooms.push(r);
+        } else {
+            const part = parts[index];
+            if (!groups[part]) groups[part] = [];
+            groups[part].push(r);
+        }
+    });
+    
+    for (const part in groups) {
+        const groupRooms = groups[part];
+        if (groupRooms.length > 1) {
+            // 複數出現，建立子目錄繼續遞迴
+            node._subs[part] = buildRoomTree(groupRooms, index + 1);
+        } else {
+            // 單一出現，不建立資料夾，直接放入當前房間清單
+            node._rooms.push(groupRooms[0]);
+        }
+    }
+    
+    return node;
+}
+
+
+// 修正：修正 removeObject 引用錯誤
+function renderTreeNode(name, node, path, depth) {
+    const collapsed = JSON.parse(localStorage.getItem('collapsed_folders') || '{}');
+    const isCollapsed = collapsed[path] || false;
+    const subNames = Object.keys(node._subs).sort();
+    
+    let html = `
+        <div class="tree-node ${isCollapsed ? 'collapsed' : ''}">
+            <div class="tree-header" onclick="toggleFolder('${path}')" style="padding-left: ${depth * 1.25 + 1}rem">
+                <svg class="zone-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <span class="node-name">${name}</span>
+                <span class="node-count">${node._rooms.length + subNames.length}</span>
+            </div>
+            <div class="tree-content">
+    `;
+
+    // 先渲染子目錄
+    subNames.forEach(sn => {
+        html += renderTreeNode(sn, node._subs[sn], (path ? path + '_' + sn : sn), depth + 1);
+    });
+
+    // 再渲染當前層級的房間
+    if (node._rooms.length > 0) {
+        html += `
+            <div class="table-wrap table-compact" style="margin-left: ${(depth + 1) * 0.8 + 0.2}rem; border-left: 1px solid var(--glass-border);">
+                <table>
+                    <tbody>
+                        ${node._rooms.map(r => `
+                            <tr>
+                                <td style="width: 180px;"><code>${r.id}</code></td>
+                                <td>${r.name}</td>
+                                <td class="action-cell">
+                                    <button class="btn btn-small btn-primary" onclick="openEditor('${r.id}')">編輯</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteRoom('${r.id}')">刪除</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    html += `</div></div>`;
+    return html;
+}
+
 function renderRoomsTable() {
     const search = ui.roomSearch.value.toLowerCase();
     const filtered = state.rooms.filter(r => 
         r.id.toLowerCase().includes(search) || 
         r.name.toLowerCase().includes(search)
     ).sort((a, b) => a.id.localeCompare(b.id));
-    
-    // Group by zone
-    const groups = {};
-    filtered.forEach(r => {
-        const z = r.zone || '未分類 (Default)';
-        if (!groups[z]) groups[z] = [];
-        groups[z].push(r);
-    });
-
-    const collapsed = JSON.parse(localStorage.getItem('collapsed_zones') || '{}');
-    const zoneNames = Object.keys(groups).sort();
-    
-    ui.roomsContainer.innerHTML = '';
-    
-    zoneNames.forEach(z => {
-        const rooms = groups[z];
-        const isCollapsed = collapsed[z] || false;
-        
-        const groupEl = document.createElement('div');
-        groupEl.className = `zone-group ${isCollapsed ? 'collapsed' : ''}`;
-        
-        groupEl.innerHTML = `
-            <div class="zone-header" onclick="toggleZone('${z}')">
-                <div class="zone-title">
-                    <svg class="zone-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    <span>${z}</span>
-                    <span class="zone-count">${rooms.length}</span>
-                </div>
-            </div>
-            <div class="zone-content">
-                <div class="table-wrap table-compact">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>名稱</th>
-                                <th>標籤</th>
-                                <th style="width: 120px;">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rooms.map(r => `
-                                <tr>
-                                    <td><code>${r.id}</code></td>
-                                    <td>${r.name}</td>
-                                    <td><span class="text-secondary" style="font-size: 0.75rem;">${(r.tags || []).join(', ')}</span></td>
-                                    <td>
-                                        <button class="btn btn-small btn-primary" onclick="openEditor('${r.id}')">編輯</button>
-                                        ${r.id !== 'lobby' && r.id !== '界壁' ? `<button class="btn btn-small btn-danger" onclick="deleteRoom('${r.id}')">刪除</button>` : ''}
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-        ui.roomsContainer.appendChild(groupEl);
-    });
 
     if (filtered.length === 0) {
         ui.roomsContainer.innerHTML = '<div class="card glass" style="text-align:center; padding: 2rem; color: var(--text-secondary);">找不到匹配的房間</div>';
+        return;
+    }
+
+    const tree = buildRoomTree(filtered);
+    ui.roomsContainer.innerHTML = '';
+    
+    // 渲染根直接屬下的子目錄
+    Object.keys(tree._subs).sort().forEach(sn => {
+        ui.roomsContainer.innerHTML += renderTreeNode(sn, tree._subs[sn], sn, 0);
+    });
+    
+    // 渲染根直接屬下的房間
+    if (tree._rooms.length > 0) {
+        ui.roomsContainer.innerHTML += `
+            <div class="table-wrap table-compact" style="padding: 0.25rem 0;">
+                <table>
+                    <tbody>
+                        ${tree._rooms.map(r => `
+                            <tr>
+                                <td style="width: 180px;"><code>${r.id}</code></td>
+                                <td>${r.name}</td>
+                                <td style="width: 140px; text-align: right;">
+                                    <button class="btn btn-small btn-primary" onclick="openEditor('${r.id}')">編輯</button>
+                                    <button class="btn btn-small btn-danger" onclick="deleteRoom('${r.id}')">刪除</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
     }
 }
 
+window.toggleFolder = toggleFolder;
 window.toggleZone = toggleZone;
 window.openEditor = openEditor;
 window.deleteRoom = deleteRoom;
@@ -195,6 +252,30 @@ async function deleteRoom(id) {
         toast(`刪除失敗: ${e.message}`, true);
     }
 }
+
+async function renameRoom() {
+    if (!state.selectedId) return;
+    const oldId = state.selectedId;
+    const newId = prompt(`請輸入房間 ${oldId} 的新 ID (建議英數與底線):`, oldId);
+    if (!newId || newId === oldId) return;
+    
+    if (!confirm(`確定將房間 ID 從「${oldId}」重命名為「${newId}」嗎？\n這將級聯更新地圖上的所有引用（出口、物件），並重新命名原始 JSON 檔案。`)) return;
+    
+    try {
+        await api(`/api/rooms/${encodeURIComponent(oldId)}/rename`, {
+            method: 'POST',
+            body: JSON.stringify({ new_id: newId })
+        });
+        toast(`成功重命名為 ${newId}`);
+        state.selectedId = newId;
+        await loadRooms();
+        openEditor(newId);
+    } catch (e) {
+        toast(`重命名失敗: ${e.message}`, true);
+    }
+}
+
+document.getElementById('btn-rename-id').onclick = renameRoom;
 
 // --- Room Editor ---
 async function openEditor(id) {
@@ -255,7 +336,7 @@ function normalizeObject(obj) {
 
 function renderObjectsForm(objs) {
     ui.objectsForm.innerHTML = '';
-    const roomIds = state.rooms.map(r => r.id).sort();
+    const sortedRooms = [...state.rooms].sort((a, b) => a.id.localeCompare(b.id));
     
     (objs || []).forEach((raw, idx) => {
         const obj = normalizeObject(raw);
@@ -276,7 +357,7 @@ function renderObjectsForm(objs) {
                 <label>移動目標房 (Move 目標)</label>
                 <select data-idx="${idx}" data-key="move_to_room_id">
                     <option value="">— 不切換房間 —</option>
-                    ${roomIds.map(rid => `<option value="${rid}" ${rid === obj.move_to_room_id ? 'selected' : ''}>${rid}</option>`).join('')}
+                    ${sortedRooms.map(r => `<option value="${r.id}" ${r.id === obj.move_to_room_id ? 'selected' : ''}>${r.id}: ${r.name || '(無名稱)'}</option>`).join('')}
                 </select>
             </div>
             <div class="behaviors-wrap" id="beh-wrap-${idx}"></div>

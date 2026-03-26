@@ -1,0 +1,64 @@
+{
+  "id": "zonelife_city_life_11f_u110_laundry",
+  "name": "洗烘室",
+  "description": "洗烘室裡一整面是商用滾筒機，另一面是分類籃與折衣檯。機器運轉時低頻震動透過地墊被吃掉大半，只剩規律的滾動聲。由此可進入〔洗衣區〕或〔烘衣區〕，分開處理流程；由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_11f_u110_0"
+    },
+    {
+      "direction": "洗衣區",
+      "to": "zonelife_city_life_11f_u110_laundry_a"
+    },
+    {
+      "direction": "烘衣區",
+      "to": "zonelife_city_life_11f_u110_laundry_b"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_laundry_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城11F」大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_0"
+    },
+    {
+      "id": "city_life_11f_laundry_to_a",
+      "name": "洗衣區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔洗衣區〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_laundry_a"
+    },
+    {
+      "id": "city_life_11f_laundry_to_b",
+      "name": "烘衣區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向〔烘衣區〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_laundry_b"
+    }
+  ]
+}

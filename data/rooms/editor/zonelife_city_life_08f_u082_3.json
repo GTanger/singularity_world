@@ -1,0 +1,33 @@
+{
+  "id": "zonelife_city_life_08f_u082_3",
+  "name": "衛浴",
+  "description": "完全抹除了傳統磁磚接縫的無縫微水泥衛浴空間。整個空間呈現出均勻的淺灰色調，彷彿是從一整塊水泥混凝土中直接雕鑿出來。牆面上嵌著極細的長條形不鏽鋼水龍頭，水流從沒有積水邊緣的地坪隱藏式水槽中安靜排走。乾濕分離僅由一片無框的落地強化玻璃界定，呈現出一種冷靜、幾乎沒有溫度的機能美。使用完畢後，你只能開門退回唯一的共同動線—〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bathroom"
+  ],
+  "zone": "citylife_8f",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "zonelife_city_life_08f_u082_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_8f_u082_bat_to_city_life_8f_u082_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開了衛浴，回到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u082_1"
+    }
+  ]
+}

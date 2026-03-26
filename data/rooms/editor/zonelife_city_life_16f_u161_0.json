@@ -1,0 +1,62 @@
+{
+  "id": "zonelife_city_life_16f_u161_0",
+  "name": "加了福",
+  "description": "｜結帳區｜入口處｜家電區｜\n巨大的藍紅標誌在律動，迎風招展。無人機引導系統正不斷發出柔和的提示音。這家賣場的規模宏大，一眼望不到盡頭。前方連接著廣大的購物區。\n回大廳",
+  "tags": [
+    "retail",
+    "hypermarket"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_16f_u160_0"
+    },
+    {
+      "direction": "生鮮區",
+      "to": "zonelife_city_life_16f_u161_1"
+    },
+    {
+      "direction": "家電區",
+      "to": "zonelife_city_life_16f_u161_2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_1774441015162",
+      "name": "回大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你返回「浮生城16樓」大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u160_0"
+    },
+    {
+      "id": "obj_1774441016162",
+      "name": "結帳區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走向寬敞的「結帳區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u161_4"
+    },
+    {
+      "id": "obj_1774441016931",
+      "name": "家電區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你穿過無人機展示架，走入「家電區」。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u161_2"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_11f_u110_kids_b",
+  "name": "活動墊",
+  "description": "活動墊區鋪設厚軟拼墊，牆面有可拆式平衡與感統器材。角落備有護具與急救包，場內標示了安全使用順序。活動後可回〔兒童室〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_11f",
+  "exits": [
+    {
+      "direction": "兒童室",
+      "to": "zonelife_city_life_11f_u110_kids"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_11f_kids_b_to_hub",
+      "name": "兒童室",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到〔兒童室〕。"
+      },
+      "move_to_room_id": "zonelife_city_life_11f_u110_kids"
+    }
+  ]
+}

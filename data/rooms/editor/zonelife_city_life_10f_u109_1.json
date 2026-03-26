@@ -1,0 +1,96 @@
+{
+  "id": "zonelife_city_life_10f_u109_1",
+  "name": "客廳",
+  "description": "踏入這座起居空間，彷彿走進了一家前衛的現代小型私人藝廊。大面積的純白牆面被極致利用，錯落有致地懸掛著幾幅色彩強烈的抽象壓克力畫作。空間中央擺放著一張宛若當代雕塑般、帶有不規則流線邊緣的寶藍色絲絨沙發。角落裡，甚至還矗立著一座充滿流動感的黃銅幾何擺件。這裡的照明捨棄了傳統的吸頂燈，全仰賴隱藏於天花板軌道上的專業投射燈，在牆面與雕塑上切割出戲劇化的完美光影。這裡是整戶的美學中樞，穿過宛如畫框的落地窗可步出〔陽台〕，兩側巧妙隱密在大型畫板後的無把手門扉則分別連接著〔主臥〕、〔客臥〕與〔衛浴〕。欣賞完畢這場居家空間藝術展後，推開背後的〔大門〕即可回到浮生城的長廊。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife_10f",
+  "exits": [
+    {
+      "direction": "大門",
+      "to": "zonelife_city_life_10f_u100_0"
+    },
+    {
+      "direction": "主臥",
+      "to": "zonelife_city_life_10f_u109_4"
+    },
+    {
+      "direction": "客臥",
+      "to": "zonelife_city_life_10f_u109_5"
+    },
+    {
+      "direction": "衛浴",
+      "to": "zonelife_city_life_10f_u109_3"
+    },
+    {
+      "direction": "陽台",
+      "to": "zonelife_city_life_10f_u109_2"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_10f_gate_city_life_10f_u109_liv",
+      "name": "大門",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開大門，離開這處充滿藝術氛圍的居所。"
+      },
+      "move_to_room_id": "zonelife_city_life_10f_u100_0"
+    },
+    {
+      "id": "city_life_10f_u109_liv_to_city_life_10f_u109_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你推開畫板隱藏門，進入了主臥。"
+      },
+      "move_to_room_id": "zonelife_city_life_10f_u109_4"
+    },
+    {
+      "id": "city_life_10f_u109_liv_to_city_life_10f_u109_brg",
+      "name": "客臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你走進了客臥。"
+      },
+      "move_to_room_id": "zonelife_city_life_10f_u109_5"
+    },
+    {
+      "id": "city_life_10f_u109_liv_to_city_life_10f_u109_bat",
+      "name": "衛浴",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入了共用的衛浴空間。"
+      },
+      "move_to_room_id": "zonelife_city_life_10f_u109_3"
+    },
+    {
+      "id": "city_life_10f_u109_liv_to_city_life_10f_u109_bal",
+      "name": "陽台",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你穿過畫框般的落地窗，步出陽台。"
+      },
+      "move_to_room_id": "zonelife_city_life_10f_u109_2"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_15f_u150_duty",
+  "name": "值班台",
+  "description": "24 小時輪值櫃檯與緊急聯絡表；對講可直通警衛與維保。由此可回〔大廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "public"
+  ],
+  "zone": "citylife_15f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_15f_u150_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_15f_duty_to_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你告別值班台的藍色燈光，重新回到15樓的中軸大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_15f_u150_0"
+    }
+  ]
+}

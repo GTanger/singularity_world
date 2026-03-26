@@ -1,0 +1,33 @@
+{
+  "id": "zonelife_city_life_08f_u089_3",
+  "name": "衛浴",
+  "description": "公共區域的衛生空間雖然狹小，但在感官美學的追求上卻沒有絲毫妥協。地坪鋪設了帶有些許錯視網格美感的黑白幾何花磚，洗手盆則是由一整塊未經修飾邊緣的天然粉色水磨石粗礦雕鑿而成。牆面上方懸掛的化妝鏡是一個極具表現張力的不規則橢圓，邊緣無縫散發著一圈柔和的背光，點亮了這個沒有對外窗的深處空間。在這處兼具生活實用性與強烈風格展示浴廁處理完生理需求後，你唯一的退路便是開門回到〔客廳〕。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential",
+    "bathroom"
+  ],
+  "zone": "citylife_8f",
+  "exits": [
+    {
+      "direction": "客廳",
+      "to": "zonelife_city_life_08f_u089_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_8f_u089_bat_to_city_life_8f_u089_liv",
+      "name": "客廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開衛浴空間，回到客廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_08f_u089_1"
+    }
+  ]
+}

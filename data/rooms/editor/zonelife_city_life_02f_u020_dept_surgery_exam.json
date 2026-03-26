@@ -1,0 +1,63 @@
+{
+  "id": "zonelife_city_life_02f_u020_dept_surgery_exam",
+  "name": "外科診間",
+  "description": "〔無影燈〕臂橫過診台，〔器械盤〕裡鑷子與持針器對齊成排。排水格邊碘酒漬洗過仍留淡黃痕；牆上〔時鐘〕秒針跳動聲被瓷磚反得發硬。\n可經〔候診區〕回到外科候診。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_2f",
+  "exits": [
+    {
+      "direction": "候診區",
+      "to": "zonelife_city_life_02f_u020_dept_surgery"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_surgery_exam_wait",
+      "name": "候診區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到外科候診區。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u020_dept_surgery"
+    },
+    {
+      "id": "city_life_2f_dept_surgery_exam_tray",
+      "name": "器械盤",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "鋼面映著燈，夾子上還卡著一點乾掉的血痂色漬，旁邊標籤寫著批次消毒時間。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_surgery_exam_light",
+      "name": "無影燈",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "燈罩內緣一圈燻黃，調焦柄膠套裂了細口，仍順滑。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_surgery_exam_clock",
+      "name": "時鐘",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "秒針一下一下敲在靜裡；玻璃內側有指紋擦過的弧痕。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "zonelife_city_life_16f_u163_5",
+  "name": "結帳區",
+  "description": "｜熟食區｜結帳區｜往大廳｜\n寬敞的出口通道。檢查員正用螢光筆在收據上畫下快速的勾記。手推車輪胎在光滑的地面上發出穩定的摩擦聲，顧客們滿載而歸。",
+  "tags": [
+    "retail",
+    "checkout"
+  ],
+  "zone": "citylife_16f",
+  "exits": [
+    {
+      "direction": "熟食區",
+      "to": "zonelife_city_life_16f_u163_4"
+    },
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_16f_u160_0"
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_costco_dining_back",
+      "name": "熟食區",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回頭望向熟食區。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u163_4"
+    },
+    {
+      "id": "obj_costco_final_exit",
+      "name": "往大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你通過安檢，回到16樓大廳。"
+      },
+      "move_to_room_id": "zonelife_city_life_16f_u160_0"
+    }
+  ]
+}

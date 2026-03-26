@@ -1,0 +1,72 @@
+{
+  "id": "zonelife_city_life_01f_u012_0",
+  "name": "醫療間",
+  "description": "白瓷與淺綠牆裙對縫，〔處置台〕上擺滅菌包與一罐廣口瓶，瓶側貼紙寫著〔真菌敷料〕。污衣桶在角落，繃帶邊角染了色，像是外圍回來的冒險者剛換下。腳底涼意往上鑽，草藥浸液與淡淡的醚味纏在鼻腔。水槽邊堆著標示「沖洗／富態孢子」的沖瓶，牆上釘著簡圖教人先止血再敷料。\n可經〔門外〕返回「浮生城1F」，或經〔醫療梯間〕搭專梯上行：1F 梯間→二樓搶救室→急診科→門診大廳（無直達大廳捷徑）。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "clinic"
+  ],
+  "zone": "citylife_1f",
+  "exits": [
+    {
+      "direction": "門外",
+      "to": "zonelife_city_life_01f_u010_0"
+    },
+    {
+      "direction": "醫療梯間",
+      "to": "zonelife_city_life_01f_u012_1"
+    }
+  ],
+  "objects": [
+    {
+      "id": "zonelife_city_life_01f_u010_0",
+      "name": "門外",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你回到「浮生城1F」公共動線。"
+      },
+      "move_to_room_id": "zonelife_city_life_01f_u010_0"
+    },
+    {
+      "id": "city_life_1f_clinic_to_lift",
+      "name": "醫療梯間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你繞到後方「醫療梯間」。"
+      },
+      "move_to_room_id": "zonelife_city_life_01f_u012_1"
+    },
+    {
+      "id": "city_life_1f_clinic_table",
+      "name": "處置台",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "不鏽鋼面有幾道擦痕與碘酒漬。旁邊紙夾板記錄：擦傷、裂創、輻射灼傷、不明蕈類螫傷——最後一欄寫得特別密，多半是週邊回來的人。"
+      }
+    },
+    {
+      "id": "city_life_1f_clinic_tray",
+      "name": "真菌敷料",
+      "owner": "",
+      "sockets": [
+        "Look",
+        "Read"
+      ],
+      "responses": {
+        "Look": "廣口瓶裡薄片浸在淡綠液裡，邊角說明寫「富態化菌絲網固定層，勿內服」。",
+        "Read": "使用須知：清創後敷上，以繃帶加壓；若傷口邊緣出現玉質光澤擴散，立刻送上一層急診窗口（管委備案）。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "zonelife_city_life_10f_u105_12",
+  "name": "花圃平台",
+  "description": "一處充滿生機的私人半戶外露台，專屬於主臥室。地面鋪設著溫馨防滑的南方松木地板，四周被大大小小的素燒陶盆所包圍，裡面種植著各式可食用的香草植物與開著淡色小花的觀葉品種。角落甚至擺放著一張小巧的實木折疊椅，是屋主用來享受清早高空陽光與芬多精的秘密家庭花園。你可以由此退回安全的〔主臥〕之中。",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "residential"
+  ],
+  "zone": "citylife_10f",
+  "exits": [
+    {
+      "direction": "主臥",
+      "to": "zonelife_city_life_10f_u105_4"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_10f_u105_balb_to_city_life_10f_u105_brm",
+      "name": "主臥",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開花圃平台，進入室內的主臥。"
+      },
+      "move_to_room_id": "zonelife_city_life_10f_u105_4"
+    }
+  ]
+}

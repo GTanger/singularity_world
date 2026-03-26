@@ -1,0 +1,79 @@
+{
+  "id": "zonelife_city_life_02f_u020_dept_surgery",
+  "name": "外　科",
+  "description": "候診區牆上〔清創流程圖〕粗字寫順序，〔紗布車〕停在走道邊，輪子卡在防滑溝槽。〔不鏽鋼回收桶〕蓋半開，棉球與膠帶頭露出一角；空氣裡酒精味比別處厚。\n可經〔大廳〕回「浮生城2F」，或進〔診間〕。",
+  "tags": [
+    "city",
+    "skyscraper"
+  ],
+  "zone": "citylife_2f",
+  "exits": [
+    {
+      "direction": "大廳",
+      "to": "zonelife_city_life_02f_u020_0"
+    },
+    {
+      "direction": "診間",
+      "to": "zonelife_city_life_02f_u020_dept_surgery_exam"
+    }
+  ],
+  "objects": [
+    {
+      "id": "city_life_2f_dept_surgery_lobby",
+      "name": "大廳",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你離開氣氛肅穆的外科診區，重新踏入2樓明亮的大廳走廊，聽見不遠處急診室的蜂鳴聲。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u020_0"
+    },
+    {
+      "id": "city_life_2f_dept_surgery_to_exam",
+      "name": "診間",
+      "owner": "",
+      "sockets": [
+        "Move"
+      ],
+      "responses": {
+        "Move": "你進入外科處置診間。"
+      },
+      "move_to_room_id": "zonelife_city_life_02f_u020_dept_surgery_exam"
+    },
+    {
+      "id": "city_life_2f_dept_surgery_flow",
+      "name": "清創流程圖",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "箭頭從沖洗接到敷料，最後一格用紅框：「富態螫咬轉皮膚／急診窗口」。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_surgery_cart",
+      "name": "紗布車",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "上層鑷子與剪刀扣在磁條上，下層抽屜半開，露出一捲未拆紗布。"
+      }
+    },
+    {
+      "id": "city_life_2f_dept_surgery_bin",
+      "name": "不鏽鋼回收桶",
+      "owner": "",
+      "sockets": [
+        "Look"
+      ],
+      "responses": {
+        "Look": "踏板連桿有點澀，桶內套袋沉底，邊角沾了碘色漬。"
+      }
+    }
+  ]
+}
