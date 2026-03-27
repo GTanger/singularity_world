@@ -268,6 +268,7 @@ pub fn store_entity_to_character(e: &Entity, npc_display_title: &str) -> Charact
         equipment_slots: e.equipment_slots.clone(),
         inventory: e.inventory.clone(),
         disposition: e.disposition,
+        current_activity: e.current_activity.clone(),
     };
     if e.kind == "npc" && !npc_display_title.is_empty() {
         c.display_title = npc_display_title.to_string();
@@ -548,6 +549,13 @@ pub fn set_entity_room(entity_id: &str, room_id: &str) -> anyhow::Result<()> {
     s.set_entity_room(entity_id, room_id)
 }
 
+/// 設定實體的表面可觀測行為（玩家 Look 時看到的「在做什麼」）。
+pub fn set_entity_activity(entity_id: &str, activity: &str) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    s.set_entity_activity(entity_id, activity)
+}
+
 /// 房間出口列表（對齊 `GetExitsForRoom`）。
 pub fn get_exits_for_room(room_id: &str) -> anyhow::Result<Vec<crate::model::Exit>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
@@ -610,6 +618,7 @@ pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Resu
         equipment_slots: equip,
         inventory: "[]".into(),
         disposition: 0,
+        current_activity: String::new(),
     };
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();

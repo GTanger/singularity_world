@@ -212,6 +212,9 @@ fn build_look_narrative(target: &Character) -> String {
             desc.push('。');
         }
     }
+    if !target.current_activity.is_empty() {
+        desc.push_str(&format!(" {pronoun}目前{act}。", act = target.current_activity));
+    }
     desc
 }
 

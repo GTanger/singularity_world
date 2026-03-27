@@ -1,6 +1,7 @@
-// store 模組 — 以 JSON 為唯一數據源的記憶體層（無 DB）。
-// 啟動時從指定 JSON 檔與目錄載入全部資料，執行期只讀寫記憶體，必要時原子寫回對應 JSON。
-// 對齊 Go store/store.go。
+// store 模組 — PostgreSQL 為主資料源，HashMap 為讀取快取。
+// 啟動時優先從 PostgreSQL 載入；若 DB 為空則從 JSON 種子灌入後同步至 PG。
+// 執行期：寫入 → PG（單筆 upsert） → 記憶體快取 → JSON 備份。
+// 讀取 → 記憶體快取（零延遲）。
 #![allow(clippy::collapsible_if)]
 
 use std::cmp::Ordering;
@@ -103,6 +104,9 @@ pub struct Entity {
     pub inventory: String,
     #[serde(default, skip_serializing_if = "is_zero_i32")]
     pub disposition: i32,
+    /// 表面可觀測行為（非內心意圖），供玩家 Look 時顯示。
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub current_activity: String,
 }
 
 /// 物品定義。
@@ -456,50 +460,83 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         npc_rumor_digest_path: runtime.join("npc_rumor_digest.json"),
     };
 
+    // 1. 房間始終從檔案系統載入（編輯器工作流）
     s.load_rooms(rooms_path)?;
-    let _ = s.load_entity_rooms();
-    
-    // PostgreSQL 連線字串，優先讀取環境變數，否則使用預設值
+
+    // 2. 初始化 PostgreSQL 連線池
     let pg_url = std::env::var("DATABASE_URL")
         .unwrap_or_else(|_| "postgres://postgres:singularity@localhost:5432/singularity".to_string());
 
     s.db_pool = match sql::init_pool(&pg_url) {
         Ok(pool) => {
-            tracing::info!("[store] Initialized PostgreSQL Pool at {}", pg_url);
+            tracing::info!("[store] PostgreSQL 連線池已初始化: {}", pg_url);
             Some(pool)
         }
         Err(e) => {
-            tracing::error!("[store] Failed to initialize PostgreSQL Pool: {}", e);
+            tracing::error!("[store] PostgreSQL 連線池初始化失敗: {}", e);
             None
         }
     };
 
-    if !data_dir.is_empty() {
-        let _ = s.load_venues();
-        let _ = s.load_assignments();
-        let _ = s.load_schedules();
-        let _ = s.load_entities();
-        let _ = s.load_items();
-        let _ = s.load_npc_threads();
-        let _ = s.load_npc_dyads();
-        let _ = s.load_npc_rumors();
-        let _ = s.load_npc_rumor_digest();
+    // 3. 優先從 PostgreSQL 載入；若 DB 為空則從 JSON 種子灌入
+    let pg_loaded = s.load_entities_from_pg();
+
+    if pg_loaded {
+        tracing::info!("[store] 資料從 PostgreSQL 載入（主資料源）");
+        // entity_rooms 需驗證房間存在性（房間可能被編輯器刪除）
+        let fallback = s.first_room_id_sorted();
+        let rooms_ref = &s.rooms;
+        s.entity_rooms.retain(|_, rid| {
+            if rooms_ref.contains_key(rid.as_str()) {
+                true
+            } else if !fallback.is_empty() {
+                *rid = fallback.clone();
+                true
+            } else {
+                false
+            }
+        });
+    } else {
+        tracing::info!("[store] PostgreSQL 為空或不可用，從 JSON 種子載入...");
+        let _ = s.load_entity_rooms();
+        if !data_dir.is_empty() {
+            let _ = s.load_venues();
+            let _ = s.load_assignments();
+            let _ = s.load_schedules();
+            let _ = s.load_entities();
+            let _ = s.load_items();
+            let _ = s.load_npc_threads();
+            let _ = s.load_npc_dyads();
+        }
+        // 種子資料灌入 DB
+        if let Err(e) = s.sync_all_to_postgresql() {
+            tracing::error!("[store] 啟動時 PostgreSQL 同步失敗: {}", e);
+        }
     }
 
+    // 4. 傳聞：已有 PG-first + JSON fallback 邏輯
+    let _ = s.load_npc_rumors();
+    let _ = s.load_npc_rumor_digest();
+
     tracing::info!(
-        "[store] loaded: {} rooms, {} entity_room, {} venues, {} assignments, {} schedules, {} entities, {} items",
+        "[store] 載入完成: {} rooms, {} entity_room, {} venues, {} assignments, {} schedules, {} entities, {} items, {} threads, {} dyads, {} rumors",
         s.rooms.len(),
         s.entity_rooms.len(),
         s.venues.len(),
         s.assignments_count(),
         s.schedules.len(),
         s.entities.len(),
-        s.items.len()
+        s.items.len(),
+        s.npc_threads.len(),
+        s.npc_dyads.len(),
+        s.npc_rumors.len()
     );
 
-    // 啟動時同步到 PostgreSQL (確保 AI 批量新增或手動編輯的 JSON 能進入 DB)
-    if let Err(e) = s.sync_all_to_postgresql() {
-        tracing::error!("[store] Startup PostgreSQL sync failed: {}", e);
+    // 5. 每次啟動時同步房間到 PG（房間從檔案系統載入，需確保 PG 一致）
+    if s.db_pool.is_some() {
+        if let Err(e) = s.sync_rooms_to_postgresql() {
+            tracing::error!("[store] 房間同步至 PostgreSQL 失敗: {}", e);
+        }
     }
 
     set_store(s);
@@ -1103,14 +1140,11 @@ impl Store {
         Ok(())
     }
 
-    /// 將目前內存中所有房間與出口同步到 PostgreSQL (全量更新)
-    pub fn sync_all_to_postgresql(&self) -> anyhow::Result<()> {
+    /// 只同步房間與出口到 PostgreSQL（每次啟動時呼叫，因房間從檔案系統載入）。
+    fn sync_rooms_to_postgresql(&self) -> anyhow::Result<()> {
         let Some(pool) = &self.db_pool else { return Ok(()) };
         let mut conn = pool.get()?;
         let mut trans = conn.transaction()?;
-        
-        tracing::info!("[store] Syncing all rooms ({}) to PostgreSQL...", self.rooms.len());
-
         for room in self.rooms.values() {
             let tags = &room.tags;
             let objects_json = serde_json::to_string(&room.objects).unwrap_or_else(|_| "[]".to_string());
@@ -1118,15 +1152,10 @@ impl Store {
                 "INSERT INTO rooms (id, name, description, zone, tags, objects)
                  VALUES ($1, $2, $3, $4, $5, $6)
                  ON CONFLICT (id) DO UPDATE SET
-                    name = EXCLUDED.name,
-                    description = EXCLUDED.description,
-                    zone = EXCLUDED.zone,
-                    tags = EXCLUDED.tags,
-                    objects = EXCLUDED.objects",
+                    name = EXCLUDED.name, description = EXCLUDED.description,
+                    zone = EXCLUDED.zone, tags = EXCLUDED.tags, objects = EXCLUDED.objects",
                 &[&room.id, &room.name, &room.description, &room.zone, tags, &objects_json],
             )?;
-
-            // Sync Exits
             trans.execute("DELETE FROM exits WHERE from_room_id = $1", &[&room.id])?;
             if let Some(exs) = self.exits.get(&room.id) {
                 for ex in exs {
@@ -1138,11 +1167,376 @@ impl Store {
                 }
             }
         }
-        
         trans.commit()?;
-        
-        tracing::info!("[store] PostgreSQL room sync completed.");
+        tracing::info!("[store] {} 個房間已同步至 PostgreSQL", self.rooms.len());
         Ok(())
+    }
+
+    /// 將目前內存中所有資料同步到 PostgreSQL（全量 upsert）。
+    /// 用途：啟動時把 JSON 種子灌入 DB（如果 DB 是空的或有差異）。
+    pub fn sync_all_to_postgresql(&self) -> anyhow::Result<()> {
+        let Some(pool) = &self.db_pool else { return Ok(()) };
+        let mut conn = pool.get()?;
+        let mut trans = conn.transaction()?;
+
+        // ── 房間 + 出口 ──
+        tracing::info!("[store] Syncing {} rooms to PostgreSQL...", self.rooms.len());
+        for room in self.rooms.values() {
+            let tags = &room.tags;
+            let objects_json = serde_json::to_string(&room.objects).unwrap_or_else(|_| "[]".to_string());
+            trans.execute(
+                "INSERT INTO rooms (id, name, description, zone, tags, objects)
+                 VALUES ($1, $2, $3, $4, $5, $6)
+                 ON CONFLICT (id) DO UPDATE SET
+                    name = EXCLUDED.name, description = EXCLUDED.description,
+                    zone = EXCLUDED.zone, tags = EXCLUDED.tags, objects = EXCLUDED.objects",
+                &[&room.id, &room.name, &room.description, &room.zone, tags, &objects_json],
+            )?;
+            trans.execute("DELETE FROM exits WHERE from_room_id = $1", &[&room.id])?;
+            if let Some(exs) = self.exits.get(&room.id) {
+                for ex in exs {
+                    trans.execute(
+                        "INSERT INTO exits (from_room_id, direction, to_room_id) VALUES ($1, $2, $3)
+                         ON CONFLICT DO NOTHING",
+                        &[&room.id, &ex.direction, &ex.to_room_id],
+                    )?;
+                }
+            }
+        }
+
+        // ── 實體 ──
+        tracing::info!("[store] Syncing {} entities to PostgreSQL...", self.entities.len());
+        for e in self.entities.values() {
+            trans.execute(
+                "INSERT INTO entities (id, kind, display_char, x, y, move_state, target_x, target_y,
+                    walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
+                    created_at, gender, soul_seed, display_title, activated_nodes,
+                    equipment_slots, inventory, disposition, current_activity)
+                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)
+                 ON CONFLICT (id) DO UPDATE SET
+                    kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
+                    move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
+                    walk_or_run=EXCLUDED.walk_or_run, move_started_at=EXCLUDED.move_started_at,
+                    vit=EXCLUDED.vit, qi=EXCLUDED.qi, dex=EXCLUDED.dex, magnesium=EXCLUDED.magnesium,
+                    last_observed_at=EXCLUDED.last_observed_at, created_at=EXCLUDED.created_at,
+                    gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
+                    activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
+                    inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
+                    current_activity=EXCLUDED.current_activity",
+                &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
+                  &e.target_x, &e.target_y, &e.walk_or_run, &e.move_started_at,
+                  &e.vit, &e.qi, &e.dex, &e.magnesium, &e.last_observed_at,
+                  &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
+                  &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
+                  &e.current_activity],
+            )?;
+        }
+
+        // ── entity_rooms ──
+        tracing::info!("[store] Syncing {} entity_rooms to PostgreSQL...", self.entity_rooms.len());
+        for (eid, rid) in &self.entity_rooms {
+            trans.execute(
+                "INSERT INTO entity_rooms (entity_id, room_id) VALUES ($1, $2)
+                 ON CONFLICT (entity_id) DO UPDATE SET room_id = EXCLUDED.room_id",
+                &[eid, rid],
+            )?;
+        }
+
+        // ── 場所 ──
+        tracing::info!("[store] Syncing {} venues to PostgreSQL...", self.venues.len());
+        for v in self.venues.values() {
+            let room_ids_json = serde_json::to_string(&v.room_ids).unwrap_or_else(|_| "[]".to_string());
+            trans.execute(
+                "INSERT INTO venues (id, name, room_ids, max_staff) VALUES ($1, $2, $3, $4)
+                 ON CONFLICT (id) DO UPDATE SET
+                    name=EXCLUDED.name, room_ids=EXCLUDED.room_ids, max_staff=EXCLUDED.max_staff",
+                &[&v.id, &v.name, &room_ids_json, &v.max_staff],
+            )?;
+        }
+
+        // ── 指派 ──
+        let asgn_count: usize = self.assignments.values().map(|v| v.len()).sum();
+        tracing::info!("[store] Syncing {} assignments to PostgreSQL...", asgn_count);
+        // 全量替換：先清後寫
+        trans.execute("DELETE FROM assignments", &[])?;
+        for list in self.assignments.values() {
+            for a in list {
+                trans.execute(
+                    "INSERT INTO assignments (entity_id, occupation_id, venue_id, assigned_by)
+                     VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING",
+                    &[&a.entity_id, &a.occupation_id, &a.venue_id, &a.assigned_by],
+                )?;
+            }
+        }
+
+        // ── 排班 ──
+        tracing::info!("[store] Syncing {} schedules to PostgreSQL...", self.schedules.len());
+        for sc in self.schedules.values() {
+            trans.execute(
+                "INSERT INTO schedules (entity_id, work_room, rest_room, shift_start, shift_end)
+                 VALUES ($1, $2, $3, $4, $5)
+                 ON CONFLICT (entity_id) DO UPDATE SET
+                    work_room=EXCLUDED.work_room, rest_room=EXCLUDED.rest_room,
+                    shift_start=EXCLUDED.shift_start, shift_end=EXCLUDED.shift_end",
+                &[&sc.entity_id, &sc.work_room, &sc.rest_room, &sc.shift_start, &sc.shift_end],
+            )?;
+        }
+
+        // ── 物品定義 ──
+        tracing::info!("[store] Syncing {} items to PostgreSQL...", self.items.len());
+        for it in self.items.values() {
+            trans.execute(
+                "INSERT INTO items (id, name, slot, item_type, weight, stackable, denomination, description)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                 ON CONFLICT (id) DO UPDATE SET
+                    name=EXCLUDED.name, slot=EXCLUDED.slot, item_type=EXCLUDED.item_type,
+                    weight=EXCLUDED.weight, stackable=EXCLUDED.stackable,
+                    denomination=EXCLUDED.denomination, description=EXCLUDED.description",
+                &[&it.id, &it.name, &it.slot, &it.item_type, &it.weight, &it.stackable, &it.denomination, &it.description],
+            )?;
+        }
+
+        // ── NPC threads ──
+        tracing::info!("[store] Syncing {} npc_threads to PostgreSQL...", self.npc_threads.len());
+        for t in self.npc_threads.values() {
+            let anchors_json = serde_json::to_string(&t.anchors).unwrap_or_else(|_| "[]".to_string());
+            trans.execute(
+                "INSERT INTO npc_threads (thread_key, topic_type, phase, anchors, turn_count, cooldown_until, updated_at)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)
+                 ON CONFLICT (thread_key) DO UPDATE SET
+                    topic_type=EXCLUDED.topic_type, phase=EXCLUDED.phase, anchors=EXCLUDED.anchors,
+                    turn_count=EXCLUDED.turn_count, cooldown_until=EXCLUDED.cooldown_until, updated_at=EXCLUDED.updated_at",
+                &[&t.thread_key, &t.topic_type, &t.phase, &anchors_json, &t.turn_count, &t.cooldown_until, &t.updated_at],
+            )?;
+        }
+
+        // ── NPC dyads ──
+        tracing::info!("[store] Syncing {} npc_dyads to PostgreSQL...", self.npc_dyads.len());
+        for d in self.npc_dyads.values() {
+            let dkey = dyad_key(&d.a_id, &d.b_id);
+            let tags_json = serde_json::to_string(&d.tags).unwrap_or_else(|_| "[]".to_string());
+            trans.execute(
+                "INSERT INTO npc_dyads (dyad_key, a_id, b_id, familiarity, sentiment, tags, updated_at)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)
+                 ON CONFLICT (dyad_key) DO UPDATE SET
+                    familiarity=EXCLUDED.familiarity, sentiment=EXCLUDED.sentiment,
+                    tags=EXCLUDED.tags, updated_at=EXCLUDED.updated_at",
+                &[&dkey, &d.a_id, &d.b_id, &d.familiarity, &d.sentiment, &tags_json, &d.updated_at],
+            )?;
+        }
+
+        // ── NPC rumors ──
+        tracing::info!("[store] Syncing {} npc_rumors to PostgreSQL...", self.npc_rumors.len());
+        for r in self.npc_rumors.values() {
+            trans.execute(
+                "INSERT INTO npc_rumors (id, text, room_id, zone, source, source_score, weight, mention_count,
+                    last_used_at, blocked_until, penalty_count, last_penalty_at,
+                    last_penalty_reason, updated_at, expires_at)
+                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+                 ON CONFLICT(id) DO UPDATE SET
+                    text=EXCLUDED.text, room_id=EXCLUDED.room_id, zone=EXCLUDED.zone, source=EXCLUDED.source,
+                    source_score=EXCLUDED.source_score, weight=EXCLUDED.weight, mention_count=EXCLUDED.mention_count,
+                    last_used_at=EXCLUDED.last_used_at, blocked_until=EXCLUDED.blocked_until,
+                    penalty_count=EXCLUDED.penalty_count, last_penalty_at=EXCLUDED.last_penalty_at,
+                    last_penalty_reason=EXCLUDED.last_penalty_reason, updated_at=EXCLUDED.updated_at,
+                    expires_at=EXCLUDED.expires_at",
+                &[&r.id, &r.text, &r.room_id, &r.zone, &r.source, &r.source_score, &r.weight, &r.mention_count,
+                  &r.last_used_at, &r.blocked_until, &r.penalty_count, &r.last_penalty_at,
+                  &r.last_penalty_reason, &r.updated_at, &r.expires_at],
+            )?;
+        }
+
+        trans.commit()?;
+        tracing::info!("[store] PostgreSQL full sync completed.");
+        Ok(())
+    }
+
+    /// 從 PostgreSQL 載入實體到記憶體快取。如果 DB 有資料則回傳 true。
+    pub fn load_entities_from_pg(&mut self) -> bool {
+        let Some(pool) = &self.db_pool else { return false };
+        let Ok(mut conn) = pool.get() else { return false };
+        let Ok(rows) = conn.query("SELECT COUNT(*) FROM entities", &[]) else { return false };
+        let count: i64 = rows[0].get(0);
+        if count == 0 { return false; }
+
+        let Ok(rows) = conn.query(
+            "SELECT id, kind, display_char, x, y, move_state, target_x, target_y,
+                    walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
+                    created_at, gender, soul_seed, display_title, activated_nodes,
+                    equipment_slots, inventory, disposition, current_activity
+             FROM entities", &[]
+        ) else { return false };
+
+        self.entities.clear();
+        for row in &rows {
+            let e = Entity {
+                id: row.get(0),
+                kind: row.get(1),
+                display_char: row.get(2),
+                x: row.get(3),
+                y: row.get(4),
+                move_state: row.get(5),
+                target_x: row.get(6),
+                target_y: row.get(7),
+                walk_or_run: row.get(8),
+                move_started_at: row.get(9),
+                vit: row.get(10),
+                qi: row.get(11),
+                dex: row.get(12),
+                magnesium: row.get(13),
+                last_observed_at: row.get(14),
+                created_at: row.get(15),
+                gender: row.get(16),
+                soul_seed: row.get(17),
+                display_title: row.get(18),
+                activated_nodes: row.get(19),
+                equipment_slots: row.get(20),
+                inventory: row.get(21),
+                disposition: row.get(22),
+                current_activity: row.get(23),
+            };
+            self.entities.insert(e.id.clone(), e);
+        }
+        tracing::info!("[store] Loaded {} entities from PostgreSQL", self.entities.len());
+
+        // entity_rooms
+        if let Ok(rows) = conn.query("SELECT entity_id, room_id FROM entity_rooms", &[]) {
+            if !rows.is_empty() {
+                self.entity_rooms.clear();
+                for row in &rows {
+                    let eid: String = row.get(0);
+                    let rid: String = row.get(1);
+                    self.entity_rooms.insert(eid, rid);
+                }
+                tracing::info!("[store] Loaded {} entity_rooms from PostgreSQL", self.entity_rooms.len());
+            }
+        }
+
+        // assignments
+        if let Ok(rows) = conn.query("SELECT entity_id, occupation_id, venue_id, assigned_by FROM assignments", &[]) {
+            if !rows.is_empty() {
+                self.assignments.clear();
+                for row in &rows {
+                    let a = Assignment {
+                        entity_id: row.get(0),
+                        occupation_id: row.get(1),
+                        venue_id: row.get(2),
+                        assigned_by: row.get(3),
+                    };
+                    self.assignments.entry(a.entity_id.clone()).or_default().push(a);
+                }
+                let count: usize = self.assignments.values().map(|v| v.len()).sum();
+                tracing::info!("[store] Loaded {} assignments from PostgreSQL", count);
+            }
+        }
+
+        // schedules
+        if let Ok(rows) = conn.query("SELECT entity_id, work_room, rest_room, shift_start, shift_end FROM schedules", &[]) {
+            if !rows.is_empty() {
+                self.schedules.clear();
+                for row in &rows {
+                    let sc = Schedule {
+                        entity_id: row.get(0),
+                        work_room: row.get(1),
+                        rest_room: row.get(2),
+                        shift_start: row.get(3),
+                        shift_end: row.get(4),
+                    };
+                    self.schedules.insert(sc.entity_id.clone(), sc);
+                }
+                tracing::info!("[store] Loaded {} schedules from PostgreSQL", self.schedules.len());
+            }
+        }
+
+        // venues
+        if let Ok(rows) = conn.query("SELECT id, name, room_ids, max_staff FROM venues", &[]) {
+            if !rows.is_empty() {
+                self.venues.clear();
+                for row in &rows {
+                    let room_ids_raw: String = row.get(2);
+                    let room_ids: Vec<String> = serde_json::from_str(&room_ids_raw).unwrap_or_default();
+                    let v = Venue {
+                        id: row.get(0),
+                        name: row.get(1),
+                        room_ids,
+                        max_staff: row.get(3),
+                    };
+                    self.venues.insert(v.id.clone(), v);
+                }
+                tracing::info!("[store] Loaded {} venues from PostgreSQL", self.venues.len());
+            }
+        }
+
+        // items
+        if let Ok(rows) = conn.query("SELECT id, name, slot, item_type, weight, stackable, denomination, description FROM items", &[]) {
+            if !rows.is_empty() {
+                self.items.clear();
+                for row in &rows {
+                    let it = Item {
+                        id: row.get(0),
+                        name: row.get(1),
+                        slot: row.get(2),
+                        item_type: row.get(3),
+                        weight: row.get(4),
+                        stackable: row.get(5),
+                        denomination: row.get(6),
+                        description: row.get(7),
+                    };
+                    self.items.insert(it.id.clone(), it);
+                }
+                tracing::info!("[store] Loaded {} items from PostgreSQL", self.items.len());
+            }
+        }
+
+        // npc_threads
+        if let Ok(rows) = conn.query(
+            "SELECT thread_key, topic_type, phase, anchors, turn_count, cooldown_until, updated_at FROM npc_threads", &[]
+        ) {
+            if !rows.is_empty() {
+                self.npc_threads.clear();
+                for row in &rows {
+                    let anchors_raw: String = row.get(3);
+                    let anchors: Vec<String> = serde_json::from_str(&anchors_raw).unwrap_or_default();
+                    let t = NpcThread {
+                        thread_key: row.get(0),
+                        topic_type: row.get(1),
+                        phase: row.get(2),
+                        anchors,
+                        turn_count: row.get(4),
+                        cooldown_until: row.get(5),
+                        updated_at: row.get(6),
+                    };
+                    self.npc_threads.insert(t.thread_key.clone(), t);
+                }
+                tracing::info!("[store] Loaded {} npc_threads from PostgreSQL", self.npc_threads.len());
+            }
+        }
+
+        // npc_dyads
+        if let Ok(rows) = conn.query(
+            "SELECT dyad_key, a_id, b_id, familiarity, sentiment, tags, updated_at FROM npc_dyads", &[]
+        ) {
+            if !rows.is_empty() {
+                self.npc_dyads.clear();
+                for row in &rows {
+                    let tags_raw: String = row.get(5);
+                    let tags: Vec<String> = serde_json::from_str(&tags_raw).unwrap_or_default();
+                    let d = NpcDyad {
+                        a_id: row.get(1),
+                        b_id: row.get(2),
+                        familiarity: row.get(3),
+                        sentiment: row.get(4),
+                        tags,
+                        updated_at: row.get(6),
+                    };
+                    let key: String = row.get(0);
+                    self.npc_dyads.insert(key, d);
+                }
+                tracing::info!("[store] Loaded {} npc_dyads from PostgreSQL", self.npc_dyads.len());
+            }
+        }
+
+        true
     }
 
     pub fn adjacency(&self) -> HashMap<String, Vec<String>> {
@@ -1164,6 +1558,41 @@ impl Store {
     }
 
     // ══════════════════════════════════════
+    //  PostgreSQL 單筆寫入輔助
+    // ══════════════════════════════════════
+
+    /// 單筆實體 upsert 到 PostgreSQL。
+    fn pg_upsert_entity(&self, e: &Entity) {
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute(
+                    "INSERT INTO entities (id, kind, display_char, x, y, move_state, target_x, target_y,
+                        walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
+                        created_at, gender, soul_seed, display_title, activated_nodes,
+                        equipment_slots, inventory, disposition, current_activity)
+                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)
+                     ON CONFLICT (id) DO UPDATE SET
+                        kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
+                        move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
+                        walk_or_run=EXCLUDED.walk_or_run, move_started_at=EXCLUDED.move_started_at,
+                        vit=EXCLUDED.vit, qi=EXCLUDED.qi, dex=EXCLUDED.dex, magnesium=EXCLUDED.magnesium,
+                        last_observed_at=EXCLUDED.last_observed_at, created_at=EXCLUDED.created_at,
+                        gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
+                        activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
+                        inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
+                        current_activity=EXCLUDED.current_activity",
+                    &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
+                      &e.target_x, &e.target_y, &e.walk_or_run, &e.move_started_at,
+                      &e.vit, &e.qi, &e.dex, &e.magnesium, &e.last_observed_at,
+                      &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
+                      &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
+                      &e.current_activity],
+                );
+            }
+        }
+    }
+
+    // ══════════════════════════════════════
     //  CRUD 方法 — entity_rooms
     // ══════════════════════════════════════
 
@@ -1173,7 +1602,32 @@ impl Store {
 
     pub fn set_entity_room(&mut self, entity_id: &str, room_id: &str) -> anyhow::Result<()> {
         self.entity_rooms.insert(entity_id.to_string(), room_id.to_string());
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute(
+                    "INSERT INTO entity_rooms (entity_id, room_id) VALUES ($1, $2)
+                     ON CONFLICT (entity_id) DO UPDATE SET room_id = EXCLUDED.room_id",
+                    &[&entity_id, &room_id],
+                );
+            }
+        }
         self.persist_entity_rooms()
+    }
+
+    /// 設定實體的表面可觀測行為。
+    pub fn set_entity_activity(&mut self, entity_id: &str, activity: &str) -> anyhow::Result<()> {
+        if let Some(e) = self.entities.get_mut(entity_id) {
+            e.current_activity = activity.to_string();
+        }
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute(
+                    "UPDATE entities SET current_activity = $1 WHERE id = $2",
+                    &[&activity, &entity_id],
+                );
+            }
+        }
+        Ok(())
     }
 
     pub fn entity_ids_in_room(&self, room_id: &str) -> Vec<String> {
@@ -1223,6 +1677,7 @@ impl Store {
         if e.inventory.is_empty() {
             e.inventory = "[]".to_string();
         }
+        self.pg_upsert_entity(&e);
         self.entities.insert(e.id.clone(), e);
         self.persist_entities()
     }
@@ -1230,6 +1685,8 @@ impl Store {
     pub fn update_entity(&mut self, id: &str, f: impl FnOnce(&mut Entity)) -> anyhow::Result<()> {
         if let Some(e) = self.entities.get_mut(id) {
             f(e);
+            let e_clone = e.clone();
+            self.pg_upsert_entity(&e_clone);
             return self.persist_entities();
         }
         Ok(())
@@ -1249,6 +1706,15 @@ impl Store {
         self.entities.get_mut(from_id).unwrap().magnesium = from_mg - amount;
         let to_mg = self.entities.get(to_id).unwrap().magnesium;
         self.entities.get_mut(to_id).unwrap().magnesium = to_mg + amount;
+        // PG 只更新鎂欄位，比全欄位 upsert 更高效
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let new_from = from_mg - amount;
+                let new_to = to_mg + amount;
+                let _ = conn.execute("UPDATE entities SET magnesium = $1 WHERE id = $2", &[&new_from, &from_id]);
+                let _ = conn.execute("UPDATE entities SET magnesium = $1 WHERE id = $2", &[&new_to, &to_id]);
+            }
+        }
         self.persist_entities()
     }
 
@@ -1280,6 +1746,12 @@ impl Store {
     pub fn clear_all_entities(&mut self) -> anyhow::Result<()> {
         self.entities.clear();
         self.entity_rooms.clear();
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute("DELETE FROM entities", &[]);
+                let _ = conn.execute("DELETE FROM entity_rooms", &[]);
+            }
+        }
         self.persist_entities()?;
         self.persist_entity_rooms()
     }
@@ -1360,11 +1832,25 @@ impl Store {
             venue_id: venue_id.to_string(),
             assigned_by: assigned_by.to_string(),
         });
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute(
+                    "INSERT INTO assignments (entity_id, occupation_id, venue_id, assigned_by)
+                     VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING",
+                    &[&entity_id, &occupation_id, &venue_id, &assigned_by],
+                );
+            }
+        }
         self.persist_assignments()
     }
 
     pub fn remove_assignments_for_entity(&mut self, entity_id: &str) -> anyhow::Result<()> {
         self.assignments.remove(entity_id);
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute("DELETE FROM assignments WHERE entity_id = $1", &[&entity_id]);
+            }
+        }
         self.persist_assignments()
     }
 
@@ -1384,11 +1870,28 @@ impl Store {
             shift_start,
             shift_end,
         });
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute(
+                    "INSERT INTO schedules (entity_id, work_room, rest_room, shift_start, shift_end)
+                     VALUES ($1, $2, $3, $4, $5)
+                     ON CONFLICT (entity_id) DO UPDATE SET
+                        work_room=EXCLUDED.work_room, rest_room=EXCLUDED.rest_room,
+                        shift_start=EXCLUDED.shift_start, shift_end=EXCLUDED.shift_end",
+                    &[&entity_id, &work_room, &rest_room, &shift_start, &shift_end],
+                );
+            }
+        }
         self.persist_schedules()
     }
 
     pub fn remove_schedule_for_entity(&mut self, entity_id: &str) -> anyhow::Result<()> {
         self.schedules.remove(entity_id);
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute("DELETE FROM schedules WHERE entity_id = $1", &[&entity_id]);
+            }
+        }
         self.persist_schedules()
     }
 
@@ -1401,6 +1904,19 @@ impl Store {
     }
 
     pub fn put_item(&mut self, it: Item) -> anyhow::Result<()> {
+        if let Some(pool) = &self.db_pool {
+            if let Ok(mut conn) = pool.get() {
+                let _ = conn.execute(
+                    "INSERT INTO items (id, name, slot, item_type, weight, stackable, denomination, description)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                     ON CONFLICT (id) DO UPDATE SET
+                        name=EXCLUDED.name, slot=EXCLUDED.slot, item_type=EXCLUDED.item_type,
+                        weight=EXCLUDED.weight, stackable=EXCLUDED.stackable,
+                        denomination=EXCLUDED.denomination, description=EXCLUDED.description",
+                    &[&it.id, &it.name, &it.slot, &it.item_type, &it.weight, &it.stackable, &it.denomination, &it.description],
+                );
+            }
+        }
         self.items.insert(it.id.clone(), it);
         self.persist_items()
     }

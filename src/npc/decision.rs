@@ -223,8 +223,13 @@ fn weighted_random_select(cands: &[Candidate]) -> Intent {
     cands.last().expect("cands non-empty").intent.clone()
 }
 
-/// 評分引擎：加權隨機選意圖（對齊 Go `Decide`）。
-pub fn decide(state: DecisionState, ctx: &DecisionContext) -> Intent {
+/// 意圖慣性加權倍率：正在執行的意圖享有此倍率優勢，避免每 tick 失憶跳來跳去。
+const INTENT_INERTIA_MULTIPLIER: f64 = 1.8;
+
+/// 評分引擎：加權隨機選意圖。
+/// `prev_intent` 為上一次意圖類型，若非 None 則給予慣性加權，使行為具連貫性。
+/// 無慣性需求時傳 `None` 即可。
+pub fn decide_with_inertia(state: DecisionState, ctx: &DecisionContext, prev_intent: Option<IntentType>) -> Intent {
     let survival = urgency_survival(state.magnesium);
     let stability = urgency_stability(state.has_assignment);
     let social = urgency_social(state.last_talk_at, state.disposition);
@@ -361,6 +366,15 @@ pub fn decide(state: DecisionState, ctx: &DecisionContext) -> Intent {
         },
         weight: wander_score,
     });
+
+    // 意圖慣性：如果上一次有意圖，同類型候選享有加權優勢
+    if let Some(prev) = prev_intent {
+        for c in &mut cands {
+            if c.intent.ty == prev {
+                c.weight *= INTENT_INERTIA_MULTIPLIER;
+            }
+        }
+    }
 
     weighted_random_select(&cands)
 }

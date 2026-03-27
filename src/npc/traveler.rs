@@ -7,13 +7,13 @@ use rand::Rng;
 
 use crate::db::{
     get_all_schedules, get_entity, get_entity_room, get_npc_display_label_at_hour, get_npc_ids_with_room,
-    get_npc_title_from_assignments, get_schedule_target_room, set_entity_room, RoomGraph,
+    get_npc_title_from_assignments, get_schedule_target_room, set_entity_activity, set_entity_room, RoomGraph,
 };
 use crate::gametext;
 
 use super::behavior::movement_speed_for_title;
 use super::decision::{
-    build_decision_context, build_decision_state, decide, resolve_brain_path, Intent, IntentType,
+    build_decision_context, build_decision_state, decide_with_inertia, resolve_brain_path, Intent, IntentType,
 };
 
 /// 移動模式（對齊 Go `MovementType`）。
@@ -71,10 +71,18 @@ impl TravelerManager {
     }
 
     /// 註冊或覆寫 NPC 移動設定（對齊 `Register`）。
+    /// 腦驅動 NPC 會獲得隨機初始延遲（0～3 小時），避免所有人同時決策造成快閃族。
     pub fn register(&mut self, entity_id: String, mut def: MovementDef) {
         if def.speed <= 0 {
             def.speed = 1;
         }
+        // 錯開初始決策時間：腦驅動 NPC 給予隨機初始停留時間
+        let initial_stay = if def.kind == MovementType::Brain {
+            let mut rng = rand::rng();
+            rng.random_range(0..4) // 0～3 小時隨機延遲
+        } else {
+            -1
+        };
         self.travelers.insert(
             entity_id.clone(),
             NpcTraveler {
@@ -82,7 +90,7 @@ impl TravelerManager {
                 move_def: def,
                 path_queue: Vec::new(),
                 active: true,
-                stay_until_hour: -1,
+                stay_until_hour: initial_stay,
                 last_intent: None,
                 departure_narrative: String::new(),
             },
@@ -160,6 +168,8 @@ impl TravelerManager {
                     if stay > 0 {
                         t.stay_until_hour = (game_hour + stay).rem_euclid(24);
                     }
+                    // 設定表面行為：抵達後停留中
+                    let _ = set_entity_activity(&t.entity_id, activity_while_staying(ty));
                     step.arrival_intent = Some(ty);
                 }
                 if !t.departure_narrative.is_empty() {
@@ -215,7 +225,18 @@ fn build_departure_narrative(npc_name: &str, intent_type: IntentType) -> String 
         IntentType::Gather => format!("【{npc_name}】拿起背簍，悄悄往郊外去了。"),
         IntentType::Trade => format!("【{npc_name}】把包袱繫緊，往人多的地方找買家去了。"),
         IntentType::Socialize => format!("【{npc_name}】閒不住，往人多的地方晃去。"),
-        _ => String::new(),
+        IntentType::Wander => {
+            // 閒晃也是行為，也是角色塑造
+            let variants = [
+                format!("【{npc_name}】漫無目的地走著，也不知道要往哪。"),
+                format!("【{npc_name}】四處張望了一圈，隨意挑了個方向走去。"),
+                format!("【{npc_name}】抬頭看了看天色，慢吞吞地挪動腳步。"),
+            ];
+            let mut rng = rand::rng();
+            variants[rng.random_range(0..variants.len())].clone()
+        }
+        IntentType::Work => format!("【{npc_name}】整了整衣裳，往鋪子的方向走去。"),
+        IntentType::Idle => String::new(),
     }
 }
 
@@ -237,26 +258,109 @@ fn compute_next_path(
         MovementType::Brain => {
             let state = build_decision_state(&t.entity_id).ok()?;
             let ctx = build_decision_context(g, current_room, 20);
-            let intent = decide(state, &ctx);
-            t.last_intent = Some(intent.clone());
+            // 帶意圖慣性：傳遞上一次意圖類型，使行為具連貫性
+            let prev_intent_type = t.last_intent.as_ref().map(|i| i.ty);
+            let intent = decide_with_inertia(state, &ctx, prev_intent_type);
+            // 降級鏈：如果首選意圖找不到路，嘗試降級行為
+            let path = resolve_brain_path(g, &intent, current_room, &ctx, 25);
+            let (final_intent, final_path) = if !path.is_empty() {
+                (intent, path)
+            } else {
+                // 降級順序：乞討 → 社交 → 閒晃（NPC 永不卡住）
+                let fallbacks = fallback_intents(&intent, &ctx);
+                let mut found = None;
+                for fb_intent in fallbacks {
+                    let fb_path = resolve_brain_path(g, &fb_intent, current_room, &ctx, 25);
+                    if !fb_path.is_empty() {
+                        found = Some((fb_intent, fb_path));
+                        break;
+                    }
+                }
+                found.unwrap_or((Intent { ty: IntentType::Idle, target_room_id: String::new() }, Vec::new()))
+            };
+            t.last_intent = Some(final_intent.clone());
+            // 設定表面行為：趕路中
+            let _ = set_entity_activity(&t.entity_id, activity_while_moving(final_intent.ty));
             let mut rng = rand::rng();
             if rng.random_range(0.0..1.0) < 0.20 {
                 let mut npc_name = get_npc_display_label_at_hour(&t.entity_id, game_hour).unwrap_or_default();
                 if npc_name.is_empty() {
                     npc_name = t.entity_id.clone();
                 }
-                let nar = build_departure_narrative(&npc_name, intent.ty);
+                let nar = build_departure_narrative(&npc_name, final_intent.ty);
                 if !nar.is_empty() {
                     t.departure_narrative = nar;
                 }
             }
-            let path = resolve_brain_path(g, &intent, current_room, &ctx, 25);
-            if path.is_empty() {
+            if final_path.is_empty() {
                 None
             } else {
-                Some(path)
+                Some(final_path)
             }
         }
+    }
+}
+
+/// 降級鏈：當首選意圖無法尋路時，依序嘗試降級行為。
+/// NPC 永遠不會「卡住」——找不到工作就去乞討，乞討找不到地方就閒晃。
+fn fallback_intents(original: &Intent, ctx: &super::decision::DecisionContext) -> Vec<Intent> {
+    use super::decision::IntentType::*;
+    let mut fallbacks = Vec::new();
+    match original.ty {
+        // 求職失敗 → 乞討 → 閒晃
+        SeekJob => {
+            if !ctx.social_or_gate_in_range.is_empty() {
+                fallbacks.push(Intent { ty: Beg, target_room_id: ctx.social_or_gate_in_range[0].clone() });
+            }
+        }
+        // 採集找不到野外 → 乞討 → 閒晃
+        Gather => {
+            if !ctx.social_or_gate_in_range.is_empty() {
+                fallbacks.push(Intent { ty: Beg, target_room_id: ctx.social_or_gate_in_range[0].clone() });
+            }
+        }
+        // 兜售失敗 → 乞討
+        Trade => {
+            if !ctx.social_or_gate_in_range.is_empty() {
+                fallbacks.push(Intent { ty: Beg, target_room_id: ctx.social_or_gate_in_range[0].clone() });
+            }
+        }
+        // 社交找不到酒館 → 閒晃
+        Socialize => {}
+        // 乞討找不到地方 → 閒晃
+        Beg => {}
+        _ => {}
+    }
+    // 最終兜底：閒晃（永遠有）
+    fallbacks.push(Intent { ty: Wander, target_room_id: String::new() });
+    fallbacks
+}
+
+/// 表面可觀測行為：趕路中（旁人眼中看到的樣子）。
+fn activity_while_moving(ty: IntentType) -> &'static str {
+    match ty {
+        IntentType::SeekJob => "步履匆忙，像是在找什麼",
+        IntentType::Beg => "低著頭慢慢走著",
+        IntentType::Gather => "背著簍子往郊外走",
+        IntentType::Trade => "背著包袱趕路",
+        IntentType::Socialize => "慢悠悠地走著",
+        IntentType::Wander => "漫無目的地走著",
+        IntentType::Work => "快步趕路中",
+        IntentType::Idle => "靜靜地待著",
+    }
+}
+
+/// 表面可觀測行為：抵達後停留中（旁人眼中看到的樣子）。
+fn activity_while_staying(ty: IntentType) -> &'static str {
+    match ty {
+        IntentType::SeekJob => "正在四處打聽活計",
+        IntentType::Beg => "蹲在路邊，低聲向過客乞討",
+        IntentType::Gather => "彎腰在地上翻找著什麼",
+        IntentType::Trade => "正在攤子前招呼過客",
+        IntentType::Socialize => "和旁人有一搭沒一搭地聊著",
+        IntentType::Wander => "倚在牆邊發著呆",
+        IntentType::Work => "正埋頭忙活著",
+        IntentType::Idle => "靜靜地待著",
     }
 }
 

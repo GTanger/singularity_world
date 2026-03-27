@@ -168,6 +168,106 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         )",
         &[],
     )?;
+    // 實體 (Entities) — NPC 與玩家本體
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS entities (
+            id TEXT PRIMARY KEY,
+            kind TEXT NOT NULL DEFAULT '',
+            display_char TEXT NOT NULL DEFAULT '',
+            x INTEGER NOT NULL DEFAULT 0,
+            y INTEGER NOT NULL DEFAULT 0,
+            move_state TEXT NOT NULL DEFAULT '',
+            target_x INTEGER,
+            target_y INTEGER,
+            walk_or_run TEXT NOT NULL DEFAULT '',
+            move_started_at BIGINT,
+            vit INTEGER NOT NULL DEFAULT 0,
+            qi INTEGER NOT NULL DEFAULT 0,
+            dex INTEGER NOT NULL DEFAULT 0,
+            magnesium INTEGER NOT NULL DEFAULT 0,
+            last_observed_at BIGINT,
+            created_at BIGINT NOT NULL DEFAULT 0,
+            gender TEXT NOT NULL DEFAULT '',
+            soul_seed BIGINT,
+            display_title TEXT NOT NULL DEFAULT '',
+            activated_nodes TEXT NOT NULL DEFAULT '',
+            equipment_slots TEXT NOT NULL DEFAULT '',
+            inventory TEXT NOT NULL DEFAULT '',
+            disposition INTEGER NOT NULL DEFAULT 0,
+            current_activity TEXT NOT NULL DEFAULT ''
+        )",
+        &[],
+    )?;
+
+    // 補欄位：current_activity（舊表可能沒有）
+    let _ = conn.execute(
+        "ALTER TABLE entities ADD COLUMN IF NOT EXISTS current_activity TEXT NOT NULL DEFAULT ''",
+        &[],
+    );
+
+    // 實體房間對應
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS entity_rooms (
+            entity_id TEXT PRIMARY KEY,
+            room_id TEXT NOT NULL
+        )",
+        &[],
+    )?;
+
+    // 場所 (Venues)
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS venues (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL DEFAULT '',
+            room_ids TEXT NOT NULL DEFAULT '[]',
+            max_staff INTEGER NOT NULL DEFAULT 0
+        )",
+        &[],
+    )?;
+
+    // 指派 (Assignments)
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS assignments (
+            entity_id TEXT NOT NULL,
+            occupation_id TEXT NOT NULL,
+            venue_id TEXT NOT NULL,
+            assigned_by TEXT NOT NULL DEFAULT '',
+            PRIMARY KEY (entity_id, venue_id)
+        )",
+        &[],
+    )?;
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_assignments_venue ON assignments(venue_id)",
+        &[],
+    )?;
+
+    // 排班 (Schedules)
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS schedules (
+            entity_id TEXT PRIMARY KEY,
+            work_room TEXT NOT NULL,
+            rest_room TEXT NOT NULL,
+            shift_start INTEGER NOT NULL DEFAULT 0,
+            shift_end INTEGER NOT NULL DEFAULT 0
+        )",
+        &[],
+    )?;
+
+    // 物品定義 (Items)
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS items (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL DEFAULT '',
+            slot TEXT NOT NULL DEFAULT '',
+            item_type TEXT NOT NULL DEFAULT '',
+            weight DOUBLE PRECISION NOT NULL DEFAULT 0,
+            stackable INTEGER NOT NULL DEFAULT 0,
+            denomination INTEGER NOT NULL DEFAULT 0,
+            description TEXT NOT NULL DEFAULT ''
+        )",
+        &[],
+    )?;
+
     // 世界詞典 (World Lexicon) — NPC 對話中自發產出的詞彙
     conn.execute(
         "CREATE TABLE IF NOT EXISTS world_lexicon (

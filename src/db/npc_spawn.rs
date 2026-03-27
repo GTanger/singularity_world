@@ -113,6 +113,7 @@ pub(crate) fn insert_npc_locked(
         equipment_slots: equip,
         inventory: "[]".to_string(),
         disposition: 0,
+        current_activity: String::new(),
     };
     s.put_entity(e)
 }

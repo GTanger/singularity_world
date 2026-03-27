@@ -105,6 +105,9 @@ pub struct Character {
     /// 心境 -100~+100，0=中性。
     #[serde(default)]
     pub disposition: i32,
+    /// 表面可觀測行為，玩家 Look 時看到的「在做什麼」。
+    #[serde(default)]
+    pub current_activity: String,
 }
 
 impl Character {
