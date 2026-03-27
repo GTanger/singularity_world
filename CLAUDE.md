@@ -19,7 +19,7 @@
 ## 技術棧
 - 後端：Rust（axum 0.8 + tokio + serde + bcrypt + reqwest + anyhow/thiserror + tracing + rand + uuid + futures-util + tower-http）
 - 前端：原生 HTML/CSS/JS（PWA），無框架
-- 資料：**PostgreSQL 為主要讀寫層**（遷移進行中，部分資料仍在 JSON）；JSON 保留作初始種子/備份
+- 資料：**PostgreSQL 為主要讀寫層**（遷移完成）；啟動優先從 PG 讀取，所有 CRUD 雙寫（PG → 記憶體快取 → JSON 備份）；JSON 保留作初始種子
 - 通訊：WebSocket（axum 內建）
 - AI：Ollama 本地模型（透過 HTTP API，reqwest）；目前 2B~4B，後台對話暫關，GPU 留給玩家 Talk
 - 部署：單機，Linux Mint，Cloudflare Tunnel，AnyDesk 遠端
@@ -30,7 +30,7 @@ src/main.rs              — 入口：初始化 + 啟動伺服器
 src/lib.rs               — 模組宣告 + run_server() 公開入口
 src/ai/                  — LLM 呼叫（玩家對話 + NPC↔NPC 對話）
 src/config/              — 可調參數（環境變數覆蓋）
-src/store/               — JSON 記憶體層
+src/store/               — 資料層（PostgreSQL 主資料源 + HashMap 讀取快取 + JSON 備份）
 src/db/                  — 資料存取介面（讀寫 store / PostgreSQL）
 src/entity/              — 角色實體、枚舉型別
 src/model/               — Room、Exit 等共用結構

@@ -1,0 +1,14 @@
+{
+  "id": "zonelife_city_life_01b_b010_0",
+  "name": "浮生城地下一樓",
+  "description": "",
+  "tags": [
+    "city",
+    "skyscraper",
+    "indoor",
+    "basement"
+  ],
+  "zone": "citylife",
+  "exits": [],
+  "objects": []
+}
