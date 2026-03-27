@@ -40,6 +40,9 @@ pub struct ItemDefBrief {
     pub slot: String,
     pub description: String,
     pub weight: f64,
+    pub vit_bonus: i32,
+    pub dex_bonus: i32,
+    pub atk_bonus: i32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -199,6 +202,9 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
         slot: it.slot.clone(),
         description: it.description.clone(),
         weight: it.weight,
+        vit_bonus: it.vit_bonus,
+        dex_bonus: it.dex_bonus,
+        atk_bonus: it.atk_bonus,
     })
 }
 

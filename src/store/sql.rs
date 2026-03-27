@@ -263,10 +263,18 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
             weight DOUBLE PRECISION NOT NULL DEFAULT 0,
             stackable INTEGER NOT NULL DEFAULT 0,
             denomination INTEGER NOT NULL DEFAULT 0,
-            description TEXT NOT NULL DEFAULT ''
+            description TEXT NOT NULL DEFAULT '',
+            vit_bonus INTEGER NOT NULL DEFAULT 0,
+            dex_bonus INTEGER NOT NULL DEFAULT 0,
+            atk_bonus INTEGER NOT NULL DEFAULT 0
         )",
         &[],
     )?;
+    // 相容已存在的舊表：補欄位
+    for col in ["vit_bonus", "dex_bonus", "atk_bonus"] {
+        let sql = format!("ALTER TABLE items ADD COLUMN IF NOT EXISTS {col} INTEGER NOT NULL DEFAULT 0");
+        let _ = conn.execute(sql.as_str(), &[]);
+    }
 
     // 世界詞典 (World Lexicon) — NPC 對話中自發產出的詞彙
     conn.execute(

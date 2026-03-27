@@ -297,11 +297,32 @@ fn build_attack_narrative(
     if !t.is_empty() {
         opt.terrain = t;
     }
+    // 接入 soul_seed 戰鬥係數
+    if let Some(seed) = attacker.soul_seed {
+        let (a, _b, g) = db::expand_soul_seed_to_combat_axes(seed);
+        opt.alpha = a;
+        opt.gamma = g;
+    }
+    if let Some(seed) = defender.soul_seed {
+        let (_a, _b, g) = db::expand_soul_seed_to_combat_axes(seed);
+        opt.gamma = (opt.gamma + g) / 2.0;
+    }
+    // 計算有效屬性 (vit, qi, dex, atk_bonus)
+    let (a_vit, _a_qi, a_dex, a_atk) = db::effective_stats(attacker);
+    let (d_vit, _d_qi, d_dex, d_atk) = db::effective_stats(defender);
+    // atk_bonus 疊加到 alpha 倍率，不灌 HP
+    if a_atk > 0 {
+        opt.alpha += a_atk as f64 * 0.1;
+    }
+    if d_atk > 0 {
+        opt.alpha += d_atk as f64 * 0.05; // 守方裝備也微弱影響戰場強度
+    }
+
     let (winner, raw_log, a_hp, d_hp) = resolve_v2(
-        attacker.vit,
-        attacker.dex,
-        defender.vit,
-        defender.dex,
+        a_vit,
+        a_dex,
+        d_vit,
+        d_dex,
         Some(&opt),
     );
     let mut a_name = display_target_name(attacker);

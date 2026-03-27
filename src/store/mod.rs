@@ -127,6 +127,12 @@ pub struct Item {
     pub denomination: i32,
     #[serde(default)]
     pub description: String,
+    #[serde(default)]
+    pub vit_bonus: i32,
+    #[serde(default)]
+    pub dex_bonus: i32,
+    #[serde(default)]
+    pub atk_bonus: i32,
 }
 
 /// 事件日誌一筆。
@@ -1286,13 +1292,14 @@ impl Store {
         tracing::info!("[store] Syncing {} items to PostgreSQL...", self.items.len());
         for it in self.items.values() {
             trans.execute(
-                "INSERT INTO items (id, name, slot, item_type, weight, stackable, denomination, description)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                "INSERT INTO items (id, name, slot, item_type, weight, stackable, denomination, description, vit_bonus, dex_bonus, atk_bonus)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                  ON CONFLICT (id) DO UPDATE SET
                     name=EXCLUDED.name, slot=EXCLUDED.slot, item_type=EXCLUDED.item_type,
                     weight=EXCLUDED.weight, stackable=EXCLUDED.stackable,
-                    denomination=EXCLUDED.denomination, description=EXCLUDED.description",
-                &[&it.id, &it.name, &it.slot, &it.item_type, &it.weight, &it.stackable, &it.denomination, &it.description],
+                    denomination=EXCLUDED.denomination, description=EXCLUDED.description,
+                    vit_bonus=EXCLUDED.vit_bonus, dex_bonus=EXCLUDED.dex_bonus, atk_bonus=EXCLUDED.atk_bonus",
+                &[&it.id, &it.name, &it.slot, &it.item_type, &it.weight, &it.stackable, &it.denomination, &it.description, &it.vit_bonus, &it.dex_bonus, &it.atk_bonus],
             )?;
         }
 
@@ -1468,7 +1475,7 @@ impl Store {
         }
 
         // items
-        if let Ok(rows) = conn.query("SELECT id, name, slot, item_type, weight, stackable, denomination, description FROM items", &[]) {
+        if let Ok(rows) = conn.query("SELECT id, name, slot, item_type, weight, stackable, denomination, description, vit_bonus, dex_bonus, atk_bonus FROM items", &[]) {
             if !rows.is_empty() {
                 self.items.clear();
                 for row in &rows {
@@ -1481,6 +1488,9 @@ impl Store {
                         stackable: row.get(5),
                         denomination: row.get(6),
                         description: row.get(7),
+                        vit_bonus: row.get(8),
+                        dex_bonus: row.get(9),
+                        atk_bonus: row.get(10),
                     };
                     self.items.insert(it.id.clone(), it);
                 }
@@ -1907,13 +1917,14 @@ impl Store {
         if let Some(pool) = &self.db_pool {
             if let Ok(mut conn) = pool.get() {
                 let _ = conn.execute(
-                    "INSERT INTO items (id, name, slot, item_type, weight, stackable, denomination, description)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    "INSERT INTO items (id, name, slot, item_type, weight, stackable, denomination, description, vit_bonus, dex_bonus, atk_bonus)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                      ON CONFLICT (id) DO UPDATE SET
                         name=EXCLUDED.name, slot=EXCLUDED.slot, item_type=EXCLUDED.item_type,
                         weight=EXCLUDED.weight, stackable=EXCLUDED.stackable,
-                        denomination=EXCLUDED.denomination, description=EXCLUDED.description",
-                    &[&it.id, &it.name, &it.slot, &it.item_type, &it.weight, &it.stackable, &it.denomination, &it.description],
+                        denomination=EXCLUDED.denomination, description=EXCLUDED.description,
+                        vit_bonus=EXCLUDED.vit_bonus, dex_bonus=EXCLUDED.dex_bonus, atk_bonus=EXCLUDED.atk_bonus",
+                    &[&it.id, &it.name, &it.slot, &it.item_type, &it.weight, &it.stackable, &it.denomination, &it.description, &it.vit_bonus, &it.dex_bonus, &it.atk_bonus],
                 );
             }
         }

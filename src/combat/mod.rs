@@ -88,6 +88,14 @@ fn apply_phase<R: Rng + ?Sized>(rng: &mut R, base_dmg: i32, gamma: f64) -> (i32,
     (base_dmg, "")
 }
 
+/// 命中判定。回傳 true 表示命中。
+fn hit_check<R: Rng + ?Sized>(rng: &mut R, atk_dex: i32, def_dex: i32) -> bool {
+    let denom = (atk_dex + def_dex).max(1) as f64;
+    let k_hit = atk_dex as f64 / denom;
+    let p_hit = (k_hit * 1.2).clamp(0.05, 0.95);
+    rng.random::<f64>() < p_hit
+}
+
 /// 依雙方屬性判定勝負並產出文字 log；HP 初值 = Vit。
 pub fn resolve(
     attacker_vit: i32,
@@ -206,66 +214,82 @@ pub fn resolve_v2(
     while a_hp > 0 && d_hp > 0 && rounds < MAX_ROUNDS {
         rounds += 1;
         if attacker_first {
-            let base = damage_v2(attacker_vit, defender_vit, opt);
-            let (dmg, tag) = apply_phase(&mut rng, base, o.gamma);
-            d_hp -= dmg;
-            log.push_str(&format!(
-                " [Action:Skill] 攻方擊中守方，傷害 {dmg}。{tag} [Result] 守方剩餘 {d_hp}。"
-            ));
-            if d_hp <= 0 {
-                if subdue {
-                    d_hp = 1;
-                    log.push_str(" 守方氣竭倒地。 [Result] 攻方留人（制伏）。");
+            if !hit_check(&mut rng, attacker_dex, defender_dex) {
+                log.push_str(" [Action:Miss] 攻方揮空。");
+            } else {
+                let base = damage_v2(attacker_vit, defender_vit, opt);
+                let (dmg, tag) = apply_phase(&mut rng, base, o.gamma);
+                d_hp -= dmg;
+                log.push_str(&format!(
+                    " [Action:Skill] 攻方擊中守方，傷害 {dmg}。{tag} [Result] 守方剩餘 {d_hp}。"
+                ));
+                if d_hp <= 0 {
+                    if subdue {
+                        d_hp = 1;
+                        log.push_str(" 守方氣竭倒地。 [Result] 攻方留人（制伏）。");
+                        return ("attacker".to_string(), log, a_hp, d_hp);
+                    }
+                    log.push_str(" 守方敗。 [Result] 攻方取得了勝利。");
                     return ("attacker".to_string(), log, a_hp, d_hp);
                 }
-                log.push_str(" 守方敗。 [Result] 攻方取得了勝利。");
-                return ("attacker".to_string(), log, a_hp, d_hp);
             }
-            let base = damage_v2(defender_vit, attacker_vit, opt);
-            let (dmg, tag) = apply_phase(&mut rng, base, o.gamma);
-            a_hp -= dmg;
-            log.push_str(&format!(
-                " 守方反擊。 [Action:Skill] 守方擊中攻方，傷害 {dmg}。{tag} [Result] 攻方剩餘 {a_hp}。"
-            ));
-            if a_hp <= 0 {
-                if subdue {
-                    a_hp = 1;
-                    log.push_str(" 攻方不支倒地。 [Result] 守方留人（制伏）。");
+            if !hit_check(&mut rng, defender_dex, attacker_dex) {
+                log.push_str(" 守方反擊。 [Action:Miss] 守方揮空。");
+            } else {
+                let base = damage_v2(defender_vit, attacker_vit, opt);
+                let (dmg, tag) = apply_phase(&mut rng, base, o.gamma);
+                a_hp -= dmg;
+                log.push_str(&format!(
+                    " 守方反擊。 [Action:Skill] 守方擊中攻方，傷害 {dmg}。{tag} [Result] 攻方剩餘 {a_hp}。"
+                ));
+                if a_hp <= 0 {
+                    if subdue {
+                        a_hp = 1;
+                        log.push_str(" 攻方不支倒地。 [Result] 守方留人（制伏）。");
+                        return ("defender".to_string(), log, a_hp, d_hp);
+                    }
+                    log.push_str(" 攻方敗。 [Result] 守方取得了勝利。");
                     return ("defender".to_string(), log, a_hp, d_hp);
                 }
-                log.push_str(" 攻方敗。 [Result] 守方取得了勝利。");
-                return ("defender".to_string(), log, a_hp, d_hp);
             }
         } else {
-            let base = damage_v2(defender_vit, attacker_vit, opt);
-            let (dmg, tag) = apply_phase(&mut rng, base, o.gamma);
-            a_hp -= dmg;
-            log.push_str(&format!(
-                " [Action:Skill] 守方擊中攻方，傷害 {dmg}。{tag} [Result] 攻方剩餘 {a_hp}。"
-            ));
-            if a_hp <= 0 {
-                if subdue {
-                    a_hp = 1;
-                    log.push_str(" 攻方不支倒地。 [Result] 守方留人（制伏）。");
+            if !hit_check(&mut rng, defender_dex, attacker_dex) {
+                log.push_str(" [Action:Miss] 守方揮空。");
+            } else {
+                let base = damage_v2(defender_vit, attacker_vit, opt);
+                let (dmg, tag) = apply_phase(&mut rng, base, o.gamma);
+                a_hp -= dmg;
+                log.push_str(&format!(
+                    " [Action:Skill] 守方擊中攻方，傷害 {dmg}。{tag} [Result] 攻方剩餘 {a_hp}。"
+                ));
+                if a_hp <= 0 {
+                    if subdue {
+                        a_hp = 1;
+                        log.push_str(" 攻方不支倒地。 [Result] 守方留人（制伏）。");
+                        return ("defender".to_string(), log, a_hp, d_hp);
+                    }
+                    log.push_str(" 攻方敗。 [Result] 守方取得了勝利。");
                     return ("defender".to_string(), log, a_hp, d_hp);
                 }
-                log.push_str(" 攻方敗。 [Result] 守方取得了勝利。");
-                return ("defender".to_string(), log, a_hp, d_hp);
             }
-            let base = damage_v2(attacker_vit, defender_vit, opt);
-            let (dmg, tag) = apply_phase(&mut rng, base, o.gamma);
-            d_hp -= dmg;
-            log.push_str(&format!(
-                " 攻方反擊。 [Action:Skill] 攻方擊中守方，傷害 {dmg}。{tag} [Result] 守方剩餘 {d_hp}。"
-            ));
-            if d_hp <= 0 {
-                if subdue {
-                    d_hp = 1;
-                    log.push_str(" 守方氣竭倒地。 [Result] 攻方留人（制伏）。");
+            if !hit_check(&mut rng, attacker_dex, defender_dex) {
+                log.push_str(" 攻方反擊。 [Action:Miss] 攻方揮空。");
+            } else {
+                let base = damage_v2(attacker_vit, defender_vit, opt);
+                let (dmg, tag) = apply_phase(&mut rng, base, o.gamma);
+                d_hp -= dmg;
+                log.push_str(&format!(
+                    " 攻方反擊。 [Action:Skill] 攻方擊中守方，傷害 {dmg}。{tag} [Result] 守方剩餘 {d_hp}。"
+                ));
+                if d_hp <= 0 {
+                    if subdue {
+                        d_hp = 1;
+                        log.push_str(" 守方氣竭倒地。 [Result] 攻方留人（制伏）。");
+                        return ("attacker".to_string(), log, a_hp, d_hp);
+                    }
+                    log.push_str(" 守方敗。 [Result] 攻方取得了勝利。");
                     return ("attacker".to_string(), log, a_hp, d_hp);
                 }
-                log.push_str(" 守方敗。 [Result] 攻方取得了勝利。");
-                return ("attacker".to_string(), log, a_hp, d_hp);
             }
         }
     }
@@ -294,19 +318,31 @@ mod tests {
     }
 
     #[test]
-    fn resolve_v2_nil_matches_resolve_outcome() {
-        let a_vit = 8;
-        let a_dex = 7;
-        let d_vit = 4;
-        let d_dex = 3;
-        let (w1, _, a1, d1) = resolve(a_vit, a_dex, d_vit, d_dex);
-        let (w2, log2, a2, d2) = resolve_v2(a_vit, a_dex, d_vit, d_dex, None);
-        assert_eq!(w1, w2, "winner mismatch");
-        assert_eq!(a1, a2, "attacker HP mismatch");
-        assert_eq!(d1, d2, "defender HP mismatch");
-        assert!(log2.contains("[Initiative]"));
-        assert!(log2.contains("[Action:Skill]"));
-        assert!(log2.contains("[Result]"));
+    fn resolve_v2_nil_attacker_wins_majority() {
+        // 攻方 vit=8 dex=7 vs 守方 vit=4 dex=3，攻方應該大部分時候贏
+        let mut attacker_wins = 0;
+        for _ in 0..200 {
+            let (w, _, _, _) = resolve_v2(8, 7, 4, 3, None);
+            if w == "attacker" {
+                attacker_wins += 1;
+            }
+        }
+        // 攻方優勢明顯，應贏超過 60%
+        assert!(attacker_wins > 120, "attacker 只贏了 {attacker_wins}/200 次，太少");
+    }
+
+    #[test]
+    fn dex_advantage_wins_more_often() {
+        // 體質相同，dex 差距大
+        let mut high_dex_wins = 0;
+        for _ in 0..500 {
+            let (w, _, _, _) = resolve_v2(10, 15, 10, 3, None);
+            if w == "attacker" {
+                high_dex_wins += 1;
+            }
+        }
+        // 高 dex 方命中率更高，應贏超過 55%
+        assert!(high_dex_wins > 275, "高 dex 方只贏了 {high_dex_wins}/500 次");
     }
 
     #[test]
@@ -324,13 +360,18 @@ mod tests {
     #[test]
     fn subdue_sets_loser_hp_to_one() {
         let opt = CombatOpt {
-            alpha: 100.0,
+            alpha: 200.0,
             subdue: true,
             ..Default::default()
         };
-        let (w, _log, a, d) = resolve_v2(50, 10, 5, 5, Some(&opt));
-        assert_eq!(w, "attacker");
-        assert!(a > 0);
-        assert_eq!(d, 1);
+        // 跑多次取第一次有結果的
+        for _ in 0..50 {
+            let (w, _log, a, d) = resolve_v2(50, 10, 5, 5, Some(&opt));
+            if w == "attacker" && d == 1 {
+                assert!(a > 0);
+                return;
+            }
+        }
+        panic!("50 次都沒出現 attacker 制伏成功");
     }
 }

@@ -225,6 +225,37 @@ pub fn expand_soul_seed_to_personality(seed: i64) -> Personality {
     }
 }
 
+/// 由 soul_seed 展開為戰鬥三係數（能階α、時脈β、相位γ）。
+pub fn expand_soul_seed_to_combat_axes(seed: i64) -> (f64, f64, f64) {
+    let (amp, freq, phase) = expand_seed_axes(seed);
+    let alpha = 0.5 + (amp - AMP_MIN) / (AMP_MAX - AMP_MIN) * 1.5;
+    let beta = 0.5 + (freq - FREQ_MIN) / (FREQ_MAX - FREQ_MIN) * 1.0;
+    let gamma = (phase - PHASE_MIN) / (PHASE_MAX - PHASE_MIN);
+    (alpha, beta, gamma)
+}
+
+/// 計算角色穿戴裝備後的有效屬性 (e_vit, e_qi, e_dex, atk_gear)。
+pub fn effective_stats(ch: &crate::entity::Character) -> (i32, i32, i32, i32) {
+    let mut e_vit = ch.vit;
+    let mut e_dex = ch.dex;
+    let mut atk_gear: i32 = 0;
+    if !ch.equipment_slots.is_empty()
+        && let Ok(slots) = serde_json::from_str::<std::collections::HashMap<String, String>>(&ch.equipment_slots)
+    {
+        for item_id in slots.values() {
+                if item_id.is_empty() {
+                    continue;
+                }
+                if let Some(item_def) = get_item_def(item_id) {
+                    e_vit += item_def.vit_bonus;
+                    e_dex += item_def.dex_bonus;
+                    atk_gear += item_def.atk_bonus;
+                }
+            }
+        }
+    (e_vit, ch.qi, e_dex, atk_gear)
+}
+
 // ══════════════════════════════════════
 //  store.Entity ↔ entity.Character 轉換
 // ══════════════════════════════════════
