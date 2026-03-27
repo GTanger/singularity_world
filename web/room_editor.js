@@ -5,6 +5,7 @@ const state = {
   edges: [],
   groups: [], // Array<string[]> — 每個群組是 room ID 陣列
   layout: {},
+  zoneFilterValue: '', // 目前選中的 zone，空字串 = 全部
   zoom: 1,
   selectedId: '',
   selectedIds: new Set(),
@@ -41,6 +42,7 @@ const ui = {
   fZone: document.getElementById('f-zone'),
   fTags: document.getElementById('f-tags'),
   fDesc: document.getElementById('f-desc'),
+  zoneFilter: document.getElementById('zone-filter'),
   fObjects: document.getElementById('f-objects'),
   objectsForm: document.getElementById('objects-form'),
   panel: document.getElementById('editor-panel'),
@@ -229,6 +231,81 @@ function refreshPathSelects() {
   if (ui.pathFrom && !ui.pathFrom.value && state.selectedId && state.nodes.has(state.selectedId)) {
     ui.pathFrom.value = state.selectedId;
   }
+}
+
+let descTemplates = null;
+
+async function loadDescTemplates() {
+  try {
+    const res = await fetch('/data/config/room_desc_templates.json');
+    descTemplates = await res.json();
+  } catch (_) {
+    descTemplates = null;
+  }
+}
+
+function generateRoomDesc(zone, tags) {
+  if (!descTemplates) return '';
+  const frags = descTemplates.fragments;
+  const pattern = descTemplates.pattern;
+  const parts = [];
+
+  for (const p of pattern) {
+    const slotPool = frags[p.slot];
+    if (!slotPool) continue;
+
+    // 依優先順序找匹配的 key：tags → zone 關鍵字 → default
+    let candidates = [];
+    // 先找 tags 匹配
+    for (const tag of (tags || [])) {
+      if (slotPool[tag] && slotPool[tag].length > 0) {
+        candidates = candidates.concat(slotPool[tag]);
+      }
+    }
+    // 沒有則找 zone 關鍵字
+    if (candidates.length === 0) {
+      for (const key of Object.keys(slotPool)) {
+        if (key !== 'default' && zone && zone.includes(key)) {
+          candidates = candidates.concat(slotPool[key]);
+        }
+      }
+    }
+    // 還是沒有則用 default
+    if (candidates.length === 0 && slotPool['default']) {
+      candidates = slotPool['default'];
+    }
+    if (candidates.length === 0) {
+      if (p.required) parts.push('');
+      continue;
+    }
+    // 隨機挑一條
+    parts.push(candidates[Math.floor(Math.random() * candidates.length)]);
+  }
+
+  return parts.filter(Boolean).join('');
+}
+
+function refreshZoneFilter() {
+  const zones = new Set();
+  for (const n of state.nodes.values()) {
+    if (n.zone) zones.add(n.zone);
+  }
+  const sorted = Array.from(zones).sort();
+  const prev = state.zoneFilterValue;
+  ui.zoneFilter.innerHTML = '<option value="">全部顯示</option>';
+  for (const z of sorted) {
+    const opt = document.createElement('option');
+    opt.value = z;
+    opt.textContent = `${z}（${Array.from(state.nodes.values()).filter(n => n.zone === z).length}）`;
+    ui.zoneFilter.appendChild(opt);
+  }
+  if (prev && zones.has(prev)) ui.zoneFilter.value = prev;
+}
+
+function isNodeVisible(id) {
+  if (!state.zoneFilterValue) return true;
+  const n = state.nodes.get(id);
+  return n && n.zone === state.zoneFilterValue;
 }
 
 function renderObjectsForm(objs) {
@@ -541,7 +618,7 @@ function render() {
   // 繪製群組包圍框（在節點下層）
   const GROUP_PAD = 12;
   state.groups.forEach((grp, gi) => {
-    const positions = grp.map((id) => state.layout[id]).filter(Boolean);
+    const positions = grp.filter(id => isNodeVisible(id)).map((id) => state.layout[id]).filter(Boolean);
     if (positions.length < 1) return;
     const xs = positions.map((p) => p.x);
     const ys = positions.map((p) => p.y);
@@ -565,6 +642,7 @@ function render() {
   const halfPx = NODE_HALF * state.zoom;
   const arrowOutPx = 2;
   for (const e of state.edges) {
+    if (!isNodeVisible(e.from) && !isNodeVisible(e.to)) continue; // zone 濾鏡：兩端都不可見才隱藏
     const from = state.layout[e.from];
     const to = state.layout[e.to];
     if (!from || !to) continue;
@@ -655,6 +733,7 @@ function render() {
 
   let i = 0;
   for (const [id, n] of state.nodes.entries()) {
+    if (!isNodeVisible(id)) continue; // zone 濾鏡
     const p = ensurePos(id, i++);
     const el = document.createElement('div');
     const selected = state.selectedIds.has(id) || state.selectedId === id;
@@ -718,6 +797,7 @@ function selectNode(id, additive = false) {
   state.selectedId = id;
   fillEditor(id);
   refreshPathSelects();
+  refreshZoneFilter();
   render();
 }
 
@@ -731,6 +811,7 @@ function setSelectedForTouchStart(id) {
   state.selectedId = id;
   fillEditor(id);
   refreshPathSelects();
+  refreshZoneFilter();
 }
 
 async function completeLink(fromId, toId) {
@@ -1218,6 +1299,7 @@ async function loadGraph(scrollToSelected = true) {
 
   if (state.selectedId) fillEditor(state.selectedId);
   refreshPathSelects();
+  refreshZoneFilter();
   render();
 
   if (scrollToSelected && state.selectedId && state.layout[state.selectedId]) {
@@ -1345,6 +1427,13 @@ document.getElementById('btn-add').onclick = async () => {
     state.selectedIds = new Set([id.trim()]);
     setStatus('房間已新增');
     await loadGraph(true);
+    // 自動生成描述
+    if (!ui.fDesc.value.trim()) {
+      const zone = ui.fZone.value;
+      const tags = parseTags(ui.fTags.value);
+      const desc = generateRoomDesc(zone, tags);
+      if (desc) ui.fDesc.value = desc;
+    }
   } catch (e) {
     setStatus(`新增失敗：${e.message}`, true);
   }
@@ -1370,6 +1459,13 @@ document.getElementById('btn-copy').onclick = async () => {
     state.selectedIds = new Set([id.trim()]);
     setStatus('房間已複製');
     await loadGraph(true);
+    // 自動生成描述
+    if (!ui.fDesc.value.trim()) {
+      const zone = ui.fZone.value;
+      const tags = parseTags(ui.fTags.value);
+      const desc = generateRoomDesc(zone, tags);
+      if (desc) ui.fDesc.value = desc;
+    }
   } catch (e) {
     setStatus(`複製失敗：${e.message}`, true);
   }
@@ -1475,6 +1571,13 @@ document.getElementById('btn-save').onclick = () => {
   saveCurrentRoom();
 };
 
+document.getElementById('btn-regen-desc').onclick = () => {
+  const zone = ui.fZone.value;
+  const tags = parseTags(ui.fTags.value);
+  const desc = generateRoomDesc(zone, tags);
+  if (desc) ui.fDesc.value = desc;
+};
+
 if (ui.pathUseSelected) {
   ui.pathUseSelected.addEventListener('click', () => {
     if (!state.selectedId || !state.nodes.has(state.selectedId)) {
@@ -1547,6 +1650,12 @@ document.addEventListener(
 (async () => {
   try {
     await loadGraph(false);
+    loadDescTemplates();
+    refreshZoneFilter();
+    ui.zoneFilter.addEventListener('change', () => {
+      state.zoneFilterValue = ui.zoneFilter.value;
+      scheduleRender();
+    });
     renderObjectsForm([]);
     setStatus('已載入房間地圖');
   } catch (e) {

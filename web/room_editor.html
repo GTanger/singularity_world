@@ -111,6 +111,12 @@
   <div class="app">
     <aside class="panel" id="editor-panel">
       <div class="status" id="status"></div>
+      <div class="field" style="margin-bottom:8px;">
+        <label>Zone 濾鏡</label>
+        <select id="zone-filter" style="width:100%;border:1px solid var(--line);background:#0d1220;color:var(--text);border-radius:6px;padding:8px;">
+          <option value="">全部顯示</option>
+        </select>
+      </div>
       <div class="toolbar">
         <button id="btn-refresh">重新載入</button>
         <button id="btn-add">新增房格</button>
@@ -150,7 +156,9 @@
         <div class="field"><label>名稱</label><input id="f-name" /></div>
         <div class="field"><label>區域 zone</label><input id="f-zone" placeholder="street / alley / ..." /></div>
         <div class="field"><label>標籤 tags（逗號分隔）</label><input id="f-tags" /></div>
-        <div class="field"><label>描述</label><textarea id="f-desc"></textarea></div>
+        <div class="field"><label>描述</label><textarea id="f-desc"></textarea>
+        <button type="button" id="btn-regen-desc" style="font-size:12px;padding:4px 8px;margin-top:4px;">重新骰描述</button>
+        </div>
       </div>
 
       <div class="section">
