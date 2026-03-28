@@ -303,6 +303,65 @@ body {
 	margin: 0 0.15rem;
 }
 
+/* ─── 互動區 ─── */
+.room-actions {
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.action-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-label {
+    color: #a0a0b0;
+    font-size: 0.85rem;
+    margin-right: 4px;
+    white-space: nowrap;
+    opacity: 0.8;
+}
+
+.action-btn {
+    background: #1a1a2e;
+    color: #e8e8e8;
+    border: 1px solid #2a2a4a;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.action-btn:hover {
+    background: #0f3460;
+    border-color: #e94560;
+}
+
+.action-btn:active {
+    transform: scale(0.96);
+}
+
+/* 出口按鈕醒目一點 */
+.action-move {
+    border-color: #0f3460;
+    color: #7ee787;
+}
+
+/* Take = 綠色系 */
+.action-take { color: #69f0ae; }
+
+/* Gather = 黃色系 */
+.action-gather { color: #ffd740; }
+
+/* Strip/Butcher = 紫色系 */
+.action-strip, .action-butcher { color: #ce93d8; }
+
 /* 房間描述內可互動物件 〔〕：琥珀色、點擊浮動下拉 */
 .desc-object {
 	color: #ffb74d;
