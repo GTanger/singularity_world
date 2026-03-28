@@ -1,7 +1,7 @@
 {
   "id": "world_golparia_kardehis",
-  "name": "Kardehis",
-  "description": "",
+  "name": "卡爾德赫伊斯",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "golparia",
   "tags": [
     "village",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Paran",
+      "direction": "官道往帕蘭",
       "to": "world_golparia_paran"
     },
     {
-      "direction": "官道往Pirmir",
+      "direction": "官道往皮爾米爾",
       "to": "world_pirmir_pirmir"
     },
     {
-      "direction": "小徑往Golshahrjan",
+      "direction": "小徑往河沙赫爾詹",
       "to": "world_golparia_golshahrjan"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Kuhpouria"
+    "province": "庫赫波烏里阿"
   }
 }

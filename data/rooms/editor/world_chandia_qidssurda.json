@@ -1,7 +1,7 @@
 {
   "id": "world_chandia_qidssurda",
-  "name": "Qidssurda",
-  "description": "",
+  "name": "奇德斯蘇爾達",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chandia",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Nolin",
+      "direction": "小徑往諾林",
       "to": "world_buming_nolin"
     },
     {
-      "direction": "小徑往Noviret",
+      "direction": "小徑往諾維列特",
       "to": "world_tsetgalia_noviret"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Girinia"
+    "province": "吉里尼阿"
   }
 }

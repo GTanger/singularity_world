@@ -1,7 +1,7 @@
 {
   "id": "world_shisur_nibadamn",
-  "name": "Nibadamn",
-  "description": "",
+  "name": "尼巴德阿姆恩",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "shisur",
   "tags": [
     "village",
@@ -30,6 +30,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nibadamn"
+    "province": "尼巴德阿姆恩"
   }
 }

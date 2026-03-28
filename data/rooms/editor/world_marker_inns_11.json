@@ -1,14 +1,14 @@
 {
   "id": "world_marker_inns_11",
   "name": "旅店",
-  "description": "",
+  "description": "簷下掛燈搖晃，木門吱呀，屋內傳來碗盤與低語，是路人在此歇腳。",
   "zone": "shalantsa",
   "tags": [
     "inns"
   ],
   "exits": [
     {
-      "direction": "返回Sevlin",
+      "direction": "返回塞瓦林",
       "to": "world_shalantsa_sevlin"
     }
   ],

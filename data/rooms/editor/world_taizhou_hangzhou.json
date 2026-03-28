@@ -1,7 +1,7 @@
 {
   "id": "world_taizhou_hangzhou",
-  "name": "Hangzhou",
-  "description": "",
+  "name": "杭州·554",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "taizhou",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Zhenqing",
+      "direction": "小徑往鎮青",
       "to": "world_xian_guo_zhenqing"
     },
     {
-      "direction": "小徑往Xianchong",
+      "direction": "小徑往咸崇",
       "to": "world_taizhou_xianchong"
     },
     {
-      "direction": "小徑往Xuantian",
+      "direction": "小徑往玄天",
       "to": "world_xian_guo_xuantian"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ying Guo"
+    "province": "伊恩國"
   }
 }

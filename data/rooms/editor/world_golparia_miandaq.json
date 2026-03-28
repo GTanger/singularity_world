@@ -1,7 +1,7 @@
 {
   "id": "world_golparia_miandaq",
-  "name": "Miandaq",
-  "description": "",
+  "name": "米阿恩達格",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "golparia",
   "tags": [
     "town",
@@ -9,7 +9,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Savand",
+      "direction": "小徑往薩萬德",
       "to": "world_golparia_savand"
     }
   ],
@@ -35,6 +35,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shahteria"
+    "province": "沙赫特里阿"
   }
 }

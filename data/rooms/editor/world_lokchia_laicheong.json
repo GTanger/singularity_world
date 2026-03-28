@@ -1,7 +1,7 @@
 {
   "id": "world_lokchia_laicheong",
-  "name": "Laicheong",
-  "description": "",
+  "name": "禮昌",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "lokchia",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Puiping",
+      "direction": "小徑往普坪",
       "to": "world_puipingia_puiping"
     },
     {
-      "direction": "小徑往Fungsha",
+      "direction": "小徑往鳳沙",
       "to": "world_heungia_fungsha"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Laicheong"
+    "province": "拉伊川格"
   }
 }

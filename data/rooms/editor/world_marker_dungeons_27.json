@@ -1,14 +1,14 @@
 {
   "id": "world_marker_dungeons_27",
   "name": "地牢",
-  "description": "",
+  "description": "低矮的鐵門半掩，霉味與腐水氣自黑暗裡湧出，階梯向下沒入無聲。",
   "zone": "golparia",
   "tags": [
     "dungeons"
   ],
   "exits": [
     {
-      "direction": "返回Arakrankafa",
+      "direction": "返回阿拉克蘭卡法",
       "to": "world_golparia_arakrankafa"
     }
   ],

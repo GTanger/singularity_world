@@ -1,14 +1,14 @@
 {
   "id": "world_marker_waterfalls_19",
   "name": "瀑布",
-  "description": "",
+  "description": "水幕自高崖斷開，轟聲如雷，水霧撲面，腳下石面滑而冷。",
   "zone": "hongnamguk",
   "tags": [
     "waterfalls"
   ],
   "exits": [
     {
-      "direction": "返回Gochanyang",
+      "direction": "返回谷倉陽",
       "to": "world_hongnamguk_gochanyang"
     }
   ],

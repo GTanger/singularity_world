@@ -1,14 +1,14 @@
 {
   "id": "world_awlata_guerherma",
-  "name": "Guerherma",
-  "description": "",
+  "name": "古厄爾赫爾馬",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "awlata",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Rafzalayt",
+      "direction": "小徑往拉夫札拉伊特",
       "to": "world_awlata_rafzalayt"
     }
   ],
@@ -34,6 +34,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Guelmam"
+    "province": "古厄勒馬姆"
   }
 }

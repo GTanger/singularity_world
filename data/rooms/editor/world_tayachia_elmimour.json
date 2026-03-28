@@ -1,7 +1,7 @@
 {
   "id": "world_tayachia_elmimour",
-  "name": "Elmimour",
-  "description": "",
+  "name": "厄勒米莫烏爾",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "tayachia",
   "tags": [
     "town",
@@ -9,7 +9,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Iknaslinez",
+      "direction": "小徑往伊克納斯利內茲",
       "to": "world_tayachia_iknaslinez"
     }
   ],
@@ -35,6 +35,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Elmimour"
+    "province": "埃爾米莫烏爾"
   }
 }

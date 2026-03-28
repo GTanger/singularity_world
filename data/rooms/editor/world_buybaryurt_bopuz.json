@@ -1,7 +1,7 @@
 {
   "id": "world_buybaryurt_bopuz",
-  "name": "Bopuz",
-  "description": "",
+  "name": "博普茲",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "buybaryurt",
   "tags": [
     "town",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Kart",
+      "direction": "官道往卡爾特",
       "to": "world_buybaryurt_kart"
     },
     {
-      "direction": "官道往Tatsuse",
+      "direction": "官道往龍瀨",
       "to": "world_nyusume_tatsuse"
     },
     {
-      "direction": "小徑往Akay",
+      "direction": "小徑往阿卡伊",
       "to": "world_buybaryurt_akay"
     },
     {
-      "direction": "小徑往Eltanoba",
+      "direction": "小徑往厄勒塔諾巴",
       "to": "world_yalkan_eltanoba"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kayuntyurt"
+    "province": "卡尤恩特尤爾特"
   }
 }

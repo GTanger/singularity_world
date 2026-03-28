@@ -1,7 +1,7 @@
 {
   "id": "world_kwun_hokshuiman",
-  "name": "Hokshuiman",
-  "description": "",
+  "name": "霍水漫",
+  "description": "街巷盡頭傳來鐘聲，煙火與低誦聲隨風散開。屋簷層疊，紙燈在暮色裡一點點亮起。",
   "zone": "kwun",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Pingyuenwan",
+      "direction": "小徑往平原灣",
       "to": "world_kwun_pingyuenwan"
     },
     {
-      "direction": "小徑往Putong",
+      "direction": "小徑往普通",
       "to": "world_shia_putong"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Kwongia"
+    "province": "克沃恩亞"
   }
 }

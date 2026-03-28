@@ -1,14 +1,14 @@
 {
   "id": "world_marker_mines_3",
   "name": "礦脈",
-  "description": "",
+  "description": "山腹裂開的礦口，黑影裡有金屬冷光一閃一滅，空氣帶著鐵與土腥。",
   "zone": "guela",
   "tags": [
     "mines"
   ],
   "exits": [
     {
-      "direction": "返回Nefrulad",
+      "direction": "返回內夫魯拉德",
       "to": "world_guela_nefrulad"
     }
   ],

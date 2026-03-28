@@ -1,7 +1,7 @@
 {
   "id": "world_gordowia_bustan",
-  "name": "Bustan",
-  "description": "",
+  "name": "布斯坦",
+  "description": "街巷盡頭傳來鐘聲，煙火與低誦聲隨風散開。屋簷層疊，紙燈在暮色裡一點點亮起。",
   "zone": "gordowia",
   "tags": [
     "town",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Gordow",
+      "direction": "官道往戈爾多瓦",
       "to": "world_gordowia_gordow"
     },
     {
-      "direction": "官道往Hajdayan",
+      "direction": "官道往哈吉達亞恩",
       "to": "world_israfamin_hajdayan"
     },
     {
-      "direction": "小徑往Jarim",
+      "direction": "小徑往賈里姆",
       "to": "world_israfamin_jarim"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Bustan"
+    "province": "布烏斯特阿恩"
   }
 }

@@ -1,18 +1,18 @@
 {
   "id": "world_tuladshia_atompydareh",
-  "name": "Atompydareh",
-  "description": "",
+  "name": "阿托姆普伊達列赫",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "tuladshia",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "官道往Vardan",
+      "direction": "官道往瓦爾丹",
       "to": "world_tuladshia_vardan"
     },
     {
-      "direction": "官道往Datigziyan",
+      "direction": "官道往達提格齊亞恩",
       "to": "world_gordowia_datigziyan"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Chogramia"
+    "province": "喬格拉米阿"
   }
 }

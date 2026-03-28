@@ -1,7 +1,7 @@
 {
   "id": "world_buybaryurt_yatopkoydi",
-  "name": "Yatopkoydi",
-  "description": "",
+  "name": "亞托普科伊迪",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "buybaryurt",
   "tags": [
     "town",
@@ -11,7 +11,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Aninok",
+      "direction": "小徑往阿尼諾克",
       "to": "world_buybaryurt_aninok"
     }
   ],
@@ -37,6 +37,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Yatopkoydi"
+    "province": "亞托普科伊迪"
   }
 }

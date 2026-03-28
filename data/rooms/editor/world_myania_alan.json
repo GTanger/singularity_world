@@ -1,7 +1,7 @@
 {
   "id": "world_myania_alan",
-  "name": "Alan",
-  "description": "",
+  "name": "阿蘭",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "myania",
   "tags": [
     "village",
@@ -12,19 +12,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Zariayandu",
+      "direction": "官道往札里阿亞恩杜",
       "to": "world_tsakhania_zariayandu"
     },
     {
-      "direction": "官道往Mekalhusu",
+      "direction": "官道往梅卡爾胡蘇",
       "to": "world_dur_un_mekalhusu"
     },
     {
-      "direction": "官道往Sains",
+      "direction": "官道往薩伊恩斯",
       "to": "world_sains_sains"
     },
     {
-      "direction": "小徑往Khonlig",
+      "direction": "小徑往洪力格",
       "to": "world_myania_khonlig"
     }
   ],
@@ -50,6 +50,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ayankh"
+    "province": "阿伊阿恩克赫"
   }
 }

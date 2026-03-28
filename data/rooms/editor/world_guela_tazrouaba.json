@@ -1,7 +1,7 @@
 {
   "id": "world_guela_tazrouaba",
-  "name": "Tazrouaba",
-  "description": "",
+  "name": "塔茲羅瓦巴",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "guela",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Guel",
+      "direction": "官道往古厄勒",
       "to": "world_guela_guel"
     },
     {
-      "direction": "官道往Dawan",
+      "direction": "官道往達萬",
       "to": "world_awlata_dawan"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Sejdita"
+    "province": "塞吉迪塔"
   }
 }

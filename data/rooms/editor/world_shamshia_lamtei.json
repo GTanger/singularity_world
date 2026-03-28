@@ -1,7 +1,7 @@
 {
   "id": "world_shamshia_lamtei",
-  "name": "Lamtei",
-  "description": "",
+  "name": "林底",
+  "description": "街巷盡頭傳來鐘聲，煙火與低誦聲隨風散開。屋簷層疊，紙燈在暮色裡一點點亮起。",
   "zone": "shamshia",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tinshan",
+      "direction": "小徑往天山·556",
       "to": "world_fungshingia_tinshan"
     },
     {
-      "direction": "小徑往Tsamkong",
+      "direction": "小徑往站港",
       "to": "world_puipingia_tsamkong"
     },
     {
-      "direction": "小徑往Muiwan",
+      "direction": "小徑往梅灣",
       "to": "world_fungshingia_muiwan"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Lamtei"
+    "province": "爾阿姆特厄伊"
   }
 }

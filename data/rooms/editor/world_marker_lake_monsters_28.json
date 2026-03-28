@@ -1,14 +1,14 @@
 {
   "id": "world_marker_lake_monsters_28",
   "name": "湖怪棲地",
-  "description": "",
+  "description": "湖面深黑，水紋不尋常地一圓圈圓圈擴開，岸邊無人敢久站。",
   "zone": "hongnamguk",
   "tags": [
     "lake-monsters"
   ],
   "exits": [
     {
-      "direction": "返回Gocha",
+      "direction": "返回戈察",
       "to": "world_hongnamguk_gocha"
     }
   ],

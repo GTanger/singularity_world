@@ -1,7 +1,7 @@
 {
   "id": "world_khovia_khovi",
-  "name": "Khovi",
-  "description": "",
+  "name": "霍布伊",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "khovia",
   "tags": [
     "village",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Kintash",
+      "direction": "官道往金塔斯赫",
       "to": "world_sains_kintash"
     },
     {
-      "direction": "官道往Irmo",
+      "direction": "官道往伊爾莫",
       "to": "world_khovia_irmo"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Khovi"
+    "province": "克赫奧維伊"
   }
 }

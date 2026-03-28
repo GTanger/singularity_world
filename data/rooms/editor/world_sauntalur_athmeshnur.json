@@ -1,7 +1,7 @@
 {
   "id": "world_sauntalur_athmeshnur",
-  "name": "Athmeshnur",
-  "description": "",
+  "name": "阿特梅沙努爾",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "sauntalur",
   "tags": [
     "town",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Hunkobertti",
+      "direction": "小徑往洪科貝爾特提",
       "to": "world_sauntalur_hunkobertti"
     },
     {
-      "direction": "小徑往Bomagagola",
+      "direction": "小徑往博馬加河阿",
       "to": "world_kusande_bomagagola"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Sarapatia"
+    "province": "薩爾阿帕特亞"
   }
 }

@@ -1,14 +1,14 @@
 {
   "id": "world_marker_battlefields_20",
   "name": "古戰場",
-  "description": "",
+  "description": "荒草淹沒的舊戰場，斷戟與碎甲半埋土中，風過時彷彿仍有金鐵聲。",
   "zone": "gordowia",
   "tags": [
     "battlefields"
   ],
   "exits": [
     {
-      "direction": "返回Tuzey-Shahr",
+      "direction": "返回圖澤伊沙赫爾",
       "to": "world_gordowia_tuzey_shahr"
     }
   ],

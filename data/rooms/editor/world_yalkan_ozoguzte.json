@@ -1,7 +1,7 @@
 {
   "id": "world_yalkan_ozoguzte",
-  "name": "Ozoguzte",
-  "description": "",
+  "name": "奧佐古茲特",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "yalkan",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Abayvardem",
+      "direction": "小徑往阿拜瓦爾德姆",
       "to": "world_yalkan_abayvardem"
     },
     {
-      "direction": "小徑往Aydi",
+      "direction": "小徑往阿伊迪",
       "to": "world_yalkan_aydi"
     },
     {
-      "direction": "地牢",
+      "direction": "往地牢",
       "to": "world_marker_dungeons_24"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ozoguzte"
+    "province": "奧佐古茲特"
   }
 }

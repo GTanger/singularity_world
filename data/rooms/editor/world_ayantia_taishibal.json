@@ -1,7 +1,7 @@
 {
   "id": "world_ayantia_taishibal",
-  "name": "Taishibal",
-  "description": "",
+  "name": "塔伊希巴勒",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "ayantia",
   "tags": [
     "village",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Sevlin",
+      "direction": "官道往塞瓦林",
       "to": "world_shalantsa_sevlin"
     },
     {
-      "direction": "官道往Hulandor",
+      "direction": "官道往呼蘭多爾",
       "to": "world_shalantsa_hulandor"
     },
     {
-      "direction": "小徑往Tsagaan",
+      "direction": "小徑往察干",
       "to": "world_ayantia_tsagaan"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Nogon"
+    "province": "恩奧格奧恩"
   }
 }

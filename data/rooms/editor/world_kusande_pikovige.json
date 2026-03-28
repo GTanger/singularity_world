@@ -1,14 +1,14 @@
 {
   "id": "world_kusande_pikovige",
-  "name": "Pikovige",
-  "description": "",
+  "name": "皮科維格",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "kusande",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Ansur",
+      "direction": "小徑往阿恩蘇爾",
       "to": "world_kusande_ansur"
     }
   ],
@@ -34,6 +34,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Pikovige"
+    "province": "皮科維格"
   }
 }

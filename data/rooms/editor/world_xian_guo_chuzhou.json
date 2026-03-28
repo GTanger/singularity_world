@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_chuzhou",
-  "name": "Chuzhou",
-  "description": "",
+  "name": "滁州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Dongchang",
+      "direction": "小徑往東昌",
       "to": "world_xian_guo_dongchang"
     },
     {
-      "direction": "小徑往Chenzhou",
+      "direction": "小徑往郴州",
       "to": "world_xian_guo_chenzhou"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Chuzhou"
+    "province": "楚哲烏"
   }
 }

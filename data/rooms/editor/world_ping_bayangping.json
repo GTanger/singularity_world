@@ -1,7 +1,7 @@
 {
   "id": "world_ping_bayangping",
-  "name": "Bayangping",
-  "description": "",
+  "name": "巴陽坪",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "ping",
   "tags": [
     "city",
@@ -12,11 +12,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tailining",
+      "direction": "小徑往太里寧",
       "to": "world_ganz_guo_tailining"
     },
     {
-      "direction": "小徑往Linjiang",
+      "direction": "小徑往臨江",
       "to": "world_ping_linjiang"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Wenzho Guo"
+    "province": "韋恩哲奧國"
   }
 }

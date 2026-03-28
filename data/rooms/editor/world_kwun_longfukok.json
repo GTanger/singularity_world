@@ -1,7 +1,7 @@
 {
   "id": "world_kwun_longfukok",
-  "name": "Longfukok",
-  "description": "",
+  "name": "龍福角",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "kwun",
   "tags": [
     "village",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Siunamtin",
+      "direction": "小徑往紹南甸",
       "to": "world_kwun_siunamtin"
     },
     {
-      "direction": "小徑往Yeungling",
+      "direction": "小徑往楊嶺",
       "to": "world_kwun_yeungling"
     },
     {
-      "direction": "小徑往Lowuhing",
+      "direction": "小徑往老湖興",
       "to": "world_kwun_lowuhing"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Dongia"
+    "province": "東亞"
   }
 }

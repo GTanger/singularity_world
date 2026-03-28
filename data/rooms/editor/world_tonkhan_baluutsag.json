@@ -1,7 +1,7 @@
 {
   "id": "world_tonkhan_baluutsag",
-  "name": "Baluutsag",
-  "description": "",
+  "name": "巴盧烏察格",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "tonkhan",
   "tags": [
     "village",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tovo",
+      "direction": "官道往托沃",
       "to": "world_khulekhia_tovo"
     },
     {
-      "direction": "官道往Jinst",
+      "direction": "官道往吉恩斯特",
       "to": "world_tonkhan_jinst"
     },
     {
-      "direction": "小徑往Balanuurga",
+      "direction": "小徑往巴拉努爾加",
       "to": "world_morovria_balanuurga"
     },
     {
-      "direction": "小徑往Zebul",
+      "direction": "小徑往澤布勒",
       "to": "world_khulekhia_zebul"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Baluutsag"
+    "province": "巴盧烏察格"
   }
 }

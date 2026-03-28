@@ -1,14 +1,14 @@
 {
   "id": "world_marker_circuses_53",
   "name": "競技場",
-  "description": "",
+  "description": "圓形場地圍著木柵，塵土與汗味混雜，彷彿還殘留喝采與馬蹄。",
   "zone": "ziyehia",
   "tags": [
     "circuses"
   ],
   "exits": [
     {
-      "direction": "返回Baghshe",
+      "direction": "返回巴格赫舍",
       "to": "world_ziyehia_baghshe"
     }
   ],

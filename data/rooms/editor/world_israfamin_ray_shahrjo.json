@@ -1,7 +1,7 @@
 {
   "id": "world_israfamin_ray_shahrjo",
-  "name": "Ray-Shahrjo",
-  "description": "",
+  "name": "拉伊沙赫爾喬",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "israfamin",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Ashahr",
+      "direction": "小徑往阿沙赫爾",
       "to": "world_israfamin_ashahr"
     },
     {
-      "direction": "小徑往Hajdayan",
+      "direction": "小徑往哈吉達亞恩",
       "to": "world_israfamin_hajdayan"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ray-Shahrjo"
+    "province": "拉伊沙赫爾喬"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_fungia_chikoktong",
-  "name": "Chikoktong",
-  "description": "",
+  "name": "赤角塘",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "fungia",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Fatshuiu",
+      "direction": "官道往發水宇",
       "to": "world_fungia_fatshuiu"
     },
     {
-      "direction": "官道往Taihang",
+      "direction": "官道往太行",
       "to": "world_fungia_taihang"
     },
     {
-      "direction": "小徑往Taishangy",
+      "direction": "小徑往台山恩吉",
       "to": "world_fungia_taishangy"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tuen"
+    "province": "圖恩"
   }
 }

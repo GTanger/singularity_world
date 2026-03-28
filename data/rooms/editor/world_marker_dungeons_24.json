@@ -1,14 +1,14 @@
 {
   "id": "world_marker_dungeons_24",
   "name": "地牢",
-  "description": "",
+  "description": "低矮的鐵門半掩，霉味與腐水氣自黑暗裡湧出，階梯向下沒入無聲。",
   "zone": "yalkan",
   "tags": [
     "dungeons"
   ],
   "exits": [
     {
-      "direction": "返回Ozoguzte",
+      "direction": "返回奧佐古茲特",
       "to": "world_yalkan_ozoguzte"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "id": "world_shia_shiu",
-  "name": "Shiu",
-  "description": "",
+  "name": "紹",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "shia",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tsingleng",
+      "direction": "官道往青嶺",
       "to": "world_shia_tsingleng"
     },
     {
-      "direction": "官道往Foningsai",
+      "direction": "官道往福寧塞",
       "to": "world_taifongia_foningsai"
     },
     {
-      "direction": "官道往Wuheikiu",
+      "direction": "官道往湖溪橋",
       "to": "world_shia_wuheikiu"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Hokshia"
+    "province": "霍克希阿"
   }
 }

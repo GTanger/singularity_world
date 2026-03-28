@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_tsuni",
-  "name": "Tsuni",
-  "description": "",
+  "name": "足尼",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "nanu",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Fuchu",
+      "direction": "小徑往夫楚",
       "to": "world_nanu_fuchu"
     },
     {
-      "direction": "小徑往Hegu",
+      "direction": "小徑往赫古",
       "to": "world_nanu_hegu"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Shi"
+    "province": "斯赫伊"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_sauntalur_hunkesh",
-  "name": "Hunkesh",
-  "description": "",
+  "name": "洪克沙",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "sauntalur",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Mirwah",
+      "direction": "官道往米爾瓦赫",
       "to": "world_ith_mirwah"
     },
     {
-      "direction": "官道往Kadur",
+      "direction": "官道往卡杜爾",
       "to": "world_hunageria_kadur"
     },
     {
-      "direction": "小徑往Sudallire",
+      "direction": "小徑往蘇達勒利列",
       "to": "world_hunageria_sudallire"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Hunkesh"
+    "province": "洪克沙"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_hawa",
-  "name": "Hawa",
-  "description": "",
+  "name": "哈瓦",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "nanu",
   "tags": [
     "village",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Kinaboka",
+      "direction": "官道往基納博卡",
       "to": "world_nanu_kinaboka"
     },
     {
-      "direction": "官道往Kujifumiro",
+      "direction": "官道往庫吉夫米羅",
       "to": "world_sananai_kujifumiro"
     },
     {
-      "direction": "小徑往Hegu",
+      "direction": "小徑往赫古",
       "to": "world_nanu_hegu"
     },
     {
-      "direction": "小徑往Ichimamifu",
+      "direction": "小徑往一間見府",
       "to": "world_nanu_ichimamifu"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Hiroto"
+    "province": "希羅托"
   }
 }

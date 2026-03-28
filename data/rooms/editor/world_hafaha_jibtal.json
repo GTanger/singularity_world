@@ -1,7 +1,7 @@
 {
   "id": "world_hafaha_jibtal",
-  "name": "Jibtal",
-  "description": "",
+  "name": "吉布塔勒",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "hafaha",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Bayan",
+      "direction": "官道往巴彥·257",
       "to": "world_chandia_bayan"
     },
     {
-      "direction": "官道往Tsogtsagaan",
+      "direction": "官道往措格察干",
       "to": "world_chandia_tsogtsagaan"
     },
     {
-      "direction": "小徑往Balsazim",
+      "direction": "小徑往巴勒薩齊姆",
       "to": "world_hafaha_balsazim"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Jibtal"
+    "province": "吉伊布特阿爾"
   }
 }

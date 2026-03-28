@@ -1,7 +1,7 @@
 {
   "id": "world_safus_astan",
-  "name": "Astan",
-  "description": "",
+  "name": "阿斯坦",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "safus",
   "tags": [
     "city",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Shah",
+      "direction": "官道往沙赫",
       "to": "world_takhtarjia_shah"
     },
     {
-      "direction": "官道往Habad",
+      "direction": "官道往哈巴德",
       "to": "world_yahan_habad"
     }
   ],

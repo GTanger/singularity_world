@@ -1,7 +1,7 @@
 {
   "id": "world_sasasunguk_ungcheon",
-  "name": "Ungcheon",
-  "description": "",
+  "name": "雄川",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "sasasunguk",
   "tags": [
     "town",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Aripo",
+      "direction": "官道往阿里波",
       "to": "world_sasasunguk_aripo"
     },
     {
-      "direction": "官道往Jeongju",
+      "direction": "官道往正州",
       "to": "world_sanguk_jeongju"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Geumguk"
+    "province": "格烏姆國"
   }
 }

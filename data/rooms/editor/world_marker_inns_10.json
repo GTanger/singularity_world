@@ -1,14 +1,14 @@
 {
   "id": "world_marker_inns_10",
   "name": "旅店",
-  "description": "",
+  "description": "簷下掛燈搖晃，木門吱呀，屋內傳來碗盤與低語，是路人在此歇腳。",
   "zone": "fungia",
   "tags": [
     "inns"
   ],
   "exits": [
     {
-      "direction": "返回Simshan",
+      "direction": "返回尖山",
       "to": "world_fungia_simshan"
     }
   ],

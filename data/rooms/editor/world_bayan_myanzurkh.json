@@ -1,7 +1,7 @@
 {
   "id": "world_bayan_myanzurkh",
-  "name": "Myanzurkh",
-  "description": "",
+  "name": "姆亞恩祖爾赫",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "bayan",
   "tags": [
     "city",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Ervanbure",
+      "direction": "官道往額爾萬布列",
       "to": "world_tsetulag_ervanbure"
     },
     {
-      "direction": "官道往Tsakhonuur",
+      "direction": "官道往察洪烏爾",
       "to": "world_bayan_tsakhonuur"
     },
     {
-      "direction": "小徑往Luushaantno",
+      "direction": "小徑往盧烏沙阿恩特諾",
       "to": "world_bayan_luushaantno"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tsakhunel"
+    "province": "察庫內勒"
   }
 }

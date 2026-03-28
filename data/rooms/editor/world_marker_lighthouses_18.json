@@ -1,14 +1,14 @@
 {
   "id": "world_marker_lighthouses_18",
   "name": "燈塔",
-  "description": "",
+  "description": "塔身聳向海霧，光柱在夜裡掃過海面，浪在腳下拍成白沫。",
   "zone": "pirmir",
   "tags": [
     "lighthouses"
   ],
   "exits": [
     {
-      "direction": "返回Pirmir",
+      "direction": "返回皮爾米爾",
       "to": "world_pirmir_pirmir"
     }
   ],

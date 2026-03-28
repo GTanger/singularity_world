@@ -1,7 +1,7 @@
 {
   "id": "world_hongnamguk_namrye",
-  "name": "Namrye",
-  "description": "",
+  "name": "南禮",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "hongnamguk",
   "tags": [
     "town",
@@ -12,7 +12,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yeoncheon",
+      "direction": "小徑往耶奧恩川",
       "to": "world_hongnamguk_yeoncheon"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Namrye"
+    "province": "恩阿姆爾伊厄"
   }
 }

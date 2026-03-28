@@ -1,7 +1,7 @@
 {
   "id": "world_lon_guo_hanzhou",
-  "name": "Hanzhou",
-  "description": "",
+  "name": "漢州",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "lon_guo",
   "tags": [
     "town",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Huangsha",
+      "direction": "小徑往黃沙",
       "to": "world_lon_guo_huangsha"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shuoqin Guo"
+    "province": "舒奧奇恩國"
   }
 }

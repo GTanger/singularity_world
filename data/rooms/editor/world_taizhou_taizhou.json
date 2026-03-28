@@ -1,7 +1,7 @@
 {
   "id": "world_taizhou_taizhou",
-  "name": "Taizhou",
-  "description": "",
+  "name": "台州·13",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "taizhou",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Zhenan",
+      "direction": "官道往鎮安",
       "to": "world_taizhou_zhenan"
     },
     {
-      "direction": "官道往Tengchang",
+      "direction": "官道往滕昌",
       "to": "world_taizhou_tengchang"
     },
     {
-      "direction": "小徑往Kuizhou",
+      "direction": "小徑往夔州·331",
       "to": "world_taizhou_kuizhou"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Xian Guo"
+    "province": "克斯亞恩國"
   }
 }

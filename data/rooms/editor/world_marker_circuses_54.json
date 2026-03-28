@@ -1,14 +1,14 @@
 {
   "id": "world_marker_circuses_54",
   "name": "競技場",
-  "description": "",
+  "description": "圓形場地圍著木柵，塵土與汗味混雜，彷彿還殘留喝采與馬蹄。",
   "zone": "tonkhan",
   "tags": [
     "circuses"
   ],
   "exits": [
     {
-      "direction": "返回Jinst",
+      "direction": "返回吉恩斯特",
       "to": "world_tonkhan_jinst"
     }
   ],

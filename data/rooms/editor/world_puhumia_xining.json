@@ -1,7 +1,7 @@
 {
   "id": "world_puhumia_xining",
-  "name": "Xining",
-  "description": "",
+  "name": "西寧",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "puhumia",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Gaozhong",
+      "direction": "小徑往高中",
       "to": "world_meia_gaozhong"
     },
     {
-      "direction": "小徑往Hopua",
+      "direction": "小徑往霍普阿",
       "to": "world_puhumia_hopua"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ganz Guo"
+    "province": "甘茲國"
   }
 }

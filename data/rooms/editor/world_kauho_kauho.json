@@ -1,7 +1,7 @@
 {
   "id": "world_kauho_kauho",
-  "name": "Kauho",
-  "description": "",
+  "name": "卡烏霍",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "kauho",
   "tags": [
     "village",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Mohikiau",
+      "direction": "官道往莫希基奧",
       "to": "world_apakalia_mohikiau"
     },
     {
-      "direction": "官道往Alopoula",
+      "direction": "官道往阿洛波烏拉",
       "to": "world_kauho_alopoula"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Kawia"
+    "province": "克阿沃伊阿"
   }
 }

@@ -1,18 +1,18 @@
 {
   "id": "world_taoxing_nayang",
-  "name": "Nayang",
-  "description": "",
+  "name": "那陽",
+  "description": "僅數戶人家，炊煙細細。四野空曠，只有風過草與木柵的聲音。",
   "zone": "taoxing",
   "tags": [
     "hamlet"
   ],
   "exits": [
     {
-      "direction": "小徑往Suzhou",
+      "direction": "小徑往蘇州",
       "to": "world_taoxing_suzhou"
     },
     {
-      "direction": "小徑往Lilan",
+      "direction": "小徑往利蘭",
       "to": "world_dengz_guo_lilan"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shun Guo"
+    "province": "舒恩國"
   }
 }

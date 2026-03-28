@@ -1,7 +1,7 @@
 {
   "id": "world_hwanponamguk_uiwang",
-  "name": "Uiwang",
-  "description": "",
+  "name": "烏伊萬格",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "hwanponamguk",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Shulun",
+      "direction": "官道往樹倫",
       "to": "world_meia_shulun"
     },
     {
-      "direction": "官道往Cheon",
+      "direction": "官道往川",
       "to": "world_hwanponamguk_cheon"
     },
     {
-      "direction": "小徑往Okchang",
+      "direction": "小徑往玉昌",
       "to": "world_sanguk_okchang"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Jincheon"
+    "province": "吉恩川"
   }
 }

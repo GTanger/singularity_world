@@ -1,14 +1,14 @@
 {
   "id": "world_marker_statues_45",
   "name": "雕像",
-  "description": "",
+  "description": "巨像矗立在空地上，石面剝落，五官模糊，仍俯視著往來的人。",
   "zone": "xian_guo",
   "tags": [
     "statues"
   ],
   "exits": [
     {
-      "direction": "返回Guang",
+      "direction": "返回廣·182",
       "to": "world_xian_guo_guang"
     }
   ],

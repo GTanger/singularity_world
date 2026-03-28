@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_shouchun",
-  "name": "Shouchun",
-  "description": "",
+  "name": "壽春",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Shinan",
+      "direction": "小徑往石南·545",
       "to": "world_xian_guo_shinan"
     },
     {
-      "direction": "小徑往Guang",
+      "direction": "小徑往廣·182",
       "to": "world_xian_guo_guang"
     },
     {
-      "direction": "小徑往Zhenqing",
+      "direction": "小徑往鎮青",
       "to": "world_xian_guo_zhenqing"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shun Guo"
+    "province": "舒恩國"
   }
 }

@@ -1,18 +1,18 @@
 {
   "id": "world_jowzvania_fuged",
-  "name": "Fuged",
-  "description": "",
+  "name": "夫格德",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "jowzvania",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Eshahrok",
+      "direction": "小徑往厄沙赫爾奧克",
       "to": "world_jowzvania_eshahrok"
     },
     {
-      "direction": "小徑往Dayandaq",
+      "direction": "小徑往達亞恩達格",
       "to": "world_jowzvania_dayandaq"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kobararia"
+    "province": "科巴拉里阿"
   }
 }

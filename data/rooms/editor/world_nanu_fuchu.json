@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_fuchu",
-  "name": "Fuchu",
-  "description": "",
+  "name": "夫楚",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "nanu",
   "tags": [
     "village",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Nawarimira",
+      "direction": "小徑往納瓦里米拉",
       "to": "world_nanu_nawarimira"
     },
     {
-      "direction": "小徑往Mimamarayo",
+      "direction": "小徑往米馬馬拉約",
       "to": "world_nanu_mimamarayo"
     },
     {
-      "direction": "小徑往Tsuni",
+      "direction": "小徑往足尼",
       "to": "world_nanu_tsuni"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Fuchu"
+    "province": "府中"
   }
 }

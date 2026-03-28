@@ -1,7 +1,7 @@
 {
   "id": "world_henlongia_henlong",
-  "name": "Henlong",
-  "description": "",
+  "name": "衡隆",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "henlongia",
   "tags": [
     "town",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Foningsai",
+      "direction": "官道往福寧塞",
       "to": "world_taifongia_foningsai"
     },
     {
-      "direction": "官道往Chinghoi",
+      "direction": "官道往青海",
       "to": "world_chinghia_chinghoi"
     },
     {
-      "direction": "小徑往Maonshano",
+      "direction": "小徑往茅山澳",
       "to": "world_henlongia_maonshano"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Henlong"
+    "province": "赫恩隆格"
   }
 }

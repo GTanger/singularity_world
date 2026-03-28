@@ -1,7 +1,7 @@
 {
   "id": "world_heungia_fungsha",
-  "name": "Fungsha",
-  "description": "",
+  "name": "鳳沙",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "heungia",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Laiyeung",
+      "direction": "官道往麗洋",
       "to": "world_lokchia_laiyeung"
     },
     {
-      "direction": "官道往Fukgong",
+      "direction": "官道往福公",
       "to": "world_heungia_fukgong"
     },
     {
-      "direction": "小徑往Laicheong",
+      "direction": "小徑往禮昌",
       "to": "world_lokchia_laicheong"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Seilunia"
+    "province": "塞伊爾溫亞"
   }
 }

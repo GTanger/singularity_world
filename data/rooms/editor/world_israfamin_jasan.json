@@ -1,7 +1,7 @@
 {
   "id": "world_israfamin_jasan",
-  "name": "Jasan",
-  "description": "",
+  "name": "賈桑",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "israfamin",
   "tags": [
     "hamlet",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Ahanatarim",
+      "direction": "小徑往阿哈納塔里姆",
       "to": "world_israfamin_ahanatarim"
     },
     {
-      "direction": "小徑往Arakrankafa",
+      "direction": "小徑往阿拉克蘭卡法",
       "to": "world_golparia_arakrankafa"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Vabia"
+    "province": "維阿布伊阿"
   }
 }

@@ -1,14 +1,14 @@
 {
   "id": "world_marker_encounters_66",
   "name": "遭遇點",
-  "description": "",
+  "description": "路在此岔開，草痕雜沓，彷彿曾有人在此急轉或停留。",
   "zone": "chamgaria",
   "tags": [
     "encounters"
   ],
   "exits": [
     {
-      "direction": "返回Pariruzful",
+      "direction": "返回帕里魯茲夫勒",
       "to": "world_chamgaria_pariruzful"
     }
   ],

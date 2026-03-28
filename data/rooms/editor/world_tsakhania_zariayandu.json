@@ -1,7 +1,7 @@
 {
   "id": "world_tsakhania_zariayandu",
-  "name": "Zariayandu",
-  "description": "",
+  "name": "札里阿亞恩杜",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "tsakhania",
   "tags": [
     "town",
@@ -12,11 +12,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tsayangai",
+      "direction": "官道往察彥加伊",
       "to": "world_tulag_tsayangai"
     },
     {
-      "direction": "官道往Alan",
+      "direction": "官道往阿蘭",
       "to": "world_myania_alan"
     }
   ],

@@ -1,14 +1,14 @@
 {
   "id": "world_marker_migration_59",
   "name": "遷徙路線",
-  "description": "",
+  "description": "舊車轍與草痕交錯，指向遠方，風裡有遷徙者留下的空曠氣息。",
   "zone": "oguzsyurt",
   "tags": [
     "migration"
   ],
   "exits": [
     {
-      "direction": "返回Yrazte",
+      "direction": "返回伊拉茲特",
       "to": "world_oguzsyurt_yrazte"
     }
   ],

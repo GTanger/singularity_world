@@ -1,14 +1,14 @@
 {
   "id": "world_marker_dances_60",
   "name": "舞場",
-  "description": "",
+  "description": "空地中央泥地被磨得光滑，彷彿曾有人在此踏節奏與圈舞，餘溫猶存。",
   "zone": "israfamin",
   "tags": [
     "dances"
   ],
   "exits": [
     {
-      "direction": "返回Hajdayan",
+      "direction": "返回哈吉達亞恩",
       "to": "world_israfamin_hajdayan"
     }
   ],

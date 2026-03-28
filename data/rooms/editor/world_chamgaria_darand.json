@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_darand",
-  "name": "Darand",
-  "description": "",
+  "name": "達蘭德",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "chamgaria",
   "tags": [
     "village",
@@ -11,7 +11,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Dowsieh",
+      "direction": "小徑往多瓦西厄赫",
       "to": "world_chamgaria_dowsieh"
     }
   ],
@@ -37,6 +37,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Shabadia"
+    "province": "沙巴德亞"
   }
 }

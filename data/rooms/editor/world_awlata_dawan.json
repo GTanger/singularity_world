@@ -1,7 +1,7 @@
 {
   "id": "world_awlata_dawan",
-  "name": "Dawan",
-  "description": "",
+  "name": "達萬",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "awlata",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tazrouaba",
+      "direction": "官道往塔茲羅瓦巴",
       "to": "world_guela_tazrouaba"
     },
     {
-      "direction": "官道往Ouramiz",
+      "direction": "官道往烏拉米茲",
       "to": "world_awlata_ouramiz"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Anfania"
+    "province": "阿恩法尼阿"
   }
 }

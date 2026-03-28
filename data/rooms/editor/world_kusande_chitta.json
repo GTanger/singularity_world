@@ -1,7 +1,7 @@
 {
   "id": "world_kusande_chitta",
-  "name": "Chitta",
-  "description": "",
+  "name": "奇特塔",
+  "description": "湖邊漁村薄霧未散，水面細浪拍岸。遠山只剩一線淡影，空氣裡有魚腥與水草。",
   "zone": "kusande",
   "tags": [
     "village",
@@ -31,6 +31,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Murapetna"
+    "province": "村佩特納"
   }
 }

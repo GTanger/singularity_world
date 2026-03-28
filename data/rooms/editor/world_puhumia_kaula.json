@@ -1,7 +1,7 @@
 {
   "id": "world_puhumia_kaula",
-  "name": "Kaula",
-  "description": "",
+  "name": "卡烏拉",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "puhumia",
   "tags": [
     "town",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Apohinehi",
+      "direction": "小徑往阿波希內希",
       "to": "world_puhumia_apohinehi"
     },
     {
-      "direction": "小徑往Nakahuaio",
+      "direction": "小徑往納卡胡艾奧",
       "to": "world_puhumia_nakahuaio"
     },
     {
-      "direction": "海路往Siche",
+      "direction": "海路往四徹",
       "to": "world_ping_siche"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Kaula"
+    "province": "克阿烏爾阿"
   }
 }

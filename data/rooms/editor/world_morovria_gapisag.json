@@ -1,7 +1,7 @@
 {
   "id": "world_morovria_gapisag",
-  "name": "Gapisag",
-  "description": "",
+  "name": "加皮薩格",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "morovria",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Ergaltkhan",
+      "direction": "官道往厄爾加爾特汗",
       "to": "world_tonkhan_ergaltkhan"
     },
     {
-      "direction": "官道往Dutsa",
+      "direction": "官道往杜察",
       "to": "world_morovria_dutsa"
     },
     {
-      "direction": "小徑往Tiyah",
+      "direction": "小徑往提亞赫",
       "to": "world_tonkhan_tiyah"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Nisagia"
+    "province": "尼薩吉阿"
   }
 }

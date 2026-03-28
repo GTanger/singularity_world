@@ -1,22 +1,22 @@
 {
   "id": "world_puz_surunidu",
-  "name": "Surunidu",
-  "description": "",
+  "name": "蘇魯尼杜",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "puz",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Tadmaba",
+      "direction": "小徑往塔德馬巴",
       "to": "world_puz_tadmaba"
     },
     {
-      "direction": "小徑往Mash",
+      "direction": "小徑往馬斯赫",
       "to": "world_puz_mash"
     },
     {
-      "direction": "小徑往Puz",
+      "direction": "小徑往普茲",
       "to": "world_puz_puz"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Surunidu"
+    "province": "蘇魯尼杜"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_kusande_wadapurpur",
-  "name": "Wadapurpur",
-  "description": "",
+  "name": "瓦達普爾普爾",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "kusande",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Mamikarmat",
+      "direction": "官道往馬米卡爾馬特",
       "to": "world_kusande_mamikarmat"
     },
     {
-      "direction": "官道往Baragotere",
+      "direction": "官道往巴拉戈特列",
       "to": "world_krishna_baragotere"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Pikia"
+    "province": "普伊克伊阿"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_shitanoyo",
-  "name": "Shitanoyo",
-  "description": "",
+  "name": "下之代",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "nanu",
   "tags": [
     "town",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Ha Khe",
+      "direction": "小徑往哈赫",
       "to": "world_nanu_ha_khe"
     },
     {
-      "direction": "小徑往Shikinata",
+      "direction": "小徑往志岐灘",
       "to": "world_nanu_shikinata"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nishi"
+    "province": "恩伊斯赫伊"
   }
 }

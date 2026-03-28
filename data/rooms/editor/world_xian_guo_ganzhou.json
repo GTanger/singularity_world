@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_ganzhou",
-  "name": "Ganzhou",
-  "description": "",
+  "name": "贛州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Xingjiang",
+      "direction": "小徑往興江",
       "to": "world_xian_guo_xingjiang"
     },
     {
-      "direction": "亡者之城",
+      "direction": "往亡者之城",
       "to": "world_marker_necropolises_63"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Jian Guo"
+    "province": "吉安國"
   }
 }

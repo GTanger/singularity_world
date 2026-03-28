@@ -1,7 +1,7 @@
 {
   "id": "world_chandia_sharud",
-  "name": "Sharud",
-  "description": "",
+  "name": "沙魯德",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chandia",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tsogtsagaan",
+      "direction": "小徑往措格察干",
       "to": "world_chandia_tsogtsagaan"
     },
     {
-      "direction": "小徑往Rench",
+      "direction": "小徑往列恩察",
       "to": "world_tsetgalia_rench"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Bugatsenia"
+    "province": "布加策尼阿"
   }
 }

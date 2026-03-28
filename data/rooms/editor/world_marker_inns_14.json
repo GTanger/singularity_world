@@ -1,14 +1,14 @@
 {
   "id": "world_marker_inns_14",
   "name": "旅店",
-  "description": "",
+  "description": "簷下掛燈搖晃，木門吱呀，屋內傳來碗盤與低語，是路人在此歇腳。",
   "zone": "tsetulag",
   "tags": [
     "inns"
   ],
   "exits": [
     {
-      "direction": "返回Ergaltkhan",
+      "direction": "返回厄爾加爾特汗·235",
       "to": "world_tsetulag_ergaltkhan"
     }
   ],

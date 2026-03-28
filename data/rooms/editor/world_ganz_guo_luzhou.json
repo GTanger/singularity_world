@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_luzhou",
-  "name": "Luzhou",
-  "description": "",
+  "name": "瀘州",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "ganz_guo",
   "tags": [
     "town",
@@ -12,7 +12,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Kaihua",
+      "direction": "小徑往開化",
       "to": "world_ganz_guo_kaihua"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Wucha"
+    "province": "沃烏克赫阿"
   }
 }

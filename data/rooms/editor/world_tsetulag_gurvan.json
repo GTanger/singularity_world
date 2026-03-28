@@ -1,7 +1,7 @@
 {
   "id": "world_tsetulag_gurvan",
-  "name": "Gurvan",
-  "description": "",
+  "name": "古爾萬",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "tsetulag",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Aska",
+      "direction": "官道往阿斯卡",
       "to": "world_buybaryurt_aska"
     },
     {
-      "direction": "官道往Ervanbure",
+      "direction": "官道往額爾萬布列",
       "to": "world_tsetulag_ervanbure"
     },
     {
-      "direction": "小徑往Khairgayan",
+      "direction": "小徑往哈伊爾嘎彥",
       "to": "world_tsetulag_khairgayan"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Gurvan"
+    "province": "格烏爾維阿恩"
   }
 }

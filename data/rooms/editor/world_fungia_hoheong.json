@@ -1,7 +1,7 @@
 {
   "id": "world_fungia_hoheong",
-  "name": "Hoheong",
-  "description": "",
+  "name": "何香",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "fungia",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Taishangy",
+      "direction": "小徑往台山恩吉",
       "to": "world_fungia_taishangy"
     },
     {
-      "direction": "小徑往Siunamtin",
+      "direction": "小徑往紹南甸",
       "to": "world_kwun_siunamtin"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Puiwia"
+    "province": "普烏伊沃伊阿"
   }
 }

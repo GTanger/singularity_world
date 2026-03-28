@@ -1,7 +1,7 @@
 {
   "id": "world_kima_tebourza",
-  "name": "Tebourza",
-  "description": "",
+  "name": "特博烏爾札",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "kima",
   "tags": [
     "town",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Aliwenden",
+      "direction": "小徑往阿利韋恩德恩",
       "to": "world_kima_aliwenden"
     },
     {
-      "direction": "小徑往Irat",
+      "direction": "小徑往伊拉特",
       "to": "world_awlata_irat"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tebourza"
+    "province": "特博烏爾扎"
   }
 }

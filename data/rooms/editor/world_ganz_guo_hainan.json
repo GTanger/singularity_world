@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_hainan",
-  "name": "Hainan",
-  "description": "",
+  "name": "海南",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "ganz_guo",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Sizhou",
+      "direction": "官道往泗州·612",
       "to": "world_ganz_guo_sizhou_612"
     },
     {
-      "direction": "官道往Laizhouyun",
+      "direction": "官道往萊州雲",
       "to": "world_xian_guo_laizhouyun"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Hainan"
+    "province": "哈因安"
   }
 }

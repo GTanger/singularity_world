@@ -1,7 +1,7 @@
 {
   "id": "world_shamshia_yongsha",
-  "name": "Yongsha",
-  "description": "",
+  "name": "涌沙",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "shamshia",
   "tags": [
     "village",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Duenchung",
+      "direction": "官道往端沖",
       "to": "world_tuenia_duenchung"
     },
     {
-      "direction": "官道往Leungchung",
+      "direction": "官道往良沖",
       "to": "world_shamshia_leungchung"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Yongsha"
+    "province": "約恩沙"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_gordowia_datigziyan",
-  "name": "Datigziyan",
-  "description": "",
+  "name": "達提格齊亞恩",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "gordowia",
   "tags": [
     "village",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Atompydareh",
+      "direction": "官道往阿托姆普伊達列赫",
       "to": "world_tuladshia_atompydareh"
     },
     {
-      "direction": "官道往Harherm",
+      "direction": "官道往哈爾赫爾姆",
       "to": "world_guela_harherm"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Fureng"
+    "province": "夫烏爾厄恩格"
   }
 }

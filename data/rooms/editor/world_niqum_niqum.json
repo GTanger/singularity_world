@@ -1,7 +1,7 @@
 {
   "id": "world_niqum_niqum",
-  "name": "Niqum",
-  "description": "",
+  "name": "尼庫姆",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "niqum",
   "tags": [
     "town",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Magu",
+      "direction": "官道往馬古",
       "to": "world_dur_un_magu"
     },
     {
-      "direction": "官道往Urun",
+      "direction": "官道往烏倫",
       "to": "world_niqum_urun"
     },
     {
-      "direction": "海路往Durkulu",
+      "direction": "海路往杜爾庫盧",
       "to": "world_dur_ti_durkulu"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Niqum"
+    "province": "恩伊庫烏姆"
   }
 }

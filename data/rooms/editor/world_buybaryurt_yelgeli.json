@@ -1,22 +1,22 @@
 {
   "id": "world_buybaryurt_yelgeli",
-  "name": "Yelgeli",
-  "description": "",
+  "name": "耶勒格利",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "buybaryurt",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Yaz",
+      "direction": "小徑往亞茲",
       "to": "world_yalkan_yaz"
     },
     {
-      "direction": "小徑往Abayvardem",
+      "direction": "小徑往阿拜瓦爾德姆",
       "to": "world_yalkan_abayvardem"
     },
     {
-      "direction": "小徑往Aynak",
+      "direction": "小徑往阿伊納克",
       "to": "world_buybaryurt_aynak"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Yelgeli"
+    "province": "耶勒格利"
   }
 }

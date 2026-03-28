@@ -1,14 +1,14 @@
 {
   "id": "world_marker_canoes_57",
   "name": "渡口",
-  "description": "",
+  "description": "淺灣邊繫著幾艘小舟，水波輕拍，岸邊草葦搖晃，遠處有路通向內陸。",
   "zone": "golparia",
   "tags": [
     "canoes"
   ],
   "exits": [
     {
-      "direction": "返回Arakrankafa",
+      "direction": "返回阿拉克蘭卡法",
       "to": "world_golparia_arakrankafa"
     }
   ],

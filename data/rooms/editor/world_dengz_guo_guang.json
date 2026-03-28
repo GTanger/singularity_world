@@ -1,7 +1,7 @@
 {
   "id": "world_dengz_guo_guang",
-  "name": "Guang",
-  "description": "",
+  "name": "廣",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "dengz_guo",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Chang",
+      "direction": "小徑往昌",
       "to": "world_dengz_guo_chang"
     },
     {
-      "direction": "小徑往Jinanhua",
+      "direction": "小徑往晉安華",
       "to": "world_dengz_guo_jinanhua"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Guang"
+    "province": "格烏阿恩格"
   }
 }

@@ -1,14 +1,14 @@
 {
   "id": "world_kusande_saundabad",
-  "name": "Saundabad",
-  "description": "",
+  "name": "薩烏恩達巴德",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "kusande",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Uduragote",
+      "direction": "小徑往烏杜拉戈特",
       "to": "world_kusande_uduragote"
     }
   ],
@@ -34,6 +34,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Saundabad"
+    "province": "薩烏恩達巴德"
   }
 }

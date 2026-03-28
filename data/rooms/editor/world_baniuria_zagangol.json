@@ -1,7 +1,7 @@
 {
   "id": "world_baniuria_zagangol",
-  "name": "Zagangol",
-  "description": "",
+  "name": "札甘河",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "baniuria",
   "tags": [
     "town",
@@ -12,19 +12,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Onuur",
+      "direction": "官道往奧努爾",
       "to": "world_baniuria_onuur"
     },
     {
-      "direction": "官道往Lada",
+      "direction": "官道往拉達",
       "to": "world_kabiria_lada"
     },
     {
-      "direction": "小徑往Tsayan",
+      "direction": "小徑往察彥",
       "to": "world_baniuria_tsayan"
     },
     {
-      "direction": "小徑往Mayansaikhan",
+      "direction": "小徑往馬亞恩賽汗",
       "to": "world_baniuria_mayansaikhan"
     }
   ],
@@ -50,6 +50,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Zagangol"
+    "province": "扎江奧爾"
   }
 }

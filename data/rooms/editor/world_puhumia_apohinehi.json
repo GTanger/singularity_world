@@ -1,26 +1,26 @@
 {
   "id": "world_puhumia_apohinehi",
-  "name": "Apohinehi",
-  "description": "",
+  "name": "阿波希內希",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "puhumia",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "官道往Napopiono",
+      "direction": "官道往納波皮奧諾",
       "to": "world_puhumia_napopiono"
     },
     {
-      "direction": "官道往Puonoukipu",
+      "direction": "官道往普奧諾烏基普",
       "to": "world_puhumia_puonoukipu"
     },
     {
-      "direction": "小徑往Paiahulua",
+      "direction": "小徑往帕亞胡盧阿",
       "to": "world_puhumia_paiahulua"
     },
     {
-      "direction": "小徑往Kaula",
+      "direction": "小徑往卡烏拉",
       "to": "world_puhumia_kaula"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kaukama"
+    "province": "卡烏卡馬"
   }
 }

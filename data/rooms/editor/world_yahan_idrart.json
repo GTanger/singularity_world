@@ -1,7 +1,7 @@
 {
   "id": "world_yahan_idrart",
-  "name": "Idrart",
-  "description": "",
+  "name": "伊德拉爾特",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "yahan",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Sraghzut",
+      "direction": "官道往斯拉格祖特",
       "to": "world_yahan_sraghzut"
     },
     {
-      "direction": "官道往Mchernagu",
+      "direction": "官道往姆切爾納古",
       "to": "world_yahan_mchernagu"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Idrart"
+    "province": "伊德爾阿爾特"
   }
 }

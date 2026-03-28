@@ -1,7 +1,7 @@
 {
   "id": "world_deria_washak",
-  "name": "Washak",
-  "description": "",
+  "name": "瓦沙克",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "deria",
   "tags": [
     "city",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Shisur",
+      "direction": "官道往希蘇爾",
       "to": "world_shisur_shisur"
     },
     {
-      "direction": "官道往Der",
+      "direction": "官道往德爾",
       "to": "world_deria_der"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Washak"
+    "province": "沃阿斯赫阿克"
   }
 }

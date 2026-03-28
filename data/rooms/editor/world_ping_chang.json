@@ -1,7 +1,7 @@
 {
   "id": "world_ping_chang",
-  "name": "Chang",
-  "description": "",
+  "name": "昌·198",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "ping",
   "tags": [
     "town",
@@ -9,19 +9,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tongzhou",
+      "direction": "官道往通州",
       "to": "world_binz_guo_tongzhou"
     },
     {
-      "direction": "官道往Hanzhou",
+      "direction": "官道往漢州·446",
       "to": "world_ping_hanzhou"
     },
     {
-      "direction": "小徑往Kaihe",
+      "direction": "小徑往開河",
       "to": "world_ping_kaihe"
     },
     {
-      "direction": "盜賊據點",
+      "direction": "往盜賊據點",
       "to": "world_marker_brigands_36"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Chang"
+    "province": "克赫阿恩格"
   }
 }

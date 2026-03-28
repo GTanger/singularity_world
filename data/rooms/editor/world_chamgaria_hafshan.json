@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_hafshan",
-  "name": "Hafshan",
-  "description": "",
+  "name": "哈夫沙恩",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "chamgaria",
   "tags": [
     "town",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Buged",
+      "direction": "小徑往布格德",
       "to": "world_chamgaria_buged"
     },
     {
-      "direction": "小徑往Pariruzful",
+      "direction": "小徑往帕里魯茲夫勒",
       "to": "world_chamgaria_pariruzful"
     },
     {
-      "direction": "小徑往Tahasar",
+      "direction": "小徑往塔哈薩爾",
       "to": "world_gordowia_tahasar"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Zran"
+    "province": "茲爾阿恩"
   }
 }

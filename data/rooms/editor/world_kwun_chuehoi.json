@@ -1,7 +1,7 @@
 {
   "id": "world_kwun_chuehoi",
-  "name": "Chuehoi",
-  "description": "",
+  "name": "除海",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "kwun",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Chingtei",
+      "direction": "小徑往清底",
       "to": "world_kwun_chingtei"
     },
     {
-      "direction": "小徑往Fangshui",
+      "direction": "小徑往防水",
       "to": "world_kwun_fangshui"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Chuehoi"
+    "province": "楚厄霍伊"
   }
 }

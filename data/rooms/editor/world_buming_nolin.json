@@ -1,7 +1,7 @@
 {
   "id": "world_buming_nolin",
-  "name": "Nolin",
-  "description": "",
+  "name": "諾林",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "buming",
   "tags": [
     "village",
@@ -9,23 +9,23 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tiyah",
+      "direction": "小徑往提亞赫",
       "to": "world_tonkhan_tiyah"
     },
     {
-      "direction": "小徑往Qidssurda",
+      "direction": "小徑往奇德斯蘇爾達",
       "to": "world_chandia_qidssurda"
     },
     {
-      "direction": "小徑往Ergaltkhan",
+      "direction": "小徑往厄爾加爾特汗",
       "to": "world_tonkhan_ergaltkhan"
     },
     {
-      "direction": "小徑往Saikhan",
+      "direction": "小徑往賽汗",
       "to": "world_buming_saikhan"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_8"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nolin"
+    "province": "恩奧爾伊恩"
   }
 }

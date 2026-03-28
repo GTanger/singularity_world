@@ -1,7 +1,7 @@
 {
   "id": "world_dengz_guo_baoqing",
-  "name": "Baoqing",
-  "description": "",
+  "name": "寶慶",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "dengz_guo",
   "tags": [
     "town",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Raozhou",
+      "direction": "小徑往饒州",
       "to": "world_dengz_guo_raozhou"
     },
     {
-      "direction": "小徑往Xinchang",
+      "direction": "小徑往新昌",
       "to": "world_dengz_guo_xinchang"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Chang"
+    "province": "克赫阿恩格"
   }
 }

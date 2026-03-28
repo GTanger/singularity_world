@@ -1,7 +1,7 @@
 {
   "id": "world_bayan_chunelgerkhu",
-  "name": "Chunelgerkhu",
-  "description": "",
+  "name": "楚內勒格爾庫",
+  "description": "街巷縱橫，屋瓦與人聲層疊。塵土與貨味混在空氣裡，日影在牆角切出深淺。",
   "zone": "bayan",
   "tags": [
     "city",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Sainshaat",
+      "direction": "小徑往薩伊恩沙特",
       "to": "world_bayan_sainshaat"
     },
     {
-      "direction": "小徑往Luushaantno",
+      "direction": "小徑往盧烏沙阿恩特諾",
       "to": "world_bayan_luushaantno"
     },
     {
-      "direction": "小徑往Khuregkhus",
+      "direction": "小徑往庫列格庫斯",
       "to": "world_bayan_khuregkhus"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Zatania"
+    "province": "札塔尼阿"
   }
 }

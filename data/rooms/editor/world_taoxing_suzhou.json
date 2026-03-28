@@ -1,7 +1,7 @@
 {
   "id": "world_taoxing_suzhou",
-  "name": "Suzhou",
-  "description": "",
+  "name": "蘇州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "taoxing",
   "tags": [
     "village",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Zhangwuian",
+      "direction": "官道往章武安",
       "to": "world_taoxing_zhangwuian"
     },
     {
-      "direction": "小徑往Nayang",
+      "direction": "小徑往那陽",
       "to": "world_taoxing_nayang"
     },
     {
-      "direction": "古戰場",
+      "direction": "往古戰場",
       "to": "world_marker_battlefields_21"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Shouc Guo"
+    "province": "紹烏克國"
   }
 }

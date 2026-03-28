@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_binzhou",
-  "name": "Binzhou",
-  "description": "",
+  "name": "濱州·139",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "ganz_guo",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Xincheng",
+      "direction": "小徑往新城·181",
       "to": "world_ganz_guo_xincheng_181"
     },
     {
-      "direction": "小徑往Jiangchun",
+      "direction": "小徑往江春",
       "to": "world_ganz_guo_jiangchun"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Hanz Guo"
+    "province": "哈恩茲國"
   }
 }

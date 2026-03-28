@@ -1,22 +1,22 @@
 {
   "id": "world_xian_guo_hajing",
-  "name": "Hajing",
-  "description": "",
+  "name": "哈京",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "官道往Laizhouyun",
+      "direction": "官道往萊州雲",
       "to": "world_xian_guo_laizhouyun"
     },
     {
-      "direction": "官道往Yananxi",
+      "direction": "官道往延安西",
       "to": "world_xian_guo_yananxi"
     },
     {
-      "direction": "小徑往Guang",
+      "direction": "小徑往廣·489",
       "to": "world_xian_guo_guang_489"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Qin Guo"
+    "province": "庫伊恩格烏奧"
   }
 }

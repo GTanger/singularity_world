@@ -1,7 +1,7 @@
 {
   "id": "world_shisur_shisur",
-  "name": "Shisur",
-  "description": "",
+  "name": "希蘇爾",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "shisur",
   "tags": [
     "city",
@@ -16,15 +16,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Mash",
+      "direction": "官道往馬斯赫",
       "to": "world_puz_mash"
     },
     {
-      "direction": "官道往Washak",
+      "direction": "官道往瓦沙克",
       "to": "world_deria_washak"
     },
     {
-      "direction": "海路往Der",
+      "direction": "海路往德爾",
       "to": "world_deria_der"
     }
   ],
@@ -50,6 +50,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Shisur"
+    "province": "斯赫伊斯烏爾"
   }
 }

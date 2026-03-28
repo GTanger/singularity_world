@@ -1,7 +1,7 @@
 {
   "id": "world_kusande_uduragote",
-  "name": "Uduragote",
-  "description": "",
+  "name": "烏杜拉戈特",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "kusande",
   "tags": [
     "town",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Saundabad",
+      "direction": "小徑往薩烏恩達巴德",
       "to": "world_kusande_saundabad"
     },
     {
-      "direction": "小徑往Asakepalli",
+      "direction": "小徑往阿薩克帕利",
       "to": "world_kusande_asakepalli"
     },
     {
-      "direction": "小徑往Arerika",
+      "direction": "小徑往阿列里卡",
       "to": "world_kusande_arerika"
     },
     {
-      "direction": "小徑往Gundhollija",
+      "direction": "小徑往貢達奧勒利賈",
       "to": "world_kusande_gundhollija"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Gavalpuria"
+    "province": "加瓦勒普爾亞"
   }
 }

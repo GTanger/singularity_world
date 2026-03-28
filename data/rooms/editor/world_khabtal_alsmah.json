@@ -1,7 +1,7 @@
 {
   "id": "world_khabtal_alsmah",
-  "name": "Alsmah",
-  "description": "",
+  "name": "阿勒斯馬赫",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "khabtal",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Saiyah",
+      "direction": "官道往薩伊亞赫",
       "to": "world_heqatha_saiyah"
     },
     {
-      "direction": "官道往Mirwah",
+      "direction": "官道往米爾瓦赫",
       "to": "world_ith_mirwah"
     },
     {
-      "direction": "官道往Alkut",
+      "direction": "官道往阿勒庫特",
       "to": "world_heqatha_alkut"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "id": "world_tsetgalia_bhatkal",
-  "name": "Bhatkal",
-  "description": "",
+  "name": "布阿特卡爾",
+  "description": "僅數戶人家，炊煙細細。四野空曠，只有風過草與木柵的聲音。",
   "zone": "tsetgalia",
   "tags": [
     "hamlet",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tonkhergayan",
+      "direction": "小徑往通赫爾嘎彥",
       "to": "world_tsetgalia_tonkhergayan"
     },
     {
-      "direction": "小徑往Sindhtakore",
+      "direction": "小徑往辛達塔科雷",
       "to": "world_kusande_sindhtakore"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Hodigeria"
+    "province": "霍迪格里阿"
   }
 }

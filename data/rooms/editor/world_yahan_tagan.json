@@ -1,14 +1,14 @@
 {
   "id": "world_yahan_tagan",
-  "name": "Tagan",
-  "description": "",
+  "name": "塔甘",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "yahan",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Sraghzut",
+      "direction": "小徑往斯拉格祖特",
       "to": "world_yahan_sraghzut"
     }
   ],
@@ -34,6 +34,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ouia"
+    "province": "歐亞"
   }
 }

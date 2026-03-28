@@ -1,14 +1,14 @@
 {
   "id": "world_marker_inns_16",
   "name": "旅店",
-  "description": "",
+  "description": "簷下掛燈搖晃，木門吱呀，屋內傳來碗盤與低語，是路人在此歇腳。",
   "zone": "hongnamguk",
   "tags": [
     "inns"
   ],
   "exits": [
     {
-      "direction": "返回Hongnam",
+      "direction": "返回洪南",
       "to": "world_hongnamguk_hongnam"
     }
   ],

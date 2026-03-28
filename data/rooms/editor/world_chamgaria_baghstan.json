@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_baghstan",
-  "name": "Baghstan",
-  "description": "",
+  "name": "巴格赫斯坦",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chamgaria",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Pishteh",
+      "direction": "小徑往皮沙特赫",
       "to": "world_ziyehia_pishteh"
     },
     {
-      "direction": "小徑往Seoymehri",
+      "direction": "小徑往塞奧伊梅赫里",
       "to": "world_chamgaria_seoymehri"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shaheh"
+    "province": "斯赫阿赫厄赫"
   }
 }

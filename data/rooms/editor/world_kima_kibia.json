@@ -1,7 +1,7 @@
 {
   "id": "world_kima_kibia",
-  "name": "Kibia",
-  "description": "",
+  "name": "基比阿",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "kima",
   "tags": [
     "town",
@@ -13,11 +13,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Griwinjaza",
+      "direction": "官道往格里維恩賈札",
       "to": "world_kima_griwinjaza"
     },
     {
-      "direction": "官道往Mchernagu",
+      "direction": "官道往姆切爾納古",
       "to": "world_yahan_mchernagu"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Miramiza"
+    "province": "米拉米扎"
   }
 }

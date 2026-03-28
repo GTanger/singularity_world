@@ -1,7 +1,7 @@
 {
   "id": "world_buybaryurt_bokuz",
-  "name": "Bokuz",
-  "description": "",
+  "name": "博庫茲",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "buybaryurt",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Buyburdi",
+      "direction": "小徑往布伊布爾迪",
       "to": "world_buybaryurt_buyburdi"
     },
     {
-      "direction": "小徑往Buynak",
+      "direction": "小徑往布伊納克",
       "to": "world_buybaryurt_buynak"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Bokuz"
+    "province": "布奧克烏茲"
   }
 }

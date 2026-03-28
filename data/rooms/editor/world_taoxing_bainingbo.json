@@ -1,7 +1,7 @@
 {
   "id": "world_taoxing_bainingbo",
-  "name": "Bainingbo",
-  "description": "",
+  "name": "白寧波",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "taoxing",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Zhangwuian",
+      "direction": "小徑往章武安",
       "to": "world_taoxing_zhangwuian"
     },
     {
-      "direction": "小徑往Ningyibei",
+      "direction": "小徑往寧義北",
       "to": "world_dengz_guo_ningyibei"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Rentian Guo"
+    "province": "列恩提阿恩國"
   }
 }

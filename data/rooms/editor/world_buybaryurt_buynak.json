@@ -1,26 +1,26 @@
 {
   "id": "world_buybaryurt_buynak",
-  "name": "Buynak",
-  "description": "",
+  "name": "布伊納克",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "buybaryurt",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Aynak",
+      "direction": "小徑往阿伊納克",
       "to": "world_buybaryurt_aynak"
     },
     {
-      "direction": "小徑往Khashinch",
+      "direction": "小徑往哈希恩察",
       "to": "world_buybaryurt_khashinch"
     },
     {
-      "direction": "小徑往Bokuz",
+      "direction": "小徑往博庫茲",
       "to": "world_buybaryurt_bokuz"
     },
     {
-      "direction": "小徑往Hondmayandor",
+      "direction": "小徑往霍恩德馬亞恩多爾",
       "to": "world_bayan_hondmayandor"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Buynak"
+    "province": "布烏伊恩阿克"
   }
 }

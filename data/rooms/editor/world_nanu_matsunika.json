@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_matsunika",
-  "name": "Matsunika",
-  "description": "",
+  "name": "松丹花",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "nanu",
   "tags": [
     "village",
@@ -9,7 +9,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Naoshitasa",
+      "direction": "小徑往納奧下薩",
       "to": "world_nanu_naoshitasa"
     }
   ],
@@ -35,6 +35,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Matsunika"
+    "province": "松尼卡"
   }
 }

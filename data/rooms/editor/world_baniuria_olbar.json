@@ -1,7 +1,7 @@
 {
   "id": "world_baniuria_olbar",
-  "name": "Olbar",
-  "description": "",
+  "name": "奧勒巴爾",
+  "description": "街巷盡頭傳來鐘聲，煙火與低誦聲隨風散開。屋簷層疊，紙燈在暮色裡一點點亮起。",
   "zone": "baniuria",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Zayankhangor",
+      "direction": "官道往札亞恩汗戈爾",
       "to": "world_gurdebulia_zayankhangor"
     },
     {
-      "direction": "官道往Onuur",
+      "direction": "官道往奧努爾",
       "to": "world_baniuria_onuur"
     },
     {
-      "direction": "小徑往Anshaka",
+      "direction": "小徑往阿恩沙卡",
       "to": "world_baniuria_anshaka"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ervan"
+    "province": "厄爾維阿恩"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_chizhou",
-  "name": "Chizhou",
-  "description": "",
+  "name": "池州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "ganz_guo",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Taizhou",
+      "direction": "小徑往台州·565",
       "to": "world_meia_taizhou"
     },
     {
-      "direction": "小徑往Chong",
+      "direction": "小徑往崇",
       "to": "world_ganz_guo_chong"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Chizhou"
+    "province": "奇哲烏"
   }
 }

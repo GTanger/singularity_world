@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_changsha",
-  "name": "Changsha",
-  "description": "",
+  "name": "長沙",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "ganz_guo",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Shuan",
+      "direction": "小徑往栓",
       "to": "world_ganz_guo_shuan"
     },
     {
-      "direction": "小徑往Jiangchun",
+      "direction": "小徑往江春",
       "to": "world_ganz_guo_jiangchun"
     },
     {
-      "direction": "小徑往Sizhou",
+      "direction": "小徑往泗州·612",
       "to": "world_ganz_guo_sizhou_612"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shaow Guo"
+    "province": "沙奧瓦國"
   }
 }

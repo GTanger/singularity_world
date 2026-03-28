@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_tingzhou",
-  "name": "Tingzhou",
-  "description": "",
+  "name": "汀州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "ganz_guo",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Shuo",
+      "direction": "官道往朔",
       "to": "world_ganz_guo_shuo"
     },
     {
-      "direction": "官道往Raozhoua",
+      "direction": "官道往饒州阿",
       "to": "world_ganz_guo_raozhoua"
     },
     {
-      "direction": "小徑往Guang",
+      "direction": "小徑往廣·385",
       "to": "world_ganz_guo_guang"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tong Guo"
+    "province": "通格國"
   }
 }

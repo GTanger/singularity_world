@@ -1,7 +1,7 @@
 {
   "id": "world_dur_un_ir_amrud",
-  "name": "Ir-Amrud",
-  "description": "",
+  "name": "伊爾阿姆魯德",
+  "description": "湖邊漁村薄霧未散，水面細浪拍岸。遠山只剩一線淡影，空氣裡有魚腥與水草。",
   "zone": "dur_un",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Wassuhas",
+      "direction": "小徑往瓦斯蘇哈斯",
       "to": "world_dur_un_wassuhas"
     },
     {
-      "direction": "小徑往Magu",
+      "direction": "小徑往馬古",
       "to": "world_dur_un_magu"
     },
     {
-      "direction": "小徑往Qagaz",
+      "direction": "小徑往卡加茲",
       "to": "world_dur_un_qagaz"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Subania"
+    "province": "蘇巴尼阿"
   }
 }

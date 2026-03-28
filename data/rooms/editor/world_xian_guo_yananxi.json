@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_yananxi",
-  "name": "Yananxi",
-  "description": "",
+  "name": "延安西",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "xian_guo",
   "tags": [
     "village",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Hajing",
+      "direction": "官道往哈京",
       "to": "world_xian_guo_hajing"
     },
     {
-      "direction": "官道往Damingbo",
+      "direction": "官道往大明波",
       "to": "world_ping_damingbo"
     },
     {
-      "direction": "小徑往Qianzhou",
+      "direction": "小徑往黔州",
       "to": "world_xian_guo_qianzhou"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Angan Guo"
+    "province": "阿恩阿恩國"
   }
 }

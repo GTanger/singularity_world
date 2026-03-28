@@ -1,7 +1,7 @@
 {
   "id": "world_kwun_chingtei",
-  "name": "Chingtei",
-  "description": "",
+  "name": "清底",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "kwun",
   "tags": [
     "village",
@@ -12,19 +12,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Hingdak",
+      "direction": "官道往興德",
       "to": "world_fungia_hingdak"
     },
     {
-      "direction": "官道往Wuheikiu",
+      "direction": "官道往湖溪橋",
       "to": "world_shia_wuheikiu"
     },
     {
-      "direction": "小徑往Lowuhing",
+      "direction": "小徑往老湖興",
       "to": "world_kwun_lowuhing"
     },
     {
-      "direction": "小徑往Chuehoi",
+      "direction": "小徑往除海",
       "to": "world_kwun_chuehoi"
     }
   ],
@@ -50,6 +50,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Chingtei"
+    "province": "奇恩特伊"
   }
 }

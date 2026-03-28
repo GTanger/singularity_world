@@ -1,7 +1,7 @@
 {
   "id": "world_khulekhia_tsogt",
-  "name": "Tsogt",
-  "description": "",
+  "name": "措格特",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "khulekhia",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Khandorgayan",
+      "direction": "小徑往汗多爾嘎彥",
       "to": "world_khulekhia_khandorgayan"
     },
     {
-      "direction": "小徑往Alangai",
+      "direction": "小徑往阿蘭加伊",
       "to": "world_khulekhia_alangai"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Khorotseria"
+    "province": "霍羅策里阿"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_golparia_kimizumega",
-  "name": "Kimizumega",
-  "description": "",
+  "name": "基米祖梅加",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "golparia",
   "tags": [
     "village",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Sateguzata",
+      "direction": "小徑往薩特古札塔",
       "to": "world_nanu_sateguzata"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tsu"
+    "province": "特斯烏"
   }
 }

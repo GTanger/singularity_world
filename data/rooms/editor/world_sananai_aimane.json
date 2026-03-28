@@ -1,7 +1,7 @@
 {
   "id": "world_sananai_aimane",
-  "name": "Aimane",
-  "description": "",
+  "name": "艾馬內",
+  "description": "屋舍疏落，田畦與小路交錯。午後陽光斜照籬笆，雞犬聲時遠時近。",
   "zone": "sananai",
   "tags": [
     "village",
@@ -9,19 +9,19 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Naoshi",
+      "direction": "小徑往納奧希",
       "to": "world_sananai_naoshi"
     },
     {
-      "direction": "小徑往Rishi",
+      "direction": "小徑往里希",
       "to": "world_sananai_rishi"
     },
     {
-      "direction": "小徑往Genbetsuha",
+      "direction": "小徑往玄別波",
       "to": "world_sananai_genbetsuha"
     },
     {
-      "direction": "小徑往Ichino",
+      "direction": "小徑往伊奇諾",
       "to": "world_sananai_ichino"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kyomisa"
+    "province": "克約米薩"
   }
 }

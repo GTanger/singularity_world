@@ -1,7 +1,7 @@
 {
   "id": "world_bayankhonia_chulandal",
-  "name": "Chulandal",
-  "description": "",
+  "name": "楚蘭達勒",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "bayankhonia",
   "tags": [
     "village",
@@ -12,11 +12,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Jinst",
+      "direction": "官道往吉恩斯特",
       "to": "world_tonkhan_jinst"
     },
     {
-      "direction": "官道往Baliun",
+      "direction": "官道往巴利烏恩",
       "to": "world_baliun_baliun"
     }
   ],

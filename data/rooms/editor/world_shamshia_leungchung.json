@@ -1,7 +1,7 @@
 {
   "id": "world_shamshia_leungchung",
-  "name": "Leungchung",
-  "description": "",
+  "name": "良沖",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "shamshia",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Yongsha",
+      "direction": "官道往涌沙",
       "to": "world_shamshia_yongsha"
     },
     {
-      "direction": "官道往Puiping",
+      "direction": "官道往普坪",
       "to": "world_puipingia_puiping"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_17"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Yuetsia"
+    "province": "尤厄齊阿"
   }
 }

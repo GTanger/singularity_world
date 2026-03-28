@@ -1,7 +1,7 @@
 {
   "id": "world_dengz_guo_chang",
-  "name": "Chang",
-  "description": "",
+  "name": "昌",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "dengz_guo",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Sicheqing",
+      "direction": "小徑往四徹青",
       "to": "world_dengz_guo_sicheqing"
     },
     {
-      "direction": "小徑往Guang",
+      "direction": "小徑往廣",
       "to": "world_dengz_guo_guang"
     },
     {
-      "direction": "小徑往Changjiang",
+      "direction": "小徑往長江",
       "to": "world_dengz_guo_changjiang"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nin Guo"
+    "province": "恩伊恩格烏奧"
   }
 }

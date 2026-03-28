@@ -1,7 +1,7 @@
 {
   "id": "world_jowzvania_eshahrok",
-  "name": "Eshahrok",
-  "description": "",
+  "name": "厄沙赫爾奧克",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "jowzvania",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Turareshahr",
+      "direction": "小徑往圖拉列沙赫爾",
       "to": "world_jowzvania_turareshahr"
     },
     {
-      "direction": "小徑往Fuged",
+      "direction": "小徑往夫格德",
       "to": "world_jowzvania_fuged"
     },
     {
-      "direction": "小徑往Tabsard",
+      "direction": "小徑往塔布薩爾德",
       "to": "world_jowzvania_tabsard"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Eshahrok"
+    "province": "厄沙赫爾奧克"
   }
 }

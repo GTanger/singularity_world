@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_qodshefids",
-  "name": "Qodshefids",
-  "description": "",
+  "name": "庫奧德舍菲德斯",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "chamgaria",
   "tags": [
     "town",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Janabad",
+      "direction": "小徑往詹阿巴德",
       "to": "world_chamgaria_janabad"
     },
     {
-      "direction": "小徑往Ahanatarim",
+      "direction": "小徑往阿哈納塔里姆",
       "to": "world_israfamin_ahanatarim"
     },
     {
-      "direction": "地牢",
+      "direction": "往地牢",
       "to": "world_marker_dungeons_25"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shabadia"
+    "province": "沙巴德亞"
   }
 }

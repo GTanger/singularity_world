@@ -1,7 +1,7 @@
 {
   "id": "world_tsetgalia_tsetsen_on",
-  "name": "Tsetsen On",
-  "description": "",
+  "name": "策特塞恩奧恩",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "tsetgalia",
   "tags": [
     "village",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Shani",
+      "direction": "官道往沙尼",
       "to": "world_dur_un_shani"
     },
     {
-      "direction": "官道往Zayanjar",
+      "direction": "官道往札亞恩賈爾",
       "to": "world_tsetgalia_zayanjar"
     },
     {
-      "direction": "小徑往Ulaangol",
+      "direction": "小徑往烏拉阿恩奧勒",
       "to": "world_tsetgalia_ulaangol"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Tsetsen On"
+    "province": "策特塞恩奧恩"
   }
 }

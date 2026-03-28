@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_ha_khe",
-  "name": "Ha Khe",
-  "description": "",
+  "name": "哈赫",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "nanu",
   "tags": [
     "village",
@@ -9,23 +9,23 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Shitanoyo",
+      "direction": "小徑往下之代",
       "to": "world_nanu_shitanoyo"
     },
     {
-      "direction": "小徑往Taiyami",
+      "direction": "小徑往大闇",
       "to": "world_nanu_taiyami"
     },
     {
-      "direction": "小徑往Can",
+      "direction": "小徑往卡恩",
       "to": "world_nanu_can"
     },
     {
-      "direction": "小徑往Sateguzata",
+      "direction": "小徑往薩特古札塔",
       "to": "world_nanu_sateguzata"
     },
     {
-      "direction": "礦脈",
+      "direction": "往礦脈",
       "to": "world_marker_mines_4"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Dabangia"
+    "province": "達班吉阿"
   }
 }

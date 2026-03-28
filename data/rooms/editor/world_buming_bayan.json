@@ -1,7 +1,7 @@
 {
   "id": "world_buming_bayan",
-  "name": "Bayan",
-  "description": "",
+  "name": "巴彥",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "buming",
   "tags": [
     "village",
@@ -12,19 +12,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Baliun",
+      "direction": "官道往巴利烏恩",
       "to": "world_baliun_baliun"
     },
     {
-      "direction": "小徑往Saikhan",
+      "direction": "小徑往賽汗",
       "to": "world_buming_saikhan"
     },
     {
-      "direction": "小徑往Khonlig",
+      "direction": "小徑往洪力格",
       "to": "world_myania_khonlig"
     },
     {
-      "direction": "小徑往Galtseg",
+      "direction": "小徑往加爾策格",
       "to": "world_buming_galtseg"
     }
   ],
@@ -50,6 +50,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Batsalagia"
+    "province": "巴特薩拉吉阿"
   }
 }

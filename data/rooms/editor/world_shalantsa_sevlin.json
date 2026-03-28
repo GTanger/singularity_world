@@ -1,7 +1,7 @@
 {
   "id": "world_shalantsa_sevlin",
-  "name": "Sevlin",
-  "description": "",
+  "name": "塞瓦林",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "shalantsa",
   "tags": [
     "village",
@@ -9,19 +9,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Ergaltkhan",
+      "direction": "官道往厄爾加爾特汗·235",
       "to": "world_tsetulag_ergaltkhan"
     },
     {
-      "direction": "官道往Taishibal",
+      "direction": "官道往塔伊希巴勒",
       "to": "world_ayantia_taishibal"
     },
     {
-      "direction": "官道往Hulandor",
+      "direction": "官道往呼蘭多爾",
       "to": "world_shalantsa_hulandor"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_11"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Bayandoria"
+    "province": "巴彥多爾亞"
   }
 }

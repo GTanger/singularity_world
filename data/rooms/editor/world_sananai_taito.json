@@ -1,7 +1,7 @@
 {
   "id": "world_sananai_taito",
-  "name": "Taito",
-  "description": "",
+  "name": "塔伊托",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "sananai",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Ojoburami",
+      "direction": "官道往王城浦見",
       "to": "world_sananai_ojoburami"
     },
     {
-      "direction": "官道往Kawakiba",
+      "direction": "官道往川基巴",
       "to": "world_sananai_kawakiba"
     },
     {
-      "direction": "小徑往Awa",
+      "direction": "小徑往阿瓦",
       "to": "world_awa_awa"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Taito"
+    "province": "特阿伊特奧"
   }
 }

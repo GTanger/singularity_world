@@ -1,7 +1,7 @@
 {
   "id": "world_lokchia_laiyeung",
-  "name": "Laiyeung",
-  "description": "",
+  "name": "麗洋",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "lokchia",
   "tags": [
     "village",
@@ -14,7 +14,7 @@
   ],
   "exits": [
     {
-      "direction": "官道往Fungsha",
+      "direction": "官道往鳳沙",
       "to": "world_heungia_fungsha"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Laiyeung"
+    "province": "拉伊耶雄"
   }
 }

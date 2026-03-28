@@ -1,7 +1,7 @@
 {
   "id": "world_meia_shulun",
-  "name": "Shulun",
-  "description": "",
+  "name": "樹倫",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "meia",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tailunfa",
+      "direction": "官道往太倫法",
       "to": "world_meia_tailunfa"
     },
     {
-      "direction": "官道往Uiwang",
+      "direction": "官道往烏伊萬格",
       "to": "world_hwanponamguk_uiwang"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Longshing"
+    "province": "隆格希恩"
   }
 }

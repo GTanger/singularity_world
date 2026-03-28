@@ -1,7 +1,7 @@
 {
   "id": "world_awlata_kenibgazer",
-  "name": "Kenibgazer",
-  "description": "",
+  "name": "克尼布加澤爾",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "awlata",
   "tags": [
     "town",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Asfrafira",
+      "direction": "小徑往阿斯夫拉菲拉",
       "to": "world_awlata_asfrafira"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kenibgazer"
+    "province": "克尼布加澤爾"
   }
 }

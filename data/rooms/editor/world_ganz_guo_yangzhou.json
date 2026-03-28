@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_yangzhou",
-  "name": "Yangzhou",
-  "description": "",
+  "name": "揚州",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "ganz_guo",
   "tags": [
     "town",
@@ -9,7 +9,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Xincheng",
+      "direction": "小徑往新城·181",
       "to": "world_ganz_guo_xincheng_181"
     }
   ],
@@ -35,6 +35,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Silian Guo"
+    "province": "席利安國"
   }
 }

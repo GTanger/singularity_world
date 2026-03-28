@@ -1,7 +1,7 @@
 {
   "id": "world_taizhou_tengchang",
-  "name": "Tengchang",
-  "description": "",
+  "name": "滕昌",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "taizhou",
   "tags": [
     "village",
@@ -9,19 +9,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Taizhou",
+      "direction": "官道往台州·13",
       "to": "world_taizhou_taizhou"
     },
     {
-      "direction": "官道往Yilin",
+      "direction": "官道往宜林",
       "to": "world_lon_guo_yilin"
     },
     {
-      "direction": "小徑往Hengzhou",
+      "direction": "小徑往衡州·594",
       "to": "world_taizhou_hengzhou"
     },
     {
-      "direction": "小徑往Haixing",
+      "direction": "小徑往海興",
       "to": "world_lon_guo_haixing"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tengchang"
+    "province": "特恩昌"
   }
 }

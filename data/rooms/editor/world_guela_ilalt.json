@@ -1,22 +1,22 @@
 {
   "id": "world_guela_ilalt",
-  "name": "Ilalt",
-  "description": "",
+  "name": "伊拉勒特",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "guela",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Chogheshahr",
+      "direction": "小徑往喬格沙赫爾",
       "to": "world_chamgaria_chogheshahr"
     },
     {
-      "direction": "小徑往Imilchran",
+      "direction": "小徑往伊米勒察蘭",
       "to": "world_guela_imilchran"
     },
     {
-      "direction": "小徑往Tagerechi",
+      "direction": "小徑往塔格列奇",
       "to": "world_guela_tagerechi"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ilalt"
+    "province": "伊爾阿爾特"
   }
 }

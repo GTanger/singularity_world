@@ -1,7 +1,7 @@
 {
   "id": "world_puz_tadmaba",
-  "name": "Tadmaba",
-  "description": "",
+  "name": "塔德馬巴",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "puz",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Er-Asha",
+      "direction": "小徑往厄爾阿沙",
       "to": "world_dur_ti_er_asha"
     },
     {
-      "direction": "小徑往Surunidu",
+      "direction": "小徑往蘇魯尼杜",
       "to": "world_puz_surunidu"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tadmaba"
+    "province": "塔德馬巴"
   }
 }

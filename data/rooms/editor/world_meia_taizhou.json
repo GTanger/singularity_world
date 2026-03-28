@@ -1,7 +1,7 @@
 {
   "id": "world_meia_taizhou",
-  "name": "Taizhou",
-  "description": "",
+  "name": "台州·565",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "meia",
   "tags": [
     "town",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Maonshing",
+      "direction": "小徑往茅城",
       "to": "world_meia_maonshing"
     },
     {
-      "direction": "小徑往Chizhou",
+      "direction": "小徑往池州",
       "to": "world_ganz_guo_chizhou"
     },
     {
-      "direction": "小徑往Kaiyang",
+      "direction": "小徑往開陽",
       "to": "world_meia_kaiyang"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Taizhou"
+    "province": "塔伊哲烏"
   }
 }

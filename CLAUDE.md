@@ -33,6 +33,7 @@
 src/main.rs              — 入口：初始化 + 啟動伺服器
 src/lib.rs               — 模組宣告 + run_server() 公開入口
 src/ai/                  — LLM 呼叫（玩家對話 + NPC↔NPC 對話）
+src/bin/                 — 獨立工具（generate_embeddings、verify_embeddings、migrate 等）
 src/config/              — 可調參數（環境變數覆蓋）
 src/store/               — 資料層（PostgreSQL 主資料源 + HashMap 讀取快取 + JSON 備份）
 src/db/                  — 資料存取介面（讀寫 store / PostgreSQL）
@@ -47,8 +48,12 @@ src/combat/              — 戰鬥系統
 src/event/               — 事件常數與紀錄
 src/gametext/            — 文案模板（從 JSON 載入）
 src/server/              — axum HTTP/WebSocket、session、simulation loop
-web/                     — 前端 + dashboard（資料庫可視化編輯器）
+web/                     — 前端 + dashboard（地圖編輯器 + 資料庫可視化）
+data/rooms/editor/       — 世界房間 JSON（world_*.json，694 房間，Azgaar Parser A 產出）
+data/rooms/archive/      — 封存房間（舊浮生城 639 房）
+data/config/             — 靜態設定（word_elements.json 500 詞元、gamedims、sentence_engine）
 data/runtime/            — 執行期 JSON（archival、summaries、threads、dyads、rumors）
+tools/                   — 本地工具腳本（gitignored，Parser、翻譯腳本等）
 docs/                    — 設計文件（修改前必讀相關文件）
 ```
 
@@ -96,17 +101,28 @@ cargo test                                                               # 跑�
 
 ## 詞盤設計核心
 - **詞盤是數學引擎，不是 LLM 系統**。造句/祭煉 = 字庫排列組合 + 品質門檻，純公式，萬人同時跑不吃算力
+- **造句 = 向量合成**。500 詞元各有 1030 維混合向量（bge-m3 embedding 1024 維 + 6 維手標遊戲維度），玩家選字→向量相加→句向量即技能效果，連續光譜非離散分類
 - **鎂與詞元異源**。鎂 = 機構發行的標準化貨幣（創角 +10,000 錠）；野生詞元 = 帶屬性的功能物件（採集/剝名所得）
 - **每顆詞元是一次取捨**。入竅（永久改頻率）/ 附魔（半永久強化裝備）/ 鑄鎂（換錢吃飯），品質越高取捨越痛
+- **疊煉**。同名詞元 + 詞元 → 擲骰充能 % → 滿 100% 擲骰升階。玄型詞元改變骰子參數。所有數值隨機
 - **詞盤配置 = 頻率簽名 = 與世界的關係**。高頻→城市安全但採不到資源；低頻→能進危險區但少了聚念場貢獻
 - **專精正回饋與陷阱**。越專精→對應品質越高→但世界越限縮（同頻相斥）
 
 ## 世界觀關鍵詞
 - Token：高維未知混沌能量，無處不在——本質是創造者的念場
+- Token 密度：無人時恆為 1.0（Token 輻射無限，永遠回滿）。高頻有念生物的存在壓低局部密度，人越多密度越低。不是冷卻計時器，是存在感應模型
+- Token 烙印：Token 混沌能量對萬物的定義。無念物引 Token 入己身即被打下烙印，烙印即詞元。火獸掉火是常數非必然——Token 對物的定義沒有必定規律，剝名前不可預知
+- 詞元本質：Token 對一切物的混沌定義凝結而成。詞元定義物資，不是物資定義詞元
 - 富態化：萬物因 Token 輻射而瘋長
 - 聚念場：有念生物聚集形成的場，人多場強，抑制富態化
-- 聚念場悖論：人多 → 資源長得慢；人少 → 資源豐富但危險（世界通用定理）
+- 聚念場悖論：人多 → 密度低 → 資源長得慢但挖得快；人少 → 密度高 → 資源豐富但挖得慢且危險。脈衝式採集（來一波挖完走人等回滿）為最優策略。公會壟斷物理上不可能
 - 同頻相斥：高頻有念生物與 Token 互斥（因為 Token 就是創造者的念場）
 - 止念：壓制意識頻率至趨近零，方能汲取 Token 微波輻射
+- 剝名：殺獸 → 屍體（可整剝/可肢解）→ 剝名取詞元。整剝難度高品質高；肢解後分剝容易品質正常
 - 沃土風、鎂（貨幣）、詞盤、竅穴、念紋（修煉體系）
 - 浮生城：強聚念場城市，電器可正常運作
+
+## 地圖管線
+- **世界骨架**：Azgaar Fantasy Map Generator → Parser A（tools/azgaar_parser.py）→ 694 房間（623 城鎮 + 71 地標）
+- **城市內部**：Watabou Medieval City Generator → Parser B（待做）→ 大城市鑽入用
+- **當前狀態**：Parser A 完成，房間名稱/描述翻譯精修中（018 工單）。舊浮生城 639 房封存，NPC 歸零

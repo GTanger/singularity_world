@@ -1,7 +1,7 @@
 {
   "id": "world_muwaida_dhabid",
-  "name": "Dhabid",
-  "description": "",
+  "name": "達阿比德",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "muwaida",
   "tags": [
     "village",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Sal",
+      "direction": "官道往薩勒",
       "to": "world_ryadh_sal"
     },
     {
-      "direction": "官道往Saiyah",
+      "direction": "官道往薩伊亞赫",
       "to": "world_heqatha_saiyah"
     },
     {
-      "direction": "小徑往Alkhan",
+      "direction": "小徑往阿勒汗",
       "to": "world_heqatha_alkhan"
     }
   ],

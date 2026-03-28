@@ -1,18 +1,18 @@
 {
   "id": "world_shia_tsingleng",
-  "name": "Tsingleng",
-  "description": "",
+  "name": "青嶺",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "shia",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "官道往Samshan",
+      "direction": "官道往三山",
       "to": "world_longchia_samshan"
     },
     {
-      "direction": "官道往Shiu",
+      "direction": "官道往紹",
       "to": "world_shia_shiu"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tsingleng"
+    "province": "齊恩勒恩"
   }
 }

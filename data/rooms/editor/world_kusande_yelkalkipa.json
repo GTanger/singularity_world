@@ -1,7 +1,7 @@
 {
   "id": "world_kusande_yelkalkipa",
-  "name": "Yelkalkipa",
-  "description": "",
+  "name": "耶勒卡爾基帕",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "kusande",
   "tags": [
     "town",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Ansur",
+      "direction": "小徑往阿恩蘇爾",
       "to": "world_kusande_ansur"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Mudgudia"
+    "province": "穆德古迪阿"
   }
 }

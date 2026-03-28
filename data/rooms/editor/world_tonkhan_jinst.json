@@ -1,7 +1,7 @@
 {
   "id": "world_tonkhan_jinst",
-  "name": "Jinst",
-  "description": "",
+  "name": "吉恩斯特",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "tonkhan",
   "tags": [
     "town",
@@ -12,19 +12,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Ergaltkhan",
+      "direction": "官道往厄爾加爾特汗",
       "to": "world_tonkhan_ergaltkhan"
     },
     {
-      "direction": "官道往Chulandal",
+      "direction": "官道往楚蘭達勒",
       "to": "world_bayankhonia_chulandal"
     },
     {
-      "direction": "官道往Baluutsag",
+      "direction": "官道往巴盧烏察格",
       "to": "world_tonkhan_baluutsag"
     },
     {
-      "direction": "競技場",
+      "direction": "往競技場",
       "to": "world_marker_circuses_54"
     }
   ],
@@ -50,6 +50,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Jinst"
+    "province": "吉伊恩斯特"
   }
 }

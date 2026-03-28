@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_nawarimira",
-  "name": "Nawarimira",
-  "description": "",
+  "name": "納瓦里米拉",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "nanu",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Namira",
+      "direction": "小徑往南伊拉",
       "to": "world_sananai_namira"
     },
     {
-      "direction": "小徑往Naoshitasa",
+      "direction": "小徑往納奧下薩",
       "to": "world_nanu_naoshitasa"
     },
     {
-      "direction": "小徑往Fuchu",
+      "direction": "小徑往夫楚",
       "to": "world_nanu_fuchu"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Nawarimira"
+    "province": "納瓦里米拉"
   }
 }

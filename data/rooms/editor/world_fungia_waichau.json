@@ -1,7 +1,7 @@
 {
   "id": "world_fungia_waichau",
-  "name": "Waichau",
-  "description": "",
+  "name": "外洲",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "fungia",
   "tags": [
     "city",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Taihang",
+      "direction": "官道往太行",
       "to": "world_fungia_taihang"
     },
     {
-      "direction": "官道往Hingdak",
+      "direction": "官道往興德",
       "to": "world_fungia_hingdak"
     },
     {
-      "direction": "橋",
+      "direction": "往橋",
       "to": "world_marker_bridges_5"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Hokshuipia"
+    "province": "霍克舒伊皮阿"
   }
 }

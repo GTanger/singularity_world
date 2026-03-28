@@ -1,7 +1,7 @@
 {
   "id": "world_tuenia_duenchung",
-  "name": "Duenchung",
-  "description": "",
+  "name": "端沖",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "tuenia",
   "tags": [
     "town",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Panui",
+      "direction": "官道往帕努伊",
       "to": "world_kauho_panui"
     },
     {
-      "direction": "官道往Yongsha",
+      "direction": "官道往涌沙",
       "to": "world_shamshia_yongsha"
     },
     {
-      "direction": "小徑往Hahua",
+      "direction": "小徑往哈胡阿",
       "to": "world_tuenia_hahua"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Tsang"
+    "province": "特斯阿恩格"
   }
 }

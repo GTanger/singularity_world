@@ -1,7 +1,7 @@
 {
   "id": "world_gurdebulia_myanuur",
-  "name": "Myanuur",
-  "description": "",
+  "name": "姆亞努爾",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "gurdebulia",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Hulaanbogd",
+      "direction": "小徑往呼拉恩博格德",
       "to": "world_sains_hulaanbogd"
     },
     {
-      "direction": "小徑往Gurdebul",
+      "direction": "小徑往古爾德布勒",
       "to": "world_gurdebulia_gurdebul"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Monkhulag"
+    "province": "蒙庫拉格"
   }
 }

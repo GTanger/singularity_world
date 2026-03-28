@@ -1,7 +1,7 @@
 {
   "id": "world_guela_lqlidelt",
-  "name": "Lqlidelt",
-  "description": "",
+  "name": "勒庫利德勒特",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "guela",
   "tags": [
     "town",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Imilchran",
+      "direction": "小徑往伊米勒察蘭",
       "to": "world_guela_imilchran"
     },
     {
-      "direction": "小徑往Tarilacem",
+      "direction": "小徑往塔里拉塞姆",
       "to": "world_guela_tarilacem"
     },
     {
-      "direction": "小徑往Aranelida",
+      "direction": "小徑往阿拉內利達",
       "to": "world_guela_aranelida"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Lqlidelt"
+    "province": "勒庫利德勒特"
   }
 }

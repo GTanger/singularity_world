@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_hailan",
-  "name": "Hailan",
-  "description": "",
+  "name": "海蘭",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "ganz_guo",
   "tags": [
     "village",
@@ -11,7 +11,7 @@
   ],
   "exits": [
     {
-      "direction": "盜賊據點",
+      "direction": "往盜賊據點",
       "to": "world_marker_brigands_37"
     }
   ],
@@ -37,6 +37,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Duihe"
+    "province": "德烏伊赫厄"
   }
 }

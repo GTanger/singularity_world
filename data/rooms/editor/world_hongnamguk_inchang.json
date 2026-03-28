@@ -1,7 +1,7 @@
 {
   "id": "world_hongnamguk_inchang",
-  "name": "Inchang",
-  "description": "",
+  "name": "伊恩昌",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "hongnamguk",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Yeong",
+      "direction": "官道往耶奧恩",
       "to": "world_hongnamguk_yeong"
     },
     {
-      "direction": "官道往Hongnam",
+      "direction": "官道往洪南",
       "to": "world_hongnamguk_hongnam"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Gimhe"
+    "province": "格伊姆赫厄"
   }
 }

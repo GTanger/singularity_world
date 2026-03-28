@@ -1,7 +1,7 @@
 {
   "id": "world_sauntalur_hasim",
-  "name": "Hasim",
-  "description": "",
+  "name": "哈西姆",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "sauntalur",
   "tags": [
     "town",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Sarasim",
+      "direction": "小徑往薩爾阿西姆",
       "to": "world_sauntalur_sarasim"
     },
     {
-      "direction": "海路往Vardan",
+      "direction": "海路往瓦爾丹",
       "to": "world_tuladshia_vardan"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Narapuria"
+    "province": "納拉普里亞"
   }
 }

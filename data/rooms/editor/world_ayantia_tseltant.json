@@ -1,7 +1,7 @@
 {
   "id": "world_ayantia_tseltant",
-  "name": "Tseltant",
-  "description": "",
+  "name": "策勒坦特",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "ayantia",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tsagaan",
+      "direction": "小徑往察干",
       "to": "world_ayantia_tsagaan"
     },
     {
-      "direction": "小徑往Amah",
+      "direction": "小徑往阿馬赫",
       "to": "world_ryadh_amah"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Orkhilia"
+    "province": "鄂爾赫伊利阿"
   }
 }

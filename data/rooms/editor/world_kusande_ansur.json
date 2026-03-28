@@ -1,7 +1,7 @@
 {
   "id": "world_kusande_ansur",
-  "name": "Ansur",
-  "description": "",
+  "name": "阿恩蘇爾",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "kusande",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yelkalkipa",
+      "direction": "小徑往耶勒卡爾基帕",
       "to": "world_kusande_yelkalkipa"
     },
     {
-      "direction": "小徑往Pikovige",
+      "direction": "小徑往皮科維格",
       "to": "world_kusande_pikovige"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ansur"
+    "province": "阿恩斯烏爾"
   }
 }

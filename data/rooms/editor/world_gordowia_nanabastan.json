@@ -1,7 +1,7 @@
 {
   "id": "world_gordowia_nanabastan",
-  "name": "Nanabastan",
-  "description": "",
+  "name": "納納巴斯坦",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "gordowia",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tahasar",
+      "direction": "小徑往塔哈薩爾",
       "to": "world_gordowia_tahasar"
     },
     {
-      "direction": "小徑往Tuzey-Shahr",
+      "direction": "返回圖澤伊沙赫爾",
       "to": "world_gordowia_tuzey_shahr"
     },
     {
-      "direction": "小徑往Qarchak",
+      "direction": "小徑往卡爾察克",
       "to": "world_gordowia_qarchak"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nanabastan"
+    "province": "納納巴斯坦"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_israfamin_ashahr",
-  "name": "Ashahr",
-  "description": "",
+  "name": "阿沙赫爾",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "israfamin",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Degan",
+      "direction": "小徑往德甘",
       "to": "world_israfamin_degan"
     },
     {
-      "direction": "小徑往Ray-Shahrjo",
+      "direction": "小徑往拉伊沙赫爾喬",
       "to": "world_israfamin_ray_shahrjo"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ashahr"
+    "province": "阿斯赫阿赫爾"
   }
 }

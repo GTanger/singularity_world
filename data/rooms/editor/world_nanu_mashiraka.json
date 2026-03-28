@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_mashiraka",
-  "name": "Mashiraka",
-  "description": "",
+  "name": "真白香",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "nanu",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Ichimamifu",
+      "direction": "小徑往一間見府",
       "to": "world_nanu_ichimamifu"
     },
     {
-      "direction": "小徑往Yagawa",
+      "direction": "小徑往亞加瓦",
       "to": "world_nanu_yagawa"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Mashiraka"
+    "province": "馬斯希拉克阿"
   }
 }

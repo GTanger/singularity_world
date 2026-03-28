@@ -1,7 +1,7 @@
 {
   "id": "world_ngwakyuen_waishui",
-  "name": "Waishui",
-  "description": "",
+  "name": "外水",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "ngwakyuen",
   "tags": [
     "town",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Namchue",
+      "direction": "官道往南除",
       "to": "world_longchia_namchue"
     },
     {
-      "direction": "官道往Hangpo",
+      "direction": "官道往行埔",
       "to": "world_heungia_hangpo"
     },
     {
-      "direction": "官道往Lokfumun",
+      "direction": "官道往樂富門",
       "to": "world_hohiwia_lokfumun"
     }
   ],

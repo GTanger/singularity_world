@@ -1,7 +1,7 @@
 {
   "id": "world_lon_guo_yilin",
-  "name": "Yilin",
-  "description": "",
+  "name": "宜林",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "lon_guo",
   "tags": [
     "city",
@@ -15,15 +15,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tengchang",
+      "direction": "官道往滕昌",
       "to": "world_taizhou_tengchang"
     },
     {
-      "direction": "小徑往Huangsha",
+      "direction": "小徑往黃沙",
       "to": "world_lon_guo_huangsha"
     },
     {
-      "direction": "小徑往Chang",
+      "direction": "小徑往昌·389",
       "to": "world_lon_guo_chang"
     }
   ],
@@ -49,6 +49,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Yilin"
+    "province": "伊伊爾伊恩"
   }
 }

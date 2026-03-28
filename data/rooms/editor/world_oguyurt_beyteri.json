@@ -1,7 +1,7 @@
 {
   "id": "world_oguyurt_beyteri",
-  "name": "Beyteri",
-  "description": "",
+  "name": "貝伊特里",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "oguyurt",
   "tags": [
     "city",
@@ -15,11 +15,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Aykor",
+      "direction": "官道往阿伊科爾",
       "to": "world_aykor_aykor"
     },
     {
-      "direction": "小徑往Ulag Ontog",
+      "direction": "小徑往烏拉格翁托格",
       "to": "world_abepe_ulag_ontog"
     }
   ],

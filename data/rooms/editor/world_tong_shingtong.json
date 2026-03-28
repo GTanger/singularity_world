@@ -1,7 +1,7 @@
 {
   "id": "world_tong_shingtong",
-  "name": "Shingtong",
-  "description": "",
+  "name": "聖堂",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "tong",
   "tags": [
     "village",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Foningsai",
+      "direction": "官道往福寧塞",
       "to": "world_taifongia_foningsai"
     },
     {
-      "direction": "官道往Lokfumun",
+      "direction": "官道往樂富門",
       "to": "world_hohiwia_lokfumun"
     },
     {
-      "direction": "小徑往Tuengonting",
+      "direction": "小徑往端安亭",
       "to": "world_longchia_tuengonting"
     }
   ],

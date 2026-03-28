@@ -1,7 +1,7 @@
 {
   "id": "world_binz_guo_tongzhou",
-  "name": "Tongzhou",
-  "description": "",
+  "name": "通州",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "binz_guo",
   "tags": [
     "town",
@@ -14,23 +14,23 @@
   ],
   "exits": [
     {
-      "direction": "官道往Rengyi",
+      "direction": "官道往仁義",
       "to": "world_ping_rengyi"
     },
     {
-      "direction": "官道往Chang",
+      "direction": "官道往昌·198",
       "to": "world_ping_chang"
     },
     {
-      "direction": "小徑往Xiwanding",
+      "direction": "小徑往西萬頂",
       "to": "world_binz_guo_xiwanding"
     },
     {
-      "direction": "海路往Yazhou",
+      "direction": "海路往亞州",
       "to": "world_ping_yazhou"
     },
     {
-      "direction": "盜賊據點",
+      "direction": "往盜賊據點",
       "to": "world_marker_brigands_35"
     }
   ],
@@ -56,6 +56,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Quzho Guo"
+    "province": "庫哲奧國"
   }
 }

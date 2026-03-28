@@ -1,7 +1,7 @@
 {
   "id": "world_hunageria_kadur",
-  "name": "Kadur",
-  "description": "",
+  "name": "卡杜爾",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "hunageria",
   "tags": [
     "town",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Hunkesh",
+      "direction": "官道往洪克沙",
       "to": "world_sauntalur_hunkesh"
     },
     {
-      "direction": "官道往Manaraland",
+      "direction": "官道往馬納拉蘭德",
       "to": "world_hunageria_manaraland"
     },
     {
-      "direction": "小徑往Sudallire",
+      "direction": "小徑往蘇達勒利列",
       "to": "world_hunageria_sudallire"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Pupetia"
+    "province": "普佩蒂亞"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_sananai_ojoburami",
-  "name": "Ojoburami",
-  "description": "",
+  "name": "王城浦見",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "sananai",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tsurifuri",
+      "direction": "官道往釣振",
       "to": "world_sananai_tsurifuri"
     },
     {
-      "direction": "官道往Taito",
+      "direction": "官道往塔伊托",
       "to": "world_sananai_taito"
     },
     {
-      "direction": "小徑往Ichino",
+      "direction": "小徑往伊奇諾",
       "to": "world_sananai_ichino"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ojoburami"
+    "province": "奧喬布拉米"
   }
 }

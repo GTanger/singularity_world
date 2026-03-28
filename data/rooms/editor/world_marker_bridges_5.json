@@ -1,14 +1,14 @@
 {
   "id": "world_marker_bridges_5",
   "name": "橋",
-  "description": "",
+  "description": "橋身跨過水面，石縫磨得光滑，欄上繫著褪色布條，隨風拍動。",
   "zone": "fungia",
   "tags": [
     "bridges"
   ],
   "exits": [
     {
-      "direction": "返回Waichau",
+      "direction": "返回外洲",
       "to": "world_fungia_waichau"
     }
   ],

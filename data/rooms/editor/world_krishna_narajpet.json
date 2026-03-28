@@ -1,7 +1,7 @@
 {
   "id": "world_krishna_narajpet",
-  "name": "Narajpet",
-  "description": "",
+  "name": "納拉吉佩特",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "krishna",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Lonnamavar",
+      "direction": "官道往隆南阿瓦爾",
       "to": "world_sauntalur_lonnamavar"
     },
     {
-      "direction": "官道往Sakore",
+      "direction": "官道往薩科雷",
       "to": "world_krishna_sakore"
     },
     {
-      "direction": "小徑往Mannanapat",
+      "direction": "小徑往曼納納帕特",
       "to": "world_krishna_mannanapat"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Afzalnaria"
+    "province": "阿夫札勒納里阿"
   }
 }

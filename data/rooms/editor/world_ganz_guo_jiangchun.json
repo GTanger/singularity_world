@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_jiangchun",
-  "name": "Jiangchun",
-  "description": "",
+  "name": "江春",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "ganz_guo",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Binzhou",
+      "direction": "小徑往濱州·139",
       "to": "world_ganz_guo_binzhou"
     },
     {
-      "direction": "小徑往Changsha",
+      "direction": "小徑往長沙",
       "to": "world_ganz_guo_changsha"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Jiangchun"
+    "province": "吉阿恩楚恩"
   }
 }

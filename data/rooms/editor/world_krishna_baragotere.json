@@ -1,7 +1,7 @@
 {
   "id": "world_krishna_baragotere",
-  "name": "Baragotere",
-  "description": "",
+  "name": "巴拉戈特列",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "krishna",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Wadapurpur",
+      "direction": "官道往瓦達普爾普爾",
       "to": "world_kusande_wadapurpur"
     },
     {
-      "direction": "官道往Lonnamavar",
+      "direction": "官道往隆南阿瓦爾",
       "to": "world_sauntalur_lonnamavar"
     },
     {
-      "direction": "小徑往Bomagagola",
+      "direction": "小徑往博馬加河阿",
       "to": "world_kusande_bomagagola"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Baragotere"
+    "province": "巴拉戈特雷"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_kwun_pingyuenwan",
-  "name": "Pingyuenwan",
-  "description": "",
+  "name": "平原灣",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "kwun",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Fangshui",
+      "direction": "小徑往防水",
       "to": "world_kwun_fangshui"
     },
     {
-      "direction": "小徑往Hokshuiman",
+      "direction": "小徑往霍水漫",
       "to": "world_kwun_hokshuiman"
     },
     {
-      "direction": "小徑往Lungong",
+      "direction": "小徑往龍宮",
       "to": "world_kwun_lungong"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Pingyuenwan"
+    "province": "平尤厄恩萬"
   }
 }

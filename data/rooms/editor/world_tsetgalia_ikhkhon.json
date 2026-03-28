@@ -1,26 +1,26 @@
 {
   "id": "world_tsetgalia_ikhkhon",
-  "name": "Ikhkhon",
-  "description": "",
+  "name": "伊赫洪",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "tsetgalia",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "官道往Albar",
+      "direction": "官道往阿勒巴爾",
       "to": "world_tsetgalia_albar"
     },
     {
-      "direction": "官道往Alkut",
+      "direction": "官道往阿勒庫特",
       "to": "world_heqatha_alkut"
     },
     {
-      "direction": "小徑往Sagtokh",
+      "direction": "小徑往薩格托赫",
       "to": "world_tsetgalia_sagtokh"
     },
     {
-      "direction": "小徑往Duut Agtset",
+      "direction": "小徑往杜烏特阿格策特",
       "to": "world_tsetgalia_duut_agtset"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ikhkhon"
+    "province": "伊赫洪"
   }
 }

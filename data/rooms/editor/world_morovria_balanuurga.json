@@ -1,7 +1,7 @@
 {
   "id": "world_morovria_balanuurga",
-  "name": "Balanuurga",
-  "description": "",
+  "name": "巴拉努爾加",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "morovria",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tsetsengor",
+      "direction": "小徑往策特塞恩奧爾",
       "to": "world_bayan_tsetsengor"
     },
     {
-      "direction": "小徑往Noroot",
+      "direction": "小徑往諾羅奧特",
       "to": "world_morovria_noroot"
     },
     {
-      "direction": "小徑往Baluutsag",
+      "direction": "小徑往巴盧烏察格",
       "to": "world_tonkhan_baluutsag"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Balanuurga"
+    "province": "巴拉努烏爾加"
   }
 }

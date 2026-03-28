@@ -1,14 +1,14 @@
 {
   "id": "world_marker_sea_monsters_29",
   "name": "海怪棲地",
-  "description": "",
+  "description": "浪頭不規則地隆起又碎裂，遠遠有黑影一掠而沒，海鳥不敢低飛。",
   "zone": "kyohe",
   "tags": [
     "sea-monsters"
   ],
   "exits": [
     {
-      "direction": "返回Nasazuni",
+      "direction": "返回納薩祖尼",
       "to": "world_kyohe_nasazuni"
     }
   ],

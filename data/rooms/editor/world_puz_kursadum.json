@@ -1,7 +1,7 @@
 {
   "id": "world_puz_kursadum",
-  "name": "Kursadum",
-  "description": "",
+  "name": "庫爾薩杜姆",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "puz",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Puz",
+      "direction": "小徑往普茲",
       "to": "world_puz_puz"
     },
     {
-      "direction": "小徑往Nisurran",
+      "direction": "小徑往尼蘇爾蘭",
       "to": "world_harbi_nisurran"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kursadum"
+    "province": "庫爾薩杜姆"
   }
 }

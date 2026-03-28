@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_bashahr",
-  "name": "Bashahr",
-  "description": "",
+  "name": "巴斯哈赫爾",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chamgaria",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Vahaveran",
+      "direction": "小徑往瓦哈維蘭",
       "to": "world_chamgaria_vahaveran"
     },
     {
-      "direction": "小徑往Qarch",
+      "direction": "小徑往卡爾察",
       "to": "world_chamgaria_qarch"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Bashahr"
+    "province": "巴沙赫爾"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_meia_tsimshan",
-  "name": "Tsimshan",
-  "description": "",
+  "name": "尖山·549",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "meia",
   "tags": [
     "town",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Jeongdong",
+      "direction": "小徑往正洞",
       "to": "world_hwanponamguk_jeongdong"
     },
     {
-      "direction": "小徑往Siukwan",
+      "direction": "小徑往紹關",
       "to": "world_meia_siukwan"
     },
     {
-      "direction": "海路往Gongseongam",
+      "direction": "海路往公城岩",
       "to": "world_hwanponamguk_gongseongam"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Loktong"
+    "province": "洛克通格"
   }
 }

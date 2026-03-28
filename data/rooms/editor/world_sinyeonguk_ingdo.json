@@ -1,7 +1,7 @@
 {
   "id": "world_sinyeonguk_ingdo",
-  "name": "Ingdo",
-  "description": "",
+  "name": "伊恩多",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "sinyeonguk",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Geochorido",
+      "direction": "小徑往巨次里島",
       "to": "world_sinyeonguk_geochorido"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_13"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ingdo"
+    "province": "伊恩格德奧"
   }
 }

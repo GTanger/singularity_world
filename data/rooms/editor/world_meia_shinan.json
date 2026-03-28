@@ -1,7 +1,7 @@
 {
   "id": "world_meia_shinan",
-  "name": "Shinan",
-  "description": "",
+  "name": "石南",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "meia",
   "tags": [
     "village",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yongshung",
+      "direction": "小徑往永順格",
       "to": "world_ganz_guo_yongshung"
     },
     {
-      "direction": "小徑往Jingzhou",
+      "direction": "小徑往荊州",
       "to": "world_puhumia_jingzhou"
     },
     {
-      "direction": "小徑往Baiwan",
+      "direction": "小徑往白灣",
       "to": "world_meia_baiwan"
     },
     {
-      "direction": "小徑往Songzhou",
+      "direction": "小徑往松州",
       "to": "world_puhumia_songzhou"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Liading"
+    "province": "利阿丁格"
   }
 }

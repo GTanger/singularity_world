@@ -1,7 +1,7 @@
 {
   "id": "world_meia_meiyue",
-  "name": "Meiyue",
-  "description": "",
+  "name": "梅月",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "meia",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tailunfa",
+      "direction": "官道往太倫法",
       "to": "world_meia_tailunfa"
     },
     {
-      "direction": "小徑往Kaungsan",
+      "direction": "小徑往廣山",
       "to": "world_meia_kaungsan"
     },
     {
-      "direction": "小徑往Maonshing",
+      "direction": "小徑往茅城",
       "to": "world_meia_maonshing"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Meiyue"
+    "province": "姆厄伊伊烏厄"
   }
 }

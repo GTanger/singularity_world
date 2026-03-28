@@ -1,7 +1,7 @@
 {
   "id": "world_gordowia_gordow",
-  "name": "Gordow",
-  "description": "",
+  "name": "戈爾多瓦",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "gordowia",
   "tags": [
     "city",
@@ -16,15 +16,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Vardan",
+      "direction": "官道往瓦爾丹",
       "to": "world_tuladshia_vardan"
     },
     {
-      "direction": "官道往Bustan",
+      "direction": "官道往布斯坦",
       "to": "world_gordowia_bustan"
     },
     {
-      "direction": "小徑往Hazedeh",
+      "direction": "小徑往哈澤德赫",
       "to": "world_israfamin_hazedeh"
     }
   ],
@@ -50,6 +50,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Gordow"
+    "province": "格奧爾德奧沃"
   }
 }

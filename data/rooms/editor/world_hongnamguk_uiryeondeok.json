@@ -1,7 +1,7 @@
 {
   "id": "world_hongnamguk_uiryeondeok",
-  "name": "Uiryeondeok",
-  "description": "",
+  "name": "義嶺德",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "hongnamguk",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Hamrye",
+      "direction": "小徑往哈姆禮",
       "to": "world_hongnamguk_hamrye"
     },
     {
-      "direction": "小徑往Uiwonjuripo",
+      "direction": "小徑往義原州里浦",
       "to": "world_hongnamguk_uiwonjuripo"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Uiryeondeok"
+    "province": "烏伊禮奧恩德"
   }
 }

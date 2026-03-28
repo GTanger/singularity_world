@@ -1,7 +1,7 @@
 {
   "id": "world_buybaryurt_yliyu",
-  "name": "Yliyu",
-  "description": "",
+  "name": "伊利尤",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "buybaryurt",
   "tags": [
     "city",
@@ -12,11 +12,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Kart",
+      "direction": "官道往卡爾特",
       "to": "world_buybaryurt_kart"
     },
     {
-      "direction": "官道往Aska",
+      "direction": "官道往阿斯卡",
       "to": "world_buybaryurt_aska"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ayayrazeli"
+    "province": "阿亞伊拉澤利"
   }
 }

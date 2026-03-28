@@ -1,14 +1,14 @@
 {
   "id": "world_marker_libraries_52",
   "name": "藏書閣",
-  "description": "",
+  "description": "高層藏書閣，木梯吱呀，紙頁與墨香混在塵埃裡，光從小窗斜入。",
   "zone": "dengz_guo",
   "tags": [
     "libraries"
   ],
   "exits": [
     {
-      "direction": "返回Danan",
+      "direction": "返回大南",
       "to": "world_dengz_guo_danan"
     }
   ],

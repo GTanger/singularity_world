@@ -1,7 +1,7 @@
 {
   "id": "world_hongnamguk_yeong",
-  "name": "Yeong",
-  "description": "",
+  "name": "耶奧恩",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "hongnamguk",
   "tags": [
     "city",
@@ -13,19 +13,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Nasazuni",
+      "direction": "官道往納薩祖尼",
       "to": "world_kyohe_nasazuni"
     },
     {
-      "direction": "官道往Inchang",
+      "direction": "官道往伊恩昌",
       "to": "world_hongnamguk_inchang"
     },
     {
-      "direction": "小徑往Jocheon",
+      "direction": "小徑往喬川",
       "to": "world_hongnamguk_jocheon"
     },
     {
-      "direction": "海路往Kyohe",
+      "direction": "海路往克約赫",
       "to": "world_kyohe_kyohe"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Yeong"
+    "province": "伊厄奧恩格"
   }
 }

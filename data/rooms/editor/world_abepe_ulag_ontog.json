@@ -1,7 +1,7 @@
 {
   "id": "world_abepe_ulag_ontog",
-  "name": "Ulag Ontog",
-  "description": "",
+  "name": "烏拉格翁托格",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "abepe",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Beyteri",
+      "direction": "小徑往貝伊特里",
       "to": "world_oguyurt_beyteri"
     },
     {
-      "direction": "遺跡",
+      "direction": "往遺跡",
       "to": "world_marker_ruins_50"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Humenia"
+    "province": "胡梅尼阿"
   }
 }

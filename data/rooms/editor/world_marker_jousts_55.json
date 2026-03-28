@@ -1,14 +1,14 @@
 {
   "id": "world_marker_jousts_55",
   "name": "馬上比武場",
-  "description": "",
+  "description": "沙地圓場被柵欄圍起，塵土與馬蹄印交疊，陽光下仍顯得肅殺。",
   "zone": "ping",
   "tags": [
     "jousts"
   ],
   "exits": [
     {
-      "direction": "返回Hengzhou",
+      "direction": "返回衡州",
       "to": "world_ping_hengzhou"
     }
   ],

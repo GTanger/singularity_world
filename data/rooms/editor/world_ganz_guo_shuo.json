@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_shuo",
-  "name": "Shuo",
-  "description": "",
+  "name": "朔",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "ganz_guo",
   "tags": [
     "village",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tingzhou",
+      "direction": "官道往汀州",
       "to": "world_ganz_guo_tingzhou"
     },
     {
-      "direction": "官道往Taizhou",
+      "direction": "官道往台州·574",
       "to": "world_ganz_guo_taizhou_574"
     },
     {
-      "direction": "官道往Suilinan",
+      "direction": "官道往遂里南",
       "to": "world_ganz_guo_suilinan"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Xin Guo"
+    "province": "克斯伊恩國"
   }
 }

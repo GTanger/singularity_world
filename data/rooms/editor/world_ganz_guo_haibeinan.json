@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_haibeinan",
-  "name": "Haibeinan",
-  "description": "",
+  "name": "海北南",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "ganz_guo",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yangzhouai",
+      "direction": "小徑往揚州埃",
       "to": "world_ganz_guo_yangzhouai"
     },
     {
-      "direction": "小徑往Natong",
+      "direction": "小徑往那通",
       "to": "world_ganz_guo_natong"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Haibeinan"
+    "province": "哈伊貝伊南"
   }
 }

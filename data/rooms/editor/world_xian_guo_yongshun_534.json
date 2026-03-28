@@ -1,18 +1,18 @@
 {
   "id": "world_xian_guo_yongshun_534",
-  "name": "Yongshun",
-  "description": "",
+  "name": "永順·534",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Yazhou",
+      "direction": "小徑往亞州·144",
       "to": "world_xian_guo_yazhou"
     },
     {
-      "direction": "小徑往Xingjiang",
+      "direction": "小徑往興江",
       "to": "world_xian_guo_xingjiang"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Anmen"
+    "province": "阿恩姆厄恩"
   }
 }

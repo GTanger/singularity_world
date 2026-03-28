@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_quzhou",
-  "name": "Quzhou",
-  "description": "",
+  "name": "衢州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village",
@@ -9,19 +9,19 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Fenzhou",
+      "direction": "小徑往汾州·544",
       "to": "world_xian_guo_fenzhou_544"
     },
     {
-      "direction": "小徑往Changhua",
+      "direction": "小徑往昌化",
       "to": "world_xian_guo_changhua"
     },
     {
-      "direction": "小徑往Laizhouyun",
+      "direction": "小徑往萊州雲",
       "to": "world_xian_guo_laizhouyun"
     },
     {
-      "direction": "雕像",
+      "direction": "往雕像",
       "to": "world_marker_statues_47"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Quzhou"
+    "province": "庫烏茲赫奧烏"
   }
 }

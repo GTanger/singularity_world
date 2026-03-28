@@ -1,14 +1,14 @@
 {
   "id": "world_marker_hot_springs_1",
   "name": "溫泉",
-  "description": "",
+  "description": "白氣自水面升起，石池邊溫熱，草木在濕氣裡顯得格外深綠。",
   "zone": "nanu",
   "tags": [
     "hot-springs"
   ],
   "exits": [
     {
-      "direction": "返回Yagawa",
+      "direction": "返回亞加瓦",
       "to": "world_nanu_yagawa"
     }
   ],

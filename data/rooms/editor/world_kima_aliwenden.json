@@ -1,7 +1,7 @@
 {
   "id": "world_kima_aliwenden",
-  "name": "Aliwenden",
-  "description": "",
+  "name": "阿利韋恩德恩",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "kima",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Mila",
+      "direction": "官道往米拉",
       "to": "world_tayachia_mila"
     },
     {
-      "direction": "小徑往Tebourza",
+      "direction": "小徑往特博烏爾札",
       "to": "world_kima_tebourza"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Aliwenden"
+    "province": "阿利韋恩德恩"
   }
 }

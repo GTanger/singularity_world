@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_liuzhou",
-  "name": "Liuzhou",
-  "description": "",
+  "name": "柳州",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "ganz_guo",
   "tags": [
     "town",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Sichejian",
+      "direction": "小徑往四徹澗",
       "to": "world_ganz_guo_sichejian"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Dinin Guo"
+    "province": "迪尼恩國"
   }
 }

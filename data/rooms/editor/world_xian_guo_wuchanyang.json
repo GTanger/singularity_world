@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_wuchanyang",
-  "name": "Wuchanyang",
-  "description": "",
+  "name": "武禪陽",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Xinchang",
+      "direction": "小徑往新昌",
       "to": "world_dengz_guo_xinchang"
     },
     {
-      "direction": "小徑往Fenzhou",
+      "direction": "小徑往汾州·210",
       "to": "world_xian_guo_fenzhou"
     },
     {
-      "direction": "小徑往Yazhou",
+      "direction": "小徑往亞州·144",
       "to": "world_xian_guo_yazhou"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Wuchanyang"
+    "province": "瓦烏察恩陽"
   }
 }

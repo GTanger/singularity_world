@@ -1,7 +1,7 @@
 {
   "id": "world_yahan_sraghzut",
-  "name": "Sraghzut",
-  "description": "",
+  "name": "斯拉格祖特",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "yahan",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Habad",
+      "direction": "官道往哈巴德",
       "to": "world_yahan_habad"
     },
     {
-      "direction": "官道往Idrart",
+      "direction": "官道往伊德拉爾特",
       "to": "world_yahan_idrart"
     },
     {
-      "direction": "小徑往Tagan",
+      "direction": "小徑往塔甘",
       "to": "world_yahan_tagan"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Sraghzut"
+    "province": "斯拉格祖特"
   }
 }

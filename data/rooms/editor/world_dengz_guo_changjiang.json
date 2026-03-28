@@ -1,7 +1,7 @@
 {
   "id": "world_dengz_guo_changjiang",
-  "name": "Changjiang",
-  "description": "",
+  "name": "長江",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "dengz_guo",
   "tags": [
     "town",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Chang",
+      "direction": "小徑往昌",
       "to": "world_dengz_guo_chang"
     },
     {
-      "direction": "小徑往Xingqing",
+      "direction": "小徑往興慶",
       "to": "world_ganz_guo_xingqing"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nafengli"
+    "province": "納費恩利"
   }
 }

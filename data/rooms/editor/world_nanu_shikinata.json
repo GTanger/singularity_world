@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_shikinata",
-  "name": "Shikinata",
-  "description": "",
+  "name": "志岐灘",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "nanu",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Naoshitasa",
+      "direction": "小徑往納奧下薩",
       "to": "world_nanu_naoshitasa"
     },
     {
-      "direction": "小徑往Shitanoyo",
+      "direction": "小徑往下之代",
       "to": "world_nanu_shitanoyo"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nishimi"
+    "province": "西米"
   }
 }

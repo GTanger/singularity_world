@@ -1,7 +1,7 @@
 {
   "id": "world_oisamawa_naka",
-  "name": "Naka",
-  "description": "",
+  "name": "納卡",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "oisamawa",
   "tags": [
     "town",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Awa",
+      "direction": "官道往阿瓦",
       "to": "world_awa_awa"
     },
     {
-      "direction": "海盜巢穴",
+      "direction": "往海盜巢穴",
       "to": "world_marker_pirates_41"
     }
   ],

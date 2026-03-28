@@ -1,7 +1,7 @@
 {
   "id": "world_binz_guo_xiwanding",
-  "name": "Xiwanding",
-  "description": "",
+  "name": "西萬頂",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "binz_guo",
   "tags": [
     "town",
@@ -13,7 +13,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tongzhou",
+      "direction": "小徑往通州",
       "to": "world_binz_guo_tongzhou"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Xiwanding"
+    "province": "克斯伊萬丁格"
   }
 }

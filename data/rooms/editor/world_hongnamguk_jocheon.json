@@ -1,7 +1,7 @@
 {
   "id": "world_hongnamguk_jocheon",
-  "name": "Jocheon",
-  "description": "",
+  "name": "喬川",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "hongnamguk",
   "tags": [
     "village",
@@ -11,7 +11,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yeong",
+      "direction": "小徑往耶奧恩",
       "to": "world_hongnamguk_yeong"
     }
   ],
@@ -37,6 +37,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Jocheon"
+    "province": "喬川"
   }
 }

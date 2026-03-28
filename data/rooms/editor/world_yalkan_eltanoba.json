@@ -1,7 +1,7 @@
 {
   "id": "world_yalkan_eltanoba",
-  "name": "Eltanoba",
-  "description": "",
+  "name": "厄勒塔諾巴",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "yalkan",
   "tags": [
     "village",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Karsenoca",
+      "direction": "官道往卡爾塞諾卡",
       "to": "world_abepe_karsenoca"
     },
     {
-      "direction": "官道往Yaz",
+      "direction": "官道往亞茲",
       "to": "world_yalkan_yaz"
     },
     {
-      "direction": "小徑往Bopuz",
+      "direction": "小徑往博普茲",
       "to": "world_buybaryurt_bopuz"
     },
     {
-      "direction": "小徑往Keren",
+      "direction": "小徑往克列恩",
       "to": "world_yalkan_keren"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Eltanoba"
+    "province": "埃爾塔諾巴"
   }
 }

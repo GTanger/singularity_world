@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_kaihua",
-  "name": "Kaihua",
-  "description": "",
+  "name": "開化",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "ganz_guo",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Taizhou",
+      "direction": "小徑往台州",
       "to": "world_ganz_guo_taizhou"
     },
     {
-      "direction": "小徑往Ganzhounyi",
+      "direction": "小徑往贛州義",
       "to": "world_ganz_guo_ganzhounyi"
     },
     {
-      "direction": "小徑往Luzhou",
+      "direction": "小徑往瀘州",
       "to": "world_ganz_guo_luzhou"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Zhengy Guo"
+    "province": "哲厄恩伊國"
   }
 }

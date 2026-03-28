@@ -1,7 +1,7 @@
 {
   "id": "world_buybaryurt_ozobala",
-  "name": "Ozobala",
-  "description": "",
+  "name": "奧佐巴拉",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "buybaryurt",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Aynak",
+      "direction": "小徑往阿伊納克",
       "to": "world_buybaryurt_aynak"
     },
     {
-      "direction": "小徑往Aydi",
+      "direction": "小徑往阿伊迪",
       "to": "world_yalkan_aydi"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ozobala"
+    "province": "奧佐巴拉"
   }
 }

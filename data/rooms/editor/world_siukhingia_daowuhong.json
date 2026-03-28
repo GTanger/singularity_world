@@ -1,7 +1,7 @@
 {
   "id": "world_siukhingia_daowuhong",
-  "name": "Daowuhong",
-  "description": "",
+  "name": "道武宏",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "siukhingia",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Muiwan",
+      "direction": "官道往梅灣",
       "to": "world_fungshingia_muiwan"
     },
     {
-      "direction": "官道往Tungchuen",
+      "direction": "官道往東川·53",
       "to": "world_siukhingia_tungchuen"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Daowuhong"
+    "province": "達奧瓦烏洪"
   }
 }

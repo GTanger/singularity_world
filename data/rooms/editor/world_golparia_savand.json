@@ -1,7 +1,7 @@
 {
   "id": "world_golparia_savand",
-  "name": "Savand",
-  "description": "",
+  "name": "薩萬德",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "golparia",
   "tags": [
     "village",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Miandaq",
+      "direction": "小徑往米阿恩達格",
       "to": "world_golparia_miandaq"
     },
     {
-      "direction": "小徑往Aslamshahr",
+      "direction": "小徑往阿斯拉姆沙赫爾",
       "to": "world_golparia_aslamshahr"
     },
     {
-      "direction": "海路往Dayandaq",
+      "direction": "海路往達亞恩達格",
       "to": "world_jowzvania_dayandaq"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Nikoshia"
+    "province": "尼科希阿"
   }
 }

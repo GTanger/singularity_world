@@ -1,7 +1,7 @@
 {
   "id": "world_kwun_lowuhing",
-  "name": "Lowuhing",
-  "description": "",
+  "name": "老湖興",
+  "description": "街巷盡頭傳來鐘聲，煙火與低誦聲隨風散開。屋簷層疊，紙燈在暮色裡一點點亮起。",
   "zone": "kwun",
   "tags": [
     "town",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Chingtei",
+      "direction": "小徑往清底",
       "to": "world_kwun_chingtei"
     },
     {
-      "direction": "小徑往Longfukok",
+      "direction": "小徑往龍福角",
       "to": "world_kwun_longfukok"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Lowuhing"
+    "province": "洛瓦烏希恩"
   }
 }

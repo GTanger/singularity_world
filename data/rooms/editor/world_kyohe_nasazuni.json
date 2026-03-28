@@ -1,7 +1,7 @@
 {
   "id": "world_kyohe_nasazuni",
-  "name": "Nasazuni",
-  "description": "",
+  "name": "納薩祖尼",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "kyohe",
   "tags": [
     "town",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Yeong",
+      "direction": "官道往耶奧恩",
       "to": "world_hongnamguk_yeong"
     },
     {
-      "direction": "海怪棲地",
+      "direction": "往海怪棲地",
       "to": "world_marker_sea_monsters_29"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nasazuni"
+    "province": "納薩祖尼"
   }
 }

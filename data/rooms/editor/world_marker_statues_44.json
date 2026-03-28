@@ -1,14 +1,14 @@
 {
   "id": "world_marker_statues_44",
   "name": "雕像",
-  "description": "",
+  "description": "巨像矗立在空地上，石面剝落，五官模糊，仍俯視著往來的人。",
   "zone": "chandia",
   "tags": [
     "statues"
   ],
   "exits": [
     {
-      "direction": "返回Bayan",
+      "direction": "返回巴彥·257",
       "to": "world_chandia_bayan"
     }
   ],

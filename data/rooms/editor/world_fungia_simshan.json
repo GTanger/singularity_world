@@ -1,7 +1,7 @@
 {
   "id": "world_fungia_simshan",
-  "name": "Simshan",
-  "description": "",
+  "name": "尖山",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "fungia",
   "tags": [
     "village",
@@ -9,23 +9,23 @@
   ],
   "exits": [
     {
-      "direction": "官道往Chung",
+      "direction": "官道往沖",
       "to": "world_fungia_chung"
     },
     {
-      "direction": "官道往Siuyeungloy",
+      "direction": "官道往紹洋來",
       "to": "world_fungia_siuyeungloy"
     },
     {
-      "direction": "小徑往Namchau",
+      "direction": "小徑往南洲",
       "to": "world_meia_namchau"
     },
     {
-      "direction": "小徑往Machaui",
+      "direction": "小徑往馬巢",
       "to": "world_fungia_machaui"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_10"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tong"
+    "province": "特奧恩格"
   }
 }

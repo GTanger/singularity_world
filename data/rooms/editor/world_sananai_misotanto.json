@@ -1,7 +1,7 @@
 {
   "id": "world_sananai_misotanto",
-  "name": "Misotanto",
-  "description": "",
+  "name": "味噌丹都",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "sananai",
   "tags": [
     "city",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Namira",
+      "direction": "小徑往南伊拉",
       "to": "world_sananai_namira"
     },
     {
-      "direction": "海盜巢穴",
+      "direction": "往海盜巢穴",
       "to": "world_marker_pirates_42"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Tagi"
+    "province": "塔吉"
   }
 }

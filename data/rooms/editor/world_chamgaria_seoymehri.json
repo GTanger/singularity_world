@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_seoymehri",
-  "name": "Seoymehri",
-  "description": "",
+  "name": "塞奧伊梅赫里",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chamgaria",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Baghstan",
+      "direction": "小徑往巴格赫斯坦",
       "to": "world_chamgaria_baghstan"
     },
     {
-      "direction": "小徑往Sakunzasar",
+      "direction": "小徑往薩昆札薩爾",
       "to": "world_chamgaria_sakunzasar"
     },
     {
-      "direction": "小徑往Hafshahrga",
+      "direction": "小徑往哈夫沙赫爾加",
       "to": "world_chamgaria_hafshahrga"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Seoymehri"
+    "province": "塞奧伊梅赫里"
   }
 }

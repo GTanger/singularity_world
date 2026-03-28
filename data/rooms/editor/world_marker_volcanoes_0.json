@@ -1,14 +1,14 @@
 {
   "id": "world_marker_volcanoes_0",
   "name": "火山",
-  "description": "",
+  "description": "遠山頂上硫煙裊裊，腳下土地溫熱，風裡有細細的灰。",
   "zone": "israfamin",
   "tags": [
     "volcanoes"
   ],
   "exits": [
     {
-      "direction": "返回Ahanatarim",
+      "direction": "返回阿哈納塔里姆",
       "to": "world_israfamin_ahanatarim"
     }
   ],

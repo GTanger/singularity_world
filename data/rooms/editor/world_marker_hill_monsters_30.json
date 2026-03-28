@@ -1,14 +1,14 @@
 {
   "id": "world_marker_hill_monsters_30",
   "name": "丘怪棲地",
-  "description": "",
+  "description": "丘頂風硬，草倒向一側，石堆旁有巨大爪痕，空氣裡有腥臊。",
   "zone": "nanu",
   "tags": [
     "hill-monsters"
   ],
   "exits": [
     {
-      "direction": "返回Yagawa",
+      "direction": "返回亞加瓦",
       "to": "world_nanu_yagawa"
     }
   ],

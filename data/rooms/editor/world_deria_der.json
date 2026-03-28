@@ -1,7 +1,7 @@
 {
   "id": "world_deria_der",
-  "name": "Der",
-  "description": "",
+  "name": "德爾",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "deria",
   "tags": [
     "town",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Washak",
+      "direction": "官道往瓦沙克",
       "to": "world_deria_washak"
     },
     {
-      "direction": "官道往Puz",
+      "direction": "官道往普茲",
       "to": "world_puz_puz"
     },
     {
-      "direction": "海路往Shisur",
+      "direction": "海路往希蘇爾",
       "to": "world_shisur_shisur"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Der"
+    "province": "德厄爾"
   }
 }

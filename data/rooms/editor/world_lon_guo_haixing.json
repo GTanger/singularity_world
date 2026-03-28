@@ -1,7 +1,7 @@
 {
   "id": "world_lon_guo_haixing",
-  "name": "Haixing",
-  "description": "",
+  "name": "海興",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "lon_guo",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Xuantian",
+      "direction": "小徑往玄天",
       "to": "world_xian_guo_xuantian"
     },
     {
-      "direction": "小徑往Tengchang",
+      "direction": "小徑往滕昌",
       "to": "world_taizhou_tengchang"
     },
     {
-      "direction": "小徑往Zhong",
+      "direction": "小徑往重",
       "to": "world_lon_guo_zhong"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Haixing"
+    "province": "哈伊克斯伊恩"
   }
 }

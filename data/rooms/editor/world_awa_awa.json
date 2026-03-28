@@ -1,7 +1,7 @@
 {
   "id": "world_awa_awa",
-  "name": "Awa",
-  "description": "",
+  "name": "阿瓦",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "awa",
   "tags": [
     "town",
@@ -14,19 +14,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Sinyeon",
+      "direction": "官道往新延",
       "to": "world_sinyeonguk_sinyeon"
     },
     {
-      "direction": "官道往Naka",
+      "direction": "官道往納卡",
       "to": "world_oisamawa_naka"
     },
     {
-      "direction": "官道往Kawakiba",
+      "direction": "官道往川基巴",
       "to": "world_sananai_kawakiba"
     },
     {
-      "direction": "小徑往Taito",
+      "direction": "小徑往塔伊托",
       "to": "world_sananai_taito"
     }
   ],

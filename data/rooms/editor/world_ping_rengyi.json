@@ -1,7 +1,7 @@
 {
   "id": "world_ping_rengyi",
-  "name": "Rengyi",
-  "description": "",
+  "name": "仁義",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "ping",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Kuizhou",
+      "direction": "官道往夔州",
       "to": "world_ping_kuizhou"
     },
     {
-      "direction": "官道往Tongzhou",
+      "direction": "官道往通州",
       "to": "world_binz_guo_tongzhou"
     },
     {
-      "direction": "官道往Zhenan",
+      "direction": "官道往鎮安",
       "to": "world_taizhou_zhenan"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Liuz Guo"
+    "province": "利烏茲國"
   }
 }

@@ -1,14 +1,14 @@
 {
   "id": "world_marker_brigands_40",
   "name": "盜賊據點",
-  "description": "",
+  "description": "林邊小寨，柵欄歪斜，泥地上有雜沓車痕與來路不明的刀痕。",
   "zone": "nyusume",
   "tags": [
     "brigands"
   ],
   "exits": [
     {
-      "direction": "返回Tatsuse",
+      "direction": "返回龍瀨",
       "to": "world_nyusume_tatsuse"
     }
   ],

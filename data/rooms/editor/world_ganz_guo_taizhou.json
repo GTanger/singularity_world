@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_taizhou",
-  "name": "Taizhou",
-  "description": "",
+  "name": "台州",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "ganz_guo",
   "tags": [
     "town",
@@ -12,23 +12,23 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yanzhou",
+      "direction": "小徑往兗州",
       "to": "world_ganz_guo_yanzhou"
     },
     {
-      "direction": "小徑往Kaihua",
+      "direction": "小徑往開化",
       "to": "world_ganz_guo_kaihua"
     },
     {
-      "direction": "小徑往Antiankang",
+      "direction": "小徑往安天康",
       "to": "world_ganz_guo_antiankang"
     },
     {
-      "direction": "小徑往Tatongshan",
+      "direction": "小徑往大同山",
       "to": "world_ganz_guo_tatongshan"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_15"
     }
   ],
@@ -54,6 +54,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Zhenkan Guo"
+    "province": "哲厄恩坎國"
   }
 }

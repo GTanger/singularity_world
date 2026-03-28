@@ -1,7 +1,7 @@
 {
   "id": "world_ith_mirwah",
-  "name": "Mirwah",
-  "description": "",
+  "name": "米爾瓦赫",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "ith",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Alsmah",
+      "direction": "官道往阿勒斯馬赫",
       "to": "world_khabtal_alsmah"
     },
     {
-      "direction": "官道往Hunkesh",
+      "direction": "官道往洪克沙",
       "to": "world_sauntalur_hunkesh"
     },
     {
-      "direction": "小徑往Sidah",
+      "direction": "小徑往西達赫",
       "to": "world_ith_sidah"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Al Nakha"
+    "province": "阿勒納克哈"
   }
 }

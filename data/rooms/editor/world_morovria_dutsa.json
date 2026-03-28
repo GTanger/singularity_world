@@ -1,7 +1,7 @@
 {
   "id": "world_morovria_dutsa",
-  "name": "Dutsa",
-  "description": "",
+  "name": "杜察",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "morovria",
   "tags": [
     "village",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tsakhonuur",
+      "direction": "官道往察洪烏爾",
       "to": "world_bayan_tsakhonuur"
     },
     {
-      "direction": "官道往Gapisag",
+      "direction": "官道往加皮薩格",
       "to": "world_morovria_gapisag"
     },
     {
-      "direction": "小徑往Noroot",
+      "direction": "小徑往諾羅奧特",
       "to": "world_morovria_noroot"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Dutsa"
+    "province": "德烏特斯阿"
   }
 }

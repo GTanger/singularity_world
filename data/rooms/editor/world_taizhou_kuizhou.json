@@ -1,7 +1,7 @@
 {
   "id": "world_taizhou_kuizhou",
-  "name": "Kuizhou",
-  "description": "",
+  "name": "夔州·331",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "taizhou",
   "tags": [
     "town",
@@ -12,11 +12,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Changtian",
+      "direction": "小徑往長天",
       "to": "world_binz_guo_changtian"
     },
     {
-      "direction": "小徑往Taizhou",
+      "direction": "小徑往台州·13",
       "to": "world_taizhou_taizhou"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Din Guo"
+    "province": "德伊恩格烏奧"
   }
 }

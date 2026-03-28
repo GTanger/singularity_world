@@ -1,7 +1,7 @@
 {
   "id": "world_chandia_borman",
-  "name": "Borman",
-  "description": "",
+  "name": "博爾曼",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "chandia",
   "tags": [
     "town",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tsakhonuur",
+      "direction": "官道往察洪烏爾",
       "to": "world_bayan_tsakhonuur"
     },
     {
-      "direction": "官道往Tsogtsagaan",
+      "direction": "官道往措格察干",
       "to": "world_chandia_tsogtsagaan"
     },
     {
-      "direction": "小徑往Dûrbina",
+      "direction": "小徑往杜爾比納",
       "to": "world_chandia_dûrbina"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Borman"
+    "province": "布奧爾姆阿恩"
   }
 }

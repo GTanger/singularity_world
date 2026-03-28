@@ -1,7 +1,7 @@
 {
   "id": "world_israfamin_hajdayan",
-  "name": "Hajdayan",
-  "description": "",
+  "name": "哈吉達亞恩",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "israfamin",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Bustan",
+      "direction": "官道往布斯坦",
       "to": "world_gordowia_bustan"
     },
     {
-      "direction": "小徑往Ray-Shahrjo",
+      "direction": "小徑往拉伊沙赫爾喬",
       "to": "world_israfamin_ray_shahrjo"
     },
     {
-      "direction": "舞場",
+      "direction": "往舞場",
       "to": "world_marker_dances_60"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Habafahia"
+    "province": "哈巴法希阿"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_kima_bous",
-  "name": "Bous",
-  "description": "",
+  "name": "博烏斯",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "kima",
   "tags": [
     "town",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Oudant Ba",
+      "direction": "小徑往烏丹特巴",
       "to": "world_tayachia_oudant_ba"
     },
     {
-      "direction": "小徑往Khelaous",
+      "direction": "小徑往赫拉烏斯",
       "to": "world_kima_khelaous"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tafra"
+    "province": "特阿夫爾阿"
   }
 }

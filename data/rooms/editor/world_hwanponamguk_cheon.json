@@ -1,7 +1,7 @@
 {
   "id": "world_hwanponamguk_cheon",
-  "name": "Cheon",
-  "description": "",
+  "name": "川",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "hwanponamguk",
   "tags": [
     "town",
@@ -13,11 +13,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Uiwang",
+      "direction": "官道往烏伊萬格",
       "to": "world_hwanponamguk_uiwang"
     },
     {
-      "direction": "官道往Gongseongam",
+      "direction": "官道往公城岩",
       "to": "world_hwanponamguk_gongseongam"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Cheon"
+    "province": "川"
   }
 }

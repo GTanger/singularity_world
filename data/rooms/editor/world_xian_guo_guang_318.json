@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_guang_318",
-  "name": "Guang",
-  "description": "",
+  "name": "廣·318",
+  "description": "街巷縱橫，屋瓦與人聲層疊。塵土與貨味混在空氣裡，日影在牆角切出深淺。",
   "zone": "xian_guo",
   "tags": [
     "city",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Fenzhou",
+      "direction": "小徑往汾州·544",
       "to": "world_xian_guo_fenzhou_544"
     },
     {
-      "direction": "小徑往Taining",
+      "direction": "小徑往泰寧",
       "to": "world_xian_guo_taining"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Guang"
+    "province": "格烏阿恩格"
   }
 }

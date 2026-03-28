@@ -1,7 +1,7 @@
 {
   "id": "world_puz_puz",
-  "name": "Puz",
-  "description": "",
+  "name": "普茲",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "puz",
   "tags": [
     "city",
@@ -14,19 +14,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Der",
+      "direction": "官道往德爾",
       "to": "world_deria_der"
     },
     {
-      "direction": "官道往Jaran",
+      "direction": "官道往賈蘭",
       "to": "world_harbi_jaran"
     },
     {
-      "direction": "小徑往Kursadum",
+      "direction": "小徑往庫爾薩杜姆",
       "to": "world_puz_kursadum"
     },
     {
-      "direction": "小徑往Surunidu",
+      "direction": "小徑往蘇魯尼杜",
       "to": "world_puz_surunidu"
     }
   ],
@@ -52,6 +52,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Puz"
+    "province": "普烏茲"
   }
 }

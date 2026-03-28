@@ -1,26 +1,26 @@
 {
   "id": "world_nanu_yagawa",
-  "name": "Yagawa",
-  "description": "",
+  "name": "亞加瓦",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "nanu",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Mashiraka",
+      "direction": "小徑往真白香",
       "to": "world_nanu_mashiraka"
     },
     {
-      "direction": "小徑往Ayazbaykut",
+      "direction": "小徑往阿亞茲拜庫特",
       "to": "world_abepe_ayazbaykut"
     },
     {
-      "direction": "溫泉",
+      "direction": "往溫泉",
       "to": "world_marker_hot_springs_1"
     },
     {
-      "direction": "丘怪棲地",
+      "direction": "往丘怪棲地",
       "to": "world_marker_hill_monsters_30"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Sunisane"
+    "province": "蘇尼薩內"
   }
 }

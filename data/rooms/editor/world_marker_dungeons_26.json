@@ -1,14 +1,14 @@
 {
   "id": "world_marker_dungeons_26",
   "name": "地牢",
-  "description": "",
+  "description": "低矮的鐵門半掩，霉味與腐水氣自黑暗裡湧出，階梯向下沒入無聲。",
   "zone": "khulekhia",
   "tags": [
     "dungeons"
   ],
   "exits": [
     {
-      "direction": "返回Bayan Uren",
+      "direction": "返回巴彥烏列恩",
       "to": "world_khulekhia_bayan_uren"
     }
   ],

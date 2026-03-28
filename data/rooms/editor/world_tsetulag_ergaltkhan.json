@@ -1,7 +1,7 @@
 {
   "id": "world_tsetulag_ergaltkhan",
-  "name": "Ergaltkhan",
-  "description": "",
+  "name": "厄爾加爾特汗·235",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "tsetulag",
   "tags": [
     "village",
@@ -9,19 +9,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Ervanbure",
+      "direction": "官道往額爾萬布列",
       "to": "world_tsetulag_ervanbure"
     },
     {
-      "direction": "官道往Sevlin",
+      "direction": "官道往塞瓦林",
       "to": "world_shalantsa_sevlin"
     },
     {
-      "direction": "小徑往Zayan",
+      "direction": "小徑往札亞恩",
       "to": "world_bayan_zayan"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_14"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ergaltkhan"
+    "province": "厄爾加爾特汗"
   }
 }

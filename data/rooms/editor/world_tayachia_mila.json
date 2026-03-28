@@ -1,7 +1,7 @@
 {
   "id": "world_tayachia_mila",
-  "name": "Mila",
-  "description": "",
+  "name": "米拉",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "tayachia",
   "tags": [
     "village",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Aliwenden",
+      "direction": "官道往阿利韋恩德恩",
       "to": "world_kima_aliwenden"
     },
     {
-      "direction": "官道往Iknaslinez",
+      "direction": "官道往伊克納斯利內茲",
       "to": "world_tayachia_iknaslinez"
     },
     {
-      "direction": "小徑往Oudant Ba",
+      "direction": "小徑往烏丹特巴",
       "to": "world_tayachia_oudant_ba"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Mila"
+    "province": "米拉"
   }
 }

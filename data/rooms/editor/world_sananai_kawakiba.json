@@ -1,7 +1,7 @@
 {
   "id": "world_sananai_kawakiba",
-  "name": "Kawakiba",
-  "description": "",
+  "name": "川基巴",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "sananai",
   "tags": [
     "town",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Taito",
+      "direction": "官道往塔伊托",
       "to": "world_sananai_taito"
     },
     {
-      "direction": "官道往Oihakawa",
+      "direction": "官道往追川",
       "to": "world_sananai_oihakawa"
     },
     {
-      "direction": "官道往Awa",
+      "direction": "官道往阿瓦",
       "to": "world_awa_awa"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Kawakiba"
+    "province": "卡瓦基巴"
   }
 }

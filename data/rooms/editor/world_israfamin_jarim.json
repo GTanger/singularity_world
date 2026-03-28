@@ -1,7 +1,7 @@
 {
   "id": "world_israfamin_jarim",
-  "name": "Jarim",
-  "description": "",
+  "name": "賈里姆",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "israfamin",
   "tags": [
     "village",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Bustan",
+      "direction": "小徑往布斯坦",
       "to": "world_gordowia_bustan"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Jarim"
+    "province": "吉阿爾伊姆"
   }
 }

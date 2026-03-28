@@ -1,7 +1,7 @@
 {
   "id": "world_aykor_aykor",
-  "name": "Aykor",
-  "description": "",
+  "name": "阿伊科爾",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "aykor",
   "tags": [
     "village",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Yrazte",
+      "direction": "官道往伊拉茲特",
       "to": "world_oguzsyurt_yrazte"
     },
     {
-      "direction": "官道往Beyteri",
+      "direction": "官道往貝伊特里",
       "to": "world_oguyurt_beyteri"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "id": "world_gordowia_tuzey_shahr",
-  "name": "Tuzey-Shahr",
-  "description": "",
+  "name": "圖澤伊沙赫爾",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "gordowia",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Nanabastan",
+      "direction": "小徑往納納巴斯坦",
       "to": "world_gordowia_nanabastan"
     },
     {
-      "direction": "古戰場",
+      "direction": "往古戰場",
       "to": "world_marker_battlefields_20"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Arimvarmia"
+    "province": "阿里姆瓦爾米阿"
   }
 }

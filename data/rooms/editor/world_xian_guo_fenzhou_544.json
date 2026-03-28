@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_fenzhou_544",
-  "name": "Fenzhou",
-  "description": "",
+  "name": "汾州·544",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "xian_guo",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Chenzhou",
+      "direction": "小徑往郴州",
       "to": "world_xian_guo_chenzhou"
     },
     {
-      "direction": "小徑往Guang",
+      "direction": "小徑往廣·318",
       "to": "world_xian_guo_guang_318"
     },
     {
-      "direction": "小徑往Quzhou",
+      "direction": "小徑往衢州",
       "to": "world_xian_guo_quzhou"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shun Guo"
+    "province": "舒恩國"
   }
 }

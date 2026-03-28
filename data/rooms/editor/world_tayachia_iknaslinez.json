@@ -1,7 +1,7 @@
 {
   "id": "world_tayachia_iknaslinez",
-  "name": "Iknaslinez",
-  "description": "",
+  "name": "伊克納斯利內茲",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "tayachia",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Mila",
+      "direction": "官道往米拉",
       "to": "world_tayachia_mila"
     },
     {
-      "direction": "官道往Rafraguyi",
+      "direction": "官道往拉夫拉古伊",
       "to": "world_kima_rafraguyi"
     },
     {
-      "direction": "小徑往Elmimour",
+      "direction": "小徑往厄勒米莫烏爾",
       "to": "world_tayachia_elmimour"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Iknaslinez"
+    "province": "伊克納斯利內茲"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_nyusume_tatsuse",
-  "name": "Tatsuse",
-  "description": "",
+  "name": "龍瀨",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "nyusume",
   "tags": [
     "village",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Bopuz",
+      "direction": "官道往博普茲",
       "to": "world_buybaryurt_bopuz"
     },
     {
-      "direction": "官道往Kinaboka",
+      "direction": "官道往基納博卡",
       "to": "world_nanu_kinaboka"
     },
     {
-      "direction": "盜賊據點",
+      "direction": "往盜賊據點",
       "to": "world_marker_brigands_40"
     }
   ],

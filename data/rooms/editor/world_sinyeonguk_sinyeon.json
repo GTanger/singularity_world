@@ -1,7 +1,7 @@
 {
   "id": "world_sinyeonguk_sinyeon",
-  "name": "Sinyeon",
-  "description": "",
+  "name": "新延",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "sinyeonguk",
   "tags": [
     "town",
@@ -14,7 +14,7 @@
   ],
   "exits": [
     {
-      "direction": "官道往Awa",
+      "direction": "官道往阿瓦",
       "to": "world_awa_awa"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Gongsanguk"
+    "province": "公桑古克"
   }
 }

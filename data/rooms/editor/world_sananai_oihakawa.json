@@ -1,18 +1,18 @@
 {
   "id": "world_sananai_oihakawa",
-  "name": "Oihakawa",
-  "description": "",
+  "name": "追川",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "sananai",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "官道往Kawakiba",
+      "direction": "官道往川基巴",
       "to": "world_sananai_kawakiba"
     },
     {
-      "direction": "官道往Kyohe",
+      "direction": "官道往克約赫",
       "to": "world_kyohe_kyohe"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Oihakawa"
+    "province": "奧伊墓瓦"
   }
 }

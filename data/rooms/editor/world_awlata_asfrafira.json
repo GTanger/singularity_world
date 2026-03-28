@@ -1,7 +1,7 @@
 {
   "id": "world_awlata_asfrafira",
-  "name": "Asfrafira",
-  "description": "",
+  "name": "阿斯夫拉菲拉",
+  "description": "僅數戶人家，炊煙細細。四野空曠，只有風過草與木柵的聲音。",
   "zone": "awlata",
   "tags": [
     "hamlet",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Kenibgazer",
+      "direction": "小徑往克尼布加澤爾",
       "to": "world_awlata_kenibgazer"
     },
     {
-      "direction": "小徑往Nefrulad",
+      "direction": "小徑往內夫魯拉德",
       "to": "world_guela_nefrulad"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Ayt"
+    "province": "阿伊特"
   }
 }

@@ -1,22 +1,22 @@
 {
   "id": "world_israfamin_degan",
-  "name": "Degan",
-  "description": "",
+  "name": "德甘",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "israfamin",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Ahanatarim",
+      "direction": "小徑往阿哈納塔里姆",
       "to": "world_israfamin_ahanatarim"
     },
     {
-      "direction": "小徑往Turenghes",
+      "direction": "小徑往圖列恩赫斯",
       "to": "world_israfamin_turenghes"
     },
     {
-      "direction": "小徑往Ashahr",
+      "direction": "小徑往阿沙赫爾",
       "to": "world_israfamin_ashahr"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Degan"
+    "province": "德厄格阿恩"
   }
 }

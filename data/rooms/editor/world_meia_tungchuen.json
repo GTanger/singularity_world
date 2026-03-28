@@ -1,26 +1,26 @@
 {
   "id": "world_meia_tungchuen",
-  "name": "Tungchuen",
-  "description": "",
+  "name": "東川",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "meia",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Gokong",
+      "direction": "小徑往角港",
       "to": "world_meia_gokong"
     },
     {
-      "direction": "小徑往Gaozhong",
+      "direction": "小徑往高中",
       "to": "world_meia_gaozhong"
     },
     {
-      "direction": "小徑往Tinshan",
+      "direction": "小徑往天山",
       "to": "world_fungia_tinshan"
     },
     {
-      "direction": "小徑往Kwaito",
+      "direction": "小徑往快島",
       "to": "world_tuenia_kwaito"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tungchuen"
+    "province": "屯格楚厄恩"
   }
 }

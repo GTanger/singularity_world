@@ -1,14 +1,14 @@
 {
   "id": "world_marker_necropolises_62",
   "name": "亡者之城",
-  "description": "",
+  "description": "碑林如林，霧氣貼地而行，石像與銘文在暮色裡一齊沉默。",
   "zone": "xian_guo",
   "tags": [
     "necropolises"
   ],
   "exits": [
     {
-      "direction": "返回Fuzhou",
+      "direction": "返回福州",
       "to": "world_xian_guo_fuzhou"
     }
   ],

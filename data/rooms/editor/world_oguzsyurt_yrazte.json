@@ -1,7 +1,7 @@
 {
   "id": "world_oguzsyurt_yrazte",
-  "name": "Yrazte",
-  "description": "",
+  "name": "伊拉茲特",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "oguzsyurt",
   "tags": [
     "town",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Bolu",
+      "direction": "官道往博盧",
       "to": "world_abepe_bolu"
     },
     {
-      "direction": "官道往Aykor",
+      "direction": "官道往阿伊科爾",
       "to": "world_aykor_aykor"
     },
     {
-      "direction": "遷徙路線",
+      "direction": "往遷徙路線",
       "to": "world_marker_migration_59"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "id": "world_fungia_taihang",
-  "name": "Taihang",
-  "description": "",
+  "name": "太行",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "fungia",
   "tags": [
     "village",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Pogongfu",
+      "direction": "官道往普功夫",
       "to": "world_fungia_pogongfu"
     },
     {
-      "direction": "官道往Chikoktong",
+      "direction": "官道往赤角塘",
       "to": "world_fungia_chikoktong"
     },
     {
-      "direction": "官道往Waichau",
+      "direction": "官道往外洲",
       "to": "world_fungia_waichau"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Fungshing"
+    "province": "夫恩希恩"
   }
 }

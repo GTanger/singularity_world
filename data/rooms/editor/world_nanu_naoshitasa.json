@@ -1,7 +1,7 @@
 {
   "id": "world_nanu_naoshitasa",
-  "name": "Naoshitasa",
-  "description": "",
+  "name": "納奧下薩",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "nanu",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Nawarimira",
+      "direction": "小徑往納瓦里米拉",
       "to": "world_nanu_nawarimira"
     },
     {
-      "direction": "小徑往Matsunika",
+      "direction": "小徑往松丹花",
       "to": "world_nanu_matsunika"
     },
     {
-      "direction": "小徑往Shikinata",
+      "direction": "小徑往志岐灘",
       "to": "world_nanu_shikinata"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Horida"
+    "province": "霍里達"
   }
 }

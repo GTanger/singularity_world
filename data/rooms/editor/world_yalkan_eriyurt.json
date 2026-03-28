@@ -1,7 +1,7 @@
 {
   "id": "world_yalkan_eriyurt",
-  "name": "Eriyurt",
-  "description": "",
+  "name": "厄里尤爾特",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "yalkan",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yaz",
+      "direction": "小徑往亞茲",
       "to": "world_yalkan_yaz"
     },
     {
-      "direction": "小徑往Aski",
+      "direction": "小徑往阿斯基",
       "to": "world_yalkan_aski"
     },
     {
-      "direction": "小徑往Buybarkaya",
+      "direction": "小徑往布伊巴爾卡亞",
       "to": "world_yalkan_buybarkaya"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Eriyurt"
+    "province": "厄里尤爾特"
   }
 }

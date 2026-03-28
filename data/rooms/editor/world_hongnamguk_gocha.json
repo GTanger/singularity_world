@@ -1,7 +1,7 @@
 {
   "id": "world_hongnamguk_gocha",
-  "name": "Gocha",
-  "description": "",
+  "name": "戈察",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "hongnamguk",
   "tags": [
     "city",
@@ -13,19 +13,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Hongnam",
+      "direction": "官道往洪南",
       "to": "world_hongnamguk_hongnam"
     },
     {
-      "direction": "官道往Aripo",
+      "direction": "官道往阿里波",
       "to": "world_sasasunguk_aripo"
     },
     {
-      "direction": "小徑往Hamrye",
+      "direction": "小徑往哈姆禮",
       "to": "world_hongnamguk_hamrye"
     },
     {
-      "direction": "湖怪棲地",
+      "direction": "往湖怪棲地",
       "to": "world_marker_lake_monsters_28"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Gocha"
+    "province": "高察"
   }
 }

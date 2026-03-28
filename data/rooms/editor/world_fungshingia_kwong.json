@@ -1,7 +1,7 @@
 {
   "id": "world_fungshingia_kwong",
-  "name": "Kwong",
-  "description": "",
+  "name": "廣·355",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "fungshingia",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tinshan",
+      "direction": "小徑往天山",
       "to": "world_fungia_tinshan"
     },
     {
-      "direction": "小徑往Kwungon",
+      "direction": "小徑往廣安",
       "to": "world_shamshia_kwungon"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kwong"
+    "province": "克沃奧恩格"
   }
 }

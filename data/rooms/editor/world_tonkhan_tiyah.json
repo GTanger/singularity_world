@@ -1,7 +1,7 @@
 {
   "id": "world_tonkhan_tiyah",
-  "name": "Tiyah",
-  "description": "",
+  "name": "提亞赫",
+  "description": "街巷縱橫，屋瓦與人聲層疊。塵土與貨味混在空氣裡，日影在牆角切出深淺。",
   "zone": "tonkhan",
   "tags": [
     "city",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Dûrbina",
+      "direction": "小徑往杜爾比納",
       "to": "world_chandia_dûrbina"
     },
     {
-      "direction": "小徑往Gapisag",
+      "direction": "小徑往加皮薩格",
       "to": "world_morovria_gapisag"
     },
     {
-      "direction": "小徑往Nolin",
+      "direction": "小徑往諾林",
       "to": "world_buming_nolin"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Sipia"
+    "province": "斯伊普伊阿"
   }
 }

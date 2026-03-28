@@ -1,7 +1,7 @@
 {
   "id": "world_guela_aranelida",
-  "name": "Aranelida",
-  "description": "",
+  "name": "阿拉內利達",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "guela",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Lqlidelt",
+      "direction": "小徑往勒庫利德勒特",
       "to": "world_guela_lqlidelt"
     },
     {
-      "direction": "小徑往Nefrulad",
+      "direction": "小徑往內夫魯拉德",
       "to": "world_guela_nefrulad"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Aranelida"
+    "province": "阿拉內利達"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_dur_un_mekalhusu",
-  "name": "Mekalhusu",
-  "description": "",
+  "name": "梅卡爾胡蘇",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "dur_un",
   "tags": [
     "town",
@@ -9,23 +9,23 @@
   ],
   "exits": [
     {
-      "direction": "官道往Alan",
+      "direction": "官道往阿蘭",
       "to": "world_myania_alan"
     },
     {
-      "direction": "官道往Magu",
+      "direction": "官道往馬古",
       "to": "world_dur_un_magu"
     },
     {
-      "direction": "小徑往Saint",
+      "direction": "小徑往薩伊恩特",
       "to": "world_myania_saint"
     },
     {
-      "direction": "小徑往Wassuhas",
+      "direction": "小徑往瓦斯蘇哈斯",
       "to": "world_dur_un_wassuhas"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_12"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shehia"
+    "province": "斯赫厄赫伊阿"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_shia_putong",
-  "name": "Putong",
-  "description": "",
+  "name": "普通",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "shia",
   "tags": [
     "town",
@@ -12,11 +12,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Hokshuiman",
+      "direction": "小徑往霍水漫",
       "to": "world_kwun_hokshuiman"
     },
     {
-      "direction": "小徑往Chinghoi",
+      "direction": "小徑往青海",
       "to": "world_chinghia_chinghoi"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Putong"
+    "province": "普烏特奧恩格"
   }
 }

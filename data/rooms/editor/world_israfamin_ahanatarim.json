@@ -1,7 +1,7 @@
 {
   "id": "world_israfamin_ahanatarim",
-  "name": "Ahanatarim",
-  "description": "",
+  "name": "阿哈納塔里姆",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "israfamin",
   "tags": [
     "town",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Qodshefids",
+      "direction": "小徑往庫奧德舍菲德斯",
       "to": "world_chamgaria_qodshefids"
     },
     {
-      "direction": "小徑往Degan",
+      "direction": "小徑往德甘",
       "to": "world_israfamin_degan"
     },
     {
-      "direction": "小徑往Jasan",
+      "direction": "小徑往賈桑",
       "to": "world_israfamin_jasan"
     },
     {
-      "direction": "火山",
+      "direction": "往火山",
       "to": "world_marker_volcanoes_0"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Majlehia"
+    "province": "馬吉勒希阿"
   }
 }

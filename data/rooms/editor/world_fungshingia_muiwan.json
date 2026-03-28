@@ -1,7 +1,7 @@
 {
   "id": "world_fungshingia_muiwan",
-  "name": "Muiwan",
-  "description": "",
+  "name": "梅灣",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "fungshingia",
   "tags": [
     "town",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Pogongfu",
+      "direction": "官道往普功夫",
       "to": "world_fungia_pogongfu"
     },
     {
-      "direction": "官道往Daowuhong",
+      "direction": "官道往道武宏",
       "to": "world_siukhingia_daowuhong"
     },
     {
-      "direction": "小徑往Lamtei",
+      "direction": "小徑往林底",
       "to": "world_shamshia_lamtei"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Hungshatia"
+    "province": "洪格沙提阿"
   }
 }

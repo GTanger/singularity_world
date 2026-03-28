@@ -1,7 +1,7 @@
 {
   "id": "world_sanguk_poyang",
-  "name": "Poyang",
-  "description": "",
+  "name": "波陽",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "sanguk",
   "tags": [
     "city",
@@ -12,7 +12,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Okchang",
+      "direction": "小徑往玉昌",
       "to": "world_sanguk_okchang"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Seong"
+    "province": "斯厄奧恩格"
   }
 }

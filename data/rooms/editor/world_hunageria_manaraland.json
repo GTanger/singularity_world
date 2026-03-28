@@ -1,7 +1,7 @@
 {
   "id": "world_hunageria_manaraland",
-  "name": "Manaraland",
-  "description": "",
+  "name": "馬納拉蘭德",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "hunageria",
   "tags": [
     "village",
@@ -11,15 +11,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Kudch",
+      "direction": "官道往庫德察",
       "to": "world_hunageria_kudch"
     },
     {
-      "direction": "官道往Kadur",
+      "direction": "官道往卡杜爾",
       "to": "world_hunageria_kadur"
     },
     {
-      "direction": "小徑往Kolemukhi",
+      "direction": "小徑往科勒穆希",
       "to": "world_sauntalur_kolemukhi"
     }
   ],
@@ -45,6 +45,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Manaraland"
+    "province": "馬納拉蘭"
   }
 }

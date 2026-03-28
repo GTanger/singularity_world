@@ -1,7 +1,7 @@
 {
   "id": "world_kusande_sindhtakore",
-  "name": "Sindhtakore",
-  "description": "",
+  "name": "辛達塔科雷",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "kusande",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Gundhollija",
+      "direction": "小徑往貢達奧勒利賈",
       "to": "world_kusande_gundhollija"
     },
     {
-      "direction": "小徑往Bhatkal",
+      "direction": "小徑往布阿特卡爾",
       "to": "world_tsetgalia_bhatkal"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kudralandia"
+    "province": "庫德拉蘭迪阿"
   }
 }

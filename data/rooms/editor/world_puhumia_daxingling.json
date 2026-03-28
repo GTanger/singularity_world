@@ -1,7 +1,7 @@
 {
   "id": "world_puhumia_daxingling",
-  "name": "Daxingling",
-  "description": "",
+  "name": "大興嶺",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "puhumia",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Jingzhou",
+      "direction": "小徑往荊州",
       "to": "world_puhumia_jingzhou"
     },
     {
-      "direction": "小徑往Guang",
+      "direction": "小徑往廣·623",
       "to": "world_puhumia_guang"
     },
     {
-      "direction": "小徑往Dongchuan",
+      "direction": "小徑往東川·618",
       "to": "world_puhumia_dongchuan"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Daxingling"
+    "province": "達克斯伊恩林格"
   }
 }

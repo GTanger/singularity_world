@@ -1,7 +1,7 @@
 {
   "id": "world_yalkan_aydi",
-  "name": "Aydi",
-  "description": "",
+  "name": "阿伊迪",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "yalkan",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Ozoguzte",
+      "direction": "小徑往奧佐古茲特",
       "to": "world_yalkan_ozoguzte"
     },
     {
-      "direction": "小徑往Khoyonurga",
+      "direction": "小徑往霍約努爾加",
       "to": "world_khulekhia_khoyonurga"
     },
     {
-      "direction": "小徑往Ozobala",
+      "direction": "小徑往奧佐巴拉",
       "to": "world_buybaryurt_ozobala"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Alazlyurt"
+    "province": "阿拉茲勒尤爾特"
   }
 }

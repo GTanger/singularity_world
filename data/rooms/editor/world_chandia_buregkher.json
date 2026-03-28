@@ -1,7 +1,7 @@
 {
   "id": "world_chandia_buregkher",
-  "name": "Buregkher",
-  "description": "",
+  "name": "布列格赫爾",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "chandia",
   "tags": [
     "town",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "官道往Bayan",
+      "direction": "官道往巴彥·257",
       "to": "world_chandia_bayan"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Buregkher"
+    "province": "布列格赫爾"
   }
 }

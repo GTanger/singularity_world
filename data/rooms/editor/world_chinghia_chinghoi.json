@@ -1,7 +1,7 @@
 {
   "id": "world_chinghia_chinghoi",
-  "name": "Chinghoi",
-  "description": "",
+  "name": "青海",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chinghia",
   "tags": [
     "village",
@@ -13,15 +13,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Henlong",
+      "direction": "官道往衡隆",
       "to": "world_henlongia_henlong"
     },
     {
-      "direction": "小徑往Putong",
+      "direction": "小徑往普通",
       "to": "world_shia_putong"
     },
     {
-      "direction": "小徑往Tsuen",
+      "direction": "小徑往村",
       "to": "world_chinghia_tsuen"
     }
   ],
@@ -47,6 +47,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Wongfongia"
+    "province": "旺福恩亞"
   }
 }

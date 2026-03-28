@@ -1,7 +1,7 @@
 {
   "id": "world_ping_hangzhou",
-  "name": "Hangzhou",
-  "description": "",
+  "name": "杭州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "ping",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Linjiang",
+      "direction": "小徑往臨江",
       "to": "world_ping_linjiang"
     },
     {
-      "direction": "小徑往Hanzhou",
+      "direction": "小徑往漢州·446",
       "to": "world_ping_hanzhou"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Hangzhou"
+    "province": "杭哲烏"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_guang",
-  "name": "Guang",
-  "description": "",
+  "name": "廣·385",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "ganz_guo",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Jiaian",
+      "direction": "小徑往家安",
       "to": "world_ganz_guo_jiaian"
     },
     {
-      "direction": "小徑往Tingzhou",
+      "direction": "小徑往汀州",
       "to": "world_ganz_guo_tingzhou"
     },
     {
-      "direction": "小徑往Linjiang",
+      "direction": "小徑往臨江",
       "to": "world_ping_linjiang"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Guang"
+    "province": "格烏阿恩格"
   }
 }

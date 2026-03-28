@@ -1,14 +1,14 @@
 {
   "id": "world_marker_water_sources_2",
   "name": "水源地",
-  "description": "",
+  "description": "清泉自岩隙滲出，聚成細溪，水聲清亮，周圍泥土鬆軟潮濕。",
   "zone": "chamgaria",
   "tags": [
     "water-sources"
   ],
   "exits": [
     {
-      "direction": "返回Abodintash",
+      "direction": "返回阿博丁塔斯赫",
       "to": "world_chamgaria_abodintash"
     }
   ],

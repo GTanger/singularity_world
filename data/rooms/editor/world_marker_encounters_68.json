@@ -1,14 +1,14 @@
 {
   "id": "world_marker_encounters_68",
   "name": "遭遇點",
-  "description": "",
+  "description": "路在此岔開，草痕雜沓，彷彿曾有人在此急轉或停留。",
   "zone": "golparia",
   "tags": [
     "encounters"
   ],
   "exits": [
     {
-      "direction": "返回Arakrankafa",
+      "direction": "返回阿拉克蘭卡法",
       "to": "world_golparia_arakrankafa"
     }
   ],

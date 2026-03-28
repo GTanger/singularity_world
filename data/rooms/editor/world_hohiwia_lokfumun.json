@@ -1,7 +1,7 @@
 {
   "id": "world_hohiwia_lokfumun",
-  "name": "Lokfumun",
-  "description": "",
+  "name": "樂富門",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "hohiwia",
   "tags": [
     "village",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Waishui",
+      "direction": "官道往外水",
       "to": "world_ngwakyuen_waishui"
     },
     {
-      "direction": "官道往Shingtong",
+      "direction": "官道往聖堂",
       "to": "world_tong_shingtong"
     }
   ],

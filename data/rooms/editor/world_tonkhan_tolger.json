@@ -1,7 +1,7 @@
 {
   "id": "world_tonkhan_tolger",
-  "name": "Tolger",
-  "description": "",
+  "name": "托勒格爾",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "tonkhan",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Berkh Uulgi",
+      "direction": "小徑往別爾赫烏勒吉",
       "to": "world_tonkhan_berkh_uulgi"
     },
     {
-      "direction": "聖松林",
+      "direction": "往聖松林",
       "to": "world_marker_sacred_pineries_34"
     },
     {
-      "direction": "遺跡",
+      "direction": "往遺跡",
       "to": "world_marker_ruins_48"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tolger"
+    "province": "特奧爾格厄爾"
   }
 }

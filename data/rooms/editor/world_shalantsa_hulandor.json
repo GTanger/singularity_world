@@ -1,7 +1,7 @@
 {
   "id": "world_shalantsa_hulandor",
-  "name": "Hulandor",
-  "description": "",
+  "name": "呼蘭多爾",
+  "description": "淺水與蘆葦交錯，泥岸踩上去軟而沉。水鳥掠過低垂的雲，風裡帶著腐植與青苔氣。",
   "zone": "shalantsa",
   "tags": [
     "town",
@@ -13,19 +13,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Taishibal",
+      "direction": "官道往塔伊希巴勒",
       "to": "world_ayantia_taishibal"
     },
     {
-      "direction": "官道往Sevlin",
+      "direction": "官道往塞瓦林",
       "to": "world_shalantsa_sevlin"
     },
     {
-      "direction": "官道往Sal",
+      "direction": "官道往薩勒",
       "to": "world_ryadh_sal"
     },
     {
-      "direction": "小徑往Alhuray",
+      "direction": "小徑往阿勒胡拉伊",
       "to": "world_hafaha_alhuray"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Hulandor"
+    "province": "呼蘭多爾"
   }
 }

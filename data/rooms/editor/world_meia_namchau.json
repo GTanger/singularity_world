@@ -1,7 +1,7 @@
 {
   "id": "world_meia_namchau",
-  "name": "Namchau",
-  "description": "",
+  "name": "南洲",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "meia",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tailunfa",
+      "direction": "小徑往太倫法",
       "to": "world_meia_tailunfa"
     },
     {
-      "direction": "小徑往Simshan",
+      "direction": "小徑往尖山",
       "to": "world_fungia_simshan"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Daktienia"
+    "province": "達克提厄尼阿"
   }
 }

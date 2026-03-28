@@ -1,14 +1,14 @@
 {
   "id": "world_marker_encounters_67",
   "name": "遭遇點",
-  "description": "",
+  "description": "路在此岔開，草痕雜沓，彷彿曾有人在此急轉或停留。",
   "zone": "xian_guo",
   "tags": [
     "encounters"
   ],
   "exits": [
     {
-      "direction": "返回Fenzhou",
+      "direction": "返回汾州·210",
       "to": "world_xian_guo_fenzhou"
     }
   ],

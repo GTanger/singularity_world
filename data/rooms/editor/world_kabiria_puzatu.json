@@ -1,7 +1,7 @@
 {
   "id": "world_kabiria_puzatu",
-  "name": "Puzatu",
-  "description": "",
+  "name": "普札圖",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "kabiria",
   "tags": [
     "town",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Maqat",
+      "direction": "官道往馬卡特",
       "to": "world_harbi_maqat"
     },
     {
-      "direction": "官道往Lada",
+      "direction": "官道往拉達",
       "to": "world_kabiria_lada"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Unakad"
+    "province": "溫阿克阿德"
   }
 }

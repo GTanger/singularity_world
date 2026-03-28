@@ -1,7 +1,7 @@
 {
   "id": "world_longchia_namchue",
-  "name": "Namchue",
-  "description": "",
+  "name": "南除",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "longchia",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tsamkong",
+      "direction": "官道往站港",
       "to": "world_puipingia_tsamkong"
     },
     {
-      "direction": "官道往Waishui",
+      "direction": "官道往外水",
       "to": "world_ngwakyuen_waishui"
     },
     {
-      "direction": "官道往Samshan",
+      "direction": "官道往三山",
       "to": "world_longchia_samshan"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Yuenia"
+    "province": "尤恩亞"
   }
 }

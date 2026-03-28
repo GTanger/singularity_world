@@ -1,7 +1,7 @@
 {
   "id": "world_siukhingia_tungchuen",
-  "name": "Tungchuen",
-  "description": "",
+  "name": "東川·53",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "siukhingia",
   "tags": [
     "village",
@@ -12,11 +12,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Daowuhong",
+      "direction": "官道往道武宏",
       "to": "world_siukhingia_daowuhong"
     },
     {
-      "direction": "官道往Samshan",
+      "direction": "官道往三山",
       "to": "world_longchia_samshan"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tungchuen"
+    "province": "屯格楚厄恩"
   }
 }

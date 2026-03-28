@@ -1,18 +1,18 @@
 {
   "id": "world_chamgaria_chogheshahr",
-  "name": "Chogheshahr",
-  "description": "",
+  "name": "喬格沙赫爾",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chamgaria",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Buged",
+      "direction": "小徑往布格德",
       "to": "world_chamgaria_buged"
     },
     {
-      "direction": "小徑往Ilalt",
+      "direction": "小徑往伊拉勒特",
       "to": "world_guela_ilalt"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nimansia"
+    "province": "尼曼西阿"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_abepe_ayazbaykut",
-  "name": "Ayazbaykut",
-  "description": "",
+  "name": "阿亞茲拜庫特",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "abepe",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Bolu",
+      "direction": "官道往博盧",
       "to": "world_abepe_bolu"
     },
     {
-      "direction": "官道往Balkayabay",
+      "direction": "官道往巴勒卡亞拜",
       "to": "world_abepe_balkayabay"
     },
     {
-      "direction": "小徑往Yagawa",
+      "direction": "小徑往亞加瓦",
       "to": "world_nanu_yagawa"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Yalyurt"
+    "province": "亞勒尤爾特"
   }
 }

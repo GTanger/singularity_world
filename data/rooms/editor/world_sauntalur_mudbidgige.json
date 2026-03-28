@@ -1,7 +1,7 @@
 {
   "id": "world_sauntalur_mudbidgige",
-  "name": "Mudbidgige",
-  "description": "",
+  "name": "穆德比德吉格",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "sauntalur",
   "tags": [
     "town",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Muduledbid",
+      "direction": "小徑往穆杜勒德比德",
       "to": "world_sauntalur_muduledbid"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Sindhwaria"
+    "province": "信德瓦里亞"
   }
 }

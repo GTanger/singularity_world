@@ -1,7 +1,7 @@
 {
   "id": "world_ganz_guo_shaozhou",
-  "name": "Shaozhou",
-  "description": "",
+  "name": "韶州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "ganz_guo",
   "tags": [
     "village",
@@ -9,7 +9,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tailining",
+      "direction": "小徑往太里寧",
       "to": "world_ganz_guo_tailining"
     }
   ],
@@ -35,6 +35,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shaozhou"
+    "province": "沙奧哲烏"
   }
 }

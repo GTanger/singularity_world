@@ -1,7 +1,7 @@
 {
   "id": "world_chandia_bayan",
-  "name": "Bayan",
-  "description": "",
+  "name": "巴彥·257",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chandia",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Jibtal",
+      "direction": "官道往吉布塔勒",
       "to": "world_hafaha_jibtal"
     },
     {
-      "direction": "官道往Buregkher",
+      "direction": "官道往布列格赫爾",
       "to": "world_chandia_buregkher"
     },
     {
-      "direction": "雕像",
+      "direction": "往雕像",
       "to": "world_marker_statues_44"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Bayan"
+    "province": "布阿伊阿恩"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_harbi_nisurran",
-  "name": "Nisurran",
-  "description": "",
+  "name": "尼蘇爾蘭",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "harbi",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Kursadum",
+      "direction": "小徑往庫爾薩杜姆",
       "to": "world_puz_kursadum"
     },
     {
-      "direction": "小徑往Jaran",
+      "direction": "小徑往賈蘭",
       "to": "world_harbi_jaran"
     },
     {
-      "direction": "小徑往Onuur",
+      "direction": "小徑往奧努爾",
       "to": "world_baniuria_onuur"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Tira"
+    "province": "提拉"
   }
 }

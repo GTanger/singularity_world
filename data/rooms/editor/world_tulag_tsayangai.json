@@ -1,7 +1,7 @@
 {
   "id": "world_tulag_tsayangai",
-  "name": "Tsayangai",
-  "description": "",
+  "name": "察彥加伊",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "tulag",
   "tags": [
     "village",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Baliun",
+      "direction": "官道往巴利烏恩",
       "to": "world_baliun_baliun"
     },
     {
-      "direction": "官道往Zariayandu",
+      "direction": "官道往札里阿亞恩杜",
       "to": "world_tsakhania_zariayandu"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_guang",
-  "name": "Guang",
-  "description": "",
+  "name": "廣·182",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Shouchun",
+      "direction": "小徑往壽春",
       "to": "world_xian_guo_shouchun"
     },
     {
-      "direction": "小徑往Fuzhou",
+      "direction": "小徑往福州",
       "to": "world_xian_guo_fuzhou"
     },
     {
-      "direction": "雕像",
+      "direction": "往雕像",
       "to": "world_marker_statues_45"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Didu"
+    "province": "迪杜"
   }
 }

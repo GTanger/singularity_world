@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_qarch",
-  "name": "Qarch",
-  "description": "",
+  "name": "卡爾察",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chamgaria",
   "tags": [
     "village",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Bashahr",
+      "direction": "小徑往巴斯哈赫爾",
       "to": "world_chamgaria_bashahr"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Qarch"
+    "province": "庫阿爾克赫"
   }
 }

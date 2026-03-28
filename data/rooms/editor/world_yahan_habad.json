@@ -1,7 +1,7 @@
 {
   "id": "world_yahan_habad",
-  "name": "Habad",
-  "description": "",
+  "name": "哈巴德",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "yahan",
   "tags": [
     "town",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Sraghzut",
+      "direction": "官道往斯拉格祖特",
       "to": "world_yahan_sraghzut"
     },
     {
-      "direction": "官道往Astan",
+      "direction": "官道往阿斯坦",
       "to": "world_safus_astan"
     },
     {
-      "direction": "盜賊據點",
+      "direction": "往盜賊據點",
       "to": "world_marker_brigands_39"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Ray-Shahr"
+    "province": "拉伊沙赫爾"
   }
 }

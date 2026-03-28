@@ -1,14 +1,14 @@
 {
   "id": "world_marker_dungeons_25",
   "name": "地牢",
-  "description": "",
+  "description": "低矮的鐵門半掩，霉味與腐水氣自黑暗裡湧出，階梯向下沒入無聲。",
   "zone": "chamgaria",
   "tags": [
     "dungeons"
   ],
   "exits": [
     {
-      "direction": "返回Qodshefids",
+      "direction": "返回庫奧德舍菲德斯",
       "to": "world_chamgaria_qodshefids"
     }
   ],

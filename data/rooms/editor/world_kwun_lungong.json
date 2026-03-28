@@ -1,7 +1,7 @@
 {
   "id": "world_kwun_lungong",
-  "name": "Lungong",
-  "description": "",
+  "name": "龍宮",
+  "description": "街巷縱橫，屋瓦與人聲層疊。塵土與貨味混在空氣裡，日影在牆角切出深淺。",
   "zone": "kwun",
   "tags": [
     "city",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yeungling",
+      "direction": "小徑往楊嶺",
       "to": "world_kwun_yeungling"
     },
     {
-      "direction": "小徑往Pingyuenwan",
+      "direction": "小徑往平原灣",
       "to": "world_kwun_pingyuenwan"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Lungong"
+    "province": "盧恩奧恩"
   }
 }

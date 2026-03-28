@@ -1,7 +1,7 @@
 {
   "id": "world_puhumia_guang",
-  "name": "Guang",
-  "description": "",
+  "name": "廣·623",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "puhumia",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Daxingling",
+      "direction": "小徑往大興嶺",
       "to": "world_puhumia_daxingling"
     },
     {
-      "direction": "小徑往Mololaiehu",
+      "direction": "小徑往莫洛拉耶胡",
       "to": "world_puhumia_mololaiehu"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tongz Guo"
+    "province": "通格茲國"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_ping_shunyang",
-  "name": "Shunyang",
-  "description": "",
+  "name": "順陽",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "ping",
   "tags": [
     "town",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Damingbo",
+      "direction": "小徑往大明波",
       "to": "world_ping_damingbo"
     },
     {
-      "direction": "小徑往Nanyang",
+      "direction": "小徑往南陽",
       "to": "world_ping_nanyang"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Shunyang"
+    "province": "舒恩陽"
   }
 }

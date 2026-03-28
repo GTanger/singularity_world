@@ -1,7 +1,7 @@
 {
   "id": "world_sains_sains",
-  "name": "Sains",
-  "description": "",
+  "name": "薩伊恩斯",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "sains",
   "tags": [
     "town",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Alan",
+      "direction": "官道往阿蘭",
       "to": "world_myania_alan"
     },
     {
-      "direction": "官道往Saintsa",
+      "direction": "官道往薩伊恩察",
       "to": "world_sains_saintsa"
     },
     {
-      "direction": "官道往Baral",
+      "direction": "官道往巴拉勒",
       "to": "world_sains_baral"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Sains"
+    "province": "斯阿伊恩斯"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_puhumia_puonoukipu",
-  "name": "Puonoukipu",
-  "description": "",
+  "name": "普奧諾烏基普",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "puhumia",
   "tags": [
     "town",
@@ -9,7 +9,7 @@
   ],
   "exits": [
     {
-      "direction": "官道往Apohinehi",
+      "direction": "官道往阿波希內希",
       "to": "world_puhumia_apohinehi"
     }
   ],
@@ -35,6 +35,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Puhoumia"
+    "province": "普霍烏姆亞"
   }
 }

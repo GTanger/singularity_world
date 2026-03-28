@@ -1,7 +1,7 @@
 {
   "id": "world_krishna_sakore",
-  "name": "Sakore",
-  "description": "",
+  "name": "薩科雷",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "krishna",
   "tags": [
     "town",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Narajpet",
+      "direction": "官道往納拉吉佩特",
       "to": "world_krishna_narajpet"
     },
     {
-      "direction": "官道往Kudch",
+      "direction": "官道往庫德察",
       "to": "world_hunageria_kudch"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Thumdurgia"
+    "province": "圖姆杜爾吉阿"
   }
 }

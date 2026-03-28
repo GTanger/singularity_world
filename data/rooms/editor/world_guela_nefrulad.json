@@ -1,7 +1,7 @@
 {
   "id": "world_guela_nefrulad",
-  "name": "Nefrulad",
-  "description": "",
+  "name": "內夫魯拉德",
+  "description": "厚重城牆擋住風沙，牆內屋舍層疊如浪。城塞塔樓居高俯視，廣場上人群與貨擔交錯，喧聲與鐵蹄混成一片。",
   "zone": "guela",
   "tags": [
     "city",
@@ -12,15 +12,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Aranelida",
+      "direction": "小徑往阿拉內利達",
       "to": "world_guela_aranelida"
     },
     {
-      "direction": "小徑往Asfrafira",
+      "direction": "小徑往阿斯夫拉菲拉",
       "to": "world_awlata_asfrafira"
     },
     {
-      "direction": "礦脈",
+      "direction": "往礦脈",
       "to": "world_marker_mines_3"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Nefrulad"
+    "province": "內夫魯拉德"
   }
 }

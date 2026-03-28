@@ -1,14 +1,14 @@
 {
   "id": "world_marker_pirates_41",
   "name": "海盜巢穴",
-  "description": "",
+  "description": "崖下藏洞，繩索與破帆堆在岸邊，海風帶著鐵鏽與酒氣。",
   "zone": "oisamawa",
   "tags": [
     "pirates"
   ],
   "exits": [
     {
-      "direction": "返回Naka",
+      "direction": "返回納卡",
       "to": "world_oisamawa_naka"
     }
   ],

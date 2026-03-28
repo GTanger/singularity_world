@@ -1,14 +1,14 @@
 {
   "id": "world_marker_ruins_48",
   "name": "遺跡",
-  "description": "",
+  "description": "斷垣殘柱立於蔓草之間，石縫裡長滿苔蘚，像被時間遺忘的一頁。",
   "zone": "tonkhan",
   "tags": [
     "ruins"
   ],
   "exits": [
     {
-      "direction": "返回Tolger",
+      "direction": "返回托勒格爾",
       "to": "world_tonkhan_tolger"
     }
   ],

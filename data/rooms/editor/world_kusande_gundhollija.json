@@ -1,18 +1,18 @@
 {
   "id": "world_kusande_gundhollija",
-  "name": "Gundhollija",
-  "description": "",
+  "name": "貢達奧勒利賈",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "kusande",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Sindhtakore",
+      "direction": "小徑往辛達塔科雷",
       "to": "world_kusande_sindhtakore"
     },
     {
-      "direction": "小徑往Uduragote",
+      "direction": "小徑往烏杜拉戈特",
       "to": "world_kusande_uduragote"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Korabia"
+    "province": "科拉比阿"
   }
 }

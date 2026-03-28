@@ -1,14 +1,14 @@
 {
   "id": "world_marker_battlefields_22",
   "name": "古戰場",
-  "description": "",
+  "description": "荒草淹沒的舊戰場，斷戟與碎甲半埋土中，風過時彷彿仍有金鐵聲。",
   "zone": "chamgaria",
   "tags": [
     "battlefields"
   ],
   "exits": [
     {
-      "direction": "返回Yahin",
+      "direction": "返回亞希恩",
       "to": "world_chamgaria_yahin"
     }
   ],

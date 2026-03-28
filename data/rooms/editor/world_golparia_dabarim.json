@@ -1,7 +1,7 @@
 {
   "id": "world_golparia_dabarim",
-  "name": "Dabarim",
-  "description": "",
+  "name": "達巴里姆",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "golparia",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Zasirstan",
+      "direction": "小徑往札西爾斯坦",
       "to": "world_golparia_zasirstan"
     },
     {
-      "direction": "古戰場",
+      "direction": "往古戰場",
       "to": "world_marker_battlefields_23"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Dabarim"
+    "province": "達巴里姆"
   }
 }

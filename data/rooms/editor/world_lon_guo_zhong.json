@@ -1,7 +1,7 @@
 {
   "id": "world_lon_guo_zhong",
-  "name": "Zhong",
-  "description": "",
+  "name": "重",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "lon_guo",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Chang",
+      "direction": "小徑往昌·389",
       "to": "world_lon_guo_chang"
     },
     {
-      "direction": "小徑往Guang",
+      "direction": "小徑往廣·366",
       "to": "world_lon_guo_guang"
     },
     {
-      "direction": "小徑往Haixing",
+      "direction": "小徑往海興",
       "to": "world_lon_guo_haixing"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Chon Guo"
+    "province": "喬恩國"
   }
 }

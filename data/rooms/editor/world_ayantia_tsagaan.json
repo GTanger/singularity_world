@@ -1,7 +1,7 @@
 {
   "id": "world_ayantia_tsagaan",
-  "name": "Tsagaan",
-  "description": "",
+  "name": "察干",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "ayantia",
   "tags": [
     "town",
@@ -11,11 +11,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tseltant",
+      "direction": "小徑往策勒坦特",
       "to": "world_ayantia_tseltant"
     },
     {
-      "direction": "小徑往Taishibal",
+      "direction": "小徑往塔伊希巴勒",
       "to": "world_ayantia_taishibal"
     }
   ],
@@ -41,6 +41,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Norotia"
+    "province": "諾羅提阿"
   }
 }

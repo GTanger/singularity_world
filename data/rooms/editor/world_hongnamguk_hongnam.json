@@ -1,7 +1,7 @@
 {
   "id": "world_hongnamguk_hongnam",
-  "name": "Hongnam",
-  "description": "",
+  "name": "洪南",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "hongnamguk",
   "tags": [
     "village",
@@ -13,19 +13,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Inchang",
+      "direction": "官道往伊恩昌",
       "to": "world_hongnamguk_inchang"
     },
     {
-      "direction": "官道往Gocha",
+      "direction": "官道往戈察",
       "to": "world_hongnamguk_gocha"
     },
     {
-      "direction": "小徑往Hamrye",
+      "direction": "小徑往哈姆禮",
       "to": "world_hongnamguk_hamrye"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_16"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Hongnam"
+    "province": "洪南"
   }
 }

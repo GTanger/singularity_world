@@ -1,22 +1,22 @@
 {
   "id": "world_chamgaria_janabad",
-  "name": "Janabad",
-  "description": "",
+  "name": "詹阿巴德",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "chamgaria",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Abnakhast",
+      "direction": "小徑往阿布納克哈斯特",
       "to": "world_chamgaria_abnakhast"
     },
     {
-      "direction": "小徑往Qodshefids",
+      "direction": "小徑往庫奧德舍菲德斯",
       "to": "world_chamgaria_qodshefids"
     },
     {
-      "direction": "小徑往Yahin",
+      "direction": "小徑往亞希恩",
       "to": "world_chamgaria_yahin"
     }
   ],
@@ -42,6 +42,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Asghestan"
+    "province": "阿斯格斯坦"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_kusande_asakepalli",
-  "name": "Asakepalli",
-  "description": "",
+  "name": "阿薩克帕利",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "kusande",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Uduragote",
+      "direction": "小徑往烏杜拉戈特",
       "to": "world_kusande_uduragote"
     },
     {
-      "direction": "小徑往Kolalanur",
+      "direction": "小徑往科拉拉努爾",
       "to": "world_kusande_kolalanur"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Asakepalli"
+    "province": "阿薩克帕利"
   }
 }

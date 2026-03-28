@@ -1,7 +1,7 @@
 {
   "id": "world_guela_harherm",
-  "name": "Harherm",
-  "description": "",
+  "name": "哈爾赫爾姆",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "guela",
   "tags": [
     "town",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Datigziyan",
+      "direction": "官道往達提格齊亞恩",
       "to": "world_gordowia_datigziyan"
     },
     {
-      "direction": "官道往Guel",
+      "direction": "官道往古厄勒",
       "to": "world_guela_guel"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Harherm"
+    "province": "哈爾赫爾姆"
   }
 }

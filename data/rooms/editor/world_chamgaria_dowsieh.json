@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_dowsieh",
-  "name": "Dowsieh",
-  "description": "",
+  "name": "多瓦西厄赫",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "chamgaria",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Shahrehen",
+      "direction": "小徑往沙赫爾厄赫恩",
       "to": "world_chamgaria_shahrehen"
     },
     {
-      "direction": "小徑往Darand",
+      "direction": "小徑往達蘭德",
       "to": "world_chamgaria_darand"
     },
     {
-      "direction": "小徑往Pishteh",
+      "direction": "小徑往皮沙特赫",
       "to": "world_ziyehia_pishteh"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Dowsieh"
+    "province": "多瓦西厄赫"
   }
 }

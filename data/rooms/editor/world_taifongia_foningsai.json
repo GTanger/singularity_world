@@ -1,7 +1,7 @@
 {
   "id": "world_taifongia_foningsai",
-  "name": "Foningsai",
-  "description": "",
+  "name": "福寧塞",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "taifongia",
   "tags": [
     "village",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Shiu",
+      "direction": "官道往紹",
       "to": "world_shia_shiu"
     },
     {
-      "direction": "官道往Henlong",
+      "direction": "官道往衡隆",
       "to": "world_henlongia_henlong"
     },
     {
-      "direction": "官道往Shingtong",
+      "direction": "官道往聖堂",
       "to": "world_tong_shingtong"
     }
   ],

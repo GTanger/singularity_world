@@ -1,7 +1,7 @@
 {
   "id": "world_khulekhia_khandorgayan",
-  "name": "Khandorgayan",
-  "description": "",
+  "name": "汗多爾嘎彥",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "khulekhia",
   "tags": [
     "town",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Batan",
+      "direction": "小徑往巴坦",
       "to": "world_khulekhia_batan"
     },
     {
-      "direction": "小徑往Tsogt",
+      "direction": "小徑往措格特",
       "to": "world_khulekhia_tsogt"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Khandorgayan"
+    "province": "汗多爾嘎彥"
   }
 }

@@ -1,18 +1,18 @@
 {
   "id": "world_khulekhia_batan",
-  "name": "Batan",
-  "description": "",
+  "name": "巴坦",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "khulekhia",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Khoyonurga",
+      "direction": "小徑往霍約努爾加",
       "to": "world_khulekhia_khoyonurga"
     },
     {
-      "direction": "小徑往Khandorgayan",
+      "direction": "小徑往汗多爾嘎彥",
       "to": "world_khulekhia_khandorgayan"
     }
   ],
@@ -38,6 +38,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Batan"
+    "province": "布阿特阿恩"
   }
 }

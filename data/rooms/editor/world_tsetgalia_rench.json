@@ -1,7 +1,7 @@
 {
   "id": "world_tsetgalia_rench",
-  "name": "Rench",
-  "description": "",
+  "name": "列恩察",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "tsetgalia",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Sharud",
+      "direction": "小徑往沙魯德",
       "to": "world_chandia_sharud"
     },
     {
-      "direction": "小徑往Sagtokh",
+      "direction": "小徑往薩格托赫",
       "to": "world_tsetgalia_sagtokh"
     },
     {
-      "direction": "小徑往Noviret",
+      "direction": "小徑往諾維列特",
       "to": "world_tsetgalia_noviret"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Gatanonia"
+    "province": "加塔諾尼阿"
   }
 }

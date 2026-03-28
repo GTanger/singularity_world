@@ -1,7 +1,7 @@
 {
   "id": "world_puhumia_okolili",
-  "name": "Okolili",
-  "description": "",
+  "name": "奧科利利",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "puhumia",
   "tags": [
     "town",
@@ -9,7 +9,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Kwaito",
+      "direction": "小徑往快島",
       "to": "world_tuenia_kwaito"
     }
   ],
@@ -35,6 +35,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Okolili"
+    "province": "奧科利利"
   }
 }

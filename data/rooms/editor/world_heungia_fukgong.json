@@ -1,7 +1,7 @@
 {
   "id": "world_heungia_fukgong",
-  "name": "Fukgong",
-  "description": "",
+  "name": "福公",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "heungia",
   "tags": [
     "village",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Fungsha",
+      "direction": "官道往鳳沙",
       "to": "world_heungia_fungsha"
     },
     {
-      "direction": "官道往Hangpo",
+      "direction": "官道往行埔",
       "to": "world_heungia_hangpo"
     },
     {
-      "direction": "小徑往Hengon",
+      "direction": "小徑往衡安",
       "to": "world_heungia_hengon"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Fukgong"
+    "province": "夫克公"
   }
 }

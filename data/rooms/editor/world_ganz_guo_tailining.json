@@ -1,26 +1,26 @@
 {
   "id": "world_ganz_guo_tailining",
-  "name": "Tailining",
-  "description": "",
+  "name": "太里寧",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "ganz_guo",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "官道往Raozhoua",
+      "direction": "官道往饒州阿",
       "to": "world_ganz_guo_raozhoua"
     },
     {
-      "direction": "官道往Tengchuan",
+      "direction": "官道往滕川",
       "to": "world_ping_tengchuan"
     },
     {
-      "direction": "小徑往Shaozhou",
+      "direction": "小徑往韶州",
       "to": "world_ganz_guo_shaozhou"
     },
     {
-      "direction": "小徑往Bayangping",
+      "direction": "小徑往巴陽坪",
       "to": "world_ping_bayangping"
     }
   ],
@@ -46,6 +46,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tailining"
+    "province": "塔伊利寧"
   }
 }

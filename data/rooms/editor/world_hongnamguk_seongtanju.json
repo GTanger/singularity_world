@@ -1,14 +1,14 @@
 {
   "id": "world_hongnamguk_seongtanju",
-  "name": "Seongtanju",
-  "description": "",
+  "name": "城丹州",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "hongnamguk",
   "tags": [
     "village"
   ],
   "exits": [
     {
-      "direction": "小徑往Yeoncheon",
+      "direction": "小徑往耶奧恩川",
       "to": "world_hongnamguk_yeoncheon"
     }
   ],
@@ -34,6 +34,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Seongtanju"
+    "province": "城坦朱"
   }
 }

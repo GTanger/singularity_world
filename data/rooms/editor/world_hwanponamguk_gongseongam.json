@@ -1,7 +1,7 @@
 {
   "id": "world_hwanponamguk_gongseongam",
-  "name": "Gongseongam",
-  "description": "",
+  "name": "公城岩",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "hwanponamguk",
   "tags": [
     "town",
@@ -11,19 +11,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Cheon",
+      "direction": "官道往川",
       "to": "world_hwanponamguk_cheon"
     },
     {
-      "direction": "官道往Jeongju",
+      "direction": "官道往正州",
       "to": "world_sanguk_jeongju"
     },
     {
-      "direction": "小徑往Jeongdong",
+      "direction": "小徑往正洞",
       "to": "world_hwanponamguk_jeongdong"
     },
     {
-      "direction": "海路往Tsimshan",
+      "direction": "海路往尖山·549",
       "to": "world_meia_tsimshan"
     }
   ],
@@ -49,6 +49,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Gongseongam"
+    "province": "公城阿姆"
   }
 }

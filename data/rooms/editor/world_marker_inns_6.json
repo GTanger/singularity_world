@@ -1,14 +1,14 @@
 {
   "id": "world_marker_inns_6",
   "name": "旅店",
-  "description": "",
+  "description": "簷下掛燈搖晃，木門吱呀，屋內傳來碗盤與低語，是路人在此歇腳。",
   "zone": "khulekhia",
   "tags": [
     "inns"
   ],
   "exits": [
     {
-      "direction": "返回Ulaan",
+      "direction": "返回烏拉阿恩",
       "to": "world_khulekhia_ulaan"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "id": "world_hwanponamguk_jeongdong",
-  "name": "Jeongdong",
-  "description": "",
+  "name": "正洞",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "hwanponamguk",
   "tags": [
     "town",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tsimshan",
+      "direction": "小徑往尖山·549",
       "to": "world_meia_tsimshan"
     },
     {
-      "direction": "小徑往Gongseongam",
+      "direction": "小徑往公城岩",
       "to": "world_hwanponamguk_gongseongam"
     },
     {
-      "direction": "小徑往Siukwan",
+      "direction": "小徑往紹關",
       "to": "world_meia_siukwan"
     },
     {
-      "direction": "洞穴",
+      "direction": "往洞穴",
       "to": "world_marker_caves_61"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Jeongdong"
+    "province": "正洞"
   }
 }

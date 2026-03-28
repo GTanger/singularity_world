@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_abnakhast",
-  "name": "Abnakhast",
-  "description": "",
+  "name": "阿布納克哈斯特",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "chamgaria",
   "tags": [
     "village",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Pariruzful",
+      "direction": "小徑往帕里魯茲夫勒",
       "to": "world_chamgaria_pariruzful"
     },
     {
-      "direction": "小徑往Abodintash",
+      "direction": "小徑往阿博丁塔斯赫",
       "to": "world_chamgaria_abodintash"
     },
     {
-      "direction": "小徑往Janabad",
+      "direction": "小徑往詹阿巴德",
       "to": "world_chamgaria_janabad"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Hafshiania"
+    "province": "哈夫希阿尼阿"
   }
 }

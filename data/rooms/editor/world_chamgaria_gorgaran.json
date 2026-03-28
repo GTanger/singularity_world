@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_gorgaran",
-  "name": "Gorgaran",
-  "description": "",
+  "name": "戈爾加蘭",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "chamgaria",
   "tags": [
     "town",
@@ -14,11 +14,11 @@
   ],
   "exits": [
     {
-      "direction": "官道往Baghshe",
+      "direction": "官道往巴格赫舍",
       "to": "world_ziyehia_baghshe"
     },
     {
-      "direction": "官道往Hafshahrga",
+      "direction": "官道往哈夫沙赫爾加",
       "to": "world_chamgaria_hafshahrga"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Avicheh"
+    "province": "阿維切赫"
   }
 }

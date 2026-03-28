@@ -1,7 +1,7 @@
 {
   "id": "world_jowzvania_turareshahr",
-  "name": "Turareshahr",
-  "description": "",
+  "name": "圖拉列沙赫爾",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "jowzvania",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Eshahrok",
+      "direction": "小徑往厄沙赫爾奧克",
       "to": "world_jowzvania_eshahrok"
     },
     {
-      "direction": "小徑往Aslamshahr",
+      "direction": "小徑往阿斯拉姆沙赫爾",
       "to": "world_golparia_aslamshahr"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Kibabad"
+    "province": "基巴巴德"
   }
 }

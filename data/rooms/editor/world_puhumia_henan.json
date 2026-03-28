@@ -1,7 +1,7 @@
 {
   "id": "world_puhumia_henan",
-  "name": "Henan",
-  "description": "",
+  "name": "河南",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "puhumia",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Tengchuan",
+      "direction": "官道往滕川",
       "to": "world_ping_tengchuan"
     },
     {
-      "direction": "官道往Mololaiehu",
+      "direction": "官道往莫洛拉耶胡",
       "to": "world_puhumia_mololaiehu"
     },
     {
-      "direction": "小徑往Paiahulua",
+      "direction": "小徑往帕亞胡盧阿",
       "to": "world_puhumia_paiahulua"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Yaz Guo"
+    "province": "伊阿茲格烏奧"
   }
 }

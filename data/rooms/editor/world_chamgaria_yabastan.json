@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_yabastan",
-  "name": "Yabastan",
-  "description": "",
+  "name": "亞巴斯坦",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "chamgaria",
   "tags": [
     "town",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Yareh",
+      "direction": "小徑往亞列赫",
       "to": "world_chamgaria_yareh"
     },
     {
-      "direction": "小徑往Shahrehen",
+      "direction": "小徑往沙赫爾厄赫恩",
       "to": "world_chamgaria_shahrehen"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Yabastan"
+    "province": "亞巴斯坦"
   }
 }

@@ -1,14 +1,14 @@
 {
   "id": "world_marker_encounters_64",
   "name": "遭遇點",
-  "description": "",
+  "description": "路在此岔開，草痕雜沓，彷彿曾有人在此急轉或停留。",
   "zone": "kyohe",
   "tags": [
     "encounters"
   ],
   "exits": [
     {
-      "direction": "返回Kyohe",
+      "direction": "返回克約赫",
       "to": "world_kyohe_kyohe"
     }
   ],

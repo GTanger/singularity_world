@@ -1,7 +1,7 @@
 {
   "id": "world_buybaryurt_buyburdi",
-  "name": "Buyburdi",
-  "description": "",
+  "name": "布伊布爾迪",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "buybaryurt",
   "tags": [
     "village",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Yaz",
+      "direction": "官道往亞茲",
       "to": "world_yalkan_yaz"
     },
     {
-      "direction": "官道往Aninok",
+      "direction": "官道往阿尼諾克",
       "to": "world_buybaryurt_aninok"
     },
     {
-      "direction": "小徑往Bokuz",
+      "direction": "小徑往博庫茲",
       "to": "world_buybaryurt_bokuz"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Buyburdi"
+    "province": "布伊布爾迪"
   }
 }

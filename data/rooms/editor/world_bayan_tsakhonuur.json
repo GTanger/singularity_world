@@ -1,7 +1,7 @@
 {
   "id": "world_bayan_tsakhonuur",
-  "name": "Tsakhonuur",
-  "description": "",
+  "name": "察洪烏爾",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "bayan",
   "tags": [
     "village",
@@ -9,23 +9,23 @@
   ],
   "exits": [
     {
-      "direction": "官道往Dutsa",
+      "direction": "官道往杜察",
       "to": "world_morovria_dutsa"
     },
     {
-      "direction": "官道往Myanzurkh",
+      "direction": "官道往姆亞恩祖爾赫",
       "to": "world_bayan_myanzurkh"
     },
     {
-      "direction": "官道往Borman",
+      "direction": "官道往博爾曼",
       "to": "world_chandia_borman"
     },
     {
-      "direction": "小徑往Noroot",
+      "direction": "小徑往諾羅奧特",
       "to": "world_morovria_noroot"
     },
     {
-      "direction": "旅店",
+      "direction": "往旅店",
       "to": "world_marker_inns_7"
     }
   ],
@@ -51,6 +51,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tsakhonuur"
+    "province": "察洪烏爾"
   }
 }

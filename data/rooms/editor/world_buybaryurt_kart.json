@@ -1,7 +1,7 @@
 {
   "id": "world_buybaryurt_kart",
-  "name": "Kart",
-  "description": "",
+  "name": "卡爾特",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "buybaryurt",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Aninok",
+      "direction": "官道往阿尼諾克",
       "to": "world_buybaryurt_aninok"
     },
     {
-      "direction": "官道往Bopuz",
+      "direction": "官道往博普茲",
       "to": "world_buybaryurt_bopuz"
     },
     {
-      "direction": "官道往Yliyu",
+      "direction": "官道往伊利尤",
       "to": "world_buybaryurt_yliyu"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Dev"
+    "province": "德厄維"
   }
 }

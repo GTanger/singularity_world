@@ -1,7 +1,7 @@
 {
   "id": "world_xian_guo_yanzhou",
-  "name": "Yanzhou",
-  "description": "",
+  "name": "兗州·178",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "xian_guo",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Qianzhou",
+      "direction": "小徑往黔州",
       "to": "world_xian_guo_qianzhou"
     },
     {
-      "direction": "小徑往Shinan",
+      "direction": "小徑往石南·545",
       "to": "world_xian_guo_shinan"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Yanzhou"
+    "province": "亞恩哲烏"
   }
 }

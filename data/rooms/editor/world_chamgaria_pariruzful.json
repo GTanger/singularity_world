@@ -1,7 +1,7 @@
 {
   "id": "world_chamgaria_pariruzful",
-  "name": "Pariruzful",
-  "description": "",
+  "name": "帕里魯茲夫勒",
+  "description": "鎮子不大卻擠滿動靜，鐵匠與叫賣聲交錯。石板路被磨得發亮，簷下掛著乾燥香草。",
   "zone": "chamgaria",
   "tags": [
     "town",
@@ -9,15 +9,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Abnakhast",
+      "direction": "小徑往阿布納克哈斯特",
       "to": "world_chamgaria_abnakhast"
     },
     {
-      "direction": "小徑往Hafshan",
+      "direction": "小徑往哈夫沙恩",
       "to": "world_chamgaria_hafshan"
     },
     {
-      "direction": "遭遇點",
+      "direction": "往遭遇點",
       "to": "world_marker_encounters_66"
     }
   ],
@@ -43,6 +43,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Pariruzful"
+    "province": "帕里魯茲夫勒"
   }
 }

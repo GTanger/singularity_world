@@ -1,7 +1,7 @@
 {
   "id": "world_taizhou_xianchong",
-  "name": "Xianchong",
-  "description": "",
+  "name": "咸崇",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "taizhou",
   "tags": [
     "town",
@@ -10,15 +10,15 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Xintaoqing",
+      "direction": "小徑往新陶青",
       "to": "world_xian_guo_xintaoqing"
     },
     {
-      "direction": "小徑往Hengzhou",
+      "direction": "小徑往衡州·594",
       "to": "world_taizhou_hengzhou"
     },
     {
-      "direction": "小徑往Hangzhou",
+      "direction": "小徑往杭州·554",
       "to": "world_taizhou_hangzhou"
     }
   ],
@@ -44,6 +44,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Xianchong"
+    "province": "克斯亞恩喬恩"
   }
 }

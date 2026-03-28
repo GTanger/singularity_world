@@ -1,7 +1,7 @@
 {
   "id": "world_dur_ti_durkulu",
-  "name": "Durkulu",
-  "description": "",
+  "name": "杜爾庫盧",
+  "description": "碼頭邊木棧被海水浸得發黑，幾艘船隨浪輕搖。鹹風穿過掛滿繩纜的巷弄，遠處燈塔在霧裡時明時暗。",
   "zone": "dur_ti",
   "tags": [
     "town",
@@ -14,19 +14,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Er-Asha",
+      "direction": "官道往厄爾阿沙",
       "to": "world_dur_ti_er_asha"
     },
     {
-      "direction": "官道往Kur",
+      "direction": "官道往庫爾",
       "to": "world_eshnun_kur"
     },
     {
-      "direction": "官道往Urun",
+      "direction": "官道往烏倫",
       "to": "world_niqum_urun"
     },
     {
-      "direction": "海路往Niqum",
+      "direction": "海路往尼庫姆",
       "to": "world_niqum_niqum"
     }
   ],
@@ -52,6 +52,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Bitnia"
+    "province": "布伊特恩伊阿"
   }
 }

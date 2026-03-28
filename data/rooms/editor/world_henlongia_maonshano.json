@@ -1,7 +1,7 @@
 {
   "id": "world_henlongia_maonshano",
-  "name": "Maonshano",
-  "description": "",
+  "name": "茅山澳",
+  "description": "街巷盡頭傳來鐘聲，煙火與低誦聲隨風散開。屋簷層疊，紙燈在暮色裡一點點亮起。",
   "zone": "henlongia",
   "tags": [
     "town",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Henlong",
+      "direction": "小徑往衡隆",
       "to": "world_henlongia_henlong"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Mongong"
+    "province": "蒙公"
   }
 }

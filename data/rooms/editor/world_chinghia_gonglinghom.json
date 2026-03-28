@@ -1,7 +1,7 @@
 {
   "id": "world_chinghia_gonglinghom",
-  "name": "Gonglinghom",
-  "description": "",
+  "name": "功嶺含",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "chinghia",
   "tags": [
     "village",
@@ -10,7 +10,7 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Tsuen",
+      "direction": "小徑往村",
       "to": "world_chinghia_tsuen"
     }
   ],
@@ -36,6 +36,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Gonglinghom"
+    "province": "公林格奧姆"
   }
 }

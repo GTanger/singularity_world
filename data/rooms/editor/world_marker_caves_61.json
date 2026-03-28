@@ -1,14 +1,14 @@
 {
   "id": "world_marker_caves_61",
   "name": "洞穴",
-  "description": "",
+  "description": "洞口幽暗，涼風自內吹出，帶著土與腐植的氣息，迴音在裡面輕輕擴散。",
   "zone": "hwanponamguk",
   "tags": [
     "caves"
   ],
   "exits": [
     {
-      "direction": "返回Jeongdong",
+      "direction": "返回正洞",
       "to": "world_hwanponamguk_jeongdong"
     }
   ],

@@ -1,7 +1,7 @@
 {
   "id": "world_baniuria_onuur",
-  "name": "Onuur",
-  "description": "",
+  "name": "奧努爾",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "baniuria",
   "tags": [
     "village",
@@ -10,19 +10,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Olbar",
+      "direction": "官道往奧勒巴爾",
       "to": "world_baniuria_olbar"
     },
     {
-      "direction": "官道往Zagangol",
+      "direction": "官道往札甘河",
       "to": "world_baniuria_zagangol"
     },
     {
-      "direction": "小徑往Tsayan",
+      "direction": "小徑往察彥",
       "to": "world_baniuria_tsayan"
     },
     {
-      "direction": "小徑往Nisurran",
+      "direction": "小徑往尼蘇爾蘭",
       "to": "world_harbi_nisurran"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Khuregkhon"
+    "province": "庫列格洪"
   }
 }

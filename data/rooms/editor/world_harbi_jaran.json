@@ -1,7 +1,7 @@
 {
   "id": "world_harbi_jaran",
-  "name": "Jaran",
-  "description": "",
+  "name": "賈蘭",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "harbi",
   "tags": [
     "village",
@@ -14,15 +14,15 @@
   ],
   "exits": [
     {
-      "direction": "官道往Puz",
+      "direction": "官道往普茲",
       "to": "world_puz_puz"
     },
     {
-      "direction": "官道往Maqat",
+      "direction": "官道往馬卡特",
       "to": "world_harbi_maqat"
     },
     {
-      "direction": "小徑往Nisurran",
+      "direction": "小徑往尼蘇爾蘭",
       "to": "world_harbi_nisurran"
     }
   ],
@@ -48,6 +48,6 @@
       "river": 0,
       "port": 1
     },
-    "province": "Jaran"
+    "province": "吉阿爾阿恩"
   }
 }

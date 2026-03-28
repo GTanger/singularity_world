@@ -1,7 +1,7 @@
 {
   "id": "world_baniuria_tsayan",
-  "name": "Tsayan",
-  "description": "",
+  "name": "察彥",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "baniuria",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Onuur",
+      "direction": "小徑往奧努爾",
       "to": "world_baniuria_onuur"
     },
     {
-      "direction": "小徑往Zagangol",
+      "direction": "小徑往札甘河",
       "to": "world_baniuria_zagangol"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Tsayan"
+    "province": "特斯阿伊阿恩"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_ith_sidah",
-  "name": "Sidah",
-  "description": "",
+  "name": "西達赫",
+  "description": "村舍散在林隙間，屋頂積滿落葉與苔。雨後的霧貼地而行，遠處樹冠遮去大半天空。",
   "zone": "ith",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Mirwah",
+      "direction": "小徑往米爾瓦赫",
       "to": "world_ith_mirwah"
     },
     {
-      "direction": "小徑往Kolemukhi",
+      "direction": "小徑往科勒穆希",
       "to": "world_sauntalur_kolemukhi"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Sidah"
+    "province": "斯伊德阿赫"
   }
 }

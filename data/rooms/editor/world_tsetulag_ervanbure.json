@@ -1,7 +1,7 @@
 {
   "id": "world_tsetulag_ervanbure",
-  "name": "Ervanbure",
-  "description": "",
+  "name": "額爾萬布列",
+  "description": "城牆內圈出一方市集廣場，攤棚與人聲擠滿石板路。灰塵與香料味混在午後的陽光裡。",
   "zone": "tsetulag",
   "tags": [
     "town",
@@ -12,19 +12,19 @@
   ],
   "exits": [
     {
-      "direction": "官道往Gurvan",
+      "direction": "官道往古爾萬",
       "to": "world_tsetulag_gurvan"
     },
     {
-      "direction": "官道往Ergaltkhan",
+      "direction": "官道往厄爾加爾特汗·235",
       "to": "world_tsetulag_ergaltkhan"
     },
     {
-      "direction": "官道往Myanzurkh",
+      "direction": "官道往姆亞恩祖爾赫",
       "to": "world_bayan_myanzurkh"
     },
     {
-      "direction": "小徑往Khuluutno",
+      "direction": "小徑往庫盧烏特諾",
       "to": "world_tsetulag_khuluutno"
     }
   ],
@@ -50,6 +50,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Umen"
+    "province": "烏姆恩"
   }
 }

@@ -1,7 +1,7 @@
 {
   "id": "world_takhtarjia_tunatompyda",
-  "name": "Tunatompyda",
-  "description": "",
+  "name": "圖納托姆普伊達",
+  "description": "小河在屋舍間拐了個彎，水聲潺潺。婦人在岸邊洗涮，柳枝垂到水面。",
   "zone": "takhtarjia",
   "tags": [
     "village",
@@ -9,11 +9,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Rhawan",
+      "direction": "小徑往爾哈萬",
       "to": "world_takhtarjia_rhawan"
     },
     {
-      "direction": "小徑往Shah",
+      "direction": "小徑往沙赫",
       "to": "world_takhtarjia_shah"
     }
   ],
@@ -39,6 +39,6 @@
       "river": 1,
       "port": 0
     },
-    "province": "Tunatompyda"
+    "province": "圖納托姆普伊達"
   }
 }

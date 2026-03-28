@@ -1,7 +1,7 @@
 {
   "id": "world_sanguk_okchang",
-  "name": "Okchang",
-  "description": "",
+  "name": "玉昌",
+  "description": "村舍沿著林邊展開，炊煙從低簷升起。風穿林隙，帶來乾葉與濕土的氣息。",
   "zone": "sanguk",
   "tags": [
     "village",
@@ -10,11 +10,11 @@
   ],
   "exits": [
     {
-      "direction": "小徑往Uiwang",
+      "direction": "小徑往烏伊萬格",
       "to": "world_hwanponamguk_uiwang"
     },
     {
-      "direction": "小徑往Poyang",
+      "direction": "小徑往波陽",
       "to": "world_sanguk_poyang"
     }
   ],
@@ -40,6 +40,6 @@
       "river": 0,
       "port": 0
     },
-    "province": "Sancheok"
+    "province": "桑尺"
   }
 }
