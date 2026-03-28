@@ -37,69 +37,95 @@ CREATE TABLE IF NOT EXISTS word_element_embeddings (
 
 寫一個獨立腳本（Python 或 Rust 皆可，建議 Python 省事）：
 
-### 路徑：`tools/generate_embeddings.py`
+### 路徑：`src/bin/generate_embeddings.rs`
+
+用 Rust 寫獨立 binary，不引入新依賴（reqwest、serde、r2d2_postgres 專案皆已有）。
 
 ### 流程：
 
-```python
-import json
-import requests
-import psycopg2
+```rust
+// src/bin/generate_embeddings.rs
+// cargo run --bin generate_embeddings
 
-# 1. 讀取詞元池
-with open('data/config/word_elements.json') as f:
-    elements = json.load(f)['elements']
+use serde::{Deserialize, Serialize};
+use std::fs;
 
-# 2. 連接 PG
-conn = psycopg2.connect("postgresql://localhost/singularity_world")
-cur = conn.cursor()
+#[derive(Deserialize)]
+struct WordPool { elements: Vec<Element> }
 
-# 3. 確保表存在
-cur.execute("""
-    CREATE TABLE IF NOT EXISTS word_element_embeddings (
-        id TEXT PRIMARY KEY,
-        char TEXT NOT NULL,
-        semantic TEXT NOT NULL,
-        desc_text TEXT NOT NULL,
-        embedding vector(1024) NOT NULL
-    )
-""")
+#[derive(Deserialize)]
+struct Element { id: String, char: String, semantic: String, desc: String }
 
-# 4. 逐筆跑 embedding
-for e in elements:
-    # 呼叫 Ollama embedding API
-    resp = requests.post('http://localhost:11434/api/embed', json={
-        'model': 'bge-m3',
-        'input': e['desc']
-    })
-    vec = resp.json()['embeddings'][0]
+#[derive(Serialize)]
+struct EmbedReq { model: String, input: String }
 
-    # 驗證維度
-    assert len(vec) == 1024, f"期望 1024 維，實際 {len(vec)} 維，id={e['id']}"
+#[derive(Deserialize)]
+struct EmbedResp { embeddings: Vec<Vec<f64>> }
 
-    # Upsert
-    cur.execute("""
-        INSERT INTO word_element_embeddings (id, char, semantic, desc_text, embedding)
-        VALUES (%s, %s, %s, %s, %s)
-        ON CONFLICT (id) DO UPDATE SET
-            char = EXCLUDED.char,
-            semantic = EXCLUDED.semantic,
-            desc_text = EXCLUDED.desc_text,
-            embedding = EXCLUDED.embedding
-    """, (e['id'], e['char'], e['semantic'], e['desc'], str(vec)))
+fn main() -> anyhow::Result<()> {
+    // 1. 讀取詞元池
+    let raw = fs::read_to_string("data/config/word_elements.json")?;
+    let pool: WordPool = serde_json::from_str(&raw)?;
 
-conn.commit()
-cur.close()
-conn.close()
-print(f"完成：{len(elements)} 顆詞元 embedding 已存入 PG")
+    // 2. 連接 PG（DATABASE_URL 環境變數或預設）
+    let db_url = std::env::var("DATABASE_URL")
+        .unwrap_or_else(|_| "postgresql://localhost/singularity_world".to_string());
+    let mut conn = postgres::Client::connect(&db_url, postgres::NoTls)?;
+
+    // 3. 確保表存在
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS word_element_embeddings (
+            id TEXT PRIMARY KEY,
+            char TEXT NOT NULL,
+            semantic TEXT NOT NULL,
+            desc_text TEXT NOT NULL,
+            embedding vector(1024) NOT NULL
+        )", &[]
+    )?;
+
+    let client = reqwest::blocking::Client::new();
+
+    // 4. 逐筆跑 embedding
+    for (i, e) in pool.elements.iter().enumerate() {
+        let resp: EmbedResp = client
+            .post("http://localhost:11434/api/embed")
+            .json(&EmbedReq {
+                model: "bge-m3".into(),
+                input: e.desc.clone(),
+            })
+            .send()?
+            .json()?;
+
+        let vec = &resp.embeddings[0];
+        assert_eq!(vec.len(), 1024, "期望 1024 維，實際 {} 維，id={}", vec.len(), e.id);
+
+        // 轉成 pgvector 字串格式 "[0.1,0.2,...]"
+        let vec_str = format!("[{}]", vec.iter().map(|v| v.to_string()).collect::<Vec<_>>().join(","));
+
+        conn.execute(
+            "INSERT INTO word_element_embeddings (id, char, semantic, desc_text, embedding)
+             VALUES ($1, $2, $3, $4, $5::vector)
+             ON CONFLICT (id) DO UPDATE SET
+                char = EXCLUDED.char, semantic = EXCLUDED.semantic,
+                desc_text = EXCLUDED.desc_text, embedding = EXCLUDED.embedding",
+            &[&e.id, &e.char, &e.semantic, &e.desc, &vec_str],
+        )?;
+
+        if (i + 1) % 50 == 0 {
+            println!("進度：{}/{}", i + 1, pool.elements.len());
+        }
+    }
+
+    println!("完成：{} 顆詞元 embedding 已存入 PG", pool.elements.len());
+    Ok(())
+}
 ```
 
 ### 執行：
 
 ```bash
 cd ~/Projects/singularity_world
-pip install psycopg2-binary  # 如果沒裝過
-python3 tools/generate_embeddings.py
+cargo run --bin generate_embeddings
 ```
 
 ## 四、驗證
@@ -130,11 +156,13 @@ ORDER BY cosine_similarity DESC;
 3. **vector 格式**：pgvector 接受字串格式 `'[0.1, 0.2, ...]'`，Python 的 `str(list)` 即可
 4. **500 筆大約跑 1~2 分鐘**，不會卡很久
 5. **冪等**：用 `ON CONFLICT DO UPDATE`，重跑不會炸
-6. **不需要動 Rust 代碼**。建表語句加到 `sql.rs` 的 `create_tables()` 裡即可，embedding 生成用 Python 腳本獨立跑
+6. **建表語句**也加到 `sql.rs` 的 `create_tables()` 裡，確保伺服器啟動時表存在
+7. **不引入新依賴**。`reqwest`（blocking feature）、`serde`、`postgres` 專案皆已有
 
 ## 六、交付標準
 
 - [ ] `word_element_embeddings` 表有 500 筆資料
 - [ ] 每筆 embedding 維度為 1024
 - [ ] 語義相似度測試通過（攻擊類詞元彼此接近、與防禦類遠離）
-- [ ] Python 腳本放在 `tools/generate_embeddings.py`
+- [ ] 獨立 binary 放在 `src/bin/generate_embeddings.rs`
+- [ ] `cargo run --bin generate_embeddings` 可執行
