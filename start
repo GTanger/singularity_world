@@ -5,8 +5,6 @@
 set -e
 cd "$(dirname "$0")"
 SW_DIR="$(pwd)"
-CHATMERY_DIR="${CHATMERY_DIR:-$SW_DIR/../chatmery}"
-
 PORT=1721
 DATABASE_URL="${DATABASE_URL:-postgres://postgres:singularity@localhost:5432/singularity}"
 
@@ -57,9 +55,4 @@ else
   nohup env PORT=$PORT DATABASE_URL="$DATABASE_URL" ./bin/server-rust >> sw.log 2>&1 &
   sleep 2
   echo "已啟動。log：$SW_DIR/sw.log"
-fi
-
-# 5) Chatmery Web（若存在則提示手動或自動啟動，此處保持最小化）
-if [[ -d "$CHATMERY_DIR" ]]; then
-  echo "提示：偵測到 Chatmery 目錄，若需同步啟動請使用 ./start-with-chatmery"
 fi

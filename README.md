@@ -38,18 +38,6 @@
 
 用途：通過閘門後，建置 Release 版本並啟動伺服器（預設埠：1721）。
 
-### 奇點 + Chatmery 一起啟動
-
-```bash
-./start-with-chatmery
-```
-
-安裝 user-level 開機自啟（systemd）：
-
-```bash
-./start-with-chatmery --install
-```
-
 ---
 
 ## 常用路由與 API

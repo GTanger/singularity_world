@@ -6,8 +6,6 @@
 set -e
 cd "$(dirname "$0")"
 SW_DIR="$(pwd)"
-CHATMERY_DIR="${CHATMERY_DIR:-$SW_DIR/../chatmery}"
-
 PORT=1721
 
 # 1) 先殺佔用 1721 的 process
@@ -25,9 +23,6 @@ elif command -v fuser &>/dev/null; then
     sleep 1
   fi
 fi
-pkill -x chatmery-web 2>/dev/null || true
-sleep 1
-
 # 2) 嚴格閘門（Rust 版：clippy → test → checkrooms）
 echo "cargo clippy -D warnings…"
 cargo clippy -- -D warnings
@@ -50,24 +45,7 @@ fi
 mkdir -p bin
 cp "$CARGO_OUT" bin/server-rust
 
-# 4) 建置並啟動 Chatmery Web（若目錄存在）
-if [[ -d "$CHATMERY_DIR" ]]; then
-  echo "建置 Chatmery Web…"
-  ( cd "$CHATMERY_DIR" && go build -o chatmery-web ./cmd/chatmery-web )
-  echo "啟動 Chatmery Web（:1722）…"
-  (
-    cd "$CHATMERY_DIR"
-    if [[ -f .env ]]; then
-      set -a
-      source .env 2>/dev/null || true
-      set +a
-    fi
-    nohup env CHATMERY_WEB_PORT=1722 ./chatmery-web >> chatmery-web.log 2>&1
-  ) &
-  sleep 0.5
-fi
-
-# 5) 專案根 .env
+# 4) 專案根 .env
 if [[ -f "$SW_DIR/.env" ]]; then
   set -a
   # shellcheck disable=SC1091
@@ -75,7 +53,7 @@ if [[ -f "$SW_DIR/.env" ]]; then
   set +a
 fi
 
-# 6) 啟動奇點（Rust，後台）
+# 5) 啟動奇點（Rust，後台）
 echo "啟動奇點 Rust（PORT=$PORT）…"
 nohup env PORT=$PORT ./bin/server-rust >> sw.log 2>&1 &
 sleep 2
