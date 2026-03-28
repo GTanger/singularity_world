@@ -33,20 +33,9 @@ fn init_loads_editor_rooms_and_data_json() {
     let arc = store::get_store().expect("init 後應設定全域 store");
     let st = arc.read().expect("store lock");
 
-    // data/rooms/editor 已遷移至 UNS 規範，約 638 個檔
-    const MIN_EDITOR_ROOMS: usize = 600;
-    assert!(
-        st.rooms.len() >= MIN_EDITOR_ROOMS,
-        "房間數應至少 {}（editor 檔案數），實際 {}",
-        MIN_EDITOR_ROOMS,
-        st.rooms.len()
-    );
-
-    // 抽樣：遷移後的 editor 房間應存在
-    assert!(
-        st.get_room("zonelife_city_life_11f_u110_0").is_some(),
-        "預期載入 editor 房間 zonelife_city_life_11f_u110_0"
-    );
+    // 浮生城已封存至 archive/，editor 目錄可能為空
+    // 僅驗證 init 成功且房間數非負（新地圖由 Parser 生成後再調整斷言）
+    eprintln!("載入房間數：{}", st.rooms.len());
 
     // data_dir 非空時應嘗試載入 entities（檔案存在則有資料）
     if data.join("entities.json").is_file() {
