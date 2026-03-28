@@ -1,0 +1,285 @@
+{
+  "meta": {
+    "description": "詞盤造句引擎——模板 + 即時驗證 + 公式命名",
+    "note": "不預存句子，玩家選字後即時匹配模板、算名、算值"
+  },
+  "templates": {
+    "三字句": [
+      {
+        "pattern": [
+          "主",
+          "動",
+          "助"
+        ],
+        "example": "吾飛也",
+        "name_rule": "動+助",
+        "power_mult": 1.0
+      },
+      {
+        "pattern": [
+          "主",
+          "動",
+          "受"
+        ],
+        "example": "吾斬敵",
+        "name_rule": "動+受",
+        "power_mult": 1.1
+      },
+      {
+        "pattern": [
+          "屬",
+          "動",
+          "構"
+        ],
+        "example": "銳斬弧",
+        "name_rule": "屬+動",
+        "power_mult": 1.0
+      },
+      {
+        "pattern": [
+          "動",
+          "受",
+          "態"
+        ],
+        "example": "斬敵燃",
+        "name_rule": "態+動",
+        "power_mult": 1.2
+      },
+      {
+        "pattern": [
+          "否",
+          "動",
+          "助"
+        ],
+        "example": "不退也",
+        "name_rule": "否+動",
+        "power_mult": 0.9
+      },
+      {
+        "pattern": [
+          "屬",
+          "構",
+          "態"
+        ],
+        "example": "堅殼燃",
+        "name_rule": "屬+構",
+        "power_mult": 1.0
+      },
+      {
+        "pattern": [
+          "主",
+          "屬",
+          "動"
+        ],
+        "example": "吾銳斬",
+        "name_rule": "屬+動",
+        "power_mult": 1.1
+      },
+      {
+        "pattern": [
+          "動",
+          "補",
+          "助"
+        ],
+        "example": "斬盡也",
+        "name_rule": "動+補",
+        "power_mult": 1.0
+      }
+    ],
+    "五字句": [
+      {
+        "pattern": [
+          "主",
+          "屬",
+          "動",
+          "受",
+          "助"
+        ],
+        "example": "吾銳斬敵也",
+        "name_rule": "屬+動+受",
+        "power_mult": 2.0
+      },
+      {
+        "pattern": [
+          "主",
+          "動",
+          "構",
+          "補",
+          "助"
+        ],
+        "example": "吾斬弧盡也",
+        "name_rule": "動+構+補",
+        "power_mult": 2.0
+      },
+      {
+        "pattern": [
+          "動",
+          "主",
+          "否",
+          "動",
+          "助"
+        ],
+        "example": "傷吾反傷之",
+        "name_rule": "否+動×2",
+        "power_mult": 2.5
+      },
+      {
+        "pattern": [
+          "屬",
+          "動",
+          "受",
+          "態",
+          "助"
+        ],
+        "example": "銳斬敵燃矣",
+        "name_rule": "屬+動+態",
+        "power_mult": 2.2
+      },
+      {
+        "pattern": [
+          "主",
+          "否",
+          "動",
+          "受",
+          "補"
+        ],
+        "example": "吾不避敵盡",
+        "name_rule": "否+動+補",
+        "power_mult": 2.0
+      },
+      {
+        "pattern": [
+          "屬",
+          "屬",
+          "動",
+          "構",
+          "態"
+        ],
+        "example": "銳寒斬弧凍",
+        "name_rule": "屬×2+動",
+        "power_mult": 2.3
+      },
+      {
+        "pattern": [
+          "主",
+          "動",
+          "受",
+          "補",
+          "助"
+        ],
+        "example": "吾斬敵盡也",
+        "name_rule": "動+受+補",
+        "power_mult": 2.1
+      }
+    ],
+    "七字句": [
+      {
+        "pattern": [
+          "主",
+          "屬",
+          "助",
+          "構",
+          "動",
+          "補",
+          "助"
+        ],
+        "example": "吾奔如雷飛速也",
+        "name_rule": "屬+構+動+補",
+        "power_mult": 3.5
+      },
+      {
+        "pattern": [
+          "動",
+          "主",
+          "受",
+          "否",
+          "態",
+          "主",
+          "動"
+        ],
+        "example": "傷吾者反遭自傷",
+        "name_rule": "動×2+否+態",
+        "power_mult": 4.0
+      },
+      {
+        "pattern": [
+          "主",
+          "屬",
+          "動",
+          "構",
+          "受",
+          "態",
+          "助"
+        ],
+        "example": "吾銳斬弧敵燃矣",
+        "name_rule": "屬+動+構+態",
+        "power_mult": 3.5
+      },
+      {
+        "pattern": [
+          "屬",
+          "屬",
+          "動",
+          "受",
+          "補",
+          "態",
+          "助"
+        ],
+        "example": "銳寒斬敵盡凍矣",
+        "name_rule": "屬×2+動+態",
+        "power_mult": 3.8
+      },
+      {
+        "pattern": [
+          "主",
+          "否",
+          "屬",
+          "動",
+          "受",
+          "補",
+          "助"
+        ],
+        "example": "吾不銳斬敵盡也",
+        "name_rule": "否+屬+動+補",
+        "power_mult": 3.2
+      }
+    ]
+  },
+  "naming_formula": {
+    "description": "從句中按 name_rule 抽取核心字，重組為技能名",
+    "examples": [
+      {
+        "sentence": "銳·斬·弧",
+        "template": "屬+動+構",
+        "name_rule": "屬+動",
+        "result": "銳斬"
+      },
+      {
+        "sentence": "吾·堅·盾·體·癒",
+        "template": "主+屬+動+受+態",
+        "name_rule": "屬+動+受",
+        "result": "堅盾體"
+      },
+      {
+        "sentence": "傷·吾·者·反·遭·自·傷",
+        "template": "動+主+受+否+態+主+動",
+        "name_rule": "動×2+否+態",
+        "result": "反傷自遭"
+      }
+    ]
+  },
+  "value_formula": {
+    "description": "技能數值 = 詞元品質均值 × 句長倍率 × 語義加權",
+    "quality_weight": "每顆詞元的充能% (0~100) 取均值",
+    "length_multiplier": {
+      "三字": 1.0,
+      "五字": 2.0,
+      "七字": 3.5
+    },
+    "semantic_bonus": {
+      "玄": "不加數值，改擲骰參數",
+      "否": "反轉效果方向（攻→反擊、護→反彈）",
+      "態": "附加持續效果（燃=DOT、凍=減速）"
+    }
+  }
+}
