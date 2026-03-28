@@ -1,4 +1,4 @@
-# 013 — Map Viewer 雙模式編輯器（碼農工單）
+# 013 — Map Viewer 地圖編輯器（碼農工單）
 
 > **你只需要照做，不要自己發明新東西。**
 > 改動只涉及 `web/map_viewer.html`（單檔，HTML + JS + CSS 全寫在裡面）。
@@ -9,8 +9,12 @@
 
 ## 總覽
 
-把現有 `map_viewer.html`（純閱讀的蒲公英地圖）改成閱讀／編輯雙模式。
-閱讀模式維持現狀。編輯模式可新增房間、拖線連房、編輯房間屬性、刪除房間和連線。
+把現有 `map_viewer.html`（純閱讀的蒲公英地圖）改成 **Watabou 風格的空間地圖編輯器**。
+**沒有模式切換。** 打開就能看（平移/縮放），點了就能改（選節點/拖曳/連線）。
+物理引擎全程關閉，節點用固定 x/y 座標定位（拖哪放哪）。
+
+功能：平移縮放瀏覽、點選節點編輯屬性、拖曳節點改位置、新增房間（點擊空白處）、
+拖線連房（從節點拖到節點）、刪除房間和連線、Zone 濾鏡、登入顯示玩家位置。
 
 **後端 API 全部現成，不需要改後端。**
 
@@ -37,15 +41,11 @@
 
 ### 1a. 替換 header
 
-把現有 `<header>` 整個替換為：
+把現有 `<header>` 整個替換為（**注意：沒有模式切換按鈕**）：
 
 ```html
 <header>
   <h1>浮生地圖</h1>
-  <div class="mode-switch">
-    <button id="btn-mode-read" class="mode-btn active">閱讀</button>
-    <button id="btn-mode-edit" class="mode-btn">編輯</button>
-  </div>
   <div class="field-inline">
     <label>Zone</label>
     <select id="zone-filter">
@@ -125,14 +125,6 @@
 在現有 `<style>` 區塊末尾（`</style>` 之前）加入以下樣式：
 
 ```css
-/* ─── 模式切換 ─── */
-.mode-switch { display: flex; gap: 4px; }
-.mode-btn {
-  background: #1a1a2e; color: #a0a0b0; border: 1px solid #0f3460;
-  padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
-}
-.mode-btn.active { background: #0f3460; color: #e8e8e8; border-color: #e94560; }
-
 /* ─── Zone 濾鏡 ─── */
 .field-inline { display: flex; align-items: center; gap: 6px; }
 .field-inline label { color: #a0a0b0; font-size: 0.85rem; white-space: nowrap; }
@@ -143,7 +135,7 @@
 
 /* ─── 側面板 ─── */
 .side-panel {
-  display: none; /* 預設隱藏，編輯模式選中節點才顯示 */
+  display: none; /* 預設隱藏，選中節點才顯示 */
   position: fixed; right: 0; top: 0; bottom: 0; width: 320px;
   background: #16213e; border-left: 1px solid #0f3460;
   padding: 16px; overflow-y: auto; z-index: 10;
@@ -166,7 +158,8 @@
 .panel-buttons button:hover { background: #0f3460; }
 .panel-buttons .danger { border-color: #5c1d26; color: #fecdd3; }
 .panel-buttons .danger:hover { background: #5c1d26; }
-.side-panel.open ~ #mynetwork { margin-right: 320px; } /* 不要，用下面的方式 */
+/* 側面板開啟時網絡畫布縮窄 */
+.side-panel.open ~ #mynetwork { margin-right: 320px; }
 
 /* ─── 對話框 ─── */
 .modal-overlay {
@@ -186,23 +179,16 @@
 }
 .modal p { color: #a0a0b0; font-size: 0.9rem; margin: 4px 0 12px; }
 
-/* ─── 佈局 ─── */
-body.edit-mode #mynetwork { width: calc(100% - 320px); }
-body.edit-mode .side-panel { display: block; }
-
 /* ─── 手機 ─── */
 @media (max-width: 768px) {
   header { padding: 8px 12px; gap: 8px; }
   .login-form { display: none; } /* 手機不需要登入 */
-  body.edit-mode #mynetwork { width: 100%; }
-  body.edit-mode .side-panel {
+  .side-panel.open {
     position: fixed; left: 0; right: 0; bottom: 0; top: auto;
     width: 100%; height: 50vh; border-left: none; border-top: 1px solid #0f3460;
   }
 }
 ```
-
-**注意**：刪掉上面 `.side-panel.open ~ #mynetwork` 那行註解（我故意留下來提醒你不要用那種選擇器），改用 `body.edit-mode #mynetwork` 的方式。
 
 ---
 
@@ -260,7 +246,6 @@ body.edit-mode .side-panel { display: block; }
   }
 
   // ─── 狀態 ───
-  var mode = 'read'; // 'read' | 'edit'
   var network = null;
   var nodesDS = null;
   var edgesDS = null;
@@ -277,8 +262,6 @@ body.edit-mode .side-panel { display: block; }
     status: $('status'),
     error: $('error-msg'),
     zoneFilter: $('zone-filter'),
-    btnModeRead: $('btn-mode-read'),
-    btnModeEdit: $('btn-mode-edit'),
     sidePanel: $('sidePanel'),
     fId: $('f-id'),
     fName: $('f-name'),
@@ -407,7 +390,9 @@ body.edit-mode .side-panel { display: block; }
       label: n.name + '\n(' + n.id + ')',
       title: buildTooltip(n),
       size: size,
-      color: color
+      color: color,
+      x: n.x || 0,
+      y: n.y || 0
     };
     if (isPlayer) {
       node.color = {
@@ -497,7 +482,7 @@ body.edit-mode .side-panel { display: block; }
   }
 
   function getVisOptions() {
-    var base = {
+    return {
       nodes: {
         font: { color: '#e8e8e8', size: 12, face: 'Noto Sans TC, Microsoft JhengHei, sans-serif' },
         borderWidth: 1, borderWidthSelected: 2, shape: 'dot'
@@ -507,39 +492,23 @@ body.edit-mode .side-panel { display: block; }
         smooth: { type: 'continuous', roundness: 0.2 },
         arrowStrikethrough: false
       },
-      interaction: { hover: true, zoomView: true, dragView: true, tooltipDelay: 100 }
-    };
-    if (mode === 'read') {
-      base.physics = {
-        enabled: true,
-        solver: 'forceAtlas2Based',
-        forceAtlas2Based: {
-          gravitationalConstant: -80, centralGravity: 0.01,
-          springLength: 120, springConstant: 0.08,
-          damping: 0.4, avoidOverlap: 0.5
-        },
-        stabilization: { iterations: 200, updateInterval: 25 }
-      };
-      base.manipulation = { enabled: false };
-    } else {
-      // 編輯模式：關閉物理（拖哪放哪），開啟 manipulation
-      base.physics = { enabled: false };
-      base.manipulation = {
+      interaction: { hover: true, zoomView: true, dragView: true, dragNodes: true, tooltipDelay: 100 },
+      // 永遠關閉物理引擎：節點用固定座標，拖哪放哪
+      physics: { enabled: false },
+      // 永遠啟用 manipulation：打開就能編輯
+      manipulation: {
         enabled: true,
         addNode: onAddNode,
         addEdge: onAddEdge,
         deleteNode: onDeleteNode,
         deleteEdge: onDeleteEdge,
         editNode: onEditNode
-      };
-      base.interaction.dragNodes = true;
-    }
-    return base;
+      }
+    };
   }
 
   function bindNetworkEvents() {
     network.on('click', function (params) {
-      if (mode !== 'edit') return;
       if (params.nodes.length === 1) {
         selectNode(params.nodes[0]);
       } else {
@@ -547,9 +516,8 @@ body.edit-mode .side-panel { display: block; }
       }
     });
 
-    // 編輯模式：拖曳結束後存座標
+    // 拖曳結束後存座標
     network.on('dragEnd', function (params) {
-      if (mode !== 'edit') return;
       if (params.nodes.length === 0) return;
       var positions = network.getPositions(params.nodes);
       apiPut(API_LAYOUT, { positions: positions }).catch(function () {});
@@ -747,6 +715,7 @@ body.edit-mode .side-panel { display: block; }
     ui.fZone.value = n.zone || '';
     ui.fTags.value = (n.tags || []).join(', ');
     ui.fDesc.value = n.description || '';
+    ui.sidePanel.classList.add('open');
   }
 
   function deselectNode() {
@@ -756,6 +725,7 @@ body.edit-mode .side-panel { display: block; }
     ui.fZone.value = '';
     ui.fTags.value = '';
     ui.fDesc.value = '';
+    ui.sidePanel.classList.remove('open');
   }
 
   // 儲存按鈕
@@ -827,51 +797,7 @@ body.edit-mode .side-panel { display: block; }
     }).catch(function (err) { setError(err.message); });
   });
 
-  // ─── 模式切換 ───
-  function switchMode(newMode) {
-    mode = newMode;
-    ui.btnModeRead.classList.toggle('active', mode === 'read');
-    ui.btnModeEdit.classList.toggle('active', mode === 'edit');
-    document.body.classList.toggle('edit-mode', mode === 'edit');
-    deselectNode();
-
-    if (mode === 'edit') {
-      // 編輯模式：從 editor API 載入（含 layout 座標）
-      loadFromEditorAPI();
-    } else {
-      // 閱讀模式：從 rooms.json 載入（含物理引擎佈局）
-      loadFromRoomsJson();
-    }
-  }
-
-  ui.btnModeRead.addEventListener('click', function () { switchMode('read'); });
-  ui.btnModeEdit.addEventListener('click', function () { switchMode('edit'); });
-
   // ─── 資料載入 ───
-  function loadFromRoomsJson() {
-    setStatus('載入中…');
-    fetch(DATA_URL).then(function (r) { return r.json(); }).then(function (json) {
-      var rooms = json.rooms || [];
-      allNodes = rooms.map(function (r) {
-        return { id: r.id, name: r.name || r.id, zone: r.zone || '', tags: r.tags || [], description: r.description || '', objects: r.objects || [] };
-      });
-      allEdges = [];
-      rooms.forEach(function (r) {
-        if (!Array.isArray(r.objects)) return;
-        r.objects.forEach(function (obj) {
-          if (obj.move_to_room_id) {
-            allEdges.push({ from: r.id, to: obj.move_to_room_id, direction: obj.name || '' });
-          }
-        });
-      });
-      refreshZoneFilter();
-      drawGraph();
-      setStatus('已載入 ' + allNodes.length + ' 房間，' + allEdges.length + ' 連線（閱讀模式）');
-    }).catch(function (err) {
-      setError(err.message || '載入失敗');
-    });
-  }
-
   function loadFromEditorAPI() {
     setStatus('載入編輯資料…');
     fetch(API_GRAPH + mgQuery()).then(function (r) { return r.json(); }).then(function (data) {
@@ -881,26 +807,17 @@ body.edit-mode .side-panel { display: block; }
       allEdges = (data.edges || []).map(function (e) {
         return { from: e.from, to: e.to, direction: e.direction || '' };
       });
-      // 套用 layout 座標
+      // 套用 layout 座標到 allNodes（drawGraph 時會用）
       var layout = data.layout || {};
-      refreshZoneFilter();
-      drawGraph();
-      // 設定已知座標
-      var positions = {};
-      var hasPos = false;
       allNodes.forEach(function (n) {
         if (layout[n.id]) {
-          positions[n.id] = { x: layout[n.id].x, y: layout[n.id].y };
-          hasPos = true;
+          n.x = layout[n.id].x;
+          n.y = layout[n.id].y;
         }
       });
-      if (hasPos && network) {
-        network.setOptions({ physics: { enabled: false } });
-        Object.keys(positions).forEach(function (id) {
-          try { nodesDS.update({ id: id, x: positions[id].x, y: positions[id].y }); } catch (_) {}
-        });
-        network.fit();
-      }
+      refreshZoneFilter();
+      drawGraph();
+      if (network) network.fit();
       // 清理孤兒：new_ 開頭且零連線的房間靜默刪除
       var orphans = allNodes.filter(function (n) {
         if (!n.id.startsWith('new_')) return false;
@@ -912,7 +829,7 @@ body.edit-mode .side-panel { display: block; }
       });
       if (orphans.length) drawGraph();
 
-      setStatus('已載入 ' + allNodes.length + ' 房間，' + allEdges.length + ' 連線（編輯模式）' + (orphans.length ? '（已清理 ' + orphans.length + ' 個孤兒）' : ''));
+      setStatus('已載入 ' + allNodes.length + ' 房間，' + allEdges.length + ' 連線' + (orphans.length ? '（已清理 ' + orphans.length + ' 個孤兒）' : ''));
     }).catch(function (err) {
       setError(err.message || '載入失敗');
     });
@@ -953,7 +870,6 @@ body.edit-mode .side-panel { display: block; }
 
   // ─── 鍵盤快捷鍵 ───
   document.addEventListener('keydown', function (e) {
-    if (mode !== 'edit') return;
     // Ctrl+S 儲存
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
       e.preventDefault();
@@ -966,7 +882,7 @@ body.edit-mode .side-panel { display: block; }
   });
 
   // ─── 啟動 ───
-  loadFromRoomsJson();
+  loadFromEditorAPI();
 })();
 ```
 
@@ -999,24 +915,26 @@ var DATA_URL = '/data/rooms.json?v=0.13.0';
 5. **新增房間時只需輸入名稱**。zone、tags、描述全部留空。連線後自動繼承連線對象的 zone 和 tags
 6. **描述永遠留空**，不自動生成。之後會另外處理
 7. **ID 可事後修改**。側面板的 ID 欄位是可編輯的，儲存時如果 ID 改了就建新刪舊
-8. **閱讀模式用物理引擎**（蒲公英自動佈局），**編輯模式關物理**（拖哪放哪，拖完存座標）
+8. **沒有模式切換。物理引擎全程關閉。** 節點用固定 x/y 座標，拖哪放哪，拖完存座標。打開就能看也能改（Watabou 風格）
 9. **單檔**。HTML + CSS + JS 全寫在 `map_viewer.html` 裡面，不要拆檔案
+10. **makeVisNode 必須帶 x/y**。從 allNodes 的 x/y（layout 載入的）傳給 vis-network 節點，沒有座標的預設 0,0
 
 ---
 
 ## 驗證清單
 
-- [ ] 開啟 `/map_viewer`，預設閱讀模式，蒲公英佈局正常顯示
+- [ ] 開啟 `/map_viewer`，節點以固定座標顯示（非蒲公英飄動），可平移縮放
 - [ ] Zone 下拉選單列出所有 zone（含數量），選擇後正確過濾
-- [ ] 點「編輯」切換到編輯模式，畫面出現側面板，蒲公英物理消失
-- [ ] 點 vis-network 工具列的「新增節點」→ 點畫布 → 彈出名稱輸入框 → 輸入名稱 → 新節點出現
+- [ ] 點 vis-network 工具列的「新增節點」→ 點畫布 → 彈出名稱輸入框 → 輸入名稱 → 新節點出現在點擊位置
 - [ ] 從一個節點拖線到另一個節點 → 彈出連線對話框 → 可選單向/雙向 → 確定後連線出現
 - [ ] 新建房間連線後，zone/tags 自動繼承、ID 自動生成
-- [ ] 點選節點 → 側面板顯示房間資料 → 可修改 → 點儲存
+- [ ] 點選節點 → 側面板滑出顯示房間資料 → 可修改 → 點儲存
+- [ ] 點畫布空白處 → 側面板收起
 - [ ] 側面板修改 ID → 儲存 → ID 正確更新
 - [ ] 選中節點按 Delete 或點「刪除房間」→ 確認後刪除
 - [ ] 選中連線按 Delete → 刪除連線（雙向線兩邊都刪）
 - [ ] 拖曳節點放開後座標自動存到後端
-- [ ] 切回閱讀模式 → 側面板消失，物理引擎恢復
-- [ ] 手機上可正常切換模式、新增、連線
-- [ ] 登入功能仍正常（閱讀模式顯示玩家位置）
+- [ ] 重新整理頁面後，節點位置維持（座標已持久化）
+- [ ] 手機上可正常新增、連線、編輯
+- [ ] 登入功能仍正常（顯示玩家位置）
+- [ ] 新偵測到的 zone 自動獲得高對比色（不需要手動配色）
