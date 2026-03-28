@@ -1,0 +1,4952 @@
+{
+  "version": "1.0.0",
+  "meta": {
+    "total": 500,
+    "semantic_types": [
+      "主",
+      "屬",
+      "動",
+      "受",
+      "構",
+      "態",
+      "補",
+      "助",
+      "否",
+      "玄"
+    ],
+    "source_types": [
+      "獸",
+      "植",
+      "礦",
+      "水",
+      "氣"
+    ],
+    "notes": "品質與充能%不在此表，由剝名時擲骰產生。sources 為可能來源陣列，同一詞元可多來源。"
+  },
+  "elements": [
+    {
+      "id": "wu",
+      "char": "吾",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "植",
+        "礦",
+        "水",
+        "氣"
+      ],
+      "desc": "自身之念，萬法歸一"
+    },
+    {
+      "id": "wo",
+      "char": "我",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "植",
+        "礦",
+        "水",
+        "氣"
+      ],
+      "desc": "意識核心，不可動搖"
+    },
+    {
+      "id": "ji",
+      "char": "己",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "植",
+        "礦",
+        "水",
+        "氣"
+      ],
+      "desc": "內省之光，照見本我"
+    },
+    {
+      "id": "hun",
+      "char": "魂",
+      "semantic": "主",
+      "sources": [
+        "獸"
+      ],
+      "desc": "意識深處的迴響"
+    },
+    {
+      "id": "nian_zhu",
+      "char": "念",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "一念起，萬象生"
+    },
+    {
+      "id": "ling",
+      "char": "靈",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "超越肉身的存在感"
+    },
+    {
+      "id": "shen",
+      "char": "神",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "精神凝聚的極致"
+    },
+    {
+      "id": "zhi_zhu",
+      "char": "志",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "不可摧折的意志"
+    },
+    {
+      "id": "xin",
+      "char": "心",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "萬感歸處"
+    },
+    {
+      "id": "po",
+      "char": "魄",
+      "semantic": "主",
+      "sources": [
+        "獸"
+      ],
+      "desc": "肉身殘留的執念"
+    },
+    {
+      "id": "yi_zhu",
+      "char": "意",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "念頭未成形之前"
+    },
+    {
+      "id": "ming_zhu",
+      "char": "命",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "生死之間的那條線"
+    },
+    {
+      "id": "ti_zhu",
+      "char": "體",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "承載一切的容器"
+    },
+    {
+      "id": "zhen",
+      "char": "真",
+      "semantic": "主",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "剝去偽裝後的本質"
+    },
+    {
+      "id": "yuan_zhu",
+      "char": "元",
+      "semantic": "主",
+      "sources": [
+        "礦",
+        "氣",
+        "水"
+      ],
+      "desc": "最初的那一點"
+    },
+    {
+      "id": "dao_zhu",
+      "char": "道",
+      "semantic": "主",
+      "sources": [
+        "氣"
+      ],
+      "desc": "萬物運行的根本法則"
+    },
+    {
+      "id": "ben",
+      "char": "本",
+      "semantic": "主",
+      "sources": [
+        "植",
+        "礦"
+      ],
+      "desc": "根源，不可再分"
+    },
+    {
+      "id": "gu",
+      "char": "骨",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "支撐形體的最後結構"
+    },
+    {
+      "id": "xue",
+      "char": "血",
+      "semantic": "主",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "生命流動的證明"
+    },
+    {
+      "id": "qi_zhu",
+      "char": "氣",
+      "semantic": "主",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "呼吸之間的力量"
+    },
+    {
+      "id": "rui",
+      "char": "銳",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "切割萬物的鋒芒"
+    },
+    {
+      "id": "jian",
+      "char": "堅",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "不可摧破之質"
+    },
+    {
+      "id": "ren",
+      "char": "韌",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "彎而不折的柔力"
+    },
+    {
+      "id": "qing",
+      "char": "輕",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "羽毛般的無重"
+    },
+    {
+      "id": "zhong",
+      "char": "重",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "沉墜大地的引力"
+    },
+    {
+      "id": "han",
+      "char": "寒",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "凍徹骨髓的冷"
+    },
+    {
+      "id": "chi",
+      "char": "熾",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "焚燒一切的灼熱"
+    },
+    {
+      "id": "hou",
+      "char": "厚",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "層疊不盡的深厚"
+    },
+    {
+      "id": "bao",
+      "char": "薄",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "一觸即破的纖細"
+    },
+    {
+      "id": "gang",
+      "char": "剛",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "寧碎不彎的硬度"
+    },
+    {
+      "id": "rou",
+      "char": "柔",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "以柔克剛的本質"
+    },
+    {
+      "id": "li_shu",
+      "char": "利",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "無物不穿的銳度"
+    },
+    {
+      "id": "dun",
+      "char": "鈍",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "沉重遲緩但不可擋"
+    },
+    {
+      "id": "ming_shu",
+      "char": "明",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "照徹黑暗的光輝"
+    },
+    {
+      "id": "an",
+      "char": "暗",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "吞噬光線的深淵"
+    },
+    {
+      "id": "su",
+      "char": "速",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "快到看不見殘影"
+    },
+    {
+      "id": "huan",
+      "char": "緩",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "不急不徐的從容"
+    },
+    {
+      "id": "kuang",
+      "char": "狂",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "失控邊緣的暴烈"
+    },
+    {
+      "id": "jing_shu",
+      "char": "靜",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "萬籟俱寂的沉靜"
+    },
+    {
+      "id": "lie",
+      "char": "烈",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "猛烈到令人畏懼"
+    },
+    {
+      "id": "wen",
+      "char": "溫",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "恰到好處的暖意"
+    },
+    {
+      "id": "du",
+      "char": "毒",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "侵蝕生命的暗流"
+    },
+    {
+      "id": "chun",
+      "char": "純",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "不摻雜質的潔淨"
+    },
+    {
+      "id": "zhuo",
+      "char": "濁",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "混雜不清的渾沌"
+    },
+    {
+      "id": "mi",
+      "char": "密",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "不透絲毫的緊實"
+    },
+    {
+      "id": "shu",
+      "char": "疏",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "鬆散但透氣的間隙"
+    },
+    {
+      "id": "shen_shu",
+      "char": "深",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "不見底的幽深"
+    },
+    {
+      "id": "qian",
+      "char": "淺",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "一眼見底的透明"
+    },
+    {
+      "id": "ku",
+      "char": "枯",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "礦"
+      ],
+      "desc": "失去水分的乾燥"
+    },
+    {
+      "id": "rong",
+      "char": "榮",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "生機盎然的茂盛"
+    },
+    {
+      "id": "hong",
+      "char": "宏",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "包容萬物的廣大"
+    },
+    {
+      "id": "wei_shu",
+      "char": "微",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "幾不可察的細微"
+    },
+    {
+      "id": "gu_shu",
+      "char": "古",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "歷經歲月的沉澱"
+    },
+    {
+      "id": "xin_shu",
+      "char": "新",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "氣"
+      ],
+      "desc": "初生之物的鮮活"
+    },
+    {
+      "id": "zheng",
+      "char": "正",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "不偏不倚的端正"
+    },
+    {
+      "id": "xie",
+      "char": "邪",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "偏離正道的扭曲"
+    },
+    {
+      "id": "xu",
+      "char": "虛",
+      "semantic": "屬",
+      "sources": [
+        "氣"
+      ],
+      "desc": "空無一物卻包含一切"
+    },
+    {
+      "id": "shi",
+      "char": "實",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "充盈飽滿的密度"
+    },
+    {
+      "id": "huo",
+      "char": "活",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "植",
+        "水"
+      ],
+      "desc": "生命力的跳動"
+    },
+    {
+      "id": "si_shu",
+      "char": "死",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "生命終止後的寂靜"
+    },
+    {
+      "id": "ling_shu",
+      "char": "靈",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "超脫凡俗的敏銳"
+    },
+    {
+      "id": "yu_shu",
+      "char": "愚",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "看似笨拙實則大巧"
+    },
+    {
+      "id": "chang",
+      "char": "長",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "延伸不止的距離"
+    },
+    {
+      "id": "duan",
+      "char": "短",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "精悍凝縮的寸勁"
+    },
+    {
+      "id": "yuan_shu",
+      "char": "圓",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "無棱無角的完滿"
+    },
+    {
+      "id": "fang",
+      "char": "方",
+      "semantic": "屬",
+      "sources": [
+        "礦"
+      ],
+      "desc": "稜角分明的規整"
+    },
+    {
+      "id": "nong",
+      "char": "濃",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "濃稠得化不開"
+    },
+    {
+      "id": "dan",
+      "char": "淡",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "若有若無的輕描"
+    },
+    {
+      "id": "ying",
+      "char": "盈",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "滿溢而出的充沛"
+    },
+    {
+      "id": "kui",
+      "char": "虧",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "殘缺不全的遺憾"
+    },
+    {
+      "id": "can",
+      "char": "燦",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "奪目耀眼的光華"
+    },
+    {
+      "id": "hui",
+      "char": "晦",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "隱於暗處的晦澀"
+    },
+    {
+      "id": "gang2",
+      "char": "鋼",
+      "semantic": "屬",
+      "sources": [
+        "礦"
+      ],
+      "desc": "百鍛成鋼的硬度"
+    },
+    {
+      "id": "mian",
+      "char": "綿",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "綿延不絕的持續"
+    },
+    {
+      "id": "hua",
+      "char": "滑",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "無處著力的光滑"
+    },
+    {
+      "id": "se",
+      "char": "澀",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "粗糲帶阻的摩擦"
+    },
+    {
+      "id": "feng_shu",
+      "char": "豐",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "飽滿充足的富饒"
+    },
+    {
+      "id": "pin",
+      "char": "貧",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "空乏枯竭的匱乏"
+    },
+    {
+      "id": "meng",
+      "char": "猛",
+      "semantic": "屬",
+      "sources": [
+        "獸"
+      ],
+      "desc": "勢不可擋的兇猛"
+    },
+    {
+      "id": "xun",
+      "char": "馴",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "收斂鋒芒的溫順"
+    },
+    {
+      "id": "zhan",
+      "char": "斬",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "利刃橫過的一瞬"
+    },
+    {
+      "id": "ci",
+      "char": "刺",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "一點突破的穿透"
+    },
+    {
+      "id": "pi",
+      "char": "劈",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "由上而下的裂開"
+    },
+    {
+      "id": "sui",
+      "char": "碎",
+      "semantic": "動",
+      "sources": [
+        "礦"
+      ],
+      "desc": "化為齏粉的崩壞"
+    },
+    {
+      "id": "dun_dong",
+      "char": "盾",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "擋在身前的屏障"
+    },
+    {
+      "id": "bi",
+      "char": "避",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "閃身而過的靈巧"
+    },
+    {
+      "id": "xi",
+      "char": "吸",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "汲取外物的引力"
+    },
+    {
+      "id": "lie_dong",
+      "char": "裂",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "從內部撕開的力量"
+    },
+    {
+      "id": "feng",
+      "char": "封",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "鎖死一切的禁錮"
+    },
+    {
+      "id": "jie",
+      "char": "解",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "拆散束縛的自由"
+    },
+    {
+      "id": "zhui",
+      "char": "墜",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "不可抗拒的下沉"
+    },
+    {
+      "id": "sheng",
+      "char": "升",
+      "semantic": "動",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "向上突破的力量"
+    },
+    {
+      "id": "rong_dong",
+      "char": "融",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "邊界消融的混合"
+    },
+    {
+      "id": "ning",
+      "char": "凝",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "由散聚實的固化"
+    },
+    {
+      "id": "rao",
+      "char": "繞",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "纏繞束縛的環繞"
+    },
+    {
+      "id": "guan",
+      "char": "貫",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "一線穿透的貫穿"
+    },
+    {
+      "id": "zhen_dong",
+      "char": "震",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "大地顫動的衝擊"
+    },
+    {
+      "id": "xiao",
+      "char": "削",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "一層層剝去的磨損"
+    },
+    {
+      "id": "tun",
+      "char": "吞",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "整個嚥下的貪婪"
+    },
+    {
+      "id": "tu",
+      "char": "吐",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "從內向外的噴發"
+    },
+    {
+      "id": "ce",
+      "char": "測",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "探知未知的觸角"
+    },
+    {
+      "id": "yin",
+      "char": "引",
+      "semantic": "動",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "牽引而至的吸力"
+    },
+    {
+      "id": "tui",
+      "char": "推",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "排斥外物的斥力"
+    },
+    {
+      "id": "zhuan",
+      "char": "轉",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "改變方向的旋力"
+    },
+    {
+      "id": "ding",
+      "char": "定",
+      "semantic": "動",
+      "sources": [
+        "礦"
+      ],
+      "desc": "一錘定音的鎮壓"
+    },
+    {
+      "id": "san",
+      "char": "散",
+      "semantic": "動",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "向四方擴散的離散"
+    },
+    {
+      "id": "ju",
+      "char": "聚",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "萬流歸一的匯聚"
+    },
+    {
+      "id": "duan_dong",
+      "char": "斷",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "一刀兩段的決絕"
+    },
+    {
+      "id": "lian",
+      "char": "連",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "首尾相接的串聯"
+    },
+    {
+      "id": "bian",
+      "char": "變",
+      "semantic": "動",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "形態質變的突變"
+    },
+    {
+      "id": "suo",
+      "char": "鎖",
+      "semantic": "動",
+      "sources": [
+        "礦"
+      ],
+      "desc": "扣死不放的拘束"
+    },
+    {
+      "id": "shi_dong",
+      "char": "蝕",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "緩慢侵蝕的腐化"
+    },
+    {
+      "id": "zhu",
+      "char": "鑄",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "百鍛成器的塑造"
+    },
+    {
+      "id": "po_dong",
+      "char": "破",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "打碎現有的毀壞"
+    },
+    {
+      "id": "bu",
+      "char": "補",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "填補缺損的修復"
+    },
+    {
+      "id": "she",
+      "char": "射",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "遠距離的投射"
+    },
+    {
+      "id": "chong",
+      "char": "衝",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "一往無前的突進"
+    },
+    {
+      "id": "shou",
+      "char": "守",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "寸步不讓的堅持"
+    },
+    {
+      "id": "bo",
+      "char": "搏",
+      "semantic": "動",
+      "sources": [
+        "獸"
+      ],
+      "desc": "性命相搏的拼鬥"
+    },
+    {
+      "id": "hua_dong",
+      "char": "化",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "萬物互轉的蛻變"
+    },
+    {
+      "id": "diao",
+      "char": "凋",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "氣"
+      ],
+      "desc": "生命力褪去的枯萎"
+    },
+    {
+      "id": "mie",
+      "char": "滅",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "徹底消失的殲滅"
+    },
+    {
+      "id": "sheng_dong",
+      "char": "生",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "獸",
+        "水"
+      ],
+      "desc": "無中生有的創造"
+    },
+    {
+      "id": "cun",
+      "char": "存",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "頑強留存的續命"
+    },
+    {
+      "id": "wang",
+      "char": "亡",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "一切歸零的終結"
+    },
+    {
+      "id": "dang",
+      "char": "擋",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "硬接不閃的阻擋"
+    },
+    {
+      "id": "chan",
+      "char": "纏",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "糾纏不休的黏著"
+    },
+    {
+      "id": "pao",
+      "char": "拋",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "擲出手中之物"
+    },
+    {
+      "id": "duo",
+      "char": "奪",
+      "semantic": "動",
+      "sources": [
+        "獸"
+      ],
+      "desc": "強取豪奪的掠取"
+    },
+    {
+      "id": "ci_dong",
+      "char": "賜",
+      "semantic": "動",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "由上而下的給予"
+    },
+    {
+      "id": "fen",
+      "char": "焚",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "烈火吞噬的燃盡"
+    },
+    {
+      "id": "dong",
+      "char": "凍",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "冰封萬物的禁止"
+    },
+    {
+      "id": "liu",
+      "char": "流",
+      "semantic": "動",
+      "sources": [
+        "水"
+      ],
+      "desc": "不止不休的流淌"
+    },
+    {
+      "id": "beng",
+      "char": "崩",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "內部瓦解的崩塌"
+    },
+    {
+      "id": "zhi_dong",
+      "char": "織",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "經緯交錯的編織"
+    },
+    {
+      "id": "bo_dong",
+      "char": "剝",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "層層剝離的揭露"
+    },
+    {
+      "id": "zhong_dong",
+      "char": "種",
+      "semantic": "動",
+      "sources": [
+        "植"
+      ],
+      "desc": "埋入土中等待萌發"
+    },
+    {
+      "id": "shou_dong",
+      "char": "收",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "收攏歸攏的匯總"
+    },
+    {
+      "id": "fang_dong",
+      "char": "放",
+      "semantic": "動",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "不加約束的釋放"
+    },
+    {
+      "id": "fu",
+      "char": "縛",
+      "semantic": "動",
+      "sources": [
+        "植",
+        "礦"
+      ],
+      "desc": "層層束縛的捆綁"
+    },
+    {
+      "id": "chou",
+      "char": "抽",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "從中抽取的萃取"
+    },
+    {
+      "id": "gai",
+      "char": "蓋",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "覆蓋遮蔽的壓制"
+    },
+    {
+      "id": "chuan",
+      "char": "穿",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "貫穿而過的洞穿"
+    },
+    {
+      "id": "mo",
+      "char": "磨",
+      "semantic": "動",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "日復一日的消磨"
+    },
+    {
+      "id": "dian",
+      "char": "點",
+      "semantic": "動",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "一觸即發的點燃"
+    },
+    {
+      "id": "di",
+      "char": "敵",
+      "semantic": "受",
+      "sources": [
+        "獸"
+      ],
+      "desc": "面前的對手"
+    },
+    {
+      "id": "ti",
+      "char": "體",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "自身的肉體"
+    },
+    {
+      "id": "qi_shou",
+      "char": "器",
+      "semantic": "受",
+      "sources": [
+        "礦"
+      ],
+      "desc": "手中的兵器"
+    },
+    {
+      "id": "di_shou",
+      "char": "地",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "腳下的大地"
+    },
+    {
+      "id": "hun_shou",
+      "char": "魂",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "對方的精神"
+    },
+    {
+      "id": "qun",
+      "char": "群",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "一群目標"
+    },
+    {
+      "id": "kong",
+      "char": "空",
+      "semantic": "受",
+      "sources": [
+        "氣"
+      ],
+      "desc": "周遭的空間"
+    },
+    {
+      "id": "shi_shou",
+      "char": "勢",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "局勢與氣場"
+    },
+    {
+      "id": "xue_shou",
+      "char": "血",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "血液與生命力"
+    },
+    {
+      "id": "gu_shou",
+      "char": "骨",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "骨骼與支撐"
+    },
+    {
+      "id": "jin",
+      "char": "筋",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "筋脈與經絡"
+    },
+    {
+      "id": "pi_shou",
+      "char": "皮",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "表皮與防護"
+    },
+    {
+      "id": "jia",
+      "char": "甲",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "護甲與外殼"
+    },
+    {
+      "id": "mai",
+      "char": "脈",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "氣脈與通道"
+    },
+    {
+      "id": "gen",
+      "char": "根",
+      "semantic": "受",
+      "sources": [
+        "植",
+        "礦"
+      ],
+      "desc": "根基與源頭"
+    },
+    {
+      "id": "ye",
+      "char": "葉",
+      "semantic": "受",
+      "sources": [
+        "植"
+      ],
+      "desc": "末端與枝節"
+    },
+    {
+      "id": "ying_shou",
+      "char": "影",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "影子與殘像"
+    },
+    {
+      "id": "shui",
+      "char": "水",
+      "semantic": "受",
+      "sources": [
+        "水"
+      ],
+      "desc": "水流與液態"
+    },
+    {
+      "id": "huo_shou",
+      "char": "火",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "火焰與熱能"
+    },
+    {
+      "id": "feng_shou",
+      "char": "風",
+      "semantic": "受",
+      "sources": [
+        "氣"
+      ],
+      "desc": "風與氣流"
+    },
+    {
+      "id": "lei",
+      "char": "雷",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "雷電與爆發"
+    },
+    {
+      "id": "tu_shou",
+      "char": "土",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "土壤與根基"
+    },
+    {
+      "id": "mu",
+      "char": "木",
+      "semantic": "受",
+      "sources": [
+        "植"
+      ],
+      "desc": "木質與生長"
+    },
+    {
+      "id": "bing",
+      "char": "冰",
+      "semantic": "受",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "冰霜與凝固"
+    },
+    {
+      "id": "guang",
+      "char": "光",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "光線與照射"
+    },
+    {
+      "id": "shi_shou2",
+      "char": "石",
+      "semantic": "受",
+      "sources": [
+        "礦"
+      ],
+      "desc": "岩石與堅固"
+    },
+    {
+      "id": "sha",
+      "char": "砂",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "細碎的顆粒"
+    },
+    {
+      "id": "wu_shou",
+      "char": "霧",
+      "semantic": "受",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "迷濛的水氣"
+    },
+    {
+      "id": "chen",
+      "char": "塵",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "飄浮的微粒"
+    },
+    {
+      "id": "si",
+      "char": "絲",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "纖細的線狀物"
+    },
+    {
+      "id": "zhi_shou",
+      "char": "質",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "物質本身的構成"
+    },
+    {
+      "id": "xing",
+      "char": "形",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "外在的形體"
+    },
+    {
+      "id": "yi",
+      "char": "意",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "對方的意念"
+    },
+    {
+      "id": "zhi_shou2",
+      "char": "智",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "心智與認知"
+    },
+    {
+      "id": "li_shou",
+      "char": "力",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "力量本身"
+    },
+    {
+      "id": "ming_shou",
+      "char": "命",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "生命與氣數"
+    },
+    {
+      "id": "dao",
+      "char": "道",
+      "semantic": "受",
+      "sources": [
+        "氣"
+      ],
+      "desc": "法則與規律"
+    },
+    {
+      "id": "shi_shou3",
+      "char": "時",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "時間與節奏"
+    },
+    {
+      "id": "jie_shou",
+      "char": "界",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "空間的邊界"
+    },
+    {
+      "id": "yin_shou",
+      "char": "因",
+      "semantic": "受",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "因果的起點"
+    },
+    {
+      "id": "huan_gou",
+      "char": "環",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "首尾相接的閉環"
+    },
+    {
+      "id": "lian_gou",
+      "char": "鏈",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "一環扣一環的串接"
+    },
+    {
+      "id": "he",
+      "char": "核",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "最中心的凝聚點"
+    },
+    {
+      "id": "ke",
+      "char": "殼",
+      "semantic": "構",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "包裹核心的外層"
+    },
+    {
+      "id": "hu",
+      "char": "弧",
+      "semantic": "構",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "彎曲的軌跡"
+    },
+    {
+      "id": "wang_gou",
+      "char": "網",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "四通八達的網絡"
+    },
+    {
+      "id": "lun",
+      "char": "輪",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "循環往復的迴圈"
+    },
+    {
+      "id": "zhen_gou",
+      "char": "陣",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "排列有序的佈局"
+    },
+    {
+      "id": "ta",
+      "char": "塔",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "層層疊起的高聳"
+    },
+    {
+      "id": "bi_gou",
+      "char": "壁",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "不可逾越的屏障"
+    },
+    {
+      "id": "jing_gou",
+      "char": "井",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "向下深入的通道"
+    },
+    {
+      "id": "qiao",
+      "char": "橋",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "連接兩端的跨越"
+    },
+    {
+      "id": "men",
+      "char": "門",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "可開可合的通道"
+    },
+    {
+      "id": "jing_gou2",
+      "char": "鏡",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "映照反射的平面"
+    },
+    {
+      "id": "luo",
+      "char": "螺",
+      "semantic": "構",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "螺旋上升的結構"
+    },
+    {
+      "id": "ci_gou",
+      "char": "刺",
+      "semantic": "構",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "向外突出的尖刺"
+    },
+    {
+      "id": "mao",
+      "char": "矛",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "集中一點的突破"
+    },
+    {
+      "id": "dun_gou",
+      "char": "盾",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "承受衝擊的面板"
+    },
+    {
+      "id": "yin_gou",
+      "char": "印",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "按下即留的刻痕"
+    },
+    {
+      "id": "fu_gou",
+      "char": "符",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "氣"
+      ],
+      "desc": "承載法則的載體"
+    },
+    {
+      "id": "jie_gou",
+      "char": "結",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "繩結般的交叉固定"
+    },
+    {
+      "id": "zhu_gou",
+      "char": "柱",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "支撐天地的立柱"
+    },
+    {
+      "id": "pan",
+      "char": "盤",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "承載萬物的底座"
+    },
+    {
+      "id": "kou",
+      "char": "扣",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "咬合鎖定的機關"
+    },
+    {
+      "id": "luo_gou",
+      "char": "絡",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "經絡交織的脈絡"
+    },
+    {
+      "id": "ceng",
+      "char": "層",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "一層疊一層的堆積"
+    },
+    {
+      "id": "zhou",
+      "char": "軸",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "旋轉的中心支點"
+    },
+    {
+      "id": "ding_gou",
+      "char": "鼎",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "三足穩立的容器"
+    },
+    {
+      "id": "ge",
+      "char": "格",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "劃分空間的框架"
+    },
+    {
+      "id": "luo_gou2",
+      "char": "羅",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "張開的大網"
+    },
+    {
+      "id": "suo_gou",
+      "char": "索",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "細長的繩索"
+    },
+    {
+      "id": "ji_gou",
+      "char": "機",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "精密運作的機關"
+    },
+    {
+      "id": "tai",
+      "char": "台",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "高起的平面"
+    },
+    {
+      "id": "lu",
+      "char": "爐",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "熔煉萬物的容器"
+    },
+    {
+      "id": "zhen_gou2",
+      "char": "針",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "極細極準的指向"
+    },
+    {
+      "id": "gong",
+      "char": "弓",
+      "semantic": "構",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "蓄力待發的弧形"
+    },
+    {
+      "id": "gu_gou",
+      "char": "鼓",
+      "semantic": "構",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "振動共鳴的腔體"
+    },
+    {
+      "id": "chi_gou",
+      "char": "池",
+      "semantic": "構",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "匯聚蓄積的凹地"
+    },
+    {
+      "id": "he_gou",
+      "char": "河",
+      "semantic": "構",
+      "sources": [
+        "水"
+      ],
+      "desc": "奔流不止的通道"
+    },
+    {
+      "id": "ling_gou",
+      "char": "嶺",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "高聳的分界線"
+    },
+    {
+      "id": "ya",
+      "char": "崖",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "萬丈深淵的邊緣"
+    },
+    {
+      "id": "gu_gou2",
+      "char": "谷",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "兩壁之間的低地"
+    },
+    {
+      "id": "dong_gou",
+      "char": "洞",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "深入未知的空腔"
+    },
+    {
+      "id": "feng_gou",
+      "char": "峰",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "最高處的尖端"
+    },
+    {
+      "id": "yuan",
+      "char": "淵",
+      "semantic": "構",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "不可測度的深處"
+    },
+    {
+      "id": "wu_gou",
+      "char": "渦",
+      "semantic": "構",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "旋轉吞噬的漩渦"
+    },
+    {
+      "id": "lang",
+      "char": "廊",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "連接兩處的通道"
+    },
+    {
+      "id": "ting",
+      "char": "庭",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "圍合的開闊空間"
+    },
+    {
+      "id": "long",
+      "char": "籠",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "礦"
+      ],
+      "desc": "封閉的囚禁空間"
+    },
+    {
+      "id": "shan",
+      "char": "傘",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "展開的遮蔽圓面"
+    },
+    {
+      "id": "yi_gou",
+      "char": "翼",
+      "semantic": "構",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "展翅的對稱平面"
+    },
+    {
+      "id": "ran",
+      "char": "燃",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "持續灼燒的火焰"
+    },
+    {
+      "id": "dong_tai",
+      "char": "凍",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "冰封不動的禁制"
+    },
+    {
+      "id": "fu_tai",
+      "char": "腐",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "緩慢分解的侵蝕"
+    },
+    {
+      "id": "yu",
+      "char": "癒",
+      "semantic": "態",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "傷口自行癒合"
+    },
+    {
+      "id": "xuan",
+      "char": "眩",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "天旋地轉的迷亂"
+    },
+    {
+      "id": "shi_tai",
+      "char": "蝕",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "一點一點的消磨"
+    },
+    {
+      "id": "ma",
+      "char": "麻",
+      "semantic": "態",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "知覺逐漸喪失"
+    },
+    {
+      "id": "mang",
+      "char": "盲",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "失去視覺的黑暗"
+    },
+    {
+      "id": "long_tai",
+      "char": "聾",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "失去聽覺的寂靜"
+    },
+    {
+      "id": "luan",
+      "char": "亂",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "秩序崩壞的混亂"
+    },
+    {
+      "id": "ning_tai",
+      "char": "凝",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "從液態固化的凝結"
+    },
+    {
+      "id": "rong_tai",
+      "char": "熔",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "固態液化的融化"
+    },
+    {
+      "id": "qi_tai",
+      "char": "汽",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "液態氣化的蒸發"
+    },
+    {
+      "id": "chen_tai",
+      "char": "沉",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "緩緩下墜的沉降"
+    },
+    {
+      "id": "fu_tai2",
+      "char": "浮",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "輕飄上升的漂浮"
+    },
+    {
+      "id": "zhuan_tai",
+      "char": "轉",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "持續旋轉的自旋"
+    },
+    {
+      "id": "zhi",
+      "char": "滯",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "流動停止的凝滯"
+    },
+    {
+      "id": "tong",
+      "char": "通",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "阻塞打通的暢行"
+    },
+    {
+      "id": "se_tai",
+      "char": "塞",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "堵住不通的阻塞"
+    },
+    {
+      "id": "ji_tai",
+      "char": "激",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "獸"
+      ],
+      "desc": "猛烈爆發的激昂"
+    },
+    {
+      "id": "yi_tai",
+      "char": "溢",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "超出容量的外溢"
+    },
+    {
+      "id": "xiao_tai",
+      "char": "消",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "逐漸減弱直至消失"
+    },
+    {
+      "id": "zhang",
+      "char": "漲",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "持續增強的膨脹"
+    },
+    {
+      "id": "suo_tai",
+      "char": "縮",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "向內收縮的壓縮"
+    },
+    {
+      "id": "zhang_tai",
+      "char": "脹",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "由內撐開的膨脹"
+    },
+    {
+      "id": "lie_tai",
+      "char": "裂",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "出現裂紋的龜裂"
+    },
+    {
+      "id": "he_tai",
+      "char": "合",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "分裂處重新合攏"
+    },
+    {
+      "id": "xing_tai",
+      "char": "醒",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "從沉睡中甦醒"
+    },
+    {
+      "id": "mian_tai",
+      "char": "眠",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "陷入深沉的睡眠"
+    },
+    {
+      "id": "mi_tai",
+      "char": "迷",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "分不清方向的迷失"
+    },
+    {
+      "id": "wu_tai",
+      "char": "悟",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "豁然開朗的頓悟"
+    },
+    {
+      "id": "ku_tai",
+      "char": "枯",
+      "semantic": "態",
+      "sources": [
+        "植",
+        "礦"
+      ],
+      "desc": "生命力枯竭的凋零"
+    },
+    {
+      "id": "sheng_tai",
+      "char": "盛",
+      "semantic": "態",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "生命力最旺盛的巔峰"
+    },
+    {
+      "id": "shuai",
+      "char": "衰",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "從巔峰滑落的衰退"
+    },
+    {
+      "id": "fu_tai3",
+      "char": "復",
+      "semantic": "態",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "從衰退中恢復"
+    },
+    {
+      "id": "cu",
+      "char": "促",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "加速催化的急迫"
+    },
+    {
+      "id": "chi_tai",
+      "char": "遲",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "減速延緩的遲鈍"
+    },
+    {
+      "id": "yin_tai",
+      "char": "隱",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "從視野中消失"
+    },
+    {
+      "id": "xian",
+      "char": "顯",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "從無形變為可見"
+    },
+    {
+      "id": "du_tai",
+      "char": "毒",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "毒素在體內擴散"
+    },
+    {
+      "id": "jing_tai",
+      "char": "淨",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "淨化一切的潔淨"
+    },
+    {
+      "id": "ran_tai",
+      "char": "染",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "被外物滲透的汙染"
+    },
+    {
+      "id": "feng_tai",
+      "char": "瘋",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "理智崩壞的瘋狂"
+    },
+    {
+      "id": "ding_tai",
+      "char": "定",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "心如止水的安定"
+    },
+    {
+      "id": "dong_tai2",
+      "char": "動",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "打破靜止的躁動"
+    },
+    {
+      "id": "sheng_tai2",
+      "char": "生",
+      "semantic": "態",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "新生命萌發的狀態"
+    },
+    {
+      "id": "si_tai",
+      "char": "死",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "生命活動停止"
+    },
+    {
+      "id": "hun_tai",
+      "char": "混",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "混沌不分的狀態"
+    },
+    {
+      "id": "qing_tai",
+      "char": "清",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "清澈透明的狀態"
+    },
+    {
+      "id": "nian_tai",
+      "char": "黏",
+      "semantic": "態",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "附著不脫的黏滯"
+    },
+    {
+      "id": "hua_tai",
+      "char": "滑",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "無法抓握的光滑"
+    },
+    {
+      "id": "jin_bu",
+      "char": "盡",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "做到極致，不留餘地"
+    },
+    {
+      "id": "jue",
+      "char": "絕",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "斷絕一切的徹底"
+    },
+    {
+      "id": "tou",
+      "char": "透",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "穿透到底的通達"
+    },
+    {
+      "id": "che",
+      "char": "徹",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "從頭到尾的完全"
+    },
+    {
+      "id": "wei",
+      "char": "微",
+      "semantic": "補",
+      "sources": [
+        "氣"
+      ],
+      "desc": "幾不可察的程度"
+    },
+    {
+      "id": "cun_bu",
+      "char": "寸",
+      "semantic": "補",
+      "sources": [
+        "礦"
+      ],
+      "desc": "極短距離的精確"
+    },
+    {
+      "id": "chi_bu",
+      "char": "尺",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "適中範圍的延伸"
+    },
+    {
+      "id": "zhang_bu",
+      "char": "丈",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "大範圍的展開"
+    },
+    {
+      "id": "li_bu",
+      "char": "里",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "極遠距離的覆蓋"
+    },
+    {
+      "id": "ban",
+      "char": "半",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "恰好一半的分寸"
+    },
+    {
+      "id": "man",
+      "char": "滿",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "充盈到溢出"
+    },
+    {
+      "id": "kong_bu",
+      "char": "空",
+      "semantic": "補",
+      "sources": [
+        "氣"
+      ],
+      "desc": "完全清空的程度"
+    },
+    {
+      "id": "sui_bu",
+      "char": "碎",
+      "semantic": "補",
+      "sources": [
+        "礦"
+      ],
+      "desc": "碎成粉末的程度"
+    },
+    {
+      "id": "duan_bu",
+      "char": "斷",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "完全截斷的乾脆"
+    },
+    {
+      "id": "san_bu",
+      "char": "散",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "四散分離的程度"
+    },
+    {
+      "id": "he_bu",
+      "char": "合",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "完全合一的融合"
+    },
+    {
+      "id": "kai",
+      "char": "開",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "徹底打開的展開"
+    },
+    {
+      "id": "bi_bu",
+      "char": "閉",
+      "semantic": "補",
+      "sources": [
+        "礦"
+      ],
+      "desc": "完全關閉的封死"
+    },
+    {
+      "id": "cheng",
+      "char": "成",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "達成目標的完成"
+    },
+    {
+      "id": "bai",
+      "char": "敗",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "徹底失敗的潰敗"
+    },
+    {
+      "id": "sheng_bu",
+      "char": "勝",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "壓倒對方的勝出"
+    },
+    {
+      "id": "luo_bu",
+      "char": "落",
+      "semantic": "補",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "向下墜落的下沉"
+    },
+    {
+      "id": "qi_bu",
+      "char": "起",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "從地面升起"
+    },
+    {
+      "id": "ru",
+      "char": "入",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "進入內部的深入"
+    },
+    {
+      "id": "chu",
+      "char": "出",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "從內向外的突出"
+    },
+    {
+      "id": "ding_bu",
+      "char": "定",
+      "semantic": "補",
+      "sources": [
+        "礦"
+      ],
+      "desc": "穩固不動的鎮定"
+    },
+    {
+      "id": "huo_bu",
+      "char": "活",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "恢復生命的復甦"
+    },
+    {
+      "id": "si_bu",
+      "char": "死",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "致命一擊的終結"
+    },
+    {
+      "id": "kuai",
+      "char": "快",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "極快的速度"
+    },
+    {
+      "id": "man_bu",
+      "char": "慢",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "極慢的速度"
+    },
+    {
+      "id": "shen_bu",
+      "char": "深",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "程度極深"
+    },
+    {
+      "id": "qian_bu",
+      "char": "淺",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "程度極淺"
+    },
+    {
+      "id": "yuan_bu",
+      "char": "遠",
+      "semantic": "補",
+      "sources": [
+        "氣"
+      ],
+      "desc": "極遠的距離"
+    },
+    {
+      "id": "jin_bu2",
+      "char": "近",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "極近的距離"
+    },
+    {
+      "id": "da",
+      "char": "大",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "規模極大"
+    },
+    {
+      "id": "xiao_bu",
+      "char": "小",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "規模極小"
+    },
+    {
+      "id": "jiu",
+      "char": "久",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "持續時間極長"
+    },
+    {
+      "id": "zhan_bu",
+      "char": "暫",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "持續時間極短"
+    },
+    {
+      "id": "qiang",
+      "char": "強",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "威力極強"
+    },
+    {
+      "id": "ruo",
+      "char": "弱",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "威力極弱"
+    },
+    {
+      "id": "ji_bu",
+      "char": "極",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "到達極限的盡頭"
+    },
+    {
+      "id": "fan",
+      "char": "返",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "回到原點的逆轉"
+    },
+    {
+      "id": "zhong_bu",
+      "char": "中",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "正中目標的精準"
+    },
+    {
+      "id": "pian",
+      "char": "偏",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "偏離目標的歪斜"
+    },
+    {
+      "id": "wen_bu",
+      "char": "穩",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "穩如磐石的紮實"
+    },
+    {
+      "id": "dou",
+      "char": "抖",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "不穩定的顫動"
+    },
+    {
+      "id": "lian_bu",
+      "char": "連",
+      "semantic": "補",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "連續不斷的串聯"
+    },
+    {
+      "id": "duan_bu2",
+      "char": "獨",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "僅此一擊的孤注"
+    },
+    {
+      "id": "shuang",
+      "char": "雙",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "成雙成對的並發"
+    },
+    {
+      "id": "zhong_bu2",
+      "char": "重",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "一重接一重的疊加"
+    },
+    {
+      "id": "yi_zhu2",
+      "char": "矣",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "已完成——效果即時生效"
+    },
+    {
+      "id": "hu_zhu",
+      "char": "乎",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "疑問——試探性施放，成功率降低但消耗減半"
+    },
+    {
+      "id": "zai",
+      "char": "哉",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "感嘆——爆發強化，威力倍增但冷卻加長"
+    },
+    {
+      "id": "ye_zhu",
+      "char": "也",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "判斷——鎖定效果，不可被驅散"
+    },
+    {
+      "id": "er",
+      "char": "耳",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "僅此——效果精確但範圍縮小"
+    },
+    {
+      "id": "yan",
+      "char": "焉",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "於此——效果錨定在特定位置"
+    },
+    {
+      "id": "zhe",
+      "char": "者",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "者也——將效果轉為持續性光環"
+    },
+    {
+      "id": "suo_zhu",
+      "char": "所",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "所述——標記目標，延遲觸發"
+    },
+    {
+      "id": "zhi_zhu2",
+      "char": "之",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "連結——串聯兩個效果"
+    },
+    {
+      "id": "fu_zhu",
+      "char": "夫",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "發語——起手式，縮短施放時間"
+    },
+    {
+      "id": "gai_zhu",
+      "char": "蓋",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "推測——效果帶有隨機性加成"
+    },
+    {
+      "id": "qi_zhu2",
+      "char": "其",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "指代——將效果轉嫁給他人"
+    },
+    {
+      "id": "ze",
+      "char": "則",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "條件——觸發型效果，滿足條件才生效"
+    },
+    {
+      "id": "nai",
+      "char": "乃",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "正是——精確匹配時效果加倍"
+    },
+    {
+      "id": "er_zhu",
+      "char": "而",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "轉折——主效果附帶反向副效果"
+    },
+    {
+      "id": "sui_zhu",
+      "char": "雖",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "讓步——降低主效果但獲得額外防禦"
+    },
+    {
+      "id": "ruo_zhu",
+      "char": "若",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "假設——預設觸發條件的備用效果"
+    },
+    {
+      "id": "gu_zhu",
+      "char": "故",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "因此——因果鏈，前一效果成功才觸發"
+    },
+    {
+      "id": "qie",
+      "char": "且",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "並且——疊加效果不覆蓋"
+    },
+    {
+      "id": "yu_zhu",
+      "char": "於",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "在此——指定效果的作用範圍"
+    },
+    {
+      "id": "yi_zhu3",
+      "char": "以",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "用此——指定效果的媒介或工具"
+    },
+    {
+      "id": "wei_zhu",
+      "char": "為",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "成為——轉化型效果"
+    },
+    {
+      "id": "yu_zhu2",
+      "char": "與",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "和——共享效果給隊友"
+    },
+    {
+      "id": "zi",
+      "char": "自",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "從此——以自身為起點擴散"
+    },
+    {
+      "id": "ji_zhu",
+      "char": "即",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "立即——取消詠唱的瞬發"
+    },
+    {
+      "id": "jiang",
+      "char": "將",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "即將——延遲觸發的預告"
+    },
+    {
+      "id": "yi_zhu4",
+      "char": "已",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "已然——追溯已造成的效果"
+    },
+    {
+      "id": "yue",
+      "char": "曰",
+      "semantic": "助",
+      "sources": [
+        "氣"
+      ],
+      "desc": "宣告——效果對所有人可見"
+    },
+    {
+      "id": "yin_zhu",
+      "char": "因",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "因為——基於目標狀態調整效果"
+    },
+    {
+      "id": "cong",
+      "char": "從",
+      "semantic": "助",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "跟隨——效果追蹤移動目標"
+    },
+    {
+      "id": "bu_fou",
+      "char": "不",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "一般否定——反轉效果"
+    },
+    {
+      "id": "fu_fou",
+      "char": "弗",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "不+之——否定並消解目標身上的效果"
+    },
+    {
+      "id": "wei_fou",
+      "char": "未",
+      "semantic": "否",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "尚未——延遲效果的觸發時機"
+    },
+    {
+      "id": "fei",
+      "char": "非",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "判斷否定——效果僅對不符條件者生效"
+    },
+    {
+      "id": "wu_fou",
+      "char": "無",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "虛無——清除目標所有增益"
+    },
+    {
+      "id": "wu_fou2",
+      "char": "勿",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "禁止——封鎖目標特定行為"
+    },
+    {
+      "id": "mo_fou",
+      "char": "莫",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "無人——群體否定，範圍免疫"
+    },
+    {
+      "id": "wu_fou3",
+      "char": "毋",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "不要——預防性否定，提前免疫"
+    },
+    {
+      "id": "fou",
+      "char": "否",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "否決——取消正在進行的效果"
+    },
+    {
+      "id": "fei2",
+      "char": "廢",
+      "semantic": "否",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "廢棄——使目標裝備失效"
+    },
+    {
+      "id": "mie_fou",
+      "char": "滅",
+      "semantic": "否",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "消滅——徹底移除而非反轉"
+    },
+    {
+      "id": "que",
+      "char": "卻",
+      "semantic": "否",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "退卻——將效果彈回施放者"
+    },
+    {
+      "id": "xiu",
+      "char": "休",
+      "semantic": "否",
+      "sources": [
+        "氣",
+        "植"
+      ],
+      "desc": "停止——強制中斷持續效果"
+    },
+    {
+      "id": "bie",
+      "char": "別",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "分離——切斷效果的傳導鏈"
+    },
+    {
+      "id": "duan_fou",
+      "char": "斷",
+      "semantic": "否",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "截斷——阻止效果的擴散"
+    },
+    {
+      "id": "zhi_fou",
+      "char": "止",
+      "semantic": "否",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "止住——將動態效果凝固"
+    },
+    {
+      "id": "xiao_fou",
+      "char": "消",
+      "semantic": "否",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "消散——讓效果自然衰減加速"
+    },
+    {
+      "id": "qu",
+      "char": "去",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "離去——效果隨距離衰減"
+    },
+    {
+      "id": "kong_fou",
+      "char": "空",
+      "semantic": "否",
+      "sources": [
+        "氣"
+      ],
+      "desc": "放空——清除自身所有狀態"
+    },
+    {
+      "id": "ji_fou",
+      "char": "寂",
+      "semantic": "否",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "寂滅——沉默，封鎖所有造句"
+    },
+    {
+      "id": "xing_xuan",
+      "char": "幸",
+      "semantic": "玄",
+      "sources": [
+        "獸",
+        "植",
+        "礦",
+        "水",
+        "氣"
+      ],
+      "desc": "微妙的好運——提升所有擲骰的正向偏移"
+    },
+    {
+      "id": "yun",
+      "char": "運",
+      "semantic": "玄",
+      "sources": [
+        "獸",
+        "植",
+        "礦",
+        "水",
+        "氣"
+      ],
+      "desc": "命運的齒輪——疊煉成功率上升"
+    },
+    {
+      "id": "yuan_xuan",
+      "char": "緣",
+      "semantic": "玄",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "因緣際會——提升稀有詞元的掉落率"
+    },
+    {
+      "id": "shu_xuan",
+      "char": "數",
+      "semantic": "玄",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "天數已定——品質上限提升"
+    },
+    {
+      "id": "ji_xuan",
+      "char": "機",
+      "semantic": "玄",
+      "sources": [
+        "氣"
+      ],
+      "desc": "天機——造句時出現隱藏組合的機率"
+    },
+    {
+      "id": "ming_xuan",
+      "char": "冥",
+      "semantic": "玄",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "冥冥之中——非觀測狀態下的NPC行為偏移"
+    },
+    {
+      "id": "zhao",
+      "char": "兆",
+      "semantic": "玄",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "預兆——提前感知危險事件"
+    },
+    {
+      "id": "shi_xuan",
+      "char": "示",
+      "semantic": "玄",
+      "sources": [
+        "氣"
+      ],
+      "desc": "天示——顯示隱藏資訊的機率"
+    },
+    {
+      "id": "ling_xuan",
+      "char": "靈",
+      "semantic": "玄",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "靈覺——感知周圍詞元品質的精度"
+    },
+    {
+      "id": "gan",
+      "char": "感",
+      "semantic": "玄",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "感應——增加與NPC的好感度獲取"
+    },
+    {
+      "id": "wu_xuan",
+      "char": "悟",
+      "semantic": "玄",
+      "sources": [
+        "氣"
+      ],
+      "desc": "頓悟——造句品質門檻降低"
+    },
+    {
+      "id": "hua_xuan",
+      "char": "化",
+      "semantic": "玄",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "造化——疊煉時漲幅骰子偏大"
+    },
+    {
+      "id": "tian",
+      "char": "天",
+      "semantic": "玄",
+      "sources": [
+        "氣"
+      ],
+      "desc": "天意——極低概率觸發奇蹟事件"
+    },
+    {
+      "id": "di_xuan",
+      "char": "地",
+      "semantic": "玄",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "地利——在特定地形獲得全面加成"
+    },
+    {
+      "id": "ren_xuan",
+      "char": "人",
+      "semantic": "玄",
+      "sources": [
+        "獸"
+      ],
+      "desc": "人和——隊伍協作效果提升"
+    },
+    {
+      "id": "shi_xuan2",
+      "char": "時",
+      "semantic": "玄",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "時運——特定遊戲時間段的加成"
+    },
+    {
+      "id": "he_xuan",
+      "char": "合",
+      "semantic": "玄",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "契合——詞元與星盤的匹配度提升"
+    },
+    {
+      "id": "dao_xuan",
+      "char": "道",
+      "semantic": "玄",
+      "sources": [
+        "氣"
+      ],
+      "desc": "道韻——修煉速度的隱性加成"
+    },
+    {
+      "id": "xu_xuan",
+      "char": "虛",
+      "semantic": "玄",
+      "sources": [
+        "氣"
+      ],
+      "desc": "虛數——隱藏屬性的波動幅度"
+    },
+    {
+      "id": "miao",
+      "char": "妙",
+      "semantic": "玄",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "微妙——所有百分比判定+1%的隱性偏移"
+    },
+    {
+      "id": "cui",
+      "char": "脆",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "一擊即碎的易損"
+    },
+    {
+      "id": "wan",
+      "char": "頑",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "頑固不化的抵抗"
+    },
+    {
+      "id": "xian_shu",
+      "char": "鮮",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "剛離枝頭的鮮活"
+    },
+    {
+      "id": "chen_shu",
+      "char": "陳",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "陳放已久的醇厚"
+    },
+    {
+      "id": "ji_shu",
+      "char": "急",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "迫不及待的急促"
+    },
+    {
+      "id": "xu_shu",
+      "char": "徐",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "不疾不徐的從容"
+    },
+    {
+      "id": "hun_shu",
+      "char": "渾",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "礦"
+      ],
+      "desc": "渾然一體的混沌"
+    },
+    {
+      "id": "ling2",
+      "char": "凜",
+      "semantic": "屬",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "令人畏懼的凜冽"
+    },
+    {
+      "id": "you",
+      "char": "幽",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "深不見底的幽暗"
+    },
+    {
+      "id": "hao",
+      "char": "皓",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "礦"
+      ],
+      "desc": "皎潔無瑕的明亮"
+    },
+    {
+      "id": "zhuo_shu",
+      "char": "拙",
+      "semantic": "屬",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "大巧若拙的笨重"
+    },
+    {
+      "id": "qiao_shu",
+      "char": "巧",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "精巧靈動的小聰明"
+    },
+    {
+      "id": "xiong",
+      "char": "凶",
+      "semantic": "屬",
+      "sources": [
+        "獸"
+      ],
+      "desc": "殺意外露的凶戾"
+    },
+    {
+      "id": "shan_shu",
+      "char": "善",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "與世無爭的溫善"
+    },
+    {
+      "id": "ao",
+      "char": "傲",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "睥睨一切的高傲"
+    },
+    {
+      "id": "bei",
+      "char": "卑",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "低伏在地的卑微"
+    },
+    {
+      "id": "cang",
+      "char": "蒼",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "氣"
+      ],
+      "desc": "蒼茫無際的古老"
+    },
+    {
+      "id": "yan_shu",
+      "char": "艷",
+      "semantic": "屬",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "濃烈到刺眼的鮮艷"
+    },
+    {
+      "id": "su_shu",
+      "char": "素",
+      "semantic": "屬",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "不加修飾的素淨"
+    },
+    {
+      "id": "nie",
+      "char": "孽",
+      "semantic": "屬",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "業障纏身的不祥"
+    },
+    {
+      "id": "tan",
+      "char": "探",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "伸出觸角的試探"
+    },
+    {
+      "id": "nie_dong",
+      "char": "捏",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "用力擠壓的揉捏"
+    },
+    {
+      "id": "hui_dong",
+      "char": "揮",
+      "semantic": "動",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "大開大合的揮動"
+    },
+    {
+      "id": "zhuo_dong",
+      "char": "啄",
+      "semantic": "動",
+      "sources": [
+        "獸"
+      ],
+      "desc": "精準一擊的啄擊"
+    },
+    {
+      "id": "yan_dong",
+      "char": "衍",
+      "semantic": "動",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "從一生二的衍生"
+    },
+    {
+      "id": "xue_gou",
+      "char": "穴",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "地底隱蔽的孔穴"
+    },
+    {
+      "id": "chao",
+      "char": "巢",
+      "semantic": "構",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "生物棲息的窩巢"
+    },
+    {
+      "id": "di_gou",
+      "char": "堤",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "攔截水流的堤壩"
+    },
+    {
+      "id": "ling_gou2",
+      "char": "菱",
+      "semantic": "構",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "交叉成菱的網格"
+    },
+    {
+      "id": "gou_gou",
+      "char": "鉤",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "向內彎曲的鉤爪"
+    },
+    {
+      "id": "shao",
+      "char": "梢",
+      "semantic": "構",
+      "sources": [
+        "植"
+      ],
+      "desc": "末端最細的尖梢"
+    },
+    {
+      "id": "chuang",
+      "char": "窗",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "在壁面開出的孔洞"
+    },
+    {
+      "id": "jie_gou2",
+      "char": "階",
+      "semantic": "構",
+      "sources": [
+        "礦"
+      ],
+      "desc": "一步步向上的梯階"
+    },
+    {
+      "id": "qiu",
+      "char": "球",
+      "semantic": "構",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "向心聚合的球體"
+    },
+    {
+      "id": "zui",
+      "char": "醉",
+      "semantic": "態",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "意識模糊的微醺"
+    },
+    {
+      "id": "nu",
+      "char": "怒",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "暴怒之下的力量暴漲"
+    },
+    {
+      "id": "ju_tai",
+      "char": "懼",
+      "semantic": "態",
+      "sources": [
+        "獸"
+      ],
+      "desc": "恐懼吞噬意志"
+    },
+    {
+      "id": "ai",
+      "char": "哀",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "悲慟削弱行動力"
+    },
+    {
+      "id": "xi_tai",
+      "char": "喜",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "喜悅增幅恢復力"
+    },
+    {
+      "id": "ji_tai2",
+      "char": "飢",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "空腹帶來的虛弱"
+    },
+    {
+      "id": "bao_tai",
+      "char": "飽",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "飽食後的遲鈍與充盈"
+    },
+    {
+      "id": "ke_tai",
+      "char": "渴",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "缺水導致的焦躁"
+    },
+    {
+      "id": "juan",
+      "char": "倦",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "疲倦的行動遲緩"
+    },
+    {
+      "id": "fen_tai",
+      "char": "奮",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "亢奮中突破極限"
+    },
+    {
+      "id": "ruo_tai",
+      "char": "弱",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "虛弱不堪的低谷"
+    },
+    {
+      "id": "zhuang",
+      "char": "壯",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "氣血充盈的強壯"
+    },
+    {
+      "id": "ying_tai",
+      "char": "硬",
+      "semantic": "態",
+      "sources": [
+        "礦"
+      ],
+      "desc": "表面硬化的防護"
+    },
+    {
+      "id": "ruan",
+      "char": "軟",
+      "semantic": "態",
+      "sources": [
+        "水",
+        "植"
+      ],
+      "desc": "結構軟化的脆弱"
+    },
+    {
+      "id": "ji_tai3",
+      "char": "寂",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "萬籟俱寂的空白"
+    },
+    {
+      "id": "zao",
+      "char": "躁",
+      "semantic": "態",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "焦躁不安的浮動"
+    },
+    {
+      "id": "mi_tai2",
+      "char": "密",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "結構緊密的加固"
+    },
+    {
+      "id": "shu_tai",
+      "char": "疏",
+      "semantic": "態",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "結構疏鬆的虛化"
+    },
+    {
+      "id": "re",
+      "char": "熱",
+      "semantic": "態",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "體溫異常升高"
+    },
+    {
+      "id": "qiao_shou",
+      "char": "竅",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "靈竅與穴位"
+    },
+    {
+      "id": "fu_shou",
+      "char": "府",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "五臟六腑"
+    },
+    {
+      "id": "rou_shou",
+      "char": "肉",
+      "semantic": "受",
+      "sources": [
+        "獸"
+      ],
+      "desc": "血肉與組織"
+    },
+    {
+      "id": "po_shou",
+      "char": "魄",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "魄力與膽識"
+    },
+    {
+      "id": "shen_shou",
+      "char": "神",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "精神與意志"
+    },
+    {
+      "id": "nian_shou",
+      "char": "念",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "念頭與意念"
+    },
+    {
+      "id": "ling_shou",
+      "char": "靈",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "靈覺與感知"
+    },
+    {
+      "id": "zhen_shou",
+      "char": "陣",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "陣法與佈局"
+    },
+    {
+      "id": "jie_shou2",
+      "char": "結",
+      "semantic": "受",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "結構與連接"
+    },
+    {
+      "id": "qi_shou2",
+      "char": "氣",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "氣息與能量"
+    },
+    {
+      "id": "chang_shou",
+      "char": "場",
+      "semantic": "受",
+      "sources": [
+        "氣"
+      ],
+      "desc": "聚念場與力場"
+    },
+    {
+      "id": "pin_shou",
+      "char": "頻",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "頻率與共振"
+    },
+    {
+      "id": "pan_shou",
+      "char": "盤",
+      "semantic": "受",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "詞盤與星盤"
+    },
+    {
+      "id": "yin_shou2",
+      "char": "音",
+      "semantic": "受",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "聲音與共鳴"
+    },
+    {
+      "id": "se_shou",
+      "char": "色",
+      "semantic": "受",
+      "sources": [
+        "植",
+        "礦"
+      ],
+      "desc": "色彩與外觀"
+    },
+    {
+      "id": "wei_shou",
+      "char": "味",
+      "semantic": "受",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "氣味與滋味"
+    },
+    {
+      "id": "wen_shou",
+      "char": "紋",
+      "semantic": "受",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "念紋與印記"
+    },
+    {
+      "id": "he_shou",
+      "char": "核",
+      "semantic": "受",
+      "sources": [
+        "植",
+        "礦"
+      ],
+      "desc": "核心與精華"
+    },
+    {
+      "id": "zhong_shou",
+      "char": "種",
+      "semantic": "受",
+      "sources": [
+        "植",
+        "獸"
+      ],
+      "desc": "種子與根源"
+    },
+    {
+      "id": "yuan_shou",
+      "char": "源",
+      "semantic": "受",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "源頭與起點"
+    },
+    {
+      "id": "guang_bu",
+      "char": "光",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "消耗殆盡的乾淨"
+    },
+    {
+      "id": "zhu_bu",
+      "char": "住",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "植"
+      ],
+      "desc": "穩穩定住不動搖"
+    },
+    {
+      "id": "dao_bu",
+      "char": "倒",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "完全擊倒的翻覆"
+    },
+    {
+      "id": "chuan_bu",
+      "char": "穿",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "貫穿而過的洞穿"
+    },
+    {
+      "id": "fei_bu",
+      "char": "飛",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "獸"
+      ],
+      "desc": "擊飛的程度"
+    },
+    {
+      "id": "dong_bu",
+      "char": "動",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "使之震動的搖撼"
+    },
+    {
+      "id": "hao_bu",
+      "char": "耗",
+      "semantic": "補",
+      "sources": [
+        "水",
+        "氣"
+      ],
+      "desc": "緩慢消耗的磨損"
+    },
+    {
+      "id": "fu_bu",
+      "char": "服",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "植"
+      ],
+      "desc": "使之臣服的壓制"
+    },
+    {
+      "id": "zhi_bu2",
+      "char": "直",
+      "semantic": "補",
+      "sources": [
+        "礦"
+      ],
+      "desc": "筆直不彎的精準"
+    },
+    {
+      "id": "zhun",
+      "char": "準",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "分毫不差的準確"
+    },
+    {
+      "id": "zha",
+      "char": "炸",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "氣"
+      ],
+      "desc": "向外炸開的爆裂"
+    },
+    {
+      "id": "can_bu",
+      "char": "殘",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "礦"
+      ],
+      "desc": "殘破但未消亡"
+    },
+    {
+      "id": "que_bu",
+      "char": "缺",
+      "semantic": "補",
+      "sources": [
+        "礦"
+      ],
+      "desc": "留下缺口的損傷"
+    },
+    {
+      "id": "wan_bu",
+      "char": "完",
+      "semantic": "補",
+      "sources": [
+        "植",
+        "水"
+      ],
+      "desc": "完整無缺的修復"
+    },
+    {
+      "id": "quan",
+      "char": "全",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "水"
+      ],
+      "desc": "全部涵蓋的範圍"
+    },
+    {
+      "id": "bian_bu",
+      "char": "遍",
+      "semantic": "補",
+      "sources": [
+        "氣",
+        "水"
+      ],
+      "desc": "無處不及的遍布"
+    },
+    {
+      "id": "li_bu2",
+      "char": "立",
+      "semantic": "補",
+      "sources": [
+        "礦"
+      ],
+      "desc": "立刻生效的即時"
+    },
+    {
+      "id": "duan_bu3",
+      "char": "段",
+      "semantic": "補",
+      "sources": [
+        "礦",
+        "獸"
+      ],
+      "desc": "分成數段的切割"
+    },
+    {
+      "id": "pu",
+      "char": "撲",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "水"
+      ],
+      "desc": "撲倒在地的壓制"
+    },
+    {
+      "id": "tuo",
+      "char": "脫",
+      "semantic": "補",
+      "sources": [
+        "獸",
+        "氣"
+      ],
+      "desc": "擺脫束縛的掙脫"
+    }
+  ]
+}
