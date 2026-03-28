@@ -81,14 +81,6 @@
       background: #1a1a2e;
     }
 
-    /* ─── 模式切換 ─── */
-    .mode-switch { display: flex; gap: 4px; }
-    .mode-btn {
-      background: #1a1a2e; color: #a0a0b0; border: 1px solid #0f3460;
-      padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
-    }
-    .mode-btn.active { background: #0f3460; color: #e8e8e8; border-color: #e94560; }
-
     /* ─── Zone 濾鏡 ─── */
     .field-inline { display: flex; align-items: center; gap: 6px; }
     .field-inline label { color: #a0a0b0; font-size: 0.85rem; white-space: nowrap; }
@@ -142,28 +134,22 @@
     .modal p { color: #a0a0b0; font-size: 0.9rem; margin: 4px 0 12px; }
 
     /* ─── 佈局 ─── */
-    body.edit-mode #mynetwork { width: calc(100% - 320px); }
-    body.edit-mode .side-panel { display: block; }
+    .side-panel.open ~ #mynetwork { margin-right: 320px; }
 
     /* ─── 手機 ─── */
     @media (max-width: 768px) {
       header { padding: 8px 12px; gap: 8px; }
       .login-form { display: none; } /* 手機不需要登入 */
-      body.edit-mode #mynetwork { width: 100%; }
-      body.edit-mode .side-panel {
+      .side-panel.open {
         position: fixed; left: 0; right: 0; bottom: 0; top: auto;
         width: 100%; height: 50vh; border-left: none; border-top: 1px solid #0f3460;
       }
     }
   </style>
 </head>
-<body class="read-mode">
+<body class="map-editor">
   <header>
     <h1>浮生地圖</h1>
-    <div class="mode-switch">
-      <button id="btn-mode-read" class="mode-btn active">閱讀</button>
-      <button id="btn-mode-edit" class="mode-btn">編輯</button>
-    </div>
     <div class="field-inline">
       <label>Zone</label>
       <select id="zone-filter">
@@ -271,7 +257,6 @@
       }
 
       // ─── 狀態 ───
-      var mode = 'read'; // 'read' | 'edit'
       var network = null;
       var nodesDS = null;
       var edgesDS = null;
@@ -288,8 +273,6 @@
         status: $('status'),
         error: $('error-msg'),
         zoneFilter: $('zone-filter'),
-        btnModeRead: $('btn-mode-read'),
-        btnModeEdit: $('btn-mode-edit'),
         sidePanel: $('sidePanel'),
         fId: $('f-id'),
         fName: $('f-name'),
@@ -420,7 +403,9 @@
           label: n.name + '\n(' + n.id + ')',
           title: buildTooltip(n),
           size: size,
-          color: colorValue
+          color: colorValue,
+          x: n.x != null ? n.x : undefined,
+          y: n.y != null ? n.y : undefined
         };
         if (isPlayer) {
           node.color = {
@@ -500,7 +485,9 @@
         if (!network) {
           network = new vis.Network(container, { nodes: nodesDS, edges: edgesDS }, options);
           bindNetworkEvents();
+          network.editMode(); // 啟動編輯模式工具列
         } else {
+          network.setData({ nodes: nodesDS, edges: edgesDS });
           network.setOptions(options);
         }
         if (currentPlayerRoomId) {
@@ -509,7 +496,7 @@
       }
 
       function getVisOptions() {
-        var base = {
+        return {
           nodes: {
             font: { color: '#e8e8e8', size: 12, face: 'Noto Sans TC, Microsoft JhengHei, sans-serif' },
             borderWidth: 1, borderWidthSelected: 2, shape: 'dot'
@@ -519,39 +506,23 @@
             smooth: { type: 'continuous', roundness: 0.2 },
             arrowStrikethrough: false
           },
-          interaction: { hover: true, zoomView: true, dragView: true, tooltipDelay: 100 }
-        };
-        if (mode === 'read') {
-          base.physics = {
-            enabled: true,
-            solver: 'forceAtlas2Based',
-            forceAtlas2Based: {
-              gravitationalConstant: -80, centralGravity: 0.01,
-              springLength: 120, springConstant: 0.08,
-              damping: 0.4, avoidOverlap: 0.5
-            },
-            stabilization: { iterations: 200, updateInterval: 25 }
-          };
-          base.manipulation = { enabled: false };
-        } else {
-          // 編輯模式：關閉物理（拖哪放哪），開啟 manipulation
-          base.physics = { enabled: false };
-          base.manipulation = {
+          interaction: { hover: true, zoomView: true, dragView: true, dragNodes: true, tooltipDelay: 100 },
+          // 永遠關閉物理引擎：節點用固定座標，拖哪放哪
+          physics: { enabled: false },
+          // 永遠啟用 manipulation：打開就能編輯
+          manipulation: {
             enabled: true,
             addNode: onAddNode,
             addEdge: onAddEdge,
             deleteNode: onDeleteNode,
             deleteEdge: onDeleteEdge,
             editNode: onEditNode
-          };
-          base.interaction.dragNodes = true;
-        }
-        return base;
+          }
+        };
       }
 
       function bindNetworkEvents() {
         network.on('click', function (params) {
-          if (mode !== 'edit') return;
           if (params.nodes.length === 1) {
             selectNode(params.nodes[0]);
           } else {
@@ -559,9 +530,8 @@
           }
         });
 
-        // 編輯模式：拖曳結束後存座標
+        // 拖曳結束後存座標
         network.on('dragEnd', function (params) {
-          if (mode !== 'edit') return;
           if (params.nodes.length === 0) return;
           var positions = network.getPositions(params.nodes);
           apiPut(API_LAYOUT, { positions: positions }).catch(function () {});
@@ -666,27 +636,40 @@
 
       function inheritProps(target, source) {
         if (!target || !source) return;
-        if (target.zone || !source.zone) return;
-        target.zone = source.zone;
+        var changed = false;
+        if (!target.zone && source.zone) {
+          target.zone = source.zone;
+          changed = true;
+        }
         if ((!target.tags || target.tags.length === 0) && source.tags && source.tags.length > 0) {
           target.tags = source.tags.slice();
+          changed = true;
         }
         var newId = generateId(source.id);
-        if (target.id.startsWith('new_') && newId !== target.id) {
+        var needRename = target.id.startsWith('new_') && newId !== target.id;
+        if (needRename) {
           var oldId = target.id;
-          target.id = newId;
-          allEdges.forEach(function (e) {
-            if (e.from === oldId) e.from = newId;
-            if (e.to === oldId) e.to = newId;
-          });
+          var body = {
+            id: newId, name: target.name, description: target.description || '',
+            zone: target.zone, tags: target.tags || [], objects: target.objects || []
+          };
+          apiPost(API_ROOM, body).then(function (res) {
+            if (!res.ok) { setError(res.error || 'ID 更名失敗'); return; }
+            return apiDelete(API_ROOM + '/' + encodeURIComponent(oldId));
+          }).then(function () {
+            target.id = newId;
+            allEdges.forEach(function (e) {
+              if (e.from === oldId) e.from = newId;
+              if (e.to === oldId) e.to = newId;
+            });
+            drawGraph();
+          }).catch(function () {});
+        } else if (changed) {
+          apiPut(API_ROOM + '/' + encodeURIComponent(target.id), {
+            name: target.name, description: target.description || '',
+            zone: target.zone, tags: target.tags || [], objects: target.objects || []
+          }).catch(function () {});
         }
-        apiPut(API_ROOM + '/' + encodeURIComponent(target.id), {
-          name: target.name,
-          description: target.description || '',
-          zone: target.zone,
-          tags: target.tags || [],
-          objects: target.objects || []
-        }).catch(function () {});
       }
 
       function onDeleteNode(data, callback) {
@@ -817,46 +800,40 @@
         fetch(API_GRAPH + mgQuery()).then(function (r) { return r.json(); }).then(function (json) {
           allNodes = json.nodes || [];
           allEdges = json.edges || [];
+          // 合併 layout 座標到 nodes
+          var layout = json.layout || {};
+          allNodes.forEach(function (n) {
+            if (layout[n.id]) {
+              n.x = layout[n.id].x;
+              n.y = layout[n.id].y;
+            }
+          });
           refreshZoneFilter();
           drawGraph();
-          setStatus('線上編輯模式 已就緒');
+          setStatus('線上編輯模式 已就緒（' + allNodes.length + ' 格）');
         }).catch(function () {
-          setStatus('API 獲取失敗，切換回唯讀模式');
-          setMode('read');
+          setStatus('API 獲取失敗，嘗試唯讀模式…');
+          fetchReadOnly();
         });
       }
 
-      function setMode(m) {
-        mode = m;
-        document.body.className = m + '-mode';
-        ui.btnModeRead.className = 'mode-btn' + (m === 'read' ? ' active' : '');
-        ui.btnModeEdit.className = 'mode-btn' + (m === 'edit' ? ' active' : '');
-        deselectNode();
-        if (m === 'read') {
-          fetchMapOnly();
-        } else {
-          fetchData();
-        }
-      }
-
-      function fetchMapOnly() {
-        setStatus('載入唯讀地圖…');
+      function fetchReadOnly() {
         fetch(DATA_URL).then(function (r) { return r.json(); }).then(function (json) {
-          allNodes = json.rooms || [];
+          var rooms = json.rooms || [];
+          allNodes = rooms.map(function (r) {
+            return { id: r.id, name: r.name, zone: r.zone || '', tags: r.tags || [], description: r.description || '', x: r.x, y: r.y };
+          });
           allEdges = [];
-          allNodes.forEach(function (r) {
-            if (r.objects) r.objects.forEach(function (o) {
-              if (o.move_to_room_id) allEdges.push({ from: r.id, to: o.move_to_room_id });
+          rooms.forEach(function (r) {
+            (r.exits || []).forEach(function (ex) {
+              allEdges.push({ from: r.id, to: ex.target, direction: ex.direction || '' });
             });
           });
           refreshZoneFilter();
           drawGraph();
-          setStatus('唯讀模式');
-        });
+          setStatus('唯讀模式（共 ' + allNodes.length + ' 格）');
+        }).catch(function () { setError('載入失敗'); });
       }
-
-      ui.btnModeRead.onclick = function () { setMode('read'); };
-      ui.btnModeEdit.onclick = function () { setMode('edit'); };
 
       ui.zoneFilter.onchange = function () {
         zoneFilterValue = ui.zoneFilter.value;
@@ -874,14 +851,14 @@
             if (data.room_id) {
               currentPlayerRoomId = data.room_id;
               drawGraph();
-              network.focus(currentPlayerRoomId, { scale: 1.2, animation: true });
+              if (network) network.focus(currentPlayerRoomId, { scale: 1.2, animation: true });
             }
           })
           .catch(function () {})
           .finally(function () { ui.btnLogin.disabled = false; });
       };
 
-      setMode('read');
+      fetchData();
     })();
   </script>
 </body>
