@@ -47,7 +47,7 @@ fn main() -> anyhow::Result<()> {
             char TEXT NOT NULL,
             semantic TEXT NOT NULL,
             desc_text TEXT NOT NULL,
-            embedding vector(1024) NOT NULL
+            embedding vector(1030) NOT NULL
         )",
         &[],
     )?;

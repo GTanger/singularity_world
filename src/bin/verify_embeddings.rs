@@ -28,7 +28,7 @@ fn main() -> anyhow::Result<()> {
         let dim_order = ["atk", "def", "spd", "dot", "aoe", "heal"];
 
         // 先回到 1024（如果之前已改過但資料沒跟上）
-        conn.execute("ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector(1024)", &[]).ok();
+        conn.execute("ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector(1030)", &[]).ok();
         // 暫時放寬為無限制維度
         conn.execute("ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector", &[])?;
 

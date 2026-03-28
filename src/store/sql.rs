@@ -292,5 +292,17 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         &[],
     )?;
 
+    // 詞元 Embedding (Word Element Embeddings) — 用於語義檢索
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS word_element_embeddings (
+            id TEXT PRIMARY KEY,
+            char TEXT NOT NULL,
+            semantic TEXT NOT NULL,
+            desc_text TEXT NOT NULL,
+            embedding vector(1030) NOT NULL
+        )",
+        &[],
+    )?;
+
     Ok(())
 }
