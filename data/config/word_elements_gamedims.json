@@ -1,0 +1,6504 @@
+{
+  "elements": [
+    {
+      "id": "wu",
+      "char": "吾",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wo",
+      "char": "我",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji",
+      "char": "己",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hun",
+      "char": "魂",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "nian_zhu",
+      "char": "念",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ling",
+      "char": "靈",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shen",
+      "char": "神",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhi_zhu",
+      "char": "志",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xin",
+      "char": "心",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "po",
+      "char": "魄",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yi_zhu",
+      "char": "意",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ming_zhu",
+      "char": "命",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ti_zhu",
+      "char": "體",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhen",
+      "char": "真",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yuan_zhu",
+      "char": "元",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dao_zhu",
+      "char": "道",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ben",
+      "char": "本",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gu",
+      "char": "骨",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xue",
+      "char": "血",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qi_zhu",
+      "char": "氣",
+      "semantic": "主",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "rui",
+      "char": "銳",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.6,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jian",
+      "char": "堅",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.7,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ren",
+      "char": "韌",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.5,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qing",
+      "char": "輕",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.5,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhong",
+      "char": "重",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "han",
+      "char": "寒",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": -0.3,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chi",
+      "char": "熾",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.4,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.5,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hou",
+      "char": "厚",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.4,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bao",
+      "char": "薄",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gang",
+      "char": "剛",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "rou",
+      "char": "柔",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "li_shu",
+      "char": "利",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dun",
+      "char": "鈍",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ming_shu",
+      "char": "明",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "an",
+      "char": "暗",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "su",
+      "char": "速",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.7,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "huan",
+      "char": "緩",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "kuang",
+      "char": "狂",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jing_shu",
+      "char": "靜",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lie",
+      "char": "烈",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.5,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wen",
+      "char": "溫",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "du",
+      "char": "毒",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.8,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chun",
+      "char": "純",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhuo",
+      "char": "濁",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mi",
+      "char": "密",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shu",
+      "char": "疏",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shen_shu",
+      "char": "深",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qian",
+      "char": "淺",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ku",
+      "char": "枯",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.4,
+        "aoe": 0.0,
+        "heal": -0.3
+      }
+    },
+    {
+      "id": "rong",
+      "char": "榮",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hong",
+      "char": "宏",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wei_shu",
+      "char": "微",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gu_shu",
+      "char": "古",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xin_shu",
+      "char": "新",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zheng",
+      "char": "正",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xie",
+      "char": "邪",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xu",
+      "char": "虛",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shi",
+      "char": "實",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "huo",
+      "char": "活",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.4
+      }
+    },
+    {
+      "id": "si_shu",
+      "char": "死",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ling_shu",
+      "char": "靈",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yu_shu",
+      "char": "愚",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chang",
+      "char": "長",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "duan",
+      "char": "短",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yuan_shu",
+      "char": "圓",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fang",
+      "char": "方",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "nong",
+      "char": "濃",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dan",
+      "char": "淡",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ying",
+      "char": "盈",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "kui",
+      "char": "虧",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "can",
+      "char": "燦",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hui",
+      "char": "晦",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gang2",
+      "char": "鋼",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mian",
+      "char": "綿",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hua",
+      "char": "滑",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "se",
+      "char": "澀",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "feng_shu",
+      "char": "豐",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pin",
+      "char": "貧",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "meng",
+      "char": "猛",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xun",
+      "char": "馴",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhan",
+      "char": "斬",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 1.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ci",
+      "char": "刺",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 1.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pi",
+      "char": "劈",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 1.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "sui",
+      "char": "碎",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dun_dong",
+      "char": "盾",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.9,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bi",
+      "char": "避",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.7,
+        "spd": 0.3,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xi",
+      "char": "吸",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.7,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": -0.3
+      }
+    },
+    {
+      "id": "lie_dong",
+      "char": "裂",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 1.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "feng",
+      "char": "封",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jie",
+      "char": "解",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhui",
+      "char": "墜",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "sheng",
+      "char": "升",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "rong_dong",
+      "char": "融",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ning",
+      "char": "凝",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": -0.4,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "rao",
+      "char": "繞",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "guan",
+      "char": "貫",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhen_dong",
+      "char": "震",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xiao",
+      "char": "削",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tun",
+      "char": "吞",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tu",
+      "char": "吐",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ce",
+      "char": "測",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yin",
+      "char": "引",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tui",
+      "char": "推",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhuan",
+      "char": "轉",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ding",
+      "char": "定",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "san",
+      "char": "散",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.5,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ju",
+      "char": "聚",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "duan_dong",
+      "char": "斷",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lian",
+      "char": "連",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bian",
+      "char": "變",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "suo",
+      "char": "鎖",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shi_dong",
+      "char": "蝕",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.6,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhu",
+      "char": "鑄",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "po_dong",
+      "char": "破",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bu",
+      "char": "補",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "she",
+      "char": "射",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chong",
+      "char": "衝",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shou",
+      "char": "守",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bo",
+      "char": "搏",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hua_dong",
+      "char": "化",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "diao",
+      "char": "凋",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mie",
+      "char": "滅",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "sheng_dong",
+      "char": "生",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.5
+      }
+    },
+    {
+      "id": "cun",
+      "char": "存",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wang",
+      "char": "亡",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dang",
+      "char": "擋",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chan",
+      "char": "纏",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pao",
+      "char": "拋",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "duo",
+      "char": "奪",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ci_dong",
+      "char": "賜",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fen",
+      "char": "焚",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dong",
+      "char": "凍",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": -0.5,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "liu",
+      "char": "流",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "beng",
+      "char": "崩",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhi_dong",
+      "char": "織",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bo_dong",
+      "char": "剝",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhong_dong",
+      "char": "種",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shou_dong",
+      "char": "收",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fang_dong",
+      "char": "放",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu",
+      "char": "縛",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chou",
+      "char": "抽",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gai",
+      "char": "蓋",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chuan",
+      "char": "穿",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mo",
+      "char": "磨",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dian",
+      "char": "點",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "di",
+      "char": "敵",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ti",
+      "char": "體",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qi_shou",
+      "char": "器",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "di_shou",
+      "char": "地",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hun_shou",
+      "char": "魂",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qun",
+      "char": "群",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "kong",
+      "char": "空",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shi_shou",
+      "char": "勢",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xue_shou",
+      "char": "血",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gu_shou",
+      "char": "骨",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jin",
+      "char": "筋",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pi_shou",
+      "char": "皮",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jia",
+      "char": "甲",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mai",
+      "char": "脈",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gen",
+      "char": "根",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ye",
+      "char": "葉",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ying_shou",
+      "char": "影",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shui",
+      "char": "水",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "huo_shou",
+      "char": "火",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "feng_shou",
+      "char": "風",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lei",
+      "char": "雷",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tu_shou",
+      "char": "土",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mu",
+      "char": "木",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bing",
+      "char": "冰",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "guang",
+      "char": "光",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shi_shou2",
+      "char": "石",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "sha",
+      "char": "砂",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wu_shou",
+      "char": "霧",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chen",
+      "char": "塵",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "si",
+      "char": "絲",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhi_shou",
+      "char": "質",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xing",
+      "char": "形",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yi",
+      "char": "意",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhi_shou2",
+      "char": "智",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "li_shou",
+      "char": "力",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ming_shou",
+      "char": "命",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dao",
+      "char": "道",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shi_shou3",
+      "char": "時",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jie_shou",
+      "char": "界",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yin_shou",
+      "char": "因",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "huan_gou",
+      "char": "環",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.8,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lian_gou",
+      "char": "鏈",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "he",
+      "char": "核",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ke",
+      "char": "殼",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.6,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hu",
+      "char": "弧",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wang_gou",
+      "char": "網",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.8999999999999999,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lun",
+      "char": "輪",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhen_gou",
+      "char": "陣",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.7,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ta",
+      "char": "塔",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bi_gou",
+      "char": "壁",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.7,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jing_gou",
+      "char": "井",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qiao",
+      "char": "橋",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "men",
+      "char": "門",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jing_gou2",
+      "char": "鏡",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "luo",
+      "char": "螺",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ci_gou",
+      "char": "刺",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.8,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mao",
+      "char": "矛",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dun_gou",
+      "char": "盾",
+      "semantic": "構",
+      "game_dims": {
+        "atk": -0.3,
+        "def": 0.9,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yin_gou",
+      "char": "印",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu_gou",
+      "char": "符",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jie_gou",
+      "char": "結",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhu_gou",
+      "char": "柱",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pan",
+      "char": "盤",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "kou",
+      "char": "扣",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "luo_gou",
+      "char": "絡",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ceng",
+      "char": "層",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhou",
+      "char": "軸",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ding_gou",
+      "char": "鼎",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ge",
+      "char": "格",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "luo_gou2",
+      "char": "羅",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "suo_gou",
+      "char": "索",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji_gou",
+      "char": "機",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tai",
+      "char": "台",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lu",
+      "char": "爐",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhen_gou2",
+      "char": "針",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gong",
+      "char": "弓",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gu_gou",
+      "char": "鼓",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chi_gou",
+      "char": "池",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "he_gou",
+      "char": "河",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ling_gou",
+      "char": "嶺",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ya",
+      "char": "崖",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gu_gou2",
+      "char": "谷",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dong_gou",
+      "char": "洞",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "feng_gou",
+      "char": "峰",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yuan",
+      "char": "淵",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wu_gou",
+      "char": "渦",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lang",
+      "char": "廊",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ting",
+      "char": "庭",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "long",
+      "char": "籠",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shan",
+      "char": "傘",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yi_gou",
+      "char": "翼",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ran",
+      "char": "燃",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 1.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dong_tai",
+      "char": "凍",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": -0.5,
+        "dot": 0.6,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu_tai",
+      "char": "腐",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.2,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 1.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yu",
+      "char": "癒",
+      "semantic": "態",
+      "game_dims": {
+        "atk": -0.5,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.9
+      }
+    },
+    {
+      "id": "xuan",
+      "char": "眩",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shi_tai",
+      "char": "蝕",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.8999999999999999,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ma",
+      "char": "麻",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mang",
+      "char": "盲",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "long_tai",
+      "char": "聾",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "luan",
+      "char": "亂",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ning_tai",
+      "char": "凝",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": -0.4,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "rong_tai",
+      "char": "熔",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qi_tai",
+      "char": "汽",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chen_tai",
+      "char": "沉",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu_tai2",
+      "char": "浮",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhuan_tai",
+      "char": "轉",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhi",
+      "char": "滯",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tong",
+      "char": "通",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "se_tai",
+      "char": "塞",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji_tai",
+      "char": "激",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yi_tai",
+      "char": "溢",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xiao_tai",
+      "char": "消",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhang",
+      "char": "漲",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "suo_tai",
+      "char": "縮",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhang_tai",
+      "char": "脹",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lie_tai",
+      "char": "裂",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.7,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "he_tai",
+      "char": "合",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xing_tai",
+      "char": "醒",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mian_tai",
+      "char": "眠",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mi_tai",
+      "char": "迷",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wu_tai",
+      "char": "悟",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ku_tai",
+      "char": "枯",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.7,
+        "aoe": 0.0,
+        "heal": -0.3
+      }
+    },
+    {
+      "id": "sheng_tai",
+      "char": "盛",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shuai",
+      "char": "衰",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu_tai3",
+      "char": "復",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.7
+      }
+    },
+    {
+      "id": "cu",
+      "char": "促",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chi_tai",
+      "char": "遲",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yin_tai",
+      "char": "隱",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xian",
+      "char": "顯",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "du_tai",
+      "char": "毒",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 1.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jing_tai",
+      "char": "淨",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ran_tai",
+      "char": "染",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "feng_tai",
+      "char": "瘋",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ding_tai",
+      "char": "定",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dong_tai2",
+      "char": "動",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "sheng_tai2",
+      "char": "生",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.5
+      }
+    },
+    {
+      "id": "si_tai",
+      "char": "死",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hun_tai",
+      "char": "混",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qing_tai",
+      "char": "清",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "nian_tai",
+      "char": "黏",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hua_tai",
+      "char": "滑",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jin_bu",
+      "char": "盡",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jue",
+      "char": "絕",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tou",
+      "char": "透",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "che",
+      "char": "徹",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wei",
+      "char": "微",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "cun_bu",
+      "char": "寸",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chi_bu",
+      "char": "尺",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhang_bu",
+      "char": "丈",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "li_bu",
+      "char": "里",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ban",
+      "char": "半",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "man",
+      "char": "滿",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "kong_bu",
+      "char": "空",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "sui_bu",
+      "char": "碎",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "duan_bu",
+      "char": "斷",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "san_bu",
+      "char": "散",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.5,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "he_bu",
+      "char": "合",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "kai",
+      "char": "開",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bi_bu",
+      "char": "閉",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "cheng",
+      "char": "成",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bai",
+      "char": "敗",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "sheng_bu",
+      "char": "勝",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "luo_bu",
+      "char": "落",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qi_bu",
+      "char": "起",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ru",
+      "char": "入",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chu",
+      "char": "出",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ding_bu",
+      "char": "定",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "huo_bu",
+      "char": "活",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.4
+      }
+    },
+    {
+      "id": "si_bu",
+      "char": "死",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "kuai",
+      "char": "快",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "man_bu",
+      "char": "慢",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shen_bu",
+      "char": "深",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qian_bu",
+      "char": "淺",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yuan_bu",
+      "char": "遠",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jin_bu2",
+      "char": "近",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "da",
+      "char": "大",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xiao_bu",
+      "char": "小",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jiu",
+      "char": "久",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhan_bu",
+      "char": "暫",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qiang",
+      "char": "強",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ruo",
+      "char": "弱",
+      "semantic": "補",
+      "game_dims": {
+        "atk": -0.3,
+        "def": -0.3,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji_bu",
+      "char": "極",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fan",
+      "char": "返",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhong_bu",
+      "char": "中",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pian",
+      "char": "偏",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wen_bu",
+      "char": "穩",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dou",
+      "char": "抖",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "lian_bu",
+      "char": "連",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "duan_bu2",
+      "char": "獨",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shuang",
+      "char": "雙",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhong_bu2",
+      "char": "重",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yi_zhu2",
+      "char": "矣",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hu_zhu",
+      "char": "乎",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zai",
+      "char": "哉",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ye_zhu",
+      "char": "也",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "er",
+      "char": "耳",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yan",
+      "char": "焉",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhe",
+      "char": "者",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "suo_zhu",
+      "char": "所",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhi_zhu2",
+      "char": "之",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu_zhu",
+      "char": "夫",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gai_zhu",
+      "char": "蓋",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qi_zhu2",
+      "char": "其",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ze",
+      "char": "則",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "nai",
+      "char": "乃",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "er_zhu",
+      "char": "而",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "sui_zhu",
+      "char": "雖",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ruo_zhu",
+      "char": "若",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gu_zhu",
+      "char": "故",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qie",
+      "char": "且",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yu_zhu",
+      "char": "於",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yi_zhu3",
+      "char": "以",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wei_zhu",
+      "char": "為",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yu_zhu2",
+      "char": "與",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zi",
+      "char": "自",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji_zhu",
+      "char": "即",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jiang",
+      "char": "將",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yi_zhu4",
+      "char": "已",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yue",
+      "char": "曰",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yin_zhu",
+      "char": "因",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "cong",
+      "char": "從",
+      "semantic": "助",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bu_fou",
+      "char": "不",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu_fou",
+      "char": "弗",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wei_fou",
+      "char": "未",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fei",
+      "char": "非",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wu_fou",
+      "char": "無",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wu_fou2",
+      "char": "勿",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mo_fou",
+      "char": "莫",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wu_fou3",
+      "char": "毋",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fou",
+      "char": "否",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fei2",
+      "char": "廢",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mie_fou",
+      "char": "滅",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "que",
+      "char": "卻",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xiu",
+      "char": "休",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bie",
+      "char": "別",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "duan_fou",
+      "char": "斷",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhi_fou",
+      "char": "止",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xiao_fou",
+      "char": "消",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qu",
+      "char": "去",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "kong_fou",
+      "char": "空",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji_fou",
+      "char": "寂",
+      "semantic": "否",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.2,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xing_xuan",
+      "char": "幸",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yun",
+      "char": "運",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yuan_xuan",
+      "char": "緣",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shu_xuan",
+      "char": "數",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji_xuan",
+      "char": "機",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ming_xuan",
+      "char": "冥",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhao",
+      "char": "兆",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shi_xuan",
+      "char": "示",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ling_xuan",
+      "char": "靈",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gan",
+      "char": "感",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wu_xuan",
+      "char": "悟",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hua_xuan",
+      "char": "化",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tian",
+      "char": "天",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "di_xuan",
+      "char": "地",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ren_xuan",
+      "char": "人",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shi_xuan2",
+      "char": "時",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "he_xuan",
+      "char": "合",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dao_xuan",
+      "char": "道",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xu_xuan",
+      "char": "虛",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "miao",
+      "char": "妙",
+      "semantic": "玄",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "cui",
+      "char": "脆",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wan",
+      "char": "頑",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.6,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xian_shu",
+      "char": "鮮",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chen_shu",
+      "char": "陳",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji_shu",
+      "char": "急",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.6,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xu_shu",
+      "char": "徐",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": -0.4,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hun_shu",
+      "char": "渾",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ling2",
+      "char": "凜",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.2,
+        "def": 0.0,
+        "spd": -0.2,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "you",
+      "char": "幽",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hao",
+      "char": "皓",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhuo_shu",
+      "char": "拙",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qiao_shu",
+      "char": "巧",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xiong",
+      "char": "凶",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.7,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shan_shu",
+      "char": "善",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.3
+      }
+    },
+    {
+      "id": "ao",
+      "char": "傲",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bei",
+      "char": "卑",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "cang",
+      "char": "蒼",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yan_shu",
+      "char": "艷",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "su_shu",
+      "char": "素",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "nie",
+      "char": "孽",
+      "semantic": "屬",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tan",
+      "char": "探",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.6,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "nie_dong",
+      "char": "捏",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.7,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hui_dong",
+      "char": "揮",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.8999999999999999,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhuo_dong",
+      "char": "啄",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 1.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yan_dong",
+      "char": "衍",
+      "semantic": "動",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "xue_gou",
+      "char": "穴",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chao",
+      "char": "巢",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "di_gou",
+      "char": "堤",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ling_gou2",
+      "char": "菱",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "gou_gou",
+      "char": "鉤",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shao",
+      "char": "梢",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chuang",
+      "char": "窗",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jie_gou2",
+      "char": "階",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qiu",
+      "char": "球",
+      "semantic": "構",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.2,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zui",
+      "char": "醉",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": -0.4,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "nu",
+      "char": "怒",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.5,
+        "def": -0.2,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ju_tai",
+      "char": "懼",
+      "semantic": "態",
+      "game_dims": {
+        "atk": -0.3,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ai",
+      "char": "哀",
+      "semantic": "態",
+      "game_dims": {
+        "atk": -0.2,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": -0.2
+      }
+    },
+    {
+      "id": "xi_tai",
+      "char": "喜",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.3
+      }
+    },
+    {
+      "id": "ji_tai2",
+      "char": "飢",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bao_tai",
+      "char": "飽",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.2
+      }
+    },
+    {
+      "id": "ke_tai",
+      "char": "渴",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "juan",
+      "char": "倦",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": -0.5,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fen_tai",
+      "char": "奮",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.0,
+        "spd": 0.3,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ruo_tai",
+      "char": "弱",
+      "semantic": "態",
+      "game_dims": {
+        "atk": -0.3,
+        "def": -0.3,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhuang",
+      "char": "壯",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.3,
+        "def": 0.3,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ying_tai",
+      "char": "硬",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.5,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ruan",
+      "char": "軟",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ji_tai3",
+      "char": "寂",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zao",
+      "char": "躁",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "mi_tai2",
+      "char": "密",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shu_tai",
+      "char": "疏",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "re",
+      "char": "熱",
+      "semantic": "態",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.3,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qiao_shou",
+      "char": "竅",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu_shou",
+      "char": "府",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "rou_shou",
+      "char": "肉",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "po_shou",
+      "char": "魄",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "shen_shou",
+      "char": "神",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "nian_shou",
+      "char": "念",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "ling_shou",
+      "char": "靈",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhen_shou",
+      "char": "陣",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.5,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "jie_shou2",
+      "char": "結",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "qi_shou2",
+      "char": "氣",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chang_shou",
+      "char": "場",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pin_shou",
+      "char": "頻",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pan_shou",
+      "char": "盤",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yin_shou2",
+      "char": "音",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "se_shou",
+      "char": "色",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wei_shou",
+      "char": "味",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wen_shou",
+      "char": "紋",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "he_shou",
+      "char": "核",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhong_shou",
+      "char": "種",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "yuan_shou",
+      "char": "源",
+      "semantic": "受",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "guang_bu",
+      "char": "光",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhu_bu",
+      "char": "住",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dao_bu",
+      "char": "倒",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "chuan_bu",
+      "char": "穿",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fei_bu",
+      "char": "飛",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.6,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "dong_bu",
+      "char": "動",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "hao_bu",
+      "char": "耗",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "fu_bu",
+      "char": "服",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhi_bu2",
+      "char": "直",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zhun",
+      "char": "準",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "zha",
+      "char": "炸",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "can_bu",
+      "char": "殘",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "que_bu",
+      "char": "缺",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "wan_bu",
+      "char": "完",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "quan",
+      "char": "全",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.5,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "bian_bu",
+      "char": "遍",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.7,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "li_bu2",
+      "char": "立",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "duan_bu3",
+      "char": "段",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "pu",
+      "char": "撲",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    },
+    {
+      "id": "tuo",
+      "char": "脫",
+      "semantic": "補",
+      "game_dims": {
+        "atk": 0.0,
+        "def": 0.0,
+        "spd": 0.0,
+        "dot": 0.0,
+        "aoe": 0.0,
+        "heal": 0.0
+      }
+    }
+  ]
+}
