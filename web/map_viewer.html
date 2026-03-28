@@ -510,20 +510,44 @@
           nodesDS = new vis.DataSet(visNodes);
           edgesDS = new vis.DataSet(visEdges);
         } else {
-          nodesDS.clear();
-          edgesDS.clear();
-          visNodes.forEach(function (n) { nodesDS.add(n); });
-          visEdges.forEach(function (e) { edgesDS.add(e); });
+          // 增量更新：只改有差異的，避免 clear + re-add 639 個節點的卡頓
+          var existingNodeIds = {};
+          nodesDS.getIds().forEach(function (id) { existingNodeIds[id] = true; });
+          var wantNodeIds = {};
+          visNodes.forEach(function (n) {
+            wantNodeIds[n.id] = true;
+            if (existingNodeIds[n.id]) {
+              nodesDS.update(n);
+            } else {
+              nodesDS.add(n);
+            }
+          });
+          nodesDS.getIds().forEach(function (id) {
+            if (!wantNodeIds[id]) nodesDS.remove(id);
+          });
+
+          var existingEdgeIds = {};
+          edgesDS.getIds().forEach(function (id) { existingEdgeIds[id] = true; });
+          var wantEdgeIds = {};
+          visEdges.forEach(function (e) {
+            wantEdgeIds[e.id] = true;
+            if (existingEdgeIds[e.id]) {
+              edgesDS.update(e);
+            } else {
+              edgesDS.add(e);
+            }
+          });
+          edgesDS.getIds().forEach(function (id) {
+            if (!wantEdgeIds[id]) edgesDS.remove(id);
+          });
         }
 
         var options = getVisOptions();
         if (!network) {
           network = new vis.Network(container, { nodes: nodesDS, edges: edgesDS }, options);
           bindNetworkEvents();
-          network.editMode(); // 啟動編輯模式工具列
         } else {
-          network.setData({ nodes: nodesDS, edges: edgesDS });
-          network.setOptions(options);
+          // 不重設 data，只在需要時更新 options
         }
         if (currentPlayerRoomId) {
           network.focus(currentPlayerRoomId, { scale: 1.2, animation: true });
@@ -542,30 +566,17 @@
             arrowStrikethrough: false
           },
           interaction: { hover: true, zoomView: true, dragView: true, dragNodes: true, tooltipDelay: 100 },
-          // 初始佈局：若多數節點沒座標，先跑物理引擎穩定後關閉
-          physics: needsInitialLayout() ? {
+          // 蒲公英模式：物理引擎常駐，拖一個整掛跟著動
+          physics: {
             enabled: true,
             solver: 'forceAtlas2Based',
-            forceAtlas2Based: { gravitationalConstant: -80, centralGravity: 0.01, springLength: 120, springConstant: 0.06 },
-            stabilization: { iterations: 300, updateInterval: 30 }
-          } : { enabled: false },
-          // 永遠啟用 manipulation：打開就能編輯
-          manipulation: {
-            enabled: true,
-            addNode: onAddNode,
-            addEdge: onAddEdge,
-            deleteNode: onDeleteNode,
-            deleteEdge: onDeleteEdge,
-            editNode: onEditNode
-          }
+            forceAtlas2Based: { gravitationalConstant: -60, centralGravity: 0.005, springLength: 100, springConstant: 0.04 },
+            stabilization: { iterations: 200, updateInterval: 50 },
+            maxVelocity: 30, minVelocity: 0.5
+          },
+          // 關閉 manipulation 工具列（用右鍵選單取代）
+          manipulation: false
         };
-      }
-
-      // 超過半數節點沒有 x/y → 需要跑一次物理引擎做初始佈局
-      function needsInitialLayout() {
-        var missing = 0;
-        allNodes.forEach(function (n) { if (n.x == null || n.y == null) missing++; });
-        return missing > allNodes.length * 0.5;
       }
 
       function hideCtxMenu() { ui.ctxMenu.classList.remove('open'); }
@@ -626,25 +637,10 @@
           showCtxMenu(params.event.pageX || params.pointer.DOM.x, params.event.pageY || params.pointer.DOM.y, nodeId);
         });
 
-        // 物理引擎穩定後：關閉物理、存所有座標
-        network.on('stabilized', function () {
-          network.setOptions({ physics: { enabled: false } });
-          // 把所有節點座標存回 layout
-          var ids = allNodes.map(function (n) { return n.id; });
-          var positions = network.getPositions(ids);
-          // 同步回 allNodes
-          allNodes.forEach(function (n) {
-            if (positions[n.id]) { n.x = positions[n.id].x; n.y = positions[n.id].y; }
-          });
-          apiPut(API_LAYOUT, { positions: positions }).catch(function () {});
-          setStatus('佈局穩定，已存座標（' + allNodes.length + ' 格）');
-        });
-
-        // 拖曳結束後存座標
+        // 拖曳結束後存座標（物理引擎常駐，不關閉）
         network.on('dragEnd', function (params) {
           if (params.nodes.length === 0) return;
           var positions = network.getPositions(params.nodes);
-          // 同步回 allNodes
           params.nodes.forEach(function (id) {
             var n = findNode(id);
             if (n && positions[id]) { n.x = positions[id].x; n.y = positions[id].y; }
