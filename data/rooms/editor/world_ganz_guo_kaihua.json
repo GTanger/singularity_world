@@ -1,0 +1,49 @@
+{
+  "id": "world_ganz_guo_kaihua",
+  "name": "Kaihua",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "naval",
+    "port"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Taizhou",
+      "to": "world_ganz_guo_taizhou"
+    },
+    {
+      "direction": "小徑往Ganzhounyi",
+      "to": "world_ganz_guo_ganzhounyi"
+    },
+    {
+      "direction": "小徑往Luzhou",
+      "to": "world_ganz_guo_luzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 559,
+    "cell_id": 4488,
+    "population": 1577,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "濕地",
+    "x": 34852.84,
+    "y": 56734.77,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Zhengy Guo"
+  }
+}

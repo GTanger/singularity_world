@@ -1,0 +1,53 @@
+{
+  "id": "world_xian_guo_laizhouyun",
+  "name": "Laizhouyun",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "village",
+    "river",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hainan",
+      "to": "world_ganz_guo_hainan"
+    },
+    {
+      "direction": "官道往Hajing",
+      "to": "world_xian_guo_hajing"
+    },
+    {
+      "direction": "小徑往Yongshun",
+      "to": "world_xian_guo_yongshun"
+    },
+    {
+      "direction": "小徑往Quzhou",
+      "to": "world_xian_guo_quzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 209,
+    "cell_id": 5462,
+    "population": 1588,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶雨林",
+    "x": 20155.39,
+    "y": 67656.27,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Chuz Guo"
+  }
+}

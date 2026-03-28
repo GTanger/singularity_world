@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_hot_springs_1",
+  "name": "溫泉",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "hot-springs"
+  ],
+  "exits": [
+    {
+      "direction": "返回Yagawa",
+      "to": "world_nanu_yagawa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 1,
+    "marker_type": "hot-springs"
+  }
+}

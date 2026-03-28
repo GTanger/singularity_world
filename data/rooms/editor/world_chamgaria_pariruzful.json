@@ -1,0 +1,48 @@
+{
+  "id": "world_chamgaria_pariruzful",
+  "name": "Pariruzful",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Abnakhast",
+      "to": "world_chamgaria_abnakhast"
+    },
+    {
+      "direction": "小徑往Hafshan",
+      "to": "world_chamgaria_hafshan"
+    },
+    {
+      "direction": "遭遇點",
+      "to": "world_marker_encounters_66"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 192,
+    "cell_id": 5707,
+    "population": 11716,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "溫帶雨林",
+    "x": 70705.15,
+    "y": 69793.2,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Pariruzful"
+  }
+}

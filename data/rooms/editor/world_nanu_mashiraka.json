@@ -1,0 +1,45 @@
+{
+  "id": "world_nanu_mashiraka",
+  "name": "Mashiraka",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ichimamifu",
+      "to": "world_nanu_ichimamifu"
+    },
+    {
+      "direction": "小徑往Yagawa",
+      "to": "world_nanu_yagawa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 420,
+    "cell_id": 2760,
+    "population": 17165,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶落葉林",
+    "x": 49232.72,
+    "y": 36246.18,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Mashiraka"
+  }
+}

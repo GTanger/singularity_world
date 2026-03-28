@@ -1,0 +1,48 @@
+{
+  "id": "world_ganz_guo_guang",
+  "name": "Guang",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Jiaian",
+      "to": "world_ganz_guo_jiaian"
+    },
+    {
+      "direction": "小徑往Tingzhou",
+      "to": "world_ganz_guo_tingzhou"
+    },
+    {
+      "direction": "小徑往Linjiang",
+      "to": "world_ping_linjiang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 385,
+    "cell_id": 4652,
+    "population": 19684,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "溫帶落葉林",
+    "x": 21349.11,
+    "y": 58271.12,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Guang"
+  }
+}

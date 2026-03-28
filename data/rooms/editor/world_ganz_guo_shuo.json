@@ -1,0 +1,52 @@
+{
+  "id": "world_ganz_guo_shuo",
+  "name": "Shuo",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tingzhou",
+      "to": "world_ganz_guo_tingzhou"
+    },
+    {
+      "direction": "官道往Taizhou",
+      "to": "world_ganz_guo_taizhou_574"
+    },
+    {
+      "direction": "官道往Suilinan",
+      "to": "world_ganz_guo_suilinan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 43,
+    "cell_id": 4833,
+    "population": 3246,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "熱帶雨林",
+    "x": 25461.53,
+    "y": 60814.72,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Xin Guo"
+  }
+}

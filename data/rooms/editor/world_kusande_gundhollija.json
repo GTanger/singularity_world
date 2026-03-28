@@ -1,0 +1,43 @@
+{
+  "id": "world_kusande_gundhollija",
+  "name": "Gundhollija",
+  "description": "",
+  "zone": "kusande",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Sindhtakore",
+      "to": "world_kusande_sindhtakore"
+    },
+    {
+      "direction": "小徑往Uduragote",
+      "to": "world_kusande_uduragote"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 452,
+    "cell_id": 3276,
+    "population": 1667,
+    "culture": "卡納提克",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 81190.84,
+    "y": 41721.5,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Korabia"
+  }
+}

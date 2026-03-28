@@ -1,0 +1,49 @@
+{
+  "id": "world_awlata_ouramiz",
+  "name": "Ouramiz",
+  "description": "",
+  "zone": "awlata",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Dawan",
+      "to": "world_awlata_dawan"
+    },
+    {
+      "direction": "官道往Rafzalayt",
+      "to": "world_awlata_rafzalayt"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 29,
+    "cell_id": 4547,
+    "population": 3246,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "熱帶雨林",
+    "x": 81610.17,
+    "y": 56383.06,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Ouramiz"
+  }
+}

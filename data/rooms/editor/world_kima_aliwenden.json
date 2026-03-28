@@ -1,0 +1,44 @@
+{
+  "id": "world_kima_aliwenden",
+  "name": "Aliwenden",
+  "description": "",
+  "zone": "kima",
+  "tags": [
+    "village",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Mila",
+      "to": "world_tayachia_mila"
+    },
+    {
+      "direction": "小徑往Tebourza",
+      "to": "world_kima_tebourza"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 149,
+    "cell_id": 4981,
+    "population": 1638,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "溫帶落葉林",
+    "x": 83092.53,
+    "y": 61370.19,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Aliwenden"
+  }
+}

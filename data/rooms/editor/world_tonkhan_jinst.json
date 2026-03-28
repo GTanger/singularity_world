@@ -1,0 +1,55 @@
+{
+  "id": "world_tonkhan_jinst",
+  "name": "Jinst",
+  "description": "",
+  "zone": "tonkhan",
+  "tags": [
+    "town",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Ergaltkhan",
+      "to": "world_tonkhan_ergaltkhan"
+    },
+    {
+      "direction": "官道往Chulandal",
+      "to": "world_bayankhonia_chulandal"
+    },
+    {
+      "direction": "官道往Baluutsag",
+      "to": "world_tonkhan_baluutsag"
+    },
+    {
+      "direction": "競技場",
+      "to": "world_marker_circuses_54"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 83,
+    "cell_id": 2133,
+    "population": 10849,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 69635.25,
+    "y": 30439.86,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jinst"
+  }
+}

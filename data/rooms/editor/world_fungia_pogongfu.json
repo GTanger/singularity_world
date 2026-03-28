@@ -1,0 +1,45 @@
+{
+  "id": "world_fungia_pogongfu",
+  "name": "Pogongfu",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Taihang",
+      "to": "world_fungia_taihang"
+    },
+    {
+      "direction": "官道往Muiwan",
+      "to": "world_fungshingia_muiwan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 513,
+    "cell_id": 2605,
+    "population": 17475,
+    "culture": "關族",
+    "religion": "秋嶺教",
+    "biome": "溫帶落葉林",
+    "x": 16216.69,
+    "y": 35388.8,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Pogongfu"
+  }
+}

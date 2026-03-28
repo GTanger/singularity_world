@@ -1,0 +1,43 @@
+{
+  "id": "world_ganz_guo_luzhou",
+  "name": "Luzhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kaihua",
+      "to": "world_ganz_guo_kaihua"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 517,
+    "cell_id": 4581,
+    "population": 15468,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "濕地",
+    "x": 35386.41,
+    "y": 57666.54,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Wucha"
+  }
+}

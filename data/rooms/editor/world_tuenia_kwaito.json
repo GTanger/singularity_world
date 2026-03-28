@@ -1,0 +1,47 @@
+{
+  "id": "world_tuenia_kwaito",
+  "name": "Kwaito",
+  "description": "",
+  "zone": "tuenia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tungchuen",
+      "to": "world_meia_tungchuen"
+    },
+    {
+      "direction": "小徑往Okolili",
+      "to": "world_puhumia_okolili"
+    },
+    {
+      "direction": "小徑往Kwungon",
+      "to": "world_shamshia_kwungon"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 398,
+    "cell_id": 3302,
+    "population": 2307,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "熱帶季雨林",
+    "x": 17093.97,
+    "y": 42640.65,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tsam"
+  }
+}

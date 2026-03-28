@@ -47,6 +47,14 @@ path = "src/bin/migrate.rs"
 name = "sw-set-password"
 path = "src/bin/sw-set-password.rs"
 
+[[bin]]
+name = "generate_embeddings"
+path = "src/bin/generate_embeddings.rs"
+
+[[bin]]
+name = "verify_embeddings"
+path = "src/bin/verify_embeddings.rs"
+
 [dev-dependencies]
 tempfile = "3"
 

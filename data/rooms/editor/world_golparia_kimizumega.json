@@ -1,0 +1,41 @@
+{
+  "id": "world_golparia_kimizumega",
+  "name": "Kimizumega",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Sateguzata",
+      "to": "world_nanu_sateguzata"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 533,
+    "cell_id": 4257,
+    "population": 1704,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "熱帶雨林",
+    "x": 51787.57,
+    "y": 53396.24,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tsu"
+  }
+}

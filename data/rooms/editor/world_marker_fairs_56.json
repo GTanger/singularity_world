@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_fairs_56",
+  "name": "集市",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "fairs"
+  ],
+  "exits": [
+    {
+      "direction": "返回Taining",
+      "to": "world_xian_guo_taining"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 56,
+    "marker_type": "fairs"
+  }
+}

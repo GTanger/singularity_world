@@ -1,0 +1,43 @@
+{
+  "id": "world_sanguk_poyang",
+  "name": "Poyang",
+  "description": "",
+  "zone": "sanguk",
+  "tags": [
+    "city",
+    "citadel",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Okchang",
+      "to": "world_sanguk_okchang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 547,
+    "cell_id": 2187,
+    "population": 24422,
+    "culture": "高麗",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 31172.04,
+    "y": 31907.64,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Seong"
+  }
+}

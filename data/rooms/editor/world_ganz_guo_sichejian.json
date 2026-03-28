@@ -1,0 +1,44 @@
+{
+  "id": "world_ganz_guo_sichejian",
+  "name": "Sichejian",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Daxing",
+      "to": "world_ganz_guo_daxing"
+    },
+    {
+      "direction": "小徑往Liuzhou",
+      "to": "world_ganz_guo_liuzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 334,
+    "cell_id": 4399,
+    "population": 1610,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "熱帶雨林",
+    "x": 25215.15,
+    "y": 55291.26,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sichejian"
+  }
+}

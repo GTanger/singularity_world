@@ -1,0 +1,48 @@
+{
+  "id": "world_chamgaria_hafshahrga",
+  "name": "Hafshahrga",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Gorgaran",
+      "to": "world_chamgaria_gorgaran"
+    },
+    {
+      "direction": "官道往Paboran",
+      "to": "world_qarchriaria_paboran"
+    },
+    {
+      "direction": "小徑往Seoymehri",
+      "to": "world_chamgaria_seoymehri"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 431,
+    "cell_id": 6168,
+    "population": 1799,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 85262.26,
+    "y": 74301.87,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hafshahrga"
+  }
+}

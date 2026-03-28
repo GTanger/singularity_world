@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_pirates_41",
+  "name": "海盜巢穴",
+  "description": "",
+  "zone": "oisamawa",
+  "tags": [
+    "pirates"
+  ],
+  "exits": [
+    {
+      "direction": "返回Naka",
+      "to": "world_oisamawa_naka"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 41,
+    "marker_type": "pirates"
+  }
+}

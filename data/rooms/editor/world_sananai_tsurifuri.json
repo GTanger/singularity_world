@@ -1,0 +1,48 @@
+{
+  "id": "world_sananai_tsurifuri",
+  "name": "Tsurifuri",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kujifumiro",
+      "to": "world_sananai_kujifumiro"
+    },
+    {
+      "direction": "官道往Ojoburami",
+      "to": "world_sananai_ojoburami"
+    },
+    {
+      "direction": "小徑往Rishi",
+      "to": "world_sananai_rishi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 371,
+    "cell_id": 2870,
+    "population": 1765,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶落葉林",
+    "x": 45320.62,
+    "y": 37744.16,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kodosawa"
+  }
+}

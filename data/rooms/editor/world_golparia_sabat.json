@@ -1,0 +1,43 @@
+{
+  "id": "world_golparia_sabat",
+  "name": "Sabat",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zanakhiyeh",
+      "to": "world_golparia_zanakhiyeh"
+    },
+    {
+      "direction": "小徑往Vazkuhpada",
+      "to": "world_golparia_vazkuhpada"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 251,
+    "cell_id": 5308,
+    "population": 1655,
+    "culture": "德蘭尼",
+    "religion": "茲茲切干教",
+    "biome": "溫帶落葉林",
+    "x": 51567.9,
+    "y": 65648.53,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yahyaha"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "world_longchia_tsimshantau",
+  "name": "Tsimshantau",
+  "description": "",
+  "zone": "longchia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hingdak",
+      "to": "world_fungia_hingdak"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 265,
+    "cell_id": 2276,
+    "population": 17983,
+    "culture": "關族",
+    "religion": "秋嶺教",
+    "biome": "溫帶雨林",
+    "x": 14461.85,
+    "y": 32808.36,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hanghia"
+  }
+}

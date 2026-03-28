@@ -1,0 +1,44 @@
+{
+  "id": "world_ganz_guo_yanzhou",
+  "name": "Yanzhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Taizhou",
+      "to": "world_ganz_guo_taizhou"
+    },
+    {
+      "direction": "小徑往Jianchang",
+      "to": "world_ganz_guo_jianchang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 357,
+    "cell_id": 4758,
+    "population": 9165,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "熱帶雨林",
+    "x": 31287.75,
+    "y": 59381.87,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ning"
+  }
+}

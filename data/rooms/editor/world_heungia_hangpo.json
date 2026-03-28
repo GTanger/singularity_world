@@ -1,0 +1,45 @@
+{
+  "id": "world_heungia_hangpo",
+  "name": "Hangpo",
+  "description": "",
+  "zone": "heungia",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Fukgong",
+      "to": "world_heungia_fukgong"
+    },
+    {
+      "direction": "官道往Waishui",
+      "to": "world_ngwakyuen_waishui"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 514,
+    "cell_id": 2713,
+    "population": 1891,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 7637.17,
+    "y": 36318.74,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hangpo"
+  }
+}

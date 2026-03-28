@@ -1,0 +1,57 @@
+{
+  "id": "world_khulekhia_ulaan",
+  "name": "Ulaan",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Khuregkhus",
+      "to": "world_bayan_khuregkhus"
+    },
+    {
+      "direction": "小徑往Tsetsengor",
+      "to": "world_bayan_tsetsengor"
+    },
+    {
+      "direction": "小徑往Buutsagrog",
+      "to": "world_khulekhia_buutsagrog"
+    },
+    {
+      "direction": "小徑往Tovo",
+      "to": "world_khulekhia_tovo"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_6"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 442,
+    "cell_id": 2128,
+    "population": 15382,
+    "culture": "兀魯斯",
+    "religion": "賽罕信仰",
+    "biome": "溫帶落葉林",
+    "x": 64384.85,
+    "y": 30059.62,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ulaan"
+  }
+}

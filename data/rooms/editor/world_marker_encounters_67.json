@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_encounters_67",
+  "name": "遭遇點",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "encounters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Fenzhou",
+      "to": "world_xian_guo_fenzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 67,
+    "marker_type": "encounters"
+  }
+}

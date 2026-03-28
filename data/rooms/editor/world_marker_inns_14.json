@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_14",
+  "name": "旅店",
+  "description": "",
+  "zone": "tsetulag",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Ergaltkhan",
+      "to": "world_tsetulag_ergaltkhan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 14,
+    "marker_type": "inns"
+  }
+}

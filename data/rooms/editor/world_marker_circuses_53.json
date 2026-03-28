@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_circuses_53",
+  "name": "競技場",
+  "description": "",
+  "zone": "ziyehia",
+  "tags": [
+    "circuses"
+  ],
+  "exits": [
+    {
+      "direction": "返回Baghshe",
+      "to": "world_ziyehia_baghshe"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 53,
+    "marker_type": "circuses"
+  }
+}

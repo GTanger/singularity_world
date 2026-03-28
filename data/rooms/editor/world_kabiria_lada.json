@@ -1,0 +1,44 @@
+{
+  "id": "world_kabiria_lada",
+  "name": "Lada",
+  "description": "",
+  "zone": "kabiria",
+  "tags": [
+    "village",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Puzatu",
+      "to": "world_kabiria_puzatu"
+    },
+    {
+      "direction": "官道往Zagangol",
+      "to": "world_baniuria_zagangol"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 294,
+    "cell_id": 1653,
+    "population": 1633,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶雨林",
+    "x": 89907.05,
+    "y": 25605.04,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Lada"
+  }
+}

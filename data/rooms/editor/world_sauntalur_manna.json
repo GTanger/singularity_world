@@ -1,0 +1,44 @@
+{
+  "id": "world_sauntalur_manna",
+  "name": "Manna",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "town",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Minoshi",
+      "to": "world_sauntalur_minoshi"
+    },
+    {
+      "direction": "小徑往Bandamanda",
+      "to": "world_sauntalur_bandamanda"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 610,
+    "cell_id": 4176,
+    "population": 9466,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "熱帶雨林",
+    "x": 57916.6,
+    "y": 52488.62,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Manna"
+  }
+}

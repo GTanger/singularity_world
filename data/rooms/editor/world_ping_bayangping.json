@@ -1,0 +1,47 @@
+{
+  "id": "world_ping_bayangping",
+  "name": "Bayangping",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "city",
+    "citadel",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tailining",
+      "to": "world_ganz_guo_tailining"
+    },
+    {
+      "direction": "小徑往Linjiang",
+      "to": "world_ping_linjiang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 453,
+    "cell_id": 4466,
+    "population": 20436,
+    "culture": "漢族",
+    "religion": "漢族教會",
+    "biome": "溫帶落葉林",
+    "x": 18836.04,
+    "y": 56461.22,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Wenzho Guo"
+  }
+}

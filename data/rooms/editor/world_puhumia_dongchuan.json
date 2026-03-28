@@ -1,0 +1,42 @@
+{
+  "id": "world_puhumia_dongchuan",
+  "name": "Dongchuan",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Daxingling",
+      "to": "world_puhumia_daxingling"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 618,
+    "cell_id": 4038,
+    "population": 1144,
+    "culture": "漢族",
+    "religion": "漢族教會",
+    "biome": "熱帶季雨林",
+    "x": 20160.41,
+    "y": 51831.3,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tongchun"
+  }
+}

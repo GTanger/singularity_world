@@ -1,0 +1,56 @@
+{
+  "id": "world_awa_awa",
+  "name": "Awa",
+  "description": "",
+  "zone": "awa",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Sinyeon",
+      "to": "world_sinyeonguk_sinyeon"
+    },
+    {
+      "direction": "官道往Naka",
+      "to": "world_oisamawa_naka"
+    },
+    {
+      "direction": "官道往Kawakiba",
+      "to": "world_sananai_kawakiba"
+    },
+    {
+      "direction": "小徑往Taito",
+      "to": "world_sananai_taito"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 54,
+    "cell_id": 2640,
+    "population": 14305,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶雨林",
+    "x": 42160.81,
+    "y": 35959.36,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

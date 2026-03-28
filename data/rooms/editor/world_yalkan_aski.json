@@ -1,0 +1,44 @@
+{
+  "id": "world_yalkan_aski",
+  "name": "Aski",
+  "description": "",
+  "zone": "yalkan",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Eriyurt",
+      "to": "world_yalkan_eriyurt"
+    },
+    {
+      "direction": "小徑往Abayvardem",
+      "to": "world_yalkan_abayvardem"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 562,
+    "cell_id": 1824,
+    "population": 7325,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 55841.5,
+    "y": 27769.37,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Bozli"
+  }
+}

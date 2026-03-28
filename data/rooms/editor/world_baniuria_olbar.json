@@ -1,0 +1,49 @@
+{
+  "id": "world_baniuria_olbar",
+  "name": "Olbar",
+  "description": "",
+  "zone": "baniuria",
+  "tags": [
+    "town",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Zayankhangor",
+      "to": "world_gurdebulia_zayankhangor"
+    },
+    {
+      "direction": "官道往Onuur",
+      "to": "world_baniuria_onuur"
+    },
+    {
+      "direction": "小徑往Anshaka",
+      "to": "world_baniuria_anshaka"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 325,
+    "cell_id": 1855,
+    "population": 7828,
+    "culture": "兀魯斯",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶落葉林",
+    "x": 86207.93,
+    "y": 27728.59,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ervan"
+  }
+}

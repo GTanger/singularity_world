@@ -1,0 +1,41 @@
+{
+  "id": "world_meia_waishan",
+  "name": "Waishan",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Waicheong",
+      "to": "world_meia_waicheong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 521,
+    "cell_id": 2615,
+    "population": 12465,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 26235.94,
+    "y": 35733.7,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Waishan"
+  }
+}

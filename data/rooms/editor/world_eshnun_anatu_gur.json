@@ -1,0 +1,34 @@
+{
+  "id": "world_eshnun_anatu_gur",
+  "name": "Anatu-Gur",
+  "description": "",
+  "zone": "eshnun",
+  "tags": [
+    "village"
+  ],
+  "exits": [],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 364,
+    "cell_id": 2812,
+    "population": 1726,
+    "culture": "幼法拉底",
+    "religion": "幼法拉底精靈信仰",
+    "biome": "溫帶雨林",
+    "x": 88493.1,
+    "y": 36861.9,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ikania"
+  }
+}

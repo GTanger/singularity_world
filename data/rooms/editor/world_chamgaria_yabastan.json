@@ -1,0 +1,45 @@
+{
+  "id": "world_chamgaria_yabastan",
+  "name": "Yabastan",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yareh",
+      "to": "world_chamgaria_yareh"
+    },
+    {
+      "direction": "小徑往Shahrehen",
+      "to": "world_chamgaria_shahrehen"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 130,
+    "cell_id": 5903,
+    "population": 10776,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 75390.46,
+    "y": 71247.43,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yabastan"
+  }
+}

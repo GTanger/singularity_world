@@ -1,0 +1,47 @@
+{
+  "id": "world_siukhingia_tungchuen",
+  "name": "Tungchuen",
+  "description": "",
+  "zone": "siukhingia",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Daowuhong",
+      "to": "world_siukhingia_daowuhong"
+    },
+    {
+      "direction": "官道往Samshan",
+      "to": "world_longchia_samshan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 53,
+    "cell_id": 2602,
+    "population": 2090,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 13346.65,
+    "y": 35431.84,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tungchuen"
+  }
+}

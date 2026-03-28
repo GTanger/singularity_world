@@ -1,0 +1,48 @@
+{
+  "id": "world_jowzvania_tabsard",
+  "name": "Tabsard",
+  "description": "",
+  "zone": "jowzvania",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Dayandaq",
+      "to": "world_jowzvania_dayandaq"
+    },
+    {
+      "direction": "官道往Paran",
+      "to": "world_golparia_paran"
+    },
+    {
+      "direction": "小徑往Eshahrok",
+      "to": "world_jowzvania_eshahrok"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 306,
+    "cell_id": 4859,
+    "population": 9288,
+    "culture": "德蘭尼",
+    "religion": "茲茲切干教",
+    "biome": "溫帶落葉林",
+    "x": 49109.84,
+    "y": 60395.8,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kushk"
+  }
+}

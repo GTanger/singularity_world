@@ -1,0 +1,48 @@
+{
+  "id": "world_shia_wuheikiu",
+  "name": "Wuheikiu",
+  "description": "",
+  "zone": "shia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Shiu",
+      "to": "world_shia_shiu"
+    },
+    {
+      "direction": "官道往Chingtei",
+      "to": "world_kwun_chingtei"
+    },
+    {
+      "direction": "盜賊據點",
+      "to": "world_marker_brigands_38"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 360,
+    "cell_id": 1972,
+    "population": 4803,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 14424.62,
+    "y": 29606.52,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Wuheikiu"
+  }
+}

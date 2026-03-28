@@ -1,0 +1,44 @@
+{
+  "id": "world_puz_tadmaba",
+  "name": "Tadmaba",
+  "description": "",
+  "zone": "puz",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Er-Asha",
+      "to": "world_dur_ti_er_asha"
+    },
+    {
+      "direction": "小徑往Surunidu",
+      "to": "world_puz_surunidu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 107,
+    "cell_id": 2256,
+    "population": 1673,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶落葉林",
+    "x": 87267.08,
+    "y": 31945.65,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tadmaba"
+  }
+}

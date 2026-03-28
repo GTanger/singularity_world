@@ -1,0 +1,44 @@
+{
+  "id": "world_dengz_guo_sicheqing",
+  "name": "Sicheqing",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "village",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Xincheng",
+      "to": "world_ganz_guo_xincheng"
+    },
+    {
+      "direction": "小徑往Chang",
+      "to": "world_dengz_guo_chang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 365,
+    "cell_id": 5205,
+    "population": 1572,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 30466.97,
+    "y": 64652.96,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yifeng"
+  }
+}

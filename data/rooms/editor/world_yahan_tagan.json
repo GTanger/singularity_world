@@ -1,0 +1,39 @@
+{
+  "id": "world_yahan_tagan",
+  "name": "Tagan",
+  "description": "",
+  "zone": "yahan",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Sraghzut",
+      "to": "world_yahan_sraghzut"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 214,
+    "cell_id": 5438,
+    "population": 3403,
+    "culture": "柏柏爾",
+    "religion": "錫亞爾克信仰",
+    "biome": "溫帶雨林",
+    "x": 86741.34,
+    "y": 66785.42,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ouia"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "id": "world_shalantsa_sevlin",
+  "name": "Sevlin",
+  "description": "",
+  "zone": "shalantsa",
+  "tags": [
+    "village",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Ergaltkhan",
+      "to": "world_tsetulag_ergaltkhan"
+    },
+    {
+      "direction": "官道往Taishibal",
+      "to": "world_ayantia_taishibal"
+    },
+    {
+      "direction": "官道往Hulandor",
+      "to": "world_shalantsa_hulandor"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_11"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 540,
+    "cell_id": 3259,
+    "population": 3459,
+    "culture": "兀魯斯",
+    "religion": "烏拉格賽拉格派",
+    "biome": "熱帶季雨林",
+    "x": 64209.63,
+    "y": 41067.16,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Bayandoria"
+  }
+}

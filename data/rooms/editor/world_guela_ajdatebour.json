@@ -1,0 +1,42 @@
+{
+  "id": "world_guela_ajdatebour",
+  "name": "Ajdatebour",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "town",
+    "river",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tagerechi",
+      "to": "world_guela_tagerechi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 225,
+    "cell_id": 4884,
+    "population": 18579,
+    "culture": "柏柏爾",
+    "religion": "靛泉結社",
+    "biome": "熱帶雨林",
+    "x": 73474.33,
+    "y": 60345.52,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Slibameg"
+  }
+}

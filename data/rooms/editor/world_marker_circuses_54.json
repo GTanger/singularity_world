@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_circuses_54",
+  "name": "競技場",
+  "description": "",
+  "zone": "tonkhan",
+  "tags": [
+    "circuses"
+  ],
+  "exits": [
+    {
+      "direction": "返回Jinst",
+      "to": "world_tonkhan_jinst"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 54,
+    "marker_type": "circuses"
+  }
+}

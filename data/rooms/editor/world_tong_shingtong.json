@@ -1,0 +1,52 @@
+{
+  "id": "world_tong_shingtong",
+  "name": "Shingtong",
+  "description": "",
+  "zone": "tong",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Foningsai",
+      "to": "world_taifongia_foningsai"
+    },
+    {
+      "direction": "官道往Lokfumun",
+      "to": "world_hohiwia_lokfumun"
+    },
+    {
+      "direction": "小徑往Tuengonting",
+      "to": "world_longchia_tuengonting"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 14,
+    "cell_id": 2270,
+    "population": 3888,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 8906.08,
+    "y": 32366.74,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

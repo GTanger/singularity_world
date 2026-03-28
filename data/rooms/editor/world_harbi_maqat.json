@@ -1,0 +1,46 @@
+{
+  "id": "world_harbi_maqat",
+  "name": "Maqat",
+  "description": "",
+  "zone": "harbi",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Jaran",
+      "to": "world_harbi_jaran"
+    },
+    {
+      "direction": "官道往Puzatu",
+      "to": "world_kabiria_puzatu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 483,
+    "cell_id": 1754,
+    "population": 12251,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶落葉林",
+    "x": 90915.0,
+    "y": 26991.3,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Inaia"
+  }
+}

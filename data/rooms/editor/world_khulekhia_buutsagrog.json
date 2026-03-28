@@ -1,0 +1,41 @@
+{
+  "id": "world_khulekhia_buutsagrog",
+  "name": "Buutsagrog",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ulaan",
+      "to": "world_khulekhia_ulaan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 485,
+    "cell_id": 2029,
+    "population": 9317,
+    "culture": "兀魯斯",
+    "religion": "賽罕信仰",
+    "biome": "溫帶雨林",
+    "x": 63858.43,
+    "y": 29069.76,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Buutsagrog"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_israfamin_turenghes",
+  "name": "Turenghes",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Degan",
+      "to": "world_israfamin_degan"
+    },
+    {
+      "direction": "小徑往Qodslamshan",
+      "to": "world_israfamin_qodslamshan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 337,
+    "cell_id": 5409,
+    "population": 6565,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶雨林",
+    "x": 57690.65,
+    "y": 66314.67,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Bayehrizia"
+  }
+}

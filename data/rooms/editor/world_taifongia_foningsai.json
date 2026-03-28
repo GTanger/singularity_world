@@ -1,0 +1,52 @@
+{
+  "id": "world_taifongia_foningsai",
+  "name": "Foningsai",
+  "description": "",
+  "zone": "taifongia",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Shiu",
+      "to": "world_shia_shiu"
+    },
+    {
+      "direction": "官道往Henlong",
+      "to": "world_henlongia_henlong"
+    },
+    {
+      "direction": "官道往Shingtong",
+      "to": "world_tong_shingtong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 8,
+    "cell_id": 1870,
+    "population": 3755,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 10056.14,
+    "y": 28329.82,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

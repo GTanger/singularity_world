@@ -1,0 +1,51 @@
+{
+  "id": "world_gurdebulia_gurdebul",
+  "name": "Gurdebul",
+  "description": "",
+  "zone": "gurdebulia",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Baral",
+      "to": "world_sains_baral"
+    },
+    {
+      "direction": "官道往Zayankhangor",
+      "to": "world_gurdebulia_zayankhangor"
+    },
+    {
+      "direction": "小徑往Myanuur",
+      "to": "world_gurdebulia_myanuur"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 71,
+    "cell_id": 1645,
+    "population": 2041,
+    "culture": "兀魯斯",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶落葉林",
+    "x": 81805.88,
+    "y": 25665.8,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hurerekhia"
+  }
+}

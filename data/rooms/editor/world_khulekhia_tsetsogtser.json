@@ -1,0 +1,44 @@
+{
+  "id": "world_khulekhia_tsetsogtser",
+  "name": "Tsetsogtser",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tovo",
+      "to": "world_khulekhia_tovo"
+    },
+    {
+      "direction": "小徑往Alangai",
+      "to": "world_khulekhia_alangai"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 288,
+    "cell_id": 1834,
+    "population": 6615,
+    "culture": "兀魯斯",
+    "religion": "賽罕信仰",
+    "biome": "溫帶落葉林",
+    "x": 65753.78,
+    "y": 27692.83,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tsetsogtser"
+  }
+}

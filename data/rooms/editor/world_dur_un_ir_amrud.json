@@ -1,0 +1,49 @@
+{
+  "id": "world_dur_un_ir_amrud",
+  "name": "Ir-Amrud",
+  "description": "",
+  "zone": "dur_un",
+  "tags": [
+    "village",
+    "lake",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Wassuhas",
+      "to": "world_dur_un_wassuhas"
+    },
+    {
+      "direction": "小徑往Magu",
+      "to": "world_dur_un_magu"
+    },
+    {
+      "direction": "小徑往Qagaz",
+      "to": "world_dur_un_qagaz"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 296,
+    "cell_id": 2567,
+    "population": 1643,
+    "culture": "幼法拉底",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 81670.6,
+    "y": 35173.7,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Subania"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "world_chinghia_gonglinghom",
+  "name": "Gonglinghom",
+  "description": "",
+  "zone": "chinghia",
+  "tags": [
+    "village",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tsuen",
+      "to": "world_chinghia_tsuen"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 482,
+    "cell_id": 1108,
+    "population": 1758,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "北方針葉林",
+    "x": 12322.2,
+    "y": 21330.0,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Gonglinghom"
+  }
+}

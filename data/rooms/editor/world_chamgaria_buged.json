@@ -1,0 +1,44 @@
+{
+  "id": "world_chamgaria_buged",
+  "name": "Buged",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "village",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Chogheshahr",
+      "to": "world_chamgaria_chogheshahr"
+    },
+    {
+      "direction": "小徑往Hafshan",
+      "to": "world_chamgaria_hafshan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 298,
+    "cell_id": 5610,
+    "population": 1535,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "溫帶雨林",
+    "x": 72571.13,
+    "y": 68749.03,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Yaboles"
+  }
+}

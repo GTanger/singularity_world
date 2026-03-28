@@ -1,0 +1,41 @@
+{
+  "id": "world_sananai_naoshi",
+  "name": "Naoshi",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Aimane",
+      "to": "world_sananai_aimane"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 422,
+    "cell_id": 3154,
+    "population": 15518,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "熱帶季雨林",
+    "x": 44123.42,
+    "y": 40862.09,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Naoshi"
+  }
+}

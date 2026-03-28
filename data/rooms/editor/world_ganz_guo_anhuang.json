@@ -1,0 +1,49 @@
+{
+  "id": "world_ganz_guo_anhuang",
+  "name": "Anhuang",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Xincheng",
+      "to": "world_ganz_guo_xincheng"
+    },
+    {
+      "direction": "官道往Suilinan",
+      "to": "world_ganz_guo_suilinan"
+    },
+    {
+      "direction": "小徑往Jianchang",
+      "to": "world_ganz_guo_jianchang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 153,
+    "cell_id": 4924,
+    "population": 13883,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 28180.08,
+    "y": 61162.58,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kuiz Guo"
+  }
+}

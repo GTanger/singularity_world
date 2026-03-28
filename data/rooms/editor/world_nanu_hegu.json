@@ -1,0 +1,44 @@
+{
+  "id": "world_nanu_hegu",
+  "name": "Hegu",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tsuni",
+      "to": "world_nanu_tsuni"
+    },
+    {
+      "direction": "小徑往Hawa",
+      "to": "world_nanu_hawa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 228,
+    "cell_id": 3070,
+    "population": 13207,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶落葉林",
+    "x": 49137.66,
+    "y": 39690.56,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hegu"
+  }
+}

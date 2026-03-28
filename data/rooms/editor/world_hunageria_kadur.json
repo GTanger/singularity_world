@@ -1,0 +1,53 @@
+{
+  "id": "world_hunageria_kadur",
+  "name": "Kadur",
+  "description": "",
+  "zone": "hunageria",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hunkesh",
+      "to": "world_sauntalur_hunkesh"
+    },
+    {
+      "direction": "官道往Manaraland",
+      "to": "world_hunageria_manaraland"
+    },
+    {
+      "direction": "小徑往Sudallire",
+      "to": "world_hunageria_sudallire"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 1,
+    "cell_id": 4004,
+    "population": 6976,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "濕地",
+    "x": 73500.99,
+    "y": 50959.85,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Pupetia"
+  }
+}

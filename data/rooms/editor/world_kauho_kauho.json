@@ -1,0 +1,49 @@
+{
+  "id": "world_kauho_kauho",
+  "name": "Kauho",
+  "description": "",
+  "zone": "kauho",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Mohikiau",
+      "to": "world_apakalia_mohikiau"
+    },
+    {
+      "direction": "官道往Alopoula",
+      "to": "world_kauho_alopoula"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 62,
+    "cell_id": 3700,
+    "population": 2725,
+    "culture": "毛伊",
+    "religion": "洛昌武信仰",
+    "biome": "熱帶雨林",
+    "x": 11790.56,
+    "y": 47453.36,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Kawia"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "id": "world_puz_puz",
+  "name": "Puz",
+  "description": "",
+  "zone": "puz",
+  "tags": [
+    "city",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Der",
+      "to": "world_deria_der"
+    },
+    {
+      "direction": "官道往Jaran",
+      "to": "world_harbi_jaran"
+    },
+    {
+      "direction": "小徑往Kursadum",
+      "to": "world_puz_kursadum"
+    },
+    {
+      "direction": "小徑往Surunidu",
+      "to": "world_puz_surunidu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 36,
+    "cell_id": 2155,
+    "population": 25161,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶雨林",
+    "x": 90679.83,
+    "y": 30678.56,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Puz"
+  }
+}

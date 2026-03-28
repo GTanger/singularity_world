@@ -1,0 +1,53 @@
+{
+  "id": "world_niqum_niqum",
+  "name": "Niqum",
+  "description": "",
+  "zone": "niqum",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Magu",
+      "to": "world_dur_un_magu"
+    },
+    {
+      "direction": "官道往Urun",
+      "to": "world_niqum_urun"
+    },
+    {
+      "direction": "海路往Durkulu",
+      "to": "world_dur_ti_durkulu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 55,
+    "cell_id": 2910,
+    "population": 8940,
+    "culture": "幼法拉底",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 81438.66,
+    "y": 37233.17,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Niqum"
+  }
+}

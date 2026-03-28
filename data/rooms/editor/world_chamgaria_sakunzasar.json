@@ -1,0 +1,44 @@
+{
+  "id": "world_chamgaria_sakunzasar",
+  "name": "Sakunzasar",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "lake"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Seoymehri",
+      "to": "world_chamgaria_seoymehri"
+    },
+    {
+      "direction": "小徑往Gomeh",
+      "to": "world_chamgaria_gomeh"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 607,
+    "cell_id": 6509,
+    "population": 9147,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "北方針葉林",
+    "x": 81880.3,
+    "y": 78296.8,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Sakunzasar"
+  }
+}

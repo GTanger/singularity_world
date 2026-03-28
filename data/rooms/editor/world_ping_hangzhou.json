@@ -1,0 +1,44 @@
+{
+  "id": "world_ping_hangzhou",
+  "name": "Hangzhou",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Linjiang",
+      "to": "world_ping_linjiang"
+    },
+    {
+      "direction": "小徑往Hanzhou",
+      "to": "world_ping_hanzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 160,
+    "cell_id": 4648,
+    "population": 1625,
+    "culture": "漢族",
+    "religion": "漢族教會",
+    "biome": "溫帶落葉林",
+    "x": 17627.92,
+    "y": 58117.19,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hangzhou"
+  }
+}

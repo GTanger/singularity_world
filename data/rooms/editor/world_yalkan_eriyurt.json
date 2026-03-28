@@ -1,0 +1,49 @@
+{
+  "id": "world_yalkan_eriyurt",
+  "name": "Eriyurt",
+  "description": "",
+  "zone": "yalkan",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yaz",
+      "to": "world_yalkan_yaz"
+    },
+    {
+      "direction": "小徑往Aski",
+      "to": "world_yalkan_aski"
+    },
+    {
+      "direction": "小徑往Buybarkaya",
+      "to": "world_yalkan_buybarkaya"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 281,
+    "cell_id": 2021,
+    "population": 7324,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 55332.67,
+    "y": 29199.77,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Eriyurt"
+  }
+}

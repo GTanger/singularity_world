@@ -1,0 +1,53 @@
+{
+  "id": "world_ganz_guo_sizhou_612",
+  "name": "Sizhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Taizhou",
+      "to": "world_ganz_guo_taizhou_574"
+    },
+    {
+      "direction": "官道往Hainan",
+      "to": "world_ganz_guo_hainan"
+    },
+    {
+      "direction": "小徑往Changsha",
+      "to": "world_ganz_guo_changsha"
+    },
+    {
+      "direction": "小徑往Yangzhouai",
+      "to": "world_ganz_guo_yangzhouai"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 612,
+    "cell_id": 5110,
+    "population": 1873,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶落葉林",
+    "x": 23706.49,
+    "y": 63527.45,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yaz Guo"
+  }
+}

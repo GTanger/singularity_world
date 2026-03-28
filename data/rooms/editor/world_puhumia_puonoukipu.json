@@ -1,0 +1,40 @@
+{
+  "id": "world_puhumia_puonoukipu",
+  "name": "Puonoukipu",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Apohinehi",
+      "to": "world_puhumia_apohinehi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 429,
+    "cell_id": 3867,
+    "population": 7914,
+    "culture": "毛伊",
+    "religion": "亞洲信仰",
+    "biome": "熱帶雨林",
+    "x": 16058.8,
+    "y": 49510.2,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Puhoumia"
+  }
+}

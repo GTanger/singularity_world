@@ -1,0 +1,54 @@
+{
+  "id": "world_tuladshia_vardan",
+  "name": "Vardan",
+  "description": "",
+  "zone": "tuladshia",
+  "tags": [
+    "city",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Gordow",
+      "to": "world_gordowia_gordow"
+    },
+    {
+      "direction": "官道往Atompydareh",
+      "to": "world_tuladshia_atompydareh"
+    },
+    {
+      "direction": "海路往Hasim",
+      "to": "world_sauntalur_hasim"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 22,
+    "cell_id": 4513,
+    "population": 34253,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "熱帶雨林",
+    "x": 65432.3,
+    "y": 56682.79,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Hashtkia"
+  }
+}

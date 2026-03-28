@@ -1,0 +1,48 @@
+{
+  "id": "world_taizhou_zhenan",
+  "name": "Zhenan",
+  "description": "",
+  "zone": "taizhou",
+  "tags": [
+    "village",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Rengyi",
+      "to": "world_ping_rengyi"
+    },
+    {
+      "direction": "官道往Taizhou",
+      "to": "world_taizhou_taizhou"
+    },
+    {
+      "direction": "小徑往Huang",
+      "to": "world_ping_huang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 458,
+    "cell_id": 5546,
+    "population": 1727,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 11356.07,
+    "y": 68641.74,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Zhenan"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_ith_sidah",
+  "name": "Sidah",
+  "description": "",
+  "zone": "ith",
+  "tags": [
+    "village",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Mirwah",
+      "to": "world_ith_mirwah"
+    },
+    {
+      "direction": "小徑往Kolemukhi",
+      "to": "world_sauntalur_kolemukhi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 615,
+    "cell_id": 3680,
+    "population": 1842,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "熱帶雨林",
+    "x": 72761.8,
+    "y": 46466.76,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Sidah"
+  }
+}

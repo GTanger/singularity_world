@@ -1,0 +1,49 @@
+{
+  "id": "world_chamgaria_seoymehri",
+  "name": "Seoymehri",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Baghstan",
+      "to": "world_chamgaria_baghstan"
+    },
+    {
+      "direction": "小徑往Sakunzasar",
+      "to": "world_chamgaria_sakunzasar"
+    },
+    {
+      "direction": "小徑往Hafshahrga",
+      "to": "world_chamgaria_hafshahrga"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 349,
+    "cell_id": 6246,
+    "population": 4174,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 83090.85,
+    "y": 75859.53,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Seoymehri"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "world_golparia_varkerura",
+  "name": "Varkerura",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zanakhiyeh",
+      "to": "world_golparia_zanakhiyeh"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 238,
+    "cell_id": 5402,
+    "population": 1644,
+    "culture": "德蘭尼",
+    "religion": "茲茲切干教",
+    "biome": "溫帶落葉林",
+    "x": 50835.11,
+    "y": 66874.87,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shares"
+  }
+}

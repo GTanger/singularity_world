@@ -1,0 +1,51 @@
+{
+  "id": "world_puhumia_apohinehi",
+  "name": "Apohinehi",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Napopiono",
+      "to": "world_puhumia_napopiono"
+    },
+    {
+      "direction": "官道往Puonoukipu",
+      "to": "world_puhumia_puonoukipu"
+    },
+    {
+      "direction": "小徑往Paiahulua",
+      "to": "world_puhumia_paiahulua"
+    },
+    {
+      "direction": "小徑往Kaula",
+      "to": "world_puhumia_kaula"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 222,
+    "cell_id": 3868,
+    "population": 1524,
+    "culture": "毛伊",
+    "religion": "亞洲信仰",
+    "biome": "熱帶雨林",
+    "x": 14950.4,
+    "y": 50444.1,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kaukama"
+  }
+}

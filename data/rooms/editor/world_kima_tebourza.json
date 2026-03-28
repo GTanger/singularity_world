@@ -1,0 +1,44 @@
+{
+  "id": "world_kima_tebourza",
+  "name": "Tebourza",
+  "description": "",
+  "zone": "kima",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Aliwenden",
+      "to": "world_kima_aliwenden"
+    },
+    {
+      "direction": "小徑往Irat",
+      "to": "world_awlata_irat"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 413,
+    "cell_id": 4811,
+    "population": 12041,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "溫帶落葉林",
+    "x": 83567.89,
+    "y": 59749.32,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tebourza"
+  }
+}

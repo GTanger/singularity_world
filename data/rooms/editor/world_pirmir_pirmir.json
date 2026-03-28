@@ -1,0 +1,48 @@
+{
+  "id": "world_pirmir_pirmir",
+  "name": "Pirmir",
+  "description": "",
+  "zone": "pirmir",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kardehis",
+      "to": "world_golparia_kardehis"
+    },
+    {
+      "direction": "燈塔",
+      "to": "world_marker_lighthouses_18"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 65,
+    "cell_id": 4955,
+    "population": 2910,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "熱帶雨林",
+    "x": 58602.59,
+    "y": 62156.29,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

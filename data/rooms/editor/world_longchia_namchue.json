@@ -1,0 +1,49 @@
+{
+  "id": "world_longchia_namchue",
+  "name": "Namchue",
+  "description": "",
+  "zone": "longchia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tsamkong",
+      "to": "world_puipingia_tsamkong"
+    },
+    {
+      "direction": "官道往Waishui",
+      "to": "world_ngwakyuen_waishui"
+    },
+    {
+      "direction": "官道往Samshan",
+      "to": "world_longchia_samshan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 103,
+    "cell_id": 2489,
+    "population": 13651,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 11379.64,
+    "y": 34782.24,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yuenia"
+  }
+}

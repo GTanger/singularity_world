@@ -1,0 +1,46 @@
+{
+  "id": "world_nanu_sateguzata",
+  "name": "Sateguzata",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ha Khe",
+      "to": "world_nanu_ha_khe"
+    },
+    {
+      "direction": "小徑往Kimizumega",
+      "to": "world_golparia_kimizumega"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 510,
+    "cell_id": 4065,
+    "population": 5085,
+    "culture": "大和",
+    "religion": "石坦派",
+    "biome": "濕地",
+    "x": 52779.27,
+    "y": 51948.28,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Sateguzata"
+  }
+}

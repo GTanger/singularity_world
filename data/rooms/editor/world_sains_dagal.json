@@ -1,0 +1,47 @@
+{
+  "id": "world_sains_dagal",
+  "name": "Dagal",
+  "description": "",
+  "zone": "sains",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Saintsa",
+      "to": "world_sains_saintsa"
+    },
+    {
+      "direction": "官道往Kintash",
+      "to": "world_sains_kintash"
+    },
+    {
+      "direction": "小徑往Durru",
+      "to": "world_myania_durru"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 170,
+    "cell_id": 2247,
+    "population": 1630,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 80830.86,
+    "y": 31775.72,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jamirhan"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "world_dengz_guo_binzhou",
+  "name": "Binzhou",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "city",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Danan",
+      "to": "world_dengz_guo_danan"
+    },
+    {
+      "direction": "官道往Xincheng",
+      "to": "world_ganz_guo_xincheng"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 24,
+    "cell_id": 5208,
+    "population": 22517,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 33299.88,
+    "y": 64731.63,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Binzhou"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_chamgaria_yareh",
+  "name": "Yareh",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yabastan",
+      "to": "world_chamgaria_yabastan"
+    },
+    {
+      "direction": "小徑往Vahaveran",
+      "to": "world_chamgaria_vahaveran"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 118,
+    "cell_id": 5902,
+    "population": 16009,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 74085.34,
+    "y": 71677.51,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yareh"
+  }
+}

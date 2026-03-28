@@ -1,0 +1,48 @@
+{
+  "id": "world_dengz_guo_chang",
+  "name": "Chang",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "village",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Sicheqing",
+      "to": "world_dengz_guo_sicheqing"
+    },
+    {
+      "direction": "小徑往Guang",
+      "to": "world_dengz_guo_guang"
+    },
+    {
+      "direction": "小徑往Changjiang",
+      "to": "world_dengz_guo_changjiang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 456,
+    "cell_id": 5375,
+    "population": 1669,
+    "culture": "漢族",
+    "religion": "漢族宗教",
+    "biome": "溫帶雨林",
+    "x": 29739.95,
+    "y": 66689.12,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nin Guo"
+  }
+}

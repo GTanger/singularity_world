@@ -1,0 +1,48 @@
+{
+  "id": "world_kima_kibia",
+  "name": "Kibia",
+  "description": "",
+  "zone": "kima",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Griwinjaza",
+      "to": "world_kima_griwinjaza"
+    },
+    {
+      "direction": "官道往Mchernagu",
+      "to": "world_yahan_mchernagu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 45,
+    "cell_id": 4896,
+    "population": 19270,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "熱帶雨林",
+    "x": 86214.64,
+    "y": 60305.04,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Miramiza"
+  }
+}

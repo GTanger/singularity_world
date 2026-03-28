@@ -1,0 +1,52 @@
+{
+  "id": "world_oguzsyurt_yrazte",
+  "name": "Yrazte",
+  "description": "",
+  "zone": "oguzsyurt",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Bolu",
+      "to": "world_abepe_bolu"
+    },
+    {
+      "direction": "官道往Aykor",
+      "to": "world_aykor_aykor"
+    },
+    {
+      "direction": "遷徙路線",
+      "to": "world_marker_migration_59"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 74,
+    "cell_id": 1914,
+    "population": 19828,
+    "culture": "突厥安",
+    "religion": "伊拉茲特信仰",
+    "biome": "溫帶雨林",
+    "x": 47015.53,
+    "y": 29247.36,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

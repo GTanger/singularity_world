@@ -1,0 +1,44 @@
+{
+  "id": "world_ping_nanyang",
+  "name": "Nanyang",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tengchungy",
+      "to": "world_ping_tengchungy"
+    },
+    {
+      "direction": "小徑往Shunyang",
+      "to": "world_ping_shunyang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 297,
+    "cell_id": 5363,
+    "population": 9075,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶落葉林",
+    "x": 17806.81,
+    "y": 66350.03,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chang"
+  }
+}

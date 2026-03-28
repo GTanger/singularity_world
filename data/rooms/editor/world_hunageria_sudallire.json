@@ -1,0 +1,44 @@
+{
+  "id": "world_hunageria_sudallire",
+  "name": "Sudallire",
+  "description": "",
+  "zone": "hunageria",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hunkesh",
+      "to": "world_sauntalur_hunkesh"
+    },
+    {
+      "direction": "小徑往Kadur",
+      "to": "world_hunageria_kadur"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 268,
+    "cell_id": 4003,
+    "population": 8880,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "熱帶雨林",
+    "x": 72187.86,
+    "y": 51028.74,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sudallire"
+  }
+}

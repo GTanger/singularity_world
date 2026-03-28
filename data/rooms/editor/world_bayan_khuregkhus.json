@@ -1,0 +1,48 @@
+{
+  "id": "world_bayan_khuregkhus",
+  "name": "Khuregkhus",
+  "description": "",
+  "zone": "bayan",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hondmayandor",
+      "to": "world_bayan_hondmayandor"
+    },
+    {
+      "direction": "小徑往Ulaan",
+      "to": "world_khulekhia_ulaan"
+    },
+    {
+      "direction": "小徑往Chunelgerkhu",
+      "to": "world_bayan_chunelgerkhu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 361,
+    "cell_id": 2126,
+    "population": 1732,
+    "culture": "兀魯斯",
+    "religion": "楚涅勒格赫信仰",
+    "biome": "溫帶落葉林",
+    "x": 62542.98,
+    "y": 30765.47,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Khuregkhus"
+  }
+}

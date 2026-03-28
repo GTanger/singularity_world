@@ -1,0 +1,45 @@
+{
+  "id": "world_meia_baiwan",
+  "name": "Baiwan",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Huang",
+      "to": "world_meia_huang"
+    },
+    {
+      "direction": "小徑往Shinan",
+      "to": "world_meia_shinan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 622,
+    "cell_id": 3717,
+    "population": 10142,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "熱帶季雨林",
+    "x": 24621.52,
+    "y": 47595.62,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jian Guo"
+  }
+}

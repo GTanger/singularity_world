@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_ruins_51",
+  "name": "遺跡",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "ruins"
+  ],
+  "exits": [
+    {
+      "direction": "返回Damingbo",
+      "to": "world_ping_damingbo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 51,
+    "marker_type": "ruins"
+  }
+}

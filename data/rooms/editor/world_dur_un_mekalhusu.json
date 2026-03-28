@@ -1,0 +1,56 @@
+{
+  "id": "world_dur_un_mekalhusu",
+  "name": "Mekalhusu",
+  "description": "",
+  "zone": "dur_un",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Alan",
+      "to": "world_myania_alan"
+    },
+    {
+      "direction": "官道往Magu",
+      "to": "world_dur_un_magu"
+    },
+    {
+      "direction": "小徑往Saint",
+      "to": "world_myania_saint"
+    },
+    {
+      "direction": "小徑往Wassuhas",
+      "to": "world_dur_un_wassuhas"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_12"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 213,
+    "cell_id": 2564,
+    "population": 8653,
+    "culture": "幼法拉底",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 79590.26,
+    "y": 34265.73,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shehia"
+  }
+}

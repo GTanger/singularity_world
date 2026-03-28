@@ -1,0 +1,50 @@
+{
+  "id": "world_guela_lqlidelt",
+  "name": "Lqlidelt",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Imilchran",
+      "to": "world_guela_imilchran"
+    },
+    {
+      "direction": "小徑往Tarilacem",
+      "to": "world_guela_tarilacem"
+    },
+    {
+      "direction": "小徑往Aranelida",
+      "to": "world_guela_aranelida"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 524,
+    "cell_id": 4975,
+    "population": 19307,
+    "culture": "柏柏爾",
+    "religion": "柏柏爾教",
+    "biome": "溫帶落葉林",
+    "x": 77741.7,
+    "y": 61402.41,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Lqlidelt"
+  }
+}

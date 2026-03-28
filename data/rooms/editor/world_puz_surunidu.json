@@ -1,0 +1,47 @@
+{
+  "id": "world_puz_surunidu",
+  "name": "Surunidu",
+  "description": "",
+  "zone": "puz",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tadmaba",
+      "to": "world_puz_tadmaba"
+    },
+    {
+      "direction": "小徑往Mash",
+      "to": "world_puz_mash"
+    },
+    {
+      "direction": "小徑往Puz",
+      "to": "world_puz_puz"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 188,
+    "cell_id": 2358,
+    "population": 1573,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶雨林",
+    "x": 88701.92,
+    "y": 32080.8,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Surunidu"
+  }
+}

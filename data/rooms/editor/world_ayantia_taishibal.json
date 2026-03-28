@@ -1,0 +1,52 @@
+{
+  "id": "world_ayantia_taishibal",
+  "name": "Taishibal",
+  "description": "",
+  "zone": "ayantia",
+  "tags": [
+    "village",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Sevlin",
+      "to": "world_shalantsa_sevlin"
+    },
+    {
+      "direction": "官道往Hulandor",
+      "to": "world_shalantsa_hulandor"
+    },
+    {
+      "direction": "小徑往Tsagaan",
+      "to": "world_ayantia_tsagaan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 6,
+    "cell_id": 3346,
+    "population": 3161,
+    "culture": "兀魯斯",
+    "religion": "烏拉格賽拉格派",
+    "biome": "濕地",
+    "x": 63382.87,
+    "y": 42213.84,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Nogon"
+  }
+}

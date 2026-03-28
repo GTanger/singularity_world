@@ -1,0 +1,50 @@
+{
+  "id": "world_ngwakyuen_waishui",
+  "name": "Waishui",
+  "description": "",
+  "zone": "ngwakyuen",
+  "tags": [
+    "town",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Namchue",
+      "to": "world_longchia_namchue"
+    },
+    {
+      "direction": "官道往Hangpo",
+      "to": "world_heungia_hangpo"
+    },
+    {
+      "direction": "官道往Lokfumun",
+      "to": "world_hohiwia_lokfumun"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 52,
+    "cell_id": 2598,
+    "population": 16644,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 9748.86,
+    "y": 35329.26,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    }
+  }
+}

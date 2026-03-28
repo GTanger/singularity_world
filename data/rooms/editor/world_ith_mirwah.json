@@ -1,0 +1,52 @@
+{
+  "id": "world_ith_mirwah",
+  "name": "Mirwah",
+  "description": "",
+  "zone": "ith",
+  "tags": [
+    "town",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Alsmah",
+      "to": "world_khabtal_alsmah"
+    },
+    {
+      "direction": "官道往Hunkesh",
+      "to": "world_sauntalur_hunkesh"
+    },
+    {
+      "direction": "小徑往Sidah",
+      "to": "world_ith_sidah"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 5,
+    "cell_id": 3757,
+    "population": 9273,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "濕地",
+    "x": 71394.09,
+    "y": 47296.84,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Al Nakha"
+  }
+}

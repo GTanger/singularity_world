@@ -1,0 +1,52 @@
+{
+  "id": "world_tsetulag_ergaltkhan",
+  "name": "Ergaltkhan",
+  "description": "",
+  "zone": "tsetulag",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Ervanbure",
+      "to": "world_tsetulag_ervanbure"
+    },
+    {
+      "direction": "官道往Sevlin",
+      "to": "world_shalantsa_sevlin"
+    },
+    {
+      "direction": "小徑往Zayan",
+      "to": "world_bayan_zayan"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_14"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 235,
+    "cell_id": 2777,
+    "population": 1762,
+    "culture": "兀魯斯",
+    "religion": "賽罕信仰",
+    "biome": "溫帶落葉林",
+    "x": 64270.88,
+    "y": 36059.02,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ergaltkhan"
+  }
+}

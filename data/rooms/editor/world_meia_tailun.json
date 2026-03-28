@@ -1,0 +1,41 @@
+{
+  "id": "world_meia_tailun",
+  "name": "Tailun",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ching",
+      "to": "world_meia_ching"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 392,
+    "cell_id": 2953,
+    "population": 1767,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶落葉林",
+    "x": 28564.13,
+    "y": 38282.59,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tailun"
+  }
+}

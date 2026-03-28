@@ -1,0 +1,55 @@
+{
+  "id": "world_myania_alan",
+  "name": "Alan",
+  "description": "",
+  "zone": "myania",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Zariayandu",
+      "to": "world_tsakhania_zariayandu"
+    },
+    {
+      "direction": "官道往Mekalhusu",
+      "to": "world_dur_un_mekalhusu"
+    },
+    {
+      "direction": "官道往Sains",
+      "to": "world_sains_sains"
+    },
+    {
+      "direction": "小徑往Khonlig",
+      "to": "world_myania_khonlig"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 85,
+    "cell_id": 2246,
+    "population": 2052,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 79123.95,
+    "y": 31311.68,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ayankh"
+  }
+}

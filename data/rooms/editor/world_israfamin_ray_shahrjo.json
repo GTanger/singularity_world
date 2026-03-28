@@ -1,0 +1,45 @@
+{
+  "id": "world_israfamin_ray_shahrjo",
+  "name": "Ray-Shahrjo",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ashahr",
+      "to": "world_israfamin_ashahr"
+    },
+    {
+      "direction": "小徑往Hajdayan",
+      "to": "world_israfamin_hajdayan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 584,
+    "cell_id": 5231,
+    "population": 13226,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶落葉林",
+    "x": 60659.0,
+    "y": 64242.59,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ray-Shahrjo"
+  }
+}

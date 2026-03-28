@@ -1,0 +1,44 @@
+{
+  "id": "world_meia_gokong",
+  "name": "Gokong",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ching",
+      "to": "world_meia_ching_305"
+    },
+    {
+      "direction": "小徑往Tungchuen",
+      "to": "world_meia_tungchuen"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 123,
+    "cell_id": 3131,
+    "population": 1592,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶落葉林",
+    "x": 22754.17,
+    "y": 40721.96,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Gokong"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_sananai_kujifumiro",
+  "name": "Kujifumiro",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hawa",
+      "to": "world_nanu_hawa"
+    },
+    {
+      "direction": "官道往Tsurifuri",
+      "to": "world_sananai_tsurifuri"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 216,
+    "cell_id": 2871,
+    "population": 1672,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶落葉林",
+    "x": 46627.43,
+    "y": 37713.68,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kujifumiro"
+  }
+}

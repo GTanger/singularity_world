@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_dungeons_26",
+  "name": "地牢",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "dungeons"
+  ],
+  "exits": [
+    {
+      "direction": "返回Bayan Uren",
+      "to": "world_khulekhia_bayan_uren"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 26,
+    "marker_type": "dungeons"
+  }
+}

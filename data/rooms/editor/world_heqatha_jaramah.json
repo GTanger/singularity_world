@@ -1,0 +1,40 @@
+{
+  "id": "world_heqatha_jaramah",
+  "name": "Jaramah",
+  "description": "",
+  "zone": "heqatha",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Jajan",
+      "to": "world_heqatha_jajan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 462,
+    "cell_id": 3831,
+    "population": 4694,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "熱帶季雨林",
+    "x": 69866.59,
+    "y": 48063.55,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jaramah"
+  }
+}

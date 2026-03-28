@@ -1,0 +1,44 @@
+{
+  "id": "world_nanu_ichimamifu",
+  "name": "Ichimamifu",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hawa",
+      "to": "world_nanu_hawa"
+    },
+    {
+      "direction": "小徑往Mashiraka",
+      "to": "world_nanu_mashiraka"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 183,
+    "cell_id": 2761,
+    "population": 14211,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶雨林",
+    "x": 50296.04,
+    "y": 36436.84,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ichimamifu"
+  }
+}

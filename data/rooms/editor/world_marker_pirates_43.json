@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_pirates_43",
+  "name": "海盜巢穴",
+  "description": "",
+  "zone": "tuladshia",
+  "tags": [
+    "pirates"
+  ],
+  "exits": [
+    {
+      "direction": "返回Sahana",
+      "to": "world_tuladshia_sahana"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 43,
+    "marker_type": "pirates"
+  }
+}

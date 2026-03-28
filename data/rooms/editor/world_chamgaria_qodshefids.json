@@ -1,0 +1,50 @@
+{
+  "id": "world_chamgaria_qodshefids",
+  "name": "Qodshefids",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Janabad",
+      "to": "world_chamgaria_janabad"
+    },
+    {
+      "direction": "小徑往Ahanatarim",
+      "to": "world_israfamin_ahanatarim"
+    },
+    {
+      "direction": "地牢",
+      "to": "world_marker_dungeons_25"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 128,
+    "cell_id": 6064,
+    "population": 18980,
+    "culture": "德蘭尼",
+    "religion": "科德謝菲茲密教",
+    "biome": "溫帶雨林",
+    "x": 65900.73,
+    "y": 73233.68,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shabadia"
+  }
+}

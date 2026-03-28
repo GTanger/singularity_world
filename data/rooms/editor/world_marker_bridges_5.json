@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_bridges_5",
+  "name": "橋",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "bridges"
+  ],
+  "exits": [
+    {
+      "direction": "返回Waichau",
+      "to": "world_fungia_waichau"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 5,
+    "marker_type": "bridges"
+  }
+}

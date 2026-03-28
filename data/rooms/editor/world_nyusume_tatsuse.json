@@ -1,0 +1,50 @@
+{
+  "id": "world_nyusume_tatsuse",
+  "name": "Tatsuse",
+  "description": "",
+  "zone": "nyusume",
+  "tags": [
+    "village",
+    "river",
+    "capital",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Bopuz",
+      "to": "world_buybaryurt_bopuz"
+    },
+    {
+      "direction": "官道往Kinaboka",
+      "to": "world_nanu_kinaboka"
+    },
+    {
+      "direction": "盜賊據點",
+      "to": "world_marker_brigands_40"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 58,
+    "cell_id": 2977,
+    "population": 2153,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶落葉林",
+    "x": 51680.53,
+    "y": 38887.29,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    }
+  }
+}

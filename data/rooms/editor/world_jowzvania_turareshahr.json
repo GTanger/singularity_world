@@ -1,0 +1,45 @@
+{
+  "id": "world_jowzvania_turareshahr",
+  "name": "Turareshahr",
+  "description": "",
+  "zone": "jowzvania",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Eshahrok",
+      "to": "world_jowzvania_eshahrok"
+    },
+    {
+      "direction": "小徑往Aslamshahr",
+      "to": "world_golparia_aslamshahr"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 454,
+    "cell_id": 4680,
+    "population": 17893,
+    "culture": "德蘭尼",
+    "religion": "圖拉雷沙赫爾派",
+    "biome": "溫帶雨林",
+    "x": 50629.71,
+    "y": 58701.66,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kibabad"
+  }
+}

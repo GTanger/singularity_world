@@ -1,0 +1,44 @@
+{
+  "id": "world_fungia_hoheong",
+  "name": "Hoheong",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Taishangy",
+      "to": "world_fungia_taishangy"
+    },
+    {
+      "direction": "小徑往Siunamtin",
+      "to": "world_kwun_siunamtin"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 390,
+    "cell_id": 2281,
+    "population": 1633,
+    "culture": "關族",
+    "religion": "秋嶺教",
+    "biome": "溫帶雨林",
+    "x": 19503.98,
+    "y": 32947.97,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Puiwia"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "world_longchia_samshan",
+  "name": "Samshan",
+  "description": "",
+  "zone": "longchia",
+  "tags": [
+    "village",
+    "river",
+    "capital",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tungchuen",
+      "to": "world_siukhingia_tungchuen"
+    },
+    {
+      "direction": "官道往Tsingleng",
+      "to": "world_shia_tsingleng"
+    },
+    {
+      "direction": "官道往Namchue",
+      "to": "world_longchia_namchue"
+    },
+    {
+      "direction": "小徑往Tuengonting",
+      "to": "world_longchia_tuengonting"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_9"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 26,
+    "cell_id": 2377,
+    "population": 2323,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 12812.79,
+    "y": 33516.14,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Wong"
+  }
+}

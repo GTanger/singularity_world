@@ -1,0 +1,52 @@
+{
+  "id": "world_puipingia_puiping",
+  "name": "Puiping",
+  "description": "",
+  "zone": "puipingia",
+  "tags": [
+    "city",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls",
+    "shantytown"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Leungchung",
+      "to": "world_shamshia_leungchung"
+    },
+    {
+      "direction": "官道往Tsamkong",
+      "to": "world_puipingia_tsamkong"
+    },
+    {
+      "direction": "小徑往Laicheong",
+      "to": "world_lokchia_laicheong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 56,
+    "cell_id": 2935,
+    "population": 32270,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 10725.07,
+    "y": 38611.84,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 1,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Puiping"
+  }
+}

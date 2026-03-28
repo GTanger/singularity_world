@@ -1,0 +1,53 @@
+{
+  "id": "world_kusande_uduragote",
+  "name": "Uduragote",
+  "description": "",
+  "zone": "kusande",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Saundabad",
+      "to": "world_kusande_saundabad"
+    },
+    {
+      "direction": "小徑往Asakepalli",
+      "to": "world_kusande_asakepalli"
+    },
+    {
+      "direction": "小徑往Arerika",
+      "to": "world_kusande_arerika"
+    },
+    {
+      "direction": "小徑往Gundhollija",
+      "to": "world_kusande_gundhollija"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 570,
+    "cell_id": 3364,
+    "population": 14968,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "溫帶雨林",
+    "x": 81327.28,
+    "y": 42876.69,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Gavalpuria"
+  }
+}

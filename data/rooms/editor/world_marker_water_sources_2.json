@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_water_sources_2",
+  "name": "水源地",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "water-sources"
+  ],
+  "exits": [
+    {
+      "direction": "返回Abodintash",
+      "to": "world_chamgaria_abodintash"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 2,
+    "marker_type": "water-sources"
+  }
+}

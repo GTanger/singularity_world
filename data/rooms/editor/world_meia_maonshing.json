@@ -1,0 +1,45 @@
+{
+  "id": "world_meia_maonshing",
+  "name": "Maonshing",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Meiyue",
+      "to": "world_meia_meiyue"
+    },
+    {
+      "direction": "小徑往Taizhou",
+      "to": "world_meia_taizhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 550,
+    "cell_id": 3400,
+    "population": 15870,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "熱帶雨林",
+    "x": 27161.19,
+    "y": 43459.7,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Siumun"
+  }
+}

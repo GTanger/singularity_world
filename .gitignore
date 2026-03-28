@@ -59,6 +59,18 @@ tools/
 # Go 歸檔（已搬遷至 Rust，保留備查，不納入版控）
 archive/
 
+# Azgaar / Watabou 原始匯出檔（太大，不納入版控）
+Celia*.json
+Celia*.svg
+Celia*.png
+*.geojson
+
+# Cursor
+.cursor/
+
+# systemd log
+sw-systemd.log
+
 # Added by cargo
 
 /target

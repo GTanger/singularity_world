@@ -1,0 +1,40 @@
+{
+  "id": "world_ganz_guo_shaozhou",
+  "name": "Shaozhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tailining",
+      "to": "world_ganz_guo_tailining"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 321,
+    "cell_id": 4316,
+    "population": 2579,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "溫帶落葉林",
+    "x": 21909.85,
+    "y": 54803.32,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shaozhou"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "world_puz_mash",
+  "name": "Mash",
+  "description": "",
+  "zone": "puz",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Eshinagan",
+      "to": "world_dur_ti_eshinagan"
+    },
+    {
+      "direction": "官道往Shisur",
+      "to": "world_shisur_shisur"
+    },
+    {
+      "direction": "小徑往Surunidu",
+      "to": "world_puz_surunidu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 327,
+    "cell_id": 2465,
+    "population": 10094,
+    "culture": "幼法拉底",
+    "religion": "幼法拉底精靈信仰",
+    "biome": "溫帶雨林",
+    "x": 88466.41,
+    "y": 33438.28,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Mash"
+  }
+}

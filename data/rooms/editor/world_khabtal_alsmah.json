@@ -1,0 +1,51 @@
+{
+  "id": "world_khabtal_alsmah",
+  "name": "Alsmah",
+  "description": "",
+  "zone": "khabtal",
+  "tags": [
+    "town",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Saiyah",
+      "to": "world_heqatha_saiyah"
+    },
+    {
+      "direction": "官道往Mirwah",
+      "to": "world_ith_mirwah"
+    },
+    {
+      "direction": "官道往Alkut",
+      "to": "world_heqatha_alkut"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 3,
+    "cell_id": 3678,
+    "population": 19480,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "濕地",
+    "x": 70301.68,
+    "y": 46527.47,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    }
+  }
+}

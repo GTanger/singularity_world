@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_brigands_40",
+  "name": "盜賊據點",
+  "description": "",
+  "zone": "nyusume",
+  "tags": [
+    "brigands"
+  ],
+  "exits": [
+    {
+      "direction": "返回Tatsuse",
+      "to": "world_nyusume_tatsuse"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 40,
+    "marker_type": "brigands"
+  }
+}

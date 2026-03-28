@@ -1,0 +1,52 @@
+{
+  "id": "world_ping_damingbo",
+  "name": "Damingbo",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Yananxi",
+      "to": "world_xian_guo_yananxi"
+    },
+    {
+      "direction": "官道往Kuizhou",
+      "to": "world_ping_kuizhou"
+    },
+    {
+      "direction": "小徑往Shunyang",
+      "to": "world_ping_shunyang"
+    },
+    {
+      "direction": "遺跡",
+      "to": "world_marker_ruins_51"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 101,
+    "cell_id": 5458,
+    "population": 11787,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶落葉林",
+    "x": 16580.59,
+    "y": 67249.36,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Zhenha Guo"
+  }
+}

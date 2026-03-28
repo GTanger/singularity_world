@@ -1,0 +1,44 @@
+{
+  "id": "world_ganz_guo_tatongshan",
+  "name": "Tatongshan",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Taizhou",
+      "to": "world_ganz_guo_taizhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 315,
+    "cell_id": 4483,
+    "population": 17867,
+    "culture": "漢族",
+    "religion": "太湛教團",
+    "biome": "熱帶雨林",
+    "x": 31703.22,
+    "y": 56939.22,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Jih Guo"
+  }
+}

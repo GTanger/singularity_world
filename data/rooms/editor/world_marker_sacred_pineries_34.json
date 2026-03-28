@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_sacred_pineries_34",
+  "name": "聖松林",
+  "description": "",
+  "zone": "tonkhan",
+  "tags": [
+    "sacred-pineries"
+  ],
+  "exits": [
+    {
+      "direction": "返回Tolger",
+      "to": "world_tonkhan_tolger"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 34,
+    "marker_type": "sacred-pineries"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_sauntalur_athmeshnur",
+  "name": "Athmeshnur",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hunkobertti",
+      "to": "world_sauntalur_hunkobertti"
+    },
+    {
+      "direction": "小徑往Bomagagola",
+      "to": "world_kusande_bomagagola"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 243,
+    "cell_id": 3531,
+    "population": 6036,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "溫帶落葉林",
+    "x": 79180.31,
+    "y": 44601.06,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sarapatia"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_dances_60",
+  "name": "舞場",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "dances"
+  ],
+  "exits": [
+    {
+      "direction": "返回Hajdayan",
+      "to": "world_israfamin_hajdayan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 60,
+    "marker_type": "dances"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_battlefields_23",
+  "name": "古戰場",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "battlefields"
+  ],
+  "exits": [
+    {
+      "direction": "返回Dabarim",
+      "to": "world_golparia_dabarim"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 23,
+    "marker_type": "battlefields"
+  }
+}

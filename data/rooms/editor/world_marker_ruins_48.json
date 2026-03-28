@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_ruins_48",
+  "name": "遺跡",
+  "description": "",
+  "zone": "tonkhan",
+  "tags": [
+    "ruins"
+  ],
+  "exits": [
+    {
+      "direction": "返回Tolger",
+      "to": "world_tonkhan_tolger"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 48,
+    "marker_type": "ruins"
+  }
+}

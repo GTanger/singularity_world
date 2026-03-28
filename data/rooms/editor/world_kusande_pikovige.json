@@ -1,0 +1,39 @@
+{
+  "id": "world_kusande_pikovige",
+  "name": "Pikovige",
+  "description": "",
+  "zone": "kusande",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ansur",
+      "to": "world_kusande_ansur"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 121,
+    "cell_id": 3017,
+    "population": 1583,
+    "culture": "卡納提克",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 87149.08,
+    "y": 38867.87,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Pikovige"
+  }
+}

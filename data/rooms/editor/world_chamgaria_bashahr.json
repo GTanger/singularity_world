@@ -1,0 +1,44 @@
+{
+  "id": "world_chamgaria_bashahr",
+  "name": "Bashahr",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Vahaveran",
+      "to": "world_chamgaria_vahaveran"
+    },
+    {
+      "direction": "小徑往Qarch",
+      "to": "world_chamgaria_qarch"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 519,
+    "cell_id": 6073,
+    "population": 3283,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 74112.21,
+    "y": 73571.02,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Bashahr"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "world_yalkan_aydi",
+  "name": "Aydi",
+  "description": "",
+  "zone": "yalkan",
+  "tags": [
+    "village",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ozoguzte",
+      "to": "world_yalkan_ozoguzte"
+    },
+    {
+      "direction": "小徑往Khoyonurga",
+      "to": "world_khulekhia_khoyonurga"
+    },
+    {
+      "direction": "小徑往Ozobala",
+      "to": "world_buybaryurt_ozobala"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 115,
+    "cell_id": 1722,
+    "population": 1582,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 59775.33,
+    "y": 26583.92,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Alazlyurt"
+  }
+}

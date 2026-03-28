@@ -1,0 +1,53 @@
+{
+  "id": "world_taoxing_suzhou",
+  "name": "Suzhou",
+  "description": "",
+  "zone": "taoxing",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Zhangwuian",
+      "to": "world_taoxing_zhangwuian"
+    },
+    {
+      "direction": "小徑往Nayang",
+      "to": "world_taoxing_nayang"
+    },
+    {
+      "direction": "古戰場",
+      "to": "world_marker_battlefields_21"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 46,
+    "cell_id": 5772,
+    "population": 3035,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 41018.8,
+    "y": 70984.77,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Shouc Guo"
+  }
+}

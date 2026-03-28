@@ -1,0 +1,45 @@
+{
+  "id": "world_longchia_tuengonting",
+  "name": "Tuengonting",
+  "description": "",
+  "zone": "longchia",
+  "tags": [
+    "village",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Samshan",
+      "to": "world_longchia_samshan"
+    },
+    {
+      "direction": "小徑往Shingtong",
+      "to": "world_tong_shingtong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 588,
+    "cell_id": 2273,
+    "population": 2047,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 11574.67,
+    "y": 32826.2,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Shan"
+  }
+}

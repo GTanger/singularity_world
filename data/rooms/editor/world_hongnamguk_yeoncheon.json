@@ -1,0 +1,44 @@
+{
+  "id": "world_hongnamguk_yeoncheon",
+  "name": "Yeoncheon",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Namrye",
+      "to": "world_hongnamguk_namrye"
+    },
+    {
+      "direction": "小徑往Seongtanju",
+      "to": "world_hongnamguk_seongtanju"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 163,
+    "cell_id": 2198,
+    "population": 7673,
+    "culture": "高麗",
+    "religion": "高麗萬神殿",
+    "biome": "溫帶雨林",
+    "x": 37092.9,
+    "y": 32183.5,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tean"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_encounters_70",
+  "name": "遭遇點",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "encounters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Yahin",
+      "to": "world_chamgaria_yahin"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 70,
+    "marker_type": "encounters"
+  }
+}

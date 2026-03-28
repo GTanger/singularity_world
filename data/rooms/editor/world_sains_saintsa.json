@@ -1,0 +1,49 @@
+{
+  "id": "world_sains_saintsa",
+  "name": "Saintsa",
+  "description": "",
+  "zone": "sains",
+  "tags": [
+    "village",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Sains",
+      "to": "world_sains_sains"
+    },
+    {
+      "direction": "官道往Dagal",
+      "to": "world_sains_dagal"
+    },
+    {
+      "direction": "小徑往Hulaanbogd",
+      "to": "world_sains_hulaanbogd"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 162,
+    "cell_id": 2144,
+    "population": 1624,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 80513.08,
+    "y": 30755.89,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Saintsa"
+  }
+}

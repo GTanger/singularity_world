@@ -1,0 +1,45 @@
+{
+  "id": "world_kwun_hokshuiman",
+  "name": "Hokshuiman",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "town",
+    "river",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Pingyuenwan",
+      "to": "world_kwun_pingyuenwan"
+    },
+    {
+      "direction": "小徑往Putong",
+      "to": "world_shia_putong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 264,
+    "cell_id": 1577,
+    "population": 11031,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶雨林",
+    "x": 17579.53,
+    "y": 25935.23,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Kwongia"
+  }
+}

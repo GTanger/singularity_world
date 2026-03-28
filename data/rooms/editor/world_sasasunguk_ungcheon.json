@@ -1,0 +1,49 @@
+{
+  "id": "world_sasasunguk_ungcheon",
+  "name": "Ungcheon",
+  "description": "",
+  "zone": "sasasunguk",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Aripo",
+      "to": "world_sasasunguk_aripo"
+    },
+    {
+      "direction": "官道往Jeongju",
+      "to": "world_sanguk_jeongju"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 11,
+    "cell_id": 2092,
+    "population": 7143,
+    "culture": "高麗",
+    "religion": "高麗萬神殿",
+    "biome": "溫帶雨林",
+    "x": 35774.93,
+    "y": 30866.03,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Geumguk"
+  }
+}

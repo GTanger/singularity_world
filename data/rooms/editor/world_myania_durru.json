@@ -1,0 +1,48 @@
+{
+  "id": "world_myania_durru",
+  "name": "Durru",
+  "description": "",
+  "zone": "myania",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Wassuhas",
+      "to": "world_dur_un_wassuhas"
+    },
+    {
+      "direction": "小徑往Dagal",
+      "to": "world_sains_dagal"
+    },
+    {
+      "direction": "小徑往Kintash",
+      "to": "world_sains_kintash"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 469,
+    "cell_id": 2454,
+    "population": 3649,
+    "culture": "幼法拉底",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 81248.13,
+    "y": 33408.38,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Garia"
+  }
+}

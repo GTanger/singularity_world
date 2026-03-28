@@ -1,0 +1,44 @@
+{
+  "id": "world_ganz_guo_raozhoua",
+  "name": "Raozhoua",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tingzhou",
+      "to": "world_ganz_guo_tingzhou"
+    },
+    {
+      "direction": "官道往Tailining",
+      "to": "world_ganz_guo_tailining"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 412,
+    "cell_id": 4565,
+    "population": 1636,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "溫帶雨林",
+    "x": 21949.31,
+    "y": 57109.12,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Raozhoua"
+  }
+}

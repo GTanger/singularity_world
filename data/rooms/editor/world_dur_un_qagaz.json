@@ -1,0 +1,45 @@
+{
+  "id": "world_dur_un_qagaz",
+  "name": "Qagaz",
+  "description": "",
+  "zone": "dur_un",
+  "tags": [
+    "town",
+    "lake",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ir-Amrud",
+      "to": "world_dur_un_ir_amrud"
+    },
+    {
+      "direction": "小徑往Kintash",
+      "to": "world_sains_kintash"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 419,
+    "cell_id": 2456,
+    "population": 13634,
+    "culture": "幼法拉底",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 82758.7,
+    "y": 33793.0,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Qagaz"
+  }
+}

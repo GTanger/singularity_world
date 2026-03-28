@@ -1,0 +1,48 @@
+{
+  "id": "world_dur_un_wassuhas",
+  "name": "Wassuhas",
+  "description": "",
+  "zone": "dur_un",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Mekalhusu",
+      "to": "world_dur_un_mekalhusu"
+    },
+    {
+      "direction": "小徑往Ir-Amrud",
+      "to": "world_dur_un_ir_amrud"
+    },
+    {
+      "direction": "小徑往Durru",
+      "to": "world_myania_durru"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 443,
+    "cell_id": 2565,
+    "population": 8251,
+    "culture": "幼法拉底",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 80564.72,
+    "y": 34803.1,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tia"
+  }
+}

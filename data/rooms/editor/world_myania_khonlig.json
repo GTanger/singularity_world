@@ -1,0 +1,48 @@
+{
+  "id": "world_myania_khonlig",
+  "name": "Khonlig",
+  "description": "",
+  "zone": "myania",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Bayan",
+      "to": "world_buming_bayan"
+    },
+    {
+      "direction": "小徑往Saint",
+      "to": "world_myania_saint"
+    },
+    {
+      "direction": "小徑往Alan",
+      "to": "world_myania_alan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 140,
+    "cell_id": 2344,
+    "population": 1610,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 77087.4,
+    "y": 32374.44,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Algeria"
+  }
+}

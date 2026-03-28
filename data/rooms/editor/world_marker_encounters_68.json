@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_encounters_68",
+  "name": "遭遇點",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "encounters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Arakrankafa",
+      "to": "world_golparia_arakrankafa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 68,
+    "marker_type": "encounters"
+  }
+}

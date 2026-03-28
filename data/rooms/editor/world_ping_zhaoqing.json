@@ -1,0 +1,35 @@
+{
+  "id": "world_ping_zhaoqing",
+  "name": "Zhaoqing",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 417,
+    "cell_id": 5102,
+    "population": 1751,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶落葉林",
+    "x": 15297.1,
+    "y": 63771.9,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Zhaoqing"
+  }
+}

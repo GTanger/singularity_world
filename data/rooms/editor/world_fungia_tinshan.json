@@ -1,0 +1,48 @@
+{
+  "id": "world_fungia_tinshan",
+  "name": "Tinshan",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "village",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Chung",
+      "to": "world_fungia_chung"
+    },
+    {
+      "direction": "小徑往Tungchuen",
+      "to": "world_meia_tungchuen"
+    },
+    {
+      "direction": "小徑往Kwong",
+      "to": "world_fungshingia_kwong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 285,
+    "cell_id": 3039,
+    "population": 1769,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶落葉林",
+    "x": 20371.46,
+    "y": 39494.87,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Tinshan"
+  }
+}

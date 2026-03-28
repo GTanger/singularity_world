@@ -1,0 +1,53 @@
+{
+  "id": "world_hwanponamguk_jeongdong",
+  "name": "Jeongdong",
+  "description": "",
+  "zone": "hwanponamguk",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tsimshan",
+      "to": "world_meia_tsimshan"
+    },
+    {
+      "direction": "小徑往Gongseongam",
+      "to": "world_hwanponamguk_gongseongam"
+    },
+    {
+      "direction": "小徑往Siukwan",
+      "to": "world_meia_siukwan"
+    },
+    {
+      "direction": "洞穴",
+      "to": "world_marker_caves_61"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 266,
+    "cell_id": 2956,
+    "population": 13987,
+    "culture": "高麗",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 31237.99,
+    "y": 38072.74,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jeongdong"
+  }
+}

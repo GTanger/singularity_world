@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_encounters_64",
+  "name": "遭遇點",
+  "description": "",
+  "zone": "kyohe",
+  "tags": [
+    "encounters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Kyohe",
+      "to": "world_kyohe_kyohe"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 64,
+    "marker_type": "encounters"
+  }
+}

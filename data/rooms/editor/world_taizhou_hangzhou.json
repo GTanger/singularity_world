@@ -1,0 +1,49 @@
+{
+  "id": "world_taizhou_hangzhou",
+  "name": "Hangzhou",
+  "description": "",
+  "zone": "taizhou",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zhenqing",
+      "to": "world_xian_guo_zhenqing"
+    },
+    {
+      "direction": "小徑往Xianchong",
+      "to": "world_taizhou_xianchong"
+    },
+    {
+      "direction": "小徑往Xuantian",
+      "to": "world_xian_guo_xuantian"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 554,
+    "cell_id": 5932,
+    "population": 8655,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶雨林",
+    "x": 12737.91,
+    "y": 72475.53,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ying Guo"
+  }
+}

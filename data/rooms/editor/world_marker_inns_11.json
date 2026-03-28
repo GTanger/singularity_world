@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_11",
+  "name": "旅店",
+  "description": "",
+  "zone": "shalantsa",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Sevlin",
+      "to": "world_shalantsa_sevlin"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 11,
+    "marker_type": "inns"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "world_kyohe_kyohe",
+  "name": "Kyohe",
+  "description": "",
+  "zone": "kyohe",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Oihakawa",
+      "to": "world_sananai_oihakawa"
+    },
+    {
+      "direction": "海路往Yeong",
+      "to": "world_hongnamguk_yeong"
+    },
+    {
+      "direction": "遭遇點",
+      "to": "world_marker_encounters_64"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 50,
+    "cell_id": 2210,
+    "population": 3103,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶雨林",
+    "x": 45103.47,
+    "y": 31123.15,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Kyohe"
+  }
+}

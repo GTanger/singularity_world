@@ -1,0 +1,44 @@
+{
+  "id": "world_xian_guo_qianzhou",
+  "name": "Qianzhou",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yananxi",
+      "to": "world_xian_guo_yananxi"
+    },
+    {
+      "direction": "小徑往Yanzhou",
+      "to": "world_xian_guo_yanzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 388,
+    "cell_id": 5748,
+    "population": 5185,
+    "culture": "漢族",
+    "religion": "希南偶像崇拜",
+    "biome": "溫帶落葉林",
+    "x": 17263.75,
+    "y": 70843.45,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Gaoz Guo"
+  }
+}

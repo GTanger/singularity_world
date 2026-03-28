@@ -1,0 +1,44 @@
+{
+  "id": "world_hunageria_kudch",
+  "name": "Kudch",
+  "description": "",
+  "zone": "hunageria",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Sakore",
+      "to": "world_krishna_sakore"
+    },
+    {
+      "direction": "官道往Manaraland",
+      "to": "world_hunageria_manaraland"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 197,
+    "cell_id": 4102,
+    "population": 1580,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 75633.6,
+    "y": 51743.1,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Madgal"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "world_lon_guo_guang",
+  "name": "Guang",
+  "description": "",
+  "zone": "lon_guo",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zhong",
+      "to": "world_lon_guo_zhong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 366,
+    "cell_id": 6182,
+    "population": 6595,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 9126.09,
+    "y": 75910.13,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Guang"
+  }
+}

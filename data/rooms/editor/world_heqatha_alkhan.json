@@ -1,0 +1,48 @@
+{
+  "id": "world_heqatha_alkhan",
+  "name": "Alkhan",
+  "description": "",
+  "zone": "heqatha",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hulya",
+      "to": "world_heqatha_hulya"
+    },
+    {
+      "direction": "小徑往Dhabid",
+      "to": "world_muwaida_dhabid"
+    },
+    {
+      "direction": "小徑往Jajan",
+      "to": "world_heqatha_jajan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 236,
+    "cell_id": 3828,
+    "population": 7040,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "熱帶季雨林",
+    "x": 66197.74,
+    "y": 48286.81,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Alkhan"
+  }
+}

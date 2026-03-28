@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_migration_58",
+  "name": "遷徙路線",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "migration"
+  ],
+  "exits": [
+    {
+      "direction": "返回Zayangalgene",
+      "to": "world_khulekhia_zayangalgene"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 58,
+    "marker_type": "migration"
+  }
+}

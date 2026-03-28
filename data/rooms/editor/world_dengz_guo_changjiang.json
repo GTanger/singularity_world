@@ -1,0 +1,46 @@
+{
+  "id": "world_dengz_guo_changjiang",
+  "name": "Changjiang",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Chang",
+      "to": "world_dengz_guo_chang"
+    },
+    {
+      "direction": "小徑往Xingqing",
+      "to": "world_ganz_guo_xingqing"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 304,
+    "cell_id": 5373,
+    "population": 18134,
+    "culture": "漢族",
+    "religion": "至尊先知派",
+    "biome": "溫帶雨林",
+    "x": 27742.03,
+    "y": 66945.7,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nafengli"
+  }
+}

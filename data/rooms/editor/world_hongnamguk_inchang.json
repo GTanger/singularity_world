@@ -1,0 +1,45 @@
+{
+  "id": "world_hongnamguk_inchang",
+  "name": "Inchang",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Yeong",
+      "to": "world_hongnamguk_yeong"
+    },
+    {
+      "direction": "官道往Hongnam",
+      "to": "world_hongnamguk_hongnam"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 369,
+    "cell_id": 2202,
+    "population": 11465,
+    "culture": "高麗",
+    "religion": "科爾教",
+    "biome": "溫帶雨林",
+    "x": 40751.13,
+    "y": 31794.88,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Gimhe"
+  }
+}

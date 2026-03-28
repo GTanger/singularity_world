@@ -1,0 +1,44 @@
+{
+  "id": "world_hafaha_alhuray",
+  "name": "Alhuray",
+  "description": "",
+  "zone": "hafaha",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hulandor",
+      "to": "world_shalantsa_hulandor"
+    },
+    {
+      "direction": "小徑往Balsazim",
+      "to": "world_hafaha_balsazim"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 423,
+    "cell_id": 3349,
+    "population": 2264,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "熱帶季雨林",
+    "x": 66805.58,
+    "y": 42353.87,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Alhuray"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "world_ganz_guo_xingqing",
+  "name": "Xingqing",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Changjiang",
+      "to": "world_dengz_guo_changjiang"
+    },
+    {
+      "direction": "小徑往Shuan",
+      "to": "world_ganz_guo_shuan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 604,
+    "cell_id": 5371,
+    "population": 8322,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶雨林",
+    "x": 25510.89,
+    "y": 66588.24,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Wuc Guo"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_brigands_38",
+  "name": "盜賊據點",
+  "description": "",
+  "zone": "shia",
+  "tags": [
+    "brigands"
+  ],
+  "exits": [
+    {
+      "direction": "返回Wuheikiu",
+      "to": "world_shia_wuheikiu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 38,
+    "marker_type": "brigands"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "world_ryadh_amah",
+  "name": "Amah",
+  "description": "",
+  "zone": "ryadh",
+  "tags": [
+    "town",
+    "river",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tseltant",
+      "to": "world_ayantia_tseltant"
+    },
+    {
+      "direction": "小徑往Najosama",
+      "to": "world_ryadh_najosama"
+    },
+    {
+      "direction": "小徑往Alaqbah",
+      "to": "world_ryadh_alaqbah"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 425,
+    "cell_id": 3671,
+    "population": 9830,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "熱帶季雨林",
+    "x": 63404.47,
+    "y": 46539.79,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Amah"
+  }
+}

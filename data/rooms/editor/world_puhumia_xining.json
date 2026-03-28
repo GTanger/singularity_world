@@ -1,0 +1,45 @@
+{
+  "id": "world_puhumia_xining",
+  "name": "Xining",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Gaozhong",
+      "to": "world_meia_gaozhong"
+    },
+    {
+      "direction": "小徑往Hopua",
+      "to": "world_puhumia_hopua"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 551,
+    "cell_id": 3556,
+    "population": 12128,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "熱帶季雨林",
+    "x": 18915.53,
+    "y": 45786.55,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ganz Guo"
+  }
+}

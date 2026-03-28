@@ -1,0 +1,53 @@
+{
+  "id": "world_tonkhan_baluutsag",
+  "name": "Baluutsag",
+  "description": "",
+  "zone": "tonkhan",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tovo",
+      "to": "world_khulekhia_tovo"
+    },
+    {
+      "direction": "官道往Jinst",
+      "to": "world_tonkhan_jinst"
+    },
+    {
+      "direction": "小徑往Balanuurga",
+      "to": "world_morovria_balanuurga"
+    },
+    {
+      "direction": "小徑往Zebul",
+      "to": "world_khulekhia_zebul"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 597,
+    "cell_id": 2034,
+    "population": 1879,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 68631.64,
+    "y": 29911.37,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Baluutsag"
+  }
+}

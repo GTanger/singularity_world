@@ -1,0 +1,45 @@
+{
+  "id": "world_meia_shulun",
+  "name": "Shulun",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tailunfa",
+      "to": "world_meia_tailunfa"
+    },
+    {
+      "direction": "官道往Uiwang",
+      "to": "world_hwanponamguk_uiwang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 221,
+    "cell_id": 2847,
+    "population": 2707,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 26180.88,
+    "y": 37334.35,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Longshing"
+  }
+}

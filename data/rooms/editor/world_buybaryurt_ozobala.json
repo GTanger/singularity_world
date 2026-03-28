@@ -1,0 +1,44 @@
+{
+  "id": "world_buybaryurt_ozobala",
+  "name": "Ozobala",
+  "description": "",
+  "zone": "buybaryurt",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Aynak",
+      "to": "world_buybaryurt_aynak"
+    },
+    {
+      "direction": "小徑往Aydi",
+      "to": "world_yalkan_aydi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 289,
+    "cell_id": 1926,
+    "population": 1539,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 59402.95,
+    "y": 28445.03,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ozobala"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "world_buybaryurt_yliyu",
+  "name": "Yliyu",
+  "description": "",
+  "zone": "buybaryurt",
+  "tags": [
+    "city",
+    "citadel",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kart",
+      "to": "world_buybaryurt_kart"
+    },
+    {
+      "direction": "官道往Aska",
+      "to": "world_buybaryurt_aska"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 406,
+    "cell_id": 2543,
+    "population": 31036,
+    "culture": "突厥安",
+    "religion": "多庫凱巴教",
+    "biome": "溫帶雨林",
+    "x": 58255.93,
+    "y": 34348.02,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ayayrazeli"
+  }
+}

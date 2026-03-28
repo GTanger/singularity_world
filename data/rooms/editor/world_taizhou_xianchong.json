@@ -1,0 +1,49 @@
+{
+  "id": "world_taizhou_xianchong",
+  "name": "Xianchong",
+  "description": "",
+  "zone": "taizhou",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Xintaoqing",
+      "to": "world_xian_guo_xintaoqing"
+    },
+    {
+      "direction": "小徑往Hengzhou",
+      "to": "world_taizhou_hengzhou"
+    },
+    {
+      "direction": "小徑往Hangzhou",
+      "to": "world_taizhou_hangzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 606,
+    "cell_id": 5840,
+    "population": 16756,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶雨林",
+    "x": 12779.31,
+    "y": 71105.63,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Xianchong"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "world_tsetulag_rasgolgert",
+  "name": "Rasgolgert",
+  "description": "",
+  "zone": "tsetulag",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 116,
+    "cell_id": 2992,
+    "population": 9448,
+    "culture": "兀魯斯",
+    "religion": "賽罕信仰",
+    "biome": "溫帶落葉林",
+    "x": 64143.64,
+    "y": 38266.67,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tsadaria"
+  }
+}

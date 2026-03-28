@@ -1,0 +1,45 @@
+{
+  "id": "world_gurdebulia_myanuur",
+  "name": "Myanuur",
+  "description": "",
+  "zone": "gurdebulia",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hulaanbogd",
+      "to": "world_sains_hulaanbogd"
+    },
+    {
+      "direction": "小徑往Gurdebul",
+      "to": "world_gurdebulia_gurdebul"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 396,
+    "cell_id": 1851,
+    "population": 11364,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 82806.19,
+    "y": 27689.36,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Monkhulag"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "world_apakalia_mohikiau",
+  "name": "Mohikiau",
+  "description": "",
+  "zone": "apakalia",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hapalane",
+      "to": "world_puhumia_hapalane"
+    },
+    {
+      "direction": "官道往Kauho",
+      "to": "world_kauho_kauho"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 40,
+    "cell_id": 3703,
+    "population": 2832,
+    "culture": "毛伊",
+    "religion": "洛昌武信仰",
+    "biome": "熱帶雨林",
+    "x": 13969.2,
+    "y": 48213.24,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

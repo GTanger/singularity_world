@@ -1,0 +1,47 @@
+{
+  "id": "world_xian_guo_hajing",
+  "name": "Hajing",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Laizhouyun",
+      "to": "world_xian_guo_laizhouyun"
+    },
+    {
+      "direction": "官道往Yananxi",
+      "to": "world_xian_guo_yananxi"
+    },
+    {
+      "direction": "小徑往Guang",
+      "to": "world_xian_guo_guang_489"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 169,
+    "cell_id": 5649,
+    "population": 1631,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶落葉林",
+    "x": 18602.33,
+    "y": 69072.61,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Qin Guo"
+  }
+}

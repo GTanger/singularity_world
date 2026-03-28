@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_8",
+  "name": "旅店",
+  "description": "",
+  "zone": "buming",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Nolin",
+      "to": "world_buming_nolin"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 8,
+    "marker_type": "inns"
+  }
+}

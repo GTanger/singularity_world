@@ -1,0 +1,44 @@
+{
+  "id": "world_golparia_golshahrjan",
+  "name": "Golshahrjan",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Paran",
+      "to": "world_golparia_paran"
+    },
+    {
+      "direction": "小徑往Kardehis",
+      "to": "world_golparia_kardehis"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 511,
+    "cell_id": 5038,
+    "population": 10083,
+    "culture": "德蘭尼",
+    "religion": "茲茲切干教",
+    "biome": "溫帶落葉林",
+    "x": 50325.26,
+    "y": 62807.39,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Golshahrjan"
+  }
+}

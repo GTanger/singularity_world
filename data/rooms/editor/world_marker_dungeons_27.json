@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_dungeons_27",
+  "name": "地牢",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "dungeons"
+  ],
+  "exits": [
+    {
+      "direction": "返回Arakrankafa",
+      "to": "world_golparia_arakrankafa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 27,
+    "marker_type": "dungeons"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "world_henlongia_maonshano",
+  "name": "Maonshano",
+  "description": "",
+  "zone": "henlongia",
+  "tags": [
+    "town",
+    "plaza",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Henlong",
+      "to": "world_henlongia_henlong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 114,
+    "cell_id": 1771,
+    "population": 5324,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 8603.8,
+    "y": 28041.7,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Mongong"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "world_shalantsa_nishikata",
+  "name": "Nishikata",
+  "description": "",
+  "zone": "shalantsa",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hosdurmat",
+      "to": "world_sauntalur_hosdurmat"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 427,
+    "cell_id": 3820,
+    "population": 7320,
+    "culture": "大和",
+    "religion": "希亞特見證者",
+    "biome": "溫帶雨林",
+    "x": 58420.74,
+    "y": 48754.33,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nishikata"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "world_sananai_genbetsuha",
+  "name": "Genbetsuha",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Aimane",
+      "to": "world_sananai_aimane"
+    },
+    {
+      "direction": "小徑往Nishi",
+      "to": "world_sananai_nishi"
+    },
+    {
+      "direction": "小徑往Koyo",
+      "to": "world_sananai_koyo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 537,
+    "cell_id": 3152,
+    "population": 1178,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "熱帶季雨林",
+    "x": 42701.5,
+    "y": 40703.75,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Genbetsuha"
+  }
+}

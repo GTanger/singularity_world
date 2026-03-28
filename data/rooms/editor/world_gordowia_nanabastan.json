@@ -1,0 +1,49 @@
+{
+  "id": "world_gordowia_nanabastan",
+  "name": "Nanabastan",
+  "description": "",
+  "zone": "gordowia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tahasar",
+      "to": "world_gordowia_tahasar"
+    },
+    {
+      "direction": "小徑往Tuzey-Shahr",
+      "to": "world_gordowia_tuzey_shahr"
+    },
+    {
+      "direction": "小徑往Qarchak",
+      "to": "world_gordowia_qarchak"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 208,
+    "cell_id": 4965,
+    "population": 11782,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "溫帶雨林",
+    "x": 67743.26,
+    "y": 61382.85,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nanabastan"
+  }
+}

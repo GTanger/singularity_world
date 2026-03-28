@@ -1,0 +1,48 @@
+{
+  "id": "world_heqatha_alkut",
+  "name": "Alkut",
+  "description": "",
+  "zone": "heqatha",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Ikhkhon",
+      "to": "world_tsetgalia_ikhkhon"
+    },
+    {
+      "direction": "官道往Alsmah",
+      "to": "world_khabtal_alsmah"
+    },
+    {
+      "direction": "小徑往Saiyah",
+      "to": "world_heqatha_saiyah"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 526,
+    "cell_id": 3602,
+    "population": 4708,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "熱帶季雨林",
+    "x": 70136.86,
+    "y": 45511.01,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Alkut"
+  }
+}

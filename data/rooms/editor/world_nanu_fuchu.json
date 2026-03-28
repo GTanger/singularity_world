@@ -1,0 +1,50 @@
+{
+  "id": "world_nanu_fuchu",
+  "name": "Fuchu",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "village",
+    "river",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Nawarimira",
+      "to": "world_nanu_nawarimira"
+    },
+    {
+      "direction": "小徑往Mimamarayo",
+      "to": "world_nanu_mimamarayo"
+    },
+    {
+      "direction": "小徑往Tsuni",
+      "to": "world_nanu_tsuni"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 292,
+    "cell_id": 3497,
+    "population": 3272,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "熱帶季雨林",
+    "x": 49132.61,
+    "y": 44739.69,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Fuchu"
+  }
+}

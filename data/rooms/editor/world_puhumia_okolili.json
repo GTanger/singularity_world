@@ -1,0 +1,40 @@
+{
+  "id": "world_puhumia_okolili",
+  "name": "Okolili",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kwaito",
+      "to": "world_tuenia_kwaito"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 445,
+    "cell_id": 3553,
+    "population": 12997,
+    "culture": "毛伊",
+    "religion": "洛昌武信仰",
+    "biome": "熱帶季雨林",
+    "x": 15385.62,
+    "y": 45417.29,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Okolili"
+  }
+}

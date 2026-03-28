@@ -1,0 +1,51 @@
+{
+  "id": "world_fungshingia_muiwan",
+  "name": "Muiwan",
+  "description": "",
+  "zone": "fungshingia",
+  "tags": [
+    "town",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Pogongfu",
+      "to": "world_fungia_pogongfu"
+    },
+    {
+      "direction": "官道往Daowuhong",
+      "to": "world_siukhingia_daowuhong"
+    },
+    {
+      "direction": "小徑往Lamtei",
+      "to": "world_shamshia_lamtei"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 97,
+    "cell_id": 2721,
+    "population": 14517,
+    "culture": "關族",
+    "religion": "秋嶺教",
+    "biome": "溫帶落葉林",
+    "x": 15430.45,
+    "y": 36631.58,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hungshatia"
+  }
+}

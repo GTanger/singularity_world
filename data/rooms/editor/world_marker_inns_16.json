@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_16",
+  "name": "旅店",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Hongnam",
+      "to": "world_hongnamguk_hongnam"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 16,
+    "marker_type": "inns"
+  }
+}

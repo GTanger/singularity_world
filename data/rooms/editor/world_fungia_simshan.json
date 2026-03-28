@@ -1,0 +1,56 @@
+{
+  "id": "world_fungia_simshan",
+  "name": "Simshan",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Chung",
+      "to": "world_fungia_chung"
+    },
+    {
+      "direction": "官道往Siuyeungloy",
+      "to": "world_fungia_siuyeungloy"
+    },
+    {
+      "direction": "小徑往Namchau",
+      "to": "world_meia_namchau"
+    },
+    {
+      "direction": "小徑往Machaui",
+      "to": "world_fungia_machaui"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_10"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 176,
+    "cell_id": 2843,
+    "population": 1406,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 22059.05,
+    "y": 37327.38,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tong"
+  }
+}

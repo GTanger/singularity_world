@@ -1,0 +1,48 @@
+{
+  "id": "world_fungia_hingdak",
+  "name": "Hingdak",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Waichau",
+      "to": "world_fungia_waichau"
+    },
+    {
+      "direction": "官道往Chingtei",
+      "to": "world_kwun_chingtei"
+    },
+    {
+      "direction": "小徑往Tsimshantau",
+      "to": "world_longchia_tsimshantau"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 530,
+    "cell_id": 2277,
+    "population": 8746,
+    "culture": "關族",
+    "religion": "秋嶺教",
+    "biome": "溫帶雨林",
+    "x": 15927.37,
+    "y": 32389.42,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hingdak"
+  }
+}

@@ -1,5 +1,11 @@
 # 014 Parser A：Azgaar 世界地圖 → rooms.json 轉換器（組長領單）
 
+| 項目 | 內容 |
+|------|------|
+| **領單** | Cursor Auto（組長） |
+| **領單日期** | 2026-03-29 |
+| **狀態** | 已完成（Celia 已轉換；`tools/azgaar_parser.py`） |
+
 ## 目標
 
 將 Azgaar Fantasy Map Generator 的 Full JSON 匯出檔（如 `Celia Full 2026-01-25-04-11.json`，9MB）

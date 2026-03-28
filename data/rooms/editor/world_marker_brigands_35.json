@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_brigands_35",
+  "name": "盜賊據點",
+  "description": "",
+  "zone": "binz_guo",
+  "tags": [
+    "brigands"
+  ],
+  "exits": [
+    {
+      "direction": "返回Tongzhou",
+      "to": "world_binz_guo_tongzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 35,
+    "marker_type": "brigands"
+  }
+}

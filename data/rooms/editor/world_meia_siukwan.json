@@ -1,0 +1,44 @@
+{
+  "id": "world_meia_siukwan",
+  "name": "Siukwan",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village",
+    "highland"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Jeongdong",
+      "to": "world_hwanponamguk_jeongdong"
+    },
+    {
+      "direction": "小徑往Tsimshan",
+      "to": "world_meia_tsimshan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 444,
+    "cell_id": 3139,
+    "population": 1565,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 30270.52,
+    "y": 40066.77,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tsamgongia"
+  }
+}

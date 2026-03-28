@@ -1,0 +1,44 @@
+{
+  "id": "world_kima_khelaous",
+  "name": "Khelaous",
+  "description": "",
+  "zone": "kima",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Rafraguyi",
+      "to": "world_kima_rafraguyi"
+    },
+    {
+      "direction": "小徑往Bous",
+      "to": "world_kima_bous"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 191,
+    "cell_id": 5256,
+    "population": 2997,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "溫帶落葉林",
+    "x": 85286.15,
+    "y": 64699.3,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Adesfira"
+  }
+}

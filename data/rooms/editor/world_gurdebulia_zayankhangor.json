@@ -1,0 +1,46 @@
+{
+  "id": "world_gurdebulia_zayankhangor",
+  "name": "Zayankhangor",
+  "description": "",
+  "zone": "gurdebulia",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Gurdebul",
+      "to": "world_gurdebulia_gurdebul"
+    },
+    {
+      "direction": "官道往Olbar",
+      "to": "world_baniuria_olbar"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 415,
+    "cell_id": 1648,
+    "population": 16058,
+    "culture": "兀魯斯",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶落葉林",
+    "x": 84253.56,
+    "y": 25880.96,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Batad"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_lon_guo_chang",
+  "name": "Chang",
+  "description": "",
+  "zone": "lon_guo",
+  "tags": [
+    "village",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yilin",
+      "to": "world_lon_guo_yilin"
+    },
+    {
+      "direction": "小徑往Zhong",
+      "to": "world_lon_guo_zhong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 389,
+    "cell_id": 5927,
+    "population": 1975,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 7609.04,
+    "y": 73388.96,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Dong Guo"
+  }
+}

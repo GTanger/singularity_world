@@ -1,0 +1,45 @@
+{
+  "id": "world_guela_aranelida",
+  "name": "Aranelida",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Lqlidelt",
+      "to": "world_guela_lqlidelt"
+    },
+    {
+      "direction": "小徑往Nefrulad",
+      "to": "world_guela_nefrulad"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 619,
+    "cell_id": 4806,
+    "population": 14863,
+    "culture": "柏柏爾",
+    "religion": "斯利拉拉扎格教",
+    "biome": "溫帶落葉林",
+    "x": 78723.02,
+    "y": 59526.06,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Aranelida"
+  }
+}

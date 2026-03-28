@@ -1,0 +1,48 @@
+{
+  "id": "world_myania_saint",
+  "name": "Saint",
+  "description": "",
+  "zone": "myania",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Khonlig",
+      "to": "world_myania_khonlig"
+    },
+    {
+      "direction": "小徑往Mekalhusu",
+      "to": "world_dur_un_mekalhusu"
+    },
+    {
+      "direction": "小徑往Ulaangol",
+      "to": "world_tsetgalia_ulaangol"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 381,
+    "cell_id": 2450,
+    "population": 8819,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 77723.42,
+    "y": 33665.97,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tonkhan"
+  }
+}

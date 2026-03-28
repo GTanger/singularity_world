@@ -1,0 +1,44 @@
+{
+  "id": "world_krishna_lakshpurhat",
+  "name": "Lakshpurhat",
+  "description": "",
+  "zone": "krishna",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kopanalur",
+      "to": "world_krishna_kopanalur"
+    },
+    {
+      "direction": "小徑往Papetnagal",
+      "to": "world_krishna_papetnagal"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 384,
+    "cell_id": 4114,
+    "population": 1589,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 81786.88,
+    "y": 51103.98,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Holia"
+  }
+}

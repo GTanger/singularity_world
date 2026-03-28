@@ -1,0 +1,41 @@
+{
+  "id": "world_israfamin_jarim",
+  "name": "Jarim",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "village",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Bustan",
+      "to": "world_gordowia_bustan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 322,
+    "cell_id": 5058,
+    "population": 3777,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶雨林",
+    "x": 62589.47,
+    "y": 62662.67,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Jarim"
+  }
+}

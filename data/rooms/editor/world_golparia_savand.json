@@ -1,0 +1,51 @@
+{
+  "id": "world_golparia_savand",
+  "name": "Savand",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "village",
+    "naval",
+    "port",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Miandaq",
+      "to": "world_golparia_miandaq"
+    },
+    {
+      "direction": "小徑往Aslamshahr",
+      "to": "world_golparia_aslamshahr"
+    },
+    {
+      "direction": "海路往Dayandaq",
+      "to": "world_jowzvania_dayandaq"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 581,
+    "cell_id": 4777,
+    "population": 1293,
+    "culture": "德蘭尼",
+    "religion": "圖拉雷沙赫爾派",
+    "biome": "濕地",
+    "x": 53120.03,
+    "y": 59149.04,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Nikoshia"
+  }
+}

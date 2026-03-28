@@ -1,0 +1,51 @@
+{
+  "id": "world_tsetgalia_tsetsen_on",
+  "name": "Tsetsen On",
+  "description": "",
+  "zone": "tsetgalia",
+  "tags": [
+    "village",
+    "river",
+    "capital",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Shani",
+      "to": "world_dur_un_shani"
+    },
+    {
+      "direction": "官道往Zayanjar",
+      "to": "world_tsetgalia_zayanjar"
+    },
+    {
+      "direction": "小徑往Ulaangol",
+      "to": "world_tsetgalia_ulaangol"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 100,
+    "cell_id": 2791,
+    "population": 2294,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 78122.85,
+    "y": 36706.85,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Tsetsen On"
+  }
+}

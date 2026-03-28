@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_ruins_50",
+  "name": "遺跡",
+  "description": "",
+  "zone": "abepe",
+  "tags": [
+    "ruins"
+  ],
+  "exits": [
+    {
+      "direction": "返回Ulag Ontog",
+      "to": "world_abepe_ulag_ontog"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 50,
+    "marker_type": "ruins"
+  }
+}

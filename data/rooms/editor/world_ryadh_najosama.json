@@ -1,0 +1,44 @@
+{
+  "id": "world_ryadh_najosama",
+  "name": "Najosama",
+  "description": "",
+  "zone": "ryadh",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hosdurmat",
+      "to": "world_sauntalur_hosdurmat"
+    },
+    {
+      "direction": "小徑往Amah",
+      "to": "world_ryadh_amah"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 356,
+    "cell_id": 3824,
+    "population": 7617,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "熱帶季雨林",
+    "x": 62803.19,
+    "y": 48624.5,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Najosama"
+  }
+}

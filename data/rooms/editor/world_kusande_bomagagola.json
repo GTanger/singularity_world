@@ -1,0 +1,44 @@
+{
+  "id": "world_kusande_bomagagola",
+  "name": "Bomagagola",
+  "description": "",
+  "zone": "kusande",
+  "tags": [
+    "village",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Athmeshnur",
+      "to": "world_sauntalur_athmeshnur"
+    },
+    {
+      "direction": "小徑往Baragotere",
+      "to": "world_krishna_baragotere"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 571,
+    "cell_id": 3688,
+    "population": 1145,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶季雨林",
+    "x": 80130.76,
+    "y": 46588.37,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sangania"
+  }
+}

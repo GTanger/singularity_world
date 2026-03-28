@@ -1,0 +1,47 @@
+{
+  "id": "world_sauntalur_heghatkalla",
+  "name": "Heghatkalla",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "city",
+    "citadel",
+    "plaza",
+    "walls",
+    "shantytown"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kolemukhi",
+      "to": "world_sauntalur_kolemukhi"
+    },
+    {
+      "direction": "小徑往Hunkobertti",
+      "to": "world_sauntalur_hunkobertti"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 104,
+    "cell_id": 3685,
+    "population": 21063,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "溫帶落葉林",
+    "x": 77436.24,
+    "y": 46720.82,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 1,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Heghatkalla"
+  }
+}

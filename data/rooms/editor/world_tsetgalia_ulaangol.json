@@ -1,0 +1,50 @@
+{
+  "id": "world_tsetgalia_ulaangol",
+  "name": "Ulaangol",
+  "description": "",
+  "zone": "tsetgalia",
+  "tags": [
+    "town",
+    "river",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Horbumenbogd",
+      "to": "world_tsetgalia_horbumenbogd"
+    },
+    {
+      "direction": "小徑往Saint",
+      "to": "world_myania_saint"
+    },
+    {
+      "direction": "小徑往Tsetsen On",
+      "to": "world_tsetgalia_tsetsen_on"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 407,
+    "cell_id": 2789,
+    "population": 12397,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 76517.6,
+    "y": 36196.36,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Bayanogodia"
+  }
+}

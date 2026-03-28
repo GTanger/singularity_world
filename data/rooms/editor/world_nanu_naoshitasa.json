@@ -1,0 +1,48 @@
+{
+  "id": "world_nanu_naoshitasa",
+  "name": "Naoshitasa",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Nawarimira",
+      "to": "world_nanu_nawarimira"
+    },
+    {
+      "direction": "小徑往Matsunika",
+      "to": "world_nanu_matsunika"
+    },
+    {
+      "direction": "小徑往Shikinata",
+      "to": "world_nanu_shikinata"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 258,
+    "cell_id": 3582,
+    "population": 1479,
+    "culture": "大和",
+    "religion": "石坦派",
+    "biome": "熱帶雨林",
+    "x": 53239.64,
+    "y": 45518.72,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Horida"
+  }
+}

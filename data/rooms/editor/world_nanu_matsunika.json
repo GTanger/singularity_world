@@ -1,0 +1,40 @@
+{
+  "id": "world_nanu_matsunika",
+  "name": "Matsunika",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Naoshitasa",
+      "to": "world_nanu_naoshitasa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 303,
+    "cell_id": 3501,
+    "population": 4970,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "熱帶雨林",
+    "x": 53113.25,
+    "y": 44800.37,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Matsunika"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "world_buybaryurt_aynak",
+  "name": "Aynak",
+  "description": "",
+  "zone": "buybaryurt",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yelgeli",
+      "to": "world_buybaryurt_yelgeli"
+    },
+    {
+      "direction": "小徑往Buynak",
+      "to": "world_buybaryurt_buynak"
+    },
+    {
+      "direction": "小徑往Ozobala",
+      "to": "world_buybaryurt_ozobala"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 484,
+    "cell_id": 2025,
+    "population": 6042,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 59216.45,
+    "y": 29246.38,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Aynak"
+  }
+}

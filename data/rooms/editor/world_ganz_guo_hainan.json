@@ -1,0 +1,45 @@
+{
+  "id": "world_ganz_guo_hainan",
+  "name": "Hainan",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Sizhou",
+      "to": "world_ganz_guo_sizhou_612"
+    },
+    {
+      "direction": "官道往Laizhouyun",
+      "to": "world_xian_guo_laizhouyun"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 202,
+    "cell_id": 5197,
+    "population": 12316,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶落葉林",
+    "x": 22851.7,
+    "y": 64702.04,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hainan"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "world_sasasunguk_samcheok",
+  "name": "Samcheok",
+  "description": "",
+  "zone": "sasasunguk",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 112,
+    "cell_id": 2089,
+    "population": 6848,
+    "culture": "高麗",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 32658.42,
+    "y": 30874.94,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Samcheok"
+  }
+}

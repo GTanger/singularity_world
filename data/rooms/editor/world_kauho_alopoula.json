@@ -1,0 +1,44 @@
+{
+  "id": "world_kauho_alopoula",
+  "name": "Alopoula",
+  "description": "",
+  "zone": "kauho",
+  "tags": [
+    "village",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kauho",
+      "to": "world_kauho_kauho"
+    },
+    {
+      "direction": "官道往Panui",
+      "to": "world_kauho_panui"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 566,
+    "cell_id": 3628,
+    "population": 1256,
+    "culture": "毛伊",
+    "religion": "洛昌武信仰",
+    "biome": "熱帶季雨林",
+    "x": 12331.6,
+    "y": 47077.9,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Pulia"
+  }
+}

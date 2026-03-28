@@ -1,0 +1,49 @@
+{
+  "id": "world_puhumia_hapalane",
+  "name": "Hapalane",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Mohikiau",
+      "to": "world_apakalia_mohikiau"
+    },
+    {
+      "direction": "官道往Mololaiehu",
+      "to": "world_puhumia_mololaiehu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 41,
+    "cell_id": 3706,
+    "population": 15901,
+    "culture": "毛伊",
+    "religion": "洛昌武信仰",
+    "biome": "熱帶雨林",
+    "x": 14628.05,
+    "y": 47935.24,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Hapalane"
+  }
+}

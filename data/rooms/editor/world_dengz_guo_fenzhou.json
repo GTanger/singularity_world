@@ -1,0 +1,45 @@
+{
+  "id": "world_dengz_guo_fenzhou",
+  "name": "Fenzhou",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "village",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ningyibei",
+      "to": "world_dengz_guo_ningyibei"
+    },
+    {
+      "direction": "聖林",
+      "to": "world_marker_sacred_forests_31"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 395,
+    "cell_id": 5569,
+    "population": 2806,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 34726.53,
+    "y": 68125.32,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Fenzhou"
+  }
+}

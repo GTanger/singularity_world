@@ -1,0 +1,49 @@
+{
+  "id": "world_krishna_baragotere",
+  "name": "Baragotere",
+  "description": "",
+  "zone": "krishna",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Wadapurpur",
+      "to": "world_kusande_wadapurpur"
+    },
+    {
+      "direction": "官道往Lonnamavar",
+      "to": "world_sauntalur_lonnamavar"
+    },
+    {
+      "direction": "小徑往Bomagagola",
+      "to": "world_kusande_bomagagola"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 572,
+    "cell_id": 3766,
+    "population": 12818,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 80799.67,
+    "y": 47602.32,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Baragotere"
+  }
+}

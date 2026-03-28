@@ -1,0 +1,52 @@
+{
+  "id": "world_hongnamguk_hamrye",
+  "name": "Hamrye",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hongnam",
+      "to": "world_hongnamguk_hongnam"
+    },
+    {
+      "direction": "小徑往Uiryeondeok",
+      "to": "world_hongnamguk_uiryeondeok"
+    },
+    {
+      "direction": "小徑往Gocha",
+      "to": "world_hongnamguk_gocha"
+    },
+    {
+      "direction": "小徑往Yeomchon",
+      "to": "world_sasasunguk_yeomchon"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 416,
+    "cell_id": 1900,
+    "population": 7943,
+    "culture": "高麗",
+    "religion": "高麗萬神殿",
+    "biome": "溫帶雨林",
+    "x": 39930.37,
+    "y": 28918.78,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Singyeon"
+  }
+}

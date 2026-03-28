@@ -1,0 +1,54 @@
+{
+  "id": "world_bayan_luushaantno",
+  "name": "Luushaantno",
+  "description": "",
+  "zone": "bayan",
+  "tags": [
+    "town",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Chunelgerkhu",
+      "to": "world_bayan_chunelgerkhu"
+    },
+    {
+      "direction": "小徑往Khairgayan",
+      "to": "world_tsetulag_khairgayan"
+    },
+    {
+      "direction": "小徑往Myanzurkh",
+      "to": "world_bayan_myanzurkh"
+    },
+    {
+      "direction": "小徑往Tsetsengor",
+      "to": "world_bayan_tsetsengor"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 391,
+    "cell_id": 2436,
+    "population": 14740,
+    "culture": "兀魯斯",
+    "religion": "賽罕信仰",
+    "biome": "溫帶落葉林",
+    "x": 63210.58,
+    "y": 33511.47,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Luushaantno"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "world_fungia_siuyeungloy",
+  "name": "Siuyeungloy",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Simshan",
+      "to": "world_fungia_simshan"
+    },
+    {
+      "direction": "官道往Fatshuiu",
+      "to": "world_fungia_fatshuiu"
+    },
+    {
+      "direction": "小徑往Maulong",
+      "to": "world_fungia_maulong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 486,
+    "cell_id": 2725,
+    "population": 18297,
+    "culture": "關族",
+    "religion": "小洋密教",
+    "biome": "溫帶雨林",
+    "x": 19680.75,
+    "y": 36369.63,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chinghia"
+  }
+}

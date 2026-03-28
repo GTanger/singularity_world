@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_battlefields_22",
+  "name": "古戰場",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "battlefields"
+  ],
+  "exits": [
+    {
+      "direction": "返回Yahin",
+      "to": "world_chamgaria_yahin"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 22,
+    "marker_type": "battlefields"
+  }
+}

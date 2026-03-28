@@ -1,0 +1,53 @@
+{
+  "id": "world_yalkan_eltanoba",
+  "name": "Eltanoba",
+  "description": "",
+  "zone": "yalkan",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Karsenoca",
+      "to": "world_abepe_karsenoca"
+    },
+    {
+      "direction": "官道往Yaz",
+      "to": "world_yalkan_yaz"
+    },
+    {
+      "direction": "小徑往Bopuz",
+      "to": "world_buybaryurt_bopuz"
+    },
+    {
+      "direction": "小徑往Keren",
+      "to": "world_yalkan_keren"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 138,
+    "cell_id": 2321,
+    "population": 1445,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 54247.55,
+    "y": 32498.7,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Eltanoba"
+  }
+}

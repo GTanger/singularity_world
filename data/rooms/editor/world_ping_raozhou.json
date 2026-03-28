@@ -1,0 +1,45 @@
+{
+  "id": "world_ping_raozhou",
+  "name": "Raozhou",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Shouchang",
+      "to": "world_ping_shouchang"
+    },
+    {
+      "direction": "小徑往Tengchungy",
+      "to": "world_ping_tengchungy"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 342,
+    "cell_id": 5009,
+    "population": 7522,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶雨林",
+    "x": 18732.2,
+    "y": 62462.5,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Raozhou"
+  }
+}

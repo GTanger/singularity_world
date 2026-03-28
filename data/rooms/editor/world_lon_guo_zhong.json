@@ -1,0 +1,48 @@
+{
+  "id": "world_lon_guo_zhong",
+  "name": "Zhong",
+  "description": "",
+  "zone": "lon_guo",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Chang",
+      "to": "world_lon_guo_chang"
+    },
+    {
+      "direction": "小徑往Guang",
+      "to": "world_lon_guo_guang"
+    },
+    {
+      "direction": "小徑往Haixing",
+      "to": "world_lon_guo_haixing"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 287,
+    "cell_id": 6100,
+    "population": 14705,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 8044.66,
+    "y": 74811.26,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chon Guo"
+  }
+}

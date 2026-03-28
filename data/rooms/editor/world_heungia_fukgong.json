@@ -1,0 +1,53 @@
+{
+  "id": "world_heungia_fukgong",
+  "name": "Fukgong",
+  "description": "",
+  "zone": "heungia",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Fungsha",
+      "to": "world_heungia_fungsha"
+    },
+    {
+      "direction": "官道往Hangpo",
+      "to": "world_heungia_hangpo"
+    },
+    {
+      "direction": "小徑往Hengon",
+      "to": "world_heungia_hengon"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 38,
+    "cell_id": 2712,
+    "population": 3093,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 6097.98,
+    "y": 37222.02,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Fukgong"
+  }
+}

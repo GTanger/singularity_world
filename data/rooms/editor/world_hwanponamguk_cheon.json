@@ -1,0 +1,48 @@
+{
+  "id": "world_hwanponamguk_cheon",
+  "name": "Cheon",
+  "description": "",
+  "zone": "hwanponamguk",
+  "tags": [
+    "town",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Uiwang",
+      "to": "world_hwanponamguk_uiwang"
+    },
+    {
+      "direction": "官道往Gongseongam",
+      "to": "world_hwanponamguk_gongseongam"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 93,
+    "cell_id": 2618,
+    "population": 12928,
+    "culture": "高麗",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 29833.37,
+    "y": 35559.42,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Cheon"
+  }
+}

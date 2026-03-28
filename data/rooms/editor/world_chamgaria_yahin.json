@@ -1,0 +1,49 @@
+{
+  "id": "world_chamgaria_yahin",
+  "name": "Yahin",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Janabad",
+      "to": "world_chamgaria_janabad"
+    },
+    {
+      "direction": "古戰場",
+      "to": "world_marker_battlefields_22"
+    },
+    {
+      "direction": "遭遇點",
+      "to": "world_marker_encounters_70"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 586,
+    "cell_id": 6232,
+    "population": 9220,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "濕地",
+    "x": 69153.55,
+    "y": 75265.04,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Yahin"
+  }
+}

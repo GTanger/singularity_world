@@ -1,0 +1,48 @@
+{
+  "id": "world_dengz_guo_ningyibei",
+  "name": "Ningyibei",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "village",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Fenzhou",
+      "to": "world_dengz_guo_fenzhou"
+    },
+    {
+      "direction": "小徑往Diping",
+      "to": "world_dengz_guo_diping"
+    },
+    {
+      "direction": "小徑往Bainingbo",
+      "to": "world_taoxing_bainingbo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 568,
+    "cell_id": 5766,
+    "population": 1730,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 35118.19,
+    "y": 70462.64,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yih Guo"
+  }
+}

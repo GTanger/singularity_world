@@ -1,0 +1,45 @@
+{
+  "id": "world_hafaha_balsazim",
+  "name": "Balsazim",
+  "description": "",
+  "zone": "hafaha",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Alhuray",
+      "to": "world_hafaha_alhuray"
+    },
+    {
+      "direction": "小徑往Jibtal",
+      "to": "world_hafaha_jibtal"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 383,
+    "cell_id": 3263,
+    "population": 7141,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "熱帶雨林",
+    "x": 68220.91,
+    "y": 41293.12,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Al Duja"
+  }
+}

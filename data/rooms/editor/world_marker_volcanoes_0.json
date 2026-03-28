@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_volcanoes_0",
+  "name": "火山",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "volcanoes"
+  ],
+  "exits": [
+    {
+      "direction": "返回Ahanatarim",
+      "to": "world_israfamin_ahanatarim"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 0,
+    "marker_type": "volcanoes"
+  }
+}

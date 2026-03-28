@@ -1,0 +1,48 @@
+{
+  "id": "world_puhumia_napopiono",
+  "name": "Napopiono",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "village",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Siche",
+      "to": "world_ping_siche"
+    },
+    {
+      "direction": "官道往Apohinehi",
+      "to": "world_puhumia_apohinehi"
+    },
+    {
+      "direction": "小徑往Paiahulua",
+      "to": "world_puhumia_paiahulua"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 250,
+    "cell_id": 4033,
+    "population": 4863,
+    "culture": "毛伊",
+    "religion": "亞洲信仰",
+    "biome": "熱帶雨林",
+    "x": 15158.02,
+    "y": 51807.89,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Napopiono"
+  }
+}

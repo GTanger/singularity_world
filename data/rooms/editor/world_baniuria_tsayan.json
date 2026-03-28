@@ -1,0 +1,45 @@
+{
+  "id": "world_baniuria_tsayan",
+  "name": "Tsayan",
+  "description": "",
+  "zone": "baniuria",
+  "tags": [
+    "village",
+    "plaza",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Onuur",
+      "to": "world_baniuria_onuur"
+    },
+    {
+      "direction": "小徑往Zagangol",
+      "to": "world_baniuria_zagangol"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 432,
+    "cell_id": 1650,
+    "population": 1789,
+    "culture": "兀魯斯",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶落葉林",
+    "x": 86926.6,
+    "y": 25873.64,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tsayan"
+  }
+}

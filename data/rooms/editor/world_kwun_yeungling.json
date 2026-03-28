@@ -1,0 +1,52 @@
+{
+  "id": "world_kwun_yeungling",
+  "name": "Yeungling",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Longfukok",
+      "to": "world_kwun_longfukok"
+    },
+    {
+      "direction": "小徑往Lungong",
+      "to": "world_kwun_lungong"
+    },
+    {
+      "direction": "小徑往Kwunmungon",
+      "to": "world_kwun_kwunmungon"
+    },
+    {
+      "direction": "遭遇點",
+      "to": "world_marker_encounters_69"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 403,
+    "cell_id": 1782,
+    "population": 8741,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶雨林",
+    "x": 20188.85,
+    "y": 27738.66,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Maonsia"
+  }
+}

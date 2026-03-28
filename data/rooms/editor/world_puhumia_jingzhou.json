@@ -1,0 +1,47 @@
+{
+  "id": "world_puhumia_jingzhou",
+  "name": "Jingzhou",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Shinan",
+      "to": "world_meia_shinan"
+    },
+    {
+      "direction": "小徑往Daxingling",
+      "to": "world_puhumia_daxingling"
+    },
+    {
+      "direction": "遭遇點",
+      "to": "world_marker_encounters_65"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 516,
+    "cell_id": 3875,
+    "population": 2016,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "熱帶季雨林",
+    "x": 22449.12,
+    "y": 49804.92,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jingzhou"
+  }
+}

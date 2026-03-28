@@ -1,0 +1,49 @@
+{
+  "id": "world_bayan_chunelgerkhu",
+  "name": "Chunelgerkhu",
+  "description": "",
+  "zone": "bayan",
+  "tags": [
+    "city",
+    "plaza",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Sainshaat",
+      "to": "world_bayan_sainshaat"
+    },
+    {
+      "direction": "小徑往Luushaantno",
+      "to": "world_bayan_luushaantno"
+    },
+    {
+      "direction": "小徑往Khuregkhus",
+      "to": "world_bayan_khuregkhus"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 230,
+    "cell_id": 2329,
+    "population": 29458,
+    "culture": "兀魯斯",
+    "religion": "楚涅勒格赫信仰",
+    "biome": "溫帶落葉林",
+    "x": 62821.04,
+    "y": 32102.87,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Zatania"
+  }
+}

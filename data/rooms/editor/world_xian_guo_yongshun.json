@@ -1,0 +1,43 @@
+{
+  "id": "world_xian_guo_yongshun",
+  "name": "Yongshun",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Laizhou",
+      "to": "world_ganz_guo_laizhou"
+    },
+    {
+      "direction": "小徑往Laizhouyun",
+      "to": "world_xian_guo_laizhouyun"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 126,
+    "cell_id": 5365,
+    "population": 1615,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶落葉林",
+    "x": 19224.82,
+    "y": 66246.74,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Qin Guo"
+  }
+}

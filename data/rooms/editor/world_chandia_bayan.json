@@ -1,0 +1,49 @@
+{
+  "id": "world_chandia_bayan",
+  "name": "Bayan",
+  "description": "",
+  "zone": "chandia",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Jibtal",
+      "to": "world_hafaha_jibtal"
+    },
+    {
+      "direction": "官道往Buregkher",
+      "to": "world_chandia_buregkher"
+    },
+    {
+      "direction": "雕像",
+      "to": "world_marker_statues_44"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 257,
+    "cell_id": 3085,
+    "population": 1705,
+    "culture": "兀魯斯",
+    "religion": "烏拉格賽拉格派",
+    "biome": "溫帶落葉林",
+    "x": 66935.89,
+    "y": 39379.13,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Bayan"
+  }
+}

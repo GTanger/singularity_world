@@ -1,0 +1,50 @@
+{
+  "id": "world_chamgaria_hafshan",
+  "name": "Hafshan",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "river",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Buged",
+      "to": "world_chamgaria_buged"
+    },
+    {
+      "direction": "小徑往Pariruzful",
+      "to": "world_chamgaria_pariruzful"
+    },
+    {
+      "direction": "小徑往Tahasar",
+      "to": "world_gordowia_tahasar"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 457,
+    "cell_id": 5513,
+    "population": 10333,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "溫帶雨林",
+    "x": 71280.01,
+    "y": 67890.06,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Zran"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "world_sauntalur_sajagaval",
+  "name": "Sajagaval",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Jajan",
+      "to": "world_heqatha_jajan"
+    },
+    {
+      "direction": "小徑往Ronni",
+      "to": "world_sauntalur_ronni"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 267,
+    "cell_id": 3913,
+    "population": 3286,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "熱帶季雨林",
+    "x": 68833.47,
+    "y": 49597.97,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kushnaia"
+  }
+}

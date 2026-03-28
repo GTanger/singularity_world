@@ -1,0 +1,45 @@
+{
+  "id": "world_sanguk_okchang",
+  "name": "Okchang",
+  "description": "",
+  "zone": "sanguk",
+  "tags": [
+    "village",
+    "citadel",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Uiwang",
+      "to": "world_hwanponamguk_uiwang"
+    },
+    {
+      "direction": "小徑往Poyang",
+      "to": "world_sanguk_poyang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 282,
+    "cell_id": 2393,
+    "population": 1575,
+    "culture": "高麗",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 28126.09,
+    "y": 33234.04,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sancheok"
+  }
+}

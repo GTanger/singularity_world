@@ -1,0 +1,44 @@
+{
+  "id": "world_awlata_asfrafira",
+  "name": "Asfrafira",
+  "description": "",
+  "zone": "awlata",
+  "tags": [
+    "hamlet",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kenibgazer",
+      "to": "world_awlata_kenibgazer"
+    },
+    {
+      "direction": "小徑往Nefrulad",
+      "to": "world_guela_nefrulad"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 401,
+    "cell_id": 4808,
+    "population": 995,
+    "culture": "柏柏爾",
+    "religion": "斯利拉拉扎格教",
+    "biome": "熱帶季雨林",
+    "x": 80493.74,
+    "y": 59905.16,
+    "watabou_params": {
+      "size": 4,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ayt"
+  }
+}

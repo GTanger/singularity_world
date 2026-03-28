@@ -1,0 +1,44 @@
+{
+  "id": "world_siukhingia_daowuhong",
+  "name": "Daowuhong",
+  "description": "",
+  "zone": "siukhingia",
+  "tags": [
+    "village",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Muiwan",
+      "to": "world_fungshingia_muiwan"
+    },
+    {
+      "direction": "官道往Tungchuen",
+      "to": "world_siukhingia_tungchuen"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 614,
+    "cell_id": 2603,
+    "population": 1945,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 14226.13,
+    "y": 35678.04,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Daowuhong"
+  }
+}

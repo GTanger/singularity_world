@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_canoes_57",
+  "name": "渡口",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "canoes"
+  ],
+  "exits": [
+    {
+      "direction": "返回Arakrankafa",
+      "to": "world_golparia_arakrankafa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 57,
+    "marker_type": "canoes"
+  }
+}

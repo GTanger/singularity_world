@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_encounters_69",
+  "name": "遭遇點",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "encounters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Yeungling",
+      "to": "world_kwun_yeungling"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 69,
+    "marker_type": "encounters"
+  }
+}

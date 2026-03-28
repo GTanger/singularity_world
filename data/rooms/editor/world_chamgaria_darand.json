@@ -1,0 +1,42 @@
+{
+  "id": "world_chamgaria_darand",
+  "name": "Darand",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "village",
+    "river",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Dowsieh",
+      "to": "world_chamgaria_dowsieh"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 132,
+    "cell_id": 6077,
+    "population": 4832,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 78626.82,
+    "y": 73518.27,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Shabadia"
+  }
+}

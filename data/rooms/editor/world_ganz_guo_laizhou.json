@@ -1,0 +1,46 @@
+{
+  "id": "world_ganz_guo_laizhou",
+  "name": "Laizhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "city",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Natong",
+      "to": "world_ganz_guo_natong"
+    },
+    {
+      "direction": "小徑往Yongshun",
+      "to": "world_xian_guo_yongshun"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 466,
+    "cell_id": 5195,
+    "population": 25870,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶雨林",
+    "x": 20489.3,
+    "y": 64748.23,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Xuz Guo"
+  }
+}

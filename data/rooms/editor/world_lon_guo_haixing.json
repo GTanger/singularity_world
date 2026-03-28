@@ -1,0 +1,49 @@
+{
+  "id": "world_lon_guo_haixing",
+  "name": "Haixing",
+  "description": "",
+  "zone": "lon_guo",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Xuantian",
+      "to": "world_xian_guo_xuantian"
+    },
+    {
+      "direction": "小徑往Tengchang",
+      "to": "world_taizhou_tengchang"
+    },
+    {
+      "direction": "小徑往Zhong",
+      "to": "world_lon_guo_zhong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 102,
+    "cell_id": 6018,
+    "population": 1497,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 10449.51,
+    "y": 73662.14,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Haixing"
+  }
+}

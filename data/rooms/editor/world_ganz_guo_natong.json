@@ -1,0 +1,48 @@
+{
+  "id": "world_ganz_guo_natong",
+  "name": "Natong",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Laizhou",
+      "to": "world_ganz_guo_laizhou"
+    },
+    {
+      "direction": "小徑往Tengchungy",
+      "to": "world_ping_tengchungy"
+    },
+    {
+      "direction": "小徑往Haibeinan",
+      "to": "world_ganz_guo_haibeinan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 270,
+    "cell_id": 5106,
+    "population": 1516,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶雨林",
+    "x": 19456.55,
+    "y": 63885.68,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Natong"
+  }
+}

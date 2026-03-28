@@ -1,0 +1,44 @@
+{
+  "id": "world_buybaryurt_khashinch",
+  "name": "Khashinch",
+  "description": "",
+  "zone": "buybaryurt",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Buynak",
+      "to": "world_buybaryurt_buynak"
+    },
+    {
+      "direction": "小徑往Khoyonurga",
+      "to": "world_khulekhia_khoyonurga"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 290,
+    "cell_id": 1928,
+    "population": 1541,
+    "culture": "兀魯斯",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 61069.61,
+    "y": 28946.07,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Khashinch"
+  }
+}

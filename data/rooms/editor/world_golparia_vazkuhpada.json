@@ -1,0 +1,44 @@
+{
+  "id": "world_golparia_vazkuhpada",
+  "name": "Vazkuhpada",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Shabas",
+      "to": "world_golparia_shabas"
+    },
+    {
+      "direction": "小徑往Sabat",
+      "to": "world_golparia_sabat"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 317,
+    "cell_id": 5404,
+    "population": 8965,
+    "culture": "德蘭尼",
+    "religion": "茲茲切干教",
+    "biome": "溫帶雨林",
+    "x": 52516.11,
+    "y": 66563.68,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Vayan"
+  }
+}

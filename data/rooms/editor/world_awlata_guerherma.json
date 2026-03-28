@@ -1,0 +1,39 @@
+{
+  "id": "world_awlata_guerherma",
+  "name": "Guerherma",
+  "description": "",
+  "zone": "awlata",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Rafzalayt",
+      "to": "world_awlata_rafzalayt"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 471,
+    "cell_id": 4458,
+    "population": 1667,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "熱帶雨林",
+    "x": 84179.36,
+    "y": 55732.87,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Guelmam"
+  }
+}

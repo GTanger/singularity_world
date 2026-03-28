@@ -1,0 +1,44 @@
+{
+  "id": "world_abepe_balkayabay",
+  "name": "Balkayabay",
+  "description": "",
+  "zone": "abepe",
+  "tags": [
+    "village",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Ayazbaykut",
+      "to": "world_abepe_ayazbaykut"
+    },
+    {
+      "direction": "官道往Karsenoca",
+      "to": "world_abepe_karsenoca"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 240,
+    "cell_id": 2217,
+    "population": 2194,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 50734.55,
+    "y": 31938.01,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Emeyurt"
+  }
+}

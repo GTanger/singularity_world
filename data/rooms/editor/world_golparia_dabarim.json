@@ -1,0 +1,45 @@
+{
+  "id": "world_golparia_dabarim",
+  "name": "Dabarim",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zasirstan",
+      "to": "world_golparia_zasirstan"
+    },
+    {
+      "direction": "古戰場",
+      "to": "world_marker_battlefields_23"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 286,
+    "cell_id": 5311,
+    "population": 13384,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶雨林",
+    "x": 54918.49,
+    "y": 65318.63,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Dabarim"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "world_puhumia_henan",
+  "name": "Henan",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "village",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tengchuan",
+      "to": "world_ping_tengchuan"
+    },
+    {
+      "direction": "官道往Mololaiehu",
+      "to": "world_puhumia_mololaiehu"
+    },
+    {
+      "direction": "小徑往Paiahulua",
+      "to": "world_puhumia_paiahulua"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 505,
+    "cell_id": 4035,
+    "population": 1149,
+    "culture": "漢族",
+    "religion": "漢族教會",
+    "biome": "熱帶季雨林",
+    "x": 17651.65,
+    "y": 51829.05,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Yaz Guo"
+  }
+}

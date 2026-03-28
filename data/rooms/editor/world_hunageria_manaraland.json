@@ -1,0 +1,50 @@
+{
+  "id": "world_hunageria_manaraland",
+  "name": "Manaraland",
+  "description": "",
+  "zone": "hunageria",
+  "tags": [
+    "village",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kudch",
+      "to": "world_hunageria_kudch"
+    },
+    {
+      "direction": "官道往Kadur",
+      "to": "world_hunageria_kadur"
+    },
+    {
+      "direction": "小徑往Kolemukhi",
+      "to": "world_sauntalur_kolemukhi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 347,
+    "cell_id": 4007,
+    "population": 2421,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 74788.37,
+    "y": 51230.47,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Manaraland"
+  }
+}

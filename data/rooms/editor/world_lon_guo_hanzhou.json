@@ -1,0 +1,41 @@
+{
+  "id": "world_lon_guo_hanzhou",
+  "name": "Hanzhou",
+  "description": "",
+  "zone": "lon_guo",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Huangsha",
+      "to": "world_lon_guo_huangsha"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 338,
+    "cell_id": 5635,
+    "population": 13463,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 7872.73,
+    "y": 69380.01,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shuoqin Guo"
+  }
+}

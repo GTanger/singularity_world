@@ -1,0 +1,43 @@
+{
+  "id": "world_jowzvania_fuged",
+  "name": "Fuged",
+  "description": "",
+  "zone": "jowzvania",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Eshahrok",
+      "to": "world_jowzvania_eshahrok"
+    },
+    {
+      "direction": "小徑往Dayandaq",
+      "to": "world_jowzvania_dayandaq"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 147,
+    "cell_id": 4590,
+    "population": 3778,
+    "culture": "德蘭尼",
+    "religion": "圖拉雷沙赫爾派",
+    "biome": "熱帶雨林",
+    "x": 48301.58,
+    "y": 57684.7,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kobararia"
+  }
+}

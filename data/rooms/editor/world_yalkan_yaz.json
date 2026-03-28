@@ -1,0 +1,55 @@
+{
+  "id": "world_yalkan_yaz",
+  "name": "Yaz",
+  "description": "",
+  "zone": "yalkan",
+  "tags": [
+    "town",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Eltanoba",
+      "to": "world_yalkan_eltanoba"
+    },
+    {
+      "direction": "官道往Buyburdi",
+      "to": "world_buybaryurt_buyburdi"
+    },
+    {
+      "direction": "小徑往Yelgeli",
+      "to": "world_buybaryurt_yelgeli"
+    },
+    {
+      "direction": "小徑往Eriyurt",
+      "to": "world_yalkan_eriyurt"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 84,
+    "cell_id": 2223,
+    "population": 19260,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶落葉林",
+    "x": 56248.88,
+    "y": 31273.69,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ynuzsyurt"
+  }
+}

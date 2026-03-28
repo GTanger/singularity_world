@@ -1,0 +1,45 @@
+{
+  "id": "world_hongnamguk_uiryeondeok",
+  "name": "Uiryeondeok",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "village",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hamrye",
+      "to": "world_hongnamguk_hamrye"
+    },
+    {
+      "direction": "小徑往Uiwonjuripo",
+      "to": "world_hongnamguk_uiwonjuripo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 473,
+    "cell_id": 1805,
+    "population": 4762,
+    "culture": "高麗",
+    "religion": "高麗萬神殿",
+    "biome": "溫帶雨林",
+    "x": 41854.4,
+    "y": 27652.0,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Uiryeondeok"
+  }
+}

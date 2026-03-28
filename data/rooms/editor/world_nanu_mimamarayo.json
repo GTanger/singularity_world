@@ -1,0 +1,44 @@
+{
+  "id": "world_nanu_mimamarayo",
+  "name": "Mimamarayo",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Fuchu",
+      "to": "world_nanu_fuchu"
+    },
+    {
+      "direction": "小徑往Nawanaiwa",
+      "to": "world_sananai_nawanaiwa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 557,
+    "cell_id": 3414,
+    "population": 8360,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "熱帶季雨林",
+    "x": 46530.14,
+    "y": 43770.31,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Uhanaiga"
+  }
+}

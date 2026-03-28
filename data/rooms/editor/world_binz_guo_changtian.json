@@ -1,0 +1,44 @@
+{
+  "id": "world_binz_guo_changtian",
+  "name": "Changtian",
+  "description": "",
+  "zone": "binz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kuizhou",
+      "to": "world_taizhou_kuizhou"
+    },
+    {
+      "direction": "雕像",
+      "to": "world_marker_statues_46"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 316,
+    "cell_id": 5270,
+    "population": 1657,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶雨林",
+    "x": 10879.25,
+    "y": 65811.82,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nanjinan Guo"
+  }
+}

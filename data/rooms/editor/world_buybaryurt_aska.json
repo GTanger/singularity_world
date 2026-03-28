@@ -1,0 +1,44 @@
+{
+  "id": "world_buybaryurt_aska",
+  "name": "Aska",
+  "description": "",
+  "zone": "buybaryurt",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Yliyu",
+      "to": "world_buybaryurt_yliyu"
+    },
+    {
+      "direction": "官道往Gurvan",
+      "to": "world_tsetulag_gurvan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 241,
+    "cell_id": 2657,
+    "population": 1529,
+    "culture": "突厥安",
+    "religion": "多庫凱巴教",
+    "biome": "溫帶雨林",
+    "x": 59173.94,
+    "y": 35458.63,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Aska"
+  }
+}

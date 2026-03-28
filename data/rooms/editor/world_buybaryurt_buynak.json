@@ -1,0 +1,51 @@
+{
+  "id": "world_buybaryurt_buynak",
+  "name": "Buynak",
+  "description": "",
+  "zone": "buybaryurt",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Aynak",
+      "to": "world_buybaryurt_aynak"
+    },
+    {
+      "direction": "小徑往Khashinch",
+      "to": "world_buybaryurt_khashinch"
+    },
+    {
+      "direction": "小徑往Bokuz",
+      "to": "world_buybaryurt_bokuz"
+    },
+    {
+      "direction": "小徑往Hondmayandor",
+      "to": "world_bayan_hondmayandor"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 449,
+    "cell_id": 2026,
+    "population": 1635,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 60478.89,
+    "y": 29911.59,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Buynak"
+  }
+}

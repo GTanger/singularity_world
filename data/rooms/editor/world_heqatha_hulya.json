@@ -1,0 +1,40 @@
+{
+  "id": "world_heqatha_hulya",
+  "name": "Hulya",
+  "description": "",
+  "zone": "heqatha",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Alkhan",
+      "to": "world_heqatha_alkhan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 464,
+    "cell_id": 3910,
+    "population": 1784,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "溫帶落葉林",
+    "x": 65949.11,
+    "y": 49776.46,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hebia"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "world_taoxing_bainingbo",
+  "name": "Bainingbo",
+  "description": "",
+  "zone": "taoxing",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zhangwuian",
+      "to": "world_taoxing_zhangwuian"
+    },
+    {
+      "direction": "小徑往Ningyibei",
+      "to": "world_dengz_guo_ningyibei"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 437,
+    "cell_id": 5768,
+    "population": 1653,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 37118.96,
+    "y": 70575.75,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Rentian Guo"
+  }
+}

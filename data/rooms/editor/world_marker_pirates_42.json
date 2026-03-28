@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_pirates_42",
+  "name": "海盜巢穴",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "pirates"
+  ],
+  "exits": [
+    {
+      "direction": "返回Misotanto",
+      "to": "world_sananai_misotanto"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 42,
+    "marker_type": "pirates"
+  }
+}

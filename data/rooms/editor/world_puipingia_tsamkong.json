@@ -1,0 +1,48 @@
+{
+  "id": "world_puipingia_tsamkong",
+  "name": "Tsamkong",
+  "description": "",
+  "zone": "puipingia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Puiping",
+      "to": "world_puipingia_puiping"
+    },
+    {
+      "direction": "官道往Namchue",
+      "to": "world_longchia_namchue"
+    },
+    {
+      "direction": "小徑往Lamtei",
+      "to": "world_shamshia_lamtei"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 172,
+    "cell_id": 2832,
+    "population": 8745,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 11569.99,
+    "y": 37076.0,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Fukhia"
+  }
+}

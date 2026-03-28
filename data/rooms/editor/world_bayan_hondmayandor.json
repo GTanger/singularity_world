@@ -1,0 +1,44 @@
+{
+  "id": "world_bayan_hondmayandor",
+  "name": "Hondmayandor",
+  "description": "",
+  "zone": "bayan",
+  "tags": [
+    "town",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Buynak",
+      "to": "world_buybaryurt_buynak"
+    },
+    {
+      "direction": "小徑往Khuregkhus",
+      "to": "world_bayan_khuregkhus"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 563,
+    "cell_id": 2125,
+    "population": 6045,
+    "culture": "兀魯斯",
+    "religion": "楚涅勒格赫信仰",
+    "biome": "溫帶雨林",
+    "x": 61203.53,
+    "y": 30481.86,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hondmayandor"
+  }
+}

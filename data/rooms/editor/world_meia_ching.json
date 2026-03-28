@@ -1,0 +1,45 @@
+{
+  "id": "world_meia_ching",
+  "name": "Ching",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tailun",
+      "to": "world_meia_tailun"
+    },
+    {
+      "direction": "小徑往Kaungsan",
+      "to": "world_meia_kaungsan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 168,
+    "cell_id": 3047,
+    "population": 11305,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶落葉林",
+    "x": 28234.79,
+    "y": 39201.73,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ching"
+  }
+}

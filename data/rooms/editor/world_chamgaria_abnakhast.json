@@ -1,0 +1,48 @@
+{
+  "id": "world_chamgaria_abnakhast",
+  "name": "Abnakhast",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "village",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Pariruzful",
+      "to": "world_chamgaria_pariruzful"
+    },
+    {
+      "direction": "小徑往Abodintash",
+      "to": "world_chamgaria_abodintash"
+    },
+    {
+      "direction": "小徑往Janabad",
+      "to": "world_chamgaria_janabad"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 467,
+    "cell_id": 5898,
+    "population": 1764,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 70197.98,
+    "y": 71824.93,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Hafshiania"
+  }
+}

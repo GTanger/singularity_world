@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_brigands_39",
+  "name": "盜賊據點",
+  "description": "",
+  "zone": "yahan",
+  "tags": [
+    "brigands"
+  ],
+  "exits": [
+    {
+      "direction": "返回Habad",
+      "to": "world_yahan_habad"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 39,
+    "marker_type": "brigands"
+  }
+}

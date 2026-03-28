@@ -1,0 +1,48 @@
+{
+  "id": "world_xian_guo_fuzhou",
+  "name": "Fuzhou",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Taining",
+      "to": "world_xian_guo_taining"
+    },
+    {
+      "direction": "小徑往Guang",
+      "to": "world_xian_guo_guang"
+    },
+    {
+      "direction": "亡者之城",
+      "to": "world_marker_necropolises_62"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 440,
+    "cell_id": 6114,
+    "population": 4298,
+    "culture": "漢族",
+    "religion": "漢族古信仰",
+    "biome": "溫帶落葉林",
+    "x": 20051.5,
+    "y": 74188.08,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yicha"
+  }
+}

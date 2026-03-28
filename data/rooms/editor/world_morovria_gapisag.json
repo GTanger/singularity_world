@@ -1,0 +1,49 @@
+{
+  "id": "world_morovria_gapisag",
+  "name": "Gapisag",
+  "description": "",
+  "zone": "morovria",
+  "tags": [
+    "village",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Ergaltkhan",
+      "to": "world_tonkhan_ergaltkhan"
+    },
+    {
+      "direction": "官道往Dutsa",
+      "to": "world_morovria_dutsa"
+    },
+    {
+      "direction": "小徑往Tiyah",
+      "to": "world_tonkhan_tiyah"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 226,
+    "cell_id": 2442,
+    "population": 1586,
+    "culture": "幼法拉底",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶雨林",
+    "x": 69472.87,
+    "y": 33629.12,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Nisagia"
+  }
+}

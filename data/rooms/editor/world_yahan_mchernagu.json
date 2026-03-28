@@ -1,0 +1,43 @@
+{
+  "id": "world_yahan_mchernagu",
+  "name": "Mchernagu",
+  "description": "",
+  "zone": "yahan",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Idrart",
+      "to": "world_yahan_idrart"
+    },
+    {
+      "direction": "官道往Kibia",
+      "to": "world_kima_kibia"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 499,
+    "cell_id": 5084,
+    "population": 1850,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "溫帶雨林",
+    "x": 88393.6,
+    "y": 63249.2,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tasha"
+  }
+}

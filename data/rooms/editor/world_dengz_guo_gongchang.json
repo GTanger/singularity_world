@@ -1,0 +1,45 @@
+{
+  "id": "world_dengz_guo_gongchang",
+  "name": "Gongchang",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "city",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Jinanhua",
+      "to": "world_dengz_guo_jinanhua"
+    },
+    {
+      "direction": "小徑往Xinchang",
+      "to": "world_dengz_guo_xinchang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 229,
+    "cell_id": 5662,
+    "population": 20493,
+    "culture": "漢族",
+    "religion": "漢族宗教",
+    "biome": "溫帶雨林",
+    "x": 31565.68,
+    "y": 69492.14,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Gongchang"
+  }
+}

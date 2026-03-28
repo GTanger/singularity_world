@@ -1,0 +1,52 @@
+{
+  "id": "world_ryadh_sal",
+  "name": "Sal",
+  "description": "",
+  "zone": "ryadh",
+  "tags": [
+    "village",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hulandor",
+      "to": "world_shalantsa_hulandor"
+    },
+    {
+      "direction": "官道往Dhabid",
+      "to": "world_muwaida_dhabid"
+    },
+    {
+      "direction": "小徑往Alaqbah",
+      "to": "world_ryadh_alaqbah"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 7,
+    "cell_id": 3517,
+    "population": 3626,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "濕地",
+    "x": 65655.72,
+    "y": 44136.24,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Dhaha"
+  }
+}

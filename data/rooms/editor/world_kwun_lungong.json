@@ -1,0 +1,46 @@
+{
+  "id": "world_kwun_lungong",
+  "name": "Lungong",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "city",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yeungling",
+      "to": "world_kwun_yeungling"
+    },
+    {
+      "direction": "小徑往Pingyuenwan",
+      "to": "world_kwun_pingyuenwan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 367,
+    "cell_id": 1678,
+    "population": 21670,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶雨林",
+    "x": 19930.47,
+    "y": 26870.62,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Lungong"
+  }
+}

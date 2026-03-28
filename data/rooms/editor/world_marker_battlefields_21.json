@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_battlefields_21",
+  "name": "古戰場",
+  "description": "",
+  "zone": "taoxing",
+  "tags": [
+    "battlefields"
+  ],
+  "exits": [
+    {
+      "direction": "返回Suzhou",
+      "to": "world_taoxing_suzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 21,
+    "marker_type": "battlefields"
+  }
+}

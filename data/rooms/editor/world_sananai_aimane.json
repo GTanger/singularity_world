@@ -1,0 +1,52 @@
+{
+  "id": "world_sananai_aimane",
+  "name": "Aimane",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Naoshi",
+      "to": "world_sananai_naoshi"
+    },
+    {
+      "direction": "小徑往Rishi",
+      "to": "world_sananai_rishi"
+    },
+    {
+      "direction": "小徑往Genbetsuha",
+      "to": "world_sananai_genbetsuha"
+    },
+    {
+      "direction": "小徑往Ichino",
+      "to": "world_sananai_ichino"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 538,
+    "cell_id": 3153,
+    "population": 2112,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "熱帶季雨林",
+    "x": 43641.13,
+    "y": 40306.57,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kyomisa"
+  }
+}

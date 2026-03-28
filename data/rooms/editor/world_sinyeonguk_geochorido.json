@@ -1,0 +1,41 @@
+{
+  "id": "world_sinyeonguk_geochorido",
+  "name": "Geochorido",
+  "description": "",
+  "zone": "sinyeonguk",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ingdo",
+      "to": "world_sinyeonguk_ingdo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 248,
+    "cell_id": 2413,
+    "population": 11724,
+    "culture": "高麗",
+    "religion": "科爾教",
+    "biome": "溫帶雨林",
+    "x": 40948.38,
+    "y": 33678.02,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Geochorido"
+  }
+}

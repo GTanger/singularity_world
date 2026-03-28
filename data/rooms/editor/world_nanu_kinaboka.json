@@ -1,0 +1,48 @@
+{
+  "id": "world_nanu_kinaboka",
+  "name": "Kinaboka",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "city",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tatsuse",
+      "to": "world_nyusume_tatsuse"
+    },
+    {
+      "direction": "官道往Hawa",
+      "to": "world_nanu_hawa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 57,
+    "cell_id": 2976,
+    "population": 20391,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶落葉林",
+    "x": 50509.38,
+    "y": 38556.58,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Kinaboka"
+  }
+}

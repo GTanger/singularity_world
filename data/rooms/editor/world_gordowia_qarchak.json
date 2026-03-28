@@ -1,0 +1,50 @@
+{
+  "id": "world_gordowia_qarchak",
+  "name": "Qarchak",
+  "description": "",
+  "zone": "gordowia",
+  "tags": [
+    "village",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Nanabastan",
+      "to": "world_gordowia_nanabastan"
+    },
+    {
+      "direction": "小徑往Rumareh",
+      "to": "world_gordowia_rumareh"
+    },
+    {
+      "direction": "小徑往Tesiruz",
+      "to": "world_gordowia_tesiruz"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 377,
+    "cell_id": 4793,
+    "population": 1032,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "熱帶季雨林",
+    "x": 65771.65,
+    "y": 59742.14,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Habomeshcia"
+  }
+}

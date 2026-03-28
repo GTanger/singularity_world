@@ -1,0 +1,42 @@
+{
+  "id": "world_buybaryurt_yatopkoydi",
+  "name": "Yatopkoydi",
+  "description": "",
+  "zone": "buybaryurt",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Aninok",
+      "to": "world_buybaryurt_aninok"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 450,
+    "cell_id": 2323,
+    "population": 5212,
+    "culture": "突厥安",
+    "religion": "多庫凱巴教",
+    "biome": "溫帶雨林",
+    "x": 56518.9,
+    "y": 32679.86,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yatopkoydi"
+  }
+}

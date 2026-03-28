@@ -1,0 +1,53 @@
+{
+  "id": "world_golparia_kardehis",
+  "name": "Kardehis",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Paran",
+      "to": "world_golparia_paran"
+    },
+    {
+      "direction": "官道往Pirmir",
+      "to": "world_pirmir_pirmir"
+    },
+    {
+      "direction": "小徑往Golshahrjan",
+      "to": "world_golparia_golshahrjan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 23,
+    "cell_id": 5041,
+    "population": 3487,
+    "culture": "德蘭尼",
+    "religion": "茲茲切干教",
+    "biome": "溫帶雨林",
+    "x": 52941.61,
+    "y": 63041.55,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Kuhpouria"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_golparia_aslamshahr",
+  "name": "Aslamshahr",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Savand",
+      "to": "world_golparia_savand"
+    },
+    {
+      "direction": "小徑往Turareshahr",
+      "to": "world_jowzvania_turareshahr"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 108,
+    "cell_id": 4595,
+    "population": 4612,
+    "culture": "德蘭尼",
+    "religion": "圖拉雷沙赫爾派",
+    "biome": "熱帶雨林",
+    "x": 51565.26,
+    "y": 57558.05,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Aslamshahr"
+  }
+}

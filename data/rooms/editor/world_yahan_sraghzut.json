@@ -1,0 +1,48 @@
+{
+  "id": "world_yahan_sraghzut",
+  "name": "Sraghzut",
+  "description": "",
+  "zone": "yahan",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Habad",
+      "to": "world_yahan_habad"
+    },
+    {
+      "direction": "官道往Idrart",
+      "to": "world_yahan_idrart"
+    },
+    {
+      "direction": "小徑往Tagan",
+      "to": "world_yahan_tagan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 324,
+    "cell_id": 5440,
+    "population": 8568,
+    "culture": "柏柏爾",
+    "religion": "錫亞爾克信仰",
+    "biome": "溫帶雨林",
+    "x": 88311.51,
+    "y": 66473.29,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sraghzut"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "world_xian_guo_xingjiang",
+  "name": "Xingjiang",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Dongchang",
+      "to": "world_xian_guo_dongchang"
+    },
+    {
+      "direction": "小徑往Ganzhou",
+      "to": "world_xian_guo_ganzhou"
+    },
+    {
+      "direction": "小徑往Yongshun",
+      "to": "world_xian_guo_yongshun_534"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 211,
+    "cell_id": 5943,
+    "population": 9832,
+    "culture": "漢族",
+    "religion": "漢族古信仰",
+    "biome": "溫帶落葉林",
+    "x": 23443.4,
+    "y": 72058.46,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Xingjiang"
+  }
+}

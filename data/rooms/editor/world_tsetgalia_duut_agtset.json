@@ -1,0 +1,44 @@
+{
+  "id": "world_tsetgalia_duut_agtset",
+  "name": "Duut Agtset",
+  "description": "",
+  "zone": "tsetgalia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ikhkhon",
+      "to": "world_tsetgalia_ikhkhon"
+    },
+    {
+      "direction": "小徑往Kurgira",
+      "to": "world_tsetgalia_kurgira"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 408,
+    "cell_id": 3270,
+    "population": 5955,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "熱帶季雨林",
+    "x": 75364.02,
+    "y": 41143.95,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Duut Agtset"
+  }
+}

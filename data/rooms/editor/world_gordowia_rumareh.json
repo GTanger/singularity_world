@@ -1,0 +1,40 @@
+{
+  "id": "world_gordowia_rumareh",
+  "name": "Rumareh",
+  "description": "",
+  "zone": "gordowia",
+  "tags": [
+    "village",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Qarchak",
+      "to": "world_gordowia_qarchak"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 135,
+    "cell_id": 4962,
+    "population": 1618,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶落葉林",
+    "x": 64410.29,
+    "y": 61539.51,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Zran"
+  }
+}

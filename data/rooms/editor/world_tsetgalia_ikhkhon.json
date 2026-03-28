@@ -1,0 +1,51 @@
+{
+  "id": "world_tsetgalia_ikhkhon",
+  "name": "Ikhkhon",
+  "description": "",
+  "zone": "tsetgalia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Albar",
+      "to": "world_tsetgalia_albar"
+    },
+    {
+      "direction": "官道往Alkut",
+      "to": "world_heqatha_alkut"
+    },
+    {
+      "direction": "小徑往Sagtokh",
+      "to": "world_tsetgalia_sagtokh"
+    },
+    {
+      "direction": "小徑往Duut Agtset",
+      "to": "world_tsetgalia_duut_agtset"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 609,
+    "cell_id": 3093,
+    "population": 3798,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 74652.44,
+    "y": 39887.94,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ikhkhon"
+  }
+}

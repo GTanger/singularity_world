@@ -1,0 +1,44 @@
+{
+  "id": "world_kyohe_nasazuni",
+  "name": "Nasazuni",
+  "description": "",
+  "zone": "kyohe",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Yeong",
+      "to": "world_hongnamguk_yeong"
+    },
+    {
+      "direction": "海怪棲地",
+      "to": "world_marker_sea_monsters_29"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 520,
+    "cell_id": 2206,
+    "population": 11157,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶雨林",
+    "x": 43434.31,
+    "y": 31255.73,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nasazuni"
+  }
+}

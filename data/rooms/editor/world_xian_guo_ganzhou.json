@@ -1,0 +1,45 @@
+{
+  "id": "world_xian_guo_ganzhou",
+  "name": "Ganzhou",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "village",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Xingjiang",
+      "to": "world_xian_guo_xingjiang"
+    },
+    {
+      "direction": "亡者之城",
+      "to": "world_marker_necropolises_63"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 354,
+    "cell_id": 6031,
+    "population": 1731,
+    "culture": "漢族",
+    "religion": "漢族古信仰",
+    "biome": "溫帶落葉林",
+    "x": 23310.38,
+    "y": 73443.2,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jian Guo"
+  }
+}

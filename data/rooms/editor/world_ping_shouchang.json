@@ -1,0 +1,49 @@
+{
+  "id": "world_ping_shouchang",
+  "name": "Shouchang",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Linjiang",
+      "to": "world_ping_linjiang"
+    },
+    {
+      "direction": "小徑往Raozhou",
+      "to": "world_ping_raozhou"
+    },
+    {
+      "direction": "小徑往Kaihe",
+      "to": "world_ping_kaihe"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 573,
+    "cell_id": 4826,
+    "population": 17205,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶雨林",
+    "x": 18079.51,
+    "y": 60405.95,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shouchang"
+  }
+}

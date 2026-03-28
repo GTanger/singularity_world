@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_dungeons_24",
+  "name": "地牢",
+  "description": "",
+  "zone": "yalkan",
+  "tags": [
+    "dungeons"
+  ],
+  "exits": [
+    {
+      "direction": "返回Ozoguzte",
+      "to": "world_yalkan_ozoguzte"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 24,
+    "marker_type": "dungeons"
+  }
+}

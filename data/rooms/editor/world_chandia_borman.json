@@ -1,0 +1,51 @@
+{
+  "id": "world_chandia_borman",
+  "name": "Borman",
+  "description": "",
+  "zone": "chandia",
+  "tags": [
+    "town",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tsakhonuur",
+      "to": "world_bayan_tsakhonuur"
+    },
+    {
+      "direction": "官道往Tsogtsagaan",
+      "to": "world_chandia_tsogtsagaan"
+    },
+    {
+      "direction": "小徑往Dûrbina",
+      "to": "world_chandia_dûrbina"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 99,
+    "cell_id": 2781,
+    "population": 16469,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 68232.49,
+    "y": 36143.13,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Borman"
+  }
+}

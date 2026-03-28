@@ -1,0 +1,48 @@
+{
+  "id": "world_xian_guo_guang",
+  "name": "Guang",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Shouchun",
+      "to": "world_xian_guo_shouchun"
+    },
+    {
+      "direction": "小徑往Fuzhou",
+      "to": "world_xian_guo_fuzhou"
+    },
+    {
+      "direction": "雕像",
+      "to": "world_marker_statues_45"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 182,
+    "cell_id": 6112,
+    "population": 1616,
+    "culture": "漢族",
+    "religion": "漢族古信仰",
+    "biome": "溫帶落葉林",
+    "x": 18056.57,
+    "y": 74299.14,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Didu"
+  }
+}

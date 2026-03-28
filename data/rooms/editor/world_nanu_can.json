@@ -1,0 +1,44 @@
+{
+  "id": "world_nanu_can",
+  "name": "Can",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Namira",
+      "to": "world_sananai_namira"
+    },
+    {
+      "direction": "小徑往Ha Khe",
+      "to": "world_nanu_ha_khe"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 314,
+    "cell_id": 3973,
+    "population": 13743,
+    "culture": "越族",
+    "religion": "彥道",
+    "biome": "溫帶雨林",
+    "x": 48353.99,
+    "y": 50218.54,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Can"
+  }
+}

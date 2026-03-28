@@ -1,0 +1,41 @@
+{
+  "id": "world_golparia_dijankanama",
+  "name": "Dijankanama",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Shabas",
+      "to": "world_golparia_shabas"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 150,
+    "cell_id": 5780,
+    "population": 13639,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶雨林",
+    "x": 52680.46,
+    "y": 70194.3,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Dijankanama"
+  }
+}

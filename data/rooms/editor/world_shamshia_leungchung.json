@@ -1,0 +1,52 @@
+{
+  "id": "world_shamshia_leungchung",
+  "name": "Leungchung",
+  "description": "",
+  "zone": "shamshia",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Yongsha",
+      "to": "world_shamshia_yongsha"
+    },
+    {
+      "direction": "官道往Puiping",
+      "to": "world_puipingia_puiping"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_17"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 495,
+    "cell_id": 3117,
+    "population": 12246,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "熱帶雨林",
+    "x": 9593.21,
+    "y": 41227.91,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Yuetsia"
+  }
+}

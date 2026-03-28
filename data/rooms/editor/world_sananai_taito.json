@@ -1,0 +1,49 @@
+{
+  "id": "world_sananai_taito",
+  "name": "Taito",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Ojoburami",
+      "to": "world_sananai_ojoburami"
+    },
+    {
+      "direction": "官道往Kawakiba",
+      "to": "world_sananai_kawakiba"
+    },
+    {
+      "direction": "小徑往Awa",
+      "to": "world_awa_awa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 493,
+    "cell_id": 2754,
+    "population": 17511,
+    "culture": "大和",
+    "religion": "歐里蘇伊瑪干密教",
+    "biome": "溫帶落葉林",
+    "x": 43064.16,
+    "y": 36666.54,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Taito"
+  }
+}

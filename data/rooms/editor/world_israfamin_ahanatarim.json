@@ -1,0 +1,53 @@
+{
+  "id": "world_israfamin_ahanatarim",
+  "name": "Ahanatarim",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Qodshefids",
+      "to": "world_chamgaria_qodshefids"
+    },
+    {
+      "direction": "小徑往Degan",
+      "to": "world_israfamin_degan"
+    },
+    {
+      "direction": "小徑往Jasan",
+      "to": "world_israfamin_jasan"
+    },
+    {
+      "direction": "火山",
+      "to": "world_marker_volcanoes_0"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 193,
+    "cell_id": 5795,
+    "population": 8878,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶雨林",
+    "x": 62204.31,
+    "y": 70890.85,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Majlehia"
+  }
+}

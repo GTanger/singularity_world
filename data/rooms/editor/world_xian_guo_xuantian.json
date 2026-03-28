@@ -1,0 +1,43 @@
+{
+  "id": "world_xian_guo_xuantian",
+  "name": "Xuantian",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "town"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hangzhou",
+      "to": "world_taizhou_hangzhou"
+    },
+    {
+      "direction": "小徑往Haixing",
+      "to": "world_lon_guo_haixing"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 507,
+    "cell_id": 6106,
+    "population": 8361,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶雨林",
+    "x": 12285.52,
+    "y": 74500.74,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Xuantian"
+  }
+}

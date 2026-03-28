@@ -1,0 +1,49 @@
+{
+  "id": "world_ping_yazhou",
+  "name": "Yazhou",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "village",
+    "naval",
+    "port"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hanzhou",
+      "to": "world_ping_hanzhou"
+    },
+    {
+      "direction": "官道往Siche",
+      "to": "world_ping_siche"
+    },
+    {
+      "direction": "海路往Tongzhou",
+      "to": "world_binz_guo_tongzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 279,
+    "cell_id": 4221,
+    "population": 1794,
+    "culture": "漢族",
+    "religion": "漢族教會",
+    "biome": "熱帶季雨林",
+    "x": 15166.89,
+    "y": 53835.97,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Yingz Guo"
+  }
+}

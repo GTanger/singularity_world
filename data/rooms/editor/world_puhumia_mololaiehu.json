@@ -1,0 +1,49 @@
+{
+  "id": "world_puhumia_mololaiehu",
+  "name": "Mololaiehu",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "village",
+    "river",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Henan",
+      "to": "world_puhumia_henan"
+    },
+    {
+      "direction": "官道往Hapalane",
+      "to": "world_puhumia_hapalane"
+    },
+    {
+      "direction": "小徑往Guang",
+      "to": "world_puhumia_guang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 463,
+    "cell_id": 3871,
+    "population": 1145,
+    "culture": "毛伊",
+    "religion": "亞洲信仰",
+    "biome": "熱帶季雨林",
+    "x": 18162.95,
+    "y": 49432.11,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Mololaiehu"
+  }
+}

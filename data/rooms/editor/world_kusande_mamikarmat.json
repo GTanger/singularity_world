@@ -1,0 +1,45 @@
+{
+  "id": "world_kusande_mamikarmat",
+  "name": "Mamikarmat",
+  "description": "",
+  "zone": "kusande",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kolalanur",
+      "to": "world_kusande_kolalanur"
+    },
+    {
+      "direction": "官道往Wadapurpur",
+      "to": "world_kusande_wadapurpur"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 470,
+    "cell_id": 3615,
+    "population": 7428,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 83886.16,
+    "y": 45237.61,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Mamikarmat"
+  }
+}

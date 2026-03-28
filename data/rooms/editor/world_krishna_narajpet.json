@@ -1,0 +1,52 @@
+{
+  "id": "world_krishna_narajpet",
+  "name": "Narajpet",
+  "description": "",
+  "zone": "krishna",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Lonnamavar",
+      "to": "world_sauntalur_lonnamavar"
+    },
+    {
+      "direction": "官道往Sakore",
+      "to": "world_krishna_sakore"
+    },
+    {
+      "direction": "小徑往Mannanapat",
+      "to": "world_krishna_mannanapat"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 42,
+    "cell_id": 4013,
+    "population": 12065,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 79510.27,
+    "y": 51076.27,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Afzalnaria"
+  }
+}

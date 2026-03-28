@@ -1,0 +1,48 @@
+{
+  "id": "world_oisamawa_naka",
+  "name": "Naka",
+  "description": "",
+  "zone": "oisamawa",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Awa",
+      "to": "world_awa_awa"
+    },
+    {
+      "direction": "海盜巢穴",
+      "to": "world_marker_pirates_41"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 28,
+    "cell_id": 2866,
+    "population": 13513,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶雨林",
+    "x": 41572.26,
+    "y": 37263.26,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "world_fungshingia_kwong",
+  "name": "Kwong",
+  "description": "",
+  "zone": "fungshingia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tinshan",
+      "to": "world_fungia_tinshan"
+    },
+    {
+      "direction": "小徑往Kwungon",
+      "to": "world_shamshia_kwungon"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 355,
+    "cell_id": 3037,
+    "population": 12760,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 18677.42,
+    "y": 39441.7,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kwong"
+  }
+}

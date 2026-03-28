@@ -1,0 +1,43 @@
+{
+  "id": "world_chamgaria_chogheshahr",
+  "name": "Chogheshahr",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Buged",
+      "to": "world_chamgaria_buged"
+    },
+    {
+      "direction": "小徑往Ilalt",
+      "to": "world_guela_ilalt"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 378,
+    "cell_id": 5612,
+    "population": 3569,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 74408.68,
+    "y": 68470.42,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nimansia"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "world_safus_astan",
+  "name": "Astan",
+  "description": "",
+  "zone": "safus",
+  "tags": [
+    "city",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Shah",
+      "to": "world_takhtarjia_shah"
+    },
+    {
+      "direction": "官道往Habad",
+      "to": "world_yahan_habad"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 31,
+    "cell_id": 5822,
+    "population": 26093,
+    "culture": "德蘭尼",
+    "religion": "錫亞爾克信仰",
+    "biome": "溫帶雨林",
+    "x": 89087.76,
+    "y": 70859.47,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

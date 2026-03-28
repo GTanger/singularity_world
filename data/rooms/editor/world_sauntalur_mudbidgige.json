@@ -1,0 +1,41 @@
+{
+  "id": "world_sauntalur_mudbidgige",
+  "name": "Mudbidgige",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Muduledbid",
+      "to": "world_sauntalur_muduledbid"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 433,
+    "cell_id": 4084,
+    "population": 17048,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "熱帶雨林",
+    "x": 64217.86,
+    "y": 51455.93,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sindhwaria"
+  }
+}

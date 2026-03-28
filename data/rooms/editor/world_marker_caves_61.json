@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_caves_61",
+  "name": "洞穴",
+  "description": "",
+  "zone": "hwanponamguk",
+  "tags": [
+    "caves"
+  ],
+  "exits": [
+    {
+      "direction": "返回Jeongdong",
+      "to": "world_hwanponamguk_jeongdong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 61,
+    "marker_type": "caves"
+  }
+}

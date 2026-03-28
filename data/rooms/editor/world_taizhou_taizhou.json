@@ -1,0 +1,52 @@
+{
+  "id": "world_taizhou_taizhou",
+  "name": "Taizhou",
+  "description": "",
+  "zone": "taizhou",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Zhenan",
+      "to": "world_taizhou_zhenan"
+    },
+    {
+      "direction": "官道往Tengchang",
+      "to": "world_taizhou_tengchang"
+    },
+    {
+      "direction": "小徑往Kuizhou",
+      "to": "world_taizhou_kuizhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 13,
+    "cell_id": 5545,
+    "population": 14644,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 10063.45,
+    "y": 68709.43,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Xian Guo"
+  }
+}

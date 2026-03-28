@@ -1,0 +1,42 @@
+{
+  "id": "world_hunageria_natagadati",
+  "name": "Natagadati",
+  "description": "",
+  "zone": "hunageria",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ronni",
+      "to": "world_sauntalur_ronni"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 601,
+    "cell_id": 4200,
+    "population": 5950,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "熱帶雨林",
+    "x": 72274.2,
+    "y": 52874.0,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Natagadati"
+  }
+}

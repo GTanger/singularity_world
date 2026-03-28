@@ -1,0 +1,39 @@
+{
+  "id": "world_ganz_guo_antiankang",
+  "name": "Antiankang",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Taizhou",
+      "to": "world_ganz_guo_taizhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 518,
+    "cell_id": 4667,
+    "population": 3798,
+    "culture": "漢族",
+    "religion": "太湛教團",
+    "biome": "溫帶落葉林",
+    "x": 32838.69,
+    "y": 58338.61,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shaoqin Guo"
+  }
+}

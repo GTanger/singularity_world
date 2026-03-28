@@ -1,0 +1,41 @@
+{
+  "id": "world_sananai_tatsuma",
+  "name": "Tatsuma",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Nawanaiwa",
+      "to": "world_sananai_nawanaiwa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 231,
+    "cell_id": 3489,
+    "population": 9091,
+    "culture": "大和",
+    "religion": "米索坦特信仰",
+    "biome": "熱帶雨林",
+    "x": 41770.15,
+    "y": 44978.85,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Bizuki"
+  }
+}

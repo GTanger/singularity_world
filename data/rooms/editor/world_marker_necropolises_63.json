@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_necropolises_63",
+  "name": "亡者之城",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "necropolises"
+  ],
+  "exits": [
+    {
+      "direction": "返回Ganzhou",
+      "to": "world_xian_guo_ganzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 63,
+    "marker_type": "necropolises"
+  }
+}

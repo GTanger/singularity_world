@@ -1,0 +1,51 @@
+{
+  "id": "world_buybaryurt_aninok",
+  "name": "Aninok",
+  "description": "",
+  "zone": "buybaryurt",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Buyburdi",
+      "to": "world_buybaryurt_buyburdi"
+    },
+    {
+      "direction": "官道往Kart",
+      "to": "world_buybaryurt_kart"
+    },
+    {
+      "direction": "小徑往Yatopkoydi",
+      "to": "world_buybaryurt_yatopkoydi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 88,
+    "cell_id": 2324,
+    "population": 2038,
+    "culture": "突厥安",
+    "religion": "多庫凱巴教",
+    "biome": "溫帶落葉林",
+    "x": 57806.83,
+    "y": 32634.82,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Erevreli"
+  }
+}

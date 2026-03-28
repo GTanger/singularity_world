@@ -1,0 +1,44 @@
+{
+  "id": "world_ganz_guo_suilinan",
+  "name": "Suilinan",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Anhuang",
+      "to": "world_ganz_guo_anhuang"
+    },
+    {
+      "direction": "官道往Shuo",
+      "to": "world_ganz_guo_shuo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 330,
+    "cell_id": 4836,
+    "population": 8635,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "熱帶雨林",
+    "x": 27081.16,
+    "y": 60264.75,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Binz Guo"
+  }
+}

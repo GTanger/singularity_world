@@ -1,0 +1,48 @@
+{
+  "id": "world_kima_rafraguyi",
+  "name": "Rafraguyi",
+  "description": "",
+  "zone": "kima",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Iknaslinez",
+      "to": "world_tayachia_iknaslinez"
+    },
+    {
+      "direction": "官道往Baghshe",
+      "to": "world_ziyehia_baghshe"
+    },
+    {
+      "direction": "小徑往Khelaous",
+      "to": "world_kima_khelaous"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 506,
+    "cell_id": 5434,
+    "population": 1674,
+    "culture": "柏柏爾",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 82549.71,
+    "y": 66896.32,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Mela"
+  }
+}

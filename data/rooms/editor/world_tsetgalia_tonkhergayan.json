@@ -1,0 +1,49 @@
+{
+  "id": "world_tsetgalia_tonkhergayan",
+  "name": "Tonkhergayan",
+  "description": "",
+  "zone": "tsetgalia",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zayanjar",
+      "to": "world_tsetgalia_zayanjar"
+    },
+    {
+      "direction": "小徑往Kurgira",
+      "to": "world_tsetgalia_kurgira"
+    },
+    {
+      "direction": "小徑往Bhatkal",
+      "to": "world_tsetgalia_bhatkal"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 503,
+    "cell_id": 3098,
+    "population": 1861,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 79222.35,
+    "y": 39913.14,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tonkhergayan"
+  }
+}

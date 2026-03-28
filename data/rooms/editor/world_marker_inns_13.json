@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_13",
+  "name": "旅店",
+  "description": "",
+  "zone": "sinyeonguk",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Ingdo",
+      "to": "world_sinyeonguk_ingdo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 13,
+    "marker_type": "inns"
+  }
+}

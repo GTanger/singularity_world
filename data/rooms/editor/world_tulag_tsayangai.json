@@ -1,0 +1,45 @@
+{
+  "id": "world_tulag_tsayangai",
+  "name": "Tsayangai",
+  "description": "",
+  "zone": "tulag",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Baliun",
+      "to": "world_baliun_baliun"
+    },
+    {
+      "direction": "官道往Zariayandu",
+      "to": "world_tsakhania_zariayandu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 75,
+    "cell_id": 1943,
+    "population": 2042,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 76104.63,
+    "y": 28727.2,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    }
+  }
+}

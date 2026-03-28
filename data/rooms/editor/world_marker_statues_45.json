@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_statues_45",
+  "name": "雕像",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "statues"
+  ],
+  "exits": [
+    {
+      "direction": "返回Guang",
+      "to": "world_xian_guo_guang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 45,
+    "marker_type": "statues"
+  }
+}

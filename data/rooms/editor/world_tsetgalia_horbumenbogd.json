@@ -1,0 +1,44 @@
+{
+  "id": "world_tsetgalia_horbumenbogd",
+  "name": "Horbumenbogd",
+  "description": "",
+  "zone": "tsetgalia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Noviret",
+      "to": "world_tsetgalia_noviret"
+    },
+    {
+      "direction": "小徑往Ulaangol",
+      "to": "world_tsetgalia_ulaangol"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 421,
+    "cell_id": 2787,
+    "population": 1805,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 74564.49,
+    "y": 36716.25,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Horbumenbogd"
+  }
+}

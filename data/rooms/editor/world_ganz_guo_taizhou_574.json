@@ -1,0 +1,48 @@
+{
+  "id": "world_ganz_guo_taizhou_574",
+  "name": "Taizhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Shuo",
+      "to": "world_ganz_guo_shuo"
+    },
+    {
+      "direction": "官道往Sizhou",
+      "to": "world_ganz_guo_sizhou_612"
+    },
+    {
+      "direction": "小徑往Sizhou",
+      "to": "world_ganz_guo_sizhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 574,
+    "cell_id": 4920,
+    "population": 9914,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶雨林",
+    "x": 24101.26,
+    "y": 61844.03,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chang"
+  }
+}

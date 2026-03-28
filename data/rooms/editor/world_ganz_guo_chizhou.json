@@ -1,0 +1,44 @@
+{
+  "id": "world_ganz_guo_chizhou",
+  "name": "Chizhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Taizhou",
+      "to": "world_meia_taizhou"
+    },
+    {
+      "direction": "小徑往Chong",
+      "to": "world_ganz_guo_chong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 541,
+    "cell_id": 3956,
+    "population": 4988,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "溫帶雨林",
+    "x": 26913.96,
+    "y": 50379.25,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chizhou"
+  }
+}

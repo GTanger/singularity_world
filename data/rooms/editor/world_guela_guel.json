@@ -1,0 +1,53 @@
+{
+  "id": "world_guela_guel",
+  "name": "Guel",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Harherm",
+      "to": "world_guela_harherm"
+    },
+    {
+      "direction": "官道往Tazrouaba",
+      "to": "world_guela_tazrouaba"
+    },
+    {
+      "direction": "小徑往Tarilacem",
+      "to": "world_guela_tarilacem"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 63,
+    "cell_id": 4625,
+    "population": 4038,
+    "culture": "柏柏爾",
+    "religion": "柏柏爾教",
+    "biome": "熱帶雨林",
+    "x": 76518.46,
+    "y": 57360.44,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Guel"
+  }
+}

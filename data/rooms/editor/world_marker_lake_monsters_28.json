@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_lake_monsters_28",
+  "name": "湖怪棲地",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "lake-monsters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Gocha",
+      "to": "world_hongnamguk_gocha"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 28,
+    "marker_type": "lake-monsters"
+  }
+}

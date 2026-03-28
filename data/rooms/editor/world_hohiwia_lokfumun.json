@@ -1,0 +1,48 @@
+{
+  "id": "world_hohiwia_lokfumun",
+  "name": "Lokfumun",
+  "description": "",
+  "zone": "hohiwia",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Waishui",
+      "to": "world_ngwakyuen_waishui"
+    },
+    {
+      "direction": "官道往Shingtong",
+      "to": "world_tong_shingtong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 51,
+    "cell_id": 2372,
+    "population": 3167,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 7952.35,
+    "y": 32989.88,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

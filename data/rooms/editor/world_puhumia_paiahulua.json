@@ -1,0 +1,48 @@
+{
+  "id": "world_puhumia_paiahulua",
+  "name": "Paiahulua",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Henan",
+      "to": "world_puhumia_henan"
+    },
+    {
+      "direction": "小徑往Apohinehi",
+      "to": "world_puhumia_apohinehi"
+    },
+    {
+      "direction": "小徑往Napopiono",
+      "to": "world_puhumia_napopiono"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 616,
+    "cell_id": 3945,
+    "population": 1222,
+    "culture": "毛伊",
+    "religion": "亞洲信仰",
+    "biome": "熱帶季雨林",
+    "x": 15905.24,
+    "y": 50838.94,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kulia"
+  }
+}

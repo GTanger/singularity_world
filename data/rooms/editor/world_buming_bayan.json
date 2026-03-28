@@ -1,0 +1,55 @@
+{
+  "id": "world_buming_bayan",
+  "name": "Bayan",
+  "description": "",
+  "zone": "buming",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Baliun",
+      "to": "world_baliun_baliun"
+    },
+    {
+      "direction": "小徑往Saikhan",
+      "to": "world_buming_saikhan"
+    },
+    {
+      "direction": "小徑往Khonlig",
+      "to": "world_myania_khonlig"
+    },
+    {
+      "direction": "小徑往Galtseg",
+      "to": "world_buming_galtseg"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 89,
+    "cell_id": 2341,
+    "population": 4376,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 74570.36,
+    "y": 32112.72,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Batsalagia"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "world_ping_tengchungy",
+  "name": "Tengchungy",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Natong",
+      "to": "world_ganz_guo_natong"
+    },
+    {
+      "direction": "小徑往Raozhou",
+      "to": "world_ping_raozhou"
+    },
+    {
+      "direction": "小徑往Nanyang",
+      "to": "world_ping_nanyang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 323,
+    "cell_id": 5105,
+    "population": 16066,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶落葉林",
+    "x": 18204.72,
+    "y": 63434.67,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Qingz Guo"
+  }
+}

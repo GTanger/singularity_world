@@ -1,0 +1,48 @@
+{
+  "id": "world_guela_tarilacem",
+  "name": "Tarilacem",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tagerechi",
+      "to": "world_guela_tagerechi"
+    },
+    {
+      "direction": "小徑往Lqlidelt",
+      "to": "world_guela_lqlidelt"
+    },
+    {
+      "direction": "小徑往Guel",
+      "to": "world_guela_guel"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 611,
+    "cell_id": 4887,
+    "population": 6580,
+    "culture": "柏柏爾",
+    "religion": "柏柏爾教",
+    "biome": "熱帶季雨林",
+    "x": 76321.22,
+    "y": 60488.36,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Dje"
+  }
+}

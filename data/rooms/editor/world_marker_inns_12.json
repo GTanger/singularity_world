@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_12",
+  "name": "旅店",
+  "description": "",
+  "zone": "dur_un",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Mekalhusu",
+      "to": "world_dur_un_mekalhusu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 12,
+    "marker_type": "inns"
+  }
+}

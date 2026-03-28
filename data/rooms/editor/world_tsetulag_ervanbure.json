@@ -1,0 +1,55 @@
+{
+  "id": "world_tsetulag_ervanbure",
+  "name": "Ervanbure",
+  "description": "",
+  "zone": "tsetulag",
+  "tags": [
+    "town",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Gurvan",
+      "to": "world_tsetulag_gurvan"
+    },
+    {
+      "direction": "官道往Ergaltkhan",
+      "to": "world_tsetulag_ergaltkhan"
+    },
+    {
+      "direction": "官道往Myanzurkh",
+      "to": "world_bayan_myanzurkh"
+    },
+    {
+      "direction": "小徑往Khuluutno",
+      "to": "world_tsetulag_khuluutno"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 98,
+    "cell_id": 2775,
+    "population": 10651,
+    "culture": "兀魯斯",
+    "religion": "賽罕信仰",
+    "biome": "溫帶落葉林",
+    "x": 62173.7,
+    "y": 36096.55,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Umen"
+  }
+}

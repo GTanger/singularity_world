@@ -1,0 +1,41 @@
+{
+  "id": "world_baniuria_mayansaikhan",
+  "name": "Mayansaikhan",
+  "description": "",
+  "zone": "baniuria",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zagangol",
+      "to": "world_baniuria_zagangol"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 414,
+    "cell_id": 1265,
+    "population": 6682,
+    "culture": "兀魯斯",
+    "religion": "希杜魯姆教",
+    "biome": "北方針葉林",
+    "x": 86848.88,
+    "y": 21525.4,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Khashinchia"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "world_ayantia_tsagaan",
+  "name": "Tsagaan",
+  "description": "",
+  "zone": "ayantia",
+  "tags": [
+    "town",
+    "naval",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tseltant",
+      "to": "world_ayantia_tseltant"
+    },
+    {
+      "direction": "小徑往Taishibal",
+      "to": "world_ayantia_taishibal"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 206,
+    "cell_id": 3431,
+    "population": 14026,
+    "culture": "兀魯斯",
+    "religion": "希亞特見證者",
+    "biome": "熱帶雨林",
+    "x": 61399.7,
+    "y": 42913.4,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Norotia"
+  }
+}

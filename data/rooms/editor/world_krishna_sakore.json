@@ -1,0 +1,46 @@
+{
+  "id": "world_krishna_sakore",
+  "name": "Sakore",
+  "description": "",
+  "zone": "krishna",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Narajpet",
+      "to": "world_krishna_narajpet"
+    },
+    {
+      "direction": "官道往Kudch",
+      "to": "world_hunageria_kudch"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 207,
+    "cell_id": 4011,
+    "population": 8334,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 78428.43,
+    "y": 50766.75,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Thumdurgia"
+  }
+}

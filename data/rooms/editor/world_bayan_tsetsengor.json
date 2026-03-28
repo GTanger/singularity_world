@@ -1,0 +1,48 @@
+{
+  "id": "world_bayan_tsetsengor",
+  "name": "Tsetsengor",
+  "description": "",
+  "zone": "bayan",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ulaan",
+      "to": "world_khulekhia_ulaan"
+    },
+    {
+      "direction": "小徑往Luushaantno",
+      "to": "world_bayan_luushaantno"
+    },
+    {
+      "direction": "小徑往Balanuurga",
+      "to": "world_morovria_balanuurga"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 405,
+    "cell_id": 2331,
+    "population": 10860,
+    "culture": "兀魯斯",
+    "religion": "楚涅勒格赫信仰",
+    "biome": "溫帶落葉林",
+    "x": 64364.84,
+    "y": 32448.45,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Gurgalut"
+  }
+}

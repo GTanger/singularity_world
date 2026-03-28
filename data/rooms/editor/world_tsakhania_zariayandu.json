@@ -1,0 +1,46 @@
+{
+  "id": "world_tsakhania_zariayandu",
+  "name": "Zariayandu",
+  "description": "",
+  "zone": "tsakhania",
+  "tags": [
+    "town",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tsayangai",
+      "to": "world_tulag_tsayangai"
+    },
+    {
+      "direction": "官道往Alan",
+      "to": "world_myania_alan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 80,
+    "cell_id": 2043,
+    "population": 6227,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 77462.49,
+    "y": 29609.46,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    }
+  }
+}

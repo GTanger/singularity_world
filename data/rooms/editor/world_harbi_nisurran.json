@@ -1,0 +1,49 @@
+{
+  "id": "world_harbi_nisurran",
+  "name": "Nisurran",
+  "description": "",
+  "zone": "harbi",
+  "tags": [
+    "village",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kursadum",
+      "to": "world_puz_kursadum"
+    },
+    {
+      "direction": "小徑往Jaran",
+      "to": "world_harbi_jaran"
+    },
+    {
+      "direction": "小徑往Onuur",
+      "to": "world_baniuria_onuur"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 146,
+    "cell_id": 1955,
+    "population": 1771,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶雨林",
+    "x": 88556.74,
+    "y": 28110.68,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Tira"
+  }
+}

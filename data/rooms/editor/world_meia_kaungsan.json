@@ -1,0 +1,47 @@
+{
+  "id": "world_meia_kaungsan",
+  "name": "Kaungsan",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tailunfa",
+      "to": "world_meia_tailunfa"
+    },
+    {
+      "direction": "小徑往Meiyue",
+      "to": "world_meia_meiyue"
+    },
+    {
+      "direction": "小徑往Ching",
+      "to": "world_meia_ching"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 164,
+    "cell_id": 2952,
+    "population": 1630,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶落葉林",
+    "x": 27061.03,
+    "y": 38820.27,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kaungsan"
+  }
+}

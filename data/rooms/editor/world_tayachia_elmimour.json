@@ -1,0 +1,40 @@
+{
+  "id": "world_tayachia_elmimour",
+  "name": "Elmimour",
+  "description": "",
+  "zone": "tayachia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Iknaslinez",
+      "to": "world_tayachia_iknaslinez"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 472,
+    "cell_id": 5162,
+    "population": 6362,
+    "culture": "柏柏爾",
+    "religion": "柏柏爾教",
+    "biome": "溫帶落葉林",
+    "x": 78724.51,
+    "y": 63147.22,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Elmimour"
+  }
+}

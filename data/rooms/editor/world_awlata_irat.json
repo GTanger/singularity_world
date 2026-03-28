@@ -1,0 +1,47 @@
+{
+  "id": "world_awlata_irat",
+  "name": "Irat",
+  "description": "",
+  "zone": "awlata",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Griwinjaza",
+      "to": "world_kima_griwinjaza"
+    },
+    {
+      "direction": "官道往Zridal",
+      "to": "world_awlata_zridal"
+    },
+    {
+      "direction": "小徑往Tebourza",
+      "to": "world_kima_tebourza"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 335,
+    "cell_id": 4638,
+    "population": 3547,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "熱帶雨林",
+    "x": 85271.8,
+    "y": 57943.04,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Irat"
+  }
+}

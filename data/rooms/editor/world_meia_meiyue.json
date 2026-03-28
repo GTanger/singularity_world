@@ -1,0 +1,52 @@
+{
+  "id": "world_meia_meiyue",
+  "name": "Meiyue",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "town",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tailunfa",
+      "to": "world_meia_tailunfa"
+    },
+    {
+      "direction": "小徑往Kaungsan",
+      "to": "world_meia_kaungsan"
+    },
+    {
+      "direction": "小徑往Maonshing",
+      "to": "world_meia_maonshing"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 61,
+    "cell_id": 3135,
+    "population": 5511,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶落葉林",
+    "x": 26168.79,
+    "y": 40592.67,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Meiyue"
+  }
+}

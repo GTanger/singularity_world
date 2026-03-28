@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_battlefields_20",
+  "name": "古戰場",
+  "description": "",
+  "zone": "gordowia",
+  "tags": [
+    "battlefields"
+  ],
+  "exits": [
+    {
+      "direction": "返回Tuzey-Shahr",
+      "to": "world_gordowia_tuzey_shahr"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 20,
+    "marker_type": "battlefields"
+  }
+}

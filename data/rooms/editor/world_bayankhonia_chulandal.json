@@ -1,0 +1,46 @@
+{
+  "id": "world_bayankhonia_chulandal",
+  "name": "Chulandal",
+  "description": "",
+  "zone": "bayankhonia",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Jinst",
+      "to": "world_tonkhan_jinst"
+    },
+    {
+      "direction": "官道往Baliun",
+      "to": "world_baliun_baliun"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 78,
+    "cell_id": 2038,
+    "population": 4945,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 72742.94,
+    "y": 29134.29,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    }
+  }
+}

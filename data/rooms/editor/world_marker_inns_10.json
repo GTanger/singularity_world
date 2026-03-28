@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_10",
+  "name": "旅店",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Simshan",
+      "to": "world_fungia_simshan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 10,
+    "marker_type": "inns"
+  }
+}

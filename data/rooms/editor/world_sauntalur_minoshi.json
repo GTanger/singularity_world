@@ -1,0 +1,46 @@
+{
+  "id": "world_sauntalur_minoshi",
+  "name": "Minoshi",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "village",
+    "river",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Taiyami",
+      "to": "world_nanu_taiyami"
+    },
+    {
+      "direction": "小徑往Manna",
+      "to": "world_sauntalur_manna"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 113,
+    "cell_id": 4070,
+    "population": 1685,
+    "culture": "大和",
+    "religion": "石坦派",
+    "biome": "熱帶雨林",
+    "x": 55387.56,
+    "y": 51667.44,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Tama"
+  }
+}

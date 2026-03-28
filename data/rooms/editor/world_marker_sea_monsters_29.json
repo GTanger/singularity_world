@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_sea_monsters_29",
+  "name": "海怪棲地",
+  "description": "",
+  "zone": "kyohe",
+  "tags": [
+    "sea-monsters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Nasazuni",
+      "to": "world_kyohe_nasazuni"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 29,
+    "marker_type": "sea-monsters"
+  }
+}

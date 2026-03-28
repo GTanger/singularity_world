@@ -1,0 +1,44 @@
+{
+  "id": "world_sauntalur_muduledbid",
+  "name": "Muduledbid",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hosdurmat",
+      "to": "world_sauntalur_hosdurmat"
+    },
+    {
+      "direction": "小徑往Mudbidgige",
+      "to": "world_sauntalur_mudbidgige"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 201,
+    "cell_id": 3908,
+    "population": 9121,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "溫帶落葉林",
+    "x": 63938.39,
+    "y": 49911.92,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shahwaria"
+  }
+}

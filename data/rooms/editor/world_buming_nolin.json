@@ -1,0 +1,56 @@
+{
+  "id": "world_buming_nolin",
+  "name": "Nolin",
+  "description": "",
+  "zone": "buming",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tiyah",
+      "to": "world_tonkhan_tiyah"
+    },
+    {
+      "direction": "小徑往Qidssurda",
+      "to": "world_chandia_qidssurda"
+    },
+    {
+      "direction": "小徑往Ergaltkhan",
+      "to": "world_tonkhan_ergaltkhan"
+    },
+    {
+      "direction": "小徑往Saikhan",
+      "to": "world_buming_saikhan"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_8"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 122,
+    "cell_id": 2444,
+    "population": 1600,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 71529.47,
+    "y": 33066.0,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nolin"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "world_puhumia_kaula",
+  "name": "Kaula",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Apohinehi",
+      "to": "world_puhumia_apohinehi"
+    },
+    {
+      "direction": "小徑往Nakahuaio",
+      "to": "world_puhumia_nakahuaio"
+    },
+    {
+      "direction": "海路往Siche",
+      "to": "world_ping_siche"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 487,
+    "cell_id": 4031,
+    "population": 7278,
+    "culture": "毛伊",
+    "religion": "亞洲信仰",
+    "biome": "熱帶雨林",
+    "x": 14006.34,
+    "y": 50970.57,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Kaula"
+  }
+}

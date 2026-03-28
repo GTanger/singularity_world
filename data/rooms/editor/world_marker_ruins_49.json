@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_ruins_49",
+  "name": "遺跡",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "ruins"
+  ],
+  "exits": [
+    {
+      "direction": "返回Yazhou",
+      "to": "world_xian_guo_yazhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 49,
+    "marker_type": "ruins"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "world_lon_guo_yilin",
+  "name": "Yilin",
+  "description": "",
+  "zone": "lon_guo",
+  "tags": [
+    "city",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls",
+    "shantytown"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tengchang",
+      "to": "world_taizhou_tengchang"
+    },
+    {
+      "direction": "小徑往Huangsha",
+      "to": "world_lon_guo_huangsha"
+    },
+    {
+      "direction": "小徑往Chang",
+      "to": "world_lon_guo_chang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 32,
+    "cell_id": 5834,
+    "population": 32868,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 7152.49,
+    "y": 71723.68,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 1,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Yilin"
+  }
+}

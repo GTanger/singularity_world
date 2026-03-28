@@ -1,0 +1,56 @@
+{
+  "id": "world_hongnamguk_yeong",
+  "name": "Yeong",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "city",
+    "naval",
+    "port",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Nasazuni",
+      "to": "world_kyohe_nasazuni"
+    },
+    {
+      "direction": "官道往Inchang",
+      "to": "world_hongnamguk_inchang"
+    },
+    {
+      "direction": "小徑往Jocheon",
+      "to": "world_hongnamguk_jocheon"
+    },
+    {
+      "direction": "海路往Kyohe",
+      "to": "world_kyohe_kyohe"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 535,
+    "cell_id": 2203,
+    "population": 36841,
+    "culture": "高麗",
+    "religion": "科爾教",
+    "biome": "溫帶雨林",
+    "x": 41392.69,
+    "y": 31174.74,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Yeong"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_waterfalls_19",
+  "name": "瀑布",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "waterfalls"
+  ],
+  "exits": [
+    {
+      "direction": "返回Gochanyang",
+      "to": "world_hongnamguk_gochanyang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 19,
+    "marker_type": "waterfalls"
+  }
+}

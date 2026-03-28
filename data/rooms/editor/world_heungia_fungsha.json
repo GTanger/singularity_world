@@ -1,0 +1,49 @@
+{
+  "id": "world_heungia_fungsha",
+  "name": "Fungsha",
+  "description": "",
+  "zone": "heungia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Laiyeung",
+      "to": "world_lokchia_laiyeung"
+    },
+    {
+      "direction": "官道往Fukgong",
+      "to": "world_heungia_fukgong"
+    },
+    {
+      "direction": "小徑往Laicheong",
+      "to": "world_lokchia_laicheong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 219,
+    "cell_id": 2827,
+    "population": 10702,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 6936.99,
+    "y": 38669.71,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Seilunia"
+  }
+}

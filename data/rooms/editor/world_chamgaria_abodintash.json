@@ -1,0 +1,49 @@
+{
+  "id": "world_chamgaria_abodintash",
+  "name": "Abodintash",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Abnakhast",
+      "to": "world_chamgaria_abnakhast"
+    },
+    {
+      "direction": "小徑往Vahaveran",
+      "to": "world_chamgaria_vahaveran"
+    },
+    {
+      "direction": "水源地",
+      "to": "world_marker_water_sources_2"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 307,
+    "cell_id": 5989,
+    "population": 10719,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 72163.71,
+    "y": 72833.17,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Khoria"
+  }
+}

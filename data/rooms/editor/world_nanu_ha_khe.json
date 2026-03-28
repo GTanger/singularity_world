@@ -1,0 +1,56 @@
+{
+  "id": "world_nanu_ha_khe",
+  "name": "Ha Khe",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Shitanoyo",
+      "to": "world_nanu_shitanoyo"
+    },
+    {
+      "direction": "小徑往Taiyami",
+      "to": "world_nanu_taiyami"
+    },
+    {
+      "direction": "小徑往Can",
+      "to": "world_nanu_can"
+    },
+    {
+      "direction": "小徑往Sateguzata",
+      "to": "world_nanu_sateguzata"
+    },
+    {
+      "direction": "礦脈",
+      "to": "world_marker_mines_4"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 278,
+    "cell_id": 3897,
+    "population": 4763,
+    "culture": "越族",
+    "religion": "石坦派",
+    "biome": "溫帶落葉林",
+    "x": 52304.73,
+    "y": 49725.67,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Dabangia"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "id": "world_kwun_chingtei",
+  "name": "Chingtei",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hingdak",
+      "to": "world_fungia_hingdak"
+    },
+    {
+      "direction": "官道往Wuheikiu",
+      "to": "world_shia_wuheikiu"
+    },
+    {
+      "direction": "小徑往Lowuhing",
+      "to": "world_kwun_lowuhing"
+    },
+    {
+      "direction": "小徑往Chuehoi",
+      "to": "world_kwun_chuehoi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 82,
+    "cell_id": 2073,
+    "population": 2071,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶落葉林",
+    "x": 16220.89,
+    "y": 30256.4,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chingtei"
+  }
+}

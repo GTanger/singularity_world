@@ -1,0 +1,46 @@
+{
+  "id": "world_khovia_khovi",
+  "name": "Khovi",
+  "description": "",
+  "zone": "khovia",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kintash",
+      "to": "world_sains_kintash"
+    },
+    {
+      "direction": "官道往Irmo",
+      "to": "world_khovia_irmo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 86,
+    "cell_id": 2250,
+    "population": 3366,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 83447.12,
+    "y": 31372.84,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Khovi"
+  }
+}

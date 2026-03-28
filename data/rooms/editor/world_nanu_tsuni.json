@@ -1,0 +1,45 @@
+{
+  "id": "world_nanu_tsuni",
+  "name": "Tsuni",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Fuchu",
+      "to": "world_nanu_fuchu"
+    },
+    {
+      "direction": "小徑往Hegu",
+      "to": "world_nanu_hegu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 141,
+    "cell_id": 3334,
+    "population": 5961,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "熱帶雨林",
+    "x": 49474.55,
+    "y": 42450.72,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Shi"
+  }
+}

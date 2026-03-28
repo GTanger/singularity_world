@@ -1,0 +1,46 @@
+{
+  "id": "world_hongnamguk_gochanyang",
+  "name": "Gochanyang",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "village",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Uiwonjuripo",
+      "to": "world_hongnamguk_uiwonjuripo"
+    },
+    {
+      "direction": "瀑布",
+      "to": "world_marker_waterfalls_19"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 490,
+    "cell_id": 1407,
+    "population": 2230,
+    "culture": "高麗",
+    "religion": "高麗萬神殿",
+    "biome": "北方針葉林",
+    "x": 41857.56,
+    "y": 23895.34,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Gochanyang"
+  }
+}

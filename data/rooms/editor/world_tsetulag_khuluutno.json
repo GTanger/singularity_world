@@ -1,0 +1,45 @@
+{
+  "id": "world_tsetulag_khuluutno",
+  "name": "Khuluutno",
+  "description": "",
+  "zone": "tsetulag",
+  "tags": [
+    "town",
+    "lake",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ervanbure",
+      "to": "world_tsetulag_ervanbure"
+    },
+    {
+      "direction": "小徑往Khovshaant",
+      "to": "world_tsetulag_khovshaant"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 156,
+    "cell_id": 2888,
+    "population": 12894,
+    "culture": "兀魯斯",
+    "religion": "賽罕信仰",
+    "biome": "溫帶雨林",
+    "x": 60748.4,
+    "y": 38242.1,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Urelen"
+  }
+}

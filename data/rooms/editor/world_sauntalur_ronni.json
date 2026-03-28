@@ -1,0 +1,48 @@
+{
+  "id": "world_sauntalur_ronni",
+  "name": "Ronni",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Sajagaval",
+      "to": "world_sauntalur_sajagaval"
+    },
+    {
+      "direction": "小徑往Sarasim",
+      "to": "world_sauntalur_sarasim"
+    },
+    {
+      "direction": "小徑往Natagadati",
+      "to": "world_hunageria_natagadati"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 110,
+    "cell_id": 4195,
+    "population": 1473,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "熱帶雨林",
+    "x": 68268.95,
+    "y": 52450.54,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Raich"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "world_golparia_shabas",
+  "name": "Shabas",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Qodslamshan",
+      "to": "world_israfamin_qodslamshan"
+    },
+    {
+      "direction": "小徑往Dijankanama",
+      "to": "world_golparia_dijankanama"
+    },
+    {
+      "direction": "小徑往Vazkuhpada",
+      "to": "world_golparia_vazkuhpada"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 553,
+    "cell_id": 5593,
+    "population": 1738,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶雨林",
+    "x": 55141.17,
+    "y": 68799.92,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shabas"
+  }
+}

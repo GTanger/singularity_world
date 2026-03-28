@@ -1,0 +1,45 @@
+{
+  "id": "world_gordowia_tahasar",
+  "name": "Tahasar",
+  "description": "",
+  "zone": "gordowia",
+  "tags": [
+    "village",
+    "plaza",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hafshan",
+      "to": "world_chamgaria_hafshan"
+    },
+    {
+      "direction": "小徑往Nanabastan",
+      "to": "world_gordowia_nanabastan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 247,
+    "cell_id": 5241,
+    "population": 4840,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "溫帶雨林",
+    "x": 70110.41,
+    "y": 64263.98,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Talk"
+  }
+}

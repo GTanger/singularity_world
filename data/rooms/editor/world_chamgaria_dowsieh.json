@@ -1,0 +1,49 @@
+{
+  "id": "world_chamgaria_dowsieh",
+  "name": "Dowsieh",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Shahrehen",
+      "to": "world_chamgaria_shahrehen"
+    },
+    {
+      "direction": "小徑往Darand",
+      "to": "world_chamgaria_darand"
+    },
+    {
+      "direction": "小徑往Pishteh",
+      "to": "world_ziyehia_pishteh"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 273,
+    "cell_id": 5996,
+    "population": 12092,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 79716.66,
+    "y": 72347.01,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Dowsieh"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "id": "world_sains_kintash",
+  "name": "Kintash",
+  "description": "",
+  "zone": "sains",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Dagal",
+      "to": "world_sains_dagal"
+    },
+    {
+      "direction": "官道往Khovi",
+      "to": "world_khovia_khovi"
+    },
+    {
+      "direction": "小徑往Durru",
+      "to": "world_myania_durru"
+    },
+    {
+      "direction": "小徑往Qagaz",
+      "to": "world_dur_un_qagaz"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 233,
+    "cell_id": 2349,
+    "population": 1519,
+    "culture": "幼法拉底",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 82159.43,
+    "y": 32096.3,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kintash"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "id": "world_ganz_guo_yangzhou",
+  "name": "Yangzhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Xincheng",
+      "to": "world_ganz_guo_xincheng_181"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 186,
+    "cell_id": 5203,
+    "population": 5827,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶雨林",
+    "x": 28829.6,
+    "y": 64456.53,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Silian Guo"
+  }
+}

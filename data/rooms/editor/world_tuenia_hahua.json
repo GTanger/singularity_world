@@ -1,0 +1,40 @@
+{
+  "id": "world_tuenia_hahua",
+  "name": "Hahua",
+  "description": "",
+  "zone": "tuenia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Duenchung",
+      "to": "world_tuenia_duenchung"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 399,
+    "cell_id": 3464,
+    "population": 10592,
+    "culture": "毛伊",
+    "religion": "洛昌武信仰",
+    "biome": "熱帶雨林",
+    "x": 10802.36,
+    "y": 44480.43,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hahua"
+  }
+}

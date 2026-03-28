@@ -1,0 +1,51 @@
+{
+  "id": "world_meia_tungchuen",
+  "name": "Tungchuen",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Gokong",
+      "to": "world_meia_gokong"
+    },
+    {
+      "direction": "小徑往Gaozhong",
+      "to": "world_meia_gaozhong"
+    },
+    {
+      "direction": "小徑往Tinshan",
+      "to": "world_fungia_tinshan"
+    },
+    {
+      "direction": "小徑往Kwaito",
+      "to": "world_tuenia_kwaito"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 531,
+    "cell_id": 3216,
+    "population": 3985,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 20157.99,
+    "y": 41088.02,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tungchuen"
+  }
+}

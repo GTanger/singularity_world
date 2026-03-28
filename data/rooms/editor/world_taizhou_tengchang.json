@@ -1,0 +1,52 @@
+{
+  "id": "world_taizhou_tengchang",
+  "name": "Tengchang",
+  "description": "",
+  "zone": "taizhou",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Taizhou",
+      "to": "world_taizhou_taizhou"
+    },
+    {
+      "direction": "官道往Yilin",
+      "to": "world_lon_guo_yilin"
+    },
+    {
+      "direction": "小徑往Hengzhou",
+      "to": "world_taizhou_hengzhou"
+    },
+    {
+      "direction": "小徑往Haixing",
+      "to": "world_lon_guo_haixing"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 459,
+    "cell_id": 5740,
+    "population": 1724,
+    "culture": "漢族",
+    "religion": "百良德見證者",
+    "biome": "溫帶雨林",
+    "x": 9781.12,
+    "y": 70825.54,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tengchang"
+  }
+}

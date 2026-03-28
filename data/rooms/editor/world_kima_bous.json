@@ -1,0 +1,44 @@
+{
+  "id": "world_kima_bous",
+  "name": "Bous",
+  "description": "",
+  "zone": "kima",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Oudant Ba",
+      "to": "world_tayachia_oudant_ba"
+    },
+    {
+      "direction": "小徑往Khelaous",
+      "to": "world_kima_khelaous"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 177,
+    "cell_id": 5080,
+    "population": 6247,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "溫帶落葉林",
+    "x": 84586.75,
+    "y": 62856.09,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tafra"
+  }
+}

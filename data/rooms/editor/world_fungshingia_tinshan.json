@@ -1,0 +1,45 @@
+{
+  "id": "world_fungshingia_tinshan",
+  "name": "Tinshan",
+  "description": "",
+  "zone": "fungshingia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kwungon",
+      "to": "world_shamshia_kwungon"
+    },
+    {
+      "direction": "小徑往Lamtei",
+      "to": "world_shamshia_lamtei"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 556,
+    "cell_id": 3033,
+    "population": 16501,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶落葉林",
+    "x": 14675.61,
+    "y": 39643.84,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chia"
+  }
+}

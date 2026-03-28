@@ -1,0 +1,52 @@
+{
+  "id": "world_dengz_guo_danan",
+  "name": "Danan",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Binzhou",
+      "to": "world_dengz_guo_binzhou"
+    },
+    {
+      "direction": "官道往Zhangwuian",
+      "to": "world_taoxing_zhangwuian"
+    },
+    {
+      "direction": "小徑往Xinglong",
+      "to": "world_dengz_guo_xinglong"
+    },
+    {
+      "direction": "藏書閣",
+      "to": "world_marker_libraries_52"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 336,
+    "cell_id": 5379,
+    "population": 1674,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 33515.54,
+    "y": 66181.04,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ping"
+  }
+}

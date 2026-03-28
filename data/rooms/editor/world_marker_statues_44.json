@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_statues_44",
+  "name": "雕像",
+  "description": "",
+  "zone": "chandia",
+  "tags": [
+    "statues"
+  ],
+  "exits": [
+    {
+      "direction": "返回Bayan",
+      "to": "world_chandia_bayan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 44,
+    "marker_type": "statues"
+  }
+}

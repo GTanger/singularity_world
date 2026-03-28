@@ -1,0 +1,41 @@
+{
+  "id": "world_yalkan_keren",
+  "name": "Keren",
+  "description": "",
+  "zone": "yalkan",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Eltanoba",
+      "to": "world_yalkan_eltanoba"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 608,
+    "cell_id": 2220,
+    "population": 16907,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 53591.96,
+    "y": 31144.36,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Keren"
+  }
+}

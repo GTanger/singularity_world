@@ -1,0 +1,46 @@
+{
+  "id": "world_baniuria_anshaka",
+  "name": "Anshaka",
+  "description": "",
+  "zone": "baniuria",
+  "tags": [
+    "village",
+    "river",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Irmo",
+      "to": "world_khovia_irmo"
+    },
+    {
+      "direction": "小徑往Olbar",
+      "to": "world_baniuria_olbar"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 195,
+    "cell_id": 1952,
+    "population": 1648,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶雨林",
+    "x": 85466.68,
+    "y": 28312.87,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Anshaka"
+  }
+}

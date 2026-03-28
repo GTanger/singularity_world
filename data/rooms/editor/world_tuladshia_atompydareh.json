@@ -1,0 +1,43 @@
+{
+  "id": "world_tuladshia_atompydareh",
+  "name": "Atompydareh",
+  "description": "",
+  "zone": "tuladshia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Vardan",
+      "to": "world_tuladshia_vardan"
+    },
+    {
+      "direction": "官道往Datigziyan",
+      "to": "world_gordowia_datigziyan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 254,
+    "cell_id": 4611,
+    "population": 4194,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "熱帶雨林",
+    "x": 66872.28,
+    "y": 57687.95,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chogramia"
+  }
+}

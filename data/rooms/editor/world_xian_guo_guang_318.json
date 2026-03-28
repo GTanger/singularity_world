@@ -1,0 +1,46 @@
+{
+  "id": "world_xian_guo_guang_318",
+  "name": "Guang",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "city",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Fenzhou",
+      "to": "world_xian_guo_fenzhou_544"
+    },
+    {
+      "direction": "小徑往Taining",
+      "to": "world_xian_guo_taining"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 318,
+    "cell_id": 5752,
+    "population": 20698,
+    "culture": "漢族",
+    "religion": "漢族古信仰",
+    "biome": "溫帶落葉林",
+    "x": 21830.41,
+    "y": 70498.0,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Guang"
+  }
+}

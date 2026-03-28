@@ -1,0 +1,46 @@
+{
+  "id": "world_kwun_siunamtin",
+  "name": "Siunamtin",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Hoheong",
+      "to": "world_fungia_hoheong"
+    },
+    {
+      "direction": "小徑往Longfukok",
+      "to": "world_kwun_longfukok"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 311,
+    "cell_id": 2176,
+    "population": 16666,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶雨林",
+    "x": 20263.79,
+    "y": 31377.89,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ngchukok"
+  }
+}

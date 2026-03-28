@@ -1,0 +1,48 @@
+{
+  "id": "world_sananai_nishi",
+  "name": "Nishi",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Genbetsuha",
+      "to": "world_sananai_genbetsuha"
+    },
+    {
+      "direction": "小徑往Koyo",
+      "to": "world_sananai_koyo"
+    },
+    {
+      "direction": "小徑往Torohakaru",
+      "to": "world_sananai_torohakaru"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 345,
+    "cell_id": 3238,
+    "population": 7598,
+    "culture": "大和",
+    "religion": "米索坦特信仰",
+    "biome": "熱帶季雨林",
+    "x": 41288.08,
+    "y": 41820.41,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nishi"
+  }
+}

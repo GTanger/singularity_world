@@ -1,0 +1,55 @@
+{
+  "id": "world_gordowia_gordow",
+  "name": "Gordow",
+  "description": "",
+  "zone": "gordowia",
+  "tags": [
+    "city",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls",
+    "temple",
+    "shantytown"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Vardan",
+      "to": "world_tuladshia_vardan"
+    },
+    {
+      "direction": "官道往Bustan",
+      "to": "world_gordowia_bustan"
+    },
+    {
+      "direction": "小徑往Hazedeh",
+      "to": "world_israfamin_hazedeh"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 64,
+    "cell_id": 4790,
+    "population": 41576,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "熱帶雨林",
+    "x": 62703.61,
+    "y": 58908.96,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 1,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Gordow"
+  }
+}

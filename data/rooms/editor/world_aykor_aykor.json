@@ -1,0 +1,48 @@
+{
+  "id": "world_aykor_aykor",
+  "name": "Aykor",
+  "description": "",
+  "zone": "aykor",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Yrazte",
+      "to": "world_oguzsyurt_yrazte"
+    },
+    {
+      "direction": "官道往Beyteri",
+      "to": "world_oguyurt_beyteri"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 73,
+    "cell_id": 1815,
+    "population": 2624,
+    "culture": "突厥安",
+    "religion": "彥道",
+    "biome": "溫帶雨林",
+    "x": 46617.75,
+    "y": 27914.65,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "id": "world_binz_guo_tongzhou",
+  "name": "Tongzhou",
+  "description": "",
+  "zone": "binz_guo",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Rengyi",
+      "to": "world_ping_rengyi"
+    },
+    {
+      "direction": "官道往Chang",
+      "to": "world_ping_chang"
+    },
+    {
+      "direction": "小徑往Xiwanding",
+      "to": "world_binz_guo_xiwanding"
+    },
+    {
+      "direction": "海路往Yazhou",
+      "to": "world_ping_yazhou"
+    },
+    {
+      "direction": "盜賊據點",
+      "to": "world_marker_brigands_35"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 67,
+    "cell_id": 5186,
+    "population": 14600,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶雨林",
+    "x": 11457.62,
+    "y": 64071.27,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Quzho Guo"
+  }
+}

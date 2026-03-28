@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_17",
+  "name": "旅店",
+  "description": "",
+  "zone": "shamshia",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Leungchung",
+      "to": "world_shamshia_leungchung"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 17,
+    "marker_type": "inns"
+  }
+}

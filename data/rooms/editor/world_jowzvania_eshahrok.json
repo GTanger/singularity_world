@@ -1,0 +1,49 @@
+{
+  "id": "world_jowzvania_eshahrok",
+  "name": "Eshahrok",
+  "description": "",
+  "zone": "jowzvania",
+  "tags": [
+    "village",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Turareshahr",
+      "to": "world_jowzvania_turareshahr"
+    },
+    {
+      "direction": "小徑往Fuged",
+      "to": "world_jowzvania_fuged"
+    },
+    {
+      "direction": "小徑往Tabsard",
+      "to": "world_jowzvania_tabsard"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 498,
+    "cell_id": 4679,
+    "population": 2281,
+    "culture": "德蘭尼",
+    "religion": "圖拉雷沙赫爾派",
+    "biome": "熱帶雨林",
+    "x": 49628.57,
+    "y": 58303.41,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Eshahrok"
+  }
+}

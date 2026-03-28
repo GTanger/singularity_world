@@ -1,0 +1,53 @@
+{
+  "id": "world_meia_shinan",
+  "name": "Shinan",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yongshung",
+      "to": "world_ganz_guo_yongshung"
+    },
+    {
+      "direction": "小徑往Jingzhou",
+      "to": "world_puhumia_jingzhou"
+    },
+    {
+      "direction": "小徑往Baiwan",
+      "to": "world_meia_baiwan"
+    },
+    {
+      "direction": "小徑往Songzhou",
+      "to": "world_puhumia_songzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 600,
+    "cell_id": 3877,
+    "population": 1906,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "溫帶落葉林",
+    "x": 24219.49,
+    "y": 49642.88,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Liading"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "world_israfamin_qodslamshan",
+  "name": "Qodslamshan",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Turenghes",
+      "to": "world_israfamin_turenghes"
+    },
+    {
+      "direction": "小徑往Zasirstan",
+      "to": "world_golparia_zasirstan"
+    },
+    {
+      "direction": "小徑往Shabas",
+      "to": "world_golparia_shabas"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 542,
+    "cell_id": 5408,
+    "population": 1680,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶雨林",
+    "x": 56592.2,
+    "y": 66684.19,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Rezash"
+  }
+}

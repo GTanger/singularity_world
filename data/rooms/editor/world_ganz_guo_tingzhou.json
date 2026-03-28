@@ -1,0 +1,49 @@
+{
+  "id": "world_ganz_guo_tingzhou",
+  "name": "Tingzhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Shuo",
+      "to": "world_ganz_guo_shuo"
+    },
+    {
+      "direction": "官道往Raozhoua",
+      "to": "world_ganz_guo_raozhoua"
+    },
+    {
+      "direction": "小徑往Guang",
+      "to": "world_ganz_guo_guang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 592,
+    "cell_id": 4653,
+    "population": 4311,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "溫帶雨林",
+    "x": 22087.67,
+    "y": 58094.86,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tong Guo"
+  }
+}

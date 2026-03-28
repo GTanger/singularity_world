@@ -1,0 +1,44 @@
+{
+  "id": "world_awlata_dawan",
+  "name": "Dawan",
+  "description": "",
+  "zone": "awlata",
+  "tags": [
+    "village",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tazrouaba",
+      "to": "world_guela_tazrouaba"
+    },
+    {
+      "direction": "官道往Ouramiz",
+      "to": "world_awlata_ouramiz"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 522,
+    "cell_id": 4631,
+    "population": 3683,
+    "culture": "柏柏爾",
+    "religion": "斯利拉拉扎格教",
+    "biome": "熱帶雨林",
+    "x": 79724.3,
+    "y": 57608.1,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Anfania"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_lighthouses_18",
+  "name": "燈塔",
+  "description": "",
+  "zone": "pirmir",
+  "tags": [
+    "lighthouses"
+  ],
+  "exits": [
+    {
+      "direction": "返回Pirmir",
+      "to": "world_pirmir_pirmir"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 18,
+    "marker_type": "lighthouses"
+  }
+}

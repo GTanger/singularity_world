@@ -1,0 +1,45 @@
+{
+  "id": "world_abepe_karsenoca",
+  "name": "Karsenoca",
+  "description": "",
+  "zone": "abepe",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Balkayabay",
+      "to": "world_abepe_balkayabay"
+    },
+    {
+      "direction": "官道往Eltanoba",
+      "to": "world_yalkan_eltanoba"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 131,
+    "cell_id": 2319,
+    "population": 16601,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 52637.78,
+    "y": 32541.13,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Yaltate"
+  }
+}

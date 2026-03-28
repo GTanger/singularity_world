@@ -1,0 +1,48 @@
+{
+  "id": "world_dur_ti_er_asha",
+  "name": "Er-Asha",
+  "description": "",
+  "zone": "dur_ti",
+  "tags": [
+    "village",
+    "lake"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Irmo",
+      "to": "world_khovia_irmo"
+    },
+    {
+      "direction": "官道往Durkulu",
+      "to": "world_dur_ti_durkulu"
+    },
+    {
+      "direction": "小徑往Tadmaba",
+      "to": "world_puz_tadmaba"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 252,
+    "cell_id": 2462,
+    "population": 1613,
+    "culture": "幼法拉底",
+    "religion": "幼法拉底精靈信仰",
+    "biome": "溫帶雨林",
+    "x": 86383.1,
+    "y": 33412.95,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Er-Asha"
+  }
+}

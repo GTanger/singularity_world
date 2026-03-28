@@ -1,0 +1,48 @@
+{
+  "id": "world_kwun_pingyuenwan",
+  "name": "Pingyuenwan",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "village",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Fangshui",
+      "to": "world_kwun_fangshui"
+    },
+    {
+      "direction": "小徑往Hokshuiman",
+      "to": "world_kwun_hokshuiman"
+    },
+    {
+      "direction": "小徑往Lungong",
+      "to": "world_kwun_lungong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 359,
+    "cell_id": 1781,
+    "population": 4034,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶落葉林",
+    "x": 19056.11,
+    "y": 27342.34,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Pingyuenwan"
+  }
+}

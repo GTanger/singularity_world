@@ -1,0 +1,44 @@
+{
+  "id": "world_sananai_nawanaiwa",
+  "name": "Nawanaiwa",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Mimamarayo",
+      "to": "world_nanu_mimamarayo"
+    },
+    {
+      "direction": "小徑往Tatsuma",
+      "to": "world_sananai_tatsuma"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 478,
+    "cell_id": 3492,
+    "population": 4213,
+    "culture": "大和",
+    "religion": "米索坦特信仰",
+    "biome": "熱帶季雨林",
+    "x": 44757.99,
+    "y": 44133.64,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nawanaiwa"
+  }
+}

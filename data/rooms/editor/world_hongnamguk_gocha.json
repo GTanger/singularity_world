@@ -1,0 +1,56 @@
+{
+  "id": "world_hongnamguk_gocha",
+  "name": "Gocha",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "city",
+    "lake",
+    "citadel",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hongnam",
+      "to": "world_hongnamguk_hongnam"
+    },
+    {
+      "direction": "官道往Aripo",
+      "to": "world_sasasunguk_aripo"
+    },
+    {
+      "direction": "小徑往Hamrye",
+      "to": "world_hongnamguk_hamrye"
+    },
+    {
+      "direction": "湖怪棲地",
+      "to": "world_marker_lake_monsters_28"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 461,
+    "cell_id": 1997,
+    "population": 23963,
+    "culture": "高麗",
+    "religion": "高麗萬神殿",
+    "biome": "溫帶雨林",
+    "x": 38596.85,
+    "y": 29428.39,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Gocha"
+  }
+}

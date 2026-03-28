@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_encounters_66",
+  "name": "遭遇點",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "encounters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Pariruzful",
+      "to": "world_chamgaria_pariruzful"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 66,
+    "marker_type": "encounters"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "id": "world_fungia_waichau",
+  "name": "Waichau",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "city",
+    "river",
+    "citadel",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Taihang",
+      "to": "world_fungia_taihang"
+    },
+    {
+      "direction": "官道往Hingdak",
+      "to": "world_fungia_hingdak"
+    },
+    {
+      "direction": "橋",
+      "to": "world_marker_bridges_5"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 451,
+    "cell_id": 2380,
+    "population": 20124,
+    "culture": "關族",
+    "religion": "秋嶺教",
+    "biome": "溫帶雨林",
+    "x": 15643.19,
+    "y": 33880.71,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Hokshuipia"
+  }
+}

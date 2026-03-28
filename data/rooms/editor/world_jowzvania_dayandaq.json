@@ -1,0 +1,55 @@
+{
+  "id": "world_jowzvania_dayandaq",
+  "name": "Dayandaq",
+  "description": "",
+  "zone": "jowzvania",
+  "tags": [
+    "city",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls",
+    "temple",
+    "shantytown"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tabsard",
+      "to": "world_jowzvania_tabsard"
+    },
+    {
+      "direction": "小徑往Fuged",
+      "to": "world_jowzvania_fuged"
+    },
+    {
+      "direction": "海路往Savand",
+      "to": "world_golparia_savand"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 44,
+    "cell_id": 4857,
+    "population": 26601,
+    "culture": "德蘭尼",
+    "religion": "茲茲切干教",
+    "biome": "熱帶雨林",
+    "x": 46822.25,
+    "y": 59781.37,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 1,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Varanlia"
+  }
+}

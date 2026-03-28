@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_mines_4",
+  "name": "礦脈",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "mines"
+  ],
+  "exits": [
+    {
+      "direction": "返回Ha Khe",
+      "to": "world_nanu_ha_khe"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 4,
+    "marker_type": "mines"
+  }
+}

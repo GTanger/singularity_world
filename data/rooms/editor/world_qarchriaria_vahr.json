@@ -1,0 +1,45 @@
+{
+  "id": "world_qarchriaria_vahr",
+  "name": "Vahr",
+  "description": "",
+  "zone": "qarchriaria",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Paboran",
+      "to": "world_qarchriaria_paboran"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 70,
+    "cell_id": 6251,
+    "population": 9572,
+    "culture": "德蘭尼",
+    "religion": "錫亞爾克信仰",
+    "biome": "溫帶雨林",
+    "x": 87242.91,
+    "y": 75813.53,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Timanshahia"
+  }
+}

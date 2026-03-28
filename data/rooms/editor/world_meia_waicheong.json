@@ -1,0 +1,45 @@
+{
+  "id": "world_meia_waicheong",
+  "name": "Waicheong",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Waishan",
+      "to": "world_meia_waishan"
+    },
+    {
+      "direction": "小徑往Machaui",
+      "to": "world_fungia_machaui"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 580,
+    "cell_id": 2502,
+    "population": 15858,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 24243.98,
+    "y": 34864.23,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Muiwania"
+  }
+}

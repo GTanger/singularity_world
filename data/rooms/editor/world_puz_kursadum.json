@@ -1,0 +1,45 @@
+{
+  "id": "world_puz_kursadum",
+  "name": "Kursadum",
+  "description": "",
+  "zone": "puz",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Puz",
+      "to": "world_puz_puz"
+    },
+    {
+      "direction": "小徑往Nisurran",
+      "to": "world_harbi_nisurran"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 397,
+    "cell_id": 2054,
+    "population": 10798,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶雨林",
+    "x": 88826.67,
+    "y": 29690.89,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kursadum"
+  }
+}

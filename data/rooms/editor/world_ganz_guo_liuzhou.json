@@ -1,0 +1,41 @@
+{
+  "id": "world_ganz_guo_liuzhou",
+  "name": "Liuzhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Sichejian",
+      "to": "world_ganz_guo_sichejian"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 246,
+    "cell_id": 4568,
+    "population": 11130,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "熱帶雨林",
+    "x": 24246.02,
+    "y": 57996.52,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Dinin Guo"
+  }
+}

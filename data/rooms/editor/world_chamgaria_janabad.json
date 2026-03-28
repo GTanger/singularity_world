@@ -1,0 +1,47 @@
+{
+  "id": "world_chamgaria_janabad",
+  "name": "Janabad",
+  "description": "",
+  "zone": "chamgaria",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Abnakhast",
+      "to": "world_chamgaria_abnakhast"
+    },
+    {
+      "direction": "小徑往Qodshefids",
+      "to": "world_chamgaria_qodshefids"
+    },
+    {
+      "direction": "小徑往Yahin",
+      "to": "world_chamgaria_yahin"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 447,
+    "cell_id": 5985,
+    "population": 1819,
+    "culture": "德蘭尼",
+    "religion": "科德謝菲茲密教",
+    "biome": "溫帶落葉林",
+    "x": 68741.51,
+    "y": 72679.54,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Asghestan"
+  }
+}

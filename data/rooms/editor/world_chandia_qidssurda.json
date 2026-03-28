@@ -1,0 +1,44 @@
+{
+  "id": "world_chandia_qidssurda",
+  "name": "Qidssurda",
+  "description": "",
+  "zone": "chandia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Nolin",
+      "to": "world_buming_nolin"
+    },
+    {
+      "direction": "小徑往Noviret",
+      "to": "world_tsetgalia_noviret"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 589,
+    "cell_id": 2557,
+    "population": 1813,
+    "culture": "幼法拉底",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶雨林",
+    "x": 72282.47,
+    "y": 34213.07,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Girinia"
+  }
+}

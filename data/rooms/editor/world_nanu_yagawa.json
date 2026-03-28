@@ -1,0 +1,51 @@
+{
+  "id": "world_nanu_yagawa",
+  "name": "Yagawa",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Mashiraka",
+      "to": "world_nanu_mashiraka"
+    },
+    {
+      "direction": "小徑往Ayazbaykut",
+      "to": "world_abepe_ayazbaykut"
+    },
+    {
+      "direction": "溫泉",
+      "to": "world_marker_hot_springs_1"
+    },
+    {
+      "direction": "丘怪棲地",
+      "to": "world_marker_hill_monsters_30"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 564,
+    "cell_id": 2534,
+    "population": 1709,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶雨林",
+    "x": 49407.99,
+    "y": 34275.39,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sunisane"
+  }
+}

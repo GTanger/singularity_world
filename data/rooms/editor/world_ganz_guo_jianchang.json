@@ -1,0 +1,48 @@
+{
+  "id": "world_ganz_guo_jianchang",
+  "name": "Jianchang",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yanzhou",
+      "to": "world_ganz_guo_yanzhou"
+    },
+    {
+      "direction": "小徑往Anhuang",
+      "to": "world_ganz_guo_anhuang"
+    },
+    {
+      "direction": "小徑往Xincheng",
+      "to": "world_ganz_guo_xincheng"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 348,
+    "cell_id": 4926,
+    "population": 4538,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶落葉林",
+    "x": 30745.29,
+    "y": 61355.27,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jianchang"
+  }
+}

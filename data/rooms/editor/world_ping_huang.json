@@ -1,0 +1,44 @@
+{
+  "id": "world_ping_huang",
+  "name": "Huang",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zhenan",
+      "to": "world_taizhou_zhenan"
+    },
+    {
+      "direction": "小徑往Hengzhou",
+      "to": "world_taizhou_hengzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 239,
+    "cell_id": 5644,
+    "population": 1520,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶雨林",
+    "x": 13409.08,
+    "y": 69123.62,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Huang"
+  }
+}

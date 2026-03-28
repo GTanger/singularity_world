@@ -1,0 +1,49 @@
+{
+  "id": "world_fungia_chikoktong",
+  "name": "Chikoktong",
+  "description": "",
+  "zone": "fungia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Fatshuiu",
+      "to": "world_fungia_fatshuiu"
+    },
+    {
+      "direction": "官道往Taihang",
+      "to": "world_fungia_taihang"
+    },
+    {
+      "direction": "小徑往Taishangy",
+      "to": "world_fungia_taishangy"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 340,
+    "cell_id": 2496,
+    "population": 17263,
+    "culture": "關族",
+    "religion": "秋嶺教",
+    "biome": "溫帶雨林",
+    "x": 18114.11,
+    "y": 34410.76,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tuen"
+  }
+}

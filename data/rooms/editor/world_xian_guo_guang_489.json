@@ -1,0 +1,46 @@
+{
+  "id": "world_xian_guo_guang_489",
+  "name": "Guang",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "town",
+    "river",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Changhua",
+      "to": "world_xian_guo_changhua"
+    },
+    {
+      "direction": "小徑往Hajing",
+      "to": "world_xian_guo_hajing"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 489,
+    "cell_id": 5749,
+    "population": 13291,
+    "culture": "漢族",
+    "religion": "漢族古信仰",
+    "biome": "溫帶雨林",
+    "x": 18882.55,
+    "y": 70416.77,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Yongchun"
+  }
+}

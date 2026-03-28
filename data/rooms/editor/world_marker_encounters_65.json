@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_encounters_65",
+  "name": "遭遇點",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "encounters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Jingzhou",
+      "to": "world_puhumia_jingzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 65,
+    "marker_type": "encounters"
+  }
+}

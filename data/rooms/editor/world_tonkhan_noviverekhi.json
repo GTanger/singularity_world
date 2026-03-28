@@ -1,0 +1,44 @@
+{
+  "id": "world_tonkhan_noviverekhi",
+  "name": "Noviverekhi",
+  "description": "",
+  "zone": "tonkhan",
+  "tags": [
+    "village",
+    "citadel"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Zebul",
+      "to": "world_khulekhia_zebul"
+    },
+    {
+      "direction": "小徑往Berkh Uulgi",
+      "to": "world_tonkhan_berkh_uulgi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 117,
+    "cell_id": 1837,
+    "population": 3689,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 68806.22,
+    "y": 27654.35,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Bayantsogtia"
+  }
+}

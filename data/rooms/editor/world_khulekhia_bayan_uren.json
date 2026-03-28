@@ -1,0 +1,44 @@
+{
+  "id": "world_khulekhia_bayan_uren",
+  "name": "Bayan Uren",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Alangai",
+      "to": "world_khulekhia_alangai"
+    },
+    {
+      "direction": "地牢",
+      "to": "world_marker_dungeons_26"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 194,
+    "cell_id": 1729,
+    "population": 1634,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 66753.9,
+    "y": 26274.38,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Bayan Uren"
+  }
+}

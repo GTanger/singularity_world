@@ -1,0 +1,40 @@
+{
+  "id": "world_tuladshia_sahana",
+  "name": "Sahana",
+  "description": "",
+  "zone": "tuladshia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "海盜巢穴",
+      "to": "world_marker_pirates_43"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 244,
+    "cell_id": 4439,
+    "population": 9570,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "熱帶雨林",
+    "x": 66671.8,
+    "y": 55409.24,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kahrizkuhia"
+  }
+}

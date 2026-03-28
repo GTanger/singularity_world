@@ -1,0 +1,47 @@
+{
+  "id": "world_guela_tagerechi",
+  "name": "Tagerechi",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Ilalt",
+      "to": "world_guela_ilalt"
+    },
+    {
+      "direction": "小徑往Tarilacem",
+      "to": "world_guela_tarilacem"
+    },
+    {
+      "direction": "小徑往Ajdatebour",
+      "to": "world_guela_ajdatebour"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 136,
+    "cell_id": 4972,
+    "population": 3488,
+    "culture": "柏柏爾",
+    "religion": "柏柏爾教",
+    "biome": "溫帶雨林",
+    "x": 74628.31,
+    "y": 61394.16,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Megrisura"
+  }
+}

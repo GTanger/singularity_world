@@ -1,0 +1,47 @@
+{
+  "id": "world_heqatha_jajan",
+  "name": "Jajan",
+  "description": "",
+  "zone": "heqatha",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Alkhan",
+      "to": "world_heqatha_alkhan"
+    },
+    {
+      "direction": "小徑往Sajagaval",
+      "to": "world_sauntalur_sajagaval"
+    },
+    {
+      "direction": "小徑往Jaramah",
+      "to": "world_heqatha_jaramah"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 428,
+    "cell_id": 3830,
+    "population": 3898,
+    "culture": "歐拉比",
+    "religion": "希亞特見證者",
+    "biome": "熱帶季雨林",
+    "x": 68207.9,
+    "y": 48689.27,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Jajan"
+  }
+}

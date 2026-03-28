@@ -1,0 +1,54 @@
+{
+  "id": "world_ping_linjiang",
+  "name": "Linjiang",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Bayangping",
+      "to": "world_ping_bayangping"
+    },
+    {
+      "direction": "小徑往Guang",
+      "to": "world_ganz_guo_guang"
+    },
+    {
+      "direction": "小徑往Shouchang",
+      "to": "world_ping_shouchang"
+    },
+    {
+      "direction": "小徑往Hangzhou",
+      "to": "world_ping_hangzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 434,
+    "cell_id": 4649,
+    "population": 11240,
+    "culture": "漢族",
+    "religion": "漢族教會",
+    "biome": "溫帶雨林",
+    "x": 18840.4,
+    "y": 58261.53,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ping"
+  }
+}

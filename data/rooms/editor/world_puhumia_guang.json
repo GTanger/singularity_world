@@ -1,0 +1,45 @@
+{
+  "id": "world_puhumia_guang",
+  "name": "Guang",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Daxingling",
+      "to": "world_puhumia_daxingling"
+    },
+    {
+      "direction": "小徑往Mololaiehu",
+      "to": "world_puhumia_mololaiehu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 623,
+    "cell_id": 3872,
+    "population": 10174,
+    "culture": "漢族",
+    "religion": "漢族教會",
+    "biome": "熱帶季雨林",
+    "x": 19793.64,
+    "y": 49583.16,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tongz Guo"
+  }
+}

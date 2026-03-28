@@ -1,0 +1,46 @@
+{
+  "id": "world_kima_griwinjaza",
+  "name": "Griwinjaza",
+  "description": "",
+  "zone": "kima",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kibia",
+      "to": "world_kima_kibia"
+    },
+    {
+      "direction": "官道往Irat",
+      "to": "world_awlata_irat"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 261,
+    "cell_id": 4724,
+    "population": 10262,
+    "culture": "柏柏爾",
+    "religion": "達爾奇教會",
+    "biome": "熱帶雨林",
+    "x": 85783.82,
+    "y": 58595.49,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Griwinjaza"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "world_hwanponamguk_gongseongam",
+  "name": "Gongseongam",
+  "description": "",
+  "zone": "hwanponamguk",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Cheon",
+      "to": "world_hwanponamguk_cheon"
+    },
+    {
+      "direction": "官道往Jeongju",
+      "to": "world_sanguk_jeongju"
+    },
+    {
+      "direction": "小徑往Jeongdong",
+      "to": "world_hwanponamguk_jeongdong"
+    },
+    {
+      "direction": "海路往Tsimshan",
+      "to": "world_meia_tsimshan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 502,
+    "cell_id": 2621,
+    "population": 9692,
+    "culture": "高麗",
+    "religion": "恭禪見證者",
+    "biome": "濕地",
+    "x": 31998.94,
+    "y": 35795.68,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Gongseongam"
+  }
+}

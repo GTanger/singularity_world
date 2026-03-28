@@ -1,0 +1,44 @@
+{
+  "id": "world_qarchriaria_paboran",
+  "name": "Paboran",
+  "description": "",
+  "zone": "qarchriaria",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Hafshahrga",
+      "to": "world_chamgaria_hafshahrga"
+    },
+    {
+      "direction": "官道往Vahr",
+      "to": "world_qarchriaria_vahr"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 309,
+    "cell_id": 6169,
+    "population": 1652,
+    "culture": "德蘭尼",
+    "religion": "錫亞爾克信仰",
+    "biome": "溫帶雨林",
+    "x": 86874.79,
+    "y": 74269.99,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Paboran"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_hongnamguk_uiwonjuripo",
+  "name": "Uiwonjuripo",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Uiryeondeok",
+      "to": "world_hongnamguk_uiryeondeok"
+    },
+    {
+      "direction": "小徑往Gochanyang",
+      "to": "world_hongnamguk_gochanyang"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 350,
+    "cell_id": 1603,
+    "population": 10311,
+    "culture": "高麗",
+    "religion": "高麗萬神殿",
+    "biome": "溫帶雨林",
+    "x": 43006.0,
+    "y": 25974.4,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Uiwonjuripo"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "world_meia_gaozhong",
+  "name": "Gaozhong",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kaiyang",
+      "to": "world_meia_kaiyang"
+    },
+    {
+      "direction": "小徑往Tungchuen",
+      "to": "world_meia_tungchuen"
+    },
+    {
+      "direction": "小徑往Xining",
+      "to": "world_puhumia_xining"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 409,
+    "cell_id": 3476,
+    "population": 1041,
+    "culture": "漢族",
+    "religion": "亞洲信仰",
+    "biome": "熱帶季雨林",
+    "x": 20371.28,
+    "y": 44344.4,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Taxin Guo"
+  }
+}

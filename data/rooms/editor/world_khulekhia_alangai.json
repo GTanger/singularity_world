@@ -1,0 +1,48 @@
+{
+  "id": "world_khulekhia_alangai",
+  "name": "Alangai",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Tsetsogtser",
+      "to": "world_khulekhia_tsetsogtser"
+    },
+    {
+      "direction": "小徑往Bayan Uren",
+      "to": "world_khulekhia_bayan_uren"
+    },
+    {
+      "direction": "小徑往Tsogt",
+      "to": "world_khulekhia_tsogt"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 587,
+    "cell_id": 1835,
+    "population": 8017,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 66420.53,
+    "y": 27296.02,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Alangai"
+  }
+}

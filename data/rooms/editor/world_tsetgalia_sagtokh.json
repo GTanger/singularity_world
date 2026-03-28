@@ -1,0 +1,45 @@
+{
+  "id": "world_tsetgalia_sagtokh",
+  "name": "Sagtokh",
+  "description": "",
+  "zone": "tsetgalia",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Rench",
+      "to": "world_tsetgalia_rench"
+    },
+    {
+      "direction": "小徑往Ikhkhon",
+      "to": "world_tsetgalia_ikhkhon"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 536,
+    "cell_id": 3092,
+    "population": 10010,
+    "culture": "兀魯斯",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶落葉林",
+    "x": 73320.17,
+    "y": 39444.92,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hogodia"
+  }
+}

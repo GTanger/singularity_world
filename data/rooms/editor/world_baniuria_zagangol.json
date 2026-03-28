@@ -1,0 +1,55 @@
+{
+  "id": "world_baniuria_zagangol",
+  "name": "Zagangol",
+  "description": "",
+  "zone": "baniuria",
+  "tags": [
+    "town",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Onuur",
+      "to": "world_baniuria_onuur"
+    },
+    {
+      "direction": "官道往Lada",
+      "to": "world_kabiria_lada"
+    },
+    {
+      "direction": "小徑往Tsayan",
+      "to": "world_baniuria_tsayan"
+    },
+    {
+      "direction": "小徑往Mayansaikhan",
+      "to": "world_baniuria_mayansaikhan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 49,
+    "cell_id": 1652,
+    "population": 14545,
+    "culture": "兀魯斯",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶落葉林",
+    "x": 88135.54,
+    "y": 25415.04,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Zagangol"
+  }
+}

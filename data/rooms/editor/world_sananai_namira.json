@@ -1,0 +1,48 @@
+{
+  "id": "world_sananai_namira",
+  "name": "Namira",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Nawarimira",
+      "to": "world_nanu_nawarimira"
+    },
+    {
+      "direction": "小徑往Misotanto",
+      "to": "world_sananai_misotanto"
+    },
+    {
+      "direction": "小徑往Can",
+      "to": "world_nanu_can"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 426,
+    "cell_id": 3732,
+    "population": 6911,
+    "culture": "大和",
+    "religion": "米索坦特信仰",
+    "biome": "熱帶季雨林",
+    "x": 46410.55,
+    "y": 47479.38,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Namira"
+  }
+}

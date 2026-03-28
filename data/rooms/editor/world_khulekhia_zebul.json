@@ -1,0 +1,44 @@
+{
+  "id": "world_khulekhia_zebul",
+  "name": "Zebul",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Baluutsag",
+      "to": "world_tonkhan_baluutsag"
+    },
+    {
+      "direction": "小徑往Noviverekhi",
+      "to": "world_tonkhan_noviverekhi"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 613,
+    "cell_id": 1934,
+    "population": 5255,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 67668.27,
+    "y": 28690.79,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Zebul"
+  }
+}

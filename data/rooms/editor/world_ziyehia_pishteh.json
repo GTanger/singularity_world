@@ -1,0 +1,44 @@
+{
+  "id": "world_ziyehia_pishteh",
+  "name": "Pishteh",
+  "description": "",
+  "zone": "ziyehia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Dowsieh",
+      "to": "world_chamgaria_dowsieh"
+    },
+    {
+      "direction": "小徑往Baghstan",
+      "to": "world_chamgaria_baghstan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 477,
+    "cell_id": 5999,
+    "population": 1824,
+    "culture": "德蘭尼",
+    "religion": "涅干教",
+    "biome": "溫帶雨林",
+    "x": 82074.25,
+    "y": 72683.98,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Pishteh"
+  }
+}

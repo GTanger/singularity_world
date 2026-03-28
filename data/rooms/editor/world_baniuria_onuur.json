@@ -1,0 +1,53 @@
+{
+  "id": "world_baniuria_onuur",
+  "name": "Onuur",
+  "description": "",
+  "zone": "baniuria",
+  "tags": [
+    "village",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Olbar",
+      "to": "world_baniuria_olbar"
+    },
+    {
+      "direction": "官道往Zagangol",
+      "to": "world_baniuria_zagangol"
+    },
+    {
+      "direction": "小徑往Tsayan",
+      "to": "world_baniuria_tsayan"
+    },
+    {
+      "direction": "小徑往Nisurran",
+      "to": "world_harbi_nisurran"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 232,
+    "cell_id": 1750,
+    "population": 1744,
+    "culture": "兀魯斯",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶落葉林",
+    "x": 87268.86,
+    "y": 26656.95,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Khuregkhon"
+  }
+}

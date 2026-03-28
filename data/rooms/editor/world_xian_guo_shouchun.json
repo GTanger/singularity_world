@@ -1,0 +1,48 @@
+{
+  "id": "world_xian_guo_shouchun",
+  "name": "Shouchun",
+  "description": "",
+  "zone": "xian_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Shinan",
+      "to": "world_xian_guo_shinan"
+    },
+    {
+      "direction": "小徑往Guang",
+      "to": "world_xian_guo_guang"
+    },
+    {
+      "direction": "小徑往Zhenqing",
+      "to": "world_xian_guo_zhenqing"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 439,
+    "cell_id": 6023,
+    "population": 4402,
+    "culture": "漢族",
+    "religion": "希南偶像崇拜",
+    "biome": "溫帶雨林",
+    "x": 15895.13,
+    "y": 73543.51,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shun Guo"
+  }
+}

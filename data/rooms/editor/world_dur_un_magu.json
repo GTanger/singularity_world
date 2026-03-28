@@ -1,0 +1,57 @@
+{
+  "id": "world_dur_un_magu",
+  "name": "Magu",
+  "description": "",
+  "zone": "dur_un",
+  "tags": [
+    "city",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Mekalhusu",
+      "to": "world_dur_un_mekalhusu"
+    },
+    {
+      "direction": "官道往Niqum",
+      "to": "world_niqum_niqum"
+    },
+    {
+      "direction": "官道往Shani",
+      "to": "world_dur_un_shani"
+    },
+    {
+      "direction": "小徑往Ir-Amrud",
+      "to": "world_dur_un_ir_amrud"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 39,
+    "cell_id": 2793,
+    "population": 38959,
+    "culture": "幼法拉底",
+    "religion": "杜爾比尼克眾神",
+    "biome": "溫帶雨林",
+    "x": 80768.97,
+    "y": 36359.09,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Magu"
+  }
+}

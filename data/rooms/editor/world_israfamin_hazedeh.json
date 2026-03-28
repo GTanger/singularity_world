@@ -1,0 +1,41 @@
+{
+  "id": "world_israfamin_hazedeh",
+  "name": "Hazedeh",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Gordow",
+      "to": "world_gordowia_gordow"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 262,
+    "cell_id": 4788,
+    "population": 18918,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "熱帶雨林",
+    "x": 61332.23,
+    "y": 59122.84,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hazedeh"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "world_ganz_guo_hailan",
+  "name": "Hailan",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "盜賊據點",
+      "to": "world_marker_brigands_37"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 387,
+    "cell_id": 5024,
+    "population": 1393,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "濕地",
+    "x": 32328.13,
+    "y": 62930.34,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Duihe"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "world_ping_kuizhou",
+  "name": "Kuizhou",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Damingbo",
+      "to": "world_ping_damingbo"
+    },
+    {
+      "direction": "官道往Rengyi",
+      "to": "world_ping_rengyi"
+    },
+    {
+      "direction": "小徑往Hengzhou",
+      "to": "world_ping_hengzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 430,
+    "cell_id": 5274,
+    "population": 8032,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "溫帶落葉林",
+    "x": 14148.82,
+    "y": 65631.13,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Xing"
+  }
+}

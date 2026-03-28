@@ -1,0 +1,51 @@
+{
+  "id": "world_guela_nefrulad",
+  "name": "Nefrulad",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "city",
+    "citadel",
+    "plaza",
+    "walls",
+    "shantytown"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Aranelida",
+      "to": "world_guela_aranelida"
+    },
+    {
+      "direction": "小徑往Asfrafira",
+      "to": "world_awlata_asfrafira"
+    },
+    {
+      "direction": "礦脈",
+      "to": "world_marker_mines_3"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 205,
+    "cell_id": 4890,
+    "population": 24937,
+    "culture": "柏柏爾",
+    "religion": "斯利拉拉扎格教",
+    "biome": "溫帶落葉林",
+    "x": 79737.52,
+    "y": 60521.27,
+    "watabou_params": {
+      "size": 25,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 1,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nefrulad"
+  }
+}

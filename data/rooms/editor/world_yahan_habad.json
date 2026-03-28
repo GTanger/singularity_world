@@ -1,0 +1,53 @@
+{
+  "id": "world_yahan_habad",
+  "name": "Habad",
+  "description": "",
+  "zone": "yahan",
+  "tags": [
+    "town",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Sraghzut",
+      "to": "world_yahan_sraghzut"
+    },
+    {
+      "direction": "官道往Astan",
+      "to": "world_safus_astan"
+    },
+    {
+      "direction": "盜賊據點",
+      "to": "world_marker_brigands_39"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 19,
+    "cell_id": 5531,
+    "population": 16440,
+    "culture": "德蘭尼",
+    "religion": "錫亞爾克信仰",
+    "biome": "溫帶雨林",
+    "x": 89093.72,
+    "y": 68451.22,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Ray-Shahr"
+  }
+}

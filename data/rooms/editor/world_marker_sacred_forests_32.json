@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_sacred_forests_32",
+  "name": "聖林",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "sacred-forests"
+  ],
+  "exits": [
+    {
+      "direction": "返回Zasirstan",
+      "to": "world_golparia_zasirstan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 32,
+    "marker_type": "sacred-forests"
+  }
+}

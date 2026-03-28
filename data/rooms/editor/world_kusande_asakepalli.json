@@ -1,0 +1,44 @@
+{
+  "id": "world_kusande_asakepalli",
+  "name": "Asakepalli",
+  "description": "",
+  "zone": "kusande",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Uduragote",
+      "to": "world_kusande_uduragote"
+    },
+    {
+      "direction": "小徑往Kolalanur",
+      "to": "world_kusande_kolalanur"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 496,
+    "cell_id": 3453,
+    "population": 4055,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 83305.75,
+    "y": 43080.94,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Asakepalli"
+  }
+}

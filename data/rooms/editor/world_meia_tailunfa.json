@@ -1,0 +1,52 @@
+{
+  "id": "world_meia_tailunfa",
+  "name": "Tailunfa",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "village",
+    "river"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Meiyue",
+      "to": "world_meia_meiyue"
+    },
+    {
+      "direction": "官道往Shulun",
+      "to": "world_meia_shulun"
+    },
+    {
+      "direction": "小徑往Kaungsan",
+      "to": "world_meia_kaungsan"
+    },
+    {
+      "direction": "小徑往Namchau",
+      "to": "world_meia_namchau"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 284,
+    "cell_id": 2951,
+    "population": 1701,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "溫帶雨林",
+    "x": 26154.01,
+    "y": 38671.52,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Tailunfa"
+  }
+}

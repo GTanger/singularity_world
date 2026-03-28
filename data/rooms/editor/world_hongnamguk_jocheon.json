@@ -1,0 +1,42 @@
+{
+  "id": "world_hongnamguk_jocheon",
+  "name": "Jocheon",
+  "description": "",
+  "zone": "hongnamguk",
+  "tags": [
+    "village",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yeong",
+      "to": "world_hongnamguk_yeong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 368,
+    "cell_id": 2002,
+    "population": 2629,
+    "culture": "高麗",
+    "religion": "科爾教",
+    "biome": "溫帶雨林",
+    "x": 41359.54,
+    "y": 30301.67,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Jocheon"
+  }
+}

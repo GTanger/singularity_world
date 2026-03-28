@@ -1,0 +1,45 @@
+{
+  "id": "world_nanu_shikinata",
+  "name": "Shikinata",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Naoshitasa",
+      "to": "world_nanu_naoshitasa"
+    },
+    {
+      "direction": "小徑往Shitanoyo",
+      "to": "world_nanu_shitanoyo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 277,
+    "cell_id": 3662,
+    "population": 10046,
+    "culture": "大和",
+    "religion": "石坦派",
+    "biome": "溫帶雨林",
+    "x": 54447.14,
+    "y": 46396.02,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Nishimi"
+  }
+}

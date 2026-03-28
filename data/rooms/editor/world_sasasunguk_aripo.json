@@ -1,0 +1,45 @@
+{
+  "id": "world_sasasunguk_aripo",
+  "name": "Aripo",
+  "description": "",
+  "zone": "sasasunguk",
+  "tags": [
+    "town",
+    "river",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Gocha",
+      "to": "world_hongnamguk_gocha"
+    },
+    {
+      "direction": "官道往Ungcheon",
+      "to": "world_sasasunguk_ungcheon"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 448,
+    "cell_id": 1994,
+    "population": 9833,
+    "culture": "高麗",
+    "religion": "高麗萬神殿",
+    "biome": "溫帶雨林",
+    "x": 36895.3,
+    "y": 29718.78,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Nasungokguk"
+  }
+}

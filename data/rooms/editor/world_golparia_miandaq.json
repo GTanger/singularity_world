@@ -1,0 +1,40 @@
+{
+  "id": "world_golparia_miandaq",
+  "name": "Miandaq",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Savand",
+      "to": "world_golparia_savand"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 455,
+    "cell_id": 4946,
+    "population": 7172,
+    "culture": "德蘭尼",
+    "religion": "茲茲切干教",
+    "biome": "熱帶雨林",
+    "x": 52141.47,
+    "y": 61474.27,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Shahteria"
+  }
+}

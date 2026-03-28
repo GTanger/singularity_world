@@ -1,0 +1,40 @@
+{
+  "id": "world_puhumia_nakahuaio",
+  "name": "Nakahuaio",
+  "description": "",
+  "zone": "puhumia",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kaula",
+      "to": "world_puhumia_kaula"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 109,
+    "cell_id": 4030,
+    "population": 9941,
+    "culture": "毛伊",
+    "religion": "振華安之道",
+    "biome": "熱帶雨林",
+    "x": 13798.6,
+    "y": 51496.7,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Haiolinia"
+  }
+}

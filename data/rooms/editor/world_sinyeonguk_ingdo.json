@@ -1,0 +1,44 @@
+{
+  "id": "world_sinyeonguk_ingdo",
+  "name": "Ingdo",
+  "description": "",
+  "zone": "sinyeonguk",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Geochorido",
+      "to": "world_sinyeonguk_geochorido"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_13"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 148,
+    "cell_id": 2414,
+    "population": 4556,
+    "culture": "高麗",
+    "religion": "科爾教",
+    "biome": "溫帶雨林",
+    "x": 41733.12,
+    "y": 33168.86,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ingdo"
+  }
+}

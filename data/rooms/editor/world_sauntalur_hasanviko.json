@@ -1,0 +1,40 @@
+{
+  "id": "world_sauntalur_hasanviko",
+  "name": "Hasanviko",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Lonnamavar",
+      "to": "world_sauntalur_lonnamavar"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 346,
+    "cell_id": 3840,
+    "population": 18061,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "溫帶落葉林",
+    "x": 78626.83,
+    "y": 48102.1,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Gulanadia"
+  }
+}

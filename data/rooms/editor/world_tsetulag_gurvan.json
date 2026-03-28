@@ -1,0 +1,48 @@
+{
+  "id": "world_tsetulag_gurvan",
+  "name": "Gurvan",
+  "description": "",
+  "zone": "tsetulag",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Aska",
+      "to": "world_buybaryurt_aska"
+    },
+    {
+      "direction": "官道往Ervanbure",
+      "to": "world_tsetulag_ervanbure"
+    },
+    {
+      "direction": "小徑往Khairgayan",
+      "to": "world_tsetulag_khairgayan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 249,
+    "cell_id": 2659,
+    "population": 7390,
+    "culture": "兀魯斯",
+    "religion": "多庫凱巴教",
+    "biome": "溫帶雨林",
+    "x": 61288.23,
+    "y": 35695.87,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Gurvan"
+  }
+}

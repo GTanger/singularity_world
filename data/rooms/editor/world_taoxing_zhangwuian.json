@@ -1,0 +1,48 @@
+{
+  "id": "world_taoxing_zhangwuian",
+  "name": "Zhangwuian",
+  "description": "",
+  "zone": "taoxing",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Danan",
+      "to": "world_dengz_guo_danan"
+    },
+    {
+      "direction": "官道往Suzhou",
+      "to": "world_taoxing_suzhou"
+    },
+    {
+      "direction": "小徑往Bainingbo",
+      "to": "world_taoxing_bainingbo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 272,
+    "cell_id": 5670,
+    "population": 12547,
+    "culture": "漢族",
+    "religion": "清之教",
+    "biome": "溫帶雨林",
+    "x": 39370.7,
+    "y": 69291.43,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Zhangwuian"
+  }
+}

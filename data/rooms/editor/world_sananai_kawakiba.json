@@ -1,0 +1,52 @@
+{
+  "id": "world_sananai_kawakiba",
+  "name": "Kawakiba",
+  "description": "",
+  "zone": "sananai",
+  "tags": [
+    "town",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Taito",
+      "to": "world_sananai_taito"
+    },
+    {
+      "direction": "官道往Oihakawa",
+      "to": "world_sananai_oihakawa"
+    },
+    {
+      "direction": "官道往Awa",
+      "to": "world_awa_awa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 94,
+    "cell_id": 2641,
+    "population": 14663,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶落葉林",
+    "x": 43669.9,
+    "y": 35458.73,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Kawakiba"
+  }
+}

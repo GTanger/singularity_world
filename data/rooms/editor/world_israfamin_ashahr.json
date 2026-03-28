@@ -1,0 +1,44 @@
+{
+  "id": "world_israfamin_ashahr",
+  "name": "Ashahr",
+  "description": "",
+  "zone": "israfamin",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Degan",
+      "to": "world_israfamin_degan"
+    },
+    {
+      "direction": "小徑往Ray-Shahrjo",
+      "to": "world_israfamin_ray_shahrjo"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 358,
+    "cell_id": 5232,
+    "population": 1584,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼信仰",
+    "biome": "溫帶雨林",
+    "x": 61160.04,
+    "y": 64911.81,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ashahr"
+  }
+}

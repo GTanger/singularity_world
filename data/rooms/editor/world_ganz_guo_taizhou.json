@@ -1,0 +1,59 @@
+{
+  "id": "world_ganz_guo_taizhou",
+  "name": "Taizhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yanzhou",
+      "to": "world_ganz_guo_yanzhou"
+    },
+    {
+      "direction": "小徑往Kaihua",
+      "to": "world_ganz_guo_kaihua"
+    },
+    {
+      "direction": "小徑往Antiankang",
+      "to": "world_ganz_guo_antiankang"
+    },
+    {
+      "direction": "小徑往Tatongshan",
+      "to": "world_ganz_guo_tatongshan"
+    },
+    {
+      "direction": "旅店",
+      "to": "world_marker_inns_15"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 111,
+    "cell_id": 4485,
+    "population": 18171,
+    "culture": "漢族",
+    "religion": "太湛教團",
+    "biome": "熱帶雨林",
+    "x": 31787.64,
+    "y": 57487.18,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Zhenkan Guo"
+  }
+}

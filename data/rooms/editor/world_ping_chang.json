@@ -1,0 +1,52 @@
+{
+  "id": "world_ping_chang",
+  "name": "Chang",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Tongzhou",
+      "to": "world_binz_guo_tongzhou"
+    },
+    {
+      "direction": "官道往Hanzhou",
+      "to": "world_ping_hanzhou"
+    },
+    {
+      "direction": "小徑往Kaihe",
+      "to": "world_ping_kaihe"
+    },
+    {
+      "direction": "盜賊據點",
+      "to": "world_marker_brigands_36"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 198,
+    "cell_id": 4911,
+    "population": 13062,
+    "culture": "漢族",
+    "religion": "振華安之道",
+    "biome": "熱帶雨林",
+    "x": 15089.69,
+    "y": 61496.27,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Chang"
+  }
+}

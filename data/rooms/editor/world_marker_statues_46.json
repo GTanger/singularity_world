@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_statues_46",
+  "name": "雕像",
+  "description": "",
+  "zone": "binz_guo",
+  "tags": [
+    "statues"
+  ],
+  "exits": [
+    {
+      "direction": "返回Changtian",
+      "to": "world_binz_guo_changtian"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 46,
+    "marker_type": "statues"
+  }
+}

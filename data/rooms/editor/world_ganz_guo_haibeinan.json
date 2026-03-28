@@ -1,0 +1,45 @@
+{
+  "id": "world_ganz_guo_haibeinan",
+  "name": "Haibeinan",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "town",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yangzhouai",
+      "to": "world_ganz_guo_yangzhouai"
+    },
+    {
+      "direction": "小徑往Natong",
+      "to": "world_ganz_guo_natong"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 129,
+    "cell_id": 5012,
+    "population": 11383,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶落葉林",
+    "x": 21078.46,
+    "y": 62727.29,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Haibeinan"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "world_kwun_longfukok",
+  "name": "Longfukok",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "village",
+    "river",
+    "plaza",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Siunamtin",
+      "to": "world_kwun_siunamtin"
+    },
+    {
+      "direction": "小徑往Yeungling",
+      "to": "world_kwun_yeungling"
+    },
+    {
+      "direction": "小徑往Lowuhing",
+      "to": "world_kwun_lowuhing"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 332,
+    "cell_id": 1977,
+    "population": 1745,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶雨林",
+    "x": 19241.79,
+    "y": 29474.03,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Dongia"
+  }
+}

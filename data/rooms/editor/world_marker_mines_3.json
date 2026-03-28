@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_mines_3",
+  "name": "礦脈",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "mines"
+  ],
+  "exits": [
+    {
+      "direction": "返回Nefrulad",
+      "to": "world_guela_nefrulad"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 3,
+    "marker_type": "mines"
+  }
+}

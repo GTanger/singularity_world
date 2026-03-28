@@ -1,0 +1,51 @@
+{
+  "id": "world_ganz_guo_tailining",
+  "name": "Tailining",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Raozhoua",
+      "to": "world_ganz_guo_raozhoua"
+    },
+    {
+      "direction": "官道往Tengchuan",
+      "to": "world_ping_tengchuan"
+    },
+    {
+      "direction": "小徑往Shaozhou",
+      "to": "world_ganz_guo_shaozhou"
+    },
+    {
+      "direction": "小徑往Bayangping",
+      "to": "world_ping_bayangping"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 552,
+    "cell_id": 4392,
+    "population": 1886,
+    "culture": "漢族",
+    "religion": "漢族教會",
+    "biome": "溫帶落葉林",
+    "x": 20649.09,
+    "y": 55490.99,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Tailining"
+  }
+}

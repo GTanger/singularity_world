@@ -1,0 +1,50 @@
+{
+  "id": "world_baliun_baliun",
+  "name": "Baliun",
+  "description": "",
+  "zone": "baliun",
+  "tags": [
+    "village",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Chulandal",
+      "to": "world_bayankhonia_chulandal"
+    },
+    {
+      "direction": "官道往Bayan",
+      "to": "world_buming_bayan"
+    },
+    {
+      "direction": "官道往Tsayangai",
+      "to": "world_tulag_tsayangai"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 79,
+    "cell_id": 2040,
+    "population": 2043,
+    "culture": "兀魯斯",
+    "religion": "沙爾提蘭之道",
+    "biome": "溫帶落葉林",
+    "x": 74833.59,
+    "y": 29543.66,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    }
+  }
+}

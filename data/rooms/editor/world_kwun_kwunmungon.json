@@ -1,0 +1,42 @@
+{
+  "id": "world_kwun_kwunmungon",
+  "name": "Kwunmungon",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "town",
+    "plaza",
+    "walls",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Yeungling",
+      "to": "world_kwun_yeungling"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 491,
+    "cell_id": 1882,
+    "population": 5505,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶雨林",
+    "x": 21219.74,
+    "y": 28738.07,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Kwunmungon"
+  }
+}

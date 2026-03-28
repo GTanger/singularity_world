@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_15",
+  "name": "旅店",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Taizhou",
+      "to": "world_ganz_guo_taizhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 15,
+    "marker_type": "inns"
+  }
+}

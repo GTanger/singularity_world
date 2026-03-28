@@ -1,0 +1,52 @@
+{
+  "id": "world_chinghia_chinghoi",
+  "name": "Chinghoi",
+  "description": "",
+  "zone": "chinghia",
+  "tags": [
+    "village",
+    "naval",
+    "capital",
+    "port",
+    "citadel",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Henlong",
+      "to": "world_henlongia_henlong"
+    },
+    {
+      "direction": "小徑往Putong",
+      "to": "world_shia_putong"
+    },
+    {
+      "direction": "小徑往Tsuen",
+      "to": "world_chinghia_tsuen"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 72,
+    "cell_id": 1670,
+    "population": 3186,
+    "culture": "關族",
+    "religion": "洛昌武信仰",
+    "biome": "溫帶雨林",
+    "x": 11504.44,
+    "y": 26053.97,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 1,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Wongfongia"
+  }
+}

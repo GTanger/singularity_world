@@ -1,0 +1,44 @@
+{
+  "id": "world_krishna_mannanapat",
+  "name": "Mannanapat",
+  "description": "",
+  "zone": "krishna",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Narajpet",
+      "to": "world_krishna_narajpet"
+    },
+    {
+      "direction": "小徑往Kopanalur",
+      "to": "world_krishna_kopanalur"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 532,
+    "cell_id": 4014,
+    "population": 17067,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "熱帶雨林",
+    "x": 80190.1,
+    "y": 51121.2,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Banthapuria"
+  }
+}

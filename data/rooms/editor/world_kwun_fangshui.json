@@ -1,0 +1,46 @@
+{
+  "id": "world_kwun_fangshui",
+  "name": "Fangshui",
+  "description": "",
+  "zone": "kwun",
+  "tags": [
+    "village",
+    "river",
+    "plaza",
+    "temple"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Chuehoi",
+      "to": "world_kwun_chuehoi"
+    },
+    {
+      "direction": "小徑往Pingyuenwan",
+      "to": "world_kwun_pingyuenwan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 374,
+    "cell_id": 1878,
+    "population": 4599,
+    "culture": "關族",
+    "religion": "龍宮信仰",
+    "biome": "溫帶雨林",
+    "x": 17260.81,
+    "y": 28092.52,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 1,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Siumun"
+  }
+}

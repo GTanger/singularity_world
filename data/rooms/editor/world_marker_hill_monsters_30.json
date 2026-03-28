@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_hill_monsters_30",
+  "name": "丘怪棲地",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "hill-monsters"
+  ],
+  "exits": [
+    {
+      "direction": "返回Yagawa",
+      "to": "world_nanu_yagawa"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 30,
+    "marker_type": "hill-monsters"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_libraries_52",
+  "name": "藏書閣",
+  "description": "",
+  "zone": "dengz_guo",
+  "tags": [
+    "libraries"
+  ],
+  "exits": [
+    {
+      "direction": "返回Danan",
+      "to": "world_dengz_guo_danan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 52,
+    "marker_type": "libraries"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "world_sauntalur_hunkobertti",
+  "name": "Hunkobertti",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Heghatkalla",
+      "to": "world_sauntalur_heghatkalla"
+    },
+    {
+      "direction": "小徑往Athmeshnur",
+      "to": "world_sauntalur_athmeshnur"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 187,
+    "cell_id": 3609,
+    "population": 8668,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "溫帶落葉林",
+    "x": 77175.76,
+    "y": 45418.47,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hunkobertti"
+  }
+}

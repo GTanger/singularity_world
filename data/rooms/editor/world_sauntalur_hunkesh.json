@@ -1,0 +1,52 @@
+{
+  "id": "world_sauntalur_hunkesh",
+  "name": "Hunkesh",
+  "description": "",
+  "zone": "sauntalur",
+  "tags": [
+    "town",
+    "river",
+    "capital",
+    "citadel",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Mirwah",
+      "to": "world_ith_mirwah"
+    },
+    {
+      "direction": "官道往Kadur",
+      "to": "world_hunageria_kadur"
+    },
+    {
+      "direction": "小徑往Sudallire",
+      "to": "world_hunageria_sudallire"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 2,
+    "cell_id": 3917,
+    "population": 12025,
+    "culture": "卡納提克",
+    "religion": "希亞特見證者",
+    "biome": "濕地",
+    "x": 72167.58,
+    "y": 49204.65,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 1,
+      "port": 0
+    },
+    "province": "Hunkesh"
+  }
+}

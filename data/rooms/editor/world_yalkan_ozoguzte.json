@@ -1,0 +1,48 @@
+{
+  "id": "world_yalkan_ozoguzte",
+  "name": "Ozoguzte",
+  "description": "",
+  "zone": "yalkan",
+  "tags": [
+    "town",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Abayvardem",
+      "to": "world_yalkan_abayvardem"
+    },
+    {
+      "direction": "小徑往Aydi",
+      "to": "world_yalkan_aydi"
+    },
+    {
+      "direction": "地牢",
+      "to": "world_marker_dungeons_24"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 441,
+    "cell_id": 1720,
+    "population": 14679,
+    "culture": "突厥安",
+    "religion": "雅贊會",
+    "biome": "溫帶雨林",
+    "x": 57607.03,
+    "y": 26203.84,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Ozoguzte"
+  }
+}

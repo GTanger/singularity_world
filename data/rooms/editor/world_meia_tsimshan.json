@@ -1,0 +1,50 @@
+{
+  "id": "world_meia_tsimshan",
+  "name": "Tsimshan",
+  "description": "",
+  "zone": "meia",
+  "tags": [
+    "town",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Jeongdong",
+      "to": "world_hwanponamguk_jeongdong"
+    },
+    {
+      "direction": "小徑往Siukwan",
+      "to": "world_meia_siukwan"
+    },
+    {
+      "direction": "海路往Gongseongam",
+      "to": "world_hwanponamguk_gongseongam"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 549,
+    "cell_id": 3142,
+    "population": 6356,
+    "culture": "關族",
+    "religion": "恭禪見證者",
+    "biome": "濕地",
+    "x": 31571.16,
+    "y": 40949.33,
+    "watabou_params": {
+      "size": 12,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Loktong"
+  }
+}

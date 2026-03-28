@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_jousts_55",
+  "name": "馬上比武場",
+  "description": "",
+  "zone": "ping",
+  "tags": [
+    "jousts"
+  ],
+  "exits": [
+    {
+      "direction": "返回Hengzhou",
+      "to": "world_ping_hengzhou"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 55,
+    "marker_type": "jousts"
+  }
+}

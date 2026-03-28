@@ -1,0 +1,46 @@
+{
+  "id": "world_gordowia_datigziyan",
+  "name": "Datigziyan",
+  "description": "",
+  "zone": "gordowia",
+  "tags": [
+    "village",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Atompydareh",
+      "to": "world_tuladshia_atompydareh"
+    },
+    {
+      "direction": "官道往Harherm",
+      "to": "world_guela_harherm"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 161,
+    "cell_id": 4707,
+    "population": 2179,
+    "culture": "德蘭尼",
+    "religion": "德蘭尼教",
+    "biome": "熱帶雨林",
+    "x": 70790.64,
+    "y": 57723.9,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Fureng"
+  }
+}

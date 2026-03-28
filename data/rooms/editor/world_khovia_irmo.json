@@ -1,0 +1,50 @@
+{
+  "id": "world_khovia_irmo",
+  "name": "Irmo",
+  "description": "",
+  "zone": "khovia",
+  "tags": [
+    "village",
+    "naval",
+    "port",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Khovi",
+      "to": "world_khovia_khovi"
+    },
+    {
+      "direction": "官道往Er-Asha",
+      "to": "world_dur_ti_er_asha"
+    },
+    {
+      "direction": "小徑往Anshaka",
+      "to": "world_baniuria_anshaka"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 199,
+    "cell_id": 2251,
+    "population": 3822,
+    "culture": "幼法拉底",
+    "religion": "希杜魯姆教",
+    "biome": "溫帶雨林",
+    "x": 84649.85,
+    "y": 32385.83,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 1,
+      "river": 0,
+      "port": 1
+    },
+    "province": "Irmo"
+  }
+}

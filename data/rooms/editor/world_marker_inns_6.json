@@ -1,0 +1,21 @@
+{
+  "id": "world_marker_inns_6",
+  "name": "旅店",
+  "description": "",
+  "zone": "khulekhia",
+  "tags": [
+    "inns"
+  ],
+  "exits": [
+    {
+      "direction": "返回Ulaan",
+      "to": "world_khulekhia_ulaan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "marker_id": 6,
+    "marker_type": "inns"
+  }
+}

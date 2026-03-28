@@ -1,0 +1,44 @@
+{
+  "id": "world_ganz_guo_binzhou",
+  "name": "Binzhou",
+  "description": "",
+  "zone": "ganz_guo",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Xincheng",
+      "to": "world_ganz_guo_xincheng_181"
+    },
+    {
+      "direction": "小徑往Jiangchun",
+      "to": "world_ganz_guo_jiangchun"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 139,
+    "cell_id": 5017,
+    "population": 1594,
+    "culture": "漢族",
+    "religion": "漢族靈信仰",
+    "biome": "溫帶落葉林",
+    "x": 26716.14,
+    "y": 62481.55,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hanz Guo"
+  }
+}

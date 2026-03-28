@@ -1,0 +1,52 @@
+{
+  "id": "world_golparia_arakrankafa",
+  "name": "Arakrankafa",
+  "description": "",
+  "zone": "golparia",
+  "tags": [
+    "village",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Jasan",
+      "to": "world_israfamin_jasan"
+    },
+    {
+      "direction": "地牢",
+      "to": "world_marker_dungeons_27"
+    },
+    {
+      "direction": "渡口",
+      "to": "world_marker_canoes_57"
+    },
+    {
+      "direction": "遭遇點",
+      "to": "world_marker_encounters_68"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 508,
+    "cell_id": 6578,
+    "population": 3680,
+    "culture": "德蘭尼",
+    "religion": "古德蘭尼信仰",
+    "biome": "北方針葉林",
+    "x": 59680.5,
+    "y": 79945.18,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Khvormia"
+  }
+}

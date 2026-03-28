@@ -1,0 +1,45 @@
+{
+  "id": "world_guela_tazrouaba",
+  "name": "Tazrouaba",
+  "description": "",
+  "zone": "guela",
+  "tags": [
+    "town",
+    "citadel",
+    "plaza"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Guel",
+      "to": "world_guela_guel"
+    },
+    {
+      "direction": "官道往Dawan",
+      "to": "world_awlata_dawan"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 527,
+    "cell_id": 4628,
+    "population": 15105,
+    "culture": "柏柏爾",
+    "religion": "斯利拉拉扎格教",
+    "biome": "熱帶雨林",
+    "x": 78127.9,
+    "y": 57649.44,
+    "watabou_params": {
+      "size": 18,
+      "citadel": 1,
+      "plaza": 1,
+      "walls": 0,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Sejdita"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "world_kusande_arerika",
+  "name": "Arerika",
+  "description": "",
+  "zone": "kusande",
+  "tags": [
+    "village",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "小徑往Kurgira",
+      "to": "world_tsetgalia_kurgira"
+    },
+    {
+      "direction": "小徑往Uduragote",
+      "to": "world_kusande_uduragote"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 313,
+    "cell_id": 3363,
+    "population": 1726,
+    "culture": "卡納提克",
+    "religion": "霍尼達爾袞教",
+    "biome": "溫帶落葉林",
+    "x": 80139.19,
+    "y": 42805.4,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 0,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Khadapuria"
+  }
+}

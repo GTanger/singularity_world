@@ -1,0 +1,53 @@
+{
+  "id": "world_nanu_hawa",
+  "name": "Hawa",
+  "description": "",
+  "zone": "nanu",
+  "tags": [
+    "village",
+    "plaza",
+    "walls"
+  ],
+  "exits": [
+    {
+      "direction": "官道往Kinaboka",
+      "to": "world_nanu_kinaboka"
+    },
+    {
+      "direction": "官道往Kujifumiro",
+      "to": "world_sananai_kujifumiro"
+    },
+    {
+      "direction": "小徑往Hegu",
+      "to": "world_nanu_hegu"
+    },
+    {
+      "direction": "小徑往Ichimamifu",
+      "to": "world_nanu_ichimamifu"
+    }
+  ],
+  "objects": [],
+  "meta": {
+    "source": "azgaar",
+    "burg_id": 494,
+    "cell_id": 2975,
+    "population": 1841,
+    "culture": "大和",
+    "religion": "彥道",
+    "biome": "溫帶落葉林",
+    "x": 49054.55,
+    "y": 38332.49,
+    "watabou_params": {
+      "size": 7,
+      "citadel": 0,
+      "plaza": 1,
+      "walls": 1,
+      "temple": 0,
+      "shantytown": 0,
+      "coast": 0,
+      "river": 0,
+      "port": 0
+    },
+    "province": "Hiroto"
+  }
+}
