@@ -1,4 +1,4 @@
-# 014 Parser A：Azgaar 世界地圖 → rooms.json 轉換器
+# 014 Parser A：Azgaar 世界地圖 → rooms.json 轉換器（組長領單）
 
 ## 目標
 
@@ -297,7 +297,7 @@ python3 tools/azgaar_parser.py "Celia Full 2026-01-25-04-11.json" --output data/
 5. **先只處理陸地 burg**。`pack.burgs[].feature` 對應 `pack.features[]`，需確認不是海洋 feature
 6. **去重 exits**：同一對 from↔to 只保留一條（優先 roads > trails > searoutes）
 7. **跑完後用 map_viewer 目視確認**——開 zone filter 逐國檢查節點位置和連線是否合理
-8. **現有 639 格（zonelife_*）不要動**。新生成的 world_* 房間是獨立的世界地圖層，與現有城市房間共存
+8. **封存現有浮生城**。轉換前先將 `data/rooms/editor/zonelife_*.json` 整批移至 `data/rooms/archive/zonelife/`，不刪除。新生成的 world_* 房間取代現有地圖，不共存
 
 ---
 
