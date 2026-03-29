@@ -1,7 +1,7 @@
 {
   "id": "world_marker_migration_58",
   "name": "遷徙路線",
-  "description": "舊車轍與草痕交錯，指向遠方，風裡有遷徙者留下的空曠氣息。",
+  "description": "空氣中瀰漫著泥土與野獸的氣息，地平線是褐黃色的塵埃。腳下是深深的轍痕，蜿蜒無盡，遠方隱約可見一團巨大的陰影，伴隨著低沉的嘶鳴聲，震得地面微微顫動。",
   "zone": "khulekhia",
   "tags": [
     "migration"

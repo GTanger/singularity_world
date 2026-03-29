@@ -1,7 +1,7 @@
 {
   "id": "world_marker_hill_monsters_30",
   "name": "丘怪棲地",
-  "description": "丘頂風硬，草倒向一側，石堆旁有巨大爪痕，空氣裡有腥臊。",
+  "description": "腐朽的草葉散發著潮濕氣息，腳下是鬆軟的泥土。遠處丘陵的陰影如巨獸般沉重，隱約可聽見低沉的咆哮，混雜著骨骼摩擦的脆響，令人毛骨悚然。",
   "zone": "nanu",
   "tags": [
     "hill-monsters"

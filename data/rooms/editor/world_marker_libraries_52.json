@@ -1,7 +1,7 @@
 {
   "id": "world_marker_libraries_52",
   "name": "藏書閣",
-  "description": "高層藏書閣，木梯吱呀，紙頁與墨香混在塵埃裡，光從小窗斜入。",
+  "description": "空氣中瀰漫著古老的紙張與皮革氣息。高聳入雲的書架綿延不絕，藏著無數泛黃的羊皮卷軸。偶有書頁翻動的細微聲響，與遠處鐘樓低沉的鐘聲交織，迴盪在寂靜的空間裡。",
   "zone": "dengz_guo",
   "tags": [
     "libraries"

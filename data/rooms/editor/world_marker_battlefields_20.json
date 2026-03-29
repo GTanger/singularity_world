@@ -1,7 +1,7 @@
 {
   "id": "world_marker_battlefields_20",
   "name": "古戰場",
-  "description": "荒草淹沒的舊戰場，斷戟與碎甲半埋土中，風過時彷彿仍有金鐵聲。",
+  "description": "殘破的石碑立在鏽紅色的土地上，無數青銅箭簇散落其間，在微風中發出細微的鳴聲。空氣中瀰漫著淡淡的血腥味，遠處隱約可聞斷劍的哀鳴，彷彿在訴說著曾經的廝殺。",
   "zone": "gordowia",
   "tags": [
     "battlefields"

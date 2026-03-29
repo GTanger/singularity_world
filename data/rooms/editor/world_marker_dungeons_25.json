@@ -1,7 +1,7 @@
 {
   "id": "world_marker_dungeons_25",
   "name": "地牢",
-  "description": "低矮的鐵門半掩，霉味與腐水氣自黑暗裡湧出，階梯向下沒入無聲。",
+  "description": "潮濕的石壁散發著腐朽氣息，空氣中混雜著泥土和淡淡的硫磺味。深邃的入口被藤蔓遮蔽，石板階梯向下蔓延，隱沒在黑暗中，偶爾可聽到滴落的水聲和遠處若隱若現的低鳴。",
   "zone": "chamgaria",
   "tags": [
     "dungeons"

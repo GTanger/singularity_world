@@ -1,7 +1,7 @@
 {
   "id": "world_marker_dungeons_27",
   "name": "地牢",
-  "description": "低矮的鐵門半掩，霉味與腐水氣自黑暗裡湧出，階梯向下沒入無聲。",
+  "description": "潮濕的石壁上滴落著不明液體，空氣中瀰漫著腐朽的泥土氣息。深邃的洞口，被扭曲的石像守護，隱約可聽到來自地底深處的低沉回音，令人毛骨悚然。",
   "zone": "golparia",
   "tags": [
     "dungeons"
