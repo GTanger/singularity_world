@@ -64,16 +64,17 @@ pub fn build_city_rooms(
     let zone = format!("city_{}", geo.burg_id);
     let prefix = format!("city_{}_", geo.burg_id);
 
-    let mut eps = 15.0_f64;
+    // 目標路口數 80-150：城市才不會出口爆炸
+    let mut eps = 30.0_f64;
     let (_cluster_of_point, centers, edges) = loop {
         let r = cluster_roads(&geo.roads, eps);
         let nj = r.1.len();
-        if nj > 500 {
-            eps *= 1.5;
+        if nj > 150 {
+            eps *= 1.3;
             continue;
         }
-        if nj < 50 && nj > 0 && eps > 2.0 {
-            eps *= 0.75;
+        if nj < 50 && nj > 0 && eps > 5.0 {
+            eps *= 0.8;
             continue;
         }
         break r;
@@ -332,19 +333,28 @@ pub fn build_city_rooms(
                 objects: Vec::new(),
             },
         );
-        let mut exs: Vec<model::Exit> = Vec::new();
+        // 同方向只保留最近的路口（避免出口爆炸）
+        let mut best_by_dir: HashMap<String, (f64, usize)> = HashMap::new();
         for &nj in &adj[ji] {
             let dx = junction_meta[nj].cx - j.cx;
             let dy = junction_meta[nj].cy - j.cy;
             let dir = bearing_label(dx, dy).to_string();
-            let to_id = junc_id[nj].clone();
-            let to_name = if nj == gate_j {
+            let dist = (dx * dx + dy * dy).sqrt();
+            let entry = best_by_dir.entry(dir).or_insert((f64::MAX, nj));
+            if dist < entry.0 {
+                *entry = (dist, nj);
+            }
+        }
+        let mut exs: Vec<model::Exit> = Vec::new();
+        for (dir, (_, nj)) in &best_by_dir {
+            let to_id = junc_id[*nj].clone();
+            let to_name = if *nj == gate_j {
                 gate_room_name.clone()
             } else {
-                junction_room_names[nj].clone()
+                junction_room_names[*nj].clone()
             };
             exs.push(model::Exit {
-                direction: dir,
+                direction: dir.clone(),
                 to_room_id: to_id,
                 to_room_name: to_name,
             });
