@@ -512,7 +512,7 @@ pub fn update_vit(entity_id: &str, new_vit: i32) -> anyhow::Result<()> {
 // ══════════════════════════════════════
 
 /// 創生預設房間名稱。
-pub const SPAWN_ROOM_NAME: &str = "界壁";
+pub const SPAWN_ROOM_NAME: &str = "宜林";
 
 /// 取得創生預設房間 id。
 pub fn get_spawn_room_id() -> String {

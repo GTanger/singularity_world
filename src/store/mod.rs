@@ -490,7 +490,8 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     if pg_loaded {
         tracing::info!("[store] 資料從 PostgreSQL 載入（主資料源）");
         // entity_rooms 需驗證房間存在性（房間可能被編輯器刪除）
-        let fallback = s.first_room_id_sorted();
+        let fallback = s.get_room_id_by_name(crate::db::SPAWN_ROOM_NAME);
+        let fallback = if fallback.is_empty() { s.first_room_id_sorted() } else { fallback };
         let rooms_ref = &s.rooms;
         s.entity_rooms.retain(|_, rid| {
             if rooms_ref.contains_key(rid.as_str()) {
