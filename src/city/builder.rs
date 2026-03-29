@@ -375,9 +375,16 @@ pub fn build_city_rooms(
         exits.insert(id, exs);
     }
 
+    // 每個路口最多掛 2 棟可進入建築
+    let mut buildings_per_junction: HashMap<usize, u32> = HashMap::new();
     for (bi, btype, bname) in enterable_list {
-        let bid = format!("{}b{:04}", prefix, bi);
         let ji = building_to_junction[bi];
+        let count = buildings_per_junction.entry(ji).or_insert(0);
+        if *count >= 2 {
+            continue; // 跳過，這個路口已經夠了
+        }
+        *count += 1;
+        let bid = format!("{}b{:04}", prefix, bi);
         let junc_rid = junc_id[ji].clone();
         let mut tags = merge_tags(world_tags, &["city_building"]);
         match btype {
