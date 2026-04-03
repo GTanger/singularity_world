@@ -1,8 +1,10 @@
+#![allow(clippy::redundant_locals)]
+
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use std::collections::HashMap;
-use crate::types::{HexCell, HexCoord, ToolMode};
+use std::collections::{HashMap, HashSet};
+use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
 
 const HEX_R: f64 = 28.0;
 const SQRT3: f64 = 1.7320508075688772;
@@ -14,6 +16,142 @@ const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (0.0, -28.0),
     (24.24871130596428, -14.0),
 ];
+
+/// 與 `HEX_VERT_OFFSETS` **邊索引 0..5** 對齊的鄰格轴向增量 `(dq, dr)`。
+/// 邊 `i` 為頂點 `i → (i+1)%6`；**必須**與畫布上該邊的外側鄰格一致，否則森林邊緣樹會畫在林區內部共用邊上。
+/// （舊版誤用 E/Ne/… 固定順序，與頂點順序不一致，導致截圖中「森林格之間仍出現小樹」。）
+const AXIAL_DIRS_FOR_EDGES: [(i32, i32); 6] = [
+    (0, 1),   // 邊 0：外側為 Se
+    (-1, 1),  // 邊 1：Sw
+    (-1, 0),  // 邊 2：W
+    (0, -1),  // 邊 3：Nw
+    (1, -1),  // 邊 4：Ne
+    (1, 0),   // 邊 5：E
+];
+
+fn is_forest_terrain(t: Terrain) -> bool {
+    matches!(t, Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle)
+}
+
+/// 六角邊的兩個頂點索引（邊 i 連接頂點 i 和 (i+1)%6）
+fn hex_edge_verts(edge_idx: usize) -> ((f64, f64), (f64, f64)) {
+    let a = HEX_VERT_OFFSETS[edge_idx];
+    let b = HEX_VERT_OFFSETS[(edge_idx + 1) % 6];
+    (a, b)
+}
+
+/// 用確定性 hash 生成偽隨機（同座標同結果）
+fn cell_hash(q: i32, r: i32, salt: u32) -> u64 {
+    let mut h = (q as u64).wrapping_mul(0x9E3779B97F4A7C15)
+        .wrapping_add((r as u64).wrapping_mul(0x517CC1B727220A95))
+        .wrapping_add(salt as u64);
+    h ^= h >> 30;
+    h = h.wrapping_mul(0xBF58476D1CE4E5B9);
+    h ^= h >> 27;
+    h
+}
+
+/// 在 hex 邊緣畫程序化小樹（bezier 樹冠 + 樹幹）
+fn draw_edge_trees(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    px: f64,
+    py: f64,
+    edge_idx: usize,
+    q: i32,
+    r: i32,
+    is_heavy: bool,
+) {
+    let ((ax, ay), (bx, by)) = hex_edge_verts(edge_idx);
+    // 邊中點
+    let mx = (ax + bx) / 2.0;
+    let my = (ay + by) / 2.0;
+    // 朝外法線方向（從中心往邊中點）
+    let out_x = mx;
+    let out_y = my;
+    let out_len = (out_x * out_x + out_y * out_y).sqrt().max(0.01);
+    let nx = out_x / out_len;
+    let ny = out_y / out_len;
+    // 邊的切線方向
+    let tx = bx - ax;
+    let ty = by - ay;
+    let tlen = (tx * tx + ty * ty).sqrt().max(0.01);
+    let tnx = tx / tlen;
+    let tny = ty / tlen;
+
+    let tree_count = if is_heavy { 3 } else { 2 };
+
+    for ti in 0..tree_count {
+        let th = cell_hash(q, r, (edge_idx as u32) * 100 + ti);
+        // 沿邊分佈位置（0.2 ~ 0.8 避開頂點）
+        let frac = 0.2 + 0.6 * (ti as f64 + 0.5) / tree_count as f64;
+        // 加微量隨機偏移
+        let jitter = ((th % 100) as f64 / 100.0 - 0.5) * 0.15;
+        let t = frac + jitter;
+        let base_x = px + ax + (bx - ax) * t;
+        let base_y = py + ay + (by - ay) * t;
+
+        // 樹高（朝外長）
+        let h_base = HEX_R * 0.35;
+        let h_var = ((th >> 8) % 60) as f64 / 100.0;
+        let tree_h = h_base * (0.7 + h_var);
+        // 樹冠寬
+        let w_base = HEX_R * 0.22;
+        let w_var = ((th >> 16) % 50) as f64 / 100.0;
+        let crown_w = w_base * (0.7 + w_var);
+
+        // 樹頂
+        let top_x = base_x + nx * tree_h;
+        let top_y = base_y + ny * tree_h;
+
+        // 樹幹（短線）
+        let trunk_h = tree_h * 0.3;
+        let trunk_top_x = base_x + nx * trunk_h;
+        let trunk_top_y = base_y + ny * trunk_h;
+
+        // 樹幹色
+        ctx.set_stroke_style_str("#4a3728");
+        ctx.set_line_width(1.2);
+        ctx.begin_path();
+        ctx.move_to(base_x, base_y);
+        ctx.line_to(trunk_top_x, trunk_top_y);
+        ctx.stroke();
+
+        // 樹冠（兩條 bezier 圍成水滴形）
+        let left_x = trunk_top_x - tnx * crown_w;
+        let left_y = trunk_top_y - tny * crown_w;
+        let right_x = trunk_top_x + tnx * crown_w;
+        let right_y = trunk_top_y + tny * crown_w;
+
+        // 樹冠色依密度
+        let crown_color = if is_heavy { "#2d5a1e" } else { "#3d7a2e" };
+        let crown_dark = if is_heavy { "#1e4015" } else { "#2d6020" };
+
+        ctx.set_fill_style_str(crown_color);
+        ctx.begin_path();
+        ctx.move_to(left_x, left_y);
+        // 左弧 → 頂
+        ctx.quadratic_curve_to(
+            trunk_top_x - tnx * crown_w * 0.3 + nx * tree_h * 0.7,
+            trunk_top_y - tny * crown_w * 0.3 + ny * tree_h * 0.7,
+            top_x,
+            top_y,
+        );
+        // 頂 → 右弧
+        ctx.quadratic_curve_to(
+            trunk_top_x + tnx * crown_w * 0.3 + nx * tree_h * 0.7,
+            trunk_top_y + tny * crown_w * 0.3 + ny * tree_h * 0.7,
+            right_x,
+            right_y,
+        );
+        ctx.close_path();
+        ctx.fill();
+
+        // 樹冠暗邊
+        ctx.set_stroke_style_str(crown_dark);
+        ctx.set_line_width(0.6);
+        ctx.stroke();
+    }
+}
 
 fn canvas_view_rect(canvas: &web_sys::HtmlCanvasElement) -> web_sys::DomRect {
     if let Some(parent) = canvas.parent_element() {
@@ -727,6 +865,19 @@ pub fn HexGrid(
                     ctx.stroke();
                 }
 
+                // 遊戲釘死彩格（如 player_spawn 標籤）
+                if cell.tags.iter().any(|t| t == "player_spawn") && cam.zoom >= 0.3 {
+                    ctx.begin_path();
+                    ctx.move_to(px + ox0, py + oy0);
+                    for (ox, oy) in HEX_VERT_OFFSETS.iter().skip(1) {
+                        ctx.line_to(px + *ox, py + *oy);
+                    }
+                    ctx.close_path();
+                    ctx.set_stroke_style_str("#f59e0b");
+                    ctx.set_line_width((2.4 / cam.zoom).clamp(1.0, 3.2));
+                    ctx.stroke();
+                }
+
                 if cam.zoom >= 0.6 {
                     ctx.set_fill_style_str("#e0e8f0");
                     ctx.set_font(&format!("{}px sans-serif", (8.0 / cam.zoom).max(7.0)));
@@ -738,6 +889,39 @@ pub fn HexGrid(
                         cell.name.clone()
                     };
                     let _ = ctx.fill_text(&label, px, py + 2.0);
+                }
+            }
+        }
+
+        // === 森林樹海：邊緣樹形 ===
+        if cam.zoom >= 0.25 {
+            // 建森林格集合
+            let forest_set: HashSet<(i32, i32)> = cs.iter()
+                .filter(|c| is_forest_terrain(c.terrain))
+                .map(|c| (c.coord.q, c.coord.r))
+                .collect();
+
+            if !forest_set.is_empty() {
+                for cell in cs.iter() {
+                    if !is_forest_terrain(cell.terrain) {
+                        continue;
+                    }
+                    let (px, py) = coord_to_pixel(cell.coord.q, cell.coord.r);
+                    if px < min_x - HEX_R || px > max_x + HEX_R
+                        || py < min_y - HEX_R || py > max_y + HEX_R
+                    {
+                        continue;
+                    }
+                    let is_heavy = matches!(cell.terrain, Terrain::ForestHeavy | Terrain::Jungle);
+
+                    // 檢查六個方向，鄰居不是森林的邊畫樹
+                    for (di, &(dq, dr)) in AXIAL_DIRS_FOR_EDGES.iter().enumerate() {
+                        let nq = cell.coord.q + dq;
+                        let nr = cell.coord.r + dr;
+                        if !forest_set.contains(&(nq, nr)) {
+                            draw_edge_trees(&ctx, px, py, di, cell.coord.q, cell.coord.r, is_heavy);
+                        }
+                    }
                 }
             }
         }
