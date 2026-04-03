@@ -33,6 +33,69 @@ fn is_forest_terrain(t: Terrain) -> bool {
     matches!(t, Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle)
 }
 
+/// 畫面上顯示用的地名／地形字（與下方文字繪製一致）
+fn cell_display_label(cell: &HexCell) -> String {
+    if cell.name.trim().is_empty() {
+        cell.terrain.label().to_string()
+    } else {
+        cell.name.clone()
+    }
+}
+
+/// 與後端 `HexDir::delta` 一致之六鄰（axial）
+const AXIAL_NEIGHBOR_DR: [(i32, i32); 6] = [
+    (1, 0),
+    (1, -1),
+    (0, -1),
+    (-1, 0),
+    (-1, 1),
+    (0, 1),
+];
+
+/// 相同地形且**顯示名相同**之連通區，僅在字典序最小之一格顯示名稱（避免整片同色重複字）
+fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
+    let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cs.len());
+    for c in cs {
+        at.insert((c.coord.q, c.coord.r), c);
+    }
+    let mut visited: HashSet<(i32, i32)> = HashSet::with_capacity(cs.len());
+    let mut reps: HashSet<(i32, i32)> = HashSet::new();
+
+    for c in cs {
+        let start = (c.coord.q, c.coord.r);
+        if visited.contains(&start) {
+            continue;
+        }
+        let key = (c.terrain, cell_display_label(c));
+        let mut stack = vec![start];
+        let mut comp: Vec<(i32, i32)> = Vec::new();
+        visited.insert(start);
+
+        while let Some(p) = stack.pop() {
+            comp.push(p);
+            for &(dq, dr) in &AXIAL_NEIGHBOR_DR {
+                let nq = p.0 + dq;
+                let nr = p.1 + dr;
+                let nid = (nq, nr);
+                if visited.contains(&nid) {
+                    continue;
+                }
+                let Some(nc) = at.get(&nid) else {
+                    continue;
+                };
+                if (nc.terrain, cell_display_label(nc)) != key {
+                    continue;
+                }
+                visited.insert(nid);
+                stack.push(nid);
+            }
+        }
+        let rep = *comp.iter().min().expect("non-empty component");
+        reps.insert(rep);
+    }
+    reps
+}
+
 /// 六角邊的兩個頂點索引（邊 i 連接頂點 i 和 (i+1)%6）
 fn hex_edge_verts(edge_idx: usize) -> ((f64, f64), (f64, f64)) {
     let a = HEX_VERT_OFFSETS[edge_idx];
@@ -777,6 +840,9 @@ pub fn HexGrid(
         let max_x = vx + vw + margin;
         let min_y = vy - margin;
         let max_y = vy + vh + margin;
+
+        let label_reps = label_representative_coords(&cs);
+
         // 以視口四角反推 axial 範圍，避免右上/左下被裁切
         let mut qf_min = f64::INFINITY;
         let mut qf_max = f64::NEG_INFINITY;
@@ -879,16 +945,15 @@ pub fn HexGrid(
                 }
 
                 if cam.zoom >= 0.6 {
-                    ctx.set_fill_style_str("#e0e8f0");
-                    ctx.set_font(&format!("{}px sans-serif", (8.0 / cam.zoom).max(7.0)));
-                    ctx.set_text_align("center");
-                    ctx.set_text_baseline("middle");
-                    let label = if cell.name.trim().is_empty() {
-                        cell.terrain.label().to_string()
-                    } else {
-                        cell.name.clone()
-                    };
-                    let _ = ctx.fill_text(&label, px, py + 2.0);
+                    let cid = (cell.coord.q, cell.coord.r);
+                    if label_reps.contains(&cid) {
+                        ctx.set_fill_style_str("#e0e8f0");
+                        ctx.set_font(&format!("{}px sans-serif", (8.0 / cam.zoom).max(7.0)));
+                        ctx.set_text_align("center");
+                        ctx.set_text_baseline("middle");
+                        let label = cell_display_label(cell);
+                        let _ = ctx.fill_text(&label, px, py + 2.0);
+                    }
                 }
             }
         }
