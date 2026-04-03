@@ -1,3 +1,5 @@
+#![allow(clippy::redundant_locals)] // Leptos 回呼內常重複綁定以利 async move 捕獲
+
 mod api;
 mod types;
 mod components;
@@ -533,7 +535,7 @@ fn App() -> impl IntoView {
     let (selected_many, set_selected_many) = signal::<Vec<HexCoord>>(Vec::new());
     let (brush_terrain, set_brush_terrain) = signal(Terrain::Grassland);
     let (brush_size, set_brush_size) = signal(1_u8);
-    let (tool_mode, set_tool_mode) = signal(ToolMode::Paint);
+    let (tool_mode, set_tool_mode) = signal(ToolMode::View);
     let (editor_open, set_editor_open) = signal(false);
     let (mobile_menu_open, set_mobile_menu_open) = signal(false);
     let (status, set_status) = signal("載入中⋯".to_string());
@@ -551,13 +553,22 @@ fn App() -> impl IntoView {
             let set_cells = set_cells;
             let set_status = set_status;
             leptos::task::spawn_local(async move {
-                match api::load_grid().await {
+                match api::sync_load_grid().await {
                     Ok(grid) => {
                         set_world_seed_str.set(grid.world_seed.to_string());
+                        let pins = if grid.contract_pins.is_empty() {
+                            String::new()
+                        } else {
+                            format!(
+                                " · 釘死契約 {} 處",
+                                grid.contract_pins.len()
+                            )
+                        };
                         set_status.set(format!(
-                            "已載入 {} 格 · world_seed={}",
+                            "已自資料庫同步並載入 {} 格 · world_seed={}{}",
                             grid.cells.len(),
-                            grid.world_seed
+                            grid.world_seed,
+                            pins
                         ));
                         set_cells.set(grid.cells);
                     }
@@ -578,12 +589,6 @@ fn App() -> impl IntoView {
     let on_reload = {
         let reload = reload_grid;
         Callback::new(move |()| reload())
-    };
-
-    let on_save = {
-        Callback::new(move |()| {
-            set_status.set("已儲存到磁碟".into());
-        })
     };
 
     let on_cell_saved = {
@@ -948,9 +953,9 @@ fn App() -> impl IntoView {
         />
         <Toolbar
             on_reload=on_reload
-            on_save=on_save
             on_clear_selection=on_clear_selection
             on_apply_world_seed=on_apply_world_seed
+            set_status=set_status
             world_seed_str=world_seed_str
             set_world_seed_str=set_world_seed_str
             selected=selected

@@ -407,7 +407,7 @@ pub fn HexGrid(
             set_last_painted.set(Some(center));
             match tool_mode.get_untracked() {
                 ToolMode::Paint | ToolMode::Erase => set_selected.set(Some(center)),
-                ToolMode::Select | ToolMode::Move => {}
+                ToolMode::View | ToolMode::Select | ToolMode::Move => {}
             }
 
             let radius = (brush_size.get_untracked() as i32 - 1).max(0);
@@ -421,6 +421,7 @@ pub fn HexGrid(
             for c in stroke_centers {
                 for b in brush_disk(c, radius) {
                     match tool_mode.get_untracked() {
+                        ToolMode::View => {}
                         ToolMode::Erase => on_erase.run(b),
                         ToolMode::Paint => on_paint.run(b),
                         ToolMode::Select => on_select_add.run(b),
@@ -497,6 +498,16 @@ pub fn HexGrid(
                     let sy = ev.client_y() as f64 - rect.top();
                     let coord = pick_coord_at(sx, sy, rect.width(), rect.height());
                     match tool_mode.get_untracked() {
+                        ToolMode::View => {
+                            // 左鍵拖曳＝平移（與中鍵相同），縮放用滾輪；不會誤繪格子
+                            set_painting.set(false);
+                            set_panning.set(true);
+                            set_drag_start.set((ev.client_x() as f64, ev.client_y() as f64));
+                            let cam = camera.get_untracked();
+                            set_cam_start.set((cam.x, cam.y));
+                            set_select_start.set(None);
+                            set_select_dragged.set(false);
+                        }
                         ToolMode::Paint | ToolMode::Erase => {
                             set_painting.set(true);
                             set_panning.set(false);
@@ -658,6 +669,15 @@ pub fn HexGrid(
                         let sy = t.client_y() as f64 - rect.top();
                         let coord = pick_coord_at(sx, sy, rect.width(), rect.height());
                         match tool_mode.get_untracked() {
+                            ToolMode::View => {
+                                set_painting.set(false);
+                                set_panning.set(true);
+                                set_drag_start.set((t.client_x() as f64, t.client_y() as f64));
+                                let cam = camera.get_untracked();
+                                set_cam_start.set((cam.x, cam.y));
+                                set_select_start.set(None);
+                                set_select_dragged.set(false);
+                            }
                             ToolMode::Paint | ToolMode::Erase => {
                                 set_painting.set(true);
                                 set_panning.set(false);

@@ -59,6 +59,8 @@ pub enum Terrain {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ToolMode {
+    /// 預設：僅平移／縮放閱覽，左鍵拖曳不會上色（避免誤觸）
+    View,
     Paint,
     Erase,
     Select,
@@ -68,6 +70,7 @@ pub enum ToolMode {
 impl ToolMode {
     pub fn as_str(self) -> &'static str {
         match self {
+            ToolMode::View => "view",
             ToolMode::Paint => "paint",
             ToolMode::Erase => "erase",
             ToolMode::Select => "select",
@@ -389,6 +392,14 @@ fn default_true() -> bool {
     true
 }
 
+/// 與後端 `crate::hex::contract_pins` 對齊：遊戲釘死之彩格（如出生點）。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ContractPin {
+    pub q: i32,
+    pub r: i32,
+    pub role: String,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GridResponse {
     #[serde(default)]
@@ -400,4 +411,7 @@ pub struct GridResponse {
     pub portals: Vec<Portal>,
     #[serde(default)]
     pub transport_edges: Vec<TransportEdge>,
+    /// 遊戲釘死契約座標（非格內資料，由伺服器附加）
+    #[serde(default)]
+    pub contract_pins: Vec<ContractPin>,
 }

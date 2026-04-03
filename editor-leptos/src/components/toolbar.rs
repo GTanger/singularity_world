@@ -4,9 +4,9 @@ use crate::types::{HexCoord, Terrain, ToolMode};
 #[component]
 pub fn Toolbar(
     #[prop(into)] on_reload: Callback<()>,
-    #[prop(into)] on_save: Callback<()>,
     #[prop(into)] on_clear_selection: Callback<()>,
     #[prop(into)] on_apply_world_seed: Callback<()>,
+    set_status: WriteSignal<String>,
     world_seed_str: ReadSignal<String>,
     set_world_seed_str: WriteSignal<String>,
     selected: ReadSignal<Option<HexCoord>>,
@@ -27,19 +27,21 @@ pub fn Toolbar(
     let handle_reload = move |_| {
         set_busy.set(true);
         let on_reload = on_reload;
+        let set_status = set_status;
         leptos::task::spawn_local(async move {
             match crate::api::reload_grid().await {
                 Ok(n) => {
                     web_sys::window()
                         .and_then(|w| w.document())
                         .and_then(|d| {
-                            let _: () = d.set_title(&format!("六角格編輯器（{n} 格）"));
+                            let _: () = d.set_title(&format!("地圖編輯器（{n} 格）"));
                             ().into()
                         });
+                    set_status.set(format!("已自資料庫重載 · {n} 格"));
                     on_reload.run(());
                 }
                 Err(e) => {
-                    web_sys::console::log_1(&format!("reload 失敗：{e}").into());
+                    set_status.set(format!("重載失敗：{e}"));
                 }
             }
             set_busy.set(false);
@@ -48,14 +50,14 @@ pub fn Toolbar(
 
     let handle_save = move |_| {
         set_busy.set(true);
-        let on_save = on_save;
+        let set_status = set_status;
         leptos::task::spawn_local(async move {
             match crate::api::save_grid().await {
-                Ok(_n) => {
-                    on_save.run(());
+                Ok(n) => {
+                    set_status.set(format!("已儲存到 PostgreSQL／JSON 備份 · 回傳 count={n}"));
                 }
                 Err(e) => {
-                    web_sys::console::log_1(&format!("save 失敗：{e}").into());
+                    set_status.set(format!("儲存失敗：{e}"));
                 }
             }
             set_busy.set(false);
@@ -66,61 +68,45 @@ pub fn Toolbar(
         on_clear_selection.run(());
     };
 
-    let handle_reveal = {
-        let on_reload = on_reload;
-        move |_| {
+    let handle_reveal = move |_| {
             let Some(c) = selected.get() else {
-                web_sys::console::log_1(&"請先點選地圖上一格（或繪製模式點一下）。".into());
+                set_status.set("請先點選地圖上一格（選「繪製」等模式後點一下）。".into());
                 return;
             };
             set_busy.set(true);
-            let on_reload = on_reload;
             leptos::task::spawn_local(async move {
                 match crate::api::reveal_cell(c.q, c.r).await {
                     Ok(resp) => {
+                        set_status.set(format!(
+                            "揭露 ({},{}) · 地形={:?} · 已存在={}",
+                            c.q, c.r, resp.cell.terrain, resp.already_revealed
+                        ));
                         on_reload.run(());
-                        web_sys::console::log_1(
-                            &format!(
-                                "揭露 {}/{} 地形={:?} 已存在={}",
-                                c.q,
-                                c.r,
-                                resp.cell.terrain,
-                                resp.already_revealed
-                            )
-                            .into(),
-                        );
                     }
                     Err(e) => {
-                        web_sys::console::log_1(&format!("揭露失敗：{e}").into());
+                        set_status.set(format!("揭露失敗：{e}"));
                     }
                 }
                 set_busy.set(false);
             });
-        }
     };
 
-    let handle_reveal_ring = {
-        let on_reload = on_reload;
-        move |_| {
+    let handle_reveal_ring = move |_| {
             let Some(c) = selected.get() else {
-                web_sys::console::log_1(&"請先選取中心格。".into());
+                set_status.set("請先選取中心格。".into());
                 return;
             };
             set_busy.set(true);
-            let on_reload = on_reload;
             leptos::task::spawn_local(async move {
                 match crate::api::reveal_region(c.q, c.r, 2).await {
                     Ok((new_c, total)) => {
+                        set_status.set(format!("區域揭露 +{new_c} 格 · 全圖共 {total} 格"));
                         on_reload.run(());
-                        web_sys::console::log_1(
-                            &format!("區域揭露 +{new_c} 格，全圖共 {total}").into(),
-                        );
                     }
-                    Err(e) => web_sys::console::log_1(&format!("區域揭露失敗：{e}").into()),
+                    Err(e) => set_status.set(format!("區域揭露失敗：{e}")),
                 }
                 set_busy.set(false);
             });
-        }
     };
 
     let handle_toggle_editor = move |_| {
@@ -155,7 +141,7 @@ pub fn Toolbar(
             </button>
 
             <div class="toolbar-controls" class:open=move || mobile_menu_open.get()>
-                <span class="toolbar-title">"六角格編輯器"</span>
+                <span class="toolbar-title">"地圖編輯器"</span>
                 <span class="toolbar-count">{move || format!("{} 格", cell_count.get())}</span>
                 <label class="toolbar-count">"種子"</label>
                 <input
@@ -181,15 +167,18 @@ pub fn Toolbar(
                     on:change=move |ev| {
                         let val = event_target_value(&ev);
                         let mode = match val.as_str() {
+                            "paint" => ToolMode::Paint,
                             "erase" => ToolMode::Erase,
                             "select" => ToolMode::Select,
                             "move" => ToolMode::Move,
-                            _ => ToolMode::Paint,
+                            "view" => ToolMode::View,
+                            _ => ToolMode::View,
                         };
                         set_tool_mode.set(mode);
                     }
                     prop:value=move || tool_mode.get().as_str().to_string()
                 >
+                    <option value="view">"檢視（平移／縮放）"</option>
                     <option value="paint">"繪製"</option>
                     <option value="erase">"刪除"</option>
                     <option value="select">"選取"</option>
@@ -240,7 +229,7 @@ pub fn Toolbar(
                     class="toolbar-btn"
                     on:click=handle_reveal
                     disabled=move || busy.get() || selected.get().is_none()
-                    title="對目前選取之座標做野外首次揭露（黑格→彩格）"
+                    title="對目前選取之座標做首次揭露（黑格→彩格）"
                 >
                     "🔭 揭露此格"
                 </button>
