@@ -42,36 +42,29 @@ fn cell_display_label(cell: &HexCell) -> String {
     }
 }
 
-/// 合併「連通區」時用的鍵：**無自訂地名**時，林相（森林／疏林／密林／叢林）彼此可合併，整片只顯示一個標籤；
-/// 有自訂地名時以 `(地形, 地名)` 區分。
+/// 標籤合併：**六邊相鄰**（與遊戲可走鄰居一致）且 **同屬性**＝同 `Terrain`；
+/// 有自訂 `name` 時須地名也相同才算同一區。
 #[derive(Clone, PartialEq, Eq, Hash)]
 enum LabelMergeKey {
-    /// 有 `name`：僅與同地形且同名者合併
-    Named {
-        terrain: Terrain,
-        name: String,
-    },
-    /// 無 `name`、屬林相：彼此可合併（避免「森林／疏林」字不同卻相鄰時每格都畫字）
-    ForestWild,
-    /// 無 `name`、非林相：僅同 `Terrain` 合併
-    TerrainDefault(Terrain),
+    /// 無自訂名：僅依地形合併
+    TerrainOnly(Terrain),
+    /// 有自訂名：同地形且同名才合併
+    TerrainAndName { terrain: Terrain, name: String },
 }
 
 fn label_merge_key(cell: &HexCell) -> LabelMergeKey {
     let n = cell.name.trim();
-    if !n.is_empty() {
-        LabelMergeKey::Named {
+    if n.is_empty() {
+        LabelMergeKey::TerrainOnly(cell.terrain)
+    } else {
+        LabelMergeKey::TerrainAndName {
             terrain: cell.terrain,
             name: n.to_string(),
         }
-    } else if is_forest_terrain(cell.terrain) {
-        LabelMergeKey::ForestWild
-    } else {
-        LabelMergeKey::TerrainDefault(cell.terrain)
     }
 }
 
-/// 與後端 `HexDir::delta` 一致之六鄰（axial）
+/// 與後端 `HexDir::delta` 一致之六鄰（axial）— **僅共用邊** 之相鄰
 const AXIAL_NEIGHBOR_DR: [(i32, i32); 6] = [
     (1, 0),
     (1, -1),
@@ -81,24 +74,7 @@ const AXIAL_NEIGHBOR_DR: [(i32, i32); 6] = [
     (0, 1),
 ];
 
-/// 僅共**頂點**、不共邊之六角（相鄰兩邊向量和）。與六邊鄰併用，才能把「看起來貼成一團」的林相當成同一標籤區。
-const AXIAL_VERTEX_ONLY_DR: [(i32, i32); 6] = [
-    (2, -1),
-    (1, -2),
-    (-1, -1),
-    (-2, 1),
-    (-1, 2),
-    (1, 1),
-];
-
-/// 標籤合併用：邊鄰 + 頂點鄰（共 12 向）
-fn label_neighbor_deltas() -> impl Iterator<Item = (i32, i32)> {
-    AXIAL_NEIGHBOR_DR
-        .into_iter()
-        .chain(AXIAL_VERTEX_ONLY_DR.into_iter())
-}
-
-/// 連通區內僅在字典序最小之一格顯示名稱（林相無名時整片只一個標籤）
+/// 連通區內僅在字典序最小之一格顯示名稱（例如六格相連森林 → 一個「森林」）
 fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
     let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cs.len());
     for c in cs {
@@ -120,7 +96,7 @@ fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
 
         while let Some(p) = stack.pop() {
             comp.push(p);
-            for (dq, dr) in label_neighbor_deltas() {
+            for &(dq, dr) in &AXIAL_NEIGHBOR_DR {
                 let nq = p.0 + dq;
                 let nr = p.1 + dr;
                 let nid = (nq, nr);
