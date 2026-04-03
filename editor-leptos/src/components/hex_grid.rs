@@ -964,14 +964,16 @@ pub fn HexGrid(
                 ctx.set_fill_style_str(cell.terrain.color());
                 ctx.fill();
 
+                // 彩格預設不畫六角邊線（避免格與格之間出現深灰縫）；僅選取／多選時描邊
                 if cam.zoom >= 0.35 {
                     let is_sel = sel == Some(cell.coord);
                     let is_multi = selected_many.get().contains(&cell.coord);
-                    let stroke = if is_multi { "#22d3ee" } else if is_sel { "#ffcc00" } else { "#1a2634" };
-                    let sw = if is_multi || is_sel { 2.0 / cam.zoom } else { 0.6 / cam.zoom };
-                    ctx.set_stroke_style_str(stroke);
-                    ctx.set_line_width(sw);
-                    ctx.stroke();
+                    if is_multi || is_sel {
+                        let stroke = if is_multi { "#22d3ee" } else { "#ffcc00" };
+                        ctx.set_stroke_style_str(stroke);
+                        ctx.set_line_width(2.0 / cam.zoom);
+                        ctx.stroke();
+                    }
                 }
 
                 // 遊戲釘死彩格（如 player_spawn 標籤）
