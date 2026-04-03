@@ -81,6 +81,23 @@ const AXIAL_NEIGHBOR_DR: [(i32, i32); 6] = [
     (0, 1),
 ];
 
+/// 僅共**頂點**、不共邊之六角（相鄰兩邊向量和）。與六邊鄰併用，才能把「看起來貼成一團」的林相當成同一標籤區。
+const AXIAL_VERTEX_ONLY_DR: [(i32, i32); 6] = [
+    (2, -1),
+    (1, -2),
+    (-1, -1),
+    (-2, 1),
+    (-1, 2),
+    (1, 1),
+];
+
+/// 標籤合併用：邊鄰 + 頂點鄰（共 12 向）
+fn label_neighbor_deltas() -> impl Iterator<Item = (i32, i32)> {
+    AXIAL_NEIGHBOR_DR
+        .into_iter()
+        .chain(AXIAL_VERTEX_ONLY_DR.into_iter())
+}
+
 /// 連通區內僅在字典序最小之一格顯示名稱（林相無名時整片只一個標籤）
 fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
     let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cs.len());
@@ -103,7 +120,7 @@ fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
 
         while let Some(p) = stack.pop() {
             comp.push(p);
-            for &(dq, dr) in &AXIAL_NEIGHBOR_DR {
+            for (dq, dr) in label_neighbor_deltas() {
                 let nq = p.0 + dq;
                 let nr = p.1 + dr;
                 let nid = (nq, nr);
