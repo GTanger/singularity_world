@@ -42,6 +42,35 @@ fn cell_display_label(cell: &HexCell) -> String {
     }
 }
 
+/// 合併「連通區」時用的鍵：**無自訂地名**時，林相（森林／疏林／密林／叢林）彼此可合併，整片只顯示一個標籤；
+/// 有自訂地名時以 `(地形, 地名)` 區分。
+#[derive(Clone, PartialEq, Eq, Hash)]
+enum LabelMergeKey {
+    /// 有 `name`：僅與同地形且同名者合併
+    Named {
+        terrain: Terrain,
+        name: String,
+    },
+    /// 無 `name`、屬林相：彼此可合併（避免「森林／疏林」字不同卻相鄰時每格都畫字）
+    ForestWild,
+    /// 無 `name`、非林相：僅同 `Terrain` 合併
+    TerrainDefault(Terrain),
+}
+
+fn label_merge_key(cell: &HexCell) -> LabelMergeKey {
+    let n = cell.name.trim();
+    if !n.is_empty() {
+        LabelMergeKey::Named {
+            terrain: cell.terrain,
+            name: n.to_string(),
+        }
+    } else if is_forest_terrain(cell.terrain) {
+        LabelMergeKey::ForestWild
+    } else {
+        LabelMergeKey::TerrainDefault(cell.terrain)
+    }
+}
+
 /// 與後端 `HexDir::delta` 一致之六鄰（axial）
 const AXIAL_NEIGHBOR_DR: [(i32, i32); 6] = [
     (1, 0),
@@ -52,7 +81,7 @@ const AXIAL_NEIGHBOR_DR: [(i32, i32); 6] = [
     (0, 1),
 ];
 
-/// 相同地形且**顯示名相同**之連通區，僅在字典序最小之一格顯示名稱（避免整片同色重複字）
+/// 連通區內僅在字典序最小之一格顯示名稱（林相無名時整片只一個標籤）
 fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
     let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cs.len());
     for c in cs {
@@ -66,7 +95,8 @@ fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
         if visited.contains(&start) {
             continue;
         }
-        let key = (c.terrain, cell_display_label(c));
+        let seed = at.get(&start).expect("cell in list");
+        let key = label_merge_key(seed);
         let mut stack = vec![start];
         let mut comp: Vec<(i32, i32)> = Vec::new();
         visited.insert(start);
@@ -83,7 +113,7 @@ fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
                 let Some(nc) = at.get(&nid) else {
                     continue;
                 };
-                if (nc.terrain, cell_display_label(nc)) != key {
+                if label_merge_key(nc) != key {
                     continue;
                 }
                 visited.insert(nid);
