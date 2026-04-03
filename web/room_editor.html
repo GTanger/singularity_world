@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>房間心智圖編輯器 v0.12.3</title>
+  <title>六角格地圖編輯器 v2.0.0</title>
   <style>
     :root { --bg:#0f1117; --panel:#161a23; --muted:#8f9bb3; --line:#2a3040; --text:#e7ebf5; --acc:#7dd3fc; --warn:#fb7185; --ok:#86efac; }
     * { box-sizing: border-box; }
     body { margin:0; background:var(--bg); color:var(--text); font-family: "Noto Sans TC", "PingFang TC", sans-serif; }
     .app { display:grid; grid-template-columns: 320px 1fr; height:100vh; }
     .panel { background:var(--panel); border-right:1px solid var(--line); padding:12px; overflow:auto; }
-    .canvas-wrap { position:relative; overflow:auto; touch-action:none; }
+    .canvas-wrap { position:relative; overflow:hidden; }
     .toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
     button { border:1px solid var(--line); background:#1f2634; color:var(--text); border-radius:8px; padding:6px 10px; cursor:pointer; }
     button.active { border-color:var(--acc); box-shadow:0 0 0 1px var(--acc) inset; }
@@ -24,17 +24,10 @@
     input, textarea { width:100%; border:1px solid var(--line); background:#0d1220; color:var(--text); border-radius:6px; padding:8px; }
     textarea { min-height:80px; resize:vertical; }
     .status {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      font-size:12px;
-      color:#dbeafe;
-      background:#111a2a;
-      border:1px solid #274060;
-      border-radius:8px;
-      padding:8px 10px;
-      margin-bottom:10px;
-      min-height:18px;
+      position: sticky; top: 0; z-index: 5;
+      font-size:12px; color:#dbeafe; background:#111a2a;
+      border:1px solid #274060; border-radius:8px;
+      padding:8px 10px; margin-bottom:10px; min-height:18px;
     }
     .obj-row { border:1px solid var(--line); border-radius:8px; padding:8px; margin:8px 0; }
     .obj-head { display:flex; gap:6px; margin-bottom:6px; }
@@ -46,63 +39,41 @@
     .beh-row textarea { flex:1; min-height:52px; }
     .beh-add-bar { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
     .beh-add-bar button { font-size:12px; padding:4px 8px; }
-    #map { position:relative; width:2400px; height:1600px; background:
-      linear-gradient(0deg, transparent 24%, rgba(70,78,97,.15) 25%, rgba(70,78,97,.15) 26%, transparent 27%, transparent 74%, rgba(70,78,97,.15) 75%, rgba(70,78,97,.15) 76%, transparent 77%, transparent),
-      linear-gradient(90deg, transparent 24%, rgba(70,78,97,.15) 25%, rgba(70,78,97,.15) 26%, transparent 27%, transparent 74%, rgba(70,78,97,.15) 75%, rgba(70,78,97,.15) 76%, transparent 77%, transparent);
-      background-size:48px 48px;
+    #hex-canvas { display:block; width:100%; height:100%; cursor:default; }
+    .ctx-menu {
+      position:absolute; z-index:30; min-width:220px;
+      border:1px solid var(--line); border-radius:8px;
+      background:#0f1726; box-shadow:0 8px 24px rgba(0,0,0,.45);
+      display:none; overflow:hidden;
     }
-    #map { touch-action:none; }
-    /* 連線在上層才看得到箭頭；空白處點擊穿透到房格 */
-    #edges { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:1; }
-    svg { position:absolute; inset:0; width:100%; height:100%; }
-    .node { position:absolute; z-index:0; width:50px; height:50px; border:1px solid var(--line); background:#121827; border-radius:8px; padding:0; cursor:move; user-select:none; overflow:hidden; display:flex; align-items:center; justify-content:center; touch-action:none; }
-    .node.selected { border-color:var(--acc); box-shadow:0 0 0 1px var(--acc) inset; }
-    .node .name { font-size:20px; line-height:1; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    /* 對齊 map_viewer vis-network edges：單向虛線 [6,4]、雙向實線；色 #4a5568、選取 #e94560 */
-    .line { stroke:#4a5568; color:#4a5568; stroke-width:1.5; opacity:1; fill:none; }
-    .line-both { stroke:#4a5568; color:#4a5568; }
-    .line-selected { stroke:#e94560; color:#e94560; stroke-width:2.5; opacity:1; }
-    .ghost { stroke:#fbbf24; color:#fbbf24; stroke-width:1.5; fill:none; }
-    .marquee { position:absolute; z-index:2; border:1px dashed #7dd3fc; background:rgba(125,211,252,.12); pointer-events:none; }
-    .group-hull { position:absolute; z-index:-1; border:2px solid; border-radius:14px; background:rgba(0,0,0,.18); pointer-events:none; }
-    .panel-toggle {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      z-index: 20;
-      display: none;
+    .ctx-menu button {
+      width:100%; text-align:left; border:0;
+      border-bottom:1px solid #1f2b42; border-radius:0;
+      background:transparent; padding:8px 10px;
     }
+    .ctx-menu button:last-child { border-bottom:0; }
+    .ctx-menu button:hover { background:#18243a; }
+    .zoom-badge {
+      position:absolute; bottom:12px; right:12px; z-index:10;
+      display:flex; gap:4px; align-items:center;
+    }
+    .zoom-badge button { min-width:36px; text-align:center; }
+    .panel-toggle { position:fixed; top:10px; left:10px; z-index:20; display:none; }
     .mobile-bar {
-      display: none;
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 20;
-      background: rgba(15,17,23,.94);
-      border-top: 1px solid var(--line);
-      padding: 8px;
-      gap: 8px;
-      align-items: center;
-      justify-content: space-between;
+      display:none; position:fixed; left:0; right:0; bottom:0; z-index:20;
+      background:rgba(15,17,23,.94); border-top:1px solid var(--line);
+      padding:8px; gap:8px; align-items:center; justify-content:space-between;
     }
     .mobile-bar button { flex:1; min-height:40px; }
     @media (max-width: 900px) {
       .app { grid-template-columns: 1fr; }
       .panel {
-        position: fixed;
-        z-index: 25;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: min(92vw, 380px);
-        transform: translateX(-101%);
-        transition: transform .18s ease;
+        position:fixed; z-index:25; top:0; left:0; bottom:0;
+        width:min(92vw,380px); transform:translateX(-101%); transition:transform .18s ease;
       }
-      .panel.open { transform: translateX(0); }
-      .panel-toggle { display: inline-flex; }
-      .mobile-bar { display: flex; }
-      .canvas-wrap { padding-bottom: 64px; }
+      .panel.open { transform:translateX(0); }
+      .panel-toggle { display:inline-flex; }
+      .mobile-bar { display:flex; }
     }
   </style>
 </head>
@@ -119,34 +90,30 @@
       </div>
       <div class="toolbar">
         <button id="btn-refresh">重新載入</button>
-        <button id="btn-add">新增房格</button>
-        <button id="btn-copy">複製房格</button>
+        <button id="btn-toggle-edges">隱藏連線</button>
         <button id="btn-delete" class="danger">刪除房格</button>
-        <button id="btn-normalize">重整座標</button>
-        <button id="btn-group-set">設定群組</button>
-        <button id="btn-group-unlock" class="danger">解鎖群組</button>
       </div>
       <div class="toolbar">
+        <button id="mode-off" class="active">選取</button>
         <button id="mode-one">單向連線</button>
         <button id="mode-two">雙向連線</button>
-        <button id="mode-off" class="active">一般拖曳</button>
       </div>
-      <div class="hint">地圖上可拖線連房（單向／雙向模式），或<strong>下方用表單「新增路徑」</strong>（與拖線效果相同）。一般模式可框選多房格、右鍵刪線；滾輪縮放、中鍵平移。</div>
+      <div class="hint">點擊空白六角格建立房間。點擊已填充格選取。拖曳平移地圖。滾輪縮放。右鍵開啟選單。</div>
 
       <div class="section">
         <h3>新增路徑（出口 + 遊戲內移動）</h3>
-        <p class="hint">建立 <code>exits</code>，並在起點（與雙向時的終點）自動寫入可 <code>Move</code> 的物件與 <code>move_to_room_id</code>。方向名稱會成為物件 <code>name</code>，請與房間描述裡的〔〕一致。</p>
+        <p class="hint">建立 <code>exits</code>，並在起點（與雙向時的終點）自動寫入可 <code>Move</code> 的物件。</p>
         <div class="field">
           <label>起點房間</label>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <select id="path-from" style="flex:1;min-width:0;"></select>
-            <button type="button" id="path-use-selected" title="使用左側目前選取的房格">帶入選取</button>
+            <button type="button" id="path-use-selected" title="使用目前選取">帶入選取</button>
           </div>
         </div>
         <div class="field"><label>終點房間</label><select id="path-to"></select></div>
-        <div class="field"><label>此端方向名稱（物件顯示名／〔〕）</label><input id="path-dir" type="text" placeholder="例：浮生、東、北小門" /></div>
-        <div class="field"><label><input type="checkbox" id="path-reverse" checked /> 同時建立反向路徑（終點↔起點）</label></div>
-        <div class="field" id="path-rev-wrap"><label>反向方向名稱</label><input id="path-reverse-dir" type="text" placeholder="留空則用起點房「名稱」" /></div>
+        <div class="field"><label>此端方向名稱</label><input id="path-dir" type="text" placeholder="例：東、北小門" /></div>
+        <div class="field"><label><input type="checkbox" id="path-reverse" checked /> 同時建立反向路徑</label></div>
+        <div class="field" id="path-rev-wrap"><label>反向方向名稱</label><input id="path-reverse-dir" type="text" placeholder="留空則用起點房名稱" /></div>
         <div class="toolbar"><button type="button" id="btn-add-path" style="border-color:#1e3a5f;">建立路徑</button></div>
       </div>
 
@@ -156,44 +123,46 @@
         <div class="field"><label>名稱</label><input id="f-name" /></div>
         <div class="field"><label>區域 zone</label><input id="f-zone" placeholder="street / alley / ..." /></div>
         <div class="field"><label>標籤 tags（逗號分隔）</label><input id="f-tags" /></div>
-        <div class="field"><label>描述</label><textarea id="f-desc"></textarea>
-        <button type="button" id="btn-regen-desc" style="font-size:12px;padding:4px 8px;margin-top:4px;">重新骰描述</button>
-        </div>
+        <div class="field"><label>描述</label><textarea id="f-desc"></textarea></div>
       </div>
 
       <div class="section">
-        <h3>可互動物件（表單）</h3>
-        <div class="hint">用表單新增物件與後續互動；每個物件可設定 sockets 與 responses。下方仍保留 JSON 進階模式。</div>
+        <h3>可互動物件</h3>
         <div class="toolbar">
           <button id="btn-add-object">新增物件</button>
           <button id="btn-template">插入模板</button>
         </div>
         <div id="objects-form"></div>
         <div class="field">
-          <label>進階 JSON（可手動編修）</label>
-          <textarea id="f-objects" placeholder='[{"id":"obj_tea","name":"茶壺","sockets":["Look","Talk"],"responses":{"Look":"茶香未散。"}}]'></textarea>
+          <label>進階 JSON</label>
+          <textarea id="f-objects" placeholder='[{"id":"obj_tea","name":"茶壺","sockets":["Look"],"responses":{"Look":"茶香未散。"}}]'></textarea>
         </div>
         <div class="toolbar" style="margin-top:8px;">
           <button id="btn-save" style="border-color:#14532d;">儲存房間</button>
         </div>
-        <p class="hint" style="margin-top:6px;">快捷鍵：<kbd>Ctrl</kbd>+<kbd>S</kbd>（macOS：<kbd>⌘</kbd>+<kbd>S</kbd>）與按鈕相同，會儲存目前選取的房間。</p>
+        <p class="hint" style="margin-top:6px;">快捷鍵：<kbd>Ctrl</kbd>+<kbd>S</kbd> 儲存。</p>
       </div>
     </aside>
 
     <main class="canvas-wrap" id="wrap">
-      <div id="map">
-        <svg id="edges"></svg>
+      <canvas id="hex-canvas"></canvas>
+      <div id="ctx-menu" class="ctx-menu">
+        <button id="ctx-create-room">在此格建立房間</button>
+        <button id="ctx-import-watabou">從此六角載入 Watabou JSON…</button>
+      </div>
+      <div class="zoom-badge">
+        <button id="btn-zoom-out">−</button>
+        <button id="btn-zoom-reset">100%</button>
+        <button id="btn-zoom-in">+</button>
       </div>
     </main>
   </div>
   <div class="mobile-bar" id="mobile-bar">
-    <button id="m-add">新增</button>
     <button id="m-del">刪除</button>
-    <button id="m-multi-sel">多選</button>
-    <button id="m-mode">一般拖曳</button>
+    <button id="m-mode">選取</button>
     <button id="m-panel">面板</button>
   </div>
-
-  <script src="/room_editor.js?v=0.12.3"></script>
+  <input id="watabou-json-input" type="file" accept=".json,application/json" style="display:none;" />
+  <script src="/room_editor.js?v=2.0.0"></script>
 </body>
 </html>

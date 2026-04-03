@@ -1,0 +1,1 @@
+{"summary":"使用者要求換回 SVG：確認 web/maps/tiles/0 已為 geom 向量瓦片與 manifest；已重跑 slice_lakes_svg_geom 同步來源。","current_status":"map_tiles 載入路徑為 maps/tiles/0/{i}_{j}.svg。"}

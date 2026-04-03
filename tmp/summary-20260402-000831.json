@@ -1,0 +1,4 @@
+{
+  "summary": "使用者回報 /home/tanger/下載/greyway_wood.json 無法載入。檢查後確認該檔為 Watabou MFCG 的 GeoJSON FeatureCollection（earth/roads/buildings/water 等），不屬於既有 hexes/cells q/r 格式。已在 editor-leptos main.rs 新增 MFCG 匯入管線：解析 Polygon/MultiPolygon/GeometryCollection/MultiPoint，將幾何投影為 axial hex cells（含 polygon 填充、line 取樣、point 映射），並整合到既有匯入流程，狀態列可顯示座標來源 mfcg-geojson。",
+  "current_status": "Hex 編輯器匯入已同時支援 Watabou hexes/cells 與 MFCG GeoJSON；release 資產已重建，等待使用者重試 greyway_wood.json。"
+}

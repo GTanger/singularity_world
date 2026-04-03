@@ -1,0 +1,1 @@
+{"summary":"依回饋修正路徑上異物：橋改為路線段與河折線 segment 真正相交才繪製（含 AABB 粗篩），移除「靠近河就畫」的假橋；聚落用 roadSegmentsPrecomputed 做 settlementOffsetFromRoads，離開路心／虛線；橋改小、色較淡。","current_status":"Watabou PoC：路河立交語意正確、聚落不壓在路徑上；若真交叉口極少導致幾乎無橋，可再談是否用河寬緩衝或端點鄰接規則。"}

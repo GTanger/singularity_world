@@ -1,0 +1,4 @@
+{
+  "summary": "使用者指出 room_editor 的六角格底圖是虛假的 CSS 背景花紋，要求開啟 https://hexatlas.net/ 實際檢視並拆解功能。透過 browser MCP 開啟 HexAtlas，截圖並解析完整 DOM 結構，列出所有功能：8 個主工具（Select/Terrain/Token/Path/Landmark/Text/Image/Fog）、10 種地形、筆刷設定（Brush/Fill/Size）、路徑工具（樣式/寬度/顏色/路徑演算）、戰爭迷霧、圖層管理、Compendium、格線/幾何/貼圖設定等。關鍵差異確認：HexAtlas 的空白格是真實可互動元素（hover + click-to-paint），而我做的只是 CSS background-image 裝飾性花紋。要對齊需將底圖重構為每個 hex cell 都有座標且可互動的架構。",
+  "current_status": "room_editor 後端資料已清空，前端 v=0.14.0 已部署。使用者確認 CSS 背景六角格是假的，要求參照 HexAtlas 重做為真實可互動格子。下一步需決定是否進行此架構級重構。"
+}

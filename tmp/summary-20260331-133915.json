@@ -1,0 +1,4 @@
+{
+  "summary": "依指定規則執行 continual-learning：讀取現有 AGENTS 與索引、以 parent transcript mtime 做增量比對，僅萃取一份 delta transcript 的高訊號，更新 AGENTS.md 兩處（提案格式要求與單一平面建築互動決策），最後以全量 parent transcript 重新寫入索引並移除非 parent 路徑。",
+  "current_status": "記憶索引已同步至最新 parent transcript mtime（4 筆）；AGENTS.md 已納入本輪可持久高訊號規則，無 linter 問題。"
+}

@@ -1,0 +1,4 @@
+{
+  "summary": "山脈不顯示主因：drawHexMountainOverlay 在 img.naturalWidth 為 0 時直接 return；SVG-as-Image 常見此情形。改以 naturalWidth||width||608、高度 442 後備，並用 drawImage 九參數 (0,0,iw,ih,dx,dy,dw,dh) 指定來源矩形。",
+  "current_status": "watabou_test 山脈 overlay 應可於各瀏覽器繪出；設計尺寸須與 overlay SVG 同步。"
+}

@@ -1,0 +1,4 @@
+{
+  "summary": "針對 village 仍不可見，加入硬保險修正：town type 判斷改為 trim().toLowerCase()，避免空白造成分支失效；village 圖示載入改為雙路徑策略（先 assets/village_neighborhood.svg，失敗再 fallback 內嵌 data URL）。同時檢查頁面 console 無錯誤。",
+  "current_status": "village 渲染路徑已具備路徑載入與 data URL 雙保險，並容錯 type 字串格式；若仍看不到，可能是當前視野無 village 節點。"
+}

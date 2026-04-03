@@ -1,0 +1,4 @@
+{
+  "summary": "執行 continual-learning skill，透過 agents-memory-updater 子代理增量處理 agent transcripts。新增兩條到 AGENTS.md：(1) 改靜態檔必須同步提升 ?v= 版次避免 Cloudflare Tunnel 快取送舊檔；(2) room_editor 必須透過 Rust 伺服器存取才有 API。索引已重建（37 個 transcript），舊條目已清理。",
+  "current_status": "room_editor 後端資料已清空，前端 v=0.14.0 已部署。使用者要求參照 HexAtlas 將編輯器六角格從 CSS 裝飾性背景重構為真實可互動格子（每格有座標、hover 反饋、click-to-paint）。AGENTS.md 已更新學習記憶。下一步：重寫 room_editor 渲染層為 Canvas-based 真實六角格互動系統。"
+}

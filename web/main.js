@@ -675,12 +675,12 @@
 		wrap.innerHTML = html;
 	}
 	var EQUIP_SLOTS = [
-		['head', '【首】'], ['face', '【面】'], ['neck', '【頸】'],
-		['body', '【衣】'], ['cloak', '【披】'],
-		['shoulder', '【肩】'], ['arm', '【臂】'], ['wrist', '【腕】'], ['hand', '【掌】'],
-		['waist', '【腰】'], ['legs', '【褲】'], ['feet', '【足】'],
-		['ring_l', '【指】左'], ['ring_r', '【指】右'], ['trinket', '【佩】'],
-		['hold_l', '【持】左'], ['hold_r', '【持】右']
+	['head', '【冠盔】'], ['face', '【面甲】'], ['neck', '【護頸】'],
+	['undershirt', '【襯衣】'], ['inner_armor', '【內甲】'], ['body', '【掛鎧】'], ['cloak', '【披風】'],
+	['shoulder', '【肩鎧】'], ['arm', '【護臂】'], ['wrist', '【護腕】'], ['hand', '【掌套】'],
+	['waist', '【腰鎧】'], ['legs', '【襯褲】'], ['leg_armor', '【腿鎧】'], ['feet', '【護靴】'],
+	['ring_l', '【左指】'], ['ring_r', '【右指】'], ['trinket', '【佩掛】'],
+	['hold_l', '【左持】'], ['hold_r', '【右持】']
 	];
 	var lastEquipMsg = null;
 

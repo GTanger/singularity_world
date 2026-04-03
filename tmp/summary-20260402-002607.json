@@ -1,0 +1,4 @@
+{
+  "summary": "使用者回報 thundertalonfield 匯入失敗。定位為後端仍在舊版程序，尚不識別新地形 wall，API 回傳 422 unknown variant wall。已執行 cargo build --release 並透過 ./start 重啟 systemd 服務；重啟後以 API 實測 terrain=wall 已回 200，確認服務端版本與前端匯入器一致。",
+  "current_status": "wall 地形端到端已生效（後端執行中版本已更新）；可重新嘗試匯入 thundertalonfield.json。"
+}

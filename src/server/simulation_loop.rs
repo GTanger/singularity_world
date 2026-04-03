@@ -8,12 +8,12 @@ use rand::Rng;
 
 use crate::config::{sim, Server};
 use crate::db::{
-    adjust_disposition, apply_schedules, build_npc_rumor_digest, decay_npc_rumors, deduct_daily_expense,
-    get_all_schedules, get_disposition, get_entity_room, get_npc_ids_with_room, get_npc_person_display_name,
-    get_npc_title_from_assignments, get_player_ids_with_room, get_room, get_room_name, get_schedule_for_entity,
-    get_schedule_target, get_spawn_room_id, set_entity_room, spawn_one_npc_from_pool, upsert_npc_rumor,
-    with_room_graph,
-    promote_lexicon_candidates, decay_lexicon, get_room_count,
+    adjust_disposition, apply_schedules, build_npc_rumor_digest, canonical_location_key, decay_npc_rumors,
+    deduct_daily_expense, get_all_schedules, get_disposition, get_entity_room, get_npc_ids_with_room,
+    get_npc_person_display_name, get_npc_title_from_assignments, get_player_ids_with_room, get_room,
+    get_room_name, get_schedule_for_entity, get_schedule_target, get_spawn_room_id, set_entity_room,
+    spawn_one_npc_from_pool, upsert_npc_rumor, with_room_graph, promote_lexicon_candidates, decay_lexicon,
+    get_room_count,
 };
 use crate::gametext;
 use crate::game::{game_time_now, run_view_simulation, Pos};
@@ -730,9 +730,10 @@ fn run_idle_wander_section(sessions: &SessionStore, cfg: &Server, hour: i32, sta
         let person = get_npc_person_display_name(&sch.entity_id).unwrap_or_default();
         let wander_rooms = get_wander_rooms(&title);
         if wander_rooms.len() > 1 && rng.random_range(0..wmax) == 0 {
+            let npc_key = canonical_location_key(&npc_room);
             let candidates: Vec<String> = wander_rooms
                 .into_iter()
-                .filter(|wr| wr != &npc_room)
+                .filter(|wr| canonical_location_key(wr) != npc_key)
                 .collect();
             if !candidates.is_empty() {
                 let dest = candidates[rng.random_range(0..candidates.len())].clone();
@@ -763,7 +764,7 @@ fn run_idle_wander_section(sessions: &SessionStore, cfg: &Server, hour: i32, sta
                 continue;
             }
         }
-        if !player_room_set.contains(&npc_room) {
+        if !player_room_set.contains(&canonical_location_key(&npc_room)) {
             continue;
         }
         let disp = get_disposition(&sch.entity_id);

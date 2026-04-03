@@ -1,0 +1,1 @@
+{"summary":"完成登入管線切換：若 Character 有 hex_q/hex_r 則以 get_hex_room_view 組首屏 RoomView（hex:q:r 虛擬房間、walkable_neighbors 出口、get_entities_at_hex）；否則沿用 ensure_entity_in_room + get_room_view。新增 hex_room_id_from_coord/parse_hex_room_id、store.entity_ids_at_hex、Character 與 store_entity_to_character 帶入六角欄位。","current_status":"cargo build/clippy/test 全過；六角登入與舊房間路徑並存，無 grid 或格不存在時自動退回舊路徑。"}

@@ -1,0 +1,4 @@
+{
+  "summary": "將山脈底色從 `#FFFCEC` 微幅調暗為 `#F6F0DD`，更新 `web/watabou_test.html` 的 `TERRAIN_COLORS.mountain`；其餘渲染流程不變。",
+  "current_status": "山脈底色為較柔和的淺米色（#F6F0DD）。"
+}

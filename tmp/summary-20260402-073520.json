@@ -1,0 +1,4 @@
+{
+  "summary": "本輪依使用者確認「好」後，完成手機漢堡面板的自動收合：將 `mobile_menu_open` 狀態由 `Toolbar` 內部提升至 `App` 層，並在 `map-area` 加上 `on:pointerdown` 事件，使用者點地圖時即自動關閉手機工具面板（☰ 展開內容）。",
+  "current_status": "手機工具列目前為主列三鍵（儲存/重載/☰）+ 展開面板；且已具備點地圖自動收合能力。前端 release build 與 lint 均通過。"
+}

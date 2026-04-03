@@ -1,0 +1,4 @@
+{
+  "summary": "使用者要求資源點設置／產出建議並檢視文檔。已確認既有 docs/design/資源點與礦區設計.md（世界觀與 Token 密度）；新建 docs/design/資源點設置與產出—實作建議.md，含 Hex 錨點原則、節點欄位草案、yield_pool、類型分級與工程順序。已更新資源點與礦區設計.md 與詞盤系統收斂規格.md 的交叉引用。",
+  "current_status": "資源點 P0 仍有 freq_band 量化與首批節點數量待設計者拍板；程式端待 schema 定案後實作。"
+}

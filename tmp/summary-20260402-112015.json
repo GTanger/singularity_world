@@ -1,0 +1,4 @@
+{
+  "summary": "本輪依需求檢查裝備是否有「內甲」欄位，確認目前程式未明確提供後，已補齊 `inner_armor` 槽位：更新後端初始裝備 JSON（男女皆含空的 inner_armor）、同步 data/entities.json 現有玩家初始槽位、並更新裝備規格文件中的槽位總數與表格（17→18，新增【內甲】）。",
+  "current_status": "系統現已具備 `inner_armor` 裝備槽（預設空值），且與初始資料與文件一致；backend 編譯與 lint 均通過。"
+}

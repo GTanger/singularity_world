@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者需求把編輯器互動改成 HexAtlas 式簡便流程：選地形後可直接新增，按住拖曳可連續新增，暫不做油漆桶。已修改 App/Toolbar/HexGrid：Toolbar 新增『筆刷地形』下拉；App 新增 brush_terrain 與 on_paint 回呼，點/拖時即時在本地 cells 建立或改地形，並呼叫 API put_cell 持久化；HexGrid 的左鍵與單指觸控改為繪製模式、右鍵改平移、雙指縮放保留，並用 last_painted 去重避免同一格重複寫入。完成 wasm 編譯與 trunk release，並在遠端網址驗證 mousedown/mouseup 可直接新增格子，最後清除測試格並 reload。",
+  "current_status": "線上編輯器目前已具備『選筆刷→點即新增→拖曳連續新增』核心體驗（無填滿桶），互動方向已對齊使用者需求；後續可再補刷子大小、連線插值與批次寫入優化。"
+}

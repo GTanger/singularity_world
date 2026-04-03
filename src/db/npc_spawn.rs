@@ -114,6 +114,8 @@ pub(crate) fn insert_npc_locked(
         inventory: "[]".to_string(),
         disposition: 0,
         current_activity: String::new(),
+        hex_q: None,
+        hex_r: None,
     };
     s.put_entity(e)
 }

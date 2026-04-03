@@ -1,0 +1,4 @@
+{
+  "summary": "使用者定預設六角邊長 100、主介面為全螢幕大地圖且玩家相關收在點擊玩家選單。已更新 map_terrain_world.md（預設 s＝100、HEX_R 對應、主介面願景段）、AGENTS.md 偏好一則、web/watabou_test.html 將 HEX_R 9→100 並註解。未改 editor-leptos／room_editor 之 HEX_R 28。",
+  "current_status": "地圖參考與試驗頁與「邊 100」世界約定對齊；完整遊戲主 UI 待實作點擊玩家選單。"
+}

@@ -1,0 +1,4 @@
+{
+  "summary": "修復手機觸控拖曳問題。根因三個：(1) Leptos on:touchmove 是 passive listener，preventDefault() 被瀏覽器靜默忽略，改用 web_sys 直接掛 { passive: false } 的 touchstart/touchmove/touchend；(2) touch-action: none 只寫在 SVG inline style，外層 html/body/.map-area 沒有，瀏覽器在外層就先攔截手勢，已全面加上；(3) container_size 用 window.innerWidth/Height 而非 SVG 元素實際尺寸，手機上工具列和狀態列佔空間導致 viewBox 偏大、拖曳速度不匹配，改用 getBoundingClientRect。三項修正後 trunk build --release 成功，伺服器已重啟。",
+  "current_status": "Leptos 六角格編輯器 MVP 已上線 /hex-editor/，含 SVG 渲染、滑鼠/觸控操控、格子 CRUD。觸控拖曳 bug 已修復，等待使用者手機端驗證。"
+}

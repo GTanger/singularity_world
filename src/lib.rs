@@ -6,6 +6,8 @@ pub mod entity;
 pub mod config;
 pub mod event;
 pub mod gametext;
+pub mod hex;
+pub mod city;
 pub mod store;
 pub mod db;
 pub mod game;

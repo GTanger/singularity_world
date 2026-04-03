@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求整理：web/lakes_of_secrets.json 頂層與 hexes 每格欄位（q,r,terrain,town）、七種 terrain 統計、rivers/roads/features/searoutes 角色；PNG 建議放 web/assets/tiles/ 並以 terrain／town.type 對照檔名；列出 63 個 Watabou features 英文地名並說明需另做中文；694 個 world_*.json 檔名完整列表寫入 tmp/world_room_json_filenames.txt。",
+  "current_status": "奇點世界：野外六角資料與房間 JSON 命名規則已文件化；中文城鎮顯示需依資料或對照表，非 Watabou 英文原名。"
+}

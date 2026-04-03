@@ -1,0 +1,4 @@
+{
+  "summary": "依指定執行增量 continual-learning：使用 index 過濾 transcript、刷新 mtime、清理刪除項，結果無高訊號記憶更新。",
+  "current_status": "AGENTS.md 本輪無需更新；index 增量流程已完成。"
+}

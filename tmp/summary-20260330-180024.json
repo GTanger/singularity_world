@@ -1,0 +1,4 @@
+{
+  "summary": "使用者問 Watabou 的渲染原理。解釋：網站用 JS+Canvas 即時渲染（非 SVG），核心是圖章系統（stamp system）——少量預製手繪符號依地形反覆貼放、旋轉微調，產生視覺豐富感；SVG 只是匯出品。並指出使用者的 JSON hex + PNG tile 管線與此本質相同。無程式碼變更。",
+  "current_status": "奇點世界：watabou_test PoC 已完成河線弧化與手機手勢優化；下一步為 PNG tile 整合與中文地名。"
+}

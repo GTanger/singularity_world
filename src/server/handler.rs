@@ -13,8 +13,10 @@ use crate::entity::Character;
 use crate::event::{self, types::BLOCKED};
 use crate::game;
 use crate::gametext;
+use crate::store;
 
 use super::action::handle_do_action;
+use super::hex_editor;
 use super::broadcast::send_room_view_to_session;
 use super::hub::Hub;
 use super::protocol::{
@@ -157,10 +159,29 @@ fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("create_entity_failed"));
         return;
     }
-    let spawn = db::get_spawn_room_id();
-    if db::set_entity_room(&msg.player_id, &spawn).is_err() {
-        conn.send_error(gametext::client("create_room_failed"));
+    // 出生唯一規則：野外六角 (0,0) 契約為草原；權威座標寫入 PG（不再於創角時綁 room_id）。
+    let spawn_hex = hex_editor::ensure_player_spawn_grassland_coord();
+    let Some(st) = store::get_store() else {
+        conn.send_error(gametext::client("create_spawn_hex_failed"));
         return;
+    };
+    match spawn_hex {
+        Ok((q, r)) => {
+            if let Ok(mut g) = st.write() {
+                if g.set_entity_hex(&msg.player_id, q, r).is_err() {
+                    conn.send_error(gametext::client("create_spawn_hex_failed"));
+                    return;
+                }
+            } else {
+                conn.send_error(gametext::client("create_spawn_hex_failed"));
+                return;
+            }
+        }
+        Err(e) => {
+            tracing::error!("ensure_player_spawn_grassland_coord: {e}");
+            conn.send_error(gametext::client("create_spawn_hex_failed"));
+            return;
+        }
     }
     if db::create_auth(&msg.player_id, &msg.password).is_err() {
         conn.send_error(gametext::client("create_auth_failed"));
@@ -170,43 +191,52 @@ fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
 }
 
 fn login_success(conn: &WsConnection, player_id: &str) {
-    let spawn = db::get_spawn_room_id();
-    let room_id = match game::ensure_entity_in_room(player_id, &spawn) {
-        Ok(r) => r,
-        Err(_) => {
-            conn.send_error(gametext::client("load_room_failed"));
-            return;
-        }
-    };
     if let Ok(mut g) = conn.player_id.write() {
         *g = Some(player_id.to_string());
     }
     let gh = current_game_hour(&conn.cfg);
-    let mut view = match game::get_room_view(&room_id, gh) {
-        Ok(v) => v,
-        Err(_) => {
+    let mut ent_pre = db::get_entity(player_id).ok().flatten();
+    let Some(e0) = ent_pre.as_ref() else {
+        conn.send_error(gametext::client("load_view_failed"));
+        return;
+    };
+    let mut hq = e0.hex_q;
+    let mut hr = e0.hex_r;
+    if hq.is_none() || hr.is_none() {
+        match hex_editor::ensure_player_spawn_grassland_coord() {
+            Ok((q, r)) => {
+                if db::set_entity_hex(player_id, q, r).is_err() {
+                    conn.send_error(gametext::client("create_spawn_hex_failed"));
+                    return;
+                }
+                hq = Some(q);
+                hr = Some(r);
+            }
+            Err(e) => {
+                tracing::error!("login spawn hex: {e}");
+                conn.send_error(gametext::client("create_spawn_hex_failed"));
+                return;
+            }
+        }
+        ent_pre = db::get_entity(player_id).ok().flatten();
+    }
+    let (hq, hr) = match (hq, hr) {
+        (Some(q), Some(r)) => (q, r),
+        _ => {
+            conn.send_error(gametext::client("create_spawn_hex_failed"));
+            return;
+        }
+    };
+    let view = match game::get_hex_room_view(player_id, hq, hr, gh) {
+        Ok(Some(v)) => v,
+        Ok(None) | Err(_) => {
             conn.send_error(gametext::client("load_view_failed"));
             return;
         }
     };
-    if view.is_none() {
-        let _ = db::set_entity_room(player_id, &spawn);
-        view = match game::get_room_view(&spawn, gh) {
-            Ok(v) => v,
-            Err(_) => {
-                conn.send_error(gametext::client("load_view_failed"));
-                return;
-            }
-        };
-        if view.is_none() {
-            conn.send_error(gametext::client("load_view_failed"));
-            return;
-        }
-    }
-    let view = view.expect("checked");
     let session = Session::with_outbound(player_id, conn.conn_id, conn.tx.clone());
     conn.sessions.set(player_id, session.clone());
-    let ent = db::get_entity(player_id).ok().flatten();
+    let ent = ent_pre.or_else(|| db::get_entity(player_id).ok().flatten());
     let (vit, qi, dex) = ent
         .as_ref()
         .map(|e| (e.vit, e.qi, e.dex))
@@ -219,7 +249,7 @@ fn login_success(conn: &WsConnection, player_id: &str) {
             let _ = db::record_meet(&e.id, player_id);
         }
     }
-    game::observe_room(&view.room.id, player_id, now);
+    game::observe_hex(hq, hr, player_id, now);
     send_me_with_status(conn, &session, ent.as_ref(), player_id, &view.room.id, &view.room.name, vit, qi, dex, &rm);
 }
 
@@ -572,13 +602,21 @@ fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error("direction required");
         return;
     }
-    let old_room = db::get_entity_room(&player_id).unwrap_or_default();
-    let (new_room, ok, err) = match game::move_by_exit(&player_id, &msg.direction) {
+    let old_ent = db::get_entity(&player_id).ok().flatten();
+    let Some(oe) = old_ent else {
+        conn.send_error(gametext::client("move_failed"));
+        return;
+    };
+    let (Some(old_q), Some(old_r)) = (oe.hex_q, oe.hex_r) else {
+        conn.send_error(gametext::client("move_failed"));
+        return;
+    };
+    let (new_room, ok, err) = match game::move_by_hex_direction(&player_id, &msg.direction) {
         Ok(v) => (v.0, v.1, None),
         Err(e) => (String::new(), false, Some(e)),
     };
     if err.is_some() {
-        conn.send_error("move failed");
+        conn.send_error(gametext::client("move_failed"));
         return;
     }
     if !ok {
@@ -594,12 +632,16 @@ fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
         });
         return;
     }
-    on_leave_room(conn.sessions.as_ref(), &old_room, &player_id);
+    on_leave_hex(conn.sessions.as_ref(), old_q, old_r, &player_id);
+    let Some((nq, nr)) = crate::hex::parse_hex_room_id(&new_room) else {
+        conn.send_error(gametext::client("move_failed"));
+        return;
+    };
     let gh = current_game_hour(&conn.cfg);
-    let view = match game::get_room_view(&new_room, gh) {
+    let view = match game::get_hex_room_view(&player_id, nq, nr, gh) {
         Ok(Some(v)) => v,
         Ok(None) | Err(_) => {
-            conn.send_error("load room failed");
+            conn.send_error(gametext::client("load_view_failed"));
             return;
         }
     };
@@ -609,7 +651,7 @@ fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
     };
     send_room_view_to_session(&sess, &view, &player_id, &conn.cfg);
     let now = game::now_unix();
-    game::observe_room(&view.room.id, &player_id, now);
+    game::observe_hex(nq, nr, &player_id, now);
     for e in &view.entities {
         if matches!(e.kind, crate::entity::EntityKind::Npc) && e.id != player_id {
             let _ = db::record_meet(&e.id, &player_id);
@@ -625,19 +667,19 @@ fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
     conn.hub.broadcast(bytes);
 }
 
-fn on_leave_room(store: &SessionStore, room_id: &str, left_player_id: &str) {
-    if room_id.is_empty() {
-        return;
-    }
+/// 離開某六角格時，若無其他玩家仍在該格，清除該格 NPC 之最後觀測。
+fn on_leave_hex(store: &SessionStore, q: i32, r: i32, left_player_id: &str) {
     for s in store.all_sessions() {
         if s.player_id.is_empty() || s.player_id == left_player_id {
             continue;
         }
-        if db::get_entity_room(&s.player_id).unwrap_or_default() == room_id {
+        if let Ok(Some(ch)) = db::get_entity(&s.player_id)
+            && ch.hex_q == Some(q) && ch.hex_r == Some(r)
+        {
             return;
         }
     }
-    let Ok(entities) = db::get_entities_in_room(room_id, -1) else {
+    let Ok(entities) = db::get_entities_at_hex(q, r, -1) else {
         return;
     };
     for e in entities {

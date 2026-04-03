@@ -72,5 +72,7 @@ Celia*.png
 sw-systemd.log
 
 # Added by cargo
-
 /target
+
+# Leptos 編輯器 build 產出
+editor-leptos/dist/

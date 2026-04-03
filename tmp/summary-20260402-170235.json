@@ -1,0 +1,1 @@
+{"summary":"落實 §15.6：新增 docs/reference/Hex格座標與cell_id規約.md（v0.1：正規字串 q,r、JSON 物件互轉、chunk 另軌）；聚落草案增 §十六 TransportEdge JSON 草案、合成圖三來源、衝突優先序仍開；更新關聯與 §15.4 cell_id 列連結；Hex探索草案關聯加 cell_id 規約。","current_status":"聚落五級＋Hex：cell_id 與 TransportEdge 草案已寫入 reference 與設計稿；實作待 Rust／JSON 落地與 portal／edge 優先序定稿。"}

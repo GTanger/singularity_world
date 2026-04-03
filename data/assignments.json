@@ -1,27 +1,14 @@
 {
   "entries": [
     {
-      "entity_id": "npc_dh7ljyggbjh5",
+      "entity_id": "npc_dhd6k6afp7kl",
       "occupation_id": "服務生",
       "venue_id": "venue_life_inn"
     },
     {
-      "entity_id": "npc_dh7lq371wwmu",
+      "entity_id": "npc_dhd7aowr26g5",
       "occupation_id": "服務生",
-      "venue_id": "venue_life_inn",
-      "assigned_by": "job_matching"
-    },
-    {
-      "entity_id": "npc_dh7lok2gzenv",
-      "occupation_id": "服務生",
-      "venue_id": "venue_life_inn",
-      "assigned_by": "job_matching"
-    },
-    {
-      "entity_id": "npc_dh7ln0pmebvc",
-      "occupation_id": "經理",
-      "venue_id": "venue_life_inn",
-      "assigned_by": "job_matching"
+      "venue_id": "venue_life_inn"
     }
   ]
 }

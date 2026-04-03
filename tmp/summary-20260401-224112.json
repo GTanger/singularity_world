@@ -1,0 +1,4 @@
+{
+  "summary": "修復使用者回報『右鍵失效』。根因是外層容器的 on:mousedown 關閉選單邏輯會在右鍵事件冒泡後立即清空 ctx_menu 狀態，導致選單瞬間消失。已將關閉條件改為僅左鍵（button==0）時才關閉，保留右鍵開啟選單流程。完成 wasm build 與 trunk release，lint 無錯。",
+  "current_status": "右鍵選單（載入 JSON / 刪除當前格）可正常顯示，中鍵平移與左鍵繪製不受影響。"
+}

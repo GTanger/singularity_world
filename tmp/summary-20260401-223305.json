@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求把右鍵改為自訂選單流程，已在 HexGrid 新增右鍵選單狀態與定位：右鍵點格子時記錄座標與選單位置，顯示兩個動作『載入 JSON（Watabou）』與『刪除當前格』；選單外點擊會關閉。載入選項呼叫既有 on_load_json（開檔並以 Watabou 匯入），刪除選項呼叫 on_erase 刪除該格。中鍵平移與左鍵繪製維持不變。同步新增 style.css 的選單樣式。完成 wasm build / trunk release，lint 無錯。",
+  "current_status": "編輯器右鍵目前會開自訂選單，含『載入 JSON（Watabou）』與『刪除當前格』兩項，互動已符合需求。"
+}

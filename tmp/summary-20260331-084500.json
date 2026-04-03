@@ -1,0 +1,4 @@
+{
+  "summary": "釐清底圖雙層：合併陸地多邊形 + 半透明逐格地形疊加造成混濁。已預設 MERGED_LAND_FILL=false 不畫 drawMergedLandfills；TERRAIN_ALPHA 在關閉合併時改為 1。山脈 SVG 貼圖下襯改 MOUNTAIN_TILE_UNDERFILL=#F7F4EB 對齊 SVG 六角，避免褐底。若需平滑海岸線可將 MERGED_LAND_FILL 改 true（會恢復 0.62 疊加）。",
+  "current_status": "watabou_test 底圖預設單層逐格地形；合併陸地為可選。"
+}

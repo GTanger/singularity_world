@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求去除城區格：前端 Terrain::ALL 移除 Urban（工具列/編輯器不再可選），匯入映射將 urban/city/town/village 與 MFCG buildings/prisms/squares 全改為 Grassland，且 roads 保護覆蓋條件不再包含 Urban。完成 wasm 與 release 建置，lint 無錯。",
+  "current_status": "編輯器層已不再生成或提供 Urban 地形；新匯入資料將不含城區格。"
+}

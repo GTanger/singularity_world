@@ -1,0 +1,5 @@
+{
+  "_說明": "世界房間 id → 野外六角 axial (q,r)。未列者若等於創生房（get_spawn_room_id）則用 spawn_hex。",
+  "spawn_hex": { "q": 0, "r": 0 },
+  "rooms": {}
+}

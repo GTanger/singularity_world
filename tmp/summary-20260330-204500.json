@@ -1,0 +1,4 @@
+{
+  "summary": "執行 continual-learning：增量處理主 transcript（mtime 新於索引）。更新 AGENTS.md：偏好「可視化改動需開頁驗收、不拘工具品牌」；工作區事實「cursor-ide-browser MCP 可開本機 watabou_test」。重寫 continual-learning-index.json 全 26 條 mtime。",
+  "current_status": "記憶索引已同步；AGENTS 已補瀏覽器驗收與 MCP 說明。"
+}

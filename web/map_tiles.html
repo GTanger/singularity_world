@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="refresh" content="0;url=watabou_test.html">
+<title>轉址 — 六角格地圖</title>
+<style>
+body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #e0e0e0;
+  margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 16px; text-align: center; }
+a { color: #8ab4ff; }
+p { max-width: 36em; line-height: 1.5; }
+code { background: #2a2a3e; padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<p>Perilous Shores 已改為<strong>六角格（JSON → Canvas）</strong>，不再使用此頁的 SVG 瓦片拼貼。</p>
+<p>若未自動跳轉，請點：<a id="link" href="watabou_test.html">watabou_test.html</a></p>
+<p style="font-size:12px;opacity:0.75">驗收建議：<code>?zoom=8</code> 看細節。舊 SVG 瓦片管線仍留在 <code>tools/slice_lakes_svg_geom.py</code>／<code>web/maps/tiles/0/</code> 供必要時備援。</p>
+<script>
+(function() {
+  var q = window.location.search || '';
+  var target = 'watabou_test.html' + q;
+  document.getElementById('link').href = target;
+  window.location.replace(target);
+})();
+</script>
+</body>
+</html>

@@ -1,8 +1,13 @@
 # 020 Watabou 城市空間引擎 — 組長工單
 
-> 狀態：待執行
-> 負責：組長（Cursor Auto）
-> 審核：Claude Opus
+| 項目 | 內容 |
+|------|------|
+| **領單** | Cursor Auto（組長） |
+| **領單日期** | 2026-03-30 |
+| **狀態** | 已完成（程式交付；實機進城驗收待主管） |
+| **審核** | Claude Opus |
+
+---
 
 ## 目標
 
@@ -206,8 +211,8 @@ if let Ok(entries) = std::fs::read_dir("data/cities") {
 
 ## 交付清單
 
-- [ ] `src/city/mod.rs` + `parser.rs` + `builder.rs`
-- [ ] `src/lib.rs` 加 `pub mod city;`
-- [ ] `src/store/mod.rs` 啟動流程加載城市
-- [ ] `data/cities/32.json`（從 `docs/map/city/darkwood_mount.json` 複製）
-- [ ] 此工單標記為已完成
+- [x] `src/city/mod.rs` + `parser.rs` + `builder.rs` + `geom.rs`
+- [x] `src/lib.rs` 加 `pub mod city;`
+- [x] `src/store/mod.rs` 啟動流程加載城市（`inject_ephemeral_rooms` / `append_exit_unique`）
+- [x] `data/cities/32.json`（repo 已具備；是否改以 `docs/map/city/darkwood_mount.json` 覆蓋由主管決定）
+- [x] 此工單標記為已完成（實機驗收見上「測試計畫」）

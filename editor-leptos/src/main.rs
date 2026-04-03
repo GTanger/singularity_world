@@ -72,7 +72,7 @@ fn coord_to_pixel_pair(q: i32, r: i32) -> (f64, f64) {
 
 fn parse_point(v: &serde_json::Value) -> Option<(f64, f64)> {
     let arr = v.as_array()?;
-    let x = arr.get(0)?.as_f64()?;
+    let x = arr.first()?.as_f64()?;
     let y = arr.get(1)?.as_f64()?;
     Some((x, y))
 }
@@ -185,8 +185,9 @@ fn extract_mfcg_cells(parsed: &serde_json::Value) -> Vec<(i32, i32, Terrain, Str
         {
             let terrain = match id {
                 "water" => Terrain::Water,
-                "buildings" | "prisms" | "squares" => Terrain::Urban,
+                "buildings" | "prisms" | "squares" => Terrain::Farmhouse,
                 "greens" => Terrain::Forest,
+                "fields" => Terrain::FarmField,
                 _ => Terrain::Grassland,
             };
             if ftype == "Polygon" {
@@ -265,12 +266,25 @@ fn extract_mfcg_cells(parsed: &serde_json::Value) -> Vec<(i32, i32, Terrain, Str
                             let k = (q, r);
                             let blocked = matches!(
                                 map.get(&k).map(|v| v.0),
-                                Some(Terrain::Wall | Terrain::Water | Terrain::Urban | Terrain::Mountain)
+                                Some(Terrain::Wall | Terrain::Water | Terrain::Mountain)
                             );
                             if blocked {
                                 continue;
                             }
                             map.insert(k, (Terrain::Road, "roads".to_string()));
+                        }
+                    }
+                }
+            }
+        }
+        if id == "planks" && ftype == "GeometryCollection" {
+            if let Some(gs) = feat.get("geometries").and_then(|v| v.as_array()) {
+                for g in gs {
+                    let gt = g.get("type").and_then(|v| v.as_str()).unwrap_or("");
+                    if gt == "LineString" {
+                        if let Some(coords) = g.get("coordinates").and_then(|v| v.as_array()) {
+                            let pts: Vec<(f64, f64)> = coords.iter().filter_map(parse_point).collect();
+                            sample_line_to_cells(&pts, &mut map, Terrain::Bridge, "planks");
                         }
                     }
                 }
@@ -327,6 +341,7 @@ fn terrain_from_watabou(raw: &str) -> Terrain {
     let k = raw.trim().to_ascii_lowercase();
     match k.as_str() {
         "road" => Terrain::Road,
+        "bridge" | "plank" | "planks" => Terrain::Bridge,
         "wall" | "walls" => Terrain::Wall,
         "forest" | "forest-light" | "forest_light" | "forest-heavy" | "forest_heavy" => Terrain::Forest,
         "mountain" => Terrain::Mountain,
@@ -336,7 +351,40 @@ fn terrain_from_watabou(raw: &str) -> Terrain {
         "swamp" => Terrain::Swamp,
         "tundra" => Terrain::Tundra,
         "jungle" => Terrain::Jungle,
-        "urban" | "city" | "town" | "village" => Terrain::Urban,
+        "farm_field" | "farmland" | "field" | "fields" | "farm" => Terrain::FarmField,
+        "farmhouse" | "farm_house" | "barn" => Terrain::Farmhouse,
+        "inn" => Terrain::Inn,
+        "tavern" | "pub" => Terrain::Tavern,
+        "blacksmith" | "smithy" | "forge" => Terrain::Blacksmith,
+        "general_store" | "store" | "shop" => Terrain::GeneralStore,
+        "clinic" | "hospital" | "healer" => Terrain::Clinic,
+        "workshop" => Terrain::Workshop,
+        "market" | "bazaar" => Terrain::Market,
+        "guild_hall" | "guildhall" | "guild" => Terrain::GuildHall,
+        "temple" | "shrine" => Terrain::Temple,
+        "academy" | "school" => Terrain::Academy,
+        "library" | "archive" => Terrain::Library,
+        "barracks" => Terrain::Barracks,
+        "guard_post" | "guardpost" | "guardhouse" | "watch" | "watchtower" => Terrain::GuardPost,
+        "warehouse" | "depot" => Terrain::Warehouse,
+        "granary" | "silo" => Terrain::Granary,
+        "dock" | "port" | "harbor" | "harbour" => Terrain::Dock,
+        "bathhouse" | "bath" | "spa" => Terrain::Bathhouse,
+        "courthouse" | "court" => Terrain::Courthouse,
+        "jail" | "prison" => Terrain::Jail,
+        "town_hall" | "townhall" | "city_hall" | "cityhall" => Terrain::TownHall,
+        "bank" => Terrain::Bank,
+        "mint" => Terrain::Mint,
+        "stables" | "stable" => Terrain::Stables,
+        "caravanserai" | "caravan" | "inn_caravan" => Terrain::Caravanserai,
+        "theater" | "theatre" | "opera" => Terrain::Theater,
+        "arena" | "colosseum" => Terrain::Arena,
+        "observatory" => Terrain::Observatory,
+        "alchemist" | "alchemy" | "apothecary" => Terrain::Alchemist,
+        "mage_tower" | "magetower" | "wizard_tower" | "arcane_tower" => Terrain::MageTower,
+        "embassy" | "consulate" => Terrain::Embassy,
+        "prison_yard" | "prisonyard" | "gaol_yard" => Terrain::PrisonYard,
+        "urban" | "city" | "town" | "village" => Terrain::Grassland,
         "grassland" | "plain" | "plains" => Terrain::Grassland,
         _ => Terrain::Grassland,
     }
@@ -487,7 +535,9 @@ fn App() -> impl IntoView {
     let (brush_size, set_brush_size) = signal(1_u8);
     let (tool_mode, set_tool_mode) = signal(ToolMode::Paint);
     let (editor_open, set_editor_open) = signal(false);
+    let (mobile_menu_open, set_mobile_menu_open) = signal(false);
     let (status, set_status) = signal("載入中⋯".to_string());
+    let (world_seed_str, set_world_seed_str) = signal(String::new());
     let (watabou_anchor, set_watabou_anchor) = signal::<Option<HexCoord>>(None);
     let watabou_input_ref = NodeRef::<leptos::html::Input>::new();
 
@@ -495,15 +545,20 @@ fn App() -> impl IntoView {
     let cell_count = Signal::derive(move || cells.get().len());
 
     let reload_grid = {
-        let set_cells = set_cells.clone();
-        let set_status = set_status.clone();
+        let set_cells = set_cells;
+        let set_status = set_status;
         move || {
-            let set_cells = set_cells.clone();
-            let set_status = set_status.clone();
+            let set_cells = set_cells;
+            let set_status = set_status;
             leptos::task::spawn_local(async move {
                 match api::load_grid().await {
                     Ok(grid) => {
-                        set_status.set(format!("已載入 {} 格", grid.cells.len()));
+                        set_world_seed_str.set(grid.world_seed.to_string());
+                        set_status.set(format!(
+                            "已載入 {} 格 · world_seed={}",
+                            grid.cells.len(),
+                            grid.world_seed
+                        ));
                         set_cells.set(grid.cells);
                     }
                     Err(e) => set_status.set(format!("載入失敗：{e}")),
@@ -514,14 +569,14 @@ fn App() -> impl IntoView {
 
     // 首次載入
     {
-        let reload = reload_grid.clone();
+        let reload = reload_grid;
         Effect::new(move || {
             reload();
         });
     }
 
     let on_reload = {
-        let reload = reload_grid.clone();
+        let reload = reload_grid;
         Callback::new(move |()| reload())
     };
 
@@ -532,12 +587,12 @@ fn App() -> impl IntoView {
     };
 
     let on_cell_saved = {
-        let reload = reload_grid.clone();
+        let reload = reload_grid;
         Callback::new(move |()| reload())
     };
 
     let on_cell_deleted = {
-        let reload = reload_grid.clone();
+        let reload = reload_grid;
         Callback::new(move |_coord: HexCoord| {
             set_selected.set(None);
             reload();
@@ -545,9 +600,9 @@ fn App() -> impl IntoView {
     };
 
     let on_paint = {
-        let set_cells = set_cells.clone();
-        let set_status = set_status.clone();
-        let set_selected = set_selected.clone();
+        let set_cells = set_cells;
+        let set_status = set_status;
+        let set_selected = set_selected;
         Callback::new(move |coord: HexCoord| {
             let terrain = brush_terrain.get_untracked();
             set_selected.set(Some(coord));
@@ -590,7 +645,7 @@ fn App() -> impl IntoView {
                 return;
             }
 
-            let set_status = set_status.clone();
+            let set_status = set_status;
             leptos::task::spawn_local(async move {
                 let req = api::CellPutReq {
                     q: coord.q,
@@ -609,9 +664,9 @@ fn App() -> impl IntoView {
     };
 
     let on_erase = {
-        let set_cells = set_cells.clone();
-        let set_status = set_status.clone();
-        let set_selected = set_selected.clone();
+        let set_cells = set_cells;
+        let set_status = set_status;
+        let set_selected = set_selected;
         Callback::new(move |coord: HexCoord| {
             set_selected.set(Some(coord));
             let mut existed = false;
@@ -623,7 +678,7 @@ fn App() -> impl IntoView {
             if !existed {
                 return;
             }
-            let set_status = set_status.clone();
+            let set_status = set_status;
             leptos::task::spawn_local(async move {
                 if let Err(e) = api::delete_cell(coord.q, coord.r).await {
                     set_status.set(format!("刪除失敗：{e}"));
@@ -633,8 +688,8 @@ fn App() -> impl IntoView {
     };
 
     let on_select_toggle = {
-        let set_selected = set_selected.clone();
-        let set_selected_many = set_selected_many.clone();
+        let set_selected = set_selected;
+        let set_selected_many = set_selected_many;
         Callback::new(move |coord: HexCoord| {
             let mut first_after = None;
             set_selected_many.update(|sel| {
@@ -650,8 +705,8 @@ fn App() -> impl IntoView {
     };
 
     let on_select_add = {
-        let set_selected = set_selected.clone();
-        let set_selected_many = set_selected_many.clone();
+        let set_selected = set_selected;
+        let set_selected_many = set_selected_many;
         Callback::new(move |coord: HexCoord| {
             set_selected_many.update(|sel| {
                 if !sel.contains(&coord) {
@@ -663,20 +718,46 @@ fn App() -> impl IntoView {
     };
 
     let on_clear_selection = {
-        let set_selected = set_selected.clone();
-        let set_selected_many = set_selected_many.clone();
+        let set_selected = set_selected;
+        let set_selected_many = set_selected_many;
         Callback::new(move |()| {
             set_selected.set(None);
             set_selected_many.set(Vec::new());
         })
     };
 
+    let on_apply_world_seed = {
+        let reload_grid = reload_grid;
+        let set_status = set_status;
+        Callback::new(move |()| {
+            let s = world_seed_str.get_untracked();
+            let seed: u64 = match s.trim().parse() {
+                Ok(v) => v,
+                Err(_) => {
+                    set_status.set("種子須為非負整數（u64）".into());
+                    return;
+                }
+            };
+            let reload_grid = reload_grid;
+            let set_status = set_status;
+            leptos::task::spawn_local(async move {
+                match api::put_world_seed(seed).await {
+                    Ok(()) => {
+                        reload_grid();
+                        set_status.set(format!("已設定 world_seed={seed}"));
+                    }
+                    Err(e) => set_status.set(format!("套用種子失敗：{e}")),
+                }
+            });
+        })
+    };
+
     let on_move_selection = {
         let selected_many = selected_many;
-        let set_selected_many = set_selected_many.clone();
-        let set_selected = set_selected.clone();
-        let set_cells = set_cells.clone();
-        let set_status = set_status.clone();
+        let set_selected_many = set_selected_many;
+        let set_selected = set_selected;
+        let set_cells = set_cells;
+        let set_status = set_status;
         Callback::new(move |(from, to): (HexCoord, HexCoord)| {
             let dq = to.q - from.q;
             let dr = to.r - from.r;
@@ -723,7 +804,7 @@ fn App() -> impl IntoView {
             set_selected_many.set(new_selection.clone());
             set_selected.set(new_selection.first().copied());
 
-            let set_status = set_status.clone();
+            let set_status = set_status;
             leptos::task::spawn_local(async move {
                 for c in old_coords {
                     let _ = api::delete_cell(c.q, c.r).await;
@@ -736,7 +817,7 @@ fn App() -> impl IntoView {
     };
 
     let on_load_json = {
-        let watabou_input_ref = watabou_input_ref.clone();
+        let watabou_input_ref = watabou_input_ref;
         Callback::new(move |coord: HexCoord| {
             set_watabou_anchor.set(Some(coord));
             if let Some(input) = watabou_input_ref.get() {
@@ -747,9 +828,9 @@ fn App() -> impl IntoView {
     };
 
     let on_watabou_change = {
-        let set_status = set_status.clone();
-        let reload_grid = reload_grid.clone();
-        let set_selected = set_selected.clone();
+        let set_status = set_status;
+        let reload_grid = reload_grid;
+        let set_selected = set_selected;
         move |ev: leptos::ev::Event| {
             let Some(anchor) = watabou_anchor.get_untracked() else {
                 set_status.set("未設定 Watabou 錨點".into());
@@ -769,9 +850,9 @@ fn App() -> impl IntoView {
             };
 
             set_status.set("Watabou JSON 匯入中⋯".into());
-            let set_status = set_status.clone();
-            let reload_grid = reload_grid.clone();
-            let set_selected = set_selected.clone();
+            let set_status = set_status;
+            let reload_grid = reload_grid;
+            let set_selected = set_selected;
             leptos::task::spawn_local(async move {
                 let text_js = wasm_bindgen_futures::JsFuture::from(file.text()).await;
                 let Ok(text_js) = text_js else {
@@ -869,6 +950,10 @@ fn App() -> impl IntoView {
             on_reload=on_reload
             on_save=on_save
             on_clear_selection=on_clear_selection
+            on_apply_world_seed=on_apply_world_seed
+            world_seed_str=world_seed_str
+            set_world_seed_str=set_world_seed_str
+            selected=selected
             cell_count=cell_count
             brush_terrain=brush_terrain
             set_brush_terrain=set_brush_terrain
@@ -878,9 +963,16 @@ fn App() -> impl IntoView {
             set_tool_mode=set_tool_mode
             editor_open=editor_open
             set_editor_open=set_editor_open
+            mobile_menu_open=mobile_menu_open
+            set_mobile_menu_open=set_mobile_menu_open
         />
         <div class="main-layout">
-            <div class="map-area">
+            <div
+                class="map-area"
+                on:pointerdown=move |_| {
+                    set_mobile_menu_open.set(false);
+                }
+            >
                 <HexGrid
                     cells=cells_signal
                     selected=selected

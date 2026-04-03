@@ -1,0 +1,1 @@
+{"summary":"map_tiles.html：移除刻意略過 touch 的 pointer 邏輯，改以 isPrimary 與 pointerId 追蹤單指拖曳；雙指 touch 結束拖曳並做 pinch 縮放（passive:false）。PNG/SVG img 改 decoding=async、佇列載入（寬螢幕 3 並行、窄螢 2）減輕一次解碼 16 張卡頓。HUD 顯示載入進度。viewport 去掉 user-scalable=no、按鈕 touch-action:manipulation。","current_status":"手機應可單指平移、雙指縮放；圖片漸進載入較不塞主執行緒。"}

@@ -1,0 +1,4 @@
+{
+  "summary": "使用者不滿未上網查證即答。已用 web_search 查 Canvas 相鄰多邊形縫隙（抗鋸齒／次像素、底層色透出），並改 watabou_test.html：drawHexTileImage 用略放大裁切半徑 TILE_CLIP_BLEED 讓鄰格重疊蓋縫；clip 內先填對應 terrain 底色再 drawImage（山／林分色）。",
+  "current_status": "藍格線應可減輕；需使用者刷新 8x 驗收。"
+}

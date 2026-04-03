@@ -1,0 +1,4 @@
+{
+  "summary": "實作多人野外迷霧分層：PostgreSQL 表 hex_player_reveal（entity_id, cell_id, revealed_at）；db 模組 mark/list/count/is；hex_editor::ensure_world_cell_at 共用世界契約生成；HTTP POST /api/hex/player-reveal（id/pw/q/r，僅玩家）與 GET /api/hex/my-revealed（分頁）。啟動時 create_tables 會建表。cargo test 與 clippy -D warnings 通過。",
+  "current_status": "世界地形仍存 grid.json；每位玩家已揭露存 PG。待接：遊戲內移動自動呼叫 player-reveal、前端依 cell_ids 畫霧、NPC 是否需列等。"
+}

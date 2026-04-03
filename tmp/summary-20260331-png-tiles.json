@@ -1,0 +1,1 @@
+{"summary":"依使用者「直接死圖」：以 cairosvg 重產 web/maps/tiles/0 全部 PNG（512²）、manifest 改 format png；刪除同目錄舊 SVG 瓦片。AGENTS.md 更新為實務預設 PNG。map_tiles 標題改 PNG。","current_status":"map_tiles 現載入約 2.5MB 總 PNG，非 38MB 向量。"}

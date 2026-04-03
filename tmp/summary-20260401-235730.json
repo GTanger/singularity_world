@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求檢視 HexAtlas 實作思路，透過網站內容與實際頁面快照比對互動結構。結論為 HexAtlas 採單一地圖視口 + 浮動工具層/側欄覆蓋，避免側欄改變地圖實際寬度；並將繪製語意（Click to paint / Drag for multiple）固定在同一視口座標系。已將本專案對齊為覆蓋式側欄與座標一致化策略。",
+  "current_status": "hex-editor 已轉為接近 HexAtlas 的視口模式（地圖不因側欄縮寬），並完成多輪本機瀏覽器自測。下一步可持續微調交互細節以對齊 HexAtlas 手感。"
+}

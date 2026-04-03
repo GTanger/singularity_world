@@ -1,1557 +1,486 @@
-const GROUP_COLORS = ['#7c3aed', '#0891b2', '#059669', '#d97706', '#dc2626', '#be185d'];
+// ================================================================
+// room_editor.js v2.0.0 — Canvas 六角格編輯器（對接 /api/hex/）
+// ================================================================
 
-const state = {
-  nodes: new Map(),
-  edges: [],
-  groups: [], // Array<string[]> — 每個群組是 room ID 陣列
-  layout: {},
-  zoneFilterValue: '', // 目前選中的 zone，空字串 = 全部
-  zoom: 1,
-  selectedId: '',
-  selectedIds: new Set(),
-  selectedEdge: null,
-  mode: 'move', // move | link-one | link-two
-  multiSelectMode: false, // 手機多選模式：tap=累加選取、空白拖曳=框選
-  drag: null,
-  linkDrag: null,
-  marquee: null,
-  panning: null,
-  pinch: null,
-  touchLinkFromId: '',
-  suppressMapClickClear: false,
-  suppressNodeClickOnce: false,
-  hasAutoFocused: false,
-  renderRaf: 0,
-};
-const MAP_BASE_WIDTH = 2400;
-const MAP_BASE_HEIGHT = 1600;
-const ZOOM_MIN = 0.4;
-const ZOOM_MAX = 2.5;
+// ── 常數 ─────────────────────────────────────────────────────────
+const HEX_R = 28;
+const HEX_SQRT3 = Math.sqrt(3);
+const ZOOM_MIN = 0.15;
+const ZOOM_MAX = 5.0;
 const ZOOM_STEP = 0.1;
-const NODE_SIZE = 50;
-const NODE_HALF = NODE_SIZE / 2;
-const MAP_MARGIN = 240;
 
-const ui = {
-  map: document.getElementById('map'),
-  svg: document.getElementById('edges'),
-  wrap: document.getElementById('wrap'),
-  status: document.getElementById('status'),
-  fId: document.getElementById('f-id'),
-  fName: document.getElementById('f-name'),
-  fZone: document.getElementById('f-zone'),
-  fTags: document.getElementById('f-tags'),
-  fDesc: document.getElementById('f-desc'),
-  zoneFilter: document.getElementById('zone-filter'),
-  fObjects: document.getElementById('f-objects'),
-  objectsForm: document.getElementById('objects-form'),
-  panel: document.getElementById('editor-panel'),
-  btnPanelToggle: document.getElementById('btn-panel-toggle'),
-  mAdd: document.getElementById('m-add'),
-  mDel: document.getElementById('m-del'),
-  mMultiSel: document.getElementById('m-multi-sel'),
-  mMode: document.getElementById('m-mode'),
-  mPanel: document.getElementById('m-panel'),
-  pathFrom: document.getElementById('path-from'),
-  pathTo: document.getElementById('path-to'),
-  pathDir: document.getElementById('path-dir'),
-  pathReverse: document.getElementById('path-reverse'),
-  pathReverseDir: document.getElementById('path-reverse-dir'),
-  btnAddPath: document.getElementById('btn-add-path'),
-  pathUseSelected: document.getElementById('path-use-selected'),
+// 預計算六角頂點偏移（flat-top，避免每格 12 次三角函數）
+const HEX_VERTS = Array.from({ length: 6 }, (_, i) => {
+  const a = Math.PI / 3 * i - Math.PI / 6;
+  return { dx: Math.cos(a), dy: Math.sin(a) };
+});
+
+const HEX_DIRECTIONS = [
+  { dq: 1, dr: 0, label: '東' },
+  { dq: 1, dr: -1, label: '東北' },
+  { dq: 0, dr: -1, label: '西北' },
+  { dq: -1, dr: 0, label: '西' },
+  { dq: -1, dr: 1, label: '西南' },
+  { dq: 0, dr: 1, label: '東南' },
+];
+
+const TERRAIN_FILL = {
+  water: '#1a3a5c', water_deep: '#12304e',
+  forest: '#1a4a2e', forest_heavy: '#14402a', forest_light: '#1e5434',
+  mountain: '#3a3a44', hills: '#2e3e34',
+  desert: '#5c4a2a', swamp: '#2a3e34',
+  tundra: '#2a3a4a', grassland: '#2a4a2e', jungle: '#1a3a1e',
+  plain: '#222e38', urban: '#2a2e3a', road: '#2e3238',
+  default: '#1e2838',
 };
 
-function setStatus(msg, isError = false) {
-  ui.status.style.color = isError ? '#fda4af' : '#8f9bb3';
-  const zoomText = `縮放 ${Math.round(state.zoom * 100)}%`;
-  ui.status.textContent = msg ? `${msg} ｜ ${zoomText}` : zoomText;
+// ── 狀態 ─────────────────────────────────────────────────────────
+const state = {
+  cells: new Map(),     // "q,r" → cell object
+  barriers: new Set(),  // "q,r,dir" strings
+  portals: [],
+  selectedCoord: null,  // {q,r}
+  hoverHex: null,
+  mode: 'move',         // move | link-one | link-two
+  linkFrom: null,       // {q,r}
+  showEdges: true,
+  raf: 0,
+};
+
+const cam = { x: 0, y: 0, zoom: 1.0 };
+const drag = { active: false, moved: false, sx: 0, sy: 0, cx: 0, cy: 0, pid: -1 };
+const pinch = { active: false, dist0: 0, zoom0: 0 };
+const pointers = new Map();
+
+// ── UI ───────────────────────────────────────────────────────────
+const canvas = document.getElementById('hex-canvas');
+const ctx = canvas.getContext('2d');
+const $ = id => document.getElementById(id);
+const ui = {
+  wrap: $('wrap'), panel: $('editor-panel'), status: $('status'),
+  fId: $('f-id'), fName: $('f-name'), fZone: $('f-zone'),
+  fTags: $('f-tags'), fDesc: $('f-desc'), fObjects: $('f-objects'),
+  objectsForm: $('objects-form'), zoneFilter: $('zone-filter'),
+  ctxMenu: $('ctx-menu'), ctxCreate: $('ctx-create-room'), ctxImport: $('ctx-import-watabou'),
+  watabouInput: $('watabou-json-input'),
+  pathFrom: $('path-from'), pathTo: $('path-to'),
+  pathDir: $('path-dir'), pathReverse: $('path-reverse'),
+  pathReverseDir: $('path-reverse-dir'),
+};
+
+// ── Hex 數學 ─────────────────────────────────────────────────────
+function axialToPixel(q, r) {
+  return { x: HEX_R * HEX_SQRT3 * (q + r / 2), y: HEX_R * 1.5 * r };
+}
+function cubeRound(qf, rf) {
+  const sf = -qf - rf;
+  let rq = Math.round(qf), rr = Math.round(rf), rs = Math.round(sf);
+  const dq = Math.abs(rq - qf), dr = Math.abs(rr - rf), ds = Math.abs(rs - sf);
+  if (dq > dr && dq > ds) rq = -rr - rs;
+  else if (dr > ds) rr = -rq - rs;
+  return { q: rq, r: rr };
+}
+function pixelToAxial(x, y) {
+  return cubeRound((HEX_SQRT3 / 3 * x - y / 3) / HEX_R, (2 / 3 * y) / HEX_R);
+}
+function hk(q, r) { return `${q},${r}`; }
+
+// ── Camera ───────────────────────────────────────────────────────
+function w2s(wx, wy) {
+  const dpr = window.devicePixelRatio || 1;
+  const cw = canvas.width / dpr, ch = canvas.height / dpr;
+  return { x: (wx - cam.x) * cam.zoom + cw / 2, y: (wy - cam.y) * cam.zoom + ch / 2 };
+}
+function s2w(sx, sy) {
+  const dpr = window.devicePixelRatio || 1;
+  const cw = canvas.width / dpr, ch = canvas.height / dpr;
+  return { x: (sx - cw / 2) / cam.zoom + cam.x, y: (sy - ch / 2) / cam.zoom + cam.y };
+}
+function s2hex(sx, sy) { const w = s2w(sx, sy); return pixelToAxial(w.x, w.y); }
+
+// ── Canvas 尺寸 ─────────────────────────────────────────────────
+function resizeCanvas() {
+  const rect = ui.wrap.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
-async function persistLayout() {
-  try {
-    await api('/api/room-editor/layout', {
-      method: 'PUT',
-      body: JSON.stringify({ positions: state.layout }),
-    });
-    setStatus('座標已儲存');
-  } catch (e) {
-    setStatus(`儲存座標失敗：${e.message}`, true);
+// ── 渲染（批次繪製 + LOD）────────────────────────────────────────
+function addHex(cx, cy, r) {
+  ctx.moveTo(cx + r * HEX_VERTS[0].dx, cy + r * HEX_VERTS[0].dy);
+  for (let i = 1; i < 6; i++) ctx.lineTo(cx + r * HEX_VERTS[i].dx, cy + r * HEX_VERTS[i].dy);
+  ctx.closePath();
+}
+
+function render() {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.width / dpr, h = canvas.height / dpr;
+  ctx.clearRect(0, 0, w, h);
+
+  const sR = HEX_R * cam.zoom;
+  const drawGrid = sR >= 4;
+  const drawLabels = sR >= 12;
+
+  // 可見範圍
+  const tl = s2w(0, 0), br = s2w(w, h);
+  const pad = HEX_R * 2;
+  const minR = Math.floor((tl.y - pad) / (1.5 * HEX_R)) - 1;
+  const maxR = Math.ceil((br.y + pad) / (1.5 * HEX_R)) + 1;
+  const minQ = Math.floor((tl.x - pad) / (HEX_SQRT3 * HEX_R)) - 2;
+  const maxQ = Math.ceil((br.x + pad) / (HEX_SQRT3 * HEX_R)) + 2;
+
+  // 收集分類
+  const emptyList = [];
+  const filledByColor = new Map();
+  const labelList = [];
+  let hoverSp = null, selectedSp = null, linkFromSp = null;
+
+  for (let r = minR; r <= maxR; r++) {
+    for (let q = minQ; q <= maxQ; q++) {
+      const wp = axialToPixel(q, r);
+      const sp = w2s(wp.x, wp.y);
+      if (sp.x < -sR * 1.5 || sp.x > w + sR * 1.5 || sp.y < -sR * 1.5 || sp.y > h + sR * 1.5) continue;
+
+      const cell = state.cells.get(hk(q, r));
+      const isHover = state.hoverHex && state.hoverHex.q === q && state.hoverHex.r === r;
+      const isSel = state.selectedCoord && state.selectedCoord.q === q && state.selectedCoord.r === r;
+      const isLinkFrom = state.linkFrom && state.linkFrom.q === q && state.linkFrom.r === r;
+
+      if (cell) {
+        const color = TERRAIN_FILL[cell.terrain] || TERRAIN_FILL.default;
+        if (!filledByColor.has(color)) filledByColor.set(color, []);
+        filledByColor.get(color).push(sp);
+        if (drawLabels) labelList.push({ sp, name: cell.name || `${q},${r}`, isSel });
+      } else if (drawGrid) {
+        emptyList.push(sp);
+      }
+
+      if (isHover) hoverSp = sp;
+      if (isSel) selectedSp = sp;
+      if (isLinkFrom) linkFromSp = sp;
+    }
+  }
+
+  // 1. 空白格（一次 fill + stroke）
+  if (emptyList.length > 0) {
+    ctx.beginPath();
+    for (const sp of emptyList) addHex(sp.x, sp.y, sR);
+    ctx.fillStyle = 'rgba(255,255,255,0.015)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+
+  // 2. 已填充格（按顏色批次）
+  for (const [color, list] of filledByColor) {
+    ctx.beginPath();
+    for (const sp of list) addHex(sp.x, sp.y, sR);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = '#3a4a5c';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // 3. 標籤
+  if (drawLabels && labelList.length > 0) {
+    const fontSize = Math.max(8, Math.min(14, 11 * cam.zoom));
+    ctx.font = `600 ${fontSize}px "Noto Sans TC", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (const { sp, name, isSel } of labelList) {
+      ctx.fillStyle = isSel ? '#e0f2fe' : '#b0c4de';
+      ctx.fillText(name.slice(0, 3), sp.x, sp.y);
+    }
+  }
+
+  // 4. Hover
+  if (hoverSp) {
+    ctx.beginPath();
+    addHex(hoverSp.x, hoverSp.y, sR);
+    ctx.fillStyle = 'rgba(125,211,252,0.10)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(125,211,252,0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  // 5. 選取
+  if (selectedSp) {
+    ctx.beginPath();
+    addHex(selectedSp.x, selectedSp.y, sR + 2);
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+  }
+
+  // 6. 連線起點
+  if (linkFromSp) {
+    ctx.beginPath();
+    addHex(linkFromSp.x, linkFromSp.y, sR + 1);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  // 7. 連線預覽
+  if (linkFromSp && hoverSp && linkFromSp !== selectedSp) {
+    ctx.beginPath();
+    ctx.moveTo(linkFromSp.x, linkFromSp.y);
+    ctx.lineTo(hoverSp.x, hoverSp.y);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // 8. 狀態列
+  const zoomPct = Math.round(cam.zoom * 100);
+  const coordTxt = state.hoverHex ? `(${state.hoverHex.q},${state.hoverHex.r})` : '';
+  const modeTxt = state.mode === 'move' ? '選取' : state.mode === 'link-one' ? '單向連線' : '雙向連線';
+  setStatus(`${modeTxt} ｜ ${zoomPct}% ｜ ${coordTxt} ｜ ${state.cells.size} 格`);
+  const zb = $('btn-zoom-reset');
+  if (zb) zb.textContent = `${zoomPct}%`;
+}
+
+function scheduleRender() {
+  if (state.raf) return;
+  state.raf = requestAnimationFrame(() => { state.raf = 0; render(); });
+}
+
+// ── 互動事件 ─────────────────────────────────────────────────────
+function canvasXY(ev) {
+  const r = canvas.getBoundingClientRect();
+  return { x: ev.clientX - r.left, y: ev.clientY - r.top };
+}
+
+function pDist() {
+  if (pointers.size < 2) return 0;
+  const pts = Array.from(pointers.values());
+  return Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+}
+
+canvas.addEventListener('pointerdown', ev => {
+  const p = canvasXY(ev);
+  pointers.set(ev.pointerId, p);
+  if (pointers.size === 2) {
+    drag.active = false;
+    pinch.active = true;
+    pinch.dist0 = Math.max(1, pDist());
+    pinch.zoom0 = cam.zoom;
+    return;
+  }
+  if (ev.button <= 1) {
+    canvas.setPointerCapture(ev.pointerId);
+    drag.active = true; drag.moved = false;
+    drag.sx = p.x; drag.sy = p.y;
+    drag.cx = cam.x; drag.cy = cam.y;
+    drag.pid = ev.pointerId;
+  }
+});
+
+canvas.addEventListener('pointermove', ev => {
+  const p = canvasXY(ev);
+  pointers.set(ev.pointerId, p);
+  if (pinch.active && pointers.size >= 2) {
+    cam.zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, pinch.zoom0 * pDist() / pinch.dist0));
+    scheduleRender();
+    return;
+  }
+  if (drag.active && drag.pid === ev.pointerId) {
+    const dx = p.x - drag.sx, dy = p.y - drag.sy;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) drag.moved = true;
+    cam.x = drag.cx - dx / cam.zoom;
+    cam.y = drag.cy - dy / cam.zoom;
+    scheduleRender();
+    return;
+  }
+  const hex = s2hex(p.x, p.y);
+  if (!state.hoverHex || state.hoverHex.q !== hex.q || state.hoverHex.r !== hex.r) {
+    state.hoverHex = hex;
+    scheduleRender();
+  }
+});
+
+canvas.addEventListener('pointerup', ev => {
+  pointers.delete(ev.pointerId);
+  if (pointers.size < 2) pinch.active = false;
+  if (drag.active && drag.pid === ev.pointerId) {
+    try { canvas.releasePointerCapture(ev.pointerId); } catch (_) {}
+    const wasDrag = drag.moved;
+    drag.active = false;
+    if (!wasDrag && ev.button === 0) handleClick(canvasXY(ev));
+  }
+});
+
+canvas.addEventListener('pointercancel', ev => {
+  pointers.delete(ev.pointerId);
+  if (pointers.size < 2) pinch.active = false;
+  drag.active = false;
+});
+
+canvas.addEventListener('pointerleave', () => {
+  if (state.hoverHex) { state.hoverHex = null; scheduleRender(); }
+});
+
+canvas.addEventListener('wheel', ev => {
+  ev.preventDefault();
+  const p = canvasXY(ev);
+  const before = s2w(p.x, p.y);
+  cam.zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, cam.zoom * (ev.deltaY > 0 ? 0.88 : 1.14)));
+  const after = s2w(p.x, p.y);
+  cam.x += before.x - after.x;
+  cam.y += before.y - after.y;
+  scheduleRender();
+}, { passive: false });
+
+canvas.addEventListener('contextmenu', ev => {
+  ev.preventDefault();
+  showCtx(ev.clientX, ev.clientY, s2hex(canvasXY(ev).x, canvasXY(ev).y));
+});
+
+function handleClick(p) {
+  hideCtx();
+  const hex = s2hex(p.x, p.y);
+  const key = hk(hex.q, hex.r);
+  const cell = state.cells.get(key);
+
+  if (state.mode === 'link-one' || state.mode === 'link-two') {
+    if (!cell) return;
+    if (!state.linkFrom) {
+      state.linkFrom = hex;
+      setStatus(`連線起點：${cell.name}，再點一格作終點`);
+      scheduleRender();
+    } else {
+      const from = state.linkFrom;
+      state.linkFrom = null;
+      if (from.q !== hex.q || from.r !== hex.r) completeWall(from, hex);
+      scheduleRender();
+    }
+    return;
+  }
+
+  if (cell) {
+    selectCell(hex);
+  } else {
+    createCell(hex.q, hex.r);
   }
 }
 
+// ── 右鍵選單 ─────────────────────────────────────────────────────
+let ctxHex = null;
+
+function showCtx(cx, cy, hex) {
+  ctxHex = hex;
+  const rect = ui.wrap.getBoundingClientRect();
+  ui.ctxMenu.style.left = (cx - rect.left + 4) + 'px';
+  ui.ctxMenu.style.top = (cy - rect.top + 4) + 'px';
+  ui.ctxMenu.style.display = 'block';
+  const exists = state.cells.has(hk(hex.q, hex.r));
+  ui.ctxCreate.textContent = exists ? `已有格子 (${hex.q},${hex.r})` : `在 (${hex.q},${hex.r}) 建立格子`;
+  ui.ctxCreate.disabled = exists;
+}
+function hideCtx() { ui.ctxMenu.style.display = 'none'; }
+document.addEventListener('click', ev => { if (!ui.ctxMenu.contains(ev.target)) hideCtx(); });
+ui.ctxCreate.onclick = () => { hideCtx(); if (ctxHex) createCell(ctxHex.q, ctxHex.r); };
+
+// ── API ──────────────────────────────────────────────────────────
 async function api(path, opt = {}) {
-  const res = await fetch(path, {
-    headers: { 'Content-Type': 'application/json' },
-    ...opt,
-  });
+  const res = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opt });
   const txt = await res.text();
   let body = {};
-  try {
-    body = txt ? JSON.parse(txt) : {};
-  } catch (_) {}
+  try { body = txt ? JSON.parse(txt) : {}; } catch (_) {}
   if (!res.ok) throw new Error(body.error || `HTTP ${res.status}`);
   return body;
 }
 
-function edgeKey(e) {
-  return `${e.from}::${e.to}`;
-}
-
-function parseTags(s) {
-  return (s || '').split(',').map((t) => t.trim()).filter(Boolean);
-}
-
-// ── 群組工具 ───────────────────────────────────────────────────────
-
-async function saveGroups() {
-  try { await api('/api/room-editor/groups', { method: 'POST', body: JSON.stringify(state.groups) }); } catch (_) {}
-}
-
-async function loadGroups() {
-  try {
-    const parsed = await api('/api/room-editor/groups');
-    if (!Array.isArray(parsed)) return;
-    // 過濾掉已不存在的 ID
-    state.groups = parsed
-      .map((g) => (Array.isArray(g) ? g.filter((id) => state.nodes.has(id)) : []))
-      .filter((g) => g.length >= 2);
-  } catch (_) {}
-}
-
-/** 回傳 id 所屬的群組（沒有則 null）。 */
-function findGroupFor(id) {
-  return state.groups.find((g) => g.includes(id)) || null;
-}
-// ──────────────────────────────────────────────────────────────────
-
-function ensurePos(id, idx) {
-  if (state.layout[id]) return state.layout[id];
-  const col = idx % 10;
-  const row = Math.floor(idx / 10);
-  const p = { x: 80 + col * 90, y: 80 + row * 90 };
-  state.layout[id] = p;
-  return p;
-}
-
-function inferDirection(fromId, toId) {
-  const a = state.layout[fromId];
-  const b = state.layout[toId];
-  if (!a || !b) return '';
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  if (Math.abs(dx) >= Math.abs(dy)) return dx >= 0 ? '東' : '西';
-  return dy >= 0 ? '南' : '北';
-}
-
-function oppositeDirection(dir) {
-  const map = { 東: '西', 西: '東', 南: '北', 北: '南', east: 'west', west: 'east', north: 'south', south: 'north' };
-  return map[dir] || '';
-}
-
-function toMapPoint(clientX, clientY) {
-  // 重要：以可滾動容器 wrap 為基準，避免 map rect 與 scrollLeft 疊加造成偏移。
-  const rect = ui.wrap.getBoundingClientRect();
-  return {
-    x: (clientX - rect.left + ui.wrap.scrollLeft) / state.zoom,
-    y: (clientY - rect.top + ui.wrap.scrollTop) / state.zoom,
-  };
-}
-
-function scheduleRender() {
-  if (state.renderRaf) return;
-  state.renderRaf = requestAnimationFrame(() => {
-    state.renderRaf = 0;
-    render();
-  });
-}
-
-/** 追蹤所有作用中 pointer，供雙指縮放與手勢判斷（Pointer Events 單一路徑） */
-const activePointers = new Map();
-
-function pinchFromActivePointers() {
-  if (activePointers.size < 2) return null;
-  const pts = Array.from(activePointers.values());
-  const a = pts[0];
-  const b = pts[1];
-  const dist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
-  const mid = { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 };
-  return { dist, mid };
-}
-
-function readObjectsFromJson() {
-  if (!ui.fObjects.value.trim()) return [];
-  const data = JSON.parse(ui.fObjects.value);
-  if (!Array.isArray(data)) throw new Error('物件 JSON 必須是陣列');
-  return data;
-}
-
-function writeObjectsJson(objs) {
-  ui.fObjects.value = JSON.stringify(objs || [], null, 2);
-}
-
-function normalizeObject(obj) {
-  return {
-    id: String(obj?.id || '').trim(),
-    name: String(obj?.name || '').trim(),
-    owner: String(obj?.owner != null ? obj.owner : '').trim(),
-    sockets: Array.isArray(obj?.sockets) ? obj.sockets.map((s) => String(s).trim()).filter(Boolean) : [],
-    responses: obj?.responses && typeof obj.responses === 'object' ? obj.responses : {},
-    move_to_room_id: String(obj?.move_to_room_id != null ? obj.move_to_room_id : '').trim(),
-  };
-}
-
-function sortedRoomIds() {
-  return Array.from(state.nodes.keys()).sort();
-}
-
-/** 填入房間下拉；valueToSelect 若仍存在會保留選取 */
-function fillRoomSelect(selectEl, valueToSelect) {
-  if (!selectEl) return;
-  const prev = valueToSelect || selectEl.value || '';
-  selectEl.innerHTML = '';
-  const empty = document.createElement('option');
-  empty.value = '';
-  empty.textContent = '— 選擇房間 —';
-  selectEl.appendChild(empty);
-  for (const rid of sortedRoomIds()) {
-    const n = state.nodes.get(rid);
-    const opt = document.createElement('option');
-    opt.value = rid;
-    opt.textContent = n && n.name ? `${n.name}（${rid}）` : rid;
-    selectEl.appendChild(opt);
+async function loadGrid(centerView = true) {
+  const data = await api('/api/hex/grid');
+  state.cells.clear();
+  state.barriers.clear();
+  for (const c of (data.cells || [])) {
+    state.cells.set(hk(c.coord.q, c.coord.r), { ...c, q: c.coord.q, r: c.coord.r });
   }
-  if (prev && state.nodes.has(prev)) selectEl.value = prev;
-}
-
-function refreshPathSelects() {
-  const pf = ui.pathFrom && ui.pathFrom.value;
-  const pt = ui.pathTo && ui.pathTo.value;
-  fillRoomSelect(ui.pathFrom, pf);
-  fillRoomSelect(ui.pathTo, pt);
-  if (ui.pathFrom && !ui.pathFrom.value && state.selectedId && state.nodes.has(state.selectedId)) {
-    ui.pathFrom.value = state.selectedId;
+  for (const b of (data.barriers || [])) {
+    state.barriers.add(`${b.coord.q},${b.coord.r},${b.dir}`);
   }
-}
+  state.portals = data.portals || [];
 
-let descTemplates = null;
-
-async function loadDescTemplates() {
-  try {
-    const res = await fetch('/data/config/room_desc_templates.json');
-    descTemplates = await res.json();
-  } catch (_) {
-    descTemplates = null;
-  }
-}
-
-function generateRoomDesc(zone, tags) {
-  if (!descTemplates) return '';
-  const frags = descTemplates.fragments;
-  const pattern = descTemplates.pattern;
-  const parts = [];
-
-  for (const p of pattern) {
-    const slotPool = frags[p.slot];
-    if (!slotPool) continue;
-
-    // 依優先順序找匹配的 key：tags → zone 關鍵字 → default
-    let candidates = [];
-    // 先找 tags 匹配
-    for (const tag of (tags || [])) {
-      if (slotPool[tag] && slotPool[tag].length > 0) {
-        candidates = candidates.concat(slotPool[tag]);
-      }
+  if (centerView && state.cells.size > 0) {
+    let sx = 0, sy = 0, n = 0;
+    for (const c of state.cells.values()) {
+      const p = axialToPixel(c.q, c.r);
+      sx += p.x; sy += p.y; n++;
     }
-    // 沒有則找 zone 關鍵字
-    if (candidates.length === 0) {
-      for (const key of Object.keys(slotPool)) {
-        if (key !== 'default' && zone && zone.includes(key)) {
-          candidates = candidates.concat(slotPool[key]);
-        }
-      }
-    }
-    // 還是沒有則用 default
-    if (candidates.length === 0 && slotPool['default']) {
-      candidates = slotPool['default'];
-    }
-    if (candidates.length === 0) {
-      if (p.required) parts.push('');
-      continue;
-    }
-    // 隨機挑一條
-    parts.push(candidates[Math.floor(Math.random() * candidates.length)]);
+    if (n) { cam.x = sx / n; cam.y = sy / n; }
   }
 
-  return parts.filter(Boolean).join('');
-}
-
-function refreshZoneFilter() {
-  const zones = new Set();
-  for (const n of state.nodes.values()) {
-    if (n.zone) zones.add(n.zone);
-  }
-  const sorted = Array.from(zones).sort();
-  const prev = state.zoneFilterValue;
-  ui.zoneFilter.innerHTML = '<option value="">全部顯示</option>';
-  for (const z of sorted) {
-    const opt = document.createElement('option');
-    opt.value = z;
-    opt.textContent = `${z}（${Array.from(state.nodes.values()).filter(n => n.zone === z).length}）`;
-    ui.zoneFilter.appendChild(opt);
-  }
-  if (prev && zones.has(prev)) ui.zoneFilter.value = prev;
-}
-
-function isNodeVisible(id) {
-  if (!state.zoneFilterValue) return true;
-  const n = state.nodes.get(id);
-  return n && n.zone === state.zoneFilterValue;
-}
-
-function renderObjectsForm(objs) {
-  ui.objectsForm.innerHTML = '';
-  const roomIds = sortedRoomIds();
-  (objs || []).forEach((raw, idx) => {
-    const obj = normalizeObject(raw);
-    const row = document.createElement('div');
-    row.className = 'obj-row';
-
-    const head = document.createElement('div');
-    head.className = 'obj-head';
-    const inpId = document.createElement('input');
-    inpId.dataset.k = 'id';
-    inpId.placeholder = 'object id';
-    inpId.value = obj.id;
-    const inpName = document.createElement('input');
-    inpName.dataset.k = 'name';
-    inpName.placeholder = '物件名稱';
-    inpName.value = obj.name;
-    const btnDel = document.createElement('button');
-    btnDel.type = 'button';
-    btnDel.dataset.act = 'del';
-    btnDel.textContent = '刪除';
-    head.appendChild(inpId);
-    head.appendChild(inpName);
-    head.appendChild(btnDel);
-    row.appendChild(head);
-
-    const ownLab = document.createElement('div');
-    ownLab.className = 'field';
-    ownLab.innerHTML = '<label>owner（可空）</label>';
-    const inpOwner = document.createElement('input');
-    inpOwner.dataset.k = 'owner';
-    inpOwner.type = 'text';
-    inpOwner.placeholder = '';
-    inpOwner.value = obj.owner;
-    ownLab.appendChild(inpOwner);
-    row.appendChild(ownLab);
-
-    const moveLab = document.createElement('div');
-    moveLab.className = 'field';
-    const moveLbl = document.createElement('label');
-    moveLbl.textContent = '移動目標房 move_to_room_id（玩家執行 Move 時切房）';
-    const selMove = document.createElement('select');
-    selMove.dataset.k = 'move_to_room_id';
-    const optNone = document.createElement('option');
-    optNone.value = '';
-    optNone.textContent = '— 不切換房間 —';
-    selMove.appendChild(optNone);
-    for (const rid of roomIds) {
-      const n = state.nodes.get(rid);
-      const o = document.createElement('option');
-      o.value = rid;
-      o.textContent = n && n.name ? `${n.name}（${rid}）` : rid;
-      if (rid === obj.move_to_room_id) o.selected = true;
-      selMove.appendChild(o);
-    }
-    moveLab.appendChild(moveLbl);
-    moveLab.appendChild(selMove);
-    row.appendChild(moveLab);
-
-    // 行為狀態（取代 sockets + responses 原始輸入）
-    const behState = {
-      sockets: [...obj.sockets],
-      responses: Object.assign({}, obj.responses || {}),
-    };
-
-    btnDel.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      const list = safeGetObjects();
-      list.splice(idx, 1);
-      writeObjectsJson(list);
-      renderObjectsForm(list);
-    });
-
-    const sync = () => {
-      const list = safeGetObjects();
-      const cur = normalizeObject(list[idx]);
-      cur.id = inpId.value.trim();
-      cur.name = inpName.value.trim();
-      cur.owner = inpOwner.value.trim();
-      cur.move_to_room_id = selMove.value.trim();
-      cur.sockets = behState.sockets;
-      cur.responses = Object.assign({}, behState.responses);
-      list[idx] = cur;
-      writeObjectsJson(list);
-    };
-    [inpId, inpName, inpOwner, selMove].forEach((el) => {
-      el.addEventListener('input', sync);
-      el.addEventListener('change', sync);
-    });
-
-    // 行為區塊
-    const behWrap = document.createElement('div');
-    behWrap.className = 'field';
-    const behLbl = document.createElement('label');
-    behLbl.textContent = '行為';
-    behWrap.appendChild(behLbl);
-
-    const behRows = document.createElement('div');
-    behRows.className = 'beh-rows';
-
-    function renderBehRows() {
-      behRows.innerHTML = '';
-      behState.sockets.forEach((sock) => {
-        const brow = document.createElement('div');
-        brow.className = 'beh-row';
-        const lbl = document.createElement('span');
-        lbl.className = 'beh-lbl';
-        lbl.textContent = sock;
-        const ta = document.createElement('textarea');
-        ta.value = behState.responses[sock] || '';
-        ta.rows = 2;
-        ta.addEventListener('input', () => { behState.responses[sock] = ta.value; sync(); });
-        const btnRem = document.createElement('button');
-        btnRem.type = 'button';
-        btnRem.textContent = '✕';
-        btnRem.addEventListener('click', () => {
-          behState.sockets = behState.sockets.filter((s) => s !== sock);
-          delete behState.responses[sock];
-          renderBehRows();
-          sync();
-        });
-        brow.appendChild(lbl);
-        brow.appendChild(ta);
-        brow.appendChild(btnRem);
-        behRows.appendChild(brow);
-      });
-    }
-    renderBehRows();
-
-    const addBar = document.createElement('div');
-    addBar.className = 'beh-add-bar';
-    const BEH_DEFAULTS = { Look: '你看見它。', Read: '（在此填入閱讀內容）' };
-    ['Look', 'Read', 'Use', 'Talk', 'Move'].forEach((beh) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.textContent = `＋${beh}`;
-      btn.addEventListener('click', () => {
-        if (!behState.sockets.includes(beh)) {
-          behState.sockets.push(beh);
-          behState.responses[beh] = BEH_DEFAULTS[beh] || '';
-          renderBehRows();
-          sync();
-        }
-      });
-      addBar.appendChild(btn);
-    });
-
-    behWrap.appendChild(behRows);
-    behWrap.appendChild(addBar);
-    row.appendChild(behWrap);
-    ui.objectsForm.appendChild(row);
-  });
-}
-
-function safeGetObjects() {
-  try {
-    return readObjectsFromJson().map(normalizeObject);
-  } catch (_) {
-    return [];
-  }
-}
-
-function getMarqueeRect() {
-  if (!state.marquee) return null;
-  const x = Math.min(state.marquee.x0, state.marquee.x1);
-  const y = Math.min(state.marquee.y0, state.marquee.y1);
-  const w = Math.abs(state.marquee.x1 - state.marquee.x0);
-  const h = Math.abs(state.marquee.y1 - state.marquee.y0);
-  return { x, y, w, h };
-}
-
-function getNodeBounds() {
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-  let count = 0;
-  for (const [id] of state.nodes.entries()) {
-    const p = state.layout[id];
-    if (!p) continue;
-    minX = Math.min(minX, p.x);
-    minY = Math.min(minY, p.y);
-    maxX = Math.max(maxX, p.x + NODE_SIZE);
-    maxY = Math.max(maxY, p.y + NODE_SIZE);
-    count++;
-  }
-  if (count === 0) return null;
-  return { minX, minY, maxX, maxY, count };
-}
-
-function focusViewportToNodes() {
-  const b = getNodeBounds();
-  if (!b) return;
-  const pad = 40;
-  ui.wrap.scrollLeft = Math.max(0, b.minX * state.zoom - pad);
-  ui.wrap.scrollTop = Math.max(0, b.minY * state.zoom - pad);
-}
-
-/**
- * 連線箭頭（對齊 map_viewer vis-network：arrows.type: 'arrow'、arrowStrikethrough: false）
- * 單向：僅 marker-end；雙向：marker-start + marker-end（等同 to+from enabled）
- */
-function appendSvgEdgeArrowDefs(svg) {
-  const NS = 'http://www.w3.org/2000/svg';
-  const defs = document.createElementNS(NS, 'defs');
-  const mk = (id, orient) => {
-    const marker = document.createElementNS(NS, 'marker');
-    marker.setAttribute('id', id);
-    // 與 vis 細線 (width≈1.5) 成比例的箭頭
-    marker.setAttribute('markerWidth', '3');
-    marker.setAttribute('markerHeight', '3');
-    marker.setAttribute('refX', '3');
-    marker.setAttribute('refY', '1.5');
-    marker.setAttribute('orient', orient);
-    marker.setAttribute('markerUnits', 'strokeWidth');
-    const path = document.createElementNS(NS, 'path');
-    path.setAttribute('d', 'M0,0 L0,3 L3,1.5 z');
-    path.setAttribute('fill', 'currentColor');
-    marker.appendChild(path);
-    defs.appendChild(marker);
-  };
-  mk('room-ed-arrow-fwd', 'auto');
-  mk('room-ed-arrow-rev', 'auto-start-reverse');
-  svg.appendChild(defs);
-}
-
-/** 從方形中心沿單位向量射線到邊界的距離（與 halfPx 同座標系） */
-function exitDistCenterToSquareEdge(ux, uy, halfPx) {
-  let t = Infinity;
-  if (Math.abs(ux) > 1e-12) t = Math.min(t, halfPx / Math.abs(ux));
-  if (Math.abs(uy) > 1e-12) t = Math.min(t, halfPx / Math.abs(uy));
-  return t === Infinity ? halfPx : t;
-}
-
-/** 連線端點避開房格內部，箭頭畫在方塊外（座標為地圖像素，已含 zoom） */
-function shortenEdgeLinePx(ax, ay, bx, by, halfPx, outPx) {
-  const dx = bx - ax;
-  const dy = by - ay;
-  const L = Math.hypot(dx, dy);
-  if (L < 1e-6) return { x1: ax, y1: ay, x2: bx, y2: by };
-  const ux = dx / L;
-  const uy = dy / L;
-  const tEdge = exitDistCenterToSquareEdge(ux, uy, halfPx);
-  const pad = outPx;
-  const x1 = ax + ux * (tEdge + pad);
-  const y1 = ay + uy * (tEdge + pad);
-  const x2 = bx - ux * (tEdge + pad);
-  const y2 = by - uy * (tEdge + pad);
-  const L2 = Math.hypot(x2 - x1, y2 - y1);
-  if (L2 < 6) return { x1: ax, y1: ay, x2: bx, y2: by };
-  return { x1, y1, x2, y2 };
-}
-
-async function normalizeLayoutToTopLeft() {
-  const b = getNodeBounds();
-  if (!b) return;
-  const targetX = 40;
-  const targetY = 40;
-  const dx = targetX - b.minX;
-  const dy = targetY - b.minY;
-  if (dx === 0 && dy === 0) {
-    setStatus('座標已在左上，無需重整');
-    return;
-  }
-  for (const [id] of state.nodes.entries()) {
-    const p = state.layout[id];
-    if (!p) continue;
-    p.x = Math.max(0, p.x + dx);
-    p.y = Math.max(0, p.y + dy);
-  }
-  render();
-  await persistLayout();
-  focusViewportToNodes();
-  setStatus('已重整座標到左上');
-}
-
-function render() {
-  const b = getNodeBounds();
-  let worldW = MAP_BASE_WIDTH;
-  let worldH = MAP_BASE_HEIGHT;
-  if (b) {
-    worldW = Math.max(worldW, b.maxX + MAP_MARGIN);
-    worldH = Math.max(worldH, b.maxY + MAP_MARGIN);
-  }
-  if (state.linkDrag) {
-    worldW = Math.max(worldW, state.linkDrag.x + MAP_MARGIN);
-    worldH = Math.max(worldH, state.linkDrag.y + MAP_MARGIN);
-  }
-  if (state.marquee) {
-    const mr = getMarqueeRect();
-    if (mr) {
-      worldW = Math.max(worldW, mr.x + mr.w + MAP_MARGIN);
-      worldH = Math.max(worldH, mr.y + mr.h + MAP_MARGIN);
-    }
-  }
-
-  ui.map.style.width = `${worldW * state.zoom}px`;
-  ui.map.style.height = `${worldH * state.zoom}px`;
-  const zoomBtn = document.getElementById('btn-zoom-reset');
-  if (zoomBtn) zoomBtn.textContent = `${Math.round(state.zoom * 100)}%`;
-
-  ui.map.querySelectorAll('.node').forEach((el) => el.remove());
-  ui.map.querySelectorAll('.marquee').forEach((el) => el.remove());
-  ui.map.querySelectorAll('.group-hull').forEach((el) => el.remove());
-  ui.svg.innerHTML = '';
-
-  // 繪製群組包圍框（在節點下層）
-  const GROUP_PAD = 12;
-  state.groups.forEach((grp, gi) => {
-    const positions = grp.filter(id => isNodeVisible(id)).map((id) => state.layout[id]).filter(Boolean);
-    if (positions.length < 1) return;
-    const xs = positions.map((p) => p.x);
-    const ys = positions.map((p) => p.y);
-    const minX = Math.min(...xs);
-    const minY = Math.min(...ys);
-    const maxX = Math.max(...xs) + NODE_SIZE;
-    const maxY = Math.max(...ys) + NODE_SIZE;
-    const hull = document.createElement('div');
-    hull.className = 'group-hull';
-    hull.style.left = `${(minX - GROUP_PAD) * state.zoom}px`;
-    hull.style.top = `${(minY - GROUP_PAD) * state.zoom}px`;
-    hull.style.width = `${(maxX - minX + GROUP_PAD * 2) * state.zoom}px`;
-    hull.style.height = `${(maxY - minY + GROUP_PAD * 2) * state.zoom}px`;
-    hull.style.borderColor = GROUP_COLORS[gi % GROUP_COLORS.length];
-    hull.style.opacity = '0.7';
-    ui.map.appendChild(hull);
-  });
-  appendSvgEdgeArrowDefs(ui.svg);
-
-  const edgeSet = new Set(state.edges.map(edgeKey));
-  const halfPx = NODE_HALF * state.zoom;
-  const arrowOutPx = 2;
-  for (const e of state.edges) {
-    if (!isNodeVisible(e.from) && !isNodeVisible(e.to)) continue; // zone 濾鏡：兩端都不可見才隱藏
-    const from = state.layout[e.from];
-    const to = state.layout[e.to];
-    if (!from || !to) continue;
-    const ax = (from.x + NODE_HALF) * state.zoom;
-    const ay = (from.y + NODE_HALF) * state.zoom;
-    const bx = (to.x + NODE_HALF) * state.zoom;
-    const by = (to.y + NODE_HALF) * state.zoom;
-    const { x1, y1, x2, y2 } = shortenEdgeLinePx(ax, ay, bx, by, halfPx, arrowOutPx);
-    const both = edgeSet.has(`${e.to}::${e.from}`);
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', String(x1));
-    line.setAttribute('y1', String(y1));
-    line.setAttribute('x2', String(x2));
-    line.setAttribute('y2', String(y2));
-    const selected = state.selectedEdge && state.selectedEdge.from === e.from && state.selectedEdge.to === e.to;
-    line.setAttribute('class', `${both ? 'line line-both' : 'line'}${selected ? ' line-selected' : ''}`);
-    if (both) {
-      line.setAttribute('marker-start', 'url(#room-ed-arrow-fwd)');
-      line.setAttribute('marker-end', 'url(#room-ed-arrow-rev)');
-      line.removeAttribute('stroke-dasharray');
-    } else {
-      line.setAttribute('marker-end', 'url(#room-ed-arrow-fwd)');
-      line.setAttribute('stroke-dasharray', `${6 * state.zoom} ${4 * state.zoom}`);
-    }
-    line.style.pointerEvents = 'stroke';
-    line.style.cursor = 'pointer';
-    line.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      state.selectedEdge = { from: e.from, to: e.to };
-      setStatus(`已選取連線：${e.from} -> ${e.to}（右鍵可刪除）`);
-      render();
-    });
-    line.addEventListener('contextmenu', async (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      const reverse = edgeSet.has(`${e.to}::${e.from}`);
-      const text = reverse ? `刪除連線 ${e.from} -> ${e.to}？\n按「確定」會連反向也一起刪除。` : `刪除連線 ${e.from} -> ${e.to}？`;
-      if (!confirm(text)) return;
-      try {
-        await api('/api/room-editor/link', {
-          method: 'DELETE',
-          body: JSON.stringify({ from: e.from, to: e.to, reverse }),
-        });
-        state.selectedEdge = null;
-        setStatus('連線已刪除');
-        await loadGraph(false);
-      } catch (err) {
-        setStatus(`刪線失敗：${err.message}`, true);
-      }
-    });
-    ui.svg.appendChild(line);
-  }
-
-  if (state.linkDrag) {
-    const p = state.layout[state.linkDrag.fromId];
-    if (p) {
-      const ax = (p.x + NODE_HALF) * state.zoom;
-      const ay = (p.y + NODE_HALF) * state.zoom;
-      const bx = state.linkDrag.x * state.zoom;
-      const by = state.linkDrag.y * state.zoom;
-      const dx = bx - ax;
-      const dy = by - ay;
-      const L = Math.hypot(dx, dy);
-      let x1 = ax;
-      let y1 = ay;
-      if (L > 1e-6) {
-        const ux = dx / L;
-        const uy = dy / L;
-        const tEdge = exitDistCenterToSquareEdge(ux, uy, halfPx);
-        const tUse = Math.min(tEdge + arrowOutPx, L - 4);
-        if (tUse > 0) {
-          x1 = ax + ux * tUse;
-          y1 = ay + uy * tUse;
-        }
-      }
-      const g = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      g.setAttribute('x1', String(x1));
-      g.setAttribute('y1', String(y1));
-      g.setAttribute('x2', String(bx));
-      g.setAttribute('y2', String(by));
-      g.setAttribute('class', 'line ghost');
-      g.setAttribute('marker-end', 'url(#room-ed-arrow-fwd)');
-      g.setAttribute('stroke-dasharray', `${6 * state.zoom} ${4 * state.zoom}`);
-      g.style.pointerEvents = 'none';
-      ui.svg.appendChild(g);
-    }
-  }
-
-  let i = 0;
-  for (const [id, n] of state.nodes.entries()) {
-    if (!isNodeVisible(id)) continue; // zone 濾鏡
-    const p = ensurePos(id, i++);
-    const el = document.createElement('div');
-    const selected = state.selectedIds.has(id) || state.selectedId === id;
-    el.className = `node ${selected ? 'selected' : ''}`;
-    el.dataset.id = id;
-    const nodePx = NODE_SIZE * state.zoom;
-    el.style.left = `${p.x * state.zoom}px`;
-    el.style.top = `${p.y * state.zoom}px`;
-    el.style.width = `${nodePx}px`;
-    el.style.height = `${nodePx}px`;
-    el.style.borderRadius = `${Math.max(4, 8 * state.zoom)}px`;
-    const shortLabel = (n.name || id || '?').trim().slice(0, 1) || '?';
-    el.title = `${n.name || id} (${id})`;
-    el.innerHTML = `<div class="name">${shortLabel}</div>`;
-    const nameEl = el.querySelector('.name');
-    if (nameEl) {
-      nameEl.style.fontSize = `${Math.max(12, 20 * state.zoom)}px`;
-    }
-    bindNode(el, id);
-    ui.map.appendChild(el);
-  }
-
-  ui.map.appendChild(ui.svg);
-
-  if (state.marquee) {
-    const mr = getMarqueeRect();
-    if (mr) {
-      const box = document.createElement('div');
-      box.className = 'marquee';
-      box.style.left = `${mr.x * state.zoom}px`;
-      box.style.top = `${mr.y * state.zoom}px`;
-      box.style.width = `${mr.w * state.zoom}px`;
-      box.style.height = `${mr.h * state.zoom}px`;
-      ui.map.appendChild(box);
-    }
-  }
-}
-
-function fillEditor(id) {
-  const n = state.nodes.get(id);
-  if (!n) return;
-  ui.fId.value = n.id;
-  ui.fName.value = n.name || '';
-  ui.fZone.value = n.zone || '';
-  ui.fTags.value = (n.tags || []).join(', ');
-  ui.fDesc.value = n.description || '';
-  writeObjectsJson(n.objects || []);
-  renderObjectsForm(n.objects || []);
-}
-
-function selectNode(id, additive = false) {
-  state.selectedEdge = null;
-  if (additive) {
-    if (state.selectedIds.has(id)) state.selectedIds.delete(id);
-    else state.selectedIds.add(id);
-  } else {
-    // 非加選時，若此格屬於群組，直接圈選整個群組
-    const grp = findGroupFor(id);
-    state.selectedIds = grp ? new Set(grp) : new Set([id]);
-  }
-  state.selectedId = id;
-  fillEditor(id);
   refreshPathSelects();
   refreshZoneFilter();
-  render();
+  scheduleRender();
 }
 
-function setSelectedForTouchStart(id) {
-  state.selectedEdge = null;
-  if (!state.selectedIds.has(id)) {
-    // 觸控非加選：同樣展開群組
-    const grp = findGroupFor(id);
-    state.selectedIds = grp ? new Set(grp) : new Set([id]);
-  }
-  state.selectedId = id;
-  fillEditor(id);
+// ── Cell CRUD ────────────────────────────────────────────────────
+async function createCell(q, r) {
+  try {
+    await api('/api/hex/cell', {
+      method: 'PUT',
+      body: JSON.stringify({ q, r, terrain: 'plain', name: `(${q},${r})` }),
+    });
+    await loadGrid(false);
+    selectCell({ q, r });
+    setStatus(`已建立 (${q},${r})`);
+  } catch (e) { setStatus(`建立失敗：${e.message}`, true); }
+}
+
+async function deleteSelected() {
+  if (!state.selectedCoord) { setStatus('請先選取', true); return; }
+  const { q, r } = state.selectedCoord;
+  if (!confirm(`刪除 (${q},${r})？`)) return;
+  try {
+    await api(`/api/hex/cell/${q}/${r}`, { method: 'DELETE' });
+    state.selectedCoord = null;
+    await loadGrid(false);
+    setStatus(`已刪除 (${q},${r})`);
+  } catch (e) { setStatus(`刪除失敗：${e.message}`, true); }
+}
+
+function selectCell(coord) {
+  state.selectedCoord = coord;
+  const cell = state.cells.get(hk(coord.q, coord.r));
+  if (cell) fillEditor(cell);
   refreshPathSelects();
-  refreshZoneFilter();
+  scheduleRender();
 }
 
-async function completeLink(fromId, toId) {
-  if (!fromId || !toId || fromId === toId) return;
-  const fromName = state.nodes.get(fromId)?.name || fromId;
-  const toName = state.nodes.get(toId)?.name || toId;
-  const guess = inferDirection(fromId, toId) || toName;
-  const dir = prompt(`設定 ${fromName} -> ${toName} 的方向名稱`, guess) || '';
-  if (!dir.trim()) return;
-
-  const reverse = state.mode === 'link-two';
-  let reverseDir = '';
-  if (reverse) reverseDir = prompt(`設定 ${toName} -> ${fromName} 的方向名稱`, oppositeDirection(dir.trim()) || fromName) || fromName;
-
-  try {
-    await api('/api/room-editor/link', {
-      method: 'POST',
-      body: JSON.stringify({ from: fromId, to: toId, direction: dir.trim(), reverse, reverse_direction: reverseDir.trim() }),
-    });
-    setStatus('連線完成');
-    await loadGraph(false);
-  } catch (e) {
-    setStatus(`連線失敗：${e.message}`, true);
-  }
+function fillEditor(cell) {
+  ui.fId.value = `(${cell.q},${cell.r})`;
+  ui.fName.value = cell.name || '';
+  ui.fZone.value = cell.zone || '';
+  ui.fTags.value = (cell.tags || []).join(', ');
+  ui.fDesc.value = cell.description || '';
+  writeObjectsJson(cell.objects || []);
+  renderObjectsForm(cell.objects || []);
 }
 
-function bindNode(el, id) {
-  el.addEventListener('click', (ev) => {
-    if (state.suppressNodeClickOnce) {
-      state.suppressNodeClickOnce = false;
-      return;
-    }
-    ev.stopPropagation();
-    selectNode(id, ev.ctrlKey || ev.metaKey);
-  });
-
-  el.addEventListener('pointerdown', (ev) => {
-    if (ev.pointerType === 'mouse' && ev.button !== 0) return;
-    // 雙指（或第二指）時由 capture 層處理縮放，節點不啟動拖曳
-    if (activePointers.size > 1) return;
-
-    ev.stopPropagation();
-    const additive = ev.ctrlKey || ev.metaKey;
-
-    if (ev.pointerType === 'touch') {
-      if (state.multiSelectMode) {
-        selectNode(id, true);
-      } else {
-        setSelectedForTouchStart(id);
-      }
-    } else if (additive) {
-      selectNode(id, true);
-    } else if (!state.selectedIds.has(id)) {
-      selectNode(id, false);
-    } else {
-      state.selectedId = id;
-      fillEditor(id);
-      render();
-    }
-
-    if (state.mode === 'move') {
-      // 必須在穩定元素上 capture：render() 會移除並重建 .node，否則捕獲失效、pointer 狀態錯亂導致縮放異常
-      try {
-        ui.wrap.setPointerCapture(ev.pointerId);
-      } catch (_) {}
-      const ids = state.selectedIds.size > 0 ? Array.from(state.selectedIds) : [id];
-      const anchor = state.layout[id];
-      const start = toMapPoint(ev.clientX, ev.clientY);
-      state.drag = {
-        captureEl: ui.wrap,
-        pointerId: ev.pointerId,
-        id,
-        ids,
-        dx: start.x - anchor.x,
-        dy: start.y - anchor.y,
-        moved: false,
-        base: ids.reduce((acc, rid) => {
-          const p = state.layout[rid];
-          acc[rid] = { x: p.x, y: p.y };
-          return acc;
-        }, {}),
-      };
-      return;
-    }
-
-    if (state.mode === 'link-one' || state.mode === 'link-two') {
-      if (ev.pointerType === 'touch') {
-        if (!state.touchLinkFromId) {
-          state.touchLinkFromId = id;
-          setStatus(`連線起點：${id}，請再點一個房格作為終點`);
-        } else if (state.touchLinkFromId === id) {
-          state.touchLinkFromId = '';
-          setStatus('已取消連線選取');
-        } else {
-          const fromId = state.touchLinkFromId;
-          state.touchLinkFromId = '';
-          void completeLink(fromId, id);
-        }
-        return;
-      }
-      try {
-        ui.map.setPointerCapture(ev.pointerId);
-      } catch (_) {}
-      const p = toMapPoint(ev.clientX, ev.clientY);
-      state.linkDrag = { fromId: id, x: p.x, y: p.y, pointerId: ev.pointerId };
-      render();
-    }
-  });
-
-  el.addEventListener('pointerup', async (ev) => {
-    // 觸控在節點上放開時，不應攔截到讓 document:pointerup 收不到，
-    // 否則 activePointers 會殘留，後續誤判成雙指，導致手機連線失效。
-    if (ev.pointerType === 'touch') {
-      activePointers.delete(ev.pointerId);
-      if (activePointers.size < 2) state.pinch = null;
-      return;
-    }
-    ev.stopPropagation();
-    if (!state.linkDrag) return;
-    if (state.linkDrag.pointerId !== ev.pointerId) return;
-    try {
-      ui.map.releasePointerCapture(ev.pointerId);
-    } catch (_) {}
-    const fromId = state.linkDrag.fromId;
-    const toId = id;
-    state.linkDrag = null;
-    activePointers.delete(ev.pointerId);
-    if (activePointers.size < 2) state.pinch = null;
-    render();
-    await completeLink(fromId, toId);
-  });
-}
-
-/** 雙指落下時先於節點邏輯：取消單指手勢並進入縮放 */
-document.addEventListener(
-  'pointerdown',
-  (ev) => {
-    activePointers.set(ev.pointerId, { clientX: ev.clientX, clientY: ev.clientY });
-    if (activePointers.size === 2) {
-      const t = pinchFromActivePointers();
-      if (t) {
-        if (state.drag) {
-          try {
-            if (state.drag.captureEl) state.drag.captureEl.releasePointerCapture(state.drag.pointerId);
-          } catch (_) {}
-          const moved = !!state.drag.moved;
-          state.drag = null;
-          if (moved) {
-            state.suppressNodeClickOnce = true;
-            void persistLayout();
-          }
-        }
-        if (state.linkDrag) {
-          try {
-            ui.map.releasePointerCapture(state.linkDrag.pointerId);
-          } catch (_) {}
-          state.linkDrag = null;
-        }
-        if (state.marquee) state.marquee = null;
-        if (state.panning) {
-          try {
-            ui.wrap.releasePointerCapture(state.panning.pointerId);
-          } catch (_) {}
-          state.panning = null;
-        }
-        state.pinch = {
-          startDist: Math.max(1, t.dist),
-          startZoom: state.zoom,
-          startMid: t.mid,
-        };
-      }
-    }
-  },
-  true,
-);
-
-document.addEventListener(
-  'pointermove',
-  (ev) => {
-    if (activePointers.has(ev.pointerId)) {
-      activePointers.set(ev.pointerId, { clientX: ev.clientX, clientY: ev.clientY });
-    }
-
-    if (ev.pointerType === 'mouse' && ev.buttons === 0) {
-      if (state.drag) {
-        try {
-          if (state.drag.captureEl) state.drag.captureEl.releasePointerCapture(state.drag.pointerId);
-        } catch (_) {}
-        const moved = !!state.drag.moved;
-        state.drag = null;
-        if (moved) {
-          state.suppressNodeClickOnce = true;
-          void persistLayout();
-        }
-      }
-      if (state.linkDrag) {
-        try {
-          ui.map.releasePointerCapture(state.linkDrag.pointerId);
-        } catch (_) {}
-        state.linkDrag = null;
-      }
-      if (state.marquee) state.marquee = null;
-      if (state.panning) {
-        try {
-          ui.wrap.releasePointerCapture(state.panning.pointerId);
-        } catch (_) {}
-        state.panning = null;
-      }
-    }
-
-    if (activePointers.size === 2 && state.pinch) {
-      const t = pinchFromActivePointers();
-      if (t) {
-        const scale = t.dist / Math.max(1, state.pinch.startDist);
-        const nextZoom = clampZoom(state.pinch.startZoom * scale);
-        setZoom(nextZoom, t.mid.x, t.mid.y);
-      }
-      return;
-    }
-
-    if (state.drag) {
-      const mp = toMapPoint(ev.clientX, ev.clientY);
-      const anchorX = Math.max(0, mp.x - state.drag.dx);
-      const anchorY = Math.max(0, mp.y - state.drag.dy);
-      const baseAnchor = state.drag.base[state.drag.id];
-      const ox = anchorX - baseAnchor.x;
-      const oy = anchorY - baseAnchor.y;
-      if (Math.abs(ox) > 1 || Math.abs(oy) > 1) state.drag.moved = true;
-      state.drag.ids.forEach((rid) => {
-        const bp = state.drag.base[rid];
-        state.layout[rid].x = Math.max(0, bp.x + ox);
-        state.layout[rid].y = Math.max(0, bp.y + oy);
-      });
-      scheduleRender();
-      return;
-    }
-
-    if (state.linkDrag) {
-      const p = toMapPoint(ev.clientX, ev.clientY);
-      state.linkDrag.x = p.x;
-      state.linkDrag.y = p.y;
-      scheduleRender();
-      return;
-    }
-
-    if (state.marquee) {
-      const p = toMapPoint(ev.clientX, ev.clientY);
-      state.marquee.x1 = p.x;
-      state.marquee.y1 = p.y;
-      scheduleRender();
-      return;
-    }
-
-    if (state.panning) {
-      const dx = ev.clientX - state.panning.startX;
-      const dy = ev.clientY - state.panning.startY;
-      ui.wrap.scrollLeft = Math.max(0, state.panning.baseScrollLeft - dx);
-      ui.wrap.scrollTop = Math.max(0, state.panning.baseScrollTop - dy);
-    }
-  },
-  { passive: false },
-);
-
-async function handlePointerUpEnd(ev) {
-  activePointers.delete(ev.pointerId);
-  if (activePointers.size < 2) state.pinch = null;
-
-  if (state.drag && state.drag.pointerId === ev.pointerId) {
-    try {
-      if (state.drag.captureEl) state.drag.captureEl.releasePointerCapture(ev.pointerId);
-    } catch (_) {}
-    if (state.drag.moved) state.suppressNodeClickOnce = true;
-    state.drag = null;
-    await persistLayout();
-  }
-
-  if (state.linkDrag && state.linkDrag.pointerId === ev.pointerId) {
-    const fromId = state.linkDrag.fromId;
-    try {
-      ui.map.releasePointerCapture(ev.pointerId);
-    } catch (_) {}
-    state.linkDrag = null;
-    render();
-    // setPointerCapture(map) 時 pointerup 的 target 是 map，節點上的 listener 不會觸發，須用座標找終點房格
-    let toId = '';
-    try {
-      const stack = document.elementsFromPoint(ev.clientX, ev.clientY);
-      for (let i = 0; i < stack.length; i++) {
-        const el = stack[i];
-        if (el.classList && el.classList.contains('node') && el.dataset && el.dataset.id) {
-          toId = el.dataset.id;
-          break;
-        }
-      }
-    } catch (_) {}
-    if (toId && toId !== fromId) {
-      await completeLink(fromId, toId);
-    }
-  }
-
-  if (state.marquee && state.marquee.pointerId === ev.pointerId) {
-    const mr = getMarqueeRect();
-    const next = new Set();
-    if (mr && (mr.w > 3 || mr.h > 3)) {
-      for (const [id] of state.nodes.entries()) {
-        const p = state.layout[id];
-        if (!p) continue;
-        const cx = p.x + NODE_HALF;
-        const cy = p.y + NODE_HALF;
-        if (cx >= mr.x && cx <= mr.x + mr.w && cy >= mr.y && cy <= mr.y + mr.h) next.add(id);
-      }
-    }
-    state.marquee = null;
-    if (next.size > 0) {
-      state.selectedIds = next;
-      const first = Array.from(next)[0];
-      state.selectedId = first;
-      fillEditor(first);
-      setStatus(`已框選 ${next.size} 個房格`);
-      state.suppressMapClickClear = true;
-    }
-    render();
-  }
-
-  if (state.panning && state.panning.pointerId === ev.pointerId) {
-    try {
-      ui.wrap.releasePointerCapture(ev.pointerId);
-    } catch (_) {}
-    state.panning = null;
-  }
-}
-
-document.addEventListener('pointerup', (ev) => {
-  void handlePointerUpEnd(ev);
-});
-
-document.addEventListener('pointercancel', (ev) => {
-  activePointers.delete(ev.pointerId);
-  if (activePointers.size < 2) state.pinch = null;
-  if (state.drag && state.drag.pointerId === ev.pointerId) {
-    try {
-      if (state.drag.captureEl) state.drag.captureEl.releasePointerCapture(ev.pointerId);
-    } catch (_) {}
-  }
-  if (state.linkDrag && state.linkDrag.pointerId === ev.pointerId) {
-    try {
-      ui.map.releasePointerCapture(ev.pointerId);
-    } catch (_) {}
-  }
-  if (state.panning && state.panning.pointerId === ev.pointerId) {
-    try {
-      ui.wrap.releasePointerCapture(ev.pointerId);
-    } catch (_) {}
-  }
-  state.drag = null;
-  state.linkDrag = null;
-  state.marquee = null;
-  state.panning = null;
-  state.touchLinkFromId = '';
-  render();
-});
-
-// 視窗失焦時也清空拖曳，避免回到頁面後仍處於「抓著房格」狀態。
-window.addEventListener('blur', () => {
-  if (!state.drag && !state.linkDrag && !state.marquee && !state.panning && !state.pinch) return;
-  if (state.drag) {
-    try {
-      if (state.drag.captureEl) state.drag.captureEl.releasePointerCapture(state.drag.pointerId);
-    } catch (_) {}
-  }
-  if (state.linkDrag) {
-    try {
-      ui.map.releasePointerCapture(state.linkDrag.pointerId);
-    } catch (_) {}
-  }
-  if (state.panning) {
-    try {
-      ui.wrap.releasePointerCapture(state.panning.pointerId);
-    } catch (_) {}
-  }
-  state.drag = null;
-  state.linkDrag = null;
-  state.marquee = null;
-  state.panning = null;
-  state.pinch = null;
-  activePointers.clear();
-  render();
-});
-
-ui.map.addEventListener('pointerdown', (ev) => {
-  const target = ev.target;
-  const tag = (target && target.tagName || '').toLowerCase();
-  if (tag === 'input' || tag === 'textarea' || tag === 'button') return;
-
-  if (ev.pointerType === 'mouse' && ev.button === 1) {
-    ev.preventDefault();
-    try {
-      ui.wrap.setPointerCapture(ev.pointerId);
-    } catch (_) {}
-    state.panning = {
-      pointerId: ev.pointerId,
-      startX: ev.clientX,
-      startY: ev.clientY,
-      baseScrollLeft: ui.wrap.scrollLeft,
-      baseScrollTop: ui.wrap.scrollTop,
-    };
-    return;
-  }
-  if (ev.pointerType === 'mouse' && ev.button !== 0) return;
-  if (activePointers.size > 1) return;
-
-  if (ev.target !== ui.map && ev.target !== ui.svg) return;
-
-  if (ev.pointerType === 'touch') {
-    if (state.multiSelectMode && state.mode === 'move') {
-      // 多選模式：空白處拖曳 = 框選（marquee）
-      try { ui.wrap.setPointerCapture(ev.pointerId); } catch (_) {}
-      const p = toMapPoint(ev.clientX, ev.clientY);
-      state.marquee = { x0: p.x, y0: p.y, x1: p.x, y1: p.y, pointerId: ev.pointerId };
-      state.selectedEdge = null;
-      render();
-      return;
-    }
-    try {
-      ui.wrap.setPointerCapture(ev.pointerId);
-    } catch (_) {}
-    state.panning = {
-      pointerId: ev.pointerId,
-      startX: ev.clientX,
-      startY: ev.clientY,
-      baseScrollLeft: ui.wrap.scrollLeft,
-      baseScrollTop: ui.wrap.scrollTop,
-    };
-    return;
-  }
-
-  if (state.mode !== 'move') return;
-  const p = toMapPoint(ev.clientX, ev.clientY);
-  state.marquee = { x0: p.x, y0: p.y, x1: p.x, y1: p.y, pointerId: ev.pointerId };
-  state.selectedEdge = null;
-  render();
-});
-
-ui.map.addEventListener('click', (ev) => {
-  if (state.suppressMapClickClear) {
-    state.suppressMapClickClear = false;
-    return;
-  }
-  if (ev.target !== ui.map && ev.target !== ui.svg) return;
-  state.selectedId = '';
-  state.selectedIds.clear();
-  state.selectedEdge = null;
-  state.touchLinkFromId = '';
-  render();
-});
-
-ui.fObjects.addEventListener('input', () => {
-  try {
-    const objs = readObjectsFromJson();
-    renderObjectsForm(objs);
-  } catch (_) {
-    // 手打 JSON 過程中可暫時無效，不中斷編輯
-  }
-});
-
-async function loadGraph(scrollToSelected = true) {
-  const data = await api('/api/room-editor/graph');
-  state.nodes.clear();
-  data.nodes.forEach((n, i) => {
-    state.nodes.set(n.id, n);
-    if (!data.layout[n.id]) ensurePos(n.id, i);
-  });
-  state.edges = data.edges || [];
-  state.layout = { ...(data.layout || {}), ...(state.layout || {}) };
-
-  if (state.selectedId && !state.nodes.has(state.selectedId)) {
-    state.selectedId = '';
-    state.selectedIds.clear();
-  }
-
-  state.selectedIds = new Set(Array.from(state.selectedIds).filter((id) => state.nodes.has(id)));
-
-  // 載入群組並清理已不存在的 ID
-  await loadGroups();
-
-  if (state.selectedId) fillEditor(state.selectedId);
-  refreshPathSelects();
-  refreshZoneFilter();
-  render();
-
-  if (scrollToSelected && state.selectedId && state.layout[state.selectedId]) {
-    const p = state.layout[state.selectedId];
-    ui.wrap.scrollTo({ left: Math.max(0, p.x - 260), top: Math.max(0, p.y - 220), behavior: 'smooth' });
-  } else if (!state.hasAutoFocused) {
-    focusViewportToNodes();
-    state.hasAutoFocused = true;
-  }
-}
-
-
-function clampZoom(z) {
-  return Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z));
-}
-
-function setZoom(nextZoom, focusClientX, focusClientY) {
-  const prev = state.zoom;
-  const next = clampZoom(nextZoom);
-  if (Math.abs(prev - next) < 0.001) return;
-
-  const wrapRect = ui.wrap.getBoundingClientRect();
-  const fx = focusClientX ?? (wrapRect.left + wrapRect.width / 2);
-  const fy = focusClientY ?? (wrapRect.top + wrapRect.height / 2);
-  const world = toMapPoint(fx, fy);
-  state.zoom = next;
-  render();
-
-  const viewportX = fx - wrapRect.left;
-  const viewportY = fy - wrapRect.top;
-  ui.wrap.scrollLeft = Math.max(0, world.x * state.zoom - viewportX);
-  ui.wrap.scrollTop = Math.max(0, world.y * state.zoom - viewportY);
-}
-
-function setMode(mode) {
-  state.mode = mode;
-  state.linkDrag = null;
-  state.marquee = null;
-  document.getElementById('mode-one').classList.toggle('active', mode === 'link-one');
-  document.getElementById('mode-two').classList.toggle('active', mode === 'link-two');
-  document.getElementById('mode-off').classList.toggle('active', mode === 'move');
-  if (ui.mMode) {
-    const text = mode === 'move' ? '一般拖曳' : (mode === 'link-one' ? '單向連線' : '雙向連線');
-    ui.mMode.textContent = text;
-  }
-  render();
-}
-
-document.getElementById('mode-one').onclick = () => setMode('link-one');
-document.getElementById('mode-two').onclick = () => setMode('link-two');
-document.getElementById('mode-off').onclick = () => setMode('move');
-if (ui.btnPanelToggle) ui.btnPanelToggle.onclick = () => ui.panel.classList.toggle('open');
-if (ui.mPanel) ui.mPanel.onclick = () => ui.panel.classList.toggle('open');
-if (ui.mAdd) ui.mAdd.onclick = () => document.getElementById('btn-add').click();
-if (ui.mDel) ui.mDel.onclick = () => document.getElementById('btn-delete').click();
-if (ui.mMultiSel) {
-  ui.mMultiSel.onclick = () => {
-    state.multiSelectMode = !state.multiSelectMode;
-    ui.mMultiSel.classList.toggle('active', state.multiSelectMode);
-    setStatus(state.multiSelectMode ? '多選模式：點格累加選取，空白拖曳框選' : '多選模式關閉');
-  };
-}
-if (ui.mMode) {
-  ui.mMode.onclick = () => {
-    const next = state.mode === 'move' ? 'link-one' : (state.mode === 'link-one' ? 'link-two' : 'move');
-    setMode(next);
-    setStatus(`模式：${ui.mMode.textContent}`);
-  };
-}
-
-ui.wrap.addEventListener('wheel', (ev) => {
-  ev.preventDefault();
-  const delta = ev.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
-  setZoom(state.zoom + delta, ev.clientX, ev.clientY);
-}, { passive: false });
-
-document.getElementById('btn-refresh').onclick = async () => {
-  try {
-    // 先從磁碟重新載入（同步 JSON 直接修改的結果），再抓 graph
-    await api('/api/room-editor/reload', { method: 'POST' });
-    await loadGraph(false);
-    setStatus('已重新載入（含磁碟同步）');
-  } catch (e) {
-    setStatus(`載入失敗：${e.message}`, true);
-  }
-};
-document.getElementById('btn-normalize').onclick = async () => {
-  if (!confirm('將所有房格平移回左上並覆寫目前座標，是否繼續？')) return;
-  await normalizeLayoutToTopLeft();
-};
-
-document.getElementById('btn-group-set').onclick = async () => {
-  const ids = Array.from(state.selectedIds);
-  if (ids.length < 2) { setStatus('請先選取 2 個以上房格再設定群組', true); return; }
-  // 把這些 ID 從既有群組移除（避免重複歸屬），再建立新群組
-  state.groups = state.groups
-    .map((g) => g.filter((id) => !ids.includes(id)))
-    .filter((g) => g.length >= 2);
-  state.groups.push(ids);
-  await saveGroups();
-  setStatus(`群組已設定（${ids.length} 格）`);
-  render();
-};
-
-document.getElementById('btn-group-unlock').onclick = async () => {
-  const ids = state.selectedIds;
-  if (ids.size === 0) { setStatus('請先點選群組內任一格', true); return; }
-  const before = state.groups.length;
-  state.groups = state.groups.filter((g) => !g.some((id) => ids.has(id)));
-  await saveGroups();
-  setStatus(state.groups.length < before ? '群組已解鎖' : '選取的格不屬於任何群組');
-  render();
-};
-
-document.getElementById('btn-add').onclick = async () => {
-  const id = prompt('新房間 ID（英文數字底線）');
-  if (!id) return;
-  const name = prompt('房間名稱', id) || id;
-  try {
-    await api('/api/room-editor/room', {
-      method: 'POST',
-      body: JSON.stringify({ id: id.trim(), name: name.trim(), description: '' }),
-    });
-    state.selectedId = id.trim();
-    state.selectedIds = new Set([id.trim()]);
-    setStatus('房間已新增');
-    await loadGraph(true);
-    // 自動生成描述
-    if (!ui.fDesc.value.trim()) {
-      const zone = ui.fZone.value;
-      const tags = parseTags(ui.fTags.value);
-      const desc = generateRoomDesc(zone, tags);
-      if (desc) ui.fDesc.value = desc;
-    }
-  } catch (e) {
-    setStatus(`新增失敗：${e.message}`, true);
-  }
-};
-
-document.getElementById('btn-copy').onclick = async () => {
-  if (!state.selectedId) {
-    setStatus('請先選一個房間', true);
-    return;
-  }
-  const id = prompt('複製後新 ID', `${state.selectedId}_copy`);
-  if (!id) return;
-  const name = prompt('新房名', id) || id;
-  try {
-    await api('/api/room-editor/room', {
-      method: 'POST',
-      body: JSON.stringify({ id: id.trim(), name: name.trim(), clone_from: state.selectedId }),
-    });
-    const p = state.layout[state.selectedId];
-    if (p) state.layout[id.trim()] = { x: p.x + 200, y: p.y + 40 };
-    await api('/api/room-editor/layout', { method: 'PUT', body: JSON.stringify({ positions: state.layout }) });
-    state.selectedId = id.trim();
-    state.selectedIds = new Set([id.trim()]);
-    setStatus('房間已複製');
-    await loadGraph(true);
-    // 自動生成描述
-    if (!ui.fDesc.value.trim()) {
-      const zone = ui.fZone.value;
-      const tags = parseTags(ui.fTags.value);
-      const desc = generateRoomDesc(zone, tags);
-      if (desc) ui.fDesc.value = desc;
-    }
-  } catch (e) {
-    setStatus(`複製失敗：${e.message}`, true);
-  }
-};
-
-document.getElementById('btn-delete').onclick = async () => {
-  const selected = state.selectedIds && state.selectedIds.size > 0
-    ? Array.from(state.selectedIds)
-    : (state.selectedId ? [state.selectedId] : []);
-
-  if (selected.length === 0) {
-    setStatus('請先選一個房間', true);
-    return;
-  }
-
-  const tip = selected.length > 1
-    ? `確定刪除已選 ${selected.length} 個房間？`
-    : `確定刪除房間 ${selected[0]}？`;
-  if (!confirm(tip)) return;
-
-  let okCount = 0;
-  let failCount = 0;
-  for (const rid of selected) {
-    try {
-      await api(`/api/room-editor/room/${encodeURIComponent(rid)}`, { method: 'DELETE' });
-      delete state.layout[rid];
-      okCount++;
-    } catch (_) {
-      failCount++;
-    }
-  }
-  await api('/api/room-editor/layout', { method: 'PUT', body: JSON.stringify({ positions: state.layout }) });
-  // 清除已刪房間所在的群組
-  state.groups = state.groups
-    .map((g) => g.filter((id) => !selected.includes(id)))
-    .filter((g) => g.length >= 2);
-  await saveGroups();
-  state.selectedId = '';
-  state.selectedIds.clear();
-  await loadGraph(false);
-  if (failCount > 0) {
-    setStatus(`批次刪除完成：成功 ${okCount}、失敗 ${failCount}`, true);
-  } else {
-    setStatus(`批次刪除完成：共刪除 ${okCount} 個房間`);
-  }
-};
-
-document.getElementById('btn-add-object').onclick = () => {
-  const list = safeGetObjects();
-  list.push({ id: '', name: '', sockets: ['Look'], responses: { Look: '你看見它。' } });
-  writeObjectsJson(list);
-  renderObjectsForm(list);
-};
-
-document.getElementById('btn-template').onclick = () => {
-  const tpl = [
-    {
-      id: 'obj_example',
-      name: '可互動物件',
-      sockets: ['Look', 'Use', 'Talk'],
-      responses: {
-        Look: '你看見它有些年歲。',
-        Use: '你試著操作，但還需要更多條件。',
-      },
-    },
-  ];
-  writeObjectsJson(tpl);
-  renderObjectsForm(tpl);
-};
-
-async function saveCurrentRoom() {
-  if (!state.selectedId) {
-    setStatus('請先選一個房間', true);
-    return;
-  }
+async function saveCurrentCell() {
+  if (!state.selectedCoord) { setStatus('請先選取', true); return; }
+  const { q, r } = state.selectedCoord;
   let objects = [];
+  try { objects = readObjectsFromJson(); } catch (e) { setStatus(`JSON 格式錯：${e.message}`, true); return; }
+  const cell = state.cells.get(hk(q, r));
   try {
-    objects = readObjectsFromJson().map(normalizeObject);
-  } catch (e) {
-    setStatus(`物件 JSON 格式錯誤：${e.message}`, true);
-    return;
-  }
-  try {
-    await api(`/api/room-editor/room/${encodeURIComponent(state.selectedId)}`, {
+    await api('/api/hex/cell', {
       method: 'PUT',
       body: JSON.stringify({
+        q, r,
+        terrain: cell?.terrain || 'plain',
         name: ui.fName.value,
         zone: ui.fZone.value,
         tags: parseTags(ui.fTags.value),
@@ -1559,106 +488,228 @@ async function saveCurrentRoom() {
         objects,
       }),
     });
-    setStatus('房間已儲存');
-    await loadGraph(false);
-    selectNode(state.selectedId);
-  } catch (e) {
-    setStatus(`儲存失敗：${e.message}`, true);
-  }
+    setStatus('已儲存');
+    await loadGrid(false);
+    selectCell({ q, r });
+  } catch (e) { setStatus(`儲存失敗：${e.message}`, true); }
 }
 
-document.getElementById('btn-save').onclick = () => {
-  saveCurrentRoom();
-};
-
-document.getElementById('btn-regen-desc').onclick = () => {
-  const zone = ui.fZone.value;
-  const tags = parseTags(ui.fTags.value);
-  const desc = generateRoomDesc(zone, tags);
-  if (desc) ui.fDesc.value = desc;
-};
-
-if (ui.pathUseSelected) {
-  ui.pathUseSelected.addEventListener('click', () => {
-    if (!state.selectedId || !state.nodes.has(state.selectedId)) {
-      setStatus('請先在地圖上選一個房格', true);
-      return;
-    }
-    ui.pathFrom.value = state.selectedId;
-    setStatus(`起點已設為：${state.nodes.get(state.selectedId)?.name || state.selectedId}`);
-  });
-}
-
-if (ui.btnAddPath) {
-  ui.btnAddPath.addEventListener('click', async () => {
-    const from = ui.pathFrom && ui.pathFrom.value;
-    const to = ui.pathTo && ui.pathTo.value;
-    const dir = (ui.pathDir && ui.pathDir.value) || '';
-    const dirTrim = dir.trim();
-    const reverse = ui.pathReverse && ui.pathReverse.checked;
-    let reverseDir = (ui.pathReverseDir && ui.pathReverseDir.value) || '';
-    reverseDir = reverseDir.trim();
-    if (!from || !to) {
-      setStatus('請選擇起點與終點房間', true);
-      return;
-    }
-    if (from === to) {
-      setStatus('起點與終點不可相同', true);
-      return;
-    }
-    if (!dirTrim) {
-      setStatus('請填「此端方向名稱」', true);
-      return;
-    }
-    if (reverse && !reverseDir) {
-      const n = state.nodes.get(from);
-      reverseDir = (n && n.name) || from;
-    }
-    try {
-      await api('/api/room-editor/link', {
-        method: 'POST',
-        body: JSON.stringify({
-          from,
-          to,
-          direction: dirTrim,
-          reverse,
-          reverse_direction: reverseDir,
-        }),
-      });
-      setStatus('路徑已建立（exits + Move／move_to_room_id）');
-      if (ui.pathDir) ui.pathDir.value = '';
-      if (ui.pathReverseDir) ui.pathReverseDir.value = '';
-      await loadGraph(false);
-    } catch (e) {
-      setStatus(`建立路徑失敗：${e.message}`, true);
-    }
-  });
-}
-
-/** Ctrl+S（Windows/Linux）或 Cmd+S（macOS）儲存目前選取的房間 */
-document.addEventListener(
-  'keydown',
-  (e) => {
-    if (!(e.ctrlKey || e.metaKey)) return;
-    if (e.key !== 's' && e.key !== 'S') return;
-    e.preventDefault();
-    saveCurrentRoom();
-  },
-  true
-);
-
-(async () => {
+async function completeWall(from, to) {
   try {
-    await loadGraph(false);
-    loadDescTemplates();
-    refreshZoneFilter();
-    ui.zoneFilter.addEventListener('change', () => {
-      state.zoneFilterValue = ui.zoneFilter.value;
-      scheduleRender();
+    await api('/api/hex/wall', {
+      method: 'PUT',
+      body: JSON.stringify({ aq: from.q, ar: from.r, bq: to.q, br: to.r }),
     });
-    renderObjectsForm([]);
-    setStatus('已載入房間地圖');
-  } catch (e) {
-    setStatus(`初始化失敗：${e.message}`, true);
+    await loadGrid(false);
+    setStatus('牆壁已建立');
+  } catch (e) { setStatus(`失敗：${e.message}`, true); }
+}
+
+// ── Watabou 匯入 ────────────────────────────────────────────────
+async function importWatabouAtAnchor(anchor, jsonText) {
+  const parsed = JSON.parse(jsonText);
+  const hexes = parsed?.hexes;
+  if (!hexes || typeof hexes !== 'object') throw new Error('不是 Watabou hex JSON');
+  const cells = [];
+  for (const cell of Object.values(hexes)) {
+    if (!cell || !Number.isFinite(cell.q) || !Number.isFinite(cell.r)) continue;
+    cells.push({ q: Number(cell.q), r: Number(cell.r), terrain: String(cell.terrain || 'plain') });
   }
-})();
+  if (!cells.length) throw new Error('無 hexes');
+  const minQ = Math.min(...cells.map(c => c.q));
+  const minR = Math.min(...cells.map(c => c.r));
+
+  const batch = cells.map(src => {
+    const tq = anchor.q + (src.q - minQ);
+    const tr = anchor.r + (src.r - minR);
+    return { q: tq, r: tr, terrain: src.terrain, name: `(${tq},${tr}) ${src.terrain}`, zone: src.terrain.split('-')[0] || 'wild', tags: ['watabou', src.terrain] };
+  });
+
+  setStatus(`匯入 ${batch.length} 格...`);
+  await api('/api/hex/cells', { method: 'PUT', body: JSON.stringify(batch) });
+  await loadGrid(false);
+  setStatus(`匯入完成：${batch.length} 格`);
+}
+
+if (ui.ctxImport && ui.watabouInput) {
+  ui.ctxImport.onclick = () => {
+    hideCtx();
+    if (!ctxHex) return;
+    ui.watabouInput.dataset.q = ctxHex.q;
+    ui.watabouInput.dataset.r = ctxHex.r;
+    ui.watabouInput.value = '';
+    ui.watabouInput.click();
+  };
+  ui.watabouInput.onchange = async () => {
+    const f = ui.watabouInput.files?.[0];
+    if (!f) return;
+    const q = Number(ui.watabouInput.dataset.q), r = Number(ui.watabouInput.dataset.r);
+    try { await importWatabouAtAnchor({ q, r }, await f.text()); } catch (e) { setStatus(`匯入失敗：${e.message}`, true); }
+  };
+}
+
+// ── 工具函式 ─────────────────────────────────────────────────────
+function setStatus(msg, isError = false) {
+  ui.status.style.color = isError ? '#fda4af' : '#8f9bb3';
+  ui.status.textContent = msg;
+}
+function parseTags(s) { return (s || '').split(',').map(t => t.trim()).filter(Boolean); }
+
+// ── Zone 濾鏡 ────────────────────────────────────────────────────
+function refreshZoneFilter() {
+  const zones = new Map();
+  for (const c of state.cells.values()) { if (c.zone) zones.set(c.zone, (zones.get(c.zone) || 0) + 1); }
+  ui.zoneFilter.innerHTML = '<option value="">全部顯示</option>';
+  for (const [z, n] of Array.from(zones).sort((a, b) => a[0].localeCompare(b[0]))) {
+    const o = document.createElement('option'); o.value = z; o.textContent = `${z}（${n}）`;
+    ui.zoneFilter.appendChild(o);
+  }
+}
+ui.zoneFilter.onchange = () => scheduleRender();
+
+// ── Path 下拉 ────────────────────────────────────────────────────
+function refreshPathSelects() {
+  const ids = Array.from(state.cells.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  for (const sel of [ui.pathFrom, ui.pathTo]) {
+    if (!sel) continue;
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">— 選擇 —</option>';
+    for (const [key, c] of ids) {
+      const o = document.createElement('option'); o.value = key;
+      o.textContent = c.name ? `${c.name}（${key}）` : key;
+      sel.appendChild(o);
+    }
+    if (prev) sel.value = prev;
+  }
+}
+
+// ── 物件表單 ─────────────────────────────────────────────────────
+function readObjectsFromJson() {
+  if (!ui.fObjects.value.trim()) return [];
+  const d = JSON.parse(ui.fObjects.value);
+  if (!Array.isArray(d)) throw new Error('必須是陣列');
+  return d;
+}
+function writeObjectsJson(objs) { ui.fObjects.value = JSON.stringify(objs || [], null, 2); }
+function safeGetObjects() { try { return readObjectsFromJson(); } catch (_) { return []; } }
+
+function renderObjectsForm(objs) {
+  ui.objectsForm.innerHTML = '';
+  (objs || []).forEach((obj, idx) => {
+    const row = document.createElement('div'); row.className = 'obj-row';
+    const head = document.createElement('div'); head.className = 'obj-head';
+    const iId = document.createElement('input'); iId.placeholder = 'id'; iId.value = obj.id || '';
+    const iName = document.createElement('input'); iName.placeholder = '名稱'; iName.value = obj.name || '';
+    const btnDel = document.createElement('button'); btnDel.textContent = '刪除';
+    head.append(iId, iName, btnDel); row.appendChild(head);
+
+    const behState = { sockets: [...(obj.sockets || [])], responses: { ...(obj.responses || {}) } };
+    const sync = () => {
+      const list = safeGetObjects(); const cur = list[idx] || {};
+      cur.id = iId.value.trim(); cur.name = iName.value.trim();
+      cur.sockets = behState.sockets; cur.responses = { ...behState.responses };
+      list[idx] = cur; writeObjectsJson(list);
+    };
+    [iId, iName].forEach(el => el.addEventListener('input', sync));
+    btnDel.onclick = () => { const list = safeGetObjects(); list.splice(idx, 1); writeObjectsJson(list); renderObjectsForm(list); };
+
+    const behRows = document.createElement('div'); behRows.className = 'beh-rows';
+    function drawBeh() {
+      behRows.innerHTML = '';
+      behState.sockets.forEach(sock => {
+        const br = document.createElement('div'); br.className = 'beh-row';
+        const lbl = document.createElement('span'); lbl.className = 'beh-lbl'; lbl.textContent = sock;
+        const ta = document.createElement('textarea'); ta.value = behState.responses[sock] || ''; ta.rows = 2;
+        ta.oninput = () => { behState.responses[sock] = ta.value; sync(); };
+        const btnR = document.createElement('button'); btnR.textContent = '✕';
+        btnR.onclick = () => { behState.sockets = behState.sockets.filter(s => s !== sock); delete behState.responses[sock]; drawBeh(); sync(); };
+        br.append(lbl, ta, btnR); behRows.appendChild(br);
+      });
+    }
+    drawBeh();
+
+    const addBar = document.createElement('div'); addBar.className = 'beh-add-bar';
+    ['Look', 'Read', 'Use', 'Talk', 'Move'].forEach(b => {
+      const btn = document.createElement('button'); btn.textContent = `＋${b}`;
+      btn.onclick = () => { if (!behState.sockets.includes(b)) { behState.sockets.push(b); behState.responses[b] = ''; drawBeh(); sync(); } };
+      addBar.appendChild(btn);
+    });
+
+    row.append(behRows, addBar);
+    ui.objectsForm.appendChild(row);
+  });
+}
+
+ui.fObjects.addEventListener('input', () => { try { renderObjectsForm(readObjectsFromJson()); } catch (_) {} });
+
+// ── 按鈕事件 ─────────────────────────────────────────────────────
+function setMode(mode) {
+  state.mode = mode;
+  state.linkFrom = null;
+  $('mode-off').classList.toggle('active', mode === 'move');
+  $('mode-one').classList.toggle('active', mode === 'link-one');
+  $('mode-two').classList.toggle('active', mode === 'link-two');
+  const mm = $('m-mode');
+  if (mm) mm.textContent = mode === 'move' ? '選取' : mode === 'link-one' ? '單向' : '雙向';
+  scheduleRender();
+}
+
+$('mode-off').onclick = () => setMode('move');
+$('mode-one').onclick = () => setMode('link-one');
+$('mode-two').onclick = () => setMode('link-two');
+
+$('btn-refresh').onclick = async () => {
+  try { await api('/api/hex/reload', { method: 'POST' }); await loadGrid(false); setStatus('已重新載入'); } catch (e) { setStatus(e.message, true); }
+};
+$('btn-delete').onclick = deleteSelected;
+$('btn-save').onclick = saveCurrentCell;
+
+$('btn-toggle-edges').onclick = () => {
+  state.showEdges = !state.showEdges;
+  $('btn-toggle-edges').textContent = state.showEdges ? '隱藏連線' : '顯示連線';
+  scheduleRender();
+};
+
+$('btn-add-object').onclick = () => {
+  const list = safeGetObjects();
+  list.push({ id: '', name: '', sockets: ['Look'], responses: { Look: '你看見它。' } });
+  writeObjectsJson(list); renderObjectsForm(list);
+};
+
+$('btn-template').onclick = () => {
+  const tpl = [{ id: 'obj_example', name: '可互動物件', sockets: ['Look', 'Use', 'Talk'], responses: { Look: '你看見它有些年歲。', Use: '條件不足。' } }];
+  writeObjectsJson(tpl); renderObjectsForm(tpl);
+};
+
+if ($('path-use-selected')) {
+  $('path-use-selected').onclick = () => {
+    if (!state.selectedCoord) { setStatus('請先選取', true); return; }
+    const k = hk(state.selectedCoord.q, state.selectedCoord.r);
+    if (ui.pathFrom) ui.pathFrom.value = k;
+  };
+}
+
+$('btn-zoom-in').onclick = () => { cam.zoom = Math.min(ZOOM_MAX, cam.zoom * 1.2); scheduleRender(); };
+$('btn-zoom-out').onclick = () => { cam.zoom = Math.max(ZOOM_MIN, cam.zoom * 0.83); scheduleRender(); };
+$('btn-zoom-reset').onclick = () => { cam.zoom = 1.0; scheduleRender(); };
+
+if ($('btn-panel-toggle')) $('btn-panel-toggle').onclick = () => ui.panel.classList.toggle('open');
+if ($('m-panel')) $('m-panel').onclick = () => ui.panel.classList.toggle('open');
+if ($('m-del')) $('m-del').onclick = deleteSelected;
+if ($('m-mode')) {
+  $('m-mode').onclick = () => setMode(state.mode === 'move' ? 'link-one' : state.mode === 'link-one' ? 'link-two' : 'move');
+}
+
+document.addEventListener('keydown', e => {
+  if (!(e.ctrlKey || e.metaKey) || (e.key !== 's' && e.key !== 'S')) return;
+  e.preventDefault();
+  saveCurrentCell();
+}, true);
+
+// ── 初始化 ───────────────────────────────────────────────────────
+function init() {
+  resizeCanvas();
+  window.addEventListener('resize', () => { resizeCanvas(); scheduleRender(); });
+  loadGrid(true).then(() => renderObjectsForm([])).catch(e => setStatus(`初始化失敗：${e.message}`, true));
+}
+init();

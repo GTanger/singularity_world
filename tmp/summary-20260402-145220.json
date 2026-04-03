@@ -1,0 +1,4 @@
+{
+  "summary": "使用者要求執行 continual-learning：已以 agents-memory-updater 子代理做增量轉錄處理（對 continual-learning-index.json 比對 mtime）、刷新索引 50 筆、更新 AGENTS.md 兩處（避免未解釋專有名詞；聚落／野外分級以 docs/design 現行規格為準並註明早期 MUD 分級表述過時）。",
+  "current_status": "Learned preferences／workspace facts 已同步；Hex 黑海等設計未寫入 AGENTS（待規格定稿）。"
+}

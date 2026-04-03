@@ -1,0 +1,4 @@
+{
+  "summary": "已依需求調整 city 顯示：將 CITY_SKYSCRAPER_OFFSET_Y_FACTOR 由 -0.12 改為 -0.2，讓 city 圖示在六角格內更上方；並把聚落渲染拆成兩段，先畫非 city（village/其他），最後再單獨畫 city，確保 city 位於最高層。",
+  "current_status": "city 目前為上移且最上層渲染；village 與其他地物層級維持既有設定。"
+}

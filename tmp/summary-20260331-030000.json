@@ -1,0 +1,4 @@
+{
+  "summary": "使用者放棄每格貼圖。已從 web/watabou_test.html 移除 tileAssets、loadImage、drawHexTileImage、terrainTileForHex、Promise.all 載入；陸地地形一律回到 drawHexWobble 半透明色塊。AGENTS.md 工作區事實改為貼圖已撤、資產目錄保留。",
+  "current_status": "Perilous PoC 回到純色塊底圖；tiles/ 仍存檔供日後。"
+}

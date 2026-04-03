@@ -1,0 +1,4 @@
+{
+  "summary": "使用者不滿 8x 對湖心與圖章品質。已加 findVerificationCamera（臨水>林>山，zoom≥4 且非 focus=center 自動對準）、改樹（闊葉雙圓+樹幹／針葉雙層／枯枝）與山（漸層+雪線）。已用瀏覽器開 ?zoom=8 驗證畫面為陸地林相非全藍。AGENTS 更新。",
+  "current_status": "驗收 URL 不再預設對準湖心；圖章仍為程式化占位，非 Watabou 成品級。"
+}

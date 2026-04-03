@@ -2,6 +2,8 @@
 
 use crate::db::{self, object_has_socket};
 use crate::entity::{Character, EntityKind};
+use crate::hex::{hex_room_id_from_coord, HexCoord, HexDir};
+use crate::store;
 use crate::model::{Exit, Room, RoomObject};
 
 /// 當前房間視野。
@@ -27,6 +29,88 @@ pub fn get_room_view(room_id: &str, game_hour: i32) -> anyhow::Result<Option<Roo
         entities,
         objects,
     }))
+}
+
+/// 由六角格權威資料組裝 `RoomView`（登入／野外主路徑）。
+///
+/// 鄰接出口僅列出 [`crate::hex::HexGrid::can_walk`] 可通行者；同格實體見 [`crate::db::get_entities_at_hex`]。
+pub fn get_hex_room_view(
+    _player_id: &str,
+    q: i32,
+    r: i32,
+    game_hour: i32,
+) -> anyhow::Result<Option<RoomView>> {
+    let Some(grid) = db::load_hex_grid() else {
+        return Ok(None);
+    };
+    let coord = HexCoord::new(q, r);
+    let Some(cell) = grid.get(coord) else {
+        return Ok(None);
+    };
+    let room = Room {
+        id: hex_room_id_from_coord(q, r),
+        name: cell.name.clone(),
+        tags: cell.tags.clone(),
+        zone: cell.zone.clone(),
+        description: cell.description.clone(),
+        objects: cell.objects.clone(),
+    };
+    let mut exits: Vec<Exit> = Vec::new();
+    for nc in grid.walkable_neighbors(coord) {
+        let ncoord = nc.coord;
+        let Some(dir) = coord.direction_to(ncoord) else {
+            continue;
+        };
+        exits.push(Exit {
+            direction: dir.label_zh().to_string(),
+            to_room_id: hex_room_id_from_coord(ncoord.q, ncoord.r),
+            to_room_name: nc.name.clone(),
+        });
+    }
+    let entities = db::get_entities_at_hex(q, r, game_hour)?;
+    let objects = cell.objects.clone();
+    Ok(Some(RoomView {
+        room,
+        exits,
+        entities,
+        objects,
+    }))
+}
+
+fn hex_dir_from_exit_label(dir: &str) -> Option<HexDir> {
+    let t = dir.trim();
+    HexDir::ALL.into_iter().find(|&d| d.label_zh() == t)
+}
+
+/// 依視野出口方向（與 [`HexDir::label_zh`] 相同之方位字）在六角網上走一步。
+/// 成功時已寫入 [`crate::db::set_entity_hex`]（含 `entity_rooms`）。
+pub fn move_by_hex_direction(entity_id: &str, direction: &str) -> anyhow::Result<(String, bool)> {
+    let dir = direction.trim();
+    if dir.is_empty() {
+        return Ok((String::new(), false));
+    }
+    let Some(grid) = db::load_hex_grid() else {
+        return Ok((String::new(), false));
+    };
+    let arc = store::get_store().ok_or_else(|| anyhow::anyhow!("no store"))?;
+    let s = arc.read().unwrap();
+    let Some(e) = s.get_entity(entity_id) else {
+        return Ok((String::new(), false));
+    };
+    let (Some(q), Some(r)) = (e.hex_q, e.hex_r) else {
+        return Ok((String::new(), false));
+    };
+    drop(s);
+    let Some(hdir) = hex_dir_from_exit_label(dir) else {
+        return Ok((String::new(), false));
+    };
+    let coord = HexCoord::new(q, r);
+    let to = coord.neighbor(hdir);
+    if !grid.can_walk(coord, to) {
+        return Ok((hex_room_id_from_coord(q, r), false));
+    }
+    db::set_entity_hex(entity_id, to.q, to.r)?;
+    Ok((hex_room_id_from_coord(to.q, to.r), true))
 }
 
 /// 若實體尚無房間則設為預設房間，並回傳房間 id。

@@ -1,0 +1,1 @@
+{"summary":"依 Watabou 林相語意重構：每林格一塊 drawForestCanopyMass 徑向漸層樹冠體塊；僅當六角鄰格非林時在該邊佈內圈 drawForestRingCrown（僅樹冠）與外圈 drawTreeSprite（樹冠＋樹幹），兩採樣點沿邊；林心與林鄰接處不再滿格 Poisson 散樹。山與內外圈 Y-sort 合併繪製；樹幹朝向 atan2(cy-py,cx-px)-π/2。","current_status":"watabou_test.html 林相改為體塊＋雙環邊緣；HUD 改 forestHex；poissonInHex 未刪留作備用。"}

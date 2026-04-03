@@ -1,0 +1,4 @@
+{
+  "summary": "本輪依照「新增橋格」需求，已在後端 Terrain enum 新增 Bridge 並納入移動係數（與 Road 同為 0.5）、可通行判定與測試；前端編輯器新增 Bridge 到地形清單、中文標籤、顏色與序列化名稱，並補上 Watabou 字串映射（bridge/plank/planks）及 MFCG GeometryCollection 的 planks 線段匯入為橋格；同步更新地形移動係數文件，最後完成後端與 editor-leptos 編譯、trunk release build、服務重啟與 lint 檢查。",
+  "current_status": "Hex 編輯器與後端地形已擴充到 Road/Bridge/Wall/FarmField/Farmhouse 等新語義，匯入管線（Watabou + MFCG）與文件保持一致；目前編譯與測試皆通過，服務已重啟可直接驗證橋格繪製與匯入效果。"
+}

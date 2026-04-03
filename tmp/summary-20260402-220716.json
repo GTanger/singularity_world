@@ -1,0 +1,4 @@
+{
+  "summary": "使用者指出先前說明過於模糊。已承認並改為定案規格：N＝6、六固定槽每 60°、碰撞直徑 D_coll ≤ W/3（W＝flat-to-flat）、滿格拒絕進入、尋路視滿格為不可站、繪製可小於碰撞半徑。已寫入 docs/reference/map_terrain_world.md 新章節。",
+  "current_status": "地圖參考文件已含可實作的六角同格規則；程式端 hex／entity／移動 API 尚待對齊此文。"
+}

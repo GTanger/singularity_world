@@ -1,0 +1,1 @@
+{"summary":"新增 room_hex_overlay.json 與 db::room_hex：set_entity_room 對世界房間可解析為六角時改走 set_entity_hex；get_entities_in_room 合併同格；canonical_location_key／resolve_room_to_hex；player_room_ids 與閒置迴圈 contains、send_narrate、refresh 用同一解析；build_active_room_ids 保留原始 id 以維持 RoomGraph 鄰接。","current_status":"clippy/test 通過；其餘房間可在 overlay rooms 填 id→q,r。"}

@@ -1,0 +1,4 @@
+{
+  "summary": "修復選取模式拖曳多選：將 Select 行為拆為「點擊切換」與「拖曳加入」。新增 on_select_add（僅加入不反轉），在 HexGrid 內加入 select_start/select_dragged 狀態；按下不立即 toggle，拖曳時沿路徑連續加入，放開若未拖曳才執行單點 toggle，因此保留點擊取消選取能力並修正拖曳只剩單點問題。",
+  "current_status": "editor 已支援穩定拖曳多選（不再來回反轉），且仍可單點切換；編譯與 release 建置均通過。"
+}

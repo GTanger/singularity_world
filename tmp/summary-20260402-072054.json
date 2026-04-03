@@ -1,0 +1,4 @@
+{
+  "summary": "本輪修正手機介面「儲存按鈕不見」問題，調整 `editor-leptos/src/components/toolbar.rs` 工具列按鈕順序：將「💾 儲存」與「🔄 重新載入」移到筆刷控制後、`toolbar-spacer` 之前，避免被側欄與清空按鈕擠到橫向捲動尾端而初始不可見。",
+  "current_status": "手機工具列關鍵操作鍵（儲存/重新載入）已恢復預設可見；前端 release build 與 lint 均通過，可直接重整頁面驗證。"
+}

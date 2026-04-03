@@ -1,0 +1,4 @@
+{
+  "summary": "watabou_test.html：非同步載入 assets/tiles 的 forest、green_mountain、stone_mountain；新增 hexWobblePath／drawHexTileImage（六角裁切＋cover 縮放）；地形對應 forest-light/dark/dead→forest.png、mountain→green_mountain、rocks→stone_mountain；其餘地形仍用半透明色塊。init 先 render 色塊再於貼圖載入後重繪。已用本機 http 開頁確認主控台無錯。",
+  "current_status": "Perilous Shores 試驗頁：森林與山脈格已改為每格貼圖；city/village 尚未用於渲染。"
+}

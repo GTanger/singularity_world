@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者指定執行 continual-learning：以 `agents-memory-updater` 走增量流程，僅處理 mtime 更新的 parent transcript，刷新索引 mtime 並維持只含 parent 路徑。AGENTS.md 有高訊號更新（補強回覆方式與單平面建築互動決策）。",
+  "current_status": "continual-learning 索引與 AGENTS.md 已同步最新高訊號記憶，非高訊號與敏感資訊未入庫。"
+}

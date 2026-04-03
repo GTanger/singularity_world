@@ -1,0 +1,4 @@
+{
+  "summary": "使用者質疑「hex 後端跑通再接畫面」並提出視距規格：以當前格為中心、VIEW_MAX_RING=R，d>R 強制黑格（已開彩格亦然）。已寫入 map_terrain_world.md（並說明不必等後端全跑通再接畫面）、AGENTS.md 一則。",
+  "current_status": "地圖參考文件含視距與並行開發說明；實作待接前端繪製與設定 R。"
+}

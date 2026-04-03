@@ -1,0 +1,1 @@
+{"summary":"實作 (2)(3)：Portal 增 counts_as_official_link（預設 false，舊 JSON 相容）；新增 TransportMode／LinkClass／Endpoint／TransportEdge 與 HexGrid.transport_edges 序列化；hex_editor POST /api/hex/transport-edge（格端點）；PortalReq 可帶 counts_as_official_link；editor-leptos GridResponse 同步型別；測試與主 crate clippy 通過。","current_status":"官方幹線資料結構已落 grid.json；build_transport_graph official 層尚未接線。"}

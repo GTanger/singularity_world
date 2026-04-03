@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者回報道路也過量，調整 MFCG roads 匯入策略：僅保留較長線段（長度<6*hex_r 直接忽略）以剔除大量小巷/邊界線，並限制道路不覆蓋 wall/water/urban/mountain 等關鍵地形，降低整片米色噪音覆蓋。已重建 editor wasm 與 release。",
+  "current_status": "walls 已改邊界化、roads 已主幹道化與覆蓋保護，可重新匯入 thundertalonfield.json 比對視覺密度。"
+}

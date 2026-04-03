@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求將 town 縮小三階，調整 web/watabou_test.html 的 TOWN_TILE_FIT 由 0.92 下修為 0.62；其餘渲染邏輯與層級不變。",
+  "current_status": "town 圖示目前顯著縮小（0.62），city/village 顯示策略維持既有設定。"
+}

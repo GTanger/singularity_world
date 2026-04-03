@@ -10,9 +10,9 @@ use crate::store;
 #[must_use]
 pub fn starter_equipment(gender: &str) -> String {
     if gender == "F" {
-        r#"{"body":"starter_body_f","legs":"starter_legs_f","feet":"starter_feet_f"}"#.to_string()
+        r#"{"undershirt":"","inner_armor":"","body":"starter_body_f","legs":"starter_legs_f","leg_armor":"","feet":"starter_feet_f"}"#.to_string()
     } else {
-        r#"{"body":"starter_body_m","legs":"starter_legs_m","feet":"starter_feet_m"}"#.to_string()
+        r#"{"undershirt":"","inner_armor":"","body":"starter_body_m","legs":"starter_legs_m","leg_armor":"","feet":"starter_feet_m"}"#.to_string()
     }
 }
 
@@ -95,6 +95,9 @@ mod tests {
     fn starter_f_differs_from_m() {
         assert_ne!(starter_equipment("F"), starter_equipment("M"));
         assert!(starter_equipment("M").contains("starter_body_m"));
+        assert!(starter_equipment("M").contains("\"inner_armor\":\"\""));
+        assert!(starter_equipment("M").contains("\"undershirt\":\"\""));
+        assert!(starter_equipment("M").contains("\"leg_armor\":\"\""));
     }
 
     #[test]

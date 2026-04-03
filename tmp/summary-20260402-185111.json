@@ -1,0 +1,4 @@
+{
+  "summary": "實作 Hex 野外「探索生成」垂直切片：HexGrid 持久化 world_seed；新增 hex/reveal（mix_coord_seed、generate_wild_cell、reveal_hex_disk、鄰格連續性與權重地形、單元測試）；API POST /api/hex/reveal、/api/hex/reveal-region、PUT /api/hex/world-seed；editor-leptos 載入 world_seed、工具列「套用種子」「揭露此格」「揭露半徑2」與 api 封裝。cargo test / clippy -D warnings / editor-leptos check 通過。",
+  "current_status": "黑格=未在 cells 內；揭露寫入契約並 tag proc_reveal。尚未做：配額/IOU、聚落 Gate、多人同步；接軌與 topology_hash 仍屬設計後端。"
+}

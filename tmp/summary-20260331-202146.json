@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者回饋修正「village 底下還有樹/山」：在渲染流程中，對同一格有 town 的 hex，跳過森林 emoji、山脈 emoji 與水面波紋符號繪製，只保留聚落圖示本體。並以瀏覽器實測 focusQ=39,focusR=5 截圖確認 village 下方不再疊地形符號。",
+  "current_status": "聚落所在 hex 現在不會再畫樹/山/水紋覆蓋符號；city/village/town 圖示仍在頂層顯示。"
+}

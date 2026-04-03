@@ -14,6 +14,7 @@
     "create_failed": "建立失敗",
     "create_id_taken": "此 ID 已被使用",
     "create_entity_failed": "建立角色失敗",
+    "create_spawn_hex_failed": "野外出生點（草原）建立失敗",
     "create_room_failed": "放入房間失敗",
     "create_auth_failed": "設定密碼失敗",
     "load_room_failed": "房間載入失敗",

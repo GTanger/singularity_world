@@ -6,6 +6,9 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 
+use crate::entity::EntityKind;
+use crate::hex::HexCoord;
+use crate::server::hex_editor;
 use crate::{config, db, gametext, model, store};
 
 // ── /api/design-constants ──
@@ -64,6 +67,11 @@ pub struct PlayerRoomQuery {
 pub struct PlayerRoomResponse {
     player_id: String,
     room_id: String,
+    /// 野外六角 even-q；未綁定時為 null。
+    #[serde(skip_serializing_if = "Option::is_none")]
+    hex_q: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    hex_r: Option<i32>,
 }
 
 pub async fn player_room(Query(q): Query<PlayerRoomQuery>) -> impl IntoResponse {
@@ -78,7 +86,24 @@ pub async fn player_room(Query(q): Query<PlayerRoomQuery>) -> impl IntoResponse 
         Ok(r) => r,
         Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"查詢房間失敗"}))).into_response(),
     };
-    Json(PlayerRoomResponse { player_id, room_id }).into_response()
+    let (hex_q, hex_r) = if let Some(st) = store::get_store() {
+        if let Ok(s) = st.read() {
+            s.get_entity(&player_id)
+                .map(|e| (e.hex_q, e.hex_r))
+                .unwrap_or((None, None))
+        } else {
+            (None, None)
+        }
+    } else {
+        (None, None)
+    };
+    Json(PlayerRoomResponse {
+        player_id,
+        room_id,
+        hex_q,
+        hex_r,
+    })
+    .into_response()
 }
 
 // ── /data/rooms.json ──
@@ -564,4 +589,117 @@ pub async fn topology(Query(q): Query<TopologyQuery>) -> impl IntoResponse {
         edges: build_topology_edges(&costs),
     };
     Json(resp).into_response()
+}
+
+// ── Hex 多人：玩家各自已揭露（PostgreSQL）vs 世界契約（grid.json）──
+
+#[derive(Deserialize)]
+pub struct HexPlayerRevealBody {
+    pub id: String,
+    pub pw: String,
+    pub q: i32,
+    pub r: i32,
+}
+
+/// POST /api/hex/player-reveal — 驗證玩家後：確保世界格存在，並寫入該玩家之已揭露列。
+pub async fn hex_player_reveal(Json(body): Json<HexPlayerRevealBody>) -> impl IntoResponse {
+    let ok = db::verify_password(&body.id, &body.pw).unwrap_or(false);
+    if !ok {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"身份驗證失敗"}))).into_response();
+    }
+    let ent = match db::get_entity(&body.id) {
+        Ok(Some(e)) => e,
+        _ => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"角色不存在"}))).into_response(),
+    };
+    if ent.kind != EntityKind::Player {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"僅玩家角色可標記野外揭露"}))).into_response();
+    }
+    let coord = HexCoord::new(body.q, body.r);
+    let cell_id = coord.to_cell_id();
+    let (cell, world_new) = match hex_editor::ensure_world_cell_at(coord) {
+        Ok(x) => x,
+        Err(e) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({"error": format!("世界格寫入失敗：{e}")})),
+            )
+                .into_response();
+        }
+    };
+    let self_new = match db::mark_player_hex_revealed(&body.id, &cell_id) {
+        Ok(b) => b,
+        Err(e) => {
+            return (
+                StatusCode::SERVICE_UNAVAILABLE,
+                Json(serde_json::json!({"error": format!("已揭露紀錄寫入失敗：{e}")})),
+            )
+                .into_response();
+        }
+    };
+    Json(serde_json::json!({
+        "cell": cell,
+        "cell_id": cell_id,
+        "world_newly_committed": world_new,
+        "self_newly_marked": self_new,
+    }))
+    .into_response()
+}
+
+#[derive(Deserialize)]
+pub struct HexMyRevealedQuery {
+    pub id: String,
+    pub pw: String,
+    #[serde(default = "default_reveal_limit")]
+    pub limit: i64,
+    #[serde(default)]
+    pub offset: i64,
+}
+
+fn default_reveal_limit() -> i64 {
+    2000
+}
+
+/// GET /api/hex/my-revealed?id=&pw=&limit=&offset= — 該玩家已揭露之 cell_id 列表（排序固定，可分頁）。
+pub async fn hex_my_revealed(Query(q): Query<HexMyRevealedQuery>) -> impl IntoResponse {
+    let ok = db::verify_password(&q.id, &q.pw).unwrap_or(false);
+    if !ok {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"身份驗證失敗"}))).into_response();
+    }
+    let ent = match db::get_entity(&q.id) {
+        Ok(Some(e)) => e,
+        _ => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"角色不存在"}))).into_response(),
+    };
+    if ent.kind != EntityKind::Player {
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"僅玩家可查詢"}))).into_response();
+    }
+    let limit = q.limit.clamp(1, 50_000);
+    let offset = q.offset.max(0);
+    let total = match db::count_player_hex_revealed(&q.id) {
+        Ok(n) => n,
+        Err(e) => {
+            return (
+                StatusCode::SERVICE_UNAVAILABLE,
+                Json(serde_json::json!({"error": format!("{e}")})),
+            )
+                .into_response();
+        }
+    };
+    let cell_ids = match db::list_player_hex_revealed(&q.id, limit, offset) {
+        Ok(v) => v,
+        Err(e) => {
+            return (
+                StatusCode::SERVICE_UNAVAILABLE,
+                Json(serde_json::json!({"error": format!("{e}")})),
+            )
+                .into_response();
+        }
+    };
+    Json(serde_json::json!({
+        "entity_id": q.id,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "cell_ids": cell_ids,
+    }))
+    .into_response()
 }

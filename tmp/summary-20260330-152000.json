@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求產出 Watabou 名稱清單文檔：docs/map/watabou_lakes_of_secrets_name_list.md，含根層 name/tags、terrain 枚舉與格數、63 個 features、56 個 hex.town、7 個無 town 地標、以及 rivers/roads/searoutes 完整鍵清單。",
+  "current_status": "奇點世界：Perilous Shores JSON 名稱與 id 已集中於單一 markdown 供翻譯與對照。"
+}

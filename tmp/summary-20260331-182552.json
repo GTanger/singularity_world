@@ -1,0 +1,4 @@
+{
+  "summary": "針對「town 都沒出現」進行可視化修正：不再把 town 併入 village SVG 分支，改為獨立符號顯示（🏬），並新增 MID_TOWN_EMOJI_SCALE=1.08 作為中間層尺寸。city 仍用城市 SVG、village 仍用 neighborhood SVG。",
+  "current_status": "聚落三層目前可視化為 city(城市SVG) / town(🏬) / village(村莊SVG)，可在畫面上明確區分。"
+}

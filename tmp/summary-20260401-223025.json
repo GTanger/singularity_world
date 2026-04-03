@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求把右鍵載入改為預設 Watabou 格式。已在前端加入隱藏 file input，右鍵點格子時先記錄錨點座標再開檔；選檔後預設按 Watabou JSON（hexes 物件含 q/r/terrain）解析，將來源最小 q/r 對齊到錨點，組成批次 CellPutReq，經 /api/hex/cells 一次寫入並刷新地圖。同步新增 api::put_cells，並補 wasm-bindgen-futures 與 web-sys 的 HtmlInputElement/FileList/File feature 以支援瀏覽器檔案讀取。已完成 wasm build、trunk release，遠端頁面可見 file input 節點。",
+  "current_status": "右鍵行為目前為：點格 -> 開 JSON 檔案 -> 預設以 Watabou 格式匯入到錨點。中鍵仍平移，左鍵維持繪製/刪除。"
+}

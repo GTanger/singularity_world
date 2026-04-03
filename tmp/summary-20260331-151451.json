@@ -1,0 +1,4 @@
+{
+  "summary": "使用者詢問 city emoji 是否可直接調亮。已準備說明：原生彩色 emoji 由系統字型彩色字形渲染，Canvas 的 fillStyle 無法像普通字型那樣精準改色/提亮；可改用光暈、陰影、濾鏡近似，或改用可控 SVG/圖示資產以達真正亮度控制。",
+  "current_status": "地圖符號功能穩定；若要精準控制 city 視覺亮度，建議從 emoji 切到自有 SVG 圖示。"
+}

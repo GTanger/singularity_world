@@ -1,0 +1,4 @@
+{
+  "summary": "使用者確認殺後台重啟後 CDP／9222 正常。已將「.desktop 已加旗標仍須完全退出 Cursor 含背景再冷啟動」寫入 AGENTS.md。已執行 cargo build 通過。",
+  "current_status": "Singularity World 主程式可建置；六角／hex_editor／editor-leptos 前序工單在先前對話已標為完成。下一步需使用者指定要接的切片（例如詞盤、NPC、地圖編輯器、Room 遷移等）。"
+}

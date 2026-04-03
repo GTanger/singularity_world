@@ -4,7 +4,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 40px;
+  height: 44px;
   background: rgba(15, 25, 35, 0.92);
   border-bottom: 1px solid #1e2d3d;
   display: flex;
@@ -13,6 +13,14 @@
   gap: 8px;
   z-index: 200;
   backdrop-filter: blur(6px);
+}
+
+.toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
 }
 
 .toolbar-title {
@@ -34,11 +42,13 @@
   background: #1e2d3d;
   border: 1px solid #2a3f55;
   color: #c8d6e5;
-  padding: 4px 10px;
+  padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
   transition: background 0.15s;
+  min-height: 32px;
+  white-space: nowrap;
 }
 
 .toolbar-btn:hover {
@@ -54,19 +64,35 @@
   background: #1a2634;
   border: 1px solid #2a3f55;
   color: #c8d6e5;
-  padding: 4px 8px;
+  padding: 6px 8px;
   border-radius: 4px;
   font-size: 0.75rem;
+  min-height: 32px;
 }
 
 .toolbar-range {
   width: 90px;
 }
 
+.toolbar-seed-input {
+  width: 120px;
+  background: #1a2634;
+  border: 1px solid #2a3f55;
+  color: #c8d6e5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  min-height: 28px;
+}
+
+.toolbar-mobile-toggle {
+  display: none;
+}
+
 /* 主佈局 */
 .main-layout {
   position: fixed;
-  top: 40px;
+  top: 44px;
   left: 0;
   right: 0;
   bottom: 28px;
@@ -293,22 +319,118 @@ html, body {
 
 /* 手機適配 */
 @media (max-width: 768px) {
-  .cell-editor {
+  .toolbar {
+    height: 52px;
+    padding: 0 8px;
+    gap: 8px;
+    overflow: visible;
+    justify-content: flex-start;
+  }
+
+  .toolbar-mobile-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    font-size: 1rem;
+  }
+
+  .toolbar-btn,
+  .toolbar-select {
+    min-height: 38px;
+    font-size: 0.82rem;
+    flex: 0 0 auto;
+    padding: 7px 10px;
+  }
+
+  .toolbar-btn-save,
+  .toolbar-btn-reload {
+    flex: 0 0 auto;
+  }
+
+  .toolbar-controls {
     position: fixed;
-    bottom: 28px;
-    left: 0;
-    right: 0;
+    top: 52px;
+    left: 8px;
+    right: 8px;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px;
+    background: rgba(15, 25, 35, 0.97);
+    border: 1px solid #2a3f55;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    z-index: 240;
+  }
+
+  .toolbar-controls.open {
+    display: flex;
+  }
+
+  .toolbar-controls .toolbar-title {
+    display: block;
+  }
+
+  .toolbar-controls .toolbar-count {
+    font-size: 0.78rem;
+  }
+
+  .toolbar-controls .toolbar-select,
+  .toolbar-controls .toolbar-range,
+  .toolbar-controls .toolbar-btn {
     width: 100%;
-    max-height: 45vh;
-    border-left: none;
-    border-top: 1px solid #1e2d3d;
+  }
+
+  .toolbar-controls .toolbar-spacer {
+    display: none;
   }
 
   .main-layout {
-    flex-direction: column;
+    top: 52px;
+    bottom: 34px;
+  }
+
+  .status-bar {
+    height: 34px;
+    font-size: 0.72rem;
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    pointer-events: auto;
+  }
+
+  .status-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cell-editor {
+    position: fixed;
+    bottom: 34px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 58vh;
+    border-left: none;
+    border-top: 1px solid #1e2d3d;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .editor-form input,
+  .editor-form select,
+  .editor-form textarea,
+  .btn-save,
+  .btn-delete {
+    font-size: 16px;
+    min-height: 40px;
   }
 
   .map-area {
-    flex: 1;
+    height: 100%;
   }
 }

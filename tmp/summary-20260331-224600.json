@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求改切 docs/map/world/lakes_of_secrets.svg：建立 web/maps/lakes_of_secrets.svg 符號連結至該檔；map_test.html 改載入 maps/lakes_of_secrets.svg、初值與按鈕 flyTo 改為 4000×4000 座標系中心；移除 Azgaar 專用 #rivers 線寬樣式。",
+  "current_status": "靜態服務 web/ 時 /map_test.html 可驗 Perilous Shores 大 SVG；world_map.svg 仍保留未刪。"
+}

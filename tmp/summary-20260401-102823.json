@@ -1,0 +1,4 @@
+{
+  "summary": "將 room_editor 升級為六角向工作流：節點改六角外觀與六向方向推斷，新增空白地圖右鍵『從此六角載入 Watabou JSON』匯入流程，匯入以錨點六角為起點且跳過既有房格（不覆蓋），並新增一鍵清空 Azgaar world_* 房間功能。",
+  "current_status": "六角編輯與 Watabou JSON 對接已可用（前端語法檢查通過、無 lint 問題）；可在 room_editor 直接右鍵空白處匯入並保留既有設定。"
+}

@@ -107,6 +107,12 @@ pub struct Entity {
     /// 表面可觀測行為（非內心意圖），供玩家 Look 時顯示。
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub current_activity: String,
+    /// 野外六角 even-q 座標 q；`None` 表示尚未綁定六角世界（僅 Room／平面 x,y）。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hex_q: Option<i32>,
+    /// 野外六角 even-q 座標 r。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hex_r: Option<i32>,
 }
 
 /// 物品定義。
@@ -468,6 +474,28 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
 
     // 1. 房間始終從檔案系統載入（編輯器工作流）
     s.load_rooms(rooms_path)?;
+
+    // 1b. 城市 GeoJSON（data/cities/{burg_id}.json）→ 記憶體房間，不寫 rooms JSON
+    let cities_dir = data.join("cities");
+    if cities_dir.is_dir() {
+        if let Ok(entries) = fs::read_dir(&cities_dir) {
+            for entry in entries.flatten() {
+                let p = entry.path();
+                if p.extension().is_none_or(|e| e != "json") {
+                    continue;
+                }
+                match crate::city::load_and_inject(&mut s, &p) {
+                    Ok(stats) => tracing::info!(
+                        "[city] burg_id={} 載入: {} 語意節點（城門+區坊）, {} 可進建築",
+                        stats.burg_id,
+                        stats.junctions,
+                        stats.buildings
+                    ),
+                    Err(e) => tracing::warn!("[city] 載入失敗 {:?}: {}", p, e),
+                }
+            }
+        }
+    }
 
     // 2. 初始化 PostgreSQL 連線池
     let pg_url = std::env::var("DATABASE_URL")
@@ -886,6 +914,11 @@ impl Store {
     //  CRUD 方法 — 房間
     // ══════════════════════════════════════
 
+    /// 房間 JSON 根目錄（如 `data/rooms`），供城市模組掃描 editor 中繼資料。
+    pub fn rooms_path(&self) -> &str {
+        self.rooms_path.as_str()
+    }
+
     pub fn room_ids(&self) -> Vec<String> {
         self.rooms.keys().cloned().collect()
     }
@@ -923,6 +956,47 @@ impl Store {
 
     pub fn get_exits_for_room(&self, from_room_id: &str) -> Vec<model::Exit> {
         self.exits.get(from_room_id).cloned().unwrap_or_default()
+    }
+
+    /// 僅寫入記憶體房間表（不寫 editor JSON、不寫 PG）；供啟動時注入城市 GeoJSON 解析結果。
+    pub fn inject_ephemeral_rooms(
+        &mut self,
+        rooms: HashMap<String, model::Room>,
+        exits: HashMap<String, Vec<model::Exit>>,
+    ) {
+        for (id, room) in rooms {
+            self.rooms.insert(id, room);
+        }
+        for (id, mut ex_list) in exits {
+            for ex in &mut ex_list {
+                if ex.to_room_name.is_empty() {
+                    if let Some(r) = self.rooms.get(&ex.to_room_id) {
+                        ex.to_room_name = r.name.clone();
+                    }
+                }
+            }
+            self.exits.insert(id, ex_list);
+        }
+    }
+
+    /// 在既有房間的出口列表末尾加一筆（同 direction + 目標房不重複）。
+    pub fn append_exit_unique(&mut self, room_id: &str, mut exit: model::Exit) {
+        if room_id.is_empty() || exit.direction.is_empty() || exit.to_room_id.is_empty() {
+            return;
+        }
+        if exit.to_room_name.is_empty() {
+            if let Some(r) = self.rooms.get(&exit.to_room_id) {
+                exit.to_room_name = r.name.clone();
+            }
+        }
+        let list = self.exits.entry(room_id.to_string()).or_default();
+        if list
+            .iter()
+            .any(|e| e.direction == exit.direction && e.to_room_id == exit.to_room_id)
+        {
+            return;
+        }
+        list.push(exit);
     }
 
     /// 更新房間資料並寫回 JSON 與 PostgreSQL。
@@ -1218,8 +1292,8 @@ impl Store {
                 "INSERT INTO entities (id, kind, display_char, x, y, move_state, target_x, target_y,
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
-                    equipment_slots, inventory, disposition, current_activity)
-                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)
+                    equipment_slots, inventory, disposition, current_activity, hex_q, hex_r)
+                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
                  ON CONFLICT (id) DO UPDATE SET
                     kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
                     move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
@@ -1229,13 +1303,13 @@ impl Store {
                     gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
                     activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
                     inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
-                    current_activity=EXCLUDED.current_activity",
+                    current_activity=EXCLUDED.current_activity, hex_q=EXCLUDED.hex_q, hex_r=EXCLUDED.hex_r",
                 &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
                   &e.target_x, &e.target_y, &e.walk_or_run, &e.move_started_at,
                   &e.vit, &e.qi, &e.dex, &e.magnesium, &e.last_observed_at,
                   &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
                   &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
-                  &e.current_activity],
+                  &e.current_activity, &e.hex_q, &e.hex_r],
             )?;
         }
 
@@ -1371,7 +1445,7 @@ impl Store {
             "SELECT id, kind, display_char, x, y, move_state, target_x, target_y,
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
-                    equipment_slots, inventory, disposition, current_activity
+                    equipment_slots, inventory, disposition, current_activity, hex_q, hex_r
              FROM entities", &[]
         ) else { return false };
 
@@ -1402,6 +1476,8 @@ impl Store {
                 inventory: row.get(21),
                 disposition: row.get(22),
                 current_activity: row.get(23),
+                hex_q: row.get(24),
+                hex_r: row.get(25),
             };
             self.entities.insert(e.id.clone(), e);
         }
@@ -1580,8 +1656,8 @@ impl Store {
                     "INSERT INTO entities (id, kind, display_char, x, y, move_state, target_x, target_y,
                         walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                         created_at, gender, soul_seed, display_title, activated_nodes,
-                        equipment_slots, inventory, disposition, current_activity)
-                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)
+                        equipment_slots, inventory, disposition, current_activity, hex_q, hex_r)
+                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
                      ON CONFLICT (id) DO UPDATE SET
                         kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
                         move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
@@ -1591,13 +1667,13 @@ impl Store {
                         gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
                         activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
                         inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
-                        current_activity=EXCLUDED.current_activity",
+                        current_activity=EXCLUDED.current_activity, hex_q=EXCLUDED.hex_q, hex_r=EXCLUDED.hex_r",
                     &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
                       &e.target_x, &e.target_y, &e.walk_or_run, &e.move_started_at,
                       &e.vit, &e.qi, &e.dex, &e.magnesium, &e.last_observed_at,
                       &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
                       &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
-                      &e.current_activity],
+                      &e.current_activity, &e.hex_q, &e.hex_r],
                 );
             }
         }
@@ -1645,6 +1721,15 @@ impl Store {
         self.entity_rooms.iter()
             .filter(|(_, rid)| rid.as_str() == room_id)
             .map(|(eid, _)| eid.clone())
+            .collect()
+    }
+
+    /// 與指定六角座標重合的實體 id（依 `hex_q` / `hex_r`）。
+    pub fn entity_ids_at_hex(&self, q: i32, r: i32) -> Vec<String> {
+        self.entities
+            .iter()
+            .filter(|(_, e)| e.hex_q == Some(q) && e.hex_r == Some(r))
+            .map(|(id, _)| id.clone())
             .collect()
     }
 
@@ -1701,6 +1786,25 @@ impl Store {
             return self.persist_entities();
         }
         Ok(())
+    }
+
+    /// 設定實體在野外六角格網（even-q）上的權威座標；寫入 PG 與快取。
+    /// 同步寫入 `entity_rooms` 為 `hex:{q}:{r}`，與 [`Self::set_entity_room`] 一致。
+    pub fn set_entity_hex(&mut self, entity_id: &str, q: i32, r: i32) -> anyhow::Result<()> {
+        self.update_entity(entity_id, |e| {
+            e.hex_q = Some(q);
+            e.hex_r = Some(r);
+        })?;
+        let rid = crate::hex::hex_room_id_from_coord(q, r);
+        self.set_entity_room(entity_id, &rid)
+    }
+
+    /// 清除六角綁定（仍保留 Room／平面座標）。
+    pub fn clear_entity_hex(&mut self, entity_id: &str) -> anyhow::Result<()> {
+        self.update_entity(entity_id, |e| {
+            e.hex_q = None;
+            e.hex_r = None;
+        })
     }
 
     pub fn transfer_magnesium(&mut self, from_id: &str, to_id: &str, amount: i32) -> anyhow::Result<()> {

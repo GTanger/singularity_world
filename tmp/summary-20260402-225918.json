@@ -1,0 +1,4 @@
+{
+  "summary": "接續「權威走 PG」：實體新增 hex_q/hex_r（Option），PostgreSQL entities 表 ALTER、全量同步與 pg_upsert、load_entities_from_pg 已貫通；insert_entity/npc_spawn 預設 None；store 新增 set_entity_hex/clear_entity_hex；/api/player-room 回傳 hex_q/hex_r。cargo build、clippy、test 通過。AGENTS.md 補一行。",
+  "current_status": "玩家六角位置可存 PG 並經 API 讀取；尚未自動從 room 對應 hex、須日後邏輯或管理工具寫入座標。"
+}

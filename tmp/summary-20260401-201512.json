@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求繼續優化大圖渲染，已在 Leptos + Canvas 架構上完成第一輪『超大地圖模式』效能改造。主要改動在 editor-leptos/src/components/hex_grid.rs：新增 cell_lookup memo（(q,r)->index 查表）避免每幀全量掃描；繪製迴圈改成只掃可視 q/r 範圍並查表；低縮放粒子模式改為按顏色分桶批次繪製；背景格線顯示門檻上調以減少遠距負擔；點擊選取改為僅可選已存在格子（點空白會清選取）。同時保留原有手機觸控拖曳/雙指縮放與滑鼠操控。已通過 wasm32 cargo build 與 trunk build --release。",
+  "current_status": "編輯器目前為 Leptos + Canvas + LOD，已具備萬格級基礎渲染策略（可視範圍查表與粒子化遠景）。可進入真機壓測階段，下一步可做更進階的幾何批次快取與分塊索引（chunk）以進一步逼近 HexAtlas 體感。"
+}

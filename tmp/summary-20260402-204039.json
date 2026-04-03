@@ -1,0 +1,4 @@
+{
+  "summary": "已直接實作先前口頭建議：hex_cells 的 tags/objects 改為 JSONB（新表預設、舊 TEXT 啟動時 ALTER 遷移）；terrain 與 HexDir serde snake_case 對齊之 CHECK；hex_transport_edges 的 mode/link_class CHECK；遷移須在 hex_barriers/hex_transport_edges 建表後執行。hex_world.rs 讀寫改 tags::text/objects::text 與 INSERT $6::$8::jsonb。",
+  "current_status": "cargo clippy -D warnings 與全套 test 通過；既有 DB 重啟連線池時會跑遷移，若舊資料 terrain 不在清單需手動修正。"
+}

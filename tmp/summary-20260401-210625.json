@@ -1,0 +1,4 @@
+{
+  "summary": "針對使用者貼出的 rustc 借用錯誤（cannot move out of canvas because it is borrowed）進行核對與修正。先讀取 hex_grid.rs 對應區段，確認目前程式可編譯；為避免 IDE 診斷誤報，再額外調整事件目標借用方式：由原本直接對 canvas 取 EventTarget，改為先 clone 成 event_target_canvas 再取 EventTarget，降低借用衝突可能。重新執行 cargo build --target wasm32-unknown-unknown 成功。",
+  "current_status": "實際編譯已通過，borrow 錯誤在當前碼已排除；IDE ReadLints 仍顯示舊錯誤，屬診斷快取未更新的殘留。"
+}

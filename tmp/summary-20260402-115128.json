@@ -1,0 +1,4 @@
+{
+  "summary": "本輪依使用者指定的裝備命名表，完成裝備欄位顯示全面改名並新增兩槽位：`undershirt`（襯衣）與 `leg_armor`（腿鎧）。更新內容涵蓋前端裝備欄位顯示順序與中文名稱（web/main.js）、後端 starter 裝備 JSON 預設槽位（src/db/equip.rs）與種子資料（data/entities.json），以及裝備規格文件（17/18 槽描述調整為 20 槽並同步新命名）。",
+  "current_status": "目前裝備欄位已擴充為 20 槽且命名對齊使用者語義（冠盔/面甲/護頸/襯衣/內甲/掛鎧...）；backend 編譯與 lint 均通過。"
+}

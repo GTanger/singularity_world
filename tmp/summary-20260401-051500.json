@@ -1,0 +1,4 @@
+{
+  "summary": "完成 room_editor 從 DOM 節點渲染到 Canvas 2D 的完整重寫。新版使用 Camera 變換系統（worldToScreen/screenToWorld）繪製無限六角格底圖，每個格子都是可互動的真實 Canvas 物件。支援：點擊空白格建房、點擊填充格選取、拖曳平移、滾輪縮放、右鍵選單（建房/Watabou匯入）、連線模式、雙指觸控縮放。保留全部 API 邏輯、面板表單、物件行為編輯、路徑建立、Zone 濾鏡等功能。截圖驗證六角格渲染正確，Console 無錯誤，API 建房連線 Layout 功能正常。",
+  "current_status": "Canvas 六角格編輯器 v1.0.0 已部署。六角格底圖渲染、基本互動（建房/選取/平移/縮放/連線）、面板編輯、Watabou 匯入全部就緒。待使用者實際操作測試反饋。地圖資料已清空（0 房 0 線），等待使用者開始填充或匯入 Watabou JSON。"
+}

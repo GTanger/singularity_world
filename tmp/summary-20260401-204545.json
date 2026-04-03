@@ -1,0 +1,4 @@
+{
+  "summary": "修復使用者回報『點格子沒反應』。根因是我前一版把點選限制成僅能選到既有 cell（lookup contains 才 set_selected），導致空白地圖永遠無法選格；另外觸控流程缺少 touch tap 選取。已在 hex_grid.rs 修改為：滑鼠 click 一律以像素反算並選取最近 hex（不再檢查是否存在 cell）；touchend 在未拖曳且單指 changedTouches 時執行同一套選格邏輯。完成 wasm32 build 與 trunk release，並用遠端頁面 https://sw.ygggt.com/hex-editor?cb=20260401-1245 驗證，0 格狀態下點擊後狀態列可顯示選取座標（例：選取：(-2,-4)）。",
+  "current_status": "Canvas 版編輯器目前可全畫面互動、空白格可選、手機 tap 可選，基礎操控恢復正常。後續可再做 chunk 索引與批次繪製深化效能。"
+}

@@ -1,0 +1,1 @@
+{"summary":"依使用者指出 Watabou 林相規則，改為：森林連通塊取邊界 loops → drawForestCanopyPoly 畫整片樹冠體塊；沿 outer loop 取樣生成兩圈（forestRingInner 只樹冠、forestRingOuter 樹冠+樹幹，樹幹朝向林心），避免每格一圈樹的玫瑰花假象。新增 forestComponents/boundaryEdgesForForest/sampleLoopPoints；render 與 HUD 改用 forestBlobs。並實際開頁 ?zoom=8 驗收畫面。","current_status":"watabou_test.html 林相語意已對齊 Watabou：體塊+邊緣環；仍可繼續調整邊緣取樣密度、色票、以及讓樹幹更像圖章（目前偏卡通）。"}

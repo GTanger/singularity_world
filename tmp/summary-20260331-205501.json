@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求調整地形圖示尺寸：MOUNTAIN_TILE_FIT 由 0.9 下修為 0.7（小兩階），FOREST_TILE_FIT 由 0.36 上調為 0.66（大三階）。其餘渲染邏輯不變。",
+  "current_status": "mountain 已縮小、forest 已放大；森林仍維持單層繪製（無雙層疊圖）。"
+}

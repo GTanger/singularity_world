@@ -1,0 +1,4 @@
+{
+  "summary": "依需求將森林色階統一：`forest-light`、`forest-dark`、`forest-dead` 全部改為同一色，並把綠色從上一版再降一階到 `#86B766`。",
+  "current_status": "地圖森林目前無明暗分層，統一使用單一森林綠（#86B766）。"
+}

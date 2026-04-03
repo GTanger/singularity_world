@@ -23,9 +23,24 @@ mod sched;
 mod trade_pending;
 mod text;
 mod lexicon;
+mod hex_reveal;
+mod hex_world;
+mod room_hex;
 
 use crate::entity::Character;
+use crate::hex::HexGrid;
 use crate::store::{self, Entity};
+
+// 六角世界格網門面（實作於 `hex_world`）；由本模組直接呼叫，避免 `pub use` 子函式時 dead_code 誤報。
+/// 自 PostgreSQL 載入野外六角格網。
+pub fn load_hex_grid() -> Option<HexGrid> {
+    hex_world::load_hex_grid()
+}
+
+/// 將野外六角格網寫入 PostgreSQL。
+pub fn save_hex_grid_to_pg(grid: &HexGrid) -> anyhow::Result<()> {
+    hex_world::save_hex_grid_to_pg(grid)
+}
 
 pub use assignment::{
     entity_in_venue_at_room, get_all_venue_ids, get_all_venue_room_ids, get_assignment_count_by_venue,
@@ -74,6 +89,13 @@ pub use npc_social::{
     set_npc_npc_conversation_summary, set_npc_npc_dyad, set_npc_npc_thread, upsert_npc_rumor,
 };
 pub use occupation::{get_sockets_for_npc, is_default_socket};
+pub use hex_reveal::{
+    count_player_hex_revealed, is_player_hex_revealed, list_player_hex_revealed,
+    mark_player_hex_revealed,
+};
+pub use room_hex::{
+    canonical_location_key, location_keys_equivalent, resolve_room_to_hex, room_hex_for_world_room,
+};
 pub use room_graph::{rebuild_room_graph, sync_room_graph_with_store, with_room_graph, RoomGraph};
 pub use room_object::{get_object_and_room, get_object_by_id_in_room, get_object_by_name_in_room, object_response};
 pub use trade_pending::{trade_offer_clear, trade_offer_get, trade_offer_set, TradePending};
@@ -300,6 +322,8 @@ pub fn store_entity_to_character(e: &Entity, npc_display_title: &str) -> Charact
         inventory: e.inventory.clone(),
         disposition: e.disposition,
         current_activity: e.current_activity.clone(),
+        hex_q: e.hex_q,
+        hex_r: e.hex_r,
     };
     if e.kind == "npc" && !npc_display_title.is_empty() {
         c.display_title = npc_display_title.to_string();
@@ -404,10 +428,53 @@ pub fn get_moving_entities() -> anyhow::Result<Vec<Character>> {
 
 /// 回傳指定房間內所有存活實體（對齊 Go `GetEntitiesInRoom`）。
 /// `game_hour` 0–23 供在職場顯示職稱；`-1` 不套用下班規則（職場內一律「職稱|真名」）。
+///
+/// 合併 `entity_rooms` 字串與 [`resolve_room_to_hex`] 對應之六角座標上的實體，避免世界房間 id 與 `hex:…` 各寫一套時漏列。
 pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec<Character>> {
+    use std::collections::HashSet;
+
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();
-    let ids = s.entity_ids_in_room(room_id);
+    let mut id_set: HashSet<String> = HashSet::new();
+    for id in s.entity_ids_in_room(room_id) {
+        id_set.insert(id);
+    }
+    if let Some((q, r)) = room_hex::resolve_room_to_hex(room_id) {
+        for id in s.entity_ids_at_hex(q, r) {
+            id_set.insert(id);
+        }
+    }
+    if id_set.is_empty() {
+        return Ok(Vec::new());
+    }
+    let label_room = room_hex::canonical_location_key(room_id);
+    let mut list = Vec::new();
+    for id in id_set {
+        let Some(se) = s.get_entity(&id) else {
+            continue;
+        };
+        if se.vit <= 0 {
+            continue;
+        }
+        let label = if se.kind == "npc" {
+            npc_display::npc_title_in_room_locked(&mut s, &id, &label_room, game_hour)
+        } else {
+            String::new()
+        };
+        let se = s.get_entity(&id).unwrap_or(se);
+        list.push(store_entity_to_character(&se, &label));
+    }
+    Ok(list)
+}
+
+/// 指定六角座標上的存活實體（與 `hex_q`／`hex_r` 對齊；`room_id` 供 NPC 職稱推斷用）。
+pub fn get_entities_at_hex(q: i32, r: i32, game_hour: i32) -> anyhow::Result<Vec<Character>> {
+    use crate::hex::hex_room_id_from_coord;
+
+    let hex_room = hex_room_id_from_coord(q, r);
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    let ids = s.entity_ids_at_hex(q, r);
     if ids.is_empty() {
         return Ok(Vec::new());
     }
@@ -420,7 +487,7 @@ pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec
             continue;
         }
         let label = if se.kind == "npc" {
-            npc_display::npc_title_in_room_locked(&mut s, &id, room_id, game_hour)
+            npc_display::npc_title_in_room_locked(&mut s, &id, &hex_room, game_hour)
         } else {
             String::new()
         };
@@ -574,10 +641,25 @@ pub fn get_room_name(room_id: &str) -> anyhow::Result<String> {
 }
 
 /// 將實體設為在指定房間（對齊 Go `SetEntityRoom`）。
+/// 若 `room_id` 為 `hex:q:r` 或於 `room_hex_overlay.json`／創生房規則可解析為六角，則改寫權威座標為 [`set_entity_hex`]。
 pub fn set_entity_room(entity_id: &str, room_id: &str) -> anyhow::Result<()> {
+    if let Some((q, r)) = crate::hex::parse_hex_room_id(room_id) {
+        return set_entity_hex(entity_id, q, r);
+    }
+    if let Some((q, r)) = room_hex::room_hex_for_world_room(room_id) {
+        return set_entity_hex(entity_id, q, r);
+    }
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();
-    s.set_entity_room(entity_id, room_id)
+    s.set_entity_room(entity_id, room_id)?;
+    s.clear_entity_hex(entity_id)
+}
+
+/// 權威六角座標；見 [`store::Store::set_entity_hex`]（同步 `entity_rooms` 為 `hex:…`）。
+pub fn set_entity_hex(entity_id: &str, q: i32, r: i32) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap();
+    s.set_entity_hex(entity_id, q, r)
 }
 
 /// 設定實體的表面可觀測行為（玩家 Look 時看到的「在做什麼」）。
@@ -650,6 +732,8 @@ pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Resu
         inventory: "[]".into(),
         disposition: 0,
         current_activity: String::new(),
+        hex_q: None,
+        hex_r: None,
     };
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();

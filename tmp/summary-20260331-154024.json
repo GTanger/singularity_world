@@ -1,0 +1,4 @@
+{
+  "summary": "完成 incremental continual-learning：比對 transcript 與索引後，處理新檔/更新檔並刷新索引 mtime；未發現可新增到 AGENTS.md 的高訊號、可重複、長期記憶。",
+  "current_status": "AGENTS.md 維持不變；.cursor/hooks/state/continual-learning-index.json 已同步為現存 31 份 transcript 的最新 mtime。"
+}

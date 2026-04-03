@@ -21,6 +21,7 @@ use crate::config::Server;
 use super::handler::{handle_message, WsConnection};
 use super::http_api;
 use super::hub::{Hub, SEND_BUFFER_SIZE};
+use super::hex_editor;
 use super::room_editor;
 use super::session::SessionStore;
 use super::simulation_loop::spawn_simulation_main_loop;
@@ -42,6 +43,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         sessions,
         cfg,
     };
+    super::hex_editor::init("data/hex/grid.json");
     spawn_simulation_main_loop(Arc::clone(&state.sessions), state.cfg.clone());
     let port = state.cfg.port.clone();
 
@@ -58,6 +60,8 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/data/rooms.json", get(http_api::rooms_data))
         // 星盤拓撲
         .route("/api/topology", get(http_api::topology))
+        .route("/api/hex/player-reveal", post(http_api::hex_player_reveal))
+        .route("/api/hex/my-revealed", get(http_api::hex_my_revealed))
         // 房間管理 CRUD
         .route("/api/rooms", get(http_api::list_rooms).post(http_api::create_room))
         .route("/api/rooms/{id}", get(http_api::get_room_admin).put(http_api::update_room).delete(http_api::delete_room))
@@ -72,12 +76,32 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/api/room-editor/layout", put(room_editor::layout))
         .route("/api/room-editor/reload", post(room_editor::reload))
         .route("/api/room-editor/groups", get(room_editor::groups_get).post(room_editor::groups_post))
+        // 六角格編輯器
+        .route("/api/hex/grid", get(hex_editor::grid_get))
+        .route("/api/hex/reveal", post(hex_editor::reveal_post))
+        .route("/api/hex/reveal-region", post(hex_editor::reveal_region_post))
+        .route("/api/hex/world-seed", put(hex_editor::world_seed_put))
+        .route("/api/hex/cell", put(hex_editor::cell_put))
+        .route("/api/hex/cells", put(hex_editor::cells_put))
+        .route("/api/hex/cell/{q}/{r}", delete(hex_editor::cell_delete))
+        .route("/api/hex/wall", put(hex_editor::wall_put))
+        .route("/api/hex/portal", post(hex_editor::portal_post))
+        .route(
+            "/api/hex/transport-edge",
+            post(hex_editor::transport_edge_post),
+        )
+        .route("/api/hex/save", post(hex_editor::save))
+        .route("/api/hex/reload", post(hex_editor::reload))
+        .route("/api/hex/path", get(hex_editor::path_get))
+        .route("/api/hex/neighbors/{q}/{r}", get(hex_editor::neighbors_get))
         // HTML 頁面路由
         .route("/map_viewer", get(serve_map_viewer))
         .route("/room_editor", get(serve_room_editor))
         .route("/star_chart", get(serve_star_chart))
         .route("/dashboard", get(serve_dashboard))
         .route("/admin", get(serve_admin))
+        // Leptos 六角格編輯器（WASM）
+        .nest_service("/hex-editor", ServeDir::new("editor-leptos/dist"))
         .with_state(state.clone())
         // 靜態檔案服務 — web/ 目錄（fallback，對齊 Go `http.FileServer`）
         .fallback_service(

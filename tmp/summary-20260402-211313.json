@@ -1,0 +1,4 @@
+{
+  "summary": "修正 `load_hex_grid` dead_code 警告：hex_world 改為 `pub(super)`，在 `db/mod.rs` 新增 `load_hex_grid`／`save_hex_grid_to_pg` 門面包裝並直接呼叫子模組，移除 `pub use hex_world::{...}`。hex_editor 仍用 `crate::db::...`。cargo clippy -D warnings 與 cargo test 通過。",
+  "current_status": "db 層對外 API 不變；若 IDE 仍顯示舊警告可重載 rust-analyzer。"
+}

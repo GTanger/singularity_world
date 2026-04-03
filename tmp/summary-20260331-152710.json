@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者提供路徑將 skyscraper SVG 複製為 web/assets/city_skyscraper.svg，並在 watabou_test.html 新增 drawHexCitySkyscraperOverlay、擴充 loadTileAssets 並行載入該圖；city 聚落改以 SVG 置中繪製（淡光暈＋CITY_SKYSCRAPER_FIT），載入失敗時仍用 🏢。village 維持 emoji。",
+  "current_status": "城市圖示已改為可控向量資產，亮度可藉光暈與 fit 常數調整；需經 HTTP 提供 web/ 以載入 assets。"
+}

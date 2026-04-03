@@ -26,7 +26,41 @@ pub enum Terrain {
     Jungle,
     Urban,
     Road,
+    Bridge,
     Wall,
+    FarmField,
+    Farmhouse,
+    Inn,
+    Tavern,
+    Blacksmith,
+    GeneralStore,
+    Clinic,
+    Workshop,
+    Market,
+    GuildHall,
+    Temple,
+    Academy,
+    Library,
+    Barracks,
+    GuardPost,
+    Warehouse,
+    Granary,
+    Dock,
+    Bathhouse,
+    Courthouse,
+    Jail,
+    TownHall,
+    Bank,
+    Mint,
+    Stables,
+    Caravanserai,
+    Theater,
+    Arena,
+    Observatory,
+    Alchemist,
+    MageTower,
+    Embassy,
+    PrisonYard,
 }
 
 impl Terrain {
@@ -38,10 +72,44 @@ impl Terrain {
     /// 移動成本倍率（1.0 = 正常，越高越慢）
     pub fn move_cost(self) -> f64 {
         match self {
-            Terrain::Road => 0.5,
-            Terrain::Plain | Terrain::Grassland | Terrain::Urban => 1.0,
+            Terrain::Road | Terrain::Bridge => 0.5,
+            Terrain::Plain
+            | Terrain::Grassland
+            | Terrain::Urban
+            | Terrain::Farmhouse
+            | Terrain::Inn
+            | Terrain::Tavern
+            | Terrain::Blacksmith
+            | Terrain::GeneralStore
+            | Terrain::Clinic
+            | Terrain::Workshop
+            | Terrain::Market
+            | Terrain::GuildHall
+            | Terrain::Temple
+            | Terrain::Academy
+            | Terrain::Library
+            | Terrain::Barracks
+            | Terrain::GuardPost
+            | Terrain::Warehouse
+            | Terrain::Granary
+            | Terrain::Dock
+            | Terrain::Bathhouse
+            | Terrain::Courthouse
+            | Terrain::Jail
+            | Terrain::TownHall
+            | Terrain::Bank
+            | Terrain::Mint
+            | Terrain::Stables
+            | Terrain::Caravanserai
+            | Terrain::Theater
+            | Terrain::Arena
+            | Terrain::Observatory
+            | Terrain::Alchemist
+            | Terrain::MageTower
+            | Terrain::Embassy
+            | Terrain::PrisonYard => 1.0,
             Terrain::Forest | Terrain::ForestLight | Terrain::Hills => 1.5,
-            Terrain::Desert | Terrain::Tundra => 1.5,
+            Terrain::Desert | Terrain::Tundra | Terrain::FarmField => 1.5,
             Terrain::ForestHeavy | Terrain::Jungle | Terrain::Swamp => 2.0,
             Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall => f64::INFINITY,
         }
@@ -113,6 +181,7 @@ mod tests {
         assert!(Terrain::Plain.walkable());
         assert!(Terrain::Forest.walkable());
         assert!(Terrain::Road.walkable());
+        assert!(Terrain::Bridge.walkable());
         assert!(!Terrain::Water.walkable());
         assert!(!Terrain::WaterDeep.walkable());
         assert!(!Terrain::Mountain.walkable());

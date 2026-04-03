@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求新增文檔，已建立 docs/reference/Hex地形與移動係數表.md，完整列出目前 Terrain 各地形的可步行狀態與 move_cost 係數，資料來源對齊 src/hex/cell.rs 的 walkable/move_cost 實作值，並補充 src/hex/grid.rs 現況：find_path 為 BFS、尚未採用 move_cost 加權。",
+  "current_status": "地形與移動係數文件已落地，可作為調參與後續改加權尋路的基準參考。"
+}

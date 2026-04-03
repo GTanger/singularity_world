@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求更新 docs/reference/Hex地形與移動係數表.md，已從地形表剔除四個地形：Plain、ForestLight、ForestHeavy、WaterDeep，並同步修正規則重點段落中的不可步行地形描述（移除 WaterDeep）。",
+  "current_status": "地形係數文件已與目前 tiles 方針對齊（保留有對應資產的地形清單）。"
+}

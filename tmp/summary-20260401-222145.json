@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者回報『編輯器沒辦法大量刪除』，已新增批次刪除筆刷模式。實作內容：Toolbar 新增模式切換（繪製/刪除），刪除模式時停用地形下拉避免混淆；HexGrid 新增 erase_mode 與 on_erase callback，拖曳補點與筆刷半徑邏輯沿用，刪除模式下會對筆刷覆蓋到的座標批次觸發刪除；App 新增 on_erase，先本地移除 cell 再呼叫 API delete_cell，同時跳過不存在格避免多餘請求。完成 wasm build 與 trunk release，lint 無新錯誤。",
+  "current_status": "編輯器現在支援大量刪除：切換到刪除模式後，按住拖曳即可連續刪除（含筆刷大小與補點）。"
+}

@@ -1,0 +1,4 @@
+{
+  "summary": "使用者對三項改進不滿——認為只是河流微改善，離 Watabou 視覺品質差距仍然巨大。坦承搬下來的 Chaikin/trueStroke/wobble 只是最底層工具，Watabou 好看的真正原因是程序化圖章系統（樹/山/城鎮）、有機海岸線合併、斜線填充紋理、色彩混合等，這些是整套渲染重寫級別的工程。向使用者坦白說明差距並詢問方向。",
+  "current_status": "watabou_test.html 有 Chaikin 曲線 + 主流 trueStroke + 微 wobble，但視覺仍是彩色六角格+線條，離 Watabou 手繪風格差距巨大。使用者待決定下一步方向。"
+}

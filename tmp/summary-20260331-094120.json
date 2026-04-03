@@ -1,0 +1,4 @@
+{
+  "summary": "依指示將山脈地形底色改為 `#FFFCEC`，更新 `web/watabou_test.html` 的 `TERRAIN_COLORS.mountain`，其餘山脈 overlay 與渲染流程不變。",
+  "current_status": "山脈格目前為極淺米白底（#FFFCEC）+ 既有山脈線稿疊圖。"
+}

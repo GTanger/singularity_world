@@ -143,14 +143,15 @@ impl SessionStore {
         let g = self.inner.read().expect("session store poisoned");
         let mut best_snippet = String::new();
         let mut best_at: Option<Instant> = None;
+        let want = db::canonical_location_key(room_id);
         for s in g.values() {
-            if s.last_talk_snippet.is_empty() || s.last_talk_room != room_id {
+            if s.last_talk_snippet.is_empty() || db::canonical_location_key(&s.last_talk_room) != want {
                 continue;
             }
             let Ok(rid) = db::get_entity_room(&s.player_id) else {
                 continue;
             };
-            if rid != room_id {
+            if db::canonical_location_key(&rid) != want {
                 continue;
             }
             let Some(at) = s.last_talk_at else {
@@ -173,9 +174,11 @@ impl SessionStore {
     }
 
     pub fn room_has_player(&self, room_id: &str) -> bool {
+        let want = db::canonical_location_key(room_id);
         let g = self.inner.read().expect("session store poisoned");
         for s in g.values() {
-            if db::get_entity_room(&s.player_id).unwrap_or_default() == room_id {
+            let rid = db::get_entity_room(&s.player_id).unwrap_or_default();
+            if db::canonical_location_key(&rid) == want {
                 return true;
             }
         }
@@ -183,9 +186,11 @@ impl SessionStore {
     }
 
     pub fn room_has_player_with_recent_talk(&self, room_id: &str, within: Duration) -> bool {
+        let want = db::canonical_location_key(room_id);
         let g = self.inner.read().expect("session store poisoned");
         for s in g.values() {
-            if db::get_entity_room(&s.player_id).unwrap_or_default() != room_id {
+            let rid = db::get_entity_room(&s.player_id).unwrap_or_default();
+            if db::canonical_location_key(&rid) != want {
                 continue;
             }
             if let Some(at) = s.last_talk_at
@@ -198,15 +203,17 @@ impl SessionStore {
     }
 
     /// 目前有玩家在線且已落在某房間的 room id 集合（對齊 Go `GetPlayerRoomMap`）。
+    /// 條目為 [`db::canonical_location_key`]，使世界房間 id 與 `hex:…` 在模擬迴圈比對時一致。
     #[must_use]
     pub fn player_room_ids(&self) -> HashSet<String> {
         let mut set = HashSet::new();
         let g = self.inner.read().expect("session store poisoned");
         for s in g.values() {
             let rid = db::get_entity_room(&s.player_id).unwrap_or_default();
-            if !rid.is_empty() {
-                set.insert(rid);
+            if rid.is_empty() {
+                continue;
             }
+            set.insert(db::canonical_location_key(&rid));
         }
         set
     }

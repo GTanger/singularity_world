@@ -1,0 +1,4 @@
+{
+  "summary": "完成「先撤下」：森林 overlay 流程已停用，`watabou_test.html` 僅保留森林地形色塊渲染。後續再檢查並確認已無 `forestOverlay`、`drawHexForestOverlay`、`forest_wave_overlay` 載入與二次繪製殘留。",
+  "current_status": "地圖目前為山脈 overlay 保留、森林純色塊（無圖章）。"
+}

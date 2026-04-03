@@ -14,7 +14,7 @@ use crate::db::{
     get_object_by_name_in_room, get_room_ids_for_venue, get_room_name, get_sockets_for_npc,
     is_default_socket, log_npc_event, object_has_socket, object_response, pick_npc_trade_offer,
     remove_assignments_for_entity, remove_from_inventory, remove_schedule_for_entity,
-    search_archival_for_player_talk, pick_style_examples, set_entity_room, terrain_from_room,
+    search_archival_for_player_talk, pick_style_examples, set_entity_hex, terrain_from_room,
     trade_floor_from_ask, trade_offer_clear, trade_offer_get, trade_offer_set,
     transfer_magnesium, update_vit, FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, FAV_SLAY, FAV_SUBDUE,
     FAV_TALK, DISP_SUBDUED, EVT_DEATH, TradePending,
@@ -23,6 +23,7 @@ use crate::entity::{self, Character, EntityKind, Verb};
 use crate::event::{self, types};
 use crate::game;
 use crate::gametext;
+use crate::hex::{hex_room_id_from_coord, parse_hex_room_id};
 use crate::npc::npc_behavior_reaction_line;
 
 use super::broadcast::{refresh_room_views_for_room, send_narrate_to_room, send_room_view_to_session};
@@ -30,6 +31,20 @@ use super::conversation::flush_conversation_and_append;
 use super::handler::{player_id, WsConnection};
 use super::protocol::{ActionResultMsg, ClientMsg, MovedMsg};
 use super::session::SessionStore;
+
+/// 與目標是否在同一可互動位置（六角重合優先，否則比對 `entity_rooms` 字串）。
+fn entities_share_playable_cell(player: &Character, target: &Character, player_room: &str) -> bool {
+    if let (Some(pq), Some(pr), Some(tq), Some(tr)) =
+        (player.hex_q, player.hex_r, target.hex_q, target.hex_r)
+        && pq == tq && pr == tr
+    {
+        return true;
+    }
+    let Ok(tr) = db::get_entity_room(&target.id) else {
+        return false;
+    };
+    !player_room.is_empty() && db::location_keys_equivalent(player_room, &tr)
+}
 
 /// 分派 `do_action`：先試同房實體，再試房間物件。
 pub fn handle_do_action(conn: &WsConnection, msg: &ClientMsg) {
@@ -50,6 +65,10 @@ pub fn handle_do_action(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("cannot_self_action"));
         return;
     }
+    let Ok(Some(player_ch)) = db::get_entity(&pid) else {
+        conn.send_error(gametext::client("get_self_failed"));
+        return;
+    };
     let Ok(player_room) = db::get_entity_room(&pid) else {
         conn.send_error(gametext::client("no_current_room"));
         return;
@@ -59,7 +78,7 @@ pub fn handle_do_action(conn: &WsConnection, msg: &ClientMsg) {
         return;
     }
 
-    if try_entity_branch(conn, msg, &pid, &player_room, &target_id, &action) {
+    if try_entity_branch(conn, msg, &pid, &player_ch, &player_room, &target_id, &action) {
         return;
     }
     do_object_branch(conn, &pid, &player_room, &target_id, &action);
@@ -69,6 +88,7 @@ fn try_entity_branch(
     conn: &WsConnection,
     msg: &ClientMsg,
     pid: &str,
+    player: &Character,
     player_room: &str,
     target_id: &str,
     action: &str,
@@ -79,11 +99,7 @@ fn try_entity_branch(
     let Some(target) = target_opt else {
         return false;
     };
-    let Ok(target_room) = db::get_entity_room(target_id) else {
-        conn.send_error(gametext::client("target_not_same_room"));
-        return true;
-    };
-    if target_room.is_empty() || target_room != player_room {
+    if !entities_share_playable_cell(player, &target, player_room) {
         conn.send_error(gametext::client("target_not_same_room"));
         return true;
     }
@@ -908,8 +924,12 @@ fn apply_object_move(
     if action != "Move" || obj.move_to_room_id.is_empty() {
         return true;
     }
+    let Some((q, r)) = parse_hex_room_id(&obj.move_to_room_id) else {
+        conn.send_error(gametext::client("move_cannot_go"));
+        return false;
+    };
     let gh = current_game_hour(&conn.cfg);
-    let Ok(view_opt) = game::get_room_view(&obj.move_to_room_id, gh) else {
+    let Ok(view_opt) = game::get_hex_room_view(pid, q, r, gh) else {
         conn.send_error(gametext::client("move_cannot_go"));
         return false;
     };
@@ -917,7 +937,7 @@ fn apply_object_move(
         conn.send_error(gametext::client("move_cannot_go"));
         return false;
     };
-    if set_entity_room(pid, &obj.move_to_room_id).is_err() {
+    if set_entity_hex(pid, q, r).is_err() {
         conn.send_error(gametext::client("move_failed"));
         return false;
     }
@@ -926,15 +946,16 @@ fn apply_object_move(
         return false;
     };
     send_room_view_to_session(&session, &view, pid, &conn.cfg);
+    let rid = hex_room_id_from_coord(q, r);
     let moved = MovedMsg {
         msg_type: "moved".into(),
         player_id: pid.to_string(),
-        room_id: obj.move_to_room_id.clone(),
+        room_id: rid.clone(),
         room_name: view.room.name.clone(),
     };
     if let Ok(bytes) = serde_json::to_vec(&moved) {
         conn.hub.broadcast(bytes);
     }
-    refresh_room_views_for_room(&conn.sessions, &conn.cfg, &obj.move_to_room_id);
+    refresh_room_views_for_room(&conn.sessions, &conn.cfg, &rid);
     true
 }

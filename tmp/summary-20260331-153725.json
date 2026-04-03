@@ -1,0 +1,4 @@
+{
+  "summary": "修復 village SVG 不顯示：先前以相對路徑載入可能失敗或 SVG-as-Image 尺寸為 0。已將 village_neighborhood.svg 內嵌為 VILLAGE_NEIGHBORHOOD_INLINE_SVG + VILLAGE_NEIGHBORHOOD_DATA_URL（與山脈線稿同策略），並抽出 drawHexVillageNeighborhoodOverlay()。loadTileAssets 改為 villageImg.src = VILLAGE_NEIGHBORHOOD_DATA_URL。",
+  "current_status": "village 圖示應可穩定顯示；若日後改 SVG 檔，須同步更新 HTML 內嵌字串或改回僅用檔案路徑。"
+}

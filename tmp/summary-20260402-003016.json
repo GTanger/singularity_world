@@ -1,0 +1,4 @@
+{
+  "summary": "針對使用者回報「牆面誇張大片覆蓋」修正 MFCG walls 匯入策略：原本把 walls Polygon 直接 fill 成整塊 wall，現改為僅抽取外環邊界並線段取樣轉 wall，內部不填滿；LineString 仍維持線式取樣。已重建 editor wasm/release 並確認無 lint。",
+  "current_status": "wall 仍為獨立地形，但 walls 匯入已改為邊界牆，不再把大片區域刷成黑塊。可重新匯入 thundertalonfield.json 驗證。"
+}

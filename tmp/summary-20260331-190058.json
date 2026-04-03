@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求將 village 再縮兩階，調整 web/watabou_test.html 的 VILLAGE_NEIGHBORHOOD_FIT 由 0.98 下修至 0.78；其餘 city/town 與渲染流程不變。",
+  "current_status": "聚落尺寸目前為 city 較大且上移、village 顯著縮小（0.78）；等待使用者提供 town SVG。"
+}

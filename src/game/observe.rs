@@ -31,6 +31,18 @@ pub fn observe_room(room_id: &str, observer_id: &str, at: i64) {
     }
 }
 
+/// 進入某六角格時對同格 NPC 標記觀測（野外權威座標）。
+pub fn observe_hex(q: i32, r: i32, observer_id: &str, at: i64) {
+    let Ok(entities) = db::get_entities_at_hex(q, r, -1) else {
+        return;
+    };
+    for e in entities {
+        if e.kind == EntityKind::Npc {
+            let _ = event::mark_observed(&e.id, observer_id, at);
+        }
+    }
+}
+
 /// 自 store 與事件日誌回推 `as_of` 時點狀態（對齊 Go `Collapse`）。
 pub fn collapse(entity_id: &str, as_of: i64) -> anyhow::Result<(Character, String)> {
     let Some(mut c) = db::get_entity(entity_id)? else {

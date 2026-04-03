@@ -1,0 +1,1 @@
+{"summary":"使用者不滿重複要求開網自檢。已用 cursor-ide-browser 開 map_tiles.html、network 顯示 manifest+16 SVG 皆 200、console 僅 MCP 警告；curl 驗證 200。AGENTS.md 新增硬性條款：map_tiles 改動須代理自行瀏覽器自檢勿推給使用者。","current_status":"自檢流程已執行並寫入 AGENTS 防再犯。"}

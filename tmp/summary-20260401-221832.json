@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求把編輯器地形也剔除四項，已在 editor-leptos/src/types.rs 的 Terrain::ALL 移除 Plain、ForestLight、ForestHeavy、WaterDeep，讓工具列筆刷與右側編輯面板下拉同步不再顯示這四項。並把預設筆刷地形與編輯器預設地形從 Plain 改為 Grassland（main.rs、cell_editor.rs），避免預設值落在已剔除項目。完成 wasm 編譯與 trunk release。",
+  "current_status": "編輯器可選地形已與 tiles 策略對齊（剔除四項），前端已重新打包部署。"
+}

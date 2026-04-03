@@ -1,12 +1,14 @@
-// 由 CityGeo 聚類路口、標記、可進建築、生成 model::Room／Exit 與城門邏輯。
+// 由 CityGeo 建「語意層」城市：城門 + 各區坊市節點、往×× 命名出口、可進建築掛在區上；幾何細節不逐路口展開。
 
+use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
+use std::path::Path;
 
 use crate::model;
 
+use super::ambience::{load_city_ambience, mix_seed_index, CityAmbienceConfig};
 use super::geom::{
-    bearing_label, dist_point_polyline, dist_point_polygon_boundary, dist_xy, point_in_polygon,
-    polygon_area_abs,
+    dist_point_polyline, dist_point_polygon_boundary, dist_xy, point_in_polygon, polygon_area_abs,
 };
 use super::CityGeo;
 
@@ -21,6 +23,7 @@ pub struct BuiltCity {
     pub batch: CityInjectBatch,
     pub gate_room_id: String,
     pub gate_room_name: String,
+    /// 語意節點數：1 城門 + 各區坊（非幾何路口數）。
     pub junction_count: usize,
     pub enterable_count: usize,
 }
@@ -34,16 +37,6 @@ pub enum BuildingType {
     Residence,
 }
 
-struct JunctionDraft {
-    cx: f64,
-    cy: f64,
-    district_idx: Option<usize>,
-    near_wall: bool,
-    near_river: bool,
-    near_square: bool,
-    degree: usize,
-}
-
 struct BuildingDraft {
     centroid_x: f64,
     centroid_y: f64,
@@ -53,70 +46,34 @@ struct BuildingDraft {
     dist_square: f64,
 }
 
-/// 依 GeoJSON 與世界房出口建出城市批次。
+struct HubInfo {
+    cx: f64,
+    cy: f64,
+    label: String,
+    near_wall: bool,
+    near_river: bool,
+    near_square: bool,
+    building_count: usize,
+}
+
+/// 依 GeoJSON 與世界房出口建出城市批次（語意圖 + 環境描述）。
 pub fn build_city_rooms(
     geo: &CityGeo,
     world_tags: &[String],
     world_room_id: &str,
     world_room_name: &str,
     world_exits: &[model::Exit],
+    ambience_path: Option<&Path>,
 ) -> BuiltCity {
     let zone = format!("city_{}", geo.burg_id);
     let prefix = format!("city_{}_", geo.burg_id);
-
-    // 目標路口數 80-150：城市才不會出口爆炸
-    let mut eps = 30.0_f64;
-    let (_cluster_of_point, centers, edges) = loop {
-        let r = cluster_roads(&geo.roads, eps);
-        let nj = r.1.len();
-        if nj > 150 {
-            eps *= 1.3;
-            continue;
-        }
-        if nj < 50 && nj > 0 && eps > 5.0 {
-            eps *= 0.8;
-            continue;
-        }
-        break r;
-    };
-
-    let n_j = centers.len();
-    let mut adj: Vec<HashSet<usize>> = vec![HashSet::new(); n_j];
-    for (a, b) in &edges {
-        adj[*a].insert(*b);
-        adj[*b].insert(*a);
-    }
-
-    let junction_meta: Vec<JunctionDraft> = centers
-        .iter()
-        .enumerate()
-        .map(|(ji, (cx, cy))| {
-            let district_idx = geo
-                .districts
-                .iter()
-                .position(|d| point_in_polygon(*cx, *cy, &d.ring));
-            let near_wall = geo.wall_rings.iter().any(|w| {
-                dist_point_polygon_boundary(*cx, *cy, w) < 50.0
-            });
-            let near_river = geo.river_lines.iter().any(|ln| {
-                dist_point_polyline(*cx, *cy, ln) < 30.0
-            });
-            let near_square = geo.squares.iter().any(|sq| {
-                point_in_polygon(*cx, *cy, sq)
-                    || dist_point_polygon_boundary(*cx, *cy, sq) < 20.0
-            });
-            let degree = adj[ji].len();
-            JunctionDraft {
-                cx: *cx,
-                cy: *cy,
-                district_idx,
-                near_wall,
-                near_river,
-                near_square,
-                degree,
-            }
-        })
-        .collect();
+    let gate_id = format!("{}gate", prefix);
+    let ambience = load_city_ambience(ambience_path);
+    let is_port_city = world_tags.iter().any(|t| {
+        let x = t.to_lowercase();
+        x == "naval" || x == "port" || t.contains("港")
+    });
+    let seed_base = (geo.burg_id as u64) << 8;
 
     let bdrafts: Vec<BuildingDraft> = geo
         .buildings
@@ -161,30 +118,540 @@ pub fn build_city_rooms(
         })
         .collect();
 
-    // --- 可進入建築篩選（條件收斂，總量控制在 ≤ 50） ---
+    let n_d = if geo.districts.is_empty() {
+        1usize
+    } else {
+        geo.districts.len()
+    };
+
+    let mut hubs: Vec<HubInfo> = Vec::with_capacity(n_d);
+    for di in 0..n_d {
+        let (cx, cy) = if geo.districts.is_empty() {
+            centroid_all_buildings(&bdrafts)
+        } else {
+            ring_centroid(&geo.districts[di].ring)
+        };
+        let near_wall = geo.wall_rings.iter().any(|w| {
+            dist_point_polygon_boundary(cx, cy, w) < 50.0
+        });
+        let near_river = geo
+            .river_lines
+            .iter()
+            .any(|ln| dist_point_polyline(cx, cy, ln) < 40.0);
+        let near_square = geo.squares.iter().any(|sq| {
+            point_in_polygon(cx, cy, sq) || dist_point_polygon_boundary(cx, cy, sq) < 25.0
+        });
+        let building_count = if geo.districts.is_empty() {
+            bdrafts.len()
+        } else {
+            bdrafts
+                .iter()
+                .filter(|b| b.district_idx == Some(di))
+                .count()
+        };
+        let label = district_label_semantic(geo, di, cx, cy, &bdrafts, &ambience);
+        hubs.push(HubInfo {
+            cx,
+            cy,
+            label,
+            near_wall,
+            near_river,
+            near_square,
+            building_count,
+        });
+    }
+
+    let gate_di = pick_gate_district(&hubs);
+    let gate_room_name = if world_room_name.trim().is_empty() {
+        format!("burg {} 城門", geo.burg_id)
+    } else {
+        format!("{}城門", world_room_name.trim())
+    };
+
+    let enterable = select_enterable_buildings(geo, &bdrafts);
+    let has_temple_tag = world_tags.iter().any(|t| {
+        let x = t.to_lowercase();
+        x.contains("temple") || t.contains("廟") || t.contains("寺")
+    });
+
+    let mut rooms: HashMap<String, model::Room> = HashMap::new();
+    let mut exits: HashMap<String, Vec<model::Exit>> = HashMap::new();
+
+    // 城門房
+    let gate_desc = ambience.pick_gate(seed_base);
+    rooms.insert(
+        gate_id.clone(),
+        model::Room {
+            id: gate_id.clone(),
+            name: gate_room_name.clone(),
+            tags: merge_tags(world_tags, &["city_gate", "city_junction", "street"]),
+            zone: zone.clone(),
+            description: gate_desc,
+            objects: Vec::new(),
+        },
+    );
+
+    // 各區坊
+    for (di, h) in hubs.iter().enumerate() {
+        let hid = format!("{}d{:03}", prefix, di);
+        let room_name = ambience.format_district_room_display(
+            world_room_name.trim(),
+            &h.label,
+            di,
+            geo.burg_id,
+        );
+        let d_seed = seed_base
+            .wrapping_add((di as u64).wrapping_mul(0xBF58_476D))
+            .wrapping_add(h.cx.to_bits() ^ h.cy.to_bits().rotate_left(17));
+        let desc = ambience.pick_district(
+            d_seed,
+            h.near_river,
+            h.near_wall,
+            h.near_square,
+            is_port_city,
+        );
+        rooms.insert(
+            hid.clone(),
+            model::Room {
+                id: hid.clone(),
+                name: room_name,
+                tags: merge_tags(world_tags, &["city_district", "city_junction", "street"]),
+                zone: zone.clone(),
+                description: desc,
+                objects: Vec::new(),
+            },
+        );
+    }
+
+    // 坊數過多時拆「外街」扇區：城門只連外街（甲乙丙…），外街再連轄下各坊。
+    const SECTOR_BRANCH: [&str; 6] = ["甲", "乙", "丙", "丁", "戊", "己"];
+    let flat_max = ambience.gate_flat_max();
+    let use_sectors = n_d > flat_max && n_d > 1;
+    let dps = ambience.districts_per_sector();
+    let cap = ambience.sector_cap().min(SECTOR_BRANCH.len());
+    let n_sectors = if use_sectors {
+        let raw = n_d.div_ceil(dps);
+        raw.min(cap).max(2).min(n_d)
+    } else {
+        0usize
+    };
+    let sector_chunks: Option<Vec<Vec<usize>>> = if use_sectors && n_sectors > 0 {
+        Some(partition_districts_by_angle(&hubs, n_sectors))
+    } else {
+        None
+    };
+
+    let mut di_to_sector: Vec<usize> = vec![0; n_d];
+    let mut sector_ids: Vec<String> = Vec::new();
+    if let Some(ref chunks) = sector_chunks {
+        for (si, chunk) in chunks.iter().enumerate() {
+            for &di in chunk {
+                if di < n_d {
+                    di_to_sector[di] = si;
+                }
+            }
+            let sid = format!("{}s{:02}", prefix, si);
+            sector_ids.push(sid.clone());
+            let short = ambience.sector_short_name(si, geo.burg_id);
+            let sroom_name = ambience.format_sector_room_display(
+                world_room_name.trim(),
+                si,
+                geo.burg_id,
+                &short,
+            );
+            let sdesc = ambience.pick_sector_street(
+                seed_base
+                    .wrapping_add(0x200)
+                    .wrapping_add(si as u64 * 0xD1CE),
+            );
+            rooms.insert(
+                sid.clone(),
+                model::Room {
+                    id: sid.clone(),
+                    name: sroom_name,
+                    tags: merge_tags(world_tags, &["city_sector", "city_junction", "street"]),
+                    zone: zone.clone(),
+                    description: sdesc,
+                    objects: Vec::new(),
+                },
+            );
+        }
+    }
+
+    // 城門出口：直連各坊，或只連外街扇區 + 世界地圖
+    let mut gate_exits: Vec<model::Exit> = Vec::new();
+    if let Some(ref chunks) = sector_chunks {
+        for (si, sid) in sector_ids.iter().enumerate() {
+            if si >= chunks.len() {
+                break;
+            }
+            let sn = ambience.sector_short_name(si, geo.burg_id);
+            let to_name = rooms.get(sid).map(|r| r.name.clone()).unwrap_or_default();
+            gate_exits.push(model::Exit {
+                direction: format!("往{}", sn),
+                to_room_id: sid.clone(),
+                to_room_name: to_name,
+            });
+        }
+    } else {
+        for (di, h) in hubs.iter().enumerate() {
+            let hid = format!("{}d{:03}", prefix, di);
+            let to_name = rooms.get(&hid).map(|r| r.name.clone()).unwrap_or_default();
+            gate_exits.push(model::Exit {
+                direction: format!("往{}", h.label),
+                to_room_id: hid,
+                to_room_name: to_name,
+            });
+        }
+    }
+    for we in world_exits {
+        if we.to_room_id == world_room_id {
+            continue;
+        }
+        gate_exits.push(model::Exit {
+            direction: we.direction.clone(),
+            to_room_id: we.to_room_id.clone(),
+            to_room_name: we.to_room_name.clone(),
+        });
+    }
+    dedup_exits(&mut gate_exits);
+    exits.insert(gate_id.clone(), gate_exits);
+
+    // 外街扇區：進城門 + 往轄下各坊
+    if let Some(ref chunks) = sector_chunks {
+        for (si, chunk) in chunks.iter().enumerate() {
+            let Some(sid) = sector_ids.get(si) else {
+                continue;
+            };
+            let mut sexs: Vec<model::Exit> = vec![model::Exit {
+                direction: "進城門".to_string(),
+                to_room_id: gate_id.clone(),
+                to_room_name: gate_room_name.clone(),
+            }];
+            for &di in chunk {
+                let h = &hubs[di];
+                let hid = format!("{}d{:03}", prefix, di);
+                let to_name = rooms.get(&hid).map(|r| r.name.clone()).unwrap_or_default();
+                sexs.push(model::Exit {
+                    direction: format!("往{}", h.label),
+                    to_room_id: hid,
+                    to_room_name: to_name,
+                });
+            }
+            dedup_exits(&mut sexs);
+            exits.insert(sid.clone(), sexs);
+        }
+    }
+
+    // 區與區互連：每區接最近 3 個其他區 + 回城門／退回外街
+    let neighbor_count = 3usize;
+    for (di, h) in hubs.iter().enumerate() {
+        let hid = format!("{}d{:03}", prefix, di);
+        let back_exit = if sector_chunks.is_some() && !sector_ids.is_empty() {
+            let si = di_to_sector[di];
+            let sid = sector_ids
+                .get(si)
+                .cloned()
+                .unwrap_or_else(|| format!("{}s00", prefix));
+            let sn = ambience.sector_short_name(si, geo.burg_id);
+            let sname = rooms.get(&sid).map(|r| r.name.clone()).unwrap_or_default();
+            model::Exit {
+                direction: format!("退回{}", sn),
+                to_room_id: sid,
+                to_room_name: sname,
+            }
+        } else {
+            model::Exit {
+                direction: "回城門".to_string(),
+                to_room_id: gate_id.clone(),
+                to_room_name: gate_room_name.clone(),
+            }
+        };
+        let mut exs: Vec<model::Exit> = vec![back_exit];
+        let mut others: Vec<(usize, f64)> = (0..n_d)
+            .filter(|&j| j != di)
+            .map(|j| {
+                let d = dist_xy(h.cx, h.cy, hubs[j].cx, hubs[j].cy);
+                (j, d)
+            })
+            .collect();
+        others.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
+        for (j, _) in others.iter().take(neighbor_count) {
+            let hj = &hubs[*j];
+            let jid = format!("{}d{:03}", prefix, j);
+            let jname = rooms.get(&jid).map(|r| r.name.clone()).unwrap_or_default();
+            exs.push(model::Exit {
+                direction: format!("往{}", hj.label),
+                to_room_id: jid,
+                to_room_name: jname,
+            });
+        }
+        dedup_exits(&mut exs);
+        exits.insert(hid, exs);
+    }
+
+    // 可進建築：每區最多 3 棟（面積大者優先），出口用「進入××」
+    let mut per_district: HashMap<usize, Vec<(usize, f64)>> = HashMap::new();
+    for &bi in &enterable {
+        let di = if geo.districts.is_empty() {
+            0usize
+        } else {
+            bdrafts[bi].district_idx.unwrap_or(gate_di)
+        };
+        let area = bdrafts[bi].area;
+        per_district.entry(di).or_default().push((bi, area));
+    }
+    for v in per_district.values_mut() {
+        v.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+        v.truncate(3);
+    }
+
+    let mut building_count = 0usize;
+    for (di, list) in &per_district {
+        let hid = format!("{}d{:03}", prefix, *di);
+        let hub = &hubs[*di];
+        for &(bi, _) in list {
+            let b = &bdrafts[bi];
+            let near_gate = *di == gate_di;
+            let btype = infer_building_type(
+                b,
+                near_gate,
+                has_temple_tag,
+                hub.near_square,
+            );
+            let b_seed = seed_base
+                .wrapping_add(bi as u64 * 0xC13F_A9A9)
+                .wrapping_add(b.centroid_x.to_bits() ^ b.centroid_y.to_bits().rotate_left(11));
+            let kind_str = building_type_kind_str(btype);
+            let bname = ambience.building_place_name(kind_str, b_seed);
+            let bid = format!("{}b{:04}", prefix, bi);
+            let mut tags = merge_tags(world_tags, &["city_building"]);
+            match btype {
+                BuildingType::Shop => tags.push("shop".to_string()),
+                BuildingType::Tavern => tags.push("tavern".to_string()),
+                BuildingType::Temple => tags.push("temple".to_string()),
+                BuildingType::Warehouse => tags.push("warehouse".to_string()),
+                BuildingType::Residence => tags.push("residence".to_string()),
+            }
+            let b_desc = ambience.pick_building_interior(seed_base + 0x1000 + bi as u64);
+            rooms.insert(
+                bid.clone(),
+                model::Room {
+                    id: bid.clone(),
+                    name: bname.clone(),
+                    tags,
+                    zone: zone.clone(),
+                    description: b_desc,
+                    objects: Vec::new(),
+                },
+            );
+            let jname = rooms.get(&hid).map(|r| r.name.clone()).unwrap_or_default();
+            exits.insert(
+                bid.clone(),
+                vec![model::Exit {
+                    direction: "離開".to_string(),
+                    to_room_id: hid.clone(),
+                    to_room_name: jname,
+                }],
+            );
+            let enter_dir = format!("進入{}", bname);
+            exits.entry(hid.clone()).or_default().push(model::Exit {
+                direction: enter_dir,
+                to_room_id: bid,
+                to_room_name: bname.clone(),
+            });
+            building_count += 1;
+        }
+    }
+
+    for ex_list in exits.values_mut() {
+        dedup_exits(ex_list);
+        for ex in ex_list.iter_mut() {
+            if ex.to_room_name.is_empty() {
+                ex.to_room_name = rooms
+                    .get(&ex.to_room_id)
+                    .map(|x| x.name.clone())
+                    .unwrap_or_default();
+            }
+        }
+    }
+
+    let extra_sectors = sector_ids.len();
+    let semantic_nodes = 1 + n_d + extra_sectors;
+    BuiltCity {
+        batch: CityInjectBatch { rooms, exits },
+        gate_room_id: gate_id,
+        gate_room_name,
+        junction_count: semantic_nodes,
+        enterable_count: building_count,
+    }
+}
+
+/// 依各坊中心相對全城中心的方位角排序，再切成 `n_sectors` 段（每段一條外街）。
+fn partition_districts_by_angle(hubs: &[HubInfo], n_sectors: usize) -> Vec<Vec<usize>> {
+    let n = hubs.len();
+    if n == 0 || n_sectors == 0 {
+        return Vec::new();
+    }
+    let k = n_sectors.min(n).max(1);
+    let mx: f64 = hubs.iter().map(|h| h.cx).sum::<f64>() / n as f64;
+    let my: f64 = hubs.iter().map(|h| h.cy).sum::<f64>() / n as f64;
+    let mut items: Vec<(usize, f64)> = hubs
+        .iter()
+        .enumerate()
+        .map(|(i, h)| {
+            let ang = (h.cy - my).atan2(h.cx - mx);
+            (i, ang)
+        })
+        .collect();
+    items.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(Ordering::Equal));
+    let base = n / k;
+    let rem = n % k;
+    let mut out: Vec<Vec<usize>> = Vec::with_capacity(k);
+    let mut idx = 0usize;
+    for s in 0..k {
+        let size = base + if s < rem { 1 } else { 0 };
+        let end = (idx + size).min(n);
+        let chunk: Vec<usize> = items[idx..end].iter().map(|(i, _)| *i).collect();
+        idx = end;
+        out.push(chunk);
+    }
+    out
+}
+
+fn pick_gate_district(hubs: &[HubInfo]) -> usize {
+    let wall_candidates: Vec<usize> = hubs
+        .iter()
+        .enumerate()
+        .filter(|(_, h)| h.near_wall)
+        .map(|(i, _)| i)
+        .collect();
+    let iter: Vec<usize> = if wall_candidates.is_empty() {
+        (0..hubs.len()).collect()
+    } else {
+        wall_candidates
+    };
+    let mut best = *iter.first().unwrap_or(&0);
+    let mut best_bc = usize::MAX;
+    for &i in &iter {
+        let bc = hubs[i].building_count;
+        if bc < best_bc || (bc == best_bc && i < best) {
+            best_bc = bc;
+            best = i;
+        }
+    }
+    best
+}
+
+fn ring_centroid(ring: &[(f64, f64)]) -> (f64, f64) {
+    if ring.is_empty() {
+        return (0.0, 0.0);
+    }
+    let (sx, sy) = ring.iter().fold((0.0, 0.0), |a, p| (a.0 + p.0, a.1 + p.1));
+    let n = ring.len() as f64;
+    (sx / n, sy / n)
+}
+
+fn centroid_all_buildings(bdrafts: &[BuildingDraft]) -> (f64, f64) {
+    if bdrafts.is_empty() {
+        return (0.0, 0.0);
+    }
+    let sx: f64 = bdrafts.iter().map(|b| b.centroid_x).sum();
+    let sy: f64 = bdrafts.iter().map(|b| b.centroid_y).sum();
+    let n = bdrafts.len() as f64;
+    (sx / n, sy / n)
+}
+
+/// 產生區坊語意短標（用於房名與「往××」）；吃 GeoJSON 區名或幾何推斷，避免固定「東隅××區」。
+fn district_label_semantic(
+    geo: &CityGeo,
+    di: usize,
+    hub_cx: f64,
+    hub_cy: f64,
+    bdrafts: &[BuildingDraft],
+    ambience: &CityAmbienceConfig,
+) -> String {
+    let seed = hub_cx
+        .to_bits()
+        .wrapping_mul(0x9E37)
+        .wrapping_add(hub_cy.to_bits())
+        .wrapping_add((di as u64).wrapping_mul(0x1F));
+    if geo.districts.is_empty() {
+        return "城內".to_string();
+    }
+    let d = &geo.districts[di];
+    let raw_name = d.name.as_deref().unwrap_or("").trim();
+    if !raw_name.is_empty() {
+        let has_cjk = raw_name
+            .chars()
+            .any(|c| ('\u{4e00}'..='\u{9fff}').contains(&c));
+        if has_cjk {
+            return ambience.format_chinese_district_raw(raw_name, seed);
+        }
+        return ambience.foreign_district_label(raw_name, seed);
+    }
+    let bc = bdrafts
+        .iter()
+        .filter(|b| b.district_idx == Some(di))
+        .count();
+    let near_river = geo
+        .river_lines
+        .iter()
+        .any(|ln| dist_point_polyline(hub_cx, hub_cy, ln) < 40.0);
+    let near_wall = geo.wall_rings.iter().any(|w| {
+        dist_point_polygon_boundary(hub_cx, hub_cy, w) < 50.0
+    });
+    let near_square = geo.squares.iter().any(|sq| {
+        point_in_polygon(hub_cx, hub_cy, sq)
+            || dist_point_polygon_boundary(hub_cx, hub_cy, sq) < 25.0
+    });
+    let cores_square = ["市集旁", "攤影裡", "鐘樓下"];
+    let cores_river = ["水埠邊", "漕聲處", "繫船石旁"];
+    let cores_wall = ["牆腳巷", "垛口影下", "護城內側"];
+    let cores_dense = ["連簷下", "煙突旁", "馬頭牆間"];
+    let cores_quiet = ["深巷底", "僻角", "少人踏處"];
+    let (pool, salt): (&[&str], u32) = if near_square && bc > 5 {
+        (&cores_square, 41)
+    } else if near_river && bc > 8 {
+        (&cores_river, 43)
+    } else if near_wall && bc < 6 {
+        (&cores_wall, 47)
+    } else if bc > 25 {
+        (&cores_dense, 49)
+    } else {
+        (&cores_quiet, 51)
+    };
+    let core = pool[mix_seed_index(seed, salt, pool.len())];
+    let epi = ambience.pick_district_epithet(seed.wrapping_add((di as u64) << 32));
+    if epi.is_empty() {
+        core.to_string()
+    } else {
+        format!("{}{}", epi, core)
+    }
+}
+
+fn building_type_kind_str(t: BuildingType) -> &'static str {
+    match t {
+        BuildingType::Shop => "shop",
+        BuildingType::Tavern => "tavern",
+        BuildingType::Temple => "temple",
+        BuildingType::Warehouse => "warehouse",
+        BuildingType::Residence => "residence",
+    }
+}
+
+fn select_enterable_buildings(geo: &CityGeo, bdrafts: &[BuildingDraft]) -> HashSet<usize> {
     let mut areas_sorted: Vec<f64> = bdrafts.iter().map(|b| b.area).collect();
     areas_sorted.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
-    // 取面積前 1%（而非 5%），大城市才不會灌入上千棟
     let threshold_idx = ((areas_sorted.len() as f64) * 0.99).floor() as usize;
     let area_threshold = areas_sorted.get(threshold_idx).copied().unwrap_or(f64::MAX);
 
-    let near_wall_junctions: HashSet<usize> = junction_meta
-        .iter()
-        .enumerate()
-        .filter(|(_, j)| j.near_wall)
-        .map(|(i, _)| i)
-        .collect();
-
     let mut enterable: HashSet<usize> = HashSet::new();
-
-    // 條件一：面積前 1% 的巨型建築
     for (bi, b) in bdrafts.iter().enumerate() {
         if b.area >= area_threshold {
             enterable.insert(bi);
         }
     }
-
-    // 條件二：廣場旁面積最大的 1 棟
     if let Some(bi) = bdrafts
         .iter()
         .enumerate()
@@ -194,8 +661,6 @@ pub fn build_city_rooms(
     {
         enterable.insert(bi);
     }
-
-    // 條件三：河岸旁面積最大的 1 棟
     if let Some(bi) = bdrafts
         .iter()
         .enumerate()
@@ -205,8 +670,6 @@ pub fn build_city_rooms(
     {
         enterable.insert(bi);
     }
-
-    // 條件五：每個 district 至少 1 棟（取最大面積）
     for di in 0..geo.districts.len() {
         let mut best: Option<(usize, f64)> = None;
         for (bi, b) in bdrafts.iter().enumerate() {
@@ -222,8 +685,6 @@ pub fn build_city_rooms(
             enterable.insert(bi);
         }
     }
-
-    // 硬上限：超過 50 棟時只保留面積最大的 50 棟
     if enterable.len() > 50 {
         let mut sorted_entries: Vec<(usize, f64)> = enterable
             .iter()
@@ -232,223 +693,7 @@ pub fn build_city_rooms(
         sorted_entries.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
         enterable = sorted_entries.into_iter().take(50).map(|(bi, _)| bi).collect();
     }
-
-    let junc_id: Vec<String> = (0..n_j)
-        .map(|i| format!("{}j{:04}", prefix, i))
-        .collect();
-
-    let building_to_junction: Vec<usize> = bdrafts
-        .iter()
-        .map(|b| {
-            let mut best_j = 0usize;
-            let mut best_d = f64::MAX;
-            for (ji, j) in junction_meta.iter().enumerate() {
-                let d = dist_xy(b.centroid_x, b.centroid_y, j.cx, j.cy);
-                if d < best_d {
-                    best_d = d;
-                    best_j = ji;
-                }
-            }
-            best_j
-        })
-        .collect();
-
-    let has_temple_tag = world_tags.iter().any(|t| {
-        let x = t.to_lowercase();
-        x.contains("temple") || t.contains("廟") || t.contains("寺")
-    });
-
-    let mut type_count: HashMap<BuildingType, u32> = HashMap::new();
-    let mut enterable_list: Vec<(usize, BuildingType, String)> = Vec::new();
-
-    for &bi in &enterable {
-        let b = &bdrafts[bi];
-        let ji = building_to_junction[bi];
-        let near_gate = near_wall_junctions.contains(&ji);
-        let btype = infer_building_type(
-            b,
-            near_gate,
-            has_temple_tag,
-            junction_meta[ji].near_square,
-        );
-        *type_count.entry(btype).or_insert(0) += 1;
-        let n = *type_count.get(&btype).unwrap();
-        let name = building_display_name(btype, n);
-        enterable_list.push((bi, btype, name));
-    }
-
-    let district_labels = district_display_names(geo, &junction_meta, &bdrafts);
-
-    let junction_room_names: Vec<String> = junction_meta
-        .iter()
-        .map(|j| {
-            let dname = j
-                .district_idx
-                .and_then(|d| district_labels.get(d).cloned())
-                .unwrap_or_else(|| "城內".to_string());
-            format!("{}路口", dname)
-        })
-        .collect();
-
-    let gate_j = pick_gate_index(&junction_meta, &near_wall_junctions).unwrap_or(0);
-    let gate_room_id = junc_id
-        .get(gate_j)
-        .cloned()
-        .unwrap_or_default();
-    let gate_room_name = if world_room_name.trim().is_empty() {
-        format!("burg {} 城門", geo.burg_id)
-    } else {
-        format!("{}城門", world_room_name.trim())
-    };
-
-    let mut rooms: HashMap<String, model::Room> = HashMap::new();
-    let mut exits: HashMap<String, Vec<model::Exit>> = HashMap::new();
-
-    for ji in 0..n_j {
-        let id = junc_id[ji].clone();
-        let j = &junction_meta[ji];
-        let room_name = if ji == gate_j {
-            gate_room_name.clone()
-        } else {
-            junction_room_names[ji].clone()
-        };
-        let mut tags = merge_tags(world_tags, &["city_junction", "street"]);
-        if j.near_wall {
-            tags.push("near_wall".to_string());
-        }
-        if j.near_river {
-            tags.push("near_river".to_string());
-        }
-        if j.near_square {
-            tags.push("near_square".to_string());
-        }
-        rooms.insert(
-            id.clone(),
-            model::Room {
-                id: id.clone(),
-                name: room_name,
-                tags,
-                zone: zone.clone(),
-                description: String::new(),
-                objects: Vec::new(),
-            },
-        );
-        // 同方向只保留最近的路口（避免出口爆炸）
-        let mut best_by_dir: HashMap<String, (f64, usize)> = HashMap::new();
-        for &nj in &adj[ji] {
-            let dx = junction_meta[nj].cx - j.cx;
-            let dy = junction_meta[nj].cy - j.cy;
-            let dir = bearing_label(dx, dy).to_string();
-            let dist = (dx * dx + dy * dy).sqrt();
-            let entry = best_by_dir.entry(dir).or_insert((f64::MAX, nj));
-            if dist < entry.0 {
-                *entry = (dist, nj);
-            }
-        }
-        let mut exs: Vec<model::Exit> = Vec::new();
-        for (dir, (_, nj)) in &best_by_dir {
-            let to_id = junc_id[*nj].clone();
-            let to_name = if *nj == gate_j {
-                gate_room_name.clone()
-            } else {
-                junction_room_names[*nj].clone()
-            };
-            exs.push(model::Exit {
-                direction: dir.clone(),
-                to_room_id: to_id,
-                to_room_name: to_name,
-            });
-        }
-        if ji == gate_j {
-            for we in world_exits {
-                if we.to_room_id == world_room_id {
-                    continue;
-                }
-                exs.push(model::Exit {
-                    direction: we.direction.clone(),
-                    to_room_id: we.to_room_id.clone(),
-                    to_room_name: we.to_room_name.clone(),
-                });
-            }
-        }
-        dedup_exits(&mut exs);
-        exits.insert(id, exs);
-    }
-
-    // 每個路口最多掛 2 棟可進入建築
-    let mut buildings_per_junction: HashMap<usize, u32> = HashMap::new();
-    for (bi, btype, bname) in enterable_list {
-        let ji = building_to_junction[bi];
-        let count = buildings_per_junction.entry(ji).or_insert(0);
-        if *count >= 2 {
-            continue; // 跳過，這個路口已經夠了
-        }
-        *count += 1;
-        let bid = format!("{}b{:04}", prefix, bi);
-        let junc_rid = junc_id[ji].clone();
-        let mut tags = merge_tags(world_tags, &["city_building"]);
-        match btype {
-            BuildingType::Shop => tags.push("shop".to_string()),
-            BuildingType::Tavern => tags.push("tavern".to_string()),
-            BuildingType::Temple => tags.push("temple".to_string()),
-            BuildingType::Warehouse => tags.push("warehouse".to_string()),
-            BuildingType::Residence => tags.push("residence".to_string()),
-        }
-        rooms.insert(
-            bid.clone(),
-            model::Room {
-                id: bid.clone(),
-                name: bname.clone(),
-                tags,
-                zone: zone.clone(),
-                description: String::new(),
-                objects: Vec::new(),
-            },
-        );
-        let jname = rooms
-            .get(&junc_rid)
-            .map(|r| r.name.clone())
-            .unwrap_or_default();
-        exits.insert(
-            bid.clone(),
-            vec![model::Exit {
-                direction: "離開".to_string(),
-                to_room_id: junc_rid.clone(),
-                to_room_name: jname,
-            }],
-        );
-        let enter_dir = format!("進入{}", bname);
-        let list = exits.entry(junc_rid).or_default();
-        list.push(model::Exit {
-            direction: enter_dir,
-            to_room_id: bid,
-            to_room_name: bname.clone(),
-        });
-    }
-
-    for ex_list in exits.values_mut() {
-        dedup_exits(ex_list);
-    }
-
-    for ex_list in exits.values_mut() {
-        for ex in ex_list.iter_mut() {
-            if ex.to_room_name.is_empty() {
-                ex.to_room_name = rooms
-                    .get(&ex.to_room_id)
-                    .map(|x| x.name.clone())
-                    .unwrap_or_default();
-            }
-        }
-    }
-
-    let enterable_count = enterable.len();
-    BuiltCity {
-        batch: CityInjectBatch { rooms, exits },
-        gate_room_id,
-        gate_room_name,
-        junction_count: n_j,
-        enterable_count,
-    }
+    enterable
 }
 
 fn merge_tags(world: &[String], extra: &[&str]) -> Vec<String> {
@@ -471,12 +716,12 @@ fn infer_building_type(
     b: &BuildingDraft,
     near_gate: bool,
     has_temple_tag: bool,
-    junc_near_square: bool,
+    hub_near_square: bool,
 ) -> BuildingType {
     if near_gate {
         return BuildingType::Tavern;
     }
-    if junc_near_square && b.dist_square < 40.0 {
+    if hub_near_square && b.dist_square < 40.0 {
         return BuildingType::Shop;
     }
     if b.dist_river < 35.0 && b.area > 200.0 {
@@ -488,206 +733,3 @@ fn infer_building_type(
     BuildingType::Residence
 }
 
-fn building_display_name(t: BuildingType, n: u32) -> String {
-    match t {
-        BuildingType::Shop => format!("街坊舖子·{}", n),
-        BuildingType::Tavern => format!("城門酒肆·{}", n),
-        BuildingType::Temple => format!("街廟·{}", n),
-        BuildingType::Warehouse => format!("河岸貨棧·{}", n),
-        BuildingType::Residence => format!("民居·{}", n),
-    }
-}
-
-fn district_display_names(
-    geo: &CityGeo,
-    junctions: &[JunctionDraft],
-    buildings: &[BuildingDraft],
-) -> Vec<String> {
-    let mut out: Vec<String> = Vec::with_capacity(geo.districts.len());
-    for (di, d) in geo.districts.iter().enumerate() {
-        let name = d.name.as_deref().unwrap_or("").trim();
-        if !name.is_empty()
-            && name
-                .chars()
-                .any(|c| ('\u{4e00}'..='\u{9fff}').contains(&c))
-        {
-            out.push(format!("{}片", name));
-            continue;
-        }
-        let jc = junctions
-            .iter()
-            .filter(|j| j.district_idx == Some(di))
-            .count();
-        let bc = buildings
-            .iter()
-            .filter(|b| b.district_idx == Some(di))
-            .count();
-        let near_river = junctions
-            .iter()
-            .any(|j| j.district_idx == Some(di) && j.near_river);
-        let near_wall = junctions
-            .iter()
-            .any(|j| j.district_idx == Some(di) && j.near_wall);
-        let has_square = junctions
-            .iter()
-            .any(|j| j.district_idx == Some(di) && j.near_square);
-        let label = if has_square && bc > 5 {
-            "廣場區"
-        } else if near_river && bc > 8 {
-            "河畔商區"
-        } else if near_wall && bc < 6 {
-            "外城片區"
-        } else if jc + bc > 25 {
-            "民居區"
-        } else {
-            "靜巷區"
-        };
-        out.push(format!("{}{}", compass_for_district(di), label));
-    }
-    out
-}
-
-fn compass_for_district(di: usize) -> &'static str {
-    match di % 4 {
-        0 => "東",
-        1 => "南",
-        2 => "西",
-        _ => "北",
-    }
-}
-
-fn pick_gate_index(
-    junctions: &[JunctionDraft],
-    near_wall_set: &HashSet<usize>,
-) -> Option<usize> {
-    if junctions.is_empty() {
-        return None;
-    }
-    let candidates: Vec<usize> = (0..junctions.len())
-        .filter(|i| near_wall_set.contains(i))
-        .collect();
-    let iter: Vec<usize> = if candidates.is_empty() {
-        (0..junctions.len()).collect()
-    } else {
-        candidates
-    };
-    let mut best = iter[0];
-    let mut best_deg = usize::MAX;
-    for &i in &iter {
-        let d = junctions[i].degree;
-        if d < best_deg || (d == best_deg && i < best) {
-            best_deg = d;
-            best = i;
-        }
-    }
-    Some(best)
-}
-
-type RoadClusterOutcome = (Vec<usize>, Vec<(f64, f64)>, Vec<(usize, usize)>);
-
-/// 回傳 (每個端點的 cluster 編號, 聚類中心, 無向邊集合)。
-fn cluster_roads(roads: &[super::Road], eps: f64) -> RoadClusterOutcome {
-    let mut points: Vec<(f64, f64)> = Vec::new();
-    for r in roads {
-        if r.coords.len() < 2 {
-            continue;
-        }
-        let a = *r.coords.first().unwrap();
-        let b = *r.coords.last().unwrap();
-        points.push(a);
-        points.push(b);
-    }
-    if points.is_empty() {
-        return (Vec::new(), Vec::new(), Vec::new());
-    }
-    let n = points.len();
-    let mut uf = UnionFind::new(n);
-    for i in 0..n {
-        for j in i + 1..n {
-            if dist_xy(points[i].0, points[i].1, points[j].0, points[j].1) <= eps {
-                uf.union(i, j);
-            }
-        }
-    }
-    let mut root_to_idx: HashMap<usize, usize> = HashMap::new();
-    let mut centers: Vec<(f64, f64)> = Vec::new();
-    let mut cluster_of: Vec<usize> = vec![0; n];
-    for (i, slot) in cluster_of.iter_mut().enumerate().take(n) {
-        let r = uf.find(i);
-        let ci = *root_to_idx.entry(r).or_insert_with(|| {
-            let k = centers.len();
-            centers.push((0.0, 0.0));
-            k
-        });
-        *slot = ci;
-    }
-    let mut counts = vec![0usize; centers.len()];
-    for i in 0..n {
-        let ci = cluster_of[i];
-        centers[ci].0 += points[i].0;
-        centers[ci].1 += points[i].1;
-        counts[ci] += 1;
-    }
-    for ci in 0..centers.len() {
-        let c = counts[ci].max(1) as f64;
-        centers[ci].0 /= c;
-        centers[ci].1 /= c;
-    }
-
-    let mut edges: HashSet<(usize, usize)> = HashSet::new();
-    for r in roads {
-        if r.coords.len() < 2 {
-            continue;
-        }
-        let a = *r.coords.first().unwrap();
-        let b = *r.coords.last().unwrap();
-        let ia = nearest_point_index(&points, a.0, a.1);
-        let ib = nearest_point_index(&points, b.0, b.1);
-        let ca = cluster_of[ia];
-        let cb = cluster_of[ib];
-        if ca != cb {
-            let e = if ca < cb { (ca, cb) } else { (cb, ca) };
-            edges.insert(e);
-        }
-    }
-    let edge_vec: Vec<(usize, usize)> = edges.into_iter().collect();
-    (cluster_of, centers, edge_vec)
-}
-
-fn nearest_point_index(points: &[(f64, f64)], x: f64, y: f64) -> usize {
-    let mut best = 0usize;
-    let mut best_d = f64::MAX;
-    for (i, p) in points.iter().enumerate() {
-        let d = dist_xy(x, y, p.0, p.1);
-        if d < best_d {
-            best_d = d;
-            best = i;
-        }
-    }
-    best
-}
-
-struct UnionFind {
-    parent: Vec<usize>,
-}
-
-impl UnionFind {
-    fn new(n: usize) -> Self {
-        Self {
-            parent: (0..n).collect(),
-        }
-    }
-    fn find(&mut self, x: usize) -> usize {
-        if self.parent[x] != x {
-            self.parent[x] = self.find(self.parent[x]);
-        }
-        self.parent[x]
-    }
-    fn union(&mut self, a: usize, b: usize) {
-        let ra = self.find(a);
-        let rb = self.find(b);
-        if ra != rb {
-            self.parent[rb] = ra;
-        }
-    }
-}

@@ -1,0 +1,1 @@
+{"summary":"接續補齊 watabou_test.html：precomputeBridges（路河中點與河折線距離）、drawBridge／drawSettlementSprite、init 賦值 bridgesPrecomputed；render 依 camScale 對樹與地名做 LOD；橋改畫在虛線道路之後；以本機 http:8877 ?zoom=8 瀏覽器開頁無腳本錯誤。","current_status":"Watabou Perilous Shores PoC：河／湖／路／橋層序與 LOD、城鎮圖章、驗收鏡頭與 8x 自測流程可移交設計者目視評估；後續若橋位過密可調 TH 或去重策略。"}

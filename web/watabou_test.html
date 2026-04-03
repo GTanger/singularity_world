@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Watabou JSON 渲染測試</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #2a2a3a; }
+canvas { display: block; touch-action: none; }
+#hud {
+  position: fixed; top: 8px; left: 8px;
+  background: rgba(0,0,0,0.7); color: #e0e0e0;
+  font: 12px/1.3 monospace; padding: 6px 10px;
+  border-radius: 6px; pointer-events: none; z-index: 10;
+}
+</style>
+</head>
+<body>
+<div id="hud">載入中…</div>
+<canvas id="c"></canvas>
+<script>
+var RIVER_LAKE_COLOR = '#3a6a9a';
+
+var TERRAIN_COLORS = {
+  'forest-light': '#86B766',
+  'forest-dark':  '#86B766',
+  'forest-dead':  '#86B766',
+  'mountain':     '#F6F0DD',
+  'rocks':        '#9a9080',
+  'swamp':        '#5a7a5a',
+  'water':        RIVER_LAKE_COLOR,
+  '':             '#c8c0a8'
+};
+
+/**
+ * 六角外接圓半徑（世界座標）。hexToPixel、河路、裁切皆依此；改小＝格距等比例縮小。
+ * 正六角邊長 s 等於外接圓半徑（pointy-top）；預設 s＝100，見 docs/reference/map_terrain_world.md。
+ * init 內 camScale 會依 HEX_R 反比調整以「塞滿視窗」，故只改 HEX_R 時，初始螢幕上每格約同大；
+ * 若要一進頁就看起來更遠／更小，請調 INIT_VIEW_ZOOM_FACTOR。
+ */
+var HEX_R = 100;
+/** 初始視野在預設 fit 上再乘此係數於分母：>1 拉遠（螢幕上六角更小），不影響世界資料。 */
+var INIT_VIEW_ZOOM_FACTOR = 1.15;
+var SQRT3 = Math.sqrt(3);
+var SHOW_HEX_STROKE = false;
+/**
+ * 底圖強制正六角：須維持 0，鄰格共邊數學重合、與正六角貼圖一致。
+ * 若 >0 須另做共用頂點 wobble，否則邊界錯位。
+ */
+var WOBBLE = 0;
+/** 繪製時外接圓額外放大（世界座標），約對應此螢幕像素，消除 Canvas 反鋸齒造成的格間細縫 */
+var HEX_AA_OVERLAP_PX = 0.65;
+var WOBBLE_COAST = 1.15;
+/** 最短河線仍繪製（世界座標長度）；與 HEX_R=12 時 45 等效 */
+var MIN_RIVER_PX = 45 * HEX_R / 12;
+/** true 時先畫合併陸地多邊形再疊逐格地形（易呈雙層混濁）；false 僅逐格地形，較乾淨 */
+var MERGED_LAND_FILL = false;
+var canvas, ctx, data;
+/** 非 null 時，部分地形改以貼圖繪製（見 loadTileAssets） */
+var tileAssets = null;
+var DEBUG_MAP = false;
+try {
+  var __sp = new URLSearchParams(window.location.search);
+  DEBUG_MAP = (__sp.get('debug') === '1');
+} catch (e) {}
+var camX = 0, camY = 0, camScale = 1;
+var W, H;
+var riverPathsPrecomputed = null;
+/** 預算：合併陸地多邊形（內湖洞） */
+var landArt = null;
+
+function hexKey(q, r) {
+  return 'q' + q + '_r' + r;
+}
+
+/** pointy-top + odd-r 與 hexToPixel 一致 */
+function hexNeighborOffsets(r) {
+  if ((r & 1) === 0) {
+    return [
+      [+1, 0], [0, -1], [-1, -1], [-1, 0], [-1, +1], [0, +1]
+    ];
+  }
+  return [
+    [+1, 0], [+1, -1], [0, -1], [-1, 0], [0, +1], [+1, +1]
+  ];
+}
+
+function isLandHex(h) {
+  return h && h.terrain !== 'water';
+}
+
+function ptsEq(a, b, eps) {
+  var e = eps == null ? 0.35 : eps;
+  return Math.abs(a[0] - b[0]) < e && Math.abs(a[1] - b[1]) < e;
+}
+
+function signedArea(pts) {
+  if (!pts || pts.length < 3) return 0;
+  var a = 0;
+  for (var i = 0; i < pts.length; i++) {
+    var j = (i + 1) % pts.length;
+    a += pts[i][0] * pts[j][1] - pts[j][0] * pts[i][1];
+  }
+  return a * 0.5;
+}
+
+function hexCornerWorld(q, r, cornerIdx, radius) {
+  var pos = hexToPixel(q, r);
+  var cx = pos[0], cy = pos[1];
+  var angle = Math.PI / 180 * (60 * cornerIdx - 30);
+  return [cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)];
+}
+
+/** 陸地連通塊 BFS */
+function landComponents(hexes) {
+  var fullMap = {};
+  var landMap = {};
+  for (var k in hexes) {
+    var h = hexes[k];
+    fullMap[k] = h;
+    if (isLandHex(h)) landMap[k] = h;
+  }
+  var visited = {};
+  var comps = [];
+  for (var lk in landMap) {
+    if (visited[lk]) continue;
+    var start = landMap[lk];
+    var queue = [start];
+    visited[lk] = true;
+    var comp = [];
+    while (queue.length) {
+      var cur = queue.shift();
+      comp.push(cur);
+      var offs = hexNeighborOffsets(cur.r);
+      for (var d = 0; d < 6; d++) {
+        var nq = cur.q + offs[d][0];
+        var nr = cur.r + offs[d][1];
+        var nk = hexKey(nq, nr);
+        if (!landMap[nk] || visited[nk]) continue;
+        visited[nk] = true;
+        queue.push(landMap[nk]);
+      }
+    }
+    comps.push(comp);
+  }
+  return { fullMap: fullMap, landMap: landMap, components: comps };
+}
+
+/** 邊界邊：陸地六角與非陸地（水或缺格） */
+function boundaryEdgesForLand(comp, fullMap) {
+  var edges = [];
+  var R = HEX_R;
+  for (var i = 0; i < comp.length; i++) {
+    var h = comp[i];
+    var offs = hexNeighborOffsets(h.r);
+    for (var d = 0; d < 6; d++) {
+      var nq = h.q + offs[d][0];
+      var nr = h.r + offs[d][1];
+      var nk = hexKey(nq, nr);
+      var nh = fullMap[nk];
+      if (isLandHex(nh)) continue;
+      var v1 = hexCornerWorld(h.q, h.r, d, R);
+      var v2 = hexCornerWorld(h.q, h.r, (d + 1) % 6, R);
+      edges.push([v1, v2]);
+    }
+  }
+  return edges;
+}
+
+/** 將邊段串成封閉環（六角邊界為 2-正則，可貪婪接） */
+function edgesToLoops(edges) {
+  var remaining = edges.slice();
+  var loops = [];
+  while (remaining.length) {
+    var chain = [remaining[0][0].slice(), remaining[0][1].slice()];
+    remaining.splice(0, 1);
+    var guard = 0;
+    while (guard < 200000) {
+      guard++;
+      var tail = chain[chain.length - 1];
+      var found = -1;
+      for (var i = 0; i < remaining.length; i++) {
+        var e = remaining[i];
+        if (ptsEq(e[0], tail)) {
+          chain.push(e[1].slice());
+          found = i;
+          break;
+        }
+        if (ptsEq(e[1], tail)) {
+          chain.push(e[0].slice());
+          found = i;
+          break;
+        }
+      }
+      if (found < 0) break;
+      remaining.splice(found, 1);
+      if (chain.length > 2 && ptsEq(chain[0], chain[chain.length - 1])) {
+        chain.pop();
+        break;
+      }
+    }
+    if (chain.length >= 3) loops.push(chain);
+  }
+  return loops;
+}
+
+function loopCentroid(pts) {
+  var sx = 0, sy = 0;
+  for (var i = 0; i < pts.length; i++) {
+    sx += pts[i][0];
+    sy += pts[i][1];
+  }
+  return [sx / pts.length, sy / pts.length];
+}
+
+/** 粗估像素→六角，用於判斷環心在水或陸 */
+function pixelToHexApprox(px, py) {
+  var r = Math.round(py / (HEX_R * 1.5));
+  var q = Math.round(px / (HEX_R * SQRT3) - 0.5 * (r & 1));
+  return [q, r];
+}
+
+function terrainAtPixel(hexes, px, py) {
+  var qr = pixelToHexApprox(px, py);
+  var k = hexKey(qr[0], qr[1]);
+  var h = hexes[k];
+  if (!h) {
+    var best = null;
+    var bd = 1e9;
+    for (var dk in hexes) {
+      var hh = hexes[dk];
+      var p = hexToPixel(hh.q, hh.r);
+      var d = Math.hypot(p[0] - px, p[1] - py);
+      if (d < bd) {
+        bd = d;
+        best = hh;
+      }
+    }
+    h = best;
+  }
+  return h ? h.terrain : 'water';
+}
+
+/** 封閉多邊形的 Chaikin（每邊兩個新點，與開放折線版不同） */
+function chaikinClosed(pts, iterations) {
+  var a = pts.slice();
+  for (var iter = 0; iter < iterations; iter++) {
+    var n = a.length;
+    var f = [];
+    for (var i = 0; i < n; i++) {
+      var p0 = a[i];
+      var p1 = a[(i + 1) % n];
+      f.push([
+        p0[0] * 0.75 + p1[0] * 0.25,
+        p0[1] * 0.75 + p1[1] * 0.25
+      ]);
+      f.push([
+        p0[0] * 0.25 + p1[0] * 0.75,
+        p0[1] * 0.25 + p1[1] * 0.75
+      ]);
+    }
+    a = f;
+  }
+  return a;
+}
+
+function smoothClosedPoly(pts, chaikinIt) {
+  if (!pts || pts.length < 3) return pts;
+  return chaikinClosed(pts, chaikinIt == null ? 2 : chaikinIt);
+}
+
+function wobbleClosedPoly(pts) {
+  var out = [];
+  for (var i = 0; i < pts.length; i++) {
+    var p = pts[i];
+    out.push([
+      p[0] + vertexHash(p[0], p[1], 11) * WOBBLE_COAST,
+      p[1] + vertexHash(p[0], p[1], 12) * WOBBLE_COAST
+    ]);
+  }
+  return out;
+}
+
+/** 高縮放驗收：鏡頭對準臨水陸格，避免對準湖心 */
+function findVerificationCamera(hexes) {
+  var qk = Object.keys(hexes);
+  if (!qk.length) return null;
+  var qs = [], rs = [];
+  for (var i = 0; i < qk.length; i++) {
+    var h = hexes[qk[i]];
+    qs.push(h.q);
+    rs.push(h.r);
+  }
+  var midQ = (Math.min.apply(null, qs) + Math.max.apply(null, qs)) / 2;
+  var midR = (Math.min.apply(null, rs) + Math.max.apply(null, rs)) / 2;
+  var midPx = hexToPixel(midQ, midR);
+  var bestPos = null;
+  var bestScore = -1;
+  var bestDist = 1e12;
+  for (var j = 0; j < qk.length; j++) {
+    var hh = hexes[qk[j]];
+    if (!isLandHex(hh)) continue;
+    var offs = hexNeighborOffsets(hh.r);
+    var touchesWater = false;
+    for (var d = 0; d < 6; d++) {
+      var nq = hh.q + offs[d][0];
+      var nr = hh.r + offs[d][1];
+      var nk = hexKey(nq, nr);
+      var nh = hexes[nk];
+      if (!nh || nh.terrain === 'water') {
+        touchesWater = true;
+        break;
+      }
+    }
+    var tt = hh.terrain || '';
+    var score = 0;
+    if (touchesWater) score += 100;
+    if (tt === 'swamp' || tt === 'rocks') score += 8;
+    var pos = hexToPixel(hh.q, hh.r);
+    var dist = Math.hypot(pos[0] - midPx[0], pos[1] - midPx[1]);
+    if (score > bestScore || (score === bestScore && dist < bestDist)) {
+      bestScore = score;
+      bestDist = dist;
+      bestPos = pos;
+    }
+  }
+  return bestPos || midPx;
+}
+
+/** 依聚落類型找鏡頭目標；可用於驗收 village/town/city 是否有繪出。 */
+function findTownCamera(hexes, preferredType) {
+  var qk = Object.keys(hexes);
+  if (!qk.length) return null;
+  var pref = String(preferredType || '').trim().toLowerCase();
+  var firstAny = null;
+  for (var i = 0; i < qk.length; i++) {
+    var h = hexes[qk[i]];
+    if (!h || !h.town) continue;
+    var pos = hexToPixel(h.q, h.r);
+    if (!firstAny) firstAny = pos;
+    var tt = String(h.town.type || '').trim().toLowerCase();
+    if (pref && tt === pref) return pos;
+  }
+  return firstAny;
+}
+
+function precomputeLandArt(hexes) {
+  var lc = landComponents(hexes);
+  var islandPolys = [];
+  for (var c = 0; c < lc.components.length; c++) {
+    var comp = lc.components[c];
+    var bedges = boundaryEdgesForLand(comp, lc.fullMap);
+    var loops = edgesToLoops(bedges);
+    if (!loops.length) continue;
+    var outer = [];
+    var holes = [];
+    for (var li = 0; li < loops.length; li++) {
+      var raw = loops[li];
+      var cen = loopCentroid(raw);
+      var tr = terrainAtPixel(hexes, cen[0], cen[1]);
+      var sm = smoothClosedPoly(raw, 2);
+      sm = wobbleClosedPoly(sm);
+      if (tr === 'water') holes.push(sm);
+      else outer.push(sm);
+    }
+    if (outer.length) islandPolys.push({ outer: outer, holes: holes });
+  }
+
+  return { islandPolys: islandPolys };
+}
+
+/** 合併陸地填色 + 外緣線（內湖洞用 evenodd） */
+function drawMergedLandfills(islandPolys) {
+  var BASE = TERRAIN_COLORS[''] || '#c8c0a8';
+  for (var ii = 0; ii < islandPolys.length; ii++) {
+    var isl = islandPolys[ii];
+    var outers = isl.outer;
+    var holes = isl.holes;
+    if (!outers || !outers.length) continue;
+    ctx.beginPath();
+    for (var oi = 0; oi < outers.length; oi++) {
+      var op = outers[oi];
+      ctx.moveTo(op[0][0], op[0][1]);
+      for (var j = 1; j < op.length; j++) ctx.lineTo(op[j][0], op[j][1]);
+      ctx.closePath();
+    }
+    var oa = signedArea(outers[0]);
+    for (var hi = 0; hi < holes.length; hi++) {
+      var hp = holes[hi].slice();
+      if (oa * signedArea(hp) > 0) hp.reverse();
+      ctx.moveTo(hp[0][0], hp[0][1]);
+      for (var hj = 1; hj < hp.length; hj++) ctx.lineTo(hp[hj][0], hp[hj][1]);
+      ctx.closePath();
+    }
+    ctx.fillStyle = BASE;
+    ctx.fill('evenodd');
+    ctx.strokeStyle = 'rgba(45,38,28,0.22)';
+    ctx.lineWidth = 1.05;
+    for (var si = 0; si < outers.length; si++) {
+      var sp = outers[si];
+      ctx.beginPath();
+      ctx.moveTo(sp[0][0], sp[0][1]);
+      for (var sj = 1; sj < sp.length; sj++) ctx.lineTo(sp[sj][0], sp[sj][1]);
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+}
+
+function hexToPixel(q, r) {
+  var x = HEX_R * SQRT3 * (q + 0.5 * (r & 1));
+  var y = HEX_R * 1.5 * r;
+  return [x, y];
+}
+
+/** 與 hexToPixel 一致的外接圓半徑＋縫補偿（依縮放），供陸／水／貼圖裁切共用 */
+function hexCellCircumradius() {
+  return HEX_R + HEX_AA_OVERLAP_PX / camScale;
+}
+
+function drawHex(cx, cy, r, fill, stroke) {
+  ctx.beginPath();
+  for (var i = 0; i < 6; i++) {
+    var angle = Math.PI / 180 * (60 * i - 30);
+    var hx = cx + r * Math.cos(angle);
+    var hy = cy + r * Math.sin(angle);
+    if (i === 0) ctx.moveTo(hx, hy);
+    else ctx.lineTo(hx, hy);
+  }
+  ctx.closePath();
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (SHOW_HEX_STROKE && stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 0.5; ctx.stroke(); }
+}
+
+function channelToRawPoints(ch) {
+  var pts = [];
+  for (var i = 0; i < ch.length; i++) {
+    var parts = ch[i].split(':');
+    var mx = 0, my = 0;
+    for (var p = 0; p < parts.length; p++) {
+      var qr = parts[p].replace('q', '').split('_r');
+      var pos2 = hexToPixel(parseInt(qr[0], 10), parseInt(qr[1], 10));
+      mx += pos2[0];
+      my += pos2[1];
+    }
+    mx /= parts.length;
+    my /= parts.length;
+    pts.push([mx, my]);
+  }
+  return pts;
+}
+
+function nearestWaterPoint(px, py, waterCenters) {
+  var best = null;
+  var bestD = 1e9;
+  for (var i = 0; i < waterCenters.length; i++) {
+    var wx = waterCenters[i][0], wy = waterCenters[i][1];
+    var d = Math.hypot(wx - px, wy - py);
+    if (d < bestD) {
+      bestD = d;
+      best = waterCenters[i];
+    }
+  }
+  return { pt: best, dist: bestD };
+}
+
+function closestOnSegment(px, py, x1, y1, x2, y2) {
+  var dx = x2 - x1, dy = y2 - y1;
+  var len2 = dx * dx + dy * dy;
+  if (len2 < 1e-12) {
+    return { x: x1, y: y1, dist: Math.hypot(px - x1, py - y1) };
+  }
+  var t = ((px - x1) * dx + (py - y1) * dy) / len2;
+  t = Math.max(0, Math.min(1, t));
+  var cx = x1 + t * dx, cy = y1 + t * dy;
+  return { x: cx, y: cy, dist: Math.hypot(px - cx, py - cy) };
+}
+
+function closestToPolyline(px, py, poly) {
+  var bestD = 1e9;
+  var bestX = px, bestY = py;
+  for (var i = 0; i < poly.length - 1; i++) {
+    var a = poly[i], b = poly[i + 1];
+    var o = closestOnSegment(px, py, a[0], a[1], b[0], b[1]);
+    if (o.dist < bestD) {
+      bestD = o.dist;
+      bestX = o.x;
+      bestY = o.y;
+    }
+  }
+  return { x: bestX, y: bestY, dist: bestD };
+}
+
+function strokeSmoothPolyline(pts) {
+  if (!pts || pts.length < 2) return;
+  if (pts.length === 2) {
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    ctx.lineTo(pts[1][0], pts[1][1]);
+    return;
+  }
+
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for (var i = 1; i < pts.length - 1; i++) {
+    var p = pts[i];
+    var n = pts[i + 1];
+    var mx = (p[0] + n[0]) * 0.5;
+    var my = (p[1] + n[1]) * 0.5;
+    ctx.quadraticCurveTo(p[0], p[1], mx, my);
+  }
+  var last = pts[pts.length - 1];
+  ctx.lineTo(last[0], last[1]);
+}
+
+function vertexHash(x, y, seed) {
+  var ix = Math.round(x * 10) | 0;
+  var iy = Math.round(y * 10) | 0;
+  var h = Math.imul(ix, 73856093) ^ Math.imul(iy, 19349663) ^ Math.imul(seed | 0, 83492791);
+  h = Math.imul((h >>> 16) ^ h, 0x45d9f3b);
+  h = Math.imul((h >>> 16) ^ h, 0x45d9f3b);
+  h = (h >>> 16) ^ h;
+  return ((h & 0x7fff) / 0x7fff) * 2 - 1;
+}
+
+function chaikinSubdivide(pts, iterations) {
+  if (!pts || pts.length < 3) return pts;
+  var a = pts;
+  for (var iter = 0; iter < iterations; iter++) {
+    var f = [a[0]];
+    for (var i = 1; i < a.length - 1; i++) {
+      f.push([a[i][0] * 0.75 + a[i-1][0] * 0.25, a[i][1] * 0.75 + a[i-1][1] * 0.25]);
+      f.push([a[i][0] * 0.75 + a[i+1][0] * 0.25, a[i][1] * 0.75 + a[i+1][1] * 0.25]);
+    }
+    f.push(a[a.length - 1]);
+    a = f;
+  }
+  return a;
+}
+
+function drawHexWobble(cx, cy, r, fill) {
+  ctx.beginPath();
+  for (var i = 0; i < 6; i++) {
+    var angle = Math.PI / 180 * (60 * i - 30);
+    var vx = cx + r * Math.cos(angle);
+    var vy = cy + r * Math.sin(angle);
+    var wx = vertexHash(vx, vy, 1) * WOBBLE;
+    var wy = vertexHash(vx, vy, 2) * WOBBLE;
+    if (i === 0) ctx.moveTo(vx + wx, vy + wy);
+    else ctx.lineTo(vx + wx, vy + wy);
+  }
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.fill();
+}
+
+/** 地形格：WOBBLE=0 時為正六角 pointy-top，與 hexToPixel 網格正接 */
+function drawHexTerrainCell(cx, cy, fill) {
+  var r = hexCellCircumradius();
+  if (WOBBLE <= 0) {
+    drawHex(cx, cy, r, fill, null);
+  } else {
+    drawHexWobble(cx, cy, r, fill);
+  }
+}
+
+/** 與 drawHexWobble 相同頂點路徑（供 clip） */
+function hexWobblePath(cx, cy, r) {
+  ctx.beginPath();
+  for (var i = 0; i < 6; i++) {
+    var angle = Math.PI / 180 * (60 * i - 30);
+    var vx = cx + r * Math.cos(angle);
+    var vy = cy + r * Math.sin(angle);
+    var wx = vertexHash(vx, vy, 1) * WOBBLE;
+    var wy = vertexHash(vx, vy, 2) * WOBBLE;
+    if (i === 0) ctx.moveTo(vx + wx, vy + wy);
+    else ctx.lineTo(vx + wx, vy + wy);
+  }
+  ctx.closePath();
+}
+
+/** 裁切半徑外擴（僅非「正六角 SVG」貼圖用；與 WOBBLE 並用時易與鄰格半徑不一致） */
+var TILE_CLIP_BLEED = 1.2;
+/** 貼圖 dest 再放大一點，蓋滿裁切邊緣 */
+var TILE_IMAGE_COVER = 1.06;
+/** 山脈僅疊線稿時，圖在格內縮放比例（留邊） */
+var MOUNTAIN_OVERLAY_FIT = 0.9;
+/** 森林/山脈 emoji 顯示尺度（世界座標） */
+var FOREST_EMOJI_SCALE = 1.1;
+var MOUNTAIN_EMOJI_SCALE = 1.45;
+/** 湖面符號（≋）顯示尺度與透明度 */
+var WATER_WAVE_SCALE = 1.05;
+var WATER_WAVE_ALPHA = 0.42;
+/** 聚落符號顯示尺度 */
+var TOWN_EMOJI_SCALE = 1.25;
+var MID_TOWN_EMOJI_SCALE = 1.08;
+var CITY_TOWN_EMOJI_SCALE = 1.3;
+var VILLAGE_TOWN_EMOJI_SCALE = 0.95;
+/** 城市 SVG（assets/city_skyscraper.svg）在格內縮放；與 viewBox 後備尺寸對齊 */
+var CITY_SKYSCRAPER_FIT = 1.12;
+var CITY_SKYSCRAPER_OFFSET_Y_FACTOR = -0.36;
+var CITY_SKYSCRAPER_DESIGN_W = 512;
+var CITY_SKYSCRAPER_DESIGN_H = 512;
+/** 村莊 SVG（assets/village_neighborhood.svg）在格內縮放；與 viewBox 後備尺寸對齊 */
+var VILLAGE_NEIGHBORHOOD_FIT = 0.78;
+var VILLAGE_NEIGHBORHOOD_OFFSET_Y_FACTOR = -0.12;
+var VILLAGE_NEIGHBORHOOD_DESIGN_W = 512;
+var VILLAGE_NEIGHBORHOOD_DESIGN_H = 512;
+/** 城鎮 SVG（web/assets/tiles/town.svg）顯示參數 */
+var TOWN_TILE_FIT = 0.62;
+var TOWN_TILE_OFFSET_Y_FACTOR = -0.14;
+var TOWN_TILE_DESIGN_W = 512;
+var TOWN_TILE_DESIGN_H = 512;
+/** 山脈 SVG（web/assets/tiles/mountain.svg）顯示參數 */
+var MOUNTAIN_TILE_FIT = 0.7;
+var MOUNTAIN_TILE_OFFSET_Y_FACTOR = -0.08;
+var MOUNTAIN_TILE_DESIGN_W = 512;
+var MOUNTAIN_TILE_DESIGN_H = 512;
+/** 森林 SVG（web/assets/tiles/forest.svg）顯示參數 */
+var FOREST_TILE_FIT = 0.66;
+var FOREST_TILE_OFFSET_Y_FACTOR = -0.06;
+var FOREST_TILE_DESIGN_W = 512;
+var FOREST_TILE_DESIGN_H = 512;
+/** 湖面 SVG（web/assets/tiles/lake.svg）顯示參數 */
+var LAKE_TILE_FIT = 0.52;
+var LAKE_TILE_OFFSET_Y_FACTOR = 0.0;
+var LAKE_TILE_DESIGN_W = 16;
+var LAKE_TILE_DESIGN_H = 16;
+/** 與 mountain_sketch_overlay.svg 根節點 width/height 一致（SVG-as-Image 常見 naturalWidth=0，須後備） */
+var MOUNTAIN_OVERLAY_DESIGN_W = 608;
+var MOUNTAIN_OVERLAY_DESIGN_H = 442;
+
+/** 依六角外接矩形「覆蓋」縮放貼圖，裁切在該格內（PNG 等全格貼圖用；山脈手繪線稿見 drawHexMountainOverlay） */
+function drawHexTileImage(cx, cy, r, img, terrain) {
+  if (!img || !img.naturalWidth) return;
+  var tt = terrain || '';
+  var rClip = r + TILE_CLIP_BLEED;
+  var w = SQRT3 * rClip;
+  var h = 2 * rClip;
+  var iw = img.naturalWidth;
+  var ih = img.naturalHeight;
+  var scale = Math.max(w / iw, h / ih);
+  var dw = iw * scale * TILE_IMAGE_COVER;
+  var dh = ih * scale * TILE_IMAGE_COVER;
+  ctx.save();
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  hexWobblePath(cx, cy, rClip);
+  ctx.clip();
+  ctx.fillStyle = TERRAIN_COLORS[tt] || TERRAIN_COLORS[''];
+  ctx.fill();
+  ctx.drawImage(img, cx - dw * 0.5, cy - dh * 0.5, dw, dh);
+  ctx.restore();
+}
+
+/** 底圖已畫山脈地形色；此僅置中疊透明底山體 SVG，並裁於本格六角 */
+function drawHexMountainOverlay(cx, cy, img) {
+  if (!img) return;
+  /** Chrome/Firefox 等對 SVG 載入成 Image 時常回報 naturalWidth=0，drawImage 仍可用設計尺寸當來源矩形 */
+  var iw = img.naturalWidth || img.width || MOUNTAIN_OVERLAY_DESIGN_W;
+  var ih = img.naturalHeight || img.height || MOUNTAIN_OVERLAY_DESIGN_H;
+  if (iw <= 0 || ih <= 0) return;
+  var R = hexCellCircumradius();
+  var hexW = SQRT3 * R;
+  var hexH = 2 * R;
+  var scale = Math.min(hexW / iw, hexH / ih) * MOUNTAIN_OVERLAY_FIT;
+  var dw = iw * scale;
+  var dh = ih * scale;
+  var dx = cx - dw * 0.5;
+  var dy = cy - dh * 0.5;
+  ctx.save();
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  hexWobblePath(cx, cy, R);
+  ctx.clip();
+  ctx.drawImage(img, 0, 0, iw, ih, dx, dy, dw, dh);
+  ctx.restore();
+}
+
+/** 森林格內疊 🌳 emoji：每格一個，置中顯示。 */
+function drawHexForestEmojiOverlay(cx, cy) {
+  var R = hexCellCircumradius();
+  var size = Math.max(10, R * FOREST_EMOJI_SCALE);
+  ctx.save();
+  hexWobblePath(cx, cy, R);
+  ctx.clip();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = size.toFixed(2) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  ctx.fillText('🌳', cx, cy);
+  ctx.restore();
+}
+
+/** 山脈格內疊 ⛰️ emoji：每格一個，置中顯示。 */
+function drawHexMountainEmojiOverlay(cx, cy) {
+  var R = hexCellCircumradius();
+  var size = Math.max(10, R * MOUNTAIN_EMOJI_SCALE);
+  ctx.save();
+  hexWobblePath(cx, cy, R);
+  ctx.clip();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = size.toFixed(2) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  ctx.fillText('⛰️', cx, cy);
+  ctx.restore();
+}
+
+/** 湖面格內疊 ≋ 符號：每格一個，置中顯示。 */
+function drawHexWaterWaveOverlay(cx, cy) {
+  var R = hexCellCircumradius();
+  var size = Math.max(9, R * WATER_WAVE_SCALE);
+  ctx.save();
+  hexWobblePath(cx, cy, R);
+  ctx.clip();
+  ctx.globalAlpha = WATER_WAVE_ALPHA;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = size.toFixed(2) + 'px "Noto Sans Symbols 2","Noto Sans Symbols","Segoe UI Symbol",sans-serif';
+  ctx.fillStyle = '#d9ecff';
+  ctx.fillText('≋', cx, cy);
+  ctx.restore();
+}
+
+/** 城市：置中繪製 skyscraper SVG（載入失敗時退回 emoji）。 */
+function drawHexCitySkyscraperOverlay(cx, cy, img) {
+  if (!img) return;
+  var iw = img.naturalWidth || img.width || CITY_SKYSCRAPER_DESIGN_W;
+  var ih = img.naturalHeight || img.height || CITY_SKYSCRAPER_DESIGN_H;
+  if (iw <= 0 || ih <= 0) return;
+  var R = hexCellCircumradius();
+  var hexW = SQRT3 * R;
+  var hexH = 2 * R;
+  var fit = Math.min(hexW / iw, hexH / ih) * CITY_SKYSCRAPER_FIT * (CITY_TOWN_EMOJI_SCALE / 1.25);
+  var dw = iw * fit;
+  var dh = ih * fit;
+  var dx = cx - dw * 0.5;
+  var dy = cy - dh * 0.5 + (R * CITY_SKYSCRAPER_OFFSET_Y_FACTOR);
+  ctx.save();
+  ctx.shadowColor = 'rgba(20,20,20,0.32)';
+  ctx.shadowBlur = Math.max(1, R * 0.24);
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = Math.max(1, R * 0.08);
+  ctx.globalAlpha = 0.45;
+  ctx.fillStyle = '#fff3c4';
+  ctx.beginPath();
+  ctx.arc(cx, cy, Math.max(6, R * 0.5), 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  // 與 village 一致用 5 參數，避免部分 SVG 在 9 參數下不穩。
+  ctx.drawImage(img, dx, dy, dw, dh);
+  ctx.restore();
+}
+
+/** 村莊：置中繪製 neighborhood SVG（內嵌 data URL 載入；載入失敗時退回 emoji）。 */
+function drawHexVillageNeighborhoodOverlay(cx, cy, img) {
+  if (!img) return;
+  var iw = img.naturalWidth || img.width || VILLAGE_NEIGHBORHOOD_DESIGN_W;
+  var ih = img.naturalHeight || img.height || VILLAGE_NEIGHBORHOOD_DESIGN_H;
+  if (iw <= 0 || ih <= 0) return;
+  var R = hexCellCircumradius();
+  var hexW = SQRT3 * R;
+  var hexH = 2 * R;
+  var fit = Math.min(hexW / iw, hexH / ih) * VILLAGE_NEIGHBORHOOD_FIT * (VILLAGE_TOWN_EMOJI_SCALE / 0.95);
+  var dw = iw * fit;
+  var dh = ih * fit;
+  var dx = cx - dw * 0.5;
+  var dy = cy - dh * 0.5 + (R * VILLAGE_NEIGHBORHOOD_OFFSET_Y_FACTOR);
+  ctx.save();
+  ctx.shadowColor = 'rgba(20,20,20,0.28)';
+  ctx.shadowBlur = Math.max(1, R * 0.22);
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = Math.max(1, R * 0.08);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  // 對部分 SVG，9 參數 drawImage 會失效；改 5 參數縮放繪製較穩定。
+  ctx.drawImage(img, dx, dy, dw, dh);
+  ctx.restore();
+}
+
+function canDrawVillageSvg(img) {
+  if (!img) return false;
+  var w = img.naturalWidth || img.width || 0;
+  var h = img.naturalHeight || img.height || 0;
+  return w > 0 && h > 0;
+}
+
+function drawHexTownTileOverlay(cx, cy, img) {
+  if (!img) return;
+  var iw = img.naturalWidth || img.width || TOWN_TILE_DESIGN_W;
+  var ih = img.naturalHeight || img.height || TOWN_TILE_DESIGN_H;
+  if (iw <= 0 || ih <= 0) return;
+  var R = hexCellCircumradius();
+  var hexW = SQRT3 * R;
+  var hexH = 2 * R;
+  var fit = Math.min(hexW / iw, hexH / ih) * TOWN_TILE_FIT * (MID_TOWN_EMOJI_SCALE / 1.08);
+  var dw = iw * fit;
+  var dh = ih * fit;
+  var dx = cx - dw * 0.5;
+  var dy = cy - dh * 0.5 + (R * TOWN_TILE_OFFSET_Y_FACTOR);
+  ctx.save();
+  ctx.shadowColor = 'rgba(20,20,20,0.30)';
+  ctx.shadowBlur = Math.max(1, R * 0.2);
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = Math.max(1, R * 0.08);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, dx, dy, dw, dh);
+  ctx.restore();
+}
+
+function drawHexMountainTileOverlay(cx, cy, img) {
+  if (!img) return;
+  var iw = img.naturalWidth || img.width || MOUNTAIN_TILE_DESIGN_W;
+  var ih = img.naturalHeight || img.height || MOUNTAIN_TILE_DESIGN_H;
+  if (iw <= 0 || ih <= 0) return;
+  var R = hexCellCircumradius();
+  var hexW = SQRT3 * R;
+  var hexH = 2 * R;
+  var fit = Math.min(hexW / iw, hexH / ih) * MOUNTAIN_TILE_FIT;
+  var dw = iw * fit;
+  var dh = ih * fit;
+  var dx = cx - dw * 0.5;
+  var dy = cy - dh * 0.5 + (R * MOUNTAIN_TILE_OFFSET_Y_FACTOR);
+  ctx.save();
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, dx, dy, dw, dh);
+  ctx.restore();
+}
+
+function drawHexForestTileOverlay(cx, cy, img) {
+  if (!img) return;
+  var iw = img.naturalWidth || img.width || FOREST_TILE_DESIGN_W;
+  var ih = img.naturalHeight || img.height || FOREST_TILE_DESIGN_H;
+  if (iw <= 0 || ih <= 0) return;
+  var R = hexCellCircumradius();
+  var hexW = SQRT3 * R;
+  var hexH = 2 * R;
+  var fit = Math.min(hexW / iw, hexH / ih) * FOREST_TILE_FIT;
+  var dw = iw * fit;
+  var dh = ih * fit;
+  var dx = cx - dw * 0.5;
+  var dy = cy - dh * 0.5 + (R * FOREST_TILE_OFFSET_Y_FACTOR);
+  ctx.save();
+  hexWobblePath(cx, cy, R);
+  ctx.clip();
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, dx, dy, dw, dh);
+  ctx.restore();
+}
+
+function drawHexLakeTileOverlay(cx, cy, img) {
+  if (!img) return;
+  var iw = img.naturalWidth || img.width || LAKE_TILE_DESIGN_W;
+  var ih = img.naturalHeight || img.height || LAKE_TILE_DESIGN_H;
+  if (iw <= 0 || ih <= 0) return;
+  var R = hexCellCircumradius();
+  var hexW = SQRT3 * R;
+  var hexH = 2 * R;
+  var fit = Math.min(hexW / iw, hexH / ih) * LAKE_TILE_FIT;
+  var dw = iw * fit;
+  var dh = ih * fit;
+  var dx = cx - dw * 0.5;
+  var dy = cy - dh * 0.5 + (R * LAKE_TILE_OFFSET_Y_FACTOR);
+  ctx.save();
+  hexWobblePath(cx, cy, R);
+  ctx.clip();
+  ctx.globalAlpha = 0.95;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, dx, dy, dw, dh);
+  ctx.restore();
+}
+
+function normalizeTownType(townType) {
+  return String(townType || '').trim().toLowerCase();
+}
+
+/** 聚落符號：city=SVG（assets/city_skyscraper.svg）或 🏢、village=內嵌 SVG 或 🏘️；未知型別退回 🏠。 */
+function drawHexTownEmojiOverlay(cx, cy, townType) {
+  var R = hexCellCircumradius();
+  var tt = normalizeTownType(townType);
+  if (tt === 'city' && tileAssets && tileAssets.citySkyscraper) {
+    drawHexCitySkyscraperOverlay(cx, cy, tileAssets.citySkyscraper);
+    return;
+  }
+  if (tt === 'village' && tileAssets && canDrawVillageSvg(tileAssets.villageNeighborhood)) {
+    drawHexVillageNeighborhoodOverlay(cx, cy, tileAssets.villageNeighborhood);
+    return;
+  }
+  if (tt === 'town' && tileAssets && tileAssets.townTile) {
+    drawHexTownTileOverlay(cx, cy, tileAssets.townTile);
+    return;
+  }
+  var glyph = tt === 'city' ? '🏢' : (tt === 'town' ? '🏬' : (tt === 'village' ? '🏘️' : '🏠'));
+  var scale = tt === 'city'
+    ? CITY_TOWN_EMOJI_SCALE
+    : (tt === 'town' ? MID_TOWN_EMOJI_SCALE : (tt === 'village' ? VILLAGE_TOWN_EMOJI_SCALE : TOWN_EMOJI_SCALE));
+  var size = Math.max(10, R * scale);
+  ctx.save();
+  if (tt === 'city') {
+    ctx.globalAlpha = 0.62;
+    ctx.fillStyle = '#ffe08a';
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.max(6, R * 0.54), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = size.toFixed(2) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  ctx.fillText(glyph, cx, cy);
+  ctx.restore();
+}
+
+function terrainTileForHex(terrain) {
+  if (!tileAssets) return null;
+  var t = terrain || '';
+  // 森林改由後段專用 pass 繪製，避免與底圖 pass 疊兩層。
+  if (t === 'forest-light' || t === 'forest-dark' || t === 'forest-dead')
+    return null;
+  /** 山脈：有 overlay 線稿時由第二階段繪製，此處不取整格貼圖 */
+  if (t === 'mountain') {
+    if (tileAssets.mountainOverlay) return null;
+    return tileAssets.greenMountain;
+  }
+  if (t === 'rocks') return tileAssets.stoneMountain;
+  return null;
+}
+
+/**
+ * 與 mountain_sketch_overlay.svg 同步；內嵌 data URL 避免相對路徑、快取舊損檔、file:// 下無法載入。
+ * 若改圖形請同時更新此字串與 assets 檔。
+ */
+var MOUNTAIN_OVERLAY_INLINE_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="232 278 608 442" width="608" height="442">' +
+  '<g><g><path d="M 380,320 Q 300,370 240,450 Q 320,470 390,470 Q 370,390 380,320 Z" fill="#FFFFFF"/>' +
+  '<path d="M 380,320 Q 370,390 390,470 Q 460,470 520,450 Q 460,370 380,320 Z" fill="#C3B6A9"/>' +
+  '<path d="M 395,360 Q 385,410 405,460" fill="none" stroke="#A49485" stroke-width="2.5" stroke-linecap="round"/>' +
+  '<path d="M 410,380 Q 400,420 420,455" fill="none" stroke="#A49485" stroke-width="2.5" stroke-linecap="round"/></g>' +
+  '<g><path d="M 520,420 Q 430,480 360,560 Q 450,580 530,590 Q 510,500 520,420 Z" fill="#FFFFFF"/>' +
+  '<path d="M 520,420 Q 510,500 530,590 Q 610,580 680,560 Q 610,480 520,420 Z" fill="#C3B6A9"/>' +
+  '<path d="M 540,460 Q 530,520 545,570" fill="none" stroke="#A49485" stroke-width="2.5" stroke-linecap="round"/>' +
+  '<path d="M 555,480 Q 545,530 560,560" fill="none" stroke="#A49485" stroke-width="2.5" stroke-linecap="round"/></g>' +
+  '<g><path d="M 420,520 Q 350,560 300,600 Q 360,620 430,620 Q 410,570 420,520 Z" fill="#FFFFFF"/>' +
+  '<path d="M 420,520 Q 410,570 430,620 Q 480,610 520,600 Q 480,550 420,520 Z" fill="#C3B6A9"/>' +
+  '<path d="M 435,545 Q 428,580 445,610" fill="none" stroke="#A49485" stroke-width="2" stroke-linecap="round"/></g>' +
+  '<g><path d="M 660,540 Q 560,600 480,680 Q 580,700 670,710 Q 650,620 660,540 Z" fill="#FFFFFF"/>' +
+  '<path d="M 660,540 Q 650,620 670,710 Q 750,700 820,680 Q 750,600 660,540 Z" fill="#C3B6A9"/>' +
+  '<path d="M 680,580 Q 670,640 685,690" fill="none" stroke="#A49485" stroke-width="2.5" stroke-linecap="round"/>' +
+  '<path d="M 695,600 Q 685,650 700,680" fill="none" stroke="#A49485" stroke-width="2.5" stroke-linecap="round"/></g>' +
+  '<g><path d="M 750,600 Q 700,640 670,670 Q 720,680 760,680 Q 740,640 750,600 Z" fill="#FFFFFF"/>' +
+  '<path d="M 750,600 Q 740,640 760,680 Q 800,670 830,660 Q 800,620 750,600 Z" fill="#C3B6A9"/>' +
+  '<path d="M 765,620 Q 760,650 770,670" fill="none" stroke="#A49485" stroke-width="2" stroke-linecap="round"/></g>' +
+  '<g stroke="#A49485" stroke-linecap="round" stroke-linejoin="round" fill="none">' +
+  '<path d="M 640,290 Q 650,285 660,295 Q 670,285 680,290" stroke-width="2"/>' +
+  '<path d="M 685,320 Q 690,315 695,325 Q 700,315 705,320" stroke-width="1.8"/>' +
+  '<path d="M 610,325 Q 615,322 620,330 Q 625,322 630,325" stroke-width="1.5"/></g></g></svg>';
+var MOUNTAIN_OVERLAY_DATA_URL =
+  'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(MOUNTAIN_OVERLAY_INLINE_SVG);
+
+var VILLAGE_NEIGHBORHOOD_INLINE_SVG = "<svg id=\"Layer_1\" viewBox=\"0 0 512 512\" xmlns=\"http://www.w3.org/2000/svg\"><g><path d=\"m211.019 293.118v146.038h-179.975v-146.038l90.038-81.782z\" fill=\"#ffd9b3\"/><path d=\"m149.976 370.021v69.134h-57.89v-69.134c0-8.162 6.617-14.779 14.779-14.779h28.333c8.162 0 14.779 6.617 14.779 14.779zm-9.678-75.339h-39.892v33.311h39.892z\" fill=\"#4da6ff\"/><path d=\"m211.019 293.118-89.937-81.782-90.038 81.782c-14.919 12.042-30.38-7.113-15.461-19.154l90.137-80.534c8.7-7.773 21.858-7.816 30.609-.098l92.191 80.595c14.028 12.793-3.474 31.984-17.501 19.191zm285.168-143.484-112.482-98.333c-10.676-9.416-26.73-9.364-37.345.12l-109.975 98.258c-18.202 14.692.662 38.062 18.864 23.37l109.854-99.781 109.731 99.781c17.115 15.608 38.469-7.807 21.354-23.415z\" fill=\"#68544f\"/><path d=\"m497.725 439.155v28.571h-484.45v-28.571h484.451z\" fill=\"#393939\"/><path d=\"m475.815 170.015v269.141h-220.163v-269.141l110.143-100.043z\" fill=\"#eabd8c\"/><path d=\"m355.5 331.812v107.343h-56.296v-107.343z\" fill=\"#f5f5f5\"/><path d=\"m442.042 331.812v82.816h-61.451v-82.816zm-142.839-58.484h40.709v-76.326h-40.709zm133.06-76.326h-40.708v76.326h40.708z\" fill=\"#f5f5f5\"/><path d=\"m388.97 134.471c0 12.833-10.403 23.237-23.237 23.237s-23.236-10.403-23.236-23.237 10.403-23.237 23.236-23.237 23.237 10.403 23.237 23.237z\" fill=\"#68544f\"/><path d=\"m283.797 357.795c0 19.83-22.832 35.905-50.995 35.905s-50.996-16.075-50.996-35.905c0-9.034 4.749-17.281 12.571-23.592-2.302-5.472-3.625-11.803-3.625-18.557 0-14.35 5.941-26.81 14.662-33.103-.122-1.432-.192-2.886-.192-4.363 0-20.692 12.348-37.466 27.579-37.466s27.579 16.774 27.579 37.466c0 1.24-.047 2.465-.134 3.674 9.261 6.042 15.656 18.902 15.656 33.792 0 7.017-1.423 13.58-3.894 19.194 7.358 6.224 11.788 14.224 11.788 22.955z\" fill=\"#52cc7b\"/></g><path d=\"m140.283 287.682h-39.892c-3.866 0-7 3.134-7 7v33.311c0 3.866 3.134 7 7 7h39.892c3.866 0 7-3.134 7-7v-33.311c0-3.866-3.134-7-7-7zm-7 33.31h-25.892v-19.311h25.892zm364.428 111.163h-14.911v-247.343c1.473.273 2.854.384 4.096.384.451 0 .886-.014 1.3-.038 5.838-.345 11.275-2.97 15.31-7.394 7.649-8.389 9.208-22.521-2.615-33.303-.036-.033-.072-.066-.109-.099l-112.46-98.312c-13.331-11.758-33.382-11.694-46.639.15l-109.852 98.146c-12.391 10.111-11.972 23.951-5.127 32.432 3.678 4.556 8.91 7.346 14.733 7.855 1.979.175 4.44.108 7.201-.548v54.594c-4.752-3.166-10.139-4.967-15.851-4.967-9.593 0-18.283 5.052-24.553 13.192l-67.289-58.825c-11.406-10.059-28.562-10.004-39.903.129l-90.016 80.426c-6.397 5.232-9.423 12.317-8.302 19.465 1.033 6.597 5.546 12.188 11.776 14.59 2.194.847 4.475 1.264 6.776 1.264.916 0 1.834-.087 2.752-.218v128.421h-10.77c-3.866 0-7 3.134-7 7v28.571c0 3.866 3.134 7 7 7h484.451c3.866 0 7-3.134 7-7v-28.571c0-3.866-3.134-7-7-7zm-255.052-261.467c-1.999-.175-3.797-1.135-5.062-2.702-1.266-1.567-1.824-3.527-1.573-5.518.322-2.56 1.962-5.099 4.742-7.343.091-.073.181-.149.268-.228l109.976-98.258c7.973-7.125 20.031-7.164 28.073-.069l112.423 98.28c2.507 2.304 3.876 4.879 3.962 7.452.072 2.176-.747 4.316-2.308 6.027-1.56 1.71-3.616 2.723-5.789 2.851-2.58.167-5.297-.99-7.843-3.312l-109.731-99.78c-1.335-1.215-3.021-1.821-4.709-1.821s-3.372.606-4.706 1.818l-109.691 99.633c-2.732 2.163-5.495 3.191-8.031 2.969zm112.826 154.124h-56.297c-3.866 0-7 3.134-7 7v100.343h-30.092v-37.266c3.863-1.663 7.483-3.661 10.779-5.982 11.547-8.13 17.906-19.18 17.906-31.112 0-8.977-3.726-17.646-10.589-24.841 1.771-5.446 2.694-11.341 2.694-17.308 0-15.216-5.861-29.061-15.522-37.193 0-.091 0-.182 0-.272 0-8.167-1.729-15.82-4.729-22.405v-79.996l102.447-93.053 103.715 94.309v255.119h-106.314v-100.343c0-3.866-3.134-7-7-7zm-7 14v93.343h-42.297v-93.343zm-138.989-50.594c1.994-1.439 3.087-3.82 2.878-6.271-.11-1.293-.166-2.561-.166-3.768 0-16.515 9.424-30.467 20.579-30.467s20.579 13.952 20.579 30.467c0 1.024-.039 2.093-.116 3.178-.181 2.535 1.028 4.97 3.157 6.358 7.582 4.946 12.48 15.909 12.48 27.93 0 5.806-1.142 11.467-3.301 16.374-1.249 2.839-.481 6.161 1.887 8.164 4.246 3.592 9.309 9.562 9.309 17.61 0 15.668-20.147 28.905-43.995 28.905s-43.996-13.237-43.996-28.905c0-6.516 3.539-12.959 9.967-18.144 2.428-1.959 3.267-5.287 2.057-8.162-2.013-4.784-3.076-10.263-3.076-15.843 0-11.506 4.615-22.272 11.758-27.428zm38.601 110.98v32.957h-8.31v-31.772c2.821-.248 5.596-.644 8.31-1.185zm-22.31 1.184v31.772h-7.783v-32.854c2.545.488 5.144.849 7.783 1.081zm-90.604-52.141h-28.332c-12.009 0-21.779 9.771-21.779 21.779v62.134h-47.042v-135.939l83.035-75.421 71.543 65.055c-5.613 8.042-8.87 18.615-8.87 29.796 0 5.659.837 11.275 2.442 16.499-7.38 7.352-11.39 16.308-11.39 25.649 0 11.934 6.359 22.982 17.906 31.112 3.447 2.426 7.246 4.501 11.307 6.207v37.041h-47.042v-62.134c0-12.009-9.771-21.779-21.779-21.779zm7.779 21.78v62.134h-43.891v-62.134c0-4.289 3.49-7.779 7.779-7.779h28.332c4.289 0 7.779 3.49 7.779 7.779zm-123.423-80.394c-1.579-.608-2.722-2.025-2.983-3.696-.339-2.157.872-4.474 3.409-6.521.091-.073.18-.149.268-.228l90.137-80.534c6.059-5.411 15.222-5.442 21.338-.048l69.699 60.933c-1.434 3.976-2.423 8.267-2.887 12.77l-72.743-66.147c-2.668-2.428-6.745-2.428-9.415-.003l-89.873 81.632c-2.487 1.959-4.949 2.613-6.949 1.842zm471.172 171.099h-470.451v-14.571h470.451zm-117.135-128.914v82.815c0 3.866 3.134 7 7 7h61.451c3.866 0 7-3.134 7-7v-82.815c0-3.866-3.134-7-7-7h-61.451c-3.866 0-7 3.134-7 7zm44.726 7h16.726v68.815h-16.726zm-30.726 0h16.726v68.815h-16.726zm-47.679-148.811h-40.709c-3.866 0-7 3.134-7 7v76.326c0 3.866 3.134 7 7 7h40.709c3.866 0 7-3.134 7-7v-76.326c0-3.866-3.134-7-7-7zm-7 76.326h-26.709v-62.326h26.709zm51.643-69.326v76.326c0 3.866 3.134 7 7 7h40.708c3.866 0 7-3.134 7-7v-76.326c0-3.866-3.134-7-7-7h-40.708c-3.866 0-7 3.134-7 7zm14 7h26.708v62.326h-26.708zm-2.585-69.531c0-16.673-13.563-30.236-30.236-30.236s-30.236 13.563-30.236 30.236 13.563 30.237 30.236 30.237 30.236-13.564 30.236-30.237zm-46.473 0c0-8.953 7.283-16.236 16.236-16.236s16.236 7.283 16.236 16.236-7.283 16.237-16.236 16.237-16.236-7.284-16.236-16.237z\"/></svg>";
+var VILLAGE_NEIGHBORHOOD_DATA_URL = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(VILLAGE_NEIGHBORHOOD_INLINE_SVG);
+
+/** 載入貼圖；山脈與村莊 SVG 走內嵌 data URL；城市圖示走 assets/city_skyscraper.svg。 */
+function loadTileAssets(done) {
+  var out = {
+    mountainOverlay: null,
+    mountainTile: null,
+    citySkyscraper: null,
+    villageNeighborhood: null,
+    townTile: null,
+    forest: null,
+    lakeTile: null,
+    greenMountain: null,
+    stoneMountain: null
+  };
+  var pending = 7;
+  function finish() {
+    pending--;
+    if (pending <= 0) {
+      tileAssets = out;
+      if (done) done();
+    }
+  }
+  var mountainImg = new Image();
+  mountainImg.onload = function () {
+    out.mountainOverlay = mountainImg;
+    finish();
+  };
+  mountainImg.onerror = function () {
+    finish();
+  };
+  mountainImg.src = MOUNTAIN_OVERLAY_DATA_URL;
+
+  var cityImg = new Image();
+  cityImg.onload = function () {
+    out.citySkyscraper = cityImg;
+    finish();
+  };
+  cityImg.onerror = function () {
+    out.citySkyscraper = null;
+    finish();
+  };
+  cityImg.src = 'assets/city_skyscraper.svg';
+
+  var villageImg = new Image();
+  villageImg.onload = function () {
+    out.villageNeighborhood = villageImg;
+    finish();
+  };
+  villageImg.onerror = function () {
+    // 先嘗試檔案路徑；失敗再回退內嵌 data URL
+    var villageFallback = new Image();
+    villageFallback.onload = function () {
+      out.villageNeighborhood = villageFallback;
+      finish();
+    };
+    villageFallback.onerror = function () {
+      out.villageNeighborhood = null;
+      finish();
+    };
+    villageFallback.src = VILLAGE_NEIGHBORHOOD_DATA_URL;
+  };
+  villageImg.src = 'assets/village_neighborhood.svg';
+
+  var townImg = new Image();
+  townImg.onload = function () {
+    out.townTile = townImg;
+    finish();
+  };
+  townImg.onerror = function () {
+    out.townTile = null;
+    finish();
+  };
+  townImg.src = 'assets/tiles/town.svg';
+
+  var mountainTileImg = new Image();
+  mountainTileImg.onload = function () {
+    out.mountainTile = mountainTileImg;
+    finish();
+  };
+  mountainTileImg.onerror = function () {
+    out.mountainTile = null;
+    finish();
+  };
+  mountainTileImg.src = 'assets/tiles/mountain.svg';
+
+  var forestImg = new Image();
+  forestImg.onload = function () {
+    out.forest = forestImg;
+    finish();
+  };
+  forestImg.onerror = function () {
+    out.forest = null;
+    finish();
+  };
+  forestImg.src = 'assets/tiles/forest.svg';
+
+  var lakeImg = new Image();
+  lakeImg.onload = function () {
+    out.lakeTile = lakeImg;
+    finish();
+  };
+  lakeImg.onerror = function () {
+    out.lakeTile = null;
+    finish();
+  };
+  lakeImg.src = 'assets/tiles/lake.svg';
+}
+
+function pathLen(pts) {
+  var l = 0;
+  for (var i = 0; i < pts.length - 1; i++)
+    l += Math.hypot(pts[i+1][0] - pts[i][0], pts[i+1][1] - pts[i][1]);
+  return l;
+}
+
+function drawTrueStroke(pts, wStart, wEnd, color) {
+  if (!pts || pts.length < 2) return;
+  var totalLen = 0, segLens = [];
+  for (var i = 0; i < pts.length - 1; i++) {
+    var sl = Math.hypot(pts[i+1][0] - pts[i][0], pts[i+1][1] - pts[i][1]);
+    segLens.push(sl); totalLen += sl;
+  }
+  var left = [], right = [], cumLen = 0;
+  for (var i = 0; i < pts.length; i++) {
+    var t = totalLen > 0 ? cumLen / totalLen : 0;
+    var hw = (wStart + (wEnd - wStart) * t) / 2;
+    var nx, ny;
+    if (i === 0) {
+      var dx = pts[1][0] - pts[0][0], dy = pts[1][1] - pts[0][1];
+      var len = Math.hypot(dx, dy) || 1;
+      nx = -dy / len; ny = dx / len;
+    } else if (i === pts.length - 1) {
+      var dx = pts[i][0] - pts[i-1][0], dy = pts[i][1] - pts[i-1][1];
+      var len = Math.hypot(dx, dy) || 1;
+      nx = -dy / len; ny = dx / len;
+    } else {
+      var dx1 = pts[i][0] - pts[i-1][0], dy1 = pts[i][1] - pts[i-1][1];
+      var dx2 = pts[i+1][0] - pts[i][0], dy2 = pts[i+1][1] - pts[i][1];
+      var l1 = Math.hypot(dx1, dy1) || 1, l2 = Math.hypot(dx2, dy2) || 1;
+      nx = -(dy1/l1 + dy2/l2); ny = (dx1/l1 + dx2/l2);
+      var nl = Math.hypot(nx, ny) || 1;
+      nx /= nl; ny /= nl;
+    }
+    left.push([pts[i][0] + nx * hw, pts[i][1] + ny * hw]);
+    right.push([pts[i][0] - nx * hw, pts[i][1] - ny * hw]);
+    if (i < pts.length - 1) cumLen += segLens[i];
+  }
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(left[0][0], left[0][1]);
+  for (var i = 1; i < left.length; i++) ctx.lineTo(left[i][0], left[i][1]);
+  var last = pts[pts.length - 1];
+  ctx.arc(last[0], last[1], (wEnd) / 2, 0, Math.PI * 2);
+  for (var i = right.length - 1; i >= 0; i--) ctx.lineTo(right[i][0], right[i][1]);
+  var first = pts[0];
+  ctx.arc(first[0], first[1], (wStart) / 2, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function precomputeRiverPaths(hexes, rivers) {
+  var waterCenters = [];
+  for (var key in hexes) {
+    var h = hexes[key];
+    if (h.terrain !== 'water') continue;
+    waterCenters.push(hexToPixel(h.q, h.r));
+  }
+
+  var raw = {};
+  for (var rk in rivers) {
+    var ch = rivers[rk].channel;
+    if (!ch || ch.length < 2) continue;
+    raw[rk] = channelToRawPoints(ch);
+  }
+
+  function moveMainStemTowardLake(pts) {
+    if (pts.length < 2) return pts;
+    var out = pts.map(function (row) { return row.slice(); });
+    var n0 = nearestWaterPoint(out[0][0], out[0][1], waterCenters);
+    var n1 = nearestWaterPoint(out[out.length - 1][0], out[out.length - 1][1], waterCenters);
+    var MAX = 210;
+    var T = 0.88;
+    if (n0.dist < n1.dist) {
+      if (n0.pt && n0.dist > 4 && n0.dist < MAX) {
+        out[0][0] += (n0.pt[0] - out[0][0]) * T;
+        out[0][1] += (n0.pt[1] - out[0][1]) * T;
+      }
+    } else {
+      if (n1.pt && n1.dist > 4 && n1.dist < MAX) {
+        var li = out.length - 1;
+        out[li][0] += (n1.pt[0] - out[li][0]) * T;
+        out[li][1] += (n1.pt[1] - out[li][1]) * T;
+      }
+    }
+    if (n0.dist < n1.dist) out.reverse();
+    return out;
+  }
+
+  function moveTributaryMouthTowardParent(pts, parentPoly) {
+    if (!pts || pts.length < 2 || !parentPoly || parentPoly.length < 2) return pts;
+    var out = pts.map(function (row) { return row.slice(); });
+    var c0 = closestToPolyline(out[0][0], out[0][1], parentPoly);
+    var c1 = closestToPolyline(out[out.length - 1][0], out[out.length - 1][1], parentPoly);
+    var mouthIdx = c0.dist < c1.dist ? 0 : out.length - 1;
+    var use = c0.dist < c1.dist ? c0 : c1;
+    var MAX_JOIN = 280;
+    var T = 0.88;
+    if (!(use.dist <= 2 || use.dist >= MAX_JOIN)) {
+      var m = out[mouthIdx];
+      out[mouthIdx][0] += (use.x - m[0]) * T;
+      out[mouthIdx][1] += (use.y - m[1]) * T;
+    }
+    if (mouthIdx === 0) out.reverse();
+    return out;
+  }
+
+  var out = {};
+  for (var mk in rivers) {
+    if (!rivers[mk].parent && raw[mk]) {
+      out[mk] = moveMainStemTowardLake(raw[mk]);
+    }
+  }
+
+  var guard = 0;
+  while (guard < 64) {
+    guard++;
+    var added = false;
+    for (var tk in rivers) {
+      if (out[tk]) continue;
+      var par = rivers[tk].parent;
+      if (!par || !out[par] || !raw[tk]) continue;
+      out[tk] = moveTributaryMouthTowardParent(raw[tk], out[par]);
+      added = true;
+    }
+    if (!added) break;
+  }
+
+  for (var fk in raw) {
+    if (!out[fk]) out[fk] = raw[fk];
+  }
+  for (var ck in out) {
+    out[ck] = chaikinSubdivide(out[ck], 2);
+  }
+  return out;
+}
+
+function render() {
+  canvas.width = W; canvas.height = H;
+  ctx.setTransform(camScale, 0, 0, camScale,
+    W / 2 - camX * camScale,
+    H / 2 - camY * camScale);
+
+  ctx.fillStyle = RIVER_LAKE_COLOR;
+  ctx.fillRect(camX - W / camScale, camY - H / camScale,
+               W * 3 / camScale, H * 3 / camScale);
+
+  var hexes = data.hexes;
+  if (MERGED_LAND_FILL && landArt && landArt.islandPolys && landArt.islandPolys.length) {
+    drawMergedLandfills(landArt.islandPolys);
+  }
+  /** 與合併陸地二選一時曾用 0.62 疊色；單層逐格時用 1 避免混濁 */
+  var TERRAIN_ALPHA = MERGED_LAND_FILL ? 0.62 : 1;
+  ctx.globalAlpha = TERRAIN_ALPHA;
+  for (var key in hexes) {
+    var h = hexes[key];
+    if (h.terrain === 'water') continue;
+    var pos = hexToPixel(h.q, h.r);
+    var terrain = h.terrain || '';
+    var tileImg = terrainTileForHex(terrain);
+    if (terrain === 'mountain' && tileAssets && tileAssets.mountainOverlay) {
+      drawHexTerrainCell(pos[0], pos[1], TERRAIN_COLORS['mountain'] || TERRAIN_COLORS['']);
+    } else if (tileImg) {
+      drawHexTileImage(pos[0], pos[1], hexCellCircumradius(), tileImg, terrain);
+    } else {
+      var color = TERRAIN_COLORS[terrain] || TERRAIN_COLORS[''];
+      drawHexTerrainCell(pos[0], pos[1], color);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  for (var wk0 in hexes) {
+    var hw0 = hexes[wk0];
+    if (hw0.terrain !== 'water') continue;
+    var wp0 = hexToPixel(hw0.q, hw0.r);
+    drawHexTerrainCell(wp0[0], wp0[1], RIVER_LAKE_COLOR);
+  }
+
+  var rivers = data.rivers;
+  ctx.strokeStyle = RIVER_LAKE_COLOR;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 1.2;
+  for (var rk2 in rivers) {
+    if (!rivers[rk2].parent) continue;
+    var pts2 = riverPathsPrecomputed[rk2];
+    if (!pts2 || pts2.length < 2 || pathLen(pts2) < MIN_RIVER_PX) continue;
+    ctx.beginPath();
+    ctx.moveTo(pts2[0][0], pts2[0][1]);
+    for (var ti = 1; ti < pts2.length; ti++) ctx.lineTo(pts2[ti][0], pts2[ti][1]);
+    ctx.stroke();
+  }
+  for (var rk in rivers) {
+    if (rivers[rk].parent) continue;
+    var pts = riverPathsPrecomputed[rk];
+    if (!pts || pts.length < 2 || pathLen(pts) < MIN_RIVER_PX) continue;
+    drawTrueStroke(pts, 1.0, 3.5, RIVER_LAKE_COLOR);
+  }
+
+  var roads = data.roads;
+  ctx.strokeStyle = 'rgba(120,100,60,0.65)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 3]);
+  for (var dk in roads) {
+    var rh = roads[dk];
+    if (!rh || rh.length < 2) continue;
+    var roadPts = [];
+    for (var i = 0; i < rh.length; i++) {
+      var qr = rh[i].replace('q', '').split('_r');
+      roadPts.push(hexToPixel(parseInt(qr[0], 10), parseInt(qr[1], 10)));
+    }
+    roadPts = chaikinSubdivide(roadPts, 2);
+    ctx.beginPath();
+    ctx.moveTo(roadPts[0][0], roadPts[0][1]);
+    for (var i = 1; i < roadPts.length; i++) ctx.lineTo(roadPts[i][0], roadPts[i][1]);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  for (var wk1 in hexes) {
+    var hw1 = hexes[wk1];
+    if (hw1.terrain !== 'water') continue;
+    if (hw1.town) continue;
+    var wp1 = hexToPixel(hw1.q, hw1.r);
+    if (tileAssets && tileAssets.lakeTile) {
+      drawHexLakeTileOverlay(wp1[0], wp1[1], tileAssets.lakeTile);
+    } else {
+      drawHexWaterWaveOverlay(wp1[0], wp1[1]);
+    }
+  }
+
+  for (var mk in hexes) {
+    var hm = hexes[mk];
+    if (hm.terrain !== 'mountain') continue;
+    if (hm.town) continue;
+    var mp = hexToPixel(hm.q, hm.r);
+    if (tileAssets && tileAssets.mountainTile) {
+      drawHexMountainTileOverlay(mp[0], mp[1], tileAssets.mountainTile);
+    } else {
+      drawHexMountainEmojiOverlay(mp[0], mp[1]);
+    }
+  }
+
+  for (var fk in hexes) {
+    var hf = hexes[fk];
+    var ft = hf.terrain || '';
+    if (ft !== 'forest-light' && ft !== 'forest-dark' && ft !== 'forest-dead') continue;
+    if (hf.town) continue;
+    var fp = hexToPixel(hf.q, hf.r);
+    if (tileAssets && tileAssets.forest) {
+      drawHexForestTileOverlay(fp[0], fp[1], tileAssets.forest);
+    } else {
+      drawHexForestEmojiOverlay(fp[0], fp[1]);
+    }
+  }
+
+  for (var tk in hexes) {
+    var ht = hexes[tk];
+    if (!ht.town) continue;
+    if (normalizeTownType(ht.town.type) === 'city') continue;
+    var tp = hexToPixel(ht.q, ht.r);
+    drawHexTownEmojiOverlay(tp[0], tp[1], ht.town.type);
+  }
+  // city 獨立最後一層，確保在所有地圖符號之上。
+  for (var ck in hexes) {
+    var hc = hexes[ck];
+    if (!hc.town) continue;
+    if (normalizeTownType(hc.town.type) !== 'city') continue;
+    var cp = hexToPixel(hc.q, hc.r);
+    drawHexTownEmojiOverlay(cp[0], cp[1], hc.town.type);
+  }
+
+  var hud = 'Lakes Of Secrets  |  hexes:' + Object.keys(hexes).length +
+    '  zoom:' + camScale.toFixed(1) + 'x';
+  if (DEBUG_MAP) {
+    var cqr = pixelToHexApprox(camX, camY);
+    var ck = hexKey(cqr[0], cqr[1]);
+    var ch = hexes[ck];
+    var ctype = ch && ch.town ? String(ch.town.type || '').trim().toLowerCase() : '-';
+    hud += '  center:' + ck + ':' + ctype;
+  }
+  document.getElementById('hud').textContent = hud;
+}
+
+function init(d) {
+  data = d;
+  landArt = precomputeLandArt(d.hexes);
+  riverPathsPrecomputed = precomputeRiverPaths(d.hexes, d.rivers);
+  canvas = document.getElementById('c');
+  ctx = canvas.getContext('2d');
+  canvas.style.touchAction = 'none';
+  W = window.innerWidth; H = window.innerHeight;
+
+  var qs = [], rs = [];
+  for (var k in d.hexes) { qs.push(d.hexes[k].q); rs.push(d.hexes[k].r); }
+  var midQ = (Math.min.apply(null, qs) + Math.max.apply(null, qs)) / 2;
+  var midR = (Math.min.apply(null, rs) + Math.max.apply(null, rs)) / 2;
+  var center = hexToPixel(midQ, midR);
+  camX = center[0]; camY = center[1];
+  function clampScale(s) {
+    return Math.max(0.2, Math.min(8, s));
+  }
+  camScale = Math.min(W, H) / (Math.max.apply(null, rs) * HEX_R * 1.6 * INIT_VIEW_ZOOM_FACTOR);
+  /** 代理驗收：?zoom=8 等；高縮放時自動對準臨水陸格，免對準湖心。?focus=center 維持地圖幾何中心 */
+  try {
+    var sp = new URLSearchParams(window.location.search);
+    var zz = parseFloat(sp.get('zoom') || sp.get('z') || '');
+    if (!isNaN(zz) && zz > 0) {
+      camScale = clampScale(zz);
+      var fq = parseInt(sp.get('focusQ') || '', 10);
+      var fr = parseInt(sp.get('focusR') || '', 10);
+      if (!isNaN(fq) && !isNaN(fr)) {
+        var fqp = hexToPixel(fq, fr);
+        camX = fqp[0];
+        camY = fqp[1];
+      } else
+      if (zz >= 4 && sp.get('focus') !== 'center') {
+        var focusType = String(sp.get('focus') || '').trim().toLowerCase();
+        var fp = null;
+        if (focusType === 'village' || focusType === 'town' || focusType === 'city') {
+          fp = findTownCamera(d.hexes, focusType);
+        } else {
+          fp = findVerificationCamera(d.hexes);
+        }
+        if (fp) {
+          camX = fp[0];
+          camY = fp[1];
+        }
+      }
+    }
+  } catch (e) {}
+
+  render();
+  loadTileAssets(render);
+
+  function screenToWorld(sx, sy) {
+    return [
+      camX + (sx - W / 2) / camScale,
+      camY + (sy - H / 2) / camScale
+    ];
+  }
+
+  var pointers = new Map();
+  var panActive = false;
+  var panStart = null;
+  var lastPan = null;
+  var pinchActive = false;
+  var pinchStart = null;
+
+  function pointerSnapshot() {
+    var arr = [];
+    pointers.forEach(function(v, id) {
+      arr.push({ id: id, x: v.x, y: v.y });
+    });
+    arr.sort(function(a, b) { return a.id - b.id; });
+    return arr;
+  }
+
+  function beginPan(p) {
+    panActive = true;
+    panStart = { x: p.x, y: p.y };
+    lastPan = { x: p.x, y: p.y };
+  }
+
+  function beginPinch(a, b) {
+    pinchActive = true;
+    var mx = (a.x + b.x) * 0.5;
+    var my = (a.y + b.y) * 0.5;
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
+    pinchStart = {
+      dist: Math.hypot(dx, dy),
+      midX: mx,
+      midY: my,
+      camX: camX,
+      camY: camY,
+      scale: camScale,
+      anchorWorld: screenToWorld(mx, my)
+    };
+  }
+
+  canvas.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    canvas.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    var ps = pointerSnapshot();
+    if (ps.length === 1) {
+      pinchActive = false;
+      beginPan(ps[0]);
+    } else if (ps.length === 2) {
+      panActive = false;
+      beginPinch(ps[0], ps[1]);
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('pointermove', function(e) {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    var ps = pointerSnapshot();
+    if (ps.length === 2) {
+      if (!pinchActive) beginPinch(ps[0], ps[1]);
+      var a = ps[0], b = ps[1];
+      var mx = (a.x + b.x) * 0.5;
+      var my = (a.y + b.y) * 0.5;
+      var dx = a.x - b.x;
+      var dy = a.y - b.y;
+      var dist = Math.hypot(dx, dy);
+      if (pinchStart.dist > 10 && dist > 10) {
+        var nextScale = clampScale(pinchStart.scale * (dist / pinchStart.dist));
+        camScale = nextScale;
+        var anchor = pinchStart.anchorWorld;
+        camX = anchor[0] - (mx - W / 2) / camScale;
+        camY = anchor[1] - (my - H / 2) / camScale;
+        render();
+      }
+      return;
+    }
+
+    if (ps.length === 1 && panActive) {
+      var p = ps[0];
+      var dx2 = p.x - panStart.x;
+      var dy2 = p.y - panStart.y;
+      var moved = Math.hypot(dx2, dy2);
+      if (moved < 3) return; // 手指微抖動門檻
+      camX -= (p.x - lastPan.x) / camScale;
+      camY -= (p.y - lastPan.y) / camScale;
+      lastPan.x = p.x; lastPan.y = p.y;
+      render();
+    }
+  }, { passive: true });
+
+  function endPointer(e) {
+    pointers.delete(e.pointerId);
+    var ps = pointerSnapshot();
+    if (ps.length === 1) {
+      pinchActive = false;
+      beginPan(ps[0]);
+    } else if (ps.length === 0) {
+      panActive = false;
+      pinchActive = false;
+      panStart = null;
+      lastPan = null;
+      pinchStart = null;
+    }
+  }
+
+  canvas.addEventListener('pointerup', endPointer);
+  canvas.addEventListener('pointercancel', endPointer);
+
+  canvas.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var f = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+    camScale = clampScale(camScale * f);
+    render();
+  }, { passive: false });
+
+  window.addEventListener('resize', function() {
+    W = window.innerWidth; H = window.innerHeight;
+    render();
+  });
+}
+
+fetch('lakes_of_secrets.json')
+  .then(function(r) { return r.json(); })
+  .then(init)
+  .catch(function(e) { document.getElementById('hud').textContent = '載入失敗: ' + e; });
+</script>
+</body>
+</html>

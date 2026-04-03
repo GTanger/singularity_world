@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>城市地圖</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a2e; }
+canvas { display: block; cursor: grab; touch-action: none; }
+canvas.dragging { cursor: grabbing; }
+#hud {
+  position: fixed; top: 8px; left: 8px;
+  background: rgba(0,0,0,0.75); color: #ccc;
+  font: 13px/1.4 monospace; padding: 8px 12px;
+  border-radius: 6px; pointer-events: none; z-index: 10;
+  max-width: 280px;
+}
+#tooltip {
+  position: fixed; display: none;
+  background: rgba(20,20,40,0.92); color: #e8dcc8;
+  font: 13px/1.4 "Noto Serif TC", serif;
+  padding: 6px 10px; border-radius: 4px;
+  border: 1px solid #665;
+  pointer-events: none; z-index: 20;
+  max-width: 220px;
+}
+</style>
+</head>
+<body>
+<div id="hud">載入中…</div>
+<div id="tooltip"></div>
+<canvas id="c"></canvas>
+<script>
+/* ── 設定 ── */
+var COLORS = {
+  bg:        '#1a1a2e',
+  earth:     '#c8b898',
+  water:     '#2a4a6a',
+  river:     '#2a4a6a',
+  field:     '#8a9a6a',
+  green:     '#6a8a5a',
+  road:      '#a09078',
+  roadStroke:'#786850',
+  building:  '#5a4a3a',
+  buildHi:   '#8a7a5a',
+  wall:      '#4a4040',
+  wallTower: '#6a5a5a',
+  square:    '#b8a888',
+  plank:     '#7a6a50',
+  prism:     '#3a3030',
+  tree:      '#5a7a4a',
+  districtStroke: 'rgba(200,180,140,0.35)',
+  districtText:   'rgba(230,220,200,0.6)',
+};
+
+var canvas, ctx;
+var camX = 0, camY = 0, camScale = 1;
+var W, H;
+var geo = null;     // 解析後的圖層
+var bounds = null;  // {minX,minY,maxX,maxY}
+
+/* ── 圖層解析 ── */
+function parseGeoJSON(raw) {
+  var layers = {
+    earth: null, water: [], fields: [], greens: [], squares: [],
+    rivers: [], roads: [], buildings: [], planks: [],
+    walls: [], towers: [], prisms: [], trees: [],
+    districts: [],
+    values: { roadWidth: 6, riverWidth: 40, wallThickness: 6, towerRadius: 6 }
+  };
+
+  var features = raw.features || [];
+  for (var i = 0; i < features.length; i++) {
+    var f = features[i];
+    var id = f.id || '';
+    var type = f.type || '';
+
+    if (id === 'values') {
+      if (f.roadWidth) layers.values.roadWidth = f.roadWidth;
+      if (f.riverWidth) layers.values.riverWidth = f.riverWidth;
+      if (f.wallThickness) layers.values.wallThickness = f.wallThickness;
+      if (f.towerRadius) layers.values.towerRadius = f.towerRadius;
+      continue;
+    }
+    if (id === 'earth' && f.coordinates) {
+      layers.earth = f.coordinates[0];
+      continue;
+    }
+    if (id === 'water' && f.coordinates) {
+      for (var wi = 0; wi < f.coordinates.length; wi++)
+        layers.water.push(f.coordinates[wi][0]);
+      continue;
+    }
+    if (id === 'fields' && f.coordinates) {
+      for (var fi = 0; fi < f.coordinates.length; fi++)
+        layers.fields.push(f.coordinates[fi][0]);
+      continue;
+    }
+    if (id === 'greens' && f.coordinates) {
+      for (var gi = 0; gi < f.coordinates.length; gi++)
+        layers.greens.push(f.coordinates[gi][0]);
+      continue;
+    }
+    if (id === 'squares' && f.coordinates) {
+      for (var si = 0; si < f.coordinates.length; si++)
+        layers.squares.push(f.coordinates[si][0]);
+      continue;
+    }
+    if (id === 'prisms' && f.coordinates) {
+      for (var pi = 0; pi < f.coordinates.length; pi++)
+        layers.prisms.push(f.coordinates[pi][0]);
+      continue;
+    }
+    if (id === 'buildings' && f.coordinates) {
+      for (var bi = 0; bi < f.coordinates.length; bi++)
+        layers.buildings.push(f.coordinates[bi][0]);
+      continue;
+    }
+    if (id === 'trees' && f.coordinates) {
+      layers.trees = f.coordinates || [];
+      continue;
+    }
+    if (id === 'roads' && f.geometries) {
+      for (var ri = 0; ri < f.geometries.length; ri++) {
+        var g = f.geometries[ri];
+        if (g.type === 'LineString' && g.coordinates)
+          layers.roads.push(g.coordinates);
+      }
+      continue;
+    }
+    if (id === 'rivers' && f.geometries) {
+      for (var rvi = 0; rvi < f.geometries.length; rvi++) {
+        var rv = f.geometries[rvi];
+        if (rv.coordinates) layers.rivers.push(rv.coordinates);
+      }
+      continue;
+    }
+    if (id === 'planks' && f.geometries) {
+      for (var pli = 0; pli < f.geometries.length; pli++) {
+        var pl = f.geometries[pli];
+        if (pl.coordinates) layers.planks.push(pl.coordinates);
+      }
+      continue;
+    }
+    if (id === 'walls' && f.geometries) {
+      for (var wli = 0; wli < f.geometries.length; wli++) {
+        var wg = f.geometries[wli];
+        if (wg.type === 'LineString' || wg.type === 'Polygon') {
+          var coords = wg.type === 'Polygon' ? wg.coordinates[0] : wg.coordinates;
+          layers.walls.push(coords);
+        }
+        if (wg.type === 'MultiPoint' && wg.coordinates) {
+          for (var ti = 0; ti < wg.coordinates.length; ti++)
+            layers.towers.push(wg.coordinates[ti]);
+        }
+      }
+      continue;
+    }
+    if (id === 'districts' && f.geometries) {
+      for (var di = 0; di < f.geometries.length; di++) {
+        var dg = f.geometries[di];
+        if (dg.type === 'Polygon' && dg.coordinates) {
+          layers.districts.push({
+            name: dg.name || null,
+            ring: dg.coordinates[0]
+          });
+        }
+      }
+      continue;
+    }
+  }
+  return layers;
+}
+
+function computeBounds(layers) {
+  var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  function scan(pts) {
+    for (var i = 0; i < pts.length; i++) {
+      var x = pts[i][0], y = pts[i][1];
+      if (x < minX) minX = x; if (x > maxX) maxX = x;
+      if (y < minY) minY = y; if (y > maxY) maxY = y;
+    }
+  }
+  if (layers.earth) scan(layers.earth);
+  for (var i = 0; i < layers.roads.length; i++) scan(layers.roads[i]);
+  for (var i = 0; i < layers.buildings.length; i++) scan(layers.buildings[i]);
+  return { minX: minX, minY: minY, maxX: maxX, maxY: maxY };
+}
+
+/* ── 座標轉換 ── */
+function toScreen(x, y) {
+  return [
+    (x - camX) * camScale + W * 0.5,
+    (y - camY) * camScale + H * 0.5
+  ];
+}
+
+/* ── 繪圖基元 ── */
+function drawPoly(ring, fill, stroke, lineW) {
+  if (!ring || ring.length < 3) return;
+  ctx.beginPath();
+  var p = toScreen(ring[0][0], ring[0][1]);
+  ctx.moveTo(p[0], p[1]);
+  for (var i = 1; i < ring.length; i++) {
+    p = toScreen(ring[i][0], ring[i][1]);
+    ctx.lineTo(p[0], p[1]);
+  }
+  ctx.closePath();
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lineW || 1; ctx.stroke(); }
+}
+
+function drawLine(pts, color, width) {
+  if (!pts || pts.length < 2) return;
+  ctx.beginPath();
+  var p = toScreen(pts[0][0], pts[0][1]);
+  ctx.moveTo(p[0], p[1]);
+  for (var i = 1; i < pts.length; i++) {
+    p = toScreen(pts[i][0], pts[i][1]);
+    ctx.lineTo(p[0], p[1]);
+  }
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+}
+
+function drawCircle(x, y, r, fill) {
+  var p = toScreen(x, y);
+  ctx.beginPath();
+  ctx.arc(p[0], p[1], r * camScale, 0, Math.PI * 2);
+  ctx.fillStyle = fill;
+  ctx.fill();
+}
+
+/* ── 主繪製 ── */
+function draw() {
+  ctx.fillStyle = COLORS.bg;
+  ctx.fillRect(0, 0, W, H);
+  if (!geo) return;
+
+  var v = geo.values;
+  var roadW = Math.max(1, v.roadWidth * 0.8 * camScale);
+  var riverW = Math.max(2, v.riverWidth * camScale);
+  var wallW = Math.max(2, v.wallThickness * camScale);
+  var towerR = v.towerRadius;
+
+  // 1. 地面
+  if (geo.earth) drawPoly(geo.earth, COLORS.earth, null);
+
+  // 2. 水域
+  for (var i = 0; i < geo.water.length; i++)
+    drawPoly(geo.water[i], COLORS.water, null);
+
+  // 3. 農田
+  for (var i = 0; i < geo.fields.length; i++)
+    drawPoly(geo.fields[i], COLORS.field, null);
+
+  // 4. 綠地
+  for (var i = 0; i < geo.greens.length; i++)
+    drawPoly(geo.greens[i], COLORS.green, null);
+
+  // 5. 河流
+  for (var i = 0; i < geo.rivers.length; i++)
+    drawLine(geo.rivers[i], COLORS.river, riverW);
+
+  // 6. 區域（半透明邊界 + 名稱）
+  for (var i = 0; i < geo.districts.length; i++) {
+    var d = geo.districts[i];
+    drawPoly(d.ring, null, COLORS.districtStroke, 1.5);
+    if (d.name && camScale > 0.15) {
+      var cx = 0, cy = 0;
+      for (var j = 0; j < d.ring.length; j++) {
+        cx += d.ring[j][0]; cy += d.ring[j][1];
+      }
+      cx /= d.ring.length; cy /= d.ring.length;
+      var sp = toScreen(cx, cy);
+      var fontSize = Math.max(10, Math.min(16, 13 * camScale));
+      ctx.font = fontSize + 'px "Noto Serif TC", serif';
+      ctx.fillStyle = COLORS.districtText;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(d.name, sp[0], sp[1]);
+    }
+  }
+
+  // 7. 道路（先畫粗邊再畫亮面）
+  for (var i = 0; i < geo.roads.length; i++)
+    drawLine(geo.roads[i], COLORS.roadStroke, roadW + 2);
+  for (var i = 0; i < geo.roads.length; i++)
+    drawLine(geo.roads[i], COLORS.road, roadW);
+
+  // 8. 廣場
+  for (var i = 0; i < geo.squares.length; i++)
+    drawPoly(geo.squares[i], COLORS.square, null);
+
+  // 9. 棧橋
+  for (var i = 0; i < geo.planks.length; i++)
+    drawLine(geo.planks[i], COLORS.plank, Math.max(1, 4 * camScale));
+
+  // 10. 稜柱（城塞陰影）
+  for (var i = 0; i < geo.prisms.length; i++)
+    drawPoly(geo.prisms[i], COLORS.prism, null);
+
+  // 11. 建築
+  for (var i = 0; i < geo.buildings.length; i++)
+    drawPoly(geo.buildings[i], COLORS.building, null);
+
+  // 12. 城牆
+  for (var i = 0; i < geo.walls.length; i++)
+    drawLine(geo.walls[i], COLORS.wall, wallW);
+
+  // 13. 塔樓
+  for (var i = 0; i < geo.towers.length; i++)
+    drawCircle(geo.towers[i][0], geo.towers[i][1], towerR, COLORS.wallTower);
+
+  // 14. 樹
+  if (camScale > 0.3) {
+    var treeR = Math.max(1.5, 3 * camScale);
+    for (var i = 0; i < geo.trees.length; i++)
+      drawCircle(geo.trees[i][0], geo.trees[i][1], treeR / camScale, COLORS.tree);
+  }
+}
+
+/* ── 互動：拖曳 + 縮放 ── */
+var dragging = false, dragLastX = 0, dragLastY = 0;
+
+canvas = document.getElementById('c');
+ctx = canvas.getContext('2d');
+
+function resize() {
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W; canvas.height = H;
+  draw();
+}
+window.addEventListener('resize', resize);
+
+canvas.addEventListener('mousedown', function(e) {
+  dragging = true;
+  dragLastX = e.clientX; dragLastY = e.clientY;
+  canvas.classList.add('dragging');
+});
+window.addEventListener('mousemove', function(e) {
+  if (!dragging) return;
+  var dx = e.clientX - dragLastX, dy = e.clientY - dragLastY;
+  camX -= dx / camScale; camY -= dy / camScale;
+  dragLastX = e.clientX; dragLastY = e.clientY;
+  draw();
+});
+window.addEventListener('mouseup', function() {
+  dragging = false;
+  canvas.classList.remove('dragging');
+});
+
+canvas.addEventListener('wheel', function(e) {
+  e.preventDefault();
+  var factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+  var mx = e.clientX, my = e.clientY;
+  // 游標位置不動的縮放
+  var wx = camX + (mx - W * 0.5) / camScale;
+  var wy = camY + (my - H * 0.5) / camScale;
+  camScale *= factor;
+  camScale = Math.max(0.02, Math.min(8, camScale));
+  camX = wx - (mx - W * 0.5) / camScale;
+  camY = wy - (my - H * 0.5) / camScale;
+  draw();
+}, { passive: false });
+
+/* 觸控支援 */
+var touches = {};
+var pinchDist0 = 0, pinchScale0 = 1;
+canvas.addEventListener('touchstart', function(e) {
+  e.preventDefault();
+  for (var i = 0; i < e.changedTouches.length; i++) {
+    var t = e.changedTouches[i];
+    touches[t.identifier] = { x: t.clientX, y: t.clientY };
+  }
+  var ids = Object.keys(touches);
+  if (ids.length === 2) {
+    var t1 = touches[ids[0]], t2 = touches[ids[1]];
+    pinchDist0 = Math.hypot(t2.x - t1.x, t2.y - t1.y);
+    pinchScale0 = camScale;
+  }
+}, { passive: false });
+canvas.addEventListener('touchmove', function(e) {
+  e.preventDefault();
+  var ids = Object.keys(touches);
+  if (ids.length === 1) {
+    var t = e.changedTouches[0];
+    var old = touches[t.identifier];
+    if (old) {
+      camX -= (t.clientX - old.x) / camScale;
+      camY -= (t.clientY - old.y) / camScale;
+      old.x = t.clientX; old.y = t.clientY;
+    }
+  } else if (ids.length === 2) {
+    for (var i = 0; i < e.changedTouches.length; i++) {
+      var ct = e.changedTouches[i];
+      if (touches[ct.identifier]) {
+        touches[ct.identifier].x = ct.clientX;
+        touches[ct.identifier].y = ct.clientY;
+      }
+    }
+    var t1 = touches[ids[0]], t2 = touches[ids[1]];
+    var dist = Math.hypot(t2.x - t1.x, t2.y - t1.y);
+    camScale = pinchScale0 * (dist / pinchDist0);
+    camScale = Math.max(0.02, Math.min(8, camScale));
+  }
+  draw();
+}, { passive: false });
+canvas.addEventListener('touchend', function(e) {
+  for (var i = 0; i < e.changedTouches.length; i++)
+    delete touches[e.changedTouches[i].identifier];
+});
+
+/* ── hover 顯示 district 名 ── */
+var tooltip = document.getElementById('tooltip');
+canvas.addEventListener('mousemove', function(e) {
+  if (dragging || !geo) return;
+  var wx = camX + (e.clientX - W * 0.5) / camScale;
+  var wy = camY + (e.clientY - H * 0.5) / camScale;
+  var hit = null;
+  for (var i = 0; i < geo.districts.length; i++) {
+    if (pointInRing(wx, wy, geo.districts[i].ring)) {
+      hit = geo.districts[i];
+      break;
+    }
+  }
+  if (hit && hit.name) {
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX + 14) + 'px';
+    tooltip.style.top = (e.clientY + 14) + 'px';
+    tooltip.textContent = hit.name;
+  } else {
+    tooltip.style.display = 'none';
+  }
+});
+
+function pointInRing(px, py, ring) {
+  var inside = false;
+  for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    var xi = ring[i][0], yi = ring[i][1];
+    var xj = ring[j][0], yj = ring[j][1];
+    if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi))
+      inside = !inside;
+  }
+  return inside;
+}
+
+/* ── 載入 ── */
+var hud = document.getElementById('hud');
+
+// 預設載入宜林
+var cityFile = 'city_32.json';
+var params = new URLSearchParams(window.location.search);
+if (params.get('file')) cityFile = params.get('file');
+
+// burgId 從檔名或 ?id= 取得
+var burgId = params.get('id') || '32';
+fetch('/cities/' + burgId + '.json')
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    hud.textContent = '解析 JSON 中（12MB）…';
+    return r.json();
+  })
+  .then(function(raw) {
+    geo = parseGeoJSON(raw);
+    bounds = computeBounds(geo);
+    // 置中
+    camX = (bounds.minX + bounds.maxX) * 0.5;
+    camY = (bounds.minY + bounds.maxY) * 0.5;
+    var spanX = bounds.maxX - bounds.minX;
+    var spanY = bounds.maxY - bounds.minY;
+    camScale = Math.min(W / (spanX * 1.1), H / (spanY * 1.1));
+
+    var nBuildings = geo.buildings.length;
+    var nRoads = geo.roads.length;
+    var nDistricts = geo.districts.length;
+    hud.innerHTML = '道路 ' + nRoads + ' ｜建築 ' + nBuildings + ' ｜區 ' + nDistricts +
+      '<br>滾輪縮放 ｜拖曳平移';
+    draw();
+  })
+  .catch(function(err) {
+    hud.textContent = '載入失敗：' + err;
+  });
+
+resize();
+</script>
+</body>
+</html>

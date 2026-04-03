@@ -1,0 +1,13 @@
+{
+  "format": "svg",
+  "variant": "inline",
+  "source": "docs/map/world/lakes_of_secrets.svg",
+  "worldSize": 4000,
+  "cols": 4,
+  "rows": 4,
+  "tileSvgW": 1000.0,
+  "tileSvgH": 1000.0,
+  "bboxPad": 80.0,
+  "zoom": 0,
+  "tileUrlPattern": "/maps/tiles/0/{i}_{j}.svg"
+}

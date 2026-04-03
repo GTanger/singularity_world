@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者回饋卡頓，將森林 emoji 數量從每格 3~5 個降為每格固定 1 個，更新 `web/watabou_test.html` 的 `FOREST_EMOJI_MIN/MAX` 為 1。",
+  "current_status": "森林 emoji 現為每格 1 個，預期可顯著降低繪製負擔。"
+}

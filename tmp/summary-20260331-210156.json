@@ -1,0 +1,4 @@
+{
+  "summary": "已將水面符號改接 web/assets/tiles/lake.svg：新增 lakeTile 載入與 drawHexLakeTileOverlay()，水域 hex 的覆蓋層改為優先繪製 lake SVG，失敗才回退原本 ≋ 符號。並自行開頁驗收，於 center 視角確認湖面已呈現新 lake 圖示。",
+  "current_status": "地圖資產化覆蓋層目前包含 city/town/village/mountain/forest/lake；湖面已改用 lake.svg。"
+}

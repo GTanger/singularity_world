@@ -1,0 +1,4 @@
+{
+  "summary": "watabou_test：新增 hexCellCircumradius（HEX_R + HEX_AA_OVERLAP_PX/camScale）統一陸／水／山貼圖裁切半徑；drawHexTerrainCell 在 WOBBLE=0 走 drawHex 正六角；移除繪製用 HEX_R+0.5；boundaryEdges 改 R=HEX_R。AGENTS 同步 hexCellCircumradius／AA 縫說明。",
+  "current_status": "底圖為正六角網格＋微量縫補偿以視覺無縫。"
+}

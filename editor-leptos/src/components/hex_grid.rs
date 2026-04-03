@@ -167,10 +167,10 @@ pub fn HexGrid(
     };
 
     let paint_screen_pos = {
-        let on_paint = on_paint.clone();
-        let on_erase = on_erase.clone();
-        let on_select_add = on_select_add.clone();
-        let set_selected = set_selected.clone();
+        let on_paint = on_paint;
+        let on_erase = on_erase;
+        let on_select_add = on_select_add;
+        let set_selected = set_selected;
         move |sx: f64, sy: f64, cw: f64, ch: f64| {
             let cam = camera.get_untracked();
             let wx = (sx - cw * 0.5) / cam.zoom + cam.x;
@@ -225,7 +225,7 @@ pub fn HexGrid(
         // window resize
         if let Some(win) = web_sys::window() {
             let resize_cb = Closure::<dyn Fn()>::new({
-                let update_size = update_size.clone();
+                let update_size = update_size;
                 move || update_size()
             });
             let _ = win.add_event_listener_with_callback("resize", resize_cb.as_ref().unchecked_ref());
@@ -234,7 +234,7 @@ pub fn HexGrid(
 
         // wheel zoom
         let wheel_cb = Closure::<dyn Fn(web_sys::WheelEvent)>::new({
-            let set_camera = set_camera.clone();
+            let set_camera = set_camera;
             move |ev: web_sys::WheelEvent| {
                 ev.prevent_default();
                 let delta = ev.delta_y();
@@ -255,13 +255,13 @@ pub fn HexGrid(
 
         // mouse down
         let mousedown_cb = Closure::<dyn Fn(web_sys::MouseEvent)>::new({
-            let set_panning = set_panning.clone();
-            let set_painting = set_painting.clone();
-            let set_drag_start = set_drag_start.clone();
-            let set_cam_start = set_cam_start.clone();
-            let paint_screen_pos = paint_screen_pos.clone();
-            let pick_coord_at = pick_coord_at.clone();
-            let set_selected = set_selected.clone();
+            let set_panning = set_panning;
+            let set_painting = set_painting;
+            let set_drag_start = set_drag_start;
+            let set_cam_start = set_cam_start;
+            let paint_screen_pos = paint_screen_pos;
+            let pick_coord_at = pick_coord_at;
+            let set_selected = set_selected;
             let canvas_for_down = canvas.clone();
             move |ev: web_sys::MouseEvent| {
                 // 左鍵：繪製；中鍵：平移；右鍵：載入 JSON
@@ -336,8 +336,8 @@ pub fn HexGrid(
 
         // mouse move
         let mousemove_cb = Closure::<dyn Fn(web_sys::MouseEvent)>::new({
-            let set_camera = set_camera.clone();
-            let paint_screen_pos = paint_screen_pos.clone();
+            let set_camera = set_camera;
+            let paint_screen_pos = paint_screen_pos;
             let canvas_for_move = canvas.clone();
             move |ev: web_sys::MouseEvent| {
                 if painting.get_untracked() {
@@ -375,11 +375,11 @@ pub fn HexGrid(
 
         // mouse up
         let mouseup_cb = Closure::<dyn Fn(web_sys::MouseEvent)>::new({
-            let set_panning = set_panning.clone();
-            let set_painting = set_painting.clone();
-            let pick_coord_at = pick_coord_at.clone();
-            let on_select_toggle = on_select_toggle.clone();
-            let on_move_selection = on_move_selection.clone();
+            let set_panning = set_panning;
+            let set_painting = set_painting;
+            let pick_coord_at = pick_coord_at;
+            let on_select_toggle = on_select_toggle;
+            let on_move_selection = on_move_selection;
             let canvas_for_up = canvas.clone();
             move |_ev: web_sys::MouseEvent| {
                 if let Some(from) = move_anchor.get_untracked() {
@@ -417,12 +417,12 @@ pub fn HexGrid(
 
         // touchstart
         let ts_cb = Closure::<dyn Fn(web_sys::TouchEvent)>::new({
-            let set_painting = set_painting.clone();
-            let set_panning = set_panning.clone();
-            let set_drag_start = set_drag_start.clone();
-            let set_cam_start = set_cam_start.clone();
-            let set_touch_dist = set_touch_dist.clone();
-            let paint_screen_pos = paint_screen_pos.clone();
+            let set_painting = set_painting;
+            let set_panning = set_panning;
+            let set_drag_start = set_drag_start;
+            let set_cam_start = set_cam_start;
+            let set_touch_dist = set_touch_dist;
+            let paint_screen_pos = paint_screen_pos;
             let canvas_for_touch = canvas.clone();
             move |ev: web_sys::TouchEvent| {
                 let touches = ev.touches();
@@ -492,8 +492,8 @@ pub fn HexGrid(
 
         // touchmove（必須 non-passive 才能 preventDefault）
         let tm_cb = Closure::<dyn Fn(web_sys::TouchEvent)>::new({
-            let set_touch_dist = set_touch_dist.clone();
-            let paint_screen_pos = paint_screen_pos.clone();
+            let set_touch_dist = set_touch_dist;
+            let paint_screen_pos = paint_screen_pos;
             let canvas_for_touch = canvas.clone();
             move |ev: web_sys::TouchEvent| {
                 ev.prevent_default();
@@ -550,12 +550,12 @@ pub fn HexGrid(
 
         // touchend
         let te_cb = Closure::<dyn Fn(web_sys::TouchEvent)>::new({
-            let set_painting = set_painting.clone();
-            let set_panning = set_panning.clone();
-            let set_touch_dist = set_touch_dist.clone();
-            let pick_coord_at = pick_coord_at.clone();
-            let on_select_toggle = on_select_toggle.clone();
-            let on_move_selection = on_move_selection.clone();
+            let set_painting = set_painting;
+            let set_panning = set_panning;
+            let set_touch_dist = set_touch_dist;
+            let pick_coord_at = pick_coord_at;
+            let on_select_toggle = on_select_toggle;
+            let on_move_selection = on_move_selection;
             let canvas_for_touch = canvas.clone();
             move |_ev: web_sys::TouchEvent| {
                 if let Some(from) = move_anchor.get_untracked() {
@@ -746,7 +746,7 @@ pub fn HexGrid(
     });
 
     let on_ctx_load_json = {
-        let on_load_json = on_load_json.clone();
+        let on_load_json = on_load_json;
         move |_| {
             if let Some(coord) = ctx_menu_coord.get() {
                 on_load_json.run(coord);
@@ -756,7 +756,7 @@ pub fn HexGrid(
     };
 
     let on_ctx_delete = {
-        let on_erase = on_erase.clone();
+        let on_erase = on_erase;
         move |_| {
             if let Some(coord) = ctx_menu_coord.get() {
                 on_erase.run(coord);

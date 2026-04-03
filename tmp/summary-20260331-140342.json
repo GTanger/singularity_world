@@ -1,0 +1,4 @@
+{
+  "summary": "已依需求調整 web/watabou_test.html：森林改為每格單一 🌳 置中；山脈改為每格單一 ⛰️ 置中；並將渲染順序改為先畫水/河，再畫山與樹，確保河流不會壓在樹與山上。保留地形底色與原有道路層。",
+  "current_status": "地圖符號層級已符合需求（山/樹 > 河流）；目前可再按視覺偏好微調 emoji 大小係數 FOREST_EMOJI_SCALE 與 MOUNTAIN_EMOJI_SCALE。"
+}

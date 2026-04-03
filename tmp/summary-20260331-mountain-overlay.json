@@ -1,0 +1,4 @@
+{
+  "summary": "新增 assets/tiles/mountain_sketch_overlay.svg（僅山＋鳥、無六角）；watabou_test 山脈格先 drawHexTerrainCell 用 TERRAIN_COLORS.mountain，再 drawHexMountainOverlay 置中 fit 0.9 並 hex clip。loadTileAssets 改載 overlay；terrainTileForHex(mountain) 有 overlay 時回 null；drawHexTileImage 移除整格山 SVG 特例。AGENTS 更新。",
+  "current_status": "山脈＝底上色塊＋透明線稿疊加；mountain_sketch.svg 未刪僅停用。"
+}

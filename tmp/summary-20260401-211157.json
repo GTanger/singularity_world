@@ -1,0 +1,4 @@
+{
+  "summary": "依使用者要求清掉 warning，已移除 editor-leptos 中兩段未使用碼：api.rs 的 put_cells() 與 types.rs 的 HexCoord::to_pixel()。完成後執行 cargo build --target=wasm32-unknown-unknown，編譯成功且無該兩項 dead_code 警告；ReadLints 針對修改檔案亦顯示無錯誤。",
+  "current_status": "Leptos 編輯器目前可編譯通過且已清除指定 warning，維持既有繪製與操控功能。"
+}

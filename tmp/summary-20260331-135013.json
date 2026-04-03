@@ -1,0 +1,4 @@
+{
+  "summary": "在 `web/watabou_test.html` 新增森林 emoji 疊圖：`drawHexForestEmojiOverlay()` 會在每個森林格以固定雜湊隨機放置 `🌳`，每格 3~5 個、大小與位置交錯且可重現；渲染順序放在地形底色與山脈 overlay 之後、水域之前。",
+  "current_status": "森林目前為統一綠底 + 每格 3~5 個 `🌳` emoji 交錯分布；山脈 overlay 維持原樣。"
+}

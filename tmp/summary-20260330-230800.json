@@ -1,0 +1,4 @@
+{
+  "summary": "實作三項 Watabou 渲染技法移植到 watabou_test.html：(1) Chaikin 2-pass 細分取代 quadraticCurveTo，套用到河流預計算+道路即時渲染；(2) drawTrueStroke 變寬河流，折線展開為多邊形 fill，支流 0.5→1.8px、主流 1.0→3.5px，預計算時校正河流方向；(3) vertexHash 確定性雜湊驅動 drawHexWobble，六角格頂點 ±1.5px 有機化偏移，共用頂點一致性保證。所有語法檢查通過。",
+  "current_status": "watabou_test.html 已具備 Chaikin 曲線、變寬河流、海岸線 wobble 三項核心渲染改進。待使用者刷新測試視覺效果並回饋調參。Watabou 渲染逆向文件已產出（tmp/Perilous.js 留存）。Rust 端城市空間引擎骨架完成。Azgaar 694 房間已匯入。"
+}

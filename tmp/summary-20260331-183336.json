@@ -1,0 +1,4 @@
+{
+  "summary": "針對 village 不可見問題，未改動使用者提供 SVG 本體，僅調整顯示參數以提高可視性：VILLAGE_NEIGHBORHOOD_FIT 0.84→1.18、OFFSET_Y -0.06→-0.12，並在 drawHexVillageNeighborhoodOverlay 加入輕微陰影，避免在地形底色上被吃掉。",
+  "current_status": "village 仍為使用者提供的 neighborhood SVG，現已放大並提升對比；city/town 邏輯維持。"
+}

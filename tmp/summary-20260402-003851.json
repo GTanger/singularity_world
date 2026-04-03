@@ -1,0 +1,4 @@
+{
+  "summary": "再次收斂 roads 匯入：改為先收集所有 LineString 候選，依總長度排序後僅保留最長 12%（上下限 6~28 條）作為主幹道，並要求最短長度>=10*hex_r；同時降低取樣密度並維持不覆蓋 wall/water/urban/mountain。目標是避免道路噪音仍過量。",
+  "current_status": "MFCG 匯入現為：walls 邊界化、roads 主幹道化（長度排序保留）。release 已重建，可重新匯入 thundertalonfield.json 觀察道路密度。"
+}
