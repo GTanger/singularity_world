@@ -43,7 +43,7 @@
 ## 常用路由與 API
 
 - **遊戲端**：`/` (Index), `/ws` (WebSocket)
-- **工具端**：`/map_viewer`, `/room_editor`, `/star_chart`, `/admin`
+- **工具端**：`/map_viewer`, `/hex-editor/`, `/dashboard`, `/star_chart`, `/admin`（房間心智圖 API：`/api/room-editor/*`）
 - **資料 API**：
     - `/data/rooms.json`：全量地圖資料
     - `/api/design-constants`：UI 常數同步

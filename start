@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# 奇點世界 — Rust 版一鍵啟動：閘門 → 建置 → 啟動。
+# 奇點世界 — Rust 版一鍵啟動：閘門 → 建置後端 → 建置 Hex 編輯器 → 啟動。
 # 用法：./start
+# 需已安裝 trunk（cargo install trunk），供 /hex-editor 靜態資源；若無 trunk 會中止並提示。
 
 set -e
 cd "$(dirname "$0")"
@@ -33,6 +34,18 @@ if [[ ! -f "$CARGO_OUT" ]]; then
 fi
 mkdir -p bin
 install -m 755 "$CARGO_OUT" bin/server-rust
+
+# 3b) Hex 編輯器（Leptos WASM → editor-leptos/dist，由 ServeDir 提供 /hex-editor）
+echo "--- 建置 Hex 編輯器 (trunk release → editor-leptos/dist) ---"
+if ! command -v trunk &>/dev/null; then
+  echo "錯誤：找不到 trunk，無法建置 editor-leptos。請安裝：cargo install trunk"
+  exit 1
+fi
+# 部分環境設 NO_COLOR=1 會讓 trunk 0.21+ 將 --no-color 傳成無效值，故清除後再建置
+(
+  cd editor-leptos
+  env -u NO_COLOR trunk build --release
+)
 
 # 4) 重啟服務
 if [ "$HAS_SYSTEMD" = true ]; then

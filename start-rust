@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# 奇點世界 — Rust 版一鍵啟動：閘門 → 建置 → 啟動。
+# 奇點世界 — Rust 版一鍵啟動：閘門 → 建置後端 → 建置 Hex 編輯器 (trunk) → 啟動。
 # 用法：在專案根目錄執行 ./start-rust
-# 對齊 Go 版 ./start 的流程，替換為 Rust 工具鏈。
+# 對齊 ./start 的 Rust 閘門；無 systemd，用 nohup 起服務。需 cargo install trunk。
 
 set -e
 cd "$(dirname "$0")"
@@ -44,6 +44,17 @@ if [[ ! -f "$CARGO_OUT" ]]; then
 fi
 mkdir -p bin
 cp "$CARGO_OUT" bin/server-rust
+
+# 3b) Hex 編輯器（與 ./start 一致，供 /hex-editor）
+echo "建置 Hex 編輯器（trunk release）…"
+if ! command -v trunk &>/dev/null; then
+  echo "錯誤：找不到 trunk。請安裝：cargo install trunk"
+  exit 1
+fi
+(
+  cd editor-leptos
+  env -u NO_COLOR trunk build --release
+)
 
 # 4) 專案根 .env
 if [[ -f "$SW_DIR/.env" ]]; then
