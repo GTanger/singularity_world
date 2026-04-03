@@ -74,7 +74,7 @@ const AXIAL_NEIGHBOR_DR: [(i32, i32); 6] = [
     (0, 1),
 ];
 
-/// 連通區內僅在字典序最小之一格顯示名稱（例如六格相連森林 → 一個「森林」）
+/// 連通區內僅**一格**顯示名稱；代表格取與區域幾何中心（螢幕座標平均）最近之六角
 fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
     let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cs.len());
     for c in cs {
@@ -113,7 +113,7 @@ fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
                 stack.push(nid);
             }
         }
-        let rep = *comp.iter().min().expect("non-empty component");
+        let rep = label_rep_coord_nearest_centroid(&comp);
         reps.insert(rep);
     }
     reps
@@ -251,6 +251,39 @@ fn coord_to_pixel(q: i32, r: i32) -> (f64, f64) {
     let x = HEX_R * SQRT3 * (q as f64 + r as f64 / 2.0);
     let y = HEX_R * 1.5 * r as f64;
     (x, y)
+}
+
+/// 在連通區 `comp` 中選與 **像素座標重心** 最近之一格（同距離則 `(q,r)` 字典序）
+fn label_rep_coord_nearest_centroid(comp: &[(i32, i32)]) -> (i32, i32) {
+    let n = comp.len() as f64;
+    debug_assert!(n > 0.0);
+    let mut sx = 0.0_f64;
+    let mut sy = 0.0_f64;
+    for &(q, r) in comp {
+        let (px, py) = coord_to_pixel(q, r);
+        sx += px;
+        sy += py;
+    }
+    let cx = sx / n;
+    let cy = sy / n;
+    comp
+        .iter()
+        .copied()
+        .min_by(|&(q1, r1), &(q2, r2)| {
+            let d1 = {
+                let (px, py) = coord_to_pixel(q1, r1);
+                (px - cx).powi(2) + (py - cy).powi(2)
+            };
+            let d2 = {
+                let (px, py) = coord_to_pixel(q2, r2);
+                (px - cx).powi(2) + (py - cy).powi(2)
+            };
+            d1.partial_cmp(&d2)
+                .unwrap_or(std::cmp::Ordering::Equal)
+                .then_with(|| q1.cmp(&q2))
+                .then_with(|| r1.cmp(&r2))
+        })
+        .expect("non-empty component")
 }
 
 fn pixel_to_axial(wx: f64, wy: f64) -> (f64, f64) {
