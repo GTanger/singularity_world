@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求少解釋、直接調：TILE_CLIP_BLEED 0.55→1.2，新增 TILE_IMAGE_COVER 1.06 放大 drawImage dest，加強鄰格重疊壓縫。",
-  "current_status": "watabou_test 貼圖接縫參數已加碼；若仍見線可再微調兩常數。"
-}

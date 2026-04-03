@@ -1,4 +1,0 @@
-{
-  "summary": "本輪針對使用者回報左下角大區域不顯示格子，修正 Watabou 匯入座標處理：將來源 offset-q（預設 even-q，支援 odd-q）轉為編輯器使用的 axial 座標，再進行錨點平移與批次寫入，避免因座標系不一致造成地塊錯位或大片缺格。已完成 wasm 目標編譯與檔案級 lint 檢查。",
-  "current_status": "Hex 編輯器已具備繪製/刪除/選取/移動、右鍵選單與 Watabou 匯入；本輪補齊 Watabou offset-q 到 axial 轉換，接下來可請使用者重新匯入同一份 JSON 驗證版圖是否完整。"
-}

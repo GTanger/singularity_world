@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求調整聚落視覺參數：city 放大並再上移（CITY_SKYSCRAPER_FIT 1.12、CITY_SKYSCRAPER_OFFSET_Y_FACTOR -0.36），village 縮小（VILLAGE_NEIGHBORHOOD_FIT 0.98）。未改動其餘渲染邏輯，lint 檢查無錯誤。",
-  "current_status": "目前聚落呈現為 city 更大且更高、village 較小；等待使用者提供 town SVG 以替換現行 town 符號。"
-}

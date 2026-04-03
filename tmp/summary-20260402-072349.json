@@ -1,4 +1,0 @@
-{
-  "summary": "本輪修正「手機只看到儲存」問題，於 `toolbar.rs` 將儲存與重載按鈕加上專用 class（`toolbar-btn-save`、`toolbar-btn-reload`）並簡化重載文案；於 `style.css` 手機 media query 對兩顆按鈕啟用 `position: sticky` 與 `left` 偏移，確保在工具列橫向捲動時仍固定可見。",
-  "current_status": "手機工具列關鍵操作（儲存、重載）已同時常駐可見；前端 release build 與 lint 均通過，待使用者重整頁面確認體感。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "依需求調整 city 圖示位置與尺寸：將 CITY_SKYSCRAPER_FIT 由 0.88 提升至 0.98 以放大，並新增 CITY_SKYSCRAPER_OFFSET_Y_FACTOR=-0.12，讓城市 SVG 在 hex 內整體上移。修改僅影響 city SVG 渲染，不動其他符號。",
-  "current_status": "city 目前為放大且上移版本；village、山、樹、河與道路層級維持原設定。"
-}

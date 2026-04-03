@@ -1,4 +1,0 @@
-{
-  "summary": "使用者定案：權威資料只走 PostgreSQL，不再以 JSON 為執行期真理。已更新 .cursorrules、CLAUDE.md、docs/技術約束規則.md（並修正過時的 Go/JSON-only 描述）、AGENTS.md 工作區事實一則。",
-  "current_status": "文件與規則已對齊 PG 權威；既有程式若仍雙寫備份 JSON，屬遷移殘留，新功能須落庫。"
-}

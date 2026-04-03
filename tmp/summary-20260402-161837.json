@@ -1,1 +1,0 @@
-{"summary":"已將 §十五 從待辦改為 v0.1 可實作：補齊 rule_id 分段格式、範例對照 §一～§四、單筆長度與 failure_cells 上限；定義 Action 列舉與 ActorKind 四類；預設權限矩陣（四類皆可修路，由伺服器脈絡檢核）；§十四 加註與 §15.1 儲存小寫前綴對照。","current_status":"人類活動地帶聚落五級草案：拓撲雙 hash、修路寫邊、water／mountain、表 A/B/C 與 rule_id／Action 權限已寫入；待 Hex grid 欄位定稿後可補 chunk 對表與 SetEdgeWeight 是否等同斷邊。"}

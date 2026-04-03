@@ -1,4 +1,0 @@
-{
-  "summary": "本輪依「應該不只這些」需求，擴充第二批城鎮功能房格：Temple、Academy、Library、Barracks、GuardPost、Warehouse、Granary、Dock、Bathhouse、Courthouse、Jail、TownHall。已同步更新後端 Terrain enum 與 move_cost（先統一 1.0、可通行）、前端編輯器地形清單/中文標籤/顏色/serde 名稱、Watabou 字串映射（含 shrine/school/archive/port/prison/townhall 等別名），並更新地形移動係數文件。",
-  "current_status": "城鎮功能房格已由第一批 8 種擴充到目前共 20 種（含既有橋、農舍農田等），前後端與文件一致；backend/editor build、trunk release、服務重啟、lint 與測試皆通過，可直接在編輯器使用。"
-}

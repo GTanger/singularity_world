@@ -1,4 +1,0 @@
-{
-  "summary": "逆向分析 Watabou Perilous Shores 的 Perilous.js（1.4MB，Haxe→JS/OpenFL）。拆解出完整渲染管線：Chaikin 細分曲線（qc.render，2-3次迭代）、三層 wobble 擾動（wobbleFixed / wobbleFixedInner / distort）、trueStroke 變寬河線（展開為多邊形填充，非 ctx.stroke）、Poisson Disc 散佈森林樹木、Park-Miller PRNG 確定性隨機。識別 14 層渲染順序（海→陸→生態群落→海岸→河→森林→山→城鎮→路→標籤→雲→羅盤）。建議優先移植 Chaikin 細分、trueStroke 變寬河、海岸 wobble 三項至 watabou_test.html。等使用者決定優先項。",
-  "current_status": "Watabou 渲染逆向分析完成並輸出詳細報告。watabou_test.html 現有基本六角底圖、平滑河流、手機觸控。下一步待使用者決定搬哪些 Watabou 技法進來。城市空間引擎（Rust 端 src/city/）骨架已完成。Azgaar 世界房間 694 間已匯入，翻譯精修中。"
-}

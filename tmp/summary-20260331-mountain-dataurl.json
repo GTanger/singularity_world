@@ -1,4 +1,0 @@
-{
-  "summary": "根因：mountain_sketch_overlay.svg 註解行含損壞位元組，Image 載入失敗。已重寫乾淨 SVG 檔。另將同內容嵌入 watabou_test 為 MOUNTAIN_OVERLAY_INLINE_SVG + data URL 載入，不依賴 assets 路徑／快取舊檔。loadTileAssets 僅設 mountainOverlay。AGENTS 註明雙源同步。",
-  "current_status": "山脈線稿應可穩定出現；改圖須同步內嵌字串與 svg 檔。"
-}

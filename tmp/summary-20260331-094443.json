@@ -1,4 +1,0 @@
-{
-  "summary": "將 `web/watabou_test.html` 的主綠色 `TERRAIN_COLORS.forest-light` 由 `#5a8c4a` 調整為淺草綠 `#9BCB7A`。",
-  "current_status": "地表主綠已提亮為淺草綠；`forest-dark` 與 `forest-dead` 仍維持原值。"
-}

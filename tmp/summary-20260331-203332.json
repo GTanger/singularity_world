@@ -1,4 +1,0 @@
-{
-  "summary": "已將 web/assets/tiles/town.svg 接入地圖渲染：新增 town 資產載入（tileAssets.townTile）、town 專用繪製函式 drawHexTownTileOverlay，並在 drawHexTownEmojiOverlay 中讓 town 優先用 SVG（失敗才 fallback 🏬）。完成後以瀏覽器開啟 ?zoom=8&focus=town&debug=1 自行驗收，截圖顯示 center=q24_r2:town 且 town SVG 正常可見。",
-  "current_status": "聚落渲染目前為 city=city SVG、town=tiles/town.svg、village=village SVG，並維持聚落格不疊樹/山/水紋符號。"
-}

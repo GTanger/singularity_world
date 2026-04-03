@@ -1,4 +1,0 @@
-{
-  "summary": "修正使用者指出的 forest 雙層貼圖問題：terrainTileForHex() 對 forest 類型改為 return null，避免底圖 pass 與森林專用 pass 重複繪製。已自行開頁以 ?zoom=8&focus=village&debug=1 驗證，截圖顯示森林只剩單層。",
-  "current_status": "forest 已去除雙層疊畫；目前每格僅由森林專用 pass 繪製一次。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "已回答「六角等比例縮小」：在 web/watabou_test.html 將 HEX_R 12→9（世界格距），並新增 INIT_VIEW_ZOOM_FACTOR=1.15 乘入預設 camScale 分母以拉遠初始視野（因僅改 HEX_R 時 init 會反比補償，螢幕上六角約同大）。MIN_RIVER_PX 改為 45*HEX_R/12 與舊閾值等效。已用本機 http.server + 瀏覽器 MCP 開 ?zoom=8，console 無頁面錯誤。",
-  "current_status": "Watabou Perilous Shores 試驗頁具 HEX_R 與 INIT_VIEW_ZOOM_FACTOR 兩種縮放語意；使用者可再調 INIT_VIEW_ZOOM_FACTOR 或 HEX_R 微調。"
-}

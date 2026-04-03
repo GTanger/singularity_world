@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求實作 Watabou 向的視覺升級：precomputeLandArt() 含陸地連通塊 BFS、邊界邊→edgesToLoops、環心 terrain 分類外圈／內湖洞、封閉 Chaikin（chaikinClosed）+ WOBBLE_COAST、evenodd 填色 drawMergedLandfills；森林六角 Poisson 散佈 + drawTreeSprite（三種林相）；山岳圖章 Y 排序；render 順序調為海洋→合併陸地→半透明地形六角→水格→河→樹→山→道路→標籤；init 呼叫 landArt。",
-  "current_status": "web/watabou_test.html 已具合併海岸、林／山圖章與層序；需瀏覽器實際載入 lakes_of_secrets.json 驗證邊界環是否完整、內湖洞是否正確 evenodd。"
-}

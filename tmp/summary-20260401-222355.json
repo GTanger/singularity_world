@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者需求加入中鍵拖曳平移。已更新 editor-leptos/src/components/hex_grid.rs 的 mousedown 判斷：平移觸發從原本僅右鍵(button==2)擴充為中鍵或右鍵(button==1 || button==2)，左鍵繪製邏輯保持不變。完成 wasm 編譯與 trunk release，且該檔 lint 無錯。",
-  "current_status": "編輯器目前支援左鍵繪製、右鍵拖曳平移，以及新增的中鍵拖曳平移。"
-}

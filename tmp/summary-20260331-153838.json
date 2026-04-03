@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求強化建築層級可視性：在 watabou_test.html 取消 city/village 建築繪製時的 hex 裁切（移除 hexWobblePath+clip），保留建築在最後層渲染。這樣建築不再受格內裁切造成的視覺壓縮，且不會被山樹水覆蓋。",
-  "current_status": "city 與 village 目前為最上層且不裁切顯示；山、樹、水、河、路皆在建築下層。"
-}

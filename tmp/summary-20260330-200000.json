@@ -1,4 +1,0 @@
-{
-  "summary": "使用者問能否開瀏覽器與 Browsebase。以 cursor-ide-browser MCP 實測 browser_navigate 至 http://127.0.0.1:8009/watabou_test.html 成功並取得畫面；說明 Cursor 內建瀏覽器 MCP 與使用者自裝 Browserbase 為不同路徑。",
-  "current_status": "本機 8009 可服務 watabou_test.html；代理可用 MCP 開頁驗證，先前未跑驗證是流程疏失非工具不存在。"
-}

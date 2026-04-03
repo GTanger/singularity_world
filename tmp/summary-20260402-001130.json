@@ -1,4 +1,0 @@
-{
-  "summary": "檢查 /home/tanger/下載/thundertalonfield.json：為 FeatureCollection，features=13，包含 earth/roads/walls/rivers/planks/buildings/prisms/squares/greens/fields/trees/districts。其核心圖層與既有 MFCG 匯入器相容（earth/buildings/prisms/squares/greens/fields/trees/roads），可直接匯入；walls/rivers/planks/districts 目前未映射為地形。",
-  "current_status": "MFCG JSON 匯入已可處理 thundertalonfield 這類大型檔案；若要更貼近原圖，下一步可加 walls/districts 的專屬映射策略。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "依「先撤下」移除森林圖章：`watabou_test.html` 刪除 drawHexForestOverlay、forest 第二階段繪製、loadTileAssets 對 forest_wave_overlay 的載入；terrainTileForHex 森林恢復僅 tileAssets.forest。AGENTS 註明森林疊圖暫撤、檔可留。",
-  "current_status": "森林僅統一綠色色塊；山脈 overlay 不變。"
-}

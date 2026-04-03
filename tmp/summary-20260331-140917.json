@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求調整地圖 emoji 尺度：將森林 emoji 係數下修、山脈 emoji 係數上修，達成「山大一階、樹小一階」。其餘渲染層級與置中邏輯保持不變，並檢查該檔案無 linter 錯誤。",
-  "current_status": "web/watabou_test.html 已套用置中與層級規則，且符號尺寸目前為樹較小、山較大；可再依視覺偏好微調兩個 scale 常數。"
-}

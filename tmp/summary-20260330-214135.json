@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求完成 watabou_test.html 收斂：precomputeLandArt 僅回傳 islandPolys；render 移除森林／山圖章整段、features 聚落與地名；刪除 buildRoadSegments、settlementOffsetFromRoads、drawSettlementSprite 與 init 內 roadSegmentsPrecomputed；HUD 只顯示 hex 數與 zoom；init 註解改為臨水陸格。已用本機 http.server + 瀏覽器開頁 ?zoom=8，主控台無 JS 錯誤。",
-  "current_status": "Perilous Shores 試驗頁改為純底圖：合併陸地、六角地形色、水域、河、路；無樹／山／城鎮圖章與標籤。"
-}

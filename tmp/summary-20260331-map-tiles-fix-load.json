@@ -1,1 +1,0 @@
-{"summary":"承認先前自檢不合格：只看了 network 200，未驗證大型自含 SVG 以 img 呈現常失敗。已改 map_tiles：所有 SVG 瓦片改 <object type=image/svg+xml>、data 用絕對 URL、error 時 HUD 提示；PNG 仍 img+onerror；file:// 提示改走 http.server。AGENTS 自檢條款補「須畫面可見、SVG 勿 img」。","current_status":"map_tiles 向量路徑應可正常顯示；若仍壞請回報 URL 與瀏覽器。"}

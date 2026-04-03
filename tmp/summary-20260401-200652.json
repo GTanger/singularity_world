@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求繼續推進，已將 editor-leptos 的 HexGrid 從 SVG DOM 渲染改為 Canvas 2D 渲染，保留 Leptos 作為框架。核心改動包含：預計算六角形頂點偏移、世界座標與軸向座標互轉、Canvas 事件模型（滑鼠拖曳、滾輪縮放、點選格子）、non-passive 觸控事件（單指拖曳、雙指縮放），並實作 LOD：zoom<0.15 走粒子模式、0.15 以上畫六角塊、>=0.35 顯示邊線、>=0.6 顯示名稱。另補上 window resize 重新量測 canvas 實際尺寸。完成 wasm 編譯與 trunk release 打包，無新增 lint 錯誤。",
-  "current_status": "六角編輯器已切換為 Leptos + Canvas 架構，手機拖曳/縮放與大規模格子渲染基礎到位；下一步建議在真機驗證效能與手感，並加入更激進的批次/索引優化以支撐萬格級編輯。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "已將 forest 更換為 web/assets/tiles/forest.svg：新增 forest 資產載入、drawHexForestTileOverlay()，森林渲染改為優先繪製 SVG，失敗才 fallback 原本 emoji。完成後自行開頁驗收（?zoom=8&focus=village&debug=1），確認 forest 已由新 SVG 呈現。",
-  "current_status": "目前地圖資產化渲染為 city/town/village/mountain/forest 皆可走 tiles SVG；聚落格仍不疊樹山水紋。"
-}

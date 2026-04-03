@@ -1,1 +1,0 @@
-{"summary":"續寫人類活動地帶草案 §15：新增 §15.4 對照現行 HexGrid／grid.json（cells、barriers、portals、無獨立 TransportEdge）；水路／渡口暫用 Portal+tags 建議；chunk 屬載入索引；§15.5 定案 SetEdgeWeight 僅影響成本不參與依附／Gate-3、禁止 weight=∞ 冒充斷路；§15.6 收斂仍開項；權限表補 SetEdgeWeight；§15.2 行內改指 §15.5。","current_status":"聚落五級規格：rule_id、Action、grid 對照與權重／連通分層已定稿於文件；實作待 TransportEdge schema 與 cell_id 契約。"}

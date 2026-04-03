@@ -1,4 +1,0 @@
-{
-  "summary": "設計者決定 hex grid 正式取代現有 Room 系統，編輯器納入 Rust 實作範圍。建立 src/hex/ 模組地基：coord.rs（HexCoord axial座標系統、HexDir 六方向、距離、pixel/even-q 轉換）、cell.rs（HexCell 格子單元 + Terrain 15種地形含通行性與移動成本）、grid.rs（HexGrid 容器 + barrier 障壁系統 + Portal 傳送門 + BFS 尋路）。核心設計：相鄰格六方皆通不需建exit，barrier語意為「不能從此格往此方向離開」（牆=兩端各一條barrier），Terrain控制默認通行性。HexCell 沿用 model::RoomObject 物件系統。cargo build 零錯誤、clippy 零警告、26個單元測試全過。",
-  "current_status": "src/hex/ 模組地基完成（coord/cell/grid），已加入 lib.rs。下一步可蓋 server/hex_editor.rs API 層、前端對接新 API 並修拖曳性能、或遊戲層整合。前端 Canvas 編輯器 v1.0.0 已部署但有拖曳卡頓問題待修（縮放時繪製太多空白格）。"
-}

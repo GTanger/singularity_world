@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者回報修正兩點：一是將 city 再上移（CITY_SKYSCRAPER_OFFSET_Y_FACTOR 由 -0.2 調整為 -0.28）；二是把 town 也納入 village-like 分支，讓 type=town/type=village 都優先使用 village_neighborhood SVG（並同步 fallback emoji 與縮放判斷）。另重啟本機 8765 靜態伺服器並確認頁面可正常載入。",
-  "current_status": "聚落符號邏輯已更新為 city 用城市 SVG、village/town 用村鎮 SVG；city 顯示位置更高且建築維持最上層。"
-}

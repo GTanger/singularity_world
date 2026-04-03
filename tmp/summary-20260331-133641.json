@@ -1,4 +1,0 @@
-{
-  "summary": "已讀取使用者提供的 `treeeee.txt`，並匯入為 `web/assets/tiles/forest_wave_overlay.svg`。`watabou_test.html` 新增森林 overlay 流程：`loadTileAssets` 併行載入山脈與森林圖章、森林格先畫底色再以 `drawHexForestOverlay` 疊圖、`terrainTileForHex` 在有 `forestOverlay` 時不再走舊貼圖分支。",
-  "current_status": "山脈/森林都採「地形色塊 + overlay SVG」渲染；森林圖章來源為 `forest_wave_overlay.svg`。"
-}

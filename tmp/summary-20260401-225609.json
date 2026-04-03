@@ -1,4 +1,0 @@
-{
-  "summary": "針對使用者回報『右鍵載入json沒東西進來』，已把匯入流程加強為多格式與大檔穩定版本。main.rs 新增 parse_qr_from_key / terrain_from_watabou / extract_watabou_cells：可讀取 hexes(object/array) 與 cells(array)，支援 q/r 或 key 解析（q53_r0），並把 terrain 字串做 Watabou 對映（含 forest-light、water-deep 等）。同時將匯入上傳改為 /api/hex/cells 分批（每批 2000）避免一次請求過大失敗。錯誤訊息也改成明確提示。完成 wasm build + trunk release，lint 無錯。",
-  "current_status": "右鍵 JSON 載入已升級為『Watabou 多格式 + 分批匯入』，降低選檔後無匯入結果的風險。"
-}

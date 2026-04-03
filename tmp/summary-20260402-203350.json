@@ -1,4 +1,0 @@
-{
-  "summary": "將 hex 世界格網改為 PostgreSQL 正規化：`hex_cells`(q,r,terrain,name,zone,tags/objects JSON 字串)、`hex_barriers`、`hex_portals`(sort_order)、`hex_transport_edges`(端點 kind+q,r 或 settlement_id)；`hex_world` 增 world_seed，grid_json 僅供舊版一次性遷移後清空。load 時若 hex_cells 空則自 grid_json 匯入；save 為交易內刪子表再寫入。HexGrid 新增 from_parts、barriers_iter。",
-  "current_status": "正規化已落地並通過 clippy/test；既有 DB 啟動時由 create_tables 補欄位與新表，舊 blob 於首次讀取時自動遷移。"
-}

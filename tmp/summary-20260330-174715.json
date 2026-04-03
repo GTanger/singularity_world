@@ -1,5 +1,0 @@
-{
-  "summary": "依使用者要求將河流從折線改為弧線：在 web/watabou_test.html 新增 strokeSmoothPolyline()，用 quadraticCurveTo 以「控制點=當前點、終點=下一段中點」的方式平滑繪製；支流與主流的 ctx.lineTo 迴圈改為呼叫該函式，僅影響渲染、不改河流點資料，避免再次引入 √ 形回勾問題。lints 檢查通過。",
-  "current_status": "奇點世界：watabou_test 現在六角格無描邊、河線呈弧形（曲線渲染），其餘水域同色與繪製順序維持不變。"
-}
-

@@ -1,4 +1,0 @@
-{
-  "summary": "針對 village 不顯示做實機驗證並修復：透過瀏覽器檢查確認 center=q39_r5:type=village 但圖示未出現。根因定位為 village SVG 在 Canvas 使用 9 參數 drawImage 失效。已改 drawHexVillageNeighborhoodOverlay 為 5 參數 drawImage(img, dx, dy, dw, dh)，重新驗證後 village SVG 正常出現。另保留 debug=1 時 HUD 顯示中心 hex/type 供驗收。",
-  "current_status": "village SVG 已可正常渲染；city/town 仍維持既有分層。可用 ?zoom=8&focusQ=39&focusR=5&debug=1 快速驗證 village 顯示。"
-}

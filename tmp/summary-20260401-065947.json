@@ -1,4 +1,0 @@
-{
-  "summary": "依增量模式執行 continual-learning：讀取 AGENTS.md 與指定 index，依 mtime 僅處理 3 份新增/更新 transcript，萃取後未發現可長期沉澱且不重複於既有條目的高訊號記憶，因此未修改 AGENTS.md；已重建並刷新 index，納入新增 transcript 並同步保留現存條目。",
-  "current_status": "continual-learning 增量索引已完成刷新（34 筆），AGENTS.md 維持現況，記憶庫無新增高訊號項目。"
-}

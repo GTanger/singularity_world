@@ -1,4 +1,0 @@
-{
-  "summary": "使用者要求驗收必 8x：AGENTS.md 增「視覺驗收細節」與 watabou_test ?zoom=8 說明；watabou_test.html 支援 URL zoom/z 參數經 clampScale。已用瀏覽器開 ?zoom=8，HUD 顯示 zoom:8.0x。",
-  "current_status": "8x 驗收為硬性步驟；地圖中心若為水域則 8x 畫面多為湖屬正常，驗海岸需平移。"
-}

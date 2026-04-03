@@ -18,6 +18,9 @@
 .env.local
 *.local
 
+# Agent 對話摘要與本地暫存（不納入版控）
+/tmp/
+
 # IDE / OS
 .idea/
 .vscode/

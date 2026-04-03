@@ -1,4 +1,0 @@
-{
-  "summary": "依增量索引比對 transcript，僅檢查不在索引或 mtime 較新的檔案。此次增量未產生新的高訊號、可重用且長期穩定的使用者偏好或 workspace 事實，因此 AGENTS.md 不變；已刷新 continual-learning-index.json 使其與目前 transcript 檔案與 mtime 同步。",
-  "current_status": "AGENTS.md 維持現狀；continual-learning-index.json 已同步到目前 43 個 transcript 檔案。"
-}

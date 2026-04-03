@@ -1,4 +1,0 @@
-{
-  "summary": "針對使用者質疑 forest 顯示過於錯誤，先修正根因：forest SVG 繪製加入 hex 裁切避免跨格疊滿；再依實測將 FOREST_TILE_FIT 由 0.56 再降至 0.36。已自行開頁連續驗證並產生新截圖。",
-  "current_status": "forest 目前採用 assets/tiles/forest.svg 並在格內裁切、縮小繪製；若仍嫌花，可再改為僅邊界林格繪製或更換更簡化森林 SVG。"
-}

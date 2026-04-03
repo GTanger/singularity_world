@@ -1,4 +1,0 @@
-{
-  "summary": "使用者指責仍以 room_id 為創角重心。已改：創角後呼叫 hex_editor::ensure_player_spawn_grassland_coord（(0,0) 契約草原）、store::set_entity_hex 寫 PG；移除創角時 set_entity_room。handler 與 gametext、map_terrain_world.md、AGENTS 已更新。首次登入仍 ensure_entity_in_room 以相容舊 WS。",
-  "current_status": "新玩家權威位置為 hex 草原；room 僅舊視野殘留待日後移除。"
-}

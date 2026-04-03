@@ -1,4 +1,0 @@
-{
-  "summary": "回覆使用者關於城鎮層級疑問：目前資料層有 city / town / village 三種 type；渲染層將 town 與 village 合併為同一種村鎮 SVG，city 使用獨立城市 SVG，未知型別才退回預設備援圖示。",
-  "current_status": "聚落資料三層級仍保留，但視覺呈現目前為兩層主樣式（city 與 village-like）。"
-}

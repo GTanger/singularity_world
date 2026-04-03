@@ -1,4 +1,0 @@
-{
-  "summary": "已將山脈底圖色由灰褐改為沙色，調整 `web/watabou_test.html` 的 `TERRAIN_COLORS.mountain` 從 `#8a7a6a` 改為 `#d6be94`，其餘山脈線稿疊加流程不變。",
-  "current_status": "山脈格目前為沙色底（`#d6be94`）+ 既有手繪山脈 overlay。"
-}

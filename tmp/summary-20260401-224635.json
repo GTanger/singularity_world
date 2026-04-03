@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求在頂層模式中加入『選取』『移動』並支援複數六角格操作。已新增 ToolMode（paint/erase/select/move），Toolbar 模式下拉擴充為四種模式。HexGrid 新增多選與移動邏輯：選取模式可累積多選；移動模式下，對已選群組按下並在放開時以起終點 hex 差量平移整組。移動後前端同步更新 cells 與選取集合，並透過 delete+put_cells 寫回後端。原有右鍵選單（載入 JSON/刪除當前格）、左鍵繪製/刪除、中鍵平移保留。狀態列新增多選計數提示。完成 wasm build 與 trunk release，lint 無錯。",
-  "current_status": "編輯器目前具備四模式：繪製、刪除、選取（複數）、移動（複數平移）。"
-}

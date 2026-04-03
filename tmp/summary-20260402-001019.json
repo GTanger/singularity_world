@@ -1,4 +1,0 @@
-{
-  "summary": "檢查 /home/tanger/下載/snow_mill.json，確認為 MFCG GeoJSON（features=9，含 earth/buildings/prisms/trees/roads/planks/squares/fields）。由於先前匯入器未納入 prisms，本輪補上 prisms 圖層映射為 Urban，避免城市結構被低估。其餘 roads(LineString)/trees(MultiPoint)/earth+fields+squares(MultiPolygon/Polygon)已可被解析。",
-  "current_status": "MFCG 匯入支援範圍再擴充（含 prisms），editor release 已重建，可重試 snow_mill.json 匯入。"
-}

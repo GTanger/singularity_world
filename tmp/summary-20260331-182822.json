@@ -1,4 +1,0 @@
-{
-  "summary": "針對「village 沒出現」追加強制可視化：確認資料中 village 仍有 21 筆後，在 drawHexTownEmojiOverlay() 對 village 改為雙層顯示（先畫 village SVG，再疊 🏘️ 與淡色底圓標記），避免 SVG 細節不明或載入差異造成不易辨識。",
-  "current_status": "聚落目前可視化穩定：city=城市SVG、town=🏬、village=村莊SVG+🏘️標記；三層級在畫面上可辨識。"
-}

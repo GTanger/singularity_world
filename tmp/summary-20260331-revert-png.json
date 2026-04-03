@@ -1,1 +1,0 @@
-{"summary":"使用者不滿先前誤解「死圖」而改 PNG。已道歉並還原：重跑 slice_lakes_svg_geom、刪 tiles/0 下 PNG、manifest 為 svg/inline；map_tiles 標題改回中性；AGENTS.md 改為預設向量 geom、PNG 僅備援。","current_status":"map_tiles 再度載入自含 SVG 瓦片；觸控/佇列載入邏輯仍保留。"}

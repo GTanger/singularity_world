@@ -1,4 +1,0 @@
-{
-  "summary": "使用者不滿上一輪對 Watabou 渲染的解釋太空泛。承認 Watabou 閉源、先前說法是從 SVG 輸出反推而非確知實作；詢問使用者是否要抓 Watabou 前端 JS 逆向分析實際渲染邏輯。",
-  "current_status": "奇點世界：等使用者決定是否要逆向 Watabou 渲染原始碼。"
-}

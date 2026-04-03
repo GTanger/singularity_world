@@ -1,4 +1,0 @@
-{
-  "summary": "已在 web/watabou_test.html 增加湖面 ≋ 符號覆蓋層：新增 WATER_WAVE_SCALE 與 WATER_WAVE_ALPHA 參數、drawHexWaterWaveOverlay() 函式，並在水域渲染後（河流與道路後）逐一對 water hex 置中繪製 ≋，以呈現湖面紋理。",
-  "current_status": "地圖現有符號層為：河流/道路在下，湖面≋中層，山與樹在上；森林與山脈仍維持置中 emoji。"
-}

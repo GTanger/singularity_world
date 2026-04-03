@@ -1,4 +1,0 @@
-{
-  "summary": "增量處理本輪更新的 agent transcripts；自對話中萃取使用者對 room_editor 驗收與靜態資源快取的高訊號回饋，合併寫入 AGENTS.md（可視化驗收條款：無瀏覽器工具時不得以讀碼冒充完成；改版須 bump HTML 內 JS/CSS 的 ?v= 以免快取／Tunnel 送舊檔；room_editor 須經 Rust 伺服器與 /api/room-editor 驗證）。已重建 continual-learning-index.json（37 條 transcript mtime）。",
-  "current_status": "AGENTS.md 偏好與工作區事實已更新；索引與磁碟上全部 *.jsonl 同步；專案其餘開發狀態未於本任務變更。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "本輪依使用者「繼續」要求，延續城鎮功能房格擴充，新增第三批 11 種地形：Bank、Mint、Stables、Caravanserai、Theater、Arena、Observatory、Alchemist、MageTower、Embassy、PrisonYard。已同步更新後端 Terrain enum 與 move_cost、前端地形選單標籤/顏色/serde 名稱、Watabou 匯入關鍵字映射，以及地形移動係數文件。",
-  "current_status": "城鎮功能房格已大幅擴充並完成前後端一致化；backend/editor 編譯、trunk release、服務重啟、clippy/test/checkrooms 與 lint 均通過，可直接在編輯器使用新地形。"
-}

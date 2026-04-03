@@ -1,4 +1,0 @@
-{
-  "summary": "mountain_sketch.svg：刪除全版面黑 rect；viewBox 改為六角外接矩形 130.95,72,762.1,880，width/height 對齊；座標未改寫僅裁切可視區，外接框四角在六角外為透明。AGENTS.md 山脈資產描述同步。",
-  "current_status": "山脈貼圖 SVG 已無黑邊框；Canvas 仍用既有 drawHexTileImage 裁六角。"
-}

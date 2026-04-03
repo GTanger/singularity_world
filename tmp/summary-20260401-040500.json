@@ -1,4 +1,0 @@
-{
-  "summary": "使用者反映 room_editor 頁面仍顯示舊版（滿畫面連線）。確認 Rust 伺服器已提供 v=0.14.0 新版檔案，但瀏覽器快取或 Cloudflare Tunnel CDN 快取導致用戶端未更新。將 HTML 中 JS 版次從 v=0.13.0 升至 v=0.14.0。隨後使用者要求直接從後端清空舊地圖——前端刪除功能失效。直接從磁碟刪除 data/rooms/editor/world_*.json（457 檔）、清空 room_editor_layout.json、從 PostgreSQL 刪除 1913 筆 world_*/city_* 記錄、reload store。最終確認 graph API 回傳 nodes=0, edges=0, layout=0。",
-  "current_status": "room_editor 後端資料已完全清空（JSON + PG + 記憶體），使用者可重新整理看到空白六角格編輯器。前端已更新至 v=0.14.0（含六角格底圖、右鍵匯入 Watabou JSON、隱藏連線等功能）。等待使用者確認頁面正常載入後，可開始用 Watabou JSON 匯入新地圖。"
-}

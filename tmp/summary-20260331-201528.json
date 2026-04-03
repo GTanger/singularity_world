@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求修正 city 被壓住問題並自行開頁驗證。程式上新增 normalizeTownType()，把 city 判斷與獨立頂層迴圈都改用同一正規化邏輯，避免型別字串差異導致 city 未落在最後層。另將 city SVG 改為與 village 相同的 5 參數 drawImage 並加陰影，提升渲染穩定與前景可視性。已以 ?zoom=8&focus=city&debug=1 實測截圖確認 city 顯示正常且在頂層。",
-  "current_status": "city/village SVG 皆使用穩定 drawImage 路徑；聚落分層維持 non-city 先畫、city 最後畫。"
-}

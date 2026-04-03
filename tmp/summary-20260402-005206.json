@@ -1,4 +1,0 @@
-{
-  "summary": "修復「選單沒出現農田與農舍」：新增後端 Terrain::FarmField/Farmhouse 並設定移動成本；前端 editor Terrain 同步新增、加入可選清單與顏色/標籤；匯入映射新增 farm_field/farmland/farmhouse 關鍵字，並將 MFCG fields 映射農田、buildings/prisms/squares 映射農舍。完成 backend/editor 編譯、trunk release 與服務重啟。",
-  "current_status": "農田格與農舍格已端到端可用（選單、存檔、匯入、後端序列化都已生效）。"
-}

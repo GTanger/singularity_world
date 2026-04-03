@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求建立 Watabou 六角貼圖用目錄：web/assets/tiles/（含 .gitkeep 以便 git 追蹤空資料夾）。",
-  "current_status": "奇點世界：web 靜態資源下已有 assets/tiles 供 PNG 去背貼圖放入；watabou_test 尚未改為載入該路徑。"
-}

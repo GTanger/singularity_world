@@ -1,4 +1,0 @@
-{
-  "summary": "在 web/watabou_test.html 新增 tileAssets、loadTileAssets（載入 assets/tiles/mountain_sketch.svg），terrainTileForHex 將 mountain 對應 mountainSketch；render 陸地迴圈改為有貼圖則 drawHexTileImage 否則 drawHexWobble；init 末尾 loadTileAssets(render) 二次重繪。本機 http.server 開頁驗收無主控台錯誤。",
-  "current_status": "Perilous Shores 試驗頁中山脈地形格已套用手繪六角 SVG；其餘地形仍為半透明色塊。"
-}

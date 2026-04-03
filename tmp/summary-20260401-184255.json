@@ -1,4 +1,0 @@
-{
-  "summary": "agents-memory-updater：處理已更新的父層 transcript（f45be77e），從使用者訊息萃取「主動提供遊戲／設計對照、決策權在設計者」與「實體碰觸推擠／撞開」兩類耐久偏好，合併原「查證」與「前端可視化驗收」兩條為單一條以維持 Learned User Preferences 共 12 點；已重寫 continual-learning-index.json（42 個 jsonl 的目前 mtime，移除已不存在路徑）。",
-  "current_status": "AGENTS.md 已同步增量記憶；continual-learning 索引與磁碟上所有 transcript 一致。"
-}

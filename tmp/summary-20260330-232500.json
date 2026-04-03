@@ -1,4 +1,0 @@
-{
-  "summary": "使用者回報三項改動後地圖反而更糟：綠地破碎露藍、支流更醜。用 cursor-ide-browser 在 3x/5x 縮放截圖確認問題，發現：(1) 大量短河段碎片（<45px）被 trueStroke 畫成散落藍斑，看起來像綠地碎裂；(2) trueStroke 在 0.5px 起始寬度上的多邊形比簡單 stroke 更醜。修法：支流改回 ctx.stroke() + Chaikin 曲線（僅主流保留 trueStroke），加 pathLen() 過濾短碎片（<45px），wobble 從 1.5 降到 0.6。修後截圖確認綠地乾淨、主流好看、支流不亂。",
-  "current_status": "watabou_test.html 渲染修復完成：主流 trueStroke 變寬 + 支流簡單 stroke + Chaikin 曲線 + 微 wobble + 短碎片過濾。已用瀏覽器多角度驗證。"
-}

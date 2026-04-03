@@ -1,4 +1,0 @@
-{
-  "summary": "使用者回報問題仍在（縮放後半屏不可編輯）。本輪進一步修正 hex_grid 重繪尺寸來源：每次 render 改用當下 canvas bounding rect 寬高，並同步校正 canvas 內部畫布尺寸，避免依賴可能過期的 container_size 導致視覺與命中區域錯位。",
-  "current_status": "已完成三層修正：匯入座標制式自動判斷、前景實際 cells 渲染裁切、事件座標與重繪尺寸同步。待使用者硬重整驗證半屏不可編輯是否排除。"
-}

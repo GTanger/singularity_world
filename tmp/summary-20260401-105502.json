@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求改為瀏覽器實際自檢：使用 cursor-ide-browser 開啟 room_editor、檢查按鈕與頁面元素、嘗試操作右鍵地圖與清空按鈕；並修補地圖容器可聚焦屬性（tabindex/aria-label）以改善自動化可見性。",
-  "current_status": "已完成實機檢查流程且確認頁面可載入與關鍵控件存在；地圖容器在 MCP 點擊上仍受 scroll/viewport 限制，已留可聚焦改動以便後續持續驗證。"
-}

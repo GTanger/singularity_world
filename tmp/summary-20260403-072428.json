@@ -1,1 +1,0 @@
-{"summary":"新增 db::location_keys_equivalent；Session 的 player_talk_echo／room_has_player／room_has_player_with_recent_talk 改以 canonical_location_key 比對；send_narrate 非 resolve 後援分支用 location_keys_equivalent；do_action entities_share_playable_cell 字串後備同上。room_hex 單元測試 3 則。","current_status":"clippy/test 全過；NPC 社交與同房判斷與 hex／世界房混用時一致。"}

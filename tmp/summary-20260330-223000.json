@@ -1,4 +1,0 @@
-{
-  "summary": "回應使用者質疑 continual-learning 產出：先前父層未逐條審查屬實。已對照 repo 修正 AGENTS.md——補上 web/lakes_of_secrets.json 為試驗頁實際載入路徑、docs/map/world 為副本；並在工作區事實明寫目前為每格貼圖合成、非 Watabou 連通林冠，避免與偏好條矛盾。",
-  "current_status": "AGENTS.md 路徑與 PoC／原作語意已對齊；使用者若還要收緊偏好條用字可再改。"
-}

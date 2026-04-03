@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求將 wall 作為獨立地形。已完成後端 Terrain 新增 Wall（不可步行、move_cost=Infinity）、前端 editor Terrain 新增 Wall（可選、顏色與標籤）、Watabou/MFCG 匯入新增 wall/walls 字串與 walls 幾何圖層映射（Polygon/LineString 皆轉為 Wall 格）。同步更新 Hex 地形與移動係數文件。",
-  "current_status": "wall 已成為端到端可用的獨立地形（資料模型、匯入、UI、規則、文件都已對齊），並完成 backend/editor 編譯與 release 前端建置。"
-}

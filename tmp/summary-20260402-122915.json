@@ -1,4 +1,0 @@
-{
-  "summary": "依增量規則比對 transcript 與索引後，本輪只處理 3 個增量檔（1 新增、2 mtime 更新）。檢視增量內容後未發現新的高訊號、可重用且持久的使用者偏好或 workspace fact，因此未修改 AGENTS.md；僅刷新 continual-learning 索引為目前檔案集合與最新 mtime。",
-  "current_status": "continual-learning 流程可正常以增量方式運作；AGENTS.md 維持既有記憶，索引已同步到最新 transcript 狀態。"
-}

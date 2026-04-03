@@ -1,1 +1,0 @@
-{"summary":"實作 LinkLayer（Official/Exploration）、reachable_from_layer、find_path_layer；find_path 預設探索圖；官方層僅 can_walk＋官方幹線邊＋counts_as_official_link portal；三則單元測試；Hex野外格 reference 補程式對齊一句。","current_status":"官方/探索連通已落地；聚落 Gate 尚未呼叫 find_path_layer(Official)。"}

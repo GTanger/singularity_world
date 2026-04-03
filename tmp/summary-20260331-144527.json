@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者回饋加強聚落對比：city 光暈透明度與半徑提升（更亮更醒目），並將 village 的 emoji 縮小一階。新增 CITY_TOWN_EMOJI_SCALE 與 VILLAGE_TOWN_EMOJI_SCALE，於 drawHexTownEmojiOverlay() 依 town.type 套用。",
-  "current_status": "聚落視覺目前為 city=🏢（強光暈、略放大）、village=🏘️（縮小），其餘維持原配置與渲染層級。"
-}

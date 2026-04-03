@@ -1,1 +1,0 @@
-{"summary":"使用者問向量瓦片為何載入慢。原因：每片數 MB XML、每片重複整包 defs、瀏覽器解析 SVG 比光柵重；先前一次對 16 個 object 塞 data 手機主執行緒會塞死。已改 map_tiles：僅對視野內瓦片設 data、並行上限（窄螢 2、寬螢 3）、由視野中心優先；HUD 顯示 已載入/視野需載入；底色 #E5E2DA；layoutTiles 內 rAF 排程。","current_status":"全圖仍可能需載滿 16 片，但改為漸進、中心先出。"}

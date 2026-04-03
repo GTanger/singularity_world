@@ -1,1 +1,0 @@
-{"summary":"依要求移除全部橋（含 segmentIntersection、aabb、buildRiverSegments、precomputeBridges、drawBridge、init/render）；保留 buildRoadSegments 與聚落偏移。樹：spriteRand＋每棵 seed；淺林多層橢圓、向光高光、樹幹漸層與 strokeRect；深林雙層針葉＋側向高光線與樹幹；枯林多枝＋橫紋。山：單一主體五階漸層、三道山稜線、碎石底、雙塊雪線＋種子變形；precomputeLandArt 調 Poisson 密度。","current_status":"Watabou PoC 無橋；樹／山圖章與林相密度已加深，可再迭代陰影或季節色若需要。"}

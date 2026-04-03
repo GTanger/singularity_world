@@ -1,4 +1,0 @@
-{
-  "summary": "使用者問「下一步」；依前輪探索生成落地後的缺口，建議優先順序：玩家維度已揭露集合與世界契約分離、黑海開局半徑、遊戲路徑接 reveal API、最後聚落 Gate／官方子圖。未改程式碼。",
-  "current_status": "Hex world_seed、reveal/reveal-region、editor-leptos 揭露與種子已可用；尚缺帳號／玩家層迷霧與黑海包膜、以及遊戲內觸發揭露。"
-}

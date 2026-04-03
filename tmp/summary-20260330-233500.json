@@ -1,4 +1,0 @@
-{
-  "summary": "應使用者要求詳細介紹 Watabou 完整視覺系統。基於 Perilous.js 逆向結果，分七大系統拆解：(1) 海岸線合併為有機多邊形（邊界追蹤→Chaikin→wobble→陰影）；(2) 森林圖章（Poisson Disc 散佈 + 三種樹型 + hatching 陰影）；(3) 山脈圖章（稜線生成 + Y排序偽3D + 漸層）；(4) 城鎮圖章（三級規模 + 城牆 + 田地）；(5) 道路橋樑；(6) 渲染層序（12層）；(7) 色彩與紋理系統（over混合 + hatching + earth多色）。給出路線圖：6項共約700-900行JS，依視覺衝擊排序。待使用者決定方向。",
-  "current_status": "Watabou 完整渲染系統逆向分析已輸出給使用者，附路線圖。使用者決定中：是否投入700-900行JS重寫渲染為手繪中世紀風格，或走其他視覺方向。watabou_test.html 現有基本 Chaikin + 主流 trueStroke + 微 wobble。"
-}

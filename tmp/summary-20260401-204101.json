@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求實測 https://sw.ygggt.com/hex-editor，已重現並確認兩個核心問題：畫布只在左上角 300x150（其餘區域點擊無效），以及先前測試流程誤寫入測試格子。根因為 CSS 仍只對 .map-area svg 套用 100% 尺寸，Canvas 沒有對應規則。已修正 style.css，將 .map-area canvas 納入定位與 100% 尺寸、touch-action 相關規則；重新 trunk build --release 後遠端頁面驗證為 canvas 1008x643 與 map-area 同尺寸，點擊可正確選取格子（狀態列出現 選取：(0,0)）。另外已把我測試用 API 寫入的格子全部刪除並 reload，最終回到 0 格。",
-  "current_status": "Leptos 編輯器目前採 Canvas 渲染，且已修復左上角 300x150 畫布 bug；遠端站點可用、點擊可選取、測試污染資料已清空。下一步可繼續做 chunk 索引與更進階批次渲染以提升超大地圖效能。"
-}

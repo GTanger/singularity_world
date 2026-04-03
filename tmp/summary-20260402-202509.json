@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求將六角世界格網主資料對接 PostgreSQL：新增表 hex_world（單例 id=1，grid_json TEXT、updated_at）；新增 db/hex_world.rs（load_hex_grid、save_hex_grid_to_pg）；hex_editor 啟動優先讀 PG、無列時從 grid.json 種子灌入並 upsert；每次持久化先寫 PG 再寫 JSON 備份；reload 改為先 PG 後備份檔。hex_reveal 註解已更新。cargo clippy -D warnings 與 cargo test 全過。",
-  "current_status": "Hex 野外世界契約與編輯器 API 已對齊專案慣例（PG 主、JSON 備）；需部署時確認 migrate 跑過 create_tables 以建立 hex_world。"
-}

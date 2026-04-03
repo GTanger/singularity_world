@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求執行 continual-learning：agents-memory-updater 子代理已跑增量採礦（僅 f45be77e 父層 jsonl 較索引新）、全量刷新 continual-learning-index.json（含 52 個 jsonl mtime）、更新 AGENTS.md 第 12 點（澄清時勿搪塞；尺度／顯示參數勿擅自擴成玩法規則）。",
-  "current_status": "記憶索引與 AGENTS.md 已與本次轉錄增量同步；高訊號為「勿從 N 等數字擅自擴寫成套系統定案」。"
-}

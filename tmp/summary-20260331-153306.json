@@ -1,4 +1,0 @@
-{
-  "summary": "已把使用者提供的 neighborhood.svg 併入 village 圖示流程：檔案複製到 web/assets/village_neighborhood.svg，watabou_test.html 新增 village SVG 尺寸/位移常數，並在 drawHexTownEmojiOverlay() 中讓 village 優先以 SVG 置中繪製，載入失敗才退回 🏘️。同時擴充 loadTileAssets 併行載入 village 圖示。",
-  "current_status": "聚落圖示目前為 city 用 city_skyscraper.svg、village 用 village_neighborhood.svg，兩者皆可用常數調整大小與偏移，仍保留 emoji fallback。"
-}

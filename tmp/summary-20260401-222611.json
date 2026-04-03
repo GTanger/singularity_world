@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者明確要求『右鍵要從點擊格載入 JSON』，已修正互動語意：HexGrid 右鍵（button==2）不再平移，改為取點擊座標反算 hex 並觸發 on_load_json；中鍵（button==1）保留平移拖曳。App 新增 on_load_json callback，會呼叫 api::load_grid() 重新讀取 JSON，若該座標存在則選取並更新狀態訊息，若不存在則提示 JSON 中無此格。完成 wasm 編譯與 trunk release，lint 無新錯誤。",
-  "current_status": "目前操作語意：左鍵繪製/刪除、拖曳連續筆刷；中鍵平移；右鍵從點擊格載入 JSON。"
-}

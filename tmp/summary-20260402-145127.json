@@ -1,4 +1,0 @@
-{
-  "summary": "執行 continual-learning／agents-memory-updater：比對索引與 50 個 *.jsonl 的 mtime，增量處理 3 個檔案（父層 f45be77e…、subagent 24cb7e6f、新檔 7f58ce19）。從父層 transcript 尾段抽出可持久化訊號：設計者要求勿堆砌未解釋專有名詞，以及聚落分級須以現行 docs/design 為準勿沿用舊 MUD 表述；已合併入 AGENTS.md 既有兩點。已全量刷新 continual-learning-index.json（50 筆 mtime，移除已不存在檔案之條目）。",
-  "current_status": "AGENTS.md 已小幅更新；索引與 transcript 集合同步；黑格海／彩格／世界擴張等屬單次設計討論未寫入記憶，避免與後續定稿衝突。"
-}

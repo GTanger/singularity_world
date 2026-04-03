@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者『繼續』要求，已延伸實作 HexAtlas 風格繪製體驗：新增筆刷大小與拖曳補點。修改 main.rs 導入 brush_size state 並傳遞到 Toolbar/HexGrid；toolbar.rs 新增筆刷大小滑桿（1~5）與即時顯示；hex_grid.rs 新增 axial_distance/axial_line/brush_disk，繪製時會從前一個中心到目前中心做線性補點，並依筆刷半徑塗抹六角圓盤，避免快速拖曳漏格。保持『左鍵/單指繪製、右鍵平移、雙指縮放』。style.css 補 toolbar-range 樣式。完成 wasm build 與 trunk release，遠端頁面可見新控制項。",
-  "current_status": "編輯器目前已具備：選地形、筆刷大小、點一下新增、按住拖曳連續新增（含補點），並暫不含 fill 工具；互動已朝 HexAtlas 簡便流程靠攏。"
-}

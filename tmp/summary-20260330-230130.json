@@ -1,1 +1,0 @@
-{"summary":"釐清「切片≠必須 PNG」：先前用 cairosvg 產 PNG 是權宜。已擴充 tools/slice_lakes_svg_tiles.py 支援 --format svg（極小向量外殼，<image href=../lakes_of_secrets.svg> + viewBox；大圖仍一份、快取共用）。web/map_tiles.html 依 manifest format 載入；SVG 瓦片改用 <object>，因 <img> 內嵌 SVG 常不載入外部 <image>。manifest 已改為 svg。","current_status":"Perilous Shores 地圖可選 PNG 或 SVG 向量瓦片管線；022 工單與實作需時對齊「城市 SVG」敘述。"}

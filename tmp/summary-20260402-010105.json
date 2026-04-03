@@ -1,4 +1,0 @@
-{
-  "summary": "本輪依「新增各式城鎮功能房格」要求，已新增 8 種城鎮功能地形：Inn、Tavern、Blacksmith、GeneralStore、Clinic、Workshop、Market、GuildHall。後端 `src/hex/cell.rs` 已擴充 Terrain enum 並將上述地形移動成本設為 1.0（可通行）；前端 `editor-leptos/src/types.rs` 已同步加入地形選單、中文標籤、顏色與 serde 名稱；`editor-leptos/src/main.rs` 的 Watabou 字串映射也補上常見關鍵字（如 pub/forge/shop/hospital/guild 等）對應到新地形；`docs/reference/Hex地形與移動係數表.md` 已同步更新。",
-  "current_status": "編輯器目前已具備城鎮功能房格繪製能力（含橋、牆、農舍農田與 8 種功能房），前後端地形定義一致；後端與前端已完成 build、trunk release build、服務重啟，測試與 lint 均通過。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "已將山脈顯示更換為 web/assets/tiles/mountain.svg：新增 mountainTile 載入與 drawHexMountainTileOverlay()，山脈渲染優先用 SVG，載入失敗時才回退舊的 mountain emoji。並自開網頁檢查，截圖確認山脈已呈現新 SVG 樣式。",
-  "current_status": "聚落圖示（city/town/village）與 mountain.svg 均已接上資產檔渲染；地圖頁可正常顯示。"
-}

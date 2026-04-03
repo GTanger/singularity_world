@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者「再小」要求，將 village 聚落符號再縮一階：VILLAGE_TOWN_EMOJI_SCALE 由 1.05 下修至 0.95。city 亮度與其餘圖層邏輯不變。",
-  "current_status": "聚落視覺為 city=🏢（亮且偏大）、village=🏘️（更小 0.95 倍），地圖其他符號與渲染順序維持穩定。"
-}

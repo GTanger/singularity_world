@@ -1,4 +1,0 @@
-{
-  "summary": "使用者要求修復 CDP（cursor-remote cdp-bridge 連線 127.0.0.1:9222 失敗）。已用 curl 驗證本環境 9222 無服務；此屬 Cursor／Electron／網路環境問題，非 singularity_world 應用程式可修。已將排查步驟與「非專案 bug」說明寫入 AGENTS.md Learned Workspace Facts 之 Cursor 條目。",
-  "current_status": "專案本體無需為 CDP 改碼；代理可依 AGENTS.md 區分環境日誌與遊戲伺服器問題。"
-}

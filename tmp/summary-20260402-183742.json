@@ -1,4 +1,0 @@
-{
-  "summary": "接續摘要中的未完成項：在 src/hex/coord.rs 實作 cell_id（q,r）與 HexCoord 的 FromStr／to_cell_id、CellIdParseError 與單元測試；修正 GET /api/hex/path 僅用單一 Query<PathGetQuery>（serde flatten AdminQuery），避免 Axum 雙 Query 無法反序列化。cargo test 與 clippy -D warnings 皆通過。",
-  "current_status": "Hex 官方／探索雙層連通與 transport_edges 已落地；cell_id 互轉與 path API 已接上。後續可選：聚落 Gate 驗證呼叫 find_path_layer(Official)（需 settlement 錨點）、或文件補 API 範例。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "使用者不滿代理屢次未先上網查證。已將 AGENTS.md「Learned User Preferences」中資料源條改寫為硬性要求：涉及外部工具／官網／規格時必須自行上網檢索，不可只靠訓練記憶，並註明勿再讓使用者口頭重複。",
-  "current_status": "偏好已寫入 AGENTS.md；後續代理應預設先搜尋再答。"
-}

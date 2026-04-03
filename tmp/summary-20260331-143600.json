@@ -1,4 +1,0 @@
-{
-  "summary": "已依需求調整 city 視覺亮度：在 drawHexTownEmojiOverlay() 內針對 town.type=city 增加一層置中淡色光暈（半透明圓形）再繪製 🏢，提升辨識度；village 與其他聚落符號不變。",
-  "current_status": "聚落符號目前為 city=🏢（加亮）、village=🏘️、其他=🏠；地形/河路/樹山/聚落層級維持既有順序。"
-}

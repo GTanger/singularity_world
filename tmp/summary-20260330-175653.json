@@ -1,5 +1,0 @@
-{
-  "summary": "依使用者回饋「手機不好拖曳」優化 web/watabou_test.html：canvas 加入 touch-action:none 並在 init 設定 style，避免瀏覽器手勢干擾；改用 Pointer Events 統一處理單指平移與雙指捏合縮放，移除舊 touchstart/touchmove pinch 版本以免與拖曳互相打架；加入 3px 抖動門檻、縮放上下限 clampScale(0.2~8)，並在捏合時以兩指中心的世界座標作錨點維持視覺穩定。",
-  "current_status": "奇點世界：watabou_test 手機手勢已改為單指拖曳平移、雙指捏合縮放，瀏覽器預設滾動/縮放不再搶手勢；其他渲染邏輯不變。"
-}
-

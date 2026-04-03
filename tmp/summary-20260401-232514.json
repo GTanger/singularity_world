@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者要求先上網查證（Canvas 座標換算、CSS 尺寸與內部 bitmap 尺寸、devicePixelRatio）。本輪將 hex_grid 改為標準 DPI 對齊流程：canvas 內部尺寸=CSS 尺寸*dpr，繪製前重設 transform 並以像素尺寸清底，再套用 dpr transform 後以 CSS 座標進行相機變換，避免縮放後命中與渲染座標漂移造成半屏不可編輯。編譯與 lint 均通過。",
-  "current_status": "已完成匯入座標修正、渲染裁切修正、事件座標同步，並新增官方建議的 DPR 對齊畫布流程；待使用者硬重整驗證是否徹底解決右半屏不可編輯問題。"
-}

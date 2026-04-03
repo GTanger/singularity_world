@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者指定啟動 agents-memory-updater 執行增量 continual-learning：僅處理索引缺失或 mtime 較新的 transcript，並刷新索引 mtime、清理刪除項檢查。結果無高訊號長期記憶可新增，AGENTS.md 未變更。",
-  "current_status": "continual-learning 索引已同步且一致性通過；本輪沒有可寫入 AGENTS.md 的高訊號更新。"
-}

@@ -1,1 +1,0 @@
-{"summary":"依使用者「換回六角格」：web/map_tiles.html 改為 meta refresh + JS location.replace 轉址 watabou_test.html（保留 query）；內文說明主路線為 JSON/Canvas 六角格，SVG 瓦片僅備援。AGENTS.md 更新主入口與自檢對象改為 watabou_test。瀏覽器自檢：開 map_tiles 會到 watabou_test 且顯示 hex。","current_status":"Perilous Shores 預設體驗回到六角格試驗頁。"}

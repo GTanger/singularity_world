@@ -1,4 +1,0 @@
-{
-  "summary": "依使用者回饋修正 village 視覺偏離：移除對 village 的額外 emoji/底圓疊加與相關分支，恢復為 village SVG 成功載入即直接繪製後 return，不再混合其他符號樣式。",
-  "current_status": "village 現在只使用使用者提供的 neighborhood SVG；city 與 town 維持各自顯示策略。"
-}

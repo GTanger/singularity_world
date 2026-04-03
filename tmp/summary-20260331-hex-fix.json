@@ -1,4 +1,0 @@
-{
-  "summary": "黑邊：山脈貼圖裁切改為與鄰格相同半徑（isMountainSketch 不加 TILE_CLIP_BLEED）、TILE_IMAGE_COVER_MOUNTAIN=1.02；mountain_sketch.svg 加 clipPath 收斂筆觸。不工整：WOBBLE 改 0 使共邊對齊。AGENTS 補 WOBBLE 與山貼圖裁切約束。",
-  "current_status": "watabou_test 為工整正六角格；若要恢復有機抖動需另權衡與正六角貼圖相容性。"
-}

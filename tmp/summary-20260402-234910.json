@@ -1,1 +1,0 @@
-{"summary":"唯一六角權威：set_entity_hex 同步 entity_rooms 為 hex:q:r；登入僅 ensure 草原出生＋get_hex_room_view；移動改 move_by_hex_direction＋on_leave_hex＋observe_hex；廣播／refresh 只走 get_hex_room_view；物件 Move 僅接受 parse_hex_room_id；do_action 同房判斷以六角重合為主並保留 entity_rooms 字串後備。","current_status":"cargo clippy -D warnings 與 cargo test 全過；NPC 排程仍用房間字串時 refresh 不會推玩家視野，敘事非 hex id 仍走字串比對。"}

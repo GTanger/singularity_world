@@ -1,4 +1,0 @@
-{
-  "summary": "完成 Leptos 六角格編輯器五步實作計畫。建立 Cargo workspace + editor-leptos/ 骨架（Leptos 0.8 CSR），通過 trunk build 編譯成 WASM。實作 types.rs（對齊後端 HexCoord/HexCell/Terrain 等 JSON 結構）和 api.rs（gloo-net fetch 封裝 6 個 API 端點）。SVG 六角格渲染元件含尖頂佈局、viewBox 相機、滑鼠拖曳/滾輪縮放、觸控手勢（單指拖曳/雙指縮放）、視口裁剪。修正了原始程式碼中平頂角度與尖頂像素佈局的不匹配，使六角格邊對邊完美貼合。右側 CellEditor 面板（HTML 原生 input 表單——注音安全）和 Toolbar 工具列均完成。CSS 深色主題含手機 768px 斷點。axum 伺服器透過 nest_service /hex-editor 提供 WASM 靜態檔。主 crate clippy 零警告、瀏覽器 console 零 WASM 錯誤。",
-  "current_status": "Leptos 六角格編輯器 MVP 完成，可從 /hex-editor/ 存取。後端 HexGrid API（9 端點）已在前一輪完成。前端包含 SVG 地圖渲染、格子 CRUD 面板、工具列。接下來可做：(1) 新增格子功能（目前只能編輯/刪除已有格子）、(2) Watabou JSON 匯入、(3) 格子間連線/障壁視覺化、(4) wasm-opt 壓縮修復。"
-}

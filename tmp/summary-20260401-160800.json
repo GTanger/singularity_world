@@ -1,4 +1,0 @@
-{
-  "summary": "完成六角格編輯器後端 API（src/server/hex_editor.rs）與前端重寫（room_editor.js v2.0.0）。後端提供 9 個端點（grid CRUD、wall、portal、save/reload、neighbors），使用 OnceLock<RwLock<HexGrid>> 全域狀態，自動持久化至 data/hex/grid.json。前端效能大幅優化：批次繪製（按地形色分組 beginPath）、預計算頂點偏移、LOD（縮小時跳過格線/文字）、視口裁剪。已驗證 cargo build/clippy 零警告、26 測試全過、瀏覽器截圖確認渲染正確（7 地形格各有色差+名稱標籤+空白格底圖）。",
-  "current_status": "六角格系統三層完成——src/hex/（座標+格子+Grid 資料模型）、src/server/hex_editor.rs（API 層）、web/room_editor.js v2.0.0（Canvas 前端）。編輯器可操作：點空白格建房、點已有格選取、右鍵選單、Watabou JSON 匯入、cell CRUD、wall/portal 管理。下一步：前端地形選擇器 UI（畫板模式）、前端 barrier 視覺化、Watabou 匯入精修（地形名稱對映）、或將 HexGrid 接入遊戲主迴圈取代舊 Room 系統。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "使用者已將 web/assets/tiles 貼圖改為英文名（city、village、forest、green_mountain、stone_mountain）。已用 ls 核對實際檔名，並更新 AGENTS.md 工作區事實，避免代理仍引用中文檔名。程式碼內無舊中文路徑引用。",
-  "current_status": "貼圖目錄與 AGENTS.md 一致；watabou_test 仍為純底圖、尚未接 tile 載入。"
-}

@@ -1,4 +1,0 @@
-{
-  "summary": "使用者批評只寫 AGENTS 不執行無用。已將「外查先行」與「規則非裝飾」寫入 .cursorrules 代碼硬規則區（與必讀規則同層、Cursor 會注入），明定須 web_search/WebFetch 再答外部問題、預設已讀本檔與 AGENTS。",
-  "current_status": "執行約束已雙掛 AGENTS + .cursorrules；仍依模型是否遵守，無法 100% 程式強制。"
-}

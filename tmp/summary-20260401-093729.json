@@ -1,4 +1,0 @@
-{
-  "summary": "本輪執行 continual-learning 增量流程：以指定 index 比對 transcript mtime，僅處理 3 份新增/更新 transcript，檢視後未發現可長期沉澱且不與既有記憶重複的高訊號條目，因此維持 AGENTS.md 不變；同時已刷新候選 transcript 的 mtime 並保留索引一致性。",
-  "current_status": "AGENTS.md 維持現況；continual-learning index 已更新為 35 筆，包含新 transcript 且完成增量刷新，刪除清理結果為 0。"
-}

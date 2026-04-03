@@ -1,4 +1,0 @@
-{
-  "summary": "使用者詢問是否可從 HexAtlas 代碼學習。已確認公開可直接抓取的是 hexatlas.net 線上介面內容，未取得可讀的對應原始碼；另搜尋到的 codeberg redAtlas 與 hexatlas.net 產品定位不同。回覆聚焦在可從產品行為反推的高價值工程原則：單一地圖視口、工具層覆蓋、輸入座標與渲染座標一致、工具狀態機與畫筆語義固定。",
-  "current_status": "Hex editor 已調整為覆蓋式側欄與視口一致化，後續可依 HexAtlas 行為模型持續收斂互動細節。"
-}

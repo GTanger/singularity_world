@@ -1,5 +1,0 @@
-{
-  "summary": "依使用者要求移除 watabou_test 六角格描邊：在 web/watabou_test.html 新增 SHOW_HEX_STROKE 開關（預設 false），並將地形格與水域格 drawHex 呼叫的 stroke 參數改為 null；drawHex 內僅在 SHOW_HEX_STROKE=true 且 stroke 存在時才畫邊框。河流線與地名文字描邊仍保留。另提醒若仍見『格線感』多半是縮放 anti-alias 縫或道路/文字描邊造成。已檢查該檔無 lints。 ",
-  "current_status": "奇點世界：watabou_test 六角格邊框已在程式層關閉，可用 SHOW_HEX_STROKE 切回；其餘渲染層（支流→主流→湖、同色）不受影響。"
-}
-
