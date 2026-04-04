@@ -31,3 +31,51 @@
 - `src/hex/` 模組（`coord.rs`、`cell.rs`、`grid.rs`、`reveal.rs`）已建立：`HexGrid` 含 `world_seed`、野外決定性揭露生成；`src/server/hex_editor.rs` 提供多個 `/api/hex/*` 端點，世界契約持久化至 `data/hex/grid.json`。**多人各自迷霧**：每位玩家已揭露之 `cell_id` 存 PostgreSQL `hex_player_reveal`（與世界格分離）；玩家 API 為 `POST /api/hex/player-reveal`、`GET /api/hex/my-revealed`（身分驗證同 `id`+`pw`，僅 `kind=player`）。編輯器前端為 `editor-leptos`（`/hex-editor`）。設計方向仍為取代 `Room`/`Exit`；長期前端路線 B（egui WASM）與現有 Leptos 編輯器並存。
 - **玩家視距（畫面）**：可設定 **VIEW_MAX_RING**＝R；與當前玩家格之六角距離 **d > R** 之格**一律黑格**，與該格是否已在 DB 揭露無關（遠距裁切）。細則見 `docs/reference/map_terrain_world.md`。
 - **實體六角座標（權威）**：`entities` 表（及 `store::Entity`）之 **`hex_q` / `hex_r`**（可 NULL）；`store::set_entity_hex`／`clear_entity_hex` 寫入 PG；`set_entity_room` 可經 `data/config/room_hex_overlay.json` 將世界房 id 對應到同一 `hex:q:r`，並以 **`canonical_location_key`**／**`location_keys_equivalent`** 統一同房與廣播判斷。已登入客戶端可查 `GET /api/player-room?id=&pw=` 回傳之 `hex_q`、`hex_r`（未綁定時省略或 null）。**新角色出生**：草原契約 **(0,0)**，`hex_editor::ensure_player_spawn_grassland_coord`。**玩家主路徑以唯一六角為準**（`room_id` 語意即 `hex:q:r`）；設計上**不收斂成「舊房間＋六角」雙軌對外說法**。見 `docs/reference/map_terrain_world.md`。
+
+## Cursor Cloud specific instructions
+
+### 系統需求
+- **Rust ≥ 1.85**（`edition = "2024"`）。Cloud VM 預設 1.83，需 `rustup install stable && rustup default stable`。
+- **libssl-dev** 與 **pkg-config**：`openssl-sys` crate 的編譯需求。
+- **Docker**：Cloud VM 需安裝 Docker 且設定 `fuse-overlayfs` storage driver 與 `iptables-legacy`（見下方啟動指令）。
+
+### 啟動 PostgreSQL
+```bash
+# 確保 Docker daemon 在跑
+sudo dockerd &>/dev/null &
+sleep 3
+sudo chmod 666 /var/run/docker.sock
+
+# 啟動 PostgreSQL（若容器不存在）
+docker start postgres-singularity 2>/dev/null || \
+  docker run -d --name postgres-singularity \
+    -e POSTGRES_PASSWORD=singularity \
+    -e POSTGRES_DB=singularity \
+    -p 5432:5432 pgvector/pgvector:pg16
+```
+
+### 啟動遊戲伺服器
+```bash
+export DATABASE_URL="postgres://postgres:singularity@localhost:5432/singularity"
+export OLLAMA_DISABLE=1  # Cloud VM 無 GPU，關閉 AI
+export PORT=1721
+cargo build --release && ./target/release/singularity_world
+```
+- 伺服器監聽 `http://0.0.0.0:1721`，WebSocket 端點 `/ws`。
+- `web/` 目錄下的前端靜態檔由伺服器直接提供。
+- 資料表在啟動時自動 `CREATE TABLE IF NOT EXISTS`，無需手動跑 migration。
+
+### 品質閘門（見 `.cursorrules` 與 `./start`）
+```bash
+cargo clippy -- -D warnings   # 零警告
+cargo test                     # 所有測試須通過
+```
+- `cargo run --bin checkrooms -- -brackets -strict` 需要 `data/rooms/editor/` 目錄有房間 JSON；全新環境通常不存在此目錄，此指令會失敗但不影響伺服器運行。
+
+### 注意事項
+- `data/rooms/editor/` 可能不在版控中（生產資料），`checkrooms` 在全新環境會報錯——這是預期行為。
+- Ollama 為可選服務（`OLLAMA_DISABLE=1` 可完全跳過）。Cloud VM 無 GPU 時應設此旗標。
+- 前端為原生 HTML/CSS/JS，無 npm 建置步驟。
+- `editor-leptos`（Leptos WASM 六角編輯器）需 `trunk` 與 `wasm32-unknown-unknown` target，非主流程必要。
+- 資料庫連線預設：`postgres://postgres:singularity@localhost:5432/singularity`。
+- 執行 SQL 查詢：`docker exec -i postgres-singularity psql -U postgres -d singularity`。
