@@ -186,9 +186,10 @@ impl Terrain {
     pub fn color(self) -> &'static str {
         match self {
             Terrain::Plain => "#c8d68e",
-            Terrain::Forest => "#5a8c42",
-            Terrain::ForestHeavy => "#2d5a1e",
-            Terrain::ForestLight => "#8bb86a",
+            // 林相格面與草原同色（林緣弧線／標籤仍區分林種）
+            Terrain::Forest => "#a8cc6a",
+            Terrain::ForestHeavy => "#a8cc6a",
+            Terrain::ForestLight => "#a8cc6a",
             Terrain::Mountain => "#8a8a8a",
             Terrain::Hills => "#b5a068",
             Terrain::Water => "#4a90d9",
