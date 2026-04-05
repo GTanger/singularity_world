@@ -129,7 +129,6 @@ find src -name '*.rs' -print0 | xargs -0 wc -l | tail -1
 - 讀取現有 `data/rooms/editor/` 全部 598 間房間無錯誤
 - 讀取現有 `data/entities.json`、`data/runtime/*` 無錯誤
 - store 初始化失敗時，明確報錯而非靜默跳過
-- **已補**：整合測試 `tests/store_init_integration.rs` — 執行 `cargo test --test store_init_integration`（需專案根含完整 `data/`）驗證 `store::init(data/rooms, data/runtime, data)` 成功且房間數 ≥ 598
 
 ---
 
@@ -206,7 +205,7 @@ find src -name '*.rs' -print0 | xargs -0 wc -l | tail -1
 |-------|------|------|
 | Phase 0：專案骨架 | **完成** | `Cargo.toml`（axum、tokio、serde、bcrypt、reqwest、anyhow、thiserror、tracing 等）、`src/` 模組樹、`cargo check` 通過 |
 | Phase 1：型別 + 設定 | **程式碼完成（測試未補）** | `model`、`entity`、`config`、`event`、`gametext`（含 `trunc_rune`）已落地；❌ 缺 config roundtrip 測試、❌ 缺 enum 窮舉測試 |
-| Phase 2：Store + DB | **完成** | `store`、`db`（含 24 子模組、`dialogue` 對話模板系統）主線已可用；`store_init_integration` 已驗證真實資料載入；`cargo test` 通過 |
+| Phase 2：Store + DB | **完成** | `store`、`db`（含 24 子模組、`dialogue` 對話模板系統）主線已可用；`cargo test` 通過 |
 | Phase 3：遊戲邏輯 | **程式碼完成（測試未補）** | `economy`、`game`（含 `advance_movement`、`entity_at`）、`combat`、`world`、`ai`、`npc`（含 `pick_enter_reaction`）、`npcnpc` 已串通；❌ 缺 NPC 決策邏輯單元測試 |
 | Phase 4：Server + 入口 | **完成** | 全部 HTTP 路由已對齊 Go；session 方法完整（含 `update_last_talk_at`、`room_has_player` 等）；E2E 已驗 |
 | Phase 5：整合測試 | **完成** | `cargo build --release` 通過；Rust 伺服器啟動正常；所有 API 端點 E2E 驗證通過；`start-rust` 腳本已建立 |

@@ -2,13 +2,13 @@
 
 ## 建置與品質閘門 (Standard Quality Gates)
 
-本專案採實施 **「開發即測試」** 的嚴格紀律。所有變更在進入 `start-rust` 或部署前必須通過以下閘門：
+本專案採實施 **「開發即測試」** 的嚴格紀律。所有變更在進入 `./start` 或部署前必須通過以下閘門：
 
 - **靜態檢查**：`cargo clippy` (不可有任何 warning)
-- **邏輯測試**：`cargo test` (包含 `store_init_integration` 真實資料載入測試)
+- **邏輯測試**：`cargo test`
 - **資料契約**：`cargo run --bin checkrooms` (驗證房間 JSON 格式與觸發關鍵字)
 
-以上流程皆已封裝於 **`./start-rust`** 腳本中。
+以上流程皆已封裝於 **`./start`** 腳本中。
 
 ### 遷移現況：Rust 原生化
 
