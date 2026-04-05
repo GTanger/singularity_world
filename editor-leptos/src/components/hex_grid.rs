@@ -8,19 +8,10 @@ use std::collections::{HashMap, HashSet};
 use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
 
 const HEX_R: f64 = 28.0;
-/// 林區邊界：頂點往鄰接林格格心內縮後，每邊以**二十四次貝茲**（25 控制點）相連；Canvas 無原生高次 API，以 De Casteljau 取樣折線逼近。
+/// 林區邊界：頂點內縮後以 **Catmull–Rom → 三次貝茲** 相連（與水域同），頂點 C¹ 連續、避免扇貝「一節一節」
 const FOREST_BOUNDARY_VERTEX_INSET: f64 = 9.0;
-/// 自格心指向該邊中點方向之基準鼓出強度（再乘隨機係數）
-const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 10.5;
-/// 鼓出量隨機係數（略收斂 → 曲線較連續、少突兀轉折）
-const FOREST_BULGE_JITTER_MIN: f64 = 0.58;
-const FOREST_BULGE_JITTER_MAX: f64 = 1.22;
-/// 沿格心→邊中再加減之額外距離（世界座標 px）
-const FOREST_RADIAL_JITTER_PX: f64 = 4.0;
-/// 法線方向擺動（垂直於弦 p0→p1）；會再乘包絡並做鄰點平滑
-const FOREST_NORMAL_WOBBLE_PX: f64 = 6.0;
-/// 二十四次貝茲每邊取樣段數（愈密愈順）
-const FOREST_BEZIER24_STEPS: usize = 160;
+const FOREST_CATMULL_TAU: f64 = 0.90;
+const FOREST_MAX_HANDLE_FRAC: f64 = 0.50;
 /// 頂點內縮距離之係數範圍
 const FOREST_INSET_SCALE_MIN: f64 = 0.78;
 const FOREST_INSET_SCALE_MAX: f64 = 1.14;
@@ -35,13 +26,9 @@ const WATER_BOUNDARY_VERTEX_INSET: f64 = 7.8;
 const WATER_SINGLE_HEX_VERTEX_INSET: f64 = 5.2;
 /// 2～5 格：略收
 const WATER_SMALL_COMPONENT_VERTEX_INSET: f64 = 6.6;
-/// 水岸弧線改為 **Catmull–Rom → 單段三次貝茲**（頂點 C¹ 連續），避免細河道「一節一節」掐縮
-/// Catmull 轉 Bezier 之係數（愈大愈柔、柄愈長；會再依弦長夾住）
+/// 水岸：**Catmull–Rom → 單段三次貝茲**（頂點 C¹ 連續）；不在控制點上加每邊獨立擺動，否則會破壞接續處平滑
 const WATER_CATMULL_TAU: f64 = 0.92;
-/// 柄長不超過弦長之比例（防窄河過衝）
 const WATER_MAX_HANDLE_FRAC: f64 = 0.52;
-/// 沿邊中點之法向微擺（只動控制點、不動頂點），略帶河流感
-const WATER_FLOW_WOBBLE_PX: f64 = 1.15;
 const WATER_INSET_SCALE_MIN: f64 = 0.96;
 const WATER_INSET_SCALE_MAX: f64 = 1.02;
 /// 水岸與跨邊鄰格格心之平衡（語意同 `FOREST_BOUNDARY_NEIGHBOR_BALANCE`）
@@ -247,26 +234,6 @@ fn forest_inset_toward(px: f64, py: f64, gx: f64, gy: f64, dist: f64) -> (f64, f
     (px + (dx / len) * dist, py + (dy / len) * dist)
 }
 
-/// [-1, 1]，與 `forest_stable_rand01` 同鍵空間
-fn forest_stable_rand_signed(q: i32, r: i32, ei: usize, salt: u32) -> f64 {
-    forest_stable_rand01(q, r, ei, salt).mul_add(2.0, -1.0)
-}
-
-/// [0, 1) 穩定偽隨機，同一 `(q,r,ei,salt)` 永遠相同（平移／縮放畫面不重算種子）
-fn forest_stable_rand01(q: i32, r: i32, ei: usize, salt: u32) -> f64 {
-    let mut x = (q as u32)
-        .wrapping_mul(0x9E37_79B9)
-        .wrapping_add((r as u32).rotate_left(7))
-        .wrapping_add((ei as u32).wrapping_mul(0x85EB_CA6B));
-    x ^= salt.wrapping_mul(0xC2B2_AE3D);
-    x ^= x >> 16;
-    x = x.wrapping_mul(0x7FEB_352D);
-    x ^= x >> 15;
-    x = x.wrapping_mul(0x846C_A68B);
-    x ^= x >> 16;
-    ((x >> 8) as f64) / (1u64 << 24) as f64
-}
-
 /// 量化頂點鍵 → [0,1)（用於內縮距離微調）
 fn forest_vertex_rand01(k: (i64, i64), salt: u32) -> f64 {
     let a = k.0 as u64;
@@ -289,109 +256,16 @@ fn lerp_f64(a: f64, b: f64, t: f64) -> f64 {
     a + (b - a) * t
 }
 
-/// 二十四次貝茲（25 控制點）在參數 `t∈[0,1]` 之值（De Casteljau）
-fn bezier24_eval(p: [(f64, f64); 25], t: f64) -> (f64, f64) {
-    let mut v = p;
-    for r in 1..25 {
-        for i in 0..(25 - r) {
-            v[i] = (
-                v[i].0 * (1.0 - t) + v[i + 1].0 * t,
-                v[i].1 * (1.0 - t) + v[i + 1].1 * t,
-            );
-        }
-    }
-    v[0]
-}
-
-/// 一維 23 點（內部控制點索引）平滑：多輪柔核，壓掉微尖角／控制多邊形急折
-fn smooth_forest_offset_23(a: &mut [f64; 23]) {
-    for _ in 0..4 {
-        let prev = *a;
-        for i in 1..22 {
-            a[i] = 0.22 * prev[i - 1] + 0.56 * prev[i] + 0.22 * prev[i + 1];
-        }
-        a[0] = 0.5 * prev[0] + 0.5 * prev[1];
-        a[22] = 0.5 * prev[21] + 0.5 * prev[22];
-    }
-}
-
-/// 單邊林緣：二十四次貝茲控制點（端點＝內縮頂點）
-fn forest_edge_bezier24_controls(
-    p0: (f64, f64),
-    p1: (f64, f64),
-    q: i32,
-    r: i32,
-    ei: usize,
-    ux: f64,
-    uy: f64,
-) -> [(f64, f64); 25] {
-    let sx = p1.0 - p0.0;
-    let sy = p1.1 - p0.1;
-    let slen = (sx * sx + sy * sy).sqrt().max(1e-9);
-    let tx = sx / slen;
-    let ty = sy / slen;
-    let nx = -ty;
-    let ny = tx;
-
-    let bulge = FOREST_ARC_BULGE_ALONG_EDGE
-        * lerp_f64(
-            FOREST_BULGE_JITTER_MIN,
-            FOREST_BULGE_JITTER_MAX,
-            forest_stable_rand01(q, r, ei, 0xB0D9),
-        );
-    let radial_extra = FOREST_RADIAL_JITTER_PX * forest_stable_rand_signed(q, r, ei, 0xE11A);
-    let outward = bulge + radial_extra;
-    let radial_blend = 0.55_f64;
-
-    let mut wn = [0.0_f64; 23];
-    let mut wt = [0.0_f64; 23];
-    for (idx, k) in (1..24).enumerate() {
-        let s = k as f64 / 24.0;
-        let bell = (std::f64::consts::PI * s).sin();
-        // sin⁴：邊緣極柔，主波動留在中段，整體較滑
-        let b2 = bell * bell;
-        let bell_soft = b2 * b2;
-        wn[idx] = FOREST_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xA100 + k as u32) * bell_soft;
-        wt[idx] = FOREST_NORMAL_WOBBLE_PX
-            * 0.32
-            * forest_stable_rand_signed(q, r, ei, 0xC200 + k as u32)
-            * bell_soft;
-    }
-    smooth_forest_offset_23(&mut wn);
-    smooth_forest_offset_23(&mut wt);
-
-    let mut pts = [(0.0_f64, 0.0_f64); 25];
-    pts[0] = p0;
-    pts[24] = p1;
-    for (idx, k) in (1..24).enumerate() {
-        let s = k as f64 / 24.0;
-        let bx = p0.0 + tx * slen * s;
-        let by = p0.1 + ty * slen * s;
-        let bell = (std::f64::consts::PI * s).sin();
-        let b2 = bell * bell;
-        let bell_soft = b2 * b2;
-        let wni = wn[idx];
-        let wti = wt[idx];
-        pts[idx + 1] = (
-            bx + nx * wni + tx * wti + ux * outward * radial_blend * bell_soft,
-            by + ny * wni + ty * wti + uy * outward * radial_blend * bell_soft,
-        );
-    }
-    pts
-}
-
-/// 均勻 Catmull–Rom（經由標準係數）轉單段三次貝茲之兩控制點；柄長依弦長夾住，避免窄河過衝。
-/// 相鄰邊共用頂點之一階導連續（C¹），可消除「每格一節」的視覺。
-fn water_catmull_bezier_handles(
+/// 均勻 Catmull–Rom → 單段三次貝茲之兩控制點；柄長依弦長夾住。
+/// 不加每邊獨立擾動，相鄰邊在共用頂點處 C¹ 連續，林／水邊界才不「一節一節」。
+fn boundary_catmull_bezier_handles(
     p_prev: (f64, f64),
     p0: (f64, f64),
     p1: (f64, f64),
     p_next: (f64, f64),
-    q: i32,
-    r: i32,
-    ei: usize,
+    tau: f64,
+    max_handle_frac: f64,
 ) -> ((f64, f64), (f64, f64)) {
-    let tau = WATER_CATMULL_TAU;
     let mut cp1 = (
         p0.0 + tau * (p1.0 - p_prev.0) / 6.0,
         p0.1 + tau * (p1.1 - p_prev.1) / 6.0,
@@ -404,7 +278,7 @@ fn water_catmull_bezier_handles(
     let sx = p1.0 - p0.0;
     let sy = p1.1 - p0.1;
     let slen = (sx * sx + sy * sy).sqrt().max(1e-9);
-    let max_h = WATER_MAX_HANDLE_FRAC * slen;
+    let max_h = max_handle_frac * slen;
 
     let clamp_handle = |p: (f64, f64), anchor: (f64, f64)| -> (f64, f64) {
         let vx = p.0 - anchor.0;
@@ -419,16 +293,6 @@ fn water_catmull_bezier_handles(
     };
     cp1 = clamp_handle(cp1, p0);
     cp2 = clamp_handle(cp2, p1);
-
-    // 邊方向之法向微擺（穩定隨機），不動端點以免破壞封閉
-    let nx = -sy / slen;
-    let ny = sx / slen;
-    let wobble = WATER_FLOW_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xF10D);
-    cp1.0 += nx * wobble;
-    cp1.1 += ny * wobble;
-    cp2.0 += nx * wobble;
-    cp2.1 += ny * wobble;
-
     (cp1, cp2)
 }
 
@@ -681,38 +545,33 @@ fn append_forest_loop_path(
     if cycle.is_empty() {
         return;
     }
+    let n = cycle.len();
     let (va, _) = forest_edge_vertex_keys(cycle[0].0, cycle[0].1, cycle[0].2);
     let mut cur_v = va;
-    for (i, &e) in cycle.iter().enumerate() {
-        let (q, r, ei) = e;
+    let mut verts: Vec<(i64, i64)> = Vec::with_capacity(n + 1);
+    verts.push(cur_v);
+    for &e in cycle {
         let other = forest_other_vertex_key(e, cur_v);
-        let p0 = inset_map[&cur_v];
-        let p1 = inset_map[&other];
-        let (cx, cy) = coord_to_pixel(q, r);
-        let (ax, ay) = HEX_VERT_OFFSETS[ei];
-        let (bx, by) = HEX_VERT_OFFSETS[(ei + 1) % 6];
-        let lmx = (ax + bx) * 0.5;
-        let lmy = (ay + by) * 0.5;
-        let ex = cx + lmx;
-        let ey = cy + lmy;
-        let rdx = ex - cx;
-        let rdy = ey - cy;
-        let rlen = (rdx * rdx + rdy * rdy).sqrt().max(1e-9);
-        let ux = rdx / rlen;
-        let uy = rdy / rlen;
-
-        let cps = forest_edge_bezier24_controls(p0, p1, q, r, ei, ux, uy);
-        let steps = FOREST_BEZIER24_STEPS.max(32);
-
-        if i == 0 {
-            ctx.move_to(p0.0, p0.1);
-        }
-        for j in 1..=steps {
-            let t = j as f64 / steps as f64;
-            let pt = bezier24_eval(cps, t);
-            ctx.line_to(pt.0, pt.1);
-        }
+        verts.push(other);
         cur_v = other;
+    }
+    debug_assert_eq!(verts[0], verts[verts.len() - 1]);
+
+    ctx.move_to(inset_map[&verts[0]].0, inset_map[&verts[0]].1);
+    for i in 0..n {
+        let p_prev = inset_map[&verts[(i + n - 1) % n]];
+        let p0 = inset_map[&verts[i]];
+        let p1 = inset_map[&verts[i + 1]];
+        let p_next = inset_map[&verts[(i + 2) % n]];
+        let (cp1, cp2) = boundary_catmull_bezier_handles(
+            p_prev,
+            p0,
+            p1,
+            p_next,
+            FOREST_CATMULL_TAU,
+            FOREST_MAX_HANDLE_FRAC,
+        );
+        ctx.bezier_curve_to(cp1.0, cp1.1, cp2.0, cp2.1, p1.0, p1.1);
     }
     ctx.close_path();
 }
@@ -744,8 +603,14 @@ fn append_water_loop_path(
         let p0 = inset_map[&verts[i]];
         let p1 = inset_map[&verts[i + 1]];
         let p_next = inset_map[&verts[(i + 2) % n]];
-        let (q, r, ei) = cycle[i];
-        let (cp1, cp2) = water_catmull_bezier_handles(p_prev, p0, p1, p_next, q, r, ei);
+        let (cp1, cp2) = boundary_catmull_bezier_handles(
+            p_prev,
+            p0,
+            p1,
+            p_next,
+            WATER_CATMULL_TAU,
+            WATER_MAX_HANDLE_FRAC,
+        );
         ctx.bezier_curve_to(cp1.0, cp1.1, cp2.0, cp2.1, p1.0, p1.1);
     }
     ctx.close_path();
