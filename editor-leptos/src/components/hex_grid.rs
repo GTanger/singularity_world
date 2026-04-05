@@ -24,6 +24,10 @@ const FOREST_BEZIER24_STEPS: usize = 160;
 /// 頂點內縮距離之係數範圍
 const FOREST_INSET_SCALE_MIN: f64 = 0.78;
 const FOREST_INSET_SCALE_MAX: f64 = 1.14;
+/// 邊界頂點內縮目標：與**跨邊鄰格**（區外、與區內格相鄰之格）格心加權混合。0＝僅連通區內格心平均；1＝僅鄰格格心平均
+const FOREST_BOUNDARY_NEIGHBOR_BALANCE: f64 = 0.42;
+/// 允許頂點沿「區心→角點」方向略**超出**六角形邊（減少內縮、可負向穿出）；0＝不穿出
+const FOREST_BOUNDARY_OUTWARD_EXTRA_MAX: f64 = 4.5;
 
 /// 水域邊界：**十二次貝茲**（13 控制點）以 De Casteljau 取樣逼近；頂點內縮須合理，否則細水道易斷段
 const WATER_BOUNDARY_VERTEX_INSET: f64 = 7.8;
@@ -41,6 +45,9 @@ const WATER_NORMAL_WOBBLE_PX: f64 = 2.35;
 const WATER_BEZIER12_STEPS: usize = 140;
 const WATER_INSET_SCALE_MIN: f64 = 0.96;
 const WATER_INSET_SCALE_MAX: f64 = 1.02;
+/// 水岸與跨邊鄰格格心之平衡（語意同 `FOREST_BOUNDARY_NEIGHBOR_BALANCE`）
+const WATER_BOUNDARY_NEIGHBOR_BALANCE: f64 = 0.48;
+const WATER_BOUNDARY_OUTWARD_EXTRA_MAX: f64 = 3.2;
 const SQRT3: f64 = 1.7320508075688772;
 const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, 14.0),
@@ -206,6 +213,18 @@ type ForestLoopPiece = (
 /// 迴線頂點聚合：量化鍵 →（世界座標、鄰接林格集合）
 type ForestVertexAgg = HashMap<(i64, i64), ((f64, f64), HashSet<(i32, i32)>)>;
 
+/// 邊界頂點內縮／鄰格平衡參數（森林與水域共用）
+struct BoundaryInsetParams {
+    vertex_inset: f64,
+    inset_scale_min: f64,
+    inset_scale_max: f64,
+    rand_salt: u32,
+    /// 與**跨邊鄰格**（不在連通區內、但與區內格六鄰）格心之混合（0＝僅區內平均；1＝僅鄰格平均）
+    neighbor_balance: f64,
+    /// 隨機外凸上限（從內縮量扣除，允許弧線略穿出六角形）
+    outward_extra_max: f64,
+}
+
 fn forest_vertex_world(q: i32, r: i32, vi: usize) -> (f64, f64) {
     let (px, py) = coord_to_pixel(q, r);
     let (vx, vy) = HEX_VERT_OFFSETS[vi];
@@ -221,6 +240,7 @@ fn forest_edge_vertex_keys(q: i32, r: i32, ei: usize) -> ((i64, i64), (i64, i64)
     (forest_vertex_key_xy(wa.0, wa.1), forest_vertex_key_xy(wb.0, wb.1))
 }
 
+/// 由 `px` 沿指向 `gx` 之方向移動 `dist`（可為負 → 越過 `px` 往反方向，即穿出六角形外）
 fn forest_inset_toward(px: f64, py: f64, gx: f64, gy: f64, dist: f64) -> (f64, f64) {
     let dx = gx - px;
     let dy = gy - py;
@@ -561,14 +581,20 @@ fn forest_trace_boundary_cycles(edges: &[ForestBoundaryEdge]) -> Vec<Vec<ForestB
     cycles
 }
 
-/// 單一迴線：頂點內縮後之量化鍵 → 座標
+/// 單一迴線：頂點內縮後之量化鍵 → 座標。
+/// - **鄰格平衡**：內縮目標為「連通區內格心平均」與「區外跨邊鄰格格心平均」之加權（`neighbor_balance`）。
+/// - **可略超出六角形**：`outward_extra_max` 為每頂點隨機之額外外凸上限，從內縮量扣掉 → 弧線可穿出格邊。
 fn boundary_loop_inset_map(
     cycle: &[ForestBoundaryEdge],
-    vertex_inset: f64,
-    inset_scale_min: f64,
-    inset_scale_max: f64,
-    rand_salt: u32,
+    terrain_of: &HashMap<(i32, i32), Terrain>,
+    p: BoundaryInsetParams,
 ) -> HashMap<(i64, i64), (f64, f64)> {
+    let b = p.neighbor_balance.clamp(0.0, 1.0);
+    let mut comp_cells: HashSet<(i32, i32)> = HashSet::with_capacity(cycle.len().saturating_mul(2));
+    for e in cycle {
+        comp_cells.insert((e.0, e.1));
+    }
+
     let mut vertex_agg: ForestVertexAgg = HashMap::new();
     for &e in cycle {
         let (q, r, ei) = e;
@@ -585,33 +611,75 @@ fn boundary_loop_inset_map(
         let mut sx = 0.0_f64;
         let mut sy = 0.0_f64;
         let n = cells.len() as f64;
-        for (q, r) in cells {
-            let (px, py) = coord_to_pixel(q, r);
+        for (q, r) in &cells {
+            let (px, py) = coord_to_pixel(*q, *r);
             sx += px;
             sy += py;
         }
         let gx = sx / n.max(1.0);
         let gy = sy / n.max(1.0);
+
+        // 與區內格相鄰、但不在本連通區之六角（通常為草原等「對岸」）— 取格心平均與區內平衡
+        let mut outside_adj: HashSet<(i32, i32)> = HashSet::new();
+        for (q, r) in &cells {
+            for &(dq, dr) in &AXIAL_NEIGHBOR_DR {
+                let nq = q + dq;
+                let nr = r + dr;
+                if comp_cells.contains(&(nq, nr)) {
+                    continue;
+                }
+                if terrain_of.contains_key(&(nq, nr)) {
+                    outside_adj.insert((nq, nr));
+                }
+            }
+        }
+        let ncount = outside_adj.len();
+        let mut nsum_x = 0.0_f64;
+        let mut nsum_y = 0.0_f64;
+        for (nq, nr) in &outside_adj {
+            let (px, py) = coord_to_pixel(*nq, *nr);
+            nsum_x += px;
+            nsum_y += py;
+        }
+        let (tx, ty) = if ncount > 0 && b > 1e-9 {
+            let nx = nsum_x / ncount as f64;
+            let ny = nsum_y / ncount as f64;
+            (
+                (1.0 - b) * gx + b * nx,
+                (1.0 - b) * gy + b * ny,
+            )
+        } else {
+            (gx, gy)
+        };
+
         let inset_scale = lerp_f64(
-            inset_scale_min,
-            inset_scale_max,
-            forest_vertex_rand01(k, rand_salt),
+            p.inset_scale_min,
+            p.inset_scale_max,
+            forest_vertex_rand01(k, p.rand_salt),
         );
-        inset_map.insert(
-            k,
-            forest_inset_toward(wx, wy, gx, gy, vertex_inset * inset_scale),
-        );
+        let outward =
+            p.outward_extra_max * forest_vertex_rand01(k, p.rand_salt.wrapping_add(0x7E57));
+        let dist = p.vertex_inset * inset_scale - outward;
+        inset_map.insert(k, forest_inset_toward(wx, wy, tx, ty, dist));
     }
     inset_map
 }
 
-fn forest_loop_inset_map(cycle: &[ForestBoundaryEdge]) -> HashMap<(i64, i64), (f64, f64)> {
+fn forest_loop_inset_map(
+    cycle: &[ForestBoundaryEdge],
+    terrain_of: &HashMap<(i32, i32), Terrain>,
+) -> HashMap<(i64, i64), (f64, f64)> {
     boundary_loop_inset_map(
         cycle,
-        FOREST_BOUNDARY_VERTEX_INSET,
-        FOREST_INSET_SCALE_MIN,
-        FOREST_INSET_SCALE_MAX,
-        0x51EE,
+        terrain_of,
+        BoundaryInsetParams {
+            vertex_inset: FOREST_BOUNDARY_VERTEX_INSET,
+            inset_scale_min: FOREST_INSET_SCALE_MIN,
+            inset_scale_max: FOREST_INSET_SCALE_MAX,
+            rand_salt: 0x51EE,
+            neighbor_balance: FOREST_BOUNDARY_NEIGHBOR_BALANCE,
+            outward_extra_max: FOREST_BOUNDARY_OUTWARD_EXTRA_MAX,
+        },
     )
 }
 
@@ -628,13 +696,19 @@ fn water_vertex_inset_for_component(comp_len: usize) -> f64 {
 fn water_loop_inset_map(
     cycle: &[ForestBoundaryEdge],
     comp_len: usize,
+    terrain_of: &HashMap<(i32, i32), Terrain>,
 ) -> HashMap<(i64, i64), (f64, f64)> {
     boundary_loop_inset_map(
         cycle,
-        water_vertex_inset_for_component(comp_len),
-        WATER_INSET_SCALE_MIN,
-        WATER_INSET_SCALE_MAX,
-        0xA7E1,
+        terrain_of,
+        BoundaryInsetParams {
+            vertex_inset: water_vertex_inset_for_component(comp_len),
+            inset_scale_min: WATER_INSET_SCALE_MIN,
+            inset_scale_max: WATER_INSET_SCALE_MAX,
+            rand_salt: 0xA7E1,
+            neighbor_balance: WATER_BOUNDARY_NEIGHBOR_BALANCE,
+            outward_extra_max: WATER_BOUNDARY_OUTWARD_EXTRA_MAX,
+        },
     )
 }
 
@@ -751,7 +825,7 @@ fn fill_and_stroke_forest_component_arcs(
         let Some(&t) = terrain_of.get(&(q0, r0)) else {
             continue;
         };
-        let inset_map = forest_loop_inset_map(&cycle);
+        let inset_map = forest_loop_inset_map(&cycle, terrain_of);
         pieces.push((t, cycle, inset_map));
     }
     if pieces.is_empty() {
@@ -806,7 +880,7 @@ fn fill_and_stroke_water_component_arcs(
         let Some(&t) = terrain_of.get(&(q0, r0)) else {
             continue;
         };
-        let inset_map = water_loop_inset_map(&cycle, comp.len());
+        let inset_map = water_loop_inset_map(&cycle, comp.len(), terrain_of);
         pieces.push((t, cycle, inset_map));
     }
     if pieces.is_empty() {
