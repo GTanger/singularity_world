@@ -137,6 +137,24 @@ fn cell_hash(q: i32, r: i32, salt: u32) -> u64 {
     h
 }
 
+fn darken_hex_rgb(color: &str, factor: f64) -> String {
+    let s = color.strip_prefix('#').unwrap_or(color);
+    if s.len() != 6 {
+        return color.to_string();
+    }
+    let Ok(v) = u32::from_str_radix(s, 16) else {
+        return color.to_string();
+    };
+    let r = ((v >> 16) & 0xff) as f64;
+    let g = ((v >> 8) & 0xff) as f64;
+    let b = (v & 0xff) as f64;
+    let f = factor.clamp(0.0, 1.0);
+    let rr = (r * f).round().clamp(0.0, 255.0) as u8;
+    let gg = (g * f).round().clamp(0.0, 255.0) as u8;
+    let bb = (b * f).round().clamp(0.0, 255.0) as u8;
+    format!("#{:02x}{:02x}{:02x}", rr, gg, bb)
+}
+
 /// 在 hex 邊緣畫程序化小樹（bezier 樹冠 + 樹幹）
 fn draw_edge_trees(
     ctx: &web_sys::CanvasRenderingContext2d,
@@ -160,6 +178,7 @@ fn draw_edge_trees(
     let tny = ty / tlen;
 
     let tree_count = if is_heavy { 3 } else { 2 };
+    let skip_trunk = matches!(edge_idx, 3 | 4); // Nw / Ne：讓樹冠直接從底色長出（像圖二）
 
     for ti in 0..tree_count {
         let th = cell_hash(q, r, (edge_idx as u32) * 100 + ti);
@@ -184,18 +203,21 @@ fn draw_edge_trees(
         let top_x = base_x + nx * tree_h;
         let top_y = base_y + ny * tree_h;
 
-        // 樹幹（短線）
+        // 樹幹（短線）— 在 Nw/Ne 邊不畫，讓樹冠直接融合底色
         let trunk_h = tree_h * 0.3;
-        let trunk_top_x = base_x + nx * trunk_h;
-        let trunk_top_y = base_y + ny * trunk_h;
-
-        // 樹幹色
-        ctx.set_stroke_style_str("#4a3728");
-        ctx.set_line_width(1.2);
-        ctx.begin_path();
-        ctx.move_to(base_x, base_y);
-        ctx.line_to(trunk_top_x, trunk_top_y);
-        ctx.stroke();
+        let (trunk_top_x, trunk_top_y) = if skip_trunk {
+            (base_x, base_y)
+        } else {
+            let x = base_x + nx * trunk_h;
+            let y = base_y + ny * trunk_h;
+            ctx.set_stroke_style_str("#4a3728");
+            ctx.set_line_width(1.2);
+            ctx.begin_path();
+            ctx.move_to(base_x, base_y);
+            ctx.line_to(x, y);
+            ctx.stroke();
+            (x, y)
+        };
 
         // 樹冠（兩條 bezier 圍成水滴形）
         let left_x = trunk_top_x - tnx * crown_w;
@@ -203,8 +225,9 @@ fn draw_edge_trees(
         let right_x = trunk_top_x + tnx * crown_w;
         let right_y = trunk_top_y + tny * crown_w;
 
-        // 樹冠色與底色同色（依格子地形）
+        // 樹冠色與底色同色（依格子地形），但仍加一圈較深描邊
         let crown_color = terrain.color();
+        let crown_stroke = darken_hex_rgb(crown_color, 0.72);
 
         ctx.set_fill_style_str(crown_color);
         ctx.begin_path();
@@ -226,9 +249,9 @@ fn draw_edge_trees(
         ctx.close_path();
         ctx.fill();
 
-        // 仍保留描邊呼叫，但同色（視覺上等於無描邊）
-        ctx.set_stroke_style_str(crown_color);
-        ctx.set_line_width(0.6);
+        // 描邊（讓剪影可讀）
+        ctx.set_stroke_style_str(&crown_stroke);
+        ctx.set_line_width(0.8);
         ctx.stroke();
     }
 }
