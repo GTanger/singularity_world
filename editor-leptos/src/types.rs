@@ -192,8 +192,9 @@ impl Terrain {
             Terrain::ForestLight => "#a8cc6a",
             Terrain::Mountain => "#8a8a8a",
             Terrain::Hills => "#b5a068",
-            Terrain::Water => "#4a90d9",
-            Terrain::WaterDeep => "#2a5a9a",
+            // 水域格面與草原同色（水岸弧線／深浅仍區分）
+            Terrain::Water => "#a8cc6a",
+            Terrain::WaterDeep => "#a8cc6a",
             Terrain::Desert => "#e8d48a",
             Terrain::Swamp => "#6b7a44",
             Terrain::Tundra => "#d0d8e0",

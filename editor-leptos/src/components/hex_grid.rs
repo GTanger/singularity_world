@@ -24,6 +24,17 @@ const FOREST_BEZIER24_STEPS: usize = 160;
 /// 頂點內縮距離之係數範圍
 const FOREST_INSET_SCALE_MIN: f64 = 0.78;
 const FOREST_INSET_SCALE_MAX: f64 = 1.14;
+
+/// 水域邊界：頂點內縮**大於林緣** → 弧線更**靠格心**（河流感在格內）
+const WATER_BOUNDARY_VERTEX_INSET: f64 = 15.5;
+const WATER_ARC_BULGE_ALONG_EDGE: f64 = 5.2;
+const WATER_BULGE_JITTER_MIN: f64 = 0.72;
+const WATER_BULGE_JITTER_MAX: f64 = 1.06;
+const WATER_RADIAL_JITTER_PX: f64 = 1.6;
+const WATER_NORMAL_WOBBLE_PX: f64 = 3.2;
+const WATER_BEZIER24_STEPS: usize = 200;
+const WATER_INSET_SCALE_MIN: f64 = 0.9;
+const WATER_INSET_SCALE_MAX: f64 = 1.05;
 const SQRT3: f64 = 1.7320508075688772;
 const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, 14.0),
@@ -46,6 +57,10 @@ const AXIAL_DIRS_FOR_EDGES: [(i32, i32); 6] = [
 
 fn is_forest_terrain(t: Terrain) -> bool {
     matches!(t, Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle)
+}
+
+fn is_water_terrain(t: Terrain) -> bool {
+    matches!(t, Terrain::Water | Terrain::WaterDeep)
 }
 
 /// 畫面上顯示用的地名／地形字（與下方文字繪製一致）
@@ -153,6 +168,24 @@ fn forest_interior_fill_color(t: Terrain) -> &'static str {
         Terrain::ForestLight => "#2d4f24",
         Terrain::Jungle => "#183814",
         _ => "#1f3d18",
+    }
+}
+
+/// 水岸描邊（略亮於填色，河流感）
+fn water_boundary_stroke_color(t: Terrain) -> &'static str {
+    match t {
+        Terrain::WaterDeep => "#7ec8ff",
+        Terrain::Water => "#a8dcff",
+        _ => "#7ec8ff",
+    }
+}
+
+/// 水域弧線內側填色（藍系，與格面草原色區隔）
+fn water_interior_fill_color(t: Terrain) -> &'static str {
+    match t {
+        Terrain::WaterDeep => "#1e5080",
+        Terrain::Water => "#3d7cb8",
+        _ => "#3d7cb8",
     }
 }
 
@@ -322,6 +355,82 @@ fn forest_edge_bezier24_controls(
     pts
 }
 
+/// 水域專用：多一輪平滑，河流線更連續
+fn smooth_water_offset_23(a: &mut [f64; 23]) {
+    for _ in 0..5 {
+        let prev = *a;
+        for i in 1..22 {
+            a[i] = 0.24 * prev[i - 1] + 0.52 * prev[i] + 0.24 * prev[i + 1];
+        }
+        a[0] = 0.5 * prev[0] + 0.5 * prev[1];
+        a[22] = 0.5 * prev[21] + 0.5 * prev[22];
+    }
+}
+
+/// 單邊水岸：二十四次貝茲；鼓出較小、波動柔，貼近格心、流暢感
+fn water_edge_bezier24_controls(
+    p0: (f64, f64),
+    p1: (f64, f64),
+    q: i32,
+    r: i32,
+    ei: usize,
+    ux: f64,
+    uy: f64,
+) -> [(f64, f64); 25] {
+    let sx = p1.0 - p0.0;
+    let sy = p1.1 - p0.1;
+    let slen = (sx * sx + sy * sy).sqrt().max(1e-9);
+    let tx = sx / slen;
+    let ty = sy / slen;
+    let nx = -ty;
+    let ny = tx;
+
+    let bulge = WATER_ARC_BULGE_ALONG_EDGE
+        * lerp_f64(
+            WATER_BULGE_JITTER_MIN,
+            WATER_BULGE_JITTER_MAX,
+            forest_stable_rand01(q, r, ei, 0xD1CE),
+        );
+    let radial_extra = WATER_RADIAL_JITTER_PX * forest_stable_rand_signed(q, r, ei, 0xE11B);
+    let outward = bulge + radial_extra;
+    let radial_blend = 0.38_f64;
+
+    let mut wn = [0.0_f64; 23];
+    let mut wt = [0.0_f64; 23];
+    for (idx, k) in (1..24).enumerate() {
+        let s = k as f64 / 24.0;
+        let bell = (std::f64::consts::PI * s).sin();
+        let b2 = bell * bell;
+        let bell_soft = b2 * b2 * b2;
+        wn[idx] = WATER_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xB100 + k as u32) * bell_soft;
+        wt[idx] = WATER_NORMAL_WOBBLE_PX
+            * 0.22
+            * forest_stable_rand_signed(q, r, ei, 0xD200 + k as u32)
+            * bell_soft;
+    }
+    smooth_water_offset_23(&mut wn);
+    smooth_water_offset_23(&mut wt);
+
+    let mut pts = [(0.0_f64, 0.0_f64); 25];
+    pts[0] = p0;
+    pts[24] = p1;
+    for (idx, k) in (1..24).enumerate() {
+        let s = k as f64 / 24.0;
+        let bx = p0.0 + tx * slen * s;
+        let by = p0.1 + ty * slen * s;
+        let bell = (std::f64::consts::PI * s).sin();
+        let b2 = bell * bell;
+        let bell_soft = b2 * b2 * b2;
+        let wni = wn[idx];
+        let wti = wt[idx];
+        pts[idx + 1] = (
+            bx + nx * wni + tx * wti + ux * outward * radial_blend * bell_soft,
+            by + ny * wni + ty * wti + uy * outward * radial_blend * bell_soft,
+        );
+    }
+    pts
+}
+
 /// 連通林區（六鄰、同屬 `forest_set`）
 fn forest_connected_components(forest_set: &HashSet<(i32, i32)>) -> Vec<Vec<(i32, i32)>> {
     let mut visited: HashSet<(i32, i32)> = HashSet::new();
@@ -432,9 +541,12 @@ fn forest_trace_boundary_cycles(edges: &[ForestBoundaryEdge]) -> Vec<Vec<ForestB
 }
 
 /// 單一迴線：頂點內縮後之量化鍵 → 座標
-fn forest_loop_inset_map(
+fn boundary_loop_inset_map(
     cycle: &[ForestBoundaryEdge],
     vertex_inset: f64,
+    inset_scale_min: f64,
+    inset_scale_max: f64,
+    rand_salt: u32,
 ) -> HashMap<(i64, i64), (f64, f64)> {
     let mut vertex_agg: ForestVertexAgg = HashMap::new();
     for &e in cycle {
@@ -460,9 +572,9 @@ fn forest_loop_inset_map(
         let gx = sx / n.max(1.0);
         let gy = sy / n.max(1.0);
         let inset_scale = lerp_f64(
-            FOREST_INSET_SCALE_MIN,
-            FOREST_INSET_SCALE_MAX,
-            forest_vertex_rand01(k, 0x51EE),
+            inset_scale_min,
+            inset_scale_max,
+            forest_vertex_rand01(k, rand_salt),
         );
         inset_map.insert(
             k,
@@ -470,6 +582,26 @@ fn forest_loop_inset_map(
         );
     }
     inset_map
+}
+
+fn forest_loop_inset_map(cycle: &[ForestBoundaryEdge]) -> HashMap<(i64, i64), (f64, f64)> {
+    boundary_loop_inset_map(
+        cycle,
+        FOREST_BOUNDARY_VERTEX_INSET,
+        FOREST_INSET_SCALE_MIN,
+        FOREST_INSET_SCALE_MAX,
+        0x51EE,
+    )
+}
+
+fn water_loop_inset_map(cycle: &[ForestBoundaryEdge]) -> HashMap<(i64, i64), (f64, f64)> {
+    boundary_loop_inset_map(
+        cycle,
+        WATER_BOUNDARY_VERTEX_INSET,
+        WATER_INSET_SCALE_MIN,
+        WATER_INSET_SCALE_MAX,
+        0xA7E1,
+    )
 }
 
 /// 將**單一**迴線弧段接到目前 path（不重複 `begin_path`）
@@ -517,6 +649,51 @@ fn append_forest_loop_path(
     ctx.close_path();
 }
 
+/// 單一水岸迴線（與林緣同幾何，參數較靠格心、較柔）
+fn append_water_loop_path(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    cycle: &[ForestBoundaryEdge],
+    inset_map: &HashMap<(i64, i64), (f64, f64)>,
+) {
+    if cycle.is_empty() {
+        return;
+    }
+    let (va, _) = forest_edge_vertex_keys(cycle[0].0, cycle[0].1, cycle[0].2);
+    let mut cur_v = va;
+    for (i, &e) in cycle.iter().enumerate() {
+        let (q, r, ei) = e;
+        let other = forest_other_vertex_key(e, cur_v);
+        let p0 = inset_map[&cur_v];
+        let p1 = inset_map[&other];
+        let (cx, cy) = coord_to_pixel(q, r);
+        let (ax, ay) = HEX_VERT_OFFSETS[ei];
+        let (bx, by) = HEX_VERT_OFFSETS[(ei + 1) % 6];
+        let lmx = (ax + bx) * 0.5;
+        let lmy = (ay + by) * 0.5;
+        let ex = cx + lmx;
+        let ey = cy + lmy;
+        let rdx = ex - cx;
+        let rdy = ey - cy;
+        let rlen = (rdx * rdx + rdy * rdy).sqrt().max(1e-9);
+        let ux = rdx / rlen;
+        let uy = rdy / rlen;
+
+        let cps = water_edge_bezier24_controls(p0, p1, q, r, ei, ux, uy);
+        let steps = WATER_BEZIER24_STEPS.max(48);
+
+        if i == 0 {
+            ctx.move_to(p0.0, p0.1);
+        }
+        for j in 1..=steps {
+            let t = j as f64 / steps as f64;
+            let pt = bezier24_eval(cps, t);
+            ctx.line_to(pt.0, pt.1);
+        }
+        cur_v = other;
+    }
+    ctx.close_path();
+}
+
 /// 一個連通林區：弧線內側填深綠，再沿同路徑描林緣線
 fn fill_and_stroke_forest_component_arcs(
     ctx: &web_sys::CanvasRenderingContext2d,
@@ -540,7 +717,7 @@ fn fill_and_stroke_forest_component_arcs(
         let Some(&t) = terrain_of.get(&(q0, r0)) else {
             continue;
         };
-        let inset_map = forest_loop_inset_map(&cycle, FOREST_BOUNDARY_VERTEX_INSET);
+        let inset_map = forest_loop_inset_map(&cycle);
         pieces.push((t, cycle, inset_map));
     }
     if pieces.is_empty() {
@@ -565,6 +742,60 @@ fn fill_and_stroke_forest_component_arcs(
         ctx.begin_path();
         append_forest_loop_path(ctx, cycle, inset_map);
         ctx.set_stroke_style_str(forest_boundary_stroke_color(*t));
+        ctx.set_line_width(line_width);
+        ctx.set_line_cap("round");
+        ctx.set_line_join("round");
+        ctx.stroke();
+    }
+}
+
+/// 一個連通水域：水岸弧線內填藍、再描邊（格面已與草原同色）
+fn fill_and_stroke_water_component_arcs(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    comp: &[(i32, i32)],
+    terrain_of: &HashMap<(i32, i32), Terrain>,
+    line_width: f64,
+) {
+    let edges = component_boundary_edges(comp);
+    if edges.is_empty() {
+        return;
+    }
+    let cycles = forest_trace_boundary_cycles(&edges);
+    if cycles.is_empty() {
+        return;
+    }
+
+    let mut pieces: Vec<ForestLoopPiece> = Vec::new();
+    for cycle in cycles {
+        let q0 = cycle[0].0;
+        let r0 = cycle[0].1;
+        let Some(&t) = terrain_of.get(&(q0, r0)) else {
+            continue;
+        };
+        let inset_map = water_loop_inset_map(&cycle);
+        pieces.push((t, cycle, inset_map));
+    }
+    if pieces.is_empty() {
+        return;
+    }
+
+    let fill_t = pieces[0].0;
+    ctx.begin_path();
+    for (_, cycle, inset_map) in &pieces {
+        append_water_loop_path(ctx, cycle, inset_map);
+    }
+    ctx.set_fill_style_str(water_interior_fill_color(fill_t));
+    let fill_rule = if pieces.len() > 1 {
+        CanvasWindingRule::Evenodd
+    } else {
+        CanvasWindingRule::Nonzero
+    };
+    ctx.fill_with_canvas_winding_rule(fill_rule);
+
+    for (t, cycle, inset_map) in &pieces {
+        ctx.begin_path();
+        append_water_loop_path(ctx, cycle, inset_map);
+        ctx.set_stroke_style_str(water_boundary_stroke_color(*t));
         ctx.set_line_width(line_width);
         ctx.set_line_cap("round");
         ctx.set_line_join("round");
@@ -1378,6 +1609,37 @@ pub fn HexGrid(
                         ctx.set_text_baseline("middle");
                         let label = cell_display_label(cell);
                         let _ = ctx.fill_text(&label, px, py + 2.0);
+                    }
+                }
+            }
+        }
+
+        // === 水岸：連通水域（先畫，林緣再疊上）===
+        if cam.zoom >= 0.25 {
+            let water_set: HashSet<(i32, i32)> = cs
+                .iter()
+                .filter(|c| is_water_terrain(c.terrain))
+                .map(|c| (c.coord.q, c.coord.r))
+                .collect();
+
+            if !water_set.is_empty() {
+                let wlw = (1.0 / cam.zoom).clamp(0.48, 2.4);
+                let water_terrain_of: HashMap<(i32, i32), Terrain> = cs
+                    .iter()
+                    .filter(|c| is_water_terrain(c.terrain))
+                    .map(|c| ((c.coord.q, c.coord.r), c.terrain))
+                    .collect();
+                let water_comps = forest_connected_components(&water_set);
+                for comp in water_comps {
+                    let any_visible = comp.iter().any(|&(q, r)| {
+                        let (px, py) = coord_to_pixel(q, r);
+                        px >= min_x - HEX_R
+                            && px <= max_x + HEX_R
+                            && py >= min_y - HEX_R
+                            && py <= max_y + HEX_R
+                    });
+                    if any_visible {
+                        fill_and_stroke_water_component_arcs(&ctx, &comp, &water_terrain_of, wlw);
                     }
                 }
             }
