@@ -8,19 +8,19 @@ use std::collections::{HashMap, HashSet};
 use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
 
 const HEX_R: f64 = 28.0;
-/// 林區邊界：頂點往鄰接林格格心內縮後，每邊以**十二次貝茲**（13 控制點）相連；Canvas 無原生高次 API，以 De Casteljau 取樣折線逼近。
+/// 林區邊界：頂點往鄰接林格格心內縮後，每邊以**二十四次貝茲**（25 控制點）相連；Canvas 無原生高次 API，以 De Casteljau 取樣折線逼近。
 const FOREST_BOUNDARY_VERTEX_INSET: f64 = 9.0;
 /// 自格心指向該邊中點方向之基準鼓出強度（再乘隨機係數）
 const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 6.5;
-/// 鼓出量隨機係數（範圍窄一點＝較平滑）
-const FOREST_BULGE_JITTER_MIN: f64 = 0.62;
-const FOREST_BULGE_JITTER_MAX: f64 = 1.22;
+/// 鼓出量隨機係數（略收斂，減少控制多邊形尖刺）
+const FOREST_BULGE_JITTER_MIN: f64 = 0.68;
+const FOREST_BULGE_JITTER_MAX: f64 = 1.12;
 /// 沿格心→邊中再加減之額外距離（世界座標 px）
-const FOREST_RADIAL_JITTER_PX: f64 = 2.9;
-/// 法線方向擺動（垂直於弦 p0→p1）
-const FOREST_NORMAL_WOBBLE_PX: f64 = 4.2;
-/// 十二次貝茲每邊取樣段數（約為六次時之兩倍，維持視覺品質）
-const FOREST_BEZIER12_STEPS: usize = 56;
+const FOREST_RADIAL_JITTER_PX: f64 = 2.0;
+/// 法線方向擺動（垂直於弦 p0→p1）；會再乘包絡並做鄰點平滑
+const FOREST_NORMAL_WOBBLE_PX: f64 = 3.0;
+/// 二十四次貝茲每邊取樣段數（約為十二次時之兩倍）
+const FOREST_BEZIER24_STEPS: usize = 112;
 /// 頂點內縮距離之係數範圍
 const FOREST_INSET_SCALE_MIN: f64 = 0.78;
 const FOREST_INSET_SCALE_MAX: f64 = 1.14;
@@ -231,11 +231,11 @@ fn lerp_f64(a: f64, b: f64, t: f64) -> f64 {
     a + (b - a) * t
 }
 
-/// 十二次貝茲（13 控制點）在參數 `t∈[0,1]` 之值（De Casteljau）
-fn bezier12_eval(p: [(f64, f64); 13], t: f64) -> (f64, f64) {
+/// 二十四次貝茲（25 控制點）在參數 `t∈[0,1]` 之值（De Casteljau）
+fn bezier24_eval(p: [(f64, f64); 25], t: f64) -> (f64, f64) {
     let mut v = p;
-    for r in 1..13 {
-        for i in 0..(13 - r) {
+    for r in 1..25 {
+        for i in 0..(25 - r) {
             v[i] = (
                 v[i].0 * (1.0 - t) + v[i + 1].0 * t,
                 v[i].1 * (1.0 - t) + v[i + 1].1 * t,
@@ -245,8 +245,20 @@ fn bezier12_eval(p: [(f64, f64); 13], t: f64) -> (f64, f64) {
     v[0]
 }
 
-/// 單邊林緣：十二次貝茲控制點（端點＝內縮頂點）
-fn forest_edge_bezier12_controls(
+/// 一維 23 點（內部控制點索引）做輕量平滑，避免控制多邊形急劇折角 → 貝茲外凸尖刺
+fn smooth_forest_offset_23(a: &mut [f64; 23]) {
+    for _ in 0..2 {
+        let prev = *a;
+        for i in 1..22 {
+            a[i] = 0.25 * prev[i - 1] + 0.5 * prev[i] + 0.25 * prev[i + 1];
+        }
+        a[0] = 0.5 * prev[0] + 0.5 * prev[1];
+        a[22] = 0.5 * prev[21] + 0.5 * prev[22];
+    }
+}
+
+/// 單邊林緣：二十四次貝茲控制點（端點＝內縮頂點）
+fn forest_edge_bezier24_controls(
     p0: (f64, f64),
     p1: (f64, f64),
     q: i32,
@@ -254,7 +266,7 @@ fn forest_edge_bezier12_controls(
     ei: usize,
     ux: f64,
     uy: f64,
-) -> [(f64, f64); 13] {
+) -> [(f64, f64); 25] {
     let sx = p1.0 - p0.0;
     let sy = p1.1 - p0.1;
     let slen = (sx * sx + sy * sy).sqrt().max(1e-9);
@@ -271,21 +283,37 @@ fn forest_edge_bezier12_controls(
         );
     let radial_extra = FOREST_RADIAL_JITTER_PX * forest_stable_rand_signed(q, r, ei, 0xE11A);
     let outward = bulge + radial_extra;
-    let radial_blend = 0.52_f64;
+    let radial_blend = 0.42_f64;
 
-    let mut pts = [(0.0_f64, 0.0_f64); 13];
+    let mut wn = [0.0_f64; 23];
+    let mut wt = [0.0_f64; 23];
+    for (idx, k) in (1..24).enumerate() {
+        let s = k as f64 / 24.0;
+        let bell = (std::f64::consts::PI * s).sin();
+        let bell2 = bell * bell;
+        wn[idx] = FOREST_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xA100 + k as u32) * bell2;
+        wt[idx] = FOREST_NORMAL_WOBBLE_PX
+            * 0.22
+            * forest_stable_rand_signed(q, r, ei, 0xC200 + k as u32)
+            * bell2;
+    }
+    smooth_forest_offset_23(&mut wn);
+    smooth_forest_offset_23(&mut wt);
+
+    let mut pts = [(0.0_f64, 0.0_f64); 25];
     pts[0] = p0;
-    pts[12] = p1;
-    for (k, slot) in pts.iter_mut().enumerate().skip(1).take(11) {
-        let s = k as f64 / 12.0;
+    pts[24] = p1;
+    for (idx, k) in (1..24).enumerate() {
+        let s = k as f64 / 24.0;
         let bx = p0.0 + tx * slen * s;
         let by = p0.1 + ty * slen * s;
         let bell = (std::f64::consts::PI * s).sin();
-        let wn = FOREST_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xA100 + k as u32);
-        let wt = FOREST_NORMAL_WOBBLE_PX * 0.28 * forest_stable_rand_signed(q, r, ei, 0xC200 + k as u32) * bell;
-        *slot = (
-            bx + nx * wn + tx * wt + ux * outward * radial_blend * bell,
-            by + ny * wn + ty * wt + uy * outward * radial_blend * bell,
+        let bell2 = bell * bell;
+        let wni = wn[idx];
+        let wti = wt[idx];
+        pts[idx + 1] = (
+            bx + nx * wni + tx * wti + ux * outward * radial_blend * bell2,
+            by + ny * wni + ty * wti + uy * outward * radial_blend * bell2,
         );
     }
     pts
@@ -470,15 +498,15 @@ fn append_forest_loop_path(
         let ux = rdx / rlen;
         let uy = rdy / rlen;
 
-        let cps = forest_edge_bezier12_controls(p0, p1, q, r, ei, ux, uy);
-        let steps = FOREST_BEZIER12_STEPS.max(16);
+        let cps = forest_edge_bezier24_controls(p0, p1, q, r, ei, ux, uy);
+        let steps = FOREST_BEZIER24_STEPS.max(32);
 
         if i == 0 {
             ctx.move_to(p0.0, p0.1);
         }
         for j in 1..=steps {
             let t = j as f64 / steps as f64;
-            let pt = bezier12_eval(cps, t);
+            let pt = bezier24_eval(cps, t);
             ctx.line_to(pt.0, pt.1);
         }
         cur_v = other;
