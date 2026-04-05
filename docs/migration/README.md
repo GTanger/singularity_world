@@ -4,7 +4,7 @@
 > 決策依據：[決策 010](../decisions/010_go_to_rust_migration.md)  
 > 狀態：**Phase 0–5 全部完成**
 
-> **實際進度快照**（2026-03-24 對帳）：`src/**/*.rs` 合計 **17304** 行 / **80** 檔（`Cargo.toml` **41** 行），已可 **`cargo check`**／**`cargo clippy -D warnings`**／**`cargo test`**／**`cargo build --release`**。✅ **已落地**：全部模組已搬，全面掃盲完成（Go 函式對 Rust 逐一比對、缺失補齊）。Rust 伺服器可獨立啟動（`start-rust`），E2E 驗證通過（598 rooms / 1173 exits / 所有 API 端點正確回應）。⏳ **仍待**：Phase 1 enum 窮舉測試、Phase 3 NPC 決策單元測試（非阻塞，可後續補）。**`./start` 仍使用 Go，`./start-rust` 使用 Rust**。
+> **實際進度快照**（2026-03-24 對帳）：`src/**/*.rs` 合計 **17304** 行 / **80** 檔（`Cargo.toml` **41** 行），已可 **`cargo check`**／**`cargo clippy -D warnings`**／**`cargo test`**／**`cargo build --release`**。✅ **已落地**：全部模組已搬，全面掃盲完成（Go 函式對 Rust 逐一比對、缺失補齊）。Rust 伺服器可獨立啟動（**`./start`**：閘門＋release＋trunk＋systemd），E2E 驗證通過（598 rooms / 1173 exits / 所有 API 端點正確回應）。⏳ **仍待**：Phase 1 enum 窮舉測試、Phase 3 NPC 決策單元測試（非阻塞，可後續補）。
 
 ---
 
@@ -208,7 +208,7 @@ find src -name '*.rs' -print0 | xargs -0 wc -l | tail -1
 | Phase 2：Store + DB | **完成** | `store`、`db`（含 24 子模組、`dialogue` 對話模板系統）主線已可用；`cargo test` 通過 |
 | Phase 3：遊戲邏輯 | **程式碼完成（測試未補）** | `economy`、`game`（含 `advance_movement`、`entity_at`）、`combat`、`world`、`ai`、`npc`（含 `pick_enter_reaction`）、`npcnpc` 已串通；❌ 缺 NPC 決策邏輯單元測試 |
 | Phase 4：Server + 入口 | **完成** | 全部 HTTP 路由已對齊 Go；session 方法完整（含 `update_last_talk_at`、`room_has_player` 等）；E2E 已驗 |
-| Phase 5：整合測試 | **完成** | `cargo build --release` 通過；Rust 伺服器啟動正常；所有 API 端點 E2E 驗證通過；`start-rust` 腳本已建立 |
+| Phase 5：整合測試 | **完成** | `cargo build --release` 通過；Rust 伺服器啟動正常；所有 API 端點 E2E 驗證通過；`./start` 已封裝閘門與建置 |
 | **全面掃盲** | **完成** | 逐函式比對 Go↔Rust 所有模組（3 個平行 agent 掃描），補齊缺口：`dialogue`、`movement_tick`、`identity` 完善、`trunc_rune`、`format_npc_memory_for_backstory`、`pick_enter_reaction`、`get_moving_entities` |
 
 更新本表時可自行掃描：`find src -name '*.rs' -print0 | xargs -0 wc -l | sort -n`
