@@ -107,7 +107,7 @@ pub struct Entity {
     /// 表面可觀測行為（非內心意圖），供玩家 Look 時顯示。
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub current_activity: String,
-    /// 野外六角 even-q 座標 q；`None` 表示尚未綁定六角世界（僅 Room／平面 x,y）。
+    /// Hex even-q 座標 q；`None` 表示尚未綁定 Hex 世界（僅 Room／平面 x,y）。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hex_q: Option<i32>,
     /// 野外六角 even-q 座標 r。
@@ -1788,7 +1788,7 @@ impl Store {
         Ok(())
     }
 
-    /// 設定實體在野外六角格網（even-q）上的權威座標；寫入 PG 與快取。
+    /// 設定實體在 Hex 世界格網（even-q）上的權威座標；寫入 PG 與快取。
     /// 同步寫入 `entity_rooms` 為 `hex:{q}:{r}`，與 [`Self::set_entity_room`] 一致。
     pub fn set_entity_hex(&mut self, entity_id: &str, q: i32, r: i32) -> anyhow::Result<()> {
         self.update_entity(entity_id, |e| {

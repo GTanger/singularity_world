@@ -1,4 +1,4 @@
-//! 六角野外世界格網 — PostgreSQL 正規化表（`hex_cells`、`hex_barriers`、`hex_portals`、`hex_transport_edges` + `hex_world` 單例）。
+//! Hex 世界格網 — PostgreSQL 正規化表（`hex_cells`、`hex_barriers`、`hex_portals`、`hex_transport_edges` + `hex_world` 單例）。
 //! 啟動時若 `hex_cells` 為空且 `hex_world.grid_json` 有舊資料，一次性遷移後清空 `grid_json`。
 //! 寫入：交易內清空子表 → 寫入 → 更新單例；另由 hex_editor 寫 JSON 備份檔。
 

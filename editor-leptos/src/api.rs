@@ -3,10 +3,46 @@ use serde::Serialize;
 
 use crate::types::*;
 
-const MG_KEY: &str = "";
+/// 從目前頁面網址 `?mg_key=` 讀取管理金鑰（與伺服器 `MANAGEMENT_KEY` 對應）；未設定時為空（僅在伺服器未設金鑰時可用）。
+fn mg_key_from_url() -> String {
+    let search = match web_sys::window().and_then(|w| w.location().search().ok()) {
+        Some(s) if !s.is_empty() && s != "?" => s,
+        _ => return String::new(),
+    };
+    let query = if search.starts_with('?') {
+        search
+    } else {
+        format!("?{search}")
+    };
+    web_sys::UrlSearchParams::new_with_str(&query)
+        .ok()
+        .and_then(|p| p.get("mg_key"))
+        .filter(|s| !s.is_empty())
+        .unwrap_or_default()
+}
+
+fn encode_uri_component(s: &str) -> String {
+    js_sys::encode_uri_component(s)
+        .as_string()
+        .unwrap_or_else(|| s.to_string())
+}
 
 fn api_url(path: &str) -> String {
-    format!("{path}?mg_key={MG_KEY}")
+    let mk = mg_key_from_url();
+    if mk.is_empty() {
+        path.to_string()
+    } else {
+        let enc = encode_uri_component(&mk);
+        format!("{path}?mg_key={enc}")
+    }
+}
+
+fn http_err(resp: &gloo_net::http::Response, fallback: &str) -> String {
+    let code = resp.status();
+    if code == 403 {
+        return "403：請在網址加上 ?mg_key=（與伺服器 MANAGEMENT_KEY 相同）".to_string();
+    }
+    format!("{fallback} HTTP {code}")
 }
 
 pub async fn load_grid() -> Result<GridResponse, String> {
@@ -15,11 +51,17 @@ pub async fn load_grid() -> Result<GridResponse, String> {
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "載入"));
     }
     resp.json::<GridResponse>()
         .await
         .map_err(|e| format!("JSON 解析失敗：{e}"))
+}
+
+/// 先自 PostgreSQL 重載世界格網再 GET——與遊戲執行期寫入之釘死彩格對齊（地圖編輯器建議用此載入）。
+pub async fn sync_load_grid() -> Result<GridResponse, String> {
+    let _ = reload_grid().await;
+    load_grid().await
 }
 
 pub async fn put_cell(cell: &CellPutReq) -> Result<(), String> {
@@ -30,7 +72,7 @@ pub async fn put_cell(cell: &CellPutReq) -> Result<(), String> {
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "寫入格子"));
     }
     Ok(())
 }
@@ -41,7 +83,7 @@ pub async fn delete_cell(q: i32, r: i32) -> Result<(), String> {
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "刪除格子"));
     }
     Ok(())
 }
@@ -54,7 +96,7 @@ pub async fn put_cells(cells: &[CellPutReq]) -> Result<usize, String> {
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "批次寫入"));
     }
     #[derive(serde::Deserialize)]
     struct Resp {
@@ -70,7 +112,7 @@ pub async fn save_grid() -> Result<usize, String> {
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "儲存"));
     }
     #[derive(serde::Deserialize)]
     struct Resp { count: usize }
@@ -97,7 +139,7 @@ pub async fn reveal_cell(q: i32, r: i32) -> Result<RevealResponse, String> {
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "揭露"));
     }
     resp.json::<RevealResponse>()
         .await
@@ -127,7 +169,7 @@ pub async fn reveal_region(center_q: i32, center_r: i32, radius: i32) -> Result<
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "區域揭露"));
     }
     let r: Resp = resp.json().await.map_err(|e| format!("JSON：{e}"))?;
     Ok((r.new_cells, r.total_cells))
@@ -145,7 +187,7 @@ pub async fn put_world_seed(world_seed: u64) -> Result<(), String> {
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "套用種子"));
     }
     Ok(())
 }
@@ -156,7 +198,7 @@ pub async fn reload_grid() -> Result<usize, String> {
         .await
         .map_err(|e| format!("fetch 失敗：{e}"))?;
     if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
+        return Err(http_err(&resp, "重載"));
     }
     #[derive(serde::Deserialize)]
     struct Resp { count: usize }

@@ -32,12 +32,12 @@ use crate::hex::HexGrid;
 use crate::store::{self, Entity};
 
 // 六角世界格網門面（實作於 `hex_world`）；由本模組直接呼叫，避免 `pub use` 子函式時 dead_code 誤報。
-/// 自 PostgreSQL 載入野外六角格網。
+/// 自 PostgreSQL 載入 Hex 世界格網。
 pub fn load_hex_grid() -> Option<HexGrid> {
     hex_world::load_hex_grid()
 }
 
-/// 將野外六角格網寫入 PostgreSQL。
+/// 將 Hex 世界格網寫入 PostgreSQL。
 pub fn save_hex_grid_to_pg(grid: &HexGrid) -> anyhow::Result<()> {
     hex_world::save_hex_grid_to_pg(grid)
 }

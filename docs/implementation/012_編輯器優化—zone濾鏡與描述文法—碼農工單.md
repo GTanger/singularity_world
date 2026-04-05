@@ -1,7 +1,8 @@
 # 012 — 編輯器優化：Zone 濾鏡 + 描述文法（碼農工單）
 
 > **你只需要照做，不要自己發明新東西。**
-> 前端改動只涉及 `web/room_editor.html` 和 `web/room_editor.js`，後端改動只涉及 `src/gametext/mod.rs`（或新增 `src/gametext/room_desc.rs`）。
+> **（2026-04：`web/room_editor.html`／`room_editor.js` 已刪除；以下路徑僅作歷史工單留存。）**
+> 前端改動原只涉及 `web/room_editor.html` 和 `web/room_editor.js`，後端改動只涉及 `src/gametext/mod.rs`（或新增 `src/gametext/room_desc.rs`）。
 > **不要引入新依賴。不要改其他檔案。**
 
 ---

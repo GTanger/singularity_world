@@ -1,4 +1,4 @@
-//! 野外格「揭露驅動」生成（對齊 Hex 探索規格：種子＋邊界、契約釘死、可重現）。
+//! Hex 格「揭露驅動」生成（對齊 Hex 探索規格：種子＋邊界、契約釘死、可重現）。
 //!
 //! 未在 `HexGrid.cells` 內之座標視為**黑格**（無契約）；`generate_wild_cell` 產出首次彩格內容。
 
@@ -22,7 +22,7 @@ pub fn mix_coord_seed(world_seed: u64, coord: HexCoord) -> u64 {
     x
 }
 
-/// 野外自動揭露用權重表（不含城內 POI 建築）
+/// 非城內 POI：自動揭露用權重表
 const WILD_WEIGHTS: &[(Terrain, u32)] = &[
     (Terrain::Plain, 14),
     (Terrain::Grassland, 10),
@@ -108,7 +108,7 @@ fn terrain_title_zh(t: Terrain) -> &'static str {
     }
 }
 
-/// 依 `world_seed`、已揭露鄰格（若有）決定性生成一筆野外彩格（未寫入 grid）。
+/// 依 `world_seed`、已揭露鄰格（若有）決定性生成一筆彩格（未寫入 grid）。
 pub fn generate_wild_cell(grid: &HexGrid, coord: HexCoord) -> HexCell {
     let mut rng = StdRng::seed_from_u64(mix_coord_seed(grid.world_seed(), coord));
 

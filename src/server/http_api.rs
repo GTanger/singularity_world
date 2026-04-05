@@ -67,7 +67,7 @@ pub struct PlayerRoomQuery {
 pub struct PlayerRoomResponse {
     player_id: String,
     room_id: String,
-    /// 野外六角 even-q；未綁定時為 null。
+    /// Hex even-q；未綁定時為 null。
     #[serde(skip_serializing_if = "Option::is_none")]
     hex_q: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -612,7 +612,7 @@ pub async fn hex_player_reveal(Json(body): Json<HexPlayerRevealBody>) -> impl In
         _ => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"角色不存在"}))).into_response(),
     };
     if ent.kind != EntityKind::Player {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"僅玩家角色可標記野外揭露"}))).into_response();
+        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"僅玩家角色可標記格網揭露"}))).into_response();
     }
     let coord = HexCoord::new(body.q, body.r);
     let cell_id = coord.to_cell_id();

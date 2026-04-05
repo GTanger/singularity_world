@@ -31,7 +31,7 @@ pub fn get_room_view(room_id: &str, game_hour: i32) -> anyhow::Result<Option<Roo
     }))
 }
 
-/// 由六角格權威資料組裝 `RoomView`（登入／野外主路徑）。
+/// 由六角格權威資料組裝 `RoomView`（登入／Hex 格網主路徑）。
 ///
 /// 鄰接出口僅列出 [`crate::hex::HexGrid::can_walk`] 可通行者；同格實體見 [`crate::db::get_entities_at_hex`]。
 pub fn get_hex_room_view(

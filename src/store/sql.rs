@@ -299,7 +299,7 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         "ALTER TABLE entities ADD COLUMN IF NOT EXISTS current_activity TEXT NOT NULL DEFAULT ''",
         &[],
     );
-    // 補欄位：六角野外座標（權威在 PG；NULL ＝未綁定 hex）
+    // 補欄位：Hex 格座標 even-q（權威在 PG；NULL ＝未綁定 hex）
     let _ = conn.execute(
         "ALTER TABLE entities ADD COLUMN IF NOT EXISTS hex_q INTEGER",
         &[],
@@ -408,7 +408,7 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         &[],
     )?;
 
-    // 六角野外：每位玩家各自「已揭露」格（cell_id = q,r 字串）；與世界格契約分表
+    // Hex 格網：每位玩家各自「已揭露」格（cell_id = q,r 字串）；與世界格契約分表
     conn.execute(
         "CREATE TABLE IF NOT EXISTS hex_player_reveal (
             entity_id TEXT NOT NULL,
@@ -423,7 +423,7 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         &[],
     )?;
 
-    // 六角野外：世界單例（world_seed + 時間戳）；舊版 grid_json 僅供一次性遷移
+    // Hex 格網世界單例（world_seed + 時間戳）；舊版 grid_json 僅供一次性遷移
     conn.execute(
         "CREATE TABLE IF NOT EXISTS hex_world (
             id SMALLINT PRIMARY KEY DEFAULT 1 CHECK (id = 1),

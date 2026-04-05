@@ -1,3 +1,104 @@
 {
-  "cells": []
+  "world_seed": 0,
+  "cells": [
+    {
+      "coord": {
+        "q": 2,
+        "r": 0
+      },
+      "terrain": "jungle",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 2
+      },
+      "terrain": "grassland",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 0
+      },
+      "terrain": "grassland",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 0
+      },
+      "terrain": "grassland",
+      "name": "",
+      "tags": [
+        "player_spawn"
+      ]
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -1
+      },
+      "terrain": "forest",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 1
+      },
+      "terrain": "forest",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 2
+      },
+      "terrain": "forest",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -1
+      },
+      "terrain": "jungle",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 1
+      },
+      "terrain": "forest",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 0
+      },
+      "terrain": "forest",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 1
+      },
+      "terrain": "grassland",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 1
+      },
+      "terrain": "forest",
+      "name": ""
+    }
+  ]
 }

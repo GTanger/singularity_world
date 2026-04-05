@@ -92,7 +92,7 @@ struct BarrierEntry {
 /// 相鄰格之間預設六方皆通；只有 barrier 和不可行走地形會阻斷。
 #[derive(Debug, Clone, Default)]
 pub struct HexGrid {
-    /// 野外揭露 PRNG 種子（與座標混合；見 `reveal` 模組）
+    /// 揭露用 PRNG 種子 world_seed（與座標混合；見 `reveal` 模組）
     world_seed: u64,
     cells: HashMap<HexCoord, HexCell>,
     barriers: HashSet<(HexCoord, HexDir)>,

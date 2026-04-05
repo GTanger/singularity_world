@@ -76,7 +76,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/api/room-editor/layout", put(room_editor::layout))
         .route("/api/room-editor/reload", post(room_editor::reload))
         .route("/api/room-editor/groups", get(room_editor::groups_get).post(room_editor::groups_post))
-        // 六角格編輯器
+        // 地圖編輯器（六角格網）
         .route("/api/hex/grid", get(hex_editor::grid_get))
         .route("/api/hex/reveal", post(hex_editor::reveal_post))
         .route("/api/hex/reveal-region", post(hex_editor::reveal_region_post))
@@ -96,11 +96,10 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/api/hex/neighbors/{q}/{r}", get(hex_editor::neighbors_get))
         // HTML 頁面路由
         .route("/map_viewer", get(serve_map_viewer))
-        .route("/room_editor", get(serve_room_editor))
         .route("/star_chart", get(serve_star_chart))
         .route("/dashboard", get(serve_dashboard))
         .route("/admin", get(serve_admin))
-        // Leptos 六角格編輯器（WASM）
+        // Leptos 地圖編輯器（WASM）
         .nest_service("/hex-editor", ServeDir::new("editor-leptos/dist"))
         .with_state(state.clone())
         // 靜態檔案服務 — web/ 目錄（fallback，對齊 Go `http.FileServer`）
@@ -142,7 +141,6 @@ async fn serve_html_page(filename: &str) -> impl IntoResponse {
 }
 
 async fn serve_map_viewer() -> impl IntoResponse { serve_html_page("map_viewer.html").await }
-async fn serve_room_editor() -> impl IntoResponse { serve_html_page("room_editor.html").await }
 async fn serve_star_chart() -> impl IntoResponse { serve_html_page("star_chart.html").await }
 async fn serve_dashboard() -> impl IntoResponse { serve_html_page("dashboard.html").await }
 async fn serve_admin() -> impl IntoResponse { serve_html_page("admin.html").await }

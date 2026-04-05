@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<title>森林樹海渲染測試</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0f1923; overflow: hidden; }
+canvas { display: block; }
+#info {
+  position: fixed; top: 8px; left: 8px;
+  background: rgba(0,0,0,0.7); color: #c8d6e5;
+  font: 13px/1.4 "Noto Sans TC", monospace; padding: 8px 12px;
+  border-radius: 6px; pointer-events: none; z-index: 10;
+}
+</style>
+</head>
+<body>
+<div id="info">森林樹海測試 | 滾輪縮放 | 拖曳平移</div>
+<canvas id="c"></canvas>
+<script>
+const HEX_R = 28;
+const SQRT3 = Math.sqrt(3);
+const HEX_VERTS = [];
+for (let i = 0; i < 6; i++) {
+  const a = Math.PI / 180 * (60 * i + 30);
+  HEX_VERTS.push([HEX_R * Math.cos(a), HEX_R * Math.sin(a)]);
+}
+
+const AXIAL_DIRS = [[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];
+
+const TERRAIN = {
+  plain:        { color: '#c8d68e', forest: false },
+  grassland:    { color: '#a8cc6a', forest: false },
+  forest:       { color: '#5a8c42', forest: true, heavy: false },
+  forest_heavy: { color: '#2d5a1e', forest: true, heavy: true },
+  forest_light: { color: '#8bb86a', forest: true, heavy: false },
+  jungle:       { color: '#3a6e2a', forest: true, heavy: true },
+  mountain:     { color: '#8a8a8a', forest: false },
+  hills:        { color: '#b5a068', forest: false },
+  water:        { color: '#4a90d9', forest: false },
+  desert:       { color: '#e8d48a', forest: false },
+  swamp:        { color: '#6b7a44', forest: false },
+  road:         { color: '#c4b48a', forest: false },
+};
+
+function coordToPixel(q, r) {
+  return [HEX_R * SQRT3 * (q + r / 2), HEX_R * 1.5 * r];
+}
+
+function cellHash(q, r, salt) {
+  let h = (q * 0x9E3779B9 + r * 0x517CC1B7 + salt) >>> 0;
+  h ^= h >> 13; h = (h * 0xBF58476D) >>> 0;
+  h ^= h >> 16;
+  return h;
+}
+
+// 生成測試地圖：中間大片森林，邊緣其他地形
+const cells = {};
+const RADIUS = 12;
+for (let q = -RADIUS; q <= RADIUS; q++) {
+  for (let r = -RADIUS; r <= RADIUS; r++) {
+    const s = -q - r;
+    if (Math.abs(s) > RADIUS) continue;
+    const dist = Math.max(Math.abs(q), Math.abs(r), Math.abs(s));
+    const h = cellHash(q, r, 42);
+    let terrain;
+    if (dist <= 2) {
+      terrain = 'forest_heavy';
+    } else if (dist <= 5) {
+      // 森林帶，偶爾有空隙
+      if (h % 12 === 0) terrain = 'grassland';
+      else if (h % 7 === 0) terrain = 'forest_light';
+      else terrain = 'forest';
+    } else if (dist <= 7) {
+      // 疏林過渡帶
+      if (h % 3 === 0) terrain = 'forest_light';
+      else if (h % 5 === 0) terrain = 'forest';
+      else terrain = 'grassland';
+    } else if (dist <= 9) {
+      // 平原丘陵
+      if (h % 4 === 0) terrain = 'hills';
+      else terrain = 'plain';
+    } else {
+      // 邊緣混合
+      const opts = ['plain', 'grassland', 'water', 'desert', 'mountain'];
+      terrain = opts[h % opts.length];
+    }
+    // 加一條河穿過森林
+    if (q === 0 && r >= -4 && r <= 8) terrain = 'water';
+    if (q === 1 && r >= 6 && r <= 10) terrain = 'water';
+    // 加一條路
+    if (r === 0 && q >= -10 && q <= 10 && terrain !== 'water') terrain = 'road';
+
+    cells[q + ',' + r] = { q, r, terrain };
+  }
+}
+
+// 建森林集合
+const forestSet = new Set();
+for (const k in cells) {
+  if (TERRAIN[cells[k].terrain].forest) forestSet.add(k);
+}
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let camX = 0, camY = 0, camScale = 1.2;
+let W, H, dpr;
+let dragging = false, lastMX, lastMY;
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  draw();
+}
+
+function drawHex(px, py) {
+  ctx.beginPath();
+  ctx.moveTo(px + HEX_VERTS[0][0], py + HEX_VERTS[0][1]);
+  for (let i = 1; i < 6; i++) ctx.lineTo(px + HEX_VERTS[i][0], py + HEX_VERTS[i][1]);
+  ctx.closePath();
+}
+
+function drawEdgeTrees(px, py, edgeIdx, q, r, isHeavy) {
+  const [ax, ay] = HEX_VERTS[edgeIdx];
+  const [bx, by] = HEX_VERTS[(edgeIdx + 1) % 6];
+  // 邊中點方向 = 朝外法線
+  const mx = (ax + bx) / 2, my = (ay + by) / 2;
+  const outLen = Math.sqrt(mx * mx + my * my) || 0.01;
+  const nx = mx / outLen, ny = my / outLen;
+  // 切線
+  const tx = bx - ax, ty = by - ay;
+  const tLen = Math.sqrt(tx * tx + ty * ty) || 0.01;
+  const tnx = tx / tLen, tny = ty / tLen;
+
+  const treeCount = isHeavy ? 3 : 2;
+  for (let ti = 0; ti < treeCount; ti++) {
+    const th = cellHash(q, r, edgeIdx * 100 + ti);
+    const frac = 0.2 + 0.6 * (ti + 0.5) / treeCount;
+    const jitter = ((th % 100) / 100 - 0.5) * 0.15;
+    const t = frac + jitter;
+    const baseX = px + ax + (bx - ax) * t;
+    const baseY = py + ay + (by - ay) * t;
+
+    const hBase = HEX_R * 0.35;
+    const hVar = ((th >> 8) % 60) / 100;
+    const treeH = hBase * (0.7 + hVar);
+    const wBase = HEX_R * 0.22;
+    const wVar = ((th >> 16) % 50) / 100;
+    const crownW = wBase * (0.7 + wVar);
+
+    const topX = baseX + nx * treeH;
+    const topY = baseY + ny * treeH;
+    const trunkH = treeH * 0.3;
+    const trunkTopX = baseX + nx * trunkH;
+    const trunkTopY = baseY + ny * trunkH;
+
+    // 樹幹
+    ctx.strokeStyle = '#4a3728';
+    ctx.lineWidth = 1.2 / camScale;
+    ctx.beginPath();
+    ctx.moveTo(baseX, baseY);
+    ctx.lineTo(trunkTopX, trunkTopY);
+    ctx.stroke();
+
+    // 樹冠
+    const leftX = trunkTopX - tnx * crownW;
+    const leftY = trunkTopY - tny * crownW;
+    const rightX = trunkTopX + tnx * crownW;
+    const rightY = trunkTopY + tny * crownW;
+
+    ctx.fillStyle = isHeavy ? '#2d5a1e' : '#3d7a2e';
+    ctx.beginPath();
+    ctx.moveTo(leftX, leftY);
+    ctx.quadraticCurveTo(
+      trunkTopX - tnx * crownW * 0.3 + nx * treeH * 0.7,
+      trunkTopY - tny * crownW * 0.3 + ny * treeH * 0.7,
+      topX, topY
+    );
+    ctx.quadraticCurveTo(
+      trunkTopX + tnx * crownW * 0.3 + nx * treeH * 0.7,
+      trunkTopY + tny * crownW * 0.3 + ny * treeH * 0.7,
+      rightX, rightY
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = isHeavy ? '#1e4015' : '#2d6020';
+    ctx.lineWidth = 0.6 / camScale;
+    ctx.stroke();
+  }
+}
+
+function draw() {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#0f1923';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.save();
+  ctx.translate(W / 2, H / 2);
+  ctx.scale(camScale, camScale);
+  ctx.translate(-camX, -camY);
+
+  // 第一遍：填色
+  for (const k in cells) {
+    const c = cells[k];
+    const [px, py] = coordToPixel(c.q, c.r);
+    const t = TERRAIN[c.terrain];
+    drawHex(px, py);
+    ctx.fillStyle = t.color;
+    ctx.fill();
+    ctx.strokeStyle = '#1a2634';
+    ctx.lineWidth = 0.5 / camScale;
+    ctx.stroke();
+  }
+
+  // 第二遍：森林邊緣樹形
+  for (const k in cells) {
+    const c = cells[k];
+    const t = TERRAIN[c.terrain];
+    if (!t.forest) continue;
+    const [px, py] = coordToPixel(c.q, c.r);
+
+    for (let di = 0; di < 6; di++) {
+      const [dq, dr] = AXIAL_DIRS[di];
+      const nk = (c.q + dq) + ',' + (c.r + dr);
+      if (!forestSet.has(nk)) {
+        drawEdgeTrees(px, py, di, c.q, c.r, t.heavy);
+      }
+    }
+  }
+
+  ctx.restore();
+}
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY > 0 ? 0.9 : 1.1;
+  camScale *= factor;
+  camScale = Math.max(0.3, Math.min(5, camScale));
+  draw();
+}, { passive: false });
+
+canvas.addEventListener('mousedown', e => {
+  dragging = true; lastMX = e.clientX; lastMY = e.clientY;
+});
+canvas.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  camX -= (e.clientX - lastMX) / camScale;
+  camY -= (e.clientY - lastMY) / camScale;
+  lastMX = e.clientX; lastMY = e.clientY;
+  draw();
+});
+canvas.addEventListener('mouseup', () => dragging = false);
+canvas.addEventListener('mouseleave', () => dragging = false);
+
+// 觸控
+let lastTouches = null;
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  lastTouches = [...e.touches];
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!lastTouches) return;
+  if (e.touches.length === 1 && lastTouches.length === 1) {
+    camX -= (e.touches[0].clientX - lastTouches[0].clientX) / camScale;
+    camY -= (e.touches[0].clientY - lastTouches[0].clientY) / camScale;
+    draw();
+  } else if (e.touches.length === 2 && lastTouches.length === 2) {
+    const d0 = Math.hypot(lastTouches[0].clientX - lastTouches[1].clientX, lastTouches[0].clientY - lastTouches[1].clientY);
+    const d1 = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    camScale *= d1 / d0;
+    camScale = Math.max(0.3, Math.min(5, camScale));
+    draw();
+  }
+  lastTouches = [...e.touches];
+}, { passive: false });
+canvas.addEventListener('touchend', () => lastTouches = null);
+
+window.addEventListener('resize', resize);
+resize();
+</script>
+</body>
+</html>

@@ -309,7 +309,7 @@ async function openEditor(id) {
 
 
 
-// --- Objects Editor (Logic from room_editor.js) ---
+// --- Objects Editor（房間物件表單；舊 Canvas room_editor 已刪）---
 function writeObjectsJson(objs) {
     ui.fObjects.value = JSON.stringify(objs || [], null, 2);
 }

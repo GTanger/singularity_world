@@ -1,4 +1,4 @@
-//! 六角野外：多人各自「已揭露」格（PostgreSQL）。世界格網主資料在 `hex_world` 表，另備份 `data/hex/grid.json`。
+//! Hex 格網：多人各自「已揭露」格（PostgreSQL）。世界格網主資料在 `hex_world` 表，另備份 `data/hex/grid.json`。
 
 use crate::store;
 

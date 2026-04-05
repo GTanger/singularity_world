@@ -159,7 +159,7 @@ fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("create_entity_failed"));
         return;
     }
-    // 出生唯一規則：野外六角 (0,0) 契約為草原；權威座標寫入 PG（不再於創角時綁 room_id）。
+    // 出生唯一規則：Hex 格 (0,0) 契約為草原；權威座標寫入 PG（不再於創角時綁 room_id）。
     let spawn_hex = hex_editor::ensure_player_spawn_grassland_coord();
     let Some(st) = store::get_store() else {
         conn.send_error(gametext::client("create_spawn_hex_failed"));

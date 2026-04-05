@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="dashboard.css?v=0.12.0">
+    <link rel="stylesheet" href="dashboard.css?v=0.12.1">
 </head>
 <body class="dark-theme">
     <div class="app-container">
@@ -73,10 +73,12 @@
                     </div>
                     <div class="card glass">
                         <h2>地圖概覽</h2>
-                        <p class="card-desc">查看目前的房間網絡結構。</p>
+                        <p class="card-desc">查看目前的房間網絡結構；六角格網編輯對接 <code>/api/hex/</code>。</p>
                         <div class="button-group">
                             <a href="map_viewer.html" target="_blank" class="btn btn-primary">開啟 Map Viewer</a>
+                            <a href="/hex-editor/" target="_blank" class="btn btn-primary">地圖編輯器（Leptos）</a>
                         </div>
+                        <p class="card-desc" style="margin-top:10px;">若伺服器設了 <code>MANAGEMENT_KEY</code>，地圖編輯器（Leptos）網址需加 <code>?mg_key=</code> 與控制台相同金鑰。</p>
                     </div>
                 </div>
             </div>

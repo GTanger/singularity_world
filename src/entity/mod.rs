@@ -108,7 +108,7 @@ pub struct Character {
     /// 表面可觀測行為，玩家 Look 時看到的「在做什麼」。
     #[serde(default)]
     pub current_activity: String,
-    /// 野外六角 even-q 座標；與 store::Entity 對齊。
+    /// Hex even-q 座標；與 store::Entity 對齊。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hex_q: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

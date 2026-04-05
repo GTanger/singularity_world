@@ -14,8 +14,9 @@ use serde::Deserialize;
 
 use crate::db::{load_hex_grid, save_hex_grid_to_pg};
 use crate::hex::{
-    generate_wild_cell, reveal_hex_disk, HexCell, HexCoord, HexDir, HexGrid, LinkLayer, Portal,
-    Terrain, TransportEdge, TransportEndpoint, TransportLinkClass, TransportMode,
+    allowed_terrain_for_pin, api_contract_pins, generate_wild_cell, is_player_spawn_pin,
+    is_undeletable_contract, reveal_hex_disk, HexCell, HexCoord, HexDir, HexGrid, LinkLayer,
+    Portal, Terrain, TransportEdge, TransportEndpoint, TransportLinkClass, TransportMode,
 };
 use crate::model::RoomObject;
 use crate::server::http_api::AdminQuery;
@@ -89,14 +90,23 @@ pub fn ensure_world_cell_at(coord: HexCoord) -> Result<(HexCell, bool), String> 
     Ok((cell, true))
 }
 
-/// 新角色野外**唯一**出生點：世界座標 **(0,0)** 契約為**草原**（`Terrain::Grassland`）。
+/// 新角色 Hex 世界**唯一**出生點：座標 **(0,0)** 契約為**草原**（`Terrain::Grassland`）。
 /// 若該格尚不存在則揭露生成；若已存在但非草原則改地形並落盤（PostgreSQL + 備份）。
+/// 格上帶 **`player_spawn`** 標籤，與 [`crate::hex::contract_pins`] 對齊，供地圖編輯器辨識遊戲釘死彩格。
 pub fn ensure_player_spawn_grassland_coord() -> Result<(i32, i32), String> {
     let coord = HexCoord::new(0, 0);
     let (mut cell, _) = ensure_world_cell_at(coord)?;
+    let mut changed = false;
     if cell.terrain != Terrain::Grassland {
         cell.terrain = Terrain::Grassland;
         cell.name = format!("草原·{}", coord.to_cell_id());
+        changed = true;
+    }
+    if !cell.tags.iter().any(|t| t == "player_spawn") {
+        cell.tags.push("player_spawn".into());
+        changed = true;
+    }
+    if changed {
         {
             let mut grid = hex_state().grid.write().map_err(|e| e.to_string())?;
             grid.insert(cell);
@@ -250,7 +260,7 @@ fn err_json(msg: &str) -> (StatusCode, Json<serde_json::Value>) {
 
 // ── Handlers ─────────────────────────────────────────────────────
 
-/// POST /api/hex/reveal — 野外單格首次揭露（契約釘死）
+/// POST /api/hex/reveal — 單格首次揭露（契約釘死）
 pub async fn reveal_post(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -301,7 +311,7 @@ pub async fn reveal_region_post(
     .into_response()
 }
 
-/// PUT /api/hex/world-seed — 設定野外生成種子
+/// PUT /api/hex/world-seed — 設定 world_seed（揭露用 RNG）
 pub async fn world_seed_put(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -315,14 +325,30 @@ pub async fn world_seed_put(
     ok_json().into_response()
 }
 
-/// GET /api/hex/grid — 回傳完整 grid
+/// GET /api/hex/grid — 回傳完整 grid，並附 **`contract_pins`**（遊戲釘死彩格座標，與地圖編輯器同步）。
 pub async fn grid_get(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
 ) -> impl IntoResponse {
     auth!(st, q);
     let grid = hex_state().grid.read().unwrap();
-    Json(serde_json::to_value(&*grid).unwrap()).into_response()
+    let mut v = match serde_json::to_value(&*grid) {
+        Ok(j) => j,
+        Err(e) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({"error": e.to_string()})),
+            )
+                .into_response();
+        }
+    };
+    if let Some(obj) = v.as_object_mut() {
+        obj.insert(
+            "contract_pins".to_string(),
+            serde_json::to_value(api_contract_pins()).unwrap_or_else(|_| serde_json::json!([])),
+        );
+    }
+    Json(v).into_response()
 }
 
 /// PUT /api/hex/cell — 建立或更新一個格子
@@ -333,9 +359,22 @@ pub async fn cell_put(
 ) -> impl IntoResponse {
     auth!(st, q);
     let coord = HexCoord::new(req.q, req.r);
+    if !allowed_terrain_for_pin(coord, req.terrain) {
+        return (
+            StatusCode::CONFLICT,
+            Json(serde_json::json!({
+                "error": "遊戲釘死之出生格 (0,0) 須為草原（grassland）"
+            })),
+        )
+            .into_response();
+    }
+    let mut tags = req.tags;
+    if is_player_spawn_pin(coord) && !tags.iter().any(|t| t == "player_spawn") {
+        tags.push("player_spawn".into());
+    }
     let mut cell = HexCell::new(coord, req.terrain, &req.name);
     cell.zone = req.zone;
-    cell.tags = req.tags;
+    cell.tags = tags;
     cell.description = req.description;
     cell.objects = req.objects;
 
@@ -357,9 +396,23 @@ pub async fn cells_put(
     let mut grid = hex_state().grid.write().unwrap();
     for req in reqs {
         let coord = HexCoord::new(req.q, req.r);
+        if !allowed_terrain_for_pin(coord, req.terrain) {
+            drop(grid);
+            return (
+                StatusCode::CONFLICT,
+                Json(serde_json::json!({
+                    "error": "批次內含遊戲釘死之出生格 (0,0)，該格須為草原（grassland）"
+                })),
+            )
+                .into_response();
+        }
+        let mut tags = req.tags;
+        if is_player_spawn_pin(coord) && !tags.iter().any(|t| t == "player_spawn") {
+            tags.push("player_spawn".into());
+        }
         let mut cell = HexCell::new(coord, req.terrain, &req.name);
         cell.zone = req.zone;
-        cell.tags = req.tags;
+        cell.tags = tags;
         cell.description = req.description;
         cell.objects = req.objects;
         grid.insert(cell);
@@ -377,6 +430,15 @@ pub async fn cell_delete(
 ) -> impl IntoResponse {
     auth!(st, q);
     let coord = HexCoord::new(cq, cr);
+    if is_undeletable_contract(coord) {
+        return (
+            StatusCode::CONFLICT,
+            Json(serde_json::json!({
+                "error": "遊戲釘死之契約格不可刪除（出生點 0,0）"
+            })),
+        )
+            .into_response();
+    }
     let mut grid = hex_state().grid.write().unwrap();
     let existed = grid.remove(coord).is_some();
     drop(grid);
