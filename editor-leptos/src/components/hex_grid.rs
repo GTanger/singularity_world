@@ -249,9 +249,23 @@ fn draw_edge_trees(
         ctx.close_path();
         ctx.fill();
 
-        // 描邊（讓剪影可讀）
+        // 描邊（只描兩側曲線，不描底邊閉合線，避免與六角邊重疊）
         ctx.set_stroke_style_str(&crown_stroke);
         ctx.set_line_width(0.8);
+        ctx.begin_path();
+        ctx.move_to(left_x, left_y);
+        ctx.quadratic_curve_to(
+            trunk_top_x - tnx * crown_w * 0.3 + nx * tree_h * 0.7,
+            trunk_top_y - tny * crown_w * 0.3 + ny * tree_h * 0.7,
+            top_x,
+            top_y,
+        );
+        ctx.quadratic_curve_to(
+            trunk_top_x + tnx * crown_w * 0.3 + nx * tree_h * 0.7,
+            trunk_top_y + tny * crown_w * 0.3 + ny * tree_h * 0.7,
+            right_x,
+            right_y,
+        );
         ctx.stroke();
     }
 }
