@@ -70,7 +70,8 @@ docs/                    — 設計文件（修改前必讀相關文件）
 
 ## 常用指令
 ```bash
-cargo build --release && PORT=1721 ./target/release/singularity_world   # 建置並啟動
+./start                                                                  # 改碼後唯一正式流程：完整閘門＋建置＋Hex trunk＋重啟（全跑、不分流）
+cargo build --release && PORT=1721 ./target/release/singularity_world   # 僅建置並啟動
 cargo clippy -- -D warnings                                              # 靜態檢查（零警告）
 cargo test                                                               # 跑測試
 ```
@@ -88,6 +89,7 @@ cargo test                                                               # 跑�
 - **不要改 store 結構**。JSON schema 變動影響全局，必須先確認
 - **改動前看 diff 範圍**。能改一行就不改十行。不要重構他沒要求重構的東西
 - **測試再提交**。改完後跑 `cargo build` 確認能編譯，`cargo clippy` 零警告，有 test 的跑 test
+- **改程式碼後必重啟**。每次修改可建置之程式後執行 **`./start`**（見根目錄 `AGENTS.md`），**全數重啟、不分流**；不得只改檔不啟動
 - **文檔寫了就要做到**。代碼實作必須對齊設計文檔，不准圖省事把設計簡化成狀態機
 
 ## NPC 設計核心
@@ -127,3 +129,7 @@ cargo test                                                               # 跑�
 - **世界骨架**：Azgaar Fantasy Map Generator → Parser A（tools/azgaar_parser.py）→ 694 房間（623 城鎮 + 71 地標）
 - **城市內部**：Watabou Medieval City Generator → Parser B（待做）→ 大城市鑽入用
 - **當前狀態**：Parser A 完成，房間名稱/描述翻譯精修中（018 工單）。舊浮生城 639 房封存，NPC 歸零
+
+## 代理入口（Harness）
+- 根目錄 **`AGENTS.md`**：精簡入口與必讀鏈結。
+- **`docs/AGENTS_LEARNED.md`**：累積之使用者偏好與工作區事實全文（與 `docs/文檔索引.md` 並讀）。

@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="utf-8">
-<title>森林樹海渲染測試</title>
+<title>六角地形渲染測試</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: #0f1923; overflow: hidden; }
@@ -16,7 +16,7 @@ canvas { display: block; }
 </style>
 </head>
 <body>
-<div id="info">森林樹海測試 | 滾輪縮放 | 拖曳平移</div>
+<div id="info">六角地形測試 | 滾輪縮放 | 拖曳平移</div>
 <canvas id="c"></canvas>
 <script>
 const HEX_R = 28;
@@ -26,8 +26,6 @@ for (let i = 0; i < 6; i++) {
   const a = Math.PI / 180 * (60 * i + 30);
   HEX_VERTS.push([HEX_R * Math.cos(a), HEX_R * Math.sin(a)]);
 }
-
-const AXIAL_DIRS = [[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];
 
 const TERRAIN = {
   plain:        { color: '#c8d68e', forest: false },
@@ -96,12 +94,6 @@ for (let q = -RADIUS; q <= RADIUS; q++) {
   }
 }
 
-// 建森林集合
-const forestSet = new Set();
-for (const k in cells) {
-  if (TERRAIN[cells[k].terrain].forest) forestSet.add(k);
-}
-
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 let camX = 0, camY = 0, camScale = 1.2;
@@ -121,76 +113,6 @@ function drawHex(px, py) {
   ctx.moveTo(px + HEX_VERTS[0][0], py + HEX_VERTS[0][1]);
   for (let i = 1; i < 6; i++) ctx.lineTo(px + HEX_VERTS[i][0], py + HEX_VERTS[i][1]);
   ctx.closePath();
-}
-
-function drawEdgeTrees(px, py, edgeIdx, q, r, isHeavy) {
-  const [ax, ay] = HEX_VERTS[edgeIdx];
-  const [bx, by] = HEX_VERTS[(edgeIdx + 1) % 6];
-  // 邊中點方向 = 朝外法線
-  const mx = (ax + bx) / 2, my = (ay + by) / 2;
-  const outLen = Math.sqrt(mx * mx + my * my) || 0.01;
-  const nx = mx / outLen, ny = my / outLen;
-  // 切線
-  const tx = bx - ax, ty = by - ay;
-  const tLen = Math.sqrt(tx * tx + ty * ty) || 0.01;
-  const tnx = tx / tLen, tny = ty / tLen;
-
-  const treeCount = isHeavy ? 3 : 2;
-  for (let ti = 0; ti < treeCount; ti++) {
-    const th = cellHash(q, r, edgeIdx * 100 + ti);
-    const frac = 0.2 + 0.6 * (ti + 0.5) / treeCount;
-    const jitter = ((th % 100) / 100 - 0.5) * 0.15;
-    const t = frac + jitter;
-    const baseX = px + ax + (bx - ax) * t;
-    const baseY = py + ay + (by - ay) * t;
-
-    const hBase = HEX_R * 0.35;
-    const hVar = ((th >> 8) % 60) / 100;
-    const treeH = hBase * (0.7 + hVar);
-    const wBase = HEX_R * 0.22;
-    const wVar = ((th >> 16) % 50) / 100;
-    const crownW = wBase * (0.7 + wVar);
-
-    const topX = baseX + nx * treeH;
-    const topY = baseY + ny * treeH;
-    const trunkH = treeH * 0.3;
-    const trunkTopX = baseX + nx * trunkH;
-    const trunkTopY = baseY + ny * trunkH;
-
-    // 樹幹
-    ctx.strokeStyle = '#4a3728';
-    ctx.lineWidth = 1.2 / camScale;
-    ctx.beginPath();
-    ctx.moveTo(baseX, baseY);
-    ctx.lineTo(trunkTopX, trunkTopY);
-    ctx.stroke();
-
-    // 樹冠
-    const leftX = trunkTopX - tnx * crownW;
-    const leftY = trunkTopY - tny * crownW;
-    const rightX = trunkTopX + tnx * crownW;
-    const rightY = trunkTopY + tny * crownW;
-
-    ctx.fillStyle = isHeavy ? '#2d5a1e' : '#3d7a2e';
-    ctx.beginPath();
-    ctx.moveTo(leftX, leftY);
-    ctx.quadraticCurveTo(
-      trunkTopX - tnx * crownW * 0.3 + nx * treeH * 0.7,
-      trunkTopY - tny * crownW * 0.3 + ny * treeH * 0.7,
-      topX, topY
-    );
-    ctx.quadraticCurveTo(
-      trunkTopX + tnx * crownW * 0.3 + nx * treeH * 0.7,
-      trunkTopY + tny * crownW * 0.3 + ny * treeH * 0.7,
-      rightX, rightY
-    );
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = isHeavy ? '#1e4015' : '#2d6020';
-    ctx.lineWidth = 0.6 / camScale;
-    ctx.stroke();
-  }
 }
 
 function draw() {
@@ -214,22 +136,6 @@ function draw() {
     ctx.strokeStyle = '#1a2634';
     ctx.lineWidth = 0.5 / camScale;
     ctx.stroke();
-  }
-
-  // 第二遍：森林邊緣樹形
-  for (const k in cells) {
-    const c = cells[k];
-    const t = TERRAIN[c.terrain];
-    if (!t.forest) continue;
-    const [px, py] = coordToPixel(c.q, c.r);
-
-    for (let di = 0; di < 6; di++) {
-      const [dq, dr] = AXIAL_DIRS[di];
-      const nk = (c.q + dq) + ',' + (c.r + dr);
-      if (!forestSet.has(nk)) {
-        drawEdgeTrees(px, py, di, c.q, c.r, t.heavy);
-      }
-    }
   }
 
   ctx.restore();

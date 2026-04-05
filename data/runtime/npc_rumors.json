@@ -1,67 +1,202 @@
 {
   "entries": [
     {
-      "id": "seed|2958641|3",
+      "id": "seed|2958986|12",
+      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 2,
+      "updated_at": 1775392092,
+      "expires_at": 1775395692
+    },
+    {
+      "id": "seed|2958988|23",
+      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775392909,
+      "expires_at": 1775396509
+    },
+    {
+      "id": "seed|2958985|22",
+      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775391247,
+      "expires_at": 1775394847
+    },
+    {
+      "id": "seed|2958983|18",
+      "text": "電梯間排了好長的隊，聽說中間幾層在做維護",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775390271,
+      "expires_at": 1775393871
+    },
+    {
+      "id": "seed|2958987|21",
+      "text": "走廊的老長凳被根鬚纏得更穩了，坐起來比以前舒服",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775392723,
+      "expires_at": 1775396323
+    },
+    {
+      "id": "seed|2958988|7",
+      "text": "聽說好事多的批發價又調了，最近物流好像不太順",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775392809,
+      "expires_at": 1775396409
+    },
+    {
+      "id": "eco|pulse|303",
+      "text": "聽說租鋪成本漲了，幾家小攤開始提早收攤。",
+      "source": "economy",
+      "source_score": 1,
+      "weight": 22,
+      "updated_at": 1775392970,
+      "expires_at": 1775398370
+    },
+    {
+      "id": "seed|2958984|12",
+      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775390620,
+      "expires_at": 1775394220
+    },
+    {
+      "id": "seed|2958987|25",
+      "text": "有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775392595,
+      "expires_at": 1775396195
+    },
+    {
+      "id": "seed|2958983|16",
+      "text": "採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775390041,
+      "expires_at": 1775393641
+    },
+    {
+      "id": "seed|2958986|22",
+      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775392164,
+      "expires_at": 1775395764
+    },
+    {
+      "id": "seed|2958985|23",
+      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775391424,
+      "expires_at": 1775395024
+    },
+    {
+      "id": "seed|2958985|12",
+      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775391173,
+      "expires_at": 1775394773
+    },
+    {
+      "id": "seed|2958984|4",
+      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775390832,
+      "expires_at": 1775394432
+    },
+    {
+      "id": "seed|2958985|0",
+      "text": "今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775391132,
+      "expires_at": 1775394732
+    },
+    {
+      "id": "seed|2958984|24",
+      "text": "昨晚牆面的玉質脈絡突然閃了一下暗紫色的光，只持續了幾秒",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775390937,
+      "expires_at": 1775394537
+    },
+    {
+      "id": "seed|2958982|4",
+      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775389726,
+      "expires_at": 1775393326
+    },
+    {
+      "id": "seed|2958985|3",
       "text": "有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775185004,
-      "expires_at": 1775188604
+      "updated_at": 1775391320,
+      "expires_at": 1775394920
     },
     {
-      "id": "seed|2958642|15",
+      "id": "seed|2958988|10",
+      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775392970,
+      "expires_at": 1775396570
+    },
+    {
+      "id": "seed|2958986|4",
+      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775391611,
+      "expires_at": 1775395211
+    },
+    {
+      "id": "seed|2958985|15",
       "text": "城外商路上的指引石被增生物覆蓋了一半，有隊伍去清理了",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775185605,
-      "expires_at": 1775189205
+      "updated_at": 1775391050,
+      "expires_at": 1775394650
     },
     {
-      "id": "seed|2958638|25",
-      "text": "有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸",
+      "id": "seed|2958984|3",
+      "text": "有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775183203,
-      "expires_at": 1775186803
-    },
-    {
-      "id": "seed|2958640|9",
-      "text": "加了福的肉質蔬果到貨了，今天特別新鮮",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775184404,
-      "expires_at": 1775188004
-    },
-    {
-      "id": "seed|2958643|12",
-      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1775186205,
-      "expires_at": 1775189805
-    },
-    {
-      "id": "seed|2958639|11",
-      "text": "藥材價格穩著，但品種比上個月少了幾樣",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775183804,
-      "expires_at": 1775187404
-    },
-    {
-      "id": "eco|pulse|284",
-      "text": "這幾天米鹽又貴了一點，街坊都在精打細算。",
-      "source": "economy",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1775184486,
-      "expires_at": 1775189886
+      "updated_at": 1775390445,
+      "expires_at": 1775394045
     }
   ]
 }

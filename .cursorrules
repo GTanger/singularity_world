@@ -73,7 +73,8 @@ docs/                    — 設計文件（修改前必讀相關文件）
 
 ## 常用指令
 ```bash
-cargo build --release && PORT=1721 ./target/release/singularity_world   # 建置並啟動
+./start                                                                  # 唯一正式重啟：閘門＋release＋Hex trunk＋重啟（改碼後全跑，不分流）
+cargo build --release && PORT=1721 ./target/release/singularity_world   # 僅建置並啟動（不含完整閘門）
 cargo clippy -- -D warnings                                              # 靜態檢查（零警告）
 cargo test                                                               # 跑測試
 ```
@@ -91,9 +92,10 @@ cargo test                                                               # 跑�
 - **不要改 store 結構**。JSON schema 變動影響全局，必須先確認
 - **改動前看 diff 範圍**。能改一行就不改十行。不要重構他沒要求重構的東西
 - **測試再提交**。改完後跑 `cargo build` 確認能編譯，`cargo clippy` 零警告，有 test 的跑 test
+- **改完代碼自動 `./start` 自檢（預設驗收）**。每次修改可建置之程式（含 `editor-leptos`、`web/`、`src/` 等）後，**同一輪任務內**於專案根目錄執行 **`./start`**（內含 clippy、test、checkrooms、release、trunk、服務重啟）；**不得**只改檔不跑、**不得以**僅 `cargo build`／`cargo clippy`／`systemctl restart` 代替（除非使用者明確只要局部指令，或環境無法執行須說明原因與已做到的最後一步）。見 `AGENTS.md`「建置與重啟」
 - **文檔寫了就要做到**。代碼實作必須對齊設計文檔，不准圖省事把設計簡化成狀態機
 - **外查先行**。涉及外部工具、官網、API、版本、授權或「官方怎麼說」時，必須先上網查證（`web_search` / `WebFetch` / MCP 等）再作答或改碼；禁止只靠訓練記憶。問 Watabou 就只查 Watabou，勿混 Azgaar。
-- **本檔與 `AGENTS.md` 不是裝飾**。條目是執行標準，預設每輪已讀；寫了不做等於沒寫，勿再讓使用者口頭重複。
+- **本檔與根目錄 `AGENTS.md`、`docs/AGENTS_LEARNED.md` 不是裝飾**。`AGENTS.md` 為入口；累積偏好與工作區事實全文在 `docs/AGENTS_LEARNED.md`。條目是執行標準，預設每輪已讀；寫了不做等於沒寫，勿再讓使用者口頭重複。
 
 ## NPC 設計核心
 - **需求驅動生活，不是腳本驅動表演**。NPC 的行為從需求出發，不是從腳本出發

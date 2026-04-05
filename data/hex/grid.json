@@ -3,26 +3,58 @@
   "cells": [
     {
       "coord": {
-        "q": 2,
+        "q": -1,
         "r": 0
       },
-      "terrain": "jungle",
+      "terrain": "forest",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 1
+      },
+      "terrain": "grassland",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -1
+      },
+      "terrain": "forest",
       "name": ""
     },
     {
       "coord": {
         "q": 0,
-        "r": 2
+        "r": -1
       },
-      "terrain": "grassland",
+      "terrain": "forest",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 0
+      },
+      "terrain": "forest",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 0
+      },
+      "terrain": "forest",
       "name": ""
     },
     {
       "coord": {
         "q": -1,
-        "r": 0
+        "r": 2
       },
-      "terrain": "grassland",
+      "terrain": "forest",
       "name": ""
     },
     {
@@ -54,22 +86,6 @@
     },
     {
       "coord": {
-        "q": -1,
-        "r": 2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 2,
-        "r": -1
-      },
-      "terrain": "jungle",
-      "name": ""
-    },
-    {
-      "coord": {
         "q": 0,
         "r": 1
       },
@@ -78,24 +94,16 @@
     },
     {
       "coord": {
-        "q": 1,
-        "r": 0
+        "q": -1,
+        "r": 1
       },
       "terrain": "forest",
       "name": ""
     },
     {
       "coord": {
-        "q": -2,
-        "r": 1
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -1,
-        "r": 1
+        "q": 0,
+        "r": 2
       },
       "terrain": "forest",
       "name": ""

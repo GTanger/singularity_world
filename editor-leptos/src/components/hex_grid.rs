@@ -7,6 +7,10 @@ use std::collections::{HashMap, HashSet};
 use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
 
 const HEX_R: f64 = 28.0;
+/// 林區邊界：頂點往鄰接林格格心內縮後，每邊以二次貝茲相連
+const FOREST_BOUNDARY_VERTEX_INSET: f64 = 9.0;
+/// 控制點自該邊**中點**沿「格心→邊中」再往六角邊外推（遠離格心、貼邊鼓出）
+const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 6.5;
 const SQRT3: f64 = 1.7320508075688772;
 const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, 14.0),
@@ -17,9 +21,7 @@ const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, -14.0),
 ];
 
-/// 與 `HEX_VERT_OFFSETS` **邊索引 0..5** 對齊的鄰格轴向增量 `(dq, dr)`。
-/// 邊 `i` 為頂點 `i → (i+1)%6`；**必須**與畫布上該邊的外側鄰格一致，否則森林邊緣樹會畫在林區內部共用邊上。
-/// （舊版誤用 E/Ne/… 固定順序，與頂點順序不一致，導致截圖中「森林格之間仍出現小樹」。）
+/// 與 `HEX_VERT_OFFSETS` **邊索引 0..5** 對齊的鄰格轴向增量 `(dq, dr)`（邊 `i`＝頂點 `i → (i+1)%6`）。
 const AXIAL_DIRS_FOR_EDGES: [(i32, i32); 6] = [
     (0, 1),   // 邊 0：外側為 Se
     (-1, 1),  // 邊 1：Sw
@@ -119,154 +121,252 @@ fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
     reps
 }
 
-/// 六角邊的兩個頂點索引（邊 i 連接頂點 i 和 (i+1)%6）
-fn hex_edge_verts(edge_idx: usize) -> ((f64, f64), (f64, f64)) {
-    let a = HEX_VERT_OFFSETS[edge_idx];
-    let b = HEX_VERT_OFFSETS[(edge_idx + 1) % 6];
-    (a, b)
-}
-
-/// 用確定性 hash 生成偽隨機（同座標同結果）
-fn cell_hash(q: i32, r: i32, salt: u32) -> u64 {
-    let mut h = (q as u64).wrapping_mul(0x9E3779B97F4A7C15)
-        .wrapping_add((r as u64).wrapping_mul(0x517CC1B727220A95))
-        .wrapping_add(salt as u64);
-    h ^= h >> 30;
-    h = h.wrapping_mul(0xBF58476D1CE4E5B9);
-    h ^= h >> 27;
-    h
-}
-
-fn darken_hex_rgb(color: &str, factor: f64) -> String {
-    let s = color.strip_prefix('#').unwrap_or(color);
-    if s.len() != 6 {
-        return color.to_string();
+/// 林緣外側邊描邊色（略深於對應地形填色）
+fn forest_boundary_stroke_color(t: Terrain) -> &'static str {
+    match t {
+        Terrain::ForestHeavy => "#1a3d12",
+        Terrain::Forest => "#3d6530",
+        Terrain::ForestLight => "#5f8a4a",
+        Terrain::Jungle => "#1f4d1a",
+        _ => "#3d6530",
     }
-    let Ok(v) = u32::from_str_radix(s, 16) else {
-        return color.to_string();
-    };
-    let r = ((v >> 16) & 0xff) as f64;
-    let g = ((v >> 8) & 0xff) as f64;
-    let b = (v & 0xff) as f64;
-    let f = factor.clamp(0.0, 1.0);
-    let rr = (r * f).round().clamp(0.0, 255.0) as u8;
-    let gg = (g * f).round().clamp(0.0, 255.0) as u8;
-    let bb = (b * f).round().clamp(0.0, 255.0) as u8;
-    format!("#{:02x}{:02x}{:02x}", rr, gg, bb)
 }
 
-/// 在 hex 邊緣畫程序化小樹（bezier 樹冠 + 樹幹）
-fn draw_edge_trees(
+/// 林緣邊界有向邊：林格 `(q,r)` 上邊 `ei`（鄰格不在**同一連通林區**）
+type ForestBoundaryEdge = (i32, i32, usize);
+/// 迴線頂點聚合：量化鍵 →（世界座標、鄰接林格集合）
+type ForestVertexAgg = HashMap<(i64, i64), ((f64, f64), HashSet<(i32, i32)>)>;
+
+fn forest_vertex_world(q: i32, r: i32, vi: usize) -> (f64, f64) {
+    let (px, py) = coord_to_pixel(q, r);
+    let (vx, vy) = HEX_VERT_OFFSETS[vi];
+    (px + vx, py + vy)
+}
+
+fn forest_vertex_key_xy(x: f64, y: f64) -> (i64, i64) {
+    ((x * 10_000.0).round() as i64, (y * 10_000.0).round() as i64)
+}
+
+fn forest_edge_vertex_keys(q: i32, r: i32, ei: usize) -> ((i64, i64), (i64, i64)) {
+    let (wa, wb) = (forest_vertex_world(q, r, ei), forest_vertex_world(q, r, (ei + 1) % 6));
+    (forest_vertex_key_xy(wa.0, wa.1), forest_vertex_key_xy(wb.0, wb.1))
+}
+
+fn forest_inset_toward(px: f64, py: f64, gx: f64, gy: f64, dist: f64) -> (f64, f64) {
+    let dx = gx - px;
+    let dy = gy - py;
+    let len = (dx * dx + dy * dy).sqrt().max(1e-9);
+    (px + (dx / len) * dist, py + (dy / len) * dist)
+}
+
+/// 連通林區（六鄰、同屬 `forest_set`）
+fn forest_connected_components(forest_set: &HashSet<(i32, i32)>) -> Vec<Vec<(i32, i32)>> {
+    let mut visited: HashSet<(i32, i32)> = HashSet::new();
+    let mut out: Vec<Vec<(i32, i32)>> = Vec::new();
+    for &seed in forest_set {
+        if visited.contains(&seed) {
+            continue;
+        }
+        let mut stack = vec![seed];
+        visited.insert(seed);
+        let mut comp = Vec::new();
+        while let Some((cq, cr)) = stack.pop() {
+            comp.push((cq, cr));
+            for &(dq, dr) in &AXIAL_NEIGHBOR_DR {
+                let nq = cq + dq;
+                let nr = cr + dr;
+                let nid = (nq, nr);
+                if !forest_set.contains(&nid) || visited.contains(&nid) {
+                    continue;
+                }
+                visited.insert(nid);
+                stack.push(nid);
+            }
+        }
+        out.push(comp);
+    }
+    out
+}
+
+/// 與連通林區相鄰但**不在該區**之邊（含外輪廓與包圍破孔非林格之內輪廓）
+fn component_boundary_edges(comp: &[(i32, i32)]) -> Vec<ForestBoundaryEdge> {
+    let cset: HashSet<(i32, i32)> = comp.iter().copied().collect();
+    let mut edges = Vec::new();
+    for &(q, r) in comp {
+        for (ei, &(dq, dr)) in AXIAL_DIRS_FOR_EDGES.iter().enumerate() {
+            let nq = q + dq;
+            let nr = r + dr;
+            if !cset.contains(&(nq, nr)) {
+                edges.push((q, r, ei));
+            }
+        }
+    }
+    edges
+}
+
+fn forest_other_vertex_key(e: ForestBoundaryEdge, v: (i64, i64)) -> (i64, i64) {
+    let (a, b) = forest_edge_vertex_keys(e.0, e.1, e.2);
+    if a == v {
+        b
+    } else {
+        a
+    }
+}
+
+/// 邊界邊集拆成封閉迴線（每迴線一筆封閉路徑）
+fn forest_trace_boundary_cycles(edges: &[ForestBoundaryEdge]) -> Vec<Vec<ForestBoundaryEdge>> {
+    if edges.is_empty() {
+        return vec![];
+    }
+    let mut unused: HashSet<ForestBoundaryEdge> = edges.iter().copied().collect();
+    let mut incident: HashMap<(i64, i64), Vec<ForestBoundaryEdge>> = HashMap::new();
+    for &e in edges {
+        let (a, b) = forest_edge_vertex_keys(e.0, e.1, e.2);
+        incident.entry(a).or_default().push(e);
+        incident.entry(b).or_default().push(e);
+    }
+    let mut cycles: Vec<Vec<ForestBoundaryEdge>> = Vec::new();
+    while let Some(&start_e) = unused.iter().next() {
+        let (va, _) = forest_edge_vertex_keys(start_e.0, start_e.1, start_e.2);
+        let mut cur_e = start_e;
+        let mut cur_v = va;
+        let start_v = va;
+        let mut cycle: Vec<ForestBoundaryEdge> = Vec::new();
+        loop {
+            if !unused.contains(&cur_e) {
+                for &e in &cycle {
+                    unused.remove(&e);
+                }
+                break;
+            }
+            cycle.push(cur_e);
+            let other = forest_other_vertex_key(cur_e, cur_v);
+            if other == start_v && cycle.len() > 1 {
+                for &e in &cycle {
+                    unused.remove(&e);
+                }
+                cycles.push(cycle);
+                break;
+            }
+            let next_e = incident
+                .get(&other)
+                .and_then(|lst| lst.iter().copied().find(|&e| e != cur_e && unused.contains(&e)));
+            match next_e {
+                Some(ne) => {
+                    cur_v = other;
+                    cur_e = ne;
+                }
+                None => {
+                    for &e in &cycle {
+                        unused.remove(&e);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    cycles
+}
+
+/// 依迴線順序畫**單一**封閉路徑：頂點內縮後，每邊 `quadratic_curve_to`（控制點：邊中沿格心→邊中外推，遠離格心）。
+fn stroke_forest_loop_world(
     ctx: &web_sys::CanvasRenderingContext2d,
-    px: f64,
-    py: f64,
-    edge_idx: usize,
-    q: i32,
-    r: i32,
+    cycle: &[ForestBoundaryEdge],
+    vertex_inset: f64,
+    bulge_along_edge: f64,
     terrain: Terrain,
-    is_heavy: bool,
+    line_width: f64,
 ) {
-    let ((ax, ay), (bx, by)) = hex_edge_verts(edge_idx);
-    // 樹一律朝北（螢幕向上；Canvas y 軸向下）
-    let nx = 0.0;
-    let ny = -1.0;
-    // 邊的切線方向
-    let tx = bx - ax;
-    let ty = by - ay;
-    let tlen = (tx * tx + ty * ty).sqrt().max(0.01);
-    let tnx = tx / tlen;
-    let tny = ty / tlen;
+    if cycle.is_empty() {
+        return;
+    }
+    // 每個量化頂點：世界座標 + 所有鄰接邊所屬林格（去重後格心平均＝內縮方向）
+    let mut vertex_agg: ForestVertexAgg = HashMap::new();
+    for &e in cycle {
+        let (q, r, ei) = e;
+        for vi in [ei, (ei + 1) % 6] {
+            let (wx, wy) = forest_vertex_world(q, r, vi);
+            let k = forest_vertex_key_xy(wx, wy);
+            let ent = vertex_agg.entry(k).or_insert_with(|| ((wx, wy), HashSet::new()));
+            ent.1.insert((q, r));
+        }
+    }
+    let mut inset_map: HashMap<(i64, i64), (f64, f64)> =
+        HashMap::with_capacity(vertex_agg.len());
+    for (k, ((wx, wy), cells)) in vertex_agg {
+        let mut sx = 0.0_f64;
+        let mut sy = 0.0_f64;
+        let n = cells.len() as f64;
+        for (q, r) in cells {
+            let (px, py) = coord_to_pixel(q, r);
+            sx += px;
+            sy += py;
+        }
+        let gx = sx / n.max(1.0);
+        let gy = sy / n.max(1.0);
+        inset_map.insert(k, forest_inset_toward(wx, wy, gx, gy, vertex_inset));
+    }
+    let (va, _) = forest_edge_vertex_keys(cycle[0].0, cycle[0].1, cycle[0].2);
+    let mut cur_v = va;
+    ctx.begin_path();
+    for (i, &e) in cycle.iter().enumerate() {
+        let (q, r, ei) = e;
+        let other = forest_other_vertex_key(e, cur_v);
+        let p0 = inset_map[&cur_v];
+        let p1 = inset_map[&other];
+        let (cx, cy) = coord_to_pixel(q, r);
+        let (ax, ay) = HEX_VERT_OFFSETS[ei];
+        let (bx, by) = HEX_VERT_OFFSETS[(ei + 1) % 6];
+        let lmx = (ax + bx) * 0.5;
+        let lmy = (ay + by) * 0.5;
+        let ex = cx + lmx;
+        let ey = cy + lmy;
+        // 格心→邊中（由內往外），控制點再沿同方向延伸 → 遠離格心、靠向六角邊
+        let dx = ex - cx;
+        let dy = ey - cy;
+        let elen = (dx * dx + dy * dy).sqrt().max(1e-9);
+        let ctrl_x = ex + (dx / elen) * bulge_along_edge;
+        let ctrl_y = ey + (dy / elen) * bulge_along_edge;
+        if i == 0 {
+            ctx.move_to(p0.0, p0.1);
+        }
+        ctx.quadratic_curve_to(ctrl_x, ctrl_y, p1.0, p1.1);
+        cur_v = other;
+    }
+    ctx.close_path();
+    ctx.set_stroke_style_str(forest_boundary_stroke_color(terrain));
+    ctx.set_line_width(line_width);
+    ctx.set_line_cap("round");
+    ctx.set_line_join("round");
+    ctx.stroke();
+}
 
-    let tree_count = if is_heavy { 3 } else { 2 };
-    let skip_trunk = matches!(edge_idx, 3 | 4); // Nw / Ne：讓樹冠直接從底色長出（像圖二）
-
-    for ti in 0..tree_count {
-        let th = cell_hash(q, r, (edge_idx as u32) * 100 + ti);
-        // 沿邊分佈位置（0.2 ~ 0.8 避開頂點）
-        let frac = 0.2 + 0.6 * (ti as f64 + 0.5) / tree_count as f64;
-        // 加微量隨機偏移
-        let jitter = ((th % 100) as f64 / 100.0 - 0.5) * 0.15;
-        let t = frac + jitter;
-        let base_x = px + ax + (bx - ax) * t;
-        let base_y = py + ay + (by - ay) * t;
-
-        // 樹高（朝外長）
-        let h_base = HEX_R * 0.35;
-        let h_var = ((th >> 8) % 60) as f64 / 100.0;
-        let tree_h = h_base * (0.7 + h_var);
-        // 樹冠寬
-        let w_base = HEX_R * 0.22;
-        let w_var = ((th >> 16) % 50) as f64 / 100.0;
-        let crown_w = w_base * (0.7 + w_var);
-
-        // 樹頂
-        let top_x = base_x + nx * tree_h;
-        let top_y = base_y + ny * tree_h;
-
-        // 樹幹（短線）— 在 Nw/Ne 邊不畫，讓樹冠直接融合底色
-        let trunk_h = tree_h * 0.3;
-        let (trunk_top_x, trunk_top_y) = if skip_trunk {
-            (base_x, base_y)
-        } else {
-            let x = base_x + nx * trunk_h;
-            let y = base_y + ny * trunk_h;
-            ctx.set_stroke_style_str("#4a3728");
-            ctx.set_line_width(1.2);
-            ctx.begin_path();
-            ctx.move_to(base_x, base_y);
-            ctx.line_to(x, y);
-            ctx.stroke();
-            (x, y)
+/// 一個連通林區：每條邊界迴線僅畫一條線
+fn stroke_forest_component_arcs(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    comp: &[(i32, i32)],
+    terrain_of: &HashMap<(i32, i32), Terrain>,
+    line_width: f64,
+) {
+    let edges = component_boundary_edges(comp);
+    if edges.is_empty() {
+        return;
+    }
+    let cycles = forest_trace_boundary_cycles(&edges);
+    for cycle in cycles {
+        let q0 = cycle[0].0;
+        let r0 = cycle[0].1;
+        let Some(&t) = terrain_of.get(&(q0, r0)) else {
+            continue;
         };
-
-        // 樹冠（兩條 bezier 圍成水滴形）
-        let left_x = trunk_top_x - tnx * crown_w;
-        let left_y = trunk_top_y - tny * crown_w;
-        let right_x = trunk_top_x + tnx * crown_w;
-        let right_y = trunk_top_y + tny * crown_w;
-
-        // 樹冠色與底色同色（依格子地形），但仍加一圈較深描邊
-        let crown_color = terrain.color();
-        let crown_stroke = darken_hex_rgb(crown_color, 0.72);
-
-        ctx.set_fill_style_str(crown_color);
-        ctx.begin_path();
-        ctx.move_to(left_x, left_y);
-        // 左弧 → 頂
-        ctx.quadratic_curve_to(
-            trunk_top_x - tnx * crown_w * 0.3 + nx * tree_h * 0.7,
-            trunk_top_y - tny * crown_w * 0.3 + ny * tree_h * 0.7,
-            top_x,
-            top_y,
+        stroke_forest_loop_world(
+            ctx,
+            &cycle,
+            FOREST_BOUNDARY_VERTEX_INSET,
+            FOREST_ARC_BULGE_ALONG_EDGE,
+            t,
+            line_width,
         );
-        // 頂 → 右弧
-        ctx.quadratic_curve_to(
-            trunk_top_x + tnx * crown_w * 0.3 + nx * tree_h * 0.7,
-            trunk_top_y + tny * crown_w * 0.3 + ny * tree_h * 0.7,
-            right_x,
-            right_y,
-        );
-        ctx.close_path();
-        ctx.fill();
-
-        // 描邊（只描兩側曲線，不描底邊閉合線，避免與六角邊重疊）
-        ctx.set_stroke_style_str(&crown_stroke);
-        ctx.set_line_width(0.8);
-        ctx.begin_path();
-        ctx.move_to(left_x, left_y);
-        ctx.quadratic_curve_to(
-            trunk_top_x - tnx * crown_w * 0.3 + nx * tree_h * 0.7,
-            trunk_top_y - tny * crown_w * 0.3 + ny * tree_h * 0.7,
-            top_x,
-            top_y,
-        );
-        ctx.quadratic_curve_to(
-            trunk_top_x + tnx * crown_w * 0.3 + nx * tree_h * 0.7,
-            trunk_top_y + tny * crown_w * 0.3 + ny * tree_h * 0.7,
-            right_x,
-            right_y,
-        );
-        ctx.stroke();
     }
 }
 
@@ -282,6 +382,18 @@ fn coord_to_pixel(q: i32, r: i32) -> (f64, f64) {
     let x = HEX_R * SQRT3 * (q as f64 + r as f64 / 2.0);
     let y = HEX_R * 1.5 * r as f64;
     (x, y)
+}
+
+/// 將「視窗中心」對齊裝置像素格（僅用於 Canvas transform，不改互動用 camera）。
+/// 否則平移時弧線描邊與格線之間會有次像素抖動。
+fn snap_camera_to_device_pixels(cam_x: f64, cam_y: f64, zoom: f64, dpr: f64) -> (f64, f64) {
+    let k = zoom * dpr;
+    if !k.is_finite() || k <= 1e-12 {
+        return (cam_x, cam_y);
+    }
+    let cx = (cam_x * k).round() / k;
+    let cy = (cam_y * k).round() / k;
+    (cx, cy)
 }
 
 /// 在連通區 `comp` 中選與 **像素座標重心** 最近之一格（同距離則 `(q,r)` 字典序）
@@ -934,14 +1046,16 @@ pub fn HexGrid(
         ctx.fill_rect(0.0, 0.0, w_u32 as f64, h_u32 as f64);
         let _ = ctx.set_transform(dpr, 0.0, 0.0, dpr, 0.0, 0.0);
         ctx.save();
+        let (cam_dx, cam_dy) = snap_camera_to_device_pixels(cam.x, cam.y, cam.zoom, dpr);
         let _ = ctx.translate(w_css * 0.5, h_css * 0.5);
         let _ = ctx.scale(cam.zoom, cam.zoom);
-        let _ = ctx.translate(-cam.x, -cam.y);
+        let _ = ctx.translate(-cam_dx, -cam_dy);
 
         let vw = w_css / cam.zoom;
         let vh = h_css / cam.zoom;
-        let vx = cam.x - vw / 2.0;
-        let vy = cam.y - vh / 2.0;
+        // 與實際 transform 一致，避免裁切範圍與畫面差半個像素
+        let vx = cam_dx - vw / 2.0;
+        let vy = cam_dy - vh / 2.0;
         let margin = HEX_R * 2.0;
         let min_x = vx - margin;
         let max_x = vx + vw + margin;
@@ -1067,43 +1181,32 @@ pub fn HexGrid(
             }
         }
 
-        // === 森林樹海：邊緣樹形 ===
+        // === 林緣：連通林區外輪廓與破孔內輪廓，迴線上弧段相連 ===
         if cam.zoom >= 0.25 {
-            // 建森林格集合
-            let forest_set: HashSet<(i32, i32)> = cs.iter()
+            let forest_set: HashSet<(i32, i32)> = cs
+                .iter()
                 .filter(|c| is_forest_terrain(c.terrain))
                 .map(|c| (c.coord.q, c.coord.r))
                 .collect();
 
             if !forest_set.is_empty() {
-                for cell in cs.iter() {
-                    if !is_forest_terrain(cell.terrain) {
-                        continue;
-                    }
-                    let (px, py) = coord_to_pixel(cell.coord.q, cell.coord.r);
-                    if px < min_x - HEX_R || px > max_x + HEX_R
-                        || py < min_y - HEX_R || py > max_y + HEX_R
-                    {
-                        continue;
-                    }
-                    let is_heavy = matches!(cell.terrain, Terrain::ForestHeavy | Terrain::Jungle);
-
-                    // 檢查六個方向，鄰居不是森林的邊畫樹
-                    for (di, &(dq, dr)) in AXIAL_DIRS_FOR_EDGES.iter().enumerate() {
-                        let nq = cell.coord.q + dq;
-                        let nr = cell.coord.r + dr;
-                        if !forest_set.contains(&(nq, nr)) {
-                            draw_edge_trees(
-                                &ctx,
-                                px,
-                                py,
-                                di,
-                                cell.coord.q,
-                                cell.coord.r,
-                                cell.terrain,
-                                is_heavy,
-                            );
-                        }
+                let lw = (1.15 / cam.zoom).clamp(0.55, 2.8);
+                let terrain_of: HashMap<(i32, i32), Terrain> = cs
+                    .iter()
+                    .filter(|c| is_forest_terrain(c.terrain))
+                    .map(|c| ((c.coord.q, c.coord.r), c.terrain))
+                    .collect();
+                let comps = forest_connected_components(&forest_set);
+                for comp in comps {
+                    let any_visible = comp.iter().any(|&(q, r)| {
+                        let (px, py) = coord_to_pixel(q, r);
+                        px >= min_x - HEX_R
+                            && px <= max_x + HEX_R
+                            && py >= min_y - HEX_R
+                            && py <= max_y + HEX_R
+                    });
+                    if any_visible {
+                        stroke_forest_component_arcs(&ctx, &comp, &terrain_of, lw);
                     }
                 }
             }
