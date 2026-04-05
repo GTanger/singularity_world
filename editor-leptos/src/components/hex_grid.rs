@@ -8,7 +8,7 @@ use std::collections::{HashMap, HashSet};
 use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
 
 const HEX_R: f64 = 28.0;
-/// 林區邊界：頂點往鄰接林格格心內縮後，每邊以**六次貝茲**（7 控制點）相連；Canvas 無原生高次 API，以 De Casteljau 取樣折線逼近。
+/// 林區邊界：頂點往鄰接林格格心內縮後，每邊以**十二次貝茲**（13 控制點）相連；Canvas 無原生高次 API，以 De Casteljau 取樣折線逼近。
 const FOREST_BOUNDARY_VERTEX_INSET: f64 = 9.0;
 /// 自格心指向該邊中點方向之基準鼓出強度（再乘隨機係數）
 const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 6.5;
@@ -19,8 +19,8 @@ const FOREST_BULGE_JITTER_MAX: f64 = 1.22;
 const FOREST_RADIAL_JITTER_PX: f64 = 2.9;
 /// 法線方向擺動（垂直於弦 p0→p1）
 const FOREST_NORMAL_WOBBLE_PX: f64 = 4.2;
-/// 六次貝茲每邊取樣段數（愈多愈順、略增 CPU）
-const FOREST_BEZIER6_STEPS: usize = 28;
+/// 十二次貝茲每邊取樣段數（約為六次時之兩倍，維持視覺品質）
+const FOREST_BEZIER12_STEPS: usize = 56;
 /// 頂點內縮距離之係數範圍
 const FOREST_INSET_SCALE_MIN: f64 = 0.78;
 const FOREST_INSET_SCALE_MAX: f64 = 1.14;
@@ -231,11 +231,11 @@ fn lerp_f64(a: f64, b: f64, t: f64) -> f64 {
     a + (b - a) * t
 }
 
-/// 六次貝茲（7 控制點）在參數 `t∈[0,1]` 之值（De Casteljau，原地三角化）
-fn bezier6_eval(p: [(f64, f64); 7], t: f64) -> (f64, f64) {
+/// 十二次貝茲（13 控制點）在參數 `t∈[0,1]` 之值（De Casteljau）
+fn bezier12_eval(p: [(f64, f64); 13], t: f64) -> (f64, f64) {
     let mut v = p;
-    for r in 1..7 {
-        for i in 0..(7 - r) {
+    for r in 1..13 {
+        for i in 0..(13 - r) {
             v[i] = (
                 v[i].0 * (1.0 - t) + v[i + 1].0 * t,
                 v[i].1 * (1.0 - t) + v[i + 1].1 * t,
@@ -245,8 +245,8 @@ fn bezier6_eval(p: [(f64, f64); 7], t: f64) -> (f64, f64) {
     v[0]
 }
 
-/// 單邊林緣：六次貝茲控制點（端點＝內縮頂點）
-fn forest_edge_bezier6_controls(
+/// 單邊林緣：十二次貝茲控制點（端點＝內縮頂點）
+fn forest_edge_bezier12_controls(
     p0: (f64, f64),
     p1: (f64, f64),
     q: i32,
@@ -254,7 +254,7 @@ fn forest_edge_bezier6_controls(
     ei: usize,
     ux: f64,
     uy: f64,
-) -> [(f64, f64); 7] {
+) -> [(f64, f64); 13] {
     let sx = p1.0 - p0.0;
     let sy = p1.1 - p0.1;
     let slen = (sx * sx + sy * sy).sqrt().max(1e-9);
@@ -273,11 +273,11 @@ fn forest_edge_bezier6_controls(
     let outward = bulge + radial_extra;
     let radial_blend = 0.52_f64;
 
-    let mut pts = [(0.0_f64, 0.0_f64); 7];
+    let mut pts = [(0.0_f64, 0.0_f64); 13];
     pts[0] = p0;
-    pts[6] = p1;
-    for (k, slot) in pts.iter_mut().enumerate().skip(1).take(5) {
-        let s = k as f64 / 6.0;
+    pts[12] = p1;
+    for (k, slot) in pts.iter_mut().enumerate().skip(1).take(11) {
+        let s = k as f64 / 12.0;
         let bx = p0.0 + tx * slen * s;
         let by = p0.1 + ty * slen * s;
         let bell = (std::f64::consts::PI * s).sin();
@@ -470,15 +470,15 @@ fn append_forest_loop_path(
         let ux = rdx / rlen;
         let uy = rdy / rlen;
 
-        let cps = forest_edge_bezier6_controls(p0, p1, q, r, ei, ux, uy);
-        let steps = FOREST_BEZIER6_STEPS.max(8);
+        let cps = forest_edge_bezier12_controls(p0, p1, q, r, ei, ux, uy);
+        let steps = FOREST_BEZIER12_STEPS.max(16);
 
         if i == 0 {
             ctx.move_to(p0.0, p0.1);
         }
         for j in 1..=steps {
             let t = j as f64 / steps as f64;
-            let pt = bezier6_eval(cps, t);
+            let pt = bezier12_eval(cps, t);
             ctx.line_to(pt.0, pt.1);
         }
         cur_v = other;
