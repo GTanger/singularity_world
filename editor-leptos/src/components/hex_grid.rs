@@ -145,18 +145,16 @@ fn draw_edge_trees(
     edge_idx: usize,
     q: i32,
     r: i32,
+    terrain: Terrain,
     is_heavy: bool,
 ) {
     let ((ax, ay), (bx, by)) = hex_edge_verts(edge_idx);
     // 邊中點
     let mx = (ax + bx) / 2.0;
     let my = (ay + by) / 2.0;
-    // 朝外法線方向（從中心往邊中點）
-    let out_x = mx;
-    let out_y = my;
-    let out_len = (out_x * out_x + out_y * out_y).sqrt().max(0.01);
-    let nx = out_x / out_len;
-    let ny = out_y / out_len;
+    // 樹一律朝北（螢幕向上；Canvas y 軸向下）
+    let nx = 0.0;
+    let ny = -1.0;
     // 邊的切線方向
     let tx = bx - ax;
     let ty = by - ay;
@@ -208,9 +206,8 @@ fn draw_edge_trees(
         let right_x = trunk_top_x + tnx * crown_w;
         let right_y = trunk_top_y + tny * crown_w;
 
-        // 樹冠色依密度
-        let crown_color = if is_heavy { "#2d5a1e" } else { "#3d7a2e" };
-        let crown_dark = if is_heavy { "#1e4015" } else { "#2d6020" };
+        // 樹冠色與底色同色（依格子地形）
+        let crown_color = terrain.color();
 
         ctx.set_fill_style_str(crown_color);
         ctx.begin_path();
@@ -232,8 +229,8 @@ fn draw_edge_trees(
         ctx.close_path();
         ctx.fill();
 
-        // 樹冠暗邊
-        ctx.set_stroke_style_str(crown_dark);
+        // 仍保留描邊呼叫，但同色（視覺上等於無描邊）
+        ctx.set_stroke_style_str(crown_color);
         ctx.set_line_width(0.6);
         ctx.stroke();
     }
@@ -1062,7 +1059,16 @@ pub fn HexGrid(
                         let nq = cell.coord.q + dq;
                         let nr = cell.coord.r + dr;
                         if !forest_set.contains(&(nq, nr)) {
-                            draw_edge_trees(&ctx, px, py, di, cell.coord.q, cell.coord.r, is_heavy);
+                            draw_edge_trees(
+                                &ctx,
+                                px,
+                                py,
+                                di,
+                                cell.coord.q,
+                                cell.coord.r,
+                                cell.terrain,
+                                is_heavy,
+                            );
                         }
                     }
                 }
