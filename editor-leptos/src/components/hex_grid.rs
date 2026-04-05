@@ -25,7 +25,7 @@ const FOREST_BEZIER24_STEPS: usize = 160;
 const FOREST_INSET_SCALE_MIN: f64 = 0.78;
 const FOREST_INSET_SCALE_MAX: f64 = 1.14;
 
-/// 水域邊界：每邊**一條三次貝茲**（非高次取樣）；頂點內縮須合理，否則細水道易斷段
+/// 水域邊界：**十二次貝茲**（13 控制點）以 De Casteljau 取樣逼近；頂點內縮須合理，否則細水道易斷段
 const WATER_BOUNDARY_VERTEX_INSET: f64 = 7.8;
 /// 僅一格連通區：內縮較小，藍色填滿較多，相鄰水格視覺才接得上
 const WATER_SINGLE_HEX_VERTEX_INSET: f64 = 5.2;
@@ -35,9 +35,10 @@ const WATER_ARC_BULGE_ALONG_EDGE: f64 = 5.2;
 const WATER_BULGE_JITTER_MIN: f64 = 0.72;
 const WATER_BULGE_JITTER_MAX: f64 = 1.06;
 const WATER_RADIAL_JITTER_PX: f64 = 1.6;
-const WATER_NORMAL_WOBBLE_PX: f64 = 2.6;
-/// 水域每邊僅用**一條三次貝茲**（Canvas `bezier_curve_to`）；柄長比例愈大愈柔
-const WATER_CUBIC_HANDLE_FRAC: f64 = 0.44;
+/// 法向擺動略收 → 搭配高次貝茲與多輪平滑，整體更柔
+const WATER_NORMAL_WOBBLE_PX: f64 = 2.35;
+/// 十二次貝茲每邊取樣段數（愈密邊界愈順）
+const WATER_BEZIER12_STEPS: usize = 140;
 const WATER_INSET_SCALE_MIN: f64 = 0.96;
 const WATER_INSET_SCALE_MAX: f64 = 1.02;
 const SQRT3: f64 = 1.7320508075688772;
@@ -283,6 +284,20 @@ fn bezier24_eval(p: [(f64, f64); 25], t: f64) -> (f64, f64) {
     v[0]
 }
 
+/// 十二次貝茲（13 控制點）在參數 `t∈[0,1]` 之值（De Casteljau）
+fn bezier12_eval(p: [(f64, f64); 13], t: f64) -> (f64, f64) {
+    let mut v = p;
+    for r in 1..13 {
+        for i in 0..(13 - r) {
+            v[i] = (
+                v[i].0 * (1.0 - t) + v[i + 1].0 * t,
+                v[i].1 * (1.0 - t) + v[i + 1].1 * t,
+            );
+        }
+    }
+    v[0]
+}
+
 /// 一維 23 點（內部控制點索引）平滑：多輪柔核，壓掉微尖角／控制多邊形急折
 fn smooth_forest_offset_23(a: &mut [f64; 23]) {
     for _ in 0..4 {
@@ -292,6 +307,18 @@ fn smooth_forest_offset_23(a: &mut [f64; 23]) {
         }
         a[0] = 0.5 * prev[0] + 0.5 * prev[1];
         a[22] = 0.5 * prev[21] + 0.5 * prev[22];
+    }
+}
+
+/// 一維 11 點（十二次貝茲內部控制索引）：多輪柔核，比林緣更強平滑
+fn smooth_water_offset_11(a: &mut [f64; 11]) {
+    for _ in 0..6 {
+        let prev = *a;
+        for i in 1..10 {
+            a[i] = 0.2 * prev[i - 1] + 0.6 * prev[i] + 0.2 * prev[i + 1];
+        }
+        a[0] = 0.5 * prev[0] + 0.5 * prev[1];
+        a[10] = 0.5 * prev[9] + 0.5 * prev[10];
     }
 }
 
@@ -360,8 +387,8 @@ fn forest_edge_bezier24_controls(
     pts
 }
 
-/// 單邊水岸：**一條三次貝茲**（兩控制點），流暢、少高頻抖動
-fn water_edge_cubic_controls(
+/// 單邊水岸：十二次貝茲（13 控制點）；包絡與多輪平滑加強柔順
+fn water_edge_bezier12_controls(
     p0: (f64, f64),
     p1: (f64, f64),
     q: i32,
@@ -369,7 +396,7 @@ fn water_edge_cubic_controls(
     ei: usize,
     ux: f64,
     uy: f64,
-) -> ((f64, f64), (f64, f64)) {
+) -> [(f64, f64); 13] {
     let sx = p1.0 - p0.0;
     let sy = p1.1 - p0.1;
     let slen = (sx * sx + sy * sy).sqrt().max(1e-9);
@@ -386,34 +413,43 @@ fn water_edge_cubic_controls(
         );
     let radial_extra = WATER_RADIAL_JITTER_PX * forest_stable_rand_signed(q, r, ei, 0xE11B);
     let outward = bulge + radial_extra;
-    let radial_blend = 0.34_f64;
+    let radial_blend = 0.30_f64;
 
-    let h = WATER_CUBIC_HANDLE_FRAC * slen;
-    // 在弦長 1/3、2/3 處的柔軟包絡（sin³），法向微擺動 → 順滑河流感
-    let bell_a = {
-        let s = 1.0_f64 / 3.0;
-        let b = (std::f64::consts::PI * s).sin();
-        b * b * b
-    };
-    let bell_b = {
-        let s = 2.0_f64 / 3.0;
-        let b = (std::f64::consts::PI * s).sin();
-        b * b * b
-    };
-    let wna = WATER_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xB1A0) * bell_a;
-    let wnb = WATER_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xB1B0) * bell_b;
-    let wta = WATER_NORMAL_WOBBLE_PX * 0.18 * forest_stable_rand_signed(q, r, ei, 0xD1A0) * bell_a;
-    let wtb = WATER_NORMAL_WOBBLE_PX * 0.18 * forest_stable_rand_signed(q, r, ei, 0xD1B0) * bell_b;
+    let mut wn = [0.0_f64; 11];
+    let mut wt = [0.0_f64; 11];
+    for (idx, k) in (1..12).enumerate() {
+        let s = k as f64 / 12.0;
+        let bell = (std::f64::consts::PI * s).sin();
+        // sin⁶：邊緣更柔、中段仍有河流擺動
+        let b2 = bell * bell;
+        let bell_soft = b2 * b2 * b2;
+        wn[idx] = WATER_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xB100 + k as u32) * bell_soft;
+        wt[idx] = WATER_NORMAL_WOBBLE_PX
+            * 0.26
+            * forest_stable_rand_signed(q, r, ei, 0xD100 + k as u32)
+            * bell_soft;
+    }
+    smooth_water_offset_11(&mut wn);
+    smooth_water_offset_11(&mut wt);
 
-    let cp1 = (
-        p0.0 + tx * h + nx * wna + tx * wta + ux * outward * radial_blend * bell_a,
-        p0.1 + ty * h + ny * wna + ty * wta + uy * outward * radial_blend * bell_a,
-    );
-    let cp2 = (
-        p1.0 - tx * h + nx * wnb - tx * wtb + ux * outward * radial_blend * bell_b,
-        p1.1 - ty * h + ny * wnb - ty * wtb + uy * outward * radial_blend * bell_b,
-    );
-    (cp1, cp2)
+    let mut pts = [(0.0_f64, 0.0_f64); 13];
+    pts[0] = p0;
+    pts[12] = p1;
+    for (idx, k) in (1..12).enumerate() {
+        let s = k as f64 / 12.0;
+        let bx = p0.0 + tx * slen * s;
+        let by = p0.1 + ty * slen * s;
+        let bell = (std::f64::consts::PI * s).sin();
+        let b2 = bell * bell;
+        let bell_soft = b2 * b2 * b2;
+        let wni = wn[idx];
+        let wti = wt[idx];
+        pts[idx + 1] = (
+            bx + nx * wni + tx * wti + ux * outward * radial_blend * bell_soft,
+            by + ny * wni + ty * wti + uy * outward * radial_blend * bell_soft,
+        );
+    }
+    pts
 }
 
 /// 連通林區（六鄰、同屬 `forest_set`）
@@ -676,12 +712,17 @@ fn append_water_loop_path(
         let ux = rdx / rlen;
         let uy = rdy / rlen;
 
-        let (cp1, cp2) = water_edge_cubic_controls(p0, p1, q, r, ei, ux, uy);
+        let cps = water_edge_bezier12_controls(p0, p1, q, r, ei, ux, uy);
+        let steps = WATER_BEZIER12_STEPS.max(48);
 
         if i == 0 {
             ctx.move_to(p0.0, p0.1);
         }
-        ctx.bezier_curve_to(cp1.0, cp1.1, cp2.0, cp2.1, p1.0, p1.1);
+        for j in 1..=steps {
+            let t = j as f64 / steps as f64;
+            let pt = bezier12_eval(cps, t);
+            ctx.line_to(pt.0, pt.1);
+        }
         cur_v = other;
     }
     ctx.close_path();
