@@ -1,202 +1,103 @@
 {
   "entries": [
     {
-      "id": "seed|2958986|12",
-      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 2,
-      "updated_at": 1775392092,
-      "expires_at": 1775395692
-    },
-    {
-      "id": "seed|2958988|23",
-      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
+      "id": "seed|2959013|0",
+      "text": "今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1775392909,
-      "expires_at": 1775396509
+      "updated_at": 1775408384,
+      "expires_at": 1775411984
     },
     {
-      "id": "seed|2958985|22",
-      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
+      "id": "seed|2959010|6",
+      "text": "市集今天來了一批品相很好的玉質木材，攤販搶著進貨",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775391247,
-      "expires_at": 1775394847
+      "updated_at": 1775406128,
+      "expires_at": 1775409728
     },
     {
-      "id": "seed|2958983|18",
+      "id": "eco|pulse|1",
+      "text": "聽說租鋪成本漲了，幾家小攤開始提早收攤。",
+      "source": "economy",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1775406381,
+      "expires_at": 1775411781
+    },
+    {
+      "id": "seed|2959014|22",
+      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775408839,
+      "expires_at": 1775412439
+    },
+    {
+      "id": "seed|2959012|18",
       "text": "電梯間排了好長的隊，聽說中間幾層在做維護",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775390271,
-      "expires_at": 1775393871
+      "updated_at": 1775407566,
+      "expires_at": 1775411166
     },
     {
-      "id": "seed|2958987|21",
-      "text": "走廊的老長凳被根鬚纏得更穩了，坐起來比以前舒服",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1775392723,
-      "expires_at": 1775396323
-    },
-    {
-      "id": "seed|2958988|7",
+      "id": "seed|2959014|7",
       "text": "聽說好事多的批發價又調了，最近物流好像不太順",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1775392809,
-      "expires_at": 1775396409
+      "updated_at": 1775408669,
+      "expires_at": 1775412269
     },
     {
-      "id": "eco|pulse|303",
-      "text": "聽說租鋪成本漲了，幾家小攤開始提早收攤。",
-      "source": "economy",
-      "source_score": 1,
-      "weight": 22,
-      "updated_at": 1775392970,
-      "expires_at": 1775398370
-    },
-    {
-      "id": "seed|2958984|12",
-      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
+      "id": "seed|2959013|8",
+      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775390620,
-      "expires_at": 1775394220
+      "updated_at": 1775408102,
+      "expires_at": 1775411702
     },
     {
-      "id": "seed|2958987|25",
-      "text": "有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1775392595,
-      "expires_at": 1775396195
-    },
-    {
-      "id": "seed|2958983|16",
-      "text": "採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775390041,
-      "expires_at": 1775393641
-    },
-    {
-      "id": "seed|2958986|22",
-      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1775392164,
-      "expires_at": 1775395764
-    },
-    {
-      "id": "seed|2958985|23",
-      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775391424,
-      "expires_at": 1775395024
-    },
-    {
-      "id": "seed|2958985|12",
-      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775391173,
-      "expires_at": 1775394773
-    },
-    {
-      "id": "seed|2958984|4",
-      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775390832,
-      "expires_at": 1775394432
-    },
-    {
-      "id": "seed|2958985|0",
+      "id": "seed|2959011|0",
       "text": "今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775391132,
-      "expires_at": 1775394732
+      "updated_at": 1775406966,
+      "expires_at": 1775410566
     },
     {
-      "id": "seed|2958984|24",
-      "text": "昨晚牆面的玉質脈絡突然閃了一下暗紫色的光，只持續了幾秒",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775390937,
-      "expires_at": 1775394537
-    },
-    {
-      "id": "seed|2958982|4",
-      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775389726,
-      "expires_at": 1775393326
-    },
-    {
-      "id": "seed|2958985|3",
-      "text": "有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775391320,
-      "expires_at": 1775394920
-    },
-    {
-      "id": "seed|2958988|10",
-      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
+      "id": "seed|2959015|5",
+      "text": "今天空氣裡的膠質味比平常濃，像要變天了",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1775392970,
-      "expires_at": 1775396570
+      "updated_at": 1775409073,
+      "expires_at": 1775412673
     },
     {
-      "id": "seed|2958986|4",
-      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
-      "source": "event_seed",
-      "source_score": 2,
+      "id": "eco|pulse|304",
+      "text": "聽說租鋪成本漲了，幾家小攤開始提早收攤。",
+      "source": "economy",
+      "source_score": 1,
       "weight": 1,
-      "updated_at": 1775391611,
-      "expires_at": 1775395211
+      "updated_at": 1775403822,
+      "expires_at": 1775409222
     },
     {
-      "id": "seed|2958985|15",
+      "id": "seed|2959010|15",
       "text": "城外商路上的指引石被增生物覆蓋了一半，有隊伍去清理了",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775391050,
-      "expires_at": 1775394650
-    },
-    {
-      "id": "seed|2958984|3",
-      "text": "有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775390445,
-      "expires_at": 1775394045
+      "updated_at": 1775406586,
+      "expires_at": 1775410186
     }
   ]
 }

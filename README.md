@@ -22,7 +22,7 @@
 
 ### 啟動前嚴格閘門（品質與契約優先）
 
-本專案將 **靜態檢查與資料契約** 視為建置前置條件。`./start`（systemd 重啟）與 `./start-rust`（nohup）會依序執行：
+本專案將 **靜態檢查與資料契約** 視為建置前置條件。`./start`（systemd 重啟）：
 
 1. **`cargo clippy -- -D warnings`**：程式碼品質檢查（不可有任何警告）。
 2. **`cargo test`**：單元與整合測試。
@@ -36,7 +36,6 @@
 
 ```bash
 ./start        # 推薦：含 systemd 重啟 singularity.service
-./start-rust   # 無 systemd 時：nohup 啟動
 ```
 
 用途：通過閘門後，建置後端與 Hex 編輯器並啟動伺服器（預設埠：1721）。

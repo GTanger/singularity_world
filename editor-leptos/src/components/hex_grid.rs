@@ -3,8 +3,7 @@
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use std::collections::{HashMap, HashSet};
-use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
+use crate::types::{HexCell, HexCoord, ToolMode};
 
 const HEX_R: f64 = 28.0;
 const SQRT3: f64 = 1.7320508075688772;
@@ -17,18 +16,8 @@ const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, -14.0),
 ];
 
-/// 邊 `i`（頂點 `i → (i+1)%6`）外側鄰格之轴向增量，與 `HEX_VERT_OFFSETS` 一致
-const EDGE_NEIGHBOR_DR: [(i32, i32); 6] = [
-    (0, 1),
-    (-1, 1),
-    (-1, 0),
-    (0, -1),
-    (1, -1),
-    (1, 0),
-];
-
-/// 連通區外輪廓：灰白邊
-const GROUP_OUTLINE_COLOR: &str = "#d8dee8";
+/// 每格房間之六角邊線（深霧灰；鄰格共用邊會疊畫，略加深分界）
+const CELL_HEX_OUTLINE_COLOR: &str = "#5c6570";
 
 /// 畫面上顯示用的地名／地形字（與下方文字繪製一致）
 fn cell_display_label(cell: &HexCell) -> String {
@@ -39,85 +28,24 @@ fn cell_display_label(cell: &HexCell) -> String {
     }
 }
 
-/// 標籤合併：**六邊相鄰**（與遊戲可走鄰居一致）且 **同屬性**＝同 `Terrain`；
-/// 有自訂 `name` 時須地名也相同才算同一區。
-#[derive(Clone, PartialEq, Eq, Hash)]
-enum LabelMergeKey {
-    /// 無自訂名：僅依地形合併
-    TerrainOnly(Terrain),
-    /// 有自訂名：同地形且同名才合併
-    TerrainAndName { terrain: Terrain, name: String },
+/// 繪製用：字元間加薄空格（U+2009）作字距，單字不加
+fn label_with_thin_space_gaps(s: &str) -> String {
+    let t = s.trim();
+    let mut it = t.chars();
+    let Some(first) = it.next() else {
+        return String::new();
+    };
+    let mut out = String::with_capacity(t.len() + t.chars().count().max(1));
+    out.push(first);
+    for ch in it {
+        out.push('\u{2009}');
+        out.push(ch);
+    }
+    out
 }
 
-fn label_merge_key(cell: &HexCell) -> LabelMergeKey {
-    let n = cell.name.trim();
-    if n.is_empty() {
-        LabelMergeKey::TerrainOnly(cell.terrain)
-    } else {
-        LabelMergeKey::TerrainAndName {
-            terrain: cell.terrain,
-            name: n.to_string(),
-        }
-    }
-}
-
-/// 與後端 `HexDir::delta` 一致之六鄰（axial）— **僅共用邊** 之相鄰
-const AXIAL_NEIGHBOR_DR: [(i32, i32); 6] = [
-    (1, 0),
-    (1, -1),
-    (0, -1),
-    (-1, 0),
-    (-1, 1),
-    (0, 1),
-];
-
-/// 連通區內僅**一格**顯示名稱；代表格取與區域幾何中心（螢幕座標平均）最近之六角
-fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
-    let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cs.len());
-    for c in cs {
-        at.insert((c.coord.q, c.coord.r), c);
-    }
-    let mut visited: HashSet<(i32, i32)> = HashSet::with_capacity(cs.len());
-    let mut reps: HashSet<(i32, i32)> = HashSet::new();
-
-    for c in cs {
-        let start = (c.coord.q, c.coord.r);
-        if visited.contains(&start) {
-            continue;
-        }
-        let seed = at.get(&start).expect("cell in list");
-        let key = label_merge_key(seed);
-        let mut stack = vec![start];
-        let mut comp: Vec<(i32, i32)> = Vec::new();
-        visited.insert(start);
-
-        while let Some(p) = stack.pop() {
-            comp.push(p);
-            for &(dq, dr) in &AXIAL_NEIGHBOR_DR {
-                let nq = p.0 + dq;
-                let nr = p.1 + dr;
-                let nid = (nq, nr);
-                if visited.contains(&nid) {
-                    continue;
-                }
-                let Some(nc) = at.get(&nid) else {
-                    continue;
-                };
-                if label_merge_key(nc) != key {
-                    continue;
-                }
-                visited.insert(nid);
-                stack.push(nid);
-            }
-        }
-        let rep = label_rep_coord_nearest_centroid(&comp);
-        reps.insert(rep);
-    }
-    reps
-}
-
-/// **文字風**：同連通群（`label_merge_key`）僅畫**外輪廓**灰白邊，群內共用邊不描邊。
-fn stroke_label_group_outer_edges(
+/// 每格獨立描完整六角邊（每格即房間、六向出口；配合指處位移／走格辨識）
+fn stroke_each_cell_hex_outline(
     ctx: &web_sys::CanvasRenderingContext2d,
     cells: &[HexCell],
     cam_zoom: f64,
@@ -126,42 +54,25 @@ fn stroke_label_group_outer_edges(
     min_y: f64,
     max_y: f64,
 ) {
-    let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cells.len());
-    for c in cells {
-        at.insert((c.coord.q, c.coord.r), c);
-    }
     let line_w = (1.0 / cam_zoom).clamp(0.55, 2.0);
-    ctx.set_stroke_style_str(GROUP_OUTLINE_COLOR);
+    ctx.set_stroke_style_str(CELL_HEX_OUTLINE_COLOR);
     ctx.set_line_width(line_w);
     ctx.set_line_cap("round");
     ctx.set_line_join("round");
 
+    let (ox0, oy0) = HEX_VERT_OFFSETS[0];
     for c in cells {
-        let q = c.coord.q;
-        let r = c.coord.r;
-        let (px, py) = coord_to_pixel(q, r);
+        let (px, py) = coord_to_pixel(c.coord.q, c.coord.r);
         if px < min_x || px > max_x || py < min_y || py > max_y {
             continue;
         }
-        let my_key = label_merge_key(c);
-        for ei in 0..6 {
-            let (dq, dr) = EDGE_NEIGHBOR_DR[ei];
-            let nq = q + dq;
-            let nr = r + dr;
-            let is_outer = match at.get(&(nq, nr)) {
-                None => true,
-                Some(nc) => label_merge_key(nc) != my_key,
-            };
-            if !is_outer {
-                continue;
-            }
-            let (ax, ay) = HEX_VERT_OFFSETS[ei];
-            let (bx, by) = HEX_VERT_OFFSETS[(ei + 1) % 6];
-            ctx.begin_path();
-            ctx.move_to(px + ax, py + ay);
-            ctx.line_to(px + bx, py + by);
-            ctx.stroke();
+        ctx.begin_path();
+        ctx.move_to(px + ox0, py + oy0);
+        for (ox, oy) in HEX_VERT_OFFSETS.iter().skip(1) {
+            ctx.line_to(px + *ox, py + *oy);
         }
+        ctx.close_path();
+        ctx.stroke();
     }
 }
 
@@ -189,39 +100,6 @@ fn snap_camera_to_device_pixels(cam_x: f64, cam_y: f64, zoom: f64, dpr: f64) -> 
     let cx = (cam_x * k).round() / k;
     let cy = (cam_y * k).round() / k;
     (cx, cy)
-}
-
-/// 在連通區 `comp` 中選與 **像素座標重心** 最近之一格（同距離則 `(q,r)` 字典序）
-fn label_rep_coord_nearest_centroid(comp: &[(i32, i32)]) -> (i32, i32) {
-    let n = comp.len() as f64;
-    debug_assert!(n > 0.0);
-    let mut sx = 0.0_f64;
-    let mut sy = 0.0_f64;
-    for &(q, r) in comp {
-        let (px, py) = coord_to_pixel(q, r);
-        sx += px;
-        sy += py;
-    }
-    let cx = sx / n;
-    let cy = sy / n;
-    comp
-        .iter()
-        .copied()
-        .min_by(|&(q1, r1), &(q2, r2)| {
-            let d1 = {
-                let (px, py) = coord_to_pixel(q1, r1);
-                (px - cx).powi(2) + (py - cy).powi(2)
-            };
-            let d2 = {
-                let (px, py) = coord_to_pixel(q2, r2);
-                (px - cx).powi(2) + (py - cy).powi(2)
-            };
-            d1.partial_cmp(&d2)
-                .unwrap_or(std::cmp::Ordering::Equal)
-                .then_with(|| q1.cmp(&q2))
-                .then_with(|| r1.cmp(&r2))
-        })
-        .expect("non-empty component")
 }
 
 fn pixel_to_axial(wx: f64, wy: f64) -> (f64, f64) {
@@ -871,8 +749,6 @@ pub fn HexGrid(
         let min_y = vy - margin;
         let max_y = vy + vh + margin;
 
-        let label_reps = label_representative_coords(&cs);
-
         // 以視口四角反推 axial 範圍，避免右上/左下被裁切
         let mut qf_min = f64::INFINITY;
         let mut qf_max = f64::NEG_INFINITY;
@@ -890,12 +766,12 @@ pub fn HexGrid(
             rf_min = rf_min.min(ar);
             rf_max = rf_max.max(ar);
         }
-        // 文字風：連通同屬性群僅外緣灰白邊，內側無描邊；孤立格六邊皆外緣
+        // 每格即房間：完整六角邊線（六向出口可視分界）
         if cam.zoom >= 0.22 {
-            stroke_label_group_outer_edges(&ctx, &cs, cam.zoom, min_x, max_x, min_y, max_y);
+            stroke_each_cell_hex_outline(&ctx, &cs, cam.zoom, min_x, max_x, min_y, max_y);
         }
 
-        // 選取／標記／代表格名稱（名稱僅連通區代表格顯示）
+        // 選取／標記／每格名稱
         for cell in cs.iter() {
             let (px, py) = coord_to_pixel(cell.coord.q, cell.coord.r);
             if px < min_x || px > max_x || py < min_y || py > max_y {
@@ -933,18 +809,15 @@ pub fn HexGrid(
             }
 
             if cam.zoom >= 0.42 {
-                let cid = (cell.coord.q, cell.coord.r);
-                if label_reps.contains(&cid) {
-                    ctx.set_fill_style_str("#e8eef5");
-                    ctx.set_font(&format!(
-                        "{}px sans-serif",
-                        (9.0 / cam.zoom).max(7.5)
-                    ));
-                    ctx.set_text_align("center");
-                    ctx.set_text_baseline("middle");
-                    let label = cell_display_label(cell);
-                    let _ = ctx.fill_text(&label, px, py + 2.0);
-                }
+                ctx.set_fill_style_str("#e8eef5");
+                ctx.set_font(&format!(
+                    "{}px sans-serif",
+                    (9.0 / cam.zoom).max(7.5)
+                ));
+                ctx.set_text_align("center");
+                ctx.set_text_baseline("middle");
+                let label = label_with_thin_space_gaps(&cell_display_label(cell));
+                let _ = ctx.fill_text(&label, px, py + 2.0);
             }
         }
 
