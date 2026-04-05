@@ -8,20 +8,22 @@ use std::collections::{HashMap, HashSet};
 use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
 
 const HEX_R: f64 = 28.0;
-/// 林區邊界：頂點往鄰接林格格心內縮後，每邊以二次貝茲相連
+/// 林區邊界：頂點往鄰接林格格心內縮後，每邊以**三次貝茲**相連（較二次貝茲平滑）
 const FOREST_BOUNDARY_VERTEX_INSET: f64 = 9.0;
-/// 控制點自該邊**中點**沿「格心→邊中」再往六角邊外推（遠離格心、貼邊鼓出）
+/// 自格心指向該邊中點方向之基準鼓出強度（再乘隨機係數）
 const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 6.5;
-/// 每邊鼓出量：在基準上乘此範圍內之**穩定隨機**係數（須夠寬才看得出差異）
-const FOREST_BULGE_JITTER_MIN: f64 = 0.38;
-const FOREST_BULGE_JITTER_MAX: f64 = 1.72;
-/// 控制點沿「格心→邊中」再加減之**額外**距離（世界座標 px）
-const FOREST_RADIAL_JITTER_PX: f64 = 4.8;
-/// 控制點沿邊**切向**最大偏移（世界座標 px，乘 [-1,1]）
-const FOREST_CTRL_TANGENT_JITTER: f64 = 6.0;
-/// 頂點內縮距離之係數範圍（同樣為穩定隨機）
-const FOREST_INSET_SCALE_MIN: f64 = 0.58;
-const FOREST_INSET_SCALE_MAX: f64 = 1.42;
+/// 鼓出量隨機係數（範圍窄一點＝較平滑）
+const FOREST_BULGE_JITTER_MIN: f64 = 0.62;
+const FOREST_BULGE_JITTER_MAX: f64 = 1.22;
+/// 沿格心→邊中再加減之額外距離（世界座標 px）
+const FOREST_RADIAL_JITTER_PX: f64 = 2.9;
+/// 法線方向擺動（垂直於弦 p0→p1），兩控制點相關以形成柔和 S 形
+const FOREST_NORMAL_WOBBLE_PX: f64 = 4.2;
+/// 三次貝茲控制柄沿弦長比例（愈小愈贴近弦、愈穩）
+const FOREST_CUBIC_HANDLE_FRAC: f64 = 0.36;
+/// 頂點內縮距離之係數範圍
+const FOREST_INSET_SCALE_MIN: f64 = 0.78;
+const FOREST_INSET_SCALE_MAX: f64 = 1.14;
 const SQRT3: f64 = 1.7320508075688772;
 const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, 14.0),
@@ -187,12 +189,12 @@ fn forest_inset_toward(px: f64, py: f64, gx: f64, gy: f64, dist: f64) -> (f64, f
     (px + (dx / len) * dist, py + (dy / len) * dist)
 }
 
-/// [0, 1) 穩定偽隨機，同一 `(q,r,ei,salt)` 永遠相同（平移／縮放畫面不重算種子）
 /// [-1, 1]，與 `forest_stable_rand01` 同鍵空間
 fn forest_stable_rand_signed(q: i32, r: i32, ei: usize, salt: u32) -> f64 {
     forest_stable_rand01(q, r, ei, salt).mul_add(2.0, -1.0)
 }
 
+/// [0, 1) 穩定偽隨機，同一 `(q,r,ei,salt)` 永遠相同（平移／縮放畫面不重算種子）
 fn forest_stable_rand01(q: i32, r: i32, ei: usize, salt: u32) -> f64 {
     let mut x = (q as u32)
         .wrapping_mul(0x9E37_79B9)
@@ -402,28 +404,44 @@ fn append_forest_loop_path(
         let lmy = (ay + by) * 0.5;
         let ex = cx + lmx;
         let ey = cy + lmy;
-        let dx = ex - cx;
-        let dy = ey - cy;
-        let elen = (dx * dx + dy * dy).sqrt().max(1e-9);
+        let rdx = ex - cx;
+        let rdy = ey - cy;
+        let rlen = (rdx * rdx + rdy * rdy).sqrt().max(1e-9);
+        let ux = rdx / rlen;
+        let uy = rdy / rlen;
+
+        // 弦 p0→p1：切向 t、法向 n（用於柔和 S 形擺動）
+        let sx = p1.0 - p0.0;
+        let sy = p1.1 - p0.1;
+        let slen = (sx * sx + sy * sy).sqrt().max(1e-9);
+        let tx = sx / slen;
+        let ty = sy / slen;
+        let nx = -ty;
+        let ny = tx;
+
         let bulge = FOREST_ARC_BULGE_ALONG_EDGE
             * lerp_f64(
                 FOREST_BULGE_JITTER_MIN,
                 FOREST_BULGE_JITTER_MAX,
                 forest_stable_rand01(q, r, ei, 0xB0D9),
             );
-        // 沿法線再加一層擺動（否則僅 ±30% 乘在 ~6px 上仍偏不明顯）
         let radial_extra = FOREST_RADIAL_JITTER_PX * forest_stable_rand_signed(q, r, ei, 0xE11A);
         let outward = bulge + radial_extra;
-        // 沿邊切向（垂直於格心→邊中）偏移控制點
-        let tx = -dy / elen;
-        let ty = dx / elen;
-        let tang = FOREST_CTRL_TANGENT_JITTER * forest_stable_rand_signed(q, r, ei, 0x7A6E);
-        let ctrl_x = ex + (dx / elen) * outward + tx * tang;
-        let ctrl_y = ey + (dy / elen) * outward + ty * tang;
+        // 兩個法向擺動略不同 → 三次貝茲較「有機」；再帶一點沿弦切向的相關偏移
+        let wn1 = FOREST_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xA1CE);
+        let wn2 = FOREST_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xB2EE);
+        let wt = FOREST_NORMAL_WOBBLE_PX * 0.32 * forest_stable_rand_signed(q, r, ei, 0xC3AB);
+        let h = FOREST_CUBIC_HANDLE_FRAC * slen;
+        let radial_blend = 0.52_f64;
+        let cp1x = p0.0 + tx * h + nx * wn1 + ux * outward * radial_blend + tx * wt;
+        let cp1y = p0.1 + ty * h + ny * wn1 + uy * outward * radial_blend + ty * wt;
+        let cp2x = p1.0 - tx * h + nx * wn2 + ux * outward * radial_blend - tx * wt;
+        let cp2y = p1.1 - ty * h + ny * wn2 + uy * outward * radial_blend - ty * wt;
+
         if i == 0 {
             ctx.move_to(p0.0, p0.1);
         }
-        ctx.quadratic_curve_to(ctrl_x, ctrl_y, p1.0, p1.1);
+        ctx.bezier_curve_to(cp1x, cp1y, cp2x, cp2y, p1.0, p1.1);
         cur_v = other;
     }
     ctx.close_path();
