@@ -17,6 +17,19 @@ const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, -14.0),
 ];
 
+/// 邊 `i`（頂點 `i → (i+1)%6`）外側鄰格之轴向增量，與 `HEX_VERT_OFFSETS` 一致
+const EDGE_NEIGHBOR_DR: [(i32, i32); 6] = [
+    (0, 1),
+    (-1, 1),
+    (-1, 0),
+    (0, -1),
+    (1, -1),
+    (1, 0),
+];
+
+/// 連通區外輪廓：灰白邊
+const GROUP_OUTLINE_COLOR: &str = "#d8dee8";
+
 /// 畫面上顯示用的地名／地形字（與下方文字繪製一致）
 fn cell_display_label(cell: &HexCell) -> String {
     if cell.name.trim().is_empty() {
@@ -101,6 +114,55 @@ fn label_representative_coords(cs: &[HexCell]) -> HashSet<(i32, i32)> {
         reps.insert(rep);
     }
     reps
+}
+
+/// **文字風**：同連通群（`label_merge_key`）僅畫**外輪廓**灰白邊，群內共用邊不描邊。
+fn stroke_label_group_outer_edges(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    cells: &[HexCell],
+    cam_zoom: f64,
+    min_x: f64,
+    max_x: f64,
+    min_y: f64,
+    max_y: f64,
+) {
+    let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cells.len());
+    for c in cells {
+        at.insert((c.coord.q, c.coord.r), c);
+    }
+    let line_w = (1.0 / cam_zoom).clamp(0.55, 2.0);
+    ctx.set_stroke_style_str(GROUP_OUTLINE_COLOR);
+    ctx.set_line_width(line_w);
+    ctx.set_line_cap("round");
+    ctx.set_line_join("round");
+
+    for c in cells {
+        let q = c.coord.q;
+        let r = c.coord.r;
+        let (px, py) = coord_to_pixel(q, r);
+        if px < min_x || px > max_x || py < min_y || py > max_y {
+            continue;
+        }
+        let my_key = label_merge_key(c);
+        for ei in 0..6 {
+            let (dq, dr) = EDGE_NEIGHBOR_DR[ei];
+            let nq = q + dq;
+            let nr = r + dr;
+            let is_outer = match at.get(&(nq, nr)) {
+                None => true,
+                Some(nc) => label_merge_key(nc) != my_key,
+            };
+            if !is_outer {
+                continue;
+            }
+            let (ax, ay) = HEX_VERT_OFFSETS[ei];
+            let (bx, by) = HEX_VERT_OFFSETS[(ei + 1) % 6];
+            ctx.begin_path();
+            ctx.move_to(px + ax, py + ay);
+            ctx.line_to(px + bx, py + by);
+            ctx.stroke();
+        }
+    }
 }
 
 fn canvas_view_rect(canvas: &web_sys::HtmlCanvasElement) -> web_sys::DomRect {
@@ -828,34 +890,12 @@ pub fn HexGrid(
             rf_min = rf_min.min(ar);
             rf_max = rf_max.max(ar);
         }
-        let q_min = qf_min.floor() as i32 - 3;
-        let q_max = qf_max.ceil() as i32 + 3;
-        let r_min = rf_min.floor() as i32 - 3;
-        let r_max = rf_max.ceil() as i32 + 3;
-
-        // 背景網格：中高倍才畫
-        if cam.zoom >= 0.28 {
-            ctx.begin_path();
-            for r in r_min..=r_max {
-                for q in q_min..=q_max {
-                    let (px, py) = coord_to_pixel(q, r);
-                    if px < min_x || px > max_x || py < min_y || py > max_y {
-                        continue;
-                    }
-                    let (ox0, oy0) = HEX_VERT_OFFSETS[0];
-                    ctx.move_to(px + ox0, py + oy0);
-                    for (ox, oy) in HEX_VERT_OFFSETS.iter().skip(1) {
-                        ctx.line_to(px + *ox, py + *oy);
-                    }
-                    ctx.close_path();
-                }
-            }
-            ctx.set_stroke_style_str("#1e2d3d");
-            ctx.set_line_width((0.6 / cam.zoom).clamp(0.2, 1.0));
-            ctx.stroke();
+        // 文字風：連通同屬性群僅外緣灰白邊，內側無描邊；孤立格六邊皆外緣
+        if cam.zoom >= 0.22 {
+            stroke_label_group_outer_edges(&ctx, &cs, cam.zoom, min_x, max_x, min_y, max_y);
         }
 
-        // 前景：無地形底色；僅選取／標記／標籤
+        // 選取／標記／代表格名稱（名稱僅連通區代表格顯示）
         for cell in cs.iter() {
             let (px, py) = coord_to_pixel(cell.coord.q, cell.coord.r);
             if px < min_x || px > max_x || py < min_y || py > max_y {
@@ -892,11 +932,14 @@ pub fn HexGrid(
                 ctx.stroke();
             }
 
-            if cam.zoom >= 0.6 {
+            if cam.zoom >= 0.42 {
                 let cid = (cell.coord.q, cell.coord.r);
                 if label_reps.contains(&cid) {
-                    ctx.set_fill_style_str("#e0e8f0");
-                    ctx.set_font(&format!("{}px sans-serif", (8.0 / cam.zoom).max(7.0)));
+                    ctx.set_fill_style_str("#e8eef5");
+                    ctx.set_font(&format!(
+                        "{}px sans-serif",
+                        (9.0 / cam.zoom).max(7.5)
+                    ));
                     ctx.set_text_align("center");
                     ctx.set_text_baseline("middle");
                     let label = cell_display_label(cell);
