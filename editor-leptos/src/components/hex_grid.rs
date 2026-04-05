@@ -1516,7 +1516,21 @@ pub fn HexGrid(
             move |ev: web_sys::TouchEvent| {
                 ev.prevent_default();
                 let touches = ev.touches();
-                if touches.length() == 1 && painting.get_untracked() {
+                // 單指平移（檢視模式）：與滑鼠 mousemove 平移一致
+                if touches.length() == 1 && panning.get_untracked() && !painting.get_untracked() {
+                    if let Some(t) = touches.get(0) {
+                        let (sx0, sy0) = drag_start.get_untracked();
+                        let dx = t.client_x() as f64 - sx0;
+                        let dy = t.client_y() as f64 - sy0;
+                        let cam = camera.get_untracked();
+                        let (cx, cy) = cam_start.get_untracked();
+                        set_camera.set(Camera {
+                            x: cx - dx / cam.zoom,
+                            y: cy - dy / cam.zoom,
+                            zoom: cam.zoom,
+                        });
+                    }
+                } else if touches.length() == 1 && painting.get_untracked() {
                     if let Some(t) = touches.get(0) {
                         let rect = canvas_view_rect(&canvas_for_touch);
                         let sx = t.client_x() as f64 - rect.left();
