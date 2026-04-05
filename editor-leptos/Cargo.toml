@@ -17,7 +17,7 @@ web-sys = { version = "0.3", features = [
   "TouchEvent", "TouchList", "Touch", "console",
   "AddEventListenerOptions", "EventTarget", "SvgElement",
   "ResizeObserver", "ResizeObserverEntry", "DomRectReadOnly",
-  "HtmlCanvasElement", "CanvasRenderingContext2d",
+  "HtmlCanvasElement", "CanvasRenderingContext2d", "CanvasWindingRule",
   "MouseEvent", "WheelEvent",
   "HtmlInputElement", "FileList", "File",
   "UrlSearchParams", "Location",

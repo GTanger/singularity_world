@@ -3,6 +3,7 @@
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use web_sys::CanvasWindingRule;
 use std::collections::{HashMap, HashSet};
 use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
 
@@ -132,8 +133,25 @@ fn forest_boundary_stroke_color(t: Terrain) -> &'static str {
     }
 }
 
+/// 弧線封閉區域內填色（深綠，略深於格面以區分林緣內側）
+fn forest_interior_fill_color(t: Terrain) -> &'static str {
+    match t {
+        Terrain::ForestHeavy => "#14280e",
+        Terrain::Forest => "#1f3d18",
+        Terrain::ForestLight => "#2d4f24",
+        Terrain::Jungle => "#183814",
+        _ => "#1f3d18",
+    }
+}
+
 /// 林緣邊界有向邊：林格 `(q,r)` 上邊 `ei`（鄰格不在**同一連通林區**）
 type ForestBoundaryEdge = (i32, i32, usize);
+/// 單一邊界迴線：地形 + 邊序列 + 內縮頂點表
+type ForestLoopPiece = (
+    Terrain,
+    Vec<ForestBoundaryEdge>,
+    HashMap<(i64, i64), (f64, f64)>,
+);
 /// 迴線頂點聚合：量化鍵 →（世界座標、鄰接林格集合）
 type ForestVertexAgg = HashMap<(i64, i64), ((f64, f64), HashSet<(i32, i32)>)>;
 
@@ -268,19 +286,11 @@ fn forest_trace_boundary_cycles(edges: &[ForestBoundaryEdge]) -> Vec<Vec<ForestB
     cycles
 }
 
-/// 依迴線順序畫**單一**封閉路徑：頂點內縮後，每邊 `quadratic_curve_to`（控制點：邊中沿格心→邊中外推，遠離格心）。
-fn stroke_forest_loop_world(
-    ctx: &web_sys::CanvasRenderingContext2d,
+/// 單一迴線：頂點內縮後之量化鍵 → 座標
+fn forest_loop_inset_map(
     cycle: &[ForestBoundaryEdge],
     vertex_inset: f64,
-    bulge_along_edge: f64,
-    terrain: Terrain,
-    line_width: f64,
-) {
-    if cycle.is_empty() {
-        return;
-    }
-    // 每個量化頂點：世界座標 + 所有鄰接邊所屬林格（去重後格心平均＝內縮方向）
+) -> HashMap<(i64, i64), (f64, f64)> {
     let mut vertex_agg: ForestVertexAgg = HashMap::new();
     for &e in cycle {
         let (q, r, ei) = e;
@@ -306,9 +316,21 @@ fn stroke_forest_loop_world(
         let gy = sy / n.max(1.0);
         inset_map.insert(k, forest_inset_toward(wx, wy, gx, gy, vertex_inset));
     }
+    inset_map
+}
+
+/// 將**單一**迴線弧段接到目前 path（不重複 `begin_path`）
+fn append_forest_loop_path(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    cycle: &[ForestBoundaryEdge],
+    inset_map: &HashMap<(i64, i64), (f64, f64)>,
+    bulge_along_edge: f64,
+) {
+    if cycle.is_empty() {
+        return;
+    }
     let (va, _) = forest_edge_vertex_keys(cycle[0].0, cycle[0].1, cycle[0].2);
     let mut cur_v = va;
-    ctx.begin_path();
     for (i, &e) in cycle.iter().enumerate() {
         let (q, r, ei) = e;
         let other = forest_other_vertex_key(e, cur_v);
@@ -321,7 +343,6 @@ fn stroke_forest_loop_world(
         let lmy = (ay + by) * 0.5;
         let ex = cx + lmx;
         let ey = cy + lmy;
-        // 格心→邊中（由內往外），控制點再沿同方向延伸 → 遠離格心、靠向六角邊
         let dx = ex - cx;
         let dy = ey - cy;
         let elen = (dx * dx + dy * dy).sqrt().max(1e-9);
@@ -334,15 +355,10 @@ fn stroke_forest_loop_world(
         cur_v = other;
     }
     ctx.close_path();
-    ctx.set_stroke_style_str(forest_boundary_stroke_color(terrain));
-    ctx.set_line_width(line_width);
-    ctx.set_line_cap("round");
-    ctx.set_line_join("round");
-    ctx.stroke();
 }
 
-/// 一個連通林區：每條邊界迴線僅畫一條線
-fn stroke_forest_component_arcs(
+/// 一個連通林區：弧線內側填深綠，再沿同路徑描林緣線
+fn fill_and_stroke_forest_component_arcs(
     ctx: &web_sys::CanvasRenderingContext2d,
     comp: &[(i32, i32)],
     terrain_of: &HashMap<(i32, i32), Terrain>,
@@ -353,20 +369,46 @@ fn stroke_forest_component_arcs(
         return;
     }
     let cycles = forest_trace_boundary_cycles(&edges);
+    if cycles.is_empty() {
+        return;
+    }
+
+    let mut pieces: Vec<ForestLoopPiece> = Vec::new();
     for cycle in cycles {
         let q0 = cycle[0].0;
         let r0 = cycle[0].1;
         let Some(&t) = terrain_of.get(&(q0, r0)) else {
             continue;
         };
-        stroke_forest_loop_world(
-            ctx,
-            &cycle,
-            FOREST_BOUNDARY_VERTEX_INSET,
-            FOREST_ARC_BULGE_ALONG_EDGE,
-            t,
-            line_width,
-        );
+        let inset_map = forest_loop_inset_map(&cycle, FOREST_BOUNDARY_VERTEX_INSET);
+        pieces.push((t, cycle, inset_map));
+    }
+    if pieces.is_empty() {
+        return;
+    }
+
+    // 填色：多迴線（外輪廓 + 破孔）用 even-odd 保留孔洞
+    let fill_t = pieces[0].0;
+    ctx.begin_path();
+    for (_, cycle, inset_map) in &pieces {
+        append_forest_loop_path(ctx, cycle, inset_map, FOREST_ARC_BULGE_ALONG_EDGE);
+    }
+    ctx.set_fill_style_str(forest_interior_fill_color(fill_t));
+    let fill_rule = if pieces.len() > 1 {
+        CanvasWindingRule::Evenodd
+    } else {
+        CanvasWindingRule::Nonzero
+    };
+    ctx.fill_with_canvas_winding_rule(fill_rule);
+
+    for (t, cycle, inset_map) in &pieces {
+        ctx.begin_path();
+        append_forest_loop_path(ctx, cycle, inset_map, FOREST_ARC_BULGE_ALONG_EDGE);
+        ctx.set_stroke_style_str(forest_boundary_stroke_color(*t));
+        ctx.set_line_width(line_width);
+        ctx.set_line_cap("round");
+        ctx.set_line_join("round");
+        ctx.stroke();
     }
 }
 
@@ -1206,7 +1248,7 @@ pub fn HexGrid(
                             && py <= max_y + HEX_R
                     });
                     if any_visible {
-                        stroke_forest_component_arcs(&ctx, &comp, &terrain_of, lw);
+                        fill_and_stroke_forest_component_arcs(&ctx, &comp, &terrain_of, lw);
                     }
                 }
             }
