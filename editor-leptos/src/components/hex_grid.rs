@@ -34,6 +34,10 @@ const WATER_INSET_SCALE_MAX: f64 = 1.02;
 /// 水岸與跨邊鄰格格心之平衡（語意同 `FOREST_BOUNDARY_NEIGHBOR_BALANCE`）
 const WATER_BOUNDARY_NEIGHBOR_BALANCE: f64 = 0.48;
 const WATER_BOUNDARY_OUTWARD_EXTRA_MAX: f64 = 3.2;
+/// 細長**河道**（連通區為一條路、無分歧）：沿各格格心畫寬筆觸，視覺如「紅線」連續水流；湖泊／樹狀仍用邊界填充
+const WATER_RIVER_HALF_WIDTH: f64 = 15.5;
+/// 格心橫向微擺（穩定隨機），保留不規則感
+const WATER_RIVER_CENTER_WOBBLE_PX: f64 = 2.4;
 const SQRT3: f64 = 1.7320508075688772;
 const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, 14.0),
@@ -576,6 +580,240 @@ fn append_forest_loop_path(
     ctx.close_path();
 }
 
+fn water_cell_degree_in_set(set: &HashSet<(i32, i32)>, q: i32, r: i32) -> usize {
+    AXIAL_NEIGHBOR_DR
+        .iter()
+        .filter(|&&(dq, dr)| set.contains(&(q + dq, r + dr)))
+        .count()
+}
+
+/// 連通區為**簡單路徑**（每格至多兩個水鄰、無 T 字／湖岸分歧）：細河道用格心帶狀筆觸；否則為湖泊／樹枝狀，用邊界填充。
+fn water_component_is_simple_river_path(comp: &[(i32, i32)]) -> bool {
+    if comp.len() < 2 {
+        return false;
+    }
+    let set: HashSet<(i32, i32)> = comp.iter().copied().collect();
+    for &(q, r) in &set {
+        if water_cell_degree_in_set(&set, q, r) > 2 {
+            return false;
+        }
+    }
+    let endpoints: Vec<(i32, i32)> = set
+        .iter()
+        .filter(|&&(q, r)| water_cell_degree_in_set(&set, q, r) == 1)
+        .copied()
+        .collect();
+    if endpoints.len() == 2 {
+        return true;
+    }
+    endpoints.is_empty() && comp.len() >= 3
+}
+
+/// 河道格心順序（開放路徑或封閉環，每格恰好一次）
+fn water_river_cell_path_order(comp: &[(i32, i32)]) -> Option<Vec<(i32, i32)>> {
+    let set: HashSet<(i32, i32)> = comp.iter().copied().collect();
+    let endpoints: Vec<(i32, i32)> = set
+        .iter()
+        .filter(|&&(q, r)| water_cell_degree_in_set(&set, q, r) == 1)
+        .copied()
+        .collect();
+
+    if endpoints.len() == 2 {
+        // 開放路徑：從字典序較小端點開始，內點度數 2 時走「非來向」之鄰格
+        let start = *endpoints
+            .iter()
+            .min_by_key(|&&(a, b)| (a, b))
+            .expect("two endpoints");
+        let mut path = vec![start];
+        let mut prev: Option<(i32, i32)> = None;
+        let mut cur = start;
+        loop {
+            if water_cell_degree_in_set(&set, cur.0, cur.1) == 1 && path.len() > 1 {
+                break;
+            }
+            let mut nxt: Option<(i32, i32)> = None;
+            for &(dq, dr) in &AXIAL_NEIGHBOR_DR {
+                let p = (cur.0 + dq, cur.1 + dr);
+                if !set.contains(&p) || Some(p) == prev {
+                    continue;
+                }
+                nxt = Some(p);
+                break;
+            }
+            let next = nxt?;
+            path.push(next);
+            prev = Some(cur);
+            cur = next;
+            if path.len() > comp.len() + 1 {
+                return None;
+            }
+        }
+        return (path.len() == comp.len()).then_some(path);
+    }
+
+    // 封閉環：從最小格出發，先走向字典序較小的鄰格
+    let start = *set.iter().min_by_key(|&&(a, b)| (a, b))?;
+    let mut nbrs: Vec<(i32, i32)> = AXIAL_NEIGHBOR_DR
+        .iter()
+        .map(|&(dq, dr)| (start.0 + dq, start.1 + dr))
+        .filter(|p| set.contains(p))
+        .collect();
+    if nbrs.len() != 2 {
+        return None;
+    }
+    nbrs.sort_by_key(|&(a, b)| (a, b));
+    let mut path = vec![start];
+    let mut prev = start;
+    let mut cur = nbrs[0];
+    while cur != start {
+        path.push(cur);
+        let mut nxt: Option<(i32, i32)> = None;
+        for &(dq, dr) in &AXIAL_NEIGHBOR_DR {
+            let p = (cur.0 + dq, cur.1 + dr);
+            if !set.contains(&p) || p == prev {
+                continue;
+            }
+            nxt = Some(p);
+            break;
+        }
+        let next = nxt?;
+        prev = cur;
+        cur = next;
+        if path.len() > comp.len() + 1 {
+            return None;
+        }
+    }
+    (path.len() == comp.len()).then_some(path)
+}
+
+fn water_river_center_pixels(cells: &[(i32, i32)]) -> Vec<(f64, f64)> {
+    let k2i64 = |(q, r): (i32, i32)| (q as i64, r as i64);
+    cells
+        .iter()
+        .map(|&(q, r)| {
+            let (px, py) = coord_to_pixel(q, r);
+            let ox = (forest_vertex_rand01(k2i64((q, r)), 0x51DE) - 0.5)
+                * 2.0
+                * WATER_RIVER_CENTER_WOBBLE_PX;
+            let oy = (forest_vertex_rand01(k2i64((q, r)), 0x52DE) - 0.5)
+                * 2.0
+                * WATER_RIVER_CENTER_WOBBLE_PX;
+            (px + ox, py + oy)
+        })
+        .collect()
+}
+
+/// 開放格心折線：端點鏡射為 Catmull 虛擬點
+fn append_open_catmull_centerline(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    pts: &[(f64, f64)],
+    tau: f64,
+    max_handle_frac: f64,
+) {
+    let n = pts.len();
+    if n < 2 {
+        return;
+    }
+    if n == 2 {
+        ctx.move_to(pts[0].0, pts[0].1);
+        ctx.line_to(pts[1].0, pts[1].1);
+        return;
+    }
+    let p_start = (
+        2.0 * pts[0].0 - pts[1].0,
+        2.0 * pts[0].1 - pts[1].1,
+    );
+    let p_end = (
+        2.0 * pts[n - 1].0 - pts[n - 2].0,
+        2.0 * pts[n - 1].1 - pts[n - 2].1,
+    );
+    ctx.move_to(pts[0].0, pts[0].1);
+    for i in 0..n - 1 {
+        let p_prev = if i == 0 { p_start } else { pts[i - 1] };
+        let p0 = pts[i];
+        let p1 = pts[i + 1];
+        let p_next = if i + 1 == n - 1 {
+            p_end
+        } else {
+            pts[i + 2]
+        };
+        let (c1, c2) =
+            boundary_catmull_bezier_handles(p_prev, p0, p1, p_next, tau, max_handle_frac);
+        ctx.bezier_curve_to(c1.0, c1.1, c2.0, c2.1, p1.0, p1.1);
+    }
+}
+
+/// 封閉環格心：最後一段接到起點
+fn append_closed_catmull_centerline(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    pts: &[(f64, f64)],
+    tau: f64,
+    max_handle_frac: f64,
+) {
+    let n = pts.len();
+    if n < 3 {
+        return;
+    }
+    ctx.move_to(pts[0].0, pts[0].1);
+    for i in 0..n {
+        let p_prev = pts[(i + n - 1) % n];
+        let p0 = pts[i];
+        let p1 = pts[(i + 1) % n];
+        let p_next = pts[(i + 2) % n];
+        let (c1, c2) =
+            boundary_catmull_bezier_handles(p_prev, p0, p1, p_next, tau, max_handle_frac);
+        ctx.bezier_curve_to(c1.0, c1.1, c2.0, c2.1, p1.0, p1.1);
+    }
+    ctx.close_path();
+}
+
+/// 河道：沿格心寬筆觸（連續水流），再描細水岸線
+fn fill_and_stroke_water_river_centerline(
+    ctx: &web_sys::CanvasRenderingContext2d,
+    comp: &[(i32, i32)],
+    terrain_of: &HashMap<(i32, i32), Terrain>,
+    line_width_outline: f64,
+) {
+    let Some(order) = water_river_cell_path_order(comp) else {
+        return;
+    };
+    let centers = water_river_center_pixels(&order);
+    let is_loop = water_cell_degree_in_set(
+        &comp.iter().copied().collect(),
+        order[0].0,
+        order[0].1,
+    ) == 2;
+
+    let fill_t = terrain_of
+        .get(&(order[0].0, order[0].1))
+        .copied()
+        .unwrap_or(Terrain::Water);
+
+    ctx.begin_path();
+    if is_loop {
+        append_closed_catmull_centerline(ctx, &centers, WATER_CATMULL_TAU, WATER_MAX_HANDLE_FRAC);
+    } else {
+        append_open_catmull_centerline(ctx, &centers, WATER_CATMULL_TAU, WATER_MAX_HANDLE_FRAC);
+    }
+    ctx.set_stroke_style_str(water_interior_fill_color(fill_t));
+    ctx.set_line_width((2.0 * WATER_RIVER_HALF_WIDTH).max(12.0));
+    ctx.set_line_cap("round");
+    ctx.set_line_join("round");
+    ctx.stroke();
+
+    ctx.begin_path();
+    if is_loop {
+        append_closed_catmull_centerline(ctx, &centers, WATER_CATMULL_TAU, WATER_MAX_HANDLE_FRAC);
+    } else {
+        append_open_catmull_centerline(ctx, &centers, WATER_CATMULL_TAU, WATER_MAX_HANDLE_FRAC);
+    }
+    ctx.set_stroke_style_str(water_boundary_stroke_color(fill_t));
+    ctx.set_line_width(line_width_outline);
+    ctx.set_line_cap("round");
+    ctx.set_line_join("round");
+    ctx.stroke();
+}
+
 /// 單一水岸迴線：Catmull–Rom 風格三次貝茲，頂點切線連續，細河道不「一節一節」
 fn append_water_loop_path(
     ctx: &web_sys::CanvasRenderingContext2d,
@@ -678,6 +916,11 @@ fn fill_and_stroke_water_component_arcs(
     terrain_of: &HashMap<(i32, i32), Terrain>,
     line_width: f64,
 ) {
+    if water_component_is_simple_river_path(comp) {
+        fill_and_stroke_water_river_centerline(ctx, comp, terrain_of, line_width);
+        return;
+    }
+
     let edges = component_boundary_edges(comp);
     if edges.is_empty() {
         return;
