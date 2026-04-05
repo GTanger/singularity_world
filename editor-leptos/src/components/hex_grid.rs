@@ -149,9 +149,6 @@ fn draw_edge_trees(
     is_heavy: bool,
 ) {
     let ((ax, ay), (bx, by)) = hex_edge_verts(edge_idx);
-    // 邊中點
-    let mx = (ax + bx) / 2.0;
-    let my = (ay + by) / 2.0;
     // 樹一律朝北（螢幕向上；Canvas y 軸向下）
     let nx = 0.0;
     let ny = -1.0;
