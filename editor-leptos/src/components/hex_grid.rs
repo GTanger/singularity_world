@@ -11,14 +11,14 @@ const HEX_R: f64 = 28.0;
 /// 林區邊界：頂點往鄰接林格格心內縮後，每邊以**二十四次貝茲**（25 控制點）相連；Canvas 無原生高次 API，以 De Casteljau 取樣折線逼近。
 const FOREST_BOUNDARY_VERTEX_INSET: f64 = 9.0;
 /// 自格心指向該邊中點方向之基準鼓出強度（再乘隨機係數）
-const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 6.5;
-/// 鼓出量隨機係數（略收斂，減少控制多邊形尖刺）
-const FOREST_BULGE_JITTER_MIN: f64 = 0.68;
-const FOREST_BULGE_JITTER_MAX: f64 = 1.12;
+const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 8.2;
+/// 鼓出量隨機係數（範圍拉寬 → 波動更明顯）
+const FOREST_BULGE_JITTER_MIN: f64 = 0.52;
+const FOREST_BULGE_JITTER_MAX: f64 = 1.35;
 /// 沿格心→邊中再加減之額外距離（世界座標 px）
-const FOREST_RADIAL_JITTER_PX: f64 = 2.0;
+const FOREST_RADIAL_JITTER_PX: f64 = 3.6;
 /// 法線方向擺動（垂直於弦 p0→p1）；會再乘包絡並做鄰點平滑
-const FOREST_NORMAL_WOBBLE_PX: f64 = 3.0;
+const FOREST_NORMAL_WOBBLE_PX: f64 = 5.2;
 /// 二十四次貝茲每邊取樣段數（約為十二次時之兩倍）
 const FOREST_BEZIER24_STEPS: usize = 112;
 /// 頂點內縮距離之係數範圍
@@ -283,7 +283,7 @@ fn forest_edge_bezier24_controls(
         );
     let radial_extra = FOREST_RADIAL_JITTER_PX * forest_stable_rand_signed(q, r, ei, 0xE11A);
     let outward = bulge + radial_extra;
-    let radial_blend = 0.42_f64;
+    let radial_blend = 0.54_f64;
 
     let mut wn = [0.0_f64; 23];
     let mut wt = [0.0_f64; 23];
@@ -293,7 +293,7 @@ fn forest_edge_bezier24_controls(
         let bell2 = bell * bell;
         wn[idx] = FOREST_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xA100 + k as u32) * bell2;
         wt[idx] = FOREST_NORMAL_WOBBLE_PX
-            * 0.22
+            * 0.34
             * forest_stable_rand_signed(q, r, ei, 0xC200 + k as u32)
             * bell2;
     }
