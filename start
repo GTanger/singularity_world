@@ -47,19 +47,32 @@ fi
   env -u NO_COLOR trunk build --release
 )
 
-# 4) 重啟服務
+# 4) 重啟服務（兩種路徑都須先釋放 PORT，否則舊的 nohup／殘留行程會讓新實例 bind 失敗）
+free_port() {
+  local pids
+  pids=$(lsof -ti :"$PORT" 2>/dev/null) || true
+  if [[ -n "$pids" ]]; then
+    echo "--- 釋放埠 :$PORT（PID: $pids）---"
+    kill $pids 2>/dev/null || true
+    sleep 1
+    pids=$(lsof -ti :"$PORT" 2>/dev/null) || true
+    [[ -n "$pids" ]] && kill -9 $pids 2>/dev/null || true
+    sleep 1
+  fi
+}
+
 if [ "$HAS_SYSTEMD" = true ]; then
   echo "--- 透過 systemd 重啟服務 ---"
-  # 傳遞環境變數給 systemd service
+  systemctl --user stop singularity.service 2>/dev/null || true
+  sleep 1
+  free_port
   systemctl --user set-environment DATABASE_URL="$DATABASE_URL"
-  systemctl --user restart singularity.service
+  systemctl --user start singularity.service
   sleep 1
   systemctl --user status singularity.service | head -n 5
 else
   echo "--- 手動重啟 (nohup) ---"
-  # 先殺舊的
-  pids=$(lsof -ti :$PORT 2>/dev/null) || true
-  [[ -n "$pids" ]] && kill $pids && sleep 1
+  free_port
   
   if [[ -f "$SW_DIR/.env" ]]; then
     set -a; source "$SW_DIR/.env"; set +a
