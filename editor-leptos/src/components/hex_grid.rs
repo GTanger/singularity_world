@@ -12,14 +12,16 @@ const HEX_R: f64 = 28.0;
 const FOREST_BOUNDARY_VERTEX_INSET: f64 = 9.0;
 /// 控制點自該邊**中點**沿「格心→邊中」再往六角邊外推（遠離格心、貼邊鼓出）
 const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 6.5;
-/// 每邊鼓出量：在基準上乘此範圍內之**穩定隨機**係數（依格座標雜湊）
-const FOREST_BULGE_JITTER_MIN: f64 = 0.72;
-const FOREST_BULGE_JITTER_MAX: f64 = 1.28;
-/// 控制點沿邊**切向**偏移（世界座標 px），使弧線不過於規律
-const FOREST_CTRL_TANGENT_JITTER: f64 = 2.35;
+/// 每邊鼓出量：在基準上乘此範圍內之**穩定隨機**係數（須夠寬才看得出差異）
+const FOREST_BULGE_JITTER_MIN: f64 = 0.38;
+const FOREST_BULGE_JITTER_MAX: f64 = 1.72;
+/// 控制點沿「格心→邊中」再加減之**額外**距離（世界座標 px）
+const FOREST_RADIAL_JITTER_PX: f64 = 4.8;
+/// 控制點沿邊**切向**最大偏移（世界座標 px，乘 [-1,1]）
+const FOREST_CTRL_TANGENT_JITTER: f64 = 6.0;
 /// 頂點內縮距離之係數範圍（同樣為穩定隨機）
-const FOREST_INSET_SCALE_MIN: f64 = 0.84;
-const FOREST_INSET_SCALE_MAX: f64 = 1.16;
+const FOREST_INSET_SCALE_MIN: f64 = 0.58;
+const FOREST_INSET_SCALE_MAX: f64 = 1.42;
 const SQRT3: f64 = 1.7320508075688772;
 const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, 14.0),
@@ -186,6 +188,11 @@ fn forest_inset_toward(px: f64, py: f64, gx: f64, gy: f64, dist: f64) -> (f64, f
 }
 
 /// [0, 1) 穩定偽隨機，同一 `(q,r,ei,salt)` 永遠相同（平移／縮放畫面不重算種子）
+/// [-1, 1]，與 `forest_stable_rand01` 同鍵空間
+fn forest_stable_rand_signed(q: i32, r: i32, ei: usize, salt: u32) -> f64 {
+    forest_stable_rand01(q, r, ei, salt).mul_add(2.0, -1.0)
+}
+
 fn forest_stable_rand01(q: i32, r: i32, ei: usize, salt: u32) -> f64 {
     let mut x = (q as u32)
         .wrapping_mul(0x9E37_79B9)
@@ -404,12 +411,15 @@ fn append_forest_loop_path(
                 FOREST_BULGE_JITTER_MAX,
                 forest_stable_rand01(q, r, ei, 0xB0D9),
             );
-        // 沿邊切向（垂直於格心→邊中）微移控制點，打破完全對稱的鼓出
+        // 沿法線再加一層擺動（否則僅 ±30% 乘在 ~6px 上仍偏不明顯）
+        let radial_extra = FOREST_RADIAL_JITTER_PX * forest_stable_rand_signed(q, r, ei, 0xE11A);
+        let outward = bulge + radial_extra;
+        // 沿邊切向（垂直於格心→邊中）偏移控制點
         let tx = -dy / elen;
         let ty = dx / elen;
-        let tang = FOREST_CTRL_TANGENT_JITTER * (forest_stable_rand01(q, r, ei, 0x7A6E) - 0.5);
-        let ctrl_x = ex + (dx / elen) * bulge + tx * tang;
-        let ctrl_y = ey + (dy / elen) * bulge + ty * tang;
+        let tang = FOREST_CTRL_TANGENT_JITTER * forest_stable_rand_signed(q, r, ei, 0x7A6E);
+        let ctrl_x = ex + (dx / elen) * outward + tx * tang;
+        let ctrl_y = ey + (dy / elen) * outward + ty * tang;
         if i == 0 {
             ctx.move_to(p0.0, p0.1);
         }
