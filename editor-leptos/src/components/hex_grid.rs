@@ -25,16 +25,20 @@ const FOREST_BEZIER24_STEPS: usize = 160;
 const FOREST_INSET_SCALE_MIN: f64 = 0.78;
 const FOREST_INSET_SCALE_MAX: f64 = 1.14;
 
-/// 水域邊界：頂點內縮**大於林緣** → 弧線更**靠格心**（河流感在格內）
-const WATER_BOUNDARY_VERTEX_INSET: f64 = 15.5;
+/// 水域邊界：頂點內縮須**小於約半徑**，否則細水道／單格水會在格間「斷段」
+const WATER_BOUNDARY_VERTEX_INSET: f64 = 7.8;
+/// 僅一格連通區：內縮較小，藍色填滿較多，相鄰水格視覺才接得上
+const WATER_SINGLE_HEX_VERTEX_INSET: f64 = 5.2;
+/// 2～5 格：略收
+const WATER_SMALL_COMPONENT_VERTEX_INSET: f64 = 6.6;
 const WATER_ARC_BULGE_ALONG_EDGE: f64 = 5.2;
 const WATER_BULGE_JITTER_MIN: f64 = 0.72;
 const WATER_BULGE_JITTER_MAX: f64 = 1.06;
 const WATER_RADIAL_JITTER_PX: f64 = 1.6;
 const WATER_NORMAL_WOBBLE_PX: f64 = 3.2;
 const WATER_BEZIER24_STEPS: usize = 200;
-const WATER_INSET_SCALE_MIN: f64 = 0.9;
-const WATER_INSET_SCALE_MAX: f64 = 1.05;
+const WATER_INSET_SCALE_MIN: f64 = 0.96;
+const WATER_INSET_SCALE_MAX: f64 = 1.02;
 const SQRT3: f64 = 1.7320508075688772;
 const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, 14.0),
@@ -401,7 +405,8 @@ fn water_edge_bezier24_controls(
         let s = k as f64 / 24.0;
         let bell = (std::f64::consts::PI * s).sin();
         let b2 = bell * bell;
-        let bell_soft = b2 * b2 * b2;
+        // sin⁴：與林緣同級柔度，避免過度內縮造成細水道斷裂
+        let bell_soft = b2 * b2;
         wn[idx] = WATER_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xB100 + k as u32) * bell_soft;
         wt[idx] = WATER_NORMAL_WOBBLE_PX
             * 0.22
@@ -420,7 +425,7 @@ fn water_edge_bezier24_controls(
         let by = p0.1 + ty * slen * s;
         let bell = (std::f64::consts::PI * s).sin();
         let b2 = bell * bell;
-        let bell_soft = b2 * b2 * b2;
+        let bell_soft = b2 * b2;
         let wni = wn[idx];
         let wti = wt[idx];
         pts[idx + 1] = (
@@ -594,10 +599,23 @@ fn forest_loop_inset_map(cycle: &[ForestBoundaryEdge]) -> HashMap<(i64, i64), (f
     )
 }
 
-fn water_loop_inset_map(cycle: &[ForestBoundaryEdge]) -> HashMap<(i64, i64), (f64, f64)> {
+fn water_vertex_inset_for_component(comp_len: usize) -> f64 {
+    if comp_len <= 1 {
+        WATER_SINGLE_HEX_VERTEX_INSET
+    } else if comp_len <= 5 {
+        WATER_SMALL_COMPONENT_VERTEX_INSET
+    } else {
+        WATER_BOUNDARY_VERTEX_INSET
+    }
+}
+
+fn water_loop_inset_map(
+    cycle: &[ForestBoundaryEdge],
+    comp_len: usize,
+) -> HashMap<(i64, i64), (f64, f64)> {
     boundary_loop_inset_map(
         cycle,
-        WATER_BOUNDARY_VERTEX_INSET,
+        water_vertex_inset_for_component(comp_len),
         WATER_INSET_SCALE_MIN,
         WATER_INSET_SCALE_MAX,
         0xA7E1,
@@ -772,7 +790,7 @@ fn fill_and_stroke_water_component_arcs(
         let Some(&t) = terrain_of.get(&(q0, r0)) else {
             continue;
         };
-        let inset_map = water_loop_inset_map(&cycle);
+        let inset_map = water_loop_inset_map(&cycle, comp.len());
         pieces.push((t, cycle, inset_map));
     }
     if pieces.is_empty() {
