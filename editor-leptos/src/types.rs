@@ -183,63 +183,6 @@ impl Terrain {
         }
     }
 
-    pub fn color(self) -> &'static str {
-        match self {
-            Terrain::Plain => "#c8d68e",
-            // 林相格面與草原同色（林緣弧線／標籤仍區分林種）
-            Terrain::Forest => "#a8cc6a",
-            Terrain::ForestHeavy => "#a8cc6a",
-            Terrain::ForestLight => "#a8cc6a",
-            Terrain::Mountain => "#8a8a8a",
-            Terrain::Hills => "#b5a068",
-            // 水域格面與草原同色（水岸弧線／深浅仍區分）
-            Terrain::Water => "#a8cc6a",
-            Terrain::WaterDeep => "#a8cc6a",
-            Terrain::Desert => "#e8d48a",
-            Terrain::Swamp => "#6b7a44",
-            Terrain::Tundra => "#d0d8e0",
-            Terrain::Grassland => "#a8cc6a",
-            Terrain::Jungle => "#3a6e2a",
-            Terrain::Urban => "#aaa090",
-            Terrain::Road => "#c4b48a",
-            Terrain::Bridge => "#9c7b5b",
-            Terrain::Wall => "#3b3f46",
-            Terrain::FarmField => "#86b34d",
-            Terrain::Farmhouse => "#8b7355",
-            Terrain::Inn => "#b88a5a",
-            Terrain::Tavern => "#8f5c3f",
-            Terrain::Blacksmith => "#5e6269",
-            Terrain::GeneralStore => "#c29a6b",
-            Terrain::Clinic => "#8fc8b0",
-            Terrain::Workshop => "#9f8f7f",
-            Terrain::Market => "#d1a85a",
-            Terrain::GuildHall => "#6e78a8",
-            Terrain::Temple => "#b8a0c9",
-            Terrain::Academy => "#7fa8c9",
-            Terrain::Library => "#9c7f5e",
-            Terrain::Barracks => "#7b868e",
-            Terrain::GuardPost => "#5a6570",
-            Terrain::Warehouse => "#8f826d",
-            Terrain::Granary => "#c0a35b",
-            Terrain::Dock => "#5b87a8",
-            Terrain::Bathhouse => "#7bb8b1",
-            Terrain::Courthouse => "#8f8f9f",
-            Terrain::Jail => "#4e545e",
-            Terrain::TownHall => "#7e6fa8",
-            Terrain::Bank => "#b8a45f",
-            Terrain::Mint => "#9fa8b2",
-            Terrain::Stables => "#8a6f4f",
-            Terrain::Caravanserai => "#b78961",
-            Terrain::Theater => "#9b6fa8",
-            Terrain::Arena => "#b97862",
-            Terrain::Observatory => "#5f7fa8",
-            Terrain::Alchemist => "#6f9b8a",
-            Terrain::MageTower => "#6a63a8",
-            Terrain::Embassy => "#7f97a8",
-            Terrain::PrisonYard => "#5a5f69",
-        }
-    }
-
     pub fn serde_name(self) -> &'static str {
         match self {
             Terrain::Plain => "plain",
