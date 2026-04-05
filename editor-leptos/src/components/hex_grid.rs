@@ -12,15 +12,15 @@ const HEX_R: f64 = 28.0;
 const FOREST_BOUNDARY_VERTEX_INSET: f64 = 9.0;
 /// 自格心指向該邊中點方向之基準鼓出強度（再乘隨機係數）
 const FOREST_ARC_BULGE_ALONG_EDGE: f64 = 10.5;
-/// 鼓出量隨機係數（範圍拉寬 → 波動更明顯）
-const FOREST_BULGE_JITTER_MIN: f64 = 0.45;
-const FOREST_BULGE_JITTER_MAX: f64 = 1.48;
+/// 鼓出量隨機係數（略收斂 → 曲線較連續、少突兀轉折）
+const FOREST_BULGE_JITTER_MIN: f64 = 0.58;
+const FOREST_BULGE_JITTER_MAX: f64 = 1.22;
 /// 沿格心→邊中再加減之額外距離（世界座標 px）
-const FOREST_RADIAL_JITTER_PX: f64 = 5.0;
+const FOREST_RADIAL_JITTER_PX: f64 = 4.0;
 /// 法線方向擺動（垂直於弦 p0→p1）；會再乘包絡並做鄰點平滑
-const FOREST_NORMAL_WOBBLE_PX: f64 = 7.0;
-/// 二十四次貝茲每邊取樣段數（略增可減輕折線微鋸齒感）
-const FOREST_BEZIER24_STEPS: usize = 128;
+const FOREST_NORMAL_WOBBLE_PX: f64 = 6.0;
+/// 二十四次貝茲每邊取樣段數（愈密愈順）
+const FOREST_BEZIER24_STEPS: usize = 160;
 /// 頂點內縮距離之係數範圍
 const FOREST_INSET_SCALE_MIN: f64 = 0.78;
 const FOREST_INSET_SCALE_MAX: f64 = 1.14;
@@ -245,12 +245,12 @@ fn bezier24_eval(p: [(f64, f64); 25], t: f64) -> (f64, f64) {
     v[0]
 }
 
-/// 一維 23 點（內部控制點索引）平滑：多輪略強核，壓掉微尖角／控制多邊形急折
+/// 一維 23 點（內部控制點索引）平滑：多輪柔核，壓掉微尖角／控制多邊形急折
 fn smooth_forest_offset_23(a: &mut [f64; 23]) {
-    for _ in 0..3 {
+    for _ in 0..4 {
         let prev = *a;
         for i in 1..22 {
-            a[i] = 0.2 * prev[i - 1] + 0.6 * prev[i] + 0.2 * prev[i + 1];
+            a[i] = 0.22 * prev[i - 1] + 0.56 * prev[i] + 0.22 * prev[i + 1];
         }
         a[0] = 0.5 * prev[0] + 0.5 * prev[1];
         a[22] = 0.5 * prev[21] + 0.5 * prev[22];
@@ -283,18 +283,19 @@ fn forest_edge_bezier24_controls(
         );
     let radial_extra = FOREST_RADIAL_JITTER_PX * forest_stable_rand_signed(q, r, ei, 0xE11A);
     let outward = bulge + radial_extra;
-    let radial_blend = 0.62_f64;
+    let radial_blend = 0.55_f64;
 
     let mut wn = [0.0_f64; 23];
     let mut wt = [0.0_f64; 23];
     for (idx, k) in (1..24).enumerate() {
         let s = k as f64 / 24.0;
         let bell = (std::f64::consts::PI * s).sin();
-        // sin²·|sin|：邊緣更柔，減輕與鄰邊接縫處的微尖角
-        let bell_soft = bell * bell * bell.abs();
+        // sin⁴：邊緣極柔，主波動留在中段，整體較滑
+        let b2 = bell * bell;
+        let bell_soft = b2 * b2;
         wn[idx] = FOREST_NORMAL_WOBBLE_PX * forest_stable_rand_signed(q, r, ei, 0xA100 + k as u32) * bell_soft;
         wt[idx] = FOREST_NORMAL_WOBBLE_PX
-            * 0.4
+            * 0.32
             * forest_stable_rand_signed(q, r, ei, 0xC200 + k as u32)
             * bell_soft;
     }
@@ -309,7 +310,8 @@ fn forest_edge_bezier24_controls(
         let bx = p0.0 + tx * slen * s;
         let by = p0.1 + ty * slen * s;
         let bell = (std::f64::consts::PI * s).sin();
-        let bell_soft = bell * bell * bell.abs();
+        let b2 = bell * bell;
+        let bell_soft = b2 * b2;
         let wni = wn[idx];
         let wti = wt[idx];
         pts[idx + 1] = (
