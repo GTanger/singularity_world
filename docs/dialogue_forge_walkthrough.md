@@ -26,7 +26,7 @@ Phase 1 實施了三層 NPC 對話鍛造爐的基礎設施：啟用 0.8B 本地�
 | 項目 | 結果 |
 |---|---|
 | `cargo clippy -- -D warnings` | ✅ 通過 |
-| `cargo test` | ✅ 54 unit + 2 integration 全過 |
+| `cargo test` | ✅ 通過（`src/` 單元測試；數量以 `cargo test` 輸出為準） |
 | `checkrooms -strict` | ✅ 通過 |
 | Git commit | ✅ `788bba3` pushed to origin/master |
 

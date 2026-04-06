@@ -31,6 +31,9 @@ Thumbs.db
 
 # Logs（./start 後台執行時寫入）
 sw.log
+# 舊試跑殘留（含過時測試名；勿再提交）
+start_error.log
+start_fixed.log
 
 # Build / cache
 /vendor/
