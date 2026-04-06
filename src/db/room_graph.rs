@@ -1,4 +1,4 @@
-//! 房間鄰接圖與 BFS 尋路（對齊 Go `db/pathfind.go`）。
+//! 房間鄰接圖與 BFS 尋路（對齊既有 `db/pathfind`）。
 
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::{Arc, OnceLock, RwLock};
@@ -18,7 +18,7 @@ pub struct RoomGraph {
 }
 
 impl RoomGraph {
-    /// 由 store 快照建圖（對齊 Go `BuildGraphFromStore`）。
+    /// 由 store 快照建圖（對齊既有 `BuildGraphFromStore`）。
     pub fn rebuild_from_store(s: &store::Store) -> Self {
         Self {
             adj: s.adjacency(),
@@ -28,7 +28,7 @@ impl RoomGraph {
         }
     }
 
-    /// BFS 最短路徑：不含起點、含終點之房間 id 序列；不可達回 `None`。`from == to` 回 `None`（與 Go 一致）。
+    /// BFS 最短路徑：不含起點、含終點之房間 id 序列；不可達回 `None`。`from == to` 回 `None`（與既有行為一致）。
     #[must_use]
     pub fn find_path(&self, from: &str, to: &str) -> Option<Vec<String>> {
         if from == to {
@@ -66,13 +66,13 @@ impl RoomGraph {
         self.adj.get(room_id).cloned().unwrap_or_default()
     }
 
-    /// 房間標籤（複本）；無標籤回空 vec（對齊 Go `RoomTags`）。
+    /// 房間標籤（複本）；無標籤回空 vec（對齊既有 `RoomTags`）。
     #[must_use]
     pub fn room_tags(&self, room_id: &str) -> Vec<String> {
         self.tags.get(room_id).cloned().unwrap_or_default()
     }
 
-    /// BFS 找最近帶指定 tag 的房間；`max_dist == 0` 不限深度。不可達回 `None`（對齊 Go `FindNearestByTag`）。
+    /// BFS 找最近帶指定 tag 的房間；`max_dist == 0` 不限深度。不可達回 `None`（對齊既有 `FindNearestByTag`）。
     #[must_use]
     pub fn find_nearest_by_tag(&self, origin: &str, tag: &str, max_dist: i32) -> Option<(String, usize)> {
         #[derive(Clone)]
@@ -115,7 +115,7 @@ impl RoomGraph {
         None
     }
 
-    /// `origin` 周圍 `max_dist` 步內、帶任一指定 tag 的房間（對齊 Go `FindRoomsWithinDist`）。
+    /// `origin` 周圍 `max_dist` 步內、帶任一指定 tag 的房間（對齊既有 `FindRoomsWithinDist`）。
     #[must_use]
     pub fn find_rooms_within_dist(&self, origin: &str, want_tags: &[&str], max_dist: i32) -> Vec<String> {
         if want_tags.is_empty() || max_dist <= 0 {

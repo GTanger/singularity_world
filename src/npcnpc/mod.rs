@@ -1,4 +1,4 @@
-// npcnpc 模組 — NPC↔NPC 社交輔助、房間事件滑窗、除錯型別（對齊 Go npcnpc/）。
+// npcnpc 模組 — NPC↔NPC 社交輔助、房間事件滑窗、除錯型別（對齊既有 npcnpc/）。
 
 mod helpers;
 mod state;

@@ -1,8 +1,8 @@
-// combat 模組 — 戰鬥判定與文字 log，對齊 Go combat/combat.go（Resolve、ResolveV2、CombatOpt）。
+// combat 模組 — 戰鬥判定與文字 log，對齊既有 combat/combat（Resolve、ResolveV2、CombatOpt）。
 
 use rand::Rng;
 
-/// 擴充選項：α/β/γ、地形、制伏留人。全為零或未設時以文件預設代入（與 Go `defaultOpt` 一致）。
+/// 擴充選項：α/β/γ、地形、制伏留人。全為零或未設時以文件預設代入（與預設選項一致）。
 #[derive(Clone, Debug, Default)]
 pub struct CombatOpt {
     pub alpha: f64,
@@ -310,8 +310,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn damage_first_stage_matches_go_edge() {
-        // Go: Round((1+Vit/10)*(1-Def/(Def+20))), max 1
+    fn damage_first_stage_matches_legacy_edge() {
+        // 公式: Round((1+Vit/10)*(1-Def/(Def+20))), max 1
         assert_eq!(damage_first_stage(10, 10), 1);
         assert_eq!(damage_first_stage(5, 5), 1);
         assert_eq!(damage_first_stage(15, 5), 2);

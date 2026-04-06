@@ -1,9 +1,9 @@
-// event 模組 — 事件類型常數、日誌列與寫入／查詢，對齊 Go event/types.go + event/journal.go。
+// event 模組 — 事件類型常數、日誌列與寫入／查詢，對齊既有 event/types + event/journal。
 
 use crate::db::ErrNoStore;
 use crate::store;
 
-/// 事件類型常數（對齊決策 004 / Go `event`）。
+/// 事件類型常數（對齊決策 004）。
 pub mod types {
     pub const OBSERVED: &str = "observed";
     pub const MOVE: &str = "move";
@@ -15,7 +15,7 @@ pub mod types {
     pub const VIT: &str = "vit";
 }
 
-/// 事件日誌一筆，供回推時依時間序套用（對齊 Go `event.EventRow`）。
+/// 事件日誌一筆，供回推時依時間序套用（對齊既有 `event.EventRow`）。
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EventRow {
     pub at: i64,

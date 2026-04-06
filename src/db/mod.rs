@@ -1,4 +1,4 @@
-// db 模組 — 資料存取門面（讀寫 store），對齊 Go db/ 層。
+// db 模組 — 資料存取門面（讀寫 store），對齊既有 db/ 層。
 // store 為唯一資料源；db 提供業務語義的包裝（實體查詢、密碼驗證、soul_seed 展開等）。
 
 mod archival;
@@ -150,7 +150,7 @@ const MAX_STAT: i32 = 30;
 
 /// 由 seed 前 3 次偽隨機展開三軸（能階、時脈、相位）。
 fn expand_seed_axes(seed: i64) -> (f64, f64, f64) {
-    // 簡易 LCG（與 Go math/rand NewSource 相容度足夠，非加密用途）
+    // 簡易 LCG（與舊版 PRNG 種子用法相容度足夠，非加密用途）
     let mut rng = SimpleLcg::new(seed);
     let u1 = rng.next_f64();
     let u2 = rng.next_f64();
@@ -379,14 +379,14 @@ pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
     Ok(Some(store_entity_to_character(&se, "")))
 }
 
-/// 回傳實體當前房間 id（對齊 Go `db.GetEntityRoom`）。
+/// 回傳實體當前房間 id（對齊既有 `db.GetEntityRoom`）。
 pub fn get_entity_room(entity_id: &str) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let s = arc.read().unwrap();
     Ok(s.get_entity_room(entity_id))
 }
 
-/// 查詢座標落在 `[x_min,x_max]×[y_min,y_max]` 內的實體；`kind` 空字串表示不限種類（對齊 Go `GetEntitiesInBox`）。
+/// 查詢座標落在 `[x_min,x_max]×[y_min,y_max]` 內的實體；`kind` 空字串表示不限種類（對齊既有 `GetEntitiesInBox`）。
 pub fn get_entities_in_box(
     x_min: i32,
     x_max: i32,
@@ -411,7 +411,7 @@ pub fn get_entities_in_box(
     Ok(list)
 }
 
-/// 回傳所有 `move_state == "moving"` 的實體（對齊 Go `GetMovingEntities`）。
+/// 回傳所有 `move_state == "moving"` 的實體（對齊既有 `GetMovingEntities`）。
 pub fn get_moving_entities() -> anyhow::Result<Vec<Character>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let s = arc.read().unwrap();
@@ -426,7 +426,7 @@ pub fn get_moving_entities() -> anyhow::Result<Vec<Character>> {
     Ok(list)
 }
 
-/// 回傳指定房間內所有存活實體（對齊 Go `GetEntitiesInRoom`）。
+/// 回傳指定房間內所有存活實體（對齊既有 `GetEntitiesInRoom`）。
 /// `game_hour` 0–23 供在職場顯示職稱；`-1` 不套用下班規則（職場內一律「職稱|真名」）。
 ///
 /// 合併 `entity_rooms` 字串與 [`resolve_room_to_hex`] 對應之六角座標上的實體，避免世界房間 id 與 `hex:…` 各寫一套時漏列。
@@ -559,7 +559,7 @@ pub fn add_magnesium(entity_id: &str, delta: i32) -> anyhow::Result<()> {
     })
 }
 
-/// 將 `amount` 鎂自 `from_id` 轉至 `to_id`（餘額不足或實體不存在則錯）；對齊 Go `db.TransferMagnesium`。
+/// 將 `amount` 鎂自 `from_id` 轉至 `to_id`（餘額不足或實體不存在則錯）；對齊既有 `db.TransferMagnesium`。
 pub fn transfer_magnesium(from_id: &str, to_id: &str, amount: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();
@@ -589,7 +589,7 @@ pub fn get_spawn_room_id() -> String {
     if id.is_empty() { "lobby".to_string() } else { id }
 }
 
-/// 有房間座標的 NPC id 列表（對齊 Go `GetNPCIDsWithRoom`）。
+/// 有房間座標的 NPC id 列表（對齊既有 `GetNPCIDsWithRoom`）。
 #[must_use]
 pub fn get_npc_ids_with_room() -> Vec<String> {
     let Some(arc) = store::get_store() else {
@@ -599,7 +599,7 @@ pub fn get_npc_ids_with_room() -> Vec<String> {
     s.get_npc_ids_with_room()
 }
 
-/// 有房間座標的玩家 id 列表（對齊 Go `GetPlayerIDsWithRoom`）。
+/// 有房間座標的玩家 id 列表（對齊既有 `GetPlayerIDsWithRoom`）。
 #[must_use]
 pub fn get_player_ids_with_room() -> Vec<String> {
     let Some(arc) = store::get_store() else {
@@ -626,21 +626,21 @@ pub fn terrain_from_room(room_id: &str) -> String {
     String::new()
 }
 
-/// 依 id 查房間（對齊 Go `GetRoom`）。
+/// 依 id 查房間（對齊既有 `GetRoom`）。
 pub fn get_room(room_id: &str) -> anyhow::Result<Option<crate::model::Room>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let s = arc.read().unwrap();
     Ok(s.get_room(room_id))
 }
 
-/// 房間顯示名稱（對齊 Go `GetRoomName`）。
+/// 房間顯示名稱（對齊既有 `GetRoomName`）。
 pub fn get_room_name(room_id: &str) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let s = arc.read().unwrap();
     Ok(s.get_room_name(room_id))
 }
 
-/// 將實體設為在指定房間（對齊 Go `SetEntityRoom`）。
+/// 將實體設為在指定房間（對齊既有 `SetEntityRoom`）。
 /// 若 `room_id` 為 `hex:q:r` 或於 `room_hex_overlay.json`／創生房規則可解析為六角，則改寫權威座標為 [`set_entity_hex`]。
 pub fn set_entity_room(entity_id: &str, room_id: &str) -> anyhow::Result<()> {
     if let Some((q, r)) = crate::hex::parse_hex_room_id(room_id) {
@@ -772,7 +772,7 @@ pub fn penalize_rumor_by_text(text: &str, now_unix: i64, reason: &str) -> anyhow
 }
 
 // ══════════════════════════════════════
-//  簡易 LCG 偽隨機（對齊 Go math/rand）
+//  簡易 LCG 偽隨機（對齊既有 math/rand）
 // ══════════════════════════════════════
 
 struct SimpleLcg {
@@ -785,7 +785,7 @@ impl SimpleLcg {
     }
 
     fn next_i64(&mut self) -> i64 {
-        // Go math/rand rngSource 使用的是更複雜的演算法，
+        // 標準庫 PRNG 的 rngSource 使用的是更複雜的演算法，
         // 但對於 soul_seed 展開只要一致性即可，後續可精確對齊。
         self.state = self.state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
         self.state
@@ -799,9 +799,9 @@ impl SimpleLcg {
     }
 }
 
-/// 拓撲邊權總量常數（對齊 Go `TotalCostNorm`）。
+/// 拓撲邊權總量常數（對齊既有 `TotalCostNorm`）。
 pub const TOTAL_TOPOLOGY_COST_NORM: f64 = 10_000.0;
-/// 拓撲邊數（對齊 Go `NumTopologyEdges`）。
+/// 拓撲邊數（對齊既有 `NumTopologyEdges`）。
 pub const NUM_TOPOLOGY_EDGES: usize = 760;
 
 /// 由 soul_seed 產生 760 條拓撲 Cost（對齊 `ExpandSoulSeedToTopologyCosts` 流程）。

@@ -1,4 +1,4 @@
-//! 腦驅動 NPC 抵達房間後的數值效果（對齊 Go `brain_arrival.go` 之 `applyBrainArrivalEffects`）。
+//! 腦驅動 NPC 抵達房間後的數值效果（對齊既有 `brain_arrival` 之 `applyBrainArrivalEffects`）。
 
 use rand::Rng;
 
@@ -24,7 +24,7 @@ fn fmt_two_s(fmt: &str, a: &str, b: &str) -> String {
     fmt.replacen("%s", a, 1).replacen("%s", b, 1)
 }
 
-/// 依抵達意圖套用鎂／背包／指派／事件／心境（對齊 Go）。
+/// 依抵達意圖套用鎂／背包／指派／事件／心境（對齊既有）。
 pub fn apply_brain_arrival_effects(at: i64, entity_id: &str, room_id: &str, intent: IntentType) {
     let be = gametext::brain_effects();
     match intent {

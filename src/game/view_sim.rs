@@ -1,4 +1,4 @@
-// 視野內即時模擬，對齊 Go game/view_sim.go。
+// 視野內即時模擬，對齊既有 game/view_sim。
 
 use std::collections::HashSet;
 
@@ -8,14 +8,14 @@ use crate::entity::Character;
 use super::observe::{now_unix, Observer};
 use super::zone::{in_view, VIEW_RADIUS};
 
-/// 觀測者格點座標（對齊 Go `Pos`）。
+/// 觀測者格點座標（對齊既有 `Pos`）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Pos {
     pub x: i32,
     pub y: i32,
 }
 
-/// 在任一觀測者視野內的實體 ID（去重，對齊 Go `InViewEntityIDs`）。
+/// 在任一觀測者視野內的實體 ID（去重，對齊既有 `InViewEntityIDs`）。
 #[must_use]
 pub fn in_view_entity_ids(observers: &[Pos], entities: &[Character]) -> Vec<String> {
     let mut seen = HashSet::new();
@@ -30,12 +30,12 @@ pub fn in_view_entity_ids(observers: &[Pos], entities: &[Character]) -> Vec<Stri
     seen.into_iter().collect()
 }
 
-/// 單一 NPC 一 tick 模擬；第一版 no-op（對齊 Go `SimulateOneTick`）。
+/// 單一 NPC 一 tick 模擬；第一版 no-op（對齊既有 `SimulateOneTick`）。
 pub fn simulate_one_tick(_entity_id: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
-/// 僅對視野內 NPC 跑觀測與 tick（對齊 Go `RunViewSimulation`）。
+/// 僅對視野內 NPC 跑觀測與 tick（對齊既有 `RunViewSimulation`）。
 pub fn run_view_simulation(
     get_observer_positions: impl Fn() -> Vec<Pos>,
     obs: Option<&dyn Observer>,

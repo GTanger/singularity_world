@@ -62,9 +62,9 @@
 |------|------|
 | **對話來源** | `data/templates/dialogues/*.json`（依職業）；無職業或無命中時 fallback `data/templates/dialogues/public_dialogue.json`（公版，已建）。 |
 | **職業從哪來** | `entity_id` → assignments → `occupation_id` → `occupations.json` 的 `dialogue_file` → 載入該職業的 dialogue 檔。 |
-| **現況** | `dialogues/*.json` 已有 ~716 句（10 職業），**Go 尚未讀取**；目前 Talk 只吃 handler 內 8 句。`GetNPCTitle` 已自 assignments 推導職稱（E3 ✅）。 |
+| **現況** | `dialogues/*.json` 已有 ~716 句（10 職業），**後端尚未全量讀取**；目前 Talk 只吃 handler 內 8 句。`GetNPCTitle` 已自 assignments 推導職稱（E3 ✅）。 |
 
-**載入時機**：啟動時載入 `occupations.json`、各職業 dialogue 檔（或第一次 Talk 時 lazy load）；需新模組或擴充 `db/behavior.go`／新檔讀取 templates。
+**載入時機**：啟動時載入 `occupations.json`、各職業 dialogue 檔（或第一次 Talk 時 lazy load）；需新模組或擴充 `db/behavior`／新檔讀取 templates。
 
 ---
 
@@ -194,7 +194,7 @@
 | 序 | 步驟 | 說明 |
 |----|------|------|
 | 1 | 協定：Talk 必帶 player_input | ClientMsg 增加 `player_input`（或 `text`）；後端無則 fallback 模板或拒收。 |
-| 2 | 載入 dialogue 檔 | 依 occupations 或 archetypes 的 dialogue_file 路徑載入 JSON；可新檔 `db/dialogue.go` 或擴充 behavior。 |
+| 2 | 載入 dialogue 檔 | 依 occupations 或 archetypes 的 dialogue_file 路徑載入 JSON；可新檔 `db/dialogue` 或擴充 behavior。 |
 | 3 | 實作 PickFromDialogue(occupationID, key, personality) | 回傳一條替換過佔位符的句子；Boldness 權重先做，Sensitivity/Orderliness 可選。 |
 | 4 | handler Talk：優先 CallAITalk、fallback I3 | 有 player_input 且 use_ai_for_talk 且 NPC 允許 → CallAITalk；否則 PickFromDialogue(..., "talk", personality)。 |
 | 5 | 前端：可對話主題＋「其他」 | 點 Talk 顯示主題清單（3～5 句＋「其他」）；點主題送該句、點「其他」開輸入框再送。 |

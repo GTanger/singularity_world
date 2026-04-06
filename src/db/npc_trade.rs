@@ -1,4 +1,4 @@
-//! NPC 街頭兜售（對齊 Go `db/npc_trade.go`）。
+//! NPC 街頭兜售（對齊既有 `db/npc_trade`）。
 
 use rand::Rng;
 
@@ -6,7 +6,7 @@ use super::{
     add_magnesium, adjust_disposition, get_entity, log_npc_event, remove_from_inventory, DISP_TRADE, EVT_TRADE,
 };
 
-/// 賣出背包中第一筆 `qty≥1` 的物品 1 件換鎂；成功回 `true`（對齊 Go `NpcStreetSellOne`）。
+/// 賣出背包中第一筆 `qty≥1` 的物品 1 件換鎂；成功回 `true`（對齊既有 `NpcStreetSellOne`）。
 pub fn npc_street_sell_one(entity_id: &str, room_id: &str, at: i64) -> bool {
     let Ok(Some(ch)) = get_entity(entity_id) else {
         return false;

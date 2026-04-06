@@ -1,4 +1,4 @@
-//! 求職撮合（對齊 Go `npc/job_matching.go`）。
+//! 求職撮合（對齊既有 `npc/job_matching`）。
 
 use rand::Rng;
 
@@ -17,7 +17,7 @@ pub const DEFAULT_OCCUPATION_FOR_HIRE: &str = "服務生";
 const DEFAULT_SHIFT_START: i32 = 6;
 const DEFAULT_SHIFT_END: i32 = 19;
 
-/// 撮合參數（對齊 Go `JobMatchParams`）。
+/// 撮合參數（對齊既有 `JobMatchParams`）。
 #[derive(Debug, Clone)]
 pub struct JobMatchParams {
     pub max_per_venue: i32,
@@ -58,7 +58,7 @@ fn do_assign(entity_id: &str, venue_id: &str, spawn_room: &str) -> bool {
     true
 }
 
-/// 一輪求職撮合；`graph` 為 `None` 時改隨機配對（與 Go `g == nil` 一致）。回傳本輪新入職 entity id。
+/// 一輪求職撮合；`graph` 為 `None` 時改隨機配對（與既有行為一致）。回傳本輪新入職 entity id。
 #[must_use]
 pub fn run_job_matching_tick(graph: Option<&RoomGraph>, mut p: JobMatchParams) -> Vec<String> {
     let mut added = Vec::new();

@@ -1,15 +1,15 @@
-// 觀測觸發與延遲坍縮回推，對齊 Go game/observe.go。
+// 觀測觸發與延遲坍縮回推，對齊既有 game/observe。
 
 use crate::db;
 use crate::entity::{Character, EntityKind};
 use crate::event::{self, types};
 
-/// 觀測發生時由視野／房間邏輯呼叫（對齊 Go `Observer`）。
+/// 觀測發生時由視野／房間邏輯呼叫（對齊既有 `Observer`）。
 pub trait Observer {
     fn on_observe(&self, entity_id: &str, observer_id: &str, at: i64);
 }
 
-/// 寫入 `observed` 事件並更新 `last_observed_at`（對齊 Go `Observed`）。
+/// 寫入 `observed` 事件並更新 `last_observed_at`（對齊既有 `Observed`）。
 #[derive(Debug, Default, Clone, Copy)]
 pub struct Observed;
 
@@ -19,7 +19,7 @@ impl Observer for Observed {
     }
 }
 
-/// 進入房間時對房內 NPC 標記觀測（對齊 Go `ObserveRoom`）。
+/// 進入房間時對房內 NPC 標記觀測（對齊既有 `ObserveRoom`）。
 pub fn observe_room(room_id: &str, observer_id: &str, at: i64) {
     let Ok(entities) = db::get_entities_in_room(room_id, -1) else {
         return;
@@ -43,7 +43,7 @@ pub fn observe_hex(q: i32, r: i32, observer_id: &str, at: i64) {
     }
 }
 
-/// 自 store 與事件日誌回推 `as_of` 時點狀態（對齊 Go `Collapse`）。
+/// 自 store 與事件日誌回推 `as_of` 時點狀態（對齊既有 `Collapse`）。
 pub fn collapse(entity_id: &str, as_of: i64) -> anyhow::Result<(Character, String)> {
     let Some(mut c) = db::get_entity(entity_id)? else {
         anyhow::bail!("entity not found");
@@ -76,7 +76,7 @@ pub fn collapse(entity_id: &str, as_of: i64) -> anyhow::Result<(Character, Strin
     Ok((c, room_id))
 }
 
-/// 當前 Unix 秒（對齊 Go `NowUnix`）。
+/// 當前 Unix 秒（對齊既有 `NowUnix`）。
 #[must_use]
 pub fn now_unix() -> i64 {
     use std::time::{SystemTime, UNIX_EPOCH};

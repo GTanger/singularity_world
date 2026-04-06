@@ -1,4 +1,4 @@
-//! WebSocket `do_action` 主幹（對齊 Go `server/handler_action.go` 與 `action_*`）。
+//! WebSocket `do_action` 主幹（對齊既有 `server/handler_action` 與 `action_*`）。
 
 use std::collections::HashSet;
 

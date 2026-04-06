@@ -58,7 +58,7 @@ data/
 | 服務生 | 服務生 | `[]` | 同上，roles.服務生（區域走動、端盤） |
 | 店員 | 店員 | `[]` | roles.店員；`dialogues/clerk.json`；蕗易沙櫃檯站崗（`wander_rooms` 單間不巡邏） |
 
-後端：`db/occupation.go` 的 `LoadOccupations`、`GetSocketsForNPC(db, entityID, roomID)` 依指派與 **room_ids 在場** 決定是否加上 `action_sockets`。
+後端：`src/db/occupation.rs` 的 `load_occupation_cache`、`get_sockets_for_npc` 依指派與 **room_ids 在場** 決定是否加上 `action_sockets`。
 
 ---
 
@@ -67,7 +67,7 @@ data/
 - **venues**：id、name、**room_ids**（JSON 陣列）。「在場」＝當前房間在該場所的 room_ids 內。
 - **assignments**：entity_id、occupation_id、venue_id、assigned_by（可空）。表示「誰、在何場所、擔任何職業」。
 
-職稱（外人認知）由指派推導；列可執行動作與執行時，僅在 **EntityInVenueAtRoom** 時才開放該職業的 action_sockets。見 `db/assignment.go`、`db/occupation.go`。
+職稱（外人認知）由指派推導；列可執行動作與執行時，僅在 **EntityInVenueAtRoom** 時才開放該職業的 action_sockets。見 `src/db/assignment.rs`、`src/db/occupation.rs`。
 
 ---
 
@@ -123,7 +123,7 @@ data/
 
 依 `destination_tags`、`wander_range` 隨機選目標，BFS 尋路。適用旅人、酒客、乞丐、學者等。
 
-詳見 `db/npc_movement.go`、`db/pathfind.go`；archetypes.json 內各原型的 movement 為參考格式。
+詳見 `src/npc/traveler.rs`（移動模式）、`src/db/room_graph.rs`（BFS）；archetypes.json 內各原型的 movement 為參考格式。
 
 ---
 
@@ -175,15 +175,15 @@ data/
 | `data/rooms.json` | 房間 + tags/zone | 已更新 |
 | `data/templates/occupations.json` | 職業型別表（對話/行為檔、action_sockets） | 已上線 |
 | store（venues/assignments） | data/venues.json、data/assignments.json；場所 room_ids、誰任職何場所 | 已上線 |
-| `db/assignment.go` | Venue、Assignment、GetNPCTitleFromAssignments、EntityInVenueAtRoom | 已上線 |
-| `db/occupation.go` | LoadOccupations、GetSocketsForNPC、IsDefaultSocket | 已上線 |
-| `db/pathfind.go` | BFS 尋路 | 已上線 |
-| `db/npc_movement.go` | 三種移動模式 | 已上線 |
+| `src/db/assignment.rs` | Venue、Assignment、get_npc_title_from_assignments、entity_in_venue_at_room | 已上線 |
+| `src/db/occupation.rs` | load_occupations、get_sockets_for_npc | 已上線 |
+| `src/db/room_graph.rs` | BFS 尋路 | 已上線 |
+| `src/npc/traveler.rs` | 三種移動模式、`TravelerManager` | 已上線 |
 | 列可執行動作 / do_action | NPC 用 GetSocketsForNPC；非預設動作檢查在場 | 已上線 |
 
 ### 演進路線
 
-1. **已完成** — 定點 NPC 活化（npc_behaviors → db/behavior.go）
+1. **已完成** — 定點 NPC 活化（npc_behaviors → `src/npc/behavior.rs` 等）
 2. **已完成** — 房間 tags/zone、尋路與移動管理器
 3. **已完成** — 身份與職業分離：venues、assignments、occupations.json；生成只帶 seed；職稱與插座依指派與在場
 4. **下一步** — 對話關鍵字檢索、公共對話 fallback、從 templates/dialogues 依職業載入

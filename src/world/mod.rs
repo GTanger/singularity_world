@@ -1,4 +1,4 @@
-// world 模組 — 地圖格點、地形、區塊載入與移動碰撞，對齊 Go world/。
+// world 模組 — 地圖格點、地形、區塊載入與移動碰撞，對齊既有 world/。
 
 mod chunk;
 mod map;

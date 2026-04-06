@@ -1,7 +1,7 @@
 # 世界觀認知分層與 NPC 對話 Prompt
 
 > **目的**：把「NPC 知道什麼」拆成可維護的層級，並對齊 **LLM system 注入策略**。  
-> **實作錨點**：`data/templates/llm_prompts.json`（欄位 `world_phenomena_cognition` 等）；`ai/prompts.go` 載入，`ai/talk.go` 的 `CallAITalk`／`CallAITalkNPCToNPC` 組裝 system。
+> **實作錨點**：`data/templates/llm_prompts.json`（欄位 `world_phenomena_cognition` 等）；`ai/prompts` 載入，`ai/talk` 的 `CallAITalk`／`CallAITalkNPCToNPC` 組裝 system。
 
 ---
 

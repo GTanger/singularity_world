@@ -1,4 +1,4 @@
-//! NPC 行為文案快取（對齊 Go `npc/behavior.go`）。
+//! NPC 行為文案快取（對齊既有 `npc/behavior`）。
 
 use std::collections::HashMap;
 use std::path::Path;
@@ -76,7 +76,7 @@ pub fn get_shift_flavor(title: &str, npc_name: &str, arriving: bool) -> String {
     s.replace("{name}", npc_name)
 }
 
-/// 依職稱讀取 `movement.speed`（對齊 Go `GetMovementDefForTitle` 之 speed）；無則為 1。
+/// 依職稱讀取 `movement.speed`（對齊既有 `GetMovementDefForTitle` 之 speed）；無則為 1。
 #[must_use]
 pub fn movement_speed_for_title(title: &str) -> i32 {
     let g = cache().read().expect("behaviors poisoned");
@@ -93,7 +93,7 @@ pub fn movement_speed_for_title(title: &str) -> i32 {
         .unwrap_or(1)
 }
 
-/// 遊戲小時（0–23）映射為 `morning`／`noon` 等（對齊 Go `GetTimePeriod`）。
+/// 遊戲小時（0–23）映射為 `morning`／`noon` 等（對齊既有 `GetTimePeriod`）。
 #[must_use]
 pub fn get_time_period(game_hour: i32) -> String {
     let g = cache().read().expect("behaviors poisoned");
@@ -122,7 +122,7 @@ fn pick_random_line(lines: &[String]) -> Option<&str> {
     Some(lines[rng.random_range(0..lines.len())].as_str())
 }
 
-/// NPC 進房反應（對齊 Go `PickEnterReaction`）。
+/// NPC 進房反應（對齊既有 `PickEnterReaction`）。
 #[must_use]
 pub fn pick_enter_reaction(title: &str, npc_name: &str) -> String {
     let g = cache().read().expect("behaviors poisoned");
@@ -138,7 +138,7 @@ pub fn pick_enter_reaction(title: &str, npc_name: &str) -> String {
     line.replace("{name}", npc_name)
 }
 
-/// 閒置動作一句；`disposition` 極端時改讀 morning／night 池（對齊 Go `PickIdleEmote`）。
+/// 閒置動作一句；`disposition` 極端時改讀 morning／night 池（對齊既有 `PickIdleEmote`）。
 #[must_use]
 pub fn pick_idle_emote(title: &str, period: &str, npc_name: &str, disposition: i32) -> String {
     let g = cache().read().expect("behaviors poisoned");
@@ -168,7 +168,7 @@ pub fn pick_idle_emote(title: &str, period: &str, npc_name: &str, disposition: i
     line.replace("{name}", npc_name)
 }
 
-/// 職稱對應的巡邏房間 id 列表（對齊 Go `GetWanderRooms`）。
+/// 職稱對應的巡邏房間 id 列表（對齊既有 `GetWanderRooms`）。
 #[must_use]
 pub fn get_wander_rooms(title: &str) -> Vec<String> {
     let g = cache().read().expect("behaviors poisoned");
@@ -181,7 +181,7 @@ pub fn get_wander_rooms(title: &str) -> Vec<String> {
         .unwrap_or_default()
 }
 
-/// 巡邏離開／抵達敘事（對齊 Go `GetWanderFlavor`）。
+/// 巡邏離開／抵達敘事（對齊既有 `GetWanderFlavor`）。
 #[must_use]
 pub fn get_wander_flavor(title: &str, npc_name: &str, room_name: &str, leaving: bool) -> String {
     let g = cache().read().expect("behaviors poisoned");

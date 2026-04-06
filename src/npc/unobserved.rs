@@ -1,4 +1,4 @@
-//! 未觀測時輕量背景模擬（對齊 Go `npc/unobserved.go`）；不發敘事。
+//! 未觀測時輕量背景模擬（對齊既有 `npc/unobserved`）；不發敘事。
 
 use rand::Rng;
 
@@ -8,7 +8,7 @@ use crate::db::{
     insert_assignment, set_entity_room, RoomGraph,
 };
 
-/// 與 Go `npc.SurvivalLineMg` 一致：低於此鎂才可能在未觀測時補鎂。
+/// 與常數 `SurvivalLineMg` 一致：低於此鎂才可能在未觀測時補鎂。
 pub const SURVIVAL_LINE_MG: i32 = 50;
 /// 每輪最多處理的 NPC 數（對齊 `UnobservedMaxNPCsPerTick`）。
 pub const UNOBSERVED_MAX_NPCS_PER_TICK: usize = 50;

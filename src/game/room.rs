@@ -1,4 +1,4 @@
-//! 房間視野與依出口移動（對齊 Go `game/room.go`）。
+//! 房間視野與依出口移動（對齊既有 `game/room`）。
 
 use crate::db::{self, object_has_socket};
 use crate::entity::{Character, EntityKind};

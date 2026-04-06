@@ -1,4 +1,4 @@
-// 職業插座（對齊 Go `db/occupation.go`）。
+// 職業插座（對齊既有 `db/occupation`）。
 
 use std::collections::HashSet;
 use std::fs;
@@ -64,7 +64,7 @@ fn occupation_action_sockets(occupation_id: &str) -> Vec<String> {
 
 const DEFAULT_SOCKETS: &[&str] = &["Talk", "Borrow", "Subdue", "Slay", "Look", "Trade"];
 
-/// 該動詞是否為預設 Agent 插座（不需在工作場所即可對 NPC 執行），對齊 Go `IsDefaultSocket`。
+/// 該動詞是否為預設 Agent 插座（不需在工作場所即可對 NPC 執行），對齊既有 `IsDefaultSocket`。
 #[must_use]
 pub fn is_default_socket(action: &str) -> bool {
     DEFAULT_SOCKETS.contains(&action)

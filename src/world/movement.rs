@@ -1,4 +1,4 @@
-// 移動與碰撞，對齊 Go world/movement.go。
+// 移動與碰撞，對齊既有 world/movement。
 
 use super::map::{terrain_blocking, Grid};
 

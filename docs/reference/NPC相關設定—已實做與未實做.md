@@ -11,25 +11,25 @@
 
 | 項目 | 說明 | 位置／備註 |
 |------|------|------------|
-| 定點行為文本 | 閒置、進房反應、換班、巡邏台詞 | `data/npc_behaviors.json`、`db/behavior.go` |
+| 定點行為文本 | 閒置、進房反應、換班、巡邏台詞 | `data/npc_behaviors.json`、`db/behavior` |
 | 職業原型 | 10 種職業屬性＋移動模式 | `data/templates/archetypes.json` |
-| 對話模板 | 約 10 職業 × ~72 句 | `data/templates/dialogues/*.json`、`db/dialogue.go` |
+| 對話模板 | 約 10 職業 × ~72 句 | `data/templates/dialogues/*.json`、`db/dialogue` |
 | 行為模板 | 日程／巡邏／交易／性格參數 | `data/templates/behaviors/*.json` |
-| 房間標籤與場所 | tags、zone、venues | `data/rooms`、`data/venues.json`、`db/room.go`、`store` |
+| 房間標籤與場所 | tags、zone、venues | `data/rooms`、`data/venues.json`、`db/room`、`store` |
 | NPC 池設定 | 總量與補滿間隔 | `config.NPCPoolSize`、`NPCSpawnIntervalSec`（env：`NPC_POOL_SIZE`、`NPC_SPAWN_INTERVAL_SEC`）；main 定時 SpawnOneNPCFromPool |
 
 ### 突破線 A–I（活化系統）
 
 | 階段 | 名稱 | 實做內容 |
 |------|------|----------|
-| **A** | 鎂消耗 | 每日扣鎂、EvtBroke／DispDaily；`db/npc_expense.go`、main 每遊戲日 |
-| **B** | Brain 停留 | 到達後停留 1–5 遊戲小時；`npc_movement.go` computeStay、MoveBrain |
-| **C** | 性格偏移決策 | 意圖候選＋性格加權；`db/decision.go` personalityWeightedSelect、Decide |
+| **A** | 鎂消耗 | 每日扣鎂、EvtBroke／DispDaily；`db/npc_expense`、main 每遊戲日 |
+| **B** | Brain 停留 | 到達後停留 1–5 遊戲小時；`npc_movement` computeStay、MoveBrain |
+| **C** | 性格偏移決策 | 意圖候選＋性格加權；`db/decision` personalityWeightedSelect、Decide |
 | **D** | NPC 事件日誌 | LogNPCEvent、GetRecentEvents、store.RecentByEntity；背版／對話可引用 |
 | **E** | disposition（心境值） | Entity.Disposition、AdjustDisposition、PickIdleEmote(disposition) |
 | **F** | NPC 間互動 | 微互動（PickMicroInteraction）＋**NPC 間 AI 對話**（閒置／排班／隨機觸發、CallAITalkNPCToNPC、主題劇本、NpcNpcSummaries）；見討論 003 |
 | **G** | 背版組裝 | BuildIdentity（職稱／場所／性格／心境／事件）；Talk 前帶入 |
-| **H** | archival 記憶 | 寫入＋關鍵字檢索、節流與 per-NPC 上限；store + `db/archival.go` |
+| **H** | archival 記憶 | 寫入＋關鍵字檢索、節流與 per-NPC 上限；store + `db/archival` |
 | **I** | CallAITalk 接入 | 玩家↔NPC 對話：背版＋記憶＋LLM（Ollama）＋模板 fallback；會後寫入記憶 |
 
 ### 移動與排班
@@ -38,7 +38,7 @@
 |------|------|
 | 四種移動模式 | schedule（排班）、regional、route、pathfind；BFS 尋路、TravelerManager.Tick |
 | 排班系統 | GetScheduleTarget、ApplySchedules；每遊戲小時出發敘事、每 15 秒 Tick 逐格移動 |
-| 觀測驅動 | 僅玩家房＋鄰房 NPC 跑決策；`buildActiveRoomIDs`、`db/unobserved.go` |
+| 觀測驅動 | 僅玩家房＋鄰房 NPC 跑決策；`buildActiveRoomIDs`、`db/unobserved` |
 | 腦驅動意圖 | seek_job、beg、gather、trade、wander、work、idle；到達效果（加鎂、加物品、SeekJob 撮合） |
 
 ### 玩家與 NPC 互動（已上線）
@@ -54,10 +54,10 @@
 ### 其他已實做
 
 - **NPC 間對話記憶**：NpcNpcSummaries（每對 NPC 一句摘要）、觸發前讀／完成後寫；玩家優先（60s／15s 檢查）。
-- **主題劇本**：`data/npc_to_npc_topics.json`（交班／閒聊／打聽）、`db/npc_topics.go`。
+- **主題劇本**：`data/npc_to_npc_topics.json`（交班／閒聊／打聽）、`db/npc_topics`。
 - **實體與身份**：soul_seed、職稱來自 assignment、排班表、鎂欄位；InsertNPC、InsertSchedule、SeedNPCs（預設空）。
-- **對話結束 consolidation**：逾時 2 分鐘視為一場結束，整場壓成 1～3 條寫入 archival，並更新該 NPC 的 summary；Talk 長期記憶僅由此路徑寫入（`server/conversation_buffer.go`）。
-- **Talk 使用 Sensitivity 權重**：背版與 LLM 口吻提示（冷淡/熱絡、回覆簡短/多說一兩句）；模板 fallback 與 buildTalkNarrative 選句依 Sensitivity 加權（高→偏長/熱絡、低→偏短/冷淡）；`db/backstory.go`、`ai/talk.go`、`db/dialogue.go` PickLineWeighted、handler buildTalkNarrative。
+- **對話結束 consolidation**：逾時 2 分鐘視為一場結束，整場壓成 1～3 條寫入 archival，並更新該 NPC 的 summary；Talk 長期記憶僅由此路徑寫入（`server/conversation_buffer`）。
+- **Talk 使用 Sensitivity 權重**：背版與 LLM 口吻提示（冷淡/熱絡、回覆簡短/多說一兩句）；模板 fallback 與 buildTalkNarrative 選句依 Sensitivity 加權（高→偏長/熱絡、低→偏短/冷淡）；`db/backstory`、`ai/talk`、`db/dialogue` PickLineWeighted、handler buildTalkNarrative。
 
 ---
 

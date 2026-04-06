@@ -18,22 +18,22 @@
 - 合併檔列版控，需更新時執行：`node tools/js/merge-rooms-one-per-line.js`
 - 若一房一檔格式跑掉，可執行：`node tools/js/format-rooms-pretty.js` 統一重排為段落。
 
-### 描述與 objects 反向檢查（Go：`cmd/checkrooms`）
+### 描述與 objects 反向檢查（`cargo run --bin checkrooms`）
 
 由 `objects[].sockets` 擷取觸發動作（預設 **`Move` 與 `Look`**）：**Move** 要求 `name` 出現在房間主 **`description`**；**Look** 允許出現在 `description` **或** 同房任一 **`objects[].responses` 字串**（二段式觀看鏈），避免無法點擊。
 
-專案根目錄執行；**`./start`／`./start-with-chatmery` 會在殺舊行程後、建置伺服器前跑完整閘門**（`go vet`、`go test`、`checkrooms -brackets -strict`），失敗則中止。手動與 CI 請用 **`make verify`**。
+專案根目錄執行；**`./start`** 會在殺舊行程後、建置伺服器前跑完整閘門（`cargo clippy`、`cargo test`、`checkrooms -brackets -strict`），失敗則中止。
 
 ```bash
-go run ./cmd/checkrooms
-go run ./cmd/checkrooms data/rooms/editor
-go run ./cmd/checkrooms -sockets Move
-go run ./cmd/checkrooms -brackets
-go run ./cmd/checkrooms -brackets -strict
-go test ./internal/roomcheck/ -v   # CI／提交前可跑
+cargo run --bin checkrooms
+cargo run --bin checkrooms -- data/rooms/editor
+cargo run --bin checkrooms -- -sockets Move
+cargo run --bin checkrooms -- -brackets
+cargo run --bin checkrooms -- -brackets -strict
+cargo test -p singularity_world roomcheck   # CI／提交前可跑
 ```
 
-規則見 `internal/roomcheck/check.go` 註解；行為對齊 `web/mud-text.js` 的 `formatDesc()`。
+規則見 `src/roomcheck/` 與 `src/bin/checkrooms.rs`；行為對齊 `web/mud-text.js` 的 `formatDesc()`。
 
 ---
 

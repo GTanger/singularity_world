@@ -1,4 +1,4 @@
-// 區塊載入，對齊 Go world/chunk_load.go。
+// 區塊載入，對齊既有 world/chunk_load。
 
 use std::collections::HashMap;
 use std::fs;

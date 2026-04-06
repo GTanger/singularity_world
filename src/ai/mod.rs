@@ -1,4 +1,4 @@
-// ai 模組 — LLM 相關；逐步對齊 Go ai/。
+// ai 模組 — LLM 相關；逐步對齊既有 ai/。
 
 pub mod openai_chat;
 pub mod prompts;

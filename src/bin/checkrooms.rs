@@ -1,5 +1,5 @@
 #![forbid(unsafe_code)]
-// checkrooms：房間 JSON 契約檢查（Rust 版，對齊 Go cmd/checkrooms）。
+// checkrooms：房間 JSON 契約檢查 CLI（`src/bin/checkrooms.rs`，邏輯見 `src/roomcheck.rs`）。
 // 用法：checkrooms [-sockets Move,Look] [-brackets] [-strict] [路徑…]
 
 use std::env;

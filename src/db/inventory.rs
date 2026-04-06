@@ -1,4 +1,4 @@
-//! 背包讀寫與裝備槽（對齊 Go `db/inventory.go`）。
+//! 背包讀寫與裝備槽（對齊既有 `db/inventory`）。
 
 use std::collections::HashMap;
 
@@ -8,10 +8,10 @@ use crate::store;
 
 use super::ErrNoStore;
 
-/// 每點體質可負重（對齊 Go `weightPerVit`）。
+/// 每點體質可負重（對齊既有 `weightPerVit`）。
 const WEIGHT_PER_VIT: f64 = 10.0;
 
-/// 單列背包顯示（對齊 Go `InventoryDisplayItem`）。
+/// 單列背包顯示（對齊既有 `InventoryDisplayItem`）。
 #[derive(Debug, Clone)]
 pub struct InventoryLine {
     pub item_id: String,
@@ -24,7 +24,7 @@ pub struct InventoryLine {
     pub slot: String,
 }
 
-/// 背包查詢結果（對齊 Go `InventoryResult`）。
+/// 背包查詢結果（對齊既有 `InventoryResult`）。
 #[derive(Debug, Clone)]
 pub struct InventorySnapshot {
     pub items: Vec<InventoryLine>,
@@ -32,7 +32,7 @@ pub struct InventorySnapshot {
     pub max_weight: f64,
 }
 
-/// 單一物品定義摘要（對齊 Go `GetItemInfo` 回傳欄位）。
+/// 單一物品定義摘要（對齊既有 `GetItemInfo` 回傳欄位）。
 #[derive(Debug, Clone)]
 pub struct ItemDefBrief {
     pub name: String,
@@ -85,7 +85,7 @@ pub fn add_to_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Res
     })
 }
 
-/// 自背包 JSON 扣減數量；堆疊歸零則移除該列（對齊 Go `RemoveFromInventory` 語意）。
+/// 自背包 JSON 扣減數量；堆疊歸零則移除該列（對齊既有 `RemoveFromInventory` 語意）。
 pub fn remove_from_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Result<()> {
     if qty <= 0 || item_id.is_empty() {
         return Ok(());
@@ -114,7 +114,7 @@ pub fn remove_from_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow
     })
 }
 
-/// 背包內所有物品數量加總（僅 `qty > 0`；對齊 Go `DecisionState.InventoryTotalQty`）。
+/// 背包內所有物品數量加總（僅 `qty > 0`；對齊既有 `DecisionState.InventoryTotalQty`）。
 #[must_use]
 pub fn inventory_total_qty(inventory_json: &str) -> i32 {
     if inventory_json.is_empty() || inventory_json == "[]" {
@@ -124,7 +124,7 @@ pub fn inventory_total_qty(inventory_json: &str) -> i32 {
     entries.iter().filter(|e| e.qty > 0 && !e.item_id.is_empty()).map(|e| e.qty).sum()
 }
 
-/// 自 `inventory` JSON 與 `items` 表組裝前端用清單與負重（對齊 Go `GetInventory`）。
+/// 自 `inventory` JSON 與 `items` 表組裝前端用清單與負重（對齊既有 `GetInventory`）。
 #[must_use]
 pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
     let max_weight = vit as f64 * WEIGHT_PER_VIT;
@@ -190,7 +190,7 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
     }
 }
 
-/// 查單一物品定義；無 store 或無此 id 則 `None`（對齊 Go `GetItemInfo` 之失敗路徑）。
+/// 查單一物品定義；無 store 或無此 id 則 `None`（對齊既有 `GetItemInfo` 之失敗路徑）。
 #[must_use]
 pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
     let arc = store::get_store()?;
@@ -208,7 +208,7 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
     })
 }
 
-/// 背包目前總重量（對齊 Go `InventoryWeight`）。
+/// 背包目前總重量（對齊既有 `InventoryWeight`）。
 #[must_use]
 pub fn inventory_weight(inventory_json: &str) -> f64 {
     if inventory_json.is_empty() || inventory_json == "[]" {
@@ -230,7 +230,7 @@ pub fn inventory_weight(inventory_json: &str) -> f64 {
     total
 }
 
-/// 設定單一裝備槽之 `item_id`（對齊 Go `UpdateEquipmentSlot`）。
+/// 設定單一裝備槽之 `item_id`（對齊既有 `UpdateEquipmentSlot`）。
 pub fn update_equipment_slot(entity_id: &str, slot: &str, item_id: &str) -> anyhow::Result<()> {
     if slot.is_empty() {
         return Ok(());
@@ -250,7 +250,7 @@ pub fn update_equipment_slot(entity_id: &str, slot: &str, item_id: &str) -> anyh
     })
 }
 
-/// 清空單一裝備槽（對齊 Go `ClearEquipmentSlot`）。
+/// 清空單一裝備槽（對齊既有 `ClearEquipmentSlot`）。
 pub fn clear_equipment_slot(entity_id: &str, slot: &str) -> anyhow::Result<()> {
     if slot.is_empty() {
         return Ok(());
@@ -282,7 +282,7 @@ pub fn inventory_has_item(inventory_json: &str, item_id: &str) -> bool {
         .any(|e| e.item_id == item_id && e.qty > 0)
 }
 
-/// 從 NPC 背包 JSON 取第一個數量 > 0 的物品作為本輪賣品（對齊 Go `PickNPCTradeOffer`）。
+/// 從 NPC 背包 JSON 取第一個數量 > 0 的物品作為本輪賣品（對齊既有 `PickNPCTradeOffer`）。
 #[must_use]
 pub fn pick_npc_trade_offer(inventory_json: &str) -> Option<String> {
     if inventory_json.is_empty() || inventory_json == "[]" {
@@ -297,7 +297,7 @@ pub fn pick_npc_trade_offer(inventory_json: &str) -> Option<String> {
     None
 }
 
-/// 第一版預設喊價（對齊 Go `DefaultTradeAskMg`）。
+/// 第一版預設喊價（對齊既有 `DefaultTradeAskMg`）。
 #[must_use]
 pub fn default_trade_ask_mg(item_id: &str) -> i32 {
     match item_id {
@@ -306,7 +306,7 @@ pub fn default_trade_ask_mg(item_id: &str) -> i32 {
     }
 }
 
-/// 議價底價＝喊價七成（至少 1）（對齊 Go `TradeFloorFromAsk`）。
+/// 議價底價＝喊價七成（至少 1）（對齊既有 `TradeFloorFromAsk`）。
 #[must_use]
 pub fn trade_floor_from_ask(ask: i32) -> i32 {
     if ask <= 0 {

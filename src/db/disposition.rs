@@ -1,4 +1,4 @@
-//! 心境值調整（對齊 Go `db/disposition.go`）。
+//! 心境值調整（對齊既有 `db/disposition`）。
 
 use crate::store;
 
@@ -8,7 +8,7 @@ use super::ErrNoStore;
 pub const DISP_BROKE: i32 = -20;
 /// 每日自然衰減（回歸中性）。
 pub const DISP_DAILY: i32 = -2;
-/// 乞討成功（對齊 Go `DispBegSuccess`）。
+/// 乞討成功（對齊既有 `DispBegSuccess`）。
 pub const DISP_BEG_SUCCESS: i32 = 3;
 /// 採集成功。
 pub const DISP_GATHER: i32 = 5;
@@ -18,10 +18,10 @@ pub const DISP_HIRED: i32 = 20;
 pub const DISP_TRADE: i32 = 6;
 /// 與人交談／社交到達。
 pub const DISP_TALKED: i32 = 5;
-/// 被留人制伏倒地後的心境修正（對齊 Go `DispSubdued`）。
+/// 被留人制伏倒地後的心境修正（對齊既有 `DispSubdued`）。
 pub const DISP_SUBDUED: i32 = -15;
 
-/// 調整心境並 clamp 於 [-100, 100]（對齊 Go `AdjustDisposition`）。
+/// 調整心境並 clamp 於 [-100, 100]（對齊既有 `AdjustDisposition`）。
 pub fn adjust_disposition(entity_id: &str, delta: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();
@@ -31,7 +31,7 @@ pub fn adjust_disposition(entity_id: &str, delta: i32) -> anyhow::Result<()> {
     })
 }
 
-/// 取得心境；無實體時 0（對齊 Go `GetDisposition`）。
+/// 取得心境；無實體時 0（對齊既有 `GetDisposition`）。
 #[must_use]
 pub fn get_disposition(entity_id: &str) -> i32 {
     let Some(arc) = store::get_store() else {

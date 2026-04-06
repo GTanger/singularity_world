@@ -1,6 +1,6 @@
-// 字串相似度（LCS），對齊 Go db/archival.go `RuneLCSSimilarity`。
+// 字串相似度（LCS），對齊既有 db/archival `RuneLCSSimilarity`。
 
-/// `2 * LCS / (len(a) + len(b))`，供摘要／去重（對齊 Go `RuneLCSSimilarity`）。
+/// `2 * LCS / (len(a) + len(b))`，供摘要／去重（對齊既有 `RuneLCSSimilarity`）。
 #[must_use]
 pub fn rune_lcs_similarity(a: &str, b: &str) -> f64 {
     let ra: Vec<char> = a.chars().collect();

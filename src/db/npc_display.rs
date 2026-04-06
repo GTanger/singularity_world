@@ -1,11 +1,11 @@
-// NPC 同房顯示字串、真名產生，對齊 Go db/schedule.go（顯示相關）與 db/npc_names。
+// NPC 同房顯示字串、真名產生，對齊既有 db/schedule（顯示相關）與 db/npc_names。
 
 use crate::store::{self, Store};
 
 use super::npc_names::generate_npc_name;
 use super::ErrNoStore;
 
-/// 排班：班次起迄判斷（對齊 Go `NPCSchedule`）。
+/// 排班：班次起迄判斷（對齊既有 `NPCSchedule`）。
 #[derive(Debug, Clone)]
 pub struct NpcSchedule {
     pub entity_id: String,
@@ -27,7 +27,7 @@ impl NpcSchedule {
     }
 }
 
-/// 取得單一實體排班（對齊 Go `GetScheduleForEntity`）。
+/// 取得單一實體排班（對齊既有 `GetScheduleForEntity`）。
 #[must_use]
 pub fn get_schedule_for_entity(entity_id: &str) -> Option<NpcSchedule> {
     let arc = store::get_store()?;
@@ -41,7 +41,7 @@ pub fn get_schedule_for_entity(entity_id: &str) -> Option<NpcSchedule> {
     })
 }
 
-/// 解析「職稱|真名」；無 `|` 則整段為真名（對齊 Go `SplitNPCListDisplayLabel`）。
+/// 解析「職稱|真名」；無 `|` 則整段為真名（對齊既有 `SplitNPCListDisplayLabel`）。
 #[must_use]
 pub fn split_npc_list_display_label(label: &str) -> (String, String) {
     let label = label.trim();
@@ -53,7 +53,7 @@ pub fn split_npc_list_display_label(label: &str) -> (String, String) {
     (occ, person)
 }
 
-/// 從列表顯示字串取出真名（對齊 Go `PersonNameFromNPCListLabel`）。
+/// 從列表顯示字串取出真名（對齊既有 `PersonNameFromNPCListLabel`）。
 #[must_use]
 pub fn person_name_from_npc_list_label(label: &str) -> String {
     let (_, p) = split_npc_list_display_label(label);
@@ -78,7 +78,7 @@ fn occupation_for_entity_at_room(s: &Store, entity_id: &str, room_id: &str) -> S
     String::new()
 }
 
-/// 在已持有 `&mut Store` 下確保 NPC 有真名並寫回（對齊 Go `GetNPCPersonDisplayName` 行為）。
+/// 在已持有 `&mut Store` 下確保 NPC 有真名並寫回（對齊既有 `GetNPCPersonDisplayName` 行為）。
 pub(crate) fn npc_person_display_name_locked(s: &mut Store, entity_id: &str) -> String {
     let Some(e) = s.get_entity(entity_id) else {
         return String::new();
@@ -127,7 +127,7 @@ fn npc_list_display_and_behavior_role_locked(
     (format!("{occ}|{person}"), occ)
 }
 
-/// 同房列表／視野用顯示字串（對齊 Go `GetNPCTitleInRoomAtHour`）。
+/// 同房列表／視野用顯示字串（對齊既有 `GetNPCTitleInRoomAtHour`）。
 pub fn get_npc_title_in_room_at_hour(
     entity_id: &str,
     room_id: &str,
@@ -139,24 +139,24 @@ pub fn get_npc_title_in_room_at_hour(
     Ok(list_display)
 }
 
-/// 不傳遊戲小時：在職場內一律「職稱|真名」（對齊 Go `GetNPCTitleInRoom`）。
+/// 不傳遊戲小時：在職場內一律「職稱|真名」（對齊既有 `GetNPCTitleInRoom`）。
 pub fn get_npc_title_in_room(entity_id: &str, room_id: &str) -> anyhow::Result<String> {
     get_npc_title_in_room_at_hour(entity_id, room_id, -1)
 }
 
-/// 敘事／移動用（對齊 Go `GetNPCDisplayLabelAtHour`）。
+/// 敘事／移動用（對齊既有 `GetNPCDisplayLabelAtHour`）。
 pub fn get_npc_display_label_at_hour(entity_id: &str, game_hour: i32) -> anyhow::Result<String> {
     let room_id = super::get_entity_room(entity_id)?;
     get_npc_title_in_room_at_hour(entity_id, &room_id, game_hour)
 }
 
-/// 無遊戲小時語境時等同 `hour = -1`（對齊 Go `GetNPCTitle`）。
+/// 無遊戲小時語境時等同 `hour = -1`（對齊既有 `GetNPCTitle`）。
 pub fn get_npc_title(entity_id: &str) -> anyhow::Result<String> {
     let room_id = super::get_entity_room(entity_id)?;
     get_npc_title_in_room_at_hour(entity_id, &room_id, -1)
 }
 
-/// 回傳 NPC 真名；無則自動產生並寫回 store（對齊 Go `GetNPCPersonDisplayName`）。
+/// 回傳 NPC 真名；無則自動產生並寫回 store（對齊既有 `GetNPCPersonDisplayName`）。
 pub fn get_npc_person_display_name(entity_id: &str) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();

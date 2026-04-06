@@ -1,4 +1,4 @@
-//! 玩家與 NPC 議價暫存（記憶體、TTL），對齊 Go `db/trade_pending.go`。
+//! 玩家與 NPC 議價暫存（記憶體、TTL），對齊既有 `db/trade_pending`。
 
 use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};

@@ -1,4 +1,4 @@
-// 主題遮罩、品質閘、錨點與情緒增量，對齊 Go npcnpc/helpers.go。
+// 主題遮罩、品質閘、錨點與情緒增量，對齊既有 npcnpc/helpers。
 
 use crate::db::{self, rune_lcs_similarity};
 use crate::gametext;
@@ -9,7 +9,7 @@ use super::state::recent_room_events;
 
 const QUALITY_GATE_DEFAULT_MAX_RUNES: i32 = 52;
 
-/// 依房間與時段建構主題遮罩（對齊 Go `TopicMaskForRoom`）。
+/// 依房間與時段建構主題遮罩（對齊既有 `TopicMaskForRoom`）。
 pub fn topic_mask_for_room(room_id: &str, hour: i32) -> NpcTopicMask {
     let venue_ids = db::get_venue_ids_for_room(room_id).unwrap_or_default();
     let room_tags = db::get_room(room_id)
@@ -25,7 +25,7 @@ pub fn topic_mask_for_room(room_id: &str, hour: i32) -> NpcTopicMask {
     }
 }
 
-/// 兩 NPC 是否有共用工作場所（對齊 Go `NpcPairSameVenue`）。
+/// 兩 NPC 是否有共用工作場所（對齊既有 `NpcPairSameVenue`）。
 #[must_use]
 pub fn npc_pair_same_venue(id_a: &str, id_b: &str) -> bool {
     let Ok(as_a) = db::get_assignments_for_entity(id_a) else {
@@ -67,7 +67,7 @@ pub fn remove_tag(tags: &[String], t: &str) -> Vec<String> {
     tags.iter().filter(|v| *v != t).cloned().collect()
 }
 
-/// 雙元關係提示句（對齊 Go `dyadRelationHint`）。
+/// 雙元關係提示句（對齊既有 `dyadRelationHint`）。
 #[must_use]
 pub fn dyad_relation_hint(d: Option<&NpcDyad>) -> String {
     match d {
@@ -76,7 +76,7 @@ pub fn dyad_relation_hint(d: Option<&NpcDyad>) -> String {
     }
 }
 
-/// 依台詞與主題推估情緒增量（對齊 Go `SentimentDeltaFromDialogue`）。
+/// 依台詞與主題推估情緒增量（對齊既有 `SentimentDeltaFromDialogue`）。
 #[must_use]
 pub fn sentiment_delta_from_dialogue(
     topic_hint: &str,
@@ -120,7 +120,7 @@ pub fn sentiment_delta_from_dialogue(
     delta
 }
 
-/// 單句品質閘（對齊 Go `qualityGateNpcLine`）；通過則 `(true, "")`。
+/// 單句品質閘（對齊既有 `qualityGateNpcLine`）；通過則 `(true, "")`。
 pub fn quality_gate_npc_line(line: &str, max_runes: i32) -> (bool, &'static str) {
     let max = if max_runes <= 0 {
         QUALITY_GATE_DEFAULT_MAX_RUNES
@@ -280,7 +280,7 @@ pub fn merge_thread_anchors(old: &[String], fresh: &[String]) -> Vec<String> {
     out
 }
 
-/// 錨與台詞是否矛盾（對齊 Go `anchorConsistencyCheck`）。
+/// 錨與台詞是否矛盾（對齊既有 `anchorConsistencyCheck`）。
 pub fn anchor_consistency_check(existing: &[String], line_a: &str, line_b: &str) -> (bool, String) {
     if existing.is_empty() {
         return (true, String::new());

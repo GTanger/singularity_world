@@ -1,6 +1,6 @@
 # 可調參數索引（目前專案實際有哪些）
 
-> 你只是要「概念」也沒問題：**已經搬進 JSON 的只有下面兩份**；其餘邏輯仍可能在 `.go` 或環境變數裡。改 JSON 後通常要**重啟伺服器**。
+> 你只是要「概念」也沒問題：**已經搬進 JSON 的只有下面兩份**；其餘邏輯仍可能在 `src/config` 或環境變數裡。改 JSON 後通常要**重啟伺服器**。
 
 ---
 
@@ -23,7 +23,7 @@
 | | `ollama_base_url`, `ollama_model` | Ollama；`ollama_disable` 時不生效 |
 | | `player_talk_api_base_url` | 玩家對 NPC **Talk** 專用：OpenAI 相容 API 根路徑，須以 `/v1` 結尾（例 `https://api.openai.com/v1`）。非空且 `player_talk_api_model` 非空時**優先**於 Ollama。環境變數 `PLAYER_TALK_API_BASE_URL` |
 | | `player_talk_api_model` | 雲端模型 id（預設例：`qwen/qwen3.5-flash-02-23` @ OpenRouter）。環境變數 `PLAYER_TALK_API_MODEL` |
-| | （無 JSON 鍵） | **金鑰**僅環境變數：`PLAYER_TALK_API_KEY` 或 `OPENAI_API_KEY`（Bearer）；勿寫入版本庫。可放專案根 `.env`（已 `.gitignore`）；`./start` 會在啟動 `bin/server` 前自動載入 |
+| | （無 JSON 鍵） | **金鑰**僅環境變數：`PLAYER_TALK_API_KEY` 或 `OPENAI_API_KEY`（Bearer）；勿寫入版本庫。可放專案根 `.env`（已 `.gitignore`）；`./start` 會在啟動 `bin/server-rust` 前自動載入 |
 | | `seek_job_mg_threshold`, `job_match_when_stable` | 求職鎂門檻、穩定時是否配對 |
 | | `npc_npc_quality_max_runes` 等 | NPC 對話品質字元上限、社交 tick 隨機範圍、對話分數門檻（0 常代表「用程式別處預設」） |
 
@@ -81,4 +81,4 @@ data/config/server_defaults.json   ← 伺服器／設計／Ollama
 data/config/simulation.json        ← 主迴圈與模擬行為
 ```
 
-型別與預設值後備邏輯：`config/server_defaults.go`、`config/simulation.go`。
+型別與預設值後備邏輯：`config/server_defaults`、`config/simulation`。

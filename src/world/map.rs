@@ -1,4 +1,4 @@
-// 地圖格點與地形，對齊 Go world/map.go。
+// 地圖格點與地形，對齊既有 world/map。
 
 /// 牆
 pub const TERRAIN_WALL: &str = "牆";
@@ -88,7 +88,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn blocking_matches_go() {
+    fn blocking_matches_legacy() {
         assert!(terrain_blocking(TERRAIN_WALL));
         assert!(terrain_blocking(TERRAIN_DOOR_CLOSED));
         assert!(terrain_blocking(TERRAIN_RIVER));

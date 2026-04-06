@@ -1,4 +1,4 @@
-// 長期記憶寫入與 NPC↔NPC 去重（對齊 Go `db/archival.go` 子集）。
+// 長期記憶寫入與 NPC↔NPC 去重（對齊既有 `db/archival` 子集）。
 
 use std::collections::HashSet;
 use std::fs;
@@ -144,7 +144,7 @@ fn should_omit_archival_fallback_for_talk_query(query: &str) -> bool {
     exact.contains(norm.as_str())
 }
 
-/// 寫入 tag=npc_npc 的長期記憶；去重／節流對齊 Go `InsertNpcNpcDialogueArchival`。
+/// 寫入 tag=npc_npc 的長期記憶；去重／節流對齊既有 `InsertNpcNpcDialogueArchival`。
 pub fn insert_npc_npc_dialogue_archival(entity_id: &str, content: &str) -> anyhow::Result<(bool, bool)> {
     let content = content.trim();
     if content.is_empty() {
@@ -322,7 +322,7 @@ pub fn pick_style_examples(entity_id: &str, n: usize) -> Vec<String> {
     out
 }
 
-/// 寫入一筆通用長期記憶（對齊 Go `InsertArchival`）。
+/// 寫入一筆通用長期記憶（對齊既有 `InsertArchival`）。
 pub fn insert_archival(entity_id: &str, content: &str, tag: &str) -> anyhow::Result<()> {
     let content = content.trim();
     if content.is_empty() {
@@ -338,7 +338,7 @@ pub fn insert_archival(entity_id: &str, content: &str, tag: &str) -> anyhow::Res
     })
 }
 
-/// 寫入 NPC 對玩家互動摘要（對齊 Go `SetNpcSummary`）。
+/// 寫入 NPC 對玩家互動摘要（對齊既有 `SetNpcSummary`）。
 pub fn set_npc_summary(entity_id: &str, summary: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();

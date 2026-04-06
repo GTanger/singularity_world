@@ -12,10 +12,9 @@
 
 ### 遷移現況：Rust 原生化
 
-依據 [決策 010](../decisions/010_go_to_rust_migration.md) 與 [遷移計畫](../migration/README.md)：
-- **主線服務**：已全面切換由 **Rust (Axum)** 提供。
-- **Go 原始碼**：已全數歸檔至 `archive/go/`，僅供備查。
-- **後續開發**：所有新功能（如：NPC 社交、物品系統擴展）皆應直接在 Rust `src/` 下實作。
+依據 [決策 010](../decisions/010_go_to_rust_migration.md) 與 [遷移說明](../migration/README.md)：
+- **主線服務**：由 **Rust（Axum）** 提供。
+- **後續開發**：新功能在 `src/` 下實作。
 
 ---
 

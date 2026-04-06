@@ -1,4 +1,4 @@
-//! NPC 對玩家好感度常數與調整（對齊 Go `db/npc_memory.go`）。
+//! NPC 對玩家好感度常數與調整（對齊既有 `db/npc_memory`）。
 
 use crate::store;
 
@@ -15,14 +15,14 @@ pub const FAV_BORROW_CAUGHT: i32 = -12;
 /// 借物得手（較輕）。
 pub const FAV_BORROW_SUCCESS: i32 = -3;
 
-/// 調整該 NPC 對某玩家的好感度，clamp [-100, +100]（對齊 Go `AdjustFavorability`）。
+/// 調整該 NPC 對某玩家的好感度，clamp [-100, +100]（對齊既有 `AdjustFavorability`）。
 pub fn adjust_favorability(entity_id: &str, subject_id: &str, delta: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();
     s.adjust_favorability(entity_id, subject_id, delta)
 }
 
-/// 回傳一句「與這位來者的短期記憶」供拼進背版；無記憶或見面 0 次回傳空字串（對齊 Go `FormatNpcMemoryForBackstory`）。
+/// 回傳一句「與這位來者的短期記憶」供拼進背版；無記憶或見面 0 次回傳空字串（對齊既有 `FormatNpcMemoryForBackstory`）。
 pub fn format_npc_memory_for_backstory(entity_id: &str, subject_id: &str) -> String {
     let Some(arc) = store::get_store() else {
         return String::new();

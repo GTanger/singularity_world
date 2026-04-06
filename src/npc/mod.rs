@@ -1,4 +1,4 @@
-// npc 模組 — 與 Go `db/npc.go`、`npc/topics.go` 對齊；建立／種子實作在 `crate::db`。
+// npc 模組 — NPC 行為與主題劇本；建立／種子實作在 `crate::db`。
 
 mod behavior;
 mod reaction;

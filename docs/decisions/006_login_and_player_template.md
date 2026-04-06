@@ -50,7 +50,7 @@
 
 ### 4.2 密碼儲存
 
-- **不存明碼**：只存雜湊（例如 bcrypt 或 Go 內建 `golang.org/x/crypto/bcrypt`）。
+- **不存明碼**：只存雜湊（例如 bcrypt；Rust 使用 `bcrypt` crate）。
 - **儲存位置二選一**：  
   - **選項甲**：新表 `entity_auth (entity_id PRIMARY KEY, password_hash TEXT NOT NULL)`，僅玩家有列；NPC 不碰。  
   - **選項乙**：`entities` 加欄 `password_hash TEXT`（nullable）；僅 `kind=player` 填值，NPC 留 NULL。  

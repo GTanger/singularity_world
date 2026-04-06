@@ -1,4 +1,4 @@
-//! 主迴圈與 NPC 社交可調參數（對齊 Go `config/simulation.go` + `data/config/simulation.json`）。
+//! 主迴圈與 NPC 社交可調參數（對齊既有 `config/simulation` + `data/config/simulation.json`）。
 
 use std::fs;
 use std::path::Path;
@@ -17,7 +17,7 @@ pub struct SimulationParams {
     pub npc_npc_social: NpcNpcSocialCfg,
     pub dialogue_anchor_rumor: DialogueAnchorRumorCfg,
     pub dyad_update: DyadUpdateCfg,
-    /// 隨機 NPC 間對話計數器（對齊 Go `random_npc_dialogue_ticks`）。
+    /// 隨機 NPC 間對話計數器（對齊既有 `random_npc_dialogue_ticks`）。
     pub random_npc_dialogue_ticks: RandomNpcDialogueTicksCfg,
     /// 傳聞池衰減呼叫間隔（秒）。
     #[serde(default = "default_rumor_decay_interval_sec")]
@@ -25,7 +25,7 @@ pub struct SimulationParams {
     /// 傳聞 digest 重建間隔（分鐘）。
     #[serde(default = "default_rumor_digest_interval_min")]
     pub rumor_digest_interval_min: i32,
-    /// 經濟 pulse 傳聞（對齊 Go `economy_pulse`）。
+    /// 經濟 pulse 傳聞（對齊既有 `economy_pulse`）。
     #[serde(default)]
     pub economy_pulse: EconomyPulseCfg,
     /// 新生 NPC 傳聞 TTL（秒）。
@@ -37,10 +37,10 @@ pub struct SimulationParams {
     /// 撮合成功傳聞 TTL（秒）。
     #[serde(default = "default_job_match_rumor_ttl_sec")]
     pub job_match_rumor_ttl_sec: i64,
-    /// 黎明／深夜心境微調（對齊 Go `disposition_time_of_day`）。
+    /// 黎明／深夜心境微調（對齊既有 `disposition_time_of_day`）。
     #[serde(default)]
     pub disposition_time_of_day: DispositionTimeOfDayCfg,
-    /// 閒置／巡邏計時（對齊 Go `idle`）。
+    /// 閒置／巡邏計時（對齊既有 `idle`）。
     #[serde(default)]
     pub idle: IdleCfg,
     /// 地圖移動檢查間隔（tick 數，對齊 `travel_tick_interval`）。
@@ -52,12 +52,12 @@ pub struct SimulationParams {
     /// 微互動觸發機率 0–100（對齊 `micro_interaction_chance_percent`）。
     #[serde(default = "default_micro_interaction_chance_percent")]
     pub micro_interaction_chance_percent: i32,
-    /// 腦驅動乞討鎂量（對齊 Go `BrainBeg`）。
+    /// 腦驅動乞討鎂量（對齊既有 `BrainBeg`）。
     #[serde(default)]
     pub brain_beg: BrainBegCfg,
 }
 
-/// 乞討到達效果之鎂隨機範圍（對齊 Go `simulation.BrainBeg`）。
+/// 乞討到達效果之鎂隨機範圍（對齊既有 `simulation.BrainBeg`）。
 #[derive(Debug, Clone, Deserialize)]
 #[serde(default)]
 pub struct BrainBegCfg {
@@ -106,7 +106,7 @@ fn default_micro_interaction_chance_percent() -> i32 {
     15
 }
 
-/// 閒置 tick 首次與後續間隔（對齊 Go `Sim.Idle`）。
+/// 閒置 tick 首次與後續間隔（對齊既有 `Sim.Idle`）。
 #[derive(Debug, Clone, Deserialize)]
 #[serde(default)]
 pub struct IdleCfg {
@@ -127,7 +127,7 @@ impl Default for IdleCfg {
     }
 }
 
-/// 特定時段一次性調整全 NPC 心境（對齊 Go）。
+/// 特定時段一次性調整全 NPC 心境（對齊既有）。
 #[derive(Debug, Clone, Deserialize)]
 #[serde(default)]
 pub struct DispositionTimeOfDayCfg {
@@ -171,7 +171,7 @@ impl Default for DispositionTimeOfDayCfg {
     }
 }
 
-/// 每若干遊戲日寫入一條經濟類傳聞（對齊 Go）。
+/// 每若干遊戲日寫入一條經濟類傳聞（對齊既有）。
 #[derive(Debug, Clone, Deserialize)]
 #[serde(default)]
 pub struct EconomyPulseCfg {
@@ -252,7 +252,7 @@ pub struct DyadUpdateCfg {
     pub clear_quarrel_sentiment_min: i32,
 }
 
-/// 主迴圈「觸發－輕」：有玩家房時重置 tick 範圍（對齊 Go）。
+/// 主迴圈「觸發－輕」：有玩家房時重置 tick 範圍（對齊既有）。
 #[derive(Debug, Clone, Deserialize)]
 #[serde(default)]
 pub struct RandomNpcDialogueTicksCfg {

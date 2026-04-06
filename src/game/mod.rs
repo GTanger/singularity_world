@@ -1,4 +1,4 @@
-// game 模組 — 遊戲時間、主迴圈 tick、視野與觀測（對齊 Go game/）。
+// game 模組 — 遊戲時間、主迴圈 tick、視野與觀測（對齊既有 game/）。
 
 mod chunk_view;
 mod gametime;

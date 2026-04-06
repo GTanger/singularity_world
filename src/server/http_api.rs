@@ -1,5 +1,5 @@
-//! HTTP API 端點（對齊 Go `admin_rooms.go`、`api_rooms_data.go`、`api_player_room.go`、
-//! `api_topology.go`、`config.ServeDesignConstants`、行內 `wipe-entities`）。
+//! HTTP API 端點（對齊既有 `admin_rooms`、`api_rooms_data`、`api_player_room`、
+//! `api_topology`、`config.ServeDesignConstants`、行內 `wipe-entities`）。
 
 use axum::extract::{Json, Path, Query};
 use axum::http::StatusCode;

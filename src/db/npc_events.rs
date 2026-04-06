@@ -1,4 +1,4 @@
-//! NPC 個人事件日誌常數與門面（對齊 Go `db/npc_events.go`）。
+//! NPC 個人事件日誌常數與門面（對齊既有 `db/npc_events`）。
 
 use crate::store;
 
@@ -12,10 +12,10 @@ pub const EVT_HIRED: &str = "hired";
 pub const EVT_TALK: &str = "talk";
 /// 交易。
 pub const EVT_TRADE: &str = "trade";
-/// 死亡（區域廣播用），對齊 Go `EvtDeath`。
+/// 死亡（區域廣播用），對齊既有 `EvtDeath`。
 pub const EVT_DEATH: &str = "death";
 
-/// 寫入一筆 NPC 事件（對齊 Go `LogNPCEvent`）。
+/// 寫入一筆 NPC 事件（對齊既有 `LogNPCEvent`）。
 pub fn log_npc_event(at: i64, entity_id: &str, event_type: &str, payload: &str) {
     let Some(arc) = store::get_store() else {
         return;
@@ -24,7 +24,7 @@ pub fn log_npc_event(at: i64, entity_id: &str, event_type: &str, payload: &str) 
     let _ = s.append_event(at, entity_id, event_type, payload);
 }
 
-/// 最近 n 筆事件（對齊 Go `GetRecentEvents`）；無 store 回空。
+/// 最近 n 筆事件（對齊既有 `GetRecentEvents`）；無 store 回空。
 #[must_use]
 pub fn get_recent_events(entity_id: &str, n: usize) -> Vec<store::EventEntry> {
     let Some(arc) = store::get_store() else {

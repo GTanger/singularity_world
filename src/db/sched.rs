@@ -1,18 +1,18 @@
-// 排班目標與 ApplySchedules，對齊 Go db/schedule.go（行程／敘事用）。
+// 排班目標與 ApplySchedules，對齊既有 db/schedule（行程／敘事用）。
 
 use crate::store;
 
 use super::npc_display::{get_npc_display_label_at_hour, NpcSchedule};
 use super::ErrNoStore;
 
-/// 排班目標房間與是否為上班地（對齊 Go `ScheduleTarget`）。
+/// 排班目標房間與是否為上班地（對齊既有 `ScheduleTarget`）。
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScheduleTarget {
     pub room: String,
     pub is_work: bool,
 }
 
-/// 排班敘事用一筆移動意圖（對齊 Go `ScheduleMove`）。
+/// 排班敘事用一筆移動意圖（對齊既有 `ScheduleMove`）。
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScheduleMove {
     pub entity_id: String,
@@ -21,13 +21,13 @@ pub struct ScheduleMove {
     pub new_room: String,
 }
 
-/// 依排班與遊戲小時回傳目標房；無排班則 `None`（對齊 Go `GetScheduleTargetRoom`）。
+/// 依排班與遊戲小時回傳目標房；無排班則 `None`（對齊既有 `GetScheduleTargetRoom`）。
 #[must_use]
 pub fn get_schedule_target_room(entity_id: &str, game_hour: i32) -> Option<String> {
     get_schedule_target(entity_id, game_hour).map(|t| t.room)
 }
 
-/// 排班目標與是否為上班地（對齊 Go `GetScheduleTarget`）。
+/// 排班目標與是否為上班地（對齊既有 `GetScheduleTarget`）。
 #[must_use]
 pub fn get_schedule_target(entity_id: &str, game_hour: i32) -> Option<ScheduleTarget> {
     let arc = store::get_store()?;
@@ -53,7 +53,7 @@ pub fn get_schedule_target(entity_id: &str, game_hour: i32) -> Option<ScheduleTa
     }
 }
 
-/// 所有 NPC 排班（對齊 Go `GetAllSchedules`）。
+/// 所有 NPC 排班（對齊既有 `GetAllSchedules`）。
 pub fn get_all_schedules() -> anyhow::Result<Vec<NpcSchedule>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let s = arc.read().unwrap();
@@ -70,7 +70,7 @@ pub fn get_all_schedules() -> anyhow::Result<Vec<NpcSchedule>> {
         .collect())
 }
 
-/// 設定 NPC 排班；寫入 `schedules.json`（對齊 Go `db.InsertSchedule`）。
+/// 設定 NPC 排班；寫入 `schedules.json`（對齊既有 `db.InsertSchedule`）。
 pub fn insert_schedule(
     entity_id: &str,
     work_room: &str,
@@ -83,14 +83,14 @@ pub fn insert_schedule(
     s.insert_schedule(entity_id, work_room, rest_room, shift_start, shift_end)
 }
 
-/// 移除某實體排班（對齊 Go `RemoveScheduleForEntity`）。
+/// 移除某實體排班（對齊既有 `RemoveScheduleForEntity`）。
 pub fn remove_schedule_for_entity(entity_id: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();
     s.remove_schedule_for_entity(entity_id)
 }
 
-/// 依當前遊戲小時回傳「應前往房間」清單，不寫入 `entity_room`（對齊 Go `ApplySchedules`）。
+/// 依當前遊戲小時回傳「應前往房間」清單，不寫入 `entity_room`（對齊既有 `ApplySchedules`）。
 pub fn apply_schedules(game_hour: i32) -> anyhow::Result<Vec<ScheduleMove>> {
     let schedules = get_all_schedules()?;
     let mut moves = Vec::new();

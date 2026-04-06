@@ -1,4 +1,4 @@
-// 對話模板載入、抽句與佔位符替換（對齊 Go `db/dialogue.go`）。
+// 對話模板載入、抽句與佔位符替換（對齊既有 `db/dialogue`）。
 // 支援：關鍵字檢索、池子混用、片段組合、情境權重、佔位符詞表、微變體。
 
 use std::collections::HashMap;
@@ -87,7 +87,7 @@ static DIALOGUE_CACHE: RwLock<Option<HashMap<String, DialogueFile>>> = RwLock::n
 static SLOTS_CACHE: OnceLock<DialogueSlots> = OnceLock::new();
 static KEYWORD_GROUPS: RwLock<Vec<KeywordGroup>> = RwLock::new(Vec::new());
 
-// ── 簡易偽隨機（seed 可重現，對齊 Go math/rand） ──
+// ── 簡易偽隨機（seed 可重現，對齊既有 math/rand） ──
 
 struct SimpleRng(u64);
 
@@ -403,7 +403,7 @@ const PROB_FRAGMENT: f32 = 0.25;
 
 // ── 主要抽句函式 ──
 
-/// 依職業取得對話檔、抽一句、填佔位符、微變體後回傳（對齊 Go `PickFromDialogue`）。
+/// 依職業取得對話檔、抽一句、填佔位符、微變體後回傳（對齊既有 `PickFromDialogue`）。
 #[allow(clippy::too_many_arguments)]
 pub fn pick_from_dialogue(
     entity_id: &str,

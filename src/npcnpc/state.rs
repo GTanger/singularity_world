@@ -1,4 +1,4 @@
-// 房間事件滑窗、配對最後對話時間、統計；對齊 Go npcnpc/state_events.go。
+// 房間事件滑窗、配對最後對話時間、統計；對齊既有 npcnpc/state_events。
 
 use std::collections::HashMap;
 use std::sync::LazyLock;
@@ -157,7 +157,7 @@ fn push_rumor_from_room_event(room_id: &str, kind: &str, subject: &str, detail: 
     let _ = db::upsert_npc_rumor(rumor);
 }
 
-/// 推入房間滑動視窗事件並寫入傳聞（對齊 Go `PushRoomEvent`）。
+/// 推入房間滑動視窗事件並寫入傳聞（對齊既有 `PushRoomEvent`）。
 pub fn push_room_event(room_id: &str, kind: &str, subject: &str, detail: &str) {
     if room_id.is_empty() {
         return;
@@ -183,7 +183,7 @@ pub fn push_room_event(room_id: &str, kind: &str, subject: &str, detail: &str) {
     push_rumor_from_room_event(room_id, kind, subject, detail, now);
 }
 
-/// 房間近期事件敘述（對齊 Go `RecentRoomEvents`）。
+/// 房間近期事件敘述（對齊既有 `RecentRoomEvents`）。
 pub fn recent_room_events(room_id: &str, max_count: usize) -> Vec<String> {
     if room_id.is_empty() || max_count == 0 {
         return Vec::new();

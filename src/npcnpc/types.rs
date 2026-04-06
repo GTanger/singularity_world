@@ -1,4 +1,4 @@
-// NPC↔NPC 除錯 API 型別，對齊 Go npcnpc/types.go。
+// NPC↔NPC 除錯 API 型別，對齊既有 npcnpc/types。
 
 use serde::Serialize;
 
@@ -6,7 +6,7 @@ use crate::ai::DialogueScoreDetail;
 use crate::npc::TopicWeightDebug;
 use crate::store::{NpcDyad, NpcThread};
 
-/// 最近一次 NPC↔NPC 社交決策（對齊 Go `LastSocialChoice`）。
+/// 最近一次 NPC↔NPC 社交決策（對齊既有 `LastSocialChoice`）。
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub struct LastSocialChoice {
@@ -31,7 +31,7 @@ pub struct LastSocialChoice {
     pub dialogue_score: Option<DialogueScoreDetail>,
 }
 
-/// 一對 NPC 配對除錯細項（對齊 Go `PairDebug`）。
+/// 一對 NPC 配對除錯細項（對齊既有 `PairDebug`）。
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub struct PairDebug {
@@ -49,7 +49,7 @@ pub struct PairDebug {
     pub topic_weights: Vec<TopicWeightDebug>,
 }
 
-/// `GET /api/debug/npc-social` 回應骨架（對齊 Go `DebugResp`）。
+/// `GET /api/debug/npc-social` 回應骨架（對齊既有 `DebugResp`）。
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub struct DebugResp {
@@ -71,7 +71,7 @@ pub struct DebugResp {
     pub rumor_details: Vec<RumorDebugItem>,
 }
 
-/// 傳聞池除錯一筆（對齊 Go `RumorDebugItem`）。
+/// 傳聞池除錯一筆（對齊既有 `RumorDebugItem`）。
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub struct RumorDebugItem {

@@ -1,4 +1,4 @@
-// 玩家↔NPC／NPC↔NPC 的 prompt 組裝、回應解析與 Ollama /api/chat，對齊 Go ai/talk.go。
+// 玩家↔NPC／NPC↔NPC 的 prompt 組裝、回應解析與 Ollama /api/chat，對齊既有 ai/talk。
 
 use serde::Deserialize;
 use serde_json::json;
@@ -40,7 +40,7 @@ fn sprintf_one_percent_s(template: &str, value: &str) -> String {
     template.replacen("%s", value, 1)
 }
 
-/// 組出玩家↔NPC Talk 的 system 與 user（對齊 Go `PlayerNPCTalkBuildPrompts`）。
+/// 組出玩家↔NPC Talk 的 system 與 user（對齊既有 `PlayerNPCTalkBuildPrompts`）。
 pub fn player_npc_talk_build_prompts(
     player_input: &str,
     npc_backstory: &str,
@@ -100,7 +100,7 @@ pub fn player_npc_talk_build_prompts(
     (sb, user)
 }
 
-/// 若回覆以「…」包一層，抽出內文（對齊 Go `CallAITalk` 結尾處理）。
+/// 若回覆以「…」包一層，抽出內文（對齊既有 `CallAITalk` 結尾處理）。
 pub fn strip_reply_guillemet_outer(reply: &str) -> String {
     let reply = reply.trim();
     let gopen = '\u{300c}';
@@ -114,7 +114,7 @@ pub fn strip_reply_guillemet_outer(reply: &str) -> String {
     reply.to_string()
 }
 
-/// 呼叫 Ollama `/api/chat`（對齊 Go `CallAITalk`）。
+/// 呼叫 Ollama `/api/chat`（對齊既有 `CallAITalk`）。
 #[allow(clippy::too_many_arguments)]
 pub fn call_ai_talk(
     base_url: &str,
@@ -374,7 +374,7 @@ pub fn parse_npc_npc_dialogue_json(
     Some(d)
 }
 
-/// 呼叫 Ollama 產生 NPC↔NPC 兩句（對齊 Go `CallAITalkNPCToNPC`）。
+/// 呼叫 Ollama 產生 NPC↔NPC 兩句（對齊既有 `CallAITalkNPCToNPC`）。
 #[allow(clippy::too_many_arguments)]
 pub fn call_ai_talk_npc_to_npc(
     base_url: &str,
@@ -529,7 +529,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn sprintf_two_matches_go_order() {
+    fn sprintf_two_matches_legacy_order() {
         let t = "A%sB%sC";
         assert_eq!(sprintf_two_percent_s(t, "1", "2"), "A1B2C");
     }

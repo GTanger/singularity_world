@@ -1,5 +1,5 @@
-//! NPC 決策引擎（對齊 Go `npc/decision.go`）：`Decide` 產生意圖，`ResolveBrainPath` 轉成尋路序列。
-// 結構刻意鏡像 Go 之多層判斷，合併 if 反而難與原版對照。
+//! NPC 決策引擎（對齊既有 `npc/decision`）：`Decide` 產生意圖，`ResolveBrainPath` 轉成尋路序列。
+// 結構刻意保留多層判斷，合併 if 反而難與原版對照。
 #![allow(clippy::collapsible_if)]
 
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -11,12 +11,12 @@ use crate::db::{
     get_recent_events, inventory_total_qty, Personality, RoomGraph, EVT_TALK,
 };
 
-/// 生存層鎂閾值（對齊 Go `SurvivalLineMg`）。
+/// 生存層鎂閾值（對齊既有 `SurvivalLineMg`）。
 pub const SURVIVAL_LINE_MG: i32 = 50;
-/// 社交衰減週期秒（對齊 Go `socialDecaySec`）。
+/// 社交衰減週期秒（對齊既有 `socialDecaySec`）。
 const SOCIAL_DECAY_SEC: i64 = 7200;
 
-/// 意圖類型（對齊 Go `IntentType`）。
+/// 意圖類型（對齊既有 `IntentType`）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum IntentType {
     SeekJob,
@@ -47,14 +47,14 @@ impl IntentType {
     }
 }
 
-/// 決策輸出：單一意圖與可選目標房（對齊 Go `Intent`）。
+/// 決策輸出：單一意圖與可選目標房（對齊既有 `Intent`）。
 #[derive(Debug, Clone, Default)]
 pub struct Intent {
     pub ty: IntentType,
     pub target_room_id: String,
 }
 
-/// 決策輸入：NPC 自身狀態（對齊 Go `DecisionState`）。
+/// 決策輸入：NPC 自身狀態（對齊既有 `DecisionState`）。
 #[derive(Debug, Clone)]
 pub struct DecisionState {
     pub magnesium: i32,
@@ -66,7 +66,7 @@ pub struct DecisionState {
     pub inventory_total_qty: i32,
 }
 
-/// 世界情境（對齊 Go `DecisionContext`）。
+/// 世界情境（對齊既有 `DecisionContext`）。
 #[derive(Debug, Clone, Default)]
 pub struct DecisionContext {
     pub room_tags: Vec<String>,
@@ -81,7 +81,7 @@ struct Candidate {
     weight: f64,
 }
 
-/// 由 store 組裝決策狀態（對齊 Go `BuildDecisionState`）。
+/// 由 store 組裝決策狀態（對齊既有 `BuildDecisionState`）。
 pub fn build_decision_state(entity_id: &str) -> anyhow::Result<DecisionState> {
     let Some(ch) = get_entity(entity_id)? else {
         anyhow::bail!("entity not found");
@@ -116,7 +116,7 @@ pub fn build_decision_state(entity_id: &str) -> anyhow::Result<DecisionState> {
     })
 }
 
-/// 組裝周邊情境（對齊 Go `BuildDecisionContext`）。
+/// 組裝周邊情境（對齊既有 `BuildDecisionContext`）。
 pub fn build_decision_context(g: &RoomGraph, current_room_id: &str, max_dist: i32) -> DecisionContext {
     let mut md = max_dist;
     if md <= 0 {
@@ -379,7 +379,7 @@ pub fn decide_with_inertia(state: DecisionState, ctx: &DecisionContext, prev_int
     weighted_random_select(&cands)
 }
 
-/// 依意圖解析尋路目標序列（對齊 Go `ResolveBrainPath`）。
+/// 依意圖解析尋路目標序列（對齊既有 `ResolveBrainPath`）。
 pub fn resolve_brain_path(
     g: &RoomGraph,
     intent: &Intent,

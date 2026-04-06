@@ -1,4 +1,4 @@
-//! WebSocket 訊息分派（對齊 Go `server/handler.go` + `handler_auth` + `handler_move` 子集）。
+//! WebSocket 訊息分派（對齊既有 `server/handler` + `handler_auth` + `handler_move` 子集）。
 
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
@@ -26,7 +26,7 @@ use super::protocol::{
 use super::session::{Session, SessionStore};
 use uuid::Uuid;
 
-/// 單一 WS 連線脈絡（對齊 Go `Client` + session 綁定）。
+/// 單一 WS 連線脈絡（對齊既有 `Client` + session 綁定）。
 pub struct WsConnection {
     pub conn_id: Uuid,
     pub tx: tokio::sync::mpsc::Sender<Vec<u8>>,
@@ -281,7 +281,7 @@ pub(super) fn player_id(conn: &WsConnection) -> Option<String> {
     conn.player_id.read().ok().and_then(|g| g.clone())
 }
 
-/// 解析裝備槽 JSON 並補物品名稱／描述（對齊 Go `parseEquipment`）。
+/// 解析裝備槽 JSON 並補物品名稱／描述（對齊既有 `parseEquipment`）。
 fn parse_equipment_triple(raw: &str) -> (HashMap<String, String>, HashMap<String, String>, HashMap<String, String>) {
     if raw.is_empty() {
         return (HashMap::new(), HashMap::new(), HashMap::new());
@@ -292,7 +292,7 @@ fn parse_equipment_triple(raw: &str) -> (HashMap<String, String>, HashMap<String
     (slots, names, descs)
 }
 
-/// 組裝 `entity_status` 訊息（第一版當前資源＝上限，對齊 Go）。
+/// 組裝 `entity_status` 訊息（第一版當前資源＝上限，對齊既有）。
 fn entity_status_from_character(ent: &Character, is_self: bool) -> EntityStatusMsg {
     let rm = compute_resource_maxes(ent.vit, ent.qi, ent.dex);
     let hp = rm.hp_max as i32;
@@ -363,7 +363,7 @@ fn inventory_msg_for_character(ent: &Character) -> InventoryMsg {
     }
 }
 
-/// 裝備變更後推播背包與自身狀態（對齊 Go `pushRefresh`）。
+/// 裝備變更後推播背包與自身狀態（對齊既有 `pushRefresh`）。
 pub(super) fn push_refresh(conn: &WsConnection, player_id: &str) {
     let Ok(Some(ent)) = db::get_entity(player_id) else {
         return;

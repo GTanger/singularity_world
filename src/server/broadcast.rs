@@ -1,4 +1,4 @@
-//! 依房間推送敘事／視野（對齊 Go `server/broadcast.go`）。
+//! 依房間推送敘事／視野（對齊既有 `server/broadcast`）。
 
 use crate::config::Server;
 use crate::db;
@@ -58,7 +58,7 @@ fn player_verb_strings() -> Vec<String> {
         .collect()
 }
 
-/// 建構 `RoomViewMsg`（對齊 Go `sendRoomView` 資料欄位）。
+/// 建構 `RoomViewMsg`（對齊既有 `sendRoomView` 資料欄位）。
 pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server) -> RoomViewMsg {
     use crate::db::get_sockets_for_npc;
 

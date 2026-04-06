@@ -1,4 +1,4 @@
-//! HTTP／WebSocket 伺服器層（逐步遷移自 Go `server/`）。
+//! HTTP／WebSocket 伺服器層（Axum `server/`）。
 
 mod action;
 mod broadcast;

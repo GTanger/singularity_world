@@ -1,4 +1,4 @@
-// 遊戲時間：1 真實小時 ＝ 1 遊戲日（依 scale），對齊 Go game/gametime.go。
+// 遊戲時間：1 真實小時 ＝ 1 遊戲日（依 scale），對齊既有 game/gametime。
 
 const SECONDS_PER_GAME_DAY: i64 = 86400;
 

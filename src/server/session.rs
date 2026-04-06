@@ -1,4 +1,4 @@
-//! 玩家 Session 與 `SessionStore`（對齊 Go `server/session.go`）。
+//! 玩家 Session 與 `SessionStore`（對齊既有 `server/session`）。
 
 use crate::db;
 use std::collections::{HashMap, HashSet};
@@ -61,7 +61,7 @@ impl Session {
     }
 }
 
-/// 以 `PlayerID` 為 key 的線上 session（對齊 Go `SessionStore`）。
+/// 以 `PlayerID` 為 key 的線上 session（對齊既有 `SessionStore`）。
 pub struct SessionStore {
     inner: RwLock<HashMap<String, Session>>,
 }
@@ -94,7 +94,7 @@ impl SessionStore {
         g.remove(player_id);
     }
 
-    /// 若目前綁定的連線 id 相符才移除（對齊 Go 斷線比對 `Client`）。
+    /// 若目前綁定的連線 id 相符才移除（對齊既有 斷線比對 `Client`）。
     pub fn remove_if_connection(&self, player_id: &str, connection_id: Uuid) {
         let mut g = self.inner.write().expect("session store poisoned");
         if let Some(s) = g.get(player_id)
@@ -202,7 +202,7 @@ impl SessionStore {
         false
     }
 
-    /// 目前有玩家在線且已落在某房間的 room id 集合（對齊 Go `GetPlayerRoomMap`）。
+    /// 目前有玩家在線且已落在某房間的 room id 集合（對齊既有 `GetPlayerRoomMap`）。
     /// 條目為 [`db::canonical_location_key`]，使世界房間 id 與 `hex:…` 在模擬迴圈比對時一致。
     #[must_use]
     pub fn player_room_ids(&self) -> HashSet<String> {

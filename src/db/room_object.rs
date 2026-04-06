@@ -1,4 +1,4 @@
-//! 房間內可互動物件查詢（對齊 Go `db/room_object.go` 子集）。
+//! 房間內可互動物件查詢（對齊既有 `db/room_object` 子集）。
 
 use crate::model;
 use crate::store;

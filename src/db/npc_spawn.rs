@@ -1,4 +1,4 @@
-// NPC 建立、種子、池生成，對齊 Go db/npc.go。
+// NPC 建立、種子、池生成，對齊既有 db/npc。
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -11,7 +11,7 @@ use super::npc_names::{first_rune, generate_npc_name};
 use super::{expand_soul_seed_to_base_stats, generate_soul_seed};
 use super::ErrNoStore;
 
-/// 預設 NPC 一筆（目前 Go `defaultNPCs` 為空 slice，對齊保留結構）。
+/// 預設 NPC 一筆（預設 NPC 列表為空，對齊保留結構）。
 #[derive(Debug, Clone, Copy)]
 pub struct NpcDef {
     pub id: &'static str,
@@ -25,7 +25,7 @@ pub struct NpcDef {
     pub title: &'static str,
 }
 
-/// 與 Go `defaultNPCs` 相同：啟動時可為空。
+/// 與預設種子列表 相同：啟動時可為空。
 pub const DEFAULT_NPCS: &[NpcDef] = &[];
 
 const VENUE_LIFE_INN: &str = "venue_life_inn";
@@ -59,7 +59,7 @@ fn npc_gender_counts_locked(s: &Store) -> (i32, i32) {
     (male, female)
 }
 
-/// 在已持有 `&mut Store` 時寫入新 NPC（對齊 Go `InsertNPC`）。
+/// 在已持有 `&mut Store` 時寫入新 NPC（對齊既有 `InsertNPC`）。
 pub(crate) fn insert_npc_locked(
     s: &mut Store,
     id: &str,
@@ -120,7 +120,7 @@ pub(crate) fn insert_npc_locked(
     s.put_entity(e)
 }
 
-/// 新增一筆 NPC 實體（對齊 Go `InsertNPC`）。
+/// 新增一筆 NPC 實體（對齊既有 `InsertNPC`）。
 pub fn insert_npc(
     id: &str,
     display_char: &str,
@@ -132,12 +132,12 @@ pub fn insert_npc(
     insert_npc_locked(&mut s, id, display_char, gender, display_title)
 }
 
-/// 逐一檢查預設 NPC（對齊 Go `SeedNPCs`）。
+/// 逐一檢查預設 NPC（對齊既有 `SeedNPCs`）。
 pub fn seed_npcs() -> anyhow::Result<()> {
     seed_npcs_for_store()
 }
 
-/// 確保 `DEFAULT_NPCS` 存在並設房間／排班／指派（對齊 Go `SeedNPCsForStore`）。
+/// 確保 `DEFAULT_NPCS` 存在並設房間／排班／指派（對齊既有 `SeedNPCsForStore`）。
 pub fn seed_npcs_for_store() -> anyhow::Result<()> {
     let Some(arc) = store::get_store() else {
         return Ok(());
@@ -169,7 +169,7 @@ pub fn seed_npcs_for_store() -> anyhow::Result<()> {
     Ok(())
 }
 
-/// 有房間的 NPC 男／女人數（對齊 Go `GetNPCGenderCounts`）。
+/// 有房間的 NPC 男／女人數（對齊既有 `GetNPCGenderCounts`）。
 #[must_use]
 pub fn get_npc_gender_counts() -> (i32, i32) {
     let Some(arc) = store::get_store() else {
@@ -188,7 +188,7 @@ pub fn get_room_count() -> usize {
     arc.read().unwrap().rooms.len()
 }
 
-/// 為缺 `soul_seed` 的 NPC 補寫；不改 vit/qi/dex（對齊 Go `EnsureAllNPCsHaveSoulSeed`）。
+/// 為缺 `soul_seed` 的 NPC 補寫；不改 vit/qi/dex（對齊既有 `EnsureAllNPCsHaveSoulSeed`）。
 pub fn ensure_all_npcs_have_soul_seed() -> anyhow::Result<i32> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();
@@ -207,7 +207,7 @@ pub fn ensure_all_npcs_have_soul_seed() -> anyhow::Result<i32> {
     Ok(fixed)
 }
 
-/// 自池生成一名 NPC 並放入指定房間（對齊 Go `SpawnOneNPCFromPool`）。
+/// 自池生成一名 NPC 並放入指定房間（對齊既有 `SpawnOneNPCFromPool`）。
 pub fn spawn_one_npc_from_pool(spawn_room_id: &str) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write().unwrap();

@@ -10,7 +10,7 @@
 
 ## 專案現況
 
-- **後端：Rust 服務**（Axum 0.8 + Tokio），全面取代原 Go 實作。
+- **後端：Rust 服務**（Axum 0.8 + Tokio）。
 - **資料儲存**：JSON/store 作為唯一執行期資料來源（No DB）。
 - **主要路徑**：`data/rooms/editor/`（房間資料）、`data/entities.json`（實體狀態）、`data/runtime/`（執行期快照）。
 - **前端**：原生 HTML/CSS/JS (PWA)，提供遊戲頁面與管理工具組（房間編輯器、地圖、星圖）。
@@ -39,6 +39,8 @@
 ```
 
 用途：通過閘門後，建置後端與 Hex 編輯器並啟動伺服器（預設埠：1721）。
+
+僅需跑閘門（clippy／test／checkrooms）而不建置、不啟動時，可用：`make verify`（與 `./start` 前段檢查相同）。
 
 ---
 
@@ -73,8 +75,7 @@ singularity_world/
 │   └── roomcheck/      # 房間契約檢查邏輯庫
 ├── data/               # 房間 JSON、設定檔、實體快照
 ├── web/                # 前端靜態資源 (HTML/CSS/JS)
-├── archive/go/         # 已遷移的 Go 原始碼備份（不納入版控）
-└── docs/               # 設計文獻、遷移進度、API 文法
+└── docs/               # 設計文獻、遷移說明、API 文法
 ```
 
 ---

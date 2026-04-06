@@ -1,4 +1,4 @@
-//! 同房 NPC↔NPC 觸發（對齊 Go `npcnpc/trigger.go`）。
+//! 同房 NPC↔NPC 觸發（對齊既有 `npcnpc/trigger`）。
 
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 

@@ -11,7 +11,7 @@
 	let VIEWPORT_H = 151;
 
 	// 地形字對應（實作依據）：map_terrain_world.md「顯示時從 chars 亂序取字與對應 colors」、每一格皆為有色地形字。
-	// 表內顏色（hex）＝該地形字顯示用色；與 world/terrain_display.go terrainMetas 對齊（道/地/巷 #c4b8a8，牆石灰 #8c8c8c）。
+	// 表內顏色（hex）＝該地形字顯示用色；與 `src/world/terrain_display.rs` 之 terrain 對照表一致（道/地/巷 #c4b8a8，牆石灰 #8c8c8c）。
 	const TERRAIN_COLORS = {
 		'牆': '#8c8c8c', '門': '#8b7355', '關': '#6b5344', '道': '#c4b8a8', '路': '#c4b8a8', '徑': '#c4b8a8', '巷': '#c4b8a8', '地': '#c4b8a8',
 		'草': '#c2d6a4', '木': '#a0d080', '山': '#98af9d', '石': '#d3d3d3', '沼': '#507050',

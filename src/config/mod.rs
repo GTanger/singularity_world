@@ -1,4 +1,4 @@
-// config 模組 — 伺服器與設計常數，對齊 Go config/config.go + config/server_defaults.go。
+// config 模組 — 伺服器與設計常數，對齊既有 config/config + config/server_defaults。
 // 載入優先順序：data/config/server_defaults.json → 環境變數覆寫 → 內建預設值。
 
 mod simulation;
@@ -178,7 +178,7 @@ fn env_bool(key: &str) -> bool {
 }
 
 impl Server {
-    /// 載入預設值（JSON + 環境變數覆寫），對齊 Go DefaultServer()。
+    /// 載入預設值（JSON + 環境變數覆寫），對齊既有 DefaultServer()。
     pub fn load_default() -> Self {
         let (sj, _design) = load_server_defaults_from_json()
             .unwrap_or_default();

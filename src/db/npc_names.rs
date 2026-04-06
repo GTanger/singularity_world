@@ -1,4 +1,4 @@
-// NPC 隨機姓名，對齊 Go db/npc_names.go。
+// NPC 隨機姓名，對齊既有 db/npc_names。
 
 use std::sync::LazyLock;
 
@@ -20,7 +20,7 @@ const COMPOUND_SURNAMES: &[&str] = &[
     "歐陽", "司馬", "諸葛", "上官", "司徒", "司空", "皇甫", "慕容", "宇文", "長孫", "聞人", "東方", "獨孤", "南宮", "萬俟", "尉遲",
 ];
 
-/// 產生「姓＋名」2～4 字；`gender` 預留（對齊 Go `GenerateNPCName`）。
+/// 產生「姓＋名」2～4 字；`gender` 預留（對齊既有 `GenerateNPCName`）。
 pub fn generate_npc_name(_gender: &str) -> String {
     let mut rng = rand::rng();
     let singles = &*SINGLE_SURNAMES;
@@ -41,7 +41,7 @@ pub fn generate_npc_name(_gender: &str) -> String {
     surname + &given
 }
 
-/// 字串第一個字；空或無效則「人」（對齊 Go `FirstRune`）。
+/// 字串第一個字；空或無效則「人」（對齊既有 `FirstRune`）。
 #[must_use]
 pub fn first_rune(s: &str) -> String {
     s.chars()

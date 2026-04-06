@@ -1,5 +1,5 @@
-//! WebSocket／HTTP JSON 訊息型別（對齊 Go `server/protocol.go`）。
-//! 欄位名與 `omitempty` 行為需與前端／Go 一致。
+//! WebSocket／HTTP JSON 訊息型別（對齊既有 `server/protocol`）。
+//! 欄位名與 `omitempty` 行為需與前端一致。
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

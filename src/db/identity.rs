@@ -1,10 +1,10 @@
-// NPC identity 字串組裝（對齊 Go `db/backstory.go` `BuildIdentity`）。
+// NPC identity 字串組裝（對齊既有 `db/backstory` `BuildIdentity`）。
 
 use crate::store;
 
 use super::{get_disposition, get_npc_person_display_name, get_personality_for_entity, get_recent_events};
 
-/// 組裝 NPC 給 LLM 用的身份描述：真名、職稱、場所、性格、心境、最近事件、摘要（對齊 Go `BuildIdentity`）。
+/// 組裝 NPC 給 LLM 用的身份描述：真名、職稱、場所、性格、心境、最近事件、摘要（對齊既有 `BuildIdentity`）。
 #[must_use]
 pub fn build_identity(entity_id: &str) -> String {
     let mut person = get_npc_person_display_name(entity_id).unwrap_or_default();

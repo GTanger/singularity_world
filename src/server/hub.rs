@@ -1,4 +1,4 @@
-//! WebSocket 連線上限與全服廣播（對齊 Go `server/websocket.go`）。
+//! WebSocket 連線上限與全服廣播（對齊既有 `server/websocket`）。
 
 use std::sync::Mutex;
 

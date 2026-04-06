@@ -1,4 +1,4 @@
-// 地形顯示對照：候選字與顏色，對齊 Go world/terrain_display.go。
+// 地形顯示對照：候選字與顏色，對齊既有 world/terrain_display。
 
 use rand::Rng;
 use std::collections::HashMap;
@@ -183,7 +183,7 @@ fn pick_char_color(meta: TerrainMeta, t_fallback: &str, idx: usize) -> (String, 
     )
 }
 
-/// 固定取第一個候選字／色（對齊 Go `Display(t, nil)`）。
+/// 固定取第一個候選字／色（對齊既有 `Display(t, nil)`）。
 pub fn display_terrain(t: &str) -> (String, String) {
     let Some(meta) = TERRAIN_METAS.get(t).copied() else {
         return (t.to_string(), "#888888".to_string());
@@ -191,7 +191,7 @@ pub fn display_terrain(t: &str) -> (String, String) {
     pick_char_color(meta, t, 0)
 }
 
-/// 多候選時亂數取一（對齊 Go `Display(t, r)`、`r != nil`）。
+/// 多候選時亂數取一（對齊既有 `Display(t, r)`、`r != nil`）。
 pub fn display_terrain_rng(t: &str, rng: &mut impl Rng) -> (String, String) {
     let Some(meta) = TERRAIN_METAS.get(t).copied() else {
         return (t.to_string(), "#888888".to_string());
@@ -204,7 +204,7 @@ pub fn display_terrain_rng(t: &str, rng: &mut impl Rng) -> (String, String) {
     pick_char_color(meta, t, idx)
 }
 
-/// 指定地形之顯示表項目；無則 `None`（對齊 Go `TerrainMetaByType`）。
+/// 指定地形之顯示表項目；無則 `None`（對齊既有 `TerrainMetaByType`）。
 pub fn terrain_meta_by_type(t: &str) -> Option<TerrainMeta> {
     TERRAIN_METAS.get(t).copied()
 }

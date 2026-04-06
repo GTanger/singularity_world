@@ -1,4 +1,4 @@
-//! 房間心智圖編輯器 HTTP API（對齊 Go `room_editor_*.go` 全套）。
+//! 房間心智圖編輯器 HTTP API（對齊既有 `room_editor_*` 全套）。
 
 use std::collections::HashMap;
 use std::fs;
@@ -17,7 +17,7 @@ fn is_admin_authorized(cfg: &config::Server, query: &AdminQuery) -> bool {
     query.mg_key.as_deref() == Some(&cfg.management_key)
 }
 
-// ── 型別（對齊 Go room_editor_types.go） ──
+// ── 型別（對齊既有 room_editor_types） ──
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct RoomEditorExit {

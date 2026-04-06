@@ -1,4 +1,4 @@
-//! 啟動 Axum HTTP／WebSocket（對齊 Go `main` + `http_routes.go`）。
+//! 啟動 Axum HTTP／WebSocket（對齊既有 `main` + `http_routes`）。
 
 use std::net::SocketAddr;
 use std::path::PathBuf;
@@ -102,7 +102,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         // Leptos 地圖編輯器（WASM）
         .nest_service("/hex-editor", ServeDir::new("editor-leptos/dist"))
         .with_state(state.clone())
-        // 靜態檔案服務 — web/ 目錄（fallback，對齊 Go `http.FileServer`）
+        // 靜態檔案服務 — web/ 目錄（fallback，對齊既有 `http.FileServer`）
         .fallback_service(
             ServeDir::new("web")
                 .precompressed_gzip()
@@ -127,7 +127,7 @@ async fn ws_upgrade(ws: WebSocketUpgrade, State(st): State<AppState>) -> impl In
     ws.on_upgrade(move |socket| handle_socket(socket, st))
 }
 
-/// HTML 頁面：讀取 web/ 下的 .html 檔並回傳（對齊 Go 的 http.ServeFile）。
+/// HTML 頁面：讀取 web/ 下的 .html 檔並回傳（對齊既有 的 http.ServeFile）。
 async fn serve_html_page(filename: &str) -> impl IntoResponse {
     let path = PathBuf::from("web").join(filename);
     match tokio::fs::read_to_string(&path).await {

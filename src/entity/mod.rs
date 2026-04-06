@@ -28,7 +28,7 @@ pub enum WalkOrRun {
     Run,
 }
 
-/// 性別。Go 版使用 "M"/"F"，serde 對齊。
+/// 性別。舊版使用 "M"/"F"，serde 對齊。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Gender {
     M,

@@ -2,7 +2,7 @@
 
 > **定位**：**語用與設計為什麼**（寒暄的社會功能等）；**不**取代「逐條回答規則」。  
 > **若你要改的是「各情節怎麼答」**：請以 [`data/templates/PLAYER_TALK_WEB_LLM.md`](../templates/PLAYER_TALK_WEB_LLM.md) 為分場景條列，並**同步** `llm_prompts.json`。  
-> **實作錨點**：`data/templates/llm_prompts.json` 的 `player_npc.*`；程式 `ai/talk.go`、`server/action_entity_talk.go`、`db/archival.go`（`SearchArchivalForPlayerTalk`）。
+> **實作錨點**：`data/templates/llm_prompts.json` 的 `player_npc.*`；程式 `ai/talk`、`server/action_entity_talk`、`db/archival`（`SearchArchivalForPlayerTalk`）。
 
 ---
 
@@ -40,7 +40,7 @@
 
 - **Talk 前**會組：`BuildIdentity` + **archival 節錄** + 口吻例句等。  
 - 若檢索在玩家只說「你好」時仍 **fallback 到「最新幾條」**，節錄裡的「對帳」會被模型當成**玩家在延續的話題** → **錯在管線，不只在模型**。  
-- 對策：**`SearchArchivalForPlayerTalk`**——寒暄類、**零關鍵字命中**時**不**做「取最新」fallback；見 [記憶系統對照NPC活化系統](記憶系統對照NPC活化系統.md)、`db/archival.go`。
+- 對策：**`SearchArchivalForPlayerTalk`**——寒暄類、**零關鍵字命中**時**不**做「取最新」fallback；見 [記憶系統對照NPC活化系統](記憶系統對照NPC活化系統.md)、`db/archival`。
 
 ---
 

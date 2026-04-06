@@ -1,4 +1,4 @@
-// NPC 間對話主題劇本（載入與查詢），對齊 Go npc/topics.go。
+// NPC 間對話主題劇本（載入與查詢），對齊既有 npc/topics。
 
 use std::fs;
 use std::io::ErrorKind;
@@ -8,7 +8,7 @@ use std::sync::{LazyLock, RwLock};
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
-/// 單一主題劇本（對齊 Go `NpcNpcTopic`）。
+/// 單一主題劇本（對齊既有 `NpcNpcTopic`）。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NpcNpcTopic {
     pub id: String,
@@ -30,7 +30,7 @@ struct TopicsFile {
 
 static NPC_TOPICS_LIST: LazyLock<RwLock<Vec<NpcNpcTopic>>> = LazyLock::new(|| RwLock::new(Vec::new()));
 
-/// 從路徑載入主題劇本；檔案不存在則靜默跳過，其餘錯誤寫 log（對齊 Go `LoadNpcNpcTopics`）。
+/// 從路徑載入主題劇本；檔案不存在則靜默跳過，其餘錯誤寫 log（對齊既有 `LoadNpcNpcTopics`）。
 pub fn load_npc_npc_topics(path: impl AsRef<Path>) {
     if let Err(e) = try_load_npc_npc_topics(path.as_ref()) {
         tracing::warn!("[npc_topics] load {}: {}", path.as_ref().display(), e);
@@ -51,7 +51,7 @@ pub fn try_load_npc_npc_topics(path: &Path) -> anyhow::Result<()> {
     Ok(())
 }
 
-/// 依 id 回傳主題（對齊 Go `GetNpcNpcTopicByID`）。
+/// 依 id 回傳主題（對齊既有 `GetNpcNpcTopicByID`）。
 #[must_use]
 pub fn get_npc_npc_topic_by_id(id: &str) -> Option<NpcNpcTopic> {
     let g = NPC_TOPICS_LIST.read().expect("npc topics lock");
@@ -66,7 +66,7 @@ fn normalize_npc_npc_topic_hint(h: &str) -> String {
     h.to_string()
 }
 
-/// 依 `topic_hint` 反查主題 id（對齊 Go `FindNpcNpcTopicIDByHint`）。
+/// 依 `topic_hint` 反查主題 id（對齊既有 `FindNpcNpcTopicIDByHint`）。
 #[must_use]
 pub fn find_npc_npc_topic_id_by_hint(topic_hint: &str) -> String {
     let h = normalize_npc_npc_topic_hint(topic_hint);
@@ -95,13 +95,13 @@ pub fn find_npc_npc_topic_id_by_hint(topic_hint: &str) -> String {
     best_id
 }
 
-/// 隨機一主題（對齊 Go `PickRandomNpcNpcTopic`）。
+/// 隨機一主題（對齊既有 `PickRandomNpcNpcTopic`）。
 #[must_use]
 pub fn pick_random_npc_npc_topic() -> Option<NpcNpcTopic> {
     pick_random_npc_npc_topic_exclude("")
 }
 
-/// 隨機主題，可排除 `exclude_id`（對齊 Go `PickRandomNpcNpcTopicExclude`）。
+/// 隨機主題，可排除 `exclude_id`（對齊既有 `PickRandomNpcNpcTopicExclude`）。
 #[must_use]
 pub fn pick_random_npc_npc_topic_exclude(exclude_id: &str) -> Option<NpcNpcTopic> {
     let g = NPC_TOPICS_LIST.read().expect("npc topics lock");
@@ -119,7 +119,7 @@ pub fn pick_random_npc_npc_topic_exclude(exclude_id: &str) -> Option<NpcNpcTopic
     g.get(idx).cloned()
 }
 
-/// 主題篩選條件（對齊 Go `NpcTopicMask`）。
+/// 主題篩選條件（對齊既有 `NpcTopicMask`）。
 #[derive(Debug, Clone, Default)]
 pub struct NpcTopicMask {
     pub is_work_venue: bool,
@@ -128,7 +128,7 @@ pub struct NpcTopicMask {
     pub room_tags: Vec<String>,
 }
 
-/// 除錯用權重明細（對齊 Go `TopicWeightDebug`）。
+/// 除錯用權重明細（對齊既有 `TopicWeightDebug`）。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TopicWeightDebug {
     pub id: String,
@@ -144,7 +144,7 @@ pub fn room_has_tag(room_tags: &[String], want: &str) -> bool {
     room_tags.iter().any(|v| v == want)
 }
 
-/// 依情境與房間 tag 計算基礎權重（對齊 Go `topicMaskBaseWeight`）。
+/// 依情境與房間 tag 計算基礎權重（對齊既有 `topicMaskBaseWeight`）。
 #[must_use]
 pub fn topic_mask_base_weight(mask: &NpcTopicMask, t: &NpcNpcTopic) -> i32 {
     let mut w = 1;
@@ -171,7 +171,7 @@ pub fn topic_mask_base_weight(mask: &NpcTopicMask, t: &NpcNpcTopic) -> i32 {
     w.max(1)
 }
 
-/// 雙人關係額外加權（對齊 Go `pairRelationWeightAdj`）。
+/// 雙人關係額外加權（對齊既有 `pairRelationWeightAdj`）。
 #[must_use]
 pub fn pair_relation_weight_adj(t: &NpcNpcTopic, familiarity: i32, sentiment: i32, dyad_tags: &[String]) -> i32 {
     let has_tag = |s: &str| dyad_tags.iter().any(|v| v == s);
@@ -188,7 +188,7 @@ pub fn pair_relation_weight_adj(t: &NpcNpcTopic, familiarity: i32, sentiment: i3
     w
 }
 
-/// 依情境加權抽主題；無符合則回退隨機（對齊 Go `PickRandomNpcNpcTopicByMask`）。
+/// 依情境加權抽主題；無符合則回退隨機（對齊既有 `PickRandomNpcNpcTopicByMask`）。
 #[must_use]
 pub fn pick_random_npc_npc_topic_by_mask(mask: &NpcTopicMask, exclude_id: &str) -> Option<NpcNpcTopic> {
     let list: Vec<NpcNpcTopic> = NPC_TOPICS_LIST.read().expect("npc topics lock").clone();
@@ -235,7 +235,7 @@ pub fn pick_random_npc_npc_topic_by_mask(mask: &NpcTopicMask, exclude_id: &str) 
     None
 }
 
-/// 情境 + 雙人關係加權抽主題（對齊 Go `PickRandomNpcNpcTopicForPair`）。
+/// 情境 + 雙人關係加權抽主題（對齊既有 `PickRandomNpcNpcTopicForPair`）。
 #[must_use]
 pub fn pick_random_npc_npc_topic_for_pair(
     mask: &NpcTopicMask,
@@ -291,7 +291,7 @@ pub fn pick_random_npc_npc_topic_for_pair(
     None
 }
 
-/// 除錯：各主題權重拆解（對齊 Go `DebugTopicWeightsForPair`）。
+/// 除錯：各主題權重拆解（對齊既有 `DebugTopicWeightsForPair`）。
 #[must_use]
 pub fn debug_topic_weights_for_pair(
     mask: &NpcTopicMask,
@@ -349,7 +349,7 @@ mod tests {
     }
 
     #[test]
-    fn find_topic_id_by_hint_matches_go() {
+    fn find_topic_id_by_hint_matches_legacy() {
         try_load_npc_npc_topics(&topics_path()).expect("load topics");
         assert_eq!(
             find_npc_npc_topic_id_by_hint("換班、交接時的情境，簡短交代或叮囑"),

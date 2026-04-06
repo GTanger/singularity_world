@@ -1,4 +1,4 @@
-// OpenAI 相容 Chat Completions，對齊 Go ai/openai_chat.go。
+// OpenAI 相容 Chat Completions，對齊既有 ai/openai_chat。
 
 use serde::Deserialize;
 use serde_json::json;

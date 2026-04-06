@@ -1,4 +1,4 @@
-// 每 tick 推進移動中實體的位置（對齊 Go `game/movement_tick.go`）。
+// 每 tick 推進移動中實體的位置（對齊既有 `game/movement_tick`）。
 
 use std::path::Path;
 
@@ -13,7 +13,7 @@ pub struct MovedResult {
     pub y: i32,
 }
 
-/// 對所有 `move_state == "moving"` 的實體推進座標（walk=1 格, run=2 格），回傳有變動的 `(id, x, y)`（對齊 Go `AdvanceMovement`）。
+/// 對所有 `move_state == "moving"` 的實體推進座標（walk=1 格, run=2 格），回傳有變動的 `(id, x, y)`（對齊既有 `AdvanceMovement`）。
 pub fn advance_movement(maps_path: &Path, now: i64) -> anyhow::Result<Vec<MovedResult>> {
     let list = db::get_moving_entities()?;
     if list.is_empty() {
@@ -68,7 +68,7 @@ pub fn advance_movement(maps_path: &Path, now: i64) -> anyhow::Result<Vec<MovedR
     Ok(out)
 }
 
-/// 回傳在 `(x, y)` 的實體（排除 `exclude_id`），用於接觸判定（對齊 Go `EntityAt`）。
+/// 回傳在 `(x, y)` 的實體（排除 `exclude_id`），用於接觸判定（對齊既有 `EntityAt`）。
 pub fn entity_at(x: i32, y: i32, exclude_id: &str) -> Option<Character> {
     let list = db::get_entities_in_box(x, x, y, y, "").ok()?;
     list.into_iter().find(|e| e.id != exclude_id)

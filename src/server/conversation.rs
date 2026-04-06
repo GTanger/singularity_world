@@ -1,4 +1,4 @@
-//! 玩家↔NPC Talk 對話緩衝與結束整併（對齊 Go `server/conversation_buffer.go`）。
+//! 玩家↔NPC Talk 對話緩衝與結束整併（對齊既有 `server/conversation_buffer`）。
 
 use std::collections::HashMap;
 use std::sync::{LazyLock, Mutex};

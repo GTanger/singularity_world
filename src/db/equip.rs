@@ -1,4 +1,4 @@
-// 初始裝備與裸奔判定，對齊 Go db/equip.go。
+// 初始裝備與裸奔判定，對齊既有 db/equip。
 
 use std::collections::HashMap;
 
@@ -6,7 +6,7 @@ use serde_json::Value;
 
 use crate::store;
 
-/// 依性別回傳初始裝備 JSON（對齊 Go `StarterEquipment`）。
+/// 依性別回傳初始裝備 JSON（對齊既有 `StarterEquipment`）。
 #[must_use]
 pub fn starter_equipment(gender: &str) -> String {
     if gender == "F" {
@@ -16,7 +16,7 @@ pub fn starter_equipment(gender: &str) -> String {
     }
 }
 
-/// `body` 或 `legs` 任一為空即「衣不蔽體」（對齊 Go `IsNaked`）。
+/// `body` 或 `legs` 任一為空即「衣不蔽體」（對齊既有 `IsNaked`）。
 #[must_use]
 pub fn is_naked(equipment_slots: &str) -> bool {
     if equipment_slots.is_empty() {
@@ -30,7 +30,7 @@ pub fn is_naked(equipment_slots: &str) -> bool {
     body.is_empty() || legs.is_empty()
 }
 
-/// 依 `equipment_slots` 查槽位→物品名稱（對齊 Go `GetItemNames`）。
+/// 依 `equipment_slots` 查槽位→物品名稱（對齊既有 `GetItemNames`）。
 #[must_use]
 pub fn get_item_names(equipment_slots: &str) -> HashMap<String, String> {
     let mut result = HashMap::new();
@@ -56,7 +56,7 @@ pub fn get_item_names(equipment_slots: &str) -> HashMap<String, String> {
     result
 }
 
-/// 依 `equipment_slots` 查槽位→物品描述（對齊 Go `GetItemDescs`）。
+/// 依 `equipment_slots` 查槽位→物品描述（對齊既有 `GetItemDescs`）。
 #[must_use]
 pub fn get_item_descs(equipment_slots: &str) -> HashMap<String, String> {
     let mut result = HashMap::new();
@@ -82,7 +82,7 @@ pub fn get_item_descs(equipment_slots: &str) -> HashMap<String, String> {
     result
 }
 
-/// 物品種子由 `items.json` 載入；no-op（對齊 Go `SeedItems`）。
+/// 物品種子由 `items.json` 載入；no-op（對齊既有 `SeedItems`）。
 pub fn seed_items() -> anyhow::Result<()> {
     Ok(())
 }

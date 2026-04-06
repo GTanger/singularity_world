@@ -1,4 +1,4 @@
-// LLM 固定文案載入，對齊 Go ai/prompts.go（data/templates/llm_prompts.json）。
+// LLM 固定文案載入，對齊既有 ai/prompts（data/templates/llm_prompts.json）。
 
 use serde::Deserialize;
 use std::fs;
@@ -81,7 +81,7 @@ impl PromptsState {
 
 static STATE: LazyLock<RwLock<PromptsState>> = LazyLock::new(|| RwLock::new(PromptsState::new()));
 
-/// 測試用：重設路徑並清空快取（對齊 Go `SetLLMPromptsPathForTest`）。
+/// 測試用：重設路徑並清空快取（對齊既有 `SetLLMPromptsPathForTest`）。
 pub fn set_llm_prompts_path_for_test(path: impl Into<String>) {
     let mut g = STATE.write().unwrap();
     g.path = path.into();
@@ -89,7 +89,7 @@ pub fn set_llm_prompts_path_for_test(path: impl Into<String>) {
     g.cache = LlmPromptsJson::default();
 }
 
-/// 載入 JSON（冪等；讀檔或解析失敗時仍標記 `loaded`，與 Go 一致）。
+/// 載入 JSON（冪等；讀檔或解析失敗時仍標記 `loaded`，與既有行為一致）。
 pub fn load_llm_prompts() -> anyhow::Result<()> {
     let mut g = STATE.write().unwrap();
     if g.loaded {
@@ -126,7 +126,7 @@ fn read_cache<R>(f: impl FnOnce(&LlmPromptsJson) -> R) -> R {
     f(&g.cache)
 }
 
-/// 世界現象級認知文案（尾端保證換行），對齊 Go `WorldPhenomenaCognitionPrompt`。
+/// 世界現象級認知文案（尾端保證換行），對齊既有 `WorldPhenomenaCognitionPrompt`。
 pub fn world_phenomena_cognition_prompt() -> String {
     read_cache(|c| {
         let mut s = c.world_phenomena_cognition.trim().to_string();

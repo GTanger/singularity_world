@@ -12,10 +12,10 @@
 | 層級 | 演進方式（舉例） |
 |------|------------------|
 | **資料** | `data/npc_behaviors.json`、主題／對話模板、`data/rooms`、NPC 池與指派 |
-| **邏輯** | 行為引擎、排班、微互動與 NPC↔NPC 觸發、`dialogue_scorer.go` 品質門檻 |
-| **Prompt** | `ai/talk.go` 等 LLM 呼叫的 system／user 結構；**隨體感與模型能力調整** |
-| **本地 LLM** | **Ollama**；`config/config.go` 的 `Server.OllamaModel` 為**可替換預設**（環境變數 `OLLAMA_MODEL` 覆寫）。目前程式預設 tag 為 `sorc/qwen3.5-claude-4.6-opus:2b`（**社群命名空間**，常為自訂 Modelfile／合併標籤），**與** [Ollama 官方 Library](https://ollama.com/library) 上的 `qwen3.5:2b` **等**不是同一個字串；**以本機 `ollama list` 為準**。官方與社群會持續上新小模型（Qwen3.5 家族等），**不必把某個模型名當成永恆真理**——與現實社會技術迭代類比。 |
-| **技術棧** | **伺服器與對話邏輯以 Go 為準（Go 全棧）**；不以 Python 作 NPC／對話的正式運行依賴。 |
+| **邏輯** | 行為引擎、排班、微互動與 NPC↔NPC 觸發、`dialogue_scorer` 品質門檻 |
+| **Prompt** | `ai/talk` 等 LLM 呼叫的 system／user 結構；**隨體感與模型能力調整** |
+| **本地 LLM** | **Ollama**；`config/config` 的 `Server.OllamaModel` 為**可替換預設**（環境變數 `OLLAMA_MODEL` 覆寫）。目前程式預設 tag 為 `sorc/qwen3.5-claude-4.6-opus:2b`（**社群命名空間**，常為自訂 Modelfile／合併標籤），**與** [Ollama 官方 Library](https://ollama.com/library) 上的 `qwen3.5:2b` **等**不是同一個字串；**以本機 `ollama list` 為準**。官方與社群會持續上新小模型（Qwen3.5 家族等），**不必把某個模型名當成永恆真理**——與現實社會技術迭代類比。 |
+| **技術棧** | **伺服器與對話邏輯以 Rust 為準**；不以 Python 作 NPC／對話的正式運行依賴。 |
 
 **對齊文件**：[NPC 間對話—記憶與情境完整設計](design/NPC間對話—記憶與情境完整設計.md)、[在線對話篩選（Autoresearch 概念）](reference/autoresearch_backend.md)、[決策 007：NPC AI 與本地模型](decisions/007_NPC_AI_API與預設使用規則.md)。
 
@@ -47,13 +47,13 @@
 | | 對話模板 | `data/templates/dialogues/*.json` | 10 種職業 × ~72 句 = ~716 句 |
 | | 行為模板 | `data/templates/behaviors/*.json` | 10 種職業的日程/巡邏/交易/性格參數 |
 | | 房間標籤 | `data/rooms.json` | 30 個房間 × tags + zone |
-| **引擎層** | 行為讀取 | `db/behavior.go` | 載入快取 npc_behaviors.json，PickIdleEmote、GetMovementDefForTitle（movement.speed） |
-| | 尋路引擎 | `db/pathfind.go` | BFS 鄰接圖，FindPath / FindRoomsWithinDist |
-| | 移動管理 | `db/npc_movement.go` | 四種移動模式：**schedule** / regional / route / pathfind |
-| | 排班系統 | `db/schedule.go` | GetScheduleTarget、ApplySchedules（只回傳敘事用清單，不傳送）；實際移動由 TravelerManager 排班型尋路 |
-| | NPC 建立 | `db/npc.go` | InsertNPC（SoulSeed + 屬性 + 穿搭）；SeedNPCs 預設為空，資料由 store（JSON）提供 |
-| **推送層** | 敘事廣播 | `server/broadcast.go` | SendNarrateToRoom / RefreshRoomViews |
-| | 訊息協定 | `server/protocol.go` | NarrateMsg（ambient 敘事推送） |
+| **引擎層** | 行為讀取 | `db/behavior` | 載入快取 npc_behaviors.json，PickIdleEmote、GetMovementDefForTitle（movement.speed） |
+| | 尋路引擎 | `db/pathfind` | BFS 鄰接圖，FindPath / FindRoomsWithinDist |
+| | 移動管理 | `db/npc_movement` | 四種移動模式：**schedule** / regional / route / pathfind |
+| | 排班系統 | `db/schedule` | GetScheduleTarget、ApplySchedules（只回傳敘事用清單，不傳送）；實際移動由 TravelerManager 排班型尋路 |
+| | NPC 建立 | `db/npc` | InsertNPC（SoulSeed + 屬性 + 穿搭）；SeedNPCs 預設為空，資料由 store（JSON）提供 |
+| **推送層** | 敘事廣播 | `server/broadcast` | SendNarrateToRoom / RefreshRoomViews |
+| | 訊息協定 | `server/protocol` | NarrateMsg（ambient 敘事推送） |
 | **前端** | 敘事渲染 | `web/main.js` | `case 'narrate'` → appendNarrative + ambient 樣式 |
 | | 樣式 | `web/style.css` | `.log-ambient` 灰色小字 |
 
@@ -73,20 +73,20 @@
          ▼                    ▼
 ┌──────────────── 引擎層 ────────────────────┐
 │                                              │
-│  db/behavior.go         db/pathfind.go       │
+│  db/behavior         db/pathfind       │
 │  (文本查詢快取)          (BFS 鄰接圖)         │
 │                                              │
-│  db/schedule.go         db/npc_movement.go   │
+│  db/schedule         db/npc_movement   │
 │  (排班目標/敘事)          (四種移動模式)        │
 │                                              │
-│  db/npc.go                                   │
+│  db/npc                                   │
 │  (NPC 實體建立)                               │
 └──────────────────────────────────────────────┘
          │
          ▼
 ┌──────────────── 主迴圈 ────────────────────┐
 │                                              │
-│  main.go  game.Loop (200ms tick)             │
+│  main  game.Loop (200ms tick)             │
 │    ├─ 每遊戲小時：ApplySchedules → 僅發「出發」敘事（不傳送）；排班目標由 Tick 逐格尋路 │
 │    ├─ 每 15 秒：TravelerManager.Tick → 排班/路線/尋路型逐格移動，抵達時發敘事          │
 │    └─ 每 5-12 秒：閒置動作 + 區域巡邏 + NPC 間 AI 對話（003；閒置／排班／隨機觸發，失敗 fallback 微互動）│
@@ -96,11 +96,11 @@
          ▼
 ┌──────────────── 推送層 ────────────────────┐
 │                                              │
-│  server/broadcast.go                         │
+│  server/broadcast                         │
 │    ├─ SendNarrateToRoom → NarrateMsg         │
 │    └─ RefreshRoomViews → RoomViewMsg         │
 │                                              │
-│  server/handler.go                           │
+│  server/handler                           │
 │    ├─ handleMove → 進房反應（enter_reaction）  │
 │    └─ Talk → 背版＋記憶檢索→回覆→寫入（第四階段）│
 │                                              │
@@ -171,33 +171,25 @@
 - **效能**：100 房 < 0.1ms，10,000 房 ~5ms
 - **API**：
 
-```go
-graph := db.GetGraph()
-graph.BuildGraph(database)                          // 啟動時建圖
-path := graph.FindPath("life_storage", "life_hall") // → ["life_backyard", "life_kitchen", "life_dining", "life_hall"]
-room, dist := graph.FindNearestByTag("life_hall", "tavern", 10) // → "life_dining", 1
-rooms := graph.FindRoomsWithinDist("life_hall", []string{"outdoor"}, 5) // → ["life_garden", "life_backyard"]
+```rust
+// 啟動時 `rebuild_room_graph`；執行期 `with_room_graph(|g| { ... })`
+use crate::db::{with_room_graph, RoomGraph};
+
+with_room_graph(|g: &RoomGraph| {
+    let path = g.find_path("life_storage", "life_hall");
+    // let (room, dist) = g.find_nearest_by_tag(...);
+});
 ```
 
 ### 3.3 移動管理器
 
-有排班的 NPC 在 **main 啟動時** 會依 `GetAllSchedules` 自動以 `MoveSchedule` 註冊；無需手動 Register。若新增 route/pathfind 型 NPC，可手動註冊：
+有排班的 NPC 在 **伺服器啟動／排班載入時** 由 `seed_traveler_manager` 等路徑註冊；細節見 `src/npc/traveler.rs`。
 
-```go
-mgr := db.NewTravelerManager()
-// 排班型：由 main 依 npc_schedules 自動註冊，目標 GetScheduleTargetRoom(db, entityID, hour)
-
-// 手動註冊例（pathfind）：
-mgr.Register("老張", db.MovementDef{
-    Type:            db.MovePathfind,
-    Speed:           1,
-    DestinationTags: []string{"inn", "tavern"},
-    WanderRange:     50,
-    StayHours:       [2]int{2, 6},
-})
-// 每 15 秒在 game loop 中：
-steps := mgr.Tick(database, graph, gameHour)
-// steps: [{EntityID:"老張", OldRoom:"life_hall", NewRoom:"life_dining", NpcName:"旅人"}]
+```rust
+// `TravelerManager`：`src/npc/traveler.rs`
+// let mut mgr = TravelerManager::new();
+// mgr.register(..., MovementDef { movement_type: MovementType::Pathfind, ... });
+// 主迴圈內：`mgr.tick(...)` 產生 `Vec<NpcStep>`
 ```
 
 ### 3.4 房間標籤系統
@@ -291,14 +283,14 @@ data/templates/
 
 | 項目 | 狀態 | 效果 | 檔案 |
 |------|------|------|------|
-| **需求掃描** | ✅ | 生存層（鎂閾值 50）＋安定層（有無指派） | `db/decision.go` urgencySurvival |
-| **意圖選擇** | 🟡 | V1 固定優先序（生存>安定>閒逛）；三軸已傳入但**未加權** | `db/decision.go` Decide |
-| **行為映射** | ✅ | 7 種意圖（seek_job/beg/gather/trade/wander/work/idle）→ BFS 尋路 | `db/decision.go` ResolveBrainPath |
-| **主迴圈介面** | ✅ | MoveBrain 型 NPC 每 tick 自動 Decide → 尋路 → 到達後敘事＋效果 | `db/npc_movement.go` + `main.go` |
-| **觀測驅動** | ✅ | 僅玩家房＋鄰房的 NPC 才跑決策；無人時背景模擬 | `main.go` buildActiveRoomIDs + `db/unobserved.go` |
-| **到達效果** | ✅ | Beg 加鎂、Gather 加物品、SeekJob 撮合指派 | `main.go` applyBrainArrivalEffects |
+| **需求掃描** | ✅ | 生存層（鎂閾值 50）＋安定層（有無指派） | `db/decision` urgencySurvival |
+| **意圖選擇** | 🟡 | V1 固定優先序（生存>安定>閒逛）；三軸已傳入但**未加權** | `db/decision` Decide |
+| **行為映射** | ✅ | 7 種意圖（seek_job/beg/gather/trade/wander/work/idle）→ BFS 尋路 | `db/decision` ResolveBrainPath |
+| **主迴圈介面** | ✅ | MoveBrain 型 NPC 每 tick 自動 Decide → 尋路 → 到達後敘事＋效果 | `db/npc_movement` + `main` |
+| **觀測驅動** | ✅ | 僅玩家房＋鄰房的 NPC 才跑決策；無人時背景模擬 | `main` buildActiveRoomIDs + `db/unobserved` |
+| **到達效果** | ✅ | Beg 加鎂、Gather 加物品、SeekJob 撮合指派 | `main` applyBrainArrivalEffects |
 
-**V1 限制已由突破線 A–C 修正**：(1) 鎂每日扣款（npc_expense.go）→ 生存層持續觸發；(2) 性格偏移加權（personalityWeightedSelect）→ 個體差異；(3) Brain 停留機制（computeStay）→ 到達後不立刻離開。詳見 [實作清單](implementation/NPC活化系統—實作清單與實作計畫.md)。
+**V1 限制已由突破線 A–C 修正**：(1) 鎂每日扣款（npc_expense）→ 生存層持續觸發；(2) 性格偏移加權（personalityWeightedSelect）→ 個體差異；(3) Brain 停留機制（computeStay）→ 到達後不立刻離開。詳見 [實作清單](implementation/NPC活化系統—實作清單與實作計畫.md)。
 
 **設計與介面**：見 [奇點決策引擎架構](reference/奇點決策引擎架構.md)（需求權重→性格偏移→情境匹配→插座執行）；實作時決策引擎產出**意圖**，不直接寫 DB 或發送，由上層負責移動／寫 assignment／觸發插座。
 
@@ -384,17 +376,17 @@ data/templates/
 
 | 檔案 | 行數 | 職責 |
 |------|------|------|
-| `db/behavior.go` | ~162 | 載入 npc_behaviors.json、PickIdleEmote、PickEnterReaction、GetShiftFlavor、GetWanderFlavor |
-| `db/pathfind.go` | ~190 | RoomGraph、BuildGraph、FindPath（BFS）、FindNearestByTag、FindRoomsWithinDist |
-| `db/npc_movement.go` | ~280 | TravelerManager、Register/Tick/Unregister、四種移動模式（含 MoveSchedule）邏輯 |
-| `db/schedule.go` | ~125 | NPCSchedule、GetScheduleTarget/GetScheduleTargetRoom、ApplySchedules（只回傳不傳送） |
-| `db/npc.go` | ~88 | InsertNPC、InsertSchedule、SeedNPCs（defaultNPCs 目前為空） |
-| `db/room.go` | ~370 | Room（含 tags/zone）、SyncRoomsFromFile、GetRoomsByTag/Zone |
-| `server/broadcast.go` | ~50 | SendNarrateToRoom、GetPlayerRoomMap、RefreshRoomViews |
-| `server/handler.go` | - | handleMove 進房反應、Talk（背版＋記憶→CallAITalk）、UpdateLastTalkAt |
-| `main.go` | - | game loop：排班＋閒置＋巡邏＋**NPC 間 AI 對話**（tryTriggerNpcNpcInRoom，見 [003](discussions/003_NPC交互對話系統.md)） |
-| `ai/talk.go` | - | CallAITalk（玩家↔NPC）、CallAITalkNPCToNPC（NPC 間一來一往，帶背版／topic／記憶） |
-| `db/npc_topics.go` | - | NPC 間對話主題劇本：LoadNpcNpcTopics、PickRandomNpcNpcTopic、GetNpcNpcTopicByID（交班／閒聊／打聽） |
+| `db/behavior` | ~162 | 載入 npc_behaviors.json、PickIdleEmote、PickEnterReaction、GetShiftFlavor、GetWanderFlavor |
+| `db/pathfind` | ~190 | RoomGraph、BuildGraph、FindPath（BFS）、FindNearestByTag、FindRoomsWithinDist |
+| `db/npc_movement` | ~280 | TravelerManager、Register/Tick/Unregister、四種移動模式（含 MoveSchedule）邏輯 |
+| `db/schedule` | ~125 | NPCSchedule、GetScheduleTarget/GetScheduleTargetRoom、ApplySchedules（只回傳不傳送） |
+| `db/npc` | ~88 | InsertNPC、InsertSchedule、SeedNPCs（defaultNPCs 目前為空） |
+| `db/room` | ~370 | Room（含 tags/zone）、SyncRoomsFromFile、GetRoomsByTag/Zone |
+| `server/broadcast` | ~50 | SendNarrateToRoom、GetPlayerRoomMap、RefreshRoomViews |
+| `server/handler` | - | handleMove 進房反應、Talk（背版＋記憶→CallAITalk）、UpdateLastTalkAt |
+| `main` | - | game loop：排班＋閒置＋巡邏＋**NPC 間 AI 對話**（tryTriggerNpcNpcInRoom，見 [003](discussions/003_NPC交互對話系統.md)） |
+| `ai/talk` | - | CallAITalk（玩家↔NPC）、CallAITalkNPCToNPC（NPC 間一來一往，帶背版／topic／記憶） |
+| `db/npc_topics` | - | NPC 間對話主題劇本：LoadNpcNpcTopics、PickRandomNpcNpcTopic、GetNpcNpcTopicByID（交班／閒聊／打聽） |
 
 ### 6.2 資料表
 
@@ -410,8 +402,8 @@ data/templates/
 
 | 檔案／模組 | 職責 |
 |------------|------|
-| `db/backstory.go` | BuildIdentity(entityID)：從職稱＋場所＋性格＋心境＋事件組 identity；Talk 前讀取。 |
-| `db/archival.go` | InsertArchival（內含節流：每 NPC 每 10 分鐘最多 3 條）、SearchArchival(entityID, query, topK)；store 負責 AppendArchival、GetArchivalByEntity、trimArchivalPerEntity(100)。 |
+| `db/backstory` | BuildIdentity(entityID)：從職稱＋場所＋性格＋心境＋事件組 identity；Talk 前讀取。 |
+| `db/archival` | InsertArchival（內含節流：每 NPC 每 10 分鐘最多 3 條）、SearchArchival(entityID, query, topK)；store 負責 AppendArchival、GetArchivalByEntity、trimArchivalPerEntity(100)。 |
 | `data/runtime/npc_archival.json` | 長期記憶持久化（store 載入／寫回）。 |
 | handler Talk 分支 | 讀背版 → SearchArchival top-5 → CallAITalk → 回覆後 InsertArchival；fallback 為 buildTalkNarrative。 |
 
@@ -561,7 +553,7 @@ data/templates/
 | 模板系統檢索 | `data/templates/README.md` | 模板格式、欄位、佔位符、快速查閱表 |
 | 第一版可做清單 | `docs/第一版可做清單.md` | MVP 進度追蹤（§十 NPC 行為） |
 | 協作約定 | `docs/COLLABORATION.md` | 主管與 AI 的角色分工 |
-| 技術約束 | `docs/技術約束規則.md` | Go／原生前端／WebSocket；執行期數據源為 JSON/store |
+| 技術約束 | `docs/技術約束規則.md` | Rust／原生前端／WebSocket；持久化見現行約束 |
 | 人物角色模板 | `docs/reference/人物角色模板.md` | 玩家/NPC 共用結構定義 |
 | **玩家視角—NPC 與房間互動** | `docs/reference/玩家視角—NPC 與房間互動.md` | 玩家端：進入房間所見、人物欄、點擊 NPC 流程與各動作結果（對齊 005/002、房間非人物件、有嘴/交易設計） |
 | **奇點馬斯洛需求系統** | `docs/reference/奇點馬斯洛需求系統.md` | 需求層級（生存／安定／可選社交與成就）、狀態變數與閾值、需求→行為意圖與決策優先序；決策引擎與需求驅動實作對齊 |

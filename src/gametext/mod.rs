@@ -1,5 +1,5 @@
 // gametext 模組 — 從 data/config/gametext.json 載入文案、敘事模板、規則詞表。
-// 對齊 Go gametext/gametext.go。
+// 對齊既有 gametext/gametext。
 
 use std::collections::HashMap;
 use std::fs;
@@ -418,7 +418,7 @@ pub fn topic_contains_any(hint: &str, subs: &[String]) -> bool {
     subs.iter().any(|s| !s.is_empty() && hint.contains(s.as_str()))
 }
 
-/// 截斷至 n 個 Unicode 字元，超出部分以「…」取代（對齊 Go `gametext.TruncRune`）。
+/// 截斷至 n 個 Unicode 字元，超出部分以「…」取代（對齊既有 `gametext.TruncRune`）。
 pub fn trunc_rune(s: &str, n: usize) -> String {
     let chars: Vec<char> = s.chars().collect();
     if chars.len() <= n {

@@ -1,4 +1,4 @@
-// roomcheck — 房間 JSON 契約檢查（對齊 Go internal/roomcheck）。
+// roomcheck — 房間 JSON 契約檢查核心邏輯（供 `checkrooms` 二進位呼叫）。
 // 驗證：objects 的 Move/Look 觸發字是否出現在 description/responses；
 // 〔…〕括號內容是否對應 objects[].name。
 

@@ -1,4 +1,4 @@
-//! NPC 行為反應一句話（借物／制伏等尾綴），對齊 Go `npc/reaction.go`。
+//! NPC 行為反應一句話（借物／制伏等尾綴），對齊既有 `npc/reaction`。
 
 use rand::Rng;
 

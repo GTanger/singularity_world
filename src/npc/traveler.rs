@@ -1,4 +1,4 @@
-//! 地圖級 NPC 移動管理（對齊 Go `npc/movement.go` 之 `TravelerManager`／`NPCTraveler`）。
+//! 地圖級 NPC 移動管理（對齊既有 `npc/movement` 之 `TravelerManager`／`NPCTraveler`）。
 
 use std::collections::{HashMap, HashSet};
 use std::sync::Mutex;
@@ -16,14 +16,14 @@ use super::decision::{
     build_decision_context, build_decision_state, decide_with_inertia, resolve_brain_path, Intent, IntentType,
 };
 
-/// 移動模式（對齊 Go `MovementType`）。
+/// 移動模式（對齊既有 `MovementType`）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MovementType {
     Schedule,
     Brain,
 }
 
-/// 單一 NPC 的移動參數（對齊 Go `MovementDef` 子集）。
+/// 單一 NPC 的移動參數（對齊既有 `MovementDef` 子集）。
 #[derive(Debug, Clone)]
 pub struct MovementDef {
     pub kind: MovementType,
@@ -42,13 +42,13 @@ struct NpcTraveler {
     departure_narrative: String,
 }
 
-/// 管理所有正在進行地圖級移動的 NPC（對齊 Go `TravelerManager`）。
+/// 管理所有正在進行地圖級移動的 NPC（對齊既有 `TravelerManager`）。
 #[derive(Default)]
 pub struct TravelerManager {
     travelers: HashMap<String, NpcTraveler>,
 }
 
-/// 一次「觀測」下完成的步驟（對齊 Go `NPCStep`）。
+/// 一次「觀測」下完成的步驟（對齊既有 `NPCStep`）。
 #[derive(Debug, Clone)]
 pub struct NpcStep {
     pub entity_id: String,
@@ -364,7 +364,7 @@ fn activity_while_staying(ty: IntentType) -> &'static str {
     }
 }
 
-/// 啟動時依 `schedules` 與 NPC 清單註冊 Traveler（對齊 Go `startSimulationMainLoop` 開頭）。
+/// 啟動時依 `schedules` 與 NPC 清單註冊 Traveler（對齊既有 `startSimulationMainLoop` 開頭）。
 pub fn seed_traveler_manager(mgr: &Mutex<TravelerManager>) -> anyhow::Result<()> {
     let mut tm = TravelerManager::new();
     let schedules = get_all_schedules()?;

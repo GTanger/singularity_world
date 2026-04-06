@@ -1,4 +1,4 @@
-//! NPC 同房微互動（對齊 Go `npc/social.go`）。
+//! NPC 同房微互動（對齊既有 `npc/social`）。
 
 use rand::Rng;
 
@@ -16,7 +16,7 @@ const MICRO_TEMPLATES: [&str; 8] = [
     "【%s】拍了拍【%s】的肩膀。",
 ];
 
-/// 同房至少兩名 NPC 時，以 `chance`（0–100）機率抽一句微互動；否則回空（對齊 Go `PickMicroInteraction`）。
+/// 同房至少兩名 NPC 時，以 `chance`（0–100）機率抽一句微互動；否則回空（對齊既有 `PickMicroInteraction`）。
 #[must_use]
 pub fn pick_micro_interaction(room_id: &str, chance: i32, game_hour: i32) -> String {
     let Ok(entities) = get_entities_in_room(room_id, game_hour) else {

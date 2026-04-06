@@ -1,4 +1,4 @@
-// NPC 對話評分，對齊 Go ai/scorer.go。
+// NPC 對話評分，對齊既有 ai/scorer。
 
 use serde::Serialize;
 
@@ -217,7 +217,7 @@ pub fn score_npc_dialogue(
     d
 }
 
-/// 剝除房間事件顯示前綴，供評分用（對齊 Go `RawEventsForDialogueScore`）。
+/// 剝除房間事件顯示前綴，供評分用（對齊既有 `RawEventsForDialogueScore`）。
 pub fn raw_events_for_dialogue_score(recent_events: &[String]) -> Vec<String> {
     let prefixes = gametext::raw_event_trim_prefixes();
     let mut raw = Vec::new();

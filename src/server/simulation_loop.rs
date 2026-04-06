@@ -1,4 +1,4 @@
-//! 主迴圈背景 tick（對齊 Go `simulation_main_loop.go`：視野、傳聞、隨機 NPC↔NPC、遊戲日、NPC 池、求職撮合、排班敘事、`TravelerManager`、未觀測 tick、閒置／微互動／巡邏）。
+//! 主迴圈背景 tick（對齊既有 `simulation_main_loop`：視野、傳聞、隨機 NPC↔NPC、遊戲日、NPC 池、求職撮合、排班敘事、`TravelerManager`、未觀測 tick、閒置／微互動／巡邏）。
 
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
@@ -30,7 +30,7 @@ use crate::store::NpcRumor;
 use super::broadcast::{broadcast_room_views, refresh_room_views_for_room, send_narrate_to_room};
 use super::SessionStore;
 
-/// 跨 tick 的計時與狀態（對齊 Go 閉包內變數）。
+/// 跨 tick 的計時與狀態（對齊既有 閉包內變數）。
 struct MainLoopTickState {
     random_dialogue_ticks: i32,
     last_rumor_decay: Option<Instant>,
@@ -49,7 +49,7 @@ struct MainLoopTickState {
     last_lexicon_maintenance: Option<Instant>,
 }
 
-/// 間隔到期則更新錨點並回傳 true；`last` 為 `None` 時第一次立即觸發（對齊 Go `time.Time` 零值）。
+/// 間隔到期則更新錨點並回傳 true；`last` 為 `None` 時第一次立即觸發（對齊既有 `time.Time` 零值）。
 fn periodic_fire(last: &mut Option<Instant>, period: Duration) -> bool {
     let now = Instant::now();
     let fire = match *last {
@@ -87,7 +87,7 @@ fn effective_travel_tick_interval() -> i32 {
     }
 }
 
-/// 首次閒置觸發門檻（對齊 Go `nextIdleTrigger` 初值）。
+/// 首次閒置觸發門檻（對齊既有 `nextIdleTrigger` 初值）。
 fn initial_next_idle_trigger() -> i32 {
     let idle = &sim().idle;
     let mut span = idle.first_trigger_span;
@@ -119,7 +119,7 @@ fn initial_random_dialogue_ticks() -> i32 {
     rdt.initial_min + rng.random_range(0..span)
 }
 
-/// 無玩家在線或無法觸發 AI 時，用 `server_defaults` 的間隔重設倒數（對齊 Go `NpcNpcSocialTickMinNoPlayer` 等）。
+/// 無玩家在線或無法觸發 AI 時，用 `server_defaults` 的間隔重設倒數（對齊既有 `NpcNpcSocialTickMinNoPlayer` 等）。
 fn reset_ticks_no_player(cfg: &Server) -> i32 {
     let mut min_e = cfg.npc_npc_social_tick_min_no_player;
     if min_e <= 0 {
@@ -134,7 +134,7 @@ fn reset_ticks_no_player(cfg: &Server) -> i32 {
     min_e + rng.random_range(0..span)
 }
 
-/// 遊戲日換日時扣鎂並可寫經濟 pulse 傳聞（對齊 Go `lastExpenseDay` 區塊）。
+/// 遊戲日換日時扣鎂並可寫經濟 pulse 傳聞（對齊既有 `lastExpenseDay` 區塊）。
 fn run_game_day_economy(now_unix: i64, game_day: i32, state: &Arc<Mutex<MainLoopTickState>>) {
     let should = {
         let Ok(mut st) = state.lock() else { return; };
@@ -272,7 +272,7 @@ fn inject_event_seed(now_unix: i64) {
     }
 }
 
-/// NPC 池補滿（對齊 Go）；新生成 NPC 註冊為腦驅動 Traveler。
+/// NPC 池補滿（對齊既有）；新生成 NPC 註冊為腦驅動 Traveler。
 fn run_npc_pool_tick(
     cfg: &Server,
     now_unix: i64,
@@ -353,7 +353,7 @@ fn run_npc_pool_tick(
     }
 }
 
-/// 求職撮合 tick（對齊 Go `RunJobMatchingTick` ＋傳聞）；新入職且有排班者註冊排班型 Traveler。
+/// 求職撮合 tick（對齊既有 `RunJobMatchingTick` ＋傳聞）；新入職且有排班者註冊排班型 Traveler。
 fn run_job_matching_section(
     sessions: &SessionStore,
     cfg: &Server,
@@ -436,7 +436,7 @@ fn run_job_matching_section(
     }
 }
 
-/// 排班換時：心境時段、`ApplySchedules` 敘事、廣播視野、嘗試交班主題 NPC↔NPC（對齊 Go；逐步位移由 `TravelerManager` 處理）。
+/// 排班換時：心境時段、`ApplySchedules` 敘事、廣播視野、嘗試交班主題 NPC↔NPC（對齊既有；逐步位移由 `TravelerManager` 處理）。
 fn run_schedule_hour_section(
     sessions: &SessionStore,
     cfg: &Server,
@@ -551,7 +551,7 @@ fn run_schedule_hour_section(
     }
 }
 
-/// 觀測圈：有玩家的房＋鄰房（對齊 Go `buildActiveRoomIDs`）。
+/// 觀測圈：有玩家的房＋鄰房（對齊既有 `buildActiveRoomIDs`）。
 fn build_active_room_ids(sessions: &SessionStore, g: &crate::db::RoomGraph) -> HashSet<String> {
     let mut out = HashSet::new();
     for rid in sessions.player_room_ids() {
@@ -563,7 +563,7 @@ fn build_active_room_ids(sessions: &SessionStore, g: &crate::db::RoomGraph) -> H
     out
 }
 
-/// 發佈逐步移動敘事、房間事件與視野刷新（對齊 Go `travelSteps` 迴圈）。
+/// 發佈逐步移動敘事、房間事件與視野刷新（對齊既有 `travelSteps` 迴圈）。
 fn apply_travel_steps(
     sessions: &SessionStore,
     cfg: &Server,
@@ -663,7 +663,7 @@ fn run_travel_section(
     });
 }
 
-/// 閒置 tick：NPC↔NPC AI、微互動、在職巡邏與閒置動作（對齊 Go 主迴圈末段）。
+/// 閒置 tick：NPC↔NPC AI、微互動、在職巡邏與閒置動作（對齊既有 主迴圈末段）。
 fn run_idle_wander_section(sessions: &SessionStore, cfg: &Server, hour: i32, state: &Arc<Mutex<MainLoopTickState>>) {
     let run = {
         let Ok(mut st) = state.lock() else { return; };
@@ -776,7 +776,7 @@ fn run_idle_wander_section(sessions: &SessionStore, cfg: &Server, hour: i32, sta
     }
 }
 
-/// 單次 tick（對齊 Go `game.Loop` 回呼內順序）。
+/// 單次 tick（對齊既有 `game.Loop` 回呼內順序）。
 fn run_simulation_tick(
     sessions: &SessionStore,
     cfg: &Server,

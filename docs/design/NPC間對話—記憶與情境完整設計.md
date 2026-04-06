@@ -4,9 +4,9 @@
 > 定位：設計規格（可交給實作拆 phase），**不是**最小改動 patch 清單。
 > 對齊：`docs/NPC活化系統.md`（含 **§零點五** 活化＝持續演進、無最終版、Ollama 模型可換）、`docs/reference/autoresearch_backend.md`、`docs/implementation/NPC對話記憶與背版—設計.md`、`docs/reference/NPC之間交互行為.md`。
 >
-> **v1.1 補充**（Go+SQLite 落地決策）：L1/L2 直接 SQLite 持久化；L0 in-memory 滑窗；Thread 最大 3 輪冷卻 300s；NPC-NPC 對話寫入雙方 archival；配對改為分數化選擇。
+> **v1.1 補充**（SQL 持久化決策稿）：L1/L2 可直接關聯式庫持久化；L0 in-memory 滑窗；Thread 最大 3 輪冷卻 300s；NPC-NPC 對話寫入雙方 archival；配對改為分數化選擇。
 >
-> **目前實作狀態（2026-03）**：已改為 **Go + JSON/store** 路線（非 SQLite）完成 P1~P5，並追加 P6~P11：`npc_thread.json` / `npc_dyad.json` / `npc_rumors.json` / `npc_rumor_digest.json`、分數化配對、L0 房間事件滑窗注入、L3 傳聞 top-K 注入與衰減、P5 品質門檻細分統計、P6 傳聞離線摘要批次、P6.5 來源分層（room_event/economy/spawn/job）與來源權重、P7 同來源配額與同文本冷卻去重、P8 被引用升權與長期未引用降權、P9 衝突傳聞反事實懲罰（降權 + 15 分鐘封鎖）、P10 debug 面板可觀測欄位（blocked/penalty/reason）、P11 debug reset 可選清空 rumor 動態訊號。  
+> **目前實作狀態（2026-03）**：**Rust 後端 + JSON/store／PostgreSQL** 路線完成 P1~P5，並追加 P6~P11：`npc_thread.json` / `npc_dyad.json` / `npc_rumors.json` / `npc_rumor_digest.json`、分數化配對、L0 房間事件滑窗注入、L3 傳聞 top-K 注入與衰減、P5 品質門檻細分統計、P6 傳聞離線摘要批次、P6.5 來源分層（room_event/economy/spawn/job）與來源權重、P7 同來源配額與同文本冷卻去重、P8 被引用升權與長期未引用降權、P9 衝突傳聞反事實懲罰（降權 + 15 分鐘封鎖）、P10 debug 面板可觀測欄位（blocked/penalty/reason）、P11 debug reset 可選清空 rumor 動態訊號。  
 > **玩家體感補強（無需調參）**：NPC↔NPC 台詞強制短句＋現場錨定（房間描述節錄注入）；玩家在場時略降隨機閒聊頻率、多帶一條傳聞並偏短閒聊主題。  
 > **續**：房間 `tags` 注入 prompt；情境列去重；依選定主題從 `npc_to_npc_topics.json` 抽一句「口吻種子」；可選環境變數 `NPC_NPC_QUALITY_MAX_RUNES`、`NPC_NPC_SOCIAL_TICK_*`（未設則與內建預設相同）。  
 > **玩家餘音**：同房玩家 Talk 後，節錄對白暫存於 session；待 NPC 閒聊可觸發時（Talk 後已逾 60s、4 分鐘內）將「餘音」列注入 NPC↔NPC prompt，讓路人閒聊可側面呼應剛才氣氛。
@@ -134,7 +134,7 @@
 
 ## 五、資料實體與持久化（概念 schema）
 
-以下為**落地 schema**；實作後端為 Go + SQLite。
+以下為**落地 schema**；實作後端為 Rust，持久化層以現行 store／資料庫為準。
 
 ### 5.1 `npc_thread`（話題線）—— SQLite 持久化
 
@@ -168,14 +168,14 @@ cooling → [now > cooldown_until] → 刪除紀錄
 
 ### 5.3 L0 `RoomEventWindow`（房間事件滑窗）—— in-memory
 
-```go
-type RoomEvent struct {
-    At      int64   // Unix 秒
-    Kind    string  // "enter" / "leave" / "shift" / "ambient"
-    Subject string  // NPC 名稱
-    Detail  string  // 如「從浮生方向」「往西街」
+```rust
+struct RoomEvent {
+    at: i64,       // Unix 秒
+    kind: String,  // "enter" / "leave" / "shift" / "ambient"
+    subject: String,
+    detail: String,
 }
-// map[roomID][]RoomEvent，每房保留最近 5 條、最長 120 秒
+// HashMap<RoomId, Vec<RoomEvent>>，每房保留最近 5 條、最長 120 秒（概念）
 ```
 
 重啟後遺失可接受（僅影響 L0 現場感，不影響 L1/L2 持久資料）。
@@ -232,11 +232,11 @@ score(A, B) =
 | `night_only` | `true` = 只在夜間時段出現 |
 | `follow_up` | `true` = L0 有進出事件時提高權重 |
 
-```go
-type TopicMask struct {
-    IsWorkVenue  bool  // assignment venue 與 room 一致
-    IsNightTime  bool  // hour < 5 || hour >= 21
-    HasRoomEvent bool  // L0 滑窗有 enter/leave 事件
+```rust
+struct TopicMask {
+    is_work_venue: bool,   // assignment venue 與 room 一致
+    is_night_time: bool,   // hour < 5 || hour >= 21
+    has_room_event: bool, // L0 滑窗有 enter/leave 事件
 }
 ```
 
@@ -359,8 +359,8 @@ L3 傳聞（P4）：可在「現場」區塊末尾加一條「近日鎮上：{ru
 - 行為說明：`docs/reference/NPC之間交互行為.md`  
 - 活化總覽：`docs/NPC活化系統.md`  
 - 玩家側記憶：`docs/implementation/NPC對話記憶與背版—設計.md`  
-- 程式錨點（可隨實作演進）：`main.go`（`tryTriggerNpcNpcInRoom`）、`ai/talk.go`（`CallAITalkNPCToNPC`）、`store`（`NpcNpcSummaries`）、`db/npc_topics.go`
+- 程式錨點（可隨實作演進）：`main`（`tryTriggerNpcNpcInRoom`）、`ai/talk`（`CallAITalkNPCToNPC`）、`store`（`NpcNpcSummaries`）、`db/npc_topics`
 
 ---
 
-*文件版本：1.1｜v1.0 基礎上補充 Go+SQLite 落地決策、Thread 生命週期精確化、配對分數化公式、Prompt 截斷模板、Topic mask 欄位設計。*
+*文件版本：1.1｜v1.0 基礎上補充持久化落地決策、Thread 生命週期精確化、配對分數化公式、Prompt 截斷模板、Topic mask 欄位設計。*

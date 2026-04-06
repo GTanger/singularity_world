@@ -370,7 +370,7 @@ struct NpcRumorsFile {
     entries: Vec<NpcRumor>,
 }
 
-/// 與 Go `npcRumorDigestFile`、現行 `npc_rumor_digest.json` 包一層 `digest` 對齊。
+/// 與既有 `npcRumorDigestFile`、現行 `npc_rumor_digest.json` 包一層 `digest` 對齊。
 #[derive(Serialize, Deserialize)]
 struct NpcRumorDigestFile {
     digest: NpcRumorDigest,
@@ -1921,7 +1921,7 @@ impl Store {
             .count()
     }
 
-    /// 該場所既有指派中的第一個職業 ID（對齊 Go `GetFirstOccupationIDForVenue`）。
+    /// 該場所既有指派中的第一個職業 ID（對齊既有 `GetFirstOccupationIDForVenue`）。
     pub fn get_first_occupation_id_for_venue(&self, venue_id: &str) -> String {
         for list in self.assignments.values() {
             for a in list {
@@ -1933,7 +1933,7 @@ impl Store {
         String::new()
     }
 
-    /// 新增指派；同 entity+occupation+venue 已存在則忽略（對齊 Go `InsertAssignment`）。
+    /// 新增指派；同 entity+occupation+venue 已存在則忽略（對齊既有 `InsertAssignment`）。
     pub fn insert_assignment(&mut self, entity_id: &str, occupation_id: &str, venue_id: &str, assigned_by: &str) -> anyhow::Result<()> {
         let list = self.assignments.entry(entity_id.to_string()).or_default();
         for a in list.iter() {
@@ -2091,7 +2091,7 @@ impl Store {
         results
     }
 
-    /// 由新到舊（對齊 Go `RecentByEntity`）。
+    /// 由新到舊（對齊既有 `RecentByEntity`）。
     pub fn recent_by_entity(&self, entity_id: &str, n: usize) -> Vec<EventEntry> {
         let mut results = Vec::new();
         if let Some(pool) = &self.db_pool
@@ -2437,7 +2437,7 @@ impl Store {
         self.npc_rumor_digest.as_ref()
     }
 
-    /// 依時間移除過期傳聞並衰減權重／可信度（對齊 Go `DecayNpcRumors`）。
+    /// 依時間移除過期傳聞並衰減權重／可信度（對齊既有 `DecayNpcRumors`）。
     pub fn decay_npc_rumors(&mut self, now_unix: i64) -> anyhow::Result<()> {
         let mut changed = false;
         let mut to_remove: Vec<String> = self
@@ -2471,7 +2471,7 @@ impl Store {
         Ok(())
     }
 
-    /// 由目前傳聞池 top 項組一句摘要並寫入 digest 檔（對齊 Go `BuildNpcRumorDigest`）。
+    /// 由目前傳聞池 top 項組一句摘要並寫入 digest 檔（對齊既有 `BuildNpcRumorDigest`）。
     pub fn build_npc_rumor_digest(&mut self, now_unix: i64) -> anyhow::Result<()> {
         let top = self.top_npc_rumors("", "", now_unix, 5);
         if top.is_empty() {
@@ -2497,7 +2497,7 @@ impl Store {
         self.persist_npc_rumor_digest()
     }
 
-    /// 正規化傳聞文本鍵（對齊 Go `canonicalRumorText`：小寫、去空白）。
+    /// 正規化傳聞文本鍵（對齊既有 `canonicalRumorText`：小寫、去空白）。
     fn canonical_rumor_text(text: &str) -> String {
         text.trim().to_lowercase()
     }
@@ -2511,7 +2511,7 @@ impl Store {
         head + "…"
     }
 
-    /// 取指定 room/zone 最相關 topK 傳聞（對齊 Go `TopNpcRumors`）。
+    /// 取指定 room/zone 最相關 topK 傳聞（對齊既有 `TopNpcRumors`）。
     #[must_use]
     pub fn top_npc_rumors(&self, room_id: &str, zone: &str, now_unix: i64, top_k: i32) -> Vec<NpcRumor> {
         if top_k <= 0 {
@@ -2585,7 +2585,7 @@ impl Store {
         selected
     }
 
-    /// 標記傳聞被引用（對齊 Go `MarkRumorUsedByText`）。
+    /// 標記傳聞被引用（對齊既有 `MarkRumorUsedByText`）。
     pub fn mark_rumor_used_by_text(&mut self, text: &str, now_unix: i64) -> anyhow::Result<()> {
         let key = Self::canonical_rumor_text(text);
         if key.is_empty() {
@@ -2613,7 +2613,7 @@ impl Store {
         Ok(())
     }
 
-    /// 衝突降權（對齊 Go `PenalizeRumorByText`）。
+    /// 衝突降權（對齊既有 `PenalizeRumorByText`）。
     pub fn penalize_rumor_by_text(
         &mut self,
         text: &str,

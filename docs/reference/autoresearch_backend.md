@@ -2,7 +2,7 @@
 
 靈感來自 [autoresearch 式「生成→評分→汰留」迴圈](https://github.com/andyluo7/autoresearch)。在本專案中，這條迴圈**只存在於遊戲伺服器運行時、在後台執行**——**不另稿離線批次**、不為同一套邏輯再開第二條管線（含 Python 或獨立 CLI）。
 
-> **一句話**：維持 NPC 在**背景**（含玩家未旁聽的 NPC↔NPC）**持續對話**；後台用各種 **Go**（`main` 觸發、`ai/scorer.go` 篩選、`db` 寫記憶與傳聞等）**去蕪存菁**，讓通過的內容進入世界；下一輪再**反哺**到對話 **prompt**——主要是 **`ai/talk.go` 組裝**＋**即時讀出的**記憶／摘要／主題／傳聞上下文，**不是**另開程式自動改 `data` 裡的靜態台詞檔（那些仍由人改版本時手動維護）。
+> **一句話**：維持 NPC 在**背景**（含玩家未旁聽的 NPC↔NPC）**持續對話**；後台以 **Rust 伺服器**（模擬迴圈觸發、`ai/scorer` 篩選、`db` 寫記憶與傳聞等）**去蕪存菁**，讓通過的內容進入世界；下一輪再**反哺**到對話 **prompt**——主要是 **`ai/talk` 組裝**＋**即時讀出的**記憶／摘要／主題／傳聞上下文，**不是**另開程式自動改 `data` 裡的靜態台詞檔（那些仍由人改版本時手動維護）。
 
 ### 與名為「autoresearch」的上游專案（僅概念辨析）
 
@@ -17,14 +17,14 @@
 - **遊戲本身就是實驗場**：NPC 每一輪符合條件的背景對話，就是一次「生成→評分→保留或丟棄」；**不需要**另開腳本或平行行程。
 - **機制**：對話經 LLM 產出後，在寫入 archival／summary／傳聞鏈之前，經 **qualityGate**、**錨點一致性**，再經 **規則評分**；**高分才寫入世界**，低分丟棄，避免汙染長期記憶。
 - **眾口鑠金（長期）**：能留下來的句子堆疊成傳聞、關係與話題；下一輪 prompt 帶入的記憶較乾淨，**有機會形成正向循環**——但**驗收仍以玩家體感為準**，不是分數儀表板。
-- **模型會換，規則資產可沿用**：換 Ollama 小模型時，同一套規則門檻仍可迭代；精煉重點在 **`ai/scorer.go`** 與 **`ai/talk.go`** 的 prompt，**全用 Go**，不以 Python 作正式依賴。
+- **模型會換，規則資產可沿用**：換 Ollama 小模型時，同一套規則門檻仍可迭代；精煉重點在 **`ai/scorer`** 與 **`ai/talk`** 的 prompt；**後端為 Rust**，不以 Python 作正式依賴。
 
 ---
 
-## 技術取向：Go 全棧
+## 技術取向：Rust 後端
 
-- **管線**：`ai/talk.go`（Ollama `/api/chat`）、`main.go` 的 `tryTriggerNpcNpcInRoom`、`ai/scorer.go` 規則評分。
-- **不改動的設計邊界**（維持模組責任）：原則上不為「篩選」去改 **配對邏輯、topic 選擇、thread 狀態機**；**`store/` 儲存結構**不因本機制而變；prompt 大結構以 **`ai/talk.go`** 為準、迭代時再調。
+- **管線**：`ai/talk`（Ollama `/api/chat`）、模擬迴圈內 `tryTriggerNpcNpcInRoom`、`ai/scorer` 規則評分。
+- **不改動的設計邊界**（維持模組責任）：原則上不為「篩選」去改 **配對邏輯、topic 選擇、thread 狀態機**；**`store/` 儲存結構**不因本機制而變；prompt 大結構以 **`ai/talk`** 為準、迭代時再調。
 
 ---
 
@@ -42,7 +42,7 @@
 概念設計者也可從 **NPC 口中採句**，得到下一階段系統／劇情的靈感（被運轉中的世界**頂回來**）。
 
 因此 **prompt、規則、本地模型** 都**沒有封閉最終版**，只有持續演進；與 [NPC活化系統.md](../NPC活化系統.md) §零點五一致。  
-**本地 LLM**：`config/config.go` 的 `OllamaModel`，環境變數 **`OLLAMA_MODEL`** 覆寫即可試新小模型。
+**本地 LLM**：`config/config` 的 `OllamaModel`，環境變數 **`OLLAMA_MODEL`** 覆寫即可試新小模型。
 
 ---
 
@@ -66,7 +66,7 @@
 LLM → sanitize → qualityGateNpcLine → anchorConsistencyCheck → `ai.ScoreNpcDialogue` → 通過才寫入摘要／archival／傳聞錨點等
 ```
 
-- **檔案**：`ai/scorer.go`（`DialogueScoreDetail`、`ScoreNpcDialogue`）、`main.go`（嵌入點、門檻、`npcSocialStats`）、`npc/topics.go`（`FindNpcNpcTopicIDByHint` 反查主題 id）。
+- **檔案**：`ai/scorer`（`DialogueScoreDetail`、`ScoreNpcDialogue`）、`main`（嵌入點、門檻、`npcSocialStats`）、`npc/topics`（`FindNpcNpcTopicIDByHint` 反查主題 id）。
 - **門檻**：預設總分 ≥ **35**；**`NPC_DIALOGUE_SCORE_THRESHOLD`**：正數＝自訂門檻；**`-1` 或 `off`**＝關閉規則評分（僅保留 qualityGate 等前段）。
 - **與 qualityGate 關係**：先擋格式／明顯髒字串；評分器為**第二道防線**（含 poison 否決等）。
 - **去重**：`db.RecentNpcNpcArchivalLinesForEntity` 取近期 npc_npc 對白本體，與本輪台詞比對重複／高相似則扣分。
@@ -81,7 +81,7 @@ LLM → sanitize → qualityGateNpcLine → anchorConsistencyCheck → `ai.Score
 ## 評分維度（概念）
 
 正向維度上限合計 **80**（Length 15＋Anchor 20＋Relation 10＋Diversity 10＋DialogueFeel 15＋Identity 10），懲罰維度（Repeat、Narration、ToneDrift）均為負數或 0；髒輸出等可 **KilledBy** 直接否決。維度含（實作以程式為準）：長度、現場錨定、關係一致性、重複懲罰、多樣性、對話感、人設一致性、旁白懲罰、**tone_drift（廢土漂移，非正維度，為 0 或 −10）**。
-**單一真相來源**：**`ai/scorer.go`**；改規則時改該檔與本文件敘述。
+**單一真相來源**：**`ai/scorer`**；改規則時改該檔與本文件敘述。
 
 ---
 
@@ -99,8 +99,8 @@ LLM → sanitize → qualityGateNpcLine → anchorConsistencyCheck → `ai.Score
 
 | 層級 | 責任 | 說明 |
 |------|------|------|
-| **Prompt（世界現象級）** | `data/templates/llm_prompts.json` → `WorldPhenomenaCognitionPrompt()`，由 `CallAITalk`、`CallAITalkNPCToNPC` **每次**拼入 system | **次次植入**；文案**維護在 JSON**，Go 僅載入與拼接。見 [世界觀認知與對話prompt](世界觀認知與對話prompt.md)。 |
-| **規則評分** | `ai/scorer.go` | 以**現場錨定、重複、人設、毒字串**為主；並有 **`tone_drift`**（`wastelandTonePenalty`）抑制典型廢土／末世劇本詞，**不**懲惡地／輻射雨等本作用語。 |
+| **Prompt（世界現象級）** | `data/templates/llm_prompts.json` → `WorldPhenomenaCognitionPrompt()`，由 `CallAITalk`、`CallAITalkNPCToNPC` **每次**拼入 system | **次次植入**；文案**維護在 JSON**，後端僅載入與拼接。見 [世界觀認知與對話prompt](世界觀認知與對話prompt.md)。 |
+| **規則評分** | `ai/scorer` | 以**現場錨定、重複、人設、毒字串**為主；並有 **`tone_drift`**（`wastelandTonePenalty`）抑制典型廢土／末世劇本詞，**不**懲惡地／輻射雨等本作用語。 |
 | **靜態資料** | `data/templates/dialogues/*.json` | 人維護；**不**由 autoresearch 管線自動改寫。 |
 
 **與「讀表遊戲」無關**：世界觀對齊是**敘事品質**，不是給玩家多看一欄分數。
@@ -111,7 +111,7 @@ LLM → sanitize → qualityGateNpcLine → anchorConsistencyCheck → `ai.Score
 
 1. **Prompt 已注入基調**：`data/templates/llm_prompts.json`（含 `world_phenomena_cognition`）；改動後重啟，`CallAITalk`／`CallAITalkNPCToNPC` 即讀新文案。  
 2. **試玩驗收**：同一房、同時段多觸發幾輪 NPC↔NPC，耳中是否仍像**本世界**（必要時縮短 JSON 內基調句，避免擠壓 token）。  
-3. **✅ 已做**：`ai/scorer.go` 的 **`tone_drift`**（`wastelandTonePenalty`，−10）；關鍵詞清單可隨試玩再調，避免誤殺。  
+3. **✅ 已做**：`ai/scorer` 的 **`tone_drift`**（`wastelandTonePenalty`，−10）；關鍵詞清單可隨試玩再調，避免誤殺。  
 4. **✅ 已做**：`data/npc_to_npc_topics.json` 新增 **城外聞**、**天候**（富態威脅、輻射雨、惡地／霜林，對齊沃土風）。  
 5. **✅ 已做**：`topicMaskForRoom` 帶入房間 `tags`；`db.topicMaskBaseWeight` 在 **`outdoor`** 時提高「城外聞」「天候」抽中權重（露天街道更易談城外與天候）。  
 6. **✅ 已做**：`sentimentDeltaFromDialogue` 對主題 id **城外聞**、**天候**（及對應 hint 後備）+1 關係傾向；`topicMaskBaseWeight` 對房間 tag **social** 提高「閒聊」權重。  
@@ -128,4 +128,4 @@ LLM → sanitize → qualityGateNpcLine → anchorConsistencyCheck → `ai.Score
 - [NPC間對話—記憶與情境完整設計.md](../design/NPC間對話—記憶與情境完整設計.md)  
 - [決策 007：NPC AI 與本地模型](../decisions/007_NPC_AI_API與預設使用規則.md) §7  
 
-若需**一次性**清除歷史 npc_npc 污染資料，可在專案根目錄執行 **`go run ./tools/go/clean-npc-npc-pollution`**（或同等維護手段）後**重啟**；非日常流程。
+若需**一次性**清除歷史 npc_npc 污染資料，請以當前 `tools/` 內維護腳本或資料修復流程為準，完成後**重啟**伺服器；非日常流程。

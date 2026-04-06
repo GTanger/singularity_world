@@ -1,4 +1,4 @@
-// 視野區域與區塊索引幾何，對齊 Go game/zone.go。
+// 視野區域與區塊索引幾何，對齊既有 game/zone。
 
 /// 以角色為中心的視野半徑（格數）。
 pub const VIEW_RADIUS: i32 = 10;

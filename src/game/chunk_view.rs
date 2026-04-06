@@ -1,4 +1,4 @@
-// 當前區塊地形與視野內實體，對齊 Go game/chunk_view.go。
+// 當前區塊地形與視野內實體，對齊既有 game/chunk_view。
 
 use std::path::Path;
 
@@ -13,7 +13,7 @@ use crate::world::{
 
 use super::zone::{chunk_bounds, chunk_index, in_chunk, in_view, CHUNK_SIZE, VIEW_RADIUS};
 
-/// 當前區塊地形 ＋ 視野內實體（對齊 Go `ChunkView`）。
+/// 當前區塊地形 ＋ 視野內實體（對齊既有 `ChunkView`）。
 #[derive(Debug, Clone)]
 pub struct ChunkView {
     pub cx: i32,
@@ -44,13 +44,13 @@ pub fn get_chunk_and_entities_in_view(
 }
 
 impl ChunkView {
-    /// 扁平顯示字列，長度 151×151（對齊 Go `ChunkRows`）。
+    /// 扁平顯示字列，長度 151×151（對齊既有 `ChunkRows`）。
     #[must_use]
     pub fn chunk_rows(&self) -> Vec<String> {
         self.chunk_rows_with_colors().0
     }
 
-    /// 每格依種子亂數取顯示字與色（對齊 Go `ChunkRowsWithColors`）。
+    /// 每格依種子亂數取顯示字與色（對齊既有 `ChunkRowsWithColors`）。
     #[must_use]
     pub fn chunk_rows_with_colors(&self) -> (Vec<String>, Vec<String>) {
         let size = (CHUNK_SIZE as usize).saturating_mul(CHUNK_SIZE as usize);
@@ -79,7 +79,7 @@ impl ChunkView {
         (rows, colors)
     }
 
-    /// 世界座標是否在當前區塊內且可通行（對齊 Go `CanMoveToWorld`）。
+    /// 世界座標是否在當前區塊內且可通行（對齊既有 `CanMoveToWorld`）。
     #[must_use]
     pub fn can_move_to_world(&self, wx: i32, wy: i32) -> bool {
         if !in_chunk(wx, wy, self.cx, self.cy) {

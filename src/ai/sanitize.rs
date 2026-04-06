@@ -1,4 +1,4 @@
-// NPC 台詞清理，對齊 Go ai/sanitize.go。
+// NPC 台詞清理，對齊既有 ai/sanitize。
 
 use crate::gametext;
 

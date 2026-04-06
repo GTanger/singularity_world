@@ -1,7 +1,7 @@
 # 玩家↔NPC Talk — Web／雲端 LLM 回答規則（操作版）
 
 > **用途**：依**情節類型**條列「要模型怎麼答」；給企劃、給 Cursor／ChatGPT 協助改稿時**直接貼這份**即可。  
-> **重要**：**實際送進 API 的字**來自 Go 載入的 **`llm_prompts.json`**（`player_npc.*` 等合併）。本檔**不會**被程式自動讀進模型；改規則請**同步改 JSON**，本檔當**分場景對照表／單一讀物**，避免只在長文裡改、忘了改 JSON。
+> **重要**：**實際送進 API 的字**來自後端載入的 **`llm_prompts.json`**（`player_npc.*` 等合併）。本檔**不會**被程式自動讀進模型；改規則請**同步改 JSON**，本檔當**分場景對照表／單一讀物**，避免只在長文裡改、忘了改 JSON。
 
 | 項目 | 檔案 |
 |------|------|
@@ -74,11 +74,11 @@
 | 人設／場所 | `identity_prefix` + 後端 `BuildIdentity`；`room_context_fmt` |
 | 世界基調 | `world_phenomena_cognition` |
 
-改完 JSON 後**重啟 `bin/server`**。
+改完 JSON 後**重啟 `bin/server-rust`**（或 `./start`）。
 
 ---
 
 ## 7. 延遲／模型（給維運，非模型讀）
 
-- 雲端路徑見 `ai/openai_chat.go`：**`max_tokens` 200**、**`temperature` 0.82**；OpenRouter 可帶 `reasoning.effort: none` 等。  
+- 雲端路徑見 `ai/openai_chat`：**`max_tokens` 200**、**`temperature` 0.82**；OpenRouter 可帶 `reasoning.effort: none` 等。  
 - 不同廠牌 Flash **延遲差很多**屬常態；要省時可換回先前較快的模型 id（見 `server_defaults`／`.env` 的 `player_talk_api_model`）。
