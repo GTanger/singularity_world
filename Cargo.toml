@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "editor-leptos"]
+members = [".", "editor-leptos", "antigravity-rc"]
 
 [package]
 name = "singularity_world"

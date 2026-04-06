@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Antigravity RC — 遠端指揮塔啟動腳本 (Rust + PWA)
+# 用法：./start_gemini
+
+set -e
+cd "$(dirname "$0")"
+SW_DIR="$(pwd)"
+PORT=2026
+
+# 1) 偵測環境與服務 (Systemd)
+HAS_SYSTEMD=false
+if systemctl --user list-unit-files antigravity-rc.service &>/dev/null; then
+  HAS_SYSTEMD=true
+fi
+
+# 2) 品質檢查 (Clippy)
+echo "--- [1/2] 品質檢查 (AR-Clippy) ---"
+cargo clippy -p antigravity-rc -- -D warnings
+
+# 3) 建置 ARC (Rust release)
+echo "--- [2/2] 建置執行檔 (Release) ---"
+cargo build --release -p antigravity-rc
+
+# 找到建置出的執行檔 (相容於 RAM Disk 與預設 target)
+CARGO_OUT="${CARGO_TARGET_DIR:-target}/release/antigravity-rc"
+if [[ ! -f "$CARGO_OUT" ]]; then
+  for candidate in "$HOME/target_ram/release/antigravity-rc" "target/release/antigravity-rc"; do
+    if [[ -f "$candidate" ]]; then CARGO_OUT="$candidate"; break; fi
+  done
+fi
+
+mkdir -p bin
+install -m 755 "$CARGO_OUT" bin/antigravity-rc
+
+# 4) 清理舊進程 (free_port Logic)
+free_port() {
+  local pids
+  pids=$(lsof -ti :"$PORT" 2>/dev/null) || true
+  if [[ -n "$pids" ]]; then
+    echo "--- 釋放埠 :$PORT (PID: $pids) ---"
+    kill $pids 2>/dev/null || true
+    sleep 1
+    pids=$(lsof -ti :"$PORT" 2>/dev/null) || true
+    [[ -n "$pids" ]] && kill -9 $pids 2>/dev/null || true
+    sleep 1
+  fi
+}
+
+# 5) 重啟服務與自啟
+if [ "$HAS_SYSTEMD" = true ]; then
+  echo "--- 透過 systemd 重啟 ARC 服務 (Port: $PORT) ---"
+  systemctl --user stop antigravity-rc.service 2>/dev/null || true
+  sleep 1
+  free_port
+  systemctl --user daemon-reload
+  systemctl --user enable antigravity-rc.service
+  systemctl --user start antigravity-rc.service
+  sleep 1
+  systemctl --user status antigravity-rc.service | head -n 5
+else
+  echo "--- 手動重啟 ARC (nohup) ---"
+  free_port
+  nohup ./bin/antigravity-rc >> remote_center.log 2>&1 &
+  sleep 2
+fi
+
+echo "========================================"
+echo "Antigravity RC 已啟動 (PWA 版)"
+echo "網址: http://localhost:$PORT"
+echo "請將隧道指向此埠，手機開啟後可「新增至主螢幕」"
+echo "========================================"
