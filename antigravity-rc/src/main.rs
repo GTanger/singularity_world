@@ -216,8 +216,11 @@ async fn poll_ide_for_responses() -> anyhow::Result<Vec<ChatMessage>> {
                     
                     let finalArr = uniqueTexts.filter(t => 
                         !t.includes('ACTIVE_MODEL') && 
-                        !t.includes('Prioritizing Tool Usage') && 
+                        !t.includes('Prioritizing') && 
                         !t.includes('CRITICAL INSTRUCTION') && 
+                        !t.includes('Top priority is to pick') && 
+                        !t.includes('/remote_uploads/') && 
+                        !t.includes('主管指令') && 
                         t.length > 5
                     );
                     if (finalArr.length > 0) {

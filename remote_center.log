@@ -1015,3 +1015,47 @@ Antigravity RC PRO (雙向對話版) 已啟動
 [ARC] Injection Result: null
 [ARC] Received message: 提交推送 (Model: Some("gemini 3 flash"))
 [ARC] Injection Result: null
+[ARC] Received message: 第三輪就出問題 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 第一輪測試 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+[ARC] Received message: 呵呵... (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 重啟後第一輪測試，路徑位址不要將遠端頁面撐開 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 第n次，我快沒耐性了，不懂你在嗨什麼 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+[ARC] Received message: 還是一個鳥樣 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 傳圖測試 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+[ARC] Received message: 測試繼續，這是watabou的渲染圖 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+[ARC] Received message: 測試繼續第三輪，我不懂代碼，只靠指令要求代理調整渲染一直鬼打牆，所以放棄 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+[ARC] Received message: 魔王測試，提交推送 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
