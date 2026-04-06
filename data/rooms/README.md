@@ -1,5 +1,7 @@
 # 房間資料 (data/rooms)
 
+**上游文件**：設計與規格總表見 [`docs/文檔索引.md`](../docs/文檔索引.md)；房間管理與目錄約定見 [`docs/rooms_manage.md`](../docs/rooms_manage.md)。
+
 **現行來源**：房間 JSON 放在本目錄下（遞迴掃描），目前主體在 **`data/rooms/editor/`**。**舊封存、舊合併檔若已刪除，以本目錄實際檔案為準**，文件不再假設 `data/rooms_archive/` 或歷史子路徑仍存在。  
 **浮生城**：東側主建物為摩天樓，可遊房 id 多為 `city_life_*`、`life_cofe_*`，zone 英文代碼 **`citylife`**；世界觀與動線見 **`docs/reference/浮生城—建築與用途.md`**。
 

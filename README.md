@@ -11,8 +11,8 @@
 ## 專案現況
 
 - **後端：Rust 服務**（Axum 0.8 + Tokio）。
-- **資料儲存**：JSON/store 作為唯一執行期資料來源（No DB）。
-- **主要路徑**：`data/rooms/editor/`（房間資料）、`data/entities.json`（實體狀態）、`data/runtime/`（執行期快照）。
+- **資料儲存**：**PostgreSQL 為權威持久層**；記憶體為讀取快取；`data/` 下 JSON 為種子、靜態設定與可選備份——執行期真理以資料庫為準（細節見 `AGENTS.md`、`docs/技術約束規則.md`）。
+- **主要路徑**：`data/rooms/editor/`（房間種子／編輯）、`data/runtime/`（執行期快照等）；實體與房間等遊戲狀態以 PG 為主。
 - **前端**：原生 HTML/CSS/JS (PWA)，提供遊戲頁面與管理工具組（房間編輯器、地圖、星圖）。
 - **進度**：Phase 0–5 遷移已全數完成。
 
@@ -64,8 +64,8 @@ singularity_world/
 │   ├── main.rs         # 程式進入點
 │   ├── lib.rs          # 模組外括
 │   ├── server/         # Axum 路由、WS Hub、Session、Room Editor API
-│   ├── store/          # JSON 資料載入與 RwLock 狀態管理
-│   ├── db/             # 業務邏輯封裝（密碼驗證、地圖查詢、拓撲計算）
+│   ├── store/          # PostgreSQL＋記憶體快取；JSON 非執行期唯一真理
+│   ├── db/             # 資料存取與業務封裝（密碼驗證、地圖查詢、拓撲計算）
 │   ├── game/           # 遊戲主循環、NPC 模擬、動作分派 (do_action)
 │   ├── world/          # 世界地圖、區塊管理、地形顯示
 │   ├── combat/         # 戰鬥結算判定
@@ -82,10 +82,15 @@ singularity_world/
 
 ## 文件導覽
 
-- **遷移對帳**：[`docs/migration/README.md`](docs/migration/README.md)
-- **文檔索引**：`docs/文檔索引.md`
-- **技術約束**：`docs/技術約束規則.md`
-- **世界觀主參考**：`docs/reference/世界觀：Token降維與生命演化.md`
+**主索引（設計／規格／AI 任務前查表）**：[`docs/文檔索引.md`](docs/文檔索引.md) — 必讀四份、決策表、規格表與 `reference/` 大表皆在此。
+
+| 用途 | 路徑 |
+| --- | --- |
+| 008 目錄速查（模組／`docs/` 子目錄樹） | [`docs/INDEX.md`](docs/INDEX.md) |
+| 遷移說明（後端已 Rust 化） | [`docs/migration/README.md`](docs/migration/README.md) |
+| 技術約束與協作 | [`docs/技術約束規則.md`](docs/技術約束規則.md)、[`docs/COLLABORATION.md`](docs/COLLABORATION.md) |
+| 可調參數與文案脈絡 | [`docs/config/PARAMETERS_INDEX.md`](docs/config/PARAMETERS_INDEX.md) |
+| 代理精簡入口 | 根目錄 [`AGENTS.md`](AGENTS.md) |
 
 決策記錄（ADRs）位於 `docs/decisions/`。
 

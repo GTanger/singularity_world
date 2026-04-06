@@ -1,6 +1,7 @@
-# 文檔導覽（008 P8 起點）
+# docs/ 目錄速查（008 附錄）
 
-> 對齊 `docs/decisions/008_架構整頓規劃.md`：先建立索引，再漸進搬移子目錄，避免一次改壞連結。
+> **完整設計／規格索引（含 AI 必讀四份、決策表、大表）請以 [`文檔索引.md`](./文檔索引.md) 為唯一主入口。**  
+> 本檔僅對齊 [`decisions/008_架構整頓規劃.md`](./decisions/008_架構整頓規劃.md)：提供 `docs/` 子目錄導航與程式模組速查，避免與主索引重複貼長表。
 
 ## 程式模組（精簡）
 
@@ -18,7 +19,7 @@
 | [decisions/009_觀測分級與行程約束.md](./decisions/009_觀測分級與行程約束.md) | **觀測分級**、行程優先於擲骰、在崗決定性、LLM／雲端定位（由討論 005 升格） |
 | [decisions/](./decisions/) | 其餘 ADR |
 | [implementation/](./implementation/) | 實作規劃、遷移說明 |
-| [dev/](./dev/) | 開發入口（含連結至 implementation；008 P8） |
+| [dev/](./dev/) | 開發入口（品質閘門；含連結至 implementation） |
 | [archive/](./archive/) | 歷史草稿（含原 gemini 概念檔） |
 | [../tools/](../tools/) | 一次性工具（JS／Python 等，008 P6） |
 | [config/](./config/) | 設定與參數索引（`PARAMETERS_INDEX.md`、`gametext_and_prompts.md`） |
@@ -27,7 +28,7 @@
 
 | 路徑 | 說明 |
 |------|------|
-| [reference/](./reference/) | 技術規格彙整（NPC、房間、經濟、戰鬥等） |
+| [reference/](./reference/) | 技術規格彙整（NPC、房間、經濟、戰鬥等）— 條目級清單見 [`文檔索引.md`](./文檔索引.md) 第五節起 |
 | [design/](./design/) | 系統設計長文（例：NPC 間對話） |
 
 ## 世界觀與草稿
@@ -43,7 +44,6 @@
 | 路徑 | 說明 |
 |------|------|
 | [reference/autoresearch_backend.md](./reference/autoresearch_backend.md) | autoresearch 後端說明 |
-| [文檔索引.md](./文檔索引.md) | 既有中文索引（若與本檔重疊，以本檔為 008 對齊入口） |
 
 ---
 

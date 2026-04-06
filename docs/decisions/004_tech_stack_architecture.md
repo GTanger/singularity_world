@@ -3,7 +3,7 @@
 **狀態**：已決斷  
 **依據**：主管決斷
 
-> **後續變更（2026）**：執行期已改為 **JSON/store** 為唯一數據源，不再使用 SQLite 持久化。見 [DB轉JSON遷移規劃](../implementation/DB轉JSON遷移規劃.md)。
+> **現況補註（2026）**：執行期**權威持久層**為 **PostgreSQL**；`store` 為讀取快取；`data/**/*.json` 為種子、靜態設定與可選備份——**不以 JSON 為唯一真理**。SQLite 已退出主線。細節見 [`AGENTS.md`](../../AGENTS.md)、[`技術約束規則`](../技術約束規則.md)；歷史遷移脈絡仍可查 [DB轉JSON遷移規劃](../implementation/DB轉JSON遷移規劃.md)（敘事為過渡期文件，現以 PG 為準）。
 
 ---
 
@@ -15,7 +15,7 @@
 - **量子坍縮系統**：惰性求值 + 事件日誌
 - **經濟／政治／生態引擎**：獨立背景任務，各自 tick rate
 - **WebSocket 伺服器**，處理最多 **10 名玩家**連線
-- **持久化**：現為 JSON（store）與 PostgreSQL（見 `AGENTS.md`），見上方後續變更說明
+- **持久化**：**PostgreSQL 權威**＋記憶體快取；JSON 非執行期唯一來源（見上方現況補註）
 
 ### 1.2 前端：網頁（HTML + CSS + JavaScript）
 
@@ -26,8 +26,8 @@
 
 ### 1.3 資料庫／持久化
 
-- **現況**：JSON（data/rooms/*.json、data/entities.json、data/runtime/*.json 等），由 store 載入與寫回；十人規模綽綽有餘。
-- **歷史**：原決策為 SQLite；已遷移為全 JSON。
+- **現況**：遊戲狀態以 **PostgreSQL** 讀寫；`data/` 下 JSON 用於房間種子、設定與備援匯出等，**與「唯一真理在資料庫」並存**，詳見技術約束。
+- **歷史**：曾為 SQLite → 過渡期全 JSON 管線 → 現行 **PG 主、雙寫／快取**（本節保留決策骨架，實作細節以現行約束為準）。
 
 ---
 

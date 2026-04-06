@@ -1,5 +1,7 @@
 # dev/ — 開發與實作規劃入口
 
+**父層索引**：設計／規格總表見 [`../文檔索引.md`](../文檔索引.md)；`docs/` 子目錄樹速查見 [`../INDEX.md`](../INDEX.md)。
+
 ## 建置與品質閘門 (Standard Quality Gates)
 
 本專案採實施 **「開發即測試」** 的嚴格紀律。所有變更在進入 `./start` 或部署前必須通過以下閘門：
@@ -9,6 +11,8 @@
 - **資料契約**：`cargo run --bin checkrooms` (驗證房間 JSON 格式與觸發關鍵字)
 
 以上流程皆已封裝於 **`./start`** 腳本中。
+
+**合併／交付前（不建置、不啟動時）**：專案根目錄執行 **`make verify`**，等同 `./start` 前段閘門（`cargo clippy -D warnings`、`cargo test`、`checkrooms`）。CI 或 pre-push 宜與此對齊，避免只跑 `cargo build`。
 
 ### 遷移現況：Rust 原生化
 

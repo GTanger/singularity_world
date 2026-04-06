@@ -61,6 +61,7 @@ docs/                    — 設計文件（修改前必讀相關文件）
 ```
 
 ## 必讀文件（修改相關系統前先讀）
+- `docs/文檔索引.md` — 設計／規格**主索引**（查表入口）；`docs/INDEX.md` 僅 `docs/` 目錄與 008 模組速查
 - `docs/COLLABORATION.md` — 協作約定
 - `docs/技術約束規則.md` — 禁止事項與程式碼風格
 - `docs/reference/世界觀：Token降維與生命演化.md` — 世界觀定調

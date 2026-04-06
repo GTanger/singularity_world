@@ -18,7 +18,7 @@
 .env.local
 *.local
 
-# Agent 對話摘要與本地暫存（不納入版控）
+# Agent 對話摘要與本地暫存（不納入版控；含 tmp/summary-*.json 等）
 /tmp/
 
 # IDE / OS

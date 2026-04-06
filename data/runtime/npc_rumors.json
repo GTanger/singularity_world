@@ -1,49 +1,58 @@
 {
   "entries": [
     {
-      "id": "seed|2959095|4",
-      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
+      "id": "seed|2959102|29",
+      "text": "最近幾天金屬器具的表面都浮了一層淡淡的礦脈紋路",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1775457051,
-      "expires_at": 1775460651
+      "updated_at": 1775461254,
+      "expires_at": 1775464854
     },
     {
-      "id": "seed|2959094|11",
-      "text": "藥材價格穩著，但品種比上個月少了幾樣",
+      "id": "seed|2959100|13",
+      "text": "聽回來的人講，城外的肉質籐蔓又往路邊多蔓了一些",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775460054,
+      "expires_at": 1775463654
+    },
+    {
+      "id": "seed|2959097|8",
+      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775458252,
+      "expires_at": 1775461852
+    },
+    {
+      "id": "seed|2959099|26",
+      "text": "今天的游離輻射塵好像比平常多一些，空氣裡有淡淡的粉光",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1775459453,
+      "expires_at": 1775463053
+    },
+    {
+      "id": "seed|2959101|19",
+      "text": "有住戶搬家了，留下的房間牆上全是根鬚攀痕，挺有意思的",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1775456451,
-      "expires_at": 1775460051
+      "updated_at": 1775460654,
+      "expires_at": 1775464254
     },
     {
-      "id": "eco|pulse|309",
-      "text": "近來活錢不寬，茶館裡談的多半是省錢門道。",
-      "source": "economy",
-      "source_score": 1,
-      "weight": 1,
-      "updated_at": 1775455850,
-      "expires_at": 1775461250
-    },
-    {
-      "id": "seed|2959092|14",
-      "text": "有人從低樓層看到遠處林冠線在晃動，可能是大型生物經過",
+      "id": "seed|2959098|2",
+      "text": "樓梯間的菌絲光昨晚特別亮，是琥珀色的",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775455642,
-      "expires_at": 1775459242
-    },
-    {
-      "id": "seed|2959093|10",
-      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775455850,
-      "expires_at": 1775459450
+      "updated_at": 1775458853,
+      "expires_at": 1775462453
     }
   ]
 }

@@ -1,18 +1,20 @@
 # DB 轉 JSON 遷移規劃 — 全專案走 JSON、拆碎利於搜尋
 
+> **現況補註（2026）**：本文為 **SQLite → JSON 拆檔與 store 過渡** 之**歷史規劃與階段紀錄**，**不作現行架構之唯一依據**。現行執行期**權威持久層為 PostgreSQL**（見 [`AGENTS.md`](../../AGENTS.md)、[`技術約束規則`](../技術約束規則.md)、[決策 004 現況補註](../decisions/004_tech_stack_architecture.md)）。下文「全 JSON」「無 DB」「唯一數據源」指該次遷移**當時目標與落地敘述**；與今日 **PG＋store＋雙寫** 並存時，以技術約束與 `AGENTS.md` 為準。
+
 > 產出日期：2026-02-12  
-> 目標：**全專案以 JSON 為唯一數據源**，拆碎為多檔利於搜尋與維護；執行期載入記憶體，**不再使用 DB 檔**。
+> **原訂目標（歷史）**：**以 JSON 為主資料載體**、拆碎為多檔利於搜尋與維護；執行期載入記憶體，**不再依賴 SQLite 檔**。
 
 ---
 
 ## Store 的定義
 
-**Store** = 以 JSON 為唯一數據源的記憶體層：
+**Store**（歷史定義；現行已疊加 **PostgreSQL 權威**）= 以 JSON 為**主要載入／備份載體**的記憶體層：
 
-- **載入**：啟動時從指定 JSON 檔與目錄（如 `data/rooms/`、`data/runtime/`、`data/*.json`）載入全部資料到記憶體。
-- **執行期**：遊戲邏輯只讀寫記憶體中的 store（`store.Default`）；db 層的 GetRoom、GetEntity、SetEntityRoom 等皆改為由此提供。
-- **持久化**：變更時原子寫回對應 JSON（先寫 `.tmp` 再 `Rename`），不寫入任何 DB 檔。
-- **結論**：本專案不再開啟或依賴 SQLite；所有該拆、該寫、該生成的資料皆由 JSON 載入／寫回 JSON。
+- **載入**：啟動時從指定 JSON 檔與目錄（如 `data/rooms/`、`data/runtime/`、`data/*.json`）載入資料至記憶體（現行並與 PG 同步路徑見程式與技術約束）。
+- **執行期**：遊戲邏輯讀寫記憶體中的 store（`store.Default`）；db 層 API 由此提供或對接 PG。
+- **持久化（歷史敘述）**：變更時曾以原子寫回對應 JSON（先寫 `.tmp` 再 `Rename`）；**現行**以 **PostgreSQL** 為執行期真理，JSON 寫回多屬種子／備份／相容路徑。
+- **結論（歷史）**：該階段關閉 SQLite 主路徑、改以 JSON 拆檔；**後續**已遷入 PG，請勿從本文倒推「現行仍全 JSON、無 DB」。
 
 ---
 
@@ -79,7 +81,7 @@ data/
 - **原子寫入**：先寫 `*.json.tmp`，成功後 `os.Rename` 覆蓋原檔。
 - **Store 單例**：啟動時 `store.Init("data/rooms", "data/runtime", "data")` 從目錄 `data/rooms/`（一房一檔，**可分子資料夾如依 zone**）及 data/runtime、data 載入；`db.GetRoom` / `GetEntityRoom` / `SetEntityRoom` 等皆經由 `store.Default`，main 不開啟 DB。
 - **打破 import cycle**：`Room`、`Exit` 型別放在 `model` 包，`store` 只依賴 `model`，不依賴 `db`；`db` 可依賴 `store`。
-- **無 DB**：本專案不以 SQLite 為數據源；所有資料由 JSON 載入、寫回 JSON。
+- **無 SQLite 主檔（歷史）**：該階段不以 SQLite 為數據源；資料由 JSON 載入／寫回。**現況**：權威在 **PostgreSQL**，見技術約束。
 
 ---
 
@@ -92,8 +94,8 @@ data/
 | **實體清空（歷史維護腳本）** | 已改為 `store::init` + 清除實體 API／維護流程，不再直開 SQLite 檔。 |
 | **db 包** | 仍接受 `*sql.DB` 參數以相容呼叫方；執行期 store.Default != nil 時一律走 store，傳 nil 不觸碰 DB。 |
 | **測試** | db/schedule_test、npc_activation_simulation_test 使用 temp 目錄的 test.db/sim.db，僅測試用，保留。 |
-| **文件** | README、rooms_manage、NPC 相關已改為「JSON/store、不開 DB」。config 仍含 DBPath 欄位（未使用，可保留或日後移除）。 |
+| **文件** | README、rooms_manage、NPC 相關曾改為「JSON/store、不開 SQLite」；**現行文件**以 PG 權威為準，見 `004` 補註。config 仍含 DBPath 欄位（未使用，可保留或日後移除）。 |
 
 ---
 
-*DB 轉 JSON 遷移規劃 v1.1 — 全 JSON、房間拆檔、無 DB*
+*DB 轉 JSON 遷移規劃 v1.1 — 歷史：全 JSON 拆檔、無 SQLite 主檔；**現行架構以 PostgreSQL 為準**（見文首現況補註）。*
