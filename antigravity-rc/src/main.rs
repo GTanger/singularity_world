@@ -179,7 +179,6 @@ async fn poll_ide_for_responses() -> anyhow::Result<Vec<ChatMessage>> {
     let script = r#"
         (function() {
             try {
-                // Find potential chat containers (penetrating shadow DOM)
                 let messageContainers = [];
                 function scanForContainers(root) {
                     if (!root) return;
@@ -187,10 +186,12 @@ async fn poll_ide_for_responses() -> anyhow::Result<Vec<ChatMessage>> {
                         let cn = root.className;
                         if (typeof cn === 'string') {
                             if (cn.includes('chat-bubble') || cn.includes('markdown') || cn.includes('content') || cn.includes('message')) {
-                                // Must have some text inside
                                 let text = root.innerText || root.textContent || "";
-                                if (text.trim().length > 10 && !text.includes('SettingsAI') && !text.includes('Agent will execute')) {
-                                    // Store node and its depth/text
+                                // Exclude the input box UI area!
+                                if (text.trim().length > 10 && 
+                                    !text.includes('Ask anything') && 
+                                    !text.includes('0 Files With Changes') &&
+                                    !text.includes('Review Changes')) {
                                     messageContainers.push(root);
                                 }
                             }
@@ -209,14 +210,16 @@ async fn poll_ide_for_responses() -> anyhow::Result<Vec<ChatMessage>> {
                 
                 scanForContainers(document.body);
                 
-                // If we found any containers, get the deeply concatenated text of the last valid one
                 if (messageContainers.length > 0) {
-                    // Start from the end, find the most plausible AI response
                     let validTexts = messageContainers.map(el => el.innerText || el.textContent || "").map(t => t.trim());
-                    // Remove duplicate overlapping containers (parents and children matching)
                     let uniqueTexts = validTexts.filter((t, i, arr) => arr.indexOf(t) === i);
                     
-                    let finalArr = uniqueTexts.filter(t => !t.includes('ACTIVE_MODEL') && !t.includes('Gemini 3.') && t.length > 5);
+                    let finalArr = uniqueTexts.filter(t => 
+                        !t.includes('ACTIVE_MODEL') && 
+                        !t.includes('Prioritizing Tool Usage') && 
+                        !t.includes('CRITICAL INSTRUCTION') && 
+                        t.length > 5
+                    );
                     if (finalArr.length > 0) {
                         return [finalArr[finalArr.length - 1]];
                     }

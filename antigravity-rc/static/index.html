@@ -81,6 +81,15 @@
 
         function addMessage(text, role) {
             const chat = document.getElementById('chat');
+            
+            // If the incoming message is from AI and the last message was also from AI, update instead of append
+            // This handles the streaming text generation perfectly!
+            if (role === 'ai' && chat.lastElementChild && chat.lastElementChild.classList.contains('msg-ai')) {
+                chat.lastElementChild.innerText = text;
+                chat.scrollTop = chat.scrollHeight;
+                return;
+            }
+
             const div = document.createElement('div');
             div.className = `msg msg-${role}`;
             div.innerText = text;

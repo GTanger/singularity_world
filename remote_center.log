@@ -959,3 +959,59 @@ Antigravity RC PRO (雙向對話版) 已啟動
 [ARC] Injection Result: null
 [ARC] Received message: 提交推送master (Model: Some("gemini 3 flash"))
 [ARC] Injection Result: null
+[ARC] Received message: 達你的頭，flash傳訊息只回傳這兩則訊息 (Model: Some("gemini 3.1 pro (high)"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 測試收訊 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 測試第n次 (Model: Some("gemini 3.1 pro (high)"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 測試訊息，你要不要去參考cursor remote專案的代碼 (Model: Some("gemini 3.1 pro (high)"))
+[ARC] Injection Result: null
+[ARC] Received message: 切換模型再次測試 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 切換flash測試收訊 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+[ARC] Received message: flash模型對話收不到回訊 (Model: Some("gemini 3.1 pro (high)"))
+[ARC] Injection Result: null
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+========================================
+Antigravity RC PRO (雙向對話版) 已啟動
+監聽地址: http://0.0.0.0:2026
+========================================
+[ARC] Received message: 測試第n次 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+[ARC] Received message: 還沒，繼續測試第二輪 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null
+[ARC] Received message: 提交推送 (Model: Some("gemini 3 flash"))
+[ARC] Injection Result: null

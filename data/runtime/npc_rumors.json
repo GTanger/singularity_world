@@ -14,25 +14,25 @@
       "text": "今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看",
       "source": "event_seed",
       "source_score": 2,
-      "weight": 3,
+      "weight": 1,
       "updated_at": 1775491134,
       "expires_at": 1775494734
     },
     {
-      "id": "seed|2959146|23",
-      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
+      "id": "seed|2959152|17",
+      "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
       "source": "event_seed",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1775488132,
-      "expires_at": 1775491732
+      "weight": 3,
+      "updated_at": 1775491734,
+      "expires_at": 1775495334
     },
     {
       "id": "seed|2959150|12",
       "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
       "source": "event_seed",
       "source_score": 2,
-      "weight": 3,
+      "weight": 1,
       "updated_at": 1775490534,
       "expires_at": 1775494134
     },
