@@ -14,14 +14,15 @@ use tokio::fs::{self, File};
 use tokio::io::AsyncWriteExt;
 use chrono::Local;
 use std::sync::Arc;
-use tokio::sync::broadcast;
+use tokio::sync::{broadcast, RwLock};
 use futures_util::{SinkExt, StreamExt};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 struct ChatMessage {
     role: String,
     content: String,
     timestamp: String,
+    index: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -32,6 +33,7 @@ struct ActionResult {
 
 struct AppState {
     tx: broadcast::Sender<ChatMessage>,
+    history: RwLock<Vec<ChatMessage>>, // Store last N messages
 }
 
 #[tokio::main]
@@ -42,26 +44,130 @@ async fn main() {
     }
 
     let (tx, _rx) = broadcast::channel(100);
-    let state = Arc::new(AppState { tx });
+    let state = Arc::new(AppState { 
+        tx, 
+        history: RwLock::new(Vec::with_capacity(50)) 
+    });
 
     let state_for_task = state.clone();
     tokio::spawn(async move {
+        use tokio_tungstenite::tungstenite::protocol::Message;
+        use futures_util::{SinkExt as _, StreamExt as _};
+
         let mut last_content = String::new();
+        let mut last_index = -1;
+        let mut ws_stream: Option<tokio_tungstenite::WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>> = None;
+        let mut cmd_id: u64 = 1;
+
         loop {
-            if let Ok(new_msgs) = poll_ide_for_responses().await {
-                for msg in new_msgs {
-                    if msg.content != last_content {
-                        last_content = msg.content.clone();
-                        let _ = state_for_task.tx.send(msg);
+            // 1. Ensure we have a CDP connection
+            if ws_stream.is_none() {
+                match discover_and_connect().await {
+                    Ok(stream) => {
+                        eprintln!("[ARC] CDP connected");
+                        ws_stream = Some(stream);
+                    }
+                    Err(e) => {
+                        eprintln!("[ARC] CDP connect failed: {}", e);
+                        tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
+                        continue;
                     }
                 }
             }
+
+            // 2. Send Runtime.evaluate and read response (with ID matching)
+            let stream = ws_stream.as_mut().unwrap();
+            cmd_id += 1;
+            let expected_id = cmd_id;
+            let script = get_extraction_script();
+            let command = json!({ "id": expected_id, "method": "Runtime.evaluate", "params": { "expression": script, "returnByValue": true } });
+
+            let result = tokio::time::timeout(
+                std::time::Duration::from_secs(5),
+                async {
+                    stream.send(Message::Text(command.to_string())).await?;
+                    // 用 ID 配對回覆，跳過 CDP 推送的 event
+                    loop {
+                        match stream.next().await {
+                            Some(Ok(Message::Text(resp_text))) => {
+                                let resp: serde_json::Value = match serde_json::from_str(&resp_text) {
+                                    Ok(v) => v,
+                                    Err(_) => continue,
+                                };
+                                // CDP event（有 method 無 id）→ 跳過
+                                if resp.get("method").is_some() && resp.get("id").is_none() {
+                                    continue;
+                                }
+                                // 確認是我們送出的命令的回覆
+                                if resp.get("id").and_then(|v| v.as_u64()) == Some(expected_id) {
+                                    return Ok::<_, anyhow::Error>(resp);
+                                }
+                                // 不是我們的 id → 跳過（可能是舊命令的回覆）
+                                continue;
+                            }
+                            Some(Ok(_)) => continue, // Binary/Ping/Pong
+                            Some(Err(e)) => anyhow::bail!("CDP WS error: {}", e),
+                            None => anyhow::bail!("CDP WS closed"),
+                        }
+                    }
+                }
+            ).await;
+
+            match result {
+                Ok(Ok(resp)) => {
+                    if let Some(res) = resp["result"]["result"]["value"].as_object() {
+                        let content = res.get("text").and_then(|v| v.as_str()).unwrap_or("");
+                        let index = res.get("index").and_then(|v| v.as_i64()).map(|v| v as i32);
+                        
+                        if !content.trim().is_empty() && (content != last_content || index != Some(last_index)) {
+                            last_content = content.to_string();
+                            last_index = index.unwrap_or(-1);
+                            
+                            let msg = ChatMessage {
+                                role: "ai".into(),
+                                content: content.to_string(),
+                                timestamp: Local::now().format("%H:%M").to_string(),
+                                index,
+                            };
+                            
+                            // Update or push to history
+                            let mut hist = state_for_task.history.write().await;
+                            let mut updated = false;
+                            if let Some(idx) = index {
+                                for m in hist.iter_mut() {
+                                    if m.role == "ai" && m.index == Some(idx) {
+                                        m.content = content.to_string();
+                                        updated = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if !updated {
+                                if hist.len() >= 50 { hist.remove(0); }
+                                hist.push(msg.clone());
+                            }
+                            
+                            let _ = state_for_task.tx.send(msg);
+                        }
+                    }
+                }
+                Ok(Err(e)) => {
+                    eprintln!("[ARC] CDP command error: {} — reconnecting", e);
+                    ws_stream = None;
+                }
+                Err(_) => {
+                    eprintln!("[ARC] CDP timeout — reconnecting");
+                    ws_stream = None;
+                }
+            }
+
             tokio::time::sleep(tokio::time::Duration::from_millis(1500)).await;
         }
     });
 
     let app = Router::new()
         .route("/ws", get(ws_handler))
+        .route("/poll", get(poll_handler))
         .route("/chat", post(handle_chat))
         .fallback_service(ServeDir::new("antigravity-rc/static"))
         .layer(DefaultBodyLimit::max(50 * 1024 * 1024))
@@ -86,16 +192,35 @@ async fn ws_handler(
 }
 
 async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
+    println!("[ARC] New WS client connected");
     let (mut sender, _) = socket.split();
     let mut rx = state.tx.subscribe();
+
+    // Send entire history on connect — 用 block scope 確保 read lock 立即釋放
+    {
+        let hist = state.history.read().await;
+        for cached in hist.iter() {
+            if let Ok(msg_json) = serde_json::to_string(cached) {
+                let _ = sender.send(WsMessage::Text(msg_json)).await;
+            }
+        }
+    }
 
     while let Ok(msg) = rx.recv().await {
         if let Ok(msg_json) = serde_json::to_string(&msg) {
             if sender.send(WsMessage::Text(msg_json)).await.is_err() {
+                println!("[ARC] WS client disconnected");
                 break;
             }
         }
     }
+}
+
+async fn poll_handler(
+    axum::extract::State(state): axum::extract::State<Arc<AppState>>,
+) -> impl IntoResponse {
+    let hist = state.history.read().await;
+    Json(json!({ "history": *hist }))
 }
 
 async fn handle_chat(
@@ -150,11 +275,17 @@ async fn handle_chat(
         Ok(res) => {
             println!("[ARC] Injection Result: {}", res);
 
-            let _ = state.tx.send(ChatMessage {
+            let msg = ChatMessage {
                 role: "user".into(),
                 content: text,
                 timestamp: Local::now().format("%H:%M").to_string(),
-            });
+                index: None,
+            };
+            let mut hist = state.history.write().await;
+            if hist.len() >= 50 { hist.remove(0); }
+            hist.push(msg.clone());
+            let _ = state.tx.send(msg);
+            
             Json(ActionResult { status: "ok".into(), detail: "Injected".into() })
         }
         Err(e) => {
@@ -164,109 +295,102 @@ async fn handle_chat(
     }
 }
 
+/// Discover CDP target and open a persistent WebSocket connection
+async fn discover_and_connect() -> anyhow::Result<tokio_tungstenite::WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>> {
+    use tokio_tungstenite::connect_async;
 
-async fn poll_ide_for_responses() -> anyhow::Result<Vec<ChatMessage>> {
-    use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(3))
+        .build()?;
+    let targets: Vec<serde_json::Value> = client
+        .get("http://127.0.0.1:9222/json")
+        .send().await?
+        .json().await?;
 
-    let client = reqwest::Client::new();
-    let targets: Vec<serde_json::Value> = client.get("http://127.0.0.1:9222/json").send().await?.json().await?;
-    let target = targets.into_iter().find(|t| t["title"].as_str().unwrap_or("").contains("singularity_world") && t["type"] == "page")
-        .ok_or_else(|| anyhow::anyhow!("Cursor not found"))?;
+    // Match by workbench URL (CursorRemote pattern) or title
+    let target = targets.into_iter()
+        .find(|t| t["type"] == "page" && (
+            t["url"].as_str().unwrap_or("").contains("workbench") ||
+            t["title"].as_str().unwrap_or("").contains("singularity_world")
+        ))
+        .ok_or_else(|| anyhow::anyhow!("No IDE page target found"))?;
 
-    let ws_url = target["webSocketDebuggerUrl"].as_str().ok_or_else(|| anyhow::anyhow!("No active WS session"))?;
-    let (mut ws_stream, _) = connect_async(ws_url).await?;
+    let ws_url = target["webSocketDebuggerUrl"].as_str()
+        .ok_or_else(|| anyhow::anyhow!("No webSocketDebuggerUrl"))?;
 
-    let script = r#"
+    eprintln!("[ARC] Connecting to: {} ({})", target["title"], ws_url);
+
+    let (ws_stream, _) = tokio::time::timeout(
+        std::time::Duration::from_secs(5),
+        connect_async(ws_url)
+    ).await.map_err(|_| anyhow::anyhow!("connect_async timeout"))??;
+
+    Ok(ws_stream)
+}
+
+/// JS extraction script — 適配 Antigravity IDE 的 DOM 結構
+fn get_extraction_script() -> &'static str {
+    r#"
         (function() {
             try {
-                let messageContainers = [];
-                function scanForContainers(root) {
-                    if (!root) return;
-                    if (root.nodeType === Node.ELEMENT_NODE) {
-                        let cn = root.className;
-                        if (typeof cn === 'string') {
-                            if (cn.includes('chat-bubble') || cn.includes('markdown') || cn.includes('content') || cn.includes('message')) {
-                                let text = root.innerText || root.textContent || "";
-                                // Exclude the input box UI area!
-                                if (text.trim().length > 10 && 
-                                    !text.includes('Ask anything') && 
-                                    !text.includes('0 Files With Changes') &&
-                                    !text.includes('Review Changes')) {
-                                    messageContainers.push(root);
-                                }
-                            }
+                // Antigravity 結構：scroll area → mx-auto → gap-y-3 px-4 → 多個 gap-0.5（每個是一個 turn）
+                const scrollArea = document.querySelector('.h-full.overflow-y-auto.min-h-0');
+                if (!scrollArea) return null;
+
+                // 找所有 turn 容器（gap-0.5），取最後一個可見的
+                const turns = scrollArea.querySelectorAll('.flex.flex-col.gap-0\\.5');
+                if (turns.length === 0) return null;
+
+                // 從最後一個 turn 開始，往前找有 AI 回覆的
+                for (let t = turns.length - 1; t >= 0; t--) {
+                    const turn = turns[t];
+                    const children = turn.children;
+                    if (children.length < 2) continue;
+
+                    // 在 turn 的子元素中，從後往前找 AI 回覆（跳過隱藏元素和輸入區）
+                    for (let i = children.length - 1; i >= 1; i--) {
+                        const el = children[i];
+                        const cls = el.className || '';
+                        if (cls.includes('opacity-0') || cls.includes('pt-3') || cls.includes('whitespace-nowrap')) continue;
+
+                        const text = (el.innerText || '').trim();
+                        if (!text) continue;
+                        if (text === 'undo') continue;
+                        // 跳過 thinking/working 區塊
+                        if (/^(Worked for|Thought for|Explored|Generating|Searching|Analyzed|Searched)/.test(text)) continue;
+                        // 跳過用戶訊息（sticky header，含 "undo"）
+                        if (cls.includes('sticky')) continue;
+
+                        // 找到 AI 回覆正文
+                        let hash = 0;
+                        for (let j = 0; j < Math.min(text.length, 200); j++) {
+                            hash = ((hash << 5) - hash + text.charCodeAt(j)) | 0;
                         }
-                    }
-                    if (root.shadowRoot) scanForContainers(root.shadowRoot);
-                    if (root.childNodes) {
-                        for (let i = 0; i < root.childNodes.length; i++) {
-                            const node = root.childNodes[i];
-                            if (node.className && typeof node.className === 'string' && 
-                                (node.className.includes('monaco-editor') || node.className.includes('decorationsOverviewRuler'))) continue;
-                            scanForContainers(node);
-                        }
+                        return { text: text, index: hash };
                     }
                 }
-                
-                scanForContainers(document.body);
-                
-                if (messageContainers.length > 0) {
-                    let validTexts = messageContainers.map(el => el.innerText || el.textContent || "").map(t => t.trim());
-                    let uniqueTexts = validTexts.filter((t, i, arr) => arr.indexOf(t) === i);
-                    
-                    let finalArr = uniqueTexts.filter(t => 
-                        !t.includes('ACTIVE_MODEL') && 
-                        !t.includes('Prioritizing') && 
-                        !t.includes('CRITICAL INSTRUCTION') && 
-                        !t.includes('Top priority is to pick') && 
-                        !t.includes('/remote_uploads/') && 
-                        !t.includes('主管指令') && 
-                        t.length > 5
-                    );
-                    if (finalArr.length > 0) {
-                        return [finalArr[finalArr.length - 1]];
-                    }
-                }
-                return ["ERROR_NO_CONVO_FOUND"];
-            } catch(e) { return [e.toString()]; }
+                return null;
+            } catch(e) { return null; }
         })();
-    "#;
-
-    let command = json!({ "id": 1, "method": "Runtime.evaluate", "params": { "expression": script, "returnByValue": true } });
-    ws_stream.send(Message::Text(command.to_string())).await?;
-
-    let mut messages = vec![];
-    if let Some(Ok(Message::Text(resp_text))) = ws_stream.next().await {
-        let resp: serde_json::Value = serde_json::from_str(&resp_text)?;
-        if let Some(value) = resp["result"]["result"]["value"].as_array() {
-            for v in value {
-                if let Some(content) = v.as_str() {
-                    if !content.trim().is_empty() {
-                        messages.push(ChatMessage {
-                            role: "ai".into(),
-                            content: content.to_string(),
-                            timestamp: Local::now().format("%H:%M").to_string(),
-                        });
-                    }
-                }
-            }
-        } else {
-            // Log what was actually returned to debug selector issues
-            println!("[ARC] Polling raw value: {:?}", resp["result"]["result"]["value"]);
-        }
-    }
-    Ok(messages)
+    "#
 }
 
 async fn inject_to_cursor(content: &str, model: Option<&str>) -> anyhow::Result<serde_json::Value> {
     use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder().timeout(std::time::Duration::from_secs(3)).build()?;
     let targets: Vec<serde_json::Value> = client.get("http://127.0.0.1:9222/json").send().await?.json().await?;
-    let target = targets.into_iter().find(|t| t["title"].as_str().unwrap_or("").contains("singularity_world") && t["type"] == "page")
-        .ok_or_else(|| anyhow::anyhow!("Cursor not found"))?;
+    let target = targets.into_iter()
+        .find(|t| t["type"] == "page" && (
+            t["url"].as_str().unwrap_or("").contains("workbench") ||
+            t["title"].as_str().unwrap_or("").contains("singularity_world")
+        ))
+        .ok_or_else(|| anyhow::anyhow!("No IDE page target found"))?;
     
     let ws_url = target["webSocketDebuggerUrl"].as_str().ok_or_else(|| anyhow::anyhow!("No WS URL"))?;
-    let (mut ws_stream, _) = connect_async(ws_url).await?;
+    let (mut ws_stream, _) = tokio::time::timeout(
+        std::time::Duration::from_secs(5),
+        connect_async(ws_url)
+    ).await.map_err(|_| anyhow::anyhow!("inject connect_async timeout"))??;
 
     if let Some(m) = model {
         let switch_script = format!(
@@ -330,88 +454,70 @@ async fn inject_to_cursor(content: &str, model: Option<&str>) -> anyhow::Result<
         tokio::time::sleep(tokio::time::Duration::from_millis(600)).await; // 等待菜單點擊與渲染
     }
 
-    let focus_script = r#"(function() {
-        const inputs = document.querySelectorAll('textarea, [contenteditable="true"], [role="textbox"]');
-        const chatInput = Array.from(inputs).find(i => 
-            i.ariaLabel?.includes('Message input') || 
-            i.getAttribute('aria-label')?.includes('Message input') ||
-            i.placeholder?.includes('Ask') || 
-            i.ariaLabel?.includes('Chat')
-        );
-        if (chatInput) {
-            chatInput.focus();
-            return { status: "focused", tag: chatInput.tagName };
-        }
-        return { status: "not_found" };
-    })();"#;
-
-    let focus_cmd = json!({ "id": 1, "method": "Runtime.evaluate", "params": { "expression": focus_script, "returnByValue": true } });
-    ws_stream.send(Message::Text(focus_cmd.to_string())).await?;
-
-    // Wait for focus to complete
-    if let Some(Ok(Message::Text(_))) = ws_stream.next().await {
-        // Now use CDP Input API to simulate real user typing & enter
-        let insert_text_cmd = json!({
-            "id": 2,
-            "method": "Input.insertText",
-            "params": {
-                "text": content
+    // 輔助：送 CDP 命令並用 ID 配對回覆
+    async fn cdp_send(
+        ws: &mut tokio_tungstenite::WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>,
+        id: u64,
+        method: &str,
+        params: serde_json::Value,
+    ) -> anyhow::Result<serde_json::Value> {
+        let cmd = json!({ "id": id, "method": method, "params": params });
+        ws.send(Message::Text(cmd.to_string())).await?;
+        let deadline = tokio::time::Instant::now() + std::time::Duration::from_secs(5);
+        loop {
+            match tokio::time::timeout_at(deadline, ws.next()).await {
+                Ok(Some(Ok(Message::Text(raw)))) => {
+                    if let Ok(resp) = serde_json::from_str::<serde_json::Value>(&raw) {
+                        if resp.get("id").and_then(|v| v.as_u64()) == Some(id) {
+                            return Ok(resp);
+                        }
+                    }
+                }
+                Ok(Some(Ok(_))) => continue,
+                _ => anyhow::bail!("CDP response timeout for id {}", id),
             }
-        });
-        ws_stream.send(Message::Text(insert_text_cmd.to_string())).await?;
-        let _ = ws_stream.next().await; // wait for insert text
-
-        let enter_cmd = json!({
-            "id": 3,
-            "method": "Input.dispatchKeyEvent",
-            "params": {
-                "type": "keyDown",
-                "windowsVirtualKeyCode": 13,
-                "key": "Enter",
-                "code": "Enter",
-                "text": "\r",
-                "unmodifiedText": "\r"
-            }
-        });
-        ws_stream.send(Message::Text(enter_cmd.to_string())).await?;
-        let _ = ws_stream.next().await; // wait for enter keyDown
-
-        let enter_up_cmd = json!({
-            "id": 4,
-            "method": "Input.dispatchKeyEvent",
-            "params": {
-                "type": "keyUp",
-                "windowsVirtualKeyCode": 13,
-                "key": "Enter",
-                "code": "Enter"
-            }
-        });
-        ws_stream.send(Message::Text(enter_up_cmd.to_string())).await?;
-        let _ = ws_stream.next().await; // wait for enter keyUp
-
-        // Try clicking send button to ensure submission
-        let click_script = r#"(function() {
-            setTimeout(() => {
-                const buttons = document.querySelectorAll('button, [role="button"], .submit-button, [aria-label*="Send"], .a-icon-send, [title*="Send"]');
-                const sendBtn = Array.from(buttons).find(b => 
-                    b.innerHTML.includes('svg') || 
-                    (b.innerText && b.innerText.includes('Send')) || 
-                    b.ariaLabel?.includes('Send') ||
-                    b.className.includes('send') ||
-                    b.getAttribute('title')?.includes('Send')
-                );
-                if (sendBtn) sendBtn.click();
-            }, 100);
-            return { status: "cdp_injected_and_clicked" };
-        })();"#;
-        let click_cmd = json!({ "id": 5, "method": "Runtime.evaluate", "params": { "expression": click_script, "returnByValue": true } });
-        ws_stream.send(Message::Text(click_cmd.to_string())).await?;
-        
-        if let Some(Ok(Message::Text(res))) = ws_stream.next().await {
-            let resp: serde_json::Value = serde_json::from_str(&res)?;
-            return Ok(resp["result"]["result"]["value"].clone());
         }
     }
-    
-    Ok(json!({"error": "No valid injection response"}))
+
+    // Step 1: Focus input
+    let focus_script = r#"(function() {
+        const input = document.querySelector('[aria-label="Message input"]');
+        if (!input) return { ok: false };
+        input.scrollIntoView({ block: 'center', behavior: 'instant' });
+        input.focus();
+        input.click();
+        return { ok: true };
+    })()"#;
+    let resp = cdp_send(&mut ws_stream, 1, "Runtime.evaluate",
+        json!({ "expression": focus_script, "returnByValue": true })).await?;
+    let focused = resp["result"]["result"]["value"]["ok"].as_bool().unwrap_or(false);
+    if !focused {
+        anyhow::bail!("Chat input not found");
+    }
+    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+
+    // Step 2: Ctrl+A → Backspace 清除殘留
+    cdp_send(&mut ws_stream, 2, "Input.dispatchKeyEvent",
+        json!({"type":"keyDown","key":"a","code":"KeyA","windowsVirtualKeyCode":65,"modifiers":2})).await?;
+    cdp_send(&mut ws_stream, 3, "Input.dispatchKeyEvent",
+        json!({"type":"keyUp","key":"a","code":"KeyA","windowsVirtualKeyCode":65})).await?;
+    tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
+    cdp_send(&mut ws_stream, 4, "Input.dispatchKeyEvent",
+        json!({"type":"keyDown","key":"Backspace","code":"Backspace","windowsVirtualKeyCode":8})).await?;
+    cdp_send(&mut ws_stream, 5, "Input.dispatchKeyEvent",
+        json!({"type":"keyUp","key":"Backspace","code":"Backspace","windowsVirtualKeyCode":8})).await?;
+    tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
+
+    // Step 3: Insert text
+    cdp_send(&mut ws_stream, 6, "Input.insertText",
+        json!({"text": content})).await?;
+    tokio::time::sleep(tokio::time::Duration::from_millis(150)).await;
+
+    // Step 4: Enter 送出
+    cdp_send(&mut ws_stream, 7, "Input.dispatchKeyEvent",
+        json!({"type":"keyDown","key":"Enter","code":"Enter","windowsVirtualKeyCode":13})).await?;
+    cdp_send(&mut ws_stream, 8, "Input.dispatchKeyEvent",
+        json!({"type":"keyUp","key":"Enter","code":"Enter","windowsVirtualKeyCode":13})).await?;
+
+    Ok(json!({"status": "injected"}))
 }

@@ -1,58 +1,49 @@
 {
   "entries": [
     {
-      "id": "seed|2959153|11",
-      "text": "藥材價格穩著，但品種比上個月少了幾樣",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1775492335,
-      "expires_at": 1775495935
-    },
-    {
-      "id": "seed|2959149|5",
-      "text": "今天空氣裡的膠質味比平常濃，像要變天了",
+      "id": "seed|2959192|3",
+      "text": "有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775489933,
-      "expires_at": 1775493533
+      "updated_at": 1775515799,
+      "expires_at": 1775519399
     },
     {
-      "id": "seed|2959151|0",
-      "text": "今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看",
+      "id": "seed|2959194|16",
+      "text": "採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775491134,
-      "expires_at": 1775494734
+      "updated_at": 1775516999,
+      "expires_at": 1775520599
     },
     {
-      "id": "seed|2959152|17",
-      "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
+      "id": "seed|2959191|21",
+      "text": "走廊的老長凳被根鬚纏得更穩了，坐起來比以前舒服",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775491734,
-      "expires_at": 1775495334
+      "updated_at": 1775515199,
+      "expires_at": 1775518799
     },
     {
-      "id": "seed|2959150|12",
-      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
+      "id": "seed|2959193|20",
+      "text": "樓頂的蓄水設施今天開始例行清洗，水量可能會少一會兒",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775490534,
-      "expires_at": 1775494134
+      "updated_at": 1775516399,
+      "expires_at": 1775519999
     },
     {
-      "id": "seed|2959154|29",
-      "text": "最近幾天金屬器具的表面都浮了一層淡淡的礦脈紋路",
+      "id": "seed|2959196|22",
+      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
       "source": "event_seed",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1775492935,
-      "expires_at": 1775496535
+      "weight": 6,
+      "updated_at": 1775517990,
+      "expires_at": 1775521590
     }
   ]
 }

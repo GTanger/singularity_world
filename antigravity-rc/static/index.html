@@ -7,20 +7,27 @@
     <link rel="manifest" href="/manifest.json">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-        .header { padding: 15px; border-bottom: 1px solid #30363d; background: #161b22; display: flex; justify-content: space-between; align-items: center; }
+        body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        .header { padding: 15px; border-bottom: 1px solid #30363d; background: #161b22; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 10; }
         .status-dot { width: 10px; height: 10px; background-color: #238636; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px #238636; }
-        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.5; word-wrap: break-word; overflow-wrap: anywhere; }
-        .msg-user { align-self: flex-end; background-color: #238636; color: white; border-bottom-right-radius: 4px; word-break: break-word; }
-        .msg-ai { align-self: flex-start; background-color: #21262d; border-bottom-left-radius: 4px; border: 1px solid #30363d; word-break: break-word; }
-        .footer { padding: 15px 20px 25px 20px; border-top: 1px solid #30363d; background-color: #161b22; }
-        .input-group-custom { background-color: #0d1117; border: 1px solid #30363d; border-radius: 30px; padding: 6px 18px; display: flex; align-items: center; }
+        .chat-container { flex: 1; overflow-y: auto; padding: 20px 15px; display: flex; flex-direction: column; gap: 16px; scroll-behavior: smooth; }
+        .msg { max-width: 90%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.6; word-wrap: break-word; overflow-wrap: anywhere; white-space: pre-wrap; position: relative; animation: fadeIn 0.15s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-user { align-self: flex-end; background: linear-gradient(135deg, #238636, #2ea043); color: white; border-bottom-right-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .msg-ai { align-self: flex-start; background-color: #21262d; border-bottom-left-radius: 4px; border: 1px solid #30363d; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .msg code { background: #0d1117; padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 14px; color: #ff7b72; }
+        .msg pre { background: #0d1117; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; border: 1px solid #30363d; }
+        .msg pre code { background: transparent; padding: 0; color: #c9d1d9; }
+        .footer { padding: 15px 15px 25px 15px; border-top: 1px solid #30363d; background-color: #161b22; }
+        .input-group-custom { background-color: #0d1117; border: 1px solid #30363d; border-radius: 30px; padding: 4px 14px; display: flex; align-items: center; transition: border-color 0.2s; }
+        .input-group-custom:focus-within { border-color: #58a6ff; }
         #messageInput { background: transparent; border: none; color: white; flex: 1; padding: 10px; outline: none; font-size: 16px; }
-        .btn-upload { background: transparent; border: none; color: #8b949e; margin-right: 12px; font-size: 22px; cursor: pointer; }
-        .preview-container { display: none; padding: 15px; border-top: 1px solid #30363d; background: #0d1117; }
-        .img-preview { max-width: 120px; max-height: 120px; border-radius: 12px; border: 2px solid #30363d; }
+        .btn-upload { background: transparent; border: none; color: #8b949e; margin-right: 8px; font-size: 22px; cursor: pointer; transition: color 0.2s; }
+        .btn-upload:hover { color: #58a6ff; }
+        .preview-container { display: none; padding: 12px; border-top: 1px solid #30363d; background: #0d1117; border-radius: 12px 12px 0 0; }
+        .img-preview { max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid #30363d; }
         .loader { width: 14px; height: 14px; border: 2px solid #fff; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; margin-left: 8px; }
+        .timestamp { font-size: 10px; opacity: 0.6; margin-top: 4px; display: block; text-align: right; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @supports (padding: env(safe-area-inset-bottom)) { .footer { padding-bottom: calc(15px + env(safe-area-inset-bottom)); } }
     </style>
@@ -28,8 +35,8 @@
 <body>
     <div class="header">
         <div>
-            <span class="status-dot"></span><strong>ARC PRO</strong> 
-            <select id="modelSelect" class="form-select form-select-sm d-inline-block w-auto ms-2" style="background-color: #21262d; color: #c9d1d9; border: 1px solid #30363d;">
+            <span class="status-dot" id="statusDot"></span><strong>ARC PRO</strong> 
+            <select id="modelSelect" class="form-select form-select-sm d-inline-block w-auto ms-2" style="background-color: #21262d; color: #c9d1d9; border: 1px solid #30363d; border-radius: 15px;">
                 <option value="">模型: 系統預設</option>
                 <option value="gemini 3.1 pro (high)">Gemini 3.1 Pro (High)</option>
                 <option value="gemini 3 flash">Gemini 3 Flash</option>
@@ -38,19 +45,24 @@
                 <option value="gpt-oss 120b (medium)">GPT-OSS 120B</option>
             </select>
         </div>
-        <div style="font-size: 10px; color: #8b949e;" id="statusText">已連線</div>
+        <div style="font-size: 11px; color: #8b949e; letter-spacing: 0.5px;" id="statusText">正在連線...</div>
     </div>
     
     <div id="chat" class="chat-container"></div>
 
-    <div id="previewArea" class="preview-container"><img id="imgPreview" class="img-preview" src=""><button onclick="clearImage()" class="btn btn-sm btn-danger rounded-circle ms-2">×</button></div>
+    <div id="previewArea" class="preview-container">
+        <div class="position-relative d-inline-block">
+            <img id="imgPreview" class="img-preview" src="">
+            <button onclick="clearImage()" class="btn btn-sm btn-danger rounded-circle position-absolute" style="top: -10px; right: -10px; width: 22px; height: 22px; padding: 0;">×</button>
+        </div>
+    </div>
 
     <div class="footer">
         <div class="input-group-custom">
             <label for="imageUpload" class="btn-upload">📎</label>
             <input type="file" id="imageUpload" style="display: none;" accept="image/*" onchange="handleImageSelect(event)">
-            <input type="text" id="messageInput" placeholder="與本機流暢同步..." onkeypress="handleKey(event)">
-            <button id="sendBtn" class="btn btn-success btn-sm rounded-pill px-4 py-2" onclick="sendMessage()">發送</button>
+            <input type="text" id="messageInput" placeholder="與本機流暢同步..." onkeypress="handleKey(event)" autocomplete="off">
+            <button id="sendBtn" class="btn btn-success btn-sm rounded-pill px-4 py-2 fw-bold" onclick="sendMessage()">發送</button>
         </div>
     </div>
 
@@ -58,43 +70,95 @@
         let selectedFile = null;
         let ws = null;
 
+        // Simple Markdown parser
+        function parseMarkdown(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                .replace(/```([\s\S]+?)```/g, '<pre><code>$1</code></pre>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color: #58a6ff;">$1</a>');
+        }
+
         function connectWS() {
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+            const url = `${protocol}//${window.location.host}/ws`;
+            console.log('[ARC-PWA] Connecting WS:', url);
+            ws = new WebSocket(url);
             
             ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                addMessage(data.content, data.role);
+                try {
+                    const data = JSON.parse(event.data);
+                    addMessage(data.content, data.role, data.timestamp, data.index);
+                } catch(e) { console.error('[ARC-PWA] Parse error:', e); }
             };
 
             ws.onclose = () => {
-                document.getElementById('statusText').innerText = '連線中斷... 重試中';
+                document.getElementById('statusText').innerText = '斷開，重連中...';
+                document.getElementById('statusDot').style.backgroundColor = '#f85149';
+                document.getElementById('statusDot').style.boxShadow = '0 0 8px #f85149';
                 setTimeout(connectWS, 2000);
             };
 
             ws.onopen = () => {
-                document.getElementById('statusText').innerText = '雙向同步中';
+                document.getElementById('statusText').innerText = '已連線 ✓';
+                document.getElementById('statusDot').style.backgroundColor = '#238636';
+                document.getElementById('statusDot').style.boxShadow = '0 0 8px #238636';
+                if (window.navigator.vibrate) window.navigator.vibrate(50);
             }
         }
 
-        connectWS();
+        // HTTP poll fallback
+        async function pollFallback() {
+            if (ws && ws.readyState === WebSocket.OPEN) return;
+            try {
+                const resp = await fetch('/poll');
+                const data = await resp.json();
+                if (data.history) {
+                    data.history.forEach(msg => addMessage(msg.content, msg.role, msg.timestamp, msg.index));
+                }
+            } catch(e) {}
+        }
 
-        function addMessage(text, role) {
+        connectWS();
+        setInterval(pollFallback, 3000);
+
+        function addMessage(text, role, time, index) {
             const chat = document.getElementById('chat');
             
-            // If the incoming message is from AI and the last message was also from AI, update instead of append
-            // This handles the streaming text generation perfectly!
-            if (role === 'ai' && chat.lastElementChild && chat.lastElementChild.classList.contains('msg-ai')) {
-                chat.lastElementChild.innerText = text;
-                chat.scrollTop = chat.scrollHeight;
+            // Update existing AI message by index
+            if (role === 'ai' && index !== undefined && index !== null) {
+                const existing = document.querySelector(`.msg-ai[data-index="${index}"]`);
+                if (existing) {
+                    if (existing.dataset.raw === text) return;
+                    existing.innerHTML = parseMarkdown(text) + `<span class="timestamp">${time}</span>`;
+                    existing.dataset.raw = text;
+                    chat.scrollTop = chat.scrollHeight;
+                    return;
+                }
+            }
+
+            // De-dupe identical recent content
+            if (chat.lastElementChild && chat.lastElementChild.dataset.raw === text && chat.lastElementChild.classList.contains(`msg-${role}`)) {
                 return;
             }
 
             const div = document.createElement('div');
             div.className = `msg msg-${role}`;
-            div.innerText = text;
+            div.dataset.raw = text;
+            if (index !== undefined && index !== null) div.dataset.index = index;
+            div.innerHTML = parseMarkdown(text) + `<span class="timestamp">${time}</span>`;
             chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
+            // Auto-scroll logic
+            if (chat.scrollHeight - chat.scrollTop - chat.clientHeight < 100) {
+                chat.scrollTop = chat.scrollHeight;
+            }
+
+            // Haptic feedback for AI response
+            if (role === 'ai' && document.visibilityState !== 'visible') {
+                if (window.navigator.vibrate) window.navigator.vibrate([80, 40, 80]);
+            }
         }
 
         function handleImageSelect(event) {
@@ -135,10 +199,10 @@
                     clearImage();
                     input.value = '';
                 } else {
-                    addMessage("注入失敗: " + result.detail, 'ai');
+                    addMessage("注入失敗: " + result.detail, 'ai', "Error", -1);
                 }
             } catch (err) {
-                addMessage("連線斷開: " + err, 'ai');
+                addMessage("連線斷開: " + err, 'ai', "Error", -1);
             } finally {
                 btn.disabled = false;
                 btn.innerText = '發送';
