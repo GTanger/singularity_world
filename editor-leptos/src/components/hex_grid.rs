@@ -2,8 +2,9 @@
 
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
+use std::collections::HashMap;
 use wasm_bindgen::JsCast;
-use crate::types::{HexCell, HexCoord, ToolMode};
+use crate::types::{HexCell, HexCoord, Terrain, ToolMode};
 
 const HEX_R: f64 = 28.0;
 const SQRT3: f64 = 1.7320508075688772;
@@ -16,8 +17,39 @@ const HEX_VERT_OFFSETS: [(f64, f64); 6] = [
     (24.24871130596428, -14.0),
 ];
 
-/// 每格房間之六角邊線（深霧灰；鄰格共用邊會疊畫，略加深分界）
+/// 地圖外緣、或**不同屬性**兩格之分界（深霧灰）
 const CELL_HEX_OUTLINE_COLOR: &str = "#5c6570";
+/// **同屬性連群**內側邊：每邊只畫一次，偏淡
+const CELL_HEX_INNER_EDGE_COLOR: &str = "rgba(92,101,112,0.20)";
+
+/// 與標籤／合併規則一致：**同地形**且（無自訂名 **或** 自訂名相同）才算同一連群
+#[derive(Clone, PartialEq, Eq, Hash)]
+enum LabelMergeKey {
+    TerrainOnly(Terrain),
+    TerrainAndName { terrain: Terrain, name: String },
+}
+
+fn label_merge_key(cell: &HexCell) -> LabelMergeKey {
+    let n = cell.name.trim();
+    if n.is_empty() {
+        LabelMergeKey::TerrainOnly(cell.terrain)
+    } else {
+        LabelMergeKey::TerrainAndName {
+            terrain: cell.terrain,
+            name: n.to_string(),
+        }
+    }
+}
+
+/// 邊 `i`（頂點 `i → (i+1)%6`）對側鄰格之 axial 增量（與 `HEX_VERT_OFFSETS` 一致）
+const EDGE_NEIGHBOR_DR: [(i32, i32); 6] = [
+    (0, 1),
+    (-1, 1),
+    (-1, 0),
+    (0, -1),
+    (1, -1),
+    (1, 0),
+];
 
 /// 畫面上顯示用的地名／地形字（與下方文字繪製一致）
 fn cell_display_label(cell: &HexCell) -> String {
@@ -44,7 +76,7 @@ fn label_with_thin_space_gaps(s: &str) -> String {
     out
 }
 
-/// 每格獨立描完整六角邊（每格即房間、六向出口；配合指處位移／走格辨識）
+/// 每格六角邊：**同屬性連群**內側用淡線；**外緣**或**異屬性鄰格**分界用深線（每邊只畫一次）
 fn stroke_each_cell_hex_outline(
     ctx: &web_sys::CanvasRenderingContext2d,
     cells: &[HexCell],
@@ -55,24 +87,54 @@ fn stroke_each_cell_hex_outline(
     max_y: f64,
 ) {
     let line_w = (1.0 / cam_zoom).clamp(0.55, 2.0);
-    ctx.set_stroke_style_str(CELL_HEX_OUTLINE_COLOR);
     ctx.set_line_width(line_w);
     ctx.set_line_cap("round");
     ctx.set_line_join("round");
 
-    let (ox0, oy0) = HEX_VERT_OFFSETS[0];
+    let mut at: HashMap<(i32, i32), &HexCell> = HashMap::with_capacity(cells.len());
     for c in cells {
-        let (px, py) = coord_to_pixel(c.coord.q, c.coord.r);
+        at.insert((c.coord.q, c.coord.r), c);
+    }
+
+    for c in cells {
+        let q = c.coord.q;
+        let r = c.coord.r;
+        let (px, py) = coord_to_pixel(q, r);
         if px < min_x || px > max_x || py < min_y || py > max_y {
             continue;
         }
-        ctx.begin_path();
-        ctx.move_to(px + ox0, py + oy0);
-        for (ox, oy) in HEX_VERT_OFFSETS.iter().skip(1) {
-            ctx.line_to(px + *ox, py + *oy);
+        let my_key = label_merge_key(c);
+        for ei in 0..6 {
+            let (dq, dr) = EDGE_NEIGHBOR_DR[ei];
+            let nq = q + dq;
+            let nr = r + dr;
+            let Some(nc) = at.get(&(nq, nr)) else {
+                ctx.set_stroke_style_str(CELL_HEX_OUTLINE_COLOR);
+                let (ax, ay) = HEX_VERT_OFFSETS[ei];
+                let (bx, by) = HEX_VERT_OFFSETS[(ei + 1) % 6];
+                ctx.begin_path();
+                ctx.move_to(px + ax, py + ay);
+                ctx.line_to(px + bx, py + by);
+                ctx.stroke();
+                continue;
+            };
+            // 有鄰格：只由 (q,r) 較小者畫一次
+            if (q, r) > (nq, nr) {
+                continue;
+            }
+            let same_group = label_merge_key(nc) == my_key;
+            if same_group {
+                ctx.set_stroke_style_str(CELL_HEX_INNER_EDGE_COLOR);
+            } else {
+                ctx.set_stroke_style_str(CELL_HEX_OUTLINE_COLOR);
+            }
+            let (ax, ay) = HEX_VERT_OFFSETS[ei];
+            let (bx, by) = HEX_VERT_OFFSETS[(ei + 1) % 6];
+            ctx.begin_path();
+            ctx.move_to(px + ax, py + ay);
+            ctx.line_to(px + bx, py + by);
+            ctx.stroke();
         }
-        ctx.close_path();
-        ctx.stroke();
     }
 }
 
@@ -766,7 +828,7 @@ pub fn HexGrid(
             rf_min = rf_min.min(ar);
             rf_max = rf_max.max(ar);
         }
-        // 每格即房間：完整六角邊線（六向出口可視分界）
+        // 每格即房間：同屬性連群內淡線，外緣／異屬性分界深線（每邊只畫一次）
         if cam.zoom >= 0.22 {
             stroke_each_cell_hex_outline(&ctx, &cs, cam.zoom, min_x, max_x, min_y, max_y);
         }
