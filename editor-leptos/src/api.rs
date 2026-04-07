@@ -58,11 +58,6 @@ pub async fn load_grid() -> Result<GridResponse, String> {
         .map_err(|e| format!("JSON 解析失敗：{e}"))
 }
 
-/// 先自 PostgreSQL 重載世界格網再 GET——與遊戲執行期寫入之釘死彩格對齊（地圖編輯器建議用此載入）。
-pub async fn sync_load_grid() -> Result<GridResponse, String> {
-    let _ = reload_grid().await;
-    load_grid().await
-}
 
 pub async fn put_cell(cell: &CellPutReq) -> Result<(), String> {
     let resp = Request::put(&api_url("/api/hex/cell"))
