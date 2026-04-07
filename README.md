@@ -11,10 +11,10 @@
 ## 專案現況
 
 - **後端：Rust 服務**（Axum 0.8 + Tokio）。
-- **資料儲存**：**PostgreSQL 為權威持久層**；記憶體為讀取快取；`data/` 下 JSON 為種子、靜態設定與可選備份——執行期真理以資料庫為準（細節見 `AGENTS.md`、`docs/技術約束規則.md`）。
-- **主要路徑**：`data/rooms/editor/`（房間種子／編輯）、`data/runtime/`（執行期快照等）；實體與房間等遊戲狀態以 PG 為主。
-- **前端**：原生 HTML/CSS/JS (PWA)，提供遊戲頁面與管理工具組（房間編輯器、地圖、星圖）。
-- **進度**：Phase 0–5 遷移已全數完成。
+- **資料儲存**：**PostgreSQL 為唯一權威持久層**；執行期真理以資料庫為準。`data/` 下 JSON 僅作種子、靜態設定與開發備份（細節見 `AGENTS.md`、`docs/技術約束規則.md`）。
+- **主要路徑**：單一六角格世界模型（HexGrid）；實體與資源點等遊戲狀態以 PG 為主。
+- **前端**：原生 HTML/CSS/JS (PWA)，提供遊戲頁面與管理工具組（`/hex-editor/`、星圖）。
+- **進度**：Phase 5 遷移完成，現正於 Hex 基礎上建立「資源與經濟 (Phase 6)」架構。
 
 ---
 
@@ -40,18 +40,15 @@
 
 用途：通過閘門後，建置後端與 Hex 編輯器並啟動伺服器（預設埠：1721）。
 
-僅需跑閘門（clippy／test／checkrooms）而不建置、不啟動時，可用：`make verify`（與 `./start` 前段檢查相同）。
-
 ---
 
 ## 常用路由與 API
 
-- **遊戲端**：`/` (Index), `/ws` (WebSocket)
-- **工具端**：`/map_viewer`, `/hex-editor/`, `/dashboard`, `/star_chart`, `/admin`（房間心智圖 API：`/api/room-editor/*`）
+- **遊戲端**：`/`, `/ws` (WebSocket)
+- **工具端**：`/hex-editor/`, `/star_chart`, `/admin`
 - **資料 API**：
-    - `/data/rooms.json`：全量地圖資料
-    - `/api/design-constants`：UI 常數同步
-    - `/api/room-editor/graph`：可視化編輯器圖資
+    - `/api/hex/grid`：全量地圖格網資料
+    - `/api/action/gather`：資源採集接口 (PG 驅動)
     - `/api/topology`：星圖演化拓撲
 
 ---
@@ -62,20 +59,18 @@
 singularity_world/
 ├── src/
 │   ├── main.rs         # 程式進入點
-│   ├── lib.rs          # 模組外括
-│   ├── server/         # Axum 路由、WS Hub、Session、Room Editor API
-│   ├── store/          # PostgreSQL＋記憶體快取；JSON 非執行期唯一真理
-│   ├── db/             # 資料存取與業務封裝（密碼驗證、地圖查詢、拓撲計算）
+│   ├── server/         # Axum 路由、WS Hub、Session、Hex API
+│   ├── store/          # PostgreSQL 權威驅動；拒絕依賴執行期 JSON
+│   ├── world/          # 世界地圖、區塊管理、資源點系統 (resource.rs)
+│   ├── hex/            # 六角格座標計算、揭露與玩家視野
 │   ├── game/           # 遊戲主循環、NPC 模擬、動作分派 (do_action)
-│   ├── world/          # 世界地圖、區塊管理、地形顯示
 │   ├── combat/         # 戰鬥結算判定
-│   ├── npc/            # NPC 決策、話語池、社交觸發
-│   ├── ai/             # Ollama LLM 整合、Prompt 管理、內容過濾
-│   ├── bin/            # 獨立工具（如 checkrooms）
-│   └── roomcheck/      # 房間契約檢查邏輯庫
-├── data/               # 房間 JSON、設定檔、實體快照
+│   ├── npc/            # NPC 決策 (10.21)、話語池、社交觸發
+│   ├── ai/             # Ollama LLM 整合、Prompt 管理
+│   └── bin/            # 獨立工具（如 checkrooms）
+├── data/               # 房間 JSON (種子)、設定檔、資料快照
 ├── web/                # 前端靜態資源 (HTML/CSS/JS)
-└── docs/               # 設計文獻、遷移說明、API 文法
+└── docs/               # 設計文獻、API 規範、實作建議
 ```
 
 ---
@@ -86,14 +81,10 @@ singularity_world/
 
 | 用途 | 路徑 |
 | --- | --- |
-| 008 目錄速查（模組／`docs/` 子目錄樹） | [`docs/INDEX.md`](docs/INDEX.md) |
-| 遷移說明（後端已 Rust 化） | [`docs/migration/README.md`](docs/migration/README.md) |
-| 技術約束與協作 | [`docs/技術約束規則.md`](docs/技術約束規則.md)、[`docs/COLLABORATION.md`](docs/COLLABORATION.md) |
-| 可調參數與文案脈絡 | [`docs/config/PARAMETERS_INDEX.md`](docs/config/PARAMETERS_INDEX.md) |
+| 資源點系統規範 | [`docs/design/資源點實作規範.md`](docs/design/資源點實作規範.md) |
+| 累積記憶與偏好 | [`docs/AGENTS_LEARNED.md`](docs/AGENTS_LEARNED.md) |
 | 代理精簡入口 | 根目錄 [`AGENTS.md`](AGENTS.md) |
-
-決策記錄（ADRs）位於 `docs/decisions/`。
 
 ---
 
-*奇點世界 — 萬物皆為 Token，演化永不止息。*
+*奇點世界 — 萬物皆為及時映射的 Token，演化永不止息。*
