@@ -19,10 +19,24 @@ use futures_util::{SinkExt, StreamExt};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 struct ChatMessage {
+    id: String,
     role: String,
     content: String,
     timestamp: String,
     index: Option<i32>,
+}
+
+static MSG_SEQ: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+static BOOT_TS: std::sync::OnceLock<u64> = std::sync::OnceLock::new();
+fn next_msg_id() -> String {
+    let boot = *BOOT_TS.get_or_init(|| {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
+    });
+    let seq = MSG_SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    format!("{}-{}", boot, seq)
 }
 
 #[derive(Serialize, Deserialize)]
@@ -55,7 +69,6 @@ async fn main() {
         use futures_util::{SinkExt as _, StreamExt as _};
 
         let mut last_content = String::new();
-        let mut last_index = -1;
         let mut ws_stream: Option<tokio_tungstenite::WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>> = None;
         let mut cmd_id: u64 = 1;
 
@@ -117,36 +130,41 @@ async fn main() {
                 Ok(Ok(resp)) => {
                     if let Some(res) = resp["result"]["result"]["value"].as_object() {
                         let content = res.get("text").and_then(|v| v.as_str()).unwrap_or("");
-                        let index = res.get("index").and_then(|v| v.as_i64()).map(|v| v as i32);
+                        let _index = res.get("index").and_then(|v| v.as_i64()).map(|v| v as i32);
                         
-                        if !content.trim().is_empty() && (content != last_content || index != Some(last_index)) {
+                        if !content.trim().is_empty() && content != last_content {
                             last_content = content.to_string();
-                            last_index = index.unwrap_or(-1);
-                            
+
+                            // AI 回覆的 index = user 訊息計數，同一輪對話共享 index
+                            let mut hist = state_for_task.history.write().await;
+                            let user_count = hist.iter().filter(|m| m.role == "user").count() as i32;
+                            let ai_index = user_count; // 每次 user 發言後 +1，AI streaming 不變
+
                             let msg = ChatMessage {
+                                id: next_msg_id(),
                                 role: "ai".into(),
                                 content: content.to_string(),
                                 timestamp: Local::now().format("%H:%M").to_string(),
-                                index,
+                                index: Some(ai_index),
                             };
-                            
-                            // Update or push to history
-                            let mut hist = state_for_task.history.write().await;
-                            let mut updated = false;
-                            if let Some(idx) = index {
-                                for m in hist.iter_mut() {
-                                    if m.role == "ai" && m.index == Some(idx) {
-                                        m.content = content.to_string();
-                                        updated = true;
-                                        break;
-                                    }
+
+                            // 覆蓋同 index 的 AI 訊息（streaming 更新），否則新增
+                            let mut replaced = false;
+                            for m in hist.iter_mut().rev() {
+                                if m.role == "ai" && m.index == Some(ai_index) {
+                                    m.content = content.to_string();
+                                    m.timestamp = msg.timestamp.clone();
+                                    m.id = msg.id.clone();
+                                    replaced = true;
+                                    break;
                                 }
+                                if m.role == "user" { break; }
                             }
-                            if !updated {
+                            if !replaced {
                                 if hist.len() >= 50 { hist.remove(0); }
                                 hist.push(msg.clone());
                             }
-                            
+
                             let _ = state_for_task.tx.send(msg);
                         }
                     }
@@ -276,6 +294,7 @@ async fn handle_chat(
             println!("[ARC] Injection Result: {}", res);
 
             let msg = ChatMessage {
+                id: next_msg_id(),
                 role: "user".into(),
                 content: text,
                 timestamp: Local::now().format("%H:%M").to_string(),
@@ -333,43 +352,19 @@ fn get_extraction_script() -> &'static str {
     r#"
         (function() {
             try {
-                // Antigravity 結構：scroll area → mx-auto → gap-y-3 px-4 → 多個 gap-0.5（每個是一個 turn）
+                // Antigravity 結構：scroll area 內，AI 正文元素統一是 class="px-2 py-1"
                 const scrollArea = document.querySelector('.h-full.overflow-y-auto.min-h-0');
                 if (!scrollArea) return null;
 
-                // 找所有 turn 容器（gap-0.5），取最後一個可見的
-                const turns = scrollArea.querySelectorAll('.flex.flex-col.gap-0\\.5');
-                if (turns.length === 0) return null;
+                // 找所有 AI 正文區塊（px-2 py-1），取最後一個
+                const replies = scrollArea.querySelectorAll('.px-2.py-1');
+                if (replies.length === 0) return null;
 
-                // 從最後一個 turn 開始，往前找有 AI 回覆的
-                for (let t = turns.length - 1; t >= 0; t--) {
-                    const turn = turns[t];
-                    const children = turn.children;
-                    if (children.length < 2) continue;
+                const last = replies[replies.length - 1];
+                const text = (last.innerText || '').trim();
+                if (!text) return null;
 
-                    // 在 turn 的子元素中，從後往前找 AI 回覆（跳過隱藏元素和輸入區）
-                    for (let i = children.length - 1; i >= 1; i--) {
-                        const el = children[i];
-                        const cls = el.className || '';
-                        if (cls.includes('opacity-0') || cls.includes('pt-3') || cls.includes('whitespace-nowrap')) continue;
-
-                        const text = (el.innerText || '').trim();
-                        if (!text) continue;
-                        if (text === 'undo') continue;
-                        // 跳過 thinking/working 區塊
-                        if (/^(Worked for|Thought for|Explored|Generating|Searching|Analyzed|Searched)/.test(text)) continue;
-                        // 跳過用戶訊息（sticky header，含 "undo"）
-                        if (cls.includes('sticky')) continue;
-
-                        // 找到 AI 回覆正文
-                        let hash = 0;
-                        for (let j = 0; j < Math.min(text.length, 200); j++) {
-                            hash = ((hash << 5) - hash + text.charCodeAt(j)) | 0;
-                        }
-                        return { text: text, index: hash };
-                    }
-                }
-                return null;
+                return { text: text, index: replies.length };
             } catch(e) { return null; }
         })();
     "#

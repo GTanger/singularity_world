@@ -475,28 +475,6 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     // 1. 房間始終從檔案系統載入（編輯器工作流）
     s.load_rooms(rooms_path)?;
 
-    // 1b. 城市 GeoJSON（data/cities/{burg_id}.json）→ 記憶體房間，不寫 rooms JSON
-    let cities_dir = data.join("cities");
-    if cities_dir.is_dir() {
-        if let Ok(entries) = fs::read_dir(&cities_dir) {
-            for entry in entries.flatten() {
-                let p = entry.path();
-                if p.extension().is_none_or(|e| e != "json") {
-                    continue;
-                }
-                match crate::city::load_and_inject(&mut s, &p) {
-                    Ok(stats) => tracing::info!(
-                        "[city] burg_id={} 載入: {} 語意節點（城門+區坊）, {} 可進建築",
-                        stats.burg_id,
-                        stats.junctions,
-                        stats.buildings
-                    ),
-                    Err(e) => tracing::warn!("[city] 載入失敗 {:?}: {}", p, e),
-                }
-            }
-        }
-    }
-
     // 2. 初始化 PostgreSQL 連線池
     let pg_url = std::env::var("DATABASE_URL")
         .unwrap_or_else(|_| "postgres://postgres:singularity@localhost:5432/singularity".to_string());

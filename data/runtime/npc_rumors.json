@@ -1,49 +1,67 @@
 {
   "entries": [
     {
-      "id": "seed|2959192|3",
-      "text": "有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的",
+      "id": "seed|2959265|0",
+      "text": "今早走廊牆縫裡的玉質脈絡又長了一截，紋路很好看",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775515799,
-      "expires_at": 1775519399
+      "updated_at": 1775559131,
+      "expires_at": 1775562731
     },
     {
-      "id": "seed|2959194|16",
-      "text": "採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理",
+      "id": "seed|2959268|12",
+      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775560946,
+      "expires_at": 1775564546
+    },
+    {
+      "id": "seed|2959266|26",
+      "text": "今天的游離輻射塵好像比平常多一些，空氣裡有淡淡的粉光",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775516999,
-      "expires_at": 1775520599
+      "updated_at": 1775559690,
+      "expires_at": 1775563290
     },
     {
-      "id": "seed|2959191|21",
-      "text": "走廊的老長凳被根鬚纏得更穩了，坐起來比以前舒服",
+      "id": "seed|2959264|12",
+      "text": "有採集隊從城外回來說，霜林靠近城側的那片最近長得特別快",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775515199,
-      "expires_at": 1775518799
+      "updated_at": 1775558531,
+      "expires_at": 1775562131
     },
     {
-      "id": "seed|2959193|20",
-      "text": "樓頂的蓄水設施今天開始例行清洗，水量可能會少一會兒",
+      "id": "seed|2959267|26",
+      "text": "今天的游離輻射塵好像比平常多一些，空氣裡有淡淡的粉光",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775560585,
+      "expires_at": 1775564185
+    },
+    {
+      "id": "seed|2959267|24",
+      "text": "昨晚牆面的玉質脈絡突然閃了一下暗紫色的光，只持續了幾秒",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1775560291,
+      "expires_at": 1775563891
+    },
+    {
+      "id": "seed|2959263|5",
+      "text": "今天空氣裡的膠質味比平常濃，像要變天了",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1775516399,
-      "expires_at": 1775519999
-    },
-    {
-      "id": "seed|2959196|22",
-      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 6,
-      "updated_at": 1775517990,
-      "expires_at": 1775521590
+      "updated_at": 1775557931,
+      "expires_at": 1775561531
     }
   ]
 }

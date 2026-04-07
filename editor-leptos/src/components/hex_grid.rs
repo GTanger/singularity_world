@@ -266,7 +266,6 @@ pub fn HexGrid(
     #[prop(into)] on_select_toggle: Callback<HexCoord>,
     #[prop(into)] on_select_add: Callback<HexCoord>,
     #[prop(into)] on_move_selection: Callback<(HexCoord, HexCoord)>,
-    #[prop(into)] on_load_json: Callback<HexCoord>,
 ) -> impl IntoView {
     let (camera, set_camera) = signal(Camera::default());
     let (panning, set_panning) = signal(false);
@@ -277,8 +276,6 @@ pub fn HexGrid(
     let (cam_start, set_cam_start) = signal((0.0_f64, 0.0_f64));
     let (container_size, set_container_size) = signal((800.0_f64, 600.0_f64));
     let (touch_dist, set_touch_dist) = signal(0.0_f64);
-    let (ctx_menu_pos, set_ctx_menu_pos) = signal((0.0_f64, 0.0_f64));
-    let (ctx_menu_coord, set_ctx_menu_coord) = signal::<Option<HexCoord>>(None);
     let (move_anchor, set_move_anchor) = signal::<Option<HexCoord>>(None);
     let (select_start, set_select_start) = signal::<Option<HexCoord>>(None);
     let (select_dragged, set_select_dragged) = signal(false);
@@ -403,7 +400,6 @@ pub fn HexGrid(
                 // 左鍵：繪製；中鍵：平移；右鍵：載入 JSON
                 if ev.button() == 0 {
                     ev.prevent_default();
-                    set_ctx_menu_coord.set(None);
                     let rect = canvas_view_rect(&canvas_for_down);
                     let sx = ev.client_x() as f64 - rect.left();
                     let sy = ev.client_y() as f64 - rect.top();
@@ -453,7 +449,6 @@ pub fn HexGrid(
                 }
                 if ev.button() == 1 {
                     ev.prevent_default();
-                    set_ctx_menu_coord.set(None);
                     set_panning.set(true);
                     set_painting.set(false);
                     set_drag_start.set((ev.client_x() as f64, ev.client_y() as f64));
@@ -472,8 +467,6 @@ pub fn HexGrid(
                     let sy = ev.client_y() as f64 - rect.top();
                     let coord = pick_coord_at(sx, sy, rect.width(), rect.height());
                     set_selected.set(Some(coord));
-                    set_ctx_menu_pos.set((sx, sy));
-                    set_ctx_menu_coord.set(Some(coord));
                 }
             }
         });
@@ -572,7 +565,6 @@ pub fn HexGrid(
             let canvas_for_touch = canvas.clone();
             move |ev: web_sys::TouchEvent| {
                 let touches = ev.touches();
-                set_ctx_menu_coord.set(None);
                 if touches.length() == 1 {
                     if let Some(t) = touches.get(0) {
                         let rect = canvas_view_rect(&canvas_for_touch);
@@ -886,52 +878,13 @@ pub fn HexGrid(
         ctx.restore();
     });
 
-    let on_ctx_load_json = {
-        let on_load_json = on_load_json;
-        move |_| {
-            if let Some(coord) = ctx_menu_coord.get() {
-                on_load_json.run(coord);
-            }
-            set_ctx_menu_coord.set(None);
-        }
-    };
-
-    let on_ctx_delete = {
-        let on_erase = on_erase;
-        move |_| {
-            if let Some(coord) = ctx_menu_coord.get() {
-                on_erase.run(coord);
-            }
-            set_ctx_menu_coord.set(None);
-        }
-    };
-
-    let hide_ctx_menu = move |ev: leptos::ev::MouseEvent| {
-        if ev.button() == 0 {
-            set_ctx_menu_coord.set(None);
-        }
-    };
-
     view! {
-        <div class="hex-grid-wrap" on:mousedown=hide_ctx_menu>
+        <div class="hex-grid-wrap">
             <canvas
                 node_ref=canvas_ref
                 style="background:#0f1923;touch-action:none;-webkit-user-select:none;user-select:none"
             >
             </canvas>
-            <Show when=move || ctx_menu_coord.get().is_some()>
-                <div
-                    class="hex-ctx-menu"
-                    style=move || {
-                        let (x, y) = ctx_menu_pos.get();
-                        format!("left:{:.1}px;top:{:.1}px;", x, y)
-                    }
-                    on:mousedown=move |ev| ev.stop_propagation()
-                >
-                    <button class="hex-ctx-item" on:click=on_ctx_load_json>"載入 JSON（Watabou）"</button>
-                    <button class="hex-ctx-item danger" on:click=on_ctx_delete>"刪除當前格"</button>
-                </div>
-            </Show>
         </div>
     }
 }
