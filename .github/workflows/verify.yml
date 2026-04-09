@@ -19,5 +19,15 @@ jobs:
           components: clippy
           targets: wasm32-unknown-unknown
 
+      - name: Rust version
+        run: rustc --version && cargo --version
+
       - name: make verify
-        run: make verify
+        run: make verify 2>&1 | tee /tmp/verify.log
+
+      - name: Upload log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-log
+          path: /tmp/verify.log
