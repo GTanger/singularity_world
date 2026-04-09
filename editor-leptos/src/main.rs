@@ -68,8 +68,6 @@ fn App() -> impl IntoView {
     };
 
     let on_paint = {
-        let set_status = set_status;
-        let reload_grid = reload_grid;
         move |coord: HexCoord| {
             let terrain = brush_terrain.get_untracked();
             leptos::task::spawn_local(async move {
@@ -92,8 +90,6 @@ fn App() -> impl IntoView {
     };
 
     let on_erase = {
-        let set_status = set_status;
-        let reload_grid = reload_grid;
         move |coord: HexCoord| {
             leptos::task::spawn_local(async move {
                 if let Err(e) = api::delete_cell(coord.q, coord.r).await {
