@@ -183,6 +183,80 @@ impl Terrain {
         }
     }
 
+    pub fn color(self) -> &'static str {
+        match self {
+            // 自然地形
+            Terrain::Plain       => "#c8c4a0",
+            Terrain::Grassland   => "#a4b870",
+            Terrain::Forest      => "#5a7a3a",
+            Terrain::ForestHeavy => "#3d5c28",
+            Terrain::ForestLight => "#7a9a52",
+            Terrain::Jungle      => "#3a6e3a",
+            Terrain::Hills       => "#9a8e60",
+            Terrain::Mountain    => "#7a7a7a",
+            Terrain::Water       => "#4a7a9a",
+            Terrain::WaterDeep   => "#2a4a6a",
+            Terrain::Desert      => "#c8a858",
+            Terrain::Swamp       => "#5a6848",
+            Terrain::Tundra      => "#a0aab0",
+
+            // 基礎設施
+            Terrain::Road        => "#8a8068",
+            Terrain::Bridge      => "#7a6a4a",
+            Terrain::Wall        => "#4a4e56",
+
+            // 農業
+            Terrain::FarmField   => "#8aaa48",
+            Terrain::Farmhouse   => "#9a8a5a",
+            Terrain::Granary     => "#a09050",
+
+            // 住宅
+            Terrain::Urban       => "#7a7068",
+
+            // 商業
+            Terrain::Market      => "#b8884a",
+            Terrain::GeneralStore=> "#9a7a52",
+            Terrain::Bank        => "#8a7a5a",
+            Terrain::Mint        => "#8a8a5a",
+            Terrain::Warehouse   => "#6a6858",
+            Terrain::Dock        => "#5a7888",
+
+            // 服務
+            Terrain::Inn         => "#9a7040",
+            Terrain::Tavern      => "#8a5a3a",
+            Terrain::Clinic      => "#6a8a6a",
+            Terrain::Bathhouse   => "#5a8a8a",
+            Terrain::Stables     => "#7a6a4a",
+            Terrain::Caravanserai=> "#8a7848",
+
+            // 工藝
+            Terrain::Blacksmith  => "#5a5a6a",
+            Terrain::Workshop    => "#7a6a50",
+            Terrain::Alchemist   => "#6a5a7a",
+
+            // 宗教文教
+            Terrain::Temple      => "#7a6a80",
+            Terrain::Academy     => "#5a6a80",
+            Terrain::Library     => "#6a7a7a",
+            Terrain::Observatory => "#5a6878",
+
+            // 軍政
+            Terrain::Barracks    => "#6a5a4a",
+            Terrain::GuardPost   => "#6a6050",
+            Terrain::Courthouse  => "#6a6a6a",
+            Terrain::Jail        => "#4a4a50",
+            Terrain::TownHall    => "#7a7068",
+            Terrain::PrisonYard  => "#4a4848",
+
+            // 特殊
+            Terrain::GuildHall   => "#7a6860",
+            Terrain::Theater     => "#8a5a6a",
+            Terrain::Arena       => "#8a6a4a",
+            Terrain::MageTower   => "#5a5a8a",
+            Terrain::Embassy     => "#6a6a78",
+        }
+    }
+
     pub fn serde_name(self) -> &'static str {
         match self {
             Terrain::Plain => "plain",

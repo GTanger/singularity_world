@@ -49,8 +49,8 @@ src/event/               — 事件常數與紀錄
 src/gametext/            — 文案模板（從 JSON 載入）
 src/server/              — axum HTTP/WebSocket、session、simulation loop
 web/                     — 前端 + dashboard（地圖編輯器 + 資料庫可視化）
-data/rooms/editor/       — 世界房間 JSON（world_*.json，694 房間，Azgaar Parser A 產出）
-data/rooms/archive/      — 封存房間（舊浮生城 639 房）
+data/rooms/editor/       — 世界房間 JSON（已清空；舊 Azgaar Parser A 產出已移除）
+data/rooms/archive/      — 封存房間（舊浮生城 639 房，歷史參考）
 data/config/             — 靜態設定（word_elements.json 500 詞元、gamedims、sentence_engine）
 data/runtime/            — 執行期 JSON（archival、summaries、threads、dyads、rumors）
 tools/                   — 本地工具腳本（gitignored，Parser、翻譯腳本等）
@@ -127,9 +127,10 @@ cargo test                                                               # 跑�
 - 浮生城：強聚念場城市，電器可正常運作
 
 ## 地圖管線
-- **世界骨架**：Azgaar Fantasy Map Generator → Parser A（tools/azgaar_parser.py）→ 694 房間（623 城鎮 + 71 地標）
-- **城市內部**：Watabou Medieval City Generator → Parser B（待做）→ 大城市鑽入用
-- **當前狀態**：Parser A 完成，房間名稱/描述翻譯精修中（018 工單）。舊浮生城 639 房封存，NPC 歸零
+- **現行路線：探索式生成**（觸發式預展開）。玩家揭露黑格 → 後台兩段式（§8.5）生成地形、聚落、資源
+- **聚落佈局**：道路驅動 + 功能格池 + 三層放置公式。見 `docs/design/人類活動地帶聚落五級—規格草案.md` §九
+- **世界骨架**：Azgaar Fantasy Map Generator（地圖 Chia，901 burgs）。錨點整合方案待定
+- **已棄用**：舊 Parser A 產出已清空、Watabou 城市生成器已被 Hex 聚落佈局取代、舊浮生城 639 房封存
 
 ## 代理入口（Harness）
 - 根目錄 **`AGENTS.md`**：精簡入口與必讀鏈結。

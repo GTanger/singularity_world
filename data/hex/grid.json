@@ -3,667 +3,1069 @@
   "cells": [
     {
       "coord": {
-        "q": -2,
-        "r": 2
+        "q": 51,
+        "r": 9
       },
       "terrain": "water",
       "name": ""
     },
     {
       "coord": {
-        "q": 10,
-        "r": -6
+        "q": 53,
+        "r": 8
       },
-      "terrain": "forest",
+      "terrain": "urban",
       "name": ""
     },
     {
       "coord": {
-        "q": 6,
-        "r": -3
+        "q": 26,
+        "r": 11
       },
-      "terrain": "water",
+      "terrain": "urban",
       "name": ""
     },
     {
       "coord": {
-        "q": 2,
-        "r": -1
+        "q": 33,
+        "r": 11
       },
-      "terrain": "forest",
-      "name": ""
+      "terrain": "stables",
+      "name": "馬廄"
     },
     {
       "coord": {
-        "q": -5,
-        "r": 1
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 2,
-        "r": -4
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 5,
-        "r": -6
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 8,
-        "r": -6
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 6,
-        "r": 0
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 5,
-        "r": 2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 8,
-        "r": -7
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 1,
-        "r": -1
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 3,
-        "r": 1
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 10,
-        "r": -7
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 9,
-        "r": -7
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 9,
-        "r": -5
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 0,
-        "r": -3
+        "q": 46,
+        "r": 8
       },
       "terrain": "wall",
       "name": ""
     },
     {
       "coord": {
-        "q": 4,
-        "r": 1
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 4,
-        "r": -2
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 9,
-        "r": -3
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 3,
-        "r": 2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -1,
-        "r": -2
-      },
-      "terrain": "wall",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 8,
-        "r": -5
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 8,
-        "r": -3
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 4,
-        "r": -3
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 7,
-        "r": -2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 6,
-        "r": -7
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 3,
-        "r": 0
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 2,
-        "r": -3
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 0,
-        "r": 2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 7,
-        "r": -3
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 6,
-        "r": -2
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 9,
-        "r": -8
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 4,
-        "r": -5
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -5,
-        "r": 2
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 5,
-        "r": -4
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -4,
-        "r": 2
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 2,
-        "r": -2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 6,
-        "r": -6
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 1,
-        "r": 2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -1,
-        "r": 0
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 10,
-        "r": -8
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -1,
-        "r": -1
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 5,
-        "r": -3
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 8,
-        "r": -2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 3,
-        "r": -4
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -3,
-        "r": 2
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 1,
-        "r": 0
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -3,
-        "r": 1
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 1,
-        "r": -3
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 6,
-        "r": -4
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -1,
-        "r": 2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 5,
-        "r": 1
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 7,
-        "r": -7
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 0,
-        "r": 1
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 9,
-        "r": -4
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 7,
-        "r": 0
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 9,
-        "r": -6
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 7,
-        "r": -5
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -3,
+        "q": 51,
         "r": 3
       },
-      "terrain": "water",
+      "terrain": "guard_post",
+      "name": "北門衛所"
+    },
+    {
+      "coord": {
+        "q": 21,
+        "r": 0
+      },
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_core",
+      "tags": [
+        "residential",
+        "residential_core"
+      ]
+    },
+    {
+      "coord": {
+        "q": 50,
+        "r": 5
+      },
+      "terrain": "road",
+      "name": "中央大道"
+    },
+    {
+      "coord": {
+        "q": 51,
+        "r": 4
+      },
+      "terrain": "road",
       "name": ""
     },
     {
       "coord": {
-        "q": 5,
+        "q": 23,
+        "r": 0
+      },
+      "terrain": "farm_field",
+      "name": "菜圃",
+      "tags": [
+        "agri_fringe"
+      ]
+    },
+    {
+      "coord": {
+        "q": 34,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 53,
+        "r": 2
+      },
+      "terrain": "wall",
+      "name": "東北角樓"
+    },
+    {
+      "coord": {
+        "q": 49,
+        "r": 7
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 52,
+        "r": 5
+      },
+      "terrain": "stables",
+      "name": "驛站馬房"
+    },
+    {
+      "coord": {
+        "q": 27,
+        "r": 8
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 21,
         "r": -2
       },
-      "terrain": "water",
-      "name": ""
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_core",
+      "tags": [
+        "residential",
+        "residential_core"
+      ]
     },
     {
       "coord": {
-        "q": 5,
-        "r": -1
+        "q": 50,
+        "r": 4
       },
-      "terrain": "water",
+      "terrain": "town_hall",
+      "name": "府衙"
+    },
+    {
+      "coord": {
+        "q": 31,
+        "r": 11
+      },
+      "terrain": "blacksmith",
+      "name": "鐵匠鋪"
+    },
+    {
+      "coord": {
+        "q": 48,
+        "r": 5
+      },
+      "terrain": "workshop",
+      "name": "染坊"
+    },
+    {
+      "coord": {
+        "q": 30,
+        "r": 9
+      },
+      "terrain": "road",
       "name": ""
     },
     {
       "coord": {
-        "q": -2,
-        "r": -1
+        "q": 18,
+        "r": 1
+      },
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_fringe",
+      "tags": [
+        "residential",
+        "residential_fringe"
+      ]
+    },
+    {
+      "coord": {
+        "q": 55,
+        "r": 5
+      },
+      "terrain": "road",
+      "name": "東門"
+    },
+    {
+      "coord": {
+        "q": 55,
+        "r": 6
       },
       "terrain": "wall",
       "name": ""
     },
     {
       "coord": {
-        "q": 3,
-        "r": -3
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 2,
-        "r": 1
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 7,
+        "q": 19,
         "r": -1
       },
-      "terrain": "forest",
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_core",
+      "tags": [
+        "residential",
+        "residential_core"
+      ]
+    },
+    {
+      "coord": {
+        "q": 19,
+        "r": 0
+      },
+      "terrain": "road",
+      "name": "村口",
+      "tags": [
+        "road_main"
+      ]
+    },
+    {
+      "coord": {
+        "q": 22,
+        "r": 0
+      },
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_fringe",
+      "tags": [
+        "residential",
+        "residential_fringe"
+      ]
+    },
+    {
+      "coord": {
+        "q": 47,
+        "r": 8
+      },
+      "terrain": "urban",
       "name": ""
     },
     {
       "coord": {
-        "q": -1,
-        "r": 1
+        "q": 52,
+        "r": 7
+      },
+      "terrain": "warehouse",
+      "name": "東倉"
+    },
+    {
+      "coord": {
+        "q": 46,
+        "r": 5
+      },
+      "terrain": "road",
+      "name": "西門"
+    },
+    {
+      "coord": {
+        "q": 48,
+        "r": 8
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 50,
+        "r": 9
+      },
+      "terrain": "bridge",
+      "name": "南門橋"
+    },
+    {
+      "coord": {
+        "q": 32,
+        "r": 8
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 31,
+        "r": 9
+      },
+      "terrain": "market",
+      "name": "中央市集"
+    },
+    {
+      "coord": {
+        "q": 51,
+        "r": 6
+      },
+      "terrain": "blacksmith",
+      "name": "百鍛坊"
+    },
+    {
+      "coord": {
+        "q": 53,
+        "r": 9
       },
       "terrain": "water",
       "name": ""
     },
     {
       "coord": {
-        "q": -4,
-        "r": 1
+        "q": 29,
+        "r": 10
       },
-      "terrain": "grassland",
+      "terrain": "road",
       "name": ""
     },
     {
       "coord": {
-        "q": 7,
-        "r": -6
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 2,
-        "r": 2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 6,
-        "r": 1
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 8,
-        "r": -8
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 0,
-        "r": -2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 4,
-        "r": -6
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 6,
-        "r": -5
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 4,
-        "r": 2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 4,
-        "r": -4
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 1,
-        "r": -2
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 4,
+        "q": 17,
         "r": 0
       },
-      "terrain": "forest",
+      "terrain": "road",
+      "name": "西方道路",
+      "tags": [
+        "road_external"
+      ]
+    },
+    {
+      "coord": {
+        "q": 49,
+        "r": 3
+      },
+      "terrain": "library",
+      "name": "藏書樓"
+    },
+    {
+      "coord": {
+        "q": 49,
+        "r": 6
+      },
+      "terrain": "inn",
+      "name": "望山客棧"
+    },
+    {
+      "coord": {
+        "q": 46,
+        "r": 6
+      },
+      "terrain": "wall",
       "name": ""
     },
     {
       "coord": {
-        "q": 6,
+        "q": 29,
+        "r": 8
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 53,
+        "r": 6
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 53,
+        "r": 7
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 30,
+        "r": 12
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 26,
+        "r": 8
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 35,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": "東門道"
+    },
+    {
+      "coord": {
+        "q": 33,
+        "r": 12
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 47,
+        "r": 5
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 50,
+        "r": 7
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 27,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 28,
+        "r": 11
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 47,
+        "r": 9
+      },
+      "terrain": "water",
+      "name": "護城河"
+    },
+    {
+      "coord": {
+        "q": 22,
+        "r": -2
+      },
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_fringe",
+      "tags": [
+        "residential",
+        "residential_fringe"
+      ]
+    },
+    {
+      "coord": {
+        "q": 30,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": "十字路口"
+    },
+    {
+      "coord": {
+        "q": 53,
+        "r": 4
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 20,
+        "r": 2
+      },
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_core",
+      "tags": [
+        "residential",
+        "residential_core"
+      ]
+    },
+    {
+      "coord": {
+        "q": 21,
+        "r": 1
+      },
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_fringe",
+      "tags": [
+        "residential",
+        "residential_fringe"
+      ]
+    },
+    {
+      "coord": {
+        "q": 49,
+        "r": 8
+      },
+      "terrain": "dock",
+      "name": "南渡口"
+    },
+    {
+      "coord": {
+        "q": 33,
+        "r": 7
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 31,
+        "r": 13
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 18,
+        "r": 0
+      },
+      "terrain": "road",
+      "name": "村道",
+      "tags": [
+        "road_main"
+      ]
+    },
+    {
+      "coord": {
+        "q": 30,
+        "r": 8
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 28,
+        "r": 9
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 20,
         "r": -1
       },
-      "terrain": "forest",
-      "name": ""
+      "terrain": "blacksmith",
+      "name": "鍛造棚",
+      "zone": "village_core",
+      "tags": [
+        "functional"
+      ]
     },
     {
       "coord": {
-        "q": 5,
-        "r": 0
+        "q": 31,
+        "r": 10
       },
-      "terrain": "forest",
+      "terrain": "road",
       "name": ""
     },
     {
       "coord": {
-        "q": 1,
-        "r": 1
+        "q": 47,
+        "r": 6
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 33,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 48,
+        "r": 3
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 19,
+        "r": 2
+      },
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_core",
+      "tags": [
+        "residential",
+        "residential_core"
+      ]
+    },
+    {
+      "coord": {
+        "q": 52,
+        "r": 4
+      },
+      "terrain": "barracks",
+      "name": "校場"
+    },
+    {
+      "coord": {
+        "q": 27,
+        "r": 9
+      },
+      "terrain": "clinic",
+      "name": "醫館"
+    },
+    {
+      "coord": {
+        "q": 50,
+        "r": 8
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 26,
+        "r": 12
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 52,
+        "r": 9
       },
       "terrain": "water",
       "name": ""
     },
     {
       "coord": {
-        "q": 5,
-        "r": -5
+        "q": 33,
+        "r": 8
       },
-      "terrain": "forest",
+      "terrain": "urban",
       "name": ""
+    },
+    {
+      "coord": {
+        "q": 51,
+        "r": 8
+      },
+      "terrain": "general_store",
+      "name": "南街雜貨"
+    },
+    {
+      "coord": {
+        "q": 50,
+        "r": 6
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 27,
+        "r": 11
+      },
+      "terrain": "workshop",
+      "name": "木工坊"
+    },
+    {
+      "coord": {
+        "q": 48,
+        "r": 6
+      },
+      "terrain": "clinic",
+      "name": "仁心堂"
+    },
+    {
+      "coord": {
+        "q": 32,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 23,
+        "r": -1
+      },
+      "terrain": "farm_field",
+      "name": "麥田",
+      "tags": [
+        "agri_fringe"
+      ]
+    },
+    {
+      "coord": {
+        "q": 32,
+        "r": 11
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 33,
+        "r": 9
+      },
+      "terrain": "tavern",
+      "name": "醉月樓"
+    },
+    {
+      "coord": {
+        "q": 30,
+        "r": 13
+      },
+      "terrain": "road",
+      "name": "南門道"
+    },
+    {
+      "coord": {
+        "q": 55,
+        "r": 7
+      },
+      "terrain": "wall",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 55,
+        "r": 9
+      },
+      "terrain": "water",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 30,
+        "r": 11
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 51,
+        "r": 2
+      },
+      "terrain": "mountain",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 52,
+        "r": 8
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 29,
+        "r": 7
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 25,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": "西門道"
+    },
+    {
+      "coord": {
+        "q": 25,
+        "r": 11
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 31,
+        "r": 12
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 20,
+        "r": 1
+      },
+      "terrain": "general_store",
+      "name": "雜貨鋪",
+      "zone": "village_core",
+      "tags": [
+        "functional"
+      ]
+    },
+    {
+      "coord": {
+        "q": 19,
+        "r": 1
+      },
+      "terrain": "inn",
+      "name": "歇腳亭",
+      "zone": "village_core",
+      "tags": [
+        "functional"
+      ]
+    },
+    {
+      "coord": {
+        "q": 28,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 34,
+        "r": 12
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 32,
+        "r": 9
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 34,
+        "r": 9
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 28,
+        "r": 12
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 32,
+        "r": 12
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 26,
+        "r": 9
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 54,
+        "r": 3
+      },
+      "terrain": "wall",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 30,
+        "r": 7
+      },
+      "terrain": "road",
+      "name": "北門道"
+    },
+    {
+      "coord": {
+        "q": 22,
+        "r": -1
+      },
+      "terrain": "farmhouse",
+      "name": "民宅",
+      "zone": "village_fringe",
+      "tags": [
+        "residential",
+        "residential_fringe"
+      ]
+    },
+    {
+      "coord": {
+        "q": 48,
+        "r": 4
+      },
+      "terrain": "temple",
+      "name": "城隍廟"
+    },
+    {
+      "coord": {
+        "q": 26,
+        "r": 10
+      },
+      "terrain": "road",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 47,
+        "r": 3
+      },
+      "terrain": "wall",
+      "name": "西北角樓"
+    },
+    {
+      "coord": {
+        "q": 20,
+        "r": 0
+      },
+      "terrain": "market",
+      "name": "村集市",
+      "zone": "village_core",
+      "tags": [
+        "functional",
+        "anchor"
+      ]
+    },
+    {
+      "coord": {
+        "q": 49,
+        "r": 5
+      },
+      "terrain": "market",
+      "name": "西市"
+    },
+    {
+      "coord": {
+        "q": 50,
+        "r": 2
+      },
+      "terrain": "mountain",
+      "name": "北嶺"
+    },
+    {
+      "coord": {
+        "q": 48,
+        "r": 9
+      },
+      "terrain": "water",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 47,
+        "r": 7
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 53,
+        "r": 3
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 52,
+        "r": 2
+      },
+      "terrain": "mountain",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 29,
+        "r": 11
+      },
+      "terrain": "general_store",
+      "name": "雜貨行"
+    },
+    {
+      "coord": {
+        "q": 49,
+        "r": 9
+      },
+      "terrain": "water",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 47,
+        "r": 4
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 29,
+        "r": 13
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 35,
+        "r": 9
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 46,
+        "r": 9
+      },
+      "terrain": "wall",
+      "name": "西南角樓"
+    },
+    {
+      "coord": {
+        "q": 28,
+        "r": 8
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 31,
+        "r": 8
+      },
+      "terrain": "temple",
+      "name": "土地祠"
     },
     {
       "coord": {
@@ -678,123 +1080,203 @@
     },
     {
       "coord": {
-        "q": 4,
-        "r": -1
+        "q": 27,
+        "r": 12
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 52,
+        "r": 6
+      },
+      "terrain": "tavern",
+      "name": "聽風閣"
+    },
+    {
+      "coord": {
+        "q": 54,
+        "r": 9
       },
       "terrain": "water",
       "name": ""
     },
     {
       "coord": {
-        "q": 3,
-        "r": -1
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 3,
-        "r": -5
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -2,
-        "r": 1
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -4,
-        "r": 0
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 3,
-        "r": -2
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -2,
-        "r": 0
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -3,
-        "r": -1
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 7,
-        "r": -4
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 0,
-        "r": -1
-      },
-      "terrain": "grassland",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 8,
-        "r": -4
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 10,
-        "r": -5
-      },
-      "terrain": "forest",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": -4,
+        "q": 52,
         "r": 3
       },
-      "terrain": "grassland",
+      "terrain": "urban",
       "name": ""
     },
     {
       "coord": {
-        "q": -3,
-        "r": 0
+        "q": 25,
+        "r": 9
       },
-      "terrain": "grassland",
+      "terrain": "urban",
       "name": ""
     },
     {
       "coord": {
-        "q": 2,
-        "r": 0
+        "q": 54,
+        "r": 5
       },
-      "terrain": "water",
+      "terrain": "road",
       "name": ""
+    },
+    {
+      "coord": {
+        "q": 54,
+        "r": 4
+      },
+      "terrain": "wall",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 29,
+        "r": 12
+      },
+      "terrain": "workshop",
+      "name": "水碓坊"
+    },
+    {
+      "coord": {
+        "q": 49,
+        "r": 2
+      },
+      "terrain": "mountain",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 48,
+        "r": 2
+      },
+      "terrain": "mountain",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 53,
+        "r": 5
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 21,
+        "r": -1
+      },
+      "terrain": "clinic",
+      "name": "草藥房",
+      "zone": "village_core",
+      "tags": [
+        "functional"
+      ]
+    },
+    {
+      "coord": {
+        "q": 51,
+        "r": 5
+      },
+      "terrain": "market",
+      "name": "東市"
+    },
+    {
+      "coord": {
+        "q": 31,
+        "r": 7
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 51,
+        "r": 7
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 29,
+        "r": 9
+      },
+      "terrain": "inn",
+      "name": "迎客棧"
+    },
+    {
+      "coord": {
+        "q": 46,
+        "r": 7
+      },
+      "terrain": "wall",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 34,
+        "r": 11
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 28,
+        "r": 13
+      },
+      "terrain": "urban",
+      "name": ""
+    },
+    {
+      "coord": {
+        "q": 23,
+        "r": -2
+      },
+      "terrain": "granary",
+      "name": "糧倉",
+      "tags": [
+        "agri_fringe",
+        "functional"
+      ]
+    },
+    {
+      "coord": {
+        "q": 48,
+        "r": 7
+      },
+      "terrain": "warehouse",
+      "name": "西倉"
+    },
+    {
+      "coord": {
+        "q": 55,
+        "r": 8
+      },
+      "terrain": "wall",
+      "name": "東南角樓"
+    },
+    {
+      "coord": {
+        "q": 49,
+        "r": 4
+      },
+      "terrain": "guild_hall",
+      "name": "公會堂"
+    },
+    {
+      "coord": {
+        "q": 50,
+        "r": 3
+      },
+      "terrain": "road",
+      "name": "北門"
     }
   ]
 }

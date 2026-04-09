@@ -820,6 +820,25 @@ pub fn HexGrid(
             rf_min = rf_min.min(ar);
             rf_max = rf_max.max(ar);
         }
+        // 地形底色填色
+        if cam.zoom >= 0.12 {
+            for cell in cs.iter() {
+                let (px, py) = coord_to_pixel(cell.coord.q, cell.coord.r);
+                if px < min_x || px > max_x || py < min_y || py > max_y {
+                    continue;
+                }
+                ctx.set_fill_style_str(cell.terrain.color());
+                ctx.begin_path();
+                let (ox0, oy0) = HEX_VERT_OFFSETS[0];
+                ctx.move_to(px + ox0, py + oy0);
+                for (ox, oy) in HEX_VERT_OFFSETS.iter().skip(1) {
+                    ctx.line_to(px + *ox, py + *oy);
+                }
+                ctx.close_path();
+                ctx.fill();
+            }
+        }
+
         // 每格即房間：同屬性連群內淡線，外緣／異屬性分界深線（每邊只畫一次）
         if cam.zoom >= 0.22 {
             stroke_each_cell_hex_outline(&ctx, &cs, cam.zoom, min_x, max_x, min_y, max_y);
