@@ -123,7 +123,7 @@ impl Terrain {
             Terrain::Hills => "石",
             Terrain::Swamp => "沼",
             Terrain::Water | Terrain::WaterDeep => "水",
-            Terrain::Grassland => "茻",
+            Terrain::Grassland => "屮屮",
             Terrain::Plain | Terrain::Desert => "荒",
             Terrain::Road | Terrain::Bridge => "道",
             Terrain::Tundra => "冰",
@@ -189,6 +189,14 @@ impl Terrain {
     pub fn text_color(self) -> Option<&'static str> {
         match self {
             Terrain::Grassland => Some("#3a6b35"),
+            _ => None,
+        }
+    }
+
+    /// 地形字字型（None 表示使用預設字型）
+    pub fn text_font(self) -> Option<&'static str> {
+        match self {
+            Terrain::Grassland => Some("FZJiaGuWen"),
             _ => None,
         }
     }

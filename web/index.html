@@ -18,8 +18,15 @@
 		font-display: swap;
 		src: url('chiron-goround-tc-sub.ttf') format('truetype');
 	}
+	@font-face {
+		font-family: 'FZJiaGuWen';
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url('FZJiaGuWen.ttf') format('truetype');
+	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.14.0">
+	<link rel="stylesheet" href="style.css?v=0.14.3">
 </head>
 <body>
 	<!-- 登入／創角：未登入時顯示，登入成功後隱藏 -->
@@ -150,14 +157,14 @@
 		</div>
 	</div>
 
-	<script src="narrative-markdown.js?v=0.14.0"></script>
-	<script src="canvas.js?v=0.14.0"></script>
-	<script src="main.js?v=0.14.0"></script>
-	<script src="ui.js?v=0.14.0"></script>
+	<script src="narrative-markdown.js?v=0.14.3"></script>
+	<script src="canvas.js?v=0.14.3"></script>
+	<script src="main.js?v=0.14.3"></script>
+	<script src="ui.js?v=0.14.3"></script>
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.14.0').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.14.3').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {

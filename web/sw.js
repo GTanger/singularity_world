@@ -1,5 +1,5 @@
 // PWA Service Worker：最小實作，支援「加入主畫面」
-const CACHE = 'singularity-world-v4';
+const CACHE = 'singularity-world-v6';
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();

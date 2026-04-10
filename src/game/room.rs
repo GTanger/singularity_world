@@ -32,6 +32,8 @@ pub struct HexCellView {
     pub color: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub text_color: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text_font: Option<String>,
     pub move_cost: f64,
 }
 
@@ -143,6 +145,7 @@ pub fn get_hex_area_view(
                 display_char: cell.terrain.display_char().to_string(),
                 color: cell.terrain.color().to_string(),
                 text_color: cell.terrain.text_color().map(String::from),
+                text_font: cell.terrain.text_font().map(String::from),
                 move_cost: cell.terrain.move_cost(),
             });
 

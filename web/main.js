@@ -381,7 +381,7 @@
 									const targetCell = (state.hexView && state.hexView.cells || [])
 										.find(c => c.q === nq && c.r === nr);
 									const moveCost = (targetCell && targetCell.move_cost) || 1.0;
-									const duration = 197 / (60 / moveCost);
+									const duration = 350 / (60 / moveCost);
 									window.hexCanvas.animateTo(nq, nr, duration, function () {
 										fetchHexView();
 									});

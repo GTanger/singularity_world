@@ -3,7 +3,7 @@
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    const HEX_R = 114;
+    const HEX_R = 202;
     const ROLE_RADIUS = 14;
     const SQRT3 = Math.sqrt(3);
 
@@ -84,7 +84,7 @@
         centerY = h / 2;
     }
 
-    function drawHex(x, y, radius, color, text, textColor) {
+    function drawHex(x, y, radius, color, text, textColor, textFont) {
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
             const angle = 2 * Math.PI / 6 * (i + 0.5); // pointy-top
@@ -102,7 +102,7 @@
 
         if (text) {
             ctx.fillStyle = textColor || (isLight(color) ? '#000' : '#fff');
-            ctx.font = "bold 48px 'Chiron GoRound TC', sans-serif";
+            ctx.font = "bold 48px '" + (textFont || 'Chiron GoRound TC') + "', sans-serif";
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(text, x, y);
@@ -161,7 +161,7 @@
             // 可視範圍檢測 (簡單矩形檢測)
             if (screenX < -100 || screenX > window.innerWidth + 100 || screenY < -100 || screenY > window.innerHeight + 100) return;
 
-            drawHex(screenX, screenY, HEX_R, cell.color, cell.display_char, cell.text_color);
+            drawHex(screenX, screenY, HEX_R, cell.color, cell.display_char, cell.text_color, cell.text_font);
         });
 
         // 繪製實體
@@ -308,9 +308,12 @@
         render();
     });
 
-    // 等字型載入完成後重繪
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(() => render());
+    // 主動觸發字型載入（canvas 不觸發 CSS @font-face）並重繪
+    if (document.fonts) {
+        Promise.all([
+            document.fonts.load("bold 48px 'Chiron GoRound TC'"),
+            document.fonts.load("bold 48px 'FZJiaGuWen'")
+        ]).then(() => render());
     }
 
     // 公開 API
