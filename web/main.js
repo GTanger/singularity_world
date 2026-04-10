@@ -8,7 +8,6 @@
 	let socket = null;
 	let heartbeatTimer = null;
 	let reconnecting = false;
-
 	const state = {
 		room_id: '',
 		room_name: '',
@@ -18,7 +17,8 @@
 		me: null,
 		server_unix: 0,
 		game_time_sec_since_midnight: 0,
-		game_days_since_epoch: 0
+		game_days_since_epoch: 0,
+		hexView: null
 	};
 
 	const GAME_TIME_SCALE = 24;
@@ -330,6 +330,7 @@
 						startGameTimeTicker();
 						updateGameTimeDisplay();
 						draw();
+						// fetchHexView 移至 case 'me'（此處 state.me 尚未設定）
 						break;
 					case 'me':
 						state.me = {
@@ -361,18 +362,43 @@
 						draw();
 						appendLog('登入成功：' + msg.player_id + ' @ ' + (msg.room_name || msg.room_id));
 						renderStarplatePane(state.me);
-						startHeartbeat();
+						if (!state.hexView) fetchHexView();
+	startHeartbeat();
 						break;
 					case 'pong':
 						break;
 					case 'moved':
 						if (state.me && (msg.player_id === state.me.player_id || msg.player_id === state.me.id)) {
+							const oldRoomId = state.me.room_id;
 							state.me.room_id = msg.room_id;
 							state.me.room_name = msg.room_name;
+
+							if (msg.room_id && msg.room_id.startsWith('hex:') && oldRoomId && oldRoomId !== msg.room_id) {
+								const parts = msg.room_id.split(':');
+								const nq = parseInt(parts[1]);
+								const nr = parseInt(parts[2]);
+								if (window.hexCanvas && !isNaN(nq) && !isNaN(nr)) {
+									const targetCell = (state.hexView && state.hexView.cells || [])
+										.find(c => c.q === nq && c.r === nr);
+									const moveCost = (targetCell && targetCell.move_cost) || 1.0;
+									const duration = 197 / (60 / moveCost);
+									window.hexCanvas.animateTo(nq, nr, duration, function () {
+										fetchHexView();
+									});
+								} else {
+									fetchHexView();
+								}
+							} else {
+								fetchHexView();
+							}
 						}
 						draw();
 						break;
 					case 'blocked':
+						if (window.hexCanvas) {
+							// 發生阻擋，重置位置（因前端可能已經跑過動畫）
+							fetchHexView();
+						}
 						appendLog('無法往「' + (msg.direction || '') + '」移動');
 						break;
 					case 'entity_status':
@@ -628,6 +654,44 @@
 			document.getElementById('auth-create-actions').setAttribute('hidden', '');
 		});
 	}
+
+	async function fetchHexView() {
+		console.log('[fetchHexView] called, me=', state.me && state.me.player_id, 'hexCanvas=', !!window.hexCanvas);
+		if (!state.me || !state.me.player_id) return;
+		try {
+			const resp = await fetch('/api/hex/view?player_id=' + encodeURIComponent(state.me.player_id));
+			if (resp.ok) {
+				const data = await resp.json();
+				console.log('[fetchHexView] got data, cells=', data.cells && data.cells.length, 'entities=', data.entities && data.entities.length);
+				state.hexView = data;
+				if (window.hexCanvas) {
+					window.hexCanvas.updateView(data);
+				} else {
+					console.warn('[fetchHexView] window.hexCanvas is not set!');
+				}
+			}
+		} catch (e) {
+			console.error('fetchHexView failed', e);
+		}
+	}
+
+	window.gameOnHexClick = function (q, r) {
+		if (!state.hexView || !state.hexView.center) return;
+		const target = { q, r };
+		const current = state.hexView.center;
+		if (window.hexCanvas.getDist(current, target) === 0) {
+			appendLog('此處為當前所在。');
+			return;
+		}
+		if (window.hexCanvas.getDist(current, target) === 1) {
+			const dir = window.hexCanvas.getDirection(current, target);
+			if (dir) {
+				send({ type: 'move', direction: dir });
+			}
+		} else {
+			appendLog('太遠了，請點擊相鄰格子進行移動。');
+		}
+	};
 
 	function send(obj) {
 		if (socket && socket.readyState === WebSocket.OPEN) {
@@ -1274,6 +1338,7 @@
 			bindLogObjectActions();
 		}
 	}
+
 	window.gameSend = function (msg) {
 		if (typeof msg === 'object') send(msg);
 		else if (socket && socket.readyState === WebSocket.OPEN) socket.send(msg);

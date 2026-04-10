@@ -114,6 +114,84 @@ impl Terrain {
             Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall => f64::INFINITY,
         }
     }
+
+    /// 取得地形對應的顯示字（簡化版，取第一個候選字）
+    pub fn display_char(self) -> &'static str {
+        match self {
+            Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle => "木",
+            Terrain::Mountain => "山",
+            Terrain::Hills => "石",
+            Terrain::Swamp => "沼",
+            Terrain::Water | Terrain::WaterDeep => "水",
+            Terrain::Grassland => "茻",
+            Terrain::Plain | Terrain::Desert => "荒",
+            Terrain::Road | Terrain::Bridge => "道",
+            Terrain::Tundra => "冰",
+            Terrain::FarmField => "田",
+            Terrain::Wall => "牆",
+            Terrain::Urban
+            | Terrain::Farmhouse
+            | Terrain::Inn
+            | Terrain::Tavern
+            | Terrain::Blacksmith
+            | Terrain::GeneralStore
+            | Terrain::Clinic
+            | Terrain::Workshop
+            | Terrain::Market
+            | Terrain::GuildHall
+            | Terrain::Temple
+            | Terrain::Academy
+            | Terrain::Library
+            | Terrain::Barracks
+            | Terrain::GuardPost
+            | Terrain::Warehouse
+            | Terrain::Granary
+            | Terrain::Dock
+            | Terrain::Bathhouse
+            | Terrain::Courthouse
+            | Terrain::Jail
+            | Terrain::TownHall
+            | Terrain::Bank
+            | Terrain::Mint
+            | Terrain::Stables
+            | Terrain::Caravanserai
+            | Terrain::Theater
+            | Terrain::Arena
+            | Terrain::Observatory
+            | Terrain::Alchemist
+            | Terrain::MageTower
+            | Terrain::Embassy
+            | Terrain::PrisonYard => "地",
+        }
+    }
+
+    /// 取得地形對應的輔助顏色（簡化版，取第一個候選色）
+    pub fn color(self) -> &'static str {
+        match self {
+            Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle => {
+                "#a0d080"
+            }
+            Terrain::Mountain => "#98af9d",
+            Terrain::Hills => "#d3d3d3",
+            Terrain::Swamp => "#507050",
+            Terrain::Water | Terrain::WaterDeep => "#b0d8f0",
+            Terrain::Grassland => "#c2d6a4",
+            Terrain::Plain | Terrain::Desert => "#e3d5ca",
+            Terrain::Road | Terrain::Bridge => "#c4b8a8",
+            Terrain::Tundra => "#e0f2f1",
+            Terrain::FarmField => "#9ef01a",
+            Terrain::Wall => "#8c8c8c",
+            _ => "#c4b8a8", // 其他建築或都市地形預設色
+        }
+    }
+
+    /// 地形字顏色（None 表示依底色亮度自動選黑/白）
+    pub fn text_color(self) -> Option<&'static str> {
+        match self {
+            Terrain::Grassland => Some("#3a6b35"),
+            _ => None,
+        }
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────

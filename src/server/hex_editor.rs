@@ -62,6 +62,11 @@ fn hex_state() -> &'static HexState {
     HEX_STATE.get().expect("hex_editor::init 未呼叫")
 }
 
+/// 取得執行期 hex grid 的唯讀快照（供 game 模組視野查詢用）。
+pub fn get_runtime_grid() -> Option<HexGrid> {
+    HEX_STATE.get().and_then(|s| s.grid.read().ok().map(|g| g.clone()))
+}
+
 fn save_to_disk() -> Result<(), String> {
     let st = hex_state();
     let grid = st.grid.read().map_err(|e| e.to_string())?;

@@ -10,7 +10,16 @@
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
-	<link rel="stylesheet" href="style.css?v=0.12.0">
+	<style>
+	@font-face {
+		font-family: 'Chiron GoRound TC';
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url('chiron-goround-tc-sub.ttf') format('truetype');
+	}
+	</style>
+	<link rel="stylesheet" href="style.css?v=0.14.0">
 </head>
 <body>
 	<!-- 登入／創角：未登入時顯示，登入成功後隱藏 -->
@@ -52,15 +61,11 @@
 	</div>
 
 	<div id="app" class="app-after-login" hidden>
-		<!-- 頂列：左＝當前地點名稱，右＝遊戲時間＋五個保留鈕 -->
+		<canvas id="hex-canvas"></canvas>
+
+		<!-- 頂列：左＝時鐘，右＝背包按鈕 -->
 		<header id="top-bar" class="top-row">
-			<div id="room-name-wrap" class="room-name-wrap">
-				<h1 id="room-name" class="room-name" aria-label="">
-					<span class="room-name-line1" id="room-name-line1"></span>
-					<span class="room-name-line2" id="room-name-line2"></span>
-				</h1>
-			</div>
-			<div class="top-bar-right">
+			<div class="top-bar-left">
 				<div id="game-time" class="game-time" title="日晷：9→3 為日、3→9 為夜">
 					<span id="game-time-date" class="game-time-date" aria-live="polite"></span>
 					<svg class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
@@ -69,31 +74,15 @@
 					</svg>
 					<span id="game-time-label" class="game-time-label" aria-live="polite"></span>
 				</div>
+			</div>
+			<div class="top-bar-right">
 				<div class="top-bar-slots">
 					<button type="button" class="slot-btn slot-btn-active" id="btn-inventory">背包</button>
-					<button type="button" class="slot-btn" disabled>保留</button>
-					<button type="button" class="slot-btn" disabled>地圖</button>
-					<button type="button" class="slot-btn" disabled>訊息</button>
-					<button type="button" class="slot-btn" disabled>設定</button>
 				</div>
 			</div>
 		</header>
 
-		<!-- 房間描述欄：全文寬，【】內為綠色強調；附「在場名單」 -->
-		<section id="room-desc-panel" class="panel room-desc-panel">
-			<div id="room-desc" class="room-desc"></div>
-			<div id="room-actions" class="room-actions"></div>
-			<div id="room-presence" class="room-presence" aria-live="polite"></div>
-		</section>
-
-		<!-- 敘事欄：紀錄區 -->
-		<section id="narrative-panel" class="panel narrative-panel">
-			<div id="narrative-right" class="narrative-right">
-				<div id="log" class="log-content" role="log"></div>
-			</div>
-		</section>
-
-		<!-- 狀態欄：姓名 + 四條狀態，置底（出口欄已移除，改由描述內物件點擊移動） -->
+		<!-- 狀態欄：姓名 + 四條狀態，置底，半透明浮層 -->
 		<section id="status-panel" class="panel status-panel">
 			<div class="status-name-wrap">
 				<div id="player-name" class="player-name" role="button" tabindex="0" title="點擊開啟角色">姓名</div>
@@ -161,14 +150,14 @@
 		</div>
 	</div>
 
-	<script src="narrative-markdown.js?v=0.12.0"></script>
-	<script src="main.js?v=0.12.0"></script>
-	<script src="mud-text.js?v=0.12.0"></script>
-	<script src="ui.js?v=0.12.0"></script>
+	<script src="narrative-markdown.js?v=0.14.0"></script>
+	<script src="canvas.js?v=0.14.0"></script>
+	<script src="main.js?v=0.14.0"></script>
+	<script src="ui.js?v=0.14.0"></script>
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.12.0').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.14.0').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {

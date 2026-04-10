@@ -1,10 +1,9 @@
-//! 房間視野與依出口移動（對齊既有 `game/room`）。
-
 use crate::db::{self, object_has_socket};
 use crate::entity::{Character, EntityKind};
-use crate::hex::{hex_room_id_from_coord, HexCoord, HexDir};
-use crate::store;
+use crate::hex::{hex_room_id_from_coord, HexCoord, HexDir, Terrain};
 use crate::model::{Exit, Room, RoomObject};
+use crate::store;
+use serde::{Deserialize, Serialize};
 
 /// 當前房間視野。
 #[derive(Debug, Clone)]
@@ -13,6 +12,36 @@ pub struct RoomView {
     pub exits: Vec<Exit>,
     pub entities: Vec<Character>,
     pub objects: Vec<RoomObject>,
+}
+
+/// 六角格區域視野（MVP 眼圖使用）。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HexAreaView {
+    pub center: HexCoord,
+    pub cells: Vec<HexCellView>,
+    pub entities: Vec<HexEntityView>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HexCellView {
+    pub q: i32,
+    pub r: i32,
+    pub terrain: Terrain,
+    pub name: String,
+    pub display_char: String,
+    pub color: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text_color: Option<String>,
+    pub move_cost: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HexEntityView {
+    pub id: String,
+    pub q: i32,
+    pub r: i32,
+    pub display_char: String,
+    pub kind: String,
 }
 
 /// 依房間 id 載入視野；`game_hour` 0–23 供 NPC 職稱，`-1` 表示不套用下班規則。
@@ -77,6 +106,67 @@ pub fn get_hex_room_view(
     }))
 }
 
+/// 輔助函式：取得給定半徑內的所有六角座標。
+fn range_coords(center: HexCoord, radius: i32) -> Vec<HexCoord> {
+    let mut results = Vec::new();
+    for q in -radius..=radius {
+        for r in (-radius).max(-q - radius)..=(radius).min(-q + radius) {
+            results.push(HexCoord::new(center.q + q, center.r + r));
+        }
+    }
+    results
+}
+
+/// 取得六角格區域視野（MVP 眼圖使用）。
+pub fn get_hex_area_view(
+    q: i32,
+    r: i32,
+    radius: i32,
+    game_hour: i32,
+) -> anyhow::Result<HexAreaView> {
+    let center = HexCoord::new(q, r);
+    let mut cells = Vec::new();
+    let mut entities = Vec::new();
+
+    let grid = crate::server::hex_editor::get_runtime_grid()
+        .or_else(db::load_hex_grid)
+        .ok_or_else(|| anyhow::anyhow!("no grid"))?;
+
+    // 1. 取得範圍內所有格子
+    for coord in range_coords(center, radius) {
+        if let Some(cell) = grid.get(coord) {
+            cells.push(HexCellView {
+                q: coord.q,
+                r: coord.r,
+                terrain: cell.terrain,
+                name: cell.name.clone(),
+                display_char: cell.terrain.display_char().to_string(),
+                color: cell.terrain.color().to_string(),
+                text_color: cell.terrain.text_color().map(String::from),
+                move_cost: cell.terrain.move_cost(),
+            });
+
+            // 2. 取得該格實體
+            let ents = db::get_entities_at_hex(coord.q, coord.r, game_hour)?;
+            for e in ents {
+                entities.push(HexEntityView {
+                    id: e.id,
+                    q: coord.q,
+                    r: coord.r,
+                    display_char: e.display_char,
+                    kind: entity_kind_str(&e.kind).to_string(),
+                });
+            }
+        }
+    }
+
+    Ok(HexAreaView {
+        center,
+        cells,
+        entities,
+    })
+}
+
 fn hex_dir_from_exit_label(dir: &str) -> Option<HexDir> {
     let t = dir.trim();
     HexDir::ALL.into_iter().find(|&d| d.label_zh() == t)
@@ -89,9 +179,6 @@ pub fn move_by_hex_direction(entity_id: &str, direction: &str) -> anyhow::Result
     if dir.is_empty() {
         return Ok((String::new(), false));
     }
-    let Some(grid) = db::load_hex_grid() else {
-        return Ok((String::new(), false));
-    };
     let arc = store::get_store().ok_or_else(|| anyhow::anyhow!("no store"))?;
     let s = arc.read().unwrap();
     let Some(e) = s.get_entity(entity_id) else {
@@ -106,6 +193,10 @@ pub fn move_by_hex_direction(entity_id: &str, direction: &str) -> anyhow::Result
     };
     let coord = HexCoord::new(q, r);
     let to = coord.neighbor(hdir);
+    let Some(grid) = crate::server::hex_editor::get_runtime_grid()
+        .or_else(db::load_hex_grid) else {
+        return Ok((String::new(), false));
+    };
     if !grid.can_walk(coord, to) {
         return Ok((hex_room_id_from_coord(q, r), false));
     }

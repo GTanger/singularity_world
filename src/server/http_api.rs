@@ -601,6 +601,43 @@ pub struct HexPlayerRevealBody {
     pub r: i32,
 }
 
+#[derive(Deserialize)]
+pub struct HexViewQuery {
+    pub player_id: String,
+}
+
+/// GET /api/hex/view?player_id=xxx — 取得該玩家周圍視距內的六角格視野。
+pub async fn hex_view(Query(q): Query<HexViewQuery>) -> impl IntoResponse {
+    // 取得玩家當前座標
+    let (hex_q, hex_r) = if let Some(st) = store::get_store() {
+        if let Ok(s) = st.read() {
+            s.get_entity(&q.player_id)
+                .map(|e| (e.hex_q, e.hex_r))
+                .unwrap_or((None, None))
+        } else {
+            (None, None)
+        }
+    } else {
+        (None, None)
+    };
+
+    let (Some(q_val), Some(r_val)) = (hex_q, hex_r) else {
+        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"玩家無座標"}))).into_response();
+    };
+
+    // 視距半徑 5
+    let radius = 5;
+    let game_hour = -1; // MVP 暫不細分 NPC 職稱
+    match crate::game::get_hex_area_view(q_val, r_val, radius, game_hour) {
+        Ok(view) => Json(view).into_response(),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response(),
+    }
+}
+
 /// POST /api/hex/player-reveal — 驗證玩家後：確保世界格存在，並寫入該玩家之已揭露列。
 pub async fn hex_player_reveal(Json(body): Json<HexPlayerRevealBody>) -> impl IntoResponse {
     let ok = db::verify_password(&body.id, &body.pw).unwrap_or(false);

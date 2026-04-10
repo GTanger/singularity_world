@@ -208,7 +208,7 @@ fn persist_grid(t: &mut Transaction<'_>, grid: &HexGrid) -> anyhow::Result<()> {
         let objects = serde_json::to_string(&cell.objects)?;
         t.execute(
             "INSERT INTO hex_cells (q, r, terrain, name, zone, tags, description, objects)
-             VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, $8::jsonb)",
+             VALUES ($1, $2, $3, $4, $5, $6::text::jsonb, $7, $8::text::jsonb)",
             &[
                 &cell.coord.q,
                 &cell.coord.r,
@@ -292,7 +292,11 @@ pub(super) fn save_hex_grid_to_pg(grid: &HexGrid) -> anyhow::Result<()> {
     let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("資料庫連線不可用"))?;
     let mut conn = pool.get()?;
     let mut t = conn.transaction()?;
-    persist_grid(&mut t, grid)?;
+    if let Err(e) = persist_grid(&mut t, grid) {
+        tracing::error!("[hex_world] persist_grid 失敗：{e}");
+        return Err(e);
+    }
     t.commit()?;
+    tracing::info!("[hex_world] PG 寫入成功：{} 格", grid.len());
     Ok(())
 }

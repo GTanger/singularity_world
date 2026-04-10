@@ -60,6 +60,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/data/rooms.json", get(http_api::rooms_data))
         // 星盤拓撲
         .route("/api/topology", get(http_api::topology))
+        .route("/api/hex/view", get(http_api::hex_view))
         .route("/api/hex/player-reveal", post(http_api::hex_player_reveal))
         .route("/api/hex/my-revealed", get(http_api::hex_my_revealed))
         // 房間管理 CRUD
