@@ -665,7 +665,7 @@
 				console.log('[fetchHexView] got data, cells=', data.cells && data.cells.length, 'entities=', data.entities && data.entities.length);
 				state.hexView = data;
 				if (window.hexCanvas) {
-					window.hexCanvas.updateView(data);
+					window.hexCanvas.updateView(data, state.me.player_id);
 				} else {
 					console.warn('[fetchHexView] window.hexCanvas is not set!');
 				}
@@ -675,21 +675,41 @@
 		}
 	}
 
-	window.gameOnHexClick = function (q, r) {
+	let hexClickTimer = null;
+	window.gameOnHexClick = function (q, r, relX, relY) {
 		if (!state.hexView || !state.hexView.center) return;
-		const target = { q, r };
 		const current = state.hexView.center;
-		if (window.hexCanvas.getDist(current, target) === 0) {
-			appendLog('此處為當前所在。');
-			return;
+
+		// 不管點在哪格，都算出相對於玩家所在格中心的偏移（用於格內移動方向）
+		var intraRelX = relX;
+		var intraRelY = relY;
+		if (q !== current.q || r !== current.r) {
+			// 點擊在其他格：用點擊的地圖絕對位置減去玩家格中心，得到方向
+			var HEX_R = 202;
+			var SQRT3 = Math.sqrt(3);
+			var clickAbsX = HEX_R * SQRT3 * (q + r / 2) + relX;
+			var clickAbsY = HEX_R * 3 / 2 * r + relY;
+			var playerCenterX = HEX_R * SQRT3 * (current.q + current.r / 2);
+			var playerCenterY = HEX_R * 3 / 2 * current.r;
+			intraRelX = clickAbsX - playerCenterX;
+			intraRelY = clickAbsY - playerCenterY;
 		}
-		if (window.hexCanvas.getDist(current, target) === 1) {
-			const dir = window.hexCanvas.getDirection(current, target);
-			if (dir) {
-				send({ type: 'move', direction: dir });
+
+		if (hexClickTimer) {
+			clearTimeout(hexClickTimer);
+			hexClickTimer = null;
+			// 雙擊：快跑 (100 px/s)
+			if (window.hexCanvas.startIntraHexMove) {
+				window.hexCanvas.startIntraHexMove(intraRelX, intraRelY, true);
 			}
 		} else {
-			appendLog('太遠了，請點擊相鄰格子進行移動。');
+			hexClickTimer = setTimeout(() => {
+				hexClickTimer = null;
+				// 單擊：步行 (50 px/s)
+				if (window.hexCanvas.startIntraHexMove) {
+					window.hexCanvas.startIntraHexMove(intraRelX, intraRelY, false);
+				}
+			}, 300);
 		}
 	};
 

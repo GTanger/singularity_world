@@ -28,13 +28,25 @@
     let currentEntities = [];
     let playerCoord = { q: 0, r: 0 };
 
-    // 移動動畫相關
+    // 移動動畫 (跨格)
     let isMoving = false;
     let moveStartTime = 0;
     let moveDuration = 0;
     let moveStartPx = { x: 0, y: 0 };
     let moveEndPx = { x: 0, y: 0 };
     let moveCallback = null;
+
+    // 格內平滑移動 (Intra-hex)
+    let playerOffsetX = 0;
+    let playerOffsetY = 0;
+    let targetOffsetX = 0;
+    let targetOffsetY = 0;
+    let isIntraMoving = false;
+    let moveSpeed = 0; // px/s
+    let myPlayerId = '';
+    let lastPlayerQ = null;
+    let lastPlayerR = null;
+    let lastFrameTime = 0;
 
     function hexToPixel(q, r) {
         const x = HEX_R * SQRT3 * (q + r / 2);
@@ -134,7 +146,60 @@
         ctx.fillText(char, x, y);
     }
 
-    function render() {
+    function checkCollision(nx, ny) {
+        // Hex 邊界碰撞 (內切圓近似)
+        const distToCenter = Math.sqrt(nx * nx + ny * ny);
+        const limit = HEX_R * Math.sqrt(3) / 2 - ROLE_RADIUS;
+        if (distToCenter > limit) return true;
+
+        // 實體碰撞 (同格 NPC)
+        const others = currentEntities.filter(e => e.q === playerCoord.q && e.r === playerCoord.r && (e.id || e.ID) !== myPlayerId);
+        for (let i = 0; i < others.length; i++) {
+            // NPC 座標 (使用 spread 邏輯)
+            const ex = (i - (others.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
+            const ey = 0;
+            const d = Math.sqrt((nx - ex) ** 2 + (ny - ey) ** 2);
+            if (d < ROLE_RADIUS * 2) return true;
+        }
+        return false;
+    }
+
+    function render(timestamp) {
+        if (!timestamp) timestamp = performance.now();
+        if (!lastFrameTime) lastFrameTime = timestamp;
+        const dt = (timestamp - lastFrameTime) / 1000;
+        lastFrameTime = timestamp;
+
+        if (isIntraMoving) {
+            const dx = targetOffsetX - playerOffsetX;
+            const dy = targetOffsetY - playerOffsetY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 2) {
+                playerOffsetX = targetOffsetX;
+                playerOffsetY = targetOffsetY;
+                isIntraMoving = false;
+            } else {
+                const angle = Math.atan2(dy, dx);
+                const step = moveSpeed * dt;
+                const nextX = playerOffsetX + Math.cos(angle) * step;
+                const nextY = playerOffsetY + Math.sin(angle) * step;
+
+                if (checkCollision(nextX, nextY)) {
+                    isIntraMoving = false;
+                } else {
+                    playerOffsetX = nextX;
+                    playerOffsetY = nextY;
+                }
+            }
+            // 讓相機跟隨字圓
+            if (!isMoving) {
+                const px = hexToPixel(playerCoord.q, playerCoord.r);
+                cameraX = px.x + playerOffsetX;
+                cameraY = px.y + playerOffsetY;
+            }
+        }
+
         if (isMoving) {
             const now = Date.now();
             const elapsed = now - moveStartTime;
@@ -175,31 +240,59 @@
         for (const key in entityGroups) {
             const group = entityGroups[key];
             const [q, r] = key.split(',').map(Number);
+            const isPlayerHex = (q === playerCoord.q && r === playerCoord.r);
+            
             const px = hexToPixel(q, r);
             const baseScreenX = px.x - cameraX + centerX;
             const baseScreenY = px.y - cameraY + centerY;
 
-            group.forEach((e, i) => {
-                const offsetX = (i - (group.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
-                const color = e.kind === 'player' ? '#7ec8e3' : '#c4b8a8';
-                drawEntity(baseScreenX + offsetX, baseScreenY, e.display_char, color);
-            });
+            if (isPlayerHex) {
+                // 分開處理玩家與 NPC
+                const npcs = group.filter(e => (e.id || e.ID) !== myPlayerId);
+                const player = group.find(e => (e.id || e.ID) === myPlayerId);
+
+                npcs.forEach((e, i) => {
+                    const offsetX = (i - (npcs.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
+                    drawEntity(baseScreenX + offsetX, baseScreenY, e.display_char, '#c4b8a8');
+                });
+                if (player) {
+                    drawEntity(baseScreenX + playerOffsetX, baseScreenY + playerOffsetY, player.display_char, '#7ec8e3');
+                }
+            } else {
+                group.forEach((e, i) => {
+                    const offsetX = (i - (group.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
+                    const color = e.kind === 'player' ? '#7ec8e3' : '#c4b8a8';
+                    drawEntity(baseScreenX + offsetX, baseScreenY, e.display_char, color);
+                });
+            }
         }
 
-        if (isMoving) {
+        if (isMoving || isIntraMoving) {
             requestAnimationFrame(render);
         }
     }
 
-    function updateView(view) {
+    function updateView(view, myId) {
+        if (myId) myPlayerId = myId;
         currentCells = view.cells;
         currentEntities = view.entities;
         playerCoord = view.center;
         
-        if (!isMoving) {
+        // 如果格位變動，重置 offset
+        if (playerCoord.q !== lastPlayerQ || playerCoord.r !== lastPlayerR) {
+            playerOffsetX = 0;
+            playerOffsetY = 0;
+            targetOffsetX = 0;
+            targetOffsetY = 0;
+            isIntraMoving = false;
+            lastPlayerQ = playerCoord.q;
+            lastPlayerR = playerCoord.r;
+        }
+
+        if (!isMoving && !isIntraMoving) {
             const px = hexToPixel(playerCoord.q, playerCoord.r);
-            cameraX = px.x;
-            cameraY = px.y;
+            cameraX = px.x + playerOffsetX;
+            cameraY = px.y + playerOffsetY;
         }
         render();
     }
@@ -254,9 +347,10 @@
             const mapX = clickX - centerX + cameraX;
             const mapY = clickY - centerY + cameraY;
             const targetHex = pixelToHex(mapX, mapY);
+            const hexPx = hexToPixel(targetHex.q, targetHex.r);
             
             if (window.gameOnHexClick) {
-                window.gameOnHexClick(targetHex.q, targetHex.r);
+                window.gameOnHexClick(targetHex.q, targetHex.r, mapX - hexPx.x, mapY - hexPx.y);
             }
         }
     });
@@ -289,6 +383,7 @@
     window.addEventListener('touchend', e => {
         if (!dragging) return;
         dragging = false;
+        e.preventDefault();   // 阻止瀏覽器合成 mouseup，否則單觸被判雙擊
         if (!justDragged && e.changedTouches[0]) {
             const t = e.changedTouches[0];
             const rect = canvas.getBoundingClientRect();
@@ -297,8 +392,10 @@
             const mapX = clickX - centerX + cameraX;
             const mapY = clickY - centerY + cameraY;
             const targetHex = pixelToHex(mapX, mapY);
+            const hexPx = hexToPixel(targetHex.q, targetHex.r);
+
             if (window.gameOnHexClick) {
-                window.gameOnHexClick(targetHex.q, targetHex.r);
+                window.gameOnHexClick(targetHex.q, targetHex.r, mapX - hexPx.x, mapY - hexPx.y);
             }
         }
     });
@@ -320,6 +417,14 @@
     window.hexCanvas = {
         updateView,
         animateTo,
+        startIntraHexMove: (tx, ty, isRun) => {
+            targetOffsetX = tx;
+            targetOffsetY = ty;
+            moveSpeed = isRun ? 100 : 50;
+            isIntraMoving = true;
+            lastFrameTime = performance.now();
+            requestAnimationFrame(render);
+        },
         render,
         getDist: (a, b) => {
             return (Math.abs(a.q - b.q) + Math.abs(a.q + a.r - b.q - b.r) + Math.abs(a.r - b.r)) / 2;
