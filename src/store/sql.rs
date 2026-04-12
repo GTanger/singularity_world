@@ -448,10 +448,16 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
             tags JSONB NOT NULL DEFAULT '[]'::jsonb,
             description TEXT NOT NULL DEFAULT '',
             objects JSONB NOT NULL DEFAULT '[]'::jsonb,
+            explored BOOLEAN NOT NULL DEFAULT FALSE,
             PRIMARY KEY (q, r)
         )",
         &[],
     )?;
+    // 補欄位：explored（舊表可能沒有）
+    let _ = conn.execute(
+        "ALTER TABLE hex_cells ADD COLUMN IF NOT EXISTS explored BOOLEAN NOT NULL DEFAULT FALSE",
+        &[],
+    );
     conn.execute(
         "CREATE INDEX IF NOT EXISTS idx_hex_cells_terrain ON hex_cells(terrain)",
         &[],

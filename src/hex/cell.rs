@@ -226,6 +226,9 @@ pub struct HexCell {
     /// 格子內的可互動物件（沿用既有 RoomObject 結構）
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub objects: Vec<RoomObject>,
+
+    #[serde(default)]
+    pub explored: bool,
 }
 
 impl HexCell {
@@ -238,6 +241,7 @@ impl HexCell {
             tags: Vec::new(),
             description: String::new(),
             objects: Vec::new(),
+            explored: false,
         }
     }
 

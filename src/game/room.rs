@@ -35,6 +35,8 @@ pub struct HexCellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub text_font: Option<String>,
     pub move_cost: f64,
+    pub explored: bool,
+    pub walkable: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -147,6 +149,8 @@ pub fn get_hex_area_view(
                 text_color: cell.terrain.text_color().map(String::from),
                 text_font: cell.terrain.text_font().map(String::from),
                 move_cost: cell.terrain.move_cost(),
+                explored: cell.explored,
+                walkable: cell.terrain.walkable(),
             });
 
             // 2. 取得該格實體

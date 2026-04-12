@@ -63,6 +63,9 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/api/hex/view", get(http_api::hex_view))
         .route("/api/hex/player-reveal", post(http_api::hex_player_reveal))
         .route("/api/hex/my-revealed", get(http_api::hex_my_revealed))
+        .route("/api/hex/scout", post(http_api::hex_scout))
+        .route("/api/hex/explore", post(http_api::hex_explore))
+        .route("/api/hex/move", post(http_api::hex_move))
         // 房間管理 CRUD
         .route("/api/rooms", get(http_api::list_rooms).post(http_api::create_room))
         .route("/api/rooms/{id}", get(http_api::get_room_admin).put(http_api::update_room).delete(http_api::delete_room))

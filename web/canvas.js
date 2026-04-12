@@ -43,6 +43,8 @@
     let targetOffsetY = 0;
     let isIntraMoving = false;
     let moveSpeed = 0; // px/s
+    let exploreProgress = 0; // 0.0 -> 1.0
+    let scoutingHexes = new Set();
     let myPlayerId = '';
     let lastPlayerQ = null;
     let lastPlayerR = null;
@@ -96,7 +98,7 @@
         centerY = h / 2;
     }
 
-    function drawHex(x, y, radius, color, text, textColor, textFont) {
+    function drawHex(x, y, radius, color, text, textColor, textFont, isFogged) {
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
             const angle = 2 * Math.PI / 6 * (i + 0.5); // pointy-top
@@ -118,6 +120,20 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(text, x, y);
+        }
+
+        if (isFogged) {
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = 2 * Math.PI / 6 * (i + 0.5);
+                const px = x + radius * Math.cos(angle);
+                const py = y + radius * Math.sin(angle);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(20, 20, 20, 0.45)';
+            ctx.fill();
         }
     }
 
@@ -147,20 +163,35 @@
     }
 
     function checkCollision(nx, ny) {
-        // Hex 邊界碰撞 (內切圓近似)
-        const distToCenter = Math.sqrt(nx * nx + ny * ny);
-        const limit = HEX_R * Math.sqrt(3) / 2 - ROLE_RADIUS;
-        if (distToCenter > limit) return true;
+        // 用 pixelToHex 判定字圓下一步落在哪個格
+        const currentPx = hexToPixel(playerCoord.q, playerCoord.r);
+        const nextHex = pixelToHex(currentPx.x + nx, currentPx.y + ny);
 
-        // 實體碰撞 (同格 NPC)
-        const others = currentEntities.filter(e => e.q === playerCoord.q && e.r === playerCoord.r && (e.id || e.ID) !== myPlayerId);
-        for (let i = 0; i < others.length; i++) {
-            // NPC 座標 (使用 spread 邏輯)
-            const ex = (i - (others.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
-            const ey = 0;
-            const d = Math.sqrt((nx - ex) ** 2 + (ny - ey) ** 2);
-            if (d < ROLE_RADIUS * 2) return true;
+        if (nextHex.q === playerCoord.q && nextHex.r === playerCoord.r) {
+            // 仍在本格內：只檢查 NPC 碰撞
+            const others = currentEntities.filter(e => e.q === playerCoord.q && e.r === playerCoord.r && (e.id || e.ID) !== myPlayerId);
+            for (let i = 0; i < others.length; i++) {
+                const ex = (i - (others.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
+                const ey = 0;
+                const d = Math.sqrt((nx - ex) ** 2 + (ny - ey) ** 2);
+                if (d < ROLE_RADIUS * 2) return true;
+            }
+            return false;
         }
+
+        // 跨格：檢查鄰格是否可進入
+        const neighbor = currentCells.find(c => c.q === nextHex.q && c.r === nextHex.r);
+        if (!neighbor) {
+            // 黑格：擋，並觸發偵查
+            if (window.onBlackHexBoundaryStop) {
+                window.onBlackHexBoundaryStop(nextHex.q, nextHex.r);
+            }
+            return true;
+        }
+        if (!neighbor.walkable) {
+            return true; // 不可走地形
+        }
+        // 可走的彩格或灰霧格：放行跨格
         return false;
     }
 
@@ -179,6 +210,11 @@
                 playerOffsetX = targetOffsetX;
                 playerOffsetY = targetOffsetY;
                 isIntraMoving = false;
+                // P2: 停止移動時若在灰霧格中心，啟動探索 Render Loop
+                const cell = currentCells.find(c => c.q === playerCoord.q && c.r === playerCoord.r);
+                if (cell && cell.fogged) {
+                    requestAnimationFrame(render);
+                }
             } else {
                 const angle = Math.atan2(dy, dx);
                 const step = moveSpeed * dt;
@@ -188,15 +224,59 @@
                 if (checkCollision(nextX, nextY)) {
                     isIntraMoving = false;
                 } else {
-                    playerOffsetX = nextX;
-                    playerOffsetY = nextY;
+                    // 偵測跨格同步 (P1: 立即換算座標與 offset)
+                    const currentPx = hexToPixel(playerCoord.q, playerCoord.r);
+                    const nextCoord = pixelToHex(currentPx.x + nextX, currentPx.y + nextY);
+                    if (nextCoord.q !== playerCoord.q || nextCoord.r !== playerCoord.r) {
+                        const newPx = hexToPixel(nextCoord.q, nextCoord.r);
+                        const moveDX = currentPx.x - newPx.x;
+                        const moveDY = currentPx.y - newPx.y;
+
+                        playerCoord.q = nextCoord.q;
+                        playerCoord.r = nextCoord.r;
+                        lastPlayerQ = playerCoord.q;
+                        lastPlayerR = playerCoord.r;
+
+                        playerOffsetX = nextX + moveDX;
+                        playerOffsetY = nextY + moveDY;
+                        targetOffsetX += moveDX;
+                        targetOffsetY += moveDY;
+
+                        if (window.onHexCrossBoundary) {
+                            window.onHexCrossBoundary(nextCoord.q, nextCoord.r);
+                        }
+                    } else {
+                        playerOffsetX = nextX;
+                        playerOffsetY = nextY;
+                    }
                 }
             }
+            // 重置探索進度（移動中不探索）
+            exploreProgress = 0;
             // 讓相機跟隨字圓
             if (!isMoving) {
                 const px = hexToPixel(playerCoord.q, playerCoord.r);
                 cameraX = px.x + playerOffsetX;
                 cameraY = px.y + playerOffsetY;
+            }
+        } else {
+            // 靜止狀態：檢查是否在灰霧格中心進行探索
+            const cell = currentCells.find(c => c.q === playerCoord.q && c.r === playerCoord.r);
+            if (cell && cell.fogged) {
+                const distToCenter = Math.sqrt(playerOffsetX * playerOffsetX + playerOffsetY * playerOffsetY);
+                if (distToCenter <= 30) {
+                    exploreProgress += dt / 3; // 3 秒
+                    if (exploreProgress >= 1.0) {
+                        if (window.onHexExploreComplete) {
+                            window.onHexExploreComplete(playerCoord.q, playerCoord.r);
+                        }
+                        exploreProgress = 0;
+                    }
+                } else {
+                    exploreProgress = 0;
+                }
+            } else {
+                exploreProgress = 0;
             }
         }
 
@@ -223,15 +303,21 @@
             const screenX = px.x - cameraX + centerX;
             const screenY = px.y - cameraY + centerY;
             
-            // 可視範圍檢測 (簡單矩形檢測)
-            if (screenX < -100 || screenX > window.innerWidth + 100 || screenY < -100 || screenY > window.innerHeight + 100) return;
+            // 可視範圍檢測：margin 須 ≥ hex 外接圓半徑，否則邊角被裁
+            const cullMargin = HEX_R * 2;
+            if (screenX < -cullMargin || screenX > window.innerWidth + cullMargin || screenY < -cullMargin || screenY > window.innerHeight + cullMargin) return;
 
-            drawHex(screenX, screenY, HEX_R, cell.color, cell.display_char, cell.text_color, cell.text_font);
+            drawHex(screenX, screenY, HEX_R, cell.color, cell.display_char, cell.text_color, cell.text_font, cell.fogged);
         });
 
-        // 繪製實體
+        // 繪製實體（玩家獨立繪製，不依賴 currentEntities 位置）
+        let playerDisplayChar = null;
         const entityGroups = {};
         currentEntities.forEach(e => {
+            if ((e.id || e.ID) === myPlayerId) {
+                playerDisplayChar = e.display_char;
+                return; // 玩家不進 group，由下方獨立繪製
+            }
             const key = `${e.q},${e.r}`;
             if (!entityGroups[key]) entityGroups[key] = [];
             entityGroups[key].push(e);
@@ -240,34 +326,33 @@
         for (const key in entityGroups) {
             const group = entityGroups[key];
             const [q, r] = key.split(',').map(Number);
-            const isPlayerHex = (q === playerCoord.q && r === playerCoord.r);
-            
             const px = hexToPixel(q, r);
             const baseScreenX = px.x - cameraX + centerX;
             const baseScreenY = px.y - cameraY + centerY;
+            group.forEach((e, i) => {
+                const offsetX = (i - (group.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
+                drawEntity(baseScreenX + offsetX, baseScreenY, e.display_char, '#c4b8a8');
+            });
+        }
 
-            if (isPlayerHex) {
-                // 分開處理玩家與 NPC
-                const npcs = group.filter(e => (e.id || e.ID) !== myPlayerId);
-                const player = group.find(e => (e.id || e.ID) === myPlayerId);
+        // 玩家字圓：永遠以 playerCoord + offset 繪製，不受 currentEntities 延遲影響
+        if (playerDisplayChar) {
+            const pPx = hexToPixel(playerCoord.q, playerCoord.r);
+            const pScreenX = pPx.x - cameraX + centerX + playerOffsetX;
+            const pScreenY = pPx.y - cameraY + centerY + playerOffsetY;
+            drawEntity(pScreenX, pScreenY, playerDisplayChar, '#7ec8e3');
 
-                npcs.forEach((e, i) => {
-                    const offsetX = (i - (npcs.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
-                    drawEntity(baseScreenX + offsetX, baseScreenY, e.display_char, '#c4b8a8');
-                });
-                if (player) {
-                    drawEntity(baseScreenX + playerOffsetX, baseScreenY + playerOffsetY, player.display_char, '#7ec8e3');
-                }
-            } else {
-                group.forEach((e, i) => {
-                    const offsetX = (i - (group.length - 1) / 2) * (ROLE_RADIUS * 2 * 1.1);
-                    const color = e.kind === 'player' ? '#7ec8e3' : '#c4b8a8';
-                    drawEntity(baseScreenX + offsetX, baseScreenY, e.display_char, color);
-                });
+            // 探索進度環
+            if (exploreProgress > 0) {
+                ctx.beginPath();
+                ctx.arc(pScreenX, pScreenY, 20, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * exploreProgress);
+                ctx.strokeStyle = 'rgba(255, 220, 120, 0.8)';
+                ctx.lineWidth = 3;
+                ctx.stroke();
             }
         }
 
-        if (isMoving || isIntraMoving) {
+        if (isMoving || isIntraMoving || exploreProgress > 0) {
             requestAnimationFrame(render);
         }
     }
@@ -276,10 +361,12 @@
         if (myId) myPlayerId = myId;
         currentCells = view.cells;
         currentEntities = view.entities;
-        playerCoord = view.center;
-        
-        // 如果格位變動，重置 offset
-        if (playerCoord.q !== lastPlayerQ || playerCoord.r !== lastPlayerR) {
+
+        const serverCoord = view.center;
+
+        if (lastPlayerQ === null) {
+            // 初次載入：從伺服器同步座標
+            playerCoord = serverCoord;
             playerOffsetX = 0;
             playerOffsetY = 0;
             targetOffsetX = 0;
@@ -287,7 +374,19 @@
             isIntraMoving = false;
             lastPlayerQ = playerCoord.q;
             lastPlayerR = playerCoord.r;
+        } else if (!isIntraMoving && !isMoving) {
+            // 靜止時才從伺服器同步（避免移動中被 race condition 覆蓋）
+            if (serverCoord.q !== playerCoord.q || serverCoord.r !== playerCoord.r) {
+                playerCoord = serverCoord;
+                playerOffsetX = 0;
+                playerOffsetY = 0;
+                targetOffsetX = 0;
+                targetOffsetY = 0;
+                lastPlayerQ = playerCoord.q;
+                lastPlayerR = playerCoord.r;
+            }
         }
+        // 移動中不覆蓋 playerCoord，render loop 跨格偵測是權威
 
         if (!isMoving && !isIntraMoving) {
             const px = hexToPixel(playerCoord.q, playerCoord.r);
@@ -420,7 +519,12 @@
         startIntraHexMove: (tx, ty, isRun) => {
             targetOffsetX = tx;
             targetOffsetY = ty;
-            moveSpeed = isRun ? 100 : 50;
+            const currentCell = currentCells.find(c => c.q === playerCoord.q && c.r === playerCoord.r);
+            if (currentCell && currentCell.fogged) {
+                moveSpeed = 30; // 灰霧格固定速
+            } else {
+                moveSpeed = isRun ? 100 : 50;
+            }
             isIntraMoving = true;
             lastFrameTime = performance.now();
             requestAnimationFrame(render);

@@ -63,7 +63,7 @@ fn load_normalized(conn: &mut Connection) -> anyhow::Result<HexGrid> {
         .unwrap_or(0);
 
     let cell_rows = conn.query(
-        "SELECT q, r, terrain, name, zone, tags::text, description, objects::text
+        "SELECT q, r, terrain, name, zone, tags::text, description, objects::text, explored
          FROM hex_cells ORDER BY q, r",
         &[],
     )?;
@@ -78,6 +78,7 @@ fn load_normalized(conn: &mut Connection) -> anyhow::Result<HexGrid> {
         let tags_s: String = row.get(5);
         let description: String = row.get(6);
         let objects_s: String = row.get(7);
+        let explored: bool = row.get(8);
         let tags: Vec<String> = serde_json::from_str(&tags_s).unwrap_or_default();
         let objects = serde_json::from_str(&objects_s).unwrap_or_default();
         let coord = HexCoord::new(q, r);
@@ -91,6 +92,7 @@ fn load_normalized(conn: &mut Connection) -> anyhow::Result<HexGrid> {
                 tags,
                 description,
                 objects,
+                explored,
             },
         );
     }
@@ -207,8 +209,8 @@ fn persist_grid(t: &mut Transaction<'_>, grid: &HexGrid) -> anyhow::Result<()> {
         let tags = serde_json::to_string(&cell.tags)?;
         let objects = serde_json::to_string(&cell.objects)?;
         t.execute(
-            "INSERT INTO hex_cells (q, r, terrain, name, zone, tags, description, objects)
-             VALUES ($1, $2, $3, $4, $5, $6::text::jsonb, $7, $8::text::jsonb)",
+            "INSERT INTO hex_cells (q, r, terrain, name, zone, tags, description, objects, explored)
+             VALUES ($1, $2, $3, $4, $5, $6::text::jsonb, $7, $8::text::jsonb, $9)",
             &[
                 &cell.coord.q,
                 &cell.coord.r,
@@ -218,6 +220,7 @@ fn persist_grid(t: &mut Transaction<'_>, grid: &HexGrid) -> anyhow::Result<()> {
                 &tags,
                 &cell.description,
                 &objects,
+                &cell.explored,
             ],
         )?;
     }

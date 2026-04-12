@@ -26,7 +26,7 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.14.5">
+	<link rel="stylesheet" href="style.css?v=0.15.6">
 </head>
 <body>
 	<!-- 登入／創角：未登入時顯示，登入成功後隱藏 -->
@@ -157,14 +157,14 @@
 		</div>
 	</div>
 
-	<script src="narrative-markdown.js?v=0.14.5"></script>
-	<script src="canvas.js?v=0.14.5"></script>
-	<script src="main.js?v=0.14.5"></script>
-	<script src="ui.js?v=0.14.5"></script>
+	<script src="narrative-markdown.js?v=0.15.6"></script>
+	<script src="canvas.js?v=0.15.6"></script>
+	<script src="main.js?v=0.15.6"></script>
+	<script src="ui.js?v=0.15.6"></script>
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.14.5').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.15.6').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {

@@ -126,10 +126,15 @@ pub fn generate_wild_cell(grid: &HexGrid, coord: HexCoord) -> HexCell {
     };
 
     let name = format!("{}·{}", terrain_title_zh(terrain), coord.to_cell_id());
-    HexCell::new(coord, terrain, name)
+    let mut cell = HexCell::new(coord, terrain, name)
         .with_zone("wild")
         .with_tags(vec!["proc_reveal".to_string()])
-        .with_description("觀測揭露生成（契約層，單調精煉）。")
+        .with_description("觀測揭露生成（契約層，單調精煉）。");
+
+    if !terrain.walkable() || coord == HexCoord::ORIGIN {
+        cell.explored = true;
+    }
+    cell
 }
 
 /// 以六角距離 `radius` 內、由近到遠順序揭露；已存在之格不覆寫。回傳**新插入**格數。

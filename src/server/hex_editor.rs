@@ -95,6 +95,20 @@ pub fn ensure_world_cell_at(coord: HexCoord) -> Result<(HexCell, bool), String> 
     Ok((cell, true))
 }
 
+/// 將指定座標標記為已探索（explored = true）並持久化。
+pub fn mark_cell_explored(coord: HexCoord) -> Result<(), String> {
+    let mut grid = hex_state().grid.write().map_err(|e| e.to_string())?;
+    if let Some(mut cell) = grid.get(coord).cloned()
+        && !cell.explored
+    {
+        cell.explored = true;
+        grid.insert(cell);
+        drop(grid);
+        save_to_disk()?;
+    }
+    Ok(())
+}
+
 /// 新角色 Hex 世界**唯一**出生點：座標 **(0,0)** 契約為**草原**（`Terrain::Grassland`）。
 /// 若該格尚不存在則揭露生成；若已存在但非草原則改地形並落盤（PostgreSQL + 備份）。
 /// 格上帶 **`player_spawn`** 標籤，與 [`crate::hex::contract_pins`] 對齊，供地圖編輯器辨識遊戲釘死彩格。

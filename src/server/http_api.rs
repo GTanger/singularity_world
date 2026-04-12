@@ -740,3 +740,181 @@ pub async fn hex_my_revealed(Query(q): Query<HexMyRevealedQuery>) -> impl IntoRe
     }))
     .into_response()
 }
+
+// ── Hex 探索揭露（Scout / Explore / Move） ──
+
+#[derive(Deserialize)]
+pub struct HexScoutReq {
+    pub player_id: String,
+    pub target_q: i32,
+    pub target_r: i32,
+}
+
+/// POST /api/hex/scout — 偵查黑格，生成地形並釘死。
+pub async fn hex_scout(Json(req): Json<HexScoutReq>) -> impl IntoResponse {
+    // 依現行 auth 邏輯，MVP 暫不強制 pw（前端已持有玩家 ID）
+    let (hex_q, hex_r) = if let Some(st) = store::get_store() {
+        if let Ok(s) = st.read() {
+            s.get_entity(&req.player_id)
+                .map(|e| (e.hex_q, e.hex_r))
+                .unwrap_or((None, None))
+        } else {
+            (None, None)
+        }
+    } else {
+        (None, None)
+    };
+
+    let (Some(pq), Some(pr)) = (hex_q, hex_r) else {
+        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"玩家無座標"}))).into_response();
+    };
+
+    let player_coord = HexCoord::new(pq, pr);
+    let target_coord = HexCoord::new(req.target_q, req.target_r);
+    if player_coord.distance(target_coord) != 1 {
+        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"偵查目標須相鄰"}))).into_response();
+    }
+
+    match hex_editor::ensure_world_cell_at(target_coord) {
+        Ok((cell, scouted)) => Json(serde_json::json!({
+            "ok": true,
+            "cell": cell,
+            "scouted": scouted
+        }))
+        .into_response(),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": format!("偵查失敗：{e}")})),
+        )
+            .into_response(),
+    }
+}
+
+#[derive(Deserialize)]
+pub struct HexExploreReq {
+    pub player_id: String,
+    pub target_q: i32,
+    pub target_r: i32,
+}
+
+/// POST /api/hex/explore — 精探完成，解鎖精煉層（移除 fogged）。
+pub async fn hex_explore(Json(req): Json<HexExploreReq>) -> impl IntoResponse {
+    let (hex_q, hex_r) = if let Some(st) = store::get_store() {
+        if let Ok(s) = st.read() {
+            s.get_entity(&req.player_id)
+                .map(|e| (e.hex_q, e.hex_r))
+                .unwrap_or((None, None))
+        } else {
+            (None, None)
+        }
+    } else {
+        (None, None)
+    };
+
+    if hex_q != Some(req.target_q) || hex_r != Some(req.target_r) {
+        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"玩家不在目標格，無法精探"})))
+            .into_response();
+    }
+
+    let target_coord = HexCoord::new(req.target_q, req.target_r);
+    match hex_editor::mark_cell_explored(target_coord) {
+        Ok(()) => Json(serde_json::json!({"ok": true})).into_response(),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": format!("探索失敗：{e}")})),
+        )
+            .into_response(),
+    }
+}
+
+#[derive(Deserialize)]
+pub struct HexMoveReq {
+    pub player_id: String,
+    pub to_q: i32,
+    pub to_r: i32,
+}
+
+/// POST /api/hex/move — 跨格移動，更新玩家座標。
+pub async fn hex_move(Json(req): Json<HexMoveReq>) -> impl IntoResponse {
+    let Some(st) = store::get_store() else {
+        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"})))
+            .into_response();
+    };
+
+    let (pq, pr) = if let Ok(s) = st.read() {
+        s.get_entity(&req.player_id)
+            .map(|e| (e.hex_q, e.hex_r))
+            .unwrap_or((None, None))
+    } else {
+        (None, None)
+    };
+
+    let (Some(pq), Some(pr)) = (pq, pr) else {
+        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"玩家無座標"}))).into_response();
+    };
+
+    let player_coord = HexCoord::new(pq, pr);
+    let target_coord = HexCoord::new(req.to_q, req.to_r);
+
+    // 1. 距離驗證 (必須相鄰)
+    if player_coord.distance(target_coord) != 1 {
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({"error": "移動距離過大，禁止瞬移"})),
+        )
+            .into_response();
+    }
+
+    // 2 & 3. 目標格存在性與通行性驗證
+    let grid = match hex_editor::get_runtime_grid() {
+        Some(g) => g,
+        None => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({"error": "無法取得地圖網格"})),
+            )
+                .into_response()
+        }
+    };
+
+    match grid.get(target_coord) {
+        Some(cell) => {
+            if !cell.terrain.walkable() {
+                return (
+                    StatusCode::BAD_REQUEST,
+                    Json(serde_json::json!({"error": "目標地形不可通行"})),
+                )
+                    .into_response();
+            }
+        }
+        None => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(serde_json::json!({"error": "目標格尚未揭露，禁止移入"})),
+            )
+                .into_response();
+        }
+    };
+
+    let mut s = match st.write() {
+        Ok(guard) => guard,
+        Err(_) => {
+            return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"})))
+                .into_response()
+        }
+    };
+
+    if s.get_entity(&req.player_id).is_none() {
+        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"玩家不存在"}))).into_response();
+    }
+
+    if let Err(e) = s.set_entity_hex(&req.player_id, req.to_q, req.to_r) {
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": format!("移動更新失敗：{e}")})),
+        )
+            .into_response();
+    }
+
+    Json(serde_json::json!({"ok": true, "q": req.to_q, "r": req.to_r})).into_response()
+}
