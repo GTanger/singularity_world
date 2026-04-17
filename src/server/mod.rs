@@ -9,6 +9,7 @@ mod protocol;
 mod run;
 mod session;
 mod simulation_loop;
+pub mod grid_manager;
 pub mod hex_editor;
 pub mod http_api;
 pub mod room_editor;

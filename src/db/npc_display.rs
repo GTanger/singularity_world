@@ -31,7 +31,7 @@ impl NpcSchedule {
 #[must_use]
 pub fn get_schedule_for_entity(entity_id: &str) -> Option<NpcSchedule> {
     let arc = store::get_store()?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     s.get_schedule(entity_id).map(|sch| NpcSchedule {
         entity_id: sch.entity_id.clone(),
         work_room: sch.work_room.clone(),
@@ -134,7 +134,7 @@ pub fn get_npc_title_in_room_at_hour(
     game_hour: i32,
 ) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap();
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     let (list_display, _) = npc_list_display_and_behavior_role_locked(&mut s, entity_id, room_id, game_hour);
     Ok(list_display)
 }
@@ -159,7 +159,7 @@ pub fn get_npc_title(entity_id: &str) -> anyhow::Result<String> {
 /// 回傳 NPC 真名；無則自動產生並寫回 store（對齊既有 `GetNPCPersonDisplayName`）。
 pub fn get_npc_person_display_name(entity_id: &str) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap();
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     Ok(npc_person_display_name_locked(&mut s, entity_id))
 }
 

@@ -19,14 +19,14 @@ pub fn insert_assignment(
     assigned_by: &str,
 ) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap();
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     s.insert_assignment(entity_id, occupation_id, venue_id, assigned_by)
 }
 
 /// 某實體的全部指派（對齊既有 `GetAssignmentsForEntity`）。
 pub fn get_assignments_for_entity(entity_id: &str) -> anyhow::Result<Vec<Assignment>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     Ok(s.get_assignments_for_entity(entity_id))
 }
 
@@ -42,7 +42,7 @@ pub fn get_npc_title_from_assignments(entity_id: &str) -> String {
 /// 移除某實體的全部指派（對齊既有 `RemoveAssignmentsForEntity`）。
 pub fn remove_assignments_for_entity(entity_id: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap();
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     s.remove_assignments_for_entity(entity_id)
 }
 
@@ -52,7 +52,7 @@ pub fn get_venue_max_staff(venue_id: &str, default_max: i32) -> i32 {
     let Some(arc) = store::get_store() else {
         return default_max;
     };
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     s.get_venue_max_staff(venue_id, default_max)
 }
 
@@ -62,21 +62,21 @@ pub fn get_first_occupation_id_for_venue(venue_id: &str) -> String {
     let Some(arc) = store::get_store() else {
         return String::new();
     };
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     s.get_first_occupation_id_for_venue(venue_id)
 }
 
 /// 該場所涵蓋的房間 ID（對齊既有 `GetRoomIDsForVenue`）。
 pub fn get_room_ids_for_venue(venue_id: &str) -> anyhow::Result<Option<Vec<String>>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     Ok(s.get_venue(venue_id).map(|v| v.room_ids.clone()))
 }
 
 /// 房間是否在該場所內（對齊既有 `IsRoomInVenue`）。
 pub fn is_room_in_venue(room_id: &str, venue_id: &str) -> anyhow::Result<bool> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     Ok(s.is_room_in_venue(room_id, venue_id))
 }
 
@@ -93,27 +93,27 @@ pub fn entity_in_venue_at_room(entity_id: &str, room_id: &str) -> anyhow::Result
 /// 包含該房間的所有場所 ID（對齊既有 `GetVenueIDsForRoom`）。
 pub fn get_venue_ids_for_room(room_id: &str) -> anyhow::Result<Vec<String>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     Ok(s.get_venue_ids_for_room(room_id))
 }
 
 /// 該場所目前的指派數量（對齊既有 `GetAssignmentCountByVenue`）。
 pub fn get_assignment_count_by_venue(venue_id: &str) -> anyhow::Result<usize> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     Ok(s.get_assignment_count_by_venue(venue_id))
 }
 
 /// 所有場所 ID（對齊既有 `GetAllVenueIDs`）。
 pub fn get_all_venue_ids() -> anyhow::Result<Vec<String>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     Ok(s.get_all_venue_ids())
 }
 
 /// 所有場所涵蓋的房間 ID（對齊既有 `GetAllVenueRoomIDs`）。
 pub fn get_all_venue_room_ids() -> anyhow::Result<Vec<String>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     Ok(s.get_all_venue_room_ids())
 }

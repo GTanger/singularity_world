@@ -227,6 +227,19 @@ fn login_success(conn: &WsConnection, player_id: &str) {
             return;
         }
     };
+    // 確保玩家也有 grid 座標（正方格）
+    let ent_now = db::get_entity(player_id).ok().flatten();
+    let (gx, gy) = match ent_now.as_ref().and_then(|e| e.grid_x.zip(e.grid_y)) {
+        Some(pair) => pair,
+        None => {
+            let _ = db::set_entity_grid(player_id, 0, 0);
+            (0, 0)
+        }
+    };
+    crate::server::grid_manager::with_square_grid_mut(|grid| {
+        crate::grid::reveal_grid_disk(grid, crate::grid::SquareCoord::new(gx, gy), 5);
+    });
+
     let view = match game::get_hex_room_view(player_id, hq, hr, gh) {
         Ok(Some(v)) => v,
         Ok(None) | Err(_) => {
@@ -243,6 +256,10 @@ fn login_success(conn: &WsConnection, player_id: &str) {
         .unwrap_or((10, 10, 10));
     let rm = compute_resource_maxes(vit, qi, dex);
     send_room_view_to_session(&session, &view, player_id, &conn.cfg);
+
+    // 額外發送正方格視野
+    send_grid_view(conn, player_id, gx, gy, gh);
+
     let now = game::now_unix();
     for e in &view.entities {
         if matches!(e.kind, crate::entity::EntityKind::Npc) && e.id != player_id {
@@ -607,6 +624,14 @@ fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("move_failed"));
         return;
     };
+
+    // 優先走正方格路徑
+    if oe.grid_x.is_some() && oe.grid_y.is_some() {
+        handle_move_grid(conn, &player_id, &msg.direction, &oe);
+        return;
+    }
+
+    // 退回六角格路徑
     let (Some(old_q), Some(old_r)) = (oe.hex_q, oe.hex_r) else {
         conn.send_error(gametext::client("move_failed"));
         return;
@@ -665,6 +690,76 @@ fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
     };
     let bytes = serde_json::to_vec(&moved).unwrap_or_default();
     conn.hub.broadcast(bytes);
+}
+
+fn handle_move_grid(conn: &WsConnection, player_id: &str, direction: &str, _oe: &Character) {
+    let (new_room, ok) = match game::move_by_grid_direction(player_id, direction) {
+        Ok(v) => v,
+        Err(_) => {
+            conn.send_error(gametext::client("move_failed"));
+            return;
+        }
+    };
+    if !ok {
+        let _ = event::append(game::now_unix(), player_id, BLOCKED, direction);
+        conn.send_json(&BlockedMsg {
+            msg_type: "blocked".into(),
+            direction: direction.to_string(),
+        });
+        return;
+    }
+    let Some(coord) = crate::grid::parse_grid_room_id(&new_room) else {
+        conn.send_error(gametext::client("move_failed"));
+        return;
+    };
+    let gh = current_game_hour(&conn.cfg);
+    send_grid_view(conn, player_id, coord.x, coord.y, gh);
+    let moved = MovedMsg {
+        msg_type: "moved".into(),
+        player_id: player_id.to_string(),
+        room_id: new_room,
+        room_name: String::new(),
+    };
+    let bytes = serde_json::to_vec(&moved).unwrap_or_default();
+    conn.hub.broadcast(bytes);
+}
+
+fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i32, game_hour: i32) {
+    use super::broadcast::build_room_view_msg;
+    use super::protocol::{GridCellView, GridViewMsg};
+
+    let view = match game::get_grid_room_view(player_id, x, y, game_hour) {
+        Ok(Some(v)) => v,
+        _ => return,
+    };
+    let base = build_room_view_msg(&view, player_id, &conn.cfg);
+    let cells_raw = game::get_grid_cells_around(x, y, 6);
+    let cells: Vec<GridCellView> = cells_raw
+        .into_iter()
+        .map(|(cx, cy, terrain, name, explored, walkable)| GridCellView {
+            x: cx,
+            y: cy,
+            terrain,
+            name,
+            explored,
+            walkable,
+        })
+        .collect();
+    let grid_msg = GridViewMsg {
+        msg_type: "grid_view".into(),
+        player_x: x,
+        player_y: y,
+        cells,
+        room_name: base.room_name,
+        description: base.description,
+        exits: base.exits,
+        entities: base.entities,
+        objects: base.objects,
+        server_unix: base.server_unix,
+        game_time_sec_since_midnight: base.game_time_sec_since_midnight,
+        game_days_since_epoch: base.game_days_since_epoch,
+    };
+    conn.send_json(&grid_msg);
 }
 
 /// 離開某六角格時，若無其他玩家仍在該格，清除該格 NPC 之最後觀測。

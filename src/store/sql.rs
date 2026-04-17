@@ -308,6 +308,15 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         "ALTER TABLE entities ADD COLUMN IF NOT EXISTS hex_r INTEGER",
         &[],
     );
+    // 補欄位：正方格座標（NULL ＝未綁定正方格世界）
+    let _ = conn.execute(
+        "ALTER TABLE entities ADD COLUMN IF NOT EXISTS grid_x INTEGER",
+        &[],
+    );
+    let _ = conn.execute(
+        "ALTER TABLE entities ADD COLUMN IF NOT EXISTS grid_y INTEGER",
+        &[],
+    );
 
     // 實體房間對應
     conn.execute(

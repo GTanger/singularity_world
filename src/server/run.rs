@@ -21,6 +21,7 @@ use crate::config::Server;
 use super::handler::{handle_message, WsConnection};
 use super::http_api;
 use super::hub::{Hub, SEND_BUFFER_SIZE};
+use super::grid_manager;
 use super::hex_editor;
 use super::room_editor;
 use super::session::SessionStore;
@@ -44,6 +45,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         cfg,
     };
     super::hex_editor::init("data/hex/grid.json");
+    grid_manager::init();
     spawn_simulation_main_loop(Arc::clone(&state.sessions), state.cfg.clone());
     let port = state.cfg.port.clone();
 

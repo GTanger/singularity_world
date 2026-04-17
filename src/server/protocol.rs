@@ -327,6 +327,42 @@ pub struct EntityStatusMsg {
     pub equipment_descs: HashMap<String, String>,
 }
 
+/// 正方格地圖視野（傳送玩家附近的多格資訊）。
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct GridViewMsg {
+    #[serde(rename = "type")]
+    pub msg_type: String,
+    #[serde(rename = "player_x")]
+    pub player_x: i32,
+    #[serde(rename = "player_y")]
+    pub player_y: i32,
+    pub cells: Vec<GridCellView>,
+    #[serde(rename = "room_name")]
+    pub room_name: String,
+    pub description: String,
+    pub exits: Vec<ExitView>,
+    pub entities: Vec<ViewEntity>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub objects: Vec<ViewObject>,
+    #[serde(rename = "server_unix")]
+    pub server_unix: i64,
+    #[serde(rename = "game_time_sec_since_midnight")]
+    pub game_time_sec_since_midnight: i32,
+    #[serde(rename = "game_days_since_epoch")]
+    pub game_days_since_epoch: i32,
+}
+
+/// 正方格單格視野資訊（地圖渲染用）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct GridCellView {
+    pub x: i32,
+    pub y: i32,
+    pub terrain: String,
+    pub name: String,
+    pub explored: bool,
+    pub walkable: bool,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

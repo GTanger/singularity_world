@@ -113,6 +113,12 @@ pub struct Entity {
     /// 野外六角 even-q 座標 r。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hex_r: Option<i32>,
+    /// 正方格座標 x（東增）。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grid_x: Option<i32>,
+    /// 正方格座標 y（北增）。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grid_y: Option<i32>,
 }
 
 /// 物品定義。
@@ -416,12 +422,12 @@ pub static DEFAULT: RwLock<Option<Arc<RwLock<Store>>>> = RwLock::new(None);
 
 /// 取得全域 store 的 Arc 參照。
 pub fn get_store() -> Option<Arc<RwLock<Store>>> {
-    DEFAULT.read().unwrap().clone()
+    DEFAULT.read().unwrap_or_else(|e| e.into_inner()).clone()
 }
 
 pub fn get_db_pool() -> Option<sql::DbPool> {
     if let Some(st) = get_store() {
-        st.read().unwrap().db_pool.clone()
+        st.read().unwrap_or_else(|e| e.into_inner()).db_pool.clone()
     } else {
         None
     }
@@ -429,7 +435,7 @@ pub fn get_db_pool() -> Option<sql::DbPool> {
 
 /// 設定全域 store。
 fn set_store(store: Store) {
-    let mut guard = DEFAULT.write().unwrap();
+    let mut guard = DEFAULT.write().unwrap_or_else(|e| e.into_inner());
     *guard = Some(Arc::new(RwLock::new(store)));
 }
 
@@ -1423,7 +1429,8 @@ impl Store {
             "SELECT id, kind, display_char, x, y, move_state, target_x, target_y,
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
-                    equipment_slots, inventory, disposition, current_activity, hex_q, hex_r
+                    equipment_slots, inventory, disposition, current_activity, hex_q, hex_r,
+                    grid_x, grid_y
              FROM entities", &[]
         ) else { return false };
 
@@ -1456,6 +1463,8 @@ impl Store {
                 current_activity: row.get(23),
                 hex_q: row.get(24),
                 hex_r: row.get(25),
+                grid_x: row.get(26),
+                grid_y: row.get(27),
             };
             self.entities.insert(e.id.clone(), e);
         }
@@ -1634,8 +1643,9 @@ impl Store {
                     "INSERT INTO entities (id, kind, display_char, x, y, move_state, target_x, target_y,
                         walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                         created_at, gender, soul_seed, display_title, activated_nodes,
-                        equipment_slots, inventory, disposition, current_activity, hex_q, hex_r)
-                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
+                        equipment_slots, inventory, disposition, current_activity, hex_q, hex_r,
+                        grid_x, grid_y)
+                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
                      ON CONFLICT (id) DO UPDATE SET
                         kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
                         move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
@@ -1645,13 +1655,14 @@ impl Store {
                         gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
                         activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
                         inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
-                        current_activity=EXCLUDED.current_activity, hex_q=EXCLUDED.hex_q, hex_r=EXCLUDED.hex_r",
+                        current_activity=EXCLUDED.current_activity, hex_q=EXCLUDED.hex_q, hex_r=EXCLUDED.hex_r,
+                        grid_x=EXCLUDED.grid_x, grid_y=EXCLUDED.grid_y",
                     &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
                       &e.target_x, &e.target_y, &e.walk_or_run, &e.move_started_at,
                       &e.vit, &e.qi, &e.dex, &e.magnesium, &e.last_observed_at,
                       &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
                       &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
-                      &e.current_activity, &e.hex_q, &e.hex_r],
+                      &e.current_activity, &e.hex_q, &e.hex_r, &e.grid_x, &e.grid_y],
                 );
             }
         }
@@ -1783,6 +1794,34 @@ impl Store {
             e.hex_q = None;
             e.hex_r = None;
         })
+    }
+
+    /// 設定實體在正方格世界上的權威座標；寫入 PG 與快取。
+    pub fn set_entity_grid(&mut self, entity_id: &str, x: i32, y: i32) -> anyhow::Result<()> {
+        self.update_entity(entity_id, |e| {
+            e.grid_x = Some(x);
+            e.grid_y = Some(y);
+        })?;
+        let rid = crate::grid::grid_room_id_from_coord(x, y);
+        self.set_entity_room(entity_id, &rid)
+    }
+
+    /// 與指定正方格座標重合的實體 id（依 `grid_x` / `grid_y`）。
+    pub fn entity_ids_at_grid(&self, x: i32, y: i32) -> Vec<String> {
+        self.entities
+            .iter()
+            .filter(|(_, e)| e.grid_x == Some(x) && e.grid_y == Some(y))
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    /// 有正方格座標的存活 NPC id 列表。
+    pub fn get_npc_ids_with_grid(&self) -> Vec<String> {
+        self.entities
+            .values()
+            .filter(|e| e.kind == "npc" && e.vit > 0 && e.grid_x.is_some() && e.grid_y.is_some())
+            .map(|e| e.id.clone())
+            .collect()
     }
 
     pub fn transfer_magnesium(&mut self, from_id: &str, to_id: &str, amount: i32) -> anyhow::Result<()> {

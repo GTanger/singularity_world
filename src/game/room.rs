@@ -1,6 +1,7 @@
 use crate::db::{self, object_has_socket};
 use crate::entity::{Character, EntityKind};
-use crate::hex::{hex_room_id_from_coord, HexCoord, HexDir, Terrain};
+use crate::grid::{Direction, SquareCoord, grid_room_id_from_coord, terrain_name_zh};
+use crate::hex::{hex_room_id_from_coord, HexCoord, HexDir, HexObject, Terrain};
 use crate::model::{Exit, Room, RoomObject};
 use crate::store;
 use serde::{Deserialize, Serialize};
@@ -187,7 +188,7 @@ pub fn move_by_hex_direction(entity_id: &str, direction: &str) -> anyhow::Result
         return Ok((String::new(), false));
     }
     let arc = store::get_store().ok_or_else(|| anyhow::anyhow!("no store"))?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     let Some(e) = s.get_entity(entity_id) else {
         return Ok((String::new(), false));
     };
@@ -250,6 +251,131 @@ pub fn move_by_exit(entity_id: &str, direction: &str) -> anyhow::Result<(String,
         return Ok((o.move_to_room_id.clone(), true));
     }
     Ok((String::new(), false))
+}
+
+// ─── 正方格地圖 ───────────────────────────────────────────────────
+
+fn hex_objects_to_room_objects(objs: &[HexObject]) -> Vec<RoomObject> {
+    objs.iter()
+        .map(|o| RoomObject {
+            id: o.id.clone(),
+            name: o.name.clone(),
+            owner: String::new(),
+            sockets: vec!["Look".into()],
+            responses: Default::default(),
+            move_to_room_id: String::new(),
+        })
+        .collect()
+}
+
+/// 依方位字在正方格上走一步。成功時已寫入 DB。
+pub fn move_by_grid_direction(entity_id: &str, direction: &str) -> anyhow::Result<(String, bool)> {
+    let dir = direction.trim();
+    if dir.is_empty() {
+        return Ok((String::new(), false));
+    }
+    let Some(gdir) = Direction::from_zh(dir) else {
+        return Ok((String::new(), false));
+    };
+    let arc = store::get_store().ok_or_else(|| anyhow::anyhow!("no store"))?;
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let Some(e) = s.get_entity(entity_id) else {
+        return Ok((String::new(), false));
+    };
+    let (Some(x), Some(y)) = (e.grid_x, e.grid_y) else {
+        return Ok((String::new(), false));
+    };
+    drop(s);
+
+    let from = SquareCoord::new(x, y);
+    let to = from.neighbor(gdir);
+
+    let can = crate::server::grid_manager::with_square_grid_mut(|grid| {
+        if !grid.can_walk(from, to) {
+            return false;
+        }
+        crate::grid::reveal_grid_disk(grid, to, 2);
+        true
+    });
+    if can != Some(true) {
+        return Ok((grid_room_id_from_coord(x, y), false));
+    }
+    db::set_entity_grid(entity_id, to.x, to.y)?;
+    Ok((grid_room_id_from_coord(to.x, to.y), true))
+}
+
+/// 組裝正方格 RoomView（當前格的實體、出口、物件）。
+pub fn get_grid_room_view(
+    _player_id: &str,
+    x: i32,
+    y: i32,
+    game_hour: i32,
+) -> anyhow::Result<Option<RoomView>> {
+    let grid = crate::server::grid_manager::get_runtime_square_grid()
+        .ok_or_else(|| anyhow::anyhow!("grid not loaded"))?;
+    let coord = SquareCoord::new(x, y);
+    let Some(cell) = grid.get(coord) else {
+        return Ok(None);
+    };
+    let room_objs = hex_objects_to_room_objects(&cell.objects);
+    let room = Room {
+        id: grid_room_id_from_coord(x, y),
+        name: crate::grid::terrain_name_zh(cell.terrain).to_string(),
+        tags: cell.tags.clone(),
+        zone: cell.zone.clone(),
+        description: cell.description.clone(),
+        objects: room_objs.clone(),
+    };
+    let mut exits: Vec<Exit> = Vec::new();
+    for nc in grid.neighbors(coord) {
+        if !nc.terrain.walkable() {
+            continue;
+        }
+        let Some(dir) = coord.direction_to(nc.coord) else {
+            continue;
+        };
+        exits.push(Exit {
+            direction: dir.label_zh().to_string(),
+            to_room_id: grid_room_id_from_coord(nc.coord.x, nc.coord.y),
+            to_room_name: crate::grid::terrain_name_zh(nc.terrain).to_string(),
+        });
+    }
+    let entities = db::get_entities_at_grid(x, y, game_hour)?;
+    let objects = room_objs;
+    Ok(Some(RoomView {
+        room,
+        exits,
+        entities,
+        objects,
+    }))
+}
+
+/// 取得正方格附近格子的簡要視野（地圖渲染用）。
+pub fn get_grid_cells_around(x: i32, y: i32, radius: i32) -> Vec<(i32, i32, String, String, bool, bool)> {
+    let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() else {
+        return Vec::new();
+    };
+    let center = SquareCoord::new(x, y);
+    let mut out = Vec::new();
+    for dx in -radius..=radius {
+        for dy in -radius..=radius {
+            let c = SquareCoord::new(x + dx, y + dy);
+            if center.chebyshev_distance(c) > radius {
+                continue;
+            }
+            if let Some(cell) = grid.get(c) {
+                out.push((
+                    c.x,
+                    c.y,
+                    terrain_name_zh(cell.terrain).to_string(),
+                    cell.name.clone(),
+                    cell.explored,
+                    cell.terrain.walkable(),
+                ));
+            }
+        }
+    }
+    out
 }
 
 #[must_use]

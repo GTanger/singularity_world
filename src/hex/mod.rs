@@ -17,7 +17,7 @@ mod coord;
 mod grid;
 mod reveal;
 
-pub use cell::{HexCell, Terrain};
+pub use cell::{HexCell, HexObject, HexObjectKind, Terrain};
 pub use contract_pins::{
     api_contract_pins, allowed_terrain_for_pin, is_player_spawn_pin, is_undeletable_contract,
     ContractPin, PLAYER_SPAWN,

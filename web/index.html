@@ -10,6 +10,7 @@
 	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-mono-tc@5/index.min.css">
 	<style>
 	@font-face {
 		font-family: 'Chiron GoRound TC';
@@ -26,10 +27,11 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.15.6">
+	<link rel="stylesheet" href="style.css?v=0.19.2">
+	<link rel="stylesheet" href="game.css?v=0.19.2">
 </head>
 <body>
-	<!-- 登入／創角：未登入時顯示，登入成功後隱藏 -->
+	<!-- 登入／創角 -->
 	<div id="auth-screen" class="auth-screen">
 		<div class="auth-box">
 			<h2 class="auth-title">奇點世界</h2>
@@ -68,103 +70,85 @@
 	</div>
 
 	<div id="app" class="app-after-login" hidden>
-		<canvas id="hex-canvas"></canvas>
-
-		<!-- 頂列：左＝時鐘，右＝背包按鈕 -->
-		<header id="top-bar" class="top-row">
-			<div class="top-bar-left">
-				<div id="game-time" class="game-time" title="日晷：9→3 為日、3→9 為夜">
-					<span id="game-time-date" class="game-time-date" aria-live="polite"></span>
-					<svg class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
-						<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
-						<line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(0 16 16)"/>
-					</svg>
-					<span id="game-time-label" class="game-time-label" aria-live="polite"></span>
-				</div>
+		<!-- 頂欄：遊戲時間 -->
+		<header id="top-bar">
+			<div class="bar-cell" id="game-time-date-cell">
+				<span id="game-time-date">奇點曆</span>
 			</div>
-			<div class="top-bar-right">
-				<div class="top-bar-slots">
-					<button type="button" class="slot-btn slot-btn-active" id="btn-inventory">背包</button>
-				</div>
+			<div class="bar-cell" id="sundial-cell">
+				<svg id="game-time-svg" class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
+					<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+					<line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(0 16 16)"/>
+				</svg>
+			</div>
+			<div class="bar-cell" id="clock-cell">
+				<span id="game-time-clock"></span>
+				<span id="game-time-label"></span>
 			</div>
 		</header>
 
-		<!-- 狀態欄：姓名 + 四條狀態，置底，半透明浮層 -->
-		<section id="status-panel" class="panel status-panel">
-			<div class="status-name-wrap">
-				<div id="player-name" class="player-name" role="button" tabindex="0" title="點擊開啟角色">姓名</div>
-			</div>
-			<div class="status-bars">
-				<div class="stat-row">
-					<span class="stat-label">氣血</span>
-					<div class="stat-bar-wrap"><div id="bar-hp" class="stat-bar stat-bar-hp" style="width: 88%"></div></div>
-				</div>
-				<div class="stat-row">
-					<span class="stat-label">精神</span>
-					<div class="stat-bar-wrap"><div id="bar-spirit" class="stat-bar stat-bar-spirit" style="width: 85%"></div></div>
-				</div>
-				<div class="stat-row">
-					<span class="stat-label">內力</span>
-					<div class="stat-bar-wrap"><div id="bar-inner" class="stat-bar stat-bar-inner" style="width: 90%"></div></div>
-				</div>
-				<div class="stat-row">
-					<span class="stat-label">體力</span>
-					<div class="stat-bar-wrap"><div id="bar-stamina" class="stat-bar stat-bar-stamina" style="width: 82%"></div></div>
-				</div>
-			</div>
-		</section>
-	</div>
+		<!-- 主輸出區 -->
+		<main id="main-output">
+			<div id="log"></div>
+		</main>
 
-	<!-- 點擊玩家姓名開啟：寬自適應、高＝log 區（JS 設定），四分頁 -->
-	<div id="player-modal-overlay" class="player-modal-overlay" hidden aria-hidden="true">
-		<div id="player-modal" class="player-modal" role="dialog" aria-modal="true" aria-labelledby="player-modal-title">
-			<div class="player-modal-header">
-				<h2 id="player-modal-title" class="player-modal-title"></h2>
-				<button type="button" class="player-modal-close" id="player-modal-close" aria-label="關閉">×</button>
+		<!-- 標籤列 -->
+		<nav id="tab-bar">
+			<button class="tab-btn active" data-tab="room">房間</button>
+			<button class="tab-btn" data-tab="inventory">背包</button>
+			<button class="tab-btn" data-tab="character">人物</button>
+			<button class="tab-btn" data-tab="skills">技能</button>
+		</nav>
+
+		<!-- 標籤面板（可收合） -->
+		<div id="tab-panel">
+			<div id="panel-room" class="tab-pane active" data-tab="room">
+				<div id="room-info"></div>
 			</div>
-			<div class="player-modal-tabs" role="tablist">
-				<button type="button" class="player-modal-tab active" role="tab" aria-selected="true" data-tab="status">狀態</button>
-				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="equip">裝備</button>
-				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="skill">技能</button>
-				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="starplate">星盤</button>
+			<div id="panel-inventory" class="tab-pane" data-tab="inventory" hidden>
+				<div id="inventory-weight"></div>
+				<div id="inventory-list"></div>
 			</div>
-			<div class="player-modal-body">
-				<div id="player-modal-pane-status" class="player-modal-pane active" role="tabpanel" data-tab="status">
-					<div id="status-content" class="status-content"></div>
-				</div>
-				<div id="player-modal-pane-equip" class="player-modal-pane" role="tabpanel" data-tab="equip" hidden>裝備內容（待接資料）</div>
-				<div id="player-modal-pane-skill" class="player-modal-pane" role="tabpanel" data-tab="skill" hidden>
-					<div id="skill-content" class="skill-content"></div>
-				</div>
-				<div id="player-modal-pane-starplate" class="player-modal-pane" role="tabpanel" data-tab="starplate" hidden>
-					<div id="starplate-content" class="starplate-content"></div>
-				</div>
+			<div id="panel-character" class="tab-pane" data-tab="character" hidden>
+				<div id="status-content"></div>
+				<div id="player-modal-pane-equip"></div>
+			</div>
+			<div id="panel-skills" class="tab-pane" data-tab="skills" hidden>
+				<div id="skill-content"></div>
+				<div id="starplate-content"></div>
 			</div>
 		</div>
+
+		<!-- 底欄：方向鈕 + 姓名 + 狀態條 -->
+		<footer id="bottom-bar">
+			<div id="dpad">
+				<button class="dir-btn" data-dir="西北">↖</button>
+				<button class="dir-btn" data-dir="北">↑</button>
+				<button class="dir-btn" data-dir="東北">↗</button>
+				<button class="dir-btn" data-dir="西">←</button>
+				<button class="dir-btn dir-center" id="look-btn">●</button>
+				<button class="dir-btn" data-dir="東">→</button>
+				<button class="dir-btn" data-dir="西南">↙</button>
+				<button class="dir-btn" data-dir="南">↓</button>
+				<button class="dir-btn" data-dir="東南">↘</button>
+			</div>
+			<div id="bottom-status">
+				<div id="player-name" tabindex="0">姓名</div>
+				<div class="stat-mini"><label>氣血</label><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
+				<div class="stat-mini"><label>體力</label><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
+				<div class="stat-mini"><label>能量</label><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
+				<div class="stat-mini"><label>精神</label><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
+			</div>
+		</footer>
 	</div>
 
-	<!-- 背包彈窗：頂欄「背包」按鈕開啟，獨立於人物彈窗 -->
-	<div id="inventory-modal-overlay" class="inventory-modal-overlay" hidden aria-hidden="true">
-		<div id="inventory-modal" class="inventory-modal" role="dialog" aria-modal="true" aria-labelledby="inventory-modal-title">
-			<div class="inventory-modal-header">
-				<h2 id="inventory-modal-title" class="inventory-modal-title">背包</h2>
-				<button type="button" class="player-modal-close" id="inventory-modal-close" aria-label="關閉">×</button>
-			</div>
-			<div class="inventory-modal-body">
-				<div id="inventory-weight" class="inventory-weight"></div>
-				<div id="inventory-list" class="inventory-list"></div>
-			</div>
-		</div>
-	</div>
-
-	<script src="narrative-markdown.js?v=0.15.6"></script>
-	<script src="canvas.js?v=0.15.6"></script>
-	<script src="main.js?v=0.15.6"></script>
-	<script src="ui.js?v=0.15.6"></script>
+	<script src="narrative-markdown.js?v=0.19.2"></script>
+	<script src="game-ui.js?v=0.19.2"></script>
+	<script src="main.js?v=0.19.2"></script>
 	<script>
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.15.6').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.19.2').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {

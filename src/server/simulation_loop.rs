@@ -21,7 +21,7 @@ use crate::npc::{
     get_npc_npc_topic_by_id, get_shift_flavor, get_time_period, get_wander_flavor, get_wander_rooms,
     movement_speed_for_title, pick_idle_emote, pick_micro_interaction, pick_random_npc_npc_topic_by_mask,
     apply_brain_arrival_effects, run_job_matching_tick, run_unobserved_world_tick, seed_traveler_manager,
-    JobMatchParams, MovementDef, MovementType, NpcStep, TravelerManager,
+    GridNpcManager, JobMatchParams, MovementDef, MovementType, NpcStep, TravelerManager,
     SEEK_JOB_MG_THRESHOLD_DEFAULT, UNOBSERVED_MAX_NPCS_PER_TICK,
 };
 use crate::npcnpc::{push_room_event, topic_mask_for_room, try_trigger_npc_npc_in_room};
@@ -627,6 +627,21 @@ fn apply_travel_steps(
     }
 }
 
+/// 正方格 NPC 行為 tick：搭 travel_tick 節奏，用 `with_square_grid_mut` 可變操作地圖。
+fn run_grid_npc_tick(
+    now_unix: i64,
+    _state: &Arc<Mutex<MainLoopTickState>>,
+    grid_npc_mgr: &Arc<Mutex<GridNpcManager>>,
+) {
+    // 與 travel_section 共用同一個 travel_tick 節奏（fire 後 count 已歸零），
+    // 但這裡不再重算——travel_section 先跑，如果沒 fire 此函式也不跑。
+    // 簡化：每次都跑（GridNpcManager.tick 本身很輕，無 NPC 即 early return）。
+    let Ok(mut mgr) = grid_npc_mgr.lock() else { return };
+    super::grid_manager::with_square_grid_mut(|grid| {
+        let _events = mgr.tick(grid, now_unix);
+    });
+}
+
 /// 每 `travel_tick_interval` 次 tick：無觀測則 `RunUnobservedWorldTick`；有觀測則 `TravelerManager.tick`。
 fn run_travel_section(
     sessions: &SessionStore,
@@ -782,6 +797,7 @@ fn run_simulation_tick(
     cfg: &Server,
     state: &Arc<Mutex<MainLoopTickState>>,
     traveler_mgr: &Arc<Mutex<TravelerManager>>,
+    grid_npc_mgr: &Arc<Mutex<GridNpcManager>>,
 ) {
     run_view_simulation(Vec::<Pos>::new, None);
 
@@ -877,6 +893,7 @@ fn run_simulation_tick(
     run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
     run_schedule_hour_section(sessions, cfg, hour, state);
     run_travel_section(sessions, cfg, hour, now_unix, state, traveler_mgr);
+    run_grid_npc_tick(now_unix, state, grid_npc_mgr);
     run_idle_wander_section(sessions, cfg, hour, state);
 }
 
@@ -886,6 +903,7 @@ pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
     if let Err(e) = seed_traveler_manager(&traveler_mgr) {
         tracing::warn!("seed_traveler_manager: {e}");
     }
+    let grid_npc_mgr = Arc::new(Mutex::new(GridNpcManager::new()));
     let tick_state = Arc::new(Mutex::new(MainLoopTickState {
         random_dialogue_ticks: initial_random_dialogue_ticks(),
         last_rumor_decay: None,
@@ -909,8 +927,21 @@ pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
             let cfg = cfg.clone();
             let tick_state = Arc::clone(&tick_state);
             let tm = Arc::clone(&traveler_mgr);
+            let gm = Arc::clone(&grid_npc_mgr);
             let res = tokio::task::spawn_blocking(move || {
-                run_simulation_tick(&sessions, &cfg, &tick_state, &tm);
+                let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    run_simulation_tick(&sessions, &cfg, &tick_state, &tm, &gm);
+                }));
+                if let Err(e) = result {
+                    let msg = if let Some(s) = e.downcast_ref::<&str>() {
+                        s.to_string()
+                    } else if let Some(s) = e.downcast_ref::<String>() {
+                        s.clone()
+                    } else {
+                        "unknown panic".to_string()
+                    };
+                    tracing::error!("simulation tick PANIC: {msg}");
+                }
             })
             .await;
             if res.is_err() {

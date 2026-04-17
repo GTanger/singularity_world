@@ -185,7 +185,7 @@ impl Server {
 
         let mut cfg = Self {
             port: if sj.port.is_empty() { "8080".into() } else { sj.port },
-            max_websocket_conn: if sj.max_websocket_conn > 0 { sj.max_websocket_conn } else { 10 },
+            max_websocket_conn: if sj.max_websocket_conn > 0 { sj.max_websocket_conn } else { 50 },
             tick_interval_ms: if sj.tick_interval_ms > 0 { sj.tick_interval_ms } else { 500 },
             economy_tick_interval_ms: if sj.economy_tick_interval_ms > 0 { sj.economy_tick_interval_ms } else { 1000 },
             chunk_size: if sj.chunk_size > 0 { sj.chunk_size } else { 151 },

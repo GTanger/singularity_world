@@ -18,7 +18,7 @@ pub fn build_identity(entity_id: &str) -> String {
         let Some(arc) = store::get_store() else {
             return append_tail(result, entity_id);
         };
-        let s = arc.read().unwrap();
+        let s = arc.read().unwrap_or_else(|e| e.into_inner());
         let assignments = s.get_assignments_for_entity(entity_id);
         if let Some(a) = assignments.first()
             && let Some(venue) = s.get_venue(&a.venue_id)

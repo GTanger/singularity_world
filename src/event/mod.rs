@@ -26,14 +26,14 @@ pub struct EventRow {
 /// 將一筆事件寫入 store 並持久化 `event_log.json`。
 pub fn append(at: i64, entity_id: &str, event_type: &str, payload: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap();
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     s.append_event(at, entity_id, event_type, payload)
 }
 
 /// 回傳該實體在 `at` 之前（含）最近一筆該類型事件的 payload。
 pub fn last_by_entity(entity_id: &str, event_type: &str, at: i64) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     Ok(s.last_by_entity(entity_id, event_type, at))
 }
 
@@ -50,7 +50,7 @@ pub fn events_in_range(
     to_at: i64,
 ) -> anyhow::Result<Vec<EventRow>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     let entries = s.events_in_range(entity_id, from_at, to_at);
     Ok(entries
         .into_iter()

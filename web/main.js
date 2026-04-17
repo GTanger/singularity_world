@@ -8,6 +8,8 @@
 	let socket = null;
 	let heartbeatTimer = null;
 	let reconnecting = false;
+	let lastPongTime = 0;
+	let reconnectDelay = 1500;
 	const state = {
 		room_id: '',
 		room_name: '',
@@ -85,11 +87,13 @@
 		var sec = gameSecNow();
 		var days = gameDaysNow();
 		var handEl = document.getElementById('game-time-hand');
+		var clockEl = document.getElementById('game-time-clock');
 		var labelEl = document.getElementById('game-time-label');
 		var dateEl = document.getElementById('game-time-date');
 		if (sec == null || days == null) {
 			if (dateEl) dateEl.textContent = '奇點曆 —';
-			if (labelEl) labelEl.textContent = '--:--';
+			if (clockEl) clockEl.textContent = '--:--';
+			if (labelEl) labelEl.textContent = '';
 			if (handEl) handEl.setAttribute('transform', 'rotate(0 16 16)');
 			return;
 		}
@@ -99,11 +103,12 @@
 			handEl.setAttribute('transform', 'rotate(' + angle + ' 16 16)');
 		}
 		if (dateEl) dateEl.textContent = formatSingularityDate(days);
-		if (labelEl) {
-			var h = Math.floor(sec / 3600) % 24;
-			var m = Math.floor((sec % 3600) / 60);
-			labelEl.textContent = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
-		}
+		var h = Math.floor(sec / 3600) % 24;
+		var m = Math.floor((sec % 3600) / 60);
+		if (clockEl) clockEl.textContent = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+		var phases = ['深夜','凌晨','破曉','清晨','上午','正午','午後','下午','傍晚','入夜','晚間','半夜'];
+		var phase = phases[Math.floor(h / 2)] || '深夜';
+		if (labelEl) labelEl.textContent = phase;
 	}
 
 	function startGameTimeTicker() {
@@ -279,9 +284,15 @@
 
 	function startHeartbeat() {
 		stopHeartbeat();
+		lastPongTime = Date.now();
 		if (!document.hidden && isConnected()) {
 			heartbeatTimer = setInterval(function () {
 				if (document.hidden || !isConnected()) return;
+				if (Date.now() - lastPongTime > HEARTBEAT_INTERVAL_MS * 2) {
+					appendLog('心跳超時，重新連線…');
+					if (socket) socket.close();
+					return;
+				}
 				send({ type: 'ping' });
 			}, HEARTBEAT_INTERVAL_MS);
 		}
@@ -301,8 +312,21 @@
 		}
 		socket = new WebSocket(wsUrl);
 		socket.onopen = function () {
+			var wasReconnecting = reconnecting;
 			if (reconnecting) reconnecting = false;
+			reconnectDelay = 1500;
 			appendLog('已連線，請登入');
+			var authMsg = document.getElementById('auth-message');
+			if (authMsg) authMsg.textContent = '';
+			var authHint = document.getElementById('auth-hint');
+			if (authHint) authHint.textContent = '已連線，請登入';
+			if (wasReconnecting) {
+				var idEl = document.getElementById('auth-id');
+				var pwEl = document.getElementById('auth-password');
+				if (idEl && pwEl && idEl.value.trim() && pwEl.value) {
+					send({ type: 'login', player_id: idEl.value.trim(), password: pwEl.value });
+				}
+			}
 		};
 		socket.onmessage = function (ev) {
 			try {
@@ -332,6 +356,17 @@
 						draw();
 						// fetchHexView 移至 case 'me'（此處 state.me 尚未設定）
 						break;
+					case 'grid_view':
+						if (window.updateRoomData) window.updateRoomData(msg);
+						if (window.onGridView) window.onGridView(msg);
+						if (typeof msg.server_unix === 'number' && typeof msg.game_time_sec_since_midnight === 'number') {
+							state.server_unix = msg.server_unix;
+							state.game_time_sec_since_midnight = msg.game_time_sec_since_midnight;
+							state.game_days_since_epoch = msg.game_days_since_epoch;
+							startGameTimeTicker();
+							updateGameTimeDisplay();
+						}
+						break;
 					case 'me':
 						state.me = {
 							player_id: msg.player_id,
@@ -357,6 +392,7 @@
 							equipment_descs: msg.equipment_descs || {}
 						};
 						if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_PLAYER_ID, msg.player_id);
+						window.myPlayerId = msg.player_id;
 						showGameAfterLogin();
 						updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
 						draw();
@@ -366,6 +402,7 @@
 	startHeartbeat();
 						break;
 					case 'pong':
+						lastPongTime = Date.now();
 						break;
 					case 'moved':
 						if (state.me && (msg.player_id === state.me.player_id || msg.player_id === state.me.id)) {
@@ -373,7 +410,9 @@
 							state.me.room_id = msg.room_id;
 							state.me.room_name = msg.room_name;
 
-							if (msg.room_id && msg.room_id.startsWith('hex:') && oldRoomId && oldRoomId !== msg.room_id) {
+							if (msg.room_id && msg.room_id.startsWith('grid:')) {
+								if (window.mapState) window.mapState.moving = false;
+							} else if (msg.room_id && msg.room_id.startsWith('hex:') && oldRoomId && oldRoomId !== msg.room_id) {
 								const parts = msg.room_id.split(':');
 								const nq = parseInt(parts[1]);
 								const nr = parseInt(parts[2]);
@@ -395,8 +434,8 @@
 						draw();
 						break;
 					case 'blocked':
+						if (window.mapState) window.mapState.moving = false;
 						if (window.hexCanvas) {
-							// 發生阻擋，重置位置（因前端可能已經跑過動畫）
 							fetchHexView();
 						}
 						appendLog('無法往「' + (msg.direction || '') + '」移動');
@@ -572,10 +611,17 @@
 			stopHeartbeat();
 			state.me = null;
 			showAuthScreen();
-			appendLog('連線關閉，請重新登入');
+			var delay = reconnectDelay;
+			reconnectDelay = Math.min(reconnectDelay * 2, 30000);
+			appendLog('連線關閉，' + (delay / 1000).toFixed(1) + '秒後重新連線…');
+			var authHint = document.getElementById('auth-hint');
+			if (authHint) authHint.textContent = '連線中…';
+			setTimeout(function () { tryReconnect(); }, delay);
 		};
 		socket.onerror = function () {
 			appendLog('連線錯誤');
+			var authHint = document.getElementById('auth-hint');
+			if (authHint) authHint.textContent = '連線失敗，重試中…';
 		};
 	}
 
@@ -605,8 +651,13 @@
 		var authScreen = document.getElementById('auth-screen');
 		var app = document.getElementById('app');
 		if (!form) return;
-		if (authScreen && !app.hidden) authScreen.setAttribute('hidden', '');
-		if (app && !state.me) app.setAttribute('hidden', '');
+		if (state.me) {
+			if (authScreen) authScreen.setAttribute('hidden', '');
+			if (app) app.removeAttribute('hidden');
+		} else {
+			if (authScreen) authScreen.removeAttribute('hidden');
+			if (app) app.setAttribute('hidden', '');
+		}
 		form.addEventListener('submit', function (e) {
 			e.preventDefault();
 			var authMsg = document.getElementById('auth-message');
@@ -1432,11 +1483,9 @@
 	}
 	if (typeof document !== 'undefined') {
 		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', function () { bindAuthForm(); initPlayerModal(); initInventoryModal(); bindLogObjectActions(); });
+			document.addEventListener('DOMContentLoaded', function () { bindAuthForm(); bindLogObjectActions(); });
 		} else {
 			bindAuthForm();
-			initPlayerModal();
-			initInventoryModal();
 			bindLogObjectActions();
 		}
 	}
@@ -1447,6 +1496,8 @@
 	};
 	window.gameState = function () { return state; };
 	window.gameSendMoveDirection = sendMoveByDirection;
+	window.gameStartTimeTicker = startGameTimeTicker;
+	window.gameUpdateTime = updateGameTimeDisplay;
 })();
 
 document.addEventListener('DOMContentLoaded', function () {

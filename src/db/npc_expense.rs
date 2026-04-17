@@ -14,13 +14,13 @@ pub const DAILY_EXPENSE_BASE: i32 = 8;
 pub fn deduct_daily_expense(now_unix: i64) -> anyhow::Result<i32> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let ids = {
-        let s = arc.read().unwrap();
+        let s = arc.read().unwrap_or_else(|e| e.into_inner());
         s.get_npc_ids_with_room()
     };
     let mut affected = 0i32;
     for id in ids {
         let mag = {
-            let s = arc.read().unwrap();
+            let s = arc.read().unwrap_or_else(|e| e.into_inner());
             let Some(e) = s.get_entity(&id) else {
                 continue;
             };

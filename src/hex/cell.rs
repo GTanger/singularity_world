@@ -4,6 +4,40 @@ use crate::model::RoomObject;
 
 use super::coord::HexCoord;
 
+// ─── 格上物件型別 ────────────────────────────────────────────────────
+
+/// 格子上可採集物件的種類（方格與六角格共用）。
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum HexObjectKind {
+    /// 植物性資源（野果、草藥、木材等）
+    Flora,
+    /// 礦物性資源（礦石、寶石等）
+    Mineral,
+    /// 水源（淡水、溫泉等）
+    WaterSource,
+    /// 其他（遺跡、碎片等）
+    Other,
+}
+
+/// 格子上的可採集物件（方格與六角格共用）。
+///
+/// 與 `model::RoomObject` 不同：此結構帶資源量與回復速率，
+/// 用於 NPC 採集與資源生態模擬。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HexObject {
+    /// 物件唯一識別碼（通常為 `"{種類}_{座標}"`）
+    pub id: String,
+    pub kind: HexObjectKind,
+    pub name: String,
+    /// 目前剩餘量
+    pub quantity: u32,
+    /// 上限量（採滿後不再增長）
+    pub max_quantity: u32,
+    /// 每 tick 自然回復量（0 = 不回復）
+    pub regrowth_per_tick: u32,
+}
+
 /// 地形類型
 ///
 /// 決定預設通行性與移動成本。

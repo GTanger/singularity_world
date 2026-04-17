@@ -20,7 +20,7 @@ pub fn log_npc_event(at: i64, entity_id: &str, event_type: &str, payload: &str) 
     let Some(arc) = store::get_store() else {
         return;
     };
-    let mut s = arc.write().unwrap();
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     let _ = s.append_event(at, entity_id, event_type, payload);
 }
 
@@ -30,6 +30,6 @@ pub fn get_recent_events(entity_id: &str, n: usize) -> Vec<store::EventEntry> {
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     s.recent_by_entity(entity_id, n)
 }

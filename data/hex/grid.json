@@ -1,1071 +1,1296 @@
 {
-  "world_seed": 0,
+  "world_seed": 20260414,
   "cells": [
     {
       "coord": {
-        "q": 51,
-        "r": 9
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 53,
-        "r": 8
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 26,
-        "r": 11
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 33,
-        "r": 11
-      },
-      "terrain": "stables",
-      "name": "馬廄"
-    },
-    {
-      "coord": {
-        "q": 46,
-        "r": 8
-      },
-      "terrain": "wall",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 51,
-        "r": 3
-      },
-      "terrain": "guard_post",
-      "name": "北門衛所"
-    },
-    {
-      "coord": {
-        "q": 21,
-        "r": 0
-      },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_core",
-      "tags": [
-        "residential",
-        "residential_core"
-      ]
-    },
-    {
-      "coord": {
-        "q": 50,
-        "r": 5
-      },
-      "terrain": "road",
-      "name": "中央大道"
-    },
-    {
-      "coord": {
-        "q": 51,
-        "r": 4
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 23,
-        "r": 0
-      },
-      "terrain": "farm_field",
-      "name": "菜圃",
-      "tags": [
-        "agri_fringe"
-      ]
-    },
-    {
-      "coord": {
-        "q": 34,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 53,
+        "q": -3,
         "r": 2
       },
-      "terrain": "wall",
-      "name": "東北角樓"
+      "terrain": "plain",
+      "name": "平原·-3,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-3,2_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
     },
     {
       "coord": {
-        "q": 49,
-        "r": 7
+        "q": 0,
+        "r": -1
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·0,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "0,-1_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
     },
     {
       "coord": {
-        "q": 52,
+        "q": 2,
+        "r": -5
+      },
+      "terrain": "plain",
+      "name": "平原·2,-5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 3
+      },
+      "terrain": "plain",
+      "name": "平原·-4,3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": true
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 1
+      },
+      "terrain": "plain",
+      "name": "平原·-3,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 2
+      },
+      "terrain": "plain",
+      "name": "平原·-4,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": true
+    },
+    {
+      "coord": {
+        "q": -4,
         "r": 5
       },
-      "terrain": "stables",
-      "name": "驛站馬房"
+      "terrain": "forest_light",
+      "name": "疏林·-4,5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-4,5_0",
+          "name": "木材",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
     },
     {
       "coord": {
-        "q": 27,
-        "r": 8
+        "q": 0,
+        "r": 1
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·0,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "0,1_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
     },
     {
       "coord": {
-        "q": 21,
+        "q": 0,
+        "r": 4
+      },
+      "terrain": "plain",
+      "name": "平原·0,4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -4
+      },
+      "terrain": "plain",
+      "name": "平原·2,-4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 3
+      },
+      "terrain": "plain",
+      "name": "平原·-2,3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -3
+      },
+      "terrain": "water",
+      "name": "水域·5,-3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": true
+    },
+    {
+      "coord": {
+        "q": -3,
         "r": -2
       },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_core",
+      "terrain": "plain",
+      "name": "平原·-3,-2",
+      "zone": "wild",
       "tags": [
-        "residential",
-        "residential_core"
-      ]
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 50,
-        "r": 4
-      },
-      "terrain": "town_hall",
-      "name": "府衙"
-    },
-    {
-      "coord": {
-        "q": 31,
-        "r": 11
-      },
-      "terrain": "blacksmith",
-      "name": "鐵匠鋪"
-    },
-    {
-      "coord": {
-        "q": 48,
-        "r": 5
-      },
-      "terrain": "workshop",
-      "name": "染坊"
-    },
-    {
-      "coord": {
-        "q": 30,
-        "r": 9
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 18,
-        "r": 1
-      },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_fringe",
-      "tags": [
-        "residential",
-        "residential_fringe"
-      ]
-    },
-    {
-      "coord": {
-        "q": 55,
-        "r": 5
-      },
-      "terrain": "road",
-      "name": "東門"
-    },
-    {
-      "coord": {
-        "q": 55,
-        "r": 6
-      },
-      "terrain": "wall",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 19,
-        "r": -1
-      },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_core",
-      "tags": [
-        "residential",
-        "residential_core"
-      ]
-    },
-    {
-      "coord": {
-        "q": 19,
-        "r": 0
-      },
-      "terrain": "road",
-      "name": "村口",
-      "tags": [
-        "road_main"
-      ]
-    },
-    {
-      "coord": {
-        "q": 22,
-        "r": 0
-      },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_fringe",
-      "tags": [
-        "residential",
-        "residential_fringe"
-      ]
-    },
-    {
-      "coord": {
-        "q": 47,
-        "r": 8
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 52,
-        "r": 7
-      },
-      "terrain": "warehouse",
-      "name": "東倉"
-    },
-    {
-      "coord": {
-        "q": 46,
-        "r": 5
-      },
-      "terrain": "road",
-      "name": "西門"
-    },
-    {
-      "coord": {
-        "q": 48,
-        "r": 8
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 50,
-        "r": 9
-      },
-      "terrain": "bridge",
-      "name": "南門橋"
-    },
-    {
-      "coord": {
-        "q": 32,
-        "r": 8
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 31,
-        "r": 9
-      },
-      "terrain": "market",
-      "name": "中央市集"
-    },
-    {
-      "coord": {
-        "q": 51,
-        "r": 6
-      },
-      "terrain": "blacksmith",
-      "name": "百鍛坊"
-    },
-    {
-      "coord": {
-        "q": 53,
-        "r": 9
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 29,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 17,
-        "r": 0
-      },
-      "terrain": "road",
-      "name": "西方道路",
-      "tags": [
-        "road_external"
-      ]
-    },
-    {
-      "coord": {
-        "q": 49,
-        "r": 3
-      },
-      "terrain": "library",
-      "name": "藏書樓"
-    },
-    {
-      "coord": {
-        "q": 49,
-        "r": 6
-      },
-      "terrain": "inn",
-      "name": "望山客棧"
-    },
-    {
-      "coord": {
-        "q": 46,
-        "r": 6
-      },
-      "terrain": "wall",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 29,
-        "r": 8
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 53,
-        "r": 6
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 53,
-        "r": 7
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 30,
-        "r": 12
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 26,
-        "r": 8
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 35,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": "東門道"
-    },
-    {
-      "coord": {
-        "q": 33,
-        "r": 12
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 47,
-        "r": 5
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 50,
-        "r": 7
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 27,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 28,
-        "r": 11
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 47,
-        "r": 9
-      },
-      "terrain": "water",
-      "name": "護城河"
-    },
-    {
-      "coord": {
-        "q": 22,
+        "q": 1,
         "r": -2
       },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_fringe",
+      "terrain": "plain",
+      "name": "平原·1,-2",
+      "zone": "wild",
       "tags": [
-        "residential",
-        "residential_fringe"
-      ]
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "1,-2_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
     },
     {
       "coord": {
-        "q": 30,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": "十字路口"
-    },
-    {
-      "coord": {
-        "q": 53,
-        "r": 4
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 20,
-        "r": 2
-      },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_core",
-      "tags": [
-        "residential",
-        "residential_core"
-      ]
-    },
-    {
-      "coord": {
-        "q": 21,
+        "q": 1,
         "r": 1
       },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_fringe",
+      "terrain": "plain",
+      "name": "平原·1,1",
+      "zone": "wild",
       "tags": [
-        "residential",
-        "residential_fringe"
-      ]
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 49,
-        "r": 8
+        "q": 3,
+        "r": -5
       },
-      "terrain": "dock",
-      "name": "南渡口"
+      "terrain": "plain",
+      "name": "平原·3,-5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 33,
-        "r": 7
+        "q": 0,
+        "r": -4
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·0,-4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 31,
-        "r": 13
+        "q": 4,
+        "r": -5
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·4,-5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 18,
+        "q": 4,
         "r": 0
       },
-      "terrain": "road",
-      "name": "村道",
+      "terrain": "plain",
+      "name": "平原·4,0",
+      "zone": "wild",
       "tags": [
-        "road_main"
-      ]
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 30,
-        "r": 8
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 28,
-        "r": 9
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 20,
-        "r": -1
-      },
-      "terrain": "blacksmith",
-      "name": "鍛造棚",
-      "zone": "village_core",
-      "tags": [
-        "functional"
-      ]
-    },
-    {
-      "coord": {
-        "q": 31,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 47,
-        "r": 6
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 33,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 48,
-        "r": 3
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 19,
-        "r": 2
-      },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_core",
-      "tags": [
-        "residential",
-        "residential_core"
-      ]
-    },
-    {
-      "coord": {
-        "q": 52,
-        "r": 4
-      },
-      "terrain": "barracks",
-      "name": "校場"
-    },
-    {
-      "coord": {
-        "q": 27,
-        "r": 9
-      },
-      "terrain": "clinic",
-      "name": "醫館"
-    },
-    {
-      "coord": {
-        "q": 50,
-        "r": 8
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 26,
-        "r": 12
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 52,
-        "r": 9
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 33,
-        "r": 8
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 51,
-        "r": 8
-      },
-      "terrain": "general_store",
-      "name": "南街雜貨"
-    },
-    {
-      "coord": {
-        "q": 50,
-        "r": 6
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 27,
-        "r": 11
-      },
-      "terrain": "workshop",
-      "name": "木工坊"
-    },
-    {
-      "coord": {
-        "q": 48,
-        "r": 6
-      },
-      "terrain": "clinic",
-      "name": "仁心堂"
-    },
-    {
-      "coord": {
-        "q": 32,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 23,
-        "r": -1
-      },
-      "terrain": "farm_field",
-      "name": "麥田",
-      "tags": [
-        "agri_fringe"
-      ]
-    },
-    {
-      "coord": {
-        "q": 32,
-        "r": 11
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 33,
-        "r": 9
-      },
-      "terrain": "tavern",
-      "name": "醉月樓"
-    },
-    {
-      "coord": {
-        "q": 30,
-        "r": 13
-      },
-      "terrain": "road",
-      "name": "南門道"
-    },
-    {
-      "coord": {
-        "q": 55,
-        "r": 7
-      },
-      "terrain": "wall",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 55,
-        "r": 9
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 30,
-        "r": 11
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 51,
-        "r": 2
-      },
-      "terrain": "mountain",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 52,
-        "r": 8
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 29,
-        "r": 7
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 25,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": "西門道"
-    },
-    {
-      "coord": {
-        "q": 25,
-        "r": 11
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 31,
-        "r": 12
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 20,
-        "r": 1
-      },
-      "terrain": "general_store",
-      "name": "雜貨鋪",
-      "zone": "village_core",
-      "tags": [
-        "functional"
-      ]
-    },
-    {
-      "coord": {
-        "q": 19,
-        "r": 1
-      },
-      "terrain": "inn",
-      "name": "歇腳亭",
-      "zone": "village_core",
-      "tags": [
-        "functional"
-      ]
-    },
-    {
-      "coord": {
-        "q": 28,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 34,
-        "r": 12
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 32,
-        "r": 9
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 34,
-        "r": 9
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 28,
-        "r": 12
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 32,
-        "r": 12
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 26,
-        "r": 9
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 54,
-        "r": 3
-      },
-      "terrain": "wall",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 30,
-        "r": 7
-      },
-      "terrain": "road",
-      "name": "北門道"
-    },
-    {
-      "coord": {
-        "q": 22,
-        "r": -1
-      },
-      "terrain": "farmhouse",
-      "name": "民宅",
-      "zone": "village_fringe",
-      "tags": [
-        "residential",
-        "residential_fringe"
-      ]
-    },
-    {
-      "coord": {
-        "q": 48,
-        "r": 4
-      },
-      "terrain": "temple",
-      "name": "城隍廟"
-    },
-    {
-      "coord": {
-        "q": 26,
-        "r": 10
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 47,
-        "r": 3
-      },
-      "terrain": "wall",
-      "name": "西北角樓"
-    },
-    {
-      "coord": {
-        "q": 20,
+        "q": -5,
         "r": 0
       },
-      "terrain": "market",
-      "name": "村集市",
-      "zone": "village_core",
+      "terrain": "plain",
+      "name": "平原·-5,0",
+      "zone": "wild",
       "tags": [
-        "functional",
-        "anchor"
-      ]
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 49,
+        "q": 0,
         "r": 5
       },
-      "terrain": "market",
-      "name": "西市"
+      "terrain": "plain",
+      "name": "平原·0,5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 50,
+        "q": -2,
+        "r": -3
+      },
+      "terrain": "plain",
+      "name": "平原·-2,-3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": 1
+      },
+      "terrain": "plain",
+      "name": "平原·3,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 2,
         "r": 2
       },
-      "terrain": "mountain",
-      "name": "北嶺"
+      "terrain": "plain",
+      "name": "平原·2,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "2,2_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
     },
     {
       "coord": {
-        "q": 48,
-        "r": 9
+        "q": -4,
+        "r": 0
       },
-      "terrain": "water",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·-4,0",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 47,
-        "r": 7
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 53,
+        "q": 2,
         "r": 3
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·2,3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 52,
+        "q": -2,
+        "r": 1
+      },
+      "terrain": "plain",
+      "name": "平原·-2,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-2,1_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 3
+      },
+      "terrain": "plain",
+      "name": "平原·-1,3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-1,3_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 3,
         "r": 2
       },
-      "terrain": "mountain",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·3,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 29,
-        "r": 11
-      },
-      "terrain": "general_store",
-      "name": "雜貨行"
-    },
-    {
-      "coord": {
-        "q": 49,
-        "r": 9
+        "q": 5,
+        "r": -2
       },
       "terrain": "water",
-      "name": ""
+      "name": "水域·5,-2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": true
     },
     {
       "coord": {
-        "q": 47,
+        "q": -1,
+        "r": 0
+      },
+      "terrain": "plain",
+      "name": "平原·-1,0",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -2
+      },
+      "terrain": "plain",
+      "name": "平原·2,-2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "2,-2_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": 1
+      },
+      "terrain": "plain",
+      "name": "平原·4,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -3,
         "r": 4
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·-3,4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 29,
-        "r": 13
+        "q": -2,
+        "r": -2
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·-2,-2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 35,
-        "r": 9
+        "q": 2,
+        "r": -1
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·2,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "2,-1_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
     },
     {
       "coord": {
-        "q": 46,
-        "r": 9
+        "q": -3,
+        "r": 0
       },
-      "terrain": "wall",
-      "name": "西南角樓"
+      "terrain": "plain",
+      "name": "平原·-3,0",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 28,
-        "r": 8
+        "q": -5,
+        "r": 3
       },
-      "terrain": "urban",
-      "name": ""
+      "terrain": "plain",
+      "name": "平原·-5,3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 31,
-        "r": 8
+        "q": -2,
+        "r": 0
       },
-      "terrain": "temple",
-      "name": "土地祠"
+      "terrain": "plain",
+      "name": "平原·-2,0",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-2,0_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -5
+      },
+      "terrain": "plain",
+      "name": "平原·1,-5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -3
+      },
+      "terrain": "plain",
+      "name": "平原·-1,-3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 2
+      },
+      "terrain": "plain",
+      "name": "平原·1,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": -1
+      },
+      "terrain": "plain",
+      "name": "平原·-3,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 2
+      },
+      "terrain": "plain",
+      "name": "平原·-1,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 5
+      },
+      "terrain": "plain",
+      "name": "平原·-1,5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 0
+      },
+      "terrain": "plain",
+      "name": "平原·1,0",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -4
+      },
+      "terrain": "plain",
+      "name": "平原·4,-4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -5
+      },
+      "terrain": "plain",
+      "name": "平原·0,-5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -1
+      },
+      "terrain": "plain",
+      "name": "平原·3,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "3,-1_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -3
+      },
+      "terrain": "plain",
+      "name": "平原·4,-3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 1
+      },
+      "terrain": "plain",
+      "name": "平原·-4,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-4,1_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": true
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -3
+      },
+      "terrain": "plain",
+      "name": "平原·0,-3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -3
+      },
+      "terrain": "plain",
+      "name": "平原·1,-3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 1
+      },
+      "terrain": "plain",
+      "name": "平原·2,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 3
+      },
+      "terrain": "plain",
+      "name": "平原·1,3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": 0
+      },
+      "terrain": "plain",
+      "name": "平原·5,0",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 2
+      },
+      "terrain": "plain",
+      "name": "平原·0,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -4
+      },
+      "terrain": "plain",
+      "name": "平原·1,-4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -3
+      },
+      "terrain": "plain",
+      "name": "平原·3,-3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -5,
+        "r": 5
+      },
+      "terrain": "forest_light",
+      "name": "疏林·-5,5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-5,5_1",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": true
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": 3
+      },
+      "terrain": "plain",
+      "name": "平原·0,3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -5,
+        "r": 2
+      },
+      "terrain": "plain",
+      "name": "平原·-5,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": true
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": 1
+      },
+      "terrain": "plain",
+      "name": "平原·-1,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 0,
+        "r": -2
+      },
+      "terrain": "plain",
+      "name": "平原·0,-2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -5,
+        "r": 1
+      },
+      "terrain": "plain",
+      "name": "平原·-5,1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": -1
+      },
+      "terrain": "plain",
+      "name": "平原·1,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": 0
+      },
+      "terrain": "plain",
+      "name": "平原·3,0",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -2
+      },
+      "terrain": "plain",
+      "name": "平原·-1,-2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 3
+      },
+      "terrain": "plain",
+      "name": "平原·-3,3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-3,3_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": true
+    },
+    {
+      "coord": {
+        "q": -1,
+        "r": -4
+      },
+      "terrain": "plain",
+      "name": "平原·-1,-4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -4
+      },
+      "terrain": "plain",
+      "name": "平原·3,-4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": -3
+      },
+      "terrain": "plain",
+      "name": "平原·2,-3",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "2,-3_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 2,
+        "r": 0
+      },
+      "terrain": "plain",
+      "name": "平原·2,0",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "2,0_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -5,
+        "r": 4
+      },
+      "terrain": "plain",
+      "name": "平原·-5,4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": 4
+      },
+      "terrain": "plain",
+      "name": "平原·-4,4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 1,
+        "r": 4
+      },
+      "terrain": "plain",
+      "name": "平原·1,4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -4
+      },
+      "terrain": "plain",
+      "name": "平原·5,-4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "5,-4_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 4,
+        "r": -1
+      },
+      "terrain": "plain",
+      "name": "平原·4,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 5
+      },
+      "terrain": "forest_light",
+      "name": "疏林·-2,5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 4
+      },
+      "terrain": "plain",
+      "name": "平原·-2,4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-2,4_0",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
     },
     {
       "coord": {
@@ -1076,207 +1301,157 @@
       "name": "",
       "tags": [
         "player_spawn"
-      ]
+      ],
+      "explored": true
     },
     {
       "coord": {
-        "q": 27,
-        "r": 12
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 52,
-        "r": 6
-      },
-      "terrain": "tavern",
-      "name": "聽風閣"
-    },
-    {
-      "coord": {
-        "q": 54,
-        "r": 9
-      },
-      "terrain": "water",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 52,
-        "r": 3
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 25,
-        "r": 9
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 54,
-        "r": 5
-      },
-      "terrain": "road",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 54,
-        "r": 4
-      },
-      "terrain": "wall",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 29,
-        "r": 12
-      },
-      "terrain": "workshop",
-      "name": "水碓坊"
-    },
-    {
-      "coord": {
-        "q": 49,
-        "r": 2
-      },
-      "terrain": "mountain",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 48,
-        "r": 2
-      },
-      "terrain": "mountain",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 53,
-        "r": 5
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 21,
-        "r": -1
-      },
-      "terrain": "clinic",
-      "name": "草藥房",
-      "zone": "village_core",
-      "tags": [
-        "functional"
-      ]
-    },
-    {
-      "coord": {
-        "q": 51,
-        "r": 5
-      },
-      "terrain": "market",
-      "name": "東市"
-    },
-    {
-      "coord": {
-        "q": 31,
-        "r": 7
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 51,
-        "r": 7
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 29,
-        "r": 9
-      },
-      "terrain": "inn",
-      "name": "迎客棧"
-    },
-    {
-      "coord": {
-        "q": 46,
-        "r": 7
-      },
-      "terrain": "wall",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 34,
-        "r": 11
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 28,
-        "r": 13
-      },
-      "terrain": "urban",
-      "name": ""
-    },
-    {
-      "coord": {
-        "q": 23,
+        "q": 4,
         "r": -2
       },
-      "terrain": "granary",
-      "name": "糧倉",
+      "terrain": "plain",
+      "name": "平原·4,-2",
+      "zone": "wild",
       "tags": [
-        "agri_fringe",
-        "functional"
-      ]
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 48,
-        "r": 7
+        "q": 5,
+        "r": -5
       },
-      "terrain": "warehouse",
-      "name": "西倉"
+      "terrain": "plain",
+      "name": "平原·5,-5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 55,
-        "r": 8
+        "q": -2,
+        "r": -1
       },
-      "terrain": "wall",
-      "name": "東南角樓"
+      "terrain": "plain",
+      "name": "平原·-2,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 49,
+        "q": -1,
         "r": 4
       },
-      "terrain": "guild_hall",
-      "name": "公會堂"
+      "terrain": "plain",
+      "name": "平原·-1,4",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     },
     {
       "coord": {
-        "q": 50,
-        "r": 3
+        "q": -1,
+        "r": -1
       },
-      "terrain": "road",
-      "name": "北門"
+      "terrain": "plain",
+      "name": "平原·-1,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -2,
+        "r": 2
+      },
+      "terrain": "plain",
+      "name": "平原·-2,2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 3,
+        "r": -2
+      },
+      "terrain": "plain",
+      "name": "平原·3,-2",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -3,
+        "r": 5
+      },
+      "terrain": "forest_light",
+      "name": "疏林·-3,5",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "objects": [
+        {
+          "id": "-3,5_1",
+          "name": "野果",
+          "owner": "",
+          "sockets": [],
+          "responses": {}
+        }
+      ],
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": 5,
+        "r": -1
+      },
+      "terrain": "plain",
+      "name": "平原·5,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
+    },
+    {
+      "coord": {
+        "q": -4,
+        "r": -1
+      },
+      "terrain": "plain",
+      "name": "平原·-4,-1",
+      "zone": "wild",
+      "tags": [
+        "proc_reveal"
+      ],
+      "description": "觀測揭露生成（契約層，單調精煉）。",
+      "explored": false
     }
   ]
 }

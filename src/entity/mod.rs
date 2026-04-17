@@ -113,6 +113,12 @@ pub struct Character {
     pub hex_q: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hex_r: Option<i32>,
+    /// 正方格座標 x（東增）。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grid_x: Option<i32>,
+    /// 正方格座標 y（北增）。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grid_y: Option<i32>,
 }
 
 impl Character {

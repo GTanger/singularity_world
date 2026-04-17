@@ -264,7 +264,7 @@ pub fn try_trigger_npc_npc_in_room(
         recent_events.insert(0, ns.player_present_context_line.clone());
     }
     if let Some(arc) = crate::store::get_store() {
-        let s = arc.read().unwrap();
+        let s = arc.read().unwrap_or_else(|e| e.into_inner());
         if let Some(d) = s.get_npc_rumor_digest()
             && !d.text.trim().is_empty()
         {

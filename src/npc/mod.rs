@@ -4,6 +4,8 @@ mod behavior;
 mod reaction;
 mod brain_arrival;
 mod decision;
+mod grid_ai;
+mod hex_ai;
 mod job_matching;
 mod social;
 mod topics;
@@ -26,6 +28,8 @@ pub use crate::db::{
     insert_npc, is_naked, seed_items, seed_npcs, seed_npcs_for_store, spawn_one_npc_from_pool,
     starter_equipment, DEFAULT_NPCS, NpcDef,
 };
+pub use grid_ai::{GridNpcManager, GridMoveEvent};
+pub use hex_ai::{HexNpcManager, HexMoveEvent};
 pub use social::pick_micro_interaction;
 pub use traveler::{seed_traveler_manager, MovementDef, MovementType, NpcStep, TravelerManager};
 pub use unobserved::{run_unobserved_world_tick, UNOBSERVED_MAX_NPCS_PER_TICK};

@@ -82,3 +82,15 @@ sw-systemd.log
 
 # Leptos 編輯器 build 產出
 editor-leptos/dist/
+
+# 本地 memory / lock（Claude hooks 寫入，不納入版控）
+.memory/
+
+# 外部 repo 參考副本（其他專案克隆下來不納入本專案版控）
+antigravity-rc/CursorRemote-main/
+
+# 遠端上傳動態資料
+remote_uploads/
+
+# 跟本專案無關的外部匯出檔（Chia PackCells 是 UPS 設備資料）
+Chia PackCells *.json

@@ -24,7 +24,7 @@ pub const DISP_SUBDUED: i32 = -15;
 /// 調整心境並 clamp 於 [-100, 100]（對齊既有 `AdjustDisposition`）。
 pub fn adjust_disposition(entity_id: &str, delta: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap();
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     s.update_entity(entity_id, |e| {
         e.disposition += delta;
         e.disposition = e.disposition.clamp(-100, 100);
@@ -37,6 +37,6 @@ pub fn get_disposition(entity_id: &str) -> i32 {
     let Some(arc) = store::get_store() else {
         return 0;
     };
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     s.get_entity(entity_id).map(|e| e.disposition).unwrap_or(0)
 }

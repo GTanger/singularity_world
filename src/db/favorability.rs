@@ -18,7 +18,7 @@ pub const FAV_BORROW_SUCCESS: i32 = -3;
 /// 調整該 NPC 對某玩家的好感度，clamp [-100, +100]（對齊既有 `AdjustFavorability`）。
 pub fn adjust_favorability(entity_id: &str, subject_id: &str, delta: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap();
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     s.adjust_favorability(entity_id, subject_id, delta)
 }
 
@@ -27,7 +27,7 @@ pub fn format_npc_memory_for_backstory(entity_id: &str, subject_id: &str) -> Str
     let Some(arc) = store::get_store() else {
         return String::new();
     };
-    let s = arc.read().unwrap();
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     let Some(m) = s.get_npc_memory(entity_id, subject_id) else {
         return String::new();
     };
