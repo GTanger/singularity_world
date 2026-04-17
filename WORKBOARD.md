@@ -1,6 +1,6 @@
 # 工作板
 
-> 最後更新：2026-04-16
+> 最後更新：2026-04-17
 > 這不是文檔，是桌上攤開的紙。每次對話開始、上下文壓縮時自動注入。
 
 ## 現狀診斷
@@ -13,6 +13,7 @@
 | UI v2 骨架 | `web/grid-map.js` 紙色 DOM 地圖骨架在（2026-04-11 建），需接點擊 + 連線 |
 | NPC 行為引擎 | `hex_ai.rs` — 需求驅動 + BFS + 真實採集扣量 |
 | 資源恢復 | density_multiplier 已接（0人×3、1人×1、2人×0.6、3+人×0.3） |
+| 歷史模擬器 | 規格 v2 + axioms 骨架完成（2026-04-17），獨立 repo 待建，未動工 |
 
 ## 方向轉折
 
@@ -115,7 +116,9 @@ hex 六方沒有「北」和「南」，文字裡不自然。底層改方格，�
 | SW-1 | ○ | ~~方向 enum 8→4~~ **已作廢**（新設計用點擊移動，不列舉方向） |
 | SW-2 | ○ | NPC spawn 寫入方格座標 |
 | SW-3 | ✓→○ | 純文字 MUD 前端 UI 實作（blocker 已解，可推進） |
-| SW-6 | ○ | WORKBOARD.md 更新（本次做到） |
+| SW-6 | ✓ | WORKBOARD.md 更新（2026-04-17 納入歷史模擬器進度）|
+| SW-7 | ○ | 歷史模擬器 epoch_seed.toml 雛形（Opus 待寫，下一步）|
+| SW-8 | ○ | 歷史模擬器 M0 骨架（新 repo + L1 純地理層，碼農領域）|
 
 ## 不做（等文字版活了再說）
 
@@ -154,3 +157,33 @@ Token 物理是敘事層，代碼只用通則：
 - 觀景窗不同步方格世界，兩套座標系獨立
 - 舊 RoomGraph 暫留不碰，NPC 遷到新 grid 後自然萎縮
 - Q1/Q2/Q3 已全部拍板（見「已定案」區），無 OPEN 阻塞
+
+## 並行專案：歷史模擬器
+
+獨立 Rust binary（未來 repo `/home/tanger/Projects/singularity_simulator/`，未建）。跑解放日 → 混沌紀 500 年 → 凍結世界初始快照 → 灌回主遊戲 PG。
+
+### 2026-04-17 進度
+- 規格 v2 完成：`docs/design/歷史模擬器—規格草案.md`（680 行，整合 28 條世界觀衝擊：世界觀公理章/陣營架構章/敘事硬約束章/Hidden Director 層）
+- **新 repo 建好骨架**：`/home/tanger/Projects/singularity_simulator/`
+  - `Cargo.toml`（依賴：rusqlite + toml + h3o + reqwest/tokio + clap）
+  - `src/main.rs`（CLI 分派骨架，init/run/inspect/snapshot/replay/extract-legends）
+  - `src/lib.rs`（9 個模組宣告：axioms/geo/population/agent/director/event/store/llm/time）
+  - `axioms/token_physics.toml` + `tribes.toml` + `epoch_seed.toml`（由 draft 搬入）
+  - `migrations/0001_initial_schema.sql`（完整 SQLite DDL + 玩家可見層過濾 view）
+  - `samples/tick0_events.jsonl`（11 筆樣本：五話 tick 0 既成事件 + 虛擬第一年事件）
+  - `prompts/prompt_context_template.md`（LLM 跑量硬契約模板，7 項 context 組裝規範）
+  - `README.md` + `.gitignore`
+- **未做**：cargo build 驗證、git init、L1 實作（碼農領域）
+
+### 里程碑
+M0 骨架+L1 純地理層跑 500 年 → M1 L2 人口流體 → M2 L3 陣營 Agent → M3 聚落 Agent + L3.5 Hidden Director → M4 snapshot 灌回主遊戲 PG → M5 Web UI 時間軸
+
+### 與主遊戲對接
+M4 時 snapshot 灌回 PG，方格 MUD 才切換到新世界狀態。現階段主遊戲仍用 hex 觀景窗既有世界，兩者並行不相衝。
+
+### 敘事外放
+三線分工：Opus 骨幹潤（30-100 骨幹事件）+ Sonnet 4.6 校對 + Qwen3.6 Plus 跑量。離線手工流程，不進模擬器 pipeline。五話為正典錨點（`docs/stories/001_降臨.md` ~ `005_是解放日.md`），續篇 `006_是親子日.md` / `007_是送別日.md`。禁用詞表/允許模式清單/第四話紅光 few-shot 為硬契約。
+
+### 底牌（不寫進規格）
+- 煙火日 = 母腦誕生事件的具體歷史身份
+- 詞盤系統除熵教外的其餘源流（熵教為已知源流之一）
