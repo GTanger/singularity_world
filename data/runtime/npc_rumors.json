@@ -1,13 +1,13 @@
 {
   "entries": [
     {
-      "id": "seed|2960871|4",
-      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
+      "id": "seed|2960873|2",
+      "text": "樓梯間的菌絲光昨晚特別亮，是琥珀色的",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1776522931,
-      "expires_at": 1776526531
+      "updated_at": 1776524079,
+      "expires_at": 1776527679
     },
     {
       "id": "seed|2960874|1",
@@ -17,6 +17,24 @@
       "weight": 3,
       "updated_at": 1776524809,
       "expires_at": 1776528409
+    },
+    {
+      "id": "seed|2960875|22",
+      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776525019,
+      "expires_at": 1776528619
+    },
+    {
+      "id": "seed|2960874|3",
+      "text": "有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776524775,
+      "expires_at": 1776528375
     },
     {
       "id": "seed|2960872|18",
@@ -29,12 +47,12 @@
     },
     {
       "id": "eco|pulse|408",
-      "text": "有人說東街貨價又動了，買賣人都在觀望。",
+      "text": "這幾天米鹽又貴了一點，街坊都在精打細算。",
       "source": "economy",
       "source_score": 1,
-      "weight": 4,
-      "updated_at": 1776524809,
-      "expires_at": 1776530209
+      "weight": 5,
+      "updated_at": 1776525019,
+      "expires_at": 1776530419
     },
     {
       "id": "seed|2960874|6",
@@ -46,22 +64,13 @@
       "expires_at": 1776528279
     },
     {
-      "id": "seed|2960873|2",
-      "text": "樓梯間的菌絲光昨晚特別亮，是琥珀色的",
+      "id": "seed|2960871|4",
+      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
       "source": "event_seed",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776524079,
-      "expires_at": 1776527679
-    },
-    {
-      "id": "seed|2960874|3",
-      "text": "有住戶說家裡石板縫長出了新的發光菌絲，紫綠色的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776524775,
-      "expires_at": 1776528375
+      "weight": 1,
+      "updated_at": 1776522931,
+      "expires_at": 1776526531
     }
   ]
 }
