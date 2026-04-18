@@ -27,8 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.19.2">
-	<link rel="stylesheet" href="game.css?v=0.19.2">
+	<link rel="stylesheet" href="style.css?v=0.20.2">
+	<link rel="stylesheet" href="game.css?v=0.20.2">
+	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
+	<link rel="stylesheet" href="game-grid.css?v=0.20.2" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -69,9 +71,10 @@
 		</div>
 	</div>
 
-	<div id="app" class="app-after-login" hidden>
+	<!-- ═══ 觀景窗模式（earth.ygggt.com）：舊 hex canvas UI ═══ -->
+	<div id="app-observatory" class="app-after-login" hidden>
 		<!-- 頂欄：遊戲時間 -->
-		<header id="top-bar">
+		<header id="top-bar-obs">
 			<div class="bar-cell" id="game-time-date-cell">
 				<span id="game-time-date">奇點曆</span>
 			</div>
@@ -120,7 +123,7 @@
 		</div>
 
 		<!-- 底欄：方向鈕 + 姓名 + 狀態條 -->
-		<footer id="bottom-bar">
+		<footer id="bottom-bar-obs">
 			<div id="dpad">
 				<button class="dir-btn" data-dir="西北">↖</button>
 				<button class="dir-btn" data-dir="北">↑</button>
@@ -142,13 +145,119 @@
 		</footer>
 	</div>
 
-	<script src="narrative-markdown.js?v=0.19.2"></script>
-	<script src="game-ui.js?v=0.19.2"></script>
-	<script src="main.js?v=0.19.2"></script>
+	<!-- ═══ Grid MUD 模式（預設，非 ygggt 域名）：四區塊 UI ═══ -->
+	<div id="app-grid" class="game-grid-app" hidden>
+
+		<!-- 頂欄：日晷時間（固定）-->
+		<header id="top-bar" class="game-grid-header">
+			<div class="bar-cell" id="game-time-date-cell-g">
+				<span id="game-time-date">奇點曆</span>
+			</div>
+			<div class="bar-cell" id="sundial-cell-g">
+				<svg id="game-time-svg" class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
+					<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+					<line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8"
+					      stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(0 16 16)"/>
+				</svg>
+			</div>
+			<div class="bar-cell" id="clock-cell-g">
+				<span id="game-time-clock"></span>
+				<span id="game-time-label"></span>
+			</div>
+		</header>
+
+		<!-- 中間主體：左物件欄 + 右側（上描述 + 下地圖）-->
+		<div class="game-grid-body-row">
+
+			<!-- 左：物件欄（窄，萬物皆物件）-->
+			<aside class="game-grid-sidebar" id="sidebar-objects">
+				<div class="mud-obj-header">物件欄</div>
+				<div id="mud-obj-list" class="mud-obj-list">
+					<!-- JS 填充 -->
+				</div>
+			</aside>
+
+			<!-- 右：房間描述（上小）+ 地圖（下大）-->
+			<div class="game-grid-main">
+
+				<!-- 上：房間描述 -->
+				<div class="game-grid-room-desc" id="mud-room-desc">
+					<!-- JS 填充 -->
+				</div>
+
+				<!-- 下：地圖視口（格子 + 連線）-->
+				<div class="game-grid-map-viewport" id="gmap-viewport">
+					<div id="gmap-grid" class="gmap-grid">
+						<!-- JS 動態生成格子 -->
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 底欄：玩家姓名 + 狀態條（固定）-->
+		<footer id="bottom-bar" class="game-grid-footer">
+			<div class="game-grid-footer-inner">
+				<div id="player-name" class="grid-player-name" tabindex="0">姓名</div>
+				<div class="grid-stat-bars">
+					<div class="stat-mini"><label>氣血</label><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
+					<div class="stat-mini"><label>體力</label><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
+					<div class="stat-mini"><label>能量</label><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
+					<div class="stat-mini"><label>精神</label><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
+				</div>
+				<!-- log 輸出（底欄展開區）-->
+				<div id="log" class="grid-log hidden"></div>
+			</div>
+		</footer>
+
+	</div><!-- /#app-grid -->
+
+	<!-- hostname 判斷：決定模式並設置 #app 指向哪個容器 -->
 	<script>
+	(function () {
+		var isObservatory = window.location.hostname === 'earth.ygggt.com'
+			|| window.location.hostname.indexOf('ygggt') !== -1;
+
+		if (isObservatory) {
+			// 觀景窗模式：啟用舊 hex UI
+			window.__gameMode = 'observatory';
+			document.getElementById('app-observatory').id = 'app';
+			document.getElementById('app-grid').remove();
+		} else {
+			// Grid MUD 模式：啟用四區塊 UI
+			window.__gameMode = 'grid';
+			document.getElementById('app-grid').id = 'app';
+			document.getElementById('app-observatory').remove();
+			// 啟用 game-grid.css
+			var css = document.getElementById('game-grid-css');
+			if (css) css.disabled = false;
+			// body 加 game-grid-body class
+			document.body.classList.add('game-grid-body');
+		}
+	})();
+	</script>
+
+	<script src="narrative-markdown.js?v=0.20.2"></script>
+	<script src="game-ui.js?v=0.20.2"></script>
+	<!-- grid-map.js 只在非觀景窗模式需要，但兩種模式都載入無害（沒有 DOM 目標就不動）-->
+	<script src="grid-map.js?v=0.20.2"></script>
+	<script src="main.js?v=0.20.2"></script>
+	<script>
+		// grid MUD 模式覆蓋：showGameAfterLogin 直接顯示 #app（已由 hostname 判斷決定哪個是 #app）
+		// 觀景窗模式：closeDrawers / triggerLook 相容 game-ui.js 可能缺的 DOM
+		if (window.__gameMode === 'grid') {
+			window.showGameAfterLogin = function () {
+				var auth = document.getElementById('auth-screen');
+				var app  = document.getElementById('app');
+				if (auth) auth.style.display = 'none';
+				if (app)  app.hidden = false;
+			};
+			window.closeDrawers = function () {};
+			window.triggerLook  = function () {};
+		}
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.19.2').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.2').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {
@@ -160,6 +269,14 @@
 				}).catch(function () {});
 			});
 		}
+		document.addEventListener('DOMContentLoaded', function () {
+			if (window.gameConnect) window.gameConnect();
+			document.addEventListener('visibilitychange', function () {
+				if (document.visibilityState === 'visible' && window.gameTryReconnect) {
+					window.gameTryReconnect();
+				}
+			});
+		});
 	</script>
 </body>
 </html>
