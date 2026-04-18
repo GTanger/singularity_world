@@ -36,7 +36,7 @@
   display: grid;
   grid-template-columns: 1.5fr 1fr 1.5fr; /* 左右等比容納日期/時間，中間窄 */
   background: var(--paper, #f0e6d3);
-  border-bottom: 1px solid var(--ink-faint, #a89880);
+  border-bottom: none;
   z-index: 10;
 }
 
@@ -46,7 +46,7 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  border-right: 1px solid var(--ink-faint, #a89880);
+  border-right: none;
   padding: 4px 6px;
   overflow: hidden;
 }
@@ -80,7 +80,6 @@
   flex: 0 0 120px;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--ink-faint, #a89880);
   background: var(--paper-dark, #e0d4c0);
   overflow: hidden;
 }
@@ -89,7 +88,7 @@
   padding: 6px 8px 4px;
   font-size: 11px;
   color: var(--ink-faint, #a89880);
-  border-bottom: 1px solid var(--ink-wash, rgba(44,30,15,0.08));
+  border-bottom: none;
   letter-spacing: 0.1em;
   flex-shrink: 0;
 }
@@ -106,7 +105,7 @@
   font-size: 10px;
   color: var(--ink-faint, #a89880);
   letter-spacing: 0.08em;
-  border-top: 1px solid var(--ink-wash, rgba(44,30,15,0.08));
+  border-top: none;
   margin-top: 4px;
 }
 .mud-obj-section-title:first-child {
@@ -304,7 +303,7 @@
 .game-grid-footer {
   flex: 0 0 auto;
   background: var(--paper, #f0e6d3);
-  border-top: 1px solid var(--ink-faint, #a89880);
+  border-top: none;
   z-index: 10;
 }
 
