@@ -1,6 +1,28 @@
 {
   "entities": [
     {
+      "id": "test_1776525409046",
+      "kind": "player",
+      "display_char": "測",
+      "x": 0,
+      "y": 0,
+      "move_state": "idle",
+      "vit": 9,
+      "qi": 11,
+      "dex": 10,
+      "magnesium": 0,
+      "created_at": 1776525409,
+      "gender": "M",
+      "soul_seed": 5745959396644676213,
+      "activated_nodes": "[\"N000\"]",
+      "equipment_slots": "{\"undershirt\":\"\",\"inner_armor\":\"\",\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"leg_armor\":\"\",\"feet\":\"starter_feet_m\"}",
+      "inventory": "[]",
+      "hex_q": 0,
+      "hex_r": 0,
+      "grid_x": 0,
+      "grid_y": 0
+    },
+    {
       "id": "測試員",
       "kind": "player",
       "display_char": "測",
@@ -19,6 +41,28 @@
       "inventory": "[]",
       "hex_q": 0,
       "hex_r": 0
+    },
+    {
+      "id": "葉卅",
+      "kind": "player",
+      "display_char": "卅",
+      "x": 0,
+      "y": 0,
+      "move_state": "idle",
+      "vit": 10,
+      "qi": 11,
+      "dex": 10,
+      "magnesium": 0,
+      "created_at": 1772893063,
+      "gender": "M",
+      "soul_seed": 5644210104510896729,
+      "activated_nodes": "[\"N000\"]",
+      "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
+      "inventory": "[]",
+      "hex_q": 0,
+      "hex_r": 0,
+      "grid_x": 0,
+      "grid_y": 0
     },
     {
       "id": "測試俠",
@@ -59,28 +103,6 @@
       "inventory": "[]",
       "hex_q": 0,
       "hex_r": 0
-    },
-    {
-      "id": "葉卅",
-      "kind": "player",
-      "display_char": "卅",
-      "x": 0,
-      "y": 0,
-      "move_state": "idle",
-      "vit": 10,
-      "qi": 11,
-      "dex": 10,
-      "magnesium": 0,
-      "created_at": 1772893063,
-      "gender": "M",
-      "soul_seed": 5644210104510896729,
-      "activated_nodes": "[\"N000\"]",
-      "equipment_slots": "{\"body\":\"starter_body_m\",\"legs\":\"starter_legs_m\",\"feet\":\"starter_feet_m\"}",
-      "inventory": "[]",
-      "hex_q": 0,
-      "hex_r": 0,
-      "grid_x": 0,
-      "grid_y": 0
     }
   ]
 }

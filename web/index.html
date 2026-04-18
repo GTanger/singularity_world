@@ -27,10 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.20.5">
-	<link rel="stylesheet" href="game.css?v=0.20.5">
+	<link rel="stylesheet" href="style.css?v=0.20.6">
+	<link rel="stylesheet" href="game.css?v=0.20.6">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.20.5" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.20.6" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -195,18 +195,20 @@
 			</div>
 		</div>
 
-		<!-- 底欄：玩家姓名 + 狀態條（固定）-->
+		<!-- 底欄：三欄（左氣血體力 | 中姓名 | 右能量精神）-->
 		<footer id="bottom-bar" class="game-grid-footer">
 			<div class="game-grid-footer-inner">
-				<div id="player-name" class="grid-player-name" tabindex="0">姓名</div>
-				<div class="grid-stat-bars">
+				<div class="grid-stats-left">
 					<div class="stat-mini"><label>氣血</label><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
 					<div class="stat-mini"><label>體力</label><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
+				</div>
+				<div id="player-name" class="grid-player-name" tabindex="0">姓名</div>
+				<div class="grid-stats-right">
 					<div class="stat-mini"><label>能量</label><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
 					<div class="stat-mini"><label>精神</label><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
 				</div>
-				<!-- log 輸出（底欄展開區）-->
-				<div id="log" class="grid-log hidden"></div>
+				<!-- log 輸出（底欄展開區，保留隱藏）-->
+				<div id="log" class="grid-log hidden" style="display:none"></div>
 			</div>
 		</footer>
 
@@ -238,11 +240,11 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.5"></script>
-	<script src="game-ui.js?v=0.20.5"></script>
+	<script src="narrative-markdown.js?v=0.20.6"></script>
+	<script src="game-ui.js?v=0.20.6"></script>
 	<!-- grid-map.js 只在非觀景窗模式需要，但兩種模式都載入無害（沒有 DOM 目標就不動）-->
-	<script src="grid-map.js?v=0.20.5"></script>
-	<script src="main.js?v=0.20.5"></script>
+	<script src="grid-map.js?v=0.20.6"></script>
+	<script src="main.js?v=0.20.6"></script>
 	<script>
 		// grid MUD 模式覆蓋：showGameAfterLogin 直接顯示 #app（已由 hostname 判斷決定哪個是 #app）
 		// 觀景窗模式：closeDrawers / triggerLook 相容 game-ui.js 可能缺的 DOM
@@ -258,7 +260,7 @@
 		}
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.20.5').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.6').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {

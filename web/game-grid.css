@@ -32,12 +32,25 @@
 /* ── 頂欄 ─────────────────────────────────────────────────────── */
 
 .game-grid-header {
-  flex: 0 0 36px;
-  display: flex;
+  flex: 0 0 44px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr; /* 奇點曆較寬 | 日晷窄 | 時間中等 */
   background: var(--paper, #f0e6d3);
   border-bottom: 1px solid var(--ink-faint, #a89880);
   z-index: 10;
 }
+
+.game-grid-header > .bar-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-right: 1px solid var(--ink-faint, #a89880);
+  padding: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.game-grid-header > .bar-cell:last-child { border-right: none; }
 
 /* ── 中間主體：左窄右寬 ────────────────────────────────────────── */
 
@@ -283,9 +296,18 @@
 
 .game-grid-footer-inner {
   padding: 6px 12px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* 左 stats | 姓名 | 右 stats */
   align-items: center;
   gap: 12px;
+}
+
+.grid-stats-left,
+.grid-stats-right {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .grid-player-name {
@@ -294,16 +316,10 @@
   color: var(--ink, #2c1e0f);
   cursor: pointer;
   white-space: nowrap;
-  min-width: 48px;
+  text-align: center;
+  padding: 0 14px;
 }
 .grid-player-name:active { opacity: 0.7; }
-
-.grid-stat-bars {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
 
 /* log 輸出（預設隱藏；可由 JS 展開）*/
 .grid-log {
