@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.14
+ * grid-map.js v0.20.15
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  *
  * 依賴：
@@ -353,7 +353,6 @@
     function renderObjectList() {
         if (!objectListEl) return;
         var myId = window.myPlayerId || '';
-        var html = '<div class="mud-obj-section-title">動作</div>';
 
         // 探索動作（永遠在）
         var px = mapData.playerX;
@@ -377,7 +376,6 @@
             return e.kind === 'player' && e.id === myId;
         })[0];
         if (me) {
-            html += '<div class="mud-obj-section-title">我</div>';
             html += '<div class="mud-obj-item mud-obj-self" data-entity-id="' + esc(me.id) + '">';
             html += '<span class="mud-obj-icon">' + esc(me.display_char || '我') + '</span> ';
             html += esc(me.display_name || me.id);
@@ -391,7 +389,6 @@
             return e.kind === 'npc' || e.kind === 'Npc';
         });
         if (npcs.length > 0) {
-            html += '<div class="mud-obj-section-title">在場</div>';
             for (var ni = 0; ni < npcs.length; ni++) {
                 var npc = npcs[ni];
                 html += '<div class="mud-obj-item mud-obj-npc" data-entity-id="' + esc(npc.id) + '">';
@@ -409,7 +406,6 @@
             return e.kind === 'player' && e.id !== myId;
         });
         if (otherPlayers.length > 0) {
-            html += '<div class="mud-obj-section-title">他人</div>';
             for (var pi = 0; pi < otherPlayers.length; pi++) {
                 var p = otherPlayers[pi];
                 html += '<div class="mud-obj-item mud-obj-player" data-entity-id="' + esc(p.id) + '">';
@@ -436,7 +432,6 @@
                 var terrain = currentCell.terrain;
                 var resourceActions = terrainToActions(terrain);
                 if (resourceActions.length > 0) {
-                    html += '<div class="mud-obj-section-title">採集</div>';
                     for (var ri = 0; ri < resourceActions.length; ri++) {
                         html += '<div class="mud-obj-item mud-obj-resource" data-resource="' + esc(resourceActions[ri].key) + '">';
                         html += '<span class="mud-obj-icon">&#x26CF;</span> ';
