@@ -27,10 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.20.11">
-	<link rel="stylesheet" href="game.css?v=0.20.11">
+	<link rel="stylesheet" href="style.css?v=0.20.12">
+	<link rel="stylesheet" href="game.css?v=0.20.12">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.20.11" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.20.12" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -170,7 +170,7 @@
 
 			<!-- 左：物件欄（窄，萬物皆物件）-->
 			<aside class="game-grid-sidebar" id="sidebar-objects">
-				<div class="mud-obj-header">物件欄</div>
+				<!-- 無「物件欄」標題（設計硬規則：示意名不印在 UI）-->
 				<div id="mud-obj-list" class="mud-obj-list">
 					<!-- JS 填充 -->
 				</div>
@@ -239,11 +239,11 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.11"></script>
-	<script src="game-ui.js?v=0.20.11"></script>
+	<script src="narrative-markdown.js?v=0.20.12"></script>
+	<script src="game-ui.js?v=0.20.12"></script>
 	<!-- grid-map.js 只在非觀景窗模式需要，但兩種模式都載入無害（沒有 DOM 目標就不動）-->
-	<script src="grid-map.js?v=0.20.11"></script>
-	<script src="main.js?v=0.20.11"></script>
+	<script src="grid-map.js?v=0.20.12"></script>
+	<script src="main.js?v=0.20.12"></script>
 	<script>
 		// grid MUD 模式覆蓋：showGameAfterLogin 直接顯示 #app（已由 hostname 判斷決定哪個是 #app）
 		// 觀景窗模式：closeDrawers / triggerLook 相容 game-ui.js 可能缺的 DOM
@@ -259,7 +259,7 @@
 		}
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.20.11').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.12').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {

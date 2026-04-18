@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.11
+// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.12
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';
@@ -78,8 +78,8 @@
 		if (day < 1) day = 1;
 		if (day > 30) day = 30;
 		var yearStr = year === 1 ? '元' : (year + '');
-		var monthStr = month <= 12 ? MONTH_NAMES[month - 1] : month + '';
-		var dayStr = day <= 30 ? DAY_NAMES[day - 1] : day + '';
+		var monthStr = month + '';
+		var dayStr = day + '';
 		return '奇點曆 ' + yearStr + '年' + monthStr + '月' + dayStr + '日';
 	}
 

@@ -1,11 +1,15 @@
 {
   "entries": [
     {
-      "entity_id": "cropA_1776530974382",
+      "entity_id": "ui31207754desktop",
       "room_id": "grid:0:0"
     },
     {
-      "entity_id": "f_1776530993098",
+      "entity_id": "ui31207754mobile",
+      "room_id": "grid:0:0"
+    },
+    {
+      "entity_id": "cropA_1776531074895",
       "room_id": "grid:0:0"
     }
   ]

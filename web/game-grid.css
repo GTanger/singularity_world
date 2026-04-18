@@ -1,8 +1,14 @@
 /**
- * game-grid.css v0.20.1
+ * game-grid.css v0.20.12
  * 方格版 MUD UI 專用樣式
- * 紙色底（#f0e6d3）、等寬字體、簡潔線條
+ * 紙色底（#f0e6d3）、等寬字體、無分隔邊線（用留白分區）
  * 依賴 game.css 的 :root CSS 變數（--paper, --ink, --gold 等）
+ *
+ * 設計硬規則（違反=退件）：
+ *   1. 區塊間無邊線（只用留白/背景區隔）——保留格子本身 border
+ *   2. 頂欄三欄非等分：日期欄必須寬到能裝「奇點曆一百年十二月三十日」12 字
+ *   3. 無多餘標題（「奇點曆」「日晷」「時間」「物件欄」等都是示意名，不印在 UI）
+ *   4. stats 維持細條 bar（不色塊填滿）
  */
 
 /* ── 全局覆蓋（game-grid 頁限定）────────────────────────────── */
@@ -29,42 +35,49 @@
   overflow: hidden;
 }
 
-/* ── 頂欄 ─────────────────────────────────────────────────────── */
+/* ── 頂欄（非等分：日期寬｜日晷窄｜時間中） ─────────────────── */
+/* 用 #top-bar.game-grid-header 疊 id 權重，蓋掉 game.css 的 #top-bar 邊線 */
 
+#top-bar.game-grid-header,
 .game-grid-header {
-  flex: 0 0 40px;
+  flex: 0 0 36px;
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1.4fr; /* 奇點曆+日期 | 日晷 | 時間 */
+  /* 日期欄 auto：依內容撐滿（中文混數字最多 ~12 字 ≈ 168px）
+     日晷欄 36px：剛好容 32px SVG 圓
+     時間欄 auto：「02:10 凌晨」之類 ~7 字 ≈ 90px */
+  grid-template-columns: auto 36px 1fr;
   background: var(--paper, #f0e6d3);
+  border: none;
   border-bottom: none;
   z-index: 10;
 }
 
+#top-bar.game-grid-header > .bar-cell,
 .game-grid-header > .bar-cell {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 4px;
+  border: none;
   border-right: none;
-  padding: 0 6px;
+  padding: 0 10px;
   overflow: hidden;
   white-space: nowrap;
   font-size: 13px;
+  color: var(--ink, #2c1e0f);
 }
+#top-bar.game-grid-header > .bar-cell:last-child,
 .game-grid-header > .bar-cell:last-child { border-right: none; }
 
-.bar-title {
-  font-size: 11px;
-  color: var(--ink-faint, #a89880);
-  letter-spacing: 0.1em;
-  line-height: 1;
-}
+/* 日期靠左（主內容）、日晷置中、時間靠右 */
+#top-bar.game-grid-header > #game-time-date-cell-g { justify-content: flex-start; padding-left: 12px; }
+#top-bar.game-grid-header > #sundial-cell-g        { justify-content: center; padding: 0; }
+#top-bar.game-grid-header > #clock-cell-g          { justify-content: flex-end; padding-right: 12px; color: var(--ink-light, #6b5a47); }
 
-.bar-value {
-  font-size: 13px;
-  color: var(--ink, #2c1e0f);
-  line-height: 1.1;
-  white-space: nowrap;
+/* 日晷 SVG 尺寸 */
+#top-bar.game-grid-header .game-time-svg {
+  width: 22px;
+  height: 22px;
+  color: var(--ink-light, #6b5a47);
 }
 
 /* ── 中間主體：左窄右寬 ────────────────────────────────────────── */
@@ -76,23 +89,19 @@
   overflow: hidden;
 }
 
-/* 左物件欄 */
+/* 左物件欄（無標題，分區用極淡背景色與頂欄區隔）*/
 .game-grid-sidebar {
-  flex: 0 0 120px;
+  flex: 0 0 108px;
   display: flex;
   flex-direction: column;
   background: var(--paper-dark, #e0d4c0);
   overflow: hidden;
+  border: none;
+  border-right: none;
 }
 
-.mud-obj-header {
-  padding: 6px 8px 4px;
-  font-size: 11px;
-  color: var(--ink-faint, #a89880);
-  border-bottom: none;
-  letter-spacing: 0.1em;
-  flex-shrink: 0;
-}
+/* 「物件欄」三字標題已移除（index.html）——保留 class 以防其他地方殘留 */
+.mud-obj-header { display: none; }
 
 .mud-obj-list {
   flex: 1 1 0;
@@ -166,13 +175,14 @@
   overflow: hidden;
 }
 
-/* 上小：房間描述 */
+/* 上小：房間描述（無下邊線，與地圖用留白隔開）*/
 .game-grid-room-desc {
   flex: 0 0 auto;
   min-height: 64px;
-  max-height: 100px;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--ink-faint, #a89880);
+  max-height: 110px;
+  padding: 8px 12px 10px;
+  border: none;
+  border-bottom: none;
   background: var(--paper, #f0e6d3);
   overflow-y: auto;
 }
@@ -299,12 +309,16 @@
   width: 2px;
 }
 
-/* ── 底欄 ─────────────────────────────────────────────────────── */
+/* ── 底欄（無上邊線，用留白與地圖區隔） ─────────────────────── */
+/* 用 #bottom-bar.game-grid-footer 疊 id 權重，蓋掉 game.css 的邊線 */
 
+#bottom-bar.game-grid-footer,
 .game-grid-footer {
   flex: 0 0 auto;
   background: var(--paper, #f0e6d3);
+  border: none;
   border-top: none;
+  padding: 0;
   z-index: 10;
 }
 
