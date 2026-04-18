@@ -32,9 +32,9 @@
 /* ── 頂欄 ─────────────────────────────────────────────────────── */
 
 .game-grid-header {
-  flex: 0 0 64px;
+  flex: 0 0 40px;
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1.5fr; /* 左右等比容納日期/時間，中間窄 */
+  grid-template-columns: 1.6fr 1fr 1.4fr; /* 奇點曆+日期 | 日晷 | 時間 */
   background: var(--paper, #f0e6d3);
   border-bottom: none;
   z-index: 10;
@@ -42,13 +42,14 @@
 
 .game-grid-header > .bar-cell {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 4px;
   border-right: none;
-  padding: 4px 6px;
+  padding: 0 6px;
   overflow: hidden;
+  white-space: nowrap;
+  font-size: 13px;
 }
 .game-grid-header > .bar-cell:last-child { border-right: none; }
 
