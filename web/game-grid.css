@@ -1,0 +1,306 @@
+/**
+ * game-grid.css v0.20.0
+ * 方格版 MUD UI 專用樣式
+ * 紙色底（#f0e6d3）、等寬字體、簡潔線條
+ * 依賴 game.css 的 :root CSS 變數（--paper, --ink, --gold 等）
+ */
+
+/* ── 全局覆蓋（game-grid 頁限定）────────────────────────────── */
+
+.game-grid-body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100dvh;
+  width: 100vw;
+  background: var(--paper, #f0e6d3);
+  color: var(--ink, #2c1e0f);
+  font-family: 'LXGW WenKai Mono TC', 'Chiron GoRound TC', 'Noto Serif TC', 'Songti SC', monospace, serif;
+  user-select: none;
+}
+
+/* ── 主容器：flex column 撐滿視口 ─────────────────────────────── */
+
+.game-grid-app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ── 頂欄 ─────────────────────────────────────────────────────── */
+
+.game-grid-header {
+  flex: 0 0 36px;
+  display: flex;
+  background: var(--paper, #f0e6d3);
+  border-bottom: 1px solid var(--ink-faint, #a89880);
+  z-index: 10;
+}
+
+/* ── 中間主體：左窄右寬 ────────────────────────────────────────── */
+
+.game-grid-body-row {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* 左物件欄 */
+.game-grid-sidebar {
+  flex: 0 0 120px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--ink-faint, #a89880);
+  background: var(--paper-dark, #e0d4c0);
+  overflow: hidden;
+}
+
+.mud-obj-header {
+  padding: 6px 8px 4px;
+  font-size: 11px;
+  color: var(--ink-faint, #a89880);
+  border-bottom: 1px solid var(--ink-wash, rgba(44,30,15,0.08));
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.mud-obj-list {
+  flex: 1 1 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 0;
+}
+
+.mud-obj-section-title {
+  padding: 4px 8px 2px;
+  font-size: 10px;
+  color: var(--ink-faint, #a89880);
+  letter-spacing: 0.08em;
+  border-top: 1px solid var(--ink-wash, rgba(44,30,15,0.08));
+  margin-top: 4px;
+}
+.mud-obj-section-title:first-child {
+  margin-top: 0;
+  border-top: none;
+}
+
+.mud-obj-item {
+  padding: 5px 8px;
+  font-size: 13px;
+  color: var(--ink, #2c1e0f);
+  cursor: pointer;
+  line-height: 1.4;
+  border-bottom: 1px solid transparent;
+  transition: background 0.1s;
+}
+.mud-obj-item:active {
+  background: var(--ink-wash, rgba(44,30,15,0.08));
+}
+
+.mud-obj-action {
+  color: var(--gold, #8b6914);
+  font-weight: 600;
+}
+
+.mud-obj-npc {
+  color: var(--ink, #2c1e0f);
+}
+.mud-obj-player {
+  color: var(--blue-ink, #2a4a6b);
+}
+.mud-obj-ground {
+  color: var(--green-ink, #2a5a3a);
+}
+.mud-obj-resource {
+  color: var(--ink-light, #6b5a47);
+}
+
+.mud-obj-icon {
+  font-size: 11px;
+  margin-right: 2px;
+}
+
+/* ── 右：房間描述 + 地圖 ───────────────────────────────────────── */
+
+.game-grid-main {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* 上小：房間描述 */
+.game-grid-room-desc {
+  flex: 0 0 auto;
+  min-height: 64px;
+  max-height: 100px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ink-faint, #a89880);
+  background: var(--paper, #f0e6d3);
+  overflow-y: auto;
+}
+
+.mud-room-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--gold, #8b6914);
+  margin-bottom: 2px;
+}
+
+.mud-room-phase {
+  font-size: 12px;
+  color: var(--ink-faint, #a89880);
+  margin-bottom: 4px;
+}
+
+.mud-room-exits {
+  font-size: 12px;
+  color: var(--ink-light, #6b5a47);
+}
+
+.mud-exit-dir {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 4px;
+  border: 1px solid var(--ink-wash, rgba(44,30,15,0.08));
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.mud-room-entities {
+  font-size: 12px;
+  color: var(--ink-light, #6b5a47);
+  margin-top: 3px;
+}
+
+.mud-entity-name {
+  color: var(--ink, #2c1e0f);
+}
+
+/* 下大：地圖視口（可捲動）*/
+.game-grid-map-viewport {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  background: var(--paper-light, #f7f0e3);
+  position: relative;
+}
+
+/* 地圖容器（動態尺寸，JS 設定）*/
+.gmap-grid {
+  position: relative;
+  /* width/height 由 JS 設定 */
+}
+
+/* ── 格子 ─────────────────────────────────────────────────────── */
+
+.gmap-cell {
+  position: absolute;
+  width: 72px;
+  height: 48px;
+  background: var(--paper, #f0e6d3);
+  border: 1px solid var(--ink-faint, #a89880);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.3;
+  text-align: center;
+  transition: background 0.1s, border-color 0.1s;
+  box-sizing: border-box;
+}
+
+.gmap-cell:active {
+  background: var(--paper-dark, #e0d4c0);
+}
+
+/* 玩家當前格 */
+.gmap-cell-player {
+  background: var(--paper-dark, #e0d4c0);
+  border-color: var(--gold, #8b6914);
+  border-width: 2px;
+  cursor: default;
+  z-index: 2;
+}
+
+.gmap-cell-name {
+  font-size: 12px;
+  color: var(--ink, #2c1e0f);
+  font-weight: 500;
+}
+
+.gmap-player-marker {
+  font-size: 8px;
+  color: var(--gold, #8b6914);
+  margin-top: 1px;
+}
+
+/* ── 連線 ────────────────────────────────────────────────────── */
+
+.gmap-line {
+  position: absolute;
+  background: var(--ink-faint, #a89880);
+  z-index: 1;
+}
+
+.gmap-line-h {
+  height: 2px;
+}
+
+.gmap-line-v {
+  width: 2px;
+}
+
+/* ── 底欄 ─────────────────────────────────────────────────────── */
+
+.game-grid-footer {
+  flex: 0 0 auto;
+  background: var(--paper, #f0e6d3);
+  border-top: 1px solid var(--ink-faint, #a89880);
+  z-index: 10;
+}
+
+.game-grid-footer-inner {
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.grid-player-name {
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--ink, #2c1e0f);
+  cursor: pointer;
+  white-space: nowrap;
+  min-width: 48px;
+}
+.grid-player-name:active { opacity: 0.7; }
+
+.grid-stat-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* log 輸出（預設隱藏；可由 JS 展開）*/
+.grid-log {
+  flex-basis: 100%;
+  max-height: 120px;
+  overflow-y: auto;
+  font-size: 12px;
+  color: var(--ink-light, #6b5a47);
+  margin-top: 4px;
+}
+
+/* ── 通用 ─────────────────────────────────────────────────────── */
+
+.hidden { display: none !important; }

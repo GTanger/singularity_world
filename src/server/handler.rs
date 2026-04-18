@@ -75,10 +75,44 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
         "unequip_item" => handle_unequip_item(conn, &msg),
         "print_topology_debug" => handle_print_topology_debug(conn),
         "do_action" => handle_do_action(conn, &msg),
+        "explore" => handle_explore_grid(conn),
         other => {
             conn.send_error(format!("unknown type: {other}"));
         }
     }
+}
+
+/// 探索當前正方格：標記該格為 explored，重新推送 grid_view。
+/// 層 3（grid_player_reveal DB）待 SW-4 實作；此版本僅重送視野以確保前端同步。
+fn handle_explore_grid(conn: &WsConnection) {
+    let pid = conn.player_id.read().ok().and_then(|g| g.clone());
+    let Some(player_id) = pid else {
+        conn.send_error("login first");
+        return;
+    };
+    let ent = match db::get_entity(&player_id) {
+        Ok(Some(e)) => e,
+        _ => {
+            conn.send_error(gametext::client("move_failed"));
+            return;
+        }
+    };
+    let (gx, gy) = match (ent.grid_x, ent.grid_y) {
+        (Some(x), Some(y)) => (x, y),
+        _ => {
+            conn.send_error("not in grid");
+            return;
+        }
+    };
+    // 把當前格標記為 explored（觸發主動探索語意）
+    crate::server::grid_manager::with_square_grid_mut(|grid| {
+        if let Some(cell) = grid.get_mut(crate::grid::SquareCoord::new(gx, gy)) {
+            cell.explored = true;
+        }
+        grid.mark_dirty();
+    });
+    let gh = current_game_hour(&conn.cfg);
+    send_grid_view(conn, &player_id, gx, gy, gh);
 }
 
 fn handle_login(conn: &WsConnection, msg: &ClientMsg) {

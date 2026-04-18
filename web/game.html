@@ -3,72 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>奇點世界</title>
-  <link rel="stylesheet" href="game.css">
+  <title>奇點世界 — 方格版</title>
+
+  <style>
+    @font-face {
+      font-family: 'Chiron GoRound TC';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url('chiron-goround-tc-sub.ttf') format('truetype');
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-mono-tc@5/index.min.css">
+  <link rel="stylesheet" href="game.css?v=0.20.0">
+  <link rel="stylesheet" href="game-grid.css?v=0.20.0">
 </head>
-<body>
-  <!-- 頂部懸浮條 -->
-  <header id="top-bar">
-    <div class="bar-cell" id="calendar">奇點曆</div>
-    <div class="bar-cell" id="sundial">日 晷</div>
-    <div class="bar-cell" id="clock">時間</div>
-  </header>
+<body class="game-grid-body">
 
-  <!-- 地圖容器 -->
-  <main id="map-viewport">
-    <div id="map-grid">
-      <!-- JS 動態生成格子 -->
+  <!-- 登入畫面 -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-box">
+      <h2 class="auth-title">奇點世界</h2>
+      <p class="auth-hint" id="auth-hint">請輸入 ID 與密碼登入</p>
+      <p class="auth-error" id="auth-message" role="alert" aria-live="polite"></p>
+      <form id="auth-form" class="auth-form" autocomplete="off">
+        <div class="auth-field">
+          <label for="auth-id">角色 ID</label>
+          <input type="text" id="auth-id" name="id" required minlength="2" maxlength="32"
+                 placeholder="2～32 字元" autocomplete="username">
+        </div>
+        <div class="auth-field">
+          <label for="auth-password">密碼</label>
+          <input type="password" id="auth-password" name="password" required minlength="6"
+                 placeholder="至少 6 字元" autocomplete="current-password">
+        </div>
+        <div class="auth-field auth-field-create" id="auth-display-wrap" hidden>
+          <label for="auth-display-char">顯示字（選填）</label>
+          <input type="text" id="auth-display-char" name="display_char" maxlength="2"
+                 placeholder="地圖上顯示一字，預設「我」">
+        </div>
+        <div class="auth-field auth-field-create" id="auth-gender-wrap" hidden>
+          <span class="auth-label">性別</span>
+          <div class="auth-gender-options">
+            <label class="auth-radio"><input type="radio" name="gender" value="男" id="auth-gender-m" checked> 男</label>
+            <label class="auth-radio"><input type="radio" name="gender" value="女" id="auth-gender-f"> 女</label>
+          </div>
+        </div>
+        <div class="auth-actions" id="auth-login-actions">
+          <button type="submit" name="action" value="login" id="auth-btn-login">登入</button>
+          <button type="button" id="auth-btn-switch">沒有帳號？創角</button>
+        </div>
+        <div class="auth-actions auth-actions-create" id="auth-create-actions" hidden>
+          <button type="submit" name="action" value="create" id="auth-btn-create">創角</button>
+          <button type="button" id="auth-btn-back">已有帳號？登入</button>
+        </div>
+      </form>
     </div>
-  </main>
+  </div>
 
-  <!-- 定位鈕 -->
-  <button id="locate-btn" title="回到角色位置">⊕</button>
+  <!-- ═══ 主遊戲 UI（登入後顯示）═══ -->
+  <div id="app" class="game-grid-app" hidden>
 
-  <!-- 左抽屜：物件欄 -->
-  <aside id="drawer-left" class="drawer drawer-hidden">
-    <div id="object-list">
-      <!-- JS 動態填充 -->
-    </div>
-  </aside>
-
-  <!-- 右抽屜：房間描述 + log -->
-  <aside id="drawer-right" class="drawer drawer-hidden">
-    <div id="room-desc"></div>
-    <div id="log"></div>
-  </aside>
-
-  <!-- 底部懸浮條 -->
-  <footer id="bottom-bar">
-    <div class="bar-cell stat-group">
-      <div class="stat-bar hp" id="stat-hp"><div class="stat-fill"></div><label>氣血</label></div>
-      <div class="stat-bar stamina" id="stat-stamina"><div class="stat-fill"></div><label>體力</label></div>
-    </div>
-    <div class="bar-cell" id="player-name">葉 卅</div>
-    <div class="bar-cell stat-group">
-      <div class="stat-bar energy" id="stat-energy"><div class="stat-fill"></div><label>能量</label></div>
-      <div class="stat-bar spirit" id="stat-spirit"><div class="stat-fill"></div><label>精神</label></div>
-    </div>
-  </footer>
-
-  <!-- 角色彈窗（背包/裝備） -->
-  <div id="player-modal" class="modal hidden">
-    <div class="modal-content">
-      <div id="modal-tabs">
-        <button class="tab active" data-tab="inventory">背包</button>
-        <button class="tab" data-tab="equipment">裝備</button>
-        <button class="tab" data-tab="status">狀態</button>
+    <!-- 頂欄：日晷時間（固定）-->
+    <header id="top-bar" class="game-grid-header">
+      <div class="bar-cell" id="game-time-date-cell">
+        <span id="game-time-date">奇點曆</span>
       </div>
-      <div id="modal-body"></div>
-      <button id="modal-close">✕</button>
+      <div class="bar-cell" id="sundial-cell">
+        <svg id="game-time-svg" class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
+          <circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(0 16 16)"/>
+        </svg>
+      </div>
+      <div class="bar-cell" id="clock-cell">
+        <span id="game-time-clock"></span>
+        <span id="game-time-label"></span>
+      </div>
+    </header>
+
+    <!-- 中間主體：左物件欄 + 右側（上描述 + 下地圖）-->
+    <div class="game-grid-body-row">
+
+      <!-- 左：物件欄（窄，萬物皆物件）-->
+      <aside class="game-grid-sidebar" id="sidebar-objects">
+        <div class="mud-obj-header">物件欄</div>
+        <div id="mud-obj-list" class="mud-obj-list">
+          <!-- JS 填充 -->
+        </div>
+      </aside>
+
+      <!-- 右：房間描述（上小）+ 地圖（下大）-->
+      <div class="game-grid-main">
+
+        <!-- 上：房間描述 -->
+        <div class="game-grid-room-desc" id="mud-room-desc">
+          <!-- JS 填充 -->
+        </div>
+
+        <!-- 下：地圖視口（格子 + 連線）-->
+        <div class="game-grid-map-viewport" id="gmap-viewport">
+          <div id="gmap-grid" class="gmap-grid">
+            <!-- JS 動態生成格子 -->
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
 
-  <!-- 物件動作選單 -->
-  <div id="action-menu" class="hidden">
-    <ul id="action-list"></ul>
-  </div>
+    <!-- 底欄：玩家姓名 + 狀態條（固定）-->
+    <footer id="bottom-bar" class="game-grid-footer">
+      <div class="game-grid-footer-inner">
+        <div id="player-name" class="grid-player-name" tabindex="0">姓名</div>
+        <div class="grid-stat-bars">
+          <div class="stat-mini"><label>氣血</label><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
+          <div class="stat-mini"><label>體力</label><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
+          <div class="stat-mini"><label>能量</label><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
+          <div class="stat-mini"><label>精神</label><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
+        </div>
+        <!-- log 輸出（底欄展開區）-->
+        <div id="log" class="grid-log hidden"></div>
+      </div>
+    </footer>
 
-  <script src="grid-map.js"></script>
-  <script src="game-ui.js"></script>
+  </div><!-- /#app -->
+
+  <script src="grid-map.js?v=0.20.0"></script>
+  <script src="narrative-markdown.js?v=0.19.2"></script>
+  <script src="main.js?v=0.20.0"></script>
+
+  <script>
+    // 覆蓋 showGameAfterLogin——game.html 版本直接顯示 #app
+    window.showGameAfterLogin = function () {
+      var auth = document.getElementById('auth-screen');
+      var app  = document.getElementById('app');
+      if (auth) auth.style.display = 'none';
+      if (app)  app.hidden = false;
+    };
+    // 相容 game-ui.js 可能缺少的 DOM（game.html 不使用標籤面板）
+    window.closeDrawers = function () {};
+    window.triggerLook  = function () {};
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js?v=0.20.0').catch(function () {});
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.gameConnect) window.gameConnect();
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible' && window.gameTryReconnect) {
+          window.gameTryReconnect();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
