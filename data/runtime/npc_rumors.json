@@ -1,31 +1,22 @@
 {
   "entries": [
     {
-      "id": "seed|2960873|2",
-      "text": "樓梯間的菌絲光昨晚特別亮，是琥珀色的",
+      "id": "seed|2960872|18",
+      "text": "電梯間排了好長的隊，聽說中間幾層在做維護",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1776524079,
-      "expires_at": 1776527679
+      "updated_at": 1776523493,
+      "expires_at": 1776527093
     },
     {
-      "id": "seed|2960874|1",
-      "text": "五樓那戶陽台的根鬚盤得更緊了，看著倒是挺穩的",
+      "id": "seed|2960875|23",
+      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1776524809,
-      "expires_at": 1776528409
-    },
-    {
-      "id": "seed|2960875|22",
-      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776525019,
-      "expires_at": 1776528619
+      "updated_at": 1776525168,
+      "expires_at": 1776528768
     },
     {
       "id": "seed|2960874|3",
@@ -37,31 +28,13 @@
       "expires_at": 1776528375
     },
     {
-      "id": "seed|2960872|18",
-      "text": "電梯間排了好長的隊，聽說中間幾層在做維護",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1776523493,
-      "expires_at": 1776527093
-    },
-    {
-      "id": "eco|pulse|408",
-      "text": "這幾天米鹽又貴了一點，街坊都在精打細算。",
-      "source": "economy",
-      "source_score": 1,
-      "weight": 5,
-      "updated_at": 1776525019,
-      "expires_at": 1776530419
-    },
-    {
-      "id": "seed|2960874|6",
-      "text": "市集今天來了一批品相很好的玉質木材，攤販搶著進貨",
+      "id": "seed|2960875|22",
+      "text": "三樓醫療區最近比較忙，好像是採集隊回城的季節",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1776524679,
-      "expires_at": 1776528279
+      "updated_at": 1776525019,
+      "expires_at": 1776528619
     },
     {
       "id": "seed|2960871|4",
@@ -71,6 +44,42 @@
       "weight": 1,
       "updated_at": 1776522931,
       "expires_at": 1776526531
+    },
+    {
+      "id": "seed|2960874|1",
+      "text": "五樓那戶陽台的根鬚盤得更緊了，看著倒是挺穩的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776524809,
+      "expires_at": 1776528409
+    },
+    {
+      "id": "eco|pulse|408",
+      "text": "這幾天米鹽又貴了一點，街坊都在精打細算。",
+      "source": "economy",
+      "source_score": 1,
+      "weight": 6,
+      "updated_at": 1776525168,
+      "expires_at": 1776530568
+    },
+    {
+      "id": "seed|2960873|2",
+      "text": "樓梯間的菌絲光昨晚特別亮，是琥珀色的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776524079,
+      "expires_at": 1776527679
+    },
+    {
+      "id": "seed|2960874|6",
+      "text": "市集今天來了一批品相很好的玉質木材，攤販搶著進貨",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776524679,
+      "expires_at": 1776528279
     }
   ]
 }
