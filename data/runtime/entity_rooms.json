@@ -1,6 +1,10 @@
 {
   "entries": [
     {
+      "entity_id": "test_1776530670660",
+      "room_id": "grid:0:0"
+    },
+    {
       "entity_id": "test_1776525409046",
       "room_id": "grid:0:0"
     }

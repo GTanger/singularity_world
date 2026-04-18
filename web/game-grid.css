@@ -34,7 +34,7 @@
 .game-grid-header {
   flex: 0 0 44px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr; /* 奇點曆較寬 | 日晷窄 | 時間中等 */
+  grid-template-columns: 3fr 1fr 2fr; /* 奇點曆最寬（日期字多）| 日晷窄 | 時間中等 */
   background: var(--paper, #f0e6d3);
   border-bottom: 1px solid var(--ink-faint, #a89880);
   z-index: 10;
