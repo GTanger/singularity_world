@@ -761,6 +761,7 @@ fn handle_move_grid(conn: &WsConnection, player_id: &str, direction: &str, _oe: 
 fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i32, game_hour: i32) {
     use super::broadcast::build_room_view_msg;
     use super::protocol::{GridCellView, GridViewMsg};
+    use crate::npc::narrative;
 
     let view = match game::get_grid_room_view(player_id, x, y, game_hour) {
         Ok(Some(v)) => v,
@@ -779,6 +780,16 @@ fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i32, game_hou
             walkable,
         })
         .collect();
+
+    // 為方格 NPC 填入行為敘事句（以當前 unix 秒 + id 為種子）
+    let tick_seed = game::now_unix() as u64;
+    let entities = base.entities.into_iter().map(|mut ent| {
+        if (ent.kind == "npc" || ent.kind == "Npc") && ent.behavior_text.is_empty() {
+            ent.behavior_text = narrative::idle(&ent.id, &ent.display_name, tick_seed);
+        }
+        ent
+    }).collect();
+
     let grid_msg = GridViewMsg {
         msg_type: "grid_view".into(),
         player_x: x,
@@ -787,7 +798,7 @@ fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i32, game_hou
         room_name: base.room_name,
         description: base.description,
         exits: base.exits,
-        entities: base.entities,
+        entities,
         objects: base.objects,
         server_unix: base.server_unix,
         game_time_sec_since_midnight: base.game_time_sec_since_midnight,

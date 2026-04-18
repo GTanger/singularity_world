@@ -44,6 +44,9 @@ pub struct ViewEntity {
     pub display_name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub actions: Vec<String>,
+    /// NPC 行為敘事句（可選；非 NPC 或無行為時省略）
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub behavior_text: String,
 }
 
 /// `do_action` 敘事結果（對齊 `ActionResultMsg`）。
@@ -393,6 +396,7 @@ mod tests {
                 display_char: "我".into(),
                 display_name: "p1".into(),
                 actions: vec![],
+                behavior_text: String::new(),
             }],
             objects: vec![],
             server_unix: 1700000000,

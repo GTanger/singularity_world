@@ -13,6 +13,7 @@ use rand::Rng;
 use crate::db::{add_magnesium, add_to_inventory, get_entity, get_npc_ids_with_grid, log_npc_event, set_entity_grid, EVT_GATHER};
 use crate::grid::{SquareCoord, SquareGrid};
 use crate::npc::decision::{build_decision_state, IntentType, SURVIVAL_LINE_MG};
+use crate::npc::narrative;
 
 /// 單個 NPC 的方格行為狀態
 #[derive(Debug, Clone)]
@@ -100,11 +101,24 @@ impl GridNpcManager {
                 state.path.remove(0);
                 if grid.contains(next) {
                     let _ = set_entity_grid(entity_id, next.x, next.y);
+                    // 取 NPC 名稱供敘事句使用（display_title 為空則退回 id）
+                    let npc_name = get_entity(entity_id)
+                        .ok()
+                        .flatten()
+                        .map(|e| if e.display_title.is_empty() { entity_id.to_string() } else { e.display_title })
+                        .unwrap_or_else(|| entity_id.to_string());
+                    let tick_seed = now_unix as u64;
+                    let desc = match state.intent {
+                        IntentType::Gather => narrative::gather(entity_id, &npc_name, tick_seed),
+                        IntentType::Idle   => narrative::idle(entity_id, &npc_name, tick_seed),
+                        _                  => narrative::wander(entity_id, &npc_name, tick_seed),
+                    };
                     events.push(GridMoveEvent {
                         entity_id: entity_id.clone(),
                         from: *pos,
                         to: next,
                         intent: state.intent,
+                        description: desc,
                     });
                     // 到達目的地：採集需停留
                     if state.path.is_empty() && state.intent == IntentType::Gather {
@@ -170,6 +184,8 @@ pub struct GridMoveEvent {
     pub from: SquareCoord,
     pub to: SquareCoord,
     pub intent: IntentType,
+    /// 行為敘事句（已填入 NPC 名稱，可直接推給前端）
+    pub description: String,
 }
 
 // ── 決策 ──────────────────────────────────────────────────

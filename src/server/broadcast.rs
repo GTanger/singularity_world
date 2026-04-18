@@ -84,6 +84,7 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
             display_char: e.display_char.clone(),
             display_name,
             actions,
+            behavior_text: String::new(),
         });
     }
     let exits: Vec<ExitView> = view

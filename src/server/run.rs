@@ -107,6 +107,8 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/admin", get(serve_admin))
         // Leptos 地圖編輯器（WASM）
         .nest_service("/hex-editor", ServeDir::new("editor-leptos/dist"))
+        // 靜態設定 JSON（terrain_ambience 等）
+        .nest_service("/data/config", ServeDir::new("data/config"))
         .with_state(state.clone())
         // 靜態檔案服務 — web/ 目錄（fallback，對齊既有 `http.FileServer`）
         .fallback_service(

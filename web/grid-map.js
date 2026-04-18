@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.0
+ * grid-map.js v0.20.1
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  *
  * 依賴：
@@ -26,6 +26,31 @@
     // 格式：Set<"x,y">
     // 從後端 grid_view 的 cells[].explored=true 同步，不單獨管理
     var revealedCells = new Set();
+
+    // ── 地形氛圍句快取 ────────────────────────────────────────────────
+    // 從 /data/config/terrain_ambience.json 非同步載入；載入前顯示 ''
+    var terrainAmbience = null;
+    fetch('/data/config/terrain_ambience.json')
+        .then(function (r) { return r.json(); })
+        .then(function (j) { terrainAmbience = j.terrains || {}; })
+        .catch(function (e) { console.warn('[grid-map] terrain_ambience 載入失敗:', e); });
+
+    // 12 個時段：每 2 小時一段，對齊 hours 0-23
+    var PHASE_LABELS = ['深夜','凌晨','破曉','清晨','上午','正午','午後','下午','傍晚','入夜','晚間','半夜'];
+
+    /**
+     * 依地形 key 與遊戲小時取氛圍句。
+     * @param {string} terrain - 地形 key（中文字符，如「木」「草」）
+     * @param {number} hour    - 0-23
+     * @returns {string}
+     */
+    function getAmbience(terrain, hour) {
+        if (!terrainAmbience || !terrain) return '';
+        var phaseLabel = PHASE_LABELS[Math.floor(hour / 2)] || '';
+        var terrainMap = terrainAmbience[terrain];
+        if (!terrainMap) return '';
+        return terrainMap[phaseLabel] || '';
+    }
 
     // ── 目前地圖狀態 ─────────────────────────────────────────────────────
     var mapData = {
@@ -265,24 +290,31 @@
     // ── 房間描述渲染 ──────────────────────────────────────────────────────
     function renderRoomDesc() {
         if (!roomDescEl) return;
-        var name = mapData.cells.find(function (c) {
+        var currentCell = mapData.cells.find(function (c) {
             return c.x === mapData.playerX && c.y === mapData.playerY;
         });
-        var terrainName = (name && name.name) ? name.name : '未知地形';
+        var terrainName = (currentCell && currentCell.name) ? currentCell.name : '未知地形';
+        var terrainKey  = (currentCell && currentCell.terrain) ? currentCell.terrain : '';
 
         var html = '<div class="mud-room-name">【' + esc(terrainName) + '】</div>';
 
-        // 時段（由 main.js 維護的 state 取遊戲時間，這裡嘗試讀取）
+        // 時段與氛圍句
+        var hour = 0;
         var phase = '';
         if (window.gameState) {
             var st = window.gameState();
             if (st && typeof st.game_time_sec_since_midnight === 'number') {
-                var h = Math.floor(st.game_time_sec_since_midnight / 3600) % 24;
-                var phases = ['深夜','凌晨','破曉','清晨','上午','正午','午後','下午','傍晚','入夜','晚間','半夜'];
-                phase = phases[Math.floor(h / 2)] || '';
+                hour  = Math.floor(st.game_time_sec_since_midnight / 3600) % 24;
+                phase = PHASE_LABELS[Math.floor(hour / 2)] || '';
             }
         }
         if (phase) html += '<div class="mud-room-phase">' + esc(phase) + '</div>';
+
+        // 地形氛圍句（SW-4）
+        var ambience = getAmbience(terrainKey, hour);
+        if (ambience) {
+            html += '<div class="mud-room-ambience">' + esc(ambience) + '</div>';
+        }
 
         // 出口
         if (mapData.exits && mapData.exits.length > 0) {
@@ -354,6 +386,9 @@
                 html += '<span class="mud-obj-icon">' + esc(npc.display_char || '人') + '</span> ';
                 html += esc(npc.display_name || npc.id);
                 html += '</div>';
+                if (npc.behavior_text) {
+                    html += '<div class="mud-npc-behavior">' + esc(npc.behavior_text) + '</div>';
+                }
             }
         }
 
@@ -539,7 +574,7 @@
         bindMapClick();
         bindObjectListClick();
 
-        console.log('[grid-map] v0.20.0 initialized');
+        console.log('[grid-map] v0.20.1 initialized');
     }
 
     if (document.readyState === 'loading') {

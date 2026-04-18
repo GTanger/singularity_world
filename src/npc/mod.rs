@@ -7,6 +7,7 @@ mod decision;
 mod grid_ai;
 mod hex_ai;
 mod job_matching;
+pub mod narrative;
 mod social;
 mod topics;
 mod traveler;

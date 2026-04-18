@@ -13,6 +13,7 @@ async fn main() -> anyhow::Result<()> {
     std::fs::create_dir_all(root.join("data/runtime")).ok();
     std::fs::create_dir_all(root.join("data/config")).ok();
     singularity_world::gametext::must_load();
+    singularity_world::npc::narrative::load();
     let _ = singularity_world::config::load_simulation("");
     let cfg = singularity_world::config::Server::load_default();
     singularity_world::store::init(
