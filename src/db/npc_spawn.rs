@@ -171,6 +171,25 @@ pub fn seed_npcs_for_store() -> anyhow::Result<()> {
     Ok(())
 }
 
+/// 為缺 `grid_x`/`grid_y` 的既存 NPC 補寫方格世界初始座標（grid 原點）。
+/// 不改 vit/qi/dex 等其他欄位；hex_q/hex_r 也不動。
+/// 啟動時可安全重複呼叫（已有座標的 NPC 不受影響）。
+pub fn ensure_grid_coords() -> anyhow::Result<i32> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let missing: Vec<String> = s
+        .npc_ids_missing_grid()
+        .into_iter()
+        .collect();
+    let mut fixed = 0i32;
+    for id in missing {
+        if s.set_entity_grid(&id, 0, 0).is_ok() {
+            fixed += 1;
+        }
+    }
+    Ok(fixed)
+}
+
 /// 有房間的 NPC 男／女人數（對齊既有 `GetNPCGenderCounts`）。
 #[must_use]
 pub fn get_npc_gender_counts() -> (i32, i32) {
@@ -243,5 +262,8 @@ pub fn spawn_one_npc_from_pool(spawn_room_id: &str) -> anyhow::Result<String> {
 
     insert_npc_locked(&mut s, &id, &display_char, gender, &name)?;
     s.set_entity_room(&id, spawn_room_id)?;
+    // 給新 NPC 方格世界初始座標（grid 原點），讓 grid_ai 能啟動。
+    // 若 NPC 所在 spawn_room 已對應到特定 grid 格則後續 grid_ai 會自行更新。
+    let _ = s.set_entity_grid(&id, 0, 0);
     Ok(id)
 }

@@ -68,8 +68,8 @@ pub use npc_display::{
 };
 pub use npc_names::{first_rune, generate_npc_name};
 pub use npc_spawn::{
-    ensure_all_npcs_have_soul_seed, get_npc_gender_counts, get_room_count, insert_npc, seed_npcs, seed_npcs_for_store,
-    spawn_one_npc_from_pool, DEFAULT_NPCS, NpcDef,
+    ensure_all_npcs_have_soul_seed, ensure_grid_coords, get_npc_gender_counts, get_room_count,
+    insert_npc, seed_npcs, seed_npcs_for_store, spawn_one_npc_from_pool, DEFAULT_NPCS, NpcDef,
 };
 pub use archival::{
     insert_archival, insert_npc_npc_dialogue_archival, pick_style_examples,

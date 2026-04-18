@@ -24,6 +24,11 @@ async fn main() -> anyhow::Result<()> {
         tracing::warn!("seed npcs: {e}");
     }
     let _ = singularity_world::db::ensure_all_npcs_have_soul_seed();
+    match singularity_world::db::ensure_grid_coords() {
+        Ok(n) if n > 0 => tracing::info!("ensure_grid_coords: 補寫 {n} 個 NPC 的方格座標"),
+        Ok(_) => {}
+        Err(e) => tracing::warn!("ensure_grid_coords: {e}"),
+    }
     let topics = root.join("data/npc_to_npc_topics.json");
     singularity_world::npc::try_load_npc_npc_topics(&topics)
         .or_else(|_| singularity_world::npc::try_load_npc_npc_topics(Path::new("data/npc_to_npc_topics.json")))
