@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.15
+ * grid-map.js v0.20.16
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  *
  * 依賴：
@@ -377,7 +377,6 @@
         })[0];
         if (me) {
             html += '<div class="mud-obj-item mud-obj-self" data-entity-id="' + esc(me.id) + '">';
-            html += '<span class="mud-obj-icon">' + esc(me.display_char || '我') + '</span> ';
             html += esc(me.display_name || me.id);
             html += '</div>';
         }
@@ -392,7 +391,6 @@
             for (var ni = 0; ni < npcs.length; ni++) {
                 var npc = npcs[ni];
                 html += '<div class="mud-obj-item mud-obj-npc" data-entity-id="' + esc(npc.id) + '">';
-                html += '<span class="mud-obj-icon">' + esc(npc.display_char || '人') + '</span> ';
                 html += esc(npc.display_name || npc.id);
                 html += '</div>';
                 if (npc.behavior_text) {
@@ -409,7 +407,6 @@
             for (var pi = 0; pi < otherPlayers.length; pi++) {
                 var p = otherPlayers[pi];
                 html += '<div class="mud-obj-item mud-obj-player" data-entity-id="' + esc(p.id) + '">';
-                html += '<span class="mud-obj-icon">' + esc(p.display_char || '我') + '</span> ';
                 html += esc(p.display_name || p.id);
                 html += '</div>';
             }
