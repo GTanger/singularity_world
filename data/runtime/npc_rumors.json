@@ -1,13 +1,13 @@
 {
   "entries": [
     {
-      "id": "seed|2960884|28",
-      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
+      "id": "seed|2960883|8",
+      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1776530584,
-      "expires_at": 1776534184
+      "updated_at": 1776529984,
+      "expires_at": 1776533584
     },
     {
       "id": "seed|2960880|23",
@@ -17,6 +17,24 @@
       "weight": 1,
       "updated_at": 1776528183,
       "expires_at": 1776531783
+    },
+    {
+      "id": "seed|2960881|17",
+      "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776528783,
+      "expires_at": 1776532383
+    },
+    {
+      "id": "seed|2960884|28",
+      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776530584,
+      "expires_at": 1776534184
     },
     {
       "id": "seed|2960879|5",
@@ -37,22 +55,13 @@
       "expires_at": 1776532983
     },
     {
-      "id": "seed|2960881|17",
+      "id": "seed|2960884|17",
       "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
       "source": "event_seed",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1776528783,
-      "expires_at": 1776532383
-    },
-    {
-      "id": "seed|2960883|8",
-      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
-      "source": "event_seed",
-      "source_score": 2,
       "weight": 3,
-      "updated_at": 1776529984,
-      "expires_at": 1776533584
+      "updated_at": 1776530789,
+      "expires_at": 1776534389
     }
   ]
 }
