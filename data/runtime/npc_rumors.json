@@ -10,15 +10,6 @@
       "expires_at": 1776532983
     },
     {
-      "id": "seed|2960884|28",
-      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1776530584,
-      "expires_at": 1776534184
-    },
-    {
       "id": "seed|2960884|6",
       "text": "市集今天來了一批品相很好的玉質木材，攤販搶著進貨",
       "source": "event_seed",
@@ -28,22 +19,49 @@
       "expires_at": 1776534562
     },
     {
-      "id": "seed|2960884|25",
-      "text": "有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸",
+      "id": "seed|2960884|28",
+      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
       "source": "event_seed",
       "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776530919,
-      "expires_at": 1776534519
+      "weight": 1,
+      "updated_at": 1776530584,
+      "expires_at": 1776534184
     },
     {
-      "id": "seed|2960884|17",
-      "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
+      "id": "seed|2960880|23",
+      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776528183,
+      "expires_at": 1776531783
+    },
+    {
+      "id": "seed|2960886|13",
+      "text": "聽回來的人講，城外的肉質籐蔓又往路邊多蔓了一些",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1776530789,
-      "expires_at": 1776534389
+      "updated_at": 1776531648,
+      "expires_at": 1776535248
+    },
+    {
+      "id": "seed|2960884|11",
+      "text": "藥材價格穩著，但品種比上個月少了幾樣",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776530853,
+      "expires_at": 1776534453
+    },
+    {
+      "id": "seed|2960885|27",
+      "text": "十六樓的某面牆突然長出了一小片琉璃化的結晶，很漂亮",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776531500,
+      "expires_at": 1776535100
     },
     {
       "id": "seed|2960885|10",
@@ -55,13 +73,22 @@
       "expires_at": 1776534654
     },
     {
-      "id": "seed|2960884|11",
-      "text": "藥材價格穩著，但品種比上個月少了幾樣",
+      "id": "seed|2960884|17",
+      "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1776530853,
-      "expires_at": 1776534453
+      "updated_at": 1776530789,
+      "expires_at": 1776534389
+    },
+    {
+      "id": "seed|2960884|25",
+      "text": "有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776530919,
+      "expires_at": 1776534519
     },
     {
       "id": "seed|2960881|17",
@@ -80,24 +107,6 @@
       "weight": 1,
       "updated_at": 1776529984,
       "expires_at": 1776533584
-    },
-    {
-      "id": "seed|2960880|23",
-      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1776528183,
-      "expires_at": 1776531783
-    },
-    {
-      "id": "seed|2960885|27",
-      "text": "十六樓的某面牆突然長出了一小片琉璃化的結晶，很漂亮",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776531500,
-      "expires_at": 1776535100
     }
   ]
 }
