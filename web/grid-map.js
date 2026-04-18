@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.17
+ * grid-map.js v0.20.18
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  *
  * 依賴：
@@ -225,23 +225,23 @@
                 if (drawnLines.has(lineKey)) continue;
                 drawnLines.add(lineKey);
 
-                var sx1 = (cx - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W / 2;
-                var sy1 = (maxY - cy) * STEP_Y + CELL_GAP_Y / 2 + CELL_H / 2;
-                var sx2 = (nx - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W / 2;
-                var sy2 = (maxY - ny) * STEP_Y + CELL_GAP_Y / 2 + CELL_H / 2;
-
                 var lineEl = document.createElement('div');
                 lineEl.className = 'gmap-line' + (nd.dx === 1 ? ' gmap-line-h' : ' gmap-line-v');
                 if (nd.dx === 1) {
-                    // 水平線
-                    lineEl.style.left = (sx1) + 'px';
-                    lineEl.style.top = (sy1 - 1) + 'px';
-                    lineEl.style.width = (sx2 - sx1) + 'px';
+                    // 水平線：從左格右邊緣到右格左邊緣（只在 gap 空間內）
+                    var leftEdge = (cx - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W;
+                    var vcenter  = (maxY - cy) * STEP_Y + CELL_GAP_Y / 2 + CELL_H / 2;
+                    lineEl.style.left = leftEdge + 'px';
+                    lineEl.style.top = (vcenter - 1) + 'px';
+                    lineEl.style.width = CELL_GAP_X + 'px';
                 } else {
-                    // 垂直線（sy1 < sy2 因為 y 翻轉，sy1 對應較北）
-                    lineEl.style.left = (sx1 - 1) + 'px';
-                    lineEl.style.top = (sy1) + 'px';
-                    lineEl.style.height = (sy2 - sy1) + 'px';
+                    // 垂直線：從上格下邊緣到下格上邊緣（只在 gap 空間內）
+                    // nd.dy = -1（南向）；螢幕上 cy 在上，ny = cy - 1 在下
+                    var topEdge = (maxY - cy) * STEP_Y + CELL_GAP_Y / 2 + CELL_H;
+                    var hcenter = (cx - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W / 2;
+                    lineEl.style.left = (hcenter - 1) + 'px';
+                    lineEl.style.top = topEdge + 'px';
+                    lineEl.style.height = CELL_GAP_Y + 'px';
                 }
                 gridMapEl.appendChild(lineEl);
             }

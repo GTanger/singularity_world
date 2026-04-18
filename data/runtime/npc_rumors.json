@@ -1,94 +1,22 @@
 {
   "entries": [
     {
-      "id": "seed|2960886|16",
-      "text": "採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理",
+      "id": "seed|2960886|15",
+      "text": "城外商路上的指引石被增生物覆蓋了一半，有隊伍去清理了",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1776531764,
-      "expires_at": 1776535364
+      "updated_at": 1776531817,
+      "expires_at": 1776535417
     },
     {
-      "id": "seed|2960884|28",
-      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
+      "id": "seed|2960884|25",
+      "text": "有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1776530584,
-      "expires_at": 1776534184
-    },
-    {
-      "id": "seed|2960885|27",
-      "text": "十六樓的某面牆突然長出了一小片琉璃化的結晶，很漂亮",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776531500,
-      "expires_at": 1776535100
-    },
-    {
-      "id": "seed|2960885|10",
-      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776531054,
-      "expires_at": 1776534654
-    },
-    {
-      "id": "seed|2960886|4",
-      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776531694,
-      "expires_at": 1776535294
-    },
-    {
-      "id": "seed|2960886|1",
-      "text": "五樓那戶陽台的根鬚盤得更緊了，看著倒是挺穩的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776531720,
-      "expires_at": 1776535320
-    },
-    {
-      "id": "seed|2960884|6",
-      "text": "市集今天來了一批品相很好的玉質木材，攤販搶著進貨",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776530962,
-      "expires_at": 1776534562
-    },
-    {
-      "id": "seed|2960884|11",
-      "text": "藥材價格穩著，但品種比上個月少了幾樣",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1776530853,
-      "expires_at": 1776534453
-    },
-    {
-      "id": "seed|2960883|8",
-      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1776529984,
-      "expires_at": 1776533584
-    },
-    {
-      "id": "seed|2960886|13",
-      "text": "聽回來的人講，城外的肉質籐蔓又往路邊多蔓了一些",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776531648,
-      "expires_at": 1776535248
+      "updated_at": 1776530919,
+      "expires_at": 1776534519
     },
     {
       "id": "seed|2960882|10",
@@ -100,22 +28,85 @@
       "expires_at": 1776532983
     },
     {
-      "id": "seed|2960881|17",
-      "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 1,
-      "updated_at": 1776528783,
-      "expires_at": 1776532383
-    },
-    {
-      "id": "seed|2960884|25",
-      "text": "有人說聽見了低樓層的結構在微微嗡鳴，像建築在呼吸",
+      "id": "seed|2960885|10",
+      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
       "source": "event_seed",
       "source_score": 2,
       "weight": 3,
-      "updated_at": 1776530919,
-      "expires_at": 1776534519
+      "updated_at": 1776531054,
+      "expires_at": 1776534654
+    },
+    {
+      "id": "seed|2960884|28",
+      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776530584,
+      "expires_at": 1776534184
+    },
+    {
+      "id": "seed|2960883|8",
+      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776529984,
+      "expires_at": 1776533584
+    },
+    {
+      "id": "seed|2960884|6",
+      "text": "市集今天來了一批品相很好的玉質木材，攤販搶著進貨",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776530962,
+      "expires_at": 1776534562
+    },
+    {
+      "id": "seed|2960885|27",
+      "text": "十六樓的某面牆突然長出了一小片琉璃化的結晶，很漂亮",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776531500,
+      "expires_at": 1776535100
+    },
+    {
+      "id": "seed|2960886|13",
+      "text": "聽回來的人講，城外的肉質籐蔓又往路邊多蔓了一些",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776531648,
+      "expires_at": 1776535248
+    },
+    {
+      "id": "seed|2960886|16",
+      "text": "採集隊說城外淺層礦脈的礦石開始出現新的玉化紋理",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776531764,
+      "expires_at": 1776535364
+    },
+    {
+      "id": "seed|2960884|11",
+      "text": "藥材價格穩著，但品種比上個月少了幾樣",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776530853,
+      "expires_at": 1776534453
+    },
+    {
+      "id": "seed|2960886|1",
+      "text": "五樓那戶陽台的根鬚盤得更緊了，看著倒是挺穩的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776531720,
+      "expires_at": 1776535320
     },
     {
       "id": "seed|2960884|17",
@@ -125,6 +116,24 @@
       "weight": 1,
       "updated_at": 1776530789,
       "expires_at": 1776534389
+    },
+    {
+      "id": "seed|2960886|4",
+      "text": "十六樓商區的地面接縫處冒出了細細的礦脈紋路",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776531694,
+      "expires_at": 1776535294
+    },
+    {
+      "id": "seed|2960881|17",
+      "text": "遠處的地脈微光今晚比平常亮一些，淡綠色的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776528783,
+      "expires_at": 1776532383
     }
   ]
 }
