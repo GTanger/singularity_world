@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.16
+ * grid-map.js v0.20.17
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  *
  * 依賴：
@@ -367,7 +367,6 @@
         // 探索按鈕（若出口未揭露才顯示）
         if (!hasExits) {
             html += '<div class="mud-obj-item mud-obj-action" data-action="explore">';
-            html += '<span class="mud-obj-icon">&#x1F50D;</span> 探索';
             html += '</div>';
         }
 
@@ -431,7 +430,6 @@
                 if (resourceActions.length > 0) {
                     for (var ri = 0; ri < resourceActions.length; ri++) {
                         html += '<div class="mud-obj-item mud-obj-resource" data-resource="' + esc(resourceActions[ri].key) + '">';
-                        html += '<span class="mud-obj-icon">&#x26CF;</span> ';
                         html += esc(resourceActions[ri].label);
                         html += '</div>';
                     }
