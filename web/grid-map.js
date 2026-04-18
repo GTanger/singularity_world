@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.12
+ * grid-map.js v0.20.13
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  *
  * 依賴：
@@ -372,6 +372,18 @@
             html += '</div>';
         }
 
+        // 「我」section：玩家自己先顯示
+        var me = (mapData.entities || []).filter(function (e) {
+            return e.kind === 'player' && e.id === myId;
+        })[0];
+        if (me) {
+            html += '<div class="mud-obj-section-title">我</div>';
+            html += '<div class="mud-obj-item mud-obj-self" data-entity-id="' + esc(me.id) + '">';
+            html += '<span class="mud-obj-icon">' + esc(me.display_char || '我') + '</span> ';
+            html += esc(me.display_name || me.id);
+            html += '</div>';
+        }
+
         // 在場 NPC
         var npcs = (mapData.entities || []).filter(function (e) {
             return e.kind !== 'player' || e.id !== myId;
@@ -407,17 +419,8 @@
             }
         }
 
-        // 地上物
-        if (mapData.objects && mapData.objects.length > 0) {
-            html += '<div class="mud-obj-section-title">地上物</div>';
-            for (var oi = 0; oi < mapData.objects.length; oi++) {
-                var obj = mapData.objects[oi];
-                html += '<div class="mud-obj-item mud-obj-ground" data-object-id="' + esc(obj.id) + '">';
-                html += '<span class="mud-obj-icon">&#x25CE;</span> ';
-                html += esc(obj.name);
-                html += '</div>';
-            }
-        }
+        // 地上物改為依地形出「動作插座」（規格：萬物皆物件，地上物 = 動作不是具體物名）
+        // 具體物品不列舉，改由下方資源動作區塊呈現
 
         // 資源動作（需已探索，且從格子 objects 推導）
         if (hasExits) {

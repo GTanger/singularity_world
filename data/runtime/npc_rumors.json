@@ -1,13 +1,31 @@
 {
   "entries": [
     {
-      "id": "seed|2960880|23",
-      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
+      "id": "seed|2960882|10",
+      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1776528183,
-      "expires_at": 1776531783
+      "updated_at": 1776529383,
+      "expires_at": 1776532983
+    },
+    {
+      "id": "seed|2960884|28",
+      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776530584,
+      "expires_at": 1776534184
+    },
+    {
+      "id": "seed|2960884|6",
+      "text": "市集今天來了一批品相很好的玉質木材，攤販搶著進貨",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776530962,
+      "expires_at": 1776534562
     },
     {
       "id": "seed|2960884|25",
@@ -28,13 +46,13 @@
       "expires_at": 1776534389
     },
     {
-      "id": "seed|2960883|8",
-      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
+      "id": "seed|2960885|10",
+      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
       "source": "event_seed",
       "source_score": 2,
-      "weight": 1,
-      "updated_at": 1776529984,
-      "expires_at": 1776533584
+      "weight": 3,
+      "updated_at": 1776531054,
+      "expires_at": 1776534654
     },
     {
       "id": "seed|2960884|11",
@@ -55,40 +73,31 @@
       "expires_at": 1776532383
     },
     {
-      "id": "seed|2960884|6",
-      "text": "市集今天來了一批品相很好的玉質木材，攤販搶著進貨",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776530962,
-      "expires_at": 1776534562
-    },
-    {
-      "id": "seed|2960885|10",
-      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776531054,
-      "expires_at": 1776534654
-    },
-    {
-      "id": "seed|2960884|28",
-      "text": "凌晨在窗邊能看到遠處地脈的微光隱約在脈動，像心跳一樣",
-      "source": "event_seed",
-      "source_score": 2,
-      "weight": 3,
-      "updated_at": 1776530584,
-      "expires_at": 1776534184
-    },
-    {
-      "id": "seed|2960882|10",
-      "text": "打鐵巷最近接了不少單，聽說是採集隊的工具要換新",
+      "id": "seed|2960883|8",
+      "text": "有人在樓下收購琉璃化的礦石碎片，出手很闊綽",
       "source": "event_seed",
       "source_score": 2,
       "weight": 1,
-      "updated_at": 1776529383,
-      "expires_at": 1776532983
+      "updated_at": 1776529984,
+      "expires_at": 1776533584
+    },
+    {
+      "id": "seed|2960880|23",
+      "text": "十一樓健身區新添了幾件器材，是用富態化木材做的",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1776528183,
+      "expires_at": 1776531783
+    },
+    {
+      "id": "seed|2960885|27",
+      "text": "十六樓的某面牆突然長出了一小片琉璃化的結晶，很漂亮",
+      "source": "event_seed",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1776531500,
+      "expires_at": 1776535100
     }
   ]
 }
