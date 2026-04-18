@@ -27,10 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.20.2">
-	<link rel="stylesheet" href="game.css?v=0.20.2">
+	<link rel="stylesheet" href="style.css?v=0.20.3">
+	<link rel="stylesheet" href="game.css?v=0.20.3">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.20.2" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.20.3" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -237,11 +237,11 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.2"></script>
-	<script src="game-ui.js?v=0.20.2"></script>
+	<script src="narrative-markdown.js?v=0.20.3"></script>
+	<script src="game-ui.js?v=0.20.3"></script>
 	<!-- grid-map.js 只在非觀景窗模式需要，但兩種模式都載入無害（沒有 DOM 目標就不動）-->
-	<script src="grid-map.js?v=0.20.2"></script>
-	<script src="main.js?v=0.20.2"></script>
+	<script src="grid-map.js?v=0.20.3"></script>
+	<script src="main.js?v=0.20.3"></script>
 	<script>
 		// grid MUD 模式覆蓋：showGameAfterLogin 直接顯示 #app（已由 hostname 判斷決定哪個是 #app）
 		// 觀景窗模式：closeDrawers / triggerLook 相容 game-ui.js 可能缺的 DOM
@@ -257,7 +257,7 @@
 		}
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.20.2').then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.3').then(function (reg) {
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {
