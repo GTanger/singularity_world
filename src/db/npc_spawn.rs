@@ -130,7 +130,7 @@ pub fn insert_npc(
     display_title: &str,
 ) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     insert_npc_locked(&mut s, id, display_char, gender, display_title)
 }
 
@@ -144,7 +144,7 @@ pub fn seed_npcs_for_store() -> anyhow::Result<()> {
     let Some(arc) = store::get_store() else {
         return Ok(());
     };
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     for npc in DEFAULT_NPCS {
         if s.get_entity(npc.id).is_some() {
             let _ = s.insert_schedule(
@@ -176,7 +176,7 @@ pub fn seed_npcs_for_store() -> anyhow::Result<()> {
 /// 啟動時可安全重複呼叫（已有座標的 NPC 不受影響）。
 pub fn ensure_grid_coords() -> anyhow::Result<i32> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     let missing: Vec<String> = s
         .npc_ids_missing_grid()
         .into_iter()
@@ -196,7 +196,7 @@ pub fn get_npc_gender_counts() -> (i32, i32) {
     let Some(arc) = store::get_store() else {
         return (0, 0);
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     npc_gender_counts_locked(&s)
 }
 
@@ -206,13 +206,13 @@ pub fn get_room_count() -> usize {
     let Some(arc) = store::get_store() else {
         return 0;
     };
-    arc.read().unwrap_or_else(|e| e.into_inner()).rooms.len()
+    arc.read().rooms.len()
 }
 
 /// 為缺 `soul_seed` 的 NPC 補寫；不改 vit/qi/dex（對齊既有 `EnsureAllNPCsHaveSoulSeed`）。
 pub fn ensure_all_npcs_have_soul_seed() -> anyhow::Result<i32> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     let ids = s.npc_ids_with_missing_soul_seed();
     let mut fixed = 0i32;
     for id in ids {
@@ -231,7 +231,7 @@ pub fn ensure_all_npcs_have_soul_seed() -> anyhow::Result<i32> {
 /// 自池生成一名 NPC 並放入指定房間（對齊既有 `SpawnOneNPCFromPool`）。
 pub fn spawn_one_npc_from_pool(spawn_room_id: &str) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
 
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)

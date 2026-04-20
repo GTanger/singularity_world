@@ -10,7 +10,12 @@ pub fn init_pool(url: &str) -> anyhow::Result<DbPool> {
         url.parse()?,
         NoTls,
     );
-    let pool = Pool::new(manager)?;
+    // max_size: r2d2 預設只 10 條——遊戲 tick + writer + sync + login reader 輕易爆滿
+    // connection_timeout: 預設 30s 太久（等不到 conn 的 caller 會僵 30s）、3s 快速失敗
+    let pool = Pool::builder()
+        .max_size(30)
+        .connection_timeout(std::time::Duration::from_secs(3))
+        .build(manager)?;
     
     // Create tables if they don't exist
     let mut conn = pool.get()?;

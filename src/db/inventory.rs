@@ -58,7 +58,7 @@ pub fn add_to_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Res
         return Ok(());
     }
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(entity_id, |e| {
         let mut raw = e.inventory.clone();
         if raw.is_empty() {
@@ -91,7 +91,7 @@ pub fn remove_from_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow
         return Ok(());
     }
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(entity_id, |e| {
         let mut raw = e.inventory.clone();
         if raw.is_empty() {
@@ -152,7 +152,7 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
             max_weight,
         };
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let mut items: Vec<InventoryLine> = Vec::new();
     let mut total_weight = 0.0;
     for e in entries {
@@ -194,7 +194,7 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
 #[must_use]
 pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
     let arc = store::get_store()?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let it = s.get_item(item_id)?;
     Some(ItemDefBrief {
         name: it.name.clone(),
@@ -218,7 +218,7 @@ pub fn inventory_weight(inventory_json: &str) -> f64 {
     let Some(arc) = store::get_store() else {
         return 0.0;
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let mut total = 0.0;
     for e in entries {
         if e.qty <= 0 {
@@ -236,7 +236,7 @@ pub fn update_equipment_slot(entity_id: &str, slot: &str, item_id: &str) -> anyh
         return Ok(());
     }
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(entity_id, |e| {
         let mut map: HashMap<String, String> = if e.equipment_slots.is_empty() {
             HashMap::new()
@@ -256,7 +256,7 @@ pub fn clear_equipment_slot(entity_id: &str, slot: &str) -> anyhow::Result<()> {
         return Ok(());
     }
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(entity_id, |e| {
         let mut map: HashMap<String, String> = if e.equipment_slots.is_empty() {
             HashMap::new()

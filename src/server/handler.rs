@@ -213,12 +213,8 @@ fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
     };
     match spawn_hex {
         Ok((q, r)) => {
-            if let Ok(mut g) = st.write() {
-                if g.set_entity_hex(&msg.player_id, q, r).is_err() {
-                    conn.send_error(gametext::client("create_spawn_hex_failed"));
-                    return;
-                }
-            } else {
+            let mut g = st.write();
+            if g.set_entity_hex(&msg.player_id, q, r).is_err() {
                 conn.send_error(gametext::client("create_spawn_hex_failed"));
                 return;
             }

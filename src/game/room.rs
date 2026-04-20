@@ -188,7 +188,7 @@ pub fn move_by_hex_direction(entity_id: &str, direction: &str) -> anyhow::Result
         return Ok((String::new(), false));
     }
     let arc = store::get_store().ok_or_else(|| anyhow::anyhow!("no store"))?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let Some(e) = s.get_entity(entity_id) else {
         return Ok((String::new(), false));
     };
@@ -278,7 +278,7 @@ pub fn move_by_grid_direction(entity_id: &str, direction: &str) -> anyhow::Resul
         return Ok((String::new(), false));
     };
     let arc = store::get_store().ok_or_else(|| anyhow::anyhow!("no store"))?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let Some(e) = s.get_entity(entity_id) else {
         return Ok((String::new(), false));
     };

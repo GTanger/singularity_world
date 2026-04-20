@@ -1,7 +1,8 @@
 //! 房間鄰接圖與 BFS 尋路（對齊既有 `db/pathfind`）。
 
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::sync::{Arc, OnceLock, RwLock};
+use std::sync::{Arc, OnceLock};
+use parking_lot::RwLock;
 
 use crate::store;
 
@@ -193,7 +194,7 @@ pub fn sync_room_graph_with_store(s: &store::Store) {
     let n_rooms = g.name.len();
     let n_edges: usize = g.adj.values().map(Vec::len).sum();
     let cell = graph_cell();
-    let mut w = cell.write().unwrap_or_else(|e| e.into_inner());
+    let mut w = cell.write();
     *w = g;
     tracing::info!(target: "pathfind", "graph synced from store: {n_rooms} rooms, {n_edges} directed edges");
 }
@@ -201,7 +202,7 @@ pub fn sync_room_graph_with_store(s: &store::Store) {
 /// 自目前全域 store 讀鎖後重建房間圖（啟動時、或無內層寫鎖時呼叫）。
 pub fn rebuild_room_graph() -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     sync_room_graph_with_store(&s);
     Ok(())
 }
@@ -209,6 +210,6 @@ pub fn rebuild_room_graph() -> anyhow::Result<()> {
 /// 讀鎖執行閉包（供撮合／尋路）。
 pub fn with_room_graph<T>(f: impl FnOnce(&RoomGraph) -> T) -> T {
     let g = graph_cell();
-    let r = g.read().unwrap_or_else(|e| e.into_inner());
+    let r = g.read();
     f(&r)
 }

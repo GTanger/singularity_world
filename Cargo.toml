@@ -37,6 +37,10 @@ rusqlite = { version = "0.39.0", features = ["bundled"] }
 r2d2_sqlite = "0.33.0"
 r2d2_postgres = "0.16"
 r2d2 = "0.8.10"
+# parking_lot RwLock/Mutex — std::sync 的 writer-heavy reader-starvation 替代
+# 理由：std::sync::RwLock 的 fairness 依賴 OS、writer 頻繁時 reader 會卡；
+# parking_lot 有 eventual fairness（critical section >1ms 強制公平 unlock）
+parking_lot = "0.12"
 
 [[bin]]
 name = "checkrooms"

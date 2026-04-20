@@ -17,7 +17,7 @@ fn count_archival_since(entity_id: &str, since_unix: i64) -> usize {
     let Some(arc) = store::get_store() else {
         return 0;
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     s.get_archival_by_entity(entity_id)
         .into_iter()
         .filter(|e| e.created_at >= since_unix)
@@ -28,7 +28,7 @@ fn recent_npc_npc_archival_contents(entity_id: &str, n: usize) -> Vec<String> {
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let mut v: Vec<_> = s
         .get_archival_by_entity(entity_id)
         .into_iter()
@@ -158,7 +158,7 @@ pub fn insert_npc_npc_dialogue_archival(entity_id: &str, content: &str) -> anyho
         return Ok((false, false));
     }
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.append_archival(ArchivalEntry {
         entity_id: entity_id.to_string(),
         content: content.to_string(),
@@ -180,7 +180,7 @@ pub fn search_archival(entity_id: &str, query: &str, top_k: usize) -> Vec<String
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let mut entries = s.get_archival_by_entity(entity_id);
     if entries.is_empty() || top_k == 0 {
         return Vec::new();
@@ -209,7 +209,7 @@ pub fn search_archival_for_player_talk(entity_id: &str, query: &str, top_k: usiz
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let mut entries = s.get_archival_by_entity(entity_id);
     if entries.is_empty() || top_k == 0 {
         return Vec::new();
@@ -329,7 +329,7 @@ pub fn insert_archival(entity_id: &str, content: &str, tag: &str) -> anyhow::Res
         return Ok(());
     }
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.append_archival(ArchivalEntry {
         entity_id: entity_id.to_string(),
         content: content.to_string(),
@@ -341,6 +341,6 @@ pub fn insert_archival(entity_id: &str, content: &str, tag: &str) -> anyhow::Res
 /// 寫入 NPC 對玩家互動摘要（對齊既有 `SetNpcSummary`）。
 pub fn set_npc_summary(entity_id: &str, summary: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.set_npc_summary(entity_id, summary)
 }

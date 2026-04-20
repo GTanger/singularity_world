@@ -387,7 +387,7 @@ pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
     // 舊版全拿 write lock 是因為 NPC display_name cache update 的副作用，
     // 但 player 走不進那分支——不該為少數 NPC 情況讓所有 get_entity 排 writer 隊
     {
-        let s = arc.read().unwrap_or_else(|e| e.into_inner());
+        let s = arc.read();
         match s.get_entity(id) {
             Some(se) if se.kind != "npc" => {
                 return Ok(Some(store_entity_to_character(&se, "")));
@@ -397,7 +397,7 @@ pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
         }
     }
     // NPC 路徑：升級到 write lock 做 display_name cache 更新
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     let Some(se) = s.get_entity(id) else { return Ok(None) };
     if se.kind == "npc" {
         npc_display::npc_person_display_name_locked(&mut s, id);
@@ -409,7 +409,7 @@ pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
 /// 回傳實體當前房間 id（對齊既有 `db.GetEntityRoom`）。
 pub fn get_entity_room(entity_id: &str) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     Ok(s.get_entity_room(entity_id))
 }
 
@@ -422,7 +422,7 @@ pub fn get_entities_in_box(
     kind: &str,
 ) -> anyhow::Result<Vec<Character>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     let sel = s.get_entities_in_box(x_min, x_max, y_min, y_max, kind);
     let mut list = Vec::with_capacity(sel.len());
     for e in sel {
@@ -441,7 +441,7 @@ pub fn get_entities_in_box(
 /// 回傳所有 `move_state == "moving"` 的實體（對齊既有 `GetMovingEntities`）。
 pub fn get_moving_entities() -> anyhow::Result<Vec<Character>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let ids = s.get_moving_entity_ids();
     let mut list = Vec::with_capacity(ids.len());
     for id in ids {
@@ -461,7 +461,7 @@ pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec
     use std::collections::HashSet;
 
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     let mut id_set: HashSet<String> = HashSet::new();
     for id in s.entity_ids_in_room(room_id) {
         id_set.insert(id);
@@ -500,7 +500,7 @@ pub fn get_entities_at_hex(q: i32, r: i32, game_hour: i32) -> anyhow::Result<Vec
 
     let hex_room = hex_room_id_from_coord(q, r);
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     let ids = s.entity_ids_at_hex(q, r);
     if ids.is_empty() {
         return Ok(Vec::new());
@@ -528,7 +528,7 @@ pub fn get_entities_at_hex(q: i32, r: i32, game_hour: i32) -> anyhow::Result<Vec
 pub fn get_entities_at_grid(x: i32, y: i32, game_hour: i32) -> anyhow::Result<Vec<Character>> {
     let grid_room = crate::grid::grid_room_id_from_coord(x, y);
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     let ids = s.entity_ids_at_grid(x, y);
     if ids.is_empty() {
         return Ok(Vec::new());
@@ -555,7 +555,7 @@ pub fn get_entities_at_grid(x: i32, y: i32, game_hour: i32) -> anyhow::Result<Ve
 /// 依 id 查 soul_seed 並展開為 Personality。
 pub fn get_personality_for_entity(entity_id: &str) -> Option<Personality> {
     let arc = store::get_store()?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let e = s.get_entity(entity_id)?;
     let seed = e.soul_seed?;
     Some(expand_soul_seed_to_personality(seed))
@@ -564,21 +564,21 @@ pub fn get_personality_for_entity(entity_id: &str) -> Option<Personality> {
 /// 更新 last_observed_at。
 pub fn update_last_observed(id: &str, at: i64) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(id, |e| { e.last_observed_at = Some(at); })
 }
 
 /// 清除 last_observed_at。
 pub fn clear_last_observed(id: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(id, |e| { e.last_observed_at = None; })
 }
 
 /// 更新位置並設為 idle。
 pub fn update_position(id: &str, x: i32, y: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(id, |e| {
         e.x = x;
         e.y = y;
@@ -593,7 +593,7 @@ pub fn update_position(id: &str, x: i32, y: i32) -> anyhow::Result<()> {
 pub fn set_move_target(id: &str, target_x: i32, target_y: i32, walk_or_run: &str, started_at: i64) -> anyhow::Result<()> {
     let wor = if walk_or_run.is_empty() { "walk" } else { walk_or_run };
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     let wor = wor.to_string();
     s.update_entity(id, move |e| {
         e.target_x = Some(target_x);
@@ -607,7 +607,7 @@ pub fn set_move_target(id: &str, target_x: i32, target_y: i32, walk_or_run: &str
 /// 增減鎂（clamp >= 0）。
 pub fn add_magnesium(entity_id: &str, delta: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(entity_id, |e| {
         e.magnesium += delta;
         if e.magnesium < 0 { e.magnesium = 0; }
@@ -617,7 +617,7 @@ pub fn add_magnesium(entity_id: &str, delta: i32) -> anyhow::Result<()> {
 /// 將 `amount` 鎂自 `from_id` 轉至 `to_id`（餘額不足或實體不存在則錯）；對齊既有 `db.TransferMagnesium`。
 pub fn transfer_magnesium(from_id: &str, to_id: &str, amount: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.transfer_magnesium(from_id, to_id, amount)
 }
 
@@ -625,7 +625,7 @@ pub fn transfer_magnesium(from_id: &str, to_id: &str, amount: i32) -> anyhow::Re
 pub fn update_vit(entity_id: &str, new_vit: i32) -> anyhow::Result<()> {
     let v = new_vit.max(0);
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.update_entity(entity_id, move |e| { e.vit = v; })
 }
 
@@ -639,7 +639,7 @@ pub const SPAWN_ROOM_NAME: &str = "宜林";
 /// 取得創生預設房間 id。
 pub fn get_spawn_room_id() -> String {
     let Some(arc) = store::get_store() else { return "lobby".to_string() };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let id = s.get_room_id_by_name(SPAWN_ROOM_NAME);
     if id.is_empty() { "lobby".to_string() } else { id }
 }
@@ -650,7 +650,7 @@ pub fn get_npc_ids_with_room() -> Vec<String> {
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     s.get_npc_ids_with_room()
 }
 
@@ -660,14 +660,14 @@ pub fn get_player_ids_with_room() -> Vec<String> {
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     s.get_player_ids_with_room()
 }
 
 /// 回傳房間的戰鬥地形標籤。
 pub fn terrain_from_room(room_id: &str) -> String {
     let Some(arc) = store::get_store() else { return String::new() };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let Some(room) = s.get_room(room_id) else { return String::new() };
     for t in &room.tags {
         let lt = t.trim().to_lowercase();
@@ -684,14 +684,14 @@ pub fn terrain_from_room(room_id: &str) -> String {
 /// 依 id 查房間（對齊既有 `GetRoom`）。
 pub fn get_room(room_id: &str) -> anyhow::Result<Option<crate::model::Room>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     Ok(s.get_room(room_id))
 }
 
 /// 房間顯示名稱（對齊既有 `GetRoomName`）。
 pub fn get_room_name(room_id: &str) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     Ok(s.get_room_name(room_id))
 }
 
@@ -705,7 +705,7 @@ pub fn set_entity_room(entity_id: &str, room_id: &str) -> anyhow::Result<()> {
         return set_entity_hex(entity_id, q, r);
     }
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.set_entity_room(entity_id, room_id)?;
     s.clear_entity_hex(entity_id)
 }
@@ -713,14 +713,14 @@ pub fn set_entity_room(entity_id: &str, room_id: &str) -> anyhow::Result<()> {
 /// 權威六角座標；見 [`store::Store::set_entity_hex`]（同步 `entity_rooms` 為 `hex:…`）。
 pub fn set_entity_hex(entity_id: &str, q: i32, r: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.set_entity_hex(entity_id, q, r)
 }
 
 /// 權威正方格座標；見 [`store::Store::set_entity_grid`]（同步 `entity_rooms` 為 `grid:…`）。
 pub fn set_entity_grid(entity_id: &str, x: i32, y: i32) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.set_entity_grid(entity_id, x, y)
 }
 
@@ -730,28 +730,28 @@ pub fn get_npc_ids_with_grid() -> Vec<String> {
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     s.get_npc_ids_with_grid()
 }
 
 /// 設定實體的表面可觀測行為（玩家 Look 時看到的「在做什麼」）。
 pub fn set_entity_activity(entity_id: &str, activity: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.set_entity_activity(entity_id, activity)
 }
 
 /// 房間出口列表（對齊 `GetExitsForRoom`）。
 pub fn get_exits_for_room(room_id: &str) -> anyhow::Result<Vec<crate::model::Exit>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     Ok(s.get_exits_for_room(room_id))
 }
 
 /// 房間內可互動物件（對齊 `GetObjectsInRoom`）。
 pub fn get_objects_in_room(room_id: &str) -> anyhow::Result<Vec<crate::model::RoomObject>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     Ok(s.get_room(room_id).map(|r| r.objects).unwrap_or_default())
 }
 
@@ -810,14 +810,14 @@ pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Resu
         grid_y: None,
     };
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.put_entity(e)
 }
 
 /// 記錄 NPC 與玩家見面（對齊 `RecordMeet`）。
 pub fn record_meet(npc_id: &str, player_id: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.record_meet(npc_id, player_id)
 }
 
@@ -827,21 +827,21 @@ pub fn top_npc_rumors(room_id: &str, zone: &str, now_unix: i64, top_k: i32) -> V
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     s.top_npc_rumors(room_id, zone, now_unix, top_k)
 }
 
 /// 標記傳聞被引用。
 pub fn mark_rumor_used_by_text(text: &str, now_unix: i64) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.mark_rumor_used_by_text(text, now_unix)
 }
 
 /// 衝突降權傳聞。
 pub fn penalize_rumor_by_text(text: &str, now_unix: i64, reason: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.penalize_rumor_by_text(text, now_unix, reason)
 }
 

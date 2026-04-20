@@ -8,7 +8,10 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
+// parking_lot::RwLock：eventual fairness、不 poison、比 std 快
+// 解 std::sync::RwLock 在 writer-heavy 時 reader starve 的 OS 預設不確定性
+use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
 
 use crate::model;
@@ -422,12 +425,12 @@ pub static DEFAULT: RwLock<Option<Arc<RwLock<Store>>>> = RwLock::new(None);
 
 /// 取得全域 store 的 Arc 參照。
 pub fn get_store() -> Option<Arc<RwLock<Store>>> {
-    DEFAULT.read().unwrap_or_else(|e| e.into_inner()).clone()
+    DEFAULT.read().clone()
 }
 
 pub fn get_db_pool() -> Option<sql::DbPool> {
     if let Some(st) = get_store() {
-        st.read().unwrap_or_else(|e| e.into_inner()).db_pool.clone()
+        st.read().db_pool.clone()
     } else {
         None
     }
@@ -435,7 +438,7 @@ pub fn get_db_pool() -> Option<sql::DbPool> {
 
 /// 設定全域 store。
 fn set_store(store: Store) {
-    let mut guard = DEFAULT.write().unwrap_or_else(|e| e.into_inner());
+    let mut guard = DEFAULT.write();
     *guard = Some(Arc::new(RwLock::new(store)));
 }
 
@@ -1682,16 +1685,13 @@ impl Store {
 
     pub fn set_entity_room(&mut self, entity_id: &str, room_id: &str) -> anyhow::Result<()> {
         self.entity_rooms.insert(entity_id.to_string(), room_id.to_string());
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let _ = conn.execute(
-                    "INSERT INTO entity_rooms (entity_id, room_id) VALUES ($1, $2)
-                     ON CONFLICT (entity_id) DO UPDATE SET room_id = EXCLUDED.room_id",
-                    &[&entity_id, &room_id],
-                );
-            }
-        }
-        self.persist_entity_rooms()
+        // PG 寫入走 writer queue，不在 store lock 下做 IO
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityRoom {
+            entity_id: entity_id.to_string(),
+            room_id: room_id.to_string(),
+        });
+        // 不再 persist_entity_rooms（CLAUDE.md 硬規則，PG 權威）
+        Ok(())
     }
 
     /// 設定實體的表面可觀測行為。
@@ -1699,14 +1699,10 @@ impl Store {
         if let Some(e) = self.entities.get_mut(entity_id) {
             e.current_activity = activity.to_string();
         }
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let _ = conn.execute(
-                    "UPDATE entities SET current_activity = $1 WHERE id = $2",
-                    &[&activity, &entity_id],
-                );
-            }
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityActivity {
+            entity_id: entity_id.to_string(),
+            activity: activity.to_string(),
+        });
         Ok(())
     }
 

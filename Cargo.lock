@@ -2897,6 +2897,7 @@ dependencies = [
  "axum 0.8.8",
  "bcrypt",
  "futures-util",
+ "parking_lot 0.12.5",
  "r2d2",
  "r2d2_postgres",
  "r2d2_sqlite",

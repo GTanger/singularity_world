@@ -44,10 +44,7 @@ pub async fn wipe_entities(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let mut s = st.write();
     if let Err(e) = s.clear_all_entities() {
         return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
     }
@@ -87,13 +84,10 @@ pub async fn player_room(Query(q): Query<PlayerRoomQuery>) -> impl IntoResponse 
         Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"查詢房間失敗"}))).into_response(),
     };
     let (hex_q, hex_r) = if let Some(st) = store::get_store() {
-        if let Ok(s) = st.read() {
-            s.get_entity(&player_id)
-                .map(|e| (e.hex_q, e.hex_r))
-                .unwrap_or((None, None))
-        } else {
-            (None, None)
-        }
+        let s = st.read();
+        s.get_entity(&player_id)
+            .map(|e| (e.hex_q, e.hex_r))
+            .unwrap_or((None, None))
     } else {
         (None, None)
     };
@@ -135,10 +129,7 @@ pub async fn rooms_data() -> impl IntoResponse {
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let s = match st.read() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let s = st.read();
     let ids = s.room_ids();
     let mut rooms = Vec::with_capacity(ids.len());
     let mut exits = Vec::with_capacity(256);
@@ -176,10 +167,7 @@ pub async fn list_rooms(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let s = match st.read() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let s = st.read();
     let ids = s.room_ids();
     let mut list = Vec::with_capacity(ids.len());
     for id in &ids {
@@ -227,10 +215,7 @@ pub async fn create_room(
         objects: vec![],
     };
     {
-        let mut s = match st.write() {
-            Ok(guard) => guard,
-            Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-        };
+        let mut s = st.write();
         if s.get_room(&body.id).is_some() {
             return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"room id already exists"}))).into_response();
         }
@@ -251,10 +236,7 @@ pub async fn get_room_admin(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let s = match st.read() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let s = st.read();
     let Some(room) = s.get_room(&id) else {
         return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
     };
@@ -292,10 +274,7 @@ pub async fn update_room(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let mut s = st.write();
     let Some(mut room) = s.get_room(&id) else {
         return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
     };
@@ -325,10 +304,7 @@ pub async fn delete_room(
     if db::get_spawn_room_id() == id {
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"cannot delete spawn room (界壁)"}))).into_response();
     }
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let mut s = st.write();
     s.delete_room_data(&id);
     Json(serde_json::json!({"deleted": id})).into_response()
 }
@@ -351,10 +327,7 @@ pub async fn rename_room(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let mut s = st.write();
     if let Err(e) = s.rename_room(&id, &body.new_id) {
         return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error": e.to_string()}))).into_response();
     }
@@ -380,10 +353,7 @@ pub async fn add_exit(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let mut s = st.write();
     let Some(room) = s.get_room(&id) else {
         return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
     };
@@ -416,10 +386,7 @@ pub async fn remove_exit(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let mut s = st.write();
     let Some(room) = s.get_room(&from_id) else {
         return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
     };
@@ -610,13 +577,10 @@ pub struct HexViewQuery {
 pub async fn hex_view(Query(q): Query<HexViewQuery>) -> impl IntoResponse {
     // 取得玩家當前座標
     let (hex_q, hex_r) = if let Some(st) = store::get_store() {
-        if let Ok(s) = st.read() {
-            s.get_entity(&q.player_id)
-                .map(|e| (e.hex_q, e.hex_r))
-                .unwrap_or((None, None))
-        } else {
-            (None, None)
-        }
+        let s = st.read();
+        s.get_entity(&q.player_id)
+            .map(|e| (e.hex_q, e.hex_r))
+            .unwrap_or((None, None))
     } else {
         (None, None)
     };
@@ -754,13 +718,10 @@ pub struct HexScoutReq {
 pub async fn hex_scout(Json(req): Json<HexScoutReq>) -> impl IntoResponse {
     // 依現行 auth 邏輯，MVP 暫不強制 pw（前端已持有玩家 ID）
     let (hex_q, hex_r) = if let Some(st) = store::get_store() {
-        if let Ok(s) = st.read() {
-            s.get_entity(&req.player_id)
-                .map(|e| (e.hex_q, e.hex_r))
-                .unwrap_or((None, None))
-        } else {
-            (None, None)
-        }
+        let s = st.read();
+        s.get_entity(&req.player_id)
+            .map(|e| (e.hex_q, e.hex_r))
+            .unwrap_or((None, None))
     } else {
         (None, None)
     };
@@ -800,13 +761,10 @@ pub struct HexExploreReq {
 /// POST /api/hex/explore — 精探完成，解鎖精煉層（移除 fogged）。
 pub async fn hex_explore(Json(req): Json<HexExploreReq>) -> impl IntoResponse {
     let (hex_q, hex_r) = if let Some(st) = store::get_store() {
-        if let Ok(s) = st.read() {
-            s.get_entity(&req.player_id)
-                .map(|e| (e.hex_q, e.hex_r))
-                .unwrap_or((None, None))
-        } else {
-            (None, None)
-        }
+        let s = st.read();
+        s.get_entity(&req.player_id)
+            .map(|e| (e.hex_q, e.hex_r))
+            .unwrap_or((None, None))
     } else {
         (None, None)
     };
@@ -841,12 +799,11 @@ pub async fn hex_move(Json(req): Json<HexMoveReq>) -> impl IntoResponse {
             .into_response();
     };
 
-    let (pq, pr) = if let Ok(s) = st.read() {
+    let (pq, pr) = {
+        let s = st.read();
         s.get_entity(&req.player_id)
             .map(|e| (e.hex_q, e.hex_r))
             .unwrap_or((None, None))
-    } else {
-        (None, None)
     };
 
     let (Some(pq), Some(pr)) = (pq, pr) else {
@@ -896,13 +853,7 @@ pub async fn hex_move(Json(req): Json<HexMoveReq>) -> impl IntoResponse {
         }
     };
 
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => {
-            return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"})))
-                .into_response()
-        }
-    };
+    let mut s = st.write();
 
     if s.get_entity(&req.player_id).is_none() {
         return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"玩家不存在"}))).into_response();

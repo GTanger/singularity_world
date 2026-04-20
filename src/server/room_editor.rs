@@ -189,10 +189,7 @@ fn normalize_id_for_file(id: &str) -> String {
 
 fn ensure_store_room(room: &RoomEditorRoomFile) {
     let Some(st) = store::get_store() else { return };
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => return, // 靜靜失敗
-    };
+    let mut s = st.write();
     let r = model::Room {
         id: room.id.clone(),
         name: room.name.clone(),
@@ -263,10 +260,7 @@ pub async fn graph(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let s = match st.read() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let s = st.read();
     let mut ids = s.room_ids();
     ids.sort();
     let mut nodes = Vec::with_capacity(ids.len());
@@ -415,9 +409,9 @@ pub async fn delete(
             }
         }
     }
-    if let Some(st) = store::get_store()
-        && let Ok(mut s) = st.write() {
-            s.delete_room_data(&id);
+    if let Some(st) = store::get_store() {
+        let mut s = st.write();
+        s.delete_room_data(&id);
     }
     Json(serde_json::json!({"ok": true, "deleted": id})).into_response()
 }
@@ -531,10 +525,7 @@ pub async fn reload(
     let Some(st) = store::get_store() else {
         return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
     };
-    let mut s = match st.write() {
-        Ok(guard) => guard,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"store lock poisoned"}))).into_response(),
-    };
+    let mut s = st.write();
     if let Err(e) = s.reload_rooms() {
         return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
     }

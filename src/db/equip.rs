@@ -43,7 +43,7 @@ pub fn get_item_names(equipment_slots: &str) -> HashMap<String, String> {
     let Some(st) = store::get_store() else {
         return result;
     };
-    let s = st.read().unwrap();
+    let s = st.read();
     for (slot, v) in map {
         let Some(item_id) = v.as_str() else { continue };
         if item_id.is_empty() {
@@ -69,7 +69,7 @@ pub fn get_item_descs(equipment_slots: &str) -> HashMap<String, String> {
     let Some(st) = store::get_store() else {
         return result;
     };
-    let s = st.read().unwrap();
+    let s = st.read();
     for (slot, v) in map {
         let Some(item_id) = v.as_str() else { continue };
         if item_id.is_empty() {

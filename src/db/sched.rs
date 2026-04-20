@@ -31,7 +31,7 @@ pub fn get_schedule_target_room(entity_id: &str, game_hour: i32) -> Option<Strin
 #[must_use]
 pub fn get_schedule_target(entity_id: &str, game_hour: i32) -> Option<ScheduleTarget> {
     let arc = store::get_store()?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let sch = s.get_schedule(entity_id)?;
     let ns = NpcSchedule {
         entity_id: sch.entity_id.clone(),
@@ -56,7 +56,7 @@ pub fn get_schedule_target(entity_id: &str, game_hour: i32) -> Option<ScheduleTa
 /// 所有 NPC 排班（對齊既有 `GetAllSchedules`）。
 pub fn get_all_schedules() -> anyhow::Result<Vec<NpcSchedule>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     Ok(s
         .get_all_schedules()
         .into_iter()
@@ -79,14 +79,14 @@ pub fn insert_schedule(
     shift_end: i32,
 ) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.insert_schedule(entity_id, work_room, rest_room, shift_start, shift_end)
 }
 
 /// 移除某實體排班（對齊既有 `RemoveScheduleForEntity`）。
 pub fn remove_schedule_for_entity(entity_id: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    let mut s = arc.write();
     s.remove_schedule_for_entity(entity_id)
 }
 
@@ -97,7 +97,7 @@ pub fn apply_schedules(game_hour: i32) -> anyhow::Result<Vec<ScheduleMove>> {
     for s in schedules {
         let arc = store::get_store().ok_or(ErrNoStore)?;
         let (vit_ok, current_room, target_room) = {
-            let st = arc.read().unwrap_or_else(|e| e.into_inner());
+            let st = arc.read();
             let Some(ent) = st.get_entity(&s.entity_id) else {
                 continue;
             };

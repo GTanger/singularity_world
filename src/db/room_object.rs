@@ -16,7 +16,7 @@ pub fn get_object_by_id_in_room(room_id: &str, object_id: &str) -> Option<model:
         return None;
     }
     let arc = store::get_store()?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let room = s.get_room(room_id)?;
     room.objects.into_iter().find(|o| o.id == object_id)
 }
@@ -29,7 +29,7 @@ pub fn get_object_by_name_in_room(room_id: &str, name: &str) -> Option<model::Ro
         return None;
     }
     let arc = store::get_store()?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     let room = s.get_room(room_id)?;
     room.objects.into_iter().find(|o| o.name == name)
 }
@@ -41,7 +41,7 @@ pub fn get_object_and_room(object_id: &str) -> Option<(model::RoomObject, String
         return None;
     }
     let arc = store::get_store()?;
-    let s = arc.read().unwrap_or_else(|e| e.into_inner());
+    let s = arc.read();
     for rid in s.room_ids() {
         let room = s.get_room(&rid)?;
         if let Some(obj) = room.objects.iter().find(|o| o.id == object_id) {

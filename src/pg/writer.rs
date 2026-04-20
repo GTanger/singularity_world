@@ -41,6 +41,14 @@ pub enum WriteOp {
         password_hash: String,
     },
     AppendArchival(ArchivalEntry),
+    SetEntityRoom {
+        entity_id: String,
+        room_id: String,
+    },
+    SetEntityActivity {
+        entity_id: String,
+        activity: String,
+    },
 }
 
 struct Service {
@@ -131,6 +139,31 @@ fn handle_op(pool: &DbPool, op: &WriteOp) {
                 conn.execute(
                     "INSERT INTO archival (entity_id, content, tag, created_at) VALUES ($1, $2, $3, $4)",
                     &[&entry.entity_id, &entry.content, &entry.tag, &entry.created_at],
+                )
+                .map(|_| ())
+                .map_err(|e| anyhow::anyhow!(e))
+            } else {
+                Err(anyhow::anyhow!("pool.get failed"))
+            }
+        }
+        WriteOp::SetEntityRoom { entity_id, room_id } => {
+            if let Ok(mut conn) = pool.get() {
+                conn.execute(
+                    "INSERT INTO entity_rooms (entity_id, room_id) VALUES ($1, $2) \
+                     ON CONFLICT (entity_id) DO UPDATE SET room_id = EXCLUDED.room_id",
+                    &[&entity_id, &room_id],
+                )
+                .map(|_| ())
+                .map_err(|e| anyhow::anyhow!(e))
+            } else {
+                Err(anyhow::anyhow!("pool.get failed"))
+            }
+        }
+        WriteOp::SetEntityActivity { entity_id, activity } => {
+            if let Ok(mut conn) = pool.get() {
+                conn.execute(
+                    "UPDATE entities SET current_activity = $1 WHERE id = $2",
+                    &[&activity, &entity_id],
                 )
                 .map(|_| ())
                 .map_err(|e| anyhow::anyhow!(e))
