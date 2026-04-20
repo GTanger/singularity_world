@@ -381,15 +381,18 @@ mod tests {
 
     #[test]
     fn find_path_diagonal() {
-        // 對角線：(0,0) → (3,3)，八方向移動下 Chebyshev 距離 3 步即可達
+        // (0,0) → (3,3)：四向制下 Manhattan 距離 6，路徑 7 格（含起終點）。
+        // 需要插入完整 4x4 可走區塊。
         let mut g = SquareGrid::new();
-        for i in 0..=3_i32 {
-            g.insert(plain(i, i));
+        for x in 0..=3_i32 {
+            for y in 0..=3_i32 {
+                g.insert(plain(x, y));
+            }
         }
         let path = g
             .find_path(SquareCoord::new(0, 0), SquareCoord::new(3, 3))
             .unwrap();
-        assert_eq!(path.len(), 4);
+        assert_eq!(path.len(), 7);
         assert_eq!(path.first(), Some(&SquareCoord::new(0, 0)));
         assert_eq!(path.last(), Some(&SquareCoord::new(3, 3)));
     }
