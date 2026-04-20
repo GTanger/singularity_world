@@ -488,6 +488,8 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     s.db_pool = match sql::init_pool(&pg_url) {
         Ok(pool) => {
             tracing::info!("[store] PostgreSQL 連線池已初始化: {}", pg_url);
+            // 同步灌給全域 pg:: 模組——繞過 store lock 的直接 IO 路徑用
+            crate::pg::set_pool(pool.clone());
             Some(pool)
         }
         Err(e) => {
@@ -1764,17 +1766,21 @@ impl Store {
         if e.inventory.is_empty() {
             e.inventory = "[]".to_string();
         }
-        self.pg_upsert_entity(&e);
-        self.entities.insert(e.id.clone(), e);
-        self.persist_entities()
+        // 先改 in-memory cache（lock 下微秒級）
+        self.entities.insert(e.id.clone(), e.clone());
+        // PG 寫入丟背景 thread——不在 store lock 下做 blocking IO
+        // （CLAUDE.md：PG 為權威；in-memory cache 立刻一致、PG 非同步最終一致）
+        crate::pg::entity::upsert_async(e);
+        // 不再 persist_entities——CLAUDE.md 硬規則「PG 為唯一權威，執行期不以 JSON 為真理」
+        Ok(())
     }
 
     pub fn update_entity(&mut self, id: &str, f: impl FnOnce(&mut Entity)) -> anyhow::Result<()> {
         if let Some(e) = self.entities.get_mut(id) {
             f(e);
             let e_clone = e.clone();
-            self.pg_upsert_entity(&e_clone);
-            return self.persist_entities();
+            // 改 cache 完成、PG 寫入背景執行（lock 立刻釋放）
+            crate::pg::entity::upsert_async(e_clone);
         }
         Ok(())
     }

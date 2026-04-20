@@ -9,6 +9,7 @@ pub mod gametext;
 pub mod grid;
 pub mod hex;
 pub mod store;
+pub mod pg;
 pub mod db;
 pub mod game;
 pub mod combat;
