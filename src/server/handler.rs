@@ -62,6 +62,10 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
             return;
         }
     };
+    if msg.msg_type != "ping" {
+        tracing::info!("[handle_message] type={} pid={} conn={}",
+            msg.msg_type, msg.player_id, conn.conn_id);
+    }
     match msg.msg_type.as_str() {
         "login" => handle_login(conn, &msg),
         "create_character" => handle_create_character(conn, &msg),
@@ -118,6 +122,7 @@ fn handle_explore_grid(conn: &WsConnection) {
 }
 
 fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
+    tracing::info!("[handle_login] start pid={} conn={}", msg.player_id, conn.conn_id);
     if msg.player_id.is_empty() {
         conn.send_error(gametext::client("login_need_id"));
         return;
@@ -126,10 +131,12 @@ fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("login_need_password"));
         return;
     }
+    tracing::info!("[handle_login] a before db::get_entity pid={}", msg.player_id);
     let Ok(ent) = db::get_entity(&msg.player_id) else {
         conn.send_error(gametext::client("login_not_found"));
         return;
     };
+    tracing::info!("[handle_login] b after db::get_entity pid={}", msg.player_id);
     let Some(ent) = ent else {
         conn.send_error(gametext::client("login_not_found"));
         return;
@@ -138,14 +145,17 @@ fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("login_not_player"));
         return;
     }
+    tracing::info!("[handle_login] c before has_password pid={}", msg.player_id);
     if !db::has_password_for_entity(&msg.player_id) {
         conn.send_error(gametext::client("login_no_password"));
         return;
     }
+    tracing::info!("[handle_login] d before verify_password pid={}", msg.player_id);
     let Ok(ok) = db::verify_password(&msg.player_id, &msg.password) else {
         conn.send_error(gametext::client("login_verify_failed"));
         return;
     };
+    tracing::info!("[handle_login] e after verify_password pid={} ok={ok}", msg.player_id);
     if !ok {
         conn.send_error(gametext::client("login_wrong_password"));
         return;
@@ -227,11 +237,14 @@ fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
 }
 
 fn login_success(conn: &WsConnection, player_id: &str) {
+    tracing::info!("[login_success] start pid={player_id} conn={}", conn.conn_id);
     if let Ok(mut g) = conn.player_id.write() {
         *g = Some(player_id.to_string());
     }
+    tracing::info!("[login_success] 1 player_id write OK pid={player_id}");
     let gh = current_game_hour(&conn.cfg);
     let mut ent_pre = db::get_entity(player_id).ok().flatten();
+    tracing::info!("[login_success] 2 db::get_entity OK pid={player_id}");
     let Some(e0) = ent_pre.as_ref() else {
         conn.send_error(gametext::client("load_view_failed"));
         return;
@@ -272,9 +285,11 @@ fn login_success(conn: &WsConnection, player_id: &str) {
             (0, 0)
         }
     };
+    tracing::info!("[login_success] 3 before with_square_grid_mut pid={player_id}");
     crate::server::grid_manager::with_square_grid_mut(|grid| {
         crate::grid::reveal_grid_disk(grid, crate::grid::SquareCoord::new(gx, gy), 5);
     });
+    tracing::info!("[login_success] 4 with_square_grid_mut OK pid={player_id}");
 
     let view = match game::get_hex_room_view(player_id, hq, hr, gh) {
         Ok(Some(v)) => v,
@@ -283,8 +298,10 @@ fn login_success(conn: &WsConnection, player_id: &str) {
             return;
         }
     };
+    tracing::info!("[login_success] 5 get_hex_room_view OK pid={player_id}");
     let session = Session::with_outbound(player_id, conn.conn_id, conn.tx.clone());
     conn.sessions.set(player_id, session.clone());
+    tracing::info!("[login_success] 6 sessions.set OK pid={player_id}");
     let ent = ent_pre.or_else(|| db::get_entity(player_id).ok().flatten());
     let (vit, qi, dex) = ent
         .as_ref()
@@ -292,9 +309,11 @@ fn login_success(conn: &WsConnection, player_id: &str) {
         .unwrap_or((10, 10, 10));
     let rm = compute_resource_maxes(vit, qi, dex);
     send_room_view_to_session(&session, &view, player_id, &conn.cfg);
+    tracing::info!("[login_success] 7 send_room_view OK pid={player_id}");
 
     // 額外發送正方格視野
     send_grid_view(conn, player_id, gx, gy, gh);
+    tracing::info!("[login_success] 8 send_grid_view OK pid={player_id}");
 
     let now = game::now_unix();
     for e in &view.entities {
@@ -304,6 +323,7 @@ fn login_success(conn: &WsConnection, player_id: &str) {
     }
     game::observe_hex(hq, hr, player_id, now);
     send_me_with_status(conn, &session, ent.as_ref(), player_id, &view.room.id, &view.room.name, vit, qi, dex, &rm);
+    tracing::info!("[login_success] 9 DONE pid={player_id}");
 }
 
 fn current_game_hour(cfg: &Server) -> i32 {

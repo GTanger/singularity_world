@@ -20,7 +20,8 @@ pub fn log_npc_event(at: i64, entity_id: &str, event_type: &str, payload: &str) 
     let Some(arc) = store::get_store() else {
         return;
     };
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    // read lock 夠：append_event 只讀 db_pool 做 PG INSERT
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     let _ = s.append_event(at, entity_id, event_type, payload);
 }
 

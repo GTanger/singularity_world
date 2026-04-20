@@ -384,6 +384,20 @@ pub fn verify_password(entity_id: &str, password: &str) -> anyhow::Result<bool> 
 /// 依 id 查詢實體。
 pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
+    // 快路徑：player/非 NPC 只需 read lock（多讀可並行，不卡 login 同時 writer）
+    // 舊版全拿 write lock 是因為 NPC display_name cache update 的副作用，
+    // 但 player 走不進那分支——不該為少數 NPC 情況讓所有 get_entity 排 writer 隊
+    {
+        let s = arc.read().unwrap_or_else(|e| e.into_inner());
+        match s.get_entity(id) {
+            Some(se) if se.kind != "npc" => {
+                return Ok(Some(store_entity_to_character(&se, "")));
+            }
+            None => return Ok(None),
+            _ => {} // NPC case 落到下面拿 write lock
+        }
+    }
+    // NPC 路徑：升級到 write lock 做 display_name cache 更新
     let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
     let Some(se) = s.get_entity(id) else { return Ok(None) };
     if se.kind == "npc" {

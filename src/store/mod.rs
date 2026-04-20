@@ -2068,7 +2068,10 @@ impl Store {
     //  CRUD 方法 — Event Log
     // ══════════════════════════════════════
 
-    pub fn append_event(&mut self, at: i64, entity_id: &str, event_type: &str, payload: &str) -> anyhow::Result<()> {
+    /// 2026-04-20 改 &self：只讀 db_pool 做同步 PG IO，不動 store state。
+    /// 舊版 &mut self → 所有 caller 拿 store write lock 做 blocking PG query，
+    /// 大量 event 寫入時 writer 霸佔 store lock 幾秒，把所有 reader（例如 login 的 get_entity）卡死。
+    pub fn append_event(&self, at: i64, entity_id: &str, event_type: &str, payload: &str) -> anyhow::Result<()> {
         if let Some(pool) = &self.db_pool {
             let mut conn = pool.get()?;
             conn.execute(

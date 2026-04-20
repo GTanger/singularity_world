@@ -26,7 +26,9 @@ pub struct EventRow {
 /// 將一筆事件寫入 store 並持久化 `event_log.json`。
 pub fn append(at: i64, entity_id: &str, event_type: &str, payload: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write().unwrap_or_else(|e| e.into_inner());
+    // append_event 只讀 db_pool 做 PG INSERT，read lock 夠；write lock 會霸佔 store lock
+    // 大量 event 寫入時害 login 的 get_entity 卡幾秒
+    let s = arc.read().unwrap_or_else(|e| e.into_inner());
     s.append_event(at, entity_id, event_type, payload)
 }
 

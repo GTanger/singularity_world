@@ -197,17 +197,33 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
             Message::Text(t) => {
                 let c = conn.clone();
                 let bytes = t.as_bytes().to_vec();
-                let _ = tokio::task::spawn_blocking(move || {
-                    handle_message(&c, &bytes);
-                })
-                .await;
+                let jh = tokio::task::spawn_blocking(move || {
+                    let r = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                        handle_message(&c, &bytes);
+                    }));
+                    if let Err(e) = r {
+                        let pmsg = if let Some(s) = e.downcast_ref::<&str>() { s.to_string() }
+                            else if let Some(s) = e.downcast_ref::<String>() { s.clone() }
+                            else { "unknown panic".to_string() };
+                        tracing::error!("[handle_message PANIC] {pmsg}");
+                    }
+                }).await;
+                if let Err(e) = jh { tracing::error!("[handle_message JOIN ERR] {e}"); }
             }
             Message::Binary(b) => {
                 let c = conn.clone();
-                let _ = tokio::task::spawn_blocking(move || {
-                    handle_message(&c, &b);
-                })
-                .await;
+                let jh = tokio::task::spawn_blocking(move || {
+                    let r = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                        handle_message(&c, &b);
+                    }));
+                    if let Err(e) = r {
+                        let pmsg = if let Some(s) = e.downcast_ref::<&str>() { s.to_string() }
+                            else if let Some(s) = e.downcast_ref::<String>() { s.clone() }
+                            else { "unknown panic".to_string() };
+                        tracing::error!("[handle_message PANIC] {pmsg}");
+                    }
+                }).await;
+                if let Err(e) = jh { tracing::error!("[handle_message JOIN ERR] {e}"); }
             }
             Message::Close(_) => break,
             _ => {}
