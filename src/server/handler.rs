@@ -42,12 +42,14 @@ impl WsConnection {
             "type": "error",
             "message": message.into(),
         });
-        let _ = self.tx.blocking_send(msg.to_string().into_bytes());
+        // try_send：channel 滿就丟（玩家重連會重抓 state），不 park blocking thread
+        // 用 blocking_send 時若 client 連線 lagging，可能累積死鎖把 tokio blocking pool 吃光
+        let _ = self.tx.try_send(msg.to_string().into_bytes());
     }
 
     pub(super) fn send_json<T: serde::Serialize>(&self, v: &T) {
         if let Ok(bytes) = serde_json::to_vec(v) {
-            let _ = self.tx.blocking_send(bytes);
+            let _ = self.tx.try_send(bytes);
         }
     }
 }

@@ -25,6 +25,11 @@ cargo run --bin checkrooms -- -brackets -strict
 
 # 3) 建置奇點（Rust release）
 echo "--- 建置執行檔 (Release) ---"
+# cargo incremental 有時抓不到 dirty 檔，強制戳 mtime 保險
+# 2026-04-20 教訓：handler.rs 明明改了，cargo 判無改動跳過重編，跑的還是舊 binary 的死鎖 bug
+if [[ -n "$(git status --porcelain src 2>/dev/null)" ]]; then
+  find src -name '*.rs' -exec touch {} +
+fi
 cargo build --release
 CARGO_OUT="${CARGO_TARGET_DIR:-target}/release/singularity_world"
 if [[ ! -f "$CARGO_OUT" ]]; then

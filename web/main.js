@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.18
+// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.32
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';
@@ -393,6 +393,8 @@
 						};
 						if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_PLAYER_ID, msg.player_id);
 						window.myPlayerId = msg.player_id;
+						// myPlayerId 到齊後，重新渲染 grid 物件欄/描述欄以過濾自己
+						if (window.refreshGridView) window.refreshGridView();
 						showGameAfterLogin();
 						updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
 						draw();
@@ -604,6 +606,7 @@
 						appendLog('收到：' + ev.data);
 				}
 			} catch (e) {
+				console.error('[onmessage throw]', e && (e.stack || e.message || e), 'msg=', ev.data && String(ev.data).slice(0,120));
 				appendLog('收到：' + ev.data);
 			}
 		};

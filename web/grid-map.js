@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.18
+ * grid-map.js v0.20.32
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  *
  * 依賴：
@@ -67,16 +67,12 @@
     var roomDescEl = null;
     var objectListEl = null;
 
-    // ── 工具：方向 ←→ (dx, dy) 轉換 ────────────────────────────────────
+    // ── 工具：方向 ←→ (dx, dy) 轉換（只走四向）──────────────────────────
     var DIR_DELTA = {
-        '北':  { dx: 0, dy: 1 },
-        '東北': { dx: 1, dy: 1 },
-        '東':  { dx: 1, dy: 0 },
-        '東南': { dx: 1, dy: -1 },
-        '南':  { dx: 0, dy: -1 },
-        '西南': { dx: -1, dy: -1 },
-        '西':  { dx: -1, dy: 0 },
-        '西北': { dx: -1, dy: 1 }
+        '北': { dx: 0, dy: 1 },
+        '東': { dx: 1, dy: 0 },
+        '南': { dx: 0, dy: -1 },
+        '西': { dx: -1, dy: 0 }
     };
 
     function dirToDelta(dir) {
@@ -154,7 +150,7 @@
         var containerH = rows * STEP_Y + CELL_GAP_Y;
         gridMapEl.style.width = containerW + 'px';
         gridMapEl.style.height = containerH + 'px';
-        gridMapEl.style.position = 'relative';
+        // position 交給 CSS（.gmap-grid { position: absolute }），不在 JS inline 覆蓋
 
         // 計算已揭露出口方向（從 exits 欄位）
         var exitDirSet = new Set();
@@ -187,65 +183,66 @@
             nameEl.textContent = cell.name || '地塊';
             el.appendChild(nameEl);
 
+            // 當前格不加圓點——格名 + 邊框/底色已足夠區分
+            // 當前格可點擊「重新錨定回中心」（拖曳後回歸用，見 centerOnPlayer）
             if (isPlayer) {
-                var markerEl = document.createElement('span');
-                markerEl.className = 'gmap-player-marker';
-                markerEl.textContent = '●';
-                el.appendChild(markerEl);
+                el.style.cursor = 'pointer';
+                el.title = '點此回到中心';
+                el.addEventListener('click', function (ev) {
+                    ev.stopPropagation();
+                    window.centerOnPlayer && window.centerOnPlayer();
+                });
             }
 
             gridMapEl.appendChild(el);
         });
 
-        // 渲染連線（已揭露格子之間的相鄰關係 + 玩家當前出口方向）
-        // 水平連線：東/西方向（dx=1, dy=0）
-        // 垂直連線：南/北方向（dx=0, dy=1）
-        // 對角連線不畫（視覺太亂）
-        var drawnLines = new Set();
+        // ── 地圖置中：算玩家格在容器內中心座標，供 applyGridTransform 用 ──
+        // 玩家走到新格時清除拖曳偏移（強制重新置中）
+        _playerCenterX = (px - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W / 2;
+        _playerCenterY = (maxY - py) * STEP_Y + CELL_GAP_Y / 2 + CELL_H / 2;
+        _dragX = 0;
+        _dragY = 0;
+        requestAnimationFrame(applyGridTransform);
 
-        revealedCells.forEach(function (k) {
-            var cell = cellMap[k];
-            if (!cell) return;
-            var cx = cell.x;
-            var cy = cell.y;
+        // ── 方向 C：只畫「當前格」的四向短腳（mapData.exits）──
+        // 遠處已揭露格不連線（只見當前格原則 + 避免 tile-RPG 慣例違和）
+        // 短腳從格子邊緣往外延伸 gap 的一半，不到鄰格（不承諾對面有東西）
+        var pCenterX = (px - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W / 2;
+        var pCenterY = (maxY - py) * STEP_Y + CELL_GAP_Y / 2 + CELL_H / 2;
+        var LEG_X = CELL_GAP_X / 2;
+        var LEG_Y = CELL_GAP_Y / 2;
 
-            var neighborDirs = [
-                { dx: 1, dy: 0, dir: '東' },
-                { dx: 0, dy: -1, dir: '南' }
-            ];
-            for (var ni = 0; ni < neighborDirs.length; ni++) {
-                var nd = neighborDirs[ni];
-                var nx = cx + nd.dx;
-                var ny = cy + nd.dy;
-                var nk = nx + ',' + ny;
-                if (!revealedCells.has(nk) || !cellMap[nk]) continue;
+        for (var ei = 0; ei < mapData.exits.length; ei++) {
+            var dir = mapData.exits[ei].direction;
+            var delta = DIR_DELTA[dir];
+            if (!delta) continue;
 
-                // 避免重複
-                var lineKey = Math.min(cx, nx) + ',' + Math.min(cy, ny) + ':' + nd.dir;
-                if (drawnLines.has(lineKey)) continue;
-                drawnLines.add(lineKey);
+            var legEl = document.createElement('div');
+            legEl.className = 'gmap-leg';
 
-                var lineEl = document.createElement('div');
-                lineEl.className = 'gmap-line' + (nd.dx === 1 ? ' gmap-line-h' : ' gmap-line-v');
-                if (nd.dx === 1) {
-                    // 水平線：從左格右邊緣到右格左邊緣（只在 gap 空間內）
-                    var leftEdge = (cx - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W;
-                    var vcenter  = (maxY - cy) * STEP_Y + CELL_GAP_Y / 2 + CELL_H / 2;
-                    lineEl.style.left = leftEdge + 'px';
-                    lineEl.style.top = (vcenter - 1) + 'px';
-                    lineEl.style.width = CELL_GAP_X + 'px';
-                } else {
-                    // 垂直線：從上格下邊緣到下格上邊緣（只在 gap 空間內）
-                    // nd.dy = -1（南向）；螢幕上 cy 在上，ny = cy - 1 在下
-                    var topEdge = (maxY - cy) * STEP_Y + CELL_GAP_Y / 2 + CELL_H;
-                    var hcenter = (cx - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W / 2;
-                    lineEl.style.left = (hcenter - 1) + 'px';
-                    lineEl.style.top = topEdge + 'px';
-                    lineEl.style.height = CELL_GAP_Y + 'px';
-                }
-                gridMapEl.appendChild(lineEl);
+            if (delta.dx !== 0) {
+                // 東/西：水平短腳
+                var xStart = delta.dx > 0
+                    ? pCenterX + CELL_W / 2           // 東：從格子右邊緣往外
+                    : pCenterX - CELL_W / 2 - LEG_X;  // 西：從格子左邊緣往外
+                legEl.style.left = xStart + 'px';
+                legEl.style.top = (pCenterY - 1) + 'px';
+                legEl.style.width = LEG_X + 'px';
+                legEl.style.height = '2px';
+            } else {
+                // 南/北：垂直短腳（北 = dy > 0 = 螢幕 y 減少）
+                var yStart = delta.dy > 0
+                    ? pCenterY - CELL_H / 2 - LEG_Y   // 北：從格子上邊緣往外
+                    : pCenterY + CELL_H / 2;          // 南：從格子下邊緣往外
+                legEl.style.left = (pCenterX - 1) + 'px';
+                legEl.style.top = yStart + 'px';
+                legEl.style.width = '2px';
+                legEl.style.height = LEG_Y + 'px';
             }
-        });
+
+            gridMapEl.appendChild(legEl);
+        }
 
         // 玩家格未被探索也要顯示（進格即見，自己所在格必定可見）
         var playerKey = px + ',' + py;
@@ -270,21 +267,8 @@
             gridMapEl.appendChild(el);
         }
 
-        // 捲動使玩家格置中
-        scrollToPlayer(minX, maxX, minY, maxY);
-    }
-
-    function scrollToPlayer(minX, maxX, minY, maxY) {
-        var viewport = gridMapEl.parentElement;
-        if (!viewport) return;
-        var px = mapData.playerX;
-        var py = mapData.playerY;
-        var cellCenterX = (px - minX) * STEP_X + CELL_GAP_X / 2 + CELL_W / 2;
-        var cellCenterY = (maxY - py) * STEP_Y + CELL_GAP_Y / 2 + CELL_H / 2;
-        var targetLeft = cellCenterX - viewport.clientWidth / 2;
-        var targetTop = cellCenterY - viewport.clientHeight / 2;
-        viewport.scrollLeft = Math.max(0, targetLeft);
-        viewport.scrollTop = Math.max(0, targetTop);
+        // 舊 scrollToPlayer 已砍（那是 overflow:auto 時代的遺留，會 shift viewport.scrollLeft
+        // 跟 transform 架構衝突，造成玩家移動後視覺偏移）
     }
 
     // ── 房間描述渲染 ──────────────────────────────────────────────────────
@@ -316,15 +300,7 @@
             html += '<div class="mud-room-ambience">' + esc(ambience) + '</div>';
         }
 
-        // 出口
-        if (mapData.exits && mapData.exits.length > 0) {
-            html += '<div class="mud-room-exits">';
-            for (var i = 0; i < mapData.exits.length; i++) {
-                var ex = mapData.exits[i];
-                html += '<span class="mud-exit-dir">' + esc(ex.direction) + '</span>';
-            }
-            html += '</div>';
-        }
+        // 出口方向已用地圖連線視覺化，描述欄不再列方向字
 
         // 在場者（不含自己）
         var myId = window.myPlayerId || '';
@@ -353,32 +329,18 @@
     function renderObjectList() {
         if (!objectListEl) return;
         var myId = window.myPlayerId || '';
+        var html = '';
 
-        // 探索動作（永遠在）
         var px = mapData.playerX;
         var py = mapData.playerY;
-        var playerKey = px + ',' + py;
-        var isExplored = revealedCells.has(playerKey);
-
-        // 注意：後端 explored 欄位代表格子本身是否被「主動探索」過
-        // 這裡判斷：若 exits 已有資料，表示當前格已被主動探索
         var hasExits = mapData.exits && mapData.exits.length > 0;
 
         // 探索按鈕（若出口未揭露才顯示）
         if (!hasExits) {
-            html += '<div class="mud-obj-item mud-obj-action" data-action="explore">';
-            html += '</div>';
+            html += '<div class="mud-obj-item mud-obj-action" data-action="explore">探索</div>';
         }
 
-        // 「我」section：玩家自己先顯示
-        var me = (mapData.entities || []).filter(function (e) {
-            return e.kind === 'player' && e.id === myId;
-        })[0];
-        if (me) {
-            html += '<div class="mud-obj-item mud-obj-self" data-entity-id="' + esc(me.id) + '">';
-            html += esc(me.display_name || me.id);
-            html += '</div>';
-        }
+        // 「自己」不在物件欄（姓名欄已顯示，不要三化）
 
         // 在場 NPC
         var npcs = (mapData.entities || []).filter(function (e) {
@@ -480,6 +442,8 @@
     function bindMapClick() {
         if (!gridMapEl) return;
         gridMapEl.addEventListener('click', function (e) {
+            // 若這次 pointer 是拖曳動作，click 不視為移動意圖
+            if (_suppressNextClick) { _suppressNextClick = false; return; }
             var cell = e.target.closest('.gmap-cell');
             if (!cell) return;
             var tx = parseInt(cell.getAttribute('data-x'), 10);
@@ -488,6 +452,58 @@
             if (tx === mapData.playerX && ty === mapData.playerY) return; // 自己的格子不移動
             moveToCell(tx, ty);
         });
+    }
+
+    // ── Google Maps 式拖曳：pointerdown/move/up 改 _dragX/_dragY ──────────
+    var _suppressNextClick = false;
+    function bindMapDrag() {
+        if (!gridMapEl) return;
+        var vp = gridMapEl.parentElement;
+        if (!vp) return;
+        var isTracking = false;
+        var dragStarted = false;  // 只有 move 超過閾值才視為真正拖曳
+        var startX = 0, startY = 0, startDragX = 0, startDragY = 0;
+        var activePointerId = null;
+        var DRAG_THRESHOLD = 5;
+
+        vp.addEventListener('pointerdown', function (e) {
+            if (e.button !== undefined && e.button !== 0) return;  // 只處理主鍵
+            isTracking = true;
+            dragStarted = false;
+            activePointerId = e.pointerId;
+            startX = e.clientX;
+            startY = e.clientY;
+            startDragX = _dragX;
+            startDragY = _dragY;
+        });
+        vp.addEventListener('pointermove', function (e) {
+            if (!isTracking || e.pointerId !== activePointerId) return;
+            var dx = e.clientX - startX;
+            var dy = e.clientY - startY;
+            if (!dragStarted) {
+                if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+                dragStarted = true;
+                vp.classList.add('dragging');
+                try { vp.setPointerCapture(activePointerId); } catch (_) {}
+            }
+            _dragX = startDragX + dx;
+            _dragY = startDragY + dy;
+            applyGridTransform();
+        });
+        function endDrag(e) {
+            if (!isTracking) return;
+            if (e.pointerId !== undefined && e.pointerId !== activePointerId) return;
+            isTracking = false;
+            if (dragStarted) {
+                _suppressNextClick = true;  // 拖曳結束的 click 事件不應被 cell 接住
+                vp.classList.remove('dragging');
+                try { vp.releasePointerCapture(activePointerId); } catch (_) {}
+            }
+            dragStarted = false;
+            activePointerId = null;
+        }
+        vp.addEventListener('pointerup', endDrag);
+        vp.addEventListener('pointercancel', endDrag);
     }
 
     function bindObjectListClick() {
@@ -528,7 +544,50 @@
     }
 
     // ── 主入口：grid_view 消息接收 ───────────────────────────────────────
+    // 緩存最近一次 msg 供 me 到達後重新渲染（避免 myPlayerId 時序問題導致物件欄未過濾自己）
+    var _lastGridMsg = null;
+    // 玩家格在容器內的中心座標（每次 renderMap 更新）
+    var _playerCenterX = 0;
+    var _playerCenterY = 0;
+    // 拖曳偏移（玩家對齊視口中心 + 拖曳偏移 = 當前視覺位置）
+    var _dragX = 0;
+    var _dragY = 0;
+
+    // 套 transform：讓玩家格對齊 viewport 中心 + 用戶拖曳偏移
+    function applyGridTransform() {
+        if (!gridMapEl) return;
+        var vp = gridMapEl.parentElement;
+        if (!vp) return;
+        // 若 viewport 還沒 layout（父 #app 可能還 hidden），clientWidth/Height 會是 0，
+        // 此時算出來的 transform 錯（玩家會偏離中心）→ 延遲 retry 直到 layout 就位
+        if (vp.clientWidth === 0 || vp.clientHeight === 0) {
+            setTimeout(applyGridTransform, 50);
+            return;
+        }
+        var viewCx = vp.clientWidth  / 2;
+        var viewCy = vp.clientHeight / 2;
+        var tx = viewCx - _playerCenterX + _dragX;
+        var ty = viewCy - _playerCenterY + _dragY;
+        gridMapEl.style.transform = 'translate(' + tx + 'px, ' + ty + 'px)';
+    }
+
+    // 回到中心：清拖曳偏移，玩家格重回視口中心
+    window.centerOnPlayer = function (instant) {
+        _dragX = 0;
+        _dragY = 0;
+        // 加臨時 transition 讓回中心平滑（除非 instant）
+        if (!instant && gridMapEl) {
+            gridMapEl.style.transition = 'transform 200ms ease-out';
+            setTimeout(function () { if (gridMapEl) gridMapEl.style.transition = ''; }, 250);
+        }
+        applyGridTransform();
+    };
+
+    // 視口 resize 時重算 transform（保持玩家置中）
+    window.addEventListener('resize', function () { applyGridTransform(); });
+
     window.onGridView = function (msg) {
+        _lastGridMsg = msg;
         mapData.playerX = msg.player_x;
         mapData.playerY = msg.player_y;
         mapData.cells   = msg.cells   || [];
@@ -556,6 +615,13 @@
         }
     };
 
+    // 外部觸發：myPlayerId 更新後重新渲染物件欄和描述欄（過濾「自己」才能生效）
+    window.refreshGridView = function () {
+        if (!_lastGridMsg) return;
+        renderRoomDesc();
+        renderObjectList();
+    };
+
     // ── 初始化 ───────────────────────────────────────────────────────────
     function init() {
         gridMapEl = document.getElementById('gmap-grid');
@@ -565,9 +631,10 @@
         if (!gridMapEl) return; // 非 game.html 頁面，靜默退出
 
         bindMapClick();
+        bindMapDrag();
         bindObjectListClick();
 
-        console.log('[grid-map] v0.20.1 initialized');
+        console.log('[grid-map] v0.20.32 initialized');
     }
 
     if (document.readyState === 'loading') {

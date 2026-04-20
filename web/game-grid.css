@@ -1,5 +1,5 @@
 /**
- * game-grid.css v0.20.18
+ * game-grid.css v0.20.32
  * 方格版 MUD UI 專用樣式
  * 紙色底（#f0e6d3）、等寬字體、無分隔邊線（用留白分區）
  * 依賴 game.css 的 :root CSS 變數（--paper, --ink, --gold 等）
@@ -42,10 +42,9 @@
 .game-grid-header {
   flex: 0 0 36px;
   display: grid;
-  /* 日期欄 auto：依內容撐滿（中文混數字最多 ~12 字 ≈ 168px）
-     日晷欄 36px：剛好容 32px SVG 圓
-     時間欄 auto：「02:10 凌晨」之類 ~7 字 ≈ 90px */
-  grid-template-columns: auto 36px 1fr;
+  /* 1fr 36px 1fr：日期=時間等寬，日晷在幾何中心。
+     日期 12 字 × 13px ≈ 156px，於 420 寬下 1fr = 192px 裝得下 */
+  grid-template-columns: 1fr 36px 1fr;
   background: var(--paper, #f0e6d3);
   border: none;
   border-bottom: none;
@@ -70,7 +69,8 @@
 
 /* 日期靠左（主內容）、日晷置中、時間靠右 */
 #top-bar.game-grid-header > #game-time-date-cell-g { justify-content: flex-start; padding-left: 12px; }
-#top-bar.game-grid-header > #sundial-cell-g        { justify-content: center; padding: 0; }
+#top-bar.game-grid-header > #sundial-cell-g        { justify-content: center; padding: 0; cursor: pointer; }
+#top-bar.game-grid-header > #sundial-cell-g:hover  { background: rgba(139,105,20,0.06); }
 #top-bar.game-grid-header > #clock-cell-g          { justify-content: flex-end; padding-right: 12px; color: var(--ink-light, #6b5a47); }
 
 /* 日晷 SVG 尺寸 */
@@ -175,14 +175,11 @@
   overflow: hidden;
 }
 
-/* 上小：房間描述（無下邊線，與地圖用留白隔開）*/
+/* 上小：房間描述（固定高度，無描述時留白，地圖位置穩定不抖動）*/
 .game-grid-room-desc {
-  flex: 0 0 auto;
-  min-height: 64px;
-  max-height: 110px;
+  flex: 0 0 110px;
   padding: 8px 12px 10px;
   border: none;
-  border-bottom: none;
   background: var(--paper, #f0e6d3);
   overflow-y: auto;
 }
@@ -232,19 +229,27 @@
   color: var(--ink, #2c1e0f);
 }
 
-/* 下大：地圖視口（可捲動）*/
+/* 下大：地圖視口（Google Maps 式 — overflow hidden，無 scrollbar；內容由 transform 位移）*/
 .game-grid-map-viewport {
   flex: 1 1 0;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
   background: var(--paper-light, #f7f0e3);
   position: relative;
+  touch-action: none;  /* 攔截手機原生捲動手勢，交給我們的 pointer drag */
+  cursor: grab;
+  user-select: none;
 }
+.game-grid-map-viewport.dragging { cursor: grabbing; }
 
-/* 地圖容器（動態尺寸，JS 設定）*/
+/* 地圖容器：釘在 viewport 左上，transform translate 來位移（不用 scroll）
+ * 左上基準 + JS 算的 dx,dy = 讓玩家格對齊 viewport 中心 */
 .gmap-grid {
-  position: relative;
-  /* width/height 由 JS 設定 */
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;  /* 拖曳時 GPU 加速 */
 }
 
 /* ── 格子 ─────────────────────────────────────────────────────── */
@@ -287,26 +292,17 @@
   font-weight: 500;
 }
 
-.gmap-player-marker {
-  font-size: 8px;
-  color: var(--gold, #8b6914);
-  margin-top: 1px;
-}
+/* 當前格圓點已砍——格名 + 邊框/底色自身區分足夠，視覺更乾淨 */
 
-/* ── 連線 ────────────────────────────────────────────────────── */
+/* ── 方向 C 短腳（只在當前格向已揭露出口浮出）──────────────── */
+/* tile-RPG 慣例：相鄰即可走，連線不承諾「對面有東西」
+ * 短腳從當前格邊緣突出 gap 的一半，不連到鄰格
+ * 即：「這方向有路」= 意圖提示，不是「那格長什麼樣」的空間編碼 */
 
-.gmap-line {
+.gmap-leg {
   position: absolute;
-  background: var(--ink-faint, #a89880);
-  z-index: 1;
-}
-
-.gmap-line-h {
-  height: 2px;
-}
-
-.gmap-line-v {
-  width: 2px;
+  background: var(--ink, #4a3520);
+  z-index: 2;
 }
 
 /* ── 底欄（無上邊線，用留白與地圖區隔） ─────────────────────── */
@@ -315,6 +311,8 @@
 #bottom-bar.game-grid-footer,
 .game-grid-footer {
   flex: 0 0 auto;
+  /* 覆蓋 game.css 的 #bottom-bar display:flex —— 該 flex 會讓 inner 被擠到 min-content */
+  display: block;
   background: var(--paper, #f0e6d3);
   border: none;
   border-top: none;
@@ -322,21 +320,61 @@
   z-index: 10;
 }
 
-.game-grid-footer-inner {
-  padding: 6px 12px;
+#bottom-bar.game-grid-footer .game-grid-footer-inner,
+.game-grid-footer .game-grid-footer-inner {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;  /* 加大呼吸 */
   display: grid;
   grid-template-columns: 1fr auto 1fr; /* 左 stats | 姓名 | 右 stats */
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+}
+
+/* ── 紙色系四色（紙紅/紙黃/紙藍/紙紫，去飽和暖調襯紙色底）─────── */
+/* 巧思：左肉身（紅氣血+黃體力）| 右神識（藍能量+紫精神）
+ * 紅黃屬陽屬肉、藍紫屬陰屬神——古典五行/陰陽對應 */
+.game-grid-footer {
+  --paper-red:    #b04a4a;  /* 朱砂/赭紅 */
+  --paper-yellow: #c0973b;  /* 硃黃/赭黃 */
+  --paper-blue:   #4a6a8a;  /* 古青/靛 */
+  --paper-purple: #6b4870;  /* 茄紫/靛紫 */
 }
 
 .grid-stats-left,
 .grid-stats-right {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
 }
+
+/* 左側 bar 靠左、右側 bar 靠右（視覺對稱；姓名置中由 grid 1fr auto 1fr 保證）*/
+.grid-stats-left  { justify-self: start; }
+.grid-stats-right { justify-self: end; }
+
+/* 底欄 stat-mini 砍 label 後的純細條樣式 */
+.game-grid-footer .stat-mini {
+  display: block;  /* 覆蓋 game.css 的 flex 排版 */
+  width: 140px;
+}
+.game-grid-footer .stat-mini .stat-track {
+  width: 100%;
+  height: 6px;
+  background: var(--ink-wash, rgba(44,30,15,0.08));
+  border-radius: 3px;
+  overflow: hidden;
+}
+.game-grid-footer .stat-mini .stat-fill {
+  height: 100%;
+  transition: width 0.2s ease;
+}
+
+/* 底欄 4 條 bar 改紙色系（覆蓋 game.css 的墨色版）*/
+.game-grid-footer .stat-fill.hp      { background: var(--paper-red); }
+.game-grid-footer .stat-fill.stamina { background: var(--paper-yellow); }
+.game-grid-footer .stat-fill.energy  { background: var(--paper-blue); }
+.game-grid-footer .stat-fill.spirit  { background: var(--paper-purple); }
 
 .grid-player-name {
   font-weight: bold;

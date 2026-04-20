@@ -27,10 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.20.18">
-	<link rel="stylesheet" href="game.css?v=0.20.18">
+	<link rel="stylesheet" href="style.css?v=0.20.32">
+	<link rel="stylesheet" href="game.css?v=0.20.32">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.20.18" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.20.32" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -153,7 +153,7 @@
 			<div class="bar-cell" id="game-time-date-cell-g">
 				<span id="game-time-date"></span>
 			</div>
-			<div class="bar-cell" id="sundial-cell-g">
+			<div class="bar-cell" id="sundial-cell-g" title="點此回到中心" onclick="window.centerOnPlayer && window.centerOnPlayer()">
 				<svg id="game-time-svg" class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
 					<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
 					<line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8"
@@ -198,13 +198,13 @@
 		<footer id="bottom-bar" class="game-grid-footer">
 			<div class="game-grid-footer-inner">
 				<div class="grid-stats-left">
-					<div class="stat-mini"><label>氣血</label><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
-					<div class="stat-mini"><label>體力</label><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
+					<div class="stat-mini" title="氣血"><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
+					<div class="stat-mini" title="體力"><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
 				</div>
 				<div id="player-name" class="grid-player-name" tabindex="0">姓名</div>
 				<div class="grid-stats-right">
-					<div class="stat-mini"><label>能量</label><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
-					<div class="stat-mini"><label>精神</label><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
+					<div class="stat-mini" title="能量"><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
+					<div class="stat-mini" title="精神"><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
 				</div>
 				<!-- log 輸出（底欄展開區，保留隱藏）-->
 				<div id="log" class="grid-log hidden" style="display:none"></div>
@@ -239,11 +239,11 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.18"></script>
-	<script src="game-ui.js?v=0.20.18"></script>
+	<script src="narrative-markdown.js?v=0.20.32"></script>
+	<script src="game-ui.js?v=0.20.32"></script>
 	<!-- grid-map.js 只在非觀景窗模式需要，但兩種模式都載入無害（沒有 DOM 目標就不動）-->
-	<script src="grid-map.js?v=0.20.18"></script>
-	<script src="main.js?v=0.20.18"></script>
+	<script src="grid-map.js?v=0.20.32"></script>
+	<script src="main.js?v=0.20.32"></script>
 	<script>
 		// grid MUD 模式覆蓋：showGameAfterLogin 直接顯示 #app（已由 hostname 判斷決定哪個是 #app）
 		// 觀景窗模式：closeDrawers / triggerLook 相容 game-ui.js 可能缺的 DOM
@@ -259,7 +259,9 @@
 		}
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.20.18').then(function (reg) {
+				// updateViaCache:'none' 讓瀏覽器檢查 SW 更新時繞 HTTP cache（破 CF 的 4h browser cache TTL 續命）
+				navigator.serviceWorker.register('/sw.js?v=0.20.32', { updateViaCache: 'none' }).then(function (reg) {
+					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
 						w.addEventListener('statechange', function () {
@@ -271,14 +273,7 @@
 				}).catch(function () {});
 			});
 		}
-		document.addEventListener('DOMContentLoaded', function () {
-			if (window.gameConnect) window.gameConnect();
-			document.addEventListener('visibilitychange', function () {
-				if (document.visibilityState === 'visible' && window.gameTryReconnect) {
-					window.gameTryReconnect();
-				}
-			});
-		});
+		// gameConnect + visibilitychange 由 main.js 末尾統一綁定（此處不重複，否則會開兩條 WS 互相踢）
 	</script>
 </body>
 </html>
