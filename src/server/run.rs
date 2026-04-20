@@ -164,8 +164,14 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
     let write_task = tokio::spawn(async move {
         while let Some(msg) = rx.recv().await {
             let text = String::from_utf8_lossy(&msg).into_owned();
-            if sink.send(Message::Text(text.into())).await.is_err() {
-                break;
+            // 10 秒 send timeout——client TCP 半關時防止 write_task 無限卡
+            // 卡住會使 mpsc channel 256 buffer 滿，blocking_send 全卡 → spawn_blocking thread 耗盡 → server 死鎖
+            match tokio::time::timeout(
+                std::time::Duration::from_secs(10),
+                sink.send(Message::Text(text.into())),
+            ).await {
+                Ok(Ok(())) => {}
+                _ => break,  // timeout / error 都中止 write side
             }
         }
     });
@@ -177,7 +183,16 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
         hub: st.hub.clone(),
         cfg: st.cfg.clone(),
     });
-    while let Some(Ok(msg)) = stream.next().await {
+    // 120 秒沒任何訊息視為殭屍連線（手機/瀏覽器半關連線不會主動送 close frame），主動砍
+    // 前端 heartbeat 每 30 秒一次 ping，正常應有 pong 往返不會 timeout
+    loop {
+        let next = tokio::time::timeout(std::time::Duration::from_secs(120), stream.next()).await;
+        let msg = match next {
+            Err(_) => { tracing::info!("ws idle timeout, closing conn_id={conn_id}"); break; }
+            Ok(None) => break,
+            Ok(Some(Err(_))) => break,
+            Ok(Some(Ok(m))) => m,
+        };
         match msg {
             Message::Text(t) => {
                 let c = conn.clone();

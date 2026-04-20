@@ -8,7 +8,7 @@
   "server": {
     "port": "8080",
     "db_path": "data/world.db",
-    "max_websocket_conn": 10,
+    "max_websocket_conn": 500,
     "tick_interval_ms": 500,
     "economy_tick_interval_ms": 1000,
     "chunk_size": 151,

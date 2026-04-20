@@ -52,12 +52,14 @@ impl Session {
         }
     }
 
-    /// 傳送原始 JSON bytes；失敗時回傳 false。
+    /// 傳送原始 JSON bytes；channel 滿或關閉時回傳 false（不阻塞）。
+    /// 改 try_send 不 blocking_send：broadcast 場景下不能因為某 client lagging 就 park
+    /// tokio blocking thread，否則殭屍連線累積會耗盡 blocking pool → server 死鎖。
     pub fn try_send_bytes(&self, msg: Vec<u8>) -> bool {
         let Some(tx) = &self.outbound else {
             return false;
         };
-        tx.blocking_send(msg).is_ok()
+        tx.try_send(msg).is_ok()
     }
 }
 
