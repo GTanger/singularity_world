@@ -49,8 +49,7 @@ src/event/               — 事件常數與紀錄
 src/gametext/            — 文案模板（從 JSON 載入）
 src/server/              — axum HTTP/WebSocket、session、simulation loop
 web/                     — 前端 + dashboard（地圖編輯器 + 資料庫可視化）
-data/rooms/editor/       — 世界房間 JSON（已清空；舊 Azgaar Parser A 產出已移除）
-data/rooms/archive/      — 封存房間（舊浮生城 639 房，歷史參考）
+data/rooms/editor/       — 世界房間 JSON（已清空；grid/hex 世界已不用 room graph）
 data/config/             — 靜態設定（word_elements.json 500 詞元、gamedims、sentence_engine）
 data/runtime/            — 執行期 JSON（archival、summaries、threads、dyads、rumors）
 tools/                   — 本地工具腳本（gitignored，Parser、翻譯腳本等）
@@ -124,13 +123,13 @@ cargo test                                                               # 跑�
 - 止念：壓制意識頻率至趨近零，方能汲取 Token 微波輻射
 - 剝名：殺獸 → 屍體（可整剝/可肢解）→ 剝名取詞元。整剝難度高品質高；肢解後分剝容易品質正常
 - 沃土風、鎂（貨幣）、詞盤、竅穴、念紋（修煉體系）
-- 浮生城：強聚念場城市，電器可正常運作
+- 聚念場內電器可用：城鎮（聚念場 + 綠護）內電器/電子日用正常運作；野外/街面游離輻射未抑區幾不見精密機械（見 `docs/reference/世界觀附篇—電子與精密機械.md`）
 
 ## 地圖管線
 - **現行路線：探索式生成**（觸發式預展開）。玩家揭露黑格 → 後台兩段式（§8.5）生成地形、聚落、資源
 - **聚落佈局**：道路驅動 + 功能格池 + 三層放置公式。見 `docs/design/人類活動地帶聚落五級—規格草案.md` §九
 - **世界骨架**：Azgaar Fantasy Map Generator（地圖 Chia，901 burgs）。錨點整合方案待定
-- **已棄用**：舊 Parser A 產出已清空、Watabou 城市生成器已被 Hex 聚落佈局取代、舊浮生城 639 房封存
+- **已棄用**：舊 Parser A / Watabou 生成器 / 浮生城 room graph 全部取代為 hex+grid 架構
 
 ## 代理入口（Harness）
 - 根目錄 **`AGENTS.md`**：精簡入口與必讀鏈結。
