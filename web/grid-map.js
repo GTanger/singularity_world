@@ -1,6 +1,7 @@
 /**
- * grid-map.js v0.20.32
+ * grid-map.js v0.20.34
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
+ * 階段 2（SW-18）：sw-minimap 區塊填色塊 9×9 純視覺地圖
  *
  * 依賴：
  *   - main.js 的 WebSocket 已就位，透過 window.gameSend 送出指令
@@ -9,6 +10,7 @@
  * 佈局（四區塊）：
  *   [頂欄：日晷時間] — 由 index.html / main.js 掌管
  *   [中左：物件欄][中右：上小房間描述 + 下大地圖]
+ *   [log+map row：左 log 暫空 + 右 160×160 色塊 minimap]
  *   [底欄：玩家狀態] — 由 index.html / main.js 掌管
  */
 (function () {
@@ -62,10 +64,38 @@
         objects: []     // ViewObject[]
     };
 
+    // ── 地形色映射表（對應後端 GridCellView.terrain，階段 5b 前寫死）────────
+    // terrain 值來自 src/server/protocol.rs GridCellView：String，如 "Forest"
+    var TERRAIN_COLOR = {
+        'Forest':      '#6b8e5a',   // 森林：深綠
+        'ForestLight': '#7fa868',   // 疏林：中綠
+        'ForestHeavy': '#4d7040',   // 密林：暗綠
+        'Grassland':   '#a8b06a',   // 草原：黃綠
+        'Plain':       '#b8ba82',   // 平原：淡黃綠
+        'Hills':       '#9a7a55',   // 丘陵：棕褐
+        'Mountain':    '#7a6a5a',   // 山：灰褐
+        'Swamp':       '#7a9080',   // 沼澤：藍綠灰
+        'Desert':      '#d8c89a',   // 沙漠：沙黃
+        'Snow':        '#d8dce8',   // 雪地：淡藍白
+        'Water':       '#6a8aa8',   // 水：藍灰
+        'River':       '#7a9ab8',   // 河流：淡藍
+        'Ocean':       '#5a7a9a',   // 海洋：深藍
+        'Road':        '#b0a090',   // 道路：灰褐
+        'Village':     '#d4a94a',   // 村落：金黃
+        'Town':        '#c49040',   // 城鎮：深金
+        'Ruin':        '#9a8878'    // 廢墟：灰棕
+    };
+    // 未知地形預設色（探索中 / 後端未送 terrain）
+    var TERRAIN_COLOR_UNKNOWN = '#2a2418';  // 黑格：未探索
+
+    // ── 地標墨點（階段 5b 加 has_landmark 後實啟用；現在 placeholder false）───
+    // 未來：if (cell.has_landmark) el.classList.add('sw-minimap-cell--landmark');
+
     // ── DOM 引用 ─────────────────────────────────────────────────────────
     var gridMapEl = null;
     var roomDescEl = null;
     var objectListEl = null;
+    var minimapContainerEl = null;  // .sw-minimap（#sw-minimap-container）
 
     // ── 工具：方向 ←→ (dx, dy) 轉換（只走四向）──────────────────────────
     var DIR_DELTA = {
@@ -271,6 +301,74 @@
         // 跟 transform 架構衝突，造成玩家移動後視覺偏移）
     }
 
+    // ── 色塊 Minimap 渲染（SW-18，階段 2）────────────────────────────────
+    /**
+     * 9×9 色塊網格，玩家格固定在正中央（row 4, col 4，0-indexed）。
+     * 從 mapData 取玩家位置為中心，向四方各延伸 4 格。
+     * 只用 revealedCells + cellMap，不探索新格，不接受任何互動。
+     * 容器已由 CSS 鎖 160×160px（.sw-minimap）。
+     */
+    function renderMinimap() {
+        if (!minimapContainerEl) return;
+
+        var GRID_SIZE = 9;           // 9×9
+        var HALF = 4;                // 玩家在中心：索引 4（0-based）
+        var px = mapData.playerX;
+        var py = mapData.playerY;
+
+        // 建 cell lookup（本次視野）
+        var cellMap = {};
+        for (var i = 0; i < mapData.cells.length; i++) {
+            var c = mapData.cells[i];
+            cellMap[c.x + ',' + c.y] = c;
+        }
+
+        // 清空容器，建 grid div（#sw-minimap-grid 若已存在就重用，否則新建）
+        var gridEl = minimapContainerEl.querySelector('.sw-minimap-grid');
+        if (!gridEl) {
+            gridEl = document.createElement('div');
+            gridEl.className = 'sw-minimap-grid';
+            minimapContainerEl.appendChild(gridEl);
+        }
+        gridEl.innerHTML = '';
+
+        // 渲染 9×9，row 0 = 北 +4，row 8 = 南 -4（螢幕向下 = 遊戲向南）
+        for (var row = 0; row < GRID_SIZE; row++) {
+            for (var col = 0; col < GRID_SIZE; col++) {
+                var worldX = px + (col - HALF);       // col 0 = px-4, col 4 = px, col 8 = px+4
+                var worldY = py + (HALF - row);       // row 0 = py+4（北）, row 4 = py, row 8 = py-4（南）
+                var key = worldX + ',' + worldY;
+
+                var cellEl = document.createElement('div');
+                cellEl.className = 'sw-minimap-cell';
+
+                var isPlayer = (row === HALF && col === HALF);
+                var isRevealed = revealedCells.has(key);
+                var cell = cellMap[key];
+
+                if (isPlayer) {
+                    // 玩家格：優先顯示地形色，加高亮邊框
+                    var playerTerrain = cell ? cell.terrain : '';
+                    cellEl.style.backgroundColor = TERRAIN_COLOR[playerTerrain] || TERRAIN_COLOR_UNKNOWN;
+                    cellEl.classList.add('sw-minimap-cell--here');
+                } else if (isRevealed && cell) {
+                    // 已探索格：顯示地形色
+                    cellEl.style.backgroundColor = TERRAIN_COLOR[cell.terrain] || TERRAIN_COLOR_UNKNOWN;
+                    // 地標墨點（placeholder：階段 5b 啟用）
+                    // if (cell.has_landmark) cellEl.classList.add('sw-minimap-cell--landmark');
+                } else if (isRevealed) {
+                    // 在 revealedCells 但本次視野沒帶資料——已探索但未知地形，用暗色
+                    cellEl.style.backgroundColor = '#5a5040';
+                } else {
+                    // 未探索：黑格
+                    cellEl.style.backgroundColor = TERRAIN_COLOR_UNKNOWN;
+                }
+
+                gridEl.appendChild(cellEl);
+            }
+        }
+    }
+
     // ── 房間描述渲染 ──────────────────────────────────────────────────────
     function renderRoomDesc() {
         if (!roomDescEl) return;
@@ -439,71 +537,17 @@
     }
 
     // ── 事件綁定 ─────────────────────────────────────────────────────────
+    // SW-18 階段 2：地圖降為純視覺 minimap，舊 gmap-grid 上的點擊移動
+    // 已遷移至物件欄出口卡片（階段 3），此處 gate 掉不綁定
     function bindMapClick() {
-        if (!gridMapEl) return;
-        gridMapEl.addEventListener('click', function (e) {
-            // 若這次 pointer 是拖曳動作，click 不視為移動意圖
-            if (_suppressNextClick) { _suppressNextClick = false; return; }
-            var cell = e.target.closest('.gmap-cell');
-            if (!cell) return;
-            var tx = parseInt(cell.getAttribute('data-x'), 10);
-            var ty = parseInt(cell.getAttribute('data-y'), 10);
-            if (isNaN(tx) || isNaN(ty)) return;
-            if (tx === mapData.playerX && ty === mapData.playerY) return; // 自己的格子不移動
-            moveToCell(tx, ty);
-        });
+        // gate：移動輸入由物件欄出口卡片承接（階段 3），地圖不接受點擊
+        // （函式保留供未來恢復，不刪）
     }
 
-    // ── Google Maps 式拖曳：pointerdown/move/up 改 _dragX/_dragY ──────────
+    // ── Google Maps 式拖曳：SW-18 gate 掉（地圖純視覺，不接受拖曳）──────
     var _suppressNextClick = false;
     function bindMapDrag() {
-        if (!gridMapEl) return;
-        var vp = gridMapEl.parentElement;
-        if (!vp) return;
-        var isTracking = false;
-        var dragStarted = false;  // 只有 move 超過閾值才視為真正拖曳
-        var startX = 0, startY = 0, startDragX = 0, startDragY = 0;
-        var activePointerId = null;
-        var DRAG_THRESHOLD = 5;
-
-        vp.addEventListener('pointerdown', function (e) {
-            if (e.button !== undefined && e.button !== 0) return;  // 只處理主鍵
-            isTracking = true;
-            dragStarted = false;
-            activePointerId = e.pointerId;
-            startX = e.clientX;
-            startY = e.clientY;
-            startDragX = _dragX;
-            startDragY = _dragY;
-        });
-        vp.addEventListener('pointermove', function (e) {
-            if (!isTracking || e.pointerId !== activePointerId) return;
-            var dx = e.clientX - startX;
-            var dy = e.clientY - startY;
-            if (!dragStarted) {
-                if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
-                dragStarted = true;
-                vp.classList.add('dragging');
-                try { vp.setPointerCapture(activePointerId); } catch (_) {}
-            }
-            _dragX = startDragX + dx;
-            _dragY = startDragY + dy;
-            applyGridTransform();
-        });
-        function endDrag(e) {
-            if (!isTracking) return;
-            if (e.pointerId !== undefined && e.pointerId !== activePointerId) return;
-            isTracking = false;
-            if (dragStarted) {
-                _suppressNextClick = true;  // 拖曳結束的 click 事件不應被 cell 接住
-                vp.classList.remove('dragging');
-                try { vp.releasePointerCapture(activePointerId); } catch (_) {}
-            }
-            dragStarted = false;
-            activePointerId = null;
-        }
-        vp.addEventListener('pointerup', endDrag);
-        vp.addEventListener('pointercancel', endDrag);
+        // gate：minimap 純視覺，不接受拖曳互動（函式保留供未來恢復）
     }
 
     function bindObjectListClick() {
@@ -604,6 +648,7 @@
         revealedCells.add(mapData.playerX + ',' + mapData.playerY);
 
         renderMap();
+        renderMinimap();
         renderRoomDesc();
         renderObjectList();
 
@@ -627,6 +672,7 @@
         gridMapEl = document.getElementById('gmap-grid');
         roomDescEl = document.getElementById('mud-room-desc');
         objectListEl = document.getElementById('mud-obj-list');
+        minimapContainerEl = document.getElementById('sw-minimap-container');
 
         if (!gridMapEl) return; // 非 game.html 頁面，靜默退出
 
@@ -634,7 +680,7 @@
         bindMapDrag();
         bindObjectListClick();
 
-        console.log('[grid-map] v0.20.32 initialized');
+        console.log('[grid-map] v0.20.34 initialized | SW-18 色塊 minimap');
     }
 
     if (document.readyState === 'loading') {
