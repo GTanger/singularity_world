@@ -100,3 +100,6 @@ remote_center.log
 
 # Ad-hoc 備份檔（手動 cp xxx.bak.<timestamp>）
 *.bak.*
+
+# 地球原始資料（SRTM 高程 + OSM landuse，共 ~600MB，不入庫）
+data/earth/

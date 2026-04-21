@@ -41,6 +41,10 @@ r2d2 = "0.8.10"
 # 理由：std::sync::RwLock 的 fairness 依賴 OS、writer 頻繁時 reader 會卡；
 # parking_lot 有 eventual fairness（critical section >1ms 強制公平 unlock）
 parking_lot = "0.12"
+# 世界生成噪聲（Perlin/Simplex），WorldGen 離線地形派生用
+noise = "0.9"
+# Earth import：SRTM .hgt 二進位讀取
+byteorder = "1"
 
 [[bin]]
 name = "checkrooms"
@@ -61,6 +65,14 @@ path = "src/bin/generate_embeddings.rs"
 [[bin]]
 name = "verify_embeddings"
 path = "src/bin/verify_embeddings.rs"
+
+[[bin]]
+name = "worldgen-preview"
+path = "src/bin/worldgen_preview.rs"
+
+[[bin]]
+name = "earth-elevation-preview"
+path = "src/bin/earth_elevation_preview.rs"
 
 [dev-dependencies]
 tempfile = "3"
