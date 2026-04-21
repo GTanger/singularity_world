@@ -146,16 +146,18 @@ pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
 
     let mut t = conn.transaction()?;
 
-    // 全量替換：清空後重寫（對稱 hex_world.rs persist_grid 的清空策略）
-    t.execute("DELETE FROM grid_cells", &[])?;
-
+    // 增量 upsert（不再全表 DELETE + re-INSERT，避免 600+ 行交易卡住 grid lock）
     for cell in grid.cells() {
         let terrain = enum_snake_string(&cell.terrain)?;
         let tags = serde_json::to_string(&cell.tags)?;
         let objects = serde_json::to_string(&cell.objects)?;
         t.execute(
             "INSERT INTO grid_cells (x, y, terrain, name, zone, tags, description, objects, explored)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+             ON CONFLICT (x, y) DO UPDATE SET
+                terrain=EXCLUDED.terrain, name=EXCLUDED.name, zone=EXCLUDED.zone,
+                tags=EXCLUDED.tags, description=EXCLUDED.description,
+                objects=EXCLUDED.objects, explored=EXCLUDED.explored",
             &[
                 &cell.coord.x,
                 &cell.coord.y,

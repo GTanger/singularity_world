@@ -14,7 +14,7 @@
 //! - `std::thread::spawn` 無界 fire-and-forget
 //! - `Store::persist_entities` 寫整份 JSON 到檔案（違反 CLAUDE.md「PG 權威」硬規則）
 
-use crate::store::{ArchivalEntry, Entity};
+use crate::store::{ArchivalEntry, Entity, Item, NpcRumor};
 use crate::store::sql::DbPool;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::mpsc::{self, SyncSender};
@@ -28,6 +28,7 @@ use std::time::Duration;
 const QUEUE_CAP: usize = 1024;
 
 /// 寫入操作的統一表示。每加一個 domain 多一個 variant。
+#[allow(clippy::large_enum_variant)]
 pub enum WriteOp {
     UpsertEntity(Entity),
     AppendEvent {
@@ -49,6 +50,72 @@ pub enum WriteOp {
         entity_id: String,
         activity: String,
     },
+    /// 批量同步傳聞：upsert 存活的 + delete 過期的（decay_npc_rumors 每 30s 觸發）
+    SyncNpcRumors {
+        upserts: Vec<NpcRumor>,
+        deletes: Vec<String>,
+    },
+    InsertAssignment {
+        entity_id: String,
+        occupation_id: String,
+        venue_id: String,
+        assigned_by: String,
+    },
+    RemoveAssignments {
+        entity_id: String,
+    },
+    InsertSchedule {
+        entity_id: String,
+        work_room: String,
+        rest_room: String,
+        shift_start: i32,
+        shift_end: i32,
+    },
+    RemoveSchedule {
+        entity_id: String,
+    },
+    RecordMeet {
+        entity_id: String,
+        subject_id: String,
+    },
+    SetFavorability {
+        entity_id: String,
+        subject_id: String,
+        new_fav: i32,
+    },
+    SetNpcSummary {
+        entity_id: String,
+        summary: String,
+    },
+    SetNpcNpcSummary {
+        dyad_key: String,
+        summary: String,
+    },
+    SetNpcThread {
+        key: String,
+        topic_type: String,
+        phase: String,
+        anchors_raw: String,
+        turn_count: i32,
+        cooldown_until: i64,
+        updated_at: i64,
+    },
+    DeleteNpcThread {
+        key: String,
+    },
+    SetNpcDyad {
+        key: String,
+        a_id: String,
+        b_id: String,
+        familiarity: i32,
+        sentiment: i32,
+        tags_raw: String,
+        updated_at: i64,
+    },
+    TrimArchival {
+        max: i64,
+    },
+    UpsertItem(Item),
 }
 
 struct Service {
@@ -170,6 +237,124 @@ fn handle_op(pool: &DbPool, op: &WriteOp) {
             } else {
                 Err(anyhow::anyhow!("pool.get failed"))
             }
+        }
+        WriteOp::SyncNpcRumors { upserts, deletes } => {
+            let r1 = super::rumor::delete_batch(pool, deletes);
+            let r2 = super::rumor::upsert_batch(pool, upserts);
+            r1.and(r2)
+        }
+        WriteOp::InsertAssignment { entity_id, occupation_id, venue_id, assigned_by } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO assignments (entity_id, occupation_id, venue_id, assigned_by) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING",
+                    &[entity_id, occupation_id, venue_id, assigned_by],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::RemoveAssignments { entity_id } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute("DELETE FROM assignments WHERE entity_id = $1", &[entity_id])
+                    .map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::InsertSchedule { entity_id, work_room, rest_room, shift_start, shift_end } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO schedules (entity_id, work_room, rest_room, shift_start, shift_end) VALUES ($1, $2, $3, $4, $5) \
+                     ON CONFLICT (entity_id) DO UPDATE SET work_room=EXCLUDED.work_room, rest_room=EXCLUDED.rest_room, shift_start=EXCLUDED.shift_start, shift_end=EXCLUDED.shift_end",
+                    &[entity_id, work_room, rest_room, shift_start, shift_end],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::RemoveSchedule { entity_id } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute("DELETE FROM schedules WHERE entity_id = $1", &[entity_id])
+                    .map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::RecordMeet { entity_id, subject_id } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO npc_memories (entity_id, subject_id, meet_count) VALUES ($1, $2, 1) \
+                     ON CONFLICT(entity_id, subject_id) DO UPDATE SET meet_count = npc_memories.meet_count + 1",
+                    &[entity_id, subject_id],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::SetFavorability { entity_id, subject_id, new_fav } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO npc_memories (entity_id, subject_id, favorability) VALUES ($1, $2, $3) \
+                     ON CONFLICT(entity_id, subject_id) DO UPDATE SET favorability = $3",
+                    &[entity_id, subject_id, new_fav],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::SetNpcSummary { entity_id, summary } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO npc_summaries (entity_id, summary) VALUES ($1, $2) \
+                     ON CONFLICT(entity_id) DO UPDATE SET summary=EXCLUDED.summary",
+                    &[entity_id, summary],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::SetNpcNpcSummary { dyad_key, summary } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO npc_npc_summaries (dyad_key, summary) VALUES ($1, $2) \
+                     ON CONFLICT(dyad_key) DO UPDATE SET summary=EXCLUDED.summary",
+                    &[dyad_key, summary],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::SetNpcThread { key, topic_type, phase, anchors_raw, turn_count, cooldown_until, updated_at } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO npc_threads (thread_key, topic_type, phase, anchors, turn_count, cooldown_until, updated_at) \
+                     VALUES ($1, $2, $3, $4, $5, $6, $7) \
+                     ON CONFLICT(thread_key) DO UPDATE SET topic_type=EXCLUDED.topic_type, phase=EXCLUDED.phase, \
+                     anchors=EXCLUDED.anchors, turn_count=EXCLUDED.turn_count, cooldown_until=EXCLUDED.cooldown_until, updated_at=EXCLUDED.updated_at",
+                    &[key, topic_type, phase, anchors_raw, turn_count, cooldown_until, updated_at],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::DeleteNpcThread { key } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute("DELETE FROM npc_threads WHERE thread_key = $1", &[key])
+                    .map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::SetNpcDyad { key, a_id, b_id, familiarity, sentiment, tags_raw, updated_at } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO npc_dyads (dyad_key, a_id, b_id, familiarity, sentiment, tags, updated_at) \
+                     VALUES ($1, $2, $3, $4, $5, $6, $7) \
+                     ON CONFLICT(dyad_key) DO UPDATE SET familiarity=EXCLUDED.familiarity, sentiment=EXCLUDED.sentiment, \
+                     tags=EXCLUDED.tags, updated_at=EXCLUDED.updated_at",
+                    &[key, a_id, b_id, familiarity, sentiment, tags_raw, updated_at],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::TrimArchival { max } => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "DELETE FROM archival WHERE id NOT IN (SELECT id FROM (SELECT id, row_number() OVER (PARTITION BY entity_id ORDER BY created_at DESC, id DESC) as rn FROM archival) t WHERE rn <= $1)",
+                    &[max],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
+        }
+        WriteOp::UpsertItem(it) => {
+            pool.get().map_err(|e| anyhow::anyhow!(e)).and_then(|mut c| {
+                c.execute(
+                    "INSERT INTO items (id, name, slot, item_type, weight, stackable, denomination, description, vit_bonus, dex_bonus, atk_bonus) \
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) \
+                     ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name, slot=EXCLUDED.slot, item_type=EXCLUDED.item_type, \
+                     weight=EXCLUDED.weight, stackable=EXCLUDED.stackable, denomination=EXCLUDED.denomination, \
+                     description=EXCLUDED.description, vit_bonus=EXCLUDED.vit_bonus, dex_bonus=EXCLUDED.dex_bonus, atk_bonus=EXCLUDED.atk_bonus",
+                    &[&it.id, &it.name, &it.slot, &it.item_type, &it.weight, &it.stackable, &it.denomination, &it.description, &it.vit_bonus, &it.dex_bonus, &it.atk_bonus],
+                ).map(|_| ()).map_err(|e| anyhow::anyhow!(e))
+            })
         }
     };
     if let Err(err) = r {

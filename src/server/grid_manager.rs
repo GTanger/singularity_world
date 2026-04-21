@@ -60,19 +60,31 @@ pub fn get_runtime_square_grid() -> Option<SquareGrid> {
 /// 以可變引用操作正方格地圖。僅在格數變動時寫回 PG。
 ///
 /// 用於揭露新格、資源扣量、NPC 路徑標記等需要改動地圖的場景。
+///
+/// **鎖策略**：callback 執行和 PG 寫入分開。callback 在 grid write lock 內跑；
+/// 若需寫 PG，clone snapshot 後釋放鎖、在無鎖狀態做 PG IO。
+/// 避免快速連點移動時 600+ 行 INSERT 把 grid lock 霸佔秒級、整個 server 卡死。
 pub fn with_square_grid_mut<F, R>(f: F) -> Option<R>
 where
     F: FnOnce(&mut SquareGrid) -> R,
 {
     let st = grid_state();
-    let mut grid = st.grid.write().ok()?;
-    let before = grid.len();
-    let result = f(&mut grid);
-    if grid.len() != before || grid.dirty() {
-        if let Err(e) = save_square_grid_to_pg(&grid) {
+    let (result, snapshot) = {
+        let mut grid = st.grid.write().ok()?;
+        let before = grid.len();
+        let result = f(&mut grid);
+        let snapshot = if grid.len() != before || grid.dirty() {
+            grid.clear_dirty();
+            Some(grid.clone())
+        } else {
+            None
+        };
+        (result, snapshot)
+    }; // grid write lock 在此釋放
+
+    if let Some(snap) = snapshot
+        && let Err(e) = save_square_grid_to_pg(&snap) {
             tracing::warn!("with_square_grid_mut: PG 寫入失敗：{e}");
         }
-        grid.clear_dirty();
-    }
     Some(result)
 }

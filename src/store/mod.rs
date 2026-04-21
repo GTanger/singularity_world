@@ -1642,38 +1642,6 @@ impl Store {
     //  PostgreSQL 單筆寫入輔助
     // ══════════════════════════════════════
 
-    /// 單筆實體 upsert 到 PostgreSQL。
-    fn pg_upsert_entity(&self, e: &Entity) {
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let _ = conn.execute(
-                    "INSERT INTO entities (id, kind, display_char, x, y, move_state, target_x, target_y,
-                        walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
-                        created_at, gender, soul_seed, display_title, activated_nodes,
-                        equipment_slots, inventory, disposition, current_activity, hex_q, hex_r,
-                        grid_x, grid_y)
-                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
-                     ON CONFLICT (id) DO UPDATE SET
-                        kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
-                        move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
-                        walk_or_run=EXCLUDED.walk_or_run, move_started_at=EXCLUDED.move_started_at,
-                        vit=EXCLUDED.vit, qi=EXCLUDED.qi, dex=EXCLUDED.dex, magnesium=EXCLUDED.magnesium,
-                        last_observed_at=EXCLUDED.last_observed_at, created_at=EXCLUDED.created_at,
-                        gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
-                        activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
-                        inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
-                        current_activity=EXCLUDED.current_activity, hex_q=EXCLUDED.hex_q, hex_r=EXCLUDED.hex_r,
-                        grid_x=EXCLUDED.grid_x, grid_y=EXCLUDED.grid_y",
-                    &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
-                      &e.target_x, &e.target_y, &e.walk_or_run, &e.move_started_at,
-                      &e.vit, &e.qi, &e.dex, &e.magnesium, &e.last_observed_at,
-                      &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
-                      &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
-                      &e.current_activity, &e.hex_q, &e.hex_r, &e.grid_x, &e.grid_y],
-                );
-            }
-        }
-    }
 
     // ══════════════════════════════════════
     //  CRUD 方法 — entity_rooms
@@ -1842,14 +1810,12 @@ impl Store {
         self.entities.get_mut(from_id).unwrap().magnesium = from_mg - amount;
         let to_mg = self.entities.get(to_id).unwrap().magnesium;
         self.entities.get_mut(to_id).unwrap().magnesium = to_mg + amount;
-        // PG 只更新鎂欄位，比全欄位 upsert 更高效
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let new_from = from_mg - amount;
-                let new_to = to_mg + amount;
-                let _ = conn.execute("UPDATE entities SET magnesium = $1 WHERE id = $2", &[&new_from, &from_id]);
-                let _ = conn.execute("UPDATE entities SET magnesium = $1 WHERE id = $2", &[&new_to, &to_id]);
-            }
+        // 走 writer queue：兩筆 entity upsert，不在 store lock 裡做 PG IO
+        if let Some(from_e) = self.entities.get(from_id) {
+            crate::pg::writer::submit(crate::pg::writer::WriteOp::UpsertEntity(from_e.clone()));
+        }
+        if let Some(to_e) = self.entities.get(to_id) {
+            crate::pg::writer::submit(crate::pg::writer::WriteOp::UpsertEntity(to_e.clone()));
         }
         self.persist_entities()
     }
@@ -1976,25 +1942,20 @@ impl Store {
             venue_id: venue_id.to_string(),
             assigned_by: assigned_by.to_string(),
         });
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let _ = conn.execute(
-                    "INSERT INTO assignments (entity_id, occupation_id, venue_id, assigned_by)
-                     VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING",
-                    &[&entity_id, &occupation_id, &venue_id, &assigned_by],
-                );
-            }
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::InsertAssignment {
+            entity_id: entity_id.to_string(),
+            occupation_id: occupation_id.to_string(),
+            venue_id: venue_id.to_string(),
+            assigned_by: assigned_by.to_string(),
+        });
         self.persist_assignments()
     }
 
     pub fn remove_assignments_for_entity(&mut self, entity_id: &str) -> anyhow::Result<()> {
         self.assignments.remove(entity_id);
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let _ = conn.execute("DELETE FROM assignments WHERE entity_id = $1", &[&entity_id]);
-            }
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::RemoveAssignments {
+            entity_id: entity_id.to_string(),
+        });
         self.persist_assignments()
     }
 
@@ -2014,28 +1975,21 @@ impl Store {
             shift_start,
             shift_end,
         });
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let _ = conn.execute(
-                    "INSERT INTO schedules (entity_id, work_room, rest_room, shift_start, shift_end)
-                     VALUES ($1, $2, $3, $4, $5)
-                     ON CONFLICT (entity_id) DO UPDATE SET
-                        work_room=EXCLUDED.work_room, rest_room=EXCLUDED.rest_room,
-                        shift_start=EXCLUDED.shift_start, shift_end=EXCLUDED.shift_end",
-                    &[&entity_id, &work_room, &rest_room, &shift_start, &shift_end],
-                );
-            }
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::InsertSchedule {
+            entity_id: entity_id.to_string(),
+            work_room: work_room.to_string(),
+            rest_room: rest_room.to_string(),
+            shift_start,
+            shift_end,
+        });
         self.persist_schedules()
     }
 
     pub fn remove_schedule_for_entity(&mut self, entity_id: &str) -> anyhow::Result<()> {
         self.schedules.remove(entity_id);
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let _ = conn.execute("DELETE FROM schedules WHERE entity_id = $1", &[&entity_id]);
-            }
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::RemoveSchedule {
+            entity_id: entity_id.to_string(),
+        });
         self.persist_schedules()
     }
 
@@ -2048,20 +2002,7 @@ impl Store {
     }
 
     pub fn put_item(&mut self, it: Item) -> anyhow::Result<()> {
-        if let Some(pool) = &self.db_pool {
-            if let Ok(mut conn) = pool.get() {
-                let _ = conn.execute(
-                    "INSERT INTO items (id, name, slot, item_type, weight, stackable, denomination, description, vit_bonus, dex_bonus, atk_bonus)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-                     ON CONFLICT (id) DO UPDATE SET
-                        name=EXCLUDED.name, slot=EXCLUDED.slot, item_type=EXCLUDED.item_type,
-                        weight=EXCLUDED.weight, stackable=EXCLUDED.stackable,
-                        denomination=EXCLUDED.denomination, description=EXCLUDED.description,
-                        vit_bonus=EXCLUDED.vit_bonus, dex_bonus=EXCLUDED.dex_bonus, atk_bonus=EXCLUDED.atk_bonus",
-                    &[&it.id, &it.name, &it.slot, &it.item_type, &it.weight, &it.stackable, &it.denomination, &it.description, &it.vit_bonus, &it.dex_bonus, &it.atk_bonus],
-                );
-            }
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::UpsertItem(it.clone()));
         self.items.insert(it.id.clone(), it);
         self.persist_items()
     }
@@ -2070,17 +2011,14 @@ impl Store {
     //  CRUD 方法 — Event Log
     // ══════════════════════════════════════
 
-    /// 2026-04-20 改 &self：只讀 db_pool 做同步 PG IO，不動 store state。
-    /// 舊版 &mut self → 所有 caller 拿 store write lock 做 blocking PG query，
-    /// 大量 event 寫入時 writer 霸佔 store lock 幾秒，把所有 reader（例如 login 的 get_entity）卡死。
+    /// PG 寫入走 writer queue，不阻塞任何 lock。
     pub fn append_event(&self, at: i64, entity_id: &str, event_type: &str, payload: &str) -> anyhow::Result<()> {
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            conn.execute(
-                "INSERT INTO event_log (entity_id, event_type, payload, created_at) VALUES ($1, $2, $3, $4)",
-                &[&entity_id, &event_type, &payload, &at],
-            )?;
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::AppendEvent {
+            at,
+            entity_id: entity_id.to_string(),
+            event_type: event_type.to_string(),
+            payload: payload.to_string(),
+        });
         Ok(())
     }
 
@@ -2154,14 +2092,10 @@ impl Store {
     // ══════════════════════════════════════
 
     pub fn set_auth(&mut self, entity_id: &str, password_hash: &str) -> anyhow::Result<()> {
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            conn.execute(
-                "INSERT INTO auth (entity_id, password_hash) VALUES ($1, $2) 
-                 ON CONFLICT(entity_id) DO UPDATE SET password_hash=EXCLUDED.password_hash",
-                &[&entity_id, &password_hash],
-            )?;
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetAuth {
+            entity_id: entity_id.to_string(),
+            password_hash: password_hash.to_string(),
+        });
         Ok(())
     }
 
@@ -2180,13 +2114,7 @@ impl Store {
     // ══════════════════════════════════════
 
     pub fn append_archival(&mut self, entry: ArchivalEntry) -> anyhow::Result<()> {
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            conn.execute(
-                "INSERT INTO archival (entity_id, content, tag, created_at) VALUES ($1, $2, $3, $4)",
-                &[&entry.entity_id, &entry.content, &entry.tag, &entry.created_at],
-            )?;
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::AppendArchival(entry));
         Ok(())
     }
 
@@ -2212,19 +2140,9 @@ impl Store {
     }
 
     pub fn trim_archival_per_entity(&mut self, max: usize) {
-        if let Some(pool) = &self.db_pool
-            && let Ok(mut conn) = pool.get() {
-                let max_i64 = max as i64;
-                let _ = conn.execute(
-                    "DELETE FROM archival WHERE id NOT IN (
-                        SELECT id FROM (
-                            SELECT id, row_number() OVER (PARTITION BY entity_id ORDER BY created_at DESC, id DESC) as rn
-                            FROM archival
-                        ) t WHERE rn <= $1
-                    )",
-                    &[&max_i64],
-                );
-            }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::TrimArchival {
+            max: max as i64,
+        });
     }
 
     // ══════════════════════════════════════
@@ -2250,30 +2168,23 @@ impl Store {
     }
 
     pub fn record_meet(&mut self, entity_id: &str, subject_id: &str) -> anyhow::Result<()> {
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            conn.execute(
-                "INSERT INTO npc_memories (entity_id, subject_id, meet_count) VALUES ($1, $2, 1) 
-                 ON CONFLICT(entity_id, subject_id) DO UPDATE SET meet_count = npc_memories.meet_count + 1",
-                &[&entity_id, &subject_id],
-            )?;
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::RecordMeet {
+            entity_id: entity_id.to_string(),
+            subject_id: subject_id.to_string(),
+        });
         Ok(())
     }
 
     pub fn adjust_favorability(&mut self, entity_id: &str, subject_id: &str, delta: i32) -> anyhow::Result<()> {
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            let old_mem = self.get_npc_memory(entity_id, subject_id);
-            let old_fav = old_mem.map_or(0, |m| m.favorability);
-            let new_fav = (old_fav + delta).clamp(-100, 100);
-            
-            conn.execute(
-                "INSERT INTO npc_memories (entity_id, subject_id, favorability) VALUES ($1, $2, $3)
-                 ON CONFLICT(entity_id, subject_id) DO UPDATE SET favorability = $3",
-                &[&entity_id, &subject_id, &new_fav],
-            )?;
-        }
+        // 讀舊值仍走 PG（快、單次 query），寫入走 writer queue
+        let old_mem = self.get_npc_memory(entity_id, subject_id);
+        let old_fav = old_mem.map_or(0, |m| m.favorability);
+        let new_fav = (old_fav + delta).clamp(-100, 100);
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetFavorability {
+            entity_id: entity_id.to_string(),
+            subject_id: subject_id.to_string(),
+            new_fav,
+        });
         Ok(())
     }
 
@@ -2292,14 +2203,10 @@ impl Store {
     }
 
     pub fn set_npc_summary(&mut self, entity_id: &str, summary: &str) -> anyhow::Result<()> {
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            conn.execute(
-                "INSERT INTO npc_summaries (entity_id, summary) VALUES ($1, $2) 
-                 ON CONFLICT(entity_id) DO UPDATE SET summary=EXCLUDED.summary",
-                &[&entity_id, &summary],
-            )?;
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetNpcSummary {
+            entity_id: entity_id.to_string(),
+            summary: summary.to_string(),
+        });
         Ok(())
     }
 
@@ -2316,14 +2223,10 @@ impl Store {
 
     pub fn set_npc_npc_summary(&mut self, id_a: &str, id_b: &str, summary: &str) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            conn.execute(
-                "INSERT INTO npc_npc_summaries (dyad_key, summary) VALUES ($1, $2) 
-                 ON CONFLICT(dyad_key) DO UPDATE SET summary=EXCLUDED.summary",
-                &[&key, &summary],
-            )?;
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetNpcNpcSummary {
+            dyad_key: key,
+            summary: summary.to_string(),
+        });
         Ok(())
     }
 
@@ -2358,32 +2261,25 @@ impl Store {
 
     pub fn set_npc_thread(&mut self, id_a: &str, id_b: &str, t: NpcThread) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            let anchors_raw = serde_json::to_string(&t.anchors).unwrap_or_else(|_| "[]".to_string());
-            conn.execute(
-                "INSERT INTO npc_threads (thread_key, topic_type, phase, anchors, turn_count, cooldown_until, updated_at)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7)
-                 ON CONFLICT(thread_key) DO UPDATE SET 
-                    topic_type=EXCLUDED.topic_type, 
-                    phase=EXCLUDED.phase, 
-                    anchors=EXCLUDED.anchors, 
-                    turn_count=EXCLUDED.turn_count, 
-                    cooldown_until=EXCLUDED.cooldown_until, 
-                    updated_at=EXCLUDED.updated_at",
-                &[&key, &t.topic_type, &t.phase, &anchors_raw, &t.turn_count, &t.cooldown_until, &t.updated_at],
-            )?;
-        }
+        let anchors_raw = serde_json::to_string(&t.anchors).unwrap_or_else(|_| "[]".to_string());
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetNpcThread {
+            key: key.clone(),
+            topic_type: t.topic_type.clone(),
+            phase: t.phase.clone(),
+            anchors_raw,
+            turn_count: t.turn_count,
+            cooldown_until: t.cooldown_until,
+            updated_at: t.updated_at,
+        });
         self.npc_threads.insert(key, t);
-        self.persist_npc_threads() // Keep JSON as fallback for now
+        self.persist_npc_threads()
     }
 
     pub fn delete_npc_thread(&mut self, id_a: &str, id_b: &str) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            conn.execute("DELETE FROM npc_threads WHERE thread_key = $1", &[&key])?;
-        }
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::DeleteNpcThread {
+            key: key.clone(),
+        });
         self.npc_threads.remove(&key);
         self.persist_npc_threads()
     }
@@ -2418,20 +2314,16 @@ impl Store {
 
     pub fn set_npc_dyad(&mut self, id_a: &str, id_b: &str, d: NpcDyad) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            let tags_raw = serde_json::to_string(&d.tags).unwrap_or_else(|_| "[]".to_string());
-            conn.execute(
-                "INSERT INTO npc_dyads (dyad_key, a_id, b_id, familiarity, sentiment, tags, updated_at)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7)
-                 ON CONFLICT(dyad_key) DO UPDATE SET 
-                    familiarity=EXCLUDED.familiarity, 
-                    sentiment=EXCLUDED.sentiment, 
-                    tags=EXCLUDED.tags, 
-                    updated_at=EXCLUDED.updated_at",
-                &[&key, &d.a_id, &d.b_id, &d.familiarity, &d.sentiment, &tags_raw, &d.updated_at],
-            )?;
-        }
+        let tags_raw = serde_json::to_string(&d.tags).unwrap_or_else(|_| "[]".to_string());
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetNpcDyad {
+            key: key.clone(),
+            a_id: d.a_id.clone(),
+            b_id: d.b_id.clone(),
+            familiarity: d.familiarity,
+            sentiment: d.sentiment,
+            tags_raw,
+            updated_at: d.updated_at,
+        });
         self.npc_dyads.insert(key, d);
         self.persist_npc_dyads()
     }
@@ -2470,16 +2362,17 @@ impl Store {
     }
 
     /// 依時間移除過期傳聞並衰減權重／可信度（對齊既有 `DecayNpcRumors`）。
+    /// PG 刪除走 writer queue，不在 store lock 內做 IO。
     pub fn decay_npc_rumors(&mut self, now_unix: i64) -> anyhow::Result<()> {
         let mut changed = false;
-        let mut to_remove: Vec<String> = self
+        let deleted_ids: Vec<String> = self
             .npc_rumors
             .iter()
             .filter(|(_, r)| r.expires_at > 0 && now_unix > r.expires_at)
             .map(|(id, _)| id.clone())
             .collect();
-        for id in to_remove.drain(..) {
-            self.npc_rumors.remove(&id);
+        for id in &deleted_ids {
+            self.npc_rumors.remove(id);
             changed = true;
         }
         for r in self.npc_rumors.values_mut() {
@@ -2498,7 +2391,7 @@ impl Store {
             }
         }
         if changed {
-            self.persist_npc_rumors()?;
+            self.persist_npc_rumors_with_deletes(&deleted_ids)?;
         }
         Ok(())
     }
@@ -2748,28 +2641,19 @@ impl Store {
     }
 
     fn persist_npc_rumors(&self) -> anyhow::Result<()> {
-        if let Some(pool) = &self.db_pool {
-            let mut conn = pool.get()?;
-            for r in self.npc_rumors.values() {
-                conn.execute(
-                    "INSERT INTO npc_rumors (id, text, room_id, zone, source, source_score, weight, mention_count, 
-                                            last_used_at, blocked_until, penalty_count, last_penalty_at, 
-                                            last_penalty_reason, updated_at, expires_at)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-                     ON CONFLICT(id) DO UPDATE SET 
-                        text=EXCLUDED.text, room_id=EXCLUDED.room_id, zone=EXCLUDED.zone, source=EXCLUDED.source, 
-                        source_score=EXCLUDED.source_score, weight=EXCLUDED.weight, mention_count=EXCLUDED.mention_count, 
-                        last_used_at=EXCLUDED.last_used_at, blocked_until=EXCLUDED.blocked_until, 
-                        penalty_count=EXCLUDED.penalty_count, last_penalty_at=EXCLUDED.last_penalty_at, 
-                        last_penalty_reason=EXCLUDED.last_penalty_reason, updated_at=EXCLUDED.updated_at, 
-                        expires_at=EXCLUDED.expires_at",
-                    &[&r.id, &r.text, &r.room_id, &r.zone, &r.source, &r.source_score, &r.weight, &r.mention_count, 
-                      &r.last_used_at, &r.blocked_until, &r.penalty_count, &r.last_penalty_at, 
-                      &r.last_penalty_reason, &r.updated_at, &r.expires_at],
-                )?;
-            }
-        }
-        
+        self.persist_npc_rumors_with_deletes(&[])
+    }
+
+    /// PG 寫入走 writer queue（不阻塞 store lock）；JSON fallback 保留（快、不卡）。
+    fn persist_npc_rumors_with_deletes(&self, deleted_ids: &[String]) -> anyhow::Result<()> {
+        // PG 走 writer queue——clone 資料後立刻放鎖，PG IO 在背景做
+        let upserts: Vec<NpcRumor> = self.npc_rumors.values().cloned().collect();
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::SyncNpcRumors {
+            upserts,
+            deletes: deleted_ids.to_vec(),
+        });
+
+        // JSON fallback 保留（atomic_write 很快，不是瓶頸）
         let entries: Vec<NpcRumor> = self.npc_rumors.values().cloned().collect();
         let raw = serde_json::to_string_pretty(&NpcRumorsFile { entries })?;
         Self::atomic_write(&self.npc_rumor_path, raw.as_bytes())

@@ -14,6 +14,7 @@ use parking_lot::RwLock;
 pub mod auth;
 pub mod entity;
 pub mod event;
+pub mod rumor;
 pub mod sync;
 pub mod writer;
 
