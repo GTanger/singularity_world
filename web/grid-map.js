@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.35
+ * grid-map.js v0.20.36
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  * 階段 2（SW-18）：sw-minimap 區塊填色塊 9×9 純視覺地圖
  *
@@ -499,14 +499,20 @@
 
     // 地形 → 可用採集動作
     function terrainToActions(terrain) {
+        // 對齊後端 terrain_name_zh() 回傳的中文字串
         var map = {
-            'Forest':      [{ key: 'gather_wood',  label: '伐木' }, { key: 'gather_herb', label: '採藥' }],
-            'ForestLight': [{ key: 'gather_herb',  label: '採藥' }],
-            'ForestHeavy': [{ key: 'gather_wood',  label: '伐木' }, { key: 'gather_herb', label: '採藥' }],
-            'Grassland':   [{ key: 'gather_herb',  label: '採集' }],
-            'Hills':       [{ key: 'gather_ore',   label: '採礦' }],
-            'Swamp':       [{ key: 'gather_water', label: '取水' }],
-            'Plain':       []
+            '林地': [{ key: 'gather_wood',  label: '伐木' }, { key: 'gather_herb', label: '採藥' }],
+            '疏林': [{ key: 'gather_herb',  label: '採藥' }],
+            '密林': [{ key: 'gather_wood',  label: '伐木' }, { key: 'gather_herb', label: '採藥' }],
+            '叢林': [{ key: 'gather_wood',  label: '伐木' }, { key: 'gather_herb', label: '採藥' }],
+            '草原': [{ key: 'gather_herb',  label: '採集' }],
+            '丘陵': [{ key: 'gather_ore',   label: '採礦' }],
+            '山嶺': [{ key: 'gather_ore',   label: '採礦' }],
+            '沼地': [{ key: 'gather_water', label: '取水' }],
+            '水域': [{ key: 'gather_water', label: '取水' }],
+            '荒漠': [],
+            '凍原': [],
+            '平地': []
         };
         return map[terrain] || [];
     }
