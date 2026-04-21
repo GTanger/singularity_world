@@ -6,7 +6,7 @@
     "login_not_player": "此 ID 非玩家角色",
     "login_verify_failed": "驗證失敗",
     "login_wrong_password": "密碼錯誤",
-    "login_no_password": "此角色尚未設定登入密碼（常見於舊存檔）。請用「建立新角色」換新 ID；若需沿用原 ID，請先關閉伺服器後在專案根執行 cargo run --bin sw-set-password 角色ID 新密碼（至少 6 字）。詳見 docs/troubleshooting_登入.md。",
+    "login_no_password": "此角色沒密碼（舊存檔）。請建新角色，或找管理員設密碼。",
     "create_need_id": "請輸入角色 ID",
     "create_need_password": "請設定密碼",
     "create_password_short": "密碼至少 6 個字元",

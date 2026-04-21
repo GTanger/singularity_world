@@ -1,15 +1,31 @@
 {
   "entries": [
     {
-      "entity_id": "ui31207754desktop",
+      "entity_id": "SAmo7g6mw7158",
       "room_id": "grid:0:0"
     },
     {
-      "entity_id": "ui31207754mobile",
+      "entity_id": "E2Emo7g6lyp87",
       "room_id": "grid:0:0"
     },
     {
-      "entity_id": "cropA_1776531074895",
+      "entity_id": "Wmo7g6mb622",
+      "room_id": "grid:0:0"
+    },
+    {
+      "entity_id": "Lmo7g6m5i563",
+      "room_id": "grid:0:0"
+    },
+    {
+      "entity_id": "SBmo7g6uou582",
+      "room_id": "grid:0:0"
+    },
+    {
+      "entity_id": "Mmo7g6mtd303",
+      "room_id": "grid:1:0"
+    },
+    {
+      "entity_id": "DAmo7g6urn850",
       "room_id": "grid:0:0"
     }
   ]
