@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.34
+ * grid-map.js v0.20.35
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
  * 階段 2（SW-18）：sw-minimap 區塊填色塊 9×9 純視覺地圖
  *
@@ -64,26 +64,23 @@
         objects: []     // ViewObject[]
     };
 
-    // ── 地形色映射表（對應後端 GridCellView.terrain，階段 5b 前寫死）────────
-    // terrain 值來自 src/server/protocol.rs GridCellView：String，如 "Forest"
+    // ── 地形色映射表（對應後端 terrain_name_zh() 回傳的中文 key）────────────
+    // 後端 src/grid/reveal.rs terrain_name_zh() 回傳中文字串，非英文 enum 名
     var TERRAIN_COLOR = {
-        'Forest':      '#6b8e5a',   // 森林：深綠
-        'ForestLight': '#7fa868',   // 疏林：中綠
-        'ForestHeavy': '#4d7040',   // 密林：暗綠
-        'Grassland':   '#a8b06a',   // 草原：黃綠
-        'Plain':       '#b8ba82',   // 平原：淡黃綠
-        'Hills':       '#9a7a55',   // 丘陵：棕褐
-        'Mountain':    '#7a6a5a',   // 山：灰褐
-        'Swamp':       '#7a9080',   // 沼澤：藍綠灰
-        'Desert':      '#d8c89a',   // 沙漠：沙黃
-        'Snow':        '#d8dce8',   // 雪地：淡藍白
-        'Water':       '#6a8aa8',   // 水：藍灰
-        'River':       '#7a9ab8',   // 河流：淡藍
-        'Ocean':       '#5a7a9a',   // 海洋：深藍
-        'Road':        '#b0a090',   // 道路：灰褐
-        'Village':     '#d4a94a',   // 村落：金黃
-        'Town':        '#c49040',   // 城鎮：深金
-        'Ruin':        '#9a8878'    // 廢墟：灰棕
+        '草原': '#a8b06a',   // Grassland：黃綠
+        '平地': '#b8ba82',   // Plain：淡黃綠
+        '林地': '#6b8e5a',   // Forest：深綠
+        '疏林': '#7fa868',   // ForestLight：中綠
+        '密林': '#4d7040',   // ForestHeavy：暗綠
+        '丘陵': '#9a7a55',   // Hills：棕褐
+        '山嶺': '#7a6a5a',   // Mountain：灰褐
+        '水域': '#6a8aa8',   // Water：藍灰
+        '深水': '#5a7a9a',   // WaterDeep：深藍
+        '沼地': '#7a9080',   // Swamp：藍綠灰
+        '荒漠': '#d8c89a',   // Desert：沙黃
+        '凍原': '#d8dce8',   // Tundra：淡藍白
+        '叢林': '#4a7848',   // Jungle：暗綠
+        '地塊': '#8a8070'    // 預設：灰褐
     };
     // 未知地形預設色（探索中 / 後端未送 terrain）
     var TERRAIN_COLOR_UNKNOWN = '#2a2418';  // 黑格：未探索
@@ -400,14 +397,14 @@
 
         // 出口方向已用地圖連線視覺化，描述欄不再列方向字
 
-        // 在場者（不含自己）
+        // 在場者：描述欄只列 NPC（玩家已在物件欄顯示，描述欄不爆版）
         var myId = window.myPlayerId || '';
-        var others = (mapData.entities || []).filter(function (e) {
-            return !(e.kind === 'player' && e.id === myId);
+        var npcsHere = (mapData.entities || []).filter(function (e) {
+            return e.kind === 'npc' || e.kind === 'Npc';
         });
-        if (others.length > 0) {
+        if (npcsHere.length > 0) {
             html += '<div class="mud-room-entities">在場：';
-            html += others.map(function (e) {
+            html += npcsHere.map(function (e) {
                 return '<span class="mud-entity-name">' + esc(e.display_name || e.id) + '</span>';
             }).join('、');
             html += '</div>';
