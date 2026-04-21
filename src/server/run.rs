@@ -161,17 +161,31 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
         return;
     }
     let (mut sink, mut stream) = socket.split();
+    // close_tx：read loop 正常結束時通知 write_task 主動 close sink，避免 CLOSE_WAIT 累積
+    let (close_tx, mut close_rx) = mpsc::channel::<()>(1);
     let write_task = tokio::spawn(async move {
-        while let Some(msg) = rx.recv().await {
-            let text = String::from_utf8_lossy(&msg).into_owned();
-            // 10 秒 send timeout——client TCP 半關時防止 write_task 無限卡
-            // 卡住會使 mpsc channel 256 buffer 滿，blocking_send 全卡 → spawn_blocking thread 耗盡 → server 死鎖
-            match tokio::time::timeout(
-                std::time::Duration::from_secs(10),
-                sink.send(Message::Text(text.into())),
-            ).await {
-                Ok(Ok(())) => {}
-                _ => break,  // timeout / error 都中止 write side
+        loop {
+            tokio::select! {
+                // 優先處理 close 信號
+                biased;
+                _ = close_rx.recv() => {
+                    // 主動 close sink——讓 TCP FIN 正常交握，不留 CLOSE_WAIT
+                    let _ = sink.close().await;
+                    break;
+                }
+                msg = rx.recv() => {
+                    let Some(msg) = msg else { break };
+                    let text = String::from_utf8_lossy(&msg).into_owned();
+                    // 10 秒 send timeout——client TCP 半關時防止 write_task 無限卡
+                    // 卡住會使 mpsc channel 256 buffer 滿，blocking_send 全卡 → spawn_blocking thread 耗盡 → server 死鎖
+                    match tokio::time::timeout(
+                        std::time::Duration::from_secs(10),
+                        sink.send(Message::Text(text.into())),
+                    ).await {
+                        Ok(Ok(())) => {}
+                        _ => break,  // timeout / error 都中止 write side
+                    }
+                }
             }
         }
     });
@@ -235,5 +249,9 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
         conn.sessions.remove_if_connection(pid, conn_id);
     }
     st.hub.unregister(conn_id);
-    write_task.abort();
+    // 通知 write_task 主動 close sink（正常 TCP FIN 交握，避免 CLOSE_WAIT 堆積）
+    // close_tx send 失敗（channel 已關）就直接 abort 作 fallback
+    if close_tx.send(()).await.is_err() {
+        write_task.abort();
+    }
 }
