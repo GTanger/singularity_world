@@ -396,7 +396,19 @@ pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
             _ => {} // NPC case 落到下面拿 write lock
         }
     }
-    // NPC 路徑：升級到 write lock 做 display_name cache 更新
+    // NPC 路徑：先用 read lock 確認是否需要 cache 填充
+    // display_title 已有 → read 就夠，不升級 write lock
+    {
+        let s = arc.read();
+        if let Some(se) = s.get_entity(id) {
+            if !se.display_title.is_empty() {
+                return Ok(Some(store_entity_to_character(&se, "")));
+            }
+        } else {
+            return Ok(None);
+        }
+    }
+    // display_title 為空才升級到 write lock 做 cache 填充
     let mut s = arc.write();
     let Some(se) = s.get_entity(id) else { return Ok(None) };
     if se.kind == "npc" {
@@ -422,20 +434,33 @@ pub fn get_entities_in_box(
     kind: &str,
 ) -> anyhow::Result<Vec<Character>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write();
-    let sel = s.get_entities_in_box(x_min, x_max, y_min, y_max, kind);
-    let mut list = Vec::with_capacity(sel.len());
-    for e in sel {
-        let mut se = e;
-        if se.kind == "npc" {
-            npc_display::npc_person_display_name_locked(&mut s, &se.id);
-            if let Some(updated) = s.get_entity(&se.id) {
-                se = updated;
+    // 先拿 read lock：取結果 + 收集 NPC display_title 為空的 id
+    let (mut entities, need_update): (Vec<store::Entity>, Vec<String>) = {
+        let s = arc.read();
+        let sel = s.get_entities_in_box(x_min, x_max, y_min, y_max, kind);
+        let mut need = Vec::new();
+        for e in &sel {
+            if e.kind == "npc" && e.display_title.is_empty() {
+                need.push(e.id.clone());
             }
         }
-        list.push(store_entity_to_character(&se, ""));
+        (sel, need)
+    };
+    // 只有真正需要 cache 填充才升級 write lock
+    if !need_update.is_empty() {
+        let mut s = arc.write();
+        for id in &need_update {
+            npc_display::npc_person_display_name_locked(&mut s, id);
+        }
+        // 把已更新的 entity 拿回覆蓋
+        for e in entities.iter_mut() {
+            if need_update.iter().any(|id| id == &e.id)
+                && let Some(updated) = s.get_entity(&e.id) {
+                    *e = updated;
+                }
+        }
     }
-    Ok(list)
+    Ok(entities.iter().map(|e| store_entity_to_character(e, "")).collect())
 }
 
 /// 回傳所有 `move_state == "moving"` 的實體（對齊既有 `GetMovingEntities`）。
@@ -461,20 +486,40 @@ pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec
     use std::collections::HashSet;
 
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write();
-    let mut id_set: HashSet<String> = HashSet::new();
-    for id in s.entity_ids_in_room(room_id) {
-        id_set.insert(id);
-    }
-    if let Some((q, r)) = room_hex::resolve_room_to_hex(room_id) {
-        for id in s.entity_ids_at_hex(q, r) {
+    // 先拿 read lock：收集 id_set + 找哪些 NPC 需要 cache 填充
+    let (id_set, need_update, label_room): (HashSet<String>, Vec<String>, String) = {
+        let s = arc.read();
+        let mut id_set: HashSet<String> = HashSet::new();
+        for id in s.entity_ids_in_room(room_id) {
             id_set.insert(id);
         }
-    }
+        if let Some((q, r)) = room_hex::resolve_room_to_hex(room_id) {
+            for id in s.entity_ids_at_hex(q, r) {
+                id_set.insert(id);
+            }
+        }
+        let mut need = Vec::new();
+        for id in &id_set {
+            if let Some(e) = s.get_entity(id)
+                && e.kind == "npc" && e.display_title.is_empty() {
+                    need.push(id.clone());
+                }
+        }
+        let label_room = room_hex::canonical_location_key(room_id);
+        (id_set, need, label_room)
+    };
     if id_set.is_empty() {
         return Ok(Vec::new());
     }
-    let label_room = room_hex::canonical_location_key(room_id);
+    // 有 NPC 需要 cache 填充才升級 write lock
+    if !need_update.is_empty() {
+        let mut s = arc.write();
+        for id in &need_update {
+            npc_display::npc_person_display_name_locked(&mut s, id);
+        }
+    }
+    // 再拿 read lock 收結果（包含已更新的 display_title）並計算 label
+    let mut s = arc.write();
     let mut list = Vec::new();
     for id in id_set {
         let Some(se) = s.get_entity(&id) else {
