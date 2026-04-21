@@ -94,3 +94,9 @@ remote_uploads/
 
 # 跟本專案無關的外部匯出檔（Chia PackCells 是 UPS 設備資料）
 Chia PackCells *.json
+
+# Claude remote center log（每輪對話都會長，不該入庫）
+remote_center.log
+
+# Ad-hoc 備份檔（手動 cp xxx.bak.<timestamp>）
+*.bak.*
