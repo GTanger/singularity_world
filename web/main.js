@@ -50,6 +50,11 @@
 		if (!el || !row) return;
 		ensureLogScrollBehavior(el);
 		el.appendChild(row);
+		// 階段 4：裁切 log 只保留最新 50 條，避免 DOM 無限成長
+		var LOG_CAP = 50;
+		while (el.children.length > LOG_CAP) {
+			el.removeChild(el.firstChild);
+		}
 		if (logStickToBottom) el.scrollTop = el.scrollHeight;
 	}
 
