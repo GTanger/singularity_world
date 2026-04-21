@@ -27,10 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.20.32">
-	<link rel="stylesheet" href="game.css?v=0.20.32">
+	<link rel="stylesheet" href="style.css?v=0.20.33">
+	<link rel="stylesheet" href="game.css?v=0.20.33">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.20.32" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.20.33" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -145,15 +145,15 @@
 		</footer>
 	</div>
 
-	<!-- ═══ Grid MUD 模式（預設，非 ygggt 域名）：四區塊 UI ═══ -->
-	<div id="app-grid" class="game-grid-app" hidden>
+	<!-- ═══ Grid MUD 模式（預設，非 ygggt 域名）：四層 grid UI ═══ -->
+	<div id="app-grid" class="game-grid-app sw-app" hidden>
 
-		<!-- 頂欄：三欄（無標題） -->
-		<header id="top-bar" class="game-grid-header">
+		<!-- 頂欄（36px）：三欄（無標題） -->
+		<header id="top-bar" class="game-grid-header sw-topbar">
 			<div class="bar-cell" id="game-time-date-cell-g">
 				<span id="game-time-date"></span>
 			</div>
-			<div class="bar-cell" id="sundial-cell-g" title="點此回到中心" onclick="window.centerOnPlayer && window.centerOnPlayer()">
+			<div class="bar-cell" id="sundial-cell-g">
 				<svg id="game-time-svg" class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
 					<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
 					<line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8"
@@ -165,37 +165,51 @@
 			</div>
 		</header>
 
-		<!-- 中間主體：左物件欄 + 右側（上描述 + 下地圖）-->
-		<div class="game-grid-body-row">
+		<!-- 主區（1fr）：左物件欄 + 右側（上描述 + 下地圖）——保留舊 DOM，套入 .sw-main 容器 -->
+		<div class="sw-main">
 
-			<!-- 左：物件欄（窄，萬物皆物件）-->
-			<aside class="game-grid-sidebar" id="sidebar-objects">
-				<!-- 無「物件欄」標題（設計硬規則：示意名不印在 UI）-->
-				<div id="mud-obj-list" class="mud-obj-list">
-					<!-- JS 填充 -->
-				</div>
-			</aside>
+			<div class="game-grid-body-row">
 
-			<!-- 右：房間描述（上小）+ 地圖（下大）-->
-			<div class="game-grid-main">
-
-				<!-- 上：房間描述 -->
-				<div class="game-grid-room-desc" id="mud-room-desc">
-					<!-- JS 填充 -->
-				</div>
-
-				<!-- 下：地圖視口（格子 + 連線）-->
-				<div class="game-grid-map-viewport" id="gmap-viewport">
-					<div id="gmap-grid" class="gmap-grid">
-						<!-- JS 動態生成格子 -->
+				<!-- 左：物件欄（窄，萬物皆物件）-->
+				<aside class="game-grid-sidebar" id="sidebar-objects">
+					<!-- 無「物件欄」標題（設計硬規則：示意名不印在 UI）-->
+					<div id="mud-obj-list" class="mud-obj-list">
+						<!-- JS 填充 -->
 					</div>
-				</div>
+				</aside>
 
+				<!-- 右：房間描述（上小）+ 地圖（下大）-->
+				<div class="game-grid-main">
+
+					<!-- 上：房間描述 -->
+					<div class="game-grid-room-desc" id="mud-room-desc">
+						<!-- JS 填充 -->
+					</div>
+
+					<!-- 下：地圖視口（格子 + 連線）-->
+					<div class="game-grid-map-viewport" id="gmap-viewport">
+						<div id="gmap-grid" class="gmap-grid">
+							<!-- JS 動態生成格子 -->
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div><!-- /.sw-main -->
+
+		<!-- log+map row（160px）：左 log（暫空）+ 右 minimap（暫保留既有地圖，階段 2 再降級）-->
+		<div class="sw-logmap-row">
+			<div class="sw-log">
+				<!-- 階段 4 接線，暫空 -->
+			</div>
+			<div class="sw-minimap" id="sw-minimap-container">
+				<!-- 階段 2 降級為色塊，暫空 -->
 			</div>
 		</div>
 
-		<!-- 底欄：三欄（左氣血體力 | 中姓名 | 右能量精神）-->
-		<footer id="bottom-bar" class="game-grid-footer">
+		<!-- 底欄（44px）：三欄（左氣血體力 | 中姓名 | 右能量精神）-->
+		<footer id="bottom-bar" class="game-grid-footer sw-statusbar">
 			<div class="game-grid-footer-inner">
 				<div class="grid-stats-left">
 					<div class="stat-mini" title="氣血"><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
@@ -239,11 +253,11 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.32"></script>
-	<script src="game-ui.js?v=0.20.32"></script>
+	<script src="narrative-markdown.js?v=0.20.33"></script>
+	<script src="game-ui.js?v=0.20.33"></script>
 	<!-- grid-map.js 只在非觀景窗模式需要，但兩種模式都載入無害（沒有 DOM 目標就不動）-->
-	<script src="grid-map.js?v=0.20.32"></script>
-	<script src="main.js?v=0.20.32"></script>
+	<script src="grid-map.js?v=0.20.33"></script>
+	<script src="main.js?v=0.20.33"></script>
 	<script>
 		// grid MUD 模式覆蓋：showGameAfterLogin 直接顯示 #app（已由 hostname 判斷決定哪個是 #app）
 		// 觀景窗模式：closeDrawers / triggerLook 相容 game-ui.js 可能缺的 DOM
@@ -260,7 +274,7 @@
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
 				// updateViaCache:'none' 讓瀏覽器檢查 SW 更新時繞 HTTP cache（破 CF 的 4h browser cache TTL 續命）
-				navigator.serviceWorker.register('/sw.js?v=0.20.32', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.33', { updateViaCache: 'none' }).then(function (reg) {
 					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;

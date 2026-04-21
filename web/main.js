@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.32
+// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.33
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';

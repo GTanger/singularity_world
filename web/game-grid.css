@@ -1,5 +1,5 @@
 /**
- * game-grid.css v0.20.32
+ * game-grid.css v0.20.33
  * 方格版 MUD UI 專用樣式
  * 紙色底（#f0e6d3）、等寬字體、無分隔邊線（用留白分區）
  * 依賴 game.css 的 :root CSS 變數（--paper, --ink, --gold 等）
@@ -400,3 +400,87 @@
 /* ── 通用 ─────────────────────────────────────────────────────── */
 
 .hidden { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+ * SW-* 四層 grid 骨架（階段 1，2026-04-21）
+ * 對齊 mockup_card_ui.html：36px 1fr 160px 44px
+ * .sw-topbar / .sw-main / .sw-logmap-row / .sw-statusbar 是語義別名，
+ * 現在蓋在舊結構（.game-grid-header / .game-grid-body-row / .game-grid-footer）上方
+ * 翻案完成後再砍舊 class，現在並存
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* 四層 grid 容器——蓋掉舊 flex column */
+.sw-app {
+  display: grid !important;
+  grid-template-rows: 36px 1fr 160px 44px;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* 頂欄（36px）：既有 .game-grid-header 已有 flex:0 0 36px，grid row 對齊即可 */
+.sw-topbar {
+  /* grid row 1 自動對應 36px，無需額外設定 */
+}
+
+/* 主區（1fr）：撐滿可用空間，overflow hidden 防止子元素爆出 */
+.sw-main {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 主區內 .game-grid-body-row 需撐滿 .sw-main */
+.sw-main > .game-grid-body-row {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* log+map row（160px）：左 log（flex 1）+ 右 minimap（固定 160px 正方形）*/
+.sw-logmap-row {
+  height: 160px;
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  overflow: hidden;
+  background: var(--paper-dark, #e0d4c0);
+  border-top: 1px solid var(--ink-faint, #a89880);
+}
+
+/* 左：log 欄（暫空，階段 4 接線）*/
+.sw-log {
+  min-width: 0;
+  overflow: hidden;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--ink-light, #6b5a47);
+  line-height: 1.7;
+  letter-spacing: 0.1em;
+}
+
+/* 右：minimap 容器（160×160，階段 2 填色塊，暫空）*/
+.sw-minimap {
+  width: 160px;
+  height: 160px;
+  background: var(--paper-light, #f7f0e3);
+  border-left: 1px solid var(--ink-faint, #a89880);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* 底欄（44px）：既有 .game-grid-footer 的 flex:0 0 auto，grid row 鎖 44px 覆蓋 */
+.sw-statusbar {
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
+}
+
+/* 底欄 inner 對應 44px 調整 padding */
+.sw-statusbar .game-grid-footer-inner {
+  padding: 0 16px;
+  height: 100%;
+}
