@@ -1,6 +1,7 @@
 /**
- * grid-map.js v0.20.36
+ * grid-map.js v0.20.37
  * 方格地圖 DOM 渲染器 + 物件欄 + 移動控制
+ * 階段 3（2026-04-21）：sw-main 翻案——卡片化物件欄主舞台，大 gmap-viewport 退場
  * 階段 2（SW-18）：sw-minimap 區塊填色塊 9×9 純視覺地圖
  *
  * 依賴：
@@ -119,6 +120,23 @@
         var d = document.createElement('div');
         d.textContent = String(s || '');
         return d.innerHTML;
+    }
+
+    // ── NPC/玩家顯示名 fallback ───────────────────────────────────────────
+    // 後端 display_name / display_title 可能為空或是 raw id（BBmo81d0d6308 etc）
+    // 沒 CJK 字符 = raw id → 視為無名（由 renderObjectList 集體壓縮成一張卡）
+    var CJK_RE = /[\u3400-\u9fff]/;
+    function hasProperName(ent) {
+        var name = (ent && (ent.display_name || ent.display_title)) || '';
+        return !!(name && CJK_RE.test(name));
+    }
+    function displayNameOf(ent) {
+        var name = (ent && (ent.display_name || ent.display_title)) || '';
+        if (name && CJK_RE.test(name)) return name;
+        // raw id fallback：單字「人」+ 尾 3 碼（不再區分遊者/路人，因後端 kind 不可信）
+        var suffix = '';
+        if (ent && ent.id) suffix = String(ent.id).slice(-3);
+        return suffix ? ('人·' + suffix) : '人';
     }
 
     // ── 地圖渲染 ─────────────────────────────────────────────────────────
@@ -405,7 +423,7 @@
         if (npcsHere.length > 0) {
             html += '<div class="mud-room-entities">在場：';
             html += npcsHere.map(function (e) {
-                return '<span class="mud-entity-name">' + esc(e.display_name || e.id) + '</span>';
+                return '<span class="mud-entity-name">' + esc(displayNameOf(e)) + '</span>';
             }).join('、');
             html += '</div>';
         }
@@ -435,37 +453,51 @@
             html += '<div class="mud-obj-item mud-obj-action" data-action="explore">探索</div>';
         }
 
-        // 「自己」不在物件欄（姓名欄已顯示，不要三化）
-
-        // 在場 NPC
-        var npcs = (mapData.entities || []).filter(function (e) {
-            return e.kind !== 'player' || e.id !== myId;
-        }).filter(function (e) {
-            return e.kind === 'npc' || e.kind === 'Npc';
-        });
-        if (npcs.length > 0) {
-            for (var ni = 0; ni < npcs.length; ni++) {
-                var npc = npcs[ni];
-                html += '<div class="mud-obj-item mud-obj-npc" data-entity-id="' + esc(npc.id) + '">';
-                html += esc(npc.display_name || npc.id);
-                html += '</div>';
-                if (npc.behavior_text) {
-                    html += '<div class="mud-npc-behavior">' + esc(npc.behavior_text) + '</div>';
+        // 出口卡片（承接移動輸入，原地圖點擊已廢）
+        if (hasExits) {
+            for (var xi = 0; xi < mapData.exits.length; xi++) {
+                var ex = mapData.exits[xi];
+                html += '<div class="mud-obj-item mud-obj-exit" data-move-dir="' + esc(ex.direction) + '">';
+                html += '往 ' + esc(ex.direction);
+                if (ex.to_room_name) {
+                    html += '<div class="mud-npc-behavior">' + esc(ex.to_room_name) + '</div>';
                 }
+                html += '</div>';
             }
         }
 
-        // 在場其他玩家
-        var otherPlayers = (mapData.entities || []).filter(function (e) {
-            return e.kind === 'player' && e.id !== myId;
+        // 「自己」不在物件欄（姓名欄已顯示，不要三化）
+
+        // 在場實體分類：有正式名 vs 無名（raw id）
+        // 後端 kind 分類目前不可信（NPC 被降級為 player），以名字有無 CJK 為準
+        var others = (mapData.entities || []).filter(function (e) {
+            return e.id !== myId;
         });
-        if (otherPlayers.length > 0) {
-            for (var pi = 0; pi < otherPlayers.length; pi++) {
-                var p = otherPlayers[pi];
-                html += '<div class="mud-obj-item mud-obj-player" data-entity-id="' + esc(p.id) + '">';
-                html += esc(p.display_name || p.id);
-                html += '</div>';
+        var named = [];
+        var nameless = 0;
+        for (var ei = 0; ei < others.length; ei++) {
+            if (hasProperName(others[ei])) named.push(others[ei]);
+            else nameless++;
+        }
+
+        // 有名實體：單卡呈現
+        for (var ni = 0; ni < named.length; ni++) {
+            var ent = named[ni];
+            var cls = (ent.kind === 'player' || ent.kind === 'Player') ? 'mud-obj-player' : 'mud-obj-npc';
+            html += '<div class="mud-obj-item ' + cls + '" data-entity-id="' + esc(ent.id) + '">';
+            html += esc(displayNameOf(ent));
+            html += '</div>';
+            if (ent.behavior_text) {
+                html += '<div class="mud-npc-behavior">' + esc(ent.behavior_text) + '</div>';
             }
+        }
+
+        // 無名實體：集體壓縮成一張「眾（N）」卡，避免爆版
+        if (nameless > 0) {
+            html += '<div class="mud-obj-item mud-obj-crowd" data-action="crowd_look" title="此格有 '
+                 + nameless + ' 位無名者">';
+            html += '眾·' + nameless;
+            html += '</div>';
         }
 
         // 地上物改為依地形出「動作插座」（規格：萬物皆物件，地上物 = 動作不是具體物名）
@@ -568,6 +600,13 @@
                 return;
             }
 
+            // 出口移動
+            var moveDir = item.getAttribute('data-move-dir');
+            if (moveDir && window.gameSend) {
+                window.gameSend({ type: 'move', direction: moveDir });
+                return;
+            }
+
             // 實體互動（NPC / 玩家）
             var eid = item.getAttribute('data-entity-id');
             if (eid && window.gameSend) {
@@ -642,6 +681,17 @@
         mapData.entities = msg.entities || [];
         mapData.objects  = msg.objects  || [];
 
+        // 診斷：entities kind 分布（確認後端語義）
+        try {
+            var kindCount = {};
+            for (var di = 0; di < mapData.entities.length; di++) {
+                var k = mapData.entities[di].kind || '?';
+                kindCount[k] = (kindCount[k] || 0) + 1;
+            }
+            console.log('[grid_view] entities=', mapData.entities.length, 'kindCount=', JSON.stringify(kindCount),
+                        'exits=', (mapData.exits||[]).length, 'cells=', (mapData.cells||[]).length);
+        } catch (e) {}
+
         // 同步揭露快取
         for (var i = 0; i < mapData.cells.length; i++) {
             var c = mapData.cells[i];
@@ -683,7 +733,7 @@
         bindMapDrag();
         bindObjectListClick();
 
-        console.log('[grid-map] v0.20.34 initialized | SW-18 色塊 minimap');
+        console.log('[grid-map] v0.20.39 initialized | 階段 3 卡片主舞台 + 出口卡');
     }
 
     if (document.readyState === 'loading') {

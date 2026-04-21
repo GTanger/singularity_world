@@ -27,10 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.20.36">
-	<link rel="stylesheet" href="game.css?v=0.20.36">
+	<link rel="stylesheet" href="style.css?v=0.20.40">
+	<link rel="stylesheet" href="game.css?v=0.20.40">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.20.36" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.20.40" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -165,35 +165,23 @@
 			</div>
 		</header>
 
-		<!-- 主區（1fr）：左物件欄 + 右側（上描述 + 下地圖）——保留舊 DOM，套入 .sw-main 容器 -->
+		<!-- 主區（1fr）：房間描述（上小）+ 卡片主舞台（下大，萬物皆物件） -->
 		<div class="sw-main">
 
-			<div class="game-grid-body-row">
+			<!-- 上：房間描述（地形名 + 氛圍句 + 出口方向）-->
+			<div class="game-grid-room-desc" id="mud-room-desc">
+				<!-- JS 填充 -->
+			</div>
 
-				<!-- 左：物件欄（窄，萬物皆物件）-->
-				<aside class="game-grid-sidebar" id="sidebar-objects">
-					<!-- 無「物件欄」標題（設計硬規則：示意名不印在 UI）-->
-					<div id="mud-obj-list" class="mud-obj-list">
-						<!-- JS 填充 -->
-					</div>
-				</aside>
+			<!-- 下：卡片主舞台（物件欄，萬物皆物件）-->
+			<div class="mud-card-stage" id="mud-obj-list">
+				<!-- JS 填充卡片 -->
+			</div>
 
-				<!-- 右：房間描述（上小）+ 地圖（下大）-->
-				<div class="game-grid-main">
-
-					<!-- 上：房間描述 -->
-					<div class="game-grid-room-desc" id="mud-room-desc">
-						<!-- JS 填充 -->
-					</div>
-
-					<!-- 下：地圖視口（格子 + 連線）-->
-					<div class="game-grid-map-viewport" id="gmap-viewport">
-						<div id="gmap-grid" class="gmap-grid">
-							<!-- JS 動態生成格子 -->
-						</div>
-					</div>
-
-				</div>
+			<!-- 舊大地圖 DOM 保留但隱藏：grid-map.js init() 找不到 gmap-grid 會 return 中斷
+			     渲染；保留隱藏節點以維持 JS 流程，未來階段再清除。-->
+			<div id="gmap-viewport" hidden aria-hidden="true">
+				<div id="gmap-grid" class="gmap-grid"></div>
 			</div>
 
 		</div><!-- /.sw-main -->
@@ -253,11 +241,11 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.36"></script>
-	<script src="game-ui.js?v=0.20.36"></script>
+	<script src="narrative-markdown.js?v=0.20.40"></script>
+	<script src="game-ui.js?v=0.20.40"></script>
 	<!-- grid-map.js 只在非觀景窗模式需要，但兩種模式都載入無害（沒有 DOM 目標就不動）-->
-	<script src="grid-map.js?v=0.20.36"></script>
-	<script src="main.js?v=0.20.36"></script>
+	<script src="grid-map.js?v=0.20.40"></script>
+	<script src="main.js?v=0.20.40"></script>
 	<script>
 		// grid MUD 模式覆蓋：showGameAfterLogin 直接顯示 #app（已由 hostname 判斷決定哪個是 #app）
 		// 觀景窗模式：closeDrawers / triggerLook 相容 game-ui.js 可能缺的 DOM
@@ -274,7 +262,7 @@
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
 				// updateViaCache:'none' 讓瀏覽器檢查 SW 更新時繞 HTTP cache（破 CF 的 4h browser cache TTL 續命）
-				navigator.serviceWorker.register('/sw.js?v=0.20.36', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.40', { updateViaCache: 'none' }).then(function (reg) {
 					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
