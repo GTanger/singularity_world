@@ -57,15 +57,42 @@ pub struct PlaceSeed {
     pub population: Option<u64>,
 }
 
-/// 將 OSM place=* tag 值映射為 Tier。
+/// 可收的 place=* 值——含 suburb/neighbourhood，配 population 定 tier 更準。
 ///
-/// 只收 city/town/village/hamlet——其他（neighbourhood/suburb/isolated_dwelling）
-/// 尺度太細，疊到 Urban/Town 即可，不獨立成種子。
-pub fn classify_place(place: &str) -> Option<Tier> {
+/// OSM 對直轄市下的「區」標註慣用法各國差異大：
+///   臺北/新北底下：板橋、中和、三重 多標 suburb（~500k 人口）
+///   臺中/臺南/嘉義底下：桃園區、永康區、安南區 多標 town（~200k-400k 人口）
+/// 單靠 place_kind 會漏掉前者，故這裡放寬過濾。
+fn is_settlement_kind(place: &str) -> bool {
+    matches!(
+        place,
+        "city" | "town" | "village" | "hamlet" | "suburb" | "neighbourhood"
+    )
+}
+
+/// Tier 分級：**人口優先，place_kind 當 fallback**。
+///
+/// 閾值（台灣都會區實地校準）：
+///   pop >= 100k  → Urban（城核 100m）
+///   pop >= 10k   → Town（鄉鎮 200m）
+///   pop < 10k / None：
+///     place=city → Urban（9 個直轄市漏標 population 的保險）
+///     其他       → Town
+///
+/// 理由：OSM 各國 place_kind 標註慣用法不一，但 population 是硬事實。
+/// 人口是王，tag 只當 tiebreaker。
+pub fn tier_of(place: &str, population: Option<u64>) -> Tier {
+    if let Some(pop) = population {
+        if pop >= 100_000 {
+            return Tier::Urban;
+        }
+        if pop >= 10_000 {
+            return Tier::Town;
+        }
+    }
     match place {
-        "city" | "town" => Some(Tier::Urban),
-        "village" | "hamlet" => Some(Tier::Town),
-        _ => None,
+        "city" => Tier::Urban,
+        _ => Tier::Town,
     }
 }
 
@@ -111,8 +138,9 @@ pub fn load_places(pbf: &Path) -> anyhow::Result<Vec<PlaceSeed>> {
             }
 
             if let Some(pv) = place_val
-                && let Some(tier) = classify_place(&pv)
+                && is_settlement_kind(&pv)
             {
+                let tier = tier_of(&pv, pop_val);
                 batch.push(PlaceSeed {
                     name: name_val.unwrap_or_else(|| "(unnamed)".to_string()),
                     lat,
