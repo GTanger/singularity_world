@@ -86,6 +86,10 @@ path = "src/bin/earth_landuse_preview.rs"
 name = "earth-import-preview"
 path = "src/bin/earth_import_preview.rs"
 
+[[bin]]
+name = "earth-import-sql"
+path = "src/bin/earth_import_sql.rs"
+
 [dev-dependencies]
 tempfile = "3"
 
