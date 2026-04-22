@@ -12,6 +12,7 @@
 //!   §4 聚落派生：biome × 水系 × 適宜性（未實作）
 
 pub mod earth;
+pub mod earth_places;
 
 use crate::hex::Terrain;
 use noise::{NoiseFn, Perlin, Seedable};

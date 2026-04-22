@@ -90,6 +90,10 @@ path = "src/bin/earth_import_preview.rs"
 name = "earth-import-sql"
 path = "src/bin/earth_import_sql.rs"
 
+[[bin]]
+name = "earth-places-preview"
+path = "src/bin/earth_places_preview.rs"
+
 [dev-dependencies]
 tempfile = "3"
 
