@@ -84,12 +84,13 @@ fn rank5_of(pop: Option<u64>, kind: &str) -> Rank5 {
 }
 
 fn rank5_rgb(r: Rank5) -> (u8, u8, u8) {
+    // 對比色盤（ColorBrewer-inspired）：不同 hue 讓五階一眼分辨
     match r {
-        Rank5::Capital => (180, 20, 30),   // 都 深紅
-        Rank5::Prefect => (230, 90, 50),   // 府 橙紅
-        Rank5::City    => (240, 160, 50),  // 市 橙
-        Rank5::Town    => (240, 210, 80),  // 鎮 黃
-        Rank5::Village => (230, 220, 150), // 村 淡黃
+        Rank5::Capital => (200, 30, 60),    // 都：洋紅（最顯眼）
+        Rank5::Prefect => (140, 70, 180),   // 府：紫
+        Rank5::City    => (30, 120, 200),   // 市：藍
+        Rank5::Town    => (50, 160, 70),    // 鎮：綠
+        Rank5::Village => (210, 170, 90),   // 村：土黃（底色層）
     }
 }
 
