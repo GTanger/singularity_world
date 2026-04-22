@@ -11,6 +11,8 @@
 //!   §3 水系連通：低點沿梯度連成河/湖（未實作）
 //!   §4 聚落派生：biome × 水系 × 適宜性（未實作）
 
+pub mod earth;
+
 use crate::hex::Terrain;
 use noise::{NoiseFn, Perlin, Seedable};
 

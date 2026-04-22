@@ -45,6 +45,10 @@ parking_lot = "0.12"
 noise = "0.9"
 # Earth import：SRTM .hgt 二進位讀取
 byteorder = "1"
+# Earth import：OSM PBF 解析
+osmpbf = "0.3"
+# Earth import：point-in-polygon 地理判定
+geo = "0.29"
 
 [[bin]]
 name = "checkrooms"
@@ -73,6 +77,14 @@ path = "src/bin/worldgen_preview.rs"
 [[bin]]
 name = "earth-elevation-preview"
 path = "src/bin/earth_elevation_preview.rs"
+
+[[bin]]
+name = "earth-landuse-preview"
+path = "src/bin/earth_landuse_preview.rs"
+
+[[bin]]
+name = "earth-import-preview"
+path = "src/bin/earth_import_preview.rs"
 
 [dev-dependencies]
 tempfile = "3"
