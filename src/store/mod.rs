@@ -22,6 +22,9 @@ mod persist;
 mod event;
 mod auth;
 mod archival;
+mod venue;
+mod work;
+mod item;
 
 // ── 實體寫回防抖間隔（秒）——Phase 3+ 實作 tokio timer 時使用 ──
 #[allow(dead_code)]
@@ -1508,146 +1511,7 @@ impl Store {
         self.persist_entity_rooms()
     }
 
-    // ══════════════════════════════════════
-    //  CRUD 方法 — Venues / Assignments / Schedules
-    // ══════════════════════════════════════
-
-    pub fn get_venue(&self, id: &str) -> Option<&Venue> {
-        self.venues.get(id)
-    }
-
-    pub fn is_room_in_venue(&self, room_id: &str, venue_id: &str) -> bool {
-        self.venues.get(venue_id)
-            .is_some_and(|v| v.room_ids.iter().any(|r| r == room_id))
-    }
-
-    pub fn get_venue_ids_for_room(&self, room_id: &str) -> Vec<String> {
-        self.venues.iter()
-            .filter(|(_, v)| v.room_ids.iter().any(|r| r == room_id))
-            .map(|(id, _)| id.clone())
-            .collect()
-    }
-
-    pub fn get_venue_max_staff(&self, venue_id: &str, default_max: i32) -> i32 {
-        self.venues.get(venue_id)
-            .map(|v| if v.max_staff > 0 { v.max_staff } else { default_max })
-            .unwrap_or(default_max)
-    }
-
-    pub fn get_all_venue_ids(&self) -> Vec<String> {
-        self.venues.keys().cloned().collect()
-    }
-
-    pub fn get_all_venue_room_ids(&self) -> Vec<String> {
-        let mut ids: Vec<String> = self.venues.values()
-            .flat_map(|v| v.room_ids.clone())
-            .collect();
-        ids.sort();
-        ids.dedup();
-        ids
-    }
-
-    pub fn get_assignments_for_entity(&self, entity_id: &str) -> Vec<Assignment> {
-        self.assignments.get(entity_id).cloned().unwrap_or_default()
-    }
-
-    pub fn get_assignment_count_by_venue(&self, venue_id: &str) -> usize {
-        self.assignments.values()
-            .flat_map(|v| v.iter())
-            .filter(|a| a.venue_id == venue_id)
-            .count()
-    }
-
-    /// 該場所既有指派中的第一個職業 ID（對齊既有 `GetFirstOccupationIDForVenue`）。
-    pub fn get_first_occupation_id_for_venue(&self, venue_id: &str) -> String {
-        for list in self.assignments.values() {
-            for a in list {
-                if a.venue_id == venue_id {
-                    return a.occupation_id.clone();
-                }
-            }
-        }
-        String::new()
-    }
-
-    /// 新增指派；同 entity+occupation+venue 已存在則忽略（對齊既有 `InsertAssignment`）。
-    pub fn insert_assignment(&mut self, entity_id: &str, occupation_id: &str, venue_id: &str, assigned_by: &str) -> anyhow::Result<()> {
-        let list = self.assignments.entry(entity_id.to_string()).or_default();
-        for a in list.iter() {
-            if a.occupation_id == occupation_id && a.venue_id == venue_id {
-                return Ok(());
-            }
-        }
-        list.push(Assignment {
-            entity_id: entity_id.to_string(),
-            occupation_id: occupation_id.to_string(),
-            venue_id: venue_id.to_string(),
-            assigned_by: assigned_by.to_string(),
-        });
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::InsertAssignment {
-            entity_id: entity_id.to_string(),
-            occupation_id: occupation_id.to_string(),
-            venue_id: venue_id.to_string(),
-            assigned_by: assigned_by.to_string(),
-        });
-        self.persist_assignments()
-    }
-
-    pub fn remove_assignments_for_entity(&mut self, entity_id: &str) -> anyhow::Result<()> {
-        self.assignments.remove(entity_id);
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::RemoveAssignments {
-            entity_id: entity_id.to_string(),
-        });
-        self.persist_assignments()
-    }
-
-    pub fn get_all_schedules(&self) -> Vec<Schedule> {
-        self.schedules.values().cloned().collect()
-    }
-
-    pub fn get_schedule(&self, entity_id: &str) -> Option<&Schedule> {
-        self.schedules.get(entity_id)
-    }
-
-    pub fn insert_schedule(&mut self, entity_id: &str, work_room: &str, rest_room: &str, shift_start: i32, shift_end: i32) -> anyhow::Result<()> {
-        self.schedules.insert(entity_id.to_string(), Schedule {
-            entity_id: entity_id.to_string(),
-            work_room: work_room.to_string(),
-            rest_room: rest_room.to_string(),
-            shift_start,
-            shift_end,
-        });
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::InsertSchedule {
-            entity_id: entity_id.to_string(),
-            work_room: work_room.to_string(),
-            rest_room: rest_room.to_string(),
-            shift_start,
-            shift_end,
-        });
-        self.persist_schedules()
-    }
-
-    pub fn remove_schedule_for_entity(&mut self, entity_id: &str) -> anyhow::Result<()> {
-        self.schedules.remove(entity_id);
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::RemoveSchedule {
-            entity_id: entity_id.to_string(),
-        });
-        self.persist_schedules()
-    }
-
-    // ══════════════════════════════════════
-    //  CRUD 方法 — Items
-    // ══════════════════════════════════════
-
-    pub fn get_item(&self, id: &str) -> Option<&Item> {
-        self.items.get(id)
-    }
-
-    pub fn put_item(&mut self, it: Item) -> anyhow::Result<()> {
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::UpsertItem(it.clone()));
-        self.items.insert(it.id.clone(), it);
-        self.persist_items()
-    }
+    // Venue / Work(Assignment+Schedule) / Item 見 store::venue / store::work / store::item
 
     // ══════════════════════════════════════
     //  CRUD 方法 — Event Log（見 store::event）
