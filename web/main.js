@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.35
+// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.43（砍 earth 觀景窗）
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';
@@ -19,8 +19,7 @@
 		me: null,
 		server_unix: 0,
 		game_time_sec_since_midnight: 0,
-		game_days_since_epoch: 0,
-		hexView: null
+		game_days_since_epoch: 0
 	};
 
 	const GAME_TIME_SCALE = 24;
@@ -316,7 +315,6 @@ function indexEntityNameCache(entities) {
 						startGameTimeTicker();
 						updateGameTimeDisplay();
 						draw();
-						// fetchHexView 移至 case 'me'（此處 state.me 尚未設定）
 						break;
 					case 'grid_view':
 						if (window.updateRoomData) window.updateRoomData(msg);
@@ -362,7 +360,6 @@ function indexEntityNameCache(entities) {
 						draw();
 						appendLog('登入成功：' + msg.player_id + ' @ ' + (msg.room_name || msg.room_id));
 						renderStarplatePane(state.me);
-						if (!state.hexView) fetchHexView();
 	startHeartbeat();
 						break;
 					case 'pong':
@@ -370,38 +367,14 @@ function indexEntityNameCache(entities) {
 						break;
 					case 'moved':
 						if (state.me && (msg.player_id === state.me.player_id || msg.player_id === state.me.id)) {
-							const oldRoomId = state.me.room_id;
 							state.me.room_id = msg.room_id;
 							state.me.room_name = msg.room_name;
-
-							if (msg.room_id && msg.room_id.startsWith('grid:')) {
-								if (window.mapState) window.mapState.moving = false;
-							} else if (msg.room_id && msg.room_id.startsWith('hex:') && oldRoomId && oldRoomId !== msg.room_id) {
-								const parts = msg.room_id.split(':');
-								const nq = parseInt(parts[1]);
-								const nr = parseInt(parts[2]);
-								if (window.hexCanvas && !isNaN(nq) && !isNaN(nr)) {
-									const targetCell = (state.hexView && state.hexView.cells || [])
-										.find(c => c.q === nq && c.r === nr);
-									const moveCost = (targetCell && targetCell.move_cost) || 1.0;
-									const duration = 350 / (60 / moveCost);
-									window.hexCanvas.animateTo(nq, nr, duration, function () {
-										fetchHexView();
-									});
-								} else {
-									fetchHexView();
-								}
-							} else {
-								fetchHexView();
-							}
+							if (window.mapState) window.mapState.moving = false;
 						}
 						draw();
 						break;
 					case 'blocked':
 						if (window.mapState) window.mapState.moving = false;
-						if (window.hexCanvas) {
-							fetchHexView();
-						}
 						appendLog('無法往「' + (msg.direction || '') + '」移動');
 						break;
 					case 'entity_status':
@@ -670,146 +643,6 @@ function indexEntityNameCache(entities) {
 			document.getElementById('auth-create-actions').setAttribute('hidden', '');
 		});
 	}
-
-	async function fetchHexView() {
-		console.log('[fetchHexView] called, me=', state.me && state.me.player_id, 'hexCanvas=', !!window.hexCanvas);
-		if (!state.me || !state.me.player_id) return;
-		try {
-			const resp = await fetch('/api/hex/view?player_id=' + encodeURIComponent(state.me.player_id));
-			if (resp.ok) {
-				const data = await resp.json();
-				console.log('[fetchHexView] got data, cells=', data.cells && data.cells.length, 'entities=', data.entities && data.entities.length);
-				
-				// 處理黑格、灰霧格、彩格狀態
-				if (data.cells) {
-					data.cells.forEach(c => {
-						// explored=false 且可走 -> 灰霧 (fogged)
-						// 不可走地形或 explored=true -> 彩格 (非 fogged)
-						if (!c.explored && c.walkable) {
-							c.fogged = true;
-						} else {
-							c.fogged = false;
-						}
-					});
-				}
-
-				state.hexView = data;
-				if (window.hexCanvas) {
-					window.hexCanvas.updateView(data, state.me.player_id);
-				} else {
-					console.warn('[fetchHexView] window.hexCanvas is not set!');
-				}
-			}
-		} catch (e) {
-			console.error('fetchHexView failed', e);
-		}
-	}
-
-	window.onBlackHexBoundaryStop = async function (q, r) {
-		if (!state.me) return;
-		const key = `${q},${r}`;
-		// 防止重複發送偵查請求
-		if (state.lastScouting === key) return;
-		state.lastScouting = key;
-
-		appendLog(`偵查未知區域 (${q}, ${r})…`);
-		try {
-			const resp = await fetch('/api/hex/scout', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ player_id: state.me.player_id, target_q: q, target_r: r })
-			});
-			if (resp.ok) {
-				const res = await resp.json();
-				if (res.ok) {
-					appendLog('發現新地形：' + (res.cell ? res.cell.name : '未知'));
-					await fetchHexView();
-				}
-			}
-		} catch (e) {
-			console.error('scout failed', e);
-		} finally {
-			setTimeout(() => { state.lastScouting = null; }, 2000);
-		}
-	};
-
-	window.onHexCrossBoundary = async function (q, r) {
-		if (!state.me) return;
-		// 預先更新 room_id，防止 WS moved 事件重複觸發 animateTo
-		state.me.room_id = 'hex:' + q + ':' + r;
-		// 跨格移動同步
-		try {
-			const resp = await fetch('/api/hex/move', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ player_id: state.me.player_id, to_q: q, to_r: r })
-			});
-			if (resp.ok) {
-				const res = await resp.json();
-				if (res.ok) {
-					// 跨格成功，刷新視野取得新格周圍資料
-					await fetchHexView();
-				}
-			}
-		} catch (e) {
-			console.error('hex move failed', e);
-		}
-	};
-
-	window.onHexExploreComplete = async function (q, r) {
-		if (!state.me) return;
-		appendLog('精探完成，地形勘測完畢。');
-		try {
-			const resp = await fetch('/api/hex/explore', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ player_id: state.me.player_id, target_q: q, target_r: r })
-			});
-			if (resp.ok) {
-				await fetchHexView();
-			}
-		} catch (e) {
-			console.error('explore failed', e);
-		}
-	};
-
-	let hexClickTimer = null;
-	window.gameOnHexClick = function (q, r, relX, relY) {
-		if (!state.hexView || !state.hexView.center) return;
-		const current = state.hexView.center;
-
-		// 不管點在哪格，都算出相對於玩家所在格中心的偏移（用於格內移動方向）
-		var intraRelX = relX;
-		var intraRelY = relY;
-		if (q !== current.q || r !== current.r) {
-			// 點擊在其他格：用點擊的地圖絕對位置減去玩家格中心，得到方向
-			var HEX_R = 202;
-			var SQRT3 = Math.sqrt(3);
-			var clickAbsX = HEX_R * SQRT3 * (q + r / 2) + relX;
-			var clickAbsY = HEX_R * 3 / 2 * r + relY;
-			var playerCenterX = HEX_R * SQRT3 * (current.q + current.r / 2);
-			var playerCenterY = HEX_R * 3 / 2 * current.r;
-			intraRelX = clickAbsX - playerCenterX;
-			intraRelY = clickAbsY - playerCenterY;
-		}
-
-		if (hexClickTimer) {
-			clearTimeout(hexClickTimer);
-			hexClickTimer = null;
-			// 雙擊：快跑 (100 px/s)
-			if (window.hexCanvas.startIntraHexMove) {
-				window.hexCanvas.startIntraHexMove(intraRelX, intraRelY, true);
-			}
-		} else {
-			hexClickTimer = setTimeout(() => {
-				hexClickTimer = null;
-				// 單擊：步行 (50 px/s)
-				if (window.hexCanvas.startIntraHexMove) {
-					window.hexCanvas.startIntraHexMove(intraRelX, intraRelY, false);
-				}
-			}, 300);
-		}
-	};
 
 	function send(obj) {
 		if (socket && socket.readyState === WebSocket.OPEN) {

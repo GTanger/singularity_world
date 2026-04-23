@@ -71,81 +71,7 @@
 		</div>
 	</div>
 
-	<!-- ═══ 觀景窗模式（earth.ygggt.com）：舊 hex canvas UI ═══ -->
-	<div id="app-observatory" class="app-after-login" hidden>
-		<!-- 頂欄：遊戲時間 -->
-		<header id="top-bar-obs">
-			<div class="bar-cell" id="game-time-date-cell">
-				<span id="game-time-date">奇點曆</span>
-			</div>
-			<div class="bar-cell" id="sundial-cell">
-				<svg id="game-time-svg" class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
-					<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
-					<line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(0 16 16)"/>
-				</svg>
-			</div>
-			<div class="bar-cell" id="clock-cell">
-				<span id="game-time-clock"></span>
-				<span id="game-time-label"></span>
-			</div>
-		</header>
-
-		<!-- 主輸出區 -->
-		<main id="main-output">
-			<div id="log"></div>
-		</main>
-
-		<!-- 標籤列 -->
-		<nav id="tab-bar">
-			<button class="tab-btn active" data-tab="room">房間</button>
-			<button class="tab-btn" data-tab="inventory">背包</button>
-			<button class="tab-btn" data-tab="character">人物</button>
-			<button class="tab-btn" data-tab="skills">技能</button>
-		</nav>
-
-		<!-- 標籤面板（可收合） -->
-		<div id="tab-panel">
-			<div id="panel-room" class="tab-pane active" data-tab="room">
-				<div id="room-info"></div>
-			</div>
-			<div id="panel-inventory" class="tab-pane" data-tab="inventory" hidden>
-				<div id="inventory-weight"></div>
-				<div id="inventory-list"></div>
-			</div>
-			<div id="panel-character" class="tab-pane" data-tab="character" hidden>
-				<div id="status-content"></div>
-				<div id="player-modal-pane-equip"></div>
-			</div>
-			<div id="panel-skills" class="tab-pane" data-tab="skills" hidden>
-				<div id="skill-content"></div>
-				<div id="starplate-content"></div>
-			</div>
-		</div>
-
-		<!-- 底欄：方向鈕 + 姓名 + 狀態條 -->
-		<footer id="bottom-bar-obs">
-			<div id="dpad">
-				<button class="dir-btn" data-dir="西北">↖</button>
-				<button class="dir-btn" data-dir="北">↑</button>
-				<button class="dir-btn" data-dir="東北">↗</button>
-				<button class="dir-btn" data-dir="西">←</button>
-				<button class="dir-btn dir-center" id="look-btn">●</button>
-				<button class="dir-btn" data-dir="東">→</button>
-				<button class="dir-btn" data-dir="西南">↙</button>
-				<button class="dir-btn" data-dir="南">↓</button>
-				<button class="dir-btn" data-dir="東南">↘</button>
-			</div>
-			<div id="bottom-status">
-				<div id="player-name" tabindex="0">姓名</div>
-				<div class="stat-mini"><label>氣血</label><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
-				<div class="stat-mini"><label>體力</label><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
-				<div class="stat-mini"><label>能量</label><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
-				<div class="stat-mini"><label>精神</label><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
-			</div>
-		</footer>
-	</div>
-
-	<!-- ═══ Grid MUD 模式（預設，非 ygggt 域名）：四層 grid UI ═══ -->
+	<!-- ═══ Grid MUD 模式（唯一模式）：四層 grid UI ═══ -->
 	<div id="app-grid" class="game-grid-app sw-app" hidden>
 
 		<!-- 頂欄（36px）：三欄（無標題） -->
@@ -214,56 +140,35 @@
 
 	</div><!-- /#app-grid -->
 
-	<!-- hostname 判斷：決定模式並設置 #app 指向哪個容器 -->
+	<!-- 初始化：grid MUD 是唯一模式 -->
 	<script>
 	(function () {
-		// 只有 exact match earth.ygggt.com 才是觀景窗
-		// 其他所有域名（其他 ygggt 子域、localhost、IP、Cloudflare Tunnel）都走 grid MUD
-		var isObservatory = window.location.hostname === 'earth.ygggt.com';
-
-		if (isObservatory) {
-			// 觀景窗模式：啟用舊 hex UI
-			window.__gameMode = 'observatory';
-			document.getElementById('app-observatory').id = 'app';
-			document.getElementById('app-grid').remove();
-		} else {
-			// Grid MUD 模式：啟用四區塊 UI
-			window.__gameMode = 'grid';
-			document.getElementById('app-grid').id = 'app';
-			document.getElementById('app-observatory').remove();
-			// 啟用 game-grid.css
-			var css = document.getElementById('game-grid-css');
-			if (css) css.disabled = false;
-			// body 加 game-grid-body class
-			document.body.classList.add('game-grid-body');
-		}
+		document.getElementById('app-grid').id = 'app';
+		var css = document.getElementById('game-grid-css');
+		if (css) css.disabled = false;
+		document.body.classList.add('game-grid-body');
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.42"></script>
-	<script src="game-ui.js?v=0.20.42"></script>
-	<!-- grid-map.js 只在非觀景窗模式需要，但兩種模式都載入無害（沒有 DOM 目標就不動）-->
-	<script src="grid-map.js?v=0.20.42"></script>
-	<script src="sw-log.js?v=0.20.42"></script>
-	<script src="sw-panes.js?v=0.20.42"></script>
-	<script src="main.js?v=0.20.42"></script>
+	<script src="narrative-markdown.js?v=0.20.43"></script>
+	<script src="game-ui.js?v=0.20.43"></script>
+	<script src="grid-map.js?v=0.20.43"></script>
+	<script src="sw-log.js?v=0.20.43"></script>
+	<script src="sw-panes.js?v=0.20.43"></script>
+	<script src="main.js?v=0.20.43"></script>
 	<script>
-		// grid MUD 模式覆蓋：showGameAfterLogin 直接顯示 #app（已由 hostname 判斷決定哪個是 #app）
-		// 觀景窗模式：closeDrawers / triggerLook 相容 game-ui.js 可能缺的 DOM
-		if (window.__gameMode === 'grid') {
-			window.showGameAfterLogin = function () {
-				var auth = document.getElementById('auth-screen');
-				var app  = document.getElementById('app');
-				if (auth) auth.style.display = 'none';
-				if (app)  app.hidden = false;
-			};
-			window.closeDrawers = function () {};
-			window.triggerLook  = function () {};
-		}
+		window.showGameAfterLogin = function () {
+			var auth = document.getElementById('auth-screen');
+			var app  = document.getElementById('app');
+			if (auth) auth.style.display = 'none';
+			if (app)  app.hidden = false;
+		};
+		window.closeDrawers = function () {};
+		window.triggerLook  = function () {};
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
 				// updateViaCache:'none' 讓瀏覽器檢查 SW 更新時繞 HTTP cache（破 CF 的 4h browser cache TTL 續命）
-				navigator.serviceWorker.register('/sw.js?v=0.20.42', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.43', { updateViaCache: 'none' }).then(function (reg) {
 					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
