@@ -1,283 +1,31 @@
-//! 六角格地圖編輯器 API
-//!
-//! 以 `HexGrid` 為核心，提供 cell CRUD、barrier、儲存/載入。
-//! 持久化：**PostgreSQL `hex_world` 為主**，`data/hex/grid.json` 為備份。
-//! 前端透過這組 API 操作地圖，不再經由 room-editor。
-
-use std::path::PathBuf;
-use std::sync::{OnceLock, RwLock};
+//! HTTP handlers：reveal / cell / wall / portal / transport / save / reload / path / neighbors。
 
 use axum::extract::{Json, Path, Query, State};
-use axum::response::IntoResponse;
 use axum::http::StatusCode;
-use serde::Deserialize;
+use axum::response::IntoResponse;
 
-use crate::db::{load_hex_grid, save_hex_grid_to_pg};
+use crate::db::load_hex_grid;
 use crate::hex::{
     allowed_terrain_for_pin, api_contract_pins, generate_wild_cell, is_player_spawn_pin,
     is_undeletable_contract, reveal_hex_disk, HexCell, HexCoord, HexDir, HexGrid, LinkLayer,
-    Portal, Terrain, TransportEdge, TransportEndpoint, TransportLinkClass, TransportMode,
+    Portal, TransportEdge, TransportEndpoint,
 };
-use crate::model::RoomObject;
 use crate::server::http_api::AdminQuery;
 use crate::server::run::AppState;
 
-// ── 全域狀態 ─────────────────────────────────────────────────────
-
-static HEX_STATE: OnceLock<HexState> = OnceLock::new();
-
-struct HexState {
-    grid: RwLock<HexGrid>,
-    path: PathBuf,
-}
-
-/// 啟動時呼叫：優先自 PostgreSQL `hex_world` 載入；無列則自 `grid.json` 種子灌入 PG。
-pub fn init(data_path: &str) {
-    let path = PathBuf::from(data_path);
-    let grid = if let Some(g) = load_hex_grid() {
-        g
-    } else if path.exists() {
-        match std::fs::read_to_string(&path) {
-            Ok(json) => {
-                let g: HexGrid = serde_json::from_str(&json).unwrap_or_default();
-                if let Err(e) = save_hex_grid_to_pg(&g) {
-                    tracing::warn!("hex_world: 種子寫入 PG 失敗：{e}");
-                }
-                g
-            }
-            Err(_) => HexGrid::new(),
-        }
-    } else {
-        HexGrid::new()
-    };
-    let count = grid.len();
-    let _ = HEX_STATE.set(HexState {
-        grid: RwLock::new(grid),
-        path,
-    });
-    tracing::info!("hex_editor: 載入 {count} 格（主資料：PostgreSQL hex_world）");
-}
-
-fn hex_state() -> &'static HexState {
-    HEX_STATE.get().expect("hex_editor::init 未呼叫")
-}
-
-/// 取得執行期 hex grid 的唯讀快照（供 game 模組視野查詢用）。
-pub fn get_runtime_grid() -> Option<HexGrid> {
-    HEX_STATE.get().and_then(|s| s.grid.read().ok().map(|g| g.clone()))
-}
-
-fn save_to_disk() -> Result<(), String> {
-    let st = hex_state();
-    let grid = st.grid.read().map_err(|e| e.to_string())?;
-    if let Err(e) = save_hex_grid_to_pg(&grid) {
-        tracing::warn!("hex_world: PG 寫入失敗（仍寫入 JSON 備份）：{e}");
-    }
-    if let Some(dir) = st.path.parent() {
-        std::fs::create_dir_all(dir).map_err(|e| e.to_string())?;
-    }
-    let json = serde_json::to_string_pretty(&*grid).map_err(|e| e.to_string())?;
-    std::fs::write(&st.path, json).map_err(|e| e.to_string())?;
-    Ok(())
-}
-
-/// 確保座標在世界格網中已有契約；若無則決定性生成並落盤。  
-/// 供多人玩法：每位玩家再於 `hex_player_reveal` 標記自己的「已見」。
-pub fn ensure_world_cell_at(coord: HexCoord) -> Result<(HexCell, bool), String> {
-    let mut grid = hex_state().grid.write().map_err(|e| e.to_string())?;
-    if let Some(c) = grid.get(coord) {
-        return Ok((c.clone(), false));
-    }
-    let cell = generate_wild_cell(&grid, coord);
-    grid.insert(cell.clone());
-    drop(grid);
-    save_to_disk()?;
-    Ok((cell, true))
-}
-
-/// 將指定座標標記為已探索（explored = true）並持久化。
-pub fn mark_cell_explored(coord: HexCoord) -> Result<(), String> {
-    let mut grid = hex_state().grid.write().map_err(|e| e.to_string())?;
-    if let Some(mut cell) = grid.get(coord).cloned()
-        && !cell.explored
-    {
-        cell.explored = true;
-        grid.insert(cell);
-        drop(grid);
-        save_to_disk()?;
-    }
-    Ok(())
-}
-
-/// 新角色 Hex 世界**唯一**出生點：座標 **(0,0)** 契約為**草原**（`Terrain::Grassland`）。
-/// 若該格尚不存在則揭露生成；若已存在但非草原則改地形並落盤（PostgreSQL + 備份）。
-/// 格上帶 **`player_spawn`** 標籤，與 [`crate::hex::contract_pins`] 對齊，供地圖編輯器辨識遊戲釘死彩格。
-pub fn ensure_player_spawn_grassland_coord() -> Result<(i32, i32), String> {
-    let coord = HexCoord::new(0, 0);
-    let (mut cell, _) = ensure_world_cell_at(coord)?;
-    let mut changed = false;
-    if cell.terrain != Terrain::Grassland {
-        cell.terrain = Terrain::Grassland;
-        cell.name = format!("草原·{}", coord.to_cell_id());
-        changed = true;
-    }
-    if !cell.tags.iter().any(|t| t == "player_spawn") {
-        cell.tags.push("player_spawn".into());
-        changed = true;
-    }
-    if changed {
-        {
-            let mut grid = hex_state().grid.write().map_err(|e| e.to_string())?;
-            grid.insert(cell);
-        }
-        save_to_disk()?;
-    }
-    Ok((coord.q, coord.r))
-}
-
-fn is_admin(cfg: &crate::config::Server, q: &AdminQuery) -> bool {
-    if cfg.management_key.is_empty() {
-        return true;
-    }
-    q.mg_key.as_deref() == Some(&cfg.management_key)
-}
+use super::state::{authz_check, hex_state, save_to_disk};
+use super::types::{
+    err_json, ok_count, ok_json, CellReq, PathGetQuery, PortalReq, RevealRegionReq, RevealReq,
+    TransportEdgeReq, WallReq, WorldSeedReq,
+};
 
 macro_rules! auth {
     ($state:expr, $q:expr) => {
-        if !is_admin(&$state.cfg, &$q) {
-            return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"unauthorized"}))).into_response();
+        if let Some(r) = authz_check(&$state.cfg, &$q) {
+            return r;
         }
     };
 }
-
-// ── 請求 / 回應型別 ─────────────────────────────────────────────
-
-#[derive(Deserialize)]
-pub struct CellReq {
-    pub q: i32,
-    pub r: i32,
-    #[serde(default)]
-    pub terrain: Terrain,
-    #[serde(default)]
-    pub name: String,
-    #[serde(default)]
-    pub zone: String,
-    #[serde(default)]
-    pub tags: Vec<String>,
-    #[serde(default)]
-    pub description: String,
-    #[serde(default)]
-    pub objects: Vec<RoomObject>,
-}
-
-#[derive(Deserialize)]
-pub struct WallReq {
-    pub aq: i32,
-    pub ar: i32,
-    pub bq: i32,
-    pub br: i32,
-    #[serde(default)]
-    pub remove: bool,
-}
-
-#[derive(Deserialize)]
-pub struct PortalReq {
-    pub name: String,
-    pub from_q: i32,
-    pub from_r: i32,
-    pub to_q: i32,
-    pub to_r: i32,
-    #[serde(default = "default_true")]
-    pub bidirectional: bool,
-    /// 預設 false：一般 portal 不計入官方聯外子圖
-    #[serde(default)]
-    pub counts_as_official_link: bool,
-}
-
-#[derive(Deserialize)]
-pub struct TransportEdgeReq {
-    pub id: Option<String>,
-    pub aq: i32,
-    pub ar: i32,
-    pub bq: i32,
-    pub br: i32,
-    pub mode: TransportMode,
-    #[serde(default = "default_true")]
-    pub operational: bool,
-    #[serde(default)]
-    pub link_class: TransportLinkClass,
-    pub weight: Option<f64>,
-}
-
-fn default_true() -> bool {
-    true
-}
-
-/// GET /api/hex/path 查詢參數（含 `mg_key`）
-#[derive(Deserialize)]
-pub struct PathGetQuery {
-    #[serde(flatten)]
-    pub admin: AdminQuery,
-    pub from_q: i32,
-    pub from_r: i32,
-    pub to_q: i32,
-    pub to_r: i32,
-    /// `official`（官方聯外子圖）或 `exploration`（預設）
-    #[serde(default)]
-    pub layer: HexPathLayer,
-}
-
-#[derive(Default, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum HexPathLayer {
-    #[default]
-    Exploration,
-    Official,
-}
-
-impl From<HexPathLayer> for LinkLayer {
-    fn from(v: HexPathLayer) -> Self {
-        match v {
-            HexPathLayer::Exploration => LinkLayer::Exploration,
-            HexPathLayer::Official => LinkLayer::Official,
-        }
-    }
-}
-
-/// POST /api/hex/reveal — 單格揭露（已存在則不重算）
-#[derive(Deserialize)]
-pub struct RevealReq {
-    pub q: i32,
-    pub r: i32,
-}
-
-/// POST /api/hex/reveal-region — 批量揭露
-#[derive(Deserialize)]
-pub struct RevealRegionReq {
-    pub center_q: i32,
-    pub center_r: i32,
-    pub radius: i32,
-}
-
-/// PUT /api/hex/world-seed
-#[derive(Deserialize)]
-pub struct WorldSeedReq {
-    pub world_seed: u64,
-}
-
-fn ok_json() -> Json<serde_json::Value> {
-    Json(serde_json::json!({"ok": true}))
-}
-
-fn ok_count(n: usize) -> Json<serde_json::Value> {
-    Json(serde_json::json!({"ok": true, "count": n}))
-}
-
-fn err_json(msg: &str) -> (StatusCode, Json<serde_json::Value>) {
-    (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error": msg})))
-}
-
-// ── Handlers ─────────────────────────────────────────────────────
 
 /// POST /api/hex/reveal — 單格首次揭露（契約釘死）
 pub async fn reveal_post(
@@ -344,7 +92,7 @@ pub async fn world_seed_put(
     ok_json().into_response()
 }
 
-/// GET /api/hex/grid — 回傳完整 grid，並附 **`contract_pins`**（遊戲釘死彩格座標，與地圖編輯器同步）。
+/// GET /api/hex/grid — 回傳完整 grid，附 `contract_pins`。
 pub async fn grid_get(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -404,7 +152,7 @@ pub async fn cell_put(
     ok_json().into_response()
 }
 
-/// PUT /api/hex/cells — 批次建立/更新多個格子
+/// PUT /api/hex/cells — 批次建立/更新
 pub async fn cells_put(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -441,7 +189,7 @@ pub async fn cells_put(
     ok_count(count).into_response()
 }
 
-/// DELETE /api/hex/cell/{q}/{r} — 刪除一個格子
+/// DELETE /api/hex/cell/{q}/{r}
 pub async fn cell_delete(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -467,7 +215,7 @@ pub async fn cell_delete(
     Json(serde_json::json!({"ok": true, "existed": existed})).into_response()
 }
 
-/// PUT /api/hex/wall — 新增或移除牆壁
+/// PUT /api/hex/wall
 pub async fn wall_put(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -490,7 +238,7 @@ pub async fn wall_put(
     ok_json().into_response()
 }
 
-/// POST /api/hex/portal — 新增傳送門
+/// POST /api/hex/portal
 pub async fn portal_post(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -511,7 +259,7 @@ pub async fn portal_post(
     ok_json().into_response()
 }
 
-/// POST /api/hex/transport-edge — 新增一條明式交通邊（雙端皆為格座標）
+/// POST /api/hex/transport-edge
 pub async fn transport_edge_post(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -534,7 +282,7 @@ pub async fn transport_edge_post(
     ok_json().into_response()
 }
 
-/// POST /api/hex/save — 手動持久化
+/// POST /api/hex/save
 pub async fn save(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -549,7 +297,7 @@ pub async fn save(
     }
 }
 
-/// POST /api/hex/reload — 自 PostgreSQL 重新載入（無列時退回 `grid.json` 備份）
+/// POST /api/hex/reload
 pub async fn reload(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
@@ -575,7 +323,7 @@ pub async fn reload(
     ok_count(count).into_response()
 }
 
-/// GET /api/hex/path — BFS 最短路（`layer`：official | exploration）
+/// GET /api/hex/path
 pub async fn path_get(
     State(st): State<AppState>,
     Query(q): Query<PathGetQuery>,
@@ -599,7 +347,7 @@ pub async fn path_get(
     .into_response()
 }
 
-/// GET /api/hex/neighbors/{q}/{r} — 查詢可行走的鄰居
+/// GET /api/hex/neighbors/{q}/{r}
 pub async fn neighbors_get(
     State(st): State<AppState>,
     Query(q): Query<AdminQuery>,
