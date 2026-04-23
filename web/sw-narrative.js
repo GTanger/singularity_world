@@ -1,4 +1,4 @@
-// 敘事格式化與實體名字索引：indexEntityNameCache / resolveEntityIDByName / formatNarrative / formatNarrativeWithClickableObjects。v0.20.45
+// 敘事格式化與實體名字索引：indexEntityNameCache / resolveEntityIDByName / formatNarrative / formatNarrativeWithClickableObjects。v0.20.46
 (function () {
 	var entityNameCache = {};
 

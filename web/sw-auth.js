@@ -1,4 +1,4 @@
-// 認證 UI：showGame / showAuth / bindForm；依賴 window.gameSend / window.gameConnect / window.gameState。v0.20.45
+// 認證 UI：showGame / showAuth / bindForm；依賴 window.gameSend / window.gameConnect / window.gameState。v0.20.46
 (function () {
 	function showGame() {
 		var authScreen = document.getElementById('auth-screen');

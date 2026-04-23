@@ -1,4 +1,4 @@
-// 遊戲時鐘與狀態條：gameSecNow / gameDaysNow / formatSingularityDate / updateGameTimeDisplay / ticker / updateStatusBars / draw。v0.20.45
+// 遊戲時鐘與狀態條：gameSecNow / gameDaysNow / formatSingularityDate / updateGameTimeDisplay / ticker / updateStatusBars / draw。v0.20.46
 (function () {
 	var GAME_TIME_SCALE = 24;
 	var GAME_SEC_PER_DAY = 86400;
