@@ -2,14 +2,15 @@
 
 > **進度看 `sw-status` 輸出，不看這份**。這份只放「方向、拍板設計、不做清單、關鍵檔案」——會變的欄位已砍，避免與實況脫節。
 >
-> 最後審訂：2026-04-19
+> 最後審訂：2026-04-23（hex/觀景窗全面下線）
 
 ## 方向定調（2026-04-16 收斂，仍有效）
 
 圖形地圖出戲，回歸純文字 MUD。底層方格，但渲染是「方格 + 連線」，不是棋盤。
 hex 六方沒「北南」文字裡不自然；方格四向自然。
 
-觀景窗（earth.ygggt.com）繼續吃 hex，不同步方格世界，兩套座標系獨立。
+earth.ygggt.com 觀景窗概念已廢止（2026-04-23）——hex 模組、編輯器、路由、資料表
+全數從 repo 移除；唯一世界 = 方格 MUD。歷史模擬器屆時直接灌 grid_cells。
 
 ## 拍板設計（2026-04-16）
 
@@ -28,7 +29,7 @@ hex 六方沒「北南」文字裡不自然；方格四向自然。
 
 - 未探索一律不顯示
 - 主動「探索」揭露當前格的連線出口 + 資源動作
-- 一旦揭露永久釘死（對齊 hex_player_reveal 語義）
+- 一旦揭露永久釘死（grid_cells.explored 欄位）
 - 地上物 + 在場者：進格即見，不需探索
 
 ### 物件欄：LPC MUD 萬物皆物件
@@ -72,14 +73,13 @@ hex 六方沒「北南」文字裡不自然；方格四向自然。
 | 檔案 | 職責 |
 |------|------|
 | `src/grid/{coord,grid,reveal,mod}.rs` | 方格座標、鄰居、BFS、揭露狀態 |
-| `src/npc/grid_ai.rs` | NPC 方格版 AI（hex_ai.rs 保留給觀景窗） |
+| `src/npc/grid_ai.rs` | NPC 方格版 AI（唯一 AI 實作） |
 | `src/npc/decision.rs` | 評分引擎，座標無關 |
 | `src/server/simulation_loop.rs` | grid tick |
 | `src/game/room.rs` | RoomView 接 square grid + 揭露狀態 |
 | `web/grid-map.js` | DOM 地圖 + 連線 + 點擊移動 |
 | `web/game-ui.js` | 物件欄、動作選單、stats bar |
 | `web/main.js` | 前端入口，WebSocket |
-| `src/hex/*`（保留） | 觀景窗專用，不動 |
 
 ## 並行：歷史模擬器（獨立 repo）
 
@@ -91,7 +91,7 @@ hex 六方沒「北南」文字裡不自然；方格四向自然。
 
 ### 對接主遊戲
 
-M4 時 snapshot 灌回 PG，方格 MUD 才切換到新世界狀態。現階段主遊戲仍用既有 hex 觀景窗世界，兩者並行。
+M4 時 snapshot 灌回 PG（grid_cells 表）。現階段主遊戲跑方格 MUD，等模擬器快照接上。
 
 ## 底牌（不寫進 LLM prompt）
 

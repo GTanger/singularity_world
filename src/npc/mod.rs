@@ -5,7 +5,6 @@ mod reaction;
 mod brain_arrival;
 mod decision;
 mod grid_ai;
-mod hex_ai;
 mod job_matching;
 pub mod narrative;
 mod social;
@@ -30,7 +29,6 @@ pub use crate::db::{
     starter_equipment, DEFAULT_NPCS, NpcDef,
 };
 pub use grid_ai::{GridNpcManager, GridMoveEvent};
-pub use hex_ai::{HexNpcManager, HexMoveEvent};
 pub use social::pick_micro_interaction;
 pub use traveler::{seed_traveler_manager, MovementDef, MovementType, NpcStep, TravelerManager};
 pub use unobserved::{run_unobserved_world_tick, UNOBSERVED_MAX_NPCS_PER_TICK};

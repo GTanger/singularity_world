@@ -74,9 +74,9 @@ impl Store {
                 "INSERT INTO entities (id, kind, display_char, x, y, move_state, target_x, target_y,
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
-                    equipment_slots, inventory, disposition, current_activity, hex_q, hex_r,
+                    equipment_slots, inventory, disposition, current_activity,
                     grid_x, grid_y)
-                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
+                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
                  ON CONFLICT (id) DO UPDATE SET
                     kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
                     move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
@@ -86,14 +86,14 @@ impl Store {
                     gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
                     activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
                     inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
-                    current_activity=EXCLUDED.current_activity, hex_q=EXCLUDED.hex_q, hex_r=EXCLUDED.hex_r,
+                    current_activity=EXCLUDED.current_activity,
                     grid_x=EXCLUDED.grid_x, grid_y=EXCLUDED.grid_y",
                 &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
                   &e.target_x, &e.target_y, &e.walk_or_run, &e.move_started_at,
                   &e.vit, &e.qi, &e.dex, &e.magnesium, &e.last_observed_at,
                   &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
                   &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
-                  &e.current_activity, &e.hex_q, &e.hex_r, &e.grid_x, &e.grid_y],
+                  &e.current_activity, &e.grid_x, &e.grid_y],
             )?;
         }
 
@@ -229,7 +229,7 @@ impl Store {
             "SELECT id, kind, display_char, x, y, move_state, target_x, target_y,
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
-                    equipment_slots, inventory, disposition, current_activity, hex_q, hex_r,
+                    equipment_slots, inventory, disposition, current_activity,
                     grid_x, grid_y
              FROM entities", &[]
         ) else { return false };
@@ -261,10 +261,8 @@ impl Store {
                 inventory: row.get(21),
                 disposition: row.get(22),
                 current_activity: row.get(23),
-                hex_q: row.get(24),
-                hex_r: row.get(25),
-                grid_x: row.get(26),
-                grid_y: row.get(27),
+                grid_x: row.get(24),
+                grid_y: row.get(25),
             };
             self.entities.insert(e.id.clone(), e);
         }

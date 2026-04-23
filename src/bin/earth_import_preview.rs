@@ -8,7 +8,7 @@
 //!       --srtm data/earth/srtm --pbf data/earth/osm/taiwan-latest.osm.pbf \
 //!       --out /tmp/taiwan_terrain.ppm --step 0.005
 
-use singularity_world::hex::Terrain;
+use singularity_world::grid::Terrain;
 use singularity_world::worldgen::earth::{
     LanduseIndex, SrtmGrid, classify_terrain, load_landuse,
 };

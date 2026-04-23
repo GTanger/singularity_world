@@ -43,15 +43,6 @@ impl Store {
             .collect()
     }
 
-    /// 與指定六角座標重合的實體 id（依 `hex_q` / `hex_r`）。
-    pub fn entity_ids_at_hex(&self, q: i32, r: i32) -> Vec<String> {
-        self.entities
-            .iter()
-            .filter(|(_, e)| e.hex_q == Some(q) && e.hex_r == Some(r))
-            .map(|(id, _)| id.clone())
-            .collect()
-    }
-
     pub fn all_entity_ids(&self) -> Vec<String> {
         self.entities.keys().cloned().collect()
     }
@@ -110,25 +101,6 @@ impl Store {
             crate::pg::entity::upsert_async(e_clone);
         }
         Ok(())
-    }
-
-    /// 設定實體在 Hex 世界格網（even-q）上的權威座標；寫入 PG 與快取。
-    /// 同步寫入 `entity_rooms` 為 `hex:{q}:{r}`，與 [`Self::set_entity_room`] 一致。
-    pub fn set_entity_hex(&mut self, entity_id: &str, q: i32, r: i32) -> anyhow::Result<()> {
-        self.update_entity(entity_id, |e| {
-            e.hex_q = Some(q);
-            e.hex_r = Some(r);
-        })?;
-        let rid = crate::hex::hex_room_id_from_coord(q, r);
-        self.set_entity_room(entity_id, &rid)
-    }
-
-    /// 清除六角綁定（仍保留 Room／平面座標）。
-    pub fn clear_entity_hex(&mut self, entity_id: &str) -> anyhow::Result<()> {
-        self.update_entity(entity_id, |e| {
-            e.hex_q = None;
-            e.hex_r = None;
-        })
     }
 
     /// 設定實體在正方格世界上的權威座標；寫入 PG 與快取。

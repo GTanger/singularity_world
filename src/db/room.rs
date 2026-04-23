@@ -2,7 +2,7 @@
 
 use crate::store;
 
-use super::{room_hex, ErrNoStore};
+use super::ErrNoStore;
 
 /// 創生預設房間名稱。
 pub const SPAWN_ROOM_NAME: &str = "宜林";
@@ -67,25 +67,10 @@ pub fn get_room_name(room_id: &str) -> anyhow::Result<String> {
 }
 
 /// 將實體設為在指定房間（對齊既有 `SetEntityRoom`）。
-/// 若 `room_id` 為 `hex:q:r` 或於 `room_hex_overlay.json`／創生房規則可解析為六角，則改寫權威座標為 [`set_entity_hex`]。
 pub fn set_entity_room(entity_id: &str, room_id: &str) -> anyhow::Result<()> {
-    if let Some((q, r)) = crate::hex::parse_hex_room_id(room_id) {
-        return set_entity_hex(entity_id, q, r);
-    }
-    if let Some((q, r)) = room_hex::room_hex_for_world_room(room_id) {
-        return set_entity_hex(entity_id, q, r);
-    }
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
-    s.set_entity_room(entity_id, room_id)?;
-    s.clear_entity_hex(entity_id)
-}
-
-/// 權威六角座標；見 [`store::Store::set_entity_hex`]（同步 `entity_rooms` 為 `hex:…`）。
-pub fn set_entity_hex(entity_id: &str, q: i32, r: i32) -> anyhow::Result<()> {
-    let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write();
-    s.set_entity_hex(entity_id, q, r)
+    s.set_entity_room(entity_id, room_id)
 }
 
 /// 權威正方格座標；見 [`store::Store::set_entity_grid`]（同步 `entity_rooms` 為 `grid:…`）。

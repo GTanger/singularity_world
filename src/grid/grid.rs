@@ -1,21 +1,20 @@
 //! 方格地圖容器（SquareGrid）與格子單元（GridCell）。
 //!
-//! 設計意圖與 HexGrid 對稱：
 //! - `SquareGrid` 持有 world_seed 及所有已揭露格子
-//! - `GridCell` 對應 `HexCell`，共用 `Terrain` 與 `HexObject` 型別
+//! - `GridCell` 為格子單元，含 `Terrain` 與 `GridObject`
 //! - 揭露邏輯由 `reveal` 模組負責，此模組只管容器
 
 use std::collections::{HashMap, HashSet, VecDeque};
 
 use serde::{Deserialize, Serialize};
 
-use crate::hex::{HexObject, Terrain};
+use super::cell::{GridObject, Terrain};
 
 use super::coord::SquareCoord;
 
 // ─── 格子單元 ───
 
-/// 方格地圖單元（與 HexCell 對稱，共用 Terrain 與 HexObject 型別）
+/// 方格地圖單元（格上資源與地形）
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GridCell {
     pub coord: SquareCoord,
@@ -31,9 +30,9 @@ pub struct GridCell {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub description: String,
 
-    /// 格子內的地上物（資源、地標）；復用 HexObject 結構，之後再改名
+    /// 格子內的地上物（資源、地標）
     #[serde(default)]
-    pub objects: Vec<HexObject>,
+    pub objects: Vec<GridObject>,
 
     /// 是否已被玩家探索（影響前端渲染）
     #[serde(default)]

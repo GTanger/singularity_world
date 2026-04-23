@@ -6,7 +6,7 @@
 //!
 //! 不直接寫 PG，避免污染遊戲執行狀態。需要灌時手動 psql 執行。
 
-use singularity_world::hex::Terrain;
+use singularity_world::grid::Terrain;
 use singularity_world::worldgen::earth::{
     LandClass, LanduseIndex, SrtmGrid, classify_terrain, load_landuse,
 };

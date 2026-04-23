@@ -5,7 +5,7 @@
 //! - `load_landuse`：掃 OSM PBF 抽 landuse/natural 多邊形
 //! - `classify`：(elev, landclass) → Terrain + Granularity
 
-use crate::hex::Terrain;
+use crate::grid::Terrain;
 use byteorder::{BigEndian, ReadBytesExt};
 use geo::{Contains, Coord, Point, Polygon};
 use osmpbf::{Element, ElementReader};

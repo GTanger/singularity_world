@@ -95,12 +95,6 @@ pub struct Entity {
     /// 表面可觀測行為（非內心意圖），供玩家 Look 時顯示。
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub current_activity: String,
-    /// Hex even-q 座標 q；`None` 表示尚未綁定 Hex 世界（僅 Room／平面 x,y）。
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub hex_q: Option<i32>,
-    /// 野外六角 even-q 座標 r。
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub hex_r: Option<i32>,
     /// 正方格座標 x（東增）。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grid_x: Option<i32>,

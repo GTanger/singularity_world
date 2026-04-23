@@ -6,10 +6,8 @@ use crate::db::{self, compute_resource_maxes, expand_soul_seed_to_origin_sentenc
 use crate::entity::Character;
 use crate::game;
 use crate::gametext;
-use crate::store;
 
 use super::super::broadcast::send_room_view_to_session;
-use super::super::hex_editor;
 use super::super::protocol::{ClientMsg, MeMsg};
 use super::super::session::Session;
 use super::movement::send_grid_view;
@@ -99,26 +97,7 @@ pub(super) fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("create_entity_failed"));
         return;
     }
-    // 出生唯一規則：Hex 格 (0,0) 契約為草原；權威座標寫入 PG（不再於創角時綁 room_id）。
-    let spawn_hex = hex_editor::ensure_player_spawn_grassland_coord();
-    let Some(st) = store::get_store() else {
-        conn.send_error(gametext::client("create_spawn_hex_failed"));
-        return;
-    };
-    match spawn_hex {
-        Ok((q, r)) => {
-            let mut g = st.write();
-            if g.set_entity_hex(&msg.player_id, q, r).is_err() {
-                conn.send_error(gametext::client("create_spawn_hex_failed"));
-                return;
-            }
-        }
-        Err(e) => {
-            tracing::error!("ensure_player_spawn_grassland_coord: {e}");
-            conn.send_error(gametext::client("create_spawn_hex_failed"));
-            return;
-        }
-    }
+    // 新玩家預設在正方格 (0,0)；login_success 會確保 grid 座標並推送視野
     if db::create_auth(&msg.player_id, &msg.password).is_err() {
         conn.send_error(gametext::client("create_auth_failed"));
         return;
@@ -133,42 +112,14 @@ fn login_success(conn: &WsConnection, player_id: &str) {
     }
     tracing::info!("[login_success] 1 player_id write OK pid={player_id}");
     let gh = current_game_hour(&conn.cfg);
-    let mut ent_pre = db::get_entity(player_id).ok().flatten();
+    let ent_pre = db::get_entity(player_id).ok().flatten();
     tracing::info!("[login_success] 2 db::get_entity OK pid={player_id}");
-    let Some(e0) = ent_pre.as_ref() else {
+    let Some(_e0) = ent_pre.as_ref() else {
         conn.send_error(gametext::client("load_view_failed"));
         return;
     };
-    let mut hq = e0.hex_q;
-    let mut hr = e0.hex_r;
-    if hq.is_none() || hr.is_none() {
-        match hex_editor::ensure_player_spawn_grassland_coord() {
-            Ok((q, r)) => {
-                if db::set_entity_hex(player_id, q, r).is_err() {
-                    conn.send_error(gametext::client("create_spawn_hex_failed"));
-                    return;
-                }
-                hq = Some(q);
-                hr = Some(r);
-            }
-            Err(e) => {
-                tracing::error!("login spawn hex: {e}");
-                conn.send_error(gametext::client("create_spawn_hex_failed"));
-                return;
-            }
-        }
-        ent_pre = db::get_entity(player_id).ok().flatten();
-    }
-    let (hq, hr) = match (hq, hr) {
-        (Some(q), Some(r)) => (q, r),
-        _ => {
-            conn.send_error(gametext::client("create_spawn_hex_failed"));
-            return;
-        }
-    };
-    // 確保玩家也有 grid 座標（正方格）
-    let ent_now = db::get_entity(player_id).ok().flatten();
-    let (gx, gy) = match ent_now.as_ref().and_then(|e| e.grid_x.zip(e.grid_y)) {
+    // 確保玩家有 grid 座標（正方格為唯一世界）
+    let (gx, gy) = match ent_pre.as_ref().and_then(|e| e.grid_x.zip(e.grid_y)) {
         Some(pair) => pair,
         None => {
             let _ = db::set_entity_grid(player_id, 0, 0);
@@ -181,14 +132,14 @@ fn login_success(conn: &WsConnection, player_id: &str) {
     });
     tracing::info!("[login_success] 4 with_square_grid_mut OK pid={player_id}");
 
-    let view = match game::get_hex_room_view(player_id, hq, hr, gh) {
+    let view = match game::get_grid_room_view(player_id, gx, gy, gh) {
         Ok(Some(v)) => v,
         Ok(None) | Err(_) => {
             conn.send_error(gametext::client("load_view_failed"));
             return;
         }
     };
-    tracing::info!("[login_success] 5 get_hex_room_view OK pid={player_id}");
+    tracing::info!("[login_success] 5 get_grid_room_view OK pid={player_id}");
     let session = Session::with_outbound(player_id, conn.conn_id, conn.tx.clone());
     conn.sessions.set(player_id, session.clone());
     tracing::info!("[login_success] 6 sessions.set OK pid={player_id}");
@@ -211,7 +162,7 @@ fn login_success(conn: &WsConnection, player_id: &str) {
             let _ = db::record_meet(&e.id, player_id);
         }
     }
-    game::observe_hex(hq, hr, player_id, now);
+    game::observe_room(&view.room.id, player_id, now);
     send_me_with_status(conn, &session, ent.as_ref(), player_id, &view.room.id, &view.room.name, vit, qi, dex, &rm);
     tracing::info!("[login_success] 9 DONE pid={player_id}");
 }

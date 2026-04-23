@@ -2,12 +2,12 @@
 
 use crate::db::{
     self, get_object_and_room, get_object_by_id_in_room, get_object_by_name_in_room,
-    object_has_socket, object_response, set_entity_hex,
+    object_has_socket, object_response, set_entity_grid,
 };
 use crate::event::{self, types};
 use crate::game;
 use crate::gametext;
-use crate::hex::{hex_room_id_from_coord, parse_hex_room_id};
+use crate::grid::parse_grid_room_id;
 
 use super::super::broadcast::{refresh_room_views_for_room, send_room_view_to_session};
 use super::super::handler::WsConnection;
@@ -117,12 +117,12 @@ fn apply_object_move(
     if action != "Move" || obj.move_to_room_id.is_empty() {
         return true;
     }
-    let Some((q, r)) = parse_hex_room_id(&obj.move_to_room_id) else {
+    let Some(coord) = parse_grid_room_id(&obj.move_to_room_id) else {
         conn.send_error(gametext::client("move_cannot_go"));
         return false;
     };
     let gh = current_game_hour(&conn.cfg);
-    let Ok(view_opt) = game::get_hex_room_view(pid, q, r, gh) else {
+    let Ok(view_opt) = game::get_grid_room_view(pid, coord.x, coord.y, gh) else {
         conn.send_error(gametext::client("move_cannot_go"));
         return false;
     };
@@ -130,7 +130,7 @@ fn apply_object_move(
         conn.send_error(gametext::client("move_cannot_go"));
         return false;
     };
-    if set_entity_hex(pid, q, r).is_err() {
+    if set_entity_grid(pid, coord.x, coord.y).is_err() {
         conn.send_error(gametext::client("move_failed"));
         return false;
     }
@@ -139,7 +139,7 @@ fn apply_object_move(
         return false;
     };
     send_room_view_to_session(&session, &view, pid, &conn.cfg);
-    let rid = hex_room_id_from_coord(q, r);
+    let rid = crate::grid::grid_room_id_from_coord(coord.x, coord.y);
     let moved = MovedMsg {
         msg_type: "moved".into(),
         player_id: pid.to_string(),

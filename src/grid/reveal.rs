@@ -1,21 +1,19 @@
-//! 方格格「揭露驅動」生成（對稱 hex/reveal.rs，適配正交網格）。
+//! 方格格「揭露驅動」生成。
 //!
 //! 未在 `SquareGrid.cells` 內之座標視為**黑格**（無契約）；
 //! `generate_wild_cell` 產出首次揭露的格子內容。
 //!
 //! 地形由加權隨機決定（30% 草原、20% 平地、15% 森林……），
-//! 與 hex 版的雙噪聲場不同——方格世界採輕量化純雜湊路線，
-//! 不依賴噪聲場，確保每格完全獨立且可重現。
+//! 採輕量化純雜湊路線，每格完全獨立且可重現。
 
 use super::coord::SquareCoord;
 use super::grid::{GridCell, SquareGrid};
-use crate::hex::{HexObject, HexObjectKind, Terrain};
+use super::cell::{GridObject, GridObjectKind, Terrain};
 
 // ─── 座標種子混合 ───
 
 /// 將 `world_seed` 與方格座標混合成決定性 u64 種子。
 ///
-/// 演算法對稱 hex/reveal.rs 的 `mix_coord_seed`：
 /// 以飽和乘法與 XOR 組合，確保跨平台確定性。
 pub fn mix_coord_seed(world_seed: u64, coord: SquareCoord) -> u64 {
     let mut x = world_seed;
@@ -75,10 +73,10 @@ pub fn terrain_name_zh(t: Terrain) -> &'static str {
 
 // ─── 地上物生成 ───
 
-use HexObjectKind::{Flora, Mineral, WaterSource};
+use GridObjectKind::{Flora, Mineral, WaterSource};
 
 /// (kind, name, max_quantity, regrowth_per_tick, 出現機率 0..=100)
-type ObjSpec = (HexObjectKind, &'static str, u32, u32, u8);
+type ObjSpec = (GridObjectKind, &'static str, u32, u32, u8);
 
 static OBJ_FOREST: &[ObjSpec] = &[
     (Flora, "野果", 5, 1, 40),
@@ -122,7 +120,7 @@ fn object_table(terrain: Terrain) -> &'static [ObjSpec] {
 }
 
 /// 依種子決定性產出地上物（整體出現率 ~25%）。
-fn generate_objects(world_seed: u64, coord: SquareCoord, terrain: Terrain) -> Vec<HexObject> {
+fn generate_objects(world_seed: u64, coord: SquareCoord, terrain: Terrain) -> Vec<GridObject> {
     let table = object_table(terrain);
     let mut objects = Vec::new();
     for (i, &(kind, name, max_qty, regen, chance)) in table.iter().enumerate() {
@@ -139,7 +137,7 @@ fn generate_objects(world_seed: u64, coord: SquareCoord, terrain: Terrain) -> Ve
         // 初始量：max_qty 的 50%~100%（決定性）
         let qty_roll = ((obj_seed >> 8) & 0xFF) as f64 / 255.0;
         let quantity = ((max_qty as f64) * (0.5 + 0.5 * qty_roll)).ceil() as u32;
-        objects.push(HexObject {
+        objects.push(GridObject {
             id: format!("sq_{}_{}", coord.x, coord.y),
             kind,
             name: name.to_string(),

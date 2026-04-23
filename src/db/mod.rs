@@ -24,24 +24,9 @@ mod trade_pending;
 mod text;
 mod lexicon;
 mod grid_world;
-mod hex_reveal;
-mod hex_world;
-mod room_hex;
 
 use crate::entity::Character;
-use crate::hex::HexGrid;
 use crate::store::{self, Entity};
-
-// 六角世界格網門面（實作於 `hex_world`）；由本模組直接呼叫，避免 `pub use` 子函式時 dead_code 誤報。
-/// 自 PostgreSQL 載入 Hex 世界格網。
-pub fn load_hex_grid() -> Option<HexGrid> {
-    hex_world::load_hex_grid()
-}
-
-/// 將 Hex 世界格網寫入 PostgreSQL。
-pub fn save_hex_grid_to_pg(grid: &HexGrid) -> anyhow::Result<()> {
-    hex_world::save_hex_grid_to_pg(grid)
-}
 
 // 正方格世界格網門面（實作於 `grid_world`）
 /// 自 PostgreSQL 載入正方格世界格網。
@@ -101,13 +86,6 @@ pub use npc_social::{
     set_npc_npc_conversation_summary, set_npc_npc_dyad, set_npc_npc_thread, upsert_npc_rumor,
 };
 pub use occupation::{get_sockets_for_npc, is_default_socket};
-pub use hex_reveal::{
-    count_player_hex_revealed, is_player_hex_revealed, list_player_hex_revealed,
-    mark_player_hex_revealed,
-};
-pub use room_hex::{
-    canonical_location_key, location_keys_equivalent, resolve_room_to_hex, room_hex_for_world_room,
-};
 pub use room_graph::{rebuild_room_graph, sync_room_graph_with_store, with_room_graph, RoomGraph};
 pub use room_object::{get_object_and_room, get_object_by_id_in_room, get_object_by_name_in_room, object_response};
 pub use trade_pending::{trade_offer_clear, trade_offer_get, trade_offer_set, TradePending};
@@ -133,7 +111,7 @@ pub use soul_seed::{
 
 mod entity;
 pub use entity::{
-    add_magnesium, clear_last_observed, get_entities_at_grid, get_entities_at_hex,
+    add_magnesium, clear_last_observed, get_entities_at_grid,
     get_entities_in_box, get_entities_in_room, get_entity, get_entity_room, get_moving_entities,
     get_personality_for_entity, set_move_target, transfer_magnesium, update_last_observed,
     update_position, update_vit,
@@ -146,7 +124,7 @@ mod room;
 pub use room::{
     get_exits_for_room, get_npc_ids_with_grid, get_npc_ids_with_room, get_objects_in_room,
     get_player_ids_with_room, get_room, get_room_name, get_spawn_room_id, object_has_socket,
-    set_entity_activity, set_entity_grid, set_entity_hex, set_entity_room, terrain_from_room,
+    set_entity_activity, set_entity_grid, set_entity_room, terrain_from_room,
     SPAWN_ROOM_NAME,
 };
 
@@ -236,8 +214,6 @@ pub fn store_entity_to_character(e: &Entity, npc_display_title: &str) -> Charact
         inventory: e.inventory.clone(),
         disposition: e.disposition,
         current_activity: e.current_activity.clone(),
-        hex_q: e.hex_q,
-        hex_r: e.hex_r,
         grid_x: e.grid_x,
         grid_y: e.grid_y,
     };
@@ -291,14 +267,22 @@ pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Resu
         inventory: "[]".into(),
         disposition: 0,
         current_activity: String::new(),
-        hex_q: None,
-        hex_r: None,
         grid_x: None,
         grid_y: None,
     };
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
     s.put_entity(e)
+}
+
+/// 正規化房間 id 鍵（grid 世界僅為字串本身）。
+pub fn canonical_location_key(room_id: &str) -> String {
+    room_id.to_string()
+}
+
+/// 判斷兩個房間 id 是否等同（grid 世界直接比字串）。
+pub fn location_keys_equivalent(a: &str, b: &str) -> bool {
+    a == b
 }
 
 /// 記錄 NPC 與玩家見面（對齊 `RecordMeet`）。

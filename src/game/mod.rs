@@ -12,11 +12,10 @@ mod zone;
 pub use chunk_view::{get_chunk_and_entities_in_view, ChunkView};
 pub use gametime::game_time_now;
 pub use movement_tick::{advance_movement, entity_at, MovedResult};
-pub use observe::{collapse, now_unix, observe_hex, observe_room, Observed, Observer};
+pub use observe::{collapse, now_unix, observe_room, Observed, Observer};
 pub use room::{
     ensure_entity_in_room, entity_kind_str, get_grid_cells_around, get_grid_room_view,
-    get_hex_area_view, get_hex_room_view, get_room_view, move_by_exit, move_by_grid_direction,
-    move_by_hex_direction, RoomView,
+    get_room_view, move_by_exit, move_by_grid_direction, RoomView,
 };
 pub use tick::spawn_loop;
 pub use view_sim::{in_view_entity_ids, run_view_simulation, simulate_one_tick, Pos};

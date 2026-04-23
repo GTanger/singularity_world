@@ -1,17 +1,18 @@
 //! 正方格世界格網 — PostgreSQL 持久層（`grid_cells` 表）。
 //!
-//! 讀取：逐列重建 `SquareGrid`；世界種子取自既有 `hex_world` 單例（共用同一列）。
+//! 讀取：逐列重建 `SquareGrid`；世界種子取固定常數（hex 世界觀已下線，不再共用）。
 //! 寫入：交易內清空 `grid_cells` → 全量 upsert → 回傳。
 //! 對外由 `crate::db::load_square_grid` / `save_square_grid_to_pg` 包裝。
 
-use crate::grid::{GridCell, SquareCoord, SquareGrid};
-use crate::hex::Terrain;
+use crate::grid::{GridCell, SquareCoord, SquareGrid, Terrain};
 use crate::store;
 
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-// ─── serde 輔助（對稱 hex_world.rs）─────────────────────────────────
+const GRID_WORLD_SEED: u64 = 20_260_414;
+
+// ─── serde 輔助 ────────────────────────────────────────────────────
 
 fn enum_snake_string<T: Serialize>(v: &T) -> anyhow::Result<String> {
     match serde_json::to_value(v)? {
@@ -63,14 +64,7 @@ pub(super) fn load_square_grid() -> Option<SquareGrid> {
         return None;
     }
 
-    // 取世界種子（共用 hex_world 單例；查無記錄時用預設值）
-    let world_seed: u64 = conn
-        .query_opt("SELECT world_seed FROM hex_world WHERE id = 1", &[])
-        .ok()
-        .flatten()
-        .map(|r| r.get::<_, i64>(0) as u64)
-        .filter(|&s| s != 0)
-        .unwrap_or(20_260_414);
+    let world_seed: u64 = GRID_WORLD_SEED;
 
     // 逐列重建格子
     let rows = conn

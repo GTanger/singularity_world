@@ -7,7 +7,7 @@
 //!   cargo run --release --bin worldgen-preview -- --seed 42 --size 80
 //!   cargo run --release --bin worldgen-preview -- --seed 42 --size 120 --csv /tmp/map.csv
 
-use singularity_world::hex::Terrain;
+use singularity_world::grid::Terrain;
 use singularity_world::worldgen;
 use singularity_world::worldgen::FlowField;
 use std::env;

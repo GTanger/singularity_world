@@ -1,15 +1,15 @@
+//! Grid 格上物件與地形型別。
+//!
+//! 原先定義於 `src/hex/cell.rs`，隨觀景窗 hex 概念下線，搬回方格模組根處。
+
 use serde::{Deserialize, Serialize};
-
-use crate::model::RoomObject;
-
-use super::coord::HexCoord;
 
 // ─── 格上物件型別 ────────────────────────────────────────────────────
 
-/// 格子上可採集物件的種類（方格與六角格共用）。
+/// 格子上可採集物件的種類。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum HexObjectKind {
+pub enum GridObjectKind {
     /// 植物性資源（野果、草藥、木材等）
     Flora,
     /// 礦物性資源（礦石、寶石等）
@@ -20,15 +20,15 @@ pub enum HexObjectKind {
     Other,
 }
 
-/// 格子上的可採集物件（方格與六角格共用）。
+/// 格子上的可採集物件。
 ///
 /// 與 `model::RoomObject` 不同：此結構帶資源量與回復速率，
 /// 用於 NPC 採集與資源生態模擬。
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct HexObject {
+pub struct GridObject {
     /// 物件唯一識別碼（通常為 `"{種類}_{座標}"`）
     pub id: String,
-    pub kind: HexObjectKind,
+    pub kind: GridObjectKind,
     pub name: String,
     /// 目前剩餘量
     pub quantity: u32,
@@ -233,110 +233,5 @@ impl Terrain {
             Terrain::Grassland => Some("FZJiaGuWen"),
             _ => None,
         }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────
-
-/// 六角格單元
-///
-/// 取代舊 `model::Room`。每個格子有座標、地形、名稱、描述、
-/// 可互動物件等。鄰接由幾何自動決定，不需手動建 exit。
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct HexCell {
-    pub coord: HexCoord,
-    pub terrain: Terrain,
-    pub name: String,
-
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub zone: String,
-
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub tags: Vec<String>,
-
-    #[serde(default, skip_serializing_if = "String::is_empty")]
-    pub description: String,
-
-    /// 格子內的可互動物件（沿用既有 RoomObject 結構）
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub objects: Vec<RoomObject>,
-
-    #[serde(default)]
-    pub explored: bool,
-}
-
-impl HexCell {
-    pub fn new(coord: HexCoord, terrain: Terrain, name: impl Into<String>) -> Self {
-        Self {
-            coord,
-            terrain,
-            name: name.into(),
-            zone: String::new(),
-            tags: Vec::new(),
-            description: String::new(),
-            objects: Vec::new(),
-            explored: false,
-        }
-    }
-
-    pub fn with_zone(mut self, zone: impl Into<String>) -> Self {
-        self.zone = zone.into();
-        self
-    }
-
-    pub fn with_tags(mut self, tags: Vec<String>) -> Self {
-        self.tags = tags;
-        self
-    }
-
-    pub fn with_description(mut self, desc: impl Into<String>) -> Self {
-        self.description = desc.into();
-        self
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn terrain_walkable() {
-        assert!(Terrain::Plain.walkable());
-        assert!(Terrain::Forest.walkable());
-        assert!(Terrain::Road.walkable());
-        assert!(Terrain::Bridge.walkable());
-        assert!(!Terrain::Water.walkable());
-        assert!(!Terrain::WaterDeep.walkable());
-        assert!(!Terrain::Mountain.walkable());
-        assert!(!Terrain::Wall.walkable());
-    }
-
-    #[test]
-    fn terrain_move_cost_ordering() {
-        assert!(Terrain::Road.move_cost() < Terrain::Plain.move_cost());
-        assert!(Terrain::Plain.move_cost() < Terrain::ForestHeavy.move_cost());
-        assert!(Terrain::Water.move_cost().is_infinite());
-    }
-
-    #[test]
-    fn cell_builder() {
-        let c = HexCell::new(HexCoord::ORIGIN, Terrain::Forest, "密林")
-            .with_zone("wild")
-            .with_tags(vec!["watabou".into()])
-            .with_description("古木參天");
-        assert_eq!(c.zone, "wild");
-        assert_eq!(c.tags, vec!["watabou"]);
-        assert_eq!(c.description, "古木參天");
-    }
-
-    #[test]
-    fn serde_roundtrip() {
-        let c = HexCell::new(HexCoord::new(3, -1), Terrain::Desert, "沙丘");
-        let json = serde_json::to_string(&c).unwrap();
-        let back: HexCell = serde_json::from_str(&json).unwrap();
-        assert_eq!(back.coord, c.coord);
-        assert_eq!(back.terrain, Terrain::Desert);
-        assert_eq!(back.name, "沙丘");
     }
 }

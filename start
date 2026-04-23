@@ -40,18 +40,6 @@ fi
 mkdir -p bin
 install -m 755 "$CARGO_OUT" bin/server-rust
 
-# 3b) Hex 編輯器（Leptos WASM → editor-leptos/dist，由 ServeDir 提供 /hex-editor）
-echo "--- 建置 Hex 編輯器 (trunk release → editor-leptos/dist) ---"
-if ! command -v trunk &>/dev/null; then
-  echo "錯誤：找不到 trunk，無法建置 editor-leptos。請安裝：cargo install trunk"
-  exit 1
-fi
-# 部分環境設 NO_COLOR=1 會讓 trunk 0.21+ 將 --no-color 傳成無效值，故清除後再建置
-(
-  cd editor-leptos
-  env -u NO_COLOR trunk build --release
-)
-
 # 4) 重啟服務（兩種路徑都須先釋放 PORT，否則舊的 nohup／殘留行程會讓新實例 bind 失敗）
 free_port() {
   local pids

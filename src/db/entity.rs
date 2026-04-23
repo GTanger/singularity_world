@@ -7,7 +7,7 @@ use crate::entity::Character;
 use crate::store::{self, Entity};
 
 use super::{
-    expand_soul_seed_to_personality, npc_display, room_hex, store_entity_to_character, ErrNoStore,
+    expand_soul_seed_to_personality, npc_display, store_entity_to_character, ErrNoStore,
     Personality,
 };
 
@@ -119,11 +119,6 @@ pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec
         for id in s.entity_ids_in_room(room_id) {
             id_set.insert(id);
         }
-        if let Some((q, r)) = room_hex::resolve_room_to_hex(room_id) {
-            for id in s.entity_ids_at_hex(q, r) {
-                id_set.insert(id);
-            }
-        }
         let mut need = Vec::new();
         for id in &id_set {
             if let Some(e) = s.get_entity(id)
@@ -133,7 +128,7 @@ pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec
                 need.push(id.clone());
             }
         }
-        let label_room = room_hex::canonical_location_key(room_id);
+        let label_room = room_id.to_string();
         (id_set, need, label_room)
     };
     if id_set.is_empty() {
@@ -156,36 +151,6 @@ pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec
         }
         let label = if se.kind == "npc" {
             npc_display::npc_title_in_room_locked(&mut s, &id, &label_room, game_hour)
-        } else {
-            String::new()
-        };
-        let se = s.get_entity(&id).unwrap_or(se);
-        list.push(store_entity_to_character(&se, &label));
-    }
-    Ok(list)
-}
-
-/// 指定六角座標上的存活實體。
-pub fn get_entities_at_hex(q: i32, r: i32, game_hour: i32) -> anyhow::Result<Vec<Character>> {
-    use crate::hex::hex_room_id_from_coord;
-
-    let hex_room = hex_room_id_from_coord(q, r);
-    let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write();
-    let ids = s.entity_ids_at_hex(q, r);
-    if ids.is_empty() {
-        return Ok(Vec::new());
-    }
-    let mut list = Vec::new();
-    for id in ids {
-        let Some(se) = s.get_entity(&id) else {
-            continue;
-        };
-        if se.vit <= 0 {
-            continue;
-        }
-        let label = if se.kind == "npc" {
-            npc_display::npc_title_in_room_locked(&mut s, &id, &hex_room, game_hour)
         } else {
             String::new()
         };

@@ -14,7 +14,7 @@
 pub mod earth;
 pub mod earth_places;
 
-use crate::hex::Terrain;
+use crate::grid::Terrain;
 use noise::{NoiseFn, Perlin, Seedable};
 
 /// 高度查詢——Perlin 三層疊加（continental / regional / local）。

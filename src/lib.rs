@@ -7,7 +7,6 @@ pub mod config;
 pub mod event;
 pub mod gametext;
 pub mod grid;
-pub mod hex;
 pub mod worldgen;
 pub mod store;
 pub mod pg;

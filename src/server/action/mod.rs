@@ -17,16 +17,16 @@ use crate::gametext;
 use super::handler::{player_id, WsConnection};
 use super::protocol::ClientMsg;
 
-/// 與目標是否在同一可互動位置（六角重合優先，否則比對 `entity_rooms` 字串）。
+/// 與目標是否在同一可互動位置（正方格重合優先，否則比對 `entity_rooms` 字串）。
 fn entities_share_playable_cell(
     player: &Character,
     target: &Character,
     player_room: &str,
 ) -> bool {
-    if let (Some(pq), Some(pr), Some(tq), Some(tr)) =
-        (player.hex_q, player.hex_r, target.hex_q, target.hex_r)
-        && pq == tq
-        && pr == tr
+    if let (Some(px), Some(py), Some(tx), Some(ty)) =
+        (player.grid_x, player.grid_y, target.grid_x, target.grid_y)
+        && px == tx
+        && py == ty
     {
         return true;
     }

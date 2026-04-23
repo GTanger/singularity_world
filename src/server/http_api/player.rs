@@ -5,7 +5,7 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 
-use crate::{db, store};
+use crate::db;
 
 // ── /api/player-room ──
 
@@ -19,10 +19,6 @@ pub struct PlayerRoomQuery {
 pub struct PlayerRoomResponse {
     player_id: String,
     room_id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    hex_q: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    hex_r: Option<i32>,
 }
 
 pub async fn player_room(Query(q): Query<PlayerRoomQuery>) -> impl IntoResponse {
@@ -37,19 +33,9 @@ pub async fn player_room(Query(q): Query<PlayerRoomQuery>) -> impl IntoResponse 
         Ok(r) => r,
         Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error":"查詢房間失敗"}))).into_response(),
     };
-    let (hex_q, hex_r) = if let Some(st) = store::get_store() {
-        let s = st.read();
-        s.get_entity(&player_id)
-            .map(|e| (e.hex_q, e.hex_r))
-            .unwrap_or((None, None))
-    } else {
-        (None, None)
-    };
     Json(PlayerRoomResponse {
         player_id,
         room_id,
-        hex_q,
-        hex_r,
     })
     .into_response()
 }
