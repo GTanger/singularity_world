@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.43（砍 earth 觀景窗）
+// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.44
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';
@@ -412,7 +412,7 @@ function indexEntityNameCache(entities) {
 						break;
 				case 'action_result':
 					if (msg.action === 'Talk') {
-						removeLogPendingTalk();
+						if (window.SwInteractions) window.SwInteractions.removeLogPendingTalk();
 						var narrative = msg.narrative;
 						if (!narrative) narrative = '（NPC 無回應）';
 						var narrativeHtml = formatNarrative(narrative);
@@ -429,7 +429,7 @@ function indexEntityNameCache(entities) {
 							appendObjectActionsLine(talkParts.join(''));
 						}
 					} else if (msg.action === 'Trade') {
-						removeLogPendingTrade();
+						if (window.SwInteractions) window.SwInteractions.removeLogPendingTrade();
 						var tNarrative = msg.narrative;
 						if (!tNarrative) tNarrative = '（交易無回應）';
 						var tHtml = formatNarrative(tNarrative);
@@ -529,8 +529,8 @@ function indexEntityNameCache(entities) {
 					renderInventoryContent(msg);
 					break;
 				case 'error':
-					removeLogPendingTalk();
-					removeLogPendingTrade();
+					if (window.SwInteractions) window.SwInteractions.removeLogPendingTalk();
+					if (window.SwInteractions) window.SwInteractions.removeLogPendingTrade();
 					appendLog('錯誤：' + msg.message);
 					if (!state.me) {
 						var authMsg = document.getElementById('auth-message');
@@ -675,279 +675,24 @@ function indexEntityNameCache(entities) {
 	var renderStarplatePane = _P.renderStarplatePane;
 	var renderInventoryContent = _P.renderInventoryContent;
 
-	function initInventoryModal() {
-		var overlay = document.getElementById('inventory-modal-overlay');
-		var closeBtn = document.getElementById('inventory-modal-close');
-		var openBtn = document.getElementById('btn-inventory');
-		if (!overlay || !openBtn) return;
-
-		function openInventory() {
-			if (!state.me) return;
-			overlay.removeAttribute('hidden');
-			overlay.setAttribute('aria-hidden', 'false');
-			document.body.style.overflow = 'hidden';
-			if (closeBtn) closeBtn.focus();
-			document.addEventListener('keydown', onInvKeydown);
-			if (isConnected()) send({ type: 'get_inventory' });
-		}
-		function closeInventory() {
-			overlay.setAttribute('hidden', '');
-			overlay.setAttribute('aria-hidden', 'true');
-			document.body.style.overflow = '';
-			document.removeEventListener('keydown', onInvKeydown);
-		}
-		function onInvKeydown(e) {
-			if (e.key === 'Escape') closeInventory();
-		}
-		openBtn.addEventListener('click', openInventory);
-		if (closeBtn) closeBtn.addEventListener('click', closeInventory);
-		overlay.addEventListener('click', function (e) {
-			if (e.target === overlay) closeInventory();
-		});
-	}
-
-	function initPlayerModal() {
-		var overlay = document.getElementById('player-modal-overlay');
-		var modal = document.getElementById('player-modal');
-		var titleEl = document.getElementById('player-modal-title');
-		var playerName = document.getElementById('player-name');
-		var closeBtn = document.getElementById('player-modal-close');
-		var logEl = document.querySelector('.log-content');
-		var tabs = document.querySelectorAll('.player-modal-tab');
-		var panes = document.querySelectorAll('.player-modal-pane');
-		if (!overlay || !modal || !playerName) return;
-
-		function openModal(displayName, entityId) {
-			if (titleEl) titleEl.textContent = (displayName && displayName.trim()) ? displayName.trim() : '角色';
-			var id = (entityId && entityId.trim()) ? entityId.trim() : (state.me && state.me.player_id ? state.me.player_id : '');
-			var starplateWrap = document.getElementById('starplate-content');
-			if (starplateWrap && id && state.me && state.me.player_id && id !== state.me.player_id) {
-				starplateWrap.innerHTML = '<p class="text-muted">僅自己可觀看星盤。</p>';
-			}
-			if (id && isConnected()) {
-				send({ type: 'get_entity_status', entity_id: id });
-			} else {
-				var wrap = document.getElementById('status-content');
-				if (wrap) wrap.innerHTML = '<p class="text-muted">請先登入</p>';
-			}
-			if (logEl) {
-				var h = logEl.clientHeight;
-				if (h > 0) modal.style.height = h + 'px';
-			}
-			overlay.removeAttribute('hidden');
-			overlay.setAttribute('aria-hidden', 'false');
-			document.body.style.overflow = 'hidden';
-			closeBtn.focus();
-			document.addEventListener('keydown', onModalKeydown);
-		}
-		function closeModal() {
-			overlay.setAttribute('hidden', '');
-			overlay.setAttribute('aria-hidden', 'true');
-			document.body.style.overflow = '';
-			document.removeEventListener('keydown', onModalKeydown);
-			if (playerName) playerName.focus();
-		}
-		function onModalKeydown(e) {
-			if (e.key === 'Escape') closeModal();
-		}
-		playerName.addEventListener('click', function () {
-			var myId = state.me && state.me.player_id;
-			openModal(playerName.textContent || myId || '', myId || '');
-		});
-		playerName.addEventListener('keydown', function (e) {
-			if (e.key === 'Enter' || e.key === ' ') {
-				e.preventDefault();
-				var myId = state.me && state.me.player_id;
-				openModal(playerName.textContent || myId || '', myId || '');
-			}
-		});
-		closeBtn.addEventListener('click', closeModal);
-		overlay.addEventListener('click', function (e) {
-			if (e.target === overlay) closeModal();
-		});
-		tabs.forEach(function (tab) {
-			tab.addEventListener('click', function () {
-				var t = tab.getAttribute('data-tab');
-				tabs.forEach(function (x) {
-					x.classList.toggle('active', x === tab);
-					x.setAttribute('aria-selected', x === tab ? 'true' : 'false');
-				});
-				panes.forEach(function (p) {
-					var on = p.getAttribute('data-tab') === t;
-					p.classList.toggle('active', on);
-					p.hidden = !on;
-				});
-			});
-		});
-		window.openCharacterModal = openModal;
-	}
+	// modal 初始化移至 web/sw-modals.js
+	if (window.initInventoryModal) window.initInventoryModal();
+	if (window.initPlayerModal) window.initPlayerModal();
 
 	updateGameTimeDisplay();
 	window.gameConnect = connect;
 	window.gameTryReconnect = tryReconnect;
-	function appendLogPendingTalk() {
-		var logEl = document.getElementById('log');
-		if (!logEl) return;
-		var div = document.createElement('div');
-		div.className = 'log-entry log-system log-talk-pending';
-		div.setAttribute('data-pending', 'talk');
-		div.textContent = '對話中…';
-		logEl.appendChild(div);
-	}
 
-	function removeLogPendingTalk() {
-		var logEl = document.getElementById('log');
-		if (!logEl) return;
-		var pending = logEl.querySelectorAll('.log-talk-pending');
-		for (var i = 0; i < pending.length; i++) pending[i].remove();
-	}
-
-	function appendLogPendingTrade() {
-		var logEl = document.getElementById('log');
-		if (!logEl) return;
-		var div = document.createElement('div');
-		div.className = 'log-entry log-system log-trade-pending';
-		div.setAttribute('data-pending', 'trade');
-		div.textContent = '交易中…';
-		logEl.appendChild(div);
-	}
-
-	function removeLogPendingTrade() {
-		var logEl = document.getElementById('log');
-		if (!logEl) return;
-		var pending = logEl.querySelectorAll('.log-trade-pending');
-		for (var j = 0; j < pending.length; j++) pending[j].remove();
-	}
-
-	function appendTalkInputRow(entityId, targetName) {
-		var logEl = document.getElementById('log');
-		if (!logEl) return;
-		var wrap = document.createElement('div');
-		wrap.className = 'log-entry log-talk-input';
-		var label = document.createElement('span');
-		label.className = 'log-talk-label';
-		label.textContent = '對 ' + (targetName || entityId) + ' 說：';
-		var input = document.createElement('input');
-		input.type = 'text';
-		input.className = 'log-talk-input-field';
-		input.placeholder = '輸入要說的話，Enter 送出';
-		input.setAttribute('maxlength', '200');
-		input.setAttribute('aria-label', '對 ' + (targetName || entityId) + ' 說');
-		var btn = document.createElement('button');
-		btn.type = 'button';
-		btn.className = 'log-talk-send';
-		btn.textContent = '送出';
-		wrap.appendChild(label);
-		wrap.appendChild(input);
-		wrap.appendChild(btn);
-		logEl.appendChild(wrap);
-		input.focus();
-		function sendTalk() {
-			var text = (input.value || '').trim();
-			var sayText = text || '（搭話）';
-			wrap.remove();
-			var playerLine = '你對【' + (targetName || entityId) + '】說：「' + sayText + '」';
-			appendNarrative(formatNarrative(playerLine), 'Talk');
-			if (window.gameSend) {
-				window.gameSend({ type: 'do_action', entity_id: entityId, action: 'Talk', player_input: sayText });
-				appendLogPendingTalk();
-			}
-		}
-		btn.addEventListener('click', sendTalk);
-		input.addEventListener('keydown', function (e) {
-			if (e.key === 'Enter') {
-				e.preventDefault();
-				sendTalk();
-			}
-		});
-	}
-
-	function appendTradeInputRow(entityId, targetName) {
-		var logEl = document.getElementById('log');
-		if (!logEl) return;
-		var wrap = document.createElement('div');
-		wrap.className = 'log-entry log-trade-input';
-		var label = document.createElement('span');
-		label.className = 'log-trade-label';
-		label.textContent = '與 ' + (targetName || entityId) + ' 交易：';
-		var input = document.createElement('input');
-		input.type = 'text';
-		input.className = 'log-trade-input-field';
-		input.placeholder = '輸入出價（鎂，整數）或「拒絕」；若尚未報價可留空再送出以開價';
-		input.setAttribute('maxlength', '32');
-		input.setAttribute('aria-label', '與 ' + (targetName || entityId) + ' 交易出價');
-		var btn = document.createElement('button');
-		btn.type = 'button';
-		btn.className = 'log-trade-send';
-		btn.textContent = '送出';
-		wrap.appendChild(label);
-		wrap.appendChild(input);
-		wrap.appendChild(btn);
-		logEl.appendChild(wrap);
-		input.focus();
-		function sendTrade() {
-			var text = (input.value || '').trim();
-			wrap.remove();
-			if (text) {
-				var playerLine = '你向【' + (targetName || entityId) + '】出價：「' + text + '」';
-				appendNarrative(formatNarrative(playerLine), 'Trade');
-			}
-			if (window.gameSend) {
-				window.gameSend({ type: 'do_action', entity_id: entityId, action: 'Trade', player_input: text });
-				appendLogPendingTrade();
-			}
-		}
-		btn.addEventListener('click', sendTrade);
-		input.addEventListener('keydown', function (e) {
-			if (e.key === 'Enter') {
-				e.preventDefault();
-				sendTrade();
-			}
-		});
-	}
-
-	function bindLogObjectActions() {
-		var logEl = document.getElementById('log');
-		if (!logEl) return;
-		logEl.addEventListener('click', function (ev) {
-			var btn = ev.target.closest && ev.target.closest('.log-object-action');
-			if (!btn) return;
-			ev.preventDefault();
-			var id = btn.getAttribute('data-entity-id');
-			var action = btn.getAttribute('data-action');
-			var targetType = btn.getAttribute('data-target-type') || '';
-			var targetName = btn.getAttribute('data-target-name') || '';
-			if (!id || !action || !window.gameSend) return;
-			if (targetType === 'entity') {
-				var stillHere = false;
-				for (var i = 0; i < (state.entities || []).length; i++) {
-					if (((state.entities[i].id || '') + '') === (id + '')) {
-						stillHere = true;
-						break;
-					}
-				}
-				if (!stillHere) {
-					appendLog('對方已不在此處。');
-					return;
-				}
-			}
-			if (action === 'Talk') {
-				appendTalkInputRow(id, targetName);
-				return;
-			}
-			if (action === 'Trade') {
-				appendTradeInputRow(id, targetName);
-				return;
-			}
-			window.gameSend({ type: 'do_action', entity_id: id, action: action });
-		});
-	}
+	// interactions 移至 web/sw-interactions.js（window.SwInteractions）
 	if (typeof document !== 'undefined') {
 		if (document.readyState === 'loading') {
-			document.addEventListener('DOMContentLoaded', function () { bindAuthForm(); bindLogObjectActions(); });
+			document.addEventListener('DOMContentLoaded', function () {
+				bindAuthForm();
+				if (window.SwInteractions) window.SwInteractions.bindLogObjectActions();
+			});
 		} else {
 			bindAuthForm();
-			bindLogObjectActions();
+			if (window.SwInteractions) window.SwInteractions.bindLogObjectActions();
 		}
 	}
 
@@ -956,6 +701,8 @@ function indexEntityNameCache(entities) {
 		else if (socket && socket.readyState === WebSocket.OPEN) socket.send(msg);
 	};
 	window.gameState = function () { return state; };
+	window.gameIsConnected = isConnected;
+	window.gameFormatNarrative = formatNarrative;
 	window.gameSendMoveDirection = sendMoveByDirection;
 	window.gameStartTimeTicker = startGameTimeTicker;
 	window.gameUpdateTime = updateGameTimeDisplay;

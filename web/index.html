@@ -150,12 +150,14 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.43"></script>
-	<script src="game-ui.js?v=0.20.43"></script>
-	<script src="grid-map.js?v=0.20.43"></script>
-	<script src="sw-log.js?v=0.20.43"></script>
-	<script src="sw-panes.js?v=0.20.43"></script>
-	<script src="main.js?v=0.20.43"></script>
+	<script src="narrative-markdown.js?v=0.20.44"></script>
+	<script src="game-ui.js?v=0.20.44"></script>
+	<script src="grid-map.js?v=0.20.44"></script>
+	<script src="sw-log.js?v=0.20.44"></script>
+	<script src="sw-panes.js?v=0.20.44"></script>
+	<script src="sw-modals.js?v=0.20.44"></script>
+	<script src="sw-interactions.js?v=0.20.44"></script>
+	<script src="main.js?v=0.20.44"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -168,7 +170,7 @@
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
 				// updateViaCache:'none' 讓瀏覽器檢查 SW 更新時繞 HTTP cache（破 CF 的 4h browser cache TTL 續命）
-				navigator.serviceWorker.register('/sw.js?v=0.20.43', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.44', { updateViaCache: 'none' }).then(function (reg) {
 					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
