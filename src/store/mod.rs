@@ -20,6 +20,8 @@ pub mod types;
 pub use types::*;
 mod persist;
 mod event;
+mod auth;
+mod archival;
 
 // ── 實體寫回防抖間隔（秒）——Phase 3+ 實作 tokio timer 時使用 ──
 #[allow(dead_code)]
@@ -1651,63 +1653,7 @@ impl Store {
     //  CRUD 方法 — Event Log（見 store::event）
     // ══════════════════════════════════════
 
-    // ══════════════════════════════════════
-    //  CRUD 方法 — Auth
-    // ══════════════════════════════════════
-
-    pub fn set_auth(&mut self, entity_id: &str, password_hash: &str) -> anyhow::Result<()> {
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::SetAuth {
-            entity_id: entity_id.to_string(),
-            password_hash: password_hash.to_string(),
-        });
-        Ok(())
-    }
-
-    pub fn get_auth(&self, entity_id: &str) -> String {
-        if let Some(pool) = &self.db_pool
-            && let Ok(mut conn) = pool.get() {
-                if let Ok(Some(row)) = conn.query_opt("SELECT password_hash FROM auth WHERE entity_id = $1", &[&entity_id]) {
-                    return row.get::<_, String>(0);
-                }
-            }
-        String::new()
-    }
-
-    // ══════════════════════════════════════
-    //  CRUD 方法 — Archival
-    // ══════════════════════════════════════
-
-    pub fn append_archival(&mut self, entry: ArchivalEntry) -> anyhow::Result<()> {
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::AppendArchival(entry));
-        Ok(())
-    }
-
-    pub fn get_archival_by_entity(&self, entity_id: &str) -> Vec<ArchivalEntry> {
-        let mut results = Vec::new();
-        if let Some(pool) = &self.db_pool
-            && let Ok(mut conn) = pool.get() {
-                if let Ok(rows) = conn.query(
-                    "SELECT entity_id, content, tag, created_at FROM archival WHERE entity_id = $1 ORDER BY created_at ASC, id ASC",
-                    &[&entity_id]
-                ) {
-                    for row in rows {
-                        results.push(ArchivalEntry {
-                            entity_id: row.get(0),
-                            content: row.get(1),
-                            tag: row.get(2),
-                            created_at: row.get(3),
-                        });
-                    }
-                }
-            }
-        results
-    }
-
-    pub fn trim_archival_per_entity(&mut self, max: usize) {
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::TrimArchival {
-            max: max as i64,
-        });
-    }
+    // Auth / Archival 見 store::auth / store::archival
 
     // ══════════════════════════════════════
     //  CRUD 方法 — NPC Memory
