@@ -52,7 +52,7 @@ earth.ygggt.com 觀景窗概念已廢止（2026-04-23）——hex 模組、編�
 
 ### 移動：點擊鄰近格（指尖 MUD），無方向鍵元件
 
-## 110V 原則（Token 物理是敘事層，代碼只用通則）
+## 110V 原則（能量物理是敘事層，代碼只用通則）
 
 - 有人→恢復慢，沒人→恢復快（density_multiplier，0人×3 / 1人×1 / 2人×0.6 / 3+人×0.3）
 - 沒有冷卻計時器，人走了下一 tick 立刻倍速
@@ -81,22 +81,14 @@ earth.ygggt.com 觀景窗概念已廢止（2026-04-23）——hex 模組、編�
 | `web/game-ui.js` | 物件欄、動作選單、stats bar |
 | `web/main.js` | 前端入口，WebSocket |
 
-## 並行：歷史模擬器（獨立 repo）
+## 並行：歷史模擬器（**已凍結 2026-04-25**）
 
-`~/Projects/singularity_simulator/`——跑解放日 → 混沌紀 500 年 → 凍結快照 → 灌回主遊戲 PG。
-
-里程碑架構：M0 骨架+L1 地理 → M1 L2 人口流體 → M2 L3 陣營 Agent → M3 聚落 Agent + L3.5 Hidden Director → M4 snapshot 灌回 PG → M5 Web UI 時間軸
-
-敘事外放三線：Opus 骨幹潤（30-100 事件）+ Sonnet 4.6 校對 + Qwen3.6 Plus 跑量。離線手工，不進模擬器 pipeline。五話為正典錨點（`docs/stories/001_降臨.md` ~ `005_是解放日.md`），續篇 006/007。禁用詞表/允許模式/紅光 few-shot 為硬契約。
-
-### 對接主遊戲
-
-M4 時 snapshot 灌回 PG（grid_cells 表）。現階段主遊戲跑方格 MUD，等模擬器快照接上。
+`~/Projects/singularity_simulator/`——隨「現代地球前史 / 解放日 / 神化人 / 母腦」一同冷凍。
+程式碼與 artifacts 保留不刪，未來若回頭撿起此設定線可恢復。**不再列里程碑、不再規劃對接。**
 
 ## 底牌（不寫進 LLM prompt）
 
-- 煙火日 = 母腦誕生事件的具體歷史身份
-- 詞盤系統除熵教外的其餘源流
+- 詞盤系統的源流暫不公開
 
 ---
 
