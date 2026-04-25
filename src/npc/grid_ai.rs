@@ -339,7 +339,7 @@ fn harvest_from_grid(grid: &mut SquareGrid, now_unix: i64, entity_id: &str, coor
 // ── 資源回復 ──────────────────────────────────────────────
 
 /// density_multiplier：0人→3.0、1人→1.0、2人→0.6、3+人→0.3
-/// Token 物理的 110V 版本：有人→恢復慢，沒人→恢復快。
+/// 110V 原則：有人→能量難凝聚，恢復慢；沒人→恢復快。
 fn density_multiplier(count: u32) -> f64 {
     match count {
         0 => 3.0,
