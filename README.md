@@ -12,9 +12,9 @@
 
 - **後端：Rust 服務**（Axum 0.8 + Tokio）。
 - **資料儲存**：**PostgreSQL 為唯一權威持久層**；執行期真理以資料庫為準。`data/` 下 JSON 僅作種子、靜態設定與開發備份（細節見 `AGENTS.md`、`docs/技術約束規則.md`）。
-- **主要路徑**：單一六角格世界模型（HexGrid）；實體與資源點等遊戲狀態以 PG 為主。
-- **前端**：原生 HTML/CSS/JS (PWA)，提供遊戲頁面與管理工具組（`/hex-editor/`、星圖）。
-- **進度**：Phase 5 遷移完成，現正於 Hex 基礎上建立「資源與經濟 (Phase 6)」架構。
+- **主要路徑**：單一**方格 MUD** 世界；底層使用 square grid，玩家體驗是純文字 MUD 與「方格 + 連線」地圖，不是棋盤，也不是 Hex。
+- **前端**：原生 HTML/CSS/JS (PWA)，提供遊戲頁面與管理工具組（星圖、管理頁）。
+- **進度**：以 `WORKBOARD.md` 的方向定調與 `sw-status` 的實況輸出為準；舊 Hex／觀景窗／歷史模擬器對接已下線或凍結。
 
 ---
 
@@ -28,26 +28,25 @@
 2. **`cargo test`**：單元與整合測試。
 3. **`cargo run --bin checkrooms -- -brackets -strict`**：房間 JSON 契約檢查（驗證觸發字與括號對應）。
 4. **`cargo build --release`** → `bin/server-rust`。
-5. **`trunk build --release`**（`editor-leptos/dist`，供 `/hex-editor/`）。需已安裝 **`cargo install trunk`**；若未裝會中止。
+5. **前端建置／靜態資源同步**：依 `./start` 內現行流程執行；不得自行跳過。
 
 ### 一鍵啟動 (Rust)
 
 在專案根目錄執行：
 
 ```bash
-./start        # 推薦：含 systemd 重啟 singularity.service
+./start        # 推薦：完整閘門 + 建置 + systemd 重啟 singularity.service
 ```
 
-用途：通過閘門後，建置後端與 Hex 編輯器並啟動伺服器（預設埠：1721）。
+用途：通過閘門後，建置後端與前端資源並啟動伺服器（預設埠：1721）。
 
 ---
 
 ## 常用路由與 API
 
 - **遊戲端**：`/`, `/ws` (WebSocket)
-- **工具端**：`/hex-editor/`, `/star_chart`, `/admin`
+- **工具端**：`/star_chart`, `/admin`
 - **資料 API**：
-    - `/api/hex/grid`：全量地圖格網資料
     - `/api/action/gather`：資源採集接口 (PG 驅動)
     - `/api/topology`：星圖演化拓撲
 
@@ -59,15 +58,15 @@
 singularity_world/
 ├── src/
 │   ├── main.rs         # 程式進入點
-│   ├── server/         # Axum 路由、WS Hub、Session、Hex API
+│   ├── server/         # Axum 路由、WS Hub、Session、API
 │   ├── store/          # PostgreSQL 權威驅動；拒絕依賴執行期 JSON
-│   ├── world/          # 世界地圖、區塊管理、資源點系統 (resource.rs)
-│   ├── hex/            # 六角格座標計算、揭露與玩家視野
+│   ├── world/          # 世界地圖、區塊管理、資源點系統
+│   ├── grid/           # 方格座標、鄰居、揭露與玩家視野
 │   ├── game/           # 遊戲主循環、NPC 模擬、動作分派 (do_action)
 │   ├── combat/         # 戰鬥結算判定
-│   ├── npc/            # NPC 決策 (10.21)、話語池、社交觸發
+│   ├── npc/            # NPC 決策、話語池、社交觸發
 │   ├── ai/             # Ollama LLM 整合、Prompt 管理
-│   └── bin/            # 獨立工具（如 checkrooms）
+│   └── bin/            # 獨立工具（如 checkrooms、migrate）
 ├── data/               # 房間 JSON (種子)、設定檔、資料快照
 ├── web/                # 前端靜態資源 (HTML/CSS/JS)
 └── docs/               # 設計文獻、API 規範、實作建議
@@ -81,7 +80,8 @@ singularity_world/
 
 | 用途 | 路徑 |
 | --- | --- |
-| 資源點系統規範 | [`docs/design/資源點實作規範.md`](docs/design/資源點實作規範.md) |
+| 方向定調 | [`WORKBOARD.md`](WORKBOARD.md) |
+| 技術約束 | [`docs/技術約束規則.md`](docs/技術約束規則.md) |
 | 累積記憶與偏好 | [`docs/AGENTS_LEARNED.md`](docs/AGENTS_LEARNED.md) |
 | 代理精簡入口 | 根目錄 [`AGENTS.md`](AGENTS.md) |
 

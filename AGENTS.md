@@ -4,16 +4,17 @@
 
 ## 必讀鏈結（順序）
 
-1. **`.cursorrules`** — 角色、技術棧、硬規則、必讀文檔提示。
-2. **`docs/文檔索引.md`** — 設計／規格之**唯一主索引**；任務前依主題查表閱讀。  
+1. **`.traerules`** — Trae／歷史上下文入口（目前指向 `.cobridge/AI_CONTEXT.md`）。若不存在 `.cursorrules`，不得假設它是入口。
+2. **`WORKBOARD.md`** — 當前方向定調：唯一世界＝方格 MUD；Hex／觀景窗已下線，歷史模擬器對接已凍結。
+3. **`docs/文檔索引.md`** — 設計／規格之**唯一主索引**；任務前依主題查表閱讀。
    **`docs/INDEX.md`** 僅為 `docs/` 目錄／008 模組速查，與主索引並列時以 `文檔索引.md` 為準。
-3. **`docs/AGENTS_LEARNED.md`** — 累積之**使用者偏好**與**工作區事實**（全文；代理必讀）。
+4. **`docs/AGENTS_LEARNED.md`** — 累積之**使用者偏好**與**工作區事實**（全文；代理必讀）。
 
 ## 建置與「重啟」
 
-> **改完代碼就要重啟**：同一輪任務結尾必跑專案根目錄 **`./start`**（閘門＋建置＋Hex `trunk`＋服務重啟）。**禁止**只改檔、不跑流程就當交付完成。
+> **改完代碼就要重啟**：同一輪任務結尾必跑專案根目錄 **`./start`**（閘門＋建置＋前端資源＋服務重啟）。**禁止**只改檔、不跑流程就當交付完成。
 
-- **「重啟」只有一種**：專案根目錄 **`./start`**（`cargo clippy`、`test`、`checkrooms`、`cargo build --release`、`editor-leptos` 之 `trunk build`、`systemctl --user restart`）。**不另分**「僅後端／僅前端」捷徑；**不得**只 `systemctl restart` 而跳過閘門與建置（`/hex-editor` 載入 **`editor-leptos/dist`**，未經 `./start` 內之 `trunk build` 則畫面不會更新）。
+- **「重啟」只有一種**：專案根目錄 **`./start`**（`cargo clippy`、`test`、`checkrooms`、`cargo build --release`、前端資源建置／同步、`systemctl --user restart`）。**不另分**「僅後端／僅前端」捷徑；**不得**只 `systemctl restart` 而跳過閘門與建置。
 - **每次修改本倉庫程式碼**（`src/`、`editor-leptos/`、`web/` 等）後，代理**必須**在該次任務內**自動**執行 **`./start` 自檢**（全閘門＋建置＋重啟），**不得**只改檔不啟動。若環境無法執行須明說阻塞與已做到的最後一步。
 - 純 Markdown／註解／與建置無涉之檔案若未改程式碼，不在此強制；**一旦動到程式**，一律 **`./start`**。
 

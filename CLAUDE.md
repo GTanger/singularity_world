@@ -48,8 +48,8 @@ src/combat/              — 戰鬥系統
 src/event/               — 事件常數與紀錄
 src/gametext/            — 文案模板（從 JSON 載入）
 src/server/              — axum HTTP/WebSocket、session、simulation loop
-web/                     — 前端 + dashboard（地圖編輯器 + 資料庫可視化）
-data/rooms/editor/       — 世界房間 JSON（已清空；grid/hex 世界已不用 room graph）
+web/                     — 前端 + dashboard（方格 MUD 地圖 + 資料庫可視化）
+data/rooms/editor/       — 世界房間 JSON（已清空；現行方格世界已不用 room graph）
 data/config/             — 靜態設定（word_elements.json 500 詞元、gamedims、sentence_engine）
 data/runtime/            — 執行期 JSON（archival、summaries、threads、dyads、rumors）
 tools/                   — 本地工具腳本（gitignored，Parser、翻譯腳本等）
@@ -65,11 +65,11 @@ docs/                    — 設計文件（修改前必讀相關文件）
 - `docs/design/NPC間對話—記憶與情境完整設計.md` — NPC 對話系統設計規格
 - `docs/design/資源點與礦區設計.md` — 資源點、聚念場悖論
 - `docs/reference/詞盤系統收斂規格.md` — 詞盤系統閉環規格（已定案/衝突/缺設計一覽）
-- `docs/design/地圖渲染—單一管線與雙前端共用.md` — **修改 Hex／地圖渲染／編輯器與玩家端對齊時**必讀（單一管線、後端權威）
+- `WORKBOARD.md` — **修改地圖／空間／前端體驗前必讀**；現行方向為方格 MUD，Hex／觀景窗已下線
 
 ## 常用指令
 ```bash
-./start                                                                  # 改碼後唯一正式流程：完整閘門＋建置＋Hex trunk＋重啟（全跑、不分流）
+./start                                                                  # 改碼後唯一正式流程：完整閘門＋建置＋前端資源＋重啟（全跑、不分流）
 cargo build --release && PORT=1721 ./target/release/singularity_world   # 僅建置並啟動
 cargo clippy -- -D warnings                                              # 靜態檢查（零警告）
 cargo test                                                               # 跑測試
