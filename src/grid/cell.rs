@@ -98,6 +98,120 @@ pub enum Terrain {
 }
 
 impl Terrain {
+    /// 序列化標記（snake_case），送前端用。
+    ///
+    /// 對齊 `#[serde(rename_all = "snake_case")]` 的 JSON 表示。
+    pub fn kind_str(self) -> &'static str {
+        match self {
+            Terrain::Plain => "plain",
+            Terrain::Forest => "forest",
+            Terrain::ForestHeavy => "forest_heavy",
+            Terrain::ForestLight => "forest_light",
+            Terrain::Mountain => "mountain",
+            Terrain::Hills => "hills",
+            Terrain::Water => "water",
+            Terrain::WaterDeep => "water_deep",
+            Terrain::Desert => "desert",
+            Terrain::Swamp => "swamp",
+            Terrain::Tundra => "tundra",
+            Terrain::Grassland => "grassland",
+            Terrain::Jungle => "jungle",
+            Terrain::Urban => "urban",
+            Terrain::Road => "road",
+            Terrain::Bridge => "bridge",
+            Terrain::Wall => "wall",
+            Terrain::FarmField => "farm_field",
+            Terrain::Farmhouse => "farmhouse",
+            Terrain::Inn => "inn",
+            Terrain::Tavern => "tavern",
+            Terrain::Blacksmith => "blacksmith",
+            Terrain::GeneralStore => "general_store",
+            Terrain::Clinic => "clinic",
+            Terrain::Workshop => "workshop",
+            Terrain::Market => "market",
+            Terrain::GuildHall => "guild_hall",
+            Terrain::Temple => "temple",
+            Terrain::Academy => "academy",
+            Terrain::Library => "library",
+            Terrain::Barracks => "barracks",
+            Terrain::GuardPost => "guard_post",
+            Terrain::Warehouse => "warehouse",
+            Terrain::Granary => "granary",
+            Terrain::Dock => "dock",
+            Terrain::Bathhouse => "bathhouse",
+            Terrain::Courthouse => "courthouse",
+            Terrain::Jail => "jail",
+            Terrain::TownHall => "town_hall",
+            Terrain::Bank => "bank",
+            Terrain::Mint => "mint",
+            Terrain::Stables => "stables",
+            Terrain::Caravanserai => "caravanserai",
+            Terrain::Theater => "theater",
+            Terrain::Arena => "arena",
+            Terrain::Observatory => "observatory",
+            Terrain::Alchemist => "alchemist",
+            Terrain::MageTower => "mage_tower",
+            Terrain::Embassy => "embassy",
+            Terrain::PrisonYard => "prison_yard",
+        }
+    }
+
+    /// 分類：terrain（自然）／landmark（人造地標）／infra（通行建設）。
+    pub fn category(self) -> &'static str {
+        match self {
+            Terrain::Plain
+            | Terrain::Forest
+            | Terrain::ForestLight
+            | Terrain::ForestHeavy
+            | Terrain::Mountain
+            | Terrain::Hills
+            | Terrain::Water
+            | Terrain::WaterDeep
+            | Terrain::Desert
+            | Terrain::Swamp
+            | Terrain::Tundra
+            | Terrain::Grassland
+            | Terrain::Jungle => "terrain",
+
+            Terrain::Urban
+            | Terrain::Inn
+            | Terrain::Tavern
+            | Terrain::Blacksmith
+            | Terrain::GeneralStore
+            | Terrain::Clinic
+            | Terrain::Workshop
+            | Terrain::Market
+            | Terrain::GuildHall
+            | Terrain::Temple
+            | Terrain::Farmhouse
+            | Terrain::FarmField
+            | Terrain::Academy
+            | Terrain::Library
+            | Terrain::Barracks
+            | Terrain::GuardPost
+            | Terrain::Warehouse
+            | Terrain::Granary
+            | Terrain::Dock
+            | Terrain::Bathhouse
+            | Terrain::Courthouse
+            | Terrain::Jail
+            | Terrain::TownHall
+            | Terrain::Bank
+            | Terrain::Mint
+            | Terrain::Stables
+            | Terrain::Caravanserai
+            | Terrain::Theater
+            | Terrain::Arena
+            | Terrain::Observatory
+            | Terrain::Alchemist
+            | Terrain::MageTower
+            | Terrain::Embassy
+            | Terrain::PrisonYard => "landmark",
+
+            Terrain::Road | Terrain::Bridge | Terrain::Wall => "infra",
+        }
+    }
+
     /// 此地形是否預設可步行通過
     pub fn walkable(self) -> bool {
         !matches!(self, Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall)

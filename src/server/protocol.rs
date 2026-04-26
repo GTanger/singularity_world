@@ -360,8 +360,12 @@ pub struct GridViewMsg {
 pub struct GridCellView {
     pub x: i32,
     pub y: i32,
+    /// Terrain enum 變體名（snake_case），前端切色/icon 用
+    pub kind: String,
     pub terrain: String,
     pub name: String,
+    /// "terrain"（自然）/ "landmark"（人造）/ "infra"（通行建設）
+    pub category: String,
     pub explored: bool,
     pub walkable: bool,
 }

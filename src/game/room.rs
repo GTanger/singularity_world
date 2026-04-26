@@ -168,7 +168,17 @@ pub fn get_grid_room_view(
 }
 
 /// 取得正方格附近格子的簡要視野（地圖渲染用）。
-pub fn get_grid_cells_around(x: i32, y: i32, radius: i32) -> Vec<(i32, i32, String, String, bool, bool)> {
+///
+/// Tuple 欄位順序：`(x, y, kind, terrain, category, name, explored, walkable)`
+/// - `kind`：Terrain enum 變體 snake_case（送前端切色/icon）
+/// - `terrain`：中文標籤（向後相容）
+/// - `category`：`"terrain"` / `"landmark"` / `"infra"`
+#[allow(clippy::type_complexity)]
+pub fn get_grid_cells_around(
+    x: i32,
+    y: i32,
+    radius: i32,
+) -> Vec<(i32, i32, String, String, String, String, bool, bool)> {
     let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() else {
         return Vec::new();
     };
@@ -184,7 +194,9 @@ pub fn get_grid_cells_around(x: i32, y: i32, radius: i32) -> Vec<(i32, i32, Stri
                 out.push((
                     c.x,
                     c.y,
+                    cell.terrain.kind_str().to_string(),
                     terrain_name_zh(cell.terrain).to_string(),
+                    cell.terrain.category().to_string(),
                     cell.name.clone(),
                     cell.explored,
                     cell.terrain.walkable(),

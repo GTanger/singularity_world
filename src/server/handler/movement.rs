@@ -111,10 +111,12 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
     let cells_raw = game::get_grid_cells_around(x, y, 6);
     let cells: Vec<GridCellView> = cells_raw
         .into_iter()
-        .map(|(cx, cy, terrain, name, explored, walkable)| GridCellView {
+        .map(|(cx, cy, kind, terrain, category, name, explored, walkable)| GridCellView {
             x: cx,
             y: cy,
+            kind,
             terrain,
+            category,
             name,
             explored,
             walkable,
