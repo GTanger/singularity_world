@@ -602,20 +602,6 @@
   z-index: 2;
 }
 
-/* ── SW-23 格子 category 視覺標記 ─────────────────────────────── */
-
-/* 地標格：金色細邊 + 微微內陰影，營造「有東西」感 */
-.gmap-cell-landmark {
-  border: 1px solid #d4af6a;
-  box-shadow: inset 0 0 4px rgba(212, 175, 106, 0.3);
-}
-
-/* 通行建設：較細較暗的虛線邊，與一般地塊區隔 */
-.gmap-cell-infra {
-  border: 1px dashed #6a5a4a;
-  opacity: 0.85;
-}
-
 /* 地標墨點（階段 5b 加 has_landmark 後實啟用）*/
 .sw-minimap-cell--landmark::after {
   content: '';
