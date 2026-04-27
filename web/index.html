@@ -27,10 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.20.46">
-	<link rel="stylesheet" href="game.css?v=0.20.46">
+	<link rel="stylesheet" href="style.css?v=0.20.48">
+	<link rel="stylesheet" href="game.css?v=0.20.48">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.20.46" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.20.48" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -150,20 +150,20 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.46"></script>
-	<script src="game-ui.js?v=0.20.46"></script>
-	<script src="sw-grid-render.js?v=0.20.46"></script>
-	<script src="sw-room-desc.js?v=0.20.46"></script>
-	<script src="sw-object-list.js?v=0.20.46"></script>
-	<script src="grid-map.js?v=0.20.46"></script>
-	<script src="sw-log.js?v=0.20.46"></script>
-	<script src="sw-panes.js?v=0.20.46"></script>
-	<script src="sw-modals.js?v=0.20.46"></script>
-	<script src="sw-interactions.js?v=0.20.46"></script>
-	<script src="sw-clock.js?v=0.20.46"></script>
-	<script src="sw-narrative.js?v=0.20.46"></script>
-	<script src="sw-auth.js?v=0.20.46"></script>
-	<script src="main.js?v=0.20.46"></script>
+	<script src="narrative-markdown.js?v=0.20.48"></script>
+	<script src="game-ui.js?v=0.20.48"></script>
+	<script src="sw-grid-render.js?v=0.20.48"></script>
+	<script src="sw-room-desc.js?v=0.20.48"></script>
+	<script src="sw-object-list.js?v=0.20.48"></script>
+	<script src="grid-map.js?v=0.20.48"></script>
+	<script src="sw-log.js?v=0.20.48"></script>
+	<script src="sw-panes.js?v=0.20.48"></script>
+	<script src="sw-modals.js?v=0.20.48"></script>
+	<script src="sw-interactions.js?v=0.20.48"></script>
+	<script src="sw-clock.js?v=0.20.48"></script>
+	<script src="sw-narrative.js?v=0.20.48"></script>
+	<script src="sw-auth.js?v=0.20.48"></script>
+	<script src="main.js?v=0.20.48"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -176,7 +176,7 @@
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
 				// updateViaCache:'none' 讓瀏覽器檢查 SW 更新時繞 HTTP cache（破 CF 的 4h browser cache TTL 續命）
-				navigator.serviceWorker.register('/sw.js?v=0.20.46', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.20.48', { updateViaCache: 'none' }).then(function (reg) {
 					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;
