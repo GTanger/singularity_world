@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.47
+ * grid-map.js v0.20.48
  * 方格地圖共享狀態 + 移動控制 + 派發中樞
  * 子模組：sw-grid-render.js / sw-room-desc.js / sw-object-list.js
  *
@@ -93,6 +93,49 @@
     function colorFor(cell) {
         if (!cell) return UNKNOWN;
         return TERRAIN_COLOR[cell.kind] || UNKNOWN;
+    }
+
+    // ── 地標 icon（單字漢字，僅 category=landmark 用）──────────────
+    var LANDMARK_ICON = {
+        'urban':         '邑',
+        'inn':           '客',
+        'tavern':        '酒',
+        'blacksmith':    '鐵',
+        'general_store': '雜',
+        'clinic':        '藥',
+        'workshop':      '工',
+        'market':        '市',
+        'guild_hall':    '會',
+        'temple':        '神',
+        'farmhouse':     '舍',
+        'farm_field':    '田',
+        'academy':       '學',
+        'library':       '書',
+        'barracks':      '兵',
+        'guard_post':    '哨',
+        'warehouse':     '倉',
+        'granary':       '糧',
+        'dock':          '港',
+        'bathhouse':     '浴',
+        'courthouse':    '法',
+        'jail':          '牢',
+        'town_hall':     '議',
+        'bank':          '銀',
+        'mint':          '幣',
+        'stables':       '馬',
+        'caravanserai':  '商',
+        'theater':       '戲',
+        'arena':         '武',
+        'observatory':   '星',
+        'alchemist':     '煉',
+        'mage_tower':    '塔',
+        'embassy':       '使',
+        'prison_yard':   '獄'
+    };
+
+    function iconFor(cell) {
+        if (!cell || cell.category !== 'landmark') return null;
+        return LANDMARK_ICON[cell.kind] || null;
     }
 
     // ── 方向 ←→ delta（四向）────────────────────────────────────────
@@ -333,14 +376,15 @@
             esc: esc,
             hasProperName: hasProperName,
             displayNameOf: displayNameOf,
-            colorFor: colorFor
+            colorFor: colorFor,
+            iconFor: iconFor
         };
 
         bindMapClick();
         bindMapDrag();
         window.SwObjectList.bindClick();
 
-        console.log('[grid-map] v0.20.47 initialized | SW-23 kind/category 雙欄渲染');
+        console.log('[grid-map] v0.20.48 initialized | SW-24 地標 icon 覆疊 + 格名 fallback 修正');
     }
 
     if (document.readyState === 'loading') {
