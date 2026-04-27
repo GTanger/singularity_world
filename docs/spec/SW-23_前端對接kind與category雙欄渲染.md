@@ -110,7 +110,7 @@ el.title = cell.name && cell.name !== cell.terrain
     : cell.terrain;
 ```
 
-`name` 是地標專名（後端生成，例 `<inn-name>`），`terrain` 是中文類別（「客棧」）——名與類別都顯示，方便 debug 與將來盲人模式。
+`name` 是地標專名（「明月客棧」），`terrain` 是中文類別（「客棧」）——名與類別都顯示，方便 debug 與將來盲人模式。
 
 ### 5. 不在範圍
 
@@ -132,7 +132,7 @@ el.title = cell.name && cell.name !== cell.terrain
 
 - [ ] 站在 Inn 旁邊，地圖上 Inn 那格底色是金棕色（`#a89060`）+ 金色細邊框，不是 UNKNOWN 灰褐
 - [ ] 站在草原格周圍有森林、密林、丘陵——四種顏色明確不同
-- [ ] hover Inn 格子，tooltip 顯示「<inn-name>（客棧）」格式；hover 草原顯示「草原」
+- [ ] hover Inn 格子，tooltip 顯示「明月客棧（客棧）」之類；hover 草原顯示「草原」
 - [ ] minimap 9×9 也吃新色表（地標格金棕、地形格自然色）
 - [ ] 後端若日後新增 `Terrain` 變體但前端 `TERRAIN_COLOR` 沒補 → 該格 fallback `UNKNOWN`，不爆炸（colorFor 已防）
 - [ ] DevTools console 無新增 error/warn
