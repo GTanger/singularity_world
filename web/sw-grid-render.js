@@ -1,4 +1,4 @@
-// sw-grid-render.js：9×9 方格 DOM 主渲染器（renderMap + 短腳連線）。v0.20.48
+// sw-grid-render.js：9×9 方格 DOM 主渲染器（renderMap + 短腳連線）。v0.20.47
 (function () {
     'use strict';
 
@@ -104,17 +104,8 @@
 
             var nameEl = document.createElement('span');
             nameEl.className = 'gmap-cell-name';
-            nameEl.textContent = cell.name || cell.terrain || '？';
+            nameEl.textContent = cell.name || '地塊';
             el.appendChild(nameEl);
-
-            // SW-24：地標 icon（右上角單字漢字）
-            var iconChar = window.SwGrid.iconFor(cell);
-            if (iconChar) {
-                var iconEl = document.createElement('span');
-                iconEl.className = 'gmap-cell-icon';
-                iconEl.textContent = iconChar;
-                el.appendChild(iconEl);
-            }
 
             // 當前格點擊回到中心（覆蓋上方 title）
             if (isPlayer) {
@@ -195,5 +186,5 @@
     }
 
     window.SwGridRender = { renderMap: renderMap };
-    console.log('[sw-grid-render] v0.20.48 loaded | SW-24 地標 icon + fallback 修正');
+    console.log('[sw-grid-render] v0.20.47 loaded | SW-23 landmark/infra class + colorFor + tooltip');
 })();

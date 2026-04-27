@@ -616,20 +616,6 @@
   opacity: 0.85;
 }
 
-/* ── SW-24 地標 icon：右上角單字，金色 ────────────────────────── */
-
-.gmap-cell-icon {
-  position: absolute;
-  top: 2px;
-  right: 5px;
-  font-size: 16px;
-  line-height: 1;
-  color: #d4af6a;
-  font-weight: bold;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
-  pointer-events: none;
-}
-
 /* 地標墨點（階段 5b 加 has_landmark 後實啟用）*/
 .sw-minimap-cell--landmark::after {
   content: '';
