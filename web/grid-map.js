@@ -1,5 +1,5 @@
 /**
- * grid-map.js v0.20.46
+ * grid-map.js v0.20.47
  * 方格地圖共享狀態 + 移動控制 + 派發中樞
  * 子模組：sw-grid-render.js / sw-room-desc.js / sw-object-list.js
  *
@@ -29,23 +29,71 @@
         objects:  []    // ViewObject[]
     };
 
-    // ── 地形色映射表（對應後端 terrain_name_zh() 回傳的中文 key）────
+    // ── 地形色映射表（key 對應後端 kind_str() snake_case，SW-23）────
     var TERRAIN_COLOR = {
-        '草原': '#a8b06a',
-        '平地': '#b8ba82',
-        '林地': '#6b8e5a',
-        '疏林': '#7fa868',
-        '密林': '#4d7040',
-        '丘陵': '#9a7a55',
-        '山嶺': '#7a6a5a',
-        '水域': '#6a8aa8',
-        '深水': '#5a7a9a',
-        '沼地': '#7a9080',
-        '荒漠': '#d8c89a',
-        '凍原': '#d8dce8',
-        '叢林': '#4a7848',
-        '地塊': '#8a8070'
+        // category=terrain（自然地塊）
+        'plain':         '#b8ba82',
+        'grassland':     '#a8b06a',
+        'forest':        '#6b8e5a',
+        'forest_light':  '#7fa868',
+        'forest_heavy':  '#4d7040',
+        'hills':         '#9a7a55',
+        'mountain':      '#7a6a5a',
+        'water':         '#6a8aa8',
+        'water_deep':    '#5a7a9a',
+        'swamp':         '#7a9080',
+        'desert':        '#d8c89a',
+        'tundra':        '#d8dce8',
+        'jungle':        '#4a7848',
+
+        // category=landmark（人造地標，統一暖金底色；視覺差異由邊框/icon 負責）
+        'urban':         '#a89060',
+        'inn':           '#a89060',
+        'tavern':        '#a89060',
+        'blacksmith':    '#a89060',
+        'general_store': '#a89060',
+        'clinic':        '#a89060',
+        'workshop':      '#a89060',
+        'market':        '#a89060',
+        'guild_hall':    '#a89060',
+        'temple':        '#a89060',
+        'farmhouse':     '#a89060',
+        'farm_field':    '#c0b878',
+        'academy':       '#a89060',
+        'library':       '#a89060',
+        'barracks':      '#a89060',
+        'guard_post':    '#a89060',
+        'warehouse':     '#a89060',
+        'granary':       '#a89060',
+        'dock':          '#a89060',
+        'bathhouse':     '#a89060',
+        'courthouse':    '#a89060',
+        'jail':          '#a89060',
+        'town_hall':     '#a89060',
+        'bank':          '#a89060',
+        'mint':          '#a89060',
+        'stables':       '#a89060',
+        'caravanserai':  '#a89060',
+        'theater':       '#a89060',
+        'arena':         '#a89060',
+        'observatory':   '#a89060',
+        'alchemist':     '#a89060',
+        'mage_tower':    '#a89060',
+        'embassy':       '#a89060',
+        'prison_yard':   '#a89060',
+
+        // category=infra（通行建設）
+        'road':          '#8a7a5a',
+        'bridge':        '#9a8060',
+        'wall':          '#5a4a3a'
     };
+
+    var UNKNOWN = '#2a2418';
+
+    function colorFor(cell) {
+        if (!cell) return UNKNOWN;
+        return TERRAIN_COLOR[cell.kind] || UNKNOWN;
+    }
 
     // ── 方向 ←→ delta（四向）────────────────────────────────────────
     var DIR_DELTA = {
@@ -158,13 +206,12 @@
                 var isPlayer   = (row === HALF && col === HALF);
                 var isRevealed = revealedCells.has(key);
                 var cell       = cellMap[key];
-                var UNKNOWN    = '#2a2418';
 
                 if (isPlayer) {
-                    cellEl.style.backgroundColor = TERRAIN_COLOR[(cell && cell.terrain) || ''] || UNKNOWN;
+                    cellEl.style.backgroundColor = colorFor(cell);
                     cellEl.classList.add('sw-minimap-cell--here');
                 } else if (isRevealed && cell) {
-                    cellEl.style.backgroundColor = TERRAIN_COLOR[cell.terrain] || UNKNOWN;
+                    cellEl.style.backgroundColor = colorFor(cell);
                 } else if (isRevealed) {
                     cellEl.style.backgroundColor = '#5a5040';
                 } else {
@@ -285,14 +332,15 @@
             applyGridTransform: applyGridTransform,
             esc: esc,
             hasProperName: hasProperName,
-            displayNameOf: displayNameOf
+            displayNameOf: displayNameOf,
+            colorFor: colorFor
         };
 
         bindMapClick();
         bindMapDrag();
         window.SwObjectList.bindClick();
 
-        console.log('[grid-map] v0.20.46 initialized | 四刀拆分：sw-grid-render / sw-room-desc / sw-object-list');
+        console.log('[grid-map] v0.20.47 initialized | SW-23 kind/category 雙欄渲染');
     }
 
     if (document.readyState === 'loading') {

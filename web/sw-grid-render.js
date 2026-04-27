@@ -1,4 +1,4 @@
-// sw-grid-render.js：9×9 方格 DOM 主渲染器（renderMap + 短腳連線）。v0.20.46
+// sw-grid-render.js：9×9 方格 DOM 主渲染器（renderMap + 短腳連線）。v0.20.47
 (function () {
     'use strict';
 
@@ -85,17 +85,29 @@
 
             var el = document.createElement('div');
             el.className = 'gmap-cell' + (isPlayer ? ' gmap-cell-player' : '');
+            // SW-23：依 category 追加視覺 class
+            if (cell.category === 'landmark') {
+                el.classList.add('gmap-cell-landmark');
+            } else if (cell.category === 'infra') {
+                el.classList.add('gmap-cell-infra');
+            }
+            // SW-23：底色改用 kind 色表（透過 SwGrid.colorFor）
+            el.style.backgroundColor = window.SwGrid.colorFor(cell);
             el.style.left = sx + 'px';
             el.style.top  = sy + 'px';
             el.setAttribute('data-x', cx);
             el.setAttribute('data-y', cy);
+            // SW-23：tooltip 顯示地標名 + 中文地形類別
+            el.title = cell.name && cell.name !== cell.terrain
+                ? cell.name + '（' + cell.terrain + '）'
+                : (cell.terrain || '');
 
             var nameEl = document.createElement('span');
             nameEl.className = 'gmap-cell-name';
             nameEl.textContent = cell.name || '地塊';
             el.appendChild(nameEl);
 
-            // 當前格點擊回到中心
+            // 當前格點擊回到中心（覆蓋上方 title）
             if (isPlayer) {
                 el.style.cursor = 'pointer';
                 el.title = '點此回到中心';
@@ -174,5 +186,5 @@
     }
 
     window.SwGridRender = { renderMap: renderMap };
-    console.log('[sw-grid-render] v0.20.46 loaded');
+    console.log('[sw-grid-render] v0.20.47 loaded | SW-23 landmark/infra class + colorFor + tooltip');
 })();
