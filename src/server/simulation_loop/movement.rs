@@ -132,11 +132,12 @@ pub(super) fn run_travel_section(
 /// 正方格 NPC 行為 tick：GridNpcManager.tick 本身很輕，無 NPC 即 early return。
 pub(super) fn run_grid_npc_tick(
     now_unix: i64,
+    hour: i32,
     _state: &Arc<Mutex<MainLoopTickState>>,
     grid_npc_mgr: &Arc<Mutex<GridNpcManager>>,
 ) {
     let Ok(mut mgr) = grid_npc_mgr.lock() else { return };
     super::super::grid_manager::with_square_grid_mut(|grid| {
-        let _events = mgr.tick(grid, now_unix);
+        let _events = mgr.tick(grid, now_unix, hour);
     });
 }

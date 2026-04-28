@@ -148,7 +148,7 @@ fn run_simulation_tick(
     run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
     run_schedule_hour_section(sessions, cfg, hour, state);
     run_travel_section(sessions, cfg, hour, now_unix, state, traveler_mgr);
-    run_grid_npc_tick(now_unix, state, grid_npc_mgr);
+    run_grid_npc_tick(now_unix, hour, state, grid_npc_mgr);
     run_idle_wander_section(sessions, cfg, hour, state);
 }
 

@@ -1,12 +1,12 @@
 {
   "entries": [
     {
-      "entity_id": "npc_dhd6k6afp7kl",
+      "entity_id": "npc_citizen_60",
       "occupation_id": "服務生",
       "venue_id": "venue_life_inn"
     },
     {
-      "entity_id": "npc_dhd7aowr26g5",
+      "entity_id": "npc_citizen_21",
       "occupation_id": "服務生",
       "venue_id": "venue_life_inn"
     }

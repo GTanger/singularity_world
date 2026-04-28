@@ -192,15 +192,34 @@ impl SquareGrid {
 
     /// 能否從 `from` 步行到相鄰的 `to`？
     ///
-    /// 條件：`to` 存在於地圖、兩格相鄰（Chebyshev 距離 1）、目標地形可走。
+    /// 條件：`to` 存在於地圖、兩格相鄰（Manhattan 距離 1）、目標地形可走。
+    /// 特別規則：禁止從一個建築物 (Landmark) 直接走到另一個建築物，必須經過道路或空地。
     pub fn can_walk(&self, from: SquareCoord, to: SquareCoord) -> bool {
-        if from.chebyshev_distance(to) != 1 {
+        // 1. 強制四向移動 (Manhattan 距離必須為 1)
+        if from.manhattan_distance(to) != 1 {
             return false;
         }
-        match self.cells.get(&to) {
-            Some(c) => c.terrain.walkable(),
-            None => false,
+
+        let from_cell = match self.cells.get(&from) {
+            Some(c) => c,
+            None => return false,
+        };
+        let to_cell = match self.cells.get(&to) {
+            Some(c) => c,
+            None => return false,
+        };
+
+        // 2. 基本通行性檢查
+        if !to_cell.terrain.walkable() {
+            return false;
         }
+
+        // 3. 建築隔離法則：禁止建築物 -> 建築物 的直接穿牆
+        if from_cell.terrain.category() == "landmark" && to_cell.terrain.category() == "landmark" {
+            return false;
+        }
+
+        true
     }
 
     /// BFS 最短路徑（跳數）；回傳包含起點與終點的座標序列。
