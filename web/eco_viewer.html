@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>奇點世界：都市模擬景觀窗</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: rgba(20, 20, 25, 0.8);
+            --accent: #00f2ff;
+        }
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: var(--bg-color);
+            color: #fff;
+            font-family: 'Inter', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+            overflow: hidden;
+        }
+        #canvas-container {
+            width: 100vw; height: 100vh;
+            cursor: crosshair;
+        }
+        #ui-overlay {
+            position: absolute;
+            top: 20px; left: 20px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+        h1 { margin: 0 0 10px 0; font-size: 18px; letter-spacing: 2px; color: var(--accent); }
+        .stat { font-size: 12px; color: #888; margin-bottom: 5px; }
+        .legend { margin-top: 15px; font-size: 11px; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 4px; }
+        .dot { width: 8px; height: 8px; border-radius: 2px; margin-right: 8px; }
+        
+        #controls {
+            position: absolute;
+            bottom: 20px; right: 20px;
+            background: var(--panel-bg);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #aaa;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="ui-overlay">
+        <h1>都市模擬景觀窗</h1>
+        <div class="stat">城市規模：<span id="cell-count">0</span> 個原子房間</div>
+        <div class="stat">當前人口：<span id="npc-count">0</span> 個實體</div>
+        <div class="stat" id="hover-info">座標：- , -</div>
+        
+        <div class="legend">
+            <div class="legend-item"><div class="dot" style="background: #b71c1c;"></div> 廣場 (Plaza)</div>
+            <div class="legend-item"><div class="dot" style="background: #aaaaaa;"></div> 道路 (Road)</div>
+            <div class="legend-item"><div class="dot" style="background: #3e2723;"></div> 住宅 (Residential)</div>
+            <div class="legend-item"><div class="dot" style="background: #ff8800;"></div> 商店 (Shop)</div>
+            <div class="legend-item"><div class="dot" style="background: #1b5e20;"></div> 建築 (Building)</div>
+            <div class="legend-item"><div class="dot" style="background: #2e7d32;"></div> 田地 / 林地</div>
+            <div class="legend-item"><div class="dot" style="background: #ff00ff; box-shadow: 0 0 10px #ff00ff;"></div> 玩家 (Player)</div>
+        </div>
+    </div>
+
+    <div id="controls">滑鼠滾輪：縮放 | 左鍵拖拽：平移</div>
+
+    <div id="canvas-container">
+        <canvas id="ecoCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('ecoCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let mapData = [];
+        let entities = [];
+        
+        let scale = 4;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        let lastMouseX, lastMouseY;
+
+        const TERRAIN_COLORS = {
+            'road': '#aaaaaa',      // 道路
+            'urban': '#3e2723',     // 住宅
+            'market': '#ff8800',    // 商店
+            'temple': '#1b5e20',    // 建築
+            'town_hall': '#b71c1c', // 廣場
+            'inn': '#311b92',       // 旅店
+            'tavern': '#e65100',    // 酒館
+            'blacksmith': '#212121',// 鐵匠
+            'plain': '#0a0a0a',     // 空地
+            'water': '#01579b',     // 水域
+            'field': '#2e7d32',     // 田地
+            'tree': '#1b5e20'       // 林地
+        };
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            if (offsetX === 0 && offsetY === 0) {
+                offsetX = width / 2;
+                offsetY = height / 2;
+            }
+        }
+
+        async function fetchData() {
+            try {
+                const [mapRes, entRes] = await Promise.all([
+                    fetch('/api/eco/map'),
+                    fetch('/api/eco/entities')
+                ]);
+                mapData = await mapRes.json();
+                entities = await entRes.json();
+                
+                document.getElementById('cell-count').textContent = mapData.length;
+                document.getElementById('npc-count').textContent = entities.length;
+            } catch (e) {
+                console.error("數據獲取失敗", e);
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            // 繪製網格 (0.8x0.8 留出黑邊，方便觀察是否相連)
+            mapData.forEach(cell => {
+                ctx.fillStyle = TERRAIN_COLORS[cell.t] || '#111';
+                ctx.fillRect(cell.x - 0.4, cell.y - 0.4, 0.8, 0.8);
+            });
+
+            // 繪製實體
+            entities.forEach(ent => {
+                const isPlayer = ent.kind === 'player';
+                ctx.fillStyle = isPlayer ? '#ff00ff' : '#00f2ff';
+                
+                if (scale > 4) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = ctx.fillStyle;
+                }
+                
+                ctx.beginPath();
+                ctx.arc(ent.x, ent.y, isPlayer ? 0.35 : 0.25, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 0;
+            });
+
+            ctx.restore();
+            requestAnimationFrame(draw);
+        }
+
+        canvas.addEventListener('mousedown', e => {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mousemove', e => {
+            if (isDragging) {
+                offsetX += (e.clientX - lastMouseX);
+                offsetY += (e.clientY - lastMouseY);
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            }
+            
+            const worldX = Math.round((e.clientX - offsetX) / scale);
+            const worldY = Math.round((e.clientY - offsetY) / scale);
+            document.getElementById('hover-info').textContent = `座標：${worldX}, ${worldY}`;
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        canvas.addEventListener('wheel', e => {
+            e.preventDefault();
+            const zoomSpeed = 0.1;
+            const delta = e.deltaY > 0 ? (1 - zoomSpeed) : (1 + zoomSpeed);
+            const mouseWorldX = (e.clientX - offsetX) / scale;
+            const mouseWorldY = (e.clientY - offsetY) / scale;
+            scale *= delta;
+            scale = Math.max(0.5, Math.min(scale, 100));
+            offsetX = e.clientX - mouseWorldX * scale;
+            offsetY = e.clientY - mouseWorldY * scale;
+        }, { passive: false });
+
+        window.addEventListener('resize', resize);
+        
+        resize();
+        fetchData();
+        setInterval(fetchData, 2000);
+        draw();
+    </script>
+</body>
+</html>

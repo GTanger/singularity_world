@@ -76,9 +76,13 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/api/room-editor/groups", get(room_editor::groups_get).post(room_editor::groups_post))
         // HTML 頁面路由
         .route("/map_viewer", get(serve_map_viewer))
+        .route("/eco_viewer", get(serve_eco_viewer))
         .route("/star_chart", get(serve_star_chart))
         .route("/dashboard", get(serve_dashboard))
         .route("/admin", get(serve_admin))
+        // 生態 API
+        .route("/api/eco/map", get(http_api::eco_map))
+        .route("/api/eco/entities", get(http_api::eco_entities))
         // 靜態設定 JSON（terrain_ambience 等）
         .nest_service("/data/config", ServeDir::new("data/config"))
         .with_state(state.clone())
@@ -121,6 +125,7 @@ async fn serve_html_page(filename: &str) -> impl IntoResponse {
 }
 
 async fn serve_map_viewer() -> impl IntoResponse { serve_html_page("map_viewer.html").await }
+async fn serve_eco_viewer() -> impl IntoResponse { serve_html_page("eco_viewer.html").await }
 async fn serve_star_chart() -> impl IntoResponse { serve_html_page("star_chart.html").await }
 async fn serve_dashboard() -> impl IntoResponse { serve_html_page("dashboard.html").await }
 async fn serve_admin() -> impl IntoResponse { serve_html_page("admin.html").await }
