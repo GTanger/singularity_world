@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "antigravity-rc"]
+members = ["."]
 
 [package]
 name = "singularity_world"
@@ -49,6 +49,7 @@ byteorder = "1"
 osmpbf = "0.3"
 # Earth import：point-in-polygon 地理判定
 geo = "0.29"
+rand_chacha = "0.10.0"
 
 [[bin]]
 name = "checkrooms"
