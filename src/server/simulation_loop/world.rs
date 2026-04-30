@@ -238,3 +238,50 @@ pub(super) fn run_npc_pool_tick(
         );
     }
 }
+
+
+/// 氣候 tick：每 60 秒觸發，對每個區域隨機決定是否轉換氣候。
+/// 氣候事件類型：`clear` / `rain` / `wind` / `plum_rain` / `snow`
+/// 回傳：有氣候變化的 `(region_id, event_type, prose_seed)` 清單（空代表本輪無變化）。
+pub(super) fn run_climate_tick(now_unix: i64) -> Vec<(String, String, i64)> {
+    use crate::db::{list_region_climates, upsert_region_climate, RegionClimate};
+    use rand::Rng;
+
+    const CLIMATE_EVENTS: &[&str] = &["clear", "rain", "wind", "plum_rain", "snow"];
+    /// 每次 tick 氣候轉換概率（可調）
+    const CHANGE_PROB: f64 = 0.05;
+
+    let climates = match list_region_climates() {
+        Ok(v) => v,
+        Err(e) => {
+            tracing::warn!("run_climate_tick list: {e}");
+            return vec![];
+        }
+    };
+
+    let mut changed = Vec::new();
+    let mut rng = rand::rng();
+    for climate in climates {
+        let roll: f64 = rng.random();
+        if roll < CHANGE_PROB {
+            let new_event = CLIMATE_EVENTS[rng.random_range(0..CLIMATE_EVENTS.len())];
+            let prose_seed: i64 = rng.random();
+            let updated = RegionClimate {
+                region_id: climate.region_id.clone(),
+                event_type: new_event.to_string(),
+                started_at_unix: now_unix,
+                prose_seed,
+            };
+            if let Err(e) = upsert_region_climate(&updated) {
+                tracing::warn!("run_climate_tick upsert {}: {e}", climate.region_id);
+            } else {
+                tracing::info!(
+                    "[climate] 區域 {} 氣候轉換 {} → {}",
+                    climate.region_id, climate.event_type, new_event
+                );
+                changed.push((climate.region_id, new_event.to_string(), prose_seed));
+            }
+        }
+    }
+    changed
+}

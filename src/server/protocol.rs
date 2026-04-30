@@ -370,6 +370,58 @@ pub struct GridCellView {
     pub walkable: bool,
 }
 
+// ─── v5 新增：探索 log 與世界狀態推播 ─────────────────────────────────
+
+/// 探索結果中的單筆戰利品。
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[allow(dead_code)]
+pub struct LootItem {
+    #[serde(rename = "item_id")]
+    pub item_id: String,
+    pub name: String,
+    /// 正值表示獲得；負值表示昏倒時失去。
+    pub qty: i32,
+}
+
+/// 屬性變化量（歸零表示無變化）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[allow(dead_code)]
+pub struct StatDelta {
+    pub hp_cur: i32,
+    pub inner_cur: i32,
+}
+
+/// 玩家探索動作回應（WS 推播）。
+///
+/// `outcome` 可為：`harvest` / `combat` / `empty` / `warning` / `faint`。
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[allow(dead_code)]
+pub struct ExploreLogMsg {
+    #[serde(rename = "type")]
+    pub msg_type: String, // 固定值 "explore_log"
+    pub outcome: String,
+    pub log: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub loot: Vec<LootItem>,
+    pub stat_delta: StatDelta,
+    pub time_period_after: String,
+    pub freshness_after: String,
+    /// 預兆散文；空字串代表無預兆。
+    pub warning_prose: String,
+}
+
+/// 世界自走事件推播（不入玩家 log buffer）。
+///
+/// `trigger` 可為：`npc_move` / `time_advance` / `climate_change`。
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[allow(dead_code)]
+pub struct StateUpdateMsg {
+    #[serde(rename = "type")]
+    pub msg_type: String, // 固定值 "state_update"
+    pub trigger: String,
+    pub payload: serde_json::Value,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

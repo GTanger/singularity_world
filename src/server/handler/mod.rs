@@ -75,9 +75,36 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
         "print_topology_debug" => inventory::handle_print_topology_debug(conn),
         "do_action" => handle_do_action(conn, &msg),
         "explore" => movement::handle_explore_grid(conn),
+        "scout" => movement::handle_scout(conn, &msg),
+        "observe" => handle_observe(conn, &msg),
         other => {
             conn.send_error(format!("unknown type: {other}"));
         }
+    }
+}
+
+/// 玩家觀察 NPC：更新 acquaintance.observed=true，重推 room_enter 讓前端刷新卡片。
+/// WS 訊息格式：`{ "type": "observe", "npc_id": "<id>" }`
+fn handle_observe(conn: &WsConnection, msg: &ClientMsg) {
+    let Some(player_id) = player_id(conn) else {
+        conn.send_error("login first");
+        return;
+    };
+    if msg.entity_id.is_empty() {
+        conn.send_error("npc_id required");
+        return;
+    }
+    if let Err(e) = crate::db::set_observed(&player_id, &msg.entity_id) {
+        tracing::warn!("[observe] set_observed 失敗：{e}");
+    }
+    // 重推 room_enter 讓前端重抽 L4
+    let ent = match crate::db::get_entity(&player_id) {
+        Ok(Some(e)) => e,
+        _ => return,
+    };
+    if let (Some(gx), Some(gy)) = (ent.grid_x, ent.grid_y) {
+        let gh = current_game_hour(&conn.cfg);
+        movement::send_grid_view(conn, &player_id, gx, gy, gh);
     }
 }
 

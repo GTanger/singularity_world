@@ -19,13 +19,14 @@ use crate::game::{game_time_now, run_view_simulation, Pos};
 use crate::npc::{seed_traveler_manager, GridNpcManager, TravelerManager};
 use crate::npcnpc::{topic_mask_for_room, try_trigger_npc_npc_in_room};
 
+use super::hub::Hub;
 use super::SessionStore;
 
 use helpers::{initial_next_idle_trigger, initial_random_dialogue_ticks, periodic_fire, reset_ticks_no_player};
 use idle::run_idle_wander_section;
 use movement::{run_grid_npc_tick, run_travel_section};
 use work::{run_job_matching_section, run_schedule_hour_section};
-use world::{inject_event_seed, run_game_day_economy, run_npc_pool_tick};
+use world::{inject_event_seed, run_climate_tick, run_game_day_economy, run_npc_pool_tick};
 
 /// 跨 tick 的計時與狀態（對齊既有 閉包內變數）。欄位以 `pub(super)` 開放供子模組存取。
 pub(super) struct MainLoopTickState {
@@ -44,11 +45,18 @@ pub(super) struct MainLoopTickState {
     pub(super) last_event_seed: Option<Instant>,
     /// 世界詞典維護計時器
     pub(super) last_lexicon_maintenance: Option<Instant>,
+    /// freshness 回復計時器（每 N tick 觸發一次）
+    pub(super) last_freshness_reset: Option<Instant>,
+    /// 氣候 tick 計時器（每 60 現實秒觸發一次）
+    pub(super) last_climate_tick: Option<Instant>,
+    /// 上一次推送 world_tick 的遊戲時辰（-1 代表尚未推過）
+    pub(super) last_broadcast_hour: i32,
 }
 
 /// 單次 tick（對齊既有 `game.Loop` 回呼內順序）。
 fn run_simulation_tick(
     sessions: &SessionStore,
+    hub: &Arc<Hub>,
     cfg: &Server,
     state: &Arc<Mutex<MainLoopTickState>>,
     traveler_mgr: &Arc<Mutex<TravelerManager>>,
@@ -62,6 +70,29 @@ fn run_simulation_tick(
         .as_secs() as i64;
     let (_sec, hour, _min, game_day) =
         game_time_now(now_unix, cfg.game_time_epoch_unix, cfg.game_time_scale);
+
+    // 時辰改變時推 world_tick time（推送後更新快取，不每 tick 推）
+    {
+        let should_broadcast = {
+            let Ok(mut st) = state.lock() else { return };
+            if st.last_broadcast_hour != hour {
+                st.last_broadcast_hour = hour;
+                true
+            } else {
+                false
+            }
+        };
+        if should_broadcast {
+            let hour_str = format!("{:02}:00", hour);
+            let msg = serde_json::json!({
+                "type": "world_tick",
+                "time": { "hour_str": hour_str, "hour": hour }
+            });
+            if let Ok(bytes) = serde_json::to_vec(&msg) {
+                hub.broadcast(bytes);
+            }
+        }
+    }
 
     let sim_c = sim();
     let mut rd_sec = sim_c.rumor_decay_interval_sec;
@@ -143,6 +174,60 @@ fn run_simulation_tick(
         let _ = try_trigger_npc_npc_in_room(sessions, cfg, &room_id, &topic_hint, h);
     }
 
+    // freshness 回復（每 10 秒觸發，離格玩家對應格回 fresh）
+    let fire_freshness = {
+        let Ok(mut st) = state.lock() else { return };
+        periodic_fire(&mut st.last_freshness_reset, Duration::from_secs(10))
+    };
+    if fire_freshness {
+        use crate::db::reset_freshness_for_vacant_cells;
+        // 取所有玩家當前的方格座標作為「有人」座標
+        let occupied: Vec<(i32, i32)> = sessions
+            .player_room_ids()
+            .iter()
+            .filter_map(|rid| {
+                crate::grid::parse_grid_room_id(rid).map(|c| (c.x, c.y))
+            })
+            .collect();
+        if let Err(e) = reset_freshness_for_vacant_cells(&occupied) {
+            tracing::warn!("reset_freshness_for_vacant_cells: {e}");
+        }
+        // 同步更新記憶體格網（讓記憶體與 PG 一致）
+        crate::server::grid_manager::with_square_grid_mut(|grid| {
+            for cell in grid.cells_mut() {
+                let coord = (cell.coord.x, cell.coord.y);
+                if cell.freshness != crate::grid::Freshness::Fresh
+                    && !occupied.contains(&coord)
+                {
+                    cell.freshness = crate::grid::Freshness::Fresh;
+                }
+            }
+        });
+    }
+
+    // 氣候 tick（每 60 秒觸發一次）
+    let fire_climate = {
+        let Ok(mut st) = state.lock() else { return };
+        periodic_fire(&mut st.last_climate_tick, Duration::from_secs(60))
+    };
+    if fire_climate {
+        let climate_changes = run_climate_tick(now_unix);
+        // 氣候事件變化時推 world_tick weather（每次變化獨立推，不合批）
+        for (region_id, event_type, prose_seed) in climate_changes {
+            let msg = serde_json::json!({
+                "type": "world_tick",
+                "weather": {
+                    "region_id": region_id,
+                    "event_type": event_type,
+                    "prose_seed": prose_seed
+                }
+            });
+            if let Ok(bytes) = serde_json::to_vec(&msg) {
+                hub.broadcast(bytes);
+            }
+        }
+    }
+
     run_game_day_economy(now_unix, game_day, state);
     run_npc_pool_tick(cfg, now_unix, state, traveler_mgr);
     run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
@@ -153,7 +238,7 @@ fn run_simulation_tick(
 }
 
 /// 在 Tokio runtime 上依 `cfg.tick_interval_ms` 週期執行主迴圈片段（與 Axum 並行）。
-pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
+pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, hub: Arc<Hub>, cfg: Server) {
     let traveler_mgr = Arc::new(Mutex::new(TravelerManager::new()));
     if let Err(e) = seed_traveler_manager(&traveler_mgr) {
         tracing::warn!("seed_traveler_manager: {e}");
@@ -172,20 +257,25 @@ pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, cfg: Server) {
         next_idle_trigger: initial_next_idle_trigger(),
         last_event_seed: None,
         last_lexicon_maintenance: None,
+        last_freshness_reset: None,
+        last_climate_tick: None,
+        last_broadcast_hour: -1,
     }));
     let tick_ms = cfg.tick_interval_ms.max(1);
+    let hub = Arc::clone(&hub);
     tokio::spawn(async move {
         let mut interval = tokio::time::interval(std::time::Duration::from_millis(tick_ms));
         loop {
             interval.tick().await;
             let sessions = Arc::clone(&sessions);
+            let hub = Arc::clone(&hub);
             let cfg = cfg.clone();
             let tick_state = Arc::clone(&tick_state);
             let tm = Arc::clone(&traveler_mgr);
             let gm = Arc::clone(&grid_npc_mgr);
             let res = tokio::task::spawn_blocking(move || {
                 let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                    run_simulation_tick(&sessions, &cfg, &tick_state, &tm, &gm);
+                    run_simulation_tick(&sessions, &hub, &cfg, &tick_state, &tm, &gm);
                 }));
                 if let Err(e) = result {
                     let msg = if let Some(s) = e.downcast_ref::<&str>() {

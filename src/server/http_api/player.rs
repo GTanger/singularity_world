@@ -1,11 +1,14 @@
-//! 玩家查詢（房間座標 + 361 拓撲）。
+//! 玩家查詢（房間座標 + 361 拓撲 + 時辰）。
 
-use axum::extract::{Json, Query};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+use axum::extract::{Json, Query, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 
 use crate::db;
+use crate::game::{game_time_now, TimePeriod};
 
 // ── /api/player-room ──
 
@@ -193,4 +196,78 @@ pub async fn topology(Query(q): Query<TopologyQuery>) -> impl IntoResponse {
         edges: build_topology_edges(&costs),
     };
     Json(resp).into_response()
+}
+
+// ── /api/time ─────────────────────────────────────────────────────────
+
+#[derive(Deserialize)]
+pub struct TimeQuery {
+    #[allow(dead_code)]
+    player_id: Option<String>,
+}
+
+#[derive(Serialize)]
+pub struct TimeResponse {
+    game_hour: i32,
+    game_min: i32,
+    time_period: String,
+    time_period_idx: i32,
+    server_unix: i64,
+}
+
+pub async fn game_time(
+    State(state): State<crate::server::run::AppState>,
+    Query(_q): Query<TimeQuery>,
+) -> impl IntoResponse {
+    let now_unix = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs() as i64;
+    let (_sec, hour, min, _day) =
+        game_time_now(now_unix, state.cfg.game_time_epoch_unix, state.cfg.game_time_scale);
+    let tp = TimePeriod::from_hour(hour);
+    Json(TimeResponse {
+        game_hour: hour,
+        game_min: min,
+        time_period: tp.label().into(),
+        time_period_idx: tp.index(),
+        server_unix: now_unix,
+    })
+    .into_response()
+}
+
+// ── /api/climate ──────────────────────────────────────────────────────
+
+#[derive(Deserialize)]
+pub struct ClimateQuery {
+    region_id: Option<String>,
+}
+
+#[derive(Serialize)]
+pub struct ClimateResponse {
+    region_id: String,
+    event_type: String,
+    prose_seed: i64,
+}
+
+pub async fn climate(Query(q): Query<ClimateQuery>) -> impl IntoResponse {
+    let region_id = q.region_id.unwrap_or_default();
+    if region_id.is_empty() {
+        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"需提供 region_id 參數"}))).into_response();
+    }
+    match db::get_region_climate(&region_id) {
+        Ok(Some(c)) => Json(ClimateResponse {
+            region_id: c.region_id,
+            event_type: c.event_type,
+            prose_seed: c.prose_seed,
+        })
+        .into_response(),
+        Ok(None) => Json(ClimateResponse {
+            region_id,
+            event_type: "clear".into(),
+            prose_seed: 0,
+        })
+        .into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response(),
+    }
 }

@@ -44,7 +44,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         cfg,
     };
     grid_manager::init();
-    spawn_simulation_main_loop(Arc::clone(&state.sessions), state.cfg.clone());
+    spawn_simulation_main_loop(Arc::clone(&state.sessions), Arc::clone(&state.hub), state.cfg.clone());
     let port = state.cfg.port.clone();
 
     let app = Router::new()
@@ -60,6 +60,9 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/data/rooms.json", get(http_api::rooms_data))
         // 星盤拓撲
         .route("/api/topology", get(http_api::topology))
+        // v5 時辰、氣候（explore 已統一走 WS 路徑）
+        .route("/api/time", get(http_api::game_time))
+        .route("/api/climate", get(http_api::climate))
         // 房間管理 CRUD
         .route("/api/rooms", get(http_api::list_rooms).post(http_api::create_room))
         .route("/api/rooms/{id}", get(http_api::get_room_admin).put(http_api::update_room).delete(http_api::delete_room))
