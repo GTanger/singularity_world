@@ -27,10 +27,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.20.46">
-	<link rel="stylesheet" href="game.css?v=0.20.46">
+	<link rel="stylesheet" href="style.css?v=0.21.0">
+	<link rel="stylesheet" href="game.css?v=0.21.0">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.20.46" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.21.0" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -71,58 +71,36 @@
 		</div>
 	</div>
 
-	<!-- ═══ Grid MUD 模式（唯一模式）：四層 grid UI ═══ -->
+	<!-- ═══ Grid MUD 模式（唯一模式）：v5 三區 UI ═══ -->
 	<div id="app-grid" class="game-grid-app sw-app" hidden>
 
-		<!-- 頂欄（36px）：三欄（無標題） -->
-		<header id="top-bar" class="game-grid-header sw-topbar">
-			<div class="bar-cell" id="game-time-date-cell-g">
-				<span id="game-time-date"></span>
-			</div>
-			<div class="bar-cell" id="sundial-cell-g">
-				<svg id="game-time-svg" class="game-time-svg" viewBox="0 0 32 32" aria-hidden="true">
-					<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
-					<line id="game-time-hand" class="game-time-hand" x1="16" y1="16" x2="16" y2="8"
-					      stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(0 16 16)"/>
-				</svg>
-			</div>
-			<div class="bar-cell" id="clock-cell-g">
-				<span id="game-time-clock"></span> <span id="game-time-label"></span>
-			</div>
-		</header>
-
-		<!-- 主區（1fr）：房間描述（上小）+ 卡片主舞台（下大，萬物皆物件） -->
-		<div class="sw-main">
-
-			<!-- 上：房間描述（地形名 + 氛圍句 + 出口方向）-->
-			<div class="game-grid-room-desc" id="mud-room-desc">
-				<!-- JS 填充 -->
-			</div>
-
-			<!-- 下：卡片主舞台（物件欄，萬物皆物件）-->
-			<div class="mud-card-stage" id="mud-obj-list">
-				<!-- JS 填充卡片 -->
-			</div>
-
-			<!-- 舊大地圖 DOM 保留但隱藏：grid-map.js init() 找不到 gmap-grid 會 return 中斷
-			     渲染；保留隱藏節點以維持 JS 流程，未來階段再清除。-->
-			<div id="gmap-viewport" hidden aria-hidden="true">
-				<div id="gmap-grid" class="gmap-grid"></div>
-			</div>
-
-		</div><!-- /.sw-main -->
-
-		<!-- log+map row（160px）：左 log（暫空）+ 右 minimap（暫保留既有地圖，階段 2 再降級）-->
-		<div class="sw-logmap-row">
-			<div class="sw-log" id="log">
-				<!-- appendLog() 寫入此處；.sw-log CSS 用 flex-end 讓最新訊息在下方 -->
-			</div>
-			<div class="sw-minimap" id="sw-minimap-container">
-				<!-- 階段 2 降級為色塊，暫空 -->
-			</div>
+		<!-- 上區：描述欄（四層 + 互動 log 流）-->
+		<div id="sw-desc-panel" class="sw-desc-panel">
+			<!-- L1 時間段（JS 填充，世界自走時重抽）-->
+			<div id="sw-l1-time" class="sw-desc-layer sw-l1"></div>
+			<!-- L2 範圍氣候段（JS 填充，氣候事件變化時重抽）-->
+			<div id="sw-l2-climate" class="sw-desc-layer sw-l2"></div>
+			<!-- L3 當前格初始段（JS 填充，踏入抽一次，離格前不變）-->
+			<div id="sw-l3-terrain" class="sw-desc-layer sw-l3"></div>
+			<!-- L4 物件卡片（JS 動態渲染，在場即顯）-->
+			<div id="sw-l4-objects" class="sw-desc-layer sw-l4"></div>
 		</div>
 
-		<!-- 底欄（44px）：三欄（左氣血體力 | 中姓名 | 右能量精神）-->
+		<!-- 中上區：互動 log 流（獨立可滾，不會推走描述欄）-->
+		<div id="sw-log" class="sw-log-stream"></div>
+
+		<!-- 中區：路口形狀 UI（四方 + 中央探索）-->
+		<div id="sw-junction" class="sw-junction">
+			<div class="junction-north" id="exit-north"></div>
+			<div class="junction-row">
+				<div class="junction-west" id="exit-west"></div>
+				<button class="junction-center" id="btn-explore">探索</button>
+				<div class="junction-east" id="exit-east"></div>
+			</div>
+			<div class="junction-south" id="exit-south"></div>
+		</div>
+
+		<!-- 下區：屬性條 + 玩家名 -->
 		<footer id="bottom-bar" class="game-grid-footer sw-statusbar">
 			<div class="game-grid-footer-inner">
 				<div class="grid-stats-left">
@@ -134,9 +112,11 @@
 					<div class="stat-mini" title="能量"><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
 					<div class="stat-mini" title="精神"><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
 				</div>
-				<!-- 舊底欄 #log 已移除——log 統一接到 .sw-log 區（id="log"）-->
 			</div>
 		</footer>
+
+		<!-- 舊 log id 相容橋：sw-log.js 等模組仍寫 #log，用隱藏 div 承接再轉接到 #sw-log -->
+		<div id="log" style="display:none" aria-hidden="true"></div>
 
 	</div><!-- /#app-grid -->
 
@@ -150,20 +130,20 @@
 	})();
 	</script>
 
-	<script src="narrative-markdown.js?v=0.20.46"></script>
-	<script src="game-ui.js?v=0.20.46"></script>
-	<script src="sw-grid-render.js?v=0.20.46"></script>
-	<script src="sw-room-desc.js?v=0.20.46"></script>
-	<script src="sw-object-list.js?v=0.20.46"></script>
-	<script src="grid-map.js?v=0.20.46"></script>
-	<script src="sw-log.js?v=0.20.46"></script>
-	<script src="sw-panes.js?v=0.20.46"></script>
-	<script src="sw-modals.js?v=0.20.46"></script>
-	<script src="sw-interactions.js?v=0.20.46"></script>
-	<script src="sw-clock.js?v=0.20.46"></script>
-	<script src="sw-narrative.js?v=0.20.46"></script>
-	<script src="sw-auth.js?v=0.20.46"></script>
-	<script src="main.js?v=0.20.46"></script>
+	<script src="narrative-markdown.js?v=0.21.0"></script>
+	<script src="game-ui.js?v=0.21.0"></script>
+	<script src="sw-grid-render.js?v=0.21.0"></script>
+	<script src="sw-room-desc.js?v=0.22.0"></script>
+	<script src="sw-object-list.js?v=0.22.0"></script>
+	<script src="grid-map.js?v=0.22.0"></script>
+	<script src="sw-log.js?v=0.22.1"></script>
+	<script src="sw-panes.js?v=0.21.0"></script>
+	<script src="sw-modals.js?v=0.21.0"></script>
+	<script src="sw-interactions.js?v=0.21.0"></script>
+	<script src="sw-clock.js?v=0.21.0"></script>
+	<script src="sw-narrative.js?v=0.21.0"></script>
+	<script src="sw-auth.js?v=0.21.0"></script>
+	<script src="main.js?v=0.22.0"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');

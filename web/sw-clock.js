@@ -40,29 +40,24 @@
 	function updateGameTimeDisplay() {
 		var sec = gameSecNow();
 		var days = gameDaysNow();
-		var handEl = document.getElementById('game-time-hand');
-		var clockEl = document.getElementById('game-time-clock');
-		var labelEl = document.getElementById('game-time-label');
-		var dateEl = document.getElementById('game-time-date');
+		var phases = ['深夜','凌晨','破曉','清晨','上午','正午','午後','下午','傍晚','入夜','晚間','半夜'];
+
 		if (sec == null || days == null) {
-			if (dateEl) dateEl.textContent = '奇點曆 —';
-			if (clockEl) clockEl.textContent = '--:--';
-			if (labelEl) labelEl.textContent = '';
-			if (handEl) handEl.setAttribute('transform', 'rotate(0 16 16)');
+			// v5 L1 時間層（頂欄已移除，只更新 L1）
+			if (window.SwRoomDesc && window.SwRoomDesc.renderL1) {
+				window.SwRoomDesc.renderL1({ hour_str: '--:--', period: '' });
+			}
 			return;
 		}
-		if (handEl) {
-			var hourCont = sec / 3600;
-			var angle = (hourCont - 12) * 15;
-			handEl.setAttribute('transform', 'rotate(' + angle + ' 16 16)');
-		}
-		if (dateEl) dateEl.textContent = formatSingularityDate(days);
 		var h = Math.floor(sec / 3600) % 24;
 		var m = Math.floor((sec % 3600) / 60);
-		if (clockEl) clockEl.textContent = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
-		var phases = ['深夜','凌晨','破曉','清晨','上午','正午','午後','下午','傍晚','入夜','晚間','半夜'];
+		var hourStr = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
 		var phase = phases[Math.floor(h / 2)] || '深夜';
-		if (labelEl) labelEl.textContent = phase;
+
+		// v5：更新 L1 描述層（時辰散文），頂欄已移除不再更新
+		if (window.SwRoomDesc && window.SwRoomDesc.renderL1) {
+			window.SwRoomDesc.renderL1({ hour_str: hourStr, period: phase });
+		}
 	}
 
 	function startTicker() {

@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.20.46
+// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.21.0
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';
@@ -323,6 +323,36 @@
 						}
 					}
 					break;
+				// ── v5 四類新事件分流 ─────────────────────────────────────────
+				case 'room_enter':
+					// 進格事件：觸發 L1-L3 重抽 + L4 重渲 + 路口 UI
+					if (window.onRoomEnter) window.onRoomEnter(msg);
+					break;
+				case 'explore_result':
+					// 探索結果：追加 log，不動 L1-L3
+					if (window.onExploreResult) window.onExploreResult(msg);
+					if (msg.log) {
+						var exploreHtml = window.SwNarrative ? window.SwNarrative.format(msg.log) : escapeHtml(msg.log);
+						if (appendNarrative) appendNarrative(exploreHtml, 'explore');
+					}
+					break;
+				case 'interact_result':
+					// 物件互動結果：追加 log + 更新 observation_state
+					if (window.onInteractResult) window.onInteractResult(msg);
+					if (msg.log) {
+						var interactHtml = window.SwNarrative ? window.SwNarrative.format(msg.log) : escapeHtml(msg.log);
+						if (appendNarrative) appendNarrative(interactHtml, 'interact');
+					}
+					break;
+				case 'world_tick':
+					// 世界自走：更新 L1/L2/L4，不推 log 條目
+					if (window.onWorldTick) window.onWorldTick(msg);
+					break;
+					case 'scout_result':
+						// 探路結果：更新方向路口顯示，不推 log
+						if (window.onScoutResult) window.onScoutResult(msg);
+						break;
+				// ── 舊事件繼續相容 ────────────────────────────────────────────
 				case 'narrate':
 					if (msg.text) {
 						appendNarrative(window.SwNarrative.format(msg.text), 'ambient');

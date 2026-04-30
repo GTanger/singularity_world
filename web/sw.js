@@ -1,7 +1,7 @@
 // PWA Service Worker：最小實作，支援「加入主畫面」
 // 改前端後必須 bump 此 CACHE 版號，瀏覽器才會偵測 SW 更新 → install/activate → claim
 // （比 index.html 的 ?v= 更深一層：即使 HTML ?v= 變了，若 SW 本身內容沒變，舊 SW 續命）
-const CACHE = 'singularity-world-v59';
+const CACHE = 'singularity-world-v76'; // v5 log 自滾修復：scroll 容器改為 #sw-log 自身（拆區後 desc-panel 不再是父滾動體）
 
 self.addEventListener('install', function (e) {
   self.skipWaiting();
