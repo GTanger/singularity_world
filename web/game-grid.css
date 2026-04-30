@@ -186,82 +186,6 @@
   color: var(--ink, #2c1e0f);
 }
 
-/* 下大：地圖視口（Google Maps 式 — overflow hidden，無 scrollbar；內容由 transform 位移）*/
-.game-grid-map-viewport {
-  flex: 1 1 0;
-  min-height: 0;
-  overflow: hidden;
-  background: var(--paper-light, #f7f0e3);
-  position: relative;
-  touch-action: none;  /* 攔截手機原生捲動手勢，交給我們的 pointer drag */
-  cursor: grab;
-  user-select: none;
-}
-.game-grid-map-viewport.dragging { cursor: grabbing; }
-
-/* 地圖容器：釘在 viewport 左上，transform translate 來位移（不用 scroll）
- * 左上基準 + JS 算的 dx,dy = 讓玩家格對齊 viewport 中心 */
-.gmap-grid {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform-origin: 0 0;
-  will-change: transform;  /* 拖曳時 GPU 加速 */
-}
-
-/* ── 格子 ─────────────────────────────────────────────────────── */
-
-.gmap-cell {
-  position: absolute;
-  width: 72px;
-  height: 48px;
-  background: var(--paper, #f0e6d3);
-  border: 1px solid var(--ink-faint, #a89880);
-  border-radius: 3px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 12px;
-  line-height: 1.3;
-  text-align: center;
-  transition: background 0.1s, border-color 0.1s;
-  box-sizing: border-box;
-}
-
-.gmap-cell:active {
-  background: var(--paper-dark, #e0d4c0);
-}
-
-/* 玩家當前格 */
-.gmap-cell-player {
-  background: var(--paper-dark, #e0d4c0);
-  border-color: var(--gold, #8b6914);
-  border-width: 2px;
-  cursor: default;
-  z-index: 2;
-}
-
-.gmap-cell-name {
-  font-size: 12px;
-  color: var(--ink, #2c1e0f);
-  font-weight: 500;
-}
-
-/* 當前格圓點已砍——格名 + 邊框/底色自身區分足夠，視覺更乾淨 */
-
-/* ── 方向 C 短腳（只在當前格向已揭露出口浮出）──────────────── */
-/* tile-RPG 慣例：相鄰即可走，連線不承諾「對面有東西」
- * 短腳從當前格邊緣突出 gap 的一半，不連到鄰格
- * 即：「這方向有路」= 意圖提示，不是「那格長什麼樣」的空間編碼 */
-
-.gmap-leg {
-  position: absolute;
-  background: var(--ink, #4a3520);
-  z-index: 2;
-}
-
 /* ── 底欄（無上邊線，用留白與地圖區隔） ─────────────────────── */
 /* 用 #bottom-bar.game-grid-footer 疊 id 權重，蓋掉 game.css 的邊線 */
 
@@ -618,17 +542,3 @@
   height: 100%;
 }
 
-/* ── 舊 minimap / topbar / sidebar DOM 隱藏（防萬一殘留）────────── */
-.game-grid-header,
-.sw-topbar,
-.sw-minimap,
-.sw-logmap-row,
-.sw-main,
-.mud-card-stage,
-.game-grid-sidebar,
-.game-grid-map-viewport,
-#gmap-viewport {
-  display: none !important;
-}
-
-/* SW-18 色塊 minimap 已移除（SW-v5 路口 UI 取代）*/
