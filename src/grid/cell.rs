@@ -4,6 +4,44 @@
 
 use serde::{Deserialize, Serialize};
 
+// ─── 探索新鮮度 ──────────────────────────────────────────────────────
+
+/// 格子探索新鮮度（110V 布林擴展）。
+///
+/// 同一玩家同一格連續 explore：`Fresh → Half → Empty`。
+/// 玩家離格後下一個 simulation tick 回 `Fresh`。
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Freshness {
+    /// 正常（預設）
+    #[default]
+    Fresh,
+    /// 採集量 ×0.5
+    Half,
+    /// 強制 outcome: "empty"
+    Empty,
+}
+
+impl Freshness {
+    /// 連續探索時依序推進（Empty → Empty，不再往下）。
+    pub fn advance(self) -> Self {
+        match self {
+            Freshness::Fresh => Freshness::Half,
+            Freshness::Half => Freshness::Empty,
+            Freshness::Empty => Freshness::Empty,
+        }
+    }
+
+    /// 序列化用字串標籤（前端 freshness_after 欄位）。
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Freshness::Fresh => "fresh",
+            Freshness::Half => "half",
+            Freshness::Empty => "empty",
+        }
+    }
+}
+
 // ─── 格上物件型別 ────────────────────────────────────────────────────
 
 /// 格子上可採集物件的種類。

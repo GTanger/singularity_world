@@ -10,7 +10,7 @@ mod view_sim;
 mod zone;
 
 pub use chunk_view::{get_chunk_and_entities_in_view, ChunkView};
-pub use gametime::game_time_now;
+pub use gametime::{game_time_now, time_period, time_period_label, TimePeriod};
 pub use movement_tick::{advance_movement, entity_at, MovedResult};
 pub use observe::{collapse, now_unix, observe_room, Observed, Observer};
 pub use room::{

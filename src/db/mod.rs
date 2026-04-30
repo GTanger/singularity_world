@@ -24,6 +24,8 @@ mod trade_pending;
 mod text;
 mod lexicon;
 mod grid_world;
+mod climate;
+mod acquaintance;
 
 use crate::entity::Character;
 use crate::store::{self, Entity};
@@ -37,6 +39,16 @@ pub fn load_square_grid() -> Option<crate::grid::SquareGrid> {
 /// 將正方格世界格網寫入 PostgreSQL。
 pub fn save_square_grid_to_pg(grid: &crate::grid::SquareGrid) -> anyhow::Result<()> {
     grid_world::save_square_grid_to_pg(grid)
+}
+
+/// 更新單一格子的 freshness（explore handler 呼叫）。
+pub fn update_cell_freshness(x: i32, y: i32, freshness: crate::grid::Freshness) -> anyhow::Result<()> {
+    grid_world::update_cell_freshness(x, y, freshness)
+}
+
+/// simulation tick：將無玩家在場的 non-fresh 格子回復為 fresh。
+pub fn reset_freshness_for_vacant_cells(occupied_coords: &[(i32, i32)]) -> anyhow::Result<()> {
+    grid_world::reset_freshness_for_vacant_cells(occupied_coords)
 }
 
 pub use assignment::{
@@ -316,3 +328,9 @@ pub fn penalize_rumor_by_text(text: &str, now_unix: i64, reason: &str) -> anyhow
     s.penalize_rumor_by_text(text, now_unix, reason)
 }
 
+// ─── v5 新增：氣候與觀察態 ───────────────────────────────────────────
+pub use climate::{get_region_climate, list_region_climates, upsert_region_climate, RegionClimate};
+pub use acquaintance::{
+    ensure_acquaintance, get_acquaintance, get_acquaintances_for_player_npcs,
+    set_named, set_observed, NpcAcquaintance,
+};

@@ -8,7 +8,7 @@ use std::collections::{HashMap, HashSet, VecDeque};
 
 use serde::{Deserialize, Serialize};
 
-use super::cell::{GridObject, Terrain};
+use super::cell::{Freshness, GridObject, Terrain};
 
 use super::coord::SquareCoord;
 
@@ -37,6 +37,10 @@ pub struct GridCell {
     /// 是否已被玩家探索（影響前端渲染）
     #[serde(default)]
     pub explored: bool,
+
+    /// 探索新鮮度（連續探索同一格的資源豐厚度衰減）
+    #[serde(default)]
+    pub freshness: Freshness,
 }
 
 impl GridCell {
@@ -50,6 +54,7 @@ impl GridCell {
             description: String::new(),
             objects: Vec::new(),
             explored: false,
+            freshness: Freshness::Fresh,
         }
     }
 }
@@ -170,6 +175,11 @@ impl SquareGrid {
     /// 遍歷所有已揭露格子
     pub fn cells(&self) -> impl Iterator<Item = &GridCell> {
         self.cells.values()
+    }
+
+    /// 遍歷所有已揭露格子（可寫；修改後應標記 dirty）
+    pub fn cells_mut(&mut self) -> impl Iterator<Item = &mut GridCell> {
+        self.cells.values_mut()
     }
 
     /// 遍歷所有已揭露座標
