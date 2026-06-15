@@ -3,12 +3,12 @@
 
 mod simulation;
 
+use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::Path;
-use serde::Deserialize;
 
-pub use simulation::{default_simulation, load_simulation, sim, SimulationParams};
+pub use simulation::{SimulationParams, default_simulation, load_simulation, sim};
 
 /// 伺服器與連線可調參數。
 #[derive(Debug, Clone)]
@@ -174,28 +174,66 @@ fn env_i32(key: &str) -> Option<i32> {
 }
 
 fn env_bool(key: &str) -> bool {
-    matches!(env::var(key).ok().as_deref(), Some("1") | Some("true") | Some("TRUE") | Some("True"))
+    matches!(
+        env::var(key).ok().as_deref(),
+        Some("1") | Some("true") | Some("TRUE") | Some("True")
+    )
 }
 
 impl Server {
     /// 載入預設值（JSON + 環境變數覆寫），對齊既有 DefaultServer()。
     pub fn load_default() -> Self {
-        let (sj, _design) = load_server_defaults_from_json()
-            .unwrap_or_default();
+        let (sj, _design) = load_server_defaults_from_json().unwrap_or_default();
 
         let mut cfg = Self {
-            port: if sj.port.is_empty() { "8080".into() } else { sj.port },
-            max_websocket_conn: if sj.max_websocket_conn > 0 { sj.max_websocket_conn } else { 50 },
-            tick_interval_ms: if sj.tick_interval_ms > 0 { sj.tick_interval_ms } else { 500 },
-            economy_tick_interval_ms: if sj.economy_tick_interval_ms > 0 { sj.economy_tick_interval_ms } else { 1000 },
-            chunk_size: if sj.chunk_size > 0 { sj.chunk_size } else { 151 },
-            maps_path: if sj.maps_path.is_empty() { "data/maps".into() } else { sj.maps_path },
-            session_retain_minutes: if sj.session_retain_minutes > 0 { sj.session_retain_minutes } else { 10 },
+            port: if sj.port.is_empty() {
+                "8080".into()
+            } else {
+                sj.port
+            },
+            max_websocket_conn: if sj.max_websocket_conn > 0 {
+                sj.max_websocket_conn
+            } else {
+                50
+            },
+            tick_interval_ms: if sj.tick_interval_ms > 0 {
+                sj.tick_interval_ms
+            } else {
+                500
+            },
+            economy_tick_interval_ms: if sj.economy_tick_interval_ms > 0 {
+                sj.economy_tick_interval_ms
+            } else {
+                1000
+            },
+            chunk_size: if sj.chunk_size > 0 {
+                sj.chunk_size
+            } else {
+                151
+            },
+            maps_path: if sj.maps_path.is_empty() {
+                "data/maps".into()
+            } else {
+                sj.maps_path
+            },
+            session_retain_minutes: if sj.session_retain_minutes > 0 {
+                sj.session_retain_minutes
+            } else {
+                10
+            },
             game_time_epoch_unix: resolve_game_time_epoch(),
-            game_time_scale: if sj.game_time_scale > 0.0 { sj.game_time_scale } else { 24.0 },
+            game_time_scale: if sj.game_time_scale > 0.0 {
+                sj.game_time_scale
+            } else {
+                24.0
+            },
             npc_pool_size: sj.npc_pool_size,
             npc_spawn_interval_sec: sj.npc_spawn_interval_sec,
-            ollama_base_url: if sj.ollama_base_url.is_empty() { "http://127.0.0.1:11434".into() } else { sj.ollama_base_url },
+            ollama_base_url: if sj.ollama_base_url.is_empty() {
+                "http://127.0.0.1:11434".into()
+            } else {
+                sj.ollama_base_url
+            },
             ollama_model: sj.ollama_model,
             ollama_disable: sj.ollama_disable,
             player_talk_api_base_url: sj.player_talk_api_base_url,
@@ -320,8 +358,6 @@ impl Server {
 /// 取得設計常數（優先 JSON 檔，fallback 內建預設）。
 pub fn design_constants() -> Design {
     load_server_defaults_from_json()
-        .and_then(|(_, d)| {
-            if d.cell_size_px > 0 { Some(d) } else { None }
-        })
+        .and_then(|(_, d)| if d.cell_size_px > 0 { Some(d) } else { None })
         .unwrap_or_default()
 }
