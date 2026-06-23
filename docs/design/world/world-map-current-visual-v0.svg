@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1240" viewBox="0 0 1800 1240" role="img" aria-labelledby="title desc">
+  <title id="title">奇點世界目前世界地圖示意 v0</title>
+  <desc id="desc">東陸與周海的設計層示意圖，包含八個 M1 大地理帶、M2/M3 入口與五條流動。此圖不是 runtime 座標地圖。</desc>
+  <style>
+    :root {
+      --ink: #20302d;
+      --muted: #5b6b68;
+      --line: #6f827f;
+      --sea: #cfe9ee;
+      --paper: #fbfaf4;
+      --city: #e7d8bd;
+      --echo: #d8ead1;
+      --coast: #d7e6cd;
+      --forest: #c8ddbc;
+      --island: #ece0ca;
+      --wound: #ead6d0;
+      --warm: #d3e6bd;
+      --road: #d8d3c6;
+      --done: #ffffff;
+    }
+    .bg { fill: var(--paper); }
+    .sea { fill: var(--sea); stroke: #81aeb7; stroke-width: 3; }
+    .land { fill: #eff1df; stroke: #8d9a88; stroke-width: 3; }
+    .region { stroke: #566966; stroke-width: 2.5; opacity: 0.94; }
+    .m1-title { font: 700 30px sans-serif; fill: var(--ink); }
+    .m2 { font: 700 21px sans-serif; fill: var(--ink); }
+    .m3 { font: 18px sans-serif; fill: var(--muted); }
+    .small { font: 16px sans-serif; fill: var(--muted); }
+    .legend { font: 18px sans-serif; fill: var(--ink); }
+    .title { font: 800 44px sans-serif; fill: var(--ink); }
+    .subtitle { font: 22px sans-serif; fill: var(--muted); }
+    .label { font: 18px sans-serif; fill: var(--ink); }
+    .flow { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; opacity: 0.52; }
+    .flow-label { font: 700 19px sans-serif; fill: var(--ink); }
+    .done-box { fill: var(--done); stroke: #566966; stroke-width: 2.2; }
+    .dash { stroke-dasharray: 8 8; }
+    .callout { fill: #fffdf6; stroke: #b6a977; stroke-width: 2; }
+    text {
+      paint-order: stroke;
+      stroke: var(--paper);
+      stroke-width: 4px;
+      stroke-linejoin: round;
+    }
+    .done-box + text,
+    .done-box + text + text {
+      stroke: #ffffff;
+    }
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 5 L 0 10 z" fill="#566966"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1800" height="1240"/>
+
+  <text class="title" x="70" y="70">奇點世界目前世界地圖示意</text>
+  <text class="subtitle" x="72" y="108">M0：東陸與周海。設計層地圖，不是 runtime 座標、距離或相鄰關係。</text>
+
+  <rect class="callout" x="1240" y="48" width="500" height="90" rx="10"/>
+  <text class="label" x="1265" y="82">讀圖方式：每個區塊先看 M1，內文列 M2/M3。</text>
+  <text class="small" x="1265" y="110">已完成跨包的 M4 以白底小框標示。</text>
+
+  <path class="sea" d="M77,170 C140,138 239,141 320,180 C434,234 493,171 605,175 C733,181 817,129 944,155 C1078,183 1178,140 1307,184 C1455,235 1570,313 1641,436 C1716,566 1704,710 1622,837 C1541,961 1370,1043 1160,1063 C969,1081 838,1045 680,1074 C520,1104 339,1049 224,941 C100,824 54,669 66,510 C75,383 6,251 77,170 Z"/>
+  <path class="land" d="M310,230 C452,170 603,210 720,255 C842,302 949,251 1095,286 C1258,326 1412,409 1484,540 C1552,664 1502,789 1392,880 C1261,990 1089,986 950,956 C809,925 713,1005 559,964 C400,922 296,789 258,645 C216,487 176,287 310,230 Z"/>
+
+  <!-- M1 regions -->
+  <path class="region" fill="var(--city)" d="M685,260 C812,224 971,249 1084,319 C1167,371 1201,458 1162,541 C1127,615 1014,643 897,625 C762,604 640,548 606,449 C582,377 611,294 685,260 Z"/>
+  <text class="m1-title" x="760" y="335">聯城帶</text>
+  <text class="m2" x="704" y="374">外地人入口帶 / 聯城中廊 / 看診街</text>
+  <text class="m3" x="704" y="407">外地人留名處、修物看診交會廊</text>
+
+  <path class="region" fill="var(--echo)" d="M415,245 C518,205 629,237 685,321 C736,398 711,493 633,544 C539,606 413,573 345,501 C275,427 302,291 415,245 Z"/>
+  <text class="m1-title" x="405" y="328">回潮原</text>
+  <text class="m2" x="346" y="365">七日回聲原 / 舊路浮現帶 / 低聲看守地</text>
+  <text class="m3" x="372" y="398">七日回聲草線、低聲停步場</text>
+
+  <path class="region" fill="var(--coast)" d="M184,435 C240,354 316,352 388,411 C446,459 452,558 410,651 C366,748 271,818 185,782 C109,751 101,647 125,560 C139,509 155,477 184,435 Z"/>
+  <text class="m1-title" x="182" y="494">沉物海岸</text>
+  <text class="m2" x="151" y="532">白潮岸 / 潮物街 / 回海石線</text>
+  <text class="m3" x="174" y="565">白潮掛物牆、回海石階</text>
+
+  <path class="region" fill="var(--forest)" d="M340,663 C440,600 565,634 621,724 C676,813 634,914 535,946 C423,984 316,919 279,829 C247,751 276,703 340,663 Z"/>
+  <text class="m1-title" x="394" y="733">不留林</text>
+  <text class="m2" x="315" y="770">林前留名帶 / 淡步林中 / 返名坡</text>
+  <text class="m3" x="333" y="803">林前寄名樹列、淡步折返線</text>
+
+  <path class="region" fill="var(--island)" d="M995,735 C1085,689 1223,711 1321,769 C1407,820 1427,908 1371,966 C1293,1048 1118,1022 1010,970 C903,919 898,784 995,735 Z"/>
+  <path class="region" fill="var(--island)" d="M1225,648 C1285,621 1376,642 1420,693 C1457,735 1434,783 1377,797 C1297,817 1217,773 1201,720 C1191,685 1199,660 1225,648 Z"/>
+  <text class="m1-title" x="1053" y="818">白脊列島</text>
+  <text class="m2" x="1005" y="856">試手島群 / 長柄修物街 / 夜作灣</text>
+  <text class="m3" x="1044" y="889">試手長廊、夜作修物院前</text>
+
+  <path class="region" fill="var(--wound)" d="M710,690 C821,638 978,663 1042,760 C1091,834 1051,924 934,954 C802,989 664,930 632,830 C610,762 643,721 710,690 Z"/>
+  <text class="m1-title" x="770" y="764">舊傷盆地</text>
+  <text class="m2" x="688" y="802">舊傷看診街 / 見證丘 / 送別園路</text>
+  <text class="m3" x="731" y="835">看診長廊、見證坡口</text>
+
+  <path class="region" fill="var(--warm)" d="M1146,392 C1267,370 1416,438 1465,552 C1513,663 1425,748 1302,755 C1163,762 1058,684 1049,563 C1042,469 1073,405 1146,392 Z"/>
+  <text class="m1-title" x="1168" y="480">暖生南域</text>
+  <text class="m2" x="1102" y="518">活籬園 / 萬葉聲林 / 豐食看護帶</text>
+  <text class="m3" x="1152" y="551">活籬果棚、萬葉避讓線</text>
+
+  <path class="region" fill="var(--road)" d="M1320,250 C1430,285 1513,389 1542,514 C1582,686 1515,840 1395,936 C1338,983 1282,980 1249,926 C1211,865 1260,787 1324,716 C1390,642 1407,568 1377,485 C1345,397 1272,330 1240,293 C1210,259 1246,226 1320,250 Z"/>
+  <text class="m1-title" x="1333" y="384">遠行脊路</text>
+  <text class="m2" x="1281" y="422">第一長路脊 / 失約岔嶺 / 同行站環</text>
+  <text class="m3" x="1324" y="455">長路寄行站、失約岔前</text>
+
+  <!-- Completed M4 callouts -->
+  <g>
+    <rect class="done-box" x="672" y="430" width="260" height="54" rx="7"/>
+    <text class="m2" x="691" y="463">外地人留名處</text>
+    <text class="small" x="691" y="486">留名紙 / 許央 / 錯稱牽連</text>
+
+    <rect class="done-box" x="398" y="438" width="270" height="54" rx="7"/>
+    <text class="m2" x="417" y="471">七日回聲草線</text>
+    <text class="small" x="417" y="494">亮腳草線 / 林青 / 拉人衝突</text>
+
+    <rect class="done-box" x="144" y="602" width="260" height="54" rx="7"/>
+    <text class="m2" x="163" y="635">白潮掛物牆</text>
+    <text class="small" x="163" y="658">不明箱 / 周澄 / 爭認</text>
+
+    <rect class="done-box" x="722" y="858" width="260" height="54" rx="7"/>
+    <text class="m2" x="741" y="891">看診長廊</text>
+    <text class="small" x="741" y="914">驗傷杯 / 杜安 / 救人留證</text>
+
+    <rect class="done-box" x="1152" y="585" width="260" height="54" rx="7"/>
+    <text class="m2" x="1171" y="618">活籬果棚</text>
+    <text class="small" x="1171" y="641">空果籃 / 季禾 / 摘錯一列</text>
+
+    <rect class="done-box dash" x="1318" y="470" width="260" height="54" rx="7"/>
+    <text class="m2" x="1337" y="503">失約岔前</text>
+    <text class="small" x="1337" y="526">下一候選：託付與改路</text>
+  </g>
+
+  <!-- Flows -->
+  <path class="flow" stroke="#7b6098" marker-end="url(#arrow)" d="M780,300 C625,260 454,314 372,402 C302,477 220,510 190,585"/>
+  <text class="flow-label" x="342" y="254">名字流</text>
+
+  <path class="flow" stroke="#65818f" marker-end="url(#arrow)" d="M210,690 C394,733 664,702 910,760 C1115,806 1270,820 1408,738"/>
+  <text class="flow-label" x="462" y="705">物件流</text>
+
+  <path class="flow" stroke="#a86767" marker-end="url(#arrow)" d="M864,882 C795,780 691,629 580,500 C526,437 470,414 408,390"/>
+  <text class="flow-label" x="696" y="682">傷與證流</text>
+
+  <path class="flow" stroke="#6f8a4d" marker-end="url(#arrow)" d="M1296,610 C1174,666 1065,758 948,850 C878,906 808,935 742,936"/>
+  <text class="flow-label" x="1038" y="705">食與生命流</text>
+
+  <path class="flow" stroke="#9b7b3f" marker-end="url(#arrow)" d="M1435,498 C1365,560 1270,625 1135,653 C1000,681 832,642 705,576 C590,516 468,486 346,517"/>
+  <text class="flow-label" x="1268" y="574">遠行流</text>
+
+  <rect class="callout" x="76" y="1088" width="1650" height="92" rx="12"/>
+  <text class="legend" x="102" y="1124">目前狀態：已有 8 個 M1、24 個 M2、16 個 M3、8 張第一輪 M4 種子；5 張已完成物件/NPC/衝突跨包同步。</text>
+  <text class="legend" x="102" y="1158">缺口：沒有座標、相鄰關係、路程成本、地形字元、完整 NPC 日程與 runtime 資料欄位。</text>
+</svg>
