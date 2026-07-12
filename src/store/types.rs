@@ -5,6 +5,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::entity::Thought;
 use crate::model;
 
 // ══════════════════════════════════════
@@ -101,6 +102,9 @@ pub struct Entity {
     /// 正方格座標 y（北增）。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grid_y: Option<i32>,
+    /// NPC 內心活動列表（最近 100 條）；空 Vec 時省略序列化。
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub thoughts: Vec<Thought>,
 }
 
 /// 物品定義。
@@ -242,8 +246,12 @@ pub struct NpcRumorDigest {
 //  serde 輔助
 // ══════════════════════════════════════
 
-pub(crate) fn is_zero_i32(v: &i32) -> bool { *v == 0 }
-pub(crate) fn is_zero_i64(v: &i64) -> bool { *v == 0 }
+pub(crate) fn is_zero_i32(v: &i32) -> bool {
+    *v == 0
+}
+pub(crate) fn is_zero_i64(v: &i64) -> bool {
+    *v == 0
+}
 
 // ══════════════════════════════════════
 //  JSON 載入/寫出輔助結構（模組內部使用）

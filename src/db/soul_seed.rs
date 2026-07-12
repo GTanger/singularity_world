@@ -29,7 +29,10 @@ impl SimpleLcg {
     fn next_i64(&mut self) -> i64 {
         // 標準庫 PRNG 的 rngSource 使用的是更複雜的演算法，
         // 但對於 soul_seed 展開只要一致性即可，後續可精確對齊。
-        self.state = self.state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+        self.state = self
+            .state
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442695040888963407);
         self.state
     }
 
@@ -81,7 +84,11 @@ pub fn expand_soul_seed_to_base_stats(seed: i64) -> (i32, i32, i32) {
     let v = (BASE_STAT * (1.0 + K_AMP * (amp - 1.0))).round() as i32;
     let q = (BASE_STAT * (1.0 + K_FREQ * (freq - 1.0))).round() as i32;
     let d = (BASE_STAT * (1.0 + K_PHASE * phase)).round() as i32;
-    (v.clamp(MIN_STAT, MAX_STAT), q.clamp(MIN_STAT, MAX_STAT), d.clamp(MIN_STAT, MAX_STAT))
+    (
+        v.clamp(MIN_STAT, MAX_STAT),
+        q.clamp(MIN_STAT, MAX_STAT),
+        d.clamp(MIN_STAT, MAX_STAT),
+    )
 }
 
 /// 四項資源最大值。
@@ -105,9 +112,27 @@ pub fn compute_resource_maxes(vit: i32, qi: i32, dex: i32) -> ResourceMaxes {
 
 /// 由三軸產出本源語句。
 pub fn generate_origin_sentence(amp: f64, freq: f64, phase: f64) -> String {
-    let amp_word = if amp < 1.0 { "幽微" } else if amp > 2.0 { "霸道" } else { "綿長" };
-    let freq_word = if freq < 1.0 { "渾厚" } else if freq > 1.6 { "敏銳" } else { "洞察" };
-    let phase_word = if phase < -0.3 { "混沌" } else if phase > 0.3 { "秩序" } else { "順流" };
+    let amp_word = if amp < 1.0 {
+        "幽微"
+    } else if amp > 2.0 {
+        "霸道"
+    } else {
+        "綿長"
+    };
+    let freq_word = if freq < 1.0 {
+        "渾厚"
+    } else if freq > 1.6 {
+        "敏銳"
+    } else {
+        "洞察"
+    };
+    let phase_word = if phase < -0.3 {
+        "混沌"
+    } else if phase > 0.3 {
+        "秩序"
+    } else {
+        "順流"
+    };
     format!("你的神識{amp_word}且{freq_word}，隱隱透著一股{phase_word}的逆流。")
 }
 
@@ -128,9 +153,7 @@ pub struct Personality {
 /// 由 soul_seed 展開為性格維度。
 pub fn expand_soul_seed_to_personality(seed: i64) -> Personality {
     let (amp, freq, phase) = expand_seed_axes(seed);
-    let norm = |v: f64, lo: f64, hi: f64| -> f64 {
-        ((v - lo) / (hi - lo)).clamp(0.0, 1.0)
-    };
+    let norm = |v: f64, lo: f64, hi: f64| -> f64 { ((v - lo) / (hi - lo)).clamp(0.0, 1.0) };
     Personality {
         boldness: norm(amp, AMP_MIN, AMP_MAX),
         sensitivity: norm(freq, FREQ_MIN, FREQ_MAX),
@@ -164,5 +187,7 @@ pub fn expand_soul_seed_to_topology_costs(seed: i64) -> Vec<f64> {
         *r = 0.1 + u * 0.9;
         sum += *r;
     }
-    raw.iter().map(|x| (x / sum) * TOTAL_TOPOLOGY_COST_NORM).collect()
+    raw.iter()
+        .map(|x| (x / sum) * TOTAL_TOPOLOGY_COST_NORM)
+        .collect()
 }

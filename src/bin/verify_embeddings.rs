@@ -3,17 +3,26 @@ use serde::Deserialize;
 use std::collections::HashMap;
 
 #[derive(Deserialize)]
-struct GameDimsFile { elements: Vec<GameDimsEntry> }
+struct GameDimsFile {
+    elements: Vec<GameDimsEntry>,
+}
 #[derive(Deserialize)]
-struct GameDimsEntry { id: String, game_dims: HashMap<String, f64> }
+struct GameDimsEntry {
+    id: String,
+    game_dims: HashMap<String, f64>,
+}
 
 fn main() -> anyhow::Result<()> {
-    let db_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "postgres://postgres:singularity@localhost:5432/singularity".to_string());
+    let db_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+        "postgres://postgres:singularity@localhost:5432/singularity".to_string()
+    });
     let mut conn = Client::connect(&db_url, NoTls)?;
 
     // 0. 檢查是否需要拼接手標維度
-    let row = conn.query_one("SELECT vector_dims(embedding) FROM word_element_embeddings LIMIT 1", &[])?;
+    let row = conn.query_one(
+        "SELECT vector_dims(embedding) FROM word_element_embeddings LIMIT 1",
+        &[],
+    )?;
     let current_dims: i32 = row.get(0);
 
     if current_dims == 1024 {
@@ -22,35 +31,59 @@ fn main() -> anyhow::Result<()> {
         // 讀手標維度
         let dims_raw = std::fs::read_to_string("data/config/word_elements_gamedims.json")?;
         let dims_file: GameDimsFile = serde_json::from_str(&dims_raw)?;
-        let dims_map: HashMap<String, HashMap<String, f64>> = dims_file.elements.into_iter()
-            .map(|e| (e.id, e.game_dims)).collect();
+        let dims_map: HashMap<String, HashMap<String, f64>> = dims_file
+            .elements
+            .into_iter()
+            .map(|e| (e.id, e.game_dims))
+            .collect();
 
         let dim_order = ["atk", "def", "spd", "dot", "aoe", "heal"];
 
         // 先回到 1024（如果之前已改過但資料沒跟上）
-        conn.execute("ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector(1030)", &[]).ok();
+        conn.execute(
+            "ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector(1030)",
+            &[],
+        )
+        .ok();
         // 暫時放寬為無限制維度
-        conn.execute("ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector", &[])?;
+        conn.execute(
+            "ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector",
+            &[],
+        )?;
 
         // 讀所有 embedding，拼接，更新
-        let rows = conn.query("SELECT id, embedding::text FROM word_element_embeddings", &[])?;
+        let rows = conn.query(
+            "SELECT id, embedding::text FROM word_element_embeddings",
+            &[],
+        )?;
         for row in &rows {
             let id: String = row.get(0);
             let emb_str: String = row.get(1);
 
             // Parse "[0.1,0.2,...]"
             let inner = emb_str.trim_start_matches('[').trim_end_matches(']');
-            let mut vals: Vec<f64> = inner.split(',').filter_map(|s| s.trim().parse().ok()).collect();
+            let mut vals: Vec<f64> = inner
+                .split(',')
+                .filter_map(|s| s.trim().parse().ok())
+                .collect();
             vals.truncate(1024);
 
             // 拼接 6 維
             let game_dims = dims_map.get(&id);
             for dk in &dim_order {
-                let v = game_dims.map(|d| *d.get(*dk).unwrap_or(&0.0)).unwrap_or(0.0);
+                let v = game_dims
+                    .map(|d| *d.get(*dk).unwrap_or(&0.0))
+                    .unwrap_or(0.0);
                 vals.push(v);
             }
 
-            let vec_str = format!("[{}]", vals.iter().map(|v| v.to_string()).collect::<Vec<_>>().join(","));
+            let vec_str = format!(
+                "[{}]",
+                vals.iter()
+                    .map(|v| v.to_string())
+                    .collect::<Vec<_>>()
+                    .join(",")
+            );
             let sql = format!(
                 "UPDATE word_element_embeddings SET embedding = '{}'::vector WHERE id = $1",
                 vec_str
@@ -58,17 +91,23 @@ fn main() -> anyhow::Result<()> {
             conn.execute(sql.as_str(), &[&id])?;
         }
         // 資料都 1030 了，鎖定維度
-        conn.execute("ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector(1030)", &[])?;
+        conn.execute(
+            "ALTER TABLE word_element_embeddings ALTER COLUMN embedding TYPE vector(1030)",
+            &[],
+        )?;
         println!("完成：{} 顆已更新為 1030 維", rows.len());
     }
 
     // 1. 確認數量
     let row = conn.query_one("SELECT COUNT(*) FROM word_element_embeddings", &[])?;
     let count: i64 = row.get(0);
-    println!("詞元總數: {}", count);
+    println!("舊語義元素總數: {}", count);
 
     // 2. 確認維度
-    let row = conn.query_one("SELECT id, char, vector_dims(embedding) FROM word_element_embeddings LIMIT 1", &[])?;
+    let row = conn.query_one(
+        "SELECT id, char, vector_dims(embedding) FROM word_element_embeddings LIMIT 1",
+        &[],
+    )?;
     let id: String = row.get(0);
     let char: String = row.get(1);
     let dims: i32 = row.get(2);
@@ -129,7 +168,10 @@ fn main() -> anyhow::Result<()> {
     let avg: f64 = stats.get(1);
     let max: f64 = stats.get(2);
     let std: f64 = stats.get(3);
-    println!("  min={:.4} avg={:.4} max={:.4} stddev={:.4}", min, avg, max, std);
+    println!(
+        "  min={:.4} avg={:.4} max={:.4} stddev={:.4}",
+        min, avg, max, std
+    );
 
     Ok(())
 }

@@ -1,7 +1,7 @@
 //! store NPC 社交 — memory / summary / thread / dyad 的讀寫。
 //! 讀取同步查 PG（帶記憶體 fallback），寫入走 writer queue + JSON 備份。
 
-use super::{dyad_key, NpcDyad, NpcMemory, NpcThread, Store};
+use super::{NpcDyad, NpcMemory, NpcThread, Store, dyad_key};
 
 impl Store {
     // ── NPC Memory ──
@@ -127,12 +127,7 @@ impl Store {
         self.npc_threads.get(&key).cloned()
     }
 
-    pub fn set_npc_thread(
-        &mut self,
-        id_a: &str,
-        id_b: &str,
-        t: NpcThread,
-    ) -> anyhow::Result<()> {
+    pub fn set_npc_thread(&mut self, id_a: &str, id_b: &str, t: NpcThread) -> anyhow::Result<()> {
         let key = dyad_key(id_a, id_b);
         let anchors_raw = serde_json::to_string(&t.anchors).unwrap_or_else(|_| "[]".to_string());
         crate::pg::writer::submit(crate::pg::writer::WriteOp::SetNpcThread {

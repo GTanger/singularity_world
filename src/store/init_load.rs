@@ -7,9 +7,9 @@ use std::path::Path;
 use crate::model;
 
 use super::{
-    dyad_key, AssignmentsFile, EntitiesFile, EntityRoomsFile, ItemsFile, NpcDyadsFile, NpcRumor,
+    AssignmentsFile, EntitiesFile, EntityRoomsFile, ItemsFile, NpcDyadsFile, NpcRumor,
     NpcRumorDigest, NpcRumorDigestFile, NpcRumorsFile, NpcThreadsFile, RoomFileOne, RoomsFile,
-    SchedulesFile, Store, VenuesFile,
+    SchedulesFile, Store, VenuesFile, dyad_key,
 };
 
 impl Store {
@@ -34,23 +34,29 @@ impl Store {
         let f: RoomsFile = serde_json::from_str(&raw)?;
         let mut name_by_id: HashMap<String, String> = HashMap::new();
         for r in &f.rooms {
-            self.rooms.insert(r.id.clone(), model::Room {
-                id: r.id.clone(),
-                name: r.name.clone(),
-                tags: r.tags.clone(),
-                zone: r.zone.clone(),
-                description: r.description.clone(),
-                objects: Vec::new(),
-            });
+            self.rooms.insert(
+                r.id.clone(),
+                model::Room {
+                    id: r.id.clone(),
+                    name: r.name.clone(),
+                    tags: r.tags.clone(),
+                    zone: r.zone.clone(),
+                    description: r.description.clone(),
+                    objects: Vec::new(),
+                },
+            );
             name_by_id.insert(r.id.clone(), r.name.clone());
         }
         for e in &f.exits {
             let to_name = name_by_id.get(&e.to).cloned().unwrap_or_default();
-            self.exits.entry(e.from.clone()).or_default().push(model::Exit {
-                direction: e.direction.clone(),
-                to_room_id: e.to.clone(),
-                to_room_name: to_name,
-            });
+            self.exits
+                .entry(e.from.clone())
+                .or_default()
+                .push(model::Exit {
+                    direction: e.direction.clone(),
+                    to_room_id: e.to.clone(),
+                    to_room_name: to_name,
+                });
         }
         self.prune_non_street_rooms(None);
         Ok(())
@@ -66,7 +72,10 @@ impl Store {
             let raw = fs::read_to_string(path)?;
             if let Ok(one) = serde_json::from_str::<RoomFileOne>(&raw) {
                 let is_editor = rel_path.starts_with("editor/");
-                list.push(FileEntry { room: one, is_editor });
+                list.push(FileEntry {
+                    room: one,
+                    is_editor,
+                });
             }
             Ok(())
         })?;
@@ -76,14 +85,17 @@ impl Store {
 
         for entry in &list {
             let one = &entry.room;
-            self.rooms.insert(one.id.clone(), model::Room {
-                id: one.id.clone(),
-                name: one.name.clone(),
-                tags: one.tags.clone(),
-                zone: one.zone.clone(),
-                description: one.description.clone(),
-                objects: one.objects.clone(),
-            });
+            self.rooms.insert(
+                one.id.clone(),
+                model::Room {
+                    id: one.id.clone(),
+                    name: one.name.clone(),
+                    tags: one.tags.clone(),
+                    zone: one.zone.clone(),
+                    description: one.description.clone(),
+                    objects: one.objects.clone(),
+                },
+            );
             name_by_id.insert(one.id.clone(), one.name.clone());
             if entry.is_editor && !one.id.is_empty() {
                 editor_ids.insert(one.id.clone());
@@ -93,11 +105,14 @@ impl Store {
             let one = &entry.room;
             for ex in &one.exits {
                 let to_name = name_by_id.get(&ex.to).cloned().unwrap_or_default();
-                self.exits.entry(one.id.clone()).or_default().push(model::Exit {
-                    direction: ex.direction.clone(),
-                    to_room_id: ex.to.clone(),
-                    to_room_name: to_name,
-                });
+                self.exits
+                    .entry(one.id.clone())
+                    .or_default()
+                    .push(model::Exit {
+                        direction: ex.direction.clone(),
+                        to_room_id: ex.to.clone(),
+                        to_room_name: to_name,
+                    });
             }
         }
         self.prune_non_street_rooms(Some(&editor_ids));
@@ -105,8 +120,15 @@ impl Store {
     }
 
     /// 遞迴掃描 dir 下所有 .json（跳過底線開頭），呼叫 f(path, rel_path)。
-    fn walk_json_dir(dir: &Path, f: &mut dyn FnMut(&Path, &str) -> anyhow::Result<()>) -> anyhow::Result<()> {
-        fn walk_inner(base: &Path, current: &Path, f: &mut dyn FnMut(&Path, &str) -> anyhow::Result<()>) -> anyhow::Result<()> {
+    fn walk_json_dir(
+        dir: &Path,
+        f: &mut dyn FnMut(&Path, &str) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        fn walk_inner(
+            base: &Path,
+            current: &Path,
+            f: &mut dyn FnMut(&Path, &str) -> anyhow::Result<()>,
+        ) -> anyhow::Result<()> {
             let entries = match fs::read_dir(current) {
                 Ok(e) => e,
                 Err(_) => return Ok(()),
@@ -121,7 +143,8 @@ impl Store {
                     if name.starts_with('_') {
                         continue;
                     }
-                    let rel = path.strip_prefix(base)
+                    let rel = path
+                        .strip_prefix(base)
                         .unwrap_or(&path)
                         .to_string_lossy()
                         .replace('\\', "/");
@@ -144,10 +167,11 @@ impl Store {
     }
 
     fn prune_non_street_rooms(&mut self, exempt_ids: Option<&std::collections::HashSet<String>>) {
-        let keep: std::collections::HashSet<String> = self.rooms.iter()
+        let keep: std::collections::HashSet<String> = self
+            .rooms
+            .iter()
             .filter(|(id, r)| {
-                exempt_ids.is_some_and(|e| e.contains(id.as_str()))
-                    || Self::is_street_or_alley(r)
+                exempt_ids.is_some_and(|e| e.contains(id.as_str())) || Self::is_street_or_alley(r)
             })
             .map(|(id, _)| id.clone())
             .collect();
@@ -205,7 +229,10 @@ impl Store {
         };
         let f: AssignmentsFile = serde_json::from_str(&raw)?;
         for a in f.entries {
-            self.assignments.entry(a.entity_id.clone()).or_default().push(a);
+            self.assignments
+                .entry(a.entity_id.clone())
+                .or_default()
+                .push(a);
         }
         Ok(())
     }
@@ -277,36 +304,37 @@ impl Store {
 
     pub(super) fn load_npc_rumors(&mut self) -> anyhow::Result<()> {
         if let Some(pool) = &self.db_pool
-            && let Ok(mut conn) = pool.get() {
-                if let Ok(rows) = conn.query(
-                    "SELECT id, text, room_id, zone, source, source_score, weight, mention_count,
+            && let Ok(mut conn) = pool.get()
+        {
+            if let Ok(rows) = conn.query(
+                "SELECT id, text, room_id, zone, source, source_score, weight, mention_count,
                             last_used_at, blocked_until, penalty_count, last_penalty_at,
                             last_penalty_reason, updated_at, expires_at FROM npc_rumors",
-                    &[]
-                ) {
-                    for row in rows {
-                        let r = NpcRumor {
-                            id: row.get(0),
-                            text: row.get(1),
-                            room_id: row.get(2),
-                            zone: row.get(3),
-                            source: row.get(4),
-                            source_score: row.get(5),
-                            weight: row.get(6),
-                            mention_count: row.get(7),
-                            last_used_at: row.get(8),
-                            blocked_until: row.get(9),
-                            penalty_count: row.get(10),
-                            last_penalty_at: row.get(11),
-                            last_penalty_reason: row.get(12),
-                            updated_at: row.get(13),
-                            expires_at: row.get(14),
-                        };
-                        self.npc_rumors.insert(r.id.clone(), r);
-                    }
-                    return Ok(());
+                &[],
+            ) {
+                for row in rows {
+                    let r = NpcRumor {
+                        id: row.get(0),
+                        text: row.get(1),
+                        room_id: row.get(2),
+                        zone: row.get(3),
+                        source: row.get(4),
+                        source_score: row.get(5),
+                        weight: row.get(6),
+                        mention_count: row.get(7),
+                        last_used_at: row.get(8),
+                        blocked_until: row.get(9),
+                        penalty_count: row.get(10),
+                        last_penalty_at: row.get(11),
+                        last_penalty_reason: row.get(12),
+                        updated_at: row.get(13),
+                        expires_at: row.get(14),
+                    };
+                    self.npc_rumors.insert(r.id.clone(), r);
                 }
+                return Ok(());
             }
+        }
 
         // Fallback to JSON
         let raw = match fs::read_to_string(&self.npc_rumor_path) {

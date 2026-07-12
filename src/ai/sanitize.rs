@@ -87,10 +87,7 @@ mod tests {
 
     #[test]
     fn strip_prefix_ascii_colon() {
-        assert_eq!(
-            strip_npc_line_speaker_prefix("Bob: hi", &["Bob"]),
-            "hi"
-        );
+        assert_eq!(strip_npc_line_speaker_prefix("Bob: hi", &["Bob"]), "hi");
     }
 
     #[test]

@@ -3,14 +3,14 @@
 use rand::Rng;
 
 use crate::db::{
-    add_to_inventory, adjust_favorability, get_item_def, pick_npc_trade_offer,
-    remove_from_inventory, FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS,
+    FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, add_to_inventory, adjust_favorability, get_item_def,
+    pick_npc_trade_offer, remove_from_inventory,
 };
 use crate::entity::{Character, EntityKind};
 use crate::event;
 use crate::npc::npc_behavior_reaction_line;
 
-use super::super::handler::{push_refresh, WsConnection};
+use super::super::handler::{WsConnection, push_refresh};
 use super::super::protocol::ActionResultMsg;
 use super::display_target_name;
 
@@ -32,6 +32,8 @@ pub(super) fn do_entity_borrow(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
         });
         return;
     };
@@ -81,5 +83,7 @@ pub(super) fn do_entity_borrow(
         success: true,
         actions: vec![],
         move_target_id: String::new(),
+        open_trade: false,
+        suggested_action: String::new(),
     });
 }

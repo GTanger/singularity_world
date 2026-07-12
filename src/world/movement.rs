@@ -1,6 +1,6 @@
 // 移動與碰撞，對齊既有 world/movement。
 
-use super::map::{terrain_blocking, Grid};
+use super::map::{Grid, terrain_blocking};
 
 /// 格 (x,y) 是否可進入：不越界且地形非阻擋。
 pub fn can_move_to(g: &Grid, x: i32, y: i32) -> bool {

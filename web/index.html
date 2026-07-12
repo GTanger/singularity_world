@@ -28,9 +28,9 @@
 	}
 	</style>
 	<link rel="stylesheet" href="style.css?v=0.21.0">
-	<link rel="stylesheet" href="game.css?v=0.21.0">
+	<link rel="stylesheet" href="game.css?v=0.21.1">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.21.0" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.25.2" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -74,30 +74,22 @@
 	<!-- ═══ Grid MUD 模式（唯一模式）：v5 三區 UI ═══ -->
 	<div id="app-grid" class="game-grid-app sw-app" hidden>
 
-		<!-- 上區：描述欄（四層 + 互動 log 流）-->
-		<div id="sw-desc-panel" class="sw-desc-panel">
+		<!-- 置頂：日晷、時段、時間、天氣 -->
+		<div id="sw-worldbar" class="sw-worldbar">
 			<!-- L1 時間段（JS 填充，世界自走時重抽）-->
 			<div id="sw-l1-time" class="sw-desc-layer sw-l1"></div>
 			<!-- L2 範圍氣候段（JS 填充，氣候事件變化時重抽）-->
 			<div id="sw-l2-climate" class="sw-desc-layer sw-l2"></div>
-			<!-- L3 當前格初始段（JS 填充，踏入抽一次，離格前不變）-->
-			<div id="sw-l3-terrain" class="sw-desc-layer sw-l3"></div>
-			<!-- L4 物件卡片（JS 動態渲染，在場即顯）-->
-			<div id="sw-l4-objects" class="sw-desc-layer sw-l4"></div>
 		</div>
 
-		<!-- 中上區：互動 log 流（獨立可滾，不會推走描述欄）-->
-		<div id="sw-log" class="sw-log-stream"></div>
-
-		<!-- 中區：路口形狀 UI（四方 + 中央探索）-->
-		<div id="sw-junction" class="sw-junction">
-			<div class="junction-north" id="exit-north"></div>
-			<div class="junction-row">
-				<div class="junction-west" id="exit-west"></div>
-				<button class="junction-center" id="btn-explore">探索</button>
-				<div class="junction-east" id="exit-east"></div>
-			</div>
-			<div class="junction-south" id="exit-south"></div>
+		<!-- 場景正文：描述 + 場景內文字流 + 可操作卡片 -->
+		<div id="sw-desc-panel" class="sw-desc-panel">
+			<!-- L3 當前格初始段（JS 填充，踏入抽一次，離格前不變）-->
+			<div id="sw-l3-terrain" class="sw-desc-layer sw-l3"></div>
+			<!-- 場景內文字流：接在描述後、可操作物件前，不顯示標題 -->
+			<div id="sw-log" class="sw-log-stream"></div>
+			<!-- L4 物件卡片（JS 動態渲染，在場即顯）-->
+			<div id="sw-l4-objects" class="sw-desc-layer sw-l4"></div>
 		</div>
 
 		<!-- 下區：屬性條 + 玩家名 -->
@@ -107,7 +99,9 @@
 					<div class="stat-mini" title="氣血"><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
 					<div class="stat-mini" title="體力"><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
 				</div>
-				<div id="player-name" class="grid-player-name" tabindex="0">姓名</div>
+				<div class="grid-player-core">
+					<div id="player-name" class="grid-player-name" role="button" tabindex="0" title="點擊開啟角色">姓名</div>
+				</div>
 				<div class="grid-stats-right">
 					<div class="stat-mini" title="能量"><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
 					<div class="stat-mini" title="精神"><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
@@ -120,6 +114,39 @@
 
 	</div><!-- /#app-grid -->
 
+	<!-- 角色面板：點擊底部姓名開啟，沿用既有 sw-modals.js / sw-panes.js。 -->
+	<div id="player-modal-overlay" class="player-modal-overlay" hidden aria-hidden="true">
+		<div id="player-modal" class="player-modal" role="dialog" aria-modal="true" aria-labelledby="player-modal-title">
+			<div class="player-modal-header">
+				<h2 id="player-modal-title" class="player-modal-title"></h2>
+				<button type="button" class="player-modal-close" id="player-modal-close" aria-label="關閉">×</button>
+			</div>
+			<div class="player-modal-tabs" role="tablist">
+				<button type="button" class="player-modal-tab active" role="tab" aria-selected="true" data-tab="status">狀態</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="inventory">背包</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="equip">裝備</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="skill">技能</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="starplate">星盤</button>
+			</div>
+			<div class="player-modal-body">
+				<div id="player-modal-pane-status" class="player-modal-pane active" role="tabpanel" data-tab="status">
+					<div id="status-content" class="status-content"></div>
+				</div>
+				<div id="player-modal-pane-inventory" class="player-modal-pane" role="tabpanel" data-tab="inventory" hidden>
+					<div id="inventory-weight" class="inventory-weight"></div>
+					<div id="inventory-list" class="inventory-list"></div>
+				</div>
+				<div id="player-modal-pane-equip" class="player-modal-pane" role="tabpanel" data-tab="equip" hidden>裝備內容（待接資料）</div>
+				<div id="player-modal-pane-skill" class="player-modal-pane" role="tabpanel" data-tab="skill" hidden>
+					<div id="skill-content" class="skill-content"></div>
+				</div>
+				<div id="player-modal-pane-starplate" class="player-modal-pane" role="tabpanel" data-tab="starplate" hidden>
+					<div id="starplate-content" class="starplate-content"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 初始化：grid MUD 是唯一模式 -->
 	<script>
 	(function () {
@@ -131,18 +158,17 @@
 	</script>
 
 	<script src="narrative-markdown.js?v=0.21.0"></script>
-	<script src="game-ui.js?v=0.21.0"></script>
-	<script src="sw-room-desc.js?v=0.22.0"></script>
-	<script src="sw-object-list.js?v=0.22.0"></script>
-	<script src="grid-map.js?v=0.22.0"></script>
-	<script src="sw-log.js?v=0.22.1"></script>
-	<script src="sw-panes.js?v=0.21.0"></script>
-	<script src="sw-modals.js?v=0.21.0"></script>
-	<script src="sw-interactions.js?v=0.21.0"></script>
+		<script src="sw-room-desc.js?v=0.24.12"></script>
+	<script src="sw-object-list.js?v=0.24.9"></script>
+	<script src="grid-map.js?v=0.24.7"></script>
+	<script src="sw-log.js?v=0.21.1"></script>
+	<script src="sw-panes.js?v=0.21.2"></script>
+	<script src="sw-modals.js?v=0.21.1"></script>
+	<script src="sw-interactions.js?v=0.21.2"></script>
 	<script src="sw-clock.js?v=0.21.0"></script>
 	<script src="sw-narrative.js?v=0.21.0"></script>
 	<script src="sw-auth.js?v=0.21.0"></script>
-	<script src="main.js?v=0.22.0"></script>
+	<script src="main.js?v=0.25.3"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -155,7 +181,7 @@
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
 				// updateViaCache:'none' 讓瀏覽器檢查 SW 更新時繞 HTTP cache（破 CF 的 4h browser cache TTL 續命）
-				navigator.serviceWorker.register('/sw.js?v=0.20.46', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.24.27', { updateViaCache: 'none' }).then(function (reg) {
 					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;

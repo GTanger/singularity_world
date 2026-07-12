@@ -1,6 +1,6 @@
 # NPC 活化系統
 
-> 最後更新：2026-03-20
+> 最後更新：2026-06-15
 > 目標：**玩家＝NPC＝玩家**，假以亂真
 
 ---
@@ -302,7 +302,7 @@ data/templates/
 |------|------|------|--------|
 | Talk 串接 LLM（Ollama） | ✅ | 玩家點 Talk → backstory＋記憶＋口吻範例 → CallAITalk → LLM 回覆；模板為 fallback | — |
 | Talk 模板（無 LLM 備援） | ✅ | dialogues/*.json 抽句，PickStyleExamples | — |
-| Trade 交易流程 | ⬜ | 出價 → 議價 → 成交/拒絕（依[世界物流規格](reference/世界物流規格—草稿.md)延後實作） | 中 |
+| Trade 交易流程 | 🟡 | 直接點【交易】已可走 NPC 個人背包報價 → 玩家出價/拒絕 → 重驗賣方持貨 → 單次結算鎂與雙方 inventory；Talk 輸入交易意圖已可觸發 `open_trade` 並自動取得同一套 Trade 報價；店舖庫存、交易面板、可對話主題 UI、NPC 主動喊價與 NPC↔NPC 交易尚未完成。 | 中 |
 | 模板 NPC 生成器 | ⬜ | 讀 archetypes.json → 批量生成 NPC 個體 | 中 |
 | NPC 喊價 | ⬜ | NPC 主動在 log 喊 trade_announce | 小 |
 

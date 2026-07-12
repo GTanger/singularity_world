@@ -4,7 +4,7 @@ use std::time::{Duration, Instant};
 
 use rand::Rng;
 
-use crate::config::{sim, Server};
+use crate::config::{Server, sim};
 
 /// 間隔到期則更新錨點並回傳 true；`last` 為 `None` 時第一次立即觸發（對齊既有 `time.Time` 零值）。
 pub(super) fn periodic_fire(last: &mut Option<Instant>, period: Duration) -> bool {
@@ -36,11 +36,7 @@ pub(super) fn sprintf_d(template: &str, n: i32) -> String {
 /// `simulation.json` 的 `travel_tick_interval`；無效時 30。
 pub(super) fn effective_travel_tick_interval() -> i32 {
     let v = sim().travel_tick_interval;
-    if v <= 0 {
-        30
-    } else {
-        v
-    }
+    if v <= 0 { 30 } else { v }
 }
 
 /// 首次閒置觸發門檻（對齊既有 `nextIdleTrigger` 初值）。

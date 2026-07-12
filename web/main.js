@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.21.0
+// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.24.6
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';
@@ -10,6 +10,10 @@
 	let reconnecting = false;
 	let lastPongTime = 0;
 	let reconnectDelay = 1500;
+	let lastEntryLogRoom = '';
+	let lastEntryLogRoomKey = '';
+	let lastEntryLogKey = '';
+	let seenEntryLogRooms = {};
 	const state = {
 		room_id: '',
 		room_name: '',
@@ -77,7 +81,6 @@
 			var wasReconnecting = reconnecting;
 			if (reconnecting) reconnecting = false;
 			reconnectDelay = 1500;
-			appendLog('已連線，請登入');
 			var authMsg = document.getElementById('auth-message');
 			if (authMsg) authMsg.textContent = '';
 			var authHint = document.getElementById('auth-hint');
@@ -161,7 +164,6 @@
 						window.SwAuth.showGame();
 						window.SwClock.updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
 						window.SwClock.draw();
-						appendLog('登入成功：' + msg.player_id + ' @ ' + (msg.room_name || msg.room_id));
 						renderStarplatePane(state.me);
 						startHeartbeat();
 						break;
@@ -224,7 +226,14 @@
 						// 對話回覆後直接顯示【對話】【攻擊】【交易】，不用再點一次角色
 						var talkTargetId = msg.target_id || '';
 						var talkTargetName = msg.target_name || talkTargetId;
-						if (talkTargetId) {
+						if (talkTargetId && msg.open_trade && msg.suggested_action === 'Trade') {
+							if (window.gameSend) {
+								window.gameSend({ type: 'do_action', entity_id: talkTargetId, action: 'Trade', player_input: '' });
+								if (window.SwInteractions) window.SwInteractions.appendLogPendingTrade();
+							} else if (window.SwInteractions && window.SwInteractions.appendTradeInputRow) {
+								window.SwInteractions.appendTradeInputRow(talkTargetId, talkTargetName);
+							}
+						} else if (talkTargetId) {
 							var talkParts = ENTITY_INTERACT_ORDER.map(function (act) {
 								var label = ENTITY_INTERACT_LABELS[act] || act;
 								return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(talkTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(talkTargetName) + '">' + escapeHtml(label) + '</span>】';
@@ -241,11 +250,16 @@
 						var tradeTargetId = msg.target_id || '';
 						var tradeTargetName = msg.target_name || tradeTargetId;
 						if (tradeTargetId) {
-							var tParts = ENTITY_INTERACT_ORDER.map(function (act) {
-								var lab = ENTITY_INTERACT_LABELS[act] || act;
-								return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(tradeTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(tradeTargetName) + '">' + escapeHtml(lab) + '</span>】';
-							});
-							appendObjectActionsLine(tParts.join(''));
+							var shouldOpenTradeInput = /願意向你賣出|請輸入你願付的鎂數|至少要\s*\d+\s*鎂才肯點頭|請輸入有效的鎂數/.test(tNarrative);
+							if (shouldOpenTradeInput && window.SwInteractions && window.SwInteractions.appendTradeInputRow) {
+								window.SwInteractions.appendTradeInputRow(tradeTargetId, tradeTargetName);
+							} else {
+								var tParts = ENTITY_INTERACT_ORDER.map(function (act) {
+									var lab = ENTITY_INTERACT_LABELS[act] || act;
+									return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(tradeTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(tradeTargetName) + '">' + escapeHtml(lab) + '</span>】';
+								});
+								appendObjectActionsLine(tParts.join(''));
+							}
 						}
 					} else if (msg.action === 'Borrow') {
 						var bNarrative = msg.narrative;
@@ -268,7 +282,7 @@
 						appendNarrative(narrativeHtml, msg.action);
 						// 觀看後下一行顯示可執行的其他動作（物件：移動/閱讀…；人物：對話/攻擊）
 						if (msg.action === 'Look') {
-							var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Borrow': '借物', 'Subdue': '留人', 'Slay': '送行', 'Trade': '交易', 'Attack': '攻擊', 'Move': '移動' };
+								var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Queue': '候號', 'AcceptJob': '應工', 'JoinCheck': '候檢', 'RegisterComplaint': '押名', 'Rest': '歇腳', 'BuySoup': '買滿碗熱湯（2鎂）', 'QueueBroth': '等分湯', 'CarryCargo': '搬貨收鎂', 'HelpRope': '搭手拉繩', 'DryOff': '避風晾衣', 'WarmHands': '烘手', 'TalkQueue': '攀談船期', 'QueueFerry': '排隊候船', 'SellReeds': '賣蘆草', 'SellSackcloth': '交麻袋布', 'SellRope': '交麻繩卷', 'BoardFerry': '憑隊上船', 'StepAshore': '踩泥上岸', 'CheckCargo': '對貨領尾款', 'Gather': '採集', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Borrow': '借物', 'Subdue': '留人', 'Slay': '送行', 'Trade': '交易', 'Attack': '攻擊', 'Move': '移動' };
 							var others = [];
 							var targetId = msg.target_id || '';
 							// 優先使用後端在 action_result 帶上的 actions（建築 Look 後必有【移動】等）
@@ -325,8 +339,40 @@
 					break;
 				// ── v5 四類新事件分流 ─────────────────────────────────────────
 				case 'room_enter':
-					// 進格事件：觸發 L1-L3 重抽 + L4 重渲 + 路口 UI
+					// 進格事件：觸發 L1-L3 重抽 + L4 重渲；entry_log 接在 L3 後、L4 前
+					var roomEnterName = (msg.terrain && msg.terrain.name) || msg.room_name || '';
+					if (msg.room_id) state.room_id = msg.room_id;
+					if (roomEnterName) state.room_name = roomEnterName;
+					if (msg.terrain && msg.terrain.description) state.description = msg.terrain.description;
+					if (Array.isArray(msg.exits)) state.exits = msg.exits;
+					if (Array.isArray(msg.objects)) state.objects = msg.objects;
+					if (state.me) {
+						state.me.room_id = state.room_id;
+						state.me.room_name = state.room_name;
+					}
 					if (window.onRoomEnter) window.onRoomEnter(msg);
+					if (msg.entry_log && appendNarrative) {
+						var entryRoomName = (msg.terrain && msg.terrain.name) || '';
+						var entryRoomKey = msg.room_id || entryRoomName || '';
+						var sameRoomAsLastEnter = !!entryRoomKey && lastEntryLogRoomKey === entryRoomKey;
+						if (!sameRoomAsLastEnter) {
+							var hasSeenRoom = !!(entryRoomKey && seenEntryLogRooms[entryRoomKey]);
+							var routeReentry = '';
+							if (hasSeenRoom && msg.reentry_logs && lastEntryLogRoom) {
+								routeReentry = msg.reentry_logs[lastEntryLogRoom] || '';
+							}
+							var entryText = routeReentry || ((hasSeenRoom && msg.reentry_log) ? msg.reentry_log : msg.entry_log);
+							var entryLogKey = entryRoomKey + '|' + entryText;
+							if (entryLogKey !== lastEntryLogKey) {
+								lastEntryLogKey = entryLogKey;
+								var entryHtml = window.SwNarrative ? window.SwNarrative.format(entryText) : escapeHtml(entryText);
+								appendNarrative(entryHtml, 'enter');
+							}
+						}
+						lastEntryLogRoom = entryRoomName;
+						lastEntryLogRoomKey = entryRoomKey;
+						if (entryRoomKey) seenEntryLogRooms[entryRoomKey] = true;
+					}
 					break;
 				case 'explore_result':
 					// 探索結果：追加 log，不動 L1-L3
@@ -459,7 +505,7 @@
 	window.gameSendMoveDirection = sendMoveByDirection;
 	window.gameStartTimeTicker = function () { window.SwClock.startTicker(); };
 	window.gameUpdateTime = function () { window.SwClock.updateDisplay(); };
-	console.log('[main.js] v0.20.46 loaded');
+	console.log('[main.js] v0.24.5 loaded');
 })();
 
 document.addEventListener('DOMContentLoaded', function () {

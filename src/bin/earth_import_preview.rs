@@ -9,9 +9,7 @@
 //!       --out /tmp/taiwan_terrain.ppm --step 0.005
 
 use singularity_world::grid::Terrain;
-use singularity_world::worldgen::earth::{
-    LanduseIndex, SrtmGrid, classify_terrain, load_landuse,
-};
+use singularity_world::worldgen::earth::{LanduseIndex, SrtmGrid, classify_terrain, load_landuse};
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
@@ -98,7 +96,12 @@ fn parse_args() -> Args {
         }
         i += 1;
     }
-    Args { srtm, pbf, out, step }
+    Args {
+        srtm,
+        pbf,
+        out,
+        step,
+    }
 }
 
 fn main() {

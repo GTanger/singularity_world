@@ -1,7 +1,7 @@
 // model 模組 — 與 db、store 共用的資料型別，避免循環依賴。
 
-use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 /// 房間內可互動物件（Look/Read/Smell 等），name 須與房間描述中〔〕一致。
 /// move_to_room_id 為選填：當 sockets 含 Move 時，執行 Move 會將玩家切換到該房間。

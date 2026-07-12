@@ -31,8 +31,6 @@ impl Store {
     }
 
     pub fn trim_archival_per_entity(&mut self, max: usize) {
-        crate::pg::writer::submit(crate::pg::writer::WriteOp::TrimArchival {
-            max: max as i64,
-        });
+        crate::pg::writer::submit(crate::pg::writer::WriteOp::TrimArchival { max: max as i64 });
     }
 }

@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{db, model, store};
 
-use super::admin::{is_admin_authorized, AdminQuery};
+use super::admin::{AdminQuery, is_admin_authorized};
 
 // ── /data/rooms.json ──
 
@@ -36,7 +36,11 @@ struct ExitDataItem {
 
 pub async fn rooms_data() -> impl IntoResponse {
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let s = st.read();
     let ids = s.room_ids();
@@ -70,10 +74,18 @@ pub async fn list_rooms(
     Query(q): Query<AdminQuery>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let s = st.read();
     let ids = s.room_ids();
@@ -104,15 +116,31 @@ pub async fn create_room(
     Json(body): Json<CreateRoomReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     if body.id.trim().is_empty() {
-        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"need id, name, description"}))).into_response();
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({"error":"need id, name, description"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
-    let name = if body.name.is_empty() { body.id.clone() } else { body.name };
+    let name = if body.name.is_empty() {
+        body.id.clone()
+    } else {
+        body.name
+    };
     let room = model::Room {
         id: body.id.clone(),
         name,
@@ -124,11 +152,19 @@ pub async fn create_room(
     {
         let mut s = st.write();
         if s.get_room(&body.id).is_some() {
-            return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"room id already exists"}))).into_response();
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(serde_json::json!({"error":"room id already exists"})),
+            )
+                .into_response();
         }
         s.upsert_room_data(room, None);
     }
-    (StatusCode::CREATED, Json(serde_json::json!({"id": body.id}))).into_response()
+    (
+        StatusCode::CREATED,
+        Json(serde_json::json!({"id": body.id})),
+    )
+        .into_response()
 }
 
 pub async fn get_room_admin(
@@ -137,20 +173,33 @@ pub async fn get_room_admin(
     Path(id): Path<String>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let s = st.read();
     let Some(room) = s.get_room(&id) else {
-        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
+        return (
+            StatusCode::NOT_FOUND,
+            Json(serde_json::json!({"error":"room not found"})),
+        )
+            .into_response();
     };
     let exits = s.get_exits_for_room(&id);
     Json(serde_json::json!({
         "room": room,
         "exits": exits
-    })).into_response()
+    }))
+    .into_response()
 }
 
 #[derive(Deserialize)]
@@ -174,14 +223,26 @@ pub async fn update_room(
     Json(body): Json<UpdateRoomReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let mut s = st.write();
     let Some(mut room) = s.get_room(&id) else {
-        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
+        return (
+            StatusCode::NOT_FOUND,
+            Json(serde_json::json!({"error":"room not found"})),
+        )
+            .into_response();
     };
     room.name = body.name;
     room.description = body.description;
@@ -200,13 +261,25 @@ pub async fn delete_room(
     Path(id): Path<String>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     if db::get_spawn_room_id() == id {
-        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"cannot delete spawn room (界壁)"}))).into_response();
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({"error":"cannot delete spawn room (界壁)"})),
+        )
+            .into_response();
     }
     let mut s = st.write();
     s.delete_room_data(&id);
@@ -225,14 +298,26 @@ pub async fn rename_room(
     Json(body): Json<RenameRoomReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let mut s = st.write();
     if let Err(e) = s.rename_room(&id, &body.new_id) {
-        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response();
     }
     Json(serde_json::json!({"ok": true, "old_id": id, "new_id": body.new_id})).into_response()
 }
@@ -250,14 +335,26 @@ pub async fn add_exit(
     Json(body): Json<AddExitReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let mut s = st.write();
     let Some(room) = s.get_room(&id) else {
-        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
+        return (
+            StatusCode::NOT_FOUND,
+            Json(serde_json::json!({"error":"room not found"})),
+        )
+            .into_response();
     };
     let mut exits = s.get_exits_for_room(&id);
     if let Some(pos) = exits.iter().position(|e| e.direction == body.direction) {
@@ -272,7 +369,11 @@ pub async fn add_exit(
         });
     }
     s.upsert_room_data(room, Some(exits));
-    (StatusCode::CREATED, Json(serde_json::json!({"from": id, "direction": body.direction, "to": body.to_room_id}))).into_response()
+    (
+        StatusCode::CREATED,
+        Json(serde_json::json!({"from": id, "direction": body.direction, "to": body.to_room_id})),
+    )
+        .into_response()
 }
 
 pub async fn remove_exit(
@@ -281,16 +382,29 @@ pub async fn remove_exit(
     Path((from_id, direction)): Path<(String, String)>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let mut s = st.write();
     let Some(room) = s.get_room(&from_id) else {
-        return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response();
+        return (
+            StatusCode::NOT_FOUND,
+            Json(serde_json::json!({"error":"room not found"})),
+        )
+            .into_response();
     };
-    let exits: Vec<model::Exit> = s.get_exits_for_room(&from_id)
+    let exits: Vec<model::Exit> = s
+        .get_exits_for_room(&from_id)
         .into_iter()
         .filter(|e| e.direction != direction)
         .collect();

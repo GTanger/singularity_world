@@ -43,7 +43,8 @@ pub fn npc_pair_same_venue(id_a: &str, id_b: &str) -> bool {
             vid.insert(a.venue_id.as_str());
         }
     }
-    as_b.iter().any(|b| !b.venue_id.is_empty() && vid.contains(b.venue_id.as_str()))
+    as_b.iter()
+        .any(|b| !b.venue_id.is_empty() && vid.contains(b.venue_id.as_str()))
 }
 
 #[must_use]
@@ -100,7 +101,8 @@ pub fn sentiment_delta_from_dialogue(
     let weather = gametext::topic_id("weather");
     let empty_topic_outside_weather = topic_id.is_empty()
         && (gametext::topic_contains_any(topic_hint, &sen.outside_wild_substrings)
-            || (!sen.weather_substring.is_empty() && topic_hint.contains(sen.weather_substring.as_str())));
+            || (!sen.weather_substring.is_empty()
+                && topic_hint.contains(sen.weather_substring.as_str())));
     if topic_id == outside || topic_id == weather || empty_topic_outside_weather {
         delta += 1;
     }
@@ -285,7 +287,9 @@ pub fn anchor_consistency_check(existing: &[String], line_a: &str, line_b: &str)
     if existing.is_empty() {
         return (true, String::new());
     }
-    let joined = format!("{} {}", line_a.trim(), line_b.trim()).trim().to_string();
+    let joined = format!("{} {}", line_a.trim(), line_b.trim())
+        .trim()
+        .to_string();
     if joined.is_empty() {
         return (true, String::new());
     }

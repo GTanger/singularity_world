@@ -14,15 +14,11 @@ use crate::entity::{self, Character, EntityKind, Verb};
 use crate::game;
 use crate::gametext;
 
-use super::handler::{player_id, WsConnection};
+use super::handler::{WsConnection, player_id};
 use super::protocol::ClientMsg;
 
 /// 與目標是否在同一可互動位置（正方格重合優先，否則比對 `entity_rooms` 字串）。
-fn entities_share_playable_cell(
-    player: &Character,
-    target: &Character,
-    player_room: &str,
-) -> bool {
+fn entities_share_playable_cell(player: &Character, target: &Character, player_room: &str) -> bool {
     if let (Some(px), Some(py), Some(tx), Some(ty)) =
         (player.grid_x, player.grid_y, target.grid_x, target.grid_y)
         && px == tx
@@ -59,16 +55,26 @@ pub fn handle_do_action(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("get_self_failed"));
         return;
     };
-    let Ok(player_room) = db::get_entity_room(&pid) else {
-        conn.send_error(gametext::client("no_current_room"));
-        return;
+    let player_room = match db::get_entity_room(&pid) {
+        Ok(room) if !room.is_empty() => room,
+        _ => match grid_room_key(&player_ch) {
+            Some(room) => room,
+            None => {
+                conn.send_error(gametext::client("no_current_room"));
+                return;
+            }
+        },
     };
-    if player_room.is_empty() {
-        conn.send_error(gametext::client("no_current_room"));
-        return;
-    }
 
-    if try_entity_branch(conn, msg, &pid, &player_ch, &player_room, &target_id, &action) {
+    if try_entity_branch(
+        conn,
+        msg,
+        &pid,
+        &player_ch,
+        &player_room,
+        &target_id,
+        &action,
+    ) {
         return;
     }
     object::do_object_branch(conn, &pid, &player_room, &target_id, &action);
@@ -112,6 +118,13 @@ fn try_entity_branch(
     true
 }
 
+fn grid_room_key(ch: &Character) -> Option<String> {
+    let (Some(x), Some(y)) = (ch.grid_x, ch.grid_y) else {
+        return None;
+    };
+    Some(format!("grid:{x}:{y}"))
+}
+
 pub(super) fn client_err_fmt(key: &str, arg: &str) -> String {
     gametext::client(key).replacen("%s", arg, 1)
 }
@@ -130,8 +143,7 @@ fn entity_socket_ok(
             return false;
         }
         if !db::is_default_socket(action) {
-            let in_venue =
-                db::entity_in_venue_at_room(target_id, player_room).unwrap_or(false);
+            let in_venue = db::entity_in_venue_at_room(target_id, player_room).unwrap_or(false);
             if !in_venue {
                 conn.send_error(client_err_fmt("target_not_at_workplace_fmt", action));
                 return false;

@@ -10,15 +10,20 @@ use crate::db::{
 };
 use crate::entity::Character;
 use crate::gametext;
+use crate::grid::{SquareCoord, grid_room_id_from_coord};
 
 use super::super::protocol::{
     ClientMsg, EntityStatusMsg, InventoryItemView, InventoryMsg, TopologyDebugAckMsg,
 };
-use super::{parse_activated_nodes, player_id, WsConnection};
+use super::{WsConnection, parse_activated_nodes, player_id};
 
 fn parse_equipment_triple(
     raw: &str,
-) -> (HashMap<String, String>, HashMap<String, String>, HashMap<String, String>) {
+) -> (
+    HashMap<String, String>,
+    HashMap<String, String>,
+    HashMap<String, String>,
+) {
     if raw.is_empty() {
         return (HashMap::new(), HashMap::new(), HashMap::new());
     }
@@ -35,11 +40,15 @@ fn entity_status_from_character(ent: &Character, is_self: bool) -> EntityStatusM
     let spirit = rm.spirit_max as i32;
     let stamina = rm.stamina_max as i32;
     let magnesium = if is_self { Some(ent.magnesium) } else { None };
-    let (equipment_slots, equipment_names, equipment_descs) = parse_equipment_triple(&ent.equipment_slots);
+    let (room_id, room_name) = entity_location_label(ent);
+    let (equipment_slots, equipment_names, equipment_descs) =
+        parse_equipment_triple(&ent.equipment_slots);
     let mut msg = EntityStatusMsg {
         msg_type: "entity_status".into(),
         entity_id: ent.id.clone(),
         display_char: ent.display_char.clone(),
+        room_id,
+        room_name,
         vit: ent.vit,
         qi: ent.qi,
         dex: ent.dex,
@@ -72,6 +81,32 @@ fn entity_status_from_character(ent: &Character, is_self: bool) -> EntityStatusM
         }
     }
     msg
+}
+
+fn entity_location_label(ent: &Character) -> (String, String) {
+    if let (Some(x), Some(y)) = (ent.grid_x, ent.grid_y) {
+        let room_id = grid_room_id_from_coord(x, y);
+        let room_name = crate::server::grid_manager::get_runtime_square_grid()
+            .and_then(|grid| grid.get(SquareCoord { x, y }).map(|cell| cell.name.clone()))
+            .filter(|name| !name.trim().is_empty())
+            .or_else(|| {
+                db::get_room_name(&room_id)
+                    .ok()
+                    .filter(|name| !name.is_empty())
+            })
+            .unwrap_or_else(|| room_id.clone());
+        return (room_id, room_name);
+    }
+    let room_id = db::get_entity_room(&ent.id).unwrap_or_default();
+    let room_name = if room_id.is_empty() {
+        String::new()
+    } else {
+        db::get_room_name(&room_id)
+            .ok()
+            .filter(|name| !name.is_empty())
+            .unwrap_or_else(|| room_id.clone())
+    };
+    (room_id, room_name)
 }
 
 fn inventory_msg_for_character(ent: &Character) -> InventoryMsg {

@@ -1,31 +1,31 @@
 // db 模組 — 資料存取門面（讀寫 store），對齊既有 db/ 層。
 // store 為唯一資料源；db 提供業務語義的包裝（實體查詢、密碼驗證、soul_seed 展開等）。
 
+mod acquaintance;
 mod archival;
 mod assignment;
+mod climate;
 mod dialogue;
 mod disposition;
-mod favorability;
 mod equip;
+mod favorability;
+mod grid_world;
 mod identity;
 mod inventory;
+mod lexicon;
 mod npc_display;
 mod npc_events;
 mod npc_expense;
 mod npc_names;
-mod npc_trade;
 mod npc_social;
 mod npc_spawn;
+mod npc_trade;
 mod occupation;
 mod room_graph;
 mod room_object;
 mod sched;
-mod trade_pending;
 mod text;
-mod lexicon;
-mod grid_world;
-mod climate;
-mod acquaintance;
+mod trade_pending;
 
 use crate::entity::Character;
 use crate::store::{self, Entity};
@@ -42,7 +42,11 @@ pub fn save_square_grid_to_pg(grid: &crate::grid::SquareGrid) -> anyhow::Result<
 }
 
 /// 更新單一格子的 freshness（explore handler 呼叫）。
-pub fn update_cell_freshness(x: i32, y: i32, freshness: crate::grid::Freshness) -> anyhow::Result<()> {
+pub fn update_cell_freshness(
+    x: i32,
+    y: i32,
+    freshness: crate::grid::Freshness,
+) -> anyhow::Result<()> {
     grid_world::update_cell_freshness(x, y, freshness)
 }
 
@@ -51,80 +55,88 @@ pub fn reset_freshness_for_vacant_cells(occupied_coords: &[(i32, i32)]) -> anyho
     grid_world::reset_freshness_for_vacant_cells(occupied_coords)
 }
 
-pub use assignment::{
-    entity_in_venue_at_room, get_all_venue_ids, get_all_venue_room_ids, get_assignment_count_by_venue,
-    get_assignments_for_entity, get_first_occupation_id_for_venue, get_npc_title_from_assignments,
-    get_room_ids_for_venue, get_venue_ids_for_room, get_venue_max_staff, insert_assignment,
-    is_room_in_venue, remove_assignments_for_entity, seed_venues, Assignment, Venue,
-};
-pub use equip::{get_item_descs, get_item_names, is_naked, seed_items, starter_equipment};
-pub use npc_display::{
-    get_npc_display_label_at_hour, get_npc_person_display_name, get_npc_title, get_npc_title_in_room,
-    get_npc_title_in_room_at_hour, get_schedule_for_entity, person_name_from_npc_list_label,
-    split_npc_list_display_label, NpcSchedule,
-};
-pub use npc_names::{first_rune, generate_npc_name};
-pub use npc_spawn::{
-    ensure_all_npcs_have_soul_seed, ensure_grid_coords, get_npc_gender_counts, get_room_count,
-    insert_npc, seed_npcs, seed_npcs_for_store, spawn_one_npc_from_pool, DEFAULT_NPCS, NpcDef,
-};
 pub use archival::{
     insert_archival, insert_npc_npc_dialogue_archival, pick_style_examples,
     recent_npc_npc_archival_lines_for_entity, search_archival, search_archival_for_player_talk,
     set_npc_summary,
 };
-pub use disposition::{
-    adjust_disposition, get_disposition, DISP_BEG_SUCCESS, DISP_BROKE, DISP_DAILY, DISP_GATHER, DISP_HIRED,
-    DISP_SUBDUED, DISP_TALKED, DISP_TRADE,
+pub use assignment::{
+    Assignment, Venue, entity_in_venue_at_room, get_all_venue_ids, get_all_venue_room_ids,
+    get_assignment_count_by_venue, get_assignments_for_entity, get_first_occupation_id_for_venue,
+    get_npc_title_from_assignments, get_room_ids_for_venue, get_venue_ids_for_room,
+    get_venue_max_staff, insert_assignment, is_room_in_venue, remove_assignments_for_entity,
+    seed_venues,
 };
+pub use dialogue::{
+    DialogueFile, DialogueSlots, PlaceholderCtx, apply_micro_variants, fill_placeholders,
+    load_dialogue, load_dialogue_keywords, load_dialogue_slots, pick_from_dialogue,
+    pick_from_public_talk, pick_line_weighted, try_match_keyword,
+};
+pub use disposition::{
+    ThoughtSource, add_thought, add_thought_with_flavor, adjust_disposition, get_active_thoughts,
+    get_disposition,
+};
+pub use equip::{get_item_descs, get_item_names, is_naked, seed_items, starter_equipment};
 pub use favorability::{
-    adjust_favorability, format_npc_memory_for_backstory,
-    FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, FAV_SLAY, FAV_SUBDUE, FAV_TALK,
+    FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, FAV_SLAY, FAV_SUBDUE, FAV_TALK, adjust_favorability,
+    format_npc_memory_for_backstory,
 };
 pub use identity::build_identity;
 pub use inventory::{
     add_to_inventory, clear_equipment_slot, default_trade_ask_mg, get_inventory, get_item_def,
-    inventory_has_item, inventory_total_qty, inventory_weight, pick_npc_trade_offer, remove_from_inventory,
-    trade_floor_from_ask, update_equipment_slot,
+    inventory_has_item, inventory_has_qty, inventory_total_qty, inventory_weight, item_is_tradable,
+    pick_npc_trade_offer, remove_from_inventory, settle_inventory_trade, trade_floor_from_ask,
+    update_equipment_slot,
+};
+pub use lexicon::{
+    decay_lexicon, list_notable_terms, promote_lexicon_candidates, upsert_lexicon_term,
+};
+pub use npc_display::{
+    NpcSchedule, get_npc_display_label_at_hour, get_npc_person_display_name, get_npc_title,
+    get_npc_title_in_room, get_npc_title_in_room_at_hour, get_schedule_for_entity,
+    person_name_from_npc_list_label, split_npc_list_display_label,
 };
 pub use npc_events::{
-    get_recent_events, log_npc_event, EVT_BEG, EVT_DEATH, EVT_GATHER, EVT_HIRED, EVT_TALK, EVT_TRADE,
+    EVT_BEG, EVT_DEATH, EVT_GATHER, EVT_HIRED, EVT_TALK, EVT_TRADE, get_recent_events,
+    log_npc_event,
 };
-pub use npc_trade::npc_street_sell_one;
-pub use npc_expense::{deduct_daily_expense, DAILY_EXPENSE_BASE};
+pub use npc_expense::{DAILY_EXPENSE_BASE, deduct_daily_expense};
+pub use npc_names::{first_rune, generate_npc_name};
 pub use npc_social::{
     build_npc_rumor_digest, decay_npc_rumors, delete_npc_npc_thread,
     get_npc_npc_conversation_summary, get_npc_npc_dyad, get_npc_npc_thread,
     set_npc_npc_conversation_summary, set_npc_npc_dyad, set_npc_npc_thread, upsert_npc_rumor,
 };
+pub use npc_spawn::{
+    DEFAULT_NPCS, NpcDef, ensure_all_npcs_have_soul_seed, ensure_grid_coords,
+    get_npc_gender_counts, get_room_count, insert_npc, seed_npcs, seed_npcs_for_store,
+    spawn_one_npc_from_pool,
+};
+pub use npc_trade::npc_street_sell_one;
 pub use occupation::{get_sockets_for_npc, is_default_socket};
-pub use room_graph::{rebuild_room_graph, sync_room_graph_with_store, with_room_graph, RoomGraph};
-pub use room_object::{get_object_and_room, get_object_by_id_in_room, get_object_by_name_in_room, object_response};
-pub use trade_pending::{trade_offer_clear, trade_offer_get, trade_offer_set, TradePending};
+pub use room_graph::{RoomGraph, rebuild_room_graph, sync_room_graph_with_store, with_room_graph};
+pub use room_object::{
+    get_object_and_room, get_object_by_id_in_room, get_object_by_name_in_room, object_response,
+};
 pub use sched::{
-    apply_schedules, get_all_schedules, get_schedule_target, get_schedule_target_room, insert_schedule,
-    remove_schedule_for_entity, ScheduleMove, ScheduleTarget,
+    ScheduleMove, ScheduleTarget, apply_schedules, get_all_schedules, get_schedule_target,
+    get_schedule_target_room, insert_schedule, remove_schedule_for_entity,
 };
 pub use text::rune_lcs_similarity;
-pub use dialogue::{
-    fill_placeholders, apply_micro_variants, load_dialogue, load_dialogue_keywords,
-    load_dialogue_slots, pick_from_dialogue, pick_from_public_talk, pick_line_weighted,
-    try_match_keyword, DialogueFile, DialogueSlots, PlaceholderCtx,
-};
-pub use lexicon::{upsert_lexicon_term, promote_lexicon_candidates, decay_lexicon, list_notable_terms};
+pub use trade_pending::{TradePending, trade_offer_clear, trade_offer_get, trade_offer_set};
 
 mod soul_seed;
 pub use soul_seed::{
+    NUM_TOPOLOGY_EDGES, Personality, ResourceMaxes, TOTAL_TOPOLOGY_COST_NORM,
     compute_resource_maxes, expand_soul_seed_to_base_stats, expand_soul_seed_to_combat_axes,
     expand_soul_seed_to_origin_sentence, expand_soul_seed_to_personality,
-    expand_soul_seed_to_topology_costs, generate_origin_sentence, generate_soul_seed, Personality,
-    ResourceMaxes, NUM_TOPOLOGY_EDGES, TOTAL_TOPOLOGY_COST_NORM,
+    expand_soul_seed_to_topology_costs, generate_origin_sentence, generate_soul_seed,
 };
 
 mod entity;
 pub use entity::{
-    add_magnesium, clear_last_observed, get_entities_at_grid,
-    get_entities_in_box, get_entities_in_room, get_entity, get_entity_room, get_moving_entities,
+    add_magnesium, clear_last_observed, get_entities_at_grid, get_entities_in_box,
+    get_entities_in_room, get_entity, get_entity_room, get_moving_entities,
     get_personality_for_entity, set_move_target, transfer_magnesium, update_last_observed,
     update_position, update_vit,
 };
@@ -134,10 +146,9 @@ pub use auth::{create_auth, has_password_for_entity, verify_password};
 
 mod room;
 pub use room::{
-    get_exits_for_room, get_npc_ids_with_grid, get_npc_ids_with_room, get_objects_in_room,
-    get_player_ids_with_room, get_room, get_room_name, get_spawn_room_id, object_has_socket,
-    set_entity_activity, set_entity_grid, set_entity_room, terrain_from_room,
-    SPAWN_ROOM_NAME,
+    SPAWN_ROOM_NAME, get_exits_for_room, get_npc_ids_with_grid, get_npc_ids_with_room,
+    get_objects_in_room, get_player_ids_with_room, get_room, get_room_name, get_spawn_room_id,
+    object_has_socket, set_entity_activity, set_entity_grid, set_entity_room, terrain_from_room,
 };
 
 // ══════════════════════════════════════
@@ -159,26 +170,26 @@ pub struct ErrItemNotFound;
 #[error("room not found")]
 pub struct ErrRoomNotFound;
 
-
 /// 計算角色穿戴裝備後的有效屬性 (e_vit, e_qi, e_dex, atk_gear)。
 pub fn effective_stats(ch: &crate::entity::Character) -> (i32, i32, i32, i32) {
     let mut e_vit = ch.vit;
     let mut e_dex = ch.dex;
     let mut atk_gear: i32 = 0;
     if !ch.equipment_slots.is_empty()
-        && let Ok(slots) = serde_json::from_str::<std::collections::HashMap<String, String>>(&ch.equipment_slots)
+        && let Ok(slots) =
+            serde_json::from_str::<std::collections::HashMap<String, String>>(&ch.equipment_slots)
     {
         for item_id in slots.values() {
-                if item_id.is_empty() {
-                    continue;
-                }
-                if let Some(item_def) = get_item_def(item_id) {
-                    e_vit += item_def.vit_bonus;
-                    e_dex += item_def.dex_bonus;
-                    atk_gear += item_def.atk_bonus;
-                }
+            if item_id.is_empty() {
+                continue;
+            }
+            if let Some(item_def) = get_item_def(item_id) {
+                e_vit += item_def.vit_bonus;
+                e_dex += item_def.dex_bonus;
+                atk_gear += item_def.atk_bonus;
             }
         }
+    }
     (e_vit, ch.qi, e_dex, atk_gear)
 }
 
@@ -228,13 +239,13 @@ pub fn store_entity_to_character(e: &Entity, npc_display_title: &str) -> Charact
         current_activity: e.current_activity.clone(),
         grid_x: e.grid_x,
         grid_y: e.grid_y,
+        thoughts: e.thoughts.clone(),
     };
     if e.kind == "npc" && !npc_display_title.is_empty() {
         c.display_title = npc_display_title.to_string();
     }
     c
 }
-
 
 /// 新增玩家實體（對齊 `InsertEntity`）。
 pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Result<()> {
@@ -281,6 +292,7 @@ pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Resu
         current_activity: String::new(),
         grid_x: None,
         grid_y: None,
+        thoughts: vec![],
     };
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
@@ -306,7 +318,12 @@ pub fn record_meet(npc_id: &str, player_id: &str) -> anyhow::Result<()> {
 
 /// 傳聞池 top K（對齊 `TopNpcRumors`）。
 #[must_use]
-pub fn top_npc_rumors(room_id: &str, zone: &str, now_unix: i64, top_k: i32) -> Vec<store::NpcRumor> {
+pub fn top_npc_rumors(
+    room_id: &str,
+    zone: &str,
+    now_unix: i64,
+    top_k: i32,
+) -> Vec<store::NpcRumor> {
     let Some(arc) = store::get_store() else {
         return Vec::new();
     };
@@ -329,8 +346,8 @@ pub fn penalize_rumor_by_text(text: &str, now_unix: i64, reason: &str) -> anyhow
 }
 
 // ─── v5 新增：氣候與觀察態 ───────────────────────────────────────────
-pub use climate::{get_region_climate, list_region_climates, upsert_region_climate, RegionClimate};
 pub use acquaintance::{
-    ensure_acquaintance, get_acquaintance, get_acquaintances_for_player_npcs,
-    set_named, set_observed, NpcAcquaintance,
+    NpcAcquaintance, ensure_acquaintance, get_acquaintance, get_acquaintances_for_player_npcs,
+    set_named, set_observed,
 };
+pub use climate::{RegionClimate, get_region_climate, list_region_climates, upsert_region_climate};

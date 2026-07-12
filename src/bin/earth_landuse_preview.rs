@@ -46,14 +46,15 @@ fn classify_tags(tags: &[(String, String)]) -> Option<LandClass> {
         match k.as_str() {
             "landuse" => {
                 return Some(match v.as_str() {
-                    "residential" | "commercial" | "industrial" | "retail"
-                    | "construction" | "railway" => LandClass::Urban,
-                    "farmland" | "orchard" | "vineyard" | "allotments"
-                    | "plant_nursery" | "aquaculture" => LandClass::Farmland,
+                    "residential" | "commercial" | "industrial" | "retail" | "construction"
+                    | "railway" => LandClass::Urban,
+                    "farmland" | "orchard" | "vineyard" | "allotments" | "plant_nursery"
+                    | "aquaculture" => LandClass::Farmland,
                     "forest" => LandClass::Forest,
                     "reservoir" | "basin" => LandClass::Water,
-                    "grass" | "meadow" | "recreation_ground" | "village_green"
-                    | "cemetery" => LandClass::Grassland,
+                    "grass" | "meadow" | "recreation_ground" | "village_green" | "cemetery" => {
+                        LandClass::Grassland
+                    }
                     "quarry" | "landfill" | "brownfield" => LandClass::Bare,
                     _ => LandClass::Grassland, // fallback
                 });
@@ -102,9 +103,7 @@ fn parse_args() -> Args {
                 step = args[i].parse().expect("--step 需浮點數");
             }
             "-h" | "--help" => {
-                eprintln!(
-                    "earth-landuse-preview --pbf <path> --out <ppm> [--step <degrees>]"
-                );
+                eprintln!("earth-landuse-preview --pbf <path> --out <ppm> [--step <degrees>]");
                 std::process::exit(0);
             }
             other => eprintln!("未知參數：{other}（跳過）"),
@@ -155,7 +154,10 @@ fn main() {
     eprintln!("  找到 {} 個 landuse 多邊形", ways.len());
 
     // 收集需要的 node ID
-    let needed: HashSet<i64> = ways.iter().flat_map(|w| w.node_ids.iter().copied()).collect();
+    let needed: HashSet<i64> = ways
+        .iter()
+        .flat_map(|w| w.node_ids.iter().copied())
+        .collect();
     eprintln!("  需要 {} 個 node 座標", needed.len());
 
     // ── Pass 2：收集 Node 座標 ──
@@ -276,6 +278,11 @@ fn main() {
     ];
     for (rgb, name) in labels {
         let c = counts.get(&rgb).copied().unwrap_or(0);
-        eprintln!("  {:<14} {:>7}  {:>5.1}%", name, c, c as f64 / total * 100.0);
+        eprintln!(
+            "  {:<14} {:>7}  {:>5.1}%",
+            name,
+            c,
+            c as f64 / total * 100.0
+        );
     }
 }

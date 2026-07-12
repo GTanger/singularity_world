@@ -1,7 +1,7 @@
 {
   "meta": {
-    "description": "詞盤造句引擎——向量制",
-    "note": "每顆詞元的 desc 跑 embedding 存 pgvector，造句 = 向量加總，效果 = 句向量本身",
+    "description": "已退役的舊語義造句引擎——向量制",
+    "note": "此設定僅歷史保留；不得作為現行 P0 採集、交易、背包或玩家第一屏實作預設。",
     "revision": "2026-03-28：從 20 模板制改為向量制"
   },
   "embedding": {
@@ -9,7 +9,7 @@
     "source_field": "desc",
     "storage": "pgvector",
     "one_time_cost": true,
-    "note": "跑完一次後不再需要 LLM。新增詞元只需對新 desc 跑一次 embedding"
+    "note": "退役設定；若未來明確重啟，需先重新審定資料來源與用途。"
   },
   "sentence_rules": {
     "lengths": [3, 5, 7],
@@ -18,14 +18,14 @@
       "5": 2.0,
       "7": 3.5
     },
-    "玄_type_rule": "玄類詞元不入句，入骰——修改疊煉/剝名等擲骰參數"
+    "玄_type_rule": "退役規則；現行 P0 不使用。"
   },
   "vector_mechanics": {
-    "compose": "將句中所有詞元的 embedding 向量加總或取平均，得到句向量",
+    "compose": "退役規則；現行 P0 不使用。",
     "effect": "句向量的各分量即隱式技能維度（攻擊性、防禦性、速度、持續性等），由 embedding 自然學得",
-    "power": "技能威力 = 句向量模長 × 句長倍率 × 詞元品質均值",
+    "power": "退役規則；現行 P0 不使用。",
     "distance": "兩個句向量的餘弦距離 = 兩個技能的差異度，效果是連續光譜",
-    "swap_effect": "換一顆詞元 → 句向量偏移 → 效果連續滑動，非離散跳變"
+    "swap_effect": "退役規則；現行 P0 不使用。"
   },
   "naming": {
     "rule": "從句中按語義類優先級抽取核心字組合",

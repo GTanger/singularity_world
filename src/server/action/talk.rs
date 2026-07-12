@@ -2,10 +2,10 @@
 
 use crate::ai::{call_ai_talk, call_openai_compatible_chat, player_npc_talk_build_prompts};
 use crate::db::{
-    self, adjust_favorability, get_disposition, get_room_name, pick_style_examples,
-    search_archival_for_player_talk, FAV_TALK,
+    self, FAV_TALK, adjust_favorability, get_disposition, get_room_name, pick_style_examples,
+    search_archival_for_player_talk,
 };
-use crate::entity::Character;
+use crate::entity::{Character, EntityKind, Verb};
 use crate::event;
 use crate::game;
 
@@ -55,7 +55,9 @@ fn build_talk_fallback(target: &Character, player_input: &str) -> (String, Strin
     for c in target.id.chars() {
         h += c as i32;
     }
-    let seed = game::now_unix().saturating_mul(1000).saturating_add(i64::from(h));
+    let seed = game::now_unix()
+        .saturating_mul(1000)
+        .saturating_add(i64::from(h));
     let mut idx = (seed as usize) % pool.len();
     if let Some(seed) = target.soul_seed {
         let p = db::expand_soul_seed_to_personality(seed);
@@ -78,6 +80,38 @@ fn build_talk_fallback(target: &Character, player_input: &str) -> (String, Strin
     (narrative, npc_reply)
 }
 
+fn is_open_trade_input(input: &str) -> bool {
+    let text = input.trim().to_lowercase();
+    if text.is_empty() || text == "（搭話）" {
+        return false;
+    }
+    const NEEDLES: &[&str] = &[
+        "想看看你有什麼",
+        "有什麼可以買",
+        "有什麼賣",
+        "看看貨",
+        "看貨",
+        "買東西",
+        "我要買",
+        "賣什麼",
+        "賣些什麼",
+        "有貨嗎",
+        "交易",
+        "trade",
+        "buy",
+    ];
+    NEEDLES.iter().any(|needle| text.contains(needle))
+}
+
+fn target_can_open_trade(target: &Character, target_id: &str, player_room: &str) -> bool {
+    if target.kind == EntityKind::Npc {
+        return db::get_sockets_for_npc(target_id, player_room)
+            .iter()
+            .any(|socket| socket == "Trade");
+    }
+    Character::sockets().contains(&Verb::Trade)
+}
+
 pub(super) fn do_entity_talk(
     conn: &WsConnection,
     msg: &ClientMsg,
@@ -90,6 +124,30 @@ pub(super) fn do_entity_talk(
     let mut player_input = msg.player_input.clone();
     if player_input.trim().is_empty() {
         player_input = "（搭話）".into();
+    }
+    let talk_name = display_target_name(target);
+    if is_open_trade_input(&player_input) && target_can_open_trade(target, target_id, player_room) {
+        let narrative =
+            format!("你向【{talk_name}】問起交易。{talk_name}示意你可以先看貨、再出價。");
+        let npc_reply = "可以先看貨、再出價。".to_string();
+        let _ = event::append(now, pid, "talk", target_id);
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: "Talk".into(),
+            target_id: target.id.clone(),
+            target_name: talk_name.clone(),
+            narrative,
+            success: true,
+            actions: vec!["Trade".into()],
+            move_target_id: String::new(),
+            open_trade: true,
+            suggested_action: "Trade".into(),
+        });
+        conn.sessions
+            .record_player_talk_for_room_echo(pid, player_room, &msg.player_input);
+        flush_conversation_and_append(pid, target_id, &player_input, &npc_reply, now);
+        let _ = adjust_favorability(target_id, pid, FAV_TALK);
+        return;
     }
     let backstory = db::build_identity(target_id);
     let snippets = search_archival_for_player_talk(target_id, &player_input, 5);
@@ -108,7 +166,6 @@ pub(super) fn do_entity_talk(
         &sensitivity,
         &room_display_name,
     );
-    let talk_name = display_target_name(target);
     let (narrative, npc_reply) = if conn.cfg.player_talk_uses_web_api() {
         match call_openai_compatible_chat(
             &conn.cfg.player_talk_api_base_url,
@@ -153,9 +210,31 @@ pub(super) fn do_entity_talk(
         success: true,
         actions: vec![],
         move_target_id: String::new(),
+        open_trade: false,
+        suggested_action: String::new(),
     });
     conn.sessions
         .record_player_talk_for_room_echo(pid, player_room, &msg.player_input);
     flush_conversation_and_append(pid, target_id, &player_input, &npc_reply, now);
     let _ = adjust_favorability(target_id, pid, FAV_TALK);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn recognizes_open_trade_input() {
+        for input in ["想看看你有什麼", "有什麼可以買？", "我要買東西", "trade"]
+        {
+            assert!(is_open_trade_input(input), "{input}");
+        }
+    }
+
+    #[test]
+    fn leaves_plain_talk_as_talk() {
+        for input in ["有什麼事嗎", "你好", "（搭話）", ""] {
+            assert!(!is_open_trade_input(input), "{input}");
+        }
+    }
 }

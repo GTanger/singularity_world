@@ -47,10 +47,7 @@ pub fn call_openai_compatible_chat(
     if base_url.to_lowercase().contains("openrouter.ai") {
         body.as_object_mut()
             .expect("object")
-            .insert(
-                "reasoning".to_string(),
-                json!({ "effort": "none" }),
-            );
+            .insert("reasoning".to_string(), json!({ "effort": "none" }));
     }
     let client = reqwest::blocking::Client::builder()
         .timeout(Duration::from_secs(90))

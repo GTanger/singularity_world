@@ -88,7 +88,12 @@ fn parse_args() -> Args {
         }
         i += 1;
     }
-    Args { srtm, pbf, out_prefix, step }
+    Args {
+        srtm,
+        pbf,
+        out_prefix,
+        step,
+    }
 }
 
 fn main() -> anyhow::Result<()> {
@@ -203,8 +208,6 @@ TRUNCATE TABLE earth_grid_cells;
     eprintln!("SQL 輸出：{sql_path}");
     eprintln!();
     eprintln!("灌庫指令：");
-    eprintln!(
-        "  docker exec -i postgres-singularity psql -U postgres -d singularity < {sql_path}"
-    );
+    eprintln!("  docker exec -i postgres-singularity psql -U postgres -d singularity < {sql_path}");
     Ok(())
 }

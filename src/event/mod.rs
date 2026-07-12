@@ -12,6 +12,8 @@ pub mod types {
     pub const CONTACT: &str = "contact";
     pub const COMBAT: &str = "combat";
     pub const TRADE: &str = "trade";
+    pub const SCENE_OBJECT_ACTION: &str = "scene_object_action";
+    pub const SCENE_OBJECT_STATE: &str = "scene_object_state";
     pub const VIT: &str = "vit";
 }
 
@@ -42,11 +44,7 @@ pub fn mark_observed(entity_id: &str, observer_id: &str, at: i64) -> anyhow::Res
 }
 
 /// 回傳該實體在 `[from_at, to_at]` 區間內的事件，依 `at` 升序（與 store 內順序一致）。
-pub fn events_in_range(
-    entity_id: &str,
-    from_at: i64,
-    to_at: i64,
-) -> anyhow::Result<Vec<EventRow>> {
+pub fn events_in_range(entity_id: &str, from_at: i64, to_at: i64) -> anyhow::Result<Vec<EventRow>> {
     let pool = pg::pool().ok_or(ErrNoStore)?;
     let entries = pg::event::events_in_range(&pool, entity_id, from_at, to_at);
     Ok(entries

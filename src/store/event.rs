@@ -40,12 +40,7 @@ impl Store {
         String::new()
     }
 
-    pub fn events_in_range(
-        &self,
-        entity_id: &str,
-        from_at: i64,
-        to_at: i64,
-    ) -> Vec<EventEntry> {
+    pub fn events_in_range(&self, entity_id: &str, from_at: i64, to_at: i64) -> Vec<EventEntry> {
         let mut results = Vec::new();
         if let Some(pool) = &self.db_pool
             && let Ok(mut conn) = pool.get()

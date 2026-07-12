@@ -2,7 +2,11 @@
 
 use std::path::Path;
 
-use crate::{db, entity::{Character, WalkOrRun}, event::{self, types as evt}};
+use crate::{
+    db,
+    entity::{Character, WalkOrRun},
+    event::{self, types as evt},
+};
 
 use super::chunk_view::get_chunk_and_entities_in_view;
 
@@ -27,10 +31,18 @@ pub fn advance_movement(maps_path: &Path, now: i64) -> anyhow::Result<Vec<MovedR
         if e.x == tx && e.y == ty {
             let _ = db::update_position(&e.id, tx, ty);
             let _ = event::append(now, &e.id, evt::ARRIVED, "");
-            out.push(MovedResult { id: e.id.clone(), x: tx, y: ty });
+            out.push(MovedResult {
+                id: e.id.clone(),
+                x: tx,
+                y: ty,
+            });
             continue;
         }
-        let steps = if e.walk_or_run == WalkOrRun::Run { 2 } else { 1 };
+        let steps = if e.walk_or_run == WalkOrRun::Run {
+            2
+        } else {
+            1
+        };
         let (mut nx, mut ny) = (e.x, e.y);
         for _ in 0..steps {
             let Ok(view) = get_chunk_and_entities_in_view(nx, ny, maps_path) else {
@@ -55,7 +67,11 @@ pub fn advance_movement(maps_path: &Path, now: i64) -> anyhow::Result<Vec<MovedR
         }
         if nx != e.x || ny != e.y {
             let _ = db::update_position(&e.id, nx, ny);
-            out.push(MovedResult { id: e.id.clone(), x: nx, y: ny });
+            out.push(MovedResult {
+                id: e.id.clone(),
+                x: nx,
+                y: ny,
+            });
         }
         if nx == tx && ny == ty {
             let _ = db::update_position(&e.id, tx, ty);
@@ -75,5 +91,11 @@ pub fn entity_at(x: i32, y: i32, exclude_id: &str) -> Option<Character> {
 }
 
 fn sign(n: i32) -> i32 {
-    if n < 0 { -1 } else if n > 0 { 1 } else { 0 }
+    if n < 0 {
+        -1
+    } else if n > 0 {
+        1
+    } else {
+        0
+    }
 }

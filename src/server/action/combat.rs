@@ -2,12 +2,11 @@
 
 use std::collections::HashSet;
 
-use crate::combat::{resolve_v2, CombatOpt};
+use crate::combat::{CombatOpt, resolve_v2};
 use crate::db::{
-    self, adjust_disposition, adjust_favorability, get_assignments_for_entity,
-    get_room_ids_for_venue, log_npc_event, remove_assignments_for_entity,
-    remove_schedule_for_entity, terrain_from_room, update_vit, DISP_SUBDUED, EVT_DEATH,
-    FAV_SLAY, FAV_SUBDUE,
+    self, EVT_DEATH, FAV_SLAY, FAV_SUBDUE, ThoughtSource, add_thought, adjust_favorability,
+    get_assignments_for_entity, get_room_ids_for_venue, log_npc_event,
+    remove_assignments_for_entity, remove_schedule_for_entity, terrain_from_room, update_vit,
 };
 use crate::entity::{Character, EntityKind};
 use crate::event::{self, types};
@@ -62,6 +61,8 @@ pub(super) fn do_entity_combat(
         success: true,
         actions: vec![],
         move_target_id: String::new(),
+        open_trade: false,
+        suggested_action: String::new(),
     });
     let _ = event::append(now, pid, types::COMBAT, target_id);
     let _ = update_vit(pid, attacker_hp);
@@ -72,14 +73,20 @@ pub(super) fn do_entity_combat(
         if subdue {
             let _ = adjust_favorability(target_id, pid, FAV_SUBDUE);
             if fight_winner == "attacker" {
-                let _ = adjust_disposition(target_id, DISP_SUBDUED);
+                let _ = add_thought(target_id, ThoughtSource::Subdued);
             }
         } else {
             let _ = adjust_favorability(target_id, pid, FAV_SLAY);
         }
     }
     if target.kind == EntityKind::Npc && !subdue && defender_hp <= 0 {
-        broadcast_npc_death(conn, player_room, target_id, &display_target_name(target), now);
+        broadcast_npc_death(
+            conn,
+            player_room,
+            target_id,
+            &display_target_name(target),
+            now,
+        );
         let _ = remove_assignments_for_entity(target_id);
         let _ = remove_schedule_for_entity(target_id);
     }
@@ -117,8 +124,7 @@ fn build_attack_narrative(
         opt.alpha += d_atk as f64 * 0.05;
     }
 
-    let (winner, raw_log, a_hp, d_hp) =
-        resolve_v2(a_vit, a_dex, d_vit, d_dex, Some(&opt));
+    let (winner, raw_log, a_hp, d_hp) = resolve_v2(a_vit, a_dex, d_vit, d_dex, Some(&opt));
     let mut a_name = display_target_name(attacker);
     let mut d_name = display_target_name(defender);
     if a_name.is_empty() {
@@ -147,13 +153,7 @@ fn build_attack_narrative(
     (format!("{prefix}{log}{suffix}"), winner, a_hp, d_hp)
 }
 
-fn broadcast_npc_death(
-    conn: &WsConnection,
-    death_room: &str,
-    npc_id: &str,
-    name: &str,
-    now: i64,
-) {
+fn broadcast_npc_death(conn: &WsConnection, death_room: &str, npc_id: &str, name: &str, now: i64) {
     let payload = format!("在{death_room}倒下");
     log_npc_event(now, npc_id, EVT_DEATH, &payload);
     let narrate_text = format!("傳來消息：【{name}】倒下了。");

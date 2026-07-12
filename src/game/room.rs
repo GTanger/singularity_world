@@ -105,18 +105,34 @@ pub fn move_by_grid_direction(entity_id: &str, direction: &str) -> anyhow::Resul
     drop(s);
 
     let from = SquareCoord::new(x, y);
-    let to = from.neighbor(gdir);
 
-    let can = crate::server::grid_manager::with_square_grid_mut(|grid| {
+    let result = crate::server::grid_manager::with_square_grid_mut(|grid| {
+        // 先從顯式出口解析目標座標，若無顯式出口則用座標鄰接
+        let to = if let Some(cell) = grid.get(from) {
+            if let Some(ex) = cell.explicit_exits.iter().find(|e| e.dir == gdir) {
+                ex.target
+            } else if cell.explicit_exits.is_empty() {
+                from.neighbor(gdir)
+            } else {
+                return None; // 有顯式出口但此方向無出口
+            }
+        } else {
+            return None;
+        };
+
         if !grid.can_walk(from, to) {
-            return false;
+            return None;
         }
-        crate::grid::reveal_grid_disk(grid, to, 2);
-        true
+        // 只有非村落格（無顯式出口）才自動揭露
+        if grid.get(from).is_none_or(|c| c.explicit_exits.is_empty()) {
+            crate::grid::reveal_grid_disk(grid, to, 2);
+        }
+        Some(to)
     });
-    if can != Some(true) {
+
+    let Some(Some(to)) = result else {
         return Ok((grid_room_id_from_coord(x, y), false));
-    }
+    };
     db::set_entity_grid(entity_id, to.x, to.y)?;
     Ok((grid_room_id_from_coord(to.x, to.y), true))
 }
@@ -134,28 +150,55 @@ pub fn get_grid_room_view(
     let Some(cell) = grid.get(coord) else {
         return Ok(None);
     };
-    let room_objs = grid_objects_to_room_objects(&cell.objects);
+    let mut room_objs = grid_objects_to_room_objects(&cell.objects);
+    room_objs.extend(super::player_scene::player_layer_scene_objects_for_room(
+        &cell.name,
+    ));
     let room = Room {
         id: grid_room_id_from_coord(x, y),
-        name: crate::grid::terrain_name_zh(cell.terrain).to_string(),
+        name: if cell.name.is_empty() {
+            crate::grid::terrain_name_zh(cell.terrain).to_string()
+        } else {
+            cell.name.clone()
+        },
         tags: cell.tags.clone(),
         zone: cell.zone.clone(),
         description: cell.description.clone(),
         objects: room_objs.clone(),
     };
     let mut exits: Vec<Exit> = Vec::new();
-    for nc in grid.neighbors(coord) {
-        if !nc.terrain.walkable() {
-            continue;
+    if !cell.explicit_exits.is_empty() {
+        for ex in &cell.explicit_exits {
+            let target_name = grid
+                .get(ex.target)
+                .map(|tc| {
+                    if tc.name.is_empty() {
+                        crate::grid::terrain_name_zh(tc.terrain).to_string()
+                    } else {
+                        tc.name.clone()
+                    }
+                })
+                .unwrap_or_else(|| "▒▒▒".to_string());
+            exits.push(Exit {
+                direction: ex.dir.label_zh().to_string(),
+                to_room_id: grid_room_id_from_coord(ex.target.x, ex.target.y),
+                to_room_name: target_name,
+            });
         }
-        let Some(dir) = coord.direction_to(nc.coord) else {
-            continue;
-        };
-        exits.push(Exit {
-            direction: dir.label_zh().to_string(),
-            to_room_id: grid_room_id_from_coord(nc.coord.x, nc.coord.y),
-            to_room_name: crate::grid::terrain_name_zh(nc.terrain).to_string(),
-        });
+    } else {
+        for nc in grid.neighbors(coord) {
+            if !nc.terrain.walkable() {
+                continue;
+            }
+            let Some(dir) = coord.direction_to(nc.coord) else {
+                continue;
+            };
+            exits.push(Exit {
+                direction: dir.label_zh().to_string(),
+                to_room_id: grid_room_id_from_coord(nc.coord.x, nc.coord.y),
+                to_room_name: crate::grid::terrain_name_zh(nc.terrain).to_string(),
+            });
+        }
     }
     let entities = db::get_entities_at_grid(x, y, game_hour)?;
     let objects = room_objs;

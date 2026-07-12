@@ -23,12 +23,17 @@ pub fn start(pool: DbPool) {
             .and_then(|v| v.parse::<u64>().ok())
             .unwrap_or(30);
         let interval = Duration::from_secs(interval_sec.max(5));
-        tracing::info!("[pg::sync] periodic full-sync 啟動，週期 {}s", interval.as_secs());
+        tracing::info!(
+            "[pg::sync] periodic full-sync 啟動，週期 {}s",
+            interval.as_secs()
+        );
         std::thread::Builder::new()
             .name("pg-full-sync".into())
-            .spawn(move || loop {
-                std::thread::sleep(interval);
-                run_once(&pool);
+            .spawn(move || {
+                loop {
+                    std::thread::sleep(interval);
+                    run_once(&pool);
+                }
             })
             .expect("spawn pg-full-sync thread")
     });

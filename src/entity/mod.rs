@@ -52,6 +52,22 @@ pub enum Verb {
     Take,
 }
 
+/// NPC 內心活動，帶來源、強度、衰減期。
+/// 加總尚未衰減完的 thoughts.delta = 當前 disposition 投影值。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Thought {
+    /// 來源 key（對應 ThoughtSource 列舉的字串值，便於 i18n／散文化）
+    pub source: String,
+    /// 強度（正負，未限幅；最終 disposition 投影時才 clamp）
+    pub delta: i32,
+    /// 創建時的真實 Unix 秒（SystemTime）
+    pub created_at: i64,
+    /// 衰減期（分鐘，超過後不計入；比較時換算為秒 * 60）
+    pub decay_minutes: i64,
+    /// 給 LLM 用的散文，由 source + 詞盤 / 簽名後續變化（可空，預設由 source 對應表抽）
+    pub flavor: Option<String>,
+}
+
 /// 角色（玩家/NPC）共用結構，對齊人物角色模板第一版最小集。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Character {
@@ -102,9 +118,12 @@ pub struct Character {
     /// 背包物品 JSON 陣列，每元素 {"item_id":"xxx","qty":1}。
     #[serde(default)]
     pub inventory: String,
-    /// 心境 -100~+100，0=中性。
+    /// 心境 -100~+100，0=中性。作為 thought log 加總的 cache，每次 add_thought 後重算。
     #[serde(default)]
     pub disposition: i32,
+    /// NPC 內心活動列表（最近 100 條，超過砍最舊）
+    #[serde(default)]
+    pub thoughts: Vec<Thought>,
     /// 表面可觀測行為，玩家 Look 時看到的「在做什麼」。
     #[serde(default)]
     pub current_activity: String,
@@ -119,7 +138,14 @@ pub struct Character {
 impl Character {
     /// 回傳此角色對外開放的動詞清單（預設插座）。
     pub fn sockets() -> Vec<Verb> {
-        vec![Verb::Talk, Verb::Borrow, Verb::Subdue, Verb::Slay, Verb::Look, Verb::Trade]
+        vec![
+            Verb::Talk,
+            Verb::Borrow,
+            Verb::Subdue,
+            Verb::Slay,
+            Verb::Look,
+            Verb::Trade,
+        ]
     }
 }
 

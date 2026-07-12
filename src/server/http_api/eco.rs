@@ -1,6 +1,6 @@
+use crate::store;
 use axum::{Json, response::IntoResponse};
 use serde::Serialize;
-use crate::store;
 
 #[derive(Serialize)]
 struct EcoMapCell {
@@ -24,21 +24,24 @@ pub async fn eco_map() -> impl IntoResponse {
         Some(p) => p,
         None => return Json(Vec::<EcoMapCell>::new()).into_response(),
     };
-    
+
     let mut conn = match pool.get() {
         Ok(c) => c,
         Err(_) => return Json(Vec::<EcoMapCell>::new()).into_response(),
     };
 
-    let rows = conn.query("SELECT x, y, terrain, zone FROM grid_cells", &[]).unwrap_or_default();
-    let cells: Vec<EcoMapCell> = rows.iter().map(|r| {
-        EcoMapCell {
+    let rows = conn
+        .query("SELECT x, y, terrain, zone FROM grid_cells", &[])
+        .unwrap_or_default();
+    let cells: Vec<EcoMapCell> = rows
+        .iter()
+        .map(|r| EcoMapCell {
             x: r.get(0),
             y: r.get(1),
             t: r.get(2),
             z: r.get(3),
-        }
-    }).collect();
+        })
+        .collect();
 
     Json(cells).into_response()
 }
@@ -49,15 +52,17 @@ pub async fn eco_entities() -> impl IntoResponse {
         return Json(Vec::<EcoEntity>::new()).into_response();
     };
     let st = st_arc.read();
-    
-    let entities: Vec<EcoEntity> = st.entities.values().map(|e| {
-        EcoEntity {
+
+    let entities: Vec<EcoEntity> = st
+        .entities
+        .values()
+        .map(|e| EcoEntity {
             id: e.id.clone(),
             x: e.grid_x.unwrap_or(0),
             y: e.grid_y.unwrap_or(0),
             kind: e.kind.clone(),
-        }
-    }).collect();
+        })
+        .collect();
 
     Json(entities).into_response()
 }

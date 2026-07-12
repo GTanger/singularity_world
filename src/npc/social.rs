@@ -2,19 +2,9 @@
 
 use rand::Rng;
 
-use crate::db::{get_entities_in_room, person_name_from_npc_list_label};
+use crate::db::{get_entities_in_room, get_room_name};
 use crate::entity::EntityKind;
-
-const MICRO_TEMPLATES: [&str; 8] = [
-    "【%s】朝【%s】點了點頭。",
-    "【%s】與【%s】閒聊了幾句。",
-    "【%s】看了【%s】一眼，沒有說話。",
-    "【%s】對【%s】笑了笑。",
-    "【%s】低聲問【%s】：「知道哪裡有活幹嗎？」",
-    "【%s】向【%s】抱怨道：「唉，日子不好過啊。」",
-    "【%s】和【%s】並肩站著，望向遠方。",
-    "【%s】拍了拍【%s】的肩膀。",
-];
+use crate::game::micro_interaction_lines_for_room;
 
 /// 同房至少兩名 NPC 時，以 `chance`（0–100）機率抽一句微互動；否則回空（對齊既有 `PickMicroInteraction`）。
 #[must_use]
@@ -22,29 +12,49 @@ pub fn pick_micro_interaction(room_id: &str, chance: i32, game_hour: i32) -> Str
     let Ok(entities) = get_entities_in_room(room_id, game_hour) else {
         return String::new();
     };
-    let mut names: Vec<String> = Vec::new();
+    let mut npc_count = 0usize;
     for e in entities {
         if e.kind != EntityKind::Npc {
             continue;
         }
-        let mut n = person_name_from_npc_list_label(&e.display_title);
-        if n.is_empty() {
-            n = e.id.clone();
-        }
-        names.push(n);
+        npc_count += 1;
     }
-    if names.len() < 2 {
+    if npc_count < 2 {
         return String::new();
     }
     let mut rng = rand::rng();
     if rng.random_range(0..100) >= chance {
         return String::new();
     }
-    let i = rng.random_range(0..names.len());
-    let mut j = rng.random_range(0..names.len());
-    while j == i {
-        j = rng.random_range(0..names.len());
+    let room_name = player_layer_room_name(room_id);
+    let lines = micro_interaction_lines_for_room(&room_name);
+    if lines.is_empty() {
+        return String::new();
     }
-    let tmpl = MICRO_TEMPLATES[rng.random_range(0..MICRO_TEMPLATES.len())];
-    tmpl.replacen("%s", &names[i], 1).replacen("%s", &names[j], 1)
+    lines[rng.random_range(0..lines.len())].to_string()
+}
+
+fn player_layer_room_name(room_id: &str) -> String {
+    if let Some(coord) = crate::grid::parse_grid_room_id(room_id)
+        && let Some(cell) = crate::server::grid_manager::get_runtime_square_grid()
+            .and_then(|g| g.get(coord).cloned())
+    {
+        if cell.name.trim().is_empty() {
+            return crate::grid::terrain_name_zh(cell.terrain).to_string();
+        }
+        return cell.name;
+    }
+    get_room_name(room_id).unwrap_or_default()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn player_layer_micro_lines_do_not_expose_template_names() {
+        let lines = micro_interaction_lines_for_room("北岸渡口");
+        assert!(lines.iter().all(|line| !line.contains("%s")));
+        assert!(lines.iter().all(|line| !line.contains('【')));
+    }
 }

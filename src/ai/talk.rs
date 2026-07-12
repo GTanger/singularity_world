@@ -8,12 +8,13 @@ use super::prompts::{
     meta_bad_markers, npc_to_npc_collapse_say_separators, npc_to_npc_context_line_fmt,
     npc_to_npc_fallback_listener_reply, npc_to_npc_identity_prefix, npc_to_npc_listener_label,
     npc_to_npc_memory_line_fmt, npc_to_npc_player_present_note, npc_to_npc_recent_event_bullet,
-    npc_to_npc_recent_events_header, npc_to_npc_relation_line_fmt, npc_to_npc_room_atmosphere_prefix,
-    npc_to_npc_room_desc_trunc_suffix, npc_to_npc_room_tags_prefix, npc_to_npc_rules_block,
-    npc_to_npc_speaker_label, npc_to_npc_task_intro, npc_to_npc_tone_after_world,
-    npc_to_npc_topic_line_fmt, npc_to_npc_user_message, player_npc_behavior_rules,
-    player_npc_identity_prefix, player_npc_persona_line, player_npc_room_context_fmt,
-    player_npc_sensitivity_prefix, player_npc_space_consistency_rule, player_npc_style_example_bullet,
+    npc_to_npc_recent_events_header, npc_to_npc_relation_line_fmt,
+    npc_to_npc_room_atmosphere_prefix, npc_to_npc_room_desc_trunc_suffix,
+    npc_to_npc_room_tags_prefix, npc_to_npc_rules_block, npc_to_npc_speaker_label,
+    npc_to_npc_task_intro, npc_to_npc_tone_after_world, npc_to_npc_topic_line_fmt,
+    npc_to_npc_user_message, player_npc_behavior_rules, player_npc_identity_prefix,
+    player_npc_persona_line, player_npc_room_context_fmt, player_npc_sensitivity_prefix,
+    player_npc_space_consistency_rule, player_npc_style_example_bullet,
     player_npc_style_examples_header, player_npc_traditional_rule, player_npc_user_plain_fmt,
     player_npc_user_with_memory_fmt, world_phenomena_cognition_prompt,
 };
@@ -105,7 +106,10 @@ pub fn strip_reply_guillemet_outer(reply: &str) -> String {
     let reply = reply.trim();
     let gopen = '\u{300c}';
     let gclose = '\u{300d}';
-    if reply.starts_with(gopen) && reply.contains(gclose) && let Some(i) = reply.find(gclose) {
+    if reply.starts_with(gopen)
+        && reply.contains(gclose)
+        && let Some(i) = reply.find(gclose)
+    {
         let start = gopen.len_utf8();
         if i > start {
             return reply[start..i].to_string();
@@ -461,7 +465,10 @@ pub fn call_ai_talk_npc_to_npc(
         }
     }
     if !topic_hint.is_empty() {
-        sb.push_str(&sprintf_one_percent_s(&npc_to_npc_topic_line_fmt(), topic_hint));
+        sb.push_str(&sprintf_one_percent_s(
+            &npc_to_npc_topic_line_fmt(),
+            topic_hint,
+        ));
     }
     if !relation_hint.is_empty() {
         sb.push_str(&sprintf_one_percent_s(
@@ -542,10 +549,7 @@ mod tests {
 
     #[test]
     fn strip_leading_speaker_strips_when_no_punct() {
-        assert_eq!(
-            strip_leading_speaker_name("老王你來啦", "老王"),
-            "你來啦"
-        );
+        assert_eq!(strip_leading_speaker_name("老王你來啦", "老王"), "你來啦");
     }
 
     #[test]

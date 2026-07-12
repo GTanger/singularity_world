@@ -4,20 +4,18 @@ use rand::Rng;
 
 use crate::config::sim;
 use crate::db::{
-    add_magnesium, add_to_inventory, adjust_disposition, get_assignment_count_by_venue, get_assignments_for_entity,
-    get_venue_ids_for_room, insert_assignment, log_npc_event, npc_street_sell_one, DISP_BEG_SUCCESS, DISP_GATHER,
-    DISP_HIRED, DISP_TALKED, EVT_BEG, EVT_GATHER, EVT_HIRED, EVT_TALK, EVT_TRADE,
+    EVT_BEG, EVT_GATHER, EVT_HIRED, EVT_TALK, EVT_TRADE, ThoughtSource, add_magnesium, add_thought,
+    add_to_inventory, get_assignment_count_by_venue, get_assignments_for_entity, get_room_name,
+    get_venue_ids_for_room, insert_assignment, log_npc_event, npc_street_sell_one,
 };
 use crate::gametext;
+use crate::world::materials;
 
 use super::decision::IntentType;
 
 fn fmt_beg(fmt: &str, room: &str, amount: i32) -> String {
-    fmt.replacen("%s", room, 1).replacen("%d", &amount.to_string(), 1)
-}
-
-fn fmt_one_s(fmt: &str, a: &str) -> String {
-    fmt.replacen("%s", a, 1)
+    fmt.replacen("%s", room, 1)
+        .replacen("%d", &amount.to_string(), 1)
 }
 
 fn fmt_two_s(fmt: &str, a: &str, b: &str) -> String {
@@ -43,13 +41,24 @@ pub fn apply_brain_arrival_effects(at: i64, entity_id: &str, room_id: &str, inte
             let _ = add_magnesium(entity_id, amount);
             let payload = fmt_beg(&be.beg_event_fmt, room_id, amount);
             log_npc_event(at, entity_id, EVT_BEG, &payload);
-            let _ = adjust_disposition(entity_id, DISP_BEG_SUCCESS);
+            let _ = add_thought(entity_id, ThoughtSource::BegSuccess);
         }
         IntentType::Gather => {
-            let _ = add_to_inventory(entity_id, "wild_herb", 1);
-            let payload = fmt_one_s(&be.gather_event_fmt, room_id);
-            log_npc_event(at, entity_id, EVT_GATHER, &payload);
-            let _ = adjust_disposition(entity_id, DISP_GATHER);
+            if let Some(gathered) =
+                materials::try_gather_material_for_room_preserving(room_id, at, 1)
+            {
+                let _ = add_to_inventory(entity_id, &gathered.item_id, 1);
+                let room_name = get_room_name(room_id)
+                    .ok()
+                    .filter(|name| !name.is_empty())
+                    .unwrap_or(gathered.source_room_name);
+                let payload = format!(
+                    "在{room_name}取得{}，{}少了一份。",
+                    gathered.name, gathered.origin_label
+                );
+                log_npc_event(at, entity_id, EVT_GATHER, &payload);
+                let _ = add_thought(entity_id, ThoughtSource::Gather);
+            }
         }
         IntentType::SeekJob => {
             let Ok(list) = get_assignments_for_entity(entity_id) else {
@@ -70,14 +79,14 @@ pub fn apply_brain_arrival_effects(at: i64, entity_id: &str, room_id: &str, inte
                 if n < cap && insert_assignment(entity_id, &occ, &vid, "").is_ok() {
                     let payload = fmt_two_s(&be.hired_event_fmt, room_id, &occ);
                     log_npc_event(at, entity_id, EVT_HIRED, &payload);
-                    let _ = adjust_disposition(entity_id, DISP_HIRED);
+                    let _ = add_thought(entity_id, ThoughtSource::Hired);
                     break;
                 }
             }
         }
         IntentType::Socialize => {
             log_npc_event(at, entity_id, EVT_TALK, &be.talk_social);
-            let _ = adjust_disposition(entity_id, DISP_TALKED);
+            let _ = add_thought(entity_id, ThoughtSource::Talked);
         }
         IntentType::Trade => {
             if !npc_street_sell_one(entity_id, room_id, at) {

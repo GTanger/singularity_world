@@ -1,15 +1,16 @@
 //! `do_action` — Trade 分支：NPC 報價、玩家議價、鎂轉帳 + inventory 轉移。
 
 use crate::db::{
-    self, add_to_inventory, default_trade_ask_mg, get_item_def, pick_npc_trade_offer,
-    remove_from_inventory, trade_floor_from_ask, trade_offer_clear, trade_offer_get,
-    trade_offer_set, transfer_magnesium, TradePending,
+    self, TradePending, default_trade_ask_mg, get_item_def, inventory_has_qty,
+    pick_npc_trade_offer, settle_inventory_trade, trade_floor_from_ask, trade_offer_clear,
+    trade_offer_get, trade_offer_set,
 };
 use crate::entity::Character;
 use crate::event::{self, types};
 use crate::gametext;
+use crate::world::materials;
 
-use super::super::handler::{push_refresh, WsConnection};
+use super::super::handler::{WsConnection, push_refresh};
 use super::super::protocol::{ActionResultMsg, ClientMsg};
 use super::display_target_name;
 
@@ -42,6 +43,8 @@ pub(super) fn do_entity_trade(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
         });
         return false;
     }
@@ -54,10 +57,13 @@ pub(super) fn do_entity_trade(
                     action: "Trade".into(),
                     target_id: target.id.clone(),
                     target_name: trade_target_name.clone(),
-                    narrative: "對方尚未開價。請先點【交易】取得報價，再在輸入欄填寫出價（鎂）。".into(),
+                    narrative: "對方尚未開價。請先點【交易】取得報價，再在輸入欄填寫出價（鎂）。"
+                        .into(),
                     success: true,
                     actions: vec![],
                     move_target_id: String::new(),
+                    open_trade: false,
+                    suggested_action: String::new(),
                 });
                 return false;
             }
@@ -67,10 +73,14 @@ pub(super) fn do_entity_trade(
                     action: "Trade".into(),
                     target_id: target.id.clone(),
                     target_name: trade_target_name.clone(),
-                    narrative: format!("你向【{trade_target_name}】提出交易，對方表示目前暫無可交易之物。"),
+                    narrative: format!(
+                        "你向【{trade_target_name}】提出交易，對方表示目前暫無可交易之物。"
+                    ),
                     success: true,
                     actions: vec![],
                     move_target_id: String::new(),
+                    open_trade: false,
+                    suggested_action: String::new(),
                 });
                 return false;
             };
@@ -80,6 +90,9 @@ pub(super) fn do_entity_trade(
                 .map(|d| d.name)
                 .filter(|n| !n.is_empty())
                 .unwrap_or_else(|| item_id.clone());
+            let origin = materials::material_origin_label(&item_id)
+                .filter(|s| !s.is_empty())
+                .unwrap_or("來源未明");
             trade_offer_set(
                 pid,
                 TradePending {
@@ -92,7 +105,7 @@ pub(super) fn do_entity_trade(
                 },
             );
             let narrative = format!(
-                "【{trade_target_name}】願意向你賣出「{item_name}」一份，開價 {ask} 鎂（議價底線約 {floor} 鎂）。請再點【交易】，在欄位輸入你願付的鎂數；達開價則一口價成交，介於底線與開價之間則以你的出價成交。輸入「拒絕」可取消。"
+                "【{trade_target_name}】願意向你賣出「{item_name}」一份，來源是{origin}，開價 {ask} 鎂（議價底線約 {floor} 鎂）。請在交易欄位輸入你願付的鎂數；達開價則一口價成交，介於底線與開價之間則以你的出價成交。輸入「拒絕」可取消。"
             );
             conn.send_json(&ActionResultMsg {
                 msg_type: "action_result".into(),
@@ -103,6 +116,8 @@ pub(super) fn do_entity_trade(
                 success: true,
                 actions: vec![],
                 move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: String::new(),
             });
             return false;
         }
@@ -117,6 +132,8 @@ pub(super) fn do_entity_trade(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
         });
         return false;
     }
@@ -130,6 +147,8 @@ pub(super) fn do_entity_trade(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
         });
         return false;
     };
@@ -143,6 +162,8 @@ pub(super) fn do_entity_trade(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
         });
         return false;
     }
@@ -167,6 +188,8 @@ pub(super) fn do_entity_trade(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
         });
         return false;
     };
@@ -180,24 +203,59 @@ pub(super) fn do_entity_trade(
             success: true,
             actions: vec![],
             move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
         });
         return false;
     }
-    if transfer_magnesium(pid, target_id, paid).is_err() {
+    let Ok(Some(seller)) = db::get_entity(target_id) else {
+        trade_offer_clear(pid, target_id);
         conn.send_json(&ActionResultMsg {
             msg_type: "action_result".into(),
             action: "Trade".into(),
             target_id: target.id.clone(),
             target_name: trade_target_name.clone(),
-            narrative: "成交時鎂轉帳失敗，請稍後再試。".into(),
-            success: false,
+            narrative: format!("【{trade_target_name}】已不在可交易狀態，這筆交易作廢。"),
+            success: true,
             actions: vec![],
             move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+        });
+        return false;
+    };
+    if !inventory_has_qty(&seller.inventory, &pending.item_id, pending.item_qty) {
+        trade_offer_clear(pid, target_id);
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: "Trade".into(),
+            target_id: target.id.clone(),
+            target_name: trade_target_name.clone(),
+            narrative: format!("【{trade_target_name}】手上的貨已不在，這筆交易作廢。"),
+            success: true,
+            actions: vec![],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
         });
         return false;
     }
-    let _ = add_to_inventory(pid, &pending.item_id, pending.item_qty);
-    let _ = remove_from_inventory(target_id, &pending.item_id, pending.item_qty);
+    if settle_inventory_trade(pid, target_id, &pending.item_id, pending.item_qty, paid).is_err() {
+        trade_offer_clear(pid, target_id);
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: "Trade".into(),
+            target_id: target.id.clone(),
+            target_name: trade_target_name.clone(),
+            narrative: "成交時交易結算失敗，請重新確認對方貨物與你的鎂。".into(),
+            success: false,
+            actions: vec![],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+        });
+        return false;
+    }
     trade_offer_clear(pid, target_id);
     let item_name = get_item_def(&pending.item_id)
         .map(|d| d.name)
@@ -218,6 +276,8 @@ pub(super) fn do_entity_trade(
         success: true,
         actions: vec![],
         move_target_id: String::new(),
+        open_trade: false,
+        suggested_action: String::new(),
     });
     push_refresh(conn, pid);
     false

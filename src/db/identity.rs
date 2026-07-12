@@ -2,7 +2,9 @@
 
 use crate::store;
 
-use super::{get_disposition, get_npc_person_display_name, get_personality_for_entity, get_recent_events};
+use super::{
+    get_active_thoughts, get_npc_person_display_name, get_personality_for_entity, get_recent_events,
+};
 
 /// 組裝 NPC 給 LLM 用的身份描述：真名、職稱、場所、性格、心境、最近事件、摘要（對齊既有 `BuildIdentity`）。
 #[must_use]
@@ -34,11 +36,17 @@ pub fn build_identity(entity_id: &str) -> String {
     if let Some(p) = get_personality_for_entity(entity_id) {
         result.push_str(&personality_to_sentence(&p));
     }
-    let disp = get_disposition(entity_id);
-    if disp > 20 {
-        result.push_str("你最近心情不錯。");
-    } else if disp < -20 {
-        result.push_str("你最近過得不太好。");
+    let thoughts = get_active_thoughts(entity_id, 5);
+    if !thoughts.is_empty() {
+        result.push_str("你最近的心境：");
+        for t in &thoughts {
+            if let Some(f) = &t.flavor
+                && !f.is_empty()
+            {
+                result.push_str(f);
+                result.push('；');
+            }
+        }
     }
     for e in get_recent_events(entity_id, 3) {
         result.push_str(&e.payload);

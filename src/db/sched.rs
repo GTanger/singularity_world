@@ -2,8 +2,8 @@
 
 use crate::store;
 
-use super::npc_display::{get_npc_display_label_at_hour, NpcSchedule};
 use super::ErrNoStore;
+use super::npc_display::{NpcSchedule, get_npc_display_label_at_hour};
 
 /// 排班目標房間與是否為上班地（對齊既有 `ScheduleTarget`）。
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -57,8 +57,7 @@ pub fn get_schedule_target(entity_id: &str, game_hour: i32) -> Option<ScheduleTa
 pub fn get_all_schedules() -> anyhow::Result<Vec<NpcSchedule>> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let s = arc.read();
-    Ok(s
-        .get_all_schedules()
+    Ok(s.get_all_schedules()
         .into_iter()
         .map(|sch| NpcSchedule {
             entity_id: sch.entity_id,

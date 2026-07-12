@@ -28,7 +28,8 @@ struct TopicsFile {
     topics: Vec<NpcNpcTopic>,
 }
 
-static NPC_TOPICS_LIST: LazyLock<RwLock<Vec<NpcNpcTopic>>> = LazyLock::new(|| RwLock::new(Vec::new()));
+static NPC_TOPICS_LIST: LazyLock<RwLock<Vec<NpcNpcTopic>>> =
+    LazyLock::new(|| RwLock::new(Vec::new()));
 
 /// 從路徑載入主題劇本；檔案不存在則靜默跳過，其餘錯誤寫 log（對齊既有 `LoadNpcNpcTopics`）。
 pub fn load_npc_npc_topics(path: impl AsRef<Path>) {
@@ -173,7 +174,12 @@ pub fn topic_mask_base_weight(mask: &NpcTopicMask, t: &NpcNpcTopic) -> i32 {
 
 /// 雙人關係額外加權（對齊既有 `pairRelationWeightAdj`）。
 #[must_use]
-pub fn pair_relation_weight_adj(t: &NpcNpcTopic, familiarity: i32, sentiment: i32, dyad_tags: &[String]) -> i32 {
+pub fn pair_relation_weight_adj(
+    t: &NpcNpcTopic,
+    familiarity: i32,
+    sentiment: i32,
+    dyad_tags: &[String],
+) -> i32 {
     let has_tag = |s: &str| dyad_tags.iter().any(|v| v == s);
     let mut w = 0;
     if familiarity >= 50 && t.id == "閒聊" {
@@ -190,7 +196,10 @@ pub fn pair_relation_weight_adj(t: &NpcNpcTopic, familiarity: i32, sentiment: i3
 
 /// 依情境加權抽主題；無符合則回退隨機（對齊既有 `PickRandomNpcNpcTopicByMask`）。
 #[must_use]
-pub fn pick_random_npc_npc_topic_by_mask(mask: &NpcTopicMask, exclude_id: &str) -> Option<NpcNpcTopic> {
+pub fn pick_random_npc_npc_topic_by_mask(
+    mask: &NpcTopicMask,
+    exclude_id: &str,
+) -> Option<NpcNpcTopic> {
     let list: Vec<NpcNpcTopic> = NPC_TOPICS_LIST.read().expect("npc topics lock").clone();
     if list.is_empty() {
         return None;
@@ -264,7 +273,8 @@ pub fn pick_random_npc_npc_topic_for_pair(
         if t.follow_up && !mask.has_room_event {
             continue;
         }
-        let mut w = topic_mask_base_weight(mask, t) + pair_relation_weight_adj(t, familiarity, sentiment, tags);
+        let mut w = topic_mask_base_weight(mask, t)
+            + pair_relation_weight_adj(t, familiarity, sentiment, tags);
         if w < 1 {
             w = 1;
         }
@@ -334,7 +344,8 @@ pub fn debug_topic_weights_for_pair(
             out.push(d);
             continue;
         }
-        d.weight = topic_mask_base_weight(mask, t) + pair_relation_weight_adj(t, familiarity, sentiment, tags);
+        d.weight = topic_mask_base_weight(mask, t)
+            + pair_relation_weight_adj(t, familiarity, sentiment, tags);
         out.push(d);
     }
     out
@@ -361,7 +372,7 @@ mod tests {
         );
         assert_eq!(
             find_npc_npc_topic_id_by_hint(
-                "鎮上傳聞城外惡地、霜林、游離輻射或富態化巨獸（非荒蕪末世，而是生機過剩的危險）"
+                "鎮上傳聞城外惡地、霜林、異常巨獸與過密植被（非荒蕪末世，而是生機過剩的危險）"
             ),
             "城外聞"
         );

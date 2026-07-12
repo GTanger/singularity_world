@@ -7,8 +7,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use rand::Rng;
 
 use crate::db::{
-    expand_soul_seed_to_personality, get_all_venue_room_ids, get_assignments_for_entity, get_entity,
-    get_recent_events, inventory_total_qty, Personality, RoomGraph, EVT_TALK,
+    EVT_TALK, Personality, RoomGraph, expand_soul_seed_to_personality, get_all_venue_room_ids,
+    get_assignments_for_entity, get_entity, get_recent_events, inventory_total_qty,
 };
 
 /// 生存層鎂閾值（對齊既有 `SurvivalLineMg`）。
@@ -91,11 +91,14 @@ pub fn build_decision_state(entity_id: &str) -> anyhow::Result<DecisionState> {
     let (personality, has_personality) = if let Some(seed) = ch.soul_seed {
         (expand_soul_seed_to_personality(seed), true)
     } else {
-        (Personality {
-            boldness: 0.5,
-            sensitivity: 0.5,
-            orderliness: 0.5,
-        }, false)
+        (
+            Personality {
+                boldness: 0.5,
+                sensitivity: 0.5,
+                orderliness: 0.5,
+            },
+            false,
+        )
     };
     let inv_qty = inventory_total_qty(&ch.inventory);
     let mut last_talk_at: i64 = 0;
@@ -117,7 +120,11 @@ pub fn build_decision_state(entity_id: &str) -> anyhow::Result<DecisionState> {
 }
 
 /// 組裝周邊情境（對齊既有 `BuildDecisionContext`）。
-pub fn build_decision_context(g: &RoomGraph, current_room_id: &str, max_dist: i32) -> DecisionContext {
+pub fn build_decision_context(
+    g: &RoomGraph,
+    current_room_id: &str,
+    max_dist: i32,
+) -> DecisionContext {
     let mut md = max_dist;
     if md <= 0 {
         md = 20;
@@ -136,7 +143,12 @@ pub fn build_decision_context(g: &RoomGraph, current_room_id: &str, max_dist: i3
     }
 }
 
-fn filter_rooms_within_dist(g: &RoomGraph, origin: &str, candidates: &[String], max_dist: i32) -> Vec<String> {
+fn filter_rooms_within_dist(
+    g: &RoomGraph,
+    origin: &str,
+    candidates: &[String],
+    max_dist: i32,
+) -> Vec<String> {
     if candidates.is_empty() || max_dist <= 0 {
         return Vec::new();
     }
@@ -180,11 +192,7 @@ fn urgency_survival(mg: i32) -> f64 {
 }
 
 fn urgency_stability(has_assignment: bool) -> f64 {
-    if has_assignment {
-        0.0
-    } else {
-        0.8
-    }
+    if has_assignment { 0.0 } else { 0.8 }
 }
 
 fn urgency_social(last_talk_at: i64, disposition: i32) -> f64 {
@@ -229,7 +237,11 @@ const INTENT_INERTIA_MULTIPLIER: f64 = 1.8;
 /// 評分引擎：加權隨機選意圖。
 /// `prev_intent` 為上一次意圖類型，若非 None 則給予慣性加權，使行為具連貫性。
 /// 無慣性需求時傳 `None` 即可。
-pub fn decide_with_inertia(state: DecisionState, ctx: &DecisionContext, prev_intent: Option<IntentType>) -> Intent {
+pub fn decide_with_inertia(
+    state: DecisionState,
+    ctx: &DecisionContext,
+    prev_intent: Option<IntentType>,
+) -> Intent {
     let survival = urgency_survival(state.magnesium);
     let stability = urgency_stability(state.has_assignment);
     let social = urgency_social(state.last_talk_at, state.disposition);
@@ -290,7 +302,8 @@ pub fn decide_with_inertia(state: DecisionState, ctx: &DecisionContext, prev_int
         }
     }
 
-    if state.inventory_total_qty > 0 && survival > 0.05
+    if state.inventory_total_qty > 0
+        && survival > 0.05
         && (!ctx.social_or_gate_in_range.is_empty() || has_tag(&ctx.room_tags, &["gate", "social"]))
     {
         let mut score = survival * 0.45;
@@ -500,8 +513,12 @@ pub fn resolve_brain_path(
             }
         }
         IntentType::Wander => {
-            let candidates = g.find_rooms_within_dist(current_room_id, &["social", "gate", "outdoor"], md);
-            let filtered: Vec<String> = candidates.into_iter().filter(|c| c != current_room_id).collect();
+            let candidates =
+                g.find_rooms_within_dist(current_room_id, &["social", "gate", "outdoor"], md);
+            let filtered: Vec<String> = candidates
+                .into_iter()
+                .filter(|c| c != current_room_id)
+                .collect();
             if !filtered.is_empty() {
                 let target = pick_random(&filtered);
                 if let Some(p) = g.find_path(current_room_id, &target) {

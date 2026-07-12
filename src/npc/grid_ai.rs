@@ -1,12 +1,11 @@
 //! 實作 `src/npc/mod.rs` 中定義的 GridNpcManager 核心邏輯 (方格網 AI)
 //! 包含 pathfinding, intent 決策, 以及與資料庫的同步。
 
-use crate::db::{
-    add_to_inventory, get_entity, get_schedule_target,
-};
-use crate::grid::{SquareCoord, SquareGrid};
+use crate::db::{add_to_inventory, get_entity, get_schedule_target};
+use crate::grid::{SquareCoord, SquareGrid, grid_room_id_from_coord};
 use crate::npc::IntentType;
 use crate::store::get_store;
+use crate::world::materials;
 use std::collections::{HashMap, HashSet};
 
 /// 與常數 `SurvivalLineMg` 一致：低於此鎂才可能在未觀測時補鎂。
@@ -32,7 +31,9 @@ impl Default for GridNpcManager {
 
 impl GridNpcManager {
     pub fn new() -> Self {
-        Self { states: HashMap::new() }
+        Self {
+            states: HashMap::new(),
+        }
     }
 
     /// 每一跳 (tick) 驅動方格世界所有 NPC：決策 -> 移動 -> 採集
@@ -40,11 +41,14 @@ impl GridNpcManager {
         let mut events = Vec::new();
         let mut harvest_queue = Vec::new();
 
-        let Some(arc) = get_store() else { return events; };
+        let Some(arc) = get_store() else {
+            return events;
+        };
         let npc_coords: HashMap<String, SquareCoord>;
         {
             let s = arc.read();
-            npc_coords = s.get_npc_ids_with_grid()
+            npc_coords = s
+                .get_npc_ids_with_grid()
                 .into_iter()
                 .filter_map(|id| {
                     let e = s.get_entity(&id)?;
@@ -71,9 +75,13 @@ impl GridNpcManager {
                     state.path.remove(0);
                     let description = format!(
                         "從 ({},{}) 往 {} ({},{}) 移動了一步",
-                        pos.x, pos.y,
-                        grid.get(next_pos).map(|c| c.name.clone()).unwrap_or_else(|| "街道".into()),
-                        next_pos.x, next_pos.y
+                        pos.x,
+                        pos.y,
+                        grid.get(next_pos)
+                            .map(|c| c.name.clone())
+                            .unwrap_or_else(|| "街道".into()),
+                        next_pos.x,
+                        next_pos.y
                     );
                     events.push(GridMoveEvent {
                         entity_id: entity_id.clone(),
@@ -82,7 +90,7 @@ impl GridNpcManager {
                         intent: state.last_intent.unwrap_or(IntentType::Wander),
                         description,
                     });
-                    
+
                     let mut s = arc.write();
                     let _ = s.set_entity_grid(entity_id, next_pos.x, next_pos.y);
                 } else {
@@ -99,16 +107,18 @@ impl GridNpcManager {
                     if let Some(target) = get_schedule_target(entity_id, hour) {
                         let parts: Vec<&str> = target.room.split(',').collect();
                         if parts.len() == 2
-                            && let (Ok(tx), Ok(ty)) = (parts[0].parse::<i32>(), parts[1].parse::<i32>()) {
-                                let target_pos = SquareCoord { x: tx, y: ty };
-                                if target_pos != *pos {
-                                    if let Some(path) = grid.find_path(*pos, target_pos) {
-                                        state.path = path.into_iter().skip(1).collect();
-                                    }
-                                } else {
-                                    state.dwell_ticks = 5;
+                            && let (Ok(tx), Ok(ty)) =
+                                (parts[0].parse::<i32>(), parts[1].parse::<i32>())
+                        {
+                            let target_pos = SquareCoord { x: tx, y: ty };
+                            if target_pos != *pos {
+                                if let Some(path) = grid.find_path(*pos, target_pos) {
+                                    state.path = path.into_iter().skip(1).collect();
                                 }
+                            } else {
+                                state.dwell_ticks = 5;
                             }
+                        }
                     }
                 }
                 IntentType::Gather => {
@@ -123,9 +133,10 @@ impl GridNpcManager {
                 }
                 IntentType::Wander => {
                     if let Some(target) = pick_random_walkable(grid, *pos, 3)
-                        && let Some(path) = grid.find_path(*pos, target) {
-                            state.path = path.into_iter().skip(1).collect();
-                        }
+                        && let Some(path) = grid.find_path(*pos, target)
+                    {
+                        state.path = path.into_iter().skip(1).collect();
+                    }
                 }
                 _ => {
                     state.dwell_ticks = 3;
@@ -151,14 +162,25 @@ pub struct GridMoveEvent {
     pub description: String,
 }
 
-fn decide_grid(entity_id: &str, pos: SquareCoord, grid: &SquareGrid, _prev: Option<IntentType>, hour: i32) -> IntentType {
+fn decide_grid(
+    entity_id: &str,
+    pos: SquareCoord,
+    grid: &SquareGrid,
+    _prev: Option<IntentType>,
+    hour: i32,
+) -> IntentType {
     if let Some(target) = get_schedule_target(entity_id, hour) {
         let parts: Vec<&str> = target.room.split(',').collect();
         if parts.len() == 2
             && let (Ok(tx), Ok(ty)) = (parts[0].parse::<i32>(), parts[1].parse::<i32>())
-                && (tx != pos.x || ty != pos.y) {
-                    return if target.is_work { IntentType::Work } else { IntentType::Idle };
-                }
+            && (tx != pos.x || ty != pos.y)
+        {
+            return if target.is_work {
+                IntentType::Work
+            } else {
+                IntentType::Idle
+            };
+        }
     }
 
     let state = match build_decision_state(entity_id) {
@@ -198,7 +220,10 @@ fn find_nearest_resource(grid: &SquareGrid, pos: SquareCoord, range: i32) -> Opt
 
     for dy in -range..=range {
         for dx in -range..=range {
-            let target = SquareCoord { x: pos.x + dx, y: pos.y + dy };
+            let target = SquareCoord {
+                x: pos.x + dx,
+                y: pos.y + dy,
+            };
             if let Some(cell) = grid.get(target) {
                 let k = cell.terrain.kind_str();
                 if k == "farm_field" || k == "forest" {
@@ -219,25 +244,29 @@ fn pick_random_walkable(grid: &SquareGrid, pos: SquareCoord, range: i32) -> Opti
     let mut rng = rand::rng();
     let dx = rng.random_range(-range..=range);
     let dy = rng.random_range(-range..=range);
-    let target = SquareCoord { x: pos.x + dx, y: pos.y + dy };
-    if grid.get(target).map(|c| c.terrain.walkable()).unwrap_or(false) {
+    let target = SquareCoord {
+        x: pos.x + dx,
+        y: pos.y + dy,
+    };
+    if grid
+        .get(target)
+        .map(|c| c.terrain.walkable())
+        .unwrap_or(false)
+    {
         Some(target)
     } else {
         None
     }
 }
 
-fn tick_regrowth(_grid: &mut SquareGrid, _occupancy: &HashSet<SquareCoord>) {
-}
+fn tick_regrowth(_grid: &mut SquareGrid, _occupancy: &HashSet<SquareCoord>) {}
 
-fn harvest_from_grid(grid: &mut SquareGrid, _now: i64, entity_id: &str, pos: SquareCoord) {
-    if let Some(cell) = grid.get(pos) {
-        let k = cell.terrain.kind_str();
-        let item = match k {
-            "farm_field" => "grain",
-            "forest" => "wood",
-            _ => return,
-        };
-        let _ = add_to_inventory(entity_id, item, 1);
+fn harvest_from_grid(grid: &mut SquareGrid, now: i64, entity_id: &str, pos: SquareCoord) {
+    if grid.get(pos).is_none() {
+        return;
+    }
+    let room_id = grid_room_id_from_coord(pos.x, pos.y);
+    if let Some(gathered) = materials::try_gather_material_for_room_preserving(&room_id, now, 1) {
+        let _ = add_to_inventory(entity_id, &gathered.item_id, 1);
     }
 }

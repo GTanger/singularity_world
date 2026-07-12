@@ -1,9 +1,8 @@
 //! NPC 街頭兜售（對齊既有 `db/npc_trade`）。
 
-use rand::Rng;
-
 use super::{
-    add_magnesium, adjust_disposition, get_entity, log_npc_event, remove_from_inventory, DISP_TRADE, EVT_TRADE,
+    EVT_TRADE, ThoughtSource, add_magnesium, add_thought, default_trade_ask_mg, get_entity,
+    get_item_def, log_npc_event, pick_npc_trade_offer, remove_from_inventory,
 };
 
 /// 賣出背包中第一筆 `qty≥1` 的物品 1 件換鎂；成功回 `true`（對齊既有 `NpcStreetSellOne`）。
@@ -14,27 +13,20 @@ pub fn npc_street_sell_one(entity_id: &str, room_id: &str, at: i64) -> bool {
     if ch.inventory.is_empty() || ch.inventory == "[]" {
         return false;
     }
-    #[derive(serde::Deserialize)]
-    struct InvRow {
-        #[serde(rename = "item_id")]
-        item_id: String,
-        qty: i32,
+    let Some(item_id) = pick_npc_trade_offer(&ch.inventory) else {
+        return false;
+    };
+    if remove_from_inventory(entity_id, &item_id, 1).is_err() {
+        return false;
     }
-    let entries: Vec<InvRow> = serde_json::from_str(&ch.inventory).unwrap_or_default();
-    for e in &entries {
-        if e.qty <= 0 || e.item_id.is_empty() {
-            continue;
-        }
-        if remove_from_inventory(entity_id, &e.item_id, 1).is_err() {
-            continue;
-        }
-        let mut rng = rand::rng();
-        let mag = 4 + rng.random_range(0..10);
-        let _ = add_magnesium(entity_id, mag);
-        let payload = format!("在{room_id}兜售賣出{}，得{mag}鎂", e.item_id);
-        log_npc_event(at, entity_id, EVT_TRADE, &payload);
-        let _ = adjust_disposition(entity_id, DISP_TRADE);
-        return true;
-    }
-    false
+    let mag = default_trade_ask_mg(&item_id);
+    let _ = add_magnesium(entity_id, mag);
+    let item_name = get_item_def(&item_id)
+        .map(|d| d.name)
+        .filter(|name| !name.is_empty())
+        .unwrap_or(item_id);
+    let payload = format!("在{room_id}兜售賣出{item_name}，得{mag}鎂");
+    log_npc_event(at, entity_id, EVT_TRADE, &payload);
+    let _ = add_thought(entity_id, ThoughtSource::Trade);
+    true
 }

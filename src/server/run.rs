@@ -4,12 +4,12 @@ use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
 
-use axum::extract::ws::{Message, WebSocket, WebSocketUpgrade};
+use axum::Router;
 use axum::extract::State;
+use axum::extract::ws::{Message, WebSocket, WebSocketUpgrade};
 use axum::http::header;
 use axum::response::{Html, IntoResponse};
 use axum::routing::{delete, get, post, put};
-use axum::Router;
 use futures_util::{SinkExt, StreamExt};
 use tokio::sync::mpsc;
 use tower_http::services::ServeDir;
@@ -18,10 +18,10 @@ use uuid::Uuid;
 
 use crate::config::Server;
 
-use super::handler::{handle_message, WsConnection};
+use super::grid_manager;
+use super::handler::{WsConnection, handle_message};
 use super::http_api;
 use super::hub::{Hub, SEND_BUFFER_SIZE};
-use super::grid_manager;
 use super::room_editor;
 use super::session::SessionStore;
 use super::simulation_loop::spawn_simulation_main_loop;
@@ -38,13 +38,13 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
     let max = cfg.max_websocket_conn.max(1) as usize;
     let hub = Arc::new(Hub::new(max));
     let sessions = Arc::new(SessionStore::new());
-    let state = AppState {
-        hub,
-        sessions,
-        cfg,
-    };
+    let state = AppState { hub, sessions, cfg };
     grid_manager::init();
-    spawn_simulation_main_loop(Arc::clone(&state.sessions), Arc::clone(&state.hub), state.cfg.clone());
+    spawn_simulation_main_loop(
+        Arc::clone(&state.sessions),
+        Arc::clone(&state.hub),
+        state.cfg.clone(),
+    );
     let port = state.cfg.port.clone();
 
     let app = Router::new()
@@ -64,19 +64,39 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/api/time", get(http_api::game_time))
         .route("/api/climate", get(http_api::climate))
         // 房間管理 CRUD
-        .route("/api/rooms", get(http_api::list_rooms).post(http_api::create_room))
-        .route("/api/rooms/{id}", get(http_api::get_room_admin).put(http_api::update_room).delete(http_api::delete_room))
+        .route(
+            "/api/rooms",
+            get(http_api::list_rooms).post(http_api::create_room),
+        )
+        .route(
+            "/api/rooms/{id}",
+            get(http_api::get_room_admin)
+                .put(http_api::update_room)
+                .delete(http_api::delete_room),
+        )
         .route("/api/rooms/{id}/rename", post(http_api::rename_room))
         .route("/api/rooms/{id}/exits", post(http_api::add_exit))
-        .route("/api/rooms/{from_id}/exits/{direction}", delete(http_api::remove_exit))
+        .route(
+            "/api/rooms/{from_id}/exits/{direction}",
+            delete(http_api::remove_exit),
+        )
         // 房間心智圖編輯器
         .route("/api/room-editor/graph", get(room_editor::graph))
         .route("/api/room-editor/room", post(room_editor::create))
-        .route("/api/room-editor/room/{id}", put(room_editor::update).delete(room_editor::delete))
-        .route("/api/room-editor/link", post(room_editor::link_create).delete(room_editor::link_delete))
+        .route(
+            "/api/room-editor/room/{id}",
+            put(room_editor::update).delete(room_editor::delete),
+        )
+        .route(
+            "/api/room-editor/link",
+            post(room_editor::link_create).delete(room_editor::link_delete),
+        )
         .route("/api/room-editor/layout", put(room_editor::layout))
         .route("/api/room-editor/reload", post(room_editor::reload))
-        .route("/api/room-editor/groups", get(room_editor::groups_get).post(room_editor::groups_post))
+        .route(
+            "/api/room-editor/groups",
+            get(room_editor::groups_get).post(room_editor::groups_post),
+        )
         // HTML 頁面路由
         .route("/map_viewer", get(serve_map_viewer))
         .route("/eco_viewer", get(serve_eco_viewer))
@@ -90,16 +110,11 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .nest_service("/data/config", ServeDir::new("data/config"))
         .with_state(state.clone())
         // 靜態檔案服務 — web/ 目錄（fallback，對齊既有 `http.FileServer`）
-        .fallback_service(
-            ServeDir::new("web")
-                .precompressed_gzip()
-        )
-        .layer(
-            SetResponseHeaderLayer::overriding(
-                header::CACHE_CONTROL,
-                header::HeaderValue::from_static("no-cache, max-age=0, must-revalidate"),
-            ),
-        );
+        .fallback_service(ServeDir::new("web").precompressed_gzip())
+        .layer(SetResponseHeaderLayer::overriding(
+            header::CACHE_CONTROL,
+            header::HeaderValue::from_static("no-cache, max-age=0, must-revalidate"),
+        ));
 
     let addr: SocketAddr = format!("0.0.0.0:{port}")
         .parse()
@@ -119,19 +134,35 @@ async fn serve_html_page(filename: &str) -> impl IntoResponse {
     let path = PathBuf::from("web").join(filename);
     match tokio::fs::read_to_string(&path).await {
         Ok(content) => (
-            [(header::CONTENT_TYPE, "text/html; charset=utf-8"),
-             (header::CACHE_CONTROL, "no-cache, max-age=0, must-revalidate")],
+            [
+                (header::CONTENT_TYPE, "text/html; charset=utf-8"),
+                (
+                    header::CACHE_CONTROL,
+                    "no-cache, max-age=0, must-revalidate",
+                ),
+            ],
             Html(content),
-        ).into_response(),
+        )
+            .into_response(),
         Err(_) => (axum::http::StatusCode::NOT_FOUND, "Not Found").into_response(),
     }
 }
 
-async fn serve_map_viewer() -> impl IntoResponse { serve_html_page("map_viewer.html").await }
-async fn serve_eco_viewer() -> impl IntoResponse { serve_html_page("eco_viewer.html").await }
-async fn serve_star_chart() -> impl IntoResponse { serve_html_page("star_chart.html").await }
-async fn serve_dashboard() -> impl IntoResponse { serve_html_page("dashboard.html").await }
-async fn serve_admin() -> impl IntoResponse { serve_html_page("admin.html").await }
+async fn serve_map_viewer() -> impl IntoResponse {
+    serve_html_page("map_viewer.html").await
+}
+async fn serve_eco_viewer() -> impl IntoResponse {
+    serve_html_page("eco_viewer.html").await
+}
+async fn serve_star_chart() -> impl IntoResponse {
+    serve_html_page("star_chart.html").await
+}
+async fn serve_dashboard() -> impl IntoResponse {
+    serve_html_page("dashboard.html").await
+}
+async fn serve_admin() -> impl IntoResponse {
+    serve_html_page("admin.html").await
+}
 
 async fn handle_socket(mut socket: WebSocket, st: AppState) {
     let conn_id = Uuid::new_v4();
@@ -182,7 +213,10 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
     loop {
         let next = tokio::time::timeout(std::time::Duration::from_secs(120), stream.next()).await;
         let msg = match next {
-            Err(_) => { tracing::info!("ws idle timeout, closing conn_id={conn_id}"); break; }
+            Err(_) => {
+                tracing::info!("ws idle timeout, closing conn_id={conn_id}");
+                break;
+            }
             Ok(None) => break,
             Ok(Some(Err(_))) => break,
             Ok(Some(Ok(m))) => m,
@@ -196,13 +230,20 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
                         handle_message(&c, &bytes);
                     }));
                     if let Err(e) = r {
-                        let pmsg = if let Some(s) = e.downcast_ref::<&str>() { s.to_string() }
-                            else if let Some(s) = e.downcast_ref::<String>() { s.clone() }
-                            else { "unknown panic".to_string() };
+                        let pmsg = if let Some(s) = e.downcast_ref::<&str>() {
+                            s.to_string()
+                        } else if let Some(s) = e.downcast_ref::<String>() {
+                            s.clone()
+                        } else {
+                            "unknown panic".to_string()
+                        };
                         tracing::error!("[handle_message PANIC] {pmsg}");
                     }
-                }).await;
-                if let Err(e) = jh { tracing::error!("[handle_message JOIN ERR] {e}"); }
+                })
+                .await;
+                if let Err(e) = jh {
+                    tracing::error!("[handle_message JOIN ERR] {e}");
+                }
             }
             Message::Binary(b) => {
                 let c = conn.clone();
@@ -211,13 +252,20 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
                         handle_message(&c, &b);
                     }));
                     if let Err(e) = r {
-                        let pmsg = if let Some(s) = e.downcast_ref::<&str>() { s.to_string() }
-                            else if let Some(s) = e.downcast_ref::<String>() { s.clone() }
-                            else { "unknown panic".to_string() };
+                        let pmsg = if let Some(s) = e.downcast_ref::<&str>() {
+                            s.to_string()
+                        } else if let Some(s) = e.downcast_ref::<String>() {
+                            s.clone()
+                        } else {
+                            "unknown panic".to_string()
+                        };
                         tracing::error!("[handle_message PANIC] {pmsg}");
                     }
-                }).await;
-                if let Err(e) = jh { tracing::error!("[handle_message JOIN ERR] {e}"); }
+                })
+                .await;
+                if let Err(e) = jh {
+                    tracing::error!("[handle_message JOIN ERR] {e}");
+                }
             }
             Message::Close(_) => break,
             _ => {}

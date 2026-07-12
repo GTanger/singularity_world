@@ -6,9 +6,9 @@
 //! 地形由加權隨機決定（30% 草原、20% 平地、15% 森林……），
 //! 採輕量化純雜湊路線，每格完全獨立且可重現。
 
+use super::cell::{GridObject, GridObjectKind, Terrain};
 use super::coord::SquareCoord;
 use super::grid::{GridCell, SquareGrid};
-use super::cell::{GridObject, GridObjectKind, Terrain};
 
 // ─── 座標種子混合 ───
 
@@ -37,16 +37,16 @@ fn terrain_from_seed(seed: u64) -> Terrain {
     // 取高 32 位元轉成 0..100 的整數
     let roll = ((seed >> 32) % 100) as u8;
     match roll {
-        0..=29 => Terrain::Grassland,   // 30%
-        30..=49 => Terrain::Plain,      // 20%
-        50..=64 => Terrain::Forest,     // 15%
+        0..=29 => Terrain::Grassland,    // 30%
+        30..=49 => Terrain::Plain,       // 20%
+        50..=64 => Terrain::Forest,      // 15%
         65..=74 => Terrain::ForestLight, // 10%
-        75..=82 => Terrain::Hills,      // 8%
+        75..=82 => Terrain::Hills,       // 8%
         83..=87 => Terrain::ForestHeavy, // 5%
-        88..=91 => Terrain::Mountain,   // 4%
-        92..=94 => Terrain::Water,      // 3%
-        95..=97 => Terrain::Swamp,      // 3%
-        _ => Terrain::Desert,           // 2%（98-99）
+        88..=91 => Terrain::Mountain,    // 4%
+        92..=94 => Terrain::Water,       // 3%
+        95..=97 => Terrain::Swamp,       // 3%
+        _ => Terrain::Desert,            // 2%（98-99）
     }
 }
 
@@ -119,27 +119,12 @@ static OBJ_FOREST: &[ObjSpec] = &[
     (Flora, "草藥", 4, 1, 30),
     (Flora, "木材", 5, 1, 55),
 ];
-static OBJ_FOREST_LIGHT: &[ObjSpec] = &[
-    (Flora, "野果", 4, 1, 35),
-    (Flora, "草藥", 3, 1, 25),
-];
-static OBJ_FOREST_HEAVY: &[ObjSpec] = &[
-    (Flora, "木材", 5, 1, 60),
-    (Flora, "草藥", 5, 1, 35),
-];
-static OBJ_GRASSLAND: &[ObjSpec] = &[
-    (Flora, "野果", 4, 1, 30),
-    (Flora, "草藥", 3, 1, 20),
-];
-static OBJ_PLAIN: &[ObjSpec] = &[
-    (Flora, "野果", 3, 1, 20),
-];
-static OBJ_HILLS: &[ObjSpec] = &[
-    (Mineral, "礦石", 5, 1, 40),
-];
-static OBJ_SWAMP: &[ObjSpec] = &[
-    (WaterSource, "淡水", 5, 1, 50),
-];
+static OBJ_FOREST_LIGHT: &[ObjSpec] = &[(Flora, "野果", 4, 1, 35), (Flora, "草藥", 3, 1, 25)];
+static OBJ_FOREST_HEAVY: &[ObjSpec] = &[(Flora, "木材", 5, 1, 60), (Flora, "草藥", 5, 1, 35)];
+static OBJ_GRASSLAND: &[ObjSpec] = &[(Flora, "野果", 4, 1, 30), (Flora, "草藥", 3, 1, 20)];
+static OBJ_PLAIN: &[ObjSpec] = &[(Flora, "野果", 3, 1, 20)];
+static OBJ_HILLS: &[ObjSpec] = &[(Mineral, "礦石", 5, 1, 40)];
+static OBJ_SWAMP: &[ObjSpec] = &[(WaterSource, "淡水", 5, 1, 50)];
 static OBJ_EMPTY: &[ObjSpec] = &[];
 
 fn object_table(terrain: Terrain) -> &'static [ObjSpec] {
@@ -161,10 +146,7 @@ fn generate_objects(world_seed: u64, coord: SquareCoord, terrain: Terrain) -> Ve
     let mut objects = Vec::new();
     for (i, &(kind, name, max_qty, regen, chance)) in table.iter().enumerate() {
         // 每件物品用獨立種子判斷是否生成
-        let obj_seed = mix_coord_seed(
-            world_seed.wrapping_add(0xABCD_0000 + i as u64),
-            coord,
-        );
+        let obj_seed = mix_coord_seed(world_seed.wrapping_add(0xABCD_0000 + i as u64), coord);
         // 取低 8 位轉 0..100
         let roll = (obj_seed & 0xFF) % 100;
         if roll >= chance as u64 {

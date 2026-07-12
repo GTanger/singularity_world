@@ -1,7 +1,7 @@
 # NPC 相關設定 — 已實做與未實做
 
 > 對照：`docs/NPC活化系統.md`、`docs/implementation/NPC活化系統—實作清單與實作計畫.md`、討論 002／003。  
-> 最後更新：2026-02-12
+> 最後更新：2026-06-15
 
 ---
 
@@ -68,7 +68,7 @@
 | 項目 | 狀態 | 說明 |
 |------|------|------|
 | Talk 串接「純」對話模板 | 🟡 | 目前 Talk 已接 LLM＋背版＋記憶；模板為 fallback，未單獨「只抽模板句」模式 |
-| **Trade 交易流程** | ⬜ 延後 | 插座有 Trade；**出價→議價→成交/拒絕**依**世界物流規格**實做（規格已定版，見 [世界物流規格—草稿](世界物流規格—草稿.md)）（目前無物品可交易）。 |
+| **Trade 交易流程** | 🟡 部分 | 直接點【交易】已可走 NPC 個人背包報價→玩家出價/拒絕→重新確認 NPC 仍持有該貨→`settle_inventory_trade` 單次結算鎂與雙方 inventory（`src/server/action/trade.rs`、`src/db/trade_pending.rs`、`src/db/inventory.rs`）。Talk 交易意圖已可回 `open_trade` 並自動取得同一套 Trade 報價。尚未完成店舖庫存、交易面板、可對話主題 UI、NPC 主動喊價與 NPC↔NPC 交易。 |
 | **模板 NPC 生成器** | ⬜ | 讀 archetypes 批量生成 NPC 個體未做；NPC 靠手動或 SpawnOneNPCFromPool |
 | **NPC 喊價** | ⬜ | NPC 主動在 log 發 trade_announce 未做 |
 

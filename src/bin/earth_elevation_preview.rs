@@ -60,7 +60,11 @@ fn parse_args() -> Args {
         }
         i += 1;
     }
-    Args { dir, out, downsample }
+    Args {
+        dir,
+        out,
+        downsample,
+    }
 }
 
 /// 讀單一 tile。回傳 3601×3601 高程 grid（row=0 為北緣）。
@@ -114,8 +118,7 @@ fn main() {
                     let row_off = ((lat_max - lat) as usize) * TILE_N;
                     let col_off = ((lon - lon_min) as usize) * TILE_N;
                     for (dy, src_row) in grid.iter().enumerate() {
-                        big[row_off + dy][col_off..col_off + TILE_N]
-                            .copy_from_slice(src_row);
+                        big[row_off + dy][col_off..col_off + TILE_N].copy_from_slice(src_row);
                     }
                     eprintln!("讀入 {name}");
                 }
@@ -154,9 +157,7 @@ fn main() {
         }
     }
 
-    eprintln!(
-        "拼接完成：{out_w}×{out_h} @ downsample={ds}，elevation range [{min_e}, {max_e}] m"
-    );
+    eprintln!("拼接完成：{out_w}×{out_h} @ downsample={ds}，elevation range [{min_e}, {max_e}] m");
 
     // 輸出 PPM P6。海=深藍、平地=綠、山=棕、高山=白
     let mut f = File::create(&args.out).expect("開 PPM 失敗");

@@ -1,11 +1,11 @@
 // gametext 模組 — 從 data/config/gametext.json 載入文案、敘事模板、規則詞表。
 // 對齊既有 gametext/gametext。
 
+use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 use std::sync::RwLock;
-use serde::Deserialize;
 
 const DEFAULT_PATH: &str = "data/config/gametext.json";
 
@@ -213,12 +213,16 @@ static STORE: RwLock<Option<RootJson>> = RwLock::new(None);
 
 /// 載入 gametext JSON，可重複呼叫（冪等）。
 pub fn load(custom_path: &str) -> anyhow::Result<()> {
-    let p = if custom_path.is_empty() { DEFAULT_PATH } else { custom_path };
+    let p = if custom_path.is_empty() {
+        DEFAULT_PATH
+    } else {
+        custom_path
+    };
     let raw = fs::read_to_string(p)
         .or_else(|_| fs::read_to_string(Path::new("..").join(p)))
         .map_err(|e| anyhow::anyhow!("gametext: read {:?}: {}", p, e))?;
-    let r: RootJson = serde_json::from_str(&raw)
-        .map_err(|e| anyhow::anyhow!("gametext: parse: {}", e))?;
+    let r: RootJson =
+        serde_json::from_str(&raw).map_err(|e| anyhow::anyhow!("gametext: parse: {}", e))?;
     let mut guard = STORE.write().unwrap();
     *guard = Some(r);
     Ok(())
@@ -263,30 +267,32 @@ where
 /// 回傳客戶端錯誤訊息，找不到則回傳 key 本身。
 pub fn client(key: &str) -> String {
     with_root(|r| {
-        r.client_errors.get(key).cloned().unwrap_or_else(|| key.to_string())
+        r.client_errors
+            .get(key)
+            .cloned()
+            .unwrap_or_else(|| key.to_string())
     })
 }
 
 /// 格式化客戶端訊息（用 key 查模板再代入參數）。
 pub fn clientf(key: &str, args: &[&str]) -> String {
-    with_root(|r| {
-        match r.client_errors.get(key) {
-            Some(tpl) => {
-                let mut result = tpl.clone();
-                for (i, arg) in args.iter().enumerate() {
-                    result = result.replacen(&format!("{{{}}}", i), arg, 1);
-                }
-                result
+    with_root(|r| match r.client_errors.get(key) {
+        Some(tpl) => {
+            let mut result = tpl.clone();
+            for (i, arg) in args.iter().enumerate() {
+                result = result.replacen(&format!("{{{}}}", i), arg, 1);
             }
-            None => key.to_string(),
+            result
         }
+        None => key.to_string(),
     })
 }
 
 /// 取得 brain_arrival 敘事模板（支援 `%s` 與 `{}` 占位）。
 pub fn brain_arrival(intent_key: &str, npc_name: &str) -> String {
     with_root(|r| {
-        r.brain_arrival.get(intent_key)
+        r.brain_arrival
+            .get(intent_key)
             .map(|tpl| {
                 if tpl.contains("{}") {
                     tpl.replace("{}", npc_name)
@@ -329,7 +335,10 @@ pub fn time_of_day_label(hour: i32) -> String {
                 return b.label.clone();
             }
         }
-        r.time_of_day.last().map(|b| b.label.clone()).unwrap_or_default()
+        r.time_of_day
+            .last()
+            .map(|b| b.label.clone())
+            .unwrap_or_default()
     })
 }
 
@@ -415,7 +424,8 @@ pub fn dialogue_markers() -> String {
 
 /// hint 是否包含 subs 中任一子字串。
 pub fn topic_contains_any(hint: &str, subs: &[String]) -> bool {
-    subs.iter().any(|s| !s.is_empty() && hint.contains(s.as_str()))
+    subs.iter()
+        .any(|s| !s.is_empty() && hint.contains(s.as_str()))
 }
 
 /// 截斷至 n 個 Unicode 字元，超出部分以「…」取代（對齊既有 `gametext.TruncRune`）。

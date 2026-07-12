@@ -26,10 +26,18 @@ pub async fn graph(
     Query(q): Query<AdminQuery>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let s = st.read();
     let mut ids = s.room_ids();
@@ -70,21 +78,43 @@ pub async fn create(
     Json(req): Json<CreateReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     if req.id.trim().is_empty() {
-        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"invalid request"}))).into_response();
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({"error":"invalid request"})),
+        )
+            .into_response();
     }
     let idx = match walk_room_files() {
         Ok(i) => i,
-        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response(),
+        Err(e) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({"error": e.to_string()})),
+            )
+                .into_response();
+        }
     };
     if idx.contains_key(&req.id) {
-        return (StatusCode::CONFLICT, Json(serde_json::json!({"error":"room id exists"}))).into_response();
+        return (
+            StatusCode::CONFLICT,
+            Json(serde_json::json!({"error":"room id exists"})),
+        )
+            .into_response();
     }
     let mut f = RoomEditorRoomFile {
         id: req.id.clone(),
-        name: if req.name.is_empty() { req.id.clone() } else { req.name },
+        name: if req.name.is_empty() {
+            req.id.clone()
+        } else {
+            req.name
+        },
         description: req.description,
         zone: req.zone,
         tags: req.tags,
@@ -99,12 +129,19 @@ pub async fn create(
         f.zone = src.zone;
         f.objects = src.objects;
     }
-    let out_path = rooms_base_path().join("editor").join(format!("{}.json", normalize_id_for_file(&req.id)));
+    let out_path = rooms_base_path()
+        .join("editor")
+        .join(format!("{}.json", normalize_id_for_file(&req.id)));
     if let Err(e) = write_room_file(&out_path, &f) {
-        return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response();
     }
     ensure_store_room(&f);
-    Json(serde_json::json!({"ok": true, "id": f.id, "path": out_path.to_string_lossy()})).into_response()
+    Json(serde_json::json!({"ok": true, "id": f.id, "path": out_path.to_string_lossy()}))
+        .into_response()
 }
 
 // PUT /api/room-editor/room/:id
@@ -115,19 +152,37 @@ pub async fn update(
     Json(req): Json<UpdateReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let (mut f, path) = match read_room_file_by_id(&id) {
         Ok(v) => v,
-        Err(_) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response(),
+        Err(_) => {
+            return (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({"error":"room not found"})),
+            )
+                .into_response();
+        }
     };
-    f.name = if req.name.is_empty() { f.id.clone() } else { req.name };
+    f.name = if req.name.is_empty() {
+        f.id.clone()
+    } else {
+        req.name
+    };
     f.description = req.description;
     f.zone = req.zone;
     f.tags = req.tags;
     f.objects = req.objects;
     if let Err(e) = write_room_file(&path, &f) {
-        return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response();
     }
     ensure_store_room(&f);
     Json(serde_json::json!({"ok": true, "id": id})).into_response()
@@ -140,14 +195,28 @@ pub async fn delete(
     AxPath(id): AxPath<String>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let (_, path) = match read_room_file_by_id(&id) {
         Ok(v) => v,
-        Err(_) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"room not found"}))).into_response(),
+        Err(_) => {
+            return (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({"error":"room not found"})),
+            )
+                .into_response();
+        }
     };
     if let Err(e) = fs::remove_file(&path) {
-        return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response();
     }
     if let Ok(idx) = walk_room_files() {
         for rid in idx.keys() {
@@ -175,31 +244,75 @@ pub async fn link_create(
     Json(req): Json<LinkReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     if req.from.is_empty() || req.to.is_empty() {
-        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"invalid request"}))).into_response();
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({"error":"invalid request"})),
+        )
+            .into_response();
     }
     let (mut from, from_path) = match read_room_file_by_id(&req.from) {
         Ok(v) => v,
-        Err(_) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"from room not found"}))).into_response(),
+        Err(_) => {
+            return (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({"error":"from room not found"})),
+            )
+                .into_response();
+        }
     };
     let (to, _to_path) = match read_room_file_by_id(&req.to) {
         Ok(v) => v,
-        Err(_) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"to room not found"}))).into_response(),
+        Err(_) => {
+            return (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({"error":"to room not found"})),
+            )
+                .into_response();
+        }
     };
-    let dir = if req.direction.trim().is_empty() { to.name.clone() } else { req.direction };
-    add_or_replace_exit(&mut from.exits, RoomEditorExit { direction: dir.clone(), to: req.to.clone() });
+    let dir = if req.direction.trim().is_empty() {
+        to.name.clone()
+    } else {
+        req.direction
+    };
+    add_or_replace_exit(
+        &mut from.exits,
+        RoomEditorExit {
+            direction: dir.clone(),
+            to: req.to.clone(),
+        },
+    );
     ensure_move_object_for_exit(&mut from, &req.to, &dir, &to.name);
     if let Err(e) = write_room_file(&from_path, &from) {
-        return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response();
     }
     ensure_store_room(&from);
     if req.reverse
         && let Ok((mut rev, rev_path)) = read_room_file_by_id(&req.to)
     {
-        let rd = if req.reverse_direction.trim().is_empty() { from.name.clone() } else { req.reverse_direction.clone() };
-        add_or_replace_exit(&mut rev.exits, RoomEditorExit { direction: rd.clone(), to: req.from.clone() });
+        let rd = if req.reverse_direction.trim().is_empty() {
+            from.name.clone()
+        } else {
+            req.reverse_direction.clone()
+        };
+        add_or_replace_exit(
+            &mut rev.exits,
+            RoomEditorExit {
+                direction: rd.clone(),
+                to: req.from.clone(),
+            },
+        );
         ensure_move_object_for_exit(&mut rev, &req.from, &rd, &from.name);
         let _ = write_room_file(&rev_path, &rev);
         ensure_store_room(&rev);
@@ -214,14 +327,28 @@ pub async fn link_delete(
     Json(req): Json<LinkReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     if req.from.is_empty() || req.to.is_empty() {
-        return (StatusCode::BAD_REQUEST, Json(serde_json::json!({"error":"invalid request"}))).into_response();
+        return (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({"error":"invalid request"})),
+        )
+            .into_response();
     }
     let (mut from, from_path) = match read_room_file_by_id(&req.from) {
         Ok(v) => v,
-        Err(_) => return (StatusCode::NOT_FOUND, Json(serde_json::json!({"error":"from room not found"}))).into_response(),
+        Err(_) => {
+            return (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({"error":"from room not found"})),
+            )
+                .into_response();
+        }
     };
     from.exits.retain(|ex| ex.to != req.to);
     let _ = write_room_file(&from_path, &from);
@@ -243,10 +370,18 @@ pub async fn layout(
     Json(req): Json<LayoutReq>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     if let Err(e) = save_layout(&req.positions) {
-        return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response();
     }
     Json(serde_json::json!({"ok": true})).into_response()
 }
@@ -257,14 +392,26 @@ pub async fn reload(
     Query(q): Query<AdminQuery>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     let Some(st) = store::get_store() else {
-        return (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"error":"store not initialized"}))).into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"error":"store not initialized"})),
+        )
+            .into_response();
     };
     let mut s = st.write();
     if let Err(e) = s.reload_rooms() {
-        return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response();
     }
     StatusCode::NO_CONTENT.into_response()
 }
@@ -275,7 +422,11 @@ pub async fn groups_get(
     Query(q): Query<AdminQuery>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     Json(load_groups()).into_response()
 }
@@ -287,10 +438,18 @@ pub async fn groups_post(
     Json(groups): Json<Vec<Vec<String>>>,
 ) -> impl IntoResponse {
     if !is_admin_authorized(&state.cfg, &q) {
-        return (StatusCode::FORBIDDEN, Json(serde_json::json!({"error":"未經授權"}))).into_response();
+        return (
+            StatusCode::FORBIDDEN,
+            Json(serde_json::json!({"error":"未經授權"})),
+        )
+            .into_response();
     }
     if let Err(e) = save_groups(&groups) {
-        return (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({"error": e.to_string()}))).into_response();
+        return (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(serde_json::json!({"error": e.to_string()})),
+        )
+            .into_response();
     }
     Json(serde_json::json!({"ok": true})).into_response()
 }

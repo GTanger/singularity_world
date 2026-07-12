@@ -35,7 +35,9 @@ static OCC_CACHE: OnceLock<std::collections::HashMap<String, OccCached>> = OnceL
 pub(crate) fn load_occupation_cache() -> &'static std::collections::HashMap<String, OccCached> {
     OCC_CACHE.get_or_init(|| {
         let path = Path::new("data/templates/occupations.json");
-        let raw = match fs::read_to_string(path).or_else(|_| fs::read_to_string(Path::new("..").join(path))) {
+        let raw = match fs::read_to_string(path)
+            .or_else(|_| fs::read_to_string(Path::new("..").join(path)))
+        {
             Ok(s) => s,
             Err(e) => {
                 tracing::warn!("occupations.json 讀取失敗: {e}");
@@ -52,14 +54,24 @@ pub(crate) fn load_occupation_cache() -> &'static std::collections::HashMap<Stri
         parsed
             .occupations
             .into_iter()
-            .map(|(k, v)| (k, OccCached { action_sockets: v.action_sockets, dialogue_file: v.dialogue_file }))
+            .map(|(k, v)| {
+                (
+                    k,
+                    OccCached {
+                        action_sockets: v.action_sockets,
+                        dialogue_file: v.dialogue_file,
+                    },
+                )
+            })
             .collect()
     })
 }
 
 fn occupation_action_sockets(occupation_id: &str) -> Vec<String> {
     let c = load_occupation_cache();
-    c.get(occupation_id).map(|o| o.action_sockets.clone()).unwrap_or_default()
+    c.get(occupation_id)
+        .map(|o| o.action_sockets.clone())
+        .unwrap_or_default()
 }
 
 const DEFAULT_SOCKETS: &[&str] = &["Talk", "Borrow", "Subdue", "Slay", "Look", "Trade"];

@@ -90,18 +90,10 @@
 		if (barStamina) barStamina.style.width = pct(staminaCur, staminaMax) + '%';
 	}
 
-	// draw：刷新地圖視圖 + 姓名 + 狀態條（讀 window.gameState()）
+	// draw：刷新姓名 + 狀態條（讀 window.gameState()）
 	function draw() {
 		var state = window.gameState ? window.gameState() : null;
 		if (!state) return;
-		if (window.mudUpdateRoomView) {
-			window.mudUpdateRoomView(state.room_name, state.description, state.exits, state.entities, state.me, state.objects);
-		}
-		if (window.mudRenderExitButtons && document.getElementById('exits-buttons')) {
-			window.mudRenderExitButtons('exits-buttons', state.exits, function (direction) {
-				if (window.gameSendMoveDirection) window.gameSendMoveDirection(direction);
-			});
-		}
 		var nameEl = document.getElementById('player-name');
 		if (nameEl) nameEl.textContent = (state.me && state.me.player_id) ? state.me.player_id : '姓名';
 		if (state.me && state.me.hp_max != null) {

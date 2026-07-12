@@ -68,10 +68,9 @@ fn pick<'a>(templates: &'a [String], npc_id: &str, tick: u64) -> Option<&'a str>
         return None;
     }
     // 以 npc_id 的字元碼和 + tick 做雜湊種子
-    let id_hash: u64 = npc_id
-        .bytes()
-        .enumerate()
-        .fold(0u64, |acc, (i, b)| acc.wrapping_add((b as u64).wrapping_mul(i as u64 + 31)));
+    let id_hash: u64 = npc_id.bytes().enumerate().fold(0u64, |acc, (i, b)| {
+        acc.wrapping_add((b as u64).wrapping_mul(i as u64 + 31))
+    });
     let idx = ((id_hash ^ tick.wrapping_mul(2654435761)) as usize) % templates.len();
     Some(&templates[idx])
 }
@@ -90,37 +89,35 @@ fn with_behaviors<F: FnOnce(&BehaviorsJson) -> Option<String>>(f: F) -> Option<S
 
 /// 採集行為敘事句。
 pub fn gather(npc_id: &str, name: &str, tick: u64) -> String {
-    with_behaviors(|b| pick(&b.gather, npc_id, tick).map(|t| fill(t, name)))
-        .unwrap_or_default()
+    with_behaviors(|b| pick(&b.gather, npc_id, tick).map(|t| fill(t, name))).unwrap_or_default()
 }
 
 /// 漫遊行為敘事句。
 pub fn wander(npc_id: &str, name: &str, tick: u64) -> String {
-    with_behaviors(|b| pick(&b.wander, npc_id, tick).map(|t| fill(t, name)))
-        .unwrap_or_default()
+    with_behaviors(|b| pick(&b.wander, npc_id, tick).map(|t| fill(t, name))).unwrap_or_default()
 }
 
 /// 發呆行為敘事句。
 pub fn idle(npc_id: &str, name: &str, tick: u64) -> String {
-    with_behaviors(|b| pick(&b.idle, npc_id, tick).map(|t| fill(t, name)))
-        .unwrap_or_default()
+    with_behaviors(|b| pick(&b.idle, npc_id, tick).map(|t| fill(t, name))).unwrap_or_default()
 }
 
 /// 抵達行為敘事句。
 pub fn arrive(npc_id: &str, name: &str, tick: u64) -> String {
-    with_behaviors(|b| pick(&b.arrive, npc_id, tick).map(|t| fill(t, name)))
-        .unwrap_or_default()
+    with_behaviors(|b| pick(&b.arrive, npc_id, tick).map(|t| fill(t, name))).unwrap_or_default()
 }
 
 /// 離開行為敘事句。
 pub fn leave(npc_id: &str, name: &str, tick: u64) -> String {
-    with_behaviors(|b| pick(&b.leave, npc_id, tick).map(|t| fill(t, name)))
-        .unwrap_or_default()
+    with_behaviors(|b| pick(&b.leave, npc_id, tick).map(|t| fill(t, name))).unwrap_or_default()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::Mutex;
+
+    static TEST_LOCK: Mutex<()> = Mutex::new(());
 
     fn inject_test_data() {
         let data = NarrativeJson {
@@ -139,6 +136,7 @@ mod tests {
 
     #[test]
     fn name_substitution() {
+        let _guard = TEST_LOCK.lock().unwrap();
         inject_test_data();
         let s = wander("npc_1", "小明", 0);
         assert_eq!(s, "小明 漫遊");
@@ -146,6 +144,7 @@ mod tests {
 
     #[test]
     fn deterministic_for_same_params() {
+        let _guard = TEST_LOCK.lock().unwrap();
         inject_test_data();
         let a = gather("npc_42", "老王", 100);
         let b = gather("npc_42", "老王", 100);
@@ -154,6 +153,7 @@ mod tests {
 
     #[test]
     fn empty_templates_returns_empty() {
+        let _guard = TEST_LOCK.lock().unwrap();
         // 注入空列表（不清空 STORE，避免並行測試競態）
         let data = NarrativeJson {
             version: "test".into(),

@@ -121,9 +121,10 @@ pub fn score_npc_dialogue(
         .iter()
         .any(|sub| !sub.is_empty() && relation_hint.contains(sub.as_str()));
     if cold {
-        let intimate = sc.intimate_when_cold.iter().any(|w| {
-            !w.is_empty() && combined.contains(w.as_str())
-        });
+        let intimate = sc
+            .intimate_when_cold
+            .iter()
+            .any(|w| !w.is_empty() && combined.contains(w.as_str()));
         if intimate {
             d.relation = 0;
         } else {
@@ -135,9 +136,10 @@ pub fn score_npc_dialogue(
             .iter()
             .any(|sub| !sub.is_empty() && relation_hint.contains(sub.as_str()));
         if warm {
-            let formal = sc.formal_when_warm.iter().any(|w| {
-                !w.is_empty() && combined.contains(w.as_str())
-            });
+            let formal = sc
+                .formal_when_warm
+                .iter()
+                .any(|w| !w.is_empty() && combined.contains(w.as_str()));
             d.relation = if formal { 3 } else { 10 };
         }
     }
@@ -271,7 +273,11 @@ mod tests {
             "楊康偉",
             &[],
         );
-        assert!(d.total >= 30, "expected decent score, got {} detail={d:?}", d.total);
+        assert!(
+            d.total >= 30,
+            "expected decent score, got {} detail={d:?}",
+            d.total
+        );
         assert!(d.killed_by.is_empty(), "unexpected kill: {}", d.killed_by);
     }
 
@@ -281,18 +287,7 @@ mod tests {
         if !gametext::loaded() {
             return;
         }
-        let d = score_npc_dialogue(
-            "npc_1 說",
-            "好",
-            "房",
-            &[],
-            "",
-            "",
-            "",
-            "A",
-            "B",
-            &[],
-        );
+        let d = score_npc_dialogue("npc_1 說", "好", "房", &[], "", "", "", "A", "B", &[]);
         assert_eq!(d.total, 0);
         assert!(!d.killed_by.is_empty());
     }
@@ -337,6 +332,10 @@ mod tests {
             &[],
         );
         assert_eq!(d.tone_drift, 0, "惡地/霜林不應觸發廢土漂移, detail={d:?}");
-        assert!(d.total >= 25, "expected passable score, got {} {d:?}", d.total);
+        assert!(
+            d.total >= 25,
+            "expected passable score, got {} {d:?}",
+            d.total
+        );
     }
 }

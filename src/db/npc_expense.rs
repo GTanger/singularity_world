@@ -3,9 +3,9 @@
 use crate::event;
 use crate::store;
 
-use super::disposition::{adjust_disposition, DISP_BROKE, DISP_DAILY};
-use super::add_magnesium;
 use super::ErrNoStore;
+use super::add_magnesium;
+use super::{ThoughtSource, add_thought};
 
 /// 每遊戲日基礎食宿消耗鎂數。
 pub const DAILY_EXPENSE_BASE: i32 = 8;
@@ -32,10 +32,10 @@ pub fn deduct_daily_expense(now_unix: i64) -> anyhow::Result<i32> {
             affected += 1;
             if new_mag == 0 {
                 let _ = event::append(now_unix, &id, "broke", "鎂歸零");
-                let _ = adjust_disposition(&id, DISP_BROKE);
+                let _ = add_thought(&id, ThoughtSource::Broke);
             }
         }
-        let _ = adjust_disposition(&id, DISP_DAILY);
+        let _ = add_thought(&id, ThoughtSource::Daily);
     }
     Ok(affected)
 }

@@ -5,7 +5,7 @@ use std::time::{Duration, Instant};
 
 use rand::Rng;
 
-use crate::config::{sim, Server};
+use crate::config::{Server, sim};
 use crate::db::{
     deduct_daily_expense, get_npc_ids_with_room, get_player_ids_with_room, get_room,
     get_room_count, get_spawn_room_id, spawn_one_npc_from_pool, upsert_npc_rumor,
@@ -23,7 +23,9 @@ pub(super) fn run_game_day_economy(
     state: &Arc<Mutex<MainLoopTickState>>,
 ) {
     let should = {
-        let Ok(mut st) = state.lock() else { return; };
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
         if game_day != st.last_expense_game_day {
             st.last_expense_game_day = game_day;
             true
@@ -174,7 +176,9 @@ pub(super) fn run_npc_pool_tick(
         return;
     }
     let fire = {
-        let Ok(mut st) = state.lock() else { return; };
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
         if st.last_spawn_check.elapsed() >= Duration::from_secs(spawn_sec as u64) {
             st.last_spawn_check = Instant::now();
             true
@@ -239,12 +243,11 @@ pub(super) fn run_npc_pool_tick(
     }
 }
 
-
 /// 氣候 tick：每 60 秒觸發，對每個區域隨機決定是否轉換氣候。
 /// 氣候事件類型：`clear` / `rain` / `wind` / `plum_rain` / `snow`
 /// 回傳：有氣候變化的 `(region_id, event_type, prose_seed)` 清單（空代表本輪無變化）。
 pub(super) fn run_climate_tick(now_unix: i64) -> Vec<(String, String, i64)> {
-    use crate::db::{list_region_climates, upsert_region_climate, RegionClimate};
+    use crate::db::{RegionClimate, list_region_climates, upsert_region_climate};
     use rand::Rng;
 
     const CLIMATE_EVENTS: &[&str] = &["clear", "rain", "wind", "plum_rain", "snow"];
@@ -277,7 +280,9 @@ pub(super) fn run_climate_tick(now_unix: i64) -> Vec<(String, String, i64)> {
             } else {
                 tracing::info!(
                     "[climate] 區域 {} 氣候轉換 {} → {}",
-                    climate.region_id, climate.event_type, new_event
+                    climate.region_id,
+                    climate.event_type,
+                    new_event
                 );
                 changed.push((climate.region_id, new_event.to_string(), prose_seed));
             }

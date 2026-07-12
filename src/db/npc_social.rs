@@ -66,7 +66,11 @@ pub fn get_npc_npc_conversation_summary(id_a: &str, id_b: &str) -> String {
 }
 
 /// 寫入 NPC↔NPC 對話摘要（對齊 `SetNpcNpcConversationSummary`）。
-pub fn set_npc_npc_conversation_summary(id_a: &str, id_b: &str, summary: &str) -> anyhow::Result<()> {
+pub fn set_npc_npc_conversation_summary(
+    id_a: &str,
+    id_b: &str,
+    summary: &str,
+) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
     s.set_npc_npc_summary(id_a, id_b, summary)

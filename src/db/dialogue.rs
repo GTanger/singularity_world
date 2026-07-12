@@ -105,7 +105,9 @@ impl SimpleRng {
         x.wrapping_mul(0x2545_f491_4f6c_dd1d)
     }
     fn intn(&mut self, n: usize) -> usize {
-        if n == 0 { return 0; }
+        if n == 0 {
+            return 0;
+        }
         (self.next_u64() % n as u64) as usize
     }
     fn float32(&mut self) -> f32 {
@@ -194,7 +196,9 @@ pub fn pick_from_public_talk(npc_name: &str, seed: i64) -> String {
 /// 載入 `dialogue_slots.json`，僅執行一次。
 pub fn load_dialogue_slots(path: &str) -> &'static DialogueSlots {
     SLOTS_CACHE.get_or_init(|| {
-        let raw = match fs::read_to_string(path).or_else(|_| fs::read_to_string(Path::new("..").join(path))) {
+        let raw = match fs::read_to_string(path)
+            .or_else(|_| fs::read_to_string(Path::new("..").join(path)))
+        {
             Ok(s) => s,
             Err(e) => {
                 tracing::warn!("[dialogue] slots {path}: {e}");
@@ -227,7 +231,10 @@ pub fn load_dialogue_slots(path: &str) -> &'static DialogueSlots {
 
 /// 依 `base_path + dialogue_file` 載入對話檔並快取。
 pub fn load_dialogue(base_path: &str, dialogue_file: &str) -> Option<DialogueFile> {
-    let key = PathBuf::from(base_path).join(dialogue_file).to_string_lossy().to_string();
+    let key = PathBuf::from(base_path)
+        .join(dialogue_file)
+        .to_string_lossy()
+        .to_string();
     {
         let guard = DIALOGUE_CACHE.read().unwrap();
         if let Some(ref cache) = *guard
@@ -262,33 +269,42 @@ pub struct PlaceholderCtx<'a> {
 }
 
 /// 將模板中的佔位符替換；空欄位從 slots 抽。子槽位：`{verb}` 有機率為 `verb_manner+verb_action`。
-pub fn fill_placeholders(s: &str, ctx: &PlaceholderCtx, slots: &DialogueSlots, seed: i64) -> String {
+pub fn fill_placeholders(
+    s: &str,
+    ctx: &PlaceholderCtx,
+    slots: &DialogueSlots,
+    seed: i64,
+) -> String {
     let mut result = s.to_string();
     let mut rng = SimpleRng::new(seed);
 
-    let do_replace = |result: &mut String, key: &str, val: &str, slots: &DialogueSlots, rng: &mut SimpleRng| {
-        let actual = if val.is_empty() {
-            match key {
-                "mood" => pick(&slots.mood, rng),
-                "verb" => {
-                    if !slots.verb_manner.is_empty() && !slots.verb_action.is_empty() && rng.float32() < 0.4 {
-                        pick(&slots.verb_manner, rng) + &pick(&slots.verb_action, rng)
-                    } else {
-                        pick(&slots.verb, rng)
+    let do_replace =
+        |result: &mut String, key: &str, val: &str, slots: &DialogueSlots, rng: &mut SimpleRng| {
+            let actual = if val.is_empty() {
+                match key {
+                    "mood" => pick(&slots.mood, rng),
+                    "verb" => {
+                        if !slots.verb_manner.is_empty()
+                            && !slots.verb_action.is_empty()
+                            && rng.float32() < 0.4
+                        {
+                            pick(&slots.verb_manner, rng) + &pick(&slots.verb_action, rng)
+                        } else {
+                            pick(&slots.verb, rng)
+                        }
                     }
+                    "time" => pick(&slots.time, rng),
+                    "thing" => pick(&slots.thing, rng),
+                    "weather" => pick(&slots.weather, rng),
+                    "topic" => pick(&slots.topic, rng),
+                    _ => String::new(),
                 }
-                "time" => pick(&slots.time, rng),
-                "thing" => pick(&slots.thing, rng),
-                "weather" => pick(&slots.weather, rng),
-                "topic" => pick(&slots.topic, rng),
-                _ => String::new(),
-            }
-        } else {
-            val.to_string()
+            } else {
+                val.to_string()
+            };
+            let placeholder = format!("{{{key}}}");
+            *result = result.replace(&placeholder, &actual);
         };
-        let placeholder = format!("{{{key}}}");
-        *result = result.replace(&placeholder, &actual);
-    };
 
     do_replace(&mut result, "name", ctx.name, slots, &mut rng);
     do_replace(&mut result, "room", ctx.room_name, slots, &mut rng);
@@ -371,7 +387,11 @@ pub fn pick_line_weighted(
     apply_personality_shift(lines, idx, personality)
 }
 
-fn apply_personality_shift(lines: &[String], mut idx: usize, personality: Option<&Personality>) -> String {
+fn apply_personality_shift(
+    lines: &[String],
+    mut idx: usize,
+    personality: Option<&Personality>,
+) -> String {
     if let Some(p) = personality {
         let n = lines.len() as i32;
         let mut shift = (p.boldness * (n / 2) as f64) as i32;
@@ -426,13 +446,19 @@ pub fn pick_from_dialogue(
         None => return String::new(),
     };
     let slots_path = PathBuf::from(DEFAULT_TEMPLATES_BASE).join("dialogue_slots.json");
-    let slots = load_dialogue_slots(slots_path.to_str().unwrap_or("data/templates/dialogue_slots.json"));
+    let slots = load_dialogue_slots(
+        slots_path
+            .to_str()
+            .unwrap_or("data/templates/dialogue_slots.json"),
+    );
 
     let mut seed: i64 = 0;
     for r in entity_id.chars() {
         seed = seed.wrapping_mul(31).wrapping_add(r as i64);
     }
-    seed = seed.wrapping_add((room_id.len() as i64) << 8).wrapping_add((key.len() as i64) << 16);
+    seed = seed
+        .wrapping_add((room_id.len() as i64) << 8)
+        .wrapping_add((key.len() as i64) << 16);
 
     let mut line = String::new();
     let mut pool_key = key;
@@ -447,17 +473,31 @@ pub fn pick_from_dialogue(
             && let Some(idles) = d.idle.get(time_label_to_idle_key(time_label))
             && !idles.is_empty()
         {
-            line = pick_line_weighted(idles, seed.wrapping_add(101), personality, time_label, room_name);
+            line = pick_line_weighted(
+                idles,
+                seed.wrapping_add(101),
+                personality,
+                time_label,
+                room_name,
+            );
             pool_key = "";
         }
     }
 
     if line.is_empty() {
         if pool_key == "greet" {
-            line = pick_line_weighted(&d.greet.lines, seed.wrapping_add(1), personality, time_label, room_name);
+            line = pick_line_weighted(
+                &d.greet.lines,
+                seed.wrapping_add(1),
+                personality,
+                time_label,
+                room_name,
+            );
         } else if pool_key == "talk" {
             // 片段組合
-            if !d.talk_fragments.is_empty() && SimpleRng::new(seed.wrapping_add(77)).float32() < PROB_FRAGMENT {
+            if !d.talk_fragments.is_empty()
+                && SimpleRng::new(seed.wrapping_add(77)).float32() < PROB_FRAGMENT
+            {
                 let mut rng = SimpleRng::new(seed.wrapping_add(17));
                 let segments = &d.talk_fragments[rng.intn(d.talk_fragments.len())];
                 line = assemble_fragment(segments, &mut rng);

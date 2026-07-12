@@ -6,10 +6,10 @@ use rand::Rng;
 
 use crate::store::{self, Entity, Store};
 
+use super::ErrNoStore;
 use super::equip::starter_equipment;
 use super::npc_names::{first_rune, generate_npc_name};
 use super::{expand_soul_seed_to_base_stats, generate_soul_seed};
-use super::ErrNoStore;
 
 /// 預設 NPC 一筆（預設 NPC 列表為空，對齊保留結構）。
 #[derive(Debug, Clone, Copy)]
@@ -69,11 +69,7 @@ pub(crate) fn insert_npc_locked(
 ) -> anyhow::Result<()> {
     let display_char = if display_char.is_empty() {
         let r: String = id.chars().take(1).collect();
-        if r.is_empty() {
-            "人".to_string()
-        } else {
-            r
-        }
+        if r.is_empty() { "人".to_string() } else { r }
     } else {
         display_char.to_string()
     };
@@ -116,6 +112,7 @@ pub(crate) fn insert_npc_locked(
         current_activity: String::new(),
         grid_x: None,
         grid_y: None,
+        thoughts: vec![],
     };
     s.put_entity(e)
 }
@@ -175,10 +172,7 @@ pub fn seed_npcs_for_store() -> anyhow::Result<()> {
 pub fn ensure_grid_coords() -> anyhow::Result<i32> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
-    let missing: Vec<String> = s
-        .npc_ids_missing_grid()
-        .into_iter()
-        .collect();
+    let missing: Vec<String> = s.npc_ids_missing_grid().into_iter().collect();
     let mut fixed = 0i32;
     for id in missing {
         if s.set_entity_grid(&id, 0, 0).is_ok() {

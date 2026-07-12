@@ -16,19 +16,19 @@ use crate::model;
 pub mod sql;
 pub mod types;
 pub use types::*;
-mod persist;
-mod event;
-mod auth;
 mod archival;
-mod venue;
-mod work;
+mod auth;
+mod entity;
+mod event;
+mod init_load;
 mod item;
 mod npc_social;
-mod rumor;
-mod entity;
-mod room;
-mod init_load;
+mod persist;
 mod pg_sync;
+mod room;
+mod rumor;
+mod venue;
+mod work;
 
 // ── 實體寫回防抖間隔（秒）——Phase 3+ 實作 tokio timer 時使用 ──
 #[allow(dead_code)]
@@ -134,8 +134,9 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     s.load_rooms(rooms_path)?;
 
     // 2. 初始化 PostgreSQL 連線池
-    let pg_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "postgres://postgres:singularity@localhost:5432/singularity".to_string());
+    let pg_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+        "postgres://postgres:singularity@localhost:5432/singularity".to_string()
+    });
 
     s.db_pool = match sql::init_pool(&pg_url) {
         Ok(pool) => {
@@ -157,7 +158,11 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         tracing::info!("[store] 資料從 PostgreSQL 載入（主資料源）");
         // entity_rooms 需驗證房間存在性（房間可能被編輯器刪除）
         let fallback = s.get_room_id_by_name(crate::db::SPAWN_ROOM_NAME);
-        let fallback = if fallback.is_empty() { s.first_room_id_sorted() } else { fallback };
+        let fallback = if fallback.is_empty() {
+            s.first_room_id_sorted()
+        } else {
+            fallback
+        };
         let rooms_ref = &s.rooms;
         s.entity_rooms.retain(|_, rid| {
             if rooms_ref.contains_key(rid.as_str()) {
@@ -169,6 +174,14 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
                 false
             }
         });
+        let n = s.ensure_p0_material_items();
+        if n > 0 {
+            tracing::info!("[store] P0 世界物質補入 items 快取: {n}");
+        }
+        let n = s.normalize_legacy_material_inventories();
+        if n > 0 {
+            tracing::info!("[store] 舊物品背包升級為 P0 世界物質: {n} entities");
+        }
     } else {
         tracing::info!("[store] PostgreSQL 為空或不可用，從 JSON 種子載入...");
         let _ = s.load_entity_rooms();
@@ -180,6 +193,14 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
             let _ = s.load_items();
             let _ = s.load_npc_threads();
             let _ = s.load_npc_dyads();
+        }
+        let n = s.ensure_p0_material_items();
+        if n > 0 {
+            tracing::info!("[store] P0 世界物質補入 items 種子: {n}");
+        }
+        let n = s.normalize_legacy_material_inventories();
+        if n > 0 {
+            tracing::info!("[store] 舊物品背包升級為 P0 世界物質: {n} entities");
         }
         // 種子資料灌入 DB
         if let Err(e) = s.sync_all_to_postgresql() {
@@ -222,21 +243,36 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
 
 impl Store {
     pub fn adjacency(&self) -> HashMap<String, Vec<String>> {
-        self.exits.iter()
-            .map(|(from, exs)| (from.clone(), exs.iter().map(|e| e.to_room_id.clone()).collect()))
+        self.exits
+            .iter()
+            .map(|(from, exs)| {
+                (
+                    from.clone(),
+                    exs.iter().map(|e| e.to_room_id.clone()).collect(),
+                )
+            })
             .collect()
     }
 
     pub fn name_map(&self) -> HashMap<String, String> {
-        self.rooms.iter().map(|(id, r)| (id.clone(), r.name.clone())).collect()
+        self.rooms
+            .iter()
+            .map(|(id, r)| (id.clone(), r.name.clone()))
+            .collect()
     }
 
     pub fn zone_map(&self) -> HashMap<String, String> {
-        self.rooms.iter().map(|(id, r)| (id.clone(), r.zone.clone())).collect()
+        self.rooms
+            .iter()
+            .map(|(id, r)| (id.clone(), r.zone.clone()))
+            .collect()
     }
 
     pub fn room_tags_map(&self) -> HashMap<String, Vec<String>> {
-        self.rooms.iter().map(|(id, r)| (id.clone(), r.tags.clone())).collect()
+        self.rooms
+            .iter()
+            .map(|(id, r)| (id.clone(), r.tags.clone()))
+            .collect()
     }
 
     // ── 子模組速查 ──

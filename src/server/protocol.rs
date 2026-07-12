@@ -69,6 +69,18 @@ pub struct ActionResultMsg {
         rename = "move_target_id"
     )]
     pub move_target_id: String,
+    #[serde(default, skip_serializing_if = "is_false", rename = "open_trade")]
+    pub open_trade: bool,
+    #[serde(
+        default,
+        skip_serializing_if = "String::is_empty",
+        rename = "suggested_action"
+    )]
+    pub suggested_action: String,
+}
+
+fn is_false(v: &bool) -> bool {
+    !*v
 }
 
 /// 單一出口（對齊 `ExitView`）。
@@ -263,6 +275,14 @@ pub struct EntityStatusMsg {
     pub entity_id: String,
     #[serde(rename = "display_char")]
     pub display_char: String,
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "room_id")]
+    pub room_id: String,
+    #[serde(
+        default,
+        skip_serializing_if = "String::is_empty",
+        rename = "room_name"
+    )]
+    pub room_name: String,
     pub vit: i32,
     pub qi: i32,
     pub dex: i32,
@@ -470,6 +490,8 @@ mod tests {
             msg_type: "entity_status".into(),
             entity_id: "n1".into(),
             display_char: "店".into(),
+            room_id: String::new(),
+            room_name: String::new(),
             vit: 1,
             qi: 2,
             dex: 3,
@@ -502,7 +524,31 @@ mod tests {
         let j = r#"{"type":"action_result","action":"Look","target_id":"o1","target_name":"門","narrative":"…","success":true,"move_target_id":"door_1"}"#;
         let a: ActionResultMsg = serde_json::from_str(j).unwrap();
         assert_eq!(a.move_target_id, "door_1");
+        assert!(!a.open_trade);
+        assert!(a.suggested_action.is_empty());
         let out = serde_json::to_string(&a).unwrap();
         assert!(out.contains("move_target_id"));
+    }
+
+    #[test]
+    fn action_result_open_trade_roundtrip() {
+        let a = ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: "Talk".into(),
+            target_id: "npc_1".into(),
+            target_name: "行商".into(),
+            narrative: "你問起交易。".into(),
+            success: true,
+            actions: vec!["Trade".into()],
+            move_target_id: String::new(),
+            open_trade: true,
+            suggested_action: "Trade".into(),
+        };
+        let out = serde_json::to_string(&a).unwrap();
+        assert!(out.contains(r#""open_trade":true"#));
+        assert!(out.contains(r#""suggested_action":"Trade""#));
+        let decoded: ActionResultMsg = serde_json::from_str(&out).unwrap();
+        assert!(decoded.open_trade);
+        assert_eq!(decoded.suggested_action, "Trade");
     }
 }

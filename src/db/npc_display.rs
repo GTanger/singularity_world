@@ -2,8 +2,8 @@
 
 use crate::store::{self, Store};
 
-use super::npc_names::generate_npc_name;
 use super::ErrNoStore;
+use super::npc_names::generate_npc_name;
 
 /// 排班：班次起迄判斷（對齊既有 `NPCSchedule`）。
 #[derive(Debug, Clone)]
@@ -135,7 +135,8 @@ pub fn get_npc_title_in_room_at_hour(
 ) -> anyhow::Result<String> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
-    let (list_display, _) = npc_list_display_and_behavior_role_locked(&mut s, entity_id, room_id, game_hour);
+    let (list_display, _) =
+        npc_list_display_and_behavior_role_locked(&mut s, entity_id, room_id, game_hour);
     Ok(list_display)
 }
 

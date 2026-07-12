@@ -13,18 +13,22 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use rand::Rng;
 
-use crate::config::{sim, Server};
-use crate::db::{build_npc_rumor_digest, decay_lexicon, decay_npc_rumors, promote_lexicon_candidates};
-use crate::game::{game_time_now, run_view_simulation, Pos};
-use crate::npc::{seed_traveler_manager, GridNpcManager, TravelerManager};
+use crate::config::{Server, sim};
+use crate::db::{
+    build_npc_rumor_digest, decay_lexicon, decay_npc_rumors, promote_lexicon_candidates,
+};
+use crate::game::{Pos, game_time_now, run_view_simulation};
+use crate::npc::{GridNpcManager, TravelerManager, seed_traveler_manager};
 use crate::npcnpc::{topic_mask_for_room, try_trigger_npc_npc_in_room};
 
-use super::hub::Hub;
 use super::SessionStore;
+use super::hub::Hub;
 
-use helpers::{initial_next_idle_trigger, initial_random_dialogue_ticks, periodic_fire, reset_ticks_no_player};
+use helpers::{
+    initial_next_idle_trigger, initial_random_dialogue_ticks, periodic_fire, reset_ticks_no_player,
+};
 use idle::run_idle_wander_section;
-use movement::{run_grid_npc_tick, run_travel_section};
+use movement::{run_grid_npc_tick, run_m3_027_north_bank_actor_tick, run_travel_section};
 use work::{run_job_matching_section, run_schedule_hour_section};
 use world::{inject_event_seed, run_climate_tick, run_game_day_economy, run_npc_pool_tick};
 
@@ -49,6 +53,8 @@ pub(super) struct MainLoopTickState {
     pub(super) last_freshness_reset: Option<Instant>,
     /// 氣候 tick 計時器（每 60 現實秒觸發一次）
     pub(super) last_climate_tick: Option<Instant>,
+    /// M3-027 北岸渡口最小同規則行動者 tick。
+    pub(super) last_m3_027_north_bank_actor: Option<Instant>,
     /// 上一次推送 world_tick 的遊戲時辰（-1 代表尚未推過）
     pub(super) last_broadcast_hour: i32,
 }
@@ -107,7 +113,9 @@ fn run_simulation_tick(
     let digest_dur = Duration::from_secs((rd_min as u64).saturating_mul(60));
 
     let (fire_decay, fire_digest) = {
-        let Ok(mut st) = state.lock() else { return; };
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
         let fd = periodic_fire(&mut st.last_rumor_decay, decay_dur);
         let fdi = periodic_fire(&mut st.last_rumor_digest, digest_dur);
         (fd, fdi)
@@ -142,7 +150,9 @@ fn run_simulation_tick(
     let ollama_ready = !cfg.ollama_base_url.is_empty() && !cfg.ollama_model.is_empty();
     let mut do_trigger: Option<(String, i32)> = None;
     {
-        let Ok(mut st) = state.lock() else { return; };
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
         st.random_dialogue_ticks -= 1;
         if st.random_dialogue_ticks <= 0 && ollama_ready {
             let room_set = sessions.player_room_ids();
@@ -185,9 +195,7 @@ fn run_simulation_tick(
         let occupied: Vec<(i32, i32)> = sessions
             .player_room_ids()
             .iter()
-            .filter_map(|rid| {
-                crate::grid::parse_grid_room_id(rid).map(|c| (c.x, c.y))
-            })
+            .filter_map(|rid| crate::grid::parse_grid_room_id(rid).map(|c| (c.x, c.y)))
             .collect();
         if let Err(e) = reset_freshness_for_vacant_cells(&occupied) {
             tracing::warn!("reset_freshness_for_vacant_cells: {e}");
@@ -196,9 +204,7 @@ fn run_simulation_tick(
         crate::server::grid_manager::with_square_grid_mut(|grid| {
             for cell in grid.cells_mut() {
                 let coord = (cell.coord.x, cell.coord.y);
-                if cell.freshness != crate::grid::Freshness::Fresh
-                    && !occupied.contains(&coord)
-                {
+                if cell.freshness != crate::grid::Freshness::Fresh && !occupied.contains(&coord) {
                     cell.freshness = crate::grid::Freshness::Fresh;
                 }
             }
@@ -229,6 +235,7 @@ fn run_simulation_tick(
     }
 
     run_game_day_economy(now_unix, game_day, state);
+    run_m3_027_north_bank_actor_tick(sessions, cfg, now_unix, state);
     run_npc_pool_tick(cfg, now_unix, state, traveler_mgr);
     run_job_matching_section(sessions, cfg, now_unix, state, traveler_mgr);
     run_schedule_hour_section(sessions, cfg, hour, state);
@@ -259,6 +266,7 @@ pub fn spawn_simulation_main_loop(sessions: Arc<SessionStore>, hub: Arc<Hub>, cf
         last_lexicon_maintenance: None,
         last_freshness_reset: None,
         last_climate_tick: None,
+        last_m3_027_north_bank_actor: None,
         last_broadcast_hour: -1,
     }));
     let tick_ms = cfg.tick_interval_ms.max(1);

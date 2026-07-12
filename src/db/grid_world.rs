@@ -7,8 +7,8 @@
 use crate::grid::{Freshness, GridCell, SquareCoord, SquareGrid, Terrain};
 use crate::store;
 
-use serde::de::DeserializeOwned;
 use serde::Serialize;
+use serde::de::DeserializeOwned;
 
 const GRID_WORLD_SEED: u64 = 20_260_414;
 
@@ -22,7 +22,9 @@ fn enum_snake_string<T: Serialize>(v: &T) -> anyhow::Result<String> {
 }
 
 fn enum_from_snake_str<T: DeserializeOwned>(s: &str) -> anyhow::Result<T> {
-    Ok(serde_json::from_value(serde_json::Value::String(s.to_string()))?)
+    Ok(serde_json::from_value(serde_json::Value::String(
+        s.to_string(),
+    ))?)
 }
 
 // ─── 載入 ────────────────────────────────────────────────────────────
@@ -47,6 +49,7 @@ pub(super) fn load_square_grid() -> Option<SquareGrid> {
             objects     TEXT    NOT NULL DEFAULT '[]',
             explored    BOOLEAN NOT NULL DEFAULT FALSE,
             freshness   TEXT    NOT NULL DEFAULT 'fresh',
+            exits       TEXT    NOT NULL DEFAULT '[]',
             PRIMARY KEY (x, y)
         )",
         &[],
@@ -58,6 +61,12 @@ pub(super) fn load_square_grid() -> Option<SquareGrid> {
     // M1 migration：補 freshness 欄位（舊表可能沒有）
     let _ = conn.execute(
         "ALTER TABLE grid_cells ADD COLUMN IF NOT EXISTS freshness TEXT NOT NULL DEFAULT 'fresh'",
+        &[],
+    );
+
+    // M2 migration：補 exits 欄位（舊表可能沒有）
+    let _ = conn.execute(
+        "ALTER TABLE grid_cells ADD COLUMN IF NOT EXISTS exits TEXT NOT NULL DEFAULT '[]'",
         &[],
     );
 
@@ -75,7 +84,7 @@ pub(super) fn load_square_grid() -> Option<SquareGrid> {
     // 逐列重建格子
     let rows = conn
         .query(
-            "SELECT x, y, terrain, name, zone, tags, description, objects, explored, freshness
+            "SELECT x, y, terrain, name, zone, tags, description, objects, explored, freshness, exits
              FROM grid_cells ORDER BY x, y",
             &[],
         )
@@ -103,6 +112,9 @@ pub(super) fn load_square_grid() -> Option<SquareGrid> {
         let explored: bool = row.get(8);
         let freshness_s: String = row.get(9);
         let freshness: Freshness = enum_from_snake_str(&freshness_s).unwrap_or_default();
+        let exits_json: String = row.get(10);
+        let explicit_exits: Vec<crate::grid::ExplicitExit> =
+            serde_json::from_str(&exits_json).unwrap_or_default();
 
         let tags: Vec<String> = serde_json::from_str(&tags_s).unwrap_or_default();
         let objects = serde_json::from_str(&objects_s).unwrap_or_default();
@@ -115,11 +127,15 @@ pub(super) fn load_square_grid() -> Option<SquareGrid> {
         cell.objects = objects;
         cell.explored = explored;
         cell.freshness = freshness;
+        cell.explicit_exits = explicit_exits;
 
         grid.insert(cell);
     }
 
-    tracing::info!("[grid_world] 載入 {} 格（PostgreSQL grid_cells）", grid.len());
+    tracing::info!(
+        "[grid_world] 載入 {} 格（PostgreSQL grid_cells）",
+        grid.len()
+    );
     Some(grid)
 }
 
@@ -130,7 +146,7 @@ pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
     let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("資料庫連線不可用"))?;
     let mut conn = pool.get()?;
 
-    // 確保資料表存在（含 freshness 欄位）
+    // 確保資料表存在（含 freshness + exits 欄位）
     conn.execute(
         "CREATE TABLE IF NOT EXISTS grid_cells (
             x           INTEGER NOT NULL,
@@ -143,6 +159,7 @@ pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
             objects     TEXT    NOT NULL DEFAULT '[]',
             explored    BOOLEAN NOT NULL DEFAULT FALSE,
             freshness   TEXT    NOT NULL DEFAULT 'fresh',
+            exits       TEXT    NOT NULL DEFAULT '[]',
             PRIMARY KEY (x, y)
         )",
         &[],
@@ -154,6 +171,12 @@ pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
         &[],
     );
 
+    // M2 migration：補 exits 欄位（舊表可能沒有）
+    let _ = conn.execute(
+        "ALTER TABLE grid_cells ADD COLUMN IF NOT EXISTS exits TEXT NOT NULL DEFAULT '[]'",
+        &[],
+    );
+
     let mut t = conn.transaction()?;
 
     // 增量 upsert（不再全表 DELETE + re-INSERT，避免 600+ 行交易卡住 grid lock）
@@ -162,14 +185,16 @@ pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
         let tags = serde_json::to_string(&cell.tags)?;
         let objects = serde_json::to_string(&cell.objects)?;
         let freshness = enum_snake_string(&cell.freshness)?;
+        let exits_json =
+            serde_json::to_string(&cell.explicit_exits).unwrap_or_else(|_| "[]".to_string());
         t.execute(
-            "INSERT INTO grid_cells (x, y, terrain, name, zone, tags, description, objects, explored, freshness)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            "INSERT INTO grid_cells (x, y, terrain, name, zone, tags, description, objects, explored, freshness, exits)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
              ON CONFLICT (x, y) DO UPDATE SET
                 terrain=EXCLUDED.terrain, name=EXCLUDED.name, zone=EXCLUDED.zone,
                 tags=EXCLUDED.tags, description=EXCLUDED.description,
                 objects=EXCLUDED.objects, explored=EXCLUDED.explored,
-                freshness=EXCLUDED.freshness",
+                freshness=EXCLUDED.freshness, exits=EXCLUDED.exits",
             &[
                 &cell.coord.x,
                 &cell.coord.y,
@@ -181,6 +206,7 @@ pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
                 &objects,
                 &cell.explored,
                 &freshness,
+                &exits_json,
             ],
         )?;
     }

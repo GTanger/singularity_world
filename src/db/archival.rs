@@ -8,7 +8,7 @@ use serde::Deserialize;
 
 use crate::store::{self, ArchivalEntry};
 
-use super::{get_assignments_for_entity, text, ErrNoStore};
+use super::{ErrNoStore, get_assignments_for_entity, text};
 
 const ARCHIVAL_THROTTLE_WINDOW_SEC: i64 = 600;
 const ARCHIVAL_THROTTLE_MAX: usize = 3;
@@ -35,10 +35,7 @@ fn recent_npc_npc_archival_contents(entity_id: &str, n: usize) -> Vec<String> {
         .filter(|e| e.tag == "npc_npc")
         .collect();
     v.sort_by_key(|e| std::cmp::Reverse(e.created_at));
-    v.into_iter()
-        .take(n)
-        .map(|e| e.content)
-        .collect()
+    v.into_iter().take(n).map(|e| e.content).collect()
 }
 
 fn should_skip_npc_npc_archival(entity_id: &str, content: &str) -> bool {
@@ -137,15 +134,51 @@ fn should_omit_archival_fallback_for_talk_query(query: &str) -> bool {
         return true;
     }
     let exact: HashSet<&str> = HashSet::from([
-        "你好", "您好", "嗨", "哈囉", "哈喽", "hello", "hi", "早", "早安", "午安", "晚安", "在嗎", "在不在",
-        "喂", "欸", "嘿", "謝謝", "谢谢", "感恩", "再見", "再见", "拜拜", "掰掰", "掰", "嗯", "嗯嗯", "喔",
-        "哦", "好", "好啊", "好喔", "好的", "收到", "了解", "恩", "噢",
+        "你好",
+        "您好",
+        "嗨",
+        "哈囉",
+        "哈喽",
+        "hello",
+        "hi",
+        "早",
+        "早安",
+        "午安",
+        "晚安",
+        "在嗎",
+        "在不在",
+        "喂",
+        "欸",
+        "嘿",
+        "謝謝",
+        "谢谢",
+        "感恩",
+        "再見",
+        "再见",
+        "拜拜",
+        "掰掰",
+        "掰",
+        "嗯",
+        "嗯嗯",
+        "喔",
+        "哦",
+        "好",
+        "好啊",
+        "好喔",
+        "好的",
+        "收到",
+        "了解",
+        "恩",
+        "噢",
     ]);
     exact.contains(norm.as_str())
 }
 
 /// 寫入 tag=npc_npc 的長期記憶；去重／節流對齊既有 `InsertNpcNpcDialogueArchival`。
-pub fn insert_npc_npc_dialogue_archival(entity_id: &str, content: &str) -> anyhow::Result<(bool, bool)> {
+pub fn insert_npc_npc_dialogue_archival(
+    entity_id: &str,
+    content: &str,
+) -> anyhow::Result<(bool, bool)> {
     let content = content.trim();
     if content.is_empty() {
         return Ok((false, false));
@@ -154,7 +187,8 @@ pub fn insert_npc_npc_dialogue_archival(entity_id: &str, content: &str) -> anyho
         return Ok((false, true));
     }
     let now = crate::game::now_unix();
-    if count_archival_since(entity_id, now - ARCHIVAL_THROTTLE_WINDOW_SEC) >= ARCHIVAL_THROTTLE_MAX {
+    if count_archival_since(entity_id, now - ARCHIVAL_THROTTLE_WINDOW_SEC) >= ARCHIVAL_THROTTLE_MAX
+    {
         return Ok((false, false));
     }
     let arc = store::get_store().ok_or(ErrNoStore)?;

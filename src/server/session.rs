@@ -41,7 +41,11 @@ impl Session {
         }
     }
 
-    pub fn with_outbound(player_id: impl Into<String>, connection_id: Uuid, tx: Sender<Vec<u8>>) -> Self {
+    pub fn with_outbound(
+        player_id: impl Into<String>,
+        connection_id: Uuid,
+        tx: Sender<Vec<u8>>,
+    ) -> Self {
         Self {
             connection_id,
             player_id: player_id.into(),
@@ -61,6 +65,21 @@ impl Session {
         };
         tx.try_send(msg).is_ok()
     }
+}
+
+/// 玩家目前所在位置的公開房間鍵。
+///
+/// 方格世界的權威位置是 `entities.grid_x/grid_y`；舊 `entity_rooms` 只作為
+/// 非方格或舊資料的 fallback，避免模擬迴圈看不到實際登入玩家。
+pub(crate) fn player_location_key(player_id: &str) -> String {
+    if let Ok(Some(ch)) = db::get_entity(player_id)
+        && let (Some(x), Some(y)) = (ch.grid_x, ch.grid_y)
+    {
+        return db::canonical_location_key(&crate::grid::grid_room_id_from_coord(x, y));
+    }
+    db::get_entity_room(player_id)
+        .map(|rid| db::canonical_location_key(&rid))
+        .unwrap_or_default()
 }
 
 /// 以 `PlayerID` 為 key 的線上 session（對齊既有 `SessionStore`）。
@@ -147,13 +166,12 @@ impl SessionStore {
         let mut best_at: Option<Instant> = None;
         let want = db::canonical_location_key(room_id);
         for s in g.values() {
-            if s.last_talk_snippet.is_empty() || db::canonical_location_key(&s.last_talk_room) != want {
+            if s.last_talk_snippet.is_empty()
+                || db::canonical_location_key(&s.last_talk_room) != want
+            {
                 continue;
             }
-            let Ok(rid) = db::get_entity_room(&s.player_id) else {
-                continue;
-            };
-            if db::canonical_location_key(&rid) != want {
+            if player_location_key(&s.player_id) != want {
                 continue;
             }
             let Some(at) = s.last_talk_at else {
@@ -179,8 +197,7 @@ impl SessionStore {
         let want = db::canonical_location_key(room_id);
         let g = self.inner.read().expect("session store poisoned");
         for s in g.values() {
-            let rid = db::get_entity_room(&s.player_id).unwrap_or_default();
-            if db::canonical_location_key(&rid) == want {
+            if player_location_key(&s.player_id) == want {
                 return true;
             }
         }
@@ -191,8 +208,7 @@ impl SessionStore {
         let want = db::canonical_location_key(room_id);
         let g = self.inner.read().expect("session store poisoned");
         for s in g.values() {
-            let rid = db::get_entity_room(&s.player_id).unwrap_or_default();
-            if db::canonical_location_key(&rid) != want {
+            if player_location_key(&s.player_id) != want {
                 continue;
             }
             if let Some(at) = s.last_talk_at
@@ -205,17 +221,17 @@ impl SessionStore {
     }
 
     /// 目前有玩家在線且已落在某房間的 room id 集合（對齊既有 `GetPlayerRoomMap`）。
-    /// 條目為 [`db::canonical_location_key`]，使世界房間 id 與 `hex:…` 在模擬迴圈比對時一致。
+    /// 條目為 [`db::canonical_location_key`]，使世界房間 id 與 `grid:…` 在模擬迴圈比對時一致。
     #[must_use]
     pub fn player_room_ids(&self) -> HashSet<String> {
         let mut set = HashSet::new();
         let g = self.inner.read().expect("session store poisoned");
         for s in g.values() {
-            let rid = db::get_entity_room(&s.player_id).unwrap_or_default();
-            if rid.is_empty() {
+            let location_key = player_location_key(&s.player_id);
+            if location_key.is_empty() {
                 continue;
             }
-            set.insert(db::canonical_location_key(&rid));
+            set.insert(location_key);
         }
         set
     }

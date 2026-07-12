@@ -60,8 +60,7 @@ impl SrtmGrid {
                         let row_off = ((lat_max - lat) as usize) * TILE_N;
                         let col_off = ((lon - lon_min) as usize) * TILE_N;
                         for (dy, src) in tile.iter().enumerate() {
-                            grid[row_off + dy][col_off..col_off + TILE_N]
-                                .copy_from_slice(src);
+                            grid[row_off + dy][col_off..col_off + TILE_N].copy_from_slice(src);
                         }
                     }
                     Err(e) => eprintln!("SRTM 讀 {name} 失敗：{e}"),
@@ -150,14 +149,15 @@ pub fn classify_osm_tags(tags: &[(String, String)]) -> Option<LandClass> {
         match k.as_str() {
             "landuse" => {
                 return Some(match v.as_str() {
-                    "residential" | "commercial" | "industrial" | "retail"
-                    | "construction" | "railway" => LandClass::Urban,
-                    "farmland" | "orchard" | "vineyard" | "allotments"
-                    | "plant_nursery" | "aquaculture" => LandClass::Farmland,
+                    "residential" | "commercial" | "industrial" | "retail" | "construction"
+                    | "railway" => LandClass::Urban,
+                    "farmland" | "orchard" | "vineyard" | "allotments" | "plant_nursery"
+                    | "aquaculture" => LandClass::Farmland,
                     "forest" => LandClass::Forest,
                     "reservoir" | "basin" => LandClass::Water,
-                    "grass" | "meadow" | "recreation_ground" | "village_green"
-                    | "cemetery" => LandClass::Grassland,
+                    "grass" | "meadow" | "recreation_ground" | "village_green" | "cemetery" => {
+                        LandClass::Grassland
+                    }
                     "quarry" | "landfill" | "brownfield" => LandClass::Bare,
                     _ => LandClass::Grassland,
                 });
@@ -211,7 +211,10 @@ pub fn load_landuse(pbf: &Path) -> anyhow::Result<Vec<(Polygon<f64>, LandClass)>
     )?;
     eprintln!("  找到 {} 個多邊形", ways.len());
 
-    let needed: HashSet<i64> = ways.iter().flat_map(|w| w.node_ids.iter().copied()).collect();
+    let needed: HashSet<i64> = ways
+        .iter()
+        .flat_map(|w| w.node_ids.iter().copied())
+        .collect();
     eprintln!("  需要 {} 個 node 座標", needed.len());
 
     eprintln!("OSM Pass 2：收 Node 座標…");

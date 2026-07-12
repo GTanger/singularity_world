@@ -5,8 +5,8 @@ use std::collections::HashSet;
 use crate::db;
 use crate::entity::Character;
 
-use super::observe::{now_unix, Observer};
-use super::zone::{in_view, VIEW_RADIUS};
+use super::observe::{Observer, now_unix};
+use super::zone::{VIEW_RADIUS, in_view};
 
 /// 觀測者格點座標（對齊既有 `Pos`）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

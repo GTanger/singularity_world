@@ -1,14 +1,14 @@
 //! 正方格地圖執行期狀態管理器。
 //!
 //! 以 `OnceLock<GridState>` + `RwLock<SquareGrid>` 為核心：
-//! - 啟動時自 PostgreSQL 載入，若為空則自動揭露原點半徑 5（11×11 = 121 格）後寫回。
+//! - 啟動時自 PostgreSQL 載入，若為空則只建立登入用的中性起點格後寫回。
 //! - 提供唯讀快照（`get_runtime_square_grid`）與可變操作（`with_square_grid_mut`）。
 //! - 對稱 `hex_editor.rs` 的 `HEX_STATE` 設計，使兩地圖管線結構一致。
 
 use std::sync::{OnceLock, RwLock};
 
 use crate::db::{load_square_grid, save_square_grid_to_pg};
-use crate::grid::{reveal_grid_disk, SquareCoord, SquareGrid};
+use crate::grid::SquareGrid;
 
 // ─── 全域狀態 ────────────────────────────────────────────────────────
 
@@ -21,20 +21,35 @@ struct GridState {
 // ─── 初始化 ──────────────────────────────────────────────────────────
 
 /// 啟動時呼叫：優先自 PostgreSQL `grid_cells` 載入；
-/// 若表格為空則自動從原點揭露半徑 5（(2×5+1)² = 121 格）並寫回 PG。
+/// 若表格為空則建立中性起點，再套用正式世界骨架補缺。
 pub fn init() {
     let mut grid = match load_square_grid() {
         Some(g) => g,
         None => SquareGrid::new(),
     };
 
-    // 格數不足時自動揭露起始區域
-    if grid.len() <= 1 {
-        let revealed = reveal_grid_disk(&mut grid, SquareCoord::ORIGIN, 5);
-        tracing::info!("grid_manager: 格數不足，自動揭露起始區域（+{revealed} 格）");
+    // 世界為空時只建立中性起點，不自動灌村莊或程序地圖。
+    if grid.is_empty() {
+        let seeded = crate::grid::ensure_seed_village(&mut grid);
+        tracing::info!("grid_manager: 世界為空，建立中性起點（+{seeded} 格）");
         if let Err(e) = save_square_grid_to_pg(&grid) {
-            tracing::warn!("grid_manager: 初始揭露寫入 PG 失敗：{e}");
+            tracing::warn!("grid_manager: 中性起點寫入 PG 失敗：{e}");
         }
+    }
+
+    match crate::grid::ensure_builtin_world_skeleton(&mut grid) {
+        Ok(report) if report.changed() => {
+            tracing::info!(
+                "grid_manager: 套用世界骨架（+{} 格，更新 {} 格）",
+                report.inserted,
+                report.updated
+            );
+            if let Err(e) = save_square_grid_to_pg(&grid) {
+                tracing::warn!("grid_manager: 世界骨架寫入 PG 失敗：{e}");
+            }
+        }
+        Ok(_) => {}
+        Err(e) => tracing::warn!("grid_manager: 世界骨架載入失敗：{e}"),
     }
 
     let count = grid.len();
@@ -83,8 +98,9 @@ where
     }; // grid write lock 在此釋放
 
     if let Some(snap) = snapshot
-        && let Err(e) = save_square_grid_to_pg(&snap) {
-            tracing::warn!("with_square_grid_mut: PG 寫入失敗：{e}");
-        }
+        && let Err(e) = save_square_grid_to_pg(&snap)
+    {
+        tracing::warn!("with_square_grid_mut: PG 寫入失敗：{e}");
+    }
     Some(result)
 }

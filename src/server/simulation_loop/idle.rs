@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 
 use rand::Rng;
 
-use crate::config::{sim, Server};
+use crate::config::{Server, sim};
 use crate::db::{
     canonical_location_key, get_all_schedules, get_disposition, get_entity_room,
     get_npc_person_display_name, get_npc_title_from_assignments, get_room_name, set_entity_room,
@@ -16,10 +16,10 @@ use crate::npc::{
 };
 use crate::npcnpc::{push_room_event, topic_mask_for_room, try_trigger_npc_npc_in_room};
 
-use super::super::broadcast::{refresh_room_views_for_room, send_narrate_to_room};
 use super::super::SessionStore;
-use super::helpers::{roll_next_idle_interval, sprintf_s};
+use super::super::broadcast::{refresh_room_views_for_room, send_narrate_to_room};
 use super::MainLoopTickState;
+use super::helpers::{roll_next_idle_interval, sprintf_s};
 
 pub(super) fn run_idle_wander_section(
     sessions: &SessionStore,
@@ -28,7 +28,9 @@ pub(super) fn run_idle_wander_section(
     state: &Arc<Mutex<MainLoopTickState>>,
 ) {
     let run = {
-        let Ok(mut st) = state.lock() else { return; };
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
         st.idle_tick_count += 1;
         if st.idle_tick_count >= st.next_idle_trigger {
             st.idle_tick_count = 0;
@@ -47,9 +49,10 @@ pub(super) fn run_idle_wander_section(
     let mut dialogue_done = false;
     if ollama_ready {
         for room_id in &player_room_set {
-            let topic_hint = pick_random_npc_npc_topic_by_mask(&topic_mask_for_room(room_id, hour), "")
-                .map(|t| t.hint)
-                .unwrap_or_default();
+            let topic_hint =
+                pick_random_npc_npc_topic_by_mask(&topic_mask_for_room(room_id, hour), "")
+                    .map(|t| t.hint)
+                    .unwrap_or_default();
             if try_trigger_npc_npc_in_room(sessions, cfg, room_id, &topic_hint, hour) {
                 dialogue_done = true;
                 break;

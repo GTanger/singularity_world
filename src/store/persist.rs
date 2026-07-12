@@ -10,9 +10,9 @@ use std::fs;
 use std::path::Path;
 
 use super::{
-    Assignment, AssignmentsFile, EntitiesFile, Entity, EntityRoomEntry, EntityRoomsFile,
-    Item, ItemsFile, NpcDyad, NpcDyadsFile, NpcRumor, NpcRumorDigestFile, NpcRumorsFile,
-    NpcThread, NpcThreadsFile, Schedule, SchedulesFile, Store,
+    Assignment, AssignmentsFile, EntitiesFile, Entity, EntityRoomEntry, EntityRoomsFile, Item,
+    ItemsFile, NpcDyad, NpcDyadsFile, NpcRumor, NpcRumorDigestFile, NpcRumorsFile, NpcThread,
+    NpcThreadsFile, Schedule, SchedulesFile, Store,
 };
 
 impl Store {

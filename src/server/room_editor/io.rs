@@ -23,7 +23,9 @@ pub(super) fn rooms_base_path() -> PathBuf {
 }
 
 fn room_editor_layout_path() -> PathBuf {
-    Path::new("data").join("runtime").join("room_editor_layout.json")
+    Path::new("data")
+        .join("runtime")
+        .join("room_editor_layout.json")
 }
 
 fn room_editor_groups_path() -> PathBuf {
@@ -96,8 +98,12 @@ fn walk_dir_recursive(dir: &Path, idx: &mut HashMap<String, PathBuf>) -> anyhow:
         if stem.starts_with('_') {
             continue;
         }
-        let Ok(b) = fs::read_to_string(&path) else { continue };
-        let Ok(f) = serde_json::from_str::<RoomEditorRoomFile>(&b) else { continue };
+        let Ok(b) = fs::read_to_string(&path) else {
+            continue;
+        };
+        let Ok(f) = serde_json::from_str::<RoomEditorRoomFile>(&b) else {
+            continue;
+        };
         if f.id.is_empty() {
             continue;
         }
@@ -151,7 +157,11 @@ pub(super) fn ensure_store_room(room: &RoomEditorRoomFile) {
             model::Exit {
                 direction: ex.direction.clone(),
                 to_room_id: ex.to.clone(),
-                to_room_name: if to_name.is_empty() { ex.to.clone() } else { to_name },
+                to_room_name: if to_name.is_empty() {
+                    ex.to.clone()
+                } else {
+                    to_name
+                },
             }
         })
         .collect();
@@ -180,8 +190,16 @@ pub(super) fn ensure_move_object_for_exit(
     if to_room_id.trim().is_empty() {
         return;
     }
-    let dir = if direction.trim().is_empty() { to_room_id } else { direction };
-    let tname = if target_name.trim().is_empty() { to_room_id } else { target_name };
+    let dir = if direction.trim().is_empty() {
+        to_room_id
+    } else {
+        direction
+    };
+    let tname = if target_name.trim().is_empty() {
+        to_room_id
+    } else {
+        target_name
+    };
     let default_move_text = format!("你前往「{tname}」。");
 
     for o in room.objects.iter_mut() {
@@ -198,7 +216,11 @@ pub(super) fn ensure_move_object_for_exit(
         if !o.sockets.contains(&"Move".to_string()) {
             o.sockets.push("Move".into());
         }
-        if o.responses.get("Move").map(|s| s.trim().is_empty()).unwrap_or(true) {
+        if o.responses
+            .get("Move")
+            .map(|s| s.trim().is_empty())
+            .unwrap_or(true)
+        {
             o.responses.insert("Move".into(), default_move_text);
         }
         return;

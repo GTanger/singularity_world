@@ -30,9 +30,9 @@ impl Direction {
     pub fn delta(self) -> (i32, i32) {
         match self {
             Direction::North => (0, 1),
-            Direction::East  => (1, 0),
+            Direction::East => (1, 0),
             Direction::South => (0, -1),
-            Direction::West  => (-1, 0),
+            Direction::West => (-1, 0),
         }
     }
 
@@ -40,9 +40,9 @@ impl Direction {
     pub fn label_zh(self) -> &'static str {
         match self {
             Direction::North => "北",
-            Direction::East  => "東",
+            Direction::East => "東",
             Direction::South => "南",
-            Direction::West  => "西",
+            Direction::West => "西",
         }
     }
 
@@ -50,9 +50,9 @@ impl Direction {
     pub fn opposite(self) -> Direction {
         match self {
             Direction::North => Direction::South,
-            Direction::East  => Direction::West,
+            Direction::East => Direction::West,
             Direction::South => Direction::North,
-            Direction::West  => Direction::East,
+            Direction::West => Direction::East,
         }
     }
 
@@ -167,7 +167,11 @@ mod tests {
     #[test]
     fn opposite_is_involution() {
         for dir in Direction::ALL {
-            assert_eq!(dir.opposite().opposite(), dir, "方向 {dir} 的 opposite 不是對合");
+            assert_eq!(
+                dir.opposite().opposite(),
+                dir,
+                "方向 {dir} 的 opposite 不是對合"
+            );
         }
     }
 

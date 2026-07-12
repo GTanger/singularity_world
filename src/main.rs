@@ -32,8 +32,16 @@ async fn main() -> anyhow::Result<()> {
     }
     let topics = root.join("data/npc_to_npc_topics.json");
     singularity_world::npc::try_load_npc_npc_topics(&topics)
-        .or_else(|_| singularity_world::npc::try_load_npc_npc_topics(Path::new("data/npc_to_npc_topics.json")))
-        .or_else(|_| singularity_world::npc::try_load_npc_npc_topics(Path::new("../data/npc_to_npc_topics.json")))?;
+        .or_else(|_| {
+            singularity_world::npc::try_load_npc_npc_topics(Path::new(
+                "data/npc_to_npc_topics.json",
+            ))
+        })
+        .or_else(|_| {
+            singularity_world::npc::try_load_npc_npc_topics(Path::new(
+                "../data/npc_to_npc_topics.json",
+            ))
+        })?;
     let behaviors = root.join("data/npc_behaviors.json");
     if let Err(e) = singularity_world::npc::try_load_npc_behaviors(&behaviors) {
         tracing::warn!("npc_behaviors: {e}");

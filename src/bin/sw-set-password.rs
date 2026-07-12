@@ -1,5 +1,5 @@
+use bcrypt::{DEFAULT_COST, hash};
 use singularity_world::store::sql;
-use bcrypt::{hash, DEFAULT_COST};
 use std::env;
 
 #[tokio::main]
@@ -17,8 +17,9 @@ async fn main() -> anyhow::Result<()> {
         anyhow::bail!("Password must be at least 6 characters long.");
     }
 
-    let pg_url = env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "postgres://postgres:singularity@localhost:5432/singularity".to_string());
+    let pg_url = env::var("DATABASE_URL").unwrap_or_else(|_| {
+        "postgres://postgres:singularity@localhost:5432/singularity".to_string()
+    });
 
     let pool = sql::init_pool(&pg_url)?;
     let mut conn = pool.get()?;

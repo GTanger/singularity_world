@@ -121,71 +121,36 @@ pub fn resolve(
             d_hp -= dmg;
             log.push_str(" 攻方擊中守方，");
             if d_hp <= 0 {
-                return (
-                    "attacker".to_string(),
-                    log + " 守方敗。",
-                    a_hp,
-                    d_hp,
-                );
+                return ("attacker".to_string(), log + " 守方敗。", a_hp, d_hp);
             }
             let dmg = damage_first_stage(defender_vit, attacker_vit);
             a_hp -= dmg;
             log.push_str(" 守方反擊。");
             if a_hp <= 0 {
-                return (
-                    "defender".to_string(),
-                    log + " 攻方敗。",
-                    a_hp,
-                    d_hp,
-                );
+                return ("defender".to_string(), log + " 攻方敗。", a_hp, d_hp);
             }
         } else {
             let dmg = damage_first_stage(defender_vit, attacker_vit);
             a_hp -= dmg;
             log.push_str(" 守方擊中攻方，");
             if a_hp <= 0 {
-                return (
-                    "defender".to_string(),
-                    log + " 攻方敗。",
-                    a_hp,
-                    d_hp,
-                );
+                return ("defender".to_string(), log + " 攻方敗。", a_hp, d_hp);
             }
             let dmg = damage_first_stage(attacker_vit, defender_vit);
             d_hp -= dmg;
             log.push_str(" 攻方反擊。");
             if d_hp <= 0 {
-                return (
-                    "attacker".to_string(),
-                    log + " 守方敗。",
-                    a_hp,
-                    d_hp,
-                );
+                return ("attacker".to_string(), log + " 守方敗。", a_hp, d_hp);
             }
         }
     }
     if a_hp <= 0 && d_hp <= 0 {
-        return (
-            "defender".to_string(),
-            log + " 平手。",
-            a_hp,
-            d_hp,
-        );
+        return ("defender".to_string(), log + " 平手。", a_hp, d_hp);
     }
     if a_hp <= 0 {
-        return (
-            "defender".to_string(),
-            log + " 攻方敗。",
-            a_hp,
-            d_hp,
-        );
+        return ("defender".to_string(), log + " 攻方敗。", a_hp, d_hp);
     }
-    (
-        "attacker".to_string(),
-        log + " 守方敗。",
-        a_hp,
-        d_hp,
-    )
+    ("attacker".to_string(), log + " 守方敗。", a_hp, d_hp)
 }
 
 /// 擴充版：CombatOpt、戰報標籤；`opt == None` 時傷害等同 `resolve`，僅 log 帶 §七 標籤。
@@ -328,7 +293,10 @@ mod tests {
             }
         }
         // 攻方優勢明顯，應贏超過 60%
-        assert!(attacker_wins > 120, "attacker 只贏了 {attacker_wins}/200 次，太少");
+        assert!(
+            attacker_wins > 120,
+            "attacker 只贏了 {attacker_wins}/200 次，太少"
+        );
     }
 
     #[test]
@@ -342,7 +310,10 @@ mod tests {
             }
         }
         // 高 dex 方命中率更高，應贏超過 55%
-        assert!(high_dex_wins > 275, "高 dex 方只贏了 {high_dex_wins}/500 次");
+        assert!(
+            high_dex_wins > 275,
+            "高 dex 方只贏了 {high_dex_wins}/500 次"
+        );
     }
 
     #[test]

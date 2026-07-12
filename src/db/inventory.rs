@@ -114,6 +114,19 @@ pub fn remove_from_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow
     })
 }
 
+/// 在同一個 store 寫鎖內完成「玩家付鎂、NPC 收鎂、NPC 扣物、玩家收物」。
+pub fn settle_inventory_trade(
+    buyer_id: &str,
+    seller_id: &str,
+    item_id: &str,
+    qty: i32,
+    price_mg: i32,
+) -> anyhow::Result<()> {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let mut s = arc.write();
+    s.settle_inventory_trade(buyer_id, seller_id, item_id, qty, price_mg)
+}
+
 /// 背包內所有物品數量加總（僅 `qty > 0`；對齊既有 `DecisionState.InventoryTotalQty`）。
 #[must_use]
 pub fn inventory_total_qty(inventory_json: &str) -> i32 {
@@ -121,7 +134,11 @@ pub fn inventory_total_qty(inventory_json: &str) -> i32 {
         return 0;
     }
     let entries: Vec<InventoryEntry> = serde_json::from_str(inventory_json).unwrap_or_default();
-    entries.iter().filter(|e| e.qty > 0 && !e.item_id.is_empty()).map(|e| e.qty).sum()
+    entries
+        .iter()
+        .filter(|e| e.qty > 0 && !e.item_id.is_empty())
+        .map(|e| e.qty)
+        .sum()
 }
 
 /// 自 `inventory` JSON 與 `items` 表組裝前端用清單與負重（對齊既有 `GetInventory`）。
@@ -159,7 +176,8 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
         if e.qty <= 0 || e.item_id.is_empty() {
             continue;
         }
-        let (name, item_type, description, slot, weight) = if let Some(it) = s.get_item(&e.item_id) {
+        let (name, item_type, description, slot, weight) = if let Some(it) = s.get_item(&e.item_id)
+        {
             (
                 it.name.clone(),
                 it.item_type.clone(),
@@ -167,8 +185,22 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
                 it.slot.clone(),
                 it.weight,
             )
+        } else if let Some(mat) = crate::world::materials::material_by_item_id(&e.item_id) {
+            (
+                mat.name.clone(),
+                mat.item_type.clone(),
+                mat.description.clone(),
+                String::new(),
+                mat.weight,
+            )
         } else {
-            (e.item_id.clone(), "misc".into(), String::new(), String::new(), 0.0)
+            (
+                e.item_id.clone(),
+                "misc".into(),
+                String::new(),
+                String::new(),
+                0.0,
+            )
         };
         let sub = weight * f64::from(e.qty);
         items.push(InventoryLine {
@@ -193,18 +225,30 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
 /// 查單一物品定義；無 store 或無此 id 則 `None`（對齊既有 `GetItemInfo` 之失敗路徑）。
 #[must_use]
 pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
-    let arc = store::get_store()?;
-    let s = arc.read();
-    let it = s.get_item(item_id)?;
-    Some(ItemDefBrief {
-        name: it.name.clone(),
-        item_type: it.item_type.clone(),
-        slot: it.slot.clone(),
-        description: it.description.clone(),
-        weight: it.weight,
-        vit_bonus: it.vit_bonus,
-        dex_bonus: it.dex_bonus,
-        atk_bonus: it.atk_bonus,
+    if let Some(arc) = store::get_store() {
+        let s = arc.read();
+        if let Some(it) = s.get_item(item_id) {
+            return Some(ItemDefBrief {
+                name: it.name.clone(),
+                item_type: it.item_type.clone(),
+                slot: it.slot.clone(),
+                description: it.description.clone(),
+                weight: it.weight,
+                vit_bonus: it.vit_bonus,
+                dex_bonus: it.dex_bonus,
+                atk_bonus: it.atk_bonus,
+            });
+        }
+    }
+    crate::world::materials::material_by_item_id(item_id).map(|mat| ItemDefBrief {
+        name: mat.name.clone(),
+        item_type: mat.item_type.clone(),
+        slot: String::new(),
+        description: mat.description.clone(),
+        weight: mat.weight,
+        vit_bonus: 0,
+        dex_bonus: 0,
+        atk_bonus: 0,
     })
 }
 
@@ -224,7 +268,11 @@ pub fn inventory_weight(inventory_json: &str) -> f64 {
         if e.qty <= 0 {
             continue;
         }
-        let w = s.get_item(&e.item_id).map(|it| it.weight).unwrap_or(0.0);
+        let w = s
+            .get_item(&e.item_id)
+            .map(|it| it.weight)
+            .or_else(|| crate::world::materials::material_by_item_id(&e.item_id).map(|m| m.weight))
+            .unwrap_or(0.0);
         total += w * f64::from(e.qty);
     }
     total
@@ -273,37 +321,52 @@ pub fn clear_equipment_slot(entity_id: &str, slot: &str) -> anyhow::Result<()> {
 /// 背包 JSON 中是否至少有一件指定 `item_id` 且 `qty > 0`。
 #[must_use]
 pub fn inventory_has_item(inventory_json: &str, item_id: &str) -> bool {
-    if inventory_json.is_empty() || inventory_json == "[]" || item_id.is_empty() {
+    inventory_has_qty(inventory_json, item_id, 1)
+}
+
+/// 背包 JSON 中是否至少有指定數量的 `item_id`。
+#[must_use]
+pub fn inventory_has_qty(inventory_json: &str, item_id: &str, qty: i32) -> bool {
+    if inventory_json.is_empty() || inventory_json == "[]" || item_id.is_empty() || qty <= 0 {
         return false;
     }
     let entries: Vec<InventoryEntry> = serde_json::from_str(inventory_json).unwrap_or_default();
-    entries
-        .iter()
-        .any(|e| e.item_id == item_id && e.qty > 0)
+    entries.iter().any(|e| e.item_id == item_id && e.qty >= qty)
 }
 
-/// 從 NPC 背包 JSON 取第一個數量 > 0 的物品作為本輪賣品（對齊既有 `PickNPCTradeOffer`）。
+/// 從 NPC 背包 JSON 取數量 > 0 且可交易的 P0 物質作為本輪賣品。
+/// P0 商品層以 `trade_priority` 讓糧、鹽、繩、礦等主商品優先於副料。
 #[must_use]
 pub fn pick_npc_trade_offer(inventory_json: &str) -> Option<String> {
     if inventory_json.is_empty() || inventory_json == "[]" {
         return None;
     }
     let entries: Vec<InventoryEntry> = serde_json::from_str(inventory_json).unwrap_or_default();
+    let mut best: Option<(String, i32)> = None;
     for e in entries {
-        if !e.item_id.is_empty() && e.qty > 0 {
-            return Some(e.item_id);
+        if !e.item_id.is_empty() && e.qty > 0 && item_is_tradable(&e.item_id) {
+            let priority = crate::world::materials::trade_offer_priority(&e.item_id).unwrap_or(0);
+            let replace = match best.as_ref() {
+                Some((_, best_priority)) => priority > *best_priority,
+                None => true,
+            };
+            if replace {
+                best = Some((e.item_id, priority));
+            }
         }
     }
-    None
+    best.map(|(item_id, _)| item_id)
 }
 
-/// 第一版預設喊價（對齊既有 `DefaultTradeAskMg`）。
+/// 第一版喊價：P0 世界物質讀價格錨點，其他物品不應進入交易報價。
 #[must_use]
 pub fn default_trade_ask_mg(item_id: &str) -> i32 {
-    match item_id {
-        "wild_herb" => 5,
-        _ => 8,
-    }
+    crate::world::materials::trade_price_anchor_mg(item_id).unwrap_or(8)
+}
+
+#[must_use]
+pub fn item_is_tradable(item_id: &str) -> bool {
+    crate::world::materials::is_tradable_item(item_id)
 }
 
 /// 議價底價＝喊價七成（至少 1）（對齊既有 `TradeFloorFromAsk`）。
@@ -313,9 +376,61 @@ pub fn trade_floor_from_ask(ask: i32) -> i32 {
         return 1;
     }
     let f = ask * 7 / 10;
-    if f < 1 {
-        1
-    } else {
-        f
+    if f < 1 { 1 } else { f }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn inventory_has_qty_requires_enough_quantity() {
+        let inventory = r#"[{"item_id":"wild_herb","qty":2},{"item_id":"stone","qty":0}]"#;
+
+        assert!(inventory_has_qty(inventory, "wild_herb", 1));
+        assert!(inventory_has_qty(inventory, "wild_herb", 2));
+        assert!(!inventory_has_qty(inventory, "wild_herb", 3));
+        assert!(!inventory_has_qty(inventory, "stone", 1));
+        assert!(!inventory_has_qty(inventory, "", 1));
+        assert!(!inventory_has_qty(inventory, "wild_herb", 0));
+    }
+
+    #[test]
+    fn inventory_has_item_is_one_or_more() {
+        assert!(inventory_has_item(
+            r#"[{"item_id":"wild_herb","qty":1}]"#,
+            "wild_herb"
+        ));
+        assert!(!inventory_has_item(
+            r#"[{"item_id":"wild_herb","qty":0}]"#,
+            "wild_herb"
+        ));
+    }
+
+    #[test]
+    fn trade_offer_skips_legacy_and_unknown_items() {
+        let inventory = r#"[{"item_id":"wild_herb","qty":3},{"item_id":"stone","qty":1}]"#;
+        assert_eq!(pick_npc_trade_offer(inventory), None);
+    }
+
+    #[test]
+    fn trade_offer_uses_p0_material_only() {
+        let inventory =
+            r#"[{"item_id":"wild_herb","qty":3},{"item_id":"mat_wet_grass_bundle","qty":1}]"#;
+        assert_eq!(
+            pick_npc_trade_offer(inventory).as_deref(),
+            Some("mat_wet_grass_bundle")
+        );
+        assert_eq!(default_trade_ask_mg("mat_wet_grass_bundle"), 4);
+    }
+
+    #[test]
+    fn trade_offer_prioritizes_main_commodity_over_byproduct() {
+        let inventory =
+            r#"[{"item_id":"mat_fish_bone_sack","qty":1},{"item_id":"mat_grain_sack","qty":1}]"#;
+        assert_eq!(
+            pick_npc_trade_offer(inventory).as_deref(),
+            Some("mat_grain_sack")
+        );
     }
 }

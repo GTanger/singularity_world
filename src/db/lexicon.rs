@@ -9,7 +9,9 @@ pub fn upsert_lexicon_term(term: &str, room_id: &str, pair_key: &str) {
         return;
     }
     let now = now_unix();
-    let Some(pool) = store::get_db_pool() else { return };
+    let Some(pool) = store::get_db_pool() else {
+        return;
+    };
     let Ok(mut conn) = pool.get() else { return };
 
     let _ = conn.execute(
@@ -39,7 +41,9 @@ pub fn upsert_lexicon_term(term: &str, room_id: &str, pair_key: &str) {
 /// - mention_count ≥ 3 且 unique_pairs ≥ 3 → status = 'nominated'
 /// - mention_count ≥ 5 且 source_rooms 含逗號（多房間）→ status = 'promoted'
 pub fn promote_lexicon_candidates() {
-    let Some(pool) = store::get_db_pool() else { return };
+    let Some(pool) = store::get_db_pool() else {
+        return;
+    };
     let Ok(mut conn) = pool.get() else { return };
 
     // candidate → nominated
@@ -63,7 +67,9 @@ pub fn promote_lexicon_candidates() {
 
 /// 衰減：last_seen 超過 48 小時且 status = 'candidate' → 刪除。
 pub fn decay_lexicon() {
-    let Some(pool) = store::get_db_pool() else { return };
+    let Some(pool) = store::get_db_pool() else {
+        return;
+    };
     let Ok(mut conn) = pool.get() else { return };
     let cutoff = now_unix() - 48 * 3600;
     let _ = conn.execute(
@@ -74,8 +80,12 @@ pub fn decay_lexicon() {
 
 /// 列出所有 nominated 或 promoted 的詞條（供日報提煉用）。
 pub fn list_notable_terms() -> Vec<LexiconEntry> {
-    let Some(pool) = store::get_db_pool() else { return vec![] };
-    let Ok(mut conn) = pool.get() else { return vec![] };
+    let Some(pool) = store::get_db_pool() else {
+        return vec![];
+    };
+    let Ok(mut conn) = pool.get() else {
+        return vec![];
+    };
     let rows = match conn.query(
         "SELECT term, category, mention_count, unique_pairs, source_rooms, status
          FROM world_lexicon

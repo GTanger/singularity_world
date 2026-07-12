@@ -1,14 +1,18 @@
-use std::path::Path;
-use rusqlite::Connection as SqliteConnection;
 use r2d2_postgres::postgres::{Client as PgClient, NoTls};
+use rusqlite::Connection as SqliteConnection;
+use std::path::Path;
 
 fn main() -> anyhow::Result<()> {
     let sqlite_path = "data/runtime/singularity.db";
-    let pg_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "postgres://postgres:singularity@localhost:5432/singularity".to_string());
+    let pg_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+        "postgres://postgres:singularity@localhost:5432/singularity".to_string()
+    });
 
     if !Path::new(sqlite_path).exists() {
-        println!("SQLite database not found at {}, skipping migration.", sqlite_path);
+        println!(
+            "SQLite database not found at {}, skipping migration.",
+            sqlite_path
+        );
         return Ok(());
     }
 
@@ -36,7 +40,8 @@ fn main() -> anyhow::Result<()> {
 
     // Migrate Event Log
     println!("Migrating Event Log...");
-    let mut stmt = sqlite_conn.prepare("SELECT entity_id, event_type, payload, created_at FROM event_log")?;
+    let mut stmt =
+        sqlite_conn.prepare("SELECT entity_id, event_type, payload, created_at FROM event_log")?;
     let rows = stmt.query_map([], |row| {
         Ok((
             row.get::<_, String>(0)?,
@@ -55,7 +60,8 @@ fn main() -> anyhow::Result<()> {
 
     // Migrate Archival
     println!("Migrating Archival...");
-    let mut stmt = sqlite_conn.prepare("SELECT entity_id, content, tag, created_at FROM archival")?;
+    let mut stmt =
+        sqlite_conn.prepare("SELECT entity_id, content, tag, created_at FROM archival")?;
     let rows = stmt.query_map([], |row| {
         Ok((
             row.get::<_, String>(0)?,
@@ -74,7 +80,8 @@ fn main() -> anyhow::Result<()> {
 
     // Migrate NPC Memories
     println!("Migrating NPC Memories...");
-    let mut stmt = sqlite_conn.prepare("SELECT entity_id, subject_id, meet_count, favorability FROM npc_memories")?;
+    let mut stmt = sqlite_conn
+        .prepare("SELECT entity_id, subject_id, meet_count, favorability FROM npc_memories")?;
     let rows = stmt.query_map([], |row| {
         Ok((
             row.get::<_, String>(0)?,
@@ -128,7 +135,7 @@ fn main() -> anyhow::Result<()> {
 
 fn migrate_json_to_pg(pg: &mut PgClient) -> anyhow::Result<()> {
     let runtime_dir = Path::new("data/runtime");
-    
+
     // Threads
     let thread_path = runtime_dir.join("npc_thread.json");
     if thread_path.exists() {
@@ -137,12 +144,24 @@ fn migrate_json_to_pg(pg: &mut PgClient) -> anyhow::Result<()> {
         let data: serde_json::Value = serde_json::from_str(&raw)?;
         if let Some(entries) = data.get("entries").and_then(|e| e.as_array()) {
             for e in entries {
-                let key = e.get("thread_key").and_then(|v| v.as_str()).unwrap_or_default();
-                let topic = e.get("topic_type").and_then(|v| v.as_str()).unwrap_or_default();
+                let key = e
+                    .get("thread_key")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let topic = e
+                    .get("topic_type")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
                 let phase = e.get("phase").and_then(|v| v.as_str()).unwrap_or_default();
-                let anchors = e.get("anchors").unwrap_or(&serde_json::Value::Array(vec![])).to_string();
+                let anchors = e
+                    .get("anchors")
+                    .unwrap_or(&serde_json::Value::Array(vec![]))
+                    .to_string();
                 let turn = e.get("turn_count").and_then(|v| v.as_i64()).unwrap_or(0) as i32;
-                let cool = e.get("cooldown_until").and_then(|v| v.as_i64()).unwrap_or(0);
+                let cool = e
+                    .get("cooldown_until")
+                    .and_then(|v| v.as_i64())
+                    .unwrap_or(0);
                 let up = e.get("updated_at").and_then(|v| v.as_i64()).unwrap_or(0);
                 pg.execute(
                     "INSERT INTO npc_threads (thread_key, topic_type, phase, anchors, turn_count, cooldown_until, updated_at)
@@ -163,10 +182,17 @@ fn migrate_json_to_pg(pg: &mut PgClient) -> anyhow::Result<()> {
             for e in entries {
                 let a_id = e.get("a_id").and_then(|v| v.as_str()).unwrap_or_default();
                 let b_id = e.get("b_id").and_then(|v| v.as_str()).unwrap_or_default();
-                let key = if a_id <= b_id { format!("{}|{}", a_id, b_id) } else { format!("{}|{}", b_id, a_id) };
+                let key = if a_id <= b_id {
+                    format!("{}|{}", a_id, b_id)
+                } else {
+                    format!("{}|{}", b_id, a_id)
+                };
                 let fam = e.get("familiarity").and_then(|v| v.as_i64()).unwrap_or(0) as i32;
                 let sent = e.get("sentiment").and_then(|v| v.as_i64()).unwrap_or(0) as i32;
-                let tags = e.get("tags").unwrap_or(&serde_json::Value::Array(vec![])).to_string();
+                let tags = e
+                    .get("tags")
+                    .unwrap_or(&serde_json::Value::Array(vec![]))
+                    .to_string();
                 let up = e.get("updated_at").and_then(|v| v.as_i64()).unwrap_or(0);
                 pg.execute(
                     "INSERT INTO npc_dyads (dyad_key, a_id, b_id, familiarity, sentiment, tags, updated_at)
@@ -187,7 +213,10 @@ fn migrate_json_to_pg(pg: &mut PgClient) -> anyhow::Result<()> {
             for e in entries {
                 let id = e.get("id").and_then(|v| v.as_str()).unwrap_or_default();
                 let text = e.get("text").and_then(|v| v.as_str()).unwrap_or_default();
-                let rid = e.get("room_id").and_then(|v| v.as_str()).unwrap_or_default();
+                let rid = e
+                    .get("room_id")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
                 let zone = e.get("zone").and_then(|v| v.as_str()).unwrap_or_default();
                 let src = e.get("source").and_then(|v| v.as_str()).unwrap_or_default();
                 let ss = e.get("source_score").and_then(|v| v.as_i64()).unwrap_or(0) as i32;
@@ -196,8 +225,14 @@ fn migrate_json_to_pg(pg: &mut PgClient) -> anyhow::Result<()> {
                 let lua = e.get("last_used_at").and_then(|v| v.as_i64()).unwrap_or(0);
                 let bu = e.get("blocked_until").and_then(|v| v.as_i64()).unwrap_or(0);
                 let pc = e.get("penalty_count").and_then(|v| v.as_i64()).unwrap_or(0) as i32;
-                let lpa = e.get("last_penalty_at").and_then(|v| v.as_i64()).unwrap_or(0);
-                let lpr = e.get("last_penalty_reason").and_then(|v| v.as_str()).unwrap_or_default();
+                let lpa = e
+                    .get("last_penalty_at")
+                    .and_then(|v| v.as_i64())
+                    .unwrap_or(0);
+                let lpr = e
+                    .get("last_penalty_reason")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
                 let up = e.get("updated_at").and_then(|v| v.as_i64()).unwrap_or(0);
                 let ex = e.get("expires_at").and_then(|v| v.as_i64()).unwrap_or(0);
                 pg.execute(

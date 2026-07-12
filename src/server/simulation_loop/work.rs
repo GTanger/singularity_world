@@ -4,25 +4,25 @@ use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use crate::config::{sim, Server};
+use crate::config::{Server, sim};
 use crate::db::{
-    adjust_disposition, apply_schedules, get_npc_ids_with_room, get_npc_person_display_name,
+    add_thought_with_flavor, apply_schedules, get_npc_ids_with_room, get_npc_person_display_name,
     get_npc_title_from_assignments, get_room_name, get_schedule_for_entity, get_schedule_target,
     upsert_npc_rumor, with_room_graph,
 };
 use crate::gametext;
 use crate::npc::{
+    JobMatchParams, MovementDef, MovementType, SEEK_JOB_MG_THRESHOLD_DEFAULT, TravelerManager,
     get_npc_npc_topic_by_id, get_shift_flavor, movement_speed_for_title,
-    pick_random_npc_npc_topic_by_mask, run_job_matching_tick, JobMatchParams, MovementDef,
-    MovementType, TravelerManager, SEEK_JOB_MG_THRESHOLD_DEFAULT,
+    pick_random_npc_npc_topic_by_mask, run_job_matching_tick,
 };
 use crate::npcnpc::{push_room_event, topic_mask_for_room, try_trigger_npc_npc_in_room};
 use crate::store::NpcRumor;
 
-use super::super::broadcast::{broadcast_room_views, send_narrate_to_room};
 use super::super::SessionStore;
-use super::helpers::{periodic_fire, sprintf_d, sprintf_s};
+use super::super::broadcast::{broadcast_room_views, send_narrate_to_room};
 use super::MainLoopTickState;
+use super::helpers::{periodic_fire, sprintf_d, sprintf_s};
 
 /// 求職撮合 tick（＋傳聞）；新入職且有排班者註冊排班型 Traveler。
 pub(super) fn run_job_matching_section(
@@ -37,8 +37,13 @@ pub(super) fn run_job_matching_section(
         jm_sec = 30;
     }
     let fire = {
-        let Ok(mut st) = state.lock() else { return; };
-        periodic_fire(&mut st.last_job_matching, Duration::from_secs(jm_sec as u64))
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
+        periodic_fire(
+            &mut st.last_job_matching,
+            Duration::from_secs(jm_sec as u64),
+        )
     };
     if !fire {
         return;
@@ -115,7 +120,9 @@ pub(super) fn run_schedule_hour_section(
     state: &Arc<Mutex<MainLoopTickState>>,
 ) {
     let run = {
-        let Ok(mut st) = state.lock() else { return; };
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
         if hour != st.last_schedule_hour {
             st.last_schedule_hour = hour;
             true
@@ -140,8 +147,13 @@ pub(super) fn run_schedule_hour_section(
         disp_delta = tod.late_night_delta;
     }
     if disp_delta != 0 {
+        let flavor = if disp_delta > 0 {
+            "拂曉時分，精神略好".to_string()
+        } else {
+            "深夜守歲，精神疲憊".to_string()
+        };
         for nid in get_npc_ids_with_room() {
-            let _ = adjust_disposition(&nid, disp_delta);
+            let _ = add_thought_with_flavor(&nid, "WorkDone", disp_delta, 360, flavor.clone());
         }
     }
 

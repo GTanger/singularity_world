@@ -178,9 +178,14 @@ body {
 .log-object-action {
   color: var(--blue-ink);
   cursor: pointer;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .log-object-action:active {
   opacity: 0.6;
+}
+.log-object-actions {
+  overflow-wrap: anywhere;
 }
 
 .narr-name {
@@ -423,53 +428,6 @@ body {
   padding: 6px 8px;
   gap: 10px;
   z-index: 10;
-}
-
-/* 方向鈕 3×3 */
-#dpad {
-  flex: 0 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 3px;
-  width: 120px;
-  height: 96px;
-}
-
-.dir-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: var(--ink-light);
-  background: var(--paper-dark);
-  border: 1px solid var(--ink-wash);
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0;
-  font-family: inherit;
-  transition: background 0.1s, color 0.1s;
-}
-.dir-btn:active {
-  background: var(--ink-faint);
-  color: var(--paper);
-}
-.dir-btn.has-exit {
-  color: var(--ink);
-  background: var(--paper);
-  border-color: var(--ink-faint);
-}
-.dir-btn.no-exit {
-  color: var(--ink-wash);
-  background: var(--paper-dark);
-  border-color: var(--ink-wash);
-  opacity: 0.4;
-}
-.dir-center {
-  color: var(--gold);
-  font-size: 14px;
-  background: var(--paper);
-  border-color: var(--ink-faint);
 }
 
 /* 右側狀態 */

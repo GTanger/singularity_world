@@ -30,14 +30,16 @@ struct EmbedResp {
 }
 
 fn main() -> anyhow::Result<()> {
-    // 1. 讀取詞元池
+    // 1. 讀取舊語義元素池
     let raw = fs::read_to_string("data/config/word_elements.json")
         .context("Failed to read data/config/word_elements.json")?;
-    let pool: WordPool = serde_json::from_str(&raw).context("Failed to parse word_elements.json")?;
+    let pool: WordPool =
+        serde_json::from_str(&raw).context("Failed to parse word_elements.json")?;
 
     // 2. 連接 PG（DATABASE_URL 環境變數或預設）
-    let db_url = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "postgres://postgres:singularity@localhost:5432/singularity".to_string());
+    let db_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+        "postgres://postgres:singularity@localhost:5432/singularity".to_string()
+    });
     let mut conn = Client::connect(&db_url, NoTls).context("Failed to connect to database")?;
 
     // 3. 確保表存在 (雖然 sql.rs 也有，但 binary 獨立跑時需要確保)
@@ -55,7 +57,10 @@ fn main() -> anyhow::Result<()> {
     let client = reqwest::blocking::Client::new();
 
     // 4. 逐筆跑 embedding
-    println!("開始為 {} 顆詞元生成 embedding...", pool.elements.len());
+    println!(
+        "開始為 {} 顆舊語義元素生成 embedding...",
+        pool.elements.len()
+    );
 
     for (i, e) in pool.elements.iter().enumerate() {
         // 優先使用 enriched desc，沒有就用原始 desc
@@ -72,7 +77,7 @@ fn main() -> anyhow::Result<()> {
             .context("Failed to parse Ollama response")?;
 
         if resp.embeddings.is_empty() {
-             anyhow::bail!("Ollama returned empty embeddings for id={}", e.id);
+            anyhow::bail!("Ollama returned empty embeddings for id={}", e.id);
         }
 
         let vec = &resp.embeddings[0];
@@ -100,16 +105,16 @@ fn main() -> anyhow::Result<()> {
             vec_str
         );
 
-        conn.execute(
-            sql.as_str(),
-            &[&e.id, &e.char, &e.semantic, &e.desc],
-        )?;
+        conn.execute(sql.as_str(), &[&e.id, &e.char, &e.semantic, &e.desc])?;
 
         if (i + 1) % 50 == 0 {
             println!("進度：{}/{}", i + 1, pool.elements.len());
         }
     }
 
-    println!("完成：{} 顆詞元 embedding 已存入 PG", pool.elements.len());
+    println!(
+        "完成：{} 顆舊語義元素 embedding 已存入 PG",
+        pool.elements.len()
+    );
     Ok(())
 }

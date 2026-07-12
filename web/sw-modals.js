@@ -43,18 +43,29 @@
 		var logEl = document.querySelector('.log-content');
 		var tabs = document.querySelectorAll('.player-modal-tab');
 		var panes = document.querySelectorAll('.player-modal-pane');
+		var currentEntityId = '';
+		var currentIsSelf = false;
 		if (!overlay || !modal || !playerName) return;
 
 		function openModal(displayName, entityId) {
 			if (titleEl) titleEl.textContent = (displayName && displayName.trim()) ? displayName.trim() : '角色';
 			var st = window.gameState ? window.gameState() : {};
 			var id = (entityId && entityId.trim()) ? entityId.trim() : (st.me && st.me.player_id ? st.me.player_id : '');
+			currentEntityId = id;
+			currentIsSelf = !!(id && st.me && st.me.player_id && id === st.me.player_id);
 			var starplateWrap = document.getElementById('starplate-content');
-			if (starplateWrap && id && st.me && st.me.player_id && id !== st.me.player_id) {
+			if (starplateWrap && id && !currentIsSelf) {
 				starplateWrap.innerHTML = '<p class="text-muted">僅自己可觀看星盤。</p>';
+			}
+			var invWeight = document.getElementById('inventory-weight');
+			var invList = document.getElementById('inventory-list');
+			if (!currentIsSelf) {
+				if (invWeight) invWeight.innerHTML = '';
+				if (invList) invList.innerHTML = '<div class="inventory-empty">僅自己可觀看背包。</div>';
 			}
 			if (id && window.gameIsConnected && window.gameIsConnected() && window.gameSend) {
 				window.gameSend({ type: 'get_entity_status', entity_id: id });
+				if (currentIsSelf) window.gameSend({ type: 'get_inventory' });
 			} else {
 				var wrap = document.getElementById('status-content');
 				if (wrap) wrap.innerHTML = '<p class="text-muted">請先登入</p>';
@@ -108,6 +119,9 @@
 					p.classList.toggle('active', on);
 					p.hidden = !on;
 				});
+				if (t === 'inventory' && currentIsSelf && window.gameIsConnected && window.gameIsConnected() && window.gameSend) {
+					window.gameSend({ type: 'get_inventory' });
+				}
 			});
 		});
 		window.openCharacterModal = openModal;

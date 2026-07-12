@@ -2,15 +2,18 @@
 
 mod chunk;
 mod map;
+pub mod materials;
 mod movement;
 mod terrain_display;
 
 pub use chunk::{load_chunk, terrain_from_rune};
 pub use map::{
-    terrain_blocking, Grid, TERRAIN_ALLEY, TERRAIN_DOOR, TERRAIN_DOOR_CLOSED, TERRAIN_FARM,
-    TERRAIN_FLOOR, TERRAIN_FOG, TERRAIN_GRASS, TERRAIN_ICE, TERRAIN_LAVA, TERRAIN_MOUNTAIN,
-    TERRAIN_RIVER, TERRAIN_ROAD, TERRAIN_STONE, TERRAIN_SWAMP, TERRAIN_TREE, TERRAIN_VALLEY,
-    TERRAIN_WALL, TERRAIN_WASTELAND, TERRAIN_WATER,
+    Grid, TERRAIN_ALLEY, TERRAIN_DOOR, TERRAIN_DOOR_CLOSED, TERRAIN_FARM, TERRAIN_FLOOR,
+    TERRAIN_FOG, TERRAIN_GRASS, TERRAIN_ICE, TERRAIN_LAVA, TERRAIN_MOUNTAIN, TERRAIN_RIVER,
+    TERRAIN_ROAD, TERRAIN_STONE, TERRAIN_SWAMP, TERRAIN_TREE, TERRAIN_VALLEY, TERRAIN_WALL,
+    TERRAIN_WASTELAND, TERRAIN_WATER, terrain_blocking,
 };
 pub use movement::can_move_to;
-pub use terrain_display::{display_terrain, display_terrain_rng, terrain_meta_by_type, TerrainMeta};
+pub use terrain_display::{
+    TerrainMeta, display_terrain, display_terrain_rng, terrain_meta_by_type,
+};

@@ -9,10 +9,16 @@ pub const SPAWN_ROOM_NAME: &str = "宜林";
 
 /// 取得創生預設房間 id。
 pub fn get_spawn_room_id() -> String {
-    let Some(arc) = store::get_store() else { return "lobby".to_string() };
+    let Some(arc) = store::get_store() else {
+        return "lobby".to_string();
+    };
     let s = arc.read();
     let id = s.get_room_id_by_name(SPAWN_ROOM_NAME);
-    if id.is_empty() { "lobby".to_string() } else { id }
+    if id.is_empty() {
+        "lobby".to_string()
+    } else {
+        id
+    }
 }
 
 /// 有房間座標的 NPC id 列表（對齊既有 `GetNPCIDsWithRoom`）。
@@ -37,9 +43,13 @@ pub fn get_player_ids_with_room() -> Vec<String> {
 
 /// 回傳房間的戰鬥地形標籤。
 pub fn terrain_from_room(room_id: &str) -> String {
-    let Some(arc) = store::get_store() else { return String::new() };
+    let Some(arc) = store::get_store() else {
+        return String::new();
+    };
     let s = arc.read();
-    let Some(room) = s.get_room(room_id) else { return String::new() };
+    let Some(room) = s.get_room(room_id) else {
+        return String::new();
+    };
     for t in &room.tags {
         let lt = t.trim().to_lowercase();
         if matches!(lt.as_str(), "lush" | "chaos" | "silent" | "grip") {

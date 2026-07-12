@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 // ─── 探索新鮮度 ──────────────────────────────────────────────────────
 
-/// 格子探索新鮮度（110V 布林擴展）。
+/// 格子探索新鮮度布林。
 ///
 /// 同一玩家同一格連續 explore：`Fresh → Half → Empty`。
 /// 玩家離格後下一個 simulation tick 回 `Fresh`。
@@ -252,7 +252,10 @@ impl Terrain {
 
     /// 此地形是否預設可步行通過
     pub fn walkable(self) -> bool {
-        !matches!(self, Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall)
+        !matches!(
+            self,
+            Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall
+        )
     }
 
     /// 移動成本倍率（1.0 = 正常，越高越慢）
@@ -297,7 +300,9 @@ impl Terrain {
             Terrain::Forest | Terrain::ForestLight | Terrain::Hills => 1.5,
             Terrain::Desert | Terrain::Tundra | Terrain::FarmField => 1.5,
             Terrain::ForestHeavy | Terrain::Jungle | Terrain::Swamp => 2.0,
-            Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall => f64::INFINITY,
+            Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall => {
+                f64::INFINITY
+            }
         }
     }
 

@@ -120,7 +120,13 @@ fn parse_args() -> Args {
         }
         i += 1;
     }
-    Args { seed, size, csv, ppm, scale }
+    Args {
+        seed,
+        size,
+        csv,
+        ppm,
+        scale,
+    }
 }
 
 fn write_ppm(path: &str, pixels: &[Vec<(u8, u8, u8)>], scale: u32) -> std::io::Result<()> {
@@ -182,8 +188,7 @@ fn main() {
     );
 
     // PPM pixel buffer (每列 = y 軸)，用於可視化輸出
-    let mut pixels: Vec<Vec<(u8, u8, u8)>> =
-        Vec::with_capacity(args.size as usize);
+    let mut pixels: Vec<Vec<(u8, u8, u8)>> = Vec::with_capacity(args.size as usize);
 
     for y in -half..half {
         let mut line = String::with_capacity(args.size as usize);

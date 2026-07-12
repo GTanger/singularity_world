@@ -56,8 +56,12 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
         }
     };
     if msg.msg_type != "ping" {
-        tracing::info!("[handle_message] type={} pid={} conn={}",
-            msg.msg_type, msg.player_id, conn.conn_id);
+        tracing::info!(
+            "[handle_message] type={} pid={} conn={}",
+            msg.msg_type,
+            msg.player_id,
+            conn.conn_id
+        );
     }
     match msg.msg_type.as_str() {
         "login" => auth::handle_login(conn, &msg),

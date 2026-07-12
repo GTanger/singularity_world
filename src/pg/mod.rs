@@ -8,8 +8,8 @@
 //! NPC rumor digest 等）全部從這裡走、store lock 天生不涉入。
 
 use crate::store::sql::DbPool;
-use std::sync::Arc;
 use parking_lot::RwLock;
+use std::sync::Arc;
 
 pub mod auth;
 pub mod entity;

@@ -1,4 +1,4 @@
-// log 捲動與追加：v5 重構，寫入 #sw-log（.sw-log-stream）。v0.21.0
+// log 捲動與追加：v5 重構，寫入 #sw-log（.sw-log-stream）。v0.21.1
 // buffer 上限 500 條，貼底自動捲動。
 (function () {
 	var logStickToBottom = true;
@@ -10,13 +10,19 @@
 		return document.getElementById('sw-log') || document.getElementById('log');
 	}
 
+	function getScrollEl(logEl) {
+		if (!logEl) return null;
+		return (logEl.closest && logEl.closest('.sw-desc-panel')) || logEl;
+	}
+
 	// scroll 監聽（貼底感知）
-	// v5.75：log 拆出 desc-panel 成獨立 grid 區，#sw-log 自身就是 scroll 容器
 	function ensureLogScrollBehavior(el) {
 		if (!el || logScrollBound) return;
 		logScrollBound = true;
-		el.addEventListener('scroll', function () {
-			var delta = el.scrollHeight - el.clientHeight - el.scrollTop;
+		var scrollEl = getScrollEl(el);
+		if (!scrollEl) return;
+		scrollEl.addEventListener('scroll', function () {
+			var delta = scrollEl.scrollHeight - scrollEl.clientHeight - scrollEl.scrollTop;
 			logStickToBottom = delta <= 48;
 		}, { passive: true });
 	}
@@ -29,7 +35,8 @@
 			el.removeChild(el.firstChild);
 		}
 		if (logStickToBottom) {
-			el.scrollTop = el.scrollHeight;
+			var scrollEl = getScrollEl(el);
+			if (scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
 		}
 	}
 
@@ -69,7 +76,7 @@
 		appendObjectActionsLine: appendObjectActionsLine,
 	};
 
-	// 相容：window.appendLog（被 game-ui.js 和 main.js 舊代碼直接呼叫）
+	// 相容：window.appendLog（main.js 仍直接呼叫）
 	window.appendLog = appendLog;
-	console.log('[sw-log] v0.21.0 loaded');
+	console.log('[sw-log] v0.21.1 loaded');
 })();

@@ -109,12 +109,16 @@ pub fn load_places(pbf: &Path) -> anyhow::Result<Vec<PlaceSeed>> {
                 Element::Node(n) => (
                     n.lat(),
                     n.lon(),
-                    n.tags().map(|(k, v)| (k.to_string(), v.to_string())).collect(),
+                    n.tags()
+                        .map(|(k, v)| (k.to_string(), v.to_string()))
+                        .collect(),
                 ),
                 Element::DenseNode(n) => (
                     n.lat(),
                     n.lon(),
-                    n.tags().map(|(k, v)| (k.to_string(), v.to_string())).collect(),
+                    n.tags()
+                        .map(|(k, v)| (k.to_string(), v.to_string()))
+                        .collect(),
                 ),
                 _ => return batch,
             };
@@ -167,7 +171,9 @@ pub fn summarize(seeds: &[PlaceSeed]) -> Vec<(String, usize)> {
     use std::collections::BTreeMap;
     let mut bucket: BTreeMap<String, usize> = BTreeMap::new();
     for s in seeds {
-        *bucket.entry(format!("{}/{}", s.tier.name(), s.place_kind)).or_insert(0) += 1;
+        *bucket
+            .entry(format!("{}/{}", s.tier.name(), s.place_kind))
+            .or_insert(0) += 1;
     }
     bucket.into_iter().collect()
 }

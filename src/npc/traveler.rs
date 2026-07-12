@@ -6,14 +6,16 @@ use std::sync::Mutex;
 use rand::Rng;
 
 use crate::db::{
-    get_all_schedules, get_entity, get_entity_room, get_npc_display_label_at_hour, get_npc_ids_with_room,
-    get_npc_title_from_assignments, get_schedule_target_room, set_entity_activity, set_entity_room, RoomGraph,
+    RoomGraph, get_all_schedules, get_entity, get_entity_room, get_npc_display_label_at_hour,
+    get_npc_ids_with_room, get_npc_title_from_assignments, get_schedule_target_room,
+    set_entity_activity, set_entity_room,
 };
 use crate::gametext;
 
 use super::behavior::movement_speed_for_title;
 use super::decision::{
-    build_decision_context, build_decision_state, decide_with_inertia, resolve_brain_path, Intent, IntentType,
+    Intent, IntentType, build_decision_context, build_decision_state, decide_with_inertia,
+    resolve_brain_path,
 };
 
 /// 移動模式（對齊既有 `MovementType`）。
@@ -98,7 +100,12 @@ impl TravelerManager {
     }
 
     /// 推進一步；`active` 為 `None` 時驅動全部；`Some` 且空則不驅動任何人。
-    pub fn tick(&mut self, g: &RoomGraph, game_hour: i32, active: Option<&HashSet<String>>) -> Vec<NpcStep> {
+    pub fn tick(
+        &mut self,
+        g: &RoomGraph,
+        game_hour: i32,
+        active: Option<&HashSet<String>>,
+    ) -> Vec<NpcStep> {
         let mut steps: Vec<NpcStep> = Vec::new();
         let mut ids: Vec<String> = self.travelers.keys().cloned().collect();
         ids.sort();
@@ -147,7 +154,8 @@ impl TravelerManager {
                 }
             }
             if cur != old_room {
-                let mut npc_name = get_npc_display_label_at_hour(&t.entity_id, game_hour).unwrap_or_default();
+                let mut npc_name =
+                    get_npc_display_label_at_hour(&t.entity_id, game_hour).unwrap_or_default();
                 if npc_name.is_empty() {
                     npc_name = t.entity_id.clone();
                 }
@@ -276,14 +284,21 @@ fn compute_next_path(
                         break;
                     }
                 }
-                found.unwrap_or((Intent { ty: IntentType::Idle, target_room_id: String::new() }, Vec::new()))
+                found.unwrap_or((
+                    Intent {
+                        ty: IntentType::Idle,
+                        target_room_id: String::new(),
+                    },
+                    Vec::new(),
+                ))
             };
             t.last_intent = Some(final_intent.clone());
             // 設定表面行為：趕路中
             let _ = set_entity_activity(&t.entity_id, activity_while_moving(final_intent.ty));
             let mut rng = rand::rng();
             if rng.random_range(0.0..1.0) < 0.20 {
-                let mut npc_name = get_npc_display_label_at_hour(&t.entity_id, game_hour).unwrap_or_default();
+                let mut npc_name =
+                    get_npc_display_label_at_hour(&t.entity_id, game_hour).unwrap_or_default();
                 if npc_name.is_empty() {
                     npc_name = t.entity_id.clone();
                 }
@@ -310,19 +325,28 @@ fn fallback_intents(original: &Intent, ctx: &super::decision::DecisionContext) -
         // 求職失敗 → 乞討 → 閒晃
         SeekJob => {
             if !ctx.social_or_gate_in_range.is_empty() {
-                fallbacks.push(Intent { ty: Beg, target_room_id: ctx.social_or_gate_in_range[0].clone() });
+                fallbacks.push(Intent {
+                    ty: Beg,
+                    target_room_id: ctx.social_or_gate_in_range[0].clone(),
+                });
             }
         }
         // 採集找不到野外 → 乞討 → 閒晃
         Gather => {
             if !ctx.social_or_gate_in_range.is_empty() {
-                fallbacks.push(Intent { ty: Beg, target_room_id: ctx.social_or_gate_in_range[0].clone() });
+                fallbacks.push(Intent {
+                    ty: Beg,
+                    target_room_id: ctx.social_or_gate_in_range[0].clone(),
+                });
             }
         }
         // 兜售失敗 → 乞討
         Trade => {
             if !ctx.social_or_gate_in_range.is_empty() {
-                fallbacks.push(Intent { ty: Beg, target_room_id: ctx.social_or_gate_in_range[0].clone() });
+                fallbacks.push(Intent {
+                    ty: Beg,
+                    target_room_id: ctx.social_or_gate_in_range[0].clone(),
+                });
             }
         }
         // 社交找不到酒館 → 閒晃
@@ -332,7 +356,10 @@ fn fallback_intents(original: &Intent, ctx: &super::decision::DecisionContext) -
         _ => {}
     }
     // 最終兜底：閒晃（永遠有）
-    fallbacks.push(Intent { ty: Wander, target_room_id: String::new() });
+    fallbacks.push(Intent {
+        ty: Wander,
+        target_room_id: String::new(),
+    });
     fallbacks
 }
 

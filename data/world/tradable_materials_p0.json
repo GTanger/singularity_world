@@ -1,0 +1,1685 @@
+{
+  "version": 3,
+  "sources": [
+    {
+      "id": "src_m3_027_north_bank_reeds",
+      "room_id": "grid:0:0",
+      "cell_id": "0,0",
+      "room_name": "北岸渡口",
+      "source_class": "plant",
+      "origin_label": "北岸河霧蘆叢",
+      "material_item_id": "mat_reed_bundle",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_027_ferry_plank_wet_rope",
+      "room_id": "grid:0:-1",
+      "cell_id": "0,-1",
+      "room_name": "渡船踏板",
+      "source_class": "fiber",
+      "origin_label": "渡船踏板濕繩圈",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_027_short_market_sackcloth",
+      "room_id": "grid:1:0",
+      "cell_id": "1,0",
+      "room_name": "岸邊短市",
+      "source_class": "textile",
+      "origin_label": "岸邊短市舊麻袋堆",
+      "material_item_id": "mat_sackcloth_bolt",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_027_boatwork_pine_pitch",
+      "room_id": "grid:1:-1",
+      "cell_id": "1,-1",
+      "room_name": "船戶作業點",
+      "source_class": "resin",
+      "origin_label": "船戶作業點松脂盆",
+      "material_item_id": "mat_sealing_pitch",
+      "stock_max": 5,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_027_warehouse_cargo_twine",
+      "room_id": "grid:1:-2",
+      "cell_id": "1,-2",
+      "room_name": "倉棚前場",
+      "source_class": "fiber",
+      "origin_label": "倉棚前場貨捆繩堆",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_s_026_field_water_grass",
+      "room_id": "grid:0:3",
+      "cell_id": "0,3",
+      "room_name": "田埂水口",
+      "source_class": "plant",
+      "origin_label": "田埂水口濕草帶",
+      "material_item_id": "mat_wet_grass_bundle",
+      "stock_max": 7,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_034_field_entry_muddy_rice",
+      "room_id": "grid:0:5",
+      "cell_id": "0,5",
+      "room_name": "田區路口",
+      "source_class": "grain",
+      "origin_label": "田區路口泥稻草堆",
+      "material_item_id": "mat_rice_straw_bundle",
+      "stock_max": 9,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_034_irrigation_gate_moss",
+      "room_id": "grid:1:5",
+      "cell_id": "1,5",
+      "room_name": "灌渠木閘",
+      "source_class": "moss",
+      "origin_label": "灌渠木閘水苔邊",
+      "material_item_id": "mat_water_moss_sheet",
+      "stock_max": 6,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_034_seedling_straw",
+      "room_id": "grid:2:5",
+      "cell_id": "2,5",
+      "room_name": "秧苗田邊",
+      "source_class": "grain",
+      "origin_label": "秧苗田邊稻草捆",
+      "material_item_id": "mat_rice_straw_bundle",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_034_farmhouse_kindling",
+      "room_id": "grid:0:6",
+      "cell_id": "0,6",
+      "room_name": "農舍前坪",
+      "source_class": "wood",
+      "origin_label": "農舍前坪柴枝架",
+      "material_item_id": "mat_kindling_bundle",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_034_grain_shed_husk",
+      "room_id": "grid:-1:6",
+      "cell_id": "-1,6",
+      "room_name": "穀場小棚",
+      "source_class": "grain",
+      "origin_label": "穀場小棚稻殼袋",
+      "material_item_id": "mat_rice_husk_sack",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_034_deep_field_wet_grass",
+      "room_id": "grid:-1:5",
+      "cell_id": "-1,5",
+      "room_name": "田埂深處",
+      "source_class": "plant",
+      "origin_label": "田埂深處濕草叢",
+      "material_item_id": "mat_wet_grass_bundle",
+      "stock_max": 7,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_030_market_wrapping_paper",
+      "room_id": "grid:4:0",
+      "cell_id": "4,0",
+      "room_name": "中鎮市集街",
+      "source_class": "paper",
+      "origin_label": "中鎮市集街包紙攤",
+      "material_item_id": "mat_wrapping_paper_pack",
+      "stock_max": 10,
+      "recover_per_day": 4
+    },
+    {
+      "id": "src_m3_030_workshop_charcoal",
+      "room_id": "grid:5:1",
+      "cell_id": "5,1",
+      "room_name": "中鎮工坊街",
+      "source_class": "charcoal",
+      "origin_label": "中鎮工坊街炭袋堆",
+      "material_item_id": "mat_charcoal_sack",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_030_cart_berth_hay",
+      "room_id": "grid:3:-1",
+      "cell_id": "3,-1",
+      "room_name": "中鎮車馬泊位",
+      "source_class": "fodder",
+      "origin_label": "中鎮車馬泊位乾草架",
+      "material_item_id": "mat_hay_bundle",
+      "stock_max": 9,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_030_warehouse_hemp_rope",
+      "room_id": "grid:4:-1",
+      "cell_id": "4,-1",
+      "room_name": "中鎮倉場門口",
+      "source_class": "fiber",
+      "origin_label": "中鎮倉場門口繩捆",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_006_salt_wet_plank",
+      "room_id": "grid:0:7",
+      "cell_id": "0,7",
+      "room_name": "北灣避風碼頭",
+      "source_class": "wood",
+      "origin_label": "北灣避風碼頭鹽濕木板",
+      "material_item_id": "mat_plank_board",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_006_cargo_crate_board",
+      "room_id": "grid:1:7",
+      "cell_id": "1,7",
+      "room_name": "港灣貨棚",
+      "source_class": "wood",
+      "origin_label": "港灣貨棚破箱板堆",
+      "material_item_id": "mat_plank_board",
+      "stock_max": 8,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_006_net_drying_line",
+      "room_id": "grid:0:8",
+      "cell_id": "0,8",
+      "room_name": "漁網曬場",
+      "source_class": "fiber",
+      "origin_label": "漁網曬場破網線捆",
+      "material_item_id": "mat_fishing_line_bundle",
+      "stock_max": 7,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_006_fish_scale_sack",
+      "room_id": "grid:1:8",
+      "cell_id": "1,8",
+      "room_name": "冷霧魚市",
+      "source_class": "fish_byproduct",
+      "origin_label": "冷霧魚市魚鱗桶",
+      "material_item_id": "mat_fish_scale_sack",
+      "stock_max": 9,
+      "recover_per_day": 4
+    },
+    {
+      "id": "src_m3_032_water_net_bamboo",
+      "room_id": "grid:3:5",
+      "cell_id": "3,5",
+      "room_name": "水網入口棧",
+      "source_class": "wood",
+      "origin_label": "水網入口棧濕竹片堆",
+      "material_item_id": "mat_bamboo_slats",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_032_lake_port_moss_sawdust",
+      "room_id": "grid:4:5",
+      "cell_id": "4,5",
+      "room_name": "湖港木棧",
+      "source_class": "wood",
+      "origin_label": "湖港木棧苔木屑堆",
+      "material_item_id": "mat_wood_offcut_bundle",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_032_short_boat_cable",
+      "room_id": "grid:3:6",
+      "cell_id": "3,6",
+      "room_name": "短船泊位",
+      "source_class": "fiber",
+      "origin_label": "短船泊位舊纜圈",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_032_fish_bone_sack",
+      "room_id": "grid:4:6",
+      "cell_id": "4,6",
+      "room_name": "魚貨分揀場",
+      "source_class": "fish_byproduct",
+      "origin_label": "魚貨分揀場魚骨桶",
+      "material_item_id": "mat_fish_bone_sack",
+      "stock_max": 9,
+      "recover_per_day": 4
+    },
+    {
+      "id": "src_m3_032_reed_cargo_bundle",
+      "room_id": "grid:5:5",
+      "cell_id": "5,5",
+      "room_name": "蘆草貨棚",
+      "source_class": "plant",
+      "origin_label": "蘆草貨棚長草捆",
+      "material_item_id": "mat_reed_bundle",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_032_water_warehouse_wet_sack",
+      "room_id": "grid:5:6",
+      "cell_id": "5,6",
+      "room_name": "水倉前場",
+      "source_class": "textile",
+      "origin_label": "水倉前場濕麻袋架",
+      "material_item_id": "mat_sackcloth_bolt",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_009_mine_shed_rough_ore",
+      "room_id": "grid:-2:5",
+      "cell_id": "-2,5",
+      "room_name": "礦坑外棚",
+      "source_class": "mineral",
+      "origin_label": "礦坑外棚粗料堆",
+      "material_item_id": "mat_rough_ore",
+      "stock_max": 5,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_009_wash_ditch_wet_ore",
+      "room_id": "grid:-3:5",
+      "cell_id": "-3,5",
+      "room_name": "洗礦溝",
+      "source_class": "mineral",
+      "origin_label": "洗礦溝濕石籃",
+      "material_item_id": "mat_washed_ore",
+      "stock_max": 5,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_009_rough_store_stone_dust",
+      "room_id": "grid:-2:6",
+      "cell_id": "-2,6",
+      "room_name": "粗料倉",
+      "source_class": "mineral",
+      "origin_label": "粗料倉石粉袋",
+      "material_item_id": "mat_stone_powder_sack",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_009_tool_shed_iron_scrap",
+      "room_id": "grid:-3:6",
+      "cell_id": "-3,6",
+      "room_name": "工具修棚",
+      "source_class": "metal",
+      "origin_label": "工具修棚鐵片盒",
+      "material_item_id": "mat_iron_scrap_box",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_009_slag_slope_shards",
+      "room_id": "grid:-4:5",
+      "cell_id": "-4,5",
+      "room_name": "礦渣坡",
+      "source_class": "mineral",
+      "origin_label": "礦渣坡灰黑碎石堆",
+      "material_item_id": "mat_rough_ore",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_009_old_loading_wedge",
+      "room_id": "grid:-4:6",
+      "cell_id": "-4,6",
+      "room_name": "舊道裝車點",
+      "source_class": "wood",
+      "origin_label": "舊道裝車點車楔筐",
+      "material_item_id": "mat_wood_offcut_bundle",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_011_border_market_salt",
+      "room_id": "grid:-5:7",
+      "cell_id": "-5,7",
+      "room_name": "邊市口",
+      "source_class": "salt",
+      "origin_label": "邊市口粗鹽袋",
+      "material_item_id": "mat_coarse_salt_pack",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_011_granary_front_grain",
+      "room_id": "grid:-6:7",
+      "cell_id": "-6,7",
+      "room_name": "糧倉前場",
+      "source_class": "grain",
+      "origin_label": "糧倉前場糧袋列",
+      "material_item_id": "mat_grain_sack",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_011_hay_shed_bundle",
+      "room_id": "grid:-7:6",
+      "cell_id": "-7,6",
+      "room_name": "乾草棚",
+      "source_class": "fodder",
+      "origin_label": "乾草棚高草垛",
+      "material_item_id": "mat_hay_bundle",
+      "stock_max": 9,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_021_workshop_wood_wedge",
+      "room_id": "grid:-2:0",
+      "cell_id": "-2,0",
+      "room_name": "工坊街口",
+      "source_class": "wood",
+      "origin_label": "工坊街口木楔箱",
+      "material_item_id": "mat_wood_offcut_bundle",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_021_forge_iron_filings",
+      "room_id": "grid:-3:0",
+      "cell_id": "-3,0",
+      "room_name": "鍛造棚",
+      "source_class": "metal",
+      "origin_label": "鍛造棚鐵屑槽",
+      "material_item_id": "mat_iron_scrap_box",
+      "stock_max": 7,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_021_yard_stone_powder",
+      "room_id": "grid:-2:1",
+      "cell_id": "-2,1",
+      "room_name": "料場秤台",
+      "source_class": "mineral",
+      "origin_label": "料場秤台石粉袋",
+      "material_item_id": "mat_stone_powder_sack",
+      "stock_max": 8,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_021_cart_repair_rim",
+      "room_id": "grid:-3:1",
+      "cell_id": "-3,1",
+      "room_name": "修車棚",
+      "source_class": "metal",
+      "origin_label": "修車棚輪箍片箱",
+      "material_item_id": "mat_metal_rim_strip",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_021_oilcloth_edge",
+      "room_id": "grid:-4:1",
+      "cell_id": "-4,1",
+      "room_name": "油布庫",
+      "source_class": "textile",
+      "origin_label": "油布庫邊料卷",
+      "material_item_id": "mat_oilcloth_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_022_pasture_seed_sack",
+      "room_id": "grid:-5:0",
+      "cell_id": "-5,0",
+      "room_name": "牧地柵門",
+      "source_class": "plant",
+      "origin_label": "牧地柵門草籽袋",
+      "material_item_id": "mat_pasture_seed_sack",
+      "stock_max": 7,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_022_trough_wet_moss",
+      "room_id": "grid:-6:0",
+      "cell_id": "-6,0",
+      "room_name": "水槽棚",
+      "source_class": "moss",
+      "origin_label": "水槽棚濕苔邊",
+      "material_item_id": "mat_water_moss_sheet",
+      "stock_max": 6,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_022_pasture_hay_bundle",
+      "room_id": "grid:-5:1",
+      "cell_id": "-5,1",
+      "room_name": "乾草堆",
+      "source_class": "fodder",
+      "origin_label": "乾草堆外層草束",
+      "material_item_id": "mat_hay_bundle",
+      "stock_max": 10,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_022_livestock_old_rope",
+      "room_id": "grid:-6:1",
+      "cell_id": "-6,1",
+      "room_name": "畜欄口",
+      "source_class": "fiber",
+      "origin_label": "畜欄口舊繩掛架",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_022_seasonal_grass_bundle",
+      "room_id": "grid:-7:1",
+      "cell_id": "-7,1",
+      "room_name": "季節草場",
+      "source_class": "plant",
+      "origin_label": "季節草場野草帶",
+      "material_item_id": "mat_wet_grass_bundle",
+      "stock_max": 9,
+      "recover_per_day": 4
+    },
+    {
+      "id": "src_m3_020_axis_slope_seal_rope",
+      "room_id": "grid:-10:-2",
+      "cell_id": "-10,-2",
+      "room_name": "西軸坡街",
+      "source_class": "fiber",
+      "origin_label": "西軸坡街封貨繩攤",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_037_ranch_sign_wood",
+      "room_id": "grid:-7:-1",
+      "cell_id": "-7,-1",
+      "room_name": "牧場門牌",
+      "source_class": "wood",
+      "origin_label": "牧場門牌修補木片",
+      "material_item_id": "mat_wood_offcut_bundle",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_037_stable_mane_hair",
+      "room_id": "grid:-6:-1",
+      "cell_id": "-6,-1",
+      "room_name": "馬欄前場",
+      "source_class": "animal_fiber",
+      "origin_label": "馬欄前場鬃毛刷籃",
+      "material_item_id": "mat_mane_hair_bundle",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_037_feed_mix_sack",
+      "room_id": "grid:-7:-2",
+      "cell_id": "-7,-2",
+      "room_name": "草料棚",
+      "source_class": "fodder",
+      "origin_label": "草料棚混料袋",
+      "material_item_id": "mat_feed_mix_sack",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_037_tack_leather_edge",
+      "room_id": "grid:-5:-1",
+      "cell_id": "-5,-1",
+      "room_name": "馱具修棚",
+      "source_class": "leather",
+      "origin_label": "馱具修棚皮帶邊料",
+      "material_item_id": "mat_leather_strip",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_037_caravan_wheel_wedge",
+      "room_id": "grid:-5:-2",
+      "cell_id": "-5,-2",
+      "room_name": "商隊泊位",
+      "source_class": "wood",
+      "origin_label": "商隊泊位車楔籃",
+      "material_item_id": "mat_wood_offcut_bundle",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_040_supply_salt_pack",
+      "room_id": "grid:-6:-4",
+      "cell_id": "-6,-4",
+      "room_name": "補給小市",
+      "source_class": "salt",
+      "origin_label": "補給小市鹽包攤",
+      "material_item_id": "mat_coarse_salt_pack",
+      "stock_max": 9,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_040_caravan_canvas_strip",
+      "room_id": "grid:-5:-4",
+      "cell_id": "-5,-4",
+      "room_name": "車隊場",
+      "source_class": "textile",
+      "origin_label": "車隊場帆布補條",
+      "material_item_id": "mat_canvas_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_045_outer_scale_grain",
+      "room_id": "grid:0:-5",
+      "cell_id": "0,-5",
+      "room_name": "糧倉外秤",
+      "source_class": "grain",
+      "origin_label": "糧倉外秤稻穀袋",
+      "material_item_id": "mat_grain_sack",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_045_granary_gate_husk",
+      "room_id": "grid:1:-5",
+      "cell_id": "1,-5",
+      "room_name": "倉門前場",
+      "source_class": "grain",
+      "origin_label": "倉門前場稻殼包",
+      "material_item_id": "mat_rice_husk_sack",
+      "stock_max": 9,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_044_guild_wrapping_paper",
+      "room_id": "grid:0:-8",
+      "cell_id": "0,-8",
+      "room_name": "商會長廊",
+      "source_class": "paper",
+      "origin_label": "商會長廊包裝紙櫃",
+      "material_item_id": "mat_wrapping_paper_pack",
+      "stock_max": 10,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_045_drying_yard_rice_ear",
+      "room_id": "grid:0:-6",
+      "cell_id": "0,-6",
+      "room_name": "曬場邊",
+      "source_class": "grain",
+      "origin_label": "曬場邊稻穗架",
+      "material_item_id": "mat_grain_sack",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_045_guard_shed_hemp_rope",
+      "room_id": "grid:2:-5",
+      "cell_id": "2,-5",
+      "room_name": "守倉棚",
+      "source_class": "fiber",
+      "origin_label": "守倉棚麻繩卷",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_045_grain_cart_dunnage",
+      "room_id": "grid:2:-6",
+      "cell_id": "2,-6",
+      "room_name": "糧車泊位",
+      "source_class": "wood",
+      "origin_label": "糧車泊位墊木堆",
+      "material_item_id": "mat_plank_board",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_048_tidal_shell_sack",
+      "room_id": "grid:3:-5",
+      "cell_id": "3,-5",
+      "room_name": "河口潮泥碼頭",
+      "source_class": "shell",
+      "origin_label": "河口潮泥碼頭貝殼袋",
+      "material_item_id": "mat_shell_sack",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_048_tidal_saltcloth",
+      "room_id": "grid:4:-6",
+      "cell_id": "4,-6",
+      "room_name": "潮線貨場",
+      "source_class": "textile",
+      "origin_label": "潮線貨場鹽布堆",
+      "material_item_id": "mat_canvas_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_048_riversea_hemp_sack",
+      "room_id": "grid:5:-5",
+      "cell_id": "5,-5",
+      "room_name": "河海倉門",
+      "source_class": "textile",
+      "origin_label": "河海倉門麻袋架",
+      "material_item_id": "mat_sackcloth_bolt",
+      "stock_max": 8,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_048_merchant_cable_fiber",
+      "room_id": "grid:5:-6",
+      "cell_id": "5,-6",
+      "room_name": "商船候泊線",
+      "source_class": "fiber",
+      "origin_label": "商船候泊線舊纜纖維",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_050_shipyard_sawdust",
+      "room_id": "grid:6:-5",
+      "cell_id": "6,-5",
+      "room_name": "東南船塢口",
+      "source_class": "wood",
+      "origin_label": "東南船塢口木屑袋",
+      "material_item_id": "mat_wood_offcut_bundle",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_050_ship_repair_tar",
+      "room_id": "grid:7:-5",
+      "cell_id": "7,-5",
+      "room_name": "修船架",
+      "source_class": "resin",
+      "origin_label": "修船架瀝青盆",
+      "material_item_id": "mat_sealing_pitch",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_050_supply_hardtack",
+      "room_id": "grid:6:-6",
+      "cell_id": "6,-6",
+      "room_name": "補給倉",
+      "source_class": "food",
+      "origin_label": "補給倉乾餅袋",
+      "material_item_id": "mat_hardtack_sack",
+      "stock_max": 8,
+      "recover_per_day": 3
+    },
+    {
+      "id": "src_m3_050_salt_step_plank",
+      "room_id": "grid:7:-6",
+      "cell_id": "7,-6",
+      "room_name": "碼頭木階",
+      "source_class": "wood",
+      "origin_label": "碼頭木階鹽木片堆",
+      "material_item_id": "mat_plank_board",
+      "stock_max": 6,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_050_canvas_edge",
+      "room_id": "grid:8:-5",
+      "cell_id": "8,-5",
+      "room_name": "帆布曬場",
+      "source_class": "textile",
+      "origin_label": "帆布曬場邊料卷",
+      "material_item_id": "mat_canvas_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_053_foreign_crate_board",
+      "room_id": "grid:9:-5",
+      "cell_id": "9,-5",
+      "room_name": "外貿碼頭",
+      "source_class": "wood",
+      "origin_label": "外貿碼頭貨箱板堆",
+      "material_item_id": "mat_plank_board",
+      "stock_max": 8,
+      "recover_per_day": 2
+    },
+    {
+      "id": "src_m3_053_ocean_hemp_rope",
+      "room_id": "grid:10:-6",
+      "cell_id": "10,-6",
+      "room_name": "遠洋倉門",
+      "source_class": "fiber",
+      "origin_label": "遠洋倉門麻繩卷",
+      "material_item_id": "mat_hemp_rope_roll",
+      "stock_max": 7,
+      "recover_per_day": 2
+    }
+  ],
+  "materials": [
+    {
+      "id": "mat_reed_bundle",
+      "name": "蘆草束",
+      "item_type": "material",
+      "category": "區域特產",
+      "commodity_role": "regional_specialty",
+      "commodity_group": "plant_fiber",
+      "source_class": "plant",
+      "source_node_id": "src_m3_027_north_bank_reeds",
+      "origin_label": "河岸與湖港蘆草帶",
+      "weight": 0.45,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 72,
+      "trade_price_anchor_mg": 6,
+      "description": "可編、可墊、可束貨的長蘆草。北岸河霧與湖港水氣會讓草莖濕硬，適合做臨時繩材、包紮與貨墊。"
+    },
+    {
+      "id": "mat_hemp_rope_roll",
+      "name": "麻繩卷",
+      "item_type": "material",
+      "category": "繩索/纖維",
+      "commodity_role": "main",
+      "commodity_group": "fiber",
+      "source_class": "fiber",
+      "source_node_id": "src_m3_027_ferry_plank_wet_rope",
+      "origin_label": "渡口、倉場與船泊線換下的繩材",
+      "weight": 0.75,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 86,
+      "trade_price_anchor_mg": 8,
+      "description": "粗麻繩重新捲成的可用繩材，可綁箱、固定船纜、牽引小車，也是多數運貨與修補工作的基礎耗材。"
+    },
+    {
+      "id": "mat_sackcloth_bolt",
+      "name": "麻袋布",
+      "item_type": "material",
+      "category": "包裝料",
+      "commodity_role": "main",
+      "commodity_group": "textile",
+      "source_class": "textile",
+      "source_node_id": "src_m3_027_short_market_sackcloth",
+      "origin_label": "短市、倉門與水倉的舊麻袋架",
+      "weight": 0.7,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 76,
+      "trade_price_anchor_mg": 7,
+      "description": "拆洗後仍能剪裁的粗麻袋布，可作包布、墊貨、補袋與臨時遮蓋，是短市和倉場反覆流通的包裝料。"
+    },
+    {
+      "id": "mat_sealing_pitch",
+      "name": "封縫膠料",
+      "item_type": "material",
+      "category": "修船料",
+      "commodity_role": "main",
+      "commodity_group": "resin",
+      "source_class": "resin",
+      "source_node_id": "src_m3_027_boatwork_pine_pitch",
+      "origin_label": "船戶松脂盆與修船架瀝青盆",
+      "weight": 0.55,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 82,
+      "trade_price_anchor_mg": 10,
+      "description": "可加熱封水縫的黏性膠料，來源可能是松脂、瀝青或混好的船縫料。船板、油布與木器修補都會消耗它。"
+    },
+    {
+      "id": "mat_wet_grass_bundle",
+      "name": "濕草束",
+      "item_type": "material",
+      "category": "畜產副料",
+      "commodity_role": "byproduct",
+      "commodity_group": "fodder",
+      "source_class": "plant",
+      "source_node_id": "src_s_026_field_water_grass",
+      "origin_label": "田埂水口、深田與季節草場",
+      "weight": 0.55,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 32,
+      "trade_price_anchor_mg": 4,
+      "description": "帶水氣的草束，價值不高，但可墊貨、餵牲口或作臨時覆蓋。它保留產地濕度差異，不作核心商品兜售。"
+    },
+    {
+      "id": "mat_rice_straw_bundle",
+      "name": "稻草束",
+      "item_type": "material",
+      "category": "畜產副料",
+      "commodity_role": "byproduct",
+      "commodity_group": "farm_byproduct",
+      "source_class": "grain",
+      "source_node_id": "src_m3_034_field_entry_muddy_rice",
+      "origin_label": "田口、秧田與曬場邊的稻作副料",
+      "weight": 0.8,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 36,
+      "trade_price_anchor_mg": 5,
+      "description": "收割與整理稻穀後留下的稻草，可作墊料、覆蓋、粗纖維或燃引物。"
+    },
+    {
+      "id": "mat_water_moss_sheet",
+      "name": "水苔片",
+      "item_type": "material",
+      "category": "建材",
+      "commodity_role": "byproduct",
+      "commodity_group": "moss",
+      "source_class": "moss",
+      "source_node_id": "src_m3_034_irrigation_gate_moss",
+      "origin_label": "水閘、木槽與濕棚邊緣",
+      "weight": 0.3,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 22,
+      "trade_price_anchor_mg": 4,
+      "description": "保水性強的濕水苔，可包根、塞縫或作濕料墊層。它只適合作副料，不該佔據主要交易畫面。"
+    },
+    {
+      "id": "mat_kindling_bundle",
+      "name": "柴枝束",
+      "item_type": "material",
+      "category": "燃料",
+      "commodity_role": "main",
+      "commodity_group": "fuel",
+      "source_class": "wood",
+      "source_node_id": "src_m3_034_farmhouse_kindling",
+      "origin_label": "農舍前坪與木作邊料堆",
+      "weight": 0.9,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 66,
+      "trade_price_anchor_mg": 6,
+      "description": "削短後綁好的柴枝與木邊料，可直接引火、烘乾濕物或供小爐使用。"
+    },
+    {
+      "id": "mat_rice_husk_sack",
+      "name": "稻殼包",
+      "item_type": "material",
+      "category": "畜產副料",
+      "commodity_role": "byproduct",
+      "commodity_group": "farm_byproduct",
+      "source_class": "grain",
+      "source_node_id": "src_m3_034_grain_shed_husk",
+      "origin_label": "穀場、倉門與糧倉副料袋",
+      "weight": 0.65,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 28,
+      "trade_price_anchor_mg": 6,
+      "description": "稻穀脫殼後裝袋的副料，可墊牲口、混入草料，也能作低價燃引物。"
+    },
+    {
+      "id": "mat_wrapping_paper_pack",
+      "name": "包裝紙",
+      "item_type": "material",
+      "category": "包裝料",
+      "commodity_role": "processing",
+      "commodity_group": "paper",
+      "source_class": "paper",
+      "source_node_id": "src_m3_030_market_wrapping_paper",
+      "origin_label": "中鎮市集與商會長廊紙櫃",
+      "weight": 0.25,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 48,
+      "trade_price_anchor_mg": 6,
+      "description": "成束整理的粗包裝紙，用於包貨、標記與隔開細碎物件。"
+    },
+    {
+      "id": "mat_charcoal_sack",
+      "name": "木炭袋",
+      "item_type": "material",
+      "category": "燃料",
+      "commodity_role": "main",
+      "commodity_group": "fuel",
+      "source_class": "charcoal",
+      "source_node_id": "src_m3_030_workshop_charcoal",
+      "origin_label": "工坊街炭袋堆",
+      "weight": 1.0,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 78,
+      "trade_price_anchor_mg": 9,
+      "description": "可穩定供熱的木炭袋，鍛造、烘乾與夜間取暖都會用到。"
+    },
+    {
+      "id": "mat_hay_bundle",
+      "name": "乾草束",
+      "item_type": "material",
+      "category": "畜產副料",
+      "commodity_role": "main",
+      "commodity_group": "fodder",
+      "source_class": "fodder",
+      "source_node_id": "src_m3_030_cart_berth_hay",
+      "origin_label": "車馬泊位、乾草棚與牧地草垛",
+      "weight": 0.9,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 62,
+      "trade_price_anchor_mg": 6,
+      "description": "晾乾後可存放的草束，是車馬、牲口與臨時鋪墊常用物。"
+    },
+    {
+      "id": "mat_plank_board",
+      "name": "木板料",
+      "item_type": "material",
+      "category": "木材/板料",
+      "commodity_role": "main",
+      "commodity_group": "wood",
+      "source_class": "wood",
+      "source_node_id": "src_m3_006_cargo_crate_board",
+      "origin_label": "碼頭貨棚、貨箱板堆與糧車墊木",
+      "weight": 1.25,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 80,
+      "trade_price_anchor_mg": 8,
+      "description": "可再裁切的板料，來源可能是破箱板、墊木或鹽濕木板；能用於修橋、補船、封箱與臨時搭架。"
+    },
+    {
+      "id": "mat_wood_offcut_bundle",
+      "name": "木料邊材",
+      "item_type": "material",
+      "category": "木材/板料",
+      "commodity_role": "byproduct",
+      "commodity_group": "wood",
+      "source_class": "wood",
+      "source_node_id": "src_m3_009_old_loading_wedge",
+      "origin_label": "木楔箱、修補木片與船塢木作邊料",
+      "weight": 0.75,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 26,
+      "trade_price_anchor_mg": 5,
+      "description": "形狀不整的木料邊材，可作楔子、墊塊、引火或小修補料。它保留工地感，但不作核心商品命名。"
+    },
+    {
+      "id": "mat_fishing_line_bundle",
+      "name": "漁網線",
+      "item_type": "material",
+      "category": "繩索/纖維",
+      "commodity_role": "processing",
+      "commodity_group": "fiber",
+      "source_class": "fiber",
+      "source_node_id": "src_m3_006_net_drying_line",
+      "origin_label": "漁網曬場與水邊破網線捆",
+      "weight": 0.25,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 46,
+      "trade_price_anchor_mg": 6,
+      "description": "從破網拆出的細線，可補網、縫袋或作細綁繩。"
+    },
+    {
+      "id": "mat_fish_scale_sack",
+      "name": "魚鱗袋",
+      "item_type": "material",
+      "category": "水產副料",
+      "commodity_role": "byproduct",
+      "commodity_group": "fish_byproduct",
+      "source_class": "fish_byproduct",
+      "source_node_id": "src_m3_006_fish_scale_sack",
+      "origin_label": "冷霧魚市魚鱗桶",
+      "weight": 0.45,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 18,
+      "trade_price_anchor_mg": 4,
+      "description": "魚市整理後留下的魚鱗副料，可作膠料、肥料或低階加工物。"
+    },
+    {
+      "id": "mat_bamboo_slats",
+      "name": "竹片束",
+      "item_type": "material",
+      "category": "建材",
+      "commodity_role": "processing",
+      "commodity_group": "wood",
+      "source_class": "wood",
+      "source_node_id": "src_m3_032_water_net_bamboo",
+      "origin_label": "水網入口棧濕竹片堆",
+      "weight": 0.65,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 56,
+      "trade_price_anchor_mg": 6,
+      "description": "削好的竹片，適合編籃、補欄、墊貨或作輕型支架。"
+    },
+    {
+      "id": "mat_fish_bone_sack",
+      "name": "魚骨袋",
+      "item_type": "material",
+      "category": "水產副料",
+      "commodity_role": "byproduct",
+      "commodity_group": "fish_byproduct",
+      "source_class": "fish_byproduct",
+      "source_node_id": "src_m3_032_fish_bone_sack",
+      "origin_label": "魚貨分揀場魚骨桶",
+      "weight": 0.55,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 16,
+      "trade_price_anchor_mg": 4,
+      "description": "分揀魚貨後留下的魚骨副料，可磨粉、熬膠或混入肥料。"
+    },
+    {
+      "id": "mat_rough_ore",
+      "name": "粗礦",
+      "item_type": "material",
+      "category": "礦料",
+      "commodity_role": "main",
+      "commodity_group": "ore",
+      "source_class": "mineral",
+      "source_node_id": "src_m3_009_mine_shed_rough_ore",
+      "origin_label": "礦坑外棚與礦渣坡粗料堆",
+      "weight": 1.8,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 88,
+      "trade_price_anchor_mg": 11,
+      "description": "尚未洗選的粗礦與含礦碎石，是礦場最基本的可交易產物。"
+    },
+    {
+      "id": "mat_washed_ore",
+      "name": "洗礦",
+      "item_type": "material",
+      "category": "礦料",
+      "commodity_role": "main",
+      "commodity_group": "ore",
+      "source_class": "mineral",
+      "source_node_id": "src_m3_009_wash_ditch_wet_ore",
+      "origin_label": "洗礦溝濕石籃",
+      "weight": 1.55,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 86,
+      "trade_price_anchor_mg": 12,
+      "description": "經水溝初步洗選後的礦料，比粗礦穩定，適合送往鍛造棚或貨場。"
+    },
+    {
+      "id": "mat_stone_powder_sack",
+      "name": "石粉袋",
+      "item_type": "material",
+      "category": "建材",
+      "commodity_role": "processing",
+      "commodity_group": "mineral",
+      "source_class": "mineral",
+      "source_node_id": "src_m3_009_rough_store_stone_dust",
+      "origin_label": "粗料倉與料場秤台石粉袋",
+      "weight": 1.15,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 42,
+      "trade_price_anchor_mg": 7,
+      "description": "石料加工後的粉料，可混灰、填縫、鋪地或作低階建材副料。"
+    },
+    {
+      "id": "mat_iron_scrap_box",
+      "name": "鐵料盒",
+      "item_type": "material",
+      "category": "礦料",
+      "commodity_role": "processing",
+      "commodity_group": "metal",
+      "source_class": "metal",
+      "source_node_id": "src_m3_009_tool_shed_iron_scrap",
+      "origin_label": "工具修棚、鍛造棚與修車棚金屬料盒",
+      "weight": 0.9,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 54,
+      "trade_price_anchor_mg": 9,
+      "description": "收在盒裡的鐵片、鐵屑與小金屬料，可重熔、補釘或作修具耗材。"
+    },
+    {
+      "id": "mat_coarse_salt_pack",
+      "name": "粗鹽包",
+      "item_type": "material",
+      "category": "鹽",
+      "commodity_role": "main",
+      "commodity_group": "salt",
+      "source_class": "salt",
+      "source_node_id": "src_m3_011_border_market_salt",
+      "origin_label": "邊市口與補給小市鹽包攤",
+      "weight": 0.8,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 90,
+      "trade_price_anchor_mg": 8,
+      "description": "容易理解也容易轉手的粗鹽包，可保存食物、補給旅隊，也能進入市集與倉場流通。"
+    },
+    {
+      "id": "mat_grain_sack",
+      "name": "稻穀袋",
+      "item_type": "material",
+      "category": "食糧",
+      "commodity_role": "main",
+      "commodity_group": "grain",
+      "source_class": "grain",
+      "source_node_id": "src_m3_011_granary_front_grain",
+      "origin_label": "糧倉前場、外秤與曬場稻穀架",
+      "weight": 1.4,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 94,
+      "trade_price_anchor_mg": 13,
+      "description": "裝袋的稻穀，是糧倉與市場最直接的食糧商品。"
+    },
+    {
+      "id": "mat_metal_rim_strip",
+      "name": "輪箍鐵片",
+      "item_type": "material",
+      "category": "建材",
+      "commodity_role": "processing",
+      "commodity_group": "metal",
+      "source_class": "metal",
+      "source_node_id": "src_m3_021_cart_repair_rim",
+      "origin_label": "修車棚輪箍片箱",
+      "weight": 0.8,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 52,
+      "trade_price_anchor_mg": 9,
+      "description": "修車棚整理出的弧形鐵片，可補輪、箍桶或當小型加固件。"
+    },
+    {
+      "id": "mat_oilcloth_roll",
+      "name": "油布卷",
+      "item_type": "material",
+      "category": "修船料",
+      "commodity_role": "main",
+      "commodity_group": "textile",
+      "source_class": "textile",
+      "source_node_id": "src_m3_021_oilcloth_edge",
+      "origin_label": "油布庫與潮線貨場鹽布堆",
+      "weight": 0.85,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 72,
+      "trade_price_anchor_mg": 8,
+      "description": "防水處理過的布卷，可遮貨、補船篷或包住怕潮的物件。"
+    },
+    {
+      "id": "mat_pasture_seed_sack",
+      "name": "草籽袋",
+      "item_type": "material",
+      "category": "畜產副料",
+      "commodity_role": "regional_specialty",
+      "commodity_group": "fodder",
+      "source_class": "plant",
+      "source_node_id": "src_m3_022_pasture_seed_sack",
+      "origin_label": "西部牧地柵門草籽袋",
+      "weight": 0.55,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 44,
+      "trade_price_anchor_mg": 7,
+      "description": "牧地留出的草籽袋，可補播草場或混入畜產料。它是牧地來源的區域性小商品。"
+    },
+    {
+      "id": "mat_mane_hair_bundle",
+      "name": "鬃毛束",
+      "item_type": "material",
+      "category": "畜產副料",
+      "commodity_role": "byproduct",
+      "commodity_group": "animal_fiber",
+      "source_class": "animal_fiber",
+      "source_node_id": "src_m3_037_stable_mane_hair",
+      "origin_label": "馬欄前場鬃毛刷籃",
+      "weight": 0.25,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 20,
+      "trade_price_anchor_mg": 6,
+      "description": "整理馬匹後收成束的鬃毛，可作刷具、線材或填料。"
+    },
+    {
+      "id": "mat_feed_mix_sack",
+      "name": "草料袋",
+      "item_type": "material",
+      "category": "畜產副料",
+      "commodity_role": "main",
+      "commodity_group": "fodder",
+      "source_class": "fodder",
+      "source_node_id": "src_m3_037_feed_mix_sack",
+      "origin_label": "草料棚混料袋",
+      "weight": 1.1,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 70,
+      "trade_price_anchor_mg": 9,
+      "description": "已混好的牲口草料，能直接供車隊、牧場與馬欄使用。"
+    },
+    {
+      "id": "mat_leather_strip",
+      "name": "皮帶料",
+      "item_type": "material",
+      "category": "建材",
+      "commodity_role": "processing",
+      "commodity_group": "leather",
+      "source_class": "leather",
+      "source_node_id": "src_m3_037_tack_leather_edge",
+      "origin_label": "馱具修棚皮帶邊料",
+      "weight": 0.45,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 58,
+      "trade_price_anchor_mg": 9,
+      "description": "修馱具留下但仍可裁用的皮帶料，可作繫帶、補片或小型連接件。"
+    },
+    {
+      "id": "mat_canvas_roll",
+      "name": "帆布卷",
+      "item_type": "material",
+      "category": "包裝料",
+      "commodity_role": "main",
+      "commodity_group": "textile",
+      "source_class": "textile",
+      "source_node_id": "src_m3_040_caravan_canvas_strip",
+      "origin_label": "車隊場、帆布曬場與外港布料邊卷",
+      "weight": 0.9,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 78,
+      "trade_price_anchor_mg": 8,
+      "description": "厚實帆布整理成卷，可遮貨、補棚、包船料或做大件包裝。"
+    },
+    {
+      "id": "mat_shell_sack",
+      "name": "貝殼袋",
+      "item_type": "material",
+      "category": "水產副料",
+      "commodity_role": "byproduct",
+      "commodity_group": "shell",
+      "source_class": "shell",
+      "source_node_id": "src_m3_048_tidal_shell_sack",
+      "origin_label": "河口潮泥碼頭貝殼袋",
+      "weight": 0.75,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 24,
+      "trade_price_anchor_mg": 5,
+      "description": "河口潮泥裡分出的貝殼，可燒灰、磨粉或作低階建材副料。"
+    },
+    {
+      "id": "mat_hardtack_sack",
+      "name": "乾餅袋",
+      "item_type": "material",
+      "category": "食糧",
+      "commodity_role": "main",
+      "commodity_group": "provision",
+      "source_class": "food",
+      "source_node_id": "src_m3_050_supply_hardtack",
+      "origin_label": "補給倉乾餅袋",
+      "weight": 0.95,
+      "stackable": 1,
+      "tradable": true,
+      "trade_priority": 84,
+      "trade_price_anchor_mg": 10,
+      "description": "耐放、易搬的乾餅袋，是船港、車隊與旅人補給的食糧商品。"
+    }
+  ],
+  "legacy_item_remaps": [
+    {
+      "from": "mat_axis_slope_seal_rope",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_boatwork_pine_pitch",
+      "to": "mat_sealing_pitch",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_border_granary_grain_sack",
+      "to": "mat_grain_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_border_hay_shed_bundle",
+      "to": "mat_hay_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_border_market_coarse_salt",
+      "to": "mat_coarse_salt_pack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_canvas_drying_edge_roll",
+      "to": "mat_canvas_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_caravan_canvas_strip",
+      "to": "mat_canvas_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_caravan_wheel_wedge",
+      "to": "mat_wood_offcut_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_cart_berth_hay_bundle",
+      "to": "mat_hay_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_cart_repair_rim_strip",
+      "to": "mat_metal_rim_strip",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_central_market_wrapping_paper",
+      "to": "mat_wrapping_paper_pack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_central_warehouse_hemp_rope",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_central_workshop_charcoal_sack",
+      "to": "mat_charcoal_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_cold_fog_fish_scale_sack",
+      "to": "mat_fish_scale_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_deep_field_wet_grass_bundle",
+      "to": "mat_wet_grass_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_dock_step_salt_plank",
+      "to": "mat_plank_board",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_drying_yard_rice_ear_bundle",
+      "to": "mat_grain_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_farmhouse_kindling_bundle",
+      "to": "mat_kindling_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_ferry_plank_wet_rope",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_field_entry_muddy_rice_straw",
+      "to": "mat_rice_straw_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_field_water_grass_bundle",
+      "to": "mat_wet_grass_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_fish_sorting_bone_sack",
+      "to": "mat_fish_bone_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_foreign_trade_crate_board",
+      "to": "mat_plank_board",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_forge_iron_filings",
+      "to": "mat_iron_scrap_box",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_grain_cart_dunnage_wood",
+      "to": "mat_plank_board",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_grain_shed_husk_sack",
+      "to": "mat_rice_husk_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_granary_gate_husk_pack",
+      "to": "mat_rice_husk_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_guard_shed_hemp_rope",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_guild_corridor_wrapping_paper",
+      "to": "mat_wrapping_paper_pack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_harbor_cargo_crate_board",
+      "to": "mat_plank_board",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_irrigation_gate_moss_sheet",
+      "to": "mat_water_moss_sheet",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_lake_port_moss_sawdust",
+      "to": "mat_wood_offcut_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_livestock_pen_old_rope",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_merchant_cable_fiber",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_mine_shed_rough_ore",
+      "to": "mat_rough_ore",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_net_drying_fishing_line",
+      "to": "mat_fishing_line_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_north_bank_reed_bundle",
+      "to": "mat_reed_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_north_harbor_salt_plank_chips",
+      "to": "mat_plank_board",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_ocean_warehouse_hemp_rope",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_oilcloth_edge_roll",
+      "to": "mat_oilcloth_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_old_loading_cart_wedge",
+      "to": "mat_wood_offcut_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_outer_scale_grain_sack",
+      "to": "mat_grain_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_pasture_hay_bundle",
+      "to": "mat_hay_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_ranch_sign_wood_chips",
+      "to": "mat_wood_offcut_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_reed_cargo_bundle",
+      "to": "mat_reed_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_riversea_warehouse_hemp_sack",
+      "to": "mat_sackcloth_bolt",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_rough_store_stone_dust_sack",
+      "to": "mat_stone_powder_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_seasonal_grass_bundle",
+      "to": "mat_wet_grass_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_seedling_field_straw_bundle",
+      "to": "mat_rice_straw_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_ship_repair_tar_lump",
+      "to": "mat_sealing_pitch",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_shipyard_sawdust_sack",
+      "to": "mat_wood_offcut_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_short_boat_cable_segment",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_short_market_sackcloth",
+      "to": "mat_sackcloth_bolt",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_slag_slope_shards",
+      "to": "mat_rough_ore",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_stable_mane_hair_bundle",
+      "to": "mat_mane_hair_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_supply_market_salt_pack",
+      "to": "mat_coarse_salt_pack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_supply_warehouse_hardtack_sack",
+      "to": "mat_hardtack_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_tack_leather_edge",
+      "to": "mat_leather_strip",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_tidal_cargo_saltcloth",
+      "to": "mat_canvas_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_tidal_shell_sack",
+      "to": "mat_shell_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_tool_shed_iron_scrap",
+      "to": "mat_iron_scrap_box",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_trough_wet_moss",
+      "to": "mat_water_moss_sheet",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_warehouse_cargo_twine",
+      "to": "mat_hemp_rope_roll",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_wash_ditch_wet_ore",
+      "to": "mat_washed_ore",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_water_net_wet_bamboo_slats",
+      "to": "mat_bamboo_slats",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_water_warehouse_wet_sack",
+      "to": "mat_sackcloth_bolt",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_workshop_lane_wood_wedge",
+      "to": "mat_wood_offcut_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "mat_yard_scale_stone_powder",
+      "to": "mat_stone_powder_sack",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    },
+    {
+      "from": "wild_herb",
+      "to": "mat_reed_bundle",
+      "reason": "P0 commodity layer rewrite: source-specific material id merged into player-facing commodity"
+    }
+  ]
+}

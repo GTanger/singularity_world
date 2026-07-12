@@ -15,7 +15,40 @@
 		if (window.gameSend) window.gameSend(payload);
 	}
 
+	var lastStatusMsg = null;
+	var lastInventoryMsg = null;
+
+	function inventorySummaryText() {
+		if (!lastInventoryMsg) return '讀取中';
+		var items = Array.isArray(lastInventoryMsg.items) ? lastInventoryMsg.items : [];
+		if (!items.length) return '背包空';
+		var shown = items.slice(0, 4).map(function (it) {
+			var qty = it.qty > 1 ? (' ×' + it.qty) : '';
+			return (it.name || it.item_id || '未名物') + qty;
+		});
+		if (items.length > shown.length) shown.push('等' + items.length + '項');
+		return shown.join('、');
+	}
+
+	function toolSummaryText(msg) {
+		var names = (msg && msg.equipment_names) || {};
+		var held = [];
+		if (names.hold_l) held.push(names.hold_l);
+		if (names.hold_r) held.push(names.hold_r);
+		if (held.length) return held.join('、');
+		return '未持工具';
+	}
+
+	function locationSummaryText(msg) {
+		if (msg && msg.room_name) return msg.room_name;
+		var st = window.gameState ? window.gameState() : null;
+		if (st && st.room_name) return st.room_name;
+		if (st && st.me && st.me.room_name) return st.me.room_name;
+		return '—';
+	}
+
 	function renderStatusPane(msg) {
+		lastStatusMsg = msg;
 		var wrap = document.getElementById('status-content');
 		if (!wrap) return;
 		var isSelf = msg.is_self === true;
@@ -36,7 +69,14 @@
 			+ '<span>精神 ' + fmt(msg.spirit_cur) + '/' + fmt(msg.spirit_max) + '</span>'
 			+ '<span>體力 ' + fmt(msg.stamina_cur) + '/' + fmt(msg.stamina_max) + '</span>'
 			+ '</dd>';
+		if (isSelf) {
+			html += '<dt>[ 所在 ]</dt><dd>' + esc(locationSummaryText(msg)) + '</dd>';
+		}
 		html += '<dt>[ 持有 ]</dt><dd>鎂：' + (isSelf && msg.magnesium != null ? msg.magnesium : '—') + '</dd>';
+		if (isSelf) {
+			html += '<dt>[ 可用物 ]</dt><dd>' + esc(inventorySummaryText()) + '</dd>';
+			html += '<dt>[ 手持 ]</dt><dd>' + esc(toolSummaryText(msg)) + '</dd>';
+		}
 		html += '</dl>';
 		wrap.innerHTML = html;
 	}
@@ -275,10 +315,9 @@
 		}
 	}
 
-	var lastInventoryMsg = null;
-
 	function renderInventoryContent(msg) {
 		lastInventoryMsg = msg;
+		if (lastStatusMsg && lastStatusMsg.is_self === true) renderStatusPane(lastStatusMsg);
 		var weightEl = document.getElementById('inventory-weight');
 		var listEl = document.getElementById('inventory-list');
 		if (!weightEl || !listEl) return;

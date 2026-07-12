@@ -1,7 +1,11 @@
-// talk/trade 輸入列、log pending 訊息、log 物件點擊派發；自包含，依賴 window.SwLog / window.gameSend / window.gameState / window.gameFormatNarrative。v0.20.44
+// talk/trade 輸入列、log pending 訊息、log 物件點擊派發；自包含，依賴 window.SwLog / window.gameSend / window.gameState / window.gameFormatNarrative。v0.20.45
 (function () {
+	function getLogEl() {
+		return document.getElementById('sw-log') || document.getElementById('log');
+	}
+
 	function appendLogPendingTalk() {
-		var logEl = document.getElementById('log');
+		var logEl = getLogEl();
 		if (!logEl) return;
 		var div = document.createElement('div');
 		div.className = 'log-entry log-system log-talk-pending';
@@ -11,14 +15,14 @@
 	}
 
 	function removeLogPendingTalk() {
-		var logEl = document.getElementById('log');
+		var logEl = getLogEl();
 		if (!logEl) return;
 		var pending = logEl.querySelectorAll('.log-talk-pending');
 		for (var i = 0; i < pending.length; i++) pending[i].remove();
 	}
 
 	function appendLogPendingTrade() {
-		var logEl = document.getElementById('log');
+		var logEl = getLogEl();
 		if (!logEl) return;
 		var div = document.createElement('div');
 		div.className = 'log-entry log-system log-trade-pending';
@@ -28,14 +32,14 @@
 	}
 
 	function removeLogPendingTrade() {
-		var logEl = document.getElementById('log');
+		var logEl = getLogEl();
 		if (!logEl) return;
 		var pending = logEl.querySelectorAll('.log-trade-pending');
 		for (var j = 0; j < pending.length; j++) pending[j].remove();
 	}
 
 	function appendTalkInputRow(entityId, targetName) {
-		var logEl = document.getElementById('log');
+		var logEl = getLogEl();
 		if (!logEl) return;
 		var wrap = document.createElement('div');
 		wrap.className = 'log-entry log-talk-input';
@@ -80,7 +84,7 @@
 	}
 
 	function appendTradeInputRow(entityId, targetName) {
-		var logEl = document.getElementById('log');
+		var logEl = getLogEl();
 		if (!logEl) return;
 		var wrap = document.createElement('div');
 		wrap.className = 'log-entry log-trade-input';
@@ -126,8 +130,10 @@
 	}
 
 	function bindLogObjectActions() {
-		var logEl = document.getElementById('log');
+		var logEl = getLogEl();
 		if (!logEl) return;
+		if (logEl.__swObjectActionsBound) return;
+		logEl.__swObjectActionsBound = true;
 		logEl.addEventListener('click', function (ev) {
 			var btn = ev.target.closest && ev.target.closest('.log-object-action');
 			if (!btn) return;

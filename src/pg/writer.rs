@@ -14,8 +14,8 @@
 //! - `std::thread::spawn` 無界 fire-and-forget
 //! - `Store::persist_entities` 寫整份 JSON 到檔案（違反 CLAUDE.md「PG 權威」硬規則）
 
-use crate::store::{ArchivalEntry, Entity, Item, NpcRumor};
 use crate::store::sql::DbPool;
+use crate::store::{ArchivalEntry, Entity, Item, NpcRumor};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::mpsc::{self, SyncSender};
 use std::sync::{Arc, Mutex, OnceLock};
@@ -374,7 +374,9 @@ pub fn submit(op: WriteOp) {
             Ok(_) => {}
             Err(mpsc::TrySendError::Full(_)) => {
                 s.pending.fetch_sub(1, Ordering::Release);
-                tracing::warn!("[pg::writer] queue full (cap={QUEUE_CAP}), dropping op; full-sync 會兜底");
+                tracing::warn!(
+                    "[pg::writer] queue full (cap={QUEUE_CAP}), dropping op; full-sync 會兜底"
+                );
             }
             Err(mpsc::TrySendError::Disconnected(_)) => {
                 s.pending.fetch_sub(1, Ordering::Release);

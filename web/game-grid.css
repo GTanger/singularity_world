@@ -1,5 +1,5 @@
 /**
- * game-grid.css v0.21.0  — SW-v5 UI 重構
+ * game-grid.css v0.21.1  — SW-v5 UI 重構
  * 方格版 MUD UI 專用樣式
  * 紙色底（#f0e6d3）、等寬字體、無分隔邊線（用留白分區）
  * 依賴 game.css 的 :root CSS 變數（--paper, --ink, --gold 等）
@@ -37,155 +37,6 @@
 
 /* 頂欄已移除（SW-v5）— 相關 CSS 不再需要 */
 
-/* ── 中間主體：左窄右寬 ────────────────────────────────────────── */
-
-.game-grid-body-row {
-  flex: 1 1 0;
-  min-height: 0;
-  display: flex;
-  overflow: hidden;
-}
-
-/* 左物件欄（無標題，分區用極淡背景色與頂欄區隔）*/
-.game-grid-sidebar {
-  flex: 0 0 108px;
-  display: flex;
-  flex-direction: column;
-  background: var(--paper-dark, #e0d4c0);
-  overflow: hidden;
-  border: none;
-  border-right: none;
-}
-
-/* 「物件欄」三字標題已移除（index.html）——保留 class 以防其他地方殘留 */
-.mud-obj-header { display: none; }
-
-.mud-obj-list {
-  flex: 1 1 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 4px 0;
-}
-
-.mud-obj-section-title {
-  padding: 4px 8px 2px;
-  font-size: 10px;
-  color: var(--ink-faint, #a89880);
-  letter-spacing: 0.08em;
-  border-top: none;
-  margin-top: 4px;
-}
-.mud-obj-section-title:first-child {
-  margin-top: 0;
-  border-top: none;
-}
-
-.mud-obj-item {
-  padding: 5px 8px;
-  font-size: 13px;
-  color: var(--ink, #2c1e0f);
-  cursor: pointer;
-  line-height: 1.4;
-  border-bottom: 1px solid transparent;
-  transition: background 0.1s;
-}
-.mud-obj-item:active {
-  background: var(--ink-wash, rgba(44,30,15,0.08));
-}
-
-.mud-obj-action {
-  color: var(--gold, #8b6914);
-  font-weight: 600;
-}
-
-.mud-obj-npc {
-  color: var(--ink, #2c1e0f);
-}
-.mud-npc-behavior {
-  font-size: 11px;
-  color: var(--ink-light, #6b5a47);
-  padding: 1px 4px 4px 20px;
-  line-height: 1.4;
-}
-.mud-obj-player {
-  color: var(--blue-ink, #2a4a6b);
-}
-.mud-obj-ground {
-  color: var(--green-ink, #2a5a3a);
-}
-.mud-obj-resource {
-  color: var(--ink-light, #6b5a47);
-}
-
-.mud-obj-icon {
-  font-size: 11px;
-  margin-right: 2px;
-}
-
-/* ── 右：房間描述 + 地圖 ───────────────────────────────────────── */
-
-.game-grid-main {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  overflow: hidden;
-}
-
-/* 上小：房間描述（固定高度，無描述時留白，地圖位置穩定不抖動）*/
-.game-grid-room-desc {
-  flex: 0 0 110px;
-  padding: 8px 12px 10px;
-  border: none;
-  background: var(--paper, #f0e6d3);
-  overflow-y: auto;
-}
-
-.mud-room-name {
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--gold, #8b6914);
-  margin-bottom: 2px;
-}
-
-.mud-room-phase {
-  font-size: 12px;
-  color: var(--ink-faint, #a89880);
-  margin-bottom: 4px;
-}
-
-.mud-room-ambience {
-  font-size: 13px;
-  color: var(--ink, #3d2e1a);
-  line-height: 1.6;
-  margin-bottom: 6px;
-  font-style: italic;
-}
-
-.mud-room-exits {
-  font-size: 12px;
-  color: var(--ink-light, #6b5a47);
-}
-
-.mud-exit-dir {
-  display: inline-block;
-  margin-right: 8px;
-  padding: 1px 4px;
-  border: 1px solid var(--ink-wash, rgba(44,30,15,0.08));
-  border-radius: 3px;
-  font-size: 11px;
-}
-
-.mud-room-entities {
-  font-size: 12px;
-  color: var(--ink-light, #6b5a47);
-  margin-top: 3px;
-}
-
-.mud-entity-name {
-  color: var(--ink, #2c1e0f);
-}
-
 /* ── 底欄（無上邊線，用留白與地圖區隔） ─────────────────────── */
 /* 用 #bottom-bar.game-grid-footer 疊 id 權重，蓋掉 game.css 的邊線 */
 
@@ -208,8 +59,9 @@
   padding: 12px 16px;  /* 加大呼吸 */
   display: grid;
   grid-template-columns: 1fr auto 1fr; /* 左 stats | 姓名 | 右 stats */
+  grid-template-rows: auto auto;
   align-items: center;
-  gap: 16px;
+  gap: 3px 16px;
 }
 
 /* ── 紙色系四色（紙紅/紙黃/紙藍/紙紫，去飽和暖調襯紙色底）─────── */
@@ -224,6 +76,7 @@
 
 .grid-stats-left,
 .grid-stats-right {
+  grid-row: 2;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -257,6 +110,14 @@
 .game-grid-footer .stat-fill.energy  { background: var(--paper-blue); }
 .game-grid-footer .stat-fill.spirit  { background: var(--paper-purple); }
 
+.grid-player-core {
+  grid-row: 2;
+  justify-self: center;
+  min-width: 0;
+  max-width: 42vw;
+  line-height: 1.15;
+}
+
 .grid-player-name {
   font-weight: bold;
   font-size: 15px;
@@ -264,43 +125,37 @@
   cursor: pointer;
   white-space: nowrap;
   text-align: center;
-  padding: 0 14px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .grid-player-name:active { opacity: 0.7; }
-
-/* log 輸出（預設隱藏；可由 JS 展開）*/
-.grid-log {
-  flex-basis: 100%;
-  max-height: 120px;
-  overflow-y: auto;
-  font-size: 12px;
-  color: var(--ink-light, #6b5a47);
-  margin-top: 4px;
-}
 
 /* ── 通用 ─────────────────────────────────────────────────────── */
 
 .hidden { display: none !important; }
 
 /* ═══════════════════════════════════════════════════════════════════
- * SW-* 四層 grid 骨架（階段 1，2026-04-21）
- * 對齊 mockup_card_ui.html：36px 1fr 160px 44px
- * .sw-topbar / .sw-main / .sw-logmap-row / .sw-statusbar 是語義別名，
- * 現在蓋在舊結構（.game-grid-header / .game-grid-body-row / .game-grid-footer）上方
- * 翻案完成後再砍舊 class，現在並存
+ * SW-v5 佈局：置頂世界資訊 + 場景文字流 + 底欄
  * ═══════════════════════════════════════════════════════════════════ */
 
-/* ═══════════════════════════════════════════════════════════════════
- * SW-v5 三區佈局：描述欄（1fr）+ 路口 UI（固定）+ 底欄（44px）
- * ═══════════════════════════════════════════════════════════════════ */
-
-/* v5 三區容器：砍頂欄、砍 minimap row */
+/* v5 場景容器：砍 minimap row；世界資訊置頂，場景正文獨立滾動 */
 .sw-app {
   display: grid !important;
-  grid-template-rows: auto 1fr auto 44px;
+  grid-template-rows: auto 1fr 56px;
   height: 100dvh;
   width: 100vw;
   overflow: hidden;
+}
+
+/* ── 置頂世界資訊：日晷 / 時段 / 時間 / 天氣 ─────────────────────── */
+
+.sw-worldbar {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px 6px;
+  background: var(--paper, #f0e6d3);
+  z-index: 2;
 }
 
 /* ── 上區：描述欄 ─────────────────────────────────────────────────── */
@@ -308,10 +163,12 @@
 .sw-desc-panel {
   display: flex;
   flex-direction: column;
-  padding: 12px 14px 8px;
+  padding: 4px 14px 8px;
   background: var(--paper, #f0e6d3);
   gap: 0;
-  /* auto 高，內容自然撐；不滾，永遠不被 log 推走 */
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 四層描述段通用 */
@@ -329,6 +186,7 @@
   gap: 8px;
   font-size: 13px;
   color: var(--ink-light, #6b5a47);
+  padding: 4px 0 6px;
 }
 .sw-l1 .desc-icon {
   display: inline-flex;
@@ -355,6 +213,7 @@
   font-size: 13px;
   color: var(--ink-light, #6b5a47);
   font-style: italic;
+  padding: 4px 0 6px;
 }
 
 /* L3 地形：主要描述文本 */
@@ -371,8 +230,14 @@
 .sw-l4 {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  column-gap: 7px;
+  row-gap: 4px;
   padding-top: 8px;
+}
+
+.sw-l4-break {
+  flex-basis: 100%;
+  height: 0;
 }
 
 .desc-icon {
@@ -391,7 +256,7 @@
   cursor: pointer;
   font-size: 14px;
   color: var(--ink, #2c1e0f);
-  padding: 1px 2px;
+  padding: 1px 3px;
   border-bottom: 1px solid var(--ink-faint, #a89880);
   line-height: 1.5;
   user-select: none;
@@ -408,137 +273,58 @@
 .sw-obj-resource { color: var(--ink-light, #6b5a47); }
 .sw-obj-exit {
   color: var(--gold, #8b6914);
-  font-weight: 600;
+  font-weight: 700;
+  border-bottom-color: currentColor;
+  border-bottom-style: solid;
+}
+.sw-obj-npc.card-stranger {
+  color: var(--ink-light, #6b5a47);
+  border-bottom-style: dotted;
+}
+.sw-obj-npc.card-observed {
+  color: var(--ink, #2c1e0f);
+  border-bottom-color: rgba(44, 30, 15, 0.42);
+}
+.sw-obj-npc.card-named {
+  color: var(--blue-ink, #2a4a6b);
+  border-bottom-color: currentColor;
+}
+.sw-obj-crowd {
+  color: var(--ink-light, #6b5a47);
+  font-style: italic;
   border-bottom-style: dashed;
 }
 
-/* log 流：獨立 grid 區（1fr），自己滾，不再推描述欄 */
+/* 場景文字流：接在 L3 後、L4 前，不顯示欄位感 */
 .sw-log-stream {
-  min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 8px 14px 8px;
-  background: var(--paper, #f0e6d3);
-  border-top: 1px solid var(--ink-wash, rgba(44,30,15,0.08));
+  min-height: auto;
+  overflow: visible;
+  padding: 0 0 4px;
+  background: transparent;
+  border-top: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
-  color: var(--ink-light, #6b5a47);
+  gap: 0;
+  font-size: 14px;
+  color: var(--ink, #2c1e0f);
   line-height: 1.7;
-  letter-spacing: 0.05em;
+  letter-spacing: 0;
 }
 
 .sw-log-entry {
   display: block;
-}
-
-/* ── 中區：路口形狀 UI ────────────────────────────────────────────── */
-
-.sw-junction {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 0 10px;
-  background: transparent;
-  gap: 0;
-  min-height: 140px;
-}
-
-.junction-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-}
-
-/* 各方向 div：佔位盒，有內容才顯示 */
-.junction-north,
-.junction-south {
-  width: 140px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: var(--gold, #8b6914);
-  font-weight: 600;
-  min-height: 40px;
-}
-
-.junction-west,
-.junction-east {
-  width: 80px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: var(--gold, #8b6914);
-  font-weight: 600;
-}
-.junction-west { justify-content: flex-end; padding-right: 12px; }
-.junction-east { justify-content: flex-start; padding-left: 12px; }
-
-/* 空方向（無內容）不佔高度 */
-.junction-north:empty,
-.junction-south:empty {
-  min-height: 16px;
-  height: 16px;
-}
-
-/* 方向 div 點擊態 */
-.junction-dir--walkable {
-  cursor: pointer;
-  transition: color 0.1s;
-}
-.junction-dir--walkable:active {
-  color: var(--ink, #2c1e0f);
-}
-
-/* 未揭露方向（▒▒▒）*/
-.junction-dir--unknown {
-  cursor: pointer;
-  color: var(--ink-faint, #a89880);
-  letter-spacing: 2px;
-}
-.junction-dir--unknown:active {
-  color: var(--ink-light, #6b5a47);
-}
-
-/* 中央探索按鈕 */
-.junction-center {
-  min-width: 64px;
-  height: 44px;
-  padding: 0 16px;
-  background: transparent;
-  border: none;
-  color: var(--gold, #8b6914);
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.1s;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.junction-center:active {
   color: var(--ink, #2c1e0f);
 }
 
 /* ── 底欄（44px）─────────────────────────────────────────────────── */
 
 .sw-statusbar {
-  height: 44px;
-  min-height: 44px;
-  max-height: 44px;
+  height: 56px;
+  min-height: 56px;
+  max-height: 56px;
 }
 
 .sw-statusbar .game-grid-footer-inner {
-  padding: 0 16px;
+  padding: 4px 16px 5px;
   height: 100%;
 }
-

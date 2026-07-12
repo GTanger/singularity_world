@@ -3,10 +3,11 @@
 use rand::Rng;
 
 use crate::db::{
-    add_magnesium, add_to_inventory, get_all_venue_ids, get_assignment_count_by_venue,
-    get_assignments_for_entity, get_entity, get_entity_room, get_npc_ids_with_room, get_schedule_target_room,
-    insert_assignment, set_entity_room, RoomGraph,
+    RoomGraph, add_magnesium, add_to_inventory, get_all_venue_ids, get_assignment_count_by_venue,
+    get_assignments_for_entity, get_entity, get_entity_room, get_npc_ids_with_room,
+    get_schedule_target_room, insert_assignment, set_entity_room,
 };
+use crate::world::materials;
 
 /// 與常數 `SurvivalLineMg` 一致：低於此鎂才可能在未觀測時補鎂。
 pub const SURVIVAL_LINE_MG: i32 = 50;
@@ -25,7 +26,12 @@ fn shuffle_vec<T>(v: &mut [T], rng: &mut impl Rng) {
 }
 
 /// 在無人處於「觀測圈」時呼叫：抽樣最多 `max_npcs` 個 NPC，讓事實持續（排班走一步／無排班隨機效果）。不發敘事。
-pub fn run_unobserved_world_tick(graph: Option<&RoomGraph>, game_hour: i32, max_npcs: usize) {
+pub fn run_unobserved_world_tick(
+    graph: Option<&RoomGraph>,
+    game_hour: i32,
+    max_npcs: usize,
+    now_unix: i64,
+) {
     let mut max_n = max_npcs;
     if max_n == 0 {
         max_n = UNOBSERVED_MAX_NPCS_PER_TICK;
@@ -68,7 +74,11 @@ pub fn run_unobserved_world_tick(graph: Option<&RoomGraph>, game_hour: i32, max_
                 let _ = add_magnesium(&entity_id, delta);
             }
         } else if effect == 1 {
-            let _ = add_to_inventory(&entity_id, "wild_herb", 1);
+            if let Some(gathered) =
+                materials::try_gather_material_for_room_preserving(&current_room, now_unix, 1)
+            {
+                let _ = add_to_inventory(&entity_id, &gathered.item_id, 1);
+            }
         } else if effect == 2 {
             let Ok(list) = get_assignments_for_entity(&entity_id) else {
                 continue;
@@ -83,7 +93,8 @@ pub fn run_unobserved_world_tick(graph: Option<&RoomGraph>, game_hour: i32, max_
                     continue;
                 };
                 if n < 2 {
-                    let _ = insert_assignment(&entity_id, DEFAULT_OCC_FOR_UNOBSERVED_HIRE, &vid, "");
+                    let _ =
+                        insert_assignment(&entity_id, DEFAULT_OCC_FOR_UNOBSERVED_HIRE, &vid, "");
                     break;
                 }
             }

@@ -1,14 +1,14 @@
 /**
- * grid-map.js v0.21.0  — SW-v5 重構
+ * grid-map.js v0.24.6  — SW-v5 重構
  * 舊職責（方格地圖渲染 + minimap）已移除。
- * 新職責：路口形狀 UI（四方向 div + 中央探索按鈕）+ 共享狀態命名空間 SwGrid。
+ * 新職責：維護當前格資料 + 共享狀態命名空間 SwGrid。
  *
  * 子模組：sw-room-desc.js / sw-object-list.js（仍掛在 SwGrid 命名空間）
  */
 (function () {
     'use strict';
 
-    // ── 方向 ←→ delta（四向）────────────────────────────────────────
+    // ── 內部方向 ←→ delta（後端通訊用；玩家層不直接顯示方向名）──────
     var DIR_DELTA = {
         '北': { dx: 0, dy:  1 },
         '東': { dx: 1, dy:  0 },
@@ -16,16 +16,12 @@
         '西': { dx: -1, dy: 0 }
     };
 
-    // ── 方向 ←→ 英文 element id────────────────────────────────────
-    var DIR_ID = {
-        '北': 'exit-north',
-        '南': 'exit-south',
-        '東': 'exit-east',
-        '西': 'exit-west'
-    };
-
     // ── 揭露快取（永久紀錄）────────────────────────────────────────
     var revealedCells = new Set();
+
+    // 舊 game-ui.js 曾建立 window.mapState；現由資料層保留移動狀態。
+    var mapState = window.mapState || { moving: false, playerX: 0, playerY: 0 };
+    window.mapState = mapState;
 
     // ── 目前地圖狀態 ─────────────────────────────────────────────────
     var mapData = {
@@ -35,6 +31,10 @@
         exits:    [],   // ExitView[] — 舊格式：{ direction, to_room_name, explored? }
         entities: [],
         objects:  [],
+        npcs:     [],
+        currentRoomId: '',
+        currentRoomName: '',
+        exitsRoomName: '',
         // v5 新：四方鄰格資訊（room_enter 格式）
         exits_v5: null  // { north, south, east, west } 每格含 explored/walkable/name
     };
@@ -59,62 +59,9 @@
         return suffix ? ('人·' + suffix) : '人';
     }
 
-    // ── DOM 引用 ─────────────────────────────────────────────────────
-    var descPanelEl  = null;
-    var junctionEl   = null;
-    var exitEls      = {};   // { north, south, east, west }
-    var btnExploreEl = null;
-
-    // ── 路口形狀 UI 渲染 ─────────────────────────────────────────────
-    function renderJunction() {
-        var dirs   = ['北', '南', '東', '西'];
-        var idKeys = { '北': 'north', '南': 'south', '東': 'east', '西': 'west' };
-        var exitsV5 = mapData.exits_v5;
-
-        // 回落到舊格式 exits[]（相容期）
-        var legacyExitDirs = {};
-        for (var li = 0; li < (mapData.exits || []).length; li++) {
-            legacyExitDirs[mapData.exits[li].direction] = mapData.exits[li];
-        }
-
-        for (var di = 0; di < dirs.length; di++) {
-            var dir    = dirs[di];
-            var key    = idKeys[dir];
-            var el     = exitEls[key];
-            if (!el) continue;
-
-            el.className  = 'junction-dir junction-' + key;
-            el.textContent = '';
-            el.removeAttribute('data-move-dir');
-            el.removeAttribute('data-scout-dir');
-            el.style.cursor = '';
-
-            var info = exitsV5 ? exitsV5[key] : null;
-
-            if (info) {
-                // v5 room_enter 格式
-                if (info.explored === true && info.walkable === true) {
-                    el.textContent = info.name || dir;
-                    el.setAttribute('data-move-dir', dir);
-                    el.classList.add('junction-dir--walkable');
-                    el.style.cursor = 'pointer';
-                } else if (info.explored === false) {
-                    el.textContent = '▒▒▒';
-                    el.setAttribute('data-scout-dir', dir);
-                    el.classList.add('junction-dir--unknown');
-                    el.style.cursor = 'pointer';
-                }
-                // explored:true + walkable:false → 留空
-            } else if (legacyExitDirs[dir]) {
-                // 相容舊格式
-                var ex = legacyExitDirs[dir];
-                el.textContent = ex.to_room_name || dir;
-                el.setAttribute('data-move-dir', dir);
-                el.classList.add('junction-dir--walkable');
-                el.style.cursor = 'pointer';
-            }
-            // 無此方向 → 空白
-        }
+    function exitLabel(info) {
+        if (!info) return '可去處';
+        return info.display_name || info.label || info.to_room_name || info.room_name || info.name || '可去處';
     }
 
     // ── 緩存最近一次 grid_view msg ───────────────────────────────────
@@ -129,6 +76,8 @@
         mapData.exits    = msg.exits    || [];
         mapData.entities = msg.entities || [];
         mapData.objects  = msg.objects  || [];
+        mapData.currentRoomName = msg.room_name || mapData.currentRoomName || '';
+        mapData.exitsRoomName = msg.room_name || '';
 
         // 同步揭露快取
         for (var i = 0; i < mapData.cells.length; i++) {
@@ -137,31 +86,45 @@
         }
         revealedCells.add(mapData.playerX + ',' + mapData.playerY);
 
-        renderJunction();
-        window.SwRoomDesc.render();
-        window.SwObjectList.render();
-
-        if (window.mapState) {
-            window.mapState.playerX = msg.player_x;
-            window.mapState.playerY = msg.player_y;
-            window.mapState.moving  = false;
+        // grid_view 只保留資料同步。L1-L4 的玩家層呈現由 room_enter
+        // 權威 payload 負責，避免舊相容路徑用 entities.display_name
+        // 覆蓋掉觀察態 NPC 卡片並洩漏真名。
+        if (!mapData.exits_v5) {
+            window.SwRoomDesc.render();
+            window.SwObjectList.render();
+        } else if (Array.isArray(mapData.npcs)) {
+            window.SwObjectList.renderV5NpcCards(mapData.npcs, mapData.objects || []);
+        } else {
+            window.SwObjectList.renderV5(mapData.objects || []);
         }
+
+        mapState.playerX = msg.player_x;
+        mapState.playerY = msg.player_y;
+        mapState.moving  = false;
     };
 
     // ── v5 room_enter 事件處理 ───────────────────────────────────────
     window.onRoomEnter = function (msg) {
+        var nextRoomId = msg.room_id || '';
+        var sameRoom = !!nextRoomId && mapData.currentRoomId === nextRoomId;
+        if (!sameRoom) {
+            mapData.exits = [];
+            mapData.exitsRoomName = '';
+        }
         // 更新 exits_v5
         if (msg.exits) {
             mapData.exits_v5 = msg.exits;
         }
+        if (nextRoomId) mapData.currentRoomId = nextRoomId;
+        mapData.currentRoomName = (msg.terrain && msg.terrain.name) || mapData.currentRoomName || '';
         // 更新 objects / entities
         if (msg.objects) mapData.objects = msg.objects;
-        // 渲染 L1-L3 + L4 + 路口
-        renderJunction();
-        window.SwRoomDesc.renderV5(msg);
+        mapData.npcs = Array.isArray(msg.npcs) ? msg.npcs : null;
+        // 渲染 L1-L3 + L4
+        window.SwRoomDesc.renderV5(msg, { keepL3: sameRoom });
         // v5 acquaintance：後端帶 npcs 陣列時直接渲染，否則 fallback 舊格式
         if (msg.npcs && Array.isArray(msg.npcs)) {
-            window.SwObjectList.renderV5NpcCards(msg.npcs);
+            window.SwObjectList.renderV5NpcCards(msg.npcs, msg.objects || []);
         } else {
             window.SwObjectList.renderV5(msg.objects || []);
         }
@@ -190,7 +153,7 @@
     };
 
     // ── v5 world_tick 事件（不污染 log）──────────────────────────────
-    // 四段時辰：dawn(5-10) / day(11-16) / dusk(17-21) / night(22-4)
+    // 四段時辰：dawn(5-10) / day(11-16) / dusk(17-19) / night(20-4)
     // 日兩組（dawn/day）夜兩組（dusk/night），每個天氣 icon 各備四池
     var WEATHER_PROSE_WT = {
         clear: {
@@ -239,7 +202,7 @@
     function _phaseOfHourWT(h) {
         if (h >= 5 && h < 11) return 'dawn';
         if (h >= 11 && h < 17) return 'day';
-        if (h >= 17 && h < 22) return 'dusk';
+        if (h >= 17 && h < 20) return 'dusk';
         return 'night';
     }
     function _climatePoolWT(iconKey, hour) {
@@ -255,23 +218,23 @@
             var wt = msg.weather;
             var iconKey = wt.event_type || wt.icon_key || 'clear';
             var desc = wt.desc;
+            var hour = 12;
+            if (msg.time && msg.time.hour_str) {
+                hour = parseInt(String(msg.time.hour_str).split(':')[0], 10) || 12;
+            }
             if (!desc) {
-                var hour = 12;
-                if (msg.time && msg.time.hour_str) {
-                    hour = parseInt(String(msg.time.hour_str).split(':')[0], 10) || 12;
-                }
                 var pool = _climatePoolWT(iconKey, hour);
                 var seed = Math.abs(wt.prose_seed || 0);
                 desc = pool[seed % pool.length];
             }
-            window.SwRoomDesc.renderL2({ icon_key: iconKey, desc: desc });
+            window.SwRoomDesc.renderL2({ icon_key: iconKey, desc: desc, hour: hour });
         }
         // 更新 L4（objects_delta）
         if (msg.objects_delta) window.SwObjectList.applyDelta(msg.objects_delta);
     };
 
 
-    // ── v5 scout_result 事件（方向揭露回應）──────────────────────────
+    // ── v5 scout_result 事件（出口槽揭露回應）──────────────────────
     window.onScoutResult = function (msg) {
         if (!msg.direction || !msg.explored) return;
         // 更新 exits_v5 該方向資訊（前端快取）
@@ -281,65 +244,31 @@
             mapData.exits_v5[key] = {
                 explored: msg.explored,
                 walkable: msg.walkable,
-                name: msg.name || msg.direction
+                name: msg.name || '可去處'
             };
         }
-        // 重渲路口（揭露後該方向變為可點地名）
-        renderJunction();
+        if (window.SwObjectList && window.SwObjectList.render) {
+            window.SwObjectList.render();
+        }
     };
 
     // 外部觸發：myPlayerId 更新後重渲描述欄 + 物件欄
     window.refreshGridView = function () {
-        if (!_lastGridMsg) return;
+        // myPlayerId 到齊後不再重跑舊 grid_view render；否則 room_enter
+        // 的 L4 觀察態會被 grid_view.entities 真名列表覆蓋。
+        if (!_lastGridMsg || mapData.exits_v5) return;
         window.SwRoomDesc.render();
         window.SwObjectList.render();
     };
 
     // ── 初始化 ───────────────────────────────────────────────────────
     function init() {
-        descPanelEl  = document.getElementById('sw-desc-panel');
-        junctionEl   = document.getElementById('sw-junction');
-        exitEls.north = document.getElementById('exit-north');
-        exitEls.south = document.getElementById('exit-south');
-        exitEls.east  = document.getElementById('exit-east');
-        exitEls.west  = document.getElementById('exit-west');
-        btnExploreEl  = document.getElementById('btn-explore');
-
-        if (!junctionEl) {
-            console.warn('[grid-map] sw-junction 未找到，路口 UI 無法初始化');
-            return;
-        }
-
-        // 路口方向點擊
-        junctionEl.addEventListener('click', function (e) {
-            var el = e.target.closest('.junction-dir');
-            if (!el) return;
-            var moveDir  = el.getAttribute('data-move-dir');
-            var scoutDir = el.getAttribute('data-scout-dir');
-            if (moveDir && window.gameSend) {
-                window.gameSend({ type: 'move', direction: moveDir });
-            } else if (scoutDir && window.gameSend) {
-                window.gameSend({ type: 'scout', direction: scoutDir });
-            }
-        });
-
-        // 中央探索按鈕
-        if (btnExploreEl) {
-            btnExploreEl.addEventListener('click', function () {
-                if (window.gameSend) {
-                    window.gameSend({ type: 'explore' });
-                }
-                if (window.SwLog && window.SwLog.appendLog) {
-                    window.SwLog.appendLog('正在探索當前格…');
-                }
-            });
-        }
-
         // 暴露共享命名空間（子模組 runtime 讀取）
         window.SwGrid = {
             mapData: mapData,
             revealedCells: revealedCells,
             DIR_DELTA: DIR_DELTA,
+            exitLabel: exitLabel,
             // DOM 引用（子模組相容用）
             roomDescEl:   document.getElementById('sw-l3-terrain'),
             objectListEl: document.getElementById('sw-l4-objects'),
@@ -350,7 +279,7 @@
 
         window.SwObjectList.bindClick();
 
-        console.log('[grid-map] v0.21.0 initialized | SW-v5 路口形狀 UI');
+        console.log('[grid-map] v0.24.6 initialized | exits render in L4');
     }
 
     if (document.readyState === 'loading') {

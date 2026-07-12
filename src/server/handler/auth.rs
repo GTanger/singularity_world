@@ -2,7 +2,10 @@
 
 use std::collections::HashMap;
 
-use crate::db::{self, compute_resource_maxes, expand_soul_seed_to_origin_sentence, expand_soul_seed_to_topology_costs};
+use crate::db::{
+    self, compute_resource_maxes, expand_soul_seed_to_origin_sentence,
+    expand_soul_seed_to_topology_costs,
+};
 use crate::entity::Character;
 use crate::game;
 use crate::gametext;
@@ -11,10 +14,14 @@ use super::super::broadcast::send_room_view_to_session;
 use super::super::protocol::{ClientMsg, MeMsg};
 use super::super::session::Session;
 use super::movement::send_grid_view;
-use super::{current_game_hour, parse_activated_nodes, WsConnection};
+use super::{WsConnection, current_game_hour, parse_activated_nodes};
 
 pub(super) fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
-    tracing::info!("[handle_login] start pid={} conn={}", msg.player_id, conn.conn_id);
+    tracing::info!(
+        "[handle_login] start pid={} conn={}",
+        msg.player_id,
+        conn.conn_id
+    );
     if msg.player_id.is_empty() {
         conn.send_error(gametext::client("login_need_id"));
         return;
@@ -23,12 +30,18 @@ pub(super) fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("login_need_password"));
         return;
     }
-    tracing::info!("[handle_login] a before db::get_entity pid={}", msg.player_id);
+    tracing::info!(
+        "[handle_login] a before db::get_entity pid={}",
+        msg.player_id
+    );
     let Ok(ent) = db::get_entity(&msg.player_id) else {
         conn.send_error(gametext::client("login_not_found"));
         return;
     };
-    tracing::info!("[handle_login] b after db::get_entity pid={}", msg.player_id);
+    tracing::info!(
+        "[handle_login] b after db::get_entity pid={}",
+        msg.player_id
+    );
     let Some(ent) = ent else {
         conn.send_error(gametext::client("login_not_found"));
         return;
@@ -42,12 +55,18 @@ pub(super) fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("login_no_password"));
         return;
     }
-    tracing::info!("[handle_login] d before verify_password pid={}", msg.player_id);
+    tracing::info!(
+        "[handle_login] d before verify_password pid={}",
+        msg.player_id
+    );
     let Ok(ok) = db::verify_password(&msg.player_id, &msg.password) else {
         conn.send_error(gametext::client("login_verify_failed"));
         return;
     };
-    tracing::info!("[handle_login] e after verify_password pid={} ok={ok}", msg.player_id);
+    tracing::info!(
+        "[handle_login] e after verify_password pid={} ok={ok}",
+        msg.player_id
+    );
     if !ok {
         conn.send_error(gametext::client("login_wrong_password"));
         return;
@@ -88,11 +107,7 @@ pub(super) fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
     if chs.len() > 1 {
         display_char = chs[0].to_string();
     }
-    let gender = if msg.gender == "女" {
-        "F"
-    } else {
-        "M"
-    };
+    let gender = if msg.gender == "女" { "F" } else { "M" };
     if db::insert_entity(&msg.player_id, &display_char, gender).is_err() {
         conn.send_error(gametext::client("create_entity_failed"));
         return;
@@ -106,7 +121,10 @@ pub(super) fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
 }
 
 fn login_success(conn: &WsConnection, player_id: &str) {
-    tracing::info!("[login_success] start pid={player_id} conn={}", conn.conn_id);
+    tracing::info!(
+        "[login_success] start pid={player_id} conn={}",
+        conn.conn_id
+    );
     if let Ok(mut g) = conn.player_id.write() {
         *g = Some(player_id.to_string());
     }
@@ -128,7 +146,10 @@ fn login_success(conn: &WsConnection, player_id: &str) {
     };
     tracing::info!("[login_success] 3 before with_square_grid_mut pid={player_id}");
     crate::server::grid_manager::with_square_grid_mut(|grid| {
-        crate::grid::reveal_grid_disk(grid, crate::grid::SquareCoord::new(gx, gy), 5);
+        crate::grid::ensure_seed_village(grid);
+        if let Err(e) = crate::grid::ensure_builtin_world_skeleton(grid) {
+            tracing::warn!("[login_success] 世界骨架保底失敗 pid={player_id}: {e}");
+        }
     });
     tracing::info!("[login_success] 4 with_square_grid_mut OK pid={player_id}");
 
@@ -163,7 +184,18 @@ fn login_success(conn: &WsConnection, player_id: &str) {
         }
     }
     game::observe_room(&view.room.id, player_id, now);
-    send_me_with_status(conn, &session, ent.as_ref(), player_id, &view.room.id, &view.room.name, vit, qi, dex, &rm);
+    send_me_with_status(
+        conn,
+        &session,
+        ent.as_ref(),
+        player_id,
+        &view.room.id,
+        &view.room.name,
+        vit,
+        qi,
+        dex,
+        &rm,
+    );
     tracing::info!("[login_success] 9 DONE pid={player_id}");
 }
 
@@ -213,7 +245,8 @@ fn send_me_with_status(
         }
         msg.activated_nodes = parse_activated_nodes(&ent.activated_nodes);
         if !ent.equipment_slots.is_empty() {
-            if let Ok(slots) = serde_json::from_str::<HashMap<String, String>>(&ent.equipment_slots) {
+            if let Ok(slots) = serde_json::from_str::<HashMap<String, String>>(&ent.equipment_slots)
+            {
                 msg.equipment_slots = slots;
             }
             msg.equipment_names = db::get_item_names(&ent.equipment_slots);

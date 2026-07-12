@@ -3,6 +3,52 @@
 
 use super::{Entity, Store};
 
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+struct TradeInventoryEntry {
+    #[serde(rename = "item_id")]
+    item_id: String,
+    qty: i32,
+}
+
+fn parse_trade_inventory(raw: &str) -> anyhow::Result<Vec<TradeInventoryEntry>> {
+    if raw.trim().is_empty() || raw.trim() == "[]" {
+        return Ok(Vec::new());
+    }
+    Ok(serde_json::from_str(raw)?)
+}
+
+fn add_trade_inventory_item(entries: &mut Vec<TradeInventoryEntry>, item_id: &str, qty: i32) {
+    for ent in entries.iter_mut() {
+        if ent.item_id == item_id {
+            ent.qty += qty;
+            return;
+        }
+    }
+    entries.push(TradeInventoryEntry {
+        item_id: item_id.to_string(),
+        qty,
+    });
+}
+
+fn remove_trade_inventory_item(
+    entries: &mut Vec<TradeInventoryEntry>,
+    item_id: &str,
+    qty: i32,
+) -> anyhow::Result<()> {
+    let Some(idx) = entries
+        .iter()
+        .position(|ent| ent.item_id == item_id && !ent.item_id.is_empty())
+    else {
+        anyhow::bail!("賣方沒有這件商品");
+    };
+    if entries[idx].qty < qty {
+        anyhow::bail!("賣方商品不足");
+    }
+    entries[idx].qty -= qty;
+    entries.retain(|ent| ent.qty > 0 && !ent.item_id.is_empty());
+    Ok(())
+}
+
 impl Store {
     // ── entity_rooms ──
 
@@ -90,11 +136,7 @@ impl Store {
         Ok(())
     }
 
-    pub fn update_entity(
-        &mut self,
-        id: &str,
-        f: impl FnOnce(&mut Entity),
-    ) -> anyhow::Result<()> {
+    pub fn update_entity(&mut self, id: &str, f: impl FnOnce(&mut Entity)) -> anyhow::Result<()> {
         if let Some(e) = self.entities.get_mut(id) {
             f(e);
             let e_clone = e.clone();
@@ -164,6 +206,70 @@ impl Store {
         self.persist_entities()
     }
 
+    pub fn settle_inventory_trade(
+        &mut self,
+        buyer_id: &str,
+        seller_id: &str,
+        item_id: &str,
+        qty: i32,
+        price_mg: i32,
+    ) -> anyhow::Result<()> {
+        if buyer_id == seller_id {
+            anyhow::bail!("交易雙方不能是同一實體");
+        }
+        if item_id.is_empty() || qty <= 0 {
+            anyhow::bail!("交易物品無效");
+        }
+        if price_mg <= 0 {
+            anyhow::bail!("交易鎂數須為正");
+        }
+
+        let (buyer_mg, buyer_inventory, seller_mg, seller_inventory) = {
+            let buyer = self
+                .entities
+                .get(buyer_id)
+                .ok_or_else(|| anyhow::anyhow!("找不到買方實體"))?;
+            let seller = self
+                .entities
+                .get(seller_id)
+                .ok_or_else(|| anyhow::anyhow!("找不到賣方實體"))?;
+            (
+                buyer.magnesium,
+                buyer.inventory.clone(),
+                seller.magnesium,
+                seller.inventory.clone(),
+            )
+        };
+        if buyer_mg < price_mg {
+            anyhow::bail!("買方鎂不足");
+        }
+
+        let mut seller_entries = parse_trade_inventory(&seller_inventory)?;
+        remove_trade_inventory_item(&mut seller_entries, item_id, qty)?;
+        let mut buyer_entries = parse_trade_inventory(&buyer_inventory)?;
+        add_trade_inventory_item(&mut buyer_entries, item_id, qty);
+
+        let seller_inventory = serde_json::to_string(&seller_entries)?;
+        let buyer_inventory = serde_json::to_string(&buyer_entries)?;
+
+        if let Some(buyer) = self.entities.get_mut(buyer_id) {
+            buyer.magnesium = buyer_mg - price_mg;
+            buyer.inventory = buyer_inventory;
+        }
+        if let Some(seller) = self.entities.get_mut(seller_id) {
+            seller.magnesium = seller_mg + price_mg;
+            seller.inventory = seller_inventory;
+        }
+
+        if let Some(buyer) = self.entities.get(buyer_id) {
+            crate::pg::entity::upsert_async(buyer.clone());
+        }
+        if let Some(seller) = self.entities.get(seller_id) {
+            crate::pg::entity::upsert_async(seller.clone());
+        }
+        self.persist_entities()
+    }
+
     pub fn get_entities_in_box(
         &self,
         x_min: i32,
@@ -221,5 +327,120 @@ impl Store {
         }
         self.persist_entities()?;
         self.persist_entity_rooms()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
+    use std::path::PathBuf;
+
+    fn test_store() -> Store {
+        Store {
+            rooms: HashMap::new(),
+            exits: HashMap::new(),
+            entity_rooms: HashMap::new(),
+            venues: HashMap::new(),
+            assignments: HashMap::new(),
+            schedules: HashMap::new(),
+            entities: HashMap::new(),
+            items: HashMap::new(),
+            npc_threads: HashMap::new(),
+            npc_dyads: HashMap::new(),
+            npc_rumors: HashMap::new(),
+            npc_rumor_digest: None,
+            db_pool: None,
+            rooms_path: String::new(),
+            runtime_dir: String::new(),
+            entity_rooms_path: PathBuf::new(),
+            venues_path: PathBuf::new(),
+            assignments_path: PathBuf::new(),
+            schedules_path: PathBuf::new(),
+            entities_path: PathBuf::new(),
+            items_path: PathBuf::new(),
+            npc_thread_path: PathBuf::new(),
+            npc_dyad_path: PathBuf::new(),
+            npc_rumor_path: PathBuf::new(),
+            npc_rumor_digest_path: PathBuf::new(),
+        }
+    }
+
+    fn test_entity(id: &str, magnesium: i32, inventory: &str) -> Entity {
+        Entity {
+            id: id.to_string(),
+            kind: "npc".to_string(),
+            display_char: String::new(),
+            x: 0,
+            y: 0,
+            move_state: String::new(),
+            target_x: None,
+            target_y: None,
+            walk_or_run: String::new(),
+            move_started_at: None,
+            vit: 10,
+            qi: 10,
+            dex: 10,
+            magnesium,
+            last_observed_at: None,
+            created_at: 0,
+            gender: String::new(),
+            soul_seed: None,
+            display_title: String::new(),
+            activated_nodes: String::new(),
+            equipment_slots: String::new(),
+            inventory: inventory.to_string(),
+            disposition: 0,
+            current_activity: String::new(),
+            grid_x: None,
+            grid_y: None,
+            thoughts: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn settle_inventory_trade_moves_money_and_item_once() {
+        let mut store = test_store();
+        store
+            .entities
+            .insert("buyer".to_string(), test_entity("buyer", 10, "[]"));
+        store.entities.insert(
+            "seller".to_string(),
+            test_entity("seller", 1, r#"[{"item_id":"wild_herb","qty":2}]"#),
+        );
+
+        store
+            .settle_inventory_trade("buyer", "seller", "wild_herb", 1, 5)
+            .unwrap();
+
+        let buyer = store.entities.get("buyer").unwrap();
+        let seller = store.entities.get("seller").unwrap();
+        assert_eq!(buyer.magnesium, 5);
+        assert_eq!(seller.magnesium, 6);
+        let buyer_inventory = parse_trade_inventory(&buyer.inventory).unwrap();
+        let seller_inventory = parse_trade_inventory(&seller.inventory).unwrap();
+        assert_eq!(buyer_inventory[0].item_id, "wild_herb");
+        assert_eq!(buyer_inventory[0].qty, 1);
+        assert_eq!(seller_inventory[0].item_id, "wild_herb");
+        assert_eq!(seller_inventory[0].qty, 1);
+    }
+
+    #[test]
+    fn settle_inventory_trade_rejects_missing_item_without_moving_money() {
+        let mut store = test_store();
+        store
+            .entities
+            .insert("buyer".to_string(), test_entity("buyer", 10, "[]"));
+        store
+            .entities
+            .insert("seller".to_string(), test_entity("seller", 1, "[]"));
+
+        let result = store.settle_inventory_trade("buyer", "seller", "wild_herb", 1, 5);
+
+        assert!(result.is_err());
+        assert_eq!(store.entities.get("buyer").unwrap().magnesium, 10);
+        assert_eq!(store.entities.get("seller").unwrap().magnesium, 1);
+        assert_eq!(store.entities.get("buyer").unwrap().inventory, "[]");
+        assert_eq!(store.entities.get("seller").unwrap().inventory, "[]");
     }
 }

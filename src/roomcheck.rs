@@ -81,7 +81,9 @@ fn room_response_corpus(objects: &[serde_json::Value]) -> String {
     let mut parts = Vec::new();
     for o in objects {
         let Some(obj) = o.as_object() else { continue };
-        let Some(serde_json::Value::Object(resp)) = obj.get("responses") else { continue };
+        let Some(serde_json::Value::Object(resp)) = obj.get("responses") else {
+            continue;
+        };
         for v in resp.values() {
             if let Some(s) = v.as_str()
                 && !s.is_empty()
@@ -94,7 +96,12 @@ fn room_response_corpus(objects: &[serde_json::Value]) -> String {
 }
 
 /// 檢查單一房間 JSON。
-pub fn check_file(path: &str, data: &[u8], opts: &Options, all_rooms: &HashSet<String>) -> CheckResult {
+pub fn check_file(
+    path: &str,
+    data: &[u8],
+    opts: &Options,
+    all_rooms: &HashSet<String>,
+) -> CheckResult {
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
 
@@ -106,10 +113,7 @@ pub fn check_file(path: &str, data: &[u8], opts: &Options, all_rooms: &HashSet<S
         }
     };
 
-    let room_id = top
-        .get("id")
-        .and_then(|v| v.as_str())
-        .unwrap_or("?");
+    let room_id = top.get("id").and_then(|v| v.as_str()).unwrap_or("?");
 
     let desc = top
         .get("description")
@@ -179,7 +183,7 @@ pub fn check_file(path: &str, data: &[u8], opts: &Options, all_rooms: &HashSet<S
             .and_then(|v| v.as_str())
             .map(|s| s.trim())
             .unwrap_or("");
-            
+
         if !move_target.is_empty() && !all_rooms.contains(move_target) {
             errors.push(format!(
                 "{path} [{room_id}] {oid}: 檢查 Move，move_to_room_id「{move_target}」指向不存在的房間（死連結）"

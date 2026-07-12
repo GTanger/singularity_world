@@ -36,7 +36,9 @@ pub fn get_npc_title_from_assignments(entity_id: &str) -> String {
     let Ok(list) = get_assignments_for_entity(entity_id) else {
         return String::new();
     };
-    list.first().map(|a| a.occupation_id.clone()).unwrap_or_default()
+    list.first()
+        .map(|a| a.occupation_id.clone())
+        .unwrap_or_default()
 }
 
 /// 移除某實體的全部指派（對齊既有 `RemoveAssignmentsForEntity`）。

@@ -27,9 +27,11 @@ struct RoomEvent {
 static ROOM_EVENTS_BY_RID: LazyLock<RwLock<HashMap<String, Vec<RoomEvent>>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
 
-static PAIR_TALK_AT: LazyLock<RwLock<HashMap<String, i64>>> = LazyLock::new(|| RwLock::new(HashMap::new()));
+static PAIR_TALK_AT: LazyLock<RwLock<HashMap<String, i64>>> =
+    LazyLock::new(|| RwLock::new(HashMap::new()));
 
-static LAST_CHOICE: LazyLock<RwLock<Option<LastSocialChoice>>> = LazyLock::new(|| RwLock::new(None));
+static LAST_CHOICE: LazyLock<RwLock<Option<LastSocialChoice>>> =
+    LazyLock::new(|| RwLock::new(None));
 
 fn default_stats() -> HashMap<String, i64> {
     [
@@ -59,7 +61,8 @@ fn default_stats() -> HashMap<String, i64> {
     .collect()
 }
 
-static STATS: LazyLock<RwLock<HashMap<String, i64>>> = LazyLock::new(|| RwLock::new(default_stats()));
+static STATS: LazyLock<RwLock<HashMap<String, i64>>> =
+    LazyLock::new(|| RwLock::new(default_stats()));
 
 pub fn inc_stat(key: &str) {
     if let Ok(mut g) = STATS.write() {
@@ -103,7 +106,11 @@ fn canonical_pair_key(id_a: &str, id_b: &str) -> String {
 
 pub fn get_pair_last_talk(id_a: &str, id_b: &str) -> i64 {
     let key = canonical_pair_key(id_a, id_b);
-    PAIR_TALK_AT.read().ok().and_then(|g| g.get(&key).copied()).unwrap_or(0)
+    PAIR_TALK_AT
+        .read()
+        .ok()
+        .and_then(|g| g.get(&key).copied())
+        .unwrap_or(0)
 }
 
 pub fn set_pair_last_talk(id_a: &str, id_b: &str, at: i64) {
@@ -131,12 +138,7 @@ fn push_rumor_from_room_event(room_id: &str, kind: &str, subject: &str, detail: 
     if text.is_empty() {
         return;
     }
-    let id = format!(
-        "evt|{}|{}|{}",
-        room_id,
-        kind,
-        trunc_rune(&text, 24)
-    );
+    let id = format!("evt|{}|{}|{}", room_id, kind, trunc_rune(&text, 24));
     let rumor = NpcRumor {
         id,
         text: trunc_rune(&text, 28),

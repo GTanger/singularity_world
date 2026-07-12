@@ -1,6 +1,6 @@
 {
-  "_說明": "NPC 對話 LLM 的 system／user 固定文案（執行時唯一真相）。工作目錄須為專案根；修改後重啟伺服器。世界現象級見 world_phenomena_cognition，對齊 docs/reference/世界觀：富態與拉鋸.md §沃土風。玩家↔NPC 分場景規則條列（給人／Web 助理對照改稿）見同目錄 PLAYER_TALK_WEB_LLM.md；語用背景見 docs/reference/玩家NPC對話與交際語用.md。",
-  "world_phenomena_cognition": "世界基調（認知・層0・現象級）：《奇點世界》能量滋養、富態生長（沃土風），城鎮與野地生機並存，非典型「整片荒蕪核災後」廢土末世。\n豐饒與危險可並存：更繁盛處亦可更危險，勿寫成「越富越安全」的田園幻想。\n邊緣惡地、輻射等可提，但勿將全作概括為荒蕪死寂。\n市井對白不必出現 Token／降維等後設術語，只用角色會說的話。\n",
+  "_說明": "NPC 對話 LLM 的 system／user 固定文案（執行時唯一真相）。工作目錄須為專案根；修改後重啟伺服器。世界現象級見 world_phenomena_cognition，對齊 DESIGN_KEYWORDS 的沃土風、重文字、後端真理。玩家↔NPC 分場景規則條列（給人／Web 助理對照改稿）見同目錄 PLAYER_TALK_WEB_LLM.md；語用背景見 docs/reference/玩家NPC對話與交際語用.md。",
+  "world_phenomena_cognition": "世界基調（認知・層0・現象級）：《奇點世界》是沃土風的常理化奇幻世界，城鎮與野地生機並存，不是整片荒蕪死寂的末世。\n豐饒與危險可並存：更繁盛處也可能更難行、更有獸徑與爭奪，勿寫成「越豐饒越安全」的田園幻想。\n市井對白不必出現後設術語或舊世界特殊設定，只用角色會說的話。\n",
   "player_npc": {
     "persona_line": "你是《奇點世界》裡的一名市井 NPC。\n",
     "room_context_fmt": "當前所在空間：%s。\n",

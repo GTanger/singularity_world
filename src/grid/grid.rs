@@ -10,7 +10,16 @@ use serde::{Deserialize, Serialize};
 
 use super::cell::{Freshness, GridObject, Terrain};
 
-use super::coord::SquareCoord;
+use super::coord::{Direction, SquareCoord};
+
+// ─── 顯式出口 ───
+
+/// 顯式出口：方向 + 目標座標。村落格用這個取代座標鄰接自動計算。
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ExplicitExit {
+    pub dir: Direction,
+    pub target: SquareCoord,
+}
 
 // ─── 格子單元 ───
 
@@ -41,6 +50,9 @@ pub struct GridCell {
     /// 探索新鮮度（連續探索同一格的資源豐厚度衰減）
     #[serde(default)]
     pub freshness: Freshness,
+
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub explicit_exits: Vec<ExplicitExit>,
 }
 
 impl GridCell {
@@ -55,6 +67,7 @@ impl GridCell {
             objects: Vec::new(),
             explored: false,
             freshness: Freshness::Fresh,
+            explicit_exits: Vec::new(),
         }
     }
 }
@@ -144,7 +157,9 @@ impl SquareGrid {
     /// 移除格子；不存在時回傳 `None`。
     pub fn remove(&mut self, coord: SquareCoord) -> Option<GridCell> {
         let r = self.cells.remove(&coord);
-        if r.is_some() { self.dirty = true; }
+        if r.is_some() {
+            self.dirty = true;
+        }
         r
     }
 
@@ -202,33 +217,33 @@ impl SquareGrid {
 
     /// 能否從 `from` 步行到相鄰的 `to`？
     ///
-    /// 條件：`to` 存在於地圖、兩格相鄰（Manhattan 距離 1）、目標地形可走。
-    /// 特別規則：禁止從一個建築物 (Landmark) 直接走到另一個建築物，必須經過道路或空地。
+    /// 若 `from` 有顯式出口（explicit_exits），以出口表為準；
+    /// 否則回退到座標鄰接邏輯（Manhattan 距離 1、地形可走、建築隔離法則）。
     pub fn can_walk(&self, from: SquareCoord, to: SquareCoord) -> bool {
-        // 1. 強制四向移動 (Manhattan 距離必須為 1)
+        let Some(from_cell) = self.cells.get(&from) else {
+            return false;
+        };
+        let Some(_to_cell) = self.cells.get(&to) else {
+            return false;
+        };
+
+        // 顯式出口覆蓋座標邏輯
+        if !from_cell.explicit_exits.is_empty() {
+            return from_cell.explicit_exits.iter().any(|e| e.target == to);
+        }
+
+        // Fallback: 座標鄰接邏輯
         if from.manhattan_distance(to) != 1 {
             return false;
         }
-
-        let from_cell = match self.cells.get(&from) {
-            Some(c) => c,
-            None => return false,
-        };
-        let to_cell = match self.cells.get(&to) {
-            Some(c) => c,
-            None => return false,
-        };
-
-        // 2. 基本通行性檢查
+        let to_cell = self.cells.get(&to).unwrap(); // already checked above
         if !to_cell.terrain.walkable() {
             return false;
         }
-
-        // 3. 建築隔離法則：禁止建築物 -> 建築物 的直接穿牆
+        // 建築隔離法則：禁止建築物 -> 建築物 的直接穿牆
         if from_cell.terrain.category() == "landmark" && to_cell.terrain.category() == "landmark" {
             return false;
         }
-
         true
     }
 
@@ -325,7 +340,10 @@ mod tests {
         let old2 = g.insert(overwrite);
         assert!(old2.is_some());
         assert_eq!(old2.unwrap().terrain, Terrain::Plain);
-        assert_eq!(g.get(SquareCoord::new(0, 0)).unwrap().terrain, Terrain::Forest);
+        assert_eq!(
+            g.get(SquareCoord::new(0, 0)).unwrap().terrain,
+            Terrain::Forest
+        );
     }
 
     #[test]
@@ -471,9 +489,10 @@ mod tests {
         g.insert(plain(0, 0));
         g.insert(plain(10, 10)); // 孤立格，中間無路
 
-        assert!(g
-            .find_path(SquareCoord::new(0, 0), SquareCoord::new(10, 10))
-            .is_none());
+        assert!(
+            g.find_path(SquareCoord::new(0, 0), SquareCoord::new(10, 10))
+                .is_none()
+        );
     }
 
     #[test]
@@ -497,9 +516,10 @@ mod tests {
         }
         g.insert(plain(3, 3)); // 目標，被水圍死
 
-        assert!(g
-            .find_path(SquareCoord::new(0, 0), SquareCoord::new(3, 3))
-            .is_none());
+        assert!(
+            g.find_path(SquareCoord::new(0, 0), SquareCoord::new(3, 3))
+                .is_none()
+        );
     }
 
     #[test]
@@ -507,8 +527,9 @@ mod tests {
         let mut g = SquareGrid::new();
         g.insert(plain(0, 0));
         // 終點不在地圖中
-        assert!(g
-            .find_path(SquareCoord::new(0, 0), SquareCoord::new(1, 0))
-            .is_none());
+        assert!(
+            g.find_path(SquareCoord::new(0, 0), SquareCoord::new(1, 0))
+                .is_none()
+        );
     }
 }

@@ -39,7 +39,7 @@
       "spawn_weight": 5,
       "trade_tendency": "collect_knowledge",
       "wealth_range": [30, 300],
-      "goods_pool": ["典籍", "殘卷", "墨錠", "宣紙", "詞元殘片"],
+      "goods_pool": ["典籍", "殘卷", "墨錠", "宣紙", "碑拓殘片"],
       "movement": {
         "type": "pathfind",
         "speed": 1,

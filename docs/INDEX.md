@@ -20,7 +20,7 @@
 | [decisions/](./decisions/) | 其餘 ADR |
 | [implementation/](./implementation/) | 實作規劃、遷移說明 |
 | [dev/](./dev/) | 開發入口（品質閘門；含連結至 implementation） |
-| [archive/](./archive/) | 歷史草稿（含原 gemini 概念檔） |
+| [archived/](./archived/) | 歷史草稿、冷凍設定、舊 Hex 工作單 |
 | [../tools/](../tools/) | 一次性工具（JS／Python 等，008 P6） |
 | [config/](./config/) | 設定與參數索引（`PARAMETERS_INDEX.md`、`gametext_and_prompts.md`） |
 
@@ -35,7 +35,7 @@
 
 | 路徑 | 說明 |
 |------|------|
-| [archive/gemini概念設計檔/](./archive/gemini概念設計檔/) | 早期概念草稿（維護頻率低） |
+| [archived/現代地球設定/](./archived/現代地球設定/) | 現代地球設定與歷史模擬器冷凍資料 |
 | [discussions/](./discussions/) | 討論稿（多數已轉決策） |
 | [discussions/005_觀測分級與行程約束_雲端與程式模擬.md](./discussions/005_觀測分級與行程約束_雲端與程式模擬.md) | 討論脈絡與筆記；**已定案見 [009](./decisions/009_觀測分級與行程約束.md)**；§五實作待補 |
 
@@ -47,4 +47,4 @@
 
 ---
 
-*`gemini概念設計檔/` 已於 008 P8 遷入 `archive/`；若再搬移 `discussions/`，請同步更新此表連結。*
+*歷史資料統一放入 `archived/`；若再搬移 `discussions/`，請同步更新此表連結。*

@@ -3,9 +3,10 @@
 use rand::Rng;
 
 use crate::db::{
-    get_all_venue_ids, get_assignment_count_by_venue, get_assignments_for_entity, get_entity,
-    get_entity_room, get_first_occupation_id_for_venue, get_npc_ids_with_room, get_room_ids_for_venue,
-    get_spawn_room_id, get_venue_max_staff, insert_assignment, insert_schedule, RoomGraph,
+    RoomGraph, get_all_venue_ids, get_assignment_count_by_venue, get_assignments_for_entity,
+    get_entity, get_entity_room, get_first_occupation_id_for_venue, get_npc_ids_with_room,
+    get_room_ids_for_venue, get_spawn_room_id, get_venue_max_staff, insert_assignment,
+    insert_schedule,
 };
 
 /// 鎂閾值預設（config 為 0 時使用）。

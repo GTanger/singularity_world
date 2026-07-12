@@ -2,16 +2,16 @@
 
 use std::path::Path;
 
-use rand::rngs::StdRng;
 use rand::SeedableRng;
+use rand::rngs::StdRng;
 
 use crate::db;
 use crate::entity::Character;
 use crate::world::{
-    self, display_terrain, display_terrain_rng, load_chunk, terrain_blocking, Grid,
+    self, Grid, display_terrain, display_terrain_rng, load_chunk, terrain_blocking,
 };
 
-use super::zone::{chunk_bounds, chunk_index, in_chunk, in_view, CHUNK_SIZE, VIEW_RADIUS};
+use super::zone::{CHUNK_SIZE, VIEW_RADIUS, chunk_bounds, chunk_index, in_chunk, in_view};
 
 /// 當前區塊地形 ＋ 視野內實體（對齊既有 `ChunkView`）。
 #[derive(Debug, Clone)]
@@ -40,7 +40,12 @@ pub fn get_chunk_and_entities_in_view(
         .into_iter()
         .filter(|e| in_view(wx, wy, e.x, e.y))
         .collect();
-    Ok(ChunkView { cx, cy, grid, entities })
+    Ok(ChunkView {
+        cx,
+        cy,
+        grid,
+        entities,
+    })
 }
 
 impl ChunkView {

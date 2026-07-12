@@ -2,20 +2,27 @@
 
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 
 use crate::config::Server;
-use crate::db::{get_npc_person_display_name, get_npc_title_from_assignments, get_schedule_target, with_room_graph};
+use crate::db::{
+    get_npc_person_display_name, get_npc_title_from_assignments, get_schedule_target,
+    with_room_graph,
+};
 use crate::gametext;
 use crate::npc::{
-    apply_brain_arrival_effects, get_shift_flavor, run_unobserved_world_tick, GridNpcManager,
-    NpcStep, TravelerManager, UNOBSERVED_MAX_NPCS_PER_TICK,
+    GridNpcManager, NpcStep, TravelerManager, UNOBSERVED_MAX_NPCS_PER_TICK,
+    apply_brain_arrival_effects, get_shift_flavor, run_unobserved_world_tick,
 };
 use crate::npcnpc::push_room_event;
 
-use super::super::broadcast::{refresh_room_views_for_room, send_narrate_to_room};
 use super::super::SessionStore;
-use super::helpers::{effective_travel_tick_interval, sprintf_s};
+use super::super::broadcast::{refresh_room_views_for_room, send_narrate_to_room};
 use super::MainLoopTickState;
+use super::helpers::{effective_travel_tick_interval, periodic_fire, sprintf_s};
+
+const M3_027_NORTH_BANK_ROOM_ID: &str = "grid:0:0";
+const M3_027_NORTH_BANK_ACTOR_PERIOD_SEC: u64 = 12;
 
 /// 觀測圈：有玩家的房＋鄰房。
 fn build_active_room_ids(sessions: &SessionStore, g: &crate::db::RoomGraph) -> HashSet<String> {
@@ -45,8 +52,14 @@ fn apply_travel_steps(
     for step in steps {
         let old_name = g.room_name(&step.old_room);
         let new_name = g.room_name(&step.new_room);
-        let leave_text = sprintf_s(&rf.travel_leave_fmt, &[step.npc_name.as_str(), new_name.as_str()]);
-        let mut arrive_text = sprintf_s(&rf.travel_arrive_fmt, &[step.npc_name.as_str(), old_name.as_str()]);
+        let leave_text = sprintf_s(
+            &rf.travel_leave_fmt,
+            &[step.npc_name.as_str(), new_name.as_str()],
+        );
+        let mut arrive_text = sprintf_s(
+            &rf.travel_arrive_fmt,
+            &[step.npc_name.as_str(), old_name.as_str()],
+        );
         if let Some(target) = get_schedule_target(&step.entity_id, hour)
             && target.room == step.new_room
         {
@@ -103,7 +116,9 @@ pub(super) fn run_travel_section(
     traveler_mgr: &Arc<Mutex<TravelerManager>>,
 ) {
     let fire = {
-        let Ok(mut st) = state.lock() else { return; };
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
         st.travel_tick_count += 1;
         if st.travel_tick_count >= effective_travel_tick_interval() {
             st.travel_tick_count = 0;
@@ -118,7 +133,7 @@ pub(super) fn run_travel_section(
     with_room_graph(|g| {
         let active = build_active_room_ids(sessions, g);
         if active.is_empty() {
-            run_unobserved_world_tick(Some(g), hour, UNOBSERVED_MAX_NPCS_PER_TICK);
+            run_unobserved_world_tick(Some(g), hour, UNOBSERVED_MAX_NPCS_PER_TICK, now_unix);
             return;
         }
         let steps = match traveler_mgr.lock() {
@@ -136,8 +151,43 @@ pub(super) fn run_grid_npc_tick(
     _state: &Arc<Mutex<MainLoopTickState>>,
     grid_npc_mgr: &Arc<Mutex<GridNpcManager>>,
 ) {
-    let Ok(mut mgr) = grid_npc_mgr.lock() else { return };
+    let Ok(mut mgr) = grid_npc_mgr.lock() else {
+        return;
+    };
     super::super::grid_manager::with_square_grid_mut(|grid| {
         let _events = mgr.tick(grid, now_unix, hour);
     });
+}
+
+/// M3-029 局部經濟行動者：北岸/短市有人觀測時，正式 NPC 個體推進同一張需求板。
+pub(super) fn run_m3_027_north_bank_actor_tick(
+    sessions: &SessionStore,
+    cfg: &Server,
+    now_unix: i64,
+    state: &Arc<Mutex<MainLoopTickState>>,
+) {
+    if !sessions.player_room_ids().iter().any(|room_id| {
+        room_id == M3_027_NORTH_BANK_ROOM_ID || room_id == "grid:1:0" || room_id == "grid:1:-2"
+    }) {
+        return;
+    }
+    let fire = {
+        let Ok(mut st) = state.lock() else {
+            return;
+        };
+        periodic_fire(
+            &mut st.last_m3_027_north_bank_actor,
+            Duration::from_secs(M3_027_NORTH_BANK_ACTOR_PERIOD_SEC),
+        )
+    };
+    if !fire {
+        return;
+    }
+    let Some(tick) = crate::server::m3_029::run_pack_runner_tick(now_unix) else {
+        return;
+    };
+    let narrative = format!("{}{}", tick.actor, tick.detail);
+    push_room_event(tick.room_id, "work", tick.actor, &tick.detail);
+    send_narrate_to_room(sessions, tick.room_id, &narrative);
+    refresh_room_views_for_room(sessions, cfg, tick.room_id);
 }

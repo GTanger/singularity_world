@@ -46,8 +46,7 @@ pub fn moisture_at(seed: u32, x: i32, y: i32) -> f64 {
     let p = Perlin::new(seed.wrapping_add(100));
     let fx = x as f64;
     let fy = y as f64;
-    let v = p.get([fx / 64.0, fy / 64.0]) * 0.75
-        + p.get([fx / 16.0, fy / 16.0]) * 0.25;
+    let v = p.get([fx / 64.0, fy / 64.0]) * 0.75 + p.get([fx / 16.0, fy / 16.0]) * 0.25;
     // [-1, 1] → [0, 1]
     ((v + 1.0) / 2.0).clamp(0.0, 1.0)
 }
@@ -176,9 +175,14 @@ impl FlowField {
         // downstream[j][i] = (di, dj) 指向下游，若自己是 sink 則 (0, 0)
         let mut downstream = vec![vec![(0_i32, 0_i32); width]; height];
         let neighbors: [(i32, i32); 8] = [
-            (-1, -1), (0, -1), (1, -1),
-            (-1, 0),           (1, 0),
-            (-1, 1),  (0, 1),  (1, 1),
+            (-1, -1),
+            (0, -1),
+            (1, -1),
+            (-1, 0),
+            (1, 0),
+            (-1, 1),
+            (0, 1),
+            (1, 1),
         ];
         for j in 0..height {
             for i in 0..width {

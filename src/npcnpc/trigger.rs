@@ -8,25 +8,26 @@ use crate::ai::{
     call_ai_talk_npc_to_npc, raw_events_for_dialogue_score, sanitize_npc_dialogue_line,
     score_npc_dialogue, strip_npc_line_speaker_prefix,
 };
-use crate::config::{sim, Server};
+use crate::config::{Server, sim};
 use crate::db::{
     self, build_identity, get_npc_npc_conversation_summary, insert_npc_npc_dialogue_archival,
     mark_rumor_used_by_text, penalize_rumor_by_text, recent_npc_npc_archival_lines_for_entity,
-    set_npc_npc_conversation_summary, set_npc_npc_dyad, set_npc_npc_thread, top_npc_rumors, upsert_npc_rumor,
-    upsert_lexicon_term,
+    set_npc_npc_conversation_summary, set_npc_npc_dyad, set_npc_npc_thread, top_npc_rumors,
+    upsert_lexicon_term, upsert_npc_rumor,
 };
 use crate::entity::EntityKind;
+use crate::game::public_person_label_for_room;
 use crate::gametext;
 use crate::npc::{
     find_npc_npc_topic_id_by_hint, get_npc_npc_topic_by_id, pick_random_npc_npc_topic_for_pair,
 };
-use crate::server::{send_narrate_to_room, SessionStore};
+use crate::server::{SessionStore, send_narrate_to_room};
 use crate::store::{NpcRumor, NpcThread};
 
 use super::helpers::{
-    add_tag, anchor_consistency_check, dedupe_social_context_lines, dyad_relation_hint, merge_thread_anchors,
-    npc_pair_same_venue, quality_gate_npc_line, remove_tag, sentiment_delta_from_dialogue,
-    should_skip_npc_npc_summary_update, topic_mask_for_room,
+    add_tag, anchor_consistency_check, dedupe_social_context_lines, dyad_relation_hint,
+    merge_thread_anchors, npc_pair_same_venue, quality_gate_npc_line, remove_tag,
+    sentiment_delta_from_dialogue, should_skip_npc_npc_summary_update, topic_mask_for_room,
 };
 use super::state::{get_pair_last_talk, inc_stat, set_last_choice, set_pair_last_talk};
 use super::types::LastSocialChoice;
@@ -56,6 +57,35 @@ fn sprintf_s(template: &str, args: &[&str]) -> String {
     s
 }
 
+fn player_layer_room_name(room_id: &str) -> String {
+    if let Some(coord) = crate::grid::parse_grid_room_id(room_id)
+        && let Some(cell) = crate::server::grid_manager::get_runtime_square_grid()
+            .and_then(|g| g.get(coord).cloned())
+    {
+        if cell.name.trim().is_empty() {
+            return crate::grid::terrain_name_zh(cell.terrain).to_string();
+        }
+        return cell.name;
+    }
+    db::get_room_name(room_id).unwrap_or_default()
+}
+
+fn player_layer_pair_labels(room_name: &str) -> (String, String) {
+    let label = public_person_label_for_room(room_name).unwrap_or("行人");
+    (format!("{label}甲"), format!("{label}乙"))
+}
+
+fn replace_private_names_for_player(text: &str, names: &[(&str, &str)]) -> String {
+    let mut out = text.to_string();
+    for (private, public) in names {
+        let private = private.trim();
+        if !private.is_empty() {
+            out = out.replace(private, public);
+        }
+    }
+    out
+}
+
 /// 在指定房嘗試觸發一次 NPC 間 AI 對話（對齊 `TryTriggerNpcNpcInRoom`）。
 #[allow(clippy::too_many_lines)]
 pub fn try_trigger_npc_npc_in_room(
@@ -70,7 +100,12 @@ pub fn try_trigger_npc_npc_in_room(
         inc_stat("fail_no_model");
         return false;
     }
-    let cd = Duration::from_secs(sim().npc_npc_social.room_recent_player_talk_cooldown_sec.max(0) as u64);
+    let cd = Duration::from_secs(
+        sim()
+            .npc_npc_social
+            .room_recent_player_talk_cooldown_sec
+            .max(0) as u64,
+    );
     if session_store.room_has_player_with_recent_talk(room_id, cd) {
         inc_stat("fail_recent_player_talk");
         return false;
@@ -181,7 +216,7 @@ pub fn try_trigger_npc_npc_in_room(
     if name_b.is_empty() {
         name_b.clone_from(&b.id);
     }
-    let room_name = db::get_room_name(room_id).unwrap_or_default();
+    let room_name = player_layer_room_name(room_id);
     let time_label = gametext::time_of_day_label(game_hour);
     let backstory_a = build_identity(&a.id);
     let backstory_b = build_identity(&b.id);
@@ -222,7 +257,10 @@ pub fn try_trigger_npc_npc_in_room(
     if gossip_pct > 100 {
         gossip_pct = 100;
     }
-    if player_in_room && topic_source == "weighted_mask_pick" && rng.random_range(0..100) < gossip_pct {
+    if player_in_room
+        && topic_source == "weighted_mask_pick"
+        && rng.random_range(0..100) < gossip_pct
+    {
         let gid = gametext::topic_id("gossip");
         if let Some(t) = get_npc_npc_topic_by_id(&gid) {
             topic_hint = t.hint.clone() + &ns.player_gossip_topic_suffix;
@@ -293,11 +331,7 @@ pub fn try_trigger_npc_npc_in_room(
     }
     if let Some(echo) = {
         let echo = session_store.player_talk_echo_for_npc_social(room_id);
-        if echo.is_empty() {
-            None
-        } else {
-            Some(echo)
-        }
+        if echo.is_empty() { None } else { Some(echo) }
     } {
         recent_events.push(sprintf_s(&ns.rumor_echo_line_fmt, &[&echo]));
     }
@@ -378,7 +412,15 @@ pub fn try_trigger_npc_npc_in_room(
     }
     let score_disabled = cfg.npc_npc_dialogue_score_threshold < 0;
     let mut dialogue_score_ptr = None;
-    tracing::info!("[Dialogue Debug] {} vs {}: \n  -> {}: {}\n  -> {}: {}", room_name, topic_hint, name_a, line_a, name_b, line_b);
+    tracing::info!(
+        "[Dialogue Debug] {} vs {}: \n  -> {}: {}\n  -> {}: {}",
+        room_name,
+        topic_hint,
+        name_a,
+        line_a,
+        name_b,
+        line_b
+    );
     if !score_disabled {
         let recent_lines_a = recent_npc_npc_archival_lines_for_entity(&a.id, 10);
         let recent_lines_b = recent_npc_npc_archival_lines_for_entity(&b.id, 10);
@@ -439,14 +481,8 @@ pub fn try_trigger_npc_npc_in_room(
     } else {
         inc_stat("skip_npc_npc_summary_dup");
     }
-    let arch_a = sprintf_s(
-        &ns.archival_with_fmt,
-        &[&name_b, &trunc_rune(&line_a, 40)],
-    );
-    let arch_b = sprintf_s(
-        &ns.archival_with_fmt,
-        &[&name_a, &trunc_rune(&line_b, 40)],
-    );
+    let arch_a = sprintf_s(&ns.archival_with_fmt, &[&name_b, &trunc_rune(&line_a, 40)]);
+    let arch_b = sprintf_s(&ns.archival_with_fmt, &[&name_a, &trunc_rune(&line_b, 40)]);
     if let Ok((_, true)) = insert_npc_npc_dialogue_archival(&a.id, &arch_a) {
         inc_stat("skip_npc_npc_archival_dup");
     }
@@ -590,11 +626,49 @@ pub fn try_trigger_npc_npc_in_room(
     if session_store.room_has_player_with_recent_talk(room_id, skip_sec) {
         return true;
     }
+    let (player_name_a, player_name_b) = player_layer_pair_labels(&room_name);
+    let player_line_a = replace_private_names_for_player(
+        &line_a,
+        &[(&name_a, &player_name_a), (&name_b, &player_name_b)],
+    );
+    let player_line_b = replace_private_names_for_player(
+        &line_b,
+        &[(&name_a, &player_name_a), (&name_b, &player_name_b)],
+    );
     let text = sprintf_s(
         &ns.broadcast_fmt,
-        &[&name_a, &name_b, &line_a, &name_b, &line_b],
+        [
+            player_name_a.as_str(),
+            player_name_b.as_str(),
+            player_line_a.as_str(),
+            player_name_b.as_str(),
+            player_line_b.as_str(),
+        ]
+        .as_slice(),
     );
     send_narrate_to_room(session_store, room_id, &text);
     inc_stat("success");
     true
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn player_layer_pair_labels_use_scene_identity() {
+        assert_eq!(
+            player_layer_pair_labels("北岸渡口"),
+            ("候渡者甲".to_string(), "候渡者乙".to_string())
+        );
+    }
+
+    #[test]
+    fn player_layer_dialogue_replaces_private_names() {
+        let text = replace_private_names_for_player(
+            "歐陽秀建說尹淑秀快看船。",
+            &[("歐陽秀建", "候渡者甲"), ("尹淑秀", "候渡者乙")],
+        );
+        assert_eq!(text, "候渡者甲說候渡者乙快看船。");
+    }
 }

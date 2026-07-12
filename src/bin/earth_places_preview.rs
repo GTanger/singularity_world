@@ -52,9 +52,9 @@ fn parse_args() -> Args {
 
 fn tier_rgb(t: Tier) -> (u8, u8, u8) {
     match t {
-        Tier::Urban => (220, 60, 60),   // 紅：城核
-        Tier::Town => (240, 180, 60),   // 橘：鄉鎮
-        Tier::Wild => (100, 100, 100),  // 灰（seed 不會出現）
+        Tier::Urban => (220, 60, 60),  // 紅：城核
+        Tier::Town => (240, 180, 60),  // 橘：鄉鎮
+        Tier::Wild => (100, 100, 100), // 灰（seed 不會出現）
     }
 }
 
@@ -62,19 +62,27 @@ fn tier_rgb(t: Tier) -> (u8, u8, u8) {
 /// 依 population 映射；place_kind 當 fallback。
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Rank5 {
-    Capital,  // 都 ≥ 1M
-    Prefect,  // 府 ≥ 300k
-    City,     // 市 ≥ 50k
-    Town,     // 鎮 ≥ 5k 或 place=town/suburb
-    Village,  // 村（其餘）
+    Capital, // 都 ≥ 1M
+    Prefect, // 府 ≥ 300k
+    City,    // 市 ≥ 50k
+    Town,    // 鎮 ≥ 5k 或 place=town/suburb
+    Village, // 村（其餘）
 }
 
 fn rank5_of(pop: Option<u64>, kind: &str) -> Rank5 {
     if let Some(p) = pop {
-        if p >= 1_000_000 { return Rank5::Capital; }
-        if p >= 300_000 { return Rank5::Prefect; }
-        if p >= 50_000 { return Rank5::City; }
-        if p >= 5_000 { return Rank5::Town; }
+        if p >= 1_000_000 {
+            return Rank5::Capital;
+        }
+        if p >= 300_000 {
+            return Rank5::Prefect;
+        }
+        if p >= 50_000 {
+            return Rank5::City;
+        }
+        if p >= 5_000 {
+            return Rank5::Town;
+        }
     }
     match kind {
         "city" => Rank5::Prefect,
@@ -86,11 +94,11 @@ fn rank5_of(pop: Option<u64>, kind: &str) -> Rank5 {
 fn rank5_rgb(r: Rank5) -> (u8, u8, u8) {
     // 對比色盤（ColorBrewer-inspired）：不同 hue 讓五階一眼分辨
     match r {
-        Rank5::Capital => (200, 30, 60),    // 都：洋紅（最顯眼）
-        Rank5::Prefect => (140, 70, 180),   // 府：紫
-        Rank5::City    => (30, 120, 200),   // 市：藍
-        Rank5::Town    => (50, 160, 70),    // 鎮：綠
-        Rank5::Village => (210, 170, 90),   // 村：土黃（底色層）
+        Rank5::Capital => (200, 30, 60),  // 都：洋紅（最顯眼）
+        Rank5::Prefect => (140, 70, 180), // 府：紫
+        Rank5::City => (30, 120, 200),    // 市：藍
+        Rank5::Town => (50, 160, 70),     // 鎮：綠
+        Rank5::Village => (210, 170, 90), // 村：土黃（底色層）
     }
 }
 
@@ -98,8 +106,8 @@ fn rank5_radius(r: Rank5) -> i32 {
     match r {
         Rank5::Capital => 6,
         Rank5::Prefect => 4,
-        Rank5::City    => 2,
-        Rank5::Town    => 1,
+        Rank5::City => 2,
+        Rank5::Town => 1,
         Rank5::Village => 0,
     }
 }
@@ -108,8 +116,8 @@ fn rank5_name(r: Rank5) -> &'static str {
     match r {
         Rank5::Capital => "都",
         Rank5::Prefect => "府",
-        Rank5::City    => "市",
-        Rank5::Town    => "鎮",
+        Rank5::City => "市",
+        Rank5::Town => "鎮",
         Rank5::Village => "村",
     }
 }

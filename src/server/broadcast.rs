@@ -6,7 +6,7 @@ use crate::entity::{EntityKind, Verb};
 use crate::game::{self, RoomView};
 
 use super::protocol::{ExitView, NarrateMsg, RoomViewMsg, ViewEntity, ViewObject};
-use super::session::Session;
+use super::session::{Session, player_location_key};
 
 fn must_json<T: serde::Serialize>(v: &T) -> Vec<u8> {
     serde_json::to_vec(v).unwrap_or_else(|_| br#"{"type":"error","message":"json"}"#.to_vec())
@@ -17,15 +17,13 @@ pub fn send_narrate_to_room(store: &super::session::SessionStore, room_id: &str,
     if text.is_empty() {
         return;
     }
+    let want = db::canonical_location_key(room_id);
     let msg = must_json(&NarrateMsg {
         msg_type: "narrate".into(),
         text: text.to_string(),
     });
     for s in store.all_sessions() {
-        let Ok(rid) = db::get_entity_room(&s.player_id) else {
-            continue;
-        };
-        if db::location_keys_equivalent(&rid, room_id) {
+        if player_location_key(&s.player_id) == want {
             let _ = s.try_send_bytes(msg.clone());
         }
     }
@@ -95,7 +93,8 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
         })
         .collect();
     let now = game::now_unix();
-    let (sec_midnight, _, _, days) = game::game_time_now(now, cfg.game_time_epoch_unix, cfg.game_time_scale);
+    let (sec_midnight, _, _, days) =
+        game::game_time_now(now, cfg.game_time_epoch_unix, cfg.game_time_scale);
     RoomViewMsg {
         msg_type: "view".into(),
         room_id: view.room.id.clone(),
@@ -110,23 +109,29 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
     }
 }
 
-pub fn send_room_view_to_session(session: &Session, view: &RoomView, viewer_player_id: &str, cfg: &Server) {
+pub fn send_room_view_to_session(
+    session: &Session,
+    view: &RoomView,
+    viewer_player_id: &str,
+    cfg: &Server,
+) {
     let msg = build_room_view_msg(view, viewer_player_id, cfg);
     let _ = session.try_send_bytes(must_json(&msg));
 }
 
 /// 對指定位置內在線玩家推送最新視野。
-pub fn refresh_room_views_for_room(store: &super::session::SessionStore, cfg: &Server, room_id: &str) {
+pub fn refresh_room_views_for_room(
+    store: &super::session::SessionStore,
+    cfg: &Server,
+    room_id: &str,
+) {
     let now = game::now_unix();
     let (_, gh, _, _) = game::game_time_now(now, cfg.game_time_epoch_unix, cfg.game_time_scale);
     for s in store.all_sessions() {
         let Ok(Some(ch)) = db::get_entity(&s.player_id) else {
             continue;
         };
-        let Ok(rid) = db::get_entity_room(&s.player_id) else {
-            continue;
-        };
-        if !db::location_keys_equivalent(&rid, room_id) {
+        if player_location_key(&s.player_id) != db::canonical_location_key(room_id) {
             continue;
         }
         let (Some(x), Some(y)) = (ch.grid_x, ch.grid_y) else {

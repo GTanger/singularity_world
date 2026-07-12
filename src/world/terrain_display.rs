@@ -177,10 +177,7 @@ fn pick_char_color(meta: TerrainMeta, t_fallback: &str, idx: usize) -> (String, 
     if idx >= meta.colors.len() {
         idx = meta.colors.len().saturating_sub(1);
     }
-    (
-        meta.chars[idx].to_string(),
-        meta.colors[idx].to_string(),
-    )
+    (meta.chars[idx].to_string(), meta.colors[idx].to_string())
 }
 
 /// 固定取第一個候選字／色（對齊既有 `Display(t, nil)`）。
@@ -212,8 +209,8 @@ pub fn terrain_meta_by_type(t: &str) -> Option<TerrainMeta> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rand::rngs::StdRng;
     use rand::SeedableRng;
+    use rand::rngs::StdRng;
 
     #[test]
     fn unknown_terrain_default_gray() {

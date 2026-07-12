@@ -1,4 +1,4 @@
-// sw-object-list.js：v5 L4 物件卡片觀察態渲染 + 甲乙編號 + 點擊事件。v0.22.1
+// sw-object-list.js：v5 L4 物件卡片觀察態渲染 + 甲乙編號 + 點擊事件。v0.24.7
 (function () {
     'use strict';
 
@@ -30,6 +30,9 @@
     // ── 觀察態 → 顯示標籤 ────────────────────────────────────────────
     function labelOf(obj) {
         var state = obj.observation_state;
+        if (!state && obj.name && !obj.tag) {
+            return obj.name;
+        }
         if (state === 'named') {
             return (obj.tag || '') + (obj.name ? obj.name : '');
         } else if (state === 'identified') {
@@ -43,22 +46,73 @@
     // 當前 L4 物件列表（供 applyDelta 更新用）
     var _currentObjects = [];
 
-    // ── v5 L4 渲染 ───────────────────────────────────────────────────
-    function renderV5(objects) {
-        _currentObjects = objects || [];
-        var el = document.getElementById('sw-l4-objects');
-        if (!el) return;
+    function exitItemsFromGrid() {
+        var G = window.SwGrid;
+        if (!G || !G.mapData) return [];
+        var mapData = G.mapData;
+        var currentRoomName = String(mapData.currentRoomName || '').trim();
+        function isCurrentRoomLabel(label) {
+            return currentRoomName && String(label || '').trim() === currentRoomName;
+        }
+        var out = [];
+        var seen = {};
+        var seenLabels = {};
+        var keys = [
+            { key: 'north', dir: '北' },
+            { key: 'south', dir: '南' },
+            { key: 'east',  dir: '東' },
+            { key: 'west',  dir: '西' }
+        ];
 
-        if (!_currentObjects.length) {
-            el.innerHTML = '';
-            return;
+        if (mapData.exits_v5) {
+            for (var i = 0; i < keys.length; i++) {
+                var k = keys[i];
+                var info = mapData.exits_v5[k.key];
+                if (!info || info.explored !== true || info.walkable !== true) continue;
+                var label = (G.exitLabel || function (x) { return x && (x.name || x.to_room_name) || '可去處'; })(info);
+                if (isCurrentRoomLabel(label)) continue;
+                var normLabel = String(label || '').trim();
+                if (seenLabels[normLabel]) continue;
+                out.push({ dir: k.dir, label: label });
+                seen[k.dir] = true;
+                seenLabels[normLabel] = true;
+            }
         }
 
-        // 計算每個物件的顯示標籤
-        var items = _currentObjects.map(function (obj) {
+        var legacy = mapData.exits || [];
+        for (var li = 0; li < legacy.length; li++) {
+            var ex = legacy[li];
+            if (!ex || !ex.direction || seen[ex.direction]) continue;
+            var legacyLabel = ex.to_room_name || ex.name || '可去處';
+            if (isCurrentRoomLabel(legacyLabel)) continue;
+            var normLegacyLabel = String(legacyLabel || '').trim();
+            if (seenLabels[normLegacyLabel]) continue;
+            out.push({ dir: ex.direction, label: legacyLabel });
+            seen[ex.direction] = true;
+            seenLabels[normLegacyLabel] = true;
+        }
+        return out;
+    }
+
+    function exitCardsHtml(escFn, addBreak) {
+        var exits = exitItemsFromGrid();
+        var html = '';
+        for (var i = 0; i < exits.length; i++) {
+            html += '<span class="sw-obj-card sw-obj-exit" data-move-dir="' + escFn(exits[i].dir) + '" role="button" tabindex="0">';
+            html += '【' + escFn(exits[i].label) + '】';
+            html += '</span>';
+        }
+        if (addBreak && exits.length) {
+            html += '<span class="sw-l4-break" aria-hidden="true"></span>';
+        }
+        return html;
+    }
+
+    function objectCardsHtml(objects) {
+        var source = objects || [];
+        var items = source.map(function (obj) {
             return { obj: obj, label: labelOf(obj), suffix: '' };
         });
-
         items = assignSuffixes(items);
 
         var html = '';
@@ -73,6 +127,17 @@
             html += '<span class="' + cls + '" data-obj-id="' + _esc(obj.id) + '" role="button" tabindex="0">' +
                     display + '</span>';
         }
+        return html;
+    }
+
+    // ── v5 L4 渲染 ───────────────────────────────────────────────────
+    function renderV5(objects) {
+        _currentObjects = objects || [];
+        var el = document.getElementById('sw-l4-objects');
+        if (!el) return;
+
+        var html = exitCardsHtml(_esc, true);
+        html += objectCardsHtml(_currentObjects);
         el.innerHTML = html;
     }
 
@@ -115,7 +180,6 @@
     }
 
     // ── 舊格式相容渲染（grid_view 事件，無 observation_state）───────
-    // 出口卡片已移除：v5 出口僅在路口形狀 UI（sw-junction）顯示，不在 L4 描述欄重複渲染
     function render() {
         var G = window.SwGrid;
         if (!G || !G.objectListEl) return;
@@ -125,7 +189,7 @@
         var displayNameOf = G.displayNameOf;
 
         var myId = window.myPlayerId || '';
-        var html = '';
+        var html = exitCardsHtml(escFn);
 
         // 在場實體（NPC + 其他玩家）
         // L4 只顯示 NPC，排除自己與其他玩家（玩家 id 污染不進 NPC 卡）
@@ -139,7 +203,6 @@
             html += '【' + escFn(displayNameOf(ent)) + '】';
             html += '</span>';
         }
-
         G.objectListEl.innerHTML = html;
     }
 
@@ -161,7 +224,6 @@
                 var objId   = card.getAttribute('data-obj-id');
                 var moveDir = card.getAttribute('data-move-dir');
                 var entId   = card.getAttribute('data-entity-id');
-
                 if (moveDir && window.gameSend) {
                     window.gameSend({ type: 'move', direction: moveDir });
                 } else if (objId && window.gameSend) {
@@ -179,7 +241,7 @@
 
         // 舊 objectListEl 相容
         var G = window.SwGrid;
-        if (G && G.objectListEl) {
+        if (G && G.objectListEl && G.objectListEl !== l4El) {
             G.objectListEl.addEventListener('click', function (e) {
                 var card = e.target.closest('.sw-obj-card');
                 if (!card) return;
@@ -193,25 +255,31 @@
 
     // ── renderV5NpcCards（後端已算好 display_name + card_state）─────
     // npcs: [{ npc_id, display_name, card_state: "stranger"|"observed"|"named" }]
-    function renderV5NpcCards(npcs) {
+    function renderV5NpcCards(npcs, objects) {
         var el = document.getElementById('sw-l4-objects');
         if (!el) return;
+        var objectList = objects || [];
         if (!npcs || !npcs.length) {
-            el.innerHTML = '';
+            el.innerHTML = exitCardsHtml(_esc, true) + objectCardsHtml(objectList);
             return;
         }
-        var html = '';
+        var html = exitCardsHtml(_esc, true);
         for (var i = 0; i < npcs.length; i++) {
             var npc = npcs[i];
             var state = npc.card_state || 'stranger';
-            var cls = 'sw-obj-card sw-obj-npc card-' + state;
-            html += '<span class="' + cls + '" data-obj-id="' + _esc(npc.npc_id) + '" data-card-state="' + _esc(state) + '" role="button" tabindex="0">';
-            html += '【' + _esc(npc.display_name) + '】';
+            var kind = npc.kind || 'npc';
+            var cls = 'sw-obj-card ' + (kind === 'crowd' ? 'sw-obj-crowd' : 'sw-obj-npc') + ' card-' + state;
+            var idAttr = kind === 'crowd' ? '' : ' data-obj-id="' + _esc(npc.npc_id) + '"';
+            var displayName = npc.display_name || (kind === 'crowd' ? '人群' : '');
+            if (kind === 'crowd') displayName = displayName.replace(/（還有\d+人）/g, '') || '人群';
+            html += '<span class="' + cls + '"' + idAttr + ' data-card-state="' + _esc(state) + '" role="button" tabindex="0">';
+            html += '【' + _esc(displayName) + '】';
             html += '</span>';
         }
+        html += objectCardsHtml(objectList);
         el.innerHTML = html;
     }
 
     window.SwObjectList = { render: render, renderV5: renderV5, renderV5NpcCards: renderV5NpcCards, applyDelta: applyDelta, applyObservationUpdate: applyObservationUpdate, bindClick: bindClick };
-    console.log('[sw-object-list] v0.22.1 loaded');
+    console.log('[sw-object-list] v0.24.8 loaded');
 })();

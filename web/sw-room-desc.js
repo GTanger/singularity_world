@@ -1,4 +1,4 @@
-// sw-room-desc.js：v5 四層描述欄渲染（L1 時間 / L2 氣候 / L3 地形 / L4 由 sw-object-list 負責）。v0.22.0
+// sw-room-desc.js：v5 四層描述欄渲染（L1 時間 / L2 氣候 / L3 地形 / L4 由 sw-object-list 負責）。v0.24.12
 (function () {
     'use strict';
 
@@ -12,11 +12,11 @@
     // 12 個時段：每 2 小時一段
     var PHASE_LABELS = ['深夜','凌晨','破曉','清晨','上午','正午','午後','下午','傍晚','入夜','晚間','半夜'];
 
-    // 氣候圖標映射
-    var WEATHER_ICONS = { rain: '☁', snow: '❄', clear: '☀', wind: '🌬', fog: '🌫', storm: '⛈', plum_rain: '🌧' };
+    // 氣候圖標映射；clear 需看時辰，夜間不能顯示太陽。
+    var WEATHER_ICONS = { rain: '☁', snow: '❄', wind: '🌬', fog: '🌫', storm: '⛈', plum_rain: '🌧' };
 
     // ── L2 氣候散文池（placeholder；後端有真資料後可擴充）──────────
-    // 四段時辰：dawn(5-10) / day(11-16) / dusk(17-21) / night(22-4)
+    // 四段時辰：dawn(5-10) / day(11-16) / dusk(17) / night(18-4)
     // 日兩組（dawn/day）夜兩組（dusk/night），每個天氣 icon 各備四池
     var WEATHER_PROSE = {
         clear: {
@@ -65,13 +65,20 @@
     function phaseOfHour(h) {
         if (h >= 5 && h < 11) return 'dawn';
         if (h >= 11 && h < 17) return 'day';
-        if (h >= 17 && h < 22) return 'dusk';
+        if (h >= 17 && h < 18) return 'dusk';
         return 'night';
     }
     function climatePool(iconKey, hour) {
         var bucket = WEATHER_PROSE[iconKey] || WEATHER_PROSE.clear;
         var phase = phaseOfHour(hour);
         return bucket[phase] || bucket.day || [];
+    }
+
+    function weatherIcon(iconKey, hour) {
+        if (iconKey === 'clear') {
+            return phaseOfHour(hour) === 'night' ? '☾' : '☀';
+        }
+        return WEATHER_ICONS[iconKey] || '☁';
     }
 
     // ── L3 地形進格散文池（placeholder；TODO: SW-v5 後端推 room_enter 後改用真資料）──
@@ -108,6 +115,7 @@
     var _lastRegionId = 'default';
     var _proseSeedCache = 0;
     var _currentHour = 12; // 由 renderL1 寫入；fetchAndRenderL2 用之決定 clear 走日/夜池
+    var _v5ControlsL2 = false;
 
     function fetchAndRenderL2(regionId) {
         regionId = regionId || _lastRegionId || 'default';
@@ -115,15 +123,17 @@
         fetch('/api/climate?region_id=' + encodeURIComponent(regionId))
             .then(function (r) { return r.json(); })
             .then(function (data) {
+                if (_v5ControlsL2) return;
                 var iconKey = data.event_type || 'clear';
                 var pool = climatePool(iconKey, _currentHour);
                 _proseSeedCache = data.prose_seed || 0;
-                renderL2({ icon_key: iconKey, desc: pickProse(pool, _proseSeedCache) });
+                renderL2({ icon_key: iconKey, desc: pickProse(pool, _proseSeedCache), hour: _currentHour });
             })
             .catch(function (e) { console.warn('[sw-room-desc] L2 climate fetch 失敗:', e); });
     }
 
     function startClimatePolling(regionId) {
+        if (_v5ControlsL2) return;
         if (_climateTimer) clearInterval(_climateTimer);
         fetchAndRenderL2(regionId);
         _climateTimer = setInterval(function () { fetchAndRenderL2(_lastRegionId); }, 30000);
@@ -141,6 +151,33 @@
         var d = document.createElement('div');
         d.textContent = String(s || '');
         return d.innerHTML;
+    }
+
+    function cleanSceneDesc(text, terrainName) {
+        var raw = String(text || '').trim();
+        var terrain = String(terrainName || '').trim();
+        var oldNorthBankName = /北岸(?:等候處|候渡處|後渡處)/g;
+        raw = raw.replace(oldNorthBankName, '北岸渡口');
+        terrain = terrain.replace(oldNorthBankName, '北岸渡口');
+        var leaks = [
+            '目前登入後的起點',
+            '登入後的暫存起點',
+            '世界地圖尚未接入',
+            '尚未寫入場景描述'
+        ];
+        var leaked = !raw;
+        for (var i = 0; i < leaks.length; i++) {
+            if (raw.indexOf(leaks[i]) !== -1) {
+                leaked = true;
+                break;
+            }
+        }
+        if (!leaked) return raw;
+        if (terrain.indexOf('北岸') !== -1 || terrain.indexOf('等候') !== -1) {
+            return '北岸渡口貼著河霧，濕木踏板通向渡船；短市那頭有價牌與貨聲，歇腳處的茶桶旁擠著等船的人。';
+        }
+        if (terrain) return terrain + '在近前展開，周圍有人聲與腳步聲，幾條去處從眼前分開。';
+        return '一處可落腳的地方展在近前，周圍有人聲與腳步聲，幾條去處從眼前分開。';
     }
 
     // ── 取 DOM ──────────────────────────────────────────────────────
@@ -187,7 +224,8 @@
             el.innerHTML = '';
             return;
         }
-        var icon = WEATHER_ICONS[weatherData.icon_key] || '☁';
+        var hour = (typeof weatherData.hour === 'number') ? weatherData.hour : _currentHour;
+        var icon = weatherIcon(weatherData.icon_key, hour);
         var desc = weatherData.desc || '';
         el.innerHTML =
             '<span class="desc-icon">' + icon + '</span>' +
@@ -204,7 +242,44 @@
         swamp: '🌿',
         desert: '🏜',
         tundra: '❄',
-        jungle: '🌴'
+        jungle: '🌴',
+        urban: '🏘',
+        road: '道',
+        bridge: '橋',
+        wall: '牆',
+        farm_field: '田',
+        farmhouse: '舍',
+        inn: '宿',
+        tavern: '酒',
+        blacksmith: '鐵',
+        general_store: '店',
+        clinic: '藥',
+        workshop: '工',
+        market: '市',
+        guild_hall: '會',
+        temple: '廟',
+        academy: '學',
+        library: '書',
+        barracks: '營',
+        guard_post: '哨',
+        warehouse: '倉',
+        granary: '廩',
+        dock: '渡',
+        bathhouse: '湯',
+        courthouse: '律',
+        jail: '牢',
+        town_hall: '政',
+        bank: '銀',
+        mint: '鑄',
+        stables: '馬',
+        caravanserai: '驛',
+        theater: '戲',
+        arena: '武',
+        observatory: '星',
+        alchemist: '煉',
+        mage_tower: '塔',
+        embassy: '館',
+        prison_yard: '囚'
     };
 
     // ── L3 地形渲染 ──────────────────────────────────────────────────
@@ -212,19 +287,31 @@
         var el = l3El();
         if (!el) return;
 
-        var iconKey = (terrainData && terrainData.icon_key) || '';
-        var icon = TERRAIN_ICONS[iconKey] || '◾';
-        var text = descText || (terrainData && terrainData.name) || '';
+        var text = cleanSceneDesc(descText, terrainData && terrainData.name);
+        if (!text) text = '一處可落腳的地方展在近前。';
 
         el.innerHTML =
-            '<span class="desc-icon">' + icon + '</span>' +
             '<span class="desc-text">' + esc(text) + '</span>';
     }
 
     // ── v5 room_enter 全渲染（L1+L2+L3）────────────────────────────
-    function renderV5(msg) {
+    function renderV5(msg, options) {
+        options = options || {};
+        _v5ControlsL2 = true;
         if (msg.time)    renderL1(msg.time);
-        if (msg.weather) renderL2(msg.weather);
+        if (msg.weather) {
+            var weather = Object.assign({}, msg.weather);
+            if (msg.time && typeof msg.time.hour === 'number') weather.hour = msg.time.hour;
+            renderL2(weather);
+        } else {
+            var fallbackHour = (msg.time && typeof msg.time.hour === 'number') ? msg.time.hour : 12;
+            var fallbackPool = climatePool('clear', fallbackHour);
+            var fallbackSeed = (msg.room_id || '').split('').reduce(function(a, c) { return a + c.charCodeAt(0); }, fallbackHour);
+            renderL2({ icon_key: 'clear', desc: pickProse(fallbackPool, fallbackSeed), hour: fallbackHour });
+        }
+
+        var currentL3Text = (l3El() && l3El().textContent || '').trim();
+        if (options.keepL3 && currentL3Text) return;
 
         // L3 散文優先序：descText > terrainAmbience > TERRAIN_PROSE 池抽 > terrainData.name > 空
         var terrainKey = (msg.terrain && msg.terrain.icon_key) || '';
@@ -234,7 +321,7 @@
         // 用 hour + terrainKey 雜湊做穩定種子（同格同時段同一條，不亂跳）
         var seed = hour * 31 + terrainKey.split('').reduce(function(a, c) { return a + c.charCodeAt(0); }, 0);
         var prose = pool ? pickProse(pool, seed) : '';
-        var descText = msg.desc || ambience || prose || (msg.terrain && msg.terrain.name) || '';
+        var descText = cleanSceneDesc(msg.desc || ambience || prose || '', msg.terrain && msg.terrain.name);
         renderL3(msg.terrain, descText);
     }
 
@@ -269,8 +356,7 @@
         // TODO: SW-v5 後端推含 region_id 的 room_enter 後，改由 onRoomEnter 傳入真實 region_id
         startClimatePolling('default');
 
-        // L3（地形）：terrain icon + 進格散文
-        var icon  = TERRAIN_ICONS[terrainKey] || '◾';
+        // L3（地形）：只顯示場景散文，不在描述前加地形字徽。
         var pool  = TERRAIN_PROSE[terrainKey];
         var prose = pool ? pool[Math.floor(Math.random() * pool.length)] : '';
         // 若 terrain_ambience.json 有更精緻描述則優先用
@@ -279,11 +365,10 @@
         var el3 = l3El();
         if (el3) {
             el3.innerHTML =
-                '<span class="desc-icon">' + icon + '</span>' +
                 '<span class="desc-text">' + esc(displayText) + '</span>';
         }
     }
 
     window.SwRoomDesc = { render: render, renderV5: renderV5, renderL1: renderL1, renderL2: renderL2, renderL3: renderL3, getAmbience: getAmbience, startClimatePolling: startClimatePolling };
-    console.log('[sw-room-desc] v0.22.0 loaded');
+    console.log('[sw-room-desc] v0.24.11 loaded');
 })();

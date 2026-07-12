@@ -96,8 +96,8 @@ pub fn load_llm_prompts() -> anyhow::Result<()> {
         return Ok(());
     }
     let primary = Path::new(&g.path);
-    let raw = fs::read_to_string(primary)
-        .or_else(|_| fs::read_to_string(Path::new("..").join(&g.path)));
+    let raw =
+        fs::read_to_string(primary).or_else(|_| fs::read_to_string(Path::new("..").join(&g.path)));
     let raw = match raw {
         Ok(s) => s,
         Err(e) => {

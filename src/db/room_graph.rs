@@ -1,8 +1,8 @@
 //! 房間鄰接圖與 BFS 尋路（對齊既有 `db/pathfind`）。
 
+use parking_lot::RwLock;
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::{Arc, OnceLock};
-use parking_lot::RwLock;
 
 use crate::store;
 
@@ -75,7 +75,12 @@ impl RoomGraph {
 
     /// BFS 找最近帶指定 tag 的房間；`max_dist == 0` 不限深度。不可達回 `None`（對齊既有 `FindNearestByTag`）。
     #[must_use]
-    pub fn find_nearest_by_tag(&self, origin: &str, tag: &str, max_dist: i32) -> Option<(String, usize)> {
+    pub fn find_nearest_by_tag(
+        &self,
+        origin: &str,
+        tag: &str,
+        max_dist: i32,
+    ) -> Option<(String, usize)> {
         #[derive(Clone)]
         struct BfsNode {
             id: String,
@@ -98,13 +103,7 @@ impl RoomGraph {
                 if max_dist > 0 && nd > max_dist as usize {
                     continue;
                 }
-                if self
-                    .tags
-                    .get(nb)
-                    .into_iter()
-                    .flatten()
-                    .any(|t| t == tag)
-                {
+                if self.tags.get(nb).into_iter().flatten().any(|t| t == tag) {
                     return Some((nb.clone(), nd));
                 }
                 queue.push_back(BfsNode {
@@ -118,7 +117,12 @@ impl RoomGraph {
 
     /// `origin` 周圍 `max_dist` 步內、帶任一指定 tag 的房間（對齊既有 `FindRoomsWithinDist`）。
     #[must_use]
-    pub fn find_rooms_within_dist(&self, origin: &str, want_tags: &[&str], max_dist: i32) -> Vec<String> {
+    pub fn find_rooms_within_dist(
+        &self,
+        origin: &str,
+        want_tags: &[&str],
+        max_dist: i32,
+    ) -> Vec<String> {
         if want_tags.is_empty() || max_dist <= 0 {
             return Vec::new();
         }
@@ -149,7 +153,13 @@ impl RoomGraph {
                 if nd > max_dist as usize {
                     continue;
                 }
-                if self.tags.get(nb).into_iter().flatten().any(|t| tag_set.contains(t.as_str())) {
+                if self
+                    .tags
+                    .get(nb)
+                    .into_iter()
+                    .flatten()
+                    .any(|t| tag_set.contains(t.as_str()))
+                {
                     result.push(nb.clone());
                 }
                 queue.push_back(BfsNode {

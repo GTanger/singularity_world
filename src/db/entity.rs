@@ -7,8 +7,8 @@ use crate::entity::Character;
 use crate::store::{self, Entity};
 
 use super::{
-    expand_soul_seed_to_personality, npc_display, store_entity_to_character, ErrNoStore,
-    Personality,
+    ErrNoStore, Personality, expand_soul_seed_to_personality, npc_display,
+    store_entity_to_character,
 };
 
 /// 依 id 查詢實體。
@@ -41,11 +41,15 @@ pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
     }
     // display_title 為空才升級到 write lock 做 cache 填充
     let mut s = arc.write();
-    let Some(se) = s.get_entity(id) else { return Ok(None) };
+    let Some(se) = s.get_entity(id) else {
+        return Ok(None);
+    };
     if se.kind == "npc" {
         npc_display::npc_person_display_name_locked(&mut s, id);
     }
-    let Some(se) = s.get_entity(id) else { return Ok(None) };
+    let Some(se) = s.get_entity(id) else {
+        return Ok(None);
+    };
     Ok(Some(store_entity_to_character(&se, "")))
 }
 
@@ -89,7 +93,10 @@ pub fn get_entities_in_box(
             }
         }
     }
-    Ok(entities.iter().map(|e| store_entity_to_character(e, "")).collect())
+    Ok(entities
+        .iter()
+        .map(|e| store_entity_to_character(e, ""))
+        .collect())
 }
 
 /// 回傳所有 `move_state == "moving"` 的實體。
@@ -237,7 +244,11 @@ pub fn set_move_target(
     walk_or_run: &str,
     started_at: i64,
 ) -> anyhow::Result<()> {
-    let wor = if walk_or_run.is_empty() { "walk" } else { walk_or_run };
+    let wor = if walk_or_run.is_empty() {
+        "walk"
+    } else {
+        walk_or_run
+    };
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
     let wor = wor.to_string();

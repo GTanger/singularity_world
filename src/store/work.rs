@@ -7,10 +7,7 @@ impl Store {
     // ── Assignments ──
 
     pub fn get_assignments_for_entity(&self, entity_id: &str) -> Vec<Assignment> {
-        self.assignments
-            .get(entity_id)
-            .cloned()
-            .unwrap_or_default()
+        self.assignments.get(entity_id).cloned().unwrap_or_default()
     }
 
     pub fn get_assignment_count_by_venue(&self, venue_id: &str) -> usize {

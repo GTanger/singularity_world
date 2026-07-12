@@ -1,29 +1,25 @@
-use r2d2_postgres::{self, PostgresConnectionManager};
-use r2d2_postgres::postgres::NoTls;
 pub use r2d2::{Pool, PooledConnection};
 pub use r2d2_postgres::postgres::Client as Connection;
+use r2d2_postgres::postgres::NoTls;
+use r2d2_postgres::{self, PostgresConnectionManager};
 
 pub type DbPool = Pool<PostgresConnectionManager<NoTls>>;
 
 pub fn init_pool(url: &str) -> anyhow::Result<DbPool> {
-    let manager = PostgresConnectionManager::new(
-        url.parse()?,
-        NoTls,
-    );
+    let manager = PostgresConnectionManager::new(url.parse()?, NoTls);
     // max_size: r2d2 預設只 10 條——遊戲 tick + writer + sync + login reader 輕易爆滿
     // connection_timeout: 預設 30s 太久（等不到 conn 的 caller 會僵 30s）、3s 快速失敗
     let pool = Pool::builder()
         .max_size(30)
         .connection_timeout(std::time::Duration::from_secs(3))
         .build(manager)?;
-    
+
     // Create tables if they don't exist
     let mut conn = pool.get()?;
     create_tables(&mut conn)?;
-    
+
     Ok(pool)
 }
-
 
 fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
     // 啟用向量擴充功能 (如果尚未啟用)
@@ -287,7 +283,8 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
     )?;
     // 相容已存在的舊表：補欄位
     for col in ["vit_bonus", "dex_bonus", "atk_bonus"] {
-        let sql = format!("ALTER TABLE items ADD COLUMN IF NOT EXISTS {col} INTEGER NOT NULL DEFAULT 0");
+        let sql =
+            format!("ALTER TABLE items ADD COLUMN IF NOT EXISTS {col} INTEGER NOT NULL DEFAULT 0");
         let _ = conn.execute(sql.as_str(), &[]);
     }
 
@@ -307,7 +304,7 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         &[],
     )?;
 
-    // 詞元 Embedding (Word Element Embeddings) — 用於語義檢索
+    // 舊語義元素 Embedding (Word Element Embeddings) — 用於語義檢索
     conn.execute(
         "CREATE TABLE IF NOT EXISTS word_element_embeddings (
             id TEXT PRIMARY KEY,

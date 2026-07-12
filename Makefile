@@ -7,11 +7,10 @@ verify: clippy test checkrooms
 	@echo "verify OK（clippy + test + checkrooms -brackets -strict）"
 
 clippy:
-	cargo clippy --workspace --exclude editor-leptos -- -D warnings
-	cargo clippy -p editor-leptos --target wasm32-unknown-unknown -- -D warnings
+	cargo clippy --workspace -- -D warnings
 
 test:
-	cargo test --workspace --exclude editor-leptos
+	cargo test --workspace
 
 checkrooms:
 	cargo run --bin checkrooms -- -brackets -strict

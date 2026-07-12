@@ -1,0 +1,4432 @@
+{
+  "id": "singularity_world_pangu",
+  "name": "奇點世界盤古骨架",
+  "version": 13,
+  "cells": [
+    {
+      "x": 0,
+      "y": 0,
+      "m4": "M4-027-01",
+      "name": "北岸渡口",
+      "terrain": "dock",
+      "zone": "中河渡口聚落帶",
+      "tags": [
+        "m3_027",
+        "m4_027_01",
+        "north_bank",
+        "ferry",
+        "core"
+      ],
+      "description": "北岸渡口貼著河霧，等船的人在踏板、短市和歇腳處之間挪動；木牌、水位痕和濕繩把這裡固定成渡口的北岸入口。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            0,
+            1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            0,
+            -1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            0
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -1,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": -1,
+      "m4": "M4-027-02",
+      "name": "渡船踏板",
+      "terrain": "bridge",
+      "zone": "中河渡口聚落帶",
+      "tags": [
+        "m3_027",
+        "m4_027_02",
+        "plank",
+        "ferry",
+        "crossing"
+      ],
+      "description": "渡船踏板連著北岸與水面，濕木、船繩和腳步聲讓人知道這裡不是停看的岸邊，而是過河的人流瓶口。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            0,
+            0
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            0,
+            -2
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": -2,
+      "m4": "M4-027-03",
+      "name": "南岸泥坡",
+      "terrain": "road",
+      "zone": "中河渡口聚落帶",
+      "tags": [
+        "m3_027",
+        "m4_027_03",
+        "south_bank",
+        "mud_slope",
+        "road"
+      ],
+      "description": "南岸泥坡被車轍和腳印反覆壓亮；上岸的人往倉棚與南側路分流，濕泥把渡口的喧聲拖得更低。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            0,
+            -1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            -2
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            0,
+            -3
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "m4": "M4-027-04",
+      "name": "岸邊短市",
+      "terrain": "market",
+      "zone": "中河渡口聚落帶",
+      "tags": [
+        "m3_027",
+        "m4_027_04",
+        "short_market",
+        "trade",
+        "road"
+      ],
+      "description": "岸邊短市沿著木架排開，短貨籃、秤和價牌擠在渡口人流旁；往谷地、船戶點、倉棚和歇腳處的路都在這裡交錯。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            0,
+            0
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            1,
+            -1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            -2
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -1,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": -1,
+      "m4": "M4-027-05",
+      "name": "船戶作業點",
+      "terrain": "workshop",
+      "zone": "中河渡口聚落帶",
+      "tags": [
+        "m3_027",
+        "m4_027_05",
+        "boat_work",
+        "repair",
+        "ferry"
+      ],
+      "description": "船戶作業點堆著撐篙、纜繩和修補木料；船戶與學徒的活計從踏板邊退到這裡，讓渡船不是一個孤立出口。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            0,
+            -1
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            1,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": -2,
+      "m4": "M4-027-06",
+      "name": "倉棚前場",
+      "terrain": "warehouse",
+      "zone": "中河渡口聚落帶",
+      "tags": [
+        "m3_027",
+        "m4_027_06",
+        "warehouse",
+        "cargo",
+        "road"
+      ],
+      "description": "倉棚前場半開著棚門，麻袋、木箱和雨布把貨流留在岸邊；搬運路一頭接南岸泥坡，一頭通往短市和外側貨路。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            0,
+            -2
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            1,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            -2
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": 0,
+      "m4": "M4-027-07",
+      "name": "臨河歇腳處",
+      "terrain": "tavern",
+      "zone": "中河渡口聚落帶",
+      "tags": [
+        "m3_027",
+        "m4_027_07",
+        "rest_spot",
+        "river_view",
+        "social"
+      ],
+      "description": "臨河歇腳處靠著河面擺了長凳和茶桶；包袱、晾衣繩和低聲談話把候渡的人流暫時攔在這裡。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            0,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            0
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -2,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "m4": "S-026:valley_road",
+      "name": "中河谷地路口",
+      "terrain": "road",
+      "zone": "中河谷地",
+      "tags": [
+        "m2_026",
+        "s_026",
+        "m3_027_connector",
+        "official_road",
+        "north_connector"
+      ],
+      "description": "中河谷地路口把北岸渡口接回谷地泥路；田埂水聲、過路腳印和遠處人聲讓渡口不再像孤立小圈。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            0,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "m4": "S-026:north_bank_road",
+      "name": "北堤泥路",
+      "terrain": "road",
+      "zone": "中河谷地",
+      "tags": [
+        "m2_026",
+        "s_026",
+        "official_road",
+        "valley_road",
+        "north_bank_road"
+      ],
+      "description": "北堤泥路離開渡口人聲後貼著河堤伸展，泥面上有挑擔腳印，也有往田埂方向壓出的窄車痕。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            0,
+            1
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            3
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "m4": "S-026:field_watermouth",
+      "name": "田埂水口",
+      "terrain": "farm_field",
+      "zone": "中河谷地",
+      "tags": [
+        "m2_026",
+        "s_026",
+        "field_edge",
+        "irrigation",
+        "valley_road"
+      ],
+      "description": "田埂水口把河邊泥路分進田間，細水從木閘下淌過；遠處的渡口聲仍能聽見，但已被蛙鳴和水聲壓低。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            0,
+            2
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "m4": "S-026:upper_field_track",
+      "name": "上田小路",
+      "terrain": "road",
+      "zone": "中河谷地",
+      "tags": [
+        "m2_026",
+        "s_026",
+        "field_track",
+        "outer_stub"
+      ],
+      "description": "上田小路沿田埂往更深的谷地延去，路旁只先露出稻葉、水聲和幾處遠遠的人影；這裡仍只是外層路骨。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            0,
+            3
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "m4": "M4-034-01",
+      "name": "田區路口",
+      "terrain": "farm_field",
+      "zone": "東部稻地",
+      "tags": [
+        "m3_034",
+        "m4_034_01",
+        "field_entry",
+        "irrigation",
+        "daily_work"
+      ],
+      "description": "田區路口把上田小路分進東部稻地；水田貼著低霧，木牌邊留著泥腳印，管水人和挑擔農人從灌渠、農舍與深處田埂之間穿過。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            0,
+            4
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            5
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -1,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "m4": "M4-034-02",
+      "name": "灌渠木閘",
+      "terrain": "farm_field",
+      "zone": "東部稻地",
+      "tags": [
+        "m3_034",
+        "m4_034_02",
+        "irrigation_gate",
+        "water_level",
+        "field_work"
+      ],
+      "description": "灌渠木閘橫在水道上，木片被水痕泡得發黑；有人蹲著看水尺，也有人把竹耙擱在埂邊，等水位穩了再往秧苗田走。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            0,
+            5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "m4": "M4-034-03",
+      "name": "秧苗田邊",
+      "terrain": "farm_field",
+      "zone": "東部稻地",
+      "tags": [
+        "m3_034",
+        "m4_034_03",
+        "seedling_field",
+        "seasonal_work",
+        "frog_sound"
+      ],
+      "description": "秧苗田邊一片淺綠貼著水面，秧盤和腳印沿田埂排開；插秧人彎身時只露出背影，蛙聲從水溝裡一陣一陣冒起。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            1,
+            5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            3,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "m4": "M4-034-04",
+      "name": "農舍前坪",
+      "terrain": "farm_field",
+      "zone": "東部稻地",
+      "tags": [
+        "m3_034",
+        "m4_034_04",
+        "farmhouse",
+        "tools",
+        "household"
+      ],
+      "description": "農舍前坪壓著碎稻殼與濕泥，鋤具靠在牆下，曬衣繩從低簷拉到木樁；農戶進出時不急著說話，只把田裡動靜帶回屋前。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            0,
+            5
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -1,
+            6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": 6,
+      "m4": "M4-034-05",
+      "name": "穀場小棚",
+      "terrain": "farm_field",
+      "zone": "東部稻地",
+      "tags": [
+        "m3_034",
+        "m4_034_05",
+        "grain_shed",
+        "drying",
+        "harvest"
+      ],
+      "description": "穀場小棚半遮著幾袋未搬完的稻穀，木篩靠在棚柱邊；棚外留出一塊晾曬空地，腳步聲在稻殼上聽起來很乾。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            0,
+            6
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -1,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": 5,
+      "m4": "M4-034-06",
+      "name": "田埂深處",
+      "terrain": "farm_field",
+      "zone": "東部稻地",
+      "tags": [
+        "m3_034",
+        "m4_034_06",
+        "deep_field_track",
+        "wet_grass",
+        "quiet_edge"
+      ],
+      "description": "田埂深處離開主要腳步後變窄，濕草貼著褲腳，水鳥在更低的田面一閃而過；這裡仍能回到田區路口，也繞得上穀場小棚。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            0,
+            5
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -1,
+            6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -2,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "m4": "S-026:porter_path",
+      "name": "挑擔小徑",
+      "terrain": "road",
+      "zone": "中河谷地",
+      "tags": [
+        "m2_026",
+        "s_026",
+        "porter_path",
+        "market_feed"
+      ],
+      "description": "挑擔小徑從北堤泥路岔開，腳印比車轍更密；短貨和水桶常從這裡避開渡口正面人流。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            0,
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "m4": "S-026:market_valley_road",
+      "name": "短市外谷地路",
+      "terrain": "road",
+      "zone": "中河谷地",
+      "tags": [
+        "m2_026",
+        "s_026",
+        "m3_027_connector",
+        "official_road",
+        "market_connector"
+      ],
+      "description": "短市外谷地路貼著攤架外緣伸向谷地，挑擔的人在這裡避開等船隊列，把小件貨送進送出。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            1,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            3,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": -3,
+      "m4": "S-026:south_valley_road",
+      "name": "南側谷地路",
+      "terrain": "road",
+      "zone": "中河谷地",
+      "tags": [
+        "m2_026",
+        "s_026",
+        "m3_027_connector",
+        "official_road",
+        "south_connector"
+      ],
+      "description": "南側谷地路從泥坡外側繞開人群，車轍往田埂與下游方向延伸；回頭仍能聽見渡船靠岸的木聲。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            0,
+            -2
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            -2
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            0,
+            -4
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": -4,
+      "m4": "S-026:downriver_field_track",
+      "name": "下游田埂路",
+      "terrain": "road",
+      "zone": "中河谷地",
+      "tags": [
+        "m2_026",
+        "s_026",
+        "field_track",
+        "downriver_stub"
+      ],
+      "description": "下游田埂路從南側谷地路再往外伸，車轍變淺，水田和濕草先接住了渡口貨聲。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            0,
+            -3
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            0,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 2,
+      "y": -2,
+      "m4": "E-027:cargo_route",
+      "name": "渡口貨路",
+      "terrain": "road",
+      "zone": "中河渡河邊",
+      "tags": [
+        "e_027",
+        "m3_027_connector",
+        "cargo_route",
+        "official_road",
+        "warehouse_connector"
+      ],
+      "description": "渡口貨路從倉棚前場外伸，雨布、拖痕和車輪印把貨流帶向更遠的河邊路線；這裡先是路骨，不是完整聚落。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            1,
+            -2
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            0,
+            -3
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            3,
+            -2
+          ]
+        }
+      ]
+    },
+    {
+      "x": 3,
+      "y": -2,
+      "m4": "E-027:cargo_bend",
+      "name": "貨路外彎",
+      "terrain": "road",
+      "zone": "中河渡河邊",
+      "tags": [
+        "e_027",
+        "cargo_route",
+        "outer_stub",
+        "river_edge"
+      ],
+      "description": "貨路外彎繞開倉棚前的擁擠，車輪印在這裡轉向河邊；更外面的路還沒有展開成完整場所。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            2,
+            -2
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            3,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "m4": "M4-030-01",
+      "name": "中鎮鎮口",
+      "terrain": "road",
+      "zone": "中部城鎮圈",
+      "tags": [
+        "m3_030",
+        "m4_030_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "central_town",
+        "subdistrict_entry",
+        "town_gate"
+      ],
+      "description": "中鎮鎮口把渡口短市外的谷地路收進鎮牌樓下；路旗、腳印和候檢車馬在這裡慢下來，市集街、廟前小場與倉場方向的人聲從門內分開。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            2,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            4,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            3,
+            1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            3,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "m4": "M4-030-02",
+      "name": "中鎮市集街",
+      "terrain": "market",
+      "zone": "中部城鎮圈",
+      "tags": [
+        "m3_030",
+        "m4_030_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "central_town",
+        "subdistrict_entry",
+        "market_street"
+      ],
+      "description": "中鎮市集街比渡口短市更長，布棚沿街排到井邊巷口；看貨人把價碼和鎮內消息壓在攤布下，客棧與倉場的人流在街心交會。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            3,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            5,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            4,
+            1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            4,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "m4": "M4-030-03",
+      "name": "中鎮客棧廊",
+      "terrain": "inn",
+      "zone": "中部城鎮圈",
+      "tags": [
+        "m3_030",
+        "m4_030_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "central_town",
+        "subdistrict_entry",
+        "inn_front"
+      ],
+      "description": "中鎮客棧廊面向市集街，長凳、熱水壺和掛包木鉤把外來旅人先攔在廊下；店伙聽著井邊與工坊街的聲音，替剛入鎮的人分辨去處。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            4,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            5,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "m4": "M4-030-04",
+      "name": "中鎮廟前小場",
+      "terrain": "temple",
+      "zone": "中部城鎮圈",
+      "tags": [
+        "m3_030",
+        "m4_030_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "central_town",
+        "subdistrict_entry",
+        "public_square"
+      ],
+      "description": "中鎮廟前小場不大，香灰、告示板和幾張石凳把鎮口噪聲沉下來；傳話人和求事的人在此停腳，再往井邊巷或鎮口散開。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            3,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            4,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "m4": "M4-030-05",
+      "name": "中鎮井邊巷",
+      "terrain": "urban",
+      "zone": "中部城鎮圈",
+      "tags": [
+        "m3_030",
+        "m4_030_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "central_town",
+        "subdistrict_entry",
+        "well_lane"
+      ],
+      "description": "中鎮井邊巷夾在市集街和住戶牆影之間，井繩濕痕從石圈拖到巷口；取水人、跑腿孩子和小店門板讓這裡像鎮子的日常內側。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            4,
+            0
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            3,
+            1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            5,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "m4": "M4-030-06",
+      "name": "中鎮工坊街",
+      "terrain": "workshop",
+      "zone": "中部城鎮圈",
+      "tags": [
+        "m3_030",
+        "m4_030_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "central_town",
+        "subdistrict_entry",
+        "workshop_lane"
+      ],
+      "description": "中鎮工坊街貼著井邊巷往內折，木屑、鐵件和修具架排在半開門面下；學徒把市集街送來的活計分進各家，不讓工坊變成孤立作坊。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            4,
+            1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            5,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": 3,
+      "y": -1,
+      "m4": "M4-030-07",
+      "name": "中鎮車馬泊位",
+      "terrain": "stables",
+      "zone": "中部城鎮圈",
+      "tags": [
+        "m3_030",
+        "m4_030_07",
+        "pangu_skeleton",
+        "scene_polished",
+        "central_town",
+        "subdistrict_entry",
+        "cart_berth"
+      ],
+      "description": "中鎮車馬泊位壓在鎮口南側，車轅、草料筐和候卸貨包把渡口貨路的車聲接進鎮裡；車夫等倉場放出手勢才往街內挪。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            3,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            4,
+            -1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            3,
+            -2
+          ]
+        }
+      ]
+    },
+    {
+      "x": 4,
+      "y": -1,
+      "m4": "M4-030-08",
+      "name": "中鎮倉場門口",
+      "terrain": "warehouse",
+      "zone": "中部城鎮圈",
+      "tags": [
+        "m3_030",
+        "m4_030_08",
+        "pangu_skeleton",
+        "scene_polished",
+        "central_town",
+        "subdistrict_entry",
+        "warehouse_gate"
+      ],
+      "description": "中鎮倉場門口靠著市集街後側，木箱、糧袋和封牌排在門檻陰影裡；倉管把車馬泊位送來的貨分成入倉、轉市與暫候三路。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            4,
+            0
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            3,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "m4": "M4-006-01",
+      "name": "北灣避風碼頭",
+      "terrain": "dock",
+      "zone": "北方港灣",
+      "tags": [
+        "m3_006",
+        "m4_006_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "north_harbor"
+      ],
+      "description": "北灣避風碼頭貼著冷海水面，避風船靠在木樁內側，結霜纜繩繃得很緊；船戶把北風裡的船位重新排開，港灣貨棚和漁網曬場的聲音從兩側傳來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            1,
+            7
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            8
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            0,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "m4": "M4-006-02",
+      "name": "港灣貨棚",
+      "terrain": "warehouse",
+      "zone": "北方港灣",
+      "tags": [
+        "m3_006",
+        "m4_006_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "north_harbor"
+      ],
+      "description": "港灣貨棚半開著棚門，鹽箱和濕木箱靠著牆邊排開；搬魚人把剛卸下的魚籃推向冷霧魚市，棚外還能聽見避風碼頭的纜繩聲。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            0,
+            7
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            1,
+            8
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": 8,
+      "m4": "M4-006-03",
+      "name": "漁網曬場",
+      "terrain": "workshop",
+      "zone": "北方港灣",
+      "tags": [
+        "m3_006",
+        "m4_006_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "north_harbor"
+      ],
+      "description": "漁網曬場掛著幾面半乾的濕網，木架被海風推得輕響；補網人沿破口穿線，避風碼頭的船身晃動聲和冷霧魚市的叫價聲隔著網眼傳來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            0,
+            7
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": 8,
+      "m4": "M4-006-04",
+      "name": "冷霧魚市",
+      "terrain": "market",
+      "zone": "北方港灣",
+      "tags": [
+        "m3_006",
+        "m4_006_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "north_harbor"
+      ],
+      "description": "冷霧魚市裡的木秤還沾著水珠，魚販把剛分出的魚貨攤在濕布上；買貨人壓低聲音問價，港灣貨棚的魚籃一批批送到棚邊。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            1,
+            7
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            0,
+            8
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "m4": "M4-006-05",
+      "name": "船戶屋排",
+      "terrain": "inn",
+      "zone": "北方港灣",
+      "tags": [
+        "m3_006",
+        "m4_006_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "north_harbor"
+      ],
+      "description": "船戶屋排低低靠著港灣背風處，火盆煙氣貼著屋簷走；船戶家屬在排班板前換下濕衣，守望石階那頭的警鈴繩影隱約可見。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            1,
+            7
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            2,
+            8
+          ]
+        }
+      ]
+    },
+    {
+      "x": 2,
+      "y": 8,
+      "m4": "M4-006-06",
+      "name": "北灣守望石階",
+      "terrain": "guard_post",
+      "zone": "北方港灣",
+      "tags": [
+        "m3_006",
+        "m4_006_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "north_harbor"
+      ],
+      "description": "北灣守望石階沿著濕石往上，霧牌和警鈴掛在風口；守望人扶著石欄看海面顏色，船戶屋排和冷霧魚市的人聲被風吹得斷斷續續。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            1,
+            8
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            2,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "m4": "M4-032-01",
+      "name": "水網入口棧",
+      "terrain": "dock",
+      "zone": "東湖諸港",
+      "tags": [
+        "m3_032",
+        "m4_032_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "water_network"
+      ],
+      "description": "水網入口棧貼著稻地外緣伸到水面，半開的棧板把田邊腳印接上內水船路；霧牌掛在木柱上，引船人靠著篙影看進出水道。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            4,
+            5
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            3,
+            6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            2,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "m4": "M4-032-02",
+      "name": "湖港木棧",
+      "terrain": "dock",
+      "zone": "東湖諸港",
+      "tags": [
+        "m3_032",
+        "m4_032_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "water_network"
+      ],
+      "description": "湖港木棧沿水面排開，濕繩圈和潮線把候船的人分成幾段；短船泊位、魚貨分揀場和蘆草貨棚的聲音都從棧板上碰在一起。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            3,
+            5
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            4,
+            6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            5,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "m4": "M4-032-03",
+      "name": "短船泊位",
+      "terrain": "bridge",
+      "zone": "東湖諸港",
+      "tags": [
+        "m3_032",
+        "m4_032_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "water_network"
+      ],
+      "description": "短船泊位停著幾條內水短船，船槳搭在船舷旁，船戶低聲催人踩穩木板；水面把湖港木棧的腳步聲推得一晃一晃。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            3,
+            5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            4,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "m4": "M4-032-04",
+      "name": "魚貨分揀場",
+      "terrain": "market",
+      "zone": "東湖諸港",
+      "tags": [
+        "m3_032",
+        "m4_032_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "water_network"
+      ],
+      "description": "魚貨分揀場鋪著濕布和魚籃，分揀工把剛上岸的魚貨按大小推成幾堆；腥味、秤聲和短賣低語順著棧板散開。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            4,
+            5
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            3,
+            6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            5,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "m4": "M4-032-05",
+      "name": "蘆草貨棚",
+      "terrain": "warehouse",
+      "zone": "東湖諸港",
+      "tags": [
+        "m3_032",
+        "m4_032_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "water_network"
+      ],
+      "description": "蘆草貨棚半遮在水邊，蘆草捆靠著曬架排開，棚下還留著採集者剛拖過的濕痕；往水倉前場的板路被草屑鋪得發滑。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            4,
+            5
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            5,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "m4": "M4-032-06",
+      "name": "水倉前場",
+      "terrain": "warehouse",
+      "zone": "東湖諸港",
+      "tags": [
+        "m3_032",
+        "m4_032_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "water_network"
+      ],
+      "description": "水倉前場的板車壓著潮濕水印停在倉門外，倉管把魚貨和蘆草分到不同棚口；水聲在木地板下悶悶回響。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            4,
+            6
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            5,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": -2,
+      "y": 5,
+      "m4": "M4-009-01",
+      "name": "礦坑外棚",
+      "terrain": "mountain",
+      "zone": "西北礦場帶",
+      "tags": [
+        "m3_009",
+        "m4_009_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_mine"
+      ],
+      "description": "礦坑外棚壓在山壁陰影下，濕支柱撐住低矮棚頂，吊燈光貼著坑口晃動；換班礦工把沾泥的鎬靠到木架旁，田埂深處、洗礦溝和粗料倉的聲音從三面傳來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -3,
+            5
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -2,
+            6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -1,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": -3,
+      "y": 5,
+      "m4": "M4-009-02",
+      "name": "洗礦溝",
+      "terrain": "road",
+      "zone": "西北礦場帶",
+      "tags": [
+        "m3_009",
+        "m4_009_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_mine"
+      ],
+      "description": "洗礦溝裡的冷水順木槽往下流，石籃一只只浸在混濁水邊；洗礦工把粗料倒進槽口，碎石聲和礦渣坡的滑落聲隔著水霧互相接住。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -2,
+            5
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -3,
+            6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -4,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "x": -2,
+      "y": 6,
+      "m4": "M4-009-03",
+      "name": "粗料倉",
+      "terrain": "warehouse",
+      "zone": "西北礦場帶",
+      "tags": [
+        "m3_009",
+        "m4_009_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_mine"
+      ],
+      "description": "粗料倉前堆著還帶水痕的礦袋，木牌用炭線標出坑口、重量和去向；倉管把新送來的石料推到標記旁，工具修棚的敲鐵聲和舊道裝車點的車輪聲輪流靠近。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            -2,
+            5
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -3,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": -3,
+      "y": 6,
+      "m4": "M4-009-04",
+      "name": "工具修棚",
+      "terrain": "workshop",
+      "zone": "西北礦場帶",
+      "tags": [
+        "m3_009",
+        "m4_009_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_mine"
+      ],
+      "description": "工具修棚裡掛著裂柄鎬、車輪鐵圈和備用支架，火星在鐵件旁短短一亮；修具工把鬆掉的鉚釘重新敲緊，棚外粗料倉和舊道裝車點的腳步不斷催著工序。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            -3,
+            5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -2,
+            6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -4,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": -4,
+      "y": 5,
+      "m4": "M4-009-05",
+      "name": "礦渣坡",
+      "terrain": "hills",
+      "zone": "西北礦場帶",
+      "tags": [
+        "m3_009",
+        "m4_009_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_mine"
+      ],
+      "description": "礦渣坡外側堆著灰黑碎石，幾道新滑坡痕從高處斜斜切下來；推車人把廢料倒到安全線內，洗礦溝的水聲在坡下變得又悶又濁。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -3,
+            5
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -4,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": -4,
+      "y": 6,
+      "m4": "M4-009-06",
+      "name": "舊道裝車點",
+      "terrain": "road",
+      "zone": "西北礦場帶",
+      "tags": [
+        "m3_009",
+        "m4_009_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_mine"
+      ],
+      "description": "舊道裝車點把礦料推向邊城外門方向，礦車停在磨亮的車轍旁，稱重木牌被灰粉蓋住一半；車夫把繩索掛上車架，等粗料倉那邊放出下一批礦袋。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -3,
+            6
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -4,
+            5
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -5,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": -5,
+      "y": 6,
+      "m4": "M4-011-01",
+      "name": "邊城外門",
+      "terrain": "guard_post",
+      "zone": "西北邊城群",
+      "tags": [
+        "m3_011",
+        "m4_011_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_border_city"
+      ],
+      "description": "邊城外門半開在舊道盡頭，木門陰影壓著查驗桌，通行牌和商隊貨包排成一線；守門人一面聽哨樓梯上的旗繩聲，一面把從舊道裝車點來的車隊攔在門影下。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -6,
+            6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -5,
+            7
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -4,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": -6,
+      "y": 6,
+      "m4": "M4-011-02",
+      "name": "哨樓梯",
+      "terrain": "guard_post",
+      "zone": "西北邊城群",
+      "tags": [
+        "m3_011",
+        "m4_011_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_border_city"
+      ],
+      "description": "哨樓梯沿城牆內側往上折，旗繩貼著木欄抽動，風鈴聲被夜風切得很細；哨兵在半高處看邊城外門、乾草棚和糧倉前場的動靜。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -5,
+            6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -6,
+            7
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -7,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": -5,
+      "y": 7,
+      "m4": "M4-011-03",
+      "name": "邊市口",
+      "terrain": "market",
+      "zone": "西北邊城群",
+      "tags": [
+        "m3_011",
+        "m4_011_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_border_city"
+      ],
+      "description": "邊市口貼著城門內側展開，臨時攤布、告示木牌和商旅包袱擠在低牆下；小販把短貨和路上消息一起壓低聲賣給等通行的人。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            -5,
+            6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -6,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "x": -6,
+      "y": 7,
+      "m4": "M4-011-04",
+      "name": "糧倉前場",
+      "terrain": "granary",
+      "zone": "西北邊城群",
+      "tags": [
+        "m3_011",
+        "m4_011_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_border_city"
+      ],
+      "description": "糧倉前場堆著邊城補給糧袋，推車從邊市口和哨樓梯之間穿過；倉管按著冊簿，把要送去巡邏院的糧袋和留在前場的口糧分開。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            -6,
+            6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -5,
+            7
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -7,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "x": -7,
+      "y": 6,
+      "m4": "M4-011-05",
+      "name": "乾草棚",
+      "terrain": "stables",
+      "zone": "西北邊城群",
+      "tags": [
+        "m3_011",
+        "m4_011_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_border_city"
+      ],
+      "description": "乾草棚靠在城牆背風處，草捆和畜欄繩索堆在棚柱旁；馬夫把乾草抖鬆，讓等在邊城外門外的牲口先安靜下來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -6,
+            6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -7,
+            7
+          ]
+        }
+      ]
+    },
+    {
+      "x": -7,
+      "y": 7,
+      "m4": "M4-011-06",
+      "name": "巡邏院",
+      "terrain": "barracks",
+      "zone": "西北邊城群",
+      "tags": [
+        "m3_011",
+        "m4_011_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "northwest_border_city"
+      ],
+      "description": "巡邏院被矮牆圈住，兵器架、值牌和拘留繩都靠著牆邊放好；巡哨在糧倉前場與乾草棚之間交班，院內腳步聲短而硬。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -6,
+            7
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -7,
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "x": -2,
+      "y": 0,
+      "m4": "M4-021-01",
+      "name": "工坊街口",
+      "terrain": "workshop",
+      "zone": "西部工坊帶",
+      "tags": [
+        "m3_021",
+        "m4_021_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_workshop"
+      ],
+      "description": "工坊街口把臨河歇腳處的人聲接進西側作坊，路牌被灰粉和手印磨暗；學徒抱著料件，在鍛造棚、料場秤台和街口之間小步穿行。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -3,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -2,
+            1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -1,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -3,
+      "y": 0,
+      "m4": "M4-021-02",
+      "name": "鍛造棚",
+      "terrain": "blacksmith",
+      "zone": "西部工坊帶",
+      "tags": [
+        "m3_021",
+        "m4_021_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_workshop"
+      ],
+      "description": "鍛造棚下火爐紅光貼著棚柱跳動，鐵胚在砧面上慢慢轉亮；鐵匠的錘聲壓過工坊街口人語，也震得石粉堆那邊落下一點灰。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -2,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -3,
+            1
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -4,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -2,
+      "y": 1,
+      "m4": "M4-021-03",
+      "name": "料場秤台",
+      "terrain": "warehouse",
+      "zone": "西部工坊帶",
+      "tags": [
+        "m3_021",
+        "m4_021_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_workshop"
+      ],
+      "description": "料場秤台旁堆著石材、礦料和記帳板，秤桿影子壓在灰粉上；秤手把料重記下，讓買料人把下一車推向修車棚。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            -2,
+            0
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -3,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -3,
+      "y": 1,
+      "m4": "M4-021-04",
+      "name": "修車棚",
+      "terrain": "workshop",
+      "zone": "西部工坊帶",
+      "tags": [
+        "m3_021",
+        "m4_021_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_workshop"
+      ],
+      "description": "修車棚前半邊被木輪架佔住，輪軸、工具箱和油布繩圈擺在棚柱旁；修車工把外路破輪墊高，等鍛造棚送來合用的鐵件。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            -3,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -2,
+            1
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -4,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -4,
+      "y": 0,
+      "m4": "M4-021-05",
+      "name": "石粉堆",
+      "terrain": "road",
+      "zone": "西部工坊帶",
+      "tags": [
+        "m3_021",
+        "m4_021_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_workshop"
+      ],
+      "description": "石粉堆沿鍛造棚外側散開，灰白粉塵從遮布邊緣浮起；搬料人把切下的碎料壓回堆內，順手清出通往牧地柵門的窄路。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -3,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -4,
+            1
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -5,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -4,
+      "y": 1,
+      "m4": "M4-021-06",
+      "name": "油布庫",
+      "terrain": "warehouse",
+      "zone": "西部工坊帶",
+      "tags": [
+        "m3_021",
+        "m4_021_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_workshop"
+      ],
+      "description": "油布庫裡堆著防雨油布、繩圈和修車耗材，厚重氣味貼在門口不散；看庫人把要送去修車棚的油布捲分出，剩下的重新掛回牆邊。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -3,
+            1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -4,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -5,
+      "y": 0,
+      "m4": "M4-022-01",
+      "name": "牧地柵門",
+      "terrain": "stables",
+      "zone": "西部牧地",
+      "tags": [
+        "m3_022",
+        "m4_022_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_pasture"
+      ],
+      "description": "牧地柵門接著石粉堆外的灰路，欄木上掛著畜牌和濕繩；牧人把柵門開出一條縫，讓牲口從工坊邊慢慢轉進草地。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -6,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -5,
+            1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -4,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -6,
+      "y": 0,
+      "m4": "M4-022-02",
+      "name": "水槽棚",
+      "terrain": "farm_field",
+      "zone": "西部牧地",
+      "tags": [
+        "m3_022",
+        "m4_022_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_pasture"
+      ],
+      "description": "水槽棚裡長水槽映著泥蹄印，桶底聲在棚柱旁來回；牧童把水桶拖到槽邊，讓剛進柵門的牲口輪流靠近。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -5,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -6,
+            1
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -7,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -5,
+      "y": 1,
+      "m4": "M4-022-03",
+      "name": "乾草堆",
+      "terrain": "farm_field",
+      "zone": "西部牧地",
+      "tags": [
+        "m3_022",
+        "m4_022_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_pasture"
+      ],
+      "description": "乾草堆被篷布壓住一角，草繩和散落草屑沿路拖到畜欄口；搬草人把乾草拆成小束，分送給柵門邊和欄內牲口。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            -5,
+            0
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -6,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -6,
+      "y": 1,
+      "m4": "M4-022-04",
+      "name": "畜欄口",
+      "terrain": "stables",
+      "zone": "西部牧地",
+      "tags": [
+        "m3_022",
+        "m4_022_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_pasture"
+      ],
+      "description": "畜欄口繩索繞著欄柱，一旁掛著畜牌和看價木牌；牲口販摸過畜背與蹄口，把價碼壓低聲報給乾草堆旁等候的人。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "south",
+          "to": [
+            -6,
+            0
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -5,
+            1
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -7,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -7,
+      "y": 0,
+      "m4": "M4-022-05",
+      "name": "獸醫棚",
+      "terrain": "clinic",
+      "zone": "西部牧地",
+      "tags": [
+        "m3_022",
+        "m4_022_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_pasture"
+      ],
+      "description": "獸醫棚前藥箱和繃帶擺在矮桌上，草屑黏在箱角；獸醫把受傷牲口牽到水槽棚旁的陰影裡查看，旁人按著繩索等吩咐。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -6,
+            0
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -7,
+            1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -7,
+            -1
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -8,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -7,
+      "y": 1,
+      "m4": "M4-022-06",
+      "name": "季節草場",
+      "terrain": "grassland",
+      "zone": "西部牧地",
+      "tags": [
+        "m3_022",
+        "m4_022_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "west_pasture"
+      ],
+      "description": "季節草場向低坡外展開，風草貼著畜群蹄邊起伏，遠哨影子在草色後方一閃；牧人把畜群壓在邊線內，不讓牠們散回欄外。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -6,
+            1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -7,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -8,
+      "y": 0,
+      "m4": "M4-020-01",
+      "name": "城邦外坡道",
+      "terrain": "road",
+      "zone": "西部城邦圈",
+      "tags": [
+        "m3_020",
+        "m4_020_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "western_city_state",
+        "city_state_approach"
+      ],
+      "description": "城邦外坡道從獸醫棚外向西抬起，石粉、蹄印和車轍在坡面上壓成一條灰亮長線；牽獸人把牧地來的牲口壓慢，讓候檢車隊先貼著石壘門方向排開。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -7,
+            0
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -9,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -9,
+      "y": 0,
+      "m4": "M4-020-02",
+      "name": "石壘門",
+      "terrain": "guard_post",
+      "zone": "西部城邦圈",
+      "tags": [
+        "m3_020",
+        "m4_020_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "western_city_state",
+        "city_state_gate"
+      ],
+      "description": "石壘門矮厚而不華麗，門側堆著通行牌、鐵環和獸欄繩；門衛按著木牌讓商隊、牧人和工坊送件分成幾列，門內券道的陰影把聲音壓得很近。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -8,
+            0
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -10,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -10,
+      "y": 0,
+      "m4": "M4-020-03",
+      "name": "門內券道",
+      "terrain": "urban",
+      "zone": "西部城邦圈",
+      "tags": [
+        "m3_020",
+        "m4_020_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "western_city_state",
+        "vaulted_entry"
+      ],
+      "description": "門內券道低低穿過石壘，牆面掛著修補過的盾牌和候審木籤；引路人把剛過門的人流推向旗石廣場，讓外坡道來的車聲停在身後。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -9,
+            0
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -10,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -10,
+      "y": -1,
+      "m4": "M4-020-04",
+      "name": "旗石廣場",
+      "terrain": "urban",
+      "zone": "西部城邦圈",
+      "tags": [
+        "m3_020",
+        "m4_020_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "western_city_state",
+        "flagstone_square"
+      ],
+      "description": "旗石廣場用幾面舊旗分出等候線，石縫裡卡著乾草和鐵屑；旗手站在旗桿下把門內券道的人流分向西軸坡街、鑄幣巷口和傭工棚邊。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -10,
+            0
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -10,
+            -2
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -11,
+            -1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -9,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -10,
+      "y": -2,
+      "m4": "M4-020-05",
+      "name": "西軸坡街",
+      "terrain": "market",
+      "zone": "西部城邦圈",
+      "tags": [
+        "m3_020",
+        "m4_020_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "western_city_state",
+        "axis_slope_street"
+      ],
+      "description": "西軸坡街沿著城邦內坡往下折，攤布、鐵件和馬具掛在低檐下；坡街販把旗石廣場來的消息壓低聲傳給議棚前階，街尾還有更深的城邦聲音。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -10,
+            -1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -10,
+            -3
+          ]
+        }
+      ]
+    },
+    {
+      "x": -10,
+      "y": -3,
+      "m4": "M4-020-06",
+      "name": "議棚前階",
+      "terrain": "courthouse",
+      "zone": "西部城邦圈",
+      "tags": [
+        "m3_020",
+        "m4_020_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "western_city_state",
+        "council_steps"
+      ],
+      "description": "議棚前階壓在坡街下端，木棚裡傳出低低議事聲，階邊貼著欠糧、傭工和通行牌的告示；記牌人把等候申訴的人帶到階側，不讓人群堵住坡街。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -10,
+            -2
+          ]
+        }
+      ]
+    },
+    {
+      "x": -11,
+      "y": -1,
+      "m4": "M4-020-07",
+      "name": "鑄幣巷口",
+      "terrain": "bank",
+      "zone": "西部城邦圈",
+      "tags": [
+        "m3_020",
+        "m4_020_07",
+        "pangu_skeleton",
+        "scene_polished",
+        "western_city_state",
+        "mint_lane"
+      ],
+      "description": "鑄幣巷口只開到半扇門，銅秤、碎銀和封袋在門內一閃；兌牌人把要換票的人攔在旗石廣場側邊，讓真正的鑄幣巷仍藏在門後。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -10,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -9,
+      "y": -1,
+      "m4": "M4-020-08",
+      "name": "傭工棚邊",
+      "terrain": "guild_hall",
+      "zone": "西部城邦圈",
+      "tags": [
+        "m3_020",
+        "m4_020_08",
+        "pangu_skeleton",
+        "scene_polished",
+        "western_city_state",
+        "hire_shed_edge"
+      ],
+      "description": "傭工棚邊掛著短工牌和舊繩結，幾排等工的人靠棚柱站著；棚頭人把從旗石廣場分來的商隊和牧地活計拆成小隊，還不讓人往棚內深處亂走。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -10,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -7,
+      "y": -1,
+      "m4": "M4-037-01",
+      "name": "牧場門牌",
+      "terrain": "stables",
+      "zone": "西南牧場帶",
+      "tags": [
+        "m3_037",
+        "m4_037_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_ranch"
+      ],
+      "description": "牧場門牌立在獸醫棚外路口，木牌被馬蹄泥點打暗，進出名冊夾在門柱旁；牧場管事看著馬欄前場和草料棚的牽繩，慢慢分派馬匹。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -6,
+            -1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -7,
+            -2
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -7,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "x": -6,
+      "y": -1,
+      "m4": "M4-037-02",
+      "name": "馬欄前場",
+      "terrain": "stables",
+      "zone": "西南牧場帶",
+      "tags": [
+        "m3_037",
+        "m4_037_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_ranch"
+      ],
+      "description": "馬欄前場擺著水桶、欄繩和挑馬用的木牌，馬蹄在濕土上踩出亮痕；馬夫摸過馬頸與蹄口，讓看馬的人站在欄外等。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -7,
+            -1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -6,
+            -2
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -5,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -7,
+      "y": -2,
+      "m4": "M4-037-03",
+      "name": "草料棚",
+      "terrain": "warehouse",
+      "zone": "西南牧場帶",
+      "tags": [
+        "m3_037",
+        "m4_037_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_ranch"
+      ],
+      "description": "草料棚裡乾草和豆料分成幾堆，草叉靠在棚柱邊；草料工聽著商隊泊位報來的牲口數，把要送往邊鎮井口方向的補給先分出。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -7,
+            -1
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -6,
+            -2
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -7,
+            -3
+          ]
+        }
+      ]
+    },
+    {
+      "x": -6,
+      "y": -2,
+      "m4": "M4-037-04",
+      "name": "獸醫點",
+      "terrain": "clinic",
+      "zone": "西南牧場帶",
+      "tags": [
+        "m3_037",
+        "m4_037_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_ranch"
+      ],
+      "description": "獸醫點靠著馬欄側邊，藥袋掛在欄上，木盆裡泡著剛換下的繃帶；獸醫低頭查看馬腿，讓馬夫把繩子放鬆一點。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -6,
+            -1
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -7,
+            -2
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -5,
+            -2
+          ]
+        }
+      ]
+    },
+    {
+      "x": -5,
+      "y": -1,
+      "m4": "M4-037-05",
+      "name": "馱具修棚",
+      "terrain": "workshop",
+      "zone": "西南牧場帶",
+      "tags": [
+        "m3_037",
+        "m4_037_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_ranch"
+      ],
+      "description": "馱具修棚下吊著皮帶、銅扣和斷繩，木墊上壓著裂開的鞍帶；修具工把商隊泊位送來的馱具重新穿孔扣緊。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -6,
+            -1
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -5,
+            -2
+          ]
+        }
+      ]
+    },
+    {
+      "x": -5,
+      "y": -2,
+      "m4": "M4-037-06",
+      "name": "商隊泊位",
+      "terrain": "caravanserai",
+      "zone": "西南牧場帶",
+      "tags": [
+        "m3_037",
+        "m4_037_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_ranch"
+      ],
+      "description": "商隊泊位邊排著馱獸、貨包和水囊，貨繩一圈圈繞在木樁上；商隊人把剛修好的馱具扣回馱獸身上，等草料棚送來下一批補給。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -6,
+            -2
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -5,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "x": -7,
+      "y": -3,
+      "m4": "M4-040-01",
+      "name": "邊鎮井口",
+      "terrain": "road",
+      "zone": "西南邊鎮",
+      "tags": [
+        "m3_040",
+        "m4_040_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_border_town"
+      ],
+      "description": "邊鎮井口立在草料棚外的路口，井繩濕亮地垂在石沿上，路旗指向低牆門洞和客棧前廊；取水人把水桶拉上來，讓旅人先把水囊補滿。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -6,
+            -3
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -7,
+            -4
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -7,
+            -2
+          ]
+        }
+      ]
+    },
+    {
+      "x": -6,
+      "y": -3,
+      "m4": "M4-040-02",
+      "name": "低牆門洞",
+      "terrain": "guard_post",
+      "zone": "西南邊鎮",
+      "tags": [
+        "m3_040",
+        "m4_040_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_border_town"
+      ],
+      "description": "低牆門洞卡著木拒馬和路牌，牆面只有半人高，卻把外路車隊擋成一排；守門人看過貨繩與水囊，才放人往補給小市裡走。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -7,
+            -3
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -6,
+            -4
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -5,
+            -3
+          ]
+        }
+      ]
+    },
+    {
+      "x": -7,
+      "y": -4,
+      "m4": "M4-040-03",
+      "name": "客棧前廊",
+      "terrain": "inn",
+      "zone": "西南邊鎮",
+      "tags": [
+        "m3_040",
+        "m4_040_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_border_town"
+      ],
+      "description": "客棧前廊靠著邊鎮井口，長凳、茶碗和旅人包袱排在廊柱下；店伙把熱水壺放到桌邊，等外路旅人卸下身上的塵土。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -7,
+            -3
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -6,
+            -4
+          ]
+        }
+      ]
+    },
+    {
+      "x": -6,
+      "y": -4,
+      "m4": "M4-040-04",
+      "name": "補給小市",
+      "terrain": "market",
+      "zone": "西南邊鎮",
+      "tags": [
+        "m3_040",
+        "m4_040_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_border_town"
+      ],
+      "description": "補給小市把鹽袋、水囊和乾糧包排在攤布前，外路價碼寫在木牌背面；小販把補給分給客棧前廊和車隊場之間來回的人。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -6,
+            -3
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -7,
+            -4
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            -5,
+            -4
+          ]
+        }
+      ]
+    },
+    {
+      "x": -5,
+      "y": -3,
+      "m4": "M4-040-05",
+      "name": "巡哨棚",
+      "terrain": "barracks",
+      "zone": "西南邊鎮",
+      "tags": [
+        "m3_040",
+        "m4_040_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_border_town"
+      ],
+      "description": "巡哨棚靠著低牆門洞內側，槍架和值牌貼著棚壁放好；巡哨一面聽門洞外的動靜，一面把車隊場的出入次序壓低聲傳下去。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -6,
+            -3
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -5,
+            -4
+          ]
+        }
+      ]
+    },
+    {
+      "x": -5,
+      "y": -4,
+      "m4": "M4-040-06",
+      "name": "車隊場",
+      "terrain": "caravanserai",
+      "zone": "西南邊鎮",
+      "tags": [
+        "m3_040",
+        "m4_040_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "southwest_border_town"
+      ],
+      "description": "車隊場裡車轍交錯，貨繩、水囊和鹽袋被重新綁上車架；車夫等補給小市送來最後一批乾糧，再看巡哨棚是否放行。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -6,
+            -4
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            -5,
+            -3
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": -5,
+      "m4": "M4-045-01",
+      "name": "糧倉外秤",
+      "terrain": "granary",
+      "zone": "南部糧倉",
+      "tags": [
+        "m3_045",
+        "m4_045_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "grain_route"
+      ],
+      "description": "糧倉外秤立在下游田埂路盡頭，秤桿垂在雨棚陰影裡；秤手把糧袋扶上秤盤，車輪泥水和稻殼粉在入口混成一條亮痕。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -1,
+            -5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            0,
+            -6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            0,
+            -4
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": -5,
+      "m4": "M4-045-02",
+      "name": "倉門前場",
+      "terrain": "granary",
+      "zone": "南部糧倉",
+      "tags": [
+        "m3_045",
+        "m4_045_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "grain_route"
+      ],
+      "description": "倉門前場貼著高倉門展開，封條和木栓掛在門側；守倉人照著秤單開合門縫，糧袋被一包包推進陰涼處。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            0,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            1,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": -5,
+      "m4": "M4-044-01",
+      "name": "南城外驛道",
+      "terrain": "road",
+      "zone": "南方大城圈",
+      "tags": [
+        "m3_044",
+        "m4_044_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "southern_city",
+        "subdistrict_entry",
+        "south_city_road"
+      ],
+      "description": "南城外驛道從糧倉外秤旁分出，車轍、路旗和候檢行囊一路壓向南城牆影；驛夫把進城的人流先排成慢慢往前挪的長線。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            0,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -1,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": -6,
+      "m4": "M4-044-02",
+      "name": "南城甕門",
+      "terrain": "guard_post",
+      "zone": "南方大城圈",
+      "tags": [
+        "m3_044",
+        "m4_044_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "southern_city",
+        "subdistrict_entry",
+        "city_gate"
+      ],
+      "description": "南城甕門把高牆壓到頭頂，門洞裡的涼影切開外驛道的濕熱；門卒按著通行木牌，讓車隊與步行人分道入城。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -1,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -1,
+            -7
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": -7,
+      "m4": "M4-044-03",
+      "name": "門內集散廣場",
+      "terrain": "urban",
+      "zone": "南方大城圈",
+      "tags": [
+        "m3_044",
+        "m4_044_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "southern_city",
+        "subdistrict_entry",
+        "inner_square"
+      ],
+      "description": "門內集散廣場比外驛道忽然開闊，旗桿、候車牌和臨時貨架把進城人流拆成幾股；引路人站在石階邊，指向更深的中軸大街。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -1,
+            -6
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -1,
+            -8
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": -8,
+      "m4": "M4-044-04",
+      "name": "中軸大街南段",
+      "terrain": "urban",
+      "zone": "南方大城圈",
+      "tags": [
+        "m3_044",
+        "m4_044_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "southern_city",
+        "subdistrict_entry",
+        "axis_street"
+      ],
+      "description": "中軸大街南段把門內廣場的人聲拉成長線，濕熱街風沿石面往深處走；攤主、挑夫和路邊旗影讓大城不是一排功能牌，而是一條必須走過的主街。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -1,
+            -7
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -1,
+            -9
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            -2,
+            -8
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            0,
+            -8
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": -9,
+      "m4": "M4-044-05",
+      "name": "中軸大街中段",
+      "terrain": "urban",
+      "zone": "南方大城圈",
+      "tags": [
+        "m3_044",
+        "m4_044_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "southern_city",
+        "subdistrict_entry",
+        "axis_street"
+      ],
+      "description": "中軸大街中段離城門更深，兩側樓影把街聲壓得更密；巡街人沿旗繩下的陰影慢走，前方大十字通衢的車鈴聲一陣陣傳來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -1,
+            -8
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            -1,
+            -10
+          ]
+        }
+      ]
+    },
+    {
+      "x": -2,
+      "y": -8,
+      "m4": "M4-044-06",
+      "name": "外區坊門",
+      "terrain": "urban",
+      "zone": "南方大城圈",
+      "tags": [
+        "m3_044",
+        "m4_044_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "southern_city",
+        "subdistrict_entry",
+        "ward_gate"
+      ],
+      "description": "外區坊門斜接中軸大街南段，門牌、窄巷和曬衣竿把大城的住戶日常藏在一側；坊門看守只讓熟路的人往更深巷內走。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            -1,
+            -8
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": -8,
+      "m4": "M4-044-07",
+      "name": "商會長廊",
+      "terrain": "market",
+      "zone": "南方大城圈",
+      "tags": [
+        "m3_044",
+        "m4_044_07",
+        "pangu_skeleton",
+        "scene_polished",
+        "southern_city",
+        "subdistrict_entry",
+        "merchant_corridor"
+      ],
+      "description": "商會長廊貼著中軸大街南段展開，木欄後是貨樣匣、印章盒和低聲議價；商會書手把外城來的貨單收進長桌陰影裡。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            -1,
+            -8
+          ]
+        }
+      ]
+    },
+    {
+      "x": -1,
+      "y": -10,
+      "m4": "M4-044-08",
+      "name": "大十字通衢",
+      "terrain": "urban",
+      "zone": "南方大城圈",
+      "tags": [
+        "m3_044",
+        "m4_044_08",
+        "pangu_skeleton",
+        "scene_polished",
+        "southern_city",
+        "subdistrict_entry",
+        "crossroads"
+      ],
+      "description": "大十字通衢把中軸大街的縱深推到第一個大岔口，車鈴、旗影和遠處官署鼓聲從四面交疊；指路人只把你帶到這裡，更多城區仍在街聲深處。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            -1,
+            -9
+          ]
+        }
+      ]
+    },
+    {
+      "x": 0,
+      "y": -6,
+      "m4": "M4-045-03",
+      "name": "曬場邊",
+      "terrain": "farm_field",
+      "zone": "南部糧倉",
+      "tags": [
+        "m3_045",
+        "m4_045_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "grain_route"
+      ],
+      "description": "曬場邊攤著曬席，穀粒被木耙翻過時發出乾響；翻穀人沿邊緣收攏潮濕處，稻殼粉貼在鞋面上。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            0,
+            -5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            1,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 1,
+      "y": -6,
+      "m4": "M4-045-04",
+      "name": "車行口",
+      "terrain": "road",
+      "zone": "南部糧倉",
+      "tags": [
+        "m3_045",
+        "m4_045_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "grain_route"
+      ],
+      "description": "車行口的車轍從南側路面壓進倉區，排隊牌立在泥邊；車夫壓低聲音催前車挪動，麻繩和軸木聲在口子上卡成一團。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            1,
+            -5
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            0,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            2,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 2,
+      "y": -5,
+      "m4": "M4-045-05",
+      "name": "守倉棚",
+      "terrain": "warehouse",
+      "zone": "南部糧倉",
+      "tags": [
+        "m3_045",
+        "m4_045_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "grain_route"
+      ],
+      "description": "守倉棚半遮著冊簿和茶壺，棚柱旁掛著值牌；倉管把秤單、封條和車次對在一起，門前的人聲到了棚下就低下來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            1,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            2,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            3,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 2,
+      "y": -6,
+      "m4": "M4-045-06",
+      "name": "糧車泊位",
+      "terrain": "caravanserai",
+      "zone": "南部糧倉",
+      "tags": [
+        "m3_045",
+        "m4_045_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "grain_route"
+      ],
+      "description": "糧車泊位停著卸到一半的車架，麻繩垂在輪旁；搬糧人把糧袋從車尾接到肩上，木輪壓過曬場邊緣的聲音沉沉作響。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            1,
+            -6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            2,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 3,
+      "y": -5,
+      "m4": "M4-048-01",
+      "name": "河口潮泥碼頭",
+      "terrain": "dock",
+      "zone": "河口港群",
+      "tags": [
+        "m3_048",
+        "m4_048_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "estuary_port"
+      ],
+      "description": "河口潮泥碼頭貼著退潮後的黑泥，纜繩在木樁旁繃緊；碼頭工把河上來的糧袋和海船邊卸下的木箱分開，守倉棚那頭的糧路到這裡混進鹹潮味。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            4,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            3,
+            -6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            2,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 4,
+      "y": -5,
+      "m4": "M4-048-02",
+      "name": "稅站棚",
+      "terrain": "courthouse",
+      "zone": "河口港群",
+      "tags": [
+        "m3_048",
+        "m4_048_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "estuary_port"
+      ],
+      "description": "稅站棚壓在碼頭入口旁，貨單在木桌上攤開；稅吏用印章壓住潮氣捲起的紙角，候查的人把木箱和糧袋停在棚外。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            3,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            4,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            5,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 3,
+      "y": -6,
+      "m4": "M4-048-03",
+      "name": "船行門面",
+      "terrain": "guild_hall",
+      "zone": "河口港群",
+      "tags": [
+        "m3_048",
+        "m4_048_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "estuary_port"
+      ],
+      "description": "船行門面掛著幾塊潮濕航線板，牌價被鹹風磨得發暗；船行人一邊喊船位，一邊把雇船消息往碼頭和潮線貨場遞。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            3,
+            -5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            4,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 4,
+      "y": -6,
+      "m4": "M4-048-04",
+      "name": "潮線貨場",
+      "terrain": "warehouse",
+      "zone": "河口港群",
+      "tags": [
+        "m3_048",
+        "m4_048_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "estuary_port"
+      ],
+      "description": "潮線貨場的木箱墊在石條上，潮印一圈圈留在地面；搬貨人趁水位低時把貨推向候泊線，也把要查驗的箱包壓到稅站棚那側。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            4,
+            -5
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            3,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            5,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 5,
+      "y": -5,
+      "m4": "M4-048-05",
+      "name": "河海倉門",
+      "terrain": "warehouse",
+      "zone": "河口港群",
+      "tags": [
+        "m3_048",
+        "m4_048_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "estuary_port"
+      ],
+      "description": "河海倉門半遮著雨布，封牌掛在門樁旁晃動；倉管把河貨、海貨和稅站放行過的貨單分開，門內傳出木箱靠牆的悶響。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            4,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            5,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            6,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 5,
+      "y": -6,
+      "m4": "M4-048-06",
+      "name": "商船候泊線",
+      "terrain": "dock",
+      "zone": "河口港群",
+      "tags": [
+        "m3_048",
+        "m4_048_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "estuary_port"
+      ],
+      "description": "商船候泊線外停著等潮的船影，候泊牌在風裡敲著木柱；船員把錨繩收成圈，隔著潮水等稅站棚那頭放行。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            4,
+            -6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            5,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 6,
+      "y": -5,
+      "m4": "M4-050-01",
+      "name": "東南船塢口",
+      "terrain": "dock",
+      "zone": "東南船港",
+      "tags": [
+        "m3_050",
+        "m4_050_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "shipyard_port"
+      ],
+      "description": "東南船塢口貼著河海倉門外的潮線，木屑和瀝青味從修船架那頭飄來；船匠把半修的船板靠在入口旁，補給倉和碼頭木階的腳步在這裡分流。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            7,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            6,
+            -6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            5,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 7,
+      "y": -5,
+      "m4": "M4-050-02",
+      "name": "修船架",
+      "terrain": "workshop",
+      "zone": "東南船港",
+      "tags": [
+        "m3_050",
+        "m4_050_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "shipyard_port"
+      ],
+      "description": "修船架下撐著一段翻起的船身，木架、楔子和瀝青桶把地面擠得很窄；修船工沿著肋木敲打，聲音一路傳向帆布曬場。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            6,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            7,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            8,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 6,
+      "y": -6,
+      "m4": "M4-050-03",
+      "name": "補給倉",
+      "terrain": "warehouse",
+      "zone": "東南船港",
+      "tags": [
+        "m3_050",
+        "m4_050_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "shipyard_port"
+      ],
+      "description": "補給倉門前堆著淡水桶、乾糧箱和油布包，倉管把近海船要帶走的份量分成幾堆；碼頭木階那頭不斷有人來催裝船。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            6,
+            -5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            7,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 7,
+      "y": -6,
+      "m4": "M4-050-04",
+      "name": "碼頭木階",
+      "terrain": "bridge",
+      "zone": "東南船港",
+      "tags": [
+        "m3_050",
+        "m4_050_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "shipyard_port"
+      ],
+      "description": "碼頭木階半濕半乾，繩柱旁的腳印被海水磨亮；船客扶著木階上下，補給倉的水桶和船戶街口的飯香一前一後貼過來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            7,
+            -5
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            6,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            8,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 8,
+      "y": -5,
+      "m4": "M4-050-05",
+      "name": "帆布曬場",
+      "terrain": "workshop",
+      "zone": "東南船港",
+      "tags": [
+        "m3_050",
+        "m4_050_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "shipyard_port"
+      ],
+      "description": "帆布曬場鋪著一片片補過的舊帆，針線架被風吹得輕響；補帆人沿著裂口穿針，外貿碼頭那頭的船旗聲隱約傳來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            7,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            8,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            9,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 8,
+      "y": -6,
+      "m4": "M4-050-06",
+      "name": "船戶街口",
+      "terrain": "urban",
+      "zone": "東南船港",
+      "tags": [
+        "m3_050",
+        "m4_050_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "shipyard_port"
+      ],
+      "description": "船戶街口擠著招工牌、飯攤和晾著鹽味衣物的繩線；船戶在門口比劃工錢與船期，帆布曬場和碼頭木階的人聲從兩邊交進來。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            7,
+            -6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            8,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 9,
+      "y": -5,
+      "m4": "M4-053-01",
+      "name": "外貿碼頭",
+      "terrain": "dock",
+      "zone": "東南外貿港",
+      "tags": [
+        "m3_053",
+        "m4_053_01",
+        "pangu_skeleton",
+        "scene_polished",
+        "foreign_trade_port"
+      ],
+      "description": "外貿碼頭貼著東南船港的帆布曬場，港旗被海風扯得很直；船員把外地貨箱吊下甲板，海關前棚和商館街口的人聲在碼頭邊交錯。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "east",
+          "to": [
+            10,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            9,
+            -6
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            8,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 10,
+      "y": -5,
+      "m4": "M4-053-02",
+      "name": "海關前棚",
+      "terrain": "courthouse",
+      "zone": "東南外貿港",
+      "tags": [
+        "m3_053",
+        "m4_053_02",
+        "pangu_skeleton",
+        "scene_polished",
+        "foreign_trade_port"
+      ],
+      "description": "海關前棚下壓著一排濕貨單，封條在木桌邊被風掀起又落下；海關吏讓貨箱停在棚外，等翻譯桌那頭把合約名目說清。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            9,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            10,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            11,
+            -5
+          ]
+        }
+      ]
+    },
+    {
+      "x": 9,
+      "y": -6,
+      "m4": "M4-053-03",
+      "name": "商館街口",
+      "terrain": "embassy",
+      "zone": "東南外貿港",
+      "tags": [
+        "m3_053",
+        "m4_053_03",
+        "pangu_skeleton",
+        "scene_polished",
+        "foreign_trade_port"
+      ],
+      "description": "商館街口掛著幾面褪色招牌，貨樣匣和外語低語在門口來回交換；商館人一面看碼頭船旗，一面把客人引向匯兌小屋。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            9,
+            -5
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            10,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 10,
+      "y": -6,
+      "m4": "M4-053-04",
+      "name": "遠洋倉門",
+      "terrain": "warehouse",
+      "zone": "東南外貿港",
+      "tags": [
+        "m3_053",
+        "m4_053_04",
+        "pangu_skeleton",
+        "scene_polished",
+        "foreign_trade_port"
+      ],
+      "description": "遠洋倉門被雨布半遮，異地木箱上的漆印還沒乾；倉管把已查驗和待查驗的箱包分到兩側，門內傳出沉重的拖箱聲。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "north",
+          "to": [
+            10,
+            -5
+          ]
+        },
+        {
+          "dir": "west",
+          "to": [
+            9,
+            -6
+          ]
+        },
+        {
+          "dir": "east",
+          "to": [
+            11,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 11,
+      "y": -5,
+      "m4": "M4-053-05",
+      "name": "翻譯桌",
+      "terrain": "embassy",
+      "zone": "東南外貿港",
+      "tags": [
+        "m3_053",
+        "m4_053_05",
+        "pangu_skeleton",
+        "scene_polished",
+        "foreign_trade_port"
+      ],
+      "description": "翻譯桌上攤著幾份合約，兩種文字並排壓在鎮紙下；翻譯把海關吏聽不懂的貨名重新說過，印章聲不時落在桌角。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            10,
+            -5
+          ]
+        },
+        {
+          "dir": "south",
+          "to": [
+            11,
+            -6
+          ]
+        }
+      ]
+    },
+    {
+      "x": 11,
+      "y": -6,
+      "m4": "M4-053-06",
+      "name": "匯兌小屋",
+      "terrain": "bank",
+      "zone": "東南外貿港",
+      "tags": [
+        "m3_053",
+        "m4_053_06",
+        "pangu_skeleton",
+        "scene_polished",
+        "foreign_trade_port"
+      ],
+      "description": "匯兌小屋裡銅秤晃得很輕，賬冊旁壓著幾疊錢票；兌票人聽著商館街口報來的價碼，把遠洋倉門那頭的貨名寫進欄裡。",
+      "explored": true,
+      "exits": [
+        {
+          "dir": "west",
+          "to": [
+            10,
+            -6
+          ]
+        },
+        {
+          "dir": "north",
+          "to": [
+            11,
+            -5
+          ]
+        }
+      ]
+    }
+  ]
+}
