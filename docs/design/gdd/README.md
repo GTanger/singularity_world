@@ -1,11 +1,17 @@
 # 奇點世界 GDD 細節文檔索引
 
-狀態：細節設計文檔草案，未經使用者拍板前不得視為定案
-日期：2026-06-20
+狀態：除 21 的上層畫面方向已拍板外，其餘細節設計文檔仍是草案
+日期：2026-07-13
 上層入口：`docs/design/奇點世界遊戲設計檔.md`
 第一權威：`docs/DESIGN_KEYWORDS.md`
 
 本目錄把「奇點世界」拆成可逐層審查的遊戲設計文件。這不是 runtime 工單，也不是世界觀散文；每份文件都必須回答玩家看到什麼、能做什麼、狀態怎麼變、失敗或錯過怎麼呈現、下次回來為什麼不同。
+
+現行玩家主畫面先讀
+[21-2d-open-world-primary-surface.md](21-2d-open-world-primary-surface.md)：
+使用者已決定重啟 2D 平面大地圖開放世界，原則上採全螢幕、可縮放大地圖。
+舊文字 MUD 分冊仍可提供零指令互動、狀態回饋與後端契約素材，但不得再
+決定主要畫面外框。
 
 本目錄的審查口徑是「玩家角度 × `DESIGN_KEYWORDS.md`」。使用者以玩家身份判斷設計是否有感、是否想玩；Codex 必須用關鍵字清單約束內容來源與方向。玩家無感或關鍵字追溯不成立，任一項失敗都不得進 runtime。
 
@@ -47,7 +53,7 @@
 |---|---|
 | [00-design-layer-bone-muscle-flesh-skin.md](00-design-layer-bone-muscle-flesh-skin.md) | 遊戲設計層總結構：骨、筋、肉、皮四層與完成標準 |
 | [01-player-and-loops.md](01-player-and-loops.md) | 玩家定位、短中長回圈、登入/離線回圈 |
-| [02-ui-and-input.md](02-ui-and-input.md) | 手機文字 MUD UI、零指令輸入、第一屏資訊分工 |
+| [02-ui-and-input.md](02-ui-and-input.md) | 舊文字 MUD UI 支援層；只保留零指令輸入、資訊分工與互動原則，不再決定主畫面 |
 | [03-scene-card-and-text.md](03-scene-card-and-text.md) | 場景卡、文字呈現、動態現象、痕跡與禁寫規則 |
 | [04-object-action-state.md](04-object-action-state.md) | 物件、動作、狀態、條件、失敗、回訪差異 |
 | [05-character-tools-growth.md](05-character-tools-growth.md) | 玩家角色、工具、熟練、裝備作為動詞來源 |
@@ -66,6 +72,7 @@
 | [18-playable-content-modules.md](18-playable-content-modules.md) | 可玩內容模組：自身、點燈、包貨、清障、等待、問路、交易、幫忙、維修、避險、戰鬥前置、離線安排 |
 | [19-player-facing-surface.md](19-player-facing-surface.md) | 玩家表層與回饋：第一屏、自身入口、場景狀態、入口、動作面板、事件流、成功/失敗/錯過/重訪文字 |
 | [20-combat-formula-design-pack.md](20-combat-formula-design-pack.md) | 衝突與戰鬥故事包 v2.1：前兆、衝突來源、升級、自動交鋒、傷勢、物件痕跡、社會後果、戰報模板與死亡/失敗邊界 |
+| [21-2d-open-world-primary-surface.md](21-2d-open-world-primary-surface.md) | 已拍板上層方向：全螢幕可縮放 2D 平面大地圖、開放世界、玩家與 NPC 直接存在地圖上；拓撲與美術仍待定 |
 
 ## 共通驗收句
 
