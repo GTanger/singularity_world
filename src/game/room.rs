@@ -961,8 +961,8 @@ pub fn ambient_creature_loot(creature_name: &str) -> Option<(&'static str, &'sta
         Some(("wt_cat_0211", "海崖黑野豬牙", "《白塔山海志》：剛鬃山豬力能拱石，其獠牙彎如新月。"))
     } else if creature_name.contains("飛鼠") || creature_name.contains("鼯") {
         Some(("wt_cat_0182", "大赤飛鼠厚絨毛", "《白塔山海志》：赤鼯夜飛巨木之間，其絨輕暖勝狐裘。"))
-    } else if creature_name.contains("白鼻心") || creature_name.contains("狐") || creature_name.contains("獾") || creature_name.contains("麝") || creature_name.contains("貂") || creature_name.contains("猴") {
-        Some(("wt_cat_0183", "白鼻心烏腳香皮", "《白塔山海志》：烏腳香與山林靈獸善棲樟楠果林，毛皮自帶草果清香。"))
+    } else if creature_name.contains("白鼻心") || creature_name.contains("狐") || creature_name.contains("獾") || creature_name.contains("麝") || creature_name.contains("貂") || creature_name.contains("猴") || creature_name.contains("獺") || creature_name.contains("獴") {
+        Some(("wt_cat_0183", "白鼻心烏腳香皮", "《白塔山海志》：烏腳香與山海毛獸善棲林澗礁灣，毛皮細密隔水且帶草果清香。"))
     } else if creature_name.contains("石虎") || creature_name.contains("虎") || creature_name.contains("狼") || creature_name.contains("犬") {
         Some(("wt_cat_0171", "山林石虎斑皮", "《白塔山海志》：石虎耳後生白斑，夜行山林迅捷如電。"))
     } else if creature_name.contains("兔") || creature_name.contains("鼠") {
@@ -971,8 +971,8 @@ pub fn ambient_creature_loot(creature_name: &str) -> Option<(&'static str, &'sta
         Some(("wt_cat_0176", "泥甲巨鱷厚麟皮", "《白塔山海志》：泥甲巨獸伏於腐葉深澤，背麟刀斧難入。"))
     } else if creature_name.contains("烏賊") || creature_name.contains("花枝") {
         Some(("wt_cat_0236", "大花枝鮮黑墨囊", "《白塔山海志》：深海巨鰂眼如銅鑼，墨囊濃黑如漆。"))
-    } else if creature_name.contains("鯨") || creature_name.contains("海翁") || creature_name.contains("鯊") || creature_name.contains("海狗") || creature_name.contains("海獺") {
-        Some(("wt_cat_0220", "豆腐鯊厚砂魚皮", "《白塔山海志》：海翁巨魚浮海如嶼，其皮粗韌如砂石。"))
+    } else if creature_name.contains("鯨") || creature_name.contains("海翁") || creature_name.contains("鯊") {
+        Some(("wt_cat_0220", "豆腐鯊厚砂魚皮", "《白塔山海志》：海翁巨鯊浮海如嶼，其皮粗韌如砂石。"))
     } else if creature_name.contains("龍魚") || creature_name.contains("鬼頭刀") || creature_name.contains("苦花") || creature_name.contains("鯇") || creature_name.contains("鰻") || creature_name.contains("魚") {
         Some(("wt_cat_0224", "銀鱗土魠魚", "《白塔山海志》：外海大魚銀鱗閃爍，食之益氣強身。"))
     } else if creature_name.contains("鷹") || creature_name.contains("雕") || creature_name.contains("隼") || creature_name.contains("鴞") {

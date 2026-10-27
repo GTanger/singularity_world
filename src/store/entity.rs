@@ -2917,6 +2917,16 @@ impl Store {
                             )
                             .0;
                             market_coord = (slot.errand_x, slot.errand_y);
+                            market_name = slot
+                                .errand_name
+                                .replace("脈絡解毒診所", "山產皮貨交割場")
+                                .replace("港務脈絡診所", "海陸山產交割場")
+                                .replace("脈絡診所", "山產皮貨交割場");
+                        } else if (market_name.contains("診所") || market_name.contains("浴堂"))
+                            && !slot.errand_name.contains("診所")
+                            && !slot.errand_name.contains("浴堂")
+                        {
+                            market_coord = (slot.errand_x, slot.errand_y);
                             market_name = slot.errand_name.to_string();
                         }
                         core_ids.push(ent_id.clone());

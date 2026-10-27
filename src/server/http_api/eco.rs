@@ -26,6 +26,14 @@ struct EcoEntity {
     kind: String,
     activity: String,
     #[serde(skip_serializing_if = "String::is_empty")]
+    thought: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    magnesium: Option<i32>,
+    #[serde(skip_serializing_if = "String::is_empty")]
+    hunting_party: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    prey_target: Option<[i32; 2]>,
+    #[serde(skip_serializing_if = "String::is_empty")]
     breath_habit: String,
     #[serde(skip_serializing_if = "String::is_empty")]
     held_vessel: String,
@@ -183,6 +191,53 @@ fn format_held_vessel_outside_store(
     format!("{item_name}（{}）", vstate.status_badge())
 }
 
+fn derive_eco_inner_thought(
+    e: &store::Entity,
+    title: &str,
+    activity: &str,
+    hunting_party: &str,
+) -> String {
+    if let Some(last) = e.thoughts.last()
+        && let Some(flav) = last.flavor.as_deref()
+    {
+        let cleaned = sanitize_eco_activity(flav.trim());
+        if !cleaned.is_empty() {
+            return cleaned;
+        }
+    }
+    let seed = e.soul_seed.unwrap_or(0).unsigned_abs();
+    if !hunting_party.is_empty() {
+        if hunting_party.contains("合圍") || hunting_party.contains("合擊") {
+            "盯緊山海獸蹤與合社弟兄手勢，四面收網切莫放跑了這頭獵物".to_string()
+        } else if hunting_party.contains("交割") {
+            "盤算著這趟獵獲到市集交割分得鎂幣後，添置些粗鹽新米再與弟兄痛飲".to_string()
+        } else {
+            "擦拭隨身獵刃與山豬牙號角，等候合社夥伴聚齊便拔營入山尋跡".to_string()
+        }
+    } else if title.contains("入山百工") || activity.contains("採") || activity.contains("伐") {
+        match seed % 3 {
+            0 => "留神腳下山徑坡坎，趁暮色四合前將這批山林原材捆紮妥當".to_string(),
+            1 => "察看山頭雲氣變化，盤算著收工後將採得之物送往鄰近聚落交割".to_string(),
+            _ => "掂量背簍分量，心想今日山海氣脈充沛，收成色澤比往日更佳".to_string(),
+        }
+    } else if title.contains("古道行旅") || activity.contains("押貨") || activity.contains("挑夫") {
+        match seed % 3 {
+            0 => "步履穩健踏過古道石階，心念這批山海貨品須準時送抵前頭市鎮".to_string(),
+            1 => "留神古道兩側林莽動靜，盤算著到前頭聚落歇腳換口熱茶".to_string(),
+            _ => "默算南北聚落行情，心想這趟押運回程再捎些海鹽與百工鐵器".to_string(),
+        }
+    } else {
+        match seed % 6 {
+            0 => "心念手頭活計火候，盤算著忙完這陣去街口食堂嚐碗熱湯".to_string(),
+            1 => "撫過隨身器物刃口，暗忖得空該去活水磨刀石上細細推磨一番".to_string(),
+            2 => "思量著家戶米缸與柴火存量，待市集獵團歸來便去添置些鮮肉".to_string(),
+            3 => "調勻胸中吐納內息，覺察今日四肢百骸氣機流轉頗為順暢".to_string(),
+            4 => "記掛著鄰里街坊託付的活計，心想做人處事當講求信義與手藝".to_string(),
+            _ => "望向遠處山海雲霞，盤算著明日早起再把門前器物拾掇齊整".to_string(),
+        }
+    }
+}
+
 /// 取得全城地圖數據（柵格化）
 pub async fn eco_map() -> impl IntoResponse {
     if let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() {
@@ -275,6 +330,12 @@ pub async fn eco_entities() -> impl IntoResponse {
         return Json(Vec::<EcoEntity>::new()).into_response();
     };
 
+    if store::LIVE_HUNTING_PARTIES.read().is_empty()
+        && let Some(grid) = crate::server::grid_manager::get_runtime_square_grid()
+    {
+        st_arc.read().sync_and_advance_hunting_parties(&grid);
+    }
+
     let raw_rows: Vec<(store::Entity, i32, i32, Option<String>, Option<String>)> = {
         let st = st_arc.read();
         st.entities
@@ -299,6 +360,53 @@ pub async fn eco_entities() -> impl IntoResponse {
             .iter()
             .map(|(k, v)| (k.clone(), v.current_activity()))
             .collect()
+    };
+
+    let party_lookup: std::collections::HashMap<String, (String, Option<[i32; 2]>)> = {
+        let parties = store::LIVE_HUNTING_PARTIES.read();
+        let mut map = std::collections::HashMap::new();
+        for p in parties.values() {
+            let (badge, target) = match p.phase {
+                store::HuntingPartyPhase::Rallying => (
+                    format!(
+                        "{}合社獵團｜領隊 {}・吹角集結（{}人）",
+                        p.zone_name,
+                        p.leader_name,
+                        p.member_ids.len()
+                    ),
+                    None,
+                ),
+                store::HuntingPartyPhase::SurroundingPrey => (
+                    format!(
+                        "{}合社獵團｜四面合圍【{}】({}, {})（{}人）",
+                        p.zone_name,
+                        p.prey_name,
+                        p.prey_coord.0,
+                        p.prey_coord.1,
+                        p.member_ids.len()
+                    ),
+                    Some([p.prey_coord.0, p.prey_coord.1]),
+                ),
+                store::HuntingPartyPhase::TakedownAndSplit => (
+                    format!(
+                        "{}合社獵團｜合擊【{}】・見者有份割取【{}】",
+                        p.zone_name, p.prey_name, p.prey_loot_name
+                    ),
+                    Some([p.prey_coord.0, p.prey_coord.1]),
+                ),
+                store::HuntingPartyPhase::ReturningToMarket => (
+                    format!(
+                        "{}合社獵團｜滿載【{}】赴【{}】交割分紅",
+                        p.zone_name, p.prey_loot_name, p.market_name
+                    ),
+                    None,
+                ),
+            };
+            for mid in &p.member_ids {
+                map.insert(mid.clone(), (badge.clone(), target));
+            }
+        }
+        map
     };
 
     let mut entities: Vec<EcoEntity> = Vec::with_capacity(raw_rows.len() + 60);
@@ -373,6 +481,12 @@ pub async fn eco_entities() -> impl IntoResponse {
             .into_iter()
             .map(|l| l.imprint_title)
             .collect();
+        let (hunting_party, prey_target) = party_lookup
+            .get(&e.id)
+            .cloned()
+            .unwrap_or_else(|| (String::new(), None));
+        let thought = derive_eco_inner_thought(&e, &title, &activity, &hunting_party);
+        let magnesium = Some(e.magnesium.max(18));
 
         entities.push(EcoEntity {
             id: e.id,
@@ -382,6 +496,10 @@ pub async fn eco_entities() -> impl IntoResponse {
             y,
             kind: e.kind,
             activity,
+            thought,
+            magnesium,
+            hunting_party,
+            prey_target,
             breath_habit,
             held_vessel,
             afflictions,
@@ -427,6 +545,10 @@ pub async fn eco_entities() -> impl IntoResponse {
                     y: sl.y,
                     kind: sl.kind_str.to_string(),
                     activity: act_str,
+                    thought: String::new(),
+                    magnesium: None,
+                    hunting_party: String::new(),
+                    prey_target: None,
                     breath_habit: "山林長息".to_string(),
                     held_vessel,
                     afflictions: Vec::new(),

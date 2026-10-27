@@ -3713,6 +3713,25 @@
           const hasPredator = ents.some(e => e.kind === 'shanhai_predator');
           const hasHerd = ents.some(e => e.kind === 'shanhai_herd');
           const hasShanhai = ents.some(e => e.kind && e.kind.startsWith('shanhai_'));
+          const hasHuntingParty = ents.some(e => Boolean(e.hunting_party));
+
+          for (const hpEnt of ents) {
+            if (Array.isArray(hpEnt.prey_target) && hpEnt.prey_target.length === 2) {
+              const [tx, ty] = hpEnt.prey_target;
+              if (Math.hypot(tx - ex, ty - ey) > 42) continue;
+              const tsx = centerX + (tx - viewX) * zoom;
+              const tsy = centerY - (ty - viewY) * zoom;
+              ctx.save();
+              ctx.strokeStyle = 'rgba(204, 78, 28, 0.48)';
+              ctx.lineWidth = Math.max(1.0, Math.min(2.0, zoom * 0.12));
+              ctx.setLineDash([3, 3]);
+              ctx.beginPath();
+              ctx.moveTo(esx, esy);
+              ctx.lineTo(tsx, tsy);
+              ctx.stroke();
+              ctx.restore();
+            }
+          }
 
           if (zoom >= 14) {
             if (hasApex) {
@@ -3727,6 +3746,14 @@
               ctx.fill();
               ctx.stroke();
               ctx.restore();
+            } else if (hasHuntingParty) {
+              ctx.save();
+              ctx.strokeStyle = 'rgba(204, 78, 28, 0.85)';
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.arc(esx, esy, zoom * 0.42, 0, Math.PI * 2);
+              ctx.stroke();
+              ctx.restore();
             }
             // 微觀模式：於格子右上角繪製精緻人數/小怪/獸群/掠食/隱匿霸主徽章
             const bx = esx + zoom * 0.32;
@@ -3736,7 +3763,7 @@
               ? '#8b5a2b'
               : (hasPredator
                 ? '#a44a28'
-                : (hasHerd ? '#1f5c5c' : (hasShanhai ? '#266141' : '#9e2a2b')));
+                : (hasHerd ? '#1f5c5c' : (hasShanhai ? '#266141' : (hasHuntingParty ? '#c84b20' : '#9e2a2b'))));
             ctx.beginPath();
             ctx.arc(bx, by, br, 0, Math.PI * 2);
             ctx.fill();
@@ -3753,10 +3780,10 @@
                 ? '猛'
                 : (hasHerd
                   ? (ents.length > 1 ? `群${ents.length}` : '群')
-                  : (hasShanhai && ents.length === 1 ? '獸' : String(ents.length))));
+                  : (hasShanhai && ents.length === 1 ? '獸' : (hasHuntingParty && ents.length === 1 ? '獵' : String(ents.length)))));
             ctx.fillText(badgeChar, bx, by + 0.5);
           } else if (zoom >= 0.45) {
-            // 全島與區域宏觀模式：人物為朱砂點，小怪為翠玉點，中型獸群為青黛點，次級掠食為赭紅點，隱匿霸主為琥珀金點
+            // 全島與區域宏觀模式：人物為朱砂點，合社獵團帶赤金外環，小怪為翠玉點，中型獸群為青黛點，次級掠食為赭紅點，隱匿霸主為琥珀金點
             const baseR = hasApex
               ? Math.max(2.2, Math.min(4.2, zoom * 1.45))
               : (hasPredator
@@ -3765,7 +3792,9 @@
                   ? Math.max(1.45, Math.min(3.7, zoom * 1.22))
                   : (hasShanhai
                     ? Math.max(1.25, Math.min(3.5, zoom * 1.15))
-                    : Math.max(1.4, Math.min(3.7, zoom * 1.2)))));
+                    : (hasHuntingParty
+                      ? Math.max(1.85, Math.min(3.9, zoom * 1.32))
+                      : Math.max(1.4, Math.min(3.7, zoom * 1.2))))));
             const dotRadius = baseR * pulse;
             ctx.fillStyle = hasApex
               ? 'rgba(184, 134, 11, 0.94)'
@@ -3773,7 +3802,9 @@
                 ? 'rgba(164, 74, 40, 0.86)'
                 : (hasHerd
                   ? 'rgba(31, 92, 92, 0.82)'
-                  : (hasShanhai ? 'rgba(38, 97, 65, 0.74)' : 'rgba(158, 42, 43, 0.72)')));
+                  : (hasShanhai
+                    ? 'rgba(38, 97, 65, 0.74)'
+                    : (hasHuntingParty ? 'rgba(208, 72, 24, 0.92)' : 'rgba(158, 42, 43, 0.72)'))));
             ctx.beginPath();
             ctx.arc(esx, esy, dotRadius, 0, Math.PI * 2);
             ctx.fill();
@@ -4059,6 +4090,9 @@
           const badgeFg = isApex ? '#7a5600' : (isPredator ? '#a44a28' : (isHerd ? '#1f5c5c' : (isBeast ? '#266141' : 'var(--copper)')));
           const roleBadge = e.title ? `<span style="font-size:0.68rem;padding:1px 5px;border-radius:3px;background:${badgeBg};color:${badgeFg};margin-left:5px;">${e.title}</span>` : '';
           let metaPills = '';
+          if (e.magnesium != null && !isBeast) {
+            metaPills += `<span style="display:inline-block;margin-right:4px;margin-top:3px;padding:1px 5px;border-radius:3px;background:rgba(184,134,11,0.14);color:#7a5600;font-size:0.68rem;">隨身鎂幣：${e.magnesium}</span>`;
+          }
           if (e.breath_habit) {
             metaPills += `<span style="display:inline-block;margin-right:4px;margin-top:3px;padding:1px 5px;border-radius:3px;background:rgba(45,71,94,0.1);color:#2d475e;font-size:0.68rem;">內息：${e.breath_habit}</span>`;
           }
@@ -4073,7 +4107,9 @@
           }
           box.innerHTML = `
             <div style="font-weight:700;color:var(--ink);">${icon} ${e.name || e.id}${roleBadge}${nearTag}</div>
+            ${e.hunting_party ? `<div style="color:#b33920;font-weight:600;margin-top:2px;font-size:0.71rem;">🏹 ${e.hunting_party}</div>` : ''}
             ${e.activity ? `<div style="color:var(--ink-light);margin-top:2px;">${e.activity}</div>` : ''}
+            ${e.thought ? `<div style="color:#2d475e;background:rgba(45,71,94,0.06);padding:2px 5px;border-radius:3px;margin-top:3px;font-size:0.7rem;">💭 心念：${e.thought}</div>` : ''}
             ${metaPills ? `<div>${metaPills}</div>` : ''}
           `;
           npcTagsEl.appendChild(box);
@@ -4488,20 +4524,20 @@
         if (currentEntityFilterMode === 'vessel' && (!e.held_vessel || isShanhaiKind(e.kind))) return false;
         if (currentEntityFilterMode === 'status' && (!(e.afflictions && e.afflictions.length) && !(e.lineage && e.lineage.length))) return false;
         if (!q) return true;
-        const hay = `${e.name || ''} ${e.title || ''} ${e.activity || ''} ${e.breath_habit || ''} ${e.held_vessel || ''} ${(e.afflictions || []).join(' ')} ${(e.lineage || []).join(' ')}`.toLowerCase();
+        const hay = `${e.name || ''} ${e.title || ''} ${e.activity || ''} ${e.thought || ''} ${e.hunting_party || ''} ${e.breath_habit || ''} ${e.held_vessel || ''} ${(e.afflictions || []).join(' ')} ${(e.lineage || []).join(' ')}`.toLowerCase();
         return hay.includes(q);
       });
 
       if (currentEntityFilterMode === 'all') {
         const humansAll = rawEntitiesList.filter(e => !isShanhaiKind(e.kind));
-        let cityCnt = 0, townCnt = 0, villageCnt = 0, wildCnt = 0;
+        let cityCnt = 0, townCnt = 0, villageCnt = 0, wildCnt = 0, huntPartyCnt = 0;
         const CITY_ZONES = new Set(['文曜', '風舶角']);
         const TOWN_ZONES = new Set(['半嶺鎮', '大圳頭', '南哨', '風舶嶼']);
         const VILLAGE_ZONES = new Set(['紅土崁', '烏石鼻', '北嶺腳', '牛埔', '霜林口', '水尾寮', '老堰頭', '風櫃尾', '三號坑口']);
         const classifyHumanTier = (h) => {
           const cell = explicitCells.get(`${h.x},${h.y}`);
           const z = cell ? cell.z : '';
-          if ((h.id || '').startsWith('wild_human_') || (h.activity || '').includes('合社共獵') || (h.activity || '').includes('山海採集') || (h.activity || '').includes('古道行旅') || (!CITY_ZONES.has(z) && !TOWN_ZONES.has(z) && !VILLAGE_ZONES.has(z))) {
+          if (h.hunting_party || (h.title || '').includes('合社獵團') || (h.title || '').includes('入山百工') || (h.title || '').includes('古道行旅') || (!CITY_ZONES.has(z) && !TOWN_ZONES.has(z) && !VILLAGE_ZONES.has(z))) {
             return 'wild';
           } else if (CITY_ZONES.has(z)) {
             return 'city';
@@ -4511,6 +4547,7 @@
           return 'village';
         };
         humansAll.forEach(h => {
+          if (h.hunting_party) huntPartyCnt++;
           const t = classifyHumanTier(h);
           if (t === 'wild') wildCnt++;
           else if (t === 'city') cityCnt++;
@@ -4518,7 +4555,9 @@
           else villageCnt++;
         });
         const activeHTier = window.currentHumanTier || 'all';
-        if (activeHTier !== 'all') {
+        if (activeHTier === 'hunting') {
+          filtered = filtered.filter(e => !isShanhaiKind(e.kind) && Boolean(e.hunting_party));
+        } else if (activeHTier !== 'all') {
           filtered = filtered.filter(e => !isShanhaiKind(e.kind) && classifyHumanTier(e) === activeHTier);
         }
         const pct = (n) => humansAll.length > 0 ? (n * 100 / humansAll.length).toFixed(1) : '0.0';
@@ -4540,6 +4579,7 @@
             ${mkHChip('town', '🏘️ 四大鎮', townCnt)}
             ${mkHChip('village', '🏡 九大村', villageCnt)}
             ${mkHChip('wild', '🥾 獵場與古道', wildCnt)}
+            ${mkHChip('hunting', '🏹 合社獵團', huntPartyCnt)}
           </div>
         `;
         humanBanner.querySelectorAll('button[data-htier]').forEach(b => {
@@ -4567,7 +4607,7 @@
           return `<button type="button" data-stier="${tierKey}" style="cursor:pointer;padding:2px 6px;margin:2px 3px 0 0;border-radius:3px;font-size:0.68rem;${st}">${label} <b>${count.toLocaleString()}</b></button>`;
         };
         summaryBanner.innerHTML = `
-          <div style="font-weight:700;color:#266141;margin-bottom:3px;">白塔山海志四層生態金字塔（共 ${shanhaiAll.length.toLocaleString()} 隻・霸主:顯形＝1:79）</div>
+          <div style="font-weight:700;color:#266141;margin-bottom:3px;">白塔山海志四層生態金字塔（共 ${shanhaiAll.length.toLocaleString()} 隻・霸主:顯形＝1:94）</div>
           <div style="display:flex;flex-wrap:wrap;">
             ${mkTierChip('all', '全部階層', shanhaiAll.length)}
             ${mkTierChip('shanhai_apex', '🐾 隱匿霸主', apexCnt)}
@@ -4632,19 +4672,22 @@
                 ? 'background:rgba(38,97,65,0.12);color:#266141;'
                 : 'background:rgba(158,42,43,0.1);color:var(--vermilion);')));
         const subTags = [];
+        if (e.magnesium != null && !isBeast) subTags.push(`隨身鎂幣：${e.magnesium}`);
         if (e.breath_habit) subTags.push(`內息：${e.breath_habit}`);
         if (e.held_vessel) subTags.push(`${e.held_vessel}`);
         if (e.afflictions && e.afflictions.length) subTags.push(`傷勢：${e.afflictions.join('、')}`);
         if (e.lineage && e.lineage.length) subTags.push(`師承：${e.lineage.join('、')}`);
 
-        const iconPrefix = isApex ? '🐾 ' : (isPredator ? '🦅 ' : (isHerd ? '🦌 ' : (isBeast ? '🐿️ ' : '')));
+        const iconPrefix = isApex ? '🐾 ' : (isPredator ? '🦅 ' : (isHerd ? '🦌 ' : (isBeast ? '🐿️ ' : (e.hunting_party ? '🏹 ' : ''))));
         card.innerHTML = `
           <div class="card-top">
             <span class="card-name">${iconPrefix}${e.name || e.id}</span>
             <span class="card-badge" style="${badgeStyle}">${badgeLabel}</span>
           </div>
           <div class="card-meta">座標 <span class="coord">(${e.x}, ${e.y})</span></div>
+          ${e.hunting_party ? `<div style="margin-top:2px;font-size:0.71rem;color:#b33920;font-weight:600;">🏹 ${e.hunting_party}</div>` : ''}
           <div class="card-desc">${e.activity || '停留常駐'}</div>
+          ${e.thought ? `<div style="margin-top:3px;font-size:0.69rem;color:#2d475e;background:rgba(45,71,94,0.06);padding:2px 6px;border-radius:3px;">💭 心念：${e.thought}</div>` : ''}
           ${subTags.length ? `<div style="margin-top:4px;font-size:0.68rem;color:var(--copper);line-height:1.35;">${subTags.join(' ｜ ')}</div>` : ''}
         `;
         listEl.appendChild(card);
