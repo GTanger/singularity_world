@@ -567,6 +567,32 @@ pub async fn eco_entities() -> impl IntoResponse {
                 "【格內顯形・漫山游走】",
             );
         }
+
+        // 5. 荒野獵場與城際驛道行旅人物（每處獵場／山道 3 位：老獵戶、深山採藥人、巡山斥候，全島共 57 人）
+        const WILDERNESS_HUMANS: &[((i32, i32), &str, &str, &str)] = &[
+            ((-5, -4), "山野獵戶", "手持精鍛防身獵刀與麻繩卷", "正在林隙獸徑旁蹲身辨識山獸新留下的蹄印與毛髮"),
+            ((6, 3), "深山採藥人", "背負竹編藥簍與熟鐵藥鋤", "正在背陰岩壁與腐木間小心採挖百年山野靈草"),
+            ((-3, 7), "巡道斥候", "佩帶防風浸油帆布斗篷與銅哨", "正在山道高處巡視往來商旅安全、標記路況"),
+        ];
+        for (w_idx, &((wdx, wdy), role_label, vessel_str, act_str)) in WILDERNESS_HUMANS.iter().enumerate() {
+            let wx = (cx + wdx + roam_dx).clamp(-395, 395);
+            let wy = (cy + wdy + roam_dy).clamp(-495, 495);
+            let wid = format!("wild_human_{z_idx}_{w_idx}");
+            let wname = store::resolve_npc_person_name(&wid, "", None);
+            entities.push(EcoEntity {
+                id: wid,
+                name: wname,
+                title: format!("{zone_name}・{role_label}"),
+                x: wx,
+                y: wy,
+                kind: "npc".to_string(),
+                activity: format!("【荒野行旅】{act_str}"),
+                breath_habit: "山海行氣".to_string(),
+                held_vessel: vessel_str.to_string(),
+                afflictions: Vec::new(),
+                lineage: Vec::new(),
+            });
+        }
     }
 
     Json(entities).into_response()

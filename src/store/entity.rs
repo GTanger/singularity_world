@@ -197,30 +197,8 @@ pub fn npc_persistent_role_label(entity_id: &str, display_title: &str) -> String
 
     let slot = wenyao_household_slot_for(entity_id);
     let is_wenyao = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
-    if is_wenyao {
-        if slot.attire_line.contains("磨刀") || slot.work_purpose.contains("廚刀") {
-            return "三水流動磨刀匠".to_string();
-        }
-        if slot.work_name.contains("鐵坊") || slot.work_name.contains("鍛造") {
-            return "岑氏鐵坊鍛造匠師".to_string();
-        }
-        if slot.work_name.contains("木") || slot.work_name.contains("傢俱") {
-            return "柯氏木作匠師".to_string();
-        }
-        if slot.work_name.contains("印行") || slot.work_name.contains("書局") {
-            return "印行館校勘與印務執事".to_string();
-        }
-        if slot.work_name.contains("學院") || slot.work_name.contains("講堂") || slot.work_name.contains("國小") {
-            return "文曜學院助教".to_string();
-        }
-        if slot.work_name.contains("藥") || slot.work_name.contains("診所") || slot.work_name.contains("脈絡") {
-            return "三水醫藥司藥師".to_string();
-        }
-    } else if slot.work_x == slot.home_x && slot.work_y == slot.home_y && !slot.brief_tag.is_empty() {
-        return slot.brief_tag.to_string();
-    }
 
-    // 剝離城市/行政區域前綴，使職銜簡練自然
+    // 先剝離城市/外坊/聚落區域前綴，避免「講堂外坊・...」全數誤判為「文曜學院助教」
     let mut clean_work = slot.work_name.to_string();
     for prefix in &[
         "文曜・",
@@ -253,6 +231,32 @@ pub fn npc_persistent_role_label(entity_id: &str, display_title: &str) -> String
         }
     }
 
+    if slot.work_x == slot.home_x && slot.work_y == slot.home_y && !slot.brief_tag.is_empty() {
+        if !is_wenyao {
+            return slot.brief_tag.to_string();
+        }
+    }
+
+    if is_wenyao {
+        if slot.attire_line.contains("磨刀") || slot.work_purpose.contains("廚刀") {
+            return "三水流動磨刀匠".to_string();
+        }
+        if clean_work.contains("第一鐵坊") || clean_work.contains("岑氏鐵坊") {
+            return "岑氏鐵坊鍛造匠師".to_string();
+        }
+        if clean_work.contains("巧木居所") || clean_work.contains("柯氏木作") {
+            return "柯氏木作匠師".to_string();
+        }
+        if clean_work.contains("印行館") || clean_work.contains("印行書局") {
+            return "印行館校勘與印務執事".to_string();
+        }
+        if clean_work == "文曜學院" || clean_work == "蒙學講堂" || clean_work.contains("學院講堂") {
+            return "文曜學院助教".to_string();
+        }
+        if clean_work.contains("溫家藥居") || clean_work.contains("三水醫藥司") {
+            return "三水醫藥司藥師".to_string();
+        }
+    }
     // 特定天然角色職銜判定
     if clean_work.contains("巡河") || clean_work.contains("哨所") || clean_work.contains("望樓") || clean_work.contains("瞭望") || clean_work.contains("燈塔") {
         if clean_work.ends_with("哨所") {

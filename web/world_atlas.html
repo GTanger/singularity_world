@@ -4483,6 +4483,36 @@
         return hay.includes(q);
       });
 
+      if (currentEntityFilterMode === 'all') {
+        const humansAll = rawEntitiesList.filter(e => !isShanhaiKind(e.kind));
+        let cityCnt = 0, townCnt = 0, villageCnt = 0, wildCnt = 0;
+        const CITY_ZONES = new Set(['文曜', '風舶角']);
+        const TOWN_ZONES = new Set(['半嶺鎮', '大圳頭', '南哨', '風舶嶼']);
+        const VILLAGE_ZONES = new Set(['紅土崁', '烏石鼻', '北嶺腳', '牛埔', '霜林口', '水尾寮', '老堰頭', '風櫃尾', '三號坑口']);
+        humansAll.forEach(h => {
+          const cell = explicitCells.get(`${h.x},${h.y}`);
+          const z = cell ? cell.z : '';
+          if ((h.id || '').startsWith('wild_human_') || (h.activity || '').includes('荒野行旅') || (!CITY_ZONES.has(z) && !TOWN_ZONES.has(z) && !VILLAGE_ZONES.has(z))) {
+            wildCnt++;
+          } else if (CITY_ZONES.has(z)) {
+            cityCnt++;
+          } else if (TOWN_ZONES.has(z)) {
+            townCnt++;
+          } else {
+            villageCnt++;
+          }
+        });
+        const humanBanner = document.createElement('div');
+        humanBanner.style.cssText = 'padding:7px 9px;margin-bottom:8px;border-radius:5px;background:rgba(158,42,43,0.06);border:1px solid rgba(158,42,43,0.22);font-size:0.72rem;line-height:1.45;color:var(--ink);';
+        const ratioStr = humansAll.length > 0 ? (shanhaiAll.length / humansAll.length).toFixed(2) : '1.00';
+        humanBanner.innerHTML = `
+          <div style="font-weight:700;color:var(--vermilion);margin-bottom:2px;">白塔半島人類人口金字塔（共 ${humansAll.length.toLocaleString()} 人｜人:獸＝1:${ratioStr}）</div>
+          <div>🏙️ 二大城 <b>${cityCnt}</b>（36.5%）｜🏘️ 四大鎮 <b>${townCnt}</b>（30.4%）</div>
+          <div>🏡 九大村 <b>${villageCnt}</b>（29.0%）｜🥾 荒野行旅 <b>${wildCnt}</b>（4.1%）</div>
+        `;
+        listEl.appendChild(humanBanner);
+      }
+
       if (currentEntityFilterMode === 'shanhai') {
         const activeTier = window.currentShanhaiTier || 'all';
         const apexCnt = shanhaiAll.filter(e => e.kind === 'shanhai_apex').length;
