@@ -44,7 +44,38 @@ pub(super) fn do_entity_borrow(
         {
             let _ = remove_from_inventory(pid, c_id, 1);
             let _ = add_to_inventory(target_id, c_id, 1);
-            let _ = adjust_favorability(target_id, pid, 5);
+            let vstate = crate::pg::living_world::get_vessel_state(pid, c_id);
+            let (fav_delta, narrative) = if vstate.condition == crate::pg::living_world::VesselCondition::RolledEdge {
+                crate::store::open_active_npc_obligation(target_id, "repair_tool", c_name);
+                (
+                    1,
+                    format!(
+                        "你將借用的「{c_name}」遞還給【{borrow_name}】。\n【{borrow_name}】接過一瞧，眉頭緊蹙：「你雖將『{c_name}』還了回來，可這刃口都捲缺成這樣……我還得送去鐵坊回火重修，下回借用可得惜物些！」"
+                    ),
+                )
+            } else if vstate.condition == crate::pg::living_world::VesselCondition::Sharp && vstate.use_count >= 2 {
+                let _ = crate::pg::living_world::record_mentor_imprint_progress(
+                    pid,
+                    &borrow_name,
+                    "百工惜器訣",
+                    "愛惜百工器物、用後推磨歸位，深得街坊匠人信重",
+                    now,
+                );
+                (
+                    8,
+                    format!(
+                        "你將借用的「{c_name}」擦拭推磨得雪亮，雙手歸還給【{borrow_name}】。\n【{borrow_name}】接過一瞧，雙眼一亮讚許道：「不僅完好歸還，連刃口都推磨得雪亮如新，真是惜物懂行之人！」"
+                    ),
+                )
+            } else {
+                (
+                    5,
+                    format!(
+                        "你將借用的「{c_name}」擦拭妥當、完好無損地歸還給【{borrow_name}】。\n【{borrow_name}】欣然接過收好，溫和頷首道：「有借有還，果然是守信重諾之人，日後若有需要儘管開口。」"
+                    ),
+                )
+            };
+            let _ = adjust_favorability(target_id, pid, fav_delta);
             let _ = crate::npc::debt_interaction::settle_debt_for_actor(pid, 999);
             if let Some(pool) = &pool_opt {
                 let _ = crate::pg::living_world::resolve_obligations_by_kind(pool, pid, "repay_debt", now);
@@ -71,9 +102,6 @@ pub(super) fn do_entity_borrow(
                     now,
                 );
             }
-            let narrative = format!(
-                "你將借用的「{c_name}」擦拭妥當、完好無損地歸還給【{borrow_name}】。\n【{borrow_name}】欣然接過收好，溫和頷首道：「有借有還，果然是守信重諾之人，日後若有需要儘管開口。」"
-            );
             conn.send_json(&ActionResultMsg {
                 msg_type: "action_result".into(),
                 action: "Borrow".into(),
@@ -179,9 +207,12 @@ pub(super) fn do_entity_borrow(
                     now,
                 );
             }
-            let narrative = format!(
+            let mut narrative = format!(
                 "你向【{borrow_name}】拱手開口商借「{c_name}」應急。\n【{borrow_name}】爽快取出一件「{c_name}」遞給你：{borrow_quote}"
             );
+            if crate::pg::living_world::is_weapon_or_tool_item(c_id, c_name) {
+                narrative.push_str("\n初握他人器物尚顯幾分生澀，須在實作中慢慢磨合重心。");
+            }
             conn.send_json(&ActionResultMsg {
                 msg_type: "action_result".into(),
                 action: "Borrow".into(),
@@ -313,6 +344,9 @@ pub(super) fn do_entity_borrow(
             );
         }
         let mut n = format!("你趁【{borrow_name}】不備，悄聲探手摸走了一件「{item_disp}」，收進隨身包袋。");
+        if crate::pg::living_world::is_weapon_or_tool_item(&item_id, &item_disp) {
+            n.push_str("\n初握他人器物尚顯幾分生澀，須在實作中慢慢磨合重心。");
+        }
         if target.kind == EntityKind::Npc {
             let _ = adjust_favorability(target_id, pid, FAV_BORROW_SUCCESS);
             let ex = npc_behavior_reaction_line(target_id, pid, "borrow_ok");

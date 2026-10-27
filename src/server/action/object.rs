@@ -3087,6 +3087,14 @@ fn try_grid_cell_object_action(
         "harvest_herb"
     };
     let _ = db::add_to_inventory(pid, item_id, 1);
+    let now_unix = crate::game::now_unix();
+    let (_extra_qty, harvest_note) = crate::game::object_ecology::harvest_from_world_object(
+        pid,
+        &obj.id,
+        &obj.name,
+        item_id,
+        now_unix,
+    );
 
     let actions = if remaining_qty > 0 {
         vec!["Look".into(), "Gather".into()]
@@ -3094,12 +3102,18 @@ fn try_grid_cell_object_action(
         vec!["Look".into()]
     };
 
+    let mut narrative = format!("你俯身細心採擷，將一份「{}」收入行囊之中。", obj.name);
+    if !harvest_note.is_empty() {
+        narrative.push(' ');
+        narrative.push_str(&harvest_note);
+    }
+
     conn.send_json(&ActionResultMsg {
         msg_type: "action_result".into(),
         action: action.into(),
         target_id: obj.id.clone(),
         target_name: obj.name.clone(),
-        narrative: format!("你俯身細心採擷，將一份「{}」收入行囊之中。", obj.name),
+        narrative,
         success: true,
         actions,
         move_target_id: String::new(),

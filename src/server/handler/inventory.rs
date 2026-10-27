@@ -2552,6 +2552,36 @@ pub fn set_player_word_casket(pid: &str, casket: WordCasket) {
     guard.insert(pid.to_string(), casket);
 }
 
+/// 取得實體（玩家或匠人）當前裝配的百工四維總和（含槽位星句字印與手持/裝備器物銘文加成）
+pub fn entity_total_craft_dims(pid: &str) -> CraftDims4D {
+    ensure_player_initialized(pid);
+    let registry = WordRegistry::global();
+    let loadouts = PLAYER_LOADOUTS.read();
+    let mut craft_totals = loadouts
+        .get(pid)
+        .map(|l| l.total_craft_dims(registry))
+        .unwrap_or_default();
+    drop(loadouts);
+
+    let casket = get_player_word_casket(pid);
+    if let Ok(Some(ent)) = crate::db::get_entity(pid)
+        && let Ok(map) = serde_json::from_str::<serde_json::Map<String, serde_json::Value>>(&ent.equipment_slots)
+    {
+        for key in ["weapon", "hold_r", "hand", "tool", "hold_l"] {
+            if let Some(weapon_id) = map.get(key).and_then(|v| v.as_str())
+                && !weapon_id.is_empty()
+            {
+                let bonus = casket.inscribed_craft_bonus(weapon_id, registry);
+                craft_totals.forge += bonus.forge;
+                craft_totals.culinary += bonus.culinary;
+                craft_totals.harvest += bonus.harvest;
+                craft_totals.wayfare += bonus.wayfare;
+            }
+        }
+    }
+    craft_totals
+}
+
 fn sentence_to_view(
     slot_name: &str,
     sentence: &StarSentence,

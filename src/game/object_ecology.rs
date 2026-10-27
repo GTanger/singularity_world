@@ -1856,6 +1856,27 @@ pub fn craft_from_raw_material(
         || room_name.contains("作坊");
     let threshold = if has_furnace_heat || has_charcoal { 78 } else if is_workshop || ent.qi >= 75 { 55 } else { 35 };
 
+    let craft_dims = crate::server::handler::entity_total_craft_dims(actor_id);
+    let is_culinary_craft = finished_def.item_type == "food"
+        || finished_def.id.contains("tea")
+        || finished_def.id.contains("fish")
+        || finished_def.id.contains("dish")
+        || finished_def.id.contains("soup")
+        || room_name.contains("廚")
+        || room_name.contains("灶")
+        || room_name.contains("食")
+        || chosen_raw_id.contains("herb")
+        || chosen_raw_id.contains("tea")
+        || chosen_raw_id.contains("fish");
+
+    let relevant_craft = if is_culinary_craft {
+        craft_dims.culinary
+    } else {
+        craft_dims.forge
+    };
+    let craft_mutation_bonus = ((relevant_craft * 0.04).min(0.18) * 100.0).round() as i32;
+    let threshold = (threshold + craft_mutation_bonus).min(98);
+
     let roll = ((now_unix.wrapping_mul(1103515245).wrapping_add(12345) / 65536) % 100).abs() as i32;
     let is_mutated = roll < threshold;
 
@@ -1940,6 +1961,10 @@ pub fn craft_from_raw_material(
         );
         (finished_def.id.to_string(), finished_def.name.to_string(), narr)
     };
+
+    if craft_dims.forge >= 0.8 || craft_dims.culinary >= 0.8 {
+        narrative.push_str(" 【百工藝相共鳴】你周天字印所蘊的藝境氣機自然流轉至指掌，火候與力道拿捏得恰到好處。");
+    }
 
     // 內息底色演進與工藝分類
     let (habit_kind, mentor_name, imprint_title, imprint_prose, slot_label, carrier_code, formula_word_ids, formula_word_chars, station_tool_name) = if finished_def.id.contains("steel")
@@ -2238,6 +2263,109 @@ pub fn mutate_finished_item(
         "你凝神調息，將十點元氣徐徐注入【{base_clean_name}】中。隨行氣勢激盪，天地與器物深層質理產生極強共振，微芒自器表寸寸漫溢，赫然蛻變為神異斐然的{mut_name}！"
     );
     Ok((mut_id, mut_name, narrative))
+}
+
+/// 自世界物件或地景採集資源時，結合百工四維、吐納底色演進、工具磨損磨合與器況回饋。
+/// 回傳 `(額外獲得份數, 質性敘事加註)`。
+pub fn harvest_from_world_object(
+    actor_id: &str,
+    target_id: &str,
+    target_name: &str,
+    mat_id: &str,
+    now_unix: i64,
+) -> (i32, String) {
+    let craft_dims = crate::server::handler::entity_total_craft_dims(actor_id);
+
+    // 依採集物產類型演進吐納底色
+    let low_mat = mat_id.to_lowercase();
+    let low_tgt_id = target_id.to_lowercase();
+    let is_ore = low_mat.contains("ore")
+        || low_mat.contains("stone")
+        || low_mat.contains("crystal")
+        || low_mat.contains("clay")
+        || low_mat.contains("salt")
+        || low_tgt_id.contains("ore")
+        || low_tgt_id.contains("stone")
+        || low_tgt_id.contains("crystal")
+        || target_name.contains("礦")
+        || target_name.contains("石")
+        || target_name.contains("岩")
+        || target_name.contains("晶")
+        || target_name.contains("鐵")
+        || target_name.contains("銅")
+        || target_name.contains("煤")
+        || target_name.contains("玉")
+        || target_name.contains("砂")
+        || target_name.contains("鹽");
+
+    let is_tide = low_mat.contains("reed")
+        || low_mat.contains("water")
+        || low_mat.contains("fish")
+        || low_tgt_id.contains("water")
+        || low_tgt_id.contains("fish")
+        || target_name.contains("水")
+        || target_name.contains("泉")
+        || target_name.contains("葦")
+        || target_name.contains("蘆")
+        || target_name.contains("渡")
+        || target_name.contains("岸")
+        || target_name.contains("魚")
+        || target_name.contains("海");
+
+    let habit_kind = if is_ore {
+        crate::pg::living_world::BreathHabitKind::ForgeHeavy
+    } else if is_tide {
+        crate::pg::living_world::BreathHabitKind::TideContinuous
+    } else {
+        crate::pg::living_world::BreathHabitKind::ForestLong
+    };
+
+    crate::pg::living_world::record_breath_activity(actor_id, habit_kind, 1, now_unix);
+
+    // 檢視角色所裝備之武器或工器具
+    let tool_id_opt = db::get_entity(actor_id).ok().flatten().and_then(|ent| {
+        let map: serde_json::Map<String, serde_json::Value> =
+            serde_json::from_str(&ent.equipment_slots).ok()?;
+        for key in ["weapon", "hold_r", "hand", "tool", "hold_l"] {
+            if let Some(s) = map.get(key).and_then(|v| v.as_str())
+                && !s.is_empty()
+            {
+                return Some(s.to_string());
+            }
+        }
+        None
+    });
+
+    let mut vstate_opt = None;
+    if let Some(tool_id) = &tool_id_opt {
+        let tool_name = get_clean_item_name(tool_id);
+        if crate::pg::living_world::is_weapon_or_tool_item(tool_id, &tool_name) {
+            let vs = crate::pg::living_world::record_vessel_use(actor_id, tool_id, 1, 1, now_unix);
+            vstate_opt = Some(vs);
+        }
+    }
+
+    let mut extra_granted = 0;
+    let mut note = String::new();
+
+    let is_rolled = vstate_opt.as_ref().map(|vs| vs.condition == crate::pg::living_world::VesselCondition::RolledEdge).unwrap_or(false);
+    let is_familiar = vstate_opt.as_ref().map(|vs| {
+        matches!(
+            vs.familiarity(),
+            crate::pg::living_world::VesselFamiliarity::WellBalanced
+                | crate::pg::living_world::VesselFamiliarity::LikeOwnArm
+        )
+    }).unwrap_or(false);
+
+    if is_rolled {
+        note.push_str("（手頭器物刃口捲缺打滑，難以順暢切削，宜前往鐵坊以火候重新回火推磨 ⚒︎）");
+    } else if craft_dims.harvest >= 1.0 || is_familiar {
+        let _ = db::add_to_inventory(actor_id, mat_id, 1);
+        extra_granted = 1;
+        note.push_str("手頭器物趁手加上【採集剝名】藝相純熟，順著紋理多採得一份完好物材。");
+    }
+
+    (extra_granted, note)
 }
 
 /// 運行單步 NPC 自主經濟與工造巡檢。
@@ -2943,8 +3071,12 @@ pub fn ignite_or_stoke_campfire(
 /// 嘗試烹調《台灣山海經》獵獲與特產名物之合味珍餚：
 /// 檢測玩家行囊是否持有山海食材與台灣特色佐料，若有則進行料理並恢復體魄元氣。
 /// 回傳 `Some((narrative, total_vit, total_qi))`。
-pub fn try_cook_shanhai_delicacy(pid: &str, venue_label: &str) -> Option<(String, i32, i32)> {
-    let ent = db::get_entity(pid).ok().flatten()?;
+pub fn try_camp_shanhai_cooking(
+    actor_id: &str,
+    venue_label: &str,
+    now_unix: i64,
+) -> Option<(String, i32, i32)> {
+    let ent = db::get_entity(actor_id).ok().flatten()?;
 
     // (ingredient_id, dish_name, condiment_id, condiment_name, base_vit, base_qi)
     const SHANHAI_RECIPES: &[(&str, &str, &str, &str, i32, i32)] = &[
@@ -2961,35 +3093,95 @@ pub fn try_cook_shanhai_delicacy(pid: &str, venue_label: &str) -> Option<(String
     for &(ing_id, dish_name, cond_id, cond_name, base_vit, base_qi) in SHANHAI_RECIPES {
         if db::inventory_has_item(&ent.inventory, ing_id) {
             let ing_name = get_clean_item_name(ing_id);
-            let _ = db::remove_from_inventory(pid, ing_id, 1);
+            let _ = db::remove_from_inventory(actor_id, ing_id, 1);
 
             let has_cond = db::inventory_has_item(&ent.inventory, cond_id);
-            let (extra_bonus, cond_narrative) = if has_cond {
-                let _ = db::remove_from_inventory(pid, cond_id, 1);
-                (4, format!("你更取出行囊中珍藏的【{}】下鍋調味，特產甘醇芳香四溢", cond_name))
+            let (extra_bonus, cond_narrative, mat_names) = if has_cond {
+                let _ = db::remove_from_inventory(actor_id, cond_id, 1);
+                (
+                    4,
+                    format!("你更取出行囊中珍藏的【{}】下鍋調味，特產甘醇芳香四溢", cond_name),
+                    vec![ing_name.clone(), cond_name.to_string()],
+                )
             } else {
-                (0, format!("你順手採集「{}」周遭備妥的在地佐料調和入味", venue_label))
+                (
+                    0,
+                    format!("你順手採集「{}」周遭備妥的在地佐料調和入味", venue_label),
+                    vec![ing_name.clone(), "在地佐料".to_string()],
+                )
             };
 
-            let total_vit = base_vit + extra_bonus;
-            let total_qi = base_qi + extra_bonus;
+            crate::pg::living_world::record_breath_activity(
+                actor_id,
+                crate::pg::living_world::BreathHabitKind::TideContinuous,
+                2,
+                now_unix,
+            );
+
+            let craft_dims = crate::server::handler::entity_total_craft_dims(actor_id);
+            let culinary_bonus = if craft_dims.culinary >= 0.6 { 5 } else { 0 };
+
+            let total_vit = base_vit + extra_bonus + culinary_bonus;
+            let total_qi = base_qi + extra_bonus + culinary_bonus;
 
             if let Some(arc) = store::get_store() {
-                let _ = arc.write().update_entity(pid, |e| {
+                let _ = arc.write().update_entity(actor_id, |e| {
                     e.vit = (e.vit + total_vit).min(100);
                     e.qi = (e.qi + total_qi).min(100);
                 });
             }
 
-            let narrative = format!(
-                "【山海合味・{}】你在「{}」旁支起鍋鑊，取出獵獲名物【{}】細心炙烹，{}，精心料理成一道香氣撲鼻的盛宴名饌「{}」！熱氣騰騰中大快朵頤，濃郁滋味透徹肺腑，渾身百骸如沐暖陽（體魄提升 +{}，元氣充盈 +{}）。",
-                dish_name, venue_label, ing_name, cond_narrative, dish_name, total_vit, total_qi
-            );
+            let actor_name = if !ent.display_title.trim().is_empty() {
+                ent.display_title.trim().to_string()
+            } else {
+                "荒野行旅".to_string()
+            };
+
+            let tool_familiarity = if craft_dims.culinary >= 0.6 {
+                "沉穩趁手".to_string()
+            } else {
+                "得心應手".to_string()
+            };
+
+            let packet = crate::ai::CraftActionFactPacket {
+                actor_name,
+                tool_name: "行旅銅釜".to_string(),
+                tool_familiarity,
+                breath_habit: "潮汐連息".to_string(),
+                material_names: mat_names,
+                output_name: dish_name.to_string(),
+                highlight_kind: "山海營火合味現煮".to_string(),
+                environment_hint: venue_label.to_string(),
+            };
+            let highlight_prose = crate::ai::compose_craft_highlight_from_data(&packet);
+
+            let resonance_note = if craft_dims.culinary >= 0.6 {
+                " 【百工藝相・庖廚調味】你周天字印所蘊的調和氣機暗合潮汐水火，火候與收汁拿捏得恰到好處。"
+            } else {
+                ""
+            };
+
+            let narrative = if highlight_prose.is_empty() {
+                format!(
+                    "【山海合味・{}】你在「{}」旁支起鍋鑊，取出獵獲名物【{}】細心炙烹，{}，精心料理成一道香氣撲鼻的盛宴名饌「{}」！熱氣騰騰中大快朵頤，濃郁滋味透徹肺腑，渾身百骸如沐暖陽（體魄提升 +{}，元氣充盈 +{}）。{}",
+                    dish_name, venue_label, ing_name, cond_narrative, dish_name, total_vit, total_qi, resonance_note
+                )
+            } else {
+                format!(
+                    "【山海合味・{}】你在「{}」旁支起鍋鑊，取出獵獲名物【{}】細心炙烹，{}，精心料理成一道香氣撲鼻的盛宴名饌「{}」！熱氣騰騰中大快朵頤，濃郁滋味透徹肺腑，渾身百骸如沐暖陽（體魄提升 +{}，元氣充盈 +{}）。{}\n\n{}",
+                    dish_name, venue_label, ing_name, cond_narrative, dish_name, total_vit, total_qi, resonance_note, highlight_prose
+                )
+            };
             return Some((narrative, total_vit, total_qi));
         }
     }
 
     None
+}
+
+/// 保持相容：嘗試烹調《台灣山海經》獵獲與特產名物之合味珍餚。
+pub fn try_cook_shanhai_delicacy(pid: &str, venue_label: &str) -> Option<(String, i32, i32)> {
+    try_camp_shanhai_cooking(pid, venue_label, crate::game::now_unix())
 }
 
 /// 與野地營火堆的多重插座互動。
@@ -3010,7 +3202,7 @@ pub fn interact_with_campfire(
             Ok("你湊近營火伸出雙手，融融暖流自掌心順著經絡徐徐流轉周身，荒野長途奔波的疲憊寒濕頓時消散大半，整個人神清氣爽（體魄與元氣獲得恢復）。".to_string())
         }
         "RoastFood" => {
-            if let Some((shanhai_narr, _v, _q)) = try_cook_shanhai_delicacy(pid, "野地營火堆") {
+            if let Some((shanhai_narr, _v, _q)) = try_camp_shanhai_cooking(pid, "野地營火堆", now_unix) {
                 return Ok(shanhai_narr);
             }
             if let Some(arc) = store::get_store() {
@@ -4295,5 +4487,36 @@ mod tests {
         let handle2 = lookup_ecology_item_def("craft_wooden_handle").unwrap();
         assert_eq!(handle2.slot, "hold_r");
         assert_eq!(handle2.item_type, "equipment");
+    }
+
+    #[test]
+    fn test_craft_dims_and_shanhai_cooking_highlight_integration() {
+        let dims = crate::server::handler::entity_total_craft_dims("unit_test_actor");
+        assert!(dims.forge >= 0.0);
+        assert!(dims.culinary >= 0.0);
+        assert!(dims.harvest >= 0.0);
+        assert!(dims.wayfare >= 0.0);
+
+        let packet = crate::ai::CraftActionFactPacket {
+            actor_name: "行旅刀客".to_string(),
+            tool_name: "行旅銅釜".to_string(),
+            tool_familiarity: "沉穩趁手".to_string(),
+            breath_habit: "潮汐連息".to_string(),
+            material_names: vec!["山胡椒馬告粒".to_string(), "馬告炭炙高地水鹿腱".to_string()],
+            output_name: "馬告炭炙高地水鹿腱".to_string(),
+            highlight_kind: "山海營火合味現煮".to_string(),
+            environment_hint: "野地營火堆".to_string(),
+        };
+        let highlight = crate::ai::compose_craft_highlight_from_data(&packet);
+        assert!(!highlight.is_empty(), "LLM craft highlight must generate fallback or local prose");
+        assert!(!highlight.contains("系統"), "Highlight cannot contain forbidden word 系統");
+        assert!(!highlight.contains("玩家"), "Highlight cannot contain forbidden word 玩家");
+        assert!(!highlight.chars().any(|c| c.is_ascii_digit()), "Highlight cannot contain raw digits");
+
+        let (extra, note) = harvest_from_world_object("unit_test_actor", "obj_wild_ore", "露天鐵礦石", "harvest_ore", 1_700_000_000);
+        assert!(extra >= 0);
+        if extra > 0 {
+            assert!(note.contains("【採集剝名】藝相純熟") || note.contains("趁手"));
+        }
     }
 }

@@ -677,21 +677,101 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
                 .map(|g| can_step_in_nine_grid(g, SquareCoord::new(gx, gy), target_coord))
                 .unwrap_or_else(|| cell.terrain.walkable());
             if can_move {
-                if crate::pg::living_world::get_entity_afflictions(&player_id)
-                    .contains(&crate::pg::living_world::AfflictionKind::LegSprain)
-                {
+                let old_room = crate::grid::grid_room_id_from_coord(gx, gy);
+                let (gx, gy) = (nx, ny);
+
+                let is_water_or_coastal = matches!(
+                    cell.terrain,
+                    Terrain::Water | Terrain::WaterDeep | Terrain::Beach | Terrain::Dock
+                ) || cell.name.contains('海')
+                    || cell.name.contains('水')
+                    || cell.name.contains('灘')
+                    || cell.name.contains('渚')
+                    || cell.name.contains('渡')
+                    || cell.name.contains('港');
+                let is_outdoor_wild = matches!(
+                    cell.terrain,
+                    Terrain::Plain
+                        | Terrain::Grassland
+                        | Terrain::Desert
+                        | Terrain::Tundra
+                        | Terrain::Forest
+                        | Terrain::ForestHeavy
+                        | Terrain::ForestLight
+                        | Terrain::Jungle
+                        | Terrain::Mountain
+                        | Terrain::Hills
+                        | Terrain::MinePass
+                        | Terrain::Swamp
+                        | Terrain::Beach
+                        | Terrain::EmptyFurrow
+                        | Terrain::DryField
+                        | Terrain::FarmField
+                );
+                let is_outdoor_step = is_outdoor_wild || is_water_or_coastal;
+                let is_rugged = matches!(
+                    cell.terrain,
+                    Terrain::Mountain
+                        | Terrain::Hills
+                        | Terrain::MinePass
+                        | Terrain::ForestHeavy
+                        | Terrain::Forest
+                        | Terrain::ForestLight
+                        | Terrain::Jungle
+                        | Terrain::Swamp
+                        | Terrain::Desert
+                        | Terrain::Tundra
+                ) || cell.terrain.move_cost() >= 1.5;
+
+                let now = crate::game::now_unix();
+                if is_outdoor_step && (gx + gy).abs() % 6 == 0 {
+                    let habit_kind = if is_water_or_coastal {
+                        crate::pg::living_world::BreathHabitKind::TideContinuous
+                    } else {
+                        crate::pg::living_world::BreathHabitKind::ForestLong
+                    };
+                    crate::pg::living_world::record_breath_activity(&player_id, habit_kind, 1, now);
+                }
+
+                let craft_dims = crate::server::handler::entity_total_craft_dims(&player_id);
+                let seed = ent.as_ref().and_then(|e| e.soul_seed).unwrap_or(0);
+                let breath = crate::pg::living_world::get_or_derive_breath_habit(&player_id, "", seed);
+                let has_leg_sprain = crate::pg::living_world::get_entity_afflictions(&player_id)
+                    .contains(&crate::pg::living_world::AfflictionKind::LegSprain);
+
+                if has_leg_sprain {
                     if let Ok(Some(current_ent)) = db::get_entity(&player_id) {
                         let new_vit = (current_ent.vit - 1).max(5);
                         if new_vit != current_ent.vit {
                             let _ = db::update_vit(&player_id, new_vit);
                         }
                     }
+                    if is_rugged && (gx + gy).abs() % 4 == 0 {
+                        conn.send_json(&super::super::protocol::NarrateMsg {
+                            msg_type: "narrate".into(),
+                            text: "【下盤扭傷】跋涉間足踝經絡隱隱作痛，步履略顯沉重，宜尋醫館或敷用舒筋藥膏。".into(),
+                        });
+                    }
+                } else if (craft_dims.wayfare >= 0.8
+                    || matches!(
+                        breath.dominant,
+                        crate::pg::living_world::BreathHabitKind::ForestLong
+                            | crate::pg::living_world::BreathHabitKind::TideContinuous
+                    ))
+                    && is_rugged
+                    && (gx + gy).abs() % 9 == 0
+                {
+                    if let Ok(Some(current_ent)) = db::get_entity(&player_id) {
+                        let new_vit = (current_ent.vit + 1).min(100);
+                        if new_vit != current_ent.vit {
+                            let _ = db::update_vit(&player_id, new_vit);
+                        }
+                    }
                     conn.send_json(&super::super::protocol::NarrateMsg {
                         msg_type: "narrate".into(),
-                        text: "下盤扭傷隱隱作痛，跋涉移步間步履微滯，氣血暗損。".into(),
+                        text: "【行旅涉險・長息輕身】你順著山海地勢勻長換氣，腳下借力輕省，跋涉不覺疲累。".into(),
                     });
                 }
-                let old_room = crate::grid::grid_room_id_from_coord(gx, gy);
                 if let Err(e) = db::set_entity_grid(&player_id, nx, ny) {
                     tracing::error!("set_entity_grid failed for {player_id} to ({nx}, {ny}): {e}");
                     conn.send_error(gametext::client("move_failed"));
@@ -793,7 +873,7 @@ fn handle_move_place(
         }
         conn.send_json(&super::super::protocol::NarrateMsg {
             msg_type: "narrate".into(),
-            text: "下盤扭傷隱隱作痛，跋涉移步間步履微滯，氣血暗損。".into(),
+            text: "【下盤扭傷】跋涉間足踝經絡隱隱作痛，步履略顯沉重，宜尋醫館或敷用舒筋藥膏。".into(),
         });
     }
     let gh = current_game_hour(&conn.cfg);

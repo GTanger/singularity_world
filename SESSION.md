@@ -41,6 +41,10 @@
    - **NPC 自主磨刀與回火修繕**：`src/server/handler/inventory.rs`（`npc_autonomous_word_and_equip_step`）使全島 NPC 隨日常鍛造、庖廚、巡防、採獵自然累積【內息底色】與所持器物之【人器磨合 × 鋒刃器況】，並在刀刃微鈍或捲刃時自主於磨刀槽推磨或回火修整。
    - **`Look` 觀察見底細**：`src/server/action/look.rs`（`build_look_narrative`）打量人物或 NPC 時，直觀顯化其所持器物之磨合度與器況（如 `（漸趨順手・鋒芒畢露）`）、呼吸吐納神態（`內息底色：【鍛爐沉息】`）與肉身部位傷勢（如 `似帶有腕肘挫傷之態`）。
    - **`talk.rs` 三棒師承請益與 PG 關係交涉接力**：`src/server/action/talk.rs`（`effective_npc_disposition_and_trust`、`handle_three_baton_mentorship_and_obligation`）全面對接 PostgreSQL `resident_relationships`，向名匠／獵戶／武師／掌事請益手藝時即時推進【師承烙印】並於熟稔達標時親贈可研讀之真字《傳世手札》。81 項單元與端到端閉環測試全數通過。
+8. **「星盤【百工藝相】四維（`forge / culinary / harvest / wayfare`）× 借物器況檢驗 × 師承熟客折讓 × 山海營火 LLM 高光」全線貫通**：
+   - **百工藝相四維實質驅動日常活計（`src/game/object_ecology.rs` ＆ `src/server/handler/inventory.rs`）**：公開 `entity_total_craft_dims(pid)`（匯總星盤套路與手持銘文器物之四維藝境加成），實質驅動工坊煉製器物異變率加成（`forge / culinary`）、地景物產採集額外完好收穫與工具磨合／捲刃提醒（`harvest` + `harvest_from_world_object`），以及營火現煮山海名饌滋養增幅與本機 LLM 高光描寫（`try_camp_shanhai_cooking` $\to$ `compose_craft_highlight_from_data`）。
+   - **借物歸還器況檢驗與師承同道折讓（`src/server/action/borrow.rs` ＆ `src/server/action/trade.rs`）**：歸還借用器物時自動檢驗 `VesselCondition`——若捲刃待修則掌事皺眉斥責並開啟 `repair_tool` 義務；若经推磨雪亮歸還則大加讚賞並累積《百工惜器訣》師承烙印。身具【師承烙印】或高熟識度者於市井交易享有同道熟客折讓。
+   - **行旅涉險與部位傷勢連動（`src/server/handler/movement.rs`）**：野外跋涉自然演進《山林長息》／《海潮綿息》；身負「下盤扭傷」於崎嶇地勢會觸發足踝隱痛提醒，而高 `wayfare` 藝相或長息底色則觸發「長息輕身」回氣減耗。82 項單元與整合測試全數通過。
 ## 二、 關鍵檔案與正典錨點
 
 - **Rust 實機代碼**：
@@ -55,5 +59,4 @@
   - `/home/tanger/Projects/singularity_world/docs/design/world/current-background-setting.md`
 
 ## 三、 下一步接續提示 (Next Cue)
-
-- 實機服務 `singularity.service` 已編譯重啟為最新 `--release` 版本；後續若擴充百工工坊（打鐵、織造、焙茶、造船）之互動插座，可直接調用玩家星盤已合成之 `SynthesizedTechnique.craft_dims`（`forge / culinary / harvest / wayfare`）作為成色與提取成數加成。
+- 實機服務 `singularity.service` 已編譯重啟為最新 `--release` 版本；九大有機活世界系統、`NPC = 玩家` 自主器況修繕與 `Look` 外顯、三棒師承請益接力、以及星盤【百工藝相】四維（`forge / culinary / harvest / wayfare`）與借物／市井／行旅連動已全數閉環落地。

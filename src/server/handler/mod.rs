@@ -11,6 +11,7 @@ pub(crate) use inventory::{
     format_entity_item_with_inscription, get_player_tactical_loadout, get_player_word_casket,
     npc_autonomous_word_and_equip_step, push_refresh, set_player_word_casket,
 };
+pub use inventory::entity_total_craft_dims;
 pub(crate) use movement::{emit_presence_reflex_on_arrival, send_place_view};
 use std::sync::{Arc, RwLock};
 

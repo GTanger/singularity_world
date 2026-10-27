@@ -172,7 +172,7 @@ pub fn settle_live_vendor_npc_purchase(
     room_id: &str,
     now_unix: i64,
 ) -> Option<VendorNpcPurchaseOutcome> {
-    let (item_id, item_name, price_mg, canonical_vendor_id) =
+    let (item_id, item_name, mut price_mg, canonical_vendor_id) =
         vendor_stall_offer_for_npc(vendor_id)?;
 
     let stock = get_shop_item_stock(canonical_vendor_id, item_id);
@@ -186,6 +186,17 @@ pub fn settle_live_vendor_npc_purchase(
     }
 
     let buyer = db::get_entity(customer_id).ok().flatten()?;
+    let is_player = buyer.kind == crate::entity::EntityKind::Player;
+    if is_player {
+        let has_lineage_or_trust = !crate::pg::living_world::get_entity_lineage_imprints(customer_id).is_empty()
+            || crate::pg::pool()
+                .and_then(|p| crate::pg::living_world::get_relationship_summary(&p, canonical_vendor_id, customer_id).ok())
+                .map(|r| r.balance_score >= 2 || r.familiarity_score >= 3)
+                .unwrap_or(false);
+        if has_lineage_or_trust && price_mg > 3 {
+            price_mg = (price_mg - (price_mg / 10).max(1)).max(2);
+        }
+    }
     if buyer.kind == crate::entity::EntityKind::Npc {
         static LAST_NPC_VENDOR_SALE_UNIX: std::sync::OnceLock<Mutex<HashMap<String, i64>>> =
             std::sync::OnceLock::new();
@@ -972,6 +983,18 @@ pub(super) fn do_entity_trade(
         });
         return false;
     };
+    let has_lineage_or_trust = !crate::pg::living_world::get_entity_lineage_imprints(pid).is_empty()
+        || crate::pg::pool()
+            .and_then(|p| crate::pg::living_world::get_relationship_summary(&p, target_id, pid).ok())
+            .map(|r| r.balance_score >= 2 || r.familiarity_score >= 3)
+            .unwrap_or(false);
+    let mut paid = paid;
+    let fellowship_note = if has_lineage_or_trust && paid > 3 {
+        paid = (paid - (paid / 10).max(1)).max(2);
+        "（對方見你身具行家師承且素有交情，特意算了熟客同道價）"
+    } else {
+        ""
+    };
     if buyer.magnesium < paid {
         let seller_id = &pending.npc_id;
         let (_floor, trust_score, _note) = compute_relationship_trade_terms(pid, seller_id, paid);
@@ -1336,9 +1359,9 @@ pub(super) fn do_entity_trade(
         String::new()
     };
     let narrative = if offer >= pending.ask_mg {
-        format!("你以開價 {paid} 鎂買下「{item_name}」。{stock_suffix}")
+        format!("你以開價 {paid} 鎂買下「{item_name}」。{stock_suffix}{fellowship_note}")
     } else {
-        format!("一番議價後，你以 {paid} 鎂買下「{item_name}」。{stock_suffix}")
+        format!("一番議價後，你以 {paid} 鎂買下「{item_name}」。{stock_suffix}{fellowship_note}")
     };
     let _ = event::append(now, pid, types::TRADE, target_id);
     conn.send_json(&ActionResultMsg {
