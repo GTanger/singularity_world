@@ -256,6 +256,21 @@ impl SquareGrid {
         self.can_walk(from, to)
     }
 
+    pub fn has_direct_non_building_walkable_exit(&self, coord: SquareCoord) -> bool {
+        for &(dx, dy) in &[(0, 1), (0, -1), (1, 0), (-1, 0)] {
+            let nb = SquareCoord::new(coord.x + dx, coord.y + dy);
+            if let Some(c) = self.get(nb) {
+                if c.terrain.walkable()
+                    && c.terrain.category() != "landmark"
+                    && c.terrain != Terrain::Water
+                {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     /// 能否從 `from` 步行到相鄰的 `to`？
     ///
     /// 若 `from` 有顯式出口（explicit_exits），以出口表為準；
@@ -305,7 +320,10 @@ impl SquareGrid {
 
         // 建築隔離法則：禁止建築物 -> 建築物 的直接穿牆（同名複合建築格除外）
         if is_bldg(from_cell.terrain) && is_bldg(to_cell.terrain) {
-            if from_cell.name != to_cell.name {
+            if from_cell.name != to_cell.name
+                && self.has_direct_non_building_walkable_exit(from)
+                && self.has_direct_non_building_walkable_exit(to)
+            {
                 return false;
             }
         }

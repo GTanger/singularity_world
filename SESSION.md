@@ -51,6 +51,10 @@
 10. **「全島 15 聚落 595 棟建築零空屋家戶化 × 1,772 人四級人文空間金字塔 × 1,805 隻台灣山海經四層生態金字塔（共 3,577 在場實體）」定案實裝**：
    - **四層《台灣山海經》全島面積加權藍噪聲（Poisson-disc）自然棲地引擎（全島 1,805 隻，1,804 個不重疊棲地格，霸主:顯形＝1:94）**：實裝於 `src/game/room.rs`（`ZONE_HABITAT_LAYOUTS`、`live_zone_shanhai_slots`）與 `src/server/http_api/eco.rs`。對齊半島地形分類器 `classify_wilderness_cell(x, y)`，依 19 座獵場真實陸塊面積動態配賦名額並加入邊界排斥權重，徹底消除人工同心圓與大獵場中央空洞：Tier 1 鎮場霸主（19 頭，周圍 2 格百鳥屏息圈）、Tier 2 次級掠食（114 隻，分據全境獨立領地）、Tier 3 尋常中型獸群（380 隻，每群 2～3 隻結群放牧）、Tier 4 尋常小怪／靈禽（1,292 隻，漫山藍噪聲散佈，個體各自獨立漫遊）。
    - **1,772 名真實持久化思考 `Entity` 全圖流動與「合社獵團」吹角招募＋八方合圍分紅（人:獸＝1:1.02，零假 `EcoEntity` 濫竽充數）**：實裝於 `src/store/outer_households.rs`（1,389 外圍與遠征槽位 + 294 文曜槽位 + 89 顯式正典人物 = 1,772 真人 `Entity`）與 `src/store/entity.rs`（`LIVE_HUNTING_PARTIES`、`pick_island_trail_waypoint`、`pick_zone_artisan_waypoint`、歐氏距離斜向尋路）。19 支「合社獵團」（114 核心獵人＋38 自主入團鄉民＝152 人）於獵場全境追蹤並四面八方合圍《台灣山海經》獸群與猛獸、瓜分獵獲與鎂錠；133 名「入山百工」遍布各獵場全境林地溪谷礦坡；95 名「古道行旅」沿全島 6,287 格真實驛道與橋樑跨區押貨巡防；`web/world_atlas.html` 全島總覽（`zoom >= 0.45`）同步渲染全島 3,577 實體自然分佈。
+11. **「六大設牆城鎮城門中繼路由 × 16 棟內院建築穿堂解鎖 × 獵團合圍獵殺遷徙與遺骸採集 × 玩家端山海生靈觀察與互動全閉環」實裝驗收**：
+   - **六大設牆城鎮城門中繼（`WALLED_CITIES`）與 16 棟街廓內院建築穿堂通行**：於 `src/store/entity.rs`（`find_bfs_next_step`、`can_npc_step_between`）與 `src/grid/grid.rs`（`has_direct_non_building_walkable_exit`）實裝跨牆城門自動導航及內院穿堂法則，並打通風舶嶼西港直街（`src/grid/gen.rs`），使全島城角與內院滯留人數降至 `0`，移動中凍結人數降至 `0`（全島 `1,772` 名真人分散於 `1,171` 個獨立座標點）。
+   - **合社獵團合圍獵殺、棲地即時遷徙（`SHANHAI_SLOT_RESPAWN_GEN`）與現場遺骸（`RECENT_HUNT_KILL_SITES`）**：獵團或玩家擊殺《台灣山海經》生靈後，該棲地槽位立即推進重生世代遷徙至新座標，並於原處留下可觀察與採集之 `【圍獵遺骸】`；每輪交割後領隊自主吹角增募鄰鎮高膽識居民入團並寫入社交思緒。
+   - **玩家端 9x9 鄰格、同格視野與《台灣山海經》生靈 `Look / Subdue / Slay` 完整閉環**：修正 `src/db/entity.rs`、`src/server/broadcast.rs`、`src/server/action/look.rs`、`src/server/action/combat.rs` 與 `src/game/room.rs`，全面支援 `shanhai_*` 與 `ambient_flock_*` 實體解析，根除山海生靈誤顯示為「陌生人」或誤套用人類代名詞之缺陷，並通過桌面版（`1440×900`）與行動版（`390×844`）雙視口實機驗收。
 ## 二、 關鍵檔案與正典錨點
 
 - **Rust 實機代碼**：

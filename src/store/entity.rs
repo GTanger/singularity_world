@@ -146,6 +146,7 @@ pub struct HuntingPartyState {
     pub core_member_ids: Vec<String>,
     pub member_ids: Vec<String>,
     pub phase: HuntingPartyPhase,
+    pub prey_slot_idx: usize,
     pub prey_coord: (i32, i32),
     pub prey_name: String,
     pub prey_tier: u8,
@@ -186,7 +187,7 @@ fn pick_live_shanhai_prey_for_zone(
     cy: i32,
     round: u32,
     now_unix: i64,
-) -> ((i32, i32), String, u8, String, String) {
+) -> ((i32, i32), usize, String, u8, String, String) {
     let time_tick = now_unix / 180;
     let z_idx = crate::game::CANONICAL_HUNTING_ZONES
         .iter()
@@ -220,6 +221,7 @@ fn pick_live_shanhai_prey_for_zone(
             .unwrap_or_else(|| ("mat_foraged_herb".to_string(), "山海毛皮獵物".to_string()));
         return (
             (sl.x, sl.y),
+            sl.slot_idx,
             amb.display_title,
             sl.tier,
             loot_id,
@@ -229,6 +231,7 @@ fn pick_live_shanhai_prey_for_zone(
 
     (
         (cx - 4, cy + 3),
+        0,
         "高地水鹿".to_string(),
         3,
         "mat_hemp_rope_roll".to_string(),
@@ -1752,21 +1755,21 @@ pub fn find_bfs_next_step(
             -323,
             153,
             167,
-            [(-330, 168), (-330, 152), (-322, 160), (-338, 160)],
+            [(-322, 160), (-338, 160), (-322, 160), (-338, 160)],
         ), // 風舶嶼
         (
             -187,
             -173,
             -147,
             -133,
-            [(-180, -132), (-180, -148), (-172, -140), (-188, -140)],
+            [(-180, -132), (-180, -148), (-172, -139), (-188, -139)],
         ), // 大圳頭
         (
             153,
             167,
             203,
             217,
-            [(160, 218), (160, 202), (168, 210), (152, 210)],
+            [(160, 218), (160, 202), (152, 210), (160, 218)],
         ), // 半嶺鎮
         (
             -7,
@@ -1787,7 +1790,7 @@ pub fn find_bfs_next_step(
                 let d2 = (raw_goal.0 - gx).abs() + (raw_goal.1 - gy).abs();
                 d1 + d2
             }) {
-                if start != best_gate {
+                if (start.0 - best_gate.0).abs() + (start.1 - best_gate.1).abs() > 1 {
                     goal = best_gate;
                 }
             }
@@ -2150,10 +2153,12 @@ pub fn can_npc_step_between(
     if dx.abs() + dy.abs() != 1 {
         return false;
     }
-    let Some(to_cell) = grid.get(crate::grid::SquareCoord::new(to_x, to_y)) else {
+    let to_coord = crate::grid::SquareCoord::new(to_x, to_y);
+    let Some(to_cell) = grid.get(to_coord) else {
         return false;
     };
-    let to_in_settlement = crate::game::is_inside_settlement_urban_core(to_x, to_y);
+    let to_in_settlement = grid.has_explicit_cell(to_coord)
+        && crate::game::is_inside_settlement_urban_core(to_x, to_y);
     // 野外山脊／冰峰（Terrain::Mountain）允許獵團與百工翻越通行；深海、城牆與柵欄嚴格禁止通行
     if matches!(
         to_cell.terrain,
@@ -2164,18 +2169,37 @@ pub fn can_npc_step_between(
     {
         return false;
     }
-    let Some(from_cell) = grid.get(crate::grid::SquareCoord::new(from_x, from_y)) else {
+    let from_coord = crate::grid::SquareCoord::new(from_x, from_y);
+    let Some(from_cell) = grid.get(from_coord) else {
         return false;
     };
-    let from_in_settlement = crate::game::is_inside_settlement_urban_core(from_x, from_y);
+    let from_in_settlement = grid.has_explicit_cell(from_coord)
+        && crate::game::is_inside_settlement_urban_core(from_x, from_y);
 
     let from_is_bldg = is_building_cell_name_or_terrain(from_cell);
     let to_is_bldg = is_building_cell_name_or_terrain(to_cell);
 
     // 建築隔離規則：若起點與終點皆為建築（非道路／橋樑／廣場／空地），禁止直接穿牆步進
+    // 但若任一建築為內院盲室（缺乏對外的直接非建築步進出口），則允許步進通行
     if from_is_bldg && to_is_bldg {
         if from_cell.name.is_empty() || from_cell.name != to_cell.name {
-            return false;
+            let has_exit = |cx: i32, cy: i32| -> bool {
+                for &(ndx, ndy) in &[(0, 1), (0, -1), (1, 0), (-1, 0)] {
+                    let nb_coord = crate::grid::SquareCoord::new(cx + ndx, cy + ndy);
+                    if let Some(nb_cell) = grid.get(nb_coord) {
+                        if nb_cell.terrain.walkable()
+                            && !is_building_cell_name_or_terrain(nb_cell)
+                            && nb_cell.terrain != crate::grid::Terrain::Water
+                        {
+                            return true;
+                        }
+                    }
+                }
+                false
+            };
+            if has_exit(from_x, from_y) && has_exit(to_x, to_y) {
+                return false;
+            }
         }
     }
 
@@ -2779,6 +2803,14 @@ impl Store {
                 }
             }
         }
+        let time_tick = (crate::game::now_unix() / 180) as i64;
+        for z_idx in 0..crate::game::CANONICAL_HUNTING_ZONES.len() {
+            for sl in crate::game::live_zone_shanhai_slots(z_idx, time_tick) {
+                if sl.tier >= 2 || crate::game::is_apex_beast_tracked_at(sl.x, sl.y) {
+                    *counts.entry((sl.x, sl.y)).or_insert(0) += 1;
+                }
+            }
+        }
         counts
     }
 
@@ -2922,7 +2954,7 @@ impl Store {
                     .unwrap_or_else(|| "老獵頭".to_string());
 
                 let init_round = z_idx as u32;
-                let (prey_coord, prey_name, prey_tier, prey_loot_id, prey_loot_name) =
+                let (prey_coord, prey_slot_idx, prey_name, prey_tier, prey_loot_id, prey_loot_name) =
                     pick_live_shanhai_prey_for_zone(cx, cy, init_round, now_unix);
                 let init_phase = if z_idx % 3 == 0 {
                     HuntingPartyPhase::Rallying
@@ -2941,6 +2973,7 @@ impl Store {
                     core_member_ids: core_ids.clone(),
                     member_ids: full_member_ids,
                     phase: init_phase,
+                    prey_slot_idx,
                     prey_coord,
                     prey_name,
                     prey_tier,
@@ -2966,6 +2999,10 @@ impl Store {
         }
 
 
+        let mut all_party_members: std::collections::HashSet<String> = parties
+            .values()
+            .flat_map(|p| p.member_ids.iter().cloned())
+            .collect();
         let mut states = LIVE_NPC_GRID_STATES.write();
         for party in parties.values_mut() {
             let elapsed = now_unix.saturating_sub(party.last_phase_change_unix);
@@ -2986,8 +3023,65 @@ impl Store {
                         })
                         .count();
                     if gathered >= 3 || elapsed >= 14 {
+                        if party.member_ids.len() < 8 {
+                            let assignments = HOUSEHOLD_MEMBER_ASSIGNMENTS.read();
+                            let mut slot_to_id: std::collections::HashMap<usize, String> =
+                                std::collections::HashMap::with_capacity(assignments.len());
+                            for (id, &s_idx) in assignments.iter() {
+                                slot_to_id.insert(s_idx, id.clone());
+                            }
+                            drop(assignments);
+
+                            let start_off = (party.zone_idx * 37 + party.hunt_round as usize * 19) % 1047;
+                            let mut recruited_count = 0;
+                            for s_idx in (start_off..1047).chain(0..start_off) {
+                                if party.member_ids.len() >= 8 || recruited_count >= 2 {
+                                    break;
+                                }
+                                let slot_idx_global = WENYAO_HOUSEHOLD_SLOTS.len() + s_idx;
+                                let cand_slot = household_slot_at(slot_idx_global);
+                                if !cand_slot.brief_tag.starts_with("合社獵團・")
+                                    && !cand_slot.brief_tag.starts_with("入山百工・")
+                                    && !cand_slot.brief_tag.starts_with("古道行旅・")
+                                    && let Some(cand_id) = slot_to_id.get(&slot_idx_global)
+                                    && let Some(cand_ent) = self.entities.get(cand_id)
+                                {
+                                    let p = crate::db::expand_soul_seed_to_personality(
+                                        cand_ent.soul_seed.unwrap_or(slot_idx_global as i64),
+                                    );
+                                    let already_in_other_party =
+                                        all_party_members.contains(cand_id);
+                                    if p.boldness > 0.52
+                                        && !party.member_ids.contains(cand_id)
+                                        && !already_in_other_party
+                                    {
+                                        party.member_ids.push(cand_id.clone());
+                                        all_party_members.insert(cand_id.clone());
+                                        recruited_count += 1;
+                                        let cid_c = cand_id.clone();
+                                        let l_name = party.leader_name.clone();
+                                        let z_name = party.zone_name.clone();
+                                        std::thread::spawn(move || {
+                                            if let Some(arc) = crate::store::get_store() {
+                                                let mut s = arc.write();
+                                                let _ = s.update_entity(&cid_c, |ent| {
+                                                    crate::db::add_thought_to_entity_with_delta(
+                                                        ent,
+                                                        crate::db::ThoughtSource::Talked,
+                                                        8,
+                                                        now_unix,
+                                                        format!("聽聞領隊【{}】吹響山豬牙號角揪團前往【{}】圍獵，欣然提刀入團助陣", l_name, z_name),
+                                                    );
+                                                });
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+
                         party.hunt_round = party.hunt_round.wrapping_add(1);
-                        let (p_coord, p_name, p_tier, l_id, l_name) =
+                        let (p_coord, p_slot, p_name, p_tier, l_id, l_name) =
                             pick_live_shanhai_prey_for_zone(
                                 party.center.0,
                                 party.center.1,
@@ -2995,6 +3089,7 @@ impl Store {
                                 now_unix,
                             );
                         party.prey_coord = p_coord;
+                        party.prey_slot_idx = p_slot;
                         party.prey_name = p_name;
                         party.prey_tier = p_tier;
                         party.prey_loot_id = l_id;
@@ -3010,18 +3105,18 @@ impl Store {
                 }
                 HuntingPartyPhase::SurroundingPrey => {
                     // 即時追蹤目標獵物當前微幅游走座標並檢查合圍就位人數
-                    let (p_coord, p_name, p_tier, l_id, l_name) = pick_live_shanhai_prey_for_zone(
+                    let (p_coord, p_slot, p_name, p_tier, l_id, l_name) = pick_live_shanhai_prey_for_zone(
                         party.center.0,
                         party.center.1,
                         party.hunt_round,
                         now_unix,
                     );
                     party.prey_coord = p_coord;
+                    party.prey_slot_idx = p_slot;
                     party.prey_name = p_name;
                     party.prey_tier = p_tier;
                     party.prey_loot_id = l_id;
                     party.prey_loot_name = l_name;
-
                     let in_surround_ring = party
                         .member_ids
                         .iter()
@@ -3054,6 +3149,16 @@ impl Store {
                 }
                 HuntingPartyPhase::TakedownAndSplit => {
                     if elapsed >= 8 {
+                        crate::game::record_shanhai_slot_hunted(
+                            party.zone_idx,
+                            party.prey_slot_idx,
+                            party.prey_coord,
+                            &party.prey_name,
+                            &party.prey_loot_id,
+                            &party.prey_loot_name,
+                            &party.leader_name,
+                            now_unix,
+                        );
                         let members_clone = party.member_ids.clone();
                         let leader_name = party.leader_name.clone();
                         let z_name = party.zone_name.clone();
@@ -3946,7 +4051,7 @@ impl Store {
                         targets[((h.wrapping_add(hour as u64)) % 4) as usize].clone()
                     } else {
                         // 在聚落內依性格挑選不同類型場所造訪，打破兩點來回死循環
-                        let candidates: Vec<&crate::grid::GridCell> = grid
+                        let mut candidates: Vec<&crate::grid::GridCell> = grid
                             .cells()
                             .filter(|c| {
                                 let d = (c.coord.x - slot.home_x).abs()
@@ -3955,14 +4060,17 @@ impl Store {
                                     && d <= 20
                                     && (c.coord.x, c.coord.y) != state.current
                                     && !c.name.is_empty()
+                                    && c.terrain.walkable()
                                     && !matches!(
                                         c.terrain,
                                         crate::grid::Terrain::Water
                                             | crate::grid::Terrain::Wall
+                                            | crate::grid::Terrain::Fence
                                             | crate::grid::Terrain::House
                                     )
                             })
                             .collect();
+                        candidates.sort_by_key(|c| (c.coord.x, c.coord.y));
                         if !candidates.is_empty() {
                             let pick = candidates
                                 [((h.wrapping_add(time_bucket)) as usize) % candidates.len()];

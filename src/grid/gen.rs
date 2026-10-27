@@ -4203,8 +4203,8 @@ fn build_town_40(
                 let is_east_pier = dy == 0 && (4..=7).contains(&dx);
                 let is_harbor_water = dx >= 5 && ((1..=3).contains(&dy.abs()));
                 let is_quay = dx == 4 && (-4..=4).contains(&dy);
-                let is_outer_beach = (dx.abs() + dy.abs() > 10 || dx < -5 || dy.abs() > 5) && !(dx == -7 && dy == 0);
-                let is_seawall = (dx.abs() + dy.abs() == 10 || dx == -5 || dy.abs() == 5) && !is_east_pier && !is_harbor_water && !is_quay && !(dx == -7 && dy == 0);
+                let is_outer_beach = (dx.abs() + dy.abs() > 10 || dx < -5 || dy.abs() > 5) && !(dy == 0 && (-7..=-5).contains(&dx));
+                let is_seawall = (dx.abs() + dy.abs() == 10 || dx == -5 || dy.abs() == 5) && !is_east_pier && !is_harbor_water && !is_quay && !(dy == 0 && (-7..=-5).contains(&dx));
 
                 if is_east_pier {
                     let name = if dx == 7 { "外澳東港門" } else { "外澳長碼頭" };

@@ -4,7 +4,7 @@ use crate::grid::{Direction, SquareCoord, grid_room_id_from_coord, terrain_name_
 use crate::model::{Exit, Room, RoomObject};
 use crate::store;
 use parking_lot::RwLock;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::sync::LazyLock;
 
 /// 記錄已被玩家「查探獸跡／尋跡」而破霧顯形的鎮場霸主座標 (x, y) 與顯形時間戳。
@@ -19,6 +19,70 @@ pub fn mark_apex_beast_tracked_at(x: i32, y: i32) {
 /// 檢查某處獵場座標之鎮場霸主是否已因尋跡而破霧顯形。
 pub fn is_apex_beast_tracked_at(x: i32, y: i32) -> bool {
     TRACKED_APEX_COORDS.read().contains(&(x, y))
+}
+
+#[derive(Debug, Clone)]
+pub struct RecentHuntKillSite {
+    pub prey_name: String,
+    pub loot_id: String,
+    pub loot_name: String,
+    pub hunter_label: String,
+    pub killed_at: i64,
+}
+
+pub static SHANHAI_SLOT_RESPAWN_GEN: LazyLock<RwLock<HashMap<(usize, usize), u64>>> =
+    LazyLock::new(|| RwLock::new(HashMap::new()));
+
+pub static RECENT_HUNT_KILL_SITES: LazyLock<RwLock<HashMap<(i32, i32), RecentHuntKillSite>>> =
+    LazyLock::new(|| RwLock::new(HashMap::new()));
+
+pub fn record_shanhai_slot_hunted(
+    z_idx: usize,
+    slot_idx: usize,
+    coord: (i32, i32),
+    prey_name: &str,
+    loot_id: &str,
+    loot_name: &str,
+    hunter_label: &str,
+    now_unix: i64,
+) {
+    let mut gen_lock = SHANHAI_SLOT_RESPAWN_GEN.write();
+    let entry = gen_lock.entry((z_idx, slot_idx)).or_insert(0);
+    *entry = entry.wrapping_add(1);
+
+    let mut sites_lock = RECENT_HUNT_KILL_SITES.write();
+    sites_lock.insert(
+        coord,
+        RecentHuntKillSite {
+            prey_name: prey_name.to_string(),
+            loot_id: loot_id.to_string(),
+            loot_name: loot_name.to_string(),
+            hunter_label: hunter_label.to_string(),
+            killed_at: now_unix,
+        },
+    );
+}
+
+pub fn peek_recent_hunt_kill_site(x: i32, y: i32, now_unix: i64) -> Option<RecentHuntKillSite> {
+    let sites_lock = RECENT_HUNT_KILL_SITES.read();
+    if let Some(site) = sites_lock.get(&(x, y)) {
+        if now_unix.saturating_sub(site.killed_at) <= 180 {
+            return Some(site.clone());
+        }
+    }
+    None
+}
+
+pub fn take_recent_hunt_kill_site(x: i32, y: i32, now_unix: i64) -> Option<RecentHuntKillSite> {
+    let mut sites_lock = RECENT_HUNT_KILL_SITES.write();
+    if let Some(site) = sites_lock.get(&(x, y)) {
+        if now_unix.saturating_sub(site.killed_at) <= 180 {
+            return sites_lock.remove(&(x, y));
+        } else {
+            sites_lock.remove(&(x, y));
+        }
+    }
+    None
 }
 /// 當前房間視野。
 #[derive(Debug, Clone)]
@@ -368,7 +432,7 @@ pub fn get_grid_room_view(
     let Some(cell) = grid.get(coord) else {
         return Ok(None);
     };
-    let cell_objects = if !grid.has_explicit_cell(coord) {
+    let cell_objects = if cell.objects.is_empty() && !is_inside_settlement_urban_core(x, y) {
         crate::grid::r#gen::generate_cell_objects(coord, cell.terrain)
     } else {
         cell.objects.clone()
@@ -438,27 +502,23 @@ pub fn get_grid_room_view(
         }
     }
     let mut entities = filter_room_entities(db::get_entities_at_grid(x, y, game_hour)?);
-    if !grid.has_explicit_cell(coord)
+
+    let is_road = room.name.contains("道路")
+        || room.name.contains("木橋")
+        || cell.terrain == crate::grid::Terrain::Road
+        || cell.terrain == crate::grid::Terrain::Bridge;
+
+    let time_bucket = (crate::game::now_unix() / 180) as i64;
+    let mut matched_live_slot = false;
+
+    if !is_inside_settlement_urban_core(x, y)
         && !matches!(
             cell.terrain,
             crate::grid::Terrain::Wall | crate::grid::Terrain::WaterDeep
         )
-        && (x.abs() > 18 || y.abs() > 18)
-        && !entities.iter().any(|e| e.kind == crate::entity::EntityKind::Npc)
+        && !is_road
     {
-        let is_road = room.name.contains("道路")
-            || room.name.contains("木橋")
-            || cell.terrain == crate::grid::Terrain::Road
-            || cell.terrain == crate::grid::Terrain::Bridge;
-        // 先檢查此座標是否為全島 1,805 隻《台灣山海經》全域棲地分布表的即時駐點（確保上帝視角地圖點位與房間內實體 100% 同步）
-        let time_bucket = (crate::game::now_unix() / 180) as i64;
-        let (zone_name, _, _) = crate::grid::r#gen::classify_wilderness_cell(x, y);
-        let mut matched_live_slot = false;
-        if !is_road
-            && let Some(z_idx) = CANONICAL_HUNTING_ZONES
-                .iter()
-                .position(|(zn, _, _)| *zn == zone_name)
-        {
+        for z_idx in 0..CANONICAL_HUNTING_ZONES.len() {
             let slots = live_zone_shanhai_slots(z_idx, time_bucket);
             for sl in slots.iter().filter(|s| s.x == x && s.y == y) {
                 if sl.tier == 1 && !is_apex_beast_tracked_at(x, y) {
@@ -481,49 +541,68 @@ pub fn get_grid_room_view(
                 matched_live_slot = true;
             }
         }
+    }
 
-        if !matched_live_slot {
-            // 霸主威壓屏息格（約 14% 獵場腹地）：尋常小怪驚散匿跡，地上留有【新鮮霸主獸跡】，查探後方會破霧顯形
-            let silence_hash = ((x as i64 * 31337) ^ (y as i64 * 65521)).unsigned_abs() % 7;
-            if !is_road && is_apex_beast_tracked_at(x, y) {
-                if let Some(amb) = ensure_ambient_npc_at_grid(x, y, "__apex__") {
+    if !matched_live_slot
+        && !is_inside_settlement_urban_core(x, y)
+        && !matches!(
+            cell.terrain,
+            crate::grid::Terrain::Wall | crate::grid::Terrain::WaterDeep
+        )
+        && (x.abs() > 18 || y.abs() > 18)
+        && !entities.iter().any(|e| e.kind == crate::entity::EntityKind::Npc)
+    {
+        // 霸主威壓屏息格（約 14% 獵場腹地）：尋常小怪驚散匿跡，地上留有【新鮮霸主獸跡】，查探後方會破霧顯形
+        let silence_hash = ((x as i64 * 31337) ^ (y as i64 * 65521)).unsigned_abs() % 7;
+        if !is_road && is_apex_beast_tracked_at(x, y) {
+            if let Some(amb) = ensure_ambient_npc_at_grid(x, y, "__apex__") {
+                entities.push(amb);
+            }
+        } else if !is_road && silence_hash == 0 {
+            if !room_objs.iter().any(|o| o.id == "shanhai_apex_trace") {
+                room_objs.push(RoomObject {
+                    id: "shanhai_apex_trace".to_string(),
+                    name: "新鮮霸主獸跡".to_string(),
+                    owner: String::new(),
+                    sockets: vec!["Look".to_string()],
+                    responses: std::collections::HashMap::new(),
+                    move_to_room_id: String::new(),
+                });
+            }
+        } else {
+            // 尋常物種與山海小怪：隨時間片在格內動態游走顯形（約 72% 野外格可見小怪或中型獸群活動，28% 為草木藏跡格）
+            let roam_gate = ((x as i64).wrapping_mul(1103515245)
+                ^ (y as i64).wrapping_mul(12345)
+                ^ time_bucket.wrapping_mul(2654435761))
+                .unsigned_abs()
+                % 100;
+            if is_road || roam_gate < 72 {
+                if let Some(amb) = ensure_ambient_npc_at_grid(x, y, &room.name) {
                     entities.push(amb);
                 }
-            } else if !is_road && silence_hash == 0 {
-                if !room_objs.iter().any(|o| o.id == "shanhai_apex_trace") {
-                    room_objs.push(RoomObject {
-                        id: "shanhai_apex_trace".to_string(),
-                        name: "新鮮霸主獸跡".to_string(),
-                        owner: String::new(),
-                        sockets: vec!["Look".to_string()],
-                        responses: std::collections::HashMap::new(),
-                        move_to_room_id: String::new(),
-                    });
-                }
-            } else {
-                // 尋常物種與山海小怪：隨時間片在格內動態游走顯形（約 72% 野外格可見小怪或中型獸群活動，28% 為草木藏跡格）
-                let roam_gate = ((x as i64).wrapping_mul(1103515245)
-                    ^ (y as i64).wrapping_mul(12345)
-                    ^ time_bucket.wrapping_mul(2654435761))
-                    .unsigned_abs()
-                    % 100;
-                if is_road || roam_gate < 72 {
-                    if let Some(amb) = ensure_ambient_npc_at_grid(x, y, &room.name) {
-                        entities.push(amb);
-                    }
-                    // 獸群／小怪群聚地塊（約 28% 野外地塊有結群伴生小怪或同群獸類）
-                    if !is_road && roam_gate < 28 {
-                        let flock_tag = if roam_gate % 2 == 0 { "__tier4a__" } else { "__tier4b__" };
-                        if let Some(mut companion) = ensure_ambient_npc_at_grid(x, y, flock_tag) {
-                            companion.id = format!("ambient_flock_{x}_{y}");
-                            if !entities.iter().any(|e| e.display_title == companion.display_title) {
-                                entities.push(companion);
-                            }
+                // 獸群／小怪群聚地塊（約 28% 野外地塊有結群伴生小怪或同群獸類）
+                if !is_road && roam_gate < 28 {
+                    let flock_tag = if roam_gate % 2 == 0 { "__tier4a__" } else { "__tier4b__" };
+                    if let Some(mut companion) = ensure_ambient_npc_at_grid(x, y, flock_tag) {
+                        companion.id = format!("ambient_flock_{x}_{y}");
+                        if !entities.iter().any(|e| e.display_title == companion.display_title) {
+                            entities.push(companion);
                         }
                     }
                 }
             }
         }
+    }
+
+    if let Some(site) = peek_recent_hunt_kill_site(x, y, crate::game::now_unix()) {
+        room_objs.push(RoomObject {
+            id: format!("hunt_kill_site_{x}_{y}"),
+            name: format!("{}・圍獵遺骸", site.prey_name),
+            owner: String::new(),
+            sockets: vec!["Look".to_string(), "Harvest".to_string()],
+            responses: std::collections::HashMap::new(),
+            move_to_room_id: String::new(),
+        });
     }
      let vendor_objs = super::player_scene::dynamic_vendor_objects_for_entities(&entities);
      for v_obj in vendor_objs {
@@ -860,7 +939,9 @@ pub fn ambient_creature_loot(creature_name: &str) -> Option<(&'static str, &'sta
         Some(("wt_cat_0205", "胸白月熊厚熊掌", "《台灣山海經》：月熊胸生白毫如新月，其掌食之禦風寒。"))
     } else if creature_name.contains("穿山甲") || creature_name.contains("鯪鯉") {
         Some(("wt_cat_0188", "鯪鯉穿山甲鱗片", "《台灣山海經》：鯪鯉遍體烏金硬鱗，炙之通經絡、綴甲禦刃。"))
-    } else if creature_name.contains("蛇") || creature_name.contains("蟒") || creature_name.contains("蝮") {
+    } else if creature_name.contains("龜") || creature_name.contains("鼇") || creature_name.contains("蟹") || creature_name.contains("海膽") || creature_name.contains("螺") || creature_name.contains("蛙") || creature_name.contains("蟾") || creature_name.contains("鯢") {
+        Some(("wt_cat_0223", "野生九孔鮑", "《台灣山海經》：甲殼水棲靈物背甲堅實如盾，息於清泉潮穴。"))
+    } else if creature_name.contains("蛇") || creature_name.contains("蟒") || creature_name.contains("蝮") || creature_name.contains("百足") {
         Some(("wt_cat_0189", "大武百步蛇乾蛻", "《台灣山海經》：百步大蛇首如三角鐵鏟，其蛻研粉可解瘴毒。"))
     } else if creature_name.contains("水鹿") || creature_name.contains("白鹿") || creature_name.contains("梅花鹿") || creature_name.contains("角鹿") || creature_name.contains("鹿") {
         Some(("wt_cat_0203", "高地水鹿厚鹿皮", "《台灣山海經》：四目靈鹿生於高山溪谷，其皮堅韌耐水火。"))
@@ -874,8 +955,8 @@ pub fn ambient_creature_loot(creature_name: &str) -> Option<(&'static str, &'sta
         Some(("wt_cat_0211", "海崖黑野豬牙", "《台灣山海經》：剛鬃山豬力能拱石，其獠牙彎如新月。"))
     } else if creature_name.contains("飛鼠") || creature_name.contains("鼯") {
         Some(("wt_cat_0182", "大赤飛鼠厚絨毛", "《台灣山海經》：赤鼯夜飛巨木之間，其絨輕暖勝狐裘。"))
-    } else if creature_name.contains("白鼻心") || creature_name.contains("狐") || creature_name.contains("獾") || creature_name.contains("麝") {
-        Some(("wt_cat_0183", "白鼻心烏腳香皮", "《台灣山海經》：烏腳香善棲樟楠果林，自帶草果清香。"))
+    } else if creature_name.contains("白鼻心") || creature_name.contains("狐") || creature_name.contains("獾") || creature_name.contains("麝") || creature_name.contains("貂") || creature_name.contains("猴") {
+        Some(("wt_cat_0183", "白鼻心烏腳香皮", "《台灣山海經》：烏腳香與山林靈獸善棲樟楠果林，毛皮自帶草果清香。"))
     } else if creature_name.contains("石虎") || creature_name.contains("虎") || creature_name.contains("狼") || creature_name.contains("犬") {
         Some(("wt_cat_0171", "山林石虎斑皮", "《台灣山海經》：石虎耳後生白斑，夜行山林迅捷如電。"))
     } else if creature_name.contains("兔") || creature_name.contains("鼠") {
@@ -888,16 +969,12 @@ pub fn ambient_creature_loot(creature_name: &str) -> Option<(&'static str, &'sta
         Some(("wt_cat_0220", "豆腐鯊厚砂魚皮", "《台灣山海經》：海翁巨魚浮海如嶼，其皮粗韌如砂石。"))
     } else if creature_name.contains("龍魚") || creature_name.contains("鬼頭刀") || creature_name.contains("苦花") || creature_name.contains("鯇") || creature_name.contains("鰻") || creature_name.contains("魚") {
         Some(("wt_cat_0224", "銀鱗土魠魚", "《台灣山海經》：外海大魚銀鱗閃爍，食之益氣強身。"))
-    } else if creature_name.contains("龜") || creature_name.contains("鼇") || creature_name.contains("蟹") || creature_name.contains("海膽") || creature_name.contains("螺") || creature_name.contains("蛙") || creature_name.contains("蟾") || creature_name.contains("鯢") {
-        Some(("wt_cat_0223", "野生九孔鮑", "《台灣山海經》：潮間岩穴甲殼海珍，味極甘鮮。"))
     } else if creature_name.contains("鷹") || creature_name.contains("雕") || creature_name.contains("隼") || creature_name.contains("鴞") {
         Some(("wt_cat_0192", "高山熊鷹翎羽", "《台灣山海經》：赫氏角鷹盤旋絕壁，其翎破空不顫。"))
-    } else if creature_name.contains("雉") || creature_name.contains("雞") || creature_name.contains("鳥") || creature_name.contains("鷗") || creature_name.contains("鷺") || creature_name.contains("燕") || creature_name.contains("鷚") {
+    } else if creature_name.contains("雉") || creature_name.contains("雞") || creature_name.contains("鳥") || creature_name.contains("鷗") || creature_name.contains("鷺") || creature_name.contains("燕") || creature_name.contains("鷚") || creature_name.contains("眉") || creature_name.contains("雀") || creature_name.contains("鳩") {
         Some(("wt_cat_0173", "水鳥蓬鬆絨羽", "《台灣山海經》：山海飛禽絨羽輕柔，禦寒隔濕。"))
-    } else if creature_name.contains("草獸") || creature_name.contains("獸") {
-        Some(("wt_cat_0185", "灰野兔整張絨皮", "《台灣山海經》：野兔潛於芒草石縫，其絨護掌不畏寒霜。"))
     } else {
-        None
+        Some(("wt_cat_0185", "灰野兔整張絨皮", "《台灣山海經》：山海林野走獸潛行草木岩壑之間，毛皮溫韌。"))
     }
 }
 
@@ -1301,11 +1378,21 @@ pub fn live_zone_shanhai_slots(z_idx: usize, time_tick: i64) -> Vec<ShanhaiHabit
     for (slot_idx, &(bx, by, base_sub, tier, tier_tag, roam_group)) in
         base_list.iter().enumerate()
     {
+        let respawn_gen = SHANHAI_SLOT_RESPAWN_GEN
+            .read()
+            .get(&(z_idx, slot_idx))
+            .copied()
+            .unwrap_or(0);
         let (gx, gy, sub_geo) = if tier == 1 {
             (bx, by, base_sub)
         } else {
             // 每個獸群或獨立個體依 roam_group 產生獨立漫遊向量（-2..=2），絕不全島同步平移
-            let rh = habitat_hash(z_idx as i64, roam_group as i64, time_tick);
+            let effective_tick = time_tick.wrapping_add(respawn_gen.wrapping_mul(17) as i64);
+            let rh = habitat_hash(
+                (z_idx as i64).wrapping_add(respawn_gen.wrapping_mul(7) as i64),
+                roam_group as i64,
+                effective_tick,
+            );
             let rdx = ((rh % 5) as i32) - 2;
             let rdy = (((rh >> 8) % 5) as i32) - 2;
             let tx = bx + rdx;
@@ -1362,6 +1449,66 @@ pub fn live_zone_shanhai_slots(z_idx: usize, time_tick: i64) -> Vec<ShanhaiHabit
     out
 }
 
+pub fn resolve_shanhai_or_ambient_entity_id(id: &str) -> Option<Character> {
+    if let Some(rest) = id.strip_prefix("shanhai_") {
+        let parts: Vec<&str> = rest.split('_').collect();
+        if parts.len() == 4 {
+            let z_idx: usize = parts[0].parse().ok()?;
+            let slot_idx: usize = parts[1].parse().ok()?;
+            let x: i32 = parts[2].parse().ok()?;
+            let y: i32 = parts[3].parse().ok()?;
+            let tier_tag = match slot_idx {
+                0 => "__apex__",
+                1..=6 => "__tier2__",
+                7..=26 => "__tier3__",
+                27..=60 => "__tier4a__",
+                _ => "__tier4b__",
+            };
+            if let Some(mut amb) = ensure_ambient_npc_at_grid(x, y, tier_tag) {
+                amb.id = id.to_string();
+                return Some(amb);
+            }
+        }
+        return None;
+    }
+
+    if let Some(rest) = id.strip_prefix("ambient_flock_") {
+        let parts: Vec<&str> = rest.split('_').collect();
+        if parts.len() == 2 {
+            let x: i32 = parts[0].parse().ok()?;
+            let y: i32 = parts[1].parse().ok()?;
+            let time_bucket = (crate::game::now_unix() / 180) as i64;
+            let roam_gate = ((x as i64).wrapping_mul(1103515245)
+                ^ (y as i64).wrapping_mul(12345)
+                ^ time_bucket.wrapping_mul(2654435761))
+                .unsigned_abs()
+                % 100;
+            let flock_tag = if roam_gate % 2 == 0 { "__tier4a__" } else { "__tier4b__" };
+            if let Some(mut amb) = ensure_ambient_npc_at_grid(x, y, flock_tag) {
+                amb.id = id.to_string();
+                return Some(amb);
+            }
+        }
+        return None;
+    }
+
+    if let Some(rest) = id.strip_prefix("ambient_") {
+        let parts: Vec<&str> = rest.split('_').collect();
+        if parts.len() == 2 {
+            let x: i32 = parts[0].parse().ok()?;
+            let y: i32 = parts[1].parse().ok()?;
+            let tag = if is_apex_beast_tracked_at(x, y) { "__apex__" } else { "" };
+            if let Some(mut amb) = ensure_ambient_npc_at_grid(x, y, tag) {
+                amb.id = id.to_string();
+                return Some(amb);
+            }
+        }
+        return None;
+    }
+
+    None
+}
+
 /// 為「入山百工」挑選遍布該獵場全境真實疆域的採集／匠作航點（跨度 20~120 格，涵蓋林地、溪谷、礦坡與草藥叢）。
 pub fn pick_zone_artisan_waypoint(
     zone_name: &str,
@@ -1378,8 +1525,16 @@ pub fn pick_zone_artisan_waypoint(
         let start = (seed as usize) % pool.len();
         for offset in 0..pool.len() {
             let &(px, py, sub_geo, ..) = &pool[(start + offset * 7) % pool.len()];
+            if is_inside_settlement_urban_core(px, py) {
+                continue;
+            }
             let dist = (px - current.0).abs() + (py - current.1).abs();
             if dist >= 18 {
+                return ((px, py), sub_geo);
+            }
+        }
+        for &(px, py, sub_geo, ..) in pool {
+            if !is_inside_settlement_urban_core(px, py) {
                 return ((px, py), sub_geo);
             }
         }

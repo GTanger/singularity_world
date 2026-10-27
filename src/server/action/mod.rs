@@ -210,6 +210,7 @@ fn try_entity_branch(
     action: &str,
 ) -> bool {
     let is_entity_id_prefix = target_id.starts_with("ambient_")
+        || target_id.starts_with("shanhai_")
         || target_id.starts_with("wt_npc_")
         || target_id.starts_with("wt_vendor_")
         || target_id.starts_with("wt_citizen_")
@@ -418,6 +419,9 @@ fn grid_room_name_at(x: i32, y: i32) -> Option<String> {
 }
 
 pub(super) fn player_visible_target_name(player_id: &str, target: &Character) -> String {
+    if target.id.starts_with("ambient_") || target.id.starts_with("shanhai_") {
+        return display_target_name(target);
+    }
     if target.kind == EntityKind::Player {
         return display_target_name(target);
     }
@@ -442,6 +446,11 @@ fn verb_from_action(action: &str) -> Option<Verb> {
 }
 
 pub(super) fn display_target_name(target: &Character) -> String {
+    if (target.id.starts_with("ambient_") || target.id.starts_with("shanhai_"))
+        && !target.display_title.trim().is_empty()
+    {
+        return target.display_title.trim().to_string();
+    }
     if target.kind == EntityKind::Npc {
         let gender_str = match target.gender {
             Some(crate::entity::Gender::F) => Some("F"),

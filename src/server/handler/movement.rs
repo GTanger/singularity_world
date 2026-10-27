@@ -1816,7 +1816,7 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                 let acq = acq_map.get(&e.id);
                 let named = acq.map(|a| a.named).unwrap_or(false);
 
-                let (label, card_state) = if e.id.starts_with("ambient_") {
+                let (label, card_state) = if e.id.starts_with("ambient_") || e.id.starts_with("shanhai_") {
                     let clean_name = e.display_name.rsplit(['｜', '|']).next().unwrap_or(&e.display_name).trim().to_string();
                     (clean_name, "named")
                 } else if named {

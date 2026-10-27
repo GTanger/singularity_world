@@ -29,9 +29,9 @@ pub use entity::{
     open_active_npc_obligation, pause_npc_for_interaction, player_knows_npc,
     player_observed_npc, record_active_npc_dialogue, resolve_npc_full_label,
     resolve_npc_person_name, resolve_wenyao_npc_schedule, unpause_npc_for_interaction,
-    wenyao_household_slot_for, ActiveNpcDialogue, NpcGridState, WenyaoHouseholdSlot,
-    KNOWN_NPC_NAMES, LIVE_NPC_GRID_STATES, LIVE_NPC_OBLIGATIONS, OBSERVED_NPCS,
-    WENYAO_HOUSEHOLD_SLOTS,
+    wenyao_household_slot_for, ActiveNpcDialogue, HuntingPartyPhase, HuntingPartyState,
+    NpcGridState, WenyaoHouseholdSlot, KNOWN_NPC_NAMES, LIVE_HUNTING_PARTIES,
+    LIVE_NPC_GRID_STATES, LIVE_NPC_OBLIGATIONS, OBSERVED_NPCS, WENYAO_HOUSEHOLD_SLOTS,
 };
 mod event;
 mod init_load;

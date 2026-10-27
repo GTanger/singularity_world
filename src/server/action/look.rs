@@ -100,6 +100,38 @@ fn build_look_narrative(
     room_name: &str,
     viewer_pid: Option<&str>,
 ) -> String {
+    if target.id.starts_with("ambient_") || target.id.starts_with("shanhai_") {
+        if let Some((_loot_id, loot_name, shanhai_note)) =
+            crate::game::ambient_creature_loot(&target.display_title)
+        {
+            let mut desc = format!(
+                "你屏息凝神，仔細觀察眼前的《台灣山海經》生靈【{}】。{}\n體魄 {}・靈敏 {}・氣勁 {}。",
+                target.display_title, shanhai_note, target.vit, target.dex, target.qi
+            );
+            if !target.current_activity.trim().is_empty() {
+                desc.push_str(&format!(" 牠{}。", target.current_activity.trim()));
+            }
+            let target_coord = (target.grid_x.unwrap_or(0), target.grid_y.unwrap_or(0));
+            {
+                let hunting_parties = crate::store::LIVE_HUNTING_PARTIES.read();
+                if let Some(party) = hunting_parties
+                    .values()
+                    .find(|p| p.prey_coord == target_coord || p.prey_name == target.display_title)
+                {
+                    desc.push_str(&format!(
+                        "\n【合社獵團合圍】領隊【{}】正率 {} 名獵手四面合圍此獸，戰況緊繃！",
+                        party.leader_name,
+                        party.member_ids.len()
+                    ));
+                }
+            }
+            desc.push_str(&format!(
+                "\n【山海物產】若將其制服或斬殺，可剝取珍材【{}】或分解溫熱殘軀。",
+                loot_name
+            ));
+            return desc;
+        }
+    }
     let has_canon_desc = canonical_npc_appearance_and_demeanor(target, room_name);
     let mut is_known_canon = false;
     let sensory_line = if target.kind == crate::entity::EntityKind::Npc {
@@ -393,6 +425,15 @@ fn build_look_narrative(
         desc.push_str(&line);
     }
     if target.kind == crate::entity::EntityKind::Npc {
+        {
+            let parties = crate::store::LIVE_HUNTING_PARTIES.read();
+            if let Some(party) = parties.values().find(|p| p.member_ids.contains(&target.id)) {
+                desc.push_str(&format!(
+                    "\n【合社圍獵編組】目前隸屬領隊【{}】率領之{}合社獵團（共 {} 人），目標獵物為【{}】。",
+                    party.leader_name, party.zone_name, party.member_ids.len(), party.prey_name
+                ));
+            }
+        }
         let now_ts = crate::game::now_unix();
         // 優先尋找非通用、非「今日花用又見底」的具體心緒
         let mut chosen_flavor = None;
@@ -634,6 +675,12 @@ fn player_visible_target_name(player_id: &str, target: &Character, _room_name: &
 }
 
 fn followup_actions(player_id: &str, target: &Character) -> Vec<String> {
+    if target.id.starts_with("shanhai_")
+        || (target.id.starts_with("ambient_")
+            && crate::game::ambient_creature_loot(&target.display_title).is_some())
+    {
+        return vec!["Look".into(), "Subdue".into(), "Slay".into()];
+    }
     let room_name = super::resolve_action_room_name(player_id, target);
     let named = db::get_acquaintance(player_id, &target.id)
         .ok()

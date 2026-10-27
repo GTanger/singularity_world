@@ -215,8 +215,30 @@ pub(super) fn do_entity_combat(
             narrative.push_str(&extra);
         }
     }
-    if target_id.starts_with("ambient_") && fight_winner == "attacker" {
+    if (target_id.starts_with("ambient_") || target_id.starts_with("shanhai_")) && fight_winner == "attacker" {
         if let Some((loot_id, loot_name, shanhai_note)) = crate::game::ambient_creature_loot(&target.display_title) {
+            if let Some(rest) = target_id.strip_prefix("shanhai_") {
+                let parts: Vec<&str> = rest.split('_').collect();
+                if parts.len() == 4
+                    && let (Ok(z_idx), Ok(slot_idx), Ok(x), Ok(y)) = (
+                        parts[0].parse::<usize>(),
+                        parts[1].parse::<usize>(),
+                        parts[2].parse::<i32>(),
+                        parts[3].parse::<i32>(),
+                    )
+                {
+                    crate::game::record_shanhai_slot_hunted(
+                        z_idx,
+                        slot_idx,
+                        (x, y),
+                        &target.display_title,
+                        loot_id,
+                        loot_name,
+                        &attacker.display_title,
+                        now,
+                    );
+                }
+            }
             let corpse = crate::pg::living_world::register_beast_corpse(
                 &target.display_title,
                 loot_id,
@@ -518,7 +540,7 @@ fn execute_tianji_wordplate_combat_internal(
     let (raw_final_a, raw_final_d) = if subdue {
         (side_a_final.max(1), side_b_final.max(1))
     } else if fight_winner == "attacker" {
-        let hp_d = if defender.id.starts_with("ambient_") || side_b_final <= 5 {
+        let hp_d = if defender.id.starts_with("ambient_") || defender.id.starts_with("shanhai_") || side_b_final <= 5 {
             0
         } else {
             crate::pg::living_world::record_entity_affliction(

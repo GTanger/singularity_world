@@ -85,6 +85,16 @@ pub fn is_default_socket(action: &str) -> bool {
 /// NPC 在指定房間的有效插座（對齊 `GetSocketsForNPC`）。
 #[must_use]
 pub fn get_sockets_for_npc(entity_id: &str, room_id: &str) -> Vec<String> {
+    if entity_id.starts_with("shanhai_") || entity_id.starts_with("ambient_flock_") {
+        return vec!["Look".to_string(), "Subdue".to_string(), "Slay".to_string()];
+    }
+    if entity_id.starts_with("ambient_") {
+        if let Some(ent) = crate::game::resolve_shanhai_or_ambient_entity_id(entity_id) {
+            if crate::game::ambient_creature_loot(&ent.display_title).is_some() {
+                return vec!["Look".to_string(), "Subdue".to_string(), "Slay".to_string()];
+            }
+        }
+    }
     let mut sockets: Vec<String> = DEFAULT_SOCKETS.iter().map(|s| (*s).to_string()).collect();
     let Ok(assignments) = assignment::get_assignments_for_entity(entity_id) else {
         return sockets;

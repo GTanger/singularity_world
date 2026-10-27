@@ -997,6 +997,87 @@ pub(super) fn do_object_branch(
         narrative.push('\n');
         narrative.push_str(&echo);
     }
+    if obj.id.starts_with("hunt_kill_site_") {
+        let (gx, gy) = if let Some(rest) = obj.id.strip_prefix("hunt_kill_site_") {
+            let mut parts = rest.split('_');
+            if let (Some(xs), Some(ys)) = (parts.next(), parts.next())
+                && let (Ok(x), Ok(y)) = (xs.parse::<i32>(), ys.parse::<i32>())
+            {
+                (x, y)
+            } else {
+                db::get_entity(pid).ok().flatten().and_then(|e| e.grid_x.zip(e.grid_y)).unwrap_or((0, 0))
+            }
+        } else {
+            db::get_entity(pid).ok().flatten().and_then(|e| e.grid_x.zip(e.grid_y)).unwrap_or((0, 0))
+        };
+
+        if action == "Look" {
+            let site_opt = crate::game::peek_recent_hunt_kill_site(gx, gy, now);
+            let narrative = if let Some(site) = site_opt {
+                format!(
+                    "領隊【{}】率合社獵團於此處四面合圍搏殺【{}】後留下的新鮮現場，草地上尚留有餘溫獸跡與散落骨角，可執行【採集 (Harvest)】拾取遺留獸材【{}】。",
+                    site.hunter_label, site.prey_name, site.loot_name
+                )
+            } else {
+                "此處圍獵痕跡已漸次風化冷卻，獵團成員早已分鹿割肉、各自返程，僅餘些許雜亂足印。".to_string()
+            };
+            conn.send_json(&ActionResultMsg {
+                msg_type: "action_result".into(),
+                action: action.to_string(),
+                target_id: obj.id.clone(),
+                target_name: obj.name.clone(),
+                narrative,
+                success: true,
+                actions: vec!["Harvest".into()],
+                move_target_id: String::new(),
+                open_trade: false,
+                suggested_action: String::new(),
+                tactical_choices: vec![],
+            });
+            return;
+        }
+
+        if matches!(action, "Harvest" | "Gather" | "Take") {
+            if let Some(site) = crate::game::take_recent_hunt_kill_site(gx, gy, now) {
+                let _ = db::add_to_inventory(pid, &site.loot_id, 1);
+                let narrative = format!(
+                    "你俯身清理合社圍獵【{}】後留下的現場，細心從殘骨與草叢間剝取收納了新鮮獸材【{}】（已入行囊）！現場餘溫漸漸散去。",
+                    site.prey_name, site.loot_name
+                );
+                conn.send_json(&ActionResultMsg {
+                    msg_type: "action_result".into(),
+                    action: action.to_string(),
+                    target_id: obj.id.clone(),
+                    target_name: obj.name.clone(),
+                    narrative,
+                    success: true,
+                    actions: vec![],
+                    move_target_id: String::new(),
+                    open_trade: false,
+                    suggested_action: String::new(),
+                    tactical_choices: vec![],
+                });
+                refresh_room_views_for_room(&conn.sessions, &conn.cfg, player_room);
+                push_refresh(conn, pid);
+                return;
+            } else {
+                conn.send_json(&ActionResultMsg {
+                    msg_type: "action_result".into(),
+                    action: action.to_string(),
+                    target_id: obj.id.clone(),
+                    target_name: obj.name.clone(),
+                    narrative: "此處遺留的獸材殘軀已被取走或已隨風化散，未尋得更多材料。".to_string(),
+                    success: false,
+                    actions: vec![],
+                    move_target_id: String::new(),
+                    open_trade: false,
+                    suggested_action: String::new(),
+                    tactical_choices: vec![],
+                });
+                return;
+            }
+        }
+    }
     if action == "Look" {
         let item_id_candidate = if let Some(stripped) = obj.id.strip_prefix("resource:") {
             stripped.split(':').nth(1).unwrap_or(stripped)

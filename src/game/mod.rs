@@ -26,13 +26,15 @@ pub use player_scene::{
     public_person_label_for_room,
 };
 pub use room::{
-    CANONICAL_HUNTING_ZONES, RoomView, ShanhaiHabitatSlot, ambient_creature_loot,
-    ensure_ambient_npc_at_grid, ensure_entity_in_room, entity_kind_str, get_grid_cells_around,
-    get_grid_room_view, get_place_room_view, get_room_view, hunting_zone_apex_omen,
-    is_apex_beast_tracked_at, is_inside_settlement_urban_core, live_zone_shanhai_slots,
-    mark_apex_beast_tracked_at, move_by_exit, move_by_grid_direction, move_by_place_route,
-    pick_island_trail_waypoint, pick_zone_artisan_waypoint, player_shanhai_talisman_bonus,
-    shanhai_item_use_effect, zone_ambient_word_source,
+    CANONICAL_HUNTING_ZONES, RecentHuntKillSite, RoomView, ShanhaiHabitatSlot,
+    ambient_creature_loot, ensure_ambient_npc_at_grid, ensure_entity_in_room, entity_kind_str,
+    get_grid_cells_around, get_grid_room_view, get_place_room_view, get_room_view,
+    hunting_zone_apex_omen, is_apex_beast_tracked_at, is_inside_settlement_urban_core,
+    live_zone_shanhai_slots, mark_apex_beast_tracked_at, move_by_exit, move_by_grid_direction,
+    move_by_place_route, peek_recent_hunt_kill_site, pick_island_trail_waypoint,
+    pick_zone_artisan_waypoint, player_shanhai_talisman_bonus, record_shanhai_slot_hunted,
+    resolve_shanhai_or_ambient_entity_id, shanhai_item_use_effect, take_recent_hunt_kill_site,
+    zone_ambient_word_source,
 };
 pub use tick::spawn_loop;
 pub use view_sim::{Pos, in_view_entity_ids, run_view_simulation, simulate_one_tick};
