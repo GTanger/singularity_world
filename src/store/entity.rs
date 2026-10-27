@@ -21,20 +21,30 @@ impl NpcGridState {
         let hour = current_game_hour();
         if self.current == self.dest {
             self.stay_activity.clone()
-        } else if (self.purpose == "安歇養神" || self.purpose == "返家安歇" || self.purpose == "夜間返家") {
+        } else if self.purpose == "安歇養神"
+            || self.purpose == "返家安歇"
+            || self.purpose == "夜間返家"
+        {
             if hour >= 20 || hour < 5 {
-                format!("正踏著夜色沿街返回【{}】準備安歇", self.dest_name)
+                format!("正踏著夜色返回【{}】準備安歇", self.dest_name)
             } else {
-                format!("正沿街返回【{}】稍作歇息", self.dest_name)
+                format!("正返回【{}】稍作歇息", self.dest_name)
             }
-        } else if hour >= 22 || hour < 5 {
-            format!("正踏著夜色沿街返回【{}】準備安歇", self.dest_name)
-        } else if self.purpose == "享用熱食" || self.purpose == "品茗用膳" || self.purpose == "洗沐放鬆" {
-            format!("剛收工，正沿街前往【{}】{}", self.dest_name, self.purpose)
+        } else if self.purpose.contains("合圍")
+            || self.purpose.contains("揪團")
+            || self.purpose.contains("獵殺")
+            || self.purpose.contains("運售")
+        {
+            format!("{}（推進目標：【{}】）", self.stay_activity, self.dest_name)
+        } else if self.purpose == "享用熱食"
+            || self.purpose == "品茗用膳"
+            || self.purpose == "洗沐放鬆"
+        {
+            format!("收工之餘，正動身前往【{}】{}", self.dest_name, self.purpose)
         } else if !self.purpose.is_empty() {
-            format!("正沿街前往【{}】{}", self.dest_name, self.purpose)
+            format!("正動身前往【{}】{}", self.dest_name, self.purpose)
         } else {
-            format!("正沿街前往【{}】", self.dest_name)
+            format!("正動身前往【{}】", self.dest_name)
         }
     }
 }
@@ -109,6 +119,283 @@ pub fn is_npc_paused_for_interaction(entity_id: &str) -> bool {
         return now < until;
     }
     false
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum HuntingPartyPhase {
+    /// 階段一：於聚落獵寮／駐點吹角號召揪團集結
+    Rallying,
+    /// 階段二：尋跡引犬推進、鎖定活體《台灣山海經》獵物並展開四面戰術包抄合圍
+    SurroundingPrey,
+    /// 階段三：合圍收網、齊力搏殺獵物並按見者有份古禮分鹿割皮
+    TakedownAndSplit,
+    /// 階段四：結伴滿載凱旋、沿古道赴城鎮市集交割並均分鎂幣紅利
+    ReturningToMarket,
+}
+
+#[derive(Debug, Clone)]
+pub struct HuntingPartyState {
+    pub zone_name: String,
+    pub zone_idx: usize,
+    pub center: (i32, i32),
+    pub rally_coord: (i32, i32),
+    pub market_coord: (i32, i32),
+    pub market_name: String,
+    pub leader_id: String,
+    pub leader_name: String,
+    pub core_member_ids: Vec<String>,
+    pub member_ids: Vec<String>,
+    pub phase: HuntingPartyPhase,
+    pub prey_coord: (i32, i32),
+    pub prey_name: String,
+    pub prey_tier: u8,
+    pub prey_loot_id: String,
+    pub prey_loot_name: String,
+    pub hunt_round: u32,
+    pub last_phase_change_unix: i64,
+}
+
+pub static LIVE_HUNTING_PARTIES: std::sync::LazyLock<
+    parking_lot::RwLock<std::collections::HashMap<String, HuntingPartyState>>,
+> = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
+
+const HUNTING_PARTY_ZONES: &[(&str, i32, i32)] = &[
+    ("長風草甸", -180, -195),
+    ("古河巨木林", -80, -60),
+    ("赤石坡", -85, -180),
+    ("落日岬", -340, -140),
+    ("驚濤岩岸", -360, 180),
+    ("巨藻淺灣", -300, 260),
+    ("黑石灣", -260, -20),
+    ("西麓林道", -130, 80),
+    ("清泉溪谷", 60, 160),
+    ("翠冠巨木林", 0, 240),
+    ("北坡雲杉林", 80, 300),
+    ("淺澤泥口", 0, -340),
+    ("白茫洲", -120, -320),
+    ("貼山深潭", 120, -320),
+    ("青籠關", 0, -450),
+    ("西嶺礦谷", 180, 40),
+    ("東海峭壁", 320, 200),
+    ("雲腰雪林", 180, 320),
+    ("白塔雪巔", 0, 420),
+];
+
+fn pick_live_shanhai_prey_for_zone(
+    cx: i32,
+    cy: i32,
+    round: u32,
+    now_unix: i64,
+) -> ((i32, i32), String, u8, String, String) {
+    let roam_phase = (now_unix / 24) as i32;
+    let roam_dx = (roam_phase % 3) - 1;
+    let roam_dy = ((roam_phase / 3) % 3) - 1;
+    let apex_x = cx + 1;
+    let apex_y = cy - 1;
+
+    // 每 4 輪圍獵中：2 輪圍獵尋常中型獸群（Tier 3）、1 輪圍獵次級掠食猛獸（Tier 2）、1 輪集結挑戰隱匿鎮場霸主（Tier 1）
+    let mode = round % 4;
+    let (raw_dx, raw_dy, tier_tag, tier_num) = if mode == 3 {
+        (1, -1, "__apex__", 1u8)
+    } else if mode == 2 {
+        const TIER2_OFFSETS: &[(i32, i32)] =
+            &[(-6, 5), (7, 4), (-8, -6), (6, -7), (0, 9), (-9, 1)];
+        let (dx, dy) = TIER2_OFFSETS[(round as usize) % TIER2_OFFSETS.len()];
+        (dx + roam_dx, dy + roam_dy, "__tier2__", 2u8)
+    } else {
+        const HERD_OFFSETS: &[(i32, i32)] = &[
+            (-11, 4),
+            (10, 8),
+            (-9, -11),
+            (12, -9),
+            (-4, 14),
+            (4, -14),
+            (-14, -2),
+        ];
+        let (dx, dy) = HERD_OFFSETS[(round as usize) % HERD_OFFSETS.len()];
+        (dx + roam_dx, dy + roam_dy, "__tier3__", 3u8)
+    };
+
+    if tier_num == 1
+        && let Some(apex) = crate::game::ensure_ambient_npc_at_grid(apex_x, apex_y, "__apex__")
+    {
+        let (loot_id, loot_name) = crate::game::ambient_creature_loot(&apex.display_title)
+            .map(|(id, name, _)| (id.to_string(), name.to_string()))
+            .unwrap_or_else(|| ("mat_foraged_herb".to_string(), "山海王獸珍材".to_string()));
+        return (
+            (apex_x, apex_y),
+            apex.display_title,
+            1,
+            loot_id,
+            loot_name,
+        );
+    }
+
+    for scale in [100, 75, 50, 25, 0] {
+        let tx = (cx + (raw_dx * scale) / 100).clamp(-395, 395);
+        let ty = (cy + (raw_dy * scale) / 100).clamp(-495, 495);
+        if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(tx, ty, tier_tag) {
+            let (loot_id, loot_name) = crate::game::ambient_creature_loot(&amb.display_title)
+                .map(|(id, name, _)| (id.to_string(), name.to_string()))
+                .unwrap_or_else(|| ("mat_foraged_herb".to_string(), "山海毛皮獵物".to_string()));
+            return ((tx, ty), amb.display_title, tier_num, loot_id, loot_name);
+        }
+    }
+
+    (
+        (cx - 4, cy + 3),
+        "高地水鹿".to_string(),
+        3,
+        "mat_hemp_rope_roll".to_string(),
+        "厚實水鹿皮".to_string(),
+    )
+}
+
+fn surround_tactical_slot(
+    grid: &crate::grid::SquareGrid,
+    prey_coord: (i32, i32),
+    member_idx: usize,
+) -> ((i32, i32), &'static str, &'static str) {
+    const RING: &[(i32, i32, &str, &str)] = &[
+        (
+            0,
+            1,
+            "下風正面主伏位",
+            "於下風處張滿百年山桑獵弓鎖定獵物咽喉、指揮收網",
+        ),
+        (
+            1,
+            0,
+            "東翼持鏢截殺位",
+            "手握倒鉤熟鐵長鏢封鎖東側退路，與隊友形成左右夾擊",
+        ),
+        (
+            0,
+            -1,
+            "上風縱犬驅趕位",
+            "縱放精悍山地獵犬自上風處吠叫逼壓，將獵物驅入伏擊圈",
+        ),
+        (
+            -1,
+            0,
+            "西翼持盾封堵位",
+            "手執精鍛台灣山刀與藤盾死守西側林間缺口，防備獵物突圍",
+        ),
+        (
+            1,
+            1,
+            "東南張網策應位",
+            "於東南側拉緊粗麻索套與攔獸網，配合獵團四面收網",
+        ),
+        (
+            -1,
+            1,
+            "西南後陣合圍位",
+            "持鐵箍竹杖與麻索守住西南側後陣，協助獵團完成包抄",
+        ),
+        (
+            1,
+            -1,
+            "東北側翼助陣位",
+            "響應號召持械守住東北側翼，敲擊竹梆壓縮獵物逃竄空間",
+        ),
+        (
+            -1,
+            -1,
+            "西北側翼助陣位",
+            "響應號召於西北側翼布下絆索，與合社獵團合力圍困獵物",
+        ),
+    ];
+    let (_, _, role_pos_label, role_act_desc) = RING[member_idx % RING.len()];
+    for shift in 0..RING.len() {
+        let (dx, dy, _, _) = RING[(member_idx + shift) % RING.len()];
+        let tx = (prey_coord.0 + dx).clamp(-395, 395);
+        let ty = (prey_coord.1 + dy).clamp(-495, 495);
+        let walkable = grid
+            .get(crate::grid::SquareCoord::new(tx, ty))
+            .map(|c| {
+                c.terrain != crate::grid::Terrain::Water && c.terrain != crate::grid::Terrain::Wall
+            })
+            .unwrap_or(false);
+        if walkable {
+            return ((tx, ty), role_pos_label, role_act_desc);
+        }
+    }
+    (prey_coord, role_pos_label, role_act_desc)
+}
+
+fn apply_party_directive_to_state(
+    party: &HuntingPartyState,
+    member_idx: usize,
+    grid: &crate::grid::SquareGrid,
+    state: &mut NpcGridState,
+) {
+    let total_members = party.member_ids.len().max(1);
+    let tier_tag = match party.prey_tier {
+        1 => "鎮場霸主",
+        2 => "次級猛獸",
+        _ => "山海獸群",
+    };
+    match party.phase {
+        HuntingPartyPhase::Rallying => {
+            let ((rx, ry), _, _) = surround_tactical_slot(grid, party.rally_coord, member_idx);
+            state.dest = (rx, ry);
+            state.dest_name = format!("{}・合社獵團集結地", party.zone_name);
+            state.purpose = format!("吹角揪團圍獵（{}人集結）", total_members);
+            if member_idx == 0 {
+                state.stay_activity = format!(
+                    "正在{}吹響山豬牙號角揪團集結（目前已集結 {} 人），準備率隊進發合圍{}【{}】",
+                    state.dest_name, total_members, tier_tag, party.prey_name
+                );
+            } else {
+                state.stay_activity = format!(
+                    "正響應領隊【{}】吹角號召於{}集結（共 {} 人），擦拭隨身獵具準備合圍{}【{}】",
+                    party.leader_name, state.dest_name, total_members, tier_tag, party.prey_name
+                );
+            }
+            state.stay_ticks_remaining = 3;
+        }
+        HuntingPartyPhase::SurroundingPrey => {
+            let ((sx, sy), pos_label, act_desc) =
+                surround_tactical_slot(grid, party.prey_coord, member_idx);
+            state.dest = (sx, sy);
+            state.dest_name = format!("{}・{}（合圍【{}】）", party.zone_name, pos_label, party.prey_name);
+            state.purpose = format!("四面合圍【{}】", party.prey_name);
+            state.stay_activity = format!(
+                "正與領隊【{}】等 {} 名合社獵手四面合圍{}【{}】，居【{}】{}",
+                party.leader_name, total_members, tier_tag, party.prey_name, pos_label, act_desc
+            );
+            state.stay_ticks_remaining = 3;
+        }
+        HuntingPartyPhase::TakedownAndSplit => {
+            let ((sx, sy), pos_label, _) =
+                surround_tactical_slot(grid, party.prey_coord, member_idx);
+            state.dest = (sx, sy);
+            state.dest_name = format!("{}・合圍收網處", party.zone_name);
+            state.purpose = format!("齊力獵殺【{}】・分鹿割皮", party.prey_name);
+            state.stay_activity = format!(
+                "正與【{}】合社獵團（共 {} 人）於【{}】收攏包圍網齊力搏殺{}【{}】，並按見者有份古禮剝取【{}】",
+                party.leader_name,
+                total_members,
+                pos_label,
+                tier_tag,
+                party.prey_name,
+                party.prey_loot_name
+            );
+            state.stay_ticks_remaining = 3;
+        }
+        HuntingPartyPhase::ReturningToMarket => {
+            let ((mx, my), _, _) = surround_tactical_slot(grid, party.market_coord, member_idx);
+            state.dest = (mx, my);
+            state.dest_name = party.market_name.clone();
+            state.purpose = format!("結伴運售【{}】分紅", party.prey_loot_name);
+            state.stay_activity = format!(
+                "正隨領隊【{}】等 {} 名合社獵團夥伴滿載圍獵所獲之【{}】，結伴前往{}過磅交割均分鎂幣紅利",
+                party.leader_name, total_members, party.prey_loot_name, party.market_name
+            );
+            state.stay_ticks_remaining = 4;
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -2198,6 +2485,14 @@ impl Store {
             HOUSEHOLD_MEMBER_ASSIGNMENTS.write().clear();
         }
         self.ensure_household_assignments();
+        for e in self.entities.values() {
+            if e.kind == "npc" && e.vit > 0 && e.grid_x.is_none() {
+                let _ = self.effective_entity_grid(e);
+            }
+        }
+        if let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() {
+            self.sync_and_advance_hunting_parties(&grid);
+        }
     }
 
     pub fn ensure_household_assignments(&self) {
@@ -2257,8 +2552,9 @@ impl Store {
         } else {
             slot_idx % 2 == 1
         };
+        let sched_hour = if is_expedition_slot { 10 } else { hour };
         let (dest, dest_name, purpose, stay_activity, stay_ticks) =
-            resolve_wenyao_npc_schedule(slot, hour, init_toggle, slot.home_name);
+            resolve_wenyao_npc_schedule(slot, sched_hour, init_toggle, slot.home_name);
         let init_coord = dest;
         let origin_name = slot.home_name.to_string();
         let stay_ticks_remaining = if is_expedition_slot {
@@ -2329,6 +2625,7 @@ impl Store {
         let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() else {
             return Vec::new();
         };
+        self.sync_and_advance_hunting_parties(&grid);
         let ids: Vec<String> = LIVE_NPC_GRID_STATES.read().keys().cloned().collect();
         let mut moves = Vec::new();
         for id in ids {
@@ -2343,6 +2640,343 @@ impl Store {
             }
         }
         moves
+    }
+    /// 同步並推進全島 19 處山海獵場的「合社圍獵小隊黑板（`LIVE_HUNTING_PARTIES`）」：
+    /// 涵蓋吹角揪團集結 -> 鎖定活體《台灣山海經》獵物座標四面戰術包抄合圍 -> 合擊獵殺與見者有份分鹿割皮 -> 結伴赴市交割分紅。
+    pub fn sync_and_advance_hunting_parties(&self, grid: &crate::grid::SquareGrid) {
+        let now_unix = crate::game::now_unix();
+        let hour = current_game_hour();
+        self.ensure_household_assignments();
+
+        let mut parties = LIVE_HUNTING_PARTIES.write();
+        if parties.is_empty() {
+            let assignments = HOUSEHOLD_MEMBER_ASSIGNMENTS.read();
+            let mut slot_to_id: std::collections::HashMap<usize, String> =
+                std::collections::HashMap::with_capacity(assignments.len());
+            for (id, &s_idx) in assignments.iter() {
+                slot_to_id.insert(s_idx, id.clone());
+            }
+            drop(assignments);
+
+            for (z_idx, &(zone_name, cx, cy)) in HUNTING_PARTY_ZONES.iter().enumerate() {
+                let mut core_ids = Vec::new();
+                let mut rally_coord = (cx - 5, cy - 4);
+                let mut market_coord = (0, 0);
+                let mut market_name = "文曜・西門車馬聯運總站".to_string();
+
+                for s_idx in 0..total_household_slots_len() {
+                    let slot = household_slot_at(s_idx);
+                    if slot.brief_tag.starts_with("合社獵團・")
+                        && slot.work_name.starts_with(zone_name)
+                        && let Some(ent_id) = slot_to_id.get(&s_idx)
+                    {
+                        if core_ids.is_empty() {
+                            rally_coord = (slot.work_x, slot.work_y);
+                            market_coord = (slot.errand_x, slot.errand_y);
+                            market_name = slot.errand_name.to_string();
+                        }
+                        core_ids.push(ent_id.clone());
+                    }
+                }
+                if core_ids.is_empty() {
+                    continue;
+                }
+                let leader_id = core_ids[0].clone();
+                let mut full_member_ids = core_ids.clone();
+                // 領隊老獵頭吹角號召：自動從鄰近村鎮招募 1~2 名膽識過人（boldness > 0.52）的居民加入東北／西北側翼助陣合圍！
+                for s_idx in ((z_idx * 37) % 1047..1047).chain(0..((z_idx * 37) % 1047)) {
+                    if full_member_ids.len() >= 8 {
+                        break;
+                    }
+                    let slot_idx_global = WENYAO_HOUSEHOLD_SLOTS.len() + s_idx;
+                    let cand_slot = household_slot_at(slot_idx_global);
+                    if !cand_slot.brief_tag.starts_with("合社獵團・")
+                        && !cand_slot.brief_tag.starts_with("入山百工・")
+                        && !cand_slot.brief_tag.starts_with("古道行旅・")
+                        && let Some(cand_id) = slot_to_id.get(&slot_idx_global)
+                        && let Some(cand_ent) = self.entities.get(cand_id)
+                    {
+                        let p = crate::db::expand_soul_seed_to_personality(
+                            cand_ent.soul_seed.unwrap_or(slot_idx_global as i64),
+                        );
+                        let already_in_other_party = parties
+                            .values()
+                            .any(|p| p.member_ids.contains(cand_id));
+                        if p.boldness > 0.54
+                            && !full_member_ids.contains(cand_id)
+                            && !already_in_other_party
+                        {
+                            full_member_ids.push(cand_id.clone());
+                        }
+                    }
+                }
+                let leader_name = self
+                    .entities
+                    .get(&leader_id)
+                    .map(|e| {
+                        resolve_npc_person_name(
+                            &e.id,
+                            if e.display_title.trim().is_empty() {
+                                "老獵頭"
+                            } else {
+                                e.display_title.as_str()
+                            },
+                            Some(e.gender.as_str()),
+                        )
+                    })
+                    .unwrap_or_else(|| "老獵頭".to_string());
+
+                let init_round = z_idx as u32;
+                let (prey_coord, prey_name, prey_tier, prey_loot_id, prey_loot_name) =
+                    pick_live_shanhai_prey_for_zone(cx, cy, init_round, now_unix);
+                let init_phase = if z_idx % 3 == 0 {
+                    HuntingPartyPhase::Rallying
+                } else {
+                    HuntingPartyPhase::SurroundingPrey
+                };
+                let party = HuntingPartyState {
+                    zone_name: zone_name.to_string(),
+                    zone_idx: z_idx,
+                    center: (cx, cy),
+                    rally_coord,
+                    market_coord,
+                    market_name,
+                    leader_id,
+                    leader_name,
+                    core_member_ids: core_ids.clone(),
+                    member_ids: full_member_ids,
+                    phase: init_phase,
+                    prey_coord,
+                    prey_name,
+                    prey_tier,
+                    prey_loot_id,
+                    prey_loot_name,
+                    hunt_round: init_round,
+                    last_phase_change_unix: now_unix,
+                };
+                parties.insert(zone_name.to_string(), party);
+            }
+
+            let mut states = LIVE_NPC_GRID_STATES.write();
+            for party in parties.values() {
+                for (m_idx, mid) in party.member_ids.iter().enumerate() {
+                    if let Some(st) = states.get_mut(mid) {
+                        apply_party_directive_to_state(party, m_idx, grid, st);
+                        if party.phase == HuntingPartyPhase::SurroundingPrey {
+                            // 初始直接就位包圍圈外圍 1~2 格，立即展現四面合圍態勢
+                            st.current = st.dest;
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+
+        let mut states = LIVE_NPC_GRID_STATES.write();
+        for party in parties.values_mut() {
+            let elapsed = now_unix.saturating_sub(party.last_phase_change_unix);
+            match party.phase {
+                HuntingPartyPhase::Rallying => {
+                    let gathered = party
+                        .member_ids
+                        .iter()
+                        .filter(|id| {
+                            states
+                                .get(*id)
+                                .map(|s| {
+                                    (s.current.0 - party.rally_coord.0).abs()
+                                        + (s.current.1 - party.rally_coord.1).abs()
+                                        <= 6
+                                })
+                                .unwrap_or(false)
+                        })
+                        .count();
+                    if gathered >= 3 || elapsed >= 14 {
+                        party.hunt_round = party.hunt_round.wrapping_add(1);
+                        let (p_coord, p_name, p_tier, l_id, l_name) =
+                            pick_live_shanhai_prey_for_zone(
+                                party.center.0,
+                                party.center.1,
+                                party.hunt_round,
+                                now_unix,
+                            );
+                        party.prey_coord = p_coord;
+                        party.prey_name = p_name;
+                        party.prey_tier = p_tier;
+                        party.prey_loot_id = l_id;
+                        party.prey_loot_name = l_name;
+                        party.phase = HuntingPartyPhase::SurroundingPrey;
+                        party.last_phase_change_unix = now_unix;
+                        for (m_idx, mid) in party.member_ids.iter().enumerate() {
+                            if let Some(st) = states.get_mut(mid) {
+                                apply_party_directive_to_state(party, m_idx, grid, st);
+                            }
+                        }
+                    }
+                }
+                HuntingPartyPhase::SurroundingPrey => {
+                    // 即時追蹤目標獵物當前微幅游走座標並檢查合圍就位人數
+                    let (p_coord, p_name, p_tier, l_id, l_name) = pick_live_shanhai_prey_for_zone(
+                        party.center.0,
+                        party.center.1,
+                        party.hunt_round,
+                        now_unix,
+                    );
+                    party.prey_coord = p_coord;
+                    party.prey_name = p_name;
+                    party.prey_tier = p_tier;
+                    party.prey_loot_id = l_id;
+                    party.prey_loot_name = l_name;
+
+                    let in_surround_ring = party
+                        .member_ids
+                        .iter()
+                        .filter(|id| {
+                            states
+                                .get(*id)
+                                .map(|s| {
+                                    (s.current.0 - party.prey_coord.0).abs()
+                                        + (s.current.1 - party.prey_coord.1).abs()
+                                        <= 3
+                                })
+                                .unwrap_or(false)
+                        })
+                        .count();
+                    if in_surround_ring >= 3 || elapsed >= 28 {
+                        if party.prey_tier == 1 {
+                            crate::game::mark_apex_beast_tracked_at(
+                                party.prey_coord.0,
+                                party.prey_coord.1,
+                            );
+                        }
+                        party.phase = HuntingPartyPhase::TakedownAndSplit;
+                        party.last_phase_change_unix = now_unix;
+                    }
+                    for (m_idx, mid) in party.member_ids.iter().enumerate() {
+                        if let Some(st) = states.get_mut(mid) {
+                            apply_party_directive_to_state(party, m_idx, grid, st);
+                        }
+                    }
+                }
+                HuntingPartyPhase::TakedownAndSplit => {
+                    if elapsed >= 8 {
+                        let members_clone = party.member_ids.clone();
+                        let leader_name = party.leader_name.clone();
+                        let z_name = party.zone_name.clone();
+                        let p_name = party.prey_name.clone();
+                        let l_id = party.prey_loot_id.clone();
+                        let l_name = party.prey_loot_name.clone();
+                        let mkt_name = party.market_name.clone();
+                        let total_n = members_clone.len();
+                        std::thread::spawn(move || {
+                            for mid in &members_clone {
+                                let _ = crate::db::add_to_inventory(mid, &l_id, 1);
+                                let _ = crate::pg::living_world::record_breath_activity(
+                                    mid,
+                                    crate::pg::living_world::BreathHabitKind::ForestLong,
+                                    2,
+                                    now_unix,
+                                );
+                                let _ = crate::pg::living_world::record_vessel_use(
+                                    mid,
+                                    "craft_steel_hunting_knife",
+                                    1,
+                                    1,
+                                    now_unix,
+                                );
+                            }
+                            if let Some(arc) = crate::store::get_store() {
+                                let mut s = arc.write();
+                                for mid in &members_clone {
+                                    let _ = s.update_entity(mid, |ent| {
+                                        crate::db::add_thought_to_entity_with_delta(
+                                            ent,
+                                            crate::db::ThoughtSource::WorkDone,
+                                            9,
+                                            now_unix,
+                                            format!(
+                                                "與領隊【{}】等 {} 名合社夥伴在【{}】四面合圍獵獲【{}】，按見者有份古禮分得【{}】，正結伴運往{}交割分紅",
+                                                leader_name, total_n, z_name, p_name, l_name, mkt_name
+                                            ),
+                                        );
+                                    });
+                                }
+                            }
+                        });
+                        party.phase = HuntingPartyPhase::ReturningToMarket;
+                        party.last_phase_change_unix = now_unix;
+                        for (m_idx, mid) in party.member_ids.iter().enumerate() {
+                            if let Some(st) = states.get_mut(mid) {
+                                apply_party_directive_to_state(party, m_idx, grid, st);
+                            }
+                        }
+                    }
+                }
+                HuntingPartyPhase::ReturningToMarket => {
+                    let at_market = party
+                        .member_ids
+                        .iter()
+                        .filter(|id| {
+                            states
+                                .get(*id)
+                                .map(|s| {
+                                    (s.current.0 - party.market_coord.0).abs()
+                                        + (s.current.1 - party.market_coord.1).abs()
+                                        <= 6
+                                })
+                                .unwrap_or(false)
+                        })
+                        .count();
+                    if at_market >= 2 || elapsed >= 36 {
+                        let members_clone = party.member_ids.clone();
+                        let leader_name = party.leader_name.clone();
+                        let l_name = party.prey_loot_name.clone();
+                        let mkt_name = party.market_name.clone();
+                        let bounty = match party.prey_tier {
+                            1 => 52,
+                            2 => 36,
+                            _ => 26,
+                        };
+                        std::thread::spawn(move || {
+                            let _ = crate::game::object_ecology::run_npc_autonomous_production_step(
+                                "",
+                                &mkt_name,
+                                &members_clone,
+                                now_unix,
+                            );
+                            if let Some(arc) = crate::store::get_store() {
+                                let mut s = arc.write();
+                                for mid in &members_clone {
+                                    let _ = s.update_entity(mid, |ent| {
+                                        ent.magnesium = ent.magnesium.saturating_add(bounty);
+                                        crate::db::add_thought_to_entity_with_delta(
+                                            ent,
+                                            crate::db::ThoughtSource::WorkDone,
+                                            8,
+                                            now_unix,
+                                            format!(
+                                                "隨領隊【{}】合社獵團將圍獵所獲之【{}】運抵{}過磅交割，分得紅利 {} 枚鎂幣，眾人士氣大振",
+                                                leader_name, l_name, mkt_name, bounty
+                                            ),
+                                        );
+                                    });
+                                }
+                            }
+                        });
+                        // 交割分紅完畢：臨時響應號召之聚落居民帶著分紅與獵獲返回各自生活，核心獵團重返駐點準備下一輪號召
+                        party.member_ids = party.core_member_ids.clone();
+                        party.phase = HuntingPartyPhase::Rallying;
+                        party.last_phase_change_unix = now_unix;
+                        for (m_idx, mid) in party.member_ids.iter().enumerate() {
+                            if let Some(st) = states.get_mut(mid) {
+                                apply_party_directive_to_state(party, m_idx, grid, st);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /// 沿道路相鄰可通行方格 BFS 步進 NPC 座標（每次最多移動 1 格）。
@@ -2392,7 +3026,15 @@ impl Store {
             return None;
         }
 
-        if hour >= 22 || hour < 5 {
+        let is_expedition_slot = slot.brief_tag.starts_with("合社獵團・")
+            || slot.brief_tag.starts_with("入山百工・")
+            || slot.brief_tag.starts_with("古道行旅・");
+        let in_hunting_party = LIVE_HUNTING_PARTIES
+            .read()
+            .values()
+            .any(|p| p.member_ids.iter().any(|id| id == entity_id));
+
+        if !is_expedition_slot && !in_hunting_party && (hour >= 22 || hour < 5) {
             let (home_or_watch_dest, target_name, target_purpose, target_activity, target_ticks) =
                 resolve_wenyao_npc_schedule(slot, hour, false, &state.dest_name);
             state.dest = home_or_watch_dest;
@@ -2679,8 +3321,20 @@ impl Store {
             let time_bucket = (now_unix / 20) as u64;
             let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
 
-            // (A) 獵場／古道遠征人員：在獵場內採多航點大跨度尋跡推進（12~26 格），滿載（streaks >= 3）後沿驛道前往城鎮市集交割，嚴禁定點徘徊！
-            if is_expedition_role && (5..=20).contains(&hour) {
+            // (A0) 若此人正參與「合社獵團／自主圍獵小隊（`LIVE_HUNTING_PARTIES`）」，直接由小隊黑板同步四面合圍戰術站位與階段行動！
+            {
+                let parties = LIVE_HUNTING_PARTIES.read();
+                for party in parties.values() {
+                    if let Some(m_idx) = party.member_ids.iter().position(|id| id == entity_id) {
+                        apply_party_directive_to_state(party, m_idx, grid, state);
+                        obligation_handled = true;
+                        break;
+                    }
+                }
+            }
+
+            // (A) 獵場／古道遠征人員（入山百工、古道行旅）：在獵場內採多航點大跨度尋跡推進（12~26 格），滿載（streaks >= 3）後沿驛道前往城鎮市集交割，嚴禁定點徘徊！
+            if !obligation_handled && is_expedition_role {
                 if state.consecutive_work_streaks < 3 {
                     let step_seed = h
                         .wrapping_add(time_bucket)
@@ -2793,7 +3447,7 @@ impl Store {
             }
 
             // (D) 聚落市集緊缺物料與跨區採集／行商驅動：不再只有死板三點，居民會因手頭銀錢或坊間急徵主動前往鄰近獵場或商站採辦！
-            if !obligation_handled && (7..=19).contains(&hour) {
+            if !obligation_handled && ((6..=21).contains(&hour) || personality.boldness > 0.58) {
                 if let Some((ob_kind, _)) = get_active_npc_obligation(entity_id) {
                     clear_active_npc_obligation(entity_id, &ob_kind);
                     if ob_kind == "restock_goods" {
@@ -2812,56 +3466,107 @@ impl Store {
                             )
                         && cur_stock < tgt_stock
                     {
-                        // 根據所在聚落位置，選擇鄰近的《台灣山海經》獵場或跨鎮集市前往採辦／調撥緊缺物產
-                        let (exp_coord, exp_zone_name) = if slot.home_y > 140 {
-                            ((64, 164), "清泉溪谷・溪畔採集地")
+                        // 根據所在聚落位置，優先響應鄰近《台灣山海經》獵場「合社獵團」的吹角號召加入四面圍獵分紅，或赴獵場採辦急缺物產！
+                        let (exp_coord, exp_zone_name, target_party_zone) = if slot.home_y > 140 {
+                            ((64, 164), "清泉溪谷・溪畔採集地", "清泉溪谷")
                         } else if slot.home_x > 50 {
-                            ((176, 44), "西嶺礦谷・露頭礦脈")
+                            ((176, 44), "西嶺礦谷・露頭礦脈", "西嶺礦谷")
                         } else if slot.home_x < -220 {
-                            ((-355, 176), "驚濤岩岸・海崖採集點")
+                            ((-355, 176), "驚濤岩岸・海崖採集點", "驚濤岩岸")
                         } else if slot.home_y < -220 {
-                            ((-116, -316), "白茫洲・蘆洲藥草灘")
+                            ((-116, -316), "白茫洲・蘆洲藥草灘", "白茫洲")
                         } else if slot.home_y < -100 {
-                            ((-176, -190), "長風草甸・豐草獵場")
+                            ((-176, -190), "長風草甸・豐草獵場", "長風草甸")
                         } else {
-                            ((-76, -56), "古河巨木林・林緣採集徑")
+                            ((-76, -56), "古河巨木林・林緣採集徑", "古河巨木林")
                         };
-                        open_active_npc_obligation(
-                            entity_id,
-                            "restock_goods",
-                            &format!("赴{}採辦坊間急缺之{}", exp_zone_name, scarce_name),
-                        );
-                        let ent_id_c = ent_id.clone();
-                        let home_s = home_settlement.to_string();
-                        let s_name = scarce_name.clone();
-                        let z_name = exp_zone_name.to_string();
-                        std::thread::spawn(move || {
-                            if let Some(arc) = crate::store::get_store() {
-                                let mut s = arc.write();
-                                let _ = s.update_entity(&ent_id_c, |ent| {
-                                    crate::db::add_thought_to_entity_with_delta(
-                                        ent,
-                                        crate::db::ThoughtSource::Daily,
-                                        4,
-                                        now_unix,
-                                        format!(
-                                            "見{}坊間急徵「{}」，盤算手頭銀錢與腳力，決定動身前往【{}】採辦應急物產",
-                                            home_s, s_name, z_name
-                                        ),
-                                    );
-                                });
+                        let mut joined_party_info: Option<(String, String, usize)> = None;
+                        {
+                            let mut parties = LIVE_HUNTING_PARTIES.write();
+                            if let Some(party) = parties.get_mut(target_party_zone)
+                                && party.member_ids.len() < 9
+                                && !party.member_ids.iter().any(|id| id == entity_id)
+                            {
+                                party.member_ids.push(entity_id.to_string());
+                                let m_idx = party.member_ids.len() - 1;
+                                apply_party_directive_to_state(party, m_idx, grid, state);
+                                joined_party_info = Some((
+                                    party.leader_name.clone(),
+                                    party.prey_name.clone(),
+                                    party.member_ids.len(),
+                                ));
                             }
-                        });
-                        state.origin_name = prev_loc_name.clone();
-                        state.dest = exp_coord;
-                        state.dest_name = exp_zone_name.to_string();
-                        state.purpose = format!("採辦急缺{}", scarce_name);
-                        state.stay_activity = format!(
-                            "正於{}一帶尋覓並採集{}坊間急缺的「{}」",
-                            exp_zone_name, home_settlement, scarce_name
-                        );
-                        state.stay_ticks_remaining = 6 + ((h % 5) as u8);
-                        obligation_handled = true;
+                        }
+                        if let Some((leader_name, prey_name, total_n)) = joined_party_info {
+                            open_active_npc_obligation(
+                                entity_id,
+                                "restock_goods",
+                                &format!(
+                                    "響應【{}】號召加入{}合社獵團（共{}人）合圍【{}】",
+                                    leader_name, target_party_zone, total_n, prey_name
+                                ),
+                            );
+                            let ent_id_c = ent_id.clone();
+                            let home_s = home_settlement.to_string();
+                            let s_name = scarce_name.clone();
+                            let z_name = target_party_zone.to_string();
+                            std::thread::spawn(move || {
+                                if let Some(arc) = crate::store::get_store() {
+                                    let mut s = arc.write();
+                                    let _ = s.update_entity(&ent_id_c, |ent| {
+                                        crate::db::add_thought_to_entity_with_delta(
+                                            ent,
+                                            crate::db::ThoughtSource::Daily,
+                                            6,
+                                            now_unix,
+                                            format!(
+                                                "見{}坊間急徵「{}」，正巧聽聞【{}】領隊【{}】吹角號召人手合圍【{}】（已集結 {} 人），當即提上隨身器物入團助陣分紅",
+                                                home_s, s_name, z_name, leader_name, prey_name, total_n
+                                            ),
+                                        );
+                                    });
+                                }
+                            });
+                            state.origin_name = prev_loc_name.clone();
+                            obligation_handled = true;
+                        } else {
+                            open_active_npc_obligation(
+                                entity_id,
+                                "restock_goods",
+                                &format!("赴{}採辦坊間急缺之{}", exp_zone_name, scarce_name),
+                            );
+                            let ent_id_c = ent_id.clone();
+                            let home_s = home_settlement.to_string();
+                            let s_name = scarce_name.clone();
+                            let z_name = exp_zone_name.to_string();
+                            std::thread::spawn(move || {
+                                if let Some(arc) = crate::store::get_store() {
+                                    let mut s = arc.write();
+                                    let _ = s.update_entity(&ent_id_c, |ent| {
+                                        crate::db::add_thought_to_entity_with_delta(
+                                            ent,
+                                            crate::db::ThoughtSource::Daily,
+                                            4,
+                                            now_unix,
+                                            format!(
+                                                "見{}坊間急徵「{}」，盤算手頭銀錢與腳力，決定動身前往【{}】採辦應急物產",
+                                                home_s, s_name, z_name
+                                            ),
+                                        );
+                                    });
+                                }
+                            });
+                            state.origin_name = prev_loc_name.clone();
+                            state.dest = exp_coord;
+                            state.dest_name = exp_zone_name.to_string();
+                            state.purpose = format!("採辦急缺{}", scarce_name);
+                            state.stay_activity = format!(
+                                "正於{}一帶尋覓並採集{}坊間急缺的「{}」",
+                                exp_zone_name, home_settlement, scarce_name
+                            );
+                            state.stay_ticks_remaining = 6 + ((h % 5) as u8);
+                            obligation_handled = true;
+                        }
                     } else if roll < 18 && is_wenyao_slot {
                         let ob_choice = (h.wrapping_add(time_bucket) >> 4) % 8;
                         let (ob_kind, ob_subject, ob_dest, ob_dest_name, ob_act, ob_purpose) =
