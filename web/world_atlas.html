@@ -682,11 +682,11 @@
     /* ─── 選中地塊檢視面板 (INSPECTOR) ─── */
     #inspector-panel {
       position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 480px;
-      max-width: calc(100vw - 40px);
+      bottom: 18px;
+      right: 68px;
+      left: auto;
+      width: 410px;
+      max-width: calc(100vw - 88px);
       background: var(--paper-card);
       border: 1.5px solid var(--copper);
       border-radius: 10px;
@@ -699,7 +699,7 @@
     }
 
     #inspector-panel.hidden {
-      transform: translateX(-50%) translateY(120%);
+      transform: translateY(120%);
       opacity: 0;
       pointer-events: none;
     }
@@ -768,8 +768,8 @@
       padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      max-height: 280px;
+      gap: 9px;
+      max-height: min(460px, calc(100vh - 190px));
       overflow-y: auto;
     }
 
@@ -963,7 +963,10 @@
         font-size: 0.74rem;
       }
       #inspector-panel {
+        right: 10px;
+        left: 10px;
         width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
         bottom: 10px;
       }
     }
@@ -3856,6 +3859,9 @@
         (canvas.height / dpr * 0.85) / 1000
       );
       targetZoom = Math.max(0.46, fitZoom);
+      selectedCellCoord = null;
+      const insp = document.getElementById('inspector-panel');
+      if (insp) insp.classList.add('hidden');
       isAnimating = true;
       requestRender();
     }
@@ -3983,16 +3989,27 @@
         objTagsEl.innerHTML = '<span class="insp-tag" style="color:var(--ink-faint);">無特殊風物設施</span>';
       }
 
-      // 在場人物實體與山海生靈（含內息底色、手持器物磨合器況、部位傷勢、師承烙印）
+      // 在場人物實體與山海生靈（含內息底色、手持器物磨合器況、部位傷勢、師承烙印；若本格無人則列出鄰近坊間/獵場實體）
       const npcTagsEl = document.getElementById('insp-npc-tags');
       npcTagsEl.innerHTML = '';
-      document.getElementById('insp-npc-count').textContent = ents.length;
-      if (ents.length > 0) {
-        ents.forEach(e => {
+      let displayEnts = ents.map(e => ({ ent: e, isNearby: false }));
+      if (displayEnts.length === 0 && rawEntitiesList.length > 0) {
+        const nearby = rawEntitiesList
+          .map(e => ({ ent: e, dist: Math.abs(e.x - x) + Math.abs(e.y - y) }))
+          .filter(item => item.dist > 0 && item.dist <= 12)
+          .sort((a, b) => a.dist - b.dist)
+          .slice(0, 3);
+        displayEnts = nearby.map(item => ({ ent: item.ent, isNearby: true }));
+      }
+      document.getElementById('insp-npc-count').textContent = ents.length > 0 ? String(ents.length) : (displayEnts.length > 0 ? `本格 0 · 鄰近 ${displayEnts.length}` : '0');
+      if (displayEnts.length > 0) {
+        displayEnts.forEach(({ ent: e, isNearby }) => {
           const box = document.createElement('div');
-          box.style.cssText = 'padding:6px 8px;border:1px solid var(--border-warm);border-radius:4px;background:#fffdf9;margin-bottom:4px;font-size:0.75rem;line-height:1.4;';
+          box.style.cssText = 'padding:6px 8px;border:1px solid var(--border-warm);border-radius:4px;background:#fffdf9;margin-bottom:4px;font-size:0.75rem;line-height:1.4;cursor:pointer;';
+          box.onclick = () => jumpTo(e.x, e.y, Math.max(zoom, 24));
           const isBeast = e.kind === 'shanhai_beast';
           const icon = isBeast ? '🦌' : '👤';
+          const nearTag = isNearby ? `<span style="font-size:0.66rem;color:var(--ink-faint);margin-left:4px;">鄰近 (${e.x}, ${e.y})</span>` : '';
           const roleBadge = e.title ? `<span style="font-size:0.68rem;padding:1px 5px;border-radius:3px;background:${isBeast ? 'rgba(38,97,65,0.12)' : 'rgba(139,90,43,0.12)'};color:${isBeast ? '#266141' : 'var(--copper)'};margin-left:5px;">${e.title}</span>` : '';
           let metaPills = '';
           if (e.breath_habit) {
@@ -4008,7 +4025,7 @@
             metaPills += `<span style="display:inline-block;margin-right:4px;margin-top:3px;padding:1px 5px;border-radius:3px;background:rgba(184,134,11,0.15);color:#7a5600;font-size:0.68rem;">師承：${e.lineage.join('、')}</span>`;
           }
           box.innerHTML = `
-            <div style="font-weight:700;color:var(--ink);">${icon} ${e.name || e.id}${roleBadge}</div>
+            <div style="font-weight:700;color:var(--ink);">${icon} ${e.name || e.id}${roleBadge}${nearTag}</div>
             ${e.activity ? `<div style="color:var(--ink-light);margin-top:2px;">${e.activity}</div>` : ''}
             ${metaPills ? `<div>${metaPills}</div>` : ''}
           `;
@@ -4017,7 +4034,6 @@
       } else {
         npcTagsEl.innerHTML = '<span class="insp-tag" style="color:var(--ink-faint);">當前無人在此駐留</span>';
       }
-
       document.getElementById('inspector-panel').classList.remove('hidden');
       requestRender();
     }
@@ -4376,11 +4392,9 @@
         loadingText.textContent = '正在渲染全島 800 × 1,000 離屏底圖…';
         initBaseMapCanvas();
 
-        // 完成載入並預設檢視文曜中心 (0, 0)
+        // 完成載入並呈現全島無遮擋總覽視野
         overlay.classList.add('hidden');
         resetToIslandView();
-        selectCell(0, 0);
-
         // 啟動實體定期輪詢（每 6 秒刷新一次）
         setInterval(fetchEntities, 6000);
 

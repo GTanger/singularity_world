@@ -415,7 +415,24 @@ pub async fn eco_entities() -> impl IntoResponse {
         for &(dx, dy) in &[(0, 0), (-3, 2), (4, -3)] {
             let gx = cx + dx;
             let gy = cy + dy;
-            if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(gx, gy, zone_name) {
+            // 若錨點本身位於道路上，取鄰近獵場腹地座標生成《台灣山海經》生靈，並顯示於該錨點供檢視
+            let mut amb_opt = crate::game::ensure_ambient_npc_at_grid(gx, gy, zone_name);
+            if amb_opt
+                .as_ref()
+                .and_then(|a| crate::game::ambient_creature_loot(&a.display_title))
+                .is_none()
+            {
+                for &(ox, oy) in &[(2, 2), (-2, -2), (3, -2), (-4, 3)] {
+                    if let Some(candidate) =
+                        crate::game::ensure_ambient_npc_at_grid(gx + ox, gy + oy, zone_name)
+                        && crate::game::ambient_creature_loot(&candidate.display_title).is_some()
+                    {
+                        amb_opt = Some(candidate);
+                        break;
+                    }
+                }
+            }
+            if let Some(amb) = amb_opt {
                 let (kind, title, held_vessel, breath) = if let Some((_lid, loot_name, shanhai_note)) =
                     crate::game::ambient_creature_loot(&amb.display_title)
                 {
@@ -434,7 +451,7 @@ pub async fn eco_entities() -> impl IntoResponse {
                     )
                 };
                 entities.push(EcoEntity {
-                    id: amb.id,
+                    id: format!("ambient_{gx}_{gy}"),
                     name: amb.display_title,
                     title,
                     x: gx,
