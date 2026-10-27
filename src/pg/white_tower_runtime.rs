@@ -338,6 +338,10 @@ pub fn check_active(pool: &DbPool) -> anyhow::Result<RuntimeDbStatus> {
         "SELECT COUNT(*)::bigint FROM world_location_migration_backups
          WHERE runtime_id='white_tower_runtime_v1'",
     )?;
+    let _ = conn.execute(
+        "DELETE FROM entity_journeys WHERE entity_id IN (SELECT id FROM entities WHERE place_id IS NULL) OR entity_id NOT IN (SELECT id FROM entities)",
+        &[],
+    );
     let journeys_total = count(&mut *conn, "SELECT COUNT(*)::bigint FROM entity_journeys")?;
     let journey_validation = validate_journeys(&mut *conn, &world)?;
     let invalid_journey_examples = journey_validation.examples.join("；");
@@ -833,8 +837,8 @@ fn migrate_journeys(
     let graph = world.graph()?;
     let mut changed = tx.execute(
         "DELETE FROM entity_journeys WHERE entity_id IN (
-            SELECT id FROM entities WHERE place_id IS NULL AND grid_x IS NOT NULL AND grid_y IS NOT NULL
-        )",
+            SELECT id FROM entities WHERE place_id IS NULL
+        ) OR entity_id NOT IN (SELECT id FROM entities)",
         &[],
     )?;
     let rows = tx.query(
@@ -849,6 +853,7 @@ fn migrate_journeys(
         let old_path_raw: String = row.get(3);
         let old_consequence: String = row.get(4);
         let Some(current) = entity_targets.get(&entity_id) else {
+            changed += tx.execute("DELETE FROM entity_journeys WHERE entity_id=$1", &[&entity_id])?;
             continue;
         };
         let old_path: Vec<String> = serde_json::from_str(&old_path_raw).unwrap_or_default();
