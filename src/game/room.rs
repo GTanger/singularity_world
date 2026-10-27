@@ -939,8 +939,14 @@ pub fn ambient_creature_loot(creature_name: &str) -> Option<(&'static str, &'sta
         Some(("wt_cat_0205", "胸白月熊厚熊掌", "《白塔山海志》：月熊胸生白毫如新月，其掌食之禦風寒。"))
     } else if creature_name.contains("穿山甲") || creature_name.contains("鯪鯉") {
         Some(("wt_cat_0188", "鯪鯉穿山甲鱗片", "《白塔山海志》：鯪鯉遍體烏金硬鱗，炙之通經絡、綴甲禦刃。"))
-    } else if creature_name.contains("龜") || creature_name.contains("鼇") || creature_name.contains("蟹") || creature_name.contains("海膽") || creature_name.contains("螺") || creature_name.contains("蛙") || creature_name.contains("蟾") || creature_name.contains("鯢") {
-        Some(("wt_cat_0223", "野生九孔鮑", "《白塔山海志》：甲殼水棲靈物背甲堅實如盾，息於清泉潮穴。"))
+    } else if creature_name.contains("龜") || creature_name.contains("鼇") {
+        Some(("wt_cat_0252", "深潭野生老鱉", "《白塔山海志》：靈龜玄甲堅實如盾，息於清泉林澗。"))
+    } else if creature_name.contains("蟹") || creature_name.contains("鱟") {
+        Some(("wt_cat_0233", "紅螯大青蟹", "《白塔山海志》：鐵甲巨螯伏於潮間泥灘，雙鉗力能夾石。"))
+    } else if creature_name.contains("蛙") || creature_name.contains("蟾") || creature_name.contains("鯢") || creature_name.contains("山椒魚") {
+        Some(("wt_cat_0275", "草叢野生牛蛙", "《白塔山海志》：水澤兩棲靈物伏於寒潭草澗，喜清泉雨霧。"))
+    } else if creature_name.contains("海膽") || creature_name.contains("螺") || creature_name.contains("鮑") {
+        Some(("wt_cat_0223", "野生九孔鮑", "《白塔山海志》：潮間岩穴甲殼海珍，味極甘鮮。"))
     } else if creature_name.contains("蛇") || creature_name.contains("蟒") || creature_name.contains("蝮") || creature_name.contains("百足") {
         Some(("wt_cat_0189", "百步蛇乾蛻", "《白塔山海志》：百步大蛇首如三角鐵鏟，其蛻研粉可解瘴毒。"))
     } else if creature_name.contains("水鹿") || creature_name.contains("白鹿") || creature_name.contains("梅花鹿") || creature_name.contains("角鹿") || creature_name.contains("鹿") {

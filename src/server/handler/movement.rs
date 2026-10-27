@@ -919,15 +919,37 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
         return;
     };
 
-    let npcs: Vec<_> = entities
-        .into_iter()
-        .filter(|e| e.kind == crate::entity::EntityKind::Npc && e.id != player_id)
-        .collect();
-
-    if npcs.is_empty() {
-        return;
+    let mut wild_creatures = Vec::new();
+    let mut npcs = Vec::new();
+    for e in entities {
+        if e.kind == crate::entity::EntityKind::Npc && e.id != player_id {
+            if e.id.starts_with("shanhai_") || e.id.starts_with("ambient_") {
+                wild_creatures.push(e);
+            } else {
+                npcs.push(e);
+            }
+        }
     }
 
+    if npcs.is_empty() {
+        if let Some(creature) = wild_creatures.first() {
+            let c_act = creature
+                .current_activity
+                .trim()
+                .trim_start_matches("正在")
+                .trim_start_matches('正');
+            let line = format!(
+                "「林隙草木間傳來細碎動靜——不遠處的【{}】正{}，察覺有人踏足此處，頓時警覺地昂首凝視。」",
+                creature.display_title,
+                if c_act.is_empty() { "於棲地間巡行覓食" } else { c_act }
+            );
+            conn.send_json(&super::super::protocol::NarrateMsg {
+                msg_type: "narrate".into(),
+                text: line,
+            });
+        }
+        return;
+    }
     let get_display_name = |npc: &crate::entity::Character| -> String {
         let is_named = db::get_acquaintance(player_id, &npc.id)
             .ok()
@@ -938,7 +960,17 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
             crate::store::resolve_npc_person_name(&npc.id, &npc.display_title, None)
         } else {
             let tag = crate::store::npc_brief_appearance_tag(&npc.id, &npc.display_title);
-            let role = if npc.display_title.contains("鐵") || npc.display_title.contains("匠") {
+            let in_hunting_party = crate::store::LIVE_HUNTING_PARTIES
+                .read()
+                .values()
+                .any(|p| p.member_ids.contains(&npc.id));
+            let role = if in_hunting_party || tag.contains("合社獵團") {
+                "獵手"
+            } else if tag.contains("入山百工") {
+                "山林百工"
+            } else if tag.contains("古道行旅") {
+                "行旅鏢客"
+            } else if npc.display_title.contains("鐵") || npc.display_title.contains("匠") {
                 "匠人"
             } else if npc.display_title.contains("商") || npc.display_title.contains("販") {
                 "攤販"
@@ -970,6 +1002,46 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
             0 => format!("「{name}見你邁步走入，神色微動，溫和點頭致意：『別來無恙，先前還在思忖何時能與你會面。』」"),
             1 => format!("「{name}停下手頭的事務，抬眼望見你，含笑招呼：『旅途可還順遂？若有事需要打點，隨時知會一聲。』」"),
             _ => format!("「{name}朝你微微頷首：『來得正好，四方市面平穩，請入內歇步。』」"),
+        };
+        conn.send_json(&super::super::protocol::NarrateMsg {
+            msg_type: "narrate".into(),
+            text: reflex,
+        });
+        return;
+    }
+
+    // (a2) 若在場有「合社獵團（`LIVE_HUNTING_PARTIES`）」成員，主動通報圍獵進度並號召同行分鹿
+    let hunting_reflex = {
+        let parties = crate::store::LIVE_HUNTING_PARTIES.read();
+        awake_npcs.iter().find_map(|n| {
+            parties
+                .values()
+                .find(|p| p.member_ids.contains(&n.id))
+                .map(|p| (n, p.clone()))
+        })
+    };
+    if let Some((hunter_npc, party)) = hunting_reflex {
+        let caller = get_display_name(hunter_npc);
+        let (px, py) = party.prey_coord;
+        let reflex = match party.phase {
+            crate::store::HuntingPartyPhase::Rallying => format!(
+                "「{caller}手按腰間山豬牙號角，見你踏入此處，精神一振低聲招呼：『來得正好！領隊【{}】正召集大夥兒（現已聚齊 {} 人）準備合圍座標 ({px}, {py}) 的【{}】，你若願一同助陣分鹿，儘管與我交談（Talk）入團！』」",
+                party.leader_name,
+                party.member_ids.len(),
+                party.prey_name
+            ),
+            crate::store::HuntingPartyPhase::SurroundingPrey => format!(
+                "「{caller}壓低身形、緊盯座標 ({px}, {py}) 方向的【{}】，見你靠近連忙打出手勢低喝：『別驚動獵物！我們【{}】合社獵團正從八方收攏包圍圈，隨同出手合擊者見者有份！』」",
+                party.prey_name, party.leader_name
+            ),
+            crate::store::HuntingPartyPhase::TakedownAndSplit => format!(
+                "「{caller}正與【{}】合社獵團夥伴全力圍殺【{}】、刀光與號角齊鳴，見你趕到高呼道：『快搭把手合擊此獸，剝取的【{}】與賞格見者有份！』」",
+                party.leader_name, party.prey_name, party.prey_loot_name
+            ),
+            crate::store::HuntingPartyPhase::ReturningToMarket => format!(
+                "「{caller}肩扛圍獵所獲的【{}】，隨【{}】合社獵團結伴趕往【{}】交割分紅，見你迎面走來爽朗笑道：『這趟合圍【{}】大獲全勝，正要進鎮過磅分鎂幣呢！』」",
+                party.prey_loot_name, party.leader_name, party.market_name, party.prey_name
+            ),
         };
         conn.send_json(&super::super::protocol::NarrateMsg {
             msg_type: "narrate".into(),

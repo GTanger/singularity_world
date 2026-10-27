@@ -348,7 +348,31 @@ fn synthesize_talk_reply_with_stance_and_obligation(
 fn extract_venue_and_role_talk_context(target: &Character, room_name: &str) -> String {
     let mut parts = Vec::new();
 
-    if target.id.starts_with("wt_vendor_") {
+    if let Some(party) = crate::store::LIVE_HUNTING_PARTIES
+        .read()
+        .values()
+        .find(|p| p.member_ids.contains(&target.id))
+        .cloned()
+    {
+        let phase_desc = match party.phase {
+            crate::store::HuntingPartyPhase::Rallying => "正於獵場前哨吹響山豬牙號角招攬好手集結",
+            crate::store::HuntingPartyPhase::SurroundingPrey => "正引獵犬分從八方包抄合圍獵物",
+            crate::store::HuntingPartyPhase::TakedownAndSplit => "正與隊友收網合擊獵物並準備依見者有份古規分鹿割皮",
+            crate::store::HuntingPartyPhase::ReturningToMarket => "正滿載獵獲結伴趕往城鎮商行過磅交割分紅",
+        };
+        parts.push(format!(
+            "你隸屬於領隊【{}】率領之【{}】合社獵團（全隊共 {} 人），當前{}，鎖定座標 ({}, {}) 之山海生靈【{}】（預計採獲【{}】運往【{}】交割）。歡迎來客應募入團並肩圍獵、見者有份。",
+            party.leader_name,
+            party.zone_name,
+            party.member_ids.len(),
+            phase_desc,
+            party.prey_coord.0,
+            party.prey_coord.1,
+            party.prey_name,
+            party.prey_loot_name,
+            party.market_name
+        ));
+    } else if target.id.starts_with("wt_vendor_") {
         let (item_id, item_name, base_price_mg, stock) =
             crate::server::action::trade::get_vendor_stall_stock(&target.id)
                 .unwrap_or(("", "招牌小吃", 3, 5));
@@ -794,6 +818,41 @@ fn build_cognitive_talk_reply(
     let trimmed = player_input.trim();
     if is_open_trade_input(trimmed) {
         return None;
+    }
+    if let Some(party) = crate::store::LIVE_HUNTING_PARTIES
+        .read()
+        .values()
+        .find(|p| p.member_ids.contains(&target.id))
+        .cloned()
+    {
+        let (px, py) = party.prey_coord;
+        let reply = match party.phase {
+            crate::store::HuntingPartyPhase::Rallying => format!(
+                "「好漢來得正巧！我們領隊【{}】正在號召好手（現已聚齊 {} 人），準備前往座標 ({px}, {py}) 合圍【{}】。你既開口相詢，便算入我們合社獵團一份子，待獵得【{}】運回【{}】，按古規見者有份！」",
+                party.leader_name,
+                party.member_ids.len(),
+                party.prey_name,
+                party.prey_loot_name,
+                party.market_name
+            ),
+            crate::store::HuntingPartyPhase::SurroundingPrey => format!(
+                "「噓——放輕腳步！我們【{}】合社獵團共 {} 人已鎖定座標 ({px}, {py}) 的【{}】，正從八方收攏合圍網。你隨我們一同包抄上去，獵下此獸後【{}】與賞格見者有份！」",
+                party.leader_name,
+                party.member_ids.len(),
+                party.prey_name,
+                party.prey_loot_name
+            ),
+            crate::store::HuntingPartyPhase::TakedownAndSplit => format!(
+                "「少廢話，快亮傢伙搭把手！我們正與領隊【{}】在 ({px}, {py}) 合力搏殺【{}】，拿下之後【{}】跟鎂幣紅利當場分你一份！」",
+                party.leader_name, party.prey_name, party.prey_loot_name
+            ),
+            crate::store::HuntingPartyPhase::ReturningToMarket => format!(
+                "「哈哈，這趟我們【{}】合社獵團在山裡順利圍下【{}】，割得上好的【{}】，正要趕往【{}】過磅分紅！下輪吹角集結時，你記得一塊兒來！」",
+                party.leader_name, party.prey_name, party.prey_loot_name, party.market_name
+            ),
+        };
+        let narr = format_npc_talk_line(target, talk_name, &reply, player_input, "");
+        return Some((narr, reply));
     }
 
     let clean_act = current_activity
@@ -2888,6 +2947,36 @@ pub(super) fn do_entity_talk(
         now,
         pool_opt.as_deref(),
     );
+    let hunting_pledge_note = if decision.choice != NpcStanceChoice::Refuse {
+        let party_opt = crate::store::LIVE_HUNTING_PARTIES
+            .read()
+            .values()
+            .find(|p| p.member_ids.contains(&target.id))
+            .cloned();
+        if let Some(party) = party_opt {
+            crate::store::pledge_player_to_hunting_party(pid, &party.zone_name);
+            crate::pg::living_world::record_breath_activity(
+                pid,
+                crate::pg::living_world::BreathHabitKind::ForestLong,
+                1,
+                now,
+            );
+            Some(format!(
+                "\n【合社入團・見者有份】你已應募加入領隊【{}】率領之【{}】合社獵團（現共 {} 名獵手）！當前鎖定獵物為座標 ({}, {}) 之【{}】——無論由你親手擊殺或隨獵團合圍收網，皆可依半島古規「見者有份」分得【{}】與交割鎂幣紅利！",
+                party.leader_name,
+                party.zone_name,
+                party.member_ids.len(),
+                party.prey_coord.0,
+                party.prey_coord.1,
+                party.prey_name,
+                party.prey_loot_name
+            ))
+        } else {
+            None
+        }
+    } else {
+        None
+    };
 
     // Step 3: 將拍板指令注入 prompt
     if !sensitivity.is_empty() && !sensitivity.ends_with('\n') {
@@ -2936,7 +3025,7 @@ pub(super) fn do_entity_talk(
         } else if was_named || rel.familiarity_score >= 2 {
             "（熟識的來客走近向你打招呼，請以熟絡口吻結合你手頭的活計、心情或近期市集供需動靜主動開口）".to_string()
         } else {
-            "（一名來客走近向你搭話，請展現你正在忙碌的動作神態，並以符合你職業與性格的台灣自然口語開口回應）".to_string()
+            "（一名來客走近向你搭話，請展現你正在忙碌的動作神態，並以符合你職業與性格的半島自然口語開口回應）".to_string()
         }
     } else {
         trimmed_input.to_string()
@@ -3162,6 +3251,9 @@ pub(super) fn do_entity_talk(
     }
     if let Some(m_note) = &mentorship_note {
         final_narrative.push_str(m_note);
+    }
+    if let Some(h_note) = &hunting_pledge_note {
+        final_narrative.push_str(h_note);
     }
     let _ = event::append(now, pid, "talk", target_id);
     conn.send_json(&ActionResultMsg {

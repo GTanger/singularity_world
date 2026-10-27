@@ -55,6 +55,10 @@
    - **六大設牆城鎮城門中繼（`WALLED_CITIES`）與 16 棟街廓內院建築穿堂通行**：於 `src/store/entity.rs`（`find_bfs_next_step`、`can_npc_step_between`）與 `src/grid/grid.rs`（`has_direct_non_building_walkable_exit`）實裝跨牆城門自動導航及內院穿堂法則，並打通風舶嶼西港直街（`src/grid/gen.rs`），使全島城角與內院滯留人數降至 `0`，移動中凍結人數降至 `0`（全島 `1,772` 名真人分散於 `1,171` 個獨立座標點）。
    - **合社獵團合圍獵殺、棲地即時遷徙（`SHANHAI_SLOT_RESPAWN_GEN`）與現場遺骸（`RECENT_HUNT_KILL_SITES`）**：獵團或玩家擊殺《白塔山海志》生靈後，該棲地槽位立即推進重生世代遷徙至新座標，並於原處留下可觀察與採集之 `【圍獵遺骸】`；每輪交割後領隊自主吹角增募鄰鎮高膽識居民入團並寫入社交思緒。
    - **玩家端 9x9 鄰格、同格視野與《白塔山海志》生靈 `Look / Subdue / Slay` 完整閉環**：修正 `src/db/entity.rs`、`src/server/broadcast.rs`、`src/server/action/look.rs`、`src/server/action/combat.rs` 與 `src/game/room.rs`，全面支援 `shanhai_*` 與 `ambient_flock_*` 實體解析，根除山海生靈誤顯示為「陌生人」或誤套用人類代名詞之缺陷，並通過桌面版（`1440×900`）與行動版（`390×844`）雙視口實機驗收。
+12. **「《白塔山海志》內生正名（零幕後元參照）× 合社獵團玩家應募入團 × 見者有份協同圍獵與聚落市集入庫調價全閉環」實裝驗收**：
+   - **拔除幕後設計概念字眼與現實地名，統一正名為《白塔山海志》**：全面清理 `src/game/room.rs`、`src/server/action/look.rs`、`src/store/outer_households.rs`、`src/game/peninsula_catalog.rs`、`data/items.json`、`web/world_atlas.html` 及 Wiki 正典，將生靈、物產與典籍全數收斂為半島內生語境（`四目水鹿`、`胸白月熊王`、`剛鬃黑山豬`、`礦谷黑野豬`、`長尾山娘`、`淺澤重角水牛王`、`清泉櫻花鉤吻鮭`、`黑沼百步蛇王`、`寒潭山椒魚`、`高山角鷹`、`馭風角鷹王`、`百步蛇乾蛻`），並細化龜鼇（`深潭野生老鱉`）、蟹鱟（`紅螯大青蟹`）與蛙鯢（`草叢野生牛蛙`）之部位映射。
+   - **進場感知反射（`emit_presence_reflex_on_arrival`）人獸分離與合社獵團實況招呼**：修正 `src/server/handler/movement.rs`，將山海生靈與人類 NPC 嚴格分流，杜絕野獸誤套用「街坊」寒暄；玩家踏入有合社獵團在場之格位時，獵手會依當前圍獵階段（集結／包抄／搏殺／返鎮）主動通報領隊、目標獸名與座標並招攬入團。
+   - **玩家應募入團（`PLAYER_HUNTING_PARTY_PLEDGES`）、協同助陣（`combat.rs`）與市集入庫調價（`record_settlement_market_trade`）**：與合社獵手對話（`Talk`）即可應募入團；玩家與獵物交鋒時同區獵團自動側翼吹角助陣（體魄回護 `+12`），擊殺或隨團完成合圍（`TakedownAndSplit`）皆可按「見者有份」分得獸材與鎂幣紅利，且獵團返鎮交割實質增加聚落市集現貨庫存並調降緊缺行情。
 ## 二、 關鍵檔案與正典錨點
 
 - **Rust 實機代碼**：
@@ -63,7 +67,7 @@
   - `src/combat/wordplate.rs:1-1370`（500 詞一字雙境 `CraftDims4D`、起承轉合語序權重與合成引擎）
   - `data/config/word_elements.json` ＆ `data/config/word_elements_gamedims.json`
 - **Wiki 與 Repo 正典文件**：
-  - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/20-世界觀/台灣山海經-十九獵場百獸與台灣物產圖譜.md`
+  - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/20-世界觀/台灣山海經-十九獵場百獸與台灣物產圖譜.md`（世界內正名為《白塔山海志》）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/30-角色與養成/wordplate-system/`（5 篇正典）
   - `/home/tanger/Projects/obsidian-vault/wiki/05-專案/Singularity-World/20-世界觀/背景設定目前確認內容.md`
   - `/home/tanger/Projects/singularity_world/docs/design/world/current-background-setting.md`

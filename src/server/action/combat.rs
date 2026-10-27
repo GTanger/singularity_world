@@ -215,6 +215,52 @@ pub(super) fn do_entity_combat(
             narrative.push_str(&extra);
         }
     }
+    if target_id.starts_with("ambient_") || target_id.starts_with("shanhai_") {
+        let assisting_party = {
+            let parties = crate::store::LIVE_HUNTING_PARTIES.read();
+            let pledged_zone = crate::store::player_pledged_hunting_zone(pid);
+            parties
+                .values()
+                .find(|p| {
+                    let near_prey = (attacker.x - p.prey_coord.0).abs().max((attacker.y - p.prey_coord.1).abs()) <= 12;
+                    let same_prey = p.prey_name == target.display_title;
+                    let is_pledged = pledged_zone.as_deref() == Some(p.zone_name.as_str());
+                    near_prey || (is_pledged && same_prey)
+                })
+                .cloned()
+        };
+        if let Some(party) = assisting_party {
+            attacker_hp = (attacker_hp + 12).min(100);
+            narrative.push_str(&format!(
+                "\n【合社獵團協同助陣】領隊【{}】率領之{}合社獵團（共 {} 人）自側翼吹響山豬牙號角、刀盾齊進封死「{}」退路，助你穩住陣腳（體魄回護 +12）！",
+                party.leader_name,
+                party.zone_name,
+                party.member_ids.len(),
+                target.display_title
+            ));
+            if fight_winner == "attacker" {
+                if let Some((loot_id, loot_name, _)) = crate::game::ambient_creature_loot(&target.display_title) {
+                    let _ = db::add_to_inventory(pid, loot_id, 1);
+                    if let Some(arc) = crate::store::get_store() {
+                        let _ = arc.write().update_entity(pid, |e| {
+                            e.magnesium = e.magnesium.saturating_add(36);
+                        });
+                    }
+                    {
+                        let mut parties = crate::store::LIVE_HUNTING_PARTIES.write();
+                        if let Some(p_mut) = parties.get_mut(&party.zone_name) {
+                            p_mut.phase = crate::store::HuntingPartyPhase::ReturningToMarket;
+                            p_mut.last_phase_change_unix = now;
+                        }
+                    }
+                    narrative.push_str(&format!(
+                        "\n【見者有份・合社分鹿】領隊【{}】率眾上前擊掌喝采，依半島合社古規與你當場分鹿割皮——你額外分得一份「{}」與合圍紅利 36 枚鎂幣，獵團隨即滿載獵獲啟程趕往【{}】交割！",
+                        party.leader_name, loot_name, party.market_name
+                    ));
+                }
+            }
+        }
+    }
     if (target_id.starts_with("ambient_") || target_id.starts_with("shanhai_")) && fight_winner == "attacker" {
         if let Some((loot_id, loot_name, shanhai_note)) = crate::game::ambient_creature_loot(&target.display_title) {
             if let Some(rest) = target_id.strip_prefix("shanhai_") {

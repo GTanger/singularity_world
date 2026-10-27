@@ -160,6 +160,23 @@ pub static LIVE_HUNTING_PARTIES: std::sync::LazyLock<
     parking_lot::RwLock<std::collections::HashMap<String, HuntingPartyState>>,
 > = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
 
+/// 玩家應募加入合社獵團之紀錄（`player_id -> zone_name`）。
+pub static PLAYER_HUNTING_PARTY_PLEDGES: std::sync::LazyLock<
+    parking_lot::RwLock<std::collections::HashMap<String, String>>,
+> = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
+
+pub fn pledge_player_to_hunting_party(player_id: &str, zone_name: &str) {
+    if !player_id.is_empty() && !zone_name.is_empty() {
+        PLAYER_HUNTING_PARTY_PLEDGES
+            .write()
+            .insert(player_id.to_string(), zone_name.to_string());
+    }
+}
+
+pub fn player_pledged_hunting_zone(player_id: &str) -> Option<String> {
+    PLAYER_HUNTING_PARTY_PLEDGES.read().get(player_id).cloned()
+}
+
 const HUNTING_PARTY_ZONES: &[(&str, i32, i32)] = &[
     ("長風草甸", -180, -195),
     ("古河巨木林", -80, -60),
@@ -3167,6 +3184,7 @@ impl Store {
                         let l_name = party.prey_loot_name.clone();
                         let mkt_name = party.market_name.clone();
                         let total_n = members_clone.len();
+                        let party_prey_coord = party.prey_coord;
                         std::thread::spawn(move || {
                             for mid in &members_clone {
                                 let _ = crate::db::add_to_inventory(mid, &l_id, 1);
@@ -3184,6 +3202,7 @@ impl Store {
                                     now_unix,
                                 );
                             }
+                            let prey_xy = party_prey_coord;
                             if let Some(arc) = crate::store::get_store() {
                                 let mut s = arc.write();
                                 for mid in &members_clone {
@@ -3199,6 +3218,36 @@ impl Store {
                                             ),
                                         );
                                     });
+                                }
+                                // 若有玩家已應募加入該獵場之合社獵團，或正駐足於合圍圈 8 格之內，依「見者有份」古規分鹿割皮並給予分紅！
+                                let eligible_players: Vec<String> = s
+                                    .entities
+                                    .values()
+                                    .filter(|e| e.kind == "player")
+                                    .filter(|e| {
+                                        let pledged = player_pledged_hunting_zone(&e.id)
+                                            .as_deref()
+                                            == Some(z_name.as_str());
+                                        let near = (e.x - prey_xy.0).abs().max((e.y - prey_xy.1).abs()) <= 8;
+                                        pledged || near
+                                    })
+                                    .map(|e| e.id.clone())
+                                    .collect();
+                                for pid in eligible_players {
+                                    let _ = s.update_entity(&pid, |ent| {
+                                        ent.magnesium = ent.magnesium.saturating_add(28);
+                                        crate::db::add_thought_to_entity_with_delta(
+                                            ent,
+                                            crate::db::ThoughtSource::WorkDone,
+                                            9,
+                                            now_unix,
+                                            format!(
+                                                "隨領隊【{}】率領之【{}】合社獵團合圍【{}】，依「見者有份」古規分得一份【{}】與 28 枚鎂幣紅利",
+                                                leader_name, z_name, p_name, l_name
+                                            ),
+                                        );
+                                    });
+                                    let _ = crate::db::add_to_inventory(&pid, &l_id, 1);
                                 }
                             }
                         });
