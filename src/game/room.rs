@@ -1063,15 +1063,46 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
             }
         }
 
+        // 按 19 座獵場真實陸塊面積（候選棲地格數）動態配賦 Tier-3（共 380 隻）與 Tier-4（共 1,292 隻）名額，
+        // 使廣袤大獵場（翠冠巨木林、西麓林道、西嶺礦谷、白茫洲等）腹地飽滿，狹小岬角不過度擁擠，總數嚴格維持 1,805 隻！
+        let total_cands: usize = zone_candidates.iter().map(|v| v.len().max(1)).sum();
+        let mut tier3_counts = vec![12usize; CANONICAL_HUNTING_ZONES.len()]; // 保底 12*19 = 228，餘 152 按面積分配
+        let rem_t3 = 380usize.saturating_sub(12 * CANONICAL_HUNTING_ZONES.len());
+        let mut assigned_t3 = 0usize;
+        for z_idx in 0..CANONICAL_HUNTING_ZONES.len() {
+            let add = (rem_t3 * zone_candidates[z_idx].len().max(1)) / total_cands.max(1);
+            tier3_counts[z_idx] += add;
+            assigned_t3 += add;
+        }
+        let mut order_by_size: Vec<usize> = (0..CANONICAL_HUNTING_ZONES.len()).collect();
+        order_by_size.sort_by_key(|&i| std::cmp::Reverse(zone_candidates[i].len()));
+        for i in 0..(rem_t3.saturating_sub(assigned_t3)) {
+            tier3_counts[order_by_size[i % order_by_size.len()]] += 1;
+        }
+
+        let mut tier4_counts = vec![28usize; CANONICAL_HUNTING_ZONES.len()]; // 保底 28*19 = 532，餘 760 按面積分配
+        let rem_t4 = 1292usize.saturating_sub(28 * CANONICAL_HUNTING_ZONES.len());
+        let mut assigned_t4 = 0usize;
+        for z_idx in 0..CANONICAL_HUNTING_ZONES.len() {
+            let add = (rem_t4 * zone_candidates[z_idx].len().max(1)) / total_cands.max(1);
+            tier4_counts[z_idx] += add;
+            assigned_t4 += add;
+        }
+        for i in 0..(rem_t4.saturating_sub(assigned_t4)) {
+            tier4_counts[order_by_size[i % order_by_size.len()]] += 1;
+        }
+
         let mut layouts = Vec::with_capacity(CANONICAL_HUNTING_ZONES.len());
         let mut global_chosen: Vec<(i32, i32)> = Vec::with_capacity(1900);
 
         for (z_idx, &(zone_name, cx, cy)) in CANONICAL_HUNTING_ZONES.iter().enumerate() {
             let cands = &zone_candidates[z_idx];
-            let mut entries: Vec<BaseHabitatEntry> = Vec::with_capacity(95);
+            let t3_quota = tier3_counts[z_idx];
+            let t4_quota = tier4_counts[z_idx];
+            let mut entries: Vec<BaseHabitatEntry> = Vec::with_capacity(1 + 6 + t3_quota + t4_quota);
 
-            // 預先計算每個候選格距獵場邊界／海岸線／城鎮核心的鏡像排斥平方距離上限（防止最遠點採樣貼邊排隊，確保獵場腹地均勻飽滿）
-            let cand_boundary_caps: Vec<i64> = cands
+            // 預先計算每個候選格距獵場邊界／海岸線／城鎮核心的邊界權重（3..=10），不封頂腹地距離，徹底消除大獵場中央空洞與邊界排隊
+            let cand_boundary_weights: Vec<i64> = cands
                 .iter()
                 .map(|&(px, py, _)| {
                     const DIRS: &[(i32, i32)] = &[
@@ -1084,13 +1115,12 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
                         (1, -1),
                         (-1, -1),
                     ];
-                    for &r in &[4i32, 8, 13, 19, 26, 34] {
+                    for &(r, w) in &[(5i32, 3i64), (10, 6), (16, 8)] {
                         for &(dx, dy) in DIRS {
                             let tx = px + dx * r;
                             let ty = py + dy * r;
                             if is_inside_settlement_urban_core(tx, ty) {
-                                let d2 = ((dx * dx + dy * dy) * r * r) as i64;
-                                return d2 * 2;
+                                return w;
                             }
                             let (tz, _, tt) =
                                 crate::grid::r#gen::classify_wilderness_cell(tx, ty);
@@ -1100,12 +1130,11 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
                                     crate::grid::Terrain::WaterDeep | crate::grid::Terrain::Wall
                                 )
                             {
-                                let d2 = ((dx * dx + dy * dy) * r * r) as i64;
-                                return d2 * 3;
+                                return w;
                             }
                         }
                     }
-                    4500i64
+                    10i64
                 })
                 .collect();
 
@@ -1158,13 +1187,11 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
                             })
                             .min()
                             .unwrap_or(min_local_d2);
-                        let effective_d2 = min_local_d2
-                            .min(min_global_d2)
-                            .min(cand_boundary_caps[c_idx]);
-                        // 加入自然隨機擾動權重（0.65x ~ 1.35x），消除任何機械網格或邊界排隊感
-                        let jitter_w = 10 + (habitat_hash(px as i64, py as i64, salt) % 11) as i64;
-                        let score = effective_d2 * jitter_w
-                            + (habitat_hash(py as i64, px as i64, salt + 99) % 29) as i64;
+                        let effective_d2 = min_local_d2.min(min_global_d2);
+                        let bw = cand_boundary_weights[c_idx];
+                        let jitter_w = 9 + (habitat_hash(px as i64, py as i64, salt) % 7) as i64;
+                        let score = effective_d2 * bw * jitter_w
+                            + (habitat_hash(py as i64, px as i64, salt + 99) % 31) as i64;
                         if score > best_score {
                             best_score = score;
                             best = (px, py, psub);
@@ -1175,7 +1202,7 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
                     best
                 };
 
-            // (2) Tier 2 次級掠食猛獸／珍獸（6 隻 / 獵場）：分據獵場全境 6 大獨立巡獵領地
+            // (2) Tier 2 次級掠食猛獸／珍獸（6 隻 / 獵場，全島 114 隻）：分據獵場全境 6 大獨立巡獵領地
             for p_idx in 0..6usize {
                 let (px, py, psub) = pick_next_spread_point(
                     &mut chosen_points,
@@ -1185,7 +1212,7 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
                 entries.push((px, py, psub, 2, "__tier2__", 1 + p_idx));
             }
 
-            // (3) Tier 3 尋常中型獸群（20 隻 / 獵場）：分為 7 處自然放牧／遷徙獸群（6 群x3 隻 + 1 群x2 隻），散佈於全區草甸溪谷
+            // (3) Tier 3 尋常中型獸群（全島 380 隻，按獵場面積配賦 t3_quota）：以每群 2~3 隻結群放牧於全區草甸溪谷
             const HERD_MEMBER_DELTAS: &[(i32, i32)] = &[
                 (0, 0),
                 (2, 1),
@@ -1195,13 +1222,20 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
                 (2, -1),
                 (-2, 2),
             ];
-            for herd_idx in 0..7usize {
+            let mut rem_herd_members = t3_quota;
+            let mut herd_idx = 0usize;
+            while rem_herd_members > 0 {
+                let herd_size = if rem_herd_members >= 3 {
+                    3
+                } else {
+                    rem_herd_members
+                };
+                rem_herd_members -= herd_size;
                 let (hx, hy, hsub) = pick_next_spread_point(
                     &mut chosen_points,
                     &mut global_chosen,
                     300 + herd_idx as i64,
                 );
-                let herd_size = if herd_idx < 6 { 3 } else { 2 };
                 for m in 0..herd_size {
                     let (mut mx, mut my, mut msub) = (hx, hy, hsub);
                     if m > 0 {
@@ -1229,10 +1263,11 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
                     }
                     entries.push((mx, my, msub, 3, "__tier3__", 7 + herd_idx));
                 }
+                herd_idx += 1;
             }
 
-            // (4) Tier 4 尋常小怪與山海靈禽（68 隻 / 獵場）：以藍噪聲 Poisson-disc 漫山散佈於獵場全境各角落
-            for k in 0..68usize {
+            // (4) Tier 4 尋常小怪與山海靈禽（全島 1,292 隻，按獵場面積配賦 t4_quota）：以藍噪聲漫山散佈於獵場全境腹地
+            for k in 0..t4_quota {
                 let (fx, fy, fsub) = pick_next_spread_point(
                     &mut chosen_points,
                     &mut global_chosen,
@@ -1243,7 +1278,7 @@ static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
                 } else {
                     "__tier4b__"
                 };
-                entries.push((fx, fy, fsub, 4, tier_tag, 14 + k));
+                entries.push((fx, fy, fsub, 4, tier_tag, 30 + k));
             }
 
             layouts.push(entries);

@@ -1708,12 +1708,17 @@ pub fn find_bfs_next_step(
         ordered.sort_by_key(|&(dx, dy)| {
             let nx = pos.0 + dx;
             let ny = pos.1 + dy;
-            let dist = (goal.0 - nx).abs() + (goal.1 - ny).abs();
+            let ddx = (goal.0 - nx) as i64;
+            let ddy = (goal.1 - ny) as i64;
+            let euclid_d2 = ddx * ddx + ddy * ddy;
             let is_road_or_bridge = grid
                 .get(crate::grid::SquareCoord::new(nx, ny))
-                .map(|c| c.terrain == crate::grid::Terrain::Road || c.terrain == crate::grid::Terrain::Bridge)
+                .map(|c| {
+                    c.terrain == crate::grid::Terrain::Road
+                        || c.terrain == crate::grid::Terrain::Bridge
+                })
                 .unwrap_or(false);
-            (dist, if is_road_or_bridge { 0u8 } else { 1u8 })
+            (if is_road_or_bridge { 0u8 } else { 1u8 }, euclid_d2)
         });
         ordered
     };
@@ -1842,20 +1847,23 @@ pub fn find_bfs_next_step(
     let mut steps3 = 240;
     while let Some((curr, first_step, depth)) = q3.pop_front() {
         steps3 -= 1;
-        let dist = (goal.0 - curr.0).abs() + (goal.1 - curr.1).abs();
+        let ddx = (goal.0 - curr.0) as i64;
+        let ddy = (goal.1 - curr.1) as i64;
+        let euclid_d2 = (ddx * ddx + ddy * ddy) as i32;
         let road_bonus = grid
             .get(crate::grid::SquareCoord::new(curr.0, curr.1))
             .map(|c| {
                 if c.terrain == crate::grid::Terrain::Road
                     || c.terrain == crate::grid::Terrain::Bridge
                 {
-                    3
+                    45
                 } else {
                     0
                 }
             })
             .unwrap_or(0);
-        let score = dist * 2 - road_bonus;
+        let wobble = ((curr.0.wrapping_mul(73) ^ curr.1.wrapping_mul(199)).unsigned_abs() % 5) as i32;
+        let score = euclid_d2 - road_bonus + wobble;
         if score < best_score {
             best_score = score;
             best_first_step = Some(first_step);
@@ -2581,6 +2589,32 @@ impl Store {
             stay_activity = format!(
                 "正在{start_zone}通往{next_zone}的聯外古道上{}，沿途照應貨擔與路況",
                 slot.work_purpose
+            );
+        } else if (slot.home_x.abs() > 24 || slot.home_y.abs() > 24) && !is_expedition_slot && (slot_idx % 4 == 0) {
+            // 外圍 14 座市鎮與村落之田野農戶、漁戶、採石匠與巡山民丁（約 25%），初始分佈於聚落外圍郊野、海岸與聯外道路上往返作業
+            let (near_zone, _, _) =
+                crate::grid::r#gen::classify_wilderness_cell(slot.home_x, slot.home_y);
+            let (out_pt, out_sub) = if slot_idx % 8 == 0 {
+                crate::game::pick_island_trail_waypoint(
+                    near_zone,
+                    (slot.home_x, slot.home_y),
+                    (slot.errand_x, slot.errand_y),
+                    (slot_idx as u64).wrapping_mul(113),
+                    (slot.home_x, slot.home_y),
+                )
+            } else {
+                crate::game::pick_zone_artisan_waypoint(
+                    near_zone,
+                    (slot_idx as u64).wrapping_mul(113),
+                    (slot.home_x, slot.home_y),
+                )
+            };
+            init_coord = out_pt;
+            dest = (slot.work_x, slot.work_y);
+            dest_name = slot.work_name.to_string();
+            stay_activity = format!(
+                "剛在{near_zone}・{out_sub}完成外圍農牧與巡看，正循鄉道返回{}",
+                slot.work_name
             );
         }
         let origin_name = slot.home_name.to_string();
@@ -3490,19 +3524,32 @@ impl Store {
                         && cur_stock < tgt_stock
                     {
                         // 根據所在聚落位置，優先響應鄰近《台灣山海經》獵場「合社獵團」的吹角號召加入四面圍獵分紅，或赴獵場採辦急缺物產！
-                        let (exp_coord, exp_zone_name, target_party_zone) = if slot.home_y > 140 {
-                            ((64, 164), "清泉溪谷・溪畔採集地", "清泉溪谷")
+                        // 根據所在聚落位置與個體雜湊，分散響應周邊 19 座《台灣山海經》獵場「合社獵團」或赴獵場廣域棲地採辦急缺物產（杜絕擠往單一座標）
+                        let target_party_zone = if slot.home_y > 140 {
+                            ["清泉溪谷", "翠冠巨木林", "北坡雲杉林", "雲腰雪林", "白塔雪巔"]
+                                [(h as usize) % 5]
                         } else if slot.home_x > 50 {
-                            ((176, 44), "西嶺礦谷・露頭礦脈", "西嶺礦谷")
+                            ["西嶺礦谷", "東海峭壁", "清泉溪谷", "淺澤泥口"]
+                                [(h as usize) % 4]
                         } else if slot.home_x < -220 {
-                            ((-355, 176), "驚濤岩岸・海崖採集點", "驚濤岩岸")
+                            ["驚濤岩岸", "巨藻淺灣", "黑石灣", "落日岬"]
+                                [(h as usize) % 4]
                         } else if slot.home_y < -220 {
-                            ((-116, -316), "白茫洲・蘆洲藥草灘", "白茫洲")
+                            ["白茫洲", "貼山深潭", "淺澤泥口", "青籠關"]
+                                [(h as usize) % 4]
                         } else if slot.home_y < -100 {
-                            ((-176, -190), "長風草甸・豐草獵場", "長風草甸")
+                            ["長風草甸", "赤石坡", "古河巨木林", "落日岬"]
+                                [(h as usize) % 4]
                         } else {
-                            ((-76, -56), "古河巨木林・林緣採集徑", "古河巨木林")
+                            ["古河巨木林", "西麓林道", "清泉溪谷", "西嶺礦谷", "赤石坡"]
+                                [(h as usize) % 5]
                         };
+                        let (exp_coord, exp_sub) = crate::game::pick_zone_artisan_waypoint(
+                            target_party_zone,
+                            h.wrapping_add(time_bucket),
+                            state.current,
+                        );
+                        let exp_zone_name = format!("{target_party_zone}・{exp_sub}");
                         let mut joined_party_info: Option<(String, String, usize)> = None;
                         {
                             let mut parties = LIVE_HUNTING_PARTIES.write();
