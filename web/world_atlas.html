@@ -3709,14 +3709,28 @@
           const esy = centerY - (ey - viewY) * zoom;
 
           if (esx < -40 || esx > cw + 40 || esy < -40 || esy > ch + 40) continue;
-          const hasShanhai = ents.some(e => e.kind === 'shanhai_beast');
+          const hasApex = ents.some(e => e.kind === 'shanhai_apex');
+          const hasShanhai = ents.some(e => e.kind === 'shanhai_beast' || e.kind === 'shanhai_apex');
 
           if (zoom >= 14) {
-            // 微觀模式：於格子右上角繪製精緻人數/山海異獸徽章
+            if (hasApex) {
+              // 隱匿鎮場霸主：繪製半透明琥珀金虛線潛伏氣場圈
+              ctx.save();
+              ctx.strokeStyle = 'rgba(184, 134, 11, 0.85)';
+              ctx.fillStyle = 'rgba(184, 134, 11, 0.12)';
+              ctx.lineWidth = 1.6;
+              ctx.setLineDash([4, 3]);
+              ctx.beginPath();
+              ctx.arc(esx, esy, zoom * 0.44, 0, Math.PI * 2);
+              ctx.fill();
+              ctx.stroke();
+              ctx.restore();
+            }
+            // 微觀模式：於格子右上角繪製精緻人數/顯形小怪/隱匿霸主徽章
             const bx = esx + zoom * 0.32;
             const by = esy - zoom * 0.32;
             const br = Math.max(6, Math.min(9.5, zoom * 0.18));
-            ctx.fillStyle = hasShanhai ? '#266141' : '#9e2a2b';
+            ctx.fillStyle = hasApex ? '#8b5a2b' : (hasShanhai ? '#266141' : '#9e2a2b');
             ctx.beginPath();
             ctx.arc(bx, by, br, 0, Math.PI * 2);
             ctx.fill();
@@ -3727,11 +3741,12 @@
             ctx.fillStyle = '#fff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(hasShanhai && ents.length === 1 ? '獸' : String(ents.length), bx, by + 0.5);
+            const badgeChar = hasApex ? '隱' : (hasShanhai && ents.length === 1 ? '獸' : String(ents.length));
+            ctx.fillText(badgeChar, bx, by + 0.5);
           } else if (zoom >= 2.2) {
-            // 宏觀模式：人物為朱砂呼吸點，山海生靈為翠玉呼吸點
+            // 宏觀模式：人物為朱砂點，顯形小怪為翠玉點，隱匿霸主為琥珀金點
             const dotRadius = Math.max(1.8, Math.min(3.8, zoom * 1.2)) * pulse;
-            ctx.fillStyle = hasShanhai ? 'rgba(38, 97, 65, 0.72)' : 'rgba(158, 42, 43, 0.55)';
+            ctx.fillStyle = hasApex ? 'rgba(184, 134, 11, 0.85)' : (hasShanhai ? 'rgba(38, 97, 65, 0.72)' : 'rgba(158, 42, 43, 0.55)');
             ctx.beginPath();
             ctx.arc(esx, esy, dotRadius, 0, Math.PI * 2);
             ctx.fill();
@@ -4007,10 +4022,13 @@
           const box = document.createElement('div');
           box.style.cssText = 'padding:6px 8px;border:1px solid var(--border-warm);border-radius:4px;background:#fffdf9;margin-bottom:4px;font-size:0.75rem;line-height:1.4;cursor:pointer;';
           box.onclick = () => jumpTo(e.x, e.y, Math.max(zoom, 24));
-          const isBeast = e.kind === 'shanhai_beast';
-          const icon = isBeast ? '🦌' : '👤';
+          const isApex = e.kind === 'shanhai_apex';
+          const isBeast = e.kind === 'shanhai_beast' || isApex;
+          const icon = isApex ? '🐾' : (isBeast ? '🦌' : '👤');
           const nearTag = isNearby ? `<span style="font-size:0.66rem;color:var(--ink-faint);margin-left:4px;">鄰近 (${e.x}, ${e.y})</span>` : '';
-          const roleBadge = e.title ? `<span style="font-size:0.68rem;padding:1px 5px;border-radius:3px;background:${isBeast ? 'rgba(38,97,65,0.12)' : 'rgba(139,90,43,0.12)'};color:${isBeast ? '#266141' : 'var(--copper)'};margin-left:5px;">${e.title}</span>` : '';
+          const badgeBg = isApex ? 'rgba(184,134,11,0.16)' : (isBeast ? 'rgba(38,97,65,0.12)' : 'rgba(139,90,43,0.12)');
+          const badgeFg = isApex ? '#7a5600' : (isBeast ? '#266141' : 'var(--copper)');
+          const roleBadge = e.title ? `<span style="font-size:0.68rem;padding:1px 5px;border-radius:3px;background:${badgeBg};color:${badgeFg};margin-left:5px;">${e.title}</span>` : '';
           let metaPills = '';
           if (e.breath_habit) {
             metaPills += `<span style="display:inline-block;margin-right:4px;margin-top:3px;padding:1px 5px;border-radius:3px;background:rgba(45,71,94,0.1);color:#2d475e;font-size:0.68rem;">內息：${e.breath_habit}</span>`;
@@ -4427,8 +4445,8 @@
       listEl.innerHTML = '';
       const q = (currentEntitySearchQuery || '').trim().toLowerCase();
       const filtered = rawEntitiesList.filter(e => {
-        if (currentEntityFilterMode === 'shanhai' && e.kind !== 'shanhai_beast') return false;
-        if (currentEntityFilterMode === 'vessel' && (!e.held_vessel || e.kind === 'shanhai_beast')) return false;
+        if (currentEntityFilterMode === 'shanhai' && e.kind !== 'shanhai_beast' && e.kind !== 'shanhai_apex') return false;
+        if (currentEntityFilterMode === 'vessel' && (!e.held_vessel || e.kind === 'shanhai_beast' || e.kind === 'shanhai_apex')) return false;
         if (currentEntityFilterMode === 'status' && (!(e.afflictions && e.afflictions.length) && !(e.lineage && e.lineage.length))) return false;
         if (!q) return true;
         const hay = `${e.name || ''} ${e.title || ''} ${e.activity || ''} ${e.breath_habit || ''} ${e.held_vessel || ''} ${(e.afflictions || []).join(' ')} ${(e.lineage || []).join(' ')}`.toLowerCase();
@@ -4443,14 +4461,17 @@
       filtered.slice(0, 80).forEach(e => {
         const card = document.createElement('div');
         card.className = 'jump-card';
-        const isBeast = e.kind === 'shanhai_beast';
-        card.style.borderLeft = isBeast ? '3.5px solid #266141' : '3.5px solid var(--vermilion)';
+        const isApex = e.kind === 'shanhai_apex';
+        const isBeast = e.kind === 'shanhai_beast' || isApex;
+        card.style.borderLeft = isApex ? '3.5px solid #b8860b' : (isBeast ? '3.5px solid #266141' : '3.5px solid var(--vermilion)');
         card.onclick = () => jumpTo(e.x, e.y, 28);
 
-        const badgeLabel = isBeast ? '山海生靈' : (e.title || e.kind || '人物');
-        const badgeStyle = isBeast
-          ? 'background:rgba(38,97,65,0.12);color:#266141;'
-          : 'background:rgba(158,42,43,0.1);color:var(--vermilion);';
+        const badgeLabel = isApex ? '隱匿霸主' : (isBeast ? '顯形小怪/獸群' : (e.title || e.kind || '人物'));
+        const badgeStyle = isApex
+          ? 'background:rgba(184,134,11,0.16);color:#7a5600;'
+          : (isBeast
+            ? 'background:rgba(38,97,65,0.12);color:#266141;'
+            : 'background:rgba(158,42,43,0.1);color:var(--vermilion);');
         const subTags = [];
         if (e.breath_habit) subTags.push(`內息：${e.breath_habit}`);
         if (e.held_vessel) subTags.push(`${e.held_vessel}`);
@@ -4459,7 +4480,7 @@
 
         card.innerHTML = `
           <div class="card-top">
-            <span class="card-name">${isBeast ? '🦌 ' : ''}${e.name || e.id}</span>
+            <span class="card-name">${isApex ? '🐾 ' : (isBeast ? '🦌 ' : '')}${e.name || e.id}</span>
             <span class="card-badge" style="${badgeStyle}">${badgeLabel}</span>
           </div>
           <div class="card-meta">座標 <span class="coord">(${e.x}, ${e.y})</span></div>

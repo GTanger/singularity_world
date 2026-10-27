@@ -1007,7 +1007,9 @@ pub(super) fn do_object_branch(
         if !origin.is_empty() && !narrative.contains("【產地溯源：") {
             narrative.push_str(&format!("\n【產地溯源：{}】", origin));
         }
-        if (obj.name.contains("獸徑足印")
+        if (obj.id == "shanhai_apex_trace"
+            || obj.name.contains("霸主獸跡")
+            || obj.name.contains("獸徑足印")
             || obj.name.contains("避風岩龕")
             || obj.name.contains("山澗清泉眼")
             || obj.name.contains("巡山木樁")
@@ -1018,6 +1020,16 @@ pub(super) fn do_object_branch(
             if let Some(omen) = crate::game::hunting_zone_apex_omen(&room_label) {
                 narrative.push('\n');
                 narrative.push_str(omen);
+            }
+            if (obj.id == "shanhai_apex_trace"
+                || obj.name.contains("霸主獸跡")
+                || obj.name.contains("獸徑足印"))
+                && let Some((gx, gy)) = db::get_entity(pid).ok().flatten().and_then(|e| e.grid_x.zip(e.grid_y))
+            {
+                crate::game::mark_apex_beast_tracked_at(gx, gy);
+                narrative.push_str(
+                    "\n【尋跡破霧】順著地上深陷的爪印與殘留靈氣撥開深林草莽，暗處一雙威凜獸瞳驟然亮起——潛伏此地的鎮場霸主已破霧顯形！",
+                );
             }
             if obj.name.contains("山澗清泉眼") && !db::inventory_has_item(pid, "crystal_water_bing") {
                 let _ = db::add_to_inventory(pid, "crystal_water_bing", 1);

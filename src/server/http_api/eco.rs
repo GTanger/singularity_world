@@ -411,11 +411,36 @@ pub async fn eco_entities() -> impl IntoResponse {
         ("雲腰雪林", 180, 320),
         ("白塔雪巔", 0, 420),
     ];
+    let roam_step = ((crate::game::now_unix() / 180) % 3) as i32 - 1;
     for &(zone_name, cx, cy) in HUNTING_ANCHORS {
-        for &(dx, dy) in &[(0, 0), (-3, 2), (4, -3)] {
-            let gx = cx + dx;
-            let gy = cy + dy;
-            // 若錨點本身位於道路上，取鄰近獵場腹地座標生成《台灣山海經》生靈，並顯示於該錨點供檢視
+        // 1. 鎮場霸主（預設隱匿・見兆尋跡顯形）：每處獵場 1 隻潛伏於核心地脈
+        if let Some(apex) = crate::game::ensure_ambient_npc_at_grid(cx + 1, cy - 1, "__apex__") {
+            let held_vessel = if let Some((_lid, loot_name, shanhai_note)) =
+                crate::game::ambient_creature_loot(&apex.display_title)
+            {
+                format!("尋跡顯形可剝取【{loot_name}】｜{shanhai_note}")
+            } else {
+                String::new()
+            };
+            entities.push(EcoEntity {
+                id: format!("apex_{}_{}", cx + 1, cy - 1),
+                name: apex.display_title,
+                title: format!("{zone_name}・隱匿鎮場霸主（尋跡顯形）"),
+                x: cx + 1,
+                y: cy - 1,
+                kind: "shanhai_apex".to_string(),
+                activity: format!("【隱匿潛伏・百鳥屏息】{}（平時藏跡於林莽深處，須查探【新鮮霸主獸跡】方會破霧顯形）", apex.current_activity),
+                breath_habit: "山林長息".to_string(),
+                held_vessel,
+                afflictions: Vec::new(),
+                lineage: Vec::new(),
+            });
+        }
+
+        // 2. 尋常物種與山海小怪（格內顯形・動態游走）：每處獵場 3 隻顯形活動的小怪／中型獸群
+        for (idx, &(dx, dy)) in [(0, 0), (-3, 2), (4, -3)].iter().enumerate() {
+            let gx = cx + dx + if idx == 0 { 0 } else { roam_step };
+            let gy = cy + dy - if idx == 1 { roam_step } else { 0 };
             let mut amb_opt = crate::game::ensure_ambient_npc_at_grid(gx, gy, zone_name);
             if amb_opt
                 .as_ref()
@@ -438,7 +463,7 @@ pub async fn eco_entities() -> impl IntoResponse {
                 {
                     (
                         "shanhai_beast".to_string(),
-                        format!("{zone_name}・台灣山海經生靈"),
+                        format!("{zone_name}・顯形尋常小怪／獸群"),
                         format!("可剝取【{loot_name}】｜{shanhai_note}"),
                         "山林長息".to_string(),
                     )
@@ -457,7 +482,7 @@ pub async fn eco_entities() -> impl IntoResponse {
                     x: gx,
                     y: gy,
                     kind,
-                    activity: amb.current_activity,
+                    activity: format!("【格內顯形・動態游走】{}", amb.current_activity),
                     breath_habit: breath,
                     held_vessel,
                     afflictions: Vec::new(),

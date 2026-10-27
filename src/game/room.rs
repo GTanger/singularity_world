@@ -3,7 +3,23 @@ use crate::entity::{Character, EntityKind};
 use crate::grid::{Direction, SquareCoord, grid_room_id_from_coord, terrain_name_zh};
 use crate::model::{Exit, Room, RoomObject};
 use crate::store;
+use parking_lot::RwLock;
+use std::collections::HashSet;
+use std::sync::LazyLock;
 
+/// 記錄已被玩家「查探獸跡／尋跡」而破霧顯形的鎮場霸主座標 (x, y) 與顯形時間戳。
+static TRACKED_APEX_COORDS: LazyLock<RwLock<HashSet<(i32, i32)>>> =
+    LazyLock::new(|| RwLock::new(HashSet::new()));
+
+/// 標記某處獵場座標之鎮場霸主已被尋跡顯形。
+pub fn mark_apex_beast_tracked_at(x: i32, y: i32) {
+    TRACKED_APEX_COORDS.write().insert((x, y));
+}
+
+/// 檢查某處獵場座標之鎮場霸主是否已因尋跡而破霧顯形。
+pub fn is_apex_beast_tracked_at(x: i32, y: i32) -> bool {
+    TRACKED_APEX_COORDS.read().contains(&(x, y))
+}
 /// 當前房間視野。
 #[derive(Debug, Clone)]
 pub struct RoomView {
@@ -430,8 +446,40 @@ pub fn get_grid_room_view(
         && (x.abs() > 18 || y.abs() > 18)
         && !entities.iter().any(|e| e.kind == crate::entity::EntityKind::Npc)
     {
-        if let Some(amb) = ensure_ambient_npc_at_grid(x, y, &room.name) {
-            entities.push(amb);
+        let is_road = room.name.contains("道路")
+            || room.name.contains("木橋")
+            || cell.terrain == crate::grid::Terrain::Road
+            || cell.terrain == crate::grid::Terrain::Bridge;
+        // 霸主威壓屏息格（約 14% 獵場腹地）：尋常小怪驚散匿跡，地上留有【新鮮霸主獸跡】，查探後方會破霧顯形
+        let silence_hash = ((x as i64 * 31337) ^ (y as i64 * 65521)).unsigned_abs() % 7;
+        if !is_road && is_apex_beast_tracked_at(x, y) {
+            if let Some(amb) = ensure_ambient_npc_at_grid(x, y, "__apex__") {
+                entities.push(amb);
+            }
+        } else if !is_road && silence_hash == 0 {
+            if !room_objs.iter().any(|o| o.id == "shanhai_apex_trace") {
+                room_objs.push(RoomObject {
+                    id: "shanhai_apex_trace".to_string(),
+                    name: "新鮮霸主獸跡".to_string(),
+                    owner: String::new(),
+                    sockets: vec!["Look".to_string()],
+                    responses: std::collections::HashMap::new(),
+                    move_to_room_id: String::new(),
+                });
+            }
+        } else {
+            // 尋常物種與山海小怪：隨時間片在格內動態游走顯形（約 72% 野外格可見小怪或中型獸群活動，28% 為草木藏跡格）
+            let time_bucket = (crate::game::now_unix() / 180) as i64;
+            let roam_gate = ((x as i64).wrapping_mul(1103515245)
+                ^ (y as i64).wrapping_mul(12345)
+                ^ time_bucket.wrapping_mul(2654435761))
+                .unsigned_abs()
+                % 100;
+            if is_road || roam_gate < 72 {
+                if let Some(amb) = ensure_ambient_npc_at_grid(x, y, &room.name) {
+                    entities.push(amb);
+                }
+            }
         }
     }
      let vendor_objs = super::player_scene::dynamic_vendor_objects_for_entities(&entities);
@@ -457,9 +505,28 @@ pub fn ensure_ambient_npc_at_grid(x: i32, y: i32, room_name: &str) -> Option<Cha
         return None;
     }
 
-    let seed = ((x as i64 * 374761393) ^ (y as i64 * 668265263)).unsigned_abs();
-    let roll = seed % 6;
-
+    let time_bucket = (crate::game::now_unix() / 300) as i64;
+    let seed = ((x as i64).wrapping_mul(374761393)
+        ^ (y as i64).wrapping_mul(668265263)
+        ^ time_bucket.wrapping_mul(1442695040888963407))
+        .unsigned_abs();
+    // 三層生態顯形分配：
+    // - Tier 1 鎮場霸主（roll == 0）：預設隱匿不直接站樁，唯有尋跡觸發（room_name == "__apex__" 或已標記尋跡）方破霧顯形
+    // - Tier 4 尋常小怪與靈禽（roll == 3, 4）：佔顯形遭遇 65%（野兔、穿山甲、獼猴、飛鼠、環頸雉、竹雞、招潮蟹、青毛蟹等直接顯形於格內）
+    // - Tier 3 尋常中型獸群（roll == 2）：佔顯形遭遇 20%（梅花鹿、水鹿、山羌、長鬃山羊、山豬成群游走顯形）
+    // - Tier 2 掠食者（roll == 1）：佔 7%
+    // - 山道獵手／採集人（roll == 5）：佔 8%
+    let roll = if room_name == "__apex__" || is_apex_beast_tracked_at(x, y) {
+        0
+    } else {
+        match seed % 100 {
+            0..=34 => 3,  // 35% 尋常小型奇獸／甲殼小怪（格內顯形）
+            35..=64 => 4, // 30% 尋常山海靈禽小怪（格內顯形）
+            65..=84 => 2, // 20% 尋常中型主力獸群（格內顯形）
+            85..=91 => 1, // 7% 掠食猛獸
+            _ => 5,       // 8% 野外獵手／採集人
+        }
+    };
     let is_road = room_name.contains("道路")
         || room_name.contains("木橋")
         || terrain == crate::grid::Terrain::Road
@@ -1070,12 +1137,19 @@ mod tests {
         assert!(npc.vit > 0);
 
         // 2. 獵場深處環境生物
+        // 2. 獵場深處環境生物（預設顯形尋常物種／小怪，不直接刷出鎮場霸主）
         let hunting_ground = ensure_ambient_npc_at_grid(-180, -195, "長風草甸・向陽原野");
         assert!(hunting_ground.is_some());
         let creature = hunting_ground.unwrap();
         assert!(!creature.display_title.is_empty());
+        assert_ne!(creature.display_title, "長風四目水鹿王");
 
-        // 3. 深水不應生成環境生物
+        // 3. 尋跡顯形後鎮場霸主破霧現身
+        mark_apex_beast_tracked_at(-180, -195);
+        let tracked_apex = ensure_ambient_npc_at_grid(-180, -195, "長風草甸・向陽原野").unwrap();
+        assert_eq!(tracked_apex.display_title, "長風四目水鹿王");
+
+        // 4. 深水不應生成環境生物
         let deep_water = ensure_ambient_npc_at_grid(-390, 0, "北冕海・深水");
         assert!(deep_water.is_none());
     }
