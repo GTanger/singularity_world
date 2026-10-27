@@ -2020,6 +2020,7 @@ pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
             let _ = store.move_entity(def.id, &format!("grid:{x}:{y}"));
         }
     }
+    store.ensure_all_household_entities_seeded();
 }
 
 fn find_settlement_secondary_building<'a>(

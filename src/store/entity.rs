@@ -231,6 +231,16 @@ pub fn npc_persistent_role_label(entity_id: &str, display_title: &str) -> String
         }
     }
 
+    if slot.brief_tag.starts_with("合社獵團・")
+        || slot.brief_tag.starts_with("入山百工・")
+        || slot.brief_tag.starts_with("古道行旅・")
+    {
+        let zone_prefix = slot.work_name.split('・').next().unwrap_or("");
+        if !zone_prefix.is_empty() {
+            return format!("{zone_prefix}・{}", slot.brief_tag);
+        }
+        return slot.brief_tag.to_string();
+    }
     if slot.work_x == slot.home_x && slot.work_y == slot.home_y && !slot.brief_tag.is_empty() {
         if !is_wenyao {
             return slot.brief_tag.to_string();
@@ -1474,65 +1484,123 @@ pub fn find_bfs_next_step(
         queue.push_back((cand, cand));
     }
 
-    let mut max_steps = 1000;
-    while let Some((curr, first_step)) = queue.pop_front() {
-        max_steps -= 1;
-        if max_steps == 0 {
-            break;
-        }
+    let manhattan_total = (goal.0 - start.0).abs() + (goal.1 - start.1).abs();
+    if manhattan_total <= 42 {
+        let mut max_steps = 1800;
+        while let Some((curr, first_step)) = queue.pop_front() {
+            max_steps -= 1;
+            if max_steps == 0 {
+                break;
+            }
 
-        for &(dx, dy) in &get_ordered_offsets(curr) {
-            let nx = curr.0 + dx;
-            let ny = curr.1 + dy;
-            if (nx, ny) == goal {
-                if can_step(curr.0, curr.1, nx, ny) {
-                    return Some(first_step);
+            for &(dx, dy) in &get_ordered_offsets(curr) {
+                let nx = curr.0 + dx;
+                let ny = curr.1 + dy;
+                if (nx, ny) == goal {
+                    if can_step(curr.0, curr.1, nx, ny) {
+                        return Some(first_step);
+                    }
+                }
+                if !visited.contains(&(nx, ny)) && can_step(curr.0, curr.1, nx, ny) {
+                    visited.insert((nx, ny));
+                    queue.push_back(((nx, ny), first_step));
                 }
             }
-            if !visited.contains(&(nx, ny)) && can_step(curr.0, curr.1, nx, ny) {
-                visited.insert((nx, ny));
-                queue.push_back(((nx, ny), first_step));
+        }
+
+        // 第二階段 BFS：若目標為外圍深巷民宅或山林營地，放寬為所有非水域可通行格
+        let can_step_relaxed = |fx: i32, fy: i32, tx: i32, ty: i32| -> bool {
+            can_npc_step_between(grid, fx, fy, tx, ty)
+        };
+        let mut q2 = std::collections::VecDeque::new();
+        let mut vis2 = std::collections::HashSet::new();
+        vis2.insert(start);
+        for &(dx, dy) in &get_ordered_offsets(start) {
+            let nx = start.0 + dx;
+            let ny = start.1 + dy;
+            if can_step_relaxed(start.0, start.1, nx, ny) {
+                if (nx, ny) == goal {
+                    return Some((nx, ny));
+                }
+                vis2.insert((nx, ny));
+                q2.push_back(((nx, ny), (nx, ny)));
+            }
+        }
+        let mut steps2 = 1800;
+        while let Some((curr, first_step)) = q2.pop_front() {
+            steps2 -= 1;
+            if steps2 == 0 {
+                break;
+            }
+            for &(dx, dy) in &get_ordered_offsets(curr) {
+                let nx = curr.0 + dx;
+                let ny = curr.1 + dy;
+                if (nx, ny) == goal && can_step_relaxed(curr.0, curr.1, nx, ny) {
+                    return Some(first_step);
+                }
+                if !vis2.contains(&(nx, ny)) && can_step_relaxed(curr.0, curr.1, nx, ny) {
+                    vis2.insert((nx, ny));
+                    q2.push_back(((nx, ny), first_step));
+                }
             }
         }
     }
 
-    // 第二階段 BFS：若目標為外圍深巷民宅（需穿過前院／廊道方可抵達），放寬為所有非水域可通行格
-    let can_step_relaxed = |fx: i32, fy: i32, tx: i32, ty: i32| -> bool {
+    // 第三階段：跨區長途尋路（城鎮 <-> 19 處獵場／鄰鎮古道）
+    // 以深度 6 局部前瞻 BFS 尋求最貼近目標且優先踏上驛道／橋樑的可通行推進方向，徹底杜絕遠距目標超過單次 BFS 半徑而原地凍結。
+    let can_step_long = |fx: i32, fy: i32, tx: i32, ty: i32| -> bool {
         can_npc_step_between(grid, fx, fy, tx, ty)
     };
-    let mut q2 = std::collections::VecDeque::new();
-    let mut vis2 = std::collections::HashSet::new();
-    vis2.insert(start);
+    let mut q3 = std::collections::VecDeque::new();
+    let mut vis3 = std::collections::HashSet::new();
+    vis3.insert(start);
     for &(dx, dy) in &get_ordered_offsets(start) {
         let nx = start.0 + dx;
         let ny = start.1 + dy;
-        if can_step_relaxed(start.0, start.1, nx, ny) {
+        if can_step_long(start.0, start.1, nx, ny) {
             if (nx, ny) == goal {
                 return Some((nx, ny));
             }
-            vis2.insert((nx, ny));
-            q2.push_back(((nx, ny), (nx, ny)));
+            vis3.insert((nx, ny));
+            q3.push_back(((nx, ny), (nx, ny), 1u8));
         }
     }
-    let mut steps2 = 1000;
-    while let Some((curr, first_step)) = q2.pop_front() {
-        steps2 -= 1;
-        if steps2 == 0 {
-            break;
+    let mut best_first_step: Option<(i32, i32)> = None;
+    let mut best_score = i32::MAX;
+    let mut steps3 = 240;
+    while let Some((curr, first_step, depth)) = q3.pop_front() {
+        steps3 -= 1;
+        let dist = (goal.0 - curr.0).abs() + (goal.1 - curr.1).abs();
+        let road_bonus = grid
+            .get(crate::grid::SquareCoord::new(curr.0, curr.1))
+            .map(|c| {
+                if c.terrain == crate::grid::Terrain::Road
+                    || c.terrain == crate::grid::Terrain::Bridge
+                {
+                    3
+                } else {
+                    0
+                }
+            })
+            .unwrap_or(0);
+        let score = dist * 2 - road_bonus;
+        if score < best_score {
+            best_score = score;
+            best_first_step = Some(first_step);
+        }
+        if steps3 == 0 || depth >= 6 {
+            continue;
         }
         for &(dx, dy) in &get_ordered_offsets(curr) {
             let nx = curr.0 + dx;
             let ny = curr.1 + dy;
-            if (nx, ny) == goal && can_step_relaxed(curr.0, curr.1, nx, ny) {
-                return Some(first_step);
-            }
-            if !vis2.contains(&(nx, ny)) && can_step_relaxed(curr.0, curr.1, nx, ny) {
-                vis2.insert((nx, ny));
-                q2.push_back(((nx, ny), first_step));
+            if !vis3.contains(&(nx, ny)) && can_step_long(curr.0, curr.1, nx, ny) {
+                vis3.insert((nx, ny));
+                q3.push_back(((nx, ny), first_step, depth + 1));
             }
         }
     }
-    None
+    best_first_step
 }
 
 pub fn zone_bounds(zone: &str, h: u64) -> (i32, i32, i32, i32) {
@@ -2042,8 +2110,99 @@ impl Store {
     /// - 若已有明確 `(grid_x, grid_y)` 則直接採用；
     /// - 若為存活 NPC，先查執行期連續座標表；
     /// - 若尚未初始化，依所屬區域決定性選取初始可行走方格，並登錄執行期座標表。
+    /// 確保全島所有戶口與山海獵場／古道遠征槽位（`total_household_slots_len()`）皆有對應的真實持久化 `Entity` 實體：
+    /// 若資料庫既有無固定座標存活 NPC 數不足槽位總數，即自動補齊具備真實 `soul_seed`、`magnesium`、`thoughts` 與職銜之持久化 `Entity`。
+    pub fn ensure_all_household_entities_seeded(&mut self) {
+        let needed = total_household_slots_len();
+        let existing_eligible = self
+            .entities
+            .values()
+            .filter(|e| {
+                e.kind == "npc"
+                    && e.vit > 0
+                    && e.grid_x.is_none()
+                    && !is_deprecated_npc_id(&e.id)
+            })
+            .count();
+        if existing_eligible < needed {
+            let now_ts = crate::game::now_unix();
+            let mut created = 0usize;
+            let mut seq = 0usize;
+            while existing_eligible + created < needed {
+                seq += 1;
+                let id = format!("npc_exp_{seq:04}");
+                if self.entities.contains_key(&id) {
+                    continue;
+                }
+                let slot_idx = existing_eligible + created;
+                let slot = household_slot_at(slot_idx);
+                let mut h: u64 = 0xcbf2_9ce4_8422_2325 ^ (slot_idx as u64);
+                for b in id.as_bytes() {
+                    h ^= u64::from(*b);
+                    h = h.wrapping_mul(0x0100_0000_01b3);
+                }
+                let gender = if slot_idx % 3 == 0 { "F" } else { "M" };
+                let person_name = deterministic_wenyao_full_name_with_gender(&id, Some(gender));
+                let display_char = person_name
+                    .chars()
+                    .next()
+                    .map(|c| c.to_string())
+                    .unwrap_or_else(|| "人".to_string());
+                let init_mg = 24 + ((slot_idx % 9) as i32) * 5;
+                let mut entity = Entity {
+                    id: id.clone(),
+                    kind: "npc".to_string(),
+                    display_char,
+                    x: 0,
+                    y: 0,
+                    move_state: "idle".to_string(),
+                    target_x: None,
+                    target_y: None,
+                    walk_or_run: String::new(),
+                    move_started_at: None,
+                    vit: 100,
+                    qi: 100,
+                    dex: 58,
+                    magnesium: init_mg,
+                    last_observed_at: None,
+                    created_at: now_ts,
+                    gender: gender.to_string(),
+                    soul_seed: Some(h as i64),
+                    display_title: person_name,
+                    activated_nodes: r#"["N000"]"#.to_string(),
+                    equipment_slots: "{}".to_string(),
+                    inventory: "[]".to_string(),
+                    disposition: 8,
+                    current_activity: slot.work_stay_activity.to_string(),
+                    place_id: None,
+                    grid_x: None,
+                    grid_y: None,
+                    thoughts: Vec::new(),
+                };
+                crate::db::add_thought_to_entity_with_delta(
+                    &mut entity,
+                    crate::db::ThoughtSource::WorkDone,
+                    6,
+                    now_ts,
+                    format!(
+                        "盤算著今日在【{}】「{}」的進度，收妥隨身器物準備推進",
+                        slot.work_name, slot.work_purpose
+                    ),
+                );
+                crate::db::clean_and_recalc_entity_disposition(&mut entity, now_ts);
+                let ent_sync = entity.clone();
+                self.entities.insert(id, entity);
+                crate::pg::entity::upsert_async(ent_sync);
+                created += 1;
+            }
+            HOUSEHOLD_MEMBER_ASSIGNMENTS.write().clear();
+        }
+        self.ensure_household_assignments();
+    }
+
     pub fn ensure_household_assignments(&self) {
-        if !HOUSEHOLD_MEMBER_ASSIGNMENTS.read().is_empty() {
+        let total_slots = total_household_slots_len();
+        if HOUSEHOLD_MEMBER_ASSIGNMENTS.read().len() >= total_slots {
             return;
         }
         let mut eligible_ids: Vec<String> = self
@@ -2059,10 +2218,11 @@ impl Store {
             .collect();
         eligible_ids.sort();
         let mut map = HOUSEHOLD_MEMBER_ASSIGNMENTS.write();
-        if map.is_empty() {
+        if map.len() < eligible_ids.len().min(total_slots) {
+            map.clear();
             for (idx, id) in eligible_ids
                 .into_iter()
-                .take(total_household_slots_len())
+                .take(total_slots)
                 .enumerate()
             {
                 map.insert(id, idx);
@@ -2089,12 +2249,23 @@ impl Store {
         let slot = household_slot_at(slot_idx);
 
         let hour = current_game_hour();
-        let init_toggle = slot_idx % 2 == 1;
+        let is_expedition_slot = slot.brief_tag.starts_with("合社獵團・")
+            || slot.brief_tag.starts_with("入山百工・")
+            || slot.brief_tag.starts_with("古道行旅・");
+        let init_toggle = if is_expedition_slot {
+            slot_idx % 6 == 0
+        } else {
+            slot_idx % 2 == 1
+        };
         let (dest, dest_name, purpose, stay_activity, stay_ticks) =
             resolve_wenyao_npc_schedule(slot, hour, init_toggle, slot.home_name);
         let init_coord = dest;
         let origin_name = slot.home_name.to_string();
-        let stay_ticks_remaining = stay_ticks;
+        let stay_ticks_remaining = if is_expedition_slot {
+            2 + ((slot_idx % 5) as u8)
+        } else {
+            (stay_ticks / 2).max(3)
+        };
         LIVE_NPC_GRID_STATES.write().insert(
             e.id.clone(),
             NpcGridState {
@@ -2106,7 +2277,7 @@ impl Store {
                 purpose,
                 stay_ticks_remaining,
                 work_errand_toggle: init_toggle,
-                consecutive_work_streaks: 0,
+                consecutive_work_streaks: (slot_idx % 2) as u8,
             },
         );
         Some(init_coord)
@@ -2125,7 +2296,7 @@ impl Store {
         counts
     }
 
-    /// 推進所有定居居民在正方格地圖上的日常作息與步進（每 tick 沿街道邁進 1 格或於場所內停留作業）。
+    /// 推進所有定居居民與山海遠征人員在正方格地圖上的思考決策與步進（每 tick 沿路徑邁進 1 格或於目標點完成作業後自主決策下一目標）。
     pub fn advance_household_npcs_one_step(&self) -> Vec<(String, String, String)> {
         static SEEDED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
         if !SEEDED.swap(true, std::sync::atomic::Ordering::Relaxed) {
@@ -2258,22 +2429,119 @@ impl Store {
                 h ^= u64::from(*b);
                 h = h.wrapping_mul(0x0100_0000_01b3);
             }
-            // 1. Appraise completed activity at state.dest_name with state.purpose
+            // 1. 評估剛完成的目標行為並寫入真實記憶心聲、經濟收益、器物磨合與傷病處置
             let dest_name_appraisal = state.dest_name.clone();
             let purpose_appraisal = state.purpose.clone();
+            let is_expedition_role = slot.brief_tag.starts_with("合社獵團・")
+                || slot.brief_tag.starts_with("入山百工・")
+                || slot.brief_tag.starts_with("古道行旅・");
+            let is_hunting_or_gathering = is_expedition_role
+                && (state.current.0 - slot.work_x).abs() + (state.current.1 - slot.work_y).abs() <= 35;
             let is_dining = [
                 "食堂", "茶", "飯", "湯", "麵", "膳", "飲",
             ]
             .iter()
             .any(|kw| dest_name_appraisal.contains(kw) || purpose_appraisal.contains(kw));
             let is_bath = dest_name_appraisal.contains("浴場");
+            let is_clinic = dest_name_appraisal.contains("診所")
+                || dest_name_appraisal.contains("藥居")
+                || purpose_appraisal.contains("敷藥")
+                || purpose_appraisal.contains("調理");
+            let is_forge = dest_name_appraisal.contains("鍛造")
+                || dest_name_appraisal.contains("鐵坊")
+                || dest_name_appraisal.contains("鐵器")
+                || purpose_appraisal.contains("修整器物");
             let is_work = [
-                "工坊", "鍛", "木", "商行", "埠", "站", "院", "堂", "館", "閣", "所",
+                "工坊", "鍛", "木", "商行", "埠", "站", "院", "堂", "館", "閣", "所", "市集", "交易", "交割",
             ]
             .iter()
             .any(|kw| dest_name_appraisal.contains(kw) || purpose_appraisal.contains(kw));
 
-            if is_dining {
+            if is_clinic {
+                let _ = crate::pg::living_world::clear_entity_afflictions(&ent_id, true, now_unix);
+                let ent_id_c = ent_id.clone();
+                let loc = dest_name_appraisal.clone();
+                std::thread::spawn(move || {
+                    if let Some(arc) = crate::store::get_store() {
+                        let mut s = arc.write();
+                        let _ = s.update_entity(&ent_id_c, |ent| {
+                            crate::db::add_thought_to_entity_with_delta(
+                                ent,
+                                crate::db::ThoughtSource::Rested,
+                                9,
+                                now_unix,
+                                format!("在{}敷過草藥調理氣脈，身上勞損與暗傷消退大半", loc),
+                            );
+                        });
+                    }
+                });
+            } else if is_forge {
+                let _ = crate::pg::living_world::temper_vessel_at_forge(
+                    &ent_id,
+                    "craft_steel_hunting_knife",
+                    now_unix,
+                );
+                let ent_id_c = ent_id.clone();
+                let loc = dest_name_appraisal.clone();
+                std::thread::spawn(move || {
+                    if let Some(arc) = crate::store::get_store() {
+                        let mut s = arc.write();
+                        let _ = s.update_entity(&ent_id_c, |ent| {
+                            crate::db::add_thought_to_entity_with_delta(
+                                ent,
+                                crate::db::ThoughtSource::WorkDone,
+                                7,
+                                now_unix,
+                                format!("在{}借爐火與鐵砧重新回火打磨隨身器物，刃口重歸鋒利趁手", loc),
+                            );
+                        });
+                    }
+                });
+            } else if is_hunting_or_gathering {
+                state.consecutive_work_streaks = state.consecutive_work_streaks.saturating_add(1);
+                let _ = crate::pg::living_world::record_breath_activity(
+                    &ent_id,
+                    crate::pg::living_world::BreathHabitKind::ForestLong,
+                    2,
+                    now_unix,
+                );
+                let _ = crate::pg::living_world::record_vessel_use(
+                    &ent_id,
+                    "craft_steel_hunting_knife",
+                    1,
+                    1,
+                    now_unix,
+                );
+                let ent_id_c = ent_id.clone();
+                let loc = dest_name_appraisal.clone();
+                let purp = purpose_appraisal.clone();
+                let streak_now = state.consecutive_work_streaks;
+                std::thread::spawn(move || {
+                    let item_choices = [
+                        "mat_foraged_herb",
+                        "mat_timber_log",
+                        "mat_rough_ore",
+                        "mat_hemp_rope_roll",
+                    ];
+                    let picked = item_choices[(streak_now as usize) % item_choices.len()];
+                    let _ = crate::db::add_to_inventory(&ent_id_c, picked, 1);
+                    if let Some(arc) = crate::store::get_store() {
+                        let mut s = arc.write();
+                        let _ = s.update_entity(&ent_id_c, |ent| {
+                            crate::db::add_thought_to_entity_with_delta(
+                                ent,
+                                crate::db::ThoughtSource::WorkDone,
+                                6,
+                                now_unix,
+                                format!(
+                                    "在{}一帶完成一輪「{}」，行囊裡添了新採獲的山海物產，繼續察看前路動靜",
+                                    loc, purp
+                                ),
+                            );
+                        });
+                    }
+                });
+            } else if is_dining {
                 let ent_id_c = ent_id.clone();
                 let loc = dest_name_appraisal.clone();
                 std::thread::spawn(move || {
@@ -2293,6 +2561,7 @@ impl Store {
                         });
                     }
                 });
+                state.consecutive_work_streaks = 0;
             } else if is_bath {
                 let ent_id_c = ent_id.clone();
                 std::thread::spawn(move || {
@@ -2303,20 +2572,32 @@ impl Store {
                                 ent,
                                 crate::db::ThoughtSource::Rested,
                                 now_unix,
-                                "在泉香溫水浴場泡過熱湯，一身疲乏盡數散去",
+                                "在溫水浴場泡過熱湯，一身疲乏盡數散去",
                             );
                             ent.disposition = (ent.disposition + 10).clamp(-100, 100);
                         });
                     }
                 });
+                state.consecutive_work_streaks = 0;
             } else if is_work {
                 let ent_id_c = ent_id.clone();
                 let loc = dest_name_appraisal.clone();
                 let purp = purpose_appraisal.clone();
-                let earn = 6 + (h % 7) as i32;
+                let earn = if is_expedition_role {
+                    16 + (h % 11) as i32
+                } else {
+                    7 + (h % 7) as i32
+                };
                 let streaks = state.consecutive_work_streaks;
                 state.consecutive_work_streaks = state.consecutive_work_streaks.saturating_add(1);
                 std::thread::spawn(move || {
+                    let single_id = [ent_id_c.clone()];
+                    let _ = crate::game::object_ecology::run_npc_autonomous_production_step(
+                        "",
+                        &loc,
+                        &single_id,
+                        now_unix,
+                    );
                     if let Some(arc) = crate::store::get_store() {
                         let mut s = arc.write();
                         let _ = s.update_entity(&ent_id_c, |ent| {
@@ -2327,15 +2608,21 @@ impl Store {
                                     crate::db::ThoughtSource::Daily,
                                     -4,
                                     now_unix,
-                                    format!("在{}連軸忙完「{}」，肩背有些痠沉，想找地方歇口氣喝杯熱茶", loc, purp),
+                                    format!(
+                                        "在{}連軸忙完「{}」，肩背有些痠沉，想找地方歇口氣喝杯熱茶",
+                                        loc, purp
+                                    ),
                                 );
                             } else {
                                 crate::db::add_thought_to_entity_with_delta(
                                     ent,
                                     crate::db::ThoughtSource::WorkDone,
-                                    5,
+                                    6,
                                     now_unix,
-                                    format!("在{}忙完一輪「{}」，手頭進了幾枚鎂幣，心裡踏實", loc, purp),
+                                    format!(
+                                        "在{}完成「{}」並結清帳目，手頭進帳 {} 枚鎂幣，心裡踏實",
+                                        loc, purp, earn
+                                    ),
                                 );
                             }
                         });
@@ -2346,8 +2633,15 @@ impl Store {
             }
 
             // Prune stale duplicate thoughts if needed
-            let has_stale_broke = e.magnesium >= 35 && e.thoughts.iter().any(|t| t.flavor.as_deref().unwrap_or("").contains("鎂袋空了"));
-            let daily_count = e.thoughts.iter().filter(|t| t.flavor.as_deref().unwrap_or("").contains("今日花用又見底")).count();
+            let has_stale_broke = e.magnesium >= 35
+                && e.thoughts
+                    .iter()
+                    .any(|t| t.flavor.as_deref().unwrap_or("").contains("鎂袋空了"));
+            let daily_count = e
+                .thoughts
+                .iter()
+                .filter(|t| t.flavor.as_deref().unwrap_or("").contains("今日花用又見底"))
+                .count();
             if has_stale_broke || daily_count > 2 {
                 let ent_id_c = ent_id.clone();
                 std::thread::spawn(move || {
@@ -2355,7 +2649,9 @@ impl Store {
                         let mut s = arc.write();
                         let _ = s.update_entity(&ent_id_c, |ent| {
                             if ent.magnesium >= 35 {
-                                ent.thoughts.retain(|t| !t.flavor.as_deref().unwrap_or("").contains("鎂袋空了"));
+                                ent.thoughts.retain(|t| {
+                                    !t.flavor.as_deref().unwrap_or("").contains("鎂袋空了")
+                                });
                             }
                             let mut kept_daily = 0;
                             ent.thoughts.retain(|t| {
@@ -2374,53 +2670,201 @@ impl Store {
             let prev_loc_name = state.dest_name.clone();
             let mut obligation_handled = false;
 
-            if (7..=20).contains(&hour) {
+            // 2. 自主大腦思考與動態目標決策引擎（涵蓋山海獵場多航點推進、傷病就醫、器物修整、市集急缺遠征與多場所生活流轉）
+            let personality =
+                crate::db::expand_soul_seed_to_personality(e.soul_seed.unwrap_or(h as i64));
+            let afflictions = crate::pg::living_world::get_entity_afflictions(entity_id);
+            let vessel_state =
+                crate::pg::living_world::get_vessel_state(entity_id, "craft_steel_hunting_knife");
+            let time_bucket = (now_unix / 20) as u64;
+            let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
+
+            // (A) 獵場／古道遠征人員：在獵場內採多航點大跨度尋跡推進（12~26 格），滿載（streaks >= 3）後沿驛道前往城鎮市集交割，嚴禁定點徘徊！
+            if is_expedition_role && (5..=20).contains(&hour) {
+                if state.consecutive_work_streaks < 3 {
+                    let step_seed = h
+                        .wrapping_add(time_bucket)
+                        .wrapping_add(state.consecutive_work_streaks as u64 * 31);
+                    let candidate_offsets: &[(i32, i32, &str)] = &[
+                        (14, -10, "東側溪谷林緣"),
+                        (-16, 12, "西北坡老樟密林"),
+                        (12, 16, "北側高地獸徑"),
+                        (-14, -15, "西南麓背風山坳"),
+                        (18, 6, "向陽山脊巡獵線"),
+                        (-18, -8, "古道下風伏擊處"),
+                        (8, -18, "山澗水源飲水處"),
+                        (-10, 18, "高處岩稜瞭望點"),
+                    ];
+                    let mut chosen_coord = (slot.work_x, slot.work_y);
+                    let mut chosen_sub = "深山獵徑";
+                    for attempt in 0..candidate_offsets.len() {
+                        let (odx, ody, sub_label) = candidate_offsets
+                            [((step_seed as usize) + attempt) % candidate_offsets.len()];
+                        let tx = (slot.work_x + odx).clamp(-390, 390);
+                        let ty = (slot.work_y + ody).clamp(-490, 490);
+                        let dist_from_cur =
+                            (tx - state.current.0).abs() + (ty - state.current.1).abs();
+                        let walkable = grid
+                            .get(crate::grid::SquareCoord::new(tx, ty))
+                            .map(|c| {
+                                c.terrain != crate::grid::Terrain::Water
+                                    && c.terrain != crate::grid::Terrain::Wall
+                            })
+                            .unwrap_or(false);
+                        if dist_from_cur >= 10 && walkable {
+                            chosen_coord = (tx, ty);
+                            chosen_sub = sub_label;
+                            break;
+                        }
+                    }
+                    let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
+                    state.origin_name = prev_loc_name.clone();
+                    state.dest = chosen_coord;
+                    state.dest_name = format!("{zone_prefix}・{chosen_sub}");
+                    state.purpose = slot.work_purpose.to_string();
+                    state.stay_activity = format!(
+                        "正在{zone_prefix}・{chosen_sub}一帶{}，仔細勘查地脈與物產蹤跡",
+                        slot.work_purpose
+                    );
+                    state.stay_ticks_remaining = 4 + ((h % 4) as u8);
+                    obligation_handled = true;
+                } else {
+                    // 已完成 3 處獵場航點採集，背囊滿載，動身沿古道與公路前往城鎮市集交割變現！
+                    state.consecutive_work_streaks = 0;
+                    state.origin_name = prev_loc_name.clone();
+                    state.dest = (slot.errand_x, slot.errand_y);
+                    state.dest_name = slot.errand_name.to_string();
+                    state.purpose = "運貨赴市交割".to_string();
+                    state.stay_activity = slot.errand_stay_activity.to_string();
+                    state.stay_ticks_remaining = 6 + ((h % 5) as u8);
+                    obligation_handled = true;
+                }
+            }
+
+            // (B) 部位傷勢或瘴氣在身：優先前往診所／藥鋪求醫調理
+            if !obligation_handled && !afflictions.is_empty() && (6..=21).contains(&hour) {
+                let (clinic_coord, clinic_name) = if is_wenyao_slot {
+                    (
+                        resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -1)),
+                        "文曜・溫氏脈絡診所",
+                    )
+                } else if slot.home_y < -220 {
+                    ((0, -320), "南哨・南哨脈絡解毒診所")
+                } else if slot.home_x < -200 {
+                    ((-263, 158), "風舶角・港務脈絡診所")
+                } else {
+                    ((slot.errand_x, slot.errand_y), slot.errand_name)
+                };
+                open_active_npc_obligation(entity_id, "treat_injury", "身上帶有傷勢勞損需赴醫館敷藥調理");
+                state.origin_name = prev_loc_name.clone();
+                state.dest = clinic_coord;
+                state.dest_name = clinic_name.to_string();
+                state.purpose = "敷藥調理".to_string();
+                state.stay_activity = format!("因身上帶有傷勢勞損，特地在{}請醫師敷藥調理氣脈", clinic_name);
+                state.stay_ticks_remaining = 8 + ((h % 5) as u8);
+                obligation_handled = true;
+            }
+
+            // (C) 隨身器物刃口微鈍或捲刃：主動前往鍛造工坊／鐵器坊打磨回火
+            if !obligation_handled
+                && vessel_state.condition != crate::pg::living_world::VesselCondition::Sharp
+                && (7..=20).contains(&hour)
+            {
+                let (forge_coord, forge_name) = if is_wenyao_slot {
+                    (
+                        resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
+                        "文曜・岑氏第一鍛造工坊",
+                    )
+                } else if slot.home_x > 40 {
+                    ((95, 95), "半嶺鎮・百工鐵器鍛造坊")
+                } else if slot.home_y < -180 {
+                    ((-180, -245), "大圳頭・西南原農具與百工坊")
+                } else {
+                    ((slot.work_x, slot.work_y), slot.work_name)
+                };
+                open_active_npc_obligation(entity_id, "repair_tool", "隨身器物刃口磨損待赴鐵坊修整");
+                state.origin_name = prev_loc_name.clone();
+                state.dest = forge_coord;
+                state.dest_name = forge_name.to_string();
+                state.purpose = "修整器物".to_string();
+                state.stay_activity = format!("察覺隨身器物刃口微鈍，特地在{}借爐火與磨石修整開鋒", forge_name);
+                state.stay_ticks_remaining = 8 + ((h % 5) as u8);
+                obligation_handled = true;
+            }
+
+            // (D) 聚落市集緊缺物料與跨區採集／行商驅動：不再只有死板三點，居民會因手頭銀錢或坊間急徵主動前往鄰近獵場或商站採辦！
+            if !obligation_handled && (7..=19).contains(&hour) {
                 if let Some((ob_kind, _)) = get_active_npc_obligation(entity_id) {
                     clear_active_npc_obligation(entity_id, &ob_kind);
                     if ob_kind == "restock_goods" {
                         crate::server::action::trade::restock_shop_items_for_seller(entity_id);
                     }
-                    if (ob_kind == "repair_tool" || ob_kind == "repay_debt" || ob_kind == "treat_injury")
-                        && e.magnesium >= 2
-                    {
-                        let ent_id = entity_id.to_string();
-                        std::thread::spawn(move || {
-                            let _ = crate::db::add_magnesium(&ent_id, -2);
-                        });
-                    }
                 } else {
-                    let now_sec = crate::game::now_unix();
-                    let mut h: u64 = 0xcbf2_9ce4_8422_2325;
-                    for b in entity_id.as_bytes() {
-                        h ^= u64::from(*b);
-                        h = h.wrapping_mul(0x0100_0000_01b3);
-                    }
-                    let time_bucket = (now_sec / 30) as u64;
-                    let roll = (h.wrapping_add(time_bucket).wrapping_mul(1103515245) >> 16) % 100;
-                    let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
-                    if roll < 18 {
-                        let ob_choice = (h.wrapping_add(time_bucket) >> 4) % 8;
-                        let (ob_kind, ob_subject, ob_dest, ob_dest_name, ob_act, ob_purpose) = if !is_wenyao_slot {
-                            if ob_choice % 2 == 0 {
-                                (
-                                    "restock_goods",
-                                    "日常用料與工坊備貨待補",
-                                    (slot.errand_x, slot.errand_y),
-                                    slot.errand_name,
-                                    slot.errand_stay_activity,
-                                    slot.errand_purpose,
-                                )
-                            } else {
-                                (
-                                    "repair_tool",
-                                    "隨身器物與工位機具檢修",
-                                    (slot.work_x, slot.work_y),
-                                    slot.work_name,
-                                    slot.work_stay_activity,
-                                    slot.work_purpose,
-                                )
-                            }
+                    let roll =
+                        (h.wrapping_add(time_bucket).wrapping_mul(1103515245) >> 16) % 100;
+                    let home_settlement =
+                        slot.home_name.split('・').next().unwrap_or("文曜");
+                    if roll < 22
+                        && (e.magnesium < 45 || personality.boldness > 0.54)
+                        && let Some((_scarce_id, scarce_name, cur_stock, tgt_stock, _price)) =
+                            crate::game::object_ecology::scarcest_item_for_settlement(
+                                home_settlement,
+                            )
+                        && cur_stock < tgt_stock
+                    {
+                        // 根據所在聚落位置，選擇鄰近的《台灣山海經》獵場或跨鎮集市前往採辦／調撥緊缺物產
+                        let (exp_coord, exp_zone_name) = if slot.home_y > 140 {
+                            ((64, 164), "清泉溪谷・溪畔採集地")
+                        } else if slot.home_x > 50 {
+                            ((176, 44), "西嶺礦谷・露頭礦脈")
+                        } else if slot.home_x < -220 {
+                            ((-355, 176), "驚濤岩岸・海崖採集點")
+                        } else if slot.home_y < -220 {
+                            ((-116, -316), "白茫洲・蘆洲藥草灘")
+                        } else if slot.home_y < -100 {
+                            ((-176, -190), "長風草甸・豐草獵場")
                         } else {
+                            ((-76, -56), "古河巨木林・林緣採集徑")
+                        };
+                        open_active_npc_obligation(
+                            entity_id,
+                            "restock_goods",
+                            &format!("赴{}採辦坊間急缺之{}", exp_zone_name, scarce_name),
+                        );
+                        let ent_id_c = ent_id.clone();
+                        let home_s = home_settlement.to_string();
+                        let s_name = scarce_name.clone();
+                        let z_name = exp_zone_name.to_string();
+                        std::thread::spawn(move || {
+                            if let Some(arc) = crate::store::get_store() {
+                                let mut s = arc.write();
+                                let _ = s.update_entity(&ent_id_c, |ent| {
+                                    crate::db::add_thought_to_entity_with_delta(
+                                        ent,
+                                        crate::db::ThoughtSource::Daily,
+                                        4,
+                                        now_unix,
+                                        format!(
+                                            "見{}坊間急徵「{}」，盤算手頭銀錢與腳力，決定動身前往【{}】採辦應急物產",
+                                            home_s, s_name, z_name
+                                        ),
+                                    );
+                                });
+                            }
+                        });
+                        state.origin_name = prev_loc_name.clone();
+                        state.dest = exp_coord;
+                        state.dest_name = exp_zone_name.to_string();
+                        state.purpose = format!("採辦急缺{}", scarce_name);
+                        state.stay_activity = format!(
+                            "正於{}一帶尋覓並採集{}坊間急缺的「{}」",
+                            exp_zone_name, home_settlement, scarce_name
+                        );
+                        state.stay_ticks_remaining = 6 + ((h % 5) as u8);
+                        obligation_handled = true;
+                    } else if roll < 18 && is_wenyao_slot {
+                        let ob_choice = (h.wrapping_add(time_bucket) >> 4) % 8;
+                        let (ob_kind, ob_subject, ob_dest, ob_dest_name, ob_act, ob_purpose) =
                             match ob_choice {
                                 0 => (
                                     "repair_tool",
@@ -2486,8 +2930,7 @@ impl Store {
                                     "正在海味行秤提新運抵的風櫃魚乾與海鹽",
                                     "提領乾貨",
                                 ),
-                            }
-                        };
+                            };
 
                         open_active_npc_obligation(entity_id, ob_kind, ob_subject);
                         state.origin_name = prev_loc_name.clone();
@@ -2495,46 +2938,69 @@ impl Store {
                         state.dest_name = ob_dest_name.to_string();
                         state.purpose = ob_purpose.to_string();
                         state.stay_activity = ob_act.to_string();
-                        state.stay_ticks_remaining = 16 + ((h % 10) as u8);
+                        state.stay_ticks_remaining = 8 + ((h % 6) as u8);
                         obligation_handled = true;
                     }
                 }
             }
 
             if !obligation_handled {
-                let personality = crate::db::expand_soul_seed_to_personality(e.soul_seed.unwrap_or(h as i64));
-                let last_thought_text = e.thoughts.last().and_then(|t| t.flavor.as_deref()).unwrap_or("");
+                let last_thought_text = e
+                    .thoughts
+                    .last()
+                    .and_then(|t| t.flavor.as_deref())
+                    .unwrap_or("");
                 let is_fatigued = e.disposition <= -12
+                    || state.consecutive_work_streaks >= 3
                     || last_thought_text.contains("痠沉")
                     || last_thought_text.contains("疲乏")
                     || last_thought_text.contains("煩悶");
 
                 let mut override_handled = false;
 
-                let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
-                // Case A: Fatigue / Bad Mood Recovery
+                // Case A: Fatigue / Bad Mood Recovery — 尋找所在聚落或鄰近街坊的茶屋、食堂、湯池歇息
                 if is_fatigued {
                     let (coord, target_name) = if is_wenyao_slot {
                         let targets = [
-                            ((-1, 2), "三水大食堂"),
-                            ((2, -2), "泉香溫水浴場"),
-                            ((2, -1), "東橋旅社與山風茶屋"),
-                            ((13, 13), "講堂外坊・翰墨清茶書肆"),
+                            ((-1, 2), "三水大食堂".to_string()),
+                            ((2, -2), "泉香溫水浴場".to_string()),
+                            ((2, -1), "東橋旅社與山風茶屋".to_string()),
+                            ((13, 13), "講堂外坊・翰墨清茶書肆".to_string()),
                         ];
-                        targets[((h.wrapping_add(hour as u64)) % 4) as usize]
+                        targets[((h.wrapping_add(hour as u64)) % 4) as usize].clone()
                     } else {
-                        ((slot.errand_x, slot.errand_y), slot.errand_name)
+                        // 在當前聚落 18 格內搜尋真實茶寮／食堂／旅社／浴場，避免永遠只去單一 errand 點
+                        let found = grid
+                            .cells()
+                            .filter(|c| {
+                                (c.coord.x - slot.home_x).abs() + (c.coord.y - slot.home_y).abs()
+                                    <= 18
+                                    && (c.name.contains("食堂")
+                                        || c.name.contains("茶")
+                                        || c.name.contains("浴")
+                                        || c.name.contains("旅社")
+                                        || c.name.contains("飯"))
+                            })
+                            .nth(((h.wrapping_add(hour as u64)) % 3) as usize);
+                        if let Some(cell) = found {
+                            ((cell.coord.x, cell.coord.y), cell.name.clone())
+                        } else {
+                            ((slot.errand_x, slot.errand_y), slot.errand_name.to_string())
+                        }
                     };
                     state.origin_name = prev_loc_name.clone();
                     state.dest = coord;
-                    state.dest_name = target_name.to_string();
-                    state.purpose = "舒緩心緒".to_string();
-                    state.stay_activity = format!("因連日忙碌心緒微疲，特地在{}歇腳喝口熱茶舒緩精神", target_name);
-                    state.stay_ticks_remaining = 20 + ((h % 8) as u8);
+                    state.dest_name = target_name.clone();
+                    state.purpose = "品茗用膳".to_string();
+                    state.stay_activity = format!(
+                        "因連日奔忙心緒微疲，特地在{}歇腳喝口熱茶、用頓熱飯舒緩精神",
+                        target_name
+                    );
+                    state.stay_ticks_remaining = 8 + ((h % 6) as u8);
                     state.consecutive_work_streaks = 0;
                     override_handled = true;
                 }
-                // Case B: Economic Drive
+                // Case B: Economic Drive — 手頭銀錢吃緊時主動赴商行、貨棧或工坊多接差事
                 else if e.magnesium < 35 && (7..=20).contains(&hour) {
                     let (coord, target_name) = if is_wenyao_slot {
                         let targets = [
@@ -2550,33 +3016,66 @@ impl Store {
                     state.dest = coord;
                     state.dest_name = target_name.to_string();
                     state.purpose = "籌措生計".to_string();
-                    state.stay_activity = format!("因手頭銀錢吃緊，主動趕往{}多接一趟差事貼補家用", target_name);
-                    state.stay_ticks_remaining = 24 + ((h % 10) as u8);
+                    state.stay_activity = format!(
+                        "因手頭銀錢吃緊，主動趕往{}多接一趟差事貼補家用",
+                        target_name
+                    );
+                    state.stay_ticks_remaining = 8 + ((h % 6) as u8);
                     let ent_id_c = ent_id.clone();
                     std::thread::spawn(move || {
                         let _ = crate::db::add_magnesium(&ent_id_c, 12);
                     });
                     override_handled = true;
                 }
-                // Case C: Social / Curiosity Drive
-                else if personality.boldness > 0.62 && (11..=20).contains(&hour) && (h.wrapping_add(now_unix as u64)) % 5 == 0 {
+                // Case C: Social / Curiosity / Cross-Building Circulation — 依性格造訪同聚落不同場所或鄰鎮商站
+                else if (personality.boldness > 0.56 || personality.sensitivity > 0.60)
+                    && (9..=20).contains(&hour)
+                    && (h.wrapping_add(time_bucket)) % 3 == 0
+                {
                     let (coord, target_name) = if is_wenyao_slot {
                         let targets = [
-                            ((0, 0), "文曜・中心樞紐石橋"),
-                            ((1, 0), "文曜・三水口納涼棚廊"),
-                            ((13, -13), "百工外坊・紅爐烈酒大飯鋪"),
+                            ((0, 0), "文曜・中心樞紐石橋".to_string()),
+                            ((1, 0), "文曜・三水口納涼棚廊".to_string()),
+                            ((13, -13), "百工外坊・紅爐烈酒大飯鋪".to_string()),
+                            ((-12, -12), "西門外坊・西郊行商車馬大店".to_string()),
                         ];
-                        targets[((h.wrapping_add(hour as u64)) % 3) as usize]
+                        targets[((h.wrapping_add(hour as u64)) % 4) as usize].clone()
                     } else {
-                        ((slot.errand_x, slot.errand_y), slot.errand_name)
+                        // 在聚落內依性格挑選不同類型場所造訪，打破兩點來回死循環
+                        let candidates: Vec<&crate::grid::GridCell> = grid
+                            .cells()
+                            .filter(|c| {
+                                let d = (c.coord.x - slot.home_x).abs()
+                                    + (c.coord.y - slot.home_y).abs();
+                                d >= 3
+                                    && d <= 20
+                                    && (c.coord.x, c.coord.y) != state.current
+                                    && !c.name.is_empty()
+                                    && !matches!(
+                                        c.terrain,
+                                        crate::grid::Terrain::Water
+                                            | crate::grid::Terrain::Wall
+                                            | crate::grid::Terrain::House
+                                    )
+                            })
+                            .collect();
+                        if !candidates.is_empty() {
+                            let pick = candidates
+                                [((h.wrapping_add(time_bucket)) as usize) % candidates.len()];
+                            ((pick.coord.x, pick.coord.y), pick.name.clone())
+                        } else {
+                            ((slot.errand_x, slot.errand_y), slot.errand_name.to_string())
+                        }
                     };
                     state.origin_name = prev_loc_name.clone();
                     state.dest = coord;
-                    state.dest_name = target_name.to_string();
-                    state.purpose = "探聽風物".to_string();
-                    state.stay_activity = format!("正駐足{}與往來同道寒暄，打聽半島各處的新近消息", target_name);
-                    state.stay_ticks_remaining = 18 + ((h % 8) as u8);
-                    state.consecutive_work_streaks = 0;
+                    state.dest_name = target_name.clone();
+                    state.purpose = "探聽商情風物".to_string();
+                    state.stay_activity = format!(
+                        "正駐足{}與往來同道寒暄，打聽近期各處物產收成與市集行情",
+                        target_name
+                    );
+                    state.stay_ticks_remaining = 6 + ((h % 5) as u8);
                     override_handled = true;
                 }
 
@@ -2588,14 +3087,19 @@ impl Store {
                     }
 
                     let (next_dest, next_dest_name, next_purpose, next_stay_activity, next_ticks) =
-                        resolve_wenyao_npc_schedule(slot, hour, state.work_errand_toggle, &prev_loc_name);
+                        resolve_wenyao_npc_schedule(
+                            slot,
+                            hour,
+                            state.work_errand_toggle,
+                            &prev_loc_name,
+                        );
 
                     state.origin_name = prev_loc_name;
                     state.dest = next_dest;
                     state.dest_name = next_dest_name;
                     state.purpose = next_purpose;
                     state.stay_activity = next_stay_activity;
-                    state.stay_ticks_remaining = next_ticks;
+                    state.stay_ticks_remaining = (next_ticks / 2).max(5);
                 }
             }
         }
