@@ -1,16 +1,16 @@
 # Singularity World — 當前交班狀態 (SESSION.md)
 
-- **更新日期**：2026-10-27
-- **當前狀態**：`completed`（台灣山海經活世界四重奏 ＋ 500 詞 × 361 星盤 × 一字雙境 ＋ 五源五層管線 ＋ 萬人萬相 `soul_seed` 星盤推演 × 器物無分工具武器與外盤銘文 `[字]` × 碎招→套路→技能與一力十會博弈 × 真人 NPC 自主刻字穿戴已全數實裝、測試通過並部署至 `singularity.service`）
+- **更新日期**：2026-10-28
+- **當前狀態**：`completed`（《白塔山海志》活世界四重奏 ＋ 500 詞 × 361 星盤 × 一字雙境 ＋ 五源五層管線 ＋ 萬人萬相 `soul_seed` 星盤推演 × 器物無分工具武器與外盤銘文 `[字]` × 碎招→套路→技能與一力十會博弈 × 真人 NPC 自主刻字穿戴 × 15 聚落與 19 獵場 3,577 活體全島動態已全數實裝、測試通過並部署至 `singularity.service`）
 
-## 一、 本輪完成里程碑（2026-10-27）
+## 一、 本輪完成里程碑（2026-10-27 ～ 2026-10-28）
 
-1. **「台灣山海經」十九獵場百獸生態與活世界四重奏實裝**：
-   - **十九獵場 103 種台灣山海生靈與四階戰力梯度**：實裝於 `src/game/room.rs:442-780`（`ensure_ambient_npc_at_grid`、`ambient_creature_loot`），擊敗異獸掉落對應《台灣山海經》部位（`src/server/action/combat.rs:115-145`）。
+1. **「白塔山海志」十九獵場百獸生態與活世界四重奏實裝**：
+   - **十九獵場 103 種半島山海生靈與四階戰力梯度**：實裝於 `src/game/room.rs:442-780`（`ensure_ambient_npc_at_grid`、`ambient_creature_loot`），擊敗異獸掉落對應《白塔山海志》部位（`src/server/action/combat.rs:115-145`）。
    - **①【食之／佩之／炙之】部位奇效與戰鬥護佑**：`src/game/room.rs:815-990`（`shanhai_item_use_effect`、`player_shanhai_talisman_bonus`），串接 `src/server/handler/inventory.rs:631-662`、`src/server/action/object.rs:1114-1127` 與 `src/server/action/combat.rs:125-145`。隨身靈佩（帝雉長尾翎、藍腹鷴彩羽、雲豹軟毛皮、石虎斑皮、穿山甲鱗片、巨鱷厚麟皮、山豬王獠牙、白鼻心香皮、熊鷹翎羽）使用不耗損且交鋒自動觸發【山海佩飾護佑】；本草珍饈（百步蛇乾蛻、月熊掌、月熊腹脂膏、深山牛樟芝）服食回補體魄與元氣。
    - **②【晝伏夜出、潮退現身】出沒時辰與潮汐律動**：`src/game/room.rs:625-668`，結合 `current_game_hour()` 呈現晨霧瑞獸（05:00–09:00）、夜行山靈（18:00–06:00）與大潮海怪（潮汐退湧時段）動態。
    - **③【未見其獸，先見其跡】十九獵場霸主環境異兆**：`src/game/room.rs:782-812`（`hunting_zone_apex_omen`）與 `src/server/action/object.rs:995-1007`，查看野外地景（獸徑足印、避風岩龕、山澗清泉眼、巡山木樁、野地營火堆）自動浮現該獵場鎮場霸主之【山海異兆】。
-   - **④【山海合味】營火與食堂來料代客料理**：`src/game/object_ecology.rs:2505-2615`（`try_cook_shanhai_delicacy`）與 `src/server/action/object.rs:2200-2210`，攜帶山海獵獲搭配台灣道地調味物產（馬告粒、陳年老菜脯、黑豆壺底蔭油、甘醇蔭油膏、老薑黑糖磚）可現煮八道山海名膳。
+   - **④【山海合味】營火與食堂來料代客料理**：`src/game/object_ecology.rs:2505-2615`（`try_cook_shanhai_delicacy`）與 `src/server/action/object.rs:2200-2210`，攜帶山海獵獲搭配半島道地調味物產（馬告粒、陳年老菜脯、黑豆壺底蔭油、甘醇蔭油膏、老薑黑糖磚）可現煮八道山海名膳。
 2. **「500 詞 × 361 星盤 × 一字雙境（在戰陣為武相、在日常為藝相）」收斂實裝**：
    - **500 詞不擴編 × 一字雙境**：`data/config/word_elements.json` 洗淨全部第四面牆系統黑話；`data/config/word_elements_gamedims.json` 校準 500 詞語義對比（修正強/弱、速/緩、堅/脆數值）並新增 4 維百工行旅向量 `craft_dims`（`forge` 鍛鑄百工、`culinary` 庖廚丹膳、`harvest` 採獵剝名、`wayfare` 山海行旅），喚醒現有 500 詞中之 `鑄、織、剝、種、磨、捏、味、色、音、爐、鼎、鮮、陳、巧、純` 等百工字。
    - **星盤起承轉合語序權重（破除加法交換律）**：`src/combat/wordplate.rs:585-690`（`StarSentence::synthesize`）依句首【起】、句中【承轉】、句尾【合】賦予位置權重（`[A, B, C] != [C, B, A]`），並同步結算 `CraftDims4D` 與 `CraftAspect`（`dual_context_summary`）。
@@ -45,16 +45,16 @@
    - **百工藝相四維實質驅動日常活計（`src/game/object_ecology.rs` ＆ `src/server/handler/inventory.rs`）**：公開 `entity_total_craft_dims(pid)`（匯總星盤套路與手持銘文器物之四維藝境加成），實質驅動工坊煉製器物異變率加成（`forge / culinary`）、地景物產採集額外完好收穫與工具磨合／捲刃提醒（`harvest` + `harvest_from_world_object`），以及營火現煮山海名饌滋養增幅與本機 LLM 高光描寫（`try_camp_shanhai_cooking` $\to$ `compose_craft_highlight_from_data`）。
    - **借物歸還器況檢驗與師承同道折讓（`src/server/action/borrow.rs` ＆ `src/server/action/trade.rs`）**：歸還借用器物時自動檢驗 `VesselCondition`——若捲刃待修則掌事皺眉斥責並開啟 `repair_tool` 義務；若经推磨雪亮歸還則大加讚賞並累積《百工惜器訣》師承烙印。身具【師承烙印】或高熟識度者於市井交易享有同道熟客折讓。
    - **行旅涉險與部位傷勢連動（`src/server/handler/movement.rs`）**：野外跋涉自然演進《山林長息》／《海潮綿息》；身負「下盤扭傷」於崎嶇地勢會觸發足踝隱痛提醒，而高 `wayfare` 藝相或長息底色則觸發「長息輕身」回氣減耗。82 項單元與整合測試全數通過。
-9. **「設計師上帝視角全地圖（`/world_atlas`）」全面對齊台灣山海經活世界並完成 `ITERATE -> PASS` 視覺驗收**：
-   - **後端三端點擴充（`src/server/http_api/eco.rs`、`src/server/run.rs`）**：`/api/eco/map` 完整供應 `14,424` 格地塊與手寫描寫 `d` 及地面遺落物；`/api/eco/entities` 整合全島在場人物與 19 獵場 57 隻《台灣山海經》生靈（含 `breath_habit` 內息底色、`held_vessel` 器物人器磨合・鋒刃器況／可剝取山海靈材、`afflictions` 部位傷勢、`lineage` 師承烙印）並消弭鎖重入死結；新增 `/api/eco/pulse` 供應 15 聚落供需急徵行情與 19 獵場霸主【山海異兆】及天地氣源。
-   - **前端上帝全地圖與 `ITERATE -> PASS` 視覺驗收（`web/world_atlas.html`、`src/game/room.rs`）**：修正 `room.rs` 殘留舊奇幻獸名與古河巨木林異兆錯配，全面正名為《台灣山海經》物種（長風四目水鹿王、古河樟林雲豹、赤石鯪鯉穿山甲、淺山錢紋石虎、大武百步蛇王、寒潭千年花斑鱸鰻、霧林黑長尾帝雉、雪巔霜冠大水鹿等）；將 `#inspector-panel` 改為右下角停靠（`right: 68px; bottom: 18px`）並於全島總覽預設收合，確保 `800×1,000` 全島南北視野 100% 無遮擋；新增同格無人時自動調閱鄰近 12 格內在場人物與山海生靈，通過桌面版（`1520×920`）與行動版（`430×932`）實機截圖驗收。
-10. **「全島 15 聚落 595 棟建築零空屋家戶化 × 1,772 人四級人文空間金字塔 × 1,805 隻台灣山海經四層生態金字塔（共 3,577 在場實體）」定案實裝**：
-   - **四層《台灣山海經》全島面積加權藍噪聲（Poisson-disc）自然棲地引擎（全島 1,805 隻，1,804 個不重疊棲地格，霸主:顯形＝1:94）**：實裝於 `src/game/room.rs`（`ZONE_HABITAT_LAYOUTS`、`live_zone_shanhai_slots`）與 `src/server/http_api/eco.rs`。對齊半島地形分類器 `classify_wilderness_cell(x, y)`，依 19 座獵場真實陸塊面積動態配賦名額並加入邊界排斥權重，徹底消除人工同心圓與大獵場中央空洞：Tier 1 鎮場霸主（19 頭，周圍 2 格百鳥屏息圈）、Tier 2 次級掠食（114 隻，分據全境獨立領地）、Tier 3 尋常中型獸群（380 隻，每群 2～3 隻結群放牧）、Tier 4 尋常小怪／靈禽（1,292 隻，漫山藍噪聲散佈，個體各自獨立漫遊）。
-   - **1,772 名真實持久化思考 `Entity` 全圖流動與「合社獵團」吹角招募＋八方合圍分紅（人:獸＝1:1.02，零假 `EcoEntity` 濫竽充數）**：實裝於 `src/store/outer_households.rs`（1,389 外圍與遠征槽位 + 294 文曜槽位 + 89 顯式正典人物 = 1,772 真人 `Entity`）與 `src/store/entity.rs`（`LIVE_HUNTING_PARTIES`、`pick_island_trail_waypoint`、`pick_zone_artisan_waypoint`、歐氏距離斜向尋路）。19 支「合社獵團」（114 核心獵人＋38 自主入團鄉民＝152 人）於獵場全境追蹤並四面八方合圍《台灣山海經》獸群與猛獸、瓜分獵獲與鎂錠；133 名「入山百工」遍布各獵場全境林地溪谷礦坡；95 名「古道行旅」沿全島 6,287 格真實驛道與橋樑跨區押貨巡防；`web/world_atlas.html` 全島總覽（`zoom >= 0.45`）同步渲染全島 3,577 實體自然分佈。
+9. **「設計師上帝視角全地圖（`/world_atlas`）」全面對齊《白塔山海志》活世界並完成 `ITERATE -> PASS` 視覺驗收**：
+   - **後端三端點擴充（`src/server/http_api/eco.rs`、`src/server/run.rs`）**：`/api/eco/map` 完整供應 `14,424` 格地塊與手寫描寫 `d` 及地面遺落物；`/api/eco/entities` 整合全島在場人物與 19 獵場《白塔山海志》生靈（含 `breath_habit` 內息底色、`held_vessel` 器物人器磨合・鋒刃器況／可剝取山海靈材、`afflictions` 部位傷勢、`lineage` 師承烙印）並消弭鎖重入死結；新增 `/api/eco/pulse` 供應 15 聚落供需急徵行情與 19 獵場霸主【山海異兆】及天地氣源。
+   - **前端上帝全地圖與 `ITERATE -> PASS` 視覺驗收（`web/world_atlas.html`、`src/game/room.rs`）**：修正 `room.rs` 殘留舊奇幻獸名與古河巨木林異兆錯配，全面正名為《白塔山海志》物種（長風四目水鹿王、古河樟林雲豹、赤石鯪鯉穿山甲、淺山錢紋石虎、黑沼百步蛇王、寒潭千年花斑鱸鰻、霧林黑長尾帝雉、雪巔霜冠大水鹿等），並徹底洗除一切外界現實地名與部族字眼；將 `#inspector-panel` 改為右下角停靠（`right: 68px; bottom: 18px`）並於全島總覽預設收合，確保 `800×1,000` 全島南北視野 100% 無遮擋；新增同格無人時自動調閱鄰近 12 格內在場人物與山海生靈，通過桌面版（`1520×920`）與行動版（`430×932`）實機截圖驗收。
+10. **「全島 15 聚落 595 棟建築零空屋家戶化 × 1,772 人四級人文空間金字塔 × 1,805 隻《白塔山海志》四層生態金字塔（共 3,577 在場實體）」定案實裝**：
+   - **四層《白塔山海志》全島面積加權藍噪聲（Poisson-disc）自然棲地引擎（全島 1,805 隻，1,804 個不重疊棲地格，霸主:顯形＝1:94）**：實裝於 `src/game/room.rs`（`ZONE_HABITAT_LAYOUTS`、`live_zone_shanhai_slots`）與 `src/server/http_api/eco.rs`。對齊半島地形分類器 `classify_wilderness_cell(x, y)`，依 19 座獵場真實陸塊面積動態配賦名額並加入邊界排斥權重，徹底消除人工同心圓與大獵場中央空洞：Tier 1 鎮場霸主（19 頭，周圍 2 格百鳥屏息圈）、Tier 2 次級掠食（114 隻，分據全境獨立領地）、Tier 3 尋常中型獸群（380 隻，每群 2～3 隻結群放牧）、Tier 4 尋常小怪／靈禽（1,292 隻，漫山藍噪聲散佈，個體各自獨立漫遊）。
+   - **1,772 名真實持久化思考 `Entity` 全圖流動與「合社獵團」吹角招募＋八方合圍分紅（人:獸＝1:1.02，零假 `EcoEntity` 濫竽充數）**：實裝於 `src/store/outer_households.rs`（1,389 外圍與遠征槽位 + 294 文曜槽位 + 89 顯式正典人物 = 1,772 真人 `Entity`）與 `src/store/entity.rs`（`LIVE_HUNTING_PARTIES`、`pick_island_trail_waypoint`、`pick_zone_artisan_waypoint`、歐氏距離斜向尋路）。19 支「合社獵團」（114 核心獵人＋38 自主入團鄉民＝152 人）於獵場全境追蹤並四面八方合圍《白塔山海志》獸群與猛獸、瓜分獵獲與鎂錠；133 名「入山百工」遍布各獵場全境林地溪谷礦坡；95 名「古道行旅」沿全島 6,287 格真實驛道與橋樑跨區押貨巡防；`web/world_atlas.html` 全島總覽（`zoom >= 0.45`）同步渲染全島 3,577 實體自然分佈。
 11. **「六大設牆城鎮城門中繼路由 × 16 棟內院建築穿堂解鎖 × 獵團合圍獵殺遷徙與遺骸採集 × 玩家端山海生靈觀察與互動全閉環」實裝驗收**：
    - **六大設牆城鎮城門中繼（`WALLED_CITIES`）與 16 棟街廓內院建築穿堂通行**：於 `src/store/entity.rs`（`find_bfs_next_step`、`can_npc_step_between`）與 `src/grid/grid.rs`（`has_direct_non_building_walkable_exit`）實裝跨牆城門自動導航及內院穿堂法則，並打通風舶嶼西港直街（`src/grid/gen.rs`），使全島城角與內院滯留人數降至 `0`，移動中凍結人數降至 `0`（全島 `1,772` 名真人分散於 `1,171` 個獨立座標點）。
-   - **合社獵團合圍獵殺、棲地即時遷徙（`SHANHAI_SLOT_RESPAWN_GEN`）與現場遺骸（`RECENT_HUNT_KILL_SITES`）**：獵團或玩家擊殺《台灣山海經》生靈後，該棲地槽位立即推進重生世代遷徙至新座標，並於原處留下可觀察與採集之 `【圍獵遺骸】`；每輪交割後領隊自主吹角增募鄰鎮高膽識居民入團並寫入社交思緒。
-   - **玩家端 9x9 鄰格、同格視野與《台灣山海經》生靈 `Look / Subdue / Slay` 完整閉環**：修正 `src/db/entity.rs`、`src/server/broadcast.rs`、`src/server/action/look.rs`、`src/server/action/combat.rs` 與 `src/game/room.rs`，全面支援 `shanhai_*` 與 `ambient_flock_*` 實體解析，根除山海生靈誤顯示為「陌生人」或誤套用人類代名詞之缺陷，並通過桌面版（`1440×900`）與行動版（`390×844`）雙視口實機驗收。
+   - **合社獵團合圍獵殺、棲地即時遷徙（`SHANHAI_SLOT_RESPAWN_GEN`）與現場遺骸（`RECENT_HUNT_KILL_SITES`）**：獵團或玩家擊殺《白塔山海志》生靈後，該棲地槽位立即推進重生世代遷徙至新座標，並於原處留下可觀察與採集之 `【圍獵遺骸】`；每輪交割後領隊自主吹角增募鄰鎮高膽識居民入團並寫入社交思緒。
+   - **玩家端 9x9 鄰格、同格視野與《白塔山海志》生靈 `Look / Subdue / Slay` 完整閉環**：修正 `src/db/entity.rs`、`src/server/broadcast.rs`、`src/server/action/look.rs`、`src/server/action/combat.rs` 與 `src/game/room.rs`，全面支援 `shanhai_*` 與 `ambient_flock_*` 實體解析，根除山海生靈誤顯示為「陌生人」或誤套用人類代名詞之缺陷，並通過桌面版（`1440×900`）與行動版（`390×844`）雙視口實機驗收。
 ## 二、 關鍵檔案與正典錨點
 
 - **Rust 實機代碼**：

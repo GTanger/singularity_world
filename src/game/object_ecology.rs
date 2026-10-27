@@ -3068,8 +3068,8 @@ pub fn ignite_or_stoke_campfire(
     Ok((narrative, is_new_fire))
 }
 
-/// 嘗試烹調《台灣山海經》獵獲與特產名物之合味珍餚：
-/// 檢測玩家行囊是否持有山海食材與台灣特色佐料，若有則進行料理並恢復體魄元氣。
+/// 嘗試烹調《白塔山海志》獵獲與特產名物之合味珍餚：
+/// 檢測玩家行囊是否持有山海食材與半島特色佐料，若有則進行料理並恢復體魄元氣。
 /// 回傳 `Some((narrative, total_vit, total_qi))`。
 pub fn try_camp_shanhai_cooking(
     actor_id: &str,
@@ -3179,7 +3179,7 @@ pub fn try_camp_shanhai_cooking(
     None
 }
 
-/// 保持相容：嘗試烹調《台灣山海經》獵獲與特產名物之合味珍餚。
+/// 保持相容：嘗試烹調《白塔山海志》獵獲與特產名物之合味珍餚。
 pub fn try_cook_shanhai_delicacy(pid: &str, venue_label: &str) -> Option<(String, i32, i32)> {
     try_camp_shanhai_cooking(pid, venue_label, crate::game::now_unix())
 }

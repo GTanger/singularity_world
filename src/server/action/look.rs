@@ -105,7 +105,7 @@ fn build_look_narrative(
             crate::game::ambient_creature_loot(&target.display_title)
         {
             let mut desc = format!(
-                "你屏息凝神，仔細觀察眼前的《台灣山海經》生靈【{}】。{}\n體魄 {}・靈敏 {}・氣勁 {}。",
+                "你屏息凝神，仔細觀察眼前的山海生靈【{}】。{}\n體魄 {}・靈敏 {}・氣勁 {}。",
                 target.display_title, shanhai_note, target.vit, target.dex, target.qi
             );
             if !target.current_activity.trim().is_empty() {

@@ -5086,25 +5086,25 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -181, home_y: -248, home_name: "牛埔・長風草浪安居宅", home_stay_activity: "正在牛埔・長風草浪安居宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -181, home_y: -248, home_name: "牛埔・長風草浪安居宅", home_stay_activity: "正在牛埔・長風草浪安居宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -181, home_y: -248, home_name: "牛埔・長風草浪安居宅", home_stay_activity: "正在牛埔・長風草浪安居宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -181, home_y: -248, home_name: "牛埔・長風草浪安居宅", home_stay_activity: "正在牛埔・長風草浪安居宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
@@ -5158,25 +5158,25 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -179, home_y: -242, home_name: "牛埔・草甸石基暖屋一號", home_stay_activity: "正在牛埔・草甸石基暖屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -179, home_y: -242, home_name: "牛埔・草甸石基暖屋一號", home_stay_activity: "正在牛埔・草甸石基暖屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -179, home_y: -242, home_name: "牛埔・草甸石基暖屋一號", home_stay_activity: "正在牛埔・草甸石基暖屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -179, home_y: -242, home_name: "牛埔・草甸石基暖屋一號", home_stay_activity: "正在牛埔・草甸石基暖屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
@@ -5230,19 +5230,19 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -180, home_y: -242, home_name: "牛埔・重角原牛擠乳工舍", home_stay_activity: "正在牛埔・重角原牛擠乳工舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -183, work_y: -246, work_name: "牛埔・牧野歇腳旅社", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -183, work_y: -246, work_name: "牛埔・牧野歇腳旅社", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -177, errand_y: -246, errand_name: "牛埔・牧畜交易市集", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧畜交易市集與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -180, home_y: -242, home_name: "牛埔・重角原牛擠乳工舍", home_stay_activity: "正在牛埔・重角原牛擠乳工舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -183, work_y: -246, work_name: "牛埔・牧野歇腳旅社", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -183, work_y: -246, work_name: "牛埔・牧野歇腳旅社", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -177, errand_y: -246, errand_name: "牛埔・牧畜交易市集", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧畜交易市集與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -180, home_y: -242, home_name: "牛埔・重角原牛擠乳工舍", home_stay_activity: "正在牛埔・重角原牛擠乳工舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -183, work_y: -246, work_name: "牛埔・牧野歇腳旅社", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -183, work_y: -246, work_name: "牛埔・牧野歇腳旅社", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -177, errand_y: -246, errand_name: "牛埔・牧畜交易市集", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧畜交易市集與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
@@ -5296,13 +5296,13 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -177, home_y: -243, home_name: "牛埔・牧家牛埔硬乳酪發酵老宅", home_stay_activity: "正在牛埔・牧家牛埔硬乳酪發酵老宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -246, work_name: "牛埔・牧畜交易市集", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -246, work_name: "牛埔・牧畜交易市集", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -177, errand_y: -244, errand_name: "牛埔・草甸脈絡調理診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・草甸脈絡調理診所與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -177, home_y: -243, home_name: "牛埔・牧家牛埔硬乳酪發酵老宅", home_stay_activity: "正在牛埔・牧家牛埔硬乳酪發酵老宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -177, work_y: -246, work_name: "牛埔・牧畜交易市集", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -177, work_y: -246, work_name: "牛埔・牧畜交易市集", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -177, errand_y: -244, errand_name: "牛埔・草甸脈絡調理診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・草甸脈絡調理診所與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
@@ -5338,13 +5338,13 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
     },
     WenyaoHouseholdSlot {
         home_x: -177, home_y: -247, home_name: "牛埔・原生甜苜蓿草種子庫居", home_stay_activity: "正在牛埔・原生甜苜蓿草種子庫居堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -183, work_y: -244, work_name: "牛埔・羊毛與乳酪精製坊", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -183, work_y: -244, work_name: "牛埔・羊毛與乳酪精製坊", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -244, errand_name: "牛埔・羊毛與乳酪精製坊", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・羊毛與乳酪精製坊與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -177, home_y: -247, home_name: "牛埔・原生甜苜蓿草種子庫居", home_stay_activity: "正在牛埔・原生甜苜蓿草種子庫居堂屋與同住家人圍坐話家常、檢整明日作息器物",
-        work_x: -183, work_y: -244, work_name: "牛埔・羊毛與乳酪精製坊", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        work_x: -183, work_y: -244, work_name: "牛埔・羊毛與乳酪精製坊", work_purpose: "放牧重角水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
         errand_x: -183, errand_y: -244, errand_name: "牛埔・羊毛與乳酪精製坊", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・羊毛與乳酪精製坊與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
@@ -6306,7 +6306,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -180, home_y: -140, home_name: "牛埔・牧草長坡獵戶木屋", home_stay_activity: "正在牛埔・牧草長坡獵戶木屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -183, work_y: -201, work_name: "長風草甸・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在長風草甸一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -180, errand_y: -245, errand_name: "大圳頭・農產集散大市集", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在大圳頭・農產集散大市集將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -180, home_y: -140, home_name: "牛埔・牧草長坡獵戶木屋", home_stay_activity: "正在牛埔・牧草長坡獵戶木屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -6414,7 +6414,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -60, home_y: -120, home_name: "紅土崁・果園護林木舍", home_stay_activity: "正在紅土崁・果園護林木舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -83, work_y: -66, work_name: "古河巨木林・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在古河巨木林一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -2, errand_y: -1, errand_name: "文曜・西門車馬聯運總站", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在文曜・西門車馬聯運總站將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -60, home_y: -120, home_name: "紅土崁・果園護林木舍", home_stay_activity: "正在紅土崁・果園護林木舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -6522,7 +6522,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -60, home_y: -120, home_name: "紅土崁・赤石採礦工寮", home_stay_activity: "正在紅土崁・赤石採礦工寮燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -88, work_y: -186, work_name: "赤石坡・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在赤石坡一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -180, errand_y: -245, errand_name: "大圳頭・西南原農具與百工坊", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在大圳頭・西南原農具與百工坊將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -60, home_y: -120, home_name: "紅土崁・赤石採礦工寮", home_stay_activity: "正在紅土崁・赤石採礦工寮燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -6630,7 +6630,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -320, home_y: -40, home_name: "烏石鼻・岬角獵海石屋", home_stay_activity: "正在烏石鼻・岬角獵海石屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -343, work_y: -146, work_name: "落日岬・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在落日岬一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -261, errand_y: 161, errand_name: "風舶角・海事總商行與船貨契據所", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在風舶角・海事總商行與船貨契據所將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -320, home_y: -40, home_name: "烏石鼻・岬角獵海石屋", home_stay_activity: "正在烏石鼻・岬角獵海石屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -6738,7 +6738,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -360, home_y: 95, home_name: "風櫃尾・防風石砌漁舍", home_stay_activity: "正在風櫃尾・防風石砌漁舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -363, work_y: 174, work_name: "驚濤岩岸・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在驚濤岩岸一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -263, errand_y: 164, errand_name: "風舶角・港區魚獲水產交易行", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在風舶角・港區魚獲水產交易行將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -360, home_y: 95, home_name: "風櫃尾・防風石砌漁舍", home_stay_activity: "正在風櫃尾・防風石砌漁舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -6846,7 +6846,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -259, home_y: 163, home_name: "風舶角・海員避風客舍", home_stay_activity: "正在風舶角・海員避風客舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -303, work_y: 254, work_name: "巨藻淺灣・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在巨藻淺灣一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -263, errand_y: 164, errand_name: "風舶角・港區魚獲水產交易行", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在風舶角・港區魚獲水產交易行將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 163, home_name: "風舶角・海員避風客舍", home_stay_activity: "正在風舶角・海員避風客舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -6954,7 +6954,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -320, home_y: -40, home_name: "烏石鼻・玄武岩岸漁寮", home_stay_activity: "正在烏石鼻・玄武岩岸漁寮燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -263, work_y: -26, work_name: "黑石灣・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在黑石灣一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -295, errand_y: 195, errand_name: "風舶嶼・島嶼乾貨海味行", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在風舶嶼・島嶼乾貨海味行將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -320, home_y: -40, home_name: "烏石鼻・玄武岩岸漁寮", home_stay_activity: "正在烏石鼻・玄武岩岸漁寮燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7062,7 +7062,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -45, home_y: 55, home_name: "老堰頭・古道護林寮舍", home_stay_activity: "正在老堰頭・古道護林寮舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -133, work_y: 74, work_name: "西麓林道・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在西麓林道一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -1, errand_y: 1, errand_name: "文曜・三水總商行", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在文曜・三水總商行將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -45, home_y: 55, home_name: "老堰頭・古道護林寮舍", home_stay_activity: "正在老堰頭・古道護林寮舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7170,7 +7170,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 25, home_y: 210, home_name: "北嶺腳・溪谷獵戶木屋", home_stay_activity: "正在北嶺腳・溪谷獵戶木屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: 57, work_y: 154, work_name: "清泉溪谷・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在清泉溪谷一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 95, errand_y: 95, errand_name: "半嶺鎮・山產皮貨交割場", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在半嶺鎮・山產皮貨交割場將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 25, home_y: 210, home_name: "北嶺腳・溪谷獵戶木屋", home_stay_activity: "正在北嶺腳・溪谷獵戶木屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7278,7 +7278,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 25, home_y: 210, home_name: "北嶺腳・伐木腦丁寮舍", home_stay_activity: "正在北嶺腳・伐木腦丁寮舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -3, work_y: 234, work_name: "翠冠巨木林・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在翠冠巨木林一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 95, errand_y: 95, errand_name: "半嶺鎮・高山樟腦與木材行", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在半嶺鎮・高山樟腦與木材行將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 25, home_y: 210, home_name: "北嶺腳・伐木腦丁寮舍", home_stay_activity: "正在北嶺腳・伐木腦丁寮舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7386,7 +7386,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 160, home_y: 210, home_name: "霜林口・雲杉巡山木屋", home_stay_activity: "正在霜林口・雲杉巡山木屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: 77, work_y: 294, work_name: "北坡雲杉林・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在北坡雲杉林一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 95, errand_y: 95, errand_name: "半嶺鎮・山產皮貨交割場", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在半嶺鎮・山產皮貨交割場將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 160, home_y: 210, home_name: "霜林口・雲杉巡山木屋", home_stay_activity: "正在霜林口・雲杉巡山木屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7494,7 +7494,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 0, home_y: -320, home_name: "南哨・鎮南獵戶石屋", home_stay_activity: "正在南哨・鎮南獵戶石屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -3, work_y: -346, work_name: "淺澤泥口・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在淺澤泥口一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 0, errand_y: -320, errand_name: "南哨・邊境皮毛藥材行", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在南哨・邊境皮毛藥材行將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 0, home_y: -320, home_name: "南哨・鎮南獵戶石屋", home_stay_activity: "正在南哨・鎮南獵戶石屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7602,7 +7602,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: -74, home_y: -280, home_name: "水尾寮・浮水蘆荻安樂居", home_stay_activity: "正在水尾寮・浮水蘆荻安樂居燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -123, work_y: -326, work_name: "白茫洲・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在白茫洲一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: -180, errand_y: -245, errand_name: "大圳頭・百草烘藥與乾貨坊", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在大圳頭・百草烘藥與乾貨坊將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: -74, home_y: -280, home_name: "水尾寮・浮水蘆荻安樂居", home_stay_activity: "正在水尾寮・浮水蘆荻安樂居燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7710,7 +7710,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 0, home_y: -320, home_name: "南哨・深潭採藥寮舍", home_stay_activity: "正在南哨・深潭採藥寮舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: 117, work_y: -326, work_name: "貼山深潭・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在貼山深潭一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 0, errand_y: -320, errand_name: "南哨・南哨脈絡解毒診所", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在南哨・南哨脈絡解毒診所將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 0, home_y: -320, home_name: "南哨・深潭採藥寮舍", home_stay_activity: "正在南哨・深潭採藥寮舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7818,7 +7818,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 0, home_y: -320, home_name: "南哨・青籠戍邊營房", home_stay_activity: "正在南哨・青籠戍邊營房燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -3, work_y: -456, work_name: "青籠關・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在青籠關一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 0, errand_y: -320, errand_name: "南哨・軍需鐵具與糧秣庫", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在南哨・軍需鐵具與糧秣庫將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 0, home_y: -320, home_name: "南哨・青籠戍邊營房", home_stay_activity: "正在南哨・青籠戍邊營房燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -7926,7 +7926,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 145, home_y: 25, home_name: "三號坑口・選礦匠人石屋", home_stay_activity: "正在三號坑口・選礦匠人石屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: 177, work_y: 34, work_name: "西嶺礦谷・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在西嶺礦谷一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 95, errand_y: 95, errand_name: "半嶺鎮・百工鐵器鍛造坊", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在半嶺鎮・百工鐵器鍛造坊將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 145, home_y: 25, home_name: "三號坑口・選礦匠人石屋", home_stay_activity: "正在三號坑口・選礦匠人石屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -8034,7 +8034,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 160, home_y: 210, home_name: "霜林口・東崖採燕寮舍", home_stay_activity: "正在霜林口・東崖採燕寮舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: 317, work_y: 194, work_name: "東海峭壁・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在東海峭壁一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 95, errand_y: 95, errand_name: "半嶺鎮・山海珍品商行", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在半嶺鎮・山海珍品商行將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 160, home_y: 210, home_name: "霜林口・東崖採燕寮舍", home_stay_activity: "正在霜林口・東崖採燕寮舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -8142,7 +8142,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 160, home_y: 210, home_name: "霜林口・雪線獵人木屋", home_stay_activity: "正在霜林口・雪線獵人木屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: 177, work_y: 314, work_name: "雲腰雪林・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在雲腰雪林一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 95, errand_y: 95, errand_name: "半嶺鎮・山產皮貨交割場", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在半嶺鎮・山產皮貨交割場將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 160, home_y: 210, home_name: "霜林口・雪線獵人木屋", home_stay_activity: "正在霜林口・雪線獵人木屋燈下擦拭隨身獵具與山刀、整理明日入山行囊",
@@ -8250,7 +8250,7 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         home_x: 25, home_y: 210, home_name: "北嶺腳・雪嶺嚮導山舍", home_stay_activity: "正在北嶺腳・雪嶺嚮導山舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",
         work_x: -3, work_y: 414, work_name: "白塔雪巔・合社獵團駐點", work_purpose: "劈荊斬棘開闢獵徑", work_stay_activity: "正在白塔雪巔一帶正揮刀劈開帶刺咬人貓與糾結葛藤，為獵團開闢林間推進路線",
         errand_x: 1, errand_y: 1, errand_name: "文曜・文曜學院格物館", errand_purpose: "交割山海物產與採買補給", errand_stay_activity: "正在文曜・文曜學院格物館將採獲的山海物產過磅交割換取鎂幣，並添購粗鹽與乾糧",
-        attire_line: "身穿防刺藤甲背心，手執加厚精鍛台灣山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
+        attire_line: "身穿防刺藤甲背心，手執加厚精鍛闊葉山刀與藤盾", brief_tag: "合社獵團・開山刀手", morning_hour: 5, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
         home_x: 25, home_y: 210, home_name: "北嶺腳・雪嶺嚮導山舍", home_stay_activity: "正在北嶺腳・雪嶺嚮導山舍燈下擦拭隨身獵具與山刀、整理明日入山行囊",

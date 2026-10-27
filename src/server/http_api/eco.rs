@@ -389,7 +389,7 @@ pub async fn eco_entities() -> impl IntoResponse {
         });
     }
 
-    // 補入 19 處獵場的 1,805 隻《台灣山海經》全島自然棲地生靈（消除同心圓，按真實疆域進行藍噪聲 Poisson-disc 與獸群聚落分布）
+    // 補入 19 處獵場的 1,805 隻《白塔山海志》全島自然棲地生靈（消除同心圓，按真實疆域進行藍噪聲 Poisson-disc 與獸群聚落分布）
     let time_tick = (crate::game::now_unix() / 180) as i64;
     for (z_idx, &(zone_name, _, _)) in crate::game::CANONICAL_HUNTING_ZONES.iter().enumerate() {
         let slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);

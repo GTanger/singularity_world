@@ -125,7 +125,7 @@ pub fn is_npc_paused_for_interaction(entity_id: &str) -> bool {
 pub enum HuntingPartyPhase {
     /// 階段一：於聚落獵寮／駐點吹角號召揪團集結
     Rallying,
-    /// 階段二：尋跡引犬推進、鎖定活體《台灣山海經》獵物並展開四面戰術包抄合圍
+    /// 階段二：尋跡引犬推進、鎖定活體山海獵物並展開四面戰術包抄合圍
     SurroundingPrey,
     /// 階段三：合圍收網、齊力搏殺獵物並按見者有份古禮分鹿割皮
     TakedownAndSplit,
@@ -267,7 +267,7 @@ fn surround_tactical_slot(
             -1,
             0,
             "西翼持盾封堵位",
-            "手執精鍛台灣山刀與藤盾死守西側林間缺口，防備獵物突圍",
+            "手執精鍛闊葉山刀與藤盾死守西側林間缺口，防備獵物突圍",
         ),
         (
             1,
@@ -2864,7 +2864,7 @@ impl Store {
         moves
     }
     /// 同步並推進全島 19 處山海獵場的「合社圍獵小隊黑板（`LIVE_HUNTING_PARTIES`）」：
-    /// 涵蓋吹角揪團集結 -> 鎖定活體《台灣山海經》獵物座標四面戰術包抄合圍 -> 合擊獵殺與見者有份分鹿割皮 -> 結伴赴市交割分紅。
+    /// 涵蓋吹角揪團集結 -> 鎖定活體山海獵物座標四面戰術包抄合圍 -> 合擊獵殺與見者有份分鹿割皮 -> 結伴赴市交割分紅。
     pub fn sync_and_advance_hunting_parties(&self, grid: &crate::grid::SquareGrid) {
         let now_unix = crate::game::now_unix();
         let hour = current_game_hour();
@@ -3229,14 +3229,28 @@ impl Store {
                     if at_market >= 2 || elapsed >= 36 {
                         let members_clone = party.member_ids.clone();
                         let leader_name = party.leader_name.clone();
+                        let l_id = party.prey_loot_id.clone();
                         let l_name = party.prey_loot_name.clone();
                         let mkt_name = party.market_name.clone();
+                        let base_price = match party.prey_tier {
+                            1 => 36,
+                            2 => 24,
+                            _ => 16,
+                        };
                         let bounty = match party.prey_tier {
                             1 => 52,
                             2 => 36,
                             _ => 26,
                         };
                         std::thread::spawn(move || {
+                            let actor_tag = format!("【{}】合社獵團", leader_name);
+                            let _ = crate::game::object_ecology::record_settlement_market_trade(
+                                &mkt_name,
+                                &l_id,
+                                base_price,
+                                2,
+                                &actor_tag,
+                            );
                             let _ = crate::game::object_ecology::run_npc_autonomous_production_step(
                                 "",
                                 &mkt_name,
@@ -3263,6 +3277,14 @@ impl Store {
                             }
                         });
                         // 交割分紅完畢：臨時響應號召之聚落居民帶著分紅與獵獲返回各自生活，核心獵團重返駐點準備下一輪號召
+                        for mid in &party.member_ids {
+                            if !party.core_member_ids.contains(mid)
+                                && let Some(st) = states.get_mut(mid)
+                            {
+                                st.dest = st.current;
+                                st.stay_ticks_remaining = 0;
+                            }
+                        }
                         party.member_ids = party.core_member_ids.clone();
                         party.phase = HuntingPartyPhase::Rallying;
                         party.last_phase_change_unix = now_unix;
@@ -3757,8 +3779,8 @@ impl Store {
                             )
                         && cur_stock < tgt_stock
                     {
-                        // 根據所在聚落位置，優先響應鄰近《台灣山海經》獵場「合社獵團」的吹角號召加入四面圍獵分紅，或赴獵場採辦急缺物產！
-                        // 根據所在聚落位置與個體雜湊，分散響應周邊 19 座《台灣山海經》獵場「合社獵團」或赴獵場廣域棲地採辦急缺物產（杜絕擠往單一座標）
+                        // 根據所在聚落位置，優先響應鄰近山海獵場「合社獵團」的吹角號召加入四面圍獵分紅，或赴獵場採辦急缺物產！
+                        // 根據所在聚落位置與個體雜湊，分散響應周邊 19 座山海獵場「合社獵團」或赴獵場廣域棲地採辦急缺物產（杜絕擠往單一座標）
                         let target_party_zone = if slot.home_y > 140 {
                             ["清泉溪谷", "翠冠巨木林", "北坡雲杉林", "雲腰雪林", "白塔雪巔"]
                                 [(h as usize) % 5]
