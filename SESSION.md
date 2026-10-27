@@ -45,6 +45,9 @@
    - **百工藝相四維實質驅動日常活計（`src/game/object_ecology.rs` ＆ `src/server/handler/inventory.rs`）**：公開 `entity_total_craft_dims(pid)`（匯總星盤套路與手持銘文器物之四維藝境加成），實質驅動工坊煉製器物異變率加成（`forge / culinary`）、地景物產採集額外完好收穫與工具磨合／捲刃提醒（`harvest` + `harvest_from_world_object`），以及營火現煮山海名饌滋養增幅與本機 LLM 高光描寫（`try_camp_shanhai_cooking` $\to$ `compose_craft_highlight_from_data`）。
    - **借物歸還器況檢驗與師承同道折讓（`src/server/action/borrow.rs` ＆ `src/server/action/trade.rs`）**：歸還借用器物時自動檢驗 `VesselCondition`——若捲刃待修則掌事皺眉斥責並開啟 `repair_tool` 義務；若经推磨雪亮歸還則大加讚賞並累積《百工惜器訣》師承烙印。身具【師承烙印】或高熟識度者於市井交易享有同道熟客折讓。
    - **行旅涉險與部位傷勢連動（`src/server/handler/movement.rs`）**：野外跋涉自然演進《山林長息》／《海潮綿息》；身負「下盤扭傷」於崎嶇地勢會觸發足踝隱痛提醒，而高 `wayfare` 藝相或長息底色則觸發「長息輕身」回氣減耗。82 項單元與整合測試全數通過。
+9. **「設計師上帝視角全地圖（`/world_atlas`）」全面對齊台灣山海經活世界並完成 `ITERATE -> PASS` 視覺驗收**：
+   - **後端三端點擴充（`src/server/http_api/eco.rs`、`src/server/run.rs`）**：`/api/eco/map` 完整供應 `14,424` 格地塊與手寫描寫 `d` 及地面遺落物；`/api/eco/entities` 整合全島在場人物與 19 獵場 57 隻《台灣山海經》生靈（含 `breath_habit` 內息底色、`held_vessel` 器物人器磨合・鋒刃器況／可剝取山海靈材、`afflictions` 部位傷勢、`lineage` 師承烙印）並消弭鎖重入死結；新增 `/api/eco/pulse` 供應 15 聚落供需急徵行情與 19 獵場霸主【山海異兆】及天地氣源。
+   - **前端上帝全地圖與 `ITERATE -> PASS` 視覺驗收（`web/world_atlas.html`、`src/game/room.rs`）**：修正 `room.rs` 殘留舊奇幻獸名與古河巨木林異兆錯配，全面正名為《台灣山海經》物種（長風四目水鹿王、古河樟林雲豹、赤石鯪鯉穿山甲、淺山錢紋石虎、大武百步蛇王、寒潭千年花斑鱸鰻、霧林黑長尾帝雉、雪巔霜冠大水鹿等）；將 `#inspector-panel` 改為右下角停靠（`right: 68px; bottom: 18px`）並於全島總覽預設收合，確保 `800×1,000` 全島南北視野 100% 無遮擋；新增同格無人時自動調閱鄰近 12 格內在場人物與山海生靈，通過桌面版（`1520×920`）與行動版（`430×932`）實機截圖驗收。
 ## 二、 關鍵檔案與正典錨點
 
 - **Rust 實機代碼**：
@@ -59,4 +62,4 @@
   - `/home/tanger/Projects/singularity_world/docs/design/world/current-background-setting.md`
 
 ## 三、 下一步接續提示 (Next Cue)
-- 實機服務 `singularity.service` 已編譯重啟為最新 `--release` 版本；九大有機活世界系統、`NPC = 玩家` 自主器況修繕與 `Look` 外顯、三棒師承請益接力、以及星盤【百工藝相】四維（`forge / culinary / harvest / wayfare`）與借物／市井／行旅連動已全數閉環落地。
+- 實機服務 `singularity.service` 已編譯重啟為最新 `--release` 版本；九大有機活世界系統、百工藝相四維連動與設計師上帝視角全地圖（`http://127.0.0.1:1721/world_atlas`）皆已完成端到端實裝與實機視覺驗收。
