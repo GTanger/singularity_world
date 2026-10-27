@@ -421,7 +421,19 @@ pub fn get_grid_room_view(
             });
         }
     }
-    let entities = filter_room_entities(db::get_entities_at_grid(x, y, game_hour)?);
+    let mut entities = filter_room_entities(db::get_entities_at_grid(x, y, game_hour)?);
+    if !grid.has_explicit_cell(coord)
+        && !matches!(
+            cell.terrain,
+            crate::grid::Terrain::Wall | crate::grid::Terrain::WaterDeep
+        )
+        && (x.abs() > 18 || y.abs() > 18)
+        && !entities.iter().any(|e| e.kind == crate::entity::EntityKind::Npc)
+    {
+        if let Some(amb) = ensure_ambient_npc_at_grid(x, y, &room.name) {
+            entities.push(amb);
+        }
+    }
      let vendor_objs = super::player_scene::dynamic_vendor_objects_for_entities(&entities);
      for v_obj in vendor_objs {
          if !room_objs.iter().any(|o| o.id == v_obj.id) {

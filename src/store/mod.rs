@@ -94,6 +94,9 @@ pub fn get_store() -> Option<Arc<RwLock<Store>>> {
 }
 
 pub fn get_db_pool() -> Option<sql::DbPool> {
+    if let Some(p) = crate::pg::pool() {
+        return Some((*p).clone());
+    }
     if let Some(st) = get_store() {
         st.read().db_pool.clone()
     } else {

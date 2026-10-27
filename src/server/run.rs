@@ -108,6 +108,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         // 生態 API
         .route("/api/eco/map", get(http_api::eco_map))
         .route("/api/eco/entities", get(http_api::eco_entities))
+        .route("/api/eco/pulse", get(http_api::eco_pulse))
         // 靜態設定 JSON（terrain_ambience 等）
         .nest_service("/data/config", ServeDir::new("data/config"))
         .with_state(state.clone())

@@ -1381,6 +1381,21 @@ pub fn claim_ground_dropped_items(gx: i32, gy: i32) -> Vec<(String, String, i32)
     claimed
 }
 
+pub fn peek_ground_dropped_items(gx: i32, gy: i32) -> Vec<(String, String, i32)> {
+    ensure_aux_pg_tables();
+    GROUND_DROPS_CACHE
+        .read()
+        .unwrap()
+        .get(&(gx, gy))
+        .cloned()
+        .unwrap_or_default()
+}
+
+pub fn snapshot_all_ground_dropped_items() -> std::collections::HashMap<(i32, i32), Vec<(String, String, i32)>> {
+    ensure_aux_pg_tables();
+    GROUND_DROPS_CACHE.read().unwrap().clone()
+}
+
 pub fn save_transcribed_manual(record: &TranscribedManualRecord) {
     ensure_aux_pg_tables();
     {

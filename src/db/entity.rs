@@ -13,6 +13,14 @@ use super::{
 
 /// 依 id 查詢實體。
 pub fn get_entity(id: &str) -> anyhow::Result<Option<Character>> {
+    if let Some(rest) = id.strip_prefix("ambient_") {
+        let mut parts = rest.splitn(2, '_');
+        if let (Some(xs), Some(ys)) = (parts.next(), parts.next())
+            && let (Ok(x), Ok(y)) = (xs.parse::<i32>(), ys.parse::<i32>())
+        {
+            return Ok(crate::game::ensure_ambient_npc_at_grid(x, y, ""));
+        }
+    }
     let arc = store::get_store().ok_or(ErrNoStore)?;
     // 快路徑：player/非 NPC 只需 read lock（多讀可並行，不卡 login 同時 writer）
     // 舊版全拿 write lock 是因為 NPC display_name cache update 的副作用，
