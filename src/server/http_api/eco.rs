@@ -411,10 +411,16 @@ pub async fn eco_entities() -> impl IntoResponse {
         ("雲腰雪林", 180, 320),
         ("白塔雪巔", 0, 420),
     ];
-    let roam_step = ((crate::game::now_unix() / 180) % 3) as i32 - 1;
-    for &(zone_name, cx, cy) in HUNTING_ANCHORS {
-        // 1. 鎮場霸主（預設隱匿・見兆尋跡顯形）：每處獵場 1 隻潛伏於核心地脈
-        if let Some(apex) = crate::game::ensure_ambient_npc_at_grid(cx + 1, cy - 1, "__apex__") {
+    let time_tick = (crate::game::now_unix() / 180) as i32;
+    let roam_dx = (time_tick % 3) - 1;
+    let roam_dy = ((time_tick / 3) % 3) - 1;
+
+    for (z_idx, &(zone_name, cx, cy)) in HUNTING_ANCHORS.iter().enumerate() {
+        let apex_x = cx + 1;
+        let apex_y = cy - 1;
+
+        // 1. Tier 1 鎮場霸主（預設隱匿・見兆尋跡顯形）：每座獵場 1 頭潛伏於核心地脈（全島 19 頭，佔山海生靈 1.25%）
+        if let Some(apex) = crate::game::ensure_ambient_npc_at_grid(apex_x, apex_y, "__apex__") {
             let held_vessel = if let Some((_lid, loot_name, shanhai_note)) =
                 crate::game::ambient_creature_loot(&apex.display_title)
             {
@@ -423,13 +429,16 @@ pub async fn eco_entities() -> impl IntoResponse {
                 String::new()
             };
             entities.push(EcoEntity {
-                id: format!("apex_{}_{}", cx + 1, cy - 1),
+                id: format!("apex_{z_idx}_{apex_x}_{apex_y}"),
                 name: apex.display_title,
                 title: format!("{zone_name}・隱匿鎮場霸主（尋跡顯形）"),
-                x: cx + 1,
-                y: cy - 1,
+                x: apex_x,
+                y: apex_y,
                 kind: "shanhai_apex".to_string(),
-                activity: format!("【隱匿潛伏・百鳥屏息】{}（平時藏跡於林莽深處，須查探【新鮮霸主獸跡】方會破霧顯形）", apex.current_activity),
+                activity: format!(
+                    "【隱匿潛伏・百鳥屏息】{}（平時藏跡於林莽深處，須查探【新鮮霸主獸跡】方會破霧顯形）",
+                    apex.current_activity
+                ),
                 breath_habit: "山林長息".to_string(),
                 held_vessel,
                 afflictions: Vec::new(),
@@ -437,58 +446,126 @@ pub async fn eco_entities() -> impl IntoResponse {
             });
         }
 
-        // 2. 尋常物種與山海小怪（格內顯形・動態游走）：每處獵場 3 隻顯形活動的小怪／中型獸群
-        for (idx, &(dx, dy)) in [(0, 0), (-3, 2), (4, -3)].iter().enumerate() {
-            let gx = cx + dx + if idx == 0 { 0 } else { roam_step };
-            let gy = cy + dy - if idx == 1 { roam_step } else { 0 };
-            let mut amb_opt = crate::game::ensure_ambient_npc_at_grid(gx, gy, zone_name);
-            if amb_opt
-                .as_ref()
-                .and_then(|a| crate::game::ambient_creature_loot(&a.display_title))
-                .is_none()
-            {
-                for &(ox, oy) in &[(2, 2), (-2, -2), (3, -2), (-4, 3)] {
-                    if let Some(candidate) =
-                        crate::game::ensure_ambient_npc_at_grid(gx + ox, gy + oy, zone_name)
-                        && crate::game::ambient_creature_loot(&candidate.display_title).is_some()
-                    {
-                        amb_opt = Some(candidate);
+        // 依據艾爾頓個體數量金字塔（Eltonian Pyramid of Numbers）與台灣山林生態調查比例：
+        // 每座獵場配置 79 隻顯形游走生靈（全島 19 獵場共 1,501 隻顯形生靈 + 19 頭隱匿霸主 = 1,520 隻山海生靈）：
+        // - Tier 2 次級掠食／珍稀靈獸（5 隻 / 獵場，全島 95 隻，6.25%，霸主:掠食 = 1:5）
+        // - Tier 3 尋常中型獸群（18 隻 / 獵場，分 6 群結伴游走，全島 342 隻，22.50%，霸主:中型獸群 = 1:18）
+        // - Tier 4 尋常小怪與靈禽（56 隻 / 獵場，含 28 隻小型奇獸/甲殼 + 28 隻山海靈禽/樹蛙，全島 1,064 隻，70.00%，霸主:小怪 = 1:56）
+        let mut push_pyramid_fauna =
+            |slot_idx: usize, raw_dx: i32, raw_dy: i32, tier_tag: &str, kind_str: &str, tier_label: &str, act_prefix: &str| {
+                let mut dx = raw_dx + roam_dx;
+                let mut dy = raw_dy + roam_dy;
+                // 避開鎮場霸主周圍 2 格的「百鳥屏息圈」（小怪走避，形成視覺可見的威壓空白圈）
+                if (cx + dx - apex_x).abs() <= 2 && (cy + dy - apex_y).abs() <= 2 {
+                    dx += if dx >= 0 { 3 } else { -3 };
+                    dy += if dy >= 0 { 3 } else { -3 };
+                }
+                let mut chosen = None;
+                // 若海岬或峭壁地塊落入深水/岩壁，則向獵場中心收斂尋找合法棲地格
+                for scale in [100, 75, 50, 25, 0] {
+                    let tx = (cx + (dx * scale) / 100).clamp(-395, 395);
+                    let ty = (cy + (dy * scale) / 100).clamp(-495, 495);
+                    if (tx - apex_x).abs() <= 1 && (ty - apex_y).abs() <= 1 {
+                        continue;
+                    }
+                    if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(tx, ty, tier_tag) {
+                        chosen = Some((tx, ty, amb));
                         break;
                     }
                 }
+                if chosen.is_none() {
+                    for &(ox, oy) in &[(-3, 2), (4, -3), (-4, -2), (3, 4), (-2, 4)] {
+                        let tx = (cx + ox).clamp(-395, 395);
+                        let ty = (cy + oy).clamp(-495, 495);
+                        if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(tx, ty, tier_tag) {
+                            chosen = Some((tx, ty, amb));
+                            break;
+                        }
+                    }
+                }
+                if let Some((gx, gy, amb)) = chosen {
+                    let held_vessel = if let Some((_lid, loot_name, shanhai_note)) =
+                        crate::game::ambient_creature_loot(&amb.display_title)
+                    {
+                        format!("可剝取【{loot_name}】｜{shanhai_note}")
+                    } else {
+                        String::new()
+                    };
+                    entities.push(EcoEntity {
+                        id: format!("shanhai_{z_idx}_{slot_idx}_{gx}_{gy}"),
+                        name: amb.display_title,
+                        title: format!("{zone_name}・{tier_label}"),
+                        x: gx,
+                        y: gy,
+                        kind: kind_str.to_string(),
+                        activity: format!("{act_prefix}{}", amb.current_activity),
+                        breath_habit: "山林長息".to_string(),
+                        held_vessel,
+                        afflictions: Vec::new(),
+                        lineage: Vec::new(),
+                    });
+                }
+            };
+
+        // 2. Tier 2 次級掠食猛獸／珍獸（5 隻 / 獵場，巡弋於中圈）
+        const TIER2_OFFSETS: &[(i32, i32)] = &[(-6, 5), (7, 4), (-8, -6), (6, -7), (0, 9)];
+        for (i, &(dx, dy)) in TIER2_OFFSETS.iter().enumerate() {
+            push_pyramid_fauna(
+                i,
+                dx,
+                dy,
+                "__tier2__",
+                "shanhai_predator",
+                "顯形次級掠食／珍獸",
+                "【格內顯形・伏行巡獵】",
+            );
+        }
+
+        // 3. Tier 3 尋常中型獸群（18 隻 / 獵場，分為 6 群、每群 3 隻結伴遷徙）
+        const HERD_CENTERS: &[(i32, i32)] = &[
+            (-11, 4),
+            (10, 8),
+            (-9, -11),
+            (12, -9),
+            (-4, 14),
+            (4, -14),
+        ];
+        const HERD_MEMBER_SHIFTS: &[(i32, i32)] = &[(0, 0), (1, 0), (0, 1)];
+        for (h_idx, &(hx, hy)) in HERD_CENTERS.iter().enumerate() {
+            for (m_idx, &(mx, my)) in HERD_MEMBER_SHIFTS.iter().enumerate() {
+                let slot = 5 + h_idx * 3 + m_idx;
+                push_pyramid_fauna(
+                    slot,
+                    hx + mx,
+                    hy + my,
+                    "__tier3__",
+                    "shanhai_herd",
+                    "顯形尋常中型獸群",
+                    "【格內顯形・結群游走】",
+                );
             }
-            if let Some(amb) = amb_opt {
-                let (kind, title, held_vessel, breath) = if let Some((_lid, loot_name, shanhai_note)) =
-                    crate::game::ambient_creature_loot(&amb.display_title)
-                {
-                    (
-                        "shanhai_beast".to_string(),
-                        format!("{zone_name}・顯形尋常小怪／獸群"),
-                        format!("可剝取【{loot_name}】｜{shanhai_note}"),
-                        "山林長息".to_string(),
-                    )
-                } else {
-                    (
-                        "npc".to_string(),
-                        format!("{zone_name}・行獵旅人"),
-                        String::new(),
-                        "山林長息".to_string(),
-                    )
-                };
-                entities.push(EcoEntity {
-                    id: format!("ambient_{gx}_{gy}"),
-                    name: amb.display_title,
-                    title,
-                    x: gx,
-                    y: gy,
-                    kind,
-                    activity: format!("【格內顯形・動態游走】{}", amb.current_activity),
-                    breath_habit: breath,
-                    held_vessel,
-                    afflictions: Vec::new(),
-                    lineage: Vec::new(),
-                });
-            }
+        }
+
+        // 4. Tier 4 尋常小怪與山海靈禽（56 隻 / 獵場：28 隻小型奇獸/甲殼 + 28 隻山海靈禽/樹蛙，以黃金角螺旋散佈於半徑 4..30 格）
+        for k in 0..56usize {
+            let angle = (k as f64) * 2.399963229728653 + (z_idx as f64) * 0.47;
+            let radius = 4.0 + ((k + 1) as f64).sqrt() * 3.5;
+            let dx = (angle.cos() * radius).round() as i32;
+            let dy = (angle.sin() * radius).round() as i32;
+            let (tier_tag, tier_label) = if k % 2 == 0 {
+                ("__tier4a__", "顯形尋常小怪（奇獸／甲殼）")
+            } else {
+                ("__tier4b__", "顯形尋常小怪（靈禽／兩棲）")
+            };
+            push_pyramid_fauna(
+                23 + k,
+                dx,
+                dy,
+                tier_tag,
+                "shanhai_beast",
+                tier_label,
+                "【格內顯形・漫山游走】",
+            );
         }
     }
 

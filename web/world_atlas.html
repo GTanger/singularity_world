@@ -3710,7 +3710,9 @@
 
           if (esx < -40 || esx > cw + 40 || esy < -40 || esy > ch + 40) continue;
           const hasApex = ents.some(e => e.kind === 'shanhai_apex');
-          const hasShanhai = ents.some(e => e.kind === 'shanhai_beast' || e.kind === 'shanhai_apex');
+          const hasPredator = ents.some(e => e.kind === 'shanhai_predator');
+          const hasHerd = ents.some(e => e.kind === 'shanhai_herd');
+          const hasShanhai = ents.some(e => e.kind && e.kind.startsWith('shanhai_'));
 
           if (zoom >= 14) {
             if (hasApex) {
@@ -3726,11 +3728,15 @@
               ctx.stroke();
               ctx.restore();
             }
-            // 微觀模式：於格子右上角繪製精緻人數/顯形小怪/隱匿霸主徽章
+            // 微觀模式：於格子右上角繪製精緻人數/小怪/獸群/掠食/隱匿霸主徽章
             const bx = esx + zoom * 0.32;
             const by = esy - zoom * 0.32;
             const br = Math.max(6, Math.min(9.5, zoom * 0.18));
-            ctx.fillStyle = hasApex ? '#8b5a2b' : (hasShanhai ? '#266141' : '#9e2a2b');
+            ctx.fillStyle = hasApex
+              ? '#8b5a2b'
+              : (hasPredator
+                ? '#a44a28'
+                : (hasHerd ? '#1f5c5c' : (hasShanhai ? '#266141' : '#9e2a2b')));
             ctx.beginPath();
             ctx.arc(bx, by, br, 0, Math.PI * 2);
             ctx.fill();
@@ -3741,12 +3747,24 @@
             ctx.fillStyle = '#fff';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            const badgeChar = hasApex ? '隱' : (hasShanhai && ents.length === 1 ? '獸' : String(ents.length));
+            const badgeChar = hasApex
+              ? '隱'
+              : (hasPredator
+                ? '猛'
+                : (hasHerd
+                  ? (ents.length > 1 ? `群${ents.length}` : '群')
+                  : (hasShanhai && ents.length === 1 ? '獸' : String(ents.length))));
             ctx.fillText(badgeChar, bx, by + 0.5);
           } else if (zoom >= 2.2) {
-            // 宏觀模式：人物為朱砂點，顯形小怪為翠玉點，隱匿霸主為琥珀金點
+            // 宏觀模式：人物為朱砂點，小怪為翠玉點，中型獸群為青黛點，次級掠食為赭紅點，隱匿霸主為琥珀金點
             const dotRadius = Math.max(1.8, Math.min(3.8, zoom * 1.2)) * pulse;
-            ctx.fillStyle = hasApex ? 'rgba(184, 134, 11, 0.85)' : (hasShanhai ? 'rgba(38, 97, 65, 0.72)' : 'rgba(158, 42, 43, 0.55)');
+            ctx.fillStyle = hasApex
+              ? 'rgba(184, 134, 11, 0.9)'
+              : (hasPredator
+                ? 'rgba(164, 74, 40, 0.8)'
+                : (hasHerd
+                  ? 'rgba(31, 92, 92, 0.78)'
+                  : (hasShanhai ? 'rgba(38, 97, 65, 0.7)' : 'rgba(158, 42, 43, 0.55)')));
             ctx.beginPath();
             ctx.arc(esx, esy, dotRadius, 0, Math.PI * 2);
             ctx.fill();
@@ -4023,11 +4041,13 @@
           box.style.cssText = 'padding:6px 8px;border:1px solid var(--border-warm);border-radius:4px;background:#fffdf9;margin-bottom:4px;font-size:0.75rem;line-height:1.4;cursor:pointer;';
           box.onclick = () => jumpTo(e.x, e.y, Math.max(zoom, 24));
           const isApex = e.kind === 'shanhai_apex';
-          const isBeast = e.kind === 'shanhai_beast' || isApex;
-          const icon = isApex ? '🐾' : (isBeast ? '🦌' : '👤');
+          const isPredator = e.kind === 'shanhai_predator';
+          const isHerd = e.kind === 'shanhai_herd';
+          const isBeast = Boolean(e.kind && e.kind.startsWith('shanhai_'));
+          const icon = isApex ? '🐾' : (isPredator ? '🦅' : (isHerd ? '🦌' : (isBeast ? '🐿️' : '👤')));
           const nearTag = isNearby ? `<span style="font-size:0.66rem;color:var(--ink-faint);margin-left:4px;">鄰近 (${e.x}, ${e.y})</span>` : '';
-          const badgeBg = isApex ? 'rgba(184,134,11,0.16)' : (isBeast ? 'rgba(38,97,65,0.12)' : 'rgba(139,90,43,0.12)');
-          const badgeFg = isApex ? '#7a5600' : (isBeast ? '#266141' : 'var(--copper)');
+          const badgeBg = isApex ? 'rgba(184,134,11,0.16)' : (isPredator ? 'rgba(164,74,40,0.14)' : (isHerd ? 'rgba(31,92,92,0.14)' : (isBeast ? 'rgba(38,97,65,0.12)' : 'rgba(139,90,43,0.12)')));
+          const badgeFg = isApex ? '#7a5600' : (isPredator ? '#a44a28' : (isHerd ? '#1f5c5c' : (isBeast ? '#266141' : 'var(--copper)')));
           const roleBadge = e.title ? `<span style="font-size:0.68rem;padding:1px 5px;border-radius:3px;background:${badgeBg};color:${badgeFg};margin-left:5px;">${e.title}</span>` : '';
           let metaPills = '';
           if (e.breath_habit) {
@@ -4444,43 +4464,115 @@
       if (!listEl) return;
       listEl.innerHTML = '';
       const q = (currentEntitySearchQuery || '').trim().toLowerCase();
-      const filtered = rawEntitiesList.filter(e => {
-        if (currentEntityFilterMode === 'shanhai' && e.kind !== 'shanhai_beast' && e.kind !== 'shanhai_apex') return false;
-        if (currentEntityFilterMode === 'vessel' && (!e.held_vessel || e.kind === 'shanhai_beast' || e.kind === 'shanhai_apex')) return false;
+      const isShanhaiKind = (k) => Boolean(k && k.startsWith('shanhai_'));
+      const shanhaiAll = rawEntitiesList.filter(e => {
+        if (!isShanhaiKind(e.kind)) return false;
+        if (!q) return true;
+        const hay = `${e.name || ''} ${e.title || ''} ${e.activity || ''} ${e.breath_habit || ''} ${e.held_vessel || ''}`.toLowerCase();
+        return hay.includes(q);
+      });
+      let filtered = rawEntitiesList.filter(e => {
+        if (currentEntityFilterMode === 'shanhai') {
+          if (!isShanhaiKind(e.kind)) return false;
+          if (window.currentShanhaiTier && window.currentShanhaiTier !== 'all' && e.kind !== window.currentShanhaiTier) return false;
+        }
+        if (currentEntityFilterMode === 'vessel' && (!e.held_vessel || isShanhaiKind(e.kind))) return false;
         if (currentEntityFilterMode === 'status' && (!(e.afflictions && e.afflictions.length) && !(e.lineage && e.lineage.length))) return false;
         if (!q) return true;
         const hay = `${e.name || ''} ${e.title || ''} ${e.activity || ''} ${e.breath_habit || ''} ${e.held_vessel || ''} ${(e.afflictions || []).join(' ')} ${(e.lineage || []).join(' ')}`.toLowerCase();
         return hay.includes(q);
       });
 
+      if (currentEntityFilterMode === 'shanhai') {
+        const activeTier = window.currentShanhaiTier || 'all';
+        const apexCnt = shanhaiAll.filter(e => e.kind === 'shanhai_apex').length;
+        const predCnt = shanhaiAll.filter(e => e.kind === 'shanhai_predator').length;
+        const herdCnt = shanhaiAll.filter(e => e.kind === 'shanhai_herd').length;
+        const smallCnt = shanhaiAll.filter(e => e.kind === 'shanhai_beast').length;
+        const summaryBanner = document.createElement('div');
+        summaryBanner.style.cssText = 'padding:7px 9px;margin-bottom:8px;border-radius:5px;background:rgba(38,97,65,0.08);border:1px solid rgba(38,97,65,0.25);font-size:0.72rem;line-height:1.45;color:var(--ink);';
+        const mkTierChip = (tierKey, label, count) => {
+          const isAct = activeTier === tierKey;
+          const st = isAct
+            ? 'background:#266141;color:#fff;border:1px solid #266141;font-weight:700;'
+            : 'background:#fffdf9;color:var(--ink);border:1px solid rgba(38,97,65,0.3);';
+          return `<button type="button" data-stier="${tierKey}" style="cursor:pointer;padding:2px 6px;margin:2px 3px 0 0;border-radius:3px;font-size:0.68rem;${st}">${label} <b>${count.toLocaleString()}</b></button>`;
+        };
+        summaryBanner.innerHTML = `
+          <div style="font-weight:700;color:#266141;margin-bottom:3px;">台灣山海經四層生態金字塔（共 ${shanhaiAll.length.toLocaleString()} 隻・霸主:顯形＝1:79）</div>
+          <div style="display:flex;flex-wrap:wrap;">
+            ${mkTierChip('all', '全部階層', shanhaiAll.length)}
+            ${mkTierChip('shanhai_apex', '🐾 隱匿霸主', apexCnt)}
+            ${mkTierChip('shanhai_predator', '🦅 次級掠食', predCnt)}
+            ${mkTierChip('shanhai_herd', '🦌 中型獸群', herdCnt)}
+            ${mkTierChip('shanhai_beast', '🐿️ 尋常小怪', smallCnt)}
+          </div>
+        `;
+        summaryBanner.querySelectorAll('button[data-stier]').forEach(b => {
+          b.onclick = () => {
+            window.currentShanhaiTier = b.dataset.stier;
+            renderEntityDirectoryList();
+          };
+        });
+        listEl.appendChild(summaryBanner);
+
+        // 交錯各獵場與四層生態階級排序，使前段列表同時呈現霸主、掠食、中型獸群與尋常小怪
+        const byZone = new Map();
+        filtered.forEach(e => {
+          const z = (e.title || '').split('・')[0] || 'other';
+          if (!byZone.has(z)) byZone.set(z, []);
+          byZone.get(z).push(e);
+        });
+        const interleaved = [];
+        let maxLen = 0;
+        byZone.forEach(arr => { if (arr.length > maxLen) maxLen = arr.length; });
+        for (let i = 0; i < maxLen; i++) {
+          for (const arr of byZone.values()) {
+            if (i < arr.length) interleaved.push(arr[i]);
+          }
+        }
+        filtered = interleaved;
+      }
+
       if (filtered.length === 0) {
-        listEl.innerHTML = '<div style="font-size:0.8rem;color:var(--ink-faint);padding:10px;">無符合篩選條件的人物或山海生靈</div>';
+        listEl.innerHTML += '<div style="font-size:0.8rem;color:var(--ink-faint);padding:10px;">無符合篩選條件的人物或山海生靈</div>';
         return;
       }
 
-      filtered.slice(0, 80).forEach(e => {
+      filtered.slice(0, 100).forEach(e => {
         const card = document.createElement('div');
         card.className = 'jump-card';
         const isApex = e.kind === 'shanhai_apex';
-        const isBeast = e.kind === 'shanhai_beast' || isApex;
-        card.style.borderLeft = isApex ? '3.5px solid #b8860b' : (isBeast ? '3.5px solid #266141' : '3.5px solid var(--vermilion)');
+        const isPredator = e.kind === 'shanhai_predator';
+        const isHerd = e.kind === 'shanhai_herd';
+        const isBeast = isShanhaiKind(e.kind);
+        card.style.borderLeft = isApex
+          ? '3.5px solid #b8860b'
+          : (isPredator ? '3.5px solid #a44a28' : (isHerd ? '3.5px solid #1f5c5c' : (isBeast ? '3.5px solid #266141' : '3.5px solid var(--vermilion)')));
         card.onclick = () => jumpTo(e.x, e.y, 28);
 
-        const badgeLabel = isApex ? '隱匿霸主' : (isBeast ? '顯形小怪/獸群' : (e.title || e.kind || '人物'));
+        const badgeLabel = isApex
+          ? '隱匿霸主'
+          : (isPredator ? '次級掠食' : (isHerd ? '中型獸群' : (isBeast ? '尋常小怪' : (e.title || e.kind || '人物'))));
         const badgeStyle = isApex
           ? 'background:rgba(184,134,11,0.16);color:#7a5600;'
-          : (isBeast
-            ? 'background:rgba(38,97,65,0.12);color:#266141;'
-            : 'background:rgba(158,42,43,0.1);color:var(--vermilion);');
+          : (isPredator
+            ? 'background:rgba(164,74,40,0.14);color:#a44a28;'
+            : (isHerd
+              ? 'background:rgba(31,92,92,0.14);color:#1f5c5c;'
+              : (isBeast
+                ? 'background:rgba(38,97,65,0.12);color:#266141;'
+                : 'background:rgba(158,42,43,0.1);color:var(--vermilion);')));
         const subTags = [];
         if (e.breath_habit) subTags.push(`內息：${e.breath_habit}`);
         if (e.held_vessel) subTags.push(`${e.held_vessel}`);
         if (e.afflictions && e.afflictions.length) subTags.push(`傷勢：${e.afflictions.join('、')}`);
         if (e.lineage && e.lineage.length) subTags.push(`師承：${e.lineage.join('、')}`);
 
+        const iconPrefix = isApex ? '🐾 ' : (isPredator ? '🦅 ' : (isHerd ? '🦌 ' : (isBeast ? '🐿️ ' : '')));
         card.innerHTML = `
           <div class="card-top">
-            <span class="card-name">${isApex ? '🐾 ' : (isBeast ? '🦌 ' : '')}${e.name || e.id}</span>
+            <span class="card-name">${iconPrefix}${e.name || e.id}</span>
             <span class="card-badge" style="${badgeStyle}">${badgeLabel}</span>
           </div>
           <div class="card-meta">座標 <span class="coord">(${e.x}, ${e.y})</span></div>

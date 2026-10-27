@@ -479,6 +479,16 @@ pub fn get_grid_room_view(
                 if let Some(amb) = ensure_ambient_npc_at_grid(x, y, &room.name) {
                     entities.push(amb);
                 }
+                // 獸群／小怪群聚地塊（約 28% 野外地塊有結群伴生小怪或同群獸類）
+                if !is_road && roam_gate < 28 {
+                    let flock_tag = if roam_gate % 2 == 0 { "__tier4a__" } else { "__tier4b__" };
+                    if let Some(mut companion) = ensure_ambient_npc_at_grid(x, y, flock_tag) {
+                        companion.id = format!("ambient_flock_{x}_{y}");
+                        if !entities.iter().any(|e| e.display_title == companion.display_title) {
+                            entities.push(companion);
+                        }
+                    }
+                }
             }
         }
     }
@@ -518,6 +528,14 @@ pub fn ensure_ambient_npc_at_grid(x: i32, y: i32, room_name: &str) -> Option<Cha
     // - 山道獵手／採集人（roll == 5）：佔 8%
     let roll = if room_name == "__apex__" || is_apex_beast_tracked_at(x, y) {
         0
+    } else if room_name == "__tier2__" {
+        1
+    } else if room_name == "__tier3__" {
+        2
+    } else if room_name == "__tier4a__" {
+        3
+    } else if room_name == "__tier4b__" {
+        4
     } else {
         match seed % 100 {
             0..=34 => 3,  // 35% 尋常小型奇獸／甲殼小怪（格內顯形）
@@ -527,10 +545,11 @@ pub fn ensure_ambient_npc_at_grid(x: i32, y: i32, room_name: &str) -> Option<Cha
             _ => 5,       // 8% 野外獵手／採集人
         }
     };
-    let is_road = room_name.contains("道路")
-        || room_name.contains("木橋")
-        || terrain == crate::grid::Terrain::Road
-        || terrain == crate::grid::Terrain::Bridge;
+    let is_road = !room_name.starts_with("__")
+        && (room_name.contains("道路")
+            || room_name.contains("木橋")
+            || terrain == crate::grid::Terrain::Road
+            || terrain == crate::grid::Terrain::Bridge);
 
     let (creature_name, creature_activity) = if is_road {
         match roll {
@@ -545,16 +564,16 @@ pub fn ensure_ambient_npc_at_grid(x: i32, y: i32, room_name: &str) -> Option<Cha
         match zone {
             "長風草甸" => match roll {
                 0 => ("長風四目水鹿王", "昂首聳立於草甸深處，雙叉巨角直指蒼穹，四目靈光威震四野"),
-                1 => ("平原梅花鹿", "優雅地在草甸花叢間駐足嚼草，白色梅花斑紋隨風微動"),
-                2 => ("草甸台灣野兔", "四足如飛，在齊膝芒草間迅疾掠過帶起陣陣草浪"),
-                3 => ("鯪鯉穿山甲", "披著堅硬烏金甲片伏於泥土坡旁，專注地扒掘蟻穴"),
+                1 => ("淺山錢紋石虎", "伏行於長風草甸灌叢陰影間，耳後白斑微動、伺機撲擊野兔"),
+                2 => ("平原梅花鹿", "優雅地在草甸花叢間結群嚼草，白色梅花斑紋隨風微動"),
+                3 => ("草甸台灣野兔", "四足如飛，在齊膝芒草間迅疾掠過帶起陣陣草浪"),
                 4 => ("草甸環頸雉", "披著絢麗五彩羽衣在芒草中昂首啼鳴，振翅破風"),
                 _ => ("放牧老獵手", "蹲在土坡上查看草甸獸跡"),
             },
             "古河巨木林" => match roll {
                 0 => ("古河樟林雲豹", "無聲無息潛行於千年古樟巨枝之間，暗影中古玉雲紋隱現"),
-                1 => ("四目台灣水鹿", "生有雙重眶下靈腺，在巨木霧氣中警覺踏水而行"),
-                2 => ("夜嘯大赤飛鼠", "展開寬闊赤褐皮翼自巨木樹冠滑翔而下，清嘯迴盪"),
+                1 => ("錢紋石虎", "踏在千年古樟厚軟腐葉層上悄然潛行，雙耳白斑靈動轉動"),
+                2 => ("四目台灣水鹿", "生有雙重眶下靈腺，在巨木霧氣中結群踏水而行"),
                 3 => ("古林台灣獼猴", "攀附於千年楠木藤蔓間靈巧擺盪，凝神張望林下動靜"),
                 4 => ("巨木領角鴞", "棲息於高枝樹洞旁，夜色中金黃雙瞳凝視林間落葉"),
                 _ => ("巡林斥候", "倚著巨木樹幹辨認獸徑"),
@@ -633,8 +652,8 @@ pub fn ensure_ambient_npc_at_grid(x: i32, y: i32, room_name: &str) -> Option<Cha
             },
             "淺澤泥口" => match roll {
                 0 => ("淺澤台灣水牛王", "雙角寬闊如彎月，半身浸在涼爽泥澤中閉目反芻，氣息沉穩如山"),
-                1 => ("泥口柴棺水龜", "背甲呈古銅褐色，靜伏於淺澤浮木上曬日吐納"),
-                2 => ("沼澤食蟹獴", "咬著泥蟹在蘆葦泥渚間翻滾滑行，皮毛防濕油亮"),
+                1 => ("沼澤食蟹獴", "咬著泥蟹在蘆葦泥渚間翻滾滑行，皮毛防濕油亮"),
+                2 => ("泥口柴棺水龜", "背甲呈古銅褐色，成群靜伏於淺澤浮木上曬日吐納"),
                 3 => ("紅螯泥沼蟹", "高舉血紅巨螯在泥孔外威嚇對手，吐著細密水泡"),
                 4 => ("凌波水雉", "拖著修長飄逸尾羽輕踏菱角浮葉之上，宛若凌波仙禽"),
                 _ => ("涉澤行腳客", "手拄長竹竿探路避開暗沼"),
@@ -649,9 +668,9 @@ pub fn ensure_ambient_npc_at_grid(x: i32, y: i32, room_name: &str) -> Option<Cha
             },
             "貼山深潭" => match roll {
                 0 => ("寒潭千年花斑鱸鰻", "碗口粗的花斑巨軀潛伏於深碧潭底石洞，游動時捲起暗湧漩渦"),
-                1 => ("阿里山山椒魚", "冰河孑遺靈獸伏於寒潭水際冷石下，褐膚帶淺斑、喜極寒清泉"),
-                2 => ("高山苦花魚王", "銀光閃爍躍出寒潭，腹部金線在陽光下熠熠生輝"),
-                3 => ("潭畔四目水鹿", "立於深潭岸邊青石上俯身飲水，長角倒映於碧綠潭面"),
+                1 => ("高山苦花魚王", "銀光閃爍躍出寒潭激流，腹部金線在陽光下熠熠生輝"),
+                2 => ("潭畔四目水鹿", "立於深潭岸邊青石上結伴俯身飲水，長角倒映於碧綠潭面"),
+                3 => ("阿里山山椒魚", "冰河孑遺靈獸伏於寒潭水際冷石下，褐膚帶淺斑、喜極寒清泉"),
                 4 => ("寒潭翠鳥", "披著寶石藍羽衣自潭邊蘆葦疾射入水，銜起銀魚破水而出"),
                 _ => ("潭邊垂釣隱士", "握竿靜坐潭石觀照水深"),
             },
@@ -673,8 +692,8 @@ pub fn ensure_ambient_npc_at_grid(x: i32, y: i32, room_name: &str) -> Option<Cha
             },
             "東海峭壁" => match roll {
                 0 => ("馭風赫氏熊鷹王", "凌空盤旋俯瞰東海萬頃波浪，雙翼遮雲蔽日、頭頂赫氏角冠威凜"),
-                1 => ("斷崖長鬃山羊", "腳踏險絕清水斷崖上的寸許石階，從容縱躍如飛"),
-                2 => ("破浪遊隼", "自千仞海崖順風俯衝，雙翼收攏如玄鐵利箭掠過海面"),
+                1 => ("破浪遊隼", "自千仞海崖順風俯衝，雙翼收攏如玄鐵利箭掠過海面"),
+                2 => ("斷崖長鬃山羊", "腳踏險絕清水斷崖上的寸許石階，成群從容縱躍如飛"),
                 3 => ("峭壁大赤飛鼠", "自海風呼嘯的懸崖樹梢縱身一躍，乘著上升氣流滑向對岸"),
                 4 => ("清水岩鷚", "羽色如花崗岩斑駁，在臨海峭壁石隙中逆風跳躍覓食"),
                 _ => ("攀崖採燕客", "身繫麻繩在崖壁凹處調勻呼吸"),
