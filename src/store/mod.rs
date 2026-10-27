@@ -19,6 +19,7 @@ pub use types::*;
 mod archival;
 mod auth;
 pub mod households;
+pub mod outer_households;
 mod entity;
 pub use entity::{
     clear_active_npc_obligation, current_game_hour, find_bfs_next_step,

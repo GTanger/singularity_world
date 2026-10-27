@@ -196,23 +196,28 @@ pub fn npc_persistent_role_label(entity_id: &str, display_title: &str) -> String
     }
 
     let slot = wenyao_household_slot_for(entity_id);
-    if slot.attire_line.contains("磨刀") || slot.work_purpose.contains("廚刀") {
-        return "三水流動磨刀匠".to_string();
-    }
-    if slot.work_name.contains("鐵坊") || slot.work_name.contains("鍛造") {
-        return "岑氏鐵坊鍛造匠師".to_string();
-    }
-    if slot.work_name.contains("木") || slot.work_name.contains("傢俱") {
-        return "柯氏木作匠師".to_string();
-    }
-    if slot.work_name.contains("印行") || slot.work_name.contains("書局") {
-        return "印行館校勘與印務執事".to_string();
-    }
-    if slot.work_name.contains("學院") || slot.work_name.contains("講堂") || slot.work_name.contains("國小") {
-        return "文曜學院助教".to_string();
-    }
-    if slot.work_name.contains("藥") || slot.work_name.contains("診所") || slot.work_name.contains("脈絡") {
-        return "三水醫藥司藥師".to_string();
+    let is_wenyao = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
+    if is_wenyao {
+        if slot.attire_line.contains("磨刀") || slot.work_purpose.contains("廚刀") {
+            return "三水流動磨刀匠".to_string();
+        }
+        if slot.work_name.contains("鐵坊") || slot.work_name.contains("鍛造") {
+            return "岑氏鐵坊鍛造匠師".to_string();
+        }
+        if slot.work_name.contains("木") || slot.work_name.contains("傢俱") {
+            return "柯氏木作匠師".to_string();
+        }
+        if slot.work_name.contains("印行") || slot.work_name.contains("書局") {
+            return "印行館校勘與印務執事".to_string();
+        }
+        if slot.work_name.contains("學院") || slot.work_name.contains("講堂") || slot.work_name.contains("國小") {
+            return "文曜學院助教".to_string();
+        }
+        if slot.work_name.contains("藥") || slot.work_name.contains("診所") || slot.work_name.contains("脈絡") {
+            return "三水醫藥司藥師".to_string();
+        }
+    } else if slot.work_x == slot.home_x && slot.work_y == slot.home_y && !slot.brief_tag.is_empty() {
+        return slot.brief_tag.to_string();
     }
 
     // 剝離城市/行政區域前綴，使職銜簡練自然
@@ -228,6 +233,20 @@ pub fn npc_persistent_role_label(entity_id: &str, display_title: &str) -> String
         "北門・",
         "南門・",
         "東門・",
+        "風舶角・",
+        "風舶嶼・",
+        "大圳頭・",
+        "半嶺鎮・",
+        "南哨・",
+        "老堰頭・",
+        "北嶺腳・",
+        "霜林口・",
+        "風櫃尾・",
+        "烏石鼻・",
+        "牛埔・",
+        "紅土崁・",
+        "三號坑口・",
+        "水尾寮・",
     ] {
         if let Some(stripped) = clean_work.strip_prefix(prefix) {
             clean_work = stripped.to_string();
@@ -235,7 +254,7 @@ pub fn npc_persistent_role_label(entity_id: &str, display_title: &str) -> String
     }
 
     // 特定天然角色職銜判定
-    if clean_work.contains("巡河") || clean_work.contains("哨所") || clean_work.contains("望樓") {
+    if clean_work.contains("巡河") || clean_work.contains("哨所") || clean_work.contains("望樓") || clean_work.contains("瞭望") || clean_work.contains("燈塔") {
         if clean_work.ends_with("哨所") {
             let base = clean_work.trim_end_matches("哨所");
             if base.contains("巡河") {
@@ -246,13 +265,19 @@ pub fn npc_persistent_role_label(entity_id: &str, display_title: &str) -> String
         }
         return format!("{clean_work}巡防執事");
     }
-    if clean_work.contains("碼頭") || clean_work.contains("渡") || clean_work.contains("埠") {
+    if clean_work.contains("碼頭") || clean_work.contains("渡") || clean_work.contains("埠") || clean_work.contains("泊位") {
         return format!("{clean_work}船務執事");
     }
-    if clean_work.contains("食堂") || clean_work.contains("茶") || clean_work.contains("酒") || clean_work.contains("麵") {
+    if clean_work.contains("船塢") || clean_work.contains("工坊") || clean_work.contains("鐵器坊") || clean_work.contains("鋸木坊") || clean_work.contains("精製坊") || clean_work.contains("灰窯") {
+        return format!("{clean_work}匠師");
+    }
+    if clean_work.contains("診所") {
+        return format!("{clean_work}藥師");
+    }
+    if clean_work.contains("食堂") || clean_work.contains("茶") || clean_work.contains("酒") || clean_work.contains("麵") || clean_work.contains("浴") {
         return format!("{clean_work}掌事");
     }
-    if clean_work.contains("商行") || clean_work.contains("帳房") || clean_work.contains("公議") {
+    if clean_work.contains("商行") || clean_work.contains("帳房") || clean_work.contains("公議") || clean_work.contains("公所") || clean_work.contains("總社") || clean_work.contains("總會") || clean_work.contains("礦務所") {
         return format!("{clean_work}管事");
     }
     format!("{clean_work}執事")
@@ -544,17 +569,45 @@ pub static HOUSEHOLD_MEMBER_ASSIGNMENTS: std::sync::LazyLock<
     parking_lot::RwLock<std::collections::HashMap<String, usize>>,
 > = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
 
+pub fn total_household_slots_len() -> usize {
+    WENYAO_HOUSEHOLD_SLOTS.len() + super::outer_households::OUTER_HOUSEHOLD_SLOTS.len()
+}
+
+pub fn household_slot_at(idx: usize) -> &'static WenyaoHouseholdSlot {
+    let wy_len = WENYAO_HOUSEHOLD_SLOTS.len();
+    let total = total_household_slots_len();
+    let i = idx % total;
+    if i < wy_len {
+        &WENYAO_HOUSEHOLD_SLOTS[i]
+    } else {
+        &super::outer_households::OUTER_HOUSEHOLD_SLOTS[i - wy_len]
+    }
+}
+
+pub fn household_slot_index(slot: &WenyaoHouseholdSlot) -> usize {
+    let sz = std::mem::size_of::<WenyaoHouseholdSlot>().max(1);
+    let ptr = slot as *const WenyaoHouseholdSlot;
+    let wy_range = WENYAO_HOUSEHOLD_SLOTS.as_ptr_range();
+    if wy_range.contains(&ptr) {
+        return (ptr as usize - wy_range.start as usize) / sz;
+    }
+    let out_range = super::outer_households::OUTER_HOUSEHOLD_SLOTS.as_ptr_range();
+    if out_range.contains(&ptr) {
+        return WENYAO_HOUSEHOLD_SLOTS.len() + (ptr as usize - out_range.start as usize) / sz;
+    }
+    0
+}
+
 pub fn wenyao_household_slot_for(entity_id: &str) -> &'static WenyaoHouseholdSlot {
     if let Some(&idx) = HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(entity_id) {
-        return &WENYAO_HOUSEHOLD_SLOTS[idx % WENYAO_HOUSEHOLD_SLOTS.len()];
+        return household_slot_at(idx);
     }
     let mut h: u64 = 0xcbf2_9ce4_8422_2325;
     for b in entity_id.as_bytes() {
         h ^= u64::from(*b);
         h = h.wrapping_mul(0x0100_0000_01b3);
     }
-    let idx = ((h >> 8) as usize) % WENYAO_HOUSEHOLD_SLOTS.len();
-    &WENYAO_HOUSEHOLD_SLOTS[idx]
+    household_slot_at((h >> 8) as usize)
 }
 
 pub fn current_game_hour() -> i32 {
@@ -586,6 +639,9 @@ static BLDG_COORD_CACHE: std::sync::LazyLock<
 > = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
 
 pub fn resolve_bldg_coord_or_fallback(bldg_name: &str, fallback: (i32, i32)) -> (i32, i32) {
+    if fallback.0.abs() > 20 || fallback.1.abs() > 20 {
+        return fallback;
+    }
     if let Some(&coord) = BLDG_COORD_CACHE.read().get(bldg_name) {
         return coord;
     }
@@ -611,15 +667,8 @@ pub fn resolve_wenyao_npc_schedule(
         h ^= u64::from(*b);
         h = h.wrapping_mul(0x0100_0000_01b3);
     }
-    let slot_idx = {
-        let base = WENYAO_HOUSEHOLD_SLOTS.as_ptr() as usize;
-        let curr = slot as *const _ as usize;
-        if curr >= base && std::mem::size_of::<WenyaoHouseholdSlot>() > 0 {
-            (curr - base) / std::mem::size_of::<WenyaoHouseholdSlot>()
-        } else {
-            h as usize
-        }
-    };
+    let slot_idx = household_slot_index(slot);
+    let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
     if hour >= 22 || hour < 5 {
         let is_night_watch_place = slot.work_name.contains("巡防")
             || slot.work_name.contains("哨")
@@ -638,7 +687,7 @@ pub fn resolve_wenyao_npc_schedule(
                 8,
             );
         }
-        if hour == 22 && slot_idx % 12 == 0 {
+        if is_wenyao_slot && hour == 22 && slot_idx % 12 == 0 {
             return match (slot_idx / 12) % 3 {
                 0 => (
                     (0, -1),
@@ -663,7 +712,7 @@ pub fn resolve_wenyao_npc_schedule(
                 ),
             };
         }
-        if slot_idx == 0 {
+        if is_wenyao_slot && slot_idx == 0 {
             return (
                 (0, 0),
                 "文曜・三水口中心樞紐石橋".to_string(),
@@ -672,7 +721,7 @@ pub fn resolve_wenyao_npc_schedule(
                 12,
             );
         }
-        if slot_idx == 15 {
+        if is_wenyao_slot && slot_idx == 15 {
             return (
                 (0, -1),
                 "文曜・三水口南街".to_string(),
@@ -695,7 +744,7 @@ pub fn resolve_wenyao_npc_schedule(
             10,
         );
     }
-    if (18..=21).contains(&hour) && work_errand_toggle && ((h.wrapping_add(hour as u64)) % 3 == 0) {
+    if is_wenyao_slot && (18..=21).contains(&hour) && work_errand_toggle && ((h.wrapping_add(hour as u64)) % 3 == 0) {
         return match (h.wrapping_add(hour as u64)) % 18 {
             0 => (
                 (0, 0),
@@ -848,6 +897,32 @@ pub fn resolve_wenyao_npc_schedule(
     if hour == 12 {
         let work_coord = resolve_bldg_coord_or_fallback(slot.work_name, (slot.work_x, slot.work_y));
         let home_coord = resolve_bldg_coord_or_fallback(slot.home_name, (slot.home_x, slot.home_y));
+        if !is_wenyao_slot {
+            let errand_coord = resolve_bldg_coord_or_fallback(slot.errand_name, (slot.errand_x, slot.errand_y));
+            return match h % 3 {
+                0 => (
+                    errand_coord,
+                    slot.errand_name.to_string(),
+                    "午間用膳與採買".to_string(),
+                    slot.errand_stay_activity.to_string(),
+                    20 + ((h % 8) as u8),
+                ),
+                1 => (
+                    work_coord,
+                    slot.work_name.to_string(),
+                    "午間便當小憩".to_string(),
+                    format!("正在{}工位旁打開木製便當盒享用熱飯菜，順道歇口氣", slot.work_name),
+                    20 + ((h % 8) as u8),
+                ),
+                _ => (
+                    home_coord,
+                    slot.home_name.to_string(),
+                    "返家午膳".to_string(),
+                    format!("正在{}自家飯桌旁與家人享用熱騰騰的午飯", slot.home_name),
+                    20 + ((h % 8) as u8),
+                ),
+            };
+        }
         return match h % 12 {
             0 => (
                 resolve_bldg_coord_or_fallback("三水大食堂", (-1, 2)),
@@ -1983,7 +2058,7 @@ impl Store {
         if map.is_empty() {
             for (idx, id) in eligible_ids
                 .into_iter()
-                .take(WENYAO_HOUSEHOLD_SLOTS.len())
+                .take(total_household_slots_len())
                 .enumerate()
             {
                 map.insert(id, idx);
@@ -2007,7 +2082,7 @@ impl Store {
 
         self.ensure_household_assignments();
         let slot_idx = *HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(&e.id)?;
-        let slot = &WENYAO_HOUSEHOLD_SLOTS[slot_idx % WENYAO_HOUSEHOLD_SLOTS.len()];
+        let slot = household_slot_at(slot_idx);
 
         let hour = current_game_hour();
         let init_toggle = slot_idx % 2 == 1;
@@ -2318,73 +2393,96 @@ impl Store {
                     }
                     let time_bucket = (now_sec / 30) as u64;
                     let roll = (h.wrapping_add(time_bucket).wrapping_mul(1103515245) >> 16) % 100;
+                    let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
                     if roll < 18 {
                         let ob_choice = (h.wrapping_add(time_bucket) >> 4) % 8;
-                        let (ob_kind, ob_subject, ob_dest, ob_dest_name, ob_act, ob_purpose) = match ob_choice {
-                            0 => (
-                                "repair_tool",
-                                "手頭器物刃口與榫卯微損待修",
-                                resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
-                                "文曜・岑氏第一鍛造工坊",
-                                "正在鍛造工坊請匠師修整受損器物",
-                                "修整器物",
-                            ),
-                            1 => (
-                                "repair_tool",
-                                "隨身木作器具榫頭鬆動待修",
-                                resolve_bldg_coord_or_fallback("巧木居所傢俱坊", (1, -2)),
-                                "文曜・巧木居所傢俱坊",
-                                "正在木作工坊請匠人加固器具榫卯",
-                                "修整木器",
-                            ),
-                            2 => (
-                                "restock_goods",
-                                "手頭物料與店內備貨見底待補",
-                                resolve_bldg_coord_or_fallback("西門車馬聯運總站", (-2, -1)),
-                                "文曜・西門車馬聯運總站",
-                                "正在清點並提領新運抵的補充物料",
-                                "補倉提貨",
-                            ),
-                            3 => (
-                                "restock_goods",
-                                "日常用料短缺需赴雜貨行添購",
-                                resolve_bldg_coord_or_fallback("分家巷口雜貨柑仔店", (1, -3)),
-                                "文曜・分家巷口雜貨柑仔店",
-                                "正在雜貨行添購新到貨的日用物料",
-                                "添購物料",
-                            ),
-                            4 => (
-                                "treat_injury",
-                                "連日奔波筋骨微酸需敷藥調理",
-                                resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -1)),
-                                "文曜・溫氏脈絡診所",
-                                "正在敷用活血草藥調理筋骨勞損",
-                                "敷藥調理",
-                            ),
-                            5 => (
-                                "treat_injury",
-                                "奔走風寒需赴湯池溫水祛乏",
-                                resolve_bldg_coord_or_fallback("泉香溫水浴場", (-2, 2)),
-                                "文曜・泉香溫水浴場",
-                                "正在溫水湯池旁熱敷舒緩筋骨疲乏",
-                                "溫水祛乏",
-                            ),
-                            6 => (
-                                "repay_debt",
-                                "手頭一筆貨單票據需赴總商行核銷",
-                                resolve_bldg_coord_or_fallback("三水總商行", (-1, 1)),
-                                "文曜・三水總商行",
-                                "正在總商行櫃台憑摺核銷往來貨單",
-                                "核銷貨單",
-                            ),
-                            _ => (
-                                "restock_goods",
-                                "海味與南北乾貨備料待補",
-                                resolve_bldg_coord_or_fallback("三水口乾貨海味行", (-1, 3)),
-                                "文曜・三水口乾貨海味行",
-                                "正在海味行秤提新運抵的風櫃魚乾與海鹽",
-                                "提領乾貨",
-                            ),
+                        let (ob_kind, ob_subject, ob_dest, ob_dest_name, ob_act, ob_purpose) = if !is_wenyao_slot {
+                            if ob_choice % 2 == 0 {
+                                (
+                                    "restock_goods",
+                                    "日常用料與工坊備貨待補",
+                                    (slot.errand_x, slot.errand_y),
+                                    slot.errand_name,
+                                    slot.errand_stay_activity,
+                                    slot.errand_purpose,
+                                )
+                            } else {
+                                (
+                                    "repair_tool",
+                                    "隨身器物與工位機具檢修",
+                                    (slot.work_x, slot.work_y),
+                                    slot.work_name,
+                                    slot.work_stay_activity,
+                                    slot.work_purpose,
+                                )
+                            }
+                        } else {
+                            match ob_choice {
+                                0 => (
+                                    "repair_tool",
+                                    "手頭器物刃口與榫卯微損待修",
+                                    resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
+                                    "文曜・岑氏第一鍛造工坊",
+                                    "正在鍛造工坊請匠師修整受損器物",
+                                    "修整器物",
+                                ),
+                                1 => (
+                                    "repair_tool",
+                                    "隨身木作器具榫頭鬆動待修",
+                                    resolve_bldg_coord_or_fallback("巧木居所傢俱坊", (1, -2)),
+                                    "文曜・巧木居所傢俱坊",
+                                    "正在木作工坊請匠人加固器具榫卯",
+                                    "修整木器",
+                                ),
+                                2 => (
+                                    "restock_goods",
+                                    "手頭物料與店內備貨見底待補",
+                                    resolve_bldg_coord_or_fallback("西門車馬聯運總站", (-2, -1)),
+                                    "文曜・西門車馬聯運總站",
+                                    "正在清點並提領新運抵的補充物料",
+                                    "補倉提貨",
+                                ),
+                                3 => (
+                                    "restock_goods",
+                                    "日常用料短缺需赴雜貨行添購",
+                                    resolve_bldg_coord_or_fallback("分家巷口雜貨柑仔店", (1, -3)),
+                                    "文曜・分家巷口雜貨柑仔店",
+                                    "正在雜貨行添購新到貨的日用物料",
+                                    "添購物料",
+                                ),
+                                4 => (
+                                    "treat_injury",
+                                    "連日奔波筋骨微酸需敷藥調理",
+                                    resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -1)),
+                                    "文曜・溫氏脈絡診所",
+                                    "正在敷用活血草藥調理筋骨勞損",
+                                    "敷藥調理",
+                                ),
+                                5 => (
+                                    "treat_injury",
+                                    "奔走風寒需赴湯池溫水祛乏",
+                                    resolve_bldg_coord_or_fallback("泉香溫水浴場", (-2, 2)),
+                                    "文曜・泉香溫水浴場",
+                                    "正在溫水湯池旁熱敷舒緩筋骨疲乏",
+                                    "溫水祛乏",
+                                ),
+                                6 => (
+                                    "repay_debt",
+                                    "手頭一筆貨單票據需赴總商行核銷",
+                                    resolve_bldg_coord_or_fallback("三水總商行", (-1, 1)),
+                                    "文曜・三水總商行",
+                                    "正在總商行櫃台憑摺核銷往來貨單",
+                                    "核銷貨單",
+                                ),
+                                _ => (
+                                    "restock_goods",
+                                    "海味與南北乾貨備料待補",
+                                    resolve_bldg_coord_or_fallback("三水口乾貨海味行", (-1, 3)),
+                                    "文曜・三水口乾貨海味行",
+                                    "正在海味行秤提新運抵的風櫃魚乾與海鹽",
+                                    "提領乾貨",
+                                ),
+                            }
                         };
 
                         open_active_npc_obligation(entity_id, ob_kind, ob_subject);
@@ -2409,16 +2507,20 @@ impl Store {
 
                 let mut override_handled = false;
 
+                let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
                 // Case A: Fatigue / Bad Mood Recovery
                 if is_fatigued {
-                    let targets = [
-                        ((-1, 2), "三水大食堂"),
-                        ((2, -2), "泉香溫水浴場"),
-                        ((2, -1), "東橋旅社與山風茶屋"),
-                        ((13, 13), "講堂外坊・翰墨清茶書肆"),
-                    ];
-                    let idx = ((h.wrapping_add(hour as u64)) % 4) as usize;
-                    let (coord, target_name) = targets[idx];
+                    let (coord, target_name) = if is_wenyao_slot {
+                        let targets = [
+                            ((-1, 2), "三水大食堂"),
+                            ((2, -2), "泉香溫水浴場"),
+                            ((2, -1), "東橋旅社與山風茶屋"),
+                            ((13, 13), "講堂外坊・翰墨清茶書肆"),
+                        ];
+                        targets[((h.wrapping_add(hour as u64)) % 4) as usize]
+                    } else {
+                        ((slot.errand_x, slot.errand_y), slot.errand_name)
+                    };
                     state.origin_name = prev_loc_name.clone();
                     state.dest = coord;
                     state.dest_name = target_name.to_string();
@@ -2430,13 +2532,16 @@ impl Store {
                 }
                 // Case B: Economic Drive
                 else if e.magnesium < 35 && (7..=20).contains(&hour) {
-                    let targets = [
-                        ((-1, 1), "三水總商行總部"),
-                        ((-3, -1), "西門・車馬聯運總站"),
-                        ((slot.work_x, slot.work_y), slot.work_name),
-                    ];
-                    let idx = ((h.wrapping_add(hour as u64)) % 3) as usize;
-                    let (coord, target_name) = targets[idx];
+                    let (coord, target_name) = if is_wenyao_slot {
+                        let targets = [
+                            ((-1, 1), "三水總商行總部"),
+                            ((-3, -1), "西門・車馬聯運總站"),
+                            ((slot.work_x, slot.work_y), slot.work_name),
+                        ];
+                        targets[((h.wrapping_add(hour as u64)) % 3) as usize]
+                    } else {
+                        ((slot.work_x, slot.work_y), slot.work_name)
+                    };
                     state.origin_name = prev_loc_name.clone();
                     state.dest = coord;
                     state.dest_name = target_name.to_string();
@@ -2451,13 +2556,16 @@ impl Store {
                 }
                 // Case C: Social / Curiosity Drive
                 else if personality.boldness > 0.62 && (11..=20).contains(&hour) && (h.wrapping_add(now_unix as u64)) % 5 == 0 {
-                    let targets = [
-                        ((0, 0), "文曜・中心樞紐石橋"),
-                        ((1, 0), "文曜・三水口納涼棚廊"),
-                        ((13, -13), "百工外坊・紅爐烈酒大飯鋪"),
-                    ];
-                    let idx = ((h.wrapping_add(hour as u64)) % 3) as usize;
-                    let (coord, target_name) = targets[idx];
+                    let (coord, target_name) = if is_wenyao_slot {
+                        let targets = [
+                            ((0, 0), "文曜・中心樞紐石橋"),
+                            ((1, 0), "文曜・三水口納涼棚廊"),
+                            ((13, -13), "百工外坊・紅爐烈酒大飯鋪"),
+                        ];
+                        targets[((h.wrapping_add(hour as u64)) % 3) as usize]
+                    } else {
+                        ((slot.errand_x, slot.errand_y), slot.errand_name)
+                    };
                     state.origin_name = prev_loc_name.clone();
                     state.dest = coord;
                     state.dest_name = target_name.to_string();
