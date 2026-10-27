@@ -366,6 +366,9 @@ pub async fn add_exit(
             direction: body.direction.clone(),
             to_room_id: body.to_room_id.clone(),
             to_room_name: to_name,
+            route_id: String::new(),
+            mode: String::new(),
+            travel_cost: 0,
         });
     }
     s.upsert_room_data(room, Some(exits));

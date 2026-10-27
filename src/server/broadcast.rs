@@ -5,7 +5,7 @@ use crate::db;
 use crate::entity::{EntityKind, Verb};
 use crate::game::{self, RoomView};
 
-use super::protocol::{ExitView, NarrateMsg, RoomViewMsg, ViewEntity, ViewObject};
+use super::protocol::{ExitView, NarrateMsg, NpcDialogueMsg, RoomViewMsg, ViewEntity, ViewObject};
 use super::session::{Session, player_location_key};
 
 fn must_json<T: serde::Serialize>(v: &T) -> Vec<u8> {
@@ -29,6 +29,32 @@ pub fn send_narrate_to_room(store: &super::session::SessionStore, room_id: &str,
     }
 }
 
+/// 對指定在線連線推送 `NarrateMsg`。
+pub fn send_narrate_to_player(session: &Session, text: &str) {
+    if text.is_empty() {
+        return;
+    }
+    let msg = must_json(&NarrateMsg {
+        msg_type: "narrate".into(),
+        text: text.to_string(),
+    });
+    let _ = session.try_send_bytes(msg);
+}
+
+/// 對指定在線連線推送 `NpcDialogueMsg`（彈窗內對話更新）。
+pub fn send_npc_dialogue_to_player(session: &Session, npc_a: &str, npc_b: &str, text: &str) {
+    if text.is_empty() {
+        return;
+    }
+    let msg = must_json(&NpcDialogueMsg {
+        msg_type: "npc_dialogue".into(),
+        npc_a: npc_a.to_string(),
+        npc_b: npc_b.to_string(),
+        text: text.to_string(),
+    });
+    let _ = session.try_send_bytes(msg);
+}
+
 fn player_verb_strings() -> Vec<String> {
     crate::entity::Character::sockets()
         .into_iter()
@@ -50,12 +76,35 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
     use crate::db::get_sockets_for_npc;
 
     let room_id = view.room.id.clone();
+    let available_market_operators = crate::pg::pool()
+        .and_then(|pool| {
+            crate::pg::world_market::available_operator_ids_for_buyer(&pool, viewer_player_id).ok()
+        })
+        .unwrap_or_default();
     let mut entities: Vec<ViewEntity> = Vec::new();
     for e in &view.entities {
         let kind = game::entity_kind_str(&e.kind);
         let mut display_name = e.id.clone();
-        if e.kind == EntityKind::Npc && !e.display_title.is_empty() {
-            display_name.clone_from(&e.display_title);
+        if e.kind == EntityKind::Npc {
+            if e.id.starts_with("ambient_") && !e.display_title.trim().is_empty() {
+                display_name = e.display_title.trim().to_string();
+            } else {
+                display_name = "陌生人".to_string();
+                let named = crate::db::get_acquaintance(viewer_player_id, &e.id)
+                    .ok()
+                    .flatten()
+                    .map(|a| a.named)
+                    .unwrap_or(false);
+                if named {
+                    let gender_str = match e.gender {
+                        Some(crate::entity::Gender::F) => Some("F"),
+                        Some(crate::entity::Gender::M) => Some("M"),
+                        None => None,
+                    };
+                    display_name =
+                        crate::store::resolve_npc_full_label(&e.id, &e.display_title, gender_str);
+                }
+            }
         }
         let mut actions: Vec<String> = Vec::new();
         if e.id != viewer_player_id {
@@ -71,6 +120,8 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
             display_char: e.display_char.clone(),
             display_name,
             actions,
+            interaction_priority: available_market_operators.contains(&e.id),
+            current_activity: e.current_activity.clone(),
             behavior_text: String::new(),
         });
     }
@@ -81,6 +132,9 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
             direction: ex.direction.clone(),
             to_room_id: ex.to_room_id.clone(),
             to_room_name: ex.to_room_name.clone(),
+            route_id: ex.route_id.clone(),
+            mode: ex.mode.clone(),
+            travel_cost: ex.travel_cost,
         })
         .collect();
     let objects: Vec<ViewObject> = view
@@ -89,6 +143,11 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
         .map(|o| ViewObject {
             id: o.id.clone(),
             name: o.name.clone(),
+            object_type: if o.id.starts_with("resource:") {
+                "resource".to_string()
+            } else {
+                "object".to_string()
+            },
             actions: o.sockets.clone(),
         })
         .collect();
@@ -119,43 +178,73 @@ pub fn send_room_view_to_session(
     let _ = session.try_send_bytes(must_json(&msg));
 }
 
-/// 對指定位置內在線玩家推送最新視野。
-pub fn refresh_room_views_for_room(
+/// 對指定位置內在線玩家推送最新視野（可排除特定玩家）。
+pub fn refresh_room_views_for_room_except(
     store: &super::session::SessionStore,
     cfg: &Server,
     room_id: &str,
+    exclude_player_id: Option<&str>,
 ) {
     let now = game::now_unix();
     let (_, gh, _, _) = game::game_time_now(now, cfg.game_time_epoch_unix, cfg.game_time_scale);
+    let target_key = db::canonical_location_key(room_id);
     for s in store.all_sessions() {
-        let Ok(Some(ch)) = db::get_entity(&s.player_id) else {
-            continue;
-        };
-        if player_location_key(&s.player_id) != db::canonical_location_key(room_id) {
+        if let Some(ex_id) = exclude_player_id {
+            if s.player_id == ex_id {
+                continue;
+            }
+        }
+        let player_coord = db::get_entity(&s.player_id)
+            .ok()
+            .flatten()
+            .and_then(|e| e.grid_x.zip(e.grid_y));
+        if let Some((gx, gy)) = player_coord {
+            if crate::grid::grid_room_id_from_coord(gx, gy) == target_key
+                || player_location_key(&s.player_id) == target_key
+            {
+                super::handler::push_grid_view_to_session(&s, cfg, gx, gy, gh);
+                continue;
+            }
+        }
+        if player_location_key(&s.player_id) != target_key {
             continue;
         }
-        let (Some(x), Some(y)) = (ch.grid_x, ch.grid_y) else {
+        let Some(place_id) = db::get_entity_place_id(&s.player_id) else {
             continue;
         };
-        let Ok(Some(view)) = game::get_grid_room_view(&s.player_id, x, y, gh) else {
+        let Ok(Some(view)) = game::get_place_room_view(&place_id, gh) else {
             continue;
         };
         send_room_view_to_session(&s, &view, &s.player_id, cfg);
     }
 }
 
-/// 對所有在線玩家依其正方格座標推送視野。
+/// 對指定位置內在線玩家推送最新視野。
+pub fn refresh_room_views_for_room(
+    store: &super::session::SessionStore,
+    cfg: &Server,
+    room_id: &str,
+) {
+    refresh_room_views_for_room_except(store, cfg, room_id, None);
+}
+
+/// 對所有在線玩家依其正式場所推送視野。
 pub fn broadcast_room_views(store: &super::session::SessionStore, cfg: &Server) {
     let now = game::now_unix();
     let (_, gh, _, _) = game::game_time_now(now, cfg.game_time_epoch_unix, cfg.game_time_scale);
     for s in store.all_sessions() {
-        let Ok(Some(ch)) = db::get_entity(&s.player_id) else {
+        let player_coord = db::get_entity(&s.player_id)
+            .ok()
+            .flatten()
+            .and_then(|e| e.grid_x.zip(e.grid_y));
+        if let Some((gx, gy)) = player_coord {
+            super::handler::push_grid_view_to_session(&s, cfg, gx, gy, gh);
+            continue;
+        }
+        let Some(place_id) = db::get_entity_place_id(&s.player_id) else {
             continue;
         };
-        let (Some(x), Some(y)) = (ch.grid_x, ch.grid_y) else {
-            continue;
-        };
-        let Ok(Some(view)) = game::get_grid_room_view(&s.player_id, x, y, gh) else {
+        let Ok(Some(view)) = game::get_place_room_view(&place_id, gh) else {
             continue;
         };
         send_room_view_to_session(&s, &view, &s.player_id, cfg);

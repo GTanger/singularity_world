@@ -249,13 +249,13 @@ fn should_refresh_north_bank_ferry_description(
     is_north_bank_ferry_cell(skeleton_cell)
         && !skeleton_cell.description.trim().is_empty()
         && existing_description != skeleton_cell.description
-        && ["北岸等候處", "北岸候渡處", "北岸後渡處"]
+        && ["北岸等候處", "北岸候渡處", "北岸後渡處", "半嶺等候處"]
             .iter()
             .any(|old_name| existing_description.contains(old_name))
 }
 
 fn is_north_bank_ferry_cell(skeleton_cell: &SkeletonCell) -> bool {
-    skeleton_cell.m4 == "M4-027-01" && skeleton_cell.name == "北岸渡口"
+    skeleton_cell.m4 == "M4-027-01" && skeleton_cell.name == "半嶺水岸渡口"
 }
 
 #[cfg(test)]
@@ -342,8 +342,13 @@ mod tests {
 
         assert_eq!(report.inserted, skeleton.cells.len() - 1);
         assert_eq!(report.updated, 1);
-        assert_eq!(north_bank.name, "北岸渡口");
-        assert!(north_bank.description.contains("北岸渡口"));
+        let north_bank_name = &north_bank.name;
+        assert_eq!(north_bank_name, "半嶺水岸渡口", "unexpected ferry name: {north_bank_name}");
+        assert!(
+            north_bank.description.contains("半嶺"),
+            "unexpected ferry desc: {}",
+            north_bank.description
+        );
         assert!(!north_bank.description.contains("北岸等候處"));
     }
 
@@ -528,7 +533,8 @@ mod tests {
             );
         }
 
-        assert_eq!(grid.get(town_gate).unwrap().name, "中鎮鎮口");
+        let gate_name = &grid.get(town_gate).unwrap().name;
+        assert_eq!(gate_name, "文曜鎮口");
         let market_valley_road = grid.get(SquareCoord::new(2, 0)).unwrap();
         assert!(
             market_valley_road
@@ -536,14 +542,13 @@ mod tests {
                 .iter()
                 .any(|exit| exit.target == SquareCoord::new(0, 1) && exit.dir == Direction::North)
         );
-        assert_eq!(grid.get(SquareCoord::new(4, 1)).unwrap().name, "中鎮井邊巷");
-        assert_eq!(
-            grid.get(SquareCoord::new(4, -1)).unwrap().name,
-            "中鎮倉場門口"
-        );
+        let alley_name = &grid.get(SquareCoord::new(4, 1)).unwrap().name;
+        assert_eq!(alley_name, "文曜井邊巷");
+        let granary_name = &grid.get(SquareCoord::new(4, -1)).unwrap().name;
+        assert_eq!(granary_name, "文曜倉場門口");
         assert!(
             grid.find_path(origin, SquareCoord::new(4, -1)).is_some(),
-            "北岸 should reach 中鎮倉場門口"
+            "ferry origin should reach granary gate"
         );
     }
 
@@ -652,7 +657,7 @@ mod tests {
         assert_eq!(grid.get(SquareCoord::new(-9, -1)).unwrap().name, "傭工棚邊");
         assert!(
             grid.find_path(origin, council_steps).is_some(),
-            "北岸 should reach 議棚前階"
+            "ferry origin should reach 議棚前階"
         );
     }
 
@@ -660,7 +665,13 @@ mod tests {
     fn builtin_world_skeleton_updates_existing_exit_direction() {
         let skeleton = load_builtin_world_skeleton().unwrap();
         let mut grid = SquareGrid::new();
-        let mut cell = GridCell::new(SquareCoord::new(2, 0), Terrain::Road, "短市外谷地路");
+        let initial_road_name = skeleton
+            .cells
+            .iter()
+            .find(|c| c.x == 2 && c.y == 0)
+            .map(|c| c.name.as_str())
+            .unwrap_or("水尾寮外谷地路");
+        let mut cell = GridCell::new(SquareCoord::new(2, 0), Terrain::Road, initial_road_name);
         cell.explicit_exits.push(ExplicitExit {
             dir: Direction::West,
             target: SquareCoord::new(0, 1),
@@ -688,7 +699,7 @@ mod tests {
 
         let origin = SquareCoord::new(0, 0);
         let endpoints = [
-            (SquareCoord::new(2, 8), "北灣守望石階"),
+            (SquareCoord::new(2, 8), "烏石鼻守望石階"),
             (SquareCoord::new(-7, 7), "巡邏院"),
             (SquareCoord::new(-5, -4), "車隊場"),
             (SquareCoord::new(-10, -3), "議棚前階"),

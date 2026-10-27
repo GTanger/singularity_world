@@ -134,7 +134,108 @@ impl DebtLedger {
             .insert((debt.debtor.clone(), debt.creditor.clone()), tick);
         self.debts.push(debt);
     }
+
+    pub fn settle_for_debtor(&mut self, debtor: &str, amount_paid: i32) -> i32 {
+        let mut remaining = amount_paid.max(0);
+        let mut cleared = 0;
+        for debt in self.debts.iter_mut() {
+            if debt.status == DebtStatus::Active && debt.debtor == debtor {
+                if remaining <= 0 {
+                    break;
+                }
+                if debt.amount <= remaining {
+                    cleared += debt.amount;
+                    remaining -= debt.amount;
+                    debt.amount = 0;
+                    debt.status = DebtStatus::Settled;
+                } else {
+                    debt.amount -= remaining;
+                    cleared += remaining;
+                    remaining = 0;
+                }
+            }
+        }
+        cleared
+    }
 }
+pub static LIVE_DEBT_LEDGER: std::sync::LazyLock<std::sync::RwLock<DebtLedger>> =
+    std::sync::LazyLock::new(|| std::sync::RwLock::new(DebtLedger::default()));
+
+pub fn active_debt_amount(debtor_id: &str) -> i32 {
+    LIVE_DEBT_LEDGER
+        .read()
+        .map(|l| l.active_amount_for_debtor(debtor_id))
+        .unwrap_or(0)
+}
+
+pub fn settle_debt_for_actor(debtor_id: &str, amount_paid: i32) -> i32 {
+    let mut ledger = match LIVE_DEBT_LEDGER.write() {
+        Ok(l) => l,
+        Err(poisoned) => poisoned.into_inner(),
+    };
+    ledger.settle_for_debtor(debtor_id, amount_paid)
+}
+
+pub fn try_credit_purchase(
+    buyer_id: &str,
+    seller_id: &str,
+    item_id: &str,
+    price: i32,
+    buyer_cash: i32,
+    trust_score: i32,
+    now_tick: i64,
+) -> CreditOutcome {
+    let mut buyer = ActorCreditState {
+        id: buyer_id.to_string(),
+        cash: buyer_cash.max(0),
+        trust: HashMap::new(),
+    };
+    let mut seller = ActorCreditState {
+        id: seller_id.to_string(),
+        cash: 0,
+        trust: {
+            let mut map = HashMap::new();
+            map.insert(buyer_id.to_string(), trust_score);
+            map
+        },
+    };
+    let intent = TradeIntent {
+        item_id: item_id.to_string(),
+        price,
+        urgency: 50,
+    };
+    let policy = DebtPolicy {
+        min_trust: 15,
+        min_urgency: 30,
+        max_single_amount: 120,
+        ..DebtPolicy::default()
+    };
+    let mut ledger = match LIVE_DEBT_LEDGER.write() {
+        Ok(l) => l,
+        Err(poisoned) => poisoned.into_inner(),
+    };
+    let outcome = resolve_trade_credit(
+        &mut buyer,
+        &mut seller,
+        &intent,
+        &mut ledger,
+        &policy,
+        now_tick,
+    );
+    match outcome {
+        CreditOutcome::DebtCreated {
+            debt_id,
+            upfront_paid,
+            deferred_amount,
+        } => CreditOutcome::PurchasedOnCredit {
+            cash_paid: upfront_paid,
+            debt_created: deferred_amount,
+            debt_id,
+        },
+        other => other,
+    }
+}
+
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CreditOutcome {
@@ -145,6 +246,11 @@ pub enum CreditOutcome {
         debt_id: u64,
         upfront_paid: i32,
         deferred_amount: i32,
+    },
+    PurchasedOnCredit {
+        cash_paid: i32,
+        debt_created: i32,
+        debt_id: u64,
     },
     Rejected {
         reason: CreditRejectReason,
@@ -578,7 +684,7 @@ mod tests {
 
             match resolve_trade_credit(&mut buyer, &mut seller, &intent(6), &mut ledger, &policy, i)
             {
-                CreditOutcome::DebtCreated { .. } => created += 1,
+                CreditOutcome::DebtCreated { .. } | CreditOutcome::PurchasedOnCredit { .. } => created += 1,
                 CreditOutcome::Rejected { .. } => rejected += 1,
                 CreditOutcome::Paid { .. } => {}
             }
@@ -590,5 +696,27 @@ mod tests {
         assert_eq!(ledger.active_count_for_creditor("seller-1"), 1);
         assert_eq!(ledger.active_count_for_creditor("seller-2"), 1);
         assert_eq!(rejected, 26);
+    }
+
+    #[test]
+    fn test_live_debt_ledger_and_credit_purchase() {
+        let debtor = "test_player_credit_1";
+        let creditor = "test_vendor_credit_1";
+        let outcome = try_credit_purchase(debtor, creditor, "mat_timber_log", 50, 10, 25, 100);
+        assert!(matches!(
+            outcome,
+            CreditOutcome::PurchasedOnCredit {
+                cash_paid: 10,
+                debt_created: 40,
+                ..
+            }
+        ));
+        assert_eq!(active_debt_amount(debtor), 40);
+        let cleared = settle_debt_for_actor(debtor, 25);
+        assert_eq!(cleared, 25);
+        assert_eq!(active_debt_amount(debtor), 15);
+        let cleared_rest = settle_debt_for_actor(debtor, 30);
+        assert_eq!(cleared_rest, 15);
+        assert_eq!(active_debt_amount(debtor), 0);
     }
 }

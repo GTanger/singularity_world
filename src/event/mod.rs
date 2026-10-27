@@ -14,6 +14,7 @@ pub mod types {
     pub const TRADE: &str = "trade";
     pub const SCENE_OBJECT_ACTION: &str = "scene_object_action";
     pub const SCENE_OBJECT_STATE: &str = "scene_object_state";
+    pub const RESOURCE_GATHER: &str = "resource_gather";
     pub const VIT: &str = "vit";
 }
 

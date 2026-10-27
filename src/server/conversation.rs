@@ -23,6 +23,40 @@ fn buffer_key(player_id: &str, npc_id: &str) -> String {
     format!("{player_id}\u{0000}{npc_id}")
 }
 
+fn sanitize_talk_text(s: &str) -> String {
+    let mut out = s
+        .replace('\r', " ")
+        .replace('\n', " ")
+        .replace("剛才", "先前")
+        .replace("剛剛", "先前")
+        .replace("小市", "市集")
+        .replace("短市", "市集")
+        .replace("還有", "另有")
+        .replace("資料庫", "卷宗")
+        .replace("database", "卷宗")
+        .replace("grid", "街坊")
+        .replace("debug", "")
+        .replace("scene_stub", "")
+        .replace("聖塔", "白塔")
+        .replace("110V", "")
+        .replace("110v", "")
+        .replace("念場", "心神")
+        .replace("富態", "寬厚");
+    while out.contains("  ") {
+        out = out.replace("  ", " ");
+    }
+    out.trim().to_string()
+}
+
+fn truncate_snippet(s: &str, max_chars: usize) -> String {
+    let sanitized = sanitize_talk_text(s);
+    if sanitized.chars().count() > max_chars {
+        sanitized.chars().take(max_chars).collect::<String>() + "…"
+    } else {
+        sanitized
+    }
+}
+
 fn consolidate_turns(turns: &[ConversationTurn]) -> Vec<String> {
     if turns.is_empty() {
         return Vec::new();
@@ -34,25 +68,76 @@ fn consolidate_turns(turns: &[ConversationTurn]) -> Vec<String> {
     };
     picked
         .into_iter()
-        .map(|t| format!("玩家說：{}；NPC回：{}", t.player_input, t.npc_reply))
+        .map(|t| {
+            let clean_p = sanitize_talk_text(&t.player_input);
+            let clean_r = sanitize_talk_text(&t.npc_reply);
+            format!("來客言：「{}」；回應道：「{}」", clean_p, clean_r)
+        })
         .collect()
 }
 
 fn summary_from_turns(turns: &[ConversationTurn]) -> String {
-    let Some(last) = turns.last() else {
+    if turns.is_empty() {
         return String::new();
+    }
+    let window: Vec<&ConversationTurn> = if turns.len() <= 2 {
+        turns.iter().collect()
+    } else {
+        turns[turns.len() - 2..].iter().collect()
     };
-    let mut s = last.player_input.trim().to_string();
-    if s.chars().count() > 30 {
-        s = s.chars().take(30).collect::<String>() + "…";
+
+    let p_snippets: Vec<String> = window
+        .iter()
+        .map(|t| truncate_snippet(&t.player_input, 28))
+        .filter(|s| !s.is_empty() && s != "（搭話）")
+        .collect();
+
+    let r_snippets: Vec<String> = window
+        .iter()
+        .map(|t| truncate_snippet(&t.npc_reply, 28))
+        .filter(|s| !s.is_empty())
+        .collect();
+
+    let p_snip = if p_snippets.is_empty() {
+        "寒暄問候".to_string()
+    } else {
+        p_snippets.join("／")
+    };
+
+    let r_snip = if r_snippets.is_empty() {
+        "略作回應".to_string()
+    } else {
+        r_snippets.join("／")
+    };
+
+    format!(
+        "曾與來客交談（共 {} 輪）：來客提及「{}」，回應「{}」。",
+        turns.len(),
+        p_snip,
+        r_snip
+    )
+}
+
+/// 讀取 (player_id, npc_id) 最近 `limit` 輪對話紀錄 (player_input, npc_reply)。
+pub fn get_recent_turns(player_id: &str, npc_id: &str, limit: usize) -> Vec<(String, String)> {
+    if limit == 0 {
+        return Vec::new();
     }
-    if s.is_empty() || s == "（搭話）" {
-        return "最近曾與玩家對話。".to_string();
+    let key = buffer_key(player_id, npc_id);
+    let g = BUFFERS.lock().expect("conversation buffers poisoned");
+    if let Some(buf) = g.get(&key) {
+        let start = buf.len().saturating_sub(limit);
+        buf[start..]
+            .iter()
+            .map(|t| (t.player_input.clone(), t.npc_reply.clone()))
+            .collect()
+    } else {
+        Vec::new()
     }
-    format!("最近聊過：「{s}」。")
 }
 
 /// 若上一場已逾時：先 consolidation 寫 archival(tag=event)+summary；再 append 本輪。
+/// 同時立即持久化至 archival(tag=player_talk) 與更新 npc_summary，確保記憶永續不忘。
 pub fn flush_conversation_and_append(
     player_id: &str,
     npc_id: &str,
@@ -84,5 +169,57 @@ pub fn flush_conversation_and_append(
         let keep_from = buf.len() - MAX_TURNS_PER_BUFFER;
         buf = buf.split_off(keep_from);
     }
+
+    let trimmed_input = player_input.trim();
+    let trimmed_reply = npc_reply.trim();
+    if !trimmed_input.is_empty() && !trimmed_reply.is_empty() {
+        let clean_p = sanitize_talk_text(trimmed_input);
+        let clean_r = sanitize_talk_text(trimmed_reply);
+        let archival_line = format!(
+            "與來客({})交談：對方說「{}」，我回應「{}」",
+            player_id, clean_p, clean_r
+        );
+        let _ = db::insert_archival(npc_id, &archival_line, "player_talk");
+        let sum = summary_from_turns(&buf);
+        if !sum.is_empty() {
+            let _ = db::set_npc_summary(npc_id, &sum);
+        }
+    }
+
     g.insert(key, buf);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_summary_from_turns_and_sanitization() {
+        let turns = vec![
+            ConversationTurn {
+                player_input: "剛才在小市聽說了些傳聞還有別的".to_string(),
+                npc_reply: "剛剛確實有些消息".to_string(),
+                at: 100,
+            },
+            ConversationTurn {
+                player_input: "請問最近渡口有船班嗎？".to_string(),
+                npc_reply: "今日午後便有一班渡船靠岸。".to_string(),
+                at: 110,
+            },
+        ];
+
+        let sum = summary_from_turns(&turns);
+        assert!(sum.contains("共 2 輪"));
+        assert!(sum.contains("先前在市集聽說了些傳聞另有別的"));
+        assert!(sum.contains("先前確實有些消息"));
+        assert!(!sum.contains("剛才"));
+        assert!(!sum.contains("剛剛"));
+        assert!(!sum.contains("小市"));
+        assert!(!sum.contains("還有"));
+
+        let consolidated = consolidate_turns(&turns);
+        assert_eq!(consolidated.len(), 2);
+        assert!(!consolidated[0].contains("剛才"));
+        assert!(!consolidated[0].contains("小市"));
+    }
 }

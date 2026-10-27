@@ -5,7 +5,7 @@ use crate::store;
 use super::ErrNoStore;
 
 /// 創生預設房間名稱。
-pub const SPAWN_ROOM_NAME: &str = "宜林";
+pub const SPAWN_ROOM_NAME: &str = "文曜";
 
 /// 取得創生預設房間 id。
 pub fn get_spawn_room_id() -> String {
@@ -81,6 +81,12 @@ pub fn set_entity_room(entity_id: &str, room_id: &str) -> anyhow::Result<()> {
     let arc = store::get_store().ok_or(ErrNoStore)?;
     let mut s = arc.write();
     s.set_entity_room(entity_id, room_id)
+}
+
+/// 實體唯一權威場所 id；無正式場所時回傳 None。
+pub fn get_entity_place_id(entity_id: &str) -> Option<String> {
+    let arc = store::get_store()?;
+    arc.read().get_entity_place_id(entity_id)
 }
 
 /// 權威正方格座標；見 [`store::Store::set_entity_grid`]（同步 `entity_rooms` 為 `grid:…`）。

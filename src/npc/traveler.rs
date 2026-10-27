@@ -299,8 +299,8 @@ fn compute_next_path(
             if rng.random_range(0.0..1.0) < 0.20 {
                 let mut npc_name =
                     get_npc_display_label_at_hour(&t.entity_id, game_hour).unwrap_or_default();
-                if npc_name.is_empty() {
-                    npc_name = t.entity_id.clone();
+                if npc_name.is_empty() || npc_name.is_ascii() {
+                    npc_name = "行路旅人".to_string();
                 }
                 let nar = build_departure_narrative(&npc_name, final_intent.ty);
                 if !nar.is_empty() {

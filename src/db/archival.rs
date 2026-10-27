@@ -219,7 +219,7 @@ pub fn search_archival(entity_id: &str, query: &str, top_k: usize) -> Vec<String
     if entries.is_empty() || top_k == 0 {
         return Vec::new();
     }
-    entries.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+    entries.sort_by_key(|b| std::cmp::Reverse(b.created_at));
     let query = query.trim();
     if query.is_empty() {
         return entries.into_iter().take(top_k).map(|e| e.content).collect();
@@ -248,7 +248,7 @@ pub fn search_archival_for_player_talk(entity_id: &str, query: &str, top_k: usiz
     if entries.is_empty() || top_k == 0 {
         return Vec::new();
     }
-    entries.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+    entries.sort_by_key(|b| std::cmp::Reverse(b.created_at));
     let query = query.trim();
     if query.is_empty() {
         return entries.into_iter().take(top_k).map(|e| e.content).collect();

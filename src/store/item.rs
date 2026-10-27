@@ -18,7 +18,20 @@ impl Store {
     pub fn ensure_p0_material_items(&mut self) -> usize {
         let mut inserted = 0;
         for item in crate::world::materials::material_item_defs() {
-            if !self.items.contains_key(&item.id) {
+            if let Some(existing) = self.items.get_mut(&item.id) {
+                if existing.origin.is_empty()
+                    || existing.origin.contains("北岸")
+                    || existing.origin.contains("中鎮")
+                    || existing.origin.contains("短市")
+                    || existing.origin.contains("小市")
+                    || existing.origin.contains("水尾寮渡頭小市")
+                    || existing.origin.contains("補給小市")
+                    || existing.origin.contains("邊市")
+                {
+                    existing.origin = item.origin;
+                    existing.description = item.description;
+                }
+            } else {
                 self.items.insert(item.id.clone(), item);
                 inserted += 1;
             }

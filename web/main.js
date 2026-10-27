@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；登入、房間視野、依出口移動。傳統 MUD 節點連接節點。v0.24.6
+// WebSocket 連線與遊戲主邏輯；把後端世界狀態投射成可操作文字表面。v0.26.0
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';
@@ -10,10 +10,6 @@
 	let reconnecting = false;
 	let lastPongTime = 0;
 	let reconnectDelay = 1500;
-	let lastEntryLogRoom = '';
-	let lastEntryLogRoomKey = '';
-	let lastEntryLogKey = '';
-	let seenEntryLogRooms = {};
 	const state = {
 		room_id: '',
 		room_name: '',
@@ -26,10 +22,58 @@
 		game_days_since_epoch: 0
 	};
 
-	/** 同房實體互動：對齊後端 Borrow / Subdue / Slay（舊 Attack＝送行，後端已映射） */
-	const ENTITY_INTERACT_LABELS = { Talk: '對話', Borrow: '借物', Subdue: '留人', Slay: '送行', Trade: '交易', Attack: '攻擊' };
-	const ENTITY_INTERACT_ORDER = ['Talk', 'Borrow', 'Trade', 'Subdue', 'Slay'];
+	/** 同房實體互動：對齊後端 Borrow(偷竊) / Subdue(攻擊) / Slay(致死) */
+	const ENTITY_INTERACT_LABELS = { Look: '觀察', Talk: '對話', Borrow: '偷竊', Subdue: '攻擊', Slay: '致死', Trade: '交易', Attack: '攻擊' };
+	const ENTITY_INTERACT_ORDER = ['Look', 'Talk', 'Trade', 'Borrow', 'Subdue', 'Slay'];
 
+	function resolveEntityDisplayName(targetId, rawTargetName) {
+		if (targetId && window.SwObjectList && typeof window.SwObjectList.getKnownNpcName === 'function') {
+			var known = window.SwObjectList.getKnownNpcName(targetId);
+			if (known) return known;
+		}
+		var name = (rawTargetName || '').trim();
+		if (name && !/^wt_npc_|^npc_/i.test(name) && !/^陌生人|^眼前之人|^行人$/.test(name)) {
+			return name;
+		}
+		if (targetId) {
+			try {
+				var leftBtn = document.querySelector('#sw-left-column [data-entity-id="' + targetId + '"]');
+				if (leftBtn) {
+					var nameSpan = leftBtn.querySelector('.sw-person-name');
+					var foundName = (nameSpan ? nameSpan.textContent : leftBtn.textContent).trim();
+					if (foundName && !/^wt_npc_|^npc_/i.test(foundName)) return foundName;
+				}
+			} catch (e) {}
+			if (state.entities && state.entities.length) {
+				for (var i = 0; i < state.entities.length; i++) {
+					var ent = state.entities[i];
+					if (ent && ent.id === targetId) {
+						var dName = (ent.display_name || ent.name || '').trim();
+						if (dName && !/^wt_npc_|^npc_/i.test(dName)) return dName;
+					}
+				}
+			}
+		}
+		return name || '眼前之人';
+	}
+
+	function renderEntityActionButtonsHtml(targetId, targetName) {
+		var cleanName = resolveEntityDisplayName(targetId, targetName);
+		var peaceActions = [
+			{ act: 'Talk', label: '對話' },
+			{ act: 'Trade', label: '交易' }
+		];
+		var html = peaceActions.map(function (item) {
+			return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(targetId) + '" data-action="' + escapeHtml(item.act) + '" data-target-name="' + escapeHtml(cleanName) + '">' + escapeHtml(item.label) + '</span>】';
+		}).join('');
+		html += '【<span class="log-conflict-toggle" role="button" tabindex="0" title="展開偷竊／攻擊／致死選項">衝突 ▾</span>】';
+		html += '<span class="log-conflict-group" style="display:none;" hidden>';
+		html += '【<span class="log-object-action log-action-steal" role="button" tabindex="0" data-entity-id="' + escapeHtml(targetId) + '" data-action="Borrow" data-target-name="' + escapeHtml(cleanName) + '">偷竊</span>】';
+		html += '【<span class="log-object-action log-action-subdue" role="button" tabindex="0" data-entity-id="' + escapeHtml(targetId) + '" data-action="Subdue" data-target-name="' + escapeHtml(cleanName) + '">攻擊</span>】';
+		html += '【<span class="log-object-action log-action-slay" role="button" tabindex="0" data-entity-id="' + escapeHtml(targetId) + '" data-action="Slay" data-target-name="' + escapeHtml(cleanName) + '">致死</span>】';
+		html += '</span>';
+		return html;
+	}
 	// log 捲動/追加 API 移至 web/sw-log.js（window.SwLog）
 	var _L = window.SwLog || {};
 	var appendLog = _L.appendLog;
@@ -43,7 +87,113 @@
 		div.textContent = s;
 		return div.innerHTML;
 	}
+	// ── 戰鬥與探索敘事 100% 去數值化過濾 ─────────────────────────────
+	function deNumericText(s) {
+		if (!s) return '';
+		var t = String(s);
+		// 替換回合、傷害、氣血扣減等裸露數值為體感描述
+		t = t.replace(/第\s*\d+\s*回合/g, '交鋒換氣之際');
+		t = t.replace(/受到\s*\d+\s*點傷害/g, '勁力破防，身形微晃');
+		t = t.replace(/造成\s*\d+\s*點傷害/g, '勁透內甲，攻勢凌厲');
+		t = t.replace(/傷害\s*[-+]?\d+/g, '勁力震盪');
+		t = t.replace(/氣血\s*[-]\d+/g, '氣息受挫');
+		t = t.replace(/氣血\s*[+]\d+/g, '氣脈舒緩');
+		t = t.replace(/HP[:\s]*\d+\s*\/\s*\d+/gi, '');
+		t = t.replace(/MP[:\s]*\d+\s*\/\s*\d+/gi, '');
+		t = t.replace(/Lv\.\s*\d+/gi, '');
+		return t;
+	}
 
+	// ── 戰鬥對峙空檔與戰術決策按鈕列控制 ─────────────────────────
+	function showTacticalChoices(choices) {
+		var choiceList = (Array.isArray(choices) && choices.length) ? choices : ['趁勢搶攻', '專攻部位', '守勢游鬥', '搏命硬撼', '抽身脫離'];
+		var container = document.getElementById('sw-tactical-choices');
+		if (container) {
+			container.hidden = false;
+			var btns = container.querySelectorAll('.sw-tactical-btn');
+			for (var i = 0; i < btns.length; i++) {
+				var btn = btns[i];
+				var val = choiceList[i] || btn.getAttribute('data-choice');
+				if (val) {
+					btn.textContent = val;
+					btn.setAttribute('data-choice', val);
+					btn.hidden = false;
+				} else {
+					btn.hidden = true;
+				}
+			}
+			if (container.scrollIntoView) container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+		}
+
+		var backdrop = document.getElementById('sw-object-popover-backdrop');
+		var popLog = document.getElementById('sw-popover-log');
+		if (backdrop && !backdrop.hidden && backdrop.style.display !== 'none' && popLog) {
+			var oldInlines = popLog.querySelectorAll('.log-tactical-inline');
+			for (var oi = 0; oi < oldInlines.length; oi++) {
+				oldInlines[oi].remove();
+			}
+			var entryDiv = document.createElement('div');
+			entryDiv.className = 'sw-log-entry log-entry log-tactical-inline';
+			entryDiv.innerHTML = '<div class="sw-tactical-hint" style="margin-bottom:6px;">戰術對峙・抉擇契機</div>' +
+				'<div class="sw-tactical-actions" style="display:flex;flex-wrap:wrap;gap:8px;">' +
+				choiceList.map(function (c) {
+					return '<button type="button" class="sw-tactical-btn" data-choice="' + escapeHtml(c) + '">' + escapeHtml(c) + '</button>';
+				}).join('') +
+				'</div>';
+			entryDiv.addEventListener('click', function (e) {
+				var b = e.target.closest('.sw-tactical-btn');
+				if (!b || b.disabled) return;
+				var choice = b.getAttribute('data-choice') || b.textContent.trim();
+				if (choice && window.gameSend) {
+					var allBtns = entryDiv.querySelectorAll('.sw-tactical-btn');
+					for (var bi = 0; bi < allBtns.length; bi++) {
+						allBtns[bi].disabled = true;
+					}
+					window.gameSend({ type: 'tactical_choice', choice: choice });
+					if (appendLog) {
+						appendLog('凝神對峙，定計【' + choice + '】……');
+					}
+					hideTacticalChoices();
+				}
+			});
+			popLog.appendChild(entryDiv);
+			popLog.scrollTop = popLog.scrollHeight;
+		}
+	}
+
+	function hideTacticalChoices() {
+		var container = document.getElementById('sw-tactical-choices');
+		if (container) container.hidden = true;
+		var popLog = document.getElementById('sw-popover-log');
+		if (popLog) {
+			var inlines = popLog.querySelectorAll('.log-tactical-inline');
+			for (var i = 0; i < inlines.length; i++) {
+				inlines[i].remove();
+			}
+		}
+	}
+
+	function bindTacticalChoices() {
+		var container = document.getElementById('sw-tactical-choices');
+		if (!container || container._bound) return;
+		container._bound = true;
+		container.addEventListener('click', function (e) {
+			var btn = e.target.closest('.sw-tactical-btn');
+			if (!btn || btn.disabled) return;
+			var choice = btn.getAttribute('data-choice') || btn.textContent.trim();
+			if (choice && window.gameSend) {
+				var allBtns = container.querySelectorAll('.sw-tactical-btn');
+				for (var bi = 0; bi < allBtns.length; bi++) {
+					allBtns[bi].disabled = true;
+				}
+				window.gameSend({ type: 'tactical_choice', choice: choice });
+				if (appendLog) {
+					appendLog('凝神對峙，定計【' + choice + '】……');
+				}
+				hideTacticalChoices();
+			}
+		});
+	}
 	function isConnected() {
 		return socket && socket.readyState === WebSocket.OPEN;
 	}
@@ -97,14 +247,20 @@
 			try {
 				const msg = JSON.parse(ev.data);
 				switch (msg.type) {
+					case 'room_view':
 					case 'view':
 						state.room_id = msg.room_id || '';
 						state.room_name = msg.room_name || '';
 						state.description = msg.description || '';
 						state.exits = Array.isArray(msg.exits) ? msg.exits : [];
-						state.entities = msg.entities || [];
+						state.entities = Array.isArray(msg.entities) ? msg.entities : [];
 						window.SwNarrative.indexNames(state.entities);
 						state.objects = Array.isArray(msg.objects) ? msg.objects : [];
+						if (Array.isArray(msg.harvestables)) state.harvestables = msg.harvestables;
+						if (msg.weather) state.weather = msg.weather;
+						if (Array.isArray(msg.cells) || Array.isArray(msg.grid_cells)) {
+							state.cells = Array.isArray(msg.cells) ? msg.cells : msg.grid_cells;
+						}
 						if (typeof msg.server_unix === 'number' && typeof msg.game_time_sec_since_midnight === 'number' && typeof msg.game_days_since_epoch === 'number') {
 							var GAME_TIME_SCALE = 24;
 							var GAME_SEC_PER_DAY = 86400;
@@ -121,8 +277,14 @@
 						window.SwClock.startTicker();
 						window.SwClock.updateDisplay();
 						window.SwClock.draw();
+						if (window.onRoomViewUpdate) window.onRoomViewUpdate(msg);
 						break;
 					case 'grid_view':
+						if (Array.isArray(msg.entities)) {
+							state.entities = msg.entities;
+							window.SwNarrative.indexNames(state.entities);
+						}
+						if (Array.isArray(msg.objects)) state.objects = msg.objects;
 						if (window.updateRoomData) window.updateRoomData(msg);
 						if (window.onGridView) window.onGridView(msg);
 						if (typeof msg.server_unix === 'number' && typeof msg.game_time_sec_since_midnight === 'number') {
@@ -175,6 +337,7 @@
 							state.me.room_id = msg.room_id;
 							state.me.room_name = msg.room_name;
 							if (window.mapState) window.mapState.moving = false;
+							hideTacticalChoices();
 						}
 						window.SwClock.draw();
 						break;
@@ -226,6 +389,15 @@
 						// 對話回覆後直接顯示【對話】【攻擊】【交易】，不用再點一次角色
 						var talkTargetId = msg.target_id || '';
 						var talkTargetName = msg.target_name || talkTargetId;
+						if (talkTargetId && talkTargetName && !/^陌生人|^眼前之人|^行人|^npc_|^wt_npc_/i.test(talkTargetName)) {
+							if (window.SwObjectList && window.SwObjectList.applyObservationUpdate) {
+								window.SwObjectList.applyObservationUpdate({
+									target_id: talkTargetId,
+									new_state: 'named',
+									tag: talkTargetName
+								});
+							}
+						}
 						if (talkTargetId && msg.open_trade && msg.suggested_action === 'Trade') {
 							if (window.gameSend) {
 								window.gameSend({ type: 'do_action', entity_id: talkTargetId, action: 'Trade', player_input: '' });
@@ -234,11 +406,7 @@
 								window.SwInteractions.appendTradeInputRow(talkTargetId, talkTargetName);
 							}
 						} else if (talkTargetId) {
-							var talkParts = ENTITY_INTERACT_ORDER.map(function (act) {
-								var label = ENTITY_INTERACT_LABELS[act] || act;
-								return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(talkTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(talkTargetName) + '">' + escapeHtml(label) + '</span>】';
-							});
-							appendObjectActionsLine(talkParts.join(''));
+							appendObjectActionsLine(renderEntityActionButtonsHtml(talkTargetId, talkTargetName));
 						}
 					} else if (msg.action === 'Trade') {
 						if (window.SwInteractions) window.SwInteractions.removeLogPendingTrade();
@@ -250,39 +418,102 @@
 						var tradeTargetId = msg.target_id || '';
 						var tradeTargetName = msg.target_name || tradeTargetId;
 						if (tradeTargetId) {
-							var shouldOpenTradeInput = /願意向你賣出|請輸入你願付的鎂數|至少要\s*\d+\s*鎂才肯點頭|請輸入有效的鎂數/.test(tNarrative);
+							var shouldOpenTradeInput = /願意向你賣出|願意交付|請輸入你願付的鎂數|至少要\s*\d+\s*鎂才肯點頭|請輸入有效的鎂數/.test(tNarrative);
 							if (shouldOpenTradeInput && window.SwInteractions && window.SwInteractions.appendTradeInputRow) {
 								window.SwInteractions.appendTradeInputRow(tradeTargetId, tradeTargetName);
 							} else {
-								var tParts = ENTITY_INTERACT_ORDER.map(function (act) {
-									var lab = ENTITY_INTERACT_LABELS[act] || act;
-									return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(tradeTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(tradeTargetName) + '">' + escapeHtml(lab) + '</span>】';
-								});
-								appendObjectActionsLine(tParts.join(''));
+								appendObjectActionsLine(renderEntityActionButtonsHtml(tradeTargetId, tradeTargetName));
 							}
 						}
 					} else if (msg.action === 'Borrow') {
 						var bNarrative = msg.narrative;
-						if (!bNarrative) bNarrative = '（借物無回應）';
+						if (!bNarrative) bNarrative = '（偷竊無回應）';
 						var bHtml = window.SwNarrative.format(bNarrative);
 						bHtml = window.SwNarrative.formatWithClickable(bHtml, state.objects);
 						appendNarrative(bHtml, 'Borrow');
 						var borrowTargetId = msg.target_id || '';
 						var borrowTargetName = msg.target_name || borrowTargetId;
 						if (borrowTargetId) {
-							var bParts = ENTITY_INTERACT_ORDER.map(function (act) {
-								var bl = ENTITY_INTERACT_LABELS[act] || act;
-								return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(borrowTargetId) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(borrowTargetName) + '">' + escapeHtml(bl) + '</span>】';
-							});
-							appendObjectActionsLine(bParts.join(''));
+							appendObjectActionsLine(renderEntityActionButtonsHtml(borrowTargetId, borrowTargetName));
 						}
 					} else if (msg.narrative) {
-						var narrativeHtml = window.SwNarrative.format(msg.narrative);
+						var narrativeText = msg.narrative;
+						var extractedDialogue = '';
+						if (msg.action === 'Look' && narrativeText.indexOf('【正在交談】') !== -1) {
+							var dlgIdx = narrativeText.indexOf('【正在交談】');
+							extractedDialogue = narrativeText.slice(dlgIdx).replace(/^【正在交談】\s*/, '').trim();
+							narrativeText = narrativeText.slice(0, dlgIdx).replace(/\s+$/, '');
+						}
+						var backdrop = document.getElementById('sw-object-popover-backdrop');
+						var popLog = document.getElementById('sw-popover-log');
+						if (msg.action === 'Look' && backdrop && !backdrop.hidden && backdrop.style.display !== 'none' && popLog) {
+							var existingDialogues = popLog.querySelectorAll('.log-npc-dialogue');
+							for (var di = 0; di < existingDialogues.length; di++) {
+								var dText = (existingDialogues[di].textContent || '').replace(/^【正在交談】\s*/, '').trim();
+								if (dText && narrativeText.indexOf(dText) !== -1) {
+									popLog.removeChild(existingDialogues[di]);
+								}
+							}
+							if (window.__popoverLogCache) {
+								var G = window.SwGrid;
+								var cRoom = (G && G.mapData && G.mapData.currentRoomId) || '';
+								var activeT = window.__currentPopoverTarget;
+								var cKey = cRoom + '|' + (activeT ? activeT.id : '');
+								if (window.__popoverLogCache[cKey]) {
+									window.__popoverLogCache[cKey] = window.__popoverLogCache[cKey].filter(function (entry) {
+										if (entry.classList && entry.classList.contains('log-npc-dialogue')) {
+											var eText = (entry.textContent || '').replace(/^【正在交談】\s*/, '').trim();
+											return !(eText && narrativeText.indexOf(eText) !== -1);
+										}
+										return true;
+									});
+								}
+							}
+						}
+						var narrativeHtml = window.SwNarrative.format(narrativeText);
 						narrativeHtml = window.SwNarrative.formatWithClickable(narrativeHtml, state.objects);
 						appendNarrative(narrativeHtml, msg.action);
 						// 觀看後下一行顯示可執行的其他動作（物件：移動/閱讀…；人物：對話/攻擊）
 						if (msg.action === 'Look') {
-								var actionLabels = { 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟', 'Queue': '候號', 'AcceptJob': '應工', 'JoinCheck': '候檢', 'RegisterComplaint': '押名', 'Rest': '歇腳', 'BuySoup': '買滿碗熱湯（2鎂）', 'QueueBroth': '等分湯', 'CarryCargo': '搬貨收鎂', 'HelpRope': '搭手拉繩', 'DryOff': '避風晾衣', 'WarmHands': '烘手', 'TalkQueue': '攀談船期', 'QueueFerry': '排隊候船', 'SellReeds': '賣蘆草', 'SellSackcloth': '交麻袋布', 'SellRope': '交麻繩卷', 'BoardFerry': '憑隊上船', 'StepAshore': '踩泥上岸', 'CheckCargo': '對貨領尾款', 'Gather': '採集', 'Sit': '坐下', 'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作', 'Talk': '對話', 'Borrow': '借物', 'Subdue': '留人', 'Slay': '送行', 'Trade': '交易', 'Attack': '攻擊', 'Move': '移動' };
+							var actionLabels = window.SwActionLabels || {
+								// Core
+								'Look': '觀察', 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟',
+								'Queue': '候號', 'AcceptJob': '應工', 'Rest': '歇腳', 'BuySoup': '買滿碗熱湯',
+								'Gather': '採集', 'Acquire': '採買入袋', 'Wash': '洗漱淨手', 'Sit': '坐下',
+								'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作',
+								'Move': '前往', 'Talk': '對話', 'Trade': '交易', 'Borrow': '偷竊',
+								'Subdue': '攻擊', 'Slay': '致死', 'Attack': '攻擊',
+								// Wood / Fire / Camp
+								'MakeFire': '生火', 'AddFuel': '添柴', 'SplitWood': '劈柴', 'RefinePlank': '裁鋸木板',
+								'BurnCharcoal': '悶燒木炭', 'CraftTorch': '扎製火把', 'CraftHandle': '車削木柄',
+								'CollectCharcoal': '收取木炭', 'RoastFood': '炙烤食物', 'RepairStructure': '修繕加固',
+								// Ore / Smithing
+								'WashOre': '淘洗礦砂', 'CrushOre': '粉碎礦石', 'SmeltIngot': '熔煉金屬',
+								'ForgeTool': '鍛打器具', 'CastHardware': '澆鑄五金', 'SharpenBlade': '砥石磨刃',
+								'Quench': '淬火', 'ForgeRepairStrip': '鍛修鐵條',
+								// Herbs / Alchemy
+								'SortHerbs': '分揀藥草', 'DryHerbs': '曝曬藥材', 'GrindPowder': '研製藥粉',
+								'DecoctPotion': '煎煮湯劑', 'MakePoultice': '調製敷料', 'DistillEssence': '萃煉純露',
+								'WashHerb': '淘洗藥草', 'DryHerb': '曝曬藥材', 'CrushHerb': '研碎藥草', 'BoilDecoction': '煎煮湯劑',
+								// Fiber / Paper / Cloth
+								'SoakFiber': '漚浸纖維', 'TwistCord': '搓捻麻繩', 'WeaveCloth': '紡織布匹',
+								'OilCanvas': '桐油浸布', 'PressPaper': '抄造紙張', 'Stitch': '縫紉', 'TwistRope': '搓捻麻繩',
+								// Hide / Shell / Boots
+								'ScrapeHide': '刮治生皮', 'BoilFishGlue': '熬製魚膠', 'CalcifyShell': '煅燒貝灰',
+								'CobbleBoots': '縫製行靴',
+								// Ferry / Wharf / Tasks
+								'JoinCheck': '候檢', 'RegisterComplaint': '押名', 'QueueBroth': '等分湯',
+								'CarryCargo': '搬貨收鎂', 'HelpRope': '搭手拉繩', 'DryOff': '避風晾衣',
+								'WarmHands': '烘手', 'TalkQueue': '攀談船期', 'QueueFerry': '排隊候船',
+								'SellReeds': '賣蘆草', 'SellSackcloth': '交麻袋布', 'SellRope': '交麻繩卷',
+								'BoardFerry': '憑隊上船', 'StepAshore': '踩泥上岸', 'CheckCargo': '對貨領尾款',
+								// Living / Artisan
+								'Sleep': '安歇', 'Bath': '洗沐', 'Drink': '汲水飲用', 'Water': '澆灌',
+								'Measure': '丈量', 'Calculate': '推算', 'Observe': '觀測', 'TestBrush': '試筆',
+								'GrindInk': '研墨', 'Weigh': '秤量', 'Sharpen': '磨利', 'Feed': '餵食',
+								'Shake': '搖動', 'Ring': '叩鐘', 'Caulking': '捻縫', 'Pound': '舂搗',
+								'PickType': '揀字', 'RollInk': '滾墨', 'Explore': '深入探索'
+							};
 							var others = [];
 							var targetId = msg.target_id || '';
 							// 優先使用後端在 action_result 帶上的 actions（建築 Look 後必有【移動】等）
@@ -290,16 +521,19 @@
 								others = msg.actions;
 							} else {
 								var obj = null;
-								if (state.objects && state.objects.length) {
-									for (var i = 0; i < state.objects.length; i++) {
-										if (state.objects[i].id === msg.target_id || state.objects[i].name === msg.target_name) {
-											obj = state.objects[i];
+								var pool = (state.objects && state.objects.length) ? state.objects :
+									((window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.objects) || []);
+								if (pool && pool.length) {
+									for (var i = 0; i < pool.length; i++) {
+										if (pool[i].id === msg.target_id || pool[i].name === msg.target_name) {
+											obj = pool[i];
 											break;
 										}
 									}
 								}
-								if (obj && obj.actions) {
-									others = obj.actions.filter(function (a) { return a !== 'Look'; });
+								if (obj && (obj.actions || obj.sockets)) {
+									var objActs = obj.actions || obj.sockets || [];
+									others = objActs.filter(function (a) { return a !== 'Look'; });
 									targetId = obj.id;
 								} else if (state.entities && state.entities.length) {
 									for (var j = 0; j < state.entities.length; j++) {
@@ -314,79 +548,152 @@
 									}
 								}
 							}
-							if (others.length) {
-								var targetName = msg.target_name || msg.target_id || '';
-								var parts = others.map(function (act) {
-									var label = actionLabels[act] || act;
-									// 建築名 Look 後後端帶 move_target_id 時，僅【移動】對該 id 送 do_action（同房的門／簾）
-									var idForAction = (act === 'Move' && msg.move_target_id) ? msg.move_target_id : targetId;
-									return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(idForAction) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(targetName) + '">' + escapeHtml(label) + '</span>】';
-								});
-								appendObjectActionsLine(parts.join(''));
+							var targetName = resolveEntityDisplayName(targetId, msg.target_name || '');
+							var isPerson = false;
+							if (state.entities && state.entities.length) {
+								for (var ej = 0; ej < state.entities.length; ej++) {
+									if (state.entities[ej].id === targetId) {
+										isPerson = true;
+										break;
+									}
+								}
 							}
-						} else if (msg.action === 'Subdue' || msg.action === 'Slay') {
-							var combatTid = msg.target_id || '';
-							var combatTname = msg.target_name || combatTid;
-							if (combatTid) {
-								var combatParts = ENTITY_INTERACT_ORDER.map(function (act) {
-									var cx = ENTITY_INTERACT_LABELS[act] || act;
-									return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(combatTid) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(combatTname) + '">' + escapeHtml(cx) + '</span>】';
-								});
-								appendObjectActionsLine(combatParts.join(''));
+							if (!isPerson && others.some(function (a) { return a === 'Subdue' || a === 'Slay' || a === 'Talk'; })) {
+								isPerson = true;
+							}
+							var popoverBackdrop = document.getElementById('sw-object-popover-backdrop');
+							var isPopoverOpen = popoverBackdrop && !popoverBackdrop.hidden && popoverBackdrop.style.display !== 'none';
+							if (isPerson) {
+								if (window.SwUpdatePopoverActions) {
+									window.SwUpdatePopoverActions('person', targetId, targetName);
+								}
+								if (!isPopoverOpen) {
+									appendObjectActionsLine(renderEntityActionButtonsHtml(targetId, targetName));
+								}
+							} else {
+								if (window.SwUpdatePopoverActions) {
+									window.SwUpdatePopoverActions('object', targetId, targetName, others, msg.move_target_id);
+								}
+								if (!isPopoverOpen && others.length) {
+									var parts = others.map(function (act) {
+										var label = actionLabels[act] || act;
+										var idForAction = (act === 'Move' && msg.move_target_id) ? msg.move_target_id : targetId;
+										return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(idForAction) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(targetName) + '">' + escapeHtml(label) + '</span>】';
+									});
+									appendObjectActionsLine(parts.join(''));
+								}
+							}
+							if (extractedDialogue && typeof window.SwRecordNpcDialogue === 'function') {
+								window.SwRecordNpcDialogue(msg.target_id || '', '', extractedDialogue);
+							}
+						} else {
+							if (Array.isArray(msg.actions) && window.SwUpdatePopoverActions) {
+								var popoverBackdrop = document.getElementById('sw-object-popover-backdrop');
+								var isPopoverOpen = popoverBackdrop && !popoverBackdrop.hidden && popoverBackdrop.style.display !== 'none';
+								var activeToken = window.__currentPopoverTarget;
+								var targetMatches = false;
+								if (activeToken) {
+									if (msg.target_id && (activeToken.id === msg.target_id || activeToken.key === msg.target_id)) targetMatches = true;
+									if (msg.target_name && (activeToken.name === msg.target_name || activeToken.label === msg.target_name)) targetMatches = true;
+								}
+								if (isPopoverOpen && targetMatches) {
+									var postActs = msg.actions.filter(function (a) { return a && a !== 'Look'; });
+									window.SwUpdatePopoverActions('object', msg.target_id || '', msg.target_name || '', postActs, msg.move_target_id);
+								}
+							}
+							if (msg.action === 'Subdue' || msg.action === 'Slay') {
+								var combatTid = msg.target_id || '';
+								var combatTname = msg.target_name || combatTid;
+								if (combatTid) {
+									appendObjectActionsLine(renderEntityActionButtonsHtml(combatTid, combatTname));
+								}
 							}
 						}
+					}
+					if (Array.isArray(msg.tactical_choices) && msg.tactical_choices.length > 0 && typeof showTacticalChoices === 'function') {
+						showTacticalChoices(msg.tactical_choices);
 					}
 					break;
 				// ── v5 四類新事件分流 ─────────────────────────────────────────
-				case 'room_enter':
-					// 進格事件：觸發 L1-L3 重抽 + L4 重渲；entry_log 接在 L3 後、L4 前
-					var roomEnterName = (msg.terrain && msg.terrain.name) || msg.room_name || '';
-					if (msg.room_id) state.room_id = msg.room_id;
-					if (roomEnterName) state.room_name = roomEnterName;
-					if (msg.terrain && msg.terrain.description) state.description = msg.terrain.description;
-					if (Array.isArray(msg.exits)) state.exits = msg.exits;
-					if (Array.isArray(msg.objects)) state.objects = msg.objects;
-					if (state.me) {
-						state.me.room_id = state.room_id;
-						state.me.room_name = state.room_name;
-					}
-					if (window.onRoomEnter) window.onRoomEnter(msg);
-					if (msg.entry_log && appendNarrative) {
-						var entryRoomName = (msg.terrain && msg.terrain.name) || '';
-						var entryRoomKey = msg.room_id || entryRoomName || '';
-						var sameRoomAsLastEnter = !!entryRoomKey && lastEntryLogRoomKey === entryRoomKey;
-						if (!sameRoomAsLastEnter) {
-							var hasSeenRoom = !!(entryRoomKey && seenEntryLogRooms[entryRoomKey]);
-							var routeReentry = '';
-							if (hasSeenRoom && msg.reentry_logs && lastEntryLogRoom) {
-								routeReentry = msg.reentry_logs[lastEntryLogRoom] || '';
-							}
-							var entryText = routeReentry || ((hasSeenRoom && msg.reentry_log) ? msg.reentry_log : msg.entry_log);
-							var entryLogKey = entryRoomKey + '|' + entryText;
-							if (entryLogKey !== lastEntryLogKey) {
-								lastEntryLogKey = entryLogKey;
-								var entryHtml = window.SwNarrative ? window.SwNarrative.format(entryText) : escapeHtml(entryText);
-								appendNarrative(entryHtml, 'enter');
-							}
+					case 'room_enter':
+						// 進入場所後直接呈現當地事實與可接觸對象，不另灌一段入場散文。
+						if (msg.room_id && state.room_id && msg.room_id !== state.room_id) {
+							hideTacticalChoices();
 						}
-						lastEntryLogRoom = entryRoomName;
-						lastEntryLogRoomKey = entryRoomKey;
-						if (entryRoomKey) seenEntryLogRooms[entryRoomKey] = true;
-					}
-					break;
+						var roomEnterName = (msg.place && msg.place.name) || (msg.terrain && msg.terrain.name) || msg.room_name || '';
+						if (msg.room_id) state.room_id = msg.room_id;
+						if (roomEnterName) state.room_name = roomEnterName;
+						if (msg.terrain && msg.terrain.description) state.description = msg.terrain.description;
+						if (Array.isArray(msg.exits)) state.exits = msg.exits;
+						if (Array.isArray(msg.objects)) state.objects = msg.objects;
+						if (Array.isArray(msg.entities)) {
+							state.entities = msg.entities;
+							window.SwNarrative.indexNames(state.entities);
+						} else if (Array.isArray(msg.npcs)) {
+							state.entities = msg.npcs;
+							window.SwNarrative.indexNames(state.entities);
+						}
+						if (state.me) {
+							state.me.room_id = state.room_id;
+							state.me.room_name = state.room_name;
+						}
+						if (window.onRoomEnter) window.onRoomEnter(msg);
+						break;
 				case 'explore_result':
-					// 探索結果：追加 log，不動 L1-L3
+					// 探索結果：追加 log，100% 去數值化過濾，不動 L1-L3
 					if (window.onExploreResult) window.onExploreResult(msg);
 					if (msg.log) {
-						var exploreHtml = window.SwNarrative ? window.SwNarrative.format(msg.log) : escapeHtml(msg.log);
+						var cleanLog = deNumericText(msg.log);
+						var harvestMap = (window.SwPanes && window.SwPanes.ITEM_NAME_MAP) || {
+							'harvest_herb': '野地草藥',
+							'harvest_wood': '堅韌原木',
+							'harvest_ore': '百工礦石',
+							'harvest_fish': '鮮活河魚',
+							'harvest_crystal': '溫潤碎晶',
+							'herb_lingzhi': '靈芝仙草',
+							'ore_black_iron': '玄鐵重礦',
+							'wood_iron_oak': '鐵櫟木材',
+							'ore_copper': '黃銅原礦',
+							'ore_silver': '秘銀精礦',
+							'tea_leaf': '翠嶺嫩茶',
+							'wild_fruit': '山野靈果',
+							'spring_water': '清冽泉露'
+						};
+						for (var rawId in harvestMap) {
+							cleanLog = cleanLog.split(rawId).join(harvestMap[rawId]);
+						}
+						var exploreHtml = window.SwNarrative ? window.SwNarrative.format(cleanLog) : escapeHtml(cleanLog);
 						if (appendNarrative) appendNarrative(exploreHtml, 'explore');
+					}
+					break;
+				case 'tactical_state':
+					if (window.onTacticalState) window.onTacticalState(msg);
+					else if (window.SwPanes && window.SwPanes.onTacticalState) window.SwPanes.onTacticalState(msg);
+					break;
+				case 'tactical_standoff':
+				case 'combat':
+				case 'combat_turn':
+				case 'combat_result':
+					var combatText = msg.narrative || msg.log || msg.text || '';
+					if (combatText) {
+						var cleanCombat = deNumericText(combatText);
+						var combatHtml = window.SwNarrative ? window.SwNarrative.format(cleanCombat) : escapeHtml(cleanCombat);
+						if (appendNarrative) appendNarrative(combatHtml, 'combat');
+					}
+					if (Array.isArray(msg.tactical_choices) && msg.tactical_choices.length > 0) {
+						showTacticalChoices(msg.tactical_choices);
+					} else if (msg.type === 'tactical_standoff') {
+						showTacticalChoices(['趁勢搶攻', '專攻部位', '守勢游鬥', '抽身脫離']);
+					} else if (msg.ended) {
+						hideTacticalChoices();
 					}
 					break;
 				case 'interact_result':
 					// 物件互動結果：追加 log + 更新 observation_state
 					if (window.onInteractResult) window.onInteractResult(msg);
 					if (msg.log) {
-						var interactHtml = window.SwNarrative ? window.SwNarrative.format(msg.log) : escapeHtml(msg.log);
+						var cleanInteract = deNumericText(msg.log);
+						var interactHtml = window.SwNarrative ? window.SwNarrative.format(cleanInteract) : escapeHtml(cleanInteract);
 						if (appendNarrative) appendNarrative(interactHtml, 'interact');
 					}
 					break;
@@ -398,9 +705,28 @@
 						// 探路結果：更新方向路口顯示，不推 log
 						if (window.onScoutResult) window.onScoutResult(msg);
 						break;
-				// ── 舊事件繼續相容 ────────────────────────────────────────────
+				case 'npc_dialogue':
+					if (window.SwRecordNpcDialogue) {
+						window.SwRecordNpcDialogue(msg.npc_a, msg.npc_b, msg.text);
+					}
+					break;
 				case 'narrate':
 					if (msg.text) {
+						var t = String(msg.text);
+						if (window.SwRecordTransitHint) {
+							var enterMatch = t.match(/^(.+?)(?:自|方自)([北南東西東北東南西北西南]+)(?:面)?(?:【[^】]*】)?(?:方向)?(?:邁步走來|邁步走入|行至此處|走來)/);
+							if (enterMatch) {
+								var eDir = enterMatch[2].replace(/面$/, '');
+								var eCard = (eDir.indexOf('北') !== -1) ? '北' : (eDir.indexOf('南') !== -1) ? '南' : (eDir.indexOf('東') !== -1) ? '東' : '西';
+								window.SwRecordTransitHint(enterMatch[1], 'enter', eCard);
+							}
+							var leaveMatch = t.match(/^(.+?)(?:邁步走入街道，往|轉身朝|匆匆趕往|沿著石板路邁步離去，往|往)([北南東西東北東南西北西南]+)(?:面)?(?:朝)?(?:【[^】]*】)?(?:方向)?(?:行去|離去)/);
+							if (leaveMatch) {
+								var lDir = leaveMatch[2].replace(/面$/, '');
+								var lCard = (lDir.indexOf('北') !== -1) ? '北' : (lDir.indexOf('南') !== -1) ? '南' : (lDir.indexOf('東') !== -1) ? '東' : '西';
+								window.SwRecordTransitHint(leaveMatch[1], 'leave', lCard);
+							}
+						}
 						appendNarrative(window.SwNarrative.format(msg.text), 'ambient');
 					}
 					break;
@@ -410,18 +736,18 @@
 				case 'error':
 					if (window.SwInteractions) window.SwInteractions.removeLogPendingTalk();
 					if (window.SwInteractions) window.SwInteractions.removeLogPendingTrade();
-					appendLog('錯誤：' + msg.message);
 					if (!state.me) {
 						var authMsg = document.getElementById('auth-message');
 						if (authMsg) authMsg.textContent = msg.message;
+					} else {
+						appendLog('錯誤：' + msg.message);
 					}
 					break;
 					default:
-						appendLog('收到：' + ev.data);
+						console.warn('[ws unhandled msg]', msg && msg.type);
 				}
 			} catch (e) {
 				console.error('[onmessage throw]', e && (e.stack || e.message || e), 'msg=', ev.data && String(ev.data).slice(0,120));
-				appendLog('收到：' + ev.data);
 			}
 		};
 		socket.onclose = function () {
@@ -482,16 +808,18 @@
 	// sw-auth.js 需要存取 socket（送登入 send 前先查狀態）
 	window._getSocket = function () { return socket; };
 
-	// interactions 移至 web/sw-interactions.js（window.SwInteractions）
+	// interactions 與戰術按鈕綁定
 	if (typeof document !== 'undefined') {
 		if (document.readyState === 'loading') {
 			document.addEventListener('DOMContentLoaded', function () {
 				window.SwAuth.bindForm();
 				if (window.SwInteractions) window.SwInteractions.bindLogObjectActions();
+				bindTacticalChoices();
 			});
 		} else {
 			window.SwAuth.bindForm();
 			if (window.SwInteractions) window.SwInteractions.bindLogObjectActions();
+			bindTacticalChoices();
 		}
 	}
 

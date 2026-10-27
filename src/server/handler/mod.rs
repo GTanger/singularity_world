@@ -3,11 +3,15 @@
 //! 按動作域拆分：auth（登入／創角）、inventory（背包／裝備／狀態）、movement（移動／探索）。
 
 mod auth;
-mod inventory;
-mod movement;
+pub mod inventory;
+pub(crate) mod movement;
+pub(crate) use movement::find_nearest_clinic_for_combat;
 
-pub(crate) use inventory::push_refresh;
-
+pub(crate) use inventory::{
+    format_entity_item_with_inscription, get_player_tactical_loadout, get_player_word_casket,
+    npc_autonomous_word_and_equip_step, push_refresh, set_player_word_casket,
+};
+pub(crate) use movement::{emit_presence_reflex_on_arrival, send_place_view};
 use std::sync::{Arc, RwLock};
 
 use crate::config::Server;
@@ -27,6 +31,27 @@ pub struct WsConnection {
     pub sessions: Arc<SessionStore>,
     pub hub: Arc<Hub>,
     pub cfg: Server,
+}
+
+pub fn push_grid_view_to_session(
+    session: &super::session::Session,
+    cfg: &Server,
+    x: i32,
+    y: i32,
+    game_hour: i32,
+) {
+    let Some(tx) = session.outbound.clone() else {
+        return;
+    };
+    let conn = WsConnection {
+        conn_id: session.connection_id,
+        tx,
+        player_id: RwLock::new(Some(session.player_id.clone())),
+        sessions: Arc::new(SessionStore::new()),
+        hub: Arc::new(Hub::new(1)),
+        cfg: cfg.clone(),
+    };
+    movement::send_grid_view(&conn, &session.player_id, x, y, game_hour);
 }
 
 impl WsConnection {
@@ -66,7 +91,7 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
     match msg.msg_type.as_str() {
         "login" => auth::handle_login(conn, &msg),
         "create_character" => auth::handle_create_character(conn, &msg),
-        "move" => movement::handle_move(conn, &msg),
+        "move" | "grid_move" | "move_to" => movement::handle_move(conn, &msg),
         "ping" => {
             conn.send_json(&PongMsg {
                 msg_type: "pong".into(),
@@ -76,11 +101,30 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
         "get_inventory" => inventory::handle_get_inventory(conn),
         "equip_item" => inventory::handle_equip_item(conn, &msg),
         "unequip_item" => inventory::handle_unequip_item(conn, &msg),
+        "drop_item" | "discard_item" => inventory::handle_drop_item(conn, &msg),
+        "use_item" | "inventory_action" => inventory::handle_use_item(conn, &msg),
+        "sell_item" => inventory::handle_sell_item(conn, &msg),
+        "craft_item" => inventory::handle_craft_item(conn, &msg),
+        "mutate_item" => inventory::handle_mutate_item(conn, &msg),
         "print_topology_debug" => inventory::handle_print_topology_debug(conn),
         "do_action" => handle_do_action(conn, &msg),
         "explore" => movement::handle_explore_grid(conn),
         "scout" => movement::handle_scout(conn, &msg),
         "observe" => handle_observe(conn, &msg),
+        "focus_entity" => {
+            if !msg.entity_id.is_empty() {
+                crate::store::pause_npc_for_interaction(&msg.entity_id, 25);
+            }
+        }
+        "unfocus_entity" => {
+            if !msg.entity_id.is_empty() {
+                crate::store::unpause_npc_for_interaction(&msg.entity_id);
+            }
+        }
+        "get_tactical_state" => inventory::handle_get_tactical_state(conn),
+        "update_tactics" => inventory::handle_update_tactics(conn, &msg),
+        "mutate_terrain" => movement::handle_mutate_terrain(conn, &msg),
+        "tactical_choice" => crate::server::action::combat::handle_tactical_choice(conn, &msg),
         other => {
             conn.send_error(format!("unknown type: {other}"));
         }
@@ -98,18 +142,11 @@ fn handle_observe(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error("npc_id required");
         return;
     }
+    crate::store::pause_npc_for_interaction(&msg.entity_id, 25);
     if let Err(e) = crate::db::set_observed(&player_id, &msg.entity_id) {
         tracing::warn!("[observe] set_observed 失敗：{e}");
     }
-    // 重推 room_enter 讓前端重抽 L4
-    let ent = match crate::db::get_entity(&player_id) {
-        Ok(Some(e)) => e,
-        _ => return,
-    };
-    if let (Some(gx), Some(gy)) = (ent.grid_x, ent.grid_y) {
-        let gh = current_game_hour(&conn.cfg);
-        movement::send_grid_view(conn, &player_id, gx, gy, gh);
-    }
+    movement::send_place_view(conn, &player_id);
 }
 
 // ── 共用小工具（跨子模組）──

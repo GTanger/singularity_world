@@ -30,17 +30,20 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-height: 100vh;
+	min-height: 100dvh;
+	background: var(--paper-bg, #eee9df);
 	padding: 1rem;
 	box-sizing: border-box;
 }
 .auth-box {
 	width: 100%;
 	max-width: 320px;
-	padding: 1.5rem;
-	background: var(--bg-panel);
-	border: 1px solid var(--border);
-	border-radius: 8px;
+	padding: 1.5rem 1.35rem;
+	background: #f7f0e3;
+	border: 1px solid rgba(139, 105, 20, 0.3);
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(44, 30, 15, 0.08);
+	box-sizing: border-box;
 }
 .auth-title {
 	margin: 0 0 0.5rem 0;
@@ -97,13 +100,20 @@ body {
 }
 .auth-field input {
 	width: 100%;
-	padding: 0.5rem 0.6rem;
+	min-height: 44px;
+	padding: 0.55rem 0.75rem;
 	font-size: 1rem;
-	color: var(--text);
-	background: var(--bg);
-	border: 1px solid var(--border);
-	border-radius: 4px;
+	color: #2c1e0f;
+	background: #fffdf9;
+	border: 1px solid rgba(73, 51, 28, 0.28);
+	border-radius: 6px;
 	box-sizing: border-box;
+	transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-field input:focus {
+	border-color: #8b6914;
+	box-shadow: 0 0 0 2px rgba(139, 105, 20, 0.15);
+	outline: none;
 }
 .auth-field input::placeholder {
 	color: var(--text-muted);
@@ -117,28 +127,40 @@ body {
 .auth-actions button[type="submit"] {
 	flex: 1;
 	min-width: 6rem;
-	padding: 0.5rem 1rem;
+	min-height: 44px;
+	padding: 0.55rem 1.25rem;
 	font-size: 1rem;
-	color: var(--text);
-	background: var(--room-name);
-	border: none;
-	border-radius: 4px;
+	font-weight: 700;
+	color: #fffdf9;
+	background: #7a5a12;
+	border: 1px solid #63480d;
+	border-radius: 6px;
 	cursor: pointer;
+	touch-action: manipulation;
 }
 .auth-actions button[type="submit"]:hover {
-	opacity: 0.9;
+	opacity: 0.92;
+	background: #6e5110;
 }
+.auth-switch,
 .auth-actions button[type="button"] {
+	min-height: 44px;
 	padding: 0.5rem 0.75rem;
 	font-size: 0.85rem;
-	color: var(--text-muted);
+	font-weight: 600;
+	color: #2a4a6b;
 	background: transparent;
 	border: none;
 	cursor: pointer;
 	text-decoration: underline;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	touch-action: manipulation;
 }
+.auth-switch:hover,
 .auth-actions button[type="button"]:hover {
-	color: var(--text);
+	color: #1a334d;
 }
 
 #app {
@@ -355,37 +377,58 @@ body {
 	font-weight: 600;
 	color: var(--text);
 }
+#player-modal-close,
 .player-modal-close {
-	width: 2rem;
-	height: 2rem;
+	width: 40px;
+	height: 40px;
 	padding: 0;
 	font-size: 1.5rem;
 	line-height: 1;
 	color: var(--text-muted);
 	background: transparent;
 	border: none;
-	border-radius: 4px;
+	border-radius: 6px;
 	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	touch-action: manipulation;
 }
-.player-modal-close:hover {
-	color: var(--text);
-	background: rgba(255, 255, 255, 0.08);
+#player-modal-close:hover,
+#player-modal-close:active,
+.player-modal-close:hover,
+.player-modal-close:active {
+	color: #2c1e0f;
+	background: rgba(73, 51, 28, 0.08);
 }
 .player-modal-tabs {
 	display: flex;
 	gap: 0;
 	border-bottom: 1px solid var(--border);
 	flex-shrink: 0;
+	overflow-x: auto;
+	white-space: nowrap;
+	scrollbar-width: none;
+}
+.player-modal-tabs::-webkit-scrollbar {
+	display: none;
 }
 .player-modal-tab {
-	flex: 1;
-	padding: 0.5rem 0.4rem;
+	flex: 1 0 auto;
+	min-height: 42px;
+	padding: 0.5rem 0.65rem;
 	font-size: 0.85rem;
+	font-weight: 600;
+	white-space: nowrap;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	color: var(--text-muted);
 	background: transparent;
 	border: none;
 	border-bottom: 2px solid transparent;
 	cursor: pointer;
+	touch-action: manipulation;
 }
 .player-modal-tab:hover { color: var(--text); }
 .player-modal-tab.active {
@@ -599,3 +642,9 @@ body {
 .equip-item-expand .inventory-item-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
 .panel { box-sizing: border-box; }
+
+/* 行動紀錄串流與文字邊界保護 */
+#sw-log, .sw-log-stream {
+	scroll-padding-top: 10px;
+	line-height: 1.72;
+}

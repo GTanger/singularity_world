@@ -207,20 +207,42 @@ pub fn material_item_defs() -> Vec<Item> {
     config()
         .materials
         .iter()
-        .map(|m| Item {
-            id: m.id.clone(),
-            name: m.name.clone(),
-            slot: String::new(),
-            item_type: m.item_type.clone(),
-            weight: m.weight,
-            stackable: m.stackable,
-            denomination: 0,
-            description: m.description.clone(),
-            vit_bonus: 0,
-            dex_bonus: 0,
-            atk_bonus: 0,
+        .map(|m| {
+            let description = if !m.description.contains("【產地：") && !m.origin_label.is_empty() {
+                format!("{}【產地：{}】", m.description, m.origin_label)
+            } else {
+                m.description.clone()
+            };
+            Item {
+                id: m.id.clone(),
+                name: m.name.clone(),
+                slot: String::new(),
+                item_type: m.item_type.clone(),
+                weight: m.weight,
+                stackable: m.stackable,
+                denomination: 0,
+                description,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: m.origin_label.clone(),
+            }
         })
         .collect()
+}
+
+#[must_use]
+pub fn infer_origin_settlement(origin_text: &str) -> &'static str {
+    for s in [
+        "霜林口", "紅土崁", "三號坑口", "青籠關", "半嶺", "分家巷", "水尾寮",
+        "大圳頭", "牛埔", "烏石鼻", "鹽田澳", "風舶角", "風舶嶼", "北嶺腳",
+        "老堰頭", "風櫃尾", "白茫洲", "南哨", "文曜", "黑石灣", "赤石坡", "長風草甸", "翠冠林",
+    ] {
+        if origin_text.contains(s) {
+            return s;
+        }
+    }
+    ""
 }
 
 pub fn legacy_item_remap(item_id: &str) -> Option<&'static str> {
@@ -436,7 +458,7 @@ mod tests {
         assert_eq!(config().sources.len(), 70);
         assert!((25..=35).contains(&config().materials.len()));
         assert!(config().sources.len() > config().materials.len() * 2);
-        assert!(room_ids.contains("grid:0:0")); // 北岸渡口
+        assert!(room_ids.contains("grid:0:0")); // 半嶺水岸渡口
         assert!(room_ids.contains("grid:0:5")); // 田區路口
         assert!(room_ids.contains("grid:-3:5")); // 洗礦溝
         assert!(room_ids.contains("grid:-5:0")); // 牧地柵門

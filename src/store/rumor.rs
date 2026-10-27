@@ -165,6 +165,10 @@ impl Store {
                 if !zone.is_empty() && r.zone == zone {
                     score += 2;
                 }
+                if r.last_used_at > 0 && now_unix - r.last_used_at < 240 {
+                    score -= 4;
+                }
+                score -= (r.mention_count / 2).min(6);
                 r.weight = score;
                 r
             })
@@ -223,8 +227,8 @@ impl Store {
             }
             r.mention_count += 1;
             r.last_used_at = now_unix;
-            if r.mention_count % 3 == 0 && r.weight < 20 {
-                r.weight += 1;
+            if r.mention_count >= 4 && r.weight > 1 {
+                r.weight -= 1;
             }
             if r.mention_count % 5 == 0 && r.source_score < 8 {
                 r.source_score += 1;

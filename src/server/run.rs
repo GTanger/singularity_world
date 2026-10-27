@@ -40,6 +40,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
     let sessions = Arc::new(SessionStore::new());
     let state = AppState { hub, sessions, cfg };
     grid_manager::init();
+    crate::game::object_ecology::ensure_ecology_items_in_store();
     spawn_simulation_main_loop(
         Arc::clone(&state.sessions),
         Arc::clone(&state.hub),
@@ -100,6 +101,7 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         // HTML 頁面路由
         .route("/map_viewer", get(serve_map_viewer))
         .route("/eco_viewer", get(serve_eco_viewer))
+        .route("/world_atlas", get(serve_world_atlas))
         .route("/star_chart", get(serve_star_chart))
         .route("/dashboard", get(serve_dashboard))
         .route("/admin", get(serve_admin))
@@ -153,6 +155,9 @@ async fn serve_map_viewer() -> impl IntoResponse {
 }
 async fn serve_eco_viewer() -> impl IntoResponse {
     serve_html_page("eco_viewer.html").await
+}
+async fn serve_world_atlas() -> impl IntoResponse {
+    serve_html_page("world_atlas.html").await
 }
 async fn serve_star_chart() -> impl IntoResponse {
     serve_html_page("star_chart.html").await
@@ -224,6 +229,7 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
         match msg {
             Message::Text(t) => {
                 let c = conn.clone();
+                let is_async_task = t.contains("\"talk\"") || t.contains("\"Talk\"") || t.contains("\"do_action\"");
                 let bytes = t.as_bytes().to_vec();
                 let jh = tokio::task::spawn_blocking(move || {
                     let r = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
@@ -239,9 +245,14 @@ async fn handle_socket(mut socket: WebSocket, st: AppState) {
                         };
                         tracing::error!("[handle_message PANIC] {pmsg}");
                     }
-                })
-                .await;
-                if let Err(e) = jh {
+                });
+                if is_async_task {
+                    tokio::spawn(async move {
+                        if let Err(e) = jh.await {
+                            tracing::error!("[handle_message JOIN ERR] {e}");
+                        }
+                    });
+                } else if let Err(e) = jh.await {
                     tracing::error!("[handle_message JOIN ERR] {e}");
                 }
             }

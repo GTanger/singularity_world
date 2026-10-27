@@ -162,6 +162,9 @@ pub(super) fn ensure_store_room(room: &RoomEditorRoomFile) {
                 } else {
                     to_name
                 },
+                route_id: String::new(),
+                mode: String::new(),
+                travel_cost: 0,
             }
         })
         .collect();

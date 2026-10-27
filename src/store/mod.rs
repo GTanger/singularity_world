@@ -18,12 +18,27 @@ pub mod types;
 pub use types::*;
 mod archival;
 mod auth;
+pub mod households;
 mod entity;
+pub use entity::{
+    clear_active_npc_obligation, current_game_hour, find_bfs_next_step,
+    get_active_npc_dialogue, get_active_npc_obligation, is_npc_paused_for_interaction,
+    is_role_or_placeholder_label, mark_player_knows_npc, mark_player_observed_npc,
+    npc_brief_appearance_tag, npc_persistent_role_label, npc_sensory_appearance_line,
+    open_active_npc_obligation, pause_npc_for_interaction, player_knows_npc,
+    player_observed_npc, record_active_npc_dialogue, resolve_npc_full_label,
+    resolve_npc_person_name, resolve_wenyao_npc_schedule, unpause_npc_for_interaction,
+    wenyao_household_slot_for, ActiveNpcDialogue, NpcGridState, WenyaoHouseholdSlot,
+    KNOWN_NPC_NAMES, LIVE_NPC_GRID_STATES, LIVE_NPC_OBLIGATIONS, OBSERVED_NPCS,
+    WENYAO_HOUSEHOLD_SLOTS,
+};
 mod event;
 mod init_load;
 mod item;
 mod npc_social;
 mod persist;
+mod place;
+pub use place::PlaceMove;
 mod pg_sync;
 mod room;
 mod rumor;
@@ -47,6 +62,7 @@ pub struct Store {
     pub assignments: HashMap<String, Vec<Assignment>>,
     pub schedules: HashMap<String, Schedule>,
     pub entities: HashMap<String, Entity>,
+    pub place_graph: crate::world::place::PlaceGraph,
     pub items: HashMap<String, Item>,
     pub npc_threads: HashMap<String, NpcThread>,
     pub npc_dyads: HashMap<String, NpcDyad>,
@@ -85,6 +101,59 @@ pub fn get_db_pool() -> Option<sql::DbPool> {
     }
 }
 
+/// 把已驗證的白塔半島 runtime seed 採用為唯一可行走世界，並重載快取。
+pub fn activate_white_tower_runtime()
+-> anyhow::Result<crate::pg::white_tower_runtime::RuntimeMigrationReport> {
+    let store = get_store().ok_or_else(|| anyhow::anyhow!("store 尚未初始化"))?;
+    let pool = store
+        .read()
+        .db_pool
+        .clone()
+        .ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
+    anyhow::ensure!(
+        crate::pg::writer::drain(std::time::Duration::from_secs(10)),
+        "啟用白塔半島前 PostgreSQL writer 未能清空"
+    );
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs() as i64;
+    let report = crate::pg::white_tower_runtime::ensure_and_migrate(&pool, now)?;
+    let mut guard = store.write();
+    anyhow::ensure!(guard.load_entities_from_pg(), "白塔半島遷移後無法重載人物");
+    guard.reload_place_graph()?;
+    Ok(report)
+}
+
+/// 新人物若還沒有正式位置，出生於白塔半島的正式起點。
+pub fn ensure_entity_in_white_tower(entity_id: &str) -> anyhow::Result<String> {
+    let world = crate::world::runtime_world::builtin_white_tower_runtime_world()?;
+    let store = get_store().ok_or_else(|| anyhow::anyhow!("store 尚未初始化"))?;
+    {
+        let guard = store.read();
+        if let Some(place_id) = guard.get_entity_place_id(entity_id)
+            && guard
+                .get_place(&place_id)
+                .is_some_and(|place| place.source_kind == "azgaar_runtime" && place.traversable)
+        {
+            return Ok(place_id);
+        }
+    }
+    let pool = store
+        .read()
+        .db_pool
+        .clone()
+        .ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs() as i64;
+    crate::pg::white_tower_runtime::capture_entity_backup_if_missing(&pool, entity_id, now)?;
+    let mut guard = store.write();
+    guard.set_entity_place(entity_id, &world.spawn_place_id)?;
+    Ok(world.spawn_place_id)
+}
+
 /// 設定全域 store。
 fn set_store(store: Store) {
     let mut guard = DEFAULT.write();
@@ -110,6 +179,7 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
         assignments: HashMap::new(),
         schedules: HashMap::new(),
         entities: HashMap::new(),
+        place_graph: crate::world::place::PlaceGraph::default(),
         items: HashMap::new(),
         npc_threads: HashMap::new(),
         npc_dyads: HashMap::new(),
@@ -141,13 +211,30 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     s.db_pool = match sql::init_pool(&pg_url) {
         Ok(pool) => {
             tracing::info!("[store] PostgreSQL 連線池已初始化: {}", pg_url);
+            let topology = crate::pg::world_topology::ensure_builtin(&pool)?;
+            tracing::info!(
+                "[world] 已載入 {} v{}：{} nodes, {} links（PostgreSQL 主資料）",
+                topology.world_id,
+                topology.version,
+                topology.node_count,
+                topology.link_count
+            );
+            let places = crate::pg::world_place::ensure_topology_places(&pool)?;
+            crate::pg::world_journey::ensure_schema(&pool)?;
+            crate::pg::economy::ensure_schema(&pool)?;
+            crate::pg::living_world::ensure_schema(&pool)?;
+            tracing::info!(
+                "[world] 已把 {} 個白塔拓撲節點登記為不可行走的正典場所容器",
+                places.topology_places
+            );
             // 同步灌給全域 pg:: 模組——繞過 store lock 的直接 IO 路徑用
             crate::pg::set_pool(pool.clone());
             Some(pool)
         }
         Err(e) => {
-            tracing::error!("[store] PostgreSQL 連線池初始化失敗: {}", e);
-            None
+            return Err(anyhow::anyhow!(
+                "PostgreSQL 主資料不可用，拒絕啟動平行 JSON 世界：{e}"
+            ));
         }
     };
 
@@ -211,6 +298,7 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     // 4. 傳聞：已有 PG-first + JSON fallback 邏輯
     let _ = s.load_npc_rumors();
     let _ = s.load_npc_rumor_digest();
+    s.reload_place_graph()?;
 
     tracing::info!(
         "[store] 載入完成: {} rooms, {} entity_room, {} venues, {} assignments, {} schedules, {} entities, {} items, {} threads, {} dyads, {} rumors",

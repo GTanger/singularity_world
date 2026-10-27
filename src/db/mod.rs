@@ -11,7 +11,9 @@ mod equip;
 mod favorability;
 mod grid_world;
 mod identity;
-mod inventory;
+pub mod inventory;
+pub use inventory::ItemDefBrief;
+mod journey;
 mod lexicon;
 mod npc_display;
 mod npc_events;
@@ -50,6 +52,17 @@ pub fn update_cell_freshness(
     grid_world::update_cell_freshness(x, y, freshness)
 }
 
+/// 更新單一格子的 explored、freshness 與 objects（探索或採集後直接單格寫入 PG）。
+pub fn update_cell_state(
+    x: i32,
+    y: i32,
+    explored: bool,
+    freshness: crate::grid::Freshness,
+    objects: &[crate::grid::GridObject],
+) -> anyhow::Result<()> {
+    grid_world::update_cell_state(x, y, explored, freshness, objects)
+}
+
 /// simulation tick：將無玩家在場的 non-fresh 格子回復為 fresh。
 pub fn reset_freshness_for_vacant_cells(occupied_coords: &[(i32, i32)]) -> anyhow::Result<()> {
     grid_world::reset_freshness_for_vacant_cells(occupied_coords)
@@ -63,9 +76,9 @@ pub use archival::{
 pub use assignment::{
     Assignment, Venue, entity_in_venue_at_room, get_all_venue_ids, get_all_venue_room_ids,
     get_assignment_count_by_venue, get_assignments_for_entity, get_first_occupation_id_for_venue,
-    get_npc_title_from_assignments, get_room_ids_for_venue, get_venue_ids_for_room,
-    get_venue_max_staff, insert_assignment, is_room_in_venue, remove_assignments_for_entity,
-    seed_venues,
+    get_npc_title_from_assignments, get_room_ids_for_venue, get_runtime_occupation_for_venue,
+    get_venue_ids_for_room, get_venue_max_staff, insert_assignment, is_room_in_venue,
+    remove_assignments_for_entity, seed_venues,
 };
 pub use dialogue::{
     DialogueFile, DialogueSlots, PlaceholderCtx, apply_micro_variants, fill_placeholders,
@@ -73,20 +86,25 @@ pub use dialogue::{
     pick_from_public_talk, pick_line_weighted, try_match_keyword,
 };
 pub use disposition::{
-    ThoughtSource, add_thought, add_thought_with_flavor, adjust_disposition, get_active_thoughts,
-    get_disposition,
+    ThoughtSource, add_thought, add_thought_to_all_npcs_with_flavor, add_thought_to_entity_with_flavor,
+    add_thought_to_entity_with_delta, add_thought_with_flavor,
+    adjust_disposition, clean_and_recalc_entity_disposition, get_active_thoughts, get_disposition,
 };
 pub use equip::{get_item_descs, get_item_names, is_naked, seed_items, starter_equipment};
 pub use favorability::{
     FAV_BORROW_CAUGHT, FAV_BORROW_SUCCESS, FAV_SLAY, FAV_SUBDUE, FAV_TALK, adjust_favorability,
-    format_npc_memory_for_backstory,
+    format_npc_memory_for_backstory, get_favorability,
 };
 pub use identity::build_identity;
 pub use inventory::{
-    add_to_inventory, clear_equipment_slot, default_trade_ask_mg, get_inventory, get_item_def,
-    inventory_has_item, inventory_has_qty, inventory_total_qty, inventory_weight, item_is_tradable,
-    pick_npc_trade_offer, remove_from_inventory, settle_inventory_trade, trade_floor_from_ask,
+    active_trade_inventory_total_qty, add_item, add_to_inventory, clear_equipment_slot, default_trade_ask_mg,
+    get_inventory, get_item_def, get_item_name, inventory_has_item, inventory_has_qty, inventory_total_qty,
+    inventory_weight, item_is_tradable, mirror_market_trade_settlement, pick_npc_trade_offer,
+    remove_from_inventory, settle_inventory_trade, settle_npc_inventory_sale, trade_floor_from_ask,
     update_equipment_slot,
+};
+pub use journey::{
+    get_entity_journey, get_person_world_state, load_pending_journeys, set_entity_journey,
 };
 pub use lexicon::{
     decay_lexicon, list_notable_terms, promote_lexicon_candidates, upsert_lexicon_term,
@@ -97,7 +115,7 @@ pub use npc_display::{
     person_name_from_npc_list_label, split_npc_list_display_label,
 };
 pub use npc_events::{
-    EVT_BEG, EVT_DEATH, EVT_GATHER, EVT_HIRED, EVT_TALK, EVT_TRADE, get_recent_events,
+    EVT_BEG, EVT_DEATH, EVT_GATHER, EVT_HIRED, EVT_TALK, EVT_TRADE, EVT_WORK, get_recent_events,
     log_npc_event,
 };
 pub use npc_expense::{DAILY_EXPENSE_BASE, deduct_daily_expense};
@@ -146,9 +164,10 @@ pub use auth::{create_auth, has_password_for_entity, verify_password};
 
 mod room;
 pub use room::{
-    SPAWN_ROOM_NAME, get_exits_for_room, get_npc_ids_with_grid, get_npc_ids_with_room,
-    get_objects_in_room, get_player_ids_with_room, get_room, get_room_name, get_spawn_room_id,
-    object_has_socket, set_entity_activity, set_entity_grid, set_entity_room, terrain_from_room,
+    SPAWN_ROOM_NAME, get_entity_place_id, get_exits_for_room, get_npc_ids_with_grid,
+    get_npc_ids_with_room, get_objects_in_room, get_player_ids_with_room, get_room, get_room_name,
+    get_spawn_room_id, object_has_socket, set_entity_activity, set_entity_grid, set_entity_room,
+    terrain_from_room,
 };
 
 // ══════════════════════════════════════
@@ -241,8 +260,20 @@ pub fn store_entity_to_character(e: &Entity, npc_display_title: &str) -> Charact
         grid_y: e.grid_y,
         thoughts: e.thoughts.clone(),
     };
-    if e.kind == "npc" && !npc_display_title.is_empty() {
-        c.display_title = npc_display_title.to_string();
+    if e.kind == "npc" {
+        if !npc_display_title.is_empty() {
+            c.display_title = npc_display_title.to_string();
+        }
+        if let Some(state) = crate::store::LIVE_NPC_GRID_STATES.read().get(&e.id) {
+            if c.grid_x.is_none() || c.grid_y.is_none() {
+                c.grid_x = Some(state.current.0);
+                c.grid_y = Some(state.current.1);
+            }
+            let live_act = state.current_activity();
+            if !live_act.is_empty() {
+                c.current_activity = live_act;
+            }
+        }
     }
     c
 }
@@ -279,7 +310,7 @@ pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Resu
         vit,
         qi,
         dex,
-        magnesium: 0,
+        magnesium: 100,
         last_observed_at: None,
         created_at: now,
         gender,
@@ -290,13 +321,15 @@ pub fn insert_entity(id: &str, display_char: &str, gender: &str) -> anyhow::Resu
         inventory: "[]".into(),
         disposition: 0,
         current_activity: String::new(),
+        place_id: None,
         grid_x: None,
         grid_y: None,
         thoughts: vec![],
     };
+    let pool = crate::pg::pool().ok_or(ErrNoStore)?;
+    crate::pg::entity::upsert(&pool, &e)?;
     let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write();
-    s.put_entity(e)
+    arc.write().mirror_new_entity_from_authority(e)
 }
 
 /// 正規化房間 id 鍵（grid 世界僅為字串本身）。

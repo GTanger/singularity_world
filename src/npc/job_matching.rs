@@ -1,5 +1,7 @@
 //! 求職撮合（對齊既有 `npc/job_matching`）。
 
+use std::collections::HashMap;
+
 use rand::Rng;
 
 use crate::db::{
@@ -35,7 +37,17 @@ fn shuffle_vec<T>(v: &mut [T], rng: &mut impl Rng) {
 }
 
 fn do_assign(entity_id: &str, venue_id: &str, spawn_room: &str) -> bool {
-    let mut occupation = get_first_occupation_id_for_venue(venue_id);
+    let mut occupation = crate::pg::pool()
+        .and_then(|pool| pool.get().ok())
+        .and_then(|mut conn| {
+            crate::pg::world_economy::occupation_for_venue(&mut *conn, venue_id)
+                .ok()
+                .flatten()
+        })
+        .unwrap_or_default();
+    if occupation.is_empty() {
+        occupation = get_first_occupation_id_for_venue(venue_id);
+    }
     if occupation.is_empty() {
         occupation = DEFAULT_OCCUPATION_FOR_HIRE.to_string();
     }
@@ -47,11 +59,15 @@ fn do_assign(entity_id: &str, venue_id: &str, spawn_room: &str) -> bool {
         .flatten()
         .unwrap_or_default();
     let work_room = room_ids.first().cloned().unwrap_or_default();
-    if !work_room.is_empty() && !spawn_room.is_empty() {
+    let rest_room = get_entity_room(entity_id)
+        .ok()
+        .filter(|room_id| !room_id.is_empty())
+        .unwrap_or_else(|| spawn_room.to_string());
+    if !work_room.is_empty() && !rest_room.is_empty() {
         let _ = insert_schedule(
             entity_id,
             &work_room,
-            spawn_room,
+            &rest_room,
             DEFAULT_SHIFT_START,
             DEFAULT_SHIFT_END,
         );
@@ -120,6 +136,8 @@ pub fn run_job_matching_tick(graph: Option<&RoomGraph>, mut p: JobMatchParams) -
     }
 
     let spawn_room = get_spawn_room_id();
+    let place_graph = crate::store::get_store().map(|store| store.read().place_graph_snapshot());
+    let mut distance_cache = HashMap::<(String, String), i32>::new();
 
     if let Some(g) = graph {
         shuffle_vec(&mut slots, &mut rng);
@@ -142,13 +160,21 @@ pub fn run_job_matching_tick(graph: Option<&RoomGraph>, mut p: JobMatchParams) -
                 if current.is_empty() {
                     continue;
                 }
-                let dist = if current == venue_first {
-                    0
-                } else if let Some(path) = g.find_path(&current, &venue_first) {
-                    path.len() as i32
-                } else {
-                    9999
-                };
+                let key = (current.clone(), venue_first.clone());
+                let dist = *distance_cache.entry(key).or_insert_with(|| {
+                    if current == venue_first {
+                        return 0;
+                    }
+                    if let Some(path) = place_graph
+                        .as_ref()
+                        .and_then(|graph| graph.find_path(&current, &venue_first))
+                    {
+                        return i32::try_from(path.len().saturating_sub(1)).unwrap_or(i32::MAX);
+                    }
+                    g.find_path(&current, &venue_first)
+                        .and_then(|path| i32::try_from(path.len()).ok())
+                        .unwrap_or(9999)
+                });
                 if dist < best_dist {
                     best_dist = dist;
                     best_idx = Some(i);

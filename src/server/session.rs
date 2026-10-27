@@ -69,14 +69,8 @@ impl Session {
 
 /// 玩家目前所在位置的公開房間鍵。
 ///
-/// 方格世界的權威位置是 `entities.grid_x/grid_y`；舊 `entity_rooms` 只作為
-/// 非方格或舊資料的 fallback，避免模擬迴圈看不到實際登入玩家。
+/// `entities.place_id` 是權威位置；公開房間鍵只取其相容顯示值。
 pub(crate) fn player_location_key(player_id: &str) -> String {
-    if let Ok(Some(ch)) = db::get_entity(player_id)
-        && let (Some(x), Some(y)) = (ch.grid_x, ch.grid_y)
-    {
-        return db::canonical_location_key(&crate::grid::grid_room_id_from_coord(x, y));
-    }
     db::get_entity_room(player_id)
         .map(|rid| db::canonical_location_key(&rid))
         .unwrap_or_default()

@@ -1,10 +1,16 @@
 // world 模組 — 地圖格點、地形、區塊載入與移動碰撞，對齊既有 world/。
 
+pub mod author_economy;
 mod chunk;
+pub mod journey;
 mod map;
 pub mod materials;
 mod movement;
+pub mod physical_geography;
+pub mod place;
+pub mod runtime_world;
 mod terrain_display;
+pub mod topology;
 
 pub use chunk::{load_chunk, terrain_from_rune};
 pub use map::{

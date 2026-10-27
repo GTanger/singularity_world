@@ -1,8 +1,12 @@
 //! 區域氣候系統 — PostgreSQL 持久層（`region_climate` 表）。
-//!
-//! M3 migration：`CREATE TABLE IF NOT EXISTS region_climate` 在每次呼叫時自動確保存在。
+//! 資料表由 store 連線池啟動邊界建立；每分鐘氣候推進只做資料讀寫。
 
 use crate::store;
+
+static CLIMATE_CACHE: std::sync::LazyLock<
+    parking_lot::RwLock<std::collections::HashMap<String, RegionClimate>>,
+> = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
+static CLIMATE_LOADED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
 /// 區域氣候資料列。
 #[derive(Debug, Clone)]
@@ -15,20 +19,28 @@ pub struct RegionClimate {
     pub prose_seed: i64,
 }
 
-const CREATE_TABLE: &str = "
-    CREATE TABLE IF NOT EXISTS region_climate (
-        region_id       TEXT   PRIMARY KEY,
-        event_type      TEXT   NOT NULL DEFAULT 'clear',
-        started_at_unix BIGINT NOT NULL DEFAULT 0,
-        prose_seed      BIGINT NOT NULL DEFAULT 0
-    )
-";
-
-/// 查詢指定區域的氣候（表不存在時自動建立）。
+/// 查詢指定區域的氣候。
 pub fn get_region_climate(region_id: &str) -> anyhow::Result<Option<RegionClimate>> {
-    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("資料庫連線不可用"))?;
+    if !CLIMATE_LOADED.load(std::sync::atomic::Ordering::Acquire) {
+        if let Ok(all) = list_region_climates() {
+            let mut cache = CLIMATE_CACHE.write();
+            for c in all {
+                cache.insert(c.region_id.clone(), c);
+            }
+            CLIMATE_LOADED.store(true, std::sync::atomic::Ordering::Release);
+        }
+    }
+
+    let cache = CLIMATE_CACHE.read();
+    if let Some(c) = cache.get(region_id) {
+        return Ok(Some(c.clone()));
+    }
+    drop(cache);
+
+    let Some(pool) = store::get_db_pool() else {
+        return Ok(None);
+    };
     let mut conn = pool.get()?;
-    conn.execute(CREATE_TABLE, &[])?;
 
     let rows = conn.query(
         "SELECT region_id, event_type, started_at_unix, prose_seed
@@ -40,42 +52,51 @@ pub fn get_region_climate(region_id: &str) -> anyhow::Result<Option<RegionClimat
         return Ok(None);
     }
     let row = &rows[0];
-    Ok(Some(RegionClimate {
+    let climate = RegionClimate {
         region_id: row.get(0),
         event_type: row.get(1),
         started_at_unix: row.get(2),
         prose_seed: row.get(3),
-    }))
+    };
+    CLIMATE_CACHE
+        .write()
+        .insert(region_id.to_string(), climate.clone());
+    Ok(Some(climate))
 }
 
 /// 更新或插入區域氣候（simulation tick 呼叫）。
 pub fn upsert_region_climate(climate: &RegionClimate) -> anyhow::Result<()> {
-    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("資料庫連線不可用"))?;
-    let mut conn = pool.get()?;
-    conn.execute(CREATE_TABLE, &[])?;
+    CLIMATE_CACHE
+        .write()
+        .insert(climate.region_id.clone(), climate.clone());
 
-    conn.execute(
-        "INSERT INTO region_climate (region_id, event_type, started_at_unix, prose_seed)
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT (region_id) DO UPDATE SET
-            event_type = EXCLUDED.event_type,
-            started_at_unix = EXCLUDED.started_at_unix,
-            prose_seed = EXCLUDED.prose_seed",
-        &[
-            &climate.region_id,
-            &climate.event_type,
-            &climate.started_at_unix,
-            &climate.prose_seed,
-        ],
-    )?;
+    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("後端儲存連線不可用"))?;
+    let climate_clone = climate.clone();
+    std::thread::spawn(move || {
+        if let Ok(mut conn) = pool.get() {
+            let _ = conn.execute(
+                "INSERT INTO region_climate (region_id, event_type, started_at_unix, prose_seed)
+                 VALUES ($1, $2, $3, $4)
+                 ON CONFLICT (region_id) DO UPDATE SET
+                    event_type = EXCLUDED.event_type,
+                    started_at_unix = EXCLUDED.started_at_unix,
+                    prose_seed = EXCLUDED.prose_seed",
+                &[
+                    &climate_clone.region_id,
+                    &climate_clone.event_type,
+                    &climate_clone.started_at_unix,
+                    &climate_clone.prose_seed,
+                ],
+            );
+        }
+    });
     Ok(())
 }
 
 /// 取得所有區域氣候（simulation tick 批量更新用）。
 pub fn list_region_climates() -> anyhow::Result<Vec<RegionClimate>> {
-    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("資料庫連線不可用"))?;
+    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("後端儲存連線不可用"))?;
     let mut conn = pool.get()?;
-    conn.execute(CREATE_TABLE, &[])?;
 
     let rows = conn.query(
         "SELECT region_id, event_type, started_at_unix, prose_seed FROM region_climate",

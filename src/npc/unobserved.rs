@@ -3,9 +3,9 @@
 use rand::Rng;
 
 use crate::db::{
-    RoomGraph, add_magnesium, add_to_inventory, get_all_venue_ids, get_assignment_count_by_venue,
+    RoomGraph, add_to_inventory, get_all_venue_ids, get_assignment_count_by_venue,
     get_assignments_for_entity, get_entity, get_entity_room, get_npc_ids_with_room,
-    get_schedule_target_room, insert_assignment, set_entity_room,
+    get_schedule_target_room, insert_assignment, npc_street_sell_one, set_entity_room,
 };
 use crate::world::materials;
 
@@ -70,12 +70,13 @@ pub fn run_unobserved_world_tick(
                 continue;
             };
             if ch.magnesium < SURVIVAL_LINE_MG {
-                let delta = 3 + rng.random_range(0..8);
-                let _ = add_magnesium(&entity_id, delta);
+                // 低鎂只會嘗試把實際持物賣給同地真買家，不再背景補發不存在的錢。
+                let _ = npc_street_sell_one(&entity_id, &current_room, now_unix);
             }
         } else if effect == 1 {
-            if let Some(gathered) =
-                materials::try_gather_material_for_room_preserving(&current_room, now_unix, 1)
+            if !current_room.starts_with("wt-physical-")
+                && let Some(gathered) =
+                    materials::try_gather_material_for_room_preserving(&current_room, now_unix, 1)
             {
                 let _ = add_to_inventory(&entity_id, &gathered.item_id, 1);
             }

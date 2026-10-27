@@ -13,6 +13,8 @@ pub const EVT_HIRED: &str = "hired";
 pub const EVT_TALK: &str = "talk";
 /// 交易。
 pub const EVT_TRADE: &str = "trade";
+/// 依正式指派完成工作。
+pub const EVT_WORK: &str = "work";
 /// 死亡（區域廣播用），對齊既有 `EvtDeath`。
 pub const EVT_DEATH: &str = "death";
 

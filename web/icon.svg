@@ -1,4 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#1e2328"/>
-  <text x="256" y="340" font-size="280" fill="#e6a23c" text-anchor="middle" font-family="sans-serif">奇</text>
+  <rect width="512" height="512" rx="96" fill="#eee9df"/>
+  <rect x="28" y="28" width="456" height="456" rx="76" fill="none" stroke="#8b6914" stroke-width="10" stroke-opacity="0.45"/>
+  <circle cx="256" cy="256" r="184" fill="#f7f0e3" stroke="#2c1e0f" stroke-width="8"/>
+  <line x1="256" y1="84" x2="256" y2="112" stroke="#8b6914" stroke-width="8" stroke-linecap="round"/>
+  <line x1="256" y1="400" x2="256" y2="428" stroke="#8b6914" stroke-width="8" stroke-linecap="round"/>
+  <line x1="84" y1="256" x2="112" y2="256" stroke="#8b6914" stroke-width="8" stroke-linecap="round"/>
+  <line x1="400" y1="256" x2="428" y2="256" stroke="#8b6914" stroke-width="8" stroke-linecap="round"/>
+  <text x="256" y="336" font-size="232" font-weight="700" fill="#2c1e0f" text-anchor="middle" font-family="'LXGW WenKai Mono TC', 'Noto Serif TC', serif">奇</text>
+  <circle cx="368" cy="148" r="16" fill="#b33927"/>
 </svg>

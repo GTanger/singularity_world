@@ -1,5 +1,7 @@
 // combat 模組 — 戰鬥判定與文字 log，對齊既有 combat/combat（Resolve、ResolveV2、CombatOpt）。
 
+pub mod wordplate;
+
 use rand::Rng;
 
 /// 擴充選項：α/β/γ、地形、制伏留人。全為零或未設時以文件預設代入（與預設選項一致）。
@@ -191,7 +193,7 @@ pub fn resolve_v2(
                 if d_hp <= 0 {
                     if subdue {
                         d_hp = 1;
-                        log.push_str(" 守方氣竭倒地。 [Result] 攻方留人（制伏）。");
+                        log.push_str(" 守方氣竭倒地。 [Result] 攻方擊敗對手。");
                         return ("attacker".to_string(), log, a_hp, d_hp);
                     }
                     log.push_str(" 守方敗。 [Result] 攻方取得了勝利。");
@@ -210,7 +212,7 @@ pub fn resolve_v2(
                 if a_hp <= 0 {
                     if subdue {
                         a_hp = 1;
-                        log.push_str(" 攻方不支倒地。 [Result] 守方留人（制伏）。");
+                        log.push_str(" 攻方不支倒地。 [Result] 守方擊敗對手。");
                         return ("defender".to_string(), log, a_hp, d_hp);
                     }
                     log.push_str(" 攻方敗。 [Result] 守方取得了勝利。");
@@ -230,7 +232,7 @@ pub fn resolve_v2(
                 if a_hp <= 0 {
                     if subdue {
                         a_hp = 1;
-                        log.push_str(" 攻方不支倒地。 [Result] 守方留人（制伏）。");
+                        log.push_str(" 攻方不支倒地。 [Result] 守方擊敗對手。");
                         return ("defender".to_string(), log, a_hp, d_hp);
                     }
                     log.push_str(" 攻方敗。 [Result] 守方取得了勝利。");
@@ -249,7 +251,7 @@ pub fn resolve_v2(
                 if d_hp <= 0 {
                     if subdue {
                         d_hp = 1;
-                        log.push_str(" 守方氣竭倒地。 [Result] 攻方留人（制伏）。");
+                        log.push_str(" 守方氣竭倒地。 [Result] 攻方擊敗對手。");
                         return ("attacker".to_string(), log, a_hp, d_hp);
                     }
                     log.push_str(" 守方敗。 [Result] 攻方取得了勝利。");

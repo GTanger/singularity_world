@@ -61,6 +61,7 @@ struct TopoNode {
     name: String,
     zone: i32,
     system: String,
+    inlayable: bool,
 }
 
 #[derive(Serialize)]
@@ -80,8 +81,8 @@ struct TopoResponse {
 }
 
 const HUB_NAMES: [&str; 20] = [
-    "天極", "脈衝", "震淵", "游離", "弦絲", "曜核", "凜晶", "淵流", "萬象", "解離", "鎮閾", "衡定",
-    "穹壁", "重塑", "逆熵", "神淵", "識閾", "坍縮", "無相", "越權",
+    "天樞", "驚雷", "震淵", "流雲", "弦月", "曜陽", "寒霜", "淵流", "萬象", "破陣", "鎮岳", "衡定",
+    "穹壁", "生息", "歸元", "神淵", "明識", "千鈞", "無相", "破極",
 ];
 
 const HUB_SYSTEMS: [&str; 20] = [
@@ -105,6 +106,7 @@ fn build_topology_nodes() -> Vec<TopoNode> {
         name: "生之奇點".into(),
         zone: 0,
         system: String::new(),
+        inlayable: false,
     });
     for i in 1..=20 {
         nodes.push(TopoNode {
@@ -112,6 +114,7 @@ fn build_topology_nodes() -> Vec<TopoNode> {
             name: HUB_NAMES[i - 1].into(),
             zone: 1,
             system: HUB_SYSTEMS[i - 1].into(),
+            inlayable: true,
         });
     }
     for i in 1..=20usize {
@@ -123,6 +126,7 @@ fn build_topology_nodes() -> Vec<TopoNode> {
                 name: LOGIC_NAMES[j - 1].into(),
                 zone: 2,
                 system: sys.into(),
+                inlayable: true,
             });
         }
     }
@@ -135,6 +139,7 @@ fn build_topology_nodes() -> Vec<TopoNode> {
                 name: PERIPHERAL_NAMES[s - 1].into(),
                 zone: 3,
                 system: sys.into(),
+                inlayable: true,
             });
         }
     }

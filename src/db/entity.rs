@@ -167,10 +167,93 @@ pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec
     Ok(list)
 }
 
+fn npc_title_read_locked(
+    s: &store::Store,
+    se: &Entity,
+    room_id: &str,
+    game_hour: i32,
+) -> String {
+    let person = if !se.display_title.is_empty() {
+        se.display_title.clone()
+    } else {
+        String::new()
+    };
+    if room_id.is_empty() {
+        return person;
+    }
+    let mut occ = String::new();
+    for a in s.get_assignments_for_entity(&se.id) {
+        if a.occupation_id.is_empty() {
+            continue;
+        }
+        if s.is_room_in_venue(room_id, &a.venue_id) {
+            occ = a.occupation_id;
+            break;
+        }
+    }
+    if occ.is_empty() {
+        return person;
+    }
+    let mut off_duty = false;
+    if let Some(sch) = s.get_schedule(&se.id) {
+        let ns = npc_display::NpcSchedule {
+            entity_id: sch.entity_id.clone(),
+            work_room: sch.work_room.clone(),
+            rest_room: sch.rest_room.clone(),
+            shift_start: sch.shift_start,
+            shift_end: sch.shift_end,
+        };
+        if (0..=23).contains(&game_hour) && !ns.is_on_duty(game_hour) {
+            off_duty = true;
+        }
+    }
+    if off_duty {
+        return person;
+    }
+    format!("{occ}|{person}")
+}
+
 /// 與指定正方格座標重合的活體實體。
 pub fn get_entities_at_grid(x: i32, y: i32, game_hour: i32) -> anyhow::Result<Vec<Character>> {
     let grid_room = crate::grid::grid_room_id_from_coord(x, y);
     let arc = store::get_store().ok_or(ErrNoStore)?;
+    let s = arc.read();
+    let ids = s.entity_ids_at_grid(x, y);
+    if ids.is_empty() {
+        return Ok(Vec::new());
+    }
+
+    // 常態下 NPC 的 display_title 皆非空，直接使用唯讀鎖組裝回傳，不搶佔全域寫鎖
+    let mut need_write = false;
+    for id in &ids {
+        if let Some(se) = s.get_entity(id) {
+            if se.kind == "npc" && se.display_title.is_empty() {
+                need_write = true;
+                break;
+            }
+        }
+    }
+
+    if !need_write {
+        let mut list = Vec::new();
+        for id in ids {
+            let Some(se) = s.get_entity(&id) else {
+                continue;
+            };
+            if se.vit <= 0 {
+                continue;
+            }
+            let label = if se.kind == "npc" {
+                npc_title_read_locked(&s, &se, &grid_room, game_hour)
+            } else {
+                String::new()
+            };
+            list.push(store_entity_to_character(&se, &label));
+        }
+        return Ok(list);
+    }
+
+    drop(s);
     let mut s = arc.write();
     let ids = s.entity_ids_at_grid(x, y);
     if ids.is_empty() {

@@ -1,6 +1,6 @@
 //! 移動節拍：travel tick（觀測圈＋腦驅動）與方格 NPC tick。
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
@@ -36,6 +36,76 @@ fn build_active_room_ids(sessions: &SessionStore, g: &crate::db::RoomGraph) -> H
     out
 }
 
+fn move_direction_zh(dx: i32, dy: i32) -> &'static str {
+    match (dx.signum(), dy.signum()) {
+        (0, 1) => "北面",
+        (0, -1) => "南面",
+        (1, 0) => "東面",
+        (-1, 0) => "西面",
+        _ => {
+            if dy.abs() > dx.abs() {
+                if dy > 0 {
+                    "北面"
+                } else {
+                    "南面"
+                }
+            } else if dx > 0 {
+                "東面"
+            } else if dx < 0 {
+                "西面"
+            } else if dy > 0 {
+                "北面"
+            } else if dy < 0 {
+                "南面"
+            } else {
+                "前方"
+            }
+        }
+    }
+}
+
+fn resolve_grid_cell_display_name(room_id: &str) -> String {
+    if let Some(coord) = crate::grid::parse_grid_room_id(room_id)
+        && let Some(grid) = crate::server::grid_manager::get_runtime_square_grid()
+        && let Some(cell) = grid.get(coord)
+    {
+        if !cell.name.trim().is_empty() {
+            return cell.name.clone();
+        }
+        return crate::grid::terrain_name_zh(cell.terrain).to_string();
+    }
+    crate::db::get_room_name(room_id).unwrap_or_else(|_| "街道".to_string())
+}
+
+fn resolve_npc_name_for_viewer(viewer_pid: &str, npc_id: &str, display_title: &str) -> String {
+    let named = crate::db::get_acquaintance(viewer_pid, npc_id)
+        .ok()
+        .flatten()
+        .map(|a| a.named)
+        .unwrap_or(false);
+    if named {
+        crate::store::resolve_npc_person_name(npc_id, display_title, None)
+    } else {
+        let brief = crate::store::npc_brief_appearance_tag(npc_id, display_title);
+        let role = if display_title.contains("鐵") || display_title.contains("鍛造") || display_title.contains("木作") || display_title.contains("工坊") {
+            "匠人"
+        } else if display_title.contains("商") || display_title.contains("鋪") || display_title.contains("市集") || display_title.contains("行") {
+            "行商"
+        } else if display_title.contains("醫") || display_title.contains("藥") || display_title.contains("診") {
+            "醫工"
+        } else if display_title.contains("學") || display_title.contains("書") || display_title.contains("講堂") || display_title.contains("觀星") {
+            "學者"
+        } else {
+            "街坊"
+        };
+        if !brief.is_empty() {
+            format!("{brief}的{role}")
+        } else {
+            format!("一名{role}")
+        }
+    }
+}
+
 /// 發佈逐步移動敘事、房間事件與視野刷新。
 fn apply_travel_steps(
     sessions: &SessionStore,
@@ -50,35 +120,69 @@ fn apply_travel_steps(
     }
     let rf = gametext::runtime_fmt();
     for step in steps {
+        if crate::store::is_npc_paused_for_interaction(&step.entity_id) {
+            continue;
+        }
         let old_name = g.room_name(&step.old_room);
         let new_name = g.room_name(&step.new_room);
-        let leave_text = sprintf_s(
-            &rf.travel_leave_fmt,
-            &[step.npc_name.as_str(), new_name.as_str()],
-        );
-        let mut arrive_text = sprintf_s(
-            &rf.travel_arrive_fmt,
-            &[step.npc_name.as_str(), old_name.as_str()],
-        );
-        if let Some(target) = get_schedule_target(&step.entity_id, hour)
-            && target.room == step.new_room
-        {
-            if target.is_work {
-                let mut occ = get_npc_title_from_assignments(&step.entity_id);
-                if occ.is_empty() {
-                    occ = gametext::occupation_clerk();
+        let want_old = crate::db::canonical_location_key(&step.old_room);
+        let want_new = crate::db::canonical_location_key(&step.new_room);
+
+        for s in sessions.all_sessions() {
+            let loc = crate::server::session::player_location_key(&s.player_id);
+            if loc == want_old {
+                let viewer_name = resolve_npc_name_for_viewer(&s.player_id, &step.entity_id, &step.npc_name);
+                let leave_text = sprintf_s(&rf.travel_leave_fmt, &[viewer_name.as_str(), new_name.as_str()]);
+                crate::server::broadcast::send_narrate_to_player(&s, &leave_text);
+                if !step.decision_narrative.is_empty() {
+                    let d_text = if crate::store::player_knows_npc(&s.player_id, &step.entity_id) {
+                        step.decision_narrative.clone()
+                    } else {
+                        step.decision_narrative.replace(&step.npc_name, &viewer_name)
+                    };
+                    crate::server::broadcast::send_narrate_to_player(&s, &d_text);
                 }
-                let person = get_npc_person_display_name(&step.entity_id).unwrap_or_default();
-                let fl = get_shift_flavor(&occ, &person, true);
-                if !fl.is_empty() {
-                    arrive_text = fl;
+            } else if loc == want_new {
+                let viewer_name = resolve_npc_name_for_viewer(&s.player_id, &step.entity_id, &step.npc_name);
+                let text = if let Some(target) = get_schedule_target(&step.entity_id, hour)
+                    && target.room == step.new_room
+                {
+                    if target.is_work {
+                        let mut occ = get_npc_title_from_assignments(&step.entity_id);
+                        if occ.is_empty() {
+                            occ = gametext::occupation_clerk();
+                        }
+                        let person = get_npc_person_display_name(&step.entity_id).unwrap_or_default();
+                        let fl = get_shift_flavor(&occ, &person, true);
+                        if !fl.is_empty() {
+                            if crate::store::player_knows_npc(&s.player_id, &step.entity_id) {
+                                fl
+                            } else {
+                                fl.replace(&person, &viewer_name)
+                            }
+                        } else {
+                            sprintf_s(&rf.travel_arrive_fmt, &[viewer_name.as_str(), old_name.as_str()])
+                        }
+                    } else {
+                        sprintf_s(&rf.wander_arrive_home, &[viewer_name.as_str()])
+                    }
+                } else {
+                    sprintf_s(&rf.travel_arrive_fmt, &[viewer_name.as_str(), old_name.as_str()])
+                };
+                crate::server::broadcast::send_narrate_to_player(&s, &text);
+                if let Some(ai) = step.arrival_intent {
+                    let arrival_line = if crate::store::player_knows_npc(&s.player_id, &step.entity_id) {
+                        gametext::brain_arrival(ai.as_key(), &step.npc_name)
+                    } else {
+                        gametext::brain_arrival(ai.as_key(), &viewer_name)
+                    };
+                    if !arrival_line.is_empty() {
+                        crate::server::broadcast::send_narrate_to_player(&s, &arrival_line);
+                    }
                 }
-            } else {
-                arrive_text = sprintf_s(&rf.wander_arrive_home, &[step.npc_name.as_str()]);
             }
         }
-        send_narrate_to_room(sessions, &step.old_room, &leave_text);
-        send_narrate_to_room(sessions, &step.new_room, &arrive_text);
+
         push_room_event(
             &step.old_room,
             "leave",
@@ -91,15 +195,10 @@ fn apply_travel_steps(
             &step.npc_name,
             &sprintf_s(&rf.push_arrive_fmt, &[old_name.as_str()]),
         );
-        if !step.decision_narrative.is_empty() {
-            send_narrate_to_room(sessions, &step.old_room, &step.decision_narrative);
-        }
         if let Some(ai) = step.arrival_intent {
-            let arrival_line = gametext::brain_arrival(ai.as_key(), &step.npc_name);
-            if !arrival_line.is_empty() {
-                send_narrate_to_room(sessions, &step.new_room, &arrival_line);
-            }
-            apply_brain_arrival_effects(now_unix, &step.entity_id, &step.new_room, ai);
+            let (_, _, _, game_day) =
+                crate::game::game_time_now(now_unix, cfg.game_time_epoch_unix, cfg.game_time_scale);
+            apply_brain_arrival_effects(now_unix, game_day, &step.entity_id, &step.new_room, ai);
         }
         refresh_room_views_for_room(sessions, cfg, &step.old_room);
         refresh_room_views_for_room(sessions, cfg, &step.new_room);
@@ -115,6 +214,16 @@ pub(super) fn run_travel_section(
     state: &Arc<Mutex<MainLoopTickState>>,
     traveler_mgr: &Arc<Mutex<TravelerManager>>,
 ) {
+    // 白塔 runtime 啟用後，舊 RoomGraph traveler 不得再改寫 entity_rooms。
+    if crate::store::get_store().is_some_and(|store| {
+        store
+            .read()
+            .place_graph
+            .places()
+            .any(|place| place.source_kind == "azgaar_runtime" && place.status == "active")
+    }) {
+        return;
+    }
     let fire = {
         let Ok(mut st) = state.lock() else {
             return;
@@ -144,22 +253,172 @@ pub(super) fn run_travel_section(
     });
 }
 
-/// 正方格 NPC 行為 tick：GridNpcManager.tick 本身很輕，無 NPC 即 early return。
+/// 居民場所行為 tick：玩家與 NPC 共用 world_routes，不再各算一套鄰接。
 pub(super) fn run_grid_npc_tick(
+    sessions: &SessionStore,
+    cfg: &Server,
     now_unix: i64,
     hour: i32,
+    game_day: i32,
     _state: &Arc<Mutex<MainLoopTickState>>,
     grid_npc_mgr: &Arc<Mutex<GridNpcManager>>,
 ) {
     let Ok(mut mgr) = grid_npc_mgr.lock() else {
         return;
     };
-    super::super::grid_manager::with_square_grid_mut(|grid| {
-        let _events = mgr.tick(grid, now_unix, hour);
-    });
+    let events = mgr.tick(now_unix, hour, game_day);
+    let canon_moves = crate::server::grid_manager::advance_canonical_npcs_one_step();
+    let household_moves = crate::store::get_store()
+        .map(|s| s.read().advance_household_npcs_one_step())
+        .unwrap_or_default();
+    if events.is_empty() && canon_moves.is_empty() && household_moves.is_empty() {
+        return;
+    }
+    let mut player_rooms = sessions.player_room_ids();
+    for pid in sessions.all_player_ids() {
+        if let Ok(Some(ent)) = crate::db::get_entity(&pid) {
+            if let (Some(gx), Some(gy)) = (ent.grid_x, ent.grid_y) {
+                player_rooms.insert(crate::grid::grid_room_id_from_coord(gx, gy));
+            }
+        }
+    }
+
+    let mut seen_moved = HashSet::new();
+    let mut all_moves: Vec<(String, String, String)> = Vec::new();
+    for (id, from_room, to_room) in household_moves {
+        if seen_moved.insert(id.clone()) {
+            all_moves.push((id, from_room, to_room));
+        }
+    }
+    for (id, from_room, to_room) in canon_moves {
+        if seen_moved.insert(id.clone()) {
+            all_moves.push((id, from_room, to_room));
+        }
+    }
+    for event in events {
+        if seen_moved.insert(event.entity_id.clone()) {
+            all_moves.push((event.entity_id, event.from_room_id, event.to_room_id));
+        }
+    }
+    let mut refresh = HashSet::new();
+    let mut narrate_counts: HashMap<String, usize> = HashMap::new();
+    static LAST_TRANSIT_NARRATE_UNIX: std::sync::OnceLock<Mutex<HashMap<String, i64>>> =
+        std::sync::OnceLock::new();
+    let transit_gate = LAST_TRANSIT_NARRATE_UNIX.get_or_init(|| Mutex::new(HashMap::new()));
+    let now_ts = crate::game::now_unix();
+    for (npc_id, from_room_id, to_room_id) in all_moves {
+        if from_room_id == to_room_id {
+            continue;
+        }
+        let from_in_player = player_rooms.contains(&from_room_id);
+        let to_in_player = player_rooms.contains(&to_room_id);
+        if !from_in_player && !to_in_player {
+            continue;
+        }
+
+        if from_in_player {
+            refresh.insert(from_room_id.clone());
+        }
+        if to_in_player {
+            refresh.insert(to_room_id.clone());
+        }
+
+        let from_coord = crate::grid::parse_grid_room_id(&from_room_id);
+        let to_coord = crate::grid::parse_grid_room_id(&to_room_id);
+        let (dx, dy) = match (from_coord, to_coord) {
+            (Some(fc), Some(tc)) => (tc.x - fc.x, tc.y - fc.y),
+            _ => (0, 0),
+        };
+        let dir_forward = move_direction_zh(dx, dy);
+        let dir_backward = move_direction_zh(-dx, -dy);
+        let from_name = resolve_grid_cell_display_name(&from_room_id);
+        let to_name = resolve_grid_cell_display_name(&to_room_id);
+
+        let ent_opt = crate::db::get_entity(&npc_id).ok().flatten();
+        let display_title = ent_opt.as_ref().map(|e| e.display_title.as_str()).unwrap_or("");
+        let activity = ent_opt.as_ref().map(|e| e.current_activity.as_str()).unwrap_or("");
+
+        // 離開現場敘事（每間房每 25 秒最多推播 1 條路過訊息，避免洗掉現場交談與叫賣）
+        if from_in_player {
+            let count = narrate_counts.entry(from_room_id.clone()).or_insert(0);
+            let allow_transit = transit_gate
+                .lock()
+                .ok()
+                .is_some_and(|g| now_ts - g.get(&from_room_id).copied().unwrap_or(0) >= 25);
+            if *count < 1 && allow_transit {
+                *count += 1;
+                if let Ok(mut g) = transit_gate.lock() {
+                    g.insert(from_room_id.clone(), now_ts);
+                }
+                let want = crate::db::canonical_location_key(&from_room_id);
+                for s in sessions.all_sessions() {
+                    if crate::server::session::player_location_key(&s.player_id) == want {
+                        let caller_name = resolve_npc_name_for_viewer(&s.player_id, &npc_id, display_title);
+                        let leave_verb_idx = (now_ts as usize + npc_id.len()) % 4;
+                        let leave_text = match leave_verb_idx {
+                            0 => format!("{caller_name}邁步走入街道，往{dir_forward}朝【{to_name}】方向行去。"),
+                            1 => format!("{caller_name}轉身朝{dir_forward}【{to_name}】方向行去，步履從容。"),
+                            2 => format!("{caller_name}匆匆趕往{dir_forward}【{to_name}】，轉眼已行至路口。"),
+                            _ => format!("{caller_name}沿著石板路邁步離去，往{dir_forward}朝【{to_name}】方向行去。"),
+                        };
+                        crate::server::send_narrate_to_player(&s, &leave_text);
+                    }
+                }
+            }
+        }
+
+        // 進入現場敘事（每間房每 25 秒最多推播 1 條路過訊息，避免洗掉現場交談與叫賣）
+        if to_in_player {
+            let count = narrate_counts.entry(to_room_id.clone()).or_insert(0);
+            let allow_transit = transit_gate
+                .lock()
+                .ok()
+                .is_some_and(|g| now_ts - g.get(&to_room_id).copied().unwrap_or(0) >= 25);
+            if *count < 1 && allow_transit {
+                *count += 1;
+                if let Ok(mut g) = transit_gate.lock() {
+                    g.insert(to_room_id.clone(), now_ts);
+                }
+                let cleaned_activity = if let Some(idx) = activity.find("沿街前往") {
+                    // 若前面有「正從【...】」或「自【...】收工，」，只保留「沿街前往」及其前置修飾（如「剛收工，正」）
+                    let prefix = if activity.contains("收工") {
+                        "方才收工，正"
+                    } else {
+                        "正"
+                    };
+                    format!("{}{}", prefix, &activity[idx..])
+                } else {
+                    activity.to_string()
+                };
+                let action_detail = if !cleaned_activity.is_empty() {
+                    cleaned_activity
+                } else {
+                    "腳步從容，正沿街前行".to_string()
+                };
+                let want = crate::db::canonical_location_key(&to_room_id);
+                for s in sessions.all_sessions() {
+                    if crate::server::session::player_location_key(&s.player_id) == want {
+                        let caller_name = resolve_npc_name_for_viewer(&s.player_id, &npc_id, display_title);
+                        let arrive_verb_idx = (now_ts as usize + npc_id.len()) % 4;
+                        let arrive_text = match arrive_verb_idx {
+                            0 => format!("{caller_name}自{dir_backward}【{from_name}】邁步走入此處，{action_detail}。"),
+                            1 => format!("{caller_name}沿著石板路從{dir_backward}【{from_name}】行來，{action_detail}。"),
+                            2 => format!("{caller_name}停下腳步打量四方，方自{dir_backward}【{from_name}】行至此處，{action_detail}。"),
+                            _ => format!("{caller_name}匆匆趕往此地，自{dir_backward}【{from_name}】方向走來，{action_detail}。"),
+                        };
+                        crate::server::send_narrate_to_player(&s, &arrive_text);
+                    }
+                }
+            }
+        }
+    }
+
+    for room_id in refresh {
+        refresh_room_views_for_room(sessions, cfg, &room_id);
+    }
 }
 
-/// M3-029 局部經濟行動者：北岸/短市有人觀測時，正式 NPC 個體推進同一張需求板。
+/// M3-029 局部經濟行動者：北岸/市集有人觀測時，正式 NPC 個體推進同一張需求板。
 pub(super) fn run_m3_027_north_bank_actor_tick(
     sessions: &SessionStore,
     cfg: &Server,

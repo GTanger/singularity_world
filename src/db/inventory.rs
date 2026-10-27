@@ -22,6 +22,7 @@ pub struct InventoryLine {
     pub sub_total: f64,
     pub description: String,
     pub slot: String,
+    pub origin: String,
 }
 
 /// 背包查詢結果（對齊既有 `InventoryResult`）。
@@ -43,6 +44,51 @@ pub struct ItemDefBrief {
     pub vit_bonus: i32,
     pub dex_bonus: i32,
     pub atk_bonus: i32,
+    pub origin: String,
+}
+
+/// 將未在 items.json 或 materials 定義的物品 ID 映射至正體中文名稱
+pub fn fallback_item_name(item_id: &str) -> Option<&'static str> {
+    match item_id {
+        "harvest_herb" => Some("野地草藥"),
+        "harvest_hardstone" => Some("緻密硬石"),
+        "harvest_rare_wood" => Some("溫木心材"),
+        "harvest_deadwood" => Some("乾燥枯枝"),
+        "harvest_berries" => Some("原野漿果"),
+        "harvest_vine" => Some("深海巨藻藤"),
+        "harvest_ore" => Some("赤紋鐵礦"),
+        "harvest_wood" => Some("北坡雲杉原木"),
+        "harvest_fish" => Some("鮮活河魚"),
+        "harvest_crystal" => Some("寒水玉原石"),
+        "herb_lingzhi" => Some("光葉藥草"),
+        "ore_black_iron" => Some("青脊重礦"),
+        "wood_iron_oak" => Some("沼生烏木"),
+        "ore_copper" => Some("風切石原礦"),
+        "ore_silver" => Some("夜光貝母"),
+        "tea_leaf" => Some("翠嶺嫩茶"),
+        "wild_fruit" => Some("山野鮮果"),
+        "spring_water" => Some("清冽泉露"),
+        "beast_scale" => Some("巨獸殘鱗"),
+        "beast_claw_fragment" => Some("裂岩巨爪殘片"),
+        "deed_white_tower_property" => Some("公議堂紅印屋契"),
+        "key_brass_home_lock" => Some("黃銅彈子門鎖鑰匙"),
+        "starter_body_m" | "starter_body_f" => Some("棉麻日常上衣"),
+        "starter_legs_m" | "starter_legs_f" => Some("耐磨休閒長褲"),
+        "starter_feet_m" | "starter_feet_f" => Some("輕便布鞋"),
+        "starter_undershirt_m" | "starter_undershirt_f" => Some("純棉貼身內衫"),
+        "starter_inner_armor_m" | "starter_inner_armor_f" => Some("輕便護甲內襯"),
+        "starter_leg_armor_m" | "starter_leg_armor_f" => Some("耐磨綁腿護膝"),
+        "粗布短褂" => Some("棉麻日常上衣"),
+        "粗布長褲" => Some("耐磨休閒長褲"),
+        "草鞋" => Some("輕便布鞋"),
+        "mat_iron_scrap" => Some("回收熟鐵料塊"),
+        "mat_timber_log" => Some("伐採原木"),
+        "mat_reed_bundle" => Some("水澤老蘆草綑"),
+        "mat_foraged_herb" => Some("山野鮮藥草"),
+        "mat_coarse_paper_ream" => Some("原漿宣紙刀"),
+        "mat_hemp_rope_roll" => Some("浸油粗麻繩卷"),
+        _ => None,
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -84,6 +130,10 @@ pub fn add_to_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Res
         }
     })
 }
+/// 便捷別名：將物品新增至背包（等同 `add_to_inventory`）
+pub fn add_item(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Result<()> {
+    add_to_inventory(entity_id, item_id, qty)
+}
 
 /// 自背包 JSON 扣減數量；堆疊歸零則移除該列（對齊既有 `RemoveFromInventory` 語意）。
 pub fn remove_from_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow::Result<()> {
@@ -114,17 +164,93 @@ pub fn remove_from_inventory(entity_id: &str, item_id: &str, qty: i32) -> anyhow
     })
 }
 
-/// 在同一個 store 寫鎖內完成「玩家付鎂、NPC 收鎂、NPC 扣物、玩家收物」。
+/// 由 PostgreSQL 共同行動入口原子完成「買方付鎂、賣方收鎂、物品反向移動」。
 pub fn settle_inventory_trade(
     buyer_id: &str,
     seller_id: &str,
     item_id: &str,
     qty: i32,
     price_mg: i32,
-) -> anyhow::Result<()> {
-    let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write();
-    s.settle_inventory_trade(buyer_id, seller_id, item_id, qty, price_mg)
+    now_unix: i64,
+    source_ref: &str,
+) -> anyhow::Result<crate::pg::world_trade::TradeSettlement> {
+    let pool = crate::pg::pool().ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
+    let settlement = crate::pg::world_trade::settle(
+        &pool, buyer_id, seller_id, item_id, qty, price_mg, now_unix, source_ref,
+    )?;
+    mirror_trade_settlement(&settlement);
+    Ok(settlement)
+}
+
+/// NPC 只在市場把實際持物賣給同地、付得起的另一名 NPC；沒有買家就不成交。
+pub fn settle_npc_inventory_sale(
+    seller_id: &str,
+    item_id: &str,
+    qty: i32,
+    price_mg: i32,
+    now_unix: i64,
+) -> anyhow::Result<Option<crate::pg::world_trade::TradeSettlement>> {
+    let pool = crate::pg::pool().ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
+    let settlement = crate::pg::world_trade::settle_npc_sale(
+        &pool,
+        seller_id,
+        item_id,
+        qty,
+        price_mg,
+        now_unix,
+        "npc_market_trade",
+    )?;
+    if let Some(ref settlement) = settlement {
+        mirror_trade_settlement(settlement);
+    }
+    Ok(settlement)
+}
+
+fn mirror_trade_settlement(settlement: &crate::pg::world_trade::TradeSettlement) {
+    let Some(arc) = store::get_store() else {
+        tracing::warn!("交易已提交但 store 尚未就緒：{}", settlement.trade_id);
+        return;
+    };
+    let mut store = arc.write();
+    for party in [&settlement.buyer, &settlement.seller] {
+        if let Err(error) = store.mirror_economy_from_authority(
+            &party.entity_id,
+            party.magnesium,
+            &party.inventory,
+            &party.current_activity,
+        ) {
+            tracing::warn!(
+                "交易 {} 快取校正失敗 {}：{}",
+                settlement.trade_id,
+                party.entity_id,
+                error
+            );
+        }
+    }
+}
+
+/// 市場成交後，把 PostgreSQL 權威狀態校正回人物快取；市場庫存與財庫本身不做雙寫。
+pub fn mirror_market_trade_settlement(settlement: &crate::pg::world_trade::MarketTradeSettlement) {
+    let Some(arc) = store::get_store() else {
+        tracing::warn!("市場交易已提交但 store 尚未就緒：{}", settlement.trade_id);
+        return;
+    };
+    let mut store = arc.write();
+    for party in [&settlement.buyer, &settlement.operator] {
+        if let Err(error) = store.mirror_economy_from_authority(
+            &party.entity_id,
+            party.magnesium,
+            &party.inventory,
+            &party.current_activity,
+        ) {
+            tracing::warn!(
+                "市場交易 {} 快取校正失敗 {}：{}",
+                settlement.trade_id,
+                party.entity_id,
+                error
+            );
+        }
+    }
 }
 
 /// 背包內所有物品數量加總（僅 `qty > 0`；對齊既有 `DecisionState.InventoryTotalQty`）。
@@ -138,6 +264,22 @@ pub fn inventory_total_qty(inventory_json: &str) -> i32 {
         .iter()
         .filter(|e| e.qty > 0 && !e.item_id.is_empty())
         .map(|e| e.qty)
+        .sum()
+}
+
+/// 只計算現行白塔市場商品；退役 `mat_*` 與舊測試物不再驅動居民交易決策。
+#[must_use]
+pub fn active_trade_inventory_total_qty(inventory_json: &str) -> i32 {
+    if inventory_json.is_empty() || inventory_json == "[]" {
+        return 0;
+    }
+    let entries: Vec<InventoryEntry> = serde_json::from_str(inventory_json).unwrap_or_default();
+    entries
+        .iter()
+        .filter(|entry| {
+            entry.qty > 0 && crate::world::author_economy::is_runtime_good_item(&entry.item_id)
+        })
+        .map(|entry| entry.qty)
         .sum()
 }
 
@@ -176,14 +318,20 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
         if e.qty <= 0 || e.item_id.is_empty() {
             continue;
         }
-        let (name, item_type, description, slot, weight) = if let Some(it) = s.get_item(&e.item_id)
+        let (name, item_type, description, slot, weight, origin) = if let Some(it) = s.get_item(&e.item_id)
         {
+            let origin = if !it.origin.is_empty() {
+                it.origin.clone()
+            } else {
+                crate::game::object_ecology::lookup_item_origin(&e.item_id)
+            };
             (
                 it.name.clone(),
                 it.item_type.clone(),
                 it.description.clone(),
                 it.slot.clone(),
                 it.weight,
+                origin,
             )
         } else if let Some(mat) = crate::world::materials::material_by_item_id(&e.item_id) {
             (
@@ -192,6 +340,37 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
                 mat.description.clone(),
                 String::new(),
                 mat.weight,
+                mat.origin_label.clone(),
+            )
+        } else if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(&e.item_id) {
+            (
+                cat.name.to_string(),
+                cat.category_name.to_string(),
+                format!(
+                    "{}（原料：{}｜出處：{}｜用途：{}）",
+                    cat.look_text, cat.origin_material, cat.workshop, cat.daily_function
+                ),
+                String::new(),
+                crate::game::peninsula_catalog::catalog_entry_weight_kg(cat),
+                cat.origin_material.to_string(),
+            )
+        } else if let Some(eco) = crate::game::object_ecology::lookup_ecology_item_def(&e.item_id) {
+            (
+                eco.name,
+                eco.item_type,
+                eco.description,
+                eco.slot,
+                eco.weight,
+                eco.origin,
+            )
+        } else if let Some(fallback_name) = fallback_item_name(&e.item_id) {
+            (
+                fallback_name.to_string(),
+                "material".into(),
+                "採集或探索獲得的物產。".into(),
+                String::new(),
+                0.5,
+                "白塔半島".to_string(),
             )
         } else {
             (
@@ -200,6 +379,7 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
                 String::new(),
                 String::new(),
                 0.0,
+                String::new(),
             )
         };
         let sub = weight * f64::from(e.qty);
@@ -212,6 +392,7 @@ pub fn get_inventory(inventory_json: &str, vit: i32) -> InventorySnapshot {
             sub_total: sub,
             description,
             slot,
+            origin,
         });
         total_weight += sub;
     }
@@ -228,6 +409,11 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
     if let Some(arc) = store::get_store() {
         let s = arc.read();
         if let Some(it) = s.get_item(item_id) {
+            let origin = if !it.origin.is_empty() {
+                it.origin.clone()
+            } else {
+                crate::game::object_ecology::lookup_item_origin(item_id)
+            };
             return Some(ItemDefBrief {
                 name: it.name.clone(),
                 item_type: it.item_type.clone(),
@@ -237,19 +423,77 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
                 vit_bonus: it.vit_bonus,
                 dex_bonus: it.dex_bonus,
                 atk_bonus: it.atk_bonus,
+                origin,
             });
         }
     }
-    crate::world::materials::material_by_item_id(item_id).map(|mat| ItemDefBrief {
-        name: mat.name.clone(),
-        item_type: mat.item_type.clone(),
-        slot: String::new(),
-        description: mat.description.clone(),
-        weight: mat.weight,
-        vit_bonus: 0,
-        dex_bonus: 0,
-        atk_bonus: 0,
-    })
+    if let Some(mat) = crate::world::materials::material_by_item_id(item_id) {
+        return Some(ItemDefBrief {
+            name: mat.name.clone(),
+            item_type: mat.item_type.clone(),
+            slot: String::new(),
+            description: mat.description.clone(),
+            weight: mat.weight,
+            vit_bonus: 0,
+            dex_bonus: 0,
+            atk_bonus: 0,
+            origin: mat.origin_label.clone(),
+        });
+    }
+    if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
+        return Some(ItemDefBrief {
+            name: cat.name.to_string(),
+            item_type: cat.category_name.to_string(),
+            slot: String::new(),
+            description: format!(
+                "{}（原料：{}｜出處：{}｜用途：{}）",
+                cat.look_text, cat.origin_material, cat.workshop, cat.daily_function
+            ),
+            weight: crate::game::peninsula_catalog::catalog_entry_weight_kg(cat),
+            vit_bonus: 0,
+            dex_bonus: 0,
+            atk_bonus: 0,
+            origin: cat.origin_material.to_string(),
+        });
+    }
+    if let Some(eco) = crate::game::object_ecology::lookup_ecology_item_def(item_id) {
+        return Some(eco);
+    }
+    if let Some(name) = fallback_item_name(item_id) {
+        let (item_type, slot, desc) = match item_id {
+            "starter_body_m" | "starter_body_f" | "粗布短褂" => ("equipment", "body", "質樸舒適的棉麻日常上衣。"),
+            "starter_legs_m" | "starter_legs_f" | "粗布長褲" => ("equipment", "legs", "耐磨且便於活動的日常休閒長褲。"),
+            "starter_feet_m" | "starter_feet_f" | "草鞋" => ("equipment", "feet", "輕便透氣的平底布鞋。"),
+            "starter_undershirt_m" | "starter_undershirt_f" => ("equipment", "undershirt", "吸汗透氣的純棉內衫。"),
+            "starter_inner_armor_m" | "starter_inner_armor_f" => ("equipment", "inner_armor", "輕薄貼身的軟韌護甲。"),
+            "starter_leg_armor_m" | "starter_leg_armor_f" => ("equipment", "leg_armor", "保護小腿與膝關節的束帶。"),
+            _ => ("material", "", "採集或探索獲得的物產。"),
+        };
+        return Some(ItemDefBrief {
+            name: name.to_string(),
+            item_type: item_type.into(),
+            slot: slot.into(),
+            description: desc.into(),
+            weight: 0.5,
+            vit_bonus: 0,
+            dex_bonus: 0,
+            atk_bonus: 0,
+            origin: "白塔半島".into(),
+        });
+    }
+    None
+}
+
+/// 查詢單一物品名稱（若查無則回退為 item_id）
+#[must_use]
+pub fn get_item_name(item_id: &str) -> String {
+    if let Some(def) = get_item_def(item_id) {
+        return def.name;
+    }
+    if let Some(fallback) = fallback_item_name(item_id) {
+        return fallback.to_string();
+    }
+    item_id.to_string()
 }
 
 /// 背包目前總重量（對齊既有 `InventoryWeight`）。
@@ -259,19 +503,21 @@ pub fn inventory_weight(inventory_json: &str) -> f64 {
         return 0.0;
     }
     let entries: Vec<InventoryEntry> = serde_json::from_str(inventory_json).unwrap_or_default();
-    let Some(arc) = store::get_store() else {
-        return 0.0;
-    };
-    let s = arc.read();
+    let arc_opt = store::get_store();
+    let s_opt = arc_opt.as_ref().map(|arc| arc.read());
     let mut total = 0.0;
     for e in entries {
         if e.qty <= 0 {
             continue;
         }
-        let w = s
-            .get_item(&e.item_id)
-            .map(|it| it.weight)
+        let w = s_opt
+            .as_ref()
+            .and_then(|s| s.get_item(&e.item_id).map(|it| it.weight))
             .or_else(|| crate::world::materials::material_by_item_id(&e.item_id).map(|m| m.weight))
+            .or_else(|| {
+                crate::game::peninsula_catalog::find_catalog_entry(&e.item_id)
+                    .map(crate::game::peninsula_catalog::catalog_entry_weight_kg)
+            })
             .unwrap_or(0.0);
         total += w * f64::from(e.qty);
     }
@@ -318,47 +564,50 @@ pub fn clear_equipment_slot(entity_id: &str, slot: &str) -> anyhow::Result<()> {
     })
 }
 
-/// 背包 JSON 中是否至少有一件指定 `item_id` 且 `qty > 0`。
+/// 背包 JSON 或實體 ID 中是否至少有一件指定 `item_id` 且 `qty > 0`。
 #[must_use]
-pub fn inventory_has_item(inventory_json: &str, item_id: &str) -> bool {
-    inventory_has_qty(inventory_json, item_id, 1)
+pub fn inventory_has_item(inventory_json_or_entity_id: &str, item_id: &str) -> bool {
+    inventory_has_qty(inventory_json_or_entity_id, item_id, 1)
 }
 
-/// 背包 JSON 中是否至少有指定數量的 `item_id`。
+/// 背包 JSON 或實體 ID 中是否至少有指定數量的 `item_id`。
 #[must_use]
-pub fn inventory_has_qty(inventory_json: &str, item_id: &str, qty: i32) -> bool {
-    if inventory_json.is_empty() || inventory_json == "[]" || item_id.is_empty() || qty <= 0 {
+pub fn inventory_has_qty(inventory_json_or_entity_id: &str, item_id: &str, qty: i32) -> bool {
+    if inventory_json_or_entity_id.is_empty() || item_id.is_empty() || qty <= 0 {
         return false;
     }
-    let entries: Vec<InventoryEntry> = serde_json::from_str(inventory_json).unwrap_or_default();
+    let raw = if inventory_json_or_entity_id.trim_start().starts_with('[') {
+        inventory_json_or_entity_id.to_string()
+    } else if let Some(arc) = store::get_store() {
+        if let Some(ent) = arc.read().get_entity(inventory_json_or_entity_id) {
+            ent.inventory
+        } else {
+            inventory_json_or_entity_id.to_string()
+        }
+    } else {
+        inventory_json_or_entity_id.to_string()
+    };
+    if raw.is_empty() || raw == "[]" {
+        return false;
+    }
+    let entries: Vec<InventoryEntry> = serde_json::from_str(&raw).unwrap_or_default();
     entries.iter().any(|e| e.item_id == item_id && e.qty >= qty)
 }
-
-/// 從 NPC 背包 JSON 取數量 > 0 且可交易的 P0 物質作為本輪賣品。
-/// P0 商品層以 `trade_priority` 讓糧、鹽、繩、礦等主商品優先於副料。
+/// 從 NPC 背包取現行白塔市場商品；退役 `mat_*` 不再進入主動交易。
 #[must_use]
 pub fn pick_npc_trade_offer(inventory_json: &str) -> Option<String> {
     if inventory_json.is_empty() || inventory_json == "[]" {
         return None;
     }
     let entries: Vec<InventoryEntry> = serde_json::from_str(inventory_json).unwrap_or_default();
-    let mut best: Option<(String, i32)> = None;
-    for e in entries {
-        if !e.item_id.is_empty() && e.qty > 0 && item_is_tradable(&e.item_id) {
-            let priority = crate::world::materials::trade_offer_priority(&e.item_id).unwrap_or(0);
-            let replace = match best.as_ref() {
-                Some((_, best_priority)) => priority > *best_priority,
-                None => true,
-            };
-            if replace {
-                best = Some((e.item_id, priority));
-            }
-        }
-    }
-    best.map(|(item_id, _)| item_id)
+    entries
+        .into_iter()
+        .filter(|entry| entry.qty > 0 && item_is_tradable(&entry.item_id))
+        .map(|entry| entry.item_id)
+        .min()
 }
 
-/// 第一版喊價：P0 世界物質讀價格錨點，其他物品不應進入交易報價。
+/// 人物持有的現行商品缺少所在地市場報價時才使用的相容喊價。
 #[must_use]
 pub fn default_trade_ask_mg(item_id: &str) -> i32 {
     crate::world::materials::trade_price_anchor_mg(item_id).unwrap_or(8)
@@ -366,7 +615,7 @@ pub fn default_trade_ask_mg(item_id: &str) -> i32 {
 
 #[must_use]
 pub fn item_is_tradable(item_id: &str) -> bool {
-    crate::world::materials::is_tradable_item(item_id)
+    crate::world::author_economy::is_runtime_good_item(item_id)
 }
 
 /// 議價底價＝喊價七成（至少 1）（對齊既有 `TradeFloorFromAsk`）。
@@ -414,23 +663,52 @@ mod tests {
     }
 
     #[test]
-    fn trade_offer_uses_p0_material_only() {
+    fn trade_offer_uses_runtime_market_good_only() {
         let inventory =
-            r#"[{"item_id":"wild_herb","qty":3},{"item_id":"mat_wet_grass_bundle","qty":1}]"#;
+            r#"[{"item_id":"mat_wet_grass_bundle","qty":3},{"item_id":"wt-good-070","qty":1}]"#;
         assert_eq!(
             pick_npc_trade_offer(inventory).as_deref(),
-            Some("mat_wet_grass_bundle")
+            Some("wt-good-070")
         );
-        assert_eq!(default_trade_ask_mg("mat_wet_grass_bundle"), 4);
+        assert_eq!(default_trade_ask_mg("wt-good-070"), 8);
     }
 
     #[test]
-    fn trade_offer_prioritizes_main_commodity_over_byproduct() {
-        let inventory =
-            r#"[{"item_id":"mat_fish_bone_sack","qty":1},{"item_id":"mat_grain_sack","qty":1}]"#;
+    fn trade_offer_is_stable_and_ignores_retired_materials() {
+        let inventory = r#"[{"item_id":"wt-good-070","qty":1},{"item_id":"mat_grain_sack","qty":9},{"item_id":"wt-good-012","qty":1}]"#;
         assert_eq!(
             pick_npc_trade_offer(inventory).as_deref(),
-            Some("mat_grain_sack")
+            Some("wt-good-012")
         );
+    }
+
+    #[test]
+    fn active_trade_quantity_excludes_legacy_inventory() {
+        let inventory =
+            r#"[{"item_id":"mat_reed_bundle","qty":5000},{"item_id":"wt-good-012","qty":2}]"#;
+        assert_eq!(active_trade_inventory_total_qty(inventory), 2);
+    }
+
+    #[test]
+    fn fallback_item_name_covers_peninsula_deeds_and_keys() {
+        assert_eq!(fallback_item_name("deed_white_tower_property"), Some("公議堂紅印屋契"));
+        assert_eq!(fallback_item_name("key_brass_home_lock"), Some("黃銅彈子門鎖鑰匙"));
+        assert_eq!(fallback_item_name("starter_body_m"), Some("棉麻日常上衣"));
+        assert_eq!(fallback_item_name("starter_legs_m"), Some("耐磨休閒長褲"));
+        assert_eq!(fallback_item_name("starter_feet_m"), Some("輕便布鞋"));
+        assert_eq!(fallback_item_name("粗布短褂"), Some("棉麻日常上衣"));
+        assert_eq!(fallback_item_name("粗布長褲"), Some("耐磨休閒長褲"));
+        assert_eq!(fallback_item_name("草鞋"), Some("輕便布鞋"));
+    }
+    #[test]
+    fn catalog_item_def_and_weight_resolution() {
+        let def = get_item_def("wt_cat_0001").expect("catalog entry wt_cat_0001 must exist");
+        assert_eq!(def.name, "赤鐵重礦");
+        assert_eq!(def.weight, 1.5);
+        assert!(def.description.contains("赤鐵重礦"));
+
+        let inv_json = r#"[{"item_id":"wt_cat_0001","qty":2}]"#;
+        let w = inventory_weight(inv_json);
+        assert!((w - 3.0).abs() < 1e-6);
     }
 }

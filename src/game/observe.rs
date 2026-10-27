@@ -53,10 +53,8 @@ pub fn collapse(entity_id: &str, as_of: i64) -> anyhow::Result<(Character, Strin
                     c.vit = v;
                 }
             }
-            t if t == types::MOVE => {
-                if !r.payload.is_empty() {
-                    room_id = r.payload;
-                }
+            t if t == types::MOVE && !r.payload.is_empty() => {
+                room_id = r.payload;
             }
             _ => {}
         }

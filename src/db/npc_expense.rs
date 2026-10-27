@@ -1,41 +1,62 @@
-//! NPC 每日食宿鎂消耗（對齊既有 `db/npc_expense`）。
+//! NPC 每日食宿消耗；一個遊戲日只結算一次，重啟不重扣。
 
-use crate::event;
 use crate::store;
 
-use super::ErrNoStore;
-use super::add_magnesium;
-use super::{ThoughtSource, add_thought};
+use super::disposition::{add_thought_to_entity, add_thought_to_entity_with_flavor};
+use super::{ErrNoStore, ThoughtSource};
 
-/// 每遊戲日基礎食宿消耗鎂數。
 pub const DAILY_EXPENSE_BASE: i32 = 8;
 
-/// 扣減所有在房 NPC 的每日消耗；鎂歸零時記 `broke` 事件並調心境（對齊既有 `DeductDailyExpense`）。
-pub fn deduct_daily_expense(now_unix: i64) -> anyhow::Result<i32> {
-    let arc = store::get_store().ok_or(ErrNoStore)?;
-    let ids = {
-        let s = arc.read();
-        s.get_npc_ids_with_room()
+pub fn deduct_daily_expense(game_day: i32, now_unix: i64) -> anyhow::Result<i32> {
+    let pool = crate::pg::pool().ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
+    let Some(results) = crate::pg::economy::apply_daily_expense_once(
+        &pool,
+        game_day,
+        now_unix,
+        DAILY_EXPENSE_BASE,
+    )?
+    else {
+        return Ok(0);
     };
-    let mut affected = 0i32;
-    for id in ids {
-        let mag = {
-            let s = arc.read();
-            let Some(e) = s.get_entity(&id) else {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let (pool, snapshots) = {
+        let mut store = arc.write();
+        let pool = store
+            .db_pool
+            .clone()
+            .ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
+        let mut snapshots = Vec::with_capacity(results.len());
+        for result in &results {
+            let Some(entity) = store.entities.get_mut(&result.entity_id) else {
                 continue;
             };
-            e.magnesium
-        };
-        if mag > 0 {
-            let new_mag = mag.saturating_sub(DAILY_EXPENSE_BASE);
-            add_magnesium(&id, -DAILY_EXPENSE_BASE)?;
-            affected += 1;
-            if new_mag == 0 {
-                let _ = event::append(now_unix, &id, "broke", "鎂歸零");
-                let _ = add_thought(&id, ThoughtSource::Broke);
+            entity.magnesium = result.magnesium;
+            if entity.magnesium == 0 {
+                let last_is_broke = entity.thoughts.last().map(|t| t.source == "Broke").unwrap_or(false);
+                if !last_is_broke {
+                    add_thought_to_entity(entity, ThoughtSource::Broke, now_unix);
+                }
+            } else if entity.magnesium > 0 && entity.magnesium < 35 {
+                add_thought_to_entity_with_flavor(
+                    entity,
+                    ThoughtSource::Daily,
+                    now_unix,
+                    "手頭鎂幣漸緊，得盤算多接幾趟差事",
+                );
+            } else if entity.magnesium >= 80 && (entity.thoughts.is_empty() || entity.disposition < 0) {
+                add_thought_to_entity_with_flavor(
+                    entity,
+                    ThoughtSource::WorkDone,
+                    now_unix,
+                    "手頭銀錢充裕、食宿安穩，心裡頗為踏實",
+                );
             }
+            snapshots.push(entity.clone());
         }
-        let _ = add_thought(&id, ThoughtSource::Daily);
-    }
-    Ok(affected)
+        (pool, snapshots)
+    };
+    crate::pg::entity::upsert_batch(&pool, &snapshots)?;
+    Ok(i32::try_from(
+        results.iter().filter(|result| result.charged).count(),
+    )?)
 }

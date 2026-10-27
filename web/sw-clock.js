@@ -1,9 +1,8 @@
-// 遊戲時鐘與狀態條：gameSecNow / gameDaysNow / formatSingularityDate / updateGameTimeDisplay / ticker / updateStatusBars / draw。v0.20.46
+// 遊戲時鐘與開譜曆日晷：gameSecNow / gameDaysNow / formatEpochSeasonDate / updateGameTimeDisplay / ticker / draw。
 (function () {
 	var GAME_TIME_SCALE = 24;
 	var GAME_SEC_PER_DAY = 86400;
 	var DAYS_PER_YEAR = 365;
-	var DAYS_PER_MONTH = 30;
 
 	var gameTimeTicker = null;
 
@@ -25,43 +24,115 @@
 		return Math.max(0, Math.floor(secTotal / GAME_SEC_PER_DAY));
 	}
 
-	function formatSingularityDate(days) {
-		days = Math.max(0, Math.floor(days));
-		var dayInYear = days % DAYS_PER_YEAR;
+	// 開譜曆與四季日期（春融、夏漲、秋狩、冬凝）
+	function formatEpochSeasonDate(days) {
+		var state = window.gameState ? window.gameState() : null;
+		if (state && state.season_date_label) {
+			return String(state.season_date_label);
+		}
+		days = Math.max(0, Math.floor(days || 0));
 		var year = Math.floor(days / DAYS_PER_YEAR) + 1;
-		var month = Math.min(12, Math.floor(dayInYear / DAYS_PER_MONTH) + 1);
-		var day = (dayInYear % DAYS_PER_MONTH) + 1;
-		if (day < 1) day = 1;
-		if (day > 30) day = 30;
-		var yearStr = year === 1 ? '元' : (year + '');
-		return '奇點曆 ' + yearStr + '年' + month + '月' + day + '日';
+		var dayInYear = days % DAYS_PER_YEAR;
+		var seasonName = '春融';
+		var dayInSeason = dayInYear + 1;
+		if (dayInYear < 91) {
+			seasonName = '春融';
+			dayInSeason = dayInYear + 1;
+		} else if (dayInYear < 182) {
+			seasonName = '夏漲';
+			dayInSeason = dayInYear - 91 + 1;
+		} else if (dayInYear < 273) {
+			seasonName = '秋狩';
+			dayInSeason = dayInYear - 182 + 1;
+		} else {
+			seasonName = '冬凝';
+			dayInSeason = dayInYear - 273 + 1;
+		}
+		var yearStr = year === 1 ? '元' : String(year);
+		return '開譜曆 ' + yearStr + ' 年・' + seasonName + '・' + dayInSeason + ' 日';
+	}
+
+	// 六段時辰：拂曉、晝前、正晝、黃昏、夜段、黎明前
+	function getSixPhase(hour) {
+		var h = Math.floor(hour);
+		if (h >= 4 && h < 8) return '拂曉';
+		if (h >= 8 && h < 12) return '晝前';
+		if (h >= 12 && h < 16) return '正晝';
+		if (h >= 16 && h < 20) return '黃昏';
+		if (h >= 20 && h < 24) return '夜段';
+		return '黎明前';
+	}
+
+	var WEATHER_NAMES = {
+		'clear': '天朗',
+		'rain': '微雨',
+		'snow': '初雪',
+		'wind': '勁風',
+		'plum_rain': '梅雨',
+		'fog': '薄霧',
+		'storm': '雷雨'
+	};
+
+	function getCurrentWeatherName() {
+		var state = window.gameState ? window.gameState() : null;
+		var wt = (state && (state.weather || (state.room_view && state.room_view.weather))) ||
+			(window.SwGrid && window.SwGrid.mapData && window.SwGrid.mapData.weather);
+		if (!wt) return '天朗';
+		if (typeof wt === 'string') return WEATHER_NAMES[wt] || wt;
+		var k = wt.event_type || wt.icon_key || wt.name || 'clear';
+		return WEATHER_NAMES[k] || wt.desc || '天朗';
 	}
 
 	function updateGameTimeDisplay() {
 		var sec = gameSecNow();
 		var days = gameDaysNow();
-		var phases = ['深夜','凌晨','破曉','清晨','上午','正午','午後','下午','傍晚','入夜','晚間','半夜'];
+		var state = window.gameState ? window.gameState() : null;
+
+		var calendarEl = document.getElementById('sw-top-calendar');
+		var phasePlaceEl = document.getElementById('sw-top-phase-place');
+		var weatherName = getCurrentWeatherName();
+
+		function setPhasePlaceHtml(el, phaseWeatherText) {
+			if (!el) return;
+			el.textContent = '';
+			var mainSpan = document.createElement('span');
+			mainSpan.className = 'sw-top-phase-weather';
+			mainSpan.textContent = phaseWeatherText;
+			el.appendChild(mainSpan);
+		}
 
 		if (sec == null || days == null) {
-			// v5 L1 時間層（頂欄已移除，只更新 L1）
+			if (calendarEl) calendarEl.textContent = '開譜曆 元年・春融・1 日';
+			setPhasePlaceHtml(phasePlaceEl, '正晝 12:00・' + weatherName);
 			if (window.SwRoomDesc && window.SwRoomDesc.renderL1) {
-				window.SwRoomDesc.renderL1({ hour_str: '--:--', period: '' });
+				window.SwRoomDesc.renderL1({ hour_str: '12:00', period: '正晝' });
 			}
 			return;
 		}
+
 		var h = Math.floor(sec / 3600) % 24;
 		var m = Math.floor((sec % 3600) / 60);
 		var hourStr = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
-		var phase = phases[Math.floor(h / 2)] || '深夜';
+		var sixPhase = getSixPhase(h);
 
-		// v5：更新 L1 描述層（時辰散文），頂欄已移除不再更新
+		// 1. 更新頂欄左側開譜曆日期
+		var calText = formatEpochSeasonDate(days);
+		if (calendarEl) {
+			calendarEl.textContent = calText;
+		}
+
+		// 2. 更新頂欄右側六段時辰、天象與時間
+		setPhasePlaceHtml(phasePlaceEl, sixPhase + ' ' + hourStr + '・' + weatherName);
+
+		// 相容 L1 描述層
 		if (window.SwRoomDesc && window.SwRoomDesc.renderL1) {
-			window.SwRoomDesc.renderL1({ hour_str: hourStr, period: phase });
+			window.SwRoomDesc.renderL1({ hour_str: hourStr, period: sixPhase });
 		}
 	}
 
 	function startTicker() {
 		if (gameTimeTicker) return;
+		updateGameTimeDisplay();
 		gameTimeTicker = setInterval(updateGameTimeDisplay, 500);
 	}
 
@@ -72,7 +143,7 @@
 		}
 	}
 
-	// 四條狀態欄：滿條＝該屬性最大值，條寬＝當前值/最大值*100%
+	// 四條狀態欄（若有需要保留內部邏輯，但前台數值條已隱藏）
 	function updateStatusBars(hpCur, hpMax, innerCur, innerMax, spiritCur, spiritMax, staminaCur, staminaMax) {
 		var pct = function (cur, max) {
 			if (max == null || max <= 0) return 100;
@@ -90,15 +161,13 @@
 		if (barStamina) barStamina.style.width = pct(staminaCur, staminaMax) + '%';
 	}
 
-	// draw：刷新姓名 + 狀態條（讀 window.gameState()）
+	// draw：刷新姓名與時鐘顯示
 	function draw() {
 		var state = window.gameState ? window.gameState() : null;
 		if (!state) return;
 		var nameEl = document.getElementById('player-name');
 		if (nameEl) nameEl.textContent = (state.me && state.me.player_id) ? state.me.player_id : '姓名';
-		if (state.me && state.me.hp_max != null) {
-			updateStatusBars(state.me.hp_cur, state.me.hp_max, state.me.inner_cur, state.me.inner_max, state.me.spirit_cur, state.me.spirit_max, state.me.stamina_cur, state.me.stamina_max);
-		}
+		updateGameTimeDisplay();
 	}
 
 	window.SwClock = {
@@ -107,11 +176,12 @@
 		updateStatusBars: updateStatusBars,
 		draw: draw,
 		updateDisplay: updateGameTimeDisplay,
-		formatDate: formatSingularityDate,
+		formatDate: formatEpochSeasonDate,
+		formatEpochSeasonDate: formatEpochSeasonDate,
+		getSixPhase: getSixPhase,
 		gameSecNow: gameSecNow,
 		gameDaysNow: gameDaysNow
 	};
-	// 向後相容 alias
 	window.gameStartTimeTicker = startTicker;
 	window.gameUpdateTime = updateGameTimeDisplay;
 })();

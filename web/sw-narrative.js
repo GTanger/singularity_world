@@ -40,10 +40,6 @@
 		var esc = escapeHtml(String(text))
 			.replace(/【([^】]*)】/g, function (_m, rawName) {
 				var name = rawName || '';
-				var eid = resolveId(name);
-				if (eid) {
-					return '【<span class="log-object-action narr-name" role="button" tabindex="0" data-entity-id="' + escapeHtml(eid) + '" data-action="Look" data-target-type="entity" data-target-name="' + escapeHtml(name) + '">' + escapeHtml(name) + '</span>】';
-				}
 				return '<span class="narr-name">【' + escapeHtml(name) + '】</span>';
 			})
 			.replace(/「([^」]*)」/g, '<span class="narr-dialogue">「$1」</span>');
@@ -77,6 +73,10 @@
 	// 第一輪：替換 【物件名】 或 〔物件名〕；第二輪：僅在「詞界」替換純文字名（避免「奶茶」命中「琥珀珍珠奶茶」）
 	function formatWithClickable(html, objects) {
 		if (!html || !objects || !objects.length) return html;
+		var popoverBackdrop = typeof document !== 'undefined' ? document.getElementById('sw-object-popover-backdrop') : null;
+		if (popoverBackdrop && !popoverBackdrop.hidden && popoverBackdrop.style.display !== 'none') {
+			return html;
+		}
 		function escapeRegex(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 		var sorted = objects.slice().sort(function (a, b) { return (b.name || '').length - (a.name || '').length; });
 		function makeSpan(o) {
@@ -89,15 +89,6 @@
 			if (!o.name) return;
 			var nameRe = escapeRegex(escapeHtml(o.name));
 			html = html.replace(new RegExp('[\u3010\u3014]' + nameRe + '[\u3011\u3015]', 'g'), makeSpan(o));
-		});
-		// 第二輪：左側不得為漢字或「>」（避免命中複合詞；避免在已有 span 內再包一層）
-		// 右側不得為漢字或「<」（避免切到 </span> 前再度替換）
-		sorted.forEach(function (o) {
-			if (!o.name) return;
-			var nameRe = escapeRegex(escapeHtml(o.name));
-			if (!nameRe) return;
-			var boundaryRe = new RegExp('(?<![\\u4e00-\\u9fff>])' + nameRe + '(?![\\u4e00-\\u9fff<])', 'g');
-			html = html.replace(boundaryRe, function () { return makeSpan(o); });
 		});
 		return html;
 	}

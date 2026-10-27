@@ -22,6 +22,14 @@ pub fn adjust_favorability(entity_id: &str, subject_id: &str, delta: i32) -> any
     s.adjust_favorability(entity_id, subject_id, delta)
 }
 
+/// 查詢該 NPC 對某玩家的好感度數值（-100 到 +100），無記憶時預設為 0。
+pub fn get_favorability(entity_id: &str, subject_id: &str) -> i32 {
+    store::get_store()
+        .and_then(|arc| arc.read().get_npc_memory(entity_id, subject_id))
+        .map(|m| m.favorability)
+        .unwrap_or(0)
+}
+
 /// 回傳一句「與這位來者的短期記憶」供拼進背版；無記憶或見面 0 次回傳空字串（對齊既有 `FormatNpcMemoryForBackstory`）。
 pub fn format_npc_memory_for_backstory(entity_id: &str, subject_id: &str) -> String {
     let Some(arc) = store::get_store() else {

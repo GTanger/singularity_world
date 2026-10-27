@@ -56,6 +56,9 @@ impl Store {
                     direction: e.direction.clone(),
                     to_room_id: e.to.clone(),
                     to_room_name: to_name,
+                    route_id: String::new(),
+                    mode: String::new(),
+                    travel_cost: 0,
                 });
         }
         self.prune_non_street_rooms(None);
@@ -112,6 +115,9 @@ impl Store {
                         direction: ex.direction.clone(),
                         to_room_id: ex.to.clone(),
                         to_room_name: to_name,
+                        route_id: String::new(),
+                        mode: String::new(),
+                        travel_cost: 0,
                     });
             }
         }
@@ -257,7 +263,10 @@ impl Store {
             Err(_) => return Ok(()),
         };
         let f: EntitiesFile = serde_json::from_str(&raw)?;
-        for e in f.entities {
+        for mut e in f.entities {
+            e.display_title = super::entity::normalize_archaic_title(&e.display_title);
+            e.equipment_slots = super::entity::normalize_archaic_clothing(&e.equipment_slots);
+            e.inventory = super::entity::normalize_archaic_clothing(&e.inventory);
             self.entities.insert(e.id.clone(), e);
         }
         Ok(())
@@ -269,7 +278,9 @@ impl Store {
             Err(_) => return Ok(()),
         };
         let f: ItemsFile = serde_json::from_str(&raw)?;
-        for it in f.items {
+        for mut it in f.items {
+            it.name = super::entity::normalize_archaic_clothing(&it.name);
+            it.description = super::entity::normalize_archaic_clothing(&it.description);
             self.items.insert(it.id.clone(), it);
         }
         Ok(())

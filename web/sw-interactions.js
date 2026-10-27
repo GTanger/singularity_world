@@ -1,6 +1,11 @@
 // talk/trade 輸入列、log pending 訊息、log 物件點擊派發；自包含，依賴 window.SwLog / window.gameSend / window.gameState / window.gameFormatNarrative。v0.20.45
 (function () {
 	function getLogEl() {
+		var backdrop = document.getElementById('sw-object-popover-backdrop');
+		var popLog = document.getElementById('sw-popover-log');
+		if (backdrop && !backdrop.hidden && backdrop.style.display !== 'none' && popLog) {
+			return popLog;
+		}
 		return document.getElementById('sw-log') || document.getElementById('log');
 	}
 
@@ -38,31 +43,101 @@
 		for (var j = 0; j < pending.length; j++) pending[j].remove();
 	}
 
+	function resolveCleanTargetName(entityId, rawTargetName) {
+		if (entityId && window.SwObjectList && typeof window.SwObjectList.getKnownNpcName === 'function') {
+			var known = window.SwObjectList.getKnownNpcName(entityId);
+			if (known) return known;
+		}
+		var name = (rawTargetName || '').trim();
+		if (name && !/^wt_npc_|^npc_|^wt_citizen_/i.test(name) && !/^陌生人|^眼前之人|^行人$/.test(name)) {
+			return name;
+		}
+		if (entityId) {
+			try {
+				var leftBtn = document.querySelector('[data-entity-id="' + entityId + '"]');
+				if (leftBtn) {
+					var nameSpan = leftBtn.querySelector('.sw-person-name');
+					var foundName = (nameSpan ? nameSpan.textContent : leftBtn.textContent).trim();
+					if (foundName && !/^wt_npc_|^npc_|^wt_citizen_/i.test(foundName)) {
+						return foundName.replace(/^陌生人\d+$/, '陌生人');
+					}
+				}
+			} catch (e) {}
+		}
+		if (/^陌生人/.test(name)) {
+			return '陌生人';
+		}
+		return name || '陌生人';
+	}
+
+	function shortEntityName(name, fallback) {
+		var raw = String(name || fallback || '').trim();
+		var parts = raw.split(/[|｜・]/);
+		return parts[parts.length - 1].trim() || raw;
+	}
+
 	function appendTalkInputRow(entityId, targetName) {
+		targetName = resolveCleanTargetName(entityId, targetName);
 		var logEl = getLogEl();
 		if (!logEl) return;
+		var existing = logEl.querySelectorAll('.log-talk-input');
+		for (var ei = 0; ei < existing.length; ei++) existing[ei].remove();
+		var sName = shortEntityName(targetName, entityId);
 		var wrap = document.createElement('div');
 		wrap.className = 'log-entry log-talk-input';
+
+		// 快捷話語按鈕（一鍵寒暄問候／打聽近況／請教差事）
+		var chipsWrap = document.createElement('div');
+		chipsWrap.className = 'log-talk-chips-row';
+		chipsWrap.style.display = 'flex';
+		chipsWrap.style.gap = '6px';
+		chipsWrap.style.width = '100%';
+		chipsWrap.style.marginBottom = '4px';
+
+		var topics = ['寒暄問候', '打聽近況', '請教差事'];
+		for (var ti = 0; ti < topics.length; ti++) {
+			var chipBtn = document.createElement('button');
+			chipBtn.type = 'button';
+			chipBtn.className = 'sw-popover-act-btn log-talk-chip';
+			chipBtn.textContent = topics[ti];
+			chipBtn.setAttribute('data-topic', topics[ti]);
+			chipsWrap.appendChild(chipBtn);
+		}
+		wrap.appendChild(chipsWrap);
+
+		var inputRow = document.createElement('div');
+		inputRow.className = 'log-talk-input-row';
+		inputRow.style.display = 'flex';
+		inputRow.style.alignItems = 'center';
+		inputRow.style.gap = '6px';
+		inputRow.style.width = '100%';
+
 		var label = document.createElement('span');
 		label.className = 'log-talk-label';
-		label.textContent = '對 ' + (targetName || entityId) + ' 說：';
+		label.textContent = '對 ' + sName + ' 說：';
 		var input = document.createElement('input');
 		input.type = 'text';
 		input.className = 'log-talk-input-field';
-		input.placeholder = '輸入要說的話，Enter 送出';
+		input.placeholder = '輸入要說的話（直接送出即搭話）';
 		input.setAttribute('maxlength', '200');
-		input.setAttribute('aria-label', '對 ' + (targetName || entityId) + ' 說');
+		input.setAttribute('aria-label', '對 ' + sName + ' 說');
 		var btn = document.createElement('button');
 		btn.type = 'button';
 		btn.className = 'log-talk-send';
 		btn.textContent = '送出';
-		wrap.appendChild(label);
-		wrap.appendChild(input);
-		wrap.appendChild(btn);
+		inputRow.appendChild(label);
+		inputRow.appendChild(input);
+		inputRow.appendChild(btn);
+		wrap.appendChild(inputRow);
 		logEl.appendChild(wrap);
+		var scrollEl = logEl.closest && (logEl.closest('#sw-center-log') || logEl.closest('.sw-center-log') || logEl.closest('.sw-desc-panel')) || logEl;
+		if (scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
+		if (wrap.scrollIntoView) {
+			wrap.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+		}
 		input.focus();
-		function sendTalk() {
-			var text = (input.value || '').trim();
+		function sendTalk(customText) {
+			var text = (typeof customText === 'string') ? customText.trim() : (input.value || '').trim();
 			var sayText = text || '（搭話）';
 			wrap.remove();
 			var playerLine = '你對【' + (targetName || entityId) + '】說：「' + sayText + '」';
@@ -74,7 +149,15 @@
 				appendLogPendingTalk();
 			}
 		}
-		btn.addEventListener('click', sendTalk);
+		chipsWrap.addEventListener('click', function (e) {
+			var chip = e.target.closest && e.target.closest('.log-talk-chip');
+			if (chip) {
+				e.preventDefault();
+				var topicText = chip.getAttribute('data-topic') || chip.textContent || '';
+				sendTalk(topicText);
+			}
+		});
+		btn.addEventListener('click', function () { sendTalk(); });
 		input.addEventListener('keydown', function (e) {
 			if (e.key === 'Enter') {
 				e.preventDefault();
@@ -84,27 +167,42 @@
 	}
 
 	function appendTradeInputRow(entityId, targetName) {
+		targetName = resolveCleanTargetName(entityId, targetName);
 		var logEl = getLogEl();
 		if (!logEl) return;
+		var existing = logEl.querySelectorAll('.log-trade-input');
+		for (var ei = 0; ei < existing.length; ei++) existing[ei].remove();
+		var sName = shortEntityName(targetName, entityId);
 		var wrap = document.createElement('div');
 		wrap.className = 'log-entry log-trade-input';
 		var label = document.createElement('span');
 		label.className = 'log-trade-label';
-		label.textContent = '與 ' + (targetName || entityId) + ' 交易：';
+		label.textContent = '出價（' + sName + '）：';
 		var input = document.createElement('input');
 		input.type = 'text';
 		input.className = 'log-trade-input-field';
-		input.placeholder = '輸入出價（鎂，整數）或「拒絕」；若尚未報價可留空再送出以開價';
+		input.placeholder = '輸入整數鎂';
+		input.setAttribute('inputmode', 'numeric');
 		input.setAttribute('maxlength', '32');
-		input.setAttribute('aria-label', '與 ' + (targetName || entityId) + ' 交易出價');
+		input.setAttribute('aria-label', '向 ' + sName + ' 交易出價');
 		var btn = document.createElement('button');
 		btn.type = 'button';
 		btn.className = 'log-trade-send';
-		btn.textContent = '送出';
+		btn.textContent = '出價';
+		var cancelBtn = document.createElement('button');
+		cancelBtn.type = 'button';
+		cancelBtn.className = 'log-trade-cancel';
+		cancelBtn.textContent = '拒絕';
 		wrap.appendChild(label);
 		wrap.appendChild(input);
 		wrap.appendChild(btn);
+		wrap.appendChild(cancelBtn);
 		logEl.appendChild(wrap);
+		var scrollEl = logEl.closest && (logEl.closest('#sw-center-log') || logEl.closest('.sw-center-log') || logEl.closest('.sw-desc-panel')) || logEl;
+		if (scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
+		if (wrap.scrollIntoView) {
+			wrap.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+		}
 		input.focus();
 		function sendTrade() {
 			var text = (input.value || '').trim();
@@ -121,6 +219,17 @@
 			}
 		}
 		btn.addEventListener('click', sendTrade);
+		cancelBtn.addEventListener('click', function () {
+			wrap.remove();
+			var playerLine = '你向【' + (targetName || entityId) + '】回絕了交易：「拒絕」';
+			var fmt = window.gameFormatNarrative || function (t) { return t; };
+			var appendNarr = (window.SwLog && window.SwLog.appendNarrative) || function () {};
+			appendNarr(fmt(playerLine), 'Trade');
+			if (window.gameSend) {
+				window.gameSend({ type: 'do_action', entity_id: entityId, action: 'Trade', player_input: '拒絕' });
+				appendLogPendingTrade();
+			}
+		});
 		input.addEventListener('keydown', function (e) {
 			if (e.key === 'Enter') {
 				e.preventDefault();
@@ -130,28 +239,89 @@
 	}
 
 	function bindLogObjectActions() {
-		var logEl = getLogEl();
-		if (!logEl) return;
-		if (logEl.__swObjectActionsBound) return;
-		logEl.__swObjectActionsBound = true;
-		logEl.addEventListener('click', function (ev) {
+		var centerEl = document.getElementById('sw-center-log') || getLogEl();
+		if (!centerEl) return;
+		if (centerEl.__swObjectActionsBound) return;
+		centerEl.__swObjectActionsBound = true;
+
+		function handleActionClick(ev) {
+			if (window.SwResetPopoverIdleTimer) window.SwResetPopoverIdleTimer();
+			var toggle = ev.target.closest && ev.target.closest('.log-conflict-toggle');
+			if (toggle) {
+				ev.preventDefault();
+				var container = toggle.closest('.sw-log-entry') || toggle.closest('.log-conflict-container') || toggle.parentElement;
+				var group = container ? container.querySelector('.log-conflict-group') : null;
+				if (group) {
+					var isHidden = group.style.display === 'none' || group.hidden;
+					if (isHidden) {
+						var isPopover = !!toggle.closest('#sw-popover-actions');
+						group.style.display = isPopover ? 'inline-flex' : 'inline';
+						if (isPopover) {
+							group.style.gap = '6px';
+							group.style.marginLeft = '6px';
+						}
+						group.removeAttribute('hidden');
+						toggle.textContent = '衝突 ▴';
+					} else {
+						group.style.display = 'none';
+						group.setAttribute('hidden', '');
+						toggle.textContent = '衝突 ▾';
+					}
+				}
+				return;
+			}
 			var btn = ev.target.closest && ev.target.closest('.log-object-action');
 			if (!btn) return;
 			ev.preventDefault();
+
+			var moveDir = btn.getAttribute('data-move-dir');
+			if (moveDir) {
+				var moveTarget = btn.getAttribute('data-move-target') || '';
+				if (window.gameSend) {
+					if (moveDir === '進') {
+						window.gameSend({ type: 'enter_room' });
+					} else {
+						window.gameSend({ type: 'move', direction: moveDir, target_place_id: moveTarget || undefined });
+					}
+				}
+				return;
+			}
+
 			var id = btn.getAttribute('data-entity-id');
 			var action = btn.getAttribute('data-action');
 			var targetType = btn.getAttribute('data-target-type') || '';
 			var targetName = btn.getAttribute('data-target-name') || '';
+			if (btn.classList.contains('desc-object')) {
+				var allDesc = document.querySelectorAll('#sw-l3-terrain .desc-object');
+				for (var di = 0; di < allDesc.length; di++) {
+					allDesc[di].classList.remove('is-active-target');
+				}
+				btn.classList.add('is-active-target');
+			}
+
+			if (action === 'Explore') {
+				if (window.gameSend) window.gameSend({ type: 'explore' });
+				return;
+			}
+
 			if (!id || !action || !window.gameSend) return;
 			if (targetType === 'entity') {
 				var st = window.gameState ? window.gameState() : {};
-				var entities = st.entities || [];
+				var entities = (st && Array.isArray(st.entities) && st.entities.length > 0)
+					? st.entities
+					: ((window.SwGrid && window.SwGrid.mapData && Array.isArray(window.SwGrid.mapData.entities)) ? window.SwGrid.mapData.entities : []);
 				var stillHere = false;
-				for (var i = 0; i < entities.length; i++) {
+				if (window.__currentPopoverTarget && ((window.__currentPopoverTarget.id || '') + '') === (id + '')) {
+					stillHere = true;
+				}
+				for (var i = 0; !stillHere && i < entities.length; i++) {
 					if (((entities[i].id || '') + '') === (id + '')) {
 						stillHere = true;
 						break;
 					}
+				}
+				if (!stillHere && document.querySelector('#sw-room-canvas [data-object-id="' + id + '"]')) {
+					stillHere = true;
 				}
 				if (!stillHere) {
 					var appendLog = (window.SwLog && window.SwLog.appendLog) || function () {};
@@ -164,11 +334,38 @@
 				return;
 			}
 			if (action === 'Trade') {
-				appendTradeInputRow(id, targetName);
+				window.gameSend({ type: 'do_action', entity_id: id, action: 'Trade', player_input: '' });
+				appendLogPendingTrade();
 				return;
 			}
 			window.gameSend({ type: 'do_action', entity_id: id, action: action });
+		}
+
+		centerEl.addEventListener('click', handleActionClick);
+		centerEl.addEventListener('keydown', function (ev) {
+			if (ev.key === 'Enter' || ev.key === ' ') {
+				var btn = ev.target.closest && ev.target.closest('.log-object-action');
+				if (btn) {
+					ev.preventDefault();
+					handleActionClick(ev);
+				}
+			}
 		});
+
+		var popoverEl = document.getElementById('sw-object-popover');
+		if (popoverEl && !popoverEl.__swObjectActionsBound) {
+			popoverEl.__swObjectActionsBound = true;
+			popoverEl.addEventListener('click', handleActionClick);
+			popoverEl.addEventListener('keydown', function (ev) {
+				if (ev.key === 'Enter' || ev.key === ' ') {
+					var btn = ev.target.closest && ev.target.closest('.log-object-action');
+					if (btn) {
+						ev.preventDefault();
+						handleActionClick(ev);
+					}
+				}
+			});
+		}
 	}
 
 	window.SwInteractions = {

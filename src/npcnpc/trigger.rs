@@ -70,9 +70,71 @@ fn player_layer_room_name(room_id: &str) -> String {
     db::get_room_name(room_id).unwrap_or_default()
 }
 
+pub fn resolve_viewer_npc_label(viewer_pid: &str, npc: &crate::entity::Character, room_name: &str) -> String {
+    if crate::store::player_knows_npc(viewer_pid, &npc.id) {
+        return crate::store::resolve_npc_person_name(&npc.id, &npc.display_title, None);
+    }
+    let tag = crate::store::npc_brief_appearance_tag(&npc.id, &npc.display_title);
+    let role = if room_name.contains("工坊") || room_name.contains("鍛造") || room_name.contains("木作") || room_name.contains("鐵坊") {
+        "匠人"
+    } else if room_name.contains("藥") || room_name.contains("診") || room_name.contains("脈") {
+        "醫工"
+    } else if room_name.contains("學") || room_name.contains("講堂") || room_name.contains("書") || room_name.contains("印行") || room_name.contains("觀星") {
+        "學者"
+    } else if room_name.contains("商") || room_name.contains("鋪") || room_name.contains("市集") || room_name.contains("行") {
+        "行商"
+    } else if room_name.contains("渡") || room_name.contains("津") || room_name.contains("水尾") || room_name.contains("河") {
+        "候渡客"
+    } else if room_name.contains("茶") || room_name.contains("食") || room_name.contains("泉") || room_name.contains("旅社") || room_name.contains("驛館") {
+        "茶客"
+    } else {
+        "街坊"
+    };
+    if !tag.is_empty() {
+        format!("{tag}的{role}")
+    } else {
+        format!("一名{role}")
+    }
+}
+
+pub fn format_staged_npc_dialogue(
+    pattern_idx: usize,
+    label_a: &str,
+    label_b: &str,
+    line_a: &str,
+    line_b: &str,
+    activity_a: &str,
+    activity_b: &str,
+) -> String {
+    let act_clause = if !activity_a.is_empty() && !activity_a.contains("無所事事") && !activity_a.contains("安歇") {
+        let clean = activity_a.trim_start_matches("正在").trim_start_matches("正");
+        format!("停下手中{clean}的活計，")
+    } else {
+        String::new()
+    };
+    let _ = activity_b;
+    match pattern_idx % 8 {
+        0 => format!("{label_a}{act_clause}側過身對{label_b}言道：「{line_a}」\n{label_b}微微點頭，隨口應道：「{line_b}」"),
+        1 => format!("{label_a}將手頭物事略作打理，向身側的{label_b}開口：「{line_a}」\n{label_b}抬眼笑應：「{line_b}」"),
+        2 => format!("只聽{label_a}若有所思地望向身旁，同{label_b}搭話：「{line_a}」\n{label_b}順著話頭接道：「{line_b}」"),
+        3 => format!("{label_a}朝{label_b}低聲說道：「{line_a}」\n{label_b}神情認真地思忖片刻，答道：「{line_b}」"),
+        4 => format!("{label_a}放緩步調，轉頭對{label_b}說道：「{line_a}」\n{label_b}側耳聽完，溫聲應著：「{line_b}」"),
+        5 => format!("案几旁，{label_a}手上動作未停，對{label_b}言道：「{line_a}」\n{label_b}語調平穩地回道：「{line_b}」"),
+        6 => format!("{label_a}見{label_b}迎面而立，便啟齒笑道：「{line_a}」\n{label_b}會心一笑，朗聲回道：「{line_b}」"),
+        _ => format!("{label_a}壓低嗓音，向{label_b}問起：「{line_a}」\n{label_b}略一沉吟，輕聲答話：「{line_b}」"),
+    }
+}
+
 fn player_layer_pair_labels(room_name: &str) -> (String, String) {
-    let label = public_person_label_for_room(room_name).unwrap_or("行人");
-    (format!("{label}甲"), format!("{label}乙"))
+    if room_name.contains("渡") || room_name.contains("津") || room_name.contains("水岸") || room_name.contains("水尾") || room_name.contains("臨河") {
+        ("候渡客".to_string(), "舟子".to_string())
+    } else if room_name.contains("坊") || room_name.contains("匠") {
+        ("掌爐匠人".to_string(), "工坊幫工".to_string())
+    } else if room_name.contains("商") || room_name.contains("市") {
+        ("採買行商".to_string(), "掌案帳房".to_string())
+    } else {
+        ("行路街客".to_string(), "鄰坊居民".to_string())
+    }
 }
 
 fn replace_private_names_for_player(text: &str, names: &[(&str, &str)]) -> String {
@@ -96,8 +158,8 @@ pub fn try_trigger_npc_npc_in_room(
     game_hour: i32,
 ) -> bool {
     inc_stat("attempt");
-    if cfg.ollama_base_url.is_empty() || cfg.ollama_model.is_empty() {
-        inc_stat("fail_no_model");
+    if cfg.ollama_disable {
+        inc_stat("fail_disabled");
         return false;
     }
     let cd = Duration::from_secs(
@@ -114,9 +176,34 @@ pub fn try_trigger_npc_npc_in_room(
         inc_stat("fail_not_enough_npc");
         return false;
     };
+    let is_night = game_hour >= 22 || game_hour < 5;
     let npcs: Vec<_> = entities
         .into_iter()
-        .filter(|e| matches!(e.kind, EntityKind::Npc))
+        .filter(|e| {
+            if !matches!(e.kind, EntityKind::Npc) {
+                return false;
+            }
+            let act = &e.current_activity;
+            if act.contains("安歇")
+                || act.contains("熟睡")
+                || act.contains("就寢")
+                || act.contains("熄燈")
+            {
+                return false;
+            }
+            if is_night {
+                let slot = crate::store::wenyao_household_slot_for(&e.id);
+                if slot.home_name == room_id
+                    || room_id.contains("居")
+                    || room_id.contains("宅")
+                    || room_id.contains("舍")
+                    || room_id.contains("齋")
+                {
+                    return false;
+                }
+            }
+            true
+        })
         .collect();
     if npcs.len() < 2 {
         inc_stat("fail_not_enough_npc");
@@ -293,9 +380,26 @@ pub fn try_trigger_npc_npc_in_room(
         if !room.tags.is_empty() {
             room_tags_joined = room.tags.join("、");
         }
-        for rr in top_npc_rumors(room_id, &room.zone, now_unix, rumor_top_k) {
+        let rumors = top_npc_rumors(room_id, &room.zone, now_unix, rumor_top_k);
+        let has_rumors = !rumors.is_empty();
+        for rr in rumors {
             recent_events.push(format!("{}{}", ns.rumor_prefix, rr.text));
             let _ = mark_rumor_used_by_text(&rr.text, now_unix);
+        }
+        if !has_rumors {
+            let act_a = if a.current_activity.trim().is_empty() { "手頭雜務" } else { a.current_activity.trim() };
+            let act_b = if b.current_activity.trim().is_empty() { "手頭差事" } else { b.current_activity.trim() };
+            let thought_a = a.thoughts.last().and_then(|t| t.flavor.as_deref()).unwrap_or("");
+            let thought_b = b.thoughts.last().and_then(|t| t.flavor.as_deref()).unwrap_or("");
+            let dialogue_anchor = if !thought_a.is_empty() || !thought_b.is_empty() {
+                format!(
+                    "雙方正分別忙於「{}」與「{}」，就手頭差事、器物成色或半島民生自然寒暄交流（心緒參考：{} / {}）",
+                    act_a, act_b, thought_a, thought_b
+                )
+            } else {
+                format!("雙方正分別忙於「{}」與「{}」，就手頭差事、器物成色或半島民生自然寒暄交流", act_a, act_b)
+            };
+            recent_events.push(dialogue_anchor);
         }
     }
     if player_in_room {
@@ -338,9 +442,63 @@ pub fn try_trigger_npc_npc_in_room(
     recent_events = dedupe_social_context_lines(&recent_events);
     let max_runes = cfg.npc_npc_quality_max_runes;
     let relation = dyad_relation_hint(dyad.as_ref());
+    // 【三棒接力・第一棒】先由 System 1 決策模型 (11436, n_predict=1 logit) 根據雙方關係與 SoulSeed 性格拍板互動立場
+    let (fam_score, sen_score) = dyad
+        .as_ref()
+        .map(|d| (d.familiarity, d.sentiment))
+        .unwrap_or((10, 0));
+    let soul_a = crate::db::get_personality_for_entity(&a.id)
+        .or_else(|| a.soul_seed.map(crate::db::expand_soul_seed_to_personality))
+        .unwrap_or(crate::db::Personality {
+            boldness: 0.5,
+            sensitivity: 0.5,
+            orderliness: 0.5,
+        });
+    let mut obligations_a: Vec<String> = Vec::new();
+    if let Some((kind, subj)) = crate::store::get_active_npc_obligation(&a.id) {
+        obligations_a.push(format!("{}:{}", kind, subj));
+    }
+    let stance_decision = crate::ai::decision_scorer::score_npc_interaction_stance(
+        &crate::ai::decision_scorer::NpcDecisionInput {
+            npc_name: &name_a,
+            boldness: soul_a.boldness,
+            sensitivity: soul_a.sensitivity,
+            orderliness: soul_a.orderliness,
+            familiarity_score: fam_score,
+            balance_score: sen_score,
+            open_obligations: &obligations_a,
+            current_activity: &a.current_activity,
+            action_kind: "npc_social_initiate",
+            player_utterance: &topic_hint,
+        },
+    );
+    if stance_decision.choice == crate::ai::decision_scorer::NpcStanceChoice::Refuse
+        && stance_decision.confidence >= 0.35
+    {
+        // 第一棒拍板「不欲搭話／保持防備」，直接擦肩而過，不浪費第三棒對話模型 Token
+        inc_stat("decision_refuse_skip");
+        return false;
+    }
+    recent_events.push(stance_decision.prompt_directive.clone());
+    let ai_base_url = if !cfg.player_talk_api_base_url.is_empty() {
+        &cfg.player_talk_api_base_url
+    } else if !cfg.ollama_base_url.is_empty() {
+        &cfg.ollama_base_url
+    } else {
+        "http://127.0.0.1:11434"
+    };
+    let ai_model = if !cfg.player_talk_api_model.is_empty() {
+        &cfg.player_talk_api_model
+    } else if !cfg.ollama_model.is_empty() {
+        &cfg.ollama_model
+    } else if !cfg.player_talk_api_model.is_empty() {
+        &cfg.player_talk_api_model
+    } else {
+        "qwen2.5:7b"
+    };
     let ai = match call_ai_talk_npc_to_npc(
-        &cfg.ollama_base_url,
-        &cfg.ollama_model,
+        ai_base_url,
+        ai_model,
         &name_a,
         &name_b,
         &backstory_a,
@@ -543,6 +701,20 @@ pub fn try_trigger_npc_npc_in_room(
             || a_low.contains("room_")
             || a_low.contains("street")
             || a_low.contains("zone")
+            || anchor.contains("飄起陣陣飛雪")
+            || anchor.contains("連綿梅雨")
+            || anchor.contains("開始降下陣雨")
+            || anchor.contains("寒氣侵襲")
+            || anchor.contains("道路變得濕滑")
+            || anchor.contains("黑澤")
+            || anchor.contains("青龍關")
+            || anchor.contains("北冠")
+            || anchor.contains("青嶺")
+            || anchor.contains("白塔高地")
+            || anchor.contains("西南平原")
+            || anchor.contains("風船")
+            || anchor.contains("天塹海峽")
+            || anchor.contains("東洋海面")
         {
             continue;
         }
@@ -569,43 +741,76 @@ pub fn try_trigger_npc_npc_in_room(
         upsert_lexicon_term(&anchor, room_id, &pair_key);
     }
     set_pair_last_talk(&a.id, &b.id, now_unix);
-    if let Some(mut d) = dyad {
-        let du = &sim().dyad_update;
-        let mut cap = du.sentiment_cap;
-        if cap <= 0 {
-            cap = 100;
+    let mut d = dyad.unwrap_or_else(|| {
+        let (first_id, second_id) = if a.id <= b.id {
+            (a.id.clone(), b.id.clone())
+        } else {
+            (b.id.clone(), a.id.clone())
+        };
+        crate::store::types::NpcDyad {
+            a_id: first_id,
+            b_id: second_id,
+            familiarity: 0,
+            sentiment: 0,
+            tags: Vec::new(),
+            updated_at: now_unix,
         }
-        d.familiarity += du.familiarity_delta_per_exchange;
-        if d.familiarity > cap {
-            d.familiarity = cap;
-        }
-        d.sentiment += sentiment_delta_from_dialogue(
-            &topic_hint,
-            &line_a,
-            &line_b,
-            d.familiarity,
-            &chosen_topic_id,
+    });
+    let du = &sim().dyad_update;
+    let mut cap = du.sentiment_cap;
+    if cap <= 0 {
+        cap = 100;
+    }
+    d.familiarity += du.familiarity_delta_per_exchange;
+    if d.familiarity > cap {
+        d.familiarity = cap;
+    }
+    d.sentiment += sentiment_delta_from_dialogue(
+        &topic_hint,
+        &line_a,
+        &line_b,
+        d.familiarity,
+        &chosen_topic_id,
+    );
+    d.sentiment = d.sentiment.clamp(-cap, cap);
+    if npc_pair_same_venue(&a.id, &b.id) {
+        d.tags = add_tag(&d.tags, &gametext::dyad_tag("same_venue"));
+    }
+    let mut qmax = du.quarrel_tag_sentiment_max;
+    if qmax == 0 {
+        qmax = -30;
+    }
+    if d.sentiment <= qmax {
+        d.tags = add_tag(&d.tags, &gametext::dyad_tag("had_quarrel"));
+    }
+    let mut cmin = du.clear_quarrel_sentiment_min;
+    if cmin == 0 {
+        cmin = 25;
+    }
+    if d.sentiment >= cmin {
+        d.tags = remove_tag(&d.tags, &gametext::dyad_tag("had_quarrel"));
+    }
+    d.updated_at = now_unix;
+    let _ = set_npc_npc_dyad(&a.id, &b.id, d);
+    if let Some(pool) = crate::pg::pool() {
+        let _ = crate::pg::living_world::record_relationship_delta(
+            &pool,
+            &a.id,
+            &b.id,
+            "talked",
+            1,
+            "npc_npc_dialogue",
+            now_unix,
         );
-        d.sentiment = d.sentiment.clamp(-cap, cap);
-        if npc_pair_same_venue(&a.id, &b.id) {
-            d.tags = add_tag(&d.tags, &gametext::dyad_tag("same_venue"));
-        }
-        let mut qmax = du.quarrel_tag_sentiment_max;
-        if qmax == 0 {
-            qmax = -30;
-        }
-        if d.sentiment <= qmax {
-            d.tags = add_tag(&d.tags, &gametext::dyad_tag("had_quarrel"));
-        }
-        let mut cmin = du.clear_quarrel_sentiment_min;
-        if cmin == 0 {
-            cmin = 25;
-        }
-        if d.sentiment >= cmin {
-            d.tags = remove_tag(&d.tags, &gametext::dyad_tag("had_quarrel"));
-        }
-        d.updated_at = now_unix;
-        let _ = set_npc_npc_dyad(&a.id, &b.id, d);
+        let _ = crate::pg::living_world::record_relationship_delta(
+            &pool,
+            &b.id,
+            &a.id,
+            "talked",
+            1,
+            "npc_npc_dialogue",
+            now_unix,
+        );
     }
     set_last_choice(LastSocialChoice {
         at: now_unix,
@@ -626,27 +831,56 @@ pub fn try_trigger_npc_npc_in_room(
     if session_store.room_has_player_with_recent_talk(room_id, skip_sec) {
         return true;
     }
-    let (player_name_a, player_name_b) = player_layer_pair_labels(&room_name);
-    let player_line_a = replace_private_names_for_player(
-        &line_a,
-        &[(&name_a, &player_name_a), (&name_b, &player_name_b)],
-    );
-    let player_line_b = replace_private_names_for_player(
-        &line_b,
-        &[(&name_a, &player_name_a), (&name_b, &player_name_b)],
-    );
-    let text = sprintf_s(
-        &ns.broadcast_fmt,
-        [
-            player_name_a.as_str(),
-            player_name_b.as_str(),
-            player_line_a.as_str(),
-            player_name_b.as_str(),
-            player_line_b.as_str(),
-        ]
-        .as_slice(),
-    );
-    send_narrate_to_room(session_store, room_id, &text);
+    let want_loc = crate::db::canonical_location_key(room_id);
+    let pattern_idx = (now_unix as usize / 13 + a.id.len() + b.id.len()) % 8;
+    let mut sent_any = false;
+    for s in session_store.all_sessions() {
+        if crate::server::session::player_location_key(&s.player_id) == want_loc {
+            let label_a = resolve_viewer_npc_label(&s.player_id, a, &room_name);
+            let label_b = resolve_viewer_npc_label(&s.player_id, b, &room_name);
+            let player_line_a = replace_private_names_for_player(
+                &line_a,
+                &[(&name_a, &label_a), (&name_b, &label_b)],
+            );
+            let player_line_b = replace_private_names_for_player(
+                &line_b,
+                &[(&name_a, &label_a), (&name_b, &label_b)],
+            );
+            let text = format_staged_npc_dialogue(
+                pattern_idx,
+                &label_a,
+                &label_b,
+                &player_line_a,
+                &player_line_b,
+                &a.current_activity,
+                &b.current_activity,
+            );
+            crate::store::record_active_npc_dialogue(room_id, &a.id, &b.id, &text);
+            crate::server::send_npc_dialogue_to_player(&s, &a.id, &b.id, &text);
+            sent_any = true;
+        }
+    }
+    if !sent_any {
+        let (player_name_a, player_name_b) = player_layer_pair_labels(&room_name);
+        let player_line_a = replace_private_names_for_player(
+            &line_a,
+            &[(&name_a, &player_name_a), (&name_b, &player_name_b)],
+        );
+        let player_line_b = replace_private_names_for_player(
+            &line_b,
+            &[(&name_a, &player_name_a), (&name_b, &player_name_b)],
+        );
+        let text = format_staged_npc_dialogue(
+            pattern_idx,
+            &player_name_a,
+            &player_name_b,
+            &player_line_a,
+            &player_line_b,
+            &a.current_activity,
+            &b.current_activity,
+        );
+        crate::store::record_active_npc_dialogue(room_id, &a.id, &b.id, &text);
+    }
     inc_stat("success");
     true
 }
@@ -658,8 +892,16 @@ mod tests {
     #[test]
     fn player_layer_pair_labels_use_scene_identity() {
         assert_eq!(
-            player_layer_pair_labels("北岸渡口"),
-            ("候渡者甲".to_string(), "候渡者乙".to_string())
+            player_layer_pair_labels("半嶺水岸渡口"),
+            ("候渡客".to_string(), "舟子".to_string())
+        );
+        assert_eq!(
+            player_layer_pair_labels("水尾寮渡頭市集"),
+            ("候渡客".to_string(), "舟子".to_string())
+        );
+        assert_eq!(
+            player_layer_pair_labels("臨河歇腳處"),
+            ("候渡客".to_string(), "舟子".to_string())
         );
     }
 
@@ -667,8 +909,8 @@ mod tests {
     fn player_layer_dialogue_replaces_private_names() {
         let text = replace_private_names_for_player(
             "歐陽秀建說尹淑秀快看船。",
-            &[("歐陽秀建", "候渡者甲"), ("尹淑秀", "候渡者乙")],
+            &[("歐陽秀建", "候渡客"), ("尹淑秀", "舟子")],
         );
-        assert_eq!(text, "候渡者甲說候渡者乙快看船。");
+        assert_eq!(text, "候渡客說舟子快看船。");
     }
 }

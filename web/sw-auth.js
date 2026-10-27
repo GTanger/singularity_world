@@ -1,15 +1,19 @@
-// 認證 UI：showGame / showAuth / bindForm；依賴 window.gameSend / window.gameConnect / window.gameState。v0.20.46
+// 認證 UI：showGame / showAuth / bindForm；依賴 window.gameSend / window.gameConnect / window.gameState。v0.20.47
 (function () {
+	function gameApp() {
+		return document.getElementById('app-grid') || document.getElementById('app');
+	}
+
 	function showGame() {
 		var authScreen = document.getElementById('auth-screen');
-		var app = document.getElementById('app');
+		var app = gameApp();
 		if (authScreen) authScreen.setAttribute('hidden', '');
 		if (app) app.removeAttribute('hidden');
 	}
 
 	function showAuth() {
 		var authScreen = document.getElementById('auth-screen');
-		var app = document.getElementById('app');
+		var app = gameApp();
 		if (authScreen) authScreen.removeAttribute('hidden');
 		if (app) app.setAttribute('hidden', '');
 	}
@@ -17,7 +21,7 @@
 	function bindForm() {
 		var form = document.getElementById('auth-form');
 		var authScreen = document.getElementById('auth-screen');
-		var app = document.getElementById('app');
+		var app = gameApp();
 		if (!form) return;
 		var state = window.gameState ? window.gameState() : null;
 		if (state && state.me) {

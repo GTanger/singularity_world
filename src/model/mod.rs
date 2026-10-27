@@ -41,4 +41,17 @@ pub struct Exit {
     pub to_room_id: String,
     #[serde(default)]
     pub to_room_name: String,
+    /// 正式世界路線 id；舊房間出口留空。
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub route_id: String,
+    /// walk / road / ferry / passage。
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub mode: String,
+    /// 人物共用的通行耗時；舊房間出口為 0。
+    #[serde(default, skip_serializing_if = "is_zero_i32")]
+    pub travel_cost: i32,
+}
+
+fn is_zero_i32(value: &i32) -> bool {
+    *value == 0
 }

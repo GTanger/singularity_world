@@ -7,8 +7,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use rand::Rng;
 
 use crate::db::{
-    EVT_TALK, Personality, RoomGraph, expand_soul_seed_to_personality, get_all_venue_room_ids,
-    get_assignments_for_entity, get_entity, get_recent_events, inventory_total_qty,
+    EVT_TALK, Personality, RoomGraph, active_trade_inventory_total_qty,
+    expand_soul_seed_to_personality, get_all_venue_room_ids, get_assignments_for_entity,
+    get_entity, get_recent_events,
 };
 
 /// 生存層鎂閾值（對齊既有 `SurvivalLineMg`）。
@@ -100,7 +101,7 @@ pub fn build_decision_state(entity_id: &str) -> anyhow::Result<DecisionState> {
             false,
         )
     };
-    let inv_qty = inventory_total_qty(&ch.inventory);
+    let inv_qty = active_trade_inventory_total_qty(&ch.inventory);
     let mut last_talk_at: i64 = 0;
     for e in get_recent_events(entity_id, 10) {
         if e.event_type == EVT_TALK {

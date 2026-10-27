@@ -110,6 +110,7 @@ pub(crate) fn insert_npc_locked(
         inventory: "[]".to_string(),
         disposition: 0,
         current_activity: String::new(),
+        place_id: None,
         grid_x: None,
         grid_y: None,
         thoughts: vec![],

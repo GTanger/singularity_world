@@ -10,10 +10,8 @@ use crate::entity::Character;
 use crate::game;
 use crate::gametext;
 
-use super::super::broadcast::send_room_view_to_session;
 use super::super::protocol::{ClientMsg, MeMsg};
 use super::super::session::Session;
-use super::movement::send_grid_view;
 use super::{WsConnection, current_game_hour, parse_activated_nodes};
 
 pub(super) fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
@@ -112,7 +110,7 @@ pub(super) fn handle_create_character(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("create_entity_failed"));
         return;
     }
-    // 新玩家預設在正方格 (0,0)；login_success 會確保 grid 座標並推送視野
+    // login_success 會把新玩家放進白塔半島的正式起點。
     if db::create_auth(&msg.player_id, &msg.password).is_err() {
         conn.send_error(gametext::client("create_auth_failed"));
         return;
@@ -136,67 +134,69 @@ fn login_success(conn: &WsConnection, player_id: &str) {
         conn.send_error(gametext::client("load_view_failed"));
         return;
     };
-    // 確保玩家有 grid 座標（正方格為唯一世界）
-    let (gx, gy) = match ent_pre.as_ref().and_then(|e| e.grid_x.zip(e.grid_y)) {
-        Some(pair) => pair,
-        None => {
-            let _ = db::set_entity_grid(player_id, 0, 0);
-            (0, 0)
-        }
-    };
-    tracing::info!("[login_success] 3 before with_square_grid_mut pid={player_id}");
-    crate::server::grid_manager::with_square_grid_mut(|grid| {
-        crate::grid::ensure_seed_village(grid);
-        if let Err(e) = crate::grid::ensure_builtin_world_skeleton(grid) {
-            tracing::warn!("[login_success] 世界骨架保底失敗 pid={player_id}: {e}");
-        }
-    });
-    tracing::info!("[login_success] 4 with_square_grid_mut OK pid={player_id}");
-
-    let view = match game::get_grid_room_view(player_id, gx, gy, gh) {
-        Ok(Some(v)) => v,
-        Ok(None) | Err(_) => {
-            conn.send_error(gametext::client("load_view_failed"));
-            return;
-        }
-    };
-    tracing::info!("[login_success] 5 get_grid_room_view OK pid={player_id}");
     let session = Session::with_outbound(player_id, conn.conn_id, conn.tx.clone());
     conn.sessions.set(player_id, session.clone());
-    tracing::info!("[login_success] 6 sessions.set OK pid={player_id}");
+    tracing::info!("[login_success] 3 sessions.set OK pid={player_id}");
     let ent = ent_pre.or_else(|| db::get_entity(player_id).ok().flatten());
     let (vit, qi, dex) = ent
         .as_ref()
         .map(|e| (e.vit, e.qi, e.dex))
         .unwrap_or((10, 10, 10));
     let rm = compute_resource_maxes(vit, qi, dex);
-    send_room_view_to_session(&session, &view, player_id, &conn.cfg);
-    tracing::info!("[login_success] 7 send_room_view OK pid={player_id}");
 
-    // 額外發送正方格視野
-    send_grid_view(conn, player_id, gx, gy, gh);
-    tracing::info!("[login_success] 8 send_grid_view OK pid={player_id}");
-
-    let now = game::now_unix();
-    for e in &view.entities {
-        if matches!(e.kind, crate::entity::EntityKind::Npc) && e.id != player_id {
-            let _ = db::record_meet(&e.id, player_id);
+    let (gx, gy) = match ent.as_ref().and_then(|e| e.grid_x.zip(e.grid_y)) {
+        Some(coord) => coord,
+        None => {
+            let _ = db::set_entity_grid(player_id, 0, 0);
+            (0, 0)
         }
-    }
-    game::observe_room(&view.room.id, player_id, now);
+    };
+    let grid_room_id = crate::grid::grid_room_id_from_coord(gx, gy);
+    let grid_room_name = crate::server::grid_manager::get_runtime_square_grid()
+        .and_then(|g| g.get(crate::grid::SquareCoord::new(gx, gy)).cloned())
+        .map(|c| {
+            if c.name.trim().is_empty() {
+                crate::grid::terrain_name_zh(c.terrain).to_string()
+            } else {
+                c.name.clone()
+            }
+        })
+        .unwrap_or_else(|| "未知荒野".to_string());
+
+    // 玩家已經通過驗證、位置與視野也已就緒；先把本人狀態送到前端，讓登入畫面
+    // 立即切換。
     send_me_with_status(
         conn,
         &session,
         ent.as_ref(),
         player_id,
-        &view.room.id,
-        &view.room.name,
+        &grid_room_id,
+        &grid_room_name,
         vit,
         qi,
         dex,
         &rm,
     );
-    tracing::info!("[login_success] 9 DONE pid={player_id}");
+    tracing::info!("[login_success] 4 player ready pid={player_id}");
+
+    super::movement::send_grid_view(conn, player_id, gx, gy, gh);
+    super::inventory::handle_get_tactical_state(conn);
+    // 異步登記格內 NPC 相遇與房間觀測
+    let observed_player_id = player_id.to_string();
+    let observed_room_id = grid_room_id;
+    let observed_at = game::now_unix();
+    drop(tokio::task::spawn_blocking(move || {
+        if let Ok(ents) = db::get_entities_at_grid(gx, gy, -1) {
+            for npc in ents {
+                if matches!(npc.kind, crate::entity::EntityKind::Npc) && npc.id != observed_player_id {
+                    let _ = db::record_meet(&npc.id, &observed_player_id);
+                }
+            }
+        }
+        game::observe_room(&observed_room_id, &observed_player_id, observed_at);
+        tracing::info!("[login_success] post-login observations done pid={observed_player_id}");
+    }));
+    tracing::info!("[login_success] 5 post-login observations scheduled pid={player_id}");
 }
 
 #[allow(clippy::too_many_arguments)]

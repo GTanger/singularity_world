@@ -33,6 +33,10 @@ pub enum ThoughtSource {
     Subdued,
     /// 工作完成（delta 動態指定，走 add_thought_with_flavor）
     WorkDone,
+    /// 用過茶飯飲食
+    Ate,
+    /// 沐浴溫水泡湯歇息
+    Rested,
 }
 
 impl ThoughtSource {
@@ -47,8 +51,10 @@ impl ThoughtSource {
             ThoughtSource::Talked => (5, 180, "跟人說了會兒話"),
             ThoughtSource::Broke => (-20, 1440, "鎂袋空了，心裡發慌"),
             ThoughtSource::Daily => (-2, 720, "今日花用又見底，發愁"),
-            ThoughtSource::Subdued => (-15, 2880, "被人留下制伏，心裡有氣"),
+            ThoughtSource::Subdued => (-15, 2880, "遭人出手攻擊落敗，心裡有氣"),
             ThoughtSource::WorkDone => (0, 360, "今日活幹完了"),
+            ThoughtSource::Ate => (8, 360, "用過熱騰騰的茶飯，肚裡暖和舒坦"),
+            ThoughtSource::Rested => (10, 480, "泡過熱湯歇息，一身疲乏盡數散去"),
         }
     }
 
@@ -64,6 +70,8 @@ impl ThoughtSource {
             ThoughtSource::Daily => "Daily",
             ThoughtSource::Subdued => "Subdued",
             ThoughtSource::WorkDone => "WorkDone",
+            ThoughtSource::Ate => "Ate",
+            ThoughtSource::Rested => "Rested",
         }
     }
 }
@@ -120,6 +128,12 @@ fn cleanup_thoughts(thoughts: &mut Vec<Thought>, now: i64) {
     }
 }
 
+/// 公開讓實體清理過期或陳舊 thoughts 並重算 disposition。
+pub fn clean_and_recalc_entity_disposition(entity: &mut store::Entity, now: i64) {
+    cleanup_thoughts(&mut entity.thoughts, now);
+    entity.disposition = recalc_disposition(&entity.thoughts, now);
+}
+
 // ─── 公開 API ─────────────────────────────────────────────────────────────
 
 /// 加入一條 thought（by ThoughtSource，用預設 delta/decay/flavor）。
@@ -144,20 +158,117 @@ pub fn add_thought_with_flavor(
     flavor: String,
 ) -> anyhow::Result<()> {
     let now = now_unix();
-    let thought = Thought {
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let (pool, snapshot) = {
+        let mut s = arc.write();
+        let pool = s
+            .db_pool
+            .clone()
+            .ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
+        let entity = s
+            .entities
+            .get_mut(entity_id)
+            .ok_or_else(|| anyhow::anyhow!("實體不存在：{entity_id}"))?;
+        push_thought(entity, source, delta, decay_minutes, flavor, now);
+        (pool, entity.clone())
+    };
+    crate::pg::entity::upsert(&pool, &snapshot)
+}
+
+/// 同一時段影響所有居民時，一次更新記憶體並用單一批次交易落庫。
+pub fn add_thought_to_all_npcs_with_flavor(
+    source: &str,
+    delta: i32,
+    decay_minutes: i64,
+    flavor: String,
+) -> anyhow::Result<usize> {
+    let now = now_unix();
+    let arc = store::get_store().ok_or(ErrNoStore)?;
+    let (pool, snapshots) = {
+        let mut s = arc.write();
+        let pool = s
+            .db_pool
+            .clone()
+            .ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
+        let snapshots = s
+            .entities
+            .values_mut()
+            .filter(|entity| entity.kind == "npc" && entity.vit > 0)
+            .map(|entity| {
+                push_thought(entity, source, delta, decay_minutes, flavor.clone(), now);
+                entity.clone()
+            })
+            .collect::<Vec<_>>();
+        (pool, snapshots)
+    };
+    crate::pg::entity::upsert_batch(&pool, &snapshots)?;
+    Ok(snapshots.len())
+}
+
+pub(crate) fn add_thought_to_entity(entity: &mut store::Entity, source: ThoughtSource, now: i64) {
+    let (delta, decay_minutes, flavor) = source.defaults();
+    push_thought(
+        entity,
+        source.key(),
+        delta,
+        decay_minutes,
+        flavor.to_string(),
+        now,
+    );
+}
+
+pub fn add_thought_to_entity_with_flavor(
+    entity: &mut store::Entity,
+    source: ThoughtSource,
+    now: i64,
+    flavor: impl Into<String>,
+) {
+    let (delta, decay_minutes, _) = source.defaults();
+    push_thought(
+        entity,
+        source.key(),
+        delta,
+        decay_minutes,
+        flavor.into(),
+        now,
+    );
+}
+
+pub fn add_thought_to_entity_with_delta(
+    entity: &mut store::Entity,
+    source: ThoughtSource,
+    delta: i32,
+    now: i64,
+    flavor: impl Into<String>,
+) {
+    let (_, decay_minutes, _) = source.defaults();
+    push_thought(
+        entity,
+        source.key(),
+        delta,
+        decay_minutes,
+        flavor.into(),
+        now,
+    );
+}
+
+fn push_thought(
+    entity: &mut store::Entity,
+    source: &str,
+    delta: i32,
+    decay_minutes: i64,
+    flavor: String,
+    now: i64,
+) {
+    entity.thoughts.push(Thought {
         source: source.to_string(),
         delta,
         created_at: now,
         decay_minutes,
         flavor: Some(flavor),
-    };
-    let arc = store::get_store().ok_or(ErrNoStore)?;
-    let mut s = arc.write();
-    s.update_entity(entity_id, |e| {
-        e.thoughts.push(thought);
-        cleanup_thoughts(&mut e.thoughts, now);
-        e.disposition = recalc_disposition(&e.thoughts, now);
-    })
+    });
+    cleanup_thoughts(&mut entity.thoughts, now);
+    entity.disposition = recalc_disposition(&entity.thoughts, now);
 }
 
 /// 取最近 N 條尚未完全衰減的 thoughts，給 LLM prompt 用。
@@ -178,7 +289,7 @@ pub fn get_active_thoughts(entity_id: &str, limit: usize) -> Vec<Thought> {
         .filter(|t| !is_expired(t, now))
         .cloned()
         .collect();
-    active.sort_unstable_by(|a, b| b.created_at.cmp(&a.created_at));
+    active.sort_unstable_by_key(|b| std::cmp::Reverse(b.created_at));
     active.truncate(limit);
     active
 }

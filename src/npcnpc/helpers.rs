@@ -142,13 +142,30 @@ pub fn quality_gate_npc_line(line: &str, max_runes: i32) -> (bool, &'static str)
         return (false, "json_residue");
     }
     let low = s.to_lowercase();
-    for leak in ["npc_", "entity_", "room_"] {
+    for leak in ["npc_", "entity_", "room_", "wt_", "mat_", "grid:", "scene_stub"] {
         if low.contains(leak) {
             return (false, "leaked_id");
         }
     }
     if low.contains("street") || low.contains("zone") {
         return (false, "leaked_id");
+    }
+    for forbidden in [
+        "小市",
+        "短市",
+        "剛才",
+        "剛剛",
+        "還有",
+        "資料庫",
+        "聖塔",
+        "110v",
+        "110V",
+        "念場",
+        "富態",
+    ] {
+        if s.contains(forbidden) || low.contains(forbidden) {
+            return (false, "forbidden_term");
+        }
     }
     if s.contains("---") || s.contains("```") || s.contains("\n\n") {
         return (false, "markdown_residue");

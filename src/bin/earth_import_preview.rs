@@ -168,7 +168,7 @@ fn main() {
     let total = (w * h) as f64;
     eprintln!("\nTerrain 分佈：");
     let mut entries: Vec<_> = histo.into_iter().collect();
-    entries.sort_by(|a, b| b.1.cmp(&a.1));
+    entries.sort_by_key(|b| std::cmp::Reverse(b.1));
     for (name, count) in entries {
         eprintln!(
             "  {:<12} {:>7}  {:>5.1}%",

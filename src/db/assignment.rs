@@ -119,3 +119,12 @@ pub fn get_all_venue_room_ids() -> anyhow::Result<Vec<String>> {
     let s = arc.read();
     Ok(s.get_all_venue_room_ids())
 }
+
+/// 若為 Azgaar 經濟證據衍生的正式工作場所，回傳該地實際職務。
+pub fn get_runtime_occupation_for_venue(venue_id: &str) -> Option<String> {
+    let pool = crate::pg::pool()?;
+    let mut conn = pool.get().ok()?;
+    crate::pg::world_economy::occupation_for_venue(&mut *conn, venue_id)
+        .ok()
+        .flatten()
+}

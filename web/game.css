@@ -348,16 +348,32 @@ body {
 .inventory-item-desc { color: var(--ink-light); margin-bottom: 0.35rem; }
 .inventory-item-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .inv-action-btn {
-  padding: 0.2rem 0.6rem;
-  font-size: 0.8rem;
-  color: var(--ink);
-  background: var(--paper-light);
-  border: 1px solid var(--ink-faint);
-  border-radius: 4px;
+  min-height: 34px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid rgba(49, 85, 116, 0.35);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--blue-ink, #2a4a6b);
+  touch-action: manipulation;
   cursor: pointer;
   font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
 }
-.inv-action-btn:active { border-color: var(--gold); color: var(--gold); }
+.inv-action-btn:hover {
+  background: #ffffff;
+  border-color: var(--blue-ink, #2a4a6b);
+}
+.inv-action-btn:active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(255, 255, 255, 0.95);
+}
 
 /* 人物狀態 */
 .status-content { padding: 0.5rem 0; }
@@ -417,6 +433,69 @@ body {
 .cost-hard    { color: var(--red-ink); font-weight: 600; }
 .cost-unknown { color: var(--ink-light); font-style: italic; }
 .btn-inline { margin-left: 0.5rem; cursor: pointer; }
+
+/* 星盤・詞匣分頁內嵌控制項美化 */
+#player-tab-starplate button,
+#player-modal-pane-starplate button,
+.tactical-slot-card button,
+.tactical-loadout-panel button,
+.starplate-content button {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid rgba(128, 96, 29, 0.35);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink, #2c1e0f);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+#player-tab-starplate button:hover,
+#player-modal-pane-starplate button:hover,
+.tactical-slot-card button:hover,
+.tactical-loadout-panel button:hover,
+.starplate-content button:hover {
+  background: #ffffff;
+  border-color: var(--gold, #80601d);
+  color: #80601d;
+}
+#player-tab-starplate button:active,
+#player-modal-pane-starplate button:active,
+.tactical-slot-card button:active,
+.tactical-loadout-panel button:active,
+.starplate-content button:active {
+  background: rgba(128, 96, 29, 0.15);
+}
+
+#player-tab-starplate input[type="text"],
+#player-modal-pane-starplate input[type="text"],
+.tactical-slot-card input[type="text"],
+.tactical-name-input,
+.starplate-content input[type="text"] {
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 1px solid rgba(73, 51, 28, 0.3);
+  border-radius: 5px;
+  background: #fffdf9;
+  color: var(--ink, #2c1e0f);
+  font-family: inherit;
+  font-size: 13.5px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#player-tab-starplate input[type="text"]:focus,
+#player-modal-pane-starplate input[type="text"]:focus,
+.tactical-slot-card input[type="text"]:focus,
+.tactical-name-input:focus,
+.starplate-content input[type="text"]:focus {
+  border-color: #8b6914;
+  box-shadow: 0 0 0 2px rgba(139, 105, 20, 0.15);
+}
 
 /* ═══ 底欄 ═══ */
 

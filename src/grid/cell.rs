@@ -133,6 +133,14 @@ pub enum Terrain {
     MageTower,
     Embassy,
     PrisonYard,
+    Beach,
+    MinePass,
+    HolyTower,
+    EmptyFurrow,
+    DryField,
+    HerbGarden,
+    Fence,
+    House,
 }
 
 impl Terrain {
@@ -191,6 +199,79 @@ impl Terrain {
             Terrain::MageTower => "mage_tower",
             Terrain::Embassy => "embassy",
             Terrain::PrisonYard => "prison_yard",
+            Terrain::Beach => "beach",
+            Terrain::MinePass => "mine_pass",
+            Terrain::HolyTower => "holy_tower",
+            Terrain::EmptyFurrow => "empty_furrow",
+            Terrain::DryField => "dry_field",
+            Terrain::HerbGarden => "herb_garden",
+            Terrain::Fence => "fence",
+            Terrain::House => "house",
+        }
+    }
+
+    /// 從 snake_case 字串解析 Terrain。
+    pub fn from_kind_str(s: &str) -> Option<Self> {
+        match s {
+            "plain" => Some(Terrain::Plain),
+            "forest" => Some(Terrain::Forest),
+            "forest_heavy" => Some(Terrain::ForestHeavy),
+            "forest_light" => Some(Terrain::ForestLight),
+            "mountain" => Some(Terrain::Mountain),
+            "hills" => Some(Terrain::Hills),
+            "water" => Some(Terrain::Water),
+            "water_deep" => Some(Terrain::WaterDeep),
+            "desert" => Some(Terrain::Desert),
+            "swamp" => Some(Terrain::Swamp),
+            "tundra" => Some(Terrain::Tundra),
+            "grassland" => Some(Terrain::Grassland),
+            "jungle" => Some(Terrain::Jungle),
+            "urban" => Some(Terrain::Urban),
+            "road" => Some(Terrain::Road),
+            "bridge" => Some(Terrain::Bridge),
+            "wall" => Some(Terrain::Wall),
+            "farm_field" => Some(Terrain::FarmField),
+            "farmhouse" => Some(Terrain::Farmhouse),
+            "inn" => Some(Terrain::Inn),
+            "tavern" => Some(Terrain::Tavern),
+            "blacksmith" => Some(Terrain::Blacksmith),
+            "general_store" => Some(Terrain::GeneralStore),
+            "clinic" => Some(Terrain::Clinic),
+            "workshop" => Some(Terrain::Workshop),
+            "market" => Some(Terrain::Market),
+            "guild_hall" => Some(Terrain::GuildHall),
+            "temple" => Some(Terrain::Temple),
+            "academy" => Some(Terrain::Academy),
+            "library" => Some(Terrain::Library),
+            "barracks" => Some(Terrain::Barracks),
+            "guard_post" => Some(Terrain::GuardPost),
+            "warehouse" => Some(Terrain::Warehouse),
+            "granary" => Some(Terrain::Granary),
+            "dock" => Some(Terrain::Dock),
+            "bathhouse" => Some(Terrain::Bathhouse),
+            "courthouse" => Some(Terrain::Courthouse),
+            "jail" => Some(Terrain::Jail),
+            "town_hall" => Some(Terrain::TownHall),
+            "bank" => Some(Terrain::Bank),
+            "mint" => Some(Terrain::Mint),
+            "stables" => Some(Terrain::Stables),
+            "caravanserai" => Some(Terrain::Caravanserai),
+            "theater" => Some(Terrain::Theater),
+            "arena" => Some(Terrain::Arena),
+            "observatory" => Some(Terrain::Observatory),
+            "alchemist" => Some(Terrain::Alchemist),
+            "mage_tower" => Some(Terrain::MageTower),
+            "embassy" => Some(Terrain::Embassy),
+            "prison_yard" => Some(Terrain::PrisonYard),
+            "beach" => Some(Terrain::Beach),
+            "mine_pass" => Some(Terrain::MinePass),
+            "holy_tower" => Some(Terrain::HolyTower),
+            "empty_furrow" => Some(Terrain::EmptyFurrow),
+            "dry_field" => Some(Terrain::DryField),
+            "herb_garden" => Some(Terrain::HerbGarden),
+            "fence" => Some(Terrain::Fence),
+            "house" => Some(Terrain::House),
+            _ => None,
         }
     }
 
@@ -209,7 +290,13 @@ impl Terrain {
             | Terrain::Swamp
             | Terrain::Tundra
             | Terrain::Grassland
-            | Terrain::Jungle => "terrain",
+            | Terrain::Jungle
+            | Terrain::Beach
+            | Terrain::MinePass
+            | Terrain::EmptyFurrow
+            | Terrain::FarmField
+            | Terrain::DryField
+            | Terrain::HerbGarden => "terrain",
 
             Terrain::Urban
             | Terrain::Inn
@@ -222,7 +309,6 @@ impl Terrain {
             | Terrain::GuildHall
             | Terrain::Temple
             | Terrain::Farmhouse
-            | Terrain::FarmField
             | Terrain::Academy
             | Terrain::Library
             | Terrain::Barracks
@@ -244,17 +330,18 @@ impl Terrain {
             | Terrain::Alchemist
             | Terrain::MageTower
             | Terrain::Embassy
-            | Terrain::PrisonYard => "landmark",
+            | Terrain::PrisonYard
+            | Terrain::HolyTower
+            | Terrain::House => "landmark",
 
-            Terrain::Road | Terrain::Bridge | Terrain::Wall => "infra",
+            Terrain::Road | Terrain::Bridge | Terrain::Wall | Terrain::Fence => "infra",
         }
     }
-
     /// 此地形是否預設可步行通過
     pub fn walkable(self) -> bool {
         !matches!(
             self,
-            Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall
+            Terrain::Mountain | Terrain::WaterDeep | Terrain::Wall | Terrain::Fence
         )
     }
 
@@ -296,64 +383,77 @@ impl Terrain {
             | Terrain::Alchemist
             | Terrain::MageTower
             | Terrain::Embassy
-            | Terrain::PrisonYard => 1.0,
+            | Terrain::PrisonYard
+            | Terrain::HolyTower
+            | Terrain::House
+            | Terrain::EmptyFurrow
+            | Terrain::HerbGarden => 1.0,
             Terrain::Forest | Terrain::ForestLight | Terrain::Hills => 1.5,
-            Terrain::Desert | Terrain::Tundra | Terrain::FarmField => 1.5,
+            Terrain::Desert | Terrain::Tundra | Terrain::FarmField | Terrain::DryField | Terrain::Beach | Terrain::MinePass => 1.5,
+            Terrain::Water => 1.8,
             Terrain::ForestHeavy | Terrain::Jungle | Terrain::Swamp => 2.0,
-            Terrain::Water | Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall => {
+            Terrain::WaterDeep | Terrain::Mountain | Terrain::Wall | Terrain::Fence => {
                 f64::INFINITY
             }
         }
     }
 
-    /// 取得地形對應的顯示字（簡化版，取第一個候選字）
+    /// 取得地形對應之 23 個定案純圖樣符號
     pub fn display_char(self) -> &'static str {
         match self {
-            Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle => "木",
-            Terrain::Mountain => "山",
-            Terrain::Hills => "石",
-            Terrain::Swamp => "沼",
-            Terrain::Water | Terrain::WaterDeep => "水",
-            Terrain::Grassland => "屮屮",
-            Terrain::Plain | Terrain::Desert => "荒",
-            Terrain::Road | Terrain::Bridge => "道",
-            Terrain::Tundra => "冰",
-            Terrain::FarmField => "田",
-            Terrain::Wall => "牆",
-            Terrain::Urban
+            Terrain::WaterDeep => "≋",
+            Terrain::Beach => "⋯",
+            Terrain::Water => "≈",
+            Terrain::Bridge => "≍",
+            Terrain::Swamp => "⋍",
+            Terrain::Plain | Terrain::Grassland | Terrain::Desert | Terrain::Tundra => "𐡚",
+            Terrain::Forest | Terrain::ForestHeavy | Terrain::ForestLight | Terrain::Jungle => "Φ",
+            Terrain::Mountain => "⛰︎",
+            Terrain::Hills | Terrain::MinePass => "△",
+            Terrain::HolyTower | Terrain::MageTower => "∆",
+            Terrain::EmptyFurrow => "≡",
+            Terrain::FarmField => "▦",
+            Terrain::DryField => "▤",
+            Terrain::HerbGarden => "☷",
+            Terrain::Wall => "■",
+            Terrain::Fence => "≠",
+            Terrain::Road => "::",
+            Terrain::House
             | Terrain::Farmhouse
-            | Terrain::Inn
-            | Terrain::Tavern
-            | Terrain::Blacksmith
+            | Terrain::Warehouse
+            | Terrain::Granary
+            | Terrain::Courthouse
+            | Terrain::Jail
+            | Terrain::PrisonYard
+            | Terrain::Urban => "𖠿",
+            Terrain::Market
             | Terrain::GeneralStore
-            | Terrain::Clinic
-            | Terrain::Workshop
-            | Terrain::Market
-            | Terrain::GuildHall
-            | Terrain::Temple
-            | Terrain::Academy
+            | Terrain::Bank
+            | Terrain::Mint
+            | Terrain::Dock
+            | Terrain::Caravanserai => "$",
+            Terrain::Blacksmith | Terrain::Workshop => "⚒︎",
+            Terrain::Clinic => "+",
+            Terrain::Inn | Terrain::Tavern | Terrain::Bathhouse => "⌂",
+            Terrain::Academy
             | Terrain::Library
             | Terrain::Barracks
             | Terrain::GuardPost
-            | Terrain::Warehouse
-            | Terrain::Granary
-            | Terrain::Dock
-            | Terrain::Bathhouse
-            | Terrain::Courthouse
-            | Terrain::Jail
+            | Terrain::Temple
+            | Terrain::GuildHall
             | Terrain::TownHall
-            | Terrain::Bank
-            | Terrain::Mint
-            | Terrain::Stables
-            | Terrain::Caravanserai
             | Terrain::Theater
             | Terrain::Arena
             | Terrain::Observatory
             | Terrain::Alchemist
-            | Terrain::MageTower
             | Terrain::Embassy
-            | Terrain::PrisonYard => "地",
+            | Terrain::Stables => "⚑",
         }
+    }
+
+    /// `display_char` 的別名方法，回傳 23 個定案純符號之一
+    pub fn symbol(self) -> &'static str {
+        self.display_char()
     }
 
     /// 取得地形對應的輔助顏色（簡化版，取第一個候選色）
@@ -365,17 +465,25 @@ impl Terrain {
             Terrain::Mountain => "#98af9d",
             Terrain::Hills => "#d3d3d3",
             Terrain::Swamp => "#507050",
-            Terrain::Water | Terrain::WaterDeep => "#b0d8f0",
+            Terrain::Water => "#70b0e0",
+            Terrain::WaterDeep => "#204090",
+            Terrain::Beach => "#e8d8b8",
             Terrain::Grassland => "#c2d6a4",
             Terrain::Plain | Terrain::Desert => "#e3d5ca",
             Terrain::Road | Terrain::Bridge => "#c4b8a8",
             Terrain::Tundra => "#e0f2f1",
             Terrain::FarmField => "#9ef01a",
+            Terrain::DryField => "#d4c49a",
+            Terrain::EmptyFurrow => "#c8b090",
+            Terrain::HerbGarden => "#a8d5ba",
             Terrain::Wall => "#8c8c8c",
+            Terrain::Fence => "#a08060",
+            Terrain::MinePass => "#706860",
+            Terrain::HolyTower => "#e0d8ff",
+            Terrain::House => "#d8c8b8",
             _ => "#c4b8a8", // 其他建築或都市地形預設色
         }
     }
-
     /// 地形字顏色（None 表示依底色亮度自動選黑/白）
     pub fn text_color(self) -> Option<&'static str> {
         match self {

@@ -133,7 +133,7 @@ pub fn generate_origin_sentence(amp: f64, freq: f64, phase: f64) -> String {
     } else {
         "順流"
     };
-    format!("你的神識{amp_word}且{freq_word}，隱隱透著一股{phase_word}的逆流。")
+    format!("你的心神感知{amp_word}且{freq_word}，隱隱透著一股{phase_word}的逆流。")
 }
 
 /// 由 soul_seed 展開為本源語句。

@@ -14,6 +14,8 @@ pub struct TradePending {
     pub item_qty: i32,
     pub ask_mg: i32,
     pub floor_mg: i32,
+    /// 有值時商品屬於該市場的實際庫存，而不是 NPC 私人物品。
+    pub market_id: Option<i32>,
     pub expires_unix: i64,
 }
 

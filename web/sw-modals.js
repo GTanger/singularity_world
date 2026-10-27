@@ -70,10 +70,6 @@
 				var wrap = document.getElementById('status-content');
 				if (wrap) wrap.innerHTML = '<p class="text-muted">請先登入</p>';
 			}
-			if (logEl) {
-				var h = logEl.clientHeight;
-				if (h > 0) modal.style.height = h + 'px';
-			}
 			overlay.removeAttribute('hidden');
 			overlay.setAttribute('aria-hidden', 'false');
 			document.body.style.overflow = 'hidden';
@@ -90,19 +86,29 @@
 		function onModalKeydown(e) {
 			if (e.key === 'Escape') closeModal();
 		}
-		playerName.addEventListener('click', function () {
+		function handleSelfClick(e) {
+			if (e && e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+			if (e && e.type === 'keydown') e.preventDefault();
 			var st = window.gameState ? window.gameState() : {};
 			var myId = st.me && st.me.player_id;
 			openModal(playerName.textContent || myId || '', myId || '');
-		});
-		playerName.addEventListener('keydown', function (e) {
-			if (e.key === 'Enter' || e.key === ' ') {
-				e.preventDefault();
-				var st = window.gameState ? window.gameState() : {};
-				var myId = st.me && st.me.player_id;
-				openModal(playerName.textContent || myId || '', myId || '');
-			}
-		});
+		}
+
+		playerName.addEventListener('click', handleSelfClick);
+		playerName.addEventListener('keydown', handleSelfClick);
+
+		var playerVibe = document.getElementById('player-vibe');
+		if (playerVibe) {
+			playerVibe.addEventListener('click', handleSelfClick);
+		}
+		var playerCore = document.querySelector('.grid-player-core');
+		if (playerCore) {
+			playerCore.addEventListener('click', function (e) {
+				if (e.target === playerCore) {
+					handleSelfClick(e);
+				}
+			});
+		}
 		closeBtn.addEventListener('click', closeModal);
 		overlay.addEventListener('click', function (e) {
 			if (e.target === overlay) closeModal();
@@ -121,6 +127,20 @@
 				});
 				if (t === 'inventory' && currentIsSelf && window.gameIsConnected && window.gameIsConnected() && window.gameSend) {
 					window.gameSend({ type: 'get_inventory' });
+				} else if (t === 'settings') {
+					if (window.SwPanes && window.SwPanes.renderSettingsPane) {
+						window.SwPanes.renderSettingsPane();
+					}
+				} else if (t === 'equip') {
+					if (window.SwPanes && window.SwPanes.renderEquipmentPane) {
+						var eqMsg = window.lastEquipMsg || {};
+						window.SwPanes.renderEquipmentPane(eqMsg);
+					}
+				} else if (t === 'starplate') {
+					if (window.SwPanes && window.SwPanes.renderStarplatePane) {
+						var st = window.gameState ? window.gameState() : {};
+						window.SwPanes.renderStarplatePane(st.me || {});
+					}
 				}
 			});
 		});

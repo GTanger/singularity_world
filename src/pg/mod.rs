@@ -12,24 +12,35 @@ use parking_lot::RwLock;
 use std::sync::Arc;
 
 pub mod auth;
+pub mod economy;
 pub mod entity;
 pub mod event;
+pub mod living_world;
 pub mod rumor;
-pub mod sync;
+pub mod white_tower_runtime;
+pub mod world_economy;
+pub mod world_journey;
+pub mod world_logistics;
+pub mod world_market;
+pub mod world_place;
+pub mod world_resource;
+pub mod world_supply;
+pub mod world_topology;
+pub mod world_trade;
+pub mod world_work;
 pub mod writer;
 
 /// 全域 DbPool — 獨立於 store，任何地方可直接取用不經 store lock
 static DB_POOL: RwLock<Option<Arc<DbPool>>> = RwLock::new(None);
 
 /// 設定全域 pool（server 啟動時呼叫一次）
-/// 同步啟動 writer service（集中 PG 寫入 queue）和 full-sync 兜底服務
+/// 同步啟動可靠的 writer service；正式資料不再靠可能覆寫新狀態的週期性全量回灌。
 pub fn set_pool(pool: DbPool) {
     {
         let mut g = DB_POOL.write();
         *g = Some(Arc::new(pool.clone()));
     }
-    writer::init(pool.clone());
-    sync::start(pool);
+    writer::init(pool);
 }
 
 /// 取得全域 pool 的 Arc clone（便宜，Arc 內部 refcount）

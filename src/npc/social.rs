@@ -31,7 +31,11 @@ pub fn pick_micro_interaction(room_id: &str, chance: i32, game_hour: i32) -> Str
     if lines.is_empty() {
         return String::new();
     }
-    lines[rng.random_range(0..lines.len())].to_string()
+    let line = lines[rng.random_range(0..lines.len())].to_string();
+    line.replace("客棧打尖", "旅社歇腳用餐")
+        .replace("客棧", "旅社")
+        .replace("把酒言歡", "聚餐暢談")
+        .replace("打尖", "歇腳用餐")
 }
 
 fn player_layer_room_name(room_id: &str) -> String {
@@ -53,8 +57,10 @@ mod tests {
 
     #[test]
     fn player_layer_micro_lines_do_not_expose_template_names() {
-        let lines = micro_interaction_lines_for_room("北岸渡口");
-        assert!(lines.iter().all(|line| !line.contains("%s")));
-        assert!(lines.iter().all(|line| !line.contains('【')));
+        for scene in ["半嶺水岸渡口", "水尾寮渡頭市集", "水尾寮"] {
+            let lines = micro_interaction_lines_for_room(scene);
+            assert!(lines.iter().all(|line| !line.contains("%s")));
+            assert!(lines.iter().all(|line| !line.contains('【')));
+        }
     }
 }

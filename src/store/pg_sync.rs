@@ -101,8 +101,8 @@ impl Store {
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
                     equipment_slots, inventory, disposition, current_activity,
-                    grid_x, grid_y)
-                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
+                    place_id, grid_x, grid_y, thoughts)
+                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
                  ON CONFLICT (id) DO UPDATE SET
                     kind=EXCLUDED.kind, display_char=EXCLUDED.display_char, x=EXCLUDED.x, y=EXCLUDED.y,
                     move_state=EXCLUDED.move_state, target_x=EXCLUDED.target_x, target_y=EXCLUDED.target_y,
@@ -112,14 +112,15 @@ impl Store {
                     gender=EXCLUDED.gender, soul_seed=EXCLUDED.soul_seed, display_title=EXCLUDED.display_title,
                     activated_nodes=EXCLUDED.activated_nodes, equipment_slots=EXCLUDED.equipment_slots,
                     inventory=EXCLUDED.inventory, disposition=EXCLUDED.disposition,
-                    current_activity=EXCLUDED.current_activity,
-                    grid_x=EXCLUDED.grid_x, grid_y=EXCLUDED.grid_y",
+                    current_activity=EXCLUDED.current_activity, place_id=EXCLUDED.place_id,
+                    grid_x=EXCLUDED.grid_x, grid_y=EXCLUDED.grid_y, thoughts=EXCLUDED.thoughts",
                 &[&e.id, &e.kind, &e.display_char, &e.x, &e.y, &e.move_state,
                   &e.target_x, &e.target_y, &e.walk_or_run, &e.move_started_at,
                   &e.vit, &e.qi, &e.dex, &e.magnesium, &e.last_observed_at,
                   &e.created_at, &e.gender, &e.soul_seed, &e.display_title,
                   &e.activated_nodes, &e.equipment_slots, &e.inventory, &e.disposition,
-                  &e.current_activity, &e.grid_x, &e.grid_y],
+                  &e.current_activity, &e.place_id, &e.grid_x, &e.grid_y,
+                  &serde_json::to_string(&e.thoughts)?],
             )?;
         }
 
@@ -296,7 +297,7 @@ impl Store {
                     walk_or_run, move_started_at, vit, qi, dex, magnesium, last_observed_at,
                     created_at, gender, soul_seed, display_title, activated_nodes,
                     equipment_slots, inventory, disposition, current_activity,
-                    grid_x, grid_y
+                    place_id, grid_x, grid_y, thoughts
              FROM entities",
             &[],
         ) else {
@@ -305,6 +306,12 @@ impl Store {
 
         self.entities.clear();
         for row in &rows {
+            let raw_title: String = row.get(18);
+            let display_title = super::entity::normalize_archaic_title(&raw_title);
+            let raw_eq: String = row.get(20);
+            let equipment_slots = super::entity::normalize_archaic_clothing(&raw_eq);
+            let raw_inv: String = row.get(21);
+            let inventory = super::entity::normalize_archaic_clothing(&raw_inv);
             let e = Entity {
                 id: row.get(0),
                 kind: row.get(1),
@@ -324,15 +331,19 @@ impl Store {
                 created_at: row.get(15),
                 gender: row.get(16),
                 soul_seed: row.get(17),
-                display_title: row.get(18),
+                display_title,
                 activated_nodes: row.get(19),
-                equipment_slots: row.get(20),
-                inventory: row.get(21),
+                equipment_slots,
+                inventory,
                 disposition: row.get(22),
                 current_activity: row.get(23),
-                grid_x: row.get(24),
-                grid_y: row.get(25),
-                thoughts: vec![], // thoughts 走 in-memory，不從 DB 讀取（待 DB 落庫階段）
+                place_id: row.get(24),
+                grid_x: row.get(25),
+                grid_y: row.get(26),
+                thoughts: serde_json::from_str::<Vec<crate::entity::Thought>>(
+                    &row.get::<_, String>(27),
+                )
+                .unwrap_or_default(),
             };
             self.entities.insert(e.id.clone(), e);
         }
@@ -429,22 +440,27 @@ impl Store {
         }
 
         // items
-        if let Ok(rows) = conn.query("SELECT id, name, slot, item_type, weight, stackable, denomination, description, vit_bonus, dex_bonus, atk_bonus FROM items", &[]) {
+        if let Ok(rows) = conn.query("SELECT id, name, slot, item_type, weight, stackable, denomination, description, vit_bonus, dex_bonus, atk_bonus, origin FROM items", &[]) {
             if !rows.is_empty() {
                 self.items.clear();
                 for row in &rows {
+                    let raw_name: String = row.get(1);
+                    let name = super::entity::normalize_archaic_clothing(&raw_name);
+                    let raw_desc: String = row.get(7);
+                    let description = super::entity::normalize_archaic_clothing(&raw_desc);
                     let it = Item {
                         id: row.get(0),
-                        name: row.get(1),
+                        name,
                         slot: row.get(2),
                         item_type: row.get(3),
                         weight: row.get(4),
                         stackable: row.get(5),
                         denomination: row.get(6),
-                        description: row.get(7),
+                        description,
                         vit_bonus: row.get(8),
                         dex_bonus: row.get(9),
                         atk_bonus: row.get(10),
+                        origin: row.try_get::<_, String>(11).unwrap_or_default(),
                     };
                     self.items.insert(it.id.clone(), it);
                 }
@@ -501,6 +517,74 @@ impl Store {
                     "[store] Loaded {} npc_dyads from PostgreSQL",
                     self.npc_dyads.len()
                 );
+            }
+        }
+
+        // 針對歷史已發生雙人對話（存在於 npc_npc_summaries 或 npc_threads）但舊版漏寫 npc_dyads 的組合自動補建
+        if let Ok(rows) = conn.query(
+            "SELECT dyad_key FROM npc_npc_summaries",
+            &[],
+        ) {
+            let mut backfilled = 0usize;
+            let now_ts = crate::game::now_unix();
+            for row in &rows {
+                let key: String = row.get(0);
+                if self.npc_dyads.contains_key(&key) {
+                    continue;
+                }
+                let Some((part_a, part_b)) = key.split_once('|') else {
+                    continue;
+                };
+                let raw_a = part_a.to_string();
+                let raw_b = part_b.to_string();
+                let (a_id, b_id) = if raw_a <= raw_b { (raw_a, raw_b) } else { (raw_b, raw_a) };
+                let thread_opt = self.npc_threads.get(&key);
+                let turns = thread_opt.map(|t| t.turn_count).unwrap_or(1).max(1);
+                let updated_at = thread_opt.map(|t| t.updated_at).filter(|&u| u > 0).unwrap_or(now_ts);
+                let fam = (turns * 2).clamp(2, 100);
+                let mut tags = Vec::new();
+                if crate::npcnpc::npc_pair_same_venue(&a_id, &b_id) {
+                    tags.push(crate::gametext::dyad_tag("same_venue"));
+                }
+                let tags_raw = serde_json::to_string(&tags).unwrap_or_else(|_| "[]".to_string());
+                let _ = conn.execute(
+                    "INSERT INTO npc_dyads (dyad_key, a_id, b_id, familiarity, sentiment, tags, updated_at) \
+                     VALUES ($1, $2, $3, $4, 2, $5, $6) ON CONFLICT (dyad_key) DO NOTHING",
+                    &[&key, &a_id, &b_id, &fam, &tags_raw, &updated_at],
+                );
+                self.npc_dyads.insert(
+                    key,
+                    NpcDyad {
+                        a_id,
+                        b_id,
+                        familiarity: fam,
+                        sentiment: 2,
+                        tags,
+                        updated_at,
+                    },
+                );
+                backfilled += 1;
+            }
+            if backfilled > 0 {
+                let _ = self.persist_npc_dyads();
+                tracing::info!("[store] Backfilled {} historical npc_dyads from npc_npc_summaries", backfilled);
+            }
+        }
+
+        if let Ok(rows) = conn.query(
+            "SELECT player_id, npc_id, observed, named FROM players_npc_acquaintance WHERE observed = TRUE OR named = TRUE",
+            &[],
+        ) {
+            for row in &rows {
+                let pid: String = row.get(0);
+                let nid: String = row.get(1);
+                let obs: bool = row.get(2);
+                let named: bool = row.get(3);
+                if named {
+                    super::mark_player_knows_npc(&pid, &nid);
+                } else if obs {
+                    super::mark_player_observed_npc(&pid, &nid);
+                }
             }
         }
 

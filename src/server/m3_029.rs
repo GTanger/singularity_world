@@ -1,4 +1,4 @@
-//! M3-029 北岸短市/倉棚局部經濟閉環：正式 NPC 個體共用需求板與物質來源。
+//! M3-029 北岸市集/倉棚局部經濟閉環：正式 NPC 個體共用需求板與物質來源。
 
 use crate::db;
 use crate::event::{self, types};
@@ -62,7 +62,7 @@ pub(crate) fn shared_economy_echo(object_id: &str, states: &[String]) -> Option<
         && object_id == "m3_027_warehouse_tally_board"
     {
         return Some(
-            "搬貨人已把短市那只墊了蘆草的貨籃推到倉棚點貨牌旁，記牌人先把這行壓住；剩下的包貨需求仍要照短市包貨單補齊。"
+            "搬貨人已把市集那只墊了蘆草的貨籃推到倉棚點貨牌旁，記牌人先把這行壓住；剩下的包貨需求仍要照市集包貨單補齊。"
                 .to_string(),
         );
     }
@@ -73,7 +73,7 @@ pub(crate) fn shared_economy_echo(object_id: &str, states: &[String]) -> Option<
                     .to_string(),
             ),
             "m3_027_warehouse_tally_board" => Some(
-                "短市那邊先收進搬貨人的一束蘆草，倉棚門前已有一只貨籃不再直接磨地；記牌人等剩下的包貨料補齊。"
+                "市集那邊先收進搬貨人的一束蘆草，倉棚門前已有一只貨籃不再直接磨地；記牌人等剩下的包貨料補齊。"
                     .to_string(),
             ),
             _ => None,
@@ -83,7 +83,7 @@ pub(crate) fn shared_economy_echo(object_id: &str, states: &[String]) -> Option<
     }
 }
 
-/// 正式 NPC 市場搬貨 tick：取得蘆草、交付短市、留下倉棚回聲。
+/// 正式 NPC 市場搬貨 tick：取得蘆草、交付市集、留下倉棚回聲。
 pub(crate) fn run_pack_runner_tick(now_unix: i64) -> Option<MarketRunnerTick> {
     ensure_pack_runner_entity(now_unix).ok()?;
     let states = pack_runner_states(now_unix);
@@ -140,7 +140,7 @@ fn gather_reeds(now_unix: i64) -> Option<MarketRunnerTick> {
     let _ = db::set_entity_grid(PACK_RUNNER_ID, 0, 0);
     let _ = db::set_entity_activity(
         PACK_RUNNER_ID,
-        "在北岸蘆叢邊挑一束能墊箱的蘆草，下一步要往短市包貨單交",
+        "在北岸蘆叢邊挑一束能墊箱的蘆草，下一步要往市集包貨單交",
     );
     if let Some(gathered) =
         materials::try_gather_material_for_room_preserving(NORTH_BANK_ROOM_ID, now_unix, 1)
@@ -162,14 +162,14 @@ fn gather_reeds(now_unix: i64) -> Option<MarketRunnerTick> {
             room_id: NORTH_BANK_ROOM_ID,
             actor: "搬貨人",
             detail:
-                "沿水線取走一束能墊箱的蘆草，抱在臂彎裡往短市方向讓路；蘆叢靠木樁那片矮了下去。"
+                "沿水線取走一束能墊箱的蘆草，抱在臂彎裡往市集方向讓路；蘆叢靠木樁那片矮了下去。"
                     .to_string(),
         });
     }
     Some(MarketRunnerTick {
         room_id: NORTH_BANK_ROOM_ID,
         actor: "搬貨人",
-        detail: "摸到的只剩短葉，便把空貨籃往短市棚腳退回，等下一輪水氣把長莖養回。".to_string(),
+        detail: "摸到的只剩短葉，便把空貨籃往市集棚腳退回，等下一輪水氣把長莖養回。".to_string(),
     })
 }
 
@@ -177,7 +177,7 @@ fn deliver_reeds(now_unix: i64) -> Option<MarketRunnerTick> {
     let _ = db::set_entity_grid(PACK_RUNNER_ID, 1, 0);
     let _ = db::set_entity_activity(
         PACK_RUNNER_ID,
-        "剛把一束蘆草交到短市包貨單，手裡多了幾枚鎂，下一步等倉棚點貨",
+        "剛把一束蘆草交到市集包貨單，手裡多了幾枚鎂，下一步等倉棚點貨",
     );
     let has_reeds = db::get_entity(PACK_RUNNER_ID)
         .ok()
@@ -187,7 +187,7 @@ fn deliver_reeds(now_unix: i64) -> Option<MarketRunnerTick> {
         return Some(MarketRunnerTick {
             room_id: SHORT_MARKET_ROOM_ID,
             actor: "搬貨人",
-            detail: "站到短市包貨單前時手上已空，只能退到棚腳等下一輪蘆草。".to_string(),
+            detail: "站到市集包貨單前時手上已空，只能退到棚腳等下一輪蘆草。".to_string(),
         });
     }
     let _ = db::remove_from_inventory(PACK_RUNNER_ID, REED_ITEM_ID, 1);
@@ -220,7 +220,7 @@ fn deliver_reeds(now_unix: i64) -> Option<MarketRunnerTick> {
         room_id: SHORT_MARKET_ROOM_ID,
         actor: "搬貨人",
         detail:
-            "把蘆草交到短市包貨單旁，收牌人數出幾枚鎂；秤邊貨籃先墊住一角，蘆草墊箱只差最後一束。"
+            "把蘆草交到市集包貨單旁，收牌人數出幾枚鎂；秤邊貨籃先墊住一角，蘆草墊箱只差最後一束。"
                 .to_string(),
     })
 }
@@ -229,7 +229,7 @@ fn move_trace_to_warehouse(now_unix: i64) -> Option<MarketRunnerTick> {
     let _ = db::set_entity_grid(PACK_RUNNER_ID, 1, -2);
     let _ = db::set_entity_activity(
         PACK_RUNNER_ID,
-        "站在倉棚點貨牌旁等短市那批貨入冊，下一步看下一輪短市包貨單",
+        "站在倉棚點貨牌旁等市集那批貨入冊，下一步看下一輪市集包貨單",
     );
     let _ = event::append(
         now_unix,
@@ -247,7 +247,7 @@ fn move_trace_to_warehouse(now_unix: i64) -> Option<MarketRunnerTick> {
         room_id: WAREHOUSE_ROOM_ID,
         actor: "搬貨人",
         detail:
-            "把短市那只墊了蘆草的貨籃推到倉棚點貨牌旁，記牌人先把這行壓住，等剩下的包貨料補齊。"
+            "把市集那只墊了蘆草的貨籃推到倉棚點貨牌旁，記牌人先把這行壓住，等剩下的包貨料補齊。"
                 .to_string(),
     })
 }
@@ -280,7 +280,7 @@ mod tests {
         let states = vec![RUNNER_WAREHOUSE_TRACE_STATE.to_string()];
         let echo = shared_economy_echo("m3_027_warehouse_tally_board", &states).unwrap();
         assert!(echo.contains("搬貨人"));
-        assert!(echo.contains("短市"));
+        assert!(echo.contains("市集"));
         assert!(echo.contains("倉棚"));
         for forbidden in ["debug", "資料庫", "grid", "NPC", "還有"] {
             assert!(!echo.contains(forbidden), "{echo}");

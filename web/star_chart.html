@@ -26,6 +26,32 @@ header h1{font-size:18px;color:#e6edf3;white-space:nowrap}
 .legend-item{display:flex;align-items:center;gap:6px}
 .legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0}
 .cost-legend{position:fixed;bottom:12px;right:12px;background:rgba(22,27,34,0.92);border:1px solid #30363d;border-radius:8px;padding:10px 14px;font-size:11px;line-height:1.8;z-index:10}
+@media (max-width: 600px) {
+  header {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .login-form {
+    flex-wrap: wrap;
+  }
+  .login-form input {
+    width: 105px;
+  }
+  .legend {
+    padding: 6px 10px;
+    font-size: 10px;
+    max-width: 46vw;
+    bottom: 8px;
+    left: 8px;
+  }
+  .cost-legend {
+    padding: 6px 10px;
+    font-size: 10px;
+    max-width: 46vw;
+    bottom: 8px;
+    right: 8px;
+  }
+}
 </style>
 </head>
 <body>
@@ -37,7 +63,7 @@ header h1{font-size:18px;color:#e6edf3;white-space:nowrap}
     <button id="btnLoad" onclick="loadTopology()">載入星盤</button>
   </div>
   <div class="controls">
-    <label><input type="checkbox" id="chkLabels" checked onchange="toggleEdgeLabels()"> 顯示 Cost</label>
+    <label><input type="checkbox" id="chkLabels" checked onchange="toggleEdgeLabels()"> 顯示星軌通暢度</label>
     <label><input type="checkbox" id="chkPhysics" checked onchange="togglePhysics()"> 物理模擬</label>
   </div>
   <span id="error-msg"></span>
@@ -46,10 +72,11 @@ header h1{font-size:18px;color:#e6edf3;white-space:nowrap}
 <div id="mynetwork"></div>
 
 <div class="legend">
-  <div class="legend-item"><span class="legend-dot" style="background:#f47067"></span> 生之奇點 (N000)</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#d29922"></span> 二十主樞 (Zone 1)</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#539bf5"></span> 邏輯閘 (Zone 2)</div>
-  <div class="legend-item"><span class="legend-dot" style="background:#57ab5a"></span> 末端接口 (Zone 3)</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#f47067"></span> 生之奇點</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#d29922"></span> 內環二十主星</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#539bf5"></span> 中環百樞星</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#57ab5a"></span> 外環周天星</div>
+  <div style="font-size:10px;color:#8b949e;margin-top:2px">（周天星位皆可打通鑲字）</div>
   <div style="margin-top:4px;border-top:1px solid #30363d;padding-top:4px">
     <div class="legend-item"><span class="legend-dot" style="background:#da3633;width:8px;height:8px"></span> 體系</div>
     <div class="legend-item"><span class="legend-dot" style="background:#a371f7;width:8px;height:8px"></span> 氣系</div>
@@ -58,11 +85,11 @@ header h1{font-size:18px;color:#e6edf3;white-space:nowrap}
 </div>
 
 <div class="cost-legend">
-  <div class="legend-item"><span style="color:#67c23a;font-weight:bold">暢流</span> ≤7</div>
-  <div class="legend-item"><span style="color:#79bbff;font-weight:bold">順通</span> 7~11</div>
-  <div class="legend-item"><span style="color:#8b949e;font-weight:bold">平穩</span> 11~16</div>
-  <div class="legend-item"><span style="color:#e6a23c;font-weight:bold">滯澀</span> 16~21</div>
-  <div class="legend-item"><span style="color:#f56c6c;font-weight:bold">險阻</span> &gt;21</div>
+  <div class="legend-item"><span style="color:#67c23a;font-weight:bold">暢流</span></div>
+  <div class="legend-item"><span style="color:#79bbff;font-weight:bold">順通</span></div>
+  <div class="legend-item"><span style="color:#8b949e;font-weight:bold">平穩</span></div>
+  <div class="legend-item"><span style="color:#e6a23c;font-weight:bold">滯澀</span></div>
+  <div class="legend-item"><span style="color:#f56c6c;font-weight:bold">險阻</span></div>
 </div>
 
 <script>
@@ -124,7 +151,7 @@ async function loadTopology() {
     }
     const data = await resp.json();
     renderChart(data);
-    setStatus('節點: ' + data.nodes.length + '  |  連線: ' + data.edges.length + '  |  角色: ' + data.player_id);
+    setStatus('周天星盤・生之奇點已啟  |  角色：' + data.player_id);
   } catch (e) {
     setError(e.message);
   } finally {
@@ -163,14 +190,14 @@ function renderChart(data) {
     const borderColor = SYS_BORDER[sys] || baseColor;
     let label = n.name;
     if (zone === 0) label = '生之奇點';
-    else if (zone === 1) label = n.name + '\n(' + n.id + ')';
-    else if (zone === 2) label = '【' + n.name + '】' + n.id;
-    else label = n.name + '\n' + n.id;
+    else if (zone === 2) label = '【' + n.name + '】';
 
     const sysName = {'體':'體質','氣':'氣脈','敏':'靈敏'}[sys] || '';
+    const zoneLabel = {0:'源核', 1:'內環二十主星', 2:'中環百樞星', 3:'外環周天星'}[zone] || '';
+    const inlayTip = n.inlayable ? '（可鑲字星位）' : '（源核不可鑲字）';
     const tip = zone === 0
-      ? n.name + ' (' + n.id + ')\n生之奇點 — 靈魂降臨的唯一起點'
-      : n.name + ' (' + n.id + ')\n系屬: ' + sys + ' (' + sysName + ')  Zone ' + zone;
+      ? n.name + ' ' + inlayTip + '\n生之奇點 — 靈魂降臨的唯一起點'
+      : n.name + ' ' + inlayTip + '\n系屬：' + sys + '（' + sysName + '）  ' + zoneLabel;
 
     return {
       id: n.id,
@@ -185,7 +212,7 @@ function renderChart(data) {
 
   const edges = data.edges.map((e, i) => {
     const len = EDGE_LENGTH_MIN + e.cost * EDGE_LENGTH_SCALE;
-    const lbl = showEdgeLabels && (e.type === 'A' || e.type === 'B') ? costLabel(e.cost) + ' ' + e.cost.toFixed(1) : '';
+    const lbl = showEdgeLabels && (e.type === 'A' || e.type === 'B') ? costLabel(e.cost) : '';
     return {
       id: 'e' + i,
       from: e.from,
@@ -194,7 +221,7 @@ function renderChart(data) {
       label: lbl,
       _cost: e.cost,
       _type: e.type,
-      title: '型' + e.type + '  ' + costLabel(e.cost) + ' (' + e.cost.toFixed(2) + ')',
+      title: '星軌通暢度：' + costLabel(e.cost),
       color: { color: EDGE_TYPE_COLOR[e.type] || '#30363d', highlight: costColor(e.cost), hover: costColor(e.cost) },
       font: { color: costColor(e.cost), size: 8, strokeWidth: 0, align: 'middle' },
       width: e.type === 'A' ? 2.5 : e.type === 'B' ? 1.8 : 1,
@@ -230,11 +257,11 @@ function renderChart(data) {
   if (network) network.destroy();
   network = new vis.Network(container, { nodes: nodesDataset, edges: edgesDataset }, options);
 
-  network.on('stabilizationProgress', function(p) {
-    setStatus('佈局中… ' + Math.round(p.iterations/p.total*100) + '%');
+  network.on('stabilizationProgress', function() {
+    setStatus('周天星軌演化中…');
   });
   network.on('stabilizationIterationsDone', function() {
-    setStatus('節點: ' + data.nodes.length + '  |  連線: ' + data.edges.length + '  |  角色: ' + data.player_id);
+    setStatus('周天星盤・生之奇點已啟  |  角色：' + data.player_id);
     network.fit();
   });
 }
@@ -245,7 +272,7 @@ function toggleEdgeLabels() {
   const updates = [];
   edgesDataset.forEach(e => {
     const show = showEdgeLabels && (e._type === 'A' || e._type === 'B');
-    updates.push({ id: e.id, label: show ? costLabel(e._cost) + ' ' + e._cost.toFixed(1) : '' });
+    updates.push({ id: e.id, label: show ? costLabel(e._cost) : '' });
   });
   edgesDataset.update(updates);
 }

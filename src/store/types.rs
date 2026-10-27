@@ -96,6 +96,9 @@ pub struct Entity {
     /// 表面可觀測行為（非內心意圖），供玩家 Look 時顯示。
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub current_activity: String,
+    /// 唯一權威場所；座標與 entity_rooms 只由此欄位鏡射。
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub place_id: Option<String>,
     /// 正方格座標 x（東增）。
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grid_x: Option<i32>,
@@ -131,6 +134,8 @@ pub struct Item {
     pub dex_bonus: i32,
     #[serde(default)]
     pub atk_bonus: i32,
+    #[serde(default)]
+    pub origin: String,
 }
 
 /// 事件日誌一筆。

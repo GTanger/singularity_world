@@ -1,4 +1,4 @@
-// sw-room-desc.js：v5 四層描述欄渲染（L1 時間 / L2 氣候 / L3 地形 / L4 由 sw-object-list 負責）。v0.24.12
+// sw-room-desc.js：地名主層、局部定位、時間／氣候與場景事實。v0.27.1
 (function () {
     'use strict';
 
@@ -16,7 +16,8 @@
     var WEATHER_ICONS = { rain: '☁', snow: '❄', wind: '🌬', fog: '🌫', storm: '⛈', plum_rain: '🌧' };
 
     // ── L2 氣候散文池（placeholder；後端有真資料後可擴充）──────────
-    // 四段時辰：dawn(5-10) / day(11-16) / dusk(17) / night(18-4)
+    // 四段時辰需與畫面上每兩小時一段的時段標籤一致：
+    // dawn(4-7) / day(8-15) / dusk(16-19) / night(20-3)。
     // 日兩組（dawn/day）夜兩組（dusk/night），每個天氣 icon 各備四池
     var WEATHER_PROSE = {
         clear: {
@@ -63,9 +64,9 @@
         }
     };
     function phaseOfHour(h) {
-        if (h >= 5 && h < 11) return 'dawn';
-        if (h >= 11 && h < 17) return 'day';
-        if (h >= 17 && h < 18) return 'dusk';
+        if (h >= 4 && h < 8) return 'dawn';
+        if (h >= 8 && h < 16) return 'day';
+        if (h >= 16 && h < 20) return 'dusk';
         return 'night';
     }
     function climatePool(iconKey, hour) {
@@ -173,19 +174,58 @@
             }
         }
         if (!leaked) return raw;
-        if (terrain.indexOf('北岸') !== -1 || terrain.indexOf('等候') !== -1) {
-            return '北岸渡口貼著河霧，濕木踏板通向渡船；短市那頭有價牌與貨聲，歇腳處的茶桶旁擠著等船的人。';
+        return terrain ? terrain + '。' : '';
+    }
+
+    // 第一屏只保留能辨認此地的短句；放寬上限至 340 字元、最多 5 句以容納環境器物描述。
+    function compactSceneDesc(text) {
+        var raw = String(text || '').replace(/\s+/g, ' ').trim();
+        if (!raw) return '';
+        var sentences = raw.match(/[^。！？!?]+[。！？!?]?/g) || [raw];
+        var chosen = [];
+        var length = 0;
+        for (var i = 0; i < sentences.length && chosen.length < 5; i++) {
+            var sentence = sentences[i].trim();
+            if (!sentence) continue;
+            if (chosen.length && length + sentence.length > 340) break;
+            chosen.push(sentence);
+            length += sentence.length;
         }
-        if (terrain) return terrain + '在近前展開，周圍有人聲與腳步聲，幾條去處從眼前分開。';
-        return '一處可落腳的地方展在近前，周圍有人聲與腳步聲，幾條去處從眼前分開。';
+        return (chosen.join('') || raw).trim();
     }
 
     // ── 取 DOM ──────────────────────────────────────────────────────
     function l1El() { return document.getElementById('sw-l1-time'); }
     function l2El() { return document.getElementById('sw-l2-climate'); }
     function l3El() { return document.getElementById('sw-l3-terrain'); }
+    function placeEl() { return document.getElementById('sw-place-name'); }
+    function locatorEl() { return document.getElementById('sw-place-locator'); }
 
-    // ── L1 時間渲染 ──────────────────────────────────────────────────
+    function splitFullPlaceName(value) {
+        var raw = String(value || '').trim();
+        var match = raw.match(/^(.+?)（(.+)）$/);
+        return match ? { title: match[1].trim(), locator: match[2].trim() } : { title: raw, locator: '' };
+    }
+
+    function renderPlace(placeData, terrainData) {
+        var el = placeEl();
+        if (!el) return;
+        var rawName = (placeData && (placeData.full_name || placeData.name)) ||
+            (terrainData && terrainData.name) || '';
+        var parts = splitFullPlaceName(rawName);
+        var explicitParts = splitFullPlaceName(placeData && placeData.name);
+        var title = explicitParts.title || parts.title;
+        var locator = (placeData && placeData.locator) || explicitParts.locator || parts.locator;
+        el.textContent = String(title || '').trim();
+        el.hidden = !el.textContent;
+        var locatorNode = locatorEl();
+        if (locatorNode) {
+            locatorNode.textContent = String(locator || '').trim();
+            locatorNode.hidden = !locatorNode.textContent;
+        }
+    }
+
+    // ── L1 時間渲染（簡潔時辰與時間，不畫日晷 SVG）──────────────────
     function renderL1(timeData) {
         var el = l1El();
         if (!el) return;
@@ -194,24 +234,11 @@
             return;
         }
         var hourStr = timeData.hour_str || '--:--';
-        // 從 hour_str 推算時段散文
         var hour = parseInt(hourStr.split(':')[0], 10) || 0;
         _currentHour = hour; // 同步給 L2 climate 池選擇用
         var phase = PHASE_LABELS[Math.floor(hour / 2)] || '';
 
-        var minutePart = parseInt(hourStr.split(':')[1], 10) || 0;
-        var hourCont = hour + minutePart / 60;
-        var sundialAngle = (hourCont - 12) * 15;
-        var sundialSvg =
-            '<svg class="desc-sundial game-time-svg" viewBox="0 0 32 32" width="18" height="18" aria-hidden="true">' +
-              '<circle class="game-time-face" cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/>' +
-              '<line class="game-time-hand" x1="16" y1="16" x2="16" y2="8" ' +
-                  'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" ' +
-                  'transform="rotate(' + sundialAngle.toFixed(1) + ' 16 16)"/>' +
-            '</svg>';
-
         el.innerHTML =
-            '<span class="desc-icon">' + sundialSvg + '</span>' +
             '<span class="desc-text">' + esc(phase) + '</span>' +
             '<span class="desc-clock">' + esc(hourStr) + '</span>';
     }
@@ -282,22 +309,35 @@
         prison_yard: '囚'
     };
 
-    // ── L3 地形渲染 ──────────────────────────────────────────────────
+    // 判斷物件是否為「可離開當前格」或人物（非靜態器物）
+    function isMovableOrPortableObject(obj) {
+        if (!obj) return false;
+        if (obj.type === 'npc' || obj.kind === 'npc' || obj.kind === 'Npc') return true;
+        if (obj.is_ground_item === true || obj.kind === 'ground_item') return true;
+        if (obj.move_to_room_id) return true;
+        var actions = obj.actions || obj.sockets || [];
+        if (Array.isArray(actions)) {
+            for (var i = 0; i < actions.length; i++) {
+                var a = actions[i];
+                if (a === 'Move' || a === 'Take') return true;
+            }
+        }
+        return false;
+    }
+
+    // ── L3 地形與內嵌靜態器物渲染 ─────────────────────────────────────
     function renderL3(terrainData, descText) {
         var el = l3El();
         if (!el) return;
-
-        var text = cleanSceneDesc(descText, terrainData && terrainData.name);
-        if (!text) text = '一處可落腳的地方展在近前。';
-
-        el.innerHTML =
-            '<span class="desc-text">' + esc(text) + '</span>';
+        var text = compactSceneDesc(cleanSceneDesc(descText, terrainData && terrainData.name));
+        el.innerHTML = text ? '<span class="desc-text">' + esc(text) + '</span>' : '';
     }
 
     // ── v5 room_enter 全渲染（L1+L2+L3）────────────────────────────
     function renderV5(msg, options) {
         options = options || {};
         _v5ControlsL2 = true;
+        renderPlace(msg.place, msg.terrain);
         if (msg.time)    renderL1(msg.time);
         if (msg.weather) {
             var weather = Object.assign({}, msg.weather);
@@ -310,19 +350,14 @@
             renderL2({ icon_key: 'clear', desc: pickProse(fallbackPool, fallbackSeed), hour: fallbackHour });
         }
 
-        var currentL3Text = (l3El() && l3El().textContent || '').trim();
-        if (options.keepL3 && currentL3Text) return;
+        var l3Node = l3El();
+        var currentL3Text = (l3Node && l3Node.textContent || '').trim();
+        if (options.keepL3 && currentL3Text) {
+            return;
+        }
 
-        // L3 散文優先序：descText > terrainAmbience > TERRAIN_PROSE 池抽 > terrainData.name > 空
-        var terrainKey = (msg.terrain && msg.terrain.icon_key) || '';
-        var hour = (msg.time && msg.time.hour) || 0;
-        var ambience = getAmbience(terrainKey, hour);
-        var pool = TERRAIN_PROSE[terrainKey];
-        // 用 hour + terrainKey 雜湊做穩定種子（同格同時段同一條，不亂跳）
-        var seed = hour * 31 + terrainKey.split('').reduce(function(a, c) { return a + c.charCodeAt(0); }, 0);
-        var prose = pool ? pickProse(pool, seed) : '';
-        var descText = cleanSceneDesc(msg.desc || ambience || prose || '', msg.terrain && msg.terrain.name);
-        renderL3(msg.terrain, descText);
+        var descText = cleanSceneDesc(msg.desc || '', msg.terrain && msg.terrain.name);
+        renderL3(msg.terrain, descText, msg.objects, msg.harvestables);
     }
 
     // ── 舊格式相容（grid_view 事件）──────────────────────────────────
@@ -331,6 +366,7 @@
         if (!G) return;
 
         var mapData  = G.mapData;
+        renderPlace(null, { name: mapData.currentRoomName || '' });
 
         var currentCell = null;
         for (var i = 0; i < mapData.cells.length; i++) {
@@ -356,19 +392,14 @@
         // TODO: SW-v5 後端推含 region_id 的 room_enter 後，改由 onRoomEnter 傳入真實 region_id
         startClimatePolling('default');
 
-        // L3（地形）：只顯示場景散文，不在描述前加地形字徽。
+        // L3（地形與內嵌器物）
         var pool  = TERRAIN_PROSE[terrainKey];
         var prose = pool ? pool[Math.floor(Math.random() * pool.length)] : '';
-        // 若 terrain_ambience.json 有更精緻描述則優先用
         var ambience = getAmbience(terrainKey, hour);
         var displayText = ambience || prose || '';
-        var el3 = l3El();
-        if (el3) {
-            el3.innerHTML =
-                '<span class="desc-text">' + esc(displayText) + '</span>';
-        }
+        renderL3({ name: (currentCell && currentCell.terrain) || '' }, displayText, mapData.objects, mapData.harvestables);
     }
 
-    window.SwRoomDesc = { render: render, renderV5: renderV5, renderL1: renderL1, renderL2: renderL2, renderL3: renderL3, getAmbience: getAmbience, startClimatePolling: startClimatePolling };
-    console.log('[sw-room-desc] v0.24.11 loaded');
+    window.SwRoomDesc = { render: render, renderV5: renderV5, renderL1: renderL1, renderL2: renderL2, renderL3: renderL3, renderPlace: renderPlace, getAmbience: getAmbience, startClimatePolling: startClimatePolling };
+    console.log('[sw-room-desc] v0.27.0 loaded');
 })();

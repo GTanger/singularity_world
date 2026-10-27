@@ -34,6 +34,27 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
         &[],
     )?;
 
+    // 玩家觀察態與區域氣候在連線池啟動時建一次；執行期讀寫不可反覆執行 DDL。
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS players_npc_acquaintance (
+            player_id TEXT NOT NULL,
+            npc_id TEXT NOT NULL,
+            observed BOOLEAN NOT NULL DEFAULT FALSE,
+            named BOOLEAN NOT NULL DEFAULT FALSE,
+            PRIMARY KEY (player_id, npc_id)
+        )",
+        &[],
+    )?;
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS region_climate (
+            region_id TEXT PRIMARY KEY,
+            event_type TEXT NOT NULL DEFAULT 'clear',
+            started_at_unix BIGINT NOT NULL DEFAULT 0,
+            prose_seed BIGINT NOT NULL DEFAULT 0
+        )",
+        &[],
+    )?;
+
     // 事件日誌
     conn.execute(
         "CREATE TABLE IF NOT EXISTS event_log (
@@ -196,7 +217,8 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
             equipment_slots TEXT NOT NULL DEFAULT '',
             inventory TEXT NOT NULL DEFAULT '',
             disposition INTEGER NOT NULL DEFAULT 0,
-            current_activity TEXT NOT NULL DEFAULT ''
+            current_activity TEXT NOT NULL DEFAULT '',
+            thoughts TEXT NOT NULL DEFAULT '[]'
         )",
         &[],
     )?;
@@ -204,6 +226,10 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
     // 補欄位：current_activity（舊表可能沒有）
     let _ = conn.execute(
         "ALTER TABLE entities ADD COLUMN IF NOT EXISTS current_activity TEXT NOT NULL DEFAULT ''",
+        &[],
+    );
+    let _ = conn.execute(
+        "ALTER TABLE entities ADD COLUMN IF NOT EXISTS thoughts TEXT NOT NULL DEFAULT '[]'",
         &[],
     );
     // 補欄位：正方格座標（NULL ＝未綁定正方格世界）
@@ -277,7 +303,8 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
             description TEXT NOT NULL DEFAULT '',
             vit_bonus INTEGER NOT NULL DEFAULT 0,
             dex_bonus INTEGER NOT NULL DEFAULT 0,
-            atk_bonus INTEGER NOT NULL DEFAULT 0
+            atk_bonus INTEGER NOT NULL DEFAULT 0,
+            origin TEXT NOT NULL DEFAULT ''
         )",
         &[],
     )?;
@@ -287,6 +314,10 @@ fn create_tables(conn: &mut Connection) -> anyhow::Result<()> {
             format!("ALTER TABLE items ADD COLUMN IF NOT EXISTS {col} INTEGER NOT NULL DEFAULT 0");
         let _ = conn.execute(sql.as_str(), &[]);
     }
+    let _ = conn.execute(
+        "ALTER TABLE items ADD COLUMN IF NOT EXISTS origin TEXT NOT NULL DEFAULT ''",
+        &[],
+    );
 
     // 世界詞典 (World Lexicon) — NPC 對話中自發產出的詞彙
     conn.execute(

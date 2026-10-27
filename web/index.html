@@ -3,11 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-	<meta name="theme-color" content="#1e2328">
+	<meta name="theme-color" content="#eee9df">
+	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
 	<title>奇點世界</title>
-	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%232a2a2a' width='32' height='32'/><text x='16' y='22' font-size='18' fill='%23e0e0e0' text-anchor='middle' font-family='sans-serif'>奇</text></svg>">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%23eee9df' rx='6' width='32' height='32'/><circle cx='16' cy='16' r='13' fill='%23f7f0e3' stroke='%232c1e0f' stroke-width='1.5'/><text x='16' y='22' font-size='17' font-weight='700' fill='%232c1e0f' text-anchor='middle' font-family='serif'>奇</text></svg>">
 	<link rel="apple-touch-icon" href="/icon.svg">
 	<link rel="manifest" href="/manifest.webmanifest">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/lxgw-wenkai-mono-tc@5/index.min.css">
@@ -27,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.21.0">
-	<link rel="stylesheet" href="game.css?v=0.21.1">
+	<link rel="stylesheet" href="style.css?v=0.38.24">
+	<link rel="stylesheet" href="game.css?v=0.38.24">
 	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.25.2" id="game-grid-css" disabled>
+	<link rel="stylesheet" href="game-grid.css?v=0.38.24" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -71,40 +72,116 @@
 		</div>
 	</div>
 
-	<!-- ═══ Grid MUD 模式（唯一模式）：v5 三區 UI ═══ -->
+	<!-- ═══ 文字世界主表面：《指尖 MUD》四區融合 UI ═══ -->
 	<div id="app-grid" class="game-grid-app sw-app" hidden>
 
-		<!-- 置頂：日晷、時段、時間、天氣 -->
-		<div id="sw-worldbar" class="sw-worldbar">
-			<!-- L1 時間段（JS 填充，世界自走時重抽）-->
-			<div id="sw-l1-time" class="sw-desc-layer sw-l1"></div>
-			<!-- L2 範圍氣候段（JS 填充，氣候事件變化時重抽）-->
-			<div id="sw-l2-climate" class="sw-desc-layer sw-l2"></div>
+		<!-- 【頂欄】：開譜曆四季、六段時辰與當前地名（已移除日晷） -->
+		<header id="sw-worldbar" class="sw-worldbar">
+			<div class="sw-topbar-left">
+				<span id="sw-top-calendar" class="sw-top-calendar">開譜曆 元年・春融・1 日</span>
+			</div>
+			<div class="sw-topbar-right">
+				<span id="sw-top-phase-place" class="sw-top-phase-place">正晝 ｜ 白塔大堂</span>
+			</div>
+			<!-- 相容 L1 與 L2 隱藏/低聲層 -->
+			<div id="sw-l1-time" class="sw-desc-layer sw-l1" style="display:none;" aria-hidden="true"></div>
+			<div id="sw-l2-climate" class="sw-desc-layer sw-l2" style="display:none;" aria-hidden="true"></div>
+		</header>
+
+		<!-- 【中段雙欄】：左側直列互動欄 ＋ 中央動態文字 Log -->
+		<main id="sw-middle-area" class="sw-middle-area">
+			<aside id="sw-left-column" class="sw-left-column" aria-label="在場接觸" hidden style="display:none;">
+				<section id="sw-col-people" class="sw-col-section">
+					<div id="sw-people-items" class="sw-col-items"></div>
+				</section>
+				<section id="sw-col-facilities" class="sw-col-section" hidden style="display:none;">
+					<div id="sw-facilities-items" class="sw-col-items"></div>
+				</section>
+				<section id="sw-col-discoveries" class="sw-col-section">
+					<div id="sw-discoveries-items" class="sw-col-items"></div>
+				</section>
+				<section id="sw-col-exits" class="sw-col-section" hidden style="display:none;">
+					<div id="sw-exits-items" class="sw-col-items"></div>
+				</section>
+				<div id="sw-l4-objects" class="sw-desc-layer sw-l4" style="display:none;" aria-hidden="true"></div>
+			</aside>
+
+			<!-- 中央動態文字 Log：地貌描述、即時事件、去數值化交鋒 Log 與戰術按鈕 -->
+			<section id="sw-center-log" class="sw-center-log" aria-label="場景與動態記錄">
+				<header class="sw-place-heading">
+					<h1 id="sw-place-name" class="sw-place-name"></h1>
+					<p id="sw-place-locator" class="sw-place-locator" hidden></p>
+				</header>
+				<div id="sw-l3-terrain" class="sw-desc-layer sw-l3"></div>
+				<div id="sw-room-canvas" class="sw-room-canvas" role="region" aria-label="當前房間物件空間">
+					<div id="sw-room-canvas-empty" class="sw-room-canvas-empty" hidden>此處空曠寂靜，暫無人事器物</div>
+				</div>
+				<div id="sw-log" class="sw-log-stream" aria-live="polite" style="display:none;" hidden></div>
+				<!-- 戰鬥對峙空檔戰術決策按鈕 -->
+				<div id="sw-tactical-choices" class="sw-tactical-choices" hidden>
+					<div class="sw-tactical-hint">戰術對峙・抉擇契機</div>
+					<div class="sw-tactical-actions">
+						<button type="button" class="sw-tactical-btn" data-choice="趁勢搶攻">趁勢搶攻</button>
+						<button type="button" class="sw-tactical-btn" data-choice="專攻部位">專攻部位</button>
+						<button type="button" class="sw-tactical-btn" data-choice="守勢游鬥">守勢游鬥</button>
+						<button type="button" class="sw-tactical-btn" data-choice="搏命硬撼">搏命硬撼</button>
+						<button type="button" class="sw-tactical-btn" data-choice="抽身脫離">抽身脫離</button>
+				</div>
+			</section>
+		</main>
+
+		<!-- 單一浮動框：物件操作與即時 Log -->
+		<div id="sw-object-popover-backdrop" class="sw-object-popover-backdrop" hidden>
+			<div id="sw-object-popover" class="sw-object-popover" role="dialog" aria-modal="true" aria-labelledby="sw-popover-title">
+				<header class="sw-popover-header">
+					<div class="sw-popover-title-wrap">
+						<h3 id="sw-popover-title" class="sw-popover-title"></h3>
+						<span id="sw-popover-subtitle" class="sw-popover-subtitle"></span>
+					</div>
+					<button type="button" id="sw-popover-close" class="sw-popover-close" aria-label="關閉浮動框">×</button>
+				</header>
+				<div id="sw-popover-actions" class="sw-popover-actions"></div>
+				<div id="sw-popover-log" class="sw-popover-log" aria-live="polite"></div>
+			</div>
 		</div>
 
-		<!-- 場景正文：描述 + 場景內文字流 + 可操作卡片 -->
-		<div id="sw-desc-panel" class="sw-desc-panel">
-			<!-- L3 當前格初始段（JS 填充，踏入抽一次，離格前不變）-->
-			<div id="sw-l3-terrain" class="sw-desc-layer sw-l3"></div>
-			<!-- 場景內文字流：接在描述後、可操作物件前，不顯示標題 -->
-			<div id="sw-log" class="sw-log-stream"></div>
-			<!-- L4 物件卡片（JS 動態渲染，在場即顯）-->
-			<div id="sw-l4-objects" class="sw-desc-layer sw-l4"></div>
-		</div>
+		<!-- 【下方空間導航區】：CSS Grid 32px 固定正方格無縫純符號大地圖 ＋ 私人客房收合 -->
+		<section id="sw-bottom-area" class="sw-bottom-area" aria-label="空間導航與大地圖">
+			<div id="sw-symbol-grid-wrap" class="sw-symbol-grid-wrap">
+				<div id="sw-symbol-grid" class="sw-symbol-grid" role="grid" aria-label="純符號大地圖"></div>
+			</div>
+			<!-- 「進／出」私人空間自動收合面板 -->
+			<div id="sw-private-room-panel" class="sw-private-room-panel" hidden>
+				<div class="sw-room-header">
+					<h2 class="sw-room-title">【 旅社單人客房 】</h2>
+					<p class="sw-room-desc">銅鎖扣合、貝母燈光柔和，床榻鋪著羽絨暖被與山風草安神枕，可安穩歇息過夜。</p>
+				</div>
+				<div class="sw-room-actions">
+					<button type="button" id="btn-room-rest" class="sw-room-btn">臥榻安歇</button>
+					<button type="button" id="btn-room-tactics" class="sw-room-btn">整理行囊與思緒</button>
+					<button type="button" id="btn-room-exit" class="sw-room-btn sw-room-btn-exit">走出客房（出）</button>
+				</div>
+			</div>
+		</section>
 
-		<!-- 下區：屬性條 + 玩家名 -->
+		<!-- 下區：玩家自身入口；體魄氣脈去數值化 -->
 		<footer id="bottom-bar" class="game-grid-footer sw-statusbar">
 			<div class="game-grid-footer-inner">
-				<div class="grid-stats-left">
-					<div class="stat-mini" title="氣血"><div class="stat-track"><div class="stat-fill hp" id="bar-hp"></div></div></div>
-					<div class="stat-mini" title="體力"><div class="stat-track"><div class="stat-fill stamina" id="bar-stamina"></div></div></div>
-				</div>
 				<div class="grid-player-core">
-					<div id="player-name" class="grid-player-name" role="button" tabindex="0" title="點擊開啟角色">姓名</div>
+					<button id="player-name" class="grid-player-name" type="button" title="查看自身">姓名</button>
+					<span id="player-vibe" class="sw-self-cue" aria-hidden="true">查看自身</span>
 				</div>
-				<div class="grid-stats-right">
-					<div class="stat-mini" title="能量"><div class="stat-track"><div class="stat-fill energy" id="bar-inner"></div></div></div>
-					<div class="stat-mini" title="精神"><div class="stat-track"><div class="stat-fill spirit" id="bar-spirit"></div></div></div>
+				<div id="sw-grid-actions" class="sw-grid-actions">
+					<button type="button" id="btn-explore" class="sw-grid-act-btn" hidden>探索此處</button>
+					<button type="button" id="btn-enter-room" class="sw-grid-act-btn" hidden>投宿／進客房（進）</button>
+					<span id="sw-pioneer-actions" class="sw-pioneer-actions"></span>
+					<button type="button" id="btn-toggle-map" class="sw-grid-act-btn sw-map-toggle-btn" aria-expanded="false" title="點開查看走過的地圖">大地圖</button>
+				</div>
+				<div class="sw-hidden-meters" aria-hidden="true">
+					<div id="bar-hp"></div>
+					<div id="bar-stamina"></div>
+					<div id="bar-inner"></div>
+					<div id="bar-spirit"></div>
 				</div>
 			</div>
 		</footer>
@@ -113,6 +190,71 @@
 		<div id="log" style="display:none" aria-hidden="true"></div>
 
 	</div><!-- /#app-grid -->
+
+	<!-- 大地圖（行旅足跡輿圖）彈窗 -->
+	<div id="sw-world-map-overlay" class="sw-world-map-overlay" hidden aria-hidden="true">
+		<div id="sw-world-map-modal" class="sw-world-map-modal" role="dialog" aria-modal="true" aria-labelledby="sw-world-map-title">
+			<div class="sw-world-map-header">
+				<div class="sw-world-map-title-wrap">
+					<h2 id="sw-world-map-title" class="sw-world-map-title">【 行旅足跡輿圖 】</h2>
+					<span id="sw-world-map-stats" class="sw-world-map-stats">已踏足 1 處</span>
+				</div>
+				<div class="sw-world-map-controls">
+					<button type="button" id="btn-wm-center" class="sw-wm-ctrl-btn" title="定位自身所在">定位自身 ◎</button>
+					<button type="button" id="btn-wm-zoom" class="sw-wm-ctrl-btn" title="切換地圖縮放">緊湊全覽</button>
+					<button type="button" id="btn-map-legend" class="sw-wm-ctrl-btn sw-map-legend-btn" aria-expanded="false" title="查看地圖符號圖例">符號圖例</button>
+					<button type="button" id="btn-wm-close" class="sw-wm-close-btn" aria-label="關閉大地圖">×</button>
+				</div>
+			</div>
+			<div id="sw-world-map-viewport" class="sw-world-map-viewport">
+				<div id="sw-world-map-grid" class="sw-world-map-grid" role="grid" aria-label="已探索足跡大地圖"></div>
+			</div>
+			<div id="sw-world-map-footer" class="sw-world-map-footer">
+				<div id="sw-world-map-info" class="sw-world-map-info">點擊輿圖上的已探索格可查看地名；拖曳畫面可平移檢視足跡。</div>
+				<button type="button" id="btn-wm-move-here" class="sw-wm-move-btn" hidden>前往此處</button>
+			</div>
+			<!-- 符號圖例古風宣紙彈窗 -->
+			<div id="sw-map-legend-popup" class="sw-map-legend-popup" hidden>
+				<div class="sw-legend-header">
+					<h3 class="sw-legend-title">【 輿地純符號圖例 】</h3>
+					<button type="button" id="btn-map-legend-close" class="sw-legend-close" aria-label="關閉圖例">×</button>
+				</div>
+				<div class="sw-legend-body">
+					<div class="sw-legend-col">
+						<div class="sw-legend-subtitle">〔 城鎮工坊與聚落 〕</div>
+						<ul class="sw-legend-list">
+							<li><span class="sym">::</span> 街衢廊道（街道、巷弄、石坪、門廊）</li>
+							<li><span class="sym">𖠿</span> 宅舍居處（民居、宅院、廬舍、起居）</li>
+							<li><span class="sym">$</span> 市集商貿（商鋪、攤檔、鎂幣、行庫）</li>
+							<li><span class="sym">⚒︎</span> 百工工坊（鍛爐、作坊、船塢、磨坊）</li>
+							<li><span class="sym">+</span> 診所藥房（診所、藥房、溫灸、調理）</li>
+							<li><span class="sym">⌂</span> 旅社浴場（旅社、茶屋、歇腳、浴場）</li>
+							<li><span class="sym">⚑</span> 公處機構（學院、鐘樓、公議堂、觀星台）</li>
+							<li><span class="sym">■</span> 城垣要塞（城牆、關隘、石壁）</li>
+							<li><span class="sym">≠</span> 柵欄圍籬（木柵、矮籬、界格）</li>
+						</ul>
+					</div>
+					<div class="sw-legend-col">
+						<div class="sw-legend-subtitle">〔 自然水脈與地形 〕</div>
+						<ul class="sw-legend-list">
+							<li><span class="sym">≈</span> 碧水長流（溪澗、河道、運河、水脈）</li>
+							<li><span class="sym">≍</span> 跨水橋埠（石橋、木橋、津渡、碼頭）</li>
+							<li><span class="sym">𐡚</span> 原野草息（草地、平疇、曠野、牧場）</li>
+							<li><span class="sym">Φ</span> 幽林深篁（山林、樹叢、竹篁、林莽）</li>
+							<li><span class="sym">⛰︎</span> 峻嶺崇山（峰巒、崖壁、崇山、奇石）</li>
+							<li><span class="sym">△</span> 幽穴採掘（洞窟、礦脈、幽壑、坑道）</li>
+							<li><span class="sym">∆</span> 遺蹟高塔（塔樓、殘跡、雪線石塔）</li>
+							<li><span class="sym">≋</span> 滄溟大澤（大洋、廣澤、淵藪、深海）</li>
+							<li><span class="sym">⋯</span> 沙磧荒丘（海灘、沙岸、荒原、淺汀）</li>
+							<li><span class="sym">⋍</span> 澤藪沼濘（沼澤、泥濘、濕地、泥淖）</li>
+							<li><span class="sym">▦</span> 膏腴田畦（耕地、農田、稼穡）</li>
+							<li><span class="sym">☷</span> 百草藥圃（藥圃、苗圃、石坪基址）</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<!-- 角色面板：點擊底部姓名開啟，沿用既有 sw-modals.js / sw-panes.js。 -->
 	<div id="player-modal-overlay" class="player-modal-overlay" hidden aria-hidden="true">
@@ -123,10 +265,10 @@
 			</div>
 			<div class="player-modal-tabs" role="tablist">
 				<button type="button" class="player-modal-tab active" role="tab" aria-selected="true" data-tab="status">狀態</button>
-				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="inventory">背包</button>
-				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="equip">裝備</button>
-				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="skill">技能</button>
-				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="starplate">星盤</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="inventory">行囊</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="equip">穿戴・百工</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="starplate">星盤・成相</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="settings">設定</button>
 			</div>
 			<div class="player-modal-body">
 				<div id="player-modal-pane-status" class="player-modal-pane active" role="tabpanel" data-tab="status">
@@ -136,12 +278,14 @@
 					<div id="inventory-weight" class="inventory-weight"></div>
 					<div id="inventory-list" class="inventory-list"></div>
 				</div>
-				<div id="player-modal-pane-equip" class="player-modal-pane" role="tabpanel" data-tab="equip" hidden>裝備內容（待接資料）</div>
-				<div id="player-modal-pane-skill" class="player-modal-pane" role="tabpanel" data-tab="skill" hidden>
-					<div id="skill-content" class="skill-content"></div>
+				<div id="player-modal-pane-equip" class="player-modal-pane" role="tabpanel" data-tab="equip" hidden>
+					<div id="equip-content" class="equip-content"></div>
 				</div>
 				<div id="player-modal-pane-starplate" class="player-modal-pane" role="tabpanel" data-tab="starplate" hidden>
 					<div id="starplate-content" class="starplate-content"></div>
+				</div>
+				<div id="player-modal-pane-settings" class="player-modal-pane" role="tabpanel" data-tab="settings" hidden>
+					<div id="settings-content" class="settings-content"></div>
 				</div>
 			</div>
 		</div>
@@ -156,19 +300,18 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-
-	<script src="narrative-markdown.js?v=0.21.0"></script>
-		<script src="sw-room-desc.js?v=0.24.12"></script>
-	<script src="sw-object-list.js?v=0.24.9"></script>
-	<script src="grid-map.js?v=0.24.7"></script>
-	<script src="sw-log.js?v=0.21.1"></script>
-	<script src="sw-panes.js?v=0.21.2"></script>
-	<script src="sw-modals.js?v=0.21.1"></script>
-	<script src="sw-interactions.js?v=0.21.2"></script>
-	<script src="sw-clock.js?v=0.21.0"></script>
-	<script src="sw-narrative.js?v=0.21.0"></script>
-	<script src="sw-auth.js?v=0.21.0"></script>
-	<script src="main.js?v=0.25.3"></script>
+	<script src="narrative-markdown.js?v=0.38.24"></script>
+	<script src="grid-map.js?v=0.38.24"></script>
+	<script src="sw-room-desc.js?v=0.38.24"></script>
+	<script src="sw-object-list.js?v=0.38.24"></script>
+	<script src="sw-log.js?v=0.38.24"></script>
+	<script src="sw-panes.js?v=0.38.24"></script>
+	<script src="sw-modals.js?v=0.38.24"></script>
+	<script src="sw-interactions.js?v=0.38.24"></script>
+	<script src="sw-clock.js?v=0.38.24"></script>
+	<script src="sw-narrative.js?v=0.38.24"></script>
+	<script src="sw-auth.js?v=0.38.24"></script>
+	<script src="main.js?v=0.38.24"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -180,8 +323,7 @@
 		window.triggerLook  = function () {};
 		if ('serviceWorker' in navigator) {
 			window.addEventListener('load', function () {
-				// updateViaCache:'none' 讓瀏覽器檢查 SW 更新時繞 HTTP cache（破 CF 的 4h browser cache TTL 續命）
-				navigator.serviceWorker.register('/sw.js?v=0.24.27', { updateViaCache: 'none' }).then(function (reg) {
+				navigator.serviceWorker.register('/sw.js?v=0.38.24', { updateViaCache: 'none' }).then(function (reg) {
 					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
 					reg.addEventListener('updatefound', function () {
 						var w = reg.installing;

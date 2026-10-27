@@ -25,11 +25,23 @@ async fn main() -> anyhow::Result<()> {
         tracing::warn!("seed npcs: {e}");
     }
     let _ = singularity_world::db::ensure_all_npcs_have_soul_seed();
-    match singularity_world::db::ensure_grid_coords() {
-        Ok(n) if n > 0 => tracing::info!("ensure_grid_coords: 補寫 {n} 個 NPC 的方格座標"),
-        Ok(_) => {}
-        Err(e) => tracing::warn!("ensure_grid_coords: {e}"),
-    }
+    let runtime = singularity_world::store::activate_white_tower_runtime()?;
+    tracing::info!(
+        "white_tower_runtime: {} places, {} routes, {} goods, {} markets, {} source deals, {} upstream profiles, {} producer sites, {} work sites, {} inventory rows, {} flow lanes, {} entities migrated, {} journeys migrated, {} backups",
+        runtime.runtime_places,
+        runtime.runtime_routes,
+        runtime.economy_goods,
+        runtime.economy_markets,
+        runtime.economy_trade_evidence,
+        runtime.economy_upstream_supply_profiles,
+        runtime.economy_producer_sites,
+        runtime.economy_work_sites,
+        runtime.economy_operational_inventory,
+        runtime.economy_flow_lanes,
+        runtime.entities_migrated,
+        runtime.journeys_migrated,
+        runtime.location_backups
+    );
     let topics = root.join("data/npc_to_npc_topics.json");
     singularity_world::npc::try_load_npc_npc_topics(&topics)
         .or_else(|_| {

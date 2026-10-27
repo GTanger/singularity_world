@@ -19,6 +19,9 @@ pub struct ClientMsg {
     pub gender: String,
     #[serde(default)]
     pub direction: String,
+    /// 同一方向有多條路時，玩家按下的確切相鄰場所。
+    #[serde(default, rename = "target_place_id")]
+    pub target_place_id: String,
     #[serde(default, rename = "entity_id")]
     pub entity_id: String,
     #[serde(default, rename = "item_id")]
@@ -31,6 +34,22 @@ pub struct ClientMsg {
     pub action: String,
     #[serde(default, rename = "player_input")]
     pub player_input: String,
+    #[serde(default)]
+    pub nodes: Vec<String>,
+    #[serde(default)]
+    pub words: Vec<String>,
+    #[serde(default)]
+    pub inlays: Vec<(String, String)>,
+    #[serde(default, rename = "custom_name")]
+    pub custom_name: Option<String>,
+    #[serde(default)]
+    pub x: Option<i32>,
+    #[serde(default)]
+    pub y: Option<i32>,
+    #[serde(default, rename = "target_terrain")]
+    pub target_terrain: String,
+    #[serde(default)]
+    pub choice: String,
 }
 
 /// 房間內單一實體（對齊 `ViewEntity`）。
@@ -44,6 +63,12 @@ pub struct ViewEntity {
     pub display_name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub actions: Vec<String>,
+    /// 此刻必須保留在可接觸人物卡中的場所角色；只表示互動入口，不公開私名。
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub interaction_priority: bool,
+    /// 人物在世界中實際進行的活動；玩家層只顯示可感知的簡短文字。
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub current_activity: String,
     /// NPC 行為敘事句（可選；非 NPC 或無行為時省略）
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub behavior_text: String,
@@ -77,6 +102,8 @@ pub struct ActionResultMsg {
         rename = "suggested_action"
     )]
     pub suggested_action: String,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tactical_choices: Vec<String>,
 }
 
 fn is_false(v: &bool) -> bool {
@@ -91,6 +118,16 @@ pub struct ExitView {
     pub to_room_id: String,
     #[serde(rename = "to_room_name")]
     pub to_room_name: String,
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "route_id")]
+    pub route_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub mode: String,
+    #[serde(default, skip_serializing_if = "is_zero_i32", rename = "travel_cost")]
+    pub travel_cost: i32,
+}
+
+fn is_zero_i32(value: &i32) -> bool {
+    *value == 0
 }
 
 /// 房間內可互動物件（對齊 `ViewObject`）。
@@ -98,6 +135,8 @@ pub struct ExitView {
 pub struct ViewObject {
     pub id: String,
     pub name: String,
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "type")]
+    pub object_type: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub actions: Vec<String>,
 }
@@ -204,6 +243,14 @@ pub struct MovedMsg {
     #[serde(rename = "room_name")]
     pub room_name: String,
 }
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NpcDialogueMsg {
+    #[serde(rename = "type")]
+    pub msg_type: String,
+    pub npc_a: String,
+    pub npc_b: String,
+    pub text: String,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ErrorMsg {
@@ -254,6 +301,8 @@ pub struct InventoryItemView {
     pub description: String,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub slot: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub origin: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -265,6 +314,30 @@ pub struct InventoryMsg {
     pub current_weight: f64,
     #[serde(rename = "max_weight")]
     pub max_weight: f64,
+}
+
+/// 角色背板「技能」欄位之單一自然生成技能（由後台依人物所學字印、所熟悉器物與星盤屬性自然生成，非玩家手動自訂）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NaturalSkillView {
+    /// "martial"（臨陣武相・戰鬥自動使用）或 "production"（百工藝相・生產自動使用）
+    pub domain: String,
+    /// 類別標籤（如 "inner_breath"）
+    #[serde(default)]
+    pub category: String,
+    /// 序位或領域標籤
+    #[serde(rename = "category_label")]
+    pub category_label: String,
+    /// 後台自然生成之技能名稱
+    pub name: String,
+    /// 碎招與套路根源說明
+    #[serde(rename = "origin_basis")]
+    pub origin_basis: String,
+    /// 所學字韻與熟悉器物依據
+    #[serde(rename = "learned_and_familiar")]
+    pub learned_and_familiar: String,
+    /// 戰鬥或生產中自動施展之效果說明
+    #[serde(rename = "auto_trigger_desc")]
+    pub auto_trigger_desc: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -348,6 +421,12 @@ pub struct EntityStatusMsg {
         rename = "equipment_descs"
     )]
     pub equipment_descs: HashMap<String, String>,
+    #[serde(
+        default,
+        skip_serializing_if = "Vec::is_empty",
+        rename = "natural_skills"
+    )]
+    pub natural_skills: Vec<NaturalSkillView>,
 }
 
 /// 正方格地圖視野（傳送玩家附近的多格資訊）。
@@ -373,6 +452,10 @@ pub struct GridViewMsg {
     pub game_time_sec_since_midnight: i32,
     #[serde(rename = "game_days_since_epoch")]
     pub game_days_since_epoch: i32,
+    #[serde(default)]
+    pub in_private_room: bool,
+    #[serde(default)]
+    pub season_date_label: String,
 }
 
 /// 正方格單格視野資訊（地圖渲染用）。
@@ -388,6 +471,10 @@ pub struct GridCellView {
     pub category: String,
     pub explored: bool,
     pub walkable: bool,
+    #[serde(default)]
+    pub symbol: String,
+    #[serde(default)]
+    pub npc_count: u16,
 }
 
 // ─── v5 新增：探索 log 與世界狀態推播 ─────────────────────────────────
@@ -442,6 +529,57 @@ pub struct StateUpdateMsg {
     pub payload: serde_json::Value,
 }
 
+/// 詞匣單一詞元條目。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CasketWordEntry {
+    pub id: String,
+    pub ch: String,
+    pub count: u32,
+    pub carrier_affinity: String,
+    pub target_part: String,
+    #[serde(default)]
+    pub quality_label: String,
+    #[serde(default)]
+    pub charge_pct: u8,
+    #[serde(default)]
+    pub extraction_ratio: u8,
+    #[serde(default)]
+    pub semantic: String,
+    #[serde(default)]
+    pub craft_label: String,
+}
+
+/// 招式槽位之視覺快照（完全去數值化）。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TacticalSentenceView {
+    pub slot: String,
+    pub name: String,
+    pub words: Vec<String>,
+    #[serde(default)]
+    pub nodes: Vec<String>,
+    pub fluency_label: String,
+    pub primary_carrier: String,
+    pub primary_target: String,
+}
+
+/// 戰術配置整合視圖。
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TacticalLoadoutView {
+    pub opening: Option<TacticalSentenceView>,
+    pub midgame: Option<TacticalSentenceView>,
+    pub finisher: Option<TacticalSentenceView>,
+    pub defense: Option<TacticalSentenceView>,
+}
+
+/// 推送給客戶端的完整戰術狀態。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TacticalStateMsg {
+    #[serde(rename = "type")]
+    pub msg_type: String,
+    pub casket: Vec<CasketWordEntry>,
+    pub loadout: TacticalLoadoutView,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -465,6 +603,9 @@ mod tests {
                 direction: "東".into(),
                 to_room_id: "r2".into(),
                 to_room_name: "走廊".into(),
+                route_id: String::new(),
+                mode: String::new(),
+                travel_cost: 0,
             }],
             entities: vec![ViewEntity {
                 id: "p1".into(),
@@ -472,6 +613,8 @@ mod tests {
                 display_char: "我".into(),
                 display_name: "p1".into(),
                 actions: vec![],
+                interaction_priority: false,
+                current_activity: String::new(),
                 behavior_text: String::new(),
             }],
             objects: vec![],
@@ -512,6 +655,7 @@ mod tests {
             equipment_slots: HashMap::new(),
             equipment_names: HashMap::new(),
             equipment_descs: HashMap::new(),
+            natural_skills: vec![],
         };
         let s = serde_json::to_string(&e).unwrap();
         assert!(!s.contains("magnesium"));
@@ -543,6 +687,7 @@ mod tests {
             move_target_id: String::new(),
             open_trade: true,
             suggested_action: "Trade".into(),
+            tactical_choices: vec![],
         };
         let out = serde_json::to_string(&a).unwrap();
         assert!(out.contains(r#""open_trade":true"#));

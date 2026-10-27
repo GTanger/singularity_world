@@ -143,7 +143,7 @@ pub(super) fn load_square_grid() -> Option<SquareGrid> {
 
 /// 將正方格世界格網全量寫入 PostgreSQL `grid_cells`（交易內執行）。
 pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
-    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("資料庫連線不可用"))?;
+    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("後端儲存連線不可用"))?;
     let mut conn = pool.get()?;
 
     // 確保資料表存在（含 freshness + exits 欄位）
@@ -178,6 +178,9 @@ pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
     );
 
     let mut t = conn.transaction()?;
+
+    // 清理舊佈局遺留格，確保全新顯式格完全生效
+    t.execute("DELETE FROM grid_cells", &[])?;
 
     // 增量 upsert（不再全表 DELETE + re-INSERT，避免 600+ 行交易卡住 grid lock）
     for cell in grid.cells() {
@@ -220,7 +223,7 @@ pub(super) fn save_square_grid_to_pg(grid: &SquareGrid) -> anyhow::Result<()> {
 
 /// 更新單一格子的 freshness（explore handler 呼叫，不走全量 grid save）。
 pub fn update_cell_freshness(x: i32, y: i32, freshness: Freshness) -> anyhow::Result<()> {
-    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("資料庫連線不可用"))?;
+    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("後端儲存連線不可用"))?;
     let mut conn = pool.get()?;
     let freshness_s = enum_snake_string(&freshness)?;
     conn.execute(
@@ -230,10 +233,29 @@ pub fn update_cell_freshness(x: i32, y: i32, freshness: Freshness) -> anyhow::Re
     Ok(())
 }
 
+/// 更新單一格子的 explored、freshness 與 objects（探索或採集後直接單格寫入 PG，避免 5,040 格全表寫入）。
+pub fn update_cell_state(
+    x: i32,
+    y: i32,
+    explored: bool,
+    freshness: Freshness,
+    objects: &[crate::grid::GridObject],
+) -> anyhow::Result<()> {
+    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("後端儲存連線不可用"))?;
+    let mut conn = pool.get()?;
+    let freshness_s = enum_snake_string(&freshness)?;
+    let objects_json = serde_json::to_string(objects)?;
+    conn.execute(
+        "UPDATE grid_cells SET explored = $1, freshness = $2, objects = $3 WHERE x = $4 AND y = $5",
+        &[&explored, &freshness_s, &objects_json, &x, &y],
+    )?;
+    Ok(())
+}
+
 /// 將所有無玩家在場的 non-fresh 格子回復為 fresh（simulation tick 呼叫）。
 /// `occupied_coords`：有玩家在場的格座標列表。
 pub fn reset_freshness_for_vacant_cells(occupied_coords: &[(i32, i32)]) -> anyhow::Result<()> {
-    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("資料庫連線不可用"))?;
+    let pool = store::get_db_pool().ok_or_else(|| anyhow::anyhow!("後端儲存連線不可用"))?;
     let mut conn = pool.get()?;
 
     if occupied_coords.is_empty() {
