@@ -299,7 +299,13 @@ fn surround_tactical_slot(
         let walkable = grid
             .get(crate::grid::SquareCoord::new(tx, ty))
             .map(|c| {
-                c.terrain != crate::grid::Terrain::Water && c.terrain != crate::grid::Terrain::Wall
+                !matches!(
+                    c.terrain,
+                    crate::grid::Terrain::WaterDeep
+                        | crate::grid::Terrain::Water
+                        | crate::grid::Terrain::Wall
+                        | crate::grid::Terrain::Fence
+                )
             })
             .unwrap_or(false);
         if walkable {
@@ -370,8 +376,34 @@ fn apply_party_directive_to_state(
             state.stay_ticks_remaining = 3;
         }
         HuntingPartyPhase::ReturningToMarket => {
-            let ((mx, my), _, _) = surround_tactical_slot(grid, party.market_coord, member_idx);
-            state.dest = (mx, my);
+            // 返城交割時優先以市集建築本身或其門前街道為目標，避免誤指鄰近封閉民宅
+            let mut mkt_dest = party.market_coord;
+            if member_idx > 0 {
+                const MKT_OFFSETS: &[(i32, i32)] = &[
+                    (0, 1),
+                    (0, -1),
+                    (1, 0),
+                    (-1, 0),
+                    (1, 1),
+                    (-1, 1),
+                    (1, -1),
+                    (-1, -1),
+                ];
+                for shift in 0..MKT_OFFSETS.len() {
+                    let (dx, dy) = MKT_OFFSETS[(member_idx + shift) % MKT_OFFSETS.len()];
+                    let tx = party.market_coord.0 + dx;
+                    let ty = party.market_coord.1 + dy;
+                    if grid
+                        .get(crate::grid::SquareCoord::new(tx, ty))
+                        .map(is_road_or_open_cell)
+                        .unwrap_or(false)
+                    {
+                        mkt_dest = (tx, ty);
+                        break;
+                    }
+                }
+            }
+            state.dest = mkt_dest;
             state.dest_name = party.market_name.clone();
             state.purpose = format!("結伴運售【{}】分紅", party.prey_loot_name);
             state.stay_activity = format!(
@@ -1692,10 +1724,89 @@ pub fn normalize_archaic_title(title: &str) -> String {
 pub fn find_bfs_next_step(
     grid: &crate::grid::SquareGrid,
     start: (i32, i32),
-    goal: (i32, i32),
+    raw_goal: (i32, i32),
 ) -> Option<(i32, i32)> {
-    if start == goal {
+    if start == raw_goal {
         return None;
+    }
+
+    // 六座設牆城鎮（文曜、風舶角、風舶嶼、大圳頭、半嶺鎮、南哨）城門中繼路由：
+    // 當起點在城牆內而終點在城牆外（或反之且距離較遠）時，自動先導引至最佳城門外口，徹底杜絕貼城牆死角（如 (16,16)、(-251,169)）來回卡死。
+    const WALLED_CITIES: &[(i32, i32, i32, i32, [(i32, i32); 4])] = &[
+        (
+            -17,
+            17,
+            -17,
+            17,
+            [(0, 18), (0, -18), (18, 0), (-18, 0)],
+        ), // 文曜
+        (
+            -270,
+            -250,
+            150,
+            170,
+            [(-260, 171), (-260, 149), (-249, 160), (-271, 160)],
+        ), // 風舶角
+        (
+            -337,
+            -323,
+            153,
+            167,
+            [(-330, 168), (-330, 152), (-322, 160), (-338, 160)],
+        ), // 風舶嶼
+        (
+            -187,
+            -173,
+            -147,
+            -133,
+            [(-180, -132), (-180, -148), (-172, -140), (-188, -140)],
+        ), // 大圳頭
+        (
+            153,
+            167,
+            203,
+            217,
+            [(160, 218), (160, 202), (168, 210), (152, 210)],
+        ), // 半嶺鎮
+        (
+            -7,
+            7,
+            -227,
+            -213,
+            [(0, -212), (0, -228), (8, -220), (-8, -220)],
+        ), // 南哨
+    ];
+    let mut goal = raw_goal;
+    for &(min_x, max_x, min_y, max_y, ref gates) in WALLED_CITIES {
+        let start_in = (min_x..=max_x).contains(&start.0) && (min_y..=max_y).contains(&start.1);
+        let goal_in =
+            (min_x..=max_x).contains(&raw_goal.0) && (min_y..=max_y).contains(&raw_goal.1);
+        if start_in && !goal_in {
+            if let Some(&best_gate) = gates.iter().min_by_key(|&&(gx, gy)| {
+                let d1 = (gx - start.0).abs() + (gy - start.1).abs();
+                let d2 = (raw_goal.0 - gx).abs() + (raw_goal.1 - gy).abs();
+                d1 + d2
+            }) {
+                if start != best_gate {
+                    goal = best_gate;
+                }
+            }
+            break;
+        } else if !start_in
+            && goal_in
+            && ((raw_goal.0 - start.0).abs() + (raw_goal.1 - start.1).abs() > 28)
+        {
+            if let Some(&best_gate) = gates.iter().min_by_key(|&&(gx, gy)| {
+                let d1 = (gx - start.0).abs() + (gy - start.1).abs();
+                let d2 = (raw_goal.0 - gx).abs() + (raw_goal.1 - gy).abs();
+                d1 + d2
+            }) {
+                if (start.0 - best_gate.0).abs() + (start.1 - best_gate.1).abs() > 3 {
+                    goal = best_gate;
+                }
+            }
+            break;
+        }
     }
 
     let get_ordered_offsets = |pos: (i32, i32)| -> [(i32, i32); 4] {
@@ -1842,9 +1953,12 @@ pub fn find_bfs_next_step(
             q3.push_back(((nx, ny), (nx, ny), 1u8));
         }
     }
-    let mut best_first_step: Option<(i32, i32)> = None;
-    let mut best_score = i32::MAX;
-    let mut steps3 = 240;
+    let mut best_frontier_step: Option<(i32, i32)> = None;
+    let mut best_frontier_score = i32::MAX;
+    let mut best_fallback_step: Option<(i32, i32)> = None;
+    let mut best_fallback_score = i32::MAX;
+    const TARGET_LOOKAHEAD_DEPTH: u8 = 12;
+    let mut steps3 = 900;
     while let Some((curr, first_step, depth)) = q3.pop_front() {
         steps3 -= 1;
         let ddx = (goal.0 - curr.0) as i64;
@@ -1856,19 +1970,24 @@ pub fn find_bfs_next_step(
                 if c.terrain == crate::grid::Terrain::Road
                     || c.terrain == crate::grid::Terrain::Bridge
                 {
-                    45
+                    90
                 } else {
                     0
                 }
             })
             .unwrap_or(0);
-        let wobble = ((curr.0.wrapping_mul(73) ^ curr.1.wrapping_mul(199)).unsigned_abs() % 5) as i32;
+        let wobble =
+            ((curr.0.wrapping_mul(73) ^ curr.1.wrapping_mul(199)).unsigned_abs() % 5) as i32;
         let score = euclid_d2 - road_bonus + wobble;
-        if score < best_score {
-            best_score = score;
-            best_first_step = Some(first_step);
+        if score < best_fallback_score {
+            best_fallback_score = score;
+            best_fallback_step = Some(first_step);
         }
-        if steps3 == 0 || depth >= 6 {
+        if (depth >= TARGET_LOOKAHEAD_DEPTH || curr == goal) && score < best_frontier_score {
+            best_frontier_score = score;
+            best_frontier_step = Some(first_step);
+        }
+        if steps3 == 0 || depth >= TARGET_LOOKAHEAD_DEPTH {
             continue;
         }
         for &(dx, dy) in &get_ordered_offsets(curr) {
@@ -1880,7 +1999,7 @@ pub fn find_bfs_next_step(
             }
         }
     }
-    best_first_step
+    best_frontier_step.or(best_fallback_step)
 }
 
 pub fn zone_bounds(zone: &str, h: u64) -> (i32, i32, i32, i32) {
@@ -2034,12 +2153,21 @@ pub fn can_npc_step_between(
     let Some(to_cell) = grid.get(crate::grid::SquareCoord::new(to_x, to_y)) else {
         return false;
     };
-    if !to_cell.terrain.walkable() {
+    let to_in_settlement = crate::game::is_inside_settlement_urban_core(to_x, to_y);
+    // 野外山脊／冰峰（Terrain::Mountain）允許獵團與百工翻越通行；深海、城牆與柵欄嚴格禁止通行
+    if matches!(
+        to_cell.terrain,
+        crate::grid::Terrain::WaterDeep
+            | crate::grid::Terrain::Wall
+            | crate::grid::Terrain::Fence
+    ) || (to_in_settlement && !to_cell.terrain.walkable())
+    {
         return false;
     }
     let Some(from_cell) = grid.get(crate::grid::SquareCoord::new(from_x, from_y)) else {
         return false;
     };
+    let from_in_settlement = crate::game::is_inside_settlement_urban_core(from_x, from_y);
 
     let from_is_bldg = is_building_cell_name_or_terrain(from_cell);
     let to_is_bldg = is_building_cell_name_or_terrain(to_cell);
@@ -2051,9 +2179,10 @@ pub fn can_npc_step_between(
         }
     }
 
-    // 城鎮水域隔離
-    if (from_cell.terrain == crate::grid::Terrain::Water || to_cell.terrain == crate::grid::Terrain::Water)
-        && (!from_cell.zone.is_empty() || !to_cell.zone.is_empty() || from_is_bldg || to_is_bldg)
+    // 城鎮水域隔離（僅限聚落核心區內之護城河／水渠，野外山溪與淺澤允許涉水渡過）
+    if (from_cell.terrain == crate::grid::Terrain::Water
+        || to_cell.terrain == crate::grid::Terrain::Water)
+        && (from_in_settlement || to_in_settlement || from_is_bldg || to_is_bldg)
     {
         return false;
     }

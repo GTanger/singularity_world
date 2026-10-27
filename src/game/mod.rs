@@ -29,10 +29,10 @@ pub use room::{
     CANONICAL_HUNTING_ZONES, RoomView, ShanhaiHabitatSlot, ambient_creature_loot,
     ensure_ambient_npc_at_grid, ensure_entity_in_room, entity_kind_str, get_grid_cells_around,
     get_grid_room_view, get_place_room_view, get_room_view, hunting_zone_apex_omen,
-    is_apex_beast_tracked_at, live_zone_shanhai_slots, mark_apex_beast_tracked_at, move_by_exit,
-    move_by_grid_direction, move_by_place_route, pick_island_trail_waypoint,
-    pick_zone_artisan_waypoint, player_shanhai_talisman_bonus, shanhai_item_use_effect,
-    zone_ambient_word_source,
+    is_apex_beast_tracked_at, is_inside_settlement_urban_core, live_zone_shanhai_slots,
+    mark_apex_beast_tracked_at, move_by_exit, move_by_grid_direction, move_by_place_route,
+    pick_island_trail_waypoint, pick_zone_artisan_waypoint, player_shanhai_talisman_bonus,
+    shanhai_item_use_effect, zone_ambient_word_source,
 };
 pub use tick::spawn_loop;
 pub use view_sim::{Pos, in_view_entity_ids, run_view_simulation, simulate_one_tick};
