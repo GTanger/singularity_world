@@ -450,42 +450,75 @@ pub fn get_grid_room_view(
             || room.name.contains("木橋")
             || cell.terrain == crate::grid::Terrain::Road
             || cell.terrain == crate::grid::Terrain::Bridge;
-        // 霸主威壓屏息格（約 14% 獵場腹地）：尋常小怪驚散匿跡，地上留有【新鮮霸主獸跡】，查探後方會破霧顯形
-        let silence_hash = ((x as i64 * 31337) ^ (y as i64 * 65521)).unsigned_abs() % 7;
-        if !is_road && is_apex_beast_tracked_at(x, y) {
-            if let Some(amb) = ensure_ambient_npc_at_grid(x, y, "__apex__") {
-                entities.push(amb);
+        // 先檢查此座標是否為全島 1,805 隻《台灣山海經》全域棲地分布表的即時駐點（確保上帝視角地圖點位與房間內實體 100% 同步）
+        let time_bucket = (crate::game::now_unix() / 180) as i64;
+        let (zone_name, _, _) = crate::grid::r#gen::classify_wilderness_cell(x, y);
+        let mut matched_live_slot = false;
+        if !is_road
+            && let Some(z_idx) = CANONICAL_HUNTING_ZONES
+                .iter()
+                .position(|(zn, _, _)| *zn == zone_name)
+        {
+            let slots = live_zone_shanhai_slots(z_idx, time_bucket);
+            for sl in slots.iter().filter(|s| s.x == x && s.y == y) {
+                if sl.tier == 1 && !is_apex_beast_tracked_at(x, y) {
+                    if !room_objs.iter().any(|o| o.id == "shanhai_apex_trace") {
+                        room_objs.push(RoomObject {
+                            id: "shanhai_apex_trace".to_string(),
+                            name: "新鮮霸主獸跡".to_string(),
+                            owner: String::new(),
+                            sockets: vec!["Look".to_string()],
+                            responses: std::collections::HashMap::new(),
+                            move_to_room_id: String::new(),
+                        });
+                    }
+                } else if let Some(mut amb) = ensure_ambient_npc_at_grid(x, y, sl.tier_tag) {
+                    amb.id = format!("shanhai_{}_{}_{}_{}", z_idx, sl.slot_idx, x, y);
+                    if !entities.iter().any(|e| e.display_title == amb.display_title) {
+                        entities.push(amb);
+                    }
+                }
+                matched_live_slot = true;
             }
-        } else if !is_road && silence_hash == 0 {
-            if !room_objs.iter().any(|o| o.id == "shanhai_apex_trace") {
-                room_objs.push(RoomObject {
-                    id: "shanhai_apex_trace".to_string(),
-                    name: "新鮮霸主獸跡".to_string(),
-                    owner: String::new(),
-                    sockets: vec!["Look".to_string()],
-                    responses: std::collections::HashMap::new(),
-                    move_to_room_id: String::new(),
-                });
-            }
-        } else {
-            // 尋常物種與山海小怪：隨時間片在格內動態游走顯形（約 72% 野外格可見小怪或中型獸群活動，28% 為草木藏跡格）
-            let time_bucket = (crate::game::now_unix() / 180) as i64;
-            let roam_gate = ((x as i64).wrapping_mul(1103515245)
-                ^ (y as i64).wrapping_mul(12345)
-                ^ time_bucket.wrapping_mul(2654435761))
-                .unsigned_abs()
-                % 100;
-            if is_road || roam_gate < 72 {
-                if let Some(amb) = ensure_ambient_npc_at_grid(x, y, &room.name) {
+        }
+
+        if !matched_live_slot {
+            // 霸主威壓屏息格（約 14% 獵場腹地）：尋常小怪驚散匿跡，地上留有【新鮮霸主獸跡】，查探後方會破霧顯形
+            let silence_hash = ((x as i64 * 31337) ^ (y as i64 * 65521)).unsigned_abs() % 7;
+            if !is_road && is_apex_beast_tracked_at(x, y) {
+                if let Some(amb) = ensure_ambient_npc_at_grid(x, y, "__apex__") {
                     entities.push(amb);
                 }
-                // 獸群／小怪群聚地塊（約 28% 野外地塊有結群伴生小怪或同群獸類）
-                if !is_road && roam_gate < 28 {
-                    let flock_tag = if roam_gate % 2 == 0 { "__tier4a__" } else { "__tier4b__" };
-                    if let Some(mut companion) = ensure_ambient_npc_at_grid(x, y, flock_tag) {
-                        companion.id = format!("ambient_flock_{x}_{y}");
-                        if !entities.iter().any(|e| e.display_title == companion.display_title) {
-                            entities.push(companion);
+            } else if !is_road && silence_hash == 0 {
+                if !room_objs.iter().any(|o| o.id == "shanhai_apex_trace") {
+                    room_objs.push(RoomObject {
+                        id: "shanhai_apex_trace".to_string(),
+                        name: "新鮮霸主獸跡".to_string(),
+                        owner: String::new(),
+                        sockets: vec!["Look".to_string()],
+                        responses: std::collections::HashMap::new(),
+                        move_to_room_id: String::new(),
+                    });
+                }
+            } else {
+                // 尋常物種與山海小怪：隨時間片在格內動態游走顯形（約 72% 野外格可見小怪或中型獸群活動，28% 為草木藏跡格）
+                let roam_gate = ((x as i64).wrapping_mul(1103515245)
+                    ^ (y as i64).wrapping_mul(12345)
+                    ^ time_bucket.wrapping_mul(2654435761))
+                    .unsigned_abs()
+                    % 100;
+                if is_road || roam_gate < 72 {
+                    if let Some(amb) = ensure_ambient_npc_at_grid(x, y, &room.name) {
+                        entities.push(amb);
+                    }
+                    // 獸群／小怪群聚地塊（約 28% 野外地塊有結群伴生小怪或同群獸類）
+                    if !is_road && roam_gate < 28 {
+                        let flock_tag = if roam_gate % 2 == 0 { "__tier4a__" } else { "__tier4b__" };
+                        if let Some(mut companion) = ensure_ambient_npc_at_grid(x, y, flock_tag) {
+                            companion.id = format!("ambient_flock_{x}_{y}");
+                            if !entities.iter().any(|e| e.display_title == companion.display_title) {
+                                entities.push(companion);
+                            }
                         }
                     }
                 }
@@ -866,6 +899,538 @@ pub fn ambient_creature_loot(creature_name: &str) -> Option<(&'static str, &'sta
     } else {
         None
     }
+}
+
+/// 正典 19 座山海獵場與其深處地脈核心錨點。
+pub const CANONICAL_HUNTING_ZONES: &[(&str, i32, i32)] = &[
+    ("長風草甸", -180, -195),
+    ("古河巨木林", -55, -80),
+    ("赤石坡", -85, -180),
+    ("落日岬", -320, -180),
+    ("驚濤岩岸", -355, 115),
+    ("巨藻淺灣", -280, 200),
+    ("黑石灣", -280, 5),
+    ("白茫洲", -180, -320),
+    ("貼山深潭", 120, -260),
+    ("淺澤泥口", 20, -180),
+    ("青籠關", 0, -450),
+    ("西麓林道", -120, 80),
+    ("清泉溪谷", 60, 160),
+    ("翠冠巨木林", -60, 220),
+    ("北坡雲杉林", 80, 280),
+    ("西嶺礦谷", 180, 40),
+    ("東海峭壁", 320, 200),
+    ("雲腰雪林", 180, 320),
+    ("白塔雪巔", 0, 420),
+];
+
+/// 全島全域自然棲地生靈點位（消除人工同心圓，按 19 獵場真實疆域進行藍噪聲 Poisson-disc 與獸群聚落分布）。
+#[derive(Debug, Clone)]
+pub struct ShanhaiHabitatSlot {
+    pub slot_idx: usize,
+    pub base_x: i32,
+    pub base_y: i32,
+    pub x: i32,
+    pub y: i32,
+    pub sub_geo: &'static str,
+    pub tier: u8,
+    pub tier_tag: &'static str,
+    pub kind_str: &'static str,
+    pub tier_label: &'static str,
+    pub act_prefix: &'static str,
+}
+
+fn is_inside_settlement_urban_core(x: i32, y: i32) -> bool {
+    const SETTLEMENT_CORES: &[(i32, i32, i32)] = &[
+        (0, 0, 24),         // 文曜
+        (-258, 160, 22),    // 風舶角
+        (-348, 160, 16),    // 風舶嶼
+        (-120, -135, 18),   // 大圳頭
+        (160, 200, 18),     // 半嶺鎮
+        (0, -340, 18),      // 南哨
+        (0, 120, 14),       // 老堰頭
+        (82, 112, 14),      // 北嶺腳
+        (180, 120, 14),     // 霜林口
+        (-258, 250, 14),    // 風櫃尾
+        (-245, 50, 14),     // 烏石鼻
+        (-120, -250, 14),   // 牛埔
+        (-60, -70, 14),     // 紅土崁
+        (-285, -155, 14),   // 三號坑口
+        (60, -260, 14),     // 水尾寮
+    ];
+    SETTLEMENT_CORES
+        .iter()
+        .any(|&(sx, sy, r)| (x - sx).abs() <= r && (y - sy).abs() <= r)
+}
+
+fn habitat_hash(a: i64, b: i64, c: i64) -> u64 {
+    let mut h = (a as u64)
+        .wrapping_mul(0x9E37_79B9_7F4A_7C15)
+        .wrapping_add((b as u64).wrapping_mul(0xBF58_476D_1CE4_E5B9))
+        .wrapping_add((c as u64).wrapping_mul(0x94D0_49BB_1331_11EB));
+    h ^= h >> 30;
+    h = h.wrapping_mul(0xBF58_476D_1CE4_E5B9);
+    h ^= h >> 27;
+    h = h.wrapping_mul(0x94D0_49BB_1331_11EB);
+    h ^ (h >> 31)
+}
+
+fn is_valid_wilderness_habitat_cell(x: i32, y: i32, expected_zone: &str) -> Option<&'static str> {
+    if !(-392..=392).contains(&x) || !(-492..=492).contains(&y) {
+        return None;
+    }
+    if is_inside_settlement_urban_core(x, y) {
+        return None;
+    }
+    let (zone, sub_geo, terrain) = crate::grid::r#gen::classify_wilderness_cell(x, y);
+    if zone != expected_zone {
+        return None;
+    }
+    if matches!(
+        terrain,
+        crate::grid::Terrain::WaterDeep | crate::grid::Terrain::Wall | crate::grid::Terrain::Water
+    ) {
+        return None;
+    }
+    Some(sub_geo)
+}
+
+type BaseHabitatEntry = (i32, i32, &'static str, u8, &'static str, usize);
+
+static ZONE_HABITAT_LAYOUTS: std::sync::LazyLock<Vec<Vec<BaseHabitatEntry>>> =
+    std::sync::LazyLock::new(|| {
+        let mut zone_candidates: Vec<Vec<(i32, i32, &'static str)>> =
+            vec![Vec::new(); CANONICAL_HUNTING_ZONES.len()];
+
+        // 1. 掃描全島 800x1000 疆域（4 格抖動網格），按 classify_wilderness_cell 歸入 19 獵場真實版圖
+        for by in (-488..=468).step_by(4) {
+            for bx in (-388..=358).step_by(4) {
+                let h = habitat_hash(bx as i64, by as i64, 17);
+                let jx = ((h % 3) as i32) - 1;
+                let jy = (((h >> 8) % 3) as i32) - 1;
+                let gx = bx + jx;
+                let gy = by + jy;
+                if is_inside_settlement_urban_core(gx, gy) {
+                    continue;
+                }
+                let (zone, sub_geo, terrain) = crate::grid::r#gen::classify_wilderness_cell(gx, gy);
+                if matches!(
+                    terrain,
+                    crate::grid::Terrain::WaterDeep
+                        | crate::grid::Terrain::Wall
+                        | crate::grid::Terrain::Water
+                ) {
+                    continue;
+                }
+                if let Some(z_idx) = CANONICAL_HUNTING_ZONES
+                    .iter()
+                    .position(|(zn, _, _)| *zn == zone)
+                {
+                    zone_candidates[z_idx].push((gx, gy, sub_geo));
+                }
+            }
+        }
+
+        // 針對風舶外島「驚濤岩岸」與狹長海岸帶加密採樣（2 格步距），確保外島與岬角棲地充沛
+        for by in (-270..=260).step_by(2) {
+            for bx in (-376..=-225).step_by(2) {
+                if is_inside_settlement_urban_core(bx, by) {
+                    continue;
+                }
+                let (zone, sub_geo, terrain) = crate::grid::r#gen::classify_wilderness_cell(bx, by);
+                if !matches!(zone, "驚濤岩岸" | "落日岬" | "巨藻淺灣" | "黑石灣") {
+                    continue;
+                }
+                if matches!(
+                    terrain,
+                    crate::grid::Terrain::WaterDeep
+                        | crate::grid::Terrain::Wall
+                        | crate::grid::Terrain::Water
+                ) {
+                    continue;
+                }
+                if let Some(z_idx) = CANONICAL_HUNTING_ZONES
+                    .iter()
+                    .position(|(zn, _, _)| *zn == zone)
+                {
+                    if !zone_candidates[z_idx]
+                        .iter()
+                        .any(|&(ex, ey, _)| ex == bx && ey == by)
+                    {
+                        zone_candidates[z_idx].push((bx, by, sub_geo));
+                    }
+                }
+            }
+        }
+
+        let mut layouts = Vec::with_capacity(CANONICAL_HUNTING_ZONES.len());
+        let mut global_chosen: Vec<(i32, i32)> = Vec::with_capacity(1900);
+
+        for (z_idx, &(zone_name, cx, cy)) in CANONICAL_HUNTING_ZONES.iter().enumerate() {
+            let cands = &zone_candidates[z_idx];
+            let mut entries: Vec<BaseHabitatEntry> = Vec::with_capacity(95);
+
+            // 預先計算每個候選格距獵場邊界／海岸線／城鎮核心的鏡像排斥平方距離上限（防止最遠點採樣貼邊排隊，確保獵場腹地均勻飽滿）
+            let cand_boundary_caps: Vec<i64> = cands
+                .iter()
+                .map(|&(px, py, _)| {
+                    const DIRS: &[(i32, i32)] = &[
+                        (1, 0),
+                        (-1, 0),
+                        (0, 1),
+                        (0, -1),
+                        (1, 1),
+                        (-1, 1),
+                        (1, -1),
+                        (-1, -1),
+                    ];
+                    for &r in &[4i32, 8, 13, 19, 26, 34] {
+                        for &(dx, dy) in DIRS {
+                            let tx = px + dx * r;
+                            let ty = py + dy * r;
+                            if is_inside_settlement_urban_core(tx, ty) {
+                                let d2 = ((dx * dx + dy * dy) * r * r) as i64;
+                                return d2 * 2;
+                            }
+                            let (tz, _, tt) =
+                                crate::grid::r#gen::classify_wilderness_cell(tx, ty);
+                            if tz != zone_name
+                                || matches!(
+                                    tt,
+                                    crate::grid::Terrain::WaterDeep | crate::grid::Terrain::Wall
+                                )
+                            {
+                                let d2 = ((dx * dx + dy * dy) * r * r) as i64;
+                                return d2 * 3;
+                            }
+                        }
+                    }
+                    4500i64
+                })
+                .collect();
+
+            // (1) Tier 1 鎮場霸主（1 頭）：駐於獵場深處核心地脈，周圍 2 格設「百鳥屏息圈」
+            let (apex_x, apex_y, apex_sub) = if let Some(sub) =
+                is_valid_wilderness_habitat_cell(cx + 1, cy - 1, zone_name)
+            {
+                (cx + 1, cy - 1, sub)
+            } else {
+                cands
+                    .iter()
+                    .copied()
+                    .min_by_key(|&(x, y, _)| (x - cx).pow(2) + (y - cy).pow(2))
+                    .unwrap_or((cx + 1, cy - 1, "深谷"))
+            };
+            entries.push((apex_x, apex_y, apex_sub, 1, "__apex__", 0));
+
+            let mut chosen_points: Vec<(i32, i32)> = vec![(apex_x, apex_y)];
+            global_chosen.push((apex_x, apex_y));
+
+            let pick_next_spread_point =
+                |chosen: &mut Vec<(i32, i32)>,
+                 all_chosen: &mut Vec<(i32, i32)>,
+                 salt: i64|
+                 -> (i32, i32, &'static str) {
+                    let mut best = (cx + 5, cy - 5, "林地");
+                    let mut best_score = -1i64;
+                    for (c_idx, &(px, py, psub)) in cands.iter().enumerate() {
+                        if (px - apex_x).abs() <= 2 && (py - apex_y).abs() <= 2 {
+                            continue;
+                        }
+                        let min_local_d2 = chosen
+                            .iter()
+                            .map(|&(ox, oy)| {
+                                let dx = (px - ox) as i64;
+                                let dy = (py - oy) as i64;
+                                dx * dx + dy * dy
+                            })
+                            .min()
+                            .unwrap_or(0);
+                        if min_local_d2 == 0 {
+                            continue;
+                        }
+                        let min_global_d2 = all_chosen
+                            .iter()
+                            .map(|&(ox, oy)| {
+                                let dx = (px - ox) as i64;
+                                let dy = (py - oy) as i64;
+                                dx * dx + dy * dy
+                            })
+                            .min()
+                            .unwrap_or(min_local_d2);
+                        let effective_d2 = min_local_d2
+                            .min(min_global_d2)
+                            .min(cand_boundary_caps[c_idx]);
+                        // 加入自然隨機擾動權重（0.65x ~ 1.35x），消除任何機械網格或邊界排隊感
+                        let jitter_w = 10 + (habitat_hash(px as i64, py as i64, salt) % 11) as i64;
+                        let score = effective_d2 * jitter_w
+                            + (habitat_hash(py as i64, px as i64, salt + 99) % 29) as i64;
+                        if score > best_score {
+                            best_score = score;
+                            best = (px, py, psub);
+                        }
+                    }
+                    chosen.push((best.0, best.1));
+                    all_chosen.push((best.0, best.1));
+                    best
+                };
+
+            // (2) Tier 2 次級掠食猛獸／珍獸（6 隻 / 獵場）：分據獵場全境 6 大獨立巡獵領地
+            for p_idx in 0..6usize {
+                let (px, py, psub) = pick_next_spread_point(
+                    &mut chosen_points,
+                    &mut global_chosen,
+                    100 + p_idx as i64,
+                );
+                entries.push((px, py, psub, 2, "__tier2__", 1 + p_idx));
+            }
+
+            // (3) Tier 3 尋常中型獸群（20 隻 / 獵場）：分為 7 處自然放牧／遷徙獸群（6 群x3 隻 + 1 群x2 隻），散佈於全區草甸溪谷
+            const HERD_MEMBER_DELTAS: &[(i32, i32)] = &[
+                (0, 0),
+                (2, 1),
+                (-1, 2),
+                (1, -2),
+                (-2, -1),
+                (2, -1),
+                (-2, 2),
+            ];
+            for herd_idx in 0..7usize {
+                let (hx, hy, hsub) = pick_next_spread_point(
+                    &mut chosen_points,
+                    &mut global_chosen,
+                    300 + herd_idx as i64,
+                );
+                let herd_size = if herd_idx < 6 { 3 } else { 2 };
+                for m in 0..herd_size {
+                    let (mut mx, mut my, mut msub) = (hx, hy, hsub);
+                    if m > 0 {
+                        for attempt in 0..HERD_MEMBER_DELTAS.len() {
+                            let (dx, dy) = HERD_MEMBER_DELTAS
+                                [(m + herd_idx + attempt) % HERD_MEMBER_DELTAS.len()];
+                            if dx == 0 && dy == 0 {
+                                continue;
+                            }
+                            let tx = hx + dx;
+                            let ty = hy + dy;
+                            if ((tx - apex_x).abs() > 2 || (ty - apex_y).abs() > 2)
+                                && !chosen_points.contains(&(tx, ty))
+                                && let Some(valid_sub) =
+                                    is_valid_wilderness_habitat_cell(tx, ty, zone_name)
+                            {
+                                mx = tx;
+                                my = ty;
+                                msub = valid_sub;
+                                chosen_points.push((mx, my));
+                                global_chosen.push((mx, my));
+                                break;
+                            }
+                        }
+                    }
+                    entries.push((mx, my, msub, 3, "__tier3__", 7 + herd_idx));
+                }
+            }
+
+            // (4) Tier 4 尋常小怪與山海靈禽（68 隻 / 獵場）：以藍噪聲 Poisson-disc 漫山散佈於獵場全境各角落
+            for k in 0..68usize {
+                let (fx, fy, fsub) = pick_next_spread_point(
+                    &mut chosen_points,
+                    &mut global_chosen,
+                    700 + k as i64,
+                );
+                let tier_tag = if k % 2 == 0 {
+                    "__tier4a__"
+                } else {
+                    "__tier4b__"
+                };
+                entries.push((fx, fy, fsub, 4, tier_tag, 14 + k));
+            }
+
+            layouts.push(entries);
+        }
+        layouts
+    });
+
+/// 取得指定獵場（`z_idx in 0..19`）在當前時間片之 95 隻《台灣山海經》生靈即時棲地座標（個體與獸群各自獨立漫遊）。
+pub fn live_zone_shanhai_slots(z_idx: usize, time_tick: i64) -> Vec<ShanhaiHabitatSlot> {
+    let Some(&(zone_name, _, _)) = CANONICAL_HUNTING_ZONES.get(z_idx) else {
+        return Vec::new();
+    };
+    let base_list = &ZONE_HABITAT_LAYOUTS[z_idx];
+    let (apex_x, apex_y) = base_list
+        .first()
+        .map(|&(x, y, ..)| (x, y))
+        .unwrap_or((0, 0));
+
+    let mut out = Vec::with_capacity(base_list.len());
+    for (slot_idx, &(bx, by, base_sub, tier, tier_tag, roam_group)) in
+        base_list.iter().enumerate()
+    {
+        let (gx, gy, sub_geo) = if tier == 1 {
+            (bx, by, base_sub)
+        } else {
+            // 每個獸群或獨立個體依 roam_group 產生獨立漫遊向量（-2..=2），絕不全島同步平移
+            let rh = habitat_hash(z_idx as i64, roam_group as i64, time_tick);
+            let rdx = ((rh % 5) as i32) - 2;
+            let rdy = (((rh >> 8) % 5) as i32) - 2;
+            let tx = bx + rdx;
+            let ty = by + rdy;
+            if ((tx - apex_x).abs() > 2 || (ty - apex_y).abs() > 2)
+                && let Some(vsub) = is_valid_wilderness_habitat_cell(tx, ty, zone_name)
+            {
+                (tx, ty, vsub)
+            } else {
+                (bx, by, base_sub)
+            }
+        };
+
+        let (kind_str, tier_label, act_prefix) = match tier {
+            1 => (
+                "shanhai_apex",
+                "隱匿鎮場霸主（尋跡顯形）",
+                "【隱匿潛伏・百鳥屏息】",
+            ),
+            2 => (
+                "shanhai_predator",
+                "顯形次級掠食／珍獸",
+                "【格內顯形・伏行巡獵】",
+            ),
+            3 => (
+                "shanhai_herd",
+                "顯形尋常中型獸群",
+                "【格內顯形・結群游走】",
+            ),
+            _ => {
+                let lbl = if tier_tag == "__tier4a__" {
+                    "顯形尋常小怪（奇獸／甲殼）"
+                } else {
+                    "顯形尋常小怪（靈禽／兩棲）"
+                };
+                ("shanhai_beast", lbl, "【格內顯形・漫山游走】")
+            }
+        };
+
+        out.push(ShanhaiHabitatSlot {
+            slot_idx,
+            base_x: bx,
+            base_y: by,
+            x: gx,
+            y: gy,
+            sub_geo,
+            tier,
+            tier_tag,
+            kind_str,
+            tier_label,
+            act_prefix,
+        });
+    }
+    out
+}
+
+/// 為「入山百工」挑選遍布該獵場全境真實疆域的採集／匠作航點（跨度 20~120 格，涵蓋林地、溪谷、礦坡與草藥叢）。
+pub fn pick_zone_artisan_waypoint(
+    zone_name: &str,
+    seed: u64,
+    current: (i32, i32),
+) -> ((i32, i32), &'static str) {
+    let z_idx = CANONICAL_HUNTING_ZONES
+        .iter()
+        .position(|(zn, _, _)| *zn == zone_name)
+        .unwrap_or(0);
+    let base_list = &ZONE_HABITAT_LAYOUTS[z_idx];
+    if base_list.len() > 27 {
+        let pool = &base_list[1..]; // 排除 slot 0 鎮場霸主屏息心
+        let start = (seed as usize) % pool.len();
+        for offset in 0..pool.len() {
+            let &(px, py, sub_geo, ..) = &pool[(start + offset * 7) % pool.len()];
+            let dist = (px - current.0).abs() + (py - current.1).abs();
+            if dist >= 18 {
+                return ((px, py), sub_geo);
+            }
+        }
+        let &(px, py, sub_geo, ..) = &pool[start];
+        return ((px, py), sub_geo);
+    }
+    let &(_, cx, cy) = &CANONICAL_HUNTING_ZONES[z_idx];
+    ((cx, cy), "深山林地")
+}
+
+static ISLAND_ROAD_MILESTONES: std::sync::OnceLock<Vec<(i32, i32, &'static str)>> =
+    std::sync::OnceLock::new();
+
+fn get_island_road_milestones() -> &'static [(i32, i32, &'static str)] {
+    if let Some(list) = ISLAND_ROAD_MILESTONES.get() {
+        return list.as_slice();
+    }
+    if let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() {
+        let mut roads = Vec::new();
+        for cell in grid.cells() {
+            let coord = cell.coord;
+            if (cell.terrain == crate::grid::Terrain::Road
+                || cell.terrain == crate::grid::Terrain::Bridge)
+                && !is_inside_settlement_urban_core(coord.x, coord.y)
+            {
+                let (zone, _, _) = crate::grid::r#gen::classify_wilderness_cell(coord.x, coord.y);
+                roads.push((coord.x, coord.y, zone));
+            }
+        }
+        roads.sort_by_key(|&(x, y, _)| (y, x));
+        // 每隔 4 格取一處古道驛路里程點，確保均勻覆蓋全島 6,287 格驛道與古道網路
+        let mut milestones = Vec::new();
+        for (idx, item) in roads.into_iter().enumerate() {
+            if idx % 4 == 0 {
+                milestones.push(item);
+            }
+        }
+        if !milestones.is_empty() {
+            let _ = ISLAND_ROAD_MILESTONES.set(milestones);
+            if let Some(list) = ISLAND_ROAD_MILESTONES.get() {
+                return list.as_slice();
+            }
+        }
+    }
+    &[]
+}
+
+/// 為「古道行旅（挑夫頭、擔夫、押貨管事、刀牌手、巡隘銃手）」挑選全島驛道與聯外古道網上的真實道路航點。
+pub fn pick_island_trail_waypoint(
+    zone_name: &str,
+    home: (i32, i32),
+    errand: (i32, i32),
+    seed: u64,
+    current: (i32, i32),
+) -> ((i32, i32), &'static str) {
+    let milestones = get_island_road_milestones();
+    if !milestones.is_empty() {
+        // 優先挑選屬於該獵場或位於「居所 <-> 獵場 <-> 交割市集」走廊上的真實道路格
+        let mid_x = (home.0 + errand.0) / 2;
+        let mid_y = (home.1 + errand.1) / 2;
+        let local: Vec<(i32, i32, &'static str)> = milestones
+            .iter()
+            .copied()
+            .filter(|&(rx, ry, rzone)| {
+                rzone == zone_name
+                    || ((rx - mid_x).abs() <= 110 && (ry - mid_y).abs() <= 110)
+                    || ((rx - home.0).abs() <= 95 && (ry - home.1).abs() <= 95)
+            })
+            .collect();
+        let pool = if local.len() >= 6 {
+            local.as_slice()
+        } else {
+            milestones
+        };
+        let start = (seed as usize) % pool.len();
+        for step in 0..pool.len() {
+            let (rx, ry, rzone) = pool[(start + step * 5) % pool.len()];
+            let dist = (rx - current.0).abs() + (ry - current.1).abs();
+            if (16..=140).contains(&dist) {
+                return ((rx, ry), rzone);
+            }
+        }
+        let (rx, ry, rzone) = pool[start];
+        return ((rx, ry), rzone);
+    }
+    pick_zone_artisan_waypoint(zone_name, seed, current)
 }
 
 /// 19 大獵場首領異獸威壓與殘跡異兆（若該地帶或場景對應既定獵場）。

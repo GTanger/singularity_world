@@ -187,59 +187,44 @@ fn pick_live_shanhai_prey_for_zone(
     round: u32,
     now_unix: i64,
 ) -> ((i32, i32), String, u8, String, String) {
-    let roam_phase = (now_unix / 24) as i32;
-    let roam_dx = (roam_phase % 3) - 1;
-    let roam_dy = ((roam_phase / 3) % 3) - 1;
-    let apex_x = cx + 1;
-    let apex_y = cy - 1;
+    let time_tick = now_unix / 180;
+    let z_idx = crate::game::CANONICAL_HUNTING_ZONES
+        .iter()
+        .enumerate()
+        .min_by_key(|(_, (_, zx, zy))| (zx - cx).pow(2) + (zy - cy).pow(2))
+        .map(|(idx, _)| idx)
+        .unwrap_or(0);
+    let slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);
 
     // 每 4 輪圍獵中：2 輪圍獵尋常中型獸群（Tier 3）、1 輪圍獵次級掠食猛獸（Tier 2）、1 輪集結挑戰隱匿鎮場霸主（Tier 1）
     let mode = round % 4;
-    let (raw_dx, raw_dy, tier_tag, tier_num) = if mode == 3 {
-        (1, -1, "__apex__", 1u8)
+    let target_slot = if mode == 3 {
+        slots.first()
     } else if mode == 2 {
-        const TIER2_OFFSETS: &[(i32, i32)] =
-            &[(-6, 5), (7, 4), (-8, -6), (6, -7), (0, 9), (-9, 1)];
-        let (dx, dy) = TIER2_OFFSETS[(round as usize) % TIER2_OFFSETS.len()];
-        (dx + roam_dx, dy + roam_dy, "__tier2__", 2u8)
+        let predators: Vec<_> = slots.iter().filter(|s| s.tier == 2).collect();
+        predators
+            .get(((round as usize) + z_idx) % predators.len().max(1))
+            .copied()
     } else {
-        const HERD_OFFSETS: &[(i32, i32)] = &[
-            (-11, 4),
-            (10, 8),
-            (-9, -11),
-            (12, -9),
-            (-4, 14),
-            (4, -14),
-            (-14, -2),
-        ];
-        let (dx, dy) = HERD_OFFSETS[(round as usize) % HERD_OFFSETS.len()];
-        (dx + roam_dx, dy + roam_dy, "__tier3__", 3u8)
+        let herds: Vec<_> = slots.iter().filter(|s| s.tier == 3).collect();
+        herds
+            .get(((round as usize) * 3 + z_idx) % herds.len().max(1))
+            .copied()
     };
 
-    if tier_num == 1
-        && let Some(apex) = crate::game::ensure_ambient_npc_at_grid(apex_x, apex_y, "__apex__")
+    if let Some(sl) = target_slot
+        && let Some(amb) = crate::game::ensure_ambient_npc_at_grid(sl.x, sl.y, sl.tier_tag)
     {
-        let (loot_id, loot_name) = crate::game::ambient_creature_loot(&apex.display_title)
+        let (loot_id, loot_name) = crate::game::ambient_creature_loot(&amb.display_title)
             .map(|(id, name, _)| (id.to_string(), name.to_string()))
-            .unwrap_or_else(|| ("mat_foraged_herb".to_string(), "山海王獸珍材".to_string()));
+            .unwrap_or_else(|| ("mat_foraged_herb".to_string(), "山海毛皮獵物".to_string()));
         return (
-            (apex_x, apex_y),
-            apex.display_title,
-            1,
+            (sl.x, sl.y),
+            amb.display_title,
+            sl.tier,
             loot_id,
             loot_name,
         );
-    }
-
-    for scale in [100, 75, 50, 25, 0] {
-        let tx = (cx + (raw_dx * scale) / 100).clamp(-395, 395);
-        let ty = (cy + (raw_dy * scale) / 100).clamp(-495, 495);
-        if let Some(amb) = crate::game::ensure_ambient_npc_at_grid(tx, ty, tier_tag) {
-            let (loot_id, loot_name) = crate::game::ambient_creature_loot(&amb.display_title)
-                .map(|(id, name, _)| (id.to_string(), name.to_string()))
-                .unwrap_or_else(|| ("mat_foraged_herb".to_string(), "山海毛皮獵物".to_string()));
-            return ((tx, ty), amb.display_title, tier_num, loot_id, loot_name);
-        }
     }
 
     (
@@ -2553,12 +2538,54 @@ impl Store {
             slot_idx % 2 == 1
         };
         let sched_hour = if is_expedition_slot { 10 } else { hour };
-        let (dest, dest_name, purpose, stay_activity, stay_ticks) =
+        let (mut dest, mut dest_name, purpose, mut stay_activity, stay_ticks) =
             resolve_wenyao_npc_schedule(slot, sched_hour, init_toggle, slot.home_name);
-        let init_coord = dest;
+        let mut init_coord = dest;
+        let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
+        if slot.brief_tag.starts_with("入山百工・") && !init_toggle {
+            let (start_pt, start_sub) = crate::game::pick_zone_artisan_waypoint(
+                zone_prefix,
+                (slot_idx as u64).wrapping_mul(131),
+                (slot.work_x, slot.work_y),
+            );
+            let (next_pt, next_sub) = crate::game::pick_zone_artisan_waypoint(
+                zone_prefix,
+                (slot_idx as u64).wrapping_mul(131).wrapping_add(19),
+                start_pt,
+            );
+            init_coord = start_pt;
+            dest = next_pt;
+            dest_name = format!("{zone_prefix}・{next_sub}");
+            stay_activity = format!(
+                "正在{zone_prefix}・{start_sub}至{next_sub}一帶{}，巡看山林物產與地脈",
+                slot.work_purpose
+            );
+        } else if slot.brief_tag.starts_with("古道行旅・") && !init_toggle {
+            let (start_pt, start_zone) = crate::game::pick_island_trail_waypoint(
+                zone_prefix,
+                (slot.home_x, slot.home_y),
+                (slot.errand_x, slot.errand_y),
+                (slot_idx as u64).wrapping_mul(97),
+                (slot.home_x, slot.home_y),
+            );
+            let (next_pt, next_zone) = crate::game::pick_island_trail_waypoint(
+                zone_prefix,
+                (slot.home_x, slot.home_y),
+                (slot.errand_x, slot.errand_y),
+                (slot_idx as u64).wrapping_mul(97).wrapping_add(23),
+                start_pt,
+            );
+            init_coord = start_pt;
+            dest = next_pt;
+            dest_name = format!("{next_zone}・聯外古道驛站");
+            stay_activity = format!(
+                "正在{start_zone}通往{next_zone}的聯外古道上{}，沿途照應貨擔與路況",
+                slot.work_purpose
+            );
+        }
         let origin_name = slot.home_name.to_string();
         let stay_ticks_remaining = if is_expedition_slot {
-            2 + ((slot_idx % 5) as u8)
+            1 + ((slot_idx % 3) as u8)
         } else {
             (stay_ticks / 2).max(3)
         };
@@ -2671,7 +2698,12 @@ impl Store {
                         && let Some(ent_id) = slot_to_id.get(&s_idx)
                     {
                         if core_ids.is_empty() {
-                            rally_coord = (slot.work_x, slot.work_y);
+                            rally_coord = crate::game::pick_zone_artisan_waypoint(
+                                zone_name,
+                                (z_idx as u64).wrapping_mul(53).wrapping_add(11),
+                                (cx, cy),
+                            )
+                            .0;
                             market_coord = (slot.errand_x, slot.errand_y);
                             market_name = slot.errand_name.to_string();
                         }
@@ -2762,10 +2794,8 @@ impl Store {
                 for (m_idx, mid) in party.member_ids.iter().enumerate() {
                     if let Some(st) = states.get_mut(mid) {
                         apply_party_directive_to_state(party, m_idx, grid, st);
-                        if party.phase == HuntingPartyPhase::SurroundingPrey {
-                            // 初始直接就位包圍圈外圍 1~2 格，立即展現四面合圍態勢
-                            st.current = st.dest;
-                        }
+                        // 初始直接就位四面合圍圈或獵場前哨集結營地，避免塞在單一中心點
+                        st.current = st.dest;
                     }
                 }
             }
@@ -3078,7 +3108,8 @@ impl Store {
                 || slot.brief_tag.starts_with("入山百工・")
                 || slot.brief_tag.starts_with("古道行旅・");
             let is_hunting_or_gathering = is_expedition_role
-                && (state.current.0 - slot.work_x).abs() + (state.current.1 - slot.work_y).abs() <= 35;
+                && state.current != (slot.errand_x, slot.errand_y)
+                && state.current != (slot.home_x, slot.home_y);
             let is_dining = [
                 "食堂", "茶", "飯", "湯", "麵", "膳", "飲",
             ]
@@ -3339,48 +3370,40 @@ impl Store {
                     let step_seed = h
                         .wrapping_add(time_bucket)
                         .wrapping_add(state.consecutive_work_streaks as u64 * 31);
-                    let candidate_offsets: &[(i32, i32, &str)] = &[
-                        (14, -10, "東側溪谷林緣"),
-                        (-16, 12, "西北坡老樟密林"),
-                        (12, 16, "北側高地獸徑"),
-                        (-14, -15, "西南麓背風山坳"),
-                        (18, 6, "向陽山脊巡獵線"),
-                        (-18, -8, "古道下風伏擊處"),
-                        (8, -18, "山澗水源飲水處"),
-                        (-10, 18, "高處岩稜瞭望點"),
-                    ];
-                    let mut chosen_coord = (slot.work_x, slot.work_y);
-                    let mut chosen_sub = "深山獵徑";
-                    for attempt in 0..candidate_offsets.len() {
-                        let (odx, ody, sub_label) = candidate_offsets
-                            [((step_seed as usize) + attempt) % candidate_offsets.len()];
-                        let tx = (slot.work_x + odx).clamp(-390, 390);
-                        let ty = (slot.work_y + ody).clamp(-490, 490);
-                        let dist_from_cur =
-                            (tx - state.current.0).abs() + (ty - state.current.1).abs();
-                        let walkable = grid
-                            .get(crate::grid::SquareCoord::new(tx, ty))
-                            .map(|c| {
-                                c.terrain != crate::grid::Terrain::Water
-                                    && c.terrain != crate::grid::Terrain::Wall
-                            })
-                            .unwrap_or(false);
-                        if dist_from_cur >= 10 && walkable {
-                            chosen_coord = (tx, ty);
-                            chosen_sub = sub_label;
-                            break;
-                        }
-                    }
                     let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
-                    state.origin_name = prev_loc_name.clone();
-                    state.dest = chosen_coord;
-                    state.dest_name = format!("{zone_prefix}・{chosen_sub}");
-                    state.purpose = slot.work_purpose.to_string();
-                    state.stay_activity = format!(
-                        "正在{zone_prefix}・{chosen_sub}一帶{}，仔細勘查地脈與物產蹤跡",
-                        slot.work_purpose
-                    );
-                    state.stay_ticks_remaining = 4 + ((h % 4) as u8);
+                    if slot.brief_tag.starts_with("古道行旅・") {
+                        let (chosen_coord, road_zone) = crate::game::pick_island_trail_waypoint(
+                            zone_prefix,
+                            (slot.home_x, slot.home_y),
+                            (slot.errand_x, slot.errand_y),
+                            step_seed,
+                            state.current,
+                        );
+                        state.origin_name = prev_loc_name.clone();
+                        state.dest = chosen_coord;
+                        state.dest_name = format!("{road_zone}・聯外古道驛路");
+                        state.purpose = slot.work_purpose.to_string();
+                        state.stay_activity = format!(
+                            "正在{road_zone}聯外古道驛路一帶{}，穩步推進跨區貨擔與巡防",
+                            slot.work_purpose
+                        );
+                        state.stay_ticks_remaining = 2 + ((h % 3) as u8);
+                    } else {
+                        let (chosen_coord, chosen_sub) = crate::game::pick_zone_artisan_waypoint(
+                            zone_prefix,
+                            step_seed,
+                            state.current,
+                        );
+                        state.origin_name = prev_loc_name.clone();
+                        state.dest = chosen_coord;
+                        state.dest_name = format!("{zone_prefix}・{chosen_sub}");
+                        state.purpose = slot.work_purpose.to_string();
+                        state.stay_activity = format!(
+                            "正在{zone_prefix}・{chosen_sub}一帶{}，仔細勘查地脈與物產蹤跡",
+                            slot.work_purpose
+                        );
+                        state.stay_ticks_remaining = 3 + ((h % 4) as u8);
+                    }
                     obligation_handled = true;
                 } else {
                     // 已完成 3 處獵場航點採集，背囊滿載，動身沿古道與公路前往城鎮市集交割變現！

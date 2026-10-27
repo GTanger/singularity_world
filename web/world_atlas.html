@@ -3755,16 +3755,25 @@
                   ? (ents.length > 1 ? `群${ents.length}` : '群')
                   : (hasShanhai && ents.length === 1 ? '獸' : String(ents.length))));
             ctx.fillText(badgeChar, bx, by + 0.5);
-          } else if (zoom >= 2.2) {
-            // 宏觀模式：人物為朱砂點，小怪為翠玉點，中型獸群為青黛點，次級掠食為赭紅點，隱匿霸主為琥珀金點
-            const dotRadius = Math.max(1.8, Math.min(3.8, zoom * 1.2)) * pulse;
-            ctx.fillStyle = hasApex
-              ? 'rgba(184, 134, 11, 0.9)'
+          } else if (zoom >= 0.45) {
+            // 全島與區域宏觀模式：人物為朱砂點，小怪為翠玉點，中型獸群為青黛點，次級掠食為赭紅點，隱匿霸主為琥珀金點
+            const baseR = hasApex
+              ? Math.max(2.2, Math.min(4.2, zoom * 1.45))
               : (hasPredator
-                ? 'rgba(164, 74, 40, 0.8)'
+                ? Math.max(1.75, Math.min(3.9, zoom * 1.3))
                 : (hasHerd
-                  ? 'rgba(31, 92, 92, 0.78)'
-                  : (hasShanhai ? 'rgba(38, 97, 65, 0.7)' : 'rgba(158, 42, 43, 0.55)')));
+                  ? Math.max(1.45, Math.min(3.7, zoom * 1.22))
+                  : (hasShanhai
+                    ? Math.max(1.25, Math.min(3.5, zoom * 1.15))
+                    : Math.max(1.4, Math.min(3.7, zoom * 1.2)))));
+            const dotRadius = baseR * pulse;
+            ctx.fillStyle = hasApex
+              ? 'rgba(184, 134, 11, 0.94)'
+              : (hasPredator
+                ? 'rgba(164, 74, 40, 0.86)'
+                : (hasHerd
+                  ? 'rgba(31, 92, 92, 0.82)'
+                  : (hasShanhai ? 'rgba(38, 97, 65, 0.74)' : 'rgba(158, 42, 43, 0.72)')));
             ctx.beginPath();
             ctx.arc(esx, esy, dotRadius, 0, Math.PI * 2);
             ctx.fill();
