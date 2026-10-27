@@ -1,8 +1,4 @@
 // 外圍 14 座聚落（風舶角、四大鎮、九大村）共 256 棟民居與 94 棟機能建築之家戶與百工作息槽位。
-// 依據歷史人口學與中地理論（Christaller Central Place Theory + Zipf 法則）校準城鄉每戶人口梯度：
-// - 風舶角（西海巨港大城）：168 人（約 4.0 人/戶，為首城文曜 355 人之 47%）
-// - 四大鎮（半嶺鎮、大圳頭、南哨、風舶嶼）：441 人（約 3.6 人/戶）
-// - 九大村（農漁林礦三代同堂大家庭）：424 人（約 4.6 人/戶，每村 44~49 人）
 use super::households::WenyaoHouseholdSlot;
 
 pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
@@ -3571,6 +3567,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "頭戴竹笠，身穿棕麻防雨短衫，手握長柄鐵鍬", brief_tag: "古堰巡水農夫", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: -3, home_y: 128, home_name: "老堰頭・清流甘泉水豆腐坊舍", home_stay_activity: "正在老堰頭・清流甘泉水豆腐坊舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -3, work_y: 125, work_name: "老堰頭・水輪石磨工坊", work_purpose: "修築古堰竹籠卵石堤與引水", work_stay_activity: "正在攔水石堰旁加固桂竹石籠、疏通果園灌溉水渠",
+        errand_x: -3, errand_y: 126, errand_name: "老堰頭・水門茶憩旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在老堰頭・水門茶憩旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴竹笠，身穿棕麻防雨短衫，手握長柄鐵鍬", brief_tag: "古堰巡水農夫", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: 1, home_y: 128, home_name: "老堰頭・水圳巡渠員居", home_stay_activity: "正在老堰頭・水圳巡渠員居屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: 1, work_y: 124, work_name: "老堰頭・堰渠水畔食堂", work_purpose: "掌勺備餐與招呼食客", work_stay_activity: "正在老堰頭・堰渠水畔食堂灶台前生火備料，為往來匠人端上熱騰騰的飯菜",
         errand_x: 1, errand_y: 125, errand_name: "老堰頭・農產公議所", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在老堰頭・農產公議所與熟識的管事交接日常物料與地方口信",
@@ -3595,6 +3597,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿碎花藍布衫，雙手戴著厚布手套，背著大竹簍", brief_tag: "溪谷果農親眷", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: 1, home_y: 128, home_name: "老堰頭・水圳巡渠員居", home_stay_activity: "正在老堰頭・水圳巡渠員居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 1, work_y: 124, work_name: "老堰頭・堰渠水畔食堂", work_purpose: "採收山谷鮮果與烘製果乾", work_stay_activity: "正在溪谷果園剪下成熟飽滿的山柑與蜜桃，分籃裝妥",
+        errand_x: 1, errand_y: 126, errand_name: "老堰頭・脈絡草木診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在老堰頭・脈絡草木診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿碎花藍布衫，雙手戴著厚布手套，背著大竹簍", brief_tag: "溪谷果農親眷", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -3, home_y: 124, home_name: "老堰頭・秦氏水輪石磨傳承老宅", home_stay_activity: "正在老堰頭・秦氏水輪石磨傳承老宅堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -3, work_y: 126, work_name: "老堰頭・水門茶憩旅社", work_purpose: "掌勺備餐與招呼食客", work_stay_activity: "正在老堰頭・水門茶憩旅社灶台前生火備料，為往來匠人端上熱騰騰的飯菜",
         errand_x: 1, errand_y: 126, errand_name: "老堰頭・脈絡草木診所", errand_purpose: "抓配草藥與請教養生", errand_stay_activity: "正在老堰頭・脈絡草木診所櫃台抓幾帖舒筋活血的草藥茶包備在家中",
@@ -3611,6 +3619,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -3, work_y: 125, work_name: "老堰頭・水輪石磨工坊", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在老堰頭・水輪石磨工坊工位前專注打磨器物、校準工序品質",
         errand_x: 1, errand_y: 126, errand_name: "老堰頭・脈絡草木診所", errand_purpose: "抓配草藥與請教養生", errand_stay_activity: "正在老堰頭・脈絡草木診所櫃台抓幾帖舒筋活血的草藥茶包備在家中",
         attire_line: "穿著淺青家常布衫，正在竹匾上翻曬碾好的穀米與草藥", brief_tag: "水畔持家人", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -3, home_y: 124, home_name: "老堰頭・秦氏水輪石磨傳承老宅", home_stay_activity: "正在老堰頭・秦氏水輪石磨傳承老宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 1, work_y: 126, work_name: "老堰頭・脈絡草木診所", work_purpose: "修築古堰竹籠卵石堤與引水", work_stay_activity: "正在攔水石堰旁加固桂竹石籠、疏通果園灌溉水渠",
+        errand_x: -3, errand_y: 126, errand_name: "老堰頭・水門茶憩旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在老堰頭・水門茶憩旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴竹笠，身穿棕麻防雨短衫，手握長柄鐵鍬", brief_tag: "古堰巡水農夫", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -3, home_y: 124, home_name: "老堰頭・秦氏水輪石磨傳承老宅", home_stay_activity: "正在老堰頭・秦氏水輪石磨傳承老宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -3661,10 +3675,22 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿碎花藍布衫，雙手戴著厚布手套，背著大竹簍", brief_tag: "溪谷果農親眷", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: 1, home_y: 129, home_name: "老堰頭・水車木匠家屋", home_stay_activity: "正在老堰頭・水車木匠家屋堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 1, work_y: 125, work_name: "老堰頭・農產公議所", work_purpose: "採收山谷鮮果與烘製果乾", work_stay_activity: "正在溪谷果園剪下成熟飽滿的山柑與蜜桃，分籃裝妥",
+        errand_x: 1, errand_y: 125, errand_name: "老堰頭・農產公議所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在老堰頭・農產公議所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿碎花藍布衫，雙手戴著厚布手套，背著大竹簍", brief_tag: "溪谷果農親眷", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: 1, home_y: 122, home_name: "老堰頭・堰上微風迎客小院", home_stay_activity: "正在老堰頭・堰上微風迎客小院屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: 1, work_y: 126, work_name: "老堰頭・脈絡草木診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在老堰頭・脈絡草木診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: 1, errand_y: 124, errand_name: "老堰頭・堰渠水畔食堂", errand_purpose: "歇腳用膳與打聽消息", errand_stay_activity: "正在老堰頭・堰渠水畔食堂木桌旁享用熱湯麵食，與鄰座同鄉閒話家常",
         attire_line: "身穿沾著細白麵粉與藥香的青灰短衫，手握石磨木柄", brief_tag: "水輪石磨匠", morning_hour: 6, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: 1, home_y: 122, home_name: "老堰頭・堰上微風迎客小院", home_stay_activity: "正在老堰頭・堰上微風迎客小院堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -3, work_y: 126, work_name: "老堰頭・水門茶憩旅社", work_purpose: "修築古堰竹籠卵石堤與引水", work_stay_activity: "正在攔水石堰旁加固桂竹石籠、疏通果園灌溉水渠",
+        errand_x: 1, errand_y: 124, errand_name: "老堰頭・堰渠水畔食堂", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在老堰頭・堰渠水畔食堂與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴竹笠，身穿棕麻防雨短衫，手握長柄鐵鍬", brief_tag: "古堰巡水農夫", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: 1, home_y: 122, home_name: "老堰頭・堰上微風迎客小院", home_stay_activity: "正在老堰頭・堰上微風迎客小院堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -3701,6 +3727,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -3, work_y: 125, work_name: "老堰頭・水輪石磨工坊", work_purpose: "採收山谷鮮果與烘製果乾", work_stay_activity: "正在溪谷果園剪下成熟飽滿的山柑與蜜桃，分籃裝妥",
         errand_x: -3, errand_y: 126, errand_name: "老堰頭・水門茶憩旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在老堰頭・水門茶憩旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿碎花藍布衫，雙手戴著厚布手套，背著大竹簍", brief_tag: "溪谷果農親眷", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -3, home_y: 123, home_name: "老堰頭・陸家舊堰農契典藏舍", home_stay_activity: "正在老堰頭・陸家舊堰農契典藏舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -3, work_y: 125, work_name: "老堰頭・水輪石磨工坊", work_purpose: "採收山谷鮮果與烘製果乾", work_stay_activity: "正在溪谷果園剪下成熟飽滿的山柑與蜜桃，分籃裝妥",
+        errand_x: -3, errand_y: 126, errand_name: "老堰頭・水門茶憩旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在老堰頭・水門茶憩旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿碎花藍布衫，雙手戴著厚布手套，背著大竹簍", brief_tag: "溪谷果農親眷", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -3, home_y: 127, home_name: "老堰頭・水門守閘水工舍", home_stay_activity: "正在老堰頭・水門守閘水工舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
@@ -3835,6 +3867,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿防荊棘鹿皮短襖，小腿綁著防蛇裹腿，背負藥鋤與山刀", brief_tag: "北山採藥獵人", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: 109, home_y: 117, home_name: "北嶺腳・松脂暖手爐銅匠舍", home_stay_activity: "正在北嶺腳・松脂暖手爐銅匠舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 109, work_y: 115, work_name: "北嶺腳・嶺腳暖火食堂", work_purpose: "深入北山採挖靈草與巡查獸徑", work_stay_activity: "正在整頓登山爪釘與採藥背簍，清理剛挖出的山野靈根",
+        errand_x: 111, errand_y: 114, errand_name: "北嶺腳・北嶺山徑補給行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在北嶺腳・北嶺山徑補給行與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿防荊棘鹿皮短襖，小腿綁著防蛇裹腿，背負藥鋤與山刀", brief_tag: "北山採藥獵人", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: 109, home_y: 116, home_name: "北嶺腳・馬家鐵齒登山釘鞋工坊宅", home_stay_activity: "正在北嶺腳・馬家鐵齒登山釘鞋工坊宅堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: 111, work_y: 115, work_name: "北嶺腳・山林旅社", work_purpose: "打理客房與接待行商", work_stay_activity: "正在北嶺腳・山林旅社前堂登記住宿名冊、為遠道商旅備妥熱水與乾爽被褥",
         errand_x: 111, errand_y: 116, errand_name: "北嶺腳・脈絡急救診所", errand_purpose: "抓配草藥與請教養生", errand_stay_activity: "正在北嶺腳・脈絡急救診所櫃台抓幾帖舒筋活血的草藥茶包備在家中",
@@ -3865,6 +3903,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿素色厚棉背心，神色慈祥沉穩，滿手濃郁草藥香", brief_tag: "山麓烘藥長輩", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: 109, home_y: 116, home_name: "北嶺腳・馬家鐵齒登山釘鞋工坊宅", home_stay_activity: "正在北嶺腳・馬家鐵齒登山釘鞋工坊宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 111, work_y: 115, work_name: "北嶺腳・山林旅社", work_purpose: "切片暴曬山藥材與炮製藥丸", work_stay_activity: "正在院前石埕竹匾上翻曬切好的黃精與當歸片",
+        errand_x: 109, errand_y: 114, errand_name: "北嶺腳・公事房", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在北嶺腳・公事房與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿素色厚棉背心，神色慈祥沉穩，滿手濃郁草藥香", brief_tag: "山麓烘藥長輩", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: 111, home_y: 117, home_name: "北嶺腳・硬木藤背架老匠居", home_stay_activity: "正在北嶺腳・硬木藤背架老匠居堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: 111, work_y: 114, work_name: "北嶺腳・北嶺山徑補給行", work_purpose: "過磅驗貨與結算銀錢", work_stay_activity: "正在北嶺腳・北嶺山徑補給行櫃台前用大秤過磅新到的物資、逐筆核對交收帳冊",
         errand_x: 109, errand_y: 114, errand_name: "北嶺腳・公事房", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在北嶺腳・公事房與熟識的管事交接日常物料與地方口信",
@@ -3875,6 +3919,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: 111, work_y: 117, work_name: "北嶺腳・硬木藤背架老匠居", work_purpose: "主持家計與居家手作", work_stay_activity: "正在北嶺腳・硬木藤背架老匠居院落內照看家務、整理手作料件並備妥家人茶飯",
         errand_x: 109, errand_y: 115, errand_name: "北嶺腳・嶺腳暖火食堂", errand_purpose: "歇腳用膳與打聽消息", errand_stay_activity: "正在北嶺腳・嶺腳暖火食堂木桌旁享用熱湯麵食，與鄰座同鄉閒話家常",
         attire_line: "身穿暖褐夾棉布裙，手裡捧著添加松脂炭塊的黃銅暖手爐", brief_tag: "嶺腳家眷", morning_hour: 7, evening_hour: 17,
+    },
+    WenyaoHouseholdSlot {
+        home_x: 111, home_y: 117, home_name: "北嶺腳・硬木藤背架老匠居", home_stay_activity: "正在北嶺腳・硬木藤背架老匠居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 109, work_y: 114, work_name: "北嶺腳・公事房", work_purpose: "深入北山採挖靈草與巡查獸徑", work_stay_activity: "正在整頓登山爪釘與採藥背簍，清理剛挖出的山野靈根",
+        errand_x: 111, errand_y: 114, errand_name: "北嶺腳・北嶺山徑補給行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在北嶺腳・北嶺山徑補給行與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿防荊棘鹿皮短襖，小腿綁著防蛇裹腿，背負藥鋤與山刀", brief_tag: "北山採藥獵人", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: 111, home_y: 117, home_name: "北嶺腳・硬木藤背架老匠居", home_stay_activity: "正在北嶺腳・硬木藤背架老匠居堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -3931,10 +3981,22 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿素色厚棉背心，神色慈祥沉穩，滿手濃郁草藥香", brief_tag: "山麓烘藥長輩", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: 111, home_y: 112, home_name: "北嶺腳・嶺腳坡地石砌家屋一號", home_stay_activity: "正在北嶺腳・嶺腳坡地石砌家屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 111, work_y: 116, work_name: "北嶺腳・脈絡急救診所", work_purpose: "切片暴曬山藥材與炮製藥丸", work_stay_activity: "正在院前石埕竹匾上翻曬切好的黃精與當歸片",
+        errand_x: 111, errand_y: 116, errand_name: "北嶺腳・脈絡急救診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在北嶺腳・脈絡急救診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿素色厚棉背心，神色慈祥沉穩，滿手濃郁草藥香", brief_tag: "山麓烘藥長輩", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: 109, home_y: 112, home_name: "北嶺腳・嶺腳坡地石砌家屋二號", home_stay_activity: "正在北嶺腳・嶺腳坡地石砌家屋二號屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: 109, work_y: 114, work_name: "北嶺腳・公事房", work_purpose: "協調坊務與登記契據", work_stay_activity: "正在北嶺腳・公事房議事廳整理地方工坊排班文書與物資調度卷宗",
         errand_x: 111, errand_y: 115, errand_name: "北嶺腳・山林旅社", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在北嶺腳・山林旅社與熟識的管事交接日常物料與地方口信",
         attire_line: "身穿防寒厚麻工裝，腰懸鍛打登山鐵齒釘鞋的小鐵鎚", brief_tag: "北嶺釘鞋匠", morning_hour: 6, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: 109, home_y: 112, home_name: "北嶺腳・嶺腳坡地石砌家屋二號", home_stay_activity: "正在北嶺腳・嶺腳坡地石砌家屋二號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 111, work_y: 114, work_name: "北嶺腳・北嶺山徑補給行", work_purpose: "深入北山採挖靈草與巡查獸徑", work_stay_activity: "正在整頓登山爪釘與採藥背簍，清理剛挖出的山野靈根",
+        errand_x: 111, errand_y: 115, errand_name: "北嶺腳・山林旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在北嶺腳・山林旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿防荊棘鹿皮短襖，小腿綁著防蛇裹腿，背負藥鋤與山刀", brief_tag: "北山採藥獵人", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: 109, home_y: 112, home_name: "北嶺腳・嶺腳坡地石砌家屋二號", home_stay_activity: "正在北嶺腳・嶺腳坡地石砌家屋二號堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -3977,6 +4039,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: 109, work_y: 115, work_name: "北嶺腳・嶺腳暖火食堂", work_purpose: "切片暴曬山藥材與炮製藥丸", work_stay_activity: "正在院前石埕竹匾上翻曬切好的黃精與當歸片",
         errand_x: 111, errand_y: 114, errand_name: "北嶺腳・北嶺山徑補給行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在北嶺腳・北嶺山徑補給行與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿素色厚棉背心，神色慈祥沉穩，滿手濃郁草藥香", brief_tag: "山麓烘藥長輩", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: 109, home_y: 119, home_name: "北嶺腳・山泉甘洌安居宅", home_stay_activity: "正在北嶺腳・山泉甘洌安居宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 109, work_y: 115, work_name: "北嶺腳・嶺腳暖火食堂", work_purpose: "切片暴曬山藥材與炮製藥丸", work_stay_activity: "正在院前石埕竹匾上翻曬切好的黃精與當歸片",
+        errand_x: 111, errand_y: 114, errand_name: "北嶺腳・北嶺山徑補給行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在北嶺腳・北嶺山徑補給行與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿素色厚棉背心，神色慈祥沉穩，滿手濃郁草藥香", brief_tag: "山麓烘藥長輩", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: 109, home_y: 118, home_name: "北嶺腳・登山行囊補配鋪舍", home_stay_activity: "正在北嶺腳・登山行囊補配鋪舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
@@ -4111,6 +4179,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿厚實粗毛呢短襖，肩扛雙人鋼齒大鋸，體格魁梧", brief_tag: "霜林伐木大匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: 189, home_y: 292, home_name: "霜林口・雲杉木滑道維護工舍", home_stay_activity: "正在霜林口・雲杉木滑道維護工舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 189, work_y: 290, work_name: "霜林口・原木水車鋸木坊", work_purpose: "甄選高冷針葉巨木與修枝集材", work_stay_activity: "正在水車鋸木坊旁用墨線標記冷杉原木、精準剖開厚板",
+        errand_x: 189, errand_y: 289, errand_name: "霜林口・林緣溫暖旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在霜林口・林緣溫暖旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿厚實粗毛呢短襖，肩扛雙人鋼齒大鋸，體格魁梧", brief_tag: "霜林伐木大匠", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: 191, home_y: 287, home_name: "霜林口・林緣伐木工排屋二號", home_stay_activity: "正在霜林口・林緣伐木工排屋二號堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: 191, work_y: 291, work_name: "霜林口・霜林脈絡診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在霜林口・霜林脈絡診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: 191, errand_y: 290, errand_name: "霜林口・霜林護林瞭望所", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在霜林口・霜林護林瞭望所與熟識的管事交接日常物料與地方口信",
@@ -4141,6 +4215,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿耐磨帆布工裝，腰纏粗麻拖索與鐵鉤，步伐矯健", brief_tag: "林場集材青年", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: 191, home_y: 287, home_name: "霜林口・林緣伐木工排屋二號", home_stay_activity: "正在霜林口・林緣伐木工排屋二號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 191, work_y: 291, work_name: "霜林口・霜林脈絡診所", work_purpose: "順著木馬道滑運原木下山", work_stay_activity: "正在林道木馬軌上塗抹烏桕滑油、合力拉動巨木滑行",
+        errand_x: 191, errand_y: 289, errand_name: "霜林口・高山木料調配站", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在霜林口・高山木料調配站與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿耐磨帆布工裝，腰纏粗麻拖索與鐵鉤，步伐矯健", brief_tag: "林場集材青年", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: 189, home_y: 293, home_name: "霜林口・高山融雪水力排鋸工居", home_stay_activity: "正在霜林口・高山融雪水力排鋸工居堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: 189, work_y: 289, work_name: "霜林口・林緣溫暖旅社", work_purpose: "打理客房與接待行商", work_stay_activity: "正在霜林口・林緣溫暖旅社前堂登記住宿名冊、為遠道商旅備妥熱水與乾爽被褥",
         errand_x: 191, errand_y: 289, errand_name: "霜林口・高山木料調配站", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在霜林口・高山木料調配站與熟識的管事交接日常物料與地方口信",
@@ -4151,6 +4231,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: 189, work_y: 293, work_name: "霜林口・高山融雪水力排鋸工居", work_purpose: "主持家計與居家手作", work_stay_activity: "正在霜林口・高山融雪水力排鋸工居院落內照看家務、整理手作料件並備妥家人茶飯",
         errand_x: 189, errand_y: 290, errand_name: "霜林口・原木水車鋸木坊", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在霜林口・原木水車鋸木坊與熟識的管事交接日常物料與地方口信",
         attire_line: "身穿深紅夾棉衫裙，正在火塘旁熬煮滾燙的松針薑茶與烘烤乾糧", brief_tag: "林緣家眷", morning_hour: 7, evening_hour: 17,
+    },
+    WenyaoHouseholdSlot {
+        home_x: 189, home_y: 293, home_name: "霜林口・高山融雪水力排鋸工居", home_stay_activity: "正在霜林口・高山融雪水力排鋸工居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 191, work_y: 289, work_name: "霜林口・高山木料調配站", work_purpose: "甄選高冷針葉巨木與修枝集材", work_stay_activity: "正在水車鋸木坊旁用墨線標記冷杉原木、精準剖開厚板",
+        errand_x: 189, errand_y: 289, errand_name: "霜林口・林緣溫暖旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在霜林口・林緣溫暖旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿厚實粗毛呢短襖，肩扛雙人鋼齒大鋸，體格魁梧", brief_tag: "霜林伐木大匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: 189, home_y: 293, home_name: "霜林口・高山融雪水力排鋸工居", home_stay_activity: "正在霜林口・高山融雪水力排鋸工居堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -4207,10 +4293,22 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿耐磨帆布工裝，腰纏粗麻拖索與鐵鉤，步伐矯健", brief_tag: "林場集材青年", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: 191, home_y: 294, home_name: "霜林口・重原木裝車大木匠居", home_stay_activity: "正在霜林口・重原木裝車大木匠居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 191, work_y: 290, work_name: "霜林口・霜林護林瞭望所", work_purpose: "順著木馬道滑運原木下山", work_stay_activity: "正在林道木馬軌上塗抹烏桕滑油、合力拉動巨木滑行",
+        errand_x: 191, errand_y: 290, errand_name: "霜林口・霜林護林瞭望所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在霜林口・霜林護林瞭望所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿耐磨帆布工裝，腰纏粗麻拖索與鐵鉤，步伐矯健", brief_tag: "林場集材青年", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: 191, home_y: 295, home_name: "霜林口・耐寒雪狼絨皮匠居", home_stay_activity: "正在霜林口・耐寒雪狼絨皮匠居屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: 191, work_y: 289, work_name: "霜林口・高山木料調配站", work_purpose: "過磅驗貨與結算銀錢", work_stay_activity: "正在霜林口・高山木料調配站櫃台前用大秤過磅新到的物資、逐筆核對交收帳冊",
         errand_x: 191, errand_y: 291, errand_name: "霜林口・霜林脈絡診所", errand_purpose: "抓配草藥與請教養生", errand_stay_activity: "正在霜林口・霜林脈絡診所櫃台抓幾帖舒筋活血的草藥茶包備在家中",
         attire_line: "身穿防寒厚呢短襖，袖口沾著清香雲杉木屑，手握排鋸扳手", brief_tag: "水車鋸木匠", morning_hour: 6, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: 191, home_y: 295, home_name: "霜林口・耐寒雪狼絨皮匠居", home_stay_activity: "正在霜林口・耐寒雪狼絨皮匠居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 189, work_y: 289, work_name: "霜林口・林緣溫暖旅社", work_purpose: "甄選高冷針葉巨木與修枝集材", work_stay_activity: "正在水車鋸木坊旁用墨線標記冷杉原木、精準剖開厚板",
+        errand_x: 191, errand_y: 291, errand_name: "霜林口・霜林脈絡診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在霜林口・霜林脈絡診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿厚實粗毛呢短襖，肩扛雙人鋼齒大鋸，體格魁梧", brief_tag: "霜林伐木大匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: 191, home_y: 295, home_name: "霜林口・耐寒雪狼絨皮匠居", home_stay_activity: "正在霜林口・耐寒雪狼絨皮匠居堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -4247,6 +4345,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: 189, work_y: 290, work_name: "霜林口・原木水車鋸木坊", work_purpose: "順著木馬道滑運原木下山", work_stay_activity: "正在林道木馬軌上塗抹烏桕滑油、合力拉動巨木滑行",
         errand_x: 189, errand_y: 289, errand_name: "霜林口・林緣溫暖旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在霜林口・林緣溫暖旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿耐磨帆布工裝，腰纏粗麻拖索與鐵鉤，步伐矯健", brief_tag: "林場集材青年", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: 189, home_y: 294, home_name: "霜林口・雪松松脂採集舍", home_stay_activity: "正在霜林口・雪松松脂採集舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: 189, work_y: 290, work_name: "霜林口・原木水車鋸木坊", work_purpose: "順著木馬道滑運原木下山", work_stay_activity: "正在林道木馬軌上塗抹烏桕滑油、合力拉動巨木滑行",
+        errand_x: 189, errand_y: 289, errand_name: "霜林口・林緣溫暖旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在霜林口・林緣溫暖旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿耐磨帆布工裝，腰纏粗麻拖索與鐵鉤，步伐矯健", brief_tag: "林場集材青年", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: 191, home_y: 292, home_name: "霜林口・梁氏水車鋸木大匠宅", home_stay_activity: "正在霜林口・梁氏水車鋸木大匠宅堂屋內與家人圍坐用膳，檢點明日上工的器物",
@@ -4381,6 +4485,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "頭戴防風桐油笠，身穿防水魚皮罩衫，手持韌竹長釣竿", brief_tag: "風櫃海釣老漁人", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: -361, home_y: 93, home_name: "風櫃尾・海岬風洞聽潮石屋", home_stay_activity: "正在風櫃尾・海岬風洞聽潮石屋堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -359, work_y: 97, work_name: "風櫃尾・海風食堂", work_purpose: "頂著海峽強風搏釣大魚", work_stay_activity: "正在防浪堤岸整理鉛錘與粗魚線、修補隨身浮標",
+        errand_x: -361, errand_y: 96, errand_name: "風櫃尾・水產冷燻工坊", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風櫃尾・水產冷燻工坊與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴防風桐油笠，身穿防水魚皮罩衫，手持韌竹長釣竿", brief_tag: "風櫃海釣老漁人", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -361, home_y: 92, home_name: "風櫃尾・海角避濤安泰宅", home_stay_activity: "正在風櫃尾・海角避濤安泰宅堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -361, work_y: 97, work_name: "風櫃尾・巨藻晾曬場", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在風櫃尾・巨藻晾曬場工位前專注打磨器物、校準工序品質",
         errand_x: -363, errand_y: 95, errand_name: "風櫃尾・燈塔", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在風櫃尾・燈塔與熟識的管事交接日常物料與地方口信",
@@ -4411,6 +4521,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿灰藍粗麻衫，繫著乾淨麻布圍裙，手拿蒲扇看顧燻爐", brief_tag: "漁村燻魚婦人", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -361, home_y: 92, home_name: "風櫃尾・海角避濤安泰宅", home_stay_activity: "正在風櫃尾・海角避濤安泰宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -361, work_y: 97, work_name: "風櫃尾・巨藻晾曬場", work_purpose: "以松枝冷燻海魚並封入陶甕", work_stay_activity: "正在煙燻房內將抹鹽海魚整齊掛上木架，添入乾燥果木屑",
+        errand_x: -359, errand_y: 96, errand_name: "風櫃尾・脈絡草藥診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風櫃尾・脈絡草藥診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿灰藍粗麻衫，繫著乾淨麻布圍裙，手拿蒲扇看顧燻爐", brief_tag: "漁村燻魚婦人", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -359, home_y: 98, home_name: "風櫃尾・採藻編繩漁家", home_stay_activity: "正在風櫃尾・採藻編繩漁家堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -361, work_y: 96, work_name: "風櫃尾・水產冷燻工坊", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在風櫃尾・水產冷燻工坊工位前專注打磨器物、校準工序品質",
         errand_x: -359, errand_y: 96, errand_name: "風櫃尾・脈絡草藥診所", errand_purpose: "抓配草藥與請教養生", errand_stay_activity: "正在風櫃尾・脈絡草藥診所櫃台抓幾帖舒筋活血的草藥茶包備在家中",
@@ -4421,6 +4537,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -359, work_y: 98, work_name: "風櫃尾・採藻編繩漁家", work_purpose: "主持家計與居家手作", work_stay_activity: "正在風櫃尾・採藻編繩漁家院落內照看家務、整理手作料件並備妥家人茶飯",
         errand_x: -359, errand_y: 97, errand_name: "風櫃尾・海風食堂", errand_purpose: "歇腳用膳與打聽消息", errand_stay_activity: "正在風櫃尾・海風食堂木桌旁享用熱湯麵食，與鄰座同鄉閒話家常",
         attire_line: "身穿防風靛藍布裙，正在玄武岩石院內翻動松屑冷燻架上的鮮魚", brief_tag: "海岬家眷", morning_hour: 7, evening_hour: 17,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -359, home_y: 98, home_name: "風櫃尾・採藻編繩漁家", home_stay_activity: "正在風櫃尾・採藻編繩漁家堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -359, work_y: 96, work_name: "風櫃尾・脈絡草藥診所", work_purpose: "頂著海峽強風搏釣大魚", work_stay_activity: "正在防浪堤岸整理鉛錘與粗魚線、修補隨身浮標",
+        errand_x: -361, errand_y: 96, errand_name: "風櫃尾・水產冷燻工坊", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風櫃尾・水產冷燻工坊與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴防風桐油笠，身穿防水魚皮罩衫，手持韌竹長釣竿", brief_tag: "風櫃海釣老漁人", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -359, home_y: 98, home_name: "風櫃尾・採藻編繩漁家", home_stay_activity: "正在風櫃尾・採藻編繩漁家堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -4465,10 +4587,22 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿灰藍粗麻衫，繫著乾淨麻布圍裙，手拿蒲扇看顧燻爐", brief_tag: "漁村燻魚婦人", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -361, home_y: 94, home_name: "風櫃尾・燈塔長明海燈維護舍", home_stay_activity: "正在風櫃尾・燈塔長明海燈維護舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -363, work_y: 95, work_name: "風櫃尾・燈塔", work_purpose: "以松枝冷燻海魚並封入陶甕", work_stay_activity: "正在煙燻房內將抹鹽海魚整齊掛上木架，添入乾燥果木屑",
+        errand_x: -363, errand_y: 95, errand_name: "風櫃尾・燈塔", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風櫃尾・燈塔與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿灰藍粗麻衫，繫著乾淨麻布圍裙，手拿蒲扇看顧燻爐", brief_tag: "漁村燻魚婦人", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -359, home_y: 93, home_name: "風櫃尾・風櫃海風松屑冷燻魚乾坊居", home_stay_activity: "正在風櫃尾・風櫃海風松屑冷燻魚乾坊居屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -359, work_y: 96, work_name: "風櫃尾・脈絡草藥診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在風櫃尾・脈絡草藥診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: -361, errand_y: 97, errand_name: "風櫃尾・巨藻晾曬場", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在風櫃尾・巨藻晾曬場與熟識的管事交接日常物料與地方口信",
         attire_line: "身穿防海浪飛沫的厚油布短衣，滿身帶著松屑冷燻魚乾的濃香", brief_tag: "冷燻水產匠", morning_hour: 6, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -359, home_y: 93, home_name: "風櫃尾・風櫃海風松屑冷燻魚乾坊居", home_stay_activity: "正在風櫃尾・風櫃海風松屑冷燻魚乾坊居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -361, work_y: 96, work_name: "風櫃尾・水產冷燻工坊", work_purpose: "頂著海峽強風搏釣大魚", work_stay_activity: "正在防浪堤岸整理鉛錘與粗魚線、修補隨身浮標",
+        errand_x: -361, errand_y: 97, errand_name: "風櫃尾・巨藻晾曬場", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風櫃尾・巨藻晾曬場與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴防風桐油笠，身穿防水魚皮罩衫，手持韌竹長釣竿", brief_tag: "風櫃海釣老漁人", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -359, home_y: 93, home_name: "風櫃尾・風櫃海風松屑冷燻魚乾坊居", home_stay_activity: "正在風櫃尾・風櫃海風松屑冷燻魚乾坊居堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -4507,6 +4641,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿灰藍粗麻衫，繫著乾淨麻布圍裙，手拿蒲扇看顧燻爐", brief_tag: "漁村燻魚婦人", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -361, home_y: 98, home_name: "風櫃尾・耐浪防風厚玄武石屋一號", home_stay_activity: "正在風櫃尾・耐浪防風厚玄武石屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -359, work_y: 97, work_name: "風櫃尾・海風食堂", work_purpose: "以松枝冷燻海魚並封入陶甕", work_stay_activity: "正在煙燻房內將抹鹽海魚整齊掛上木架，添入乾燥果木屑",
+        errand_x: -361, errand_y: 96, errand_name: "風櫃尾・水產冷燻工坊", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風櫃尾・水產冷燻工坊與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿灰藍粗麻衫，繫著乾淨麻布圍裙，手拿蒲扇看顧燻爐", brief_tag: "漁村燻魚婦人", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -359, home_y: 92, home_name: "風櫃尾・海燕鳥羽採集居", home_stay_activity: "正在風櫃尾・海燕鳥羽採集居堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -361, work_y: 97, work_name: "風櫃尾・巨藻晾曬場", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在風櫃尾・巨藻晾曬場工位前專注打磨器物、校準工序品質",
         errand_x: -363, errand_y: 95, errand_name: "風櫃尾・燈塔", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在風櫃尾・燈塔與熟識的管事交接日常物料與地方口信",
@@ -4523,6 +4663,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -359, work_y: 96, work_name: "風櫃尾・脈絡草藥診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在風櫃尾・脈絡草藥診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: -363, errand_y: 95, errand_name: "風櫃尾・燈塔", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在風櫃尾・燈塔與熟識的管事交接日常物料與地方口信",
         attire_line: "穿著厚實灰麻家常衫，手裡編織著耐浪巨藻粗纜繩", brief_tag: "漁家內當家", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -359, home_y: 92, home_name: "風櫃尾・海燕鳥羽採集居", home_stay_activity: "正在風櫃尾・海燕鳥羽採集居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -361, work_y: 97, work_name: "風櫃尾・巨藻晾曬場", work_purpose: "頂著海峽強風搏釣大魚", work_stay_activity: "正在防浪堤岸整理鉛錘與粗魚線、修補隨身浮標",
+        errand_x: -359, errand_y: 96, errand_name: "風櫃尾・脈絡草藥診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在風櫃尾・脈絡草藥診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴防風桐油笠，身穿防水魚皮罩衫，手持韌竹長釣竿", brief_tag: "風櫃海釣老漁人", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -359, home_y: 92, home_name: "風櫃尾・海燕鳥羽採集居", home_stay_activity: "正在風櫃尾・海燕鳥羽採集居堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -4639,6 +4785,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿貼身防寒水靠，腰繫鉛塊與骨製撬刀，水性極佳", brief_tag: "烏石潛海採鮑客", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: -259, home_y: 33, home_name: "烏石鼻・深水黑曜玄武岩採鑿工舍", home_stay_activity: "正在烏石鼻・深水黑曜玄武岩採鑿工舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -261, work_y: 37, work_name: "烏石鼻・海貝灰窯", work_purpose: "潛入玄武岩海溝採集九孔鮑與龍蝦", work_stay_activity: "正在岩岸旁晾曬潛水麻網，將鮮活海產分養入活水池",
+        errand_x: -259, errand_y: 36, errand_name: "烏石鼻・脈絡草木診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在烏石鼻・脈絡草木診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿貼身防寒水靠，腰繫鉛塊與骨製撬刀，水性極佳", brief_tag: "烏石潛海採鮑客", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -261, home_y: 33, home_name: "烏石鼻・十二眼八卦網老漁夫居", home_stay_activity: "正在烏石鼻・十二眼八卦網老漁夫居堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -261, work_y: 36, work_name: "烏石鼻・玄武岩鑿石工坊", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在烏石鼻・玄武岩鑿石工坊工位前專注打磨器物、校準工序品質",
         errand_x: -263, errand_y: 35, errand_name: "烏石鼻・漁船泊位", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在烏石鼻・漁船泊位與熟識的管事交接日常物料與地方口信",
@@ -4669,6 +4821,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿深褐油布圍裙，手持長柄木杓，身旁堆滿乾貝與海魚", brief_tag: "海灣熬油匠人", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -261, home_y: 33, home_name: "烏石鼻・十二眼八卦網老漁夫居", home_stay_activity: "正在烏石鼻・十二眼八卦網老漁夫居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -261, work_y: 36, work_name: "烏石鼻・玄武岩鑿石工坊", work_purpose: "熬煉海魚脂油與焙製乾貝", work_stay_activity: "正在石灶旁撇去魚油浮沫、將琥珀色海魚油封入防潮大甕",
+        errand_x: -259, errand_y: 37, errand_name: "烏石鼻・烏石水產集散行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在烏石鼻・烏石水產集散行與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿深褐油布圍裙，手持長柄木杓，身旁堆滿乾貝與海魚", brief_tag: "海灣熬油匠人", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -259, home_y: 32, home_name: "烏石鼻・防滲灰漿調配舍", home_stay_activity: "正在烏石鼻・防滲灰漿調配舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -259, work_y: 36, work_name: "烏石鼻・脈絡草木診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在烏石鼻・脈絡草木診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: -259, errand_y: 37, errand_name: "烏石鼻・烏石水產集散行", errand_purpose: "採買家用與交收物料", errand_stay_activity: "正在烏石鼻・烏石水產集散行挑選今日所需的油鹽柴米與工坊備用料件",
@@ -4679,6 +4837,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -259, work_y: 32, work_name: "烏石鼻・防滲灰漿調配舍", work_purpose: "主持家計與居家手作", work_stay_activity: "正在烏石鼻・防滲灰漿調配舍院落內照看家務、整理手作料件並備妥家人茶飯",
         errand_x: -261, errand_y: 37, errand_name: "烏石鼻・海貝灰窯", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在烏石鼻・海貝灰窯與熟識的管事交接日常物料與地方口信",
         attire_line: "身穿海青色粗布衫裙，正在石屋前修補十二眼八卦漁網", brief_tag: "烏石漁家眷", morning_hour: 7, evening_hour: 17,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -259, home_y: 32, home_name: "烏石鼻・防滲灰漿調配舍", home_stay_activity: "正在烏石鼻・防滲灰漿調配舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -259, work_y: 37, work_name: "烏石鼻・烏石水產集散行", work_purpose: "潛入玄武岩海溝採集九孔鮑與龍蝦", work_stay_activity: "正在岩岸旁晾曬潛水麻網，將鮮活海產分養入活水池",
+        errand_x: -259, errand_y: 36, errand_name: "烏石鼻・脈絡草木診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在烏石鼻・脈絡草木診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿貼身防寒水靠，腰繫鉛塊與骨製撬刀，水性極佳", brief_tag: "烏石潛海採鮑客", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 32, home_name: "烏石鼻・防滲灰漿調配舍", home_stay_activity: "正在烏石鼻・防滲灰漿調配舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -4735,10 +4899,22 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿深褐油布圍裙，手持長柄木杓，身旁堆滿乾貝與海魚", brief_tag: "海灣熬油匠人", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -259, home_y: 39, home_name: "烏石鼻・玄武岩堆砌漁舍二號", home_stay_activity: "正在烏石鼻・玄武岩堆砌漁舍二號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -263, work_y: 35, work_name: "烏石鼻・漁船泊位", work_purpose: "熬煉海魚脂油與焙製乾貝", work_stay_activity: "正在石灶旁撇去魚油浮沫、將琥珀色海魚油封入防潮大甕",
+        errand_x: -263, errand_y: 35, errand_name: "烏石鼻・漁船泊位", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在烏石鼻・漁船泊位與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿深褐油布圍裙，手持長柄木杓，身旁堆滿乾貝與海魚", brief_tag: "海灣熬油匠人", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -261, home_y: 32, home_name: "烏石鼻・黑石灣觀濤石宅", home_stay_activity: "正在烏石鼻・黑石灣觀濤石宅屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -259, work_y: 37, work_name: "烏石鼻・烏石水產集散行", work_purpose: "過磅驗貨與結算銀錢", work_stay_activity: "正在烏石鼻・烏石水產集散行櫃台前用大秤過磅新到的物資、逐筆核對交收帳冊",
         errand_x: -261, errand_y: 36, errand_name: "烏石鼻・玄武岩鑿石工坊", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在烏石鼻・玄武岩鑿石工坊與熟識的管事交接日常物料與地方口信",
         attire_line: "身穿防石屑黑褐厚麻短打，雙手握著鍛鋼石鑿與重鐵鎚", brief_tag: "玄武鑿石匠", morning_hour: 6, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -261, home_y: 32, home_name: "烏石鼻・黑石灣觀濤石宅", home_stay_activity: "正在烏石鼻・黑石灣觀濤石宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -259, work_y: 36, work_name: "烏石鼻・脈絡草木診所", work_purpose: "潛入玄武岩海溝採集九孔鮑與龍蝦", work_stay_activity: "正在岩岸旁晾曬潛水麻網，將鮮活海產分養入活水池",
+        errand_x: -261, errand_y: 36, errand_name: "烏石鼻・玄武岩鑿石工坊", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在烏石鼻・玄武岩鑿石工坊與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿貼身防寒水靠，腰繫鉛塊與骨製撬刀，水性極佳", brief_tag: "烏石潛海採鮑客", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -261, home_y: 32, home_name: "烏石鼻・黑石灣觀濤石宅", home_stay_activity: "正在烏石鼻・黑石灣觀濤石宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -4775,6 +4951,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -261, work_y: 37, work_name: "烏石鼻・海貝灰窯", work_purpose: "熬煉海魚脂油與焙製乾貝", work_stay_activity: "正在石灶旁撇去魚油浮沫、將琥珀色海魚油封入防潮大甕",
         errand_x: -259, errand_y: 36, errand_name: "烏石鼻・脈絡草木診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在烏石鼻・脈絡草木診所與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿深褐油布圍裙，手持長柄木杓，身旁堆滿乾貝與海魚", brief_tag: "海灣熬油匠人", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -261, home_y: 38, home_name: "烏石鼻・玄武岩堆砌漁舍一號", home_stay_activity: "正在烏石鼻・玄武岩堆砌漁舍一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -261, work_y: 37, work_name: "烏石鼻・海貝灰窯", work_purpose: "熬煉海魚脂油與焙製乾貝", work_stay_activity: "正在石灶旁撇去魚油浮沫、將琥珀色海魚油封入防潮大甕",
+        errand_x: -259, errand_y: 36, errand_name: "烏石鼻・脈絡草木診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在烏石鼻・脈絡草木診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿深褐油布圍裙，手持長柄木杓，身旁堆滿乾貝與海魚", brief_tag: "海灣熬油匠人", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -259, home_y: 38, home_name: "烏石鼻・深海石斑釣客舍", home_stay_activity: "正在烏石鼻・深海石斑釣客舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
@@ -4921,6 +5103,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: -181, home_y: -248, home_name: "牛埔・長風草浪安居宅", home_stay_activity: "正在牛埔・長風草浪安居宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -183, home_y: -243, home_name: "牛埔・重型駝獸高鞍皮匠舍", home_stay_activity: "正在牛埔・重型駝獸高鞍皮匠舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -177, work_y: -246, work_name: "牛埔・牧畜交易市集", work_purpose: "過磅驗貨與結算銀錢", work_stay_activity: "正在牛埔・牧畜交易市集櫃台前用大秤過磅新到的物資、逐筆核對交收帳冊",
         errand_x: -183, errand_y: -244, errand_name: "牛埔・羊毛與乳酪精製坊", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在牛埔・羊毛與乳酪精製坊與熟識的管事交接日常物料與地方口信",
@@ -4951,6 +5139,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿靛青粗布衣褲，頭包防曬布巾，手握彎月鐮刀", brief_tag: "草甸刈草農婦", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -183, home_y: -243, home_name: "牛埔・重型駝獸高鞍皮匠舍", home_stay_activity: "正在牛埔・重型駝獸高鞍皮匠舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -177, work_y: -246, work_name: "牛埔・牧畜交易市集", work_purpose: "割取新鮮牧草與晾曬冬日乾草", work_stay_activity: "正在草甸邊緣俐落割下豐美牧草、捆成圓實草垛堆高",
+        errand_x: -177, errand_y: -244, errand_name: "牛埔・草甸脈絡調理診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・草甸脈絡調理診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿靛青粗布衣褲，頭包防曬布巾，手握彎月鐮刀", brief_tag: "草甸刈草農婦", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -179, home_y: -242, home_name: "牛埔・草甸石基暖屋一號", home_stay_activity: "正在牛埔・草甸石基暖屋一號堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -183, work_y: -246, work_name: "牛埔・牧野歇腳旅社", work_purpose: "打理客房與接待行商", work_stay_activity: "正在牛埔・牧野歇腳旅社前堂登記住宿名冊、為遠道商旅備妥熱水與乾爽被褥",
         errand_x: -177, errand_y: -244, errand_name: "牛埔・草甸脈絡調理診所", errand_purpose: "抓配草藥與請教養生", errand_stay_activity: "正在牛埔・草甸脈絡調理診所櫃台抓幾帖舒筋活血的草藥茶包備在家中",
@@ -4961,6 +5155,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -179, work_y: -242, work_name: "牛埔・草甸石基暖屋一號", work_purpose: "主持家計與居家手作", work_stay_activity: "正在牛埔・草甸石基暖屋一號院落內照看家務、整理手作料件並備妥家人茶飯",
         errand_x: -177, errand_y: -245, errand_name: "牛埔・牧業公議所", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在牛埔・牧業公議所與熟識的管事交接日常物料與地方口信",
         attire_line: "身穿米白羊毛滾邊布裙，手裡端著剛熬滾的濃香鮮乳鍋", brief_tag: "牧場家眷", morning_hour: 7, evening_hour: 17,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -179, home_y: -242, home_name: "牛埔・草甸石基暖屋一號", home_stay_activity: "正在牛埔・草甸石基暖屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -179, home_y: -242, home_name: "牛埔・草甸石基暖屋一號", home_stay_activity: "正在牛埔・草甸石基暖屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -5017,10 +5217,22 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿靛青粗布衣褲，頭包防曬布巾，手握彎月鐮刀", brief_tag: "草甸刈草農婦", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -183, home_y: -247, home_name: "牛埔・疾行草獸馴育舍", home_stay_activity: "正在牛埔・疾行草獸馴育舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -183, work_y: -244, work_name: "牛埔・羊毛與乳酪精製坊", work_purpose: "割取新鮮牧草與晾曬冬日乾草", work_stay_activity: "正在草甸邊緣俐落割下豐美牧草、捆成圓實草垛堆高",
+        errand_x: -183, errand_y: -244, errand_name: "牛埔・羊毛與乳酪精製坊", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・羊毛與乳酪精製坊與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿靛青粗布衣褲，頭包防曬布巾，手握彎月鐮刀", brief_tag: "草甸刈草農婦", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -180, home_y: -242, home_name: "牛埔・重角原牛擠乳工舍", home_stay_activity: "正在牛埔・重角原牛擠乳工舍屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -177, work_y: -244, work_name: "牛埔・草甸脈絡調理診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在牛埔・草甸脈絡調理診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: -177, errand_y: -246, errand_name: "牛埔・牧畜交易市集", errand_purpose: "採買家用與交收物料", errand_stay_activity: "正在牛埔・牧畜交易市集挑選今日所需的油鹽柴米與工坊備用料件",
         attire_line: "身穿厚實羊毛氈坎肩，腰繫皮製擠乳桶帶與牧哨", brief_tag: "草甸牧人", morning_hour: 6, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -180, home_y: -242, home_name: "牛埔・重角原牛擠乳工舍", home_stay_activity: "正在牛埔・重角原牛擠乳工舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -183, work_y: -246, work_name: "牛埔・牧野歇腳旅社", work_purpose: "放牧台灣水牛群與黃牛群", work_stay_activity: "正在向陽草坡上吹哨聚攏吃草的水牛群，檢查牛隻蹄鐵",
+        errand_x: -177, errand_y: -246, errand_name: "牛埔・牧畜交易市集", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧畜交易市集與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴寬沿草帽，身穿粗獷麻布短衫，腰插竹笛與麻鞭", brief_tag: "牛埔牧牛壯漢", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -180, home_y: -242, home_name: "牛埔・重角原牛擠乳工舍", home_stay_activity: "正在牛埔・重角原牛擠乳工舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -5057,6 +5269,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "割取新鮮牧草與晾曬冬日乾草", work_stay_activity: "正在草甸邊緣俐落割下豐美牧草、捆成圓實草垛堆高",
         errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿靛青粗布衣褲，頭包防曬布巾，手握彎月鐮刀", brief_tag: "草甸刈草農婦", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -183, home_y: -245, home_name: "牛埔・向陽草甸原牛厚毛氈壓製居", home_stay_activity: "正在牛埔・向陽草甸原牛厚毛氈壓製居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -177, work_y: -245, work_name: "牛埔・牧業公議所", work_purpose: "割取新鮮牧草與晾曬冬日乾草", work_stay_activity: "正在草甸邊緣俐落割下豐美牧草、捆成圓實草垛堆高",
+        errand_x: -183, errand_y: -246, errand_name: "牛埔・牧野歇腳旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在牛埔・牧野歇腳旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿靛青粗布衣褲，頭包防曬布巾，手握彎月鐮刀", brief_tag: "草甸刈草農婦", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -177, home_y: -243, home_name: "牛埔・牧家牛埔硬乳酪發酵老宅", home_stay_activity: "正在牛埔・牧家牛埔硬乳酪發酵老宅堂屋內與家人圍坐用膳，檢點明日上工的器物",
@@ -5179,6 +5397,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿灰麻短褲褂，頭紮汗巾，手持細目竹篩與木杵", brief_tag: "崁頂篩土夥計", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -86, home_y: -136, home_name: "紅土崁・紅磚紅瓦工人家屋二號", home_stay_activity: "正在紅土崁・紅磚紅瓦工人家屋二號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -86, work_y: -138, work_name: "紅土崁・紅土百工鐵器坊", work_purpose: "粉碎紅土礦泥與淘洗製陶細泥", work_stay_activity: "正在沉澱池旁將紅土原礦過篩去石、踩煉出柔韌陶土",
+        errand_x: -84, errand_y: -139, errand_name: "紅土崁・脈絡復原診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在紅土崁・脈絡復原診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿灰麻短褲褂，頭紮汗巾，手持細目竹篩與木杵", brief_tag: "崁頂篩土夥計", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -84, home_y: -141, home_name: "紅土崁・方氏分支選礦與耐火磚老宅", home_stay_activity: "正在紅土崁・方氏分支選礦與耐火磚老宅堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -86, work_y: -138, work_name: "紅土崁・紅土百工鐵器坊", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在紅土崁・紅土百工鐵器坊工位前專注打磨器物、校準工序品質",
         errand_x: -84, errand_y: -138, errand_name: "紅土崁・鐵礦原料調撥處", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在紅土崁・鐵礦原料調撥處與熟識的管事交接日常物料與地方口信",
@@ -5201,6 +5425,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -86, work_y: -138, work_name: "紅土崁・紅土百工鐵器坊", work_purpose: "粉碎紅土礦泥與淘洗製陶細泥", work_stay_activity: "正在沉澱池旁將紅土原礦過篩去石、踩煉出柔韌陶土",
         errand_x: -84, errand_y: -139, errand_name: "紅土崁・脈絡復原診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在紅土崁・脈絡復原診所與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿灰麻短褲褂，頭紮汗巾，手持細目竹篩與木杵", brief_tag: "崁頂篩土夥計", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -84, home_y: -141, home_name: "紅土崁・方氏分支選礦與耐火磚老宅", home_stay_activity: "正在紅土崁・方氏分支選礦與耐火磚老宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -84, work_y: -139, work_name: "紅土崁・脈絡復原診所", work_purpose: "拉坯塑形與看顧紅土磚瓦窯火", work_stay_activity: "正在轉輪前拉出渾圓耐火陶甕，並透過觀火孔調整窯溫",
+        errand_x: -86, errand_y: -139, errand_name: "紅土崁・選礦場", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在紅土崁・選礦場與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿沾滿赤紅陶泥的粗布短衫，雙手靈巧沉穩，眼神專注", brief_tag: "紅土陶窯師傅", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -84, home_y: -141, home_name: "紅土崁・方氏分支選礦與耐火磚老宅", home_stay_activity: "正在紅土崁・方氏分支選礦與耐火磚老宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -5233,6 +5463,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿灰麻短褲褂，頭紮汗巾，手持細目竹篩與木杵", brief_tag: "崁頂篩土夥計", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -86, home_y: -142, home_name: "紅土崁・赤紋鐵礦調撥員居", home_stay_activity: "正在紅土崁・赤紋鐵礦調撥員居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -86, work_y: -138, work_name: "紅土崁・紅土百工鐵器坊", work_purpose: "粉碎紅土礦泥與淘洗製陶細泥", work_stay_activity: "正在沉澱池旁將紅土原礦過篩去石、踩煉出柔韌陶土",
+        errand_x: -84, errand_y: -139, errand_name: "紅土崁・脈絡復原診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在紅土崁・脈絡復原診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿灰麻短褲褂，頭紮汗巾，手持細目竹篩與木杵", brief_tag: "崁頂篩土夥計", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -86, home_y: -143, home_name: "紅土崁・耐火泥漿攪拌工舍", home_stay_activity: "正在紅土崁・耐火泥漿攪拌工舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -84, work_y: -138, work_name: "紅土崁・鐵礦原料調撥處", work_purpose: "過磅驗貨與結算銀錢", work_stay_activity: "正在紅土崁・鐵礦原料調撥處櫃台前用大秤過磅新到的物資、逐筆核對交收帳冊",
         errand_x: -86, errand_y: -138, errand_name: "紅土崁・紅土百工鐵器坊", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在紅土崁・紅土百工鐵器坊與熟識的管事交接日常物料與地方口信",
@@ -5263,6 +5499,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿沾滿赤紅陶泥的粗布短衫，雙手靈巧沉穩，眼神專注", brief_tag: "紅土陶窯師傅", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: -86, home_y: -143, home_name: "紅土崁・耐火泥漿攪拌工舍", home_stay_activity: "正在紅土崁・耐火泥漿攪拌工舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -84, work_y: -139, work_name: "紅土崁・脈絡復原診所", work_purpose: "拉坯塑形與看顧紅土磚瓦窯火", work_stay_activity: "正在轉輪前拉出渾圓耐火陶甕，並透過觀火孔調整窯溫",
+        errand_x: -86, errand_y: -139, errand_name: "紅土崁・選礦場", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在紅土崁・選礦場與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿沾滿赤紅陶泥的粗布短衫，雙手靈巧沉穩，眼神專注", brief_tag: "紅土陶窯師傅", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -84, home_y: -137, home_name: "紅土崁・重型鍛錘鋼模修造舍", home_stay_activity: "正在紅土崁・重型鍛錘鋼模修造舍屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -84, work_y: -139, work_name: "紅土崁・脈絡復原診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在紅土崁・脈絡復原診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: -86, errand_y: -139, errand_name: "紅土崁・選礦場", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在紅土崁・選礦場與熟識的管事交接日常物料與地方口信",
@@ -5281,6 +5523,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿灰麻短褲褂，頭紮汗巾，手持細目竹篩與木杵", brief_tag: "崁頂篩土夥計", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -84, home_y: -137, home_name: "紅土崁・重型鍛錘鋼模修造舍", home_stay_activity: "正在紅土崁・重型鍛錘鋼模修造舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -86, work_y: -138, work_name: "紅土崁・紅土百工鐵器坊", work_purpose: "粉碎紅土礦泥與淘洗製陶細泥", work_stay_activity: "正在沉澱池旁將紅土原礦過篩去石、踩煉出柔韌陶土",
+        errand_x: -84, errand_y: -139, errand_name: "紅土崁・脈絡復原診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在紅土崁・脈絡復原診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿灰麻短褲褂，頭紮汗巾，手持細目竹篩與木杵", brief_tag: "崁頂篩土夥計", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -88, home_y: -140, home_name: "紅土崁・千度耐火磚瓦窯居", home_stay_activity: "正在紅土崁・千度耐火磚瓦窯居堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -86, work_y: -138, work_name: "紅土崁・紅土百工鐵器坊", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在紅土崁・紅土百工鐵器坊工位前專注打磨器物、校準工序品質",
         errand_x: -84, errand_y: -138, errand_name: "紅土崁・鐵礦原料調撥處", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在紅土崁・鐵礦原料調撥處與熟識的管事交接日常物料與地方口信",
@@ -5297,6 +5545,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -86, work_y: -138, work_name: "紅土崁・紅土百工鐵器坊", work_purpose: "粉碎紅土礦泥與淘洗製陶細泥", work_stay_activity: "正在沉澱池旁將紅土原礦過篩去石、踩煉出柔韌陶土",
         errand_x: -84, errand_y: -139, errand_name: "紅土崁・脈絡復原診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在紅土崁・脈絡復原診所與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿灰麻短褲褂，頭紮汗巾，手持細目竹篩與木杵", brief_tag: "崁頂篩土夥計", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -88, home_y: -140, home_name: "紅土崁・千度耐火磚瓦窯居", home_stay_activity: "正在紅土崁・千度耐火磚瓦窯居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -84, work_y: -139, work_name: "紅土崁・脈絡復原診所", work_purpose: "拉坯塑形與看顧紅土磚瓦窯火", work_stay_activity: "正在轉輪前拉出渾圓耐火陶甕，並透過觀火孔調整窯溫",
+        errand_x: -86, errand_y: -139, errand_name: "紅土崁・選礦場", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在紅土崁・選礦場與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿沾滿赤紅陶泥的粗布短衫，雙手靈巧沉穩，眼神專注", brief_tag: "紅土陶窯師傅", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -88, home_y: -140, home_name: "紅土崁・千度耐火磚瓦窯居", home_stay_activity: "正在紅土崁・千度耐火磚瓦窯居堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -5467,6 +5721,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "頭戴防落石藤盔，額前掛著防風油燈，身穿厚帆布礦工服", brief_tag: "坑口掘礦老匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: -286, home_y: -141, home_name: "三號坑口・重型捲揚軌道機工居", home_stay_activity: "正在三號坑口・重型捲揚軌道機工居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -286, work_y: -138, work_name: "三號坑口・坑口礦工旅社", work_purpose: "深入三號坑道辨識富礦脈與支護坑木", work_stay_activity: "正在坑口檢視礦車帶出的赤鐵礦石成色，加固坑道杉木支撐",
+        errand_x: -284, errand_y: -138, errand_name: "三號坑口・礦山生活物資行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在三號坑口・礦山生活物資行與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴防落石藤盔，額前掛著防風油燈，身穿厚帆布礦工服", brief_tag: "坑口掘礦老匠", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -286, home_y: -142, home_name: "三號坑口・雙刃碎石手鎬淬火工匠舍", home_stay_activity: "正在三號坑口・雙刃碎石手鎬淬火工匠舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -284, work_y: -139, work_name: "三號坑口・脈絡急救診所", work_purpose: "煎藥與照料傷患", work_stay_activity: "正在三號坑口・脈絡急救診所分揀道地藥材、協助醫師煎煮活血防瘴湯藥",
         errand_x: -290, errand_y: -140, errand_name: "三號坑口・礦務所", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在三號坑口・礦務所與熟識的管事交接日常物料與地方口信",
@@ -5497,6 +5757,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿深色耐磨短衫，雙手戴著厚麻手套，手握選礦鐵鏟", brief_tag: "選礦洗砂青年", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -286, home_y: -142, home_name: "三號坑口・雙刃碎石手鎬淬火工匠舍", home_stay_activity: "正在三號坑口・雙刃碎石手鎬淬火工匠舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -284, work_y: -139, work_name: "三號坑口・脈絡急救診所", work_purpose: "敲碎原礦並以流水淘選出高純度鐵砂", work_stay_activity: "正在洗礦槽前引山澗急流沖洗碎礦，將重鐵砂裝入麻袋",
+        errand_x: -286, errand_y: -139, errand_name: "三號坑口・坑口台車維修棚", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在三號坑口・坑口台車維修棚與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿深色耐磨短衫，雙手戴著厚麻手套，手握選礦鐵鏟", brief_tag: "選礦洗砂青年", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -284, home_y: -142, home_name: "三號坑口・採礦防爆防風礦燈檢修舍", home_stay_activity: "正在三號坑口・採礦防爆防風礦燈檢修舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -284, work_y: -138, work_name: "三號坑口・礦山生活物資行", work_purpose: "過磅驗貨與結算銀錢", work_stay_activity: "正在三號坑口・礦山生活物資行櫃台前用大秤過磅新到的物資、逐筆核對交收帳冊",
         errand_x: -286, errand_y: -139, errand_name: "三號坑口・坑口台車維修棚", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在三號坑口・坑口台車維修棚與熟識的管事交接日常物料與地方口信",
@@ -5507,6 +5773,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -284, work_y: -142, work_name: "三號坑口・採礦防爆防風礦燈檢修舍", work_purpose: "主持家計與居家手作", work_stay_activity: "正在三號坑口・採礦防爆防風礦燈檢修舍院落內照看家務、整理手作料件並備妥家人茶飯",
         errand_x: -286, errand_y: -138, errand_name: "三號坑口・坑口礦工旅社", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在三號坑口・坑口礦工旅社與熟識的管事交接日常物料與地方口信",
         attire_line: "身穿靛青耐洗粗布衫裙，正在石砌院落旁檢修防風礦燈與擦拭燈罩", brief_tag: "礦工家眷", morning_hour: 7, evening_hour: 17,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -284, home_y: -142, home_name: "三號坑口・採礦防爆防風礦燈檢修舍", home_stay_activity: "正在三號坑口・採礦防爆防風礦燈檢修舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -286, work_y: -139, work_name: "三號坑口・坑口台車維修棚", work_purpose: "深入三號坑道辨識富礦脈與支護坑木", work_stay_activity: "正在坑口檢視礦車帶出的赤鐵礦石成色，加固坑道杉木支撐",
+        errand_x: -284, errand_y: -138, errand_name: "三號坑口・礦山生活物資行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在三號坑口・礦山生活物資行與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴防落石藤盔，額前掛著防風油燈，身穿厚帆布礦工服", brief_tag: "坑口掘礦老匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -284, home_y: -142, home_name: "三號坑口・採礦防爆防風礦燈檢修舍", home_stay_activity: "正在三號坑口・採礦防爆防風礦燈檢修舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -5557,10 +5829,22 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿深色耐磨短衫，雙手戴著厚麻手套，手握選礦鐵鏟", brief_tag: "選礦洗砂青年", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -286, home_y: -143, home_name: "三號坑口・西嶺堅石安平宅", home_stay_activity: "正在三號坑口・西嶺堅石安平宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -290, work_y: -140, work_name: "三號坑口・礦務所", work_purpose: "敲碎原礦並以流水淘選出高純度鐵砂", work_stay_activity: "正在洗礦槽前引山澗急流沖洗碎礦，將重鐵砂裝入麻袋",
+        errand_x: -290, errand_y: -140, errand_name: "三號坑口・礦務所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在三號坑口・礦務所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿深色耐磨短衫，雙手戴著厚麻手套，手握選礦鐵鏟", brief_tag: "選礦洗砂青年", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -286, home_y: -136, home_name: "三號坑口・礦石樣本檢測齋", home_stay_activity: "正在三號坑口・礦石樣本檢測齋屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -286, work_y: -139, work_name: "三號坑口・坑口台車維修棚", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在三號坑口・坑口台車維修棚工位前專注打磨器物、校準工序品質",
         errand_x: -284, errand_y: -139, errand_name: "三號坑口・脈絡急救診所", errand_purpose: "抓配草藥與請教養生", errand_stay_activity: "正在三號坑口・脈絡急救診所櫃台抓幾帖舒筋活血的草藥茶包備在家中",
         attire_line: "身穿防煤塵深灰厚帆布礦工服，頭戴防爆銅網礦燈，腰別雙刃手鎬", brief_tag: "西嶺採礦匠", morning_hour: 6, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -286, home_y: -136, home_name: "三號坑口・礦石樣本檢測齋", home_stay_activity: "正在三號坑口・礦石樣本檢測齋堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -284, work_y: -138, work_name: "三號坑口・礦山生活物資行", work_purpose: "深入三號坑道辨識富礦脈與支護坑木", work_stay_activity: "正在坑口檢視礦車帶出的赤鐵礦石成色，加固坑道杉木支撐",
+        errand_x: -284, errand_y: -139, errand_name: "三號坑口・脈絡急救診所", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在三號坑口・脈絡急救診所與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴防落石藤盔，額前掛著防風油燈，身穿厚帆布礦工服", brief_tag: "坑口掘礦老匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -286, home_y: -136, home_name: "三號坑口・礦石樣本檢測齋", home_stay_activity: "正在三號坑口・礦石樣本檢測齋堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -5597,6 +5881,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -286, work_y: -138, work_name: "三號坑口・坑口礦工旅社", work_purpose: "敲碎原礦並以流水淘選出高純度鐵砂", work_stay_activity: "正在洗礦槽前引山澗急流沖洗碎礦，將重鐵砂裝入麻袋",
         errand_x: -284, errand_y: -138, errand_name: "三號坑口・礦山生活物資行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在三號坑口・礦山生活物資行與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "身穿深色耐磨短衫，雙手戴著厚麻手套，手握選礦鐵鏟", brief_tag: "選礦洗砂青年", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -284, home_y: -137, home_name: "三號坑口・礦道通風支柱老木匠居", home_stay_activity: "正在三號坑口・礦道通風支柱老木匠居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -286, work_y: -138, work_name: "三號坑口・坑口礦工旅社", work_purpose: "敲碎原礦並以流水淘選出高純度鐵砂", work_stay_activity: "正在洗礦槽前引山澗急流沖洗碎礦，將重鐵砂裝入麻袋",
+        errand_x: -284, errand_y: -138, errand_name: "三號坑口・礦山生活物資行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在三號坑口・礦山生活物資行與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿深色耐磨短衫，雙手戴著厚麻手套，手握選礦鐵鏟", brief_tag: "選礦洗砂青年", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -286, home_y: -137, home_name: "三號坑口・依嶺石砌礦工宿舍一號", home_stay_activity: "正在三號坑口・依嶺石砌礦工宿舍一號堂屋內與家人圍坐用膳，檢點明日上工的器物",
@@ -5731,6 +6021,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "身穿清爽青麻布衫，膝上鋪著皮護墊，手握鋒利破竹篾刀", brief_tag: "水尾編竹巧匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
+        home_x: -74, home_y: -275, home_name: "水尾寮・黑沼生鮮水產暫存冷浸舍", home_stay_activity: "正在水尾寮・黑沼生鮮水產暫存冷浸舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -74, work_y: -279, work_name: "水尾寮・濕地脈絡防瘴診所", work_purpose: "劈削桂竹青篾與編織桐油雨具", work_stay_activity: "正在竹棚下將三年老桂竹破成薄如蟬翼的竹篾、編結斗笠傘骨",
+        errand_x: -76, errand_y: -278, errand_name: "水尾寮・水尾浮木旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在水尾寮・水尾浮木旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿清爽青麻布衫，膝上鋪著皮護墊，手握鋒利破竹篾刀", brief_tag: "水尾編竹巧匠", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -76, home_y: -283, home_name: "水尾寮・架高避水木屋一號", home_stay_activity: "正在水尾寮・架高避水木屋一號堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -76, work_y: -279, work_name: "水尾寮・蘆葦與竹編工棚", work_purpose: "匠作生產與器物打磨", work_stay_activity: "正在水尾寮・蘆葦與竹編工棚工位前專注打磨器物、校準工序品質",
         errand_x: -73, errand_y: -280, errand_name: "水尾寮・平底竹筏埠", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在水尾寮・平底竹筏埠與熟識的管事交接日常物料與地方口信",
@@ -5761,6 +6057,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "頭戴油竹笠，身穿防潑水短褂，雙手握著丈八長竹篙", brief_tag: "溪尾撐筏船夫", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -76, home_y: -283, home_name: "水尾寮・架高避水木屋一號", home_stay_activity: "正在水尾寮・架高避水木屋一號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -76, work_y: -279, work_name: "水尾寮・蘆葦與竹編工棚", work_purpose: "撐行竹筏順溪運送山產竹材", work_stay_activity: "正在水尾淺灘用麻藤重新紮緊竹筏浮筒、裝載成捆竹材",
+        errand_x: -74, errand_y: -278, errand_name: "水尾寮・黑沼生鮮水產行", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在水尾寮・黑沼生鮮水產行與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴油竹笠，身穿防潑水短褂，雙手握著丈八長竹篙", brief_tag: "溪尾撐筏船夫", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -76, home_y: -277, home_name: "水尾寮・白茫洲止血水苔採收人舍", home_stay_activity: "正在水尾寮・白茫洲止血水苔採收人舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
         work_x: -76, work_y: -278, work_name: "水尾寮・水尾浮木旅社", work_purpose: "打理客房與接待行商", work_stay_activity: "正在水尾寮・水尾浮木旅社前堂登記住宿名冊、為遠道商旅備妥熱水與乾爽被褥",
         errand_x: -74, errand_y: -278, errand_name: "水尾寮・黑沼生鮮水產行", errand_purpose: "採買家用與交收物料", errand_stay_activity: "正在水尾寮・黑沼生鮮水產行挑選今日所需的油鹽柴米與工坊備用料件",
@@ -5771,6 +6073,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -76, work_y: -277, work_name: "水尾寮・白茫洲止血水苔採收人舍", work_purpose: "主持家計與居家手作", work_stay_activity: "正在水尾寮・白茫洲止血水苔採收人舍院落內照看家務、整理手作料件並備妥家人茶飯",
         errand_x: -74, errand_y: -279, errand_name: "水尾寮・濕地脈絡防瘴診所", errand_purpose: "抓配草藥與請教養生", errand_stay_activity: "正在水尾寮・濕地脈絡防瘴診所櫃台抓幾帖舒筋活血的草藥茶包備在家中",
         attire_line: "身穿清爽的淺綠麻布衫裙，正在高腳木屋廊下編織細密蘆葦簾", brief_tag: "水寮家眷", morning_hour: 7, evening_hour: 17,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -76, home_y: -277, home_name: "水尾寮・白茫洲止血水苔採收人舍", home_stay_activity: "正在水尾寮・白茫洲止血水苔採收人舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -74, work_y: -278, work_name: "水尾寮・黑沼生鮮水產行", work_purpose: "劈削桂竹青篾與編織桐油雨具", work_stay_activity: "正在竹棚下將三年老桂竹破成薄如蟬翼的竹篾、編結斗笠傘骨",
+        errand_x: -76, errand_y: -278, errand_name: "水尾寮・水尾浮木旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在水尾寮・水尾浮木旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿清爽青麻布衫，膝上鋪著皮護墊，手握鋒利破竹篾刀", brief_tag: "水尾編竹巧匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -76, home_y: -277, home_name: "水尾寮・白茫洲止血水苔採收人舍", home_stay_activity: "正在水尾寮・白茫洲止血水苔採收人舍堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -5821,10 +6129,22 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         attire_line: "頭戴油竹笠，身穿防潑水短褂，雙手握著丈八長竹篙", brief_tag: "溪尾撐筏船夫", morning_hour: 7, evening_hour: 19,
     },
     WenyaoHouseholdSlot {
+        home_x: -74, home_y: -282, home_name: "水尾寮・阮家高腳木屋與平底竹筏匠老宅", home_stay_activity: "正在水尾寮・阮家高腳木屋與平底竹筏匠老宅堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -73, work_y: -280, work_name: "水尾寮・平底竹筏埠", work_purpose: "撐行竹筏順溪運送山產竹材", work_stay_activity: "正在水尾淺灘用麻藤重新紮緊竹筏浮筒、裝載成捆竹材",
+        errand_x: -73, errand_y: -280, errand_name: "水尾寮・平底竹筏埠", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在水尾寮・平底竹筏埠與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴油竹笠，身穿防潑水短褂，雙手握著丈八長竹篙", brief_tag: "溪尾撐筏船夫", morning_hour: 6, evening_hour: 18,
+    },
+    WenyaoHouseholdSlot {
         home_x: -74, home_y: -277, home_name: "水尾寮・柔韌蘆葦編簾工匠居", home_stay_activity: "正在水尾寮・柔韌蘆葦編簾工匠居屋內獨自整理隨身器具、生火煮茶歇息",
         work_x: -74, work_y: -278, work_name: "水尾寮・黑沼生鮮水產行", work_purpose: "過磅驗貨與結算銀錢", work_stay_activity: "正在水尾寮・黑沼生鮮水產行櫃台前用大秤過磅新到的物資、逐筆核對交收帳冊",
         errand_x: -76, errand_y: -279, errand_name: "水尾寮・蘆葦與竹編工棚", errand_purpose: "洽辦雜務與互通有無", errand_stay_activity: "正在水尾寮・蘆葦與竹編工棚與熟識的管事交接日常物料與地方口信",
         attire_line: "身穿防泥水浸濕的油麻短衣，手握削竹刀與平底竹筏長篙", brief_tag: "水尾竹筏匠", morning_hour: 6, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -74, home_y: -277, home_name: "水尾寮・柔韌蘆葦編簾工匠居", home_stay_activity: "正在水尾寮・柔韌蘆葦編簾工匠居堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -76, work_y: -278, work_name: "水尾寮・水尾浮木旅社", work_purpose: "劈削桂竹青篾與編織桐油雨具", work_stay_activity: "正在竹棚下將三年老桂竹破成薄如蟬翼的竹篾、編結斗笠傘骨",
+        errand_x: -76, errand_y: -279, errand_name: "水尾寮・蘆葦與竹編工棚", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在水尾寮・蘆葦與竹編工棚與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "身穿清爽青麻布衫，膝上鋪著皮護墊，手握鋒利破竹篾刀", brief_tag: "水尾編竹巧匠", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -74, home_y: -277, home_name: "水尾寮・柔韌蘆葦編簾工匠居", home_stay_activity: "正在水尾寮・柔韌蘆葦編簾工匠居堂屋與同住家人圍坐話家常、檢整明日作息器物",
@@ -5861,6 +6181,12 @@ pub const OUTER_HOUSEHOLD_SLOTS: &[WenyaoHouseholdSlot] = &[
         work_x: -74, work_y: -279, work_name: "水尾寮・濕地脈絡防瘴診所", work_purpose: "撐行竹筏順溪運送山產竹材", work_stay_activity: "正在水尾淺灘用麻藤重新紮緊竹筏浮筒、裝載成捆竹材",
         errand_x: -76, errand_y: -278, errand_name: "水尾寮・水尾浮木旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在水尾寮・水尾浮木旅社與街坊鄰里交接日用物資、寒暄近況",
         attire_line: "頭戴油竹笠，身穿防潑水短褂，雙手握著丈八長竹篙", brief_tag: "溪尾撐筏船夫", morning_hour: 7, evening_hour: 19,
+    },
+    WenyaoHouseholdSlot {
+        home_x: -74, home_y: -276, home_name: "水尾寮・架高避水木屋二號", home_stay_activity: "正在水尾寮・架高避水木屋二號堂屋與同住家人圍坐話家常、檢整明日作息器物",
+        work_x: -74, work_y: -279, work_name: "水尾寮・濕地脈絡防瘴診所", work_purpose: "撐行竹筏順溪運送山產竹材", work_stay_activity: "正在水尾淺灘用麻藤重新紮緊竹筏浮筒、裝載成捆竹材",
+        errand_x: -76, errand_y: -278, errand_name: "水尾寮・水尾浮木旅社", errand_purpose: "採買日用與互通消息", errand_stay_activity: "正在水尾寮・水尾浮木旅社與街坊鄰里交接日用物資、寒暄近況",
+        attire_line: "頭戴油竹笠，身穿防潑水短褂，雙手握著丈八長竹篙", brief_tag: "溪尾撐筏船夫", morning_hour: 6, evening_hour: 18,
     },
     WenyaoHouseholdSlot {
         home_x: -76, home_y: -282, home_name: "水尾寮・沼生烏木打樁水工舍", home_stay_activity: "正在水尾寮・沼生烏木打樁水工舍堂屋內與家人圍坐用膳，檢點明日上工的器物",
