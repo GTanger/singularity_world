@@ -361,19 +361,61 @@
 			});
 		}
 	}
+	var activeStarplateDrawer = 'martial';
+	var activeMartialSkillIdx = 0;
+	var activeCraftSkillIdx = 0;
+	var activeStarplateHubIdx = -1;
+
+	function syncStarplateDrawers() {
+		var pane = document.getElementById('player-modal-pane-starplate');
+		if (!pane) return;
+		pane.querySelectorAll('.sw-accordion-drawer').forEach(function (drawer) {
+			var key = drawer.getAttribute('data-drawer');
+			var isOpen = key === activeStarplateDrawer;
+			drawer.classList.toggle('is-open', isOpen);
+			var arrow = drawer.querySelector('.sw-accordion-arrow');
+			if (arrow) arrow.textContent = isOpen ? '▾' : '▸';
+			var body = drawer.querySelector('.sw-accordion-body');
+			if (body) body.hidden = !isOpen;
+		});
+	}
+
+	function bindDrawerHeader(drawer, key) {
+		var hdr = drawer.querySelector('.sw-accordion-header');
+		if (!hdr) return;
+		hdr.addEventListener('click', function () {
+			activeStarplateDrawer = (activeStarplateDrawer === key) ? '' : key;
+			syncStarplateDrawers();
+		});
+	}
+
 	function renderSkillPane(msg) {
 		var wrap = document.getElementById('skill-content');
 		if (!wrap) return;
 		var skills = (msg && Array.isArray(msg.natural_skills)) ? msg.natural_skills : [];
 		var html = '<div class="skill-section">';
 		if (!skills.length) {
-			html += '<div class="skill-section-title">【 身手與手藝 】</div>';
-			html += '<div class="skill-section-body"><div class="skill-placeholder">氣脈初凝，隨日常採獵、百工與吐納漸次成形。</div></div>';
+			html += '<div class="sw-accordion-drawer is-open" data-drawer="martial">';
+			html += '<div class="sw-accordion-header"><span class="sw-accordion-title"><span class="sw-accordion-arrow">▾</span>【內息與臨陣身手】</span><span class="sw-accordion-badge">初凝</span></div>';
+			html += '<div class="sw-accordion-body"><div class="skill-placeholder">氣脈初凝，隨日常採獵、百工與吐納漸次成形。</div></div>';
+			html += '</div>';
 		} else {
 			var martial = skills.filter(function (s) { return s.domain === 'martial'; });
 			var prod = skills.filter(function (s) { return s.domain === 'production'; });
 			if (martial.length) {
-				html += '<div class="equip-section-title" style="margin:4px 0 8px 0;">【 臨陣身手 】</div>';
+				if (activeMartialSkillIdx >= martial.length) activeMartialSkillIdx = 0;
+				var breathItem = martial.find(function (s) {
+					return (s.category_label || '').indexOf('內息底色') !== -1 || s.category === 'inner_breath';
+				});
+				var martialMoveCount = martial.length - (breathItem ? 1 : 0);
+				var martialBadge = (breathItem ? '《' + esc(breathItem.name) + '》· ' : '') + martialMoveCount + ' 式';
+				var isMartialOpen = activeStarplateDrawer === 'martial';
+				html += '<div class="sw-accordion-drawer' + (isMartialOpen ? ' is-open' : '') + '" data-drawer="martial">';
+				html += '<div class="sw-accordion-header">';
+				html += '<span class="sw-accordion-title"><span class="sw-accordion-arrow">' + (isMartialOpen ? '▾' : '▸') + '</span>【內息與臨陣身手】</span>';
+				html += '<span class="sw-accordion-badge">' + martialBadge + '</span>';
+				html += '</div>';
+				html += '<div class="sw-accordion-body"' + (isMartialOpen ? '' : ' hidden') + '>';
 				for (var i = 0; i < martial.length; i++) {
 					var ms = martial[i];
 					var isBreathHabit = (ms.category_label || '').indexOf('內息底色') !== -1 || ms.category === 'inner_breath';
@@ -382,40 +424,82 @@
 					else if (ms.category_label && ms.category_label.indexOf('連攜') !== -1) slotKey = 'midgame';
 					else if (ms.category_label && ms.category_label.indexOf('破綻') !== -1) slotKey = 'finisher';
 					else if (ms.category_label && ms.category_label.indexOf('守勢') !== -1) slotKey = 'defense';
-
-					html += '<div class="starplate-block" style="margin-bottom:8px;padding:8px 10px;">';
-					html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
-					html += '<div><strong>◆ 《' + esc(ms.name) + '》</strong> <span class="text-muted">｜ ' + esc(ms.category_label) + '</span></div>';
+					var isSubOpen = (i === activeMartialSkillIdx);
+					html += '<div class="sw-sub-accordion-card' + (isSubOpen ? ' is-open' : '') + '" data-sub-group="martial" data-sub-idx="' + i + '">';
+					html += '<div class="sw-sub-accordion-header">';
+					html += '<div class="sw-sub-accordion-main"><span class="sw-sub-arrow">' + (isSubOpen ? '▾' : '▸') + '</span> <strong>◆ 《' + esc(ms.name) + '》</strong> <span class="text-muted">｜ ' + esc(ms.category_label) + '</span></div>';
 					if (!isBreathHabit) {
-						html += '<button type="button" class="transcribe-manual-btn" data-slot="' + slotKey + '" style="cursor:pointer;padding:2px 8px;font-size:0.85em;border:1px solid #7c5c28;background:rgba(139,105,20,0.12);color:#6e4b0e;font-weight:600;border-radius:3px;">著譜立說</button>';
+						html += '<button type="button" class="transcribe-manual-btn" data-slot="' + slotKey + '">著譜立說</button>';
 					}
 					html += '</div>';
-					html += '<div style="font-size:0.92em;margin-top:3px;">' + esc(ms.origin_basis) + '</div>';
+					html += '<div class="sw-sub-accordion-body"' + (isSubOpen ? '' : ' hidden') + '>';
+					html += '<div class="sw-sub-basis">' + esc(ms.origin_basis) + '</div>';
 					if (isBreathHabit && ms.auto_trigger_desc) {
-						html += '<div style="font-size:0.88em;margin-top:4px;color:#6e4b0e;font-weight:600;">行氣與實效：' + esc(ms.auto_trigger_desc) + '</div>';
+						html += '<div class="sw-sub-effect">行氣與實效：' + esc(ms.auto_trigger_desc) + '</div>';
 					}
 					if (ms.learned_and_familiar) {
-						html += '<div class="text-muted" style="font-size:0.88em;margin-top:2px;">' + esc(ms.learned_and_familiar) + '</div>';
+						html += '<div class="text-muted sw-sub-familiar">' + esc(ms.learned_and_familiar) + '</div>';
 					}
-					html += '</div>';
+					html += '</div></div>';
 				}
+				html += '</div></div>';
 			}
 			if (prod.length) {
-				html += '<div class="equip-section-title" style="margin:14px 0 8px 0;">【 百工手藝 】</div>';
+				if (activeCraftSkillIdx >= prod.length) activeCraftSkillIdx = 0;
+				var isCraftOpen = activeStarplateDrawer === 'craft';
+				var craftBadge = '百工 ' + prod.length + ' 藝';
+				html += '<div class="sw-accordion-drawer' + (isCraftOpen ? ' is-open' : '') + '" data-drawer="craft">';
+				html += '<div class="sw-accordion-header">';
+				html += '<span class="sw-accordion-title"><span class="sw-accordion-arrow">' + (isCraftOpen ? '▾' : '▸') + '</span>【百工造物手藝】</span>';
+				html += '<span class="sw-accordion-badge">' + craftBadge + '</span>';
+				html += '</div>';
+				html += '<div class="sw-accordion-body"' + (isCraftOpen ? '' : ' hidden') + '>';
 				for (var j = 0; j < prod.length; j++) {
 					var ps = prod[j];
-					html += '<div class="starplate-block" style="margin-bottom:8px;padding:8px 10px;">';
-					html += '<div><strong>◇ 《' + esc(ps.name) + '》</strong> <span class="text-muted">｜ ' + esc(ps.category_label) + '</span></div>';
-					html += '<div style="font-size:0.92em;margin-top:3px;">' + esc(ps.origin_basis) + '</div>';
-					if (ps.learned_and_familiar) {
-						html += '<div class="text-muted" style="font-size:0.88em;margin-top:2px;">' + esc(ps.learned_and_familiar) + '</div>';
-					}
+					var isProdSubOpen = (j === activeCraftSkillIdx);
+					html += '<div class="sw-sub-accordion-card' + (isProdSubOpen ? ' is-open' : '') + '" data-sub-group="craft" data-sub-idx="' + j + '">';
+					html += '<div class="sw-sub-accordion-header">';
+					html += '<div class="sw-sub-accordion-main"><span class="sw-sub-arrow">' + (isProdSubOpen ? '▾' : '▸') + '</span> <strong>◇ 《' + esc(ps.name) + '》</strong> <span class="text-muted">｜ ' + esc(ps.category_label) + '</span></div>';
 					html += '</div>';
+					html += '<div class="sw-sub-accordion-body"' + (isProdSubOpen ? '' : ' hidden') + '>';
+					html += '<div class="sw-sub-basis">' + esc(ps.origin_basis) + '</div>';
+					if (ps.learned_and_familiar) {
+						html += '<div class="text-muted sw-sub-familiar">' + esc(ps.learned_and_familiar) + '</div>';
+					}
+					html += '</div></div>';
 				}
+				html += '</div></div>';
 			}
 		}
 		html += '</div>';
 		wrap.innerHTML = html;
+		wrap.querySelectorAll('.sw-accordion-drawer').forEach(function (drawer) {
+			bindDrawerHeader(drawer, drawer.getAttribute('data-drawer'));
+		});
+		wrap.querySelectorAll('.sw-sub-accordion-card').forEach(function (card) {
+			var hdr = card.querySelector('.sw-sub-accordion-header');
+			if (!hdr) return;
+			hdr.addEventListener('click', function (e) {
+				if (e.target.closest('.transcribe-manual-btn')) return;
+				var group = card.getAttribute('data-sub-group');
+				var idx = parseInt(card.getAttribute('data-sub-idx'), 10);
+				if (group === 'martial') {
+					activeMartialSkillIdx = (activeMartialSkillIdx === idx) ? -1 : idx;
+				} else if (group === 'craft') {
+					activeCraftSkillIdx = (activeCraftSkillIdx === idx) ? -1 : idx;
+				}
+				var activeIdx = (group === 'martial') ? activeMartialSkillIdx : activeCraftSkillIdx;
+				wrap.querySelectorAll('.sw-sub-accordion-card[data-sub-group="' + group + '"]').forEach(function (c) {
+					var cIdx = parseInt(c.getAttribute('data-sub-idx'), 10);
+					var open = (cIdx === activeIdx);
+					c.classList.toggle('is-open', open);
+					var arr = c.querySelector('.sw-sub-arrow');
+					if (arr) arr.textContent = open ? '▾' : '▸';
+					var body = c.querySelector('.sw-sub-accordion-body');
+					if (body) body.hidden = !open;
+				});
+			});
+		});
 		wrap.querySelectorAll('.transcribe-manual-btn').forEach(function (btn) {
 			btn.addEventListener('click', function (e) {
 				e.stopPropagation();
@@ -550,29 +634,46 @@
 	];
 
 	function renderTacticalSection(container) {
+		var words = lastTacticalState.casket || [];
+		var isTacticsOpen = activeStarplateDrawer === 'tactics';
+		var drawer = document.createElement('div');
+		drawer.className = 'sw-accordion-drawer' + (isTacticsOpen ? ' is-open' : '');
+		drawer.setAttribute('data-drawer', 'tactics');
+
+		var drawerHeader = document.createElement('div');
+		drawerHeader.className = 'sw-accordion-header';
+		drawerHeader.innerHTML = '<span class="sw-accordion-title"><span class="sw-accordion-arrow">' + (isTacticsOpen ? '▾' : '▸') + '</span>【識海字譜與四序配招】</span>' +
+			'<span class="sw-accordion-badge">心印 ' + words.length + ' 種 · 四序</span>';
+		drawer.appendChild(drawerHeader);
+
 		var section = document.createElement('div');
-		section.className = 'tactical-loadout-panel';
+		section.className = 'sw-accordion-body tactical-loadout-panel';
+		section.hidden = !isTacticsOpen;
 
 		// 1. 萬人萬相・心印收納
 		var casketHeader = document.createElement('div');
-		casketHeader.className = 'starplate-block';
-		casketHeader.innerHTML = '<strong>[ 識海字譜 ]</strong>';
+		casketHeader.className = 'starplate-block sw-section-subhead';
+		casketHeader.innerHTML = '<strong>[ 識海字譜 ]</strong> <span class="text-muted">點選字印以排入下方展開之戰術序位</span>';
 		section.appendChild(casketHeader);
 
 		var casketBox = document.createElement('div');
 		casketBox.className = 'tactical-casket-box';
-		var words = lastTacticalState.casket || [];
 		var selectedWordId = null;
+
+		function formatCompactWords(wordArr) {
+			if (!wordArr || !wordArr.length) return '（未凝心印）';
+			return '【' + wordArr.map(getWordLabel).join('・') + '】';
+		}
 
 		function updateSlotCard(key) {
 			var card = section.querySelector('.tactical-slot-card[data-slot="' + key + '"]');
 			if (!card) return;
 			var cur = (lastTacticalState.loadout && lastTacticalState.loadout[key]) || { nodes: [], words: [], name: '' };
+			var wordListStr = (cur.words && cur.words.length) ? cur.words.map(function (w) { return '【' + getWordLabel(w) + '】'; }).join(' ') : '（未凝心印）';
 			var preview = card.querySelector('.active-words');
-			if (preview) {
-				var wordListStr = (cur.words && cur.words.length) ? cur.words.map(function(w){ return '【' + getWordLabel(w) + '】'; }).join(' ') : '（未凝心印）';
-				preview.textContent = wordListStr;
-			}
+			if (preview) preview.textContent = wordListStr;
+			var inlineWords = card.querySelector('.tactical-slot-inline-words');
+			if (inlineWords) inlineWords.textContent = formatCompactWords(cur.words);
 			var nodesPreview = card.querySelector('.tactical-nodes-preview');
 			if (nodesPreview) {
 				var nodeListStr = (cur.nodes && cur.nodes.length) ? cur.nodes.map(formatNodeName).join(' · ') : '天極主樞';
@@ -586,9 +687,10 @@
 				var wBtn = document.createElement('button');
 				wBtn.type = 'button';
 				wBtn.className = 'tactical-word-crystal';
-				var countBadge = (item.count && item.count > 1) ? '（' + item.count + '枚）' : '';
-				var qualStr = item.quality_label ? ' [' + item.quality_label + ']' : '';
-				wBtn.textContent = '【' + label + '】' + qualStr + countBadge;
+				var countNum = (item.count && item.count > 1) ? '×' + item.count : '';
+				var shortQual = item.quality_label ? item.quality_label.replace('品', '') : '';
+				wBtn.textContent = '【' + label + '】' + shortQual + countNum;
+				wBtn.title = '【' + label + '】' + (item.quality_label ? '[' + item.quality_label + ']' : '') + (item.count ? '（' + item.count + '枚）' : '');
 				wBtn.setAttribute('data-word', label);
 				wBtn.addEventListener('click', function () {
 					selectedWordId = item.id || label;
@@ -650,10 +752,10 @@
 		casketActions.appendChild(mintBtn);
 		section.appendChild(casketActions);
 
-		// 2. 成相四序・臨陣應變
+		// 2. 成相四序・臨陣應變（內層風琴收納）
 		var slotHeader = document.createElement('div');
-		slotHeader.className = 'starplate-block';
-		slotHeader.innerHTML = '<strong>[ 四序星軌 ]</strong>';
+		slotHeader.className = 'starplate-block sw-section-subhead';
+		slotHeader.innerHTML = '<strong>[ 四序星軌 ]</strong> <span class="text-muted">點選序位切換編輯槽位</span>';
 		section.appendChild(slotHeader);
 
 		var slotsWrap = document.createElement('div');
@@ -662,44 +764,48 @@
 		for (var si = 0; si < TACTICAL_SLOT_DEFS.length; si++) {
 			(function (slotDef) {
 				var slotKey = slotDef.key;
+				var shortTitle = slotDef.label.split(' · ')[0];
+				var isSlotActive = (slotKey === activeTacticalSlot);
 				var current = (lastTacticalState.loadout && lastTacticalState.loadout[slotKey]) || { nodes: [], words: [], name: '' };
+				var wordListStr = (current.words && current.words.length) ? current.words.map(function (w) { return '【' + getWordLabel(w) + '】'; }).join(' ') : '（未凝心印）';
+				var compactWordStr = formatCompactWords(current.words);
+				var nodeListStr = (current.nodes && current.nodes.length) ? current.nodes.map(formatNodeName).join(' · ') : '天極主樞';
+
 				var card = document.createElement('div');
-				card.className = 'tactical-slot-card' + (slotKey === activeTacticalSlot ? ' tactical-slot-active' : '');
+				card.className = 'tactical-slot-card slot-' + slotKey + (isSlotActive ? ' tactical-slot-active' : '');
 				card.setAttribute('data-slot', slotKey);
 
-				card.addEventListener('click', function (e) {
-					if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
-					activeTacticalSlot = slotKey;
-					slotsWrap.querySelectorAll('.tactical-slot-card').forEach(function (c) {
-						c.classList.remove('tactical-slot-active');
-					});
-					card.classList.add('tactical-slot-active');
-				});
+				var summaryRow = document.createElement('div');
+				summaryRow.className = 'tactical-slot-summary-row';
+				summaryRow.innerHTML = '<div class="tactical-slot-summary-left">' +
+					'<span class="sw-sub-arrow">' + (isSlotActive ? '▾' : '▸') + '</span>' +
+					'<strong class="tactical-slot-short-title">' + esc(shortTitle) + '</strong>' +
+					'<span class="tactical-natural-name">· ' + esc(current.name || '順脈連式') + '</span>' +
+					'</div>' +
+					'<span class="tactical-slot-inline-words">' + esc(compactWordStr) + '</span>';
+				card.appendChild(summaryRow);
+
+				var detailWrap = document.createElement('div');
+				detailWrap.className = 'tactical-slot-detail';
+				detailWrap.hidden = !isSlotActive;
 
 				var cardTitle = document.createElement('div');
 				cardTitle.className = 'tactical-slot-title';
-				cardTitle.innerHTML = '<strong>' + esc(slotDef.label) + '</strong><div class="tactical-slot-hint">' + esc(slotDef.hint) + '</div>';
-				card.appendChild(cardTitle);
+				cardTitle.innerHTML = '<div class="tactical-slot-hint">' + esc(slotDef.label) + '｜' + esc(slotDef.hint) + '</div>';
+				detailWrap.appendChild(cardTitle);
 
-				var nameRow = document.createElement('div');
-				nameRow.className = 'tactical-name-row';
-				nameRow.innerHTML = '<label>招式：</label><span class="tactical-natural-name"><strong>' + esc(current.name || '順脈連式') + '</strong></span>';
-				card.appendChild(nameRow);
-
-				// 裝配詞晶與節點
 				var equipRow = document.createElement('div');
 				equipRow.className = 'tactical-equip-row';
-				var wordListStr = (current.words && current.words.length) ? current.words.map(function(w){ return '【' + getWordLabel(w) + '】'; }).join(' ') : '（未凝心印）';
-				var nodeListStr = (current.nodes && current.nodes.length) ? current.nodes.map(formatNodeName).join(' · ') : '天極主樞';
 				equipRow.innerHTML = '<div class="tactical-words-preview">心印：<span class="active-words">' + esc(wordListStr) + '</span></div>' +
-									 '<div class="tactical-nodes-preview">星樞：' + esc(nodeListStr) + '</div>';
-				card.appendChild(equipRow);
+					'<div class="tactical-nodes-preview">星樞：' + esc(nodeListStr) + '</div>';
+				detailWrap.appendChild(equipRow);
 
 				var commitBtn = document.createElement('button');
 				commitBtn.type = 'button';
 				commitBtn.className = 'tactical-commit-btn';
-				commitBtn.textContent = '引字入樞（' + slotDef.label.split(' · ')[0] + '）';
-				commitBtn.addEventListener('click', function () {
+				commitBtn.textContent = '引字入樞（' + shortTitle + '）';
+				commitBtn.addEventListener('click', function (e) {
+					e.stopPropagation();
 					var nodes = current.nodes && current.nodes.length ? current.nodes.slice() : ['N001'];
 					var w = current.words && current.words.length ? current.words.map(getWordLabel) : ['疾'];
 					while (nodes.length < w.length) nodes.push(nodes[0] || 'N001');
@@ -712,11 +818,30 @@
 						custom_name: ''
 					});
 				});
-				card.appendChild(commitBtn);
+				detailWrap.appendChild(commitBtn);
+				card.appendChild(detailWrap);
+
+				card.addEventListener('click', function (e) {
+					if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+					activeTacticalSlot = slotKey;
+					slotsWrap.querySelectorAll('.tactical-slot-card').forEach(function (c) {
+						var cKey = c.getAttribute('data-slot');
+						var isAct = (cKey === activeTacticalSlot);
+						c.classList.toggle('tactical-slot-active', isAct);
+						var arr = c.querySelector('.sw-sub-arrow');
+						if (arr) arr.textContent = isAct ? '▾' : '▸';
+						var det = c.querySelector('.tactical-slot-detail');
+						if (det) det.hidden = !isAct;
+					});
+				});
+
+				slotsWrap.appendChild(card);
 			})(TACTICAL_SLOT_DEFS[si]);
 		}
 		section.appendChild(slotsWrap);
-		container.appendChild(section);
+		drawer.appendChild(section);
+		bindDrawerHeader(drawer, 'tactics');
+		container.appendChild(drawer);
 	}
 
 	window.onTacticalState = function (msg) {
@@ -728,10 +853,12 @@
 	};
 
 	window.openTacticsModal = function () {
+		activeStarplateDrawer = 'tactics';
 		var modalOverlay = document.getElementById('player-modal-overlay');
 		if (modalOverlay) modalOverlay.hidden = false;
 		var tabBtn = document.querySelector('.player-modal-tab[data-tab="starplate"]');
 		if (tabBtn) tabBtn.click();
+		syncStarplateDrawers();
 	};
 
 	function renderStarplatePane(me) {
@@ -740,45 +867,68 @@
 
 		wrap.innerHTML = '';
 
-		// 頂部優先渲染：隨身詞匣與星盤四戰術序位配招介面
+		// 第三抽屜：識海字譜與四序配招
 		renderTacticalSection(wrap);
+
+		var isStarplateOpen = activeStarplateDrawer === 'starplate';
+		var spDrawer = document.createElement('div');
+		spDrawer.className = 'sw-accordion-drawer' + (isStarplateOpen ? ' is-open' : '');
+		spDrawer.setAttribute('data-drawer', 'starplate');
+
+		var spHeader = document.createElement('div');
+		spHeader.className = 'sw-accordion-header';
+		spHeader.innerHTML = '<span class="sw-accordion-title"><span class="sw-accordion-arrow">' + (isStarplateOpen ? '▾' : '▸') + '</span>【三百六十星軌共鳴】</span>' +
+			'<span class="sw-accordion-badge">二十主樞 · 脈絡</span>';
+
+		var spBody = document.createElement('div');
+		spBody.className = 'sw-accordion-body';
+		spBody.hidden = !isStarplateOpen;
 
 		if (!me || !me.activated_nodes || !Array.isArray(me.activated_nodes)) {
 			var note = document.createElement('div');
 			note.className = 'starplate-block text-muted';
 			note.textContent = '（登入後可隨意觀覽完整三十六宮與二十主樞展開態）';
-			wrap.appendChild(note);
+			spBody.appendChild(note);
+			spDrawer.appendChild(spBody);
+			bindDrawerHeader(spDrawer, 'starplate');
+			wrap.appendChild(spDrawer);
 			return;
 		}
 
-		var activated = me.activated_nodes;
-		var count = activated.length;
 		var costs = me.topology_costs || [];
 
 		var header = document.createElement('div');
 		header.className = 'starplate-block starplate-paper-header';
-		header.innerHTML = '<div class="starplate-paper-title">【 三百六十星軌共鳴 】</div>' +
-			'<div class="starplate-paper-sub">以二十主星樞為基，貫通五門邏輯、牽引十二真言成相。點擊主樞展開星位脈絡。</div>';
-		wrap.appendChild(header);
+		header.innerHTML = '<div class="starplate-paper-sub">以二十主星樞為基，貫通五門邏輯、牽引十二真言成相。點選主樞展開星位脈絡。</div>';
+		spBody.appendChild(header);
 
 		var gridContainer = document.createElement('div');
 		gridContainer.className = 'starplate-paper-grid';
-		wrap.appendChild(gridContainer);
+		spBody.appendChild(gridContainer);
 
 		for (var i = 0; i < HUB_NAMES.length; i++) {
 			(function (hubIndex) {
 				var costA = getCostA(costs, hubIndex);
 				var adaptStr = costA != null ? costSpan(costA) : '<span class="text-muted">調和中</span>';
+				var isHubOpen = (hubIndex === activeStarplateHubIdx);
 
 				var card = document.createElement('div');
-				card.className = 'starplate-hub-card';
+				card.className = 'starplate-hub-card' + (isHubOpen ? ' expanded' : '');
 				card.setAttribute('data-hub', hubIndex);
 
 				var cardHeader = document.createElement('div');
 				cardHeader.className = 'hub-card-header';
-				cardHeader.innerHTML = '<span class="hub-name">▸ 【' + HUB_NAMES[hubIndex] + '主樞】</span>' +
+				cardHeader.innerHTML = '<span class="hub-name">' + (isHubOpen ? '▾' : '▸') + ' 【' + HUB_NAMES[hubIndex] + '主樞】</span>' +
 					'<span class="hub-adapt">' + adaptStr + '</span>';
 				card.appendChild(cardHeader);
+
+				if (isHubOpen) {
+					var initExpand = document.createElement('div');
+					initExpand.className = 'starplate-hub-expand';
+					initExpand.setAttribute('data-hub', hubIndex);
+					initExpand.innerHTML = buildHubExpandHTML(hubIndex, costs);
+					card.appendChild(initExpand);
+				}
 				gridContainer.appendChild(card);
 
 				card.addEventListener('click', function () {
@@ -790,8 +940,12 @@
 						var exp = c.querySelector('.starplate-hub-expand');
 						if (exp) exp.remove();
 					});
-					if (isExpanded) return;
+					if (isExpanded) {
+						activeStarplateHubIdx = -1;
+						return;
+					}
 
+					activeStarplateHubIdx = hubIndex;
 					card.classList.add('expanded');
 					var hName = card.querySelector('.hub-name');
 					if (hName) hName.innerHTML = hName.innerHTML.replace('▸', '▾');
@@ -804,6 +958,10 @@
 				});
 			})(i);
 		}
+
+		spDrawer.appendChild(spBody);
+		bindDrawerHeader(spDrawer, 'starplate');
+		wrap.appendChild(spDrawer);
 	}
 
 	function describeItemWeight(subTotal) {

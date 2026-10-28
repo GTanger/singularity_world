@@ -62,7 +62,7 @@
 13. **「路人 `Look` 打量視角邊界收斂 × 五類【內息底色】實戰與百工加成接線 × 玩家端 `查看自身`（狀態／星盤・成相）面板修復與場景 `陌生人 1..N` 消歧義」實裝驗收**：
    - **收斂 `Look` 外在肉眼觀察邊界（`src/server/action/look.rs`、`src/server/handler/inventory.rs`）**：拔除打量他人時外洩之 `（內息底色：【…】）` 括號標籤、他人器物內部銘文 `[緩][靈]` 與 `如臂使指` 內在磨合度，以及對未結識 `陌生人` 之讀心引號與私密店務；`EntityStatusMsg.natural_skills` 嚴格限制僅對 `is_self == true` 回傳。
    - **五類【內息底色】實戰、行旅與百工加成全接通（`src/pg/living_world.rs`、`src/server/action/combat.rs`、`src/game/object_ecology.rs`）**：實裝《鍛爐沉息》、《山林長息》、《海潮綿息》、《靜室清息》、《百戰烈息》之實戰攻守穿透倍率與百工精工異變加成，並於交鋒時輸出內息催動戰報。
-   - **修復玩家端 `查看自身` 成相面板與同格多陌生人序號消歧義（`web/index.html`、`web/sw-panes.js`、`web/sw-modals.js`、`web/sw-object-list.js`）**：於 `#player-modal-pane-starplate` 補回 `<div id="skill-content">` 使【臨陣身手】（含【內息底色】五維養成比重與著譜立說）及【百工手藝】完整渲染，同步於「狀態」分頁新增 `[ 內息底色 ]` 欄位；同格 $\ge 2$ 名未結識人物於場景畫布（`.sw-canvas-token`）顯示為 `陌生人 1`、`陌生人 2`。
+   - **修復玩家端 `查看自身` 成相面板、識盤雙層風琴收納（`風琴抽屜`）與同格多陌生人序號消歧義（`web/index.html`、`web/sw-panes.js`、`web/game-grid.css`、`web/sw-modals.js`、`web/sw-object-list.js`）**：於 `#player-modal-pane-starplate` 補回 `<div id="skill-content">` 與 `renderTacticalSection` 漏接之 `slotsWrap.appendChild(card)`，並將「星盤・成相（識盤）」改為**雙層風琴收納（Two-Tier Accordion）**——外層收攏為【內息與臨陣身手】、【百工造物手藝】、【識海字譜與四序配招】、【三百六十星軌共鳴】四大單開風琴抽屜（附右側膠囊摘要標籤），內層支援單式武相／百工手藝卡片展開、緊湊字印晶片（`【避】丙×5`）配對四序戰術槽單開切換（起手式／常態連攜／破綻殺招／守勢身法同屏一覽無須捲動）與二十主樞單開展開；同格 $\ge 2$ 名未結識人物於場景畫布（`.sw-canvas-token`）顯示為 `陌生人 1`、`陌生人 2`。
 
 ## 二、 關鍵檔案與正典錨點
 

@@ -1489,35 +1489,244 @@
   border-color: var(--blue-ink, #315574);
 }
 
-/* 四戰術序位槽位（起手式、常態連攜、破綻殺招、守勢身法） */
-.tactical-slots-container,
-.tactical-slots-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.tactical-slot-card {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(112, 79, 36, 0.25);
-  border-radius: 6px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* ── 識盤（星盤・成相）雙層風琴收納（四大總綱抽屜 ＋ 內層招式／四序槽／主樞） ── */
+.sw-accordion-drawer {
+  margin-bottom: 10px;
+  border: 1px solid rgba(112, 79, 36, 0.28);
+  border-radius: 7px;
+  background: rgba(252, 248, 240, 0.92);
+  overflow: hidden;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+.sw-accordion-drawer.is-open {
+  border-color: rgba(128, 96, 29, 0.55);
+  box-shadow: 0 2px 8px rgba(73, 51, 28, 0.08);
+}
+
+.sw-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(241, 232, 214, 0.72);
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: background-color 0.15s ease;
+}
+
+.sw-accordion-drawer.is-open > .sw-accordion-header {
+  background: rgba(235, 223, 198, 0.95);
+  border-bottom: 1px solid rgba(112, 79, 36, 0.2);
+}
+
+.sw-accordion-header:hover {
+  background: rgba(232, 219, 192, 0.95);
+}
+
+.sw-accordion-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink, #2c1e0f);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sw-accordion-arrow,
+.sw-sub-arrow {
+  display: inline-block;
+  width: 1.05em;
+  color: #80601d;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sw-accordion-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #6e4b0e;
+  background: rgba(255, 253, 248, 0.85);
+  border: 1px solid rgba(128, 96, 29, 0.25);
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 48%;
+}
+
+.sw-accordion-body {
+  padding: 10px;
+}
+
+.sw-section-subhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 13.5px;
+}
+
+.sw-sub-accordion-card {
+  margin-bottom: 7px;
+  border: 1px solid rgba(112, 79, 36, 0.22);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.72);
+  overflow: hidden;
+}
+
+.sw-sub-accordion-card:last-child {
+  margin-bottom: 0;
+}
+
+.sw-sub-accordion-card.is-open {
+  border-color: rgba(128, 96, 29, 0.48);
+  background: rgba(255, 253, 248, 0.96);
+}
+
+.sw-sub-accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.sw-sub-accordion-main {
+  font-size: 13px;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.sw-sub-accordion-body {
+  padding: 6px 10px 9px 22px;
+  border-top: 1px dashed rgba(112, 79, 36, 0.18);
+}
+
+.sw-sub-basis {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink, #2c1e0f);
+}
+
+.sw-sub-effect {
+  font-size: 12.5px;
+  margin-top: 4px;
+  color: #6e4b0e;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.sw-sub-familiar {
+  font-size: 12px;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.transcribe-manual-btn {
+  cursor: pointer;
+  padding: 2px 8px;
+  font-size: 12px;
+  border: 1px solid #7c5c28;
+  background: rgba(139, 105, 20, 0.12);
+  color: #6e4b0e;
+  font-weight: 600;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 四戰術序位槽位（起手式、常態連攜、破綻殺招、守勢身法）內層風琴 */
+.tactical-slots-container,
+.tactical-slots-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.tactical-slot-card {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(112, 79, 36, 0.25);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
 .tactical-slot-card.tactical-slot-active {
+  background: #fffdf9;
   border-color: #80601d;
   box-shadow: 0 0 0 1px rgba(128, 96, 29, 0.35);
 }
 
-.tactical-slot-card.slot-opening { border-top: 3px solid #b33927; }
-.tactical-slot-card.slot-midgame { border-top: 3px solid #315574; }
-.tactical-slot-card.slot-finisher { border-top: 3px solid #80601d; }
-.tactical-slot-card.slot-defense { border-top: 3px solid #35523c; }
+.tactical-slot-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.tactical-slot-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.tactical-slot-short-title {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tactical-slot-summary-left .tactical-natural-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink-light, #594c3c);
+  font-size: 12.5px;
+}
+
+.tactical-slot-inline-words {
+  font-size: 12px;
+  font-weight: 650;
+  color: #6e4b0e;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tactical-slot-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(112, 79, 36, 0.2);
+}
+
+.tactical-slot-detail[hidden] {
+  display: none !important;
+}
+
+.tactical-slot-card.slot-opening { border-left: 3px solid #b33927; }
+.tactical-slot-card.slot-midgame { border-left: 3px solid #315574; }
+.tactical-slot-card.slot-finisher { border-left: 3px solid #80601d; }
+.tactical-slot-card.slot-defense { border-left: 3px solid #35523c; }
 
 .tactical-casket-box {
   display: flex;
@@ -1530,12 +1739,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 3px 8px;
+  min-height: 28px !important;
+  padding: 3px 7px !important;
   background: #fffdf9;
   border: 1px solid rgba(128, 96, 29, 0.35);
   border-radius: 4px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--ink, #2c1e0f);
   cursor: pointer;
