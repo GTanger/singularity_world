@@ -1573,6 +1573,16 @@ impl BreathHabitKind {
             Self::BattleFierce => "胸中一口烈息激盪，迎著鋒芒寸步不讓",
         }
     }
+    pub fn effect_summary(&self) -> &'static str {
+        match self {
+            Self::ForgeHeavy => "實戰剛猛重擊（攻勢 +10%、守禦 +3%、破防 +3.0）；鍛打冶煉時器物精工異變率 +6%。",
+            Self::ForestLong => "實戰輕靈游鬥（身法守禦 +9%、攻勢 +4%、穿透 +2.0）；山海崎嶇地形跋涉自動勻長換氣回復體魄；百工淬煉率 +4%。",
+            Self::TideContinuous => "實戰綿延續航（久戰守禦 +10%、攻勢 +5%、穿透 +2.0）；水域濕地跋涉自動回氣；庖廚熬煉與百工淬煉率 +5%。",
+            Self::ChamberClear => "實戰澄明貫脈（字印穿透 +4.5、攻勢 +6%、守禦 +4%）；細木卯合、製藥與百工精工異變率 +6%。",
+            Self::BattleFierce => "實戰烘爐搏殺（臨敵攻勢 +12%、破防 +3.5、守禦 +2%）；兵刃回火與實戰磨合加速，百工淬煉率 +3%。",
+        }
+    }
+
 
     pub fn combat_modifiers(&self) -> (f64, f64, f64, &'static str) {
         match self {

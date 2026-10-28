@@ -336,7 +336,11 @@ fn entity_status_from_character(ent: &Character, is_self: bool) -> EntityStatusM
         equipment_slots,
         equipment_names,
         equipment_descs,
-        natural_skills: synthesize_entity_natural_skills(ent),
+        natural_skills: if is_self {
+            synthesize_entity_natural_skills(ent)
+        } else {
+            Vec::new()
+        },
     };
     if !ent.display_title.is_empty() {
         msg.display_title.clone_from(&ent.display_title);
@@ -2926,8 +2930,11 @@ pub fn synthesize_entity_natural_skills(ent: &Character) -> Vec<NaturalSkillView
         category_label: "【內息底色】".to_string(),
         name: habit.dominant.label().to_string(),
         origin_basis: breath_origin,
-        learned_and_familiar: "周天吐納".to_string(),
-        auto_trigger_desc: habit.dominant.combat_rhythm_phrase().to_string(),
+        learned_and_familiar: format!(
+            "周天吐納（養成比重：鍛爐 {}・山林 {}・海潮 {}・靜室 {}・百戰 {}｜隨日常打鐵、涉山、涉水、靜修、交鋒自然演進）",
+            habit.forge_score, habit.forest_score, habit.tide_score, habit.chamber_score, habit.battle_score
+        ),
+        auto_trigger_desc: format!("{}。{}", habit.dominant.combat_rhythm_phrase(), habit.dominant.effect_summary()),
     };
 
     let mut skills = Vec::with_capacity(10);

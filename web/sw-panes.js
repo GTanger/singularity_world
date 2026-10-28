@@ -184,6 +184,18 @@
 			+ '<div class="sw-vibe-row"><span class="sw-vibe-label">行止：</span><span class="sw-vibe-val">' + esc(stamDesc) + '</span></div>'
 			+ '</dd>';
 		if (isSelf) {
+			var breathSkill = null;
+			if (Array.isArray(msg.natural_skills)) {
+				for (var bi = 0; bi < msg.natural_skills.length; bi++) {
+					if (msg.natural_skills[bi] && msg.natural_skills[bi].category === 'inner_breath') {
+						breathSkill = msg.natural_skills[bi];
+						break;
+					}
+				}
+			}
+			if (breathSkill) {
+				html += '<dt>[ 內息底色 ]</dt><dd><strong>《' + esc(breathSkill.name) + '》</strong><div style="font-size:0.86em;color:var(--ink-muted, #5c4b37);margin-top:2px;line-height:1.45;">' + esc(breathSkill.auto_trigger_desc || '') + '</div></dd>';
+			}
 			html += '<dt>[ 所在 ]</dt><dd>' + esc(locationSummaryText(msg)) + '</dd>';
 		}
 		// 唯一保留數值：金錢「鎂」
@@ -375,12 +387,12 @@
 					html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
 					html += '<div><strong>◆ 《' + esc(ms.name) + '》</strong> <span class="text-muted">｜ ' + esc(ms.category_label) + '</span></div>';
 					if (!isBreathHabit) {
-						html += '<button type="button" class="transcribe-manual-btn" data-slot="' + slotKey + '" style="cursor:pointer;padding:2px 8px;font-size:0.85em;border:1px solid #7c6f5a;background:rgba(218,165,32,0.1);color:#d4af37;border-radius:3px;">著譜立說</button>';
+						html += '<button type="button" class="transcribe-manual-btn" data-slot="' + slotKey + '" style="cursor:pointer;padding:2px 8px;font-size:0.85em;border:1px solid #7c5c28;background:rgba(139,105,20,0.12);color:#6e4b0e;font-weight:600;border-radius:3px;">著譜立說</button>';
 					}
 					html += '</div>';
 					html += '<div style="font-size:0.92em;margin-top:3px;">' + esc(ms.origin_basis) + '</div>';
 					if (isBreathHabit && ms.auto_trigger_desc) {
-						html += '<div style="font-size:0.88em;margin-top:2px;color:#d4af37;">行氣節奏：' + esc(ms.auto_trigger_desc) + '</div>';
+						html += '<div style="font-size:0.88em;margin-top:4px;color:#6e4b0e;font-weight:600;">行氣與實效：' + esc(ms.auto_trigger_desc) + '</div>';
 					}
 					if (ms.learned_and_familiar) {
 						html += '<div class="text-muted" style="font-size:0.88em;margin-top:2px;">' + esc(ms.learned_and_familiar) + '</div>';

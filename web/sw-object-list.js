@@ -601,7 +601,7 @@
             if (nameCounts[finalName] > 1) {
                 var seqIdx = nameSeen[finalName] || 0;
                 nameSeen[finalName] = seqIdx + 1;
-                finalName = finalName + String(seqIdx + 1);
+                finalName = finalName + ' ' + String(seqIdx + 1);
             }
             var cls = (kind === 'player') ? 'sw-obj-player' : 'sw-obj-npc';
             var activity = visibleActivity(npc.current_activity);
@@ -815,26 +815,44 @@
         var seenKeys = {};
 
         var npcs = _currentNpcs || [];
-        for (var i = 0; i < npcs.length; i++) {
-            var npc = npcs[i];
-            if (npc.kind === 'crowd') continue;
-            var nId = npc.npc_id || npc.id || ('npc_' + i);
-            var key = 'npc:' + nId;
-            if (seenKeys[key]) continue;
-            seenKeys[key] = true;
-            var nName = npc.display_name || '行人';
-            var nLabel = concisePersonLabel(nName, npc.card_state);
-            var act = visibleActivity(npc.current_activity);
+        var validNpcs = [];
+        var npcLabelCounts = {};
+        for (var ni = 0; ni < npcs.length; ni++) {
+            var rawNpc = npcs[ni];
+            if (rawNpc.kind === 'crowd') continue;
+            var rawId = rawNpc.npc_id || rawNpc.id || ('npc_' + ni);
+            var rawKey = 'npc:' + rawId;
+            if (seenKeys[rawKey]) continue;
+            seenKeys[rawKey] = true;
+            var rawName = rawNpc.display_name || '行人';
+            var rawLabel = concisePersonLabel(rawName, rawNpc.card_state);
+            npcLabelCounts[rawLabel] = (npcLabelCounts[rawLabel] || 0) + 1;
+            validNpcs.push({ npc: rawNpc, id: rawId, key: rawKey, name: rawName, label: rawLabel });
+        }
+        var npcLabelSeen = {};
+        for (var i = 0; i < validNpcs.length; i++) {
+            var item = validNpcs[i];
+            var nName = item.name;
+            var nLabel = item.label;
+            if (npcLabelCounts[nLabel] > 1) {
+                var seqIdx = npcLabelSeen[nLabel] || 0;
+                npcLabelSeen[nLabel] = seqIdx + 1;
+                nLabel = nLabel + ' ' + String(seqIdx + 1);
+                if (nName === '陌生人') {
+                    nName = nLabel;
+                }
+            }
+            var act = visibleActivity(item.npc.current_activity);
             var sub = act ? ('在場人物 · ' + act) : '在場人物';
             tokens.push({
-                key: key,
-                id: nId,
+                key: item.key,
+                id: item.id,
                 name: nName,
                 label: nLabel,
                 subtitle: sub,
                 kind: 'npc',
                 tokenClass: 'sw-token-npc',
-                data: npc
+                data: item.npc
             });
         }
 

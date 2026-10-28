@@ -59,10 +59,15 @@
    - **拔除幕後設計概念字眼與現實地名，統一正名為《白塔山海志》**：全面清理 `src/game/room.rs`、`src/server/action/look.rs`、`src/store/outer_households.rs`、`src/game/peninsula_catalog.rs`、`data/items.json`、`web/world_atlas.html` 及 Wiki 正典（將圖譜檔正式更名為 `白塔山海志-十九獵場百獸與半島物產圖譜.md` 並更新全庫雙向連結），將生靈、物產與典籍全數收斂為半島內生語境，並細化龜鼇（`深潭野生老鱉`）、蟹鱟（`紅螯大青蟹`）、蛙鯢（`草叢野生牛蛙`）與水獺食蟹獴（`白鼻心烏腳香皮`）之部位映射。
    - **進場感知反射（`emit_presence_reflex_on_arrival`）人獸分離、玩家應募入團與見者有份協同圍獵**：修正 `src/server/handler/movement.rs` 將山海生靈與人類 NPC 嚴格分流；與合社獵手對話（`Talk`）即可應募入團（`PLAYER_HUNTING_PARTY_PLEDGES`），交鋒時同區獵團自動側翼助陣，擊殺或隨團完成合圍（`TakedownAndSplit`）皆可按「見者有份」分得獸材與鎂幣紅利，且獵團返鎮交割實質增加聚落市集現貨庫存並調降緊缺行情。
    - **上帝視角（`/world_atlas`）全島 1,771 名真人即時【心念思緒（`thought`）】、【隨身鎂幣（`magnesium`）】與【合社獵團（`hunting_party`）】實況顯化**：擴充 `src/server/http_api/eco.rs`（`EcoEntity`）與 `web/world_atlas.html`，於名冊與檢視器直接呈現每位居民之即時心念思緒、隨身鎂幣與合社獵團階段，新增 `🏹 合社獵團` 專屬篩選標籤與獵場局部戰術包抄虛線，通過桌面版（`1440×900`）與行動版（`390×844`）實機截圖驗收。
+13. **「路人 `Look` 打量視角邊界收斂 × 五類【內息底色】實戰與百工加成接線 × 玩家端 `查看自身`（狀態／星盤・成相）面板修復與場景 `陌生人 1..N` 消歧義」實裝驗收**：
+   - **收斂 `Look` 外在肉眼觀察邊界（`src/server/action/look.rs`、`src/server/handler/inventory.rs`）**：拔除打量他人時外洩之 `（內息底色：【…】）` 括號標籤、他人器物內部銘文 `[緩][靈]` 與 `如臂使指` 內在磨合度，以及對未結識 `陌生人` 之讀心引號與私密店務；`EntityStatusMsg.natural_skills` 嚴格限制僅對 `is_self == true` 回傳。
+   - **五類【內息底色】實戰、行旅與百工加成全接通（`src/pg/living_world.rs`、`src/server/action/combat.rs`、`src/game/object_ecology.rs`）**：實裝《鍛爐沉息》、《山林長息》、《海潮綿息》、《靜室清息》、《百戰烈息》之實戰攻守穿透倍率與百工精工異變加成，並於交鋒時輸出內息催動戰報。
+   - **修復玩家端 `查看自身` 成相面板與同格多陌生人序號消歧義（`web/index.html`、`web/sw-panes.js`、`web/sw-modals.js`、`web/sw-object-list.js`）**：於 `#player-modal-pane-starplate` 補回 `<div id="skill-content">` 使【臨陣身手】（含【內息底色】五維養成比重與著譜立說）及【百工手藝】完整渲染，同步於「狀態」分頁新增 `[ 內息底色 ]` 欄位；同格 $\ge 2$ 名未結識人物於場景畫布（`.sw-canvas-token`）顯示為 `陌生人 1`、`陌生人 2`。
+
 ## 二、 關鍵檔案與正典錨點
 
 - **Rust 實機代碼**：
-  - `src/game/room.rs:442-1090`（十九獵場百獸、霸主異兆、部位奇效与佩飾護佑）
+  - `src/game/room.rs:442-1090`（十九獵場百獸、霸主異兆、部位奇效與佩飾護佑）
   - `src/game/object_ecology.rs:2505-2630`（營火與食堂「山海合味」現煮料理）
   - `src/combat/wordplate.rs:1-1370`（500 詞一字雙境 `CraftDims4D`、起承轉合語序權重與合成引擎）
   - `data/config/word_elements.json` ＆ `data/config/word_elements_gamedims.json`

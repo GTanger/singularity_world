@@ -57,6 +57,10 @@
 			if (starplateWrap && id && !currentIsSelf) {
 				starplateWrap.innerHTML = '<p class="text-muted">僅自己可觀看星盤。</p>';
 			}
+			var skillWrap = document.getElementById('skill-content');
+			if (skillWrap && !currentIsSelf) {
+				skillWrap.innerHTML = '';
+			}
 			var invWeight = document.getElementById('inventory-weight');
 			var invList = document.getElementById('inventory-list');
 			if (!currentIsSelf) {
