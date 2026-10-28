@@ -505,11 +505,26 @@ fn execute_tianji_wordplate_combat_internal(
     let (d_vit, _d_qi, d_dex, d_atk) = db::effective_stats(defender);
 
     let a_res_bonus = if resonance_note.is_some() { 1.15 } else { 1.0 };
-    let effective_a_atk = ((a_atk as f64) + extra_a_atk + (a_dex as f64 * 0.25)) * a_res_bonus;
-    let effective_d_atk = (d_atk as f64) + extra_d_atk + (d_dex as f64 * 0.25);
+    let a_breath = crate::pg::living_world::get_or_derive_breath_habit(
+        pid,
+        &attacker.display_title,
+        attacker.soul_seed.unwrap_or(0),
+    );
+    let d_breath = crate::pg::living_world::get_or_derive_breath_habit(
+        &defender.id,
+        &defender.display_title,
+        defender.soul_seed.unwrap_or(0),
+    );
+    let (a_b_atk, a_b_def, a_b_pen, a_b_line) = a_breath.dominant.combat_modifiers();
+    let (d_b_atk, d_b_def, d_b_pen, _) = d_breath.dominant.combat_modifiers();
 
-    let cur_a_hp = (a_vit as f64 + extra_a_def).max(1.0).round() as i32;
-    let cur_d_hp = (d_vit as f64 + extra_d_def).max(1.0).round() as i32;
+    let effective_a_atk = ((a_atk as f64) + extra_a_atk + (a_dex as f64 * 0.25)) * a_res_bonus * a_b_atk;
+    let effective_d_atk = ((d_atk as f64) + extra_d_atk + (d_dex as f64 * 0.25)) * d_b_atk;
+    let effective_a_pen = extra_a_pen + a_b_pen;
+    let effective_d_pen = extra_d_pen + d_b_pen;
+
+    let cur_a_hp = ((a_vit as f64 + extra_a_def) * a_b_def).max(1.0).round() as i32;
+    let cur_d_hp = ((d_vit as f64 + extra_d_def) * d_b_def).max(1.0).round() as i32;
 
     let now = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -544,9 +559,9 @@ fn execute_tianji_wordplate_combat_internal(
 
     // 7. 調用田忌賽馬時序對決結算（融入量級權重與專克／一力降十會裁決）
     let weight_a =
-        (effective_a_atk * 0.65 + (cur_a_hp as f64) * 0.35 + extra_a_pen * 0.5) * penalty_a;
+        (effective_a_atk * 0.65 + (cur_a_hp as f64) * 0.35 + effective_a_pen * 0.5) * penalty_a;
     let weight_b =
-        (effective_d_atk * 0.65 + (cur_d_hp as f64) * 0.35 + extra_d_pen * 0.5) * penalty_d;
+        (effective_d_atk * 0.65 + (cur_d_hp as f64) * 0.35 + effective_d_pen * 0.5) * penalty_d;
 
     let matchup_result = resolve_tianji_matchup_with_weights(
         &a_loadout,
@@ -635,6 +650,7 @@ fn execute_tianji_wordplate_combat_internal(
         a_weapon_carrier,
         d_weapon_carrier,
     );
+    prose_log.push_str(&format!("\n{a_b_line}"));
 
     crate::pg::living_world::record_breath_activity(
         pid,

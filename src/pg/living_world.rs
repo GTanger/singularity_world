@@ -1573,6 +1573,51 @@ impl BreathHabitKind {
             Self::BattleFierce => "胸中一口烈息激盪，迎著鋒芒寸步不讓",
         }
     }
+
+    pub fn combat_modifiers(&self) -> (f64, f64, f64, &'static str) {
+        match self {
+            Self::ForgeHeavy => (
+                1.10,
+                1.03,
+                3.0,
+                "【內息催動・鍛爐沉息】你吐納沉如風箱鼓火，腰胯沉穩催發重勁，出招力道更添三分凝實。",
+            ),
+            Self::ForestLong => (
+                1.04,
+                1.09,
+                2.0,
+                "【內息催動・山林長息】你呼吸綿長無聲，換氣間步法輕靈，閃轉卸力後回氣極快。",
+            ),
+            Self::TideContinuous => (
+                1.05,
+                1.10,
+                2.0,
+                "【內息催動・海潮綿息】你內息如潮汐疊浪綿延不絕，纏鬥間氣脈深長、後勁不衰。",
+            ),
+            Self::ChamberClear => (
+                1.06,
+                1.04,
+                4.5,
+                "【內息催動・靜室清息】你神息澄明似水，體內氣機順支脈自然滑轉，招式落點分毫不差。",
+            ),
+            Self::BattleFierce => (
+                1.12,
+                1.02,
+                3.5,
+                "【內息催動・百戰烈息】你胸中一口烈息如烘爐驟燃，臨敵硬撼時氣勢暴漲、寸步不讓。",
+            ),
+        }
+    }
+
+    pub fn craft_mutation_bonus(&self) -> f64 {
+        match self {
+            Self::ForgeHeavy => 0.06,
+            Self::ChamberClear => 0.06,
+            Self::TideContinuous => 0.05,
+            Self::ForestLong => 0.04,
+            Self::BattleFierce => 0.03,
+        }
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]

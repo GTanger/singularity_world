@@ -1874,12 +1874,75 @@ pub fn craft_from_raw_material(
     } else {
         craft_dims.forge
     };
+
+    // 預先研判工藝分類以記錄吐納動態並取得內息加成
+    let (habit_kind, mentor_name, imprint_title, imprint_prose, slot_label, carrier_code, formula_word_ids, formula_word_chars, station_tool_name) = if finished_def.id.contains("steel")
+        || finished_def.id.contains("iron")
+        || finished_def.id.contains("metal")
+        || finished_def.id.contains("pick")
+        || finished_def.id.contains("knife")
+        || finished_def.slot == "weapon"
+        || room_name.contains("鐵")
+        || chosen_raw_id.contains("iron")
+        || chosen_raw_id.contains("metal")
+        || chosen_raw_id.contains("stone")
+        || chosen_raw_id.contains("礦")
+    {
+        (
+            crate::pg::living_world::BreathHabitKind::ForgeHeavy,
+            "岑鐵匠",
+            "岑氏沉腕落錘法",
+            "鐵砧火花明滅間沉腕落錘，將剛猛勁力勻入器胚，剛柔兼濟",
+            "重手",
+            "blunt",
+            vec!["gang".to_string(), "chen_tai".to_string(), "zhong".to_string()],
+            vec!["剛".to_string(), "沉".to_string(), "重".to_string()],
+            "鍛鐵重錘",
+        )
+    } else if finished_def.item_type == "food"
+        || finished_def.id.contains("tea")
+        || finished_def.id.contains("fish")
+        || finished_def.id.contains("dish")
+        || finished_def.id.contains("soup")
+        || room_name.contains("廚")
+        || room_name.contains("灶")
+        || room_name.contains("食")
+        || chosen_raw_id.contains("herb")
+        || chosen_raw_id.contains("tea")
+        || chosen_raw_id.contains("fish")
+    {
+        (
+            crate::pg::living_world::BreathHabitKind::TideContinuous,
+            "溫大娘",
+            "三水火候收汁訣",
+            "三水調和火候收汁，氣脈如潮汐連綿不絕，滋養臟腑",
+            "連攜",
+            "tool",
+            vec!["shui".to_string(), "huo_shou".to_string(), "he_tai".to_string()],
+            vec!["水".to_string(), "火".to_string(), "合".to_string()],
+            "庖廚湯杓",
+        )
+    } else {
+        (
+            crate::pg::living_world::BreathHabitKind::ChamberClear,
+            "柯木匠",
+            "柯氏順紋卯合訣",
+            "順應木石竹絲紋理卯榫相合，意守方寸凝神聚氣，分毫不差",
+            "起手",
+            "tool",
+            vec!["qiao_shu".to_string(), "mu".to_string(), "he_tai".to_string()],
+            vec!["巧".to_string(), "木".to_string(), "合".to_string()],
+            "百工刻刀",
+        )
+    };
+
+    let habit_rec = crate::pg::living_world::record_breath_activity(actor_id, habit_kind, 2, now_unix);
+    let breath_mut_bonus = (habit_rec.dominant.craft_mutation_bonus() * 100.0).round() as i32;
     let craft_mutation_bonus = ((relevant_craft * 0.04).min(0.18) * 100.0).round() as i32;
-    let threshold = (threshold + craft_mutation_bonus).min(98);
+    let threshold = (threshold + craft_mutation_bonus + breath_mut_bonus).min(98);
 
     let roll = ((now_unix.wrapping_mul(1103515245).wrapping_add(12345) / 65536) % 100).abs() as i32;
     let is_mutated = roll < threshold;
-
     let (prod_id, prod_name, mut narrative) = if is_mutated {
         let arch_idx = ((now_unix as usize) ^ (chosen_raw_id.len())) % MUTATION_ARCHETYPES.len();
         let arch = &MUTATION_ARCHETYPES[arch_idx];
@@ -1966,68 +2029,6 @@ pub fn craft_from_raw_material(
         narrative.push_str(" 【百工藝相共鳴】你周天字印所蘊的藝境氣機自然流轉至指掌，火候與力道拿捏得恰到好處。");
     }
 
-    // 內息底色演進與工藝分類
-    let (habit_kind, mentor_name, imprint_title, imprint_prose, slot_label, carrier_code, formula_word_ids, formula_word_chars, station_tool_name) = if finished_def.id.contains("steel")
-        || finished_def.id.contains("iron")
-        || finished_def.id.contains("metal")
-        || finished_def.id.contains("pick")
-        || finished_def.id.contains("knife")
-        || finished_def.slot == "weapon"
-        || room_name.contains("鐵")
-        || chosen_raw_id.contains("iron")
-        || chosen_raw_id.contains("metal")
-        || chosen_raw_id.contains("stone")
-        || chosen_raw_id.contains("礦")
-    {
-        (
-            crate::pg::living_world::BreathHabitKind::ForgeHeavy,
-            "岑鐵匠",
-            "岑氏沉腕落錘法",
-            "鐵砧火花明滅間沉腕落錘，將剛猛勁力勻入器胚，剛柔兼濟",
-            "重手",
-            "blunt",
-            vec!["gang".to_string(), "chen_tai".to_string(), "zhong".to_string()],
-            vec!["剛".to_string(), "沉".to_string(), "重".to_string()],
-            "鍛鐵重錘",
-        )
-    } else if finished_def.item_type == "food"
-        || finished_def.id.contains("tea")
-        || finished_def.id.contains("fish")
-        || finished_def.id.contains("dish")
-        || finished_def.id.contains("soup")
-        || room_name.contains("廚")
-        || room_name.contains("灶")
-        || room_name.contains("食")
-        || chosen_raw_id.contains("herb")
-        || chosen_raw_id.contains("tea")
-        || chosen_raw_id.contains("fish")
-    {
-        (
-            crate::pg::living_world::BreathHabitKind::TideContinuous,
-            "溫大娘",
-            "三水火候收汁訣",
-            "三水調和火候收汁，氣脈如潮汐連綿不絕，滋養臟腑",
-            "連攜",
-            "tool",
-            vec!["shui".to_string(), "huo_shou".to_string(), "he_tai".to_string()],
-            vec!["水".to_string(), "火".to_string(), "合".to_string()],
-            "庖廚湯杓",
-        )
-    } else {
-        (
-            crate::pg::living_world::BreathHabitKind::ChamberClear,
-            "柯木匠",
-            "柯氏順紋卯合訣",
-            "順應木石竹絲紋理卯榫相合，意守方寸凝神聚氣，分毫不差",
-            "起手",
-            "tool",
-            vec!["qiao_shu".to_string(), "mu".to_string(), "he_tai".to_string()],
-            vec!["巧".to_string(), "木".to_string(), "合".to_string()],
-            "百工刻刀",
-        )
-    };
-
-    let habit_rec = crate::pg::living_world::record_breath_activity(actor_id, habit_kind, 2, now_unix);
     let vstate = if crate::pg::living_world::is_weapon_or_tool_item(&prod_id, &prod_name) {
         Some(crate::pg::living_world::record_vessel_use(actor_id, &prod_id, 0, 2, now_unix))
     } else {

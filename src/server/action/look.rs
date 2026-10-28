@@ -132,7 +132,12 @@ fn build_look_narrative(
             return desc;
         }
     }
-    let has_canon_desc = canonical_npc_appearance_and_demeanor(target, room_name);
+    let is_stranger = name.starts_with("陌生人");
+    let has_canon_desc = if is_stranger {
+        None
+    } else {
+        canonical_npc_appearance_and_demeanor(target, room_name)
+    };
     let mut is_known_canon = false;
     let sensory_line = if target.kind == crate::entity::EntityKind::Npc {
         crate::store::npc_sensory_appearance_line(&target.id, &target.display_title)
@@ -282,7 +287,7 @@ fn build_look_narrative(
                 }
             }
 
-            // 2. 持握工具 / 武器（無論是否有專屬服飾皆顯示器物與銘文字）
+            // 2. 持握工具 / 武器（無論是否有專屬服飾皆顯示器物）
             let held_slots = ["hold_r", "weapon", "hand", "tool", "hold_l"];
             let mut held_items: Vec<String> = Vec::new();
             for &slot in &held_slots {
@@ -294,11 +299,15 @@ fn build_look_narrative(
                             .map(|s| s.as_str())
                             .or(ecol_name.as_deref())
                             .unwrap_or(item_id);
-                        let formatted = crate::server::handler::format_entity_item_with_inscription(
-                            &target.id,
-                            item_id,
-                            base_name,
-                        );
+                        let item_label = if viewer_pid != Some(target.id.as_str()) {
+                            base_name.to_string()
+                        } else {
+                            crate::server::handler::format_entity_item_with_inscription(
+                                &target.id,
+                                item_id,
+                                base_name,
+                            )
+                        };
                         if crate::pg::living_world::is_weapon_or_tool_item(item_id, base_name) {
                             let mut vstate = crate::pg::living_world::get_vessel_state(&target.id, item_id);
                             if vstate.use_count == 0 && target.kind == crate::entity::EntityKind::Npc {
@@ -310,13 +319,27 @@ fn build_look_narrative(
                                     crate::game::now_unix(),
                                 );
                             }
-                            held_items.push(format!(
-                                "【{formatted}】（{}・{}）",
-                                vstate.familiarity().label(),
-                                vstate.condition.label()
-                            ));
+                            if viewer_pid != Some(target.id.as_str()) {
+                                match vstate.condition {
+                                    crate::pg::living_world::VesselCondition::SlightlyDull => {
+                                        held_items.push(format!("【{item_label}】（刃口微鈍）"));
+                                    }
+                                    crate::pg::living_world::VesselCondition::RolledEdge => {
+                                        held_items.push(format!("【{item_label}】（刃口微捲）"));
+                                    }
+                                    crate::pg::living_world::VesselCondition::Sharp => {
+                                        held_items.push(format!("【{item_label}】"));
+                                    }
+                                }
+                            } else {
+                                held_items.push(format!(
+                                    "【{item_label}】（{}・{}）",
+                                    vstate.familiarity().label(),
+                                    vstate.condition.label()
+                                ));
+                            }
                         } else {
-                            held_items.push(format!("【{formatted}】"));
+                            held_items.push(format!("【{item_label}】"));
                         }
                     }
                 }
@@ -341,12 +364,16 @@ fn build_look_narrative(
                             .map(|s| s.as_str())
                             .or(ecol_name.as_deref())
                             .unwrap_or(item_id);
-                        let formatted = crate::server::handler::format_entity_item_with_inscription(
-                            &target.id,
-                            item_id,
-                            base_name,
-                        );
-                        worn_items.push(format!("【{formatted}】"));
+                        let item_label = if viewer_pid != Some(target.id.as_str()) {
+                            base_name.to_string()
+                        } else {
+                            crate::server::handler::format_entity_item_with_inscription(
+                                &target.id,
+                                item_id,
+                                base_name,
+                            )
+                        };
+                        worn_items.push(format!("【{item_label}】"));
                     }
                 }
             }
@@ -429,100 +456,11 @@ fn build_look_narrative(
             let parties = crate::store::LIVE_HUNTING_PARTIES.read();
             if let Some(party) = parties.values().find(|p| p.member_ids.contains(&target.id)) {
                 desc.push_str(&format!(
-                    "\n【合社圍獵編組】目前隸屬領隊【{}】率領之{}合社獵團（共 {} 人），目標獵物為【{}】。",
+                    "{pronoun}正隨【{}】率領之{}合社獵團（共 {} 人）追獵【{}】。",
                     party.leader_name, party.zone_name, party.member_ids.len(), party.prey_name
                 ));
             }
         }
-        let now_ts = crate::game::now_unix();
-        // 優先尋找非通用、非「今日花用又見底」的具體心緒
-        let mut chosen_flavor = None;
-        for t in target.thoughts.iter().rev() {
-            let not_expired = t.decay_minutes <= 0 || (now_ts - t.created_at) < t.decay_minutes * 60;
-            if not_expired {
-                if let Some(f) = &t.flavor {
-                    let s = f.trim();
-                    if !s.is_empty()
-                        && !s.contains("花用又見底")
-                        && !s.contains("又見底，發愁")
-                        && !s.is_ascii()
-                    {
-                        chosen_flavor = Some(s.to_string());
-                        break;
-                    }
-                }
-            }
-        }
-        // 若無特定具體心緒，則根據 NPC 當前待辦義務或當前活動合成真實具體的心緒
-        if chosen_flavor.is_none() {
-            if let Some((kind, subj)) = crate::store::get_active_npc_obligation(&target.id) {
-                let synth = match kind.as_str() {
-                    "restock_goods" => "店裡現貨吃緊，得趁早補齊庫存".to_string(),
-                    "repair_tool" => "手頭工具耗損得緊，得抽空修整一番".to_string(),
-                    "stranded_cargo" => "卡在外頭的那批貨件，得想方設法接應回來".to_string(),
-                    "repay_debt" => "近來的幾筆人情帳目，得早些算個分明".to_string(),
-                    "treat_injury" => "這身傷損得妥善料理，切莫傷了筋骨根本".to_string(),
-                    _ => {
-                        let clean_subj = if subj.is_ascii() {
-                            crate::world::materials::material_by_item_id(&subj)
-                                .map(|m| m.name.clone())
-                                .or_else(|| db::get_item_def(&subj).map(|d| d.name))
-                                .unwrap_or_else(|| "手頭差事".to_string())
-                        } else {
-                            subj.clone()
-                        };
-                        format!("得把【{clean_subj}】這檔差事處置妥貼")
-                    }
-                };
-                chosen_flavor = Some(synth);
-            } else {
-                let act = &target.current_activity;
-                let synth = if act.contains("鍛") || act.contains("鐵") || act.contains("爐") {
-                    "爐火正旺，這批鐵胚得趁熱打出成色來".to_string()
-                } else if act.contains("食") || act.contains("麵") || act.contains("煮") || act.contains("煎") || act.contains("烤") || act.contains("廚") {
-                    "湯頭與火候得分毫不差，讓過路食客吃口暖胃順心的".to_string()
-                } else if act.contains("帳") || act.contains("盤點") || act.contains("貨") || act.contains("算") || act.contains("商") || act.contains("賣") {
-                    "市面行情起落無常，每筆進出都得算得明明白白".to_string()
-                } else if act.contains("書") || act.contains("讀") || act.contains("卷") || act.contains("學") || act.contains("閣") {
-                    "卷冊所錄的脈絡章法，尚有幾處關竅待細細推敲".to_string()
-                } else if act.contains("藥") || act.contains("草") || act.contains("診") || act.contains("醫") {
-                    "藥石性味不同，劑量配比更得嚴絲合縫，輕忽不得".to_string()
-                } else if act.contains("巡") || act.contains("守") || act.contains("衛") || act.contains("哨") {
-                    "四下動靜不可大意，各處關口都得盯得踏實些".to_string()
-                } else if act.contains("走") || act.contains("趕") || act.contains("行") || act.contains("路") {
-                    "腳下得快些走動，免得耽擱了前頭約定的時辰".to_string()
-                } else if act.contains("歇") || act.contains("茶") || act.contains("坐") || act.contains("飲") {
-                    "忙裡偷得片刻清閒，定定心神也是保養".to_string()
-                } else if act.contains("耕") || act.contains("農") || act.contains("田") || act.contains("苗") {
-                    "農時節令緊要，地裡的苗情得細心料理照拂".to_string()
-                } else if target.id.starts_with("wt_vendor_") || target.display_title.contains("攤") {
-                    "手頭這口營生不可怠慢，得把每樣貨色都拾掇得當".to_string()
-                } else if !target.display_title.is_empty() {
-                    "把手頭這份營生踏實顧好，求個平順安穩".to_string()
-                } else {
-                    "看顧好眼前手頭這點活計，步步踏實便好".to_string()
-                };
-                chosen_flavor = Some(synth);
-            }
-        }
-
-        let clean_flavor = chosen_flavor.and_then(|mut s| {
-            if s.is_ascii() {
-                return None;
-            }
-            for forbidden in [
-                "小市", "短市", "剛才", "剛剛", "還有", "資料庫", "database", "grid", "debug", "scene_stub", "聖塔", "110V", "110v", "念場", "富態",
-            ] {
-                s = s.replace(forbidden, "");
-            }
-            let s = s.trim().to_string();
-            if s.is_empty() {
-                None
-            } else {
-                Some(s)
-            }
-        });
-
         let mood_phrase = match target.disposition {
             ..=-30 => Some("眉宇微蹙，神色間透著幾分鬱結與焦躁"),
             -29..=-10 => Some("神色略顯疲態，似有心事縈繞"),
@@ -530,37 +468,10 @@ fn build_look_narrative(
             40.. => Some("眉目舒朗、神采奕奕，心境頗為暢快"),
             -9..=14 => None,
         };
-
-        match (mood_phrase, clean_flavor) {
-            (Some(mood), Some(flavor)) => {
-                desc.push_str(&format!("{pronoun}此刻{mood}，眉眼間似正思忖著「{flavor}」。"));
-            }
-            (None, Some(flavor)) => {
-                desc.push_str(&format!("{pronoun}眉眼間似正思忖著「{flavor}」。"));
-            }
-            (Some(mood), None) => {
-                desc.push_str(&format!("{pronoun}此刻{mood}。"));
-            }
-            (None, None) => {}
+        if let Some(mood) = mood_phrase {
+            desc.push_str(&format!("{pronoun}此刻{mood}。"));
         }
     }
-
-    // 觀測目標內息底色與吐納氣機
-    let vocation_for_habit = if target.display_title == "山海行旅者" {
-        ""
-    } else {
-        target.display_title.as_str()
-    };
-    let breath_rec = crate::pg::living_world::get_or_derive_breath_habit(
-        &target.id,
-        vocation_for_habit,
-        target.soul_seed.unwrap_or(0),
-    );
-    desc.push_str(&format!(
-        "{pronoun}{}（內息底色：【{}】）。",
-        breath_rec.dominant.combat_rhythm_phrase(),
-        breath_rec.dominant.label()
-    ));
 
     // 觀測目標肉身創傷或暗疾
     let afflictions = crate::pg::living_world::get_entity_afflictions(&target.id);
@@ -570,30 +481,32 @@ fn build_look_narrative(
     }
 
     let mut ob_matter_opt = None;
-    if let Some((kind, subj)) = crate::store::get_active_npc_obligation(&target.id) {
-        ob_matter_opt = match kind.as_str() {
-            "restock_goods" => Some("正為店內現貨見底、急需提貨補倉而掛心".to_string()),
-            "repair_tool" => Some("手頭器物似有耗損待修".to_string()),
-            "stranded_cargo" => Some("正為一批滯留貨物發愁".to_string()),
-            "repay_debt" => Some("眉宇間似有帳務掛心".to_string()),
-            "treat_injury" => Some("氣息略顯不穩，似有傷在身".to_string()),
-            _ => if !subj.is_empty() {
-                let clean_subj = if subj.is_ascii() {
-                    crate::world::materials::material_by_item_id(&subj)
-                        .map(|m| m.name.clone())
-                        .or_else(|| db::get_item_def(&subj).map(|d| d.name))
-                        .unwrap_or_else(|| "手頭差事".to_string())
+    if !is_stranger {
+        if let Some((kind, subj)) = crate::store::get_active_npc_obligation(&target.id) {
+            ob_matter_opt = match kind.as_str() {
+                "restock_goods" => Some("正為店內現貨見底、急需提貨補倉而掛心".to_string()),
+                "repair_tool" => Some("手頭器物似有耗損待修".to_string()),
+                "stranded_cargo" => Some("正為一批滯留貨物發愁".to_string()),
+                "repay_debt" => Some("眉宇間似有帳務掛心".to_string()),
+                "treat_injury" => Some("氣息略顯不穩，似有傷在身".to_string()),
+                _ => if !subj.is_empty() {
+                    let clean_subj = if subj.is_ascii() {
+                        crate::world::materials::material_by_item_id(&subj)
+                            .map(|m| m.name.clone())
+                            .or_else(|| db::get_item_def(&subj).map(|d| d.name))
+                            .unwrap_or_else(|| "手頭差事".to_string())
+                    } else {
+                        subj.clone()
+                    };
+                    Some(format!("正為【{clean_subj}】掛心"))
                 } else {
-                    subj.clone()
-                };
-                Some(format!("正為【{clean_subj}】掛心"))
-            } else {
-                None
-            },
-        };
+                    None
+                },
+            };
+        }
     }
     if let Some(pool) = crate::pg::pool() {
-        if ob_matter_opt.is_none() {
+        if !is_stranger && ob_matter_opt.is_none() {
             if let Ok(obligations) =
                 crate::pg::living_world::list_open_obligations_for_entity(&pool, &target.id)
             {
@@ -632,9 +545,9 @@ fn build_look_narrative(
             };
             let rel_phrase = if eff_balance <= -3 {
                 Some("看向你時神色帶著明顯戒備與舊怨")
-            } else if eff_balance >= 3 {
+            } else if !is_stranger && eff_balance >= 3 {
                 Some("看向你時神色熟稔溫和")
-            } else if eff_fam >= 2 {
+            } else if !is_stranger && eff_fam >= 2 {
                 Some("對你已有幾分印象")
             } else {
                 None
@@ -655,9 +568,9 @@ fn build_look_narrative(
             let eff_fam = if fav > 0 { 1 } else { 0 };
             let rel_phrase = if eff_balance <= -3 {
                 Some("看向你時神色帶著明顯戒備與舊怨")
-            } else if eff_balance >= 3 {
+            } else if !is_stranger && eff_balance >= 3 {
                 Some("看向你時神色熟稔溫和")
-            } else if eff_fam >= 2 {
+            } else if !is_stranger && eff_fam >= 2 {
                 Some("對你已有幾分印象")
             } else {
                 None
@@ -1438,7 +1351,7 @@ mod tests {
         });
         let line = build_look_narrative(&ch, "某甲", "客棧前廊", None);
         assert!(line.contains("眉目舒朗、神采奕奕，心境頗為暢快"));
-        assert!(line.contains("眉眼間似正思忖著「跟人說了會兒話，心裡踏實」。"));
+        assert!(!line.contains("思忖著"));
     }
 
     #[test]
@@ -1467,15 +1380,15 @@ mod tests {
 
         let narrative = build_look_narrative(&ch, "鐵掌老張", "文曜・白塔西市", None);
 
-        // 1. 內息底色
-        assert!(narrative.contains("內息底色：【鍛爐沉息】"));
-        assert!(narrative.contains("吐納沉如風箱鼓火"));
+        // 1. 內息底色不應出現在外部打量中
+        assert!(!narrative.contains("內息底色"));
+        assert!(!narrative.contains("思忖著"));
 
-        // 2. 人器磨合與鋒刃器況
-        assert!(narrative.contains("手裡握著【精鍛防身獵刀】（"));
-        assert!(
-            narrative.contains("漸趨順手・鋒芒畢露") || narrative.contains("沉穩趁手・鋒芒畢露")
-        );
+        // 2. 外部觀察器物（非自身觀測時，Sharp 狀態保持乾淨器名，無內部熟練度標籤）
+        assert!(narrative.contains("手裡握著【精鍛防身獵刀】"));
+        assert!(!narrative.contains("如臂使指"));
+        assert!(!narrative.contains("漸趨順手"));
+        assert!(!narrative.contains("沉穩趁手"));
 
         // 3. 創傷觀測
         assert!(narrative.contains("似帶有腕肘挫傷之態。"), "narrative was: {narrative}");
