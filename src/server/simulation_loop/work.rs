@@ -19,6 +19,23 @@ use super::super::broadcast::broadcast_room_views;
 use super::MainLoopTickState;
 use super::helpers::{periodic_fire, sprintf_d};
 
+/// 依撮合到的工作場域物件，為求職撮合傳聞豐富化當值與崗位資訊
+pub(crate) fn format_job_match_venue_rumor(base_text: &str, room_name: &str) -> String {
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name.trim(), "") {
+        let zone_tag = if venue.has_counter_restricted_zone {
+            "當值櫃檯內側"
+        } else {
+            "當值作業區"
+        };
+        format!(
+            "{base_text}（其中{}{}已由新任{}披掛上崗）",
+            venue.venue_kind, zone_tag, venue.default_host_title
+        )
+    } else {
+        base_text.to_string()
+    }
+}
+
 /// 求職撮合 tick（＋傳聞）；新入職且有排班者註冊排班型 Traveler。
 pub(super) fn run_job_matching_section(
     sessions: &SessionStore,
@@ -84,7 +101,15 @@ pub(super) fn run_job_matching_section(
         job_ttl = 7200;
     }
     let fmt = gametext::npc_social().job_match_rumor_fmt;
-    let text = sprintf_d(&fmt, added.len() as i32);
+    let mut text = sprintf_d(&fmt, added.len() as i32);
+    let sample_room_name = added.iter().find_map(|eid| {
+        get_schedule_for_entity(eid).map(|sched| {
+            crate::db::get_room_name(&sched.work_room).unwrap_or(sched.work_room)
+        })
+    });
+    if let Some(room) = sample_room_name {
+        text = format_job_match_venue_rumor(&text, &room);
+    }
     let rumor = NpcRumor {
         id: format!("job|{}", now_unix / 1800),
         text,
@@ -104,5 +129,25 @@ pub(super) fn run_job_matching_section(
     };
     if let Err(e) = upsert_npc_rumor(rumor) {
         tracing::warn!("job match upsert_npc_rumor: {e}");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_format_job_match_venue_rumor() {
+        let base = "據聞市集勞務行今日促成了 2 筆雇傭撮合。";
+        let enriched_counter = format_job_match_venue_rumor(base, "公議堂房地契書局");
+        assert!(enriched_counter.contains("當值櫃檯內側"));
+        assert!(enriched_counter.contains("地籍契書司"));
+
+        let enriched_observatory = format_job_match_venue_rumor(base, "觀星台");
+        assert!(enriched_observatory.contains("當值作業區"));
+        assert!(enriched_observatory.contains("觀星測候台"));
+
+        let unknown = format_job_match_venue_rumor(base, "荒蕪礫石空地");
+        assert_eq!(unknown, base);
     }
 }

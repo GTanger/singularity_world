@@ -131,9 +131,14 @@ pub fn generate_origin_sentence(amp: f64, freq: f64, phase: f64) -> String {
     } else if phase > 0.3 {
         "秩序"
     } else {
-        "順流"
+         "順流"
+     };
+    let phase_desc = if phase_word == "順流" {
+        "順流而行的澄明氣韻"
+    } else {
+        "逆流而上的孤高氣韻"
     };
-    format!("你的心神感知{amp_word}且{freq_word}，隱隱透著一股{phase_word}的逆流。")
+    format!("你的心神感知{amp_word}且{freq_word}，隱隱透著一股{phase_desc}。")
 }
 
 /// 由 soul_seed 展開為本源語句。
@@ -150,14 +155,56 @@ pub struct Personality {
     pub orderliness: f64,
 }
 
-/// 由 soul_seed 展開為性格維度。
+/// 由 soul_seed 展開為性格維度（先天心性單純形守恆：boldness + sensitivity + orderliness == 1.50，各軸 [0.12, 0.88]）。
 pub fn expand_soul_seed_to_personality(seed: i64) -> Personality {
     let (amp, freq, phase) = expand_seed_axes(seed);
     let norm = |v: f64, lo: f64, hi: f64| -> f64 { ((v - lo) / (hi - lo)).clamp(0.0, 1.0) };
+    let b_raw = 0.15 + 0.70 * norm(amp, AMP_MIN, AMP_MAX);
+    let s_raw = 0.15 + 0.70 * norm(freq, FREQ_MIN, FREQ_MAX);
+    let o_raw = 0.15 + 0.70 * norm(phase, PHASE_MIN, PHASE_MAX);
+
+    let mut cur = [b_raw, s_raw, o_raw];
+    const TARGET_SUM: f64 = 1.50;
+    const MIN_BOUND: f64 = 0.12;
+    const MAX_BOUND: f64 = 0.88;
+
+    // Bounded simplex water-filling 投影（12 次迭代）
+    for _ in 0..12 {
+        let sum: f64 = cur[0] + cur[1] + cur[2];
+        let diff = TARGET_SUM - sum;
+        if diff.abs() < 1e-12 {
+            break;
+        }
+        let mut free_count = 0usize;
+        for &v in &cur {
+            if (diff > 0.0 && v < MAX_BOUND - 1e-9) || (diff < 0.0 && v > MIN_BOUND + 1e-9) {
+                free_count += 1;
+            }
+        }
+        if free_count == 0 {
+            break;
+        }
+        let delta = diff / (free_count as f64);
+        for v in &mut cur {
+            if (diff > 0.0 && *v < MAX_BOUND - 1e-9) || (diff < 0.0 && *v > MIN_BOUND + 1e-9) {
+                *v = (*v + delta).clamp(MIN_BOUND, MAX_BOUND);
+            }
+        }
+    }
+    let rem = TARGET_SUM - (cur[0] + cur[1] + cur[2]);
+    if rem.abs() > 1e-12 {
+        for v in &mut cur {
+            if (rem > 0.0 && *v + rem <= MAX_BOUND) || (rem < 0.0 && *v + rem >= MIN_BOUND) {
+                *v += rem;
+                break;
+            }
+        }
+    }
+
     Personality {
-        boldness: norm(amp, AMP_MIN, AMP_MAX),
-        sensitivity: norm(freq, FREQ_MIN, FREQ_MAX),
-        orderliness: norm(phase, PHASE_MIN, PHASE_MAX),
+        boldness: cur[0],
+        sensitivity: cur[1],
+        orderliness: cur[2],
     }
 }
 
@@ -190,4 +237,37 @@ pub fn expand_soul_seed_to_topology_costs(seed: i64) -> Vec<f64> {
     raw.iter()
         .map(|x| (x / sum) * TOTAL_TOPOLOGY_COST_NORM)
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_expand_soul_seed_to_personality_conservation() {
+        // 驗證跨各種種子性格三軸總和嚴格守恆 1.50 且各軸處於 [0.12, 0.88]
+        for seed in -1000..1000 {
+            let p = expand_soul_seed_to_personality(seed);
+            let sum = p.boldness + p.sensitivity + p.orderliness;
+            assert!(
+                (sum - 1.50).abs() < 1e-6,
+                "Seed {seed} failed sum conservation: sum = {sum}"
+            );
+            assert!(
+                p.boldness >= 0.12 && p.boldness <= 0.88,
+                "Seed {seed} boldness out of bounds: {}",
+                p.boldness
+            );
+            assert!(
+                p.sensitivity >= 0.12 && p.sensitivity <= 0.88,
+                "Seed {seed} sensitivity out of bounds: {}",
+                p.sensitivity
+            );
+            assert!(
+                p.orderliness >= 0.12 && p.orderliness <= 0.88,
+                "Seed {seed} orderliness out of bounds: {}",
+                p.orderliness
+            );
+        }
+    }
 }

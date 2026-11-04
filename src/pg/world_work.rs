@@ -191,8 +191,23 @@ pub fn perform_shift(
         .checked_add(wage_mg)
         .ok_or_else(|| anyhow::anyhow!("人物鎂數溢位"))?;
     let treasury_mg_after = treasury_mg_before - wage_mg;
+    let raw_place_name = crate::db::get_room_name(&place_id).ok().unwrap_or_default();
+    let venue_name = if raw_place_name.is_empty() {
+        place_id.as_str()
+    } else {
+        raw_place_name.as_str()
+    };
+    let produced_good_display = prepared_supply
+        .as_ref()
+        .map(|p| crate::pg::living_world::peninsula_good_display_name(&p.display_name));
+    let shift_activity = resolve_venue_shift_activity_and_advance_event_pack(
+        venue_name,
+        &occupation_id,
+        &venue_id,
+        produced_good_display,
+    );
     let mut current_activity = if kind == "npc" {
-        format!("正在從事{occupation_id}")
+        shift_activity
     } else {
         previous_activity
     };
@@ -236,7 +251,7 @@ pub fn perform_shift(
             &now_unix,
         ],
     )?;
-    let supply = prepared_supply
+    let mut supply = prepared_supply
         .map(|prepared| {
             super::world_supply::dispatch_in_tx(
                 &mut tx,
@@ -248,12 +263,28 @@ pub fn perform_shift(
             )
         })
         .transpose()?;
+    if let Some(s) = supply.as_mut() {
+        s.display_name =
+            crate::pg::living_world::peninsula_good_display_name(&s.display_name).to_string();
+    }
     if let Some(supply) = &supply
         && supply.delivery_kind == "shipment"
     {
+        let raw_dname = crate::db::get_room_name(&supply.destination_place_id)
+            .ok()
+            .filter(|n| !n.is_empty())
+            .unwrap_or_else(|| "鄰近市集".to_string());
+        let market_prefix = crate::pg::living_world::peninsula_market_settlement_name(&raw_dname);
+        let dname = if market_prefix.is_empty() || market_prefix == "鄰近" {
+            "鄰近市集".to_string()
+        } else if market_prefix.ends_with("市集") {
+            market_prefix.to_string()
+        } else {
+            format!("{market_prefix}市集")
+        };
         current_activity = format!(
-            "正運送{}份{}前往目的市場",
-            supply.quantity, supply.display_name
+            "正運送{}份{}前往{}",
+            supply.quantity, supply.display_name, dname
         );
         tx.execute(
             "UPDATE entities SET current_activity=$1 WHERE id=$2",
@@ -307,6 +338,63 @@ pub fn perform_shift(
     }))
 }
 
+pub fn resolve_venue_shift_activity_and_advance_event_pack(
+    venue_display_name: &str,
+    venue_type: &str,
+    venue_id: &str,
+    produced_good_display: Option<&str>,
+) -> String {
+    let venue_obj = crate::grid::resolve_any_room_venue_object(venue_display_name, venue_type);
+    if let Some(good_name) = produced_good_display {
+        let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            venue_display_name,
+            good_name,
+        );
+        if let Some(v) = venue_obj {
+            if v.has_counter_restricted_zone {
+                return format!(
+                    "正在{}（{}當值櫃檯內側{}，產出{}）",
+                    venue_display_name, v.venue_kind, v.on_duty_fixture_activity, good_name
+                );
+            }
+            return format!(
+                "正在{}（{}，產出{}）",
+                venue_display_name, v.on_duty_fixture_activity, good_name
+            );
+        }
+        return format!("正在{}當值，產出{}", venue_display_name, good_name);
+    }
+
+    // Non-supply shift: also advance the room's active EventPack via its first key object if present
+    if let Some((ev, _sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+        venue_display_name,
+        None,
+        crate::game::now_unix() as i64,
+    ) {
+        if let Some(first_key) = ev.key_objects.split('、').next() {
+            let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+                venue_display_name,
+                first_key,
+            );
+        }
+    }
+
+    if let Some(v) = venue_obj {
+        if v.has_counter_restricted_zone {
+            return format!(
+                "正在{}（{}當值櫃檯內側{}）",
+                venue_display_name, v.venue_kind, v.on_duty_fixture_activity
+            );
+        }
+        return format!("正在{}（{}）", venue_display_name, v.on_duty_fixture_activity);
+    }
+    if venue_type == "guard_post" || venue_id.contains("guard") {
+        format!("正在{}執勤巡守", venue_display_name)
+    } else {
+        format!("正在{}當值勞作", venue_display_name)
+    }
+}
+
 pub fn ledger_balance(client: &mut impl GenericClient) -> anyhow::Result<(i64, i64, i64)> {
     let row = client.query_one(
         "SELECT COUNT(*)::bigint,COALESCE(SUM(wage_mg),0)::bigint,
@@ -332,5 +420,57 @@ mod tests {
             599_i64.div_euclid(PAID_PERIOD_SECONDS),
             600_i64.div_euclid(PAID_PERIOD_SECONDS)
         );
+    }
+
+    #[test]
+    fn test_resolve_venue_shift_activity_and_advance_event_pack() {
+        let mill_act = resolve_venue_shift_activity_and_advance_event_pack(
+            "老堰頭・水輪石磨工坊",
+            "miller",
+            "wt_venue_mill_001",
+            Some("現磨溫米漿"),
+        );
+        assert_eq!(
+            mill_act,
+            "正在老堰頭・水輪石磨工坊（水輪石磨工坊當值櫃檯內側正引水推動玄武岩大石磨細磨新收稻穀與米漿，產出現磨溫米漿）"
+        );
+
+        let bath_act = resolve_venue_shift_activity_and_advance_event_pack(
+            "泉香溫水浴場",
+            "bathhouse",
+            "wt_venue_bath_001",
+            None,
+        );
+        assert_eq!(
+            bath_act,
+            "正在泉香溫水浴場（溫泉浴場當值櫃檯內側正往寒水玉湯池投放祛寒草木湯包）"
+        );
+
+        let deed_act = resolve_venue_shift_activity_and_advance_event_pack(
+            "公議堂房地契書局",
+            "clerk",
+            "wt_venue_deed_001",
+            None,
+        );
+        assert_eq!(
+            deed_act,
+            "正在公議堂房地契書局（地籍契書司當值櫃檯內側正於案前核對《半島全戶總譜》與紅印屋契）"
+        );
+
+        let fallback_guard = resolve_venue_shift_activity_and_advance_event_pack(
+            "荒蕪礫石空地",
+            "guard_post",
+            "venue_guard_001",
+            None,
+        );
+        assert_eq!(fallback_guard, "正在荒蕪礫石空地執勤巡守");
+
+        let fallback_labor = resolve_venue_shift_activity_and_advance_event_pack(
+            "荒蕪礫石空地",
+            "laborer",
+            "venue_labor_001",
+            None,
+        );
+        assert_eq!(fallback_labor, "正在荒蕪礫石空地當值勞作");
     }
 }

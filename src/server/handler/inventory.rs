@@ -6,12 +6,10 @@ use parking_lot::RwLock;
 
 use serde::{Deserialize, Serialize};
 
-use crate::ai::narrative::{SkillDataPacket, synthesize_skill_from_data};
 use crate::combat::wordplate::{
-    derive_elementary_motions_from_chars, derive_elementary_motions_with_fluency,
     CarrierAffinity, CraftDims4D, OrbitFluency, StarInlay, StarSentence, TacticalLoadout,
-    TacticalSlot, TargetPart, WordCasket, WordElement, WordPlateError, WordQuality,
-    WordRegistry, WordSource,
+    TacticalSlot, TargetPart, WordCasket, WordElement, WordQuality,
+    WordRegistry,
 };
 use crate::db::{
     self, add_to_inventory, clear_equipment_slot, compute_resource_maxes,
@@ -36,6 +34,7 @@ fn resolve_inv_item_name(item_id: &str) -> String {
         .or_else(|| crate::world::materials::material_by_item_id(item_id).map(|m| m.name.to_string()))
         .or_else(|| crate::game::peninsula_catalog::find_catalog_entry(item_id).map(|c| c.name.to_string()))
         .or_else(|| crate::game::object_ecology::lookup_ecology_item_def(item_id).map(|d| d.name))
+        .or_else(|| crate::db::fallback_item_name(item_id).map(|s| s.to_string()))
         .filter(|n| !n.trim().is_empty());
     match candidate {
         Some(name) if !name.is_ascii() => name,
@@ -55,13 +54,105 @@ fn resolve_inv_item_name(item_id: &str) -> String {
     }
 }
 
+/// 依據命魂種子（soul_seed）為未通節點或僅有初生核心節點 ["N000"] 之生靈（玩家與真人NPC）
+/// 確定性點亮 6–9 個星盤節點（包含 N000，以及 3 個經絡節點 M01..M12、3 個星府節點 G010..G060、2 個星宿節點 S101..S150）
+pub fn derive_activated_nodes_from_soul_seed(seed: i64) -> Vec<String> {
+    let mut nodes = vec!["N000".to_string()];
+    let u = (seed as u64) ^ 0x514E_5353_A5A5_5A5A;
+
+    // 1. 3 個經絡節點 M01..M12
+    let m_a = (u % 12) + 1;
+    let m_b = ((u.wrapping_shr(7)) % 12) + 1;
+    let m_c = ((u.wrapping_shr(14)) % 12) + 1;
+    let mut m_set = vec![m_a];
+    if !m_set.contains(&m_b) {
+        m_set.push(m_b);
+    } else {
+        let alt = if m_b % 12 + 1 != m_a { m_b % 12 + 1 } else { (m_b + 1) % 12 + 1 };
+        m_set.push(alt);
+    }
+    for cand in [m_c, (m_c % 12) + 1, ((m_c + 1) % 12) + 1] {
+        if !m_set.contains(&cand) {
+            m_set.push(cand);
+            break;
+        }
+    }
+    for m in m_set {
+        nodes.push(format!("M{:02}", m));
+    }
+
+    // 2. 3 個星府節點 G010..G060（步進 10）
+    let g_a = ((u.wrapping_shr(21) % 6) + 1) * 10;
+    let g_b = ((u.wrapping_shr(28) % 6) + 1) * 10;
+    let g_c = ((u.wrapping_shr(35) % 6) + 1) * 10;
+    let mut g_set = vec![g_a];
+    if !g_set.contains(&g_b) {
+        g_set.push(g_b);
+    } else {
+        let alt = if (g_b / 10) % 6 + 1 != g_a / 10 { ((g_b / 10) % 6 + 1) * 10 } else { (((g_b / 10) + 1) % 6 + 1) * 10 };
+        g_set.push(alt);
+    }
+    for cand_idx in [g_c / 10, (g_c / 10) % 6 + 1, ((g_c / 10) + 1) % 6 + 1] {
+        let cand = cand_idx * 10;
+        if !g_set.contains(&cand) {
+            g_set.push(cand);
+            break;
+        }
+    }
+    for g in g_set {
+        nodes.push(format!("G{:03}", g));
+    }
+
+    // 3. 2 個星宿節點 S101..S150
+    let s_a = 101 + (u.wrapping_shr(42) % 50);
+    let s_b = 101 + (u.wrapping_shr(49) % 50);
+    let mut s_set = vec![s_a];
+    if s_b != s_a {
+        s_set.push(s_b);
+    } else {
+        let alt = if s_b < 150 { s_b + 1 } else { 101 };
+        s_set.push(alt);
+    }
+    for s in s_set {
+        nodes.push(format!("S{:03}", s));
+    }
+
+    nodes
+}
+
 /// 檢查 entity_id 在 PLAYER_CASKETS 中是否有針對 item_id 之銘文，若有則綴上 ` [字1][字2]`
 pub fn format_entity_item_with_inscription(entity_id: &str, item_id: &str, base_name: &str) -> String {
     let caskets = PLAYER_CASKETS.read();
     if let Some(casket) = caskets.get(entity_id) {
-        let suffix = casket.format_inscribed_suffix(item_id, WordRegistry::global());
-        if !suffix.is_empty() {
-            return format!("{base_name}{suffix}");
+        let word_ids = casket.inscribed_words_of(item_id);
+        if !word_ids.is_empty() && !base_name.contains('[') {
+            let registry = WordRegistry::global();
+            let mut suffix = String::from(" ");
+            for wid in word_ids {
+                let ch = registry
+                    .get_by_id(wid)
+                    .map(|elem| elem.ch.as_str())
+                    .unwrap_or_else(|| {
+                        if wid.is_ascii() {
+                            "銘"
+                        } else {
+                            wid.as_str()
+                        }
+                    });
+                suffix.push('[');
+                suffix.push_str(ch);
+                suffix.push(']');
+            }
+            return format!("{}{}", base_name, suffix);
+        }
+    }
+    if !base_name.contains('[') && entity_id != "player" {
+        match item_id {
+            "wt_cat_0984" => return format!("{base_name} [巧][堅]"),
+            "wt_cat_0973" => return format!("{base_name} [純][流]"),
+            "wt_cat_0945" | "wt_blacksmith_hammer" => return format!("{base_name} [鍛][堅]"),
+            "wt_cat_0947" | "wt_carpenter_chisel" => return format!("{base_name} [巧][定]"),
+            _ => {}
         }
     }
     base_name.to_string()
@@ -101,38 +192,19 @@ pub fn npc_autonomous_word_and_equip_step(
             .filter(|it| it.item_id.starts_with("corpse_") && it.qty > 0)
             .map(|it| it.item_id.clone())
             .collect();
-        let npc_seed = ent.soul_seed.unwrap_or(0);
+        let _npc_seed = ent.soul_seed.unwrap_or(0);
         for corpse_id in corpse_items {
             let corpse_rec = crate::pg::living_world::get_beast_corpse(&corpse_id);
             let _ = remove_from_inventory(npc_id, &corpse_id, 1);
             crate::pg::living_world::consume_beast_corpse(&corpse_id);
-            let mut hasher: u64 = 0xcbf29ce484222325;
-            for b in ent.id.as_bytes() {
-                hasher ^= *b as u64;
-                hasher = hasher.wrapping_mul(0x100000001b3);
-            }
-            for b in corpse_id.as_bytes() {
-                hasher ^= *b as u64;
-                hasher = hasher.wrapping_mul(0x100000001b3);
-            }
-            hasher ^= npc_seed.unsigned_abs();
-            hasher = hasher.wrapping_mul(0x100000001b3);
-            let tier = corpse_rec.as_ref().map(|r| r.tier).unwrap_or(3);
-            let strip_quality = crate::combat::wordplate::roll_strip_quality(35.0, tier, true, hasher);
-            if matches!(strip_quality, WordQuality::Jia | WordQuality::Yi | WordQuality::Bing) {
-                let crystal_id = crate::combat::wordplate::crystal_item_id(
-                    WordSource::Beast,
-                    strip_quality,
-                );
-                let _ = db::add_to_inventory(npc_id, &crystal_id, 1);
-            } else {
-                let primary_loot = corpse_rec
-                    .as_ref()
-                    .map(|r| r.primary_loot_id.as_str())
-                    .unwrap_or("mat_beast_hide");
-                let _ = db::add_to_inventory(npc_id, primary_loot, 1);
-                let _ = db::add_to_inventory(npc_id, "wt_beast_bone", 1);
-            }
+            let primary_loot = corpse_rec
+                .as_ref()
+                .map(|r| r.primary_loot_id.as_str())
+                .unwrap_or("mat_leather_strip");
+            let _ = db::add_to_inventory(npc_id, primary_loot, 1);
+            let _ = db::add_to_inventory(npc_id, "wt_beast_bone", 1);
+            let ctitle = corpse_rec.as_ref().map(|r| r.creature_title.as_str()).unwrap_or("異獸");
+            crate::pg::living_world::record_entity_anatomy_familiarity(npc_id, ctitle, 1);
         }
     }
 
@@ -255,10 +327,7 @@ pub fn npc_autonomous_word_and_equip_step(
 
     save_player_wordplates();
 
-    Some(format!(
-        "{}並以自身氣機將【「{}」】字烙印其上，隨手佩掛【{} [{}]】。",
-        npc_name, elem.ch, crafted_item_name, elem.ch
-    ))
+    Some(format!("{npc_name}隨手將新造之【{crafted_item_name}】試手佩掛於身。"))
 }
 
 fn parse_equipment_triple(
@@ -277,7 +346,7 @@ fn parse_equipment_triple(
     (slots, names, descs)
 }
 
-fn entity_status_from_character(ent: &Character, is_self: bool) -> EntityStatusMsg {
+pub(crate) fn entity_status_from_character(ent: &Character, is_self: bool) -> EntityStatusMsg {
     let rm = compute_resource_maxes(ent.vit, ent.qi, ent.dex);
     let hp = rm.hp_max as i32;
     let inner = rm.inner_max as i32;
@@ -310,6 +379,7 @@ fn entity_status_from_character(ent: &Character, is_self: bool) -> EntityStatusM
             *name = format_entity_item_with_inscription(&ent.id, item_id, name);
         }
     }
+    let offline_dir = crate::npc::causal_core::get_player_offline_directive(&ent.id);
     let mut msg = EntityStatusMsg {
         msg_type: "entity_status".into(),
         entity_id: ent.id.clone(),
@@ -336,21 +406,27 @@ fn entity_status_from_character(ent: &Character, is_self: bool) -> EntityStatusM
         equipment_slots,
         equipment_names,
         equipment_descs,
-        natural_skills: if is_self {
-            synthesize_entity_natural_skills(ent)
-        } else {
-            Vec::new()
-        },
+        natural_skills: synthesize_entity_natural_skills(ent),
+        offline_directive: offline_dir.code().to_string(),
+        offline_directive_label: offline_dir.label().to_string(),
+        offline_directive_desc: offline_dir.desc().to_string(),
     };
     if !ent.display_title.is_empty() {
         msg.display_title.clone_from(&ent.display_title);
     }
-    if is_self {
-        msg.activated_nodes = parse_activated_nodes(&ent.activated_nodes);
+    let parsed = parse_activated_nodes(&ent.activated_nodes);
+    msg.activated_nodes = if parsed.len() <= 1 {
         if let Some(seed) = ent.soul_seed {
-            msg.origin_sentence = expand_soul_seed_to_origin_sentence(seed);
-            msg.topology_costs = expand_soul_seed_to_topology_costs(seed);
+            derive_activated_nodes_from_soul_seed(seed)
+        } else {
+            parsed
         }
+    } else {
+        parsed
+    };
+    if let Some(seed) = ent.soul_seed {
+        msg.origin_sentence = expand_soul_seed_to_origin_sentence(seed);
+        msg.topology_costs = expand_soul_seed_to_topology_costs(seed);
     }
     msg
 }
@@ -488,7 +564,15 @@ pub(super) fn handle_equip_item(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("inv_item_not_found"));
         return;
     };
-    if def.slot.is_empty() {
+    if def.slot.is_empty()
+        || msg.item_id.contains("storage_box")
+        || msg.item_id.contains("pine_soot_ink")
+        || msg.item_id.contains("tool_handle")
+        || def.name.contains("隨身匣")
+        || def.name.contains("收納匣")
+        || def.name.contains("墨錠")
+        || def.name.contains("工具長柄")
+    {
         conn.send_error(gametext::client("inv_cannot_equip"));
         return;
     }
@@ -510,6 +594,8 @@ pub(super) fn handle_equip_item(conn: &WsConnection, msg: &ClientMsg) {
     };
     if (target_slot == "hold_r" || target_slot == "hold_l")
         && (msg.target_slot == "hold_l" || msg.target_slot == "hold_r")
+        && (msg.target_slot == "hold_l"
+            || crate::pg::living_world::is_weapon_or_tool_item(&msg.item_id, &def.name))
     {
         target_slot.clone_from(&msg.target_slot);
     }
@@ -538,6 +624,20 @@ pub(super) fn handle_equip_item(conn: &WsConnection, msg: &ClientMsg) {
     if !old_item_id.is_empty() && add_to_inventory(&pid, &old_item_id, 1).is_err() {
         conn.send_error(gametext::client("inv_unequip_old_fail"));
         return;
+    }
+    if (target_slot == "hold_r" || target_slot == "hold_l")
+        && crate::pg::living_world::is_weapon_or_tool_item(&msg.item_id, &def.name)
+    {
+        let vstate = crate::pg::living_world::get_vessel_state(&pid, &msg.item_id);
+        if vstate.use_count == 0 {
+            let _ = crate::pg::living_world::record_vessel_use(
+                &pid,
+                &msg.item_id,
+                0,
+                1,
+                crate::game::now_unix(),
+            );
+        }
     }
     push_refresh(conn, &pid);
     let item_name = format_entity_item_with_inscription(&pid, &msg.item_id, &def.name);
@@ -694,11 +794,12 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         };
 
         let registry = WordRegistry::global();
+        ensure_player_initialized(&pid);
         let casket = get_player_word_casket(&pid);
         let loadout = {
             let guard = PLAYER_LOADOUTS.read();
             guard.get(&pid).cloned().unwrap_or_else(|| {
-                let seed = ent.soul_seed.unwrap_or(100_003);
+                let seed = crate::combat::human_phase::resolve_entity_soul_seed(&ent.id, ent.soul_seed);
                 crate::combat::wordplate::build_loadout_from_soul_seed(seed, Some(&casket), registry)
             })
         };
@@ -711,64 +812,99 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         };
 
         let Some(sent) = sent_opt else {
-            conn.send_error("此路數尚未排定字譜星軌，無法著譜立說。");
+            conn.send_error("此路數尚未純熟，無法著譜立說。");
             return;
         };
 
-        let word_ids: Vec<String> = sent.inlays.iter().map(|i| i.word_id.clone()).collect();
-        let word_chars: Vec<String> = sent
-            .inlays
-            .iter()
-            .map(|inlay| {
-                registry
-                    .get_by_id(&inlay.word_id)
-                    .map(|e| e.ch.clone())
-                    .unwrap_or_else(|| inlay.word_id.clone())
-            })
-            .collect();
-
-        let syn_opt = sent.synthesize(registry).ok();
-        let carrier = syn_opt.as_ref().map(|s| s.primary_carrier).unwrap_or(CarrierAffinity::Unarmed);
-        let motion_seq = syn_opt
-            .as_ref()
-            .map(|s| s.derive_elementary_motions_for_carrier(Some(carrier)))
-            .unwrap_or_else(|| {
-                derive_elementary_motions_from_chars(&word_chars, carrier, TargetPart::Torso)
-            });
-
-        let role_hint = if !ent.display_title.trim().is_empty() {
-            ent.display_title.trim().to_string()
+        let (equip_slots, equip_names, _) = parse_equipment_triple(&ent.equipment_slots);
+        let held_keys = ["hold_r", "hold_l", "weapon", "hand", "tool"];
+        let mut held_item_id = String::new();
+        let mut held_item_display = String::new();
+        for k in &held_keys {
+            if let Some(id) = equip_slots.get(*k).filter(|s| !s.is_empty()) {
+                held_item_id = id.clone();
+                let base = equip_names.get(*k).cloned().unwrap_or_else(|| resolve_inv_item_name(id));
+                held_item_display = format_entity_item_with_inscription(&ent.id, id, &base);
+                break;
+            }
+        }
+        let held_carrier = if !held_item_id.is_empty() {
+            crate::combat::wordplate::infer_item_carrier_affinity(&held_item_id, &held_item_display)
         } else {
-            "山海行旅者".to_string()
+            None
+        };
+        let martial_carrier = held_carrier.unwrap_or(CarrierAffinity::Unarmed);
+        let vessel_name = if held_item_display.is_empty() {
+            "隨身套路".to_string()
+        } else {
+            held_item_display.clone()
+        };
+        let studied_manuals = crate::pg::living_world::get_entity_studied_manuals(&ent.id);
+        let learned_bonus = (studied_manuals.len() as f64 * 0.25).min(1.0);
+        let vessel_familiarity_count = if !held_item_id.is_empty() {
+            crate::pg::living_world::get_vessel_state(&ent.id, &held_item_id).use_count as u32
+        } else {
+            0
         };
 
-        let first_hub = sent
-            .inlays
-            .first()
-            .map(|i| hub_label_from_node(&i.node_id))
-            .unwrap_or_else(|| "天極主樞".to_string());
+        let seed = crate::combat::human_phase::resolve_entity_soul_seed(&ent.id, ent.soul_seed);
+        let bone = crate::combat::human_phase::InnateBonePhase::from_seed(seed);
+        let personal_routine = crate::combat::human_phase::derive_personal_martial_routine(
+            &bone,
+            slot_enum,
+            martial_carrier,
+            &vessel_name,
+            learned_bonus,
+            vessel_familiarity_count,
+            registry,
+        );
 
-        let natural_name = syn_opt
-            .as_ref()
-            .map(|s| s.effective_name.clone())
-            .unwrap_or_else(|| format!("{}連式", word_chars.join("")));
-
-        let packet = SkillDataPacket {
-            entity_id: ent.id.clone(),
-            role_title: role_hint,
-            domain: "martial".to_string(),
-            slot_label: slot_label.to_string(),
-            hub_or_tier: first_hub,
-            word_chars: word_chars.clone(),
-            vessel_name: "隨身套路".to_string(),
-            carrier,
-            motion_sequence: motion_seq,
-            fallback_name: natural_name,
+        let (formal_name, origin_basis, carrier, word_ids, word_chars) = if let Some(custom_name) = &sent.custom_name {
+            let ids: Vec<String> = sent.inlays.iter().map(|i| i.word_id.clone()).collect();
+            let chars: Vec<String> = sent
+                .inlays
+                .iter()
+                .map(|inlay| {
+                    registry
+                        .get_by_id(&inlay.word_id)
+                        .map(|e| e.ch.clone())
+                        .unwrap_or_else(|| inlay.word_id.clone())
+                })
+                .collect();
+            (
+                custom_name.clone(),
+                format!("體察自身發力習慣與呼吸節奏，將隨身演練純熟之《{}》著錄於冊", custom_name),
+                martial_carrier,
+                ids,
+                chars,
+            )
+        } else {
+            let mut ids = vec![personal_routine.omp_word_ids.0.clone(), personal_routine.omp_word_ids.1.clone()];
+            for inlay in &sent.inlays {
+                if !ids.contains(&inlay.word_id) {
+                    ids.push(inlay.word_id.clone());
+                }
+            }
+            while ids.len() < 3 {
+                ids.push(personal_routine.omp_word_ids.1.clone());
+            }
+            let chars: Vec<String> = ids
+                .iter()
+                .map(|wid| {
+                    registry
+                        .get_by_id(wid)
+                        .map(|e| e.ch.clone())
+                        .unwrap_or_else(|| wid.clone())
+                })
+                .collect();
+            (
+                personal_routine.formal_name.clone(),
+                personal_routine.origin_basis_zh.clone(),
+                personal_routine.carrier,
+                ids,
+                chars,
+            )
         };
-
-        let synthesized = synthesize_skill_from_data(&packet);
-        let formal_name = synthesized.name;
-        let origin_basis = synthesized.origin_basis;
 
         let mut hasher: u64 = 0xcbf29ce484222325;
         for b in pid.bytes() {
@@ -819,7 +955,7 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
             target_id: manual_item_id,
             target_name: format!("《{}》手札", formal_name),
             narrative: format!(
-                "你鋪開空白手札，凝神將平生習熟的「{}」行氣路線與「{}」諸字真意逐筆錄下，裝訂成一冊《{}》手札收入行囊。",
+                "你鋪開空白手札，體察自身發力習慣與招式流轉，將隨身演練純熟之招法著錄於冊：以「{}」之勢與「{}」諸字真意逐筆錄下，裝訂成一冊《{}》手札收入行囊。",
                 origin_basis,
                 word_chars.join("・"),
                 formal_name
@@ -845,137 +981,34 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         };
 
         let Some(manual) = crate::pg::living_world::get_transcribed_manual(&msg.item_id) else {
-            conn.send_error("此卷手札殘損模糊，字印氣脈無從辨識。");
+            conn.send_error("此卷手札字跡殘損模糊，其中要訣已無從辨識。");
             return;
         };
         if manual.word_ids.len() < 3 {
-            conn.send_error("此冊手札字印殘缺，無法成句。");
+            conn.send_error("此冊手札篇章殘缺，難以連貫參悟。");
             return;
         }
-
         let registry = WordRegistry::global();
-        let casket = get_player_word_casket(&pid);
+        let learner_seed = crate::combat::human_phase::resolve_entity_soul_seed(&ent.id, ent.soul_seed);
+        let bone = crate::combat::human_phase::InnateBonePhase::from_seed(learner_seed);
 
-        let in_loadout_has_word = |wid: &str| -> bool {
-            let guard = PLAYER_LOADOUTS.read();
-            guard.get(&pid).map(|l| {
-                let check_sent = |s: Option<&StarSentence>| {
-                    s.map(|sent| sent.inlays.iter().any(|inlay| inlay.word_id == wid)).unwrap_or(false)
-                };
-                check_sent(l.opening.as_ref())
-                    || check_sent(l.midgame.as_ref())
-                    || check_sent(l.finisher.as_ref())
-                    || check_sent(l.defense.as_ref())
-            }).unwrap_or(false)
-        };
-
-        let mut grasped_chars = Vec::new();
-        let mut missing_chars = Vec::new();
-        for (i, wid) in manual.word_ids.iter().enumerate() {
-            let ch = manual.word_chars.get(i).cloned().unwrap_or_else(|| {
-                registry.get_by_id(wid).map(|e| e.ch.clone()).unwrap_or_else(|| wid.clone())
-            });
-            let in_casket = casket.count(wid) > 0;
-            let in_loadout = in_loadout_has_word(wid);
-
-            if in_casket || in_loadout {
-                grasped_chars.push(ch);
-            } else {
-                missing_chars.push(ch);
-            }
-        }
-
-        if !missing_chars.is_empty() {
-            let narrative = if grasped_chars.is_empty() {
-                format!(
-                    "你細細研讀《{}》手札，發覺其中所載之「{}」諸字真意尚未採獵得獲，遂先將心得記為「參悟殘譜（待日後採獵剝名補齊字印方可完整成相）」，未能即刻化入星軌。",
-                    manual.formal_name,
-                    missing_chars.join("、")
-                )
-            } else {
-                format!(
-                    "你細細研讀《{}》手札，發覺其中所載之「{}」諸字真意，你目前僅通曉「{}」，其餘「{}」字印尚未採獵得獲，遂先將心得記為「參悟殘譜（待日後採獵剝名補齊字印方可完整成相）」，未能即刻化入星軌。",
-                    manual.formal_name,
-                    manual.word_chars.join("・"),
-                    grasped_chars.join("・"),
-                    missing_chars.join("、")
-                )
-            };
-
-            conn.send_json(&ActionResultMsg {
-                msg_type: "action_result".into(),
-                action: "StudyManual".into(),
-                target_id: msg.item_id.clone(),
-                target_name: format!("《{}》手札", manual.formal_name),
-                narrative,
-                success: true,
-                actions: vec![],
-                move_target_id: String::new(),
-                open_trade: false,
-                suggested_action: String::new(),
-                tactical_choices: vec![],
-            });
-            return;
-        }
-
-        let learner_seed = ent.soul_seed.unwrap_or(100_003);
-        let costs = expand_soul_seed_to_topology_costs(learner_seed);
-
-        let (slot_idx, slot_enum) = match manual.slot_label.as_str() {
-            "起手" | "opening" => (0, TacticalSlot::Opening),
-            "連攜" | "midgame" => (1, TacticalSlot::Midgame),
-            "破綻" | "finisher" | "重手" => (2, TacticalSlot::Finisher),
-            "守勢" | "defense" => (3, TacticalSlot::Defense),
-            _ => (0, TacticalSlot::Opening),
-        };
-
-        let mut hub_scores: Vec<(usize, f64)> = (1..=20)
-            .map(|h| {
-                let a_cost = costs.get(h - 1).copied().unwrap_or(13.0);
-                let b_start = 20 + 5 * (h - 1);
-                let b_avg: f64 = (0..5)
-                    .map(|j| costs.get(b_start + j).copied().unwrap_or(13.0))
-                    .sum::<f64>()
-                    / 5.0;
-                let total_resistance = a_cost * 0.4 + b_avg * 0.6;
-                (h, total_resistance)
-            })
-            .collect();
-        hub_scores.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
-        let selected_hub = hub_scores[slot_idx % hub_scores.len()].0;
-
-        let word_count = if manual.word_ids.len() >= 7 {
-            7
-        } else if manual.word_ids.len() >= 5 {
-            5
-        } else {
-            3
-        };
-
-        let avg_cost = costs.iter().take(word_count.max(1)).sum::<f64>() / (word_count.max(1) as f64);
-        let learner_fluency = OrbitFluency::from_cost(avg_cost);
-        let inlays: Vec<StarInlay> = (0..word_count)
-            .map(|i| {
-                let node_id = format!("N{:03}", i + 1);
-                let node_cost = costs.get(i).copied().unwrap_or(10.0);
-                StarInlay::with_fluency(
-                    node_id,
-                    manual.word_ids[i].clone(),
-                    OrbitFluency::from_cost(node_cost),
-                )
-            })
-            .collect();
-        let mut star_sentence = match StarSentence::new(inlays) {
-            Ok(s) => s.with_custom_name(&manual.formal_name),
-            Err(e) => {
-                conn.send_error(format!("星軌成相滯澀：{e}"));
-                return;
-            }
-        };
-        star_sentence.set_soul_seed(learner_seed);
-        let detour_note = match star_sentence.synthesize(registry) {
-            Ok(synth) => synth.meridian_detour_note,
-            Err(_) => String::new(),
+        let is_craft_manual = manual.carrier_code == "tool"
+            || manual.slot_label.contains("百工")
+            || manual.slot_label.contains("庖廚")
+            || manual.slot_label.contains("採獵")
+            || manual.slot_label.contains("行旅")
+            || manual.slot_label == "craft"
+            || manual.slot_label == "production"
+            || manual.formal_name.contains("卯合")
+            || manual.formal_name.contains("火候")
+            || manual.formal_name.contains("收汁")
+            || manual.formal_name.contains("衡準");
+        let (slot_enum, slot_label_zh) = match manual.slot_label.as_str() {
+            "起手" | "opening" => (TacticalSlot::Opening, "起手"),
+            "連攜" | "midgame" => (TacticalSlot::Midgame, "連攜"),
+            "破綻" | "finisher" | "重手" => (TacticalSlot::Finisher, "破綻"),
+            "守勢" | "defense" => (TacticalSlot::Defense, "守勢"),
+            _ => (TacticalSlot::Opening, "起手"),
         };
 
         let (equip_slots, equip_names, _) = parse_equipment_triple(&ent.equipment_slots);
@@ -984,10 +1017,12 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         let mut held_item_display = String::new();
         for k in &held_keys {
             if let Some(id) = equip_slots.get(*k).filter(|s| !s.is_empty()) {
-                held_item_id = id.clone();
                 let base = equip_names.get(*k).cloned().unwrap_or_else(|| resolve_inv_item_name(id));
-                held_item_display = format_entity_item_with_inscription(&ent.id, id, &base);
-                break;
+                if crate::pg::living_world::is_weapon_or_tool_item(id, &base) {
+                    held_item_id = id.clone();
+                    held_item_display = format_entity_item_with_inscription(&ent.id, id, &base);
+                    break;
+                }
             }
         }
         let carrier = if !held_item_id.is_empty() {
@@ -998,14 +1033,60 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
                 .unwrap_or(CarrierAffinity::Unarmed)
         };
 
-        let motions = derive_elementary_motions_with_fluency(
-            &manual.word_chars,
+        let (routine, adaptation_prose) = crate::combat::human_phase::adapt_manual_to_bone_phase(
+            &bone,
+            slot_enum,
             carrier,
-            TargetPart::Torso,
-            learner_fluency,
+            &manual.formal_name,
+            &manual.word_chars,
+            registry,
         );
 
-        {
+        crate::pg::living_world::record_entity_studied_manual(&pid, &manual.formal_name);
+
+        let word_count = if manual.word_ids.len() >= 7 {
+            7
+        } else if manual.word_ids.len() >= 5 {
+            5
+        } else {
+            3
+        };
+        let inlays: Vec<StarInlay> = (0..word_count)
+            .map(|i| {
+                let node_id = format!("N{:03}", i + 1);
+                let wid = if i == 0 {
+                    routine.omp_word_ids.0.clone()
+                } else if i == 1 {
+                    routine.omp_word_ids.1.clone()
+                } else {
+                    manual.word_ids.get(i).cloned().unwrap_or_else(|| routine.omp_word_ids.1.clone())
+                };
+                let fluency = if routine.continuity_c >= 1.25 {
+                    OrbitFluency::ChangLiu
+                } else if routine.continuity_c >= 0.95 {
+                    OrbitFluency::ShunTong
+                } else if routine.continuity_c >= 0.70 {
+                    OrbitFluency::PingWen
+                } else {
+                    OrbitFluency::ZhiSe
+                };
+                StarInlay::with_fluency(
+                    node_id,
+                    wid,
+                    fluency,
+                )
+            })
+            .collect();
+        let mut star_sentence = match StarSentence::new(inlays) {
+            Ok(s) => s.with_custom_name(&routine.formal_name),
+            Err(e) => {
+                conn.send_error(format!("招式推演受阻：{e}"));
+                return;
+            }
+        };
+        star_sentence.set_soul_seed(learner_seed);
+
+        if !is_craft_manual {
             let mut loadouts = PLAYER_LOADOUTS.write();
             if let Some(loadout) = loadouts.get_mut(&pid) {
                 loadout.set_slot(slot_enum, star_sentence);
@@ -1014,25 +1095,29 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
                 loadout.set_slot(slot_enum, star_sentence);
                 loadouts.insert(pid.clone(), loadout);
             }
+            save_player_wordplates();
         }
-        save_player_wordplates();
         push_refresh(conn, &pid);
 
-        let motions_str = motions.join(" → ");
-        let detour_suffix = if !detour_note.is_empty() {
-            format!("（{}）", detour_note)
+        let motions_str = routine.main_motions.join(" → ");
+        let narrative = if is_craft_manual {
+            format!(
+                "你靜心參讀《{}》手札，細細揣摩其中百工造物與行氣法度，隨自身發力習慣心領神會！\n{}\n手札所載之「{}」要訣已融會貫通並納入【{}】與百工手藝之中！",
+                manual.formal_name,
+                adaptation_prose,
+                motions_str,
+                manual.slot_label
+            )
         } else {
-            String::new()
+            format!(
+                "你靜心參讀《{}》手札，細細揣摩其中發力法度，隨自身體魄節奏自然化為「{}」！\n{}\n招式循序運化為「{}」，已自然融入{}身手！",
+                manual.formal_name,
+                routine.formal_name,
+                adaptation_prose,
+                motions_str,
+                slot_label_zh
+            )
         };
-        let narrative = format!(
-            "你手捧《{}》研讀，循自身三十六位天星氣脈運轉，經絡相映間「{}」諸字真意自識海流轉，氣機{}貫通；雖習同門心法，卻隨你自身體魄拓撲衍生出獨屬武相{}，碎招化作「{}」，順勢納入{}式！",
-            manual.formal_name,
-            manual.word_chars.join("・"),
-            learner_fluency.label(),
-            detour_suffix,
-            motions_str,
-            manual.slot_label
-        );
         conn.send_json(&ActionResultMsg {
             msg_type: "action_result".into(),
             action: "StudyManual".into(),
@@ -1049,212 +1134,23 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         return;
     }
 
-    // ─── 器物刻字／外盤銘文（InscribeItem）───────────────────────────────────
-    if msg.action == "InscribeItem" {
-        ensure_player_initialized(&pid);
-        let registry = WordRegistry::global();
-        let (target_item_id, raw_word_id) = if let Some((target, wid)) = msg.item_id.split_once('|') {
-            (target.trim(), wid.trim())
-        } else {
-            (msg.item_id.as_str().trim(), "")
-        };
-
-        if target_item_id.is_empty() {
-            conn.send_error("未指定欲銘刻外盤字韻之器物");
-            return;
-        }
-
-        let Ok(Some(ent)) = db::get_entity(&pid) else {
-            conn.send_error(gametext::client("inv_entity_not_found"));
-            return;
-        };
-
-        let is_in_inventory = inventory_has_item(&ent.inventory, target_item_id);
-        let is_equipped = if ent.equipment_slots.is_empty() {
-            false
-        } else {
-            let slots: HashMap<String, String> =
-                serde_json::from_str(&ent.equipment_slots).unwrap_or_default();
-            slots.values().any(|id| id == target_item_id)
-        };
-
-        if !is_in_inventory && !is_equipped {
-            conn.send_error("行囊或身上並無此器物，無法銘刻外盤字韻");
-            return;
-        }
-
-        let word_id = if !raw_word_id.is_empty() {
-            let Some(wid) = resolve_word_id(registry, raw_word_id) else {
-                conn.send_error(format!("未能辨識字印【{raw_word_id}】"));
-                return;
-            };
-            wid
-        } else {
-            let caskets = PLAYER_CASKETS.read();
-            let Some(casket) = caskets.get(&pid) else {
-                conn.send_error("隨身詞匣尚未開啟");
-                return;
-            };
-            let first_available = casket.list().into_iter().find(|(_wid, count)| *count > 0).map(|(wid, _)| wid.to_string());
-            match first_available {
-                Some(wid) => wid,
-                None => {
-                    conn.send_error("隨身詞匣內無可用之字韻詞元");
-                    return;
-                }
-            }
-        };
-
-        let word_char = {
-            let mut caskets = PLAYER_CASKETS.write();
-            let Some(casket) = caskets.get_mut(&pid) else {
-                conn.send_error("隨身詞匣未就緒");
-                return;
-            };
-            if casket.count(&word_id) == 0 {
-                let ch = registry.get_by_id(&word_id).map(|e| e.ch.as_str()).unwrap_or(&word_id);
-                conn.send_error(format!("隨身詞匣中已無「{ch}」字詞元"));
-                return;
-            }
-            match casket.inscribe_item(target_item_id, &word_id) {
-                Ok(_) => {
-                    registry.get_by_id(&word_id).map(|e| e.ch.clone()).unwrap_or_else(|| word_id.clone())
-                }
-                Err(e) => {
-                    conn.send_error(format!("器物銘文失敗：{e}"));
-                    return;
-                }
-            }
-        };
-
-        save_player_wordplates();
-        push_refresh(conn, &pid);
-        let state_msg = build_tactical_state_msg(&pid);
-        conn.send_json(&state_msg);
-
-        let base_name = resolve_inv_item_name(target_item_id);
-        let inscribed_full_name = format_entity_item_with_inscription(&pid, target_item_id, &base_name);
-
-        let narrative = format!(
-            "你凝心定氣，自隨身詞匣引出一縷「{word_char}」字玄芒，於【{base_name}】之外盤肌理細細鏤刻！氣機貫注之下，器物泛起五源流轉之微芒，化為【{inscribed_full_name}】——銘文既成，此器於庖丁解牛、採獵百工中平添入微化境，於戰陣交鋒時更能與星盤經脈引動同律共鳴！"
-        );
-
-        conn.send_json(&ActionResultMsg {
-            msg_type: "action_result".into(),
-            action: "InscribeItem".into(),
-            target_id: target_item_id.to_string(),
-            target_name: inscribed_full_name,
-            narrative,
-            success: true,
-            actions: vec![],
-            move_target_id: String::new(),
-            open_trade: false,
-            suggested_action: String::new(),
-            tactical_choices: vec![],
-        });
+    // ─── 舊法攔截（InscribeItem, StackWord, MintWord, StripName）───────────
+    if matches!(
+        msg.action.as_str(),
+        "InscribeItem" | "StackWord" | "MintWord" | "ExtractWord"
+    ) {
+        conn.send_error("此項舊法已不再通行，請直接運用器物或執行百工工序。");
+        return;
+    }
+    if msg.action == "StripName" {
+        conn.send_error("此項舊法已不再通行，請直接運用器物或執行百工工序。");
+        return;
+    }
+    if msg.action == "StripNameWhole" && !msg.item_id.starts_with("corpse_") {
+        conn.send_error("此項舊法已不再通行，請直接運用器物或執行百工工序。");
         return;
     }
 
-    // ─── 識海試排槽心印操作：同名疊煉（StackWord）與鎔鑄化鎂（MintWord） ───────────
-    if msg.action == "StackWord" || msg.action == "MintWord" {
-        ensure_player_initialized(&pid);
-        let registry = WordRegistry::global();
-        let word_id = if let Some(wid) = resolve_word_id(registry, &msg.item_id) {
-            wid
-        } else {
-            conn.send_error("未能辨識欲操作之字印");
-            return;
-        };
-        let word_ch = registry.get_by_id(&word_id).map(|e| e.ch.clone()).unwrap_or_else(|| word_id.clone());
-
-        if msg.action == "StackWord" {
-            let (target_quality, target_charge, upgraded, narrative) = {
-                let mut caskets = PLAYER_CASKETS.write();
-                let casket = match caskets.get_mut(&pid) {
-                    Some(c) => c,
-                    None => {
-                        conn.send_error("詞匣尚未開竅");
-                        return;
-                    }
-                };
-                let loadouts = PLAYER_LOADOUTS.read();
-                let loadout = loadouts.get(&pid);
-                let xuan_bonus = loadout.map(|l| l.xuan_luck_bonus(casket, registry)).unwrap_or(0.0);
-                let now = crate::game::now_unix();
-                let seed = (now as u64)
-                    .wrapping_mul(6364136223846793005)
-                    .wrapping_add(pid.bytes().fold(0u64, |acc, b| acc.wrapping_mul(31).wrapping_add(b as u64)));
-                match casket.stack_refine(&word_id, xuan_bonus, seed) {
-                    Ok(res) => res,
-                    Err(e) => {
-                        conn.send_error(format!("疊煉未成：{e}"));
-                        return;
-                    }
-                }
-            };
-            save_player_wordplates();
-            let state_msg = build_tactical_state_msg(&pid);
-            conn.send_json(&state_msg);
-
-            let result_title = if upgraded { "【同名疊煉・品階躍升】" } else { "【同名疊煉・充能蘊養】" };
-            conn.send_json(&ActionResultMsg {
-                msg_type: "action_result".into(),
-                action: "StackWord".into(),
-                target_id: word_id,
-                target_name: format!("「{word_ch}」字心印"),
-                narrative: format!("{result_title}{narrative}（當前品位：{}）", target_quality.label_zh()),
-                success: true,
-                actions: vec![],
-                move_target_id: String::new(),
-                open_trade: false,
-                suggested_action: String::new(),
-                tactical_choices: vec![],
-            });
-            return;
-        }
-
-        if msg.action == "MintWord" {
-            let (mg_gain, quality, narrative) = {
-                let mut caskets = PLAYER_CASKETS.write();
-                let casket = match caskets.get_mut(&pid) {
-                    Some(c) => c,
-                    None => {
-                        conn.send_error("詞匣尚未開竅");
-                        return;
-                    }
-                };
-                match casket.mint_to_magnesium(&word_id) {
-                    Ok(res) => res,
-                    Err(e) => {
-                        conn.send_error(format!("化鎂未成：{e}"));
-                        return;
-                    }
-                }
-            };
-            if let Err(e) = db::add_magnesium(&pid, mg_gain) {
-                tracing::warn!("[MintWord] 增加鎂錠失敗：{e}");
-            }
-            save_player_wordplates();
-            push_refresh(conn, &pid);
-            let state_msg = build_tactical_state_msg(&pid);
-            conn.send_json(&state_msg);
-
-            conn.send_json(&ActionResultMsg {
-                msg_type: "action_result".into(),
-                action: "MintWord".into(),
-                target_id: word_id,
-                target_name: format!("「{word_ch}」字心印"),
-                narrative: format!("【鎔鑄化鎂】{narrative}（化解{}心印，凝結入行囊實得 {mg_gain} 鎂錠）", quality.label_zh()),
-                success: true,
-                actions: vec![],
-                move_target_id: String::new(),
-                open_trade: false,
-                suggested_action: String::new(),
-                tactical_choices: vec![],
-            });
-            return;
-        }
-    }
     let Ok(Some(ent)) = db::get_entity(&pid) else {
         conn.send_error(gametext::client("inv_entity_not_found"));
         return;
@@ -1263,336 +1159,15 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("inv_bag_missing"));
         return;
     }
-    // ─── 碎晶提出（ExtractWord / Use on crystal_*）───────────────────────────
-    if let Some((source, quality)) = crate::combat::wordplate::parse_crystal_item_id(&msg.item_id) {
-        if msg.action.is_empty() || msg.action == "ExtractWord" || msg.action == "Use" {
-            if remove_from_inventory(&pid, &msg.item_id, 1).is_err() {
-                conn.send_error(gametext::client("inv_bag_fail"));
-                return;
-            }
-            ensure_player_initialized(&pid);
-            let registry = WordRegistry::global();
-            let loadouts = PLAYER_LOADOUTS.read();
-            let forge_score = loadouts
-                .get(&pid)
-                .map(|l| l.total_craft_dims(registry).forge)
-                .unwrap_or(0.0);
-            drop(loadouts);
-
-            let (_, room_name) = entity_location_label(&ent);
-            let is_official_agency = room_name.contains("文曜")
-                || room_name.contains("講堂")
-                || room_name.contains("學政")
-                || room_name.contains("工坊")
-                || room_name.contains("市");
-
-            let ratio = crate::combat::wordplate::compute_extraction_ratio(forge_score as f32, is_official_agency);
-            let now = crate::game::now_unix();
-            let seed = (now as u64)
-                .wrapping_mul(6364136223846793005)
-                .wrapping_add(pid.bytes().fold(0u64, |acc, b| acc.wrapping_mul(31).wrapping_add(b as u64)))
-                .wrapping_add(source.code().bytes().fold(0u64, |acc, b| acc.wrapping_mul(17).wrapping_add(b as u64)));
-            let elem = registry.roll_word_from_source(source, quality, seed);
-
-            {
-                let mut caskets = PLAYER_CASKETS.write();
-                if let Some(casket) = caskets.get_mut(&pid) {
-                    casket.add_extracted(&elem.id, 1, quality, ratio);
-                }
-            }
-            save_player_wordplates();
-            push_refresh(conn, &pid);
-            let state_msg = build_tactical_state_msg(&pid);
-            conn.send_json(&state_msg);
-
-            let crystal_name = resolve_inv_item_name(&msg.item_id);
-            let efficiency_note = if is_official_agency {
-                "爐溫與陣勢相合，字韻凝結格外飽滿。"
-            } else {
-                "字韻隨心火緩緩收束成形。"
-            };
-            conn.send_json(&ActionResultMsg {
-                msg_type: "action_result".into(),
-                action: "ExtractWord".into(),
-                target_id: elem.id.clone(),
-                target_name: format!("「{}」字心印", elem.ch),
-                narrative: format!(
-                    "你運起心火碎解【{crystal_name}】，識海字譜中凝現一枚{}【「{}」】字心印。{efficiency_note}",
-                    quality.label_zh(),
-                    elem.ch
-                ),
-                success: true,
-                actions: vec![],
-                move_target_id: String::new(),
-                open_trade: false,
-                suggested_action: String::new(),
-                tactical_choices: vec![],
-            });
-            return;
-        }
-    }
-
-    // ─── 剝名結晶（StripName / StripNameWhole）───────────────────────────────
-    if msg.action == "StripName" || msg.action == "StripNameWhole" {
-        let is_whole = msg.action == "StripNameWhole" || msg.item_id.starts_with("corpse_");
-        let item_name = resolve_inv_item_name(&msg.item_id);
-        let Some((source, tier)) = crate::game::object_ecology::classify_material_word_source(&msg.item_id, &item_name) else {
-            conn.send_error("此物未具備可剝名凝晶之天地五源質性");
-            return;
-        };
-
-        let now = crate::game::now_unix();
-        let is_corpse = msg.item_id.starts_with("corpse_");
-        let corpse_opt = if is_corpse {
-            let c = crate::pg::living_world::get_beast_corpse(&msg.item_id);
-            if c.is_none() {
-                conn.send_error("此具殘軀放置過久，靈韻已散，僅可執行【肢體分解】。");
-                return;
-            }
-            c
-        } else {
-            None
-        };
-
-        if let Some(corpse) = &corpse_opt {
-            if now > corpse.fresh_until {
-                conn.send_error("此具殘軀放置過久，周身靈韻已隨天地元氣散逸，無法再整軀剝名，僅可執行【肢體分解】取下皮骨。");
-                return;
-            }
-        }
-
-        if remove_from_inventory(&pid, &msg.item_id, 1).is_err() {
-            conn.send_error(gametext::client("inv_bag_fail"));
-            return;
-        }
-
-        if msg.item_id.starts_with("corpse_") {
-            crate::pg::living_world::consume_beast_corpse(&msg.item_id);
-        }
-        ensure_player_initialized(&pid);
-        let registry = WordRegistry::global();
-        let total_craft = {
-            let loadouts = PLAYER_LOADOUTS.read();
-            loadouts
-                .get(&pid)
-                .map(|l| l.total_craft_dims(registry))
-                .unwrap_or_default()
-        };
-        let mut harvest_score = total_craft.harvest + 0.35 * total_craft.culinary;
-
-        let equipment_map: HashMap<String, String> = if ent.equipment_slots.is_empty() {
-            HashMap::new()
-        } else {
-            serde_json::from_str(&ent.equipment_slots).unwrap_or_default()
-        };
-
-        let mut tool_resonance = false;
-        let mut resonance_tool_name = String::new();
-        let held_keys = ["hold_r", "hold_l", "weapon", "hand", "tool"];
-        {
-            let caskets = PLAYER_CASKETS.read();
-            let casket_opt = caskets.get(&pid);
-
-            for key in &held_keys {
-                if let Some(held_id) = equipment_map.get(*key).filter(|id| !id.is_empty()) {
-                    let held_name = resolve_inv_item_name(held_id);
-                    let is_tool = held_name.contains("刀")
-                        || held_name.contains("剪")
-                        || held_name.contains("鋸")
-                        || held_name.contains("刃")
-                        || held_name.contains("鎬")
-                        || held_name.contains("斧")
-                        || held_name.contains("鍬")
-                        || held_name.contains("針")
-                        || held_name.contains("刮")
-                        || held_name.contains("工具")
-                        || held_id.contains("blade")
-                        || held_id.contains("knife")
-                        || held_id.contains("tool")
-                        || held_id.contains("axe");
-
-                    if is_tool {
-                        harvest_score += 15.0;
-                    }
-
-                    if let Some(casket) = casket_opt {
-                        let craft_bonus = casket.inscribed_craft_bonus(held_id, registry);
-                        harvest_score += craft_bonus.harvest + 0.5 * craft_bonus.culinary;
-
-                        let inscribed = casket.inscribed_words_of(held_id);
-                        let has_dissecting = inscribed.iter().any(|wid| {
-                            let ch = registry.get_by_id(wid).map(|e| e.ch.as_str()).unwrap_or(wid);
-                            matches!(ch, "解" | "剝" | "骨" | "筋" | "巧" | "薄" | "探")
-                        });
-                        if is_tool && (!inscribed.is_empty() || has_dissecting) {
-                            tool_resonance = true;
-                            harvest_score += 25.0;
-                            if has_dissecting {
-                                harvest_score += 20.0;
-                            }
-                            if resonance_tool_name.is_empty() {
-                                resonance_tool_name = format_entity_item_with_inscription(&pid, held_id, &held_name);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        let habit_rec = crate::pg::living_world::record_breath_activity(
-            &pid,
-            crate::pg::living_world::BreathHabitKind::ForestLong,
-            2,
-            now,
-        );
-
-        let mut bladed_tool: Option<(String, String)> = None;
-        for key in &held_keys {
-            if let Some(held_id) = equipment_map.get(*key).filter(|id| !id.is_empty()) {
-                let held_name = resolve_inv_item_name(held_id);
-                if crate::pg::living_world::is_bladed_vessel_item(held_id, &held_name) {
-                    bladed_tool = Some((held_id.clone(), held_name));
-                    break;
-                }
-            }
-        }
-        if bladed_tool.is_none() {
-            let inv_check = get_inventory(&ent.inventory, ent.vit);
-            for it in inv_check.items {
-                if crate::pg::living_world::is_bladed_vessel_item(&it.item_id, &it.name) {
-                    bladed_tool = Some((it.item_id, it.name));
-                    break;
-                }
-            }
-        }
-        let vstate = bladed_tool.as_ref().map(|(kid, _)| {
-            crate::pg::living_world::record_vessel_use(&pid, kid, 1, 2, now)
-        });
-
-        let seed = (now as u64)
-            .wrapping_mul(6364136223846793005)
-            .wrapping_add(pid.bytes().fold(0u64, |acc, b| acc.wrapping_mul(31).wrapping_add(b as u64)))
-            .wrapping_add(tier as u64);
-
-        if is_whole {
-            let success_threshold = (45.0 + (harvest_score as f32) * 0.65).min(92.0);
-            if ((seed % 100) as f32) > success_threshold {
-                push_refresh(conn, &pid);
-                let fail_narrative = if let (Some((_, kname)), Some(vs)) = (&bladed_tool, &vstate) {
-                    format!(
-                        "你操持【{}】（{}），試圖趁餘溫將【{}】整具靈韻一氣剝離，孰料半途氣機微滯，殘軀晶光驟然潰散於天地之間，未能凝成結晶。{}",
-                        kname,
-                        vs.status_badge(),
-                        item_name,
-                        vs.familiarity().feel_prose()
-                    )
-                } else {
-                    format!(
-                        "你徒手試圖趁餘溫將【{}】整具靈韻一氣剝離，孰料半途氣機微滯，殘軀晶光驟然潰散於天地之間，未能凝成結晶。",
-                        item_name
-                    )
-                };
-                conn.send_json(&ActionResultMsg {
-                    msg_type: "action_result".into(),
-                    action: "StripNameWhole".into(),
-                    target_id: msg.item_id.clone(),
-                    target_name: item_name.clone(),
-                    narrative: fail_narrative,
-                    success: false,
-                    actions: vec![],
-                    move_target_id: String::new(),
-                    open_trade: false,
-                    suggested_action: String::new(),
-                    tactical_choices: vec![],
-                });
-                return;
-            }
-        }
-
-        let quality = if is_whole {
-            if (harvest_score >= 35.0) || ((seed % 10) < 5) {
-                WordQuality::Jia
-            } else {
-                WordQuality::Yi
-            }
-        } else {
-            crate::combat::wordplate::roll_strip_quality(harvest_score as f32, tier, is_whole, seed)
-        };
-        let crystal_id = crate::combat::wordplate::crystal_item_id(source, quality);
-        let crystal_def = crate::game::object_ecology::lookup_ecology_item_def(&crystal_id);
-        let crystal_name = crystal_def.map(|d| d.name).unwrap_or_else(|| "詞元結晶".to_string());
-
-        if let Err(e) = db::add_to_inventory(&pid, &crystal_id, 1) {
-            tracing::warn!("[StripName] 增加結晶至背包失敗：{e}");
-        }
+    // ─── 舊版晶石使用清理 ───────────────────────────────────────────────────
+    if crate::combat::wordplate::parse_crystal_item_id(&msg.item_id).is_some() {
+        let _ = remove_from_inventory(&pid, &msg.item_id, 1);
         push_refresh(conn, &pid);
-
-        let whole_note = if is_whole { "藉整全完軀之靈韻引導，" } else { "" };
-        let paoding_note = if tool_resonance {
-            format!("，手中【{resonance_tool_name}】順著骨縫肌理輕巧游走，皮肉筋骨應手而解")
-        } else {
-            String::new()
-        };
-        let vessel_phrase = if let (Some((_, kname)), Some(vs)) = (&bladed_tool, &vstate) {
-            format!("手中【{}】（{}），{}。", kname, vs.status_badge(), vs.familiarity().feel_prose())
-        } else {
-            "徒手運勁分理，手感沉著。".to_string()
-        };
-        let mut narrative = format!(
-            "你凝神處理【{item_name}】，{whole_note}剝去雜質{paoding_note}，掌心凝結出一枚【{crystal_name}】（{}・{}）。{}",
-            source.label_zh(),
-            quality.label_zh(),
-            vessel_phrase
-        );
-
-        let familiar_enough = vstate.as_ref().map(|vs| matches!(
-            vs.familiarity(),
-            crate::pg::living_world::VesselFamiliarity::WellBalanced
-                | crate::pg::living_world::VesselFamiliarity::LikeOwnArm
-        )).unwrap_or(false);
-
-        if is_whole || familiar_enough {
-            let actor_name = if !ent.display_title.trim().is_empty() {
-                ent.display_title.trim().to_string()
-            } else {
-                "行者".to_string()
-            };
-            let tool_name = bladed_tool.as_ref().map(|(_, n)| n.clone()).unwrap_or_else(|| "徒手".to_string());
-            let tool_familiarity = vstate.as_ref().map(|vs| vs.familiarity().label().to_string()).unwrap_or_else(|| "得心應手".to_string());
-            let packet = crate::ai::CraftActionFactPacket {
-                actor_name,
-                tool_name,
-                tool_familiarity,
-                breath_habit: habit_rec.dominant.label().to_string(),
-                material_names: vec![item_name.clone()],
-                output_name: crystal_name.clone(),
-                highlight_kind: if is_whole { "整軀剝名" } else { "剝名凝晶" }.to_string(),
-                environment_hint: "荒澤曠野".to_string(),
-            };
-            let highlight = crate::ai::compose_craft_highlight_from_data(&packet);
-            if !highlight.is_empty() {
-                narrative.push_str("\n\n");
-                narrative.push_str(&highlight);
-            }
-        }
-
-        conn.send_json(&ActionResultMsg {
-            msg_type: "action_result".into(),
-            action: "StripName".into(),
-            target_id: crystal_id,
-            target_name: crystal_name.to_string(),
-            narrative,
-            success: true,
-            actions: vec![],
-            move_target_id: String::new(),
-            open_trade: false,
-            suggested_action: String::new(),
-            tactical_choices: vec![],
-        });
         return;
     }
-    // ─── 肢體分解（ButcherCorpse）───────────────────────────────────────────
-    if msg.action == "ButcherCorpse" {
+
+    // ─── 肢體分解（ButcherCorpse 或殘軀之 StripNameWhole）────────────────────
+    if msg.action == "ButcherCorpse" || msg.action == "StripNameWhole" {
         if !msg.item_id.starts_with("corpse_") {
             conn.send_error("此物已非完整殘軀，不可再次分解。");
             return;
@@ -1614,7 +1189,7 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         let primary_loot_id = corpse_rec
             .as_ref()
             .map(|r| r.primary_loot_id.as_str())
-            .unwrap_or("mat_beast_hide");
+            .unwrap_or("mat_leather_strip");
         let primary_loot_name = corpse_rec
             .as_ref()
             .map(|r| r.primary_loot_name.as_str())
@@ -1627,6 +1202,7 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         let _ = db::add_to_inventory(&pid, primary_loot_id, 1);
         let _ = db::add_to_inventory(&pid, "wt_beast_bone", 1);
         push_refresh(conn, &pid);
+        crate::pg::living_world::record_entity_anatomy_familiarity(&pid, creature_title, 1);
 
         let now = crate::game::now_unix();
         let habit_rec = crate::pg::living_world::record_breath_activity(
@@ -1680,6 +1256,19 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
                 primary_loot_name
             )
         };
+        let seed = crate::combat::human_phase::resolve_entity_soul_seed(&ent.id, ent.soul_seed);
+        let bone = crate::combat::human_phase::InnateBonePhase::from_seed(seed);
+        let anatomy_fam = crate::pg::living_world::get_entity_anatomy_familiarity_total(&pid);
+        let seam = crate::combat::human_phase::evaluate_seam_threading(
+            &bone,
+            CarrierAffinity::Blade,
+            ent.dex as f64,
+            45.0,
+            anatomy_fam,
+        );
+        if seam.xi_index >= 0.40 {
+            narrative.push_str("你順著生靈骨節肌理之天然空隙游刃穿入，刀鋒避開堅硬外皮，毫不費力便將其完整剖解，器物鋒刃幾無損耗。");
+        }
 
         let familiar_enough = vstate.as_ref().map(|vs| matches!(
             vs.familiarity(),
@@ -1729,8 +1318,14 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     }
 
 
-    if crate::game::object_ecology::is_wood_or_firewood_item(&msg.item_id)
-        || msg.item_id == "mat_charcoal_sack"
+    if matches!(
+        msg.action.as_str(),
+        "MakeFire" | "SplitWood" | "RefinePlank" | "BurnCharcoal" | "CraftTorch" | "CraftHandle" | "AddFuel" | "RepairStructure"
+    ) || (msg.action.is_empty()
+        && matches!(
+            msg.item_id.as_str(),
+            "mat_kindling_bundle" | "mat_timber_log" | "harvest_wood" | "mat_charcoal_sack"
+        ))
     {
         let (room_id, room_name) = entity_location_label(&ent);
         let ent_room = if !room_name.is_empty() { room_name } else { room_id };
@@ -1813,7 +1408,7 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     } else if matches!(
         msg.action.as_str(),
         "WashOre" | "SmeltBloom" | "ForgeRepairStrip" | "SharpenBlade" | "BuildFieldAnvil"
-    ) || (crate::game::object_ecology::is_mineral_item(&msg.item_id) && msg.action.is_empty()) {
+    ) {
         let (room_id, room_name) = entity_location_label(&ent);
         let ent_room = if !room_name.is_empty() { room_name } else { room_id };
         let now = crate::game::now_unix();
@@ -1859,7 +1454,7 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     } else if matches!(
         msg.action.as_str(),
         "WashHerb" | "DryHerb" | "CrushHerb" | "BoilDecoction" | "SetupHerbStove"
-    ) || (crate::game::object_ecology::is_herb_item(&msg.item_id) && msg.action.is_empty() && !msg.item_id.starts_with("craft_")) {
+    ) {
         let (room_id, room_name) = entity_location_label(&ent);
         let ent_room = if !room_name.is_empty() { room_name } else { room_id };
         let now = crate::game::now_unix();
@@ -1905,7 +1500,7 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     } else if matches!(
         msg.action.as_str(),
         "TwistRope" | "WeaveSackcloth" | "OilCanvas" | "PressPaper"
-    ) || (crate::game::object_ecology::is_fiber_item(&msg.item_id) && msg.action.is_empty()) {
+    ) {
         let (room_id, room_name) = entity_location_label(&ent);
         let ent_room = if !room_name.is_empty() { room_name } else { room_id };
         let now = crate::game::now_unix();
@@ -1943,7 +1538,7 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     } else if matches!(
         msg.action.as_str(),
         "ScrapeHide" | "BoilFishGlue" | "CalcifyShell" | "CobbleBoots"
-    ) || (crate::game::object_ecology::is_hide_fish_item(&msg.item_id) && msg.action.is_empty()) {
+    ) {
         let (room_id, room_name) = entity_location_label(&ent);
         let ent_room = if !room_name.is_empty() { room_name } else { room_id };
         let now = crate::game::now_unix();
@@ -2008,14 +1603,77 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         });
         return;
     }
+    let item_def = get_item_def(&msg.item_id);
+    let item_name = format_entity_item_with_inscription(&pid, &msg.item_id, &resolve_inv_item_name(&msg.item_id));
+    let is_non_edible_gear_or_mat = item_def
+        .as_ref()
+        .is_some_and(|d| !d.slot.is_empty() || d.item_type == "equipment" || d.item_type == "misc" || d.item_type == "tool")
+        || matches!(
+            msg.item_id.as_str(),
+            "mat_fishing_line_bundle"
+                | "mat_fish_scale_sack"
+                | "mat_fish_bone_sack"
+                | "mat_sealing_pitch"
+                | "item_ebony_mortise_tea_tray"
+        )
+        || [
+            "魚骨", "魚鱗", "魚皮", "釣魚線", "魚線", "漁線", "魚網", "漁網", "魚簍", "魚刀", "魚鰾",
+            "螺殼", "貝殼", "蟹殼", "封縫膏", "灰膏", "茶盤", "茶壺", "茶盅", "茶篩", "茶托", "茶籽",
+            "湯鍋", "湯碗", "果盤", "螺鈿",
+        ]
+        .iter()
+        .any(|kw| item_name.contains(kw));
+    let is_edible = !is_non_edible_gear_or_mat
+        && (item_def.as_ref().is_some_and(|d| d.item_type == "consumable" || d.item_type == "food")
+            || matches!(
+                msg.item_id.as_str(),
+                "mat_fresh_shrimp"
+                    | "shanhai_fresh_fish"
+                    | "shanhai_beast_meat"
+                    | "mat_salted_fish"
+                    | "harvest_fish"
+                    | "harvest_berries"
+                    | "craft_roasted_shrimp_skewer"
+                    | "craft_smoked_fish_fillet"
+                    | "craft_spiced_beast_jerky"
+                    | "craft_ration_grain_cake"
+                    | "craft_meridian_salve"
+                    | "craft_calming_tea_pack"
+            )
+            || ["蝦", "魚", "肉", "蟹", "鮑", "蛤", "蜆", "螺", "果", "茶", "餅", "脯", "串", "湯", "粥", "飲", "露", "膏", "散", "丹", "丸", "水芹", "芝"]
+                .iter()
+                .any(|kw| item_name.contains(kw)));
+    if !is_edible {
+        conn.send_json(&ActionResultMsg {
+            msg_type: "action_result".into(),
+            action: if msg.action.is_empty() { "Use".into() } else { msg.action.clone() },
+            target_id: msg.item_id.clone(),
+            target_name: item_name.clone(),
+            narrative: format!("【{item_name}】屬於百工原材或隨身器物，無法直接食用；請於行囊點擊「加工煉製」或「穿戴」。"),
+            success: false,
+            actions: vec![],
+            move_target_id: String::new(),
+            open_trade: false,
+            suggested_action: String::new(),
+            tactical_choices: vec![],
+        });
+        return;
+    }
     if remove_from_inventory(&pid, &msg.item_id, 1).is_err() {
         conn.send_error(gametext::client("inv_bag_fail"));
         return;
     }
     let is_meridian_salve = msg.item_id == "craft_meridian_salve" || msg.item_id.contains("meridian_salve");
     let is_calming_tea = msg.item_id == "craft_calming_tea_pack" || msg.item_id.contains("calming_tea");
+    let is_culinary = matches!(
+        msg.item_id.as_str(),
+        "craft_roasted_shrimp_skewer"
+            | "craft_smoked_fish_fillet"
+            | "craft_spiced_beast_jerky"
+            | "craft_ration_grain_cake"
+            | "mat_salted_fish"
+    );
     let is_mutated = msg.item_id.starts_with("mut_") || crate::game::object_ecology::classify_item_stage(&msg.item_id) == "mutated";
-
     if let Some(arc) = crate::store::get_store() {
         let _ = arc.write().update_entity(&pid, |e| {
             if is_meridian_salve {
@@ -2023,6 +1681,9 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
                 e.qi = (e.qi + 20).min(100);
             } else if is_calming_tea {
                 e.qi = (e.qi + 30).min(100);
+            } else if is_culinary {
+                e.vit = (e.vit + 20).min(100);
+                e.qi = (e.qi + 18).min(100);
             } else if is_mutated {
                 e.vit = (e.vit + 15).min(100);
                 e.qi = (e.qi + 20).min(100);
@@ -2032,9 +1693,17 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
             }
         });
     }
+    if is_meridian_salve || is_calming_tea || is_mutated {
+        crate::pg::living_world::clear_entity_afflictions(&pid, true, crate::game::now_unix());
+    }
     push_refresh(conn, &pid);
 
-    let item_name = format_entity_item_with_inscription(&pid, &msg.item_id, &resolve_inv_item_name(&msg.item_id));
+    // item_name already bound above
+    let bracketed_name = if item_name.starts_with('【') {
+        item_name.clone()
+    } else {
+        format!("【{item_name}】")
+    };
 
     let is_food = ["餅", "麵", "飯", "肉", "薯", "凍", "花", "菜", "蝦", "蛤", "魚", "丸", "糖", "湯", "粥", "粿"]
         .iter()
@@ -2047,19 +1716,19 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         .any(|k| item_name.contains(k));
 
     let narrative = if is_meridian_salve {
-        format!("你取出一份【{item_name}】塗抹於周身經絡要穴。溫潤的藥力順著經脈化開，氣血大暢，肌肉酸痛盡消（周身氣血與心神皆獲豐沛滋養）！")
+        format!("你取出一份{bracketed_name}塗抹於周身經絡要穴。溫潤的藥力順著經脈化開，氣血大暢，肌肉酸痛盡消（周身氣血與心神皆獲豐沛滋養）！")
     } else if is_calming_tea {
-        format!("你沏開這份【{item_name}】細細品飲。茶湯清洌甘甜，靈氣透入靈台，心神澄澈通達（心神頓時澄澈充盈）！")
+        format!("你沏開這份{bracketed_name}細細品飲。茶湯清洌甘甜，清氣透入眉宇，心神澄澈通達（心神頓時澄澈充盈）！")
     } else if is_mutated {
-        format!("你凝神運用手中神異的【{item_name}】。微芒順著指尖湧入經脈，天地共鳴之氣充盈四肢百骸，周身氣脈頓時大振（體魄與元氣漸次平順舒暢）！")
+        format!("你凝神運用手中神異的{bracketed_name}。微芒順著指尖湧入經脈，天地共鳴之氣充盈四肢百骸，周身氣脈頓時大振（體魄與元氣漸次平順舒暢）！")
     } else if is_food {
-        format!("你取出一份熱騰騰的【{item_name}】，大口趁熱品嚐。外皮酥香、內餡鮮美多汁，溫潤的香氣自舌尖散開，頓時腹中一暖，整個人精神大振！")
+        format!("你取出一份熱騰騰的{bracketed_name}，大口趁熱品嚐。外皮酥香、內餡鮮美多汁，溫潤的香氣自舌尖散開，頓時腹中一暖，整個人精神大振！")
     } else if is_drink {
-        format!("你仰頭啜飲這份【{item_name}】。甘潤清甜的湯水順喉而下，齒頰留香，周身燥熱頓消，氣息隨之舒暢通達。")
+        format!("你仰頭啜飲這份{bracketed_name}。甘潤清甜的湯水順喉而下，齒頰留香，周身燥熱頓消，氣息隨之舒暢通達。")
     } else if is_herb {
-        format!("你細細研服這份【{item_name}】。草木清香在口中化開，微苦回甘，藥力順著經脈緩緩化開，氣血漸漸充盈。")
+        format!("你細細研服這份{bracketed_name}。草木清香在口中化開，微苦回甘，藥力順著經脈緩緩化開，氣血漸漸充盈。")
     } else {
-        format!("你取出手中的【{item_name}】仔細檢視並加以使用。觸感扎實細膩，工藝純熟，片刻調理後整個人氣定神閒。")
+        format!("你取出手中的{bracketed_name}仔細檢視並加以使用。觸感紮實細膩，工藝純熟，片刻調理後整個人氣定神閒。")
     };
 
     conn.send_json(&ActionResultMsg {
@@ -2142,7 +1811,6 @@ pub(super) fn handle_sell_item(conn: &WsConnection, msg: &ClientMsg) {
         return;
     }
     let mut payout = 0i32;
-    let mut after_quote = initial_quote.clone();
     for _ in 0..sell_qty {
         let cur = crate::game::object_ecology::dynamic_settlement_market_quote(
             &player_room,
@@ -2150,7 +1818,7 @@ pub(super) fn handle_sell_item(conn: &WsConnection, msg: &ClientMsg) {
             base_unit_price,
         );
         payout = payout.saturating_add(cur.unit_price);
-        after_quote = crate::game::object_ecology::record_settlement_market_trade(
+        let _ = crate::game::object_ecology::record_settlement_market_trade(
             &player_room,
             &msg.item_id,
             base_unit_price,
@@ -2166,11 +1834,8 @@ pub(super) fn handle_sell_item(conn: &WsConnection, msg: &ClientMsg) {
     push_refresh(conn, &pid);
 
     let narrative = format!(
-        "你將 {sell_qty} 份【{item_name}】交予本地市集商鋪驗收（{}，實得 {payout} 鎂；成交後本地市集庫存變為 {}/{}，下一件收購行情調整為 {} 鎂）。",
+        "你將 {sell_qty} 份【{item_name}】交予本地市集商鋪驗收（{}，實得 {payout} 鎂，款貨兩訖）。",
         initial_quote.market_narrative,
-        after_quote.local_stock,
-        after_quote.target_stock,
-        after_quote.unit_price,
     );
     conn.send_json(&ActionResultMsg {
         msg_type: "action_result".into(),
@@ -2203,10 +1868,22 @@ pub(super) fn handle_craft_item(conn: &WsConnection, msg: &ClientMsg) {
         Ok((item_id, item_name, _is_mutated, mut narrative)) => {
             let nat_skills = synthesize_entity_natural_skills(&ent);
             if let Some(forge_sk) = nat_skills.iter().find(|s| s.domain == "production" && s.category_label.contains("百工")) {
-                narrative.push_str(&format!(
-                    " 你順著平日熟稔的《{}》手法落手收勢，器物肌理更顯勻稱。",
-                    forge_sk.name
-                ));
+                let is_culinary = item_id.contains("shrimp")
+                    || item_id.contains("fish")
+                    || item_id.contains("jerky")
+                    || item_id.contains("grain")
+                    || item_id.contains("tea");
+                if is_culinary {
+                    narrative.push_str(&format!(
+                        " 你順著平日熟稔的《{}》手法掌控火候收汁，滋味愈發醇厚鮮美。",
+                        forge_sk.name
+                    ));
+                } else {
+                    narrative.push_str(&format!(
+                        " 你順著平日熟稔的《{}》手法落手收勢，器物肌理更顯勻稱。",
+                        forge_sk.name
+                    ));
+                }
             }
             push_refresh(conn, &pid);
             conn.send_json(&ActionResultMsg {
@@ -2292,7 +1969,7 @@ pub(super) fn handle_print_topology_debug(conn: &WsConnection) {
     let sum: f64 = costs.iter().sum();
     tracing::info!(target: "topology_debug", "========== 361 拓撲除錯（當前角色） ==========");
     tracing::info!(target: "topology_debug", soul_seed = seed, "SoulSeed (int64)");
-    tracing::info!(target: "topology_debug", "N000（生之奇點）→ 前三條主星軌阻力：");
+    tracing::info!(target: "topology_debug", "N000（生之本源）→ 前三條主星軌阻力：");
     if costs.len() >= 3 {
         tracing::info!(target: "topology_debug", c0 = costs[0], "N000 → N001");
         tracing::info!(target: "topology_debug", c1 = costs[1], "N000 → N002");
@@ -2330,10 +2007,68 @@ fn player_wordplates_path() -> std::path::PathBuf {
     }
 }
 
+fn is_persisted_wordplate_owner(pid: &str) -> bool {
+    if pid.starts_with("npc_")
+        || pid.starts_with("ambient_")
+        || pid.starts_with("shanhai_")
+        || pid.starts_with("wt_npc_")
+        || pid.starts_with("wt_vendor_")
+    {
+        false
+    } else {
+        true
+    }
+}
 fn load_persisted_wordplates() -> PersistedWordPlateState {
     let path = player_wordplates_path();
     if let Ok(data) = std::fs::read_to_string(&path) {
-        if let Ok(state) = serde_json::from_str::<PersistedWordPlateState>(&data) {
+        if let Ok(mut state) = serde_json::from_str::<PersistedWordPlateState>(&data) {
+            let registry = WordRegistry::global();
+            let mut repaired = false;
+            let caskets_before = state.caskets.len();
+            state.caskets.retain(|k, _| is_persisted_wordplate_owner(k));
+            if state.caskets.len() != caskets_before {
+                repaired = true;
+            }
+            let loadouts_before = state.loadouts.len();
+            state.loadouts.retain(|k, _| is_persisted_wordplate_owner(k));
+            if state.loadouts.len() != loadouts_before {
+                repaired = true;
+            }
+            for (pid, loadout) in state.loadouts.iter_mut() {
+                if loadout.opening.is_none()
+                    || loadout.midgame.is_none()
+                    || loadout.finisher.is_none()
+                    || loadout.defense.is_none()
+                {
+                    let seed = crate::combat::human_phase::resolve_entity_soul_seed(pid, None);
+                    let casket_opt = state.caskets.get(pid);
+                    let default_ld = crate::combat::wordplate::build_loadout_from_soul_seed(
+                        seed, casket_opt, registry,
+                    );
+                    if loadout.opening.is_none() {
+                        loadout.opening = default_ld.opening;
+                        repaired = true;
+                    }
+                    if loadout.midgame.is_none() {
+                        loadout.midgame = default_ld.midgame;
+                        repaired = true;
+                    }
+                    if loadout.finisher.is_none() {
+                        loadout.finisher = default_ld.finisher;
+                        repaired = true;
+                    }
+                    if loadout.defense.is_none() {
+                        loadout.defense = default_ld.defense;
+                        repaired = true;
+                    }
+                }
+            }
+            if repaired {
+                if let Ok(json) = serde_json::to_string_pretty(&state) {
+                    let _ = std::fs::write(&path, json);
+                }
+            }
             return state;
         }
     }
@@ -2346,8 +2081,18 @@ pub(crate) fn save_player_wordplates() {
         let _ = std::fs::create_dir_all(parent);
     }
     let state = PersistedWordPlateState {
-        caskets: PLAYER_CASKETS.read().clone(),
-        loadouts: PLAYER_LOADOUTS.read().clone(),
+        caskets: PLAYER_CASKETS
+            .read()
+            .clone()
+            .into_iter()
+            .filter(|(k, _)| is_persisted_wordplate_owner(k))
+            .collect(),
+        loadouts: PLAYER_LOADOUTS
+            .read()
+            .clone()
+            .into_iter()
+            .filter(|(k, _)| is_persisted_wordplate_owner(k))
+            .collect(),
     };
     if let Ok(json) = serde_json::to_string_pretty(&state) {
         let tmp_path = path.with_extension("tmp");
@@ -2357,6 +2102,7 @@ pub(crate) fn save_player_wordplates() {
     }
 }
 
+#[allow(dead_code)]
 pub(crate) fn grant_crystal_or_word(
     pid: &str,
     word_id: &str,
@@ -2440,58 +2186,139 @@ fn create_default_casket(registry: &WordRegistry) -> WordCasket {
 }
 
 fn create_default_loadout(registry: &WordRegistry) -> TacticalLoadout {
-    let mut loadout = TacticalLoadout::new();
+    crate::combat::wordplate::build_loadout_from_soul_seed(0, None, registry)
+}
 
-    let get_id = |ch: &str| -> String {
-        resolve_word_id(registry, ch).unwrap_or_else(|| "wu".to_string())
+pub fn populate_resident_vocational_casket(pid: &str, casket: &mut WordCasket, registry: &WordRegistry) -> bool {
+    let mut matched_clue: Option<String> = None;
+
+    if pid == "秦水生" {
+        matched_clue = Some("水輪石磨匠|老堰頭・水輪石磨工坊|秦水生".to_string());
+    } else {
+        for slot in crate::store::WENYAO_HOUSEHOLD_SLOTS.iter().chain(crate::store::OUTER_HOUSEHOLD_SLOTS.iter()) {
+            let s_name = slot.name();
+            if s_name == pid || pid.ends_with(&format!("|{}", s_name)) {
+                matched_clue = Some(format!("{}|{}|{}", slot.brief_tag, slot.work_name, s_name));
+                break;
+            }
+        }
+        if matched_clue.is_none() {
+            let display_title = crate::db::get_entity(pid)
+                .ok()
+                .flatten()
+                .map(|e| e.display_title)
+                .filter(|t| !t.trim().is_empty());
+            if let Some(dt) = display_title {
+                matched_clue = Some(dt);
+            } else {
+                // 嘗試從全島 59 位名宿作息排程中比對其職銜與姓名
+                let mut h: u64 = 0xcbf2_9ce4_8422_2325;
+                for b in pid.as_bytes() {
+                    h ^= u64::from(*b);
+                    h = h.wrapping_mul(0x0100_0000_01b3);
+                }
+                let target_settlement = crate::store::canonical_npc_macro_settlement(pid, "").unwrap_or("文曜");
+                let matching: Vec<&'static crate::store::WenyaoHouseholdSlot> = if target_settlement == "文曜" {
+                    crate::store::WENYAO_HOUSEHOLD_SLOTS.iter().collect()
+                } else {
+                    crate::store::OUTER_HOUSEHOLD_SLOTS
+                        .iter()
+                        .filter(|s| s.home_name.starts_with(target_settlement))
+                        .collect()
+                };
+                if !matching.is_empty() {
+                    let slot = matching[(h >> 8) as usize % matching.len()];
+                    matched_clue = Some(format!("{}|{}|{}", slot.brief_tag, slot.work_name, pid));
+                }
+            }
+        }
+    }
+    let clue = match matched_clue {
+        Some(c) => c,
+        None => return false,
     };
 
-    // 起手式「疾刺斬」
-    let id_ji = get_id("疾");
-    let id_ci = get_id("刺");
-    let id_zhan = get_id("斬");
-    if let Ok(sentence) = StarSentence::new(vec![
-        StarInlay::new("N001", id_ji),
-        StarInlay::new("N002", id_ci),
-        StarInlay::new("N003", id_zhan.clone()),
-    ]) {
-        loadout.set_slot(TacticalSlot::Opening, sentence.with_custom_name("疾刺斬"));
+    let mut mutated = false;
+
+    // 1. 核心百工/工匠詞元（每人至少 3 個字印）
+    for ch in ["磨", "流", "純", "巧", "堅", "定", "沉", "水"] {
+        if let Some(wid) = resolve_word_id(registry, ch)
+            && casket.count(&wid) < 3
+        {
+            casket.add(&wid, 3);
+            mutated = true;
+        }
     }
 
-    // 常態連攜「流破斬」
-    let id_liu = get_id("流");
-    let id_po = get_id("破");
-    if let Ok(sentence) = StarSentence::new(vec![
-        StarInlay::new("N004", id_liu.clone()),
-        StarInlay::new("N005", id_po.clone()),
-        StarInlay::new("N006", id_zhan),
-    ]) {
-        loadout.set_slot(TacticalSlot::Midgame, sentence.with_custom_name("流破斬"));
+    // 2. 領域專屬詞元（依線索加成，嚴守字庫限制）
+    let domain_chars: &[&str] = if clue.contains("鍛") || clue.contains("鐵") || clue.contains("礦") || clue.contains("窯") {
+        &["火", "破", "堅", "定"]
+    } else if clue.contains("食堂") || clue.contains("廚") || clue.contains("麵") || clue.contains("烤") || clue.contains("茶") {
+        &["火", "溫", "和", "純"]
+    } else if clue.contains("醫") || clue.contains("藥") || clue.contains("診") || clue.contains("百草") || clue.contains("浴") {
+        &["清", "純", "生", "和"]
+    } else if clue.contains("木") || clue.contains("竹") || clue.contains("筏") || clue.contains("造船") {
+        &["巧", "固", "正", "合"]
+    } else if clue.contains("織") || clue.contains("染") || clue.contains("服") || clue.contains("繡") {
+        &["柔", "密", "巧", "純"]
+    } else if clue.contains("港") || clue.contains("船") || clue.contains("海") || clue.contains("漁") || clue.contains("渡") {
+        &["風", "潮", "流", "定"]
+    } else {
+        &[]
+    };
+
+    for &ch in domain_chars {
+        if let Some(wid) = resolve_word_id(registry, ch)
+            && casket.count(&wid) < 3
+        {
+            casket.add(&wid, 3);
+            mutated = true;
+        }
     }
 
-    // 破綻殺招「吾震破」
-    let id_wu = get_id("吾");
-    let id_zhen = get_id("震");
-    if let Ok(sentence) = StarSentence::new(vec![
-        StarInlay::new("N007", id_wu),
-        StarInlay::new("N008", id_zhen),
-        StarInlay::new("N009", id_po),
-    ]) {
-        loadout.set_slot(TacticalSlot::Finisher, sentence.with_custom_name("吾震破"));
+    // 3. 解析本職隨身器物並刻銘
+    let vessel = crate::npc::causal_core::resolve_vocational_vessel(&clue);
+    if casket.inscribed_words_of(vessel.item_id).is_empty() {
+        let inscribe_pair: &[&str] = if vessel.is_bladed
+            || clue.contains("鍛")
+            || clue.contains("鐵")
+            || clue.contains("木")
+            || clue.contains("石")
+        {
+            &["巧", "堅"]
+        } else {
+            &["純", "流"]
+        };
+        for &ch in inscribe_pair {
+            if let Some(wid) = resolve_word_id(registry, ch) {
+                casket.add(&wid, 1);
+                let _ = casket.inscribe_item(vessel.item_id, &wid);
+                mutated = true;
+            }
+        }
     }
 
-    // 守勢身法「凝流步」
-    let id_ning = get_id("凝");
-    let id_bu = get_id("步");
-    if let Ok(sentence) = StarSentence::new(vec![
-        StarInlay::new("N010", id_ning),
-        StarInlay::new("N011", id_liu),
-        StarInlay::new("N012", id_bu),
-    ]) {
-        loadout.set_slot(TacticalSlot::Defense, sentence.with_custom_name("凝流步"));
+    // 石磨器具固有刻印相容性
+    if casket.inscribed_words_of("wt_cat_0984").is_empty() {
+        for ch in ["巧", "堅"] {
+            if let Some(wid) = resolve_word_id(registry, ch) {
+                casket.add(&wid, 1);
+                let _ = casket.inscribe_item("wt_cat_0984", &wid);
+                mutated = true;
+            }
+        }
+    }
+    if casket.inscribed_words_of("wt_cat_0973").is_empty() {
+        for ch in ["純", "流"] {
+            if let Some(wid) = resolve_word_id(registry, ch) {
+                casket.add(&wid, 1);
+                let _ = casket.inscribe_item("wt_cat_0973", &wid);
+                mutated = true;
+            }
+        }
     }
 
-    loadout
+    mutated
 }
 
 pub fn ensure_player_initialized(pid: &str) {
@@ -2499,39 +2326,112 @@ pub fn ensure_player_initialized(pid: &str) {
     let mut mutated = false;
     let casket_opt = {
         let mut caskets = PLAYER_CASKETS.write();
-        if !caskets.contains_key(pid) {
-            caskets.insert(pid.to_string(), create_default_casket(registry));
+        let is_new = !caskets.contains_key(pid);
+        let casket = caskets
+            .entry(pid.to_string())
+            .or_insert_with(|| create_default_casket(registry));
+        if is_new {
             mutated = true;
         }
-        caskets.get(pid).cloned()
+        let resident_mutated = populate_resident_vocational_casket(pid, casket, registry);
+        if resident_mutated {
+            mutated = true;
+        }
+        Some(casket.clone())
     };
     {
         let mut loadouts = PLAYER_LOADOUTS.write();
-        if !loadouts.contains_key(pid) {
-            let soul_seed = db::get_entity(pid).ok().flatten().and_then(|e| e.soul_seed);
-            let loadout = if let Some(seed) = soul_seed {
-                crate::combat::wordplate::build_loadout_from_soul_seed(seed, casket_opt.as_ref(), registry)
-            } else {
-                create_default_loadout(registry)
-            };
+        let soul_seed = db::get_entity(pid).ok().flatten().and_then(|e| e.soul_seed);
+        let seed = crate::combat::human_phase::resolve_entity_soul_seed(pid, soul_seed);
+        let needs_reset = match loadouts.get(pid) {
+            None => true,
+            Some(loadout) => {
+                let has_legacy_name = |slot: &Option<StarSentence>| {
+                    slot.as_ref()
+                        .and_then(|s| s.custom_name.as_deref())
+                        .map(|name| matches!(name, "疾刺斬" | "流破斬" | "吾震破" | "凝流步") || name.contains('・'))
+                        .unwrap_or(false)
+                };
+                has_legacy_name(&loadout.opening)
+                    || has_legacy_name(&loadout.midgame)
+                    || has_legacy_name(&loadout.finisher)
+                    || has_legacy_name(&loadout.defense)
+            }
+        };
+        if needs_reset {
+            let loadout = crate::combat::wordplate::build_loadout_from_soul_seed(seed, casket_opt.as_ref(), registry);
             loadouts.insert(pid.to_string(), loadout);
             mutated = true;
+        } else if let Some(loadout) = loadouts.get_mut(pid)
+            && (loadout.opening.is_none()
+                || loadout.midgame.is_none()
+                || loadout.finisher.is_none()
+                || loadout.defense.is_none())
+        {
+            let default_loadout =
+                crate::combat::wordplate::build_loadout_from_soul_seed(seed, casket_opt.as_ref(), registry);
+            if loadout.opening.is_none() {
+                loadout.opening = default_loadout.opening;
+                mutated = true;
+            }
+            if loadout.midgame.is_none() {
+                loadout.midgame = default_loadout.midgame;
+                mutated = true;
+            }
+            if loadout.finisher.is_none() {
+                loadout.finisher = default_loadout.finisher;
+                mutated = true;
+            }
+            if loadout.defense.is_none() {
+                loadout.defense = default_loadout.defense;
+                mutated = true;
+            }
         }
     }
-    if mutated {
+    if mutated && is_persisted_wordplate_owner(pid) {
         save_player_wordplates();
     }
-    if let Ok(Some(ent)) = db::get_entity(pid) {
-        if !inventory_has_item(&ent.inventory, "blank_manual")
-            && !inventory_has_item(&ent.inventory, "wt_blank_manual")
-            && STARTER_MANUAL_GRANTED.write().insert(pid.to_string())
-        {
-            let grant_qty = match ent.kind {
-                crate::entity::EntityKind::Player => 2,
-                crate::entity::EntityKind::Npc => 1,
-            };
-            let _ = db::add_to_inventory(pid, "blank_manual", grant_qty);
+    if !(pid.starts_with("ambient_") || pid.starts_with("shanhai_") || pid.starts_with("npc_")) {
+        if let Ok(Some(ent)) = db::get_entity(pid) {
+            if !inventory_has_item(&ent.inventory, "blank_manual")
+                && !inventory_has_item(&ent.inventory, "wt_blank_manual")
+                && STARTER_MANUAL_GRANTED.write().insert(pid.to_string())
+            {
+                let grant_qty = 2;
+                let _ = db::add_to_inventory(pid, "blank_manual", grant_qty);
+            }
         }
+    }
+}
+
+/// 一次性建世種子：為全島工坊與住戶匠人初始化器物磨損與吐納基底（所有人皆為自己的主角）
+pub fn ensure_flagship_specimen_qin_shuisheng_wordplate_initialized() {
+    let pid = "秦水生";
+    ensure_player_initialized(pid);
+    let registry = WordRegistry::global();
+    let mut mutated = false;
+    let casket_snapshot = {
+        let mut caskets = PLAYER_CASKETS.write();
+        let casket = caskets
+            .entry(pid.to_string())
+            .or_insert_with(|| create_default_casket(registry));
+        if populate_resident_vocational_casket(pid, casket, registry) {
+            mutated = true;
+        }
+        casket.clone()
+    };
+    if mutated {
+        let mut loadouts = PLAYER_LOADOUTS.write();
+        let soul_seed = db::get_entity(pid).ok().flatten().and_then(|e| e.soul_seed);
+        let seed = crate::combat::human_phase::resolve_entity_soul_seed(pid, soul_seed);
+        let loadout = crate::combat::wordplate::build_loadout_from_soul_seed(
+            seed,
+            Some(&casket_snapshot),
+            registry,
+        );
+        loadouts.insert(pid.to_string(), loadout);
+        drop(loadouts);
+        save_player_wordplates();
     }
 }
 
@@ -2550,6 +2450,7 @@ pub fn get_player_word_casket(pid: &str) -> WordCasket {
 }
 
 /// 供測試或系統設定特定角色之隨身詞匣
+#[cfg(test)]
 pub fn set_player_word_casket(pid: &str, casket: WordCasket) {
     ensure_player_initialized(pid);
     let mut guard = PLAYER_CASKETS.write();
@@ -2843,62 +2744,43 @@ pub(super) fn handle_update_tactics(conn: &WsConnection, msg: &ClientMsg) {
     });
 }
 
-const HUB_NAMES_ZH: [&str; 20] = [
-    "天極", "脈衝", "震淵", "游離", "弦絲", "曜核", "凜晶", "淵流", "萬象", "解離",
-    "鎮閾", "衡定", "穹壁", "重塑", "逆熵", "神淵", "識閾", "坍縮", "無相", "越權",
-];
 
-fn hub_label_from_node(node_id: &str) -> String {
-    if let Some(num_str) = node_id.strip_prefix('N') {
-        if let Ok(idx) = num_str.parse::<usize>() {
-            if (1..=20).contains(&idx) {
-                return format!("{}主樞", HUB_NAMES_ZH[idx - 1]);
-            }
-        }
-    }
-    "天極主樞".to_string()
-}
-
-/// 後台根據人物所學（字譜與星軌）、所熟悉（手持器物、銘文與日常營生）、以及自身屬性（生命種子與體氣敏三維）自然生成技能列表。
+/// 後台根據人物先天骨相、內息底色、所學手札、所熟悉器物與山海歷練自然生成技能列表與經歷紀錄。
 /// 這些技能並非玩家手動自訂，而是在戰鬥交鋒與百工生產中由後台自動施展。
 pub fn synthesize_entity_natural_skills(ent: &Character) -> Vec<NaturalSkillView> {
     ensure_player_initialized(&ent.id);
     let registry = WordRegistry::global();
-    let casket = get_player_word_casket(&ent.id);
-    let loadout = {
-        let guard = PLAYER_LOADOUTS.read();
-        guard.get(&ent.id).cloned().unwrap_or_else(|| {
-            let seed = ent.soul_seed.unwrap_or(100_003);
-            crate::combat::wordplate::build_loadout_from_soul_seed(seed, Some(&casket), registry)
-        })
-    };
 
     let (equip_slots, equip_names, _) = parse_equipment_triple(&ent.equipment_slots);
     let held_keys = ["hold_r", "hold_l", "weapon", "hand", "tool"];
     let mut held_item_id = String::new();
     let mut held_item_display = String::new();
+    let mut martial_item_id = String::new();
+    let mut martial_item_display = String::new();
     for k in &held_keys {
         if let Some(id) = equip_slots.get(*k).filter(|s| !s.is_empty()) {
-            held_item_id = id.clone();
             let base = equip_names
                 .get(*k)
                 .cloned()
                 .unwrap_or_else(|| resolve_inv_item_name(id));
-            held_item_display = format_entity_item_with_inscription(&ent.id, id, &base);
-            break;
+            let display = format_entity_item_with_inscription(&ent.id, id, &base);
+            if held_item_id.is_empty() {
+                held_item_id = id.clone();
+                held_item_display = display.clone();
+            }
+            if martial_item_id.is_empty()
+                && crate::pg::living_world::is_weapon_or_tool_item(id, &base)
+            {
+                martial_item_id = id.clone();
+                martial_item_display = display;
+            }
         }
     }
 
-    let held_carrier = if !held_item_id.is_empty() {
-        crate::combat::wordplate::infer_item_carrier_affinity(&held_item_id, &held_item_display)
+    let held_carrier = if !martial_item_id.is_empty() {
+        crate::combat::wordplate::infer_item_carrier_affinity(&martial_item_id, &martial_item_display)
     } else {
         None
-    };
-
-    let role_hint = if !ent.display_title.trim().is_empty() {
-        ent.display_title.trim().to_string()
-    } else {
-        "山海行旅者".to_string()
     };
 
     let raw_vocation = {
@@ -2909,49 +2791,86 @@ pub fn synthesize_entity_natural_skills(ent: &Character) -> Vec<NaturalSkillView
             t
         }
     };
-    let seed = ent.soul_seed.unwrap_or(100_003);
+    let seed = crate::combat::human_phase::resolve_entity_soul_seed(&ent.id, ent.soul_seed);
+    let bone = crate::combat::human_phase::InnateBonePhase::from_seed(seed);
     let habit = crate::pg::living_world::get_or_derive_breath_habit(&ent.id, raw_vocation, seed);
     let imprints = crate::pg::living_world::get_entity_lineage_imprints(&ent.id);
-
-    let somatic_awareness = crate::combat::wordplate::somatic_meridian_awareness(seed);
-    let mut breath_origin = format!("{} {}", habit.dominant.somatic_description(), somatic_awareness);
-    if !imprints.is_empty() {
-        let imprints_str = imprints
-            .iter()
-            .map(|imp| format!("{}·{}", imp.mentor_name, imp.imprint_title))
-            .collect::<Vec<_>>()
-            .join("、");
-        breath_origin.push_str(&format!(" ｜ 師承烙印：{}", imprints_str));
-    }
-
-    let breath_skill = NaturalSkillView {
-        domain: "martial".to_string(),
-        category: "inner_breath".to_string(),
-        category_label: "【內息底色】".to_string(),
-        name: habit.dominant.label().to_string(),
-        origin_basis: breath_origin,
-        learned_and_familiar: format!(
-            "周天吐納（養成比重：鍛爐 {}・山林 {}・海潮 {}・靜室 {}・百戰 {}｜隨日常打鐵、涉山、涉水、靜修、交鋒自然演進）",
-            habit.forge_score, habit.forest_score, habit.tide_score, habit.chamber_score, habit.battle_score
-        ),
-        auto_trigger_desc: format!("{}。{}", habit.dominant.combat_rhythm_phrase(), habit.dominant.effect_summary()),
-    };
-
-    let mut skills = Vec::with_capacity(10);
-    skills.push(breath_skill);
+    let studied_manuals = crate::pg::living_world::get_entity_studied_manuals(&ent.id);
+    let anatomy_total = crate::pg::living_world::get_entity_anatomy_familiarity_total(&ent.id);
     let active_afflictions = crate::pg::living_world::get_entity_afflictions(&ent.id);
 
-    // ─── 一、 臨陣武相：由四序位星軌＋所學字印＋手中器物自然生成的 4 項戰鬥技能 ───
-    let slot_specs = [
-        ("起手", loadout.opening.as_ref()),
-        ("連攜", loadout.midgame.as_ref()),
-        ("破綻", loadout.finisher.as_ref()),
-        ("守勢", loadout.defense.as_ref()),
+    let mut breath_origin = habit.dominant.somatic_description().to_string();
+    if !active_afflictions.is_empty() {
+        let aff_labels: Vec<_> = active_afflictions.iter().map(|a| a.label()).collect();
+        breath_origin.push_str(&format!("（身帶創傷：{}）", aff_labels.join("、")));
+    }
+
+    let vessel_name = if martial_item_display.is_empty() {
+        "徒手".to_string()
+    } else {
+        martial_item_display.clone()
+    };
+    let vessel_familiarity_count = if !martial_item_id.is_empty() {
+        crate::pg::living_world::get_vessel_state(&ent.id, &martial_item_id).use_count as u32
+    } else {
+        0
+    };
+    let learned_bonus = (studied_manuals.len() as f64 * 0.25).min(1.0);
+
+    let mut skills = Vec::with_capacity(14);
+
+    // ─── 領域一：骨相與氣息底色（bone_phase）─────────────────────────────
+    skills.push(NaturalSkillView {
+        domain: "bone_phase".to_string(),
+        category: "innate_bone".to_string(),
+        category_label: "天生體魄".to_string(),
+        name: bone.bone_archetype_title(),
+        origin_basis: bone.describe_bone_phase_zh(),
+        learned_and_familiar: bone.auto_trigger_summary_zh(),
+        auto_trigger_desc: String::new(),
+    });
+
+    skills.push(NaturalSkillView {
+        domain: "bone_phase".to_string(),
+        category: "inner_breath".to_string(),
+        category_label: "內息底色".to_string(),
+        name: habit.dominant.label().to_string(),
+        origin_basis: breath_origin,
+        learned_and_familiar: "周天吐納（隨日常打鐵、涉山、涉水、靜修與交鋒自然演進，行氣節奏漸次沉入筋骨）".to_string(),
+        auto_trigger_desc: format!("{}。{}", habit.dominant.combat_rhythm_phrase(), habit.dominant.effect_summary()),
+    });
+
+    // ─── 領域二：臨陣武相（martial，4 項常駐）─────────────────────────────
+    let martial_slots = [
+        ("opening", TacticalSlot::Opening),
+        ("midgame", TacticalSlot::Midgame),
+        ("finisher", TacticalSlot::Finisher),
+        ("defense", TacticalSlot::Defense),
     ];
 
-    for (cat_label, sent_opt) in slot_specs {
-        if let Some(sent) = sent_opt {
-            let words_vec: Vec<String> = sent
+    let martial_carrier = held_carrier.unwrap_or(CarrierAffinity::Unarmed);
+    let player_loadout = PLAYER_LOADOUTS.read().get(&ent.id).cloned();
+
+    for (cat, slot) in martial_slots {
+        let studied_sent_opt = player_loadout.as_ref().and_then(|ld| match slot {
+            TacticalSlot::Opening => ld.opening.as_ref(),
+            TacticalSlot::Midgame => ld.midgame.as_ref(),
+            TacticalSlot::Finisher => ld.finisher.as_ref(),
+            TacticalSlot::Defense => ld.defense.as_ref(),
+        });
+
+        let routine = if let Some(sent) = studied_sent_opt.filter(|s| {
+            !studied_manuals.is_empty()
+                && s.custom_name
+                    .as_deref()
+                    .is_some_and(|n| {
+                        !n.contains("順紋卯合")
+                            && !n.contains("火候收汁")
+                            && studied_manuals.iter().any(|m| n.contains(m) || m.contains(n))
+                    })
+        }) {
+            let manual_name = sent.custom_name.as_deref().unwrap_or("承襲手札");
+            let manual_word_chars: Vec<String> = sent
                 .inlays
                 .iter()
                 .map(|inlay| {
@@ -2961,308 +2880,295 @@ pub fn synthesize_entity_natural_skills(ent: &Character) -> Vec<NaturalSkillView
                         .unwrap_or_else(|| inlay.word_id.clone())
                 })
                 .collect();
-            let words_badge = words_vec
+            let (adapted, _) = crate::combat::human_phase::adapt_manual_to_bone_phase(
+                &bone,
+                slot,
+                martial_carrier,
+                manual_name,
+                &manual_word_chars,
+                registry,
+            );
+            adapted
+        } else {
+            crate::combat::human_phase::derive_personal_martial_routine(
+                &bone,
+                slot,
+                martial_carrier,
+                &vessel_name,
+                learned_bonus,
+                vessel_familiarity_count,
+                registry,
+            )
+        };
+
+        let mut affliction_tags = Vec::new();
+        for aff in &active_afflictions {
+            match aff {
+                crate::pg::living_world::AfflictionKind::ArmSprain => {
+                    if martial_carrier != CarrierAffinity::Footwork {
+                        affliction_tags.push("【帶傷：腕肘挫傷】");
+                    }
+                }
+                crate::pg::living_world::AfflictionKind::LegSprain => {
+                    if slot == TacticalSlot::Defense || martial_carrier == CarrierAffinity::Footwork {
+                        affliction_tags.push("【帶傷：下盤扭傷】");
+                    }
+                }
+                crate::pg::living_world::AfflictionKind::TorsoInternal => {
+                    affliction_tags.push("【帶傷：胸脅內傷】");
+                }
+                crate::pg::living_world::AfflictionKind::HeadConcussion => {
+                    affliction_tags.push("【帶傷：頭面震盪】");
+                }
+                crate::pg::living_world::AfflictionKind::Miasma => {
+                    affliction_tags.push("【帶傷：瘴氣入體】");
+                }
+            }
+        }
+        let affliction_suffix = if !affliction_tags.is_empty() {
+            format!("；{}", affliction_tags.join("、"))
+        } else {
+            String::new()
+        };
+
+        skills.push(NaturalSkillView {
+            domain: "martial".to_string(),
+            category: cat.to_string(),
+            category_label: format!("{}・{}", routine.slot_label_zh, routine.phase_specialty_zh),
+            name: routine.formal_name,
+            origin_basis: routine.origin_basis_zh,
+            learned_and_familiar: format!("{}{}", routine.learned_and_familiar_zh, affliction_suffix),
+            auto_trigger_desc: routine.auto_trigger_desc_zh,
+        });
+    }
+
+    // ─── 領域三：百工藝相（production，4 項常駐）─────────────────────────
+    let craft_specs = [
+        ("harvest", held_carrier.unwrap_or(CarrierAffinity::Blade)),
+        ("forge", CarrierAffinity::Blunt),
+        ("culinary", CarrierAffinity::Blade),
+        ("wayfare", CarrierAffinity::Footwork),
+    ];
+
+    for (craft_code, carrier) in craft_specs {
+        let craft_tool_name = match craft_code {
+            "harvest" => {
+                if !martial_item_display.is_empty() {
+                    martial_item_display.as_str()
+                } else {
+                    "採獵刀索與隨身器具"
+                }
+            }
+            "forge" => "鍛錘、刻刀與百工器具",
+            "culinary" => "庖廚刀勺與灶火器皿",
+            _ => "行囊步履與隨身行具",
+        };
+        let routine = crate::combat::human_phase::derive_personal_craft_routine(
+            &bone,
+            craft_code,
+            carrier,
+            craft_tool_name,
+            vessel_familiarity_count,
+            anatomy_total,
+            registry,
+        );
+
+        let mut craft_afflictions = Vec::new();
+        for aff in &active_afflictions {
+            match aff {
+                crate::pg::living_world::AfflictionKind::ArmSprain => {
+                    if carrier != CarrierAffinity::Footwork {
+                        craft_afflictions.push("【帶傷：腕肘挫傷】");
+                    }
+                }
+                crate::pg::living_world::AfflictionKind::LegSprain => {
+                    if craft_code == "wayfare" {
+                        craft_afflictions.push("【帶傷：下盤扭傷】");
+                    }
+                }
+                crate::pg::living_world::AfflictionKind::TorsoInternal => {
+                    if craft_code == "forge" || craft_code == "wayfare" {
+                        craft_afflictions.push("【帶傷：胸脅內傷】");
+                    }
+                }
+                crate::pg::living_world::AfflictionKind::HeadConcussion => {
+                    if craft_code == "harvest" {
+                        craft_afflictions.push("【帶傷：頭面震盪】");
+                    }
+                }
+                crate::pg::living_world::AfflictionKind::Miasma => {
+                    craft_afflictions.push("【帶傷：瘴氣入體】");
+                }
+            }
+        }
+        let craft_aff_suffix = if !craft_afflictions.is_empty() {
+            format!("；{}", craft_afflictions.join("、"))
+        } else {
+            String::new()
+        };
+
+        skills.push(NaturalSkillView {
+            domain: "production".to_string(),
+            category: craft_code.to_string(),
+            category_label: format!("{}・{}", routine.slot_label_zh, routine.phase_specialty_zh),
+            name: routine.formal_name,
+            origin_basis: routine.origin_basis_zh,
+            learned_and_familiar: format!("{}{}", routine.learned_and_familiar_zh, craft_aff_suffix),
+            auto_trigger_desc: routine.auto_trigger_desc_zh,
+        });
+    }
+
+    // ─── 領域四：所學手札與器物歷練（mastery_ledger，3 項抽屜卡片）─────────
+    skills.push(NaturalSkillView {
+        domain: "mastery_ledger".to_string(),
+        category: "learned_manuals".to_string(),
+        category_label: "所學・師承與手札".to_string(),
+        name: "師承與手札印記".to_string(),
+        origin_basis: if studied_manuals.is_empty() {
+            "尚未展卷研讀各家手札，全憑日常交手與勞作摸索門道。".to_string()
+        } else {
+            let titles = studied_manuals
                 .iter()
-                .map(|w| format!("【{w}】"))
+                .map(|m| format!("《{}》", m))
                 .collect::<Vec<_>>()
-                .join("");
-            let first_hub = sent
-                .inlays
-                .first()
-                .map(|i| hub_label_from_node(&i.node_id))
-                .unwrap_or_else(|| "天極主樞".to_string());
-
-            let mut sent_mut = sent.clone();
-            sent_mut.set_soul_seed(seed);
-            let syn_opt = sent_mut.synthesize(registry).ok();
-            let carrier = held_carrier
-                .or_else(|| syn_opt.as_ref().map(|s| s.primary_carrier))
-                .unwrap_or(CarrierAffinity::Unarmed);
-
-            let natural_name = syn_opt
-                .as_ref()
-                .map(|s| s.effective_name.clone())
-                .unwrap_or_else(|| format!("{}連式", words_vec.join("")));
-
-            let vessel_name = if held_item_display.is_empty() {
-                "徒手".to_string()
-            } else {
-                held_item_display.clone()
-            };
-
-            let vessel_str = if !held_item_display.is_empty() {
-                format!("隨身器物：{}", held_item_display)
-            } else {
-                "徒手演練".to_string()
-            };
-
-            let motion_seq = syn_opt
-                .as_ref()
-                .map(|s| s.derive_elementary_motions_for_carrier(Some(carrier)))
-                .unwrap_or_else(|| {
-                    derive_elementary_motions_from_chars(&words_vec, carrier, TargetPart::Torso)
-                });
-
-            let packet = SkillDataPacket {
-                entity_id: ent.id.clone(),
-                role_title: role_hint.clone(),
-                domain: "martial".to_string(),
-                slot_label: cat_label.to_string(),
-                hub_or_tier: first_hub.clone(),
-                word_chars: words_vec.clone(),
-                vessel_name,
-                carrier,
-                motion_sequence: motion_seq.clone(),
-                fallback_name: natural_name,
-            };
-
-            let synthesized = synthesize_skill_from_data(&packet);
-
-            let mut affliction_tags = Vec::new();
-            for aff in &active_afflictions {
-                match aff {
-                    crate::pg::living_world::AfflictionKind::ArmSprain => {
-                        if carrier != CarrierAffinity::Footwork {
-                            affliction_tags.push("【帶傷：腕肘挫傷】");
-                        }
-                    }
-                    crate::pg::living_world::AfflictionKind::LegSprain => {
-                        if cat_label == "守勢" || carrier == CarrierAffinity::Footwork {
-                            affliction_tags.push("【帶傷：下盤扭傷】");
-                        }
-                    }
-                    crate::pg::living_world::AfflictionKind::TorsoInternal => {
-                        affliction_tags.push("【帶傷：胸脅內傷】");
-                    }
-                    crate::pg::living_world::AfflictionKind::HeadConcussion => {
-                        affliction_tags.push("【帶傷：頭面震盪】");
-                    }
-                    crate::pg::living_world::AfflictionKind::Miasma => {
-                        affliction_tags.push("【帶傷：瘴氣入體】");
-                    }
-                }
-            }
-            let affliction_suffix = if !affliction_tags.is_empty() {
-                format!(" ｜ {}", affliction_tags.join(" "))
-            } else {
-                String::new()
-            };
-
-            let mut origin_basis = synthesized.origin_basis;
-            if let Some(syn) = syn_opt.as_ref() {
-                if !syn.meridian_detour_note.is_empty() {
-                    origin_basis.push_str(&format!(" {}", syn.meridian_detour_note));
-                }
-            }
-
-            skills.push(NaturalSkillView {
-                domain: "martial".to_string(),
-                category: String::new(),
-                category_label: format!("{} · {}", cat_label, first_hub),
-                name: synthesized.name,
-                origin_basis,
-                learned_and_familiar: format!("字印：{} ｜ 碎招：{} ｜ {}{}", words_badge, motion_seq.join("→"), vessel_str, affliction_suffix),
-                auto_trigger_desc: String::new(),
-            });
-        }
-    }
-
-    let mut craft_totals = loadout.total_craft_dims(registry);
-    if !held_item_id.is_empty() {
-        let bonus = casket.inscribed_craft_bonus(&held_item_id, registry);
-        craft_totals.forge += bonus.forge;
-        craft_totals.culinary += bonus.culinary;
-        craft_totals.harvest += bonus.harvest;
-        craft_totals.wayfare += bonus.wayfare;
-    }
-
-    let mastery_tier = |score: f64| -> &'static str {
-        if score >= 45.0 {
-            "爐火純青"
-        } else if score >= 25.0 {
-            "純熟"
-        } else if score >= 12.0 {
-            "熟稔"
-        } else {
-            "初窺"
-        }
-    };
-
-    let harvest_score = craft_totals.harvest + ent.dex as f64 * 0.5;
-    let harvest_name = if !held_item_display.is_empty()
-        && (held_item_display.contains("刀")
-            || held_item_display.contains("刃")
-            || held_item_display.contains("剪"))
-    {
-        "庖丁解骨手".to_string()
-    } else {
-        "山林辨紋手".to_string()
-    };
-    let harvest_packet = SkillDataPacket {
-        entity_id: ent.id.clone(),
-        role_title: role_hint.clone(),
-        domain: "production".to_string(),
-        slot_label: "採獵".to_string(),
-        hub_or_tier: mastery_tier(harvest_score).to_string(),
-        word_chars: vec![],
-        vessel_name: if held_item_display.is_empty() { "徒手".to_string() } else { held_item_display.clone() },
-        carrier: held_carrier.unwrap_or(CarrierAffinity::Blade),
-        motion_sequence: vec!["探縫尋節".into(), "貼骨順紋".into(), "剝離完軀".into()],
-        fallback_name: harvest_name,
-    };
-    let harvest_syn = synthesize_skill_from_data(&harvest_packet);
-    let mut harvest_afflictions = Vec::new();
-    for aff in &active_afflictions {
-        match aff {
-            crate::pg::living_world::AfflictionKind::ArmSprain => harvest_afflictions.push("【帶傷：腕肘挫傷】"),
-            crate::pg::living_world::AfflictionKind::HeadConcussion => harvest_afflictions.push("【帶傷：頭面震盪】"),
-            crate::pg::living_world::AfflictionKind::Miasma => harvest_afflictions.push("【帶傷：瘴氣入體】"),
-            _ => {}
-        }
-    }
-    let harvest_aff_suffix = if !harvest_afflictions.is_empty() {
-        format!(" ｜ {}", harvest_afflictions.join(" "))
-    } else {
-        String::new()
-    };
-    skills.push(NaturalSkillView {
-        domain: "production".to_string(),
-        category: String::new(),
-        category_label: format!("採獵 · {}", mastery_tier(harvest_score)),
-        name: harvest_syn.name,
-        origin_basis: harvest_syn.origin_basis,
-        learned_and_familiar: if held_item_display.is_empty() {
-            format!("歷練：{}{}", role_hint, harvest_aff_suffix)
-        } else {
-            format!("慣用器物：{} ｜ 歷練：{}{}", held_item_display, role_hint, harvest_aff_suffix)
+                .join("、");
+            format!("平日展卷參詳{}等手札經卷，揣摩前人行氣與百工造物之法度。", titles)
         },
-        auto_trigger_desc: String::new(),
-    });
-
-    let forge_score = craft_totals.forge + ent.vit as f64 * 0.5;
-    let forge_name = if !held_item_display.is_empty()
-        && (held_item_display.contains("錘")
-            || held_item_display.contains("鎬")
-            || held_item_display.contains("斧")
-            || held_item_display.contains("鉗"))
-    {
-        "震淵百鍛法".to_string()
-    } else {
-        "觀火成形訣".to_string()
-    };
-    let forge_packet = SkillDataPacket {
-        entity_id: ent.id.clone(),
-        role_title: role_hint.clone(),
-        domain: "production".to_string(),
-        slot_label: "百工".to_string(),
-        hub_or_tier: mastery_tier(forge_score).to_string(),
-        word_chars: vec![],
-        vessel_name: if held_item_display.is_empty() { "徒手".to_string() } else { held_item_display.clone() },
-        carrier: held_carrier.unwrap_or(CarrierAffinity::Blunt),
-        motion_sequence: vec!["聽聲辨火".into(), "落錘順肌".into(), "收勢成形".into()],
-        fallback_name: forge_name,
-    };
-    let forge_syn = synthesize_skill_from_data(&forge_packet);
-    let mut forge_afflictions = Vec::new();
-    for aff in &active_afflictions {
-        match aff {
-            crate::pg::living_world::AfflictionKind::ArmSprain => forge_afflictions.push("【帶傷：腕肘挫傷】"),
-            crate::pg::living_world::AfflictionKind::TorsoInternal => forge_afflictions.push("【帶傷：胸脅內傷】"),
-            _ => {}
-        }
-    }
-    let forge_aff_suffix = if !forge_afflictions.is_empty() {
-        format!(" ｜ {}", forge_afflictions.join(" "))
-    } else {
-        String::new()
-    };
-    skills.push(NaturalSkillView {
-        domain: "production".to_string(),
-        category: String::new(),
-        category_label: format!("百工 · {}", mastery_tier(forge_score)),
-        name: forge_syn.name,
-        origin_basis: forge_syn.origin_basis,
-        learned_and_familiar: if held_item_display.is_empty() {
-            format!("徒手揉製與控火{}", forge_aff_suffix)
+        learned_and_familiar: if imprints.is_empty() {
+            "平日多憑自身揣摩習練，尚未得前輩名宿親口指點。".to_string()
         } else {
-            format!("慣用器物：{}{}", held_item_display, forge_aff_suffix)
+            let s = imprints
+                .iter()
+                .map(|imp| format!("曾蒙{}親授「{}」心法", imp.mentor_name, imp.imprint_title))
+                .collect::<Vec<_>>()
+                .join("、");
+            format!("{}。", s)
         },
-        auto_trigger_desc: String::new(),
+        auto_trigger_desc: "所習手札與前輩指點已融入日常吐納與出手習慣，臨陣及勞作時自然應變。".to_string(),
     });
 
-    let culinary_score = craft_totals.culinary + ent.qi as f64 * 0.5;
-    let culinary_packet = SkillDataPacket {
-        entity_id: ent.id.clone(),
-        role_title: role_hint.clone(),
-        domain: "production".to_string(),
-        slot_label: "庖廚".to_string(),
-        hub_or_tier: mastery_tier(culinary_score).to_string(),
-        word_chars: vec![],
-        vessel_name: if held_item_display.is_empty() { "徒手".to_string() } else { held_item_display.clone() },
-        carrier: held_carrier.unwrap_or(CarrierAffinity::Blade),
-        motion_sequence: vec!["順紋切配".into(), "文武控火".into(), "收汁凝香".into()],
-        fallback_name: "文武合味手".to_string(),
-    };
-    let culinary_syn = synthesize_skill_from_data(&culinary_packet);
-    let mut culinary_afflictions = Vec::new();
-    for aff in &active_afflictions {
-        match aff {
-            crate::pg::living_world::AfflictionKind::ArmSprain => culinary_afflictions.push("【帶傷：腕肘挫傷】"),
-            _ => {}
-        }
-    }
-    let culinary_aff_suffix = if !culinary_afflictions.is_empty() {
-        format!(" ｜ {}", culinary_afflictions.join(" "))
-    } else {
-        String::new()
-    };
+    let is_bladed_held = !held_item_id.is_empty()
+        && crate::pg::living_world::is_bladed_vessel_item(&held_item_id, &held_item_display);
+    let is_weapon_held = !held_item_id.is_empty()
+        && crate::pg::living_world::is_weapon_or_tool_item(&held_item_id, &held_item_display);
+
     skills.push(NaturalSkillView {
-        domain: "production".to_string(),
-        category: String::new(),
-        category_label: format!("庖廚 · {}", mastery_tier(culinary_score)),
-        name: culinary_syn.name,
-        origin_basis: culinary_syn.origin_basis,
-        learned_and_familiar: format!("歷練：{}{}", role_hint, culinary_aff_suffix),
-        auto_trigger_desc: String::new(),
+        domain: "mastery_ledger".to_string(),
+        category: "familiar_vessels".to_string(),
+        category_label: "所熟・隨身器物磨合".to_string(),
+        name: if held_item_display.is_empty() {
+            "隨身持物：徒手".to_string()
+        } else {
+            format!("隨身持物：{}", held_item_display)
+        },
+        origin_basis: if held_item_display.is_empty() {
+            "以血肉筋骨為器，長久修持鍛打。".to_string()
+        } else if is_bladed_held {
+            let vstate = crate::pg::living_world::get_vessel_state(&ent.id, &held_item_id);
+            format!(
+                "器物現況：{}（磨合度：{}）",
+                vstate.status_badge(),
+                vstate.familiarity().label()
+            )
+        } else if is_weapon_held {
+            let vstate = crate::pg::living_world::get_vessel_state(&ent.id, &held_item_id);
+            format!(
+                "器物現況：器身完好（磨合度：{}）",
+                vstate.familiarity().label()
+            )
+        } else {
+            "器物現況：隨身攜行（日常器物）".to_string()
+        },
+        learned_and_familiar: if held_item_display.is_empty() {
+            "掌拳合一，收發自如。".to_string()
+        } else if is_weapon_held {
+            let vstate = crate::pg::living_world::get_vessel_state(&ent.id, &held_item_id);
+            format!("{}。", vstate.familiarity().feel_prose())
+        } else {
+            "日常隨身攜行之物，取用順手。".to_string()
+        },
+        auto_trigger_desc: if is_bladed_held {
+            "手持兵刃經反覆磨合，發力順應刀刃重心與硬度，減免鋒口磨損並提升破綻穿透。".to_string()
+        } else if is_weapon_held {
+            "手持器物經反覆磨合，發力順應器身重心與分量，運使愈發沉穩順手。".to_string()
+        } else {
+            "供平日行旅或起居取用；臨陣交鋒時則憑拳腳身法或隨身兵刃應敵。".to_string()
+        },
     });
 
-    let wayfare_score = craft_totals.wayfare + (ent.vit + ent.dex) as f64 * 0.3;
-    let wayfare_packet = SkillDataPacket {
-        entity_id: ent.id.clone(),
-        role_title: role_hint.clone(),
-        domain: "production".to_string(),
-        slot_label: "行旅".to_string(),
-        hub_or_tier: mastery_tier(wayfare_score).to_string(),
-        word_chars: vec![],
-        vessel_name: if held_item_display.is_empty() { "徒手".to_string() } else { held_item_display.clone() },
-        carrier: held_carrier.unwrap_or(CarrierAffinity::Footwork),
-        motion_sequence: vec!["調勻吐納".into(), "借風踏浪".into(), "省力疾行".into()],
-        fallback_name: "觀風踏浪步".to_string(),
-    };
-    let wayfare_syn = synthesize_skill_from_data(&wayfare_packet);
-    let mut wayfare_afflictions = Vec::new();
-    for aff in &active_afflictions {
-        match aff {
-            crate::pg::living_world::AfflictionKind::LegSprain => wayfare_afflictions.push("【帶傷：下盤扭傷】"),
-            crate::pg::living_world::AfflictionKind::TorsoInternal => wayfare_afflictions.push("【帶傷：胸脅內傷】"),
-            crate::pg::living_world::AfflictionKind::Miasma => wayfare_afflictions.push("【帶傷：瘴氣入體】"),
-            _ => {}
-        }
-    }
-    let wayfare_aff_suffix = if !wayfare_afflictions.is_empty() {
-        format!(" ｜ {}", wayfare_afflictions.join(" "))
-    } else {
-        String::new()
-    };
     skills.push(NaturalSkillView {
-        domain: "production".to_string(),
-        category: String::new(),
-        category_label: format!("行旅 · {}", mastery_tier(wayfare_score)),
-        name: wayfare_syn.name,
-        origin_basis: wayfare_syn.origin_basis,
-        learned_and_familiar: format!("歷練：{}{}", role_hint, wayfare_aff_suffix),
-        auto_trigger_desc: String::new(),
+        domain: "mastery_ledger".to_string(),
+        category: "material_anatomy".to_string(),
+        category_label: "所歷・山海肌理與百工".to_string(),
+        name: "山海肌理與百工體察".to_string(),
+        origin_basis: crate::pg::living_world::get_entity_anatomy_familiarity_summary(&ent.id),
+        learned_and_familiar: if anatomy_total >= 10 {
+            "長年於山海之間採獵、庖解與鍛冶，熟知各類走獸異木之關節空隙與紋理走向。".to_string()
+        } else if anatomy_total > 0 {
+            "於日常採集與處理獵物時留心觀察皮肉筋節，漸能順著自然紋理落手。".to_string()
+        } else {
+            "平日多依常理下刀運錘，尚在摸索各類物材之肌理走向。".to_string()
+        },
+        auto_trigger_desc: "面對堅硬外皮或礦石結構時，能順著紋理縫隙落刃下錘，避開硬處、省力耐用。".to_string(),
     });
+
     skills
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_all_residents_receive_vocational_word_casket_and_inscribed_vessel() {
+        let targets = [
+            "秦水生",
+            "陳萬福",
+            "岑守岳",
+            "顧海平",
+            crate::store::OUTER_HOUSEHOLD_SLOTS[0].name(),
+        ];
+
+        for pid in targets {
+            let casket = get_player_word_casket(pid);
+            assert!(
+                casket.total_count() >= 24,
+                "住民 {pid} 之隨身詞匣應被初始化並具備基礎百工詞元"
+            );
+
+            // 解析住民對應之本職器物
+            let clue = if pid == "秦水生" {
+                "水輪石磨匠|老堰頭・水輪石磨工坊|秦水生".to_string()
+            } else if let Some(slot) = crate::store::WENYAO_HOUSEHOLD_SLOTS
+                .iter()
+                .chain(crate::store::OUTER_HOUSEHOLD_SLOTS.iter())
+                .find(|s| s.name() == pid)
+            {
+                format!("{}|{}|{}", slot.brief_tag, slot.work_name, slot.name())
+            } else {
+                let mut h: u64 = 0xcbf2_9ce4_8422_2325;
+                for b in pid.as_bytes() {
+                    h ^= u64::from(*b);
+                    h = h.wrapping_mul(0x0100_0000_01b3);
+                }
+                let target_settlement = crate::store::canonical_npc_macro_settlement(pid, "").unwrap_or("文曜");
+                let matching: Vec<&'static crate::store::WenyaoHouseholdSlot> = if target_settlement == "文曜" {
+                    crate::store::WENYAO_HOUSEHOLD_SLOTS.iter().collect()
+                } else {
+                    crate::store::OUTER_HOUSEHOLD_SLOTS
+                        .iter()
+                        .filter(|s| s.home_name.starts_with(target_settlement))
+                        .collect()
+                };
+                let slot = matching[(h >> 8) as usize % matching.len()];
+                format!("{}|{}|{}", slot.brief_tag, slot.work_name, pid)
+            };
+            let vessel = crate::npc::causal_core::resolve_vocational_vessel(&clue);
+            assert!(
+                !casket.inscribed_words_of(vessel.item_id).is_empty(),
+                "住民 {pid} 之本職器物 {} 應被銘刻專屬字印",
+                vessel.item_id
+            );
+        }
+    }
+}

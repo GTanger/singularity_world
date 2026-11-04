@@ -55,6 +55,7 @@ pub fn send_npc_dialogue_to_player(session: &Session, npc_a: &str, npc_b: &str, 
     let _ = session.try_send_bytes(msg);
 }
 
+
 fn player_verb_strings() -> Vec<String> {
     crate::entity::Character::sockets()
         .into_iter()

@@ -111,6 +111,39 @@ pub fn arrive(npc_id: &str, name: &str, tick: u64) -> String {
 pub fn leave(npc_id: &str, name: &str, tick: u64) -> String {
     with_behaviors(|b| pick(&b.leave, npc_id, tick).map(|t| fill(t, name))).unwrap_or_default()
 }
+/// 依場域一等物件或活躍事件／劇本包產出 NPC 閒置敘事句。
+#[must_use]
+pub fn venue_or_event_pack_idle_line(
+    room_name: &str,
+    npc_name: &str,
+    title_hint: &str,
+    now_unix: i64,
+) -> Option<String> {
+    let r = room_name.trim();
+    let n = npc_name.trim();
+    if r.is_empty() || n.is_empty() {
+        return None;
+    }
+    let hint = title_hint.trim();
+    if let Some((ev, _sp)) =
+        crate::game::peninsula_scripts::active_event_and_script_pack_for_room(r, None, now_unix)
+    {
+        let first_key = ev.key_objects.split('、').next().unwrap_or(ev.key_objects).trim();
+        if let Some(venue) = crate::grid::resolve_any_room_venue_object(r, hint) {
+            return Some(format!(
+                "{}在{}圍繞【{}】忙碌，{}。",
+                n, venue.venue_kind, first_key, venue.on_duty_fixture_activity
+            ));
+        }
+    }
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(r, hint) {
+        return Some(format!(
+            "{}在{}當值，{}。",
+            n, venue.venue_kind, venue.on_duty_fixture_activity
+        ));
+    }
+    None
+}
 
 #[cfg(test)]
 mod tests {
@@ -173,5 +206,46 @@ mod tests {
         assert!(s.is_empty());
         // 恢復為有效資料
         inject_test_data();
+    }
+    #[test]
+    fn test_venue_or_event_pack_idle_line() {
+        let now_unix = 1_700_000_000;
+
+        // 1. 水輪石磨工坊（在 peninsula_scripts 中有劇本包／事件包配置）
+        let mill_line = venue_or_event_pack_idle_line(
+            "老堰頭・水輪石磨工坊",
+            "石老爹",
+            "當值石磨匠師",
+            now_unix,
+        );
+        assert!(mill_line.is_some());
+        let ml = mill_line.unwrap();
+        assert!(ml.contains("石老爹"));
+        assert!(ml.contains("水輪石磨工坊"));
+
+        // 2. 三水大食堂
+        let canteen_line = venue_or_event_pack_idle_line(
+            "三水大食堂",
+            "張大廚",
+            "食堂主廚",
+            now_unix,
+        );
+        assert!(canteen_line.is_some());
+        let cl = canteen_line.unwrap();
+        assert!(cl.contains("張大廚"));
+        assert!(cl.contains("大食堂"));
+
+        // 3. 荒蕪礫石空地（非場域物件、無劇本包配置）
+        let wasteland_line = venue_or_event_pack_idle_line(
+            "荒蕪礫石空地",
+            "小旅人",
+            "訪客",
+            now_unix,
+        );
+        assert!(wasteland_line.is_none());
+
+        // 4. 空名稱保護
+        assert!(venue_or_event_pack_idle_line("", "石老爹", "", now_unix).is_none());
+        assert!(venue_or_event_pack_idle_line("三水大食堂", "", "", now_unix).is_none());
     }
 }

@@ -5,13 +5,15 @@
 mod auth;
 pub mod inventory;
 pub(crate) mod movement;
-pub(crate) use movement::find_nearest_clinic_for_combat;
+pub mod query;
 
 pub(crate) use inventory::{
     format_entity_item_with_inscription, get_player_tactical_loadout, get_player_word_casket,
-    npc_autonomous_word_and_equip_step, push_refresh, set_player_word_casket,
+    npc_autonomous_word_and_equip_step, push_refresh,
 };
 pub use inventory::entity_total_craft_dims;
+#[cfg(test)]
+pub(crate) use inventory::set_player_word_casket;
 pub(crate) use movement::{emit_presence_reflex_on_arrival, send_place_view};
 use std::sync::{Arc, RwLock};
 
@@ -74,31 +76,30 @@ impl WsConnection {
 }
 
 pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
-    let msg: ClientMsg = match serde_json::from_slice(raw) {
+    let mut msg: ClientMsg = match serde_json::from_slice(raw) {
         Ok(m) => m,
         Err(_) => {
             conn.send_error("invalid json");
             return;
         }
     };
-    if msg.msg_type != "ping" {
-        tracing::info!(
-            "[handle_message] type={} pid={} conn={}",
-            msg.msg_type,
-            msg.player_id,
-            conn.conn_id
-        );
-    }
     match msg.msg_type.as_str() {
         "login" => auth::handle_login(conn, &msg),
         "create_character" => auth::handle_create_character(conn, &msg),
         "move" | "grid_move" | "move_to" => movement::handle_move(conn, &msg),
+        "enter_room" => {
+            if msg.direction.is_empty() {
+                msg.direction = "進".to_string();
+            }
+            movement::handle_move(conn, &msg);
+        }
         "ping" => {
             conn.send_json(&PongMsg {
                 msg_type: "pong".into(),
             });
         }
-        "get_entity_status" => inventory::handle_get_entity_status(conn, &msg),
+        "get_entity_status" | "get_status" => query::handle_get_status(conn, &msg),
+        "set_offline_directive" => query::handle_set_offline_directive(conn, &msg),
         "get_inventory" => inventory::handle_get_inventory(conn),
         "equip_item" => inventory::handle_equip_item(conn, &msg),
         "unequip_item" => inventory::handle_unequip_item(conn, &msg),
@@ -114,7 +115,7 @@ pub fn handle_message(conn: &WsConnection, raw: &[u8]) {
         "observe" => handle_observe(conn, &msg),
         "focus_entity" => {
             if !msg.entity_id.is_empty() {
-                crate::store::pause_npc_for_interaction(&msg.entity_id, 25);
+                crate::store::pause_npc_for_interaction(&msg.entity_id, 45);
             }
         }
         "unfocus_entity" => {
@@ -143,11 +144,10 @@ fn handle_observe(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error("npc_id required");
         return;
     }
-    crate::store::pause_npc_for_interaction(&msg.entity_id, 25);
+    crate::store::pause_npc_for_interaction(&msg.entity_id, 45);
     if let Err(e) = crate::db::set_observed(&player_id, &msg.entity_id) {
         tracing::warn!("[observe] set_observed 失敗：{e}");
     }
-    movement::send_place_view(conn, &player_id);
 }
 
 // ── 共用小工具（跨子模組）──

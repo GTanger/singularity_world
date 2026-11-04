@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# 奇點世界 — Rust 版一鍵啟動：閘門 → 建置後端 → 建置 Hex 編輯器 → 啟動。
+# 奇點世界 — Rust 版一鍵啟動：五道閘門 → release 建置 → 正式服務重啟。
 # 用法：./start
-# 需已安裝 trunk（cargo install trunk），供 /hex-editor 靜態資源；若無 trunk 會中止並提示。
 
 set -e
 cd "$(dirname "$0")"
@@ -15,12 +14,16 @@ if systemctl --user list-unit-files singularity.service &>/dev/null; then
   HAS_SYSTEMD=true
 fi
 
-# 2) 嚴格閘門（Rust 版：clippy → test → checkrooms）
-echo "--- [1/3] 品質檢查 (Clippy) ---"
+# 2) 嚴格閘門（Rust 版：clippy → test → 白塔 runtime → 活世界 → checkrooms）
+echo "--- [1/5] 品質檢查 (Clippy) ---"
 cargo clippy -- -D warnings
-echo "--- [2/3] 邏輯測試 (Test) ---"
+echo "--- [2/5] 邏輯測試 (Test) ---"
 cargo test
-echo "--- [3/3] 房間契約 (Checkrooms) ---"
+echo "--- [3/5] 白塔正式世界契約 (Runtime) ---"
+cargo run --bin white-tower-runtime-check
+echo "--- [4/5] 活世界與玩家接縫契約 ---"
+cargo run --bin white-tower-living-world-check
+echo "--- [5/5] 房間契約 (Checkrooms) ---"
 cargo run --bin checkrooms -- -brackets -strict
 
 # 3) 建置奇點（Rust release）
@@ -31,7 +34,8 @@ if [[ -n "$(git status --porcelain src 2>/dev/null)" ]]; then
   find src -name '*.rs' -exec touch {} +
 fi
 cargo build --release
-CARGO_OUT="${CARGO_TARGET_DIR:-target}/release/singularity_world"
+CARGO_TARGET_ROOT="$(cargo metadata --no-deps --format-version 1 | jq -r '.target_directory')"
+CARGO_OUT="$CARGO_TARGET_ROOT/release/singularity_world"
 if [[ ! -f "$CARGO_OUT" ]]; then
   for candidate in "$HOME/target_ram/release/singularity_world" "target/release/singularity_world"; do
     if [[ -f "$candidate" ]]; then CARGO_OUT="$candidate"; break; fi

@@ -46,7 +46,7 @@
         "destination_tags": ["study", "inn", "social"],
         "wander_range": 15,
         "stay_hours": [3, 8],
-        "_說明": "學者在圖書館、茶館、客棧之間隨機遊走。"
+        "_說明": "學者在藏書閣、茶館、旅社之間隨機遊走。"
       }
     },
     "traveler": {
@@ -56,14 +56,14 @@
       "spawn_weight": 12,
       "trade_tendency": "opportunistic",
       "wealth_range": [20, 400],
-      "goods_pool": ["乾糧", "水囊", "地圖殘頁", "異地特產", "護身符"],
+      "goods_pool": ["乾糧", "水囊", "地圖殘頁", "異地特產", "驅蟲香囊"],
       "movement": {
         "type": "pathfind",
         "speed": 1,
         "destination_tags": ["inn", "tavern", "gate", "social"],
         "wander_range": 50,
         "stay_hours": [2, 6],
-        "_說明": "旅人滿世界走，偏好客棧、酒館、城門等地標。"
+        "_說明": "旅人滿世界走，偏好旅社、飯館、城門等地標。"
       }
     },
     "drunkard": {
@@ -73,14 +73,14 @@
       "spawn_weight": 10,
       "trade_tendency": "impulsive",
       "wealth_range": [5, 150],
-      "goods_pool": ["酒壺", "骰子", "銅板", "當票"],
+      "goods_pool": ["酒壺", "骰子", "鎂幣", "當票"],
       "movement": {
         "type": "pathfind",
         "speed": 1,
         "destination_tags": ["tavern", "social", "food"],
         "wander_range": 8,
         "stay_hours": [2, 10],
-        "_說明": "酒客短程亂晃，偏好酒館和食堂。"
+        "_說明": "酒客短程亂晃，偏好茶屋和食堂。"
       }
     },
     "beggar": {
@@ -122,7 +122,7 @@
       "spawn_weight": 4,
       "trade_tendency": "specialized",
       "wealth_range": [60, 500],
-      "goods_pool": ["金創藥", "止血散", "回氣丹", "安神香", "乾草藥束"],
+      "goods_pool": ["金創藥", "止血散", "益氣丸", "安神香", "乾草藥束"],
       "movement": {
         "type": "pathfind",
         "speed": 1,
@@ -177,7 +177,7 @@
         "destination_tags": ["market", "gate", "outdoor", "tavern"],
         "wander_range": 30,
         "stay_hours": [4, 10],
-        "_說明": "搬運工在各個卸貨點和便宜酒館、廣場隨機遊走等活。"
+        "_說明": "搬運工在各個卸貨點和便宜飯館、廣場隨機遊走等活。"
       }
     },
     "mechanic": {
@@ -187,14 +187,14 @@
       "spawn_weight": 8,
       "trade_tendency": "opportunistic",
       "wealth_range": [30, 250],
-      "goods_pool": ["廢棄陣盤", "潤滑油", "保險絲", "扳手", "銅管", "晶體碎片"],
+      "goods_pool": ["舊羅盤", "桐油", "銅絲", "鐵鉗", "銅管", "晶體碎片"],
       "movement": {
         "type": "pathfind",
         "speed": 1,
         "destination_tags": ["outdoor", "indoor", "market"],
         "wander_range": 20,
         "stay_hours": [2, 6],
-        "_說明": "修繕工會四處奔走尋找壞掉的設備，偶爾在酒館出沒。"
+        "_說明": "修繕工會四處奔走尋找壞掉的設備，偶爾在茶屋出沒。"
       }
     },
     "broker": {
@@ -228,7 +228,7 @@
         "destination_tags": ["outdoor", "gate", "road"],
         "wander_range": 15,
         "stay_hours": [2, 8],
-        "_說明": "武師通常在特定區域的室外練功或巡邏，偶爾去酒館。"
+        "_說明": "武師通常在特定區域的室外練功或巡邏，偶爾去茶屋。"
       }
     },
     "scout": {
@@ -238,7 +238,7 @@
       "spawn_weight": 5,
       "trade_tendency": "scavenge",
       "wealth_range": [0, 80],
-      "goods_pool": ["廢棄晶片", "奇異草藥", "變異獸骨", "破衣爛衫", "手繪地圖"],
+      "goods_pool": ["廢棄算籌銅片", "奇異草藥", "荒野獸骨", "破衣爛衫", "手繪地圖"],
       "movement": {
         "type": "pathfind",
         "speed": 1,

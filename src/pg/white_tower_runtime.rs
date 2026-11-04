@@ -837,8 +837,8 @@ fn migrate_journeys(
     let graph = world.graph()?;
     let mut changed = tx.execute(
         "DELETE FROM entity_journeys WHERE entity_id IN (
-            SELECT id FROM entities WHERE place_id IS NULL
-        ) OR entity_id NOT IN (SELECT id FROM entities)",
+            SELECT id FROM entities WHERE place_id IS NULL OR kind = 'player'
+        ) OR entity_id NOT IN (SELECT id FROM entities WHERE kind = 'npc')",
         &[],
     )?;
     let rows = tx.query(

@@ -12,11 +12,11 @@
     // 12 個時段：每 2 小時一段
     var PHASE_LABELS = ['深夜','凌晨','破曉','清晨','上午','正午','午後','下午','傍晚','入夜','晚間','半夜'];
 
-    // 氣候圖標映射；clear 需看時辰，夜間不能顯示太陽。
+    // 氣候圖標映射；clear 需看時段，夜間不能顯示太陽。
     var WEATHER_ICONS = { rain: '☁', snow: '❄', wind: '🌬', fog: '🌫', storm: '⛈', plum_rain: '🌧' };
 
     // ── L2 氣候散文池（placeholder；後端有真資料後可擴充）──────────
-    // 四段時辰需與畫面上每兩小時一段的時段標籤一致：
+    // 四段時段需與畫面上每兩小時一段的時段標籤一致：
     // dawn(4-7) / day(8-15) / dusk(16-19) / night(20-3)。
     // 日兩組（dawn/day）夜兩組（dusk/night），每個天氣 icon 各備四池
     var WEATHER_PROSE = {
@@ -158,8 +158,8 @@
         var raw = String(text || '').trim();
         var terrain = String(terrainName || '').trim();
         var oldNorthBankName = /北岸(?:等候處|候渡處|後渡處)/g;
-        raw = raw.replace(oldNorthBankName, '北岸渡口');
-        terrain = terrain.replace(oldNorthBankName, '北岸渡口');
+        raw = raw.replace(oldNorthBankName, '北灣貨船大埠');
+        terrain = terrain.replace(oldNorthBankName, '北灣貨船大埠');
         var leaks = [
             '目前登入後的起點',
             '登入後的暫存起點',
@@ -216,6 +216,11 @@
         var explicitParts = splitFullPlaceName(placeData && placeData.name);
         var title = explicitParts.title || parts.title;
         var locator = (placeData && placeData.locator) || explicitParts.locator || parts.locator;
+        if (window.cleanPlaceDisplayName) {
+            title = window.cleanPlaceDisplayName(title);
+        } else {
+            title = String(title || '').replace(/^文曜・中心樞紐石橋$/, '三水匯流大石橋').replace(/^中心樞紐石橋$/, '三水匯流大石橋').replace(/^文曜・/, '');
+        }
         el.textContent = String(title || '').trim();
         el.hidden = !el.textContent;
         var locatorNode = locatorEl();
@@ -225,7 +230,7 @@
         }
     }
 
-    // ── L1 時間渲染（簡潔時辰與時間，不畫日晷 SVG）──────────────────
+    // ── L1 時間渲染（簡潔時段與時間，不畫日晷 SVG）──────────────────
     function renderL1(timeData) {
         var el = l1El();
         if (!el) return;
@@ -296,7 +301,7 @@
         courthouse: '律',
         jail: '牢',
         town_hall: '政',
-        bank: '銀',
+        bank: '匯',
         mint: '鑄',
         stables: '馬',
         caravanserai: '驛',
@@ -350,14 +355,20 @@
             renderL2({ icon_key: 'clear', desc: pickProse(fallbackPool, fallbackSeed), hour: fallbackHour });
         }
 
+        var descText = cleanSceneDesc(msg.desc || '', msg.terrain && msg.terrain.name);
         var l3Node = l3El();
         var currentL3Text = (l3Node && l3Node.textContent || '').trim();
-        if (options.keepL3 && currentL3Text) {
-            return;
+        if (!options.keepL3 || !currentL3Text) {
+            renderL3(msg.terrain, descText, msg.objects, msg.harvestables);
         }
-
-        var descText = cleanSceneDesc(msg.desc || '', msg.terrain && msg.terrain.name);
-        renderL3(msg.terrain, descText, msg.objects, msg.harvestables);
+        if (!options.keepL3 && typeof window.SwPushBreath === 'function') {
+            var pEl = placeEl();
+            var pName = (pEl && pEl.textContent || '').trim() || (msg.place && msg.place.name) || '';
+            var b0 = document.getElementById('sw-breath-0');
+            if (pName && (!b0 || !b0.textContent)) {
+                window.SwPushBreath('駐足【' + pName + '】，墨韻隨步履漸次鋪展。', { byPlayer: false });
+            }
+        }
     }
 
     // ── 舊格式相容（grid_view 事件）──────────────────────────────────
@@ -401,5 +412,4 @@
     }
 
     window.SwRoomDesc = { render: render, renderV5: renderV5, renderL1: renderL1, renderL2: renderL2, renderL3: renderL3, renderPlace: renderPlace, getAmbience: getAmbience, startClimatePolling: startClimatePolling };
-    console.log('[sw-room-desc] v0.27.0 loaded');
 })();

@@ -477,7 +477,7 @@ window.addEventListener('keydown', e => {
 });
 
 document.getElementById('btn-wipe-entities').onclick = async () => {
-    if (!confirm('!!! 警告 !!!\n確定要清除所有實體嗎？這將重置所有玩家與 NPC 的位置與數據。')) return;
+    if (!confirm('!!! 警告 !!!\n確定要清除所有實體嗎？這將重置所有玩家與 NPC 的位置與資料。')) return;
     try {
         await api('/api/admin/wipe-entities', { method: 'POST' });
         toast('已清除所有實體');

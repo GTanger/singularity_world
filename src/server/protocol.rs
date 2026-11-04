@@ -4,7 +4,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-/// 客戶端送出的 JSON；`type` 決定行為。
+/// 連線端送出的 JSON；`type` 決定行為。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ClientMsg {
     #[serde(rename = "type")]
@@ -50,6 +50,8 @@ pub struct ClientMsg {
     pub target_terrain: String,
     #[serde(default)]
     pub choice: String,
+    #[serde(default, rename = "target_id")]
+    pub target_id: String,
 }
 
 /// 房間內單一實體（對齊 `ViewEntity`）。
@@ -229,7 +231,17 @@ pub struct MeMsg {
         rename = "equipment_names"
     )]
     pub equipment_names: HashMap<String, String>,
+    #[serde(default)]
+    pub offline_directive: String,
+    #[serde(default)]
+    pub offline_directive_label: String,
+    #[serde(default)]
+    pub offline_directive_desc: String,
 }
+
+/// 狀態查詢訊息（別名對齊 StatusMsg）
+#[allow(dead_code)]
+pub type StatusMsg = EntityStatusMsg;
 
 /// 移動廣播（對齊 `MovedMsg`）。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -250,6 +262,20 @@ pub struct NpcDialogueMsg {
     pub npc_a: String,
     pub npc_b: String,
     pub text: String,
+}
+
+/// NPC 主動對玩家搭話／招攬／叫住玩家之定向事件。
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct NpcAddressMsg {
+    #[serde(rename = "type")]
+    pub msg_type: String,
+    #[serde(rename = "npc_id")]
+    pub npc_id: String,
+    #[serde(rename = "npc_name")]
+    pub npc_name: String,
+    pub text: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub intent: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -427,6 +453,12 @@ pub struct EntityStatusMsg {
         rename = "natural_skills"
     )]
     pub natural_skills: Vec<NaturalSkillView>,
+    #[serde(default)]
+    pub offline_directive: String,
+    #[serde(default)]
+    pub offline_directive_label: String,
+    #[serde(default)]
+    pub offline_directive_desc: String,
 }
 
 /// 正方格地圖視野（傳送玩家附近的多格資訊）。
@@ -571,7 +603,7 @@ pub struct TacticalLoadoutView {
     pub defense: Option<TacticalSentenceView>,
 }
 
-/// 推送給客戶端的完整戰術狀態。
+/// 推送給連線端的完整戰術狀態。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TacticalStateMsg {
     #[serde(rename = "type")]
@@ -656,6 +688,9 @@ mod tests {
             equipment_names: HashMap::new(),
             equipment_descs: HashMap::new(),
             natural_skills: vec![],
+            offline_directive: String::new(),
+            offline_directive_label: String::new(),
+            offline_directive_desc: String::new(),
         };
         let s = serde_json::to_string(&e).unwrap();
         assert!(!s.contains("magnesium"));
@@ -695,5 +730,36 @@ mod tests {
         let decoded: ActionResultMsg = serde_json::from_str(&out).unwrap();
         assert!(decoded.open_trade);
         assert_eq!(decoded.suggested_action, "Trade");
+    }
+
+    #[test]
+    fn npc_address_roundtrip() {
+        let msg = NpcAddressMsg {
+            msg_type: "npc_address".into(),
+            npc_id: "wt_npc_wen".into(),
+            npc_name: "溫掌事".into(),
+            text: "「溫掌事見你邁步走入，神色微動……」".into(),
+            intent: "talk".into(),
+        };
+        let out = serde_json::to_string(&msg).unwrap();
+        assert!(out.contains(r#""type":"npc_address""#));
+        assert!(out.contains(r#""npc_id":"wt_npc_wen""#));
+        assert!(out.contains(r#""intent":"talk""#));
+        let decoded: NpcAddressMsg = serde_json::from_str(&out).unwrap();
+        assert_eq!(decoded, msg);
+
+        // Empty intent omitted in json
+        let msg_no_intent = NpcAddressMsg {
+            msg_type: "npc_address".into(),
+            npc_id: "wt_npc_wen".into(),
+            npc_name: "溫掌事".into(),
+            text: "招呼".into(),
+            intent: String::new(),
+        };
+        let out_no_intent = serde_json::to_string(&msg_no_intent).unwrap();
+        assert!(!out_no_intent.contains("intent"));
+        let decoded_no_intent: NpcAddressMsg = serde_json::from_str(&out_no_intent).unwrap();
+        assert_eq!(decoded_no_intent.intent, "");
+        assert_eq!(decoded_no_intent, msg_no_intent);
     }
 }

@@ -8,7 +8,7 @@
 use std::sync::{OnceLock, RwLock};
 
 use crate::db::{load_square_grid, save_square_grid_to_pg};
-use crate::grid::{GridObjectKind, SquareCoord, SquareGrid};
+use crate::grid::{GridCell, GridObjectKind, SquareCoord, SquareGrid};
 
 // ─── 全域狀態 ────────────────────────────────────────────────────────
 
@@ -47,7 +47,7 @@ pub fn init() {
         .unwrap_or(false)
         && grid
             .get(crate::grid::SquareCoord::new(0, 0))
-            .map(|c| c.name == "文曜・中心樞紐石橋")
+            .map(|c| c.name == "文曜・三水匯流大石橋")
             .unwrap_or(false)
         && grid
             .get(crate::grid::SquareCoord::new(0, -1))
@@ -67,7 +67,7 @@ pub fn init() {
             .unwrap_or(false);
     let deed_office_updated = grid
         .get(crate::grid::SquareCoord::new(-2, -1))
-        .map(|c| c.description.contains("地籍契書專局"))
+        .map(|c| c.name.contains("房地契書局") || c.description.contains("地籍契書專局"))
         .unwrap_or(false);
     let wen_yao_has_water = grid
         .get(crate::grid::SquareCoord::new(-2, 2))
@@ -78,7 +78,7 @@ pub fn init() {
         .any(|c| c.zone == "文曜" && c.name.contains("溫氏脈絡診所") && c.coord.x > 0 && c.coord.y < 0);
     let academy_has_fountain_pen = grid
         .cells()
-        .any(|c| c.zone == "文曜" && c.name.contains("學院") && c.description.contains("教案上的黃銅鋼筆") && !c.description.contains("文曜文曜"));
+        .any(|c| c.zone == "文曜" && c.name.contains("學院") && c.description.contains("黃銅硬筆") && !c.description.contains("文曜文曜"));
     let outer_workshops_upgraded = grid
         .get(crate::grid::SquareCoord::new(-8, 2))
         .map(|c| c.terrain == crate::grid::Terrain::Workshop)
@@ -91,8 +91,8 @@ pub fn init() {
             || c.description.contains("算盤")
             || c.description.contains("銀票")
             || c.name.contains("客棧")
-            || c.name.contains("茶肆")
-            || c.name.contains("鏢局")
+            || c.name.contains(concat!("茶", "肆"))
+            || c.name.contains(concat!("鏢", "局"))
             || c.description.contains("行人踏石而過")
             || c.description.contains("牛肉肉乾")
             || c.objects.iter().any(|o| o.name == "培植靈草")
@@ -125,6 +125,14 @@ pub fn init() {
             || (c.coord.x == -18 && c.coord.y == -1 && c.zone != "西麓林道")
             || c.name.contains("築港頭商行大道")
             || c.name.contains("街巷空坪")
+            || c.name.contains("西南原")
+            || c.name.contains("青脊山")
+            || c.name.contains("\u{638c}櫃")
+            || c.name.contains("梁架居")
+            || c.name.contains("煉金格物所")
+            || c.name.contains("導能翻土犁")
+            || c.name.contains("宣筆\u{5236}毫坊")
+            || c.name.contains("竹筏\u{624e}作宅")
     }) || grid.get(SquareCoord::new(-18, 0)).map_or(true, |c| c.objects.is_empty())
         || grid.get(SquareCoord::new(2, 125)).map_or(true, |c| c.terrain == crate::grid::Terrain::Bridge)
         || grid.get(SquareCoord::new(-280, 160)).map_or(true, |c| c.zone != "天然港灣道")
@@ -141,7 +149,7 @@ pub fn init() {
         .unwrap_or(false)
         && grid
             .cells()
-            .any(|c| c.name.contains("馬家鐵齒登山釘鞋工坊宅") && c.description.contains("石牆厚實防風"))
+            .any(|c| c.name.contains("馬家鐵齒登山釘鞋工坊宅") && c.description.contains("防風青石板"))
         && grid
             .cells()
             .any(|c| c.name.contains("架高避水木屋") && c.description.contains("耐水烏木高椿"))
@@ -174,11 +182,12 @@ pub fn init() {
             wen_yao_expanded
         );
         grid = crate::grid::generate_white_tower_grid();
-        grid.mark_dirty();
+        grid.clear_dirty();
         if let Err(e) = save_square_grid_to_pg(&grid) {
             tracing::warn!("grid_manager: 儲存白塔半島大地圖至 PG 失敗：{e}");
         }
     }
+    grid.clear_dirty();
 
     let count = grid.len();
     let _ = GRID_STATE.set(GridState {
@@ -200,6 +209,41 @@ pub fn get_runtime_square_grid() -> Option<SquareGrid> {
     GRID_STATE
         .get()
         .and_then(|s| s.grid.read().ok().map(|g| (*g).clone()))
+}
+
+/// 取得執行期正方格地圖的唯讀快照（get_runtime_square_grid 之公開簡稱別名）。
+pub fn get_square_grid() -> Option<SquareGrid> {
+    get_runtime_square_grid()
+}
+
+/// 單元測試專用：設置執行期正方格地圖快照
+pub fn set_runtime_square_grid_for_testing(grid: SquareGrid) {
+    if let Some(state) = GRID_STATE.get() {
+        if let Ok(mut g) = state.grid.write() {
+            *g = grid;
+        }
+    } else {
+        let _ = GRID_STATE.set(GridState {
+            grid: std::sync::RwLock::new(grid),
+        });
+    }
+}
+
+/// 取得執行期正方格地圖單一格子的唯讀快照（避免單格查詢 clone 整張 14,424 格地圖）。
+pub fn get_runtime_grid_cell(coord: SquareCoord) -> Option<GridCell> {
+    GRID_STATE
+        .get()
+        .and_then(|s| s.grid.read().ok().and_then(|g| g.get(coord).cloned()))
+}
+
+/// 依聚落房間名稱取得執行期正方格地圖單一格子的唯讀快照（零整圖 clone）。
+pub fn get_runtime_grid_cell_by_name(room_name: &str) -> Option<GridCell> {
+    GRID_STATE.get().and_then(|s| {
+        s.grid
+            .read()
+            .ok()
+            .and_then(|g| resolve_settlement_room_coord(&g, room_name).cloned())
+    })
 }
 
 /// 以可變引用操作正方格地圖。僅在格數變動時寫回 PG。
@@ -232,6 +276,18 @@ where
     {
         tracing::warn!("with_square_grid_mut: PG 寫入失敗：{e}");
     }
+    Some(result)
+}
+
+/// 僅於記憶體內修改正方格地圖並清除 dirty 標記（供已自行透過 `update_cell_state` 單格寫入 PG 的呼叫端使用，避免 14,424 格全表重寫）。
+pub fn with_square_grid_mut_in_memory<F, R>(f: F) -> Option<R>
+where
+    F: FnOnce(&mut SquareGrid) -> R,
+{
+    let st = grid_state();
+    let mut grid = st.grid.write().ok()?;
+    let result = f(&mut grid);
+    grid.clear_dirty();
     Some(result)
 }
 
@@ -294,7 +350,7 @@ pub const CANONICAL_EXPEDITIONS: &[CanonicalExpeditionDef] = &[
         npc_id: "岑拓",
         goal_kind: "caravan_route",
         target_coord: (-22, 0),
-        target_name: "西麓林道・道路",
+        target_name: "西麓林道",
         activity: "押著滿載鐵器與茶磚的雙輪貨車行進在西麓林道上，隨時留意路旁獸蹤",
         thought: "西麓林道今日風乾路實，趁天色尚早把這批貨趕送出去，回程還能收些山貨",
         return_thought: "在城外林道完成了商隊貨物巡察與交易，正準備沿路返回城裡",
@@ -306,7 +362,7 @@ pub const CANONICAL_EXPEDITIONS: &[CanonicalExpeditionDef] = &[
         goal_kind: "wilderness_expedition",
         target_coord: (-20, 1),
         target_name: "西麓林道",
-        activity: "背著竹編藥簍在西麓林道旁辨識剛冒芽的光葉藥草與山茶籽",
+        activity: "背著竹編藥簍在西麓林道旁辨識新冒芽的光葉藥草與山茶籽",
         thought: "百草堂裡的退熱草藥快見底了，趁今日無雨親自出西門採些鮮葉回去炮製",
         return_thought: "在城外林道採齊了所需的藥材與山貨，正準備沿路返回城裡",
         obligation_kind: "restock_goods",
@@ -316,9 +372,9 @@ pub const CANONICAL_EXPEDITIONS: &[CanonicalExpeditionDef] = &[
         npc_id: "馬行頭",
         goal_kind: "caravan_route",
         target_coord: (-18, 0),
-        target_name: "西麓林道・道路",
+        target_name: "西麓林道",
         activity: "在西城門外的西麓林道起點檢查駝獸蹄鐵與車轍路況",
-        thought: "剛出西門這段林道車轍頗深，得叮囑車夫們過坡時收緊韁繩",
+        thought: "出西門這段林道車轍頗深，得叮囑車夫們過坡時收緊韁繩",
         return_thought: "在城外林道檢查完路面車轍與蹄鐵，正準備沿路返回車馬行",
         obligation_kind: "repair_tool",
         obligation_desc: "檢查西麓林道起點路況與駝獸蹄鐵車軛",
@@ -407,7 +463,7 @@ pub const CANONICAL_EXPEDITIONS: &[CanonicalExpeditionDef] = &[
         target_name: "長風草甸",
         activity: "在長風草甸開闊處實地測試重型翻土犁刀的入土深度與草根切斷力",
         thought: "草甸的黑土質地緊密，這款改良犁頭還得再調大兩分傾角才能更省獸力",
-        return_thought: "草甸犁刀試驗數據詳實，回工坊後即可敲定新一批農具規格",
+        return_thought: "草甸犁刀試驗紀錄詳實，回工坊後即可敲定新一批農具規格",
         obligation_kind: "repair_tool",
         obligation_desc: "長風草甸實地試驗改良農具與犁頭深度",
     },
@@ -418,7 +474,7 @@ pub const CANONICAL_EXPEDITIONS: &[CanonicalExpeditionDef] = &[
         target_name: "長風草甸",
         activity: "在長風草甸開闊處實地測試重型翻土犁刀的入土深度與草根切斷力",
         thought: "草甸的黑土質地緊密，這款改良犁頭還得再調大兩分傾角才能更省獸力",
-        return_thought: "草甸犁刀試驗數據詳實，回工坊後即可敲定新一批農具規格",
+        return_thought: "草甸犁刀試驗紀錄詳實，回工坊後即可敲定新一批農具規格",
         obligation_kind: "repair_tool",
         obligation_desc: "長風草甸實地試驗改良農具與犁頭深度",
     },
@@ -454,29 +510,36 @@ fn initial_thought_for_npc(id: &str, title: &str) -> String {
     if let Some(exp) = find_canonical_expedition(id) {
         return exp.thought.to_string();
     }
-    match id {
-        "韓鐵山" => "各路商隊與駝車進出頻繁，得確保草料充足、車馬蹄鐵安妥".to_string(),
-        "陸秉衡" => "三水總商行的跨鎮通兌匯票已清點完畢，各口岸船運平穩".to_string(),
-        "陸知微" => "古卷殘篇與各鎮新送來的地鳴紀錄對比頗有收穫，得抓緊修纂風物誌".to_string(),
-        "岑守岳" => "爐火正旺，這批新出爐的精鐵兵刃得趁熱淬火才能剛韌並濟".to_string(),
-        "溫懷瑾" => "文曜學院新一期的格物課綱擬定了大半，得為學子多添幾部古算籍".to_string(),
-        "陳萬福" => "今日鮮魚湯底文火慢煨恰到好處，待會得備好新鮮菜蔬迎客人".to_string(),
-        "白泉生" => "泉香浴場水溫適中，寒水玉引流清澈，正適合遠行歸人洗去一身風塵".to_string(),
-        "柯成器" => "這根老料烏木乾燥得宜，正好用來打造大客棧的雕花案桌".to_string(),
-        "蘇錦心" => "新染就的青藍織錦光澤均勻，正合適裁剪換季的厚實袍服".to_string(),
-        _ => {
-            if title.contains("匠") || title.contains("工") {
-                "手頭這批工料正加緊整修，心裡琢磨著今日工序進度".to_string()
-            } else if title.contains("醫") || title.contains("診") {
-                "藥櫃裡的常備藥材得及早補齊，免得病患急需時周轉不及".to_string()
-            } else if title.contains("商") || title.contains("店") || title.contains("攤") {
-                "盤算著今日進貨帳目與市面行情，打點鋪面準備開門接客".to_string()
-            } else if title.contains("獵") || title.contains("巡") || title.contains("防") {
-                "留意著城郊各處道路與荒野動靜，提防野獸與異動".to_string()
-            } else {
-                "手頭事務料理妥當，心裡踏實沉穩".to_string()
-            }
-        }
+    if title.contains("聯運") || title.contains("總站") || title.contains("車馬") {
+        "各路商隊與駝車進出頻繁，得確保草料充足、車馬蹄鐵安妥".to_string()
+    } else if title.contains("總商行") || title.contains("會長") || title.contains("票號") {
+        "三水總商行的跨鎮通兌匯票已清點完畢，各口岸船運平穩".to_string()
+    } else if title.contains("藏書") || title.contains("主編") || title.contains("風物誌") {
+        "古卷殘篇與各鎮新送來的地鳴紀錄對比頗有收穫，得抓緊修纂風物誌".to_string()
+    } else if title.contains("水輪") || title.contains("石磨") {
+        "聽著堰渠水輪推動大石磨的低沉嗡鳴，心裡盤算著明日送往文曜三水大食堂的現磨溫米漿與大圳頭新穀碾期".to_string()
+    } else if title.contains("鍛") || title.contains("鐵") {
+        "爐火正旺，這批新出爐的精鐵兵刃得趁熱淬火才能堅韌並濟".to_string()
+    } else if title.contains("學院") || title.contains("教務") {
+        "文曜學院新一期的格物課綱擬定了大半，得為學子多添幾部古算籍".to_string()
+    } else if title.contains("食堂") || title.contains("主廚") {
+        "今日鮮魚湯底文火慢煨恰到好處，待會得備好新鮮菜蔬迎客人".to_string()
+    } else if title.contains("浴場") || title.contains("溫泉") {
+        "泉香浴場水溫適中，寒水玉引流清澈，正適合遠行歸人洗去一身風塵".to_string()
+    } else if title.contains("木作") || title.contains("木匠") {
+        "這根老料烏木乾燥得宜，正好用來打造大旅社的雕花案桌".to_string()
+    } else if title.contains("織") || title.contains("染") || title.contains("服飾") {
+        "新染就的青藍織錦光澤均勻，正合適裁剪換季的厚實袍服".to_string()
+    } else if title.contains("匠") || title.contains("工") {
+        "手頭這批工料正加緊整修，心裡琢磨著今日工序進度".to_string()
+    } else if title.contains("醫") || title.contains("診") {
+        "藥櫃裡的常備藥材得及早補齊，免得病患急需時周轉不及".to_string()
+    } else if title.contains("商") || title.contains("店") || title.contains("攤") {
+        "盤算著今日進貨帳目與市面行情，打點鋪面準備開門接客".to_string()
+    } else if title.contains("獵") || title.contains("巡") || title.contains("防") {
+        "留意著城郊各處道路與荒野動靜，提防野獸與異動".to_string()
+    } else {
+        "手頭事務料理妥當，心裡踏實沉穩".to_string()
     }
 }
 
@@ -558,7 +621,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 17..=18 => (
                     "岑氏第一鍛造工坊",
-                    "回宗坊清點剛鍛成的大宗開山鐵器，叮嚀學徒做好防鏽浸油封存",
+                    "回宗坊清點新鍛成的大宗開山鐵器，叮嚀學徒做好防鏽浸油封存",
                 ),
                 19..=21 => (
                     "泉香溫水浴場",
@@ -578,7 +641,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 8..=19 => (
                     "岑氏第一鍛造工坊",
-                    "拿著西南原剛運來的青脊重礦與半嶺鎮的寒水玉，專注地試打新式器物",
+                    "拿著大圳頭新運來的青脊重礦與半嶺鎮的寒水玉，專注地試打新式器物",
                 ),
                 20..=21 => (
                     "三水大食堂",
@@ -682,7 +745,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 _ => (
                     "築港頭・許家宅邸",
-                    "站在二樓窗前望著避風灣的點點漁火，擔心孫女許海音又動了遠航外海的念頭",
+                    "站在二樓窗前望著風舶海港的點點漁火，擔心孫女許海音又動了遠航外海的念頭",
                 ),
             },
         },
@@ -694,7 +757,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 8..=14 => (
                     "深水泊位與卸貨碼頭",
-                    "站在『北冕號』甲板上檢查加固後的船帆與纜繩，為下一趟往北繞過白塔神山的遠航做準備",
+                    "站在『北冕號』甲板上檢查加固後的船帆與纜繩，為下一趟往北繞過白塔雪巔的遠航做準備",
                 ),
                 15..=18 => (
                     "林氏大船塢",
@@ -702,7 +765,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 19..=21 => (
                     "海風海鮮食堂",
-                    "與船員們圍桌大啖剛烤好的海魚，打聽東海峭壁與外海擾流的情報",
+                    "與船員們圍桌大啖現烤好的海魚，打聽東海峭壁與外海擾流的情報",
                 ),
                 _ => (
                     "築港頭・許家宅邸",
@@ -734,11 +797,11 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
         CanonicalNpcSchedule {
             id: "周萬生",
             gender: "M",
-            display_title: "西南原農牧總社理事長|周萬生",
+            display_title: "大圳頭農牧總社理事長|周萬生",
             resolve: |hour| match hour {
                 7..=17 => (
-                    "西南原農牧總社",
-                    "核對大圳頭的水閘放水時辰與牛埔的牧草收成，確保送往各城食堂的米糧蔬果充足",
+                    "大圳頭・大圳農牧總社",
+                    "核對大圳頭的水閘放水時刻與牛埔的牧草收成，確保送往各城食堂的米糧蔬果充足",
                 ),
                 18..=20 => (
                     "田園風味大食堂",
@@ -754,7 +817,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
         CanonicalNpcSchedule {
             id: "方石",
             gender: "M",
-            display_title: "西南原礦務主任|方石",
+            display_title: "三號坑口礦務掌事|方石",
             resolve: |hour| match hour {
                 7..=16 => (
                     "三號坑口礦務所",
@@ -786,7 +849,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 20..=21 => (
                     "半嶺山野茶屋食堂",
-                    "吃著熱騰騰的山產鍋物，聽剛從北山雲腰雪林下山的獵人描述神山深處的動靜",
+                    "吃著熱騰騰的山產鍋物，聽自北山雲腰雪林下山的獵人描述北嶺深處的動靜",
                 ),
                 _ => (
                     "半嶺鎮・岑家二房別院",
@@ -802,11 +865,11 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 7..=14 => (
                     "南哨防務公議廳",
-                    "與哨衛隊員核對黑沼林北口的巡防路線，記錄近期白茫洲霧氣消散時辰的異常變化",
+                    "與哨衛隊員核對水尾寮北口的巡防路線，記錄近期白茫洲霧氣消散時刻的異常變化",
                 ),
                 15..=18 => (
                     "入林嚮導公會",
-                    "向準備進林採集的獵人交代黑沼林的水路標記，並打聽那些自稱從『青籠關』以南穿林而來的異鄉行商下落",
+                    "向準備進林採集的獵人交代水尾寮外的水路標記，並打聽那些自稱從『下營』以南穿林而來的異鄉行商下落",
                 ),
                 19..=21 => (
                     "南哨原野食堂",
@@ -814,7 +877,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 _ => (
                     "高棧坪・羅家宅院",
-                    "在燈下修補黑沼林深處的水路地圖，思索青籠關以南那片未知大陸的模樣",
+                    "在燈下修補水尾寮深處的水路地圖，思索下營以南那片未知陸地的模樣",
                 ),
             },
         },
@@ -842,7 +905,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
         CanonicalNpcSchedule {
             id: "沈清河",
             gender: "M",
-            display_title: "東橋旅社與茶屋店長|沈清河",
+            display_title: "東橋旅社與茶屋掌事|沈清河",
             resolve: |hour| match hour {
                 7..=21 => (
                     "東橋旅社",
@@ -862,7 +925,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 7..=21 => (
                     "泉香溫水浴場",
-                    "巡看老堰頭活水暗管與鋪滿半嶺寒水玉的恆溫石池，在亮銀玻璃鏡盥洗台擺妥青鹽薄荷潔牙粉、軟毛竹柄牙刷、山茶松脂香皂、山茶護髮潤膚油與蜂格棉面巾",
+                    "巡看老堰頭活水暗管與鋪滿半嶺寒水玉的恆溫石池，在亮銀明水鏡盥洗台擺妥青鹽薄荷潔牙粉、軟毛竹柄潔齒刷、山茶松脂香胰、山茶護髮潤膚油與蜂格棉面巾",
                 ),
                 _ => (
                     "三水口・白氏湯屋居",
@@ -886,7 +949,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 _ => (
                     "分家巷・柯氏木作居",
-                    "換上軟底居家布拖鞋，在旋蓋貝母台燈下用鋼尖沾水筆在竹綿紙手札上繪製新式保鮮石櫃與桌椅圖樣",
+                    "換上軟底居家布便鞋，在旋蓋貝母台燈下用鋼尖蘸水硬筆在竹綿紙手札上繪製新式保鮮石櫃與桌椅圖樣",
                 ),
             },
         },
@@ -898,7 +961,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 8..=19 => (
                     "雲錦織造與服飾坊",
-                    "用大圳頭細棉麻裁製透氣常服，縫製北山雪狼絨冬衣、塗黑沼樹膠的防雨風衣、雙扣帆布斜背包與軟底居家布拖鞋，並替客人挑選軟牛皮零錢夾與竹骨晴雨摺疊傘",
+                    "用大圳頭細棉麻裁製透氣常服，縫製北山雪狼絨冬衣、塗黑沼樹膠的防雨長衫、雙扣帆布斜背包與軟底居家布便鞋，並替客人挑選軟牛皮零錢夾與竹骨晴雨摺疊傘",
                 ),
                 20..=21 => (
                     "泉香溫水浴場",
@@ -922,11 +985,11 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 18..=20 => (
                     "潮音溫水浴堂",
-                    "泡在溫水池裡洗去一身海風鹹味，聽剛下船的水手聊起北冕海的洋流變化",
+                    "泡在溫水池裡洗去一身海風鹹味，聽才下船的水手聊起北冕海的洋流變化",
                 ),
                 _ => (
-                    "避風灣漁家民宅",
-                    "在燈下修訂外澳避風灣的潮汐與水深手冊",
+                    "避風港船伕家屋",
+                    "在燈下修訂風舶海港的潮汐與水深手冊",
                 ),
             },
         },
@@ -941,7 +1004,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                     "借著海蝕風洞終年不息的強勁海風，用北山松木屑將深海大魚冷燻成久放不壞的風櫃冷燻魚乾",
                 ),
                 18..=23 => (
-                    "風櫃尾・風櫃尾燈塔",
+                    "風櫃尾燈塔",
                     "在海岬高處的燈塔頂層添入大魚油脂與巨藻燈芯，守望夜裡歸航的船隊",
                 ),
                 _ => (
@@ -982,7 +1045,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 18..=20 => (
                     "堰渠水畔食堂",
-                    "喝著現磨米漿與熱麵湯，與北郊農戶商議明日引水入渠的時辰",
+                    "喝著現磨米漿與熱麵湯，與北郊農戶商議明日引水入渠的時刻",
                 ),
                 _ => (
                     "老堰頭・秦氏水輪石磨傳承老宅",
@@ -994,7 +1057,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
         CanonicalNpcSchedule {
             id: "馬山行",
             gender: "M",
-            display_title: "北嶺山徑補給行店長|馬山行",
+            display_title: "北嶺山徑補給行掌事|馬山行",
             resolve: |hour| match hour {
                 6..=18 => (
                     "北嶺山徑補給行",
@@ -1054,7 +1117,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
         CanonicalNpcSchedule {
             id: "袁山茶",
             gender: "F",
-            display_title: "半嶺山泉旅社店長|袁山茶",
+            display_title: "半嶺山泉旅社掌事|袁山茶",
             resolve: |hour| match hour {
                 7..=21 => (
                     "半嶺山泉旅社",
@@ -1074,7 +1137,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 6..=18 => (
                     "半嶺氣象觀測所",
-                    "守在岩台上的青銅測風儀旁，觀測白塔神山雲霧帶與風壓變化，將風雪與溪水漲落訊號傳往山下",
+                    "守在岩台上的青銅測風儀旁，觀測白塔雪巔雲霧帶與風壓變化，將風雪與溪水漲落訊號傳往山下",
                 ),
                 19..=21 => (
                     "半嶺山野茶屋食堂",
@@ -1082,7 +1145,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 _ => (
                     "半嶺鎮・高家青銅測風儀觀測居",
-                    "推窗仰望神山夜空星象，核對明日的天氣預報",
+                    "推窗仰望雪巔夜空星象，核對明日的四時星象與風候",
                 ),
             },
         },
@@ -1090,10 +1153,10 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
         CanonicalNpcSchedule {
             id: "田百稼",
             gender: "M",
-            display_title: "西南原農具百工大匠|田百稼",
+            display_title: "大圳頭農具百工大匠|田百稼",
             resolve: |hour| match hour {
                 7..=18 => (
-                    "西南原農具與百工坊",
+                    "大圳頭・大圳農具與百工坊",
                     "調校一人扶把即可翻耕水田的省力導能翻土犁，並檢修榨取日照穀木油的水力榨油車",
                 ),
                 19..=21 => (
@@ -1162,7 +1225,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 _ => (
                     "南哨・雷家重型獵具大匠宅",
-                    "在乾燥密封的木箱裡封存剛配好的紅磷信號筒",
+                    "在乾燥密封的木箱裡封存新配好的紅磷信號筒",
                 ),
             },
         },
@@ -1174,7 +1237,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 7..=19 => (
                     "南哨脈絡解毒診所",
-                    "用白茫洲採回的霧晶與浮洲奇花煉製避瘴清心丸，替剛從黑沼林歸來的採集隊員拔除濕氣與蟲毒",
+                    "用白茫洲採回的霧晶與浮洲奇花煉製避瘴清心丸，替自水尾寮外澤林歸來的採集隊員拔除濕氣與蟲毒",
                 ),
                 20..=21 => (
                     "南哨原野食堂",
@@ -1198,7 +1261,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
                 18..=20 => (
                     "水尾寮平底竹筏埠",
-                    "幫歸來的採集竹筏卸下剛打撈出的沉水烏木、止血水苔與鮮活沼蝦，準備送往高棧坪收購行",
+                    "幫歸來的採集竹筏卸下新打撈出的沉水烏木、止血水苔與鮮活沼蝦，準備送往高棧坪收購行",
                 ),
                 _ => (
                     "水尾寮・阮家高腳木屋與平底竹筏匠老宅",
@@ -1226,15 +1289,15 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
             },
         },
-        // 36. wt_npc_lu_changgui (公議堂民事調解員陸長貴)
+        // 36. wt_npc_lu_changgui (公議堂民務通事陸長貴)
         CanonicalNpcSchedule {
             id: "wt_npc_lu_changgui",
             gender: "M",
-            display_title: "公議堂民事調解員|陸長貴",
+            display_title: "公議堂民務通事|陸長貴",
             resolve: |hour| match hour {
                 8..=11 => (
-                    "中心樞紐石橋",
-                    "站在樞紐石橋旁指引外地商旅認路，解答各項定居入籍與過戶手續",
+                    "三水匯流大石橋",
+                    "站在三水匯流大石橋旁指引外地商旅認路，解答各項定居入籍與過戶手續",
                 ),
                 12..=17 => (
                     "公議堂",
@@ -1250,22 +1313,22 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
             },
         },
-        // 37. wt_npc_lu_jingxuan (國小老師陸敬軒)
+        // 37. wt_npc_lu_jingxuan (蒙學先生陸敬軒)
         CanonicalNpcSchedule {
             id: "wt_npc_lu_jingxuan",
             gender: "M",
-            display_title: "國小老師|陸敬軒",
+            display_title: "蒙學先生|陸敬軒",
             resolve: |hour| match hour {
                 8..=16 => (
                     "學院主校區",
-                    "帶領文曜國小的學生朗讀《白塔基礎讀本》，在練習板上指導書寫",
+                    "帶領文曜蒙學堂的學生朗讀《白塔基礎讀本》，在練習板上指導書寫",
                 ),
                 17..=19 => (
                     "藏書閣",
                     "在藏書閣中挑選適合學童閱讀的四季自然插畫圖鑑",
                 ),
                 _ => (
-                    "講堂街・陸老師宿舍",
+                    "講堂街・蒙學陸先生舍",
                     "在貝母檯燈下批改學生作業並指導助教整理教材",
                 ),
             },
@@ -1278,31 +1341,31 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 8..=17 => (
                     "百工商算",
-                    "左手壓著出貨報表、右手操作隨身計數板，核算各工坊出貨成本與損耗",
+                    "左手壓著出貨帳冊、右手操作隨身計數板，核算各工坊出貨成本與損耗",
                 ),
                 18..=20 => (
                     "三水大食堂",
                     "邊吃著蔥香米烙餅邊在記事本上核算下一季的採購鎂幣預算",
                 ),
                 _ => (
-                    "講堂街・秦氏會計事務所",
+                    "講堂街・秦氏算學居",
                     "在書桌前檢視實習核算員提交的帳務試算表",
                 ),
             },
         },
-        // 39. wt_npc_lin_shizhong (傳訊鐘樓報時主任林時中)
+        // 39. wt_npc_lin_shizhong (傳訊鐘樓司鐘長林時中)
         CanonicalNpcSchedule {
             id: "wt_npc_lin_shizhong",
             gender: "M",
-            display_title: "傳訊鐘樓報時主任|林時中",
+            display_title: "傳訊鐘樓司鐘長|林時中",
             resolve: |hour| match hour {
                 6..=19 => (
                     "傳訊鐘樓與信使總站",
-                    "在鐘樓瞭望台校對旋轉日規與報時青銅大鐘，並為整裝待發的快遞信使核驗防雨郵袋與各鎮收發印戳",
+                    "在鐘樓瞭望台校對旋轉日規與報時青銅大鐘，並為整裝待發的快馬信使核驗防雨郵袋與各鎮收發印戳",
                 ),
                 20..=21 => (
                     "三水大食堂",
-                    "在食堂喝著熱騰騰的原牛骨湯，與下班的快遞信使核對明日發往風舶角與老堰頭的早班信件",
+                    "在食堂喝著熱騰騰的原牛骨湯，與收工的快馬信使核對明日發往風舶角與老堰頭的早班信件",
                 ),
                 _ => (
                     "三水口・信使快騎宿所",
@@ -1310,11 +1373,11 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
             },
         },
-        // 40. wt_npc_zhao_guanxing (學院觀星台觀測主任趙觀星)
+        // 40. wt_npc_zhao_guanxing (學院觀星台司天掌度趙觀星)
         CanonicalNpcSchedule {
             id: "wt_npc_zhao_guanxing",
             gender: "M",
-            display_title: "學院觀星台觀測主任|趙觀星",
+            display_title: "學院觀星台司天掌度|趙觀星",
             resolve: |hour| match hour {
                 8..=21 => (
                     "學院觀星台與評議廳",
@@ -1374,7 +1437,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 6..=20 => (
                     "分家巷口雜貨柑仔店",
-                    "坐在竹編藤椅上擦拭裝滿黑糖麥芽糖與鹽津梅餅的廣口玻璃罐，招呼下工的鐵匠學徒添購紅磷火柴與艾草蚊香盤",
+                    "坐在竹編藤椅上擦拭裝滿黑糖麥芽糖與鹽津梅餅的廣口玻璃罐，招呼下工的鐵匠學徒添購紅磷火籤與艾草蚊香盤",
                 ),
                 _ => (
                     "分家巷・精工火磚匠廬",
@@ -1402,11 +1465,11 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
             },
         },
-        // 45. wt_vendor_roast_beef (炭烤牛肉番薯攤老闆鄭火旺)
+        // 45. wt_vendor_roast_beef (炭烤牛肉番薯攤東家鄭火旺)
         CanonicalNpcSchedule {
             id: "wt_vendor_roast_beef",
             gender: "M",
-            display_title: "炭烤牛肉番薯攤老闆|鄭火旺",
+            display_title: "炭烤牛肉番薯攤東家|鄭火旺",
             resolve: |hour| match hour {
                 15..=23 | 0..=4 => (
                     "三水口南街",
@@ -1422,11 +1485,11 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
                 ),
             },
         },
-        // 46. wt_vendor_noodle_soup (現煮切仔麵攤老闆娘林罔市)
+        // 46. wt_vendor_noodle_soup (現煮切仔麵攤女東家林罔市)
         CanonicalNpcSchedule {
             id: "wt_vendor_noodle_soup",
             gender: "F",
-            display_title: "現煮切仔麵攤老闆娘|林罔市",
+            display_title: "現煮切仔麵攤女東家|林罔市",
             resolve: |hour| match hour {
                 15..=23 | 0..=4 => (
                     "三水口南街",
@@ -1450,7 +1513,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 15..=23 | 0..=4 => (
                     "三水口南街",
-                    "正在貼爐蔥香胡椒餅攤前用鐵夾從炭火鐵桶壁鏟下金黃酥脆的胡椒餅，大聲吆喝剛出爐的熱餅",
+                    "正在貼爐蔥香胡椒餅攤前用鐵夾從炭火鐵桶壁鏟下金黃酥脆的胡椒餅，大聲吆喝現出爐的熱餅",
                 ),
                 14 => (
                     "西門・草料客商居",
@@ -1550,7 +1613,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             resolve: |hour| match hour {
                 5..=14 => (
                     "三水口北街",
-                    "正在清晨帶露時令蔬果攤前噴水整理剛摘下的老堰頭水芹菜脆嫩莖與脆甜高麗菜，熱情招呼買菜居民",
+                    "正在清晨帶露時令蔬果攤前噴水整理新摘下的老堰頭水芹菜脆嫩莖與脆甜高麗菜，熱情招呼買菜居民",
                 ),
                 15..=17 => (
                     "三水大食堂",
@@ -1669,7 +1732,7 @@ static CANONICAL_NPC_SCHEDULES: [CanonicalNpcSchedule; 59] = [
             display_title: "草甸改良農具匠師|田大犁",
             resolve: |hour| match hour {
                 6..=17 => (
-                    "西南原農具與百工坊",
+                    "大圳頭・大圳農具與百工坊",
                     "在工坊鍛造改良型草甸翻土犁刀，測試鋼口韌度與犁架配重",
                 ),
                 18..=20 => (
@@ -1713,7 +1776,7 @@ pub fn dispatch_west_gate_expedition_npcs(store: &mut crate::store::Store) {
             "caravan_route",
             (-19, 0),
             (-22, 0),
-            "西麓林道・道路",
+            "西麓林道",
             "押著滿載鐵器與茶磚的雙輪貨車行進在西麓林道上，隨時留意路旁獸蹤",
             "西麓林道今日風乾路實，趁天色尚早把這批貨趕送出去，回程還能收些山貨",
             "stranded_cargo",
@@ -1724,8 +1787,8 @@ pub fn dispatch_west_gate_expedition_npcs(store: &mut crate::store::Store) {
             "wilderness_expedition",
             (-20, 1),
             (-18, 0),
-            "西麓林道・道路",
-            "背著竹編藥簍在西麓林道旁辨識剛冒芽的光葉藥草與山茶籽",
+            "西麓林道",
+            "背著竹編藥簍在西麓林道旁辨識新冒芽的光葉藥草與山茶籽",
             "百草堂裡的退熱草藥快見底了，趁今日無雨親自出西門採些鮮葉回去炮製",
             "restock_goods",
             "採集光葉藥草與山茶籽以備炮製",
@@ -1735,9 +1798,9 @@ pub fn dispatch_west_gate_expedition_npcs(store: &mut crate::store::Store) {
             "caravan_route",
             (-18, 0),
             (-21, 0),
-            "西麓林道・道路",
+            "西麓林道",
             "在西城門外的西麓林道起點檢查駝獸蹄鐵與車轍路況",
-            "剛出西門這段林道車轍頗深，得叮囑車夫們過坡時收緊韁繩",
+            "出西門這段林道車轍頗深，得叮囑車夫們過坡時收緊韁繩",
             "repair_tool",
             "檢查西麓林道起點路況與駝獸蹄鐵車軛",
         ),
@@ -1821,17 +1884,29 @@ pub fn dispatch_west_gate_expedition_npcs(store: &mut crate::store::Store) {
     }
 }
 
-/// 依遊戲時辰將白塔半島 59 位核心正典人物同步至正方格大地圖對應建築，更新其作息目標。
+/// 依遊戲時刻將白塔半島 59 位核心正典人物同步至正方格大地圖對應建築，更新其作息目標。
+static HOUSEHOLD_ENTITIES_SEEDED_ONCE: std::sync::atomic::AtomicBool =
+    std::sync::atomic::AtomicBool::new(false);
+static LAST_SYNCED_CANONICAL_HOUR: std::sync::atomic::AtomicI32 =
+    std::sync::atomic::AtomicI32::new(-1);
+
 pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
+    if LAST_SYNCED_CANONICAL_HOUR.swap(game_hour, std::sync::atomic::Ordering::SeqCst) == game_hour
+        && HOUSEHOLD_ENTITIES_SEEDED_ONCE.load(std::sync::atomic::Ordering::SeqCst)
+    {
+        return;
+    }
     let grid = match get_runtime_square_grid() {
         Some(g) => g,
         None => return,
     };
 
+    crate::server::handler::inventory::ensure_flagship_specimen_qin_shuisheng_wordplate_initialized();
     let Some(store_arc) = crate::store::get_store() else {
         return;
     };
     let mut store = store_arc.write();
+    crate::npc::causal_core::normalize_and_seed_circular_economy_once(&mut store);
 
     let now = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -1847,7 +1922,11 @@ pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
         if (def.id.starts_with("wt_vendor_") || def.id == "wt_npc_ma_buxue")
             && (game_hour == 5 || game_hour == 15 || game_hour == 23)
         {
-            crate::server::action::trade::restock_shop_items_for_seller(def.id);
+            crate::npc::causal_core::enqueue_arrival_effect(
+                crate::npc::causal_core::ArrivalEffect::RestockShopItems {
+                    seller_id: def.id.to_string(),
+                },
+            );
         }
         let (bldg_name, mut activity) = (def.resolve)(game_hour);
         if !def.id.starts_with("wt_vendor_") && (game_hour >= 22 || game_hour < 5) {
@@ -1857,9 +1936,14 @@ pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
                 || def.display_title.contains("守塔")
                 || def.display_title.contains("值守");
             if !is_night_watch {
-                activity = "正在內室榻上熄燈安歇";
+                if !activity.contains("歇")
+                    && !activity.contains("睡")
+                    && !activity.contains("寢")
+                    && !activity.contains("宿")
+                {
+                    activity = "正在內室榻上熄燈安歇";
+                }
                 clear_canonical_npc_goal(def.id);
-                crate::store::clear_active_npc_obligation(def.id, "");
             }
         }
         let cell = resolve_settlement_room_coord(&grid, bldg_name);
@@ -1872,9 +1956,20 @@ pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
         };
         let (x, y) = (cell.coord.x, cell.coord.y);
 
-        if let Some(mut existing) = store.get_entity(def.id) {
+        if store.get_entity(def.id).is_some() {
+            let (tx, ty, activity_owned) = crate::pg::living_world::step_canonical_resident_human_life_loop(
+                &mut store,
+                def.id,
+                x,
+                y,
+                bldg_name,
+                activity,
+                game_hour as i32,
+                crate::game::now_unix(),
+            );
+            let activity = activity_owned.as_str();
+            let mut existing = store.get_entity(def.id).unwrap();
             existing.kind = "npc".to_string();
-
             // 保留既有體力/精力/敏捷與鎂幣數值，避免整點被清空或強制覆蓋
             if existing.vit <= 0 {
                 existing.vit = 100;
@@ -1891,7 +1986,7 @@ pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
             existing.place_id = None;
             existing.display_title = def.display_title.to_string();
 
-            // 白晝與傍晚時段（6..=21）保護正典自主目標（荒野遠征、商隊行進、因果義務差事等），不被整點時辰重設打斷
+            // 白晝與傍晚時段（6..=21）保護正典自主目標（荒野遠征、商隊行進、因果義務差事等），不被整點時刻重設打斷
             let is_autonomous_active = (6..=21).contains(&game_hour)
                 && matches!(
                     existing.goal_kind().as_deref(),
@@ -1914,32 +2009,39 @@ pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
                 && (bldg_name == "三水口南街" || bldg_name == "三水口北街");
             let cur_coord = (existing.grid_x, existing.grid_y);
             if let (Some(cur_x), Some(cur_y)) = cur_coord {
-                let far_relocated = (cur_x - x).abs() + (cur_y - y).abs() > 40;
-                if (cur_x, cur_y) == (x, y) || is_on_duty_vendor || far_relocated {
-                    existing.grid_x = Some(x);
-                    existing.grid_y = Some(y);
+                if (cur_x, cur_y) == (tx, ty) || is_on_duty_vendor {
+                    existing.grid_x = Some(tx);
+                    existing.grid_y = Some(ty);
                     existing.current_activity = activity.to_string();
                     CANONICAL_NPC_TARGETS.write().remove(def.id);
-                    let _ = store.move_entity(def.id, &format!("grid:{x}:{y}"));
+                    let _ = store.move_entity(def.id, &format!("grid:{tx}:{ty}"));
                 } else {
                     // 不論日間夜間皆不瞬移，寫入執行期目標表由 advance_canonical_npcs_one_step 逐格走！
+                    let dest_bldg_name = grid
+                        .get(crate::grid::SquareCoord::new(tx, ty))
+                        .map(|c| c.name.as_str())
+                        .unwrap_or(bldg_name);
                     CANONICAL_NPC_TARGETS.write().insert(
                         def.id.to_string(),
-                        (x, y, bldg_name.to_string(), activity.to_string()),
+                        (tx, ty, dest_bldg_name.to_string(), activity.to_string()),
                     );
                 }
             } else {
-                existing.grid_x = Some(x);
-                existing.grid_y = Some(y);
+                existing.grid_x = Some(tx);
+                existing.grid_y = Some(ty);
                 existing.current_activity = activity.to_string();
-                let _ = store.move_entity(def.id, &format!("grid:{x}:{y}"));
+                let _ = store.move_entity(def.id, &format!("grid:{tx}:{ty}"));
             }
 
             // Prune stale broken/daily thoughts and provide fresh character-specific thought
             let now_ts = crate::game::now_unix();
             existing.thoughts.retain(|t| {
                 let f = t.flavor.as_deref().unwrap_or("");
-                !f.contains("鎂袋空了") && !f.contains("今日花用又見底")
+                !f.contains("鎂袋空了")
+                    && !f.contains("今日花用又見底")
+                    && !f.contains("記掛著「內室榻上熄燈安歇」")
+                    && !f.contains("記掛著『診所抓藥』")
+                    && !f.contains("記掛著『手頭差事』")
             });
             if existing.thoughts.is_empty() {
                 let init_flavor = initial_thought_for_npc(def.id, &def.display_title);
@@ -1949,14 +2051,6 @@ pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
                     8,
                     now_ts,
                     init_flavor,
-                );
-            } else {
-                crate::db::add_thought_to_entity_with_delta(
-                    &mut existing,
-                    crate::db::ThoughtSource::WorkDone,
-                    8,
-                    now_ts,
-                    format!("心裡記掛著「{}」，手頭沉穩踏實", activity),
                 );
             }
             crate::db::clean_and_recalc_entity_disposition(&mut existing, now_ts);
@@ -2020,7 +2114,9 @@ pub fn sync_canonical_white_tower_npcs(game_hour: i32) {
             let _ = store.move_entity(def.id, &format!("grid:{x}:{y}"));
         }
     }
-    store.ensure_all_household_entities_seeded();
+    if !HOUSEHOLD_ENTITIES_SEEDED_ONCE.swap(true, std::sync::atomic::Ordering::SeqCst) {
+        store.ensure_all_household_entities_seeded();
+    }
 }
 
 fn find_settlement_secondary_building<'a>(
@@ -2073,12 +2169,15 @@ fn step_canonical_npc_idles(grid: &crate::grid::SquareGrid) {
 
     for def in &CANONICAL_NPC_SCHEDULES {
         let id = def.id;
+        if def.display_title.contains("水輪") || def.display_title.contains("石磨") {
+            continue;
+        }
         if active_targets.contains(id) {
             CANONICAL_NPC_IDLE_TICKS.write().remove(id);
             continue;
         }
 
-        // 攤販業者由正典時辰表嚴格控管擺攤、備料、採買與返家時段，跳過隨機次級建築漫遊
+        // 攤販業者由正典時刻表嚴格控管擺攤、備料、採買與返家時段，跳過隨機次級建築漫遊
         if id.starts_with("wt_vendor_") || id == "wt_npc_ma_buxue" {
             let is_vending = if id.starts_with("wt_vendor_") {
                 true
@@ -2122,7 +2221,7 @@ fn step_canonical_npc_idles(grid: &crate::grid::SquareGrid) {
             };
 
             if let Some((gx, gy)) = ent_coord {
-                let cell_update = with_square_grid_mut(|g| {
+                let cell_update = with_square_grid_mut_in_memory(|g| {
                     if let Some(cell) = g.get_mut(SquareCoord::new(gx, gy)) {
                         for obj in &mut cell.objects {
                             if obj.quantity > 0
@@ -2230,12 +2329,8 @@ fn step_canonical_npc_idles(grid: &crate::grid::SquareGrid) {
 
             {
                 let mut s = store_arc.write();
+                crate::npc::causal_core::pay_from_settlement_treasury(&mut s, id, "文曜", 12);
                 if let Some(mut ent) = s.get_entity(id) {
-                    if harvested_name.is_some() {
-                        ent.magnesium = ent.magnesium.saturating_add(15);
-                    } else {
-                        ent.magnesium = ent.magnesium.saturating_add(12);
-                    }
                     crate::db::add_thought_to_entity_with_delta(
                         &mut ent,
                         crate::db::ThoughtSource::WorkDone,
@@ -2303,8 +2398,8 @@ fn step_canonical_npc_idles(grid: &crate::grid::SquareGrid) {
             // 目前正在次級目標或義務場所，停留結束後結清義務並走回原駐點
             {
                 let mut s = store_arc.write();
+                crate::npc::causal_core::pay_from_settlement_treasury(&mut s, id, "文曜", 12);
                 if let Some(mut ent) = s.get_entity(id) {
-                    ent.magnesium = ent.magnesium.saturating_add(12);
                     crate::db::clean_and_recalc_entity_disposition(&mut ent, crate::game::now_unix());
                     let ent_sync = ent.clone();
                     let _ = s.upsert_entity_full(ent);
@@ -2322,7 +2417,7 @@ fn step_canonical_npc_idles(grid: &crate::grid::SquareGrid) {
             }
         } else {
             // 目前正在原駐點
-            // 1. 若該人物為正典遠征/巡獵/商隊人物且時辰在日間（6..=20），啟動荒野巡獵或商隊遠征出巡
+            // 1. 若該人物為正典遠征/巡獵/商隊人物且時刻在日間（6..=20），啟動荒野巡獵或商隊遠征出巡
             if (6..=20).contains(&hour) && let Some(exp_def) = find_canonical_expedition(id) {
                 set_canonical_npc_goal(id, exp_def.goal_kind);
                 crate::store::open_active_npc_obligation(id, exp_def.obligation_kind, exp_def.obligation_desc);
@@ -2375,7 +2470,7 @@ fn step_canonical_npc_idles(grid: &crate::grid::SquareGrid) {
                     );
                 }
             } else {
-                let queries = ["食堂", "茶屋", "工坊", "商行", "聯運", "貨棧", "書肆"];
+                let queries = ["食堂", "茶屋", "工坊", "商行", "聯運", "貨棧", "書舍"];
                 let q_idx = ((h.wrapping_add(hour as u64)) as usize) % queries.len();
                 let query = queries[q_idx];
                 let secondary_cell = find_settlement_secondary_building(grid, (cx, cy), query)
@@ -2383,7 +2478,38 @@ fn step_canonical_npc_idles(grid: &crate::grid::SquareGrid) {
                         queries.iter().find_map(|q| find_settlement_secondary_building(grid, (cx, cy), q))
                     });
                 if let Some(sc) = secondary_cell {
-                    let act = if sc.name.contains("食堂") {
+                    let venue_obj = crate::grid::resolve_room_venue_object(&sc.name, "")
+                        .or_else(|| crate::grid::resolve_market_or_specialty_room_object(&sc.name, ""));
+                    let act = if let Some(v) = venue_obj {
+                        let vk = v.venue_kind;
+                        if vk.contains("食堂") || vk.contains("食肆") || vk.contains("餐") || vk.contains("麵") {
+                            "正在食堂用餐小憩並品嚐熱湯餐點"
+                        } else if vk.contains("茶") || vk.contains("旅社") || vk.contains("客") || vk.contains("酒") {
+                            "正在茶屋小憩並品嚐熱茶糕點"
+                        } else if vk.contains("商行") || vk.contains("聯運") || vk.contains("貨棧") || vk.contains("海事") || vk.contains("車馬") || vk.contains("市集") {
+                            "正在巡視貨棧物料與往來車馬商情"
+                        } else if vk.contains("工坊") || vk.contains("鍛造") || vk.contains("鐵") || vk.contains("木作") || vk.contains("石磨") || vk.contains("造船") || vk.contains("修船") || vk.contains("窯") {
+                            "正在察看工坊匠人營造進度與器物修檢"
+                        } else if vk.contains("醫館") || vk.contains("藥") || vk.contains("診所") {
+                            "正在醫館問診調息並檢視道地藥材"
+                        } else if vk.contains("浴") || vk.contains("溫泉") {
+                            "正在溫水浴場沐浴調息、舒緩筋骨"
+                        } else if vk.contains("巡防") || vk.contains("哨所") || vk.contains("武") {
+                            "正在巡防哨所察看周遭防務動向"
+                        } else if vk.contains("書") || vk.contains("講堂") || vk.contains("學") {
+                            "正在典籍書舍翻閱卷宗並觀摩研習"
+                        } else if sc.name.contains("食堂") {
+                            "正在食堂用餐小憩並品嚐熱湯餐點"
+                        } else if sc.name.contains("茶屋") || sc.name.contains("茶寮") {
+                            "正在茶屋小憩並品嚐熱茶糕點"
+                        } else if sc.name.contains("商行") || sc.name.contains("聯運") || sc.name.contains("貨棧") {
+                            "正在巡視貨棧物料與往來車馬商情"
+                        } else if sc.name.contains("工坊") || sc.name.contains("鍛造") {
+                            "正在察看工坊匠人營造進度與器物修檢"
+                        } else {
+                            "正在周遭街坊中場巡視並察看市面商情"
+                        }
+                    } else if sc.name.contains("食堂") {
                         "正在食堂用餐小憩並品嚐熱湯餐點"
                     } else if sc.name.contains("茶屋") || sc.name.contains("茶寮") {
                         "正在茶屋小憩並品嚐熱茶糕點"
@@ -2479,18 +2605,30 @@ pub fn advance_canonical_npcs_one_step() -> Vec<(String, String, String)> {
         };
 
         if (cur_x, cur_y) == (target_x, target_y) {
-            {
+            let hour = crate::store::current_game_hour();
+            let final_act = {
                 let mut store = store_arc.write();
                 if let Some(ent) = store.entities.get_mut(&id) {
                     ent.target_x = None;
                     ent.target_y = None;
                     ent.current_activity = target_activity.clone();
                 }
-            }
+                let (_, _, act) = crate::pg::living_world::step_canonical_resident_human_life_loop(
+                    &mut store,
+                    &id,
+                    target_x,
+                    target_y,
+                    &bldg_name,
+                    &target_activity,
+                    hour as i32,
+                    crate::game::now_unix(),
+                );
+                act
+            };
             if crate::pg::writer::is_active() {
                 crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityActivity {
                     entity_id: id.clone(),
-                    activity: target_activity.clone(),
+                    activity: final_act,
                 });
             }
             finished.push(id);
@@ -2519,34 +2657,71 @@ pub fn advance_canonical_npcs_one_step() -> Vec<(String, String, String)> {
                 finished.push(id.clone());
             }
             target_activity.clone()
+        } else if target_activity.contains("前往")
+            || target_activity.contains("返回")
+            || target_activity.contains("趕往")
+            || target_activity.contains("步向")
+        {
+            target_activity.clone()
         } else if id.starts_with("wt_vendor_") {
+            let display_bldg_name = bldg_name.replace("大圳頭・西南原", "大圳頭・圳頭").replace("西門外坊・西南原", "西門外坊・西門").replace("西南原", "大圳頭").replace("防爆防風", "防風");
             if bldg_name.contains("街") {
-                format!("正推著攤車前往【{}】準備擺攤營業", bldg_name)
+                format!("正推著攤車前往【{}】準備擺攤營業", display_bldg_name)
             } else {
-                format!("已收攤，正推著攤車返回【{}】歇息", bldg_name)
+                format!("已收攤，正推著攤車返回【{}】歇息", display_bldg_name)
             }
         } else if (hour >= 22 || hour < 5) && !target_activity.contains("值守") {
-            format!("正踏著夜色沿街返回【{}】準備安歇", bldg_name)
+            let display_bldg_name = bldg_name.replace("大圳頭・西南原", "大圳頭・圳頭").replace("西門外坊・西南原", "西門外坊・西門").replace("西南原", "大圳頭").replace("防爆防風", "防風");
+            format!("正踏著夜色沿街返回【{}】準備安歇", display_bldg_name)
         } else {
+            let display_bldg_name = bldg_name.replace("大圳頭・西南原", "大圳頭・圳頭").replace("西門外坊・西南原", "西門外坊・西門").replace("西南原", "大圳頭").replace("防爆防風", "防風");
             format!(
-                "正步行前往{}，準備{}",
-                bldg_name,
+                "正動身前往{}，準備{}",
+                display_bldg_name,
                 target_activity.trim_start_matches("正在")
             )
         };
 
         // 短暫取得 store_arc.write() 只更新記憶體中的 grid_x, grid_y, current_activity 與 entity_rooms
+        let mut final_activity = new_activity;
+        let mut arrived_player = false;
         {
             let mut store = store_arc.write();
+            let is_player = store
+                .entities
+                .get(&id)
+                .map(|e| e.kind == "player" || e.kind == "Player")
+                .unwrap_or(false);
             if let Some(ent) = store.entities.get_mut(&id) {
                 ent.grid_x = Some(nx);
                 ent.grid_y = Some(ny);
                 ent.target_x = if (nx, ny) == (target_x, target_y) { None } else { Some(target_x) };
                 ent.target_y = if (nx, ny) == (target_x, target_y) { None } else { Some(target_y) };
                 ent.place_id = Some(place_id.clone());
-                ent.current_activity = new_activity.clone();
+                ent.current_activity = final_activity.clone();
             }
             store.entity_rooms.insert(id.clone(), to_room_id.clone());
+            if (nx, ny) == (target_x, target_y) {
+                if !is_player {
+                    let (_, _, act) = crate::pg::living_world::step_canonical_resident_human_life_loop(
+                        &mut store,
+                        &id,
+                        target_x,
+                        target_y,
+                        &bldg_name,
+                        &target_activity,
+                        hour as i32,
+                        crate::game::now_unix(),
+                    );
+                    final_activity = act;
+                } else {
+                    arrived_player = true;
+                }
+            }
+        }
+
+        if arrived_player {
+            let _ = crate::npc::causal_core::step_offline_player_once(&id, crate::game::now_unix());
         }
 
         if crate::pg::writer::is_active() {
@@ -2559,7 +2734,7 @@ pub fn advance_canonical_npcs_one_step() -> Vec<(String, String, String)> {
             });
             crate::pg::writer::submit(crate::pg::writer::WriteOp::SetEntityActivity {
                 entity_id: id.clone(),
-                activity: new_activity,
+                activity: final_activity,
             });
         }
 
@@ -2585,7 +2760,7 @@ pub fn resolve_settlement_room_coord<'a>(
 ) -> Option<&'a crate::grid::GridCell> {
     // 0. 核心街道與橋樑座標之 O(1) 直查
     match bldg_query {
-        "中心樞紐石橋" => return grid.get(crate::grid::SquareCoord::new(0, 0)),
+        "三水匯流大石橋" | "中心樞紐石橋" => return grid.get(crate::grid::SquareCoord::new(0, 0)),
         "三水口北街" => return grid.get(crate::grid::SquareCoord::new(0, 1)),
         "三水口南街" => return grid.get(crate::grid::SquareCoord::new(0, -1)),
         "三水東街" | "三水口東街" => return grid.get(crate::grid::SquareCoord::new(1, 0)),
@@ -2663,14 +2838,18 @@ pub fn resolve_settlement_room_coord<'a>(
         &["巧木居所", "傢俱坊", "巧木"]
     } else if bldg_query.contains("雲錦織造") || bldg_query.contains("雲錦") {
         &["雲錦織造", "服飾坊", "雲錦"]
-    } else if bldg_query.contains("百工商算") || bldg_query.contains("商算") || bldg_query.contains("商務會計") {
-        &["商務會計教室", "商算學舍", "百工商算", "算學", "會計"]
+    } else if bldg_query.contains("百工商算") || bldg_query.contains("商算") {
+        &["商算學舍", "百工商算", "算學"]
     } else if bldg_query.contains("習武堂") || bldg_query.contains("試招") {
         &["習武堂", "試招院", "試招"]
-    } else if bldg_query.contains("中心樞紐石橋") || bldg_query.contains("樞紐橋") {
-        &["中心樞紐石橋", "中心樞紐橋", "樞紐橋"]
+    } else if bldg_query.contains("三水匯流大石橋") || bldg_query.contains("中心樞紐石橋") || bldg_query.contains("樞紐橋") {
+        &["三水匯流大石橋", "中心樞紐石橋", "中心樞紐橋", "樞紐橋"]
     } else if bldg_query.contains("川流貨船大埠") || bldg_query.contains("貨船大埠") || bldg_query.contains("貨運碼頭") {
         &["川流貨船大埠", "三水口貨運碼頭", "貨運碼頭", "碼頭匯兌分號"]
+    } else if bldg_query.contains("農牧總社") {
+        &["大圳農牧總社", "農牧總社"]
+    } else if bldg_query.contains("農具與百工坊") {
+        &["大圳農具與百工坊", "農具與百工坊"]
     } else if (bldg_query.contains("三水口石砌住宅") || bldg_query.contains("三水口")) && is_residence_query {
         &[
             "票號總管居",
@@ -2695,9 +2874,7 @@ pub fn resolve_settlement_room_coord<'a>(
         ]
     } else if (bldg_query.contains("講堂街・溫家宅院") || bldg_query.contains("溫家宅院") || bldg_query.contains("講堂街")) && is_residence_query {
         &[
-            "陸老師宿舍",
             "蒙學陸先生舍",
-            "秦氏會計事務所",
             "秦氏算學居",
             "陸氏清雅書齋",
             "溫家藥圃居",
@@ -2725,9 +2902,7 @@ pub fn resolve_settlement_room_coord<'a>(
             "匠居",
             "宗宅",
             "書齋",
-            "會計事務所",
             "算學居",
-            "老師宿舍",
             "先生舍",
             "校勘齋",
             "墨香居",

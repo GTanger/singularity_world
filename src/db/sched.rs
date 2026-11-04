@@ -5,7 +5,7 @@ use crate::store;
 use super::ErrNoStore;
 use super::npc_display::{NpcSchedule, get_npc_display_label_at_hour};
 
-/// 排班目標房間與是否為上班地（對齊既有 `ScheduleTarget`）。
+/// 排班目標房間與是否為當值處所（對齊既有 `ScheduleTarget`）。
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScheduleTarget {
     pub room: String,
@@ -27,7 +27,7 @@ pub fn get_schedule_target_room(entity_id: &str, game_hour: i32) -> Option<Strin
     get_schedule_target(entity_id, game_hour).map(|t| t.room)
 }
 
-/// 排班目標與是否為上班地（對齊既有 `GetScheduleTarget`）。
+/// 排班目標與是否為當值處所（對齊既有 `GetScheduleTarget`）。
 #[must_use]
 pub fn get_schedule_target(entity_id: &str, game_hour: i32) -> Option<ScheduleTarget> {
     let arc = store::get_store()?;

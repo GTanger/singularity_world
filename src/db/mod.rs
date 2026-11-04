@@ -12,7 +12,7 @@ mod favorability;
 mod grid_world;
 mod identity;
 pub mod inventory;
-pub use inventory::ItemDefBrief;
+pub use inventory::{ItemDefBrief, fallback_item_name};
 mod journey;
 mod lexicon;
 mod npc_display;
@@ -99,7 +99,7 @@ pub use identity::build_identity;
 pub use inventory::{
     active_trade_inventory_total_qty, add_item, add_to_inventory, clear_equipment_slot, default_trade_ask_mg,
     get_inventory, get_item_def, get_item_name, inventory_has_item, inventory_has_qty, inventory_total_qty,
-    inventory_weight, item_is_tradable, mirror_market_trade_settlement, pick_npc_trade_offer,
+    inventory_weight, item_is_tradable, mirror_market_trade_settlement, pick_entity_trade_offer, pick_npc_trade_offer,
     remove_from_inventory, settle_inventory_trade, settle_npc_inventory_sale, trade_floor_from_ask,
     update_equipment_slot,
 };

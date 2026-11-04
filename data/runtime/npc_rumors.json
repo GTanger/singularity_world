@@ -1,3 +1,184 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "id": "weather|wt-c-sacred-tower",
+      "text": "聽聞半嶺鎮一帶風勢轉勁，過路行旅多半收緊了行裝、留神腳下。",
+      "zone": "wt-c-sacred-tower",
+      "source": "climate",
+      "source_score": 3,
+      "weight": 1,
+      "mention_count": 1,
+      "last_used_at": 1793752173,
+      "updated_at": 1793751295,
+      "expires_at": 1793753095
+    },
+    {
+      "id": "weather|wt-n-sacred-mountain",
+      "text": "聽聞北嶺腳一帶連綿梅雨籠罩，天候潮濕低迷，往來行旅得多留神腳下。",
+      "zone": "wt-n-sacred-mountain",
+      "source": "climate",
+      "source_score": 3,
+      "weight": 1,
+      "mention_count": 2,
+      "last_used_at": 1793752737,
+      "updated_at": 1793751661,
+      "expires_at": 1793753461
+    },
+    {
+      "id": "world_seed|stranded_cargo",
+      "text": "聽說蕭芷瑜的貨物因路況受阻滯留在天然港灣道・古道驛路，急需設法轉運。",
+      "zone": "天然港灣道",
+      "source": "living_world",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1793750265,
+      "expires_at": 1793753865
+    },
+    {
+      "id": "world_seed|restock_goods",
+      "text": "有人瞧見韓映雪行經長風草甸・野花草甸趕路，說是鋪內存貨見底，正趕往鄰鎮市集採辦補倉。",
+      "zone": "長風草甸",
+      "source": "living_world",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1793752069,
+      "expires_at": 1793755669
+    },
+    {
+      "id": "grid:-236:160|西麓林道|赤霞林秋日採收楓糖樹脂與鮮山果",
+      "text": "赤霞林秋日採收楓糖樹脂與鮮山果",
+      "room_id": "grid:-236:160",
+      "zone": "西麓林道",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "updated_at": 1793751464,
+      "expires_at": 1793755064
+    },
+    {
+      "id": "weather|wt-c-southwest-plain",
+      "text": "聽聞大圳頭一帶開始降下陣雨，道路變得濕滑泥濘，往來行旅得多留神腳下。",
+      "zone": "wt-c-southwest-plain",
+      "source": "climate",
+      "source_score": 3,
+      "weight": 1,
+      "mention_count": 1,
+      "last_used_at": 1793752509,
+      "updated_at": 1793751722,
+      "expires_at": 1793753522
+    },
+    {
+      "id": "grid:-361:93|風櫃尾|落雁灘退潮拾取夜光貝母與鹽晶石",
+      "text": "落雁灘退潮拾取夜光貝母與鹽晶石",
+      "room_id": "grid:-361:93",
+      "zone": "風櫃尾",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "mention_count": 3,
+      "last_used_at": 1793752382,
+      "updated_at": 1793749780,
+      "expires_at": 1793753380
+    },
+    {
+      "id": "grid:0:-222|南哨|外澳領航公會海圖繪製與六分儀實測",
+      "text": "外澳領航公會海圖繪製與六分儀實測",
+      "room_id": "grid:0:-222",
+      "zone": "南哨",
+      "source": "dialogue_anchor",
+      "source_score": 1,
+      "weight": 1,
+      "mention_count": 1,
+      "last_used_at": 1793752030,
+      "updated_at": 1793750376,
+      "expires_at": 1793753976
+    },
+    {
+      "id": "weather|wt-w-windship-cape",
+      "text": "聽聞風舶角一帶雨勢漸歇、天色放晴，道路已好走許多，往來商旅也跟著加快了腳程。",
+      "zone": "wt-w-windship-cape",
+      "source": "climate",
+      "source_score": 3,
+      "weight": 1,
+      "mention_count": 1,
+      "last_used_at": 1793751900,
+      "updated_at": 1793751418,
+      "expires_at": 1793753218
+    },
+    {
+      "id": "weather|wt-c-wenyao",
+      "text": "聽聞文曜一帶風勢轉勁，過路行旅多半收緊了行裝、留神腳下。",
+      "zone": "wt-c-wenyao",
+      "source": "climate",
+      "source_score": 3,
+      "weight": 1,
+      "mention_count": 1,
+      "last_used_at": 1793751996,
+      "updated_at": 1793751479,
+      "expires_at": 1793753279
+    },
+    {
+      "id": "world_seed|market_delivery",
+      "text": "有人瞧見白品妤押著貨擔往文曜・市集鋪面一帶趕路，說是趕著交割物產。",
+      "zone": "文曜",
+      "source": "living_world",
+      "source_score": 2,
+      "weight": 3,
+      "updated_at": 1793752670,
+      "expires_at": 1793756270
+    },
+    {
+      "id": "weather|wt-w-windship-island",
+      "text": "聽聞風舶嶼一帶連綿梅雨籠罩，天候潮濕低迷，往來行旅得多留神腳下。",
+      "zone": "wt-w-windship-island",
+      "source": "climate",
+      "source_score": 3,
+      "weight": 4,
+      "updated_at": 1793752336,
+      "expires_at": 1793754136
+    },
+    {
+      "id": "world_seed|repair_tool",
+      "text": "聽聞方美玲在文曜・街坊工坊忙於整修受損器物，正尋求可用資材。",
+      "zone": "文曜",
+      "source": "living_world",
+      "source_score": 2,
+      "weight": 1,
+      "updated_at": 1793750867,
+      "expires_at": 1793754467
+    },
+    {
+      "id": "weather|wt-s-south-sentinel",
+      "text": "聽聞南哨一帶開始降下陣雨，道路變得濕滑泥濘，往來行旅得多留神腳下。",
+      "zone": "wt-s-south-sentinel",
+      "source": "climate",
+      "source_score": 3,
+      "weight": 1,
+      "mention_count": 1,
+      "last_used_at": 1793752030,
+      "updated_at": 1793751540,
+      "expires_at": 1793753340
+    },
+    {
+      "id": "eco|pulse|2003",
+      "text": "聽說租鋪成本漲了，幾家小攤開始提早收攤。",
+      "source": "economy",
+      "source_score": 2,
+      "weight": 1,
+      "mention_count": 8,
+      "last_used_at": 1793752737,
+      "updated_at": 1793749686,
+      "expires_at": 1793755086
+    },
+    {
+      "id": "weather|wt-s-qinglong-pass",
+      "text": "聽聞下營一帶連綿梅雨籠罩，天候潮濕低迷，往來行旅得多留神腳下。",
+      "zone": "wt-s-qinglong-pass",
+      "source": "climate",
+      "source_score": 3,
+      "weight": 1,
+      "updated_at": 1793751418,
+      "expires_at": 1793753218
+    }
+  ]
 }

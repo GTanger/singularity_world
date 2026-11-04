@@ -111,20 +111,20 @@ fn validate_water_anchor(anchor: &AnchorMapping) -> Result<()> {
     Ok(())
 }
 
-/// 驗證白塔、青脊山、西南原與黑沼林錨點的必要物理語義；輸入只讀。
+/// 驗證白塔、青脊山、大圳頭與水尾澤錨點的必要物理語義；輸入只讀。
 fn validate_anchor_semantics(anchors: &BTreeMap<&str, &AnchorMapping>) -> Result<()> {
-    // 河道是否穿過黑沼林由完整主要水系路徑驗證，不以錨點單格的 river id 代替。
+    // 河道是否穿過水尾澤由完整主要水系路徑驗證，不以錨點單格的 river id 代替。
     ensure!(anchors["wt-n-sacred-mountain"].height >= 70, "白塔必須居高");
     ensure!(anchors["wt-e-green-ridge"].height >= 50, "青脊山高度不足");
     ensure!(anchors["wt-c-wenyao"].height >= 38, "文曜古河階高度不足");
     ensure!(anchors["wt-c-wenyao"].river == 0, "文曜不可壓在河道單格上");
     ensure!(
         anchors["wt-c-southwest-plain"].biome_name == "Grassland",
-        "西南原應為草地"
+        "大圳頭應為草地"
     );
     ensure!(
         anchors["wt-s-black-marsh"].biome_name == "Wetland",
-        "黑沼林應為濕地"
+        "水尾澤應為濕地"
     );
     let south_sentinel = anchors["wt-s-south-sentinel"];
     ensure!(south_sentinel.height >= 34, "南哨穩定乾地高度不足");

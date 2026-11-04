@@ -357,7 +357,7 @@ pub fn conservation_status(
         balances.entry(row.get(0)).or_default().consumed = row.get(1);
     }
     for row in client.query(
-        "SELECT inventory FROM entities WHERE kind IN ('npc','player')",
+        "SELECT inventory FROM entities WHERE id LIKE 'npc_%'",
         &[],
     )? {
         let raw: String = row.get(0);
@@ -414,7 +414,7 @@ pub fn conservation_status(
             .query_one(
                 "SELECT COUNT(*)::bigint FROM world_trade_ledger t
                  JOIN world_market_adoptions a ON a.runtime_id=$1
-                 WHERE t.occurred_at>=a.activated_at AND t.item_id NOT LIKE 'wt-good-%'",
+                 WHERE t.occurred_at>=a.activated_at AND NOT (t.item_id LIKE 'wt-good-%' OR t.item_id LIKE 'wt_cat_%' OR t.item_id LIKE 'craft_%' OR t.item_id LIKE 'food_%')",
                 &[&crate::world::runtime_world::WHITE_TOWER_RUNTIME_ID],
             )?
             .get(0),
@@ -472,7 +472,7 @@ pub fn offer_for_operator(
         place_id: row.get(1),
         source_good_id: row.get(2),
         item_id: row.get(3),
-        display_name: row.get(4),
+        display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(4)).to_string(),
         source_unit: row.get(5),
         quantity: row.get(6),
         target_quantity: row.get(7),
@@ -539,13 +539,14 @@ fn upsert_item_definitions(
     {
         let item_id = runtime_good_item_id(good.source_good_id);
         let weight = if is_portable(good) { 1.0_f64 } else { 25.0_f64 };
+        let display_name = super::living_world::peninsula_good_display_name(&good.display_name);
         let description = format!(
             "白塔半島市場流通的{}；每份沿用既有市場單位結算。",
-            good.display_name
+            display_name
         );
         client.execute(
             &statement,
-            &[&item_id, &good.display_name, &weight, &description],
+            &[&item_id, &display_name, &weight, &description],
         )?;
     }
     Ok(())

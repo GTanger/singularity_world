@@ -35,6 +35,24 @@ pub fn is_runtime_good_item(item_id: &str) -> bool {
     source_good_id_from_item_id(item_id).is_some_and(|id| id != 31)
 }
 
+static AUTHOR_GOOD_NAMES: std::sync::LazyLock<BTreeMap<u32, String>> =
+    std::sync::LazyLock::new(|| {
+        serde_json::from_str::<WhiteTowerAuthorEconomy>(WHITE_TOWER_AUTHOR_ECONOMY_JSON)
+            .map(|ec| {
+                ec.goods
+                    .into_iter()
+                    .map(|g| (g.source_good_id, g.display_name))
+                    .collect()
+            })
+            .unwrap_or_default()
+    });
+
+#[must_use]
+pub fn runtime_good_display_name(item_id: &str) -> Option<&'static str> {
+    let gid = source_good_id_from_item_id(item_id)?;
+    AUTHOR_GOOD_NAMES.get(&gid).map(|s| s.as_str())
+}
+
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct AuthorGood {
     pub source_good_id: u32,

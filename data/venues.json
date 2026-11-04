@@ -3,7 +3,7 @@
   "venues": [
     {
       "id": "venue_life_inn",
-      "name": "浮生客棧",
+      "name": "浮生旅社",
       "max_staff": 4,
       "room_ids": [
         "life_garden",

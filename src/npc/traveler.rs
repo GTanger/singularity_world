@@ -349,7 +349,7 @@ fn fallback_intents(original: &Intent, ctx: &super::decision::DecisionContext) -
                 });
             }
         }
-        // 社交找不到酒館 → 閒晃
+        // 社交找不到飯館 → 閒晃
         Socialize => {}
         // 乞討找不到地方 → 閒晃
         Beg => {}

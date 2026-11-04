@@ -234,9 +234,11 @@ pub fn material_item_defs() -> Vec<Item> {
 #[must_use]
 pub fn infer_origin_settlement(origin_text: &str) -> &'static str {
     for s in [
-        "霜林口", "紅土崁", "三號坑口", "青籠關", "半嶺", "分家巷", "水尾寮",
-        "大圳頭", "牛埔", "烏石鼻", "鹽田澳", "風舶角", "風舶嶼", "北嶺腳",
-        "老堰頭", "風櫃尾", "白茫洲", "南哨", "文曜", "黑石灣", "赤石坡", "長風草甸", "翠冠林",
+        "霜林口", "紅土崁", "三號坑口", "下營", "青籠關", "半嶺鎮", "半嶺", "分家巷", "水尾寮",
+        "大圳頭", "牛埔", "烏石鼻", "風舶角", "風舶嶼", "北嶺腳",
+        "老堰頭", "風櫃尾", "白茫洲", "南哨", "文曜", "黑石灣", "赤石坡", "長風草甸", "翠冠巨木林", "青竹坪",
+        "古河巨木林", "落日岬", "驚濤岩岸", "巨藻淺灣", "清泉溪谷", "北坡雲杉林", "西麓林道",
+        "淺澤泥口", "貼山深潭", "西嶺礦谷", "東海峭壁", "雲腰雪林", "白塔雪巔",
     ] {
         if origin_text.contains(s) {
             return s;
@@ -264,7 +266,32 @@ pub fn normalize_legacy_inventory_json(raw: &str) -> Option<String> {
         if row.qty <= 0 || row.item_id.is_empty() {
             continue;
         }
-        let mapped = legacy_item_remap(&row.item_id).unwrap_or(row.item_id.as_str());
+        if row.item_id.starts_with("crystal_") {
+            changed = true;
+            continue;
+        }
+        let base_id = if row.item_id.starts_with("mut_blank_manual")
+            || row.item_id.starts_with("mut_wt_blank_manual")
+        {
+            "blank_manual"
+        } else if row.item_id.starts_with("mut_craft_meridian_salve") {
+            "craft_meridian_salve"
+        } else if row.item_id.starts_with("mut_craft_pine_soot_ink") {
+            "craft_pine_soot_ink"
+        } else if row.item_id.starts_with("mut_craft_pine_torch") {
+            "craft_pine_torch"
+        } else if row.item_id.starts_with("mut_craft_bamboo_oil_umbrella") {
+            "craft_bamboo_oil_umbrella"
+        } else if row.item_id.starts_with("mut_craft_camphor_storage_box") {
+            "craft_camphor_storage_box"
+        } else if row.item_id.starts_with("mut_craft_wooden_tool_handle") {
+            "craft_wooden_tool_handle"
+        } else if row.item_id.starts_with("mut_wt_cat_0793") {
+            "wt_cat_0793"
+        } else {
+            row.item_id.as_str()
+        };
+        let mapped = legacy_item_remap(base_id).unwrap_or(base_id);
         if mapped != row.item_id {
             changed = true;
         }
@@ -539,5 +566,8 @@ mod tests {
             r#"[{"item_id":"wild_herb","qty":2},{"item_id":"mat_north_bank_reed_bundle","qty":1}]"#;
         let normalized = normalize_legacy_inventory_json(raw).expect("legacy remap");
         assert_eq!(normalized, r#"[{"item_id":"mat_reed_bundle","qty":3}]"#);
+        let raw_mut = r#"[{"item_id":"mut_blank_manual_atk_1","qty":1}]"#;
+        let norm_mut = normalize_legacy_inventory_json(raw_mut).expect("mut_blank_manual normalize");
+        assert_eq!(norm_mut, r#"[{"item_id":"blank_manual","qty":1}]"#);
     }
 }

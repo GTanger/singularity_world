@@ -37,9 +37,21 @@ pub fn npc_street_sell_one(entity_id: &str, room_id: &str, at: i64) -> bool {
         .map(|d| d.name)
         .filter(|name| !name.is_empty())
         .unwrap_or(item_id);
+    let place_name = crate::db::get_room_name(&settlement.place_id)
+        .ok()
+        .filter(|n| !n.is_empty() && !n.starts_with("grid:") && !n.starts_with("wt-physical-"))
+        .unwrap_or_else(|| "市集".to_string());
+    let buyer_name = crate::store::get_store()
+        .and_then(|s| {
+            s.read()
+                .entities
+                .get(&settlement.buyer.entity_id)
+                .map(|e| crate::store::resolve_npc_person_name(&e.id, &e.display_title, None))
+        })
+        .filter(|n| !n.is_empty() && n != "陌生人")
+        .unwrap_or_else(|| "街坊買客".to_string());
     let payload = format!(
-        "在{}把{item_name}賣給{}，實收{mag}鎂（交易 {}）",
-        settlement.place_id, settlement.buyer.entity_id, settlement.trade_id
+        "在{place_name}把{item_name}賣給{buyer_name}，實收{mag}鎂"
     );
     log_npc_event(at, entity_id, EVT_TRADE, &payload);
     let _ = add_thought(entity_id, ThoughtSource::Trade);

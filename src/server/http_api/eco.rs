@@ -43,6 +43,29 @@ struct EcoEntity {
     lineage: Vec<String>,
 }
 
+/// 住民因果思緒與決策選項條目（對應 /api/eco/npc-thoughts）
+#[derive(Serialize)]
+pub struct NpcThoughtEntry {
+    pub id: String,
+    pub name: String,
+    pub title: String,
+    pub settlement: String,
+    pub activity: String,
+    pub thought: String,
+    pub magnesium: i32,
+    pub decision_image_code: String,
+    pub eligible_option_count: u8,
+    pub chosen_action_code: String,
+    pub active_need: String,
+    pub image_decision: String,
+    pub situated_action: String,
+    pub carryover_note: String,
+    pub stress: u8,
+    pub time_scale_mark: String,
+    pub belief_summary: String,
+    pub latest_ripple: Option<crate::npc::causal_core::WorldRippleFact>,
+}
+
 #[derive(Serialize)]
 struct EcoSettlementPulse {
     name: String,
@@ -63,6 +86,9 @@ struct EcoPulseResponse {
     explicit_cells: usize,
     settlements: Vec<EcoSettlementPulse>,
     hunting_zones: Vec<EcoHuntingZonePulse>,
+    pub active_ripples_count: usize,
+    pub active_ripples: Vec<crate::npc::causal_core::WorldRippleFact>,
+    pub stranded_cargo_orders: Vec<crate::npc::causal_core::StrandedCargoOrder>,
 }
 
 trait TerrainExt {
@@ -86,12 +112,19 @@ impl CellExt for crate::grid::GridCell {
 }
 
 fn sanitize_eco_activity(act: &str) -> String {
-    let mut result = String::with_capacity(act.len());
-    let mut chars = act.char_indices().peekable();
+    let normalized = act
+        .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
+        .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
+        .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
+        .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
+        .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
+        .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
+    let mut result = String::with_capacity(normalized.len());
+    let mut chars = normalized.char_indices().peekable();
     while let Some((idx, ch)) = chars.next() {
         if ch == '（' || ch == '(' {
             let closer = if ch == '（' { '）' } else { ')' };
-            let rest = &act[idx..];
+            let rest = &normalized[idx..];
             if let Some(close_offset) = rest.find(closer) {
                 let inside = &rest[..close_offset + closer.len_utf8()];
                 if inside.contains("側 · ")
@@ -196,6 +229,7 @@ fn derive_eco_inner_thought(
     title: &str,
     activity: &str,
     hunting_party: &str,
+    effective_mg: i32,
 ) -> String {
     if let Some(last) = e.thoughts.last()
         && let Some(flav) = last.flavor.as_deref()
@@ -206,39 +240,277 @@ fn derive_eco_inner_thought(
         }
     }
     let seed = e.soul_seed.unwrap_or(0).unsigned_abs();
-    if !hunting_party.is_empty() {
-        if hunting_party.contains("合圍") || hunting_party.contains("合擊") {
-            "盯緊山海獸蹤與合社弟兄手勢，四面收網切莫放跑了這頭獵物".to_string()
-        } else if hunting_party.contains("交割") {
-            "盤算著這趟獵獲到市集交割分得鎂幣後，添置些粗鹽新米再與弟兄痛飲".to_string()
-        } else {
-            "擦拭隨身獵刃與山豬牙號角，等候合社夥伴聚齊便拔營入山尋跡".to_string()
-        }
-    } else if title.contains("入山百工") || activity.contains("採") || activity.contains("伐") {
-        match seed % 3 {
-            0 => "留神腳下山徑坡坎，趁暮色四合前將這批山林原材捆紮妥當".to_string(),
-            1 => "察看山頭雲氣變化，盤算著收工後將採得之物送往鄰近聚落交割".to_string(),
-            _ => "掂量背簍分量，心想今日山海氣脈充沛，收成色澤比往日更佳".to_string(),
-        }
-    } else if title.contains("古道行旅") || activity.contains("押貨") || activity.contains("挑夫") {
-        match seed % 3 {
-            0 => "步履穩健踏過古道石階，心念這批山海貨品須準時送抵前頭市鎮".to_string(),
-            1 => "留神古道兩側林莽動靜，盤算著到前頭聚落歇腳換口熱茶".to_string(),
-            _ => "默算南北聚落行情，心想這趟押運回程再捎些海鹽與百工鐵器".to_string(),
-        }
-    } else {
-        match seed % 6 {
-            0 => "心念手頭活計火候，盤算著忙完這陣去街口食堂嚐碗熱湯".to_string(),
-            1 => "撫過隨身器物刃口，暗忖得空該去活水磨刀石上細細推磨一番".to_string(),
-            2 => "思量著家戶米缸與柴火存量，待市集獵團歸來便去添置些鮮肉".to_string(),
-            3 => "調勻胸中吐納內息，覺察今日四肢百骸氣機流轉頗為順暢".to_string(),
-            4 => "記掛著鄰里街坊託付的活計，心想做人處事當講求信義與手藝".to_string(),
-            _ => "望向遠處山海雲霞，盤算著明日早起再把門前器物拾掇齊整".to_string(),
-        }
-    }
+    let role = format!("{} {}", title, e.display_title);
+    let settlement = title.split('・').next().unwrap_or("文曜");
+    crate::npc::causal_core::render_somatic_10layer_thought(
+        &e.id,
+        &role,
+        settlement,
+        seed,
+        activity,
+        "",
+        "山海長息",
+        &[],
+        hunting_party,
+        effective_mg,
+    )
 }
 
-/// 取得全城地圖數據（柵格化）
+/// 取得全島住民因果思緒與決策選項明細（/api/eco/npc-thoughts）
+pub async fn handle_eco_npc_thoughts() -> impl IntoResponse {
+    let Some(st_arc) = store::get_store() else {
+        return Json(Vec::<NpcThoughtEntry>::new()).into_response();
+    };
+    crate::npc::causal_core::ensure_circular_economy_normalized_if_needed();
+    let raw_rows: Vec<(store::Entity, Option<String>, Option<String>)> = {
+        let st = st_arc.read();
+        st.entities
+            .values()
+            .filter_map(|e| {
+                if e.kind != "npc" || e.vit <= 0 {
+                    return None;
+                }
+                let primary_id = extract_primary_slot_id(&e.equipment_slots);
+                let store_item_name = primary_id
+                    .as_deref()
+                    .and_then(|iid| st.get_item(iid).map(|it| it.name.clone()));
+                Some((e.clone(), primary_id, store_item_name))
+            })
+            .collect()
+    };
+
+    let live_acts: std::collections::HashMap<String, (String, String)> = {
+        let live_states = store::LIVE_NPC_GRID_STATES.read();
+        live_states
+            .iter()
+            .map(|(k, v)| (k.clone(), (v.current_activity(), v.dest_name.clone())))
+            .collect()
+    };
+
+    let mut thoughts: Vec<NpcThoughtEntry> = Vec::with_capacity(raw_rows.len());
+
+    for (e, _primary_id, _store_item_name) in raw_rows {
+        let non_empty_title = if e.display_title.trim().is_empty() {
+            "住民"
+        } else {
+            e.display_title.as_str()
+        };
+        let non_empty_gender = if e.gender.trim().is_empty() {
+            "M"
+        } else {
+            e.gender.as_str()
+        };
+        let person = store::resolve_npc_person_name(&e.id, non_empty_title, Some(non_empty_gender));
+        let role_raw = store::npc_persistent_role_label(&e.id, non_empty_title);
+        let role_clean = role_raw
+            .split(['|', '｜'])
+            .next()
+            .unwrap_or(&role_raw)
+            .trim()
+            .to_string();
+        let final_title = if role_clean != person {
+            role_clean
+        } else {
+            String::new()
+        };
+
+        let slot = store::wenyao_household_slot_for(&e.id);
+        let role = if !e.id.starts_with("npc_") && !e.display_title.trim().is_empty() {
+            e.display_title.clone()
+        } else {
+            format!("{} {}", slot.brief_tag, e.display_title)
+        };
+        let settlement = store::canonical_npc_macro_settlement(&e.id, &e.display_title)
+            .unwrap_or_else(|| store::normalize_household_home_settlement(slot.home_name))
+            .to_string();
+
+        let (raw_act, live_dest_name) = if let Some((act, dname)) = live_acts.get(&e.id) {
+            (act.clone(), dname.clone())
+        } else {
+            (e.current_activity.clone(), slot.work_name.to_string())
+        };
+        let res_seed = crate::npc::causal_core::deterministic_resident_seed(&e.id, e.soul_seed);
+        let eff_mg = e.magnesium;
+        let mut cstate = crate::npc::causal_core::get_or_init_causal_state(
+            &e.id,
+            &role,
+            &settlement,
+            res_seed,
+        );
+        crate::npc::causal_core::sync_causal_state_with_magnesium(&mut cstate, eff_mg, res_seed);
+        let cleaned_raw_owned = raw_act
+            .trim()
+            .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
+            .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
+            .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
+            .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
+            .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
+            .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
+        let cleaned_raw = cleaned_raw_owned.as_str();
+        let is_moving = cleaned_raw.starts_with("正動身前往")
+            || cleaned_raw.starts_with("正踏著夜色返回")
+            || cleaned_raw.starts_with("正返回【")
+            || cleaned_raw.starts_with("收工之餘，正動身前往")
+            || cleaned_raw.contains("（推進目標：【");
+        let chosen_opt = crate::npc::causal_core::lookup_action_option(&cstate.chosen_action_code);
+        let matches_chosen = chosen_opt.is_some_and(|opt| {
+            if is_moving {
+                let is_sleep_rest = opt.action_title.contains("安歇")
+                    || opt.action_title.contains("睡")
+                    || opt.action_title.contains("歇息")
+                    || opt.action_title.contains("歇宿")
+                    || opt.action_title.contains("返家")
+                    || opt.action_title.contains("回屋舍")
+                    || opt.action_title.contains("回居所");
+                if is_sleep_rest
+                    && (cleaned_raw.contains("準備安歇") || cleaned_raw.contains("稍作歇息"))
+                {
+                    return true;
+                }
+                let opt_title_norm = opt
+                    .action_title
+                    .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
+                    .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
+                    .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
+                    .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
+                    .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
+                    .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
+                if cleaned_raw.contains(&opt_title_norm) {
+                    return true;
+                }
+                let prefixes = [
+                    "回屋舍", "回居所", "在攤前", "在旅社", "在茶屋", "在貨站", "在案頭", "去", "到", "在",
+                ];
+                let mut trimmed_title = opt_title_norm.as_str();
+                let mut changed = true;
+                while changed {
+                    changed = false;
+                    for p in prefixes {
+                        if let Some(rest) = trimmed_title.strip_prefix(p) {
+                            trimmed_title = rest.trim_start();
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+                !trimmed_title.is_empty() && cleaned_raw.contains(trimmed_title)
+            } else {
+                cleaned_raw.contains(opt.action_behavior)
+            }
+        });
+        let is_legacy_or_mismatched = cleaned_raw.is_empty()
+            || !matches_chosen
+            || cleaned_raw.contains("（【")
+            || cleaned_raw.contains("——")
+            || cleaned_raw.contains("項符合條件選項中擇");
+        let activity = if is_legacy_or_mismatched {
+            if is_moving && let Some(opt) = chosen_opt {
+                let place = crate::npc::causal_core::coherent_place_for_venue_req(
+                    opt.venue_req,
+                    &live_dest_name,
+                );
+                let dest_label = format!("{settlement}・{place}");
+                let title_norm = opt
+                    .action_title
+                    .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
+                    .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
+                    .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
+                    .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
+                    .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
+                    .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
+                let title = title_norm.as_str();
+                let is_sleep_rest = title.contains("安歇")
+                    || title.contains("睡")
+                    || title.contains("歇息")
+                    || title.contains("歇宿")
+                    || title.contains("返家")
+                    || title.contains("回屋舍")
+                    || title.contains("回居所");
+                if is_sleep_rest {
+                    let hour = crate::store::current_game_hour();
+                    if hour >= 20 || hour < 5 {
+                        format!("正踏著夜色返回【{dest_label}】準備安歇")
+                    } else {
+                        format!("正返回【{dest_label}】稍作歇息")
+                    }
+                } else {
+                    let prefixes = [
+                        "回屋舍", "回居所", "在攤前", "在旅社", "在茶屋", "在貨站", "在案頭", "去", "到", "在",
+                    ];
+                    let mut trimmed = title;
+                    let mut changed = true;
+                    while changed {
+                        changed = false;
+                        for p in prefixes {
+                            if let Some(rest) = trimmed.strip_prefix(p) {
+                                trimmed = rest.trim_start();
+                                changed = true;
+                                break;
+                            }
+                        }
+                    }
+                    if trimmed.is_empty() {
+                        format!("正動身前往【{dest_label}】")
+                    } else {
+                        format!("正動身前往【{dest_label}】，準備{trimmed}")
+                    }
+                }
+            } else {
+                crate::npc::causal_core::format_predefined_stay_activity(
+                    &live_dest_name,
+                    &cstate,
+                    eff_mg,
+                )
+            }
+        } else {
+            sanitize_eco_activity(cleaned_raw)
+        };
+        let thought = derive_eco_inner_thought(
+            &e,
+            &final_title,
+            &activity,
+            "",
+            eff_mg,
+        );
+        let now_unix = crate::game::now_unix();
+        let mark = crate::npc::causal_core::format_time_scale_mark(&cstate, now_unix);
+        let latest_ripple = crate::npc::causal_core::top_active_ripple_for_npc(&e.id, now_unix);
+        thoughts.push(NpcThoughtEntry {
+            id: e.id,
+            name: person,
+            title: final_title,
+            settlement,
+            activity,
+            thought,
+            magnesium: eff_mg,
+            decision_image_code: cstate.decision_image_code.clone(),
+            eligible_option_count: cstate.eligible_option_count,
+            chosen_action_code: cstate.chosen_action_code.clone(),
+            active_need: cstate.active_need,
+            image_decision: cstate.image_decision,
+            situated_action: cstate.situated_action,
+            carryover_note: cstate.carryover_from_yesterday,
+            stress: cstate.stress,
+            time_scale_mark: mark,
+            belief_summary: cstate.belief_summary,
+            latest_ripple,
+        });
+    }
+
+    Json(thoughts).into_response()
+}
+
+/// 取得全島住民因果思緒（別名相容 /api/eco/npc-thoughts）
+pub async fn eco_npc_thoughts() -> impl IntoResponse {
+    handle_eco_npc_thoughts().await
+}
+
+/// 取得所有實體的即時位置與活體狀態（別名相容 handle_eco_entities）
+pub async fn handle_eco_entities() -> impl IntoResponse {
+    eco_entities().await
+}
+
+/// 取得全城地圖資料（柵格化）
 pub async fn eco_map() -> impl IntoResponse {
     if let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() {
         let all_drops = crate::pg::living_world::snapshot_all_ground_dropped_items();
@@ -329,7 +601,7 @@ pub async fn eco_entities() -> impl IntoResponse {
     let Some(st_arc) = store::get_store() else {
         return Json(Vec::<EcoEntity>::new()).into_response();
     };
-
+    crate::npc::causal_core::ensure_circular_economy_normalized_if_needed();
     if store::LIVE_HUNTING_PARTIES.read().is_empty()
         && let Some(grid) = crate::server::grid_manager::get_runtime_square_grid()
     {
@@ -376,17 +648,25 @@ pub async fn eco_entities() -> impl IntoResponse {
                     ),
                     None,
                 ),
-                store::HuntingPartyPhase::SurroundingPrey => (
-                    format!(
-                        "{}合社獵團｜四面合圍【{}】({}, {})（{}人）",
-                        p.zone_name,
-                        p.prey_name,
-                        p.prey_coord.0,
-                        p.prey_coord.1,
-                        p.member_ids.len()
-                    ),
-                    Some([p.prey_coord.0, p.prey_coord.1]),
-                ),
+                store::HuntingPartyPhase::SurroundingPrey => {
+                    let (px, py) = p.prey_coord;
+                    let prey_place = crate::game::CANONICAL_HUNTING_ZONES
+                        .get(crate::game::nearest_hunting_zone_idx(px, py))
+                        .map(|z| z.0.to_string())
+                        .unwrap_or_else(|| {
+                            let (z, s, _) = crate::grid::r#gen::classify_wilderness_cell(px, py);
+                            format!("{z}・{s}")
+                        });
+                    (
+                        format!(
+                            "{}合社獵團｜四面合圍【{}】於【{prey_place}】（{}人）",
+                            p.zone_name,
+                            p.prey_name,
+                            p.member_ids.len()
+                        ),
+                        Some([p.prey_coord.0, p.prey_coord.1]),
+                    )
+                }
                 store::HuntingPartyPhase::TakedownAndSplit => (
                     format!(
                         "{}合社獵團｜合擊【{}】・見者有份割取【{}】",
@@ -396,7 +676,7 @@ pub async fn eco_entities() -> impl IntoResponse {
                 ),
                 store::HuntingPartyPhase::ReturningToMarket => (
                     format!(
-                        "{}合社獵團｜滿載【{}】赴【{}】交割分紅",
+                        "{}合社獵團｜滿載【{}】赴【{}】交割分成",
                         p.zone_name, p.prey_loot_name, p.market_name
                     ),
                     None,
@@ -485,8 +765,9 @@ pub async fn eco_entities() -> impl IntoResponse {
             .get(&e.id)
             .cloned()
             .unwrap_or_else(|| (String::new(), None));
-        let thought = derive_eco_inner_thought(&e, &title, &activity, &hunting_party);
-        let magnesium = Some(e.magnesium.max(18));
+        let eff_mg = e.magnesium;
+        let thought = derive_eco_inner_thought(&e, &title, &activity, &hunting_party, eff_mg);
+        let magnesium = Some(eff_mg);
 
         entities.push(EcoEntity {
             id: e.id,
@@ -507,7 +788,7 @@ pub async fn eco_entities() -> impl IntoResponse {
         });
     }
 
-    // 補入 19 處獵場的 1,805 隻《白塔山海志》全島自然棲地生靈（消除同心圓，按真實疆域進行藍噪聲 Poisson-disc 與獸群聚落分布）
+    // 補入 19 處獵場的 1,805 隻《白塔山海誌》全島自然棲地生靈（消除同心圓，按真實疆域進行藍噪聲 Poisson-disc 與獸群聚落分布）
     let time_tick = (crate::game::now_unix() / 180) as i64;
     for (z_idx, &(zone_name, _, _)) in crate::game::CANONICAL_HUNTING_ZONES.iter().enumerate() {
         let slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);
@@ -516,11 +797,7 @@ pub async fn eco_entities() -> impl IntoResponse {
                 let held_vessel = if let Some((_lid, loot_name, shanhai_note)) =
                     crate::game::ambient_creature_loot(&amb.display_title)
                 {
-                    if sl.tier == 1 {
-                        format!("尋跡顯形可剝取【{loot_name}】｜{shanhai_note}")
-                    } else {
-                        format!("可剝取【{loot_name}】｜{shanhai_note}")
-                    }
+                    format!("可剝取【{loot_name}】｜{shanhai_note}")
                 } else {
                     String::new()
                 };
@@ -531,7 +808,7 @@ pub async fn eco_entities() -> impl IntoResponse {
                 };
                 let act_str = if sl.tier == 1 {
                     format!(
-                        "{}{}（平時藏跡於{}深處，須查探【新鮮霸主獸跡】方會破霧顯形）",
+                        "{}{}（常隱於{}深處，唯順著林間深深獸跡才能尋見蹤影）",
                         sl.act_prefix, amb.current_activity, sl.sub_geo
                     )
                 } else {
@@ -561,7 +838,7 @@ pub async fn eco_entities() -> impl IntoResponse {
     Json(entities).into_response()
 }
 
-/// 取得全島 15 聚落即時供需行情與 19 獵場山海異兆總覽
+/// 取得全島 16 聚落即時供需行情與 19 獵場山海異兆總覽
 pub async fn eco_pulse() -> impl IntoResponse {
     let explicit_cells = crate::server::grid_manager::get_runtime_square_grid()
         .map(|g| g.len())
@@ -583,6 +860,7 @@ pub async fn eco_pulse() -> impl IntoResponse {
         "紅土崁",
         "三號坑口",
         "水尾寮",
+        "下營",
     ];
     let settlements: Vec<EcoSettlementPulse> = SETTLEMENT_NAMES
         .iter()
@@ -626,9 +904,8 @@ pub async fn eco_pulse() -> impl IntoResponse {
     let hunting_zones: Vec<EcoHuntingZonePulse> = HUNTING_NAMES
         .iter()
         .map(|&name| {
-            let apex_omen = crate::game::hunting_zone_apex_omen(name)
-                .unwrap_or_default()
-                .to_string();
+            let apex_omen = crate::game::dynamic_hunting_zone_ecology_omen(name)
+                .unwrap_or_default();
             let word_source = crate::game::zone_ambient_word_source(name)
                 .map(|(_ws, desc)| desc.to_string())
                 .unwrap_or_default();
@@ -640,10 +917,30 @@ pub async fn eco_pulse() -> impl IntoResponse {
         })
         .collect();
 
+    let now_unix = crate::game::now_unix();
+    let stranded_cargo_orders =
+        crate::npc::causal_core::list_active_stranded_cargo_orders(now_unix);
+    let mut active_ripples = Vec::new();
+    if let Ok(guard) = crate::npc::causal_core::LIVE_NPC_CAUSAL_STATES.read() {
+        for state in guard.values() {
+            for rip in &state.active_ripples {
+                if rip.origin_tick + 5400 >= now_unix
+                    && !active_ripples.iter().any(|r: &crate::npc::causal_core::WorldRippleFact| r.fact_id == rip.fact_id)
+                {
+                    active_ripples.push(rip.clone());
+                }
+            }
+        }
+    }
+    let active_ripples_count = active_ripples.len();
+
     Json(EcoPulseResponse {
         explicit_cells,
         settlements,
         hunting_zones,
+        active_ripples_count,
+        active_ripples,
+        stranded_cargo_orders,
     })
     .into_response()
 }

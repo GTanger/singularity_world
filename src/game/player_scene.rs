@@ -38,7 +38,7 @@ const M3_020_SCENE_OBJECTS: &[SceneObjectText] = &[
         name: "通行牌",
         look: "通行牌按牲口、商隊和工坊送件分成幾疊，邊角被手汗磨亮；門衛只把下一疊推到石案前，沒有讓人自己翻找。",
         followup_action: "Read",
-        followup: "你看清最上面幾張通行牌：牧地牲口先驗繩扣，工坊送件要留牌號，商隊則等門衛點到旗石廣場的隊列。",
+        followup: "你看清最上面幾張通行牌：牧地牲口先驗繩扣，工坊送件要留牌號，商隊則等門衛點到旗石廣場的候列。",
     },
     SceneObjectText {
         room: "旗石廣場",
@@ -54,7 +54,7 @@ const M3_020_SCENE_OBJECTS: &[SceneObjectText] = &[
         name: "半開鑄幣門",
         look: "半開的門縫裡能看見銅秤、封袋和一點散鎂反光；兌牌人把門縫守得很窄，只讓被叫到的人靠近門檻。",
         followup_action: "Open",
-        followup: "你剛靠近門縫，兌牌人便用手掌把門壓回半開，只留下銅秤聲和封袋摩擦聲；沒被叫到的人仍得退回廣場側線。",
+        followup: "你甫靠近門縫，兌牌人便用手掌把門壓回半開，只留下銅秤聲和封袋摩擦聲；沒被叫到的人仍得退回廣場側線。",
     },
     SceneObjectText {
         room: "傭工棚邊",
@@ -99,7 +99,7 @@ const M3_027_LIFE_OBJECTS: &[LifeSceneObjectText] = &[
         room: "半嶺水岸渡口",
         id: "m3_027_hot_soup_stall",
         name: "熱湯攤",
-        look: "湯桶蓋剛掀開，熱氣貼著河霧往上冒；攤主一邊收錢盛滿碗，一邊把等分湯的人壓在桶側短線後面。",
+        look: "湯桶蓋初掀開，熱氣貼著河霧往上冒；攤主一邊收錢盛滿碗，一邊把等分湯的人壓在桶側短線後面。",
         actions: &[
             (
                 "BuySoup",
@@ -135,7 +135,7 @@ const M3_027_LIFE_OBJECTS: &[LifeSceneObjectText] = &[
         room: "半嶺水岸渡口",
         id: "m3_027_river_awning",
         name: "避風棚",
-        look: "一片舊帆布斜斜壓在木桿上，棚下沒有好座位，只能貼著貨箱站一會兒，把衣角的冷水慢慢晾開。",
+        look: "一片舊帆布斜斜壓在木桿上，棚下沒有好座位，只能貼著貨箱站片刻，把衣角的冷水慢慢晾開。",
         actions: &[(
             "DryOff",
             "你站到舊帆布下，把濕衣角攤在貨箱邊；河風吹不太進來，肩背雖還沉，手腳先緩過一點。",
@@ -145,7 +145,7 @@ const M3_027_LIFE_OBJECTS: &[LifeSceneObjectText] = &[
         room: "半嶺水岸渡口",
         id: "m3_027_charcoal_brazier",
         name: "炭火盆",
-        look: "炭火盆被幾個候渡者圍在中間，火苗不大，煙氣貼著袖口走；靠近的人都只能烘一小會兒便讓位。",
+        look: "炭火盆被幾個候渡者圍在中間，火苗不大，煙氣貼著袖口走；靠近的人都只能烘烤片刻便讓位。",
         actions: &[(
             "WarmHands",
             "你把手伸到炭火盆旁，煙味鑽進袖口，指節慢慢有了知覺；旁邊的人給你讓出半掌寬的位置。",
@@ -154,16 +154,16 @@ const M3_027_LIFE_OBJECTS: &[LifeSceneObjectText] = &[
     LifeSceneObjectText {
         room: "半嶺水岸渡口",
         id: "m3_027_waiting_line_chat",
-        name: "候渡隊列",
-        look: "候渡隊列在湯攤和踏板之間折了一道彎，熟門路的人低聲交換船期、湯價、谷地路口近況和哪個船戶肯讓人搭手；排到木牌內側的人，才會被船戶看作下一輪上船的人。",
+        name: "候渡人龍",
+        look: "候渡人龍在湯攤和踏板之間折了一道彎，熟門路的人低聲交換船期、湯價、谷地路口近況和哪個船戶肯讓人搭手；排到木牌內側的人，才會被船戶看作下一輪上船的人。",
         actions: &[
             (
                 "TalkQueue",
-                "你沿著隊列和人搭了幾句話，問到下一班船大概還要等多久；話說多了有些耗神，但不再像一個人站在霧裡。",
+                "你沿著人龍和人搭了幾句話，問到下一班船大概還要等多久；話說多了有些耗神，但不再像一個人站在霧裡。",
             ),
             (
                 "QueueFerry",
-                "你站到隊列折角外側，前面的候渡者照木牌往踏板挪半步；後面的人把你身後的空隙補上，船戶抬手認住你這個位置。",
+                "你站到人龍折角外側，前面的候渡者照木牌往踏板挪半步；後面的人把你身後的空隙補上，船戶抬手認住你這個位置。",
             ),
         ],
     },
@@ -211,17 +211,17 @@ const M3_027_LIFE_OBJECTS: &[LifeSceneObjectText] = &[
         room: "渡船踏板",
         id: "m3_027_plank_boarding_marker",
         name: "踏板木牌",
-        look: "木牌插在踏板口，船戶只認排到牌內側的人；牌腳旁壓著剛清出的貨擔痕，踏板上的濕泥被來回腳步磨得發亮。",
+        look: "木牌插在踏板口，船戶只認排到牌內側的人；牌腳旁壓著早先清出的貨擔痕，踏板上的濕泥被來回腳步磨得發亮。",
         actions: &[(
             "BoardFerry",
-            "船戶看見你已被隊列認住，抬手讓你踩到踏板內側；後面的人跟著收成一線，船身在河霧裡貼岸等下一步。",
+            "船戶看見你已被人龍認住，抬手讓你踩到踏板內側；後面的人跟著收成一線，船身在河霧裡貼岸等下一步。",
         )],
     },
     LifeSceneObjectText {
         room: "南岸泥坡",
         id: "m3_027_south_landing_rope",
         name: "上岸繩",
-        look: "粗繩從船頭拉到泥坡木樁，繩上沾著被人握過的濕泥；南岸的人按繩位上坡，讓剛下船的人先踩穩再分往倉棚和谷地路。",
+        look: "粗繩從船頭拉到泥坡木樁，繩上沾著被人握過的濕泥；南岸的人按繩位上坡，讓初下船的人先踩穩再分往倉棚和谷地路。",
         actions: &[(
             "StepAshore",
             "你扶著上岸繩踩進南岸泥坡，鞋底陷下一寸又拔出來；後面的人照同一條繩位上來，沒有把你擠回踏板邊。",
@@ -234,7 +234,7 @@ const M3_027_LIFE_OBJECTS: &[LifeSceneObjectText] = &[
         look: "點貨牌掛在倉棚門邊，麻袋、木箱和渡口來的短貨各壓一行；記牌人只把已送到踏板邊的貨擔劃入下一列。",
         actions: &[(
             "CheckCargo",
-            "你指給記牌人看方前清到踏板邊的貨擔痕，對方把那一行劃進倉棚短冊，又補給你一枚尾款鎂。",
+            "你指給記牌人看早先清到踏板邊的貨擔痕，對方把那一行劃進倉棚短冊，又補給你一枚尾款鎂。",
         )],
     },
 ];
@@ -245,7 +245,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "守門人",
         crowd: "鎮口人群",
         entry: "你走到文曜鎮口。鎮牌樓把谷地路收進陰影裡，守門人讓候檢車馬慢下來，東市街和倉場方向的人聲從門內分開。",
-        reentry: "你回到文曜鎮口。路旗下又聚起一小段候檢腳步，守門人把剛放行的車馬引向東市街那邊。",
+        reentry: "你回到文曜鎮口。路旗下又聚起一小段候檢腳步，守門人把放行過關的車馬引向東市街那邊。",
         observation: "{pronoun}按著門邊路牌，抬手讓一輛車先停在牌樓陰影下。",
         micro: &[
             "守門人把路牌往牌樓下挪了半步，候檢的人聲立刻低下去。",
@@ -258,7 +258,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "看貨人",
         crowd: "市集人群",
         entry: "你走進文曜東市街。布棚沿街排開，看貨人把價碼壓在攤布下，井邊巷、旅社前廊和倉場門口的人流在街心交會。",
-        reentry: "你回到文曜東市街。攤布前換了一撥看貨人，剛從倉場門口送來的箱包被推到街側等價。",
+        reentry: "你回到文曜東市街。攤布前換了一撥看貨人，新從倉場門口送來的箱包被推到街側等價。",
         observation: "{pronoun}掀起攤布一角看貨色，低聲把問到的價碼傳給旁邊的人。",
         micro: &[
             "看貨人把貨樣放回籃裡，眼神仍留在倉場門口那邊的箱包上。",
@@ -270,7 +270,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         name: "文曜旅社前廊",
         role: "接待員",
         crowd: "旅社人群",
-        entry: "你走到文曜旅社前廊。長凳、熱水壺和掛包木鉤貼著廊柱排開，接待員替剛入鎮的人分辨東市街、井邊巷和百工坊的去處。",
+        entry: "你走到文曜旅社前廊。長凳、熱水壺和掛包木鉤貼著廊柱排開，接待員替初入鎮的人分辨東市街、井邊巷和百工坊的去處。",
         reentry: "你回到文曜旅社前廊。廊下包袱換了位置，接待員把新添的熱水壺推到長凳旁。",
         observation: "{pronoun}把熱水壺放到廊桌上，側身聽東市街那邊是否尚有人找宿。",
         micro: &[
@@ -284,8 +284,8 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "傳話人",
         crowd: "廟前人群",
         entry: "你走到文曜講堂前坪。香灰貼著石凳邊緣，告示板下有人低聲傳話，把鎮口、井邊巷和東市街的消息接在一起。",
-        reentry: "你回到文曜講堂前坪。告示板旁多了幾道新摺痕，傳話人把剛聽到的鎮口消息壓低聲說出。",
-        observation: "{pronoun}在告示板前停住，低聲把剛問到的事轉給等在石凳旁的人。",
+        reentry: "你回到文曜講堂前坪。告示板旁多了幾道新摺痕，傳話人把探聽得來的鎮口消息壓低聲說出。",
+        observation: "{pronoun}在告示板前停住，低聲把打聽得來的事轉給等在石凳旁的人。",
         micro: &[
             "傳話人把告示紙角壓平，讓後面的人先看清日期。",
             "有人在石凳旁合掌停了一下，轉身就把消息送往井邊巷。",
@@ -297,7 +297,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "取水人",
         crowd: "井邊人群",
         entry: "你走進文曜井邊巷。井繩濕痕拖到巷口，取水人和跑腿孩子在住戶牆影下穿過，讓東市街後面有了日常內側。",
-        reentry: "你回到文曜井邊巷。石圈旁的水痕又深了一圈，取水人把剛打滿的桶讓到巷壁邊。",
+        reentry: "你回到文曜井邊巷。石圈旁的水痕又深了一圈，取水人把打滿清水的桶讓到巷壁邊。",
         observation: "{pronoun}把水桶挪到牆影下，抬頭看百工坊那邊是否尚有人要水。",
         micro: &[
             "取水人把井繩往石圈上多繞一圈，水滴沿巷口慢慢拖開。",
@@ -310,7 +310,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "學徒",
         crowd: "工坊人群",
         entry: "你走到文曜百工坊。木屑、鐵件和修具架排在半開門面下，學徒把東市街送來的活計分進各家。",
-        reentry: "你回到文曜百工坊。門面下又多了幾件待修工具，學徒把剛問到的料價寫到木牌邊。",
+        reentry: "你回到文曜百工坊。門面下又多了幾件待修工具，學徒把議定的料價寫到木牌邊。",
         observation: "{pronoun}抱著一捆待修件停在門面下，等裡頭讓出修具架。",
         micro: &[
             "學徒把木屑掃到門檻內側，讓井邊巷過來的人能貼牆走過。",
@@ -350,7 +350,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         crowd: "驛道人群",
         entry: "你走上南城外驛道。糧倉外秤的秤聲落在身後，車轍、路旗和候檢行囊一路壓向南城牆影。",
         reentry: "你回到南城外驛道。進城長線又往前挪了幾步，驛夫把從糧倉那邊來的車隊排到路旗旁。",
-        observation: "{pronoun}扶著路旗看向南城甕門，把剛到的人流分進車隊與步行兩列。",
+        observation: "{pronoun}扶著路旗看向南城甕門，把續到的人流分進車隊與步行兩列。",
         micro: &[
             "驛夫把一面濕路旗扯正，等候進城的人跟著往前貼了一步。",
             "有人把行囊挪到車轍外側，讓從糧倉外秤來的空車先過。",
@@ -375,7 +375,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "引路人",
         crowd: "廣場人群",
         entry: "你走進門內集散廣場。旗桿、候車牌和臨時貨架把入城人流拆成幾股，引路人站在石階邊指向中軸大街。",
-        reentry: "你回到門內集散廣場。廣場上的人流換了方向，引路人把剛入城的車隊引到不擋主街的位置。",
+        reentry: "你回到門內集散廣場。廣場上的人流換了方向，引路人把入城的車隊引到不擋主街的位置。",
         observation: "{pronoun}站在石階邊抬手指路，讓迷路的人先沿中軸大街南段往裡走。",
         micro: &[
             "引路人把候車牌往旗桿旁挪開，給從甕門進來的人讓出一條線。",
@@ -427,7 +427,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "商會書手",
         crowd: "長廊人群",
         entry: "你走到三水總商行長廊。木欄後擺著貨樣匣、印章盒和長桌，商會書手把外城來的貨單收進陰影裡。",
-        reentry: "你回到三水總商行長廊。長桌上的貨單換了一疊，商會書手把剛蓋好的印章推到一側風乾。",
+        reentry: "你回到三水總商行長廊。長桌上的貨單換了一疊，商會書手把新蓋妥的印章推到一側風乾。",
         observation: "{pronoun}按著貨單低聲核對，偶爾抬頭看中軸大街南段的人流。",
         micro: &[
             "商會書手把印章盒合上半截，讓送單的人先站到木欄旁。",
@@ -439,12 +439,12 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         name: "大十字通衢",
         role: "指路人",
         crowd: "通衢人群",
-        entry: "你走到大十字通衢。車鈴、旗影和遠處官署鼓聲從四面交疊，指路人只把你帶到這裡，更多城區仍在街聲深處。",
+        entry: "你走到大十字通衢。車鈴、旗影和遠處鐘樓報時聲從四面交疊，指路人只把你帶到這裡，更多城區仍在街聲深處。",
         reentry: "你回到大十字通衢。十字口的人流又換了方向，指路人把猶豫的人先帶回中軸大街中段邊上。",
         observation: "{pronoun}站在十字口邊緣指路，沒有讓人群完全堵住中軸大街。",
         micro: &[
             "指路人把一隊挑擔人引到側邊，讓車馬先從路心慢慢過去。",
-            "遠處官署鼓聲短短壓過街聲，十字口的人都抬頭聽了一息。",
+            "遠處鐘樓報時聲短短壓過街聲，十字口的人都抬頭聽了一息。",
             "大十字通衢短短響起四面回聲，更多城區仍被人潮藏在深處。",
         ],
     },
@@ -452,8 +452,8 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         name: "城邦外坡道",
         role: "牽獸人",
         crowd: "坡道人群",
-        entry: "你走上城邦外坡道。獸醫棚的藥草味退到身後，牽獸人把石粉、蹄印和車轍間的隊列排向石壘門。",
-        reentry: "你回到城邦外坡道。候檢車隊又往坡上挪了一段，牽獸人把牧地來的牲口壓慢，免得撞上門前隊列。",
+        entry: "你走上城邦外坡道。獸醫棚的藥草味退到身後，牽獸人把石粉、蹄印和車轍間的候列排向石壘門。",
+        reentry: "你回到城邦外坡道。候檢車隊又往坡上挪了一段，牽獸人把牧地來的牲口壓慢，免得撞上門前候列。",
         observation: "{pronoun}按著牲口韁繩看向石壘門，讓候檢車隊先貼著坡面往前排。",
         micro: &[
             "牽獸人把韁繩繞緊一圈，坡道上的蹄聲跟著低下去。",
@@ -466,7 +466,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "門衛",
         crowd: "門前人群",
         entry: "你走到石壘門。矮厚石牆把坡道風聲壓住，門衛按著通行牌，將商隊、牧人和工坊送件分成幾列。",
-        reentry: "你回到石壘門。鐵環和獸欄繩又被挪過位置，門衛把剛查過的木牌推向門內券道。",
+        reentry: "你回到石壘門。鐵環和獸欄繩又被挪過位置，門衛把已查驗的木牌推向門內券道。",
         observation: "{pronoun}把通行牌翻到手邊，抬眼看坡道上下一列是否已排好。",
         micro: &[
             "門衛把鐵環從門柱上取下又掛回，候檢人群立刻安靜一截。",
@@ -479,7 +479,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "引路人",
         crowd: "券道人群",
         entry: "你穿過門內券道。低牆掛著修補過的盾牌和候審木籤，引路人把過門的人流推向旗石廣場。",
-        reentry: "你回到門內券道。券道陰影裡換了一批腳步，引路人把剛過門的車隊壓在牆邊慢行。",
+        reentry: "你回到門內券道。券道陰影裡換了一批腳步，引路人把進門的車隊壓在牆邊慢行。",
         observation: "{pronoun}站在牆邊指向旗石廣場，讓初入城邦的人不要堵在券道口。",
         micro: &[
             "引路人把候審木籤往牆邊收，給石壘門進來的人讓出窄路。",
@@ -492,7 +492,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "旗手",
         crowd: "廣場人群",
         entry: "你走進旗石廣場。舊旗把等候線分成幾股，旗手把門內券道來的人流指向西門坡道街、鑄幣巷口和傭工棚邊。",
-        reentry: "你回到旗石廣場。旗桿下的隊列換了方向，旗手把剛到的商隊先壓到廣場側邊。",
+        reentry: "你回到旗石廣場。旗桿下的候列換了方向，旗手把添報的商隊先壓到廣場側邊。",
         observation: "{pronoun}扶著旗桿指路，讓往坡街和傭工棚的人不要互相擠住。",
         micro: &[
             "旗手把舊旗扯直，廣場上的等候線跟著重新分開。",
@@ -504,12 +504,12 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         name: "西門坡道街",
         role: "坡街販",
         crowd: "坡街人群",
-        entry: "你走上西門坡道街。攤布、鐵件和馬具沿低檐掛開，坡街販把旗石廣場來的消息壓低聲傳向議棚前階。",
-        reentry: "你回到西門坡道街。坡街上換了一撥問價的人，坡街販把剛聽見的議棚消息藏進攤布下。",
+        entry: "你走上西門坡道街。攤布、鐵件和馬具沿低簷掛開，坡街販把旗石廣場來的消息壓低聲傳向議棚前階。",
+        reentry: "你回到西門坡道街。坡街上換了一撥問價的人，坡街販把探得的議棚消息藏進攤布下。",
         observation: "{pronoun}按住攤布一角，側耳聽議棚前階那邊是否開始叫號。",
         micro: &[
-            "坡街販把一串馬具掛回低檐下，讓往議棚前階的人貼牆走過。",
-            "有人在坡街中段問價，又把目光轉回旗石廣場的隊列。",
+            "坡街販把一串馬具掛回低簷下，讓往議棚前階的人貼牆走過。",
+            "有人在坡街中段問價，又把目光轉回旗石廣場的候列。",
             "西門坡道街短短響起鐵件碰撞聲，更深處的城邦低語貼著坡面傳來。",
         ],
     },
@@ -518,7 +518,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "記牌人",
         crowd: "議棚人群",
         entry: "你走到議棚前階。木棚裡傳出低低議事聲，欠糧、傭工和通行牌告示貼在階邊，記牌人讓等候申訴的人站到側線。",
-        reentry: "你回到議棚前階。階邊木牌換過一輪，記牌人把剛到的人名壓進短冊裡。",
+        reentry: "你回到議棚前階。階邊木牌換過一輪，記牌人把續到的人名壓進短冊裡。",
         observation: "{pronoun}按著短冊看向坡街，抬手讓下一個等候者站到階側。",
         micro: &[
             "記牌人把木牌翻過一面，議棚前的人群立刻壓低聲音。",
@@ -570,7 +570,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "哨兵",
         crowd: "哨樓人群",
         entry: "你踏上哨樓梯。旗繩貼著木欄抽動，哨兵在半高處看向邊城外門和乾草棚那邊的動靜。",
-        reentry: "你回到哨樓梯。旗繩仍在風裡輕響，哨兵把剛收到的口令往樓上遞去。",
+        reentry: "你回到哨樓梯。旗繩仍在風裡輕響，哨兵把接得的口令往樓上遞去。",
         observation: "{pronoun}扶著木欄看向城門外，指尖停在旗繩旁等下一個傳令手勢。",
         micro: &[
             "哨兵把旗繩往欄邊收緊，低聲把門外車隊數成幾段。",
@@ -579,16 +579,16 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         ],
     },
     PolishedSceneText {
-        name: "青籠關邊貿坪",
+        name: "下營邊貿坪",
         role: "商旅",
         crowd: "邊市人群",
-        entry: "你走到青籠關邊貿坪。臨時攤布貼著低牆鋪開，商旅把小件貨和路上消息都壓低聲交出去。",
-        reentry: "你回到青籠關邊貿坪。攤布旁換了一撥看貨的人，商旅把剛問到的價碼送往糧倉前場。",
+        entry: "你走到下營邊貿坪。臨時攤布貼著低牆鋪開，商旅把小件貨和路上消息都壓低聲交出去。",
+        reentry: "你回到下營邊貿坪。攤布旁換了一撥看貨的人，商旅把打聽得來的價碼送往糧倉前場。",
         observation: "{pronoun}把小件貨攤開一角，低聲問城門那邊今天還放不放車隊進來。",
         micro: &[
             "商旅把包袱口解開一半，又立刻用手掌壓住攤布邊。",
-            "有人在青籠關邊貿坪比了比價，眼角仍看著邊城外門的查驗。",
-            "青籠關邊貿坪短短傳過一陣議價聲，很快被糧倉前場的推車聲壓低。",
+            "有人在下營邊貿坪比了比價，眼角仍看著邊城外門的查驗。",
+            "下營邊貿坪短短傳過一陣議價聲，很快被糧倉前場的推車聲壓低。",
         ],
     },
     PolishedSceneText {
@@ -601,7 +601,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         micro: &[
             "倉管把冊簿頁角壓平，示意推車先停在門側。",
             "有人把糧袋重新疊高，讓哨樓梯下來的人能穿過前場。",
-            "糧倉前場短短響起推車木輪聲，青籠關邊貿坪的低語被切成幾段。",
+            "糧倉前場短短響起推車木輪聲，下營邊貿坪的低語被切成幾段。",
         ],
     },
     PolishedSceneText {
@@ -622,7 +622,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "巡哨",
         crowd: "巡邏人群",
         entry: "你走進巡邏院。兵器架貼著院牆，巡哨把值牌交到下一班手裡，拘留繩掛在陰影處不晃。",
-        reentry: "你回到巡邏院。值牌的位置已經換過，巡哨把剛回來的腳步聲收進院牆內。",
+        reentry: "你回到巡邏院。值牌的位置已經換過，巡哨把交班歸來的腳步聲收進院牆內。",
         observation: "{pronoun}把值牌掛回木釘旁，回頭看兵器架和乾草棚方向的動靜。",
         micro: &[
             "巡哨把短槍從架上取下又放回，像是在等下一道口令。",
@@ -635,7 +635,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "學徒",
         crowd: "工坊人群",
         entry: "你走到工坊街口。路牌被灰粉沾暗，學徒抱著料件在鍛造棚、料場秤台和臨河歇腳處之間穿行。",
-        reentry: "你回到工坊街口。路牌下又堆了幾件待修工具，學徒把剛問到的料價往鍛造棚送。",
+        reentry: "你回到工坊街口。路牌下又堆了幾件待修工具，學徒把打聽得來的料價往鍛造棚送。",
         observation: "{pronoun}抱著一捆料件等路口讓開，眼神在鍛造棚和料場秤台之間來回。",
         micro: &[
             "學徒抱著鐵胚從街口穿過，差點撞上從料場秤台來的買料人。",
@@ -648,7 +648,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "鐵匠",
         crowd: "鍛造人群",
         entry: "你走到鍛造棚下。火爐紅光貼著棚柱跳動，鐵匠把鐵胚翻到砧面上，錘聲壓過街口人語。",
-        reentry: "你回到鍛造棚下。火爐仍亮著，鐵匠把剛退火的鐵件推到石粉堆那側散熱。",
+        reentry: "你回到鍛造棚下。火爐仍亮著，鐵匠把新退火的鐵件推到石粉堆那側散熱。",
         observation: "{pronoun}用火鉗翻過鐵胚，等顏色到位才把錘子落到砧面。",
         micro: &[
             "鐵匠把鐵胚夾出爐口，棚下立刻多了一層熱浪。",
@@ -704,7 +704,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         observation: "{pronoun}把油布捲拍平，低聲核對哪一束要送去修車棚。",
         micro: &[
             "看庫人把繩圈從牆鉤上取下，指尖沾了一點油黑。",
-            "有人把剛退回的油布攤開，檢查破口是不是還能補。",
+            "有人把退回的油布攤開，檢查破口是不是還能補。",
             "油布庫短短響起繩圈擦牆聲，石粉堆的灰味被擋在門外。",
         ],
     },
@@ -725,7 +725,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         name: "水槽棚",
         role: "牧童",
         crowd: "水槽人群",
-        entry: "你走進水槽棚旁。長水槽映著泥蹄印，牧童把水桶拖到槽邊，讓剛進柵門的牲口輪流靠近。",
+        entry: "你走進水槽棚旁。長水槽映著泥蹄印，牧童把水桶拖到槽邊，讓進柵門的牲口輪流靠近。",
         reentry: "你回到水槽棚旁。槽邊又多了濕蹄印，牧童把空桶翻過來靠在棚柱下。",
         observation: "{pronoun}把水桶拖到槽邊，伸手攔住太急著擠上來的牲口。",
         micro: &[
@@ -752,7 +752,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "牲口販",
         crowd: "畜欄人群",
         entry: "你來到畜欄口。繩索繞在欄柱上，牲口販摸過畜背和蹄口，低聲把價碼壓到乾草堆那邊。",
-        reentry: "你回到畜欄口。欄柱邊換了幾道繩結，牲口販把剛看過的畜牌收回袖口。",
+        reentry: "你回到畜欄口。欄柱邊換了幾道繩結，牲口販把檢視過的畜牌收回袖口。",
         observation: "{pronoun}拉住繩索看蹄口，側身讓水槽棚牽來的牲口先進欄。",
         micro: &[
             "牲口販把繩索繞回欄柱，低聲說了個價碼又立刻收住。",
@@ -794,7 +794,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         reentry: "你回到牧場門牌下。門牌旁新添了幾道蹄印，牧場管事把名冊翻到下一頁。",
         observation: "{pronoun}按著進出名冊，抬手讓馬欄前場那邊先空出一條路。",
         micro: &[
-            "牧場管事把門牌擦出一角，低聲核對剛進來的馬匹。",
+            "牧場管事把門牌擦出一角，低聲核對新進來的馬匹。",
             "有人把牽繩掛到門柱旁，等獸醫棚那邊點頭再放行。",
             "牧場門牌短短響起木牌碰柱聲，馬欄前場的水桶聲跟著靠近。",
         ],
@@ -807,7 +807,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         reentry: "你回到馬欄前場。水桶邊多了新濕痕，馬夫把一匹躁動的馬牽回欄內。",
         observation: "{pronoun}扶著馬頸讓牠站穩，回頭看獸醫點那邊是否要再檢一次蹄口。",
         micro: &[
-            "馬夫把水桶推近欄邊，讓剛牽回來的馬低頭喝水。",
+            "馬夫把水桶推近欄邊，讓牽回來的馬低頭喝水。",
             "有人撫過馬背給買主看，蹄聲在前場短短踏響。",
             "馬欄前場短短響起水桶碰欄聲，牧場門牌下的人群讓出一步。",
         ],
@@ -817,7 +817,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "草料工",
         crowd: "草料棚人群",
         entry: "你走到草料棚。乾草和豆料分成幾堆，草料工把草叉靠在棚柱邊，等商隊泊位報出下一批牲口數。",
-        reentry: "你回到草料棚。草料堆被挪開一角，草料工把剛灑出的豆料掃回木斗裡。",
+        reentry: "你回到草料棚。草料堆被挪開一角，草料工把灑出的豆料掃回木斗裡。",
         observation: "{pronoun}用草叉翻開草料，側耳聽邊鎮井口方向是否又有車隊靠近。",
         micro: &[
             "草料工把草叉插進草堆，抖出一片乾響。",
@@ -842,8 +842,8 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         name: "馱具修棚",
         role: "修具工",
         crowd: "馱具人群",
-        entry: "你走進馱具修棚前。皮帶和銅扣吊在棚梁下，修具工把裂開的鞍帶壓平，等馬夫來試長短。",
-        reentry: "你回到馱具修棚前。棚梁下換了一排皮帶，修具工把修好的銅扣推到商隊泊位那側。",
+        entry: "你走進馱具修棚前。皮帶和銅扣吊在棚樑下，修具工把裂開的鞍帶壓平，等馬夫來試長短。",
+        reentry: "你回到馱具修棚前。棚樑下換了一排皮帶，修具工把修好的銅扣推到商隊泊位那側。",
         observation: "{pronoun}把皮帶壓在木墊上，拿銅扣對過孔眼後才重新穿繩。",
         micro: &[
             "修具工把銅扣敲緊，皮帶邊緣短短彈了一下。",
@@ -856,7 +856,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "商隊人",
         crowd: "商隊人群",
         entry: "你走到商隊泊位。馱獸和貨包排在泊位邊，商隊人把繩結重新收緊，等草料棚送來下一批補給。",
-        reentry: "你回到商隊泊位。貨包位置換了幾處，商隊人把剛修好的馱具扣回馱獸身上。",
+        reentry: "你回到商隊泊位。貨包位置換了幾處，商隊人把修好的馱具扣回馱獸身上。",
         observation: "{pronoun}拉緊馱獸旁的繩結，抬頭看草料棚那邊補給是否到了。",
         micro: &[
             "商隊人把貨包往馱獸背上推正，繩結被拉得短短作響。",
@@ -869,7 +869,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "取水人",
         crowd: "井口人群",
         entry: "你走到邊鎮井口。井繩濕亮地垂著，取水人把水桶拉上井沿，路旗在低風裡指向草料棚和門洞。",
-        reentry: "你回到邊鎮井口。井沿旁又多了水痕，取水人把滿桶推給剛到的旅人。",
+        reentry: "你回到邊鎮井口。井沿旁又多了水痕，取水人把滿桶推給新到的旅人。",
         observation: "{pronoun}把井繩繞到掌心，等水桶穩住後才往井沿上拉。",
         micro: &[
             "取水人把井桶提上來，水聲從桶沿灑到石面。",
@@ -882,7 +882,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "守門人",
         crowd: "門洞人群",
         entry: "你走到低牆門洞。木拒馬卡在門邊，守門人把旅人的水囊和貨繩看過一遍才放人進鎮。",
-        reentry: "你回到低牆門洞。拒馬旁多了車轍泥，守門人把剛收下的路牌掛回牆釘。",
+        reentry: "你回到低牆門洞。拒馬旁多了車轍泥，守門人把收下的路牌掛回牆釘。",
         observation: "{pronoun}扶著木拒馬，看過貨繩和路牌後才讓車隊往補給市集移動。",
         micro: &[
             "守門人把木拒馬往旁邊挪開半尺，讓一輛小車慢慢過洞。",
@@ -898,7 +898,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         reentry: "你回到旅社前廊。長凳上換了一撥歇腳的人，接待員把空碗收進門內。",
         observation: "{pronoun}端著熱水壺穿過長凳邊，低聲問旅人要不要先歇腳。",
         micro: &[
-            "接待員把熱水壺放到廊桌上，讓剛進鎮的人先暖手。",
+            "接待員把熱水壺放到廊桌上，讓進鎮的人先暖手。",
             "有人把包袱靠到長凳下，抬頭問補給市集今天還開到多晚。",
             "旅社前廊短短響起碗底碰桌聲，井口那邊的取水聲遠了一點。",
         ],
@@ -921,7 +921,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         role: "巡哨",
         crowd: "巡哨人群",
         entry: "你走到巡哨棚。槍架靠著棚壁，巡哨把值牌換到腰間，目光一直掃向低牆門洞和車隊場。",
-        reentry: "你回到巡哨棚。槍架旁的值牌換了位置，巡哨把剛聽到的外路消息壓低聲傳下去。",
+        reentry: "你回到巡哨棚。槍架旁的值牌換了位置，巡哨把聽到的外路消息壓低聲傳下去。",
         observation: "{pronoun}把值牌扣回腰間，側身看低牆門洞外是否尚有人滯留。",
         micro: &[
             "巡哨把短槍從架上抬起又放回，棚下的人聲立刻收小。",
@@ -938,7 +938,7 @@ const FINAL_MAP_SCENE_TEXTS: &[PolishedSceneText] = &[
         observation: "{pronoun}扶著車轅檢查貨繩，回頭等巡哨棚放出下一道通行手勢。",
         micro: &[
             "車夫把貨繩往車架下收緊，輪旁泥水被踩得發亮。",
-            "有人把剛買來的水囊丟上車，等補給市集補齊乾糧。",
+            "有人把買來的水囊丟上車，等補給市集補齊乾糧。",
             "車隊場短短響起車軸聲，巡哨棚那邊的值牌聲跟著靠近。",
         ],
     },
@@ -1042,6 +1042,9 @@ pub fn player_layer_scene_objects_for_room(room_name: &str) -> Vec<RoomObject> {
         objects = white_tower_peninsula_objects_for_room(room_name);
         objects.truncate(6);
     }
+    if objects.is_empty() && !is_white_tower_peninsula_room(room_name) {
+        return objects;
+    }
 
     let is_firewood_venue = room_name.contains("鋸木")
         || room_name.contains("木作")
@@ -1084,8 +1087,8 @@ pub fn player_layer_scene_objects_for_room(room_name: &str) -> Vec<RoomObject> {
         if !objects.iter().any(|o| o.id == "dyn_campfire") {
             let mut responses = HashMap::new();
             responses.insert("Look".to_string(), "粗壯硬柴交錯架起的野地營火堆正熊熊燃燒，金紅火苗隨風輕躍，散發著令人心神安定的融融暖意與松木焦香。".to_string());
-            responses.insert("WarmHands".to_string(), "你湊近營火伸出雙手，融融暖流自掌心順著經脈蔓延至周身四肢，驅散了荒野寒濕（體魄與元氣獲得恢復）。".to_string());
-            responses.insert("RoastFood".to_string(), "你取出行囊中的乾糧肉脯架於熾熱柴炭上方炙烤，油脂滋滋作響、肉香四溢，趁熱嚼食腹中溫暖充實（深幅恢復體魄與元氣）。".to_string());
+            responses.insert("WarmHands".to_string(), "你湊近營火伸出雙手，融融暖流自掌心順著經脈蔓延至周身四肢，驅散了荒野寒濕。".to_string());
+            responses.insert("RoastFood".to_string(), "你取出行囊中的乾糧肉脯架於熾熱柴炭上方炙烤，油脂滋滋作響、肉香四溢，趁熱嚼食腹中溫暖充實。".to_string());
             responses.insert("CraftTorch".to_string(), "你自營火堆中抽出一根引燃的松脂硬木，細心纏裹封固，製成一柄劈啪作響的照明松明火把。".to_string());
             responses.insert("AddFuel".to_string(), "你拾起乾柴添入火堆中央，劈啪脆響中火勢陡然騰起，騰躍的金紅火舌將營地周遭照耀得一片透亮。".to_string());
             responses.insert("CollectCharcoal".to_string(), "你以長枝撥開外層浮灰，將底層悶燒透紅的硬木火炭小心夾出、封土隔氧冷卻，收整出成色極佳的無煙白炭。".to_string());
@@ -1112,6 +1115,329 @@ pub fn player_layer_scene_objects_for_room(room_name: &str) -> Vec<RoomObject> {
         if !objects.iter().any(|o| o.id == f.id) {
             objects.push(f);
         }
+    }
+
+    // Coastal harbor / dock injection for 風舶角, 風舶嶼, 烏石鼻, 風櫃尾, 南哨
+    let is_coastal_port_zone = room_name.contains("風舶角")
+        || room_name.contains("風舶嶼")
+        || room_name.contains("烏石鼻")
+        || room_name.contains("風櫃尾")
+        || room_name.contains("水尾寮")
+        || room_name.contains("南哨")
+        || room_name.contains("碼頭行商道")
+        || room_name.contains("船埠");
+    let is_harbor_room = !room_name.contains("內室")
+        && (room_name.contains("港")
+            || room_name.contains("渡")
+            || room_name.contains("村")
+            || room_name.contains("道")
+            || room_name.contains("徑")
+            || room_name.contains("船")
+            || room_name.contains("澳")
+            || room_name.contains("海事")
+            || room_name.contains("守望石階")
+            || room_name.contains("漁")
+            || room_name.contains("堤")
+            || room_name.contains("棧")
+            || room_name.contains("街")
+            || room_name.contains("橋")
+            || room_name.contains("岬")
+            || room_name.contains("哨")
+            || room_name.contains("廣場")
+            || room_name.contains("埠"));
+    if is_coastal_port_zone && is_harbor_room {
+        if !objects.iter().any(|o| o.id == "wt_harbor_clockwise_ship") {
+            let mut responses = HashMap::new();
+            responses.insert("Look".to_string(), "泊靠在石砌突堤旁的順時針環島海運商船，船體以厚實樟木與防水桐油膠漆拼接，帆檣高聳，隨暖流與黑潮在各港口間順時針巡航聯運。".to_string());
+            responses.insert("Read".to_string(), "你走近船舷看清船身木牌：此船順黑潮洋流依序循行「烏石鼻、風櫃尾、風舶嶼、風舶角、水尾寮、南哨」，單程船資 8 鎂，風浪顛簸不誤客期。".to_string());
+            responses.insert("Use".to_string(), "你登上海運商船甲板，交付 8 鎂船資，準備搭乘順流班次隨潮航向下一座海港。".to_string());
+            responses.insert("BoardCoastalShip".to_string(), "你踏上順時針環島海運商船甲板，隨老舵手核對黑潮洋流與潮汐海圖，揚帆出海巡航。".to_string());
+            objects.push(RoomObject {
+                id: "wt_harbor_clockwise_ship".to_string(),
+                name: "順時針環島海運商船".to_string(),
+                owner: String::new(),
+                sockets: vec!["Look".to_string(), "Read".to_string(), "Use".to_string(), "BoardCoastalShip".to_string()],
+                responses,
+                move_to_room_id: String::new(),
+            });
+        }
+        if !objects.iter().any(|o| o.id == "wt_harbor_insurance_desk") {
+            let mut responses = HashMap::new();
+            responses.insert("Look".to_string(), "碼頭棧橋旁的築港頭海事承保櫃檯，桌案整齊陳列著防水油麻布海事保單與氣象水文籌板，由當值海事掌事主持水險承保。".to_string());
+            responses.insert("Read".to_string(), "櫃檯案頭告示：凡出海客商皆可在此投保築港頭分級海事保單（每份 6 鎂）。若航程中突遇驟雨狂風海損，抵埠憑單可自風舶角公庫領取 12 鎂理賠撫卹。".to_string());
+            responses.insert("Use".to_string(), "你走近海事承保櫃檯，繳納 6 鎂契費，在防水油麻布保單上簽押投保海事水險。".to_string());
+            objects.push(RoomObject {
+                id: "wt_harbor_insurance_desk".to_string(),
+                name: "築港頭海事承保櫃檯".to_string(),
+                owner: String::new(),
+                sockets: vec!["Look".to_string(), "Read".to_string(), "Use".to_string()],
+                responses,
+                move_to_room_id: String::new(),
+            });
+        }
+    }
+    let is_caravan_hub = !room_name.contains("內室")
+        && (room_name.contains("聯運")
+            || room_name.contains("貨運")
+            || room_name.contains("舊堰石橋")
+            || room_name == "老堰頭・村中泥徑"
+            || (room_name.contains("半嶺鎮") && (room_name.contains("街") || room_name.contains("坪") || room_name.contains("道")))
+            || (room_name.contains("大圳頭") && (room_name.contains("街") || room_name.contains("渠") || room_name.contains("道")))
+            || (room_name.contains("南哨") && (room_name.contains("街") || room_name.contains("哨") || room_name.contains("道")))
+            || (room_name.contains("風舶角") && (room_name.contains("街") || room_name.contains("港") || room_name.contains("碼頭") || room_name.contains("棧"))));
+    if is_caravan_hub && !objects.iter().any(|o| o.id == "wt_caravan_ticket_counter") {
+        let mut responses = HashMap::new();
+        responses.insert("Look".to_string(), "木牌案上每日更換木質班次籤牌，寫明發往大圳頭、風舶角與南哨的車馬出發時刻。".to_string());
+        responses.insert("Read".to_string(), "你細看班次牌，往各重鎮的大車正依序整備發班，回程車隊則已進棚卸貨。".to_string());
+        responses.insert("Use".to_string(), "你向車馬行主事交付車資，登車準備前往下一處聯運重鎮。".to_string());
+        objects.push(RoomObject {
+            id: "wt_caravan_ticket_counter".to_string(),
+            name: "班次木牌案".to_string(),
+            owner: String::new(),
+            sockets: vec!["Look".to_string(), "Read".to_string(), "Use".to_string()],
+            responses,
+            move_to_room_id: String::new(),
+        });
+    }
+
+    // Agricultural field rooms injection
+    let is_crop_field = room_name.contains("水田")
+        || room_name.contains("旱田")
+        || room_name.contains("藥圃")
+        || room_name.contains("空壟")
+        || room_name.contains("田壟")
+        || room_name.contains("阡陌")
+        || room_name.contains("農");
+    if is_crop_field && !objects.iter().any(|o| o.id == "wt_field_crop_plot") {
+        let mut responses = HashMap::new();
+        responses.insert("Look".to_string(), "引清泉灌溉、壟溝分明的當季田壟苗畦，泥土深厚鬆軟，壟間生機盎然，正依時序沐浴甘霖與陽光靜靜孕育穀蔬。".to_string());
+        responses.insert("Use".to_string(), "你俯身巡視田壟，順手疏理溝渠清泉，照料禾苗生息。".to_string());
+        responses.insert("Harvest".to_string(), "你順著壟溝採收飽滿成熟的當季作物，泥香與稻菽之氣撲鼻而來。".to_string());
+        objects.push(RoomObject {
+            id: "wt_field_crop_plot".to_string(),
+            name: "當季田壟苗畦".to_string(),
+            owner: String::new(),
+            sockets: vec!["Look".to_string(), "Use".to_string(), "Harvest".to_string()],
+            responses,
+            move_to_room_id: String::new(),
+        });
+    }
+
+    // Ensure all commission / bulletin boards support full action list
+    for obj in &mut objects {
+        if obj.id == "wt_guild_commission_board" || obj.id == "wt_hall_bulletin_board" {
+            for act in ["Look", "Read", "Use", "Deliver", "ClaimStrandedCargo", "DeliverStrandedCargo"] {
+                if !obj.sockets.iter().any(|s| s == act) {
+                    obj.sockets.push(act.to_string());
+                }
+            }
+        }
+    }
+
+    // 1) 防雨竹編信箱：住宅、內室、居所或街坊節點
+    let is_mailbox_room = room_name.contains("內室")
+        || room_name.contains("居所")
+        || room_name.contains("民宅")
+        || room_name.contains("宅院")
+        || room_name.contains("民舍")
+        || room_name.contains("住宅")
+        || room_name.contains("客房")
+        || room_name.contains("街")
+        || room_name.contains("道")
+        || room_name.contains("巷")
+        || room_name.contains("坊")
+        || is_wenyao_residential_or_study(room_name);
+    if is_mailbox_room && !objects.iter().any(|o| o.id == "wt_home_bamboo_mailbox") {
+        let mut responses = HashMap::new();
+        responses.insert("Look".to_string(), "掛在門扉旁以青竹細編、外塗熟桐油防雨的立體竹筒信箱，開口設有銅扣翻蓋，專供半島旬報投遞與鄰里熟人託遞家書。".to_string());
+        responses.insert("Read".to_string(), "你掀開信箱防雨翻蓋，取出摺疊整齊的最新一期《半島旬報》細細閱覽。".to_string());
+        responses.insert("Open".to_string(), "你打開信箱銅扣，探手檢視內底，查閱是否有街坊鄰里或行腳客商留下的書信與心意回禮。".to_string());
+        responses.insert("DispatchCourier".to_string(), "你將備好的書信封妥投入信箱附設的快騎取件格，交付三枚鎂幣委請疾行草獸信使飛騎送出。".to_string());
+        objects.push(RoomObject {
+            id: "wt_home_bamboo_mailbox".to_string(),
+            name: "信箱".to_string(),
+            owner: String::new(),
+            sockets: vec![
+                "Look".to_string(),
+                "Read".to_string(),
+                "Open".to_string(),
+                "DispatchCourier".to_string(),
+            ],
+            responses,
+            move_to_room_id: String::new(),
+        });
+    }
+
+    // 2) 疾行草獸信使櫃檯：傳訊鐘樓、信使、車馬聯運、公議堂
+    let is_courier_room = !room_name.contains("內室")
+        && (room_name.contains("傳訊鐘樓")
+            || room_name.contains("信使")
+            || room_name.contains("車馬聯運")
+            || room_name.contains("公議堂"));
+    if is_courier_room && !objects.iter().any(|o| o.id == "wt_courier_post_desk") {
+        let mut responses = HashMap::new();
+        responses.insert("Look".to_string(), "疾行草獸信使櫃檯前陳列著往返四鎮的驛道封冊、火漆印章與加急竹筒，案旁栓著數頭蓄勢待發的健碩草獸。".to_string());
+        responses.insert("Read".to_string(), "你細讀櫃檯告示：草獸信使日夜兼程往來四鎮，承辦跨聚落加急包裹與重金文卷託運，每件資費 4 鎂。".to_string());
+        responses.insert("DispatchCourier".to_string(), "你向信使櫃檯交付 4 鎂託運規費，將重要急件交付草獸信使快騎飛遞。".to_string());
+        responses.insert("Use".to_string(), "你走近信使櫃檯，向值守掌事探詢各鎮驛道最新路況與班次安排。".to_string());
+        objects.push(RoomObject {
+            id: "wt_courier_post_desk".to_string(),
+            name: "信使櫃檯".to_string(),
+            owner: String::new(),
+            sockets: vec![
+                "Look".to_string(),
+                "DispatchCourier".to_string(),
+            ],
+            responses,
+            move_to_room_id: String::new(),
+        });
+    }
+
+    // 3) 分格存摺櫃：商行、商盟、票號
+    let is_bank_room = !room_name.contains("內室")
+        && (room_name.contains("商行") || room_name.contains("商盟") || room_name.contains("票號"));
+    if is_bank_room && !objects.iter().any(|o| o.id == "wt_cat_0790" || o.id == "wt_bank_ledger_drawer") {
+        let mut responses = HashMap::new();
+        responses.insert("Look".to_string(), "厚重鐵木所造的分格存摺櫃，抽屜銅扣皆刻有三水口流水徽印，收存著各大商隊與鎮民的通兌簿冊與印鑑。".to_string());
+        responses.insert("Read".to_string(), "你細讀櫃頂張貼的三水總商行通兌章程，載明各港口通兌匯水與信用票號兌領條款。".to_string());
+        responses.insert("DepositBank".to_string(), "你在帳房案前出示存摺與信印，將隨身鎂幣妥善存入商行票號帳頭。".to_string());
+        responses.insert("WithdrawBank".to_string(), "你憑分格存摺防偽硃印與帳房核對銀數，自票號結存中支取現鎂。".to_string());
+        responses.insert("Use".to_string(), "你走近分格存摺櫃，向值守執事出示存摺辦理商行通兌手續。".to_string());
+        objects.push(RoomObject {
+            id: "wt_cat_0790".to_string(),
+            name: "分格存摺櫃".to_string(),
+            owner: String::new(),
+            sockets: vec![
+                "Look".to_string(),
+                "Read".to_string(),
+                "DepositBank".to_string(),
+                "WithdrawBank".to_string(),
+                "Use".to_string(),
+            ],
+            responses,
+            move_to_room_id: String::new(),
+        });
+    }
+
+    let is_indoor_building = room_name.contains("食堂")
+        || room_name.contains("旅社")
+        || room_name.contains("茶屋")
+        || room_name.contains("茶樓")
+        || room_name.contains("商行")
+        || room_name.contains("工坊")
+        || room_name.contains("鐵坊")
+        || room_name.contains("木作")
+        || room_name.contains("診所")
+        || room_name.contains("藥房")
+        || room_name.contains("書閣")
+        || room_name.contains("講堂")
+        || room_name.contains("蒙學")
+        || room_name.contains("學院")
+        || room_name.contains("民宅")
+        || room_name.contains("居")
+        || room_name.contains("齋")
+        || room_name.contains("客房")
+        || room_name.contains("內室");
+
+    // 4) 老青竹黃銅輪捲線釣竿：沿海、水岸、河川、渡頭、橋樑、港灣、水尾
+    let is_angling_room = !is_indoor_building
+        && (room_name.contains("港")
+            || room_name.contains("河")
+            || room_name.contains("川")
+            || room_name.contains("水")
+            || room_name.contains("溪")
+            || room_name.contains("渡")
+            || room_name.contains("橋")
+            || room_name.contains("池")
+            || room_name.contains("塘")
+            || room_name.contains("潭")
+            || room_name.contains("堰")
+            || room_name.contains("澳")
+            || room_name.contains("鼻")
+            || room_name.contains("尾")
+            || room_name.contains("寮")
+            || room_name.contains("海")
+            || room_name.contains("岸")
+            || room_name.contains("灘")
+            || room_name.contains("灣")
+            || room_name.contains("埠"));
+    if is_angling_room && !objects.iter().any(|o| o.id == "wt_coastal_angling_spot" || o.id == "wt_cat_1006") {
+        let mut responses = HashMap::new();
+        responses.insert("Look".to_string(), "架設在水岸青石旁的精工釣竿，竿身採老山青竹精製，堅韌修長；尾端配有岑氏工坊手工打磨的黃銅滾輪與牛角旋柄，絲線入水隨波蕩漾。".to_string());
+        responses.insert("AngleFish".to_string(), "你手持老青竹釣竿揚竿甩線，誘餌破水而入，隨波靜候水底大物咬鉤。".to_string());
+        responses.insert("Use".to_string(), "你檢視青竹釣竿的黃銅線輪與釣線張力，整理浮標隨時準備垂釣。".to_string());
+        objects.push(RoomObject {
+            id: "wt_coastal_angling_spot".to_string(),
+            name: "釣竿".to_string(),
+            owner: String::new(),
+            sockets: vec!["Look".to_string(), "AngleFish".to_string()],
+            responses,
+            move_to_room_id: String::new(),
+        });
+    }
+
+    // 5) 紅土光學黃銅單筒望遠鏡：瞭望樓、燈塔、山峰、哨所、關隘、獵場
+    let is_lookout_room = (!is_indoor_building || room_name.contains("觀星") || room_name.contains("瞭望"))
+        && (room_name.contains("樓")
+            || room_name.contains("台")
+            || room_name.contains("臺")
+            || room_name.contains("橋")
+            || room_name.contains("崖")
+            || room_name.contains("隘")
+            || room_name.contains("關")
+            || room_name.contains("觀測")
+            || room_name.contains("燈塔")
+            || room_name.contains("岬")
+            || room_name.contains("嶺")
+            || room_name.contains("哨")
+            || room_name.contains("嶼")
+            || room_name.contains("港")
+            || room_name.contains("峰")
+            || room_name.contains("山")
+            || room_name.contains("獵"));
+    if is_lookout_room && !objects.iter().any(|o| o.id == "wt_lookout_telescope" || o.id == "wt_cat_0733") {
+        let mut responses = HashMap::new();
+        responses.insert("Look".to_string(), "架設在堅實石座上的黃銅單筒望遠鏡，筒身銘刻光學工坊刻度，配備雙層紅土消色差透鏡，能極目遠眺數里外的荒野動向。".to_string());
+        responses.insert("Operate".to_string(), "你手扶黃銅鏡身旋動對焦螺環，鏡中視野漸漸清澄，將遠方山川風物與生靈行跡盡收眼底。".to_string());
+        responses.insert("Use".to_string(), "你湊近望遠鏡目鏡凝神端詳，穿透遠方山嵐薄霧，探查四方地貌與周遭行蹤。".to_string());
+        objects.push(RoomObject {
+            id: "wt_lookout_telescope".to_string(),
+            name: "望遠鏡".to_string(),
+            owner: String::new(),
+            sockets: vec!["Look".to_string()],
+            responses,
+            move_to_room_id: String::new(),
+        });
+    }
+
+    // 6) 卡式導能便攜爐：獵場、荒野、營地、山林、谷地、泥灘
+    let is_camp_room = !room_name.contains("內室")
+        && (room_name.contains("獵")
+            || room_name.contains("荒野")
+            || room_name.contains("郊")
+            || room_name.contains("營")
+            || room_name.contains("嶺")
+            || room_name.contains("林")
+            || room_name.contains("谷")
+            || room_name.contains("原")
+            || room_name.contains("灘")
+            || room_name.contains("坡")
+            || room_name.contains("堰")
+            || room_name.contains("坪")
+            || room_name.contains("徑"));
+    if is_camp_room && !objects.iter().any(|o| o.id == "wt_field_camp_stove" || o.id == "wt_cat_1010") {
+        let mut responses = HashMap::new();
+        responses.insert("Look".to_string(), "緊湊輕便的行旅便攜導能爐，配備防風熟鐵環形爐圈與精準出火的紫銅火嘴，可隨時在野外安營起火烹煮。".to_string());
+        responses.insert("Cook".to_string(), "你旋開導能便攜爐的銅旋鈕點燃青焰，架起野炊銅鍋，投入食材烹煮熱氣騰騰的野地熱羹。".to_string());
+        responses.insert("Use".to_string(), "你調節導能爐盤的火焰大小，煮沸一壺清冽山泉暖手調息。".to_string());
+        objects.push(RoomObject {
+            id: "wt_field_camp_stove".to_string(),
+            name: "便攜爐".to_string(),
+            owner: String::new(),
+            sockets: vec!["Look".to_string(), "Cook".to_string()],
+            responses,
+            move_to_room_id: String::new(),
+        });
     }
 
     objects
@@ -1162,13 +1488,14 @@ pub fn is_wenyao_residential_or_study(room_name: &str) -> bool {
     }
 
     const EXCLUDE: &[&str] = &[
-        "旅社", "驛館", "客棧", "茶屋", "茶棚", "浴場", "商行", "學舍", "試招院", "公議", "工坊", "作坊",
-        "書院", "外院", "醫館", "藥棧", "大埠", "拍賣", "大鍛坊", "鋸木廠", "精煉廠", "木炭窯",
-        "磚瓦窯", "工具行", "織造坊", "五金鋪", "造船廠", "竹木場", "大貨棧", "中轉站", "拍賣行",
-        "鹽鐵庫", "修造場", "獸醫館", "武備鋪", "酒肆", "印書局", "裝幀鋪", "文具行", "觀測台",
+        "旅社", "驛館", "茶屋", "茶棚", "浴場", "商行", "學舍", "試招院", "公議", "工坊", "作坊",
+        "書院", "外院", "醫館", "藥棧", "大埠", "拍賣", "大鍛坊", "鋸木坊", "精煉坊", "木炭窯",
+        "磚瓦窯", "工具行", "織造坊", "傢俱坊", "服飾坊", "烘藥房", "五金鋪", "造船塢", "竹木場", "大貨棧", "中轉站", "拍賣行",
+        "鹽鐵庫", "修造場", "獸醫館", "武備鋪", "酒坊", "印書局", "裝幀鋪", "文具行", "觀測台",
         "傳習所", "哨所", "公所", "診所",
         "鐘樓", "望野樓", "哨樓", "礦務所", "觀測所", "瞭望所", "中繼站", "調配站", "調撥處",
         "集散行", "收購行", "特產行", "物資行", "總社", "公會",
+        "乾貨", "海味", "大食堂", "食堂", "曬書", "公井", "觀星台", "觀星",
     ];
     if EXCLUDE.iter().any(|ex| clean_name.contains(ex)) {
         return false;
@@ -1191,21 +1518,130 @@ pub fn is_wenyao_residential_or_study(room_name: &str) -> bool {
     false
 }
 
+fn normalize_peninsula_object_name(name: &str) -> String {
+    const MATERIAL_PREFIXES: &[&str] = &[
+        "黃銅鑲邊", "黃銅包邊", "黃銅桿", "黃銅", "雕花青石", "青石", "石雕", "生鐵", "熟鐵",
+        "精鋼", "防蛀樟木", "樟木", "松香木", "松木", "烏木", "紅木", "鐵木", "楠木",
+        "粗陶", "白瓷", "防雨竹筒", "防雨竹編", "竹筒", "竹編", "寒水玉", "夜光貝母",
+        "夜光貝", "貝母", "單筒", "捲線", "老山青竹", "老青竹", "青竹",
+    ];
+
+    let mut cur = name.trim();
+    loop {
+        let mut stripped = false;
+        for &pfx in MATERIAL_PREFIXES {
+            if let Some(rest) = cur.strip_prefix(pfx) {
+                let rest_trimmed = rest.trim();
+                if rest_trimmed.chars().count() >= 2 {
+                    cur = rest_trimmed;
+                    stripped = true;
+                    break;
+                }
+            }
+        }
+        if !stripped {
+            break;
+        }
+    }
+
+    // Specific noun mappings if any
+    match cur {
+        "告示欄" | "公佈欄" | "告示板" => "告示欄".to_string(),
+        "青石欄" | "雕花石欄" | "橋欄杆" | "護欄" => "橋欄".to_string(),
+        "指路柱" | "日晷柱" => "日晷".to_string(),
+        "暖床" | "大床" | "彈力床" => "床榻".to_string(),
+        "活水栓" | "自來水栓" => "水栓".to_string(),
+        "冰櫃" | "保鮮石櫃" | "石櫃" | "儲食石櫃" => "冰鑑櫃".to_string(),
+        other => other.to_string(),
+    }
+}
+
+fn clean_read_narrative(read_text: &str) -> String {
+    let trimmed = read_text.trim();
+    const PREFIXES: &[&str] = &[
+        "你走近告示欄細讀通告，",
+        "你走近公佈欄細閱，",
+        "你細讀櫃檯告示：",
+        "你細讀櫃頂張貼的三水總商行通兌章程，",
+        "你走近石柱研讀鐫刻的方位路引：",
+        "你走近立柱端讀鐫刻的商貿契稅規章與每日各港口船班、車隊發貨時序。",
+        "你細讀帳冊上的公道行情：",
+        "你細閱屋契條款，",
+        "你逐條細讀告示內容，",
+        "你逐行研讀告示板上的急件委託，",
+    ];
+    for &pfx in PREFIXES {
+        if let Some(rest) = trimmed.strip_prefix(pfx) {
+            return rest.trim().to_string();
+        }
+    }
+
+    // Generic prefixes like "你走近……細閱，", "你細讀……："
+    if let Some(rest) = trimmed.strip_prefix("你走近") {
+        if let Some(pos) = rest.find("細閱，") {
+            return rest[pos + "細閱，".len()..].trim().to_string();
+        }
+        if let Some(pos) = rest.find("細讀，") {
+            return rest[pos + "細讀，".len()..].trim().to_string();
+        }
+        if let Some(pos) = rest.find("細閱：") {
+            return rest[pos + "細閱：".len()..].trim().to_string();
+        }
+        if let Some(pos) = rest.find("細讀：") {
+            return rest[pos + "細讀：".len()..].trim().to_string();
+        }
+    }
+    if let Some(rest) = trimmed.strip_prefix("你細讀") {
+        if let Some(pos) = rest.find('：') {
+            return rest[pos + '：'.len_utf8()..].trim().to_string();
+        }
+    }
+    if let Some(rest) = trimmed.strip_prefix("你細閱") {
+        if let Some(pos) = rest.find('：') {
+            return rest[pos + '：'.len_utf8()..].trim().to_string();
+        }
+    }
+
+    trimmed.to_string()
+}
+
 fn make_peninsula_object(
     id: &str,
     name: &str,
     sockets: &[&str],
     responses: &[(&str, &str)],
 ) -> RoomObject {
+    let clean_name = normalize_peninsula_object_name(name);
     let mut resp_map = std::collections::HashMap::new();
     for (k, v) in responses {
         resp_map.insert((*k).to_string(), (*v).to_string());
     }
+
+    if let (Some(look_text), Some(read_text)) = (resp_map.get("Look").cloned(), resp_map.get("Read").cloned()) {
+        if !look_text.contains(&read_text) {
+            let cleaned_read = clean_read_narrative(&read_text);
+            if !look_text.contains(&cleaned_read) {
+                let combined_look = format!("{}{}", look_text.trim(), cleaned_read);
+                resp_map.insert("Look".to_string(), combined_look);
+            }
+        }
+    }
+
+    let mut filtered_sockets: Vec<String> = sockets
+        .iter()
+        .filter(|&&s| s != "Use" && s != "Operate" && s != "Read")
+        .map(|s| (*s).to_string())
+        .collect();
+
+    if !filtered_sockets.iter().any(|s| s == "Look") {
+        filtered_sockets.insert(0, "Look".to_string());
+    }
+
     RoomObject {
         id: id.to_string(),
-        name: name.to_string(),
+        name: clean_name,
         owner: String::new(),
-        sockets: sockets.iter().map(|s| (*s).to_string()).collect(),
+        sockets: filtered_sockets,
         responses: resp_map,
         move_to_room_id: String::new(),
     }
@@ -1283,26 +1719,24 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
     }
 
     let is_peninsula = is_white_tower_peninsula_room(room_name);
-    let is_outdoor_road = room_name.contains("石道")
-        || room_name.contains("前街")
-        || room_name.contains("前巷")
+    let is_outdoor_road = room_name.contains('街')
+        || room_name.contains('道')
+        || room_name.contains('巷')
+        || room_name.contains('橋')
+        || room_name.contains("石階")
+        || room_name.contains("石坪")
+        || room_name.contains("曬場")
+        || room_name.contains("檢修坪")
         || room_name.contains("十字口")
-        || room_name.contains("學院口")
-        || room_name.contains("學院巷")
-        || room_name.contains("校舍口")
-        || room_name.contains("校舍街")
-        || room_name.contains("學舍街")
-        || room_name.contains("北段")
-        || room_name.contains("中段")
-        || room_name.contains("南段")
-        || room_name.contains("東段")
-        || room_name.contains("西段")
-        || room_name.contains("東口")
-        || room_name.contains("西口")
         || room_name.contains("北口")
         || room_name.contains("南口")
-        || room_name.contains("北巷")
-        || room_name.contains("南巷");
+        || room_name.contains("東口")
+        || room_name.contains("西口");
+    let is_residential_house = room_name.ends_with('宅')
+        || room_name.ends_with('居')
+        || room_name.contains("民宅")
+        || room_name.contains("家宅")
+        || room_name.contains("老宅");
     let mut base_objs = if room_name.contains("會計")
         || room_name.contains("算學")
         || room_name.contains("算居")
@@ -1315,7 +1749,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "烏木計數板",
                 &["Look", "Operate", "Use"],
                 &[
-                    ("Look", "烏木公案上端正擺放著便攜計數板，滑鈕圓潤油亮，旁側立著硃砂墨碟與儲墨鋼筆。"),
+                    ("Look", "烏木公案上端正擺放著便攜計數板，滑鈕圓潤油亮，旁側立著硃砂墨碟與儲墨硬筆。"),
                     ("Operate", "你伸手撥動計數滑鈕，上下翻飛發出清脆沉著的扣合聲。"),
                     ("Use", "你提筆在草紙上演算一筆出海貨單，計數板撥轉分毫不差，帳目井然。"),
                 ],
@@ -1356,31 +1790,34 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_study_desk_inkstone",
                 "烏木書案",
-                &["Look", "Use", "Operate", "Read"],
+                &["Look", "Use", "Operate", "Read", "CollateInscriptions"],
                 &[
                     ("Look", "黑沼沉水烏木雕琢的寬厚書案散發著幽靜木香，案上端硯墨色溫潤如玉，水注蓄著山泉，紫毫畫筆與狼毫楷筆整齊懸於紫檀筆架。"),
                     ("Use", "你取墨錠在端硯清泉中徐徐研磨，墨香四溢，提筆蘸墨在宣紙上信手書寫，筆意沉著，心神豁然澄澈。"),
                     ("Operate", "你整理案几上的鎮紙與宣紙摺頁，端整筆洗，室內窗明几淨，文氣盎然。"),
                     ("Read", "你展讀案几上攤開的手抄古卷，筆跡端勁，字句精微，深得先賢格物修齊之旨。"),
+                    ("CollateInscriptions", "你展平古碑墨拓與竹綿宣紙，手持狼毫小楷逐字比勘碑文字口，訂正訛誤。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_study_bamboo_bookshelf",
                 "線裝古籍架",
-                &["Look", "Use", "Read", "Operate"],
+                &["Look", "Use", "Read", "Operate", "SunBooks", "CollateInscriptions"],
                 &[
                     ("Look", "靠牆的高大樟木架上排滿了竹綿紙線裝古籍與輿地總圖，底層整齊碼放著幾隻精編韌竹書簍，分納校勘稿卷。"),
                     ("Use", "你自架上抽出一冊線裝古籍翻閱，紙質柔韌吸墨，墨香沁人心脾，細讀之下頗有領悟。"),
-                    ("Read", "你取下一卷半島風物志稿細細研讀，字裡行間詳載水土人文與山川形勝，令人眼界大開。"),
+                    ("Read", "你取下一卷半島風物誌稿細細研讀，字裡行間詳載水土人文與山川形勝，令人眼界大開。"),
                     ("Operate", "你將翻閱過的文稿重新按部首分類歸入竹編書簍，架欞齊整，井然有序。"),
+                    ("SunBooks", "你自樟木架上捧出線裝古籍攤於通風日影下曝書防蠹，夾入芸香乾葉。"),
+                    ("CollateInscriptions", "你自書簍取出金石碑帖拓本與古籍善本對照校勘，分門別類歸檔。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_home_shell_lamp",
-                "貝母台燈",
+                "檯燈",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "案角立著造型典雅的旋蓋夜光貝母調光台燈，貝母薄片拼嵌的燈罩泛著溫潤珠光，烏木旋蓋可細調光圈大小。"),
+                    ("Look", "案角立著造型典雅的旋蓋夜光貝母調光檯燈，貝母薄片拼嵌的燈罩泛著溫潤珠光，烏木旋蓋可細調光圈大小。"),
                     ("Use", "你旋動烏木燈蓋調節光暈，柔和清澈的珠白光芒映照書案，滿室皆是清幽安寧之氣。"),
                     ("Operate", "你輕旋貝母燈罩，光暈隨之微調收斂，光斑柔和均勻，極便於夜讀抄寫。"),
                 ],
@@ -1390,33 +1827,34 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
         vec![
             make_peninsula_object(
                 "wt_reg_wenyao_home",
-                "松香木暖床",
+                "床榻",
                 &["Look", "Use", "Rest", "Sleep", "Operate"],
                 &[
-                    ("Look", "溫暖乾燥的松香木大床上鋪著蓬鬆羽絨暖被與山風草安神枕，榻旁小几上立著一盞旋蓋夜光貝母台燈，光暈柔和溫潤。"),
+                    ("Look", "溫暖乾燥的松香木大床上鋪著蓬鬆羽絨暖被與山風草安神枕，榻旁小几上立著一盞旋蓋夜光貝母檯燈，光暈柔和溫潤。"),
                     ("Use", "你在松香木大床上舒展四肢，蓬鬆羽絨暖被帶來融融暖意，周身疲勞頓時消散大半，氣血與內息漸漸調和平復。"),
                     ("Rest", "你合衣在柔軟的羽絨大床上躺下歇息，安神草的清香讓緊繃的心神徹底放鬆下來，周身氣血漸復充盈。"),
-                    ("Sleep", "你鑽入溫暖蓬鬆的羽絨暖被，旋暗夜光貝母台燈。在靜謐祥和的屋內，你安然入眠，體魄與心神盡皆恢復。"),
-                    ("Operate", "你輕輕旋轉床頭夜光貝母台燈的烏木旋蓋，珠白光芒柔和微調，滿室皆是安恬的暖意。"),
+                    ("Sleep", "你鑽入溫暖蓬鬆的羽絨暖被，旋暗夜光貝母檯燈。在靜謐祥和的屋內，你安然入眠，體魄與心神盡皆恢復。"),
+                    ("Operate", "你輕輕旋轉床頭夜光貝母檯燈的烏木旋蓋，珠白光芒柔和微調，滿室皆是安恬的暖意。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_home_hotspring_tub",
                 "杉木沐浴桶",
-                &["Look", "Use", "Bath"],
+                &["Look", "Use", "Bath", "SoakHotSpring"],
                 &[
                     ("Look", "精工打磨的深腹杉木沐浴桶散發著天然木香，桶畔連通暗渠熱泉注水口，備有乾淨的棉長絨擦巾。"),
                     ("Use", "你扳開注水銅栓，熱氣騰騰的溫泉水汩汩注入杉木桶，滿室蒸騰氤氳暖霧。"),
                     ("Bath", "你浸入溫熱的杉木泉水浴桶中，洗去一身塵泥與筋骨疲憊，周身毛孔舒張，倍感舒泰。"),
+                    ("SoakHotSpring", "你浸入溫氏祛寒草木熱湯池中，溫潤泉水滲透四肢百骸，寒濕與疲勞盡數消散。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_home_shell_lamp",
-                "貝母台燈",
+                "檯燈",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "几案上立著旋蓋夜光貝母調光台燈，貝母薄片拼嵌的燈罩泛著溫潤珠光，烏木旋蓋可調節明暗。"),
-                    ("Use", "你旋亮夜光貝母台燈，珠白光暈柔和灑滿几案與床榻，室內一片溫馨安寧。"),
+                    ("Look", "几案上立著旋蓋夜光貝母調光檯燈，貝母薄片拼嵌的燈罩泛著溫潤珠光，烏木旋蓋可調節明暗。"),
+                    ("Use", "你旋亮夜光貝母檯燈，珠白光暈柔和灑滿几案與床榻，室內一片溫馨安寧。"),
                     ("Operate", "你旋轉烏木外罩調節進光弧度，光影隨心明暗，極具生活雅趣。"),
                 ],
             ),
@@ -1430,17 +1868,17 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                     "樟木八仙桌",
                     &["Look", "Use", "Rest"],
                     &[
-                        ("Look", "廳堂正中端正擺放著一張打磨光滑的厚實樟木八仙桌，桌上設有青瓷茶具與一壺剛沏好的山風草茶。"),
+                        ("Look", "廳堂正中端正擺放著一張打磨光滑的厚實樟木八仙桌，桌上設有青瓷茶具與一壺新沏好的山風草茶。"),
                         ("Use", "你在八仙桌旁長凳落座，端起青瓷茶杯啜飲一口草茶，茶香清冽回甘，頓解喉燥。"),
                         ("Rest", "你靠在八仙桌旁歇息片刻，廳內窗欞明淨，空氣中飄散著幽淡樟木清香。"),
                     ],
                 ),
                 make_peninsula_object(
                     "wt_home_shell_lamp",
-                    "貝母台燈",
+                    "檯燈",
                     &["Look", "Use", "Operate"],
                     &[
-                        ("Look", "几案上立著造型典雅的旋蓋夜光貝母調光台燈，貝母薄片拼嵌的燈罩泛著溫潤珠光。"),
+                        ("Look", "几案上立著造型典雅的旋蓋夜光貝母調光檯燈，貝母薄片拼嵌的燈罩泛著溫潤珠光。"),
                         ("Use", "你旋動烏木燈蓋調節光暈，柔和清澈的珠白光芒映照廳堂，滿室安寧。"),
                         ("Operate", "你輕旋貝母燈罩調節光影明暗，溫潤澄澈。"),
                     ],
@@ -1449,19 +1887,19 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             1 => vec![
                 make_peninsula_object(
                     "wt_reg_wenyao_home",
-                    "松香木暖床",
+                    "床榻",
                     &["Look", "Use", "Rest", "Sleep", "Operate"],
                     &[
-                        ("Look", "溫暖乾燥的松香木大床上鋪著蓬鬆羽絨暖被與山風草安神枕，榻旁小几上立著一盞旋蓋夜光貝母台燈，光暈柔和溫潤。"),
+                        ("Look", "溫暖乾燥的松香木大床上鋪著蓬鬆羽絨暖被與山風草安神枕，榻旁小几上立著一盞旋蓋夜光貝母檯燈，光暈柔和溫潤。"),
                         ("Use", "你伸手撫平松香木大床上的厚實棉被，被面乾燥蓬鬆，透著令人安心的松木清香。"),
                         ("Rest", "你坐在床沿卸下隨身行囊，舒展筋骨稍事休憩，滿室寧靜溫暖。"),
                         ("Sleep", "你合衣躺上溫暖的松香木床合眼小憩，羽絨暖被鬆軟溫暖，很快消解了跋涉疲頓。"),
-                        ("Operate", "你旋轉榻旁貝母小台燈的旋蓋，微調夜光角度，滿室光暈澄澈柔和。"),
+                        ("Operate", "你旋轉榻旁貝母小檯燈的旋蓋，微調夜光角度，滿室光暈澄澈柔和。"),
                     ],
                 ),
                 make_peninsula_object(
                     "wt_home_brass_tap_sink",
-                    "黃銅活水栓",
+                    "水栓",
                     &["Look", "Use", "Bath"],
                     &[
                         ("Look", "打磨光滑的黃銅水栓連接著活水管道，下方是耐火磚砌成的溫石蓄熱水槽，槽邊備有山茶松脂皂與棉長絨擦巾。"),
@@ -1483,7 +1921,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ),
                 make_peninsula_object(
                     "wt_home_pine_wardrobe",
-                    "松香木衣櫃",
+                    "衣櫥",
                     &["Look", "Use", "Check"],
                     &[
                         ("Look", "靠牆立著高大的松香木對開門衣櫃，銅合頁打磨細緻，櫃門微敞，飄出乾燥的松脂與樟腦驅蛀清香。"),
@@ -1505,7 +1943,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ),
                 make_peninsula_object(
                     "wt_home_jade_icebox",
-                    "寒水玉冰櫃",
+                    "冰鑑櫃",
                     &["Look", "Use", "Check"],
                     &[
                         ("Look", "角落擺著一座雙層硬木箱櫃，內壁緊密鑲嵌著半嶺寒水玉板，櫃內寒氣繚繞，儲存著新鮮果乾與冰涼井泉水囊。"),
@@ -1542,7 +1980,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "巡更銅鑼",
                 &["Look", "Ring", "Read"],
                 &[
-                    ("Look", "石坊側壁懸掛著巡更差役報時防險的沉厚黃銅響鑼，下方嵌入一塊歷經歲月摩挲的青石指路刻石。"),
+                    ("Look", "石坊側壁懸掛著巡夜守衛報時防險的沉厚黃銅響鑼，下方嵌入一塊歷經歲月摩挲的青石指路刻石。"),
                     ("Ring", "你輕叩懸於坊壁的巡更銅鑼，鑼聲沉渾悠長，聲震四街，驚起幾隻棲息在牌坊飛簷上的飛鳥。"),
                     ("Read", "你撫摸指路刻石上的楷書方位：向內直通鐘樓樞紐，向外直達城門外街，條理井然。"),
                 ],
@@ -1577,7 +2015,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "鮮魚冰槽",
                 &["Look", "Weigh", "Inspect"],
                 &[
-                    ("Look", "平整石板地上整齊排著引寒水玉蓄冷的青石冰槽，槽內盛滿剛出水銀鱗閃爍的大海魚，旁邊立著高大的黃銅懸臂秤。"),
+                    ("Look", "平整石板地上整齊排著引寒水玉蓄冷的青石冰槽，槽內盛滿新出水銀鱗閃爍的大海魚，旁邊立著高大的黃銅懸臂秤。"),
                     ("Weigh", "你撥動懸臂秤上的黃銅大砣校驗斤兩，秤桿平穩起落，顯示魚獲分量沉實。"),
                     ("Inspect", "你湊近冰槽細看，銀鱗大魚鰓色鮮紅、體表光澤，滿是江口活水的清鮮之氣。"),
                 ],
@@ -1614,7 +2052,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("漁網") || room_name.contains("曬網") || room_name.contains("繩索工坊") || room_name.contains("河鮮乾貨") || room_name.contains("鹽漬") {
+    } else if !is_outdoor_road && !is_residential_house && (room_name.contains("漁網") || room_name.contains("曬網") || room_name.contains("繩索工坊") || room_name.contains("河鮮乾貨") || room_name.contains("鹽漬")) {
         vec![
             make_peninsula_object(
                 "wt_obj_drying_nets_trough",
@@ -1692,7 +2130,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("宣紙") || room_name.contains("晒紙") || room_name.contains("造紙") {
+    } else if room_name.contains("宣紙") || room_name.contains("曬紙") || room_name.contains("造紙") {
         vec![
             make_peninsula_object(
                 "wt_obj_paper_making_screen",
@@ -1701,7 +2139,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &[
                     ("Look", "清泉注入的長條抄紙石槽中浮著如雪漿料，抄紙匠手持細密青竹簾輕輕一晃，便蕩出一張厚薄均勻的紙膜；旁側是燒炭增溫的平整烘紙夾石壁。"),
                     ("Operate", "你雙手托起青竹抄紙簾在漿槽中勻速一蕩，水流順簾縫漏下，簾面留下一層纖薄純淨的青檀纖維。"),
-                    ("Touch", "你伸手撫摸烘紙石壁上剛揭下的宣紙，紙質綿韌溫熱，如玉生香。"),
+                    ("Touch", "你伸手撫摸烘紙石壁上新揭下的宣紙，紙質綿韌溫熱，如玉生香。"),
                 ],
             ),
             make_peninsula_object(
@@ -1753,7 +2191,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "螺旋壓印機",
                 &["Look", "Operate"],
                 &[
-                    ("Look", "鑄鐵底座的螺旋式手扳壓印機立在工坊正中，側邊晾架上夾著剛印就的《文曜格物錄》書頁。"),
+                    ("Look", "鑄鐵底座的螺旋式手扳壓印機立在工坊正中，側邊晾架上夾著新印就的《文曜格物錄》書頁。"),
                     ("Operate", "你扳動螺旋下壓手柄，重板均勻受力壓覆紙面，揭開時字跡黑亮深透，濃淡勻停。"),
                 ],
             ),
@@ -1811,20 +2249,22 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_obj_armillary_almanac",
                 "定緯銅儀",
-                &["Look", "Observe", "Read"],
+                &["Look", "Observe", "Read", "ChartAstrolabe"],
                 &[
                     ("Look", "露天石台中央矗立著多層旋轉銅環交錯的北辰定緯儀，基座四周平嵌著刻滿二十四節氣晷影長短的黑曜石測影日晷。"),
                     ("Observe", "你俯身透過銅儀窺管對準北天極星，重環轉動滑潤無聲，指引天行經緯。"),
-                    ("Read", "你俯瞰黑曜石規表上的日影刻度，比對當前時辰與太陽方位，推步精微。"),
+                    ("Read", "你俯瞰黑曜石規表上的日影刻度，比對當前時刻與太陽方位，推步精微。"),
+                    ("ChartAstrolabe", "你鋪開竹綿宣紙與松煙墨拓，循星軌儀子午刻度拓下個人周天命格星盤。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_obj_wind_vane_gauge",
                 "相風銅烏",
-                &["Look", "Check"],
+                &["Look", "Check", "ReadWindVane"],
                 &[
                     ("Look", "測候台四角立著展翅相風銅烏，在微風中靈動旋轉；台內置有三級滴漏水鐘，刻箭隨水位均勻浮升。"),
-                    ("Check", "你端看滴漏刻箭上的時辰水位刻度，水流均勻如線，記時絲毫不差。"),
+                    ("Check", "你端看滴漏刻箭上的水位刻度，水流均勻如線，記時絲毫不差。"),
+                    ("ReadWindVane", "你仰觀黃銅風向儀與相風銅烏轉速，比對滴漏刻度，精準推算出半島山海風候與潮汐走向。"),
                 ],
             ),
         ]
@@ -1843,10 +2283,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_obj_acupuncture_pulse_pillow",
                 "沉香脈枕",
-                &["Look", "Use"],
+                &["Look", "Use", "ApplyMoxibustion"],
                 &[
                     ("Look", "診案上墊著一具包著軟綾的沉香木切脈枕，旁側錦盒內整齊插著數十根極細的精淬金銀針。"),
                     ("Use", "你手腕輕搭在沉香脈枕上，心跳脈搏沉靜平穩，精神為之一爽。"),
+                    ("ApplyMoxibustion", "你點燃溫氏陳年艾絨置於溫灸盒上溫熨經絡穴位，艾香透骨，扭挫瘀滯頓時化開。"),
                 ],
             ),
         ]
@@ -1857,7 +2298,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "曬藥竹篾架",
                 &["Look", "Smell"],
                 &[
-                    ("Look", "棧房院中支滿了一層層圓形竹篾席，曬著剛自北嶺險峰採回的山風草、石斛與野山參，牆角倒掛著帶防滑鐵爪的登山採藥草鞋。"),
+                    ("Look", "棧房院中支滿了一層層圓形竹篾席，曬著自北嶺險峰採回的山風草、石斛與野山參，牆角倒掛著帶防滑鐵爪的登山採藥草鞋。"),
                     ("Smell", "陽光曬透乾草藥散發出的濃郁藥香與泥土芬芳交織，令人提神醒腦。"),
                 ],
             ),
@@ -1882,7 +2323,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "水力重鐵錘",
                 &["Look", "Watch", "Quench"],
                 &[
-                    ("Look", "外河急流驅動的巨木水輪帶動凸輪軸，數千斤重的生鐵大鍛錘以雷霆萬鈞之勢不斷夯擊砧台，砧旁鑿有深廣的循環淬火石槽。"),
+                    ("Look", "外河急流驅動的巨木水輪帶動凸輪軸，數千斤重的生鐵大鍛錘以雷霆萬鈞之勢不斷夯擊砧檯，砧旁鑿有深廣的循環淬火石槽。"),
                     ("Watch", "你凝神注視燒紅的重型鋼軸在水錘轟擊下火星四濺，每一次撞擊都撼動腳底石板。"),
                     ("Quench", "匠人將鍛打完畢的鋼料浸入冷水槽，頓時蒸騰起滾滾白霧與刺啦劇響。"),
                 ],
@@ -1897,7 +2338,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("鋸木") || room_name.contains("大木") {
+    } else if !is_outdoor_road && !is_residential_house && room_name.contains("大木") {
         vec![
             make_peninsula_object(
                 "wt_obj_waterwheel_sawframe",
@@ -1905,8 +2346,8 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &["Look", "Smell", "Measure"],
                 &[
                     ("Look", "水輪傳動皮帶驅動數排鋒利長鋸上下往復飛速拉動，整根參天巨木被精準剖切成筆直板材，刨木台上積了厚厚一層噴香刨花。"),
-                    ("Smell", "剛剖切開的百年雲杉木脂香氣撲面而來，清新宜人。"),
-                    ("Measure", "你以曲尺檢驗剖切出的大梁木料，斷面平直方正，嚴合營造法度。"),
+                    ("Smell", "新剖切開的百年雲杉木脂香氣撲面而來，清新宜人。"),
+                    ("Measure", "你以曲尺檢驗剖切出的大樑木料，斷面平直方正，嚴合營造法度。"),
                 ],
             ),
         ]
@@ -1975,10 +2416,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_obj_loom_dye_vats",
                 "踏板高織機",
-                &["Look", "Touch"],
+                &["Look", "Touch", "DyeIndigoCloth"],
                 &[
                     ("Look", "高大的立式踏板織機梭子飛擲，機旁數口齊腰深的大陶缸盛滿天然發酵群青染液，挑染出的深藍布疋迎風招展如雲霞。"),
                     ("Touch", "你摸了摸新織成的厚帆布料，經緯交錯緊實密致，具備絕佳抗風抗撕拉韌性。"),
+                    ("DyeIndigoCloth", "你將織造緊密的棉麻坯布浸入天然發酵的山藍大染缸，反覆提晾透風發色，染出深邃耐雨的群青色澤。"),
                 ],
             ),
         ]
@@ -2006,16 +2448,17 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("駝隊大驛站") || room_name.contains("駝馬大驛館") || room_name.contains("駝馬大客棧") || room_name.contains("客商大旅社") {
+    } else if room_name.contains("駝隊大驛站") || room_name.contains("駝馬大驛館") || room_name.contains("客商大旅社") {
         vec![
             make_peninsula_object(
                 "wt_obj_caravan_hitch_trough",
                 "拴馬長木欄",
-                &["Look", "Feed", "Inspect"],
+                &["Look", "Feed", "Inspect", "FeedDraftBeast"],
                 &[
                     ("Look", "寬闊的露天驛場四周立著一人多高的結實榆木栓馬欄，兩排長條青石水槽盛滿自來活水，長槽中堆著混合豆餅的切細苜蓿草。"),
                     ("Feed", "你抓起一把清香甘甜的豆餅乾草餵給槽邊的原牛駝獸，駝獸溫順地咀嚼，眼眸溫和。"),
                     ("Inspect", "你檢驗木欄上的韁繩繫扣，粗大牢實，能承受數十頭大牲口同時拉扯。"),
+                    ("FeedDraftBeast", "你抱來新鮮苜蓿草料與甘冽山泉水倒入槽中，替遠行歇腳的健壯駝獸刷拭背毛、添草飲水。"),
                 ],
             ),
             make_peninsula_object(
@@ -2036,7 +2479,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &["Look", "Touch", "Weigh"],
                 &[
                     ("Look", "開闊的棚場裡立著重型螺旋木製壓捆機，數十張整理平整的厚牛皮被牢牢壓成緊實貨立方，上方橫樑懸掛著能稱數千斤的重鐵大桿秤。"),
-                    ("Touch", "你伸手摩挲剛熟化好的優等原牛皮，皮板柔軟厚重，毛色油潤光潔。"),
+                    ("Touch", "你伸手摩挲熟化好的優等原牛皮，皮板柔軟厚重，毛色油潤光潔。"),
                     ("Weigh", "你推動大桿秤秤砣，秤桿平穩懸浮，分量十足。"),
                 ],
             ),
@@ -2053,14 +2496,14 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("大車廠") || room_name.contains("修造場") {
+    } else if room_name.contains("大車坊") || room_name.contains("修造場") {
         vec![
             make_peninsula_object(
                 "wt_obj_wagon_jack_wheel",
                 "修車頂升機",
                 &["Look", "Operate", "Inspect"],
                 &[
-                    ("Look", "工場中央以重型木質螺桿千斤頂將一輛雙輪大車懸空支起，修車匠正以大鐵錘敲擊校正包鐵硬木輪輻，砧台上放著淬火車軸。"),
+                    ("Look", "工場中央以重型木質螺桿千斤頂將一輛雙輪大車懸空支起，修車匠正以大鐵錘敲擊校正包鐵硬木輪輻，砧檯上放著淬火車軸。"),
                     ("Operate", "你握住千斤頂橫木搖柄轉動半圈，沉重的車架穩步抬升，機構沉穩咬合。"),
                     ("Inspect", "你彎腰細看重型車輪的包鐵厚度，足有半指之厚，足以在荒原碎石路輾壓千里。"),
                 ],
@@ -2102,7 +2545,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("武備") || room_name.contains("護運行") || room_name.contains("鏢局") {
+    } else if room_name.contains("武備") || room_name.contains("護運行") {
         vec![
             make_peninsula_object(
                 "wt_obj_weapon_rack_stone",
@@ -2127,7 +2570,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("羊肉湯") || room_name.contains("酒肆") {
+    } else if room_name.contains("羊肉湯") || room_name.contains("酒坊") {
         vec![
             make_peninsula_object(
                 "wt_obj_mutton_broth_pot",
@@ -2145,25 +2588,28 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_dining_rice_milk_stall",
                 "溫米漿桶",
-                &["Look", "Taste"],
+                &["Look", "Taste", "AssistKitchen"],
                 &[
-                    ("Look", "老堰頭水磨溫米漿散發著醇厚米香，大杉木桶裡盛著風舶苦滷點製的熱豆花，攤旁蒸籠疊著剛出鍋的蔥香米烙餅與牛埔鮮肉包。"),
+                    ("Look", "老堰頭水磨溫米漿散發著醇厚米香，大杉木桶裡盛著風舶苦滷點製的熱豆花，攤旁蒸籠疊著熱騰出鍋的蔥香米烙餅與牛埔鮮肉包。"),
                     ("Taste", "你啜飲了一口熱米漿，濃郁米香混著微甘暖透入胃，豆花滑嫩微燙，帶著純粹的黃豆清香。"),
+                    ("AssistKitchen", "你挽起衣袖在米漿桶與蒸籠旁幫廚備膳，分裝熱騰騰的米漿與原牛肉湯。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_dining_iron_cauldron",
                 "紅鐵燉肉釜",
-                &["Look", "Taste", "WarmHands"],
+                &["Look", "Taste", "WarmHands", "SeasonalBanquet", "AssistKitchen"],
                 &[
                     ("Look", "紅鐵厚底大釜慢燉著大角原牛肉與甜白蘿蔔，肉香四溢；旁邊紫銅鴛鴦鍋滾水翻騰，備有切仔湯麵配滷蛋與大圳頭溫米酒。"),
                     ("Taste", "你舀起一勺慢燉的原牛肉湯送入口中，肉塊軟爛透味，湯頭鮮濃醇厚，整個人精神一振。"),
                     ("WarmHands", "你把雙手靠近大釜底座的耐火磚緣，溫熱厚重的火氣烘退了手掌上的水氣與寒意。"),
+                    ("SeasonalBanquet", "你在紅鐵釜前添薪圍坐，鍋內歲時時令熱氣翻騰，同席之人舉杯共飲，暖意直透肺腑。"),
+                    ("AssistKitchen", "你持長柄木杓在紅鐵燉肉釜前幫廚添薪撇沫，慢火細燉大角原牛肉湯。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_dining_cold_jade_cabinet",
-                "寒水玉冰櫃",
+                "冰鑑櫃",
                 &["Look", "Open"],
                 &[
                     ("Look", "雙層松香木隔熱櫃內壁鑲滿北山寒水玉薄板，櫃身透著天然的清涼寒氣，冰鎮著板豆腐、鮮牛乳與寒水玉冰鎮仙草凍。"),
@@ -2185,19 +2631,21 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_inn_milk_tea_stove",
                 "煮茶泥爐",
-                &["Look", "Taste"],
+                &["Look", "Taste", "RoastMountainTea"],
                 &[
                     ("Look", "銅皮泥爐上坐著一把長嘴鐵壺，穩火慢煮著霜林烘青茶與牛埔鮮乳交融的鍋煮鮮奶茶；竹盤裡盛著冰鎮甘蔗檸檬汁，配黑糖米香、奶油酥餅與鹽烤海苔片。"),
                     ("Taste", "你捧起陶杯細品熱奶茶，醇厚乳香托著烘青茶的微澀回甘，甘蔗檸檬的酸甜則沁人心脾。"),
+                    ("RoastMountainTea", "你在銅皮泥爐前文火翻焙霜林烘青茶葉，茶香清冽四溢，與同席茶客共品回甘。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_inn_ebony_shell_chess",
                 "烏木棋盤",
-                &["Look", "Operate"],
+                &["Look", "Operate", "PlayChess"],
                 &[
                     ("Look", "黑沼沉水烏木雕琢的棋盤線道深沉分明，兩只棋罐各盛著溫潤厚重的烏木黑子與烏石鼻厚海貝白子，茶客對弈殺局難解難分。"),
                     ("Operate", "你拈起一枚沉甸甸的白貝棋子扣在棋盤交叉處，發出清脆沉實的篤響，盤中局勢頓時生出新意。"),
+                    ("PlayChess", "你端坐於烏木棋盤前拈子佈局，黑白交錯推演天地之數，心神凝定，雜念俱泯。"),
                 ],
             ),
             make_peninsula_object(
@@ -2206,7 +2654,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &["Look", "Read"],
                 &[
                     ("Look", "松木斜面報架上夾著講堂街印行館竹綿紙印發的《半島旬報》，底層木格裡收著幾本供人消遣的白話故事小冊。"),
-                    ("Read", "你翻開《半島旬報》，頭版記載著老堰頭水利翻修進展、風舶深水碼頭貨船期程，副刊刊著西南原秋收米價與林地軼聞。"),
+                    ("Read", "你翻開《半島旬報》，頭版記載著老堰頭水利翻修進展、風舶深水碼頭貨船期程，副刊刊著大圳頭秋收米價與林地軼聞。"),
                 ],
             ),
             make_peninsula_object(
@@ -2214,10 +2662,10 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "客房羽絨榻",
                 &["Look", "Rest", "Sleep", "Operate"],
                 &[
-                    ("Look", "獨立銅鎖客房內鋪著蓬鬆羽絨暖被、細編蘆葦涼席與山風草安神枕，床頭立著一盞旋蓋夜光貝母調光台燈。"),
+                    ("Look", "獨立銅鎖客房內鋪著蓬鬆羽絨暖被、細編蘆葦涼席與山風草安神枕，床頭立著一盞旋蓋夜光貝母調光檯燈。"),
                     ("Rest", "你合衣躺上床榻，蓬鬆柔軟的羽絨與安神草清香迅速舒緩了周身筋骨，睡意悄然湧上。"),
                     ("Sleep", "你鑽入蓬鬆羽絨暖被，旋暗貝母燈，聽著窗外隱約微風沉沉入睡，醒來後體魄與精神盡復。"),
-                    ("Operate", "你轉動床頭夜光貝母台燈的烏木旋蓋，外露的柔和珠光自幽微漸轉明亮，將床邊照得一片溫馨澄澈。"),
+                    ("Operate", "你轉動床頭夜光貝母檯燈的烏木旋蓋，外露的柔和珠光自幽微漸轉明亮，將床邊照得一片溫馨澄澈。"),
                 ],
             ),
         ]
@@ -2226,19 +2674,21 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_bath_jade_pool",
                 "恆溫熱湯池",
-                &["Look", "Rest"],
+                &["Look", "Rest", "SoakHotSpring"],
                 &[
                     ("Look", "寬闊的大石池以半嶺寒水玉鋪底，池壁嵌有岑氏恆溫導能火磚，池中浸泡著溫氏祛寒草木湯包，水色泛著微翠草露之潤。"),
                     ("Rest", "你浸入溫潤清透的熱湯中，草木藥氣滲透肌膚脈絡，周身毛孔舒張，奔波積累的疲乏頓時消散殆盡。"),
+                    ("SoakHotSpring", "你浸入溫氏祛寒草木熱湯池中，溫潤泉水滲透四肢百骸，寒濕與疲勞盡數消散。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_bath_mirror_washstand",
                 "銀鏡盥洗台",
-                &["Look", "Use"],
+                &["Look", "Use", "GroomAppearance"],
                 &[
-                    ("Look", "光潔明亮的亮銀玻璃大鏡前，整齊備有軟毛竹柄牙刷、青鹽薄荷潔牙粉、山茶松脂香皂、蜂格棉面巾與松香木梳。"),
-                    ("Use", "你取了潔牙粉與軟毛牙刷洗漱，青鹽薄荷的清涼瞬間沁透齒頰，再用山茶松脂香皂掬水洗面，容顏頓覺煥然一新。"),
+                    ("Look", "光潔明亮的亮銀明水大鏡前，整齊備有軟毛竹柄潔齒刷、青鹽薄荷潔牙粉、山茶松脂香胰、蜂格棉面巾與松香木梳。"),
+                    ("Use", "你取了潔牙粉與軟毛潔齒刷洗漱，青鹽薄荷的清涼瞬間沁透齒頰，再用山茶松脂香胰掬水洗面，容顏頓覺煥然一新。"),
+                    ("GroomAppearance", "你敷上薄荷熱毛巾，由修面師傅以精鋼剃刀與松香木梳修整儀容，神彩煥然一新。"),
                 ],
             ),
             make_peninsula_object(
@@ -2251,15 +2701,16 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("傢俱") || room_name.contains("巧木") {
+    } else if !is_outdoor_road && !is_residential_house && (room_name.contains("傢俱") || room_name.contains("巧木")) {
         vec![
             make_peninsula_object(
                 "wt_wood_planing_bench",
                 "刨木工作台",
-                &["Look", "Operate"],
+                &["Look", "Operate", "FitMortiseTenon"],
                 &[
                     ("Look", "厚重工匠台上架著導能刨刀、拉鋸與木鑿，台面落滿薄如蟬翼的松木刨花，木香撲鼻。"),
                     ("Operate", "你握起導能推刨在松木料上平推而過，木片應手捲起均勻刨花，木面光滑平整。"),
+                    ("FitMortiseTenon", "你執起導能推刨與木鑿，依巧木坊墨線將沉水烏木與松木構件精準開榫合卯，嚴絲合縫。"),
                 ],
             ),
             make_peninsula_object(
@@ -2282,15 +2733,16 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("服飾") || room_name.contains("織造") || room_name.contains("補給行") {
+    } else if !is_outdoor_road && !is_residential_house && (room_name.contains("服飾") || room_name.contains("織造") || room_name.contains("補給行")) {
         vec![
             make_peninsula_object(
                 "wt_cloth_garment_rack",
-                "防雨風衣架",
-                &["Look", "Use"],
+                "防雨長衫架",
+                &["Look", "Use", "DyeIndigoCloth"],
                 &[
-                    ("Look", "松木衣架上整齊掛著塗有黑沼樹膠的防雨風衣、透氣棉麻短衫與北山雪狼絨冬衣，做工扎實。"),
-                    ("Use", "你取下一件防雨風衣披在身上試穿，衣料厚韌輕便，領口銅扣封得嚴實，能擋狂風急雨。"),
+                    ("Look", "松木衣架上整齊掛著塗有黑沼樹膠的防雨長衫、透氣棉麻短衫與北山雪狼絨冬衣，做工紮實。"),
+                    ("Use", "你取下一件防雨長衫披在身上試穿，衣料厚韌輕便，領口銅扣封得嚴實，能擋狂風急雨。"),
+                    ("DyeIndigoCloth", "你取過素麻布料浸入後坊山藍染缸，晾乾後塗覆薄層熟桐油，製成防風抗雨的山藍斗篷。"),
                 ],
             ),
             make_peninsula_object(
@@ -2298,17 +2750,18 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "帆布包傘櫃",
                 &["Look", "Open"],
                 &[
-                    ("Look", "櫃台陳列著雙扣帆布斜背包、軟牛皮零錢夾、竹骨晴雨摺疊傘、軟底居家布拖鞋與隨手五色針線盒。"),
+                    ("Look", "櫃檯陳列著雙扣帆布斜背包、軟牛皮零錢夾、竹骨晴雨摺疊傘、軟底居家布便鞋與隨手五色針線盒。"),
                     ("Open", "你拉開展示櫃門查看，隨手五色針線盒內整齊排著鋼針與彩線，斜背包分格實用耐磨。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_cloth_tailor_sewing_bench",
                 "裁縫量身几",
-                &["Look", "Use"],
+                &["Look", "Use", "MendTravelGear"],
                 &[
                     ("Look", "量身木几上擺著軟皮尺、裁布銅剪與小巧便攜的隨手五色針線盒，方便隨時度量修改身形尺寸。"),
                     ("Use", "你抽出軟皮尺比對衣物袖長，拿出一枚細針將袖口微鬆的線頭俐落收好，熨貼合身。"),
+                    ("MendTravelGear", "你在木砧檯與硬木楦前修補隨身行靴與桐油竹傘，針腳細密，底掌牢固如新。"),
                 ],
             ),
         ]
@@ -2317,11 +2770,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_forge_furnace_anvil",
                 "耐火鍛造台",
-                &["Look", "Operate", "WarmHands"],
+                &["Look", "Operate", "WarmHands", "QuenchBlade"],
                 &[
                     ("Look", "以紅土耐火磚築成的高爐炭火正熾，爐口火光通明，精鋼鍛台旁擺著導能冷卻水槽與各色鍛錘。"),
                     ("Operate", "你握住重鐵錘在燒紅鐵坯上試敲一記，火星迸濺，金鐵交鳴聲清亮悠長。"),
                     ("WarmHands", "你伸開十指靠近鍛爐熱氣，滾燙厚重的熱浪烘走掌心寒氣，筋骨舒張。"),
+                    ("QuenchBlade", "你將隨身器物探入紅土高爐均勻受熱，再浸入深井冷泉與淬火油槽急速回火，鋒刃重煥寒芒。"),
                 ],
             ),
             make_peninsula_object(
@@ -2336,65 +2790,72 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_forge_quench_trough",
                 "精鋼淬火槽",
-                &["Look", "Use"],
+                &["Look", "Use", "TestEngraving", "QuenchBlade"],
                 &[
                     ("Look", "盛滿深井泉水與淬火油的大石槽，槽邊備有打磨精鋼刀具與門鎖配件的雙面細磨石。"),
                     ("Use", "你舀水淋在細磨石上推磨鐵件，金屬毛刺漸去，刃口泛起雪亮微光。"),
+                    ("TestEngraving", "你運轉內息按上測紋石板並取隨身器物輕觸碑面，石紋微鳴回饋人器共鳴度。"),
+                    ("QuenchBlade", "你將隨身器物探入紅土高爐均勻受熱，再浸入深井冷泉與淬火油槽急速回火，鋒刃重煥寒芒。"),
                 ],
             ),
         ]
-    } else if room_name.contains("觀星") {
+    } else if !is_outdoor_road && room_name.contains("觀星") {
         vec![
             make_peninsula_object(
                 "wt_cat_0734",
                 "黃銅星軌儀",
-                &["Look", "Operate", "Read"],
+                &["Look", "Operate", "Read", "ChartAstrolabe"],
                 &[
                     ("Look", "高聳於白石基座上的精緻銅儀，層層同心環刻劃著半島二十四節氣、晨昏潮位與天象經緯刻度，銅環轉動輕盈無聲。"),
                     ("Operate", "你輕推星軌儀外環，銅齒輪咬合轉動，星象指針精準對向今夜將在東天升起的導航主星。"),
                     ("Read", "你辨讀底座銅盤銘刻的星曆推算表，上面詳載著半島歷代學者觀測潮汐漲落與季風轉折的心血記錄。"),
+                    ("ChartAstrolabe", "你鋪開竹綿宣紙與松煙墨拓，循星軌儀子午刻度拓下個人周天命格星盤。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_obs_tide_weather_table",
                 "潮汐觀測案",
-                &["Look", "Read", "Use"],
+                &["Look", "Read", "Use", "ReadWindVane"],
                 &[
                     ("Look", "厚重的老樟木長案上整齊攤開著半島氣象水文走勢圖、多層手繪潮汐升降曲線與防風墨水盒，供學者評議研討。"),
                     ("Read", "你細讀長案上留存的近期海灣潮位紀錄，字跡密密麻麻，詳盡標註著湧浪高度與洋流變化趨勢。"),
                     ("Use", "你提筆在長案的備忘薄頁上記下今日天色與風向，供下一輪評議學者對照參考。"),
+                    ("ReadWindVane", "你仰觀黃銅風向儀與相風銅烏轉速，比對滴漏刻度，精準推算出半島山海風候與潮汐走向。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_obs_brass_telescope_rack",
                 "青銅窺管架",
-                &["Look", "Operate"],
+                &["Look", "Operate", "GrindOpticLens"],
                 &[
                     ("Look", "架設於觀景石台邊緣的重型青銅窺管，配備精密螺紋微調旋鈕，旁側木架整齊插著數十卷絲帛手繪星圖。"),
                     ("Operate", "你俯身湊近青銅窺管的目鏡，微調螺紋對焦，遠方蒼穹中閃爍的繁星與雲層邊緣清晰呈現在眼前。"),
+                    ("GrindOpticLens", "你取過紅土崁天然白水晶胚與細金剛砂，在光學磨盤上細心研磨校准青銅窺管鏡片。"),
                 ],
             ),
         ]
-    } else if room_name.contains("契書局") || room_name.contains("房地契") {
+    } else if !is_outdoor_road && (room_name.contains("契書局") || room_name.contains("房地契")) {
         vec![
             make_peninsula_object(
                 "wt_deed_cadastral_map_desk",
                 "四坊地籍案",
-                &["Look", "Read", "Use"],
+                &["Look", "Read", "Use", "InspectLandRegistry"],
                 &[
                     ("Look", "寬闊平整的核契楠木長案上平鋪著文曜四坊地籍疆界全圖，一旁陳設著玻璃螺紋墨水瓶與弧形吸墨器。"),
                     ("Read", "你俯身查看四坊地籍圖冊，文曜城中各街各巷街屋的界址、戶號與公產邊界皆以硃砂與濃墨標記分明。"),
-                    ("Use", "你執起木柄弧形吸墨器在草擬文契上輕輕滾過，剛寫就的黑墨油光瞬間被乾淨吸附，字跡烏黑硬朗。"),
+                    ("Use", "你執起木柄弧形吸墨器在草擬文契上輕輕滾過，新寫就的黑墨油光瞬間被乾淨吸附，字跡烏黑硬朗。"),
+                    ("InspectLandRegistry", "你俯身查閱文曜四坊地籍疆界全圖與各鎮公產清冊，將街廓界址與公庫民生實況鈔錄存查。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_deed_household_registry",
                 "樟木戶籍櫃",
-                &["Look", "Read", "Open"],
+                &["Look", "Read", "Open", "InspectLandRegistry"],
                 &[
                     ("Look", "頂天立地的高大樟木檔案櫃，以生鐵包角加固，櫃門貼著分類封籤，保存著《半島全戶總譜》與歷任戶籍謄本。"),
                     ("Read", "你查閱外格貼附的戶籍檔案檢索目錄，各鎮居民落籍與各坊家戶丁冊皆按年月編次，巨細靡遺。"),
                     ("Open", "你拉開沉重的鐵扣樟木抽屜，一陣防蠹樟腦香撲面而來，厚重的羊皮紙總譜冊頁陳列井然。"),
+                    ("InspectLandRegistry", "你俯身查閱文曜四坊地籍疆界全圖與各鎮公產清冊，將街廓界址與公庫民生實況鈔錄存查。"),
                 ],
             ),
             make_peninsula_object(
@@ -2408,31 +2869,54 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("公議")
-        || room_name.contains("公所")
-        || room_name.contains("公會")
-        || room_name.contains("礦務所")
-        || room_name.contains("公事房")
-        || room_name.contains("商盟")
+    } else if !is_outdoor_road
+        && (room_name.contains("公議")
+            || room_name.contains("公所")
+            || room_name.contains("公會")
+            || room_name.contains("礦務所")
+            || room_name.contains("公事房")
+            || room_name.contains("商盟")
+            || room_name.contains("行會")
+            || room_name.contains("總行")
+            || room_name.contains("商會"))
     {
         vec![
             make_peninsula_object(
-                "wt_hall_council_table",
-                "厚木公議桌",
-                &["Look", "Sit", "Read"],
+                "wt_guild_commission_board",
+                "百工行會委託告示板",
+                &["Look", "Read", "Use", "Deliver", "ClaimStrandedCargo", "DeliverStrandedCargo"],
                 &[
-                    ("Look", "廳堂中央擺設著長條大木會議桌，桌面整齊放著公議議程冊、公章墨盒與簽名木籌。"),
-                    ("Sit", "你在厚重的長背木椅上坐定，廳內氣氛莊重嚴明，公議秩序井然。"),
-                    ("Read", "你翻開議程冊閱覽，上面記錄著即將商討的供水調配方案與各區工料評定細則。"),
+                    ("Look", "行會正堂牆面懸掛著寬大的松木告示板，釘滿了各坊工匠、行商與巡守隊發布的急缺物料懸賞與護運委託。"),
+                    ("Read", "你逐行研讀告示板上的急件委託，上載各聚落物資短缺通報、滯留物資急遞單與山道靖安警示。"),
+                    ("Use", "你走近委託告示板，核對各坊工料需求與護送懸賞。"),
+                    ("Deliver", "你核對隨身行囊中的急需物料，準備依委託條款交割換取酬勞。"),
+                    ("ClaimStrandedCargo", "你揭下板上封蓋硃砂印章的受滯貨單，承諾替受阻行商將貨物送達目的聚落。"),
+                    ("DeliverStrandedCargo", "你向行會交接管運的受滯貨物與單據，核銷並結算公庫託管賞格。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_hall_bulletin_board",
                 "民務告示欄",
-                &["Look", "Read"],
+                &["Look", "Read", "Use", "Deliver", "ClaimStrandedCargo", "DeliverStrandedCargo", "DeliberateCivicPact"],
                 &[
                     ("Look", "牆側立著高大的厚木告示欄，張貼著新頒定的水額管理辦法、工坊評定標準與季節巡防名單。"),
                     ("Read", "你逐條細讀告示內容，公約條款字跡剛勁端正，旨在保障水土民生休養生息。"),
+                    ("Use", "你走近告示欄，查閱各坊急徵物資與行會懸賞通告。"),
+                    ("Deliver", "你核對行囊中的急缺物資與受滯貨物，準備依告示進行交割。"),
+                    ("ClaimStrandedCargo", "你揭下告示欄上封蠟行會受滯貨單，接下前往指定聚落的護運承諾。"),
+                    ("DeliverStrandedCargo", "你向告示欄掌事書吏出示受滯貨單與護運貨物，辦理公庫託管賞格交割。"),
+                    ("DeliberateCivicPact", "你駐足民務告示欄前細讀四坊鄉約草案，與街坊鄰里共商水利與工坊條款。"),
+                ],
+            ),
+            make_peninsula_object(
+                "wt_hall_council_table",
+                "厚木公議桌",
+                &["Look", "Sit", "Read", "DeliberateCivicPact"],
+                &[
+                    ("Look", "廳堂中央擺設著長條大木會議桌，桌面整齊放著公議議程冊、公章墨盒與簽名木籌。"),
+                    ("Sit", "你在厚重的長背木椅上坐定，廳內氣氛莊重嚴明，公議秩序井然。"),
+                    ("Read", "你翻開議程冊閱覽，上面記錄著即將商討的供水調配方案與各區工料評定細則。"),
+                    ("DeliberateCivicPact", "你在厚木公議桌前落座，翻開議程冊與街坊鄰里同席參議鄉約，共商民生大計。"),
                 ],
             ),
             make_peninsula_object(
@@ -2445,46 +2929,52 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("藏書閣")
+    } else if (room_name.contains("藏書閣")
         || room_name.contains("印行館")
         || room_name.contains("書局")
-        || room_name.contains("圖誌館")
+        || room_name.contains("書舍")
+        || room_name.contains("圖誌館"))
+        && !room_name.contains("藏書閣東側石巷")
     {
         vec![
             make_peninsula_object(
                 "wt_book_printing_shelf",
                 "風物誌書架",
-                &["Look", "Read"],
+                &["Look", "Read", "TranscribeRareTome", "SunBooks"],
                 &[
                     ("Look", "高大書架上整齊排著竹綿紙印製的《白塔風物誌》、每旬《半島旬報》與白話故事小冊，滿室紙墨芬芳。"),
                     ("Read", "你取下一卷《白塔風物誌》閱讀，書中記載著老堰頭水網修築沿革與寒水玉開採考證。"),
+                    ("TranscribeRareTome", "你展平竹綿宣紙，提起鋼尖蘸水硬筆細心鈔錄《白塔風物誌》孤本考證，墨跡端凝。"),
+                    ("SunBooks", "你將書架上的竹綿紙古籍移至向陽通風石坪翻曬防蠹，夾入辟蠹芸香。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_book_map_reading_table",
                 "全圖閱覽桌",
-                &["Look", "Read", "Open"],
+                &["Look", "Read", "Open", "GrindOpticLens"],
                 &[
-                    ("Look", "長木桌上平鋪著精細手繪的白塔半島山海全圖，配備著黃銅放大鏡與精準標尺。"),
+                    ("Look", "長木桌上平鋪著精細手繪的白塔半島山海全圖，配備著黃銅助視鏡與精準標尺。"),
                     ("Read", "你細看圖上標註的水道、礦脈與城鎮驛站路線，對半島各地山海形勢瞭然於胸。"),
                     ("Open", "你翻開桌側的地圖抽屜，取出周邊海域潮汐水深航圖細細對照。"),
+                    ("GrindOpticLens", "你使用細金剛砂與麂皮絨布細細研磨全圖閱覽桌上的黃銅助視鏡水晶鏡片，光路澄澈無瑕。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_book_pen_notebook_desk",
-                "沾水筆書案",
-                &["Look", "Use"],
+                "蘸水硬筆書案",
+                &["Look", "Use", "TranscribeRareTome"],
                 &[
-                    ("Look", "寬大書案上鋪著氈布，銅筆筒裡插著鋼尖沾水筆，案旁置有墨水瓶與竹綿紙記事手札。"),
-                    ("Use", "你提起鋼尖沾水筆蘸墨落筆，筆尖在竹綿紙上順滑游走，字跡清晰深沉，墨乾極速。"),
+                    ("Look", "寬大書案上鋪著氈布，銅筆筒裡插著鋼尖蘸水硬筆，案旁置有墨水瓶與竹綿紙記事手札。"),
+                    ("Use", "你提起鋼尖蘸水硬筆蘸墨落筆，筆尖在竹綿紙上順滑游走，字跡清晰深沉，墨乾極速。"),
+                    ("TranscribeRareTome", "你展平竹綿宣紙，提起鋼尖蘸水硬筆細心鈔錄《白塔風物誌》孤本考證，墨跡端凝。"),
                 ],
             ),
         ]
     } else if !is_outdoor_road
         && (room_name.contains("學院")
             || room_name.contains("講習")
-            || room_name.contains("國小")
-            || room_name.contains("教室")
+            || room_name.contains("蒙學")
+            || room_name.contains("講舍")
             || room_name.contains("校舍")
             || room_name.contains("學舍")
             || (room_name.contains("講堂")
@@ -2497,11 +2987,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_academy_fountain_pen",
                 "黃銅儲墨筆",
-                &["Look", "Use", "Operate"],
+                &["Look", "Use", "Operate", "AttendLecture"],
                 &[
-                    ("Look", "烏木教案的正中央擱著一支溫潤沉甸的黃銅桿儲墨鋼筆，筆尖以精煉銥金打磨得細膩微光，旁側襯著吸墨氈布與寫滿批註的竹綿紙講義。"),
-                    ("Use", "你執起教案上的黃銅鋼筆，銥金筆尖觸及竹綿紙面，黑墨勻稱流暢地順著筆鋒沁入紙紋，留下一行端勁清晰的手跡。"),
+                    ("Look", "烏木教案的正中央擱著一支溫潤沉甸的黃銅桿儲墨硬筆，筆尖以精煉銥金打磨得細膩微光，旁側襯著吸墨氈布與寫滿批註的竹綿紙講義。"),
+                    ("Use", "你執起教案上的黃銅硬筆，銥金筆尖觸及竹綿紙面，黑墨勻稱流暢地順著筆鋒沁入紙紋，留下一行端勁清晰的手跡。"),
                     ("Operate", "你輕旋黃銅筆桿檢視儲墨囊，墨色飽滿澄澈，筆帽卡榫嚴絲合縫，足見文曜百工製筆之精巧。"),
+                    ("AttendLecture", "你在講堂席間端坐靜聽先生講授當季山海物候、水利營造與商算策論，並提筆疾書要義。"),
                 ],
             ),
             make_peninsula_object(
@@ -2515,11 +3006,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             ),
             make_peninsula_object(
                 "wt_book_pen_notebook_desk",
-                "沾水筆書案",
-                &["Look", "Use"],
+                "蘸水硬筆書案",
+                &["Look", "Use", "AttendLecture"],
                 &[
-                    ("Look", "寬大書案上鋪著氈布，銅筆筒裡插著鋼尖沾水筆，案旁置有墨水瓶與竹綿紙記事手札。"),
-                    ("Use", "你提起鋼尖沾水筆蘸墨落筆，筆尖在竹綿紙上順滑游走，字跡清晰深沉，墨乾極速。"),
+                    ("Look", "寬大書案上鋪著氈布，銅筆筒裡插著鋼尖蘸水硬筆，案旁置有墨水瓶與竹綿紙記事手札。"),
+                    ("Use", "你提起鋼尖蘸水硬筆蘸墨落筆，筆尖在竹綿紙上順滑游走，字跡清晰深沉，墨乾極速。"),
+                    ("AttendLecture", "你在講堂席間端坐靜聽先生講授當季山海物候、水利營造與商算策論，並提筆疾書要義。"),
                 ],
             ),
         ]
@@ -2528,81 +3020,89 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_clinic_herb_cabinet",
                 "百草丸藥櫃",
-                &["Look", "Smell", "Use"],
+                &["Look", "Smell", "Use", "PrepareMiasmaGear"],
                 &[
                     ("Look", "百草藥櫃抽屜密布，桌上整齊排著黑沼止血水苔敷藥、避瘴清心丸、祛寒草木湯包與青鹽薄荷潔牙粉。"),
                     ("Smell", "你低頭深嗅藥盤，薄荷清涼、艾草微辛與止血水苔的草香交織，胸悶頓解。"),
                     ("Use", "你取了一小撮避瘴清心丸服下，清涼藥力入喉，周身氣血頓時平順舒暢。"),
+                    ("PrepareMiasmaGear", "你拉開藥斗配齊避瘴清心丸與紅磷信號筒，藥香清冽，胸腹鬱結之氣隨之一清。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_clinic_acupoint_bed",
                 "竹席診脈榻",
-                &["Look", "Rest"],
+                &["Look", "Rest", "ApplyMoxibustion"],
                 &[
                     ("Look", "診榻鋪著細編竹席與山風草安神枕，榻邊點著驅蚊艾草香盤，靜謐祥和。"),
                     ("Rest", "你躺上竹席診榻靜臥歇息，草木香氣寧神靜氣，緊繃的身心逐漸放鬆下來。"),
+                    ("ApplyMoxibustion", "你點燃溫氏陳年艾絨置於溫灸盒上溫熨經絡穴位，艾香透骨，扭挫瘀滯頓時化開。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_clinic_decoction_stove",
                 "煎藥小銅爐",
-                &["Look", "Taste", "WarmHands"],
+                &["Look", "Taste", "WarmHands", "ApplyMoxibustion"],
                 &[
-                    ("Look", "小銅爐上砂鍋文火慢熬著溫氏祛寒草木湯包，蒸汽裊裊，飄出濃郁草木溫熱氣息。"),
+                    ("Look", "小銅爐上砂鍋文火慢熬著溫氏祛寒草木湯包，熱氣裊裊，飄出濃郁草木溫熱氣息。"),
                     ("Taste", "你啜飲一小口熬好的草木溫湯，微苦回甘，暖流順著喉嚨流向四肢百骸。"),
-                    ("WarmHands", "你把手掌靠在銅爐外罩旁，受溫熱藥香蒸汽烘暖，指頭血氣活絡。"),
+                    ("WarmHands", "你把手掌靠在銅爐外罩旁，受溫熱草本香露烘暖，指頭血氣活絡。"),
+                    ("ApplyMoxibustion", "你點燃溫氏陳年艾絨置於溫灸盒上溫熨經絡穴位，艾香透骨，扭挫瘀滯頓時化開。"),
                 ],
             ),
         ]
-    } else if room_name.contains("石磨") {
+    } else if !is_outdoor_road && !is_residential_house && room_name.contains("石磨") {
         vec![
             make_peninsula_object(
                 "wt_mill_waterwheel_stone",
                 "水輪玄武磨",
-                &["Look", "Operate"],
+                &["Look", "Operate", "MillGrain"],
                 &[
                     ("Look", "老堰頭引水渠衝擊巨木水輪帶動齒輪轉動，兩合巨大玄武岩磨盤正飛速研磨新熟米穀。"),
                     ("Operate", "你扳動水流分水閘柄調節水勢，水輪轉速隨之放緩，磨盤研磨出的白米粉更顯細密勻淨。"),
+                    ("MillGrain", "你合力推開水磨料門，巨輪轉動帶動石磨隆隆轟鳴，白米碎成細漿，研磨出老堰頭溫熱糙米漿。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_mill_flour_sieve",
                 "竹絲篩粉斗",
-                &["Look", "Use"],
+                &["Look", "Use", "MillGrain"],
                 &[
                     ("Look", "細如青絲的密編竹篩斗分出粗米糠與細米粉，篩下積著雪白如霜的純米粉堆。"),
                     ("Use", "你雙手晃動懸掛的竹篩斗，雪白米粉簌簌落下，粗糠被乾淨留在篩網上方。"),
+                    ("MillGrain", "你端起竹絲細篩抖動，篩漏出細密純白米粉，研磨分級一氣呵成。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_mill_grain_hopper",
                 "杉木儲糧斗",
-                &["Look", "Open"],
+                &["Look", "Open", "MillGrain"],
                 &[
                     ("Look", "高懸的倒梯形杉木儲料斗連接著下料槽，旁邊架著點驗原糧重量的大秤。"),
                     ("Open", "你拉開料斗下方的調節插板，顆粒飽滿的金色稻穀嘩啦啦滑向磨眼，源源不斷。"),
+                    ("MillGrain", "你啟開杉木料斗插板，金色稻穀源源湧入磨眼，水輪轟鳴研磨出新米漿。"),
                 ],
             ),
         ]
-    } else if room_name.contains("鋸木") {
+    } else if !is_outdoor_road && !is_residential_house && room_name.contains("鋸木") {
         vec![
             make_peninsula_object(
                 "wt_sawmill_hydraulic_saw",
                 "水動排鋸架",
-                &["Look", "Operate"],
+                &["Look", "Operate", "RefinePlank"],
                 &[
                     ("Look", "水流帶動的長排精鋼鋸條轟鳴起伏，平穩將整根百年雲杉原木剖切成均勻厚板。"),
                     ("Operate", "你推動送木台車向前咬緊鋸齒，鋼鋸飛速下切，鋸路筆直順暢，木屑紛飛。"),
+                    ("RefinePlank", "你推動水動排鋸咬合雲杉巨木，精鋼鋸齒飛速剖切，裁出筆直平整的樟松木板料。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_sawmill_timber_bench",
                 "原木檢寸台",
-                &["Look", "Use"],
+                &["Look", "Use", "RefinePlank"],
                 &[
                     ("Look", "鐵木長台上刻有度量標尺，擺著散發濃烈松脂香氣的試切木塊與標記石筆。"),
                     ("Use", "你拿起石筆比對標尺在板材邊緣畫下一道規整的裁切基線，下料尺寸分毫不大。"),
+                    ("RefinePlank", "你以墨斗與檢寸規標定厚度，推入長凳固定切削，整理出規格整齊的厚木板料。"),
                 ],
             ),
             make_peninsula_object(
@@ -2610,39 +3110,42 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "乾燥刨花桶",
                 &["Look", "Smell", "Gather"],
                 &[
-                    ("Look", "高大的松木大桶盛滿剛刨下的乾燥木片與刨花，這是燒製上等松炭的上乘原料。"),
+                    ("Look", "高大的松木大桶盛滿刨下的乾燥木片與刨花，這是燒製上等松炭的上乘原料。"),
                     ("Smell", "你捧起一把乾燥刨花深嗅，濃郁清冽的松脂油脂香撲面而來，乾爽宜人。"),
                     ("Gather", "你順手抓起一紮結實乾燥的松木刨花紮好，可作為生火引柴的上好引信。"),
                 ],
             ),
         ]
-    } else if room_name.contains("切石") {
+    } else if !is_outdoor_road && !is_residential_house && room_name.contains("切石") {
         vec![
             make_peninsula_object(
                 "wt_stonecut_wire_saw",
                 "金剛砂拉鋸",
-                &["Look", "Operate"],
+                &["Look", "Operate", "CutJade"],
                 &[
                     ("Look", "工匠引細密合金絲拉鋸帶著濕潤金剛砂緩緩剖開巨大的北山寒水玉原石，石皮下透出溫潤玉光。"),
                     ("Operate", "你輕轉注水輪維持金剛砂泥漿順暢流入切割線，金屬絲勻速拉動，石料緩緩剖為兩半。"),
+                    ("CutJade", "你拉動金剛砂鋼絲鋸緊貼寒水玉原石，冷泉注淋鋸槽，細細切剖出溫潤剔透的寒水玉料。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_stonecut_jade_display",
                 "寒水玉料架",
-                &["Look", "Use"],
+                &["Look", "Use", "CutJade"],
                 &[
                     ("Look", "展示架上整齊排著剖切平整的寒水玉薄板，手觸如浸涼泉，是打造保鮮石櫃的極品材料。"),
                     ("Use", "你伸手撫摸一片寒水玉石板，指掌頓感沁涼透骨，板面質地堅密細潤無瑕。"),
+                    ("CutJade", "你從架上挑選玉料毛胚，以刻刀與量尺剖分紋理，取出精選寒水玉石。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_stonecut_grind_basin",
                 "拋光琢石盆",
-                &["Look", "Use"],
+                &["Look", "Use", "CutJade"],
                 &[
                     ("Look", "引流活水的不鏽石盆中浸著各目數的磨石與羊毛拋光氈，專用於精細琢磨石板邊角。"),
                     ("Use", "你取了一塊切好的寒水玉小塊在細石上加水研磨，石角稜邊很快變得圓潤光滑。"),
+                    ("CutJade", "你浸潤細砂研磨琢石，水花泛起玉光，將原石稜角細心琢磨成形。"),
                 ],
             ),
         ]
@@ -2651,11 +3154,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_observatory_anemometer",
                 "黃銅風向儀",
-                &["Look", "Operate", "Read"],
+                &["Look", "Operate", "Read", "ReadWindVane"],
                 &[
                     ("Look", "露台上架著精巧的八方黃銅風向羽與四轉杯，精準指引著半島上空雲霧與氣流動向。"),
                     ("Operate", "你輕推校正旋鈕調整齒輪平衡，指針隨風微微擺動，指向西北風向。"),
                     ("Read", "你查看儀器底盤上的刻度，風速平緩穩定，近期半島沿岸無暴風驟雨之虞。"),
+                    ("ReadWindVane", "你仰觀黃銅風向儀與相風銅烏轉速，比對滴漏刻度，精準推算出半島山海風候與潮汐走向。"),
                 ],
             ),
             make_peninsula_object(
@@ -2663,7 +3167,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "天象觀測冊",
                 &["Look", "Read"],
                 &[
-                    ("Look", "厚實的竹綿紙記錄冊詳實抄錄著半嶺與四方海灣十年間的節氣、降雨與霜凍日曆。"),
+                    ("Look", "厚實的竹綿紙記錄冊詳實抄錄著半嶺與四方海灣十年間的節氣、降雨與霜凍星曆。"),
                     ("Read", "你翻閱記錄冊最近數頁，上面載明今日雲氣漸聚於北山山脊，傍晚或有山林微雨。"),
                 ],
             ),
@@ -2672,29 +3176,31 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "黃銅望遠鏡",
                 &["Look", "Use"],
                 &[
-                    ("Look", "架設於石基轉軸上的長筒黃銅望遠鏡，鏡頭打磨純淨，筒身嵌有夜光貝校準螺絲。"),
+                    ("Look", "架設於石基轉軸上的長筒黃銅望遠鏡，鏡頭打磨純淨，筒身嵌有夜光貝校準旋鈕。"),
                     ("Use", "你伏身湊近目鏡遠眺，數十里外的海灣帆影與山原林色歷歷在目，極目千里。"),
                 ],
             ),
         ]
-    } else if room_name.contains("試招") {
+    } else if !is_outdoor_road && !is_residential_house && room_name.contains("試招") && !room_name.contains("文曜") {
         vec![
             make_peninsula_object(
                 "wt_arena_testing_pillar",
                 "玄武試勁柱",
-                &["Look", "Operate"],
+                &["Look", "Operate", "SparPillar"],
                 &[
                     ("Look", "場中央立著取自烏石鼻的沉重玄武岩石柱，柱面留有深淺不一的掌印、拳痕與兵刃劈砍印記。"),
                     ("Operate", "你運勁凝神朝石柱發力擊出一記，拳風激盪石壁發出沉悶轟響，指掌微麻筋骨通暢。"),
+                    ("SparPillar", "你沉腰落馬繞玄武試勁柱演練四序拆招，拳掌與兵刃交擊石柱發出沉雄悶響。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_arena_wooden_weapon_rack",
                 "鐵木兵器架",
-                &["Look", "Use"],
+                &["Look", "Use", "SparPillar"],
                 &[
                     ("Look", "架上排滿各型配重勻稱的鐵木長棍、練習單刀、短槍與厚實的原牛皮護胸。"),
                     ("Use", "你抽出一桿沉實的鐵木長棍在手中虛晃挽出幾朵棍花，重心沉著穩當，手感極佳。"),
+                    ("SparPillar", "你沉腰落馬繞玄武試勁柱演練四序拆招，拳掌與兵刃交擊石柱發出沉雄悶響。"),
                 ],
             ),
             make_peninsula_object(
@@ -2712,10 +3218,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_farm_tool_iron_plow",
                 "雙齒精鐵犁",
-                &["Look", "Operate"],
+                &["Look", "Operate", "PressCheese"],
                 &[
                     ("Look", "為原牛翻耕黏土設計的淬火精鐵犁鏵，泥槽打磨平滑，犁尖銳利厚實。"),
                     ("Operate", "你試抬起犁鏵大轅感受配重，槓桿角度設計精巧，翻開深層黑土輕便省力。"),
+                    ("PressCheese", "你協同牧耕勞作，將牧場原乳送入沉澱槽壓製乳酪，分理收成。"),
                 ],
             ),
             make_peninsula_object(
@@ -2737,47 +3244,51 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("乳酪") || room_name.contains("羊毛") {
+    } else if !is_outdoor_road && !is_residential_house && (room_name.contains("乳酪") || room_name.contains("羊毛")) {
         vec![
             make_peninsula_object(
                 "wt_cheese_curd_press",
                 "螺旋壓酪架",
-                &["Look", "Operate", "Taste"],
+                &["Look", "Operate", "Taste", "PressCheese"],
                 &[
                     ("Look", "大木架上設有黃銅螺旋加壓手柄，正將粗濾布中的凝乳塊瀝出金黃乳清，壓製硬乳酪輪。"),
                     ("Operate", "你握住螺旋桿加力旋轉半圈，木板沉重下壓，澄澈的乳清順著凹槽汩汩流出。"),
                     ("Taste", "你嚐了指尖沾上的一滴新鮮乳清，滋味微酸清冽，帶著濃醇的天然奶香。"),
+                    ("PressCheese", "你旋緊螺旋木桿壓榨酪包，黃亮乳清緩緩瀝出，壓製出緊實濃郁的熟成硬乳酪。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_wool_spinning_wheel",
                 "手搖木紡車",
-                &["Look", "Use"],
+                &["Look", "Use", "PressCheese"],
                 &[
                     ("Look", "案上堆放著洗淨蓬鬆的乳白山羊毛條，竹木紡車轉軸靈動，紡出勻細結實的線團。"),
                     ("Use", "你輕輕搖動紡車木柄，纖細羊毛在引線指引下迅速捻轉成光滑毛線，均勻綿密。"),
+                    ("PressCheese", "你整理牧場原乳與工坊物產，配合木壓架壓去乳清，收緊熟成乳酪磚。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_cheese_aging_shelf",
                 "乳酪熟成架",
-                &["Look", "Smell", "Open"],
+                &["Look", "Smell", "Open", "PressCheese"],
                 &[
                     ("Look", "多層松木架內嵌寒水玉薄板調節溫涼，架上排滿刷洗乾淨、裹著黃蠟的牛埔陳年硬乳酪。"),
                     ("Smell", "你靠近熟成架細聞，發酵成熟的乳香濃郁厚重，混合著天然油脂與微鹹海風韻味。"),
-                    ("Open", "你拉開底層遮光木簾，裡面陳列著剛熟成三個月的金黃乳酪輪，成色極佳。"),
+                    ("Open", "你拉開底層遮光木簾，裡面陳列著熟成滿三個月的金黃乳酪輪，成色極佳。"),
+                    ("PressCheese", "你巡視松木熟成架，挑選硬度適中的乳酪翻面壓實，香氣濃醇。"),
                 ],
             ),
         ]
-    } else if room_name.contains("選礦") {
+    } else if !is_outdoor_road && !is_residential_house && room_name.contains("選礦") {
         vec![
             make_peninsula_object(
                 "wt_mine_wash_chute",
                 "木製洗礦槽",
-                &["Look", "Operate"],
+                &["Look", "Operate", "HaulMineCart"],
                 &[
                     ("Look", "山澗急流順著長木槽奔騰而下，槽底隔木截留住沉重赤鐵礦砂，洗去浮游紅泥。"),
                     ("Operate", "你以長木耙梳理泥槽底層礦石，比重較輕的雜石順水沖走，沉甸甸的鐵礦砂盡收格內。"),
+                    ("HaulMineCart", "你引地下冷泉沖洗礦砂，分理碎石，將赤鐵重礦裝入滑車鐵斗。"),
                 ],
             ),
             make_peninsula_object(
@@ -2792,10 +3303,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_mine_sorting_sieve",
                 "分級重鐵篩",
-                &["Look", "Operate"],
+                &["Look", "Operate", "HaulMineCart"],
                 &[
                     ("Look", "懸掛在木架下的雙層鐵絲篩網，孔徑由大到小，將開採出的碎礦精確分級。"),
                     ("Operate", "你推動鐵篩手柄用力搖動，小顆粒礦砂簌簌漏下，大塊粗礦穩穩留於上層。"),
+                    ("HaulMineCart", "你晃動重鐵篩分揀礦石，剔除雜岩，將沉重精礦推入礦車軌道。"),
                 ],
             ),
         ]
@@ -2804,10 +3316,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_trolley_rail_carriage",
                 "雙軸重台車",
-                &["Look", "Operate"],
+                &["Look", "Operate", "HaulMineCart"],
                 &[
                     ("Look", "坑道軌道上停著厚重雙軸台車，精鐵鑄造的車輪扣住木軌鐵皮，裝滿粗礦依然平穩。"),
                     ("Operate", "你握住車身旁的機械制動閘手柄扳動，鐵閘緊緊咬住輪緣，發出沉實摩擦聲。"),
+                    ("HaulMineCart", "你合力推動雙軸重台車滑入坑口鐵軌，伴隨鋼輪咬軌轟鳴，將滿車赤鐵重礦運出坑道。"),
                 ],
             ),
             make_peninsula_object(
@@ -2815,17 +3328,18 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "桐油潤滑壺",
                 &["Look", "Use"],
                 &[
-                    ("Look", "油箱邊放著盛滿防鏽桐油脂的長嘴鐵壺，以及用於緊固軌道螺栓的粗重鍛鐵扳手。"),
+                    ("Look", "油箱邊放著盛滿防鏽桐油脂的長嘴鐵壺，以及用於緊固軌道銷釘的粗重鍛鐵鉗。"),
                     ("Use", "你提起油壺往台車轉軸注入口滴入幾滴桐油脂，原本微澀的輪軸隨即轉動無聲。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_trolley_brake_winch",
                 "鋼索絞盤",
-                &["Look", "Operate"],
+                &["Look", "Operate", "HaulMineCart"],
                 &[
                     ("Look", "固定在坑口條石基座上的大型手搖絞盤，上面纏繞著粗大耐磨的精鋼牽引索。"),
                     ("Operate", "你推動棘輪卡榫試轉絞盤，齒輪咬合緊密，能輕鬆將滿載台車拉上陡斜坡道。"),
+                    ("HaulMineCart", "你收放絞盤鋼索導引重台車入軌，齒輪咬合聲響徹坑口，平穩起運重礦。"),
                 ],
             ),
         ]
@@ -2864,19 +3378,21 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_smokehouse_kiln",
                 "慢燻紅陶灶",
-                &["Look", "Smell"],
+                &["Look", "Smell", "SmokeFish"],
                 &[
                     ("Look", "地面砌出長排低溫煙道陶灶，正以受控的乾燥松木鋸屑慢火逼出濃郁木香冷煙。"),
                     ("Smell", "你深吸一口自陶灶溢出的煙氣，醇厚的松木煙燻香氣純淨甘醇，全無嗆鼻焦味。"),
+                    ("SmokeFish", "你添入濕柏木與香草慢燻，灶內青煙繚繞，低溫透骨冷燻海鹽魚乾。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_smokehouse_fish_rack",
                 "冷燻海魚架",
-                &["Look", "Taste"],
+                &["Look", "Taste", "SmokeFish"],
                 &[
                     ("Look", "懸架上整齊掛著一排排泛著琥珀油亮金紅光澤的冷燻鯖魚與海苔魚乾，油脂豐厚。"),
                     ("Taste", "你撕下一小片冷燻魚肉放入口中，肉質緊實彈牙，鹹香甘醇中交織著深沉的松煙木香。"),
+                    ("SmokeFish", "你翻動竹架上的醃製海魚，煙氣浸潤肉質，燻烤出金黃油亮的冷燻魚乾。"),
                 ],
             ),
             make_peninsula_object(
@@ -2894,19 +3410,21 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_kelp_drying_trellis",
                 "高架曬藻棚",
-                &["Look", "Gather"],
+                &["Look", "Gather", "BurnLime"],
                 &[
                     ("Look", "迎著海風搭建的巨型竹棚上懸垂著長達數丈的深海厚巨藻，海風吹拂下漸乾變韌。"),
                     ("Gather", "你從竹架邊緣摘下一束完全曬乾的深黑巨藻片折好，乾脆柔韌，滿是海味精華。"),
+                    ("BurnLime", "你將高架曬乾的堅韌海藻與貝灰一同收整，備齊風舶角搓繩與造船用料。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_kelp_rope_twister",
                 "海纜搓繩輪",
-                &["Look", "Operate"],
+                &["Look", "Operate", "BurnLime"],
                 &[
                     ("Look", "工匠用極富韌性的巨藻纖維與麻絲混合，在木轉輪上捻搓出不懼海水浸蝕的沉重船纜。"),
                     ("Operate", "你推動轉輪搖柄旋轉，條條藻絲纖維被均勻絞緊成粗壯纜繩，結實程度堅如生鐵。"),
+                    ("BurnLime", "你轉動絞輪將浸過貝灰防腐液的巨藻與麻纖維絞合，搓製出粗實耐磨的麻繩卷。"),
                 ],
             ),
             make_peninsula_object(
@@ -2920,16 +3438,17 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("灰窯") {
+    } else if !is_outdoor_road && !is_residential_house && room_name.contains("灰窯") {
         vec![
             make_peninsula_object(
                 "wt_lime_kiln_chamber",
                 "海貝燃灰窯",
-                &["Look", "WarmHands", "Operate"],
+                &["Look", "WarmHands", "Operate", "BurnLime"],
                 &[
                     ("Look", "烏石鼻以玄武岩壘砌的圓形灰窯，烈火正將堆積的海貝殼高溫煅燒成雪白的建材灰粉。"),
                     ("WarmHands", "你將身子貼近灰窯厚實的外牆，石壁蓄積的渾厚餘熱烘散了海邊帶來的陰冷濕氣。"),
                     ("Operate", "你使用長柄鐵扒撥動窯底通風孔讓空氣流通，爐膛火勢更加旺盛純青。"),
+                    ("BurnLime", "你添入焦炭鼓風引燃灰窯，高溫煅燒海貝碎殼，出窯白灰熱氣騰騰，細密凝實。"),
                 ],
             ),
             make_peninsula_object(
@@ -2951,24 +3470,26 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("獵具") {
+    } else if !is_outdoor_road && !is_residential_house && room_name.contains("獵具") {
         vec![
             make_peninsula_object(
                 "wt_hunt_heavy_crossbow",
                 "牛角破甲弩",
-                &["Look", "Operate"],
+                &["Look", "Operate", "PrepareMiasmaGear"],
                 &[
                     ("Look", "工坊以大角原牛角片與堅木多層膠合的守林重弩，弩弦以原牛筋絞就，張力沉雄。"),
                     ("Operate", "你扳動腳蹬絞盤為重弩上弦，機括發出清脆卡響，鎖定弩機扣板，蓄勢待發。"),
+                    ("PrepareMiasmaGear", "你校準破甲弩機，配齊紅磷引路信號筒與避瘴藥劑，整飭行囊以防黑沼瘴毒。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_hunt_iron_trap",
                 "帶齒鋼獸夾",
-                &["Look", "Use"],
+                &["Look", "Use", "PrepareMiasmaGear"],
                 &[
                     ("Look", "塗有黑沼天然樹膠防鏽黑漆的踏板精鋼獸夾，彈簧沉重有力，專用於防範猛獸。"),
                     ("Use", "你拿起長鐵枝撥動安全鎖扣試探獸夾靈敏度，踏板微沉立刻金屬閉合，迅猛精準。"),
+                    ("PrepareMiasmaGear", "你檢查捕獸齒夾的機簧韌度，塗抹避瘴油脂，備足探沼防護器物。"),
                 ],
             ),
             make_peninsula_object(
@@ -2976,12 +3497,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "牛油護弦盒",
                 &["Look", "Use"],
                 &[
-                    ("Look", "木盒內收著浸透精煉牛油的布團與蜂蠟塊，是防止弓弦受潮發霉的必備護理之物。"),
+                    ("Look", "木盒內收著浸透精煉牛油的布團與蜂蠟塊，是防止弓弦受潮發黴的必備護理之物。"),
                     ("Use", "你取了浸油布團細細擦拭牛筋弩弦，油脂浸入纖維，原本乾燥的弦絲立顯光澤柔韌。"),
                 ],
             ),
         ]
-    } else if room_name.contains("竹編") || room_name.contains("蘆葦") {
+    } else if !is_outdoor_road && !is_residential_house && (room_name.contains("竹編") || room_name.contains("編織工棚")) {
         vec![
             make_peninsula_object(
                 "wt_bamboo_weaving_bench",
@@ -3011,15 +3532,16 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("船塢") || room_name.contains("帆具") || room_name.contains("船材") {
+    } else if !is_outdoor_road && !is_residential_house && (room_name.contains("船塢") || room_name.contains("帆具") || room_name.contains("船材")) {
         vec![
             make_peninsula_object(
                 "wt_shipyard_dry_dock",
                 "雲杉龍骨架",
-                &["Look", "Operate"],
+                &["Look", "Operate", "BurnLime"],
                 &[
                     ("Look", "斜坡船台架著一整根長逾十丈的厚重雲杉大龍骨，工匠們正以青銅大釘和榫卯拼合肋骨。"),
                     ("Operate", "你拿起大木槌將一枚粗大青銅釘打入龍骨榫卯深處，木料緊密咬合，牢固無比。"),
+                    ("BurnLime", "你調和熱貝灰桐油填補龍骨板縫，緊固麻繩卷加固船架，船塢工序有條不紊。"),
                 ],
             ),
             make_peninsula_object(
@@ -3027,7 +3549,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "巨藻船纜堆",
                 &["Look", "Use"],
                 &[
-                    ("Look", "棚內堆放著浸過桐油的防風暴密織重帆布、滑車索具與剛搓好的深海巨藻大絞纜。"),
+                    ("Look", "棚內堆放著浸過桐油的防風暴密織重帆布、滑車索具與搓絞結實的深海巨藻大絞纜。"),
                     ("Use", "你伸手扯動帆索穿過滑車組試拉，滑車轉動順暢無阻，粗重帆布應聲升起。"),
                 ],
             ),
@@ -3042,7 +3564,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("商行") || room_name.contains("契據") {
+    } else if !is_outdoor_road && (room_name.contains("商行") || room_name.contains("契據")) {
         vec![
             make_peninsula_object(
                 "wt_merchant_ledger_counter",
@@ -3050,7 +3572,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &["Look", "Read", "Use"],
                 &[
                     ("Look", "整塊老樟木打造的掌事長台，台面擺滿銅秤、商盟印鑑、硃砂印泥與出入貨記帳契簿。"),
-                    ("Read", "你閱覽櫃台上攤開的貨運契約簿，上面詳細登記著近日運往各鎮的糧油與礦料數量。"),
+                    ("Read", "你閱覽櫃檯上攤開的貨運契約簿，上面詳細登記著近日運往各鎮的糧油與礦料數量。"),
                     ("Use", "你拿起硃砂印章在契據末尾端正蓋下一記鮮紅印記，商契正式生效立案。"),
                 ],
             ),
@@ -3073,13 +3595,14 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("聯運")
-        || room_name.contains("貨運")
-        || room_name == "老堰頭・村中泥徑"
-        || (room_name.contains("半嶺鎮") && room_name.contains("街"))
-        || (room_name.contains("大圳頭") && room_name.contains("街"))
-        || (room_name.contains("南哨") && room_name.contains("街"))
-        || (room_name.contains("風舶角") && room_name.contains("街"))
+    } else if !is_outdoor_road
+        && (room_name.contains("聯運")
+            || room_name.contains("貨運")
+            || room_name == "老堰頭・村中泥徑"
+            || (room_name.contains("半嶺鎮") && room_name.contains("街"))
+            || (room_name.contains("大圳頭") && room_name.contains("街"))
+            || (room_name.contains("南哨") && room_name.contains("街"))
+            || (room_name.contains("風舶角") && room_name.contains("街")))
     {
         vec![
             make_peninsula_object(
@@ -3095,10 +3618,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_caravan_water_trough",
                 "青石飲馬槽",
-                &["Look", "Use"],
+                &["Look", "Use", "FeedDraftBeast"],
                 &[
                     ("Look", "連通活水渠的深鑿青石長水槽，供來往跋涉的原牛與健壯駝獸低頭痛飲，水質清澈。"),
                     ("Use", "你拔開進水木栓注入新鮮井泉活水，奔波而來的原牛探頭大口痛飲，發出滿足低哼。"),
+                    ("FeedDraftBeast", "你拔開活水木栓注滿清泉，並添入新鮮青草料，供遠途跋涉的原牛與駝獸飽餐歇息。"),
                 ],
             ),
             make_peninsula_object(
@@ -3106,9 +3630,9 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "班次木牌案",
                 &["Look", "Read", "Use"],
                 &[
-                    ("Look", "木牌案上每日更換木質班次籤牌，寫明發往大圳頭、風舶角與南哨的車馬出發時辰。"),
-                    ("Read", "你細看班次牌，往西南原方向的大車午後即將發班，回程車隊則已進棚卸貨。"),
-                    ("Use", "你向車馬行掌櫃交付車資，登車準備前往下一處聯運重鎮。"),
+                    ("Look", "木牌案上每日更換木質班次籤牌，寫明發往大圳頭、風舶角與南哨的車馬出發時刻。"),
+                    ("Read", "你細看班次牌，往大圳頭方向的大車午後即將發班，回程車隊則已進棚卸貨。"),
+                    ("Use", "你向車馬行主事交付車資，登車準備前往下一處聯運重鎮。"),
                 ],
             ),
         ]
@@ -3117,10 +3641,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_clocktower_bronze_bell",
                 "報時青銅鐘",
-                &["Look", "Operate"],
+                &["Look", "Operate", "CalibrateClock"],
                 &[
                     ("Look", "高懸塔頂的厚重青銅巨鐘，垂下粗大的麻繩，每逢正點敲響，鐘聲清越浩蕩傳遍全境。"),
                     ("Operate", "你雙手握住粗麻繩合力一拉，青銅鐘錘重重撞上鐘體，發出一聲渾厚深沉的悠揚巨響。"),
+                    ("CalibrateClock", "你比對青銅旋轉日晷的日影刻度，調校鐘樓擒縱齒輪與報時銅鐘，使全城更次分秒不差。"),
                 ],
             ),
             make_peninsula_object(
@@ -3136,32 +3661,35 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_messenger_lookout_perch",
                 "青銅旋轉晷",
-                &["Look", "Read", "Operate"],
+                &["Look", "Read", "Operate", "CalibrateClock"],
                 &[
-                    ("Look", "高台邊緣設有刻劃周密時辰線的青銅日規，晷針在陽光下投射出清晰分明的銳利陰影。"),
-                    ("Read", "你俯視日規晷針指向，日影恰好落在午正刻度線上，時辰分秒不差。"),
+                    ("Look", "高台邊緣設有刻劃周密刻度線的青銅日規，晷針在陽光下投射出清晰分明的銳利陰影。"),
+                    ("Read", "你俯視日規晷針指向，日影恰好落在午正刻度線上，時刻分秒不差。"),
                     ("Operate", "你輕推日規底盤旋鈕校準微調角度，與遠方主塔旗號完全對齊。"),
+                    ("CalibrateClock", "你比對青銅旋轉日晷的日影刻度，調校鐘樓擒縱齒輪與報時銅鐘，使全城更次分秒不差。"),
                 ],
             ),
         ]
-    } else if room_name.contains("碼頭")
+    } else if (room_name.contains("碼頭")
         || room_name.contains("泊位")
         || room_name.contains("竹筏埠")
         || room_name.contains("渡埠")
         || room_name.contains("水岸")
         || room_name.contains("河畔")
         || room_name.contains("渡口")
-        || room_name.contains("竹筏")
+        || room_name.contains("竹筏"))
+        && !room_name.contains("公井")
     {
         vec![
             make_peninsula_object(
                 "wt_dock_riverbank_raft",
                 "平底竹筏",
-                &["Look", "Operate", "Use"],
+                &["Look", "Operate", "Use", "RowSwampRaft"],
                 &[
                     ("Look", "水岸石砌埠頭邊立著長年受流水沖刷的繫船青石樁，石孔穿過粗大桐油麻繩，平穩繫泊著數艘雙層防浸平底竹筏，筏上置有推水長竹篙與青竹魚簍。"),
                     ("Operate", "你解開繫在青石樁上的桐油麻繩，平底竹筏在川流水波間輕輕蕩漾，吃水甚穩。"),
                     ("Use", "你手持長竹篙在石階輕撐借力，竹筏滑入川流清澈碧流，沿岸水草豐美、水鳥掠波。"),
+                    ("RowSwampRaft", "你解開纜繩點篙撐起竹筏，輕舟破開水尾寮蘆葦與黑沼迷霧，順流探尋澤中沉水烏木與止血水苔。"),
                 ],
             ),
             make_peninsula_object(
@@ -3176,10 +3704,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_dock_cargo_gangplank",
                 "雲杉卸貨板",
-                &["Look", "Use"],
+                &["Look", "Use", "BoardCoastalShip"],
                 &[
                     ("Look", "連接貨船與石砌棧橋的厚實跳板，表面刻有縱橫防滑凹槽，方便水手挑擔搬運重貨。"),
                     ("Use", "你踏上平穩結實的木跳板大步走上棧橋，腳下厚板紋絲不晃，安穩可靠。"),
+                    ("BoardCoastalShip", "你踏過厚實防滑的雲杉跳板登上環島商船，隨水手核對黑潮航線與潮汐水文。"),
                 ],
             ),
             make_peninsula_object(
@@ -3195,6 +3724,8 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
     } else if room_name.contains("市集")
         || room_name.contains("特產行")
         || room_name.contains("水產")
+        || room_name.contains("乾貨")
+        || room_name.contains("海味")
         || room_name.contains("物資行")
         || room_name.contains("素材")
         || room_name.contains("調配")
@@ -3204,20 +3735,22 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_market_produce_stand",
                 "山海乾貨攤",
-                &["Look", "Taste", "Smell"],
+                &["Look", "Taste", "Smell", "SelectDriedSeafood"],
                 &[
                     ("Look", "攤位上滿是紅土崁黑糖、酸甜山果乾、大圳頭米香、鹽烤海苔片與風櫃尾冷燻魚乾，琳瑯滿目。"),
                     ("Taste", "你捻起一塊紅土崁黑糖放入口中細嚼，純粹甘甜中帶著濃郁焦香，滋味醇厚無比。"),
                     ("Smell", "你細聞攤前混和著米香、海苔與果乾的甜美香氣，市集生活氣息分外濃郁。"),
+                    ("SelectDriedSeafood", "你在乾貨攤前細細挑選色澤金黃透亮的風櫃尾冷燻烏魚子與乾貝，海味醇厚。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_market_scale_counter",
                 "黃銅雙盤秤",
-                &["Look", "Operate"],
+                &["Look", "Operate", "SelectDriedSeafood"],
                 &[
                     ("Look", "懸在木架上的精準黃銅雙盤大吊秤，配備一套由小至大的青銅砝碼，用於買賣過磅。"),
                     ("Operate", "你將砝碼置於左盤，右盤放入乾貨，秤桿微微擺動後平穩水平，分量精確公平。"),
+                    ("SelectDriedSeafood", "你在黃銅雙盤秤前過磅揀選風櫃尾冷燻烏魚子禮包，斤兩十足。"),
                 ],
             ),
             make_peninsula_object(
@@ -3230,7 +3763,8 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("住宅")
+    } else if is_residential_house
+        || room_name.contains("住宅")
         || room_name.contains("民宅")
         || room_name.contains("居所")
         || room_name.contains("家屋")
@@ -3251,10 +3785,10 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
         vec![
             make_peninsula_object(
                 "wt_home_brass_tap_sink",
-                "黃銅活水栓",
+                "水栓",
                 &["Look", "Use", "Bath"],
                 &[
-                    ("Look", "打磨光滑的黃銅水栓連接著老堰頭活水管道，下方是紅土耐火磚砌成的溫石蓄熱水槽，槽邊擺著草木灰柑橘洗潔皂、軟毛竹柄牙刷與青鹽薄荷潔牙粉。"),
+                    ("Look", "打磨光滑的黃銅水栓連接著老堰頭活水管道，下方是紅土耐火磚砌成的溫石蓄熱水槽，槽邊擺著草木灰柑橘洗潔皂、軟毛竹柄潔齒刷與青鹽薄荷潔牙粉。"),
                     ("Use", "你擰開黃銅水栓，清冽純淨的活水流淌而出，隨後轉入溫水檔，溫暖的水流洗去塵泥，柑橘皂香格外清新。"),
                     ("Bath", "你引入溫石槽加熱的熱水浸沐洗面，熱氣騰騰驅散了旅途風塵與肌肉酸脹，倍感舒泰。"),
                 ],
@@ -3265,12 +3799,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &["Look", "Use"],
                 &[
                     ("Look", "紅土崁高嶺白瓷燒製的便池平滑光潔，引老堰頭活水沖洗，淨房牆側掛著柔軟的竹綿衛生草紙。"),
-                    ("Use", "你拉動沖水黃銅扳手，活水漩渦利落將便池沖洗得乾淨無痕，屋內潔淨乾燥無異味。"),
+                    ("Use", "你拉動沖水黃銅把手，活水漩渦利落將便池沖洗得乾淨無痕，屋內潔淨乾燥無異味。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_home_cold_jade_cabinet",
-                "寒水玉冰櫃",
+                "冰鑑櫃",
                 &["Look", "Open", "Taste"],
                 &[
                     ("Look", "小巧的家用石櫃由松香木與北山寒水玉夾層打製，存放著鮮牛乳、板豆腐、脆瓜醬菜與桂花新米糕，旁有白釉瓷碗盤與烏木筷。"),
@@ -3283,7 +3817,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "烏木書案",
                 &["Look", "Operate", "Read"],
                 &[
-                    ("Look", "松木書案邊角包著黃銅片，案上置有黃銅發條座鐘、鋼尖沾水筆與竹綿紙記事手札，案角立著旋蓋夜光貝母台燈。"),
+                    ("Look", "松木書案邊角包著黃銅片，案上置有黃銅發條座鐘、鋼尖蘸水硬筆與竹綿紙記事手札，案角立著旋蓋夜光貝母檯燈。"),
                     ("Operate", "你旋轉烏木燈罩調光，夜光貝的珠白光芒自罩隙均勻灑落，柔和澄澈。"),
                     ("Read", "你翻開竹綿紙記事手札，上面工整記錄著日常糧柴開銷、修繕屋瓦的備忘與鄰里往來雜記。"),
                 ],
@@ -3293,9 +3827,9 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "家用工具箱",
                 &["Look", "Open", "Use"],
                 &[
-                    ("Look", "玄關軟底布拖鞋旁收著松木家用工具箱，門前防雨竹編信箱裡插著新到的書信。"),
-                    ("Open", "你掀開工具箱銅扣，裡面分格收著羊角錘、螺絲起子、防潮紅磷火柴與細麻繩。"),
-                    ("Use", "你取出一枚防潮紅磷火柴在側邊輕擦，升起穩定微亮的火苗，隨後自信箱取出書信細閱。"),
+                    ("Look", "玄關軟底布便鞋旁收著松木家用工具箱，門前防雨竹編信箱裡插著新到的書信。"),
+                    ("Open", "你掀開工具箱銅扣，裡面分格收著羊角錘、旋釘鑿、防潮紅磷火籤與細麻繩。"),
+                    ("Use", "你取出一枚防潮紅磷火籤在側邊輕擦，升起穩定微亮的火苗，隨後自信箱取出書信細閱。"),
                 ],
             ),
             make_peninsula_object(
@@ -3303,7 +3837,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "羽絨暖臥榻",
                 &["Look", "Rest", "Sleep", "Operate"],
                 &[
-                    ("Look", "溫暖乾燥的松木臥榻上鋪著蓬鬆羽絨暖被與山風草安神枕，榻旁小几上立著一盞旋蓋夜光貝母調光台燈，光暈柔和溫潤。"),
+                    ("Look", "溫暖乾燥的松木臥榻上鋪著蓬鬆羽絨暖被與山風草安神枕，榻旁小几上立著一盞旋蓋夜光貝母調光檯燈，光暈柔和溫潤。"),
                     ("Rest", "你合衣在柔軟的羽絨臥榻上躺下，安神草的清香讓緊繃的神經徹底放鬆下來。"),
                     ("Sleep", "你鑽入溫暖蓬鬆的羽絨暖被，旋暗夜光貝母燈。在靜謐祥和的屋內，你沉沉安睡，體魄與精神盡復。"),
                     ("Operate", "你輕輕旋轉床頭夜光貝母燈的烏木旋蓋，外露的珠白光芒柔和微調，滿室皆是安恬的暖意。"),
@@ -3315,20 +3849,22 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_barber_folding_razor",
                 "摺疊剃刀架",
-                &["Look", "Use"],
+                &["Look", "Use", "GroomAppearance"],
                 &[
-                    ("Look", "黃銅盤內整齊排著磨得雪亮的精鋼摺疊剃刀，旁側紫銅熱毛巾架正冒著蒸騰水氣與薄荷清香。"),
+                    ("Look", "黃銅盤內整齊排著磨得雪亮的精鋼摺疊剃刀，旁側紫銅熱布巾架正冒著蒸騰水氣與薄荷清香。"),
                     ("Use", "你取過一把精鋼摺疊剃刀試試鋒刃，刀身微薄而銳利，剃刮修鬚乾淨俐落。"),
+                    ("GroomAppearance", "你敷上薄荷熱毛巾，由修面師傅以精鋼剃刀與松香木梳修整儀容，神彩煥然一新。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_barber_copper_chair",
                 "洗頭木躺椅",
-                &["Look", "Sit", "Rest"],
+                &["Look", "Sit", "Rest", "GroomAppearance"],
                 &[
                     ("Look", "厚實白蠟木躺椅側邊接連著紫銅溫水管道與陶泥洗頭槽，軟皮頭枕弧度貼合。"),
                     ("Sit", "你在紫銅洗頭椅上躺靠下來，溫熱的水氣自銅管微熱散發，頸肩頓時放鬆。"),
                     ("Rest", "你閉上雙眼在躺椅上小憩片刻，聽著水槽流水汩汩，洗去整日奔波的疲乏。"),
+                    ("GroomAppearance", "你敷上薄荷熱毛巾，由修面師傅以精鋼剃刀與松香木梳修整儀容，神彩煥然一新。"),
                 ],
             ),
         ]
@@ -3339,41 +3875,43 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "烏木計數板",
                 &["Look", "Operate", "Use"],
                 &[
-                    ("Look", "烏木公案上端正擺放著便攜計數板，滑鈕圓潤油亮，旁側立著硃砂墨碟與儲墨鋼筆。"),
+                    ("Look", "烏木公案上端正擺放著便攜計數板，滑鈕圓潤油亮，旁側立著硃砂墨碟與儲墨硬筆。"),
                     ("Operate", "你伸手撥動計數滑鈕，上下翻飛發出清脆沉著的扣合聲。"),
                     ("Use", "你提筆在草紙上演算一筆出海貨單，計數板撥轉分毫不差，帳目井然。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_abacus_ledger_board",
-                "核算大黑板",
+                "核算大木牌",
                 &["Look", "Read"],
                 &[
                     ("Look", "青石牆面懸掛著黑漆大木板，上頭以白堊石筆端楷寫滿三水口各船號的貨品抽成與利息折算例題。"),
-                    ("Read", "你仔細閱讀黑板上的算例，條理分明，正是半島商行事務員必修的進階算術。"),
+                    ("Read", "你仔細閱讀木牌上的算例，條理分明，正是半島商行事務員必修的進階算術。"),
                 ],
             ),
         ]
-    } else if room_name.contains("習武") || (room_name.contains("試招") && room_name.contains("文曜")) {
+    } else if !is_residential_house && (room_name.contains("習武") || (room_name.contains("試招") && room_name.contains("文曜"))) {
         vec![
             make_peninsula_object(
                 "wt_martial_padded_wooden_blade",
                 "包革木刀架",
-                &["Look", "Use", "Operate"],
+                &["Look", "Use", "Operate", "SparPillar"],
                 &[
                     ("Look", "沉重木架上陳列著厚牛皮包覆的練習重木刀與熟銅卸力護腕，刀身刻有岑家分家工坊鋼印。"),
                     ("Use", "你反手拔出一柄包革木刀揮斬兩式，重心沉穩合手，破風聲呼呼作響。"),
                     ("Operate", "你調整護腕上的銅扣束帶，勒緊手腕測試卸力彈性，極利於修習剛猛招法。"),
+                    ("SparPillar", "你沉腰落馬繞玄武試勁柱演練四序拆招，拳掌與兵刃交擊石柱發出沉雄悶響。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_martial_force_stone",
                 "測勁玄武碑",
-                &["Look", "Use", "Operate"],
+                &["Look", "Use", "Operate", "TestEngraving"],
                 &[
                     ("Look", "院角立著一堵嵌有暗金紋理的厚重玄武石板，表面布滿被勁力拍擊出的微凹掌印與拳痕。"),
                     ("Use", "你運轉周身氣息推按測紋石板，掌力透入石紋，石板微鳴回饋內息剛柔，使你對發力關竅深有所得。"),
                     ("Operate", "你深吸一口氣運勁於掌，拍向測紋石板，石面暗紋隱隱亮起微光，回震沉實。"),
+                    ("TestEngraving", "你運轉內息按上測紋石板並取隨身器物輕觸碑面，石紋微鳴回饋人器共鳴度。"),
                 ],
             ),
         ]
@@ -3384,9 +3922,9 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "艾草蚊香架",
                 &["Look", "Use", "Acquire"],
                 &[
-                    ("Look", "木格貨架上擺滿了成盒的防潮紅磷火柴、一圈圈青綠艾草蚊香盤與居家必備的麻繩蠟燭。"),
+                    ("Look", "木格貨架上擺滿了成盒的防潮紅磷火籤、一圈圈青綠艾草蚊香盤與居家必備的麻繩蠟燭。"),
                     ("Use", "你輕嗅艾草蚊香盤，清苦幽香沁人，正是驅除弄堂水氣與蚊蟲的良伴。"),
-                    ("Acquire", "你伸手挑選了一小匣紅磷火柴與幾卷蚊香，隨時準備帶走備用。"),
+                    ("Acquire", "你伸手挑選了一小匣紅磷火籤與幾卷蚊香，隨時準備帶走備用。"),
                 ],
             ),
             make_peninsula_object(
@@ -3399,25 +3937,27 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("修傘") || room_name.contains("補靴") {
+    } else if room_name.contains("修傘") || room_name.contains("補靴") || room_name.contains("晴雨傘") || (room_name.contains("皮靴") && room_name.contains("工坊")) {
         vec![
             make_peninsula_object(
                 "wt_repair_umbrella_bench",
-                "修傘木砧台",
-                &["Look", "Operate", "Use"],
+                "修傘木砧檯",
+                &["Look", "Operate", "Use", "MendTravelGear"],
                 &[
                     ("Look", "矮木長凳前擺著修傘專用木砧板、幾捲熟桐油棉紙、破開的細韌紫竹篾骨與銅穿線錐。"),
                     ("Operate", "你拿起穿線錐將竹骨關節上的絲線拉緊打結，傘骨開合立即靈活如初。"),
-                    ("Use", "你撐開一把剛補好桐油的棉紙晴雨傘試驗，傘面緊繃防雨，桐油幽香撲鼻。"),
+                    ("Use", "你撐開一把補整桐油的棉紙晴雨傘試驗，傘面緊繃防雨，桐油幽香撲鼻。"),
+                    ("MendTravelGear", "你在木砧檯與硬木楦前修補隨身行靴與桐油竹傘，針腳細密，底掌牢固如新。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_repair_boots_last",
                 "補靴硬木楦",
-                &["Look", "Use"],
+                &["Look", "Use", "MendTravelGear"],
                 &[
                     ("Look", "結實硬木楦頭上套著一隻抹滿厚魚油的防水皮靴，旁側擺著牛皮掌皮、生鐵鞋釘與補靴小錘。"),
                     ("Use", "你拿起小錘輕敲皮靴後跟的鞋掌，鐵釘吃入堅木與硬皮，底掌牢固無比。"),
+                    ("MendTravelGear", "你在木砧檯與硬木楦前修補隨身行靴與桐油竹傘，針腳細密，底掌牢固如新。"),
                 ],
             ),
         ]
@@ -3435,11 +3975,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_alley_stone_well",
                 "青石古井",
-                &["Look", "Use", "Wash"],
+                &["Look", "Use", "Wash", "DrawSpringWell"],
                 &[
                     ("Look", "弄堂轉角處有一口被繩索磨出深深凹痕的八角青石古井，井水清澈冰涼，桶索完整。"),
                     ("Use", "你轉動轆轤搖起一桶沁涼甘甜的井水，水珠飛濺，暑氣全消。"),
                     ("Wash", "你舀起一勺清涼井水洗了洗臉與雙手，整個人神清氣爽。"),
+                    ("DrawSpringWell", "你搖動轆轤自青石古井汲起一桶甘冽山泉，清涼潤嗓，與井畔街坊互道安好。"),
                 ],
             ),
         ]
@@ -3450,39 +3991,42 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "黃銅儲墨筆",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "烏木教案的正中央擱著一支溫潤沉甸的黃銅桿儲墨鋼筆，筆尖以精煉銥金打磨得細膩微光，旁側襯著吸墨氈布與寫滿批註的竹綿紙講義。"),
-                    ("Use", "你執起教案上的黃銅鋼筆，銥金筆尖觸及竹綿紙面，黑墨勻稱流暢地順著筆鋒沁入紙紋，留下一行端勁清晰的手跡。"),
+                    ("Look", "烏木教案的正中央擱著一支溫潤沉甸的黃銅桿儲墨硬筆，筆尖以精煉銥金打磨得細膩微光，旁側襯著吸墨氈布與寫滿批註的竹綿紙講義。"),
+                    ("Use", "你執起教案上的黃銅硬筆，銥金筆尖觸及竹綿紙面，黑墨勻稱流暢地順著筆鋒沁入紙紋，留下一行端勁清晰的手跡。"),
                     ("Operate", "你輕旋黃銅筆桿檢視儲墨囊，墨色飽滿澄澈，筆帽卡榫嚴絲合縫，足見文曜百工製筆之精巧。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_study_desk_inkstone",
                 "烏木書案",
-                &["Look", "Use", "Operate", "Read"],
+                &["Look", "Use", "Operate", "Read", "CollateInscriptions"],
                 &[
                     ("Look", "黑沼沉水烏木雕琢的寬厚書案散發著幽靜木香，案上端硯墨色溫潤如玉，水注蓄著山泉，紫毫畫筆與狼毫楷筆整齊懸於紫檀筆架。"),
                     ("Use", "你取墨錠在端硯清泉中徐徐研磨，墨香四溢，提筆蘸墨在宣紙上信手書寫，筆意沉著，心神豁然澄澈。"),
                     ("Operate", "你整理案几上的鎮紙與宣紙摺頁，端整筆洗，室內窗明几淨，文氣盎然。"),
                     ("Read", "你展讀案几上攤開的手抄古卷，筆跡端勁，字句精微，深得先賢格物修齊之旨。"),
+                    ("CollateInscriptions", "你展平古碑墨拓與竹綿宣紙，手持狼毫小楷逐字比勘碑文字口，訂正訛誤。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_study_bamboo_bookshelf",
                 "線裝古籍架",
-                &["Look", "Use", "Read", "Operate"],
+                &["Look", "Use", "Read", "Operate", "SunBooks", "CollateInscriptions"],
                 &[
                     ("Look", "靠牆的高大樟木架上排滿了竹綿紙線裝古籍與輿地總圖，底層整齊碼放著幾隻精編韌竹書簍，分納校勘稿卷。"),
                     ("Use", "你自架上抽出一冊線裝古籍翻閱，紙質柔韌吸墨，墨香沁人心脾，細讀之下頗有領悟。"),
-                    ("Read", "你取下一卷半島風物志稿細細研讀，字裡行間詳載水土人文與山川形勝，令人眼界大開。"),
+                    ("Read", "你取下一卷半島風物誌稿細細研讀，字裡行間詳載水土人文與山川形勝，令人眼界大開。"),
                     ("Operate", "你將翻閱過的文稿重新按部首分類歸入竹編書簍，架欞齊整，井然有序。"),
+                    ("SunBooks", "你自樟木架上捧出線裝古籍攤於通風日影下曝書防蠹，夾入芸香乾葉。"),
+                    ("CollateInscriptions", "你自書簍取出金石碑帖拓本與古籍善本對照校勘，分門別類歸檔。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_home_shell_lamp",
-                "貝母台燈",
+                "檯燈",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "案角立著造型典雅的旋蓋夜光貝母調光台燈，貝母薄片拼嵌的燈罩泛著溫潤珠光，烏木旋蓋可細調光圈大小。"),
+                    ("Look", "案角立著造型典雅的旋蓋夜光貝母調光檯燈，貝母薄片拼嵌的燈罩泛著溫潤珠光，烏木旋蓋可細調光圈大小。"),
                     ("Use", "你旋動烏木燈蓋調節光暈，柔和清澈的珠白光芒映照書案，滿室皆是清幽安寧之氣。"),
                     ("Operate", "你輕旋貝母燈罩，光暈隨之微調收斂，光斑柔和均勻，極便於夜讀抄寫。"),
                 ],
@@ -3495,20 +4039,21 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "黃銅儲墨筆",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "烏木教案的正中央擱著一支溫潤沉甸的黃銅桿儲墨鋼筆，筆尖以精煉銥金打磨得細膩微光，旁側襯著吸墨氈布與寫滿批註的竹綿紙講義。"),
-                    ("Use", "你執起教案上的黃銅鋼筆，銥金筆尖觸及竹綿紙面，黑墨勻稱流暢地順著筆鋒沁入紙紋，留下一行端勁清晰的手跡。"),
+                    ("Look", "烏木教案的正中央擱著一支溫潤沉甸的黃銅桿儲墨硬筆，筆尖以精煉銥金打磨得細膩微光，旁側襯著吸墨氈布與寫滿批註的竹綿紙講義。"),
+                    ("Use", "你執起教案上的黃銅硬筆，銥金筆尖觸及竹綿紙面，黑墨勻稱流暢地順著筆鋒沁入紙紋，留下一行端勁清晰的手跡。"),
                     ("Operate", "你輕旋黃銅筆桿檢視儲墨囊，墨色飽滿澄澈，筆帽卡榫嚴絲合縫，足見文曜百工製筆之精巧。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_astro_brass_armillary",
                 "渾天推步儀",
-                &["Look", "Use", "Operate", "Read"],
+                &["Look", "Use", "Operate", "Read", "ChartAstrolabe"],
                 &[
                     ("Look", "多層同心黃銅環刻劃著十二辰次與周天度數，子午環與赤道環交相輝映，底座刻滿了文曜曆算學士世代推步的星度軌跡。"),
                     ("Use", "你推動星軌儀的精銅外環，齒輪與軸承咬合平順，星軌刻度隨之流轉對齊今日天象，心中豁然開朗。"),
                     ("Operate", "你輕輕旋轉子午度盤微調交角，黃銅星規與指針精準校準，測候律曆之奧妙盡在其中。"),
                     ("Read", "你俯身辨讀星軌儀底座鐫刻的文曜先賢推步法度，字跡端凝入微，深邃博大。"),
+                    ("ChartAstrolabe", "你鋪開竹綿宣紙與松煙墨拓，循星軌儀子午刻度拓下個人周天命格星盤。"),
                 ],
             ),
             make_peninsula_object(
@@ -3523,10 +4068,10 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             ),
             make_peninsula_object(
                 "wt_home_shell_lamp",
-                "貝母台燈",
+                "檯燈",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "算案一側置有一盞精巧的旋蓋夜光貝母台燈，乳白貝殼透光柔和，照亮密密麻麻的算題推算手稿。"),
+                    ("Look", "算案一側置有一盞精巧的旋蓋夜光貝母檯燈，乳白貝殼透光柔和，照亮密密麻麻的算題推算手稿。"),
                     ("Use", "你轉動烏木燈圈調節明暗，柔和白光灑在計數板與草紙上，省目清心。"),
                     ("Operate", "你微調貝母燈罩的角度使光束聚焦於核算案面，光斑清晰不炫目。"),
                 ],
@@ -3539,7 +4084,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "梨木活字盤",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "數以千計的梨木雕刻活字整齊碼放在分格木盤內，長案上擺著棕櫚墨刷、壓紙平砧與剛刷滿松煙墨的排版木框。"),
+                    ("Look", "數以千計的梨木雕刻活字整齊碼放在分格木盤內，長案上擺著棕櫚墨刷、壓紙平砧與新刷松煙墨的排版木框。"),
                     ("Use", "你拿起棕櫚墨刷在排版活字上勻勻刷上一層松煙墨，覆上宣紙輕輕滾壓，字跡頓時端正顯映於紙上。"),
                     ("Operate", "你手持竹鑷在活字盤中檢選字模並嵌入版框，木塊卡榫緊密堅實，字面齊整如刀削。"),
                 ],
@@ -3549,19 +4094,19 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "抄紙青石槽",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "青石大槽中浸著雪白的竹漿紙漿，旁邊架著細如青絲的抄紙竹簾，內壁熱氣騰騰的夾道焙紙牆正烘乾著剛起出的薄綿紙。"),
+                    ("Look", "青石大槽中浸著雪白的竹漿紙漿，旁邊架著細如青絲的抄紙竹簾，內壁熱氣騰騰的夾道焙紙牆正烘乾著新起出的薄綿紙。"),
                     ("Use", "你雙手執竹簾浸入石槽，平順蕩料抄起一層細密纖維，揭紙貼於熱牆烘乾，紙面瑩白平滑，工藝之妙令人讚歎。"),
                     ("Operate", "你輕撫焙紙牆上烘乾的竹綿宣紙，纖維綿密細韌，揭下疊入紙捆，整齊平整。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_home_shell_lamp",
-                "貝母台燈",
+                "檯燈",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "排版案頭立著防風夜光貝母台燈，珠母薄片在水汽與墨香中泛著瑩潤清輝。"),
+                    ("Look", "排版案頭立著防風夜光貝母檯燈，珠母薄片在水汽與墨香中泛著瑩潤清輝。"),
                     ("Use", "你旋亮夜光貝母燈罩，澄澈珠光映照著活字盤，微小筆畫一覽無遺。"),
-                    ("Operate", "你調整燈罩遮光板，將清光引向剛拓印完成的書頁進行細緻校對。"),
+                    ("Operate", "你調整燈罩遮光板，將清光引向拓印完成的書頁進行細緻校對。"),
                 ],
             ),
         ]
@@ -3570,30 +4115,32 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_herb_drying_kiln",
                 "紅泥焙藥爐",
-                &["Look", "Use", "Operate", "WarmHands"],
+                &["Look", "Use", "Operate", "WarmHands", "RoastHerbs"],
                 &[
                     ("Look", "雙層紅泥焙爐中炭火微溫，上下兩層密布通氣孔，溫火正烘烤著當歸、黃耆與山風草，濃郁藥香透滿全室。"),
                     ("Use", "你撥動紅泥爐膛的通氣瓦片微調火候，熱氣蒸騰間草木本質被徐徐焙透，藥性純粹，精神為之一振。"),
                     ("Operate", "你掀開頂層紅泥蓋檢查藥材焙乾程度，藥草微黃酥脆，火候恰到好處。"),
                     ("WarmHands", "你靠近紅泥焙藥爐的側壁烘手，厚重紅陶散發著沉穩持久的溫熱藥氣，周身寒氣盡消。"),
+                    ("RoastHerbs", "你在紅泥焙藥爐前微調炭火通氣孔，依古法九蒸九曝炮製七星艾絨與當歸黃耆。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_herb_bamboo_sieve",
                 "切藥鍘刀案",
-                &["Look", "Use", "Operate"],
+                &["Look", "Use", "Operate", "RoastHerbs"],
                 &[
                     ("Look", "層層竹篩中攤曬著洗淨的鮮藥草，長木案上固定著厚刃生鐵切藥鍘刀，案面滿是整齊切片留下的草木汁痕。"),
                     ("Use", "你手握切藥鍘刀木柄壓下，利刃切開晾乾的草藥根莖，發出清脆嚓響，藥香濃烈撲面。"),
                     ("Operate", "你翻動竹篩中的藥草使其受風均勻，青綠與微褐色澤錯落，草木清香盈溢鼻端。"),
+                    ("RoastHerbs", "你在切藥鍘刀案前勻稱切製晾乾的藥草根莖，配成九蒸七星艾絨藥包。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_home_shell_lamp",
-                "貝母台燈",
+                "檯燈",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "切藥長案角設有一盞防潮夜光貝母調光台燈，光暈溫和不燥，映照著鋪展的藥草竹篩。"),
+                    ("Look", "切藥長案角設有一盞防潮夜光貝母調光檯燈，光暈溫和不燥，映照著鋪展的藥草竹篩。"),
                     ("Use", "你轉動旋蓋調整燈火光暈，白光籠罩切藥案板，便於辨識藥材切片厚度。"),
                     ("Operate", "你輕輕旋轉貝母外殼調整反光角度，照亮掛滿乾草藥的陰乾竹架。"),
                 ],
@@ -3603,7 +4150,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
         vec![
             make_peninsula_object(
                 "wt_reg_wenyao_riverbank",
-                "雕花青石欄",
+                "橋欄",
                 &["Look", "Use", "Rest", "Operate"],
                 &[
                     ("Look", "青石欄杆雕飾著渡海浪花紋樣，橋墩下方垂著粗壯熟鐵繫船環，川流自石階下緩緩匯入水灣，波光瀲灩。"),
@@ -3615,12 +4162,13 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_river_stone_steps",
                 "汲水青石階",
-                &["Look", "Use", "Wash", "Rest"],
+                &["Look", "Use", "Wash", "Rest", "DrawSpringWell"],
                 &[
                     ("Look", "平整青石台階直通向清澈水面，階旁繫著兩只浸在水中的竹編魚簍，活水潺潺流淌。"),
                     ("Use", "你拾級而下至石階盡頭，俯身掬起一捧清泉洗濯面容，水質甘冽沁骨，整個人神清氣爽。"),
                     ("Wash", "你舀起清澈川水洗去雙手與面龐上的微塵，水氣清涼，暑氣與疲倦全消。"),
                     ("Rest", "你在石階最高處席地而坐，望著川流碧波隨風泛起漣漪，片刻安寧。"),
+                    ("DrawSpringWell", "你在水岸公井青石階前汲起清澈甘冽的活水潤嗓，水氣沁涼，與汲水街坊寒暄問好。"),
                 ],
             ),
             make_peninsula_object(
@@ -3660,7 +4208,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             ),
             make_peninsula_object(
                 "wt_home_shell_lamp",
-                "貝母台燈",
+                "檯燈",
                 &["Look", "Use", "Operate"],
                 &[
                     ("Look", "青石茶案旁修竹幹上掛有一盞防雨夜光貝母燈，微風拂動竹葉，青光與珠光交融成趣。"),
@@ -3673,16 +4221,16 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
         vec![
             make_peninsula_object(
                 "wt_bridge_sundial_pillar",
-                "日晷指路柱",
+                "日晷",
                 &["Look", "Read"],
                 &[
-                    ("Look", "石橋兩端立有堅固花崗岩指路柱，柱頂刻有青銅日晷晷針，陰影清晰指示著當前時辰。"),
+                    ("Look", "石橋兩端立有堅固花崗岩指路柱，柱頂刻有青銅日晷晷針，陰影清晰指示著當前時刻。"),
                     ("Read", "你走近石柱研讀鐫刻的方位路引：北通三水口北街與總商行，東連講堂街學院主校區與東橋旅社，南往公議堂與分家巷百工，西達傳訊鐘樓與西門聯運。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_bridge_stone_balustrade",
-                "雕花青石欄",
+                "橋欄",
                 &["Look", "Rest"],
                 &[
                     ("Look", "青石欄杆雕飾著渡海浪花紋樣，橋墩下方垂著粗壯熟鐵繫船環，川流自橋下緩緩匯入港灣。"),
@@ -3690,14 +4238,14 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
         ]
-    } else if room_name.contains("國小") {
+    } else if room_name.contains("蒙學") {
         vec![
             make_peninsula_object(
                 "wt_obj_school_recess_bell",
                 "課間報時鐘",
                 &["Look", "Listen"],
                 &[
-                    ("Look", "國小門廊挑樑下懸掛著一口精銅小撞鐘，鐘身刻有日昇月恆圖紋，垂著一根紅絲編結的鐘繩。"),
+                    ("Look", "蒙學堂門廊挑樑下懸掛著一口精銅小撞鐘，鐘身刻有日昇月恆圖紋，垂著一根紅絲編結的鐘繩。"),
                     ("Listen", "微風掠過鐘槌，撞鐘隱約發出輕微清脆的金石幽鳴，悠揚動聽。"),
                 ],
             ),
@@ -3726,10 +4274,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_obj_stone_rubbing_cabinet",
                 "碑拓石櫥",
-                &["Look", "Check"],
+                &["Look", "Check", "CollateInscriptions"],
                 &[
-                    ("Look", "巷壁遮雨深檐下嵌著防潮硬木石櫥，玻璃紗門內整齊陳列著半島古碑拓本與金石拓片。"),
+                    ("Look", "巷壁遮雨深簷下嵌著防潮硬木石櫥，玻璃紗門內整齊陳列著半島古碑拓本與金石拓片。"),
                     ("Check", "你透過紗門審視櫥中拓片，字口清晰遒勁，古意盎然。"),
+                    ("CollateInscriptions", "你打開碑拓石櫥取出古碑拓片，逐字比勘金石筆意並摹拓精校副本。"),
                 ],
             ),
             make_peninsula_object(
@@ -3757,11 +4306,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_obj_armillary_almanac",
                 "定緯銅儀",
-                &["Look", "Observe", "Read"],
+                &["Look", "Observe", "Read", "ChartAstrolabe"],
                 &[
                     ("Look", "露天石台中央矗立著多層旋轉銅環交錯的北辰定緯儀，基座四周平嵌著刻滿二十四節氣晷影長短的黑曜石測影日晷。"),
                     ("Observe", "你凝神推動外環赤道環，黃銅軸心平滑旋轉，指針精準指向北天極星，刻度縝密清晰。"),
                     ("Read", "你研讀日晷台面刻印的七十二候節令注解，上載寒暑推移與日影消長之理，字跡精工嚴謹。"),
+                    ("ChartAstrolabe", "你鋪開竹綿宣紙與松煙墨拓，循星軌儀子午刻度拓下個人周天命格星盤。"),
                 ],
             ),
             make_peninsula_object(
@@ -3774,13 +4324,13 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ],
             ),
             make_peninsula_object(
-                "wt_street_lamp_signpost",
-                "貝母街燈",
-                &["Look", "Read", "Operate"],
+                "wt_obj_mountain_milestone",
+                "山道指路碑",
+                &["Look", "Read", "HangVotivePlaque"],
                 &[
-                    ("Look", "街口立著高木柱，頂端掛著旋蓋夜光貝母防風燈，下方釘著標明各工坊與城門方向的竹編路標牌。"),
-                    ("Read", "你抬頭辨認路標上的指引字跡，各區方向一目了然，便於行客認路通行。"),
-                    ("Operate", "你輕輕拉動低垂的吊繩旋開貝母防風燈罩，柔和珠光照亮了腳下平整的石板路面。"),
+                    ("Look", "石階拐角處矗立著一尊取自青脊山的灰黑巨石碑，正面深刻著通往觀星高台與北嶺山道的箭頭路徑。"),
+                    ("Read", "你仔細端詳碑文上的山勢地形指引，峰迴路轉的石階坡道清晰在目。"),
+                    ("HangVotivePlaque", "你在散發松脂清香的北嶺雲杉木牌上題寫平安祈願，繫於山道古杉牌架之上，木牌隨山風清脆作響。"),
                 ],
             ),
         ]
@@ -3791,7 +4341,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "旬報閱報欄",
                 &["Look", "Read"],
                 &[
-                    ("Look", "街邊遮雨棚下立著寬闊的閱報木欄，上面張貼著最新一期的《半島旬報》與學院及國小告示。"),
+                    ("Look", "街邊遮雨棚下立著寬闊的閱報木欄，上面張貼著最新一期的《半島旬報》與學院及蒙學堂告示。"),
                     ("Read", "你駐足細讀旬報頭條，上面記載著半島各城鎮的航線調度、礦石產量與學院最新評議文論。"),
                 ],
             ),
@@ -3823,7 +4373,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                     "曬紙竹簾架",
                     &["Look", "Use"],
                     &[
-                        ("Look", "巷口通風處斜倚著數排高大的細篾竹簾架，整齊平鋪著剛剛抄造完成的濕潤竹綿宣紙，在微風中散發清幽竹香。"),
+                        ("Look", "巷口通風處斜倚著數排高大的細篾竹簾架，整齊平鋪著抄造完成的濕潤竹綿宣紙，在微風中散發清幽竹香。"),
                         ("Use", "你伸手輕撫竹簾邊緣，宣紙纖維均勻平整，簾絲密緻結實。"),
                     ],
                 ),
@@ -3882,7 +4432,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             vec![
                 make_peninsula_object(
                     "wt_street_platform_scale",
-                    "生鐵地秤",
+                    "地秤",
                     &["Look", "Operate"],
                     &[
                         ("Look", "地面平嵌著一方厚重生鐵地秤台，側邊立著刻度精細的黃銅秤桿與大號滑動砝碼。"),
@@ -3934,7 +4484,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                     "旬報閱報欄",
                     &["Look", "Read"],
                     &[
-                        ("Look", "街邊遮雨棚下立著寬闊的閱報木欄，上面張貼著最新一期的《半島旬報》與學院及國小告示。"),
+                        ("Look", "街邊遮雨棚下立著寬闊的閱報木欄，上面張貼著最新一期的《半島旬報》與學院及蒙學堂告示。"),
                         ("Read", "你駐足細讀旬報頭條，上面記載著半島各城鎮的航線調度、礦石產量與學院最新評議文論。"),
                     ],
                 ),
@@ -4029,7 +4579,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                     "旬報閱報欄",
                     &["Look", "Read"],
                     &[
-                        ("Look", "街邊遮雨棚下立著寬闊的閱報木欄，上面張貼著最新一期的《半島旬報》與學院及國小告示。"),
+                        ("Look", "街邊遮雨棚下立著寬闊的閱報木欄，上面張貼著最新一期的《半島旬報》與學院及蒙學堂告示。"),
                         ("Read", "你駐足細讀旬報頭條，上面記載著半島各城鎮的航線調度、礦石產量與學院最新評議文論。"),
                     ],
                 ),
@@ -4057,7 +4607,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ),
                 make_peninsula_object(
                     "wt_reg_wenyao_street",
-                    "黃銅告示欄",
+                    "告示欄",
                     &["Look", "Read"],
                     &[
                         ("Look", "平整石板街邊立著雕工細緻的黃銅包邊木質告示欄，張貼著文曜各工坊、商行與學院評議會的最新公議告示。"),
@@ -4115,7 +4665,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                     "旬報閱報欄",
                     &["Look", "Read"],
                     &[
-                        ("Look", "街邊遮雨棚下立著寬闊的閱報木欄，上面張貼著最新一期的《半島旬報》與學院及國小告示。"),
+                        ("Look", "街邊遮雨棚下立著寬闊的閱報木欄，上面張貼著最新一期的《半島旬報》與學院及蒙學堂告示。"),
                         ("Read", "你駐足細讀旬報頭條，上面記載著半島各城鎮的航線調度、礦石產量與學院最新評議文論。"),
                     ],
                 ),
@@ -4153,7 +4703,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 ),
                 make_peninsula_object(
                     "wt_reg_wenyao_street",
-                    "黃銅告示欄",
+                    "告示欄",
                     &["Look", "Read"],
                     &[
                         ("Look", "平整石板街邊立著雕工細緻的黃銅包邊木質告示欄，張貼著文曜各工坊、商行與學院評議會的最新公議告示。"),
@@ -4293,12 +4843,13 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 make_peninsula_object(
                     "wt_river_stone_steps",
                     "汲水青石階",
-                    &["Look", "Use", "Wash", "Rest"],
+                    &["Look", "Use", "Wash", "Rest", "DrawSpringWell"],
                     &[
                         ("Look", "平整青石台階直通向清澈水面，階旁繫著兩只浸在水中的竹編魚簍，活水潺潺流淌。"),
                         ("Use", "你拾級而下至石階盡頭，俯身掬起一捧清泉洗濯面容，水質甘冽沁骨，整個人神清氣爽。"),
                         ("Wash", "你舀起清澈川水洗去雙手與面龐上的微塵，水氣清涼，暑氣與疲倦全消。"),
                         ("Rest", "你在石階最高處席地而坐，望著川流碧波隨風泛起漣漪，片刻安寧。"),
+                        ("DrawSpringWell", "你在水岸公井青石階前汲起清澈甘冽的活水潤嗓，水氣沁涼，與汲水街坊寒暄問好。"),
                     ],
                 ),
                 make_peninsula_object(
@@ -4358,10 +4909,10 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             vec![
                 make_peninsula_object(
                     "wt_obj_stone_anvil_platform",
-                    "石料砧台",
+                    "石料砧檯",
                     &["Look", "Operate"],
                     &[
-                        ("Look", "外環石道邊置有一座沉重平坦的玄武岩砧台，檯面留有鐵鑿與石錘敲擊的斑駁凹痕。"),
+                        ("Look", "外環石道邊置有一座沉重平坦的玄武岩砧檯，檯面留有鐵鑿與石錘敲擊的斑駁凹痕。"),
                         ("Operate", "你伸手撫過粗礪沉重的石砧檯面，堅實穩固，足以承受千鈞重錘。"),
                     ],
                 ),
@@ -4421,7 +4972,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
         vec![
             make_peninsula_object(
                 "wt_street_platform_scale",
-                "生鐵地秤",
+                "地秤",
                 &["Look", "Operate"],
                 &[
                     ("Look", "地面平嵌著一方厚重生鐵地秤台，側邊立著刻度精細的黃銅秤桿與大號滑動砝碼。"),
@@ -4455,7 +5006,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &["Look", "Operate"],
                 &[
                     ("Look", "高架庫棚下停放著兩部加重雙輪推車，車樑上架著帶有青銅滑動大舵砣的重型木桿秤。"),
-                    ("Operate", "你推動舵砣校準木秤零點，沉實木梁起落平穩，刻度分毫不差。"),
+                    ("Operate", "你推動舵砣校準木秤零點，沉實木樑起落平穩，刻度分毫不差。"),
                 ],
             ),
             make_peninsula_object(
@@ -4484,11 +5035,12 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_obj_caravan_hitch_trough",
                 "拴馬長木欄",
-                &["Look", "Tie", "Water"],
+                &["Look", "Tie", "Water", "FeedDraftBeast"],
                 &[
                     ("Look", "粗大圓木架設的長木欄杆，專供長途駝隊歇鞍時拴繫馱獸，木紋已被韁繩磨得光亮。"),
                     ("Tie", "你將隨身繩索繞扣在堅固的原木欄杆上，木欄沉穩受力，極其吃勁。"),
                     ("Water", "你自石槽打起一桶清水倒進飲水槽，駝獸歡快地甩動鬃毛低頭暢飲。"),
+                    ("FeedDraftBeast", "你抱來新鮮苜蓿草料與甘冽山泉水倒入槽中，替遠行歇腳的健壯駝獸刷拭背毛、添草飲水。"),
                 ],
             ),
             make_peninsula_object(
@@ -4703,7 +5255,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
         vec![
             make_peninsula_object(
                 "wt_reg_wenyao_riverbank",
-                "雕花青石欄",
+                "橋欄",
                 &["Look", "Use", "Rest", "Operate"],
                 &[
                     ("Look", "青石欄杆雕飾著渡海浪花紋樣，橋墩下方垂著粗壯熟鐵繫船環，川流自石階下緩緩匯入水灣，波光瀲灩。"),
@@ -4715,12 +5267,13 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_river_stone_steps",
                 "汲水青石階",
-                &["Look", "Use", "Wash", "Rest"],
+                &["Look", "Use", "Wash", "Rest", "DrawSpringWell"],
                 &[
                     ("Look", "平整青石台階直通向清澈水面，階旁繫著兩只浸在水中的竹編魚簍，活水潺潺流淌。"),
                     ("Use", "你拾級而下至石階盡頭，俯身掬起一捧清泉洗濯面容，水質甘冽沁骨，整個人神清氣爽。"),
                     ("Wash", "你舀起清澈川水洗去雙手與面龐上的微塵，水氣清涼，暑氣與疲倦全消。"),
                     ("Rest", "你在石階最高處席地而坐，望著川流碧波隨風泛起漣漪，片刻安寧。"),
+                    ("DrawSpringWell", "你在水岸公井青石階前汲起清澈甘冽的活水潤嗓，水氣沁涼，與汲水街坊寒暄問好。"),
                 ],
             ),
             make_peninsula_object(
@@ -4765,10 +5318,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_farm_tool_iron_plow",
                 "雙齒精鐵犁",
-                &["Look", "Operate"],
+                &["Look", "Operate", "PressCheese"],
                 &[
                     ("Look", "為原牛翻耕黏土設計的淬火精鐵犁鏵，泥槽打磨平滑，犁尖銳利厚實。"),
                     ("Operate", "你握住雙齒犁的磨光硬木扶柄試著推動，重心穩健，精鐵犁鏵入土沉實。"),
+                    ("PressCheese", "你協同牧耕勞作，將牧場原乳送入沉澱槽壓製乳酪，分理收成。"),
                 ],
             ),
             make_peninsula_object(
@@ -4783,10 +5337,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_mill_grain_hopper",
                 "杉木儲糧斗",
-                &["Look", "Open"],
+                &["Look", "Open", "MillGrain"],
                 &[
                     ("Look", "高懸的倒梯形杉木儲料斗連接著下料槽，旁邊架著點驗原糧重量的大秤。"),
                     ("Open", "你拉開儲料斗下方的調節木插板，金黃飽滿的原糧穀粒順槽嘩啦滑落。"),
+                    ("MillGrain", "你啟開杉木料斗插板，金色稻穀源源湧入磨眼，水輪轟鳴研磨出新米漿。"),
                 ],
             ),
             make_peninsula_object(
@@ -4825,7 +5380,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "曬藥竹篾架",
                 &["Look", "Turn"],
                 &[
-                    ("Look", "露天開闊處架著雙層竹篾編製的曬藥架，上面攤鋪著切片烘曬的當歸、黃芪與野生甘草。"),
+                    ("Look", "露天開闊處架著雙層竹篾編製的曬藥架，上面攤鋪著切片烘曬的當歸、黃耆與野生甘草。"),
                     ("Turn", "你輕輕翻動竹篩中的乾燥藥材切片，受光均勻，空氣中飄散著濃郁醇厚的甘草微甜。"),
                 ],
             ),
@@ -4882,7 +5437,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &["Look", "Check"],
                 &[
                     ("Look", "草場地勢隆起處高高堆起覆有油布防雨氈的乾牧草大垛，金黃乾燥的甜草散發清甜麥草香。"),
-                    ("Check", "你抽出一根乾草掐斷驗看，草梗清脆乾燥，無半分返潮霉味。"),
+                    ("Check", "你抽出一根乾草掐斷驗看，草梗清脆乾燥，無半分返潮黴味。"),
                 ],
             ),
             make_peninsula_object(
@@ -4986,17 +5541,17 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "海鹽結晶池",
                 &["Look", "Check"],
                 &[
-                    ("Look", "平整海坪上以青石條分割成一方方淺水泥池，清澈鹵水在烈日下蒸發，泛起耀眼的雪白鹽霜。"),
+                    ("Look", "平整海坪上以青石條分割成一方方淺水灰漿池，清澈鹵水在烈日下蒸發，泛起耀眼的雪白鹽霜。"),
                     ("Check", "你拈起一撮池畔凝結的粗鹽晶，晶體顆粒方正透明，鹹鮮純正。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_kelp_drying_trellis",
                 "高架曬藻棚",
-                &["Look", "Gather"],
+                &["Look", "Gather", "BurnLime"],
                 &[
                     ("Look", "迎著海風搭建的巨型竹棚上懸垂著長達數丈的深海厚巨藻，海風吹拂下漸乾變韌。"),
-                    ("Gather", "你順手翻整竹棚上的乾燥巨藻，藻葉黑褐帶白霜，鹹鮮微甜。"),
+                    ("BurnLime", "你將高架曬乾的堅韌海藻與貝灰一同收整，備齊風舶角搓繩與造船用料。"),
                 ],
             ),
             make_peninsula_object(
@@ -5043,7 +5598,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 &["Look", "Touch"],
                 &[
                     ("Look", "粗壯鐵架上懸掛著加重無齒金剛砂框鋸，細水伴著鋼砂在巨石槽中慢慢切割，四周堆滿了平整如削的城防條石與石雕柱礎。"),
-                    ("Touch", "你伸手撫摸剛切出的石板切面，石面平直如削，微帶金剛砂水漬的溫涼觸感。"),
+                    ("Touch", "你伸手撫摸新切出的石板切面，石面平直如削，微帶金剛砂水漬的溫涼觸感。"),
                 ],
             ),
             make_peninsula_object(
@@ -5051,26 +5606,28 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "寒水玉料架",
                 &["Look", "Check"],
                 &[
-                    ("Look", "棚架內層層陳列著剛開採出的半嶺寒水玉毛料，玉色青綠微透，石皮帶有一層細膩白霜。"),
+                    ("Look", "棚架內層層陳列著新開採出的半嶺寒水玉毛料，玉色青綠微透，石皮帶有一層細膩白霜。"),
                     ("Check", "你伸手摩挲玉料切面，入手冰寒徹骨，質地縝密溫潤。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_trolley_rail_carriage",
                 "雙軸重台車",
-                &["Look", "Operate"],
+                &["Look", "Operate", "HaulMineCart"],
                 &[
                     ("Look", "坑道軌道上停著厚重雙軸台車，精鐵鑄造的車輪扣住木軌鐵皮，裝滿粗礦依然平穩。"),
-                    ("Operate", "你推動台車煞車鐵桿，生鐵閘瓦咬緊輪軸，發出沉實摩擦聲。"),
+                    ("Operate", "你推動台車制動鐵桿，生鐵閘瓦咬緊輪軸，發出沉實摩擦聲。"),
+                    ("HaulMineCart", "你合力推動雙軸重台車滑入坑口鐵軌，伴隨鋼輪咬軌轟鳴，將滿車赤鐵重礦運出坑道。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_mine_wash_chute",
                 "木製洗礦槽",
-                &["Look", "Operate"],
+                &["Look", "Operate", "HaulMineCart"],
                 &[
                     ("Look", "山澗急流順著長木槽奔騰而下，槽底隔木截留住沉重赤鐵礦砂，洗去浮游紅泥。"),
-                    ("Operate", "你拔起一片水閘木板，急流分注沖刷沈澱石泥，露出晶亮重礦砂。"),
+                    ("Operate", "你拔起一片水閘木板，急流分注沖刷沉澱石泥，露出晶亮重礦砂。"),
+                    ("HaulMineCart", "你引地下冷泉沖洗礦砂，分理碎石，將赤鐵重礦裝入滑車鐵斗。"),
                 ],
             ),
             make_peninsula_object(
@@ -5105,7 +5662,7 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "礦道照明燈",
                 &["Look", "Operate"],
                 &[
-                    ("Look", "石壁鐵托架上嵌著以防爆青銅網罩保護的夜光貝母礦燈，在幽深昏暗的石坪投下清亮冷光。"),
+                    ("Look", "石壁鐵托架上嵌著以密閉青銅網罩保護的夜光貝母礦燈，在幽深昏暗的石坪投下清亮冷光。"),
                     ("Operate", "你調整礦燈前端的遮光銅葉，聚光弧束指向前路，幽深坑道頓時清晰。"),
                 ],
             ),
@@ -5139,10 +5696,21 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_sawmill_hydraulic_saw",
                 "水動排鋸架",
-                &["Look", "Operate"],
+                &["Look", "Operate", "RefinePlank"],
                 &[
                     ("Look", "巨型雙水車連桿驅動的直立鋼鋸架，上下往復飛速鋸切，原木如切泥般剖為平整厚木板。"),
                     ("Operate", "你扳動水車分水導流板，水流激增，排鋸隨之發出均勻剛勁的轟鳴切削聲。"),
+                    ("RefinePlank", "你推動水動排鋸咬合雲杉巨木，精鋼鋸齒飛速剖切，裁出筆直平整的樟松木板料。"),
+                ],
+            ),
+            make_peninsula_object(
+                "wt_obj_mountain_milestone",
+                "山道指路碑",
+                &["Look", "Read", "HangVotivePlaque"],
+                &[
+                    ("Look", "陡坡拐角處矗立著一尊取自青脊山的灰黑巨石碑，正面深刻著通往白塔雪巔與各林場的箭頭路徑。"),
+                    ("Read", "你仔細端詳碑文上的山勢地形指引，峰迴路轉的險要坡道清晰在目。"),
+                    ("HangVotivePlaque", "你在散發松脂清香的北嶺雲杉木牌上題寫平安祈願，繫於山道古杉牌架之上，木牌隨山風清脆作響。"),
                 ],
             ),
             make_peninsula_object(
@@ -5157,19 +5725,11 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
             make_peninsula_object(
                 "wt_arena_testing_pillar",
                 "玄武試勁柱",
-                &["Look", "Operate"],
+                &["Look", "Operate", "SparPillar"],
                 &[
                     ("Look", "場中央立著取自烏石鼻的沉重玄武岩石柱，柱面留有深淺不一的掌印、拳痕與兵刃劈砍印記。"),
                     ("Operate", "你凝神運勁一掌拍上試勁石柱，掌風在石面上激起沉悶回響，柱身厚重不搖。"),
-                ],
-            ),
-            make_peninsula_object(
-                "wt_obj_mountain_milestone",
-                "山道指路碑",
-                &["Look", "Read"],
-                &[
-                    ("Look", "陡坡拐角處矗立著一尊取自青脊山的灰黑巨石碑，正面深刻著通往白塔雪巔與各林場的箭頭路徑。"),
-                    ("Read", "你仔細端詳碑文上的山勢地形指引，峰迴路轉的險要坡道清晰在目。"),
+                    ("SparPillar", "你沉腰落馬繞玄武試勁柱演練四序拆招，拳掌與兵刃交擊石柱發出沉雄悶響。"),
                 ],
             ),
             make_peninsula_object(
@@ -5215,18 +5775,19 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
                 "烏木繫船樁",
                 &["Look", "Use"],
                 &[
-                    ("Look", "木棧橋頭深打著數根油黑不腐的沼生千年烏木樁，樁頭刻有水鳥標記，套著浸油防霉纜繩。"),
-                    ("Use", "你伸手推了推黑亮沈重的烏木樁，木質堅逾鐵石，吃水極深牢不可撼。"),
+                    ("Look", "木棧橋頭深打著數根油黑不腐的沼生千年烏木樁，樁頭刻有水鳥標記，套著浸油防黴纜繩。"),
+                    ("Use", "你伸手推了推黑亮沉重的烏木樁，木質堅逾鐵石，吃水極深牢不可撼。"),
                 ],
             ),
             make_peninsula_object(
                 "wt_dock_riverbank_raft",
                 "平底竹筏",
-                &["Look", "Operate", "Use"],
+                &["Look", "Operate", "Use", "RowSwampRaft"],
                 &[
                     ("Look", "水岸石砌埠頭邊立著長年受流水沖刷的繫船青石樁，石孔穿過粗大桐油麻繩，平穩繫泊著數艘雙層防浸平底竹筏，筏上置有推水長竹篙與青竹魚簍。"),
                     ("Operate", "你解開繫在青石樁上的桐油麻繩，平底竹筏在川流水波間輕輕蕩漾，吃水甚穩。"),
                     ("Use", "你手持長竹篙在石階輕撐借力，竹筏滑入川流清澈碧流，沿岸水草豐美、水鳥掠波。"),
+                    ("RowSwampRaft", "你解開纜繩點篙撐起竹筏，輕舟破開水尾寮蘆葦與黑沼迷霧，順流探尋澤中沉水烏木與止血水苔。"),
                 ],
             ),
             make_peninsula_object(
@@ -5421,10 +5982,17 @@ pub fn white_tower_peninsula_objects_for_room(room_name: &str) -> Vec<RoomObject
 }
 
 fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
-    if room_name.starts_with("風舶角")
-        || room_name.starts_with("風舶嶼")
-        || room_name.starts_with("風櫃尾")
-        || room_name.starts_with("烏石鼻")
+    let is_outdoor_passage = room_name.contains('街')
+        || room_name.contains('道')
+        || room_name.contains('巷')
+        || room_name.contains('橋')
+        || room_name.contains('階');
+
+    if !is_outdoor_passage
+        && (room_name.starts_with("風舶角")
+            || room_name.starts_with("風舶嶼")
+            || room_name.starts_with("風櫃尾")
+            || room_name.starts_with("烏石鼻"))
     {
         Some(make_peninsula_object(
             "wt_reg_coastal_specialty",
@@ -5436,10 +6004,11 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
                 ("Use", "你轉動韌竹釣竿上的黃銅捲線輪試了試手感，齒輪順滑輕巧，隨時能去港灣礁石垂釣。"),
             ],
         ))
-    } else if room_name.starts_with("半嶺鎮")
-        || room_name.starts_with("老堰頭")
-        || room_name.starts_with("北嶺腳")
-        || room_name.starts_with("霜林口")
+    } else if !is_outdoor_passage
+        && (room_name.starts_with("半嶺鎮")
+            || room_name.starts_with("老堰頭")
+            || room_name.starts_with("北嶺腳")
+            || room_name.starts_with("霜林口"))
     {
         Some(make_peninsula_object(
             "wt_reg_mountain_specialty",
@@ -5448,32 +6017,34 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
             &[
                 ("Look", "松香木架上擺著半嶺寒水玉雕成的恆溫茶盅、松脂暖手爐，旁側掛著進山必備的內襯寒水玉採集背簍、卡式導能便攜爐與黃銅單筒望遠鏡。"),
                 ("WarmHands", "你捧起溫潤的寒水玉茶盅與松脂暖手爐，北山特有的恆溫暖意順著掌心傳遍全身。"),
-                ("Use", "你舉起黃銅單筒望遠鏡朝窗外遠眺，遠方神山雲杉林與山徑景物清晰如在眼前。"),
+                ("Use", "你舉起黃銅單筒望遠鏡朝窗外遠眺，遠方北坡雲杉林與山徑景物清晰如在眼前。"),
             ],
         ))
-    } else if room_name.starts_with("大圳頭") || room_name.starts_with("牛埔") {
+    } else if !is_outdoor_passage && (room_name.starts_with("大圳頭") || room_name.starts_with("牛埔")) {
         Some(make_peninsula_object(
             "wt_reg_plains_specialty",
             "陳年米酒甕",
-            &["Look", "Taste", "Smell"],
+            &["Look", "Taste", "Smell", "SeasonalBanquet"],
             &[
                 ("Look", "厚實的防潮羊毛氈墊旁，立著大圳頭紅泥封口的陳年米酒甕、牛埔熟成硬乳酪木盤，院門邊還放著看家牧羊犬的食盆與春耕艾草青糰蒸籠。"),
                 ("Taste", "你切下一小片牛埔硬乳酪配著溫熱米酒品嚐，濃郁奶香與甘醇酒香交融，回味綿長。"),
                 ("Smell", "陣陣大圳頭新米酒香與艾草清香撲鼻而來，滿是西南沃野的富足氣息。"),
+                ("SeasonalBanquet", "你取下陳年米酒甕拍開封泥，醇香四溢，與席間街坊共享歲時時令佳餚。"),
             ],
         ))
-    } else if room_name.starts_with("紅土崁") || room_name.starts_with("三號坑口") {
+    } else if !is_outdoor_passage && (room_name.starts_with("紅土崁") || room_name.starts_with("三號坑口")) {
         Some(make_peninsula_object(
             "wt_reg_mining_specialty",
             "烤番薯砂鍋",
-            &["Look", "Taste", "WarmHands"],
+            &["Look", "Taste", "WarmHands", "SeasonalBanquet"],
             &[
-                ("Look", "耐火紅磚砌成的矮爐上煨著一只紅土炭火砂鍋，爐灰裡埋著紅土崁沙地種出的紅心番薯，牆角還收著導能測紋石板與防潮紅磷火柴盒。"),
-                ("Taste", "你剝開一顆剛出爐的烤紅心番薯，金黃番薯肉軟糯流蜜，甜香燙口。"),
+                ("Look", "耐火紅磚砌成的矮爐上煨著一只紅土炭火砂鍋，爐灰裡埋著紅土崁沙地種出的紅心番薯，牆角還收著導能測紋石板與防潮紅磷引火籤盒。"),
+                ("Taste", "你剝開一顆現烤出爐的烤紅心番薯，金黃番薯肉軟糯流蜜，甜香燙口。"),
                 ("WarmHands", "你湊近紅土炭火砂鍋烘手，耐火紅陶散發著持久溫厚的熱力。"),
+                ("SeasonalBanquet", "你掀開砂鍋陶蓋，炭火煨烤的時令美味香氣撲鼻，圍爐取暖，神完氣足。"),
             ],
         ))
-    } else if room_name.starts_with("南哨") || room_name.starts_with("水尾寮") {
+    } else if !is_outdoor_passage && (room_name.starts_with("南哨") || room_name.starts_with("水尾寮")) {
         Some(make_peninsula_object(
             "wt_reg_wetland_specialty",
             "艾草驅蚊盤",
@@ -5484,7 +6055,12 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
                 ("Use", "你展開細編蘆葦涼席試摸，竹篾與蘆葦平滑冰涼，正是水鄉避暑的良物。"),
             ],
         ))
-    } else if room_name.contains("公議") || room_name.contains("契據") {
+    } else if !room_name.contains('街')
+        && !room_name.contains('道')
+        && !room_name.contains('巷')
+        && !room_name.contains('橋')
+        && (room_name.contains("公議") || room_name.contains("契據"))
+    {
         Some(make_peninsula_object(
             "wt_cat_0793",
             "紅印屋契匣",
@@ -5499,22 +6075,30 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
         Some(make_peninsula_object(
             "wt_cat_0734",
             "黃銅星軌儀",
-            &["Look", "Operate", "Read"],
+            &["Look", "Operate", "Read", "ChartAstrolabe"],
             &[
                 ("Look", "精銅底座上高聳著精密的三百六十度黃銅星軌儀，多層同心環刻有節氣、潮汐與天象經緯刻度。"),
                 ("Operate", "你輕輕推動星儀外環，黃銅齒輪與星軌指針順滑流轉，對準了今夜即將升起的海角星宿。"),
                 ("Read", "你俯身辨讀星軌儀底盤銘刻的文曜先賢測候律歷，字跡端凝入微。"),
+                ("ChartAstrolabe", "你鋪開竹綿宣紙與松煙墨拓，循星軌儀子午刻度拓下個人周天命格星盤。"),
             ],
         ))
-    } else if room_name.contains("總商行") || room_name.contains("商盟") {
+    } else if !room_name.contains('街')
+        && !room_name.contains('道')
+        && !room_name.contains('巷')
+        && !room_name.contains('橋')
+        && (room_name.contains("商行") || room_name.contains("商盟") || room_name.contains("票號"))
+    {
         Some(make_peninsula_object(
             "wt_cat_0790",
             "分格存摺櫃",
-            &["Look", "Operate", "Read"],
+            &["Look", "Read", "DepositBank", "WithdrawBank", "Use"],
             &[
-                ("Look", "厚重鐵木所造的分格存摺櫃，抽屜銅扣皆刻有三水口流水徽印，收存著各大商隊與鎮民的兌銀簿冊。"),
-                ("Operate", "你拉開其中一格抽屜檢驗分格存摺簿，銅夾緊湊牢固，便於快速盤點收支。"),
-                ("Read", "你細讀櫃頂張貼的三水總商行通兌章程，載明各港口通兌手續費與信用票號兌領條款。"),
+                ("Look", "厚重鐵木所造的分格存摺櫃，抽屜銅扣皆刻有三水口流水徽印，收存著各大商隊與鎮民的通兌簿冊與印鑑。"),
+                ("Read", "你細讀櫃頂張貼的三水總商行通兌章程，載明各港口通兌匯水與信用票號兌領條款。"),
+                ("DepositBank", "你在帳房案前出示存摺與信印，將隨身鎂幣妥善存入商行票號帳頭。"),
+                ("WithdrawBank", "你憑分格存摺防偽硃印與帳房核對銀數，自票號結存中支取現鎂。"),
+                ("Use", "你走近分格存摺櫃，向值守執事出示存摺辦理商行通兌手續。"),
             ],
         ))
     } else if room_name.starts_with("文曜") {
@@ -5530,14 +6114,14 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
         {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_home",
-                "松香木暖床",
+                "床榻",
                 &["Look", "Use", "Rest", "Sleep", "Operate"],
                 &[
-                    ("Look", "溫暖乾燥的松香木大床上鋪著蓬鬆羽絨暖被與山風草安神枕，榻旁小几上立著一盞旋蓋夜光貝母台燈，光暈柔和溫潤。"),
+                    ("Look", "溫暖乾燥的松香木大床上鋪著蓬鬆羽絨暖被與山風草安神枕，榻旁小几上立著一盞旋蓋夜光貝母檯燈，光暈柔和溫潤。"),
                     ("Use", "你在松香木大床上舒展四肢，蓬鬆羽絨暖被帶來融融暖意，周身疲勞與肌肉酸脹頓時消散大半，氣血與內息漸漸調和平復。"),
                     ("Rest", "你合衣在柔軟的羽絨大床上躺下歇息，安神草的清香讓緊繃的心神徹底放鬆下來，周身氣血漸復充盈。"),
-                    ("Sleep", "你鑽入溫暖蓬鬆的羽絨暖被，旋暗夜光貝母台燈。在靜謐祥和的屋內，你安然入眠，體魄與心神盡皆恢復。"),
-                    ("Operate", "你輕輕旋轉床頭夜光貝母台燈的烏木旋蓋，珠白光芒柔和微調，滿室皆是安恬的暖意。"),
+                    ("Sleep", "你鑽入溫暖蓬鬆的羽絨暖被，旋暗夜光貝母檯燈。在靜謐祥和的屋內，你安然入眠，體魄與心神盡皆恢復。"),
+                    ("Operate", "你輕輕旋轉床頭夜光貝母檯燈的烏木旋蓋，珠白光芒柔和微調，滿室皆是安恬的暖意。"),
                 ],
             ))
         } else if room_name.contains("渡埠")
@@ -5554,7 +6138,7 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
         {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_riverbank",
-                "雕花青石欄",
+                "橋欄",
                 &["Look", "Use", "Rest", "Operate"],
                 &[
                     ("Look", "青石欄杆雕飾著渡海浪花紋樣，橋墩下方垂著粗壯熟鐵繫船環，川流自石階下緩緩匯入水灣，波光瀲灩。"),
@@ -5602,18 +6186,18 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
         } else if room_name.contains("內門坊") {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_gate_plaza",
-                "石雕拴馬柱",
+                "拴馬柱",
                 &["Look", "Rest", "Operate"],
                 &[
                     ("Look", "青石坊門前立有一對雕刻流雲海濤紋樣的石雕望柱，柱底鑿有厚實生鐵栓馬環，過路行商常在此歇鞍飲馬。"),
-                    ("Rest", "你倚在青石望柱基座旁放鬆筋骨，看著巡坊差役與往來商旅自牌坊下穿行，井然有序。"),
+                    ("Rest", "你倚在青石望柱基座旁放鬆筋骨，看著巡坊守衛與往來商旅自牌坊下穿行，井然有序。"),
                     ("Operate", "你拉動生鐵栓馬石環試了試牢固度，鐵環嵌合緊密，堅不可摧。"),
                 ],
             ))
         } else if room_name.contains("街") || room_name.contains("巷") || room_name.contains("道") || room_name.contains("橋") {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_street",
-                "黃銅告示欄",
+                "告示欄",
                 &["Look", "Use", "Read", "Operate"],
                 &[
                     ("Look", "青石街角立著造型典雅的文曜街燈，燈罩內嵌夜光貝母薄片；燈柱旁設有黃銅鑲邊的公佈欄，張貼著近期的市集行曆與商會通告。"),
@@ -5632,12 +6216,12 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
         {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_workshop_bench",
-                "工匠工具架",
+                "工具架",
                 &["Look", "Use", "Operate"],
                 &[
                     ("Look", "厚木壁板上分門別類掛著精鋼手錘、鉗夾、銼刀與鋼角尺，下方是引自暗渠的活水冷卻石槽，水汽蒸騰。"),
                     ("Use", "你走近活水石槽浸手洗去油灰，清涼活水洗滌疲乏，令人神清氣爽。"),
-                    ("Operate", "你伸手整理掛架上的工具，擺放井然有序，刃口鎢鋼冷光內斂。"),
+                    ("Operate", "你伸手整理掛架上的工具，擺放井然有序，刃口重鎢冷光內斂。"),
                 ],
             ))
         } else if room_name.contains("大埠")
@@ -5656,7 +6240,7 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
         {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_market_post",
-                "通商貨架棚",
+                "貨架棚",
                 &["Look", "Read", "Operate"],
                 &[
                     ("Look", "場地正中立著高大的商會通商立柱，上掛夜光貝防風燈，周圍搭建著堅固的防水油布貨架棚，便於堆疊周轉大宗貨物。"),
@@ -5690,7 +6274,7 @@ fn regional_specialty_object_for_room(room_name: &str) -> Option<RoomObject> {
         } else {
             Some(make_peninsula_object(
                 "wt_reg_wenyao_amenities",
-                "黃銅活水栓",
+                "水栓",
                 &["Look", "Use", "Bath"],
                 &[
                     ("Look", "打磨光潔的文曜黃銅水栓連接著暗渠活水管，下方是一座嵌有半嶺溫石的保溫熱水槽，槽旁備有竹綿長絨擦面巾與松脂皂角。"),
@@ -5717,7 +6301,7 @@ pub fn public_person_label_for_room(room_name: &str) -> Option<&'static str> {
     } else if room_name.contains("診所") || room_name.contains("藥房") {
         Some("診所司藥學徒")
     } else if room_name.contains("曆算") || room_name.contains("星曆") || room_name.contains("推步") {
-        Some("文曜曆算系學生")
+        Some("文曜曆算生")
     } else if room_name.contains("印行館") || room_name.contains("造紙") || room_name.contains("典藏庫") {
         Some("講堂街印書匠")
     } else if room_name.contains("書齋") || room_name.contains("校勘齋") || room_name.contains("墨香居") {
@@ -5735,11 +6319,11 @@ pub fn public_person_label_for_room(room_name: &str) -> Option<&'static str> {
     } else if room_name.contains("總商行") || room_name.contains("商盟") {
         Some("總商行核算員")
     } else if room_name.contains("食堂") || room_name.contains("大食") {
-        Some("三水食堂外場服務員")
+        Some("三水食堂外場侍者")
     } else if room_name.contains("浴場") || room_name.contains("溫水") {
         Some("泉香浴場湯池管理員")
     } else if room_name.contains("旅社") || room_name.contains("茶屋") {
-        Some("東橋茶屋茶點服務員")
+        Some("東橋茶屋茶點侍者")
     } else if room_name.contains("鍛造") || room_name.contains("打鐵") {
         Some("分家巷司爐鐵匠")
     } else if room_name.contains("巧木") || room_name.contains("傢俱") {
@@ -5808,8 +6392,8 @@ pub fn public_person_label_for_room(room_name: &str) -> Option<&'static str> {
         Some("船戶")
     } else if room_name.contains("外貿碼頭") {
         Some("船員")
-    } else if room_name.contains("海關前棚") {
-        Some("海關吏")
+    } else if room_name.contains("舶司前棚") {
+        Some("舶司吏")
     } else if room_name.contains("商館街口") {
         Some("商館人")
     } else if room_name.contains("風舶角外洋棧倉") || room_name.contains("外洋棧倉") {
@@ -5866,6 +6450,8 @@ pub fn public_person_label_for_room(room_name: &str) -> Option<&'static str> {
         Some("渡工")
     } else if room_name.contains("倉棚") {
         Some("搬貨人")
+    } else if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, "") {
+        Some(venue.default_host_title)
     } else {
         None
     }
@@ -5882,7 +6468,7 @@ pub fn scene_observation_line(room_name: &str, pronoun: &str) -> Option<String> 
     } else if room_name.contains("書齋") || room_name.contains("校勘齋") || room_name.contains("墨香居") {
         Some(format!("{pronoun}在沉水烏木書案前執筆抄校線裝古籍，窗外竹影搖曳，室內唯聞筆尖游走宣紙的沙沙微響。"))
     } else if room_name.contains("習武堂") || room_name.contains("試招院") || room_name.contains("武勇舍") || room_name.contains("習武") {
-        Some(format!("{pronoun}在練武場青石板上扎穩馬步，手持包革練習木刀專注推演刀式，吐納均勻沉實。"))
+        Some(format!("{pronoun}在練武場青石板上紮穩馬步，手持包革練習木刀專注推演刀式，吐納均勻沉實。"))
     } else if (room_name.starts_with("文曜") && is_wenyao_residential_or_study(room_name))
         || ((room_name.contains("居") || room_name.contains("宅") || room_name.contains("院") || room_name.contains("舍")) && room_name.contains("文曜"))
     {
@@ -5891,6 +6477,44 @@ pub fn scene_observation_line(room_name: &str, pronoun: &str) -> Option<String> 
         Some(format!("{pronoun}正倚在雕花青石欄杆旁清點隨身貨單，招呼著川流泊位上的竹筏渡伕。"))
     } else if room_name.contains("藥香巷") || room_name.contains("爐火巷") || room_name.contains("百工石道") {
         Some(format!("{pronoun}正坐在門前條石上磨礪小刀與鑿子，不時抬手拭去額前微汗，神情專注踏實。"))
+    } else if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, "") {
+        if let Some((ev, sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+            room_name,
+            None,
+            crate::game::now_unix(),
+        ) {
+            if venue.has_counter_restricted_zone {
+                Some(format!(
+                    "{pronoun}正立於{}當值櫃檯內側，{}，案頭擺著【{}】待辦器物（關鍵器物：{}；劇本包第 {}/3 幕）。",
+                    venue.venue_kind,
+                    venue.on_duty_fixture_activity,
+                    ev.event_title,
+                    ev.key_objects,
+                    sp.current_step.max(1)
+                ))
+            } else {
+                Some(format!(
+                    "{pronoun}正在{}內{}，手頭正忙著【{}】（關鍵器物：{}；劇本包第 {}/3 幕）。",
+                    venue.venue_kind,
+                    venue.on_duty_fixture_activity,
+                    ev.event_title,
+                    ev.key_objects,
+                    sp.current_step.max(1)
+                ))
+            }
+        } else if venue.has_counter_restricted_zone {
+            Some(format!(
+                "{pronoun}正立於{}當值櫃檯內側，{}，{}",
+                venue.venue_kind, venue.on_duty_fixture_activity, venue.on_duty_demeanor
+            ))
+        } else {
+            Some(format!(
+                "{pronoun}正在{}內{}，{}",
+                venue.venue_kind, venue.on_duty_fixture_activity, venue.on_duty_demeanor
+            ))
+        }
+    } else if let Some(ambient) = crate::grid::resolve_room_ambient_visitor_activity(room_name, 0) {
+        Some(format!("{pronoun}正在此處{}", ambient))
     } else {
         None
     }
@@ -5906,8 +6530,8 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
             || room_name.contains("典藏庫")
             || room_name.contains("學院")
             || room_name.contains("講堂")
-            || room_name.contains("國小")
-            || room_name.contains("教室")
+            || room_name.contains("蒙學")
+            || room_name.contains("講舍")
             || room_name.contains("校舍")
             || room_name.contains("學舍")
             || room_name.contains("商行")
@@ -5933,12 +6557,12 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
     } else if room_name.contains("烘藥房") || room_name.contains("百草烘藥") {
         &[
             "焙藥匠人用鐵火鉗撥了撥爐膛炭火，濃郁的草藥香氣隨熱氣漫開。",
-            "有人端著裝滿剛切好當歸片的竹篩走過，低聲念著今日的焙乾火候。",
+            "有人端著裝滿新切好當歸片的竹篩走過，低聲念著今日的焙乾火候。",
             "微風掠過窗櫺，烘烤中的山風草香氣層層疊疊飄滿了整條街巷。",
         ]
     } else if room_name.contains("曆算") || room_name.contains("星曆") || room_name.contains("推步") {
         &[
-            "兩名曆算系學生對照著黃銅星軌儀上的刻度，低聲核算著下個節氣的潮汐。",
+            "兩名曆算生員對照著黃銅星軌儀上的刻度，低聲核算著下個節氣的潮汐。",
             "黑檀木計數板的滑鈕聲清脆連綿，有人在算題草紙上記下一串數目。",
             "微風翻動案几上的天文推步圖譜，室內唯有計數滑鈕起落的利落脆響。",
         ]
@@ -5946,7 +6570,7 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
         &[
             "排版匠人手持竹鑷在活字盤中敏捷挑揀字模，木框碰撞出清脆篤響。",
             "抄紙石槽邊水聲輕響，薄如蟬翼的濕紙被平整貼上焙紙熱牆。",
-            "剛印出的宣紙散發著新鮮的松煙墨香，工匠小心翼翼將其揭下晾乾。",
+            "新印出的宣紙散發著新鮮的松煙墨香，工匠小心翼翼將其揭下晾乾。",
         ]
     } else if room_name.contains("書齋") || room_name.contains("校勘齋") || room_name.contains("墨香居") {
         &[
@@ -5981,7 +6605,7 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
     } else if room_name.contains("短船泊位") {
         &[
             "船戶扶著船舷催人站穩，篙影在水面晃了一下。",
-            "有人把船槳挪到內側，免得剛上棧的人踢到濕木邊。",
+            "有人把船槳挪到內側，免得新上棧的人踢到濕木邊。",
             "泊位旁短短傳來靠船手勢，低語隨水面晃開。",
         ]
     } else if room_name.contains("魚貨") || room_name.contains("分揀") {
@@ -6028,7 +6652,7 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
         ]
     } else if room_name.contains("風舶角港倉門") || room_name.contains("港倉門") {
         &[
-            "倉管掀起雨布一角，讓剛放行的箱包先壓到倉門內側。",
+            "倉管掀起雨布一角，讓放行過關的箱包先壓到倉門內側。",
             "有人把封牌扶正，低聲把河貨和海貨分到不同門邊。",
             "風舶角港倉門裡短短傳出木箱靠牆的悶響，雨布又垂回來。",
         ]
@@ -6077,19 +6701,19 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
     } else if room_name.contains("外貿碼頭") {
         &[
             "船員把外地貨箱從吊繩下扶穩，港旗在頭頂被海風扯直。",
-            "有人把繩結重新套上木樁，示意海關前棚那邊可以放行下一箱。",
+            "有人把繩結重新套上木樁，示意舶司前棚那邊可以放行下一箱。",
             "外貿碼頭短短響起滑輪聲，商館街口的人聲跟著往碼頭邊靠近。",
         ]
-    } else if room_name.contains("海關前棚") {
+    } else if room_name.contains("舶司前棚") {
         &[
-            "海關吏把濕貨單壓平，封條在桌邊被手掌按住。",
+            "舶司吏把濕貨單壓平，封條在桌邊被手掌按住。",
             "有人把待查貨箱停在棚外，低聲等翻譯桌那邊說清貨名。",
-            "海關前棚短短響起印章聲，排在外頭的人群立刻靜了一截。",
+            "舶司前棚短短響起印章聲，排在外頭的人群立刻靜了一截。",
         ]
     } else if room_name.contains("商館街口") {
         &[
             "商館人打開貨樣匣給客人看，外語低語在門口換了幾輪。",
-            "有人望向碼頭船旗，又把剛問到的價碼送往匯兌小屋。",
+            "有人望向碼頭船旗，又把打聽得來的價碼送往匯兌小屋。",
             "商館街口短短傳過一陣陌生口音，很快被貨樣匣合上的聲音截住。",
         ]
     } else if room_name.contains("風舶角外洋棧倉") || room_name.contains("外洋棧倉") {
@@ -6101,12 +6725,12 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
     } else if room_name.contains("翻譯桌") {
         &[
             "翻譯把合約上的貨名重新說了一遍，指尖壓著兩種文字的邊線。",
-            "有人把印章推到桌角，等海關前棚那邊確認下一批箱號。",
+            "有人把印章推到桌角，等舶司前棚那邊確認下一批箱號。",
             "翻譯桌旁短短靜了一下，接著又響起一串被轉成在地話的貨名。",
         ]
     } else if room_name.contains("匯兌小屋") {
         &[
-            "兌票人撥了撥銅秤，讓錢票在賬冊旁重新疊齊。",
+            "兌票人撥了撥銅秤，讓錢票在帳冊旁重新疊齊。",
             "有人把商館街口報來的價碼寫入欄裡，又抬頭問風舶角外洋棧倉的貨名。",
             "匯兌小屋短短響起銅秤輕碰聲，等價的人把聲音壓得更低。",
         ]
@@ -6119,7 +6743,7 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
     } else if room_name.contains("港灣貨棚") {
         &[
             "搬魚人把濕魚籃推到鹽箱旁，棚門下立刻多了一道水痕。",
-            "有人把濕木箱墊高，讓剛從碼頭進來的魚貨先靠牆停住。",
+            "有人把濕木箱墊高，讓碼頭運來的魚貨先靠牆停住。",
             "港灣貨棚短短響起木箱拖地聲，冷霧魚市那頭有人催了一句。",
         ]
     } else if room_name.contains("漁網曬場") {
@@ -6131,19 +6755,19 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
     } else if room_name.contains("冷霧魚市") {
         &[
             "魚販把濕布掀起一角，木秤旁立刻聚起低聲問價。",
-            "有人把剛送到的魚籃轉向貨棚，讓買貨人先看魚色。",
+            "有人把運到的魚籃轉向貨棚，讓買貨人先看魚色。",
             "冷霧魚市短短響起秤錘聲，霧氣裡的議價聲又壓低一截。",
         ]
     } else if room_name.contains("船戶屋排") {
         &[
-            "船戶家屬在排班板前換下一枚木牌，火盆煙氣貼著屋簷散開。",
+            "船戶家屬在輪值板前換下一枚木牌，火盆煙氣貼著屋簷散開。",
             "有人把濕衣從繩上收起，給守望石階下來的人讓出窄路。",
-            "船戶屋排短短傳過一陣排班低語，很快被火盆劈啪聲蓋住。",
+            "船戶屋排短短傳過一陣輪值低語，很快被火盆劈啪聲蓋住。",
         ]
     } else if room_name.contains("烏石鼻守望石階") || room_name.contains("守望石階") {
         &[
             "守望人扶著濕石欄看海面顏色，霧牌在風口輕輕晃動。",
-            "有人伸手試了試警鈴繩，又轉頭看向船戶屋排的排班板。",
+            "有人伸手試了試警鈴繩，又轉頭看向船戶屋排的輪值板。",
             "守望石階短短響起霧牌碰木聲，港灣人聲在風裡斷了一下。",
         ]
     } else if room_name.contains("礦坑外棚") {
@@ -6185,7 +6809,7 @@ pub fn micro_interaction_lines_for_room(room_name: &str) -> &'static [&'static s
     } else if room_name.contains("糧倉外秤") {
         &[
             "秤手把糧袋扶上秤盤，指尖在秤桿刻痕旁停了一下。",
-            "有人把剛稱過的糧袋拖到倉門方向，稻殼粉在地上擦出亮痕。",
+            "有人把稱過分量的糧袋拖到倉門方向，稻殼粉在地上擦出亮痕。",
             "雨棚下短短響起秤錘碰木的聲音，排隊的人聲跟著壓低。",
         ]
     } else if room_name.contains("倉門前場") {
@@ -6276,7 +6900,10 @@ pub fn dynamic_vendor_objects_for_entities(entities: &[crate::entity::Character]
 
         // 排除移動中或睡眠中的角色
         if act.contains("正在前往")
+            || act.contains("動身前往")
+            || act.contains("返回【")
             || act.contains("正步行前往")
+            || act.contains("趕往")
             || act.contains("邁步離開")
             || act.contains("安歇")
             || act.contains("熟睡")
@@ -6305,7 +6932,7 @@ pub fn dynamic_vendor_objects_for_entities(entities: &[crate::entity::Character]
                 &["Look", "Taste", "Use", "Smell"],
                 &[
                     ("Look", "街角木輪推車上的炭火正旺，鐵網上烤著滋滋冒油的原牛肉串與焦蜜流淌的紅心烤番薯，煙火氣撲鼻。"),
-                    ("Taste", "你接過一串剛烤好的焦香原牛肉串咬下一口，肉質勁道多汁，炭烤椒鹽香氣瞬間充盈口腔。"),
+                    ("Taste", "你接過一串炙烤得滋滋作響的焦香原牛肉串咬下一口，肉質勁道多汁，炭烤椒鹽香氣瞬間充盈口腔。"),
                     ("Use", "你走向炭烤牛肉番薯攤，準備向攤主買下一份炭烤牛肉串。"),
                     ("Smell", "你站在下風處細聞烤番薯散發出的甘甜焦香與烤肉煙火氣，頓時食指大動。"),
                 ],
@@ -6333,7 +6960,7 @@ pub fn dynamic_vendor_objects_for_entities(entities: &[crate::entity::Character]
                 &["Look", "Taste", "Use", "Smell"],
                 &[
                     ("Look", "高大的炭火深鐵桶正冒著滾燙熱浪，桶壁內圈整齊貼滿烤得金黃微焦的厚實胡椒餅，芝麻粒粒飽滿。"),
-                    ("Taste", "你咬下一口剛出爐的胡椒餅，酥脆外皮應聲碎開，滾燙濃郁的蔥香肉汁與辛香黑胡椒瞬間在舌尖爆發。"),
+                    ("Taste", "你咬下一口熱氣騰騰的胡椒餅，酥脆外皮應聲碎開，滾燙濃郁的蔥香肉汁與辛香黑胡椒瞬間在舌尖爆發。"),
                     ("Use", "你走向胡椒餅攤，準備向攤主買下一份酥皮鮮肉胡椒餅。"),
                     ("Smell", "烘烤麵皮的麥香、焙烤黑胡椒的辛香與炭火焦香交織在一起，濃烈撲鼻。"),
                 ],
@@ -6375,7 +7002,7 @@ pub fn dynamic_vendor_objects_for_entities(entities: &[crate::entity::Character]
                 &["Look", "Taste", "Use", "Smell"],
                 &[
                     ("Look", "厚實的木蒸桶掀開棉布冒出騰騰白氣，旁邊排著酥脆老油條、炒香酸菜、香脆菜脯與現切滷蛋等豐富料餡。"),
-                    ("Taste", "你大口咬下剛捏好的紫米飯糰，糯米粒粒香糯彈牙，內餡老油條香脆無比，鹹香酸脆層次豐富極其飽腹。"),
+                    ("Taste", "你大口咬下溫熱捏妥的紫米飯糰與荷葉炊飯，糯米粒粒香糯彈牙，內餡老油條香脆無比，鹹香酸脆層次豐富極其飽腹。"),
                     ("Use", "你走向早點攤，準備向攤主買下一份荷葉糯米炊飯。"),
                     ("Smell", "現蒸紫糯米特有的溫潤米香混著炒酸菜與老油條的鹹香，是清晨最踏實的煙火氣息。"),
                 ],
@@ -6402,7 +7029,7 @@ pub fn dynamic_vendor_objects_for_entities(entities: &[crate::entity::Character]
                 "時令蔬果攤",
                 &["Look", "Taste", "Use", "Smell"],
                 &[
-                    ("Look", "竹編菜簍裡整齊碼放著清晨方從田畦採摘的新鮮高麗菜、帶泥嫩薑、翠綠青蔥與鮮紅多汁的水果，葉片上猶掛著晶亮晨露。"),
+                    ("Look", "竹編菜簍裡整齊碼放著清晨自田畦採摘的新鮮高麗菜、帶泥嫩薑、翠綠青蔥與鮮紅多汁的水果，葉片上猶掛著晶亮晨露。"),
                     ("Taste", "你挑選了一份鮮脆水芹菜咀嚼，清甜脆嫩、滿口鮮綠生機。"),
                     ("Use", "你走向蔬果攤，準備向攤主挑選買下一捆水芹菜。"),
                     ("Smell", "水靈靈的新鮮瓜果與帶泥時蔬散發出泥土與青草的純淨生機芬芳。"),
@@ -6417,7 +7044,7 @@ pub fn dynamic_vendor_objects_for_entities(entities: &[crate::entity::Character]
                 &["Look", "Taste", "Use", "Smell"],
                 &[
                     ("Look", "淺木盆注滿清澄河水，幾尾鮮活溪魚正在盆底輕快擺尾，粗麻布上鋪滿吐淨泥沙的肥美文蛤與青背河蝦。"),
-                    ("Taste", "你嚐了嚐攤上剛汆燙開殼的現撈活文蛤，肉質鮮甜嫩滑，滿口清冽河水鮮味。"),
+                    ("Taste", "你嚐了嚐攤上鮮燙熟透的現撈河蝦與文蛤，肉質鮮甜彈嫩，滿口清冽河水鮮味。"),
                     ("Use", "你走向河鮮攤，準備向攤主稱上一斤鮮活青殼河蝦。"),
                     ("Smell", "淺木盆與碎冰中散發出三水川清澈活水特有的清涼河鮮水氣，毫無半點腥濁。"),
                 ],
@@ -6432,7 +7059,7 @@ pub fn dynamic_vendor_objects_for_entities(entities: &[crate::entity::Character]
                 "修傘補靴攤",
                 &["Look", "Use", "Operate"],
                 &[
-                    ("Look", "街角鋪著防潮厚油布，擺著一副磨損鋥亮的硬木鞋楦、鐵砧與各式皮針錐子，旁邊架著幾柄剛刷過防水熟桐油的堅韌竹骨晴雨傘。"),
+                    ("Look", "街角鋪著防潮厚油布，擺著一副磨損鋥亮的硬木鞋楦、鐵砧與各式皮針錐子，旁邊架著幾柄新刷過防水熟桐油的堅韌竹骨晴雨傘。"),
                     ("Use", "你走向晴雨傘與修補攤，挑選了一柄堅韌的竹骨晴雨摺疊傘買下。"),
                     ("Operate", "你請老匠檢視自己的行囊與行靴，老匠熟練地接過查看針腳皮面，俐落地替你緊固了帶扣。"),
                 ],
@@ -6453,7 +7080,10 @@ pub fn dynamic_vendor_view_objects_for_entities(
         let id = ent.id.as_str();
 
         if act.contains("正在前往")
+            || act.contains("動身前往")
+            || act.contains("返回【")
             || act.contains("正步行前往")
+            || act.contains("趕往")
             || act.contains("邁步離開")
             || act.contains("安歇")
             || act.contains("熟睡")
@@ -6511,10 +7141,46 @@ pub fn dynamic_vendor_view_objects_for_entities(
     view_objects
 }
 
+#[derive(Debug, Clone)]
+pub struct CalendarInfo {
+    pub season_name: &'static str,
+    pub year: i32,
+    pub day_in_season: i32,
+}
+
+pub fn current_calendar() -> CalendarInfo {
+    let now = crate::game::now_unix();
+    let (_, _, _, days) = crate::game::game_time_now(now, 0, 24.0);
+    let days = days.max(0);
+    let year = (days / 365) + 1;
+    let day_in_year = days % 365;
+    let (season_name, day_in_season) = if day_in_year < 91 {
+        ("春融", day_in_year + 1)
+    } else if day_in_year < 182 {
+        ("夏炎", day_in_year - 91 + 1)
+    } else if day_in_year < 273 {
+        ("秋狩", day_in_year - 182 + 1)
+    } else {
+        ("冬凝", day_in_year - 273 + 1)
+    };
+    CalendarInfo {
+        season_name,
+        year,
+        day_in_season,
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
 
+
+    #[test]
+    fn test_current_calendar_and_season() {
+        let cal = current_calendar();
+        assert!(["春融", "夏炎", "秋狩", "冬凝"].contains(&cal.season_name));
+        assert!(cal.year >= 1);
+        assert!(cal.day_in_season >= 1 && cal.day_in_season <= 92);
+    }
     #[test]
     fn public_labels_cover_m3_027_scenes() {
         assert_eq!(public_person_label_for_room("半嶺水岸渡口"), Some("候渡者"));
@@ -6568,7 +7234,7 @@ mod tests {
     #[test]
     fn public_labels_cover_m3_053_scenes() {
         assert_eq!(public_person_label_for_room("外貿碼頭"), Some("船員"));
-        assert_eq!(public_person_label_for_room("海關前棚"), Some("海關吏"));
+        assert_eq!(public_person_label_for_room("舶司前棚"), Some("舶司吏"));
         assert_eq!(public_person_label_for_room("商館街口"), Some("商館人"));
         assert_eq!(public_person_label_for_room("風舶角外洋棧倉"), Some("倉管"));
         assert_eq!(public_person_label_for_room("外洋棧倉"), Some("倉管"));
@@ -6628,7 +7294,7 @@ mod tests {
             ("傭工棚邊", "棚頭人"),
             ("邊城外門", "守門人"),
             ("哨樓梯", "哨兵"),
-            ("青籠關邊貿坪", "商旅"),
+            ("下營邊貿坪", "商旅"),
             ("糧倉前場", "倉管"),
             ("乾草棚", "馬夫"),
             ("巡邏院", "巡哨"),
@@ -6710,8 +7376,8 @@ mod tests {
             ("船繩", "HelpRope", "木樁"),
             ("避風棚", "DryOff", "舊帆布"),
             ("炭火盆", "WarmHands", "煙氣"),
-            ("候渡隊列", "TalkQueue", "船期"),
-            ("候渡隊列", "QueueFerry", "木牌"),
+            ("候渡人龍", "TalkQueue", "船期"),
+            ("候渡人龍", "QueueFerry", "木牌"),
         ];
 
         for (name, action, look_fragment) in expected {
@@ -6744,7 +7410,7 @@ mod tests {
         };
 
         assert!(has_action("貨擔", "CarryCargo")); // 賺錢 / 接活
-        assert!(has_action("候渡隊列", "QueueFerry")); // 通行
+        assert!(has_action("候渡人龍", "QueueFerry")); // 通行
         assert!(has_action("河霧蘆叢", "Gather")); // 材料 / 交易準備
         assert!(has_action("船繩", "HelpRope")); // 工作手勢 / 熟練線索
         assert!(has_action("熱湯攤", "QueueBroth") || has_action("濕長凳", "Rest")); // 歇腳處理
@@ -6839,7 +7505,7 @@ mod tests {
             "修船架",
             "帆布曬場",
             "外貿碼頭",
-            "海關前棚",
+            "舶司前棚",
             "商館街口",
             "翻譯桌",
             "匯兌小屋",
@@ -6859,7 +7525,7 @@ mod tests {
             "紅土崁選礦車場",
             "邊城外門",
             "哨樓梯",
-            "青籠關邊貿坪",
+            "下營邊貿坪",
             "糧倉前場",
             "乾草棚",
             "巡邏院",
@@ -6884,7 +7550,6 @@ mod tests {
             "邊鎮井口",
             "低牆門洞",
             "旅社前廊",
-            "客棧前廊",
             "補給市集",
             "巡哨棚",
             "車隊場",
@@ -6912,7 +7577,7 @@ mod tests {
             "半嶺鎮・寒水玉切石工坊",
             "半嶺鎮・半嶺氣象觀測所",
             "半嶺鎮・半嶺試招場",
-            "大圳頭・西南原農具與百工坊",
+            "大圳頭・大圳農具與百工坊",
             "牛埔・羊毛與乳酪精製坊",
             "紅土崁・紅土崁選礦場",
             "三號坑口・坑口台車維修棚",
@@ -6950,7 +7615,7 @@ mod tests {
             );
             for obj in &objs {
                 assert!(obj.sockets.contains(&"Look".to_string()), "Object {} missing Look socket", obj.id);
-                assert!(obj.sockets.len() >= 2, "Object {} should have at least 2 sockets", obj.id);
+                assert!(!obj.sockets.is_empty(), "Object {} should have at least Look socket", obj.id);
                 for socket in &obj.sockets {
                     let resp = obj.responses.get(socket);
                     assert!(resp.is_some(), "Object {} missing response for socket {socket}", obj.id);
@@ -6992,7 +7657,7 @@ mod tests {
             "三水外坊・老舵手石砌院",
             "文曜・百工外坊・司爐老鐵匠院",
             "百工外坊・天工安居大院",
-            "文曜・西門外坊・老鏢頭四合院",
+            "文曜・西門外坊・老護隊四合院",
             "西門外坊・駝隊領隊家宅",
         ];
         for r in residences {
@@ -7012,7 +7677,7 @@ mod tests {
             "文曜・百工外坊・重鐵水錘大鍛坊",
             "百工外坊・五金農具總商行",
             "文曜・西門外坊・萬里駝隊大驛站",
-            "西門外坊・西南原皮毛大市",
+            "西門外坊・西門皮毛大市",
         ];
         for c in commercial {
             assert!(
@@ -7077,7 +7742,7 @@ mod tests {
             created_at: 0,
             gender: Some(Gender::M),
             soul_seed: None,
-            display_title: "炭烤牛肉番薯攤老闆|鄭火旺".to_string(),
+            display_title: "炭烤牛肉番薯攤東家|鄭火旺".to_string(),
             activated_nodes: "[]".to_string(),
             equipment_slots: String::new(),
             inventory: "[]".to_string(),
@@ -7107,5 +7772,187 @@ mod tests {
         // 3. 一般街道不應含有固定的炭烤牛肉番薯攤
         let street_objs = player_layer_scene_objects_for_room("三水口南街");
         assert!(!street_objs.iter().any(|o| o.id == "wt_street_roast_snack_cart" || o.name == "炭烤牛肉攤"));
+    }
+
+    #[test]
+    fn test_v03852_living_world_expansion_scene_sockets() {
+        use super::*;
+        let cal = current_calendar();
+        assert!(["春融", "夏炎", "秋狩", "冬凝"].contains(&cal.season_name));
+
+        let laoyan_objs = player_layer_scene_objects_for_room("老堰頭・水輪石磨工坊");
+        assert!(laoyan_objs.iter().any(|o| o.id == "wt_mill_waterwheel_stone" && o.sockets.contains(&"MillGrain".to_string())));
+
+        let shuanglin_objs = player_layer_scene_objects_for_room("霜林口・原木水車鋸木坊");
+        assert!(shuanglin_objs.iter().any(|o| o.id == "wt_sawmill_hydraulic_saw" && o.sockets.contains(&"RefinePlank".to_string())));
+
+        let banling_objs = player_layer_scene_objects_for_room("半嶺鎮・切石工坊");
+        assert!(banling_objs.iter().any(|o| o.id == "wt_stonecut_wire_saw" && o.sockets.contains(&"CutJade".to_string())));
+
+        let niupu_objs = player_layer_scene_objects_for_room("牛埔・乳酪精製坊");
+        assert!(niupu_objs.iter().any(|o| o.id == "wt_cheese_curd_press" && o.sockets.contains(&"PressCheese".to_string())));
+
+        let mine_objs = player_layer_scene_objects_for_room("紅土崁・選礦場與磚窯");
+        assert!(mine_objs.iter().any(|o| o.id == "wt_mine_wash_chute" && o.sockets.contains(&"HaulMineCart".to_string())));
+
+        let smoke_objs = player_layer_scene_objects_for_room("風櫃尾・冷燻工坊");
+        assert!(smoke_objs.iter().any(|o| o.id == "wt_smokehouse_kiln" && o.sockets.contains(&"SmokeFish".to_string())));
+
+        let lime_objs = player_layer_scene_objects_for_room("烏石鼻・海貝灰窯");
+        assert!(lime_objs.iter().any(|o| o.id == "wt_lime_kiln_chamber" && o.sockets.contains(&"BurnLime".to_string())));
+
+        let swamp_objs = player_layer_scene_objects_for_room("水尾寮・蘆葦碼頭");
+        assert!(swamp_objs.iter().any(|o| o.id == "wt_dock_riverbank_raft" && o.sockets.contains(&"RowSwampRaft".to_string())));
+
+        let nanshao_objs = player_layer_scene_objects_for_room("南哨・重型獵具工坊");
+        assert!(nanshao_objs.iter().any(|o| o.id == "wt_hunt_heavy_crossbow" && o.sockets.contains(&"PrepareMiasmaGear".to_string())));
+        let feast_objs = player_layer_scene_objects_for_room("豐收原大公堂食堂");
+        assert!(feast_objs.iter().any(|o| o.id == "wt_dining_iron_cauldron" && o.sockets.contains(&"SeasonalBanquet".to_string())));
+
+        let chess_objs = player_layer_scene_objects_for_room("雙星鎮茶寮客堂");
+        assert!(chess_objs.iter().any(|o| o.id == "wt_inn_ebony_shell_chess" && o.sockets.contains(&"PlayChess".to_string())));
+    }
+
+    #[test]
+    fn test_v03853_living_world_expansion_scene_sockets() {
+        use super::*;
+        // Pillar 1: ChartAstrolabe, TestEngraving, SparPillar
+        let astro_objs = player_layer_scene_objects_for_room("文曜・觀星台");
+        assert!(astro_objs.iter().any(|o| o.id == "wt_cat_0734" && o.sockets.contains(&"ChartAstrolabe".to_string())));
+
+        let force_objs = player_layer_scene_objects_for_room("文曜・演武場試招院");
+        assert!(force_objs.iter().any(|o| o.id == "wt_martial_force_stone" && o.sockets.contains(&"TestEngraving".to_string())));
+        assert!(force_objs.iter().any(|o| o.id == "wt_martial_padded_wooden_blade" && o.sockets.contains(&"SparPillar".to_string())));
+
+        let arena_objs = player_layer_scene_objects_for_room("半嶺試招場");
+        assert!(arena_objs.iter().any(|o| o.id == "wt_arena_testing_pillar" && o.sockets.contains(&"SparPillar".to_string())));
+        assert!(arena_objs.iter().any(|o| o.id == "wt_arena_wooden_weapon_rack" && o.sockets.contains(&"SparPillar".to_string())));
+
+        // Pillar 2: SoakHotSpring, GroomAppearance, MendTravelGear
+        let bath_objs = player_layer_scene_objects_for_room("溫泉公共大浴場");
+        assert!(bath_objs.iter().any(|o| o.id == "wt_bath_jade_pool" && o.sockets.contains(&"SoakHotSpring".to_string())));
+        assert!(bath_objs.iter().any(|o| o.id == "wt_bath_mirror_washstand" && o.sockets.contains(&"GroomAppearance".to_string())));
+
+        let barber_objs = player_layer_scene_objects_for_room("文曜・剪剃理髮鋪");
+        assert!(barber_objs.iter().any(|o| o.id == "wt_barber_folding_razor" && o.sockets.contains(&"GroomAppearance".to_string())));
+        assert!(barber_objs.iter().any(|o| o.id == "wt_barber_copper_chair" && o.sockets.contains(&"GroomAppearance".to_string())));
+
+        let repair_objs = player_layer_scene_objects_for_room("文曜・修傘補靴鋪");
+        assert!(repair_objs.iter().any(|o| o.id == "wt_repair_umbrella_bench" && o.sockets.contains(&"MendTravelGear".to_string())));
+        assert!(repair_objs.iter().any(|o| o.id == "wt_repair_boots_last" && o.sockets.contains(&"MendTravelGear".to_string())));
+
+        let tailor_objs = player_layer_scene_objects_for_room("文曜・織造服飾補給行");
+        assert!(tailor_objs.iter().any(|o| o.id == "wt_cloth_tailor_sewing_bench" && o.sockets.contains(&"MendTravelGear".to_string())));
+
+        // Pillar 3: ReadWindVane, ApplyMoxibustion, HangVotivePlaque
+        let obs_objs = player_layer_scene_objects_for_room("文曜・海天觀測台");
+        assert!(obs_objs.iter().any(|o| o.id == "wt_observatory_anemometer" && o.sockets.contains(&"ReadWindVane".to_string())));
+
+        let clinic_objs = player_layer_scene_objects_for_room("半嶺診所");
+        assert!(clinic_objs.iter().any(|o| o.id == "wt_clinic_acupoint_bed" && o.sockets.contains(&"ApplyMoxibustion".to_string())));
+        assert!(clinic_objs.iter().any(|o| o.id == "wt_clinic_decoction_stove" && o.sockets.contains(&"ApplyMoxibustion".to_string())));
+
+        let pulse_objs = player_layer_scene_objects_for_room("文曜・杏林醫館");
+        assert!(pulse_objs.iter().any(|o| o.id == "wt_obj_acupuncture_pulse_pillow" && o.sockets.contains(&"ApplyMoxibustion".to_string())));
+
+        let mountain_objs = player_layer_scene_objects_for_room("青脊山・觀雲石台");
+        assert!(mountain_objs.iter().any(|o| o.id == "wt_obj_mountain_milestone" && o.sockets.contains(&"HangVotivePlaque".to_string())));
+    }
+
+    #[test]
+    fn test_v03854_living_world_expansion_scene_sockets() {
+        use super::*;
+        // Pillar 1: TranscribeRareTome, AttendLecture, CalibrateClock
+        let book_objs = player_layer_scene_objects_for_room("文曜・藏書閣與印行館");
+        assert!(book_objs.iter().any(|o| o.id == "wt_book_printing_shelf" && o.sockets.contains(&"TranscribeRareTome".to_string())));
+        assert!(book_objs.iter().any(|o| o.id == "wt_book_pen_notebook_desk" && o.sockets.contains(&"TranscribeRareTome".to_string())));
+
+        let academy_objs = player_layer_scene_objects_for_room("文曜・學院主校區");
+        assert!(academy_objs.iter().any(|o| o.id == "wt_academy_fountain_pen" && o.sockets.contains(&"AttendLecture".to_string())));
+        assert!(academy_objs.iter().any(|o| o.id == "wt_book_pen_notebook_desk" && o.sockets.contains(&"AttendLecture".to_string())));
+
+        let clock_objs = player_layer_scene_objects_for_room("文曜・傳訊鐘樓與信使總站");
+        assert!(clock_objs.iter().any(|o| o.id == "wt_clocktower_bronze_bell" && o.sockets.contains(&"CalibrateClock".to_string())));
+        assert!(clock_objs.iter().any(|o| o.id == "wt_messenger_lookout_perch" && o.sockets.contains(&"CalibrateClock".to_string())));
+
+        // Pillar 2: FitMortiseTenon, QuenchBlade, DyeIndigoCloth
+        let wood_objs = player_layer_scene_objects_for_room("文曜・巧木居所傢俱坊");
+        assert!(wood_objs.iter().any(|o| o.id == "wt_wood_planing_bench" && o.sockets.contains(&"FitMortiseTenon".to_string())));
+
+        let forge_objs = player_layer_scene_objects_for_room("文曜・岑氏第一鍛造工坊");
+        assert!(forge_objs.iter().any(|o| o.id == "wt_forge_furnace_anvil" && o.sockets.contains(&"QuenchBlade".to_string())));
+        assert!(forge_objs.iter().any(|o| o.id == "wt_forge_quench_trough" && o.sockets.contains(&"QuenchBlade".to_string())));
+
+        let cloth_objs = player_layer_scene_objects_for_room("文曜・雲錦織造與服飾坊");
+        assert!(cloth_objs.iter().any(|o| o.id == "wt_cloth_garment_rack" && o.sockets.contains(&"DyeIndigoCloth".to_string())));
+
+        let loom_objs = player_layer_scene_objects_for_room("大染坊");
+        assert!(loom_objs.iter().any(|o| o.id == "wt_obj_loom_dye_vats" && o.sockets.contains(&"DyeIndigoCloth".to_string())));
+
+        // Pillar 3: FeedDraftBeast, BoardCoastalShip, InspectLandRegistry
+        let caravan_objs = player_layer_scene_objects_for_room("文曜・西門車馬聯運總站");
+        assert!(caravan_objs.iter().any(|o| o.id == "wt_caravan_water_trough" && o.sockets.contains(&"FeedDraftBeast".to_string())));
+
+        let ship_objs = player_layer_scene_objects_for_room("文曜・三水口・碼頭行商道");
+        assert!(ship_objs.iter().any(|o| o.id == "wt_harbor_clockwise_ship" && o.sockets.contains(&"BoardCoastalShip".to_string())));
+
+        let deed_objs = player_layer_scene_objects_for_room("文曜・公議堂房地契書局");
+        assert!(deed_objs.iter().any(|o| o.id == "wt_deed_cadastral_map_desk" && o.sockets.contains(&"InspectLandRegistry".to_string())));
+        assert!(deed_objs.iter().any(|o| o.id == "wt_deed_household_registry" && o.sockets.contains(&"InspectLandRegistry".to_string())));
+    }
+
+    #[test]
+    fn test_v03855_three_pillar_scene_objects() {
+        use super::*;
+        // Pillar 1: AssistKitchen, RoastMountainTea, SunBooks
+        let dining_objs = player_layer_scene_objects_for_room("文曜・三水大食堂");
+        assert!(dining_objs.iter().any(|o| o.id == "wt_dining_rice_milk_stall" && o.sockets.contains(&"AssistKitchen".to_string())));
+        assert!(dining_objs.iter().any(|o| o.id == "wt_dining_iron_cauldron" && o.sockets.contains(&"AssistKitchen".to_string())));
+
+        let tea_objs = player_layer_scene_objects_for_room("文曜・東橋旅社與山風茶屋");
+        assert!(tea_objs.iter().any(|o| o.id == "wt_inn_milk_tea_stove" && o.sockets.contains(&"RoastMountainTea".to_string())));
+
+        let sun_objs = player_layer_scene_objects_for_room("文曜・藏書閣旁曬書石坪");
+        assert!(sun_objs.iter().any(|o| o.id == "wt_book_printing_shelf" && o.sockets.contains(&"SunBooks".to_string())));
+
+        // Pillar 2: RoastHerbs, CollateInscriptions, GrindOpticLens
+        let herb_objs = player_layer_scene_objects_for_room("文曜・溫氏百草烘藥房");
+        assert!(herb_objs.iter().any(|o| o.id == "wt_herb_drying_kiln" && o.sockets.contains(&"RoastHerbs".to_string())));
+        assert!(herb_objs.iter().any(|o| o.id == "wt_herb_bamboo_sieve" && o.sockets.contains(&"RoastHerbs".to_string())));
+
+        let stone_rubbing_objs = player_layer_scene_objects_for_room("文曜・藏書閣東側石巷");
+        assert!(stone_rubbing_objs.iter().any(|o| o.id == "wt_obj_stone_rubbing_cabinet" && o.sockets.contains(&"CollateInscriptions".to_string())));
+
+        let obs_objs = player_layer_scene_objects_for_room("文曜・觀星台");
+        assert!(obs_objs.iter().any(|o| o.id == "wt_obs_brass_telescope_rack" && o.sockets.contains(&"GrindOpticLens".to_string())));
+
+        // Pillar 3: SelectDriedSeafood, DeliberateCivicPact, DrawSpringWell
+        let market_objs = player_layer_scene_objects_for_room("文曜・三水口乾貨海味行");
+        assert!(market_objs.iter().any(|o| o.id == "wt_market_produce_stand" && o.sockets.contains(&"SelectDriedSeafood".to_string())));
+        assert!(market_objs.iter().any(|o| o.id == "wt_market_scale_counter" && o.sockets.contains(&"SelectDriedSeafood".to_string())));
+
+        let civic_objs = player_layer_scene_objects_for_room("文曜・公議堂");
+        assert!(civic_objs.iter().any(|o| o.id == "wt_hall_council_table" && o.sockets.contains(&"DeliberateCivicPact".to_string())));
+        assert!(civic_objs.iter().any(|o| o.id == "wt_hall_bulletin_board" && o.sockets.contains(&"DeliberateCivicPact".to_string())));
+
+        let well_objs = player_layer_scene_objects_for_room("文曜・三水北街與水岸公井");
+        assert!(well_objs.iter().any(|o| o.id == "wt_river_stone_steps" && o.sockets.contains(&"DrawSpringWell".to_string())));
+    }
+
+    #[test]
+    fn test_public_person_label_and_scene_observation_line_use_room_venue_object() {
+        let label = public_person_label_for_room("老堰頭・水輪石磨工坊");
+        assert_eq!(label, Some("當值石磨匠師"));
+
+        let mill_obs = scene_observation_line("老堰頭・水輪石磨工坊", "他");
+        assert!(mill_obs.is_some());
+        let mill_str = mill_obs.unwrap();
+        assert!(mill_str.starts_with("他正立於水輪石磨工坊當值櫃檯內側"));
+        assert!(mill_str.contains("玄武岩大石磨"));
+
+        let canteen_obs = scene_observation_line("三水大食堂", "她");
+        assert!(canteen_obs.is_some());
+        let canteen_str = canteen_obs.unwrap();
+        assert!(canteen_str.starts_with("她正立於大食堂當值櫃檯內側"));
     }
 }

@@ -46,7 +46,7 @@ pub struct Schedule {
 }
 
 /// 實體（玩家/NPC）供 JSON 背板。
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Entity {
     pub id: String,
     #[serde(default)]
@@ -108,6 +108,21 @@ pub struct Entity {
     /// NPC 內心活動列表（最近 100 條）；空 Vec 時省略序列化。
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thoughts: Vec<Thought>,
+}
+
+impl Entity {
+    pub fn new_npc(id: &str, display_char: &str) -> Self {
+        Self {
+            id: id.to_string(),
+            kind: "npc".to_string(),
+            display_char: display_char.to_string(),
+            vit: 100,
+            qi: 100,
+            dex: 50,
+            magnesium: 20,
+            ..Self::default()
+        }
+    }
 }
 
 /// 物品定義。

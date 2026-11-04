@@ -1,5 +1,5 @@
 #![forbid(unsafe_code)]
-// 奇點世界 — 模組宣告。
+// 白塔半島世界觀引擎 — 模組宣告。
 
 pub mod ai;
 pub mod combat;
@@ -12,6 +12,7 @@ pub mod game;
 pub mod gametext;
 pub mod grid;
 pub mod living_world;
+pub mod living_world_evaluator;
 pub mod model;
 pub mod npc;
 pub mod npcnpc;

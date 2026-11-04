@@ -19,14 +19,14 @@
 		'harvest_wood': '堅韌原木',
 		'harvest_ore': '百工礦石',
 		'harvest_fish': '鮮活河魚',
-		'harvest_crystal': '溫潤碎晶',
-		'herb_lingzhi': '靈芝仙草',
-		'ore_black_iron': '玄鐵重礦',
-		'wood_iron_oak': '鐵櫟木材',
-		'ore_copper': '黃銅原礦',
-		'ore_silver': '秘銀精礦',
-		'tea_leaf': '翠嶺嫩茶',
-		'wild_fruit': '山野靈果',
+		'harvest_crystal': '寒水玉原石',
+		'herb_lingzhi': '光葉藥草',
+		'ore_black_iron': '青脊重礦',
+		'wood_iron_oak': '霜林鐵杉木',
+		'ore_copper': '紅土銅原礦',
+		'ore_silver': '銀紋輝石',
+		'tea_leaf': '霜林嫩茶',
+		'wild_fruit': '山野漿果',
 		'spring_water': '清冽泉露',
 		'mat_iron_scrap': '回收熟鐵料塊',
 		'mat_timber_log': '伐採原木',
@@ -43,7 +43,19 @@
 		'mat_charcoal': '硬木白炭袋',
 		'mat_torch': '浸脂松明火把',
 		'mat_firewood': '乾燥柴枝束',
-		'mat_timber': '伐採原木'
+		'mat_timber': '伐採原木',
+		'mat_fresh_shrimp': '水尾寮鮮沼蝦',
+		'shanhai_fresh_fish': '深海鮮魚',
+		'shanhai_beast_meat': '山海鮮獸肉',
+		'mat_salted_fish': '海鹽醃魚乾',
+		'mat_grain_sack': '農家精選穀糧袋',
+		'mat_pasture_seed_sack': '優質牧草種籽袋',
+		'mat_plank_board': '樟松木板料',
+		'mat_charcoal_sack': '硬木白炭袋',
+		'craft_roasted_shrimp_skewer': '炭炙水尾鮮蝦串',
+		'craft_smoked_fish_fillet': '相思木燻鮮魚乾',
+		'craft_spiced_beast_jerky': '馬告炭炙獸肉脯',
+		'craft_ration_grain_cake': '行旅耐儲米糧餅'
 	};
 
 	function formatItemName(rawName, rawId) {
@@ -56,11 +68,12 @@
 		if (key) {
 			if (ITEM_NAME_MAP[key]) return ITEM_NAME_MAP[key];
 			if (key.indexOf('mut_') !== 0 && key.indexOf('craft_') !== 0) {
+				if (key.indexOf('shrimp') !== -1) return '水尾寮鮮沼蝦';
 				if (key.indexOf('herb') !== -1) return '野地草藥';
 				if (key.indexOf('ore') !== -1) return '百工礦石';
 				if (key.indexOf('wood') !== -1) return '堅韌原木';
 				if (key.indexOf('fish') !== -1) return '鮮活河魚';
-				if (key.indexOf('crystal') !== -1) return '溫潤碎晶';
+				if (key.indexOf('crystal') !== -1) return '寒水玉原石';
 			}
 		}
 		var fallback = rawName || rawId;
@@ -77,12 +90,27 @@
 		if (!lastInventoryMsg) return '讀取中';
 		var items = Array.isArray(lastInventoryMsg.items) ? lastInventoryMsg.items : [];
 		if (!items.length) return '背包空';
-		var shown = items.slice(0, 4).map(function (it) {
-			var qty = it.qty > 1 ? (' ×' + it.qty) : '';
-			return formatItemName(it.name, it.item_id) + qty;
+		var nameMap = {};
+		var nameOrder = [];
+		for (var i = 0; i < items.length; i++) {
+			var it = items[i];
+			if (!it) continue;
+			var dName = formatItemName(it.name, it.item_id);
+			var q = Number(it.qty) || 1;
+			if (nameMap[dName] == null) {
+				nameMap[dName] = 0;
+				nameOrder.push(dName);
+			}
+			nameMap[dName] += q;
+		}
+		var shown = nameOrder.slice(0, 4).map(function (dName) {
+			var totalQty = nameMap[dName];
+			var qtyStr = totalQty > 1 ? (' ×' + totalQty) : '';
+			return dName + qtyStr;
 		});
-		if (items.length > shown.length) shown.push('等' + items.length + '項');
-		return shown.join('、');
+		var summary = shown.join('、');
+		if (nameOrder.length > shown.length) summary += ' 等 ' + nameOrder.length + ' 項';
+		return summary;
 	}
 
 	function toolSummaryText(msg) {
@@ -176,7 +204,7 @@
 		if (origin) {
 			html += '<dt>[ 本源 ]</dt><dd>「' + esc(origin) + '」</dd>';
 		}
-		html += '<dt>[ 體魄氣脈 ]</dt><dd class="status-qualitative">' + esc(vitDesc) + ' ｜ ' + esc(qiDesc) + ' ｜ ' + esc(dexDesc) + '</dd>';
+		html += '<dt>[ 體魄氣脈 ]</dt><dd class="status-qualitative">' + esc(vitDesc) + '、' + esc(qiDesc) + '、' + esc(dexDesc) + '</dd>';
 		html += '<dt>[ 身心氣感 ]</dt><dd class="status-four-qualitative">'
 			+ '<div class="sw-vibe-row"><span class="sw-vibe-label">氣血：</span><span class="sw-vibe-val">' + esc(hpDesc) + '</span></div>'
 			+ '<div class="sw-vibe-row"><span class="sw-vibe-label">氣息：</span><span class="sw-vibe-val">' + esc(innerDesc) + '</span></div>'
@@ -194,7 +222,7 @@
 				}
 			}
 			if (breathSkill) {
-				html += '<dt>[ 內息底色 ]</dt><dd><strong>《' + esc(breathSkill.name) + '》</strong><div style="font-size:0.86em;color:var(--ink-muted, #5c4b37);margin-top:2px;line-height:1.45;">' + esc(breathSkill.auto_trigger_desc || '') + '</div></dd>';
+				html += '<dt>[ 內息底色 ]</dt><dd><strong>' + esc(breathSkill.name) + '</strong><div style="font-size:0.86em;color:var(--ink-muted, #5c4b37);margin-top:2px;line-height:1.45;">' + esc(breathSkill.auto_trigger_desc || '') + '</div></dd>';
 			}
 			html += '<dt>[ 所在 ]</dt><dd>' + esc(locationSummaryText(msg)) + '</dd>';
 		}
@@ -204,9 +232,50 @@
 		if (isSelf) {
 			html += '<dt>[ 隨身物 ]</dt><dd>' + esc(inventorySummaryText()) + '</dd>';
 			html += '<dt>[ 執握工具 ]</dt><dd>' + esc(toolSummaryText(msg)) + '</dd>';
+
+			var curDirCode = msg.offline_directive || 'inn_rest';
+			var curDirLabel = msg.offline_directive_label || '客房歇息養傷';
+			var curDirDesc = msg.offline_directive_desc || '投宿歇舍或居室內靜養生息，徐徐調理身心與氣血。';
+			var directiveOptions = [
+				{ code: 'inn_rest', label: '客房歇息養傷' },
+				{ code: 'workshop_craft', label: '駐坊百工代工' },
+				{ code: 'field_tend', label: '照料田壟與林緣巡採' },
+				{ code: 'road_escort', label: '古道隨行護運' }
+			];
+
+			html += '<dt>[ 離線行事 ]</dt><dd class="status-offline-directive">'
+				+ '<div class="offline-directive-summary" style="margin-bottom:6px;line-height:1.45;">'
+				+ '<strong>' + esc(curDirLabel) + '</strong>'
+				+ '<div style="font-size:0.86em;color:var(--ink-muted, #5c4b37);margin-top:2px;">' + esc(curDirDesc) + '</div>'
+				+ '</div>'
+				+ '<div class="offline-directive-btn-group" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">';
+
+			for (var di = 0; di < directiveOptions.length; di++) {
+				var opt = directiveOptions[di];
+				var isActive = opt.code === curDirCode;
+				var btnStyle = 'display:inline-block;padding:3px 8px;font-size:0.82em;border-radius:3px;cursor:pointer;user-select:none;transition:all 0.15s ease;'
+					+ (isActive
+						? 'background:var(--sw-accent-ink, #9e2a2b);color:#f7f2e7;border:1px solid var(--sw-accent-ink, #9e2a2b);font-weight:600;'
+						: 'background:var(--sw-btn-bg, rgba(44,30,15,0.04));color:var(--ink-light, #594c3c);border:1px solid var(--sw-btn-border, rgba(73,51,28,0.25));');
+				html += '<button type="button" class="sw-offline-dir-btn' + (isActive ? ' is-active' : '') + '" data-directive="' + esc(opt.code) + '" style="' + btnStyle + '">'
+					+ esc(opt.label)
+					+ '</button>';
+			}
+			html += '</div></dd>';
 		}
 		html += '</dl>';
 		wrap.innerHTML = html;
+
+		if (isSelf) {
+			wrap.querySelectorAll('.sw-offline-dir-btn').forEach(function (btn) {
+				btn.addEventListener('click', function (e) {
+					e.stopPropagation();
+					var code = this.getAttribute('data-directive');
+					if (!code) return;
+					_send({ type: 'set_offline_directive', action: code });
+				});
+			});
+		}
 	}
 
 	var CANONICAL_EQUIP_SLOTS = [
@@ -235,7 +304,7 @@
 		['weapon', '【主武】'],
 		['armor', '【甲冑】'],
 		['helmet', '【頭盔】'],
-		['boots', '【軍靴】'],
+		['boots', '【長靴】'],
 		['accessory', '【佩飾】'],
 		['tool', '【器具】']
 	];
@@ -282,18 +351,30 @@
 		titleEquip.textContent = '【 當前穿戴與百工工具 】';
 		sectionEquip.appendChild(titleEquip);
 
-		var dl = document.createElement('dl');
-		dl.className = 'status-dl equip-dl';
+		var equippedSlots = [];
+		var unequippedSlots = [];
 		for (var i = 0; i < renderSlots.length; i++) {
-			(function (code, label) {
-				var dt = document.createElement('dt');
-				dt.textContent = label;
-				dl.appendChild(dt);
+			var slotInfo = renderSlots[i];
+			var code = slotInfo[0];
+			if (names[code] && slots[code]) {
+				equippedSlots.push(slotInfo);
+			} else {
+				unequippedSlots.push(slotInfo);
+			}
+		}
 
-				var dd = document.createElement('dd');
-				var itemName = names[code];
-				var itemID = slots[code];
-				if (itemName && itemID) {
+		if (equippedSlots.length > 0) {
+			var dl = document.createElement('dl');
+			dl.className = 'status-dl equip-dl';
+			for (var ei = 0; ei < equippedSlots.length; ei++) {
+				(function (code, label) {
+					var dt = document.createElement('dt');
+					dt.textContent = label;
+					dl.appendChild(dt);
+
+					var dd = document.createElement('dd');
+					var itemName = names[code];
+					var itemID = slots[code];
 					dd.className = 'equip-has-item';
 					dd.innerHTML = '▸ ' + esc(formatItemName(itemName, itemID));
 					dd.addEventListener('click', function () {
@@ -325,39 +406,105 @@
 							_send({ type: 'unequip_item', slot: code });
 						});
 					});
-				} else {
-					var emptyHint = (code === 'hold_l' || code === 'hold_r') ? '素手隨行' : '素常衣飾';
-					dd.innerHTML = '<span class="text-muted">' + emptyHint + '</span>';
-				}
-				dl.appendChild(dd);
-			})(renderSlots[i][0], renderSlots[i][1]);
+					dl.appendChild(dd);
+				})(equippedSlots[ei][0], equippedSlots[ei][1]);
+			}
+			sectionEquip.appendChild(dl);
+		} else {
+			var noneEl = document.createElement('div');
+			noneEl.className = 'equip-none-summary';
+			noneEl.style.cssText = 'padding: 4px 0 8px; font-size: 0.88em; color: var(--ink-muted, #7c6853);';
+			noneEl.textContent = '身著素常衣飾，雙手素常隨行。';
+			sectionEquip.appendChild(noneEl);
 		}
-		sectionEquip.appendChild(dl);
+
+		if (unequippedSlots.length > 0) {
+			var unequipDetails = document.createElement('details');
+			unequipDetails.className = 'equip-unequipped-summary';
+			unequipDetails.style.cssText = 'margin-top: 6px; margin-bottom: 6px; font-size: 0.82rem; color: var(--ink-muted, #7c6853);';
+			var summary = document.createElement('summary');
+			summary.style.cssText = 'cursor: pointer; user-select: none; color: var(--ink-muted, #665544); padding: 4px 0; outline: none;';
+			summary.textContent = '其餘部位（' + unequippedSlots.length + ' 處素常衣飾／隨行） ▾';
+			unequipDetails.appendChild(summary);
+
+			var unequipGrid = document.createElement('div');
+			unequipGrid.style.cssText = 'display: flex; flex-wrap: wrap; gap: 4px 8px; padding: 4px 0; color: var(--ink-muted, #887766); line-height: 1.5; font-size: 0.78rem;';
+			var unequipLabels = unequippedSlots.map(function (s) {
+				var code = s[0];
+				var cleanLabel = s[1].replace(/^[【\[]|[\】\]]$/g, '');
+				var hint = (code === 'hold_l' || code === 'hold_r') ? '素手' : '素常';
+				return cleanLabel + '・' + hint;
+			});
+			unequipGrid.textContent = unequipLabels.join('、');
+			unequipDetails.appendChild(unequipGrid);
+			sectionEquip.appendChild(unequipDetails);
+		}
 		wrap.appendChild(sectionEquip);
 
 		var sectionCraft = document.createElement('div');
 		sectionCraft.className = 'equip-section';
+
+		function isRawMaterialItem(it) {
+			if (!it) return false;
+			var itemId = String(it.item_id || it.id || '');
+			var itemName = String(it.name || '');
+			var isFinishedOrMutated = itemId.indexOf('mut_') === 0 || itemId.indexOf('craft_') === 0 || itemId.indexOf('manual_') === 0 || itemId.indexOf('item_') === 0 || itemName.indexOf('【異變') !== -1 || itemName.indexOf('精鍛') !== -1;
+			if (isFinishedOrMutated) return false;
+			return itemId.indexOf('mat_') === 0 ||
+				itemId.indexOf('harvest_') === 0 ||
+				(itemId.indexOf('wt_cat_') === 0 && !it.slot && it.item_type !== 'tool' && it.item_type !== 'equipment') ||
+				itemId === 'wt_beast_bone' ||
+				itemId === 'wt_down_feather' ||
+				itemId === 'shanhai_fresh_fish' ||
+				itemId === 'shanhai_beast_meat' ||
+				it.item_type === 'material' ||
+				it.item_type === 'raw_material' ||
+				/礦|砂|原木|蘆草|竹竿|草藥|水苔|紙刀|墨坯|麻繩|袋布|原牛皮|河蝦|水芹|絨羽|獸骨|老鱉|毛皮|鱗片|獠牙|彩羽|尾翎|香皮|鹿茸|山茶籽|白鮮草|藥草|漿果|獸皮|獸筋|鮮蝦|鮮魚|獸肉|魚乾|米糧|牧草|白炭|松脂|石粉|海貝|牛樟芝|黃金蜆/.test(itemName);
+		}
+
+		var bagItems = (lastInventoryMsg && Array.isArray(lastInventoryMsg.items)) ? lastInventoryMsg.items : [];
+		var rawMaterials = bagItems.filter(isRawMaterialItem);
+
+		var craftBodyHtml = '';
+		if (rawMaterials.length > 0) {
+			craftBodyHtml += '<div class="craft-materials-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;">';
+			for (var rIdx = 0; rIdx < rawMaterials.length; rIdx++) {
+				var rm = rawMaterials[rIdx];
+				var rmId = rm.item_id || rm.id || '';
+				var rmRawName = rm.name || rmId;
+				var rmName = formatItemName(rmRawName, rmId);
+				var rmQty = Number(rm.qty) || 1;
+				var isCulinary = !/魚骨|魚鱗|魚皮|釣魚線|魚線|漁線|魚網|漁網|螺殼|貝殼|茶籽/.test(rmName) && !/fishing_line|fish_bone|fish_scale|shell_sack/.test(rmId) && (/蝦|魚|蟹|鮑|蛤|蜆|螺|肉|稻穀|穀糧|漿果|鮮果|茶|水芹/.test(rmName) || /蝦|魚|蟹|鮑|蛤|蜆|螺|肉|稻穀|穀糧|漿果|鮮果|茶|水芹/.test(rmRawName));
+				var btnLabel = isCulinary ? '烹調炙烤' : '加工煉製';
+				craftBodyHtml += '<div class="craft-material-row" style="display:flex;justify-content:space-between;align-items:center;padding:4px 6px;background:rgba(0,0,0,0.03);border-radius:4px;">' +
+					'<span>' + esc(rmName) + (rmQty > 1 ? ' <small style="opacity:0.8;">\u00d7' + rmQty + '</small>' : '') + '</span>' +
+					'<button type="button" class="inv-action-btn craft-item-btn" data-action="craft_item" data-item-id="' + esc(rmId) + '">' + btnLabel + '</button>' +
+					'</div>';
+			}
+			craftBodyHtml += '</div>';
+		} else {
+			craftBodyHtml += '<div style="margin-bottom:8px;font-size:0.9em;opacity:0.75;">行囊中暫無可煉製的原材</div>';
+		}
+
 		sectionCraft.innerHTML = '<div class="equip-section-title">【 手作與淬鍊 】</div>' +
 			'<div class="equip-section-body craft-summary">' +
-			'<div class="equip-action-row" style="display:flex;gap:8px;flex-wrap:wrap;">' +
-			'<button type="button" class="inv-action-btn craft-auto-btn" data-action="craft_auto">煉製隨身原料</button>' +
-			'<button type="button" class="inv-action-btn mutate-auto-btn" data-action="mutate_auto">催動器物異變</button>' +
-			'</div>' +
+			craftBodyHtml +
 			'</div>';
 		wrap.appendChild(sectionCraft);
+
+		sectionCraft.querySelectorAll('.craft-item-btn').forEach(function (btn) {
+			btn.addEventListener('click', function (e) {
+				e.stopPropagation();
+				var targetItemId = this.getAttribute('data-item-id');
+				_send({ type: 'craft_item', item_id: targetItemId });
+			});
+		});
 
 		var craftAutoBtn = sectionCraft.querySelector('.craft-auto-btn');
 		if (craftAutoBtn) {
 			craftAutoBtn.addEventListener('click', function (e) {
 				e.stopPropagation();
 				_send({ type: 'craft_item', item_id: 'auto' });
-			});
-		}
-		var mutateAutoBtn = sectionCraft.querySelector('.mutate-auto-btn');
-		if (mutateAutoBtn) {
-			mutateAutoBtn.addEventListener('click', function (e) {
-				e.stopPropagation();
-				_send({ type: 'mutate_item', item_id: 'auto' });
 			});
 		}
 	}
@@ -389,6 +536,27 @@
 		});
 	}
 
+	function canTranscribeManual() {
+		if (lastInventoryMsg && Array.isArray(lastInventoryMsg.items)) {
+			for (var k = 0; k < lastInventoryMsg.items.length; k++) {
+				var it = lastInventoryMsg.items[k];
+				if (!it) continue;
+				if (it.item_id === 'manual_blank' || (it.name && (it.name.indexOf('空白圖譜') !== -1 || it.name.indexOf('無字殘卷') !== -1 || it.name.indexOf('空白書冊') !== -1))) {
+					return true;
+				}
+			}
+		}
+		var st = (window.gameState ? window.gameState() : null) || {};
+		var objs = st.objects || [];
+		for (var j = 0; j < objs.length; j++) {
+			var oName = (objs[j] && (objs[j].name || objs[j].id)) || '';
+			if (oName.indexOf('書案') !== -1 || oName.indexOf('書桌') !== -1 || oName.indexOf('案几') !== -1 || oName.indexOf('筆墨') !== -1) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	function renderSkillPane(msg) {
 		var wrap = document.getElementById('skill-content');
 		if (!wrap) return;
@@ -400,15 +568,16 @@
 			html += '<div class="sw-accordion-body"><div class="skill-placeholder">氣脈初凝，隨日常採獵、百工與吐納漸次成形。</div></div>';
 			html += '</div>';
 		} else {
-			var martial = skills.filter(function (s) { return s.domain === 'martial'; });
+			var breathItem = skills.find(function (s) {
+				return s.category === 'inner_breath' || (s.category_label || '').indexOf('內息底色') !== -1;
+			});
+			var martialMoves = skills.filter(function (s) { return s.domain === 'martial'; });
+			var martial = breathItem ? [breathItem].concat(martialMoves) : martialMoves;
 			var prod = skills.filter(function (s) { return s.domain === 'production'; });
 			if (martial.length) {
 				if (activeMartialSkillIdx >= martial.length) activeMartialSkillIdx = 0;
-				var breathItem = martial.find(function (s) {
-					return (s.category_label || '').indexOf('內息底色') !== -1 || s.category === 'inner_breath';
-				});
-				var martialMoveCount = martial.length - (breathItem ? 1 : 0);
-				var martialBadge = (breathItem ? '《' + esc(breathItem.name) + '》· ' : '') + martialMoveCount + ' 式';
+				var martialMoveCount = martialMoves.length;
+				var martialBadge = (breathItem ? esc(breathItem.name) + '・' : '') + martialMoveCount + ' 式';
 				var isMartialOpen = activeStarplateDrawer === 'martial';
 				html += '<div class="sw-accordion-drawer' + (isMartialOpen ? ' is-open' : '') + '" data-drawer="martial">';
 				html += '<div class="sw-accordion-header">';
@@ -419,26 +588,23 @@
 				for (var i = 0; i < martial.length; i++) {
 					var ms = martial[i];
 					var isBreathHabit = (ms.category_label || '').indexOf('內息底色') !== -1 || ms.category === 'inner_breath';
-					var slotKey = 'opening';
-					if (ms.category_label && ms.category_label.indexOf('起手') !== -1) slotKey = 'opening';
-					else if (ms.category_label && ms.category_label.indexOf('連攜') !== -1) slotKey = 'midgame';
-					else if (ms.category_label && ms.category_label.indexOf('破綻') !== -1) slotKey = 'finisher';
-					else if (ms.category_label && ms.category_label.indexOf('守勢') !== -1) slotKey = 'defense';
+					var slotKey = (ms.category === 'opening' || ms.category === 'midgame' || ms.category === 'finisher' || ms.category === 'defense') ? ms.category : 'opening';
 					var isSubOpen = (i === activeMartialSkillIdx);
 					html += '<div class="sw-sub-accordion-card' + (isSubOpen ? ' is-open' : '') + '" data-sub-group="martial" data-sub-idx="' + i + '">';
 					html += '<div class="sw-sub-accordion-header">';
-					html += '<div class="sw-sub-accordion-main"><span class="sw-sub-arrow">' + (isSubOpen ? '▾' : '▸') + '</span> <strong>◆ 《' + esc(ms.name) + '》</strong> <span class="text-muted">｜ ' + esc(ms.category_label) + '</span></div>';
-					if (!isBreathHabit) {
+					html += '<div class="sw-sub-accordion-main"><span class="sw-sub-arrow">' + (isSubOpen ? '▾' : '▸') + '</span> <strong>◆ ' + esc(ms.name) + '</strong> <span class="text-muted">・' + esc((ms.category_label || '').replace(/^[【\[]|[\】\]]$/g, '')) + '</span></div>';
+					var showTranscribe = !isBreathHabit && canTranscribeManual();
+					if (showTranscribe) {
 						html += '<button type="button" class="transcribe-manual-btn" data-slot="' + slotKey + '">著譜立說</button>';
 					}
 					html += '</div>';
 					html += '<div class="sw-sub-accordion-body"' + (isSubOpen ? '' : ' hidden') + '>';
 					html += '<div class="sw-sub-basis">' + esc(ms.origin_basis) + '</div>';
-					if (isBreathHabit && ms.auto_trigger_desc) {
-						html += '<div class="sw-sub-effect">行氣與實效：' + esc(ms.auto_trigger_desc) + '</div>';
-					}
 					if (ms.learned_and_familiar) {
 						html += '<div class="text-muted sw-sub-familiar">' + esc(ms.learned_and_familiar) + '</div>';
+					}
+					if (ms.auto_trigger_desc) {
+						html += '<div class="sw-sub-effect">' + (isBreathHabit ? '行氣與實效：' : '臨陣實效：') + esc(ms.auto_trigger_desc) + '</div>';
 					}
 					html += '</div></div>';
 				}
@@ -459,12 +625,15 @@
 					var isProdSubOpen = (j === activeCraftSkillIdx);
 					html += '<div class="sw-sub-accordion-card' + (isProdSubOpen ? ' is-open' : '') + '" data-sub-group="craft" data-sub-idx="' + j + '">';
 					html += '<div class="sw-sub-accordion-header">';
-					html += '<div class="sw-sub-accordion-main"><span class="sw-sub-arrow">' + (isProdSubOpen ? '▾' : '▸') + '</span> <strong>◇ 《' + esc(ps.name) + '》</strong> <span class="text-muted">｜ ' + esc(ps.category_label) + '</span></div>';
+					html += '<div class="sw-sub-accordion-main"><span class="sw-sub-arrow">' + (isProdSubOpen ? '▾' : '▸') + '</span> <strong>◇ ' + esc(ps.name) + '</strong> <span class="text-muted">・' + esc((ps.category_label || '').replace(/^[【\[]|[\】\]]$/g, '')) + '</span></div>';
 					html += '</div>';
 					html += '<div class="sw-sub-accordion-body"' + (isProdSubOpen ? '' : ' hidden') + '>';
 					html += '<div class="sw-sub-basis">' + esc(ps.origin_basis) + '</div>';
 					if (ps.learned_and_familiar) {
 						html += '<div class="text-muted sw-sub-familiar">' + esc(ps.learned_and_familiar) + '</div>';
+					}
+					if (ps.auto_trigger_desc) {
+						html += '<div class="sw-sub-effect">百工實效：' + esc(ps.auto_trigger_desc) + '</div>';
 					}
 					html += '</div></div>';
 				}
@@ -509,351 +678,10 @@
 		});
 	}
 
-	// 二十主樞（361 規格 §2.2）：代碼 N001～N020、名稱
-	var HUB_NAMES = ['天極', '脈衝', '震淵', '游離', '弦絲', '曜核', '凜晶', '淵流', '萬象', '解離', '鎮閾', '衡定', '穹壁', '重塑', '逆熵', '神淵', '識閾', '坍縮', '無相', '越權'];
-	function formatNodeName(nodeId) {
-		if (!nodeId) return '天極主樞';
-		var str = String(nodeId).trim();
-		if (str === 'N000') return '生之奇點';
-		var m = str.match(/^N(\d{3})$/);
-		if (m) {
-			var idx = parseInt(m[1], 10);
-			if (idx >= 1 && idx <= 20) {
-				return HUB_NAMES[idx - 1] + '主樞';
-			}
-			return '星軌節點';
-		}
-		return str;
-	}
-	// Cost 文字化五級（狀態與星盤分頁規格 §5.5）
-	function costToLabel(cost) {
-		if (cost == null) return { text: '未知', css: 'cost-unknown' };
-		if (cost <= 7)  return { text: '暢流', css: 'cost-flow' };
-		if (cost <= 11) return { text: '順通', css: 'cost-easy' };
-		if (cost <= 16) return { text: '平穩', css: 'cost-mid' };
-		if (cost <= 21) return { text: '滯澀', css: 'cost-slow' };
-		return { text: '險阻', css: 'cost-hard' };
-	}
-	function costSpan(cost) {
-		var label = costToLabel(cost);
-		return '<span class="' + label.css + '">' + label.text + '</span>';
-	}
-	// 760 邊序（361 §6.1.0）：型 A 0..19，型 B 20..119，型 C 120..419，型 D 420..659，型 E 660..759
-	function getTypeCCosts(costs, hubIndex) {
-		if (!costs || costs.length < 120 + (hubIndex + 1) * 15) return [];
-		return costs.slice(120 + hubIndex * 15, 120 + hubIndex * 15 + 15);
-	}
-	function getCostA(costs, hubIndex) {
-		if (!costs || costs.length <= hubIndex) return null;
-		return costs[hubIndex];
-	}
-	function getCostB(costs, hubIndex, blueIdx) {
-		var i = 20 + hubIndex * 5 + blueIdx;
-		return (costs && costs.length > i) ? costs[i] : null;
-	}
-	function getCostD(costs, hubIndex, greenIdx) {
-		var i = 420 + hubIndex * 12 + greenIdx;
-		return (costs && costs.length > i) ? costs[i] : null;
-	}
-	function getCostE(costs, hubIndex, blueIdx) {
-		var i = 660 + hubIndex * 5 + blueIdx;
-		return (costs && costs.length > i) ? costs[i] : null;
-	}
-	var BLUE_NAMES = ['\u8d77', '\u627f', '\u8f49', '\u5354', '\u5408'];
-	var GREEN_LABELS = ['【探】', '【觸】', '【納】', '【蓄】', '【濾】', '【析】', '【融】', '【衍】', '【律】', '【束】', '【釋】', '【散】'];
-	var GREEN_SHORT = ['【探】', '【觸】', '【納】', '【蓄】', '【濾】', '【析】', '【融】', '【衍】', '【律】', '【束】', '【釋】', '【散】'];
-	var GREEN_PER_BLUE = [[0, 1, 2], [2, 3, 4], [4, 5, 6], [7, 8, 9], [9, 10, 11]];
-	var GREEN_SHARED = { 2: ' (\u8207[\u627f]\u5171\u7528)', 4: ' (\u8207[\u8f49]\u5171\u7528)', 9: ' (\u8207[\u5408]\u5171\u7528)' };
 
-	function buildHubExpandHTML(hubIndex, costs) {
-		var costA = getCostA(costs, hubIndex);
-		var typeCCosts = getTypeCCosts(costs, hubIndex);
-		var html = '<div class="starplate-hub-cost-card">';
-		html += '<span class="hub-entry-label">主樞貫通調和：</span>' + costSpan(costA);
-		html += '</div>';
-
-		html += '<div class="starplate-gates-grid">';
-		var idx = 0;
-		for (var b = 0; b < 5; b++) {
-			var costB = getCostB(costs, hubIndex, b);
-			var nextBlue = BLUE_NAMES[(b + 1) % 5];
-			var ringE = getCostE(costs, hubIndex, b);
-			html += '<div class="starplate-gate-card">';
-			html += '<div class="gate-header">';
-			html += '<span class="gate-name">【' + BLUE_NAMES[b] + '】門</span>';
-			html += '<span class="gate-cost">' + costSpan(costB) + '</span>';
-			html += '<span class="gate-cycle" title="星軌旋動">⟳ ' + nextBlue + ' ' + costSpan(ringE) + '</span>';
-			html += '</div>';
-
-			html += '<div class="gate-subnodes">';
-			for (var g = 0; g < 3; g++) {
-				var greenIdx = GREEN_PER_BLUE[b][g];
-				var costC = typeCCosts.length > idx ? typeCCosts[idx] : null;
-				var ringD = getCostD(costs, hubIndex, greenIdx);
-				var nextGreen = GREEN_SHORT[(greenIdx + 1) % 12];
-				var shared = GREEN_SHARED[greenIdx] || '';
-				html += '<div class="gate-subnode-row">';
-				html += '<span class="subnode-tag">' + GREEN_LABELS[greenIdx] + '</span>';
-				html += '<span class="subnode-cost">' + costSpan(costC) + '</span>';
-				if (shared) html += '<span class="subnode-shared">' + shared + '</span>';
-				html += '<span class="subnode-ring">⟳ ' + nextGreen + ' ' + costSpan(ringD) + '</span>';
-				html += '</div>';
-				idx++;
-			}
-			html += '</div></div>';
-		}
-		html += '</div>';
-		return html;
-	}
-
-	function getWordLabel(w) {
-		if (!w) return '';
-		if (typeof w === 'object') return w.char_text || w.ch || w.word || w.name || w.word_id || w.id || '';
-		return String(w);
-	}
-
-	var activeTacticalSlot = 'opening';
-	var selectedWordPlateWordId = null;
-	window.selectedWordPlateWordId = null;
-
-	var lastTacticalState = {
-		casket: ['疾', '穿', '震', '卸', '纏', '崩', '化', '凝', '裂', '連', '速', '刺', '斬', '流', '破', '吾', '避'],
-		loadout: {
-			opening:  { nodes: ['N001', 'N001', 'N001'], words: ['速', '刺', '斬'], name: '驚鴻刺' },
-			midgame:  { nodes: ['N001', 'N001', 'N001'], words: ['流', '破', '斬'], name: '隨流纏手' },
-			finisher: { nodes: ['N001', 'N001', 'N001'], words: ['吾', '震', '破'], name: '斷空崩' },
-			defense:  { nodes: ['N001', 'N001', 'N001'], words: ['凝', '流', '避'], name: '沉嶽卸' }
-		}
-	};
-
-	var TACTICAL_SLOT_DEFS = [
-		{ key: 'opening',  label: '起手式 · 搶攻先機', hint: '相剋重點：迅捷搶攻，打亂節奏' },
-		{ key: 'midgame',  label: '常態連攜 · 纏鬥守中', hint: '相剋重點：攻守兼備，消耗轉化' },
-		{ key: 'finisher', label: '破綻殺招 · 決命一擊', hint: '相剋重點：專攻破綻，破防重創' },
-		{ key: 'defense',  label: '守勢身法 · 卸力化勁', hint: '相剋重點：化勁保身，避重就輕' }
-	];
-
-	function renderTacticalSection(container) {
-		var words = lastTacticalState.casket || [];
-		var isTacticsOpen = activeStarplateDrawer === 'tactics';
-		var drawer = document.createElement('div');
-		drawer.className = 'sw-accordion-drawer' + (isTacticsOpen ? ' is-open' : '');
-		drawer.setAttribute('data-drawer', 'tactics');
-
-		var drawerHeader = document.createElement('div');
-		drawerHeader.className = 'sw-accordion-header';
-		drawerHeader.innerHTML = '<span class="sw-accordion-title"><span class="sw-accordion-arrow">' + (isTacticsOpen ? '▾' : '▸') + '</span>【識海字譜與四序配招】</span>' +
-			'<span class="sw-accordion-badge">心印 ' + words.length + ' 種 · 四序</span>';
-		drawer.appendChild(drawerHeader);
-
-		var section = document.createElement('div');
-		section.className = 'sw-accordion-body tactical-loadout-panel';
-		section.hidden = !isTacticsOpen;
-
-		// 1. 萬人萬相・心印收納
-		var casketHeader = document.createElement('div');
-		casketHeader.className = 'starplate-block sw-section-subhead';
-		casketHeader.innerHTML = '<strong>[ 識海字譜 ]</strong> <span class="text-muted">點選字印以排入下方展開之戰術序位</span>';
-		section.appendChild(casketHeader);
-
-		var casketBox = document.createElement('div');
-		casketBox.className = 'tactical-casket-box';
-		var selectedWordId = null;
-
-		function formatCompactWords(wordArr) {
-			if (!wordArr || !wordArr.length) return '（未凝心印）';
-			return '【' + wordArr.map(getWordLabel).join('・') + '】';
-		}
-
-		function updateSlotCard(key) {
-			var card = section.querySelector('.tactical-slot-card[data-slot="' + key + '"]');
-			if (!card) return;
-			var cur = (lastTacticalState.loadout && lastTacticalState.loadout[key]) || { nodes: [], words: [], name: '' };
-			var wordListStr = (cur.words && cur.words.length) ? cur.words.map(function (w) { return '【' + getWordLabel(w) + '】'; }).join(' ') : '（未凝心印）';
-			var preview = card.querySelector('.active-words');
-			if (preview) preview.textContent = wordListStr;
-			var inlineWords = card.querySelector('.tactical-slot-inline-words');
-			if (inlineWords) inlineWords.textContent = formatCompactWords(cur.words);
-			var nodesPreview = card.querySelector('.tactical-nodes-preview');
-			if (nodesPreview) {
-				var nodeListStr = (cur.nodes && cur.nodes.length) ? cur.nodes.map(formatNodeName).join(' · ') : '天極主樞';
-				nodesPreview.textContent = '星樞：' + nodeListStr;
-			}
-		}
-
-		for (var wi = 0; wi < words.length; wi++) {
-			(function (item) {
-				var label = getWordLabel(item);
-				var wBtn = document.createElement('button');
-				wBtn.type = 'button';
-				wBtn.className = 'tactical-word-crystal';
-				var countNum = (item.count && item.count > 1) ? '×' + item.count : '';
-				var shortQual = item.quality_label ? item.quality_label.replace('品', '') : '';
-				wBtn.textContent = '【' + label + '】' + shortQual + countNum;
-				wBtn.title = '【' + label + '】' + (item.quality_label ? '[' + item.quality_label + ']' : '') + (item.count ? '（' + item.count + '枚）' : '');
-				wBtn.setAttribute('data-word', label);
-				wBtn.addEventListener('click', function () {
-					selectedWordId = item.id || label;
-					selectedWordPlateWordId = item.id || label;
-					window.selectedWordPlateWordId = selectedWordPlateWordId;
-					casketBox.querySelectorAll('.tactical-word-crystal').forEach(function (b) {
-						b.classList.remove('selected');
-					});
-					wBtn.classList.add('selected');
-					if (!lastTacticalState.loadout) lastTacticalState.loadout = {};
-					if (!lastTacticalState.loadout[activeTacticalSlot]) {
-						lastTacticalState.loadout[activeTacticalSlot] = { nodes: [], words: [], name: '' };
-					}
-					var cur = lastTacticalState.loadout[activeTacticalSlot];
-					if (!Array.isArray(cur.words)) cur.words = [];
-					cur.words.push(label);
-					if (!Array.isArray(cur.nodes)) cur.nodes = [];
-					if (cur.nodes.length < cur.words.length) {
-						var nIdx = cur.nodes.length + 1;
-						cur.nodes.push('N' + String(nIdx).padStart(3, '0'));
-					}
-					updateSlotCard(activeTacticalSlot);
-				});
-				casketBox.appendChild(wBtn);
-			})(words[wi]);
-		}
-		section.appendChild(casketBox);
-		var casketActions = document.createElement('div');
-		casketActions.className = 'tactical-casket-actions';
-		casketActions.style.display = 'flex';
-		casketActions.style.gap = '8px';
-		casketActions.style.margin = '6px 0 12px 0';
-
-		var stackBtn = document.createElement('button');
-		stackBtn.type = 'button';
-		stackBtn.className = 'inv-action-btn';
-		stackBtn.textContent = '同名疊煉';
-		stackBtn.addEventListener('click', function () {
-			if (!selectedWordId) {
-				alert('請先點選欲疊煉的心印字韻');
-				return;
-			}
-			_send({ type: 'use_item', item_id: selectedWordId, action: 'StackWord' });
-		});
-
-		var mintBtn = document.createElement('button');
-		mintBtn.type = 'button';
-		mintBtn.className = 'inv-action-btn';
-		mintBtn.textContent = '鎔鑄化鎂';
-		mintBtn.addEventListener('click', function () {
-			if (!selectedWordId) {
-				alert('請先點選欲化鎂的心印字韻');
-				return;
-			}
-			_send({ type: 'use_item', item_id: selectedWordId, action: 'MintWord' });
-		});
-
-		casketActions.appendChild(stackBtn);
-		casketActions.appendChild(mintBtn);
-		section.appendChild(casketActions);
-
-		// 2. 成相四序・臨陣應變（內層風琴收納）
-		var slotHeader = document.createElement('div');
-		slotHeader.className = 'starplate-block sw-section-subhead';
-		slotHeader.innerHTML = '<strong>[ 四序星軌 ]</strong> <span class="text-muted">點選序位切換編輯槽位</span>';
-		section.appendChild(slotHeader);
-
-		var slotsWrap = document.createElement('div');
-		slotsWrap.className = 'tactical-slots-grid';
-
-		for (var si = 0; si < TACTICAL_SLOT_DEFS.length; si++) {
-			(function (slotDef) {
-				var slotKey = slotDef.key;
-				var shortTitle = slotDef.label.split(' · ')[0];
-				var isSlotActive = (slotKey === activeTacticalSlot);
-				var current = (lastTacticalState.loadout && lastTacticalState.loadout[slotKey]) || { nodes: [], words: [], name: '' };
-				var wordListStr = (current.words && current.words.length) ? current.words.map(function (w) { return '【' + getWordLabel(w) + '】'; }).join(' ') : '（未凝心印）';
-				var compactWordStr = formatCompactWords(current.words);
-				var nodeListStr = (current.nodes && current.nodes.length) ? current.nodes.map(formatNodeName).join(' · ') : '天極主樞';
-
-				var card = document.createElement('div');
-				card.className = 'tactical-slot-card slot-' + slotKey + (isSlotActive ? ' tactical-slot-active' : '');
-				card.setAttribute('data-slot', slotKey);
-
-				var summaryRow = document.createElement('div');
-				summaryRow.className = 'tactical-slot-summary-row';
-				summaryRow.innerHTML = '<div class="tactical-slot-summary-left">' +
-					'<span class="sw-sub-arrow">' + (isSlotActive ? '▾' : '▸') + '</span>' +
-					'<strong class="tactical-slot-short-title">' + esc(shortTitle) + '</strong>' +
-					'<span class="tactical-natural-name">· ' + esc(current.name || '順脈連式') + '</span>' +
-					'</div>' +
-					'<span class="tactical-slot-inline-words">' + esc(compactWordStr) + '</span>';
-				card.appendChild(summaryRow);
-
-				var detailWrap = document.createElement('div');
-				detailWrap.className = 'tactical-slot-detail';
-				detailWrap.hidden = !isSlotActive;
-
-				var cardTitle = document.createElement('div');
-				cardTitle.className = 'tactical-slot-title';
-				cardTitle.innerHTML = '<div class="tactical-slot-hint">' + esc(slotDef.label) + '｜' + esc(slotDef.hint) + '</div>';
-				detailWrap.appendChild(cardTitle);
-
-				var equipRow = document.createElement('div');
-				equipRow.className = 'tactical-equip-row';
-				equipRow.innerHTML = '<div class="tactical-words-preview">心印：<span class="active-words">' + esc(wordListStr) + '</span></div>' +
-					'<div class="tactical-nodes-preview">星樞：' + esc(nodeListStr) + '</div>';
-				detailWrap.appendChild(equipRow);
-
-				var commitBtn = document.createElement('button');
-				commitBtn.type = 'button';
-				commitBtn.className = 'tactical-commit-btn';
-				commitBtn.textContent = '引字入樞（' + shortTitle + '）';
-				commitBtn.addEventListener('click', function (e) {
-					e.stopPropagation();
-					var nodes = current.nodes && current.nodes.length ? current.nodes.slice() : ['N001'];
-					var w = current.words && current.words.length ? current.words.map(getWordLabel) : ['疾'];
-					while (nodes.length < w.length) nodes.push(nodes[0] || 'N001');
-					if (nodes.length > w.length) nodes = nodes.slice(0, w.length);
-					_send({
-						type: 'update_tactics',
-						slot: slotKey,
-						nodes: nodes,
-						words: w,
-						custom_name: ''
-					});
-				});
-				detailWrap.appendChild(commitBtn);
-				card.appendChild(detailWrap);
-
-				card.addEventListener('click', function (e) {
-					if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
-					activeTacticalSlot = slotKey;
-					slotsWrap.querySelectorAll('.tactical-slot-card').forEach(function (c) {
-						var cKey = c.getAttribute('data-slot');
-						var isAct = (cKey === activeTacticalSlot);
-						c.classList.toggle('tactical-slot-active', isAct);
-						var arr = c.querySelector('.sw-sub-arrow');
-						if (arr) arr.textContent = isAct ? '▾' : '▸';
-						var det = c.querySelector('.tactical-slot-detail');
-						if (det) det.hidden = !isAct;
-					});
-				});
-
-				slotsWrap.appendChild(card);
-			})(TACTICAL_SLOT_DEFS[si]);
-		}
-		section.appendChild(slotsWrap);
-		drawer.appendChild(section);
-		bindDrawerHeader(drawer, 'tactics');
-		container.appendChild(drawer);
-	}
-
-	window.onTacticalState = function (msg) {
-		if (!msg) return;
-		if (msg.casket) lastTacticalState.casket = msg.casket;
-		if (msg.loadout) lastTacticalState.loadout = msg.loadout;
-		var me = (window.gameState && window.gameState().me) || (lastStatusMsg && lastStatusMsg.is_self ? lastStatusMsg : null);
-		if (me) renderStarplatePane(me);
-	};
-
+	window.onTacticalState = function () {};
 	window.openTacticsModal = function () {
-		activeStarplateDrawer = 'tactics';
+		activeStarplateDrawer = 'martial';
 		var modalOverlay = document.getElementById('player-modal-overlay');
 		if (modalOverlay) modalOverlay.hidden = false;
 		var tabBtn = document.querySelector('.player-modal-tab[data-tab="starplate"]');
@@ -867,101 +695,75 @@
 
 		wrap.innerHTML = '';
 
-		// 第三抽屜：識海字譜與四序配招
-		renderTacticalSection(wrap);
+		var st = (window.gameState && window.gameState().me) || (lastStatusMsg && lastStatusMsg.is_self ? lastStatusMsg : null);
+		var currentMe = me || st || {};
+		var skills = (currentMe && Array.isArray(currentMe.natural_skills)) ? currentMe.natural_skills : ((lastStatusMsg && Array.isArray(lastStatusMsg.natural_skills)) ? lastStatusMsg.natural_skills : []);
 
-		var isStarplateOpen = activeStarplateDrawer === 'starplate';
-		var spDrawer = document.createElement('div');
-		spDrawer.className = 'sw-accordion-drawer' + (isStarplateOpen ? ' is-open' : '');
-		spDrawer.setAttribute('data-drawer', 'starplate');
-
-		var spHeader = document.createElement('div');
-		spHeader.className = 'sw-accordion-header';
-		spHeader.innerHTML = '<span class="sw-accordion-title"><span class="sw-accordion-arrow">' + (isStarplateOpen ? '▾' : '▸') + '</span>【三百六十星軌共鳴】</span>' +
-			'<span class="sw-accordion-badge">二十主樞 · 脈絡</span>';
-
-		var spBody = document.createElement('div');
-		spBody.className = 'sw-accordion-body';
-		spBody.hidden = !isStarplateOpen;
-
-		if (!me || !me.activated_nodes || !Array.isArray(me.activated_nodes)) {
-			var note = document.createElement('div');
-			note.className = 'starplate-block text-muted';
-			note.textContent = '（登入後可隨意觀覽完整三十六宮與二十主樞展開態）';
-			spBody.appendChild(note);
-			spDrawer.appendChild(spBody);
-			bindDrawerHeader(spDrawer, 'starplate');
-			wrap.appendChild(spDrawer);
-			return;
+		var boneSkill = null;
+		var masteryCards = [];
+		for (var k = 0; k < skills.length; k++) {
+			var sk = skills[k];
+			if (!sk) continue;
+			if (sk.category === 'innate_bone' || (sk.category_label && sk.category_label.indexOf('天生體魄') !== -1)) {
+				boneSkill = sk;
+			} else if (sk.domain === 'mastery_ledger') {
+				masteryCards.push(sk);
+			}
 		}
 
-		var costs = me.topology_costs || [];
+		var boneName = (boneSkill ? boneSkill.name : '')
+			|| (currentMe && (currentMe.bone_structure || currentMe.innate_phase))
+			|| '身架勻稱・發力順暢';
 
-		var header = document.createElement('div');
-		header.className = 'starplate-block starplate-paper-header';
-		header.innerHTML = '<div class="starplate-paper-sub">以二十主星樞為基，貫通五門邏輯、牽引十二真言成相。點選主樞展開星位脈絡。</div>';
-		spBody.appendChild(header);
+		var boneDesc = (boneSkill && boneSkill.origin_basis)
+			|| '身形平實沉著，骨肉勻亭，動靜轉換之間行氣順暢，不偏不倚。';
 
-		var gridContainer = document.createElement('div');
-		gridContainer.className = 'starplate-paper-grid';
-		spBody.appendChild(gridContainer);
+		var boneFluency = (boneSkill && boneSkill.learned_and_familiar) || '';
 
-		for (var i = 0; i < HUB_NAMES.length; i++) {
-			(function (hubIndex) {
-				var costA = getCostA(costs, hubIndex);
-				var adaptStr = costA != null ? costSpan(costA) : '<span class="text-muted">調和中</span>';
-				var isHubOpen = (hubIndex === activeStarplateHubIdx);
+		var isBoneOpen = activeStarplateDrawer === 'bone_heritage';
+		var drawer = document.createElement('div');
+		drawer.className = 'sw-accordion-drawer' + (isBoneOpen ? ' is-open' : '');
+		drawer.setAttribute('data-drawer', 'bone_heritage');
 
-				var card = document.createElement('div');
-				card.className = 'starplate-hub-card' + (isHubOpen ? ' expanded' : '');
-				card.setAttribute('data-hub', hubIndex);
+		var drawerHeader = document.createElement('div');
+		drawerHeader.className = 'sw-accordion-header';
+		drawerHeader.innerHTML = '<span class="sw-accordion-title"><span class="sw-accordion-arrow">' + (isBoneOpen ? '▾' : '▸') + '</span>【體魄底蘊與所學所歷】</span>' +
+			'<span class="sw-accordion-badge">體魄・所學・所歷</span>';
+		drawer.appendChild(drawerHeader);
 
-				var cardHeader = document.createElement('div');
-				cardHeader.className = 'hub-card-header';
-				cardHeader.innerHTML = '<span class="hub-name">' + (isHubOpen ? '▾' : '▸') + ' 【' + HUB_NAMES[hubIndex] + '主樞】</span>' +
-					'<span class="hub-adapt">' + adaptStr + '</span>';
-				card.appendChild(cardHeader);
+		var drawerBody = document.createElement('div');
+		drawerBody.className = 'sw-accordion-body';
+		drawerBody.hidden = !isBoneOpen;
 
-				if (isHubOpen) {
-					var initExpand = document.createElement('div');
-					initExpand.className = 'starplate-hub-expand';
-					initExpand.setAttribute('data-hub', hubIndex);
-					initExpand.innerHTML = buildHubExpandHTML(hubIndex, costs);
-					card.appendChild(initExpand);
-				}
-				gridContainer.appendChild(card);
+		var cardHtml = '<div class="sw-sub-accordion-card is-open" style="margin-bottom:10px;">' +
+			'<div class="sw-sub-accordion-header">' +
+			'<div class="sw-sub-accordion-main"><strong>◇ ' + esc(boneName) + '</strong> <span class="text-muted">・天生體魄</span></div>' +
+			'</div>' +
+			'<div class="sw-sub-accordion-body">' +
+			'<div class="sw-sub-basis">' + esc(boneDesc) + '</div>' +
+			(boneFluency ? '<div class="text-muted sw-sub-familiar">' + esc(boneFluency) + '</div>' : '') +
+			'</div></div>';
 
-				card.addEventListener('click', function () {
-					var isExpanded = card.classList.contains('expanded');
-					gridContainer.querySelectorAll('.starplate-hub-card.expanded').forEach(function (c) {
-						c.classList.remove('expanded');
-						var h = c.querySelector('.hub-name');
-						if (h) h.innerHTML = h.innerHTML.replace('▾', '▸');
-						var exp = c.querySelector('.starplate-hub-expand');
-						if (exp) exp.remove();
-					});
-					if (isExpanded) {
-						activeStarplateHubIdx = -1;
-						return;
-					}
-
-					activeStarplateHubIdx = hubIndex;
-					card.classList.add('expanded');
-					var hName = card.querySelector('.hub-name');
-					if (hName) hName.innerHTML = hName.innerHTML.replace('▸', '▾');
-
-					var expandEl = document.createElement('div');
-					expandEl.className = 'starplate-hub-expand';
-					expandEl.setAttribute('data-hub', hubIndex);
-					expandEl.innerHTML = buildHubExpandHTML(hubIndex, costs);
-					card.appendChild(expandEl);
-				});
-			})(i);
+		for (var mIdx = 0; mIdx < masteryCards.length; mIdx++) {
+			var mc = masteryCards[mIdx];
+			cardHtml += '<div class="sw-sub-accordion-card is-open" style="margin-bottom:10px;">' +
+				'<div class="sw-sub-accordion-header">' +
+				'<div class="sw-sub-accordion-main"><strong>◇ ' + esc(mc.name) + '</strong> <span class="text-muted">・' + esc((mc.category_label || '').replace(/^[【\[]|[\】\]]$/g, '')) + '</span></div>' +
+				'</div>' +
+				'<div class="sw-sub-accordion-body">' +
+				'<div class="sw-sub-basis">' + esc(mc.origin_basis) + '</div>' +
+				(mc.learned_and_familiar ? '<div class="text-muted sw-sub-familiar">' + esc(mc.learned_and_familiar) + '</div>' : '') +
+				(mc.auto_trigger_desc ? '<div class="sw-sub-effect">' + esc(mc.auto_trigger_desc) + '</div>' : '') +
+				'</div></div>';
 		}
 
-		spDrawer.appendChild(spBody);
-		bindDrawerHeader(spDrawer, 'starplate');
-		wrap.appendChild(spDrawer);
+		cardHtml += '<div style="padding:10px 12px;background:var(--paper-light, rgba(255,255,255,0.65));border:1px dashed var(--sw-btn-border, rgba(112,79,36,0.25));border-radius:6px;font-size:12.5px;line-height:1.6;color:var(--ink-light, #5c4832);">' +
+			'「一身技藝皆由平日所學、器物磨合與山海行旅自然養成，臨陣交手與百工勞作時隨手施展。」' +
+			'</div>';
+		drawerBody.innerHTML = cardHtml;
+		drawer.appendChild(drawerBody);
+		bindDrawerHeader(drawer, 'bone_heritage');
+		wrap.appendChild(drawer);
 	}
 
 	function describeItemWeight(subTotal) {
@@ -1003,10 +805,14 @@
 		listEl.innerHTML = '';
 		for (var i = 0; i < msg.items.length; i++) {
 			(function (it) {
+				var rawId = String(it.item_id || '');
+				if (rawId.indexOf('crystal_') === 0 || it.item_type === 'word_crystal' || /crystal|\u8a5e\u5143\u7d50\u6676/.test(String(it.name || ''))) return;
 				var itemId = it.item_id || it.id || '';
 				var itemName = it.name || '';
 				var isMutated = itemId.indexOf('mut_') === 0 || itemName.indexOf('【異變') !== -1;
-				var isRaw = !isMutated && (itemId.indexOf('mat_') === 0 || itemId.indexOf('harvest_') === 0 || /礦|砂|原木|蘆草|竹竿|草藥|水苔|紙刀|墨坯|麻繩|袋布|原牛皮|河蝦|水芹/.test(itemName));
+				var isCraftedFinished = itemId.indexOf('craft_') === 0 || itemId.indexOf('manual_') === 0 || itemId.indexOf('item_') === 0 || itemName.indexOf('精鍛') !== -1;
+				var isRaw = !isMutated && !isCraftedFinished && (itemId.indexOf('mat_') === 0 || itemId.indexOf('harvest_') === 0 || (itemId.indexOf('wt_cat_') === 0 && !it.slot && it.item_type !== 'tool' && it.item_type !== 'equipment') || itemId === 'wt_beast_bone' || itemId === 'wt_down_feather' || it.item_type === 'material' || it.item_type === 'raw_material' || /礦|砂|原木|蘆草|竹竿|草藥|水苔|紙刀|墨坯|麻繩|袋布|原牛皮|河蝦|水芹|絨羽|獸骨|老鱉|毛皮|鱗片|獠牙|彩羽|尾翎|香皮|鹿茸|山茶籽|白鮮草|藥草|漿果|獸皮|獸筋/.test(itemName));
+				var isCulinaryRaw = isRaw && !/魚骨|魚鱗|魚皮|釣魚線|魚線|漁線|魚網|漁網|螺殼|貝殼|茶籽/.test(itemName) && !/fishing_line|fish_bone|fish_scale|shell_sack/.test(itemId) && (/蝦|魚|蟹|鮑|蛤|蜆|螺|肉|熊掌|鹿腱|牛蛙|老鱉|稻穀|穀糧|漿果|鮮果|茶|水芹/.test(itemName) || /shrimp|fish|meat|grain|berries/.test(itemId));
 				var stageBadge = isMutated ? '[異變奇珍]' : (isRaw ? '[原料]' : '[成品]');
 				var qtyStr = it.qty > 1 ? (' \u00d7' + it.qty) : '';
 				var wTag = '[' + describeItemWeight(it.sub_total) + ']';
@@ -1045,9 +851,9 @@
 					var desc = it.description || '';
 					var descHtml = desc ? '<div class="inventory-item-desc">\u2503 ' + esc(desc) + '</div>' : '';
 					var actionsHtml = '<div class="inventory-item-actions">';
-					var isCrystal = /^crystal_/.test(it.item_id) || it.item_type === 'word_crystal';
 					var isCorpse = /^corpse_/.test(it.item_id) || it.item_type === 'corpse';
-					var isManual = /^manual_/.test(it.item_id) || it.item_type === 'manual' || it.item_id === 'blank_manual' || it.item_id === 'wt_blank_manual';
+					var isBlankManual = it.item_id === 'blank_manual' || it.item_id === 'wt_blank_manual';
+					var isManual = /^manual_/.test(it.item_id) || it.item_type === 'manual' || isBlankManual;
 					if (it.slot) {
 						if (it.slot === 'hold' || it.slot === 'hold_r' || it.slot === 'hold_l') {
 							actionsHtml += '<button type="button" class="inv-action-btn" data-action="equip" data-target="hold_l">\u5de6\u624b</button>';
@@ -1055,32 +861,23 @@
 						} else {
 							actionsHtml += '<button type="button" class="inv-action-btn" data-action="equip">\u7a7f\u6234</button>';
 						}
-					}
-					if (!isCrystal && it.slot) {
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="inscribe-item">器物刻字</button>';
-					}
-					if (isCrystal) {
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="extract-word">碎晶提出</button>';
-					}
-					if (isCorpse) {
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="strip-name-whole">整軀剝名</button>';
+					} else if (isCorpse) {
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="butcher-corpse">肢體分解</button>';
-					}
-					if (/^manual_/.test(it.item_id)) {
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="study-manual">研讀手札</button>';
-					}
-					if (!it.slot && !isCrystal && !isRaw && !isCorpse && !/^manual_/.test(it.item_id)) {
-						var isFoodOrDrink = /[餅麵飯肉薯凍花菜蝦蛤魚丸糖湯茶漿飲水酒粥粿]/.test(it.name || '');
+					} else if (isBlankManual) {
+						actionsHtml += '<button type="button" class="inv-action-btn" data-action="transcribe-manual">著譜立說</button>';
+					} else if (isManual) {
+						actionsHtml += '<button type="button" class="inv-action-btn" data-action="study-manual">研讀參悟</button>';
+					} else if (!isRaw) {
+						var isFoodOrDrink = it.item_type === 'food' || /蝦串|魚乾|肉脯|糧餅|茶磚|魚湯|肉湯|鮮湯|米粥|湯麵|飯糰|滷肉|煎魚|烤魚|烤蝦/.test(it.name || '') || (!/[羽皮骨甲鱗角牙爪殼毛絲麻布線繩木竹石礦砂泥炭灰油蠟漆紙冊燈桶竿網錘刀劍甲衣衫褲鞋帽鐲環戒佩印契鑰]/.test(it.name || '') && /[餅麵飯肉薯凍花菜蝦蛤魚丸糖湯茶漿飲水酒粥粿包蛋羹膏丸散丹串脯]/.test(it.name || ''));
 						var useLabel = isFoodOrDrink ? '食用' : '使用';
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + useLabel + '</button>';
 					}
-					if (!it.slot && !isCrystal && !isCorpse && !isManual) {
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="strip-name">剝名凝晶</button>';
-					}
 					if (isRaw) {
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft">加工煉製</button>';
-					} else if (!isMutated && !isCrystal && !isCorpse && !isManual) {
-						actionsHtml += '<button type="button" class="inv-action-btn" data-action="mutate">氣脈異變</button>';
+						if (isCulinaryRaw && /蝦|魚|肉|漿果|鮮果/.test(nameStr) && itemId !== 'raw_meat' && !nameStr.includes('生獸肉')) {
+							actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">食用</button>';
+						}
+						var craftLabel = isCulinaryRaw ? '烹調炙烤' : '加工煉製';
+						actionsHtml += '<button type="button" class="inv-action-btn" data-action="craft">' + craftLabel + '</button>';
 					}
 					actionsHtml += '<button type="button" class="inv-action-btn" data-action="sell" data-sell-mode="one">售出</button>';
 					if (it.qty && it.qty > 1) {
@@ -1109,54 +906,22 @@
 							_send({ type: 'use_item', item_id: it.item_id });
 						});
 					});
-					expand.querySelectorAll('.inv-action-btn[data-action="extract-word"]').forEach(function (btn) {
-						btn.addEventListener('click', function (e) {
-							e.stopPropagation();
-							_send({ type: 'use_item', item_id: it.item_id, action: 'ExtractWord' });
-						});
-					});
-					expand.querySelectorAll('.inv-action-btn[data-action="strip-name"]').forEach(function (btn) {
-						btn.addEventListener('click', function (e) {
-							e.stopPropagation();
-							_send({ type: 'use_item', item_id: it.item_id, action: 'StripName' });
-						});
-					});
-					expand.querySelectorAll('.inv-action-btn[data-action="strip-name-whole"]').forEach(function (btn) {
-						btn.addEventListener('click', function (e) {
-							e.stopPropagation();
-							_send({ type: 'use_item', item_id: it.item_id, action: 'StripNameWhole' });
-						});
-					});
 					expand.querySelectorAll('.inv-action-btn[data-action="butcher-corpse"]').forEach(function (btn) {
 						btn.addEventListener('click', function (e) {
 							e.stopPropagation();
 							_send({ type: 'use_item', item_id: it.item_id, action: 'ButcherCorpse' });
 						});
 					});
+					expand.querySelectorAll('.inv-action-btn[data-action="transcribe-manual"]').forEach(function (btn) {
+						btn.addEventListener('click', function (e) {
+							e.stopPropagation();
+							_send({ type: 'use_item', item_id: 'opening', action: 'TranscribeManual' });
+						});
+					});
 					expand.querySelectorAll('.inv-action-btn[data-action="study-manual"]').forEach(function (btn) {
 						btn.addEventListener('click', function (e) {
 							e.stopPropagation();
 							_send({ type: 'use_item', item_id: it.item_id, action: 'StudyManual' });
-						});
-					});
-					expand.querySelectorAll('.inv-action-btn[data-action="inscribe-item"]').forEach(function (btn) {
-						btn.addEventListener('click', function (e) {
-							e.stopPropagation();
-							var wordId = selectedWordPlateWordId || window.selectedWordPlateWordId;
-							if (!wordId && lastTacticalState && lastTacticalState.casket && lastTacticalState.casket.length > 0) {
-								var first = lastTacticalState.casket[0];
-								wordId = (typeof first === 'object' && first !== null) ? (first.id || first.char || first.ch || first.word || first.name) : first;
-							}
-							if (!wordId) {
-								wordId = prompt('請輸入欲銘刻於器物之字韻（如：斬、解、疾、薄）：');
-								if (!wordId) return;
-							}
-							var doSend = (typeof send === 'function') ? send : _send;
-							doSend({
-								type: 'use_item',
-								item_id: it.item_id + '|' + wordId,
-								action: 'InscribeItem'
-							});
 						});
 					});
 					expand.querySelectorAll('.inv-action-btn[data-action="craft"]').forEach(function (btn) {
@@ -1189,6 +954,7 @@
 			})(msg.items[i]);
 		}
 	}
+
 	function applyFontScale(scale) {
 		if (scale === 'large') {
 			document.documentElement.style.fontSize = '17.5px';
@@ -1302,7 +1068,8 @@
 		applyFontScale: applyFontScale,
 		onTacticalState: window.onTacticalState,
 		openTacticsModal: window.openTacticsModal,
-		renderTacticalSection: renderTacticalSection,
+		updateTacticalState: function () {},
+		renderTacticalSection: function () {},
 		formatItemName: formatItemName,
 		ITEM_NAME_MAP: ITEM_NAME_MAP
 	};

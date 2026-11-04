@@ -1,0 +1,1992 @@
+{
+  "schema_version": 2,
+  "artifact_role": "verification_evidence",
+  "runtime_authority": false,
+  "source_manifest": {
+    "id": "white_tower_peninsula_v1",
+    "name": "白塔半島完整地區第一版",
+    "status": "working_proposal",
+    "canon": false
+  },
+  "run": {
+    "schema_version": 1,
+    "world_id": "white_tower_peninsula_v1",
+    "source_day_id": "D0",
+    "target_day_id": "D7",
+    "facts_before": [
+      {
+        "id": "F-ROAD-CAPACITY",
+        "subject_ref": "OBJ-N-21",
+        "key": "load_status",
+        "value": "heavy_allowed"
+      },
+      {
+        "id": "F-PORT-MED-BATCH",
+        "subject_ref": "OBJ-N-22",
+        "key": "port_subbatch",
+        "value": "held_pending_road"
+      },
+      {
+        "id": "F-SW-MED-BATCH",
+        "subject_ref": "OBJ-N-22",
+        "key": "southwest_subbatch_location",
+        "value": "lowland_storage"
+      },
+      {
+        "id": "F-WENYAO-FLOW",
+        "subject_ref": "BT-R03",
+        "key": "lowland_traffic",
+        "value": "normal_heavy_route"
+      },
+      {
+        "id": "F-CROSS-REGION-SCHEDULE",
+        "subject_ref": "NET-N-MSG",
+        "key": "affected_arrivals",
+        "value": "on_time"
+      },
+      {
+        "id": "F-MARSH-ROUTE",
+        "subject_ref": "OBJ-N-SOUTH",
+        "key": "north_edge_route",
+        "value": "conflicting_reports"
+      },
+      {
+        "id": "F-EAST-PATIENT",
+        "subject_ref": "SITE-N-EAST",
+        "key": "patient_transfer",
+        "value": "waiting_at_east_coast"
+      },
+      {
+        "id": "F-EAST-ROAD",
+        "subject_ref": "SITE-N-EAST",
+        "key": "road_status",
+        "value": "blocked"
+      },
+      {
+        "id": "F-EAST-MATERIAL",
+        "subject_ref": "SITE-N-EAST",
+        "key": "repair_material",
+        "value": "awaiting_dispatch"
+      },
+      {
+        "id": "F-NORTH-FERRY",
+        "subject_ref": "OBJ-N-FOG",
+        "key": "departure",
+        "value": "delayed_by_fog"
+      },
+      {
+        "id": "F-PASS-STATUS",
+        "subject_ref": "OBJ-N-PASS",
+        "key": "repair",
+        "value": "new_part_unfixed"
+      },
+      {
+        "id": "F-PRACTICE-SITE",
+        "subject_ref": "SITE-N-PRACTICE",
+        "key": "usable_area",
+        "value": "restricted"
+      }
+    ],
+    "facts_after": [
+      {
+        "id": "F-ROAD-CAPACITY",
+        "subject_ref": "OBJ-N-21",
+        "key": "load_status",
+        "value": "heavy_allowed"
+      },
+      {
+        "id": "F-PORT-MED-BATCH",
+        "subject_ref": "OBJ-N-22",
+        "key": "port_subbatch",
+        "value": "delivered_to_wenyao_transfer"
+      },
+      {
+        "id": "F-SW-MED-BATCH",
+        "subject_ref": "OBJ-N-22",
+        "key": "southwest_subbatch_location",
+        "value": "released_to_local_clinics"
+      },
+      {
+        "id": "F-WENYAO-FLOW",
+        "subject_ref": "BT-R03",
+        "key": "lowland_traffic",
+        "value": "normal_heavy_route_restored"
+      },
+      {
+        "id": "F-CROSS-REGION-SCHEDULE",
+        "subject_ref": "NET-N-MSG",
+        "key": "affected_arrivals",
+        "value": "stable_with_recorded_delays"
+      },
+      {
+        "id": "F-MARSH-ROUTE",
+        "subject_ref": "OBJ-N-SOUTH",
+        "key": "north_edge_route",
+        "value": "current_markers_published"
+      },
+      {
+        "id": "F-EAST-PATIENT",
+        "subject_ref": "SITE-N-EAST",
+        "key": "patient_transfer",
+        "value": "admission_confirmed_to_east_team"
+      },
+      {
+        "id": "F-EAST-ROAD",
+        "subject_ref": "SITE-N-EAST",
+        "key": "road_status",
+        "value": "open_with_monitoring"
+      },
+      {
+        "id": "F-EAST-MATERIAL",
+        "subject_ref": "SITE-N-EAST",
+        "key": "repair_material",
+        "value": "installed_in_repair"
+      },
+      {
+        "id": "F-NORTH-FERRY",
+        "subject_ref": "OBJ-N-FOG",
+        "key": "departure",
+        "value": "normal_schedule_with_delay_recorded"
+      },
+      {
+        "id": "F-PASS-STATUS",
+        "subject_ref": "OBJ-N-PASS",
+        "key": "repair",
+        "value": "normal_service"
+      },
+      {
+        "id": "F-PRACTICE-SITE",
+        "subject_ref": "SITE-N-PRACTICE",
+        "key": "usable_area",
+        "value": "reopened_with_repair_zone"
+      }
+    ],
+    "steps": [
+      {
+        "schema_version": 1,
+        "world_id": "white_tower_peninsula_v1",
+        "source_day_id": "D0",
+        "target_day_id": "D1",
+        "facts_before": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "heavy_allowed"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "held_pending_road"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "lowland_storage"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "normal_heavy_route"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "on_time"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "conflicting_reports"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "waiting_at_east_coast"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "blocked"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "awaiting_dispatch"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "delayed_by_fog"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "new_part_unfixed"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted"
+          }
+        ],
+        "facts_after": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "light_only"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "heavy_part_delayed"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "highland_storage"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "light_diversion"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "delays_propagated_to_shifts_and_households"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "transferred_by_sea"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "blocked"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "in_transit"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "delayed_by_fog"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "new_part_unfixed"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted"
+          }
+        ],
+        "applied_transitions": [
+          {
+            "id": "BT-D01",
+            "order": 1,
+            "actor_refs": [
+              "P-N-01"
+            ],
+            "object_refs": [
+              "OBJ-N-21",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R03"
+            ],
+            "consequence": "沈和完成實地複查，路標留下時間、施作人與適用路段",
+            "changes": [
+              {
+                "fact_ref": "F-ROAD-CAPACITY",
+                "before": "heavy_allowed",
+                "after": "light_only"
+              }
+            ]
+          },
+          {
+            "id": "BT-D02",
+            "order": 2,
+            "actor_refs": [
+              "P-N-04"
+            ],
+            "object_refs": [
+              "OBJ-N-22",
+              "OBJ-N-PORT",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R01"
+            ],
+            "consequence": "風舶角只延後受限子批次，沒有把整批貨複製到內陸",
+            "changes": [
+              {
+                "fact_ref": "F-PORT-MED-BATCH",
+                "before": "held_pending_road",
+                "after": "heavy_part_delayed"
+              }
+            ]
+          },
+          {
+            "id": "BT-D03",
+            "order": 3,
+            "actor_refs": [
+              "P-N-02",
+              "P-N-03"
+            ],
+            "object_refs": [
+              "OBJ-N-22",
+              "OBJ-N-OLD"
+            ],
+            "region_refs": [
+              "BT-R05"
+            ],
+            "consequence": "大圳頭既有子批次被實際搬到高地，原位置不再保留副本",
+            "changes": [
+              {
+                "fact_ref": "F-SW-MED-BATCH",
+                "before": "lowland_storage",
+                "after": "highland_storage"
+              }
+            ]
+          },
+          {
+            "id": "BT-D04",
+            "order": 4,
+            "actor_refs": [
+              "P-N-01",
+              "P-N-03",
+              "P-N-04"
+            ],
+            "object_refs": [
+              "OBJ-N-21",
+              "OBJ-N-22",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R01",
+              "BT-R03",
+              "BT-R05"
+            ],
+            "consequence": "低地客貨改道，幾名跨區工作者的接班與家戶安排跟著延誤",
+            "changes": [
+              {
+                "fact_ref": "F-WENYAO-FLOW",
+                "before": "normal_heavy_route",
+                "after": "light_diversion"
+              },
+              {
+                "fact_ref": "F-CROSS-REGION-SCHEDULE",
+                "before": "on_time",
+                "after": "delays_propagated_to_shifts_and_households"
+              }
+            ]
+          },
+          {
+            "id": "BT-D05",
+            "order": 5,
+            "actor_refs": [
+              "P-N-11"
+            ],
+            "object_refs": [
+              "OBJ-N-SOUTH",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R07"
+            ],
+            "consequence": "只更新有證據的北緣漫流位置，其他沼林路段維持各自版本",
+            "changes": [
+              {
+                "fact_ref": "F-MARSH-ROUTE",
+                "before": "conflicting_reports",
+                "after": "north_channel_shift_confirmed"
+              }
+            ]
+          },
+          {
+            "id": "BT-D06",
+            "order": 6,
+            "actor_refs": [
+              "P-N-12",
+              "P-N-13"
+            ],
+            "object_refs": [
+              "OBJ-N-FOG",
+              "SITE-N-EAST",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R08",
+              "BT-R09"
+            ],
+            "consequence": "病人完成海上轉送，封閉道路仍未因轉送成功而自動修復",
+            "changes": [
+              {
+                "fact_ref": "F-EAST-PATIENT",
+                "before": "waiting_at_east_coast",
+                "after": "transferred_by_sea"
+              }
+            ]
+          },
+          {
+            "id": "BT-D07",
+            "order": 7,
+            "actor_refs": [
+              "P-N-10",
+              "P-N-13"
+            ],
+            "object_refs": [
+              "OBJ-N-PASS",
+              "SITE-N-EAST",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R06",
+              "BT-R09"
+            ],
+            "consequence": "修路材料進入運送但尚未抵達，未完工作被帶入 D1",
+            "changes": [
+              {
+                "fact_ref": "F-EAST-MATERIAL",
+                "before": "awaiting_dispatch",
+                "after": "in_transit"
+              }
+            ]
+          }
+        ],
+        "changed_fact_count": 8
+      },
+      {
+        "schema_version": 1,
+        "world_id": "white_tower_peninsula_v1",
+        "source_day_id": "D1",
+        "target_day_id": "D2",
+        "facts_before": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "light_only"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "heavy_part_delayed"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "highland_storage"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "light_diversion"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "delays_propagated_to_shifts_and_households"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "transferred_by_sea"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "blocked"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "in_transit"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "delayed_by_fog"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "new_part_unfixed"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted"
+          }
+        ],
+        "facts_after": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "light_only"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "heavy_part_delayed"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "light_diversion"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "delays_propagated_to_shifts_and_households"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "blocked"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "delivered_to_east_coast"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "fixed_pending_load_test"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted"
+          }
+        ],
+        "applied_transitions": [
+          {
+            "id": "BT-D2-01",
+            "order": 1,
+            "actor_refs": [
+              "P-N-12"
+            ],
+            "object_refs": [
+              "OBJ-N-FOG",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R08"
+            ],
+            "consequence": "能見度改善後先以減班方式離港，原延誤仍留在乘客與接續行程記錄",
+            "changes": [
+              {
+                "fact_ref": "F-NORTH-FERRY",
+                "before": "delayed_by_fog",
+                "after": "departed_on_reduced_schedule"
+              }
+            ]
+          },
+          {
+            "id": "BT-D2-02",
+            "order": 2,
+            "actor_refs": [
+              "P-N-13"
+            ],
+            "object_refs": [
+              "SITE-N-EAST",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R09"
+            ],
+            "consequence": "方石點收實際抵達的修路材料，運送責任結束但修路尚未完成",
+            "changes": [
+              {
+                "fact_ref": "F-EAST-MATERIAL",
+                "before": "in_transit",
+                "after": "delivered_to_east_coast"
+              }
+            ]
+          },
+          {
+            "id": "BT-D2-03",
+            "order": 3,
+            "actor_refs": [
+              "P-N-10"
+            ],
+            "object_refs": [
+              "OBJ-N-PASS"
+            ],
+            "region_refs": [
+              "BT-R06"
+            ],
+            "consequence": "新受力件完成固定，山口仍須實際載重測試才能恢復通行",
+            "changes": [
+              {
+                "fact_ref": "F-PASS-STATUS",
+                "before": "new_part_unfixed",
+                "after": "fixed_pending_load_test"
+              }
+            ]
+          },
+          {
+            "id": "BT-D2-04",
+            "order": 4,
+            "actor_refs": [
+              "P-N-02",
+              "P-N-03"
+            ],
+            "object_refs": [
+              "OBJ-N-22",
+              "OBJ-N-OLD"
+            ],
+            "region_refs": [
+              "BT-R05"
+            ],
+            "consequence": "大圳頭子批次由高地儲放點分送到原定診療地，沒有回到受潮低地",
+            "changes": [
+              {
+                "fact_ref": "F-SW-MED-BATCH",
+                "before": "highland_storage",
+                "after": "released_to_local_clinics"
+              }
+            ]
+          },
+          {
+            "id": "BT-D2-05",
+            "order": 5,
+            "actor_refs": [
+              "P-N-13"
+            ],
+            "object_refs": [
+              "SITE-N-EAST",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R09"
+            ],
+            "consequence": "接收地的到院回報送回東岸，方石只因此確認病人交接，不獲得其他病歷",
+            "changes": [
+              {
+                "fact_ref": "F-EAST-PATIENT",
+                "before": "transferred_by_sea",
+                "after": "admission_confirmed_to_east_team"
+              }
+            ]
+          }
+        ],
+        "changed_fact_count": 5
+      },
+      {
+        "schema_version": 1,
+        "world_id": "white_tower_peninsula_v1",
+        "source_day_id": "D2",
+        "target_day_id": "D3",
+        "facts_before": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "light_only"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "heavy_part_delayed"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "light_diversion"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "delays_propagated_to_shifts_and_households"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "blocked"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "delivered_to_east_coast"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "fixed_pending_load_test"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted"
+          }
+        ],
+        "facts_after": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "light_only"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "split_into_light_loads"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "light_diversion"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "delays_propagated_to_shifts_and_households"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "repair_in_progress"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "delivered_to_east_coast"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "fixed_pending_load_test"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted_repair_underway"
+          }
+        ],
+        "applied_transitions": [
+          {
+            "id": "BT-D3-01",
+            "order": 1,
+            "actor_refs": [
+              "P-N-13"
+            ],
+            "object_refs": [
+              "SITE-N-EAST"
+            ],
+            "region_refs": [
+              "BT-R09"
+            ],
+            "consequence": "東岸封路範圍內開始修復，居民仍不能因施工開始就通行",
+            "changes": [
+              {
+                "fact_ref": "F-EAST-ROAD",
+                "before": "blocked",
+                "after": "repair_in_progress"
+              }
+            ]
+          },
+          {
+            "id": "BT-D3-02",
+            "order": 2,
+            "actor_refs": [
+              "P-N-04"
+            ],
+            "object_refs": [
+              "OBJ-N-22",
+              "OBJ-N-PORT",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R01"
+            ],
+            "consequence": "梁知把受限子批次按實物拆成可追蹤輕載，不以一份排程複製貨物",
+            "changes": [
+              {
+                "fact_ref": "F-PORT-MED-BATCH",
+                "before": "heavy_part_delayed",
+                "after": "split_into_light_loads"
+              }
+            ]
+          },
+          {
+            "id": "BT-D3-03",
+            "order": 3,
+            "actor_refs": [
+              "P-N-08"
+            ],
+            "object_refs": [
+              "SITE-N-PRACTICE"
+            ],
+            "region_refs": [
+              "BT-R04"
+            ],
+            "consequence": "共用場地在維持限用的同時開始排水修復，教學範圍沒有被文字重置",
+            "changes": [
+              {
+                "fact_ref": "F-PRACTICE-SITE",
+                "before": "restricted",
+                "after": "restricted_repair_underway"
+              }
+            ]
+          }
+        ],
+        "changed_fact_count": 3
+      },
+      {
+        "schema_version": 1,
+        "world_id": "white_tower_peninsula_v1",
+        "source_day_id": "D3",
+        "target_day_id": "D4",
+        "facts_before": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "light_only"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "split_into_light_loads"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "light_diversion"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "delays_propagated_to_shifts_and_households"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "repair_in_progress"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "delivered_to_east_coast"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "fixed_pending_load_test"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted_repair_underway"
+          }
+        ],
+        "facts_after": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "heavy_test_pending"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "in_light_transit"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "light_diversion"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "delays_propagated_to_shifts_and_households"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "repair_in_progress"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "delivered_to_east_coast"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "reopened_light_only"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted_repair_underway"
+          }
+        ],
+        "applied_transitions": [
+          {
+            "id": "BT-D4-01",
+            "order": 1,
+            "actor_refs": [
+              "P-N-04"
+            ],
+            "object_refs": [
+              "OBJ-N-22",
+              "OBJ-N-PORT",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R01"
+            ],
+            "consequence": "拆分後的醫療件分批離港，港口持有量隨實際交付減少",
+            "changes": [
+              {
+                "fact_ref": "F-PORT-MED-BATCH",
+                "before": "split_into_light_loads",
+                "after": "in_light_transit"
+              }
+            ]
+          },
+          {
+            "id": "BT-D4-02",
+            "order": 2,
+            "actor_refs": [
+              "P-N-01"
+            ],
+            "object_refs": [
+              "OBJ-N-21",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R03"
+            ],
+            "consequence": "水位與路基觀察允許安排重載測試，但一般重載尚未恢復",
+            "changes": [
+              {
+                "fact_ref": "F-ROAD-CAPACITY",
+                "before": "light_only",
+                "after": "heavy_test_pending"
+              }
+            ]
+          },
+          {
+            "id": "BT-D4-03",
+            "order": 3,
+            "actor_refs": [
+              "P-N-10"
+            ],
+            "object_refs": [
+              "OBJ-N-PASS"
+            ],
+            "region_refs": [
+              "BT-R06"
+            ],
+            "consequence": "山口載重測試先允許輕載通行，原本等待的人仍須重新排次序",
+            "changes": [
+              {
+                "fact_ref": "F-PASS-STATUS",
+                "before": "fixed_pending_load_test",
+                "after": "reopened_light_only"
+              }
+            ]
+          }
+        ],
+        "changed_fact_count": 3
+      },
+      {
+        "schema_version": 1,
+        "world_id": "white_tower_peninsula_v1",
+        "source_day_id": "D4",
+        "target_day_id": "D5",
+        "facts_before": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "heavy_test_pending"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "in_light_transit"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "light_diversion"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "delays_propagated_to_shifts_and_households"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "repair_in_progress"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "delivered_to_east_coast"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "reopened_light_only"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted_repair_underway"
+          }
+        ],
+        "facts_after": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "heavy_allowed"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "in_light_transit"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "mixed_route_recovery"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "revised_recovery_schedule"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "open_light_only"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "delivered_to_east_coast"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "reopened_light_only"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted_repair_underway"
+          }
+        ],
+        "applied_transitions": [
+          {
+            "id": "BT-D5-01",
+            "order": 1,
+            "actor_refs": [
+              "P-N-01"
+            ],
+            "object_refs": [
+              "OBJ-N-21",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R03"
+            ],
+            "consequence": "實測完成後才恢復重載，限載期間的延誤不會因此消失",
+            "changes": [
+              {
+                "fact_ref": "F-ROAD-CAPACITY",
+                "before": "heavy_test_pending",
+                "after": "heavy_allowed"
+              }
+            ]
+          },
+          {
+            "id": "BT-D5-02",
+            "order": 2,
+            "actor_refs": [
+              "P-N-01"
+            ],
+            "object_refs": [
+              "OBJ-N-21",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R03"
+            ],
+            "consequence": "既有輕載改線與恢復重載並行，路面沒有瞬間回到 D0 流量",
+            "changes": [
+              {
+                "fact_ref": "F-WENYAO-FLOW",
+                "before": "light_diversion",
+                "after": "mixed_route_recovery"
+              }
+            ]
+          },
+          {
+            "id": "BT-D5-03",
+            "order": 3,
+            "actor_refs": [
+              "P-N-04"
+            ],
+            "object_refs": [
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R01",
+              "BT-R03",
+              "BT-R05"
+            ],
+            "consequence": "接班、家戶與到貨時間按已發生延誤重排，不倒填成準時",
+            "changes": [
+              {
+                "fact_ref": "F-CROSS-REGION-SCHEDULE",
+                "before": "delays_propagated_to_shifts_and_households",
+                "after": "revised_recovery_schedule"
+              }
+            ]
+          },
+          {
+            "id": "BT-D5-04",
+            "order": 4,
+            "actor_refs": [
+              "P-N-13"
+            ],
+            "object_refs": [
+              "SITE-N-EAST"
+            ],
+            "region_refs": [
+              "BT-R09"
+            ],
+            "consequence": "修復路段先開放輕載與必要通行，重載仍被具體路標阻止",
+            "changes": [
+              {
+                "fact_ref": "F-EAST-ROAD",
+                "before": "repair_in_progress",
+                "after": "open_light_only"
+              }
+            ]
+          }
+        ],
+        "changed_fact_count": 4
+      },
+      {
+        "schema_version": 1,
+        "world_id": "white_tower_peninsula_v1",
+        "source_day_id": "D5",
+        "target_day_id": "D6",
+        "facts_before": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "heavy_allowed"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "in_light_transit"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "mixed_route_recovery"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "revised_recovery_schedule"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "open_light_only"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "delivered_to_east_coast"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "reopened_light_only"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "restricted_repair_underway"
+          }
+        ],
+        "facts_after": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "heavy_allowed"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "delivered_to_wenyao_transfer"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "mixed_route_recovery"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "revised_recovery_schedule"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "open_with_monitoring"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "installed_in_repair"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "reopened_light_only"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "partial_reopening"
+          }
+        ],
+        "applied_transitions": [
+          {
+            "id": "BT-D6-01",
+            "order": 1,
+            "actor_refs": [
+              "P-N-01"
+            ],
+            "object_refs": [
+              "OBJ-N-22",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R03"
+            ],
+            "consequence": "文曜轉運點確認實物抵達，港口子批次不再同時保有這些貨件",
+            "changes": [
+              {
+                "fact_ref": "F-PORT-MED-BATCH",
+                "before": "in_light_transit",
+                "after": "delivered_to_wenyao_transfer"
+              }
+            ]
+          },
+          {
+            "id": "BT-D6-02",
+            "order": 2,
+            "actor_refs": [
+              "P-N-13"
+            ],
+            "object_refs": [
+              "SITE-N-EAST"
+            ],
+            "region_refs": [
+              "BT-R09"
+            ],
+            "consequence": "東岸道路擴大開放但保留監測，附近住戶仍能看見修復痕跡與限速",
+            "changes": [
+              {
+                "fact_ref": "F-EAST-ROAD",
+                "before": "open_light_only",
+                "after": "open_with_monitoring"
+              }
+            ]
+          },
+          {
+            "id": "BT-D6-03",
+            "order": 3,
+            "actor_refs": [
+              "P-N-13"
+            ],
+            "object_refs": [
+              "SITE-N-EAST"
+            ],
+            "region_refs": [
+              "BT-R09"
+            ],
+            "consequence": "已點收材料成為路體的一部分，不再是可另行派送的完整批次",
+            "changes": [
+              {
+                "fact_ref": "F-EAST-MATERIAL",
+                "before": "delivered_to_east_coast",
+                "after": "installed_in_repair"
+              }
+            ]
+          },
+          {
+            "id": "BT-D6-04",
+            "order": 4,
+            "actor_refs": [
+              "P-N-08"
+            ],
+            "object_refs": [
+              "SITE-N-PRACTICE"
+            ],
+            "region_refs": [
+              "BT-R04"
+            ],
+            "consequence": "排水修復完成一段後只重開安全區，未修區仍被隔離",
+            "changes": [
+              {
+                "fact_ref": "F-PRACTICE-SITE",
+                "before": "restricted_repair_underway",
+                "after": "partial_reopening"
+              }
+            ]
+          }
+        ],
+        "changed_fact_count": 4
+      },
+      {
+        "schema_version": 1,
+        "world_id": "white_tower_peninsula_v1",
+        "source_day_id": "D6",
+        "target_day_id": "D7",
+        "facts_before": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "heavy_allowed"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "delivered_to_wenyao_transfer"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "mixed_route_recovery"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "revised_recovery_schedule"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "north_channel_shift_confirmed"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "open_with_monitoring"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "installed_in_repair"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "departed_on_reduced_schedule"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "reopened_light_only"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "partial_reopening"
+          }
+        ],
+        "facts_after": [
+          {
+            "id": "F-ROAD-CAPACITY",
+            "subject_ref": "OBJ-N-21",
+            "key": "load_status",
+            "value": "heavy_allowed"
+          },
+          {
+            "id": "F-PORT-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "port_subbatch",
+            "value": "delivered_to_wenyao_transfer"
+          },
+          {
+            "id": "F-SW-MED-BATCH",
+            "subject_ref": "OBJ-N-22",
+            "key": "southwest_subbatch_location",
+            "value": "released_to_local_clinics"
+          },
+          {
+            "id": "F-WENYAO-FLOW",
+            "subject_ref": "BT-R03",
+            "key": "lowland_traffic",
+            "value": "normal_heavy_route_restored"
+          },
+          {
+            "id": "F-CROSS-REGION-SCHEDULE",
+            "subject_ref": "NET-N-MSG",
+            "key": "affected_arrivals",
+            "value": "stable_with_recorded_delays"
+          },
+          {
+            "id": "F-MARSH-ROUTE",
+            "subject_ref": "OBJ-N-SOUTH",
+            "key": "north_edge_route",
+            "value": "current_markers_published"
+          },
+          {
+            "id": "F-EAST-PATIENT",
+            "subject_ref": "SITE-N-EAST",
+            "key": "patient_transfer",
+            "value": "admission_confirmed_to_east_team"
+          },
+          {
+            "id": "F-EAST-ROAD",
+            "subject_ref": "SITE-N-EAST",
+            "key": "road_status",
+            "value": "open_with_monitoring"
+          },
+          {
+            "id": "F-EAST-MATERIAL",
+            "subject_ref": "SITE-N-EAST",
+            "key": "repair_material",
+            "value": "installed_in_repair"
+          },
+          {
+            "id": "F-NORTH-FERRY",
+            "subject_ref": "OBJ-N-FOG",
+            "key": "departure",
+            "value": "normal_schedule_with_delay_recorded"
+          },
+          {
+            "id": "F-PASS-STATUS",
+            "subject_ref": "OBJ-N-PASS",
+            "key": "repair",
+            "value": "normal_service"
+          },
+          {
+            "id": "F-PRACTICE-SITE",
+            "subject_ref": "SITE-N-PRACTICE",
+            "key": "usable_area",
+            "value": "reopened_with_repair_zone"
+          }
+        ],
+        "applied_transitions": [
+          {
+            "id": "BT-D7-01",
+            "order": 1,
+            "actor_refs": [
+              "P-N-01"
+            ],
+            "object_refs": [
+              "OBJ-N-21",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R03"
+            ],
+            "consequence": "混合改線完成消化後恢復一般重載路線，期間留下的維護記錄仍可倒查",
+            "changes": [
+              {
+                "fact_ref": "F-WENYAO-FLOW",
+                "before": "mixed_route_recovery",
+                "after": "normal_heavy_route_restored"
+              }
+            ]
+          },
+          {
+            "id": "BT-D7-02",
+            "order": 2,
+            "actor_refs": [
+              "P-N-04"
+            ],
+            "object_refs": [
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R01",
+              "BT-R03",
+              "BT-R05"
+            ],
+            "consequence": "跨區班次在新安排下穩定，已發生的缺班與家戶負擔不被改寫成準時",
+            "changes": [
+              {
+                "fact_ref": "F-CROSS-REGION-SCHEDULE",
+                "before": "revised_recovery_schedule",
+                "after": "stable_with_recorded_delays"
+              }
+            ]
+          },
+          {
+            "id": "BT-D7-03",
+            "order": 3,
+            "actor_refs": [
+              "P-N-12"
+            ],
+            "object_refs": [
+              "OBJ-N-FOG",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R08"
+            ],
+            "consequence": "接駁恢復一般班次，D0 延誤仍留在班次與乘客行程歷史",
+            "changes": [
+              {
+                "fact_ref": "F-NORTH-FERRY",
+                "before": "departed_on_reduced_schedule",
+                "after": "normal_schedule_with_delay_recorded"
+              }
+            ]
+          },
+          {
+            "id": "BT-D7-04",
+            "order": 4,
+            "actor_refs": [
+              "P-N-10"
+            ],
+            "object_refs": [
+              "OBJ-N-PASS"
+            ],
+            "region_refs": [
+              "BT-R06"
+            ],
+            "consequence": "山口完成後續測試並恢復一般服務，等待序列依實際到達重排",
+            "changes": [
+              {
+                "fact_ref": "F-PASS-STATUS",
+                "before": "reopened_light_only",
+                "after": "normal_service"
+              }
+            ]
+          },
+          {
+            "id": "BT-D7-05",
+            "order": 5,
+            "actor_refs": [
+              "P-N-08"
+            ],
+            "object_refs": [
+              "SITE-N-PRACTICE"
+            ],
+            "region_refs": [
+              "BT-R04"
+            ],
+            "consequence": "主要使用面重開，仍保留一塊修復區而不是整座場地瞬間如新",
+            "changes": [
+              {
+                "fact_ref": "F-PRACTICE-SITE",
+                "before": "partial_reopening",
+                "after": "reopened_with_repair_zone"
+              }
+            ]
+          },
+          {
+            "id": "BT-D7-06",
+            "order": 6,
+            "actor_refs": [
+              "P-N-11"
+            ],
+            "object_refs": [
+              "OBJ-N-SOUTH",
+              "NET-N-MSG"
+            ],
+            "region_refs": [
+              "BT-R07"
+            ],
+            "consequence": "高嶺發布有時間與來源的當期標記，未查路段仍保留不確定性",
+            "changes": [
+              {
+                "fact_ref": "F-MARSH-ROUTE",
+                "before": "north_channel_shift_confirmed",
+                "after": "current_markers_published"
+              }
+            ]
+          }
+        ],
+        "changed_fact_count": 6
+      }
+    ],
+    "total_transition_count": 32,
+    "total_changed_fact_count": 33
+  },
+  "resume_verification": {
+    "checkpoint_day_id": "D3",
+    "target_day_id": "D7",
+    "resumed_steps": 4,
+    "final_facts_match": true,
+    "suffix_receipts_match": true
+  }
+}

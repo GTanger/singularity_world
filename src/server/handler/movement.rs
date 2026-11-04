@@ -12,10 +12,10 @@ use crate::game::TimePeriod;
 use crate::gametext;
 use crate::grid::{Freshness, SquareCoord, Terrain};
 
-use super::super::protocol::{ActionResultMsg, BlockedMsg, ClientMsg, ExploreLogMsg, LootItem, MovedMsg, StatDelta};
+use super::super::protocol::{ActionResultMsg, BlockedMsg, ClientMsg, ExploreLogMsg, LootItem, MovedMsg, NpcAddressMsg, NpcDialogueMsg, StatDelta};
 use super::{WsConnection, current_game_hour};
 
-/// 線程安全的私人客房狀態集合（記錄處於私人客房中的玩家 ID）
+/// 執行緒安全的私人客房狀態集合（記錄處於私人客房中的玩家 ID）
 static IN_PRIVATE_ROOM: LazyLock<RwLock<HashSet<String>>> =
     LazyLock::new(|| RwLock::new(HashSet::new()));
 
@@ -34,6 +34,46 @@ pub fn set_player_private_room(player_id: &str, in_room: bool) {
     }
 }
 
+pub(crate) fn player_holds_property_deed_or_key(player_id: &str) -> bool {
+    let Ok(Some(ent)) = db::get_entity(player_id) else {
+        return false;
+    };
+    let inv = db::get_inventory(&ent.inventory, ent.vit);
+    inv.items.iter().any(|item| {
+        let id = item.item_id.as_str();
+        let name = item.name.as_str();
+        matches!(
+            id,
+            "wt_red_seal_property_deed"
+                | "wt_cat_0793"
+                | "wt_brass_pin_tumbler_key"
+                | "key_brass_home_lock"
+        ) || name.contains("紅印屋契")
+            || name.contains("門鎖鑰匙")
+    })
+}
+
+pub(crate) fn is_residential_building(name: &str) -> bool {
+    if name.contains("書院")
+        || name.contains("學院")
+        || name.contains("講院")
+        || name.contains("醫館")
+        || name.contains("工坊")
+        || name.contains("茶屋")
+        || name.contains("書屋")
+    {
+        return false;
+    }
+    name.contains('宅')
+        || name.contains('居')
+        || name.contains('屋')
+        || name.contains('舍')
+        || name.contains("宅院")
+        || name.contains("院落")
+        || name.contains("小院")
+        || name.contains('家')
+}
+
 /// 探索冷卻計時：(player_id, x, y) -> 過期 unix timestamp
 static EXPLORE_COOLDOWN: LazyLock<RwLock<HashMap<(String, i32, i32), i64>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
@@ -47,6 +87,10 @@ static PLAYER_LAST_ANNOUNCED_COORD: LazyLock<RwLock<HashMap<String, (i32, i32)>>
     LazyLock::new(|| RwLock::new(HashMap::new()));
 /// 到場 NPC 叫賣／交談反應冷卻：(player_id, room_id) -> 過期 unix timestamp
 static PRESENCE_REFLEX_COOLDOWN: LazyLock<RwLock<HashMap<(String, String), i64>>> =
+    LazyLock::new(|| RwLock::new(HashMap::new()));
+
+/// 玩家與特定 NPC 跨領域漣漪與因果反射冷卻：(player_id, npc_id) -> (過期 unix timestamp, 觸發因由鍵值)
+static PAIRWISE_REFLEX_COOLDOWN: LazyLock<RwLock<HashMap<(String, String), (i64, String)>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
 
 
@@ -338,7 +382,7 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
                     )
                 };
                 let faint_log = format!(
-                    "凶威暴烈，胸口受此沉重重擊，眼前驟然一黑沉入虛無——待悠悠轉醒，鼻端縈繞著草藥與導能凝膠的清冽香氣，傷口已被細心包紮止血，正臥於【{}】的病床之上。{}",
+                    "凶威暴烈，胸口受此沉重重擊，眼前驟然一黑沉入虛無——待悠悠轉醒，鼻端縈繞著草藥與導能凝膠的清冽香氣，傷口已被細心包紮止血，正臥於【{}】的病榻之上。{}",
                     dest_name, drop_note
                 );
                 let faint_msg = ExploreLogMsg {
@@ -364,7 +408,7 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
             // 未昏迷：純體感傷勢描寫，嚴禁出現「受傷 15 點」等數字
             let prose = match terrain_str {
                 "forest" | "forest_heavy" | "jungle" => {
-                    "密林深處狂風驟起，護巢猛獸自樹冠陰影撲殺而下！利爪撕裂襟袖、擦過皮肉，火辣灼痛驟起，所幸抽身迅疾、借勢翻滾，方將兇獸格開逼退，氣息翻湧難平。"
+                    "密林深處狂風驟起，護巢猛獸自樹冠陰影撲殺而下！利爪撕裂襟袖、擦過皮肉，火辣灼痛驟起，所幸抽身迅疾、借勢翻滾，才將兇獸格開逼退，氣息翻湧難平。"
                 }
                 "mountain" | "hills" | "mine_pass" => {
                     "亂石崩飛，岩隙盤踞的猛獸張口怒咆、暴起衝撞！重擊橫掃之下背脊撞上嶙峋石壁，氣血震盪窒悶，連退數步才穩住架勢，持械將其震退。"
@@ -409,7 +453,7 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
                     Some(("beast_scale", "巨獸鰭鱗")),
                 ),
                 _ => (
-                    "地表塵土翻卷，隱約留有一道寬闊蜿蜒的巨型甲軀拖行巨痕，並沿途散落些許焦黑蛻殼碎片。痕跡筆直指向西北荒丘，顯然有巨獸方自此處遷徙。",
+                    "地表塵土翻卷，隱約留有一道寬闊蜿蜒的巨型甲軀拖行巨痕，並沿途散落些許焦黑蛻殼碎片。痕跡筆直指向西北荒丘，顯然有巨獸自此處遷徙而過。",
                     Some(("beast_scale", "巨獸殘鱗")),
                 ),
             };
@@ -437,7 +481,7 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
                     "水渚泛起微瀾，幾隻長羽白鷺自茂密蘆葦叢間振翅低飛、悠然涉水覓食。遠望生機盎然，行者可自行決斷是否引動殺機，或留其一份自在。"
                 }
                 _ => {
-                    "草叢沙沙作響，一隻靈動的野兔自灌木間探頭張望，旋即蹦跳覓食。四野安適，若無狩獵果腹之需，無須驚動這片刻安寧。"
+                    "草叢沙沙作響，一隻靈動的野兔自灌木間探頭張望，蹦跳著四處覓食。四野安適，若無狩獵果腹之需，無須驚動這片刻安寧。"
                 }
             };
             ("prey".into(), prose.into(), vec![])
@@ -515,8 +559,8 @@ pub(super) fn handle_explore_grid(conn: &WsConnection) {
                     } else {
                         (
                             "水沫拍岸，自礁灘沙土間拾起一截久浸不腐的沼生烏木，木質堅韌沉水。",
-                            "harvest_rare_wood",
-                            "溫木心材",
+                            "wood_iron_oak",
+                            "沼生烏木",
                             1,
                         )
                     }
@@ -612,22 +656,32 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
 
     if is_dir_in {
         let gh = current_game_hour(&conn.cfg);
-        let can_enter = crate::server::grid_manager::get_runtime_square_grid()
-            .and_then(|g| g.get(SquareCoord::new(gx, gy)).cloned())
+        let cell_info = crate::server::grid_manager::get_runtime_grid_cell(SquareCoord::new(gx, gy))
             .map(|c| {
-                let name = c.name.trim();
+                let name = c.name.trim().to_string();
                 let is_lodging = name.contains("旅社")
-                    || name.contains("客棧")
+                    || name.contains("茶屋")
                     || (name.contains("行館") && !name.contains("印行館"))
                     || name.contains("歇舍")
                     || name.contains("驛館");
-                is_lodging
-            })
-            .unwrap_or(false);
+                let is_residential = is_residential_building(&name);
+                let can_enter = is_lodging || (is_residential && player_holds_property_deed_or_key(&player_id));
+                (can_enter, is_lodging)
+            });
+        let (can_enter, is_lodging) = cell_info.unwrap_or((false, false));
 
         if can_enter {
             set_player_private_room(&player_id, true);
             send_grid_view(conn, &player_id, gx, gy, gh);
+            let narrate_text = if is_lodging {
+                "你推開客房木門邁步入內，反手扣上黃銅插銷，將外頭街巷的喧囂隔絕在門外。"
+            } else {
+                "你穿過門廊步入宅院內室，掩上房門，屋內恬靜安寧。"
+            };
+            conn.send_json(&super::super::protocol::NarrateMsg {
+                msg_type: "narrate".into(),
+                text: narrate_text.into(),
+            });
         } else {
             let _ = event::append(game::now_unix(), &player_id, BLOCKED, &direction);
             conn.send_json(&BlockedMsg {
@@ -637,9 +691,28 @@ pub(super) fn handle_move(conn: &WsConnection, msg: &ClientMsg) {
         }
         return;
     } else if is_dir_out {
+        let is_lodging = crate::server::grid_manager::get_runtime_grid_cell(SquareCoord::new(gx, gy))
+            .map(|c| {
+                let name = c.name.trim();
+                name.contains("旅社")
+                    || name.contains("茶屋")
+                    || (name.contains("行館") && !name.contains("印行館"))
+                    || name.contains("歇舍")
+                    || name.contains("驛館")
+            })
+            .unwrap_or(false);
         set_player_private_room(&player_id, false);
         let gh = current_game_hour(&conn.cfg);
         send_grid_view(conn, &player_id, gx, gy, gh);
+        let narrate_text = if is_lodging {
+            "你拉開黃銅插銷，推開房門走出客房，重新回到堂前。"
+        } else {
+            "你推開內室房門邁步而出，重新回到外間。"
+        };
+        conn.send_json(&super::super::protocol::NarrateMsg {
+            msg_type: "narrate".into(),
+            text: narrate_text.into(),
+        });
         return;
     } else {
         // 移動至其他方向時自動脫離私人客房
@@ -939,14 +1012,24 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
                 .trim_start_matches("正在")
                 .trim_start_matches('正');
             let line = format!(
-                "「林隙草木間傳來細碎動靜——不遠處的【{}】正{}，察覺有人踏足此處，頓時警覺地昂首凝視。」",
+                "林隙草木間傳來細碎動靜——不遠處的【{}】正{}，察覺有人踏足此處，警覺地昂首凝視。",
                 creature.display_title,
                 if c_act.is_empty() { "於棲地間巡行覓食" } else { c_act }
             );
-            conn.send_json(&super::super::protocol::NarrateMsg {
-                msg_type: "narrate".into(),
-                text: line,
-            });
+            if creature.id.starts_with("shanhai_") {
+                conn.send_json(&NpcAddressMsg {
+                    msg_type: "npc_address".into(),
+                    npc_id: creature.id.clone(),
+                    npc_name: creature.display_title.clone(),
+                    text: line,
+                    intent: "combat".into(),
+                });
+            } else {
+                conn.send_json(&super::super::protocol::NarrateMsg {
+                    msg_type: "narrate".into(),
+                    text: line,
+                });
+            }
         }
         return;
     }
@@ -969,7 +1052,7 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
             } else if tag.contains("入山百工") {
                 "山林百工"
             } else if tag.contains("古道行旅") {
-                "行旅鏢客"
+                "行旅護商"
             } else if npc.display_title.contains("鐵") || npc.display_title.contains("匠") {
                 "匠人"
             } else if npc.display_title.contains("商") || npc.display_title.contains("販") {
@@ -982,7 +1065,11 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
                 "街坊"
             };
             if !tag.is_empty() {
-                format!("{tag}的{role}")
+                if matches!(tag.as_str(), "合社獵團" | "入山百工" | "古道行旅") {
+                    format!("{tag}的{role}")
+                } else {
+                    format!("一名{tag}的{role}")
+                }
             } else {
                 format!("一名{role}")
             }
@@ -994,18 +1081,174 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
         .cloned()
         .collect();
 
+    // 高優先因果存在感反射（Causal Presence Reflexes）
+    let player_name = db::get_entity(player_id)
+        .ok()
+        .flatten()
+        .map(|e| e.display_title)
+        .unwrap_or_default();
+
+    // Priority 1: 直接針對玩家的人情與恩怨交感
+    for npc in &awake_npcs {
+        if let Some(hook) = crate::npc::causal_core::find_relational_hook_for_target(&npc.id, player_id, &player_name) {
+            if hook.intensity >= 3 {
+                let pair_key = (player_id.to_string(), npc.id.clone());
+                let should_emit = {
+                    let cds = PAIRWISE_REFLEX_COOLDOWN.read();
+                    match cds.get(&pair_key) {
+                        Some((expire, last_reason)) => now >= *expire || last_reason != &hook.kind_label,
+                        None => true,
+                    }
+                };
+                if should_emit {
+                    PAIRWISE_REFLEX_COOLDOWN.write().insert(pair_key, (now + 180, hook.kind_label.clone()));
+                    let caller = get_display_name(npc);
+                    let (reflex, intent) = match hook.kind_label.as_str() {
+                        "山道解圍" | "救命之恩" | "合社並肩" | "守諾歸還" | "大宗交割" => (
+                            format!("{caller}見你邁步走入，神色間帶著感念之意，上前抱拳致意：「別來無恙！因『{}』之誼，在下銘記於心，今日能在此處與足下相逢，甚是欣慰。」", hook.kind_label),
+                            "talk",
+                        ),
+                        "結下樑子" | "交鋒結怨" | "毀器芥蒂" => (
+                            format!("{caller}抬眼瞥見你走入，神色微沉，下意識按向身側戒備，冷冷道：「你我因『{}』結下的過節未解，今日至此，又有何貴幹？」", hook.kind_label),
+                            "combat",
+                        ),
+                        "切磋落敗" => (
+                            format!("{caller}見你踏入，肅然正色，抱拳沉聲道：「足下身手精湛，上次切磋受教良多，武道深邃，在下佩服。」"),
+                            "talk",
+                        ),
+                        _ => (
+                            format!("{caller}望向你時目光微動，主動點頭示意：「因『{}』之故，在下記得足下，別來無恙。」", hook.kind_label),
+                            "talk",
+                        ),
+                    };
+                    conn.send_json(&NpcAddressMsg {
+                        msg_type: "npc_address".into(),
+                        npc_id: npc.id.clone(),
+                        npc_name: caller,
+                        text: reflex,
+                        intent: intent.into(),
+                    });
+                    return;
+                }
+            }
+        }
+    }
+
+    let room_display_name =
+        crate::db::get_room_name(new_room).unwrap_or_else(|_| new_room.to_string());
+
+    // Priority 2: 滯留貨物託運或地方緊急見聞
+    for npc in &awake_npcs {
+        if let Some(order) = crate::npc::causal_core::active_stranded_cargo_for_carrier_or_room(
+            &npc.id,
+            &room_display_name,
+            now,
+        ) {
+            let pair_key = (player_id.to_string(), npc.id.clone());
+            let reason_key = format!("stranded_cargo:{}", order.order_id);
+            let should_emit = {
+                let cds = PAIRWISE_REFLEX_COOLDOWN.read();
+                match cds.get(&pair_key) {
+                    Some((expire, last_reason)) => now >= *expire || last_reason != &reason_key,
+                    None => true,
+                }
+            };
+            if should_emit {
+                PAIRWISE_REFLEX_COOLDOWN.write().insert(pair_key, (now + 180, reason_key));
+                let caller = get_display_name(npc);
+                let reflex = format!(
+                    "{}守著行囊貨擔正自發愁，見你踏入連忙上前拱手道：「客友留步！我有一批要發往【{}】的『{}』因{}受阻於此，公庫已備妥 {} 枚鎂幣賞格，不知可願搭手幫忙護送過關？」",
+                    caller, order.dest_settlement, order.item_name, order.hazard_prose, order.escrow_bounty_mg
+                );
+                conn.send_json(&NpcAddressMsg {
+                    msg_type: "npc_address".into(),
+                    npc_id: npc.id.clone(),
+                    npc_name: caller,
+                    text: reflex,
+                    intent: "errand".into(),
+                });
+                return;
+            }
+        }
+
+        if crate::store::player_knows_npc(player_id, &npc.id) {
+            if let Some(rf) = crate::npc::causal_core::top_active_ripple_for_npc(&npc.id, now) {
+                if rf.hop_count <= 2 {
+                    let pair_key = (player_id.to_string(), npc.id.clone());
+                    let reason_key = format!("ripple:{}", rf.fact_id);
+                    let should_emit = {
+                        let cds = PAIRWISE_REFLEX_COOLDOWN.read();
+                        match cds.get(&pair_key) {
+                            Some((expire, last_reason)) => now >= *expire || last_reason != &reason_key,
+                            None => true,
+                        }
+                    };
+                    if should_emit {
+                        PAIRWISE_REFLEX_COOLDOWN.write().insert(pair_key, (now + 180, reason_key));
+                        let caller = get_display_name(npc);
+                        let ending = if rf.prose_summary.contains("重新暢通") || rf.prose_summary.contains("額手稱慶") {
+                            "這幾日往來行旅總算能鬆一口氣了。"
+                        } else {
+                            "你出入山道市集可得多留個心眼。"
+                        };
+                        let reflex = format!(
+                            "{}見你行色匆匆踏入，壓低嗓音朝你提點道：「前刻外頭傳來的風聲——{}，{}」",
+                            caller, rf.prose_summary, ending
+                        );
+                        conn.send_json(&NpcAddressMsg {
+                            msg_type: "npc_address".into(),
+                            npc_id: npc.id.clone(),
+                            npc_name: caller,
+                            text: reflex,
+                            intent: "talk".into(),
+                        });
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     // 0. 玩家在場反應（Presence Reflex）優先判定
-    // (a) 若在場有熟識的 NPC，主動相認或點頭招呼
+    // (a) 若在場有熟識的 NPC，主動相認或託付差事
     if let Some(known_npc) = awake_npcs.iter().find(|n| crate::store::player_knows_npc(player_id, &n.id)) {
         let name = crate::store::resolve_npc_person_name(&known_npc.id, &known_npc.display_title, None);
+        let active_ob = crate::store::get_active_npc_obligation(&known_npc.id).filter(|(k, _)| {
+            matches!(k.as_str(), "restock_goods" | "repair_tool" | "treat_injury" | "repay_debt" | "stranded_cargo")
+        });
+        if let Some((kind, subject_ref)) = active_ob {
+            let desc = if !subject_ref.is_empty() {
+                subject_ref
+            } else {
+                match kind.as_str() {
+                    "restock_goods" => "鋪內現貨見底急需提貨補倉".to_string(),
+                    "repair_tool" => "手頭工具耗損待修".to_string(),
+                    "treat_injury" => "連日勞作氣息微滯需調理".to_string(),
+                    "repay_debt" => "貨單票據核銷結算".to_string(),
+                    _ => "手頭未了的差事".to_string(),
+                }
+            };
+            let reflex = format!("{name}見你踏入此處，上前拱手低聲道：「近來正為【{desc}】發愁，不知可否請你搭把手？」");
+            conn.send_json(&NpcAddressMsg {
+                msg_type: "npc_address".into(),
+                npc_id: known_npc.id.clone(),
+                npc_name: name,
+                text: reflex,
+                intent: "errand".into(),
+            });
+            return;
+        }
         let reflex = match (crate::game::now_unix() as usize + known_npc.id.len()) % 3 {
-            0 => format!("「{name}見你邁步走入，神色微動，溫和點頭致意：『別來無恙，先前還在思忖何時能與你會面。』」"),
-            1 => format!("「{name}停下手頭的事務，抬眼望見你，含笑招呼：『旅途可還順遂？若有事需要打點，隨時知會一聲。』」"),
-            _ => format!("「{name}朝你微微頷首：『來得正好，四方市面平穩，請入內歇步。』」"),
+            0 => format!("{name}見你邁步走入，神色微動，溫和點頭致意：「別來無恙，先前還在思忖何時能與你會面。」"),
+            1 => format!("{name}停下手頭的事務，抬眼望見你，含笑招呼：「旅途可還順遂？若有事需要打點，隨時知會一聲。」"),
+            _ => format!("{name}朝你微微頷首：「來得正好，四方市面平穩，請入內歇步。」"),
         };
-        conn.send_json(&super::super::protocol::NarrateMsg {
-            msg_type: "narrate".into(),
+        conn.send_json(&NpcAddressMsg {
+            msg_type: "npc_address".into(),
+            npc_id: known_npc.id.clone(),
+            npc_name: name,
             text: reflex,
+            intent: "talk".into(),
         });
         return;
     }
@@ -1023,111 +1266,101 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
     if let Some((hunter_npc, party)) = hunting_reflex {
         let caller = get_display_name(hunter_npc);
         let (px, py) = party.prey_coord;
+        let prey_place = crate::game::CANONICAL_HUNTING_ZONES
+            .get(crate::game::nearest_hunting_zone_idx(px, py))
+            .map(|z| z.0.to_string())
+            .unwrap_or_else(|| {
+                let (z, s, _) = crate::grid::r#gen::classify_wilderness_cell(px, py);
+                format!("{z}・{s}")
+            });
         let reflex = match party.phase {
             crate::store::HuntingPartyPhase::Rallying => format!(
-                "「{caller}手按腰間山豬牙號角，見你踏入此處，精神一振低聲招呼：『來得正好！領隊【{}】正召集大夥兒（現已聚齊 {} 人）準備合圍座標 ({px}, {py}) 的【{}】，你若願一同助陣分鹿，儘管與我交談（Talk）入團！』」",
+                "{caller}手按腰間山豬牙號角，見你踏入此處，精神一振低聲招呼：「來得正好！領隊【{}】正召集大夥（現已聚齊 {} 人）準備前往【{prey_place}】一帶合圍【{}】，你若願一同助陣分鹿，儘管與我交談（Talk）入團！」",
                 party.leader_name,
                 party.member_ids.len(),
                 party.prey_name
             ),
             crate::store::HuntingPartyPhase::SurroundingPrey => format!(
-                "「{caller}壓低身形、緊盯座標 ({px}, {py}) 方向的【{}】，見你靠近連忙打出手勢低喝：『別驚動獵物！我們【{}】合社獵團正從八方收攏包圍圈，隨同出手合擊者見者有份！』」",
+                "{caller}壓低身形、緊盯【{prey_place}】一帶方向的【{}】，見你靠近連忙打出手勢低喝：「別驚動獵物！我們【{}】合社獵團正從八方收攏包圍圈，隨同出手合擊者見者有份！」",
                 party.prey_name, party.leader_name
             ),
             crate::store::HuntingPartyPhase::TakedownAndSplit => format!(
-                "「{caller}正與【{}】合社獵團夥伴全力圍殺【{}】、刀光與號角齊鳴，見你趕到高呼道：『快搭把手合擊此獸，剝取的【{}】與賞格見者有份！』」",
+                "{caller}正與【{}】合社獵團夥伴全力圍殺【{}】、刀光與號角齊鳴，見你趕到高呼道：「快搭把手合擊此獸，剝取的【{}】與賞格見者有份！」",
                 party.leader_name, party.prey_name, party.prey_loot_name
             ),
             crate::store::HuntingPartyPhase::ReturningToMarket => format!(
-                "「{caller}肩扛圍獵所獲的【{}】，隨【{}】合社獵團結伴趕往【{}】交割分紅，見你迎面走來爽朗笑道：『這趟合圍【{}】大獲全勝，正要進鎮過磅分鎂幣呢！』」",
+                "{caller}肩扛圍獵所獲的【{}】，隨【{}】合社獵團結伴趕往【{}】交割分成，見你迎面走來爽朗笑道：「這趟合圍【{}】大獲全勝，正要進鎮過磅分鎂幣呢！」",
                 party.prey_loot_name, party.leader_name, party.market_name, party.prey_name
             ),
         };
-        conn.send_json(&super::super::protocol::NarrateMsg {
-            msg_type: "narrate".into(),
+        conn.send_json(&NpcAddressMsg {
+            msg_type: "npc_address".into(),
+            npc_id: hunter_npc.id.clone(),
+            npc_name: caller,
             text: reflex,
+            intent: "hunt".into(),
         });
         return;
     }
 
-    // (b) 工匠/商販對攜帶原料之行旅者的反應
-    let artisan_npc = awake_npcs.iter().find(|n| {
-        n.id.starts_with("wt_vendor_") || n.id.contains("cen_") || n.id.contains("ke_") || n.id.contains("ma_buxue") || n.id.contains("smith") || n.id.contains("carpenter")
-    });
+    // (b) 工匠對攜帶原料之行旅者的反應（僅限工坊環境）
+    let is_workshop_room = room_display_name.contains("坊") || room_display_name.contains("打鐵") || room_display_name.contains("木作") || room_display_name.contains("印行") || room_display_name.contains("窯");
+    let artisan_npc = if is_workshop_room {
+        awake_npcs.iter().find(|n| {
+            !n.id.starts_with("wt_vendor_") && (n.id.contains("cen_") || n.id.contains("ke_") || n.id.contains("ma_buxue") || n.id.contains("smith") || n.id.contains("carpenter"))
+        })
+    } else {
+        None
+    };
     if let Some(artisan) = artisan_npc {
         let caller = get_display_name(artisan);
-        let inv_raw = db::get_entity(player_id).ok().flatten().is_some_and(|ch| {
-            db::get_inventory(&ch.inventory, ch.vit).items.iter().any(|it| {
-                crate::game::object_ecology::classify_item_stage(&it.item_id) == "raw"
-            })
-        });
-        if inv_raw {
-            let reflex = format!("「{caller}見你走入，目光掠過你隨身行囊中的百工原料，主動招呼道：『客友請進，隨身若備有山野金石草木原料，可於爐前案頭煉製；若欲激發器物氣脈異變，亦可隨時開爐！』」");
-            conn.send_json(&super::super::protocol::NarrateMsg {
-                msg_type: "narrate".into(),
-                text: reflex,
-            });
-            return;
-        }
-    }
-
-    // (c) NPC 差事/義務探詢
-    if let Some(ob_npc) = awake_npcs.iter().find(|n| {
-        crate::store::get_active_npc_obligation(&n.id).is_some_and(|(k, _)| {
-            matches!(k.as_str(), "restock_goods" | "repair_tool" | "treat_injury" | "repay_debt" | "stranded_cargo")
-        })
-    }) {
-        let npc_name = get_display_name(ob_npc);
-        let (kind, subject_ref) = crate::store::get_active_npc_obligation(&ob_npc.id).unwrap();
-        let desc = if !subject_ref.is_empty() {
-            subject_ref
-        } else {
-            match kind.as_str() {
-                "restock_goods" => "店內現貨見底急需提貨補倉".to_string(),
-                "repair_tool" => "手頭工具耗損待修".to_string(),
-                "treat_injury" => "連日勞作氣息微滯需調理".to_string(),
-                "repay_debt" => "貨單票據核銷結算".to_string(),
-                _ => "手頭未了的差事".to_string(),
-            }
-        };
-        let line = format!("「{npc_name}正為【{desc}】發愁，見你踏入此處，隨即投來探詢的目光。」");
-        conn.send_json(&super::super::protocol::NarrateMsg {
-            msg_type: "narrate".into(),
-            text: line,
+        let reflex = format!("{caller}見你步入坊內，擦了擦手主動招呼道：「客友請進，案頭爐火正旺，隨身若有金石草木良材或器物待修整鍛打，皆可就爐操持！」");
+        conn.send_json(&NpcAddressMsg {
+            msg_type: "npc_address".into(),
+            npc_id: artisan.id.clone(),
+            npc_name: caller,
+            text: reflex,
+            intent: "craft".into(),
         });
         return;
     }
+
 
     // 1. 優先檢查是否有正在擺攤的攤販業者
     let vendor_npc = npcs.iter().find(|e| {
-        e.id.starts_with("wt_vendor_")
-            || e.current_activity.contains("攤前")
-            || e.current_activity.contains("擺攤")
-            || (e.id == "wt_npc_ma_buxue" && e.current_activity.contains("修補攤"))
+        (e.id.starts_with("wt_vendor_") || e.display_title.contains("攤") || e.display_title.contains("補靴") || e.display_title.contains("修傘"))
+            && (e.current_activity.contains("擺攤")
+                || e.current_activity.contains("攤位")
+                || e.current_activity.contains("叫賣")
+                || e.current_activity.contains("修補攤")
+                || e.current_activity.contains("掌勺")
+                || e.current_activity.contains("招呼"))
     });
 
     if let Some(v) = vendor_npc {
         let caller = get_display_name(v);
-        let bark = if v.id == "wt_vendor_roast_beef" || v.display_title.contains("鄭火旺") || v.current_activity.contains("牛肉") {
+        let bark = if v.id == "wt_vendor_roast_beef" || v.display_title.contains("牛肉") || v.current_activity.contains("牛肉") {
             format!("{caller}一邊翻動炭火烤網上滋滋冒油的肉串，一邊高聲叫賣：「街角炭烤原牛肉串配焦蜜烤番薯喔——炭火現烤、焦香鮮嫩，來一串暖暖胃！」")
-        } else if v.id == "wt_vendor_noodle_soup" || v.display_title.contains("林罔市") || v.current_activity.contains("切仔麵") {
+        } else if v.id == "wt_vendor_noodle_soup" || v.display_title.contains("切仔麵") || v.current_activity.contains("切仔麵") {
             format!("{caller}掀開大銅鍋蓋，伴著滾燙大骨白煙清脆招呼：「切仔湯麵配滷蛋熱騰騰出鍋喔！大骨高湯現點現煮，來坐吃麵！」")
-        } else if v.id == "wt_vendor_pepper_bun" || v.display_title.contains("張阿發") || v.current_activity.contains("胡椒餅") {
-            format!("{caller}用扁鐵鏟從鐵桶內壁鏟起金黃焦脆的熱餅，高聲吆喝：「方出爐的酥皮鮮肉胡椒餅！老麵貼爐、皮酥蔥香肉汁滿，小心燙口喔——」")
-        } else if v.id == "wt_vendor_herbal_tea" || v.display_title.contains("蘇秋月") || v.current_activity.contains("烏梅") || v.current_activity.contains("仙草") {
+        } else if v.id == "wt_vendor_pepper_bun" || v.display_title.contains("胡椒餅") || v.current_activity.contains("胡椒餅") {
+            format!("{caller}用扁鐵鏟從鐵桶內壁鏟起金黃焦脆的熱餅，高聲吆喝：「現烤出爐的酥皮鮮肉胡椒餅！老麵貼爐、皮酥蔥香肉汁滿，小心燙口喔——」")
+        } else if v.id == "wt_vendor_herbal_tea" || v.display_title.contains("仙草") || v.current_activity.contains("烏梅") || v.current_activity.contains("仙草") {
             format!("{caller}手搖清脆銅盞叮噹作響，笑著叫賣：「寒水玉冰鎮黑糖仙草凍來囉！慢熬仙草沁涼滑嫩、生津止渴，解膩消暑最對味喔！」")
-        } else if v.id == "wt_vendor_tofu_pudding" || v.display_title.contains("陳順興") || v.current_activity.contains("豆花") {
+        } else if v.id == "wt_vendor_tofu_pudding" || v.display_title.contains("豆花") || v.current_activity.contains("豆花") {
             format!("{caller}手持扁銅杓片出滑嫩豆花，朗聲招呼：「古早味黑糖薑汁熱豆花——井泉鹽滷、慢火黑糖粉圓配薑汁暖胃補氣，來坐喔！」")
-        } else if v.id == "wt_vendor_rice_roll" || v.display_title.contains("吳秀琴") || v.current_activity.contains("飯糰") || v.current_activity.contains("炊飯") {
-            format!("{caller}掀開大木甑散發出撲鼻荷葉香氣，清脆吆喝：「方蒸好的荷葉糯米炊飯！粒粒糯米透著竹香，吃一顆飽到中午喔！」")
-        } else if v.id == "wt_vendor_soy_milk" || v.display_title.contains("周文貴") || v.current_activity.contains("米漿") {
-            format!("{caller}攪拌著滾燙濃香的銅鍋，朗聲招呼：「老堰頭現磨溫米漿配現炸酥脆油條喔！石磨現磨香濃滑順，大清早喝一碗神清氣爽！」")
-        } else if v.id == "wt_vendor_morning_produce" || v.display_title.contains("李春生") || v.current_activity.contains("蔬果") || v.current_activity.contains("水芹") {
-            format!("{caller}往竹簍鮮菜灑了點清泉水，笑著吆喝：「老堰頭水芹菜脆嫩莖方採下山喔！山泉灌溉、梗脆帶露清甜，隨便挑隨便選！」")
-        } else if v.id == "wt_vendor_morning_fish" || v.display_title.contains("許海生") || v.current_activity.contains("河鮮") || v.current_activity.contains("河蝦") {
-            format!("{caller}指著木盆裡水花直濺的鮮活河蝦，大聲叫賣：「水尾寮淺澤青殼河蝦現撈上岸！隻隻鮮活生猛、殼薄肉甜，買回去煮湯下酒最正點！」")
-        } else if v.id == "wt_npc_ma_buxue" || v.display_title.contains("馬補靴") || v.current_activity.contains("修補攤") {
+        } else if v.id == "wt_vendor_rice_roll" || v.display_title.contains("炊飯") || v.current_activity.contains("飯糰") || v.current_activity.contains("炊飯") {
+            format!("{caller}掀開大木甑散發出撲鼻荷葉香氣，清脆吆喝：「熱騰騰蒸好的荷葉糯米炊飯！粒粒糯米透著竹香，吃一顆飽足頂餓喔！」")
+        } else if v.id == "wt_vendor_soy_milk" || v.display_title.contains("米漿") || v.current_activity.contains("米漿") {
+            format!("{caller}攪拌著滾燙濃香的銅鍋，朗聲招呼：「老堰頭現磨溫米漿配現炸酥脆油條喔！石磨現磨香濃滑順，熱氣騰騰喝一碗神清氣爽！」")
+        } else if v.id == "wt_vendor_morning_produce" || v.display_title.contains("蔬果") || v.current_activity.contains("蔬果") || v.current_activity.contains("水芹") {
+            format!("{caller}往竹簍鮮菜灑了點清泉水，笑著吆喝：「老堰頭水芹菜脆嫩莖山泉現採下山喔！山泉灌溉、梗脆帶露清甜，隨便挑隨便選！」")
+        } else if v.id == "wt_vendor_morning_fish" || v.display_title.contains("河鮮") || v.current_activity.contains("河鮮") || v.current_activity.contains("河蝦") {
+            format!("{caller}指著木盆裡水花直濺的鮮活河蝦，大聲叫賣：「水尾寮淺澤青殼河蝦現撈上岸！隻隻鮮活生猛、殼薄肉甜，買回去煮湯下酒最鮮甜！」")
+        } else if v.id == "wt_npc_ma_buxue" || v.display_title.contains("補靴") || v.display_title.contains("修傘") || v.current_activity.contains("修補攤") {
             format!("{caller}敲了敲硬木楦頭上的厚牛皮掌，朗聲招呼：「釘鞋底、換皮掌、修補韌竹骨桐油晴雨摺疊傘——現修現拿，耐走防雨喔！」")
+        } else if let Some(vo) = crate::grid::resolve_market_or_specialty_room_object(new_room, &v.display_title) {
+            format!("{caller}招呼著過往行人：「{}」", vo.trade_talk_pitch)
         } else {
             format!("{caller}招呼著過往行人：「走過路過來瞧瞧，新出爐的手藝，新鮮道地喔！」")
         };
@@ -1150,7 +1383,8 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
                 crate::store::resolve_npc_person_name(&cust.id, &cust.display_title, None)
             } else {
                 let tag = crate::store::npc_brief_appearance_tag(&cust.id, &cust.display_title);
-                format!("那名{}的客人", tag)
+                let clean_tag = tag.strip_prefix("一名").unwrap_or(&tag);
+                format!("一名{}的客人", clean_tag)
             };
             let v_name = &caller;
             let c_name = &cust_name;
@@ -1164,22 +1398,37 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
                 Some(crate::server::action::trade::VendorNpcPurchaseOutcome::Purchased {
                     item_name,
                     price_mg,
-                    remaining_stock,
+                    remaining_stock: _,
                     ..
                 }) => {
+                    let is_raw_or_craft = [
+                        "芹菜", "鮮菜", "河蝦", "文蛤", "鮮魚", "青蟹", "牡蠣", "乾貨", "魚乾",
+                        "粗鹽", "海帶", "紫菜", "茶葉", "茶磚", "竹筍", "野蕈", "山藥", "鮮果",
+                        "皮掌", "鞋底", "摺疊傘", "冰鎮", "仙草凍", "涼茶", "冷泡",
+                    ]
+                    .iter()
+                    .any(|kw| item_name.contains(kw));
                     let pattern_idx = (now_ts as usize + v.id.len()) % 5;
-                    match pattern_idx {
-                        0 => format!("{bark} 一旁的{c_name}行色匆匆趕路經過，停下腳步喊道：「老闆，手頭趕工時間緊，幫我俐落外帶一份【{item_name}】！」說著遞上 {price_mg} 鎂。 {v_name}麻利包好遞過，笑道：「好勒收您 {price_mg} 鎂！路上慢走趁熱吃，幹工順遂啊！」（攤上現貨尚餘 {remaining_stock} 份）"),
-                        1 => format!("{bark} 一旁的{c_name}深吸一口氣、聞香靠攏過來笑道：「遠遠就聞到香味，實在忍不住嘴饞！老闆，來一份【{item_name}】嚐嚐！」隨即掏出 {price_mg} 鎂遞過去。 {v_name}笑臉盈盈盛妥遞上：「識貨！現起鍋的滋味最正點，收您 {price_mg} 鎂，慢用啊！」（攤上現貨尚餘 {remaining_stock} 份）"),
-                        2 => format!("{bark} 一旁的{c_name}駐足端詳片刻，溫言道：「老闆，家裡長輩最念叨你這手藝，幫我包一份【{item_name}】帶回去給老人家嚐鮮！」說罷取出 {price_mg} 鎂付帳。 {v_name}格外細心地用厚紙包妥，樂呵呵道：「孝順！給長輩帶的特別挑了份量足的，收您 {price_mg} 鎂，替我向老人家問好！」（攤上現貨尚餘 {remaining_stock} 份）"),
-                        3 => format!("{bark} 一旁的{c_name}拍了拍腰間的工錢袋，朗聲笑道：「辛苦奔波半天，方結了工錢，非得來一份【{item_name}】犒勞犒勞自己不可！」利落地數出 {price_mg} 鎂遞上。 {v_name}連忙接過笑道：「踏實幹活就該吃點好的！收您 {price_mg} 鎂，吃飽喝足渾身都是力氣！」（攤上現貨尚餘 {remaining_stock} 份）"),
-                        _ => format!("{bark} 一旁的{c_name}迎面熟絡地點頭招呼：「頭家，老樣子一份【{item_name}】，口味你知道的！」隨手將 {price_mg} 鎂整齊排在攤前。 {v_name}會心一笑，手腳極快地備齊遞上：「熟客就是懂吃！早幫您留心著呢，收您 {price_mg} 鎂，回頭再來坐啊！」（攤上現貨尚餘 {remaining_stock} 份）"),
+                    if is_raw_or_craft {
+                        match pattern_idx % 3 {
+                            0 => format!("{bark} 身旁的{c_name}行色匆匆趕路經過，停下腳步喊道：「東家，幫我快手包一份【{item_name}】帶走！」說著遞上 {price_mg} 鎂。 {v_name}手腳利索包妥遞過，笑道：「好咧收您 {price_mg} 鎂！細心挑揀好的成色最地道，路上慢走啊！」"),
+                            1 => format!("{bark} 身旁的{c_name}駐足端詳片刻，溫言道：「東家，家裡最認你這攤的【{item_name}】，幫我備一份帶回去！」說罷取出 {price_mg} 鎂付帳。 {v_name}格外細心地包妥，樂呵呵道：「識貨！這批【{item_name}】品質上乘，收您 {price_mg} 鎂，慢走啊！」"),
+                            _ => format!("{bark} 身旁的{c_name}迎面熟絡地點頭招呼：「頭家，老樣子來一份【{item_name}】！」隨手將 {price_mg} 鎂整齊排在攤前。 {v_name}會心一笑，手腳極快地備齊遞上：「熟客就是內行！早幫您留著好貨呢，收您 {price_mg} 鎂，回頭再來！」"),
+                        }
+                    } else {
+                        match pattern_idx {
+                            0 => format!("{bark} 身旁的{c_name}行色匆匆趕路經過，停下腳步喊道：「東家，手頭趕工時間緊，幫我快手包一份【{item_name}】！」說著遞上 {price_mg} 鎂。 {v_name}手腳極快包好遞過，笑道：「好咧收您 {price_mg} 鎂！路上慢走趁熱吃，幹工順遂啊！」"),
+                            1 => format!("{bark} 身旁的{c_name}深吸一口氣、聞香靠攏過來笑道：「遠遠就聞到香味，實在忍不住嘴饞！東家，來一份【{item_name}】嚐嚐！」笑著掏出 {price_mg} 鎂遞過去。 {v_name}笑臉盈盈盛妥遞上：「識貨！熱騰騰起鍋的滋味最地道，收您 {price_mg} 鎂，慢用啊！」"),
+                            2 => format!("{bark} 身旁的{c_name}駐足端詳片刻，溫言道：「東家，家裡長輩最掛念你這手藝，幫我包一份【{item_name}】帶回去給老人家嚐鮮！」說罷取出 {price_mg} 鎂付帳。 {v_name}格外細心地用厚紙包妥，樂呵呵道：「孝順！給長輩帶的特別挑了份量足的，收您 {price_mg} 鎂，替我向老人家問好！」"),
+                            3 => format!("{bark} 身旁的{c_name}拍了拍腰間的工錢袋，朗聲笑道：「辛苦奔波半天，領了工錢，非得來一份【{item_name}】犒勞犒勞自己不可！」利落地數出 {price_mg} 鎂遞上。 {v_name}連忙接過笑道：「踏實做工就該吃點好的！收您 {price_mg} 鎂，吃飽喝足渾身都是力氣！」"),
+                            _ => format!("{bark} 身旁的{c_name}迎面熟絡地點頭招呼：「頭家，老樣子一份【{item_name}】，口味你知道的！」隨手將 {price_mg} 鎂整齊排在攤前。 {v_name}會心一笑，手腳極快地備齊遞上：「熟客就是懂吃！早幫您留心著呢，收您 {price_mg} 鎂，回頭再來坐啊！」"),
+                        }
                     }
                 }
                 Some(crate::server::action::trade::VendorNpcPurchaseOutcome::OutOfStock {
                     item_name,
                 }) => {
-                    format!("一旁的{c_name}駐足問道：「老闆，想買一份【{item_name}】！」 {v_name}看了一眼見底的鍋具，抱歉笑道：「真不巧，最後一份【{item_name}】賣完啦，我得趕緊去補料，勞駕稍候再來！」")
+                    format!("一旁的{c_name}駐足問道：「東家，想買一份【{item_name}】！」 {v_name}看了一眼見底的鍋具，抱歉笑道：「真不巧，最後一份【{item_name}】賣完啦，我得趕緊去補料，勞駕稍候再來！」")
                 }
                 Some(crate::server::action::trade::VendorNpcPurchaseOutcome::InsufficientFunds {
                     item_name,
@@ -1192,7 +1441,7 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
                     let idle_idx = (now_ts as usize + v.id.len()) % 3;
                     match idle_idx {
                         0 => bark,
-                        1 => format!("{bark} 一旁的{c_name}在攤前停下打量，好奇問道：「老闆，今天這料看著挺新鮮，火候正好呢！」 {v_name}笑著抬頭應道：「那是自然，天天現備的好料，您先瞧瞧，待會兒想吃隨時吩咐！」"),
+                        1 => format!("{bark} 一旁的{c_name}在攤前停下打量，好奇問道：「東家，今天這料看著挺新鮮，火候正好呢！」 {v_name}笑著抬頭應道：「那是自然，天天現備的好料，您先瞧瞧，待會想吃隨時吩咐！」"),
                         _ => format!("{bark} 一旁的{c_name}駐足探頭望著攤車，客氣問道：「頭家，今天生意挺熱絡啊？」 {v_name}擦了擦汗爽朗笑道：「承蒙街坊照顧！您先慢慢看，有合意的儘管開口！」"),
                     }
                 }
@@ -1200,11 +1449,23 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
         } else {
             bark
         };
-
-        conn.send_json(&super::super::protocol::NarrateMsg {
-            msg_type: "narrate".into(),
-            text: line,
-        });
+        if let Some(cust) = other_customer {
+            crate::store::record_active_npc_dialogue(new_room, &v.id, &cust.id, &line);
+            conn.send_json(&NpcDialogueMsg {
+                msg_type: "npc_dialogue".into(),
+                npc_a: v.id.clone(),
+                npc_b: cust.id.clone(),
+                text: line,
+            });
+        } else {
+            conn.send_json(&NpcAddressMsg {
+                msg_type: "npc_address".into(),
+                npc_id: v.id.clone(),
+                npc_name: caller,
+                text: line,
+                intent: "trade".into(),
+            });
+        }
         return;
     }
 
@@ -1236,8 +1497,8 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
             std::sync::atomic::AtomicUsize::new(0);
         let dialogues: &[(&str, &str)] = if room.contains("橋") || room.contains("街") || room.contains("巷") || room.contains("道") {
             &[
-                ("「方自三水口過來，看著河道水位退得乾淨，這兩天船運順得很。」", "「可不是嘛，連帶這兩天的乾貨瓜果也新鮮便宜不少。」"),
-                ("「前頭夜市又擺起炭烤跟切仔麵了，那香味隔了半條街都聞得到！」", "「待會兒辦完手頭這趟差事，正想過去叫碗熱湯暖暖身子呢。」"),
+                ("「自三水口過來，看著河道水位退得乾淨，這兩天船運順得很。」", "「可不是嘛，連帶這兩天的乾貨瓜果也新鮮便宜不少。」"),
+                ("「前頭熟食攤又擺起炭烤跟切仔麵了，那香味隔了半條街都聞得到！」", "「稍後辦完手頭這趟差事，正想過去叫碗熱湯暖暖身子呢。」"),
                 ("「聽說西門老匠那邊新熬了一批防雨桐油，拿去抹靴子正耐走。」", "「下回得把家裡那把竹骨傘也順便送去給他過過油。」"),
             ]
         } else if room.contains("食堂") || room.contains("茶屋") || room.contains("酒") {
@@ -1250,9 +1511,9 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
                 ("「這筆東灣進口的苧麻粗布帳目核算過兩遍，總數對上了。」", "「妥當！把籤條壓在庫單上，下午就能發往分家巷作坊了。」"),
                 ("「這批烏木與精鋼的公道貨價冊子，今天行商們反應如何？」", "「都照著公議堂紅印市價走，四方貨客沒一個有異議的。」"),
             ]
-        } else if room.contains("國小") || room.contains("學院") || room.contains("書局") || room.contains("講堂") || room.contains("藏書") {
+        } else if room.contains("蒙學") || room.contains("學院") || room.contains("書局") || room.contains("書舍") || room.contains("講堂") || room.contains("藏書") {
             &[
-                ("「先前先生講的氣象潮汐篇，那段測風速的法子真精妙。」", "「待會兒去借閱室把《半島風物圖志》找出來，核對一下就全通了。」"),
+                ("「先前先生講的氣象潮汐篇，那段測風速的法子真精妙。」", "「稍後去借閱室把《半島風物圖誌》找出來，核對一下就全通了。」"),
                 ("「這批新到的竹綿紙墨色吃得極好，抄寫筆札不化不透。」", "「我也挑了兩刀，打算謄寫先生留下來的天文算曆課卷。」"),
             ]
         } else if room.contains("鐵坊") || room.contains("鍛造") || room.contains("木作") || room.contains("工坊") {
@@ -1262,12 +1523,12 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
             ]
         } else if room.contains("浴場") || room.contains("泉") {
             &[
-                ("「這寒水玉溫石槽引的活泉水，泡上一刻鐘全身骨頭都鬆快了。」", "「勞作一整天，就盼著這一瓢溫熱泉水把寒氣都洗透。」"),
+                ("「這寒水玉溫石槽引的活泉水，泡上一刻鐘全身骨頭都舒暢了。」", "「勞作一整天，就盼著這一瓢溫熱泉水把寒氣都洗透。」"),
                 ("「裡頭松炭烘衣櫥真方便，洗完澡衣裳早已暖烘烘的了。」", "「可不是嘛，出門吹夜風也不怕著涼！」"),
             ]
         } else if room.contains("診所") || room.contains("藥房") || room.contains("烘藥") {
             &[
-                ("「這批百草方焙過，止血水苔的藥性收斂得恰到好處。」", "「分包切片整齊些，巡坊隊跟出海船夫常備著救急呢。」"),
+                ("「這批百草細火焙過，止血水苔的藥性收斂得恰到好處。」", "「分包切片整齊些，巡坊隊跟出海船夫常備著救急呢。」"),
                 ("「換季時節夜裡露水重，這幾天來抓避瘴清心草藥的人不少。」", "「慢火溫湯小銅爐一直沒熄火，隨時備著熱藥湯給街坊暖胃。」"),
             ]
         } else {
@@ -1288,8 +1549,11 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
             _ => format!("{name_a}向{name_b}問起：{dlg_a}\n{name_b}略一思索，溫聲回道：{dlg_b}"),
         };
 
-        conn.send_json(&super::super::protocol::NarrateMsg {
-            msg_type: "narrate".into(),
+        crate::store::record_active_npc_dialogue(new_room, &a.id, &b.id, &line);
+        conn.send_json(&NpcDialogueMsg {
+            msg_type: "npc_dialogue".into(),
+            npc_a: a.id.clone(),
+            npc_b: b.id.clone(),
             text: line,
         });
         return;
@@ -1297,8 +1561,13 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
 
     // 3. 單一 NPC 舊有差事／打量 fallback
     if let Some(npc) = awake_npcs.first().or_else(|| npcs.first()) {
+        let is_known = crate::store::player_knows_npc(player_id, &npc.id);
         let npc_name = get_display_name(npc);
-        let active_ob = crate::store::get_active_npc_obligation(&npc.id);
+        let active_ob = if is_known {
+            crate::store::get_active_npc_obligation(&npc.id)
+        } else {
+            None
+        };
         let personality = crate::db::get_personality_for_entity(&npc.id)
             .or_else(|| npc.soul_seed.map(crate::db::expand_soul_seed_to_personality))
             .unwrap_or(crate::db::Personality {
@@ -1307,34 +1576,46 @@ pub(crate) fn emit_presence_reflex_on_arrival(conn: &WsConnection, player_id: &s
                 orderliness: 0.5,
             });
 
-        let line = if let Some((kind, subject_ref)) = active_ob.filter(|(k, _)| {
+        let ob_line = active_ob.filter(|(k, _)| {
             matches!(
                 k.as_str(),
                 "restock_goods" | "repair_tool" | "treat_injury" | "repay_debt" | "stranded_cargo"
             )
-        }) {
+        }).map(|(kind, subject_ref)| {
             let desc = if !subject_ref.is_empty() {
                 subject_ref
             } else {
                 match kind.as_str() {
-                    "restock_goods" => "店內現貨見底急需提貨補倉".to_string(),
+                    "restock_goods" => "鋪內現貨見底急需提貨補倉".to_string(),
                     "repair_tool" => "手頭工具耗損待修".to_string(),
                     "treat_injury" => "連日勞作氣息微滯需調理".to_string(),
                     "repay_debt" => "貨單票據核銷結算".to_string(),
                     _ => "手頭未了的差事".to_string(),
                 }
             };
-            format!("「{npc_name}正為【{desc}】發愁，見你踏入此處，隨即投來探詢的目光。」")
-        } else if personality.boldness >= 0.65 {
-            format!("「{npc_name}聽見腳步聲，抬眼向你投來友善的招呼目光。」")
-        } else {
-            format!("「{npc_name}抬眼見你走近，微笑著朝你點了點頭。」")
-        };
-
-        conn.send_json(&super::super::protocol::NarrateMsg {
-            msg_type: "narrate".into(),
-            text: line,
+            format!("{npc_name}見你踏入此處，上前拱手低聲道：「近來正為【{desc}】發愁，不知可否請你搭把手？」")
         });
+
+        if let Some(line) = ob_line {
+            conn.send_json(&NpcAddressMsg {
+                msg_type: "npc_address".into(),
+                npc_id: npc.id.clone(),
+                npc_name: npc_name,
+                text: line,
+                intent: "errand".into(),
+            });
+        } else {
+            let line = if personality.boldness >= 0.65 {
+                format!("{npc_name}聽見腳步聲，抬眼向你投來友善的招呼目光。")
+            } else {
+                format!("{npc_name}抬眼見你走近，微笑著朝你點了點頭。")
+            };
+            conn.send_json(&super::super::protocol::NarrateMsg {
+                msg_type: "narrate".into(),
+                text: line,
+            });
+        }
+        return;
     }
 }
 
@@ -1363,7 +1644,7 @@ pub(crate) fn send_place_view(conn: &WsConnection, player_id: &str) {
 
 pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i32, game_hour: i32) {
     use super::super::broadcast::build_room_view_msg;
-    use super::super::protocol::{GridCellView, GridViewMsg, NarrateMsg};
+    use super::super::protocol::{GridCellView, GridViewMsg};
     let view = match game::get_grid_room_view(player_id, x, y, game_hour) {
         Ok(Some(v)) => v,
         _ => return,
@@ -1516,7 +1797,7 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
             .collect()
     };
     // 先把 exits_v5 與 grid_exits 所需的相鄰資訊組裝好
-    let current_terrain_key = current_cell
+    let _current_terrain_key = current_cell
         .as_ref()
         .map(|c| c.terrain.kind_str().to_string())
         .unwrap_or_default();
@@ -1534,7 +1815,7 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         .as_ref()
         .map(|c| c.terrain.category().to_string())
         .unwrap_or_default();
-    let is_building = current_cell
+    let _is_building = current_cell
         .as_ref()
         .map(|c| {
             let sym = c.terrain.display_char();
@@ -1666,7 +1947,6 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
     }
 
     let is_lodging = current_terrain_name.contains("旅社")
-        || current_terrain_name.contains("客棧")
         || (current_terrain_name.contains("行館") && !current_terrain_name.contains("印行館"))
         || current_terrain_name.contains("歇舍")
         || current_terrain_name.contains("驛館");
@@ -1707,8 +1987,11 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
             travel_cost: 0,
         });
     } else {
+        let is_residential = is_residential_building(&current_terrain_name);
         let in_exit_name = if is_lodging {
             Some(format!("投宿{}客房", current_terrain_name))
+        } else if is_residential && player_holds_property_deed_or_key(player_id) {
+            Some(format!("持契推門入{}內室", current_terrain_name))
         } else {
             None
         };
@@ -1743,26 +2026,57 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         "scale": "grid_cell"
     });
 
-    let indoor_objects = vec![
+    let mut indoor_objects = vec![
         super::super::protocol::ViewObject {
             id: "wt_reg_wenyao_home".to_string(),
-            name: "松香木大床與羽絨暖被".to_string(),
+            name: "床榻".to_string(),
             object_type: "bed".to_string(),
             actions: vec!["Look".to_string(), "Rest".to_string(), "Sleep".to_string(), "Use".to_string()],
         },
         super::super::protocol::ViewObject {
             id: "wt_inn_bath_Preview".to_string(),
-            name: "杉木沐浴桶與溫泉水".to_string(),
+            name: "沐浴桶".to_string(),
             object_type: "bath".to_string(),
             actions: vec!["Look".to_string(), "Wash".to_string(), "Use".to_string()],
         },
         super::super::protocol::ViewObject {
             id: "wt_home_shell_lamp".to_string(),
-            name: "夜光貝母台燈".to_string(),
+            name: "檯燈".to_string(),
             object_type: "lamp".to_string(),
             actions: vec!["Look".to_string(), "Operate".to_string(), "Use".to_string()],
         },
+        super::super::protocol::ViewObject {
+            id: "wt_home_jade_cabinet".to_string(),
+            name: "冰鑑櫃".to_string(),
+            object_type: "cabinet".to_string(),
+            actions: vec![
+                "Look".to_string(),
+                "Open".to_string(),
+                "StoreStash".to_string(),
+                "RetrieveStash".to_string(),
+                "Use".to_string(),
+            ],
+        },
     ];
+    if !is_lodging {
+        indoor_objects.push(super::super::protocol::ViewObject {
+            id: "wt_home_bamboo_mailbox".to_string(),
+            name: "信箱".to_string(),
+            object_type: "mailbox".to_string(),
+            actions: vec![
+                "Look".to_string(),
+                "Read".to_string(),
+                "Open".to_string(),
+                "DispatchCourier".to_string(),
+            ],
+        });
+    }
+    indoor_objects.push(super::super::protocol::ViewObject {
+        id: "wt_home_charcoal_wardrobe".to_string(),
+        name: "衣櫥".to_string(),
+        object_type: "wardrobe".to_string(),
+        actions: vec!["Look".to_string(), "WarmHands".to_string(), "Use".to_string()],
+    });
 
     let final_objects = if in_private_room {
         indoor_objects
@@ -1782,6 +2096,114 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                         object_type: "grid_object".to_string(),
                         actions,
                     });
+                }
+            }
+        }
+        let tail_room_name = base.room_name.rsplit('・').next().unwrap_or(&base.room_name).trim();
+        let is_open_street_or_bridge = (tail_room_name.contains("街")
+            || tail_room_name.contains("路")
+            || tail_room_name.contains("道")
+            || tail_room_name.contains("巷")
+            || tail_room_name.contains("橋")
+            || tail_room_name.contains("外環")
+            || tail_room_name.contains("內環")
+            || tail_room_name.ends_with("段")
+            || tail_room_name.ends_with("口")
+            || tail_room_name.ends_with("隅")
+            || tail_room_name.ends_with("花圃")
+            || tail_room_name.ends_with("廣場"))
+            && !tail_room_name.contains("市")
+            && !tail_room_name.contains("鋪")
+            && !tail_room_name.contains("工坊")
+            && !tail_room_name.contains("作坊")
+            && !tail_room_name.contains("堂")
+            && !tail_room_name.contains("行")
+            && !tail_room_name.contains("館")
+            && !tail_room_name.contains("廠")
+            && !tail_room_name.contains("社")
+            && !tail_room_name.contains("屋")
+            && !tail_room_name.contains("診所")
+            && !tail_room_name.contains("浴場");
+        if !is_open_street_or_bridge {
+            if let Some(venue) = crate::grid::resolve_any_room_venue_object(&base.room_name, "") {
+                if venue.has_counter_restricted_zone
+                    && !objs.iter().any(|o| {
+                        o.id == "wt_venue_counter"
+                            || o.name.contains("櫃檯")
+                            || o.name.contains("櫃台")
+                    })
+                {
+                    objs.push(super::super::protocol::ViewObject {
+                        id: "wt_venue_counter".to_string(),
+                        name: format!("{}・當值櫃檯", venue.venue_kind),
+                        object_type: "counter".to_string(),
+                        actions: vec![
+                            "Look".to_string(),
+                            "Inspect".to_string(),
+                            "Operate".to_string(),
+                        ],
+                    });
+                }
+                if let Some((tool_id, tool_name, _)) = venue.lendable_tool
+                    && !objs.iter().any(|o| o.id == tool_id || o.name == tool_name)
+                {
+                    objs.push(super::super::protocol::ViewObject {
+                        id: tool_id.to_string(),
+                        name: tool_name.to_string(),
+                        object_type: "tool".to_string(),
+                        actions: vec![
+                            "Look".to_string(),
+                            "Inspect".to_string(),
+                            "Use".to_string(),
+                        ],
+                    });
+                }
+            }
+            if let Some((ev_pack, _)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                &base.room_name,
+                None,
+                base.server_unix,
+            ) {
+                if let Some(first_key) = ev_pack
+                    .key_objects
+                    .split('、')
+                    .map(|seg| {
+                        let cleaned = seg
+                            .split('（')
+                            .next()
+                            .unwrap_or(seg)
+                            .split('(')
+                            .next()
+                            .unwrap_or(seg)
+                            .trim();
+                        if let Some(start) = cleaned.find('《')
+                            && let Some(end) = cleaned.find('》')
+                            && start < end
+                        {
+                            cleaned[start + '《'.len_utf8()..end].trim()
+                        } else {
+                            cleaned.trim_matches(['《', '》'])
+                        }
+                    })
+                    .find(|k| !k.is_empty())
+                {
+                    if !objs.iter().any(|o| {
+                        o.name == first_key
+                            || o.name.contains(first_key)
+                            || first_key.contains(o.name.as_str())
+                    }) {
+                        objs.push(super::super::protocol::ViewObject {
+                            id: format!("wt_event_obj_{}", ev_pack.id.to_lowercase()),
+                            name: first_key.to_string(),
+                            object_type: "event_object".to_string(),
+                            actions: vec![
+                                "Look".to_string(),
+                                "Inspect".to_string(),
+                                "Operate".to_string(),
+                                "Use".to_string(),
+                            ],
+                        });
+                    }
                 }
             }
         }
@@ -1877,6 +2299,38 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
             })
             .collect();
 
+        let hour = crate::store::current_game_hour();
+        let is_night = hour >= 22 || hour < 5;
+        let tail_room_for_cards = base.room_name.rsplit('・').next().unwrap_or(&base.room_name).trim();
+        let is_open_street_or_bridge_for_cards = (tail_room_for_cards.contains("街")
+            || tail_room_for_cards.contains("路")
+            || tail_room_for_cards.contains("道")
+            || tail_room_for_cards.contains("巷")
+            || tail_room_for_cards.contains("橋")
+            || tail_room_for_cards.contains("外環")
+            || tail_room_for_cards.contains("內環")
+            || tail_room_for_cards.ends_with("段")
+            || tail_room_for_cards.ends_with("口")
+            || tail_room_for_cards.ends_with("隅")
+            || tail_room_for_cards.ends_with("花圃")
+            || tail_room_for_cards.ends_with("廣場"))
+            && !tail_room_for_cards.contains("市")
+            && !tail_room_for_cards.contains("鋪")
+            && !tail_room_for_cards.contains("工坊")
+            && !tail_room_for_cards.contains("作坊")
+            && !tail_room_for_cards.contains("堂")
+            && !tail_room_for_cards.contains("行")
+            && !tail_room_for_cards.contains("館")
+            && !tail_room_for_cards.contains("廠")
+            && !tail_room_for_cards.contains("社")
+            && !tail_room_for_cards.contains("屋")
+            && !tail_room_for_cards.contains("診所")
+            && !tail_room_for_cards.contains("浴場");
+        let room_venue_opt = if is_open_street_or_bridge_for_cards {
+            None
+        } else {
+            crate::grid::resolve_any_room_venue_object(&base.room_name, "")
+        };
         let cards: Vec<NpcCard<'_>> = filtered_npc_entities
             .into_iter()
             .enumerate()
@@ -1887,7 +2341,14 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                     || e.display_name.contains('|');
                 let acq = acq_map.get(&e.id);
                 let named = acq.map(|a| a.named).unwrap_or(false);
-
+                let is_on_duty_staff = !is_open_street_or_bridge_for_cards
+                    && (e.current_activity.contains("櫃檯")
+                        || e.current_activity.contains("櫃台")
+                        || e.current_activity.contains("當值")
+                        || room_venue_opt.as_ref().is_some_and(|v| {
+                            e.current_activity == v.on_duty_fixture_activity
+                                || (npc_idx == 0 && !e.current_activity.contains("安歇"))
+                        }));
                 let (label, card_state) = if e.id.starts_with("ambient_") || e.id.starts_with("shanhai_") {
                     let clean_name = e.display_name.rsplit(['｜', '|']).next().unwrap_or(&e.display_name).trim().to_string();
                     (clean_name, "named")
@@ -1895,223 +2356,48 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                     let clean_name =
                         crate::store::resolve_npc_person_name(&e.id, &e.display_name, None);
                     (clean_name, "named")
+                } else if is_on_duty_staff
+                    && let Some(venue) = &room_venue_opt
+                {
+                    (venue.default_host_title.to_string(), "stranger")
                 } else {
-                    // 尚未認識該 NPC：不論 observed 真假、不論是否為正典人物，一律顯示為陌生人
+                    // 尚未認識該 NPC：顯示為陌生人
                     ("陌生人".to_string(), "stranger")
                 };
-
-                // 為正典人物賦予鮮活實活描述（若當前活動過於通用或空缺）
-                let hour = crate::store::current_game_hour();
-                let is_night = hour >= 22 || hour < 5;
-                let canon_activity: Option<&'static str> = if is_night {
+                let canon_activity: Option<&'static str> = if is_on_duty_staff {
+                    room_venue_opt
+                        .as_ref()
+                        .map(|v| v.on_duty_fixture_activity)
+                        .or_else(|| crate::grid::resolve_any_room_venue_object(&base.room_name, &e.display_name).map(|v| v.on_duty_fixture_activity))
+                } else if is_night {
                     let r = base.room_name.as_str();
                     if r.contains("居") || r.contains("舍") || r.contains("宅") || r.contains("宿所") || r.contains("院") || r.contains("齋") {
                         Some("正在內室床鋪上熄燈安歇")
+                    } else if r.contains("橋") {
+                        Some("正提著防風燈沿青石橋面緩步夜行")
+                    } else if r.contains("街") || r.contains("道") || r.contains("口") || r.contains("坪") {
+                        Some("正提著防風燈沿著街面緩步夜行")
                     } else {
                         Some("正提著防風燈在廊下巡看門戶")
                     }
                 } else if is_canonical_leader || named {
-                    let n = e.display_name.as_str();
-                    if n.contains("陳萬福") {
-                        Some("正守在紅鐵大釜前慢火熬煮原牛肉湯")
-                    } else if n.contains("陸秉衡") {
-                        Some("正於樟木掌事台前核驗跨鎮通兌匯票")
-                    } else if n.contains("陸承禮") {
-                        Some("正於案前核對《半島全戶總譜》與紅印屋契")
-                    } else if n.contains("白泉生") {
-                        Some("正往寒水玉湯池投放祛寒草木湯包")
-                    } else if n.contains("溫晴") {
-                        Some("正於青石藥案前調配青鹽薄荷潔牙粉與水苔敷藥")
-                    } else if n.contains("岑守岳") {
-                        Some("正指導學徒查看高溫紅鐵爐的火色")
-                    } else if n.contains("柯成器") {
-                        Some("正用省力導能刨刀推平松香木板")
-                    } else if n.contains("蘇錦心") {
-                        Some("正為遠行採購商量裁黑沼防雨樹膠風衣")
-                    } else if n.contains("韓鐵山") {
-                        Some("正調度雙輪駝獸大車裝卸四方貨件")
-                    } else if n.contains("陸知微") {
-                        Some("正校勘新印出的《白塔風物誌》與《半島旬報》")
-                    } else if n.contains("岑拓") {
-                        Some("正用游標卡尺測量導能火磚嵌合縫隙")
-                    } else if n.contains("秦明誠") {
-                        Some("正操作隨身計數板核算大宗行單")
-                    } else if n.contains("岑雲野") {
-                        Some("正手持包革木刀指點學徒格擋防身步法")
-                    } else if n.contains("陸長貴") {
-                        Some("正手持木牌巡看街坊水渠與公議告示")
-                    } else if n.contains("陸敬軒") {
-                        Some("正敲響響板帶領學生朗讀基礎教材")
-                    } else if n.contains("溫懷瑾") {
-                        Some("正於講堂案前批閱學生呈交的脈絡札記")
-                    } else if n.contains("沈清河") {
-                        Some("正於臨水茶席沏起頭道山風草茶並擺設棋局")
-                    } else if n.contains("林時中") {
-                        Some("正校對旋轉日規與報時青銅巨鐘並核驗快騎郵袋")
-                    } else if n.contains("趙觀星") {
-                        Some("正撥轉三百六十星軌銅儀測算星度交角與節氣日影")
-                    } else if n.contains("周一刀") {
-                        Some("正推磨精鋼摺疊剃刀並擰乾熱毛巾替客修面理容")
-                    } else if n.contains("許阿甘") {
-                        Some("正擦拭廣口玻璃柑仔糖罐並清點紅磷火柴與蚊香")
-                    } else if n.contains("馬補靴") {
-                        Some("正在硬木楦頭上釘補防浸皮靴並為竹骨傘刷上熟桐油")
-                    } else {
-                        None
-                    }
-                } else if base.room_name.starts_with("文曜") {
-                    let r = base.room_name.as_str();
-                    let variants: &[&'static str] = if r.contains("樞紐") || r.contains("石橋") {
-                        &[
-                            "憑著雕花青石欄杆遠眺三水川往來貨船",
-                            "在橋頭日晷石柱旁仰看刻度核對時間",
-                            "挑著兩擔山海乾貨穩步走過青石拱橋",
-                        ]
-                    } else if r.contains("國小") || r.contains("學院") || r.contains("蒙學") {
-                        &[
-                            "端坐講堂木案前用鋼尖沾水筆抄錄課卷",
-                            "手捧新印的《白塔風物誌》與同學低聲切磋",
-                            "在杉木書架前翻檢四時物候與山海圖譜",
-                        ]
-                    } else if r.contains("觀星") {
-                        &[
-                            "圍在三百六十星軌銅儀旁記錄星度刻度",
-                            "在評議廳長案前整理本季的氣象與潮汐觀測表",
-                        ]
-                    } else if r.contains("藏書") || r.contains("印行") || (r.contains("書局") && !r.contains("契書")) {
-                        &[
-                            "手持竹骨放大鏡仔細校勘新排印的《半島旬報》",
-                            "將裁切整齊的講義冊頁穿線裝訂成冊",
-                            "在多層杉木書架間輕步搜尋地方風物誌卷宗",
-                        ]
-                    } else if r.contains("會計") || r.contains("商算") {
-                        &[
-                            "專注操作計數板演練帳務核算公式",
-                            "對照黑板上的出海貨單核算跨鎮運費與匯差",
-                        ]
-                    } else if r.contains("剪剃") {
-                        &[
-                            "半躺在紫銅溫水管木椅上敷著熱毛巾閉目養神",
-                            "在亮銀玻璃鏡前用香柏木梳整理先前修剪好的髮鬢",
-                        ]
-                    } else if r.contains("診所") {
-                        &[
-                            "在藥櫃前按方稱量烘乾的光葉藥草與止血水苔",
-                            "用青石藥碾將薄荷與青鹽細細研成潔牙粉",
-                        ]
-                    } else if r.contains("總商行") {
-                        &[
-                            "在厚樟木櫃台後核對防偽鋼印與通兌匯票存根",
-                            "將收進的實體鎂幣按面額分格歸入樟木錢箱",
-                            "捧著四方貨單向掌事稟報今日大宗物產行情",
-                        ]
-                    } else if r.contains("鐘樓") || r.contains("信使") {
-                        &[
-                            "將加蓋火漆印戳的書信分揀裝入雙扣防水郵袋",
-                            "在信使站廊下替疾行草獸快騎檢查鞍轡與水囊",
-                        ]
-                    } else if r.contains("食堂") {
-                        &[
-                            "端著剛出鍋的原牛骨湯與蔥香米烙餅穿梭送餐",
-                            "在紅鐵大釜旁添柴看火並撇去高湯浮沫",
-                            "圍在木桌旁大口品嚐熱豆花與切仔湯麵",
-                        ]
-                    } else if r.contains("浴場") {
-                        &[
-                            "抱著烘得乾爽蓬鬆的蜂格棉面巾替浴客更換",
-                            "在寒水玉湯池邊泡著溫水洗去一身奔波疲乏",
-                        ]
-                    } else if r.contains("公議") || r.contains("契據") || r.contains("契書") {
-                        &[
-                            "在長條厚木公議案桌前謄錄今日新簽的屋契地籍",
-                            "站在水土民務告示立木前審視各坊修繕委託單",
-                        ]
-                    } else if r.contains("鍛造") {
-                        &[
-                            "拉動風箱助燃紅土耐火高爐並觀察赤鐵火色",
-                            "舉起熟鐵鍛錘在鐵砧上反覆鍛打農具與船釘",
-                            "將燒紅的精鋼刃口浸入冷卻水槽激起一團白霧",
-                        ]
-                    } else if r.contains("巧木") || r.contains("傢俱") {
-                        &[
-                            "順著松香木紋理推刨木板，刨花如雪片般捲落",
-                            "拿著木槌與竹釘試拼寒水玉保鮮石櫃的榫卯框體",
-                        ]
-                    } else if r.contains("雲錦") || r.contains("服飾") {
-                        &[
-                            "在木機旁飛梭走線織造細密挺括的防風棉麻布",
-                            "拿著軟尺與粉線為客人量裁黑沼防雨樹膠風衣",
-                        ]
-                    } else if r.contains("旅社") || r.contains("茶屋") {
-                        &[
-                            "提著紅銅長嘴壺為對弈茶客添上熱騰騰的山風草茶",
-                            "坐在臨水窗邊一邊品嚐鍋煮鮮奶茶一邊翻看旬報",
-                        ]
-                    } else if r.contains("習武") || r.contains("試招") {
-                        &[
-                            "手握包革練習木刀在青石院中演練卸力步法",
-                            "站在導能測紋石板前調勻呼吸測試掌力勁道",
-                        ]
-                    } else if r.contains("柑仔店") || r.contains("雜貨") {
-                        &[
-                            "在貨架前挑選紅磷防風火柴與艾草蚊香盤",
-                            "拈起一塊古早黑糖麥芽糖笑咪咪地與鄰里寒暄",
-                        ]
-                    } else if r.contains("聯運") || r.contains("貨運") || r.contains("西門") {
-                        &[
-                            "推著獨輪木車將捆紮結實的貨箱推上生鐵地秤過磅",
-                            "在青石水槽旁替遠道歸來的雙輪駝獸刷洗毛皮添草料",
-                            "對照聯運班次木板核對發往大圳頭與風舶角的車次",
-                        ]
-                    } else if r.contains("修傘") || r.contains("補靴") {
-                        &[
-                            "將淋溼的桐油竹骨傘撐開晾在木架上檢視傘骨",
-                            "拿著麻線錐子替採購商縫補磨穿的牛皮靴底",
-                        ]
-                    } else if r.contains("講堂街") || r.contains("學院巷") || r.contains("書院巷") || r.contains("曬書") || r.contains("竹苑") {
-                        &[
-                            "手捧裝訂講義沿著石造拱廊的石道慢步交談",
-                            "駐足在《半島旬報》閱報木欄前細讀最新一期刊物",
-                        ]
-                    } else if r.contains("分家巷") || r.contains("百工") || r.contains("晾木") {
-                        &[
-                            "在工坊門前青石水槽邊用天然油磨石打磨隨身工具",
-                            "扛著剛裁好的北山松香木板穿過百工石板巷",
-                        ]
-                    } else if r.contains("烘藥") || r.contains("百草") {
-                        &[
-                            "在紅泥焙藥爐旁照看火候，藥香濃郁沁鼻",
-                            "手持切藥鍘刀仔細修整晾乾的藥草根莖",
-                        ]
-                    } else if r.contains("造紙") || r.contains("紙廬") || r.contains("精廬") {
-                        &[
-                            "在石槽旁蕩料抄紙，水花均勻泛起",
-                            "拿著毛刷將濕紙平整貼於熱牆焙乾",
-                        ]
-                    } else if r.contains("書齋") || r.contains("墨香") || r.contains("居舍") || r.contains("民宅") {
-                        &[
-                            "在沉水烏木書案前研墨習字，神情安恬專注",
-                            "推開雕花木窗迎入微風，靜心翻閱案上線裝冊頁",
-                        ]
-                    } else if r.contains("河灣") || r.contains("北渠") || r.contains("水脈") || r.contains("東灣") || r.contains("竹筏") {
-                        &[
-                            "在青石埠階旁繫穩竹筏繩纜，掬水洗面",
-                            "整理汲水木桶與竹編魚簍，聽水聲潺潺流淌",
-                        ]
-                    } else {
-                        &[
-                            "提著竹編提籃在三水口商號間採辦日用雜貨",
-                            "沿著平整的青石板街與相熟的街坊點頭寒暄",
-                        ]
-                    };
-                    Some(variants[npc_idx % variants.len()])
+                    crate::grid::resolve_any_room_venue_object(&base.room_name, &e.display_name)
+                        .map(|v| v.on_duty_fixture_activity)
+                        .or_else(|| crate::grid::resolve_room_ambient_visitor_activity(&base.room_name, npc_idx))
                 } else {
-                    None
+                    crate::grid::resolve_room_ambient_visitor_activity(&base.room_name, npc_idx)
+                        .or_else(|| {
+                            crate::grid::resolve_any_room_venue_object(&base.room_name, &e.display_name)
+                                .map(|v| v.on_duty_fixture_activity)
+                        })
                 };
 
-                let current_act = if (e.id.starts_with("wt_vendor_") || !is_canonical_leader)
+                let current_act = if is_on_duty_staff {
+                    canon_activity.unwrap_or(e.current_activity.as_str())
+                } else if (e.id.starts_with("wt_vendor_") || !is_canonical_leader)
                     && !e.current_activity.trim().is_empty()
                     && !e.current_activity.contains("安歇")
+                    && !e.current_activity.bytes().any(|b| b.is_ascii_alphabetic())
                 {
                     e.current_activity.as_str()
                 } else if is_night {
@@ -2126,13 +2412,13 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                     label,
                     card_state,
                     current_activity: current_act,
-                    interaction_priority: is_canonical_leader || available_market_operators.contains(&e.id),
+                    interaction_priority: is_canonical_leader || is_on_duty_staff || available_market_operators.contains(&e.id),
                 }
             })
             .collect();
 
         let unnamed_total = cards.iter().filter(|c| c.card_state != "named").count();
-        let (visible_npcs, has_hidden_unnamed) = build_player_layer_npc_cards(&cards);
+        let (visible_npcs, _has_hidden_unnamed) = build_player_layer_npc_cards(&cards);
         let mut npcs_json: Vec<serde_json::Value> = Vec::new();
         for c in &visible_npcs {
             npcs_json.push(serde_json::json!({
@@ -2144,13 +2430,54 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
             }));
         }
         let total_present = cards.len();
+        let sanitize_public_entry_act = |raw: &str, idx: usize| -> String {
+            let trimmed = raw.trim().trim_end_matches('。');
+            let r = base.room_name.as_str();
+            let is_open_bridge_or_street = r.contains("橋")
+                || r.contains("街")
+                || r.contains("道")
+                || r.contains("口")
+                || r.contains("坪")
+                || r.contains("原")
+                || r.contains("坡");
+            let is_indoor_only_act = trimmed.contains("工坊案頭")
+                || trimmed.contains("居所木榻")
+                || trimmed.contains("回屋舍")
+                || trimmed.contains("內室")
+                || trimmed.contains("單間")
+                || trimmed.contains("浴池");
+            let is_private_transit = trimmed.contains("動身前往")
+                || trimmed.contains("步行前往")
+                || trimmed.contains("沿街步行")
+                || trimmed.contains("前往【")
+                || trimmed.contains("回返【")
+                || trimmed.contains("返回【")
+                || trimmed.contains("推進目標：【")
+                || trimmed.contains("趕往【")
+                || (is_open_bridge_or_street && is_indoor_only_act);
+            if is_private_transit {
+                if r.contains("橋") {
+                    if idx % 2 == 0 {
+                        "正沿著青石橋面邁步穿行，往鄰街一帶行去".to_string()
+                    } else {
+                        "正憑著雕花青石欄杆遠眺三水川水面".to_string()
+                    }
+                } else if idx % 2 == 0 {
+                    "正沿著街面邁步穿行，往鄰街一帶行去".to_string()
+                } else {
+                    "正順著廊下緩步穿行，打量四周動靜".to_string()
+                }
+            } else {
+                trimmed.to_string()
+            }
+        };
         let mut present_npc_summaries: Vec<(String, String)> = visible_npcs
             .iter()
             .take(2)
             .enumerate()
             .map(|(idx, c)| {
                 let subj = narrative_person_subject(c, idx);
-                (subj, c.current_activity.to_string())
+                (subj, sanitize_public_entry_act(c.current_activity, idx))
             })
             .collect();
         let npc_name_map: std::collections::HashMap<String, String> = visible_npcs
@@ -2193,7 +2520,7 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                             current_activity: act,
                         };
                         let subj = narrative_person_subject(&card, idx);
-                        present_npc_summaries.push((subj, act.to_string()));
+                        present_npc_summaries.push((subj, sanitize_public_entry_act(act, idx)));
                         if present_npc_summaries.len() == 2 {
                             break;
                         }
@@ -2203,8 +2530,8 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         }
         // 取當前格資料，供前端 L3 渲染用。玩家層不能只收到 icon_key，
         // 否則聚落/道路/建築類地形會退成空白方塊。
-        let current_cell = crate::server::grid_manager::get_runtime_square_grid()
-            .and_then(|g| g.get(crate::grid::SquareCoord::new(x, y)).cloned());
+        let current_cell =
+            crate::server::grid_manager::get_runtime_grid_cell(crate::grid::SquareCoord::new(x, y));
         let current_terrain_key = current_cell
             .as_ref()
             .map(|c| c.terrain.kind_str().to_string())
@@ -2253,24 +2580,35 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
         let recent_scene_events = crate::npcnpc::recent_room_events(&current_room_id, 3);
         let current_desc = if in_private_room {
             let is_lodging = current_terrain_name.contains("旅社")
-                || current_terrain_name.contains("客棧")
                 || current_terrain_name.contains("茶屋")
                 || current_terrain_name.contains("公寓")
                 || current_terrain_name.contains("驛");
             if is_lodging {
                 "你反手扣上房門的黃銅插銷。這是樓上一間安靜整潔的單人客房，窗畔擺著旋蓋夜光貝母調光台燈與烏木書案，床鋪上鋪著厚實的蓬鬆羽絨暖被與山風草安神枕，將樓下街巷的喧囂人聲隔絕在外。".to_string()
             } else {
-                "你穿過門廊走入宅院內室。屋內鋪著擦拭光潔的熟桐油木地板，門口整齊擺著軟底布拖鞋。室內設有松香木大床與山風草安神枕，窗畔几案上亮著旋蓋夜光貝母台燈，一側自來活水黃銅水栓與溫石熱水槽水氣氤氳，恬靜怡人。".to_string()
+                "你穿過門廊走入宅院內室。屋內鋪著擦拭光潔的熟桐油木地板，門口整齊擺著軟底布便鞋。室內設有松香木大床與山風草安神枕，窗畔几案上亮著旋蓋夜光貝母台燈，一側自來活水黃銅水栓與溫石熱水槽水氣氤氳，恬靜怡人。".to_string()
             }
         } else {
-            player_layer_scene_desc(
+            let mut desc = player_layer_scene_desc(
                 &current_desc,
                 &current_terrain_name,
                 game_minute_of_day,
                 scene_climate_ref,
                 unnamed_total,
                 &recent_scene_events,
-            )
+            );
+            if !is_open_street_or_bridge_for_cards {
+                if let Some((ev_pack, _)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                    &current_terrain_name,
+                    None,
+                    base.server_unix,
+                ) {
+                    if !desc.contains(&ev_pack.trigger_and_causal_chain) {
+                        desc.push_str(&format!("\n{}", ev_pack.trigger_and_causal_chain));
+                    }
+                }
+            }
+            desc
         };
         let npcs_json = if in_private_room {
             vec![]
@@ -2330,14 +2668,30 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
     conn.send_json(&grid_msg);
 
     if !in_private_room {
-        let is_new_coord = {
+        let (is_new_coord, prev_coord) = {
             let mut last_coord = PLAYER_LAST_ANNOUNCED_COORD.write();
-            if last_coord.get(player_id).copied() != Some((x, y)) {
+            let prev = last_coord.get(player_id).copied();
+            if prev != Some((x, y)) {
                 last_coord.insert(player_id.to_string(), (x, y));
-                true
+                (true, prev)
             } else {
-                false
+                (false, prev)
             }
+        };
+        let step_prefix = if let Some((px, py)) = prev_coord {
+            if (x - px).abs() + (y - py).abs() == 1 {
+                match (x - px, y - py) {
+                    (1, 0) => "你往東步入",
+                    (-1, 0) => "你往西步入",
+                    (0, 1) => "你往北步入",
+                    (0, -1) => "你往南步入",
+                    _ => "你步入",
+                }
+            } else {
+                "你步入"
+            }
+        } else {
+            "你步入"
         };
         if is_new_coord {
             if !present_npc_summaries.is_empty() {
@@ -2347,7 +2701,6 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                         "正駐足於此".to_string()
                     } else if act.starts_with('正')
                         || act.starts_with('在')
-                        || act.starts_with('剛')
                         || act.starts_with('已')
                     {
                         act.to_string()
@@ -2374,40 +2727,46 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                     });
 
                 let line = if all_asleep {
-                    format!("你步入【{}】，夜深人靜，屋內諸人皆已熄燈安歇。", grid_msg.room_name)
-                } else if total_present >= 3 && present_npc_summaries.len() >= 2 {
+                    format!("{step_prefix}【{}】，夜深人靜，屋內諸人皆已熄燈安歇。", grid_msg.room_name)
+                } else if total_present >= 2 && present_npc_summaries.len() >= 2 {
                     let (npc1, act1_raw) = &present_npc_summaries[0];
                     let (npc2, act2_raw) = &present_npc_summaries[1];
                     let act1 = format_npc_act(act1_raw);
                     let act2 = format_npc_act(act2_raw);
-                    if is_night_time {
+                    let night_prefix = if is_night_time && total_present >= 3 {
+                        "夜色微涼，"
+                    } else {
+                        ""
+                    };
+                    if act1 == act2 {
                         format!(
-                            "你步入【{}】，夜色微涼，見{}{}；旁側{}{}。",
-                            grid_msg.room_name, npc1, act1, npc2, act2
+                            "{step_prefix}【{}】，{}見{}與{}皆{}。",
+                            grid_msg.room_name, night_prefix, npc1, npc2, act1
                         )
                     } else {
                         format!(
-                            "你步入【{}】，見{}{}；旁側{}{}。",
-                            grid_msg.room_name, npc1, act1, npc2, act2
+                            "{step_prefix}【{}】，{}見{}{}；旁側{}{}。",
+                            grid_msg.room_name, night_prefix, npc1, act1, npc2, act2
                         )
                     }
-                } else if total_present == 2 && present_npc_summaries.len() >= 2 {
-                    let (npc1, act1_raw) = &present_npc_summaries[0];
-                    let (npc2, act2_raw) = &present_npc_summaries[1];
-                    let act1 = format_npc_act(act1_raw);
-                    let act2 = format_npc_act(act2_raw);
-                    format!(
-                        "你步入【{}】，見{}{}；一旁的{}{}。",
-                        grid_msg.room_name, npc1, act1, npc2, act2
-                    )
                 } else {
                     let (npc1, act1_raw) = &present_npc_summaries[0];
                     let act1 = format_npc_act(act1_raw);
-                    format!("你步入【{}】，見{}{}。", grid_msg.room_name, npc1, act1)
+                    format!("{step_prefix}【{}】，見{}{}。", grid_msg.room_name, npc1, act1)
                 };
                 conn.send_json(&super::super::protocol::NarrateMsg {
                     msg_type: "narrate".into(),
                     text: line,
+                });
+            } else {
+                let empty_line = if game_hour >= 22 || game_hour < 5 {
+                    format!("{step_prefix}【{}】，夜色深沉，四周靜謐無人。", grid_msg.room_name)
+                } else {
+                    format!("{step_prefix}【{}】，四周一時清朗安靜。", grid_msg.room_name)
+                };
+                conn.send_json(&super::super::protocol::NarrateMsg {
+                    msg_type: "narrate".into(),
+                    text: empty_line,
                 });
             }
         }
@@ -2633,7 +2992,7 @@ fn north_bank_presence(unnamed_total: usize, seed: i64) -> &'static str {
 fn north_bank_object_surface(seed: i64) -> &'static str {
     pick_scene_variant(
         &[
-            "長凳旁的蘆叢和貨擔都貼著踏板邊等人伸手，熱湯攤分出滿碗與等分湯，隊列木牌把下一輪上船的人壓成一線。",
+            "長凳旁的蘆叢和貨擔都貼著踏板邊等人伸手，熱湯攤分出滿碗與等分湯，人龍木牌把下一輪上船的人壓成一線。",
             "歇腳處留著半段乾位，湯桶熱氣貼著河霧上浮，船繩旁的貨擔把路口擠窄；谷地路口的泥印從人群後面斜出去。",
         ],
         seed,
@@ -2651,7 +3010,7 @@ fn north_bank_ferry_presence(ferry: FerryPhase, seed: i64) -> &'static str {
         ),
         FerryPhase::CrossingSouth => pick_scene_variant(
             &[
-                "渡船剛離北岸，撐篙在水面攪開一道還沒合攏的痕。",
+                "渡船才離北岸不遠，撐篙在水面攪開一道還沒合攏的痕。",
                 "船影正往南岸滑去，北岸踏板前的腳步暫時收住。",
             ],
             seed,
@@ -2687,20 +3046,20 @@ fn north_bank_trace(
         "rain" | "plum_rain" | "storm" => pick_scene_variant(
             &[
                 "岸泥上新舊腳印疊在一起，靠近踏板的幾道還泛著水光。",
-                "棚腳滴下的雨水把泥痕沖淡，又立刻被新的腳步踩亂。",
+                "棚腳滴下的雨水把泥痕沖淡，又被新的腳步踩亂。",
             ],
             seed,
         ),
         "fog" => pick_scene_variant(
             &[
-                "霧裡偶爾露出一串剛踩過的濕腳印，往踏板方向斷斷續續。",
-                "木樁旁的濕繩痕還清楚，像剛被人重新繞緊過。",
+                "霧裡偶爾露出一串新踩出的濕腳印，往踏板方向斷斷續續。",
+                "木樁旁的濕繩痕還清楚，像是被人重新繞緊過。",
             ],
             seed,
         ),
         _ => match ferry {
             FerryPhase::NorthDocked | FerryPhase::CrossingSouth => {
-                "踏板邊剛讓出過一條縫，濕木上還留著一排急促腳印。"
+                "踏板邊讓出了一條縫，濕木上還留著一排急促腳印。"
             }
             FerryPhase::SouthDocked | FerryPhase::CrossingNorth if unnamed_total >= 5 => {
                 "岸邊腳印交疊得密，幾道貨擔拖痕從市集斜斜壓向踏板前。"
@@ -2722,13 +3081,13 @@ fn trace_from_recent_room_events(recent_events: &[String]) -> Option<&'static st
         || text.contains("搬")
         || text.contains("賣")
     {
-        Some("泥地上留著剛拖過貨擔的痕，從市集那頭一路壓向踏板前。")
+        Some("泥地上留著拖過貨擔的新痕，從市集那頭一路壓向踏板前。")
     } else if text.contains("離")
         || text.contains("去")
         || text.contains("往")
         || text.contains("leave")
     {
-        Some("踏板前剛空出一小塊地方，濕腳印沿著人群邊緣斷開。")
+        Some("踏板前空出一小塊地方，濕腳印沿著人群邊緣斷開。")
     } else if text.contains("到")
         || text.contains("來")
         || text.contains("抵")
@@ -2740,7 +3099,7 @@ fn trace_from_recent_room_events(recent_events: &[String]) -> Option<&'static st
         || text.contains("談")
         || text.contains("低聲")
     {
-        Some("市集和踏板之間還留著剛壓下去的低語，像水聲一過就會散。")
+        Some("市集和踏板之間還留著壓低的交談聲，像水聲一過就會散。")
     } else {
         None
     }
@@ -2827,7 +3186,7 @@ fn scene_desc_override(
     } else if room_name.contains("踏板") {
         Some("渡船踏板濕滑發亮，一端扣著船繩，一端連著岸上的木樁；等船的人在踏板前收住腳步，聽水聲拍著船腹。".to_string())
     } else if room_name.contains("南岸") || room_name.contains("泥坡") {
-        Some("南岸泥坡被來往腳印踩得發亮，河水退去後留下濕泥與碎草；剛下船的人沿坡上行，也有人回頭看渡船是否還會再靠。".to_string())
+        Some("南岸泥坡被來往腳印踩得發亮，河水退去後留下濕泥與碎草；下船的人沿坡上行，也有人回頭看渡船是否還會再靠。".to_string())
     } else if room_name.contains("船戶作業點") || room_name.contains("作業") {
         Some("船戶作業點堆著纜繩、撐篙與修補木片；船邊的人低聲分派活計，偶爾有人伸手試一試船身晃動。".to_string())
     } else if room_name.contains("倉棚前場") {
@@ -2858,16 +3217,8 @@ fn narrative_person_subject(card: &VisibleNpcCard<'_>, index: usize) -> String {
         return card.display_name.clone();
     }
 
-    let is_chen_wanfu = card.id == "wt_npc_chen_wanfu" || card.id.contains("chen_wanfu") || card.display_name.contains("陳萬福");
-    let is_lu_chengli = card.id == "wt_npc_lu_chengli" || card.id.contains("lu_chengli") || card.display_name.contains("陸承禮");
-
-    let sensory = if is_chen_wanfu {
-        "潔白雙排扣主廚服與厚布圍裙".to_string()
-    } else if is_lu_chengli {
-        "身穿深藍色公務外套，身姿端正".to_string()
-    } else {
-        crate::store::npc_sensory_appearance_line(card.id, &card.display_name)
-    };
+    let hint = format!("{} {}", card.display_name, card.current_activity);
+    let sensory = crate::store::npc_sensory_appearance_line(card.id, &hint);
 
     let first_attire = sensory
         .split(['，', '、', '。'])
@@ -2875,34 +3226,27 @@ fn narrative_person_subject(card: &VisibleNpcCard<'_>, index: usize) -> String {
         .map(|s| s.trim())
         .unwrap_or("");
 
-    let role_pers = crate::store::npc_persistent_role_label(card.id, &card.display_name);
-    let role = if is_lu_chengli {
-        "主事"
-    } else if is_chen_wanfu {
-        "主廚"
-    } else if card.id == "wt_npc_lu_bingheng" || card.display_name.contains("陸秉衡") {
-        "主事"
-    } else if card.id == "wt_npc_lu_zhiwei" || card.display_name.contains("陸知微") {
-        "主編"
-    } else if card.id == "wt_npc_cen_shouyue" || card.display_name.contains("岑守岳") {
-        "師傅"
-    } else if card.id == "wt_npc_cen_tuo" || card.display_name.contains("岑拓") {
-        "師傅"
-    } else if card.id == "wt_npc_wen_huaijin" || card.display_name.contains("溫懷瑾") {
-        "主事"
-    } else if card.id == "wt_npc_wen_qing" || card.display_name.contains("溫晴") {
-        "人員"
-    } else if card.id == "wt_npc_han_tieshan" || card.display_name.contains("韓鐵山") {
-        "主事"
-    } else if card.id.starts_with("wt_vendor_") || role_pers.contains("攤") {
+    let role_pers = crate::store::npc_persistent_role_label(card.id, &hint);
+    let role = if card.id.starts_with("wt_vendor_") || role_pers.contains("攤") {
         "攤販"
-    } else if role_pers.contains("主事") || role_pers.contains("長") || role_pers.contains("總管") {
+    } else if role_pers.contains("主事")
+        || role_pers.contains("長")
+        || role_pers.contains("總管")
+        || role_pers.contains("會")
+        || card.current_activity.contains("審理戶籍")
+        || card.current_activity.contains("戶政")
+    {
         "主事"
-    } else if role_pers.contains("廚") {
+    } else if role_pers.contains("編") {
+        "主編"
+    } else if role_pers.contains("廚")
+        || card.current_activity.contains("熬煮")
+        || card.current_activity.contains("濃湯")
+    {
         "主廚"
-    } else if role_pers.contains("匠") || role_pers.contains("工") || role_pers.contains("鍛") {
+    } else if role_pers.contains("匠") || role_pers.contains("工") || role_pers.contains("鍛") || role_pers.contains("師") {
         "師傅"
-    } else if role_pers.contains("生") || role_pers.contains("吏") || role_pers.contains("教") || role_pers.contains("學") {
+    } else if role_pers.contains("生") || role_pers.contains("吏") || role_pers.contains("教") || role_pers.contains("學") || role_pers.contains("醫") {
         "人員"
     } else if role_pers.contains("商") || role_pers.contains("客") {
         "商旅"
@@ -2997,10 +3341,12 @@ fn build_player_layer_npc_cards<'a>(cards: &'a [NpcCard<'a>]) -> (Vec<VisibleNpc
     (visible, false)
 }
 
+#[cfg(test)]
 fn crowd_label_for_scene(room_name: &str) -> &'static str {
     scene_crowd_label(room_name).unwrap_or("人群")
 }
 
+#[cfg(test)]
 fn m3_020_public_presence_for_room(room_name: &str) -> Option<(&'static str, &'static str)> {
     const M3_020_ROOM_NAMES: [&str; 8] = [
         "城邦外坡道",
@@ -3023,6 +3369,7 @@ fn m3_020_public_presence_for_room(room_name: &str) -> Option<(&'static str, &'s
     Some((role, crowd))
 }
 
+#[cfg(test)]
 fn append_m3_020_public_presence_cards(room_name: &str, cards: &mut Vec<serde_json::Value>) {
     let Some((role, crowd)) = m3_020_public_presence_for_room(room_name) else {
         return;
@@ -3031,6 +3378,7 @@ fn append_m3_020_public_presence_cards(room_name: &str, cards: &mut Vec<serde_js
     push_public_presence_card(cards, crowd);
 }
 
+#[cfg(test)]
 fn push_public_presence_card(cards: &mut Vec<serde_json::Value>, label: &'static str) {
     if cards
         .iter()
@@ -3098,10 +3446,12 @@ fn route_reentry_log_for_room(
         .map(|(_, line)| line)
 }
 
+#[cfg(test)]
 fn observed_label_for_scene(_raw_name: &str, _room_name: &str) -> String {
     "陌生人".to_string()
 }
 
+#[cfg(test)]
 fn scene_crowd_label(room_name: &str) -> Option<&'static str> {
     if let Some(label) = game::final_map_crowd_label_for_room(room_name) {
         Some(label)
@@ -3157,8 +3507,8 @@ fn scene_crowd_label(room_name: &str) -> Option<&'static str> {
         Some("船戶人群")
     } else if room_name.contains("外貿碼頭") {
         Some("外貿人群")
-    } else if room_name.contains("海關前棚") {
-        Some("海關人群")
+    } else if room_name.contains("舶司前棚") {
+        Some("舶司人群")
     } else if room_name.contains("商館街口") {
         Some("商館人群")
     } else if room_name.contains("風舶角外洋棧倉") || room_name.contains("外洋棧倉") {
@@ -3253,7 +3603,7 @@ fn scene_entry_log(room_name: &str) -> Option<&'static str> {
         Some("你停在短船泊位旁。內水短船貼著木樁晃動，船戶扶著船舷催人站穩，船槳和篙影在水面交錯。")
     } else if room_name.contains("魚貨") || room_name.contains("分揀") {
         Some(
-            "你走進魚貨分揀場。濕布鋪在魚籃下，分揀工把剛上岸的魚貨推向秤邊，腥味和短賣低語順著木棧散開。",
+            "你走進魚貨分揀場。濕布鋪在魚籃下，分揀工把新上岸的魚貨推向秤邊，腥味和短賣低語順著木棧散開。",
         )
     } else if room_name.contains("蘆草") || room_name.contains("蘆棚") {
         Some(
@@ -3325,10 +3675,10 @@ fn scene_entry_log(room_name: &str) -> Option<&'static str> {
         )
     } else if room_name.contains("外貿碼頭") {
         Some(
-            "你走到外貿碼頭。港旗在海風裡扯直，船員把外地貨箱從吊繩下扶穩，海關前棚那邊已有人等著看貨單。",
+            "你走到外貿碼頭。港旗在海風裡扯直，船員把外地貨箱從吊繩下扶穩，舶司前棚那邊已有人等著看貨單。",
         )
-    } else if room_name.contains("海關前棚") {
-        Some("你走進海關前棚下。濕貨單被壓在木桌上，海關吏按住封條，等翻譯桌那邊把貨名和合約說清。")
+    } else if room_name.contains("舶司前棚") {
+        Some("你走進舶司前棚下。濕貨單被壓在木桌上，舶司吏按住封條，等翻譯桌那邊把貨名和合約說清。")
     } else if room_name.contains("商館街口") {
         Some("你走到商館街口。褪色招牌掛在門前，商館人打開貨樣匣，外語低語和碼頭船旗聲一同靠近。")
     } else if room_name.contains("風舶角外洋棧倉") || room_name.contains("外洋棧倉") {
@@ -3337,16 +3687,16 @@ fn scene_entry_log(room_name: &str) -> Option<&'static str> {
         )
     } else if room_name.contains("翻譯桌") {
         Some(
-            "你走到翻譯桌旁。合約攤在鎮紙下，翻譯把陌生貨名轉成在地話，海關前棚的印章聲在旁邊等著落下。",
+            "你走到翻譯桌旁。合約攤在鎮紙下，翻譯把陌生貨名轉成在地話，舶司前棚的印章聲在旁邊等著落下。",
         )
     } else if room_name.contains("匯兌小屋") {
-        Some("你走進匯兌小屋前。銅秤在桌邊輕晃，兌票人把商館街口報來的價碼寫進賬冊，錢票疊在手邊。")
+        Some("你走進匯兌小屋前。銅秤在桌邊輕晃，兌票人把商館街口報來的價碼寫進帳冊，錢票疊在手邊。")
     } else if room_name.contains("風舶角避風港") || room_name.contains("避風港") {
         Some(
             "你走到風舶角避風港。冷海水貼著木樁晃動，船戶把結霜纜繩重新繞緊，避風船在內側輕碰碼頭。",
         )
     } else if room_name.contains("港灣貨棚") {
-        Some("你走進港灣貨棚前。鹽箱和濕木箱靠牆排開，搬魚人把剛卸下的魚籃推向冷霧魚市那頭。")
+        Some("你走進港灣貨棚前。鹽箱和濕木箱靠牆排開，搬魚人把新卸下的魚籃推向冷霧魚市那頭。")
     } else if room_name.contains("漁網曬場") {
         Some("你走到漁網曬場。半乾濕網掛在木架上，補網人沿破口穿線，海風把避風碼頭的船聲帶過來。")
     } else if room_name.contains("冷霧魚市") {
@@ -3354,7 +3704,7 @@ fn scene_entry_log(room_name: &str) -> Option<&'static str> {
             "你來到冷霧魚市。木秤還沾著水珠，魚販把濕布下的魚貨攤開，買貨人的問價聲貼著霧氣低低傳開。",
         )
     } else if room_name.contains("船戶屋排") {
-        Some("你走到船戶屋排。火盆煙氣貼著低屋簷，船戶家屬在排班板前換下濕木牌，屋後風聲很細。")
+        Some("你走到船戶屋排。火盆煙氣貼著低屋簷，船戶家屬在輪值板前換下濕木牌，屋後風聲很細。")
     } else if room_name.contains("烏石鼻守望石階") || room_name.contains("守望石階") {
         Some("你踏上烏石鼻守望石階。霧牌和警鈴掛在風口，守望人扶著濕石欄，看向港外海面的顏色。")
     } else if room_name.contains("礦坑外棚") {
@@ -3370,7 +3720,7 @@ fn scene_entry_log(room_name: &str) -> Option<&'static str> {
     } else if room_name.contains("紅土崁選礦車場") || room_name.contains("選礦車場") {
         Some("你走到紅土崁選礦車場。礦車停在磨亮車轍旁，車夫把繩索掛上車架，稱重木牌半埋在灰粉裡。")
     } else if room_name.contains("農舍前坪") {
-        Some("你走進農舍前坪。鋤具靠在牆下，曬衣繩從低簷拉到木樁，屋前濕泥帶著田裡剛回來的腳印。")
+        Some("你走進農舍前坪。鋤具靠在牆下，曬衣繩從低簷拉到木樁，屋前濕泥帶著從田裡回來的腳印。")
     } else if room_name.contains("穀場小棚") {
         Some("你來到穀場小棚。幾袋稻穀半遮在棚下，木篩靠著棚柱，稻殼被腳步踩得乾乾作響。")
     } else if room_name.contains("田埂深處") {
@@ -3429,13 +3779,13 @@ fn north_bank_entry_ferry_flow(ferry: FerryPhase, seed: i64) -> &'static str {
         FerryPhase::NorthDocked => pick_scene_variant(
             &[
                 "船繩旁有人把濕繩重新繞上木樁，船身貼岸時輕輕碰了一下踏板。",
-                "踏板口的木板被船腹碰得短短一響，船繩隨即被人往木樁上多繞半圈。",
+                "踏板口的木板被船腹碰得短短一響，船繩被人往木樁上多繞半圈。",
             ],
             seed,
         ),
         FerryPhase::CrossingSouth => pick_scene_variant(
             &[
-                "渡船剛離北岸，船繩在木樁旁鬆下一圈，水面還留著撐篙攪開的痕。",
+                "渡船離了北岸，船繩在木樁旁鬆下一圈，水面還留著撐篙攪開的痕。",
                 "踏板前的人把腳步收住，船尾往南岸滑開，只剩船繩滴水落回木樁邊。",
             ],
             seed,
@@ -3469,7 +3819,7 @@ fn north_bank_entry_market_flow(game_hour: u32, climate_key: &str, seed: i64) ->
         "fog" => pick_scene_variant(
             &[
                 "市集價牌在霧裡只露出邊角，討價的人靠得更近，聲音貼著貨擔傳開。",
-                "霧把市集那頭收得很窄，有人摸著木牌邊緣報價，又立刻壓低嗓音。",
+                "霧把市集那頭收得很窄，有人摸著木牌邊緣報價，又順勢壓低嗓音。",
             ],
             seed,
         ),
@@ -3483,7 +3833,7 @@ fn north_bank_entry_market_flow(game_hour: u32, climate_key: &str, seed: i64) ->
         _ => match scene_phase(game_hour) {
             ScenePhase::Dawn => pick_scene_variant(
                 &[
-                    "市集剛把價牌掛起，湯桶熱氣先冒出來，早到的人低聲問第一班船。",
+                    "市集把早市價牌掛起，湯桶熱氣先冒出來，早到的人低聲問第一班船。",
                     "天光還薄，市集的人把木牌翻到外側，貨聲比人聲更早貼上岸邊。",
                 ],
                 seed,
@@ -3491,7 +3841,7 @@ fn north_bank_entry_market_flow(game_hour: u32, climate_key: &str, seed: i64) ->
             ScenePhase::Day => pick_scene_variant(
                 &[
                     "市集那頭有人壓低聲音討價，木牌被指節敲得輕響。",
-                    "日光照開市集價牌，有人把小件貨往外推半寸，又立刻被問價聲攔住。",
+                    "日光照開市集價牌，有人把小件貨往外推半寸，便被問價聲攔住。",
                 ],
                 seed,
             ),
@@ -3520,10 +3870,10 @@ fn north_bank_entry_crowd_flow(unnamed_total: usize, ferry: FerryPhase, seed: i6
                 "等船人群往踏板口擠出一條窄縫，包袱和貨擔又在船繩聲裡短短合攏。"
             }
             FerryPhase::CrossingSouth => {
-                "踏板前的人群一起往後收，剛空出的濕木邊很快被包袱和貨擔佔住。"
+                "踏板前的人群一起往後收，空出的濕木邊很快被包袱和貨擔佔住。"
             }
             FerryPhase::SouthDocked => {
-                "人群壓在岸邊等對岸放船，幾個挑擔客換了肩，空隙立刻被後面腳步補上。"
+                "人群壓在岸邊等對岸放船，幾個挑擔客換了肩，空隙被後面腳步補上。"
             }
             FerryPhase::CrossingNorth => "等船人群往踏板口挪了一步，又停在河面傳來的水聲裡。",
         }
@@ -3555,7 +3905,7 @@ fn scene_reentry_log(room_name: &str) -> Option<&'static str> {
         || room_name.contains("等候")
     {
         Some(
-            "你回到半嶺水岸渡口。踏板前的人群已重新合攏，包袱和腳步把方才空出的縫隙填回；有人又抬頭望向河面。",
+            "你回到半嶺水岸渡口。踏板前的人群已重新合攏，包袱和腳步把先前空出的縫隙填回；有人又抬頭望向河面。",
         )
     } else if room_name.contains("中河谷地路口") {
         Some("你回到中河谷地路口。泥路上的腳印又被人踩亂，渡口聲和田埂水聲在這裡重新交在一起。")
@@ -3580,7 +3930,7 @@ fn scene_reentry_log(room_name: &str) -> Option<&'static str> {
             "你回到湖港木棧。候船的人群換了站位，濕繩圈旁多了些滴水痕，泊位和分揀場的聲音又在腳下聚攏。",
         )
     } else if room_name.contains("短船泊位") {
-        Some("你回到短船泊位。方才靠著木樁的船身換了角度，船戶把船槳收近，等下一撥人踩穩棧板。")
+        Some("你回到短船泊位。先前靠著木樁的船身換了角度，船戶把船槳收近，等下一撥人踩穩棧板。")
     } else if room_name.contains("魚貨") || room_name.contains("分揀") {
         Some("你回到魚貨分揀場。魚籃位置已被推開一些，濕布邊新添水印，分揀工把低聲短賣接著說下去。")
     } else if room_name.contains("蘆草") || room_name.contains("蘆棚") {
@@ -3592,7 +3942,7 @@ fn scene_reentry_log(room_name: &str) -> Option<&'static str> {
             "你回到水倉前場。倉門外的板車被挪出新角度，倉管仍在棚口分派貨流，木地板下的水聲沒有停。",
         )
     } else if room_name.contains("糧倉外秤") {
-        Some("你回到糧倉外秤。秤盤旁又添了一圈稻殼粉，秤手把剛稱過的糧袋指向倉門前場。")
+        Some("你回到糧倉外秤。秤盤旁又添了一圈稻殼粉，秤手把稱妥的糧袋指向倉門前場。")
     } else if room_name.contains("倉門前場") {
         Some("你回到倉門前場。半開的倉門仍壓著陰影，守倉人換了站位，封條在門側輕輕晃著。")
     } else if room_name.contains("曬場邊") {
@@ -3604,11 +3954,11 @@ fn scene_reentry_log(room_name: &str) -> Option<&'static str> {
     } else if room_name.contains("糧車泊位") {
         Some("你回到糧車泊位。泊位邊的麻繩被收短一截，搬糧人換肩接袋，木輪聲仍沉沉壓在濕土上。")
     } else if room_name.contains("河口潮泥") || room_name.contains("潮泥碼頭") {
-        Some("你回到河口潮泥碼頭。潮泥上又多了一層腳印，碼頭工把剛靠岸的貨聲分向稅站棚和船行門面。")
+        Some("你回到河口潮泥碼頭。潮泥上又多了一層腳印，碼頭工把靠岸的貨聲分向稅站棚和船行門面。")
     } else if room_name.contains("稅站棚") {
         Some("你回到稅站棚。桌上貨單換了幾張，稅吏仍壓著印章，棚外等待查驗的人群往前挪了一截。")
     } else if room_name.contains("船行門面") {
-        Some("你回到船行門面。航線板還在門下潮濕發暗，船行人把剛問到的船位重新報給等候的人。")
+        Some("你回到船行門面。航線板還在門下潮濕發暗，船行人把問妥的船位重新報給等候的人。")
     } else if room_name.contains("潮線貨場") {
         Some("你回到潮線貨場。潮印旁新添了木箱拖痕，搬貨人趁水線未漲又把箱包往候泊線推近。")
     } else if room_name.contains("風舶角港倉門") || room_name.contains("港倉門") {
@@ -3629,16 +3979,16 @@ fn scene_reentry_log(room_name: &str) -> Option<&'static str> {
         Some("你回到船戶街口。飯攤鍋聲仍在，招工牌下換了幾個等活的人，船戶把船期重新說了一遍。")
     } else if room_name.contains("外貿碼頭") {
         Some("你回到外貿碼頭。吊繩又放下一只外地貨箱，船員壓住箱角，港旗聲重新貼回耳邊。")
-    } else if room_name.contains("海關前棚") {
-        Some("你回到海關前棚。木桌上的貨單換了一疊，海關吏把封條重新壓平，棚外貨箱往前挪了一截。")
+    } else if room_name.contains("舶司前棚") {
+        Some("你回到舶司前棚。木桌上的貨單換了一疊，舶司吏把封條重新壓平，棚外貨箱往前挪了一截。")
     } else if room_name.contains("商館街口") {
         Some("你回到商館街口。貨樣匣又打開一次，商館人把新問到的價碼送往匯兌小屋。")
     } else if room_name.contains("風舶角外洋棧倉") || room_name.contains("外洋棧倉") {
         Some("你回到風舶角外洋棧倉。雨布被拖箱聲頂起又落下，倉管把新放行的箱包推進門內陰影。")
     } else if room_name.contains("翻譯桌") {
-        Some("你回到翻譯桌旁。合約邊角被重新壓住，翻譯把方才沒說清的貨名再轉了一遍。")
+        Some("你回到翻譯桌旁。合約邊角被重新壓住，翻譯把先前沒說清的貨名再轉了一遍。")
     } else if room_name.contains("匯兌小屋") {
-        Some("你回到匯兌小屋。銅秤還在輕晃，兌票人把新價碼添進賬冊，錢票聲很快低下去。")
+        Some("你回到匯兌小屋。銅秤還在輕晃，兌票人把新價碼添進帳冊，錢票聲很快低下去。")
     } else if room_name.contains("風舶角避風港") || room_name.contains("避風港") {
         Some("你回到風舶角避風港。結霜纜繩又被拉緊一截，避風船貼著木樁換了角度。")
     } else if room_name.contains("港灣貨棚") {
@@ -3648,7 +3998,7 @@ fn scene_reentry_log(room_name: &str) -> Option<&'static str> {
     } else if room_name.contains("冷霧魚市") {
         Some("你回到冷霧魚市。木秤旁換了一籃魚貨，魚販把問價聲重新壓回濕布邊。")
     } else if room_name.contains("船戶屋排") {
-        Some("你回到船戶屋排。火盆煙氣還貼著屋簷，排班板上的濕木牌換了一格位置。")
+        Some("你回到船戶屋排。火盆煙氣還貼著屋簷，輪值板上的濕木牌換了一格位置。")
     } else if room_name.contains("烏石鼻守望石階") || room_name.contains("守望石階") {
         Some("你回到烏石鼻守望石階。霧牌仍在風口晃動，守望人把目光從港外收回石階下。")
     } else if room_name.contains("礦坑外棚") {
@@ -3670,7 +4020,7 @@ fn scene_reentry_log(room_name: &str) -> Option<&'static str> {
     } else if room_name.contains("田埂深處") {
         Some("你回到田埂深處。濕草重新貼上腳邊，遠處田區路口的人聲只剩一點斷續回音。")
     } else if room_name.contains("挑擔小徑") {
-        Some("你又轉回挑擔小徑。草邊新腳印接上舊痕，像是剛有挑擔人從這裡避過渡口正面。")
+        Some("你又轉回挑擔小徑。草邊新腳印接上舊痕，像是有挑擔人從這裡避過渡口正面。")
     } else if room_name.contains("水尾寮外谷地路") || room_name.contains("外谷地路") {
         Some("你回到水尾寮外谷地路。攤架聲從身後斷續傳來，泥路上的小件貨腳印又密了一層。")
     } else if room_name.contains("南側谷地路") {
@@ -3682,17 +4032,17 @@ fn scene_reentry_log(room_name: &str) -> Option<&'static str> {
     } else if room_name.contains("貨路外彎") {
         Some("你回到貨路外彎。草坡前的路面仍被車輪壓亮，貨流像是從這裡拐向更遠處。")
     } else if room_name.contains("水尾寮渡頭市集") || room_name.contains("渡頭市集") {
-        Some("你又走回水尾寮渡頭市集。價牌仍在河風裡晃，方才談價的人換了位置，打聽渡船的低語還沒散。")
+        Some("你又走回水尾寮渡頭市集。價牌仍在河風裡晃，先前談價的人換了位置，打聽渡船的低語還沒散。")
     } else if room_name.contains("歇腳") {
         Some("你回到臨河歇腳處。長凳旁的茶碗換了幾隻手，包袱仍壓在腳邊，談話聲貼著河風低低延續。")
     } else if room_name.contains("踏板") {
-        Some("你又停在渡船踏板前。濕木板仍隨水聲輕晃，方才讓開的人群又把腳步收回繩柱旁。")
+        Some("你又停在渡船踏板前。濕木板仍隨水聲輕晃，先前讓開的人群又把腳步收回繩柱旁。")
     } else if room_name.contains("南岸") || room_name.contains("泥坡") {
         Some("你回到南岸泥坡。濕泥上新舊腳印疊在一起，坡邊等船的人換了站姿，目光仍貼著河面。")
     } else if room_name.contains("船戶作業點") || room_name.contains("作業") {
-        Some("你又走近船戶作業點。木樁旁的纜繩少了一圈，船邊的人把方才沒說完的活計接著分派下去。")
+        Some("你又走近船戶作業點。木樁旁的纜繩少了一圈，船邊的人把先前沒說完的活計接著分派下去。")
     } else if room_name.contains("倉棚") {
-        Some("你回到倉棚前場。棚門旁的麻袋被挪出一道新縫，木箱拖痕在泥地上接上方才那一串腳印。")
+        Some("你回到倉棚前場。棚門旁的麻袋被挪出一道新縫，木箱拖痕在泥地上接上先前那一串腳印。")
     } else {
         None
     }
@@ -3707,7 +4057,7 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
         vec![
             (
                 "水尾寮渡頭市集",
-                "你從水尾寮渡頭市集那頭回到半嶺水岸渡口。身後的價牌聲被河風拉遠，踏板前的人群已重新合攏；有人把剛買的零散貨塞回包袱裡，又抬頭看船。",
+                "你從水尾寮渡頭市集那頭回到半嶺水岸渡口。身後的價牌聲被河風拉遠，踏板前的人群已重新合攏；有人把買妥的零散貨塞回包袱裡，又抬頭看船。",
             ),
             (
                 "渡船踏板",
@@ -3864,7 +4214,7 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
             ),
             (
                 "短船泊位",
-                "你從短船泊位走進魚貨分揀場。船槳聲斷在身後，剛上岸的魚貨沿濕布被分往幾處籃口。",
+                "你從短船泊位走進魚貨分揀場。船槳聲斷在身後，新上岸的魚貨沿濕布被分往幾處籃口。",
             ),
             (
                 "水倉前場",
@@ -4157,27 +4507,27 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
                 "你從帆布曬場走到外貿碼頭。舊帆和針線架被留在身後，港旗、吊繩和外地貨箱把海風接到眼前。",
             ),
             (
-                "海關前棚",
-                "你從海關前棚回到外貿碼頭。貨單與封條聲退到棚下，船員重新把吊繩下的貨箱扶穩。",
+                "舶司前棚",
+                "你從舶司前棚回到外貿碼頭。貨單與封條聲退到棚下，船員重新把吊繩下的貨箱扶穩。",
             ),
             (
                 "商館街口",
                 "你從商館街口回到外貿碼頭。貨樣匣聲被留在門口，港旗和甲板滑輪重新壓住耳邊。",
             ),
         ]
-    } else if room_name.contains("海關前棚") {
+    } else if room_name.contains("舶司前棚") {
         vec![
             (
                 "外貿碼頭",
-                "你從外貿碼頭走進海關前棚。港旗聲退到身後，濕貨單、封條和待查貨箱把腳步收進棚下。",
+                "你從外貿碼頭走進舶司前棚。港旗聲退到身後，濕貨單、封條和待查貨箱把腳步收進棚下。",
             ),
             (
                 "風舶角外洋棧倉",
-                "你從風舶角外洋棧倉回到海關前棚。雨布和拖箱聲落在身後，海關吏把新放行的貨單壓回桌上。",
+                "你從風舶角外洋棧倉回到舶司前棚。雨布和拖箱聲落在身後，舶司吏把新放行的貨單壓回桌上。",
             ),
             (
                 "翻譯桌",
-                "你從翻譯桌回到海關前棚。合約上的陌生貨名剛被說清，印章和封條立刻接住下一步。",
+                "你從翻譯桌回到舶司前棚。合約上的陌生貨名一經核清，印章和封條便接住下一步。",
             ),
         ]
     } else if room_name.contains("商館街口") {
@@ -4194,8 +4544,8 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
     } else if room_name.contains("風舶角外洋棧倉") || room_name.contains("外洋棧倉") {
         vec![
             (
-                "海關前棚",
-                "你從海關前棚走到風舶角外洋棧倉。封條聲留在棚下，已查和待查的異地箱把門前分成兩側。",
+                "舶司前棚",
+                "你從舶司前棚走到風舶角外洋棧倉。封條聲留在棚下，已查和待查的異地箱把門前分成兩側。",
             ),
             (
                 "商館街口",
@@ -4209,8 +4559,8 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
     } else if room_name.contains("翻譯桌") {
         vec![
             (
-                "海關前棚",
-                "你從海關前棚走到翻譯桌。封條與印章暫時停在身後，合約上的兩種文字把貨名重新攤開。",
+                "舶司前棚",
+                "你從舶司前棚走到翻譯桌。封條與印章暫時停在身後，合約上的兩種文字把貨名重新攤開。",
             ),
             (
                 "匯兌小屋",
@@ -4221,11 +4571,11 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
         vec![
             (
                 "風舶角外洋棧倉",
-                "你從風舶角外洋棧倉走到匯兌小屋。雨布和拖箱聲退到身後，銅秤、賬冊和錢票把貨名換成價碼。",
+                "你從風舶角外洋棧倉走到匯兌小屋。雨布和拖箱聲退到身後，銅秤、帳冊和錢票把貨名換成價碼。",
             ),
             (
                 "翻譯桌",
-                "你從翻譯桌走到匯兌小屋。合約文字留在桌上，兌票人把剛說清的價碼壓進賬冊欄裡。",
+                "你從翻譯桌走到匯兌小屋。合約文字留在桌上，兌票人把議定的價碼壓進帳冊欄裡。",
             ),
         ]
     } else if room_name.contains("風舶角避風港") || room_name.contains("避風港") {
@@ -4288,18 +4638,18 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
         vec![
             (
                 "港灣貨棚",
-                "你從港灣貨棚走到船戶屋排。濕木箱聲落在棚門後，火盆煙氣和排班板把港邊活計收進屋簷下。",
+                "你從港灣貨棚走到船戶屋排。濕木箱聲落在棚門後，火盆煙氣和輪值板把港邊活計收進屋簷下。",
             ),
             (
                 "烏石鼻守望石階",
-                "你從烏石鼻守望石階回到船戶屋排。霧牌和警鈴聲退到風口，排班板前的低語重新接住腳步。",
+                "你從烏石鼻守望石階回到船戶屋排。霧牌和警鈴聲退到風口，輪值板前的低語重新接住腳步。",
             ),
         ]
     } else if room_name.contains("烏石鼻守望石階") || room_name.contains("守望石階") {
         vec![
             (
                 "冷霧魚市",
-                "你從冷霧魚市踏上烏石鼻守望石階。木秤和問價聲被甩在霧裡，警鈴與霧牌聲在風口變清。",
+                "你從冷霧魚市踏上烏石鼻守望石階。木秤和問價聲被拋在霧裡，警鈴與霧牌聲在風口變清。",
             ),
             (
                 "船戶屋排",
@@ -4344,7 +4694,7 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
             ),
             (
                 "工具修棚",
-                "你從工具修棚回到粗料倉。敲鐵聲落在棚後，倉管把剛修好的車架旁邊礦袋重新標記。",
+                "你從工具修棚回到粗料倉。敲鐵聲落在棚後，倉管把修妥的車架旁邊礦袋重新標記。",
             ),
         ]
     } else if room_name.contains("工具修棚") {
@@ -4441,75 +4791,6 @@ fn scene_route_reentry_logs(room_name: &str) -> Vec<(&'static str, &'static str)
     }
 }
 
-fn looks_like_private_name(s: &str) -> bool {
-    let mut count = 0usize;
-    for ch in s.chars() {
-        if !('\u{4e00}'..='\u{9fff}').contains(&ch) {
-            return false;
-        }
-        count += 1;
-    }
-    (2..=4).contains(&count) && !looks_like_public_role(s)
-}
-
-fn looks_like_public_role(s: &str) -> bool {
-    if game::is_final_map_public_role(s) {
-        return true;
-    }
-    let roles = [
-        "船戶",
-        "渡工",
-        "挑夫",
-        "旅人",
-        "商人",
-        "攤販",
-        "茶客",
-        "行人",
-        "獵戶",
-        "道士",
-        "守衛",
-        "工匠",
-        "學徒",
-        "修船者",
-        "候渡者",
-        "看貨人",
-        "歇腳旅人",
-        "候船者",
-        "上岸客",
-        "搬貨人",
-        "引船人",
-        "分揀工",
-        "採集者",
-        "倉管",
-        "秤手",
-        "守倉人",
-        "翻穀人",
-        "車夫",
-        "搬糧人",
-        "碼頭工",
-        "稅吏",
-        "船行人",
-        "船員",
-        "船匠",
-        "修船工",
-        "船客",
-        "補帆人",
-        "海關吏",
-        "商館人",
-        "翻譯",
-        "兌票人",
-        "搬魚人",
-        "補網人",
-        "魚販",
-        "船戶家屬",
-        "守望人",
-        "礦工",
-        "洗礦工",
-        "修具工",
-        "推車人",
-    ];
-    roles.iter().any(|role| s.contains(role))
-}
 
 // 此檔仍保留退役方格的相容處理器；相關小工具暫時位於測試模組後方，
 // 待方格相容層整體移除時一併刪除，避免為通過 lint 搬動大段既有程式。
@@ -4974,13 +5255,13 @@ mod tests {
     #[test]
     fn m3_053_entry_logs_have_trade_port_presence_not_counts() {
         let dock = player_layer_entry_log("外貿碼頭", 9);
-        let customs = player_layer_entry_log("海關前棚", 9);
+        let customs = player_layer_entry_log("舶司前棚", 9);
         let exchange = player_layer_entry_log("匯兌小屋", 9);
 
         assert!(dock.contains("外貿碼頭"));
         assert!(dock.contains("船員"));
-        assert!(customs.contains("海關前棚"));
-        assert!(customs.contains("海關吏"));
+        assert!(customs.contains("舶司前棚"));
+        assert!(customs.contains("舶司吏"));
         assert!(exchange.contains("匯兌小屋"));
         assert!(exchange.contains("兌票人"));
         assert_eq!(crowd_label_for_scene("外貿碼頭"), "外貿人群");
@@ -4995,15 +5276,15 @@ mod tests {
         let generic = player_layer_reentry_log("外貿碼頭", 9);
         let from_sailcloth = route_reentry_log_for_room("外貿碼頭", "帆布曬場", 9)
             .expect("外貿碼頭應有從帆布曬場進入的路徑句");
-        let from_customs = route_reentry_log_for_room("翻譯桌", "海關前棚", 9)
-            .expect("翻譯桌應有從海關前棚進入的路徑句");
+        let from_customs = route_reentry_log_for_room("翻譯桌", "舶司前棚", 9)
+            .expect("翻譯桌應有從舶司前棚進入的路徑句");
         let from_warehouse = route_reentry_log_for_room("匯兌小屋", "風舶角外洋棧倉", 9)
             .expect("匯兌小屋應有從風舶角外洋棧倉進入的路徑句");
 
         assert_ne!(generic, from_sailcloth);
         assert!(from_sailcloth.contains("從帆布曬場走到外貿碼頭"));
         assert!(from_sailcloth.contains("港旗"));
-        assert!(from_customs.contains("從海關前棚走到翻譯桌"));
+        assert!(from_customs.contains("從舶司前棚走到翻譯桌"));
         assert!(from_warehouse.contains("從風舶角外洋棧倉走到匯兌小屋"));
         assert!(!from_sailcloth.contains("9"));
         assert!(!from_customs.contains("9"));
@@ -5013,7 +5294,7 @@ mod tests {
     #[test]
     fn m3_053_observed_labels_fall_back_to_public_roles() {
         assert_eq!(observed_label_for_scene("張三", "外貿碼頭"), "陌生人");
-        assert_eq!(observed_label_for_scene("李四", "海關前棚"), "陌生人");
+        assert_eq!(observed_label_for_scene("李四", "舶司前棚"), "陌生人");
         assert_eq!(observed_label_for_scene("王五", "翻譯桌"), "陌生人");
         assert_eq!(observed_label_for_scene("趙六", "匯兌小屋"), "陌生人");
     }
@@ -5193,7 +5474,7 @@ mod tests {
             ("畜欄口", "牲口販"),
             ("獸醫棚", "獸醫"),
             ("商隊泊位", "商隊人"),
-            ("客棧前廊", "店伙"),
+            ("旅社前廊", "店伙"),
             ("補給市集", "小販"),
             ("巡哨棚", "巡哨"),
         ] {
@@ -5561,6 +5842,19 @@ pub(super) fn handle_mutate_terrain(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error("地形改造失敗");
         return;
     }
+    // 若改造為水田、旱田或藥圃，立即向作物生長核心註冊新播種農田
+    match target_terrain {
+        Terrain::FarmField => {
+            crate::npc::causal_core::register_crop_plot_sown(tx, ty, "water_field", crate::game::now_unix());
+        }
+        Terrain::DryField => {
+            crate::npc::causal_core::register_crop_plot_sown(tx, ty, "dry_field", crate::game::now_unix());
+        }
+        Terrain::HerbGarden => {
+            crate::npc::causal_core::register_crop_plot_sown(tx, ty, "herb_garden", crate::game::now_unix());
+        }
+        _ => {}
+    }
 
     let narrative = match target_terrain {
         Terrain::EmptyFurrow => {
@@ -5570,7 +5864,7 @@ pub(super) fn handle_mutate_terrain(conn: &WsConnection, msg: &ClientMsg) {
             "【百工開拓・播種育苗】你順著整好的田壟引水播下稻種，新苗在微風與活水滋潤下吐露青翠生機。".to_string()
         }
         Terrain::DryField => {
-            "【百工開拓・整飭旱田】你耙平土塊、修整畦道，將田地整理得疏鬆透氣，便利各色雜糧與耐旱作物深扎根脈。".to_string()
+            "【百工開拓・整飭旱田】你耙平土塊、修整畦道，將田地整理得疏鬆透氣，便利各色雜糧與耐旱作物深紮根脈。".to_string()
         }
         Terrain::HerbGarden => {
             "【百工開拓・分畦藥圃】你細分苗床、鋪設腐殖沃土與疏水碎石，闢出一壟壟清氣撲鼻、適宜草藥生長的分畦苗圃。".to_string()

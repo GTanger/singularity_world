@@ -6,8 +6,8 @@
       {"hour_start": 7, "hour_end": 12, "activity": "work", "location_pref": ["outdoor", "gate"], "description": "指導學徒練功或進行街頭巡邏護衛"},
       {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["tavern", "home"], "description": "大量進食以補充練武消耗的氣血"},
       {"hour_start": 14, "hour_end": 18, "activity": "work", "location_pref": ["outdoor", "gate"], "description": "繼續指導學徒，偶爾與同行實戰切磋"},
-      {"hour_start": 18, "hour_end": 21, "activity": "socialize", "location_pref": ["tavern", "home"], "description": "在酒館與人拚酒，交換江湖情報，或在院子裡擦拭兵器"},
-      {"hour_start": 21, "hour_end": 24, "activity": "sleep", "location_pref": ["home", "indoor"], "description": "盤膝打坐代替入眠，運氣療傷"},
+      {"hour_start": 18, "hour_end": 21, "activity": "socialize", "location_pref": ["tavern", "home"], "description": "在飯館與人同席飲茶論武，交換半島情報，或在院子裡擦拭兵器"},
+      {"hour_start": 21, "hour_end": 24, "activity": "sleep", "location_pref": ["home", "indoor"], "description": "早早歇息養神，活絡筋骨"},
       {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["home", "indoor"], "description": "保持極高警覺性的淺眠狀態"}
     ]
   },
@@ -25,7 +25,7 @@
     "arrive_texts": [
       "【{name}】如同一座鐵塔般從{from}方向出現，目光如炬。",
       "【{name}】自{from}方向走來，每一步都踏得極為沉穩有力。",
-      "【{name}】從{from}方向大步走來，身上還帶著剛練完功的熱氣。",
+      "【{name}】從{from}方向大步走來，身上還帶著初練完功的熱氣。",
       "【{name}】帶著一身駭人的武道氣焰從{from}方向踏入此地。",
       "【{name}】從{from}走來，雖然雙手空空，卻給人一種刀劍出鞘的壓迫感。"
     ]
@@ -33,25 +33,25 @@
   "trade": {
     "buy_markup": 1.0,
     "sell_markup": 1.0,
-    "preferred_goods": ["金創藥", "酒肉", "護具", "兵器殘片", "氣血丹丸"],
+    "preferred_goods": ["金創藥", "酒肉", "護具", "兵器殘片", "活血藥丸"],
     "refused_goods": ["文房四寶", "胭脂水粉", "絲綢"],
     "haggle_tolerance": 1,
     "haggle_texts": {
       "accept": [
         "【{name}】點頭：「痛快！就這個價。」",
-        "【{name}】接過東西：「好！老夫最喜歡和爽快人做買賣。」",
+        "【{name}】接過東西：「好！我最喜歡和爽快人做買賣。」",
         "【{name}】大笑一聲：「成交！算我欠你一個人情。」",
-        "【{name}】將錢扔在桌上：「這點錢老夫還出得起，拿去。」"
+        "【{name}】將錢扔在桌上：「這點錢我還出得起，拿去。」"
       ],
       "reject": [
         "【{name}】冷哼一聲：「你當我們練武的人好欺負？滾！」",
         "【{name}】一拍桌子，震得茶杯亂跳：「休想！這點錢你想買什麼？」",
-        "【{name}】眼神一凜：「不要得寸進尺，老夫的耐心有限。」",
+        "【{name}】眼神一凜：「不要得寸進尺，我的耐心有限。」",
         "【{name}】將東西推開：「道不同不相為謀，免談。」"
       ],
       "counter": [
         "【{name}】皺起眉頭：「再降兩成，否則這買賣作罷。」",
-        "【{name}】伸出三根粗壯的手指：「加三枚銀幣，這是我最後的底線。」",
+        "【{name}】伸出三根粗壯的手指：「加三枚鎂幣，這是我最後的底線。」",
         "【{name}】不耐煩地揮手：「這點小錢也爭來爭去？各退一步，如何？」",
         "【{name}】沉聲道：「看你也不容易，再讓點利，權當交個朋友。」"
       ]

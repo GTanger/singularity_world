@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>奇點世界 — 靜態文字中的活世界流動感（三大破框原型）</title>
+<style>
+  :root {
+    --paper: #f3ede0;
+    --paper-soft: #f8f4eb;
+    --ink: #2c2117;
+    --ink-mid: #5a4a38;
+    --ink-faint: #8a7964;
+    --accent: #7a5821;
+    --cinnabar: #8f3a1c;
+    --pine: #1f3f30;
+    --hairline: rgba(73, 51, 28, 0.12);
+    --font-serif: "LXGW WenKai Mono TC", "Chiron GoRound TC", "Noto Serif TC", "Songti TC", serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    width: 100%;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background: #dfd7c6;
+    color: var(--ink);
+    font-family: var(--font-serif);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .view-radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── 頂部極簡切換列 ── */
+  .switcher-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 5px 4px;
+    background: #231b14;
+    color: #dcd2c0;
+    font-size: 11.5px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .sw-tab {
+    padding: 3.5px 7px;
+    border-radius: 999px;
+    cursor: pointer;
+    color: #bfb29c;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    user-select: none;
+    font-size: 11.5px;
+    line-height: 1.2;
+  }
+
+#v-fusion:checked ~ .switcher-bar label[for="v-fusion"],
+#v-1:checked ~ .switcher-bar label[for="v-1"],
+#v-2:checked ~ .switcher-bar label[for="v-2"],
+#v-3:checked ~ .switcher-bar label[for="v-3"],
+#v-all:checked ~ .switcher-bar label[for="v-all"] {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+    font-weight: 600;
+  }
+
+  .sw-hint {
+    font-size: 12px;
+    color: #9e907a;
+    margin-left: 8px;
+  }
+
+  /* ── 畫布容器：桌面三欄並排，手機單畫面 1:1 滿版 ── */
+  .stage-deck {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 28px;
+    padding: 20px 24px 32px;
+    max-width: 1560px;
+    margin: 0 auto;
+  }
+
+  .proto-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 390px;
+    flex: 0 0 390px;
+  }
+
+  .proto-caption {
+    font-size: 13px;
+    color: #4a3c2c;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* ── 390×800 實機比例宣紙外框 ── */
+  .screen {
+    position: relative;
+    width: 390px;
+    height: 800px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.55), transparent 48%),
+      var(--paper);
+    border-radius: 22px;
+    border: 1px solid rgba(73, 51, 28, 0.22);
+    box-shadow: 0 14px 36px rgba(38, 28, 16, 0.14);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: background 0.9s ease, color 0.9s ease;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     共通：頂欄、場景題名、底欄
+     ══════════════════════════════════════════════════════════ */
+  .sw-worldbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px 7px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 13px;
+    color: var(--ink-mid);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .sw-scene-head {
+    padding: 14px 22px 10px;
+    flex-shrink: 0;
+  }
+
+  .sw-place-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: inherit;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+
+  .sw-place-atmo {
+    font-size: 16px;
+    line-height: 1.68;
+    color: var(--ink-mid);
+    letter-spacing: 0.03em;
+    transition: opacity 0.45s ease;
+  }
+
+  .sw-trail-origin {
+    font-size: 12.5px;
+    color: var(--accent);
+    margin-top: 5px;
+    letter-spacing: 0.04em;
+    opacity: 0.85;
+  }
+
+  .sw-statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 20px 11px;
+    border-top: 1px solid var(--hairline);
+    background: rgba(243, 237, 224, 0.65);
+    flex-shrink: 0;
+  }
+
+  .sw-self-btn {
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    color: inherit;
+    background: none;
+    border: none;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .sw-bar-right {
+    display: flex;
+    gap: 8px;
+  }
+
+  .sw-bar-btn {
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--ink-mid);
+    background: rgba(255, 253, 248, 0.55);
+    border: 1px solid rgba(73, 51, 28, 0.18);
+    border-radius: 6px;
+    padding: 4px 11px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     共通：活態墨跡（主名 ＋ 呼吸微態附記，無白貼紙框）
+     ══════════════════════════════════════════════════════════ */
+  .ink-entity {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: transparent;
+    border: none;
+    font-family: var(--font-serif);
+    cursor: pointer;
+    padding: 4px 6px;
+    transition: left 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                top 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.55s ease;
+    white-space: nowrap;
+    z-index: 5;
+  }
+
+  .ent-name {
+    font-size: 17.5px;
+    letter-spacing: 0.06em;
+    padding-bottom: 2px;
+  }
+
+  .ink-entity.is-obj .ent-name {
+    font-weight: 500;
+    color: #4a3a2a;
+    border-bottom: 1px solid rgba(73, 51, 28, 0.24);
+  }
+
+  .ink-entity.is-npc .ent-name {
+    font-weight: 600;
+    color: var(--pine);
+    border-bottom: 1.5px solid rgba(31, 63, 48, 0.36);
+  }
+
+  .ink-entity.is-stall .ent-name {
+    font-weight: 600;
+    color: #632814;
+    border-bottom: 1.5px solid rgba(143, 58, 28, 0.42);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .ink-entity.is-stall .ent-name::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cinnabar);
+    display: inline-block;
+  }
+
+  /* 呼吸微態附記：隨世界脈動靜靜更迭 */
+  .ent-micro-state {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    animation: inkBreath 3.8s ease-in-out infinite;
+  }
+
+  .ent-passer-cadence {
+    font-size: 11.5px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+
+  @keyframes inkBreath {
+    0%, 100% { opacity: 0.52; }
+    50% { opacity: 0.92; }
+  }
+
+  /* 過客步進動畫與擦肩低語、離場餘韻 */
+  .ink-entity.is-passer {
+    animation: passerFadeIn 0.7s ease;
+  }
+
+  @keyframes passerFadeIn {
+    from { opacity: 0; transform: translate(-50%, -44%); }
+    to   { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  .ink-whisper-thread {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: rgba(252, 248, 238, 0.92);
+    border: 1px dashed rgba(122, 88, 33, 0.38);
+    border-radius: 999px;
+    padding: 3px 11px;
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    color: #5c3d18;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    white-space: nowrap;
+    z-index: 8;
+    animation: passerFadeIn 0.55s ease;
+  }
+
+  .ink-residual-trace {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    font-family: var(--font-serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+    animation: traceDissolve 3.8s ease forwards;
+  }
+
+  @keyframes traceDissolve {
+    0%   { opacity: 0; }
+    20%  { opacity: 0.85; }
+    80%  { opacity: 0.65; }
+    100% { opacity: 0.25; }
+  }
+
+  /* 移步換景方位過渡 */
+  .shift-from-west { animation: shiftWest 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+  .shift-from-east { animation: shiftEast 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+  .shift-from-north { animation: shiftNorth 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+  .shift-from-south { animation: shiftSouth 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+
+  @keyframes shiftWest {
+    from { opacity: 0; transform: translateX(-28px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes shiftEast {
+    from { opacity: 0; transform: translateX(28px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes shiftNorth {
+    from { opacity: 0; transform: translateY(-24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shiftSouth {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     共通：輕巧浮動紙箋（Popover）
+     ══════════════════════════════════════════════════════════ */
+  .ink-popover {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    background: rgba(252, 249, 242, 0.99);
+    border: 1px solid rgba(73, 51, 28, 0.24);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 12px 32px rgba(36, 25, 14, 0.16);
+    z-index: 25;
+    display: none;
+    color: var(--ink);
+  }
+
+  .ink-popover.is-open {
+    display: block;
+    animation: passerFadeIn 0.22s ease;
+  }
+
+  .has-popover #p1-entities-layer,
+  .has-popover #p1-passer-layer,
+  .has-popover .p2-reading-body {
+    opacity: 0.2;
+    transition: opacity 0.2s ease;
+  }
+
+  .pop-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+
+  .pop-title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .pop-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .pop-sub {
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .pop-close {
+    font-size: 19px;
+    color: var(--ink-faint);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+  }
+
+  .pop-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .pop-pill {
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--ink);
+    background: #efe7d6;
+    border: 1px solid rgba(122, 88, 33, 0.28);
+    border-radius: 999px;
+    padding: 4px 12px;
+    cursor: pointer;
+  }
+
+  .pop-pill.active {
+    background: var(--ink);
+    color: var(--paper-soft);
+    border-color: var(--ink);
+  }
+
+  .pop-log {
+    font-size: 14.5px;
+    line-height: 1.66;
+    color: #3d3022;
+    padding-top: 8px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     流動一：行跡水墨場（四極邊籤 ＋ 步進穿行 ＋ 離場餘韻）
+     ══════════════════════════════════════════════════════════ */
+  .p1-canvas {
+    position: relative;
+    flex: 1 1 auto;
+    margin: 0 14px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .p1-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .p1-layer button {
+    pointer-events: auto;
+  }
+
+  .s1-exit {
+    position: absolute;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(248, 244, 235, 0.78);
+    border: 1px solid rgba(122, 88, 33, 0.24);
+    border-radius: 999px;
+    padding: 5px 14px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    z-index: 10;
+    transition: background-color 0.15s ease, transform 0.12s ease;
+  }
+
+  .s1-exit:active {
+    background: #e5dac6;
+  }
+
+  .s1-exit.north { top: 12px; left: 50%; transform: translateX(-50%); }
+  .s1-exit.south { bottom: 12px; left: 50%; transform: translateX(-50%); }
+  .s1-exit.west {
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    padding: 12px 6px;
+    letter-spacing: 0.12em;
+  }
+  .s1-exit.east {
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    padding: 12px 6px;
+    letter-spacing: 0.12em;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     流動二：當下三息・活書卷（萬物皆在行間、原位墨變、新墨深舊墨淡）
+     ══════════════════════════════════════════════════════════ */
+  .p2-page {
+    position: relative;
+    flex: 1 1 auto;
+    margin: 0 18px;
+    padding: 18px 6px 12px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .p2-reading-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .p2-living-para {
+    font-size: 17px;
+    line-height: 1.92;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+
+  .inline-ink {
+    appearance: none;
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0 2px;
+    margin: 0 1px;
+    cursor: pointer;
+    letter-spacing: inherit;
+    line-height: 1.3;
+  }
+
+  .inline-ink.is-obj {
+    font-weight: 600;
+    color: #4a3a2a;
+    border-bottom: 1px solid rgba(73, 51, 28, 0.35);
+  }
+
+  .inline-ink.is-npc {
+    font-weight: 700;
+    color: var(--pine);
+    border-bottom: 1.5px solid rgba(31, 63, 48, 0.45);
+  }
+
+  .inline-ink.is-stall {
+    font-weight: 700;
+    color: var(--cinnabar);
+    border-bottom: 1.5px solid rgba(143, 58, 28, 0.48);
+  }
+
+  .morph-clause {
+    display: inline;
+    transition: opacity 0.32s ease;
+  }
+
+  .morph-clause.ink-morphing {
+    opacity: 0.15;
+  }
+
+  /* 當下三息區（固定高度、無捲軸，新墨深、舊墨淡） */
+  .p2-breaths-zone {
+    margin-top: 6px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(73, 51, 28, 0.16);
+    min-height: 158px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .p2-breaths-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .breath-line {
+    font-size: 15.5px;
+    line-height: 1.68;
+    letter-spacing: 0.03em;
+    transition: opacity 0.6s ease;
+  }
+
+  .breath-fresh {
+    color: var(--ink);
+    opacity: 1;
+    animation: freshInkIn 0.65s ease;
+  }
+
+  .breath-mid {
+    color: var(--ink-mid);
+    opacity: 0.66;
+  }
+
+  .breath-faint {
+    color: var(--ink-faint);
+    opacity: 0.36;
+  }
+
+  @keyframes freshInkIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .p2-compass-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    padding: 10px 16px 12px;
+    border-top: 1px solid var(--hairline);
+    flex-shrink: 0;
+  }
+
+  .p2-compass-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 5px 2px;
+    border-radius: 8px;
+    background: rgba(255, 253, 248, 0.65);
+    border: 1px solid rgba(122, 88, 33, 0.2);
+  }
+
+  .p2-compass-btn .dir { font-size: 11px; color: var(--accent); font-weight: 700; }
+  .p2-compass-btn .dest { font-size: 13px; color: var(--ink); font-weight: 600; }
+
+  /* ══════════════════════════════════════════════════════════
+     流動三：時光潮汐・因果漣漪（六時序天光紙色流轉 ＋ 出攤收攤 ＋ 感官水紋）
+     ══════════════════════════════════════════════════════════ */
+  #p3-screen[data-tide="dawn"] {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(235, 244, 245, 0.7), transparent 52%),
+      #eaede6;
+    color: #232d2b;
+  }
+  #p3-screen[data-tide="noon"] {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.6), transparent 50%),
+      #f3ede0;
+    color: #2c2117;
+  }
+  #p3-screen[data-tide="dusk"] {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(244, 204, 156, 0.45), transparent 55%),
+      #ebdccb;
+    color: #332014;
+  }
+  #p3-screen[data-tide="night"] {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(56, 70, 92, 0.35), transparent 55%),
+      #1f2126;
+    color: #dfd6c3;
+  }
+
+  #p3-screen[data-tide="night"] .sw-worldbar,
+  #p3-screen[data-tide="night"] .sw-place-atmo,
+  #p3-screen[data-tide="night"] .ent-micro-state,
+  #p3-screen[data-tide="night"] .p3-trace-line {
+    color: #a89f8d;
+  }
+
+  #p3-screen[data-tide="night"] .ink-entity.is-npc .ent-name,
+  #p3-screen[data-tide="night"] .ink-entity.is-obj .ent-name {
+    color: #e6decb;
+    border-bottom-color: rgba(230, 222, 203, 0.35);
+  }
+
+  #p3-screen[data-tide="night"] .sw-statusbar {
+    background: rgba(26, 28, 33, 0.85);
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+
+  #p3-screen[data-tide="night"] .sw-bar-btn,
+  #p3-screen[data-tide="night"] .s2-step {
+    background: rgba(255, 255, 255, 0.08);
+    color: #dfd6c3;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .tide-ribbon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 20px;
+    border-bottom: 1px solid var(--hairline);
+    gap: 6px;
+  }
+
+  .tide-pill {
+    flex: 1 1 0;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 3px 0;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid rgba(122, 88, 33, 0.22);
+    color: inherit;
+    opacity: 0.65;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tide-pill.active {
+    opacity: 1;
+    font-weight: 700;
+    background: rgba(122, 88, 33, 0.16);
+    border-color: rgba(122, 88, 33, 0.5);
+  }
+
+  .p3-canvas {
+    position: relative;
+    flex: 1 1 auto;
+    margin: 0 18px;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  /* 炭烤肉攤感官水墨漣漪 */
+  .ink-entity.has-ripple::after {
+    content: "";
+    position: absolute;
+    width: 96px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid rgba(143, 58, 28, 0.22);
+    pointer-events: none;
+    animation: rippleSpread 3.6s ease-out infinite;
+  }
+
+  @keyframes rippleSpread {
+    0%   { transform: scale(0.75); opacity: 0.65; }
+    100% { transform: scale(1.45); opacity: 0; }
+  }
+
+  .p3-trace-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    text-align: center;
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+
+  .s2-cross-nav {
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr;
+    grid-template-rows: 32px 32px 32px;
+    gap: 4px 8px;
+    align-items: center;
+    justify-items: center;
+    padding: 8px 22px 10px;
+    flex-shrink: 0;
+  }
+
+  .s2-step {
+    min-width: 110px;
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(255, 253, 248, 0.72);
+    border: 1px solid rgba(122, 88, 33, 0.25);
+    color: var(--ink);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .s2-step .dir-char { color: var(--accent); font-size: 12px; }
+  .s2-step.north { grid-column: 1 / 4; grid-row: 1; }
+  .s2-step.west  { grid-column: 1; grid-row: 2; justify-self: end; }
+  .s2-center-dot {
+    grid-column: 2;
+    grid-row: 2;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(122, 88, 33, 0.35);
+  }
+  .s2-step.east  { grid-column: 3; grid-row: 2; justify-self: start; }
+  .s2-step.south { grid-column: 1 / 4; grid-row: 3; }
+
+  /* ══════════════════════════════════════════════════════════
+     融匯定案：活水墨卷（#f-screen）
+     ══════════════════════════════════════════════════════════ */
+  .f-canvas {
+    position: relative;
+    flex: 1 1 auto;
+    margin: 0 14px;
+    border-top: 1px solid var(--hairline);
+    min-height: 290px;
+  }
+
+  .f-tide-btn {
+    font-family: inherit;
+    font-size: 13px;
+    color: inherit;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(122, 88, 33, 0.45);
+    border-radius: 0;
+    padding: 1px 2px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+
+  .f-tide-btn:hover {
+    opacity: 0.85;
+    border-bottom-color: var(--cinnabar);
+  }
+
+  .f-tide-btn .f-cycle-icon {
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .f-tide-hint {
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    margin-left: 2px;
+  }
+
+  /* 當下二息區：固定 2 行無捲軸、零版面跳動 */
+  .f-breaths-zone {
+    margin: 0 18px;
+    padding: 9px 2px 5px;
+    border-top: 1px dashed rgba(73, 51, 28, 0.16);
+    min-height: 102px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-shrink: 0;
+  }
+
+  .f-breaths-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .f-breath-line {
+    font-size: 14.5px;
+    line-height: 1.58;
+    letter-spacing: 0.03em;
+    transition: opacity 0.5s ease;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .f-breath-fresh {
+    color: var(--ink);
+    opacity: 1;
+    font-weight: 500;
+    animation: freshInkIn 0.5s ease;
+  }
+  .f-breath-fresh.is-player-breath {
+    border-left: 2.5px solid var(--cinnabar);
+    padding-left: 8px;
+  }
+
+  .f-breath-faint {
+    color: var(--ink-faint);
+    opacity: 0.42;
+  }
+
+  /* 原位微綻動作籤（取代遮擋舞台的彈窗卡片，僅在點擊該實體時原位浮現，無膠囊外框） */
+  .ent-micro-state[hidden],
+  .ent-inline-actions[hidden] {
+    display: none !important;
+  }
+
+  .ent-inline-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    animation: freshInkIn 0.22s ease;
+  }
+
+  .ent-act-chip {
+    font-family: var(--font-serif);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cinnabar);
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed rgba(143, 58, 28, 0.55);
+    border-radius: 0;
+    padding: 1px 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+  }
+
+  .ent-act-chip:active {
+    opacity: 0.65;
+  }
+
+  #f-screen[data-tide="night"] .ent-act-chip {
+    background: transparent;
+    color: #f0c38e;
+    border-bottom-color: rgba(240, 195, 142, 0.55);
+  }
+  .f-compass-btn.is-origin-dir .f-dir::before {
+    content: "↩ ";
+    font-size: 10px;
+    opacity: 0.75;
+  }
+  /* 底部輕巧四向步履列 */
+  .f-compass-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding: 6px 10px 8px;
+    border-top: 1px solid var(--hairline);
+    flex-shrink: 0;
+  }
+
+  .f-compass-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 3px 2px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--hairline);
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+  }
+
+  .f-compass-btn:last-child {
+    border-right: none;
+  }
+
+  .f-compass-btn:hover {
+    opacity: 0.78;
+  }
+
+  .f-compass-btn:active {
+    transform: scale(0.96);
+  }
+
+  .f-compass-btn .f-dir {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .f-compass-btn.has-pursuit-hint .f-dir::after {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--cinnabar);
+    display: inline-block;
+    animation: inkBreath 1.8s ease-in-out infinite;
+  }
+
+  .f-compass-btn .f-dest {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* 四時序天光紙色平滑流轉 */
+  #f-screen[data-tide="dawn"] {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(235, 244, 245, 0.7), transparent 52%),
+      #eaede6;
+    color: #232d2b;
+  }
+  #f-screen[data-tide="noon"] {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.6), transparent 50%),
+      #f3ede0;
+    color: #2c2117;
+  }
+  #f-screen[data-tide="dusk"] {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(244, 204, 156, 0.45), transparent 55%),
+      #ebdccb;
+    color: #332014;
+  }
+  #f-screen[data-tide="night"] {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(56, 70, 92, 0.35), transparent 55%),
+      #1f2126;
+    color: #dfd6c3;
+  }
+
+  #f-screen[data-tide="night"] .sw-worldbar,
+  #f-screen[data-tide="night"] .sw-place-atmo,
+  #f-screen[data-tide="night"] .ent-micro-state,
+  #f-screen[data-tide="night"] .f-breath-faint {
+    color: #a89f8d;
+  }
+
+  #f-screen[data-tide="night"] .ink-entity.is-npc .ent-name,
+  #f-screen[data-tide="night"] .ink-entity.is-obj .ent-name {
+    color: #e6decb;
+    border-bottom-color: rgba(230, 222, 203, 0.35);
+  }
+
+  #f-screen[data-tide="night"] .sw-statusbar {
+    background: rgba(26, 28, 33, 0.85);
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+
+  #f-screen[data-tide="night"] .sw-bar-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: #dfd6c3;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  #f-screen[data-tide="night"] .f-compass-btn {
+    background: transparent;
+    color: #dfd6c3;
+    border-right-color: rgba(255, 255, 255, 0.12);
+  }
+
+  #f-screen[data-tide="night"] .f-compass-btn:last-child {
+    border-right: none;
+  }
+
+  #f-screen[data-tide="night"] .f-tide-btn {
+    background: transparent;
+    color: #dfd6c3;
+    border-bottom-color: rgba(223, 214, 195, 0.4);
+  }
+
+  #f-screen[data-tide="night"] .f-compass-btn .f-dest {
+    color: #dfd6c3;
+  }
+
+  #f-screen[data-tide="night"] .f-breath-fresh {
+    color: #f5eedf;
+  }
+
+  #f-screen[data-tide="night"] .ink-whisper-thread {
+    background: rgba(36, 40, 48, 0.95);
+    border-color: rgba(220, 190, 130, 0.4);
+    color: #ebdcb9;
+  }
+
+  #f-screen[data-tide="night"] .ink-popover {
+    background: #252830;
+    color: #dfd6c3;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  #f-screen[data-tide="night"] .pop-title { color: #f5eedf; }
+  #f-screen[data-tide="night"] .pop-sub { color: #a89f8d; }
+  #f-screen[data-tide="night"] .pop-close { color: #a89f8d; }
+  #f-screen[data-tide="night"] .pop-log { color: #dfd6c3; }
+  #f-screen[data-tide="night"] .pop-pill {
+    background: #323640;
+    color: #dfd6c3;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  #f-screen[data-tide="night"] .pop-pill.active {
+    background: #d8c8af;
+    color: #1f2126;
+  }
+
+  /* 桌面與手機切換規則 */
+  #v-fusion:checked ~ .stage-deck .col-1,
+  #v-fusion:checked ~ .stage-deck .col-2,
+  #v-fusion:checked ~ .stage-deck .col-3 { display: none; }
+
+  #v-1:checked ~ .stage-deck .col-fusion,
+  #v-1:checked ~ .stage-deck .col-2,
+  #v-1:checked ~ .stage-deck .col-3 { display: none; }
+
+  #v-2:checked ~ .stage-deck .col-fusion,
+  #v-2:checked ~ .stage-deck .col-1,
+  #v-2:checked ~ .stage-deck .col-3 { display: none; }
+
+  #v-3:checked ~ .stage-deck .col-fusion,
+  #v-3:checked ~ .stage-deck .col-1,
+  #v-3:checked ~ .stage-deck .col-2 { display: none; }
+
+  #v-all:checked ~ .stage-deck .col-fusion { display: none; }
+
+  /* ── 手機視窗（<= 1080px）：單一畫面 1:1 滿版體驗 ── */
+  @media (max-width: 1080px) {
+    body { background: var(--paper); }
+    .sw-hint { display: none; }
+    .stage-deck {
+      padding: 0;
+      gap: 0;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .proto-col {
+      width: 100%;
+      flex: 1 1 auto;
+      gap: 0;
+    }
+    .proto-caption { display: none; }
+    .screen {
+      width: 100%;
+      max-width: 480px;
+      height: calc(100dvh - 38px);
+      margin: 0 auto;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    /* 手機視窗下依 radio 顯示單一視角 */
+    /* 手機視窗下依 radio 顯示單一視角，其餘隱藏 */
+    #v-fusion:checked ~ .stage-deck .col-1,
+    #v-fusion:checked ~ .stage-deck .col-2,
+    #v-fusion:checked ~ .stage-deck .col-3 { display: none !important; }
+
+    #v-1:checked ~ .stage-deck .col-fusion,
+    #v-1:checked ~ .stage-deck .col-2,
+    #v-1:checked ~ .stage-deck .col-3 { display: none !important; }
+
+    #v-2:checked ~ .stage-deck .col-fusion,
+    #v-2:checked ~ .stage-deck .col-1,
+    #v-2:checked ~ .stage-deck .col-3 { display: none !important; }
+
+    #v-3:checked ~ .stage-deck .col-fusion,
+    #v-3:checked ~ .stage-deck .col-1,
+    #v-3:checked ~ .stage-deck .col-2 { display: none !important; }
+
+    #v-all:checked ~ .stage-deck .col-fusion { display: none !important; }
+    #v-all:checked ~ .stage-deck .col-1,
+    #v-all:checked ~ .stage-deck .col-2,
+    #v-all:checked ~ .stage-deck .col-3 { display: flex !important; }
+    #v-all:checked ~ .stage-deck {
+      gap: 24px;
+      padding: 12px 0 32px;
+      background: #dfd7c6;
+    }
+    #v-all:checked ~ .stage-deck .proto-caption {
+      display: block;
+      padding: 4px 12px;
+    }
+    #v-all:checked ~ .stage-deck .screen {
+      height: 790px;
+      border-top: 1px solid rgba(73, 51, 28, 0.2);
+      border-bottom: 1px solid rgba(73, 51, 28, 0.2);
+    }
+  }
+</style>
+</head>
+<body>
+
+  <input type="radio" name="proto-view" id="v-fusion" class="view-radio" checked>
+  <input type="radio" name="proto-view" id="v-1" class="view-radio">
+  <input type="radio" name="proto-view" id="v-2" class="view-radio">
+  <input type="radio" name="proto-view" id="v-3" class="view-radio">
+  <input type="radio" name="proto-view" id="v-all" class="view-radio">
+
+  <nav class="switcher-bar" aria-label="動態方案切換">
+    <label for="v-fusion" class="sw-tab">融匯定案</label>
+    <label for="v-1" class="sw-tab">一：行跡</label>
+    <label for="v-2" class="sw-tab">二：三息</label>
+    <label for="v-3" class="sw-tab">三：潮汐</label>
+    <label for="v-all" class="sw-tab">並排對照</label>
+    <span class="sw-hint">（畫面每 3.8 秒自然呼吸推進；可點擊人物、擦肩低語、四邊去路或時序撥盤）</span>
+  </nav>
+
+  <main class="stage-deck">
+
+    <!-- ═══════════════════════════════════════════════════════
+         融匯定案：活水墨卷（取三案之優、逐三案之劣的終局主畫面）
+         ═══════════════════════════════════════════════════════ -->
+    <section class="proto-col col-fusion">
+      <div class="proto-caption">融匯定案：活水墨卷（時序紙色天光 ＋ 2D 水墨空間穿行 ＋ 原位墨變 ＋ 當下二息 ＋ 底部四向步履）</div>
+      <div class="screen" id="f-screen" data-tide="noon">
+        <header class="sw-worldbar">
+          <span>開譜曆 17 年・春融・42 日</span>
+          <div class="sw-bar-right" style="align-items: baseline; gap: 6px;">
+            <button type="button" class="f-tide-btn" id="f-tide-trigger" aria-label="切換時序">
+              <span id="f-tide-text">正晝 12:30</span>
+              <span class="f-cycle-icon">↻</span>
+            </button>
+            <span id="f-place-short">中心石橋</span>
+          </div>
+        </header>
+
+        <div class="sw-scene-head">
+          <h1 class="sw-place-title" id="f-title">文曜・中心樞紐石橋</h1>
+          <p class="sw-place-atmo" id="f-atmo">三水在此匯流，正晝江風微潤，橋頭炭火正溫。</p>
+          <p class="sw-trail-origin" id="f-trail-origin" hidden></p>
+        </div>
+
+        <div class="f-canvas" id="f-canvas">
+          <!-- 在場常駐實體層（含呼吸微態、肉攤感官硃砂水紋、晝夜出攤收攤） -->
+          <div class="p1-layer" id="f-entities-layer"></div>
+
+          <!-- 穿行過客與離場餘韻層（東入 -> 橋心擦肩低語 -> 西出 -> 餘韻消散；可點擊駐足） -->
+          <div class="p1-layer" id="f-passer-layer"></div>
+
+          <!-- 單一輕巧互動紙箋 -->
+          <div class="ink-popover" id="f-popover">
+            <div class="pop-head">
+              <div class="pop-title-group">
+                <span class="pop-title" id="f-pop-title"></span>
+                <span class="pop-sub" id="f-pop-sub"></span>
+              </div>
+              <button type="button" class="pop-close" id="f-pop-close" aria-label="關閉">×</button>
+            </div>
+            <div class="pop-actions" id="f-pop-actions"></div>
+            <div class="pop-log" id="f-pop-log"></div>
+          </div>
+        </div>
+
+        <!-- 無捲軸「當下二息」區（新墨 100% 濃墨 + 前息 42% 淡墨，零跳動，即時同步中央動態） -->
+        <div class="f-breaths-zone" id="f-breaths-zone" aria-live="polite">
+          <div class="f-breaths-list" id="f-breaths-list">
+            <p class="f-breath-line f-breath-fresh" id="f-breath-0">正晝江風微潤，炭烤肉攤前炭火正溫，原塊牛油香氣漫過橋欄。</p>
+            <p class="f-breath-line f-breath-faint" id="f-breath-1">挑擔藥農初刻自東街踏上石階，竹簍裡的山參草氣撲面微苦。</p>
+          </div>
+        </div>
+
+        <!-- 底部輕巧四向步履列（方位推移前往四街，去西街可遇上前刻走過去的挑擔藥農） -->
+        <nav class="f-compass-strip" id="f-compass-strip" aria-label="四向移動">
+          <button type="button" class="f-compass-btn" id="f-exit-west" data-dir="west" data-target="west_st">
+            <span class="f-dir">西</span><span class="f-dest" id="f-dest-west">三水西街</span>
+          </button>
+          <button type="button" class="f-compass-btn" id="f-exit-north" data-dir="north" data-target="north_st">
+            <span class="f-dir">北</span><span class="f-dest" id="f-dest-north">三水北街</span>
+          </button>
+          <button type="button" class="f-compass-btn" id="f-exit-south" data-dir="south" data-target="south_st">
+            <span class="f-dir">南</span><span class="f-dest" id="f-dest-south">三水南街</span>
+          </button>
+          <button type="button" class="f-compass-btn" id="f-exit-east" data-dir="east" data-target="east_st">
+            <span class="f-dir">東</span><span class="f-dest" id="f-dest-east">三水東街</span>
+          </button>
+        </nav>
+
+        <footer class="sw-statusbar">
+          <button type="button" class="sw-self-btn">林青硯</button>
+          <div class="sw-bar-right">
+            <span class="sw-bar-btn">近事</span>
+            <span class="sw-bar-btn">輿圖</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         流動一：行跡水墨場（步進穿行 ＋ 微態呼吸 ＋ 擦肩低語 ＋ 離場餘韻 ＋ 移步換景）
+         ═══════════════════════════════════════════════════════ -->
+    <section class="proto-col col-1">
+      <div class="proto-caption">流動一：行跡水墨場（過客步進穿橋、擦肩低語、離場餘韻、點擊去路推移空間）</div>
+      <div class="screen" id="p1-screen">
+        <header class="sw-worldbar">
+          <span>開譜曆 17 年・春融・42 日</span>
+          <span id="p1-phase-place">正晝 ｜ 中心石橋</span>
+        </header>
+
+        <div class="sw-scene-head">
+          <h1 class="sw-place-title" id="p1-title">文曜・中心樞紐石橋</h1>
+          <p class="sw-place-atmo" id="p1-atmo">三水在此匯流，正晝江風微潤，橋頭炭火正溫。</p>
+          <p class="sw-trail-origin" id="p1-trail-origin" hidden></p>
+        </div>
+
+        <div class="p1-canvas" id="p1-canvas">
+          <!-- 四極去路（點擊直接觸發空間方位推移，還可在西街追上前刻走過去的藥農） -->
+          <button type="button" class="s1-exit north" id="p1-exit-north" data-dir="north" data-target="north_st">北・三水北街</button>
+          <button type="button" class="s1-exit west" id="p1-exit-west" data-dir="west" data-target="west_st">西・三水西街</button>
+          <button type="button" class="s1-exit east" id="p1-exit-east" data-dir="east" data-target="east_st">東・三水東街</button>
+          <button type="button" class="s1-exit south" id="p1-exit-south" data-dir="south" data-target="south_st">南・三水南街</button>
+
+          <!-- 在場常駐實體層（由 ui_mockups.js 即時驅動微態更迭） -->
+          <div class="p1-layer" id="p1-entities-layer"></div>
+
+          <!-- 穿行過客與離場餘韻層（東入 -> 橋心擦肩低語 -> 西出 -> 餘韻消散） -->
+          <div class="p1-layer" id="p1-passer-layer"></div>
+
+          <!-- 單一輕巧互動紙箋 -->
+          <div class="ink-popover" id="p1-popover">
+            <div class="pop-head">
+              <div class="pop-title-group">
+                <span class="pop-title" id="p1-pop-title"></span>
+                <span class="pop-sub" id="p1-pop-sub"></span>
+              </div>
+              <button type="button" class="pop-close" id="p1-pop-close" aria-label="關閉">×</button>
+            </div>
+            <div class="pop-actions" id="p1-pop-actions"></div>
+            <div class="pop-log" id="p1-pop-log"></div>
+          </div>
+        </div>
+
+        <footer class="sw-statusbar">
+          <button type="button" class="sw-self-btn">林青硯</button>
+          <div class="sw-bar-right">
+            <span class="sw-bar-btn">近事</span>
+            <span class="sw-bar-btn">輿圖</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         流動二：當下三息・活書卷（消滅「段落＋按鈕」割裂，萬物皆在正在改寫的句子裡）
+         ═══════════════════════════════════════════════════════ -->
+    <section class="proto-col col-2">
+      <div class="proto-caption">流動二：當下三息・活書卷（萬物嵌於行間、原位墨變、新墨深舊墨淡無捲軸）</div>
+      <div class="screen" id="p2-screen">
+        <header class="sw-worldbar">
+          <span>開譜曆 17 年・春融・42 日</span>
+          <span>正晝 ｜ 中心石橋</span>
+        </header>
+
+        <div class="sw-scene-head">
+          <h1 class="sw-place-title">文曜・中心樞紐石橋</h1>
+        </div>
+
+        <div class="p2-page" id="p2-page">
+          <div class="p2-reading-body" id="p2-static-lines">
+            <p class="p2-living-para">
+              三水在此匯流，正晝日影落在橋頭 <button type="button" class="inline-ink is-obj" data-target="sundial">日晷竹牌</button> 與微潤的 <button type="button" class="inline-ink is-obj" data-target="railing">雕花石欄</button> 上。
+            </p>
+
+            <p class="p2-living-para">
+              欄邊 <button type="button" class="inline-ink is-npc" data-target="scholar">青衫旅人</button> <span class="morph-clause" id="p2-verb-scholar">正憑欄遠眺北岸春水</span>；橋下 <button type="button" class="inline-ink is-npc" data-target="angler">垂釣老叟</button> <span class="morph-clause" id="p2-verb-angler">揚手將青竹釣線甩入碧波</span>。
+            </p>
+
+            <p class="p2-living-para">
+              橋南 <button type="button" class="inline-ink is-stall" data-target="stall">炭烤肉攤</button> 攤主阿火正 <span class="morph-clause" id="p2-verb-stall">煽火起炭，原塊牛油滴落紅炭</span>。
+            </p>
+
+            <!-- 當下三息：無捲軸、不洗版，只留當下三息（新墨深 -> 中墨 -> 殘墨消散） -->
+            <div class="p2-breaths-zone" aria-live="polite">
+              <div class="p2-breaths-list" id="p2-breaths-list"></div>
+            </div>
+          </div>
+
+          <div class="ink-popover" id="p2-popover">
+            <div class="pop-head">
+              <div class="pop-title-group">
+                <span class="pop-title" id="p2-pop-title"></span>
+                <span class="pop-sub" id="p2-pop-sub"></span>
+              </div>
+              <button type="button" class="pop-close" id="p2-pop-close" aria-label="關閉">×</button>
+            </div>
+            <div class="pop-actions" id="p2-pop-actions"></div>
+            <div class="pop-log" id="p2-pop-log"></div>
+          </div>
+        </div>
+
+        <nav class="p2-compass-strip" aria-label="四向移動">
+          <div class="p2-compass-btn"><span class="dir">西</span><span class="dest">三水西街</span></div>
+          <div class="p2-compass-btn"><span class="dir">北</span><span class="dest">三水北街</span></div>
+          <div class="p2-compass-btn"><span class="dir">南</span><span class="dest">三水南街</span></div>
+          <div class="p2-compass-btn"><span class="dir">東</span><span class="dest">三水東街</span></div>
+        </nav>
+
+        <footer class="sw-statusbar">
+          <button type="button" class="sw-self-btn">林青硯</button>
+          <div class="sw-bar-right">
+            <span class="sw-bar-btn">近事</span>
+            <span class="sw-bar-btn">輿圖</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         流動三：時光潮汐・因果漣漪（六時序紙色天光流轉 ＋ 出攤收攤 ＋ 渡船週期）
+         ═══════════════════════════════════════════════════════ -->
+    <section class="proto-col col-3">
+      <div class="proto-caption">流動三：時光潮汐・因果漣漪（天光紙色隨六時序流轉、出攤收攤、渡船靠離）</div>
+      <div class="screen" id="p3-screen" data-tide="noon">
+        <header class="sw-worldbar">
+          <span>開譜曆 17 年・春融・42 日</span>
+          <span id="p3-clock">正晝 12:30 ｜ 中心石橋</span>
+        </header>
+
+        <!-- 六時序潮汐撥盤（自動流轉，亦可手動點選體驗晨昏晝夜紙色與出攤收攤） -->
+        <div class="tide-ribbon" role="group" aria-label="時序潮汐">
+          <button type="button" class="tide-pill" data-idx="0">晨曉・起霧</button>
+          <button type="button" class="tide-pill active" data-idx="1">正晝・出攤</button>
+          <button type="button" class="tide-pill" data-idx="2">黃昏・歸帆</button>
+          <button type="button" class="tide-pill" data-idx="3">入夜・收攤</button>
+        </div>
+
+        <div class="sw-scene-head">
+          <h1 class="sw-place-title">文曜・中心樞紐石橋</h1>
+          <p class="sw-place-atmo" id="p3-prose">正午日影直落晷盤，三水碧波耀眼，橋南炭火正旺，人流絡繹不絕。</p>
+        </div>
+
+        <div class="p3-canvas">
+          <div class="p1-layer" id="p3-stage-nodes"></div>
+          <div class="p3-trace-line" id="p3-trace">· 炭爐牛油焦香隨江風吹向橋北 ·</div>
+
+          <div class="ink-popover" id="p3-popover">
+            <div class="pop-head">
+              <div class="pop-title-group">
+                <span class="pop-title" id="p3-pop-title"></span>
+                <span class="pop-sub" id="p3-pop-sub"></span>
+              </div>
+              <button type="button" class="pop-close" id="p3-pop-close" aria-label="關閉">×</button>
+            </div>
+            <div class="pop-log" id="p3-pop-log"></div>
+          </div>
+        </div>
+
+        <nav class="s2-cross-nav" aria-label="四向移動">
+          <span class="s2-step north"><span class="dir-char">北</span>三水北街</span>
+          <span class="s2-step west"><span class="dir-char">西</span>三水西街</span>
+          <span class="s2-center-dot"></span>
+          <span class="s2-step east"><span class="dir-char">東</span>三水東街</span>
+          <span class="s2-step south"><span class="dir-char">南</span>三水南街</span>
+        </nav>
+
+        <footer class="sw-statusbar">
+          <button type="button" class="sw-self-btn">林青硯</button>
+          <div class="sw-bar-right">
+            <span class="sw-bar-btn">近事</span>
+            <span class="sw-bar-btn">輿圖</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/ui_mockups.js"></script>
+</body>
+</html>

@@ -37,14 +37,24 @@ pub(super) fn choose_place_intent(
     if let Some(pool) = crate::pg::pool()
         && let Ok(Some(delivery)) =
             crate::pg::world_logistics::active_delivery_target(&pool, entity_id)
-        && graph.place(&delivery.destination_place_id).is_some()
+        && let Some(dest_place) = graph.place(&delivery.destination_place_id)
     {
+        let raw_title = dest_place.player_title().trim();
+        let base_dname = crate::pg::living_world::peninsula_market_settlement_name(raw_title);
+        let dname = if base_dname.is_empty() {
+            "鄰近市集".to_string()
+        } else if base_dname != "鄰近市集" && !base_dname.ends_with("市集") {
+            format!("{base_dname}市集")
+        } else {
+            base_dname.to_string()
+        };
+        let display_name = crate::pg::living_world::peninsula_good_display_name(&delivery.display_name);
         return PlaceIntent {
             ty: IntentType::Work,
             target: Some(delivery.destination_place_id),
             reason: format!(
-                "正在承運{}份{}，必須把既有貨物送到目的市場",
-                delivery.quantity, delivery.display_name
+                "正在承運{}份{}，準備送往{}",
+                delivery.quantity, display_name, dname
             ),
         };
     }
@@ -54,12 +64,16 @@ pub(super) fn choose_place_intent(
         && let Some(ob) = obligations.into_iter().find(|o| {
             matches!(
                 o.obligation_kind.as_str(),
-                "repair_tool" | "stranded_cargo" | "repay_debt" | "treat_injury" | "restock_goods"
+                "repair_tool" | "stranded_cargo" | "repay_debt" | "treat_injury" | "restock_goods" | "supply_shortage" | "craft_material" | "fuel_shortage"
             )
         })
     {
         let found_target = match ob.obligation_kind.as_str() {
-            "treat_injury" => nearest_rest_place(graph, place_id),
+            "repair_tool" | "craft_material" => nearest_forge_or_workshop_place(graph, place_id)
+                .or_else(|| nearest_work_place(graph, place_id))
+                .or_else(|| nearest_trade_place(graph, place_id)),
+            "treat_injury" => nearest_clinic_or_rest_place(graph, place_id)
+                .or_else(|| nearest_rest_place(graph, place_id)),
             "stranded_cargo" => {
                 if ob.subject_ref != place_id && graph.place(&ob.subject_ref).is_some() {
                     Some(ob.subject_ref.clone())
@@ -77,10 +91,10 @@ pub(super) fn choose_place_intent(
                 .or_else(|| nearest_work_place(graph, place_id)),
         };
         if let Some(target) = found_target.or_else(|| graph.place(place_id).map(|_| place_id.to_string())) {
-            let ty = if ob.obligation_kind == "treat_injury" {
-                IntentType::Idle
-            } else {
-                IntentType::Trade
+            let ty = match ob.obligation_kind.as_str() {
+                "treat_injury" => IntentType::Idle,
+                "repair_tool" | "craft_material" => IntentType::Work,
+                _ => IntentType::Trade,
             };
             return PlaceIntent {
                 ty,
@@ -116,6 +130,14 @@ fn nearest_work_place(graph: &PlaceGraph, origin: &str) -> Option<String> {
 fn nearest_rest_place(graph: &PlaceGraph, origin: &str) -> Option<String> {
     find_reachable(graph, origin, SEARCH_RADIUS, is_rest_place)
 }
+
+fn nearest_forge_or_workshop_place(graph: &PlaceGraph, origin: &str) -> Option<String> {
+    find_reachable(graph, origin, SEARCH_RADIUS, is_forge_or_workshop_place)
+}
+
+fn nearest_clinic_or_rest_place(graph: &PlaceGraph, origin: &str) -> Option<String> {
+    find_reachable(graph, origin, SEARCH_RADIUS, is_clinic_or_rest_place)
+}
 fn build_candidates(
     entity_id: &str,
     state: Option<&DecisionState>,
@@ -147,6 +169,15 @@ fn build_candidates(
     }
     if let Some(intent) = assigned_work_intent(entity_id, state, hour, place_id, graph) {
         let weight = scale_candidate_weight(10, 0.6 + 0.8 * personality.orderliness);
+        candidates.push(WeightedIntent { intent, weight });
+    }
+    if (6..=20).contains(&hour)
+        && let Some(intent) = event_pack_work_intent(entity_id, state, hour, place_id, graph)
+    {
+        let weight = scale_candidate_weight(
+            6,
+            0.5 + 0.5 * personality.boldness + 0.4 * personality.orderliness,
+        );
         candidates.push(WeightedIntent { intent, weight });
     }
     if let Some(intent) = unassigned_job_intent(state, hour, place_id, graph) {
@@ -253,6 +284,39 @@ fn assigned_work_intent(
     })
 }
 
+fn event_pack_work_intent(
+    entity_id: &str,
+    _state: Option<&DecisionState>,
+    _hour: i32,
+    place_id: &str,
+    graph: &PlaceGraph,
+) -> Option<PlaceIntent> {
+    if entity_id.trim().is_empty() {
+        return None;
+    }
+    let now_unix = crate::game::now_unix();
+    for cand_id in reachable_places(graph, place_id, SEARCH_RADIUS) {
+        if let Some(place) = graph.place(&cand_id) {
+            let title = place.player_title().trim();
+            if title.is_empty() {
+                continue;
+            }
+            if let Some((ep, sp)) =
+                crate::game::peninsula_scripts::active_event_and_script_pack_for_room(title, None, now_unix)
+            {
+                if ep.status != "completed" {
+                    return Some(PlaceIntent {
+                        ty: IntentType::Work,
+                        target: Some(cand_id),
+                        reason: format!("響應事件包【{}】與劇本包【{}】現場協作需求", ep.pack_id, sp.title),
+                    });
+                }
+            }
+        }
+    }
+    None
+}
+
 fn unassigned_job_intent(
     state: Option<&DecisionState>,
     hour: i32,
@@ -288,6 +352,7 @@ fn find_runtime_market(graph: &PlaceGraph, origin: &str) -> Option<String> {
         return find_reachable(graph, origin, SEARCH_RADIUS, is_trade_place);
     }
     find_reachable_in_set(graph, origin, &runtime_markets)
+        .or_else(|| find_reachable(graph, origin, SEARCH_RADIUS, is_trade_place))
 }
 
 fn find_reachable_in_set(
@@ -295,9 +360,15 @@ fn find_reachable_in_set(
     origin: &str,
     target_ids: &HashSet<String>,
 ) -> Option<String> {
-    reachable_places(graph, origin, usize::MAX)
-        .into_iter()
-        .find(|place_id| target_ids.contains(place_id))
+    for max_steps in [SEARCH_RADIUS, SEARCH_RADIUS * 3, usize::MAX] {
+        if let Some(place_id) = reachable_places(graph, origin, max_steps)
+            .into_iter()
+            .find(|place_id| target_ids.contains(place_id))
+        {
+            return Some(place_id);
+        }
+    }
+    None
 }
 
 fn assigned_venue_place(entity_id: &str, graph: &PlaceGraph) -> Option<String> {
@@ -454,27 +525,81 @@ fn is_material_source(place: &WorldPlace) -> bool {
         || materials::material_for_room_id(&place.compatibility_room_id()).is_some()
 }
 
+fn is_forge_or_workshop_place(place: &WorldPlace) -> bool {
+    has_any_tag(
+        place,
+        &["鐵匠鋪", "工坊", "磨石", "礦場", "林場", "織坊"],
+    ) || {
+        let title = place.player_title();
+        title.contains('鍛')
+            || title.contains('鐵')
+            || title.contains("工坊")
+            || title.contains("巧木")
+            || title.contains("織造")
+            || title.contains('窯')
+    }
+}
+
+fn is_clinic_or_rest_place(place: &WorldPlace) -> bool {
+    has_any_tag(
+        place,
+        &["藥圃", "藥材", "浴場", "旅社", "歇宿", "民居"],
+    ) || {
+        let title = place.player_title();
+        title.contains("診所")
+            || title.contains("脈絡")
+            || title.contains("百草")
+            || title.contains("浴場")
+            || title.contains("旅社")
+            || title.contains("茶屋")
+    }
+}
+
 fn is_social_place(place: &WorldPlace) -> bool {
-    has_any_tag(place, &["social", "market", "public_square", "rest_spot"])
-        || matches!(place.kind.as_str(), "tavern" | "inn" | "market" | "urban")
+    has_any_tag(
+        place,
+        &[
+            "social", "market", "public_square", "rest_spot",
+            "食堂", "熱食", "現煮飲品", "歇腳",
+            "茶屋", "廣場", "浴場", "石橋",
+        ],
+    ) || matches!(place.kind.as_str(), "tavern" | "inn" | "market" | "urban")
 }
 
 fn is_trade_place(place: &WorldPlace) -> bool {
-    has_any_tag(place, &["trade", "market", "public_square", "social"])
-        || matches!(place.kind.as_str(), "market" | "urban" | "dock")
+    has_any_tag(
+        place,
+        &[
+            "trade", "market", "public_square", "social",
+            "商鋪", "市集", concat!("零", "售"), "雜貨", "收購", "櫃檯",
+            "聯運", "碼頭", "茶屋",
+        ],
+    ) || matches!(place.kind.as_str(), "market" | "urban" | "dock")
 }
 
 fn is_rest_place(place: &WorldPlace) -> bool {
-    has_any_tag(place, &["rest", "rest_spot", "home", "lodging"])
-        || matches!(place.kind.as_str(), "inn" | "tavern" | "farmhouse")
+    has_any_tag(
+        place,
+        &[
+            "rest", "rest_spot", "home", "lodging",
+            "民居", "歇宿", "歇腳",
+            "旅社", "浴場", "茶屋", "水井",
+        ],
+    ) || matches!(place.kind.as_str(), "inn" | "tavern" | "farmhouse")
 }
 
 fn is_work_place(place: &WorldPlace) -> bool {
-    has_any_tag(place, &["work", "trade", "warehouse", "dock", "farm"])
-        || matches!(
-            place.kind.as_str(),
-            "urban" | "workshop" | "warehouse" | "dock"
-        )
+    has_any_tag(
+        place,
+        &[
+            "work", "trade", "warehouse", "dock", "farm",
+            "工坊", "鐵匠鋪", "糧倉", "礦場", "林場", "藥圃", "漁港", "織坊",
+            "磨石", "藥材", "聯運", "碼頭", "水井",
+        ],
+    ) || matches!(
+        place.kind.as_str(),
+        "urban" | "workshop" | "warehouse" | "dock"
+    )
 }
 
 fn has_any_tag(place: &WorldPlace, tags: &[&str]) -> bool {
@@ -528,4 +653,104 @@ pub(super) fn test_economic_recovery_intent(
         inventory_total_qty,
     };
     economic_recovery_intent(Some(&state), origin, graph).map(|intent| intent.ty)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn dummy_place(id: &str, tags: &[&str], title: &str) -> WorldPlace {
+        let mut place_tags: Vec<String> = tags.iter().map(|s| s.to_string()).collect();
+        if !title.is_empty() {
+            place_tags.push(format!("player_title:{}", title));
+        }
+        WorldPlace {
+            id: id.to_string(),
+            world_id: crate::world::place::LEGACY_WORLD_ID.to_string(),
+            topology_node_ref: None,
+            parent_place_id: None,
+            name: id.to_string(),
+            kind: "urban".to_string(),
+            scale: "place".to_string(),
+            canon: false,
+            status: "material".to_string(),
+            traversable: true,
+            source_kind: "legacy_grid".to_string(),
+            zone: String::new(),
+            tags: place_tags,
+            description: String::new(),
+            legacy_grid_x: Some(0),
+            legacy_grid_y: Some(0),
+        }
+    }
+
+    #[test]
+    fn test_is_forge_or_workshop_place() {
+        let p_tag = dummy_place("p1", &["工坊"], "");
+        assert!(is_forge_or_workshop_place(&p_tag));
+
+        let p_smith = dummy_place("p2", &["鐵匠鋪"], "");
+        assert!(is_forge_or_workshop_place(&p_smith));
+
+        let p_title = dummy_place("p3", &[], "老堰頭巧木工坊");
+        assert!(is_forge_or_workshop_place(&p_title));
+
+        let p_unrelated = dummy_place("p4", &["rest"], "尋常民宅");
+        assert!(!is_forge_or_workshop_place(&p_unrelated));
+    }
+
+    #[test]
+    fn test_is_clinic_or_rest_place() {
+        let p_tag = dummy_place("p1", &["藥圃"], "");
+        assert!(is_clinic_or_rest_place(&p_tag));
+
+        let p_clinic_title = dummy_place("p2", &[], "文曜草藥診所");
+        assert!(is_clinic_or_rest_place(&p_clinic_title));
+
+        let p_bath = dummy_place("p3", &["浴場"], "");
+        assert!(is_clinic_or_rest_place(&p_bath));
+
+        let p_unrelated = dummy_place("p4", &["mine"], "赤嶺礦坑");
+        assert!(!is_clinic_or_rest_place(&p_unrelated));
+    }
+
+    #[test]
+    fn test_expanded_tag_predicates() {
+        let p_bath = dummy_place("b", &["浴場"], "");
+        assert!(is_social_place(&p_bath));
+        assert!(is_rest_place(&p_bath));
+
+        let p_tea = dummy_place("t", &["茶屋"], "");
+        assert!(is_social_place(&p_tea));
+        assert!(is_trade_place(&p_tea));
+        assert!(is_rest_place(&p_tea));
+
+        let p_inn = dummy_place("i", &["旅社"], "");
+        assert!(is_rest_place(&p_inn));
+
+        let p_logistics = dummy_place("l", &["聯運"], "");
+        assert!(is_trade_place(&p_logistics));
+        assert!(is_work_place(&p_logistics));
+
+        let p_square = dummy_place("s", &["廣場"], "");
+        assert!(is_social_place(&p_square));
+    }
+
+    #[test]
+    fn test_event_pack_work_intent() {
+        let mut p = dummy_place("wt_mill", &[], "老堰頭水輪石磨工坊");
+        p.traversable = true;
+        let graph = PlaceGraph::new(vec![p], Vec::new()).unwrap();
+
+        let intent_empty = event_pack_work_intent("", None, 10, "wt_mill", &graph);
+        assert!(intent_empty.is_none());
+
+        let intent = event_pack_work_intent("npc_worker_1", None, 10, "wt_mill", &graph);
+        assert!(intent.is_some());
+        let intent = intent.unwrap();
+        assert_eq!(intent.ty, IntentType::Work);
+        assert_eq!(intent.target.as_deref(), Some("wt_mill"));
+        assert!(intent.reason.contains("響應事件包"));
+        assert!(intent.reason.contains("劇本包"));
+    }
 }

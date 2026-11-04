@@ -62,19 +62,25 @@ impl Store {
         Self::atomic_write(&self.schedules_path, raw.as_bytes())
     }
 
-    pub(super) fn persist_items(&self) -> anyhow::Result<()> {
+    pub(crate) fn persist_items(&self) -> anyhow::Result<()> {
         let items: Vec<Item> = self.items.values().cloned().collect();
         let raw = serde_json::to_string_pretty(&ItemsFile { items })?;
         Self::atomic_write(&self.items_path, raw.as_bytes())
     }
 
     pub(super) fn persist_npc_threads(&self) -> anyhow::Result<()> {
+        if self.db_pool.is_some() {
+            return Ok(());
+        }
         let entries: Vec<NpcThread> = self.npc_threads.values().cloned().collect();
         let raw = serde_json::to_string_pretty(&NpcThreadsFile { entries })?;
         Self::atomic_write(&self.npc_thread_path, raw.as_bytes())
     }
 
     pub(super) fn persist_npc_dyads(&self) -> anyhow::Result<()> {
+        if self.db_pool.is_some() {
+            return Ok(());
+        }
         let entries: Vec<NpcDyad> = self.npc_dyads.values().cloned().collect();
         let raw = serde_json::to_string_pretty(&NpcDyadsFile { entries })?;
         Self::atomic_write(&self.npc_dyad_path, raw.as_bytes())

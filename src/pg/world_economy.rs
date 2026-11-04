@@ -198,13 +198,14 @@ pub fn upsert_seed(
         let id = i32::try_from(good.source_good_id)?;
         let tags = serde_json::to_string(&good.tags)?;
         let source_ref = format!("azgaar:good:{}", good.source_good_id);
+        let display_name = super::living_world::peninsula_good_display_name(&good.display_name);
         client.execute(
             &good_statement,
             &[
                 &economy.runtime_id,
                 &id,
                 &good.source_name,
-                &good.display_name,
+                &display_name,
                 &good.source_unit,
                 &tags,
                 &good.base_value,
@@ -454,6 +455,9 @@ fn upsert_work_sites(
                 &[&market.place_id],
             )?
             .map(|row| row.get::<_, String>(0))
+            .map(|n| n.split('（').next().unwrap_or(&n).trim().to_string())
+            .map(|n| super::living_world::peninsula_market_settlement_name(&n).to_string())
+            .filter(|n| !n.is_empty())
             .unwrap_or_else(|| market.place_id.clone());
         let venue_name = format!("{place_name}市場運務點");
         let room_ids = serde_json::to_string(&[market.place_id.as_str()])?;

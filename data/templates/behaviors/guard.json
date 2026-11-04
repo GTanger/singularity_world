@@ -1,5 +1,5 @@
 {
-  "_說明": "守衛行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。嚴格排班，巡邏城門／城牆／街道，不擅離職守，遇威脅時主動對峙。",
+  "_說明": "守衛行為模板。定義日程、巡邏偏好、交易定價規約、性情品性。按班次輪值，巡邏城門／城牆／街道，不擅離職守，遇威脅時主動對峙。",
   "schedule": {
     "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
     "entries": [
@@ -8,7 +8,7 @@
       {"hour_start": 6, "hour_end": 12, "activity": "patrol", "location_pref": ["gate", "wall", "street_main"], "description": "上午巡邏，城門至主街"},
       {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["barracks", "gate_house"], "description": "午間短暫休整"},
       {"hour_start": 14, "hour_end": 18, "activity": "patrol", "location_pref": ["wall", "street_main", "market_entrance"], "description": "下午巡邏，城牆與市集入口"},
-      {"hour_start": 18, "hour_end": 22, "activity": "patrol", "location_pref": ["gate", "street_main", "tavern_district"], "description": "傍晚巡邏，加強酒肆一帶"},
+      {"hour_start": 18, "hour_end": 22, "activity": "patrol", "location_pref": ["gate", "street_main", "tavern_district"], "description": "傍晚巡邏，加強茶寮一帶"},
       {"hour_start": 22, "hour_end": 24, "activity": "night_watch", "location_pref": ["gate", "wall"], "description": "夜間值守，嚴守城門"}
     ]
   },

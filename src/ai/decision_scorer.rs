@@ -221,31 +221,58 @@ pub fn score_npc_interaction_stance(input: &NpcDecisionInput<'_>) -> NpcStanceDe
         prob_d = 1.0;
     }
 
-    // 先驗加權計算
-    let prior_a = (0.6 + 0.5 * input.boldness)
-        * if input.balance_score >= 2 {
-            1.4
-        } else if input.balance_score < 0 {
-            0.5
-        } else {
-            1.0
-        };
+    // 多軸處境交錯先驗加權計算（boldness × sensitivity × orderliness × 熟稔度 × 恩怨結餘 × 未完義務）
+    let b = input.boldness;
+    let s = input.sensitivity;
+    let o = input.orderliness;
+    let fam = input.familiarity_score as f64;
+    let bal = input.balance_score as f64;
+    let has_ob = !input.open_obligations.is_empty();
 
-    let prior_b = (0.6 + 0.6 * input.sensitivity)
-        * if input.balance_score < 0 {
-            1.6
-        } else {
-            0.9
-        };
-
-    let prior_c = 0.6 + 0.5 * input.orderliness;
-
-    let prior_d = if !input.open_obligations.is_empty() {
-        1.5 + 0.4 * input.orderliness
+    // A (同意／正面相助)：豪爽大膽且具同理感，熟稔度與恩義加成，受死板規矩牽制少
+    let rel_a = if bal >= 2.0 {
+        1.35 + 0.05 * fam.min(5.0)
+    } else if bal < 0.0 {
+        0.45
     } else {
-        0.7
+        0.90 + 0.04 * fam.clamp(0.0, 5.0)
     };
+    let prior_a = ((0.50 + 0.40 * b + 0.20 * s) * rel_a + 0.10 * (b * (1.0 - o))).max(0.20);
 
+    // B (拒絕／戒備防範)：心思敏銳多疑、行事謹慎戒備，怨懟欠款或生疏時防範加劇
+    let rel_b = if bal < 0.0 {
+        1.60 + 0.10 * (-bal).min(5.0)
+    } else if bal >= 2.0 {
+        0.65
+    } else {
+        0.95 - 0.03 * fam.clamp(0.0, 5.0)
+    };
+    let prior_b = ((0.50 + 0.50 * s + 0.20 * (1.0 - b)) * rel_b + 0.20 * (s * o)).max(0.20);
+
+    // C (轉移／委婉敷衍)：崇尚章法規矩、保持距離，迴避冒險爭端
+    let rel_c = if bal < 0.0 {
+        1.10
+    } else if fam > 5.0 {
+        0.80
+    } else {
+        1.00
+    };
+    let prior_c = ((0.50 + 0.45 * o + 0.25 * (1.0 - b) + 0.15 * s) * rel_c).max(0.20);
+
+    // D (條件交換／討價還價)：受未完義務與手藝規矩驅動，講求互惠對等交割
+    let ob_bonus = if has_ob {
+        1.50 + 0.30 * o + 0.20 * b + 0.20 * s
+    } else {
+        0.65 + 0.20 * o
+    };
+    let rel_d = if bal >= 2.0 {
+        1.10
+    } else if bal < 0.0 {
+        0.85
+    } else {
+        1.00
+    };
+    let prior_d = (ob_bonus * rel_d).max(0.20);
     let weight_a = prob_a * prior_a;
     let weight_b = prob_b * prior_b;
     let weight_c = prob_c * prior_c;

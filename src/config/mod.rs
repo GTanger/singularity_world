@@ -136,7 +136,7 @@ fn load_server_defaults_from_json() -> Option<(ServerJson, Design)> {
     Some((root.server, root.design))
 }
 
-/// 決定奇點曆起點：環境變數 > 持久檔 > 現在並寫檔。
+/// 決定正典島曆起點：環境變數 > 持久檔 > 現在並寫檔。
 fn resolve_game_time_epoch() -> i64 {
     if let Ok(s) = env::var("GAME_TIME_EPOCH_UNIX")
         && let Ok(n) = s.parse::<i64>()

@@ -54,12 +54,12 @@
 		}
 		if (entityId) {
 			try {
-				var leftBtn = document.querySelector('[data-entity-id="' + entityId + '"]');
+				var leftBtn = document.querySelector('.sw-canvas-token[data-entity-id="' + entityId + '"], .sw-person-card[data-entity-id="' + entityId + '"]');
 				if (leftBtn) {
-					var nameSpan = leftBtn.querySelector('.sw-person-name');
+					var nameSpan = leftBtn.querySelector('.sw-token-label, .sw-person-name');
 					var foundName = (nameSpan ? nameSpan.textContent : leftBtn.textContent).trim();
-					if (foundName && !/^wt_npc_|^npc_|^wt_citizen_/i.test(foundName)) {
-						return foundName.replace(/^陌生人\d+$/, '陌生人');
+					if (foundName && !/^wt_npc_|^npc_|^wt_citizen_/i.test(foundName) && !/^(對話|交易|觀察|打量|切磋|生死戰)$/.test(foundName)) {
+						return foundName.replace(/^陌生人\s*\d+$/, '陌生人');
 					}
 				}
 			} catch (e) {}
@@ -80,7 +80,7 @@
 		targetName = resolveCleanTargetName(entityId, targetName);
 		var logEl = getLogEl();
 		if (!logEl) return;
-		var existing = logEl.querySelectorAll('.log-talk-input');
+		var existing = logEl.querySelectorAll('.log-talk-input, .log-trade-input');
 		for (var ei = 0; ei < existing.length; ei++) existing[ei].remove();
 		var sName = shortEntityName(targetName, entityId);
 		var wrap = document.createElement('div');
@@ -112,20 +112,16 @@
 		inputRow.style.gap = '6px';
 		inputRow.style.width = '100%';
 
-		var label = document.createElement('span');
-		label.className = 'log-talk-label';
-		label.textContent = '對 ' + sName + ' 說：';
 		var input = document.createElement('input');
 		input.type = 'text';
 		input.className = 'log-talk-input-field';
-		input.placeholder = '輸入要說的話（直接送出即搭話）';
+		input.placeholder = '對 ' + sName + ' 說些什麼（直接送出即搭話）';
 		input.setAttribute('maxlength', '200');
 		input.setAttribute('aria-label', '對 ' + sName + ' 說');
 		var btn = document.createElement('button');
 		btn.type = 'button';
 		btn.className = 'log-talk-send';
 		btn.textContent = '送出';
-		inputRow.appendChild(label);
 		inputRow.appendChild(input);
 		inputRow.appendChild(btn);
 		wrap.appendChild(inputRow);
@@ -153,11 +149,15 @@
 			var chip = e.target.closest && e.target.closest('.log-talk-chip');
 			if (chip) {
 				e.preventDefault();
+				e.stopPropagation();
 				var topicText = chip.getAttribute('data-topic') || chip.textContent || '';
 				sendTalk(topicText);
 			}
 		});
-		btn.addEventListener('click', function () { sendTalk(); });
+		btn.addEventListener('click', function (e) {
+			if (e && e.stopPropagation) e.stopPropagation();
+			sendTalk();
+		});
 		input.addEventListener('keydown', function (e) {
 			if (e.key === 'Enter') {
 				e.preventDefault();
@@ -170,7 +170,7 @@
 		targetName = resolveCleanTargetName(entityId, targetName);
 		var logEl = getLogEl();
 		if (!logEl) return;
-		var existing = logEl.querySelectorAll('.log-trade-input');
+		var existing = logEl.querySelectorAll('.log-talk-input, .log-trade-input');
 		for (var ei = 0; ei < existing.length; ei++) existing[ei].remove();
 		var sName = shortEntityName(targetName, entityId);
 		var wrap = document.createElement('div');
@@ -218,8 +218,12 @@
 				appendLogPendingTrade();
 			}
 		}
-		btn.addEventListener('click', sendTrade);
-		cancelBtn.addEventListener('click', function () {
+		btn.addEventListener('click', function (e) {
+			if (e && e.stopPropagation) e.stopPropagation();
+			sendTrade();
+		});
+		cancelBtn.addEventListener('click', function (e) {
+			if (e && e.stopPropagation) e.stopPropagation();
 			wrap.remove();
 			var playerLine = '你向【' + (targetName || entityId) + '】回絕了交易：「拒絕」';
 			var fmt = window.gameFormatNarrative || function (t) { return t; };
@@ -278,11 +282,7 @@
 			if (moveDir) {
 				var moveTarget = btn.getAttribute('data-move-target') || '';
 				if (window.gameSend) {
-					if (moveDir === '進') {
-						window.gameSend({ type: 'enter_room' });
-					} else {
-						window.gameSend({ type: 'move', direction: moveDir, target_place_id: moveTarget || undefined });
-					}
+					window.gameSend({ type: 'move', direction: moveDir, target_place_id: moveTarget || undefined });
 				}
 				return;
 			}
@@ -320,7 +320,11 @@
 						break;
 					}
 				}
-				if (!stillHere && document.querySelector('#sw-room-canvas [data-object-id="' + id + '"]')) {
+				if (!stillHere && (
+					document.querySelector('#sw-room-canvas [data-object-id="' + id + '"]') ||
+					document.querySelector('#sw-room-canvas [data-token-key="npc:' + id + '"]') ||
+					document.querySelector('#sw-popover-actions [data-entity-id="' + id + '"]')
+				)) {
 					stillHere = true;
 				}
 				if (!stillHere) {

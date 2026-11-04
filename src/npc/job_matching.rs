@@ -28,6 +28,218 @@ pub struct JobMatchParams {
     pub job_match_when_stable: bool,
 }
 
+/// 房間候選資訊（用於職能媒合與最佳工作房間評分）。
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct RoomCandidate {
+    pub name: String,
+    pub tags: Vec<String>,
+}
+
+fn strip_generic_role_affixes(s: &str) -> String {
+    let mut out = s.trim().to_string();
+    for affix in [
+        "當值", "首席", "駐場", "匠師", "掌櫃", "主事", "掌事", "師傅", "執事", "學徒", "工坊",
+        "商鋪", "店鋪",
+    ] {
+        out = out.replace(affix, "");
+    }
+    out
+}
+
+fn shares_two_char_substring(a: &str, b: &str) -> bool {
+    let clean_a = strip_generic_role_affixes(a);
+    let clean_b = strip_generic_role_affixes(b);
+    let chars_a: Vec<char> = clean_a.chars().collect();
+    if chars_a.len() < 2 {
+        return false;
+    }
+    for w in chars_a.windows(2) {
+        let sub: String = w.iter().collect();
+        if clean_b.contains(&sub) {
+            return true;
+        }
+    }
+    false
+}
+
+/// 依職業關鍵字匹配場域空間關鍵詞
+#[must_use]
+pub fn occupation_keywords(occupation: &str) -> Vec<&'static str> {
+    let occ = occupation.trim();
+    let mut kws = Vec::new();
+    if occ.contains("磨") || occ.contains("石磨") || occ.contains("水輪") {
+        kws.extend_from_slice(&["石磨", "磨坊", "水輪", "老堰頭"]);
+    }
+    if occ.contains("織")
+        || occ.contains("染")
+        || occ.contains("繡")
+        || occ.contains("服")
+        || occ.contains("布")
+    {
+        kws.extend_from_slice(&["織", "染坊", "雲錦", "服飾"]);
+    }
+    if occ.contains("茶") || occ.contains("旅") || occ.contains("宿") {
+        kws.extend_from_slice(&["茶屋", "茶坊", "旅社", "歇宿"]);
+    }
+    if occ.contains("浴") || occ.contains("湯") || occ.contains("泉") {
+        kws.extend_from_slice(&["浴場", "溫水", "湯池", "泉香"]);
+    }
+    if occ.contains("車") || occ.contains("聯運") || occ.contains("腳夫") || occ.contains("貨運") {
+        kws.extend_from_slice(&["聯運", "車馬", "貨運", "倉", "碼頭"]);
+    }
+    if occ.contains("船") || occ.contains("渡") || occ.contains("港") || occ.contains("海") {
+        kws.extend_from_slice(&["碼頭", "渡口", "船塢", "港", "泊位"]);
+    }
+    if occ.contains("牧") || occ.contains("牛") || occ.contains("乳酪") {
+        kws.extend_from_slice(&["牛埔", "牧", "乳酪", "草場"]);
+    }
+    if occ.contains("窯") || occ.contains("陶") || occ.contains("磚") {
+        kws.extend_from_slice(&["窯", "紅土崁", "陶"]);
+    }
+    if occ.contains("算") || occ.contains("契") || occ.contains("公議") || occ.contains("執事") {
+        kws.extend_from_slice(&["公議", "契", "商行", "算"]);
+    }
+    if occ.contains("武") || occ.contains("巡") || occ.contains("哨") || occ.contains("衛") {
+        kws.extend_from_slice(&["習武", "試招", "巡防", "哨", "門"]);
+    }
+    if occ.contains("鐵") || occ.contains("鍛") || occ.contains("鑄") {
+        kws.extend_from_slice(&["鐵匠鋪", "鍛造", "爐"]);
+    } else if occ.contains("匠") && kws.is_empty() {
+        kws.extend_from_slice(&["鐵匠鋪", "鍛造", "工坊", "爐"]);
+    }
+    if occ.contains("醫") || occ.contains("藥") || occ.contains("診") {
+        kws.extend_from_slice(&["醫館", "百草", "診所", "藥局", "藥材"]);
+    }
+    if occ.contains("食") || occ.contains("廚") || occ.contains("伙") || occ.contains("飯") {
+        kws.extend_from_slice(&["大食堂", "食堂", "廚房", "食肆"]);
+    }
+    if occ.contains("商")
+        || occ.contains("販")
+        || occ.contains("店")
+        || occ.contains("買")
+        || occ.contains("賣")
+        || occ.contains("掌櫃")
+    {
+        kws.extend_from_slice(&["商鋪", "市集", "商行", "店鋪"]);
+    }
+    if occ.contains("學") || occ.contains("書") || occ.contains("講") || occ.contains("生") {
+        kws.extend_from_slice(&["書院", "講堂", "學堂", "蒙學"]);
+    }
+    if occ.contains("服務") || occ.contains("侍") {
+        kws.extend_from_slice(&["茶屋", "食堂", "旅社"]);
+    }
+
+    let mut out = Vec::new();
+    for kw in kws {
+        if !out.contains(&kw) {
+            out.push(kw);
+        }
+    }
+    out
+}
+
+/// 判斷場所房間是否契合特定職業
+#[must_use]
+pub fn room_matches_occupation(occupation: &str, room_name: &str, tags: &[String]) -> bool {
+    let occ = occupation.trim();
+    let keywords = occupation_keywords(occ);
+
+    for kw in &keywords {
+        if room_name.contains(kw) {
+            return true;
+        }
+        for tag in tags {
+            if tag == kw || tag.contains(kw) || kw.contains(tag.as_str()) {
+                return true;
+            }
+        }
+    }
+
+    if !occ.is_empty() {
+        if room_name.contains(occ) || occ.contains(room_name) {
+            return true;
+        }
+        for tag in tags {
+            if tag == occ || tag.contains(occ) || occ.contains(tag.as_str()) {
+                return true;
+            }
+        }
+    }
+
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, "") {
+        let venue_tags = venue.semantic_tags();
+        for kw in &keywords {
+            if venue.venue_kind.contains(kw)
+                || kw.contains(venue.venue_kind)
+                || venue.default_host_title.contains(kw)
+                || kw.contains(venue.default_host_title)
+                || venue_tags.iter().any(|vt| vt == kw || vt.contains(kw) || kw.contains(vt))
+            {
+                return true;
+            }
+        }
+        if shares_two_char_substring(occ, venue.default_host_title)
+            || shares_two_char_substring(occ, venue.venue_kind)
+        {
+            return true;
+        }
+    }
+
+    false
+}
+
+/// 尋找最適合從事該職業之工作房間
+#[must_use]
+pub fn find_best_work_room(
+    occupation: &str,
+    home_room: &str,
+    candidates: &[RoomCandidate],
+) -> String {
+    let mut best_score = -1;
+    let mut best_room = home_room.to_string();
+    let now_unix = crate::game::now_unix();
+    let keywords = occupation_keywords(occupation);
+    for r in candidates {
+        if room_matches_occupation(occupation, &r.name, &r.tags) {
+            let mut score = 1;
+            if r.name == home_room {
+                score += 1;
+            }
+            if keywords.iter().any(|kw| r.name.contains(kw)) {
+                score += 4;
+            }
+            if let Some(venue) = crate::grid::resolve_any_room_venue_object(&r.name, occupation) {
+                score += 2;
+                if venue.default_host_title == occupation.trim() {
+                    score += 6;
+                } else if shares_two_char_substring(occupation, venue.default_host_title)
+                    || shares_two_char_substring(occupation, venue.venue_kind)
+                {
+                    score += 4;
+                }
+            }
+            if crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                &r.name,
+                None,
+                now_unix,
+            )
+            .is_some()
+            {
+                score += 2;
+            }
+            if score > best_score {
+                best_score = score;
+                best_room = r.name.clone();
+            }
+        }
+    }
+
+    if best_score < 0 && !home_room.is_empty() {
+        return home_room.to_string();
+    }
+    best_room
+}
+
 /// Fisher–Yates 洗牌。
 fn shuffle_vec<T>(v: &mut [T], rng: &mut impl Rng) {
     for i in (1..v.len()).rev() {
@@ -58,7 +270,18 @@ fn do_assign(entity_id: &str, venue_id: &str, spawn_room: &str) -> bool {
         .ok()
         .flatten()
         .unwrap_or_default();
-    let work_room = room_ids.first().cloned().unwrap_or_default();
+    let work_room = if room_ids.len() > 1 {
+        let candidates: Vec<RoomCandidate> = room_ids
+            .iter()
+            .map(|r_id| RoomCandidate {
+                name: r_id.clone(),
+                tags: Vec::new(),
+            })
+            .collect();
+        find_best_work_room(&occupation, &room_ids[0], &candidates)
+    } else {
+        room_ids.first().cloned().unwrap_or_default()
+    };
     let rest_room = get_entity_room(entity_id)
         .ok()
         .filter(|room_id| !room_id.is_empty())
@@ -203,4 +426,49 @@ pub fn run_job_matching_tick(graph: Option<&RoomGraph>, mut p: JobMatchParams) -
     }
 
     added
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_room_matches_occupation_peninsula_vocations() {
+        assert!(room_matches_occupation(
+            "當值石磨匠師",
+            "老堰頭・水輪石磨工坊",
+            &[]
+        ));
+        assert!(room_matches_occupation(
+            "湯池掌事",
+            "泉香溫水浴場",
+            &[]
+        ));
+    }
+
+    #[test]
+    fn test_find_best_work_room() {
+        let candidates = vec![
+            RoomCandidate {
+                name: "老堰頭・水輪石磨工坊".to_string(),
+                tags: vec!["工坊".to_string()],
+            },
+            RoomCandidate {
+                name: "泉香溫水浴場".to_string(),
+                tags: vec!["浴場".to_string()],
+            },
+            RoomCandidate {
+                name: "無關林道".to_string(),
+                tags: vec![],
+            },
+        ];
+        let chosen_mill = find_best_work_room("當值石磨匠師", "無關林道", &candidates);
+        assert_eq!(chosen_mill, "老堰頭・水輪石磨工坊");
+
+        let chosen_bath = find_best_work_room("湯池掌事", "無關林道", &candidates);
+        assert_eq!(chosen_bath, "泉香溫水浴場");
+
+        let fallback = find_best_work_room("未知流浪者", "無關林道", &candidates);
+        assert_eq!(fallback, "無關林道");
+    }
 }

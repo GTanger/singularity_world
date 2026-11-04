@@ -64,7 +64,7 @@
         return info.display_name || info.label || info.to_room_name || info.room_name || info.name || '可去處';
     }
 
-    // ── 緩存最近一次 grid_view msg ───────────────────────────────────
+    // ── 快取最近一次 grid_view msg ───────────────────────────────────
     var _lastGridMsg = null;
 
     // ── 主入口：grid_view 消息接收（舊格式，相容）───────────────────
@@ -195,10 +195,10 @@
         if (/[牆壁城垣關隘砦]/.test(n)) return '■';
         if (/[欄籬柵垛]/.test(n)) return '≠';
         if (/[居宅院舍廬齋宿處室]/.test(n)) return '𖠿';
-        if (/[店鋪市集商行銀錢庫攤賈貿]/.test(n)) return '$';
+        if (/[店鋪市集商行鎂幣庫攤賈貿]/.test(n)) return '$';
         if (/[坊爐鐵匠機工器作造船磨坊]/.test(n)) return '⚒︎';
         if (/[醫藥草堂診病救傷回春]/.test(n)) return '+';
-        if (/[客棧旅舍茶酒歇宿泉浴湯館舍]/.test(n)) return '⌂';
+        if (/[旅舍茶酒歇宿泉浴湯館舍]/.test(n)) return '⌂';
         if (/[堂府衙館衛哨營學書院宮殿星儀鐘樓鐘星軌契署]/.test(n)) return '⚑';
         if (/[藥圃草圃]/.test(n)) return '☷';
         if (/[田隴圃園苑畦]/.test(n)) return '▦';
@@ -230,10 +230,12 @@
     }
 
     var EXACT_SHORT_LABELS = {
-        '青籠關・幽深籠林': '幽深籠林',
+        '下營邊貿坪': '邊貿坪',
+        '下營・下營邊貿坪': '邊貿坪',
+        '下營・幽深籠林': '幽深籠林',
         '幽深籠林': '幽深籠林',
         '南下古隘道': '南下古道',
-        '青籠關・南下古隘道': '南下古道',
+        '下營・南下古隘道': '南下古道',
         '中心樞紐石橋': '中心石橋',
         '三水總商行總部': '三水商行',
         '傳訊鐘樓與信使總站': '傳訊鐘樓',
@@ -246,18 +248,17 @@
         '學院主校區': '文曜學院',
         '學院觀星台與評議廳': '觀星台',
         '藏書閣與印行館': '藏書閣',
-        '商務會計教室': '會計教室',
-        '百工商算學舍': '會計教室',
+        '百工商算學舍': '商算學舍',
         '講堂街書局與印行館': '印行書局',
         '講堂街老字號剪剃鋪': '老剪剃鋪',
         '講堂街書局': '講堂書局',
-        '文曜國小教室': '文曜國小',
-        '學院蒙學堂講習舍': '文曜國小',
-        '陸老師宿舍': '老師宿舍',
-        '講堂街・陸老師宿舍': '老師宿舍',
-        '蒙學陸先生舍': '老師宿舍',
-        '秦氏會計事務所': '秦氏會計',
-        '講堂街・秦氏會計事務所': '秦氏會計',
+        '文曜蒙學堂講舍': '文曜蒙學',
+        '蒙學堂講舍': '文曜蒙學',
+        '學院蒙學堂講習舍': '文曜蒙學',
+        '講堂街・蒙學陸先生舍': '先生舍',
+        '蒙學陸先生舍': '先生舍',
+        '秦氏算學居': '秦氏算學',
+        '講堂街・秦氏算學居': '秦氏算學',
         '岑氏第一鍛造工坊': '第一鐵坊',
         '東橋旅社與山風茶屋': '東橋旅社',
         '巧木居所傢俱坊': '巧木傢俱',
@@ -360,13 +361,13 @@
         '書院巷北口': '學院北口',
         '書院巷中段': '學院巷中',
         '書院巷南口': '學院南口',
-        '講堂街・文曜國小十字口': '國小街口',
-        '文曜國小十字口': '國小街口',
-        '講堂街・文曜國小前巷': '國小前巷',
-        '文曜國小前巷': '國小前巷',
-        '文曜國小書聲西口': '國小西口',
-        '文曜國小書聲西段': '國小西段',
-        '文曜國小書聲中段': '國小中段',
+        '講堂街・文曜蒙學堂十字口': '蒙學街口',
+        '文曜蒙學堂十字口': '蒙學街口',
+        '講堂街・文曜蒙學堂前巷': '蒙學前巷',
+        '文曜蒙學堂前巷': '蒙學前巷',
+        '文曜蒙學堂書聲西口': '蒙學西口',
+        '文曜蒙學堂書聲西段': '蒙學西段',
+        '文曜蒙學堂書聲中段': '蒙學中段',
         '講堂外環北校舍口': '外環校口',
         '觀星台道西口': '觀星西口',
         '觀星台道東段': '觀星東段',
@@ -380,8 +381,8 @@
         '三水口・河畔水磨居': '河畔水磨',
         '老水夫客寮': '水夫客寮',
         '三水口・老水夫客寮': '水夫客寮',
-        '竹筏扎作宅': '竹筏扎作',
-        '三水口・竹筏扎作宅': '竹筏扎作',
+        '竹筏紮作宅': '竹筏紮作',
+        '三水口・竹筏紮作宅': '竹筏紮作',
         '修網結繩工坊': '修網工坊',
         '三水口・修網結繩工坊': '修網工坊',
         '晨汲泉井舍': '晨汲泉井',
@@ -444,7 +445,7 @@
         '臨江魚鮮舍': '臨江魚舍',
         '渡頭擺渡舍': '渡頭擺舍',
         '織網老漁家': '老漁家舍',
-        '南津水運棧': '水運客棧',
+        '南津水運棧': '水運棧舍',
         '泊船修帆居': '修帆居舍',
         '河道更夫鋪': '河道更鋪',
         '泉香客居小院': '泉香小院',
@@ -481,8 +482,8 @@
         '講堂街・藏書別院': '藏書別院',
         '靜思桂花林': '靜思桂林',
         '講堂街・靜思桂花林': '靜思桂林',
-        '宣筆制毫坊': '宣筆制毫',
-        '講堂街・宣筆制毫坊': '宣筆制毫',
+        '宣筆製毫坊': '宣筆製毫',
+        '講堂街・宣筆製毫坊': '宣筆製毫',
         '文林石徑': '文林石徑',
         '講堂街・文林石徑': '文林石徑',
         '曆算講堂': '曆算講堂',
@@ -640,8 +641,8 @@
         '西門・苜蓿甜草圃': '苜蓿甜圃',
         '行車雨布作坊': '行車雨布',
         '西門・行車雨布作坊': '行車雨布',
-        '車隊列隊坪': '列隊石坪',
-        '西門・車隊列隊坪': '列隊石坪',
+        '車馬整隊坪': '整隊石坪',
+        '西門・車馬整隊坪': '整隊石坪',
         '通事向導舍': '通事向導',
         '西門・通事向導舍': '通事向導',
         '飲馬清草塘': '飲馬草塘',
@@ -666,8 +667,8 @@
         '西門・防雨竹笠院': '防雨竹笠',
         '城門集市街': '城門集市',
         '西門・城門集市街': '城門集市',
-        '長途保鏢哨所': '保鏢哨所',
-        '西門・長途保鏢哨所': '保鏢哨所',
+        '長途護運哨所': '護運哨所',
+        '西門・長途護運哨所': '護運哨所',
         '春風牧草甸': '春風草甸',
         '西門・春風牧草甸': '春風草甸',
         '行囊修補行': '行囊修補',
@@ -781,7 +782,7 @@
         '通濟河運總倉': '河運總倉',
         '大船桅帆作坊': '桅帆作坊',
         '臨江水手茶飯館': '臨江飯館',
-        '北灣泊客棧舍': '北灣棧舍',
+        '北灣臨水旅社': '北灣旅社',
         '漁具簑笠商號': '漁具商號',
         '河鮮鹽漬加工坊': '河鮮鹽漬',
         '碼頭匯兌分號': '匯兌分號',
@@ -807,25 +808,25 @@
         '晴波燈火人家': '晴波人家',
         '安瀾水手大院': '安瀾大院',
         '格物輿圖外院': '格物外院',
-        '活字排版印書局': '活字印局',
+        '活字排版印書局': '排版印局',
         '青檀宣紙大工坊': '宣紙工坊',
         '松煙徽墨精製坊': '徽墨精坊',
         '杏林百草醫館': '杏林醫館',
         '文房四寶總號': '文房總號',
         '青雲求學客舍': '青雲客舍',
-        '翰墨清茶書肆': '翰墨書肆',
+        '講堂外坊・翰墨清茶書舍': '翰墨書舍',
+        '翰墨清茶書舍': '翰墨書舍',
         '善本紙料儲庫': '紙料儲庫',
         '北辰測風高台': '測風高台',
         '刻書雕版匠居': '雕版匠居',
         '修竹讀書山房': '讀書山房',
         '老教席靜養院': '教席靜院',
         '青燈抄書人舍': '抄書人舍',
-        '采藥本草人家': '本草人家',
+        '採藥本草人家': '本草人家',
         '澄心洗硯小築': '洗硯小築',
         '古琴調律雅舍': '調律雅舍',
-        '會計主計家院': '主計家院',
         '算學司書家院': '主計家院',
-        '竹林晒紙人家': '晒紙人家',
+        '竹林曬紙人家': '曬紙人家',
         '梅影詩社別院': '詩社別院',
         '石鼓拓碑匠宅': '拓碑匠宅',
         '蘭谿伴讀書舍': '伴讀書舍',
@@ -840,7 +841,7 @@
         '重鐵水錘大鍛坊': '水錘鍛坊',
         '魯班大木車船坊': '魯班車船',
         '青釉官窯燒造局': '青釉官窯',
-        '五金農具總商行': '五金商行',
+        '五金農具總商行': '百工農具行',
         '焦炭生鐵大棧房': '生鐵棧房',
         '雲錦機杼大染坊': '雲錦染坊',
         '紅爐烈酒大飯鋪': '紅爐飯鋪',
@@ -848,7 +849,7 @@
         '東城器物交易場': '器物市集',
         '東門火政巡防所': '火政巡所',
         '司爐老鐵匠院': '老鐵匠院',
-        '大木作梁架居': '梁架木居',
+        '大木作樑架居': '樑架木居',
         '青瓷拉坯人舍': '拉坯人舍',
         '染缸看色匠宅': '看色匠宅',
         '熟皮鞍具家院': '鞍具家院',
@@ -868,16 +869,16 @@
         '百鍊刀劍匠宅': '刀劍匠宅',
         '天工安居大院': '天工大院',
         '萬里駝隊大驛站': '駝隊驛站',
-        '西南原皮毛大市': '皮毛大市',
-        '戰備糧草總儲倉': '糧草總倉',
-        '重載雙輪大車廠': '雙輪車廠',
+        '西門皮毛大市': '皮毛大市',
+        '常平糧草總大庫': '糧草總庫',
+        '重載雙輪大車坊': '雙輪車坊',
         '風塵客商大旅社': '客商旅社',
         '大碗羊肉湯餅鋪': '羊肉湯鋪',
         '車軸鐵箍鍛修鋪': '車軸鍛鋪',
         '遠行鞍轡帳篷行': '鞍轡帳行',
-        '四方鏢局總堂': '四方鏢局',
+        '四方護運行總堂': '四方護運',
         '西城關防驗契所': '驗契哨所',
-        '老鏢頭四合院': '老鏢頭院',
+        '老護隊四合院': '老護隊院',
         '駝隊領隊家宅': '領隊家宅',
         '牧草飼養人居': '牧草人居',
         '大車木軸匠舍': '木軸匠舍',
@@ -906,19 +907,21 @@
         '天然港灣道・南水道口': '南水道口',
         '天然港灣道・跨海長橋': '跨海長橋',
         '跨海長橋': '跨海長橋',
-        '西南原農具與百工坊': '農具工坊',
-        '西南原農具': '農具工坊',
+        '大圳農牧總社': '農牧總社',
+        '大圳農具與百工坊': '農具工坊',
+        '大圳頭農具與百工坊': '農具工坊',
+        '大圳頭農具': '農具工坊',
         '大圳頭農產與糧油市集': '農產市集',
         '農產與糧油市集': '農產市集',
         '農產': '農產市集',
         '大圳頭商旅社': '大圳商旅',
         '商旅社': '大圳商旅',
-        '大圳頭農業商行': '農業商行',
+        '大圳頭農產行': '大圳農產',
         '大圳頭車馬聯運站': '車馬聯運',
         '大圳頭脈絡診所': '脈絡診所',
         '田園風味大食堂': '田園食堂',
         '圳水溫和浴堂': '圳水浴堂',
-        '西南原導能翻土犁工坊舍': '翻土犁坊',
+        '大圳頭省力翻土犁工坊舍': '翻土犁坊',
         '大圳頭農具百工舍': '農具工舍',
         '大圳頭糧油調度員宅': '糧油調度',
         '農牧總社管事居': '總社管事',
@@ -927,19 +930,19 @@
         '大圳頭棉麻織造家': '棉麻織造',
         '原野收穫儲糧宅': '收穫儲糧',
         '大圳頭田園蔬食居': '田園蔬食',
-        '西南原拓墾老農舍': '拓墾農舍',
+        '大圳頭拓墾老農舍': '拓墾農舍',
         '大圳頭甘蔗榨汁小院': '甘蔗小院',
         '圳水磨坊工匠宅': '水磨匠宅',
-        '農產市集掌櫃居': '市集掌櫃',
+        '農產市集主事居': '市集主事',
         '大圳頭聯運駝獸伕舍': '駝獸伕舍',
         '大圳頭行商會客小舍': '行商會舍',
         '田園風光青石屋': '田園石屋',
         '大圳頭修耙補犁鋪居': '修耙補犁',
-        '西南原草料集運宅': '草料集運',
+        '大圳頭草料集運宅': '草料集運',
         '大圳頭稻香安居舍': '稻香安居',
         '大圳頭育苗育種園居': '育苗園居',
         '大圳頭清泉飲水舍': '清泉飲舍',
-        '大圳頭西南原望野樓': '望野石樓',
+        '大圳頭望野樓': '望野石樓',
         '海事總商行與船貨契據所': '海事商行',
         '海事總商行': '海事商行',
         '風舶航海圖誌館': '航海圖館',
@@ -1178,7 +1181,7 @@
         '潮音茶憩小舍': '潮音茶舍',
         '外海探險老舵手居': '老舵手居',
         '築港石匠工寮居': '築港工寮',
-        '港尾雜貨掌櫃居': '雜貨掌櫃',
+        '港尾雜貨管事居': '雜貨管事',
         '港口更夫直宿舍': '更夫直舍',
         '海員家眷安居樓': '家眷安樓',
         '遠洋物資存備宅': '遠洋備宅',
@@ -1250,7 +1253,7 @@
         '大圳頭農耕民家五號': '農耕五號',
         '大圳頭農耕民家六號': '農耕六號',
         '清泉飲水舍': '清泉飲舍',
-        '西南原望野樓': '望野石樓',
+        '大圳頭望野樓': '望野石樓',
         '石家寒水玉切石匠宅': '石家匠宅',
         '袁家半嶺山泉客舍': '袁家客舍',
         '高家青銅測風儀觀測居': '高家觀居',
@@ -1262,7 +1265,7 @@
         '半嶺石湯溫熱居': '石湯溫居',
         '雪嶺暖身茶湯鋪居': '暖身茶鋪',
         '半嶺登山鐵齒釘鞋作坊舍': '釘鞋坊舍',
-        '青脊山山徑嚮導居': '山徑嚮導',
+        '青竹坪山徑嚮導居': '山徑嚮導',
         '半嶺坡地石砌排屋一號': '坡地一號',
         '半嶺坡地石砌排屋二號': '坡地二號',
         '半嶺坡地石砌排屋三號': '坡地三號',
@@ -1397,7 +1400,7 @@
         '方石礦務辦事與技術研討舍': '礦務研舍',
         '三號坑口重型捲揚軌道機工居': '捲揚機居',
         '重型捲揚軌道機工居': '捲揚機居',
-        '採礦防爆防風礦燈檢修舍': '礦燈修舍',
+        '採礦防風礦燈檢修舍': '礦燈修舍',
         '雙刃碎石手鎬淬火工匠舍': '手鎬匠舍',
         '礦道通風支柱老木匠居': '支柱木居',
         '依嶺石砌礦工宿舍一號': '依嶺一號',
@@ -1423,7 +1426,9 @@
         '平底竹筏修配棚舍': '竹筏修棚',
         '黑沼生鮮水產暫存冷浸舍': '水產冷舍',
         '水尾寮浮水蘆荻安樂居': '蘆荻安居',
-        '浮水蘆荻安樂居': '蘆荻安居'
+        '浮水蘆荻安樂居': '蘆荻安居',
+        '三水匯流大石橋': '三水石橋',
+        '文曜・三水匯流大石橋': '三水石橋'
     };
 
     function shortPlaceLabel(rawName, fallbackDir) {
@@ -1680,10 +1685,74 @@
     var _lastSymbolCells = null;
     var _lastSymbolPx = null;
     var _lastSymbolPy = null;
+    var _prevFootstepPx = null;
+    var _prevFootstepPy = null;
+    var _originReturnDir = '';
+    var _lastCardinalByDir = {};
+    var OPPOSITE_CARDINAL = { '西': '東', '東': '西', '北': '南', '南': '北' };
+    var SHIFT_CLASS_BY_DIR = {
+        '西': 'shift-from-west',
+        '東': 'shift-from-east',
+        '北': 'shift-from-north',
+        '南': 'shift-from-south'
+    };
+
+    function triggerCanvasOpticalShift(dir) {
+        var canvasEl = document.getElementById('sw-room-canvas');
+        var cls = SHIFT_CLASS_BY_DIR[dir];
+        if (!canvasEl || !cls) return;
+        canvasEl.classList.remove('shift-from-west', 'shift-from-east', 'shift-from-north', 'shift-from-south');
+        void canvasEl.offsetWidth;
+        canvasEl.classList.add(cls);
+        setTimeout(function () {
+            canvasEl.classList.remove(cls);
+        }, 380);
+    }
+
+    function executeCardinalStep(cItem, dir, px, py) {
+        if (cItem && cItem.walkable && dir) {
+            _originReturnDir = OPPOSITE_CARDINAL[dir] || '';
+            triggerCanvasOpticalShift(dir);
+            if (window.gameSend) {
+                var tx = Number(cItem.x);
+                var ty = Number(cItem.y);
+                var targetCell = cItem.cellObj;
+                var placeId = (targetCell && (targetCell.target_place_id || targetCell.place_id)) || '';
+                window.gameSend({
+                    type: 'move',
+                    target: placeId || undefined,
+                    target_place_id: placeId || undefined,
+                    direction: dir,
+                    x: Number.isNaN(tx) ? undefined : tx,
+                    y: Number.isNaN(ty) ? undefined : ty
+                });
+            }
+        } else {
+            var tCell = cItem && cItem.cellObj;
+            var tName = (tCell && tCell.name) || (cItem && cItem.lblText) || '地勢阻隔';
+            var tSym = (cItem && cItem.char) || '·';
+            if (window.SwLog && window.SwLog.appendLog) {
+                window.SwLog.appendLog('「【' + (dir || '近處') + '】一側為「' + tName + '」（' + tSym + '），地勢阻隔無法直行。」', 'system');
+            }
+        }
+    }
+
+    window.SwMoveDirection = function (dir) {
+        if (!dir) return;
+        var cItem = _lastCardinalByDir[dir];
+        if (cItem) {
+            executeCardinalStep(cItem, dir, _lastSymbolPx, _lastSymbolPy);
+        } else if (window.gameSend) {
+            _originReturnDir = OPPOSITE_CARDINAL[dir] || '';
+            triggerCanvasOpticalShift(dir);
+            window.gameSend({ type: 'move', direction: dir });
+        }
+    };
 
     function renderSymbolGrid(cells, px, py) {
         var gridEl = document.getElementById('sw-symbol-grid');
-        if (!gridEl) return;
+        var footstepEl = document.getElementById('sw-footstep-strip');
+        if (!gridEl && !footstepEl) return;
 
         px = (typeof px === 'number') ? px : (mapData.playerX || 0);
         py = (typeof py === 'number') ? py : (mapData.playerY || 0);
@@ -1693,6 +1762,21 @@
         _lastSymbolPx = px;
         _lastSymbolPy = py;
 
+        if (_prevFootstepPx !== null && _prevFootstepPy !== null && (_prevFootstepPx !== px || _prevFootstepPy !== py)) {
+            var stepDx = px - _prevFootstepPx;
+            var stepDy = py - _prevFootstepPy;
+            var movedDir = '';
+            if (stepDx === -1 && stepDy === 0) movedDir = '西';
+            else if (stepDx === 1 && stepDy === 0) movedDir = '東';
+            else if (stepDx === 0 && stepDy === 1) movedDir = '北';
+            else if (stepDx === 0 && stepDy === -1) movedDir = '南';
+            if (movedDir) {
+                _originReturnDir = OPPOSITE_CARDINAL[movedDir] || '';
+                triggerCanvasOpticalShift(movedDir);
+            }
+        }
+        _prevFootstepPx = px;
+        _prevFootstepPy = py;
         var minX = px - 1;
         var maxX = px + 1;
         var minY = py - 1;
@@ -1711,11 +1795,13 @@
         var vw = window.innerWidth || document.documentElement.clientWidth || 1024;
         var colW = (vw <= 768) ? 76 : 88;
         var rowH = (vw <= 768) ? 46 : 52;
-        gridEl.style.setProperty('--grid-cols', '3');
-        gridEl.style.gridTemplateColumns = 'repeat(3, ' + colW + 'px)';
-        gridEl.style.gridAutoRows = rowH + 'px';
-        gridEl.style.gap = '4px';
-        gridEl.innerHTML = '';
+        if (gridEl) {
+            gridEl.style.setProperty('--grid-cols', '3');
+            gridEl.style.gridTemplateColumns = 'repeat(3, ' + colW + 'px)';
+            gridEl.style.gridAutoRows = rowH + 'px';
+            gridEl.style.gap = '4px';
+            gridEl.innerHTML = '';
+        }
 
         var currentPlaceName = mapData.currentRoomName || '自身所在';
         var currentShortName = shortPlaceLabel(currentPlaceName, '此處');
@@ -1877,13 +1963,6 @@
             }
 
             var cellTitle = item.cellTitle;
-            if (item.popCount > 0) {
-                div.classList.add('sw-cell-has-pop');
-                if (!item.isPlayer && item.popCount >= 6) {
-                    div.classList.add('sw-cell-bustling');
-                }
-                cellTitle += '（在場 ' + item.popCount + ' 人）';
-            }
             div.title = cellTitle;
 
             var symSpan = document.createElement('span');
@@ -1896,12 +1975,6 @@
             lblSpan.textContent = item.lblText;
             div.appendChild(lblSpan);
 
-            if (item.popCount > 0) {
-                var popSpan = document.createElement('span');
-                popSpan.className = 'sw-cell-pop';
-                popSpan.textContent = item.popCount + '人';
-                div.appendChild(popSpan);
-            }
 
             (function (targetX, targetY, targetCell, isCenter, isWalk, targetDir, targetChar, targetLbl) {
                 var longPressTimer = null;
@@ -1973,13 +2046,65 @@
                         var tName = (targetCell && targetCell.name) || targetLbl || '地勢阻隔';
                         var tSym = targetChar || '·';
                         if (window.SwLog && window.SwLog.appendLog) {
-                            window.SwLog.appendLog('「【' + (targetDir || '前方') + '】方向為「' + tName + '」（' + tSym + '），地勢阻隔無法直行。」');
+                            window.SwLog.appendLog('「【' + (targetDir || '近處') + '】一側為「' + tName + '」（' + tSym + '），地勢阻隔無法直行。」', 'system');
                         }
                     }
                 });
             })(item.x, item.y, item.cellObj, item.isPlayer, item.walkable, item.dir, item.char, item.lblText);
 
-            gridEl.appendChild(div);
+            if (gridEl) gridEl.appendChild(div);
+        }
+        // ── 渲染無框四向步履列（空間同構：由左至右 西 ｜ 北 ｜ 南 ｜ 東）──
+        var cardinalByDir = {};
+        for (var ci = 0; ci < gridItems.length; ci++) {
+            var gIt = gridItems[ci];
+            if (gIt.dir === '西' || gIt.dir === '北' || gIt.dir === '南' || gIt.dir === '東') {
+                cardinalByDir[gIt.dir] = gIt;
+            }
+        }
+        _lastCardinalByDir = cardinalByDir;
+        if (footstepEl) {
+            footstepEl.innerHTML = '';
+            var dirsOrder = [
+                { d: '西' },
+                { d: '北' },
+                { d: '南' },
+                { d: '東' }
+            ];
+            for (var di = 0; di < dirsOrder.length; di++) {
+                var spec = dirsOrder[di];
+                var cItem = cardinalByDir[spec.d];
+                var isWalk = !!(cItem && cItem.walkable);
+                var isOrigin = isWalk && (_originReturnDir === spec.d);
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'sw-foot-step' + (isWalk ? '' : ' is-disabled') + (isOrigin ? ' is-origin-dir' : '');
+                btn.setAttribute('data-dir', spec.d);
+                if (cItem) {
+                    btn.setAttribute('data-x', cItem.x);
+                    btn.setAttribute('data-y', cItem.y);
+                }
+                btn.title = (cItem && cItem.cellTitle) ? cItem.cellTitle : ('【' + spec.d + '】方向');
+
+                var dirSpan = document.createElement('span');
+                dirSpan.className = 'sw-foot-dir';
+                dirSpan.textContent = spec.d;
+                btn.appendChild(dirSpan);
+
+                var destSpan = document.createElement('span');
+                destSpan.className = 'sw-foot-dest';
+                destSpan.textContent = (cItem && cItem.lblText) ? cItem.lblText : (isWalk ? '可行' : '無路');
+                btn.appendChild(destSpan);
+
+                (function (boundItem, boundDir) {
+                    btn.addEventListener('click', function (ev) {
+                        ev.preventDefault();
+                        executeCardinalStep(boundItem, boundDir, px, py);
+                    });
+                })(cItem, spec.d);
+
+                footstepEl.appendChild(btn);
+            }
         }
         window.renderSymbolGrid3x3 = renderSymbolGrid;
         window.renderSymbolGrid = renderSymbolGrid;
@@ -2115,7 +2240,7 @@
     var _isCompactZoom = false;
     var _selectedWmCoord = null;
     var _didDragWorldMap = false;
-    var WM_ACTIVE_VISION_RADIUS = 2; // 周遭顯亮半徑（Chebyshev 距離 <= 2，即周遭 5x5 顯亮，範圍外暗化）
+    var WM_ACTIVE_VISION_RADIUS = 2; // 周遭顯亮半徑（方格距離 <= 2，即周遭 5x5 顯亮，範圍外暗化）
     function renderWorldMapContent() {
         var gridEl = document.getElementById('sw-world-map-grid');
         var statsEl = document.getElementById('sw-world-map-stats');
@@ -2204,10 +2329,6 @@
                 var sym = '·';
                 var lbl = '';
                 var cls = 'wm-cell';
-                var popCount = (isLiveSight && cellEntry && typeof cellEntry.npc_count === 'number') ? cellEntry.npc_count : 0;
-                if (popCount > 0) {
-                    cls += ' wm-cell-has-pop';
-                }
                 if (isPl) {
                     cls += ' wm-cell-player wm-cell-lit';
                     sym = '◎';
@@ -2243,12 +2364,6 @@
                     div.appendChild(lblSpan);
                 }
 
-                if (popCount > 0) {
-                    var popSpan = document.createElement('span');
-                    popSpan.className = 'wm-pop';
-                    popSpan.textContent = String(popCount);
-                    div.appendChild(popSpan);
-                }
 
                 (function (cellEl, tx, ty, tEntry, isSelf, tSym, tLbl, tLit, tLive) {
                     cellEl.addEventListener('click', function () {
@@ -2260,12 +2375,9 @@
                         }
                         cellEl.classList.add('is-selected');
 
-                        var popSuffix = (tLive && tEntry && typeof tEntry.npc_count === 'number' && tEntry.npc_count > 0)
-                            ? (' · 在場 ' + tEntry.npc_count + ' 人')
-                            : '';
                         if (isSelf) {
                             if (infoEl) {
-                                infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】符號 [◎] · 當前所在之處' + popSuffix + '（周遭顯亮範圍內為目力所及，範圍外過往足跡則暗化留存）';
+                                infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】符號 [◎] · 當前所在之處（周遭顯亮範圍內為目力所及，範圍外過往足跡則暗化留存）';
                             }
                             if (moveBtn) moveBtn.hidden = true;
                         } else if (tEntry && (tEntry.visited || tEntry.seen)) {
@@ -2274,7 +2386,7 @@
                                 : (tEntry.visited ? '過往足跡記憶（超出目力範圍，已暗化）' : '過往目及印象（超出目力範圍，已暗化）');
                             var fName = tEntry.name || (tEntry.visited ? '行旅足跡處' : '目及之處');
                             if (infoEl) {
-                                infoEl.textContent = '【' + fName + '】符號 [' + tSym + '] · ' + statusStr + popSuffix;
+                                infoEl.textContent = '【' + fName + '】符號 [' + tSym + '] · ' + statusStr;
                             }
                             var dx = tx - px;
                             var dy = ty - py;
@@ -2302,6 +2414,51 @@
                 })(div, x, y, cellEntry, isPl, sym, lbl, isLitVision, isLiveSight);
 
                 gridEl.appendChild(div);
+            }
+        }
+
+        if (_selectedWmCoord) {
+            var isSelSelf = _selectedWmCoord.x === px && _selectedWmCoord.y === py;
+            var selKey = _selectedWmCoord.x + ',' + _selectedWmCoord.y;
+            var selEntry = (store.cells || {})[selKey];
+            var selChebDist = Math.max(Math.abs(_selectedWmCoord.x - px), Math.abs(_selectedWmCoord.y - py));
+            var isSelLit = selChebDist <= WM_ACTIVE_VISION_RADIUS;
+            var isSelLive = selChebDist <= 1;
+            if (isSelSelf) {
+                if (infoEl) {
+                    infoEl.textContent = '【' + (mapData.currentRoomName || '自身所在') + '】符號 [◎] · 當前所在之處（周遭顯亮範圍內為目力所及，範圍外過往足跡則暗化留存）';
+                }
+                if (moveBtn) moveBtn.hidden = true;
+            } else if (selEntry && (selEntry.visited || selEntry.seen)) {
+                var selStatusStr = isSelLit
+                    ? (selEntry.visited ? '周遭顯亮（已踏足）' : '周遭顯亮（已目及）')
+                    : (selEntry.visited ? '過往足跡記憶（超出目力範圍，已暗化）' : '過往目及印象（超出目力範圍，已暗化）');
+                var selFName = selEntry.name || (selEntry.visited ? '行旅足跡處' : '目及之處');
+                var selSym = selEntry.symbol || (selEntry.visited ? '⋯' : '·');
+                if (infoEl) {
+                    infoEl.textContent = '【' + selFName + '】符號 [' + selSym + '] · ' + selStatusStr;
+                }
+                var selDx = _selectedWmCoord.x - px;
+                var selDy = _selectedWmCoord.y - py;
+                var isSelAdj = Math.abs(selDx) <= 1 && Math.abs(selDy) <= 1 && (selDx !== 0 || selDy !== 0);
+                var selDir = getDirectionFromOffset(selDx, selDy);
+                if (isSelAdj && selEntry.walkable !== false && selDir && moveBtn) {
+                    moveBtn.hidden = false;
+                    moveBtn.textContent = '前往此處（' + selDir + '）';
+                    moveBtn.onclick = function () {
+                        if (window.gameSend) {
+                            window.gameSend({ type: 'move', direction: selDir });
+                        }
+                        closeWorldMapModal();
+                    };
+                } else if (moveBtn) {
+                    moveBtn.hidden = true;
+                }
+            } else {
+                if (infoEl) {
+                    infoEl.textContent = '此處尚在雲霧阻隔中，尚未親臨踏足。';
+                }
+                if (moveBtn) moveBtn.hidden = true;
             }
         }
     }
@@ -2332,12 +2489,10 @@
         overlay.setAttribute('aria-hidden', 'false');
         if (toggleMapBtn) toggleMapBtn.setAttribute('aria-expanded', 'true');
         document.body.classList.add('sw-world-map-open');
-        if (!_selectedWmCoord) {
-            _selectedWmCoord = {
-                x: (typeof mapData.playerX === 'number') ? mapData.playerX : 0,
-                y: (typeof mapData.playerY === 'number') ? mapData.playerY : 0
-            };
-        }
+        _selectedWmCoord = {
+            x: (typeof mapData.playerX === 'number') ? mapData.playerX : 0,
+            y: (typeof mapData.playerY === 'number') ? mapData.playerY : 0
+        };
 
         bindWorldMapEvents();
         recordWalkedFootprint(mapData.cells, mapData.playerX, mapData.playerY, mapData.currentRoomName);
@@ -2608,6 +2763,49 @@
     }
 
     // ── 客房內部動作按鈕綁定 ─────────────────────────────────────────
+    function renderPrivateRoomFootstepStrip(roomName) {
+        var footstepEl = document.getElementById('sw-footstep-strip');
+        if (!footstepEl) return;
+        footstepEl.innerHTML = '';
+        var isGuest = (String(roomName || '').indexOf('客房') !== -1 || String(roomName || '').indexOf('旅社') !== -1);
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sw-foot-step';
+        btn.setAttribute('data-dir', '出');
+        btn.style.gridColumn = '1 / -1';
+        btn.title = isGuest ? '走出客房（出）' : '走出內室（出）';
+
+        var dirSpan = document.createElement('span');
+        dirSpan.className = 'sw-foot-dir';
+        dirSpan.textContent = '出';
+        btn.appendChild(dirSpan);
+
+        var destSpan = document.createElement('span');
+        destSpan.className = 'sw-foot-dest';
+        destSpan.textContent = isGuest ? '走出客房' : '走出內室';
+        btn.appendChild(destSpan);
+
+        btn.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            if (window.gameSend) window.gameSend({ type: 'move', direction: '出' });
+        });
+
+        footstepEl.appendChild(btn);
+    }
+
+    function cleanPlaceDisplayName(name) {
+        var s = String(name || '').trim();
+        if (!s) return '';
+        if (s.indexOf('文曜・中心樞紐石橋') !== -1 || s.indexOf('中心樞紐石橋') !== -1) {
+            s = s.replace('文曜・中心樞紐石橋', '三水匯流大石橋').replace('中心樞紐石橋', '三水匯流大石橋');
+        }
+        if (s.indexOf('文曜・') === 0) {
+            s = s.slice(3).trim();
+        }
+        return s;
+    }
+    window.cleanPlaceDisplayName = cleanPlaceDisplayName;
+
     function updatePrivateRoomDisplay(roomName) {
         var titleEl = document.querySelector('#sw-private-room-panel .sw-room-title');
         var descEl = document.querySelector('#sw-private-room-panel .sw-room-desc');
@@ -2742,6 +2940,8 @@
             if (activeTarget && activeTarget.kind !== 'explore' && activeTarget.id !== '__terrain_pioneer__' && activeTarget.kind !== 'npc') {
                 if (window.SwCloseObjectPopover) window.SwCloseObjectPopover();
             }
+            if (window.SwNotify && window.SwNotify.hideTopCallout) window.SwNotify.hideTopCallout();
+            _selectedWmCoord = { x: msg.player_x, y: msg.player_y };
             mapData.currentRoomId = incomingRoomId;
         }
         mapData.playerX  = msg.player_x;
@@ -2772,6 +2972,7 @@
                 roomPanel.hidden = false;
                 updatePrivateRoomDisplay(mapData.currentRoomName);
             }
+            renderPrivateRoomFootstepStrip(mapData.currentRoomName);
         } else {
             // 回到公開大堂／街道，展開 CSS Grid 符號大地圖
             if (gridWrap) gridWrap.style.display = '';
@@ -2785,6 +2986,8 @@
         if (!mapData.exits_v5) {
             window.SwRoomDesc.render();
             window.SwObjectList.render();
+        } else if (Array.isArray(mapData.entities) && mapData.entities.length > 0 && window.SwObjectList && window.SwObjectList.syncNpcEntities) {
+            window.SwObjectList.syncNpcEntities(mapData.entities, mapData.objects || []);
         } else if (Array.isArray(mapData.npcs)) {
             window.SwObjectList.renderV5NpcCards(mapData.npcs, mapData.objects || []);
         } else {
@@ -2816,17 +3019,23 @@
                           (msg.place && typeof msg.place.is_private === 'boolean') ? msg.place.is_private : prevPrivate;
         mapData.in_private_room = nextPrivate;
         var nextRoomId = msg.room_id || '';
+        var nextRoomName = (msg.place && msg.place.name) || (msg.terrain && msg.terrain.name) || '';
         var prevKey = canonicalRoomCoordKey(mapData.currentRoomId, mapData.playerX, mapData.playerY, prevPrivate);
         var nextKey = canonicalRoomCoordKey(nextRoomId, null, null, nextPrivate);
-        var sameRoom = (prevPrivate === nextPrivate) && !!nextKey && !!prevKey && prevKey === nextKey;
+        var sameRoom = (prevPrivate === nextPrivate) && (
+            (!!nextKey && !!prevKey && prevKey === nextKey) ||
+            (!!nextRoomId && !!mapData.currentRoomId && nextRoomId === mapData.currentRoomId) ||
+            ((!nextRoomId || !mapData.currentRoomId) && !!nextRoomName && !!mapData.currentRoomName && nextRoomName === mapData.currentRoomName)
+        );
         if (!sameRoom) {
+            if (window.SwNotify && window.SwNotify.hideTopCallout) window.SwNotify.hideTopCallout();
             var curTarget = window.__currentPopoverTarget;
             if (window.SwCloseObjectPopover) {
                 window.SwCloseObjectPopover();
             }
             mapData.exits = [];
+            mapData.entities = [];
             mapData.exitsRoomName = '';
-            if (window.SwLog && window.SwLog.clearScene) window.SwLog.clearScene();
             var leftColEl = document.getElementById('sw-left-column');
             if (leftColEl) leftColEl.scrollTop = 0;
             var centerLogEl = document.getElementById('sw-center-log');
@@ -2858,6 +3067,7 @@
                 roomPanel.hidden = false;
                 updatePrivateRoomDisplay(mapData.currentRoomName);
             }
+            renderPrivateRoomFootstepStrip(mapData.currentRoomName);
         } else {
             if (gridWrap) gridWrap.style.display = '';
             if (roomPanel) roomPanel.hidden = true;
@@ -2868,8 +3078,10 @@
 
         // 渲染 L1-L3 + L4
         window.SwRoomDesc.renderV5(msg, { keepL3: sameRoom });
-        // v5 acquaintance：後端帶 npcs 陣列時直接渲染，否則 fallback 舊格式
-        if (msg.npcs && Array.isArray(msg.npcs)) {
+        // v5 acquaintance：若已有完整 entities 則透過 syncNpcEntities 保守合併固定駐場人物與熟識狀態
+        if (Array.isArray(mapData.entities) && mapData.entities.length > 0 && window.SwObjectList && window.SwObjectList.syncNpcEntities) {
+            window.SwObjectList.syncNpcEntities(mapData.entities, msg.objects || mapData.objects || []);
+        } else if (msg.npcs && Array.isArray(msg.npcs)) {
             window.SwObjectList.renderV5NpcCards(msg.npcs, msg.objects || []);
         } else {
             window.SwObjectList.renderV5(msg.objects || []);
@@ -2924,6 +3136,7 @@
                 roomPanel.hidden = false;
                 updatePrivateRoomDisplay(mapData.currentRoomName);
             }
+            renderPrivateRoomFootstepStrip(mapData.currentRoomName);
         } else {
             if (gridWrap) gridWrap.style.display = '';
             if (roomPanel) roomPanel.hidden = true;
@@ -2937,8 +3150,8 @@
             var hour = Math.floor(seconds / 3600) % 24;
             window.SwRoomDesc.renderV5({
                 room_id: msg.room_id || '',
-                place: { name: mapData.currentRoomName },
-                terrain: { name: mapData.currentRoomName, description: msg.description || '' },
+                place: { name: cleanPlaceDisplayName(mapData.currentRoomName) },
+                terrain: { name: cleanPlaceDisplayName(mapData.currentRoomName), description: msg.description || '' },
                 desc: msg.description || '',
                 time: { hour: hour, hour_str: String(hour).padStart(2, '0') + ':00' },
                 objects: mapData.objects,
@@ -2967,7 +3180,7 @@
     };
 
     // ── v5 world_tick 事件（不污染 log）──────────────────────────────
-    // 四段時辰需與畫面上每兩小時一段的時段標籤一致：
+    // 四段時序需與畫面上每兩小時一段的時段標籤一致：
     // dawn(4-7) / day(8-15) / dusk(16-19) / night(20-3)。
     // 日兩組（dawn/day）夜兩組（dusk/night），每個天氣 icon 各備四池
     var WEATHER_PROSE_WT = {
@@ -3087,6 +3300,8 @@
             if (window.SwObjectList && window.SwObjectList.render) {
                 window.SwObjectList.render();
             }
+        } else if (Array.isArray(mapData.entities) && mapData.entities.length > 0 && window.SwObjectList && window.SwObjectList.syncNpcEntities) {
+            window.SwObjectList.syncNpcEntities(mapData.entities, mapData.objects || []);
         } else if (Array.isArray(mapData.npcs) && window.SwObjectList && window.SwObjectList.renderV5NpcCards) {
             window.SwObjectList.renderV5NpcCards(mapData.npcs, mapData.objects || []);
         }
@@ -3121,7 +3336,6 @@
                 renderSymbolGrid(_lastSymbolCells, _lastSymbolPx, _lastSymbolPy);
             }
         });
-        console.log('[grid-map] v0.26.0 initialized | living text surface');
     }
 
     if (document.readyState === 'loading') {

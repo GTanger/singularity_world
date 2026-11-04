@@ -1,4 +1,4 @@
-//! 玩家查詢（房間座標 + 361 拓撲 + 時辰）。
+//! 玩家查詢（房間座標 + 361 拓撲 + 時序）。
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -103,7 +103,7 @@ fn build_topology_nodes() -> Vec<TopoNode> {
     let mut nodes = Vec::with_capacity(361);
     nodes.push(TopoNode {
         id: "N000".into(),
-        name: "生之奇點".into(),
+        name: "生之本源".into(),
         zone: 0,
         system: String::new(),
         inlayable: false,

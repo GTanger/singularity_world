@@ -224,6 +224,15 @@ pub fn gather(
         now_unix,
     )?;
     tx.commit()?;
+    let room_name = crate::db::get_room_name(place_id).unwrap_or_default();
+    let narrative = format_venue_gather_narrative_and_advance_event_pack(
+        &room_name,
+        &state.origin_label,
+        &state.item_id,
+        &state.name,
+        quantity,
+        state.current_stock,
+    );
     Ok(Some(GatherResult {
         action_id,
         place_id: place_id.to_string(),
@@ -234,11 +243,40 @@ pub fn gather(
         source_stock_after: state.current_stock,
         entity_quantity_after,
         inventory,
-        narrative: format!(
-            "從{}取走{}{}份；原地還看得見{}份。",
-            state.origin_label, state.name, quantity, state.current_stock
-        ),
+        narrative,
     }))
+}
+
+/// 依據採集所在場域物件化資訊產出敘事，並嘗試推進活躍事件包與劇本包。
+pub fn format_venue_gather_narrative_and_advance_event_pack(
+    room_name: &str,
+    origin_label: &str,
+    item_id: &str,
+    item_name: &str,
+    quantity: i32,
+    remaining_stock: i32,
+) -> String {
+    let room_trimmed = room_name.trim();
+    let item_trimmed = item_id.trim();
+    let name_trimmed = item_name.trim();
+    if !room_trimmed.is_empty() {
+        let hint = format!("{item_trimmed} {name_trimmed}");
+        let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            room_trimmed,
+            hint.trim(),
+        );
+    }
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_trimmed, "") {
+        format!(
+            "於{}（{}）從{}取走{}{}份；原地還看得見{}份。",
+            room_trimmed, venue.venue_kind, origin_label, item_name, quantity, remaining_stock
+        )
+    } else {
+        format!(
+            "從{}取走{}{}份；原地還看得見{}份。",
+            origin_label, item_name, quantity, remaining_stock
+        )
+    }
 }
 
 /// 依遊戲日補回所有來源；同一天重複呼叫不會重複生成。
@@ -424,19 +462,26 @@ fn add_inventory_quantity(
             .get("qty")
             .and_then(serde_json::Value::as_i64)
             .unwrap_or(0);
-        let after = before.saturating_add(i64::from(quantity));
+        let after = before
+            .saturating_add(i64::from(quantity))
+            .min(crate::db::inventory::MAX_NPC_ITEM_STACK_QTY as i64);
         anyhow::ensure!(after <= i64::from(i32::MAX), "背包數量溢位");
         entry["qty"] = serde_json::json!(after);
         return Ok((serde_json::to_string(&value)?, after as i32));
     }
-    array.push(serde_json::json!({"item_id": item_id, "qty": quantity}));
-    Ok((serde_json::to_string(&value)?, quantity))
+    let clamped_quantity = (quantity as i64)
+        .min(crate::db::inventory::MAX_NPC_ITEM_STACK_QTY as i64) as i32;
+    let actual_added = if array.len() < crate::db::inventory::MAX_NPC_DISTINCT_ITEMS {
+        array.push(serde_json::json!({"item_id": item_id, "qty": clamped_quantity}));
+        clamped_quantity
+    } else {
+        0
+    };
+    Ok((serde_json::to_string(&value)?, actual_added))
 }
-
 #[cfg(test)]
 mod tests {
-    use super::add_inventory_quantity;
-
+    use super::{add_inventory_quantity, format_venue_gather_narrative_and_advance_event_pack};
     #[test]
     fn inventory_add_preserves_unrelated_fields() {
         let raw = r#"[{"item_id":"mat_hay_bundle","qty":2,"quality":"dry"}]"#;
@@ -450,5 +495,66 @@ mod tests {
         let (updated, qty) = add_inventory_quantity("[]", "mat_reed_bundle", 2).expect("add");
         assert_eq!(qty, 2);
         assert_eq!(updated, r#"[{"item_id":"mat_reed_bundle","qty":2}]"#);
+    }
+
+    #[test]
+    fn inventory_add_clamps_max_qty() {
+        let (updated, qty) = add_inventory_quantity("[]", "mat_reed_bundle", 20).expect("add");
+        assert_eq!(qty, crate::db::inventory::MAX_NPC_ITEM_STACK_QTY);
+        assert_eq!(
+            updated,
+            format!(
+                r#"[{{"item_id":"mat_reed_bundle","qty":{}}}]"#,
+                crate::db::inventory::MAX_NPC_ITEM_STACK_QTY
+            )
+        );
+    }
+
+    #[test]
+    fn inventory_add_caps_distinct_items() {
+        let mut raw_arr = Vec::new();
+        for i in 0..crate::db::inventory::MAX_NPC_DISTINCT_ITEMS {
+            raw_arr.push(serde_json::json!({
+                "item_id": format!("item_{i}"),
+                "qty": 1
+            }));
+        }
+        let raw = serde_json::to_string(&raw_arr).expect("json");
+        let (updated, qty) = add_inventory_quantity(&raw, "overflow_item", 1).expect("add");
+        assert_eq!(qty, 0);
+        let parsed: serde_json::Value = serde_json::from_str(&updated).expect("parse");
+        assert_eq!(
+            parsed.as_array().map(|a| a.len()),
+            Some(crate::db::inventory::MAX_NPC_DISTINCT_ITEMS)
+        );
+    }
+
+    #[test]
+    fn test_format_venue_gather_narrative_and_advance_event_pack() {
+        let venue_narrative = format_venue_gather_narrative_and_advance_event_pack(
+            "老堰頭・水輪石磨工坊",
+            "料架",
+            "mat_wheat_grain",
+            "麥粒",
+            3,
+            12,
+        );
+        assert_eq!(
+            venue_narrative,
+            "於老堰頭・水輪石磨工坊（水輪石磨工坊）從料架取走麥粒3份；原地還看得見12份。"
+        );
+
+        let fallback_narrative = format_venue_gather_narrative_and_advance_event_pack(
+            "荒蕪礫石空地",
+            "地表碎石堆",
+            "mat_flint_stone",
+            "燧石",
+            1,
+            0,
+        );
+        assert_eq!(
+            fallback_narrative,
+            "從地表碎石堆取走燧石1份；原地還看得見0份。"
+        );
     }
 }

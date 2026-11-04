@@ -1,5 +1,5 @@
 {
-  "_說明": "鐵匠行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "_說明": "鐵匠行為模板。定義日程、巡邏偏好、交易定價規約、性情品性。",
   "schedule": {
     "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
     "entries": [
@@ -8,7 +8,7 @@
       {"hour_start": 8, "hour_end": 12, "activity": "work", "location_pref": ["forge"], "description": "專心鍛造，錘聲不絕"},
       {"hour_start": 12, "hour_end": 13, "activity": "rest", "location_pref": ["forge", "inn"], "description": "午間歇息，簡單用膳"},
       {"hour_start": 13, "hour_end": 18, "activity": "work", "location_pref": ["forge"], "description": "繼續打鐵，完成訂單"},
-      {"hour_start": 18, "hour_end": 20, "activity": "rest", "location_pref": ["tavern", "inn"], "description": "收工後到附近酒館小酌"},
+      {"hour_start": 18, "hour_end": 20, "activity": "rest", "location_pref": ["tavern", "inn"], "description": "收工後到附近飯館小酌"},
       {"hour_start": 20, "hour_end": 22, "activity": "idle", "location_pref": ["forge", "home"], "description": "整理工具，收拾爐火"},
       {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["home"], "description": "就寢安歇"},
       {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["home"], "description": "沉睡夢鄉"}
@@ -52,7 +52,7 @@
       ],
       "counter": [
         "【{name}】伸出手指比了比：「再加點如何？」",
-        "【{name}】敲了敲砧板：「實價在這，少一文都不行。」",
+        "【{name}】敲了敲砧板：「實價在這，少一枚鎂幣都不行。」",
         "【{name}】皺起眉頭：「這已經是最低價了，再讓我就白忙活了。」",
         "【{name}】掂了掂手中的鐵器：「這可是好鋼，你再加些。」"
       ]

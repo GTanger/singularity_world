@@ -8,7 +8,7 @@ mod player;
 mod rooms;
 
 pub use admin::{AdminQuery, design_constants, wipe_entities};
-pub use eco::{eco_entities, eco_map, eco_pulse};
+pub use eco::{eco_entities, eco_map, eco_npc_thoughts, eco_pulse, handle_eco_entities, handle_eco_npc_thoughts};
 pub use player::{climate, game_time, player_room, topology};
 pub use rooms::{
     add_exit, create_room, delete_room, get_room_admin, list_rooms, remove_exit, rename_room,

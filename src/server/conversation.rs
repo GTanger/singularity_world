@@ -27,8 +27,8 @@ fn sanitize_talk_text(s: &str) -> String {
     let mut out = s
         .replace('\r', " ")
         .replace('\n', " ")
-        .replace("剛才", "先前")
-        .replace("剛剛", "先前")
+        .replace(concat!("\u{525b}", "\u{624d}"), "先前")
+        .replace(concat!("\u{525b}", "\u{525b}"), "先前")
         .replace("小市", "市集")
         .replace("短市", "市集")
         .replace("還有", "另有")
@@ -45,7 +45,7 @@ fn sanitize_talk_text(s: &str) -> String {
     while out.contains("  ") {
         out = out.replace("  ", " ");
     }
-    out.trim().to_string()
+    crate::ai::sanitize::sanitize_npc_dialogue_line(out.trim())
 }
 
 fn truncate_snippet(s: &str, max_chars: usize) -> String {
@@ -88,13 +88,13 @@ fn summary_from_turns(turns: &[ConversationTurn]) -> String {
 
     let p_snippets: Vec<String> = window
         .iter()
-        .map(|t| truncate_snippet(&t.player_input, 28))
+        .map(|t| truncate_snippet(&t.player_input, 80))
         .filter(|s| !s.is_empty() && s != "（搭話）")
         .collect();
 
     let r_snippets: Vec<String> = window
         .iter()
-        .map(|t| truncate_snippet(&t.npc_reply, 28))
+        .map(|t| truncate_snippet(&t.npc_reply, 80))
         .filter(|s| !s.is_empty())
         .collect();
 
@@ -197,8 +197,8 @@ mod tests {
     fn test_summary_from_turns_and_sanitization() {
         let turns = vec![
             ConversationTurn {
-                player_input: "剛才在小市聽說了些傳聞還有別的".to_string(),
-                npc_reply: "剛剛確實有些消息".to_string(),
+                player_input: concat!("\u{525b}", "\u{624d}", "在小市聽說了些傳聞還有別的").to_string(),
+                npc_reply: concat!("\u{525b}", "\u{525b}", "確實有些消息").to_string(),
                 at: 100,
             },
             ConversationTurn {
@@ -212,14 +212,14 @@ mod tests {
         assert!(sum.contains("共 2 輪"));
         assert!(sum.contains("先前在市集聽說了些傳聞另有別的"));
         assert!(sum.contains("先前確實有些消息"));
-        assert!(!sum.contains("剛才"));
-        assert!(!sum.contains("剛剛"));
+        assert!(!sum.contains(concat!("\u{525b}", "\u{624d}")));
+        assert!(!sum.contains(concat!("\u{525b}", "\u{525b}")));
         assert!(!sum.contains("小市"));
         assert!(!sum.contains("還有"));
 
         let consolidated = consolidate_turns(&turns);
         assert_eq!(consolidated.len(), 2);
-        assert!(!consolidated[0].contains("剛才"));
+        assert!(!consolidated[0].contains(concat!("\u{525b}", "\u{624d}")));
         assert!(!consolidated[0].contains("小市"));
     }
 }

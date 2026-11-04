@@ -270,7 +270,7 @@ pub fn compile() -> Result<CompiledFormalization> {
         "operational_route_overrides": {
             "hard_conflicts": &hard_conflicts,
             "requires_geometry_review": review_routes,
-            "rule": "西南原不得直接越過黑沼林抵達青籠關；衝突路線保留來源但不得升格正式跨區走廊"
+            "rule": "大圳頭不得直接越過水尾澤抵達青籠關；衝突路線保留來源但不得升格正式跨區走廊"
         },
         "accepted_anchor_projection": &anchors,
         "territorial_mesh_candidates": states,
@@ -291,7 +291,7 @@ pub fn compile() -> Result<CompiledFormalization> {
             "cell_and_area_are_not_meaningful_nodes": true,
             "marker_zero_and_zone_zero_preserved": true,
             "known_south_bypass_flagged": true,
-            "falsifier": "任一聚落無法映射到物理區、任一來源層漏記、生成政治被當成正典，或西南原仍可被認作直通青籠關時，本批不得判定完成"
+            "falsifier": "任一聚落無法映射到物理區、任一來源層漏記、生成政治被當成正典，或大圳頭仍可被認作直通青籠關時，本批不得判定完成"
         }
     });
 
@@ -734,7 +734,7 @@ fn compile_route_overrides(geography: &PhysicalGeography) -> (Vec<ConflictRoute>
                 from,
                 to,
                 "formalization_blocked",
-                "繞過黑沼林，與已接受南向地理關係衝突",
+                "繞過水尾澤，與已接受南向地理關係衝突",
             ));
             continue;
         }
@@ -748,7 +748,7 @@ fn compile_route_overrides(geography: &PhysicalGeography) -> (Vec<ConflictRoute>
                 "route_id": route.id,
                 "from_place_id": route.from_place_id,
                 "to_place_id": route.to_place_id,
-                "reason": "須檢查實際線位是否已進入黑沼林北緣，不能只靠 anchor 標籤判定",
+                "reason": "須檢查實際線位是否已進入水尾澤北緣，不能只靠 anchor 標籤判定",
                 "disposition": "retained_pending_geometry_review"
             }));
         }

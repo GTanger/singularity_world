@@ -66,8 +66,7 @@ fn move_direction_zh(dx: i32, dy: i32) -> &'static str {
 
 fn resolve_grid_cell_display_name(room_id: &str) -> String {
     if let Some(coord) = crate::grid::parse_grid_room_id(room_id)
-        && let Some(grid) = crate::server::grid_manager::get_runtime_square_grid()
-        && let Some(cell) = grid.get(coord)
+        && let Some(cell) = crate::server::grid_manager::get_runtime_grid_cell(coord)
     {
         if !cell.name.trim().is_empty() {
             return cell.name.clone();
@@ -99,11 +98,94 @@ fn resolve_npc_name_for_viewer(viewer_pid: &str, npc_id: &str, display_title: &s
             "街坊"
         };
         if !brief.is_empty() {
-            format!("{brief}的{role}")
+            if matches!(brief.as_str(), "合社獵團" | "入山百工" | "古道行旅") {
+                format!("{brief}的{role}")
+            } else {
+                format!("一名{brief}的{role}")
+            }
         } else {
             format!("一名{role}")
         }
     }
+}
+
+pub(crate) fn resolve_npc_name_for_viewer_in_room(
+    viewer_pid: &str,
+    npc_id: &str,
+    display_title: &str,
+    room_name: &str,
+    activity: &str,
+    equipment_slots: &str,
+) -> String {
+    let named = !viewer_pid.is_empty()
+        && crate::db::get_acquaintance(viewer_pid, npc_id)
+            .ok()
+            .flatten()
+            .map(|a| a.named)
+            .unwrap_or(false);
+    if named {
+        crate::store::resolve_npc_person_name(npc_id, display_title, None)
+    } else {
+        let (is_staff, has_uniform, in_counter_zone) =
+            crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+                room_name,
+                npc_id,
+                display_title,
+                activity,
+                equipment_slots,
+            );
+        if is_staff {
+            let host_title = crate::grid::resolve_any_room_venue_object(room_name, display_title)
+                .map(|v| v.default_host_title)
+                .unwrap_or("當值主事");
+            if in_counter_zone && has_uniform {
+                format!("身著制服站於櫃檯內側的{host_title}")
+            } else if in_counter_zone {
+                format!("站在櫃檯內側的{host_title}")
+            } else if has_uniform {
+                format!("身著工作制服的{host_title}")
+            } else {
+                host_title.to_string()
+            }
+        } else {
+            resolve_npc_name_for_viewer(viewer_pid, npc_id, display_title)
+        }
+    }
+}
+
+pub(crate) fn resolve_unnamed_arrival_action_detail(
+    room_name: &str,
+    npc_id: &str,
+    display_title: &str,
+    activity: &str,
+    equipment_slots: &str,
+) -> String {
+    let (is_staff, has_uniform, in_counter_zone) =
+        crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+            room_name,
+            npc_id,
+            display_title,
+            activity,
+            equipment_slots,
+        );
+    if is_staff {
+        if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, display_title) {
+            if in_counter_zone || venue.has_counter_restricted_zone {
+                return format!(
+                    "邁步進入{}當值櫃檯內側，{}",
+                    venue.venue_kind, venue.on_duty_fixture_activity
+                );
+            } else if has_uniform {
+                return format!(
+                    "身著工作制服步入{}，{}",
+                    venue.venue_kind, venue.on_duty_fixture_activity
+                );
+            }
+        }
+    } else if let Some(ambient) = crate::grid::resolve_room_ambient_visitor_activity(room_name, 0) {
+        return format!("步入此處，{}", ambient);
+    }
+    "步履從容地沿街前行".to_string()
 }
 
 /// 發佈逐步移動敘事、房間事件與視野刷新。
@@ -267,10 +349,13 @@ pub(super) fn run_grid_npc_tick(
         return;
     };
     let events = mgr.tick(now_unix, hour, game_day);
+    crate::npc::causal_core::ensure_circular_economy_normalized_if_needed();
     let canon_moves = crate::server::grid_manager::advance_canonical_npcs_one_step();
     let household_moves = crate::store::get_store()
         .map(|s| s.read().advance_household_npcs_one_step())
         .unwrap_or_default();
+    let _ = crate::npc::causal_core::drain_pending_arrival_effects();
+    let _ = crate::npc::causal_core::step_offline_players_autonomy(crate::game::now_unix());
     if events.is_empty() && canon_moves.is_empty() && household_moves.is_empty() {
         return;
     }
@@ -331,13 +416,23 @@ pub(super) fn run_grid_npc_tick(
         };
         let dir_forward = move_direction_zh(dx, dy);
         let dir_backward = move_direction_zh(-dx, -dy);
-        let from_name = resolve_grid_cell_display_name(&from_room_id);
-        let to_name = resolve_grid_cell_display_name(&to_room_id);
+        let from_name_raw = resolve_grid_cell_display_name(&from_room_id);
+        let to_name_raw = resolve_grid_cell_display_name(&to_room_id);
+        let clean_room_name = |name: &str| -> String {
+            let s = name.trim_start_matches("文曜・");
+            if s == "中心樞紐石橋" {
+                "三水匯流大石橋".to_string()
+            } else {
+                s.to_string()
+            }
+        };
+        let from_name_clean = clean_room_name(&from_name_raw);
+        let to_name_clean = clean_room_name(&to_name_raw);
 
         let ent_opt = crate::db::get_entity(&npc_id).ok().flatten();
         let display_title = ent_opt.as_ref().map(|e| e.display_title.as_str()).unwrap_or("");
         let activity = ent_opt.as_ref().map(|e| e.current_activity.as_str()).unwrap_or("");
-
+        let equipment_slots = ent_opt.as_ref().map(|e| e.equipment_slots.as_str()).unwrap_or("");
         // 離開現場敘事（每間房每 25 秒最多推播 1 條路過訊息，避免洗掉現場交談與叫賣）
         if from_in_player {
             let count = narrate_counts.entry(from_room_id.clone()).or_insert(0);
@@ -353,13 +448,27 @@ pub(super) fn run_grid_npc_tick(
                 let want = crate::db::canonical_location_key(&from_room_id);
                 for s in sessions.all_sessions() {
                     if crate::server::session::player_location_key(&s.player_id) == want {
-                        let caller_name = resolve_npc_name_for_viewer(&s.player_id, &npc_id, display_title);
-                        let leave_verb_idx = (now_ts as usize + npc_id.len()) % 4;
-                        let leave_text = match leave_verb_idx {
-                            0 => format!("{caller_name}邁步走入街道，往{dir_forward}朝【{to_name}】方向行去。"),
-                            1 => format!("{caller_name}轉身朝{dir_forward}【{to_name}】方向行去，步履從容。"),
-                            2 => format!("{caller_name}匆匆趕往{dir_forward}【{to_name}】，轉眼已行至路口。"),
-                            _ => format!("{caller_name}沿著石板路邁步離去，往{dir_forward}朝【{to_name}】方向行去。"),
+                        let named = crate::db::get_acquaintance(&s.player_id, &npc_id)
+                            .ok()
+                            .flatten()
+                            .map(|a| a.named)
+                            .unwrap_or(false);
+                        let caller_name = resolve_npc_name_for_viewer_in_room(
+                            &s.player_id,
+                            &npc_id,
+                            display_title,
+                            &from_name_raw,
+                            activity,
+                            equipment_slots,
+                        );
+                        let leave_text = if !named || to_name_clean.is_empty() {
+                            if dir_forward.is_empty() {
+                                format!("{caller_name}邁步離去。")
+                            } else {
+                                format!("{caller_name}邁步往{dir_forward}一側行去。")
+                            }
+                        } else {
+                            format!("{caller_name}邁步往{dir_forward}【{to_name_clean}】一側行去。")
                         };
                         crate::server::send_narrate_to_player(&s, &leave_text);
                     }
@@ -380,9 +489,9 @@ pub(super) fn run_grid_npc_tick(
                     g.insert(to_room_id.clone(), now_ts);
                 }
                 let cleaned_activity = if let Some(idx) = activity.find("沿街前往") {
-                    // 若前面有「正從【...】」或「自【...】收工，」，只保留「沿街前往」及其前置修飾（如「剛收工，正」）
+                    // 若前面有「正從【...】」或「自【...】收工，」，只保留「沿街前往」及其前置修飾（如「才收工，正」）
                     let prefix = if activity.contains("收工") {
-                        "方才收工，正"
+                        "收工後正"
                     } else {
                         "正"
                     };
@@ -398,16 +507,62 @@ pub(super) fn run_grid_npc_tick(
                 let want = crate::db::canonical_location_key(&to_room_id);
                 for s in sessions.all_sessions() {
                     if crate::server::session::player_location_key(&s.player_id) == want {
-                        let caller_name = resolve_npc_name_for_viewer(&s.player_id, &npc_id, display_title);
-                        let arrive_verb_idx = (now_ts as usize + npc_id.len()) % 4;
-                        let arrive_text = match arrive_verb_idx {
-                            0 => format!("{caller_name}自{dir_backward}【{from_name}】邁步走入此處，{action_detail}。"),
-                            1 => format!("{caller_name}沿著石板路從{dir_backward}【{from_name}】行來，{action_detail}。"),
-                            2 => format!("{caller_name}停下腳步打量四方，方自{dir_backward}【{from_name}】行至此處，{action_detail}。"),
-                            _ => format!("{caller_name}匆匆趕往此地，自{dir_backward}【{from_name}】方向走來，{action_detail}。"),
+                        let named = crate::db::get_acquaintance(&s.player_id, &npc_id).ok().flatten().map(|a| a.named).unwrap_or(false);
+                        let caller_name = resolve_npc_name_for_viewer_in_room(
+                            &s.player_id,
+                            &npc_id,
+                            display_title,
+                            &to_name_raw,
+                            activity,
+                            equipment_slots,
+                        );
+                        let unnamed_detail = if !named {
+                            resolve_unnamed_arrival_action_detail(
+                                &to_name_raw,
+                                &npc_id,
+                                display_title,
+                                activity,
+                                equipment_slots,
+                            )
+                        } else {
+                            String::new()
+                        };
+                        let effective_action_detail = if named {
+                            action_detail.as_str()
+                        } else {
+                            unnamed_detail.as_str()
+                        };
+                        let act_clause = effective_action_detail.trim().trim_end_matches(['。', '！', '？', '，', ' ']);
+                        let arrive_text = if dir_backward.is_empty() {
+                            format!("{caller_name}自【{from_name_clean}】走來，{act_clause}。")
+                        } else {
+                            format!("{caller_name}自{dir_backward}【{from_name_clean}】一側走來，{act_clause}。")
                         };
                         crate::server::send_narrate_to_player(&s, &arrive_text);
                     }
+                }
+            }
+        }
+
+        if crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+            &to_name_raw,
+            &npc_id,
+            display_title,
+            activity,
+            equipment_slots,
+        )
+        .0
+        {
+            if let Some((ev, _sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                &to_name_raw,
+                None,
+                now_ts as _,
+            ) {
+                if let Some(first_key) = ev.key_objects.split('、').next() {
+                    let _ = crate::npc::brain_arrival::advance_room_event_pack_on_npc_arrival_action(
+                        &to_name_raw,
+                        first_key,
+                    );
                 }
             }
         }
@@ -449,4 +604,93 @@ pub(super) fn run_m3_027_north_bank_actor_tick(
     push_room_event(tick.room_id, "work", tick.actor, &tick.detail);
     send_narrate_to_room(sessions, tick.room_id, &narrative);
     refresh_room_views_for_room(sessions, cfg, tick.room_id);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_resolve_npc_name_for_viewer_in_room_uniform_and_counter() {
+        let name_both = resolve_npc_name_for_viewer_in_room(
+            "",
+            "test_npc_clerk",
+            "店員",
+            "半島百草診所",
+            "",
+            "",
+        );
+        assert_eq!(name_both, "身著制服站於櫃檯內側的當值醫師");
+
+        let name_counter = resolve_npc_name_for_viewer_in_room(
+            "",
+            "test_npc_mgr",
+            "掌事",
+            "半島百草診所",
+            "",
+            "",
+        );
+        assert_eq!(name_counter, "站在櫃檯內側的當值醫師");
+
+        let name_uniform = resolve_npc_name_for_viewer_in_room(
+            "",
+            "test_npc_cust",
+            "穿制服的顧客",
+            "半島百草診所",
+            "",
+            "",
+        );
+        assert_eq!(name_uniform, "身著工作制服的當值醫師");
+
+        let name_passerby = resolve_npc_name_for_viewer_in_room(
+            "",
+            "test_npc_guest",
+            "路人顧客",
+            "",
+            "",
+            "",
+        );
+        assert!(name_passerby.contains("街坊"));
+    }
+
+    #[test]
+    fn test_resolve_unnamed_arrival_action_detail() {
+        let staff_arrival = resolve_unnamed_arrival_action_detail(
+            "半島百草診所",
+            "test_npc_clerk",
+            "店員",
+            "",
+            "",
+        );
+        assert_eq!(
+            staff_arrival,
+            "邁步進入醫館藥局當值櫃檯內側，正於青石藥案前調配青鹽薄荷潔牙粉與水苔敷藥"
+        );
+
+        // 2. 穿著制服但非管制櫃檯區（以蒙學學舍為例）
+        let uniform_arrival = resolve_unnamed_arrival_action_detail(
+            "文曜蒙學",
+            "test_npc_cust",
+            "穿制服的顧客",
+            "",
+            "",
+        );
+        assert_eq!(
+            uniform_arrival,
+            "身著工作制服步入蒙學學舍，正敲響響板帶領學生朗讀基礎教材"
+        );
+
+        // 3. 一般訪客抵達（環境氛圍活動）
+        let visitor_arrival = resolve_unnamed_arrival_action_detail(
+            "尋常林間小道",
+            "test_npc_guest",
+            "路人顧客",
+            "",
+            "",
+        );
+        assert_eq!(
+            visitor_arrival,
+            "步入此處，提著竹編提籃在三水口商號間採辦日用雜貨"
+        );
+    }
 }

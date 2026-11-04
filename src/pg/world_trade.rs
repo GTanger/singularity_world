@@ -206,18 +206,27 @@ pub fn settle_npc_sale(
     if !is_market {
         return Ok(None);
     }
-    let Some(buyer_row) = tx.query_opt(
+    let buyer_rows = tx.query(
         "SELECT id,kind,vit,magnesium,inventory,place_id,current_activity
          FROM entities
          WHERE kind='npc' AND vit>0 AND id<>$1 AND place_id=$2 AND magnesium >= $3
          ORDER BY abs(hashtext(id || ':' || $1 || ':' || ($4::bigint)::text)),id
-         LIMIT 1 FOR UPDATE SKIP LOCKED",
+         LIMIT 16 FOR UPDATE SKIP LOCKED",
         &[&seller_id, &place_id, &price_mg, &now_unix],
-    )?
-    else {
+    )?;
+    let mut chosen_buyer = None;
+    for row in buyer_rows {
+        let buyer = actor_from_row(row);
+        if let Ok(mut test_inv) = parse_inventory(&buyer.inventory) {
+            if add_quantity_for_actor(&mut test_inv, item_id, quantity, buyer.kind == "npc", false).is_ok() {
+                chosen_buyer = Some(buyer);
+                break;
+            }
+        }
+    }
+    let Some(buyer) = chosen_buyer else {
         return Ok(None);
     };
-    let buyer = actor_from_row(buyer_row);
     let settlement = settle_locked(
         &mut tx, &buyer, &seller, item_id, quantity, price_mg, now_unix, source_ref,
     )?;
@@ -299,7 +308,7 @@ pub fn settle_market_sale(
     let target_quantity: i32 = market.get(5);
     let reference_price_mg: i32 = market.get(6);
     let current_ask_mg: i32 = market.get(7);
-    let display_name: String = market.get(8);
+    let display_name = super::living_world::peninsula_good_display_name(market.get::<_, &str>(8)).to_string();
     let minimum_total = current_ask_mg
         .checked_mul(quantity)
         .map(|total| (total * 7 / 10).max(1))
@@ -320,15 +329,22 @@ pub fn settle_market_sale(
     );
     let mut buyer_inventory = parse_inventory(&buyer.inventory)?;
     let buyer_quantity_before = inventory_quantity(&buyer_inventory, item_id)?;
-    add_quantity(&mut buyer_inventory, item_id, quantity)?;
+    add_quantity_for_actor(
+        &mut buyer_inventory,
+        item_id,
+        quantity,
+        buyer.kind == "npc",
+        consume_period.is_some(),
+    )?;
     let buyer_quantity_after_sale = inventory_quantity(&buyer_inventory, item_id)?;
     let buyer_inventory_after_sale = serde_json::to_string(&buyer_inventory)?;
-    let buyer_activity = if buyer.kind == "npc" {
-        format!("正在市場買下{display_name}")
-    } else {
-        buyer.current_activity.clone()
-    };
-    let operator_activity = format!("正在替市場交付{display_name}");
+    let (buyer_activity, operator_activity) = resolve_venue_trade_activities(
+        place_id,
+        item_id,
+        &display_name,
+        buyer.kind == "npc",
+        &buyer.current_activity,
+    );
 
     tx.execute(
         "UPDATE entities SET magnesium=$1,inventory=$2,current_activity=$3 WHERE id=$4",
@@ -458,7 +474,14 @@ pub fn settle_market_sale(
         remove_quantity(&mut buyer_inventory, item_id, quantity)?;
         let consumption_after = inventory_quantity(&buyer_inventory, item_id)?;
         final_inventory = serde_json::to_string(&buyer_inventory)?;
-        final_activity = format!("剛在市場買下並使用{display_name}");
+        final_activity = if matches!(
+            display_name.as_str(),
+            "日曬海鹽" | "茶籽皂塊" | "蜂蠟燭台" | "深海鯨脂" | "精碾白米" | "鮮海魚獲" | "山林野味"
+        ) {
+            format!("在市集添購了日常所需的{display_name}")
+        } else {
+            format!("在市集購得並享用{display_name}")
+        };
         tx.execute(
             "UPDATE entities SET inventory=$1,current_activity=$2 WHERE id=$3",
             &[&final_inventory, &final_activity, &buyer.id],
@@ -536,15 +559,16 @@ pub fn settle_one_npc_consumption(
               AND operator.kind='npc' AND operator.vit>0
          JOIN entities buyer ON buyer.place_id=w.place_id AND buyer.kind='npc' AND buyer.vit>0
               AND buyer.id<>operator.id AND buyer.magnesium>=i.price_mg
-         WHERE i.consumable AND i.local_demand_deals>0 AND i.quantity>0
+         WHERE (i.consumable OR i.source_good_id IN (9, 11, 12, 16, 39, 64, 66)) AND i.local_demand_deals>0 AND i.quantity>0 AND i.price_mg >= 1
            AND NOT EXISTS (
              SELECT 1 FROM world_consumption_ledger c
              WHERE c.entity_id=buyer.id AND c.consumption_period=$1)
            AND NOT EXISTS (
              SELECT 1 FROM world_market_shipments s
              WHERE s.carrier_id IN (buyer.id,operator.id) AND s.status='in_transit')
-         ORDER BY (i.target_quantity-i.quantity) DESC,
-                  abs(hashtextextended(buyer.id||':'||operator.id||':'||i.item_id||':'||$1::text,0))
+         ORDER BY (i.quantity > i.target_quantity / 2) DESC,
+                  abs(hashtextextended(buyer.id||':'||operator.id||':'||i.item_id||':'||$1::text,0)),
+                  i.item_id
          LIMIT 1",
         &[&consumption_period],
     )?;
@@ -557,7 +581,7 @@ pub fn settle_one_npc_consumption(
     let item_id: String = candidate.get(3);
     let price_mg: i32 = candidate.get(4);
     drop(conn);
-    settle_market_sale(
+    match settle_market_sale(
         pool,
         &buyer_id,
         &operator_id,
@@ -568,9 +592,24 @@ pub fn settle_one_npc_consumption(
         now_unix,
         "runtime:npc-market-consumption",
         Some(consumption_period),
-    )
-    .map(Some)
+    ) {
+        Ok(settlement) => Ok(Some(settlement)),
+        Err(err) => {
+            let msg = err.to_string();
+            if msg.contains("買方鎂不足")
+                || msg.contains("市場商品不足")
+                || msg.contains("雙方不在同一市場")
+                || msg.contains("出價低於當下市場可接受底線")
+                || msg.contains("賣方並非此市場在崗人員")
+            {
+                Ok(None)
+            } else {
+                Err(err)
+            }
+        }
+    }
 }
+
 
 #[allow(clippy::too_many_arguments)]
 fn settle_locked(
@@ -614,13 +653,19 @@ fn settle_locked(
     let seller_quantity_before = inventory_quantity(&seller_inventory, item_id)?;
     anyhow::ensure!(seller_quantity_before >= quantity, "賣方商品不足");
     remove_quantity(&mut seller_inventory, item_id, quantity)?;
-    add_quantity(&mut buyer_inventory, item_id, quantity)?;
+    add_quantity_for_actor(
+        &mut buyer_inventory,
+        item_id,
+        quantity,
+        buyer.kind == "npc",
+        false,
+    )?;
     let buyer_quantity_after = inventory_quantity(&buyer_inventory, item_id)?;
     let seller_quantity_after = inventory_quantity(&seller_inventory, item_id)?;
     let buyer_inventory_after = serde_json::to_string(&buyer_inventory)?;
     let seller_inventory_after = serde_json::to_string(&seller_inventory)?;
-    let buyer_activity = trade_activity(buyer);
-    let seller_activity = trade_activity(seller);
+    let buyer_activity = trade_activity(buyer, place_id, item_id, false);
+    let seller_activity = trade_activity(seller, place_id, item_id, true);
 
     tx.execute(
         "UPDATE entities SET magnesium=$1,inventory=$2,current_activity=$3 WHERE id=$4",
@@ -799,17 +844,43 @@ fn inventory_quantity(entries: &[InventoryEntry], item_id: &str) -> anyhow::Resu
         })
 }
 
+#[cfg(test)]
 fn add_quantity(
     entries: &mut Vec<InventoryEntry>,
     item_id: &str,
     quantity: i32,
 ) -> anyhow::Result<()> {
+    add_quantity_for_actor(entries, item_id, quantity, true, false)
+}
+
+fn add_quantity_for_actor(
+    entries: &mut Vec<InventoryEntry>,
+    item_id: &str,
+    quantity: i32,
+    is_npc: bool,
+    immediate_consume: bool,
+) -> anyhow::Result<()> {
     if let Some(entry) = entries.iter_mut().find(|entry| entry.item_id == item_id) {
-        entry.qty = entry
-            .qty
-            .checked_add(quantity)
-            .ok_or_else(|| anyhow::anyhow!("物品數量溢位"))?;
+        let after = (entry.qty as i64).saturating_add(i64::from(quantity));
+        anyhow::ensure!(after <= i64::from(i32::MAX), "物品數量溢位");
+        if is_npc && !immediate_consume {
+            anyhow::ensure!(
+                after <= crate::db::inventory::MAX_NPC_ITEM_STACK_QTY as i64,
+                "買方該項物產堆疊已達上限"
+            );
+        }
+        entry.qty = after as i32;
     } else {
+        if is_npc && !immediate_consume {
+            anyhow::ensure!(
+                entries.len() < crate::db::inventory::MAX_NPC_DISTINCT_ITEMS,
+                "買方行囊品類已滿"
+            );
+            anyhow::ensure!(
+                quantity <= crate::db::inventory::MAX_NPC_ITEM_STACK_QTY,
+                "買方該項物產堆疊已達上限"
+            );
+        }
         entries.push(InventoryEntry {
             item_id: item_id.to_string(),
             qty: quantity,
@@ -837,9 +908,115 @@ fn remove_quantity(
     Ok(())
 }
 
-fn trade_activity(actor: &LockedActor) -> String {
+fn resolve_venue_trade_activities(
+    place_id: &str,
+    item_id_or_name: &str,
+    display_name: &str,
+    buyer_is_npc: bool,
+    buyer_prev_activity: &str,
+) -> (String, String) {
+    let raw_place_title = crate::store::get_store()
+        .and_then(|s| {
+            s.read()
+                .place_graph
+                .place(place_id)
+                .map(|p| p.player_title().to_string())
+        })
+        .unwrap_or_else(|| place_id.to_string());
+    let place_title = super::living_world::peninsula_market_settlement_name(&raw_place_title);
+    let venue_opt = crate::grid::resolve_any_room_venue_object(&raw_place_title, display_name)
+        .or_else(|| crate::grid::resolve_any_room_venue_object(place_title, display_name));
+
+    let operator_activity = match venue_opt.as_ref() {
+        Some(venue) if venue.has_counter_restricted_zone => {
+            let venue_kind = if venue.venue_kind == "大食堂" {
+                "聚落大食堂"
+            } else {
+                venue.venue_kind
+            };
+            let host_title = if venue.default_host_title == "食堂主廚" {
+                "當值大廚"
+            } else {
+                venue.default_host_title
+            };
+            format!("在{}當值櫃檯內側交付{}（{}）", venue_kind, display_name, host_title)
+        }
+        Some(venue) => {
+            let venue_kind = if venue.venue_kind == "大食堂" {
+                "聚落大食堂"
+            } else {
+                venue.venue_kind
+            };
+            format!("正在替{}交付{}", venue_kind, display_name)
+        }
+        None => format!("正在替市場交付{display_name}"),
+    };
+
+    let buyer_activity = if !buyer_is_npc {
+        buyer_prev_activity.to_string()
+    } else if let Some(venue) = venue_opt.as_ref() {
+        let venue_kind = if venue.venue_kind == "大食堂" {
+            "聚落大食堂"
+        } else {
+            venue.venue_kind
+        };
+        format!("在{}櫃檯前買下{}", venue_kind, display_name)
+    } else {
+        format!("正在市場買下{display_name}")
+    };
+
+    let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+        &raw_place_title,
+        display_name,
+    );
+    if item_id_or_name != display_name {
+        let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            &raw_place_title,
+            item_id_or_name,
+        );
+    }
+
+    (buyer_activity, operator_activity)
+}
+
+fn trade_activity(actor: &LockedActor, place_id: &str, item_id: &str, is_seller: bool) -> String {
+    let item_name = crate::game::peninsula_catalog::find_catalog_entry(item_id)
+        .map(|e| e.name)
+        .unwrap_or(item_id);
+    let raw_place_title = crate::store::get_store()
+        .and_then(|s| {
+            s.read()
+                .place_graph
+                .place(place_id)
+                .map(|p| p.player_title().to_string())
+        })
+        .unwrap_or_else(|| place_id.to_string());
+    if is_seller {
+        let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            &raw_place_title,
+            item_name,
+        );
+    }
     if actor.kind == "npc" {
-        "正在與身邊的人交易".to_string()
+        let place_title = super::living_world::peninsula_market_settlement_name(&raw_place_title);
+        if let Some(venue) = crate::grid::resolve_any_room_venue_object(&raw_place_title, item_name)
+            .or_else(|| crate::grid::resolve_any_room_venue_object(place_title, item_name))
+        {
+            let venue_kind = if venue.venue_kind == "大食堂" {
+                "聚落大食堂"
+            } else {
+                venue.venue_kind
+            };
+            if is_seller && venue.has_counter_restricted_zone {
+                format!("在{}當值櫃檯內側點交{}", venue_kind, item_name)
+            } else if is_seller {
+                format!("在{}點交{}", venue_kind, item_name)
+            } else {
+                format!("在{}買入{}", venue_kind, item_name)
+            }
+        } else {
+            "正在與身邊的人交易".to_string()
+        }
     } else {
         actor.current_activity.clone()
     }
@@ -870,5 +1047,53 @@ mod tests {
         assert!(validate_request("buyer", "seller", "", 1, 2).is_err());
         assert!(validate_request("buyer", "seller", "soap", 0, 2).is_err());
         assert!(validate_request("buyer", "seller", "soap", 1, 0).is_err());
+    }
+
+    #[test]
+    fn trade_add_quantity_enforces_npc_stack_and_distinct_caps() -> anyhow::Result<()> {
+        let mut entries = Vec::new();
+        assert!(add_quantity_for_actor(&mut entries, "mat_hay", 20, true, false).is_err());
+        add_quantity_for_actor(&mut entries, "mat_hay", 12, true, false)?;
+        assert_eq!(entries.len(), 1);
+        assert_eq!(entries[0].qty, crate::db::inventory::MAX_NPC_ITEM_STACK_QTY);
+
+        // Rejects exceeding stack cap for non-immediate-consume NPC purchase
+        assert!(add_quantity_for_actor(&mut entries, "mat_hay", 1, true, false).is_err());
+
+        // Fill to MAX_NPC_DISTINCT_ITEMS
+        for i in 1..crate::db::inventory::MAX_NPC_DISTINCT_ITEMS {
+            add_quantity_for_actor(&mut entries, &format!("item_{i}"), 1, true, false)?;
+        }
+        assert_eq!(entries.len(), crate::db::inventory::MAX_NPC_DISTINCT_ITEMS);
+
+        // 9th distinct item is rejected for non-immediate-consume NPC purchase
+        assert!(add_quantity_for_actor(&mut entries, "overflow_item", 1, true, false).is_err());
+
+        // Immediate market consumption succeeds even when 8 slots are full, then removes cleanly
+        add_quantity_for_actor(&mut entries, "daily_ration", 1, true, true)?;
+        remove_quantity(&mut entries, "daily_ration", 1)?;
+        assert_eq!(entries.len(), crate::db::inventory::MAX_NPC_DISTINCT_ITEMS);
+
+        // Player buyers are not restricted by NPC 12/8 cap
+        let mut player_entries = Vec::new();
+        add_quantity_for_actor(&mut player_entries, "mat_hay", 25, false, false)?;
+        assert_eq!(player_entries[0].qty, 25);
+        Ok(())
+    }
+
+    #[test]
+    fn venue_trade_activities_reflect_counter_zone_and_advance_event_pack() {
+        let (buyer_act, op_act) = resolve_venue_trade_activities(
+            "三水大食堂",
+            "wt_cat_0444",
+            "三水大釜牛雜湯",
+            true,
+            "",
+        );
+        assert_eq!(
+            op_act,
+            "在聚落大食堂當值櫃檯內側交付三水大釜牛雜湯（當值大廚）"
+        );
+        assert_eq!(buyer_act, "在聚落大食堂櫃檯前買下三水大釜牛雜湯");
     }
 }

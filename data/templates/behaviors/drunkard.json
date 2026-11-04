@@ -1,11 +1,11 @@
 {
-  "_說明": "[酒客]行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "_說明": "[酒客]行為模板。定義日程、巡邏偏好、交易定價規約、性情品性。",
   "schedule": {
     "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
     "entries": [
       {"hour_start": 0, "hour_end": 10, "activity": "sleep", "location_pref": ["life_dining", "life_hall", "life_backyard"], "description": "【{name}】醉倒在角落，鼾聲如雷。"},
       {"hour_start": 10, "hour_end": 12, "activity": "wake_hungover", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】揉著太陽穴醒來，頭疼欲裂。"},
-      {"hour_start": 12, "hour_end": 14, "activity": "head_to_tavern", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】晃晃悠悠往酒肆而去。"},
+      {"hour_start": 12, "hour_end": 14, "activity": "head_to_tavern", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】晃晃悠悠往茶寮而去。"},
       {"hour_start": 14, "hour_end": 18, "activity": "drink_afternoon", "location_pref": ["life_dining", "life_wine_cellar", "life_hall"], "description": "【{name}】舉杯獨酌，一杯接一杯。"},
       {"hour_start": 18, "hour_end": 22, "activity": "drink_evening", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】醉眼惺忪，與人推杯換盞。"},
       {"hour_start": 22, "hour_end": 24, "activity": "wander_drunk", "location_pref": ["life_dining", "life_hall", "life_garden", "life_backyard"], "description": "【{name}】醉醺醺地四處晃蕩，腳步踉蹌。"}
@@ -35,7 +35,7 @@
   "trade": {
     "buy_markup": 1.4,
     "sell_markup": 0.6,
-    "preferred_goods": ["酒壺", "骰子", "銅板", "當票"],
+    "preferred_goods": ["酒壺", "骰子", "鎂幣", "當票"],
     "refused_goods": [],
     "haggle_tolerance": 1,
     "haggle_texts": {
@@ -47,7 +47,7 @@
       "reject": [
         "【{name}】晃著腦袋：「不……不成……你……你當我醉……醉了嗎？」",
         "【{name}】打嗝：「這……這價……太……太離譜……不……不賣！」",
-        "【{name}】醉眼一瞪：「少……少糊弄……老……老子……」"
+        "【{name}】醉眼一瞪：「少……少矇混……我……」"
       ],
       "counter": [
         "【{name}】含糊：「再……再……便宜……便……便宜點……」",

@@ -57,7 +57,7 @@ data/
 |---------------|------|----------------|------|
 | 經理 | 經理 | `[]` | 行為敘事來自 npc_behaviors.json roles.經理 |
 | 服務生 | 服務生 | `[]` | 同上，roles.服務生（區域走動、端盤） |
-| 店員 | 店員 | `[]` | roles.店員；`dialogues/clerk.json`；蕗易沙櫃檯站崗（`wander_rooms` 單間不巡邏） |
+| 店員 | 店員 | `[]` | roles.店員；`dialogues/clerk.json`；茶鋪櫃檯值守（`wander_rooms` 單間不巡邏） |
 
 後端：`src/db/occupation.rs` 的 `load_occupation_cache`、`get_sockets_for_npc` 依指派與 **room_ids 在場** 決定是否加上 `action_sockets`。
 
@@ -81,8 +81,8 @@ data/
 | Tag | 說明 | 適用房間 |
 |-----|------|---------|
 | `spawn` | 重生點 | lobby |
-| `inn` | 客棧 | life_hall |
-| `tavern` | 酒館/食堂 | life_dining, life_wine_cellar |
+| `inn` | 旅社 | life_hall |
+| `tavern` | 飯館/食堂 | life_dining, life_wine_cellar |
 | `social` | 社交場所（八卦／聚談） | life_hall, life_dining, life_cofe_seat |
 | `trade` | 可交易 | life_hall |
 | `food` | 有食物 | life_dining, life_cofe_1, life_cofe_order, life_cofe_seat |
@@ -90,7 +90,7 @@ data/
 | `garden` | 花園/庭院 | life_garden |
 | `gate` | 入口/城門 | life_garden |
 | `kitchen` | 廚房 | life_kitchen |
-| `staff` | 員工區 | life_kitchen, life_backyard, life_storage |
+| `staff` | 內場夥計區 | life_kitchen, life_backyard, life_storage |
 | `storage` | 倉庫 | life_storage, life_wine_cellar |
 | `rest` | 休息處 | life_storage |
 | `corridor` | 走廊 | life_corridor_2f/3f |
@@ -218,6 +218,6 @@ data/
 
 Talk、Attack、Look。其餘為職業 action_sockets，僅在綁定場所內由 GetSocketsForNPC 加入並可執行。
 
-### 場所「浮生客棧」room_ids（範例）
+### 場所「浮生旅社」room_ids（範例）
 
 由 SeedVenues 寫入 store（或 DB），涵蓋 life_garden、life_hall、life_dining、life_kitchen、life_backyard、life_storage、life_wine_cellar、life_corridor_2f/3f、各客房 life_ri_1/2、life_yue_1/2、… 等。擴建地圖時需維護 venues.room_ids 或由程式依規則更新。

@@ -118,7 +118,7 @@ pub fn get_moving_entities() -> anyhow::Result<Vec<Character>> {
 }
 
 /// 回傳指定房間內所有存活實體。
-/// `game_hour` 0–23 供在職場顯示職稱；`-1` 不套用下班規則。
+/// `game_hour` 0–23 供在職場顯示職稱；`-1` 不套用收工休歇規則。
 pub fn get_entities_in_room(room_id: &str, game_hour: i32) -> anyhow::Result<Vec<Character>> {
     use std::collections::HashSet;
 

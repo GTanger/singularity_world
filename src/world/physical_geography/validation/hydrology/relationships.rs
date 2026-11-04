@@ -1,4 +1,4 @@
-//! 三源、共同匯流、黑沼林下游與生成診斷的交叉關係驗證。
+//! 三源、共同匯流、水尾澤下游與生成診斷的交叉關係驗證。
 
 use std::collections::BTreeSet;
 
@@ -9,7 +9,7 @@ use crate::world::physical_geography::{MajorWatercourse, NormalizedPoint, Physic
 use super::geometry::same_point;
 use super::{COURSE_SPECS, WENYAO, valid_distance};
 
-/// 驗證三條源流共用真匯流點，且下游穿過黑沼林後由南界接續。
+/// 驗證三條源流共用真匯流點，且下游穿過水尾澤後由南界接續。
 pub(super) fn validate_relationships(geography: &PhysicalGeography) -> Result<()> {
     // 不採信輸出的布林值，直接重算角色間的幾何與流域關係。
     let hydrology = &geography.major_hydrology;
@@ -73,13 +73,13 @@ fn validate_branches(
         );
         ensure!(
             branch.black_marsh_fit_distance.is_none(),
-            "來源河不應宣稱抵達黑沼林"
+            "來源河不應宣稱抵達水尾澤"
         );
     }
     Ok(())
 }
 
-/// 驗證共同下游的文曜、黑沼林與南界位置契約；輸入只讀。
+/// 驗證共同下游的文曜、水尾澤與南界位置契約；輸入只讀。
 fn validate_lower_course(lower: &MajorWatercourse) -> Result<()> {
     // 南界是縮略圖外的接續，不代表河流在此入海或世界結束。
     ensure!(
@@ -91,7 +91,7 @@ fn validate_lower_course(lower: &MajorWatercourse) -> Result<()> {
         lower
             .black_marsh_fit_distance
             .is_some_and(|value| value <= 0.055),
-        "下游只擦過或錯過黑沼林"
+        "下游只擦過或錯過水尾澤"
     );
     ensure!(lower.end_point.y >= 0.94, "下游未接續至半島南界");
     ensure!(
@@ -157,7 +157,7 @@ fn validate_hydrology_invariants(geography: &PhysicalGeography) -> Result<()> {
     );
     ensure!(
         value.lower_river_reaches_black_marsh,
-        "黑沼林下游 invariant 未成立"
+        "水尾澤下游 invariant 未成立"
     );
     ensure!(
         value.lower_river_continues_south,

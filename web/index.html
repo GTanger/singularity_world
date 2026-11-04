@@ -28,10 +28,10 @@
 		src: url('FZJiaGuWen.ttf') format('truetype');
 	}
 	</style>
-	<link rel="stylesheet" href="style.css?v=0.38.26">
-	<link rel="stylesheet" href="game.css?v=0.38.26">
-	<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
-	<link rel="stylesheet" href="game-grid.css?v=0.38.26" id="game-grid-css" disabled>
+<link rel="stylesheet" href="style.css?v=0.39.78">
+<link rel="stylesheet" href="game.css?v=0.39.78">
+<!-- grid MUD 專用樣式（非觀景窗模式載入）-->
+<link rel="stylesheet" href="game-grid.css?v=0.39.78" id="game-grid-css" disabled>
 </head>
 <body>
 	<!-- 登入／創角 -->
@@ -75,7 +75,7 @@
 	<!-- ═══ 文字世界主表面：《指尖 MUD》四區融合 UI ═══ -->
 	<div id="app-grid" class="game-grid-app sw-app" hidden>
 
-		<!-- 【頂欄】：開譜曆四季、六段時辰與當前地名（已移除日晷） -->
+		<!-- 【頂欄】：開譜曆四季、六段時刻與當前地名（已移除日晷） -->
 		<header id="sw-worldbar" class="sw-worldbar">
 			<div class="sw-topbar-left">
 				<span id="sw-top-calendar" class="sw-top-calendar">開譜曆 元年・春融・1 日</span>
@@ -116,6 +116,11 @@
 				<div id="sw-room-canvas" class="sw-room-canvas" role="region" aria-label="當前房間物件空間">
 					<div id="sw-room-canvas-empty" class="sw-room-canvas-empty" hidden>此處空曠寂靜，暫無人事器物</div>
 				</div>
+				<!-- 無捲軸「當下二息」墨韻區：第 1 行新墨 100%，第 2 行舊墨 42% -->
+				<div id="sw-breaths-zone" class="sw-breaths-zone" aria-live="polite" aria-label="當下二息墨韻">
+					<p id="sw-breath-0" class="sw-breath-line sw-breath-0"></p>
+					<p id="sw-breath-1" class="sw-breath-line sw-breath-1"></p>
+				</div>
 				<div id="sw-log" class="sw-log-stream" aria-live="polite" style="display:none;" hidden></div>
 				<!-- 戰鬥對峙空檔戰術決策按鈕 -->
 				<div id="sw-tactical-choices" class="sw-tactical-choices" hidden>
@@ -148,7 +153,8 @@
 		<!-- 【下方空間導航區】：CSS Grid 32px 固定正方格無縫純符號大地圖 ＋ 私人客房收合 -->
 		<section id="sw-bottom-area" class="sw-bottom-area" aria-label="空間導航與大地圖">
 			<div id="sw-symbol-grid-wrap" class="sw-symbol-grid-wrap">
-				<div id="sw-symbol-grid" class="sw-symbol-grid" role="grid" aria-label="純符號大地圖"></div>
+				<nav id="sw-footstep-strip" class="sw-footstep-strip" aria-label="四向步履列"></nav>
+				<div id="sw-symbol-grid" class="sw-symbol-grid" role="grid" aria-label="純符號大地圖" hidden style="display:none;"></div>
 			</div>
 			<!-- 「進／出」私人空間自動收合面板 -->
 			<div id="sw-private-room-panel" class="sw-private-room-panel" hidden>
@@ -170,11 +176,13 @@
 				<div class="grid-player-core">
 					<button id="player-name" class="grid-player-name" type="button" title="查看自身">姓名</button>
 					<span id="player-vibe" class="sw-self-cue" aria-hidden="true">查看自身</span>
+					<span id="sw-status-seals" class="sw-status-seals"></span>
 				</div>
 				<div id="sw-grid-actions" class="sw-grid-actions">
 					<button type="button" id="btn-explore" class="sw-grid-act-btn" hidden>探索此處</button>
 					<button type="button" id="btn-enter-room" class="sw-grid-act-btn" hidden>投宿／進客房（進）</button>
 					<span id="sw-pioneer-actions" class="sw-pioneer-actions"></span>
+					<button type="button" id="btn-toggle-recap" class="sw-grid-act-btn sw-recap-toggle-btn" title="翻閱近期搭話、探索與交鋒紀錄">近事<span id="sw-recap-unread" class="sw-recap-unread" hidden></span></button>
 					<button type="button" id="btn-toggle-map" class="sw-grid-act-btn sw-map-toggle-btn" aria-expanded="false" title="點開查看走過的地圖">大地圖</button>
 				</div>
 				<div class="sw-hidden-meters" aria-hidden="true">
@@ -244,7 +252,7 @@
 							<li><span class="sym">⛰︎</span> 峻嶺崇山（峰巒、崖壁、崇山、奇石）</li>
 							<li><span class="sym">△</span> 幽穴採掘（洞窟、礦脈、幽壑、坑道）</li>
 							<li><span class="sym">∆</span> 遺蹟高塔（塔樓、殘跡、雪線石塔）</li>
-							<li><span class="sym">≋</span> 滄溟大澤（大洋、廣澤、淵藪、深海）</li>
+							<li><span class="sym">≋</span> 滄溟大澤（汪洋、廣澤、淵藪、深海）</li>
 							<li><span class="sym">⋯</span> 沙磧荒丘（海灘、沙岸、荒原、淺汀）</li>
 							<li><span class="sym">⋍</span> 澤藪沼濘（沼澤、泥濘、濕地、泥淖）</li>
 							<li><span class="sym">▦</span> 膏腴田畦（耕地、農田、稼穡）</li>
@@ -267,7 +275,7 @@
 				<button type="button" class="player-modal-tab active" role="tab" aria-selected="true" data-tab="status">狀態</button>
 				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="inventory">行囊</button>
 				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="equip">穿戴・百工</button>
-				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="starplate">星盤・成相</button>
+				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="starplate">技能</button>
 				<button type="button" class="player-modal-tab" role="tab" aria-selected="false" data-tab="settings">設定</button>
 			</div>
 			<div class="player-modal-body">
@@ -301,18 +309,18 @@
 		document.body.classList.add('game-grid-body');
 	})();
 	</script>
-	<script src="narrative-markdown.js?v=0.38.26"></script>
-	<script src="grid-map.js?v=0.38.26"></script>
-	<script src="sw-room-desc.js?v=0.38.26"></script>
-	<script src="sw-object-list.js?v=0.38.26"></script>
-	<script src="sw-log.js?v=0.38.26"></script>
-	<script src="sw-panes.js?v=0.38.26"></script>
-	<script src="sw-modals.js?v=0.38.26"></script>
-	<script src="sw-interactions.js?v=0.38.26"></script>
-	<script src="sw-clock.js?v=0.38.26"></script>
-	<script src="sw-narrative.js?v=0.38.26"></script>
-	<script src="sw-auth.js?v=0.38.26"></script>
-	<script src="main.js?v=0.38.26"></script>
+	<script src="narrative-markdown.js?v=0.39.78"></script>
+	<script src="grid-map.js?v=0.39.78"></script>
+	<script src="sw-room-desc.js?v=0.39.78"></script>
+	<script src="sw-object-list.js?v=0.39.78"></script>
+	<script src="sw-log.js?v=0.39.78"></script>
+	<script src="sw-panes.js?v=0.39.78"></script>
+	<script src="sw-modals.js?v=0.39.78"></script>
+	<script src="sw-interactions.js?v=0.39.78"></script>
+	<script src="sw-clock.js?v=0.39.78"></script>
+	<script src="sw-narrative.js?v=0.39.78"></script>
+	<script src="sw-auth.js?v=0.39.78"></script>
+	<script src="main.js?v=0.39.78"></script>
 	<script>
 		window.showGameAfterLogin = function () {
 			var auth = document.getElementById('auth-screen');
@@ -323,21 +331,51 @@
 		window.closeDrawers = function () {};
 		window.triggerLook  = function () {};
 		if ('serviceWorker' in navigator) {
+			var hadController = !!navigator.serviceWorker.controller;
+			var refreshingSw = false;
+			navigator.serviceWorker.addEventListener('controllerchange', function () {
+				if (!hadController || refreshingSw) return;
+				if (sessionStorage.getItem('sw_reloaded_v0.39.78')) return;
+				sessionStorage.setItem('sw_reloaded_v0.39.78', '1');
+				refreshingSw = true;
+				window.location.reload();
+			});
 			window.addEventListener('load', function () {
-				navigator.serviceWorker.register('/sw.js?v=0.38.26', { updateViaCache: 'none' }).then(function (reg) {
-					if (reg.update) reg.update();  // 主動觸發 update check，不等預設 24h 週期
-					reg.addEventListener('updatefound', function () {
-						var w = reg.installing;
-						w.addEventListener('statechange', function () {
-							if (w.state === 'installed' && navigator.serviceWorker.controller) {
-								window.location.reload();
-							}
-						});
-					});
+				navigator.serviceWorker.register('/sw.js?v=0.39.78', { updateViaCache: 'none' }).then(function (reg) {
 				}).catch(function () {});
 			});
 		}
 		// gameConnect + visibilitychange 由 main.js 末尾統一綁定（此處不重複，否則會開兩條 WS 互相踢）
 	</script>
+	<!-- 全域浮動通知層：頂端呼喚條、浮動墨韻吐司、近事錄抽屜 -->
+	<div id="sw-top-callout" class="sw-top-callout" hidden role="alert" aria-live="assertive">
+		<div class="sw-callout-inner">
+			<div class="sw-callout-header">
+				<span id="sw-callout-badge" class="sw-callout-badge"></span>
+				<span id="sw-callout-speaker" class="sw-callout-speaker"></span>
+			</div>
+			<div id="sw-callout-text" class="sw-callout-text"></div>
+			<div class="sw-callout-actions">
+				<button type="button" id="sw-callout-reply" class="sw-callout-btn sw-callout-reply-btn">回應</button>
+				<button type="button" id="sw-callout-later" class="sw-callout-btn sw-callout-later-btn">稍後</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="sw-toast-layer" class="sw-toast-layer" aria-live="polite"></div>
+
+	<div id="sw-recap-backdrop" class="sw-recap-backdrop" hidden></div>
+	<aside id="sw-recap-drawer" class="sw-recap-drawer" hidden role="dialog" aria-modal="true" aria-labelledby="sw-recap-title">
+		<header class="sw-recap-header">
+			<h3 id="sw-recap-title" class="sw-recap-title">【 行旅近事錄 】</h3>
+			<button type="button" id="sw-recap-close" class="sw-recap-close" aria-label="關閉近事錄">×</button>
+		</header>
+		<div class="sw-recap-tabs" role="tablist">
+			<button type="button" class="sw-recap-tab active" data-filter="all">全部</button>
+			<button type="button" class="sw-recap-tab" data-filter="address">搭話・要事</button>
+			<button type="button" class="sw-recap-tab" data-filter="ambient">街坊動靜</button>
+		</div>
+		<div id="sw-recap-list" class="sw-recap-list" role="feed"></div>
+	</aside>
 </body>
 </html>

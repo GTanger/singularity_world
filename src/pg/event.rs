@@ -19,6 +19,19 @@ pub fn append(
         "INSERT INTO event_log (entity_id, event_type, payload, created_at) VALUES ($1, $2, $3, $4)",
         &[&entity_id, &event_type, &payload, &at],
     )?;
+    if entity_id.starts_with("npc_") {
+        let _ = conn.execute(
+            "DELETE FROM event_log
+             WHERE entity_id = $1
+               AND id NOT IN (
+                   SELECT id FROM event_log
+                   WHERE entity_id = $1
+                   ORDER BY created_at DESC, id DESC
+                   LIMIT 6
+               )",
+            &[&entity_id],
+        );
+    }
     Ok(())
 }
 

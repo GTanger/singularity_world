@@ -6,9 +6,9 @@
       {"hour_start": 6, "hour_end": 12, "activity": "work", "location_pref": ["market", "trade"], "description": "四處找活，抗大包扛重物"},
       {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["outdoor", "shadow"], "description": "在屋簷下或陰涼處癱坐休息"},
       {"hour_start": 14, "hour_end": 19, "activity": "work", "location_pref": ["market", "trade"], "description": "忍著酷熱與疲憊繼續搬運"},
-      {"hour_start": 19, "hour_end": 22, "activity": "socialize", "location_pref": ["tavern", "outdoor"], "description": "在便宜小酒館喝劣質燒酒或蹲在街邊"},
+      {"hour_start": 19, "hour_end": 22, "activity": "socialize", "location_pref": ["tavern", "outdoor"], "description": "在便宜小飯館喝劣質燒酒或蹲在街邊"},
       {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["outdoor", "gate"], "description": "找個擋風的角落和衣而睡"},
-      {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["outdoor", "gate"], "description": "沉睡夢鄉（或做惡夢）"}
+      {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["outdoor", "gate"], "description": "沉睡夢鄉"}
     ]
   },
   "wander": {
@@ -45,15 +45,15 @@
       ],
       "reject": [
         "【{name}】把拳頭捏得咔咔作響：「這點錢你打發叫花子呢？」",
-        "【{name}】冷笑一聲：「滾，老子不幹。」",
-        "【{name}】像看白痴一樣看著你：「你當我是喝風長大的？」",
+        "【{name}】冷笑一聲：「走開，這活我不接。」",
+        "【{name}】像看白癡一樣看著你：「你當我是喝風長大的？」",
         "【{name}】一把推開你：「不給足錢免談。」"
       ],
       "counter": [
         "【{name}】伸出一根粗壯的手指：「再加點，不然不幹。」",
-        "【{name}】語氣僵硬：「這活兒太累，得加錢。」",
-        "【{name}】皺眉道：「看在我是個苦命人的份上，多給兩個銅板吧？」",
-        "【{name}】不耐煩地說：「別囉嗦，一口價，不行拉倒。」"
+        "【{name}】語氣僵硬：「這活計太累，得加錢。」",
+        "【{name}】皺眉道：「看在我是個苦命人的份上，多給兩個鎂幣吧？」",
+        "【{name}】不耐煩地說：「別囉嗦，一口價，不成便罷。」"
       ]
     }
   },

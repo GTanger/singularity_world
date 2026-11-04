@@ -206,9 +206,9 @@ pub fn load_dialogue_slots(path: &str) -> &'static DialogueSlots {
                     verb: vec!["嘆了口氣".into(), "點點頭".into()],
                     mood: vec!["隨口".into(), "正色".into()],
                     time: vec!["清晨".into(), "正午".into(), "傍晚".into(), "夜裡".into()],
-                    thing: vec!["這兒的規矩".into()],
+                    thing: vec!["這裡的規矩".into()],
                     weather: vec!["晴".into()],
-                    topic: vec!["這兒的規矩".into()],
+                    topic: vec!["這裡的規矩".into()],
                     ..Default::default()
                 };
             }
@@ -329,9 +329,9 @@ pub fn apply_micro_variants(s: &str, seed: i64) -> String {
     }
     if rng.float32() < 0.2 {
         if rng.float32() < 0.5 {
-            result = result.replacen("這兒", "那兒", 1);
+            result = result.replacen("這裡", "那裡", 1);
         } else {
-            result = result.replacen("那兒", "這兒", 1);
+            result = result.replacen("那裡", "這裡", 1);
         }
     }
     result

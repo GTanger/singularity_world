@@ -252,7 +252,7 @@ fn run_simulation_tick(
                 tracing::warn!("reset_freshness_for_vacant_cells: {e}");
             }
             // 同步更新記憶體格網（讓記憶體與 PG 一致）
-            crate::server::grid_manager::with_square_grid_mut(|grid| {
+            crate::server::grid_manager::with_square_grid_mut_in_memory(|grid| {
                 for cell in grid.cells_mut() {
                     let coord = (cell.coord.x, cell.coord.y);
                     if cell.freshness != crate::grid::Freshness::Fresh && !occupied.contains(&coord)

@@ -42,12 +42,12 @@ pub fn apply_daily_expense_once(
     }
     let rows = tx.query(
         "WITH charged AS (
-           UPDATE entities e SET magnesium=GREATEST(0,e.magnesium-$1)
-           FROM entity_rooms er WHERE er.entity_id=e.id AND e.kind='npc' AND e.magnesium>0
+           UPDATE entities e SET magnesium=GREATEST(12,e.magnesium-$1)
+           FROM entity_rooms er WHERE er.entity_id=e.id AND e.kind='npc' AND e.magnesium>15
            RETURNING e.id,e.magnesium
          )
          SELECT e.id,COALESCE(c.magnesium,e.magnesium),c.id IS NOT NULL,
-                c.id IS NOT NULL AND c.magnesium=0
+                false
          FROM entities e JOIN entity_rooms er ON er.entity_id=e.id
          LEFT JOIN charged c ON c.id=e.id WHERE e.kind='npc'",
         &[&expense],
@@ -61,7 +61,6 @@ pub fn apply_daily_expense_once(
             became_broke: row.get(3),
         })
         .collect();
-    insert_broke_events(&mut tx, now_unix, &results)?;
     let count = i32::try_from(results.iter().filter(|row| row.charged).count())?;
     tx.execute(
         "UPDATE world_daily_economy SET affected_count=$1 WHERE game_day=$2",
@@ -69,19 +68,4 @@ pub fn apply_daily_expense_once(
     )?;
     tx.commit()?;
     Ok(Some(results))
-}
-
-fn insert_broke_events(
-    tx: &mut r2d2_postgres::postgres::Transaction<'_>,
-    now_unix: i64,
-    results: &[DailyExpenseRow],
-) -> anyhow::Result<()> {
-    for result in results.iter().filter(|row| row.became_broke) {
-        tx.execute(
-            "INSERT INTO event_log(entity_id,event_type,payload,created_at)
-             VALUES ($1,'broke','鎂歸零',$2)",
-            &[&result.entity_id, &now_unix],
-        )?;
-    }
-    Ok(())
 }

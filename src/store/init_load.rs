@@ -266,8 +266,55 @@ impl Store {
         for mut e in f.entities {
             e.display_title = super::entity::normalize_archaic_title(&e.display_title);
             e.equipment_slots = super::entity::normalize_archaic_clothing(&e.equipment_slots);
-            e.inventory = super::entity::normalize_archaic_clothing(&e.inventory);
+            let is_npc = e.kind == "npc" || e.id.starts_with("npc_") || e.id.starts_with("wt_");
+            let mut inv_json = super::entity::normalize_archaic_clothing(&e.inventory);
+            if let Ok(mut entries) = serde_json::from_str::<Vec<crate::db::inventory::InventoryEntry>>(&inv_json) {
+                let mut inv_changed = false;
+                // 自任何玩家或 NPC 背包移除 manual_854b8035e7134512
+                let before_retain = entries.len();
+                entries.retain(|it| it.item_id != "manual_854b8035e7134512");
+                if entries.len() != before_retain {
+                    inv_changed = true;
+                }
+                if is_npc && crate::db::inventory::normalize_npc_inventory_entries(&mut entries) {
+                    inv_changed = true;
+                }
+                if inv_changed {
+                    if let Ok(serialized) = serde_json::to_string(&entries) {
+                        inv_json = serialized;
+                    }
+                }
+            }
+            e.inventory = inv_json;
             self.entities.insert(e.id.clone(), e);
+        }
+        self.ensure_household_assignments();
+        let mut npc_ids: Vec<String> = self
+            .entities
+            .keys()
+            .filter(|id| id.starts_with("npc_"))
+            .cloned()
+            .collect();
+        npc_ids.sort();
+        let mut used_names: std::collections::HashSet<String> =
+            std::collections::HashSet::with_capacity(npc_ids.len());
+        for id in npc_ids {
+            if let Some(e) = self.entities.get_mut(&id) {
+                let is_female = super::entity::npc_effective_is_female(&id, Some(&e.gender));
+                let g = if is_female { "F".to_string() } else { "M".to_string() };
+                let mut resolved = super::entity::resolve_npc_person_name(&id, &e.display_title, Some(&g));
+                if !used_names.insert(resolved.clone()) {
+                    for salt in 1..2080 {
+                        let cand = super::entity::deterministic_wenyao_full_name_salted(&id, Some(&g), salt);
+                        if used_names.insert(cand.clone()) {
+                            resolved = cand;
+                            break;
+                        }
+                    }
+                }
+                e.gender = g;
+                e.display_title = resolved;
+            }
         }
         Ok(())
     }

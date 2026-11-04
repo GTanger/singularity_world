@@ -1,17 +1,18 @@
 # 奇點世界 GDD 細節文檔索引
 
-狀態：除 21 的上層畫面方向已拍板外，其餘細節設計文檔仍是草案
-日期：2026-07-13
+狀態：22「回文字」是已拍板的現行玩家表面；其餘細節設計文檔仍是草案
+日期：2026-07-20
 上層入口：`docs/design/奇點世界遊戲設計檔.md`
 第一權威：`docs/DESIGN_KEYWORDS.md`
 
 本目錄把「奇點世界」拆成可逐層審查的遊戲設計文件。這不是 runtime 工單，也不是世界觀散文；每份文件都必須回答玩家看到什麼、能做什麼、狀態怎麼變、失敗或錯過怎麼呈現、下次回來為什麼不同。
 
 現行玩家主畫面先讀
-[21-2d-open-world-primary-surface.md](21-2d-open-world-primary-surface.md)：
-使用者已決定重啟 2D 平面大地圖開放世界，原則上採全螢幕、可縮放大地圖。
-舊文字 MUD 分冊仍可提供零指令互動、狀態回饋與後端契約素材，但不得再
-決定主要畫面外框。
+[22-return-to-text.md](22-return-to-text.md)：使用者已確認「好，回文字」。
+文字是正式主要玩家表面，但不是敘事分支遊戲；舊文字 MUD 分冊、退役方格
+runtime 與 2D 大地圖都只能提供歷史素材。玩家的基礎移動語彙是東、西、南、北、
+上、下、進、出；決策 013 已把它們接成可點路線與正式白塔 PlaceGraph，最終視覺
+語言、自由輸入與長程旅行表現仍由真實遊玩驗收決定。
 
 本目錄的審查口徑是「玩家角度 × `DESIGN_KEYWORDS.md`」。使用者以玩家身份判斷設計是否有感、是否想玩；Codex 必須用關鍵字清單約束內容來源與方向。玩家無感或關鍵字追溯不成立，任一項失敗都不得進 runtime。
 
@@ -23,7 +24,7 @@
 
 任何具名內容包必須附 `DESIGN_KEYWORDS.md` 關鍵字追溯表。只在頁首寫「第一權威」不夠；每個場景、NPC、核心物件、事件、路線與玩家腳本都要能反查關鍵字簇，否則視為助手自創內容，不能進下一步設計。
 
-輔助研究：`../research/2026-06-17-遊戲設計本體研究.md`、`../research/2026-06-17-外部遊戲設計參照.md`、`../research/2026-06-19-roleplay-element-research.md`。外部資料只用來校準有意義行動、MDA、核心循環、選擇取捨、MUD 動機、UI、文字、物件、NPC、經濟、角色扮演與元素關係的設計判準，不作為奇點第一權威。
+輔助研究：`../research/2026-07-16-text-as-living-world-surface-prior-art.md`、`../research/2026-06-17-遊戲設計本體研究.md`、`../research/2026-06-17-外部遊戲設計參照.md`、`../research/2026-06-19-roleplay-element-research.md`。外部資料只用來校準文字作活世界表面、有意義行動、MDA、核心循環、選擇取捨、MUD 動機、UI、物件、NPC、經濟、角色扮演與元素關係的設計判準，不作為奇點第一權威。
 
 ## 完整設計層自審入口
 
@@ -53,7 +54,7 @@
 |---|---|
 | [00-design-layer-bone-muscle-flesh-skin.md](00-design-layer-bone-muscle-flesh-skin.md) | 遊戲設計層總結構：骨、筋、肉、皮四層與完成標準 |
 | [01-player-and-loops.md](01-player-and-loops.md) | 玩家定位、短中長回圈、登入/離線回圈 |
-| [02-ui-and-input.md](02-ui-and-input.md) | 舊文字 MUD UI 支援層；只保留零指令輸入、資訊分工與互動原則，不再決定主畫面 |
+| [02-ui-and-input.md](02-ui-and-input.md) | 舊文字 MUD UI 素材；八個移動詞已另行採用，但舊零指令映射、資訊分工與版面仍須逐項重審 |
 | [03-scene-card-and-text.md](03-scene-card-and-text.md) | 場景卡、文字呈現、動態現象、痕跡與禁寫規則 |
 | [04-object-action-state.md](04-object-action-state.md) | 物件、動作、狀態、條件、失敗、回訪差異 |
 | [05-character-tools-growth.md](05-character-tools-growth.md) | 玩家角色、工具、熟練、裝備作為動詞來源 |
@@ -72,7 +73,8 @@
 | [18-playable-content-modules.md](18-playable-content-modules.md) | 可玩內容模組：自身、點燈、包貨、清障、等待、問路、交易、幫忙、維修、避險、戰鬥前置、離線安排 |
 | [19-player-facing-surface.md](19-player-facing-surface.md) | 玩家表層與回饋：第一屏、自身入口、場景狀態、入口、動作面板、事件流、成功/失敗/錯過/重訪文字 |
 | [20-combat-formula-design-pack.md](20-combat-formula-design-pack.md) | 衝突與戰鬥故事包 v2.1：前兆、衝突來源、升級、自動交鋒、傷勢、物件痕跡、社會後果、戰報模板與死亡/失敗邊界 |
-| [21-2d-open-world-primary-surface.md](21-2d-open-world-primary-surface.md) | 已拍板上層方向：全螢幕可縮放 2D 平面大地圖、開放世界、玩家與 NPC 直接存在地圖上；拓撲與美術仍待定 |
+| [21-2d-open-world-primary-surface.md](21-2d-open-world-primary-surface.md) | 2026-07-13～15 歷史圖像方向；2026-07-16 已被「回文字」覆蓋 |
+| [22-return-to-text.md](22-return-to-text.md) | 現行玩家表面：文字呈現正在運作的世界事實與行動結果；八方向路線 GUI 已可操作，最終視覺與長程旅行仍待遊玩驗收 |
 
 ## 共通驗收句
 

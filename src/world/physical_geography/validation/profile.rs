@@ -17,7 +17,7 @@ struct TerrainEnvelope {
     max_y: f64,
 }
 
-/// 驗證雪峰與黑沼林沒有退回過大的規則色塊；輸入只讀，沒有副作用。
+/// 驗證雪峰與水尾澤沒有退回過大的規則色塊；輸入只讀，沒有副作用。
 pub(super) fn validate_terrain_profile(geography: &PhysicalGeography) -> Result<()> {
     // 數值只守住已目視通過的外包範圍；輪廓是否自然仍需人工看圖驗收。
     let snow = summarize(geography, "snow_and_ice")?;
@@ -28,15 +28,15 @@ pub(super) fn validate_terrain_profile(geography: &PhysicalGeography) -> Result<
     let wetland = summarize(geography, "wetland")?;
     ensure!(
         (WETLAND_MIN_CELLS..=WETLAND_MAX_CELLS).contains(&wetland.cells),
-        "黑沼林濕地份量失衡"
+        "水尾澤濕地份量失衡"
     );
     ensure!(
         wetland.min_y >= 0.50 && wetland.max_y <= 0.92,
-        "黑沼林南北位置漂移"
+        "水尾澤南北位置漂移"
     );
     ensure!(
         wetland.max_x - wetland.min_x <= 0.35 && wetland.max_y - wetland.min_y >= 0.25,
-        "黑沼林濕地外包形狀失衡"
+        "水尾澤濕地外包形狀失衡"
     );
     Ok(())
 }

@@ -1,5 +1,5 @@
 {
-  "_說明": "農夫行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。日出前起身，整日田間勞作，傍晚赴市集或客棧，早睡，作息極規律。",
+  "_說明": "農夫行為模板。定義日程、巡邏偏好、交易定價規約、性情品性。日出前起身，整日田間勞作，傍晚赴市集或旅社，早睡，作息極規律。",
   "schedule": {
     "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
     "entries": [
@@ -9,7 +9,7 @@
       {"hour_start": 10, "hour_end": 12, "activity": "work", "location_pref": ["field", "rice_paddy", "vegetable_patch"], "description": "上午繼續農活"},
       {"hour_start": 12, "hour_end": 14, "activity": "rest", "location_pref": ["field", "farmhouse", "tree_shade"], "description": "田邊或樹下歇晌"},
       {"hour_start": 14, "hour_end": 18, "activity": "work", "location_pref": ["field", "rice_paddy"], "description": "下午田間勞作"},
-      {"hour_start": 18, "hour_end": 20, "activity": "market", "location_pref": ["market", "inn", "life_hall"], "description": "傍晚赴市集或客棧賣貨歇腳"},
+      {"hour_start": 18, "hour_end": 20, "activity": "market", "location_pref": ["market", "inn", "life_hall"], "description": "傍晚赴市集或旅社賣貨歇腳"},
       {"hour_start": 20, "hour_end": 22, "activity": "rest", "location_pref": ["farmhouse", "home"], "description": "回宅歇息"},
       {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["farmhouse", "home"], "description": "早睡"}
     ]
@@ -28,7 +28,7 @@
       "【{name}】從{from}方向走了過來，身上帶著泥土與稻香。",
       "【{name}】自{from}而至，肩上還扛著農具。",
       "【{name}】從{from}走了進來，褲腳沾著泥點。",
-      "【{name}】自{from}而來，手裡提著一籃剛摘的菜。"
+      "【{name}】自{from}而來，手裡提著一籃初摘的菜。"
     ]
   },
   "trade": {

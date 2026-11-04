@@ -54,10 +54,10 @@
   "rumor_decay_interval_sec": 30,
   "rumor_digest_interval_min": 2,
   "idle": {
-    "first_trigger_min": 25,
-    "first_trigger_span": 35,
-    "interval_min": 60,
-    "interval_span": 60
+    "first_trigger_min": 12,
+    "first_trigger_span": 8,
+    "interval_min": 16,
+    "interval_span": 12
   },
   "random_npc_dialogue_ticks": {
     "initial_min": 30,

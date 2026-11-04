@@ -1,0 +1,1645 @@
+{
+  "schema_version": 1,
+  "id": "white_tower_peninsula_v1",
+  "name": "白塔半島完整地區第一版",
+  "status": "working_proposal",
+  "canon": false,
+  "sources": [
+    "../obsidian-vault/wiki/05-專案/Singularity-World/20-世界觀/白塔半島完整地區第一版.md",
+    "../obsidian-vault/wiki/05-專案/Singularity-World/20-世界觀/白塔半島.md",
+    "../obsidian-vault/wiki/05-專案/Singularity-World/20-世界觀/白塔半島第一條環境壓力閉環—高水期與通行地帶遷移.md",
+    "docs/DESIGN_KEYWORDS.md"
+  ],
+  "boundaries": {
+    "accepted": [
+      "西出海、中生活、東臨山海、南陷沼關、北仰神山",
+      "白塔半島是縮略圖所代表的大型地區，不是數個相鄰小場景",
+      "高水期與通行地帶遷移是第一條環境壓力閉環",
+      "奇幻是風格，現代是時間",
+      "世界不等待玩家，玩家不是世界主角"
+    ],
+    "working_premises": [
+      "常住人口量級為一千八百萬",
+      "坦頡人萬人萬相，個人能力不取代共同設施、材料、時間與責任",
+      "居民壽數可超過兩百壽",
+      "地方、組織、人口統計只能由具體人、物與事件加總"
+    ],
+    "not_decided": [
+      "正式比例尺、座標與格制",
+      "玩家文字 GUI、輸入方式與資訊密度",
+      "基礎裝置的動力與視覺形式",
+      "貨幣名、行政區名與完整法制",
+      "全人口模擬解析度、規則引擎、AI 與資料庫方案"
+    ],
+    "forbidden_promotions": [
+      "不得寫入舊方格 runtime 後便宣稱成為正典",
+      "不得把本資料投影成任務鏈、全域狀態看板或預寫故事",
+      "不得用組織、城市或人口數跳過實際居民、物件、位置、時間與責任",
+      "不得讓玩家行動後仍存在未改變的世界副本"
+    ]
+  },
+  "total_population": 18000000,
+  "regions": [
+    {
+      "id": "BT-R01",
+      "name": "風舶角港灣—台地帶",
+      "population": 3100000,
+      "settlement_form": "港岸工作面、穩定台地與向內陸放射的連續城市帶",
+      "load_bearing_roles": [
+        "內陸轉運與查驗",
+        "批發與專業服務",
+        "港口家庭住居",
+        "醫療與教育"
+      ],
+      "neighbor_refs": ["BT-R02", "BT-R03", "BT-R05"]
+    },
+    {
+      "id": "BT-R02",
+      "name": "風舶嶼港島帶",
+      "population": 1200000,
+      "settlement_form": "東側岸線與階地密集，中央山脊背風面長住，西側海崖稀疏",
+      "load_bearing_roles": [
+        "過路船隊修整",
+        "船體維護與換乘",
+        "島上長住生活",
+        "外海消息入口"
+      ],
+      "neighbor_refs": ["BT-R01"]
+    },
+    {
+      "id": "BT-R03",
+      "name": "文曜三河都會帶",
+      "population": 3300000,
+      "settlement_form": "古河階多中心城市、低地河港與外圍河谷聚落",
+      "load_bearing_roles": [
+        "普通教育與專業學習",
+        "複雜醫療與紀錄",
+        "媒體、服務與製造",
+        "河運與陸路轉接"
+      ],
+      "neighbor_refs": ["BT-R01", "BT-R04", "BT-R05", "BT-R06", "BT-R08"]
+    },
+    {
+      "id": "BT-R04",
+      "name": "白塔丘原生活帶",
+      "population": 1700000,
+      "settlement_form": "低丘、林脊、淺谷與泉地上的分散城市帶",
+      "load_bearing_roles": [
+        "非學院修行與獨立教學",
+        "普通住居與照護",
+        "修物與文化活動",
+        "山麓往來"
+      ],
+      "neighbor_refs": ["BT-R03", "BT-R06"]
+    },
+    {
+      "id": "BT-R05",
+      "name": "大圳頭多中心生活面",
+      "population": 5000000,
+      "settlement_form": "高河階、沖積平原、舊河道與濕地邊緣上的多座地方城市",
+      "load_bearing_roles": [
+        "最大食物產地與消費面",
+        "日用品與材料加工",
+        "醫療器物維護",
+        "地方醫療、教育與公共服務"
+      ],
+      "neighbor_refs": ["BT-R01", "BT-R03", "BT-R07"]
+    },
+    {
+      "id": "BT-R06",
+      "name": "青脊山西谷群",
+      "population": 1700000,
+      "settlement_form": "溪流、沖積扇與谷口串成的谷地聚居群",
+      "load_bearing_roles": [
+        "山地住居與谷地農作",
+        "林地、石材與坡面管理",
+        "地方醫療與教育",
+        "修路、勘查與跨谷轉接"
+      ],
+      "neighbor_refs": ["BT-R03", "BT-R04", "BT-R08", "BT-R09"]
+    },
+    {
+      "id": "BT-R07",
+      "name": "南哨—水尾澤穩定邊緣",
+      "population": 800000,
+      "settlement_form": "南哨高地城市、濕地穩定坡地與少數長住水路點",
+      "load_bearing_roles": [
+        "南向準備與交接",
+        "救援與傷病處理",
+        "熟路工作與濕地生活",
+        "普通家庭與地方服務"
+      ],
+      "neighbor_refs": ["BT-R05"]
+    },
+    {
+      "id": "BT-R08",
+      "name": "北冕海沿岸—神山西麓",
+      "population": 800000,
+      "settlement_form": "河口、小海灣、長谷、高地湖與穩定坡麓的離散聚居",
+      "load_bearing_roles": [
+        "沿岸與山地生活",
+        "水系觀察",
+        "地方運輸與照護",
+        "北方港地往來"
+      ],
+      "neighbor_refs": ["BT-R03", "BT-R06"]
+    },
+    {
+      "id": "BT-R09",
+      "name": "青脊山東側稀疏岸",
+      "population": 400000,
+      "settlement_form": "不連續河口、石灘上方穩定地面與少數可用岸段",
+      "load_bearing_roles": [
+        "海岸與坡地維護",
+        "海況觀察與救援",
+        "地方家庭生活",
+        "小型海路與山谷接駁"
+      ],
+      "neighbor_refs": ["BT-R06"]
+    }
+  ],
+  "corridors": [
+    {
+      "id": "BT-C01",
+      "name": "港灣跨水道連結",
+      "region_refs": ["BT-R02", "BT-R01"],
+      "modes": ["客貨接駁", "港內船席轉接"],
+      "constraints": ["天然港灣道仍是主航道", "不能以無代價固定橋切斷船路"]
+    },
+    {
+      "id": "BT-C02",
+      "name": "西岸—文曜幹線",
+      "region_refs": ["BT-R01", "BT-R03"],
+      "modes": ["快速客運", "一般貨運", "沿線地方交通"],
+      "constraints": ["沿線住居與地方中心密集", "低丘天候與城市轉接會改變時間"]
+    },
+    {
+      "id": "BT-C03",
+      "name": "文曜—大圳頭多線網",
+      "region_refs": ["BT-R03", "BT-R05"],
+      "modes": ["高地幹線", "低地道路", "河運", "地方路"],
+      "constraints": ["高水分別改變路線載重與可靠度", "不得把整張網一次關閉"]
+    },
+    {
+      "id": "BT-C04",
+      "name": "文曜—雲腰雪林—西谷連結",
+      "region_refs": ["BT-R03", "BT-R04", "BT-R06"],
+      "modes": ["丘原支線", "谷口轉接", "地方運具"],
+      "constraints": ["越往東固定大運量交通越少", "谷地距離依山口與鞍部計算"]
+    },
+    {
+      "id": "BT-C05",
+      "name": "大圳頭—南哨連結",
+      "region_refs": ["BT-R05", "BT-R07"],
+      "modes": ["常態幹線", "分段轉乘", "熟路小隊"],
+      "constraints": ["幹線只穩定到南哨高地", "南哨以南沒有可靠固定重載班次"]
+    },
+    {
+      "id": "BT-C06",
+      "name": "北冕海沿岸與西麓連結",
+      "region_refs": ["BT-R08", "BT-R06", "BT-R03"],
+      "modes": ["短段沿岸路", "河谷路", "海上接駁"],
+      "constraints": ["不存在貼完整北岸的平直大道", "濃霧、河口與山路分段影響地方生活圈"]
+    },
+    {
+      "id": "BT-C07",
+      "name": "東岸地方連結",
+      "region_refs": ["BT-R09", "BT-R06"],
+      "modes": ["地方維護路", "山谷接駁", "小型海路"],
+      "constraints": ["岸段之間常須退回西谷、繞山或走海路", "不得補成完整東岸幹線"]
+    }
+  ],
+  "travel_times": [
+    {
+      "id": "BT-T01",
+      "from_ref": "BT-R02",
+      "to_ref": "BT-R01",
+      "ordinary_range": "含等候與上下船約 1–3 小時",
+      "modifiers": ["船席", "窄段交會", "查驗", "風浪", "夜間維護"]
+    },
+    {
+      "id": "BT-T02",
+      "from_ref": "BT-R01",
+      "to_ref": "BT-R03",
+      "ordinary_range": "快速客運約 5–7 小時；一般貨運約 10–18 小時",
+      "modifiers": ["城市轉接", "低丘天候", "貨物查驗", "運具排位"]
+    },
+    {
+      "id": "BT-T03",
+      "from_ref": "BT-R03",
+      "to_ref": "BT-R04",
+      "ordinary_range": "約 3–5 小時",
+      "modifiers": ["丘原支線", "場地活動", "林地", "道路維護"]
+    },
+    {
+      "id": "BT-T04",
+      "from_ref": "BT-R03",
+      "to_ref": "BT-R05",
+      "ordinary_range": "近處約 1 小時，遠端可達 12 小時",
+      "modifiers": ["中心位置", "渡越", "河運", "高低地可用性"]
+    },
+    {
+      "id": "BT-T05",
+      "from_ref": "BT-R03",
+      "to_ref": "BT-R07",
+      "ordinary_range": "常態約 10–18 小時；高水時可增至 18–36 小時或分段中斷",
+      "modifiers": ["低地限載", "改道", "轉乘", "南緣濕地"]
+    },
+    {
+      "id": "BT-T06",
+      "from_ref": "BT-R03",
+      "to_ref": "BT-R06",
+      "ordinary_range": "約 4–16 小時",
+      "modifiers": ["所在谷地", "鞍部", "落石", "地方接駁", "夜間條件"]
+    },
+    {
+      "id": "BT-T07",
+      "from_ref": "BT-R03",
+      "to_ref": "BT-R08",
+      "ordinary_range": "約 10–24 小時",
+      "modifiers": ["長谷位置", "河口", "濃霧", "山路", "海上接駁"]
+    },
+    {
+      "id": "BT-T08",
+      "from_ref": "BT-R03",
+      "to_ref": "BT-R09",
+      "ordinary_range": "約 12–36 小時，部分地點更久",
+      "modifiers": ["退回谷口", "繞山", "海路", "東岸段落不連續"]
+    },
+    {
+      "id": "BT-T09",
+      "from_ref": "BT-R07",
+      "to_ref": "BT-X02",
+      "ordinary_range": "熟路小隊在有利條件下約 2–6 日；沒有可靠固定班次",
+      "modifiers": ["水尾澤水路", "能見度", "隊伍狀態", "青籠關路徑", "回報版本"]
+    }
+  ],
+  "lifelines": [
+    {
+      "id": "BT-L01",
+      "name": "水與衛生",
+      "source_refs": ["BT-R08", "BT-R03", "BT-R06"],
+      "serves_region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "processes": ["取水", "沉降", "淨化", "儲放", "分區送達", "污水處理"],
+      "vulnerabilities": ["高水濁度與污染", "輸送構造老化", "島上多項備援同時失效"],
+      "consequences": ["具體住區、醫療、餐食與修理排程改變", "需求不因文字呈現而歸零"]
+    },
+    {
+      "id": "BT-L02",
+      "name": "食物",
+      "source_refs": ["BT-R05", "BT-R06", "BT-R01", "BT-R08", "BT-X01"],
+      "serves_region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "processes": ["生產", "分級", "保存", "加工", "河陸海運", "消費", "廢棄回收"],
+      "vulnerabilities": ["高水", "受潮", "病害", "路段限載", "船期", "保存器物故障"],
+      "consequences": ["特定市場、餐食地、家戶與價格先改變", "同一批貨不可同時出現在產地與港口"]
+    },
+    {
+      "id": "BT-L03",
+      "name": "住居、材料與修理",
+      "source_refs": ["BT-R06", "BT-R04", "BT-R05", "BT-X01"],
+      "serves_region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "processes": ["取得", "初加工", "製造", "改裝", "使用", "磨耗", "修理", "拆修回收"],
+      "vulnerabilities": ["鹽霧", "受潮", "材料疲勞", "坡面變動", "錯誤改裝", "缺乏精密共同件"],
+      "consequences": ["缺件時拆、借、延壽、改期或換方案", "物件來歷與多代改裝不能被清空"]
+    },
+    {
+      "id": "BT-L04",
+      "name": "醫療與照護",
+      "source_refs": ["BT-R03", "BT-R01", "BT-R02", "BT-R07", "BT-X01"],
+      "serves_region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "processes": ["地方診療", "急救", "慢性照護", "復健", "器物維護", "跨區轉介與轉送"],
+      "vulnerabilities": ["專門人員", "床位", "替換件", "路程", "授權記錄", "照護者時間"],
+      "consequences": ["等待、惡化、復健與照護負擔留在當事人及家戶", "個人差異不能成為拒收或萬能治療的理由"]
+    },
+    {
+      "id": "BT-L05",
+      "name": "人員與貨物移動",
+      "source_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "serves_region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "processes": ["預約", "排位", "裝載", "查驗", "轉乘", "接駁", "交付", "延誤處理"],
+      "vulnerabilities": ["船席", "載重", "路況", "能見度", "運具故障", "交接者未到"],
+      "consequences": ["人與貨的位置、責任和下一段行程實際改變", "路線不以縮略圖距離取代真實時間"]
+    },
+    {
+      "id": "BT-L06",
+      "name": "通訊、媒體與紀錄",
+      "source_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "serves_region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "processes": ["觀察", "記錄", "傳遞", "收件", "讀取", "互讀", "更正", "保存版本"],
+      "vulnerabilities": ["延遲", "未讀", "誤讀", "舊版本", "來源不明", "責任斷裂"],
+      "consequences": ["人物只知道真正接觸到的版本", "消息速度不能變成全體居民同步全知"]
+    },
+    {
+      "id": "BT-L07",
+      "name": "廢棄物、生態與土地回復",
+      "source_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "serves_region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "processes": ["分類", "回收", "修復", "污水處理", "土地退讓", "濕地與坡地維護"],
+      "vulnerabilities": ["鹽霧與受潮廢物", "污染回流", "過度取材", "濕地占用", "坡地失穩"],
+      "consequences": ["維護與廢棄物回到具體地方、物件與責任人", "自然空間不是可無限抽取後重置的資源點"]
+    }
+  ],
+  "organizations": [
+    {
+      "id": "BT-ORG-LOCAL",
+      "name": "地方公共體",
+      "region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "resident_refs": ["P-N-01", "P-N-02", "P-N-09", "P-N-13"],
+      "capabilities": ["地方道路、衛生、公共空間、基礎照護、安全與爭議處理"],
+      "limits": ["沒有當值居民、地點、預算、器物與時間時不能瞬間完成工作"]
+    },
+    {
+      "id": "BT-ORG-PORT",
+      "name": "港灣互運網",
+      "region_refs": ["BT-R01", "BT-R02"],
+      "resident_refs": ["P-N-04", "P-N-05"],
+      "capabilities": ["排船", "轉運", "互讀貨物與修理記錄", "處理貨損與延誤責任"],
+      "limits": ["不能指揮全部海上世界，也不能保證每艘船安全"]
+    },
+    {
+      "id": "ORG-N-WATER",
+      "name": "流域與通路聯繫",
+      "region_refs": ["BT-R03", "BT-R05", "BT-R07", "BT-R08"],
+      "resident_refs": ["P-N-01", "P-N-02", "P-N-03", "P-N-11"],
+      "capabilities": ["通報來水", "複查路況", "調整載重", "保存版本與責任"],
+      "limits": ["不是全知水文中心，不能預測每條漫流"]
+    },
+    {
+      "id": "BT-ORG-CARE",
+      "name": "醫療照護轉介網",
+      "region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "resident_refs": ["P-N-03", "P-N-06", "P-N-10", "P-N-12", "P-N-13"],
+      "capabilities": ["跨地接續治療", "取得器物", "轉送", "返回地方照護"],
+      "limits": ["不能吞掉病人資料權，也不能把個人差異變成拒收理由"]
+    },
+    {
+      "id": "BT-ORG-LEARN",
+      "name": "學習互認網",
+      "region_refs": ["BT-R03", "BT-R04", "BT-R06"],
+      "resident_refs": ["P-N-06", "P-N-07", "P-N-08"],
+      "capabilities": ["讓部分學習成果、風險記錄與專業能力跨地可讀"],
+      "limits": ["不能替全體居民決定單一修行分類或正統"]
+    },
+    {
+      "id": "BT-ORG-SOUTH",
+      "name": "南向聯絡網",
+      "region_refs": ["BT-R07"],
+      "resident_refs": ["P-N-11"],
+      "capabilities": ["配對隊伍", "保存回報", "接收傷員", "追查失聯", "核對當期走法"],
+      "limits": ["不能把水尾澤和青籠關制度化成固定安全商路"]
+    },
+    {
+      "id": "BT-ORG-COAST",
+      "name": "山海維護聯繫",
+      "region_refs": ["BT-R06", "BT-R08", "BT-R09"],
+      "resident_refs": ["P-N-10", "P-N-12", "P-N-13"],
+      "capabilities": ["維持局部通路", "通報崩塌", "安排轉送與材料"],
+      "limits": ["不能用組織名稱補出不存在的完整東岸道路"]
+    }
+  ],
+  "flows": [
+    {
+      "id": "BT-F01",
+      "name": "醫療替換件",
+      "origin_refs": ["BT-X01"],
+      "via_refs": ["BT-R01", "BT-R03", "BT-R05"],
+      "destination_refs": ["BT-R03", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "return_flow": "壞件、使用記錄與改良需求返向製造地",
+      "vulnerabilities": ["船期", "查驗", "低地儲放受潮", "限載", "交付人未到"],
+      "organization_refs": ["BT-ORG-PORT", "BT-ORG-CARE", "ORG-N-WATER"],
+      "object_refs": ["OBJ-N-22", "OBJ-N-PORT"]
+    },
+    {
+      "id": "BT-F02",
+      "name": "大圳頭食物",
+      "origin_refs": ["BT-R05"],
+      "via_refs": ["BT-R05", "BT-R03", "BT-R01"],
+      "destination_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "return_flow": "廚餘、容器、價格與需求回到地方處理",
+      "vulnerabilities": ["病害", "高水", "保存器物", "運具", "道路", "買方取消"],
+      "organization_refs": ["BT-ORG-LOCAL", "BT-ORG-PORT", "ORG-N-WATER"],
+      "object_refs": ["OBJ-N-FOOD"]
+    },
+    {
+      "id": "BT-F03",
+      "name": "山谷材料",
+      "origin_refs": ["BT-R06", "BT-R04"],
+      "via_refs": ["BT-R06", "BT-R03", "BT-R05"],
+      "destination_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "return_flow": "舊件與修理經驗返流到取得與加工地",
+      "vulnerabilities": ["坡面", "過度取材", "谷路中斷", "規格失配", "責任不清"],
+      "organization_refs": ["BT-ORG-LOCAL", "BT-ORG-COAST"],
+      "object_refs": ["OBJ-N-PASS", "SITE-N-EAST"]
+    },
+    {
+      "id": "BT-F04",
+      "name": "海事修理",
+      "origin_refs": ["BT-R02", "BT-X01"],
+      "via_refs": ["BT-R02", "BT-R01"],
+      "destination_refs": ["BT-X01"],
+      "return_flow": "磨耗與失效資料回到港灣互運網",
+      "vulnerabilities": ["排位", "廣面判讀者未空出", "零件延誤", "船主不接受延期"],
+      "organization_refs": ["BT-ORG-PORT"],
+      "object_refs": ["OBJ-N-DOCK"]
+    },
+    {
+      "id": "BT-F05",
+      "name": "南向地方交換",
+      "origin_refs": ["BT-X02", "BT-R07"],
+      "via_refs": ["BT-R07"],
+      "destination_refs": ["BT-X02", "BT-R07", "BT-R05"],
+      "return_flow": "回程帶回路況、需求、人員與消息",
+      "vulnerabilities": ["水路改變", "隊伍狀態", "回報失真", "無法重載", "南北接頭錯過"],
+      "organization_refs": ["BT-ORG-SOUTH"],
+      "object_refs": ["OBJ-N-SOUTH"]
+    },
+    {
+      "id": "BT-F06",
+      "name": "知識與教法",
+      "origin_refs": ["BT-R03", "BT-R04", "BT-R06"],
+      "via_refs": ["BT-R03", "BT-R04", "BT-R06"],
+      "destination_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "return_flow": "失敗、例外與新方法回到教學者與記錄地",
+      "vulnerabilities": ["把一人結果誤當普遍方法", "記錄缺條件", "師生承諾中斷"],
+      "organization_refs": ["BT-ORG-LEARN"],
+      "object_refs": ["OBJ-N-LESSON", "SITE-N-PRACTICE"]
+    }
+  ],
+  "history": [
+    {
+      "id": "BT-H01",
+      "age_before_d0": "900 壽以上",
+      "change": "多個地方從季節使用轉成跨代住居，固定高低地不同用途",
+      "result": "古河階住居、低地季節使用、舊岸線與地方權利延續至今",
+      "region_refs": ["BT-R03", "BT-R05", "BT-R08"]
+    },
+    {
+      "id": "BT-H02",
+      "age_before_d0": "約 520 壽",
+      "change": "風舶角內陸貨流與風舶嶼過路修整長期互補",
+      "result": "商業之都始終由兩城與水道共同構成",
+      "region_refs": ["BT-R01", "BT-R02"]
+    },
+    {
+      "id": "BT-H03",
+      "age_before_d0": "約 360 壽",
+      "change": "多個教學與工作地開始保存方法條件、失敗與結果",
+      "result": "陌生人可比較結果，文曜形成學院密度但不消滅萬人萬相",
+      "region_refs": ["BT-R03", "BT-R04", "BT-R06"]
+    },
+    {
+      "id": "BT-H04",
+      "age_before_d0": "約 330 壽",
+      "change": "丘原短期停留地逐漸成為長住生活帶",
+      "result": "非學院修行者、教學者與普通居民都有場地、照護與生活",
+      "region_refs": ["BT-R04"]
+    },
+    {
+      "id": "BT-H05",
+      "age_before_d0": "約 250 壽",
+      "change": "南向交接、救援、醫療與普通家庭由臨時營地轉成高地城市",
+      "result": "南哨可處理返回者與失聯，卻未把水尾澤變成固定安全官道",
+      "region_refs": ["BT-R07"]
+    },
+    {
+      "id": "H-07",
+      "age_before_d0": "141 壽",
+      "change": "多流域高水重新使用舊河道，路基、儲放與通路位置遷移",
+      "result": "今日高低地通行、舊痕、長壽親歷者與責任爭議共享同一來歷",
+      "region_refs": ["BT-R03", "BT-R05", "BT-R07"]
+    },
+    {
+      "id": "BT-H06",
+      "age_before_d0": "約 47 壽",
+      "change": "連續崩塌證明部分東岸岸段無法維持常態連線",
+      "result": "地方改用分段服務與海上接駁，東岸保留稀疏生活面",
+      "region_refs": ["BT-R06", "BT-R09"]
+    },
+    {
+      "id": "BT-H07",
+      "age_before_d0": "約 18 壽至今",
+      "change": "港口、醫療、通路與教學逐步更新互讀方式",
+      "result": "快速消息、版本差、舊器物與長壽責任人同時存在",
+      "region_refs": ["BT-R01", "BT-R02", "BT-R03", "BT-R04", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"]
+    }
+  ],
+  "residents": [
+    {
+      "id": "P-N-01",
+      "name": "沈和",
+      "age": 93,
+      "home_region_ref": "BT-R03",
+      "current_region_ref": "BT-R03",
+      "body_and_use": "能察覺腳下含水差異，範圍小，須反覆走現場",
+      "knowledge": "只收到兩河部分消息，相信當期測量要壓過單一記憶",
+      "asset_refs": ["OBJ-N-21", "NET-N-MSG"],
+      "linked_resident_refs": ["P-N-02", "P-N-03", "P-N-04"],
+      "obligations": ["對低地路段使用者負責", "保存觀察與限載版本"],
+      "intent": "完成全段複查",
+      "options": ["限載", "再測", "請人接段"],
+      "prior_consequence": "過去一次晚報讓地方多付過轉移成本"
+    },
+    {
+      "id": "P-N-02",
+      "name": "唐沛",
+      "age": 204,
+      "home_region_ref": "BT-R05",
+      "current_region_ref": "BT-R05",
+      "body_and_use": "能穩住搬運器物，近年負荷增加，只做輕載",
+      "knowledge": "親歷 141 壽前通路遷移，也知道自己的記憶可能失準",
+      "asset_refs": ["OBJ-N-OLD", "OBJ-N-22"],
+      "linked_resident_refs": ["P-N-01", "P-N-03"],
+      "obligations": ["家戶共同物", "裴成交付", "地方儲放"],
+      "intent": "協助搬移醫療替換件",
+      "options": ["搬運", "指路", "停止"],
+      "prior_consequence": "多年前的改裝仍限制今日工具載重"
+    },
+    {
+      "id": "P-N-03",
+      "name": "裴成",
+      "age": 61,
+      "home_region_ref": "BT-R03",
+      "current_region_ref": "BT-R05",
+      "body_and_use": "可短時重塑貼合材料，之後仍靠器物結構維持",
+      "knowledge": "只知道檢查增加，尚不知道最終限載結果",
+      "asset_refs": ["OBJ-N-22", "NET-N-MSG"],
+      "linked_resident_refs": ["P-N-01", "P-N-02", "P-N-04"],
+      "obligations": ["貨物不屬於他", "答應地方診療地當日回報"],
+      "intent": "完成替換件交付",
+      "options": ["走高地慢路", "等候", "退回"],
+      "prior_consequence": "延誤會改變病人替換時間與自己的信用"
+    },
+    {
+      "id": "P-N-04",
+      "name": "梁知",
+      "age": 148,
+      "home_region_ref": "BT-R01",
+      "current_region_ref": "BT-R01",
+      "body_and_use": "不以個人能量工作，長時間輪班留下舊肩傷",
+      "knowledge": "知道貨已到港，只把低地消息視為未確認版本",
+      "asset_refs": ["OBJ-N-PORT", "OBJ-N-22", "NET-N-MSG"],
+      "linked_resident_refs": ["P-N-01", "P-N-03", "P-N-05"],
+      "obligations": ["持當值排程權", "同事交班", "回家照護長者"],
+      "intent": "在路況確認後決定醫療批次放行方式",
+      "options": ["延後放行", "拆批", "交班"],
+      "prior_consequence": "一次錯誤拆批使他不再混用物件身分"
+    },
+    {
+      "id": "P-N-05",
+      "name": "易舟",
+      "age": 82,
+      "home_region_ref": "BT-R02",
+      "current_region_ref": "BT-R02",
+      "body_and_use": "觸碰時可維持局部差異感知，廣面判讀仍須他人和器具",
+      "knowledge": "知道新船等檢查，不接受船主口頭的應該沒事",
+      "asset_refs": ["OBJ-N-DOCK"],
+      "linked_resident_refs": ["P-N-04"],
+      "obligations": ["既有委託", "學徒", "同住家人", "前件交付記錄"],
+      "intent": "先完成前件再接新船",
+      "options": ["連夜趕工", "轉介", "拒接"],
+      "prior_consequence": "曾因過勞失準，形成不能連續超時的身體限制"
+    },
+    {
+      "id": "P-N-06",
+      "name": "何音",
+      "age": 36,
+      "home_region_ref": "BT-R06",
+      "current_region_ref": "BT-R03",
+      "body_and_use": "個人運用仍不穩，疲累時容易把精細動作做過頭",
+      "knowledge": "知道家鄉鞍部維修，尚未收到病人轉送結果",
+      "asset_refs": ["NET-N-MSG"],
+      "linked_resident_refs": ["P-N-07", "P-N-10"],
+      "obligations": ["借用器物完好返還", "住居費", "晚間共同排演"],
+      "intent": "決定留城學習或返谷協助",
+      "options": ["留城", "返谷", "整理器物"],
+      "prior_consequence": "上次急著證明自己造成的小損傷仍在復健"
+    },
+    {
+      "id": "P-N-07",
+      "name": "顧言",
+      "age": 226,
+      "home_region_ref": "BT-R03",
+      "current_region_ref": "BT-R03",
+      "body_and_use": "不靠個人能量授課，聽力需使用調整過的輔助器物",
+      "knowledge": "記得多次教法改版，不相信最新版本必然最好",
+      "asset_refs": ["OBJ-N-LESSON"],
+      "linked_resident_refs": ["P-N-06", "P-N-08"],
+      "obligations": ["合法副本使用邊界", "課程交接", "當事人資料權"],
+      "intent": "判斷一份失敗案例能否匿名公開",
+      "options": ["延後", "刪減", "徵得同意"],
+      "prior_consequence": "早年公開過度留下尚未修復的關係裂痕"
+    },
+    {
+      "id": "P-N-08",
+      "name": "陶真",
+      "age": 64,
+      "home_region_ref": "BT-R04",
+      "current_region_ref": "BT-R04",
+      "body_and_use": "擅長長時間微調自身動作，近期腕傷限制練習",
+      "knowledge": "相信部分經驗只能在場學，也接受損傷與結果要留記錄",
+      "asset_refs": ["SITE-N-PRACTICE", "OBJ-N-LESSON"],
+      "linked_resident_refs": ["P-N-07"],
+      "obligations": ["兩名學習者", "醫療者的停練要求", "未付修理費"],
+      "intent": "在場地縮小與腕傷下重排今日教學",
+      "options": ["觀察課", "換場", "取消"],
+      "prior_consequence": "逞強會同時改變傷勢、學習者判斷與場地責任"
+    },
+    {
+      "id": "P-N-09",
+      "name": "林禾",
+      "age": 131,
+      "home_region_ref": "BT-R05",
+      "current_region_ref": "BT-R05",
+      "body_and_use": "可分辨少量材料受潮差異，不能取代檢驗器物",
+      "knowledge": "知道低地限載機率升高，不知道風舶角是否拆批放行",
+      "asset_refs": ["OBJ-N-FOOD", "NET-N-MSG"],
+      "linked_resident_refs": ["P-N-02", "P-N-04"],
+      "obligations": ["兩批食物交付", "家戶住居使用權", "休養中的兄長"],
+      "intent": "在遠地交付與近地需求間重新分配",
+      "options": ["改走河運", "延後", "改交近地市場"],
+      "prior_consequence": "曾把可用貨全送遠造成近地短缺"
+    },
+    {
+      "id": "P-N-10",
+      "name": "余岑",
+      "age": 188,
+      "home_region_ref": "BT-R06",
+      "current_region_ref": "BT-R06",
+      "body_and_use": "個人運用適合穩定精細手部動作，長途山路後會顫抖",
+      "knowledge": "知道鞍部維修與病人轉送需求，不知道何時修好",
+      "asset_refs": ["OBJ-N-PASS", "NET-N-MSG"],
+      "linked_resident_refs": ["P-N-06", "P-N-13"],
+      "obligations": ["地方醫療器物", "轉送記錄", "留守病人", "谷口客運舊欠款"],
+      "intent": "在留守與隨病人轉送之間取捨",
+      "options": ["留守", "隨病人轉送", "請外援"],
+      "prior_consequence": "任一選擇都留下地方照護缺口或轉送風險"
+    },
+    {
+      "id": "P-N-11",
+      "name": "高嶺",
+      "age": 73,
+      "home_region_ref": "BT-R07",
+      "current_region_ref": "BT-R07",
+      "body_and_use": "能在低能見度中維持自身方向感較久，不能替全隊導航",
+      "knowledge": "收到兩組互斥回報，暫不把任何一組視為全沼林真相",
+      "asset_refs": ["OBJ-N-SOUTH", "NET-N-MSG"],
+      "linked_resident_refs": [],
+      "obligations": ["當期路標回收", "通訊器物歸還", "朋友家戶與救援人力"],
+      "intent": "核對南段回報的時間、來源與實際路段",
+      "options": ["核對", "派短程觀察", "等待"],
+      "prior_consequence": "過早宣布失聯會改變救援人力與朋友家戶生活"
+    },
+    {
+      "id": "P-N-12",
+      "name": "程汐",
+      "age": 211,
+      "home_region_ref": "BT-R08",
+      "current_region_ref": "BT-R08",
+      "body_and_use": "不以能量駕船，視力下降後改做靠岸與乘客協助",
+      "knowledge": "依現場判斷霧尚未安全，不接受遠方排程催促",
+      "asset_refs": ["OBJ-N-FOG", "NET-N-MSG"],
+      "linked_resident_refs": ["P-N-10", "P-N-13"],
+      "obligations": ["地方接駁船", "乘客名單", "同住友人", "赴文曜複診居民"],
+      "intent": "在能見度不足時維持乘客與船的安全",
+      "options": ["延後", "改短航段", "交給另一船"],
+      "prior_consequence": "多年前冒霧靠岸事故仍影響自己與居民信任"
+    },
+    {
+      "id": "P-N-13",
+      "name": "方石",
+      "age": 99,
+      "home_region_ref": "BT-R09",
+      "current_region_ref": "BT-R09",
+      "body_and_use": "能協助固定小型構件，不能穩住整片崩塌坡",
+      "knowledge": "知道道路已不可通，不知道上方坡面是否繼續落石",
+      "asset_refs": ["SITE-N-EAST", "NET-N-MSG"],
+      "linked_resident_refs": ["P-N-10", "P-N-12"],
+      "obligations": ["維護隊", "附近住戶", "待轉送病人", "借用材料"],
+      "intent": "維持封路並完成病人海上轉送",
+      "options": ["等待材料", "再觀察", "撤隊"],
+      "prior_consequence": "封路延後探親與工作，但避免更多人進入危險段"
+    }
+  ],
+  "objects": [
+    {
+      "id": "OBJ-N-21",
+      "name": "文曜下游低地路標組",
+      "kind": "public_marker_set",
+      "region_refs": ["BT-R03"],
+      "owner": "地方共同持有",
+      "custodian_refs": ["P-N-01"],
+      "state": "D0 尚標重載可行，正在複查",
+      "dependency_refs": ["P-N-01", "ORG-N-WATER", "F-ROAD-CAPACITY"]
+    },
+    {
+      "id": "OBJ-N-22",
+      "name": "醫療替換件批次",
+      "kind": "tracked_cargo_batch",
+      "region_refs": ["BT-R01", "BT-R05"],
+      "owner": "地方醫療網持有，各子批次分別追蹤",
+      "custodian_refs": ["P-N-02", "P-N-03", "P-N-04"],
+      "state": "D0 一部分在風舶角，一部分在大圳頭低地待轉高地",
+      "dependency_refs": ["OBJ-N-21", "OBJ-N-PORT", "BT-ORG-CARE", "F-PORT-MED-BATCH", "F-SW-MED-BATCH"]
+    },
+    {
+      "id": "OBJ-N-OLD",
+      "name": "唐沛家戶搬運工具",
+      "kind": "shared_household_tool",
+      "region_refs": ["BT-R05"],
+      "owner": "家戶多人共有",
+      "custodian_refs": ["P-N-02"],
+      "state": "六十八壽、多次改裝，只適合輕載",
+      "dependency_refs": ["P-N-02"]
+    },
+    {
+      "id": "OBJ-N-PORT",
+      "name": "風舶角內陸轉運排程",
+      "kind": "shared_schedule",
+      "region_refs": ["BT-R01"],
+      "owner": "港地多方可讀，當值者可修改",
+      "custodian_refs": ["P-N-04"],
+      "state": "等待低地路況，尚未放行全批",
+      "dependency_refs": ["P-N-04", "OBJ-N-22", "F-PORT-MED-BATCH"]
+    },
+    {
+      "id": "OBJ-N-DOCK",
+      "name": "風舶嶼廣面檢查架",
+      "kind": "shared_inspection_rig",
+      "region_refs": ["BT-R02"],
+      "owner": "港地共用",
+      "custodian_refs": ["P-N-05"],
+      "state": "前件委託占用，新船不能插隊取得完整判讀",
+      "dependency_refs": ["P-N-05", "BT-ORG-PORT"]
+    },
+    {
+      "id": "OBJ-N-LESSON",
+      "name": "文曜修行失敗案例記錄",
+      "kind": "rights_bound_record",
+      "region_refs": ["BT-R03", "BT-R04"],
+      "owner": "當事人保有資料權，教學者只持合法副本",
+      "custodian_refs": ["P-N-07", "P-N-08"],
+      "state": "是否公開尚未取得完整同意",
+      "dependency_refs": ["P-N-07", "P-N-08", "BT-ORG-LEARN"]
+    },
+    {
+      "id": "SITE-N-PRACTICE",
+      "name": "白塔丘原共用修行場地",
+      "kind": "shared_site",
+      "region_refs": ["BT-R04"],
+      "owner": "多名使用者共同維持",
+      "custodian_refs": ["P-N-08"],
+      "state": "排水構造損壞，可用範圍縮小",
+      "dependency_refs": ["P-N-08", "BT-ORG-LOCAL", "F-PRACTICE-SITE"]
+    },
+    {
+      "id": "OBJ-N-FOOD",
+      "name": "大圳頭兩批當日食物",
+      "kind": "tracked_food_batches",
+      "region_refs": ["BT-R05"],
+      "owner": "產地所有",
+      "custodian_refs": ["P-N-09"],
+      "state": "一批可按原路，一批需要改線",
+      "dependency_refs": ["P-N-09", "ORG-N-WATER"]
+    },
+    {
+      "id": "OBJ-N-PASS",
+      "name": "青脊西谷鞍部受力件",
+      "kind": "public_infrastructure_component",
+      "region_refs": ["BT-R06"],
+      "owner": "地方公共持有",
+      "custodian_refs": ["P-N-10"],
+      "state": "舊件已卸，新件尚未完成固定",
+      "dependency_refs": ["P-N-10", "BT-ORG-COAST", "F-PASS-STATUS"]
+    },
+    {
+      "id": "OBJ-N-SOUTH",
+      "name": "水尾澤南段兩組路況記錄",
+      "kind": "conflicting_observation_records",
+      "region_refs": ["BT-R07"],
+      "owner": "回報者各自負責來源",
+      "custodian_refs": ["P-N-11"],
+      "state": "說法互斥，時間與走法不同",
+      "dependency_refs": ["P-N-11", "BT-ORG-SOUTH", "F-MARSH-ROUTE"]
+    },
+    {
+      "id": "OBJ-N-FOG",
+      "name": "北冕海河口接駁班次與乘客名單",
+      "kind": "transport_schedule_and_manifest",
+      "region_refs": ["BT-R08"],
+      "owner": "地方接駁體",
+      "custodian_refs": ["P-N-12"],
+      "state": "因濃霧延後，乘客仍在原地",
+      "dependency_refs": ["P-N-12", "BT-ORG-CARE", "F-NORTH-FERRY"]
+    },
+    {
+      "id": "SITE-N-EAST",
+      "name": "青脊東岸維護路",
+      "kind": "public_route_segment",
+      "region_refs": ["BT-R09"],
+      "owner": "地方公共持有",
+      "custodian_refs": ["P-N-13"],
+      "state": "已封閉，病人改走海上轉送",
+      "dependency_refs": ["P-N-13", "BT-ORG-COAST", "F-EAST-ROAD", "F-EAST-PATIENT", "F-EAST-MATERIAL"]
+    },
+    {
+      "id": "NET-N-MSG",
+      "name": "D0 事件相關消息版本",
+      "kind": "distributed_message_versions",
+      "region_refs": ["BT-R01", "BT-R03", "BT-R05", "BT-R06", "BT-R07", "BT-R08", "BT-R09"],
+      "owner": "各發送者與收件者分別持有自己的副本",
+      "custodian_refs": ["P-N-01", "P-N-03", "P-N-04", "P-N-06", "P-N-09", "P-N-10", "P-N-11", "P-N-12", "P-N-13"],
+      "state": "已知、未讀、推測與更正並存",
+      "dependency_refs": ["BT-L06", "ORG-N-WATER"]
+    }
+  ],
+  "external_interfaces": [
+    {
+      "id": "BT-X01",
+      "name": "西／北海事與外洋交換",
+      "region_refs": ["BT-R01", "BT-R02", "BT-R08"],
+      "flow_refs": ["BT-F01", "BT-F02", "BT-F03", "BT-F04"],
+      "exchanges": ["人員", "貨物", "船舶", "修理", "消息", "家庭往來"],
+      "forbidden_shortcut": "不得把白塔半島寫成唯一港口、世界航運中心或無限貨物生成器"
+    },
+    {
+      "id": "BT-X02",
+      "name": "南方主陸北緣",
+      "region_refs": ["BT-R07"],
+      "flow_refs": ["BT-F05"],
+      "exchanges": ["少量急需物", "地方材料", "人員", "消息", "熟路關係"],
+      "forbidden_shortcut": "不得補成常態重載官道、固定安全副本或完全不存在的路"
+    },
+    {
+      "id": "BT-X03",
+      "name": "風舶外向交換面",
+      "region_refs": ["BT-R01", "BT-R02"],
+      "flow_refs": ["BT-F01", "BT-F03", "BT-F04", "BT-F06"],
+      "exchanges": ["批量製品", "專門器物", "外地食物", "修理經驗", "修行與山海工作經驗"],
+      "forbidden_shortcut": "不得寫成只輸出原料的殖民港或單向輸入市場"
+    },
+    {
+      "id": "BT-X04",
+      "name": "東岸地方海路",
+      "region_refs": ["BT-R09"],
+      "flow_refs": ["BT-F03"],
+      "exchanges": ["地方接駁", "救援", "材料", "家庭往來"],
+      "forbidden_shortcut": "不得補成可替代西港的完整東岸航運帶"
+    }
+  ],
+  "current_state": {
+    "day_id": "D0",
+    "region_snapshots": [
+      {
+        "region_ref": "BT-R01",
+        "state": "醫療替換件已查驗，一部分等待低地路況後才放行",
+        "actor_refs": ["P-N-04"],
+        "object_refs": ["OBJ-N-22", "OBJ-N-PORT", "NET-N-MSG"],
+        "scope": "相關貨批、承運者、醫療網與轉運排程"
+      },
+      {
+        "region_ref": "BT-R02",
+        "state": "北上風勢增加停靠時間，外洋船檢查排在既有委託之後",
+        "actor_refs": ["P-N-05"],
+        "object_refs": ["OBJ-N-DOCK"],
+        "scope": "相關船席、旅客、貨主與住區，不是全港停擺"
+      },
+      {
+        "region_ref": "BT-R03",
+        "state": "兩河來水時間接近，古河階照常，低地用途開始複查",
+        "actor_refs": ["P-N-01", "P-N-06", "P-N-07"],
+        "object_refs": ["OBJ-N-21", "OBJ-N-LESSON", "NET-N-MSG"],
+        "scope": "受影響低地與下游選擇，不是全城洪水"
+      },
+      {
+        "region_ref": "BT-R04",
+        "state": "共用修行場地排水構造損壞，可用範圍縮小",
+        "actor_refs": ["P-N-08"],
+        "object_refs": ["SITE-N-PRACTICE", "OBJ-N-LESSON"],
+        "scope": "具體場地、使用時段與承諾，不是地方秩序崩壞"
+      },
+      {
+        "region_ref": "BT-R05",
+        "state": "低地儲放點轉移受潮敏感物，高地市場與大部分產地照常",
+        "actor_refs": ["P-N-02", "P-N-03", "P-N-09"],
+        "object_refs": ["OBJ-N-22", "OBJ-N-OLD", "OBJ-N-FOOD", "NET-N-MSG"],
+        "scope": "地方道路、貨批與交期，不是五百萬人糧荒"
+      },
+      {
+        "region_ref": "BT-R06",
+        "state": "一個鞍部路段更換受力件，谷地仍可走較慢替代路",
+        "actor_refs": ["P-N-10"],
+        "object_refs": ["OBJ-N-PASS", "NET-N-MSG"],
+        "scope": "一個谷地與相關轉送，不是青脊山全面封閉"
+      },
+      {
+        "region_ref": "BT-R07",
+        "state": "浮根帶向舊淺水走法側移，兩組返回者路況說法不一致",
+        "actor_refs": ["P-N-11"],
+        "object_refs": ["OBJ-N-SOUTH", "NET-N-MSG"],
+        "scope": "有證據的路段與回報版本，不重抽整片沼林"
+      },
+      {
+        "region_ref": "BT-R08",
+        "state": "一處河口濃霧延後地方接駁，高地湖觀察無異常",
+        "actor_refs": ["P-N-12"],
+        "object_refs": ["OBJ-N-FOG", "NET-N-MSG"],
+        "scope": "該河口生活圈，除非後續影響共同航路"
+      },
+      {
+        "region_ref": "BT-R09",
+        "state": "落石切斷地方維護路，海上接駁仍可抵達附近聚居",
+        "actor_refs": ["P-N-13"],
+        "object_refs": ["SITE-N-EAST", "NET-N-MSG"],
+        "scope": "地方維護、病人轉送與材料，不是全半島危機"
+      }
+    ],
+    "facts": [
+      {
+        "id": "F-ROAD-CAPACITY",
+        "subject_ref": "OBJ-N-21",
+        "key": "load_status",
+        "value": "heavy_allowed"
+      },
+      {
+        "id": "F-PORT-MED-BATCH",
+        "subject_ref": "OBJ-N-22",
+        "key": "port_subbatch",
+        "value": "held_pending_road"
+      },
+      {
+        "id": "F-SW-MED-BATCH",
+        "subject_ref": "OBJ-N-22",
+        "key": "southwest_subbatch_location",
+        "value": "lowland_storage"
+      },
+      {
+        "id": "F-WENYAO-FLOW",
+        "subject_ref": "BT-R03",
+        "key": "lowland_traffic",
+        "value": "normal_heavy_route"
+      },
+      {
+        "id": "F-CROSS-REGION-SCHEDULE",
+        "subject_ref": "NET-N-MSG",
+        "key": "affected_arrivals",
+        "value": "on_time"
+      },
+      {
+        "id": "F-MARSH-ROUTE",
+        "subject_ref": "OBJ-N-SOUTH",
+        "key": "north_edge_route",
+        "value": "conflicting_reports"
+      },
+      {
+        "id": "F-EAST-PATIENT",
+        "subject_ref": "SITE-N-EAST",
+        "key": "patient_transfer",
+        "value": "waiting_at_east_coast"
+      },
+      {
+        "id": "F-EAST-ROAD",
+        "subject_ref": "SITE-N-EAST",
+        "key": "road_status",
+        "value": "blocked"
+      },
+      {
+        "id": "F-EAST-MATERIAL",
+        "subject_ref": "SITE-N-EAST",
+        "key": "repair_material",
+        "value": "awaiting_dispatch"
+      },
+      {
+        "id": "F-NORTH-FERRY",
+        "subject_ref": "OBJ-N-FOG",
+        "key": "departure",
+        "value": "delayed_by_fog"
+      },
+      {
+        "id": "F-PASS-STATUS",
+        "subject_ref": "OBJ-N-PASS",
+        "key": "repair",
+        "value": "new_part_unfixed"
+      },
+      {
+        "id": "F-PRACTICE-SITE",
+        "subject_ref": "SITE-N-PRACTICE",
+        "key": "usable_area",
+        "value": "restricted"
+      }
+    ],
+    "transitions": [
+      {
+        "id": "BT-D01",
+        "order": 1,
+        "actor_refs": ["P-N-01"],
+        "object_refs": ["OBJ-N-21", "NET-N-MSG"],
+        "region_refs": ["BT-R03"],
+        "preconditions": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "heavy_allowed"}
+        ],
+        "effects": [
+          {"fact_ref": "F-ROAD-CAPACITY", "set": "light_only"}
+        ],
+        "consequence": "沈和完成實地複查，路標留下時間、施作人與適用路段"
+      },
+      {
+        "id": "BT-D02",
+        "order": 2,
+        "actor_refs": ["P-N-04"],
+        "object_refs": ["OBJ-N-22", "OBJ-N-PORT", "NET-N-MSG"],
+        "region_refs": ["BT-R01"],
+        "preconditions": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "light_only"},
+          {"fact_ref": "F-PORT-MED-BATCH", "equals": "held_pending_road"}
+        ],
+        "effects": [
+          {"fact_ref": "F-PORT-MED-BATCH", "set": "heavy_part_delayed"}
+        ],
+        "consequence": "風舶角只延後受限子批次，沒有把整批貨複製到內陸"
+      },
+      {
+        "id": "BT-D03",
+        "order": 3,
+        "actor_refs": ["P-N-02", "P-N-03"],
+        "object_refs": ["OBJ-N-22", "OBJ-N-OLD"],
+        "region_refs": ["BT-R05"],
+        "preconditions": [
+          {"fact_ref": "F-SW-MED-BATCH", "equals": "lowland_storage"},
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "light_only"}
+        ],
+        "effects": [
+          {"fact_ref": "F-SW-MED-BATCH", "set": "highland_storage"}
+        ],
+        "consequence": "大圳頭既有子批次被實際搬到高地，原位置不再保留副本"
+      },
+      {
+        "id": "BT-D04",
+        "order": 4,
+        "actor_refs": ["P-N-01", "P-N-03", "P-N-04"],
+        "object_refs": ["OBJ-N-21", "OBJ-N-22", "NET-N-MSG"],
+        "region_refs": ["BT-R01", "BT-R03", "BT-R05"],
+        "preconditions": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "light_only"},
+          {"fact_ref": "F-WENYAO-FLOW", "equals": "normal_heavy_route"},
+          {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "on_time"}
+        ],
+        "effects": [
+          {"fact_ref": "F-WENYAO-FLOW", "set": "light_diversion"},
+          {"fact_ref": "F-CROSS-REGION-SCHEDULE", "set": "delays_propagated_to_shifts_and_households"}
+        ],
+        "consequence": "低地客貨改道，幾名跨區工作者的接班與家戶安排跟著延誤"
+      },
+      {
+        "id": "BT-D05",
+        "order": 5,
+        "actor_refs": ["P-N-11"],
+        "object_refs": ["OBJ-N-SOUTH", "NET-N-MSG"],
+        "region_refs": ["BT-R07"],
+        "preconditions": [
+          {"fact_ref": "F-MARSH-ROUTE", "equals": "conflicting_reports"}
+        ],
+        "effects": [
+          {"fact_ref": "F-MARSH-ROUTE", "set": "north_channel_shift_confirmed"}
+        ],
+        "consequence": "只更新有證據的北緣漫流位置，其他沼林路段維持各自版本"
+      },
+      {
+        "id": "BT-D06",
+        "order": 6,
+        "actor_refs": ["P-N-12", "P-N-13"],
+        "object_refs": ["OBJ-N-FOG", "SITE-N-EAST", "NET-N-MSG"],
+        "region_refs": ["BT-R08", "BT-R09"],
+        "preconditions": [
+          {"fact_ref": "F-EAST-PATIENT", "equals": "waiting_at_east_coast"},
+          {"fact_ref": "F-EAST-ROAD", "equals": "blocked"}
+        ],
+        "effects": [
+          {"fact_ref": "F-EAST-PATIENT", "set": "transferred_by_sea"}
+        ],
+        "consequence": "病人完成海上轉送，封閉道路仍未因轉送成功而自動修復"
+      },
+      {
+        "id": "BT-D07",
+        "order": 7,
+        "actor_refs": ["P-N-10", "P-N-13"],
+        "object_refs": ["OBJ-N-PASS", "SITE-N-EAST", "NET-N-MSG"],
+        "region_refs": ["BT-R06", "BT-R09"],
+        "preconditions": [
+          {"fact_ref": "F-EAST-MATERIAL", "equals": "awaiting_dispatch"},
+          {"fact_ref": "F-EAST-ROAD", "equals": "blocked"}
+        ],
+        "effects": [
+          {"fact_ref": "F-EAST-MATERIAL", "set": "in_transit"}
+        ],
+        "consequence": "修路材料進入運送但尚未抵達，未完工作被帶入 D1"
+      }
+    ],
+    "expected_d1": [
+      {"fact_ref": "F-ROAD-CAPACITY", "equals": "light_only"},
+      {"fact_ref": "F-PORT-MED-BATCH", "equals": "heavy_part_delayed"},
+      {"fact_ref": "F-SW-MED-BATCH", "equals": "highland_storage"},
+      {"fact_ref": "F-WENYAO-FLOW", "equals": "light_diversion"},
+      {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "delays_propagated_to_shifts_and_households"},
+      {"fact_ref": "F-MARSH-ROUTE", "equals": "north_channel_shift_confirmed"},
+      {"fact_ref": "F-EAST-PATIENT", "equals": "transferred_by_sea"},
+      {"fact_ref": "F-EAST-ROAD", "equals": "blocked"},
+      {"fact_ref": "F-EAST-MATERIAL", "equals": "in_transit"},
+      {"fact_ref": "F-NORTH-FERRY", "equals": "delayed_by_fog"},
+      {"fact_ref": "F-PASS-STATUS", "equals": "new_part_unfixed"},
+      {"fact_ref": "F-PRACTICE-SITE", "equals": "restricted"}
+    ],
+    "continuation": [
+      {
+        "target_day_id": "D2",
+        "transitions": [
+          {
+            "id": "BT-D2-01",
+            "order": 1,
+            "actor_refs": ["P-N-12"],
+            "object_refs": ["OBJ-N-FOG", "NET-N-MSG"],
+            "region_refs": ["BT-R08"],
+            "preconditions": [
+              {"fact_ref": "F-NORTH-FERRY", "equals": "delayed_by_fog"}
+            ],
+            "effects": [
+              {"fact_ref": "F-NORTH-FERRY", "set": "departed_on_reduced_schedule"}
+            ],
+            "consequence": "能見度改善後先以減班方式離港，原延誤仍留在乘客與接續行程記錄"
+          },
+          {
+            "id": "BT-D2-02",
+            "order": 2,
+            "actor_refs": ["P-N-13"],
+            "object_refs": ["SITE-N-EAST", "NET-N-MSG"],
+            "region_refs": ["BT-R09"],
+            "preconditions": [
+              {"fact_ref": "F-EAST-MATERIAL", "equals": "in_transit"}
+            ],
+            "effects": [
+              {"fact_ref": "F-EAST-MATERIAL", "set": "delivered_to_east_coast"}
+            ],
+            "consequence": "方石點收實際抵達的修路材料，運送責任結束但修路尚未完成"
+          },
+          {
+            "id": "BT-D2-03",
+            "order": 3,
+            "actor_refs": ["P-N-10"],
+            "object_refs": ["OBJ-N-PASS"],
+            "region_refs": ["BT-R06"],
+            "preconditions": [
+              {"fact_ref": "F-PASS-STATUS", "equals": "new_part_unfixed"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PASS-STATUS", "set": "fixed_pending_load_test"}
+            ],
+            "consequence": "新受力件完成固定，山口仍須實際載重測試才能恢復通行"
+          },
+          {
+            "id": "BT-D2-04",
+            "order": 4,
+            "actor_refs": ["P-N-02", "P-N-03"],
+            "object_refs": ["OBJ-N-22", "OBJ-N-OLD"],
+            "region_refs": ["BT-R05"],
+            "preconditions": [
+              {"fact_ref": "F-SW-MED-BATCH", "equals": "highland_storage"}
+            ],
+            "effects": [
+              {"fact_ref": "F-SW-MED-BATCH", "set": "released_to_local_clinics"}
+            ],
+            "consequence": "大圳頭子批次由高地儲放點分送到原定診療地，沒有回到受潮低地"
+          },
+          {
+            "id": "BT-D2-05",
+            "order": 5,
+            "actor_refs": ["P-N-13"],
+            "object_refs": ["SITE-N-EAST", "NET-N-MSG"],
+            "region_refs": ["BT-R09"],
+            "preconditions": [
+              {"fact_ref": "F-EAST-PATIENT", "equals": "transferred_by_sea"}
+            ],
+            "effects": [
+              {"fact_ref": "F-EAST-PATIENT", "set": "admission_confirmed_to_east_team"}
+            ],
+            "consequence": "接收地的到院回報送回東岸，方石只因此確認病人交接，不獲得其他病歷"
+          }
+        ],
+        "expected": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "light_only"},
+          {"fact_ref": "F-PORT-MED-BATCH", "equals": "heavy_part_delayed"},
+          {"fact_ref": "F-SW-MED-BATCH", "equals": "released_to_local_clinics"},
+          {"fact_ref": "F-WENYAO-FLOW", "equals": "light_diversion"},
+          {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "delays_propagated_to_shifts_and_households"},
+          {"fact_ref": "F-MARSH-ROUTE", "equals": "north_channel_shift_confirmed"},
+          {"fact_ref": "F-EAST-PATIENT", "equals": "admission_confirmed_to_east_team"},
+          {"fact_ref": "F-EAST-ROAD", "equals": "blocked"},
+          {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+          {"fact_ref": "F-NORTH-FERRY", "equals": "departed_on_reduced_schedule"},
+          {"fact_ref": "F-PASS-STATUS", "equals": "fixed_pending_load_test"},
+          {"fact_ref": "F-PRACTICE-SITE", "equals": "restricted"}
+        ]
+      },
+      {
+        "target_day_id": "D3",
+        "transitions": [
+          {
+            "id": "BT-D3-01",
+            "order": 1,
+            "actor_refs": ["P-N-13"],
+            "object_refs": ["SITE-N-EAST"],
+            "region_refs": ["BT-R09"],
+            "preconditions": [
+              {"fact_ref": "F-EAST-ROAD", "equals": "blocked"},
+              {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"}
+            ],
+            "effects": [
+              {"fact_ref": "F-EAST-ROAD", "set": "repair_in_progress"}
+            ],
+            "consequence": "東岸封路範圍內開始修復，居民仍不能因施工開始就通行"
+          },
+          {
+            "id": "BT-D3-02",
+            "order": 2,
+            "actor_refs": ["P-N-04"],
+            "object_refs": ["OBJ-N-22", "OBJ-N-PORT", "NET-N-MSG"],
+            "region_refs": ["BT-R01"],
+            "preconditions": [
+              {"fact_ref": "F-PORT-MED-BATCH", "equals": "heavy_part_delayed"},
+              {"fact_ref": "F-ROAD-CAPACITY", "equals": "light_only"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PORT-MED-BATCH", "set": "split_into_light_loads"}
+            ],
+            "consequence": "梁知把受限子批次按實物拆成可追蹤輕載，不以一份排程複製貨物"
+          },
+          {
+            "id": "BT-D3-03",
+            "order": 3,
+            "actor_refs": ["P-N-08"],
+            "object_refs": ["SITE-N-PRACTICE"],
+            "region_refs": ["BT-R04"],
+            "preconditions": [
+              {"fact_ref": "F-PRACTICE-SITE", "equals": "restricted"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PRACTICE-SITE", "set": "restricted_repair_underway"}
+            ],
+            "consequence": "共用場地在維持限用的同時開始排水修復，教學範圍沒有被文字重置"
+          }
+        ],
+        "expected": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "light_only"},
+          {"fact_ref": "F-PORT-MED-BATCH", "equals": "split_into_light_loads"},
+          {"fact_ref": "F-SW-MED-BATCH", "equals": "released_to_local_clinics"},
+          {"fact_ref": "F-WENYAO-FLOW", "equals": "light_diversion"},
+          {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "delays_propagated_to_shifts_and_households"},
+          {"fact_ref": "F-MARSH-ROUTE", "equals": "north_channel_shift_confirmed"},
+          {"fact_ref": "F-EAST-PATIENT", "equals": "admission_confirmed_to_east_team"},
+          {"fact_ref": "F-EAST-ROAD", "equals": "repair_in_progress"},
+          {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+          {"fact_ref": "F-NORTH-FERRY", "equals": "departed_on_reduced_schedule"},
+          {"fact_ref": "F-PASS-STATUS", "equals": "fixed_pending_load_test"},
+          {"fact_ref": "F-PRACTICE-SITE", "equals": "restricted_repair_underway"}
+        ]
+      },
+      {
+        "target_day_id": "D4",
+        "transitions": [
+          {
+            "id": "BT-D4-01",
+            "order": 1,
+            "actor_refs": ["P-N-04"],
+            "object_refs": ["OBJ-N-22", "OBJ-N-PORT", "NET-N-MSG"],
+            "region_refs": ["BT-R01"],
+            "preconditions": [
+              {"fact_ref": "F-PORT-MED-BATCH", "equals": "split_into_light_loads"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PORT-MED-BATCH", "set": "in_light_transit"}
+            ],
+            "consequence": "拆分後的醫療件分批離港，港口持有量隨實際交付減少"
+          },
+          {
+            "id": "BT-D4-02",
+            "order": 2,
+            "actor_refs": ["P-N-01"],
+            "object_refs": ["OBJ-N-21", "NET-N-MSG"],
+            "region_refs": ["BT-R03"],
+            "preconditions": [
+              {"fact_ref": "F-ROAD-CAPACITY", "equals": "light_only"}
+            ],
+            "effects": [
+              {"fact_ref": "F-ROAD-CAPACITY", "set": "heavy_test_pending"}
+            ],
+            "consequence": "水位與路基觀察允許安排重載測試，但一般重載尚未恢復"
+          },
+          {
+            "id": "BT-D4-03",
+            "order": 3,
+            "actor_refs": ["P-N-10"],
+            "object_refs": ["OBJ-N-PASS"],
+            "region_refs": ["BT-R06"],
+            "preconditions": [
+              {"fact_ref": "F-PASS-STATUS", "equals": "fixed_pending_load_test"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PASS-STATUS", "set": "reopened_light_only"}
+            ],
+            "consequence": "山口載重測試先允許輕載通行，原本等待的人仍須重新排次序"
+          }
+        ],
+        "expected": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "heavy_test_pending"},
+          {"fact_ref": "F-PORT-MED-BATCH", "equals": "in_light_transit"},
+          {"fact_ref": "F-SW-MED-BATCH", "equals": "released_to_local_clinics"},
+          {"fact_ref": "F-WENYAO-FLOW", "equals": "light_diversion"},
+          {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "delays_propagated_to_shifts_and_households"},
+          {"fact_ref": "F-MARSH-ROUTE", "equals": "north_channel_shift_confirmed"},
+          {"fact_ref": "F-EAST-PATIENT", "equals": "admission_confirmed_to_east_team"},
+          {"fact_ref": "F-EAST-ROAD", "equals": "repair_in_progress"},
+          {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+          {"fact_ref": "F-NORTH-FERRY", "equals": "departed_on_reduced_schedule"},
+          {"fact_ref": "F-PASS-STATUS", "equals": "reopened_light_only"},
+          {"fact_ref": "F-PRACTICE-SITE", "equals": "restricted_repair_underway"}
+        ]
+      },
+      {
+        "target_day_id": "D5",
+        "transitions": [
+          {
+            "id": "BT-D5-01",
+            "order": 1,
+            "actor_refs": ["P-N-01"],
+            "object_refs": ["OBJ-N-21", "NET-N-MSG"],
+            "region_refs": ["BT-R03"],
+            "preconditions": [
+              {"fact_ref": "F-ROAD-CAPACITY", "equals": "heavy_test_pending"}
+            ],
+            "effects": [
+              {"fact_ref": "F-ROAD-CAPACITY", "set": "heavy_allowed"}
+            ],
+            "consequence": "實測完成後才恢復重載，限載期間的延誤不會因此消失"
+          },
+          {
+            "id": "BT-D5-02",
+            "order": 2,
+            "actor_refs": ["P-N-01"],
+            "object_refs": ["OBJ-N-21", "NET-N-MSG"],
+            "region_refs": ["BT-R03"],
+            "preconditions": [
+              {"fact_ref": "F-ROAD-CAPACITY", "equals": "heavy_allowed"},
+              {"fact_ref": "F-WENYAO-FLOW", "equals": "light_diversion"}
+            ],
+            "effects": [
+              {"fact_ref": "F-WENYAO-FLOW", "set": "mixed_route_recovery"}
+            ],
+            "consequence": "既有輕載改線與恢復重載並行，路面沒有瞬間回到 D0 流量"
+          },
+          {
+            "id": "BT-D5-03",
+            "order": 3,
+            "actor_refs": ["P-N-04"],
+            "object_refs": ["NET-N-MSG"],
+            "region_refs": ["BT-R01", "BT-R03", "BT-R05"],
+            "preconditions": [
+              {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "delays_propagated_to_shifts_and_households"}
+            ],
+            "effects": [
+              {"fact_ref": "F-CROSS-REGION-SCHEDULE", "set": "revised_recovery_schedule"}
+            ],
+            "consequence": "接班、家戶與到貨時間按已發生延誤重排，不倒填成準時"
+          },
+          {
+            "id": "BT-D5-04",
+            "order": 4,
+            "actor_refs": ["P-N-13"],
+            "object_refs": ["SITE-N-EAST"],
+            "region_refs": ["BT-R09"],
+            "preconditions": [
+              {"fact_ref": "F-EAST-ROAD", "equals": "repair_in_progress"},
+              {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"}
+            ],
+            "effects": [
+              {"fact_ref": "F-EAST-ROAD", "set": "open_light_only"}
+            ],
+            "consequence": "修復路段先開放輕載與必要通行，重載仍被具體路標阻止"
+          }
+        ],
+        "expected": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "heavy_allowed"},
+          {"fact_ref": "F-PORT-MED-BATCH", "equals": "in_light_transit"},
+          {"fact_ref": "F-SW-MED-BATCH", "equals": "released_to_local_clinics"},
+          {"fact_ref": "F-WENYAO-FLOW", "equals": "mixed_route_recovery"},
+          {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "revised_recovery_schedule"},
+          {"fact_ref": "F-MARSH-ROUTE", "equals": "north_channel_shift_confirmed"},
+          {"fact_ref": "F-EAST-PATIENT", "equals": "admission_confirmed_to_east_team"},
+          {"fact_ref": "F-EAST-ROAD", "equals": "open_light_only"},
+          {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+          {"fact_ref": "F-NORTH-FERRY", "equals": "departed_on_reduced_schedule"},
+          {"fact_ref": "F-PASS-STATUS", "equals": "reopened_light_only"},
+          {"fact_ref": "F-PRACTICE-SITE", "equals": "restricted_repair_underway"}
+        ]
+      },
+      {
+        "target_day_id": "D6",
+        "transitions": [
+          {
+            "id": "BT-D6-01",
+            "order": 1,
+            "actor_refs": ["P-N-01"],
+            "object_refs": ["OBJ-N-22", "NET-N-MSG"],
+            "region_refs": ["BT-R03"],
+            "preconditions": [
+              {"fact_ref": "F-PORT-MED-BATCH", "equals": "in_light_transit"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PORT-MED-BATCH", "set": "delivered_to_wenyao_transfer"}
+            ],
+            "consequence": "文曜轉運點確認實物抵達，港口子批次不再同時保有這些貨件"
+          },
+          {
+            "id": "BT-D6-02",
+            "order": 2,
+            "actor_refs": ["P-N-13"],
+            "object_refs": ["SITE-N-EAST"],
+            "region_refs": ["BT-R09"],
+            "preconditions": [
+              {"fact_ref": "F-EAST-ROAD", "equals": "open_light_only"}
+            ],
+            "effects": [
+              {"fact_ref": "F-EAST-ROAD", "set": "open_with_monitoring"}
+            ],
+            "consequence": "東岸道路擴大開放但保留監測，附近住戶仍能看見修復痕跡與限速"
+          },
+          {
+            "id": "BT-D6-03",
+            "order": 3,
+            "actor_refs": ["P-N-13"],
+            "object_refs": ["SITE-N-EAST"],
+            "region_refs": ["BT-R09"],
+            "preconditions": [
+              {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+              {"fact_ref": "F-EAST-ROAD", "equals": "open_with_monitoring"}
+            ],
+            "effects": [
+              {"fact_ref": "F-EAST-MATERIAL", "set": "installed_in_repair"}
+            ],
+            "consequence": "已點收材料成為路體的一部分，不再是可另行派送的完整批次"
+          },
+          {
+            "id": "BT-D6-04",
+            "order": 4,
+            "actor_refs": ["P-N-08"],
+            "object_refs": ["SITE-N-PRACTICE"],
+            "region_refs": ["BT-R04"],
+            "preconditions": [
+              {"fact_ref": "F-PRACTICE-SITE", "equals": "restricted_repair_underway"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PRACTICE-SITE", "set": "partial_reopening"}
+            ],
+            "consequence": "排水修復完成一段後只重開安全區，未修區仍被隔離"
+          }
+        ],
+        "expected": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "heavy_allowed"},
+          {"fact_ref": "F-PORT-MED-BATCH", "equals": "delivered_to_wenyao_transfer"},
+          {"fact_ref": "F-SW-MED-BATCH", "equals": "released_to_local_clinics"},
+          {"fact_ref": "F-WENYAO-FLOW", "equals": "mixed_route_recovery"},
+          {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "revised_recovery_schedule"},
+          {"fact_ref": "F-MARSH-ROUTE", "equals": "north_channel_shift_confirmed"},
+          {"fact_ref": "F-EAST-PATIENT", "equals": "admission_confirmed_to_east_team"},
+          {"fact_ref": "F-EAST-ROAD", "equals": "open_with_monitoring"},
+          {"fact_ref": "F-EAST-MATERIAL", "equals": "installed_in_repair"},
+          {"fact_ref": "F-NORTH-FERRY", "equals": "departed_on_reduced_schedule"},
+          {"fact_ref": "F-PASS-STATUS", "equals": "reopened_light_only"},
+          {"fact_ref": "F-PRACTICE-SITE", "equals": "partial_reopening"}
+        ]
+      },
+      {
+        "target_day_id": "D7",
+        "transitions": [
+          {
+            "id": "BT-D7-01",
+            "order": 1,
+            "actor_refs": ["P-N-01"],
+            "object_refs": ["OBJ-N-21", "NET-N-MSG"],
+            "region_refs": ["BT-R03"],
+            "preconditions": [
+              {"fact_ref": "F-ROAD-CAPACITY", "equals": "heavy_allowed"},
+              {"fact_ref": "F-WENYAO-FLOW", "equals": "mixed_route_recovery"}
+            ],
+            "effects": [
+              {"fact_ref": "F-WENYAO-FLOW", "set": "normal_heavy_route_restored"}
+            ],
+            "consequence": "混合改線完成消化後恢復一般重載路線，期間留下的維護記錄仍可倒查"
+          },
+          {
+            "id": "BT-D7-02",
+            "order": 2,
+            "actor_refs": ["P-N-04"],
+            "object_refs": ["NET-N-MSG"],
+            "region_refs": ["BT-R01", "BT-R03", "BT-R05"],
+            "preconditions": [
+              {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "revised_recovery_schedule"}
+            ],
+            "effects": [
+              {"fact_ref": "F-CROSS-REGION-SCHEDULE", "set": "stable_with_recorded_delays"}
+            ],
+            "consequence": "跨區班次在新安排下穩定，已發生的缺班與家戶負擔不被改寫成準時"
+          },
+          {
+            "id": "BT-D7-03",
+            "order": 3,
+            "actor_refs": ["P-N-12"],
+            "object_refs": ["OBJ-N-FOG", "NET-N-MSG"],
+            "region_refs": ["BT-R08"],
+            "preconditions": [
+              {"fact_ref": "F-NORTH-FERRY", "equals": "departed_on_reduced_schedule"}
+            ],
+            "effects": [
+              {"fact_ref": "F-NORTH-FERRY", "set": "normal_schedule_with_delay_recorded"}
+            ],
+            "consequence": "接駁恢復一般班次，D0 延誤仍留在班次與乘客行程歷史"
+          },
+          {
+            "id": "BT-D7-04",
+            "order": 4,
+            "actor_refs": ["P-N-10"],
+            "object_refs": ["OBJ-N-PASS"],
+            "region_refs": ["BT-R06"],
+            "preconditions": [
+              {"fact_ref": "F-PASS-STATUS", "equals": "reopened_light_only"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PASS-STATUS", "set": "normal_service"}
+            ],
+            "consequence": "山口完成後續測試並恢復一般服務，等待序列依實際到達重排"
+          },
+          {
+            "id": "BT-D7-05",
+            "order": 5,
+            "actor_refs": ["P-N-08"],
+            "object_refs": ["SITE-N-PRACTICE"],
+            "region_refs": ["BT-R04"],
+            "preconditions": [
+              {"fact_ref": "F-PRACTICE-SITE", "equals": "partial_reopening"}
+            ],
+            "effects": [
+              {"fact_ref": "F-PRACTICE-SITE", "set": "reopened_with_repair_zone"}
+            ],
+            "consequence": "主要使用面重開，仍保留一塊修復區而不是整座場地瞬間如新"
+          },
+          {
+            "id": "BT-D7-06",
+            "order": 6,
+            "actor_refs": ["P-N-11"],
+            "object_refs": ["OBJ-N-SOUTH", "NET-N-MSG"],
+            "region_refs": ["BT-R07"],
+            "preconditions": [
+              {"fact_ref": "F-MARSH-ROUTE", "equals": "north_channel_shift_confirmed"}
+            ],
+            "effects": [
+              {"fact_ref": "F-MARSH-ROUTE", "set": "current_markers_published"}
+            ],
+            "consequence": "高嶺發布有時間與來源的當期標記，未查路段仍保留不確定性"
+          }
+        ],
+        "expected": [
+          {"fact_ref": "F-ROAD-CAPACITY", "equals": "heavy_allowed"},
+          {"fact_ref": "F-PORT-MED-BATCH", "equals": "delivered_to_wenyao_transfer"},
+          {"fact_ref": "F-SW-MED-BATCH", "equals": "released_to_local_clinics"},
+          {"fact_ref": "F-WENYAO-FLOW", "equals": "normal_heavy_route_restored"},
+          {"fact_ref": "F-CROSS-REGION-SCHEDULE", "equals": "stable_with_recorded_delays"},
+          {"fact_ref": "F-MARSH-ROUTE", "equals": "current_markers_published"},
+          {"fact_ref": "F-EAST-PATIENT", "equals": "admission_confirmed_to_east_team"},
+          {"fact_ref": "F-EAST-ROAD", "equals": "open_with_monitoring"},
+          {"fact_ref": "F-EAST-MATERIAL", "equals": "installed_in_repair"},
+          {"fact_ref": "F-NORTH-FERRY", "equals": "normal_schedule_with_delay_recorded"},
+          {"fact_ref": "F-PASS-STATUS", "equals": "normal_service"},
+          {"fact_ref": "F-PRACTICE-SITE", "equals": "reopened_with_repair_zone"}
+        ]
+      }
+    ]
+  },
+  "continuity_rules": [
+    "每名居民都有穩定身分、身體、位置、所知、持物、關係、意圖、選項與後果",
+    "事件只送達真正接觸到的人、物與地方，其他居民照自己的生活推進",
+    "組織、家戶、城市和人口不能跳過具體居民直接行動",
+    "共享物件、位置、承諾與結果只結算一次",
+    "統計由居民與物件事件加總，不能先變統計再捏造原因",
+    "遠處可用較稀疏時間點推進，解析度改變不得創造矛盾過去"
+  ],
+  "player_projection": {
+    "expose": [
+      "玩家所在地可感知的人、物、路況、消息版本與可做行動",
+      "行動、等待、離開與回訪後的局部事實",
+      "玩家主動追查時才需要浮現的來源、持有人、路徑與歷史"
+    ],
+    "hide_by_default": [
+      "全半島狀態看板",
+      "後端人口、事件與因果資料表",
+      "與玩家當前位置和感知無關的完整世界細節"
+    ],
+    "invariant": "世界需要細節；玩家只遇見細節造成的現實"
+  }
+}

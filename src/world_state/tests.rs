@@ -20,7 +20,7 @@ fn facts() -> Vec<Fact> {
     ]
 }
 
-/// 建立兩段相依轉換，第二段必須讀到第一段剛完成的狀態。
+/// 建立兩段相依轉換，第二段必須讀到第一段執行完畢的狀態。
 fn transitions() -> Vec<Transition> {
     vec![
         Transition {

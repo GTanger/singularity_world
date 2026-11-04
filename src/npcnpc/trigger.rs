@@ -16,12 +16,11 @@ use crate::db::{
     upsert_lexicon_term, upsert_npc_rumor,
 };
 use crate::entity::EntityKind;
-use crate::game::public_person_label_for_room;
 use crate::gametext;
 use crate::npc::{
     find_npc_npc_topic_id_by_hint, get_npc_npc_topic_by_id, pick_random_npc_npc_topic_for_pair,
 };
-use crate::server::{SessionStore, send_narrate_to_room};
+use crate::server::SessionStore;
 use crate::store::{NpcRumor, NpcThread};
 
 use super::helpers::{
@@ -37,6 +36,20 @@ fn now_unix() -> i64 {
         .duration_since(UNIX_EPOCH)
         .unwrap_or_default()
         .as_secs() as i64
+}
+#[allow(dead_code)]
+trait KeyObjectsJoinExt {
+    fn join(&self, sep: &str) -> String;
+}
+
+impl KeyObjectsJoinExt for str {
+    fn join(&self, sep: &str) -> String {
+        self.split('、')
+            .map(|s| s.trim())
+            .filter(|s| !s.is_empty())
+            .collect::<Vec<_>>()
+            .join(sep)
+    }
 }
 
 fn trunc_rune(s: &str, max: usize) -> String {
@@ -58,23 +71,63 @@ fn sprintf_s(template: &str, args: &[&str]) -> String {
 }
 
 fn player_layer_room_name(room_id: &str) -> String {
-    if let Some(coord) = crate::grid::parse_grid_room_id(room_id)
-        && let Some(cell) = crate::server::grid_manager::get_runtime_square_grid()
-            .and_then(|g| g.get(coord).cloned())
+    let raw_name = if let Some(coord) = crate::grid::parse_grid_room_id(room_id)
+        && let Some(cell) = crate::server::grid_manager::get_runtime_grid_cell(coord)
     {
         if cell.name.trim().is_empty() {
-            return crate::grid::terrain_name_zh(cell.terrain).to_string();
+            crate::grid::terrain_name_zh(cell.terrain).to_string()
+        } else {
+            cell.name
         }
-        return cell.name;
-    }
-    db::get_room_name(room_id).unwrap_or_default()
+    } else {
+        let name = db::get_room_name(room_id).unwrap_or_default();
+        if name.trim().is_empty() {
+            "半島街巷".to_string()
+        } else {
+            name
+        }
+    };
+    crate::store::clean_wilderness_place_label(&raw_name)
+        .replace("大圳頭・西南原", "大圳頭・圳頭")
+        .replace("西門外坊・西南原", "西門外坊・西門")
+        .replace("西南原", "大圳頭")
+        .replace("防爆防風", "防風")
+        .replace("黑沼關隘", "下營")
+        .replace("鹽田澳", "烏石鼻")
+        .replace("青籠關", "下營")
+        .replace("黑沼林澤", "水尾寮")
+        .replace("黑沼林", "水尾寮")
+        .replace("白塔山麓", "半嶺鎮")
+        .replace("北聖山", "北嶺腳")
+        .replace("西北礦帶", "紅土崁")
 }
 
-pub fn resolve_viewer_npc_label(viewer_pid: &str, npc: &crate::entity::Character, room_name: &str) -> String {
-    if crate::store::player_knows_npc(viewer_pid, &npc.id) {
-        return crate::store::resolve_npc_person_name(&npc.id, &npc.display_title, None);
+pub fn resolve_viewer_npc_label(player_id: &str, c: &crate::entity::Character, room_name: &str) -> String {
+    if crate::store::player_knows_npc(player_id, &c.id) {
+        return crate::store::resolve_npc_person_name(&c.id, &c.display_title, None);
     }
-    let tag = crate::store::npc_brief_appearance_tag(&npc.id, &npc.display_title);
+    let (is_staff, has_uniform, in_counter_zone) =
+        crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+            room_name,
+            &c.id,
+            &c.display_title,
+            &c.current_activity,
+            &c.equipment_slots,
+        );
+    if is_staff {
+        let role_title = crate::grid::resolve_any_room_venue_object(room_name, &c.display_title)
+            .map(|v| v.default_host_title)
+            .unwrap_or("當值主事");
+        if in_counter_zone && has_uniform {
+            return format!("身著制服站於櫃檯內側的{role_title}");
+        } else if in_counter_zone {
+            return format!("站在櫃檯內側的{role_title}");
+        } else if has_uniform {
+            return format!("身著工作制服的{role_title}");
+        }
+        return role_title.to_string();
+    }
+    let tag = crate::store::npc_brief_appearance_tag(&c.id, &c.display_title);
     let role = if room_name.contains("工坊") || room_name.contains("鍛造") || room_name.contains("木作") || room_name.contains("鐵坊") {
         "匠人"
     } else if room_name.contains("藥") || room_name.contains("診") || room_name.contains("脈") {
@@ -106,11 +159,49 @@ pub fn format_staged_npc_dialogue(
     activity_a: &str,
     activity_b: &str,
 ) -> String {
-    let act_clause = if !activity_a.is_empty() && !activity_a.contains("無所事事") && !activity_a.contains("安歇") {
-        let clean = activity_a.trim_start_matches("正在").trim_start_matches("正");
-        format!("停下手中{clean}的活計，")
-    } else {
+    let mut stripped_a = String::with_capacity(activity_a.len());
+    let mut in_bracket = false;
+    for ch in activity_a.chars() {
+        if ch == '【' {
+            in_bracket = true;
+        } else if ch == '】' {
+            in_bracket = false;
+        } else if !in_bracket {
+            stripped_a.push(ch);
+        }
+    }
+    let clean = stripped_a.trim().trim_start_matches("正在").trim_start_matches('正').trim();
+
+    let is_transit = clean.contains("動身前往")
+        || clean.contains("前往")
+        || clean.contains("趕往")
+        || clean.contains("步行")
+        || clean.contains("沿街")
+        || clean.contains("返回")
+        || clean.contains("邁步")
+        || clean.contains("穿行");
+    let is_rest = clean.contains("安歇")
+        || clean.contains('歇')
+        || clean.contains('睡')
+        || clean.contains("吹燈")
+        || clean.contains("就寢")
+        || clean.contains("無所事事");
+    let is_eating = clean.contains("用膳")
+        || clean.contains('吃')
+        || clean.contains('飲')
+        || clean.contains('茶')
+        || clean.contains('湯')
+        || clean.contains("果腹")
+        || clean.contains("墊肚")
+        || clean.contains("熱粥")
+        || clean.contains("粗麵");
+
+    let act_clause = if clean.is_empty() || is_transit || is_rest || is_eating {
         String::new()
+    } else if clean.chars().count() > 10 {
+        "手頭活計略作停歇，".to_string()
+    } else {
+        format!("停下手中{clean}的活計，")
     };
     let _ = activity_b;
     match pattern_idx % 8 {
@@ -126,8 +217,13 @@ pub fn format_staged_npc_dialogue(
 }
 
 fn player_layer_pair_labels(room_name: &str) -> (String, String) {
-    if room_name.contains("渡") || room_name.contains("津") || room_name.contains("水岸") || room_name.contains("水尾") || room_name.contains("臨河") {
+    if ["渡", "埠", "橋", "臨河"].iter().any(|k| room_name.contains(k)) {
         ("候渡客".to_string(), "舟子".to_string())
+    } else if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, "") {
+        (
+            venue.default_host_title.to_string(),
+            format!("來{}辦事的街坊", venue.venue_kind),
+        )
     } else if room_name.contains("坊") || room_name.contains("匠") {
         ("掌爐匠人".to_string(), "工坊幫工".to_string())
     } else if room_name.contains("商") || room_name.contains("市") {
@@ -240,21 +336,38 @@ pub fn try_trigger_npc_npc_in_room(
                 t.phase = "cooling".into();
                 t.cooldown_until = now_unix + pp.thread_cooldown_sec as i64;
                 t.updated_at = now_unix;
+                t.anchors.retain(|x| {
+                    !x.contains('・')
+                        && !x.starts_with("wt-")
+                        && !x.starts_with("grid:")
+                        && !matches!(
+                            x.as_str(),
+                            "清晨" | "正午" | "傍晚" | "夜裡" | "深夜" | "正晝" | "早晨" | "午後"
+                        )
+                });
                 let _ = set_npc_npc_thread(&a.id, &b.id, t.clone());
             }
-            if let Some(ref t) = thread
-                && t.phase == "cooling"
+            if let Some(t) = &thread
+                && (t.phase == "cooling" || t.phase == "awaiting_fulfillment")
                 && t.cooldown_until > now_unix
             {
                 continue;
             }
-            if let Some(ref t) = thread
-                && t.phase == "cooling"
-                && t.cooldown_until > 0
-                && t.cooldown_until <= now_unix
-            {
-                let _ = db::delete_npc_npc_thread(&a.id, &b.id);
-                thread = None;
+            if let Some(t) = &mut thread {
+                if t.phase == "awaiting_fulfillment"
+                    && t.cooldown_until > 0
+                    && t.cooldown_until <= now_unix
+                {
+                    t.phase = "followup".into();
+                    t.cooldown_until = 0;
+                    let _ = set_npc_npc_thread(&a.id, &b.id, t.clone());
+                } else if t.phase == "cooling"
+                    && t.cooldown_until > 0
+                    && t.cooldown_until <= now_unix
+                {
+                    let _ = db::delete_npc_npc_thread(&a.id, &b.id);
+                    thread = None;
+                }
             }
             let mut score = rng.random_range(0..base_n);
             if let Some(ref t) = thread
@@ -275,13 +388,37 @@ pub fn try_trigger_npc_npc_in_room(
                 score += pp.same_venue_score_bonus;
             }
             let last = get_pair_last_talk(&a.id, &b.id);
+            if last > 0 && now_unix - last < 180 {
+                continue;
+            }
             if last > 0 && now_unix - last < pp.pair_last_talk_penalty_sec as i64 {
                 score -= pp.pair_last_talk_penalty;
             }
-            let p_a = db::person_name_from_npc_list_label(&a.display_title);
-            let p_b = db::person_name_from_npc_list_label(&b.display_title);
-            if !p_a.is_empty() && p_a == p_b {
-                score -= pp.same_display_name_penalty;
+            let p_a = {
+                let res = crate::store::resolve_npc_person_name(&a.id, &a.display_title, None);
+                if !res.is_empty() && res != "陌生人" {
+                    res
+                } else {
+                    db::person_name_from_npc_list_label(&a.display_title)
+                }
+            };
+            let p_b = {
+                let res = crate::store::resolve_npc_person_name(&b.id, &b.display_title, None);
+                if !res.is_empty() && res != "陌生人" {
+                    res
+                } else {
+                    db::person_name_from_npc_list_label(&b.display_title)
+                }
+            };
+            let probe_a = if !p_a.is_empty() { &p_a } else { &a.id };
+            let probe_b = if !p_b.is_empty() { &p_b } else { &b.id };
+            if probe_a == probe_b {
+                continue;
+            }
+            let chars_a: Vec<char> = probe_a.chars().collect();
+            let chars_b: Vec<char> = probe_b.chars().collect();
+            if chars_a.len() >= 3 && chars_b.len() >= 3 && chars_a[chars_a.len() - 2..] == chars_b[chars_b.len() - 2..] {
+                continue;
             }
             if score > best_score {
                 best_score = score;
@@ -295,13 +432,34 @@ pub fn try_trigger_npc_npc_in_room(
         inc_stat("fail_no_pair");
         return false;
     };
-    let mut name_a = db::person_name_from_npc_list_label(&a.display_title);
-    let mut name_b = db::person_name_from_npc_list_label(&b.display_title);
+    let mut name_a = {
+        let res = crate::store::resolve_npc_person_name(&a.id, &a.display_title, None);
+        if !res.is_empty() && res != "陌生人" {
+            res
+        } else {
+            db::person_name_from_npc_list_label(&a.display_title)
+        }
+    };
+    let mut name_b = {
+        let res = crate::store::resolve_npc_person_name(&b.id, &b.display_title, None);
+        if !res.is_empty() && res != "陌生人" {
+            res
+        } else {
+            db::person_name_from_npc_list_label(&b.display_title)
+        }
+    };
     if name_a.is_empty() {
         name_a.clone_from(&a.id);
     }
     if name_b.is_empty() {
         name_b.clone_from(&b.id);
+    }
+    let chars_a: Vec<char> = name_a.chars().collect();
+    let chars_b: Vec<char> = name_b.chars().collect();
+    let same_given = chars_a.len() >= 3 && chars_b.len() >= 3 && chars_a[chars_a.len() - 2..] == chars_b[chars_b.len() - 2..];
+    if name_a == name_b || same_given {
+        inc_stat("fail_same_name_npc");
+        return false;
     }
     let room_name = player_layer_room_name(room_id);
     let time_label = gametext::time_of_day_label(game_hour);
@@ -313,9 +471,14 @@ pub fn try_trigger_npc_npc_in_room(
     let mut topic_hint = topic_hint_in.to_string();
     let mut chosen_topic_id = String::new();
     if topic_hint.is_empty()
-        && let Some(ref t) = best_thread
+        && let Some(t) = &mut best_thread
         && !t.topic_type.is_empty()
     {
+        if t.topic_type.contains("低飽和微光") || t.topic_type.contains("沃土風") || t.topic_type.contains("非核冬天") {
+            t.topic_type = "天候與環境：海霧、陣雨、山風微寒或晴暖水氣等半島日常天氣變化".to_string();
+        } else if t.topic_type.contains("城外惡地") || t.topic_type.contains("非荒蕪末世") {
+            t.topic_type = "鎮上傳聞山海古道、霜林口、山野異獸與豐茂林地動靜".to_string();
+        }
         topic_hint.clone_from(&t.topic_type);
         topic_source = "thread_topic".into();
     }
@@ -381,36 +544,71 @@ pub fn try_trigger_npc_npc_in_room(
             room_tags_joined = room.tags.join("、");
         }
         let rumors = top_npc_rumors(room_id, &room.zone, now_unix, rumor_top_k);
-        let has_rumors = !rumors.is_empty();
         for rr in rumors {
             recent_events.push(format!("{}{}", ns.rumor_prefix, rr.text));
             let _ = mark_rumor_used_by_text(&rr.text, now_unix);
         }
-        if !has_rumors {
-            let act_a = if a.current_activity.trim().is_empty() { "手頭雜務" } else { a.current_activity.trim() };
-            let act_b = if b.current_activity.trim().is_empty() { "手頭差事" } else { b.current_activity.trim() };
-            let thought_a = a.thoughts.last().and_then(|t| t.flavor.as_deref()).unwrap_or("");
-            let thought_b = b.thoughts.last().and_then(|t| t.flavor.as_deref()).unwrap_or("");
-            let dialogue_anchor = if !thought_a.is_empty() || !thought_b.is_empty() {
-                format!(
-                    "雙方正分別忙於「{}」與「{}」，就手頭差事、器物成色或半島民生自然寒暄交流（心緒參考：{} / {}）",
-                    act_a, act_b, thought_a, thought_b
-                )
-            } else {
-                format!("雙方正分別忙於「{}」與「{}」，就手頭差事、器物成色或半島民生自然寒暄交流", act_a, act_b)
-            };
-            recent_events.push(dialogue_anchor);
+        let act_a = if a.current_activity.trim().is_empty() { "手頭雜務" } else { a.current_activity.trim() };
+        let act_b = if b.current_activity.trim().is_empty() { "手頭差事" } else { b.current_activity.trim() };
+        let thought_a = a.thoughts.last().and_then(|t| t.flavor.as_deref()).unwrap_or("");
+        let thought_b = b.thoughts.last().and_then(|t| t.flavor.as_deref()).unwrap_or("");
+        let mut dialogue_anchor = if !thought_a.is_empty() || !thought_b.is_empty() {
+            format!(
+                "雙方正分別忙於「{}」與「{}」，就手頭差事、器物成色或半島民生自然寒暄交流（心緒參考：{} / {}）",
+                act_a, act_b, thought_a, thought_b
+            )
+        } else {
+            format!("雙方正分別忙於「{}」與「{}」，就手頭差事、器物成色或半島民生自然寒暄交流", act_a, act_b)
+        };
+        if let Some(venue) = crate::grid::resolve_any_room_venue_object(&room_name, "") {
+            dialogue_anchor.push_str(&format!(
+                "；場域物件：【{}】（當值主事：{}；場內活計：{}）",
+                venue.venue_kind, venue.default_host_title, venue.on_duty_fixture_activity
+            ));
         }
+        if let Some((ev, sp)) = crate::game::peninsula_scripts::active_dyadic_event_and_script_pack_for_room(
+            &room_name,
+            Some(&name_a),
+            Some(&name_b),
+            now_unix.unsigned_abs() as i64,
+        ) {
+            dialogue_anchor.push_str(&format!(
+                "；現場事件包：【{}】{}（劇本包【{}】關鍵器物：{}）",
+                ev.pack_id,
+                ev.event_title,
+                sp.pack_id,
+                ev.key_objects.join("、")
+            ));
+        }
+        let (ax, ay) = (a.x, a.y);
+        let place_label = &room_name;
+        if !crate::game::is_inside_settlement_urban_core(ax, ay)
+            && ["草甸", "岩岸", "峭壁", "林", "谷", "澤", "沼", "灘", "山", "嶺", "洲"].iter().any(|k| place_label.contains(k))
+        {
+            dialogue_anchor.push_str("（注意：兩人此刻身處野外荒原山林，不可謊稱正在街角麵攤或浴堂內）");
+        }
+        recent_events.push(dialogue_anchor);
     }
     if player_in_room {
         recent_events.insert(0, ns.player_present_context_line.clone());
     }
-    if let Some(arc) = crate::store::get_store() {
-        let s = arc.read();
-        if let Some(d) = s.get_npc_rumor_digest()
-            && !d.text.trim().is_empty()
-        {
-            recent_events.push(d.text.clone());
+    let ripple_exchanged = crate::npc::causal_core::propagate_ripple_between_npcs(&a.id, &name_a, &b.id, &name_b, now_unix)
+        .or_else(|| crate::npc::causal_core::propagate_ripple_between_npcs(&b.id, &name_b, &a.id, &name_a, now_unix));
+    let has_ripple = ripple_exchanged.is_some();
+    if let Some(rf) = ripple_exchanged {
+        recent_events.insert(0, format!("雙方正當面交換一樁新傳開的緊要風聲：{}", rf.prose_summary));
+        if topic_hint.is_empty() {
+            topic_hint = rf.prose_summary.clone();
+        }
+    }
+    if recent_events.len() < 2 && !has_ripple {
+        if let Some(arc) = crate::store::get_store() {
+            let s = arc.read();
+            if let Some(d) = s.get_npc_rumor_digest()
+                && !d.text.trim().is_empty()
+            {
+                recent_events.push(d.text.clone());
+            }
         }
     }
     let mut anchors_used: Vec<String> = vec![];
@@ -456,7 +654,19 @@ pub fn try_trigger_npc_npc_in_room(
         });
     let mut obligations_a: Vec<String> = Vec::new();
     if let Some((kind, subj)) = crate::store::get_active_npc_obligation(&a.id) {
-        obligations_a.push(format!("{}:{}", kind, subj));
+        if kind != "employment" {
+            let kind_label = match kind.as_str() {
+                "repair_tool" => "器物待修",
+                "stranded_cargo" => "貨擔受阻",
+                "repay_debt" => "欠款待償",
+                "treat_injury" => "傷病待養",
+                "restock_goods" => "鋪貨待補",
+                "market_delivery" => "物產待交割",
+                "supply_shortage" => "物資緊缺",
+                other => other,
+            };
+            obligations_a.push(format!("{}:{}", kind_label, subj));
+        }
     }
     let stance_decision = crate::ai::decision_scorer::score_npc_interaction_stance(
         &crate::ai::decision_scorer::NpcDecisionInput {
@@ -480,6 +690,28 @@ pub fn try_trigger_npc_npc_in_room(
         return false;
     }
     recent_events.push(stance_decision.prompt_directive.clone());
+    let role_a = crate::store::npc_persistent_role_label(&a.id, &a.display_title);
+    let role_b = crate::store::npc_persistent_role_label(&b.id, &b.display_title);
+    let kotodama_plan = crate::npc::causal_core::plan_dyadic_kotodama_encounter(
+        &a.id,
+        &name_a,
+        &role_a,
+        a.magnesium,
+        crate::store::get_active_npc_obligation(&a.id),
+        &b.id,
+        &name_b,
+        &role_b,
+        b.magnesium,
+        crate::store::get_active_npc_obligation(&b.id),
+        &room_name,
+        fam_score,
+        sen_score,
+        now_unix,
+    );
+    if let Some(plan) = &kotodama_plan {
+        recent_events.push(plan.prompt_directive.clone());
+        topic_hint = plan.topic_override.clone();
+    }
     let ai_base_url = if !cfg.player_talk_api_base_url.is_empty() {
         &cfg.player_talk_api_base_url
     } else if !cfg.ollama_base_url.is_empty() {
@@ -526,6 +758,15 @@ pub fn try_trigger_npc_npc_in_room(
     line_b = strip_npc_line_speaker_prefix(&line_b, &[nb, na]);
     line_a = sanitize_npc_dialogue_line(&line_a);
     line_b = sanitize_npc_dialogue_line(&line_b);
+    line_a = crate::ai::sanitize::fix_self_surname_vocative_in_pair(&line_a, na, nb);
+    line_b = crate::ai::sanitize::fix_self_surname_vocative_in_pair(&line_b, nb, na);
+    line_a = super::helpers::clean_npc_line(&line_a);
+    line_b = super::helpers::clean_npc_line(&line_b);
+    let anchors: Vec<String> = anchors
+        .into_iter()
+        .map(|a| super::helpers::clean_npc_line(&sanitize_npc_dialogue_line(&a)))
+        .filter(|a| !a.is_empty())
+        .collect();
     let (ok_a, reason_a) = quality_gate_npc_line(&line_a, max_runes);
     let (ok_b, reason_b) = quality_gate_npc_line(&line_b, max_runes);
     if line_a.is_empty() || line_b.is_empty() || !ok_a || !ok_b {
@@ -624,14 +865,17 @@ pub fn try_trigger_npc_npc_in_room(
     } else {
         inc_stat("score_disabled_skip");
     }
+    if let Some(plan) = &kotodama_plan {
+        crate::npc::causal_core::commit_dyadic_kotodama_plan(&a.id, &name_a, &b.id, &name_b, plan, now_unix);
+    }
     let summary = sprintf_s(
         &ns.summary_fmt,
         &[
             &room_name,
             &name_a,
-            &trunc_rune(&line_a, 25),
+            &trunc_rune(&line_a, 120),
             &name_b,
-            &trunc_rune(&line_b, 25),
+            &trunc_rune(&line_b, 120),
         ],
     );
     if !should_skip_npc_npc_summary_update(&npc_npc_memory, &summary, &line_a, &line_b) {
@@ -639,8 +883,8 @@ pub fn try_trigger_npc_npc_in_room(
     } else {
         inc_stat("skip_npc_npc_summary_dup");
     }
-    let arch_a = sprintf_s(&ns.archival_with_fmt, &[&name_b, &trunc_rune(&line_a, 40)]);
-    let arch_b = sprintf_s(&ns.archival_with_fmt, &[&name_a, &trunc_rune(&line_b, 40)]);
+    let arch_a = sprintf_s(&ns.archival_with_fmt, &[&name_b, &trunc_rune(&line_a, 120)]);
+    let arch_b = sprintf_s(&ns.archival_with_fmt, &[&name_a, &trunc_rune(&line_b, 120)]);
     if let Ok((_, true)) = insert_npc_npc_dialogue_archival(&a.id, &arch_a) {
         inc_stat("skip_npc_npc_archival_dup");
     }
@@ -648,7 +892,7 @@ pub fn try_trigger_npc_npc_in_room(
         inc_stat("skip_npc_npc_archival_dup");
     }
     let mut thread = best_thread.unwrap_or_else(|| NpcThread {
-        thread_key: String::new(),
+        thread_key: format!("{}|{}", a.id.as_str().min(b.id.as_str()), a.id.as_str().max(b.id.as_str())),
         topic_type: topic_hint.clone(),
         phase: "opening".into(),
         anchors: vec![],
@@ -661,13 +905,40 @@ pub fn try_trigger_npc_npc_in_room(
     if thread.topic_type.is_empty() {
         thread.topic_type.clone_from(&topic_hint);
     }
+    if thread.topic_type.contains("低飽和微光") || thread.topic_type.contains("沃土風") || thread.topic_type.contains("非核冬天") {
+        thread.topic_type = "天候與環境：海霧、陣雨、山風微寒或晴暖水氣等半島日常天氣變化".to_string();
+    } else if thread.topic_type.contains("城外惡地") || thread.topic_type.contains("非荒蕪末世") {
+        thread.topic_type = "鎮上傳聞山海古道、霜林口、山野異獸與豐茂林地動靜".to_string();
+    }
     if thread.turn_count >= 1 {
         thread.phase = "elaborate".into();
     }
-    if thread.turn_count >= 3 {
+    if thread.turn_count >= 2 {
         thread.phase = "cooling".into();
+        thread.cooldown_until = now_unix + 600;
+    }
+    if kotodama_plan.as_ref().is_some_and(|p| p.keep_thread_open) {
+        thread.phase = "awaiting_fulfillment".into();
         thread.cooldown_until = now_unix + 300;
     }
+    let is_valid_thread_anchor = |x: &String| {
+        !x.contains('・')
+            && x != &room_name
+            && !x.starts_with("wt-")
+            && !x.starts_with("grid:")
+            && !matches!(
+                x.as_str(),
+                "清晨" | "正午" | "傍晚" | "夜裡" | "深夜" | "正晝" | "早晨" | "午後"
+            )
+    };
+    thread.anchors = thread
+        .anchors
+        .into_iter()
+        .map(|a| super::helpers::clean_npc_line(&sanitize_npc_dialogue_line(&a)))
+        .filter(|a| !a.is_empty())
+        .collect();
+    thread.anchors.retain(&is_valid_thread_anchor);
+    let anchors: Vec<String> = anchors.into_iter().filter(is_valid_thread_anchor).collect();
     thread.anchors = merge_thread_anchors(&thread.anchors, &anchors);
     let _ = set_npc_npc_thread(&a.id, &b.id, thread);
     let dar = &sim().dialogue_anchor_rumor;
@@ -718,27 +989,34 @@ pub fn try_trigger_npc_npc_in_room(
         {
             continue;
         }
-        let rid = format!("{room_id}|{room_zone}|{anchor}");
-        let _ = upsert_npc_rumor(NpcRumor {
-            id: rid,
-            text: anchor.clone(),
-            room_id: room_id.to_string(),
-            zone: room_zone.clone(),
-            source: "dialogue_anchor".into(),
-            source_score: ss,
-            weight: w,
-            mention_count: 0,
-            last_used_at: 0,
-            blocked_until: 0,
-            penalty_count: 0,
-            last_penalty_at: 0,
-            last_penalty_reason: String::new(),
-            updated_at: now_unix,
-            expires_at: now_unix + ttl,
-        });
-        // 寫入世界詞典
-        let pair_key = format!("{}|{}", a.id, b.id);
-        upsert_lexicon_term(&anchor, room_id, &pair_key);
+        let is_valid_rumor_sentence = anchor.chars().count() >= 12
+            && !anchor.contains('・')
+            && anchor != room_name
+            && !anchor.starts_with("wt-")
+            && !anchor.starts_with("grid:");
+        if is_valid_rumor_sentence {
+            let rid = format!("{room_id}|{room_zone}|{anchor}");
+            let _ = upsert_npc_rumor(NpcRumor {
+                id: rid,
+                text: anchor.clone(),
+                room_id: room_id.to_string(),
+                zone: room_zone.clone(),
+                source: "dialogue_anchor".into(),
+                source_score: ss,
+                weight: w,
+                mention_count: 0,
+                last_used_at: 0,
+                blocked_until: 0,
+                penalty_count: 0,
+                last_penalty_at: 0,
+                last_penalty_reason: String::new(),
+                updated_at: now_unix,
+                expires_at: now_unix + ttl,
+            });
+            // 寫入世界詞典
+            let pair_key = format!("{}|{}", a.id, b.id);
+            upsert_lexicon_term(&anchor, room_id, &pair_key);
+        }
     }
     set_pair_last_talk(&a.id, &b.id, now_unix);
     let mut d = dyad.unwrap_or_else(|| {
@@ -888,6 +1166,7 @@ pub fn try_trigger_npc_npc_in_room(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::entity::Character;
 
     #[test]
     fn player_layer_pair_labels_use_scene_identity() {
@@ -912,5 +1191,79 @@ mod tests {
             &[("歐陽秀建", "候渡客"), ("尹淑秀", "舟子")],
         );
         assert_eq!(text, "候渡客說舟子快看船。");
+    }
+
+    #[test]
+    fn test_format_staged_npc_dialogue_never_wraps_transit_or_leaks_destination() {
+        let activity_a = "正動身前往【三水外坊・水巷搬運員宿所】回屋舍吹燈安穩睡一覺";
+        let res = format_staged_npc_dialogue(
+            0,
+            "老張",
+            "小李",
+            "今日收工了。",
+            "是啊，回去歇歇。",
+            activity_a,
+            "",
+        );
+        assert!(
+            !res.contains("停下手中"),
+            "Should not contain '停下手中', got: {}",
+            res
+        );
+        assert!(
+            !res.contains("【三水外坊・水巷搬運員宿所】"),
+            "Should not leak bracketed destination, got: {}",
+            res
+        );
+    }
+
+    #[test]
+    fn test_resolve_viewer_npc_label_recognizes_uniform_and_counter_zone() {
+        let c = Character {
+            id: "ambient_mill_staff_01".to_string(),
+            kind: crate::entity::EntityKind::Npc,
+            display_char: "匠".to_string(),
+            x: 0,
+            y: 0,
+            move_state: crate::entity::MoveState::Idle,
+            target_x: None,
+            target_y: None,
+            walk_or_run: crate::entity::WalkOrRun::Walk,
+            move_started_at: None,
+            vit: 10,
+            qi: 10,
+            dex: 10,
+            magnesium: 0,
+            last_observed_at: None,
+            created_at: 0,
+            gender: Some(crate::entity::Gender::M),
+            soul_seed: None,
+            display_title: String::new(),
+            activated_nodes: "[]".to_string(),
+            equipment_slots: r#"{"body":"wt_cat_0840"}"#.to_string(),
+            inventory: "[]".to_string(),
+            disposition: 0,
+            thoughts: vec![],
+            current_activity: "正在櫃檯內側照料石磨".to_string(),
+            grid_x: None,
+            grid_y: None,
+        };
+        let label = resolve_viewer_npc_label("player_unknown_1", &c, "老堰頭・水輪石磨工坊");
+        assert!(
+            label.contains("身著制服站於櫃檯內側的"),
+            "Expected label containing '身著制服站於櫃檯內側的', got: {label}"
+        );
+        assert_eq!(label, "身著制服站於櫃檯內側的當值石磨匠師");
+    }
+
+    #[test]
+    fn test_player_layer_pair_labels_uses_room_venue_object() {
+        assert_eq!(
+            player_layer_pair_labels("老堰頭・水輪石磨工坊"),
+            (
+                "當值石磨匠師".to_string(),
+                "來水輪石磨工坊辦事的街坊".to_string()
+            )
+        );
     }
 }

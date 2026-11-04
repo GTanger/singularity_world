@@ -72,6 +72,81 @@ pub struct LogisticsStatus {
     pub invalid_destination_balances: i64,
 }
 
+pub fn format_venue_logistics_dispatch_reason_and_advance_event_pack(
+    origin_room_name: &str,
+    dest_room_name: &str,
+    item_id: &str,
+    display_name: &str,
+) -> String {
+    let origin_trimmed = origin_room_name.trim();
+    let dest_trimmed = dest_room_name.trim();
+    let item_trimmed = item_id.trim();
+    let display_trimmed = display_name.trim();
+
+    if !origin_trimmed.is_empty() {
+        let hint = format!("{item_trimmed} {display_trimmed}");
+        let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            origin_trimmed,
+            hint.trim(),
+        );
+    }
+
+    let dest_label = if dest_trimmed.is_empty() {
+        "鄰近市集"
+    } else {
+        dest_trimmed
+    };
+
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(origin_trimmed, "") {
+        let zone_tag = if venue.has_counter_restricted_zone {
+            "當值櫃檯內側"
+        } else {
+            "當值作業區"
+        };
+        if !display_trimmed.is_empty() {
+            format!(
+                "已自{}{}提領【{}】，正押運前往{}",
+                venue.venue_kind, zone_tag, display_trimmed, dest_label
+            )
+        } else {
+            format!(
+                "已自{}{}提領在途貨物，正押運前往{}",
+                venue.venue_kind, zone_tag, dest_label
+            )
+        }
+    } else if !display_trimmed.is_empty() {
+        format!("已有在途市場貨物【{display_trimmed}】必須送達{dest_label}")
+    } else {
+        "已有在途市場貨物必須送達".to_string()
+    }
+}
+
+pub fn advance_venue_logistics_arrival_event_pack(
+    dest_room_name: &str,
+    item_id: &str,
+    display_name: &str,
+) -> Option<String> {
+    let dest_trimmed = dest_room_name.trim();
+    let item_trimmed = item_id.trim();
+    let display_trimmed = display_name.trim();
+
+    if dest_trimmed.is_empty() {
+        return None;
+    }
+
+    crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+        dest_trimmed,
+        display_trimmed,
+    )
+    .or_else(|| {
+        crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            dest_trimmed,
+            item_trimmed,
+        )
+    })
+    .map(|(_ev, _sp, note)| note)
+}
+
 pub fn ensure_schema(client: &mut impl GenericClient) -> anyhow::Result<()> {
     client.batch_execute(
         "CREATE TABLE IF NOT EXISTS world_market_shipments (
@@ -185,7 +260,7 @@ pub fn dispatch_one(pool: &DbPool, now_unix: i64) -> anyhow::Result<Option<Shipm
     let destination_before: i32 = row.get(12);
     let destination_target: i32 = row.get(13);
     let item_id: String = row.get(14);
-    let display_name: String = row.get(15);
+    let display_name = super::living_world::peninsula_good_display_name(row.get::<_, &str>(15)).to_string();
     let origin_place_id: String = row.get(16);
     let destination_place_id: String = row.get(17);
 
@@ -271,9 +346,17 @@ pub fn dispatch_one(pool: &DbPool, now_unix: i64) -> anyhow::Result<Option<Shipm
         &lane_source_ref,
         now_unix,
     )?;
+    let origin_name = crate::db::get_room_name(&origin_place_id).unwrap_or_default();
+    let dest_name = crate::db::get_room_name(&destination_place_id).unwrap_or_default();
+    let intent_reason = format_venue_logistics_dispatch_reason_and_advance_event_pack(
+        &origin_name,
+        &dest_name,
+        &item_id,
+        &display_name,
+    );
     tx.execute(
         "UPDATE resident_continuity SET current_intent='work',
-           intent_reason='已有在途市場貨物必須送達',destination_place_id=$1,
+           intent_reason=$5,destination_place_id=$1,
            blocked_by=NULL,next_wake_at=LEAST(COALESCE(next_wake_at,$2),$2),
            revision=revision+1,updated_at=$2,source_kind='runtime_logistics',
            source_ref=$3 WHERE entity_id=$4",
@@ -282,6 +365,7 @@ pub fn dispatch_one(pool: &DbPool, now_unix: i64) -> anyhow::Result<Option<Shipm
             &now_unix,
             &lane_source_ref,
             &carrier_id,
+            &intent_reason,
         ],
     )?;
     tx.commit()?;
@@ -314,7 +398,7 @@ pub fn active_delivery_target(
         .map(|row| DeliveryAssignment {
             shipment_id: row.get(0),
             destination_place_id: row.get(1),
-            display_name: row.get(2),
+            display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(2)).to_string(),
             quantity: row.get(3),
         }))
 }
@@ -346,7 +430,7 @@ pub fn complete_if_arrived(
     let item_id: String = row.get(4);
     let destination_place_id: String = row.get(5);
     let quantity: i32 = row.get(6);
-    let display_name: String = row.get(7);
+    let display_name = super::living_world::peninsula_good_display_name(row.get::<_, &str>(7)).to_string();
     if place_id != destination_place_id {
         tx.execute(
             "UPDATE world_market_shipments SET current_place_id=$1,updated_at=$2
@@ -399,6 +483,14 @@ pub fn complete_if_arrived(
          WHERE obligation_id='shipment:'||$2",
         &[&now_unix, &shipment_id],
     )?;
+    let prune_cutoff = now_unix - 3600;
+    tx.execute(
+        "DELETE FROM resident_obligations
+         WHERE obligation_id LIKE 'shipment:%'
+           AND status IN ('completed', 'failed')
+           AND updated_at < $1",
+        &[&prune_cutoff],
+    )?;
     let action_id = super::living_world::record_action_in_tx(
         &mut tx,
         super::living_world::ActionDraft {
@@ -426,6 +518,8 @@ pub fn complete_if_arrived(
         },
     )?;
     tx.commit()?;
+    let dest_name = crate::db::get_room_name(&destination_place_id).unwrap_or_default();
+    let _ = advance_venue_logistics_arrival_event_pack(&dest_name, &item_id, &display_name);
     Ok(Some(DeliveryResult {
         shipment_id,
         carrier_id: carrier_id.to_string(),
@@ -562,7 +656,7 @@ pub fn producer_shipment_probe(
         destination_place_id: row.get(3),
         current_place_id: row.get(4),
         status: row.get(5),
-        display_name: row.get(6),
+        display_name: super::living_world::peninsula_good_display_name(row.get::<_, &str>(6)).to_string(),
         quantity: row.get(7),
         carrier_place_id: row.get(8),
         carrier_activity: row.get(9),
@@ -596,4 +690,58 @@ pub(crate) fn upsert_delivery_obligation(
         ],
     )?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_format_venue_logistics_dispatch_reason_and_advance_event_pack() {
+        let reason_known = format_venue_logistics_dispatch_reason_and_advance_event_pack(
+            "老堰頭・水輪石磨工坊",
+            "三水大食堂",
+            "wt_cat_0388",
+            "現磨溫米漿",
+        );
+        assert_eq!(
+            reason_known,
+            "已自水輪石磨工坊當值櫃檯內側提領【現磨溫米漿】，正押運前往三水大食堂"
+        );
+
+        let reason_fallback = format_venue_logistics_dispatch_reason_and_advance_event_pack(
+            "荒蕪礫石空地",
+            "三水大食堂",
+            "wt_cat_0388",
+            "現磨溫米漿",
+        );
+        assert_eq!(
+            reason_fallback,
+            "已有在途市場貨物【現磨溫米漿】必須送達三水大食堂"
+        );
+
+        let reason_fallback_empty_dest = format_venue_logistics_dispatch_reason_and_advance_event_pack(
+            "荒蕪礫石空地",
+            "",
+            "wt_cat_0388",
+            "現磨溫米漿",
+        );
+        assert_eq!(
+            reason_fallback_empty_dest,
+            "已有在途市場貨物【現磨溫米漿】必須送達鄰近市集"
+        );
+    }
+
+    #[test]
+    fn test_advance_venue_logistics_arrival_event_pack() {
+        let empty_res = advance_venue_logistics_arrival_event_pack("", "wt_cat_0388", "現磨溫米漿");
+        assert!(empty_res.is_none());
+
+        let res = advance_venue_logistics_arrival_event_pack(
+            "老堰頭・水輪石磨工坊",
+            "wt_mill_001",
+            "水輪大石磨",
+        );
+        assert!(res.is_some());
+    }
 }

@@ -103,3 +103,10 @@ remote_center.log
 
 # 地球原始資料（SRTM 高程 + OSM landuse，共 ~600MB，不入庫）
 data/earth/
+
+# Python bytecode 與本地 IDE 設定
+__pycache__/
+*.pyc
+.claude/settings.local.json
+data/runtime/*.db*
+data/runtime/llm_skill_cache.json

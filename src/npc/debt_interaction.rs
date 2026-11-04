@@ -436,6 +436,39 @@ pub fn resolve_trade_credit(
     }
 }
 
+/// 依據場域物件化資訊產出賒欠或核銷帳目記敘，並推進場域事件包與劇本包。
+pub fn format_venue_credit_or_debt_ledger_note_and_advance_pack(
+    room_name: &str,
+    item_or_reason_hint: &str,
+    amount_mg: i32,
+    is_settlement: bool,
+) -> Option<String> {
+    let room_trimmed = room_name.trim();
+    let hint_trimmed = item_or_reason_hint.trim();
+    if room_trimmed.is_empty() || amount_mg <= 0 {
+        return None;
+    }
+    let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+        room_trimmed,
+        hint_trimmed,
+    );
+    let venue = crate::grid::resolve_any_room_venue_object(room_trimmed, "")?;
+    let zone_tag = if venue.has_counter_restricted_zone {
+        "當值櫃檯帳冊"
+    } else {
+        "當值作業區帳冊"
+    };
+    let action_word = if is_settlement {
+        "核銷清償"
+    } else {
+        "登載賒欠"
+    };
+    Some(format!(
+        "【{}・{}】已由{}當面{}{}鎂往來帳目。",
+        venue.venue_kind, zone_tag, venue.default_host_title, action_word, amount_mg
+    ))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -718,5 +751,38 @@ mod tests {
         let cleared_rest = settle_debt_for_actor(debtor, 30);
         assert_eq!(cleared_rest, 15);
         assert_eq!(active_debt_amount(debtor), 0);
+    }
+
+    #[test]
+    fn test_format_venue_credit_or_debt_ledger_note_and_advance_pack() {
+        let mill_debt = format_venue_credit_or_debt_ledger_note_and_advance_pack(
+            "老堰頭・水輪石磨工坊",
+            "麥粒 麵粉研磨費",
+            35,
+            false,
+        );
+        assert_eq!(
+            mill_debt,
+            Some("【水輪石磨工坊・當值櫃檯帳冊】已由當值石磨匠師當面登載賒欠35鎂往來帳目。".to_string())
+        );
+
+        let canteen_settle = format_venue_credit_or_debt_ledger_note_and_advance_pack(
+            "三水大食堂",
+            "合菜清償",
+            60,
+            true,
+        );
+        assert_eq!(
+            canteen_settle,
+            Some("【大食堂・當值櫃檯帳冊】已由食堂主廚當面核銷清償60鎂往來帳目。".to_string())
+        );
+
+        let non_venue = format_venue_credit_or_debt_ledger_note_and_advance_pack(
+            "荒蕪礫石空地",
+            "私人物品",
+            20,
+            false,
+        );
+        assert_eq!(non_venue, None);
     }
 }

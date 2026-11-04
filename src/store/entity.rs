@@ -20,31 +20,79 @@ impl NpcGridState {
     pub fn current_activity(&self) -> String {
         let hour = current_game_hour();
         if self.current == self.dest {
-            self.stay_activity.clone()
-        } else if self.purpose == "安歇養神"
-            || self.purpose == "返家安歇"
-            || self.purpose == "夜間返家"
-        {
-            if hour >= 20 || hour < 5 {
-                format!("正踏著夜色返回【{}】準備安歇", self.dest_name)
-            } else {
-                format!("正返回【{}】稍作歇息", self.dest_name)
-            }
-        } else if self.purpose.contains("合圍")
-            || self.purpose.contains("揪團")
-            || self.purpose.contains("獵殺")
-            || self.purpose.contains("運售")
-        {
-            format!("{}（推進目標：【{}】）", self.stay_activity, self.dest_name)
-        } else if self.purpose == "享用熱食"
-            || self.purpose == "品茗用膳"
-            || self.purpose == "洗沐放鬆"
-        {
-            format!("收工之餘，正動身前往【{}】{}", self.dest_name, self.purpose)
-        } else if !self.purpose.is_empty() {
-            format!("正動身前往【{}】{}", self.dest_name, self.purpose)
+            self.stay_activity
+                .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
+                .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
+                .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
+                .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
+                .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
+                .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣")
         } else {
-            format!("正動身前往【{}】", self.dest_name)
+            let normalized_purpose = self
+                .purpose
+                .replace("買米菜回屋自炊熱粥", "採買米菜自炊熱粥")
+                .replace("切滷肉包熱點心帶回家", "切份滷肉包熱點心解饞")
+                .replace("舀大水缸冷開水喝", "取用清冽涼水一飲解渴")
+                .replace("掬山泉涼水飲用解渴", "取用清冽涼水一飲解渴")
+                .replace("空手去近郊拾柴採野草換鎂幣", "空手拾柴採野草換取鎂幣")
+                .replace("靠著案頭木架閉目喘口氣", "尋處陰涼角落閉目歇腳喘口氣");
+            let purpose = normalized_purpose.as_str();
+            if purpose.contains("安歇")
+                || purpose.contains("睡")
+                || purpose.contains("歇息")
+                || purpose.contains("歇宿")
+                || purpose.contains("返家")
+                || purpose.contains("回屋舍")
+                || purpose.contains("回居所")
+            {
+                if hour >= 20 || hour < 5 {
+                    format!("正踏著夜色返回【{}】準備安歇", self.dest_name)
+                } else {
+                    format!("正返回【{}】稍作歇息", self.dest_name)
+                }
+            } else if purpose.contains("合圍")
+                || purpose.contains("揪團")
+                || purpose.contains("獵殺")
+                || purpose.contains("運售")
+            {
+                if self.purpose.contains(&self.dest_name)
+                    || self.purpose.contains("結伴前往")
+                    || self.stay_activity.contains(&self.dest_name)
+                    || self.stay_activity.contains("結伴前往")
+                {
+                    self.stay_activity.clone()
+                } else {
+                    format!("{}（推進目標：【{}】）", self.stay_activity, self.dest_name)
+                }
+            } else if purpose == "享用熱食"
+                || purpose == "品茗用膳"
+                || purpose == "洗沐放鬆"
+            {
+                format!("收工之餘，正動身前往【{}】{}", self.dest_name, purpose)
+            } else if !purpose.is_empty() {
+                let prefixes = [
+                    "回屋舍", "回居所", "在攤前", "在旅社", "在茶屋", "在貨站", "在案頭", "去", "到", "在",
+                ];
+                let mut trimmed = purpose;
+                let mut changed = true;
+                while changed {
+                    changed = false;
+                    for p in prefixes {
+                        if let Some(rest) = trimmed.strip_prefix(p) {
+                            trimmed = rest.trim_start();
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+                if trimmed.is_empty() {
+                    format!("正動身前往【{}】", self.dest_name)
+                } else {
+                    format!("正動身前往【{}】，準備{}", self.dest_name, trimmed)
+                }
+            } else {
+                format!("正動身前往【{}】", self.dest_name)
+            }
         }
     }
 }
@@ -88,7 +136,9 @@ pub fn clear_active_npc_obligation(entity_id: &str, obligation_kind: &str) {
             }
         }
     }
-    if let Some(pool) = crate::pg::pool() {
+    if !obligation_kind.trim().is_empty()
+        && let Some(pool) = crate::pg::pool()
+    {
         let _ = crate::pg::living_world::resolve_obligations_by_kind(
             &pool,
             entity_id,
@@ -177,27 +227,7 @@ pub fn player_pledged_hunting_zone(player_id: &str) -> Option<String> {
     PLAYER_HUNTING_PARTY_PLEDGES.read().get(player_id).cloned()
 }
 
-const HUNTING_PARTY_ZONES: &[(&str, i32, i32)] = &[
-    ("長風草甸", -180, -195),
-    ("古河巨木林", -80, -60),
-    ("赤石坡", -85, -180),
-    ("落日岬", -340, -140),
-    ("驚濤岩岸", -360, 180),
-    ("巨藻淺灣", -300, 260),
-    ("黑石灣", -260, -20),
-    ("西麓林道", -130, 80),
-    ("清泉溪谷", 60, 160),
-    ("翠冠巨木林", 0, 240),
-    ("北坡雲杉林", 80, 300),
-    ("淺澤泥口", 0, -340),
-    ("白茫洲", -120, -320),
-    ("貼山深潭", 120, -320),
-    ("青籠關", 0, -450),
-    ("西嶺礦谷", 180, 40),
-    ("東海峭壁", 320, 200),
-    ("雲腰雪林", 180, 320),
-    ("白塔雪巔", 0, 420),
-];
+const HUNTING_PARTY_ZONES: &[(&str, i32, i32)] = crate::game::CANONICAL_HUNTING_ZONES;
 
 fn pick_live_shanhai_prey_for_zone(
     cx: i32,
@@ -214,20 +244,67 @@ fn pick_live_shanhai_prey_for_zone(
         .unwrap_or(0);
     let slots = crate::game::live_zone_shanhai_slots(z_idx, time_tick);
 
-    // 每 4 輪圍獵中：2 輪圍獵尋常中型獸群（Tier 3）、1 輪圍獵次級掠食猛獸（Tier 2）、1 輪集結挑戰隱匿鎮場霸主（Tier 1）
-    let mode = round % 4;
-    let target_slot = if mode == 3 {
-        slots.first()
-    } else if mode == 2 {
+    let trophic_opt = crate::game::get_zone_trophic_state(z_idx);
+
+    // 合社自適應獵律：見少留種、見害除猛獸
+    let target_slot = if crate::game::is_zone_predator_spillover_active(z_idx) {
+        let overflow_predators: Vec<_> = slots
+            .iter()
+            .filter(|s| s.tier == 2 && s.tier_tag == "__tier2_overflow__")
+            .collect();
+        if !overflow_predators.is_empty() {
+            overflow_predators
+                .get(((round as usize) + z_idx) % overflow_predators.len())
+                .copied()
+        } else {
+            let predators: Vec<_> = slots.iter().filter(|s| s.tier == 2).collect();
+            predators
+                .get(((round as usize) + z_idx) % predators.len().max(1))
+                .copied()
+                .or_else(|| slots.first())
+        }
+    } else if trophic_opt
+        .as_ref()
+        .is_some_and(|st| st.n_tier2 > st.k_tier2 * 1.12)
+    {
+        // 次級掠食猛獸氾濫（除猛獸護鹿群）：優先獵捕 Tier 2 猛獸
         let predators: Vec<_> = slots.iter().filter(|s| s.tier == 2).collect();
         predators
             .get(((round as usize) + z_idx) % predators.len().max(1))
             .copied()
-    } else {
-        let herds: Vec<_> = slots.iter().filter(|s| s.tier == 3).collect();
-        herds
-            .get(((round as usize) * 3 + z_idx) % herds.len().max(1))
+            .or_else(|| slots.first())
+    } else if trophic_opt
+        .as_ref()
+        .is_some_and(|st| st.apex_presence >= 0.95 && st.n_tier3 >= st.k_tier3 * 0.72)
+        && round % 10 == 9
+    {
+        // 鎮場霸主顯跡且草食獸群充裕：組織合社大獵挑戰 Tier 1 霸主
+        slots.iter().find(|s| s.tier == 1).or_else(|| slots.first())
+    } else if trophic_opt
+        .as_ref()
+        .is_some_and(|st| st.n_tier3 < st.k_tier3 * 0.45)
+    {
+        // 中型食草獸群匱乏（封山休獵留種）：避開 Tier 3，獵捕 Tier 2 掠食猛獸或 Tier 4 繁盛小型野獸
+        let alt_prey: Vec<_> = slots.iter().filter(|s| s.tier == 2 || s.tier == 4).collect();
+        alt_prey
+            .get(((round as usize) + z_idx) % alt_prey.len().max(1))
             .copied()
+            .or_else(|| slots.first())
+    } else {
+        // 永續輪獵：兩輪圍獵 Tier 3 尋常獸群、一輪圍獵 Tier 2 次級掠食猛獸
+        if round % 3 != 2 {
+            let herds: Vec<_> = slots.iter().filter(|s| s.tier == 3).collect();
+            herds
+                .get(((round as usize) * 3 + z_idx) % herds.len().max(1))
+                .copied()
+                .or_else(|| slots.first())
+        } else {
+            let predators: Vec<_> = slots.iter().filter(|s| s.tier == 2).collect();
+            predators
+                .get(((round as usize) + z_idx) % predators.len().max(1))
+                .copied()
+                .or_else(|| slots.first())
+        }
     };
 
     if let Some(sl) = target_slot
@@ -343,9 +420,9 @@ fn apply_party_directive_to_state(
 ) {
     let total_members = party.member_ids.len().max(1);
     let tier_tag = match party.prey_tier {
-        1 => "鎮場霸主",
-        2 => "次級猛獸",
-        _ => "山海獸群",
+        1 => "山海異獸",
+        2 => "山林猛獸",
+        _ => "山林獸群",
     };
     match party.phase {
         HuntingPartyPhase::Rallying => {
@@ -425,7 +502,7 @@ fn apply_party_directive_to_state(
             }
             state.dest = mkt_dest;
             state.dest_name = party.market_name.clone();
-            state.purpose = format!("結伴運售【{}】分紅", party.prey_loot_name);
+            state.purpose = format!("結伴運售【{}】分成", party.prey_loot_name);
             state.stay_activity = format!(
                 "正隨領隊【{}】等 {} 名合社獵團夥伴滿載圍獵所獲之【{}】，結伴前往{}過磅交割均分鎂幣紅利",
                 party.leader_name, total_members, party.prey_loot_name, party.market_name
@@ -472,38 +549,39 @@ pub fn get_active_npc_dialogue(entity_id: &str) -> Option<ActiveNpcDialogue> {
     None
 }
 
+#[allow(dead_code)]
 pub const PERSISTENT_NPC_ROLES: [&str; 24] = [
     "三水船塢搬運員",
     "西門車隊貨運員",
     "第一鍛造工坊技師",
     "文曜學院學生",
-    "溫氏診所護理員",
-    "三水商行外務員",
+    "溫氏藥居採藥人",
+    "三水商行押運夥計",
     "東橋茶屋常客",
     "海產乾貨商",
-    "公議堂紀錄員",
+    "公議堂抄錄書生",
     "分家巷木工技師",
-    "藏書閣編輯助理",
+    "藏書閣校書生",
     "百工街鐵工",
     "北門巡守員",
     "三水食堂廚務員",
-    "講堂街研究員",
+    "講堂街治學士",
     "織造坊裁縫師",
     "石橋攤商",
-    "文曜國小助教",
+    "文曜蒙學堂助教",
     "南街藥材商",
     "鐘樓報時員",
-    "泉香浴場服務員",
+    "泉香浴場侍者",
     "西門修配工",
     "三水川船務員",
     "外地旅客",
 ];
 
 const SPECIFIC_ROLE_KEYWORDS: &[&str] = &[
-    "掌櫃", "主事", "師傅", "教習", "學徒", "醫師", "舵手", "船夫", "鐵匠",
+    "主事", "師傅", "教習", "學徒", "醫師", "藥師", "舵手", "船夫", "鐵匠",
     "帳房", "巡衛", "茶博士", "庖師", "腳夫", "會長", "主編", "大匠", "匠師",
-    "教務", "站長", "船長", "理事", "主任", "隊長", "嚮導", "大廚", "場主",
-    "木匠", "夥計", "侍者", "工匠", "坊主", "教頭", "行首", "堂主", "館主",
+    "教務", "站長", "船長", "理事", "掌事", "隊長", "嚮導", "大廚", "場主",
+    "木匠", "店員", "侍者", "工匠", "坊主", "教頭", "行首", "堂主", "館主",
     "衛士", "書生", "學子", "老師", "教師", "助教", "刻字", "雜役", "茶客", "行商", "貨郎", "散客",
     "員", "技師", "學生", "常客", "助理", "鐵工", "攤商", "裁縫師", "旅客", "商旅", "文吏", "客商",
 ];
@@ -694,90 +772,162 @@ pub fn is_role_or_placeholder_label(s: &str) -> bool {
         return true;
     }
     const ROLE_MARKERS: &[&str] = &[
-        "掌櫃", "主事", "師傅", "教習", "學徒", "醫師", "舵手", "船夫", "鐵匠", "帳房", "巡衛",
+        "主事", "師傅", "教習", "學徒", "醫師", "舵手", "船夫", "鐵匠", "帳房", "巡衛",
         "茶博士", "庖師", "腳夫", "會長", "主編", "大匠", "匠師", "教務", "站長", "船長", "理事",
-        "主任", "隊長", "嚮導", "大廚", "場主", "木匠", "夥計", "侍者", "工匠", "坊主", "教頭",
+        "掌事", "隊長", "嚮導", "大廚", "場主", "木匠", "店員", "侍者", "工匠", "坊主", "教頭",
         "行首", "堂主", "館主", "衛士", "書生", "學子", "老師", "教師", "助教", "刻字", "雜役", "茶客", "行商",
         "貨郎", "散客", "住戶", "儒生", "馱夫", "藥童", "巡丁", "居民", "旅人", "食客", "農夫",
         "漁夫", "信使", "錄事", "門生", "大嫂", "伴當", "門房", "船戶", "渡客", "候渡者", "搬魚人",
-        "補網人", "補帆人", "海關吏", "商館人", "跑堂", "幫廚", "郎中", "大夫", "醫者", "鏢師",
+        "補網人", "補帆人", "舶司吏", "商館人", "跑堂", "幫廚", "醫師", "藥師", "醫者", "鏢師",
         "武師", "挑夫", "車夫", "馬夫", "樵夫", "女工", "記帳員", "手藝人", "採藥人",
         "員", "技師", "學生", "常客", "助理", "鐵工", "攤商", "裁縫師", "旅客", "商旅", "文吏", "客商",
     ];
     ROLE_MARKERS.iter().any(|&kw| t.contains(kw))
 }
 
+#[allow(dead_code)]
 pub fn deterministic_wenyao_full_name(npc_id: &str) -> String {
     deterministic_wenyao_full_name_with_gender(npc_id, None)
 }
 
-pub fn deterministic_wenyao_full_name_with_gender(
-    npc_id: &str,
-    gender_hint: Option<&str>,
-) -> String {
+pub fn npc_effective_is_female(entity_id: &str, gender_hint: Option<&str>) -> bool {
     let mut resolved_gender = gender_hint.map(str::to_string);
     if resolved_gender.is_none() {
-        if let Some(arc) = super::get_store() {
-            let s = arc.read();
-            if let Some(ent) = s.get_entity(npc_id) {
-                if !ent.gender.is_empty() {
-                    resolved_gender = Some(ent.gender.clone());
-                }
-            }
+        if let Some(arc) = super::get_store()
+            && let Some(s) = arc.try_read()
+            && let Some(ent) = s.get_entity(entity_id)
+            && !ent.gender.is_empty()
+        {
+            resolved_gender = Some(ent.gender.clone());
         }
     }
 
-    let slot = wenyao_household_slot_for(npc_id);
-    let slot_female_clue = slot.attire_line.contains("裙")
+    if !entity_id.starts_with("npc_") {
+        return match resolved_gender.as_deref() {
+            Some("F") | Some("f") | Some("女") | Some("female") | Some("女性") => true,
+            Some("M") | Some("m") | Some("男") | Some("male") | Some("男性") => false,
+            _ => false,
+        };
+    }
+
+    let slot = wenyao_household_slot_for(entity_id);
+    let attire_no_apron = slot.attire_line.replace("圍裙", "");
+    let tag_no_apron = slot.brief_tag.replace("圍裙", "");
+    let slot_female_clue = attire_no_apron.contains("裙")
         || slot.attire_line.contains("簪")
         || slot.attire_line.contains("髮髻")
-        || slot.brief_tag.contains("裙")
+        || tag_no_apron.contains("裙")
         || slot.work_purpose.contains("女")
         || slot.work_stay_activity.contains("女")
         || slot.home_stay_activity.contains("女")
         || slot.attire_line.contains("娘")
         || slot.attire_line.contains("小姐")
         || slot.attire_line.contains("婦");
+    let slot_male_clue = slot.attire_line.contains("鬚")
+        || slot.attire_line.contains("鬍")
+        || slot.attire_line.contains("赤膊")
+        || slot.attire_line.contains("雙臂赤裸")
+        || slot.attire_line.contains("雄健")
+        || slot.attire_line.contains("魁梧")
+        || slot.attire_line.contains("老漢")
+        || slot.attire_line.contains("壯漢");
 
-    let is_female = if slot_female_clue {
+    if slot_female_clue {
         true
+    } else if slot_male_clue {
+        false
     } else {
         match resolved_gender.as_deref() {
-            Some("F") | Some("f") | Some("女") | Some("female") => true,
-            Some("M") | Some("m") | Some("男") | Some("male") => false,
+            Some("F") | Some("f") | Some("女") | Some("female") | Some("女性") => true,
+            Some("M") | Some("m") | Some("男") | Some("male") | Some("男性") => false,
             _ => false,
         }
-    };
-
-    const SURNAMES: &[&str] = &[
-        "陳", "林", "黃", "張", "李", "王", "吳", "劉", "蔡", "楊",
-        "許", "鄭", "謝", "洪", "郭", "邱", "曾", "廖", "賴", "徐",
-        "周", "葉", "蘇", "莊", "江", "呂", "何", "羅", "高", "蕭",
-        "柯", "溫", "秦", "顧", "沈", "方", "岑", "陸", "白", "韓",
-    ];
-    const FEMALE_GIVEN: &[&str] = &[
-        "雅筑", "佳穎", "怡君", "詩涵", "婷萱", "語彤", "涵晴", "宥蓁",
-        "心怡", "婉婷", "淑芬", "筱涵", "姿妤", "采潔", "郁婷", "馨儀",
-    ];
-    const MALE_GIVEN: &[&str] = &[
-        "冠廷", "柏翰", "承恩", "家瑋", "宇翔", "哲維", "建宏", "俊傑",
-        "志豪", "宥辰", "敬堯", "浩然", "子軒", "廷恩", "振宇", "彥廷",
-    ];
-
-    let mut h: usize = 0xcbf2_9ce4_8422_2325;
-    for b in npc_id.bytes() {
-        h = h.wrapping_mul(31).wrapping_add(b as usize);
     }
+}
 
-    let surname = SURNAMES[(h >> 8) % SURNAMES.len()];
+pub const MALE_ONLY_NAME_CHARS: &[char] = &[
+    '強', '偉', '\u{525b}', '勇', '彪', '豪', '傑', '杰', '俊', '雄', '建', '國', '軍', '磊', '濤', '鵬',
+    '飛', '超', '康', '邦', '霸', '武', '猛', '龍', '虎', '志', '洋',
+    '正', '明', '德', '興', '良', '貴', '富', '榮', '昌', '宏', '盛', '峰', '棟', '川', '山', '海',
+    '軒', '宇', '翰', '廷', '翔', '維', '瑋', '凱', '鈞', '睿', '佑', '恩', '霖', '哲',
+];
+
+pub const FEMALE_ONLY_NAME_CHARS: &[char] = &[
+    '淑', '娟', '婷', '慧', '敏', '麗', '美', '芳', '玲', '秀', '霞', '燕', '艷', '蘭', '萍', '梅',
+    '琳', '琴', '娜', '芬', '靜', '妍', '嫣', '薇', '姿', '妤', '媛', '嬌', '婉', '嫺', '嫻', '蓉',
+    '蕊', '惠', '琪', '紅', '雅', '晴', '雯', '馨', '佩', '碧', '素', '映', '月', '穎', '彤', '怡',
+    '涵', '瑜', '珊', '瑄', '妮', '樺', '欣', '玥', '柔', '萱', '儀', '筑', '依', '荷', '翠', '姝',
+    '韻', '微', '若',
+];
+
+pub const WENYAO_SURNAMES: &[&str] = &[
+    "陳", "林", "黃", "張", "李", "王", "吳", "劉", "蔡", "楊",
+    "許", "鄭", "謝", "洪", "郭", "邱", "曾", "廖", "賴", "徐",
+    "周", "葉", "蘇", "莊", "江", "呂", "何", "羅", "高", "蕭",
+    "柯", "溫", "秦", "顧", "沈", "\u{65b9}", "岑", "陸", "白", "韓",
+    "趙", "孫", "馬", "朱", "胡", "戴", "潘", "鄧", "馮", "曹",
+    "彭", "范", "石", "姚", "余", "魏", "薛", "鍾", "宋", "段",
+];
+
+pub const WENYAO_FEMALE_GIVEN: &[&str] = &[
+    "雅婷", "雅筑", "婷萱", "妤涵", "晴雯", "琳琪", "柔馨", "潔儀",
+    "欣真", "宜佩", "慈惠", "秀娟", "雅竹", "婉清", "素心", "芷蘭",
+    "佩玉", "碧雲", "映雪", "淑敏", "秋月", "秀英", "婉君", "佳穎",
+    "子晴", "宥彤", "語晴", "品妤", "心怡", "筱涵", "芷瑜", "佩珊",
+    "庭瑄", "雅柔", "靜雯", "碧華", "映辰", "彩妮", "青樺", "淑芬",
+    "美玲", "淑惠", "詠晴", "若彤", "依晨", "彩薇", "涵玥", "芷嫣",
+    "曼琳", "詩涵", "依婷", "佳欣",
+    "語彤", "韻如", "知微", "若水", "靜姝", "曉萱", "雅雯", "淑娟",
+    "玉蘭", "清荷", "秀芳", "翠玉",
+];
+
+pub const WENYAO_MALE_GIVEN: &[&str] = &[
+    "冠廷", "宇翔", "志豪", "俊傑", "柏翰", "冠宇", "志明", "家豪",
+    "宗翰", "承恩", "宇軒", "冠霖", "哲維", "振武", "建興", "致遠",
+    "子傑", "明哲", "清和", "懷安", "文軒", "正明", "長青", "明德",
+    "家瑋", "文華", "豐年", "志強", "忠義", "宏偉", "崇安", "毅宏",
+    "銘凱", "駿宏", "皓天", "景耀", "啟銘", "承宏", "秉諺", "耀庭",
+    "翔宇", "彥良", "凱鈞", "瀚睿", "睿佑", "辰威", "建宏", "冠良",
+    "子豪", "政憲", "廷宇", "博文",
+    "少華", "敬堯", "子軒", "定遠", "廷恩", "哲瑋", "承澤", "柏睿",
+    "敬軒", "松年", "安邦", "紹齊",
+];
+
+pub fn deterministic_wenyao_full_name_with_gender(
+    npc_id: &str,
+    gender_hint: Option<&str>,
+) -> String {
+    deterministic_wenyao_full_name_salted(npc_id, gender_hint, 0)
+}
+
+pub fn deterministic_wenyao_full_name_salted(
+    npc_id: &str,
+    gender_hint: Option<&str>,
+    salt: usize,
+) -> String {
+    let is_female = npc_effective_is_female(npc_id, gender_hint);
+
+    let mut z: u64 = 0xcbf2_9ce4_8422_2325_u64.wrapping_add((salt as u64).wrapping_mul(0x9e37_79b9_7f4a_7c15));
+    for b in npc_id.bytes() {
+        z ^= b as u64;
+        z = z.wrapping_mul(0x1000_0000_01b3);
+    }
+    z = (z ^ (z >> 30)).wrapping_mul(0xbf58_476d_1ce4_e5b9);
+    z = (z ^ (z >> 27)).wrapping_mul(0x94d0_49bb_1331_11eb);
+    z ^= z >> 31;
+    let h = z as usize;
+
     if is_female {
-        let given = FEMALE_GIVEN[h % FEMALE_GIVEN.len()];
+        let surname = WENYAO_SURNAMES[(h / WENYAO_FEMALE_GIVEN.len()) % WENYAO_SURNAMES.len()];
+        let given = WENYAO_FEMALE_GIVEN[h % WENYAO_FEMALE_GIVEN.len()];
         format!("{surname}{given}")
     } else {
-        let given = MALE_GIVEN[h % MALE_GIVEN.len()];
+        let surname = WENYAO_SURNAMES[(h / WENYAO_MALE_GIVEN.len()) % WENYAO_SURNAMES.len()];
+        let given = WENYAO_MALE_GIVEN[h % WENYAO_MALE_GIVEN.len()];
         format!("{surname}{given}")
     }
 }
+
 
 pub fn resolve_npc_person_name(
     entity_id: &str,
@@ -786,43 +936,84 @@ pub fn resolve_npc_person_name(
 ) -> String {
     let mut resolved_gender = gender_hint.map(str::to_string);
     if resolved_gender.is_none() {
-        if let Some(arc) = super::get_store() {
-            let s = arc.read();
-            if let Some(ent) = s.get_entity(entity_id) {
-                if !ent.gender.is_empty() {
-                    resolved_gender = Some(ent.gender.clone());
-                }
-            }
+        if let Some(arc) = super::get_store()
+            && let Some(s) = arc.try_read()
+            && let Some(ent) = s.entities.get(entity_id)
+            && !ent.gender.is_empty()
+        {
+            resolved_gender = Some(ent.gender.clone());
         }
     }
-    let slot = wenyao_household_slot_for(entity_id);
-    let slot_female_clue = slot.attire_line.contains("裙")
-        || slot.attire_line.contains("簪")
-        || slot.attire_line.contains("髮髻")
-        || slot.brief_tag.contains("裙")
-        || slot.work_purpose.contains("女")
-        || slot.work_stay_activity.contains("女")
-        || slot.home_stay_activity.contains("女")
-        || slot.attire_line.contains("娘")
-        || slot.attire_line.contains("小姐")
-        || slot.attire_line.contains("婦");
+    let is_female = npc_effective_is_female(entity_id, resolved_gender.as_deref());
 
-    let is_female = if slot_female_clue {
-        true
-    } else {
-        match resolved_gender.as_deref() {
-            Some("F") | Some("f") | Some("女") | Some("female") => true,
-            Some("M") | Some("m") | Some("男") | Some("male") => false,
-            _ => false,
-        }
-    };
+    const COMPOUND_SURNAMES: &[&str] = &[
+        "歐陽", "司馬", "諸葛", "上官", "司徒", "司空", "皇甫", "慕容",
+        "宇文", "長孫", "聞人", "東方", "獨孤", "南宮", "萬俟", "尉遲",
+    ];
 
     let check_candidate = |cand: &str| -> Option<String> {
         let r = cand.trim();
         if is_role_or_placeholder_label(r) {
             return None;
         }
-        if is_female && (r.contains("安勇") || r.contains("勇") || r.contains("剛") || r.contains("強") || r.contains("豪")) {
+
+        let (surname, given) = if let Some(comp) = COMPOUND_SURNAMES.iter().find(|&&cs| r.starts_with(cs)) {
+            (*comp, &r[comp.len()..])
+        } else {
+            let mut chars = r.chars();
+            if let Some(first_char) = chars.next() {
+                let first_len = first_char.len_utf8();
+                (&r[..first_len], &r[first_len..])
+            } else {
+                ("", "")
+            }
+        };
+
+        if surname.is_empty() || given.is_empty() {
+            return None;
+        }
+
+        let is_npc_prefix = entity_id.starts_with("npc_");
+        if !is_npc_prefix {
+            return Some(r.to_string());
+        }
+
+        let valid_surname = WENYAO_SURNAMES.contains(&surname) || COMPOUND_SURNAMES.contains(&surname);
+        if !valid_surname {
+            return None;
+        }
+        if is_female {
+            if !WENYAO_FEMALE_GIVEN.contains(&given) {
+                return None;
+            }
+        } else if !WENYAO_MALE_GIVEN.contains(&given) {
+            return None;
+        }
+
+        let given_chars: Vec<char> = given.chars().collect();
+        if is_npc_prefix && given_chars.len() != 2 {
+            return None;
+        }
+        if given_chars.len() == 2 && given_chars[0] == given_chars[1] {
+            return None;
+        }
+
+        let has_male_char = given_chars.iter().any(|c| MALE_ONLY_NAME_CHARS.contains(c));
+        let has_female_char = given_chars.iter().any(|c| FEMALE_ONLY_NAME_CHARS.contains(c));
+
+        let has_neutral_male_seed = given_chars.iter().any(|c| matches!(c, '平' | '安' | '寧' | '明'));
+        if has_neutral_male_seed && has_female_char {
+            return None;
+        }
+
+        if has_male_char && has_female_char {
+            return None;
+        }
+        if is_female {
+            if !has_female_char || has_male_char {
+                return None;
+            }
+        } else if has_female_char {
             return None;
         }
         Some(r.to_string())
@@ -839,23 +1030,48 @@ pub fn resolve_npc_person_name(
         return valid;
     }
 
-    if let Some(arc) = super::get_store() {
-        let s = arc.read();
-        if let Some(ent) = s.get_entity(entity_id) {
-            let st_title = ent.display_title.trim();
-            if st_title.contains('|') || st_title.contains('｜') {
-                if let Some(right) = st_title.rsplit(['|', '｜']).next() {
-                    if let Some(valid) = check_candidate(right) {
-                        return valid;
-                    }
-                }
-            } else if let Some(valid) = check_candidate(st_title) {
+    if raw_hint.is_empty()
+        && let Some(arc) = super::get_store()
+        && let Some(s) = arc.try_read()
+        && let Some(ent) = s.entities.get(entity_id)
+    {
+        let st_title = ent.display_title.trim();
+        if st_title.contains('|') || st_title.contains('｜') {
+            if let Some(right) = st_title.rsplit(['|', '｜']).next()
+                && let Some(valid) = check_candidate(right)
+            {
                 return valid;
             }
+        } else if let Some(valid) = check_candidate(st_title) {
+            return valid;
+        }
+    }
+    if !entity_id.starts_with("npc_") && !entity_id.starts_with("wt_") {
+        if let Some(valid) = check_candidate(entity_id) {
+            return valid;
         }
     }
 
     deterministic_wenyao_full_name_with_gender(entity_id, resolved_gender.as_deref())
+}
+
+pub fn clean_wilderness_place_label(name: &str) -> String {
+    let mut trimmed = name.trim();
+    for suffix in ["・道路", "・山道", "・林道", "・石徑", "・步道"] {
+        if let Some(stripped) = trimmed.strip_suffix(suffix) {
+            trimmed = stripped;
+            break;
+        }
+    }
+    if let Some((prefix, sub)) = trimmed.split_once('・') {
+        if sub.is_empty() || sub == "道路" || prefix.ends_with(sub) || (sub == "草原" && prefix.contains("草甸")) {
+            prefix.to_string()
+        } else {
+            format!("{prefix}・{sub}")
+        }
+    } else {
+        trimmed.to_string()
+    }
 }
 
 pub fn resolve_npc_full_label(
@@ -878,6 +1094,7 @@ pub fn resolve_npc_full_label(
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct NpcDestinationTarget {
     pub x: i32,
     pub y: i32,
@@ -886,10 +1103,11 @@ pub struct NpcDestinationTarget {
     pub stay_activity: &'static str,
 }
 
+#[allow(dead_code)]
 pub const WENYAO_TARGETS: &[NpcDestinationTarget] = &[
     NpcDestinationTarget { x: -1, y: 2, name: "三水大食堂", purpose: "用餐休息", stay_activity: "正在木桌旁享用熱湯麵與現磨米漿" },
     NpcDestinationTarget { x: -1, y: 1, name: "三水總商行", purpose: "交割貨單", stay_activity: "正在櫃檯前核對山海貨單與鎂幣帳目" },
-    NpcDestinationTarget { x: 1, y: 3, name: "印行書局", purpose: "採買書冊", stay_activity: "正在翻閱剛印好的竹綿紙書冊與旬報" },
+    NpcDestinationTarget { x: 1, y: 3, name: "印行書局", purpose: "採買書冊", stay_activity: "正在翻閱新印好的竹綿紙書冊與旬報" },
     NpcDestinationTarget { x: 1, y: -1, name: "第一鐵坊", purpose: "修整器物", stay_activity: "正在爐火旁查看鍛鐵器物與工具刃口" },
     NpcDestinationTarget { x: 2, y: 2, name: "溫家藥居", purpose: "抓藥調理", stay_activity: "正在藥櫃前等候秤量草藥" },
     NpcDestinationTarget { x: 1, y: 1, name: "文曜學院", purpose: "旁聽課程", stay_activity: "正在講堂廊下研討數學與會計與專業教材" },
@@ -936,14 +1154,137 @@ pub fn household_slot_index(slot: &WenyaoHouseholdSlot) -> usize {
     0
 }
 
+pub fn normalize_household_home_settlement(home_name: &str) -> &'static str {
+    const OUTER_SETTLEMENTS: &[&str] = &[
+        "風舶角", "風舶嶼", "大圳頭", "半嶺鎮", "南哨", "老堰頭", "北嶺腳", "霜林口",
+        "風櫃尾", "烏石鼻", "牛埔", "紅土崁", "三號坑口", "水尾寮", "下營",
+    ];
+    for &s in OUTER_SETTLEMENTS {
+        if home_name.starts_with(s) {
+            return s;
+        }
+    }
+    "文曜"
+}
+
+pub fn canonical_npc_macro_settlement(entity_id: &str, display_title: &str) -> Option<&'static str> {
+    if entity_id.starts_with("npc_") {
+        return None;
+    }
+    if entity_id == "秦水生"
+        || entity_id == "林山"
+        || display_title.contains("老堰頭")
+        || display_title.contains("翠冠巨木")
+    {
+        return Some("老堰頭");
+    }
+    if entity_id == "許萬川"
+        || entity_id == "許海音"
+        || entity_id == "林正雄"
+        || entity_id == "顧海平"
+        || display_title.contains("風舶角")
+        || display_title.contains("風舶海事")
+        || display_title.contains("大船塢")
+        || display_title.contains("北冕號")
+        || display_title.contains("外澳領航")
+    {
+        return Some("風舶角");
+    }
+    if display_title.contains("風舶嶼") {
+        return Some("風舶嶼");
+    }
+    if entity_id == "周萬生"
+        || entity_id == "田百稼"
+        || entity_id == "田大犁"
+        || display_title.contains("大圳")
+        || display_title.contains("草甸改良農具")
+    {
+        return Some("大圳頭");
+    }
+    if entity_id == "方石" || display_title.contains("三號坑口") {
+        return Some("三號坑口");
+    }
+    if entity_id == "岑守淵"
+        || entity_id == "袁山茶"
+        || entity_id == "高望雲"
+        || entity_id == "石萬鈞"
+        || display_title.contains("半嶺")
+        || display_title.contains("寒水玉切石")
+    {
+        return Some("半嶺鎮");
+    }
+    if entity_id == "羅烈"
+        || entity_id == "雷千鈞"
+        || entity_id == "雷橫山"
+        || entity_id == "葉青囊"
+        || entity_id == "葉青"
+        || display_title.contains("南哨")
+        || display_title.contains("百茫白蘚")
+    {
+        return Some("南哨");
+    }
+    if entity_id == "洪守明" || display_title.contains("風櫃尾") {
+        return Some("風櫃尾");
+    }
+    if entity_id == "鄭烏石" || display_title.contains("烏石鼻") {
+        return Some("烏石鼻");
+    }
+    if entity_id == "馬山行" || display_title.contains("北嶺") {
+        return Some("北嶺腳");
+    }
+    if entity_id == "梁千木" || display_title.contains("霜林口") {
+        return Some("霜林口");
+    }
+    if entity_id == "牧長風"
+        || entity_id == "牧野"
+        || display_title.contains("牛埔")
+        || display_title.contains("長風草甸")
+    {
+        return Some("牛埔");
+    }
+    if entity_id == "方赤土" || display_title.contains("紅土崁") {
+        return Some("紅土崁");
+    }
+    if entity_id == "阮水生" || display_title.contains("水尾寮") {
+        return Some("水尾寮");
+    }
+    if display_title.contains("下營") {
+        return Some("下營");
+    }
+    Some("文曜")
+}
+
 pub fn wenyao_household_slot_for(entity_id: &str) -> &'static WenyaoHouseholdSlot {
-    if let Some(&idx) = HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(entity_id) {
-        return household_slot_at(idx);
+    if entity_id == "秦水生" {
+        if let Some(slot) = super::outer_households::OUTER_HOUSEHOLD_SLOTS
+            .iter()
+            .find(|s| s.home_name == "老堰頭・秦氏水輪石磨傳承老宅" && s.brief_tag == "水輪石磨匠")
+        {
+            return slot;
+        }
     }
     let mut h: u64 = 0xcbf2_9ce4_8422_2325;
     for b in entity_id.as_bytes() {
         h ^= u64::from(*b);
         h = h.wrapping_mul(0x0100_0000_01b3);
+    }
+    if !entity_id.starts_with("npc_") {
+        let target_settlement = canonical_npc_macro_settlement(entity_id, "").unwrap_or("文曜");
+        if target_settlement == "文曜" {
+            return &WENYAO_HOUSEHOLD_SLOTS[(h >> 8) as usize % WENYAO_HOUSEHOLD_SLOTS.len()];
+        } else {
+            let matching: Vec<&'static WenyaoHouseholdSlot> =
+                super::outer_households::OUTER_HOUSEHOLD_SLOTS
+                    .iter()
+                    .filter(|s| s.home_name.starts_with(target_settlement))
+                    .collect();
+            if !matching.is_empty() {
+                return matching[(h >> 8) as usize % matching.len()];
+            }
+        }
+    }
+    if let Some(&idx) = HOUSEHOLD_MEMBER_ASSIGNMENTS.read().get(entity_id) {
+        return household_slot_at(idx);
     }
     household_slot_at((h >> 8) as usize)
 }
@@ -1036,9 +1377,9 @@ pub fn resolve_wenyao_npc_schedule(
                 ),
                 1 => (
                     (0, 0),
-                    "文曜・三水口中心樞紐石橋".to_string(),
+                    "文曜・三水匯流大石橋".to_string(),
                     "晚間散步".to_string(),
-                    "正在中心樞紐石橋憑欄吹著晚風，遠眺三水川兩岸燈火".to_string(),
+                    "正在三水匯流大石橋憑欄吹著晚風，遠眺三水川兩岸燈火".to_string(),
                     10,
                 ),
                 _ => (
@@ -1053,9 +1394,9 @@ pub fn resolve_wenyao_npc_schedule(
         if is_wenyao_slot && slot_idx == 0 {
             return (
                 (0, 0),
-                "文曜・三水口中心樞紐石橋".to_string(),
+                "文曜・三水匯流大石橋".to_string(),
                 "夜間巡行".to_string(),
-                "正提著防風提燈在中心樞紐石橋巡看三水川水勢與夜間街道".to_string(),
+                "正提著防風提燈在三水匯流大石橋巡看三水川水勢與夜間街道".to_string(),
                 12,
             );
         }
@@ -1086,9 +1427,9 @@ pub fn resolve_wenyao_npc_schedule(
         return match (h.wrapping_add(hour as u64)) % 18 {
             0 => (
                 (0, 0),
-                "中心樞紐石橋".to_string(),
+                "三水匯流大石橋".to_string(),
                 "橋頭交會".to_string(),
-                "正在中心樞紐石橋燈火下與往來行商交談並眺望三水川水色".to_string(),
+                "正在三水匯流大石橋燈火下與往來行商交談並眺望三水川水色".to_string(),
                 18 + (((h.wrapping_add(hour as u64)).wrapping_add(0)) % 11) as u8,
             ),
             1 => (
@@ -1137,7 +1478,7 @@ pub fn resolve_wenyao_npc_schedule(
                 resolve_bldg_coord_or_fallback("三水總商行總部", (-1, 1)),
                 "三水總商行總部".to_string(),
                 "晚盤結算".to_string(),
-                "正在三水總商行燈下核對當日跨鎮通兌銀票與總帳".to_string(),
+                "正在三水總商行燈下核對當日跨鎮通兌匯票與總帳".to_string(),
                 18 + (((h.wrapping_add(hour as u64)).wrapping_add(7)) % 11) as u8,
             ),
             8 => (
@@ -1190,10 +1531,10 @@ pub fn resolve_wenyao_npc_schedule(
                 18 + (((h.wrapping_add(hour as u64)).wrapping_add(14)) % 11) as u8,
             ),
             15 => (
-                resolve_bldg_coord_or_fallback("講堂外坊・翰墨清茶書肆", (13, 13)),
-                "講堂外坊・翰墨清茶書肆".to_string(),
-                "書肆清談".to_string(),
-                "正在翰墨清茶書肆雅座間翻閱新印善本並與學士低聲論道".to_string(),
+                resolve_bldg_coord_or_fallback("講堂外坊・翰墨清茶書舍", (13, 13)),
+                "講堂外坊・翰墨清茶書舍".to_string(),
+                "書舍清談".to_string(),
+                "正在翰墨清茶書舍雅座間翻閱新印善本並與學士低聲論道".to_string(),
                 18 + (((h.wrapping_add(hour as u64)).wrapping_add(15)) % 11) as u8,
             ),
             16 => (
@@ -1292,9 +1633,9 @@ pub fn resolve_wenyao_npc_schedule(
             ),
             4 => (
                 (2, 1),
-                "講堂外坊・翰墨清茶書肆".to_string(),
-                "書肆茶點".to_string(),
-                "正在清茶書肆廊下就著熱茶享用午間茶點".to_string(),
+                "講堂外坊・翰墨清茶書舍".to_string(),
+                "書舍茶點".to_string(),
+                "正在清茶書舍廊下就著熱茶享用午間茶點".to_string(),
                 20 + ((h % 8) as u8),
             ),
             5 => (
@@ -1315,7 +1656,7 @@ pub fn resolve_wenyao_npc_schedule(
                 (0, 2),
                 "文曜・鐘樓前街".to_string(),
                 "鐘樓午歇".to_string(),
-                "正在鐘樓前街樹蔭石凳上享用剛買的酥皮胡椒餅與熱湯".to_string(),
+                "正在鐘樓前街樹蔭石凳上享用熱騰騰的酥皮胡椒餅與熱湯".to_string(),
                 20 + ((h % 8) as u8),
             ),
             8 => (
@@ -1418,208 +1759,243 @@ pub fn resolve_wenyao_npc_schedule(
 }
 
 pub fn npc_sensory_appearance_line(entity_id: &str, display_title: &str) -> String {
-    let title = display_title.trim();
-    if title.contains("陸知微") || entity_id == "wt_npc_lu_zhiwei" {
+    let combined = format!("{entity_id} {display_title}");
+    if combined.contains("藏書閣") || combined.contains("館長") {
         return "身著深青色修身長外套，下擺帶著簡約水紋暗飾，鬚髮微霜，眼神清澈而深邃".to_string();
     }
-    if title.contains("陸承禮") || entity_id == "wt_npc_lu_chengli" {
-        return "穿著沉穩的墨色立領外套，束著精緻皮帶，氣度雍容，舉止端方".to_string();
+    if combined.contains("房地契") || combined.contains("戶政") || combined.contains("審理戶籍") || combined.contains("lu_chengli") {
+        return "穿著沉穩的墨色立領外套，束著精緻皮帶，氣度雍容，舉止端雅".to_string();
     }
-    if title.contains("陸長貴") || entity_id == "wt_npc_lu_changgui" {
-        return "身著端整莊重的深青色公務外套，隨身佩帶印章盒與公文夾，神色嚴謹".to_string();
-    }
-    if title.contains("陸秉衡") || entity_id == "wt_npc_lu_bingheng" {
+    if combined.contains("總商行") {
         return "身穿寶藍色正裝外套，腰間掛著隨身懷錶與核算夾，指尖圓潤，氣度沉著圓融".to_string();
     }
-    if title.contains("岑守岳") || entity_id == "wt_npc_cen_shouyue" {
+    if combined.contains("第一鐵坊") || combined.contains("鍛造總匠") {
         return "身形如鐵塔般魁梧，赤臂外罩厚重牛皮防護圍兜，臂膀青筋虯結，滿身精金炭火氣息".to_string();
     }
-    if title.contains("岑拓") || entity_id == "wt_npc_cen_tuo" {
-        return "身著深灰耐磨工作衫，右臂套著厚皮防燙手甲，目光如炬，專注沉靜".to_string();
+    if combined.contains("教務長") || combined.contains("診所") {
+        return "身著清爽月白色挺括短衫與長褲，袖口收緊，指間隱含艾草香氣，眉宇溫和謙潤".to_string();
     }
-    if title.contains("岑雲野") || entity_id == "wt_npc_cen_yunye" {
-        return "身穿黑色防風機能服，外罩暗紅半身防護背心，身姿挺拔如松，腰佩練習木刀".to_string();
-    }
-    if title.contains("溫懷瑾") || entity_id == "wt_npc_wen_huaijin" {
-        return "身著清爽月白色挺括襯衫與長褲，袖口收緊，指間隱含艾草香氣，眉宇溫和謙潤".to_string();
-    }
-    if title.contains("溫晴") || title.contains("溫采薇") || entity_id == "wt_npc_wen_qing" || entity_id == "wt_npc_wen_caiwei" {
-        return "身著俐落的杏黃色俐落工作裙，腰間繫著分格布囊藥包與百草溫灸盒，神情溫柔專注".to_string();
-    }
-    if title.contains("柯成器") || entity_id == "wt_npc_ke_chengqi" {
+    if combined.contains("巧木") || combined.contains("木作") {
         return "滿頭短鬚微帶木屑，穿著耐磨牛筋布背心，腰間皮帶別滿各色雕花鑿與角尺".to_string();
     }
-    if title.contains("柯有才") || entity_id == "wt_npc_ke_youcai" {
-        return "穿著灰布工作襯衫，肩扛刨平木料，滿面憨厚笑容".to_string();
-    }
-    if title.contains("蘇錦心") || entity_id == "wt_npc_su_jinxin" {
+    if combined.contains("雲錦") || combined.contains("織造") {
         return "身著雅緻雪青色剪裁長裙，長髮俐落束起並插著銀頂量尺針，手指纖細白皙，氣質靈動婉約".to_string();
     }
-    if title.contains("陳萬福") || entity_id == "wt_npc_chen_wanfu" {
-        return "身形微豐健朗，穿著乾淨的白棉布大圍裙，笑口常開，身上帶著鮮香湯氣".to_string();
+    if combined.contains("大食堂") || combined.contains("主廚") || combined.contains("熬煮濃湯") || combined.contains("chen_wanfu") {
+        return "身穿潔白雙排扣主廚服與厚布圍裙，笑口常開，身上帶著鮮香湯氣".to_string();
     }
-    if title.contains("白泉生") || entity_id == "wt_npc_bai_quansheng" {
-        return "穿著寬鬆棉麻浴場休閒服，腳踏防滑木底涼拖，手持竹柄水勺，容光煥發".to_string();
+    if combined.contains("溫水浴場") || combined.contains("浴場") {
+        return "穿著寬鬆棉麻浴場休閒服，腳踏防滑木底便履，手持竹柄水勺，容光煥發".to_string();
     }
-    if title.contains("趙觀星") || entity_id == "wt_npc_zhao_guanxing" {
+    if combined.contains("觀星台") || combined.contains("司天") {
         return "身穿繪有星圖暗紋的深藍觀測大衣，手持黃銅天體測角儀，眼神悠遠".to_string();
     }
-    if title.contains("林時中") || entity_id == "wt_npc_lin_shizhong" {
-        return "穿著灰布工作襯衫，口袋插著精細小起子與發條鑰匙，神情專注".to_string();
+    if combined.contains("鐘樓") || combined.contains("司鐘") {
+        return "穿著灰布工裝衫，口袋插著精細小旋鑿與發條鑰匙，神情專注".to_string();
     }
-    if title.contains("韓鐵山") || entity_id == "wt_npc_han_tieshan" {
+    if combined.contains("聯運") || combined.contains("車馬") {
         return "面龐黝黑硬朗，穿著厚皮革背心與長靴，手握皮鞭，嗓音渾厚有力".to_string();
     }
-    if title.contains("陸景軒") || entity_id == "wt_npc_lu_jingxuan" {
-        return "身著潔淨淺青色襯衫，面容溫和清瘦，懷抱啟蒙教材與一束鋼尖沾水筆".to_string();
+    if combined.contains("蒙學") || combined.contains("講舍") {
+        return "身著潔淨淺青短衫，面容溫和清瘦，懷抱啟蒙教材與一束鋼尖蘸水硬筆".to_string();
     }
-    if title.contains("秦明誠") || entity_id == "wt_npc_qin_mingcheng" {
-        return "身穿整潔洗白的藏青色夾克，右手拿著計數板，手指不時點算".to_string();
+    if combined.contains("商算") || combined.contains("會計") {
+        return "身穿整潔洗白的藏青色短襖，右手拿著計數板，手指不時點算".to_string();
     }
-    if title.contains("周一刀") || entity_id == "wt_npc_zhou_yidao" {
+    if combined.contains("書局") || combined.contains("印行") {
+        return "身穿洗得乾淨挺括的淺墨灰工作長衫，神態溫和，指尖留有長年翻閱書頁與活字印墨痕跡".to_string();
+    }
+    if combined.contains("剪剃") || combined.contains("理容") {
         return "身著乾淨白色短袖工作衫，胸前革帶插滿各式修容細剪與剃刀，動作俐落如風".to_string();
     }
-    if title.contains("許阿甘") || entity_id == "wt_npc_xu_agan" {
+    if combined.contains("習武") || combined.contains("武館") {
+        return "身穿黑色防風機能服，外罩暗紅半身防護背心，身姿挺拔如松，腰佩練習木刀".to_string();
+    }
+    if combined.contains("柑仔店") || combined.contains("雜貨") {
         return "穿著洗得泛黃的紅花布圍裙，兜裡裝滿五彩糖球，神情親切可親".to_string();
     }
-    if title.contains("沈清河") || entity_id == "wt_npc_shen_qinghe" {
+    if combined.contains("東橋旅社") || combined.contains("茶屋") {
         return "身著淺茶色休閒外套，手握隨身懷錶，笑容溫厚周到，語調從容不迫".to_string();
     }
-    if title.contains("鄭火旺") || entity_id == "wt_vendor_roast_beef" {
+    if combined.contains("修傘") || combined.contains("補靴") {
+        return "鼻樑架著黃銅圓框助視鏡，圍著滿是蠟痕與針孔的厚牛皮圍兜，指節粗大粗糙，身邊擺滿硬木鞋楦".to_string();
+    }
+    if combined.contains("公議堂") {
+        return "身著端整莊重的深青色當值夾袍，隨身佩帶印章盒與公文夾，神色嚴謹".to_string();
+    }
+    if combined.contains("roast_beef") || combined.contains("炭烤") || combined.contains("燒肉") {
         return "身穿耐磨粗布短衫，腰繫沾滿炭灰的厚帆布防油圍裙，手持長柄鐵夾，滿身炭火烤肉香".to_string();
     }
-    if title.contains("林罔市") || entity_id == "wt_vendor_noodle_soup" {
+    if combined.contains("noodle_soup") || combined.contains("切仔麵") {
         return "身著花布短衫外罩白棉布圍裙，挽起衣袖，右手握著長柄竹編笊籬，周身蒸氣繚繞".to_string();
     }
-    if title.contains("張阿發") || entity_id == "wt_vendor_pepper_bun" {
-        return "頭裹吸汗白布巾，雙臂戴著厚實的防燙棉布手套，手持長柄扁鐵鏟，身上散發濃郁蔥香與胡椒香".to_string();
+    if combined.contains("general_goods") || combined.contains("雜貨") || combined.contains("柑仔店") {
+        return "頭戴整潔便帽，腰繫多袋帆布隨身兜，笑容熱情，手邊擺滿各式日常雜貨小件".to_string();
     }
-    if title.contains("蘇秋月") || entity_id == "wt_vendor_herbal_tea" {
-        return "身著青藍色素雅短衫，手腕套著光潔銀鐲，手中輕搖小銅盞，攤前散發著冰爽甘美的仙草與黑糖清香".to_string();
+    if combined.contains("herb_clinic") || combined.contains("百草") {
+        return "身著俐落的杏黃色工作裙，腰間繫著分格布囊藥包與百草溫灸盒，神情溫柔專注".to_string();
     }
-    if title.contains("陳順興") || entity_id == "wt_vendor_tofu_pudding" {
-        return "面容慈祥，穿著乾淨的藍布對襟衫，手握一把扁平銅杓，神情篤定從容".to_string();
-    }
-    if title.contains("吳秀琴") || entity_id == "wt_vendor_rice_roll" {
-        return "圍著藍條紋廚房圍裙，戴著乾淨防油套袖，雙手麻利翻動竹簾與白棉布，手腳極其俐落".to_string();
-    }
-    if title.contains("周文貴") || entity_id == "wt_vendor_soy_milk" {
-        return "身著寬鬆白布短褂，肩上搭著吸汗白毛巾，手持長柄木勺在大銅壺與瓷碗間傾倒濃香米漿".to_string();
-    }
-    if title.contains("李春生") || entity_id == "wt_vendor_morning_produce" {
+    if combined.contains("fresh_produce") || combined.contains("果菜") {
         return "頭戴寬簷遮陽竹笠，捲起深色棉布褲管，身前放著盛滿清水的竹筒噴水壺，滿面泥土清香與憨厚笑容".to_string();
     }
-    if title.contains("許海生") || entity_id == "wt_vendor_morning_fish" {
+    if combined.contains("hot_congee") || combined.contains("熱粥") {
+        return "面容慈祥，穿著乾淨的藍布對襟衫，手握一把扁平長柄木杓，神情篤定從容，身前陶鍋熱氣升騰".to_string();
+    }
+    if combined.contains("dried_seafood") || combined.contains("乾貨") {
         return "穿著防水牛筋皮背心與高筒膠靴，腰間繫著剖魚小皮鞘，身上帶著新鮮河水與海味鹹香".to_string();
     }
-    if title.contains("馬補靴") || entity_id == "wt_npc_ma_buxue" {
-        return "鼻樑架著黃銅圓框老花鏡，圍著滿是蠟痕與針孔的厚牛皮圍兜，指節粗大粗糙，身邊擺滿硬木鞋楦".to_string();
+    if combined.contains("iron_repair") || combined.contains("鐵器") {
+        return "身著深灰耐磨工作衫，右臂套著厚皮防燙手甲，目光如炬，專注沉靜".to_string();
+    }
+    if combined.contains("wood_craft") || combined.contains("木器") {
+        return "穿著灰布工裝衫，肩扛刨平木料，腰間插著木工鋸與角尺，滿面憨厚笑容".to_string();
     }
     let slot = wenyao_household_slot_for(entity_id);
     slot.attire_line.to_string()
 }
 
 pub fn npc_brief_appearance_tag(entity_id: &str, display_title: &str) -> String {
-    let title = display_title.trim();
-    if title.contains("陸知微") || entity_id == "wt_npc_lu_zhiwei" {
+    let combined = format!("{entity_id} {display_title}");
+    if combined.contains("藏書閣") || combined.contains("館長") {
         return "身著深青長外套".to_string();
     }
-    if title.contains("陸承禮") || entity_id == "wt_npc_lu_chengli" {
+    if combined.contains("房地契") || combined.contains("戶政") {
         return "身穿墨色立領外套".to_string();
     }
-    if title.contains("陸長貴") || entity_id == "wt_npc_lu_changgui" {
-        return "佩帶印章公文夾".to_string();
-    }
-    if title.contains("陸秉衡") || entity_id == "wt_npc_lu_bingheng" {
+    if combined.contains("總商行") {
         return "身穿寶藍正裝外套".to_string();
     }
-    if title.contains("岑守岳") || entity_id == "wt_npc_cen_shouyue" {
+    if combined.contains("第一鐵坊") || combined.contains("鍛造總匠") {
         return "繫著厚重牛皮圍兜".to_string();
     }
-    if title.contains("岑拓") || entity_id == "wt_npc_cen_tuo" {
-        return "戴著防燙手甲".to_string();
+    if combined.contains("教務長") || combined.contains("診所") {
+        return "身著挺括白短衫".to_string();
     }
-    if title.contains("岑雲野") || entity_id == "wt_npc_cen_yunye" {
-        return "身穿黑色機能服".to_string();
-    }
-    if title.contains("溫懷瑾") || entity_id == "wt_npc_wen_huaijin" {
-        return "身著挺括白襯衫".to_string();
-    }
-    if title.contains("溫晴") || title.contains("溫采薇") || entity_id == "wt_npc_wen_qing" || entity_id == "wt_npc_wen_caiwei" {
-        return "身穿杏黃工作裙".to_string();
-    }
-    if title.contains("柯成器") || entity_id == "wt_npc_ke_chengqi" {
+    if combined.contains("巧木") || combined.contains("木作") {
         return "腰別鑿尺工具帶".to_string();
     }
-    if title.contains("柯有才") || entity_id == "wt_npc_ke_youcai" {
-        return "肩扛刨平木料".to_string();
-    }
-    if title.contains("蘇錦心") || entity_id == "wt_npc_su_jinxin" {
+    if combined.contains("雲錦") || combined.contains("織造") {
         return "身穿雪青剪裁長裙".to_string();
     }
-    if title.contains("陳萬福") || entity_id == "wt_npc_chen_wanfu" {
+    if combined.contains("大食堂") || combined.contains("主廚") {
         return "圍著白棉布大圍裙".to_string();
     }
-    if title.contains("白泉生") || entity_id == "wt_npc_bai_quansheng" {
+    if combined.contains("溫水浴場") || combined.contains("浴場") {
         return "穿著浴場休閒服".to_string();
     }
-    if title.contains("趙觀星") || entity_id == "wt_npc_zhao_guanxing" {
+    if combined.contains("觀星台") || combined.contains("司天") {
         return "身穿深藍觀測大衣".to_string();
     }
-    if title.contains("林時中") || entity_id == "wt_npc_lin_shizhong" {
+    if combined.contains("鐘樓") || combined.contains("司鐘") {
         return "口袋插著發條鑰匙".to_string();
     }
-    if title.contains("韓鐵山") || entity_id == "wt_npc_han_tieshan" {
+    if combined.contains("聯運") || combined.contains("車馬") {
         return "穿著厚皮革背心".to_string();
     }
-    if title.contains("陸景軒") || entity_id == "wt_npc_lu_jingxuan" {
-        return "身著淺青襯衫".to_string();
+    if combined.contains("蒙學") || combined.contains("講舍") {
+        return "身著淺青短衫".to_string();
     }
-    if title.contains("秦明誠") || entity_id == "wt_npc_qin_mingcheng" {
+    if combined.contains("商算") || combined.contains("會計") {
         return "手持計數板".to_string();
     }
-    if title.contains("周一刀") || entity_id == "wt_npc_zhou_yidao" {
+    if combined.contains("書局") || combined.contains("印行") {
+        return "身穿挺括淺墨灰衫".to_string();
+    }
+    if combined.contains("剪剃") || combined.contains("理容") {
         return "佩掛各式修容細剪".to_string();
     }
-    if title.contains("許阿甘") || entity_id == "wt_npc_xu_agan" {
+    if combined.contains("習武") || combined.contains("武館") {
+        return "身穿黑色機能服".to_string();
+    }
+    if combined.contains("柑仔店") || combined.contains("雜貨") {
         return "圍著紅花布圍裙".to_string();
     }
-    if title.contains("沈清河") || entity_id == "wt_npc_shen_qinghe" {
+    if combined.contains("東橋旅社") || combined.contains("茶屋") {
         return "手握隨身懷錶".to_string();
     }
-    if title.contains("鄭火旺") || entity_id == "wt_vendor_roast_beef" {
-        return "圍著防油帆布圍裙手持長夾".to_string();
+    if combined.contains("修傘") || combined.contains("補靴") {
+        return "鼻架圓框水晶明目鏡".to_string();
     }
-    if title.contains("林罔市") || entity_id == "wt_vendor_noodle_soup" {
-        return "手持竹編笊籬蒸氣繚繞".to_string();
+    if combined.contains("公議堂") {
+        return "佩帶印章公文夾".to_string();
     }
-    if title.contains("張阿發") || entity_id == "wt_vendor_pepper_bun" {
-        return "戴著防燙棉手套持扁鐵鏟".to_string();
+    if combined.contains("roast_beef") || combined.contains("炭烤") || combined.contains("燒肉") {
+        return "圍著防油帆布圍裙".to_string();
     }
-    if title.contains("蘇秋月") || entity_id == "wt_vendor_herbal_tea" {
-        return "手搖清脆銅盞盛裝仙草凍".to_string();
+    if combined.contains("noodle_soup") || combined.contains("切仔麵") {
+        return "繫著素色布巾圍裙".to_string();
     }
-    if title.contains("陳順興") || entity_id == "wt_vendor_tofu_pudding" {
-        return "手握扁平銅杓片熱豆花".to_string();
+    if combined.contains("general_goods") || combined.contains("雜貨") || combined.contains("柑仔店") {
+        return "腰繫多袋隨身兜".to_string();
     }
-    if title.contains("吳秀琴") || entity_id == "wt_vendor_rice_roll" {
-        return "圍藍條紋圍裙麻利包飯糰".to_string();
+    if combined.contains("herb_clinic") || combined.contains("百草") {
+        return "身穿杏黃工作裙".to_string();
     }
-    if title.contains("周文貴") || entity_id == "wt_vendor_soy_milk" {
-        return "肩搭白毛巾手持木勺舀米漿".to_string();
+    if combined.contains("fresh_produce") || combined.contains("果菜") {
+        return "頭戴寬沿遮陽竹笠".to_string();
     }
-    if title.contains("李春生") || entity_id == "wt_vendor_morning_produce" {
-        return "戴遮陽竹笠持噴水壺理鮮菜".to_string();
+    if combined.contains("hot_congee") || combined.contains("熱粥") {
+        return "手握長柄木杓".to_string();
     }
-    if title.contains("許海生") || entity_id == "wt_vendor_morning_fish" {
-        return "穿高筒膠靴換水保鮮活魚".to_string();
+    if combined.contains("dried_seafood") || combined.contains("乾貨") {
+        return "身穿防潮高筒膠靴".to_string();
     }
-    if title.contains("馬補靴") || entity_id == "wt_npc_ma_buxue" {
-        return "戴圓框老花鏡圍牛皮圍兜".to_string();
+    if combined.contains("iron_repair") || combined.contains("鐵器") {
+        return "戴著防燙手甲".to_string();
+    }
+    if combined.contains("wood_craft") || combined.contains("木器") {
+        return "肩扛刨平木料".to_string();
     }
 
     let slot = wenyao_household_slot_for(entity_id);
-    slot.brief_tag.to_string()
+    let role_nouns = [
+        "手", "師", "匠", "夫", "婦", "頭", "客", "商", "事", "官", "丁", "販", "生", "徒", "民", "戶", "眷", "姆", "工", "力",
+    ];
+    let raw_tag = if slot.brief_tag.is_empty()
+        || slot.brief_tag.contains('・')
+        || role_nouns.iter().any(|&n| slot.brief_tag.ends_with(n))
+    {
+        slot.attire_line.split('，').next().unwrap_or("身著常服").trim().to_string()
+    } else {
+        slot.brief_tag.trim().to_string()
+    };
+    let frag = raw_tag.trim();
+    if frag.is_empty() {
+        return String::new();
+    }
+    if frag.starts_with("腕纏")
+        || frag.starts_with("手執")
+        || frag.starts_with("雙手")
+        || frag.starts_with("袖口")
+        || frag.starts_with("肩披")
+        || frag.starts_with("背負")
+        || frag.starts_with("足蹬")
+        || frag.starts_with("腳踏")
+        || frag.starts_with("神色")
+        || frag.starts_with("氣息")
+        || frag.starts_with("目光")
+    {
+        return frag.to_string();
+    }
+    let has_verb_or_part = [
+        "身著", "身穿", "穿著", "身帶", "身染", "身泛", "身飄", "身上", "著", "戴", "頭", "腰", "肩",
+        "手", "腕", "圍", "繫", "佩", "口袋", "鼻", "背", "挽", "拎", "披", "踏", "腳", "足", "袖",
+        "領", "襟", "額", "髮", "鬢", "面", "懷", "胸", "雙", "合社", "入山", "古道", "別著", "前兜",
+        "外罩", "夾著", "套著", "套防", "懸", "抱著", "拇指", "指", "挑著", "掛著", "插", "攜",
+        "散發", "斜", "沾", "滿身", "縈繞", "耳", "衣", "負", "頸", "髻",
+    ]
+    .iter()
+    .any(|p| frag.starts_with(p));
+    if has_verb_or_part {
+        return frag.to_string();
+    }
+    if frag.starts_with("穿") {
+        return format!("身{}", frag);
+    }
+    if frag.starts_with("帶") {
+        return format!("身上{}", frag);
+    }
+    format!("身著{frag}")
 }
 
 pub fn normalize_archaic_clothing(s: &str) -> String {
@@ -1627,7 +2003,7 @@ pub fn normalize_archaic_clothing(s: &str) -> String {
         return String::new();
     }
     let mut res = s.to_string();
-    res = res.replace("童生布衫", "學生制服襯衫");
+    res = res.replace("童生布衫", "學子青衫");
     res = res.replace("十三檔烏木竹骨算盤", "烏木便攜計數板");
     res = res.replace("銀票", "通兌匯票");
     res = res.replace("粗布短褂", "棉麻短衫");
@@ -1638,28 +2014,28 @@ pub fn normalize_archaic_clothing(s: &str) -> String {
     res = res.replace("粗布短褐", "耐磨工作衫");
     res = res.replace("布裳", "日常上衣");
     res = res.replace("短褐", "耐磨工作衫");
-    res = res.replace("吏目直裰", "深青色公務外套");
-    res = res.replace("直裰", "公務外套");
+    res = res.replace("吏目直裰", "深青色當值夾袍");
+    res = res.replace("直裰", "當值夾袍");
     res = res.replace("深藍道袍", "深藍觀測大衣");
     res = res.replace("道袍", "觀測大衣");
     res = res.replace("交領羅裙", "剪裁長裙");
     res = res.replace("羅裙", "剪裁長裙");
     res = res.replace("窄袖布裙", "俐落工作裙");
     res = res.replace("短坎肩", "皮革背心");
-    res = res.replace("素青直身衣", "淺青色襯衫");
-    res = res.replace("藏青夾袍", "藏青色夾克");
+    res = res.replace("素青直身衣", "淺青色短衫");
+    res = res.replace("藏青夾袍", "藏青色短襖");
     res = res.replace("廣袖儒袍", "修身長外套");
     res = res.replace("細絹長袍", "休閒外套");
-    res = res.replace("月白長袍", "挺括襯衫");
+    res = res.replace("月白長袍", "挺括短衫");
     res = res.replace("墨色長衫", "墨色立領外套");
     res = res.replace("寶藍錦袍", "寶藍色正裝外套");
-    res = res.replace("桐木屐", "防滑木底涼拖");
+    res = res.replace("桐木屐", "防滑木底便履");
     res = res.replace("烏木算盤", "便攜計數板");
     res = res.replace("金絲算盤", "隨身懷錶與核算夾");
     res = res.replace("算盤", "計數板");
     res = res.replace("竹骨摺扇", "隨身懷錶");
     res = res.replace("摺扇", "隨身懷錶");
-    res = res.replace("硃筆", "鋼尖沾水筆");
+    res = res.replace("硃筆", "鋼尖蘸水硬筆");
     res
 }
 
@@ -1673,24 +2049,24 @@ pub fn normalize_archaic_title(title: &str) -> String {
         ("印行書局刻字匠", "西門車隊貨運員"),
         ("百工鐵坊鍛徒", "第一鍛造工坊技師"),
         ("文曜算學學子", "文曜學院學生"),
-        ("文曜蒙學堂助教", "文曜國小助教"),
-        ("文曜小學堂助教", "文曜國小助教"),
-        ("溫氏藥居採藥人", "溫氏診所護理員"),
-        ("三水商行押運夥計", "三水商行外務員"),
+        ("文曜蒙學堂助教", "文曜蒙學堂助教"),
+        ("文曜小學堂助教", "文曜蒙學堂助教"),
+        ("溫氏藥居採藥人", "溫氏藥居採藥人"),
+        ("三水商行押運夥計", "三水商行押運夥計"),
         ("東橋茶寮茶客", "東橋茶屋常客"),
         ("海味乾貨行商", "海產乾貨商"),
-        ("公議堂抄錄書生", "公議堂紀錄員"),
+        ("公議堂抄錄書生", "公議堂抄錄書生"),
         ("車馬行趕車夫", "分家巷木工技師"),
-        ("藏書閣校書生", "藏書閣編輯助理"),
+        ("藏書閣校書生", "藏書閣校書生"),
         ("西門貨棧搬運工", "百工街鐵工"),
         ("北門巡街衛士", "北門巡守員"),
         ("南門紡織女工", "三水食堂廚務員"),
-        ("三水渡口船夫", "講堂街研究員"),
+        ("三水渡口船夫", "講堂街治學士"),
         ("竹編器物手藝人", "織造坊裁縫師"),
         ("石橋挑擔貨郎", "石橋攤商"),
         ("觀星台測候學徒", "南街藥材商"),
         ("鐘樓守時雜役", "鐘樓報時員"),
-        ("泉香浴道夥計", "泉香浴場服務員"),
+        ("泉香浴道夥計", "泉香浴場侍者"),
         ("青石巷木工師傅", "西門修配工"),
         ("算學館記帳員", "三水川船務員"),
         ("遠道行旅散客", "外地旅客"),
@@ -1701,36 +2077,36 @@ pub fn normalize_archaic_title(title: &str) -> String {
         }
     }
     const FRAGMENTS: &[(&str, &str)] = &[
-        ("公議堂保甲司", "公議堂治安巡防課"),
-        ("民務通事", "民事調解員"),
-        ("小學堂教師", "國小老師"),
-        ("蒙學教諭", "國小老師"),
-        ("教書先生", "國小老師"),
-        ("抄錄書生", "紀錄員"),
-        ("校書生", "編輯助理"),
+        ("公議堂保甲司", "公議堂治安巡防處"),
+        ("民務通事", "民務通事"),
+        ("小學堂教師", "蒙學先生"),
+        ("蒙學教諭", "蒙學先生"),
+        ("教書先生", "蒙學先生"),
+        ("抄錄書生", "抄錄書生"),
+        ("校書生", "校書生"),
         ("挑擔貨郎", "攤商"),
         ("茶寮茶客", "茶屋常客"),
         ("講堂街抱卷學子", "講堂街抱書學生"),
-        ("文曜曆算學子", "文曜曆算系學生"),
+        ("文曜曆算學子", "文曜曆算生"),
         ("算學學子", "學院學生"),
         ("學子", "學生"),
-        ("文曜小學堂", "文曜國小"),
-        ("文曜蒙學堂", "文曜國小"),
-        ("蒙學堂助教", "國小助教"),
-        ("小學堂助教", "國小助教"),
-        ("小學堂", "國小"),
-        ("蒙學堂", "國小"),
-        ("跑堂夥計", "外場服務員"),
-        ("跑堂", "外場服務員"),
+        ("文曜小學堂", "文曜蒙學堂"),
+        ("文曜蒙學堂", "文曜蒙學堂"),
+        ("蒙學堂助教", "蒙學助教"),
+        ("小學堂助教", "蒙學助教"),
+        ("小學堂", "蒙學堂"),
+        ("蒙學堂", "蒙學堂"),
+        ("跑堂夥計", "外場侍者"),
+        ("跑堂", "外場侍者"),
         ("巡街衛士", "巡守員"),
         ("守時雜役", "報時員"),
         ("行旅散客", "外地旅客"),
         ("茶博士", "茶屋侍者"),
-        ("鏢師", "隨隊安保員"),
+        ("鏢師", "隨隊護衛"),
         ("郎中", "駐店醫師"),
         ("腳夫", "搬運員"),
         ("貨郎", "攤商"),
-        ("掌櫃", "店長"),
+        ("\u{638c}櫃", "掌事"),
         ("夥計", "店員"),
     ];
     for &(old_f, new_f) in FRAGMENTS {
@@ -2022,6 +2398,7 @@ pub fn find_bfs_next_step(
     best_frontier_step.or(best_fallback_step)
 }
 
+#[allow(dead_code)]
 pub fn zone_bounds(zone: &str, h: u64) -> (i32, i32, i32, i32) {
     match zone {
         "wt-c-wenyao" => (0, 0, 3, 3),
@@ -2093,7 +2470,7 @@ pub fn is_road_or_open_cell(cell: &crate::grid::GridCell) -> bool {
 
     let leaf = cell.name.rsplit('・').next().unwrap_or(&cell.name);
     const BUILDING_LEAF_KEYWORDS: &[&str] = &[
-        "宿舍", "書齋", "小齋", "教室", "書局", "印行館", "剪剃鋪", "事務所", "工坊", "旅社",
+        "宿舍", "書齋", "小齋", "講舍", "書局", "印行館", "剪剃鋪", "事務所", "工坊", "旅社",
         "茶屋", "傢俱坊", "服飾坊", "診所", "藥房", "試招院", "柑仔店", "公議堂", "總站", "貨運行",
         "宅", "居", "舍", "院", "閣", "堂", "樓", "館", "所", "寮",
     ];
@@ -2323,14 +2700,12 @@ impl Store {
             let mut ids = Vec::new();
             let mut seen = std::collections::HashSet::new();
 
+            let live_states = LIVE_NPC_GRID_STATES.read();
             // 1. LIVE_NPC_GRID_STATES whose state.current == (coord.x, coord.y)
-            {
-                let states = LIVE_NPC_GRID_STATES.read();
-                for (id, state) in states.iter() {
-                    if state.current == (coord.x, coord.y) {
-                        if seen.insert(id.clone()) {
-                            ids.push(id.clone());
-                        }
+            for (id, state) in live_states.iter() {
+                if state.current == (coord.x, coord.y) {
+                    if seen.insert(id.clone()) {
+                        ids.push(id.clone());
                     }
                 }
             }
@@ -2351,7 +2726,7 @@ impl Store {
             // 3. Players or non-grid entities in self.entity_rooms at room_id
             for (eid, rid) in &self.entity_rooms {
                 if rid == room_id {
-                    let is_tracked_live_npc = LIVE_NPC_GRID_STATES.read().contains_key(eid);
+                    let is_tracked_live_npc = live_states.contains_key(eid);
                     let is_tracked_canon_npc = self
                         .entities
                         .get(eid)
@@ -2489,6 +2864,19 @@ impl Store {
         Ok(())
     }
 
+    pub fn append_thought(
+        &mut self,
+        entity_id: &str,
+        source: crate::db::ThoughtSource,
+        flavor: String,
+        now_unix: i64,
+    ) {
+        let _ = self.update_entity(entity_id, |ent| {
+            crate::db::add_thought_to_entity_with_delta(ent, source, 8, now_unix, flavor);
+            crate::db::clean_and_recalc_entity_disposition(ent, now_unix);
+        });
+    }
+
     /// PostgreSQL 已在同一交易完成背包變動時，只校正讀取快取，不再排第二次寫入。
     pub fn mirror_inventory_from_authority(
         &mut self,
@@ -2598,7 +2986,7 @@ impl Store {
                     .next()
                     .map(|c| c.to_string())
                     .unwrap_or_else(|| "人".to_string());
-                let init_mg = 24 + ((slot_idx % 9) as i32) * 5;
+                let init_mg = (h % 38) as i32;
                 let mut entity = Entity {
                     id: id.clone(),
                     kind: "npc".to_string(),
@@ -2648,13 +3036,14 @@ impl Store {
             HOUSEHOLD_MEMBER_ASSIGNMENTS.write().clear();
         }
         self.ensure_household_assignments();
+        let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
         for e in self.entities.values() {
             if e.kind == "npc" && e.vit > 0 && e.grid_x.is_none() {
-                let _ = self.effective_entity_grid(e);
+                let _ = self.effective_entity_grid_with_grid(e, grid_opt.as_ref());
             }
         }
-        if let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() {
-            self.sync_and_advance_hunting_parties(&grid);
+        if let Some(ref grid) = grid_opt {
+            self.sync_and_advance_hunting_parties(grid);
         }
     }
 
@@ -2688,7 +3077,278 @@ impl Store {
         }
     }
 
+fn resolve_venue_for_requirement(
+    req: crate::npc::causal_core::VenueRequirement,
+    slot: &WenyaoHouseholdSlot,
+    grid: Option<&crate::grid::SquareGrid>,
+    current: (i32, i32),
+    is_bladed: bool,
+    seed: u64,
+) -> ((i32, i32), String) {
+    let is_wenyao = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
+    let settlement = slot.home_name.split('・').next().unwrap_or("文曜");
+    let ref_pt = if !is_wenyao && current == (0, 0) {
+        (slot.home_x, slot.home_y)
+    } else {
+        current
+    };
+    match req {
+        crate::npc::causal_core::VenueRequirement::HomeOrKitchen => {
+            ((slot.home_x, slot.home_y), slot.home_name.to_string())
+        }
+        crate::npc::causal_core::VenueRequirement::OwnWorkplace => {
+            if slot.brief_tag.starts_with("入山百工・") {
+                let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
+                let (pt, actual_zone, sub) =
+                    crate::game::pick_zone_artisan_waypoint_with_zone(zone_prefix, seed, current);
+                (pt, clean_wilderness_place_label(&format!("{actual_zone}・{sub}")))
+            } else if slot.brief_tag.starts_with("古道行旅・") {
+                let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
+                let (pt, rzone) = crate::game::pick_island_trail_waypoint(
+                    zone_prefix,
+                    (slot.home_x, slot.home_y),
+                    (slot.errand_x, slot.errand_y),
+                    seed,
+                    current,
+                );
+                (pt, format!("{rzone}・古道驛路"))
+            } else {
+                ((slot.work_x, slot.work_y), slot.work_name.to_string())
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::CanteenOrStall => {
+            if is_wenyao {
+                (
+                    resolve_bldg_coord_or_fallback("三水大食堂", (-1, 2)),
+                    "文曜・三水大食堂".to_string(),
+                )
+            } else {
+                let found = grid.and_then(|g| {
+                    g.cells()
+                        .filter(|c| {
+                            let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                            d <= 24
+                                && (c.has_room_tag("食堂")
+                                    || c.name.contains("食堂")
+                                    || c.name.contains("飯")
+                                    || c.name.contains("麵")
+                                    || c.name.contains("廚"))
+                        })
+                        .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+                });
+                if let Some(c) = found {
+                    ((c.coord.x, c.coord.y), c.name.clone())
+                } else {
+                    (
+                        (slot.errand_x, slot.errand_y),
+                        format!("{settlement}・街角熱食攤"),
+                    )
+                }
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::TeahouseOrTavern => {
+            if is_wenyao {
+                (
+                    resolve_bldg_coord_or_fallback("東橋旅社與山風茶屋", (2, -1)),
+                    "文曜・東橋旅社與山風茶屋".to_string(),
+                )
+            } else {
+                let found = grid.and_then(|g| {
+                    g.cells()
+                        .filter(|c| {
+                            let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                            d <= 24
+                                && (c.has_room_tag("茶屋")
+                                    || c.has_room_tag("旅社")
+                                    || c.name.contains("茶")
+                                    || c.name.contains("旅社"))
+                        })
+                        .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+                });
+                if let Some(c) = found {
+                    ((c.coord.x, c.coord.y), c.name.clone())
+                } else {
+                    (
+                        (slot.errand_x, slot.errand_y),
+                        format!("{settlement}・路邊茶寮"),
+                    )
+                }
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::WellOrStream => {
+            if is_wenyao {
+                ((1, 0), "文曜・三水口水岸公井".to_string())
+            } else {
+                (
+                    (slot.home_x, slot.home_y),
+                    format!("{settlement}・街角山泉公井"),
+                )
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::Bathhouse => {
+            if is_wenyao {
+                (
+                    resolve_bldg_coord_or_fallback("泉香溫水浴場", (2, -2)),
+                    "文曜・泉香溫水浴場".to_string(),
+                )
+            } else {
+                let found = grid.and_then(|g| {
+                    g.cells()
+                        .filter(|c| {
+                            let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                            d <= 24
+                                && (c.has_room_tag("浴場")
+                                    || c.name.contains("浴")
+                                    || c.name.contains("湯"))
+                        })
+                        .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+                });
+                if let Some(c) = found {
+                    ((c.coord.x, c.coord.y), c.name.clone())
+                } else {
+                    (
+                        (slot.home_x, slot.home_y),
+                        format!("{settlement}・溫水石湯屋"),
+                    )
+                }
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::InnOrHome => {
+            if is_wenyao {
+                (
+                    resolve_bldg_coord_or_fallback("東橋旅社與山風茶屋", (2, -1)),
+                    "文曜・東橋旅社與山風茶屋".to_string(),
+                )
+            } else {
+                (
+                    (slot.errand_x, slot.errand_y),
+                    format!("{settlement}・旅社通鋪"),
+                )
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::Clinic => {
+            if is_wenyao {
+                (
+                    resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -1)),
+                    "文曜・溫氏脈絡診所".to_string(),
+                )
+            } else {
+                let found = grid.and_then(|g| {
+                    g.cells()
+                        .filter(|c| {
+                            let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                            d <= 28
+                                && (c.has_room_tag("藥圃") || c.has_room_tag("藥材"))
+                                && (c.name.contains("診")
+                                    || c.name.contains("醫")
+                                    || c.name.contains("藥鋪")
+                                    || c.name.contains("藥局"))
+                        })
+                        .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+                });
+                if let Some(c) = found {
+                    ((c.coord.x, c.coord.y), c.name.clone())
+                } else if slot.home_y < -220 {
+                    ((0, -320), "南哨・南哨脈絡解毒診所".to_string())
+                } else if slot.home_x < -200 {
+                    ((-263, 158), "風舶角・港務脈絡診所".to_string())
+                } else {
+                    (
+                        (slot.errand_x, slot.errand_y),
+                        format!("{settlement}・草木藥鋪"),
+                    )
+                }
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::ForgeOrWorkshop => {
+            if is_bladed {
+                if is_wenyao {
+                    (
+                        resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
+                        "文曜・岑氏第一鍛造工坊".to_string(),
+                    )
+                } else {
+                    let found = grid.and_then(|g| {
+                        g.cells()
+                            .filter(|c| {
+                                let d = (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs();
+                                d <= 28
+                                    && (c.has_room_tag("鐵匠鋪")
+                                        || c.name.contains("鍛造")
+                                        || c.name.contains("鐵器"))
+                            })
+                            .min_by_key(|c| (c.coord.x - ref_pt.0).abs() + (c.coord.y - ref_pt.1).abs())
+                    });
+                    if let Some(c) = found {
+                        ((c.coord.x, c.coord.y), c.name.clone())
+                    } else if slot.home_x > 40 {
+                        ((95, 95), "半嶺鎮・百工鐵器鍛造坊".to_string())
+                    } else {
+                        ((slot.work_x, slot.work_y), slot.work_name.to_string())
+                    }
+                }
+            } else {
+                ((slot.work_x, slot.work_y), slot.work_name.to_string())
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::DockOrStation => {
+            if is_wenyao {
+                (
+                    resolve_bldg_coord_or_fallback("西門車馬聯運總站", (-2, -1)),
+                    "文曜・西門車馬聯運總站".to_string(),
+                )
+            } else {
+                ((slot.errand_x, slot.errand_y), slot.errand_name.to_string())
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::Market => {
+            if is_wenyao {
+                (
+                    resolve_bldg_coord_or_fallback("三水總商行", (-1, 1)),
+                    "文曜・三水總商行".to_string(),
+                )
+            } else {
+                ((slot.errand_x, slot.errand_y), slot.errand_name.to_string())
+            }
+        }
+        crate::npc::causal_core::VenueRequirement::WildOrOutskirts => {
+            let zone = if slot.home_y > 140 {
+                "清泉溪谷"
+            } else if slot.home_x > 50 {
+                "西嶺礦谷"
+            } else if slot.home_x < -220 {
+                "驚濤岩岸"
+            } else if slot.home_y < -150 {
+                "長風草甸"
+            } else {
+                "西麓林道"
+            };
+            let (c, actual_zone, sub) =
+                crate::game::pick_zone_artisan_waypoint_with_zone(zone, seed, current);
+            (c, clean_wilderness_place_label(&format!("{actual_zone}・{sub}")))
+        }
+        crate::npc::causal_core::VenueRequirement::BridgeOrPlaza => {
+            if is_wenyao {
+                ((0, 0), "文曜・三水匯流大石橋".to_string())
+            } else {
+                (
+                    (slot.errand_x, slot.errand_y),
+                    format!("{settlement}・街心石坪"),
+                )
+            }
+        }
+    }
+}
+
     pub fn effective_entity_grid(&self, e: &Entity) -> Option<(i32, i32)> {
+        self.effective_entity_grid_with_grid(e, None)
+    }
+
+    pub fn effective_entity_grid_with_grid(
+        &self,
+        e: &Entity,
+        grid: Option<&crate::grid::SquareGrid>,
+    ) -> Option<(i32, i32)> {
         if is_deprecated_npc_id(&e.id) {
             return None;
         }
@@ -2716,55 +3376,30 @@ impl Store {
             slot_idx % 2 == 1
         };
         let sched_hour = if is_expedition_slot { 10 } else { hour };
-        let (mut dest, mut dest_name, purpose, mut stay_activity, stay_ticks) =
+        let (dest, _dest_name, _purpose, _stay_activity, stay_ticks) =
             resolve_wenyao_npc_schedule(slot, sched_hour, init_toggle, slot.home_name);
         let mut init_coord = dest;
         let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
         if slot.brief_tag.starts_with("入山百工・") && !init_toggle {
-            let (start_pt, start_sub) = crate::game::pick_zone_artisan_waypoint(
+            let (start_pt, _start_sub) = crate::game::pick_zone_artisan_waypoint(
                 zone_prefix,
                 (slot_idx as u64).wrapping_mul(131),
                 (slot.work_x, slot.work_y),
             );
-            let (next_pt, next_sub) = crate::game::pick_zone_artisan_waypoint(
-                zone_prefix,
-                (slot_idx as u64).wrapping_mul(131).wrapping_add(19),
-                start_pt,
-            );
             init_coord = start_pt;
-            dest = next_pt;
-            dest_name = format!("{zone_prefix}・{next_sub}");
-            stay_activity = format!(
-                "正在{zone_prefix}・{start_sub}至{next_sub}一帶{}，巡看山林物產與地脈",
-                slot.work_purpose
-            );
         } else if slot.brief_tag.starts_with("古道行旅・") && !init_toggle {
-            let (start_pt, start_zone) = crate::game::pick_island_trail_waypoint(
+            let (start_pt, _start_zone) = crate::game::pick_island_trail_waypoint(
                 zone_prefix,
                 (slot.home_x, slot.home_y),
                 (slot.errand_x, slot.errand_y),
                 (slot_idx as u64).wrapping_mul(97),
                 (slot.home_x, slot.home_y),
             );
-            let (next_pt, next_zone) = crate::game::pick_island_trail_waypoint(
-                zone_prefix,
-                (slot.home_x, slot.home_y),
-                (slot.errand_x, slot.errand_y),
-                (slot_idx as u64).wrapping_mul(97).wrapping_add(23),
-                start_pt,
-            );
             init_coord = start_pt;
-            dest = next_pt;
-            dest_name = format!("{next_zone}・聯外古道驛站");
-            stay_activity = format!(
-                "正在{start_zone}通往{next_zone}的聯外古道上{}，沿途照應貨擔與路況",
-                slot.work_purpose
-            );
         } else if (slot.home_x.abs() > 24 || slot.home_y.abs() > 24) && !is_expedition_slot && (slot_idx % 4 == 0) {
-            // 外圍 14 座市鎮與村落之田野農戶、漁戶、採石匠與巡山民丁（約 25%），初始分佈於聚落外圍郊野、海岸與聯外道路上往返作業
             let (near_zone, _, _) =
                 crate::grid::r#gen::classify_wilderness_cell(slot.home_x, slot.home_y);
-            let (out_pt, out_sub) = if slot_idx % 8 == 0 {
+            let (out_pt, _out_sub) = if slot_idx % 8 == 0 {
                 crate::game::pick_island_trail_waypoint(
                     near_zone,
                     (slot.home_x, slot.home_y),
@@ -2780,12 +3415,6 @@ impl Store {
                 )
             };
             init_coord = out_pt;
-            dest = (slot.work_x, slot.work_y);
-            dest_name = slot.work_name.to_string();
-            stay_activity = format!(
-                "剛在{near_zone}・{out_sub}完成外圍農牧與巡看，正循鄉道返回{}",
-                slot.work_name
-            );
         }
         let origin_name = slot.home_name.to_string();
         let stay_ticks_remaining = if is_expedition_slot {
@@ -2793,15 +3422,47 @@ impl Store {
         } else {
             (stay_ticks / 2).max(3)
         };
+        let settlement_name = normalize_household_home_settlement(slot.home_name);
+        let actual_scarce_name =
+            crate::game::object_ecology::scarcest_item_for_settlement(settlement_name)
+                .map(|(_id, nm, _cur, _max, _pr)| nm);
+        let res_seed = crate::npc::causal_core::deterministic_resident_seed(&e.id, e.soul_seed);
+        let role_combined = format!("{} {}", slot.brief_tag, e.display_title);
+        let (causal, chosen) = crate::npc::causal_core::plan_next_causal_action(
+            &e.id,
+            &role_combined,
+            settlement_name,
+            res_seed,
+            "",
+            1,
+            false,
+            false,
+            e.magnesium,
+            hour.max(0) as u32,
+            actual_scarce_name.as_deref(),
+        );
+        let (dest_coord, dest_name) = Self::resolve_venue_for_requirement(
+            chosen.venue_req,
+            slot,
+            grid,
+            init_coord,
+            false,
+            res_seed,
+        );
+        let stay_activity = crate::npc::causal_core::format_predefined_stay_activity(
+            &dest_name,
+            &causal,
+            e.magnesium,
+        );
         LIVE_NPC_GRID_STATES.write().insert(
             e.id.clone(),
             NpcGridState {
                 current: init_coord,
-                dest,
+                dest: dest_coord,
                 dest_name,
                 origin_name,
                 stay_activity,
-                purpose,
+                purpose: chosen.action_title.to_string(),
                 stay_ticks_remaining,
                 work_errand_toggle: init_toggle,
                 consecutive_work_streaks: (slot_idx % 2) as u8,
@@ -2836,30 +3497,6 @@ impl Store {
         static SEEDED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
         if !SEEDED.swap(true, std::sync::atomic::Ordering::Relaxed) {
             self.ensure_household_assignments();
-            let mut need_init_mg = Vec::new();
-            for e in self.entities.values() {
-                if e.kind == "npc" && e.vit > 0 && e.grid_x.is_none() {
-                    let _ = self.effective_entity_grid(e);
-                    if e.magnesium <= 0 {
-                        need_init_mg.push(e.id.clone());
-                    }
-                }
-            }
-            if !need_init_mg.is_empty() {
-                if let Ok(handle) = tokio::runtime::Handle::try_current() {
-                    handle.spawn(async move {
-                        for (idx, id) in need_init_mg.into_iter().enumerate() {
-                            let init_mg = 18 + ((idx % 5) as i32) * 4;
-                            let _ = crate::db::add_magnesium(&id, init_mg);
-                        }
-                    });
-                } else {
-                    for (idx, id) in need_init_mg.into_iter().enumerate() {
-                        let init_mg = 18 + ((idx % 5) as i32) * 4;
-                        let _ = crate::db::add_magnesium(&id, init_mg);
-                    }
-                }
-            }
         }
         let Some(grid) = crate::server::grid_manager::get_runtime_square_grid() else {
             return Vec::new();
@@ -2880,11 +3517,11 @@ impl Store {
         }
         moves
     }
-    /// 同步並推進全島 19 處山海獵場的「合社圍獵小隊黑板（`LIVE_HUNTING_PARTIES`）」：
-    /// 涵蓋吹角揪團集結 -> 鎖定活體山海獵物座標四面戰術包抄合圍 -> 合擊獵殺與見者有份分鹿割皮 -> 結伴赴市交割分紅。
+    /// 同步並推進全島 19 處山海獵場的「合社圍獵小隊共識板（`LIVE_HUNTING_PARTIES`）」：
+    /// 涵蓋吹角揪團集結 -> 鎖定活體山海獵物座標四面戰術包抄合圍 -> 合擊獵殺與見者有份分鹿割皮 -> 結伴赴市交割分成。
     pub fn sync_and_advance_hunting_parties(&self, grid: &crate::grid::SquareGrid) {
         let now_unix = crate::game::now_unix();
-        let hour = current_game_hour();
+        let _hour = current_game_hour();
         self.ensure_household_assignments();
 
         let mut parties = LIVE_HUNTING_PARTIES.write();
@@ -2917,23 +3554,70 @@ impl Store {
                             )
                             .0;
                             market_coord = (slot.errand_x, slot.errand_y);
-                            market_name = slot
-                                .errand_name
-                                .replace("脈絡解毒診所", "山產皮貨交割場")
-                                .replace("港務脈絡診所", "海陸山產交割場")
-                                .replace("脈絡診所", "山產皮貨交割場");
-                        } else if (market_name.contains("診所") || market_name.contains("浴堂"))
-                            && !slot.errand_name.contains("診所")
-                            && !slot.errand_name.contains("浴堂")
-                        {
-                            market_coord = (slot.errand_x, slot.errand_y);
                             market_name = slot.errand_name.to_string();
+                        } else {
+                            // 過磅交割均分鎂幣紅利場地挑選：
+                            // 優先選擇山貨、皮毛、藥、商行、市集、雜貨、大食堂、棧等相稱場所，
+                            // 避開診所、浴堂，以及鐵器鍛造坊、木材行、樟腦、抄紙、磚窯、石材等不相干工業作坊。
+                            let is_preferred = |n: &str| {
+                                (n.contains("山貨")
+                                    || n.contains("皮毛")
+                                    || n.contains("皮貨")
+                                    || n.contains("藥")
+                                    || n.contains("商行")
+                                    || n.contains("市集")
+                                    || n.contains("雜貨")
+                                    || n.contains("大食堂")
+                                    || n.contains("物產")
+                                    || n.contains("棧"))
+                                    && !n.contains("診所")
+                                    && !n.contains("浴堂")
+                                    && !n.contains("鐵器")
+                                    && !n.contains("鍛造")
+                                    && !n.contains("木材")
+                                    && !n.contains("樟腦")
+                                    && !n.contains("抄紙")
+                                    && !n.contains("磚窯")
+                                    && !n.contains("石材")
+                            };
+                            let cur_pref = is_preferred(&market_name);
+                            let cand_pref = is_preferred(slot.errand_name);
+                            if (!cur_pref && cand_pref)
+                                || ((market_name.contains("診所") || market_name.contains("浴堂") || market_name.contains("木材") || market_name.contains("鍛造") || market_name.contains("鐵器"))
+                                    && !slot.errand_name.contains("診所")
+                                    && !slot.errand_name.contains("浴堂")
+                                    && !slot.errand_name.contains("木材")
+                                    && !slot.errand_name.contains("鍛造")
+                                    && !slot.errand_name.contains("鐵器"))
+                            {
+                                market_coord = (slot.errand_x, slot.errand_y);
+                                market_name = slot.errand_name.to_string();
+                            }
                         }
                         core_ids.push(ent_id.clone());
                     }
                 }
                 if core_ids.is_empty() {
                     continue;
+                }
+                // 若最終市場仍帶有不相干工業作坊（鐵器鍛造坊、木材行、樟腦、抄紙、磚窯、石材）或診所浴堂，
+                // 替換為該聚落之山海物產收購行或山產皮貨交割場，絕不將獵物送去鐵匠鋪或木材行！
+                let is_unrelated_venue = market_name.contains("鐵器")
+                    || market_name.contains("鍛造")
+                    || market_name.contains("木材")
+                    || market_name.contains("樟腦")
+                    || market_name.contains("抄紙")
+                    || market_name.contains("磚窯")
+                    || market_name.contains("石材")
+                    || market_name.contains("診所")
+                    || market_name.contains("浴堂");
+                if is_unrelated_venue {
+                    let settlement = market_name
+                        .split_once('・')
+                        .map(|(s, _)| s)
+                        .unwrap_or("半嶺鎮");
+                    market_name = format!("{settlement}・山海物產收購行");
+                    market_coord = resolve_bldg_coord_or_fallback(&market_name, market_coord);
                 }
                 let leader_id = core_ids[0].clone();
                 let mut full_member_ids = core_ids.clone();
@@ -3088,20 +3772,18 @@ impl Store {
                                         let cid_c = cand_id.clone();
                                         let l_name = party.leader_name.clone();
                                         let z_name = party.zone_name.clone();
-                                        std::thread::spawn(move || {
-                                            if let Some(arc) = crate::store::get_store() {
-                                                let mut s = arc.write();
-                                                let _ = s.update_entity(&cid_c, |ent| {
-                                                    crate::db::add_thought_to_entity_with_delta(
-                                                        ent,
-                                                        crate::db::ThoughtSource::Talked,
-                                                        8,
-                                                        now_unix,
-                                                        format!("聽聞領隊【{}】吹響山豬牙號角揪團前往【{}】圍獵，欣然提刀入團助陣", l_name, z_name),
-                                                    );
-                                                });
-                                            }
-                                        });
+                                        crate::npc::causal_core::enqueue_arrival_effect(
+                                            crate::npc::causal_core::ArrivalEffect::CustomThoughtAndMg {
+                                                entity_id: cid_c,
+                                                delta_mg: 0,
+                                                delta_disp: 8,
+                                                now_unix,
+                                                thought: format!(
+                                                    "聽聞領隊【{}】吹響山豬牙號角揪團前往【{}】圍獵，欣然提刀入團助陣",
+                                                    l_name, z_name
+                                                ),
+                                            },
+                                        );
                                     }
                                 }
                             }
@@ -3190,77 +3872,88 @@ impl Store {
                         let leader_name = party.leader_name.clone();
                         let z_name = party.zone_name.clone();
                         let p_name = party.prey_name.clone();
-                        let l_id = party.prey_loot_id.clone();
+                        let _l_id = party.prey_loot_id.clone();
                         let l_name = party.prey_loot_name.clone();
                         let mkt_name = party.market_name.clone();
                         let total_n = members_clone.len();
-                        let party_prey_coord = party.prey_coord;
-                        std::thread::spawn(move || {
-                            for mid in &members_clone {
-                                let _ = crate::db::add_to_inventory(mid, &l_id, 1);
-                                let _ = crate::pg::living_world::record_breath_activity(
-                                    mid,
-                                    crate::pg::living_world::BreathHabitKind::ForestLong,
-                                    2,
+                        let prey_xy = party.prey_coord;
+                        for mid in &members_clone {
+                            crate::npc::causal_core::enqueue_arrival_effect(
+                                crate::npc::causal_core::ArrivalEffect::CustomThoughtAndMg {
+                                    entity_id: mid.clone(),
+                                    delta_mg: 0,
+                                    delta_disp: 9,
                                     now_unix,
-                                );
-                                let _ = crate::pg::living_world::record_vessel_use(
-                                    mid,
-                                    "craft_steel_hunting_knife",
-                                    1,
-                                    1,
+                                    thought: format!(
+                                        "與領隊【{}】等 {} 名合社夥伴在【{}】四面合圍獵獲【{}】，按見者有份古禮分得【{}】，正結伴運往{}交割分成",
+                                        leader_name, total_n, z_name, p_name, l_name, mkt_name
+                                    ),
+                                },
+                            );
+                        }
+                        let eligible_players: Vec<String> = self
+                            .entities
+                            .values()
+                            .filter(|e| e.kind == "player")
+                            .filter(|e| {
+                                let pledged = player_pledged_hunting_zone(&e.id).as_deref()
+                                    == Some(z_name.as_str());
+                                let near =
+                                    (e.x - prey_xy.0).abs().max((e.y - prey_xy.1).abs()) <= 8;
+                                pledged || near
+                            })
+                            .map(|e| e.id.clone())
+                            .collect();
+                        for pid in eligible_players {
+                            crate::npc::causal_core::enqueue_arrival_effect(
+                                crate::npc::causal_core::ArrivalEffect::CustomThoughtAndMg {
+                                    entity_id: pid,
+                                    delta_mg: 28,
+                                    delta_disp: 9,
                                     now_unix,
-                                );
-                            }
-                            let prey_xy = party_prey_coord;
-                            if let Some(arc) = crate::store::get_store() {
-                                let mut s = arc.write();
-                                for mid in &members_clone {
-                                    let _ = s.update_entity(mid, |ent| {
-                                        crate::db::add_thought_to_entity_with_delta(
-                                            ent,
-                                            crate::db::ThoughtSource::WorkDone,
-                                            9,
-                                            now_unix,
-                                            format!(
-                                                "與領隊【{}】等 {} 名合社夥伴在【{}】四面合圍獵獲【{}】，按見者有份古禮分得【{}】，正結伴運往{}交割分紅",
-                                                leader_name, total_n, z_name, p_name, l_name, mkt_name
-                                            ),
-                                        );
-                                    });
-                                }
-                                // 若有玩家已應募加入該獵場之合社獵團，或正駐足於合圍圈 8 格之內，依「見者有份」古規分鹿割皮並給予分紅！
-                                let eligible_players: Vec<String> = s
-                                    .entities
-                                    .values()
-                                    .filter(|e| e.kind == "player")
-                                    .filter(|e| {
-                                        let pledged = player_pledged_hunting_zone(&e.id)
-                                            .as_deref()
-                                            == Some(z_name.as_str());
-                                        let near = (e.x - prey_xy.0).abs().max((e.y - prey_xy.1).abs()) <= 8;
-                                        pledged || near
-                                    })
-                                    .map(|e| e.id.clone())
-                                    .collect();
-                                for pid in eligible_players {
-                                    let _ = s.update_entity(&pid, |ent| {
-                                        ent.magnesium = ent.magnesium.saturating_add(28);
-                                        crate::db::add_thought_to_entity_with_delta(
-                                            ent,
-                                            crate::db::ThoughtSource::WorkDone,
-                                            9,
-                                            now_unix,
-                                            format!(
-                                                "隨領隊【{}】率領之【{}】合社獵團合圍【{}】，依「見者有份」古規分得一份【{}】與 28 枚鎂幣紅利",
-                                                leader_name, z_name, p_name, l_name
-                                            ),
-                                        );
-                                    });
-                                    let _ = crate::db::add_to_inventory(&pid, &l_id, 1);
-                                }
-                            }
-                        });
+                                    thought: format!(
+                                        "隨領隊【{}】率領之【{}】合社獵團合圍【{}】，依「見者有份」古規分得一份【{}】與 28 枚鎂幣紅利",
+                                        leader_name, z_name, p_name, l_name
+                                    ),
+                                },
+                            );
+                        }
+                        for member_id in &party.member_ids {
+                            crate::npc::causal_core::upsert_relational_hook(
+                                member_id,
+                                &party.leader_id,
+                                &party.leader_name,
+                                "合社並肩",
+                                format!(
+                                    "曾與【{}】在{}並肩合圍「{}」、同分獵獲",
+                                    party.leader_name, party.zone_name, party.prey_name
+                                ),
+                                3,
+                                now_unix,
+                            );
+                        }
+                        let apex_ripple = crate::npc::causal_core::WorldRippleFact {
+                            fact_id: format!("apex_slain_{}_{}", party.zone_idx, now_unix),
+                            kind: crate::npc::causal_core::RippleFactKind::ApexSlainOrRescued,
+                            subject_zone_or_settlement: party.zone_name.clone(),
+                            item_or_actor: party.prey_name.clone(),
+                            order_id: None,
+                            severity: 1.0,
+                            origin_tick: now_unix,
+                            hop_count: 0,
+                            max_hops: 4,
+                            prose_summary: format!(
+                                "{}的合社獵團已在{}合圍獵得「{}」，山道威脅大減，正押運「{}」返鎮交割",
+                                party.leader_name, party.zone_name, party.prey_name, party.prey_loot_name
+                            ),
+                        };
+                        for member_id in &party.member_ids {
+                            crate::npc::causal_core::inject_ripple_fact_into_npc(
+                                member_id,
+                                apex_ripple.clone(),
+                                now_unix,
+                            );
+                        }
                         party.phase = HuntingPartyPhase::ReturningToMarket;
                         party.last_phase_change_unix = now_unix;
                         for (m_idx, mid) in party.member_ids.iter().enumerate() {
@@ -3301,41 +3994,29 @@ impl Store {
                             2 => 36,
                             _ => 26,
                         };
-                        std::thread::spawn(move || {
-                            let actor_tag = format!("【{}】合社獵團", leader_name);
-                            let _ = crate::game::object_ecology::record_settlement_market_trade(
-                                &mkt_name,
-                                &l_id,
-                                base_price,
-                                2,
-                                &actor_tag,
+                        let actor_tag = format!("【{}】合社獵團", leader_name);
+                        let _ = crate::game::object_ecology::record_settlement_market_trade(
+                            &mkt_name,
+                            &l_id,
+                            base_price,
+                            2,
+                            &actor_tag,
+                        );
+                        for mid in &members_clone {
+                            crate::npc::causal_core::enqueue_arrival_effect(
+                                crate::npc::causal_core::ArrivalEffect::CustomThoughtAndMg {
+                                    entity_id: mid.clone(),
+                                    delta_mg: bounty,
+                                    delta_disp: 8,
+                                    now_unix,
+                                    thought: format!(
+                                        "隨領隊【{}】合社獵團將圍獵所獲之【{}】運抵{}過磅交割，分得紅利 {} 枚鎂幣，眾人士氣大振",
+                                        leader_name, l_name, mkt_name, bounty
+                                    ),
+                                },
                             );
-                            let _ = crate::game::object_ecology::run_npc_autonomous_production_step(
-                                "",
-                                &mkt_name,
-                                &members_clone,
-                                now_unix,
-                            );
-                            if let Some(arc) = crate::store::get_store() {
-                                let mut s = arc.write();
-                                for mid in &members_clone {
-                                    let _ = s.update_entity(mid, |ent| {
-                                        ent.magnesium = ent.magnesium.saturating_add(bounty);
-                                        crate::db::add_thought_to_entity_with_delta(
-                                            ent,
-                                            crate::db::ThoughtSource::WorkDone,
-                                            8,
-                                            now_unix,
-                                            format!(
-                                                "隨領隊【{}】合社獵團將圍獵所獲之【{}】運抵{}過磅交割，分得紅利 {} 枚鎂幣，眾人士氣大振",
-                                                leader_name, l_name, mkt_name, bounty
-                                            ),
-                                        );
-                                    });
-                                }
-                            }
-                        });
-                        // 交割分紅完畢：臨時響應號召之聚落居民帶著分紅與獵獲返回各自生活，核心獵團重返駐點準備下一輪號召
+                        }
+                        // 交割分成完畢：臨時響應號召之聚落居民帶著分成與獵獲返回各自生活，核心獵團重返駐點準備下一輪號召
                         for mid in &party.member_ids {
                             if !party.core_member_ids.contains(mid)
                                 && let Some(st) = states.get_mut(mid)
@@ -3376,7 +4057,7 @@ impl Store {
         grid: &crate::grid::SquareGrid,
     ) -> Option<((i32, i32), (i32, i32))> {
         let e = self.entities.get(entity_id)?;
-        let (old_x, old_y) = self.effective_entity_grid(e)?;
+        let (old_x, old_y) = self.effective_entity_grid_with_grid(e, Some(grid))?;
         if is_npc_paused_for_interaction(entity_id) {
             return Some(((old_x, old_y), (old_x, old_y)));
         }
@@ -3384,6 +4065,19 @@ impl Store {
         let hour = current_game_hour();
         let slot = wenyao_household_slot_for(entity_id);
 
+        let _is_expedition_slot = slot.brief_tag.starts_with("合社獵團・")
+            || slot.brief_tag.starts_with("入山百工・")
+            || slot.brief_tag.starts_with("古道行旅・");
+        let in_hunting_party = LIVE_HUNTING_PARTIES
+            .try_read()
+            .map(|parties| {
+                parties
+                    .values()
+                    .any(|p| p.member_ids.iter().any(|id| id == entity_id))
+            })
+            .unwrap_or(false);
+
+        let mut arrived_for_ripple: Option<((i32, i32), String, i64)> = None;
         let mut states = LIVE_NPC_GRID_STATES.write();
         let state = states.entry(entity_id.to_string()).or_insert_with(|| {
             let (dest, dest_name, purpose, stay_activity, stay_ticks) =
@@ -3404,45 +4098,18 @@ impl Store {
         if e.grid_x.is_some() && e.grid_y.is_some() {
             return None;
         }
-
-        let is_expedition_slot = slot.brief_tag.starts_with("合社獵團・")
-            || slot.brief_tag.starts_with("入山百工・")
-            || slot.brief_tag.starts_with("古道行旅・");
-        let in_hunting_party = LIVE_HUNTING_PARTIES
-            .read()
-            .values()
-            .any(|p| p.member_ids.iter().any(|id| id == entity_id));
-
-        if !is_expedition_slot && !in_hunting_party && (hour >= 22 || hour < 5) {
-            let (home_or_watch_dest, target_name, target_purpose, target_activity, target_ticks) =
-                resolve_wenyao_npc_schedule(slot, hour, false, &state.dest_name);
-            state.dest = home_or_watch_dest;
-            state.dest_name = target_name;
-            state.purpose = target_purpose;
-            state.stay_activity = target_activity;
-            state.stay_ticks_remaining = target_ticks;
-            if state.current == state.dest {
-                return Some(((old_x, old_y), (old_x, old_y)));
-            }
-        } else if (5..22).contains(&hour)
-            && (state.purpose == "返家安歇" || state.purpose == "安歇養神" || state.purpose == "夜間返家")
-        {
-            let (day_dest, day_dest_name, day_purpose, day_activity, day_ticks) =
-                resolve_wenyao_npc_schedule(slot, hour, false, &state.dest_name);
-            state.dest = day_dest;
-            state.dest_name = day_dest_name;
-            state.purpose = day_purpose;
-            state.stay_activity = day_activity;
-            state.stay_ticks_remaining = day_ticks;
-            if state.current == state.dest {
-                return Some(((old_x, old_y), (old_x, old_y)));
-            }
-        }
+        // 作息與日間／夜間返家均由下方正向因果引擎（plan_next_causal_action）統一驅動
         if state.current == state.dest {
             if state.stay_ticks_remaining > 0 {
                 state.stay_ticks_remaining -= 1;
-                return Some(((old_x, old_y), (old_x, old_y)));
-            }
+                if state.stay_ticks_remaining == 3 {
+                    let now_unix = crate::game::now_unix();
+                    let spk_name = resolve_npc_person_name(entity_id, &e.display_title, Some(e.gender.as_str()));
+                    arrived_for_ripple = Some((state.current, spk_name, now_unix));
+                } else {
+                    return Some(((old_x, old_y), (old_x, old_y)));
+                }
+            } else {
             let now_unix = crate::game::now_unix();
             let ent_id = entity_id.to_string();
             let mut h: u64 = 0xcbf2_9ce4_8422_2325;
@@ -3450,75 +4117,136 @@ impl Store {
                 h ^= u64::from(*b);
                 h = h.wrapping_mul(0x0100_0000_01b3);
             }
-            // 1. 評估剛完成的目標行為並寫入真實記憶心聲、經濟收益、器物磨合與傷病處置
+            // 1. 評估已完成的目標行為並寫入真實記憶心聲、經濟收益、器物磨合與傷病處置
             let dest_name_appraisal = state.dest_name.clone();
             let purpose_appraisal = state.purpose.clone();
             let is_expedition_role = slot.brief_tag.starts_with("合社獵團・")
                 || slot.brief_tag.starts_with("入山百工・")
                 || slot.brief_tag.starts_with("古道行旅・");
-            let is_hunting_or_gathering = is_expedition_role
-                && state.current != (slot.errand_x, slot.errand_y)
-                && state.current != (slot.home_x, slot.home_y);
-            let is_dining = [
-                "食堂", "茶", "飯", "湯", "麵", "膳", "飲",
-            ]
-            .iter()
-            .any(|kw| dest_name_appraisal.contains(kw) || purpose_appraisal.contains(kw));
-            let is_bath = dest_name_appraisal.contains("浴場");
-            let is_clinic = dest_name_appraisal.contains("診所")
-                || dest_name_appraisal.contains("藥居")
-                || purpose_appraisal.contains("敷藥")
-                || purpose_appraisal.contains("調理");
-            let is_forge = dest_name_appraisal.contains("鍛造")
-                || dest_name_appraisal.contains("鐵坊")
-                || dest_name_appraisal.contains("鐵器")
-                || purpose_appraisal.contains("修整器物");
-            let is_work = [
-                "工坊", "鍛", "木", "商行", "埠", "站", "院", "堂", "館", "閣", "所", "市集", "交易", "交割",
-            ]
-            .iter()
-            .any(|kw| dest_name_appraisal.contains(kw) || purpose_appraisal.contains(kw));
-
+            let role_hint = format!("{} {} {}", e.display_title, slot.brief_tag, slot.work_name);
+            let vessel_spec = crate::npc::causal_core::resolve_vocational_vessel(&role_hint);
+            let matched_opt = crate::npc::causal_core::find_predefined_action_by_title(&purpose_appraisal);
+            let is_bath = matched_opt
+                .map(|opt| opt.code == "rest_soak_in_hot_stone_bathhouse")
+                .unwrap_or_else(|| {
+                    dest_name_appraisal.contains("浴場")
+                        || dest_name_appraisal.contains("湯屋")
+                        || purpose_appraisal.contains("泡湯")
+                        || purpose_appraisal.contains("沐浴")
+                });
+            let is_dining = !is_bath
+                && matched_opt
+                    .map(|opt| {
+                        matches!(
+                            opt.image,
+                            crate::npc::causal_core::DecisionImageKind::Eat
+                                | crate::npc::causal_core::DecisionImageKind::Drink
+                        )
+                    })
+                    .unwrap_or_else(|| {
+                        dest_name_appraisal.contains("食堂")
+                            || dest_name_appraisal.contains("茶屋")
+                            || dest_name_appraisal.contains("茶湯鋪")
+                            || [
+                                "乾糧", "果腹", "粗麵", "麥餅", "自炊", "熱粥", "滷肉", "大菜",
+                                "吃熱食", "藥膳", "解渴", "冷開水", "涼水", "粗茶", "水筒", "涼茶",
+                                "清茗", "共飲", "米酒", "品茶",
+                            ]
+                            .iter()
+                            .any(|kw| purpose_appraisal.contains(kw))
+                    });
+            let is_clinic = matched_opt
+                .map(|opt| opt.image == crate::npc::causal_core::DecisionImageKind::HealOrTend)
+                .unwrap_or_else(|| {
+                    dest_name_appraisal.contains("診所")
+                        || dest_name_appraisal.contains("藥居")
+                        || dest_name_appraisal.contains("藥鋪")
+                        || [
+                            "敷藥", "調理", "止血", "膏藥", "包紮", "煎湯", "熱敷", "施針",
+                            "養傷", "靜養", "傷藥",
+                        ]
+                        .iter()
+                        .any(|kw| purpose_appraisal.contains(kw))
+                });
+            let is_forge = matched_opt
+                .map(|opt| opt.image == crate::npc::causal_core::DecisionImageKind::MendOrEquip)
+                .unwrap_or_else(|| {
+                    dest_name_appraisal.contains("鍛造")
+                        || dest_name_appraisal.contains("鐵坊")
+                        || dest_name_appraisal.contains("鐵器")
+                        || purpose_appraisal.contains("修整器物")
+                        || purpose_appraisal.contains("磨利")
+                });
+            let is_rest_stop = !is_bath
+                && matched_opt
+                    .map(|opt| opt.image == crate::npc::causal_core::DecisionImageKind::SleepOrRest)
+                    .unwrap_or_else(|| {
+                        [
+                            "歇息", "小憩", "便當", "喘口氣", "閉目", "納涼", "用膳", "吃熱食",
+                            "睡一覺", "熟睡", "調息", "擦汗歇腿",
+                        ]
+                        .iter()
+                        .any(|kw| purpose_appraisal.contains(kw))
+                    });
+            let is_hunting_or_gathering = !is_clinic
+                && !is_forge
+                && !is_dining
+                && !is_bath
+                && !is_rest_stop
+                && matched_opt
+                    .map(|opt| {
+                        opt.image == crate::npc::causal_core::DecisionImageKind::WorkOrTrade
+                            && (opt.venue_req
+                                == crate::npc::causal_core::VenueRequirement::WildOrOutskirts
+                                || (is_expedition_role
+                                    && state.current != (slot.errand_x, slot.errand_y)
+                                    && state.current != (slot.home_x, slot.home_y)))
+                    })
+                    .unwrap_or_else(|| {
+                        is_expedition_role
+                            && state.current != (slot.errand_x, slot.errand_y)
+                            && state.current != (slot.home_x, slot.home_y)
+                    });
+            let is_work = !is_rest_stop
+                && !is_dining
+                && !is_bath
+                && !is_clinic
+                && !is_forge
+                && !is_hunting_or_gathering
+                && matched_opt
+                    .map(|opt| opt.image == crate::npc::causal_core::DecisionImageKind::WorkOrTrade)
+                    .unwrap_or_else(|| {
+                        [
+                            "工坊", "鍛", "木", "商行", "埠", "站", "院", "堂", "館", "閣", "所",
+                            "市集", "交易", "交割",
+                        ]
+                        .iter()
+                        .any(|kw| dest_name_appraisal.contains(kw) || purpose_appraisal.contains(kw))
+                    });
             if is_clinic {
                 let _ = crate::pg::living_world::clear_entity_afflictions(&ent_id, true, now_unix);
-                let ent_id_c = ent_id.clone();
-                let loc = dest_name_appraisal.clone();
-                std::thread::spawn(move || {
-                    if let Some(arc) = crate::store::get_store() {
-                        let mut s = arc.write();
-                        let _ = s.update_entity(&ent_id_c, |ent| {
-                            crate::db::add_thought_to_entity_with_delta(
-                                ent,
-                                crate::db::ThoughtSource::Rested,
-                                9,
-                                now_unix,
-                                format!("在{}敷過草藥調理氣脈，身上勞損與暗傷消退大半", loc),
-                            );
-                        });
-                    }
-                });
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::ClinicRecovered {
+                        entity_id: ent_id.clone(),
+                        dest_name: dest_name_appraisal.clone(),
+                        recovered_label: "勞損與暗傷".to_string(),
+                        now_unix,
+                    },
+                );
             } else if is_forge {
                 let _ = crate::pg::living_world::temper_vessel_at_forge(
                     &ent_id,
-                    "craft_steel_hunting_knife",
+                    vessel_spec.item_id,
                     now_unix,
                 );
-                let ent_id_c = ent_id.clone();
-                let loc = dest_name_appraisal.clone();
-                std::thread::spawn(move || {
-                    if let Some(arc) = crate::store::get_store() {
-                        let mut s = arc.write();
-                        let _ = s.update_entity(&ent_id_c, |ent| {
-                            crate::db::add_thought_to_entity_with_delta(
-                                ent,
-                                crate::db::ThoughtSource::WorkDone,
-                                7,
-                                now_unix,
-                                format!("在{}借爐火與鐵砧重新回火打磨隨身器物，刃口重歸鋒利趁手", loc),
-                            );
-                        });
-                    }
-                });
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::VesselMaintained {
+                        entity_id: ent_id.clone(),
+                        dest_name: dest_name_appraisal.clone(),
+                        vessel_name: vessel_spec.display_name.to_string(),
+                        now_unix,
+                    },
+                );
             } else if is_hunting_or_gathering {
                 state.consecutive_work_streaks = state.consecutive_work_streaks.saturating_add(1);
                 let _ = crate::pg::living_world::record_breath_activity(
@@ -3529,128 +4257,74 @@ impl Store {
                 );
                 let _ = crate::pg::living_world::record_vessel_use(
                     &ent_id,
-                    "craft_steel_hunting_knife",
+                    vessel_spec.item_id,
                     1,
                     1,
                     now_unix,
                 );
-                let ent_id_c = ent_id.clone();
-                let loc = dest_name_appraisal.clone();
-                let purp = purpose_appraisal.clone();
-                let streak_now = state.consecutive_work_streaks;
-                std::thread::spawn(move || {
-                    let item_choices = [
-                        "mat_foraged_herb",
-                        "mat_timber_log",
-                        "mat_rough_ore",
-                        "mat_hemp_rope_roll",
-                    ];
-                    let picked = item_choices[(streak_now as usize) % item_choices.len()];
-                    let _ = crate::db::add_to_inventory(&ent_id_c, picked, 1);
-                    if let Some(arc) = crate::store::get_store() {
-                        let mut s = arc.write();
-                        let _ = s.update_entity(&ent_id_c, |ent| {
-                            crate::db::add_thought_to_entity_with_delta(
-                                ent,
-                                crate::db::ThoughtSource::WorkDone,
-                                6,
-                                now_unix,
-                                format!(
-                                    "在{}一帶完成一輪「{}」，行囊裡添了新採獲的山海物產，繼續察看前路動靜",
-                                    loc, purp
-                                ),
-                            );
-                        });
-                    }
-                });
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::WildernessForaged {
+                        entity_id: ent_id.clone(),
+                        dest_name: dest_name_appraisal.clone(),
+                        purpose: purpose_appraisal.clone(),
+                        streak: state.consecutive_work_streaks,
+                        now_unix,
+                    },
+                );
             } else if is_dining {
-                let ent_id_c = ent_id.clone();
-                let loc = dest_name_appraisal.clone();
-                std::thread::spawn(move || {
-                    if let Some(arc) = crate::store::get_store() {
-                        let mut s = arc.write();
-                        let _ = s.update_entity(&ent_id_c, |ent| {
-                            if ent.magnesium >= 2 {
-                                ent.magnesium = ent.magnesium.saturating_sub(2);
-                            }
-                            crate::db::add_thought_to_entity_with_flavor(
-                                ent,
-                                crate::db::ThoughtSource::Ate,
-                                now_unix,
-                                format!("在{}用過熱騰騰的茶飯，肚裡暖和舒坦", loc),
-                            );
-                            ent.disposition = (ent.disposition + 8).clamp(-100, 100);
-                        });
-                    }
-                });
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::DinedAtVenue {
+                        entity_id: ent_id.clone(),
+                        dest_name: dest_name_appraisal.clone(),
+                        purpose: purpose_appraisal.clone(),
+                        now_unix,
+                    },
+                );
+                // consecutive_work_streaks 僅作物理連軸工數統計；生命是一條直線，大腦不可逆刻度與昨日延續由 advance_causal_state_on_arrival 完整繼承
                 state.consecutive_work_streaks = 0;
             } else if is_bath {
-                let ent_id_c = ent_id.clone();
-                std::thread::spawn(move || {
-                    if let Some(arc) = crate::store::get_store() {
-                        let mut s = arc.write();
-                        let _ = s.update_entity(&ent_id_c, |ent| {
-                            crate::db::add_thought_to_entity_with_flavor(
-                                ent,
-                                crate::db::ThoughtSource::Rested,
-                                now_unix,
-                                "在溫水浴場泡過熱湯，一身疲乏盡數散去",
-                            );
-                            ent.disposition = (ent.disposition + 10).clamp(-100, 100);
-                        });
-                    }
-                });
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::BathedAtVenue {
+                        entity_id: ent_id.clone(),
+                        now_unix,
+                    },
+                );
+                // consecutive_work_streaks 僅作物理連軸工數統計；生命是一條直線，大腦不可逆刻度與昨日延續由 advance_causal_state_on_arrival 完整繼承
                 state.consecutive_work_streaks = 0;
+            } else if is_rest_stop {
+                state.consecutive_work_streaks = 0;
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::CompletedWorkShift {
+                        entity_id: ent_id.clone(),
+                        dest_name: dest_name_appraisal.clone(),
+                        purpose: purpose_appraisal.clone(),
+                        earn: 0,
+                        streaks: 0,
+                        now_unix,
+                    },
+                );
             } else if is_work {
-                let ent_id_c = ent_id.clone();
-                let loc = dest_name_appraisal.clone();
-                let purp = purpose_appraisal.clone();
-                let earn = if is_expedition_role {
-                    16 + (h % 11) as i32
-                } else {
-                    7 + (h % 7) as i32
-                };
                 let streaks = state.consecutive_work_streaks;
                 state.consecutive_work_streaks = state.consecutive_work_streaks.saturating_add(1);
-                std::thread::spawn(move || {
-                    let single_id = [ent_id_c.clone()];
-                    let _ = crate::game::object_ecology::run_npc_autonomous_production_step(
-                        "",
-                        &loc,
-                        &single_id,
+                let _ = crate::pg::living_world::record_vessel_use(
+                    &ent_id,
+                    vessel_spec.item_id,
+                    1,
+                    usize::from(streaks % 3 == 2) as i32,
+                    now_unix,
+                );
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::CompletedWorkShift {
+                        entity_id: ent_id.clone(),
+                        dest_name: dest_name_appraisal.clone(),
+                        purpose: purpose_appraisal.clone(),
+                        earn: 0,
+                        streaks,
                         now_unix,
-                    );
-                    if let Some(arc) = crate::store::get_store() {
-                        let mut s = arc.write();
-                        let _ = s.update_entity(&ent_id_c, |ent| {
-                            ent.magnesium = ent.magnesium.saturating_add(earn);
-                            if streaks >= 2 {
-                                crate::db::add_thought_to_entity_with_delta(
-                                    ent,
-                                    crate::db::ThoughtSource::Daily,
-                                    -4,
-                                    now_unix,
-                                    format!(
-                                        "在{}連軸忙完「{}」，肩背有些痠沉，想找地方歇口氣喝杯熱茶",
-                                        loc, purp
-                                    ),
-                                );
-                            } else {
-                                crate::db::add_thought_to_entity_with_delta(
-                                    ent,
-                                    crate::db::ThoughtSource::WorkDone,
-                                    6,
-                                    now_unix,
-                                    format!(
-                                        "在{}完成「{}」並結清帳目，手頭進帳 {} 枚鎂幣，心裡踏實",
-                                        loc, purp, earn
-                                    ),
-                                );
-                            }
-                        });
-                    }
-                });
+                    },
+                );
             } else {
+                // consecutive_work_streaks 僅作物理連軸工數統計；生命是一條直線，大腦不可逆刻度與昨日延續由 advance_causal_state_on_arrival 完整繼承
                 state.consecutive_work_streaks = 0;
             }
 
@@ -3665,45 +4339,58 @@ impl Store {
                 .filter(|t| t.flavor.as_deref().unwrap_or("").contains("今日花用又見底"))
                 .count();
             if has_stale_broke || daily_count > 2 {
-                let ent_id_c = ent_id.clone();
-                std::thread::spawn(move || {
-                    if let Some(arc) = crate::store::get_store() {
-                        let mut s = arc.write();
-                        let _ = s.update_entity(&ent_id_c, |ent| {
-                            if ent.magnesium >= 35 {
-                                ent.thoughts.retain(|t| {
-                                    !t.flavor.as_deref().unwrap_or("").contains("鎂袋空了")
-                                });
-                            }
-                            let mut kept_daily = 0;
-                            ent.thoughts.retain(|t| {
-                                if t.flavor.as_deref().unwrap_or("").contains("今日花用又見底") {
-                                    kept_daily += 1;
-                                    kept_daily <= 2
-                                } else {
-                                    true
-                                }
-                            });
-                            crate::db::clean_and_recalc_entity_disposition(ent, now_unix);
-                        });
-                    }
-                });
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::PruneStaleThoughts {
+                        entity_id: ent_id.clone(),
+                        now_unix,
+                    },
+                );
+            }
+            let home_settlement_for_causal =
+                normalize_household_home_settlement(slot.home_name);
+            let prior_action_code = crate::npc::causal_core::LIVE_NPC_CAUSAL_STATES
+                .read()
+                .ok()
+                .and_then(|m| m.get(&ent_id).map(|s| s.chosen_action_code.clone()))
+                .unwrap_or_default();
+            if !prior_action_code.is_empty()
+                && !in_hunting_party
+                && ![
+                    "合社獵團集結地",
+                    "合圍【",
+                    "合圍收網處",
+                    "外圍警戒圈",
+                    "獸跡追蹤點",
+                    "集結哨點",
+                ]
+                .iter()
+                .any(|k| dest_name_appraisal.contains(k))
+            {
+                crate::npc::causal_core::enqueue_arrival_effect(
+                    crate::npc::causal_core::ArrivalEffect::ActionSettlement {
+                        entity_id: ent_id.clone(),
+                        settlement: home_settlement_for_causal.to_string(),
+                        dest_name: dest_name_appraisal.clone(),
+                        action_code: prior_action_code,
+                        now_unix,
+                    },
+                );
             }
             let prev_loc_name = state.dest_name.clone();
             let mut obligation_handled = false;
 
-            // 2. 自主大腦思考與動態目標決策引擎（涵蓋山海獵場多航點推進、傷病就醫、器物修整、市集急缺遠征與多場所生活流轉）
-            let personality =
-                crate::db::expand_soul_seed_to_personality(e.soul_seed.unwrap_or(h as i64));
             let afflictions = crate::pg::living_world::get_entity_afflictions(entity_id);
             let vessel_state =
-                crate::pg::living_world::get_vessel_state(entity_id, "craft_steel_hunting_knife");
+                crate::pg::living_world::get_vessel_state(entity_id, vessel_spec.item_id);
+            let actual_scarce_name =
+                crate::game::object_ecology::scarcest_item_for_settlement(home_settlement_for_causal)
+                    .map(|(_id, nm, _cur, _max, _pr)| nm);
+            let res_seed = crate::npc::causal_core::deterministic_resident_seed(entity_id, e.soul_seed);
+            let role_combined = format!("{} {}", slot.brief_tag, e.display_title);
             let time_bucket = (now_unix / 20) as u64;
-            let is_wenyao_slot = slot.home_x.abs() <= 20 && slot.home_y.abs() <= 20;
 
-            // (A0) 若此人正參與「合社獵團／自主圍獵小隊（`LIVE_HUNTING_PARTIES`）」，直接由小隊黑板同步四面合圍戰術站位與階段行動！
-            {
-                let parties = LIVE_HUNTING_PARTIES.read();
+            // (A0) 若此人正參與「合社獵團／自主圍獵小隊（`LIVE_HUNTING_PARTIES`）」，直接由小隊共識板同步四面合圍戰術站位與階段行動！
+            if let Some(parties) = LIVE_HUNTING_PARTIES.try_read() {
                 for party in parties.values() {
                     if let Some(m_idx) = party.member_ids.iter().position(|id| id == entity_id) {
                         apply_party_directive_to_state(party, m_idx, grid, state);
@@ -3713,500 +4400,249 @@ impl Store {
                 }
             }
 
-            // (A) 獵場／古道遠征人員（入山百工、古道行旅）：在獵場內採多航點大跨度尋跡推進（12~26 格），滿載（streaks >= 3）後沿驛道前往城鎮市集交割，嚴禁定點徘徊！
-            if !obligation_handled && is_expedition_role {
-                if state.consecutive_work_streaks < 3 {
-                    let step_seed = h
-                        .wrapping_add(time_bucket)
-                        .wrapping_add(state.consecutive_work_streaks as u64 * 31);
-                    let zone_prefix = slot.work_name.split('・').next().unwrap_or(slot.work_name);
-                    if slot.brief_tag.starts_with("古道行旅・") {
-                        let (chosen_coord, road_zone) = crate::game::pick_island_trail_waypoint(
-                            zone_prefix,
-                            (slot.home_x, slot.home_y),
-                            (slot.errand_x, slot.errand_y),
-                            step_seed,
-                            state.current,
-                        );
-                        state.origin_name = prev_loc_name.clone();
-                        state.dest = chosen_coord;
-                        state.dest_name = format!("{road_zone}・聯外古道驛路");
-                        state.purpose = slot.work_purpose.to_string();
-                        state.stay_activity = format!(
-                            "正在{road_zone}聯外古道驛路一帶{}，穩步推進跨區貨擔與巡防",
-                            slot.work_purpose
-                        );
-                        state.stay_ticks_remaining = 2 + ((h % 3) as u8);
-                    } else {
-                        let (chosen_coord, chosen_sub) = crate::game::pick_zone_artisan_waypoint(
-                            zone_prefix,
-                            step_seed,
-                            state.current,
-                        );
-                        state.origin_name = prev_loc_name.clone();
-                        state.dest = chosen_coord;
-                        state.dest_name = format!("{zone_prefix}・{chosen_sub}");
-                        state.purpose = slot.work_purpose.to_string();
-                        state.stay_activity = format!(
-                            "正在{zone_prefix}・{chosen_sub}一帶{}，仔細勘查地脈與物產蹤跡",
-                            slot.work_purpose
-                        );
-                        state.stay_ticks_remaining = 3 + ((h % 4) as u8);
-                    }
-                    obligation_handled = true;
-                } else {
-                    // 已完成 3 處獵場航點採集，背囊滿載，動身沿古道與公路前往城鎮市集交割變現！
-                    state.consecutive_work_streaks = 0;
-                    state.origin_name = prev_loc_name.clone();
-                    state.dest = (slot.errand_x, slot.errand_y);
-                    state.dest_name = slot.errand_name.to_string();
-                    state.purpose = "運貨赴市交割".to_string();
-                    state.stay_activity = slot.errand_stay_activity.to_string();
-                    state.stay_ticks_remaining = 6 + ((h % 5) as u8);
-                    obligation_handled = true;
-                }
-            }
-
-            // (B) 部位傷勢或瘴氣在身：優先前往診所／藥鋪求醫調理
-            if !obligation_handled && !afflictions.is_empty() && (6..=21).contains(&hour) {
-                let (clinic_coord, clinic_name) = if is_wenyao_slot {
-                    (
-                        resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -1)),
-                        "文曜・溫氏脈絡診所",
-                    )
-                } else if slot.home_y < -220 {
-                    ((0, -320), "南哨・南哨脈絡解毒診所")
-                } else if slot.home_x < -200 {
-                    ((-263, 158), "風舶角・港務脈絡診所")
-                } else {
-                    ((slot.errand_x, slot.errand_y), slot.errand_name)
-                };
-                open_active_npc_obligation(entity_id, "treat_injury", "身上帶有傷勢勞損需赴醫館敷藥調理");
-                state.origin_name = prev_loc_name.clone();
-                state.dest = clinic_coord;
-                state.dest_name = clinic_name.to_string();
-                state.purpose = "敷藥調理".to_string();
-                state.stay_activity = format!("因身上帶有傷勢勞損，特地在{}請醫師敷藥調理氣脈", clinic_name);
-                state.stay_ticks_remaining = 8 + ((h % 5) as u8);
-                obligation_handled = true;
-            }
-
-            // (C) 隨身器物刃口微鈍或捲刃：主動前往鍛造工坊／鐵器坊打磨回火
-            if !obligation_handled
-                && vessel_state.condition != crate::pg::living_world::VesselCondition::Sharp
-                && (7..=20).contains(&hour)
-            {
-                let (forge_coord, forge_name) = if is_wenyao_slot {
-                    (
-                        resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
-                        "文曜・岑氏第一鍛造工坊",
-                    )
-                } else if slot.home_x > 40 {
-                    ((95, 95), "半嶺鎮・百工鐵器鍛造坊")
-                } else if slot.home_y < -180 {
-                    ((-180, -245), "大圳頭・西南原農具與百工坊")
-                } else {
-                    ((slot.work_x, slot.work_y), slot.work_name)
-                };
-                open_active_npc_obligation(entity_id, "repair_tool", "隨身器物刃口磨損待赴鐵坊修整");
-                state.origin_name = prev_loc_name.clone();
-                state.dest = forge_coord;
-                state.dest_name = forge_name.to_string();
-                state.purpose = "修整器物".to_string();
-                state.stay_activity = format!("察覺隨身器物刃口微鈍，特地在{}借爐火與磨石修整開鋒", forge_name);
-                state.stay_ticks_remaining = 8 + ((h % 5) as u8);
-                obligation_handled = true;
-            }
-
-            // (D) 聚落市集緊缺物料與跨區採集／行商驅動：不再只有死板三點，居民會因手頭銀錢或坊間急徵主動前往鄰近獵場或商站採辦！
-            if !obligation_handled && ((6..=21).contains(&hour) || personality.boldness > 0.58) {
-                if let Some((ob_kind, _)) = get_active_npc_obligation(entity_id) {
-                    clear_active_npc_obligation(entity_id, &ob_kind);
-                    if ob_kind == "restock_goods" {
-                        crate::server::action::trade::restock_shop_items_for_seller(entity_id);
-                    }
-                } else {
-                    let roll =
-                        (h.wrapping_add(time_bucket).wrapping_mul(1103515245) >> 16) % 100;
-                    let home_settlement =
-                        slot.home_name.split('・').next().unwrap_or("文曜");
-                    if roll < 22
-                        && (e.magnesium < 45 || personality.boldness > 0.54)
-                        && let Some((_scarce_id, scarce_name, cur_stock, tgt_stock, _price)) =
-                            crate::game::object_ecology::scarcest_item_for_settlement(
-                                home_settlement,
-                            )
-                        && cur_stock < tgt_stock
-                    {
-                        // 根據所在聚落位置，優先響應鄰近山海獵場「合社獵團」的吹角號召加入四面圍獵分紅，或赴獵場採辦急缺物產！
-                        // 根據所在聚落位置與個體雜湊，分散響應周邊 19 座山海獵場「合社獵團」或赴獵場廣域棲地採辦急缺物產（杜絕擠往單一座標）
-                        let target_party_zone = if slot.home_y > 140 {
-                            ["清泉溪谷", "翠冠巨木林", "北坡雲杉林", "雲腰雪林", "白塔雪巔"]
-                                [(h as usize) % 5]
-                        } else if slot.home_x > 50 {
-                            ["西嶺礦谷", "東海峭壁", "清泉溪谷", "淺澤泥口"]
-                                [(h as usize) % 4]
-                        } else if slot.home_x < -220 {
-                            ["驚濤岩岸", "巨藻淺灣", "黑石灣", "落日岬"]
-                                [(h as usize) % 4]
-                        } else if slot.home_y < -220 {
-                            ["白茫洲", "貼山深潭", "淺澤泥口", "青籠關"]
-                                [(h as usize) % 4]
-                        } else if slot.home_y < -100 {
-                            ["長風草甸", "赤石坡", "古河巨木林", "落日岬"]
-                                [(h as usize) % 4]
-                        } else {
-                            ["古河巨木林", "西麓林道", "清泉溪谷", "西嶺礦谷", "赤石坡"]
-                                [(h as usize) % 5]
-                        };
-                        let (exp_coord, exp_sub) = crate::game::pick_zone_artisan_waypoint(
-                            target_party_zone,
-                            h.wrapping_add(time_bucket),
-                            state.current,
-                        );
-                        let exp_zone_name = format!("{target_party_zone}・{exp_sub}");
-                        let mut joined_party_info: Option<(String, String, usize)> = None;
-                        {
-                            let mut parties = LIVE_HUNTING_PARTIES.write();
-                            if let Some(party) = parties.get_mut(target_party_zone)
-                                && party.member_ids.len() < 9
-                                && !party.member_ids.iter().any(|id| id == entity_id)
-                            {
-                                party.member_ids.push(entity_id.to_string());
-                                let m_idx = party.member_ids.len() - 1;
-                                apply_party_directive_to_state(party, m_idx, grid, state);
-                                joined_party_info = Some((
-                                    party.leader_name.clone(),
-                                    party.prey_name.clone(),
-                                    party.member_ids.len(),
-                                ));
-                            }
-                        }
-                        if let Some((leader_name, prey_name, total_n)) = joined_party_info {
-                            open_active_npc_obligation(
-                                entity_id,
-                                "restock_goods",
-                                &format!(
-                                    "響應【{}】號召加入{}合社獵團（共{}人）合圍【{}】",
-                                    leader_name, target_party_zone, total_n, prey_name
-                                ),
-                            );
-                            let ent_id_c = ent_id.clone();
-                            let home_s = home_settlement.to_string();
-                            let s_name = scarce_name.clone();
-                            let z_name = target_party_zone.to_string();
-                            std::thread::spawn(move || {
-                                if let Some(arc) = crate::store::get_store() {
-                                    let mut s = arc.write();
-                                    let _ = s.update_entity(&ent_id_c, |ent| {
-                                        crate::db::add_thought_to_entity_with_delta(
-                                            ent,
-                                            crate::db::ThoughtSource::Daily,
-                                            6,
-                                            now_unix,
-                                            format!(
-                                                "見{}坊間急徵「{}」，正巧聽聞【{}】領隊【{}】吹角號召人手合圍【{}】（已集結 {} 人），當即提上隨身器物入團助陣分紅",
-                                                home_s, s_name, z_name, leader_name, prey_name, total_n
-                                            ),
-                                        );
-                                    });
-                                }
-                            });
-                            state.origin_name = prev_loc_name.clone();
-                            obligation_handled = true;
-                        } else {
-                            open_active_npc_obligation(
-                                entity_id,
-                                "restock_goods",
-                                &format!("赴{}採辦坊間急缺之{}", exp_zone_name, scarce_name),
-                            );
-                            let ent_id_c = ent_id.clone();
-                            let home_s = home_settlement.to_string();
-                            let s_name = scarce_name.clone();
-                            let z_name = exp_zone_name.to_string();
-                            std::thread::spawn(move || {
-                                if let Some(arc) = crate::store::get_store() {
-                                    let mut s = arc.write();
-                                    let _ = s.update_entity(&ent_id_c, |ent| {
-                                        crate::db::add_thought_to_entity_with_delta(
-                                            ent,
-                                            crate::db::ThoughtSource::Daily,
-                                            4,
-                                            now_unix,
-                                            format!(
-                                                "見{}坊間急徵「{}」，盤算手頭銀錢與腳力，決定動身前往【{}】採辦應急物產",
-                                                home_s, s_name, z_name
-                                            ),
-                                        );
-                                    });
-                                }
-                            });
-                            state.origin_name = prev_loc_name.clone();
-                            state.dest = exp_coord;
-                            state.dest_name = exp_zone_name.to_string();
-                            state.purpose = format!("採辦急缺{}", scarce_name);
-                            state.stay_activity = format!(
-                                "正於{}一帶尋覓並採集{}坊間急缺的「{}」",
-                                exp_zone_name, home_settlement, scarce_name
-                            );
-                            state.stay_ticks_remaining = 6 + ((h % 5) as u8);
-                            obligation_handled = true;
-                        }
-                    } else if roll < 18 && is_wenyao_slot {
-                        let ob_choice = (h.wrapping_add(time_bucket) >> 4) % 8;
-                        let (ob_kind, ob_subject, ob_dest, ob_dest_name, ob_act, ob_purpose) =
-                            match ob_choice {
-                                0 => (
-                                    "repair_tool",
-                                    "手頭器物刃口與榫卯微損待修",
-                                    resolve_bldg_coord_or_fallback("岑氏第一鍛造工坊", (1, -1)),
-                                    "文曜・岑氏第一鍛造工坊",
-                                    "正在鍛造工坊請匠師修整受損器物",
-                                    "修整器物",
-                                ),
-                                1 => (
-                                    "repair_tool",
-                                    "隨身木作器具榫頭鬆動待修",
-                                    resolve_bldg_coord_or_fallback("巧木居所傢俱坊", (1, -2)),
-                                    "文曜・巧木居所傢俱坊",
-                                    "正在木作工坊請匠人加固器具榫卯",
-                                    "修整木器",
-                                ),
-                                2 => (
-                                    "restock_goods",
-                                    "手頭物料與店內備貨見底待補",
-                                    resolve_bldg_coord_or_fallback("西門車馬聯運總站", (-2, -1)),
-                                    "文曜・西門車馬聯運總站",
-                                    "正在清點並提領新運抵的補充物料",
-                                    "補倉提貨",
-                                ),
-                                3 => (
-                                    "restock_goods",
-                                    "日常用料短缺需赴雜貨行添購",
-                                    resolve_bldg_coord_or_fallback("分家巷口雜貨柑仔店", (1, -3)),
-                                    "文曜・分家巷口雜貨柑仔店",
-                                    "正在雜貨行添購新到貨的日用物料",
-                                    "添購物料",
-                                ),
-                                4 => (
-                                    "treat_injury",
-                                    "連日奔波筋骨微酸需敷藥調理",
-                                    resolve_bldg_coord_or_fallback("溫氏脈絡診所", (1, -1)),
-                                    "文曜・溫氏脈絡診所",
-                                    "正在敷用活血草藥調理筋骨勞損",
-                                    "敷藥調理",
-                                ),
-                                5 => (
-                                    "treat_injury",
-                                    "奔走風寒需赴湯池溫水祛乏",
-                                    resolve_bldg_coord_or_fallback("泉香溫水浴場", (-2, 2)),
-                                    "文曜・泉香溫水浴場",
-                                    "正在溫水湯池旁熱敷舒緩筋骨疲乏",
-                                    "溫水祛乏",
-                                ),
-                                6 => (
-                                    "repay_debt",
-                                    "手頭一筆貨單票據需赴總商行核銷",
-                                    resolve_bldg_coord_or_fallback("三水總商行", (-1, 1)),
-                                    "文曜・三水總商行",
-                                    "正在總商行櫃台憑摺核銷往來貨單",
-                                    "核銷貨單",
-                                ),
-                                _ => (
-                                    "restock_goods",
-                                    "海味與南北乾貨備料待補",
-                                    resolve_bldg_coord_or_fallback("三水口乾貨海味行", (-1, 3)),
-                                    "文曜・三水口乾貨海味行",
-                                    "正在海味行秤提新運抵的風櫃魚乾與海鹽",
-                                    "提領乾貨",
-                                ),
-                            };
-
-                        open_active_npc_obligation(entity_id, ob_kind, ob_subject);
-                        state.origin_name = prev_loc_name.clone();
-                        state.dest = ob_dest;
-                        state.dest_name = ob_dest_name.to_string();
-                        state.purpose = ob_purpose.to_string();
-                        state.stay_activity = ob_act.to_string();
-                        state.stay_ticks_remaining = 8 + ((h % 6) as u8);
-                        obligation_handled = true;
-                    }
+            let (causal_state, chosen_opt) = crate::npc::causal_core::plan_next_causal_action(
+                entity_id,
+                &role_combined,
+                home_settlement_for_causal,
+                res_seed,
+                &dest_name_appraisal,
+                state.consecutive_work_streaks,
+                !afflictions.is_empty(),
+                vessel_state.condition != crate::pg::living_world::VesselCondition::Sharp,
+                e.magnesium,
+                hour.max(0) as u32,
+                actual_scarce_name.as_deref(),
+            );
+            if obligation_handled {
+                if let Ok(mut map) = crate::npc::causal_core::LIVE_NPC_CAUSAL_STATES.write()
+                    && let Some(st) = map.get_mut(&ent_id)
+                {
+                    st.chosen_action_code.clear();
                 }
             }
 
             if !obligation_handled {
-                let last_thought_text = e
-                    .thoughts
-                    .last()
-                    .and_then(|t| t.flavor.as_deref())
-                    .unwrap_or("");
-                let is_fatigued = e.disposition <= -12
-                    || state.consecutive_work_streaks >= 3
-                    || last_thought_text.contains("痠沉")
-                    || last_thought_text.contains("疲乏")
-                    || last_thought_text.contains("煩悶");
+                let (next_coord, next_dest_name) = Self::resolve_venue_for_requirement(
+                    chosen_opt.venue_req,
+                    slot,
+                    Some(grid),
+                    state.current,
+                    vessel_spec.is_bladed,
+                    res_seed.wrapping_add(time_bucket),
+                );
+                state.origin_name = prev_loc_name;
+                state.dest = next_coord;
+                state.dest_name = next_dest_name;
+                state.purpose = chosen_opt.action_title.to_string();
+                state.stay_activity = crate::npc::causal_core::format_predefined_stay_activity(
+                    &state.dest_name,
+                    &causal_state,
+                    e.magnesium,
+                );
+                let z_idx = crate::game::nearest_hunting_zone_idx(state.current.0, state.current.1);
+                let spillover = crate::game::is_zone_predator_spillover_active(z_idx);
+                let (weather, _tide) = crate::game::current_zone_weather_and_tide(z_idx, now_unix / 300);
+                let is_urban_dest = crate::game::is_inside_settlement_urban_core(state.dest.0, state.dest.1)
+                    || [
+                        "文曜", "半嶺鎮", "風舶角", "南哨", "大圳頭", "紅土崁", "北嶺腳", "風櫃尾", "下營", "青竹坪",
+                        "牛埔", "烏石鼻", "霜林口", "三號坑口", "水尾寮", "老堰頭", "三水口",
+                        "石橋", "街", "巷", "弄", "坊", "鋪", "行", "堂", "館", "閣", "院", "所", "署", "庫", "倉",
+                        "食堂", "茶", "酒", "旅社", "驛館", "診", "藥", "居", "宅", "舍", "齋", "井", "哨",
+                        "屋", "寮", "房", "棚", "市集",
+                    ]
+                    .iter()
+                    .any(|kw| state.dest_name.contains(kw));
+                let is_urban_current = crate::game::is_inside_settlement_urban_core(state.current.0, state.current.1);
+                let fallow = if is_urban_dest {
+                    None
+                } else {
+                    crate::game::is_zone_in_fallow_stewardship(&state.dest_name)
+                };
+                let pers = self.entities.get(entity_id).and_then(|e| e.soul_seed).map(crate::db::expand_soul_seed_to_personality);
+                let bold = pers.map(|p| p.boldness).unwrap_or(0.5);
+                let person_name = resolve_npc_person_name(entity_id, &e.display_title, Some(e.gender.as_str()));
+                let home_settlement = home_settlement_for_causal;
+                let dest_settlement = state.dest_name.split('・').next().unwrap_or(&state.dest_name);
 
-                let mut override_handled = false;
-
-                // Case A: Fatigue / Bad Mood Recovery — 尋找所在聚落或鄰近街坊的茶屋、食堂、湯池歇息
-                if is_fatigued {
-                    let (coord, target_name) = if is_wenyao_slot {
-                        let targets = [
-                            ((-1, 2), "三水大食堂".to_string()),
-                            ((2, -2), "泉香溫水浴場".to_string()),
-                            ((2, -1), "東橋旅社與山風茶屋".to_string()),
-                            ((13, 13), "講堂外坊・翰墨清茶書肆".to_string()),
-                        ];
-                        targets[((h.wrapping_add(hour as u64)) % 4) as usize].clone()
-                    } else {
-                        // 在當前聚落 18 格內搜尋真實茶寮／食堂／旅社／浴場，避免永遠只去單一 errand 點
-                        let found = grid
-                            .cells()
-                            .filter(|c| {
-                                (c.coord.x - slot.home_x).abs() + (c.coord.y - slot.home_y).abs()
-                                    <= 18
-                                    && (c.name.contains("食堂")
-                                        || c.name.contains("茶")
-                                        || c.name.contains("浴")
-                                        || c.name.contains("旅社")
-                                        || c.name.contains("飯"))
-                            })
-                            .nth(((h.wrapping_add(hour as u64)) % 3) as usize);
-                        if let Some(cell) = found {
-                            ((cell.coord.x, cell.coord.y), cell.name.clone())
-                        } else {
-                            ((slot.errand_x, slot.errand_y), slot.errand_name.to_string())
-                        }
-                    };
-                    state.origin_name = prev_loc_name.clone();
-                    state.dest = coord;
-                    state.dest_name = target_name.clone();
-                    state.purpose = "品茗用膳".to_string();
-                    state.stay_activity = format!(
-                        "因連日奔忙心緒微疲，特地在{}歇腳喝口熱茶、用頓熱飯舒緩精神",
-                        target_name
-                    );
-                    state.stay_ticks_remaining = 8 + ((h % 6) as u8);
-                    state.consecutive_work_streaks = 0;
-                    override_handled = true;
-                }
-                // Case B: Economic Drive — 手頭銀錢吃緊時主動赴商行、貨棧或工坊多接差事
-                else if e.magnesium < 35 && (7..=20).contains(&hour) {
-                    let (coord, target_name) = if is_wenyao_slot {
-                        let targets = [
-                            ((-1, 1), "三水總商行總部"),
-                            ((-3, -1), "西門・車馬聯運總站"),
-                            ((slot.work_x, slot.work_y), slot.work_name),
-                        ];
-                        targets[((h.wrapping_add(hour as u64)) % 3) as usize]
-                    } else {
-                        ((slot.work_x, slot.work_y), slot.work_name)
-                    };
-                    state.origin_name = prev_loc_name.clone();
-                    state.dest = coord;
-                    state.dest_name = target_name.to_string();
-                    state.purpose = "籌措生計".to_string();
-                    state.stay_activity = format!(
-                        "因手頭銀錢吃緊，主動趕往{}多接一趟差事貼補家用",
-                        target_name
-                    );
-                    state.stay_ticks_remaining = 8 + ((h % 6) as u8);
-                    let ent_id_c = ent_id.clone();
-                    std::thread::spawn(move || {
-                        let _ = crate::db::add_magnesium(&ent_id_c, 12);
-                    });
-                    override_handled = true;
-                }
-                // Case C: Social / Curiosity / Cross-Building Circulation — 依性格造訪同聚落不同場所或鄰鎮商站
-                else if (personality.boldness > 0.56 || personality.sensitivity > 0.60)
-                    && (9..=20).contains(&hour)
-                    && (h.wrapping_add(time_bucket)) % 3 == 0
+                if !is_urban_dest
+                    && !is_urban_current
+                    && slot.brief_tag.starts_with("古道行旅・")
+                    && (spillover || weather == crate::game::ZoneWeatherPhase::RainMist || weather == crate::game::ZoneWeatherPhase::ColdFrost)
+                    && bold < 0.52
                 {
-                    let (coord, target_name) = if is_wenyao_slot {
-                        let targets = [
-                            ((0, 0), "文曜・中心樞紐石橋".to_string()),
-                            ((1, 0), "文曜・三水口納涼棚廊".to_string()),
-                            ((13, -13), "百工外坊・紅爐烈酒大飯鋪".to_string()),
-                            ((-12, -12), "西門外坊・西郊行商車馬大店".to_string()),
-                        ];
-                        targets[((h.wrapping_add(hour as u64)) % 4) as usize].clone()
+                    let hazard_prose = if spillover {
+                        "山中猛獸越界下山於古道伏行窺伺"
+                    } else if weather == crate::game::ZoneWeatherPhase::RainMist {
+                        "連綿山雨致古道泥濘難行"
                     } else {
-                        // 在聚落內依性格挑選不同類型場所造訪，打破兩點來回死循環
-                        let mut candidates: Vec<&crate::grid::GridCell> = grid
-                            .cells()
-                            .filter(|c| {
-                                let d = (c.coord.x - slot.home_x).abs()
-                                    + (c.coord.y - slot.home_y).abs();
-                                d >= 3
-                                    && d <= 20
-                                    && (c.coord.x, c.coord.y) != state.current
-                                    && !c.name.is_empty()
-                                    && c.terrain.walkable()
-                                    && !matches!(
-                                        c.terrain,
-                                        crate::grid::Terrain::Water
-                                            | crate::grid::Terrain::Wall
-                                            | crate::grid::Terrain::Fence
-                                            | crate::grid::Terrain::House
-                                    )
-                            })
-                            .collect();
-                        candidates.sort_by_key(|c| (c.coord.x, c.coord.y));
-                        if !candidates.is_empty() {
-                            let pick = candidates
-                                [((h.wrapping_add(time_bucket)) as usize) % candidates.len()];
-                            ((pick.coord.x, pick.coord.y), pick.name.clone())
-                        } else {
-                            ((slot.errand_x, slot.errand_y), slot.errand_name.to_string())
-                        }
+                        "寒霜凜冽封阻高處山徑"
                     };
-                    state.origin_name = prev_loc_name.clone();
-                    state.dest = coord;
-                    state.dest_name = target_name.clone();
-                    state.purpose = "探聽商情風物".to_string();
-                    state.stay_activity = format!(
-                        "正駐足{}與往來同道寒暄，打聽近期各處物產收成與市集行情",
-                        target_name
+                    crate::npc::causal_core::create_stranded_cargo_order(
+                        entity_id,
+                        &person_name,
+                        "iron_ore",
+                        "高純鐵礦石",
+                        2,
+                        home_settlement,
+                        dest_settlement,
+                        &state.dest_name,
+                        state.current,
+                        hazard_prose,
+                        now_unix,
                     );
-                    state.stay_ticks_remaining = 6 + ((h % 5) as u8);
-                    override_handled = true;
-                }
-
-                if !override_handled {
-                    if (7..=11).contains(&hour) || (13..=21).contains(&hour) {
-                        state.work_errand_toggle = !state.work_errand_toggle;
-                    } else {
-                        state.work_errand_toggle = false;
-                    }
-
-                    let (next_dest, next_dest_name, next_purpose, next_stay_activity, next_ticks) =
-                        resolve_wenyao_npc_schedule(
-                            slot,
-                            hour,
-                            state.work_errand_toggle,
-                            &prev_loc_name,
+                    open_active_npc_obligation(
+                        entity_id,
+                        "stranded_cargo",
+                        &format!("受阻於{}的急貨待援", state.dest_name),
+                    );
+                    state.stay_activity = format!(
+                        "因前方{}而不敢貿然強穿，正守著滯留貨擔在{}焦急尋人接應",
+                        hazard_prose, state.dest_name
+                    );
+                } else if bold >= 0.52 || slot.brief_tag.starts_with("合社獵團・") || slot.brief_tag.starts_with("古道行旅・") {
+                    if let Some((order, bounty)) = crate::npc::causal_core::claim_or_deliver_stranded_cargo_for_npc(
+                        entity_id,
+                        &person_name,
+                        &state.dest_name,
+                        state.current,
+                        now_unix,
+                    ) {
+                        if bounty > 0 {
+                            let mut treasuries = crate::npc::causal_core::SETTLEMENT_TREASURIES
+                                .write()
+                                .unwrap_or_else(|e| e.into_inner());
+                            *treasuries.entry("文曜".to_string()).or_insert(2400) += bounty;
+                            drop(treasuries);
+                            crate::npc::causal_core::enqueue_arrival_effect(
+                                crate::npc::causal_core::ArrivalEffect::CustomThoughtAndMg {
+                                    entity_id: entity_id.to_string(),
+                                    delta_mg: bounty,
+                                    delta_disp: 4,
+                                    thought: format!(
+                                        "替【{}】將受阻於{}的「{}」護送過關，領得公庫賞格 {} 枚鎂幣",
+                                        order.carrier_name, order.waystation_name, order.item_name, bounty
+                                    ),
+                                    now_unix,
+                                },
+                            );
+                        }
+                        clear_active_npc_obligation(&order.carrier_id, "stranded_cargo");
+                        let _ = crate::game::object_ecology::supply_settlement_commodity_from_work(
+                            &order.dest_settlement,
+                            "arbitrage",
+                            &person_name,
                         );
-
-                    state.origin_name = prev_loc_name;
-                    state.dest = next_dest;
-                    state.dest_name = next_dest_name;
-                    state.purpose = next_purpose;
-                    state.stay_activity = next_stay_activity;
-                    state.stay_ticks_remaining = (next_ticks / 2).max(5);
+                        state.stay_activity = format!(
+                            "冒險替【{}】將滯留的「{}」搶運過關、送抵{}市集交割",
+                            order.carrier_name, order.item_name, order.dest_settlement
+                        );
+                    }
                 }
+
+                if let Some(res_label) = &fallow {
+                    let dest_z_idx = crate::game::resolve_zone_idx_from_name_or_settlement(&state.dest_name);
+                    let zone_name = crate::game::CANONICAL_HUNTING_ZONES
+                        .get(dest_z_idx)
+                        .map(|z| z.0)
+                        .unwrap_or(state.dest_name.as_str());
+                    let prose_summary = match *res_label {
+                        "漁場" => format!(
+                            "{zone_name}的漁場因連日捕撈正逢休漁養息，漁人多已轉往鄰灣或留守修補網具"
+                        ),
+                        "礦脈" => format!(
+                            "{zone_name}的礦脈因連日開採正逢封坑休養，礦工多已轉往鄰谷或留守加固坑道"
+                        ),
+                        _ => format!(
+                            "{zone_name}的{res_label}因連日採擷正逢封山休養，百工多已轉往鄰谷或留守培土護苗"
+                        ),
+                    };
+                    let fact = crate::npc::causal_core::WorldRippleFact {
+                        fact_id: format!("fallow_{}_{}_{}", zone_name, res_label, now_unix / 300),
+                        kind: crate::npc::causal_core::RippleFactKind::ResourceFallow,
+                        subject_zone_or_settlement: zone_name.to_string(),
+                        item_or_actor: res_label.to_string(),
+                        order_id: None,
+                        severity: 1.0,
+                        origin_tick: now_unix,
+                        hop_count: 0,
+                        max_hops: 4,
+                        prose_summary,
+                    };
+                    crate::npc::causal_core::inject_ripple_fact_into_npc(entity_id, fact, now_unix);
+                    if slot.brief_tag.starts_with("入山百工・") {
+                        state.stay_activity = match *res_label {
+                            "漁場" => format!("見此處{}亟待休養，正親手修整礁岸、養護藻床，兼做「{}」", res_label, chosen_opt.action_title),
+                            "礦脈" => format!("見此處{}亟待休養，正親手加固坑木、疏通山溝，兼做「{}」", res_label, chosen_opt.action_title),
+                            _ => format!("見此處{}亟待休養，正親手培土護苗、修整山場，兼做「{}」", res_label, chosen_opt.action_title),
+                        };
+                    }
+                } else if slot.brief_tag.starts_with("古道行旅・") && spillover && bold >= 0.52 {
+                    state.stay_activity = format!(
+                        "沿途留神草莽間下山覓食的猛獸動靜，一邊緊握防身傢伙、一邊{}",
+                        chosen_opt.action_title
+                    );
+                }
+
+                state.stay_ticks_remaining = 6 + ((h % 5) as u8);
+            }
+            let spk_name = resolve_npc_person_name(entity_id, &e.display_title, Some(e.gender.as_str()));
+            arrived_for_ripple = Some((state.current, spk_name, now_unix));
             }
         }
 
-        if state.current != state.dest {
+        let step_result = if state.current != state.dest {
             let next_coord = find_bfs_next_step(grid, state.current, state.dest)
                 .unwrap_or(state.current);
             let prev_coord = state.current;
             state.current = next_coord;
-
-            return Some((prev_coord, next_coord));
+            (prev_coord, next_coord)
+        } else {
+            ((old_x, old_y), (old_x, old_y))
+        };
+        if let Some((cur_pos, speaker_name, now_unix)) = arrived_for_ripple {
+            let peer_opt = states
+                .iter()
+                .find(|(id, st)| {
+                    id.as_str() != entity_id
+                        && (st.current.0 - cur_pos.0).abs() + (st.current.1 - cur_pos.1).abs() <= 1
+                })
+                .map(|(id, _)| id.clone());
+            drop(states);
+            if let Some(peer_id) = peer_opt {
+                let peer_name = self
+                    .entities
+                    .get(&peer_id)
+                    .map(|pe| {
+                        resolve_npc_person_name(
+                            &pe.id,
+                            if pe.display_title.trim().is_empty() {
+                                "街坊住民"
+                            } else {
+                                pe.display_title.as_str()
+                            },
+                            Some(pe.gender.as_str()),
+                        )
+                    })
+                    .unwrap_or_else(|| "坊間住民".to_string());
+                crate::npc::causal_core::propagate_ripple_between_npcs(
+                    entity_id,
+                    &speaker_name,
+                    &peer_id,
+                    &peer_name,
+                    now_unix,
+                );
+                crate::npc::causal_core::propagate_ripple_between_npcs(
+                    &peer_id,
+                    &peer_name,
+                    entity_id,
+                    &speaker_name,
+                    now_unix,
+                );
+            }
+        } else {
+            drop(states);
         }
-
-        Some(((old_x, old_y), (old_x, old_y)))
+        Some(step_result)
     }
 
     /// 與指定正方格座標重合的實體 id（依 `entity_ids_in_room`）。
@@ -4320,5 +4756,33 @@ impl Store {
         }
         self.persist_entities()?;
         self.persist_entity_rooms()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_salted_wenyao_names_roundtrip_and_gender_separation() {
+        for salt in 0..3840 {
+            let f_name = deterministic_wenyao_full_name_salted("npc_test_f", Some("F"), salt);
+            assert_eq!(
+                resolve_npc_person_name("npc_test_f", &f_name, Some("F")),
+                f_name,
+                "Female salted name failed roundtrip at salt={salt}: {f_name}"
+            );
+            let m_name = deterministic_wenyao_full_name_salted("npc_test_m", Some("M"), salt);
+            assert_eq!(
+                resolve_npc_person_name("npc_test_m", &m_name, Some("M")),
+                m_name,
+                "Male salted name failed roundtrip at salt={salt}: {m_name}"
+            );
+        }
+        assert_ne!(resolve_npc_person_name("npc_100", "韓國", Some("M")), "韓國");
+        assert_ne!(resolve_npc_person_name("npc_101", "宋淑", Some("F")), "宋淑");
+        assert_ne!(resolve_npc_person_name("npc_102", "盧強勇", Some("M")), "盧強勇");
+        assert_ne!(resolve_npc_person_name("npc_103", "萬玲淑", Some("F")), "萬玲淑");
+        assert_eq!(resolve_npc_person_name("溫晴", "溫晴", Some("F")), "溫晴");
     }
 }

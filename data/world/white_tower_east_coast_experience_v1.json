@@ -1,0 +1,517 @@
+{
+  "schema_version": 1,
+  "id": "white_tower_east_coast_experience_v1",
+  "name": "白塔東岸行動與回訪程式原型",
+  "artifact_role": "experience_prototype_fixture",
+  "status": "working_proposal",
+  "canon": false,
+  "runtime_authority": false,
+  "stage": "program_only_experience_proof",
+  "source_world": {
+    "manifest_id": "white_tower_peninsula_v1",
+    "baseline_day_id": "D2",
+    "region_ref": "BT-R09",
+    "resident_ref": "P-N-13",
+    "site_ref": "SITE-N-EAST",
+    "baseline_fact_refs": [
+      "F-EAST-PATIENT",
+      "F-EAST-ROAD",
+      "F-EAST-MATERIAL"
+    ]
+  },
+  "player_actor_ref": "PLAYER-PROTOTYPE-01",
+  "hypothesis": "玩家在東岸花一天協助方石搬運真實修路材料後，同一套世界事實規則會消耗這一天並讓修復較早推進；玩家離開期間方石仍會自行工作，D5 回來時可從道路、材料與人物去向看出自己當時選擇留下或離開的差異。",
+  "falsifiers": [
+    "幫忙與離開在 D5 得到相同的權威事實或相同的可見回訪結果",
+    "玩家離開後，方石必須等玩家再次交談才會繼續工作",
+    "玩家行動繞過居民使用的 Transition 前置條件與效果規則",
+    "玩家可見文字包含沒有事實支撐的結果，或洩漏隱藏事實與其他地區狀態"
+  ],
+  "proof_boundary": {
+    "proven": [
+      "一個玩家選擇能進入既有白塔東岸因果鏈",
+      "玩家與居民行動由同一個通用 Transition 引擎執行",
+      "玩家離開後居民仍可推進工作",
+      "回訪文字逐行由當地權威事實支撐",
+      "中途快照重啟可得到相同結局與後段收據"
+    ],
+    "not_proven": [
+      "正式文字 GUI、版面、輸入方式或視覺語言",
+      "PostgreSQL 與現行伺服器 runtime 接線",
+      "一千八百萬人口的效能與模擬解析度",
+      "白塔東岸事件或生活的世界整體方向已升格正典"
+    ]
+  },
+  "minimum_offscreen_resident_transitions": 3,
+  "required_branch_difference_refs": [
+    "F-EAST-ROAD",
+    "F-EAST-MATERIAL",
+    "F-EAST-CUSTODIAN-LOCATION",
+    "F-EAST-WORK-STAGE",
+    "F-EAST-PLAYER-TIME",
+    "F-EAST-PLAYER-CHOICE",
+    "F-EAST-HELP-TRACE"
+  ],
+  "facts": [
+    {
+      "id": "F-EAST-PATIENT",
+      "subject_ref": "SITE-N-EAST",
+      "key": "patient_transfer",
+      "value": "admission_confirmed_to_east_team"
+    },
+    {
+      "id": "F-EAST-ROAD",
+      "subject_ref": "SITE-N-EAST",
+      "key": "road_status",
+      "value": "blocked"
+    },
+    {
+      "id": "F-EAST-MATERIAL",
+      "subject_ref": "SITE-N-EAST",
+      "key": "repair_material",
+      "value": "delivered_to_east_coast"
+    },
+    {
+      "id": "F-EAST-CUSTODIAN-LOCATION",
+      "subject_ref": "P-N-13",
+      "key": "current_task_location",
+      "value": "at_closed_road"
+    },
+    {
+      "id": "F-EAST-WORK-STAGE",
+      "subject_ref": "SITE-N-EAST",
+      "key": "repair_stage",
+      "value": "materials_waiting_outside_closed_section"
+    },
+    {
+      "id": "F-EAST-PLAYER-LOCATION",
+      "subject_ref": "PLAYER-PROTOTYPE-01",
+      "key": "location",
+      "value": "at_east_coast_road"
+    },
+    {
+      "id": "F-EAST-PLAYER-TIME",
+      "subject_ref": "PLAYER-PROTOTYPE-01",
+      "key": "available_time",
+      "value": "one_day_available"
+    },
+    {
+      "id": "F-EAST-PLAYER-PERMISSION",
+      "subject_ref": "PLAYER-PROTOTYPE-01",
+      "key": "local_permission",
+      "value": "invited_to_help"
+    },
+    {
+      "id": "F-EAST-PLAYER-CHOICE",
+      "subject_ref": "PLAYER-PROTOTYPE-01",
+      "key": "east_coast_choice",
+      "value": "undecided"
+    },
+    {
+      "id": "F-EAST-HELP-TRACE",
+      "subject_ref": "SITE-N-EAST",
+      "key": "player_work_trace",
+      "value": "none"
+    }
+  ],
+  "entry_projection": [
+    {
+      "fact_ref": "F-EAST-CUSTODIAN-LOCATION",
+      "equals": "at_closed_road",
+      "text": "方石守在東岸維護路的封路處。"
+    },
+    {
+      "fact_ref": "F-EAST-WORK-STAGE",
+      "equals": "materials_waiting_outside_closed_section",
+      "text": "修路材料還堆在封鎖線外。"
+    },
+    {
+      "fact_ref": "F-EAST-PLAYER-PERMISSION",
+      "equals": "invited_to_help",
+      "text": "他問你能不能留下一天幫忙搬料。"
+    }
+  ],
+  "variants": [
+    {
+      "id": "help",
+      "label": "幫忙",
+      "action_transition_ref": "BT-EXP-HELP-ACTION",
+      "return_transition_ref": "BT-EXP-HELP-RETURN",
+      "steps": [
+        {
+          "target_day_id": "D2-HELP-ACTION",
+          "transitions": [
+            {
+              "id": "BT-EXP-HELP-ACTION",
+              "order": 1,
+              "actor_refs": ["PLAYER-PROTOTYPE-01", "P-N-13"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-PLAYER-LOCATION", "equals": "at_east_coast_road"},
+                {"fact_ref": "F-EAST-PLAYER-TIME", "equals": "one_day_available"},
+                {"fact_ref": "F-EAST-PLAYER-PERMISSION", "equals": "invited_to_help"},
+                {"fact_ref": "F-EAST-PLAYER-CHOICE", "equals": "undecided"},
+                {"fact_ref": "F-EAST-ROAD", "equals": "blocked"},
+                {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "equals": "materials_waiting_outside_closed_section"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-PLAYER-LOCATION", "set": "away_from_east_coast"},
+                {"fact_ref": "F-EAST-PLAYER-TIME", "set": "spent_on_east_coast_repair"},
+                {"fact_ref": "F-EAST-PLAYER-CHOICE", "set": "helped"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "set": "materials_staged_with_player_help"},
+                {"fact_ref": "F-EAST-HELP-TRACE", "set": "visible_trace_from_player_staging"}
+              ],
+              "consequence": "玩家與方石把已點收的材料搬進封鎖線；玩家付出一天，材料沒有被複製，道路仍保持封閉"
+            }
+          ]
+        },
+        {
+          "target_day_id": "D3-HELP",
+          "transitions": [
+            {
+              "id": "BT-EXP-HELP-D3-01",
+              "order": 1,
+              "actor_refs": ["P-N-13"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-ROAD", "equals": "blocked"},
+                {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "equals": "materials_staged_with_player_help"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-ROAD", "set": "repair_in_progress"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "set": "base_course_set"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "set": "working_inside_closed_section"}
+              ],
+              "consequence": "方石利用已搬入的材料完成基層施工；玩家不在場，道路仍未開放"
+            }
+          ]
+        },
+        {
+          "target_day_id": "D4-HELP",
+          "transitions": [
+            {
+              "id": "BT-EXP-HELP-D4-01",
+              "order": 1,
+              "actor_refs": ["P-N-13"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-ROAD", "equals": "repair_in_progress"},
+                {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "equals": "base_course_set"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-ROAD", "set": "open_light_only"},
+                {"fact_ref": "F-EAST-MATERIAL", "set": "installed_in_repair"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "set": "safety_check"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "set": "monitoring_reopened_section"}
+              ],
+              "consequence": "材料成為修復段的一部分，方石先開放輕載並留在現場觀察"
+            }
+          ]
+        },
+        {
+          "target_day_id": "D5-HELP-RETURN",
+          "transitions": [
+            {
+              "id": "BT-EXP-HELP-D5-01",
+              "order": 1,
+              "actor_refs": ["P-N-13"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-ROAD", "equals": "open_light_only"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "equals": "safety_check"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "equals": "monitoring_reopened_section"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-ROAD", "set": "open_with_monitoring"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "set": "handed_over"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "set": "left_after_handoff"}
+              ],
+              "consequence": "方石在玩家回來前完成交接並離開路旁，道路擴大開放但保留監測"
+            },
+            {
+              "id": "BT-EXP-HELP-RETURN",
+              "order": 2,
+              "actor_refs": ["PLAYER-PROTOTYPE-01"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-PLAYER-LOCATION", "equals": "away_from_east_coast"},
+                {"fact_ref": "F-EAST-ROAD", "equals": "open_with_monitoring"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-PLAYER-LOCATION", "set": "returned_to_east_coast"}
+              ],
+              "consequence": "玩家在 D5 回到東岸維護路，只取得抵達當下能看見的局部事實"
+            }
+          ]
+        }
+      ],
+      "immediate_projection": [
+        {
+          "fact_ref": "F-EAST-WORK-STAGE",
+          "equals": "materials_staged_with_player_help",
+          "text": "你和方石把材料搬進封鎖線內。"
+        },
+        {
+          "fact_ref": "F-EAST-ROAD",
+          "equals": "blocked",
+          "text": "路仍封著。"
+        },
+        {
+          "fact_ref": "F-EAST-PLAYER-TIME",
+          "equals": "spent_on_east_coast_repair",
+          "text": "今天剩下的時間已用在這裡。"
+        },
+        {
+          "fact_ref": "F-EAST-CUSTODIAN-LOCATION",
+          "equals": "at_closed_road",
+          "text": "你離開時，方石仍留在封路處。"
+        }
+      ],
+      "return_projection": [
+        {
+          "fact_ref": "F-EAST-PLAYER-LOCATION",
+          "equals": "returned_to_east_coast",
+          "text": "D5，你回到東岸維護路。"
+        },
+        {
+          "fact_ref": "F-EAST-ROAD",
+          "equals": "open_with_monitoring",
+          "text": "道路已開放，路旁仍留著限速標記。"
+        },
+        {
+          "fact_ref": "F-EAST-MATERIAL",
+          "equals": "installed_in_repair",
+          "text": "送到東岸的材料已經裝進修復段。"
+        },
+        {
+          "fact_ref": "F-EAST-CUSTODIAN-LOCATION",
+          "equals": "left_after_handoff",
+          "text": "方石已完成交接，現在不在路旁。"
+        },
+        {
+          "fact_ref": "F-EAST-HELP-TRACE",
+          "equals": "visible_trace_from_player_staging",
+          "text": "封鎖線內還看得到你當時搬料留下的痕跡。"
+        }
+      ],
+      "expected_final": [
+        {"fact_ref": "F-EAST-PATIENT", "equals": "admission_confirmed_to_east_team"},
+        {"fact_ref": "F-EAST-ROAD", "equals": "open_with_monitoring"},
+        {"fact_ref": "F-EAST-MATERIAL", "equals": "installed_in_repair"},
+        {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "equals": "left_after_handoff"},
+        {"fact_ref": "F-EAST-WORK-STAGE", "equals": "handed_over"},
+        {"fact_ref": "F-EAST-PLAYER-LOCATION", "equals": "returned_to_east_coast"},
+        {"fact_ref": "F-EAST-PLAYER-TIME", "equals": "spent_on_east_coast_repair"},
+        {"fact_ref": "F-EAST-PLAYER-PERMISSION", "equals": "invited_to_help"},
+        {"fact_ref": "F-EAST-PLAYER-CHOICE", "equals": "helped"},
+        {"fact_ref": "F-EAST-HELP-TRACE", "equals": "visible_trace_from_player_staging"}
+      ]
+    },
+    {
+      "id": "leave",
+      "label": "離開",
+      "action_transition_ref": "BT-EXP-LEAVE-ACTION",
+      "return_transition_ref": "BT-EXP-LEAVE-RETURN",
+      "steps": [
+        {
+          "target_day_id": "D2-LEAVE-ACTION",
+          "transitions": [
+            {
+              "id": "BT-EXP-LEAVE-ACTION",
+              "order": 1,
+              "actor_refs": ["PLAYER-PROTOTYPE-01"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-PLAYER-LOCATION", "equals": "at_east_coast_road"},
+                {"fact_ref": "F-EAST-PLAYER-TIME", "equals": "one_day_available"},
+                {"fact_ref": "F-EAST-PLAYER-PERMISSION", "equals": "invited_to_help"},
+                {"fact_ref": "F-EAST-PLAYER-CHOICE", "equals": "undecided"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-PLAYER-LOCATION", "set": "away_from_east_coast"},
+                {"fact_ref": "F-EAST-PLAYER-PERMISSION", "set": "declined_for_now"},
+                {"fact_ref": "F-EAST-PLAYER-CHOICE", "set": "left"}
+              ],
+              "consequence": "玩家離開且保留這一天；方石、材料與封路不因此消失或暫停"
+            }
+          ]
+        },
+        {
+          "target_day_id": "D3-LEAVE",
+          "transitions": [
+            {
+              "id": "BT-EXP-LEAVE-D3-01",
+              "order": 1,
+              "actor_refs": ["P-N-13"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-ROAD", "equals": "blocked"},
+                {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "equals": "materials_waiting_outside_closed_section"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-ROAD", "set": "repair_in_progress"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "set": "maintenance_team_staging"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "set": "working_inside_closed_section"}
+              ],
+              "consequence": "沒有玩家協助，方石仍在 D3 帶維護隊開始搬料與施工，道路保持封閉"
+            }
+          ]
+        },
+        {
+          "target_day_id": "D4-LEAVE",
+          "transitions": [
+            {
+              "id": "BT-EXP-LEAVE-D4-01",
+              "order": 1,
+              "actor_refs": ["P-N-13"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-ROAD", "equals": "repair_in_progress"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "equals": "maintenance_team_staging"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "equals": "working_inside_closed_section"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-WORK-STAGE", "set": "repair_surface_prepared"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "set": "working_on_surface"}
+              ],
+              "consequence": "方石與維護隊在玩家不在場時完成開放前的路面準備"
+            }
+          ]
+        },
+        {
+          "target_day_id": "D5-LEAVE-RETURN",
+          "transitions": [
+            {
+              "id": "BT-EXP-LEAVE-D5-01",
+              "order": 1,
+              "actor_refs": ["P-N-13"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-ROAD", "equals": "repair_in_progress"},
+                {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "equals": "repair_surface_prepared"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "equals": "working_on_surface"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-ROAD", "set": "open_light_only"},
+                {"fact_ref": "F-EAST-WORK-STAGE", "set": "staged_opening_under_monitoring"},
+                {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "set": "monitoring_reopened_section"}
+              ],
+              "consequence": "方石在玩家回來前先開放輕載，材料尚未全數裝入路段，自己留在現場監測"
+            },
+            {
+              "id": "BT-EXP-LEAVE-RETURN",
+              "order": 2,
+              "actor_refs": ["PLAYER-PROTOTYPE-01"],
+              "object_refs": ["SITE-N-EAST"],
+              "region_refs": ["BT-R09"],
+              "preconditions": [
+                {"fact_ref": "F-EAST-PLAYER-LOCATION", "equals": "away_from_east_coast"},
+                {"fact_ref": "F-EAST-ROAD", "equals": "open_light_only"}
+              ],
+              "effects": [
+                {"fact_ref": "F-EAST-PLAYER-LOCATION", "set": "returned_to_east_coast"}
+              ],
+              "consequence": "玩家在 D5 回到東岸維護路，只取得抵達當下能看見的局部事實"
+            }
+          ]
+        }
+      ],
+      "immediate_projection": [
+        {
+          "fact_ref": "F-EAST-PLAYER-CHOICE",
+          "equals": "left",
+          "text": "你沒有留下，轉身離開東岸維護路。"
+        },
+        {
+          "fact_ref": "F-EAST-PLAYER-TIME",
+          "equals": "one_day_available",
+          "text": "這一天剩下的時間仍由你安排。"
+        },
+        {
+          "fact_ref": "F-EAST-CUSTODIAN-LOCATION",
+          "equals": "at_closed_road",
+          "text": "方石仍守在封路處。"
+        }
+      ],
+      "return_projection": [
+        {
+          "fact_ref": "F-EAST-PLAYER-LOCATION",
+          "equals": "returned_to_east_coast",
+          "text": "D5，你回到東岸維護路。"
+        },
+        {
+          "fact_ref": "F-EAST-ROAD",
+          "equals": "open_light_only",
+          "text": "道路只開放輕載，重車仍被攔在外面。"
+        },
+        {
+          "fact_ref": "F-EAST-MATERIAL",
+          "equals": "delivered_to_east_coast",
+          "text": "送到東岸的材料還沒有全部裝進修復段。"
+        },
+        {
+          "fact_ref": "F-EAST-WORK-STAGE",
+          "equals": "staged_opening_under_monitoring",
+          "text": "施工還沒有收尾。"
+        },
+        {
+          "fact_ref": "F-EAST-CUSTODIAN-LOCATION",
+          "equals": "monitoring_reopened_section",
+          "text": "方石還守在開放段旁。"
+        }
+      ],
+      "expected_final": [
+        {"fact_ref": "F-EAST-PATIENT", "equals": "admission_confirmed_to_east_team"},
+        {"fact_ref": "F-EAST-ROAD", "equals": "open_light_only"},
+        {"fact_ref": "F-EAST-MATERIAL", "equals": "delivered_to_east_coast"},
+        {"fact_ref": "F-EAST-CUSTODIAN-LOCATION", "equals": "monitoring_reopened_section"},
+        {"fact_ref": "F-EAST-WORK-STAGE", "equals": "staged_opening_under_monitoring"},
+        {"fact_ref": "F-EAST-PLAYER-LOCATION", "equals": "returned_to_east_coast"},
+        {"fact_ref": "F-EAST-PLAYER-TIME", "equals": "one_day_available"},
+        {"fact_ref": "F-EAST-PLAYER-PERMISSION", "equals": "declined_for_now"},
+        {"fact_ref": "F-EAST-PLAYER-CHOICE", "equals": "left"},
+        {"fact_ref": "F-EAST-HELP-TRACE", "equals": "none"}
+      ]
+    }
+  ],
+  "projection_policy": {
+    "allowed_fact_refs": [
+      "F-EAST-ROAD",
+      "F-EAST-MATERIAL",
+      "F-EAST-CUSTODIAN-LOCATION",
+      "F-EAST-WORK-STAGE",
+      "F-EAST-PLAYER-LOCATION",
+      "F-EAST-PLAYER-TIME",
+      "F-EAST-PLAYER-PERMISSION",
+      "F-EAST-PLAYER-CHOICE",
+      "F-EAST-HELP-TRACE"
+    ],
+    "hidden_fact_refs": ["F-EAST-PATIENT"],
+    "forbidden_visible_tokens": [
+      "F-",
+      "BT-",
+      "P-N-",
+      "SITE-",
+      "runtime",
+      "fact",
+      "狀態已更新",
+      "世界正在改變",
+      "因為你選了"
+    ],
+    "invariant": "玩家只看見當地可感知且由事實支撐的結果；不顯示世界改變看板、不洩漏後端識別與未取得的消息。"
+  }
+}

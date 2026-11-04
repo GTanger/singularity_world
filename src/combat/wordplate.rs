@@ -1,5 +1,5 @@
 // wordplate 模組 — 500 詞 ＋ 360 星盤 × 隨身【詞匣】 × 田忌賽馬四戰術序位核心系統。
-// 嚴守台灣正體中文，徹底拔除 Codex 偽科幻詞彙；後台數據嚴謹，前台體感去數值化。
+// 嚴守台灣正體中文，徹底拔除 Codex 偽科幻詞彙；後台資料嚴謹，前台體感去數值化。
 
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::sync::LazyLock;
@@ -9,9 +9,9 @@ use thiserror::Error;
 /// 詞盤與詞匣系統領域錯誤分類（符合 RIVP 錯誤分類規範）
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum WordPlateError {
-    #[error("詞元不存在：{0}")]
+    #[error("字訣不存在：{0}")]
     WordNotFound(String),
-    #[error("詞匣中詞元數量不足：{0}（現有 {1}，需求 {2}）")]
+    #[error("字匣中字訣數量不足：{0}（現有 {1}，需求 {2}）")]
     InsufficientWordCount(String, u32, u32),
     #[error("星盤節點不可鑲嵌：{0}")]
     NodeNotInlayable(String),
@@ -477,7 +477,7 @@ impl CraftAspect {
         match self {
             Self::Forge => "鍛鑄百工",
             Self::Culinary => "庖廚丹膳",
-            Self::Harvest => "採獵剝名",
+            Self::Harvest => "採獵百工",
             Self::Wayfare => "山海行旅",
         }
     }
@@ -743,7 +743,7 @@ impl WordRegistry {
         for w in words_doc.elements {
             let gd = gamedims_map
                 .remove(&w.id)
-                .ok_or_else(|| WordPlateError::ConfigParseError(format!("詞元 ID 於 gamedims 中遺失：{}", w.id)))?;
+                .ok_or_else(|| WordPlateError::ConfigParseError(format!("字訣 ID 於 gamedims 中遺失：{}", w.id)))?;
 
             let elem = WordElement {
                 id: w.id.clone(),
@@ -969,7 +969,7 @@ impl WordCasket {
                 self.qualities.insert(word_id.to_string(), next_quality);
                 self.charges.insert(word_id.to_string(), remaining_charge);
                 let narrative = format!(
-                    "同名真意交融共鳴，詞元【{}】由{}躍升為{}，靈韻相融，字印光澤愈發凝練。",
+                    "同名真意交融共鳴，字訣【{}】由{}躍升為{}，靈韻相融，筆意愈發凝練。",
                     word_id,
                     current_quality.label_zh(),
                     next_quality.label_zh()
@@ -985,12 +985,12 @@ impl WordCasket {
                 self.charges.insert(word_id.to_string(), capped_charge);
                 let narrative = if current_quality == WordQuality::Jia {
                     format!(
-                        "詞元【{}】已臻甲品極境，同名相疊淬煉精華，靈韻充盈圓滿，一舉破繭昇華。",
+                        "字訣【{}】已臻甲品極境，同名相疊淬煉精華，靈韻充盈圓滿，一舉破繭昇華。",
                         word_id
                     )
                 } else {
                     format!(
-                        "同名真意衝擊極限未果，詞元【{}】維持{}，氣機微盪，靈韻略微回落。",
+                        "同名真意衝擊極限未果，字訣【{}】維持{}，氣機微盪，靈韻略微回落。",
                         word_id,
                         current_quality.label_zh()
                     )
@@ -1001,7 +1001,7 @@ impl WordCasket {
             let new_charge = total_charge as u8;
             self.charges.insert(word_id.to_string(), new_charge);
             let narrative = format!(
-                "同名疊煉相融，詞元【{}】（{}）靈韻浸潤，字印神彩更添一重。",
+                "同名疊煉相融，字訣【{}】（{}）靈韻浸潤，筆意神彩更添一重。",
                 word_id,
                 current_quality.label_zh()
             );
@@ -1023,7 +1023,7 @@ impl WordCasket {
         let val = q.magnesium_value();
         self.remove(word_id, 1)?;
         let narrative = format!(
-            "鎔鑄{}詞元【{}】，解構歸真，化為 {} 鎂。",
+            "鎔鑄{}字訣【{}】，化歸本源，化為 {} 鎂。",
             q.label_zh(),
             word_id,
             val
@@ -1132,7 +1132,7 @@ impl WordCasket {
 pub fn parse_star_node(node_id: &str) -> Result<usize, WordPlateError> {
     if node_id == "N000" {
         return Err(WordPlateError::NodeNotInlayable(
-            "N000（生之奇點為靈魂源核，不可鑲嵌詞元）".to_string(),
+            "N000（生之樞紐為本源核心，不可鑲嵌字訣）".to_string(),
         ));
     }
     if !node_id.starts_with('N') {
@@ -1199,6 +1199,14 @@ pub struct SynthesizedTechnique {
     pub meridian_detour_note: String,
     #[serde(default)]
     pub practice_feel: String,
+    #[serde(default)]
+    pub soul_seed: Option<i64>,
+    #[serde(default)]
+    pub practice_count: u32,
+    #[serde(default)]
+    pub anatomy_familiarity: u32,
+    #[serde(default)]
+    pub learned_delta: f64,
 }
 
 impl SynthesizedTechnique {
@@ -1406,7 +1414,7 @@ pub fn derive_elementary_motions_with_fluency(
                 &["連環壓落", "借轉崩錘", "流勢推砸"],
             ),
             OrbitFluency::ZhiSe | OrbitFluency::XianZu => (
-                &["凝息迴轉", "借勢繞隙", "沉腰死扎"],
+                &["凝息迴轉", "借勢繞隙", "沉腰死紮"],
                 &["硬拗力道", "沉柄頂推", "截氣橫掄"],
                 &["傾力重砸", "震臂崩砸", "頓地回擊"],
             ),
@@ -1440,7 +1448,7 @@ pub fn derive_elementary_motions_with_fluency(
                 &["反身推擊", "順勁壓身", "巧震退敵"],
             ),
             OrbitFluency::ZhiSe | OrbitFluency::XianZu => (
-                &["凝息迴轉", "借勢繞隙", "死扎步位"],
+                &["凝息迴轉", "借勢繞隙", "死紮步位"],
                 &["硬抗重轟", "鈍挫卡鎖", "貼肘死抵"],
                 &["合身頂撞", "震肩反擊", "頓步爆發"],
             ),
@@ -1458,7 +1466,7 @@ pub fn derive_elementary_motions_with_fluency(
             ),
             OrbitFluency::ZhiSe | OrbitFluency::XianZu => (
                 &["凝息迴轉", "借勢繞隙", "挫步重頓"],
-                &["勉強側移", "踉蹌避鋒", "回旋沉扎"],
+                &["勉強側移", "踉蹌避鋒", "回旋沉紮"],
                 &["回身掃腿", "借力飄退", "咬牙沉步切入"],
             ),
             OrbitFluency::PingWen => (
@@ -1509,6 +1517,12 @@ pub struct StarSentence {
     pub custom_name: Option<String>,
     #[serde(default)]
     pub soul_seed: Option<i64>,
+    #[serde(default)]
+    pub practice_count: Option<u32>,
+    #[serde(default)]
+    pub anatomy_familiarity: Option<u32>,
+    #[serde(default)]
+    pub learned_delta: Option<f64>,
 }
 
 impl StarSentence {
@@ -1531,9 +1545,11 @@ impl StarSentence {
             inlays,
             custom_name: None,
             soul_seed: None,
+            practice_count: None,
+            anatomy_familiarity: None,
+            learned_delta: None,
         })
     }
-
     /// 成相著譜定名
     pub fn with_custom_name(mut self, name: impl Into<String>) -> Self {
         self.custom_name = Some(name.into());
@@ -1764,6 +1780,10 @@ impl StarSentence {
             motion_sequence,
             meridian_detour_note,
             practice_feel,
+            soul_seed: self.soul_seed,
+            practice_count: self.practice_count.unwrap_or(25),
+            anatomy_familiarity: self.anatomy_familiarity.unwrap_or(20),
+            learned_delta: self.learned_delta.unwrap_or(0.0),
         })
     }
 }
@@ -1892,7 +1912,13 @@ pub fn build_loadout_from_soul_seed(
         .map(|c| {
             c.list()
                 .into_iter()
-                .filter(|(_, cnt)| *cnt > 0)
+                .filter(|(w, cnt)| {
+                    *cnt > 0
+                        && !matches!(
+                            *w,
+                            "qiao_shu" | "mu" | "he_tai" | "shui" | "huo_shou"
+                        )
+                })
                 .map(|(w, _)| w.to_string())
                 .collect()
         })
@@ -2017,44 +2043,44 @@ pub fn build_loadout_from_soul_seed(
 
             let suffix_pool: &[&str] = match slot {
                 TacticalSlot::Opening => &[
-                    "・神探巧解勢",
-                    "・先聲奪人勢",
-                    "・探隙截脈式",
-                    "・浮光掠影勢",
-                    "・拔刀破空式",
-                    "・驚弦掣電勢",
-                    "・疾風穿雲勢",
-                    "・靈猿破虛式",
+                    "探隙勢",
+                    "奪人勢",
+                    "截脈式",
+                    "掠影勢",
+                    "破空式",
+                    "掣電勢",
+                    "穿雲勢",
+                    "破虛式",
                 ],
                 TacticalSlot::Midgame => &[
-                    "・連環截江連",
-                    "・萬流奔湧連",
-                    "・行雲流水擊",
-                    "・穿甲碎骨連",
-                    "・百工妙手連",
-                    "・隨風拂柳連",
-                    "・狂嵐驟雨連",
-                    "・千疊崩濤連",
+                    "截江連",
+                    "奔湧連",
+                    "流水擊",
+                    "碎骨連",
+                    "妙手連",
+                    "拂柳連",
+                    "驟雨連",
+                    "崩濤連",
                 ],
                 TacticalSlot::Finisher => &[
-                    "・重劈裂骨擊",
-                    "・乾坤一擲破",
-                    "・九霄雷霆破",
-                    "・摧山斷岳轟",
-                    "・庖丁解牛破",
-                    "・絕命透骨殺",
-                    "・破極開天轟",
-                    "・逆鱗崩解殺",
+                    "裂骨擊",
+                    "一擲破",
+                    "雷霆破",
+                    "斷岳轟",
+                    "穿隙破",
+                    "透骨殺",
+                    "開天轟",
+                    "崩解殺",
                 ],
                 TacticalSlot::Defense => &[
-                    "・固若金湯身",
-                    "・乘風卸勁步",
-                    "・移星換斗步",
-                    "・旋空避實身",
-                    "・氣貫周天護",
-                    "・磐石無轉身",
-                    "・游龍潛水步",
-                    "・凝虛抱一身",
+                    "金湯身",
+                    "卸勁步",
+                    "換斗步",
+                    "避實身",
+                    "周天護",
+                    "無轉身",
+                    "潛水步",
+                    "抱一身",
                 ],
             };
 
@@ -2070,143 +2096,13 @@ pub fn build_loadout_from_soul_seed(
 }
 
 /// 依據造句詞元星位與角色生命種子，推導自動繞行經絡阻力之體感描述（同法不同相）
-pub fn compute_auto_detour_meridian_note(words: &[&WordEntry], soul_seed: i64) -> String {
-    if words.is_empty() {
-        return "周天氣機沉靜自守，經脈各循其道直達末節。".to_string();
-    }
-
-    let costs = crate::db::expand_soul_seed_to_topology_costs(soul_seed);
-    if costs.is_empty() {
-        return "周天經絡順暢無礙，氣機自手太陰肺脈一氣貫通直達梢節。".to_string();
-    }
-
-    // 計算 8 群經絡平均阻力
-    let mut group_costs: Vec<(usize, f64)> = (0..8)
-        .map(|g| {
-            let start = g * 45;
-            let slice = if start + 45 <= costs.len() {
-                &costs[start..start + 45]
-            } else {
-                &costs[..]
-            };
-            let avg: f64 = if !slice.is_empty() {
-                slice.iter().sum::<f64>() / slice.len() as f64
-            } else {
-                10.0
-            };
-            (g, avg)
-        })
-        .collect();
-    group_costs.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
-
-    let smooth_group = group_costs.first().map(|&(g, _)| g).unwrap_or(0);
-    let lateral_smooth_group = if group_costs.len() > 1 {
-        group_costs[1].0
-    } else {
-        smooth_group
-    };
-
-    let word_star_idx = |w: &WordEntry| -> usize {
-        if let Ok(n) = w.id.parse::<usize>() {
-            n.saturating_sub(1)
-        } else if let Some(stripped) = w.id.strip_prefix('W').or_else(|| w.id.strip_prefix('w')).or_else(|| w.id.strip_prefix('N')) {
-            if let Ok(n) = stripped.parse::<usize>() {
-                return n.saturating_sub(1);
-            }
-            let ch_code = w.ch.chars().next().map(|c| c as usize).unwrap_or(1);
-            ch_code.saturating_sub(1)
-        } else {
-            let ch_code = w.ch.chars().next().map(|c| c as usize).unwrap_or(1);
-            ch_code.saturating_sub(1)
-        }
-    };
-
-    let mut groups = Vec::new();
-    let mut has_severe = false;
-
-    for w in words {
-        let idx = word_star_idx(w);
-        let cost = costs.get(idx % costs.len()).copied().unwrap_or(10.0);
-        let tier = CostTier::from_cost(cost);
-        if tier == CostTier::Severe {
-            has_severe = true;
-        }
-        let grp = (idx / 45) % 8;
-        groups.push(grp);
-    }
-
-    // 檢查是否跨越主要經脈群之縱向落差（G07: 6 號任督中樞 與 G08: 7 號帶脈 之落差）
-    let has_vertical_gap = groups.windows(2).any(|pair| {
-        (pair[0] == 6 && pair[1] == 7) || (pair[0] == 7 && pair[1] == 6)
-    });
-
-    if has_vertical_gap {
-        let detour_group = group_costs
-            .iter()
-            .find(|&&(g, _)| g != 6 && g != 7)
-            .map(|&(g, _)| g)
-            .unwrap_or(1);
-        let detour_name = group_meridian_name(detour_group);
-        format!(
-            "氣脈跨越樞紐略現阻隙，氣息自然隨{}支絡側移疏導，勢道反添沉穩圓融",
-            detour_name
-        )
-    } else if has_severe {
-        let detour_name = group_meridian_name(lateral_smooth_group);
-        format!(
-            "氣機行經轉折處略遇阻滯，身體自然順{}支絡橫移繞行，勁路反添一分綿密折轉",
-            detour_name
-        )
-    } else {
-        let smooth_name = group_meridian_name(smooth_group);
-        format!(
-            "周天經絡順暢無礙，氣機自{}一氣貫通直達梢節",
-            smooth_name
-        )
-    }
+pub fn compute_auto_detour_meridian_note(_words: &[&WordEntry], soul_seed: i64) -> String {
+    crate::combat::human_phase::InnateBonePhase::from_seed(soul_seed).describe_bone_phase_zh()
 }
 
 /// 依據生命種子體察周天經絡在靜修體悟中的自發分流與最暢通經脈
 pub fn somatic_meridian_awareness(soul_seed: i64) -> String {
-    let costs = crate::db::expand_soul_seed_to_topology_costs(soul_seed);
-    if costs.is_empty() {
-        return "動中體察周天，經絡氣機平穩順暢，神意內斂。".to_string();
-    }
-
-    let mut group_costs: Vec<(usize, f64)> = (0..8)
-        .map(|g| {
-            let start = g * 45;
-            let slice = if start + 45 <= costs.len() {
-                &costs[start..start + 45]
-            } else {
-                &costs[..]
-            };
-            let avg: f64 = if !slice.is_empty() {
-                slice.iter().sum::<f64>() / slice.len() as f64
-            } else {
-                10.0
-            };
-            (g, avg)
-        })
-        .collect();
-    group_costs.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
-
-    let best_g = group_costs.first().map(|&(g, _)| g).unwrap_or(0);
-    let worst_g = group_costs.last().map(|&(g, _)| g).unwrap_or(7);
-    let detour_g = if group_costs.len() > 1 && group_costs[1].0 != worst_g {
-        group_costs[1].0
-    } else {
-        best_g
-    };
-
-    let best_name = group_meridian_name(best_g);
-    let worst_name = group_meridian_name(worst_g);
-    let detour_name = group_meridian_name(detour_g);
-
-    format!(
-        "動中體察周天氣息，{}最為暢流順達；遇{}阻滯之處，身形氣脈自發循{}支絡橫折分流，圓融不滯",
-        best_name, worst_name, detour_name
-    )
+    crate::combat::human_phase::InnateBonePhase::from_seed(soul_seed).describe_bone_phase_zh()
 }
 
 /// 戰術交鋒每階段記錄（承載碎招、套路與成招技能狀態）
@@ -2319,7 +2215,7 @@ pub struct TacticalClashReport {
     pub summary: String,
 }
 
-/// 單序位交鋒判定（結合同量級專克拆招、跨量級一力降十會、戰場殘留氣機與架勢判定）
+/// 單序位交鋒判定（融合相同量級專克拆招、跨量級一力降十會、戰場殘留氣機與架勢判定）
 pub fn resolve_bout(
     slot: TacticalSlot,
     phase: usize,
@@ -2448,16 +2344,16 @@ pub fn resolve_bout_with_state(
 
     if ratio_a >= 1.45 && !b_evades_heavy_a {
         score_a += (ratio_a - 1.0) * 1.8;
-        counter_reason = Some("一力降十會：挾千鈞重勢正面硬壓，沛然巨力直接震散對方巧勁架勢".to_string());
+        counter_reason = Some("重勢硬壓：挾千鈞重勢正面硬壓，沛然巨力直接震散對方巧勁架勢".to_string());
     } else if ratio_b >= 1.45 && !a_evades_heavy_b {
         score_b += (ratio_b - 1.0) * 1.8;
-        counter_reason = Some("一力降十會：挾千鈞重勢正面硬壓，沛然巨力直接震散對方巧勁架勢".to_string());
+        counter_reason = Some("重勢硬壓：挾千鈞重勢正面硬壓，沛然巨力直接震散對方巧勁架勢".to_string());
     } else if ratio_b >= 1.45 && a_evades_heavy_b {
         score_a += 0.75;
-        counter_reason = Some("十會解一力：避開千鈞正面鋒芒，趁對方舊力剛盡、新力未生之骨縫切入".to_string());
+        counter_reason = Some("入微破勢：避開千鈞正面鋒芒，趁對方舊力初盡、新力未生之骨縫切入".to_string());
     } else if ratio_a >= 1.45 && b_evades_heavy_a {
         score_b += 0.75;
-        counter_reason = Some("十會解一力：避開千鈞正面鋒芒，趁對方舊力剛盡、新力未生之骨縫切入".to_string());
+        counter_reason = Some("入微破勢：避開千鈞正面鋒芒，趁對方舊力初盡、新力未生之骨縫切入".to_string());
     } else if let (Some(t_a), Some(t_b)) = (tech_a, tech_b) {
         // 2. 同量級拆招（「玉女劍法專克全真劍法：以巧破剛」）
         let v_a = &t_a.vector_12d;
@@ -2508,6 +2404,73 @@ pub fn resolve_bout_with_state(
         .unwrap_or_else(|| {
             derive_elementary_motions_from_chars(&[], b_carrier, b_target_part)
         });
+    let seed_a = tech_a
+        .and_then(|t| t.soul_seed)
+        .unwrap_or_else(|| {
+            let key = tech_a
+                .map(|t| format!("{}:{slot:?}", t.effective_name))
+                .unwrap_or_else(|| format!("neutral_empty_slot:{slot:?}"));
+            crate::combat::human_phase::resolve_entity_soul_seed(&key, None)
+        });
+    let seed_b = tech_b
+        .and_then(|t| t.soul_seed)
+        .unwrap_or_else(|| {
+            let key = tech_b
+                .map(|t| format!("{}:{slot:?}", t.effective_name))
+                .unwrap_or_else(|| format!("neutral_empty_slot:{slot:?}"));
+            crate::combat::human_phase::resolve_entity_soul_seed(&key, None)
+        });
+    let bone_a = crate::combat::human_phase::InnateBonePhase::from_seed(seed_a);
+    let bone_b = crate::combat::human_phase::InnateBonePhase::from_seed(seed_b);
+
+    let practice_a = tech_a.map(|t| t.practice_count).unwrap_or(25);
+    let practice_b = tech_b.map(|t| t.practice_count).unwrap_or(25);
+    let anatomy_a = tech_a.map(|t| t.anatomy_familiarity).unwrap_or(20);
+    let anatomy_b = tech_b.map(|t| t.anatomy_familiarity).unwrap_or(20);
+    let learned_a = tech_a.map(|t| t.learned_delta).unwrap_or(0.0);
+    let learned_b = tech_b.map(|t| t.learned_delta).unwrap_or(0.0);
+
+    let three_phase_res = crate::combat::human_phase::evaluate_three_phase_bout_ext(
+        slot,
+        &bone_a,
+        &bone_b,
+        weight_a,
+        weight_b,
+        a_carrier,
+        b_carrier,
+        a_prior_posture,
+        b_prior_posture,
+        a_motions.len(),
+        b_motions.len(),
+        _phase,
+        practice_a,
+        practice_b,
+        anatomy_a,
+        anatomy_b,
+        learned_a,
+        learned_b,
+        if a_flawed_prior { 0.25 } else { 0.0 },
+        if b_flawed_prior { 0.25 } else { 0.0 },
+    );
+
+    if counter_reason.is_none() {
+        score_a += three_phase_res.score_delta_a;
+        score_b += three_phase_res.score_delta_b;
+        if let Some(cr) = &three_phase_res.counter_reason {
+            counter_reason = Some(cr.clone());
+        }
+    }
+    if let Some(cr) = counter_reason.as_deref() {
+        if cr.starts_with("重勢硬壓") || cr.starts_with("重勢硬撼") {
+            if (score_a > score_b && weight_a < weight_b)
+                || (score_b > score_a && weight_b < weight_a)
+            {
+                counter_reason = Some(
+                    "入微破勢：避開千鈞正面鋒芒，趁對方舊力初盡、新力未生之骨縫切入".to_string(),
+                );
+            }
+        }
+    }
 
     let mut notes = Vec::new();
     if let Some(r) = counter_reason.as_deref() {
@@ -2528,8 +2491,16 @@ pub fn resolve_bout_with_state(
     let is_draw = (score_a - score_b).abs() < 1e-6;
 
     if is_draw {
-        let a_completed_motions = a_motions.len().max(1);
-        let b_completed_motions = b_motions.len().max(1);
+        let a_completed_motions = if !three_phase_res.a_manifested_as_skill && three_phase_res.verdict != crate::combat::human_phase::ThreePhaseVerdict::StandardExchange {
+            three_phase_res.a_completed_motions.clamp(1, a_motions.len().max(1))
+        } else {
+            a_motions.len().max(1)
+        };
+        let b_completed_motions = if !three_phase_res.b_manifested_as_skill && three_phase_res.verdict != crate::combat::human_phase::ThreePhaseVerdict::StandardExchange {
+            three_phase_res.b_completed_motions.clamp(1, b_motions.len().max(1))
+        } else {
+            b_motions.len().max(1)
+        };
         let a_chain_str = a_motions.join("、");
         let b_chain_str = b_motions.join("、");
         let narr = format!(
@@ -2590,7 +2561,9 @@ pub fn resolve_bout_with_state(
         };
         let final_dmg = (base_dmg - def_mit_b).max(2.0).round() as i32;
         let a_completed_motions = a_motions.len().max(1);
-        let b_completed_motions = if score_a - score_b >= 0.8 {
+        let b_completed_motions = if three_phase_res.verdict != crate::combat::human_phase::ThreePhaseVerdict::StandardExchange && !three_phase_res.b_manifested_as_skill {
+            three_phase_res.b_completed_motions.clamp(1, b_motions.len().max(1))
+        } else if score_a - score_b >= 0.8 {
             1
         } else {
             2.min(b_motions.len().saturating_sub(1).max(1))
@@ -2609,7 +2582,7 @@ pub fn resolve_bout_with_state(
                 "甲方將「{a_chain_str}」順暢連貫，起承轉合一氣呵成，顯化成招為技能「{name_a}」！乙方甫自起手做出「{b_frag_str}」，便在半途被截斷氣機，套路當場潰散為零散碎招，{target_label}受創！{counter_note}"
             ),
             TacticalSlot::Midgame => format!(
-                "甲方乘勝將「{a_chain_str}」融會貫通，成相顯化為技能「{name_a}」！乙方勉強遞出「{b_frag_str}」苦撐，氣息浮動間被硬生截斷，只餘零星碎招便被破開防線，{target_label}受震！{counter_note}"
+                "甲方乘勝將「{a_chain_str}」融會貫通，成招顯化為技能「{name_a}」！乙方勉強遞出「{b_frag_str}」苦撐，氣息浮動間被硬生截斷，只餘零星碎招便被破開防線，{target_label}受震！{counter_note}"
             ),
             TacticalSlot::Finisher => format!(
                 "甲方周身勁力合一，「{a_chain_str}」連環貫徹，悍然顯化為絕殺技能「{name_a}」！乙方意圖運轉「{b_frag_str}」抵禦，終因招式受阻散為零碎招架，{target_label}遭重創失據！{counter_note}"
@@ -2626,7 +2599,7 @@ pub fn resolve_bout_with_state(
 
         let mut b_post = if final_dmg >= 22 || b_prior_posture == PostureState::Shaken || b_prior_posture == PostureState::Broken {
             PostureState::Broken
-        } else if final_dmg >= 11 {
+        } else if final_dmg >= 11 || three_phase_res.b_posture_after == PostureState::Shaken {
             PostureState::Shaken
         } else {
             PostureState::Steady
@@ -2678,7 +2651,9 @@ pub fn resolve_bout_with_state(
         };
         let final_dmg = (base_dmg - def_mit_a).max(2.0).round() as i32;
         let b_completed_motions = b_motions.len().max(1);
-        let a_completed_motions = if score_b - score_a >= 0.8 {
+        let a_completed_motions = if three_phase_res.verdict != crate::combat::human_phase::ThreePhaseVerdict::StandardExchange && !three_phase_res.a_manifested_as_skill {
+            three_phase_res.a_completed_motions.clamp(1, a_motions.len().max(1))
+        } else if score_b - score_a >= 0.8 {
             1
         } else {
             2.min(a_motions.len().saturating_sub(1).max(1))
@@ -2714,7 +2689,7 @@ pub fn resolve_bout_with_state(
 
         let mut a_post = if final_dmg >= 22 || a_prior_posture == PostureState::Shaken || a_prior_posture == PostureState::Broken {
             PostureState::Broken
-        } else if final_dmg >= 11 {
+        } else if final_dmg >= 11 || three_phase_res.a_posture_after == PostureState::Shaken {
             PostureState::Shaken
         } else {
             PostureState::Steady
@@ -3059,7 +3034,7 @@ mod tests {
         // 1. 驗證 N000 不可鑲字
         assert_eq!(
             parse_star_node("N000"),
-            Err(WordPlateError::NodeNotInlayable("N000（生之奇點為靈魂源核，不可鑲嵌詞元）".into()))
+            Err(WordPlateError::NodeNotInlayable("N000（生之樞紐為本源核心，不可鑲嵌字訣）".into()))
         );
 
         // 2. 驗證 N001..N360 全數合法且可解析
@@ -3681,7 +3656,7 @@ mod tests {
         assert!(bout_crush.b_manifested_as_skill, "量級碾壓方成招顯化為技能");
         assert!(!bout_crush.a_manifested_as_skill, "巧勁方套路被絕對力量轟散為碎招");
         assert!(bout_crush.narrative.contains("碎招"));
-        assert!(bout_crush.counter_reason.as_ref().unwrap().contains("一力降十會"));
+        assert!(bout_crush.counter_reason.as_ref().unwrap().contains("重勢硬壓"));
 
         // 情況三：十會解一力（以無厚入有間：當重擊方一味蠻幹毫無守勢根底 sustain < 0.5，而庖丁入微者具備極致穿透與流轉 >= 2.6 時，可避開正面蠻力切入骨縫反拆）
         let mut tech_master_paoding = tech_light.clone();
@@ -3704,7 +3679,7 @@ mod tests {
             false,
         );
         assert_eq!(bout_paoding.winner_side, "side_a");
-        assert!(bout_paoding.counter_reason.as_ref().unwrap().contains("十會解一力"));
+        assert!(bout_paoding.counter_reason.as_ref().unwrap().contains("入微破勢"));
     }
 
     #[test]
@@ -3900,7 +3875,7 @@ mod tests {
                 awareness
             );
             assert!(
-                awareness.contains("暢流") && awareness.contains("動中體察"),
+                awareness.contains("交手發力之際") || awareness.contains("暢流"),
                 "體感覺察必須包含關鍵體察字詞：{}",
                 awareness
             );

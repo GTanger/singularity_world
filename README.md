@@ -12,9 +12,13 @@
 
 - **後端：Rust 服務**（Axum 0.8 + Tokio）。
 - **資料儲存**：**PostgreSQL 為唯一權威持久層**；執行期真理以資料庫為準。`data/` 下 JSON 僅作種子、靜態設定與開發備份（細節見 `AGENTS.md`、`docs/技術約束規則.md`）。
-- **主要路徑**：單一**方格 MUD** 世界；底層使用 square grid，玩家體驗是純文字 MUD 與「方格 + 連線」地圖，不是棋盤，也不是 Hex。
-- **前端**：原生 HTML/CSS/JS (PWA)，提供遊戲頁面與管理工具組（星圖、管理頁）。
-- **進度**：以 `WORKBOARD.md` 的方向定調與 `sw-status` 的實況輸出為準；舊 Hex／觀景窗／歷史模擬器對接已下線或凍結。
+- **主要路徑**：白塔半島文字 GUI 活世界。305 個正式可通行區域與 1,644 條路線
+  承載玩家及居民；舊 119 格已退出 active 世界。玩家以東、西、南、北、上、下、
+  進、出行動，沒有圖像玩家地圖。
+- **前端**：原生 HTML/CSS/JS (PWA)，把 PostgreSQL 權威世界投射成可操作文字 GUI，
+  另提供星圖與管理工具。
+- **進度**：以 `WORKBOARD.md` 的方向定調與 runtime check／正式服務實況為準；舊
+  Hex、方格玩家世界、觀景窗與歷史模擬器均已退役或凍結。
 
 ---
 
@@ -26,9 +30,10 @@
 
 1. **`cargo clippy -- -D warnings`**：程式碼品質檢查（不可有任何警告）。
 2. **`cargo test`**：單元與整合測試。
-3. **`cargo run --bin checkrooms -- -brackets -strict`**：房間 JSON 契約檢查（驗證觸發字與括號對應）。
-4. **`cargo build --release`** → `bin/server-rust`。
-5. **前端建置／靜態資源同步**：依 `./start` 內現行流程執行；不得自行跳過。
+3. **`cargo run --bin white-tower-runtime-check`**：完整來源、場所、路線、資源、名稱與
+   active runtime 契約檢查。
+4. **`cargo run --bin checkrooms -- -brackets -strict`**：相容房間 JSON 契約檢查。
+5. **`cargo build --release`** → `bin/server-rust`，再重啟正式服務。
 
 ### 一鍵啟動 (Rust)
 
@@ -60,8 +65,7 @@ singularity_world/
 │   ├── main.rs         # 程式進入點
 │   ├── server/         # Axum 路由、WS Hub、Session、API
 │   ├── store/          # PostgreSQL 權威驅動；拒絕依賴執行期 JSON
-│   ├── world/          # 世界地圖、區塊管理、資源點系統
-│   ├── grid/           # 方格座標、鄰居、揭露與玩家視野
+│   ├── world/          # 白塔拓撲、正式場所／路線、旅程、物理地理與資源
 │   ├── game/           # 遊戲主循環、NPC 模擬、動作分派 (do_action)
 │   ├── combat/         # 戰鬥結算判定
 │   ├── npc/            # NPC 決策、話語池、社交觸發
@@ -87,4 +91,4 @@ singularity_world/
 
 ---
 
-*奇點世界 — 一個能量充沛的常理化奇幻世界，萬物因此富態生長。*
+*奇點世界 — 世界先活著，玩家在其中活出自己的故事。*

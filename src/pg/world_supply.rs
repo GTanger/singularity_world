@@ -1,6 +1,6 @@
 //! Azgaar `burg -> market` 證據的實體上游供應。
 //!
-//! 來源 Burg 不直接升格為正典聚落；同一物理場所的來源交易會共用一個地方供應站。
+//! 來源 Burg 不直接升格為核心聚落；同一物理場所的來源交易會共用一個地方供應站。
 //! 只有受派且親自在來源場所工作的居民，才能把有來源證據的商品交進同地市場，
 //! 或把它裝成一批由自己承運的實體貨物。
 
@@ -83,7 +83,7 @@ pub(crate) struct PreparedSupply {
     destination_place_id: String,
     source_good_id: i32,
     item_id: String,
-    display_name: String,
+    pub(crate) display_name: String,
     evidence_units: f64,
     planned_path: String,
     travel_cost: i32,
@@ -242,10 +242,11 @@ pub fn upsert_seed(
         .collect::<BTreeMap<_, _>>();
     for (place_id, evidence_deal_count) in &site_deal_counts {
         let venue_id = producer_venue_id(place_id)?;
-        let place_name = place_names
+        let raw_place_name = place_names
             .get(place_id.as_str())
             .copied()
             .ok_or_else(|| anyhow::anyhow!("供應來源沒有正式物理場所：{place_id}"))?;
+        let place_name = super::living_world::peninsula_market_settlement_name(raw_place_name);
         let venue_name = format!("{place_name}地方供應站");
         let room_ids = serde_json::to_string(&[place_id.as_str()])?;
         client.execute(
@@ -573,9 +574,18 @@ pub(crate) fn dispatch_in_tx(
             &prepared.source_ref,
             now_unix,
         )?;
+        let source_name = crate::db::get_room_name(&prepared.source_place_id).unwrap_or_default();
+        let dest_name =
+            crate::db::get_room_name(&prepared.destination_place_id).unwrap_or_default();
+        let reason = format_venue_supply_dispatch_reason_and_advance_event_pack(
+            &source_name,
+            &dest_name,
+            &prepared.item_id,
+            &prepared.display_name,
+        );
         tx.execute(
             "UPDATE resident_continuity SET current_intent='work',
-               intent_reason='已在供應地裝貨，必須把既有貨物送到目的市場',
+               intent_reason=$5,
                destination_place_id=$1,blocked_by=NULL,
                next_wake_at=LEAST(COALESCE(next_wake_at,$2),$2),
                revision=revision+1,updated_at=$2,source_kind='runtime_upstream_supply',
@@ -585,6 +595,7 @@ pub(crate) fn dispatch_in_tx(
                 &now_unix,
                 &prepared.source_ref,
                 &worker_id,
+                &reason,
             ],
         )?;
         (
@@ -745,6 +756,52 @@ fn supply_quantity(evidence_units: f64, remaining_capacity: i32) -> i32 {
     (evidence_units.ceil().clamp(1.0, 3.0) as i32).min(remaining_capacity.max(0))
 }
 
+/// 依來源場所 `RoomVenueObject` 與貨物名稱組裝上游供應裝貨意向描述，並推進房間 `EventPack`／`ScriptPack`。
+#[must_use]
+pub fn format_venue_supply_dispatch_reason_and_advance_event_pack(
+    source_room_name: &str,
+    dest_room_name: &str,
+    item_id: &str,
+    display_name: &str,
+) -> String {
+    let src_trimmed = source_room_name.trim();
+    if !src_trimmed.is_empty() {
+        let object_hint = format!("{} {}", item_id.trim(), display_name.trim());
+        let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            src_trimmed,
+            object_hint.trim(),
+        );
+    }
+    let dest_label = if dest_room_name.trim().is_empty() {
+        "鄰近市集"
+    } else {
+        dest_room_name.trim()
+    };
+    let item_label = display_name.trim();
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(src_trimmed, "") {
+        let zone_tag = if venue.has_counter_restricted_zone {
+            "當值櫃檯內側"
+        } else {
+            "當值作業區"
+        };
+        if !item_label.is_empty() {
+            return format!(
+                "已於{}{}備妥【{}】，正將貨物運往{}",
+                venue.venue_kind, zone_tag, item_label, dest_label
+            );
+        }
+        return format!(
+            "已於{}{}完成裝貨，正將貨物運往{}",
+            venue.venue_kind, zone_tag, dest_label
+        );
+    }
+    if !item_label.is_empty() {
+        format!("已在供應地裝妥【{item_label}】，正將貨物運往{dest_label}")
+    } else {
+        format!("已在供應地裝貨，正將貨物運往{dest_label}")
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -784,5 +841,27 @@ mod tests {
             "wt-supply-0042"
         );
         assert!(producer_venue_id("azgaar-burg-42").is_err());
+    }
+
+    #[test]
+    fn test_format_venue_supply_dispatch_reason_and_advance_event_pack() {
+        let reason = format_venue_supply_dispatch_reason_and_advance_event_pack(
+            "老堰頭・水輪石磨工坊",
+            "三水大食堂",
+            "wt_cat_0388",
+            "現磨溫米漿",
+        );
+        assert_eq!(
+            reason,
+            "已於水輪石磨工坊當值櫃檯內側備妥【現磨溫米漿】，正將貨物運往三水大食堂"
+        );
+
+        let fallback = format_venue_supply_dispatch_reason_and_advance_event_pack(
+            "荒蕪礫石空地",
+            "",
+            "wt_cat_0001",
+            "粗鹽",
+        );
+        assert_eq!(fallback, "已在供應地裝妥【粗鹽】，正將貨物運往鄰近市集");
     }
 }

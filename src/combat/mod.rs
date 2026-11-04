@@ -1,6 +1,7 @@
 // combat 模組 — 戰鬥判定與文字 log，對齊既有 combat/combat（Resolve、ResolveV2、CombatOpt）。
 
 pub mod wordplate;
+pub mod human_phase;
 
 use rand::Rng;
 
@@ -311,10 +312,10 @@ mod tests {
                 high_dex_wins += 1;
             }
         }
-        // 高 dex 方命中率更高，應贏超過 55%
+        // 高敏一方命中率更高，應贏超過 55%
         assert!(
             high_dex_wins > 275,
-            "高 dex 方只贏了 {high_dex_wins}/500 次"
+            "高敏一方只贏了 {high_dex_wins}/500 次"
         );
     }
 

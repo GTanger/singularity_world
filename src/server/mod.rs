@@ -22,7 +22,7 @@ pub use handler::{WsConnection, handle_message};
 pub use hub::{Hub, SEND_BUFFER_SIZE};
 pub use protocol::{
     ActionResultMsg, BlockedMsg, ClientMsg, EntityStatusMsg, ErrorMsg, ExitView, InventoryItemView,
-    InventoryMsg, MeMsg, MovedMsg, NarrateMsg, NpcDialogueMsg, PongMsg, RoomViewMsg,
+    InventoryMsg, MeMsg, MovedMsg, NarrateMsg, NpcAddressMsg, NpcDialogueMsg, PongMsg, RoomViewMsg,
     TopologyDebugAckMsg, ViewEntity, ViewObject,
 };
 pub use run::{AppState, run};

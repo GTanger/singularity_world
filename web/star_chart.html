@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>星盤 — 奇點世界</title>
+<title>星盤 — 白塔半島</title>
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -72,7 +72,7 @@ header h1{font-size:18px;color:#e6edf3;white-space:nowrap}
 <div id="mynetwork"></div>
 
 <div class="legend">
-  <div class="legend-item"><span class="legend-dot" style="background:#f47067"></span> 生之奇點</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#f47067"></span> 生之本源</div>
   <div class="legend-item"><span class="legend-dot" style="background:#d29922"></span> 內環二十主星</div>
   <div class="legend-item"><span class="legend-dot" style="background:#539bf5"></span> 中環百樞星</div>
   <div class="legend-item"><span class="legend-dot" style="background:#57ab5a"></span> 外環周天星</div>
@@ -151,7 +151,7 @@ async function loadTopology() {
     }
     const data = await resp.json();
     renderChart(data);
-    setStatus('周天星盤・生之奇點已啟  |  角色：' + data.player_id);
+    setStatus('周天星盤・生之本源已啟  |  角色：' + data.player_id);
   } catch (e) {
     setError(e.message);
   } finally {
@@ -189,14 +189,14 @@ function renderChart(data) {
     const baseColor = ZONE_COLORS[zone];
     const borderColor = SYS_BORDER[sys] || baseColor;
     let label = n.name;
-    if (zone === 0) label = '生之奇點';
+    if (zone === 0) label = '生之本源';
     else if (zone === 2) label = '【' + n.name + '】';
 
     const sysName = {'體':'體質','氣':'氣脈','敏':'靈敏'}[sys] || '';
     const zoneLabel = {0:'源核', 1:'內環二十主星', 2:'中環百樞星', 3:'外環周天星'}[zone] || '';
     const inlayTip = n.inlayable ? '（可鑲字星位）' : '（源核不可鑲字）';
     const tip = zone === 0
-      ? n.name + ' ' + inlayTip + '\n生之奇點 — 靈魂降臨的唯一起點'
+      ? n.name + ' ' + inlayTip + '\n生之本源 — 靈魂降臨的唯一起點'
       : n.name + ' ' + inlayTip + '\n系屬：' + sys + '（' + sysName + '）  ' + zoneLabel;
 
     return {
@@ -261,7 +261,7 @@ function renderChart(data) {
     setStatus('周天星軌演化中…');
   });
   network.on('stabilizationIterationsDone', function() {
-    setStatus('周天星盤・生之奇點已啟  |  角色：' + data.player_id);
+    setStatus('周天星盤・生之本源已啟  |  角色：' + data.player_id);
     network.fit();
   });
 }

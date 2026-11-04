@@ -1,0 +1,1747 @@
+{
+  "schema": "tanger-agent-system/story-checkpoint/v1",
+  "version": 65,
+  "label": "object-deduction-storyline",
+  "created_at": "2026-10-20T14:34:29+08:00",
+  "state_sha256": "c28caaa1ac335cadbdd21da6f67703eea0a0d517e237f116ba1770b27b761c36",
+  "state": {
+    "schema": "tanger-agent-system/story-production-state/v1",
+    "project_id": "white-tower-storyline",
+    "title": "白塔半島故事線：從渡海起源至萬物其來有自",
+    "seed": "生存與生活需求因果鏈與百工風物推導",
+    "revision": 65,
+    "created_at": "2026-10-20T14:34:29+08:00",
+    "updated_at": "2026-10-20T14:34:29+08:00",
+    "canon_policy": {
+      "ai_output_default": "proposal",
+      "acceptance_requires_user_approval": true,
+      "forbidden_legacy_markers": [
+        "欣格蕾爾",
+        "xingleier"
+      ],
+      "current_boundaries": [
+        "偏現代",
+        "能量的源頭都一樣",
+        "萬人萬相",
+        "功法有高下，勝負無定式"
+      ]
+    },
+    "runtime": {
+      "phase": "idle",
+      "repair_budget_total": 0,
+      "repair_budget_remaining": 0,
+      "failure_reasons": [],
+      "last_checkpoint": null,
+      "last_error": null
+    },
+    "source_credits": [
+      {
+        "project": "danjdewhurst/story-skills",
+        "reviewed_revision": "c482d48f4eb9b488f033a77a51f9fae55cc0d75f",
+        "local_capability": "typed story packets and deterministic continuity",
+        "runtime_boundary": "concept credit only; no external runtime or story content copied"
+      },
+      {
+        "project": "ExplosiveCoderflome/AI-Novel-Writing-Assistant",
+        "reviewed_revision": "7785b0569bb0e95244238245b75ce3c79a8e028a",
+        "local_capability": "checkpoint, resume, feedback, repair budget, circuit breaker",
+        "runtime_boundary": "concept credit only; no React, Express, LangGraph, or Qdrant"
+      },
+      {
+        "project": "bybren-llc/story-systems-template",
+        "reviewed_revision": "e4ddd291a5d708737c2e7a97d541fd7f837d195c",
+        "local_capability": "Fountain build and script-supervisor validation pass",
+        "runtime_boundary": "review passes remain main-agent-owned; no multi-agent theater"
+      },
+      {
+        "project": "ur-grue/autopunk-media-skills",
+        "reviewed_revision": "58b410924e394f18a629fe9fc123c7bfccc11ca4",
+        "local_capability": "editing and screenwriting quality gates",
+        "runtime_boundary": "quality checks cannot override user wording or canon"
+      }
+    ],
+    "world": {
+      "white_tower_peninsula": {
+        "id": "white_tower_peninsula",
+        "name": "白塔半島",
+        "summary": "坦頡人千餘年前渡海定居之半島，四方山海物產豐盈，百工器物皆其來有自。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "rule_or_state": "同源能量萬人萬相，無修行者平均壽命逾兩百壽，百工器物皆因生活需求推導其來有自"
+        },
+        "revision": 1,
+        "active": true
+      }
+    },
+    "characters": {
+      "cen_shouyuan": {
+        "id": "cen_shouyuan",
+        "name": "岑守淵",
+        "summary": "長年駐守聖塔與半嶺鎮的二叔祖大匠師，主張人必在磨礪中淬鍊自身筋骨氣力。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在聖塔居高遠眺，定期採集北山寒水玉捎下山送往分家巷",
+          "motive": "堅持坦頡人不可全恃現成器物而喪失筋骨意志"
+        },
+        "revision": 4,
+        "active": true
+      },
+      "cen_shouyue": {
+        "id": "cen_shouyue",
+        "name": "岑守岳",
+        "summary": "岑氏第一鍛造工坊大匠師，百餘年前與弟弟岑守淵在東橋頭分家，專精民生百工器物。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在分家巷北頭工坊指導岑拓以北山寒水玉打製新式器物",
+          "motive": "以導能器物普及城鎮，免除常人苦力並減少拓墾傷亡"
+        },
+        "revision": 3,
+        "active": true
+      },
+      "cen_tuo": {
+        "id": "cen_tuo",
+        "name": "岑拓",
+        "summary": "岑氏第一鍛造工坊年輕匠師，岑守岳之徒，手藝精湛且勇於嘗試新材料。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在工坊內爐以寒水玉與深山重礦打製新式器具",
+          "motive": "調和山上山下兩代匠師之見，精研導能百工器物"
+        },
+        "revision": 5,
+        "active": true
+      },
+      "fang_shi": {
+        "id": "fang_shi",
+        "name": "方石",
+        "summary": "三號坑口礦務主任，長年在青脊山西麓帶領礦工開採紅鐵礦與深山重礦。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在三號坑口指揮採掘紅鐵重礦，裝車交付西門聯運",
+          "motive": "確保三號坑口礦脈開採安全，供應全島百工冶煉所需重礦"
+        },
+        "revision": 6,
+        "active": true
+      },
+      "lu_bingheng": {
+        "id": "lu_bingheng",
+        "name": "陸秉衡",
+        "summary": "兩百六十八歲之全島最年長老會長，三水總商行主事者，百年前主導開譜立契。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在三水食堂喝早湯泡早浴，總攬半島公議與商盟運轉",
+          "motive": "守護白塔半島百工繁榮、商行契據與城鄉安寧"
+        },
+        "revision": 2,
+        "active": true
+      },
+      "lu_zhiwei": {
+        "id": "lu_zhiwei",
+        "name": "陸知微",
+        "summary": "文曜藏書閣掌管者，主編白塔風物誌，精研半島山海物產源流與地名考證。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在文曜講堂街藏書閣整編全島物件源流與風物卷冊",
+          "motive": "考證四方山海器物與家族拓墾歷史，編纂風物誌"
+        },
+        "revision": 9,
+        "active": true
+      },
+      "luo_lie": {
+        "id": "luo_lie",
+        "name": "羅烈",
+        "summary": "南哨防務總隊長，長年守望黑沼林北緣高棧坪與南哨市集。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在南哨巡視高棧坪與沉水烏木交易市集",
+          "motive": "守望黑沼林北緣險隘，確保南哨市集與採集獵人安全"
+        },
+        "revision": 11,
+        "active": true
+      },
+      "wen_qing": {
+        "id": "wen_qing",
+        "name": "溫晴",
+        "summary": "文曜城溫氏診所主治醫師，溫懷瑾之女，精通草木藥理與筋骨脈絡調理。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在診所整理北山草藥與黑沼水苔，為泉香浴場調配草木湯包",
+          "motive": "研發拔毒活血與強健筋骨之草木藥劑，撫慰居民勞損"
+        },
+        "revision": 10,
+        "active": true
+      },
+      "xu_haiyin": {
+        "id": "xu_haiyin",
+        "name": "許海音",
+        "summary": "北冕號年輕船長，許萬川之孫女，膽識過人、熟悉西海航道。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在大船塢協同林正雄檢修北冕號之雲杉龍骨與巨藻船纜",
+          "motive": "繼承先祖領航膽識，率北冕號航巡山海水道"
+        },
+        "revision": 8,
+        "active": true
+      },
+      "xu_wanchuan": {
+        "id": "xu_wanchuan",
+        "name": "許萬川",
+        "summary": "海事商盟老會長，先祖渡海領航船舵手後代，風舶雙港之老掌舵人。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "current_state": "在風舶雙港商盟調度港務與巨藻船纜物料",
+          "motive": "保全遠洋船隊航安，維護漁撈秩序與白神使祖訓"
+        },
+        "revision": 7,
+        "active": true
+      }
+    },
+    "plot": {
+      "plot-white-tower-deduction": {
+        "id": "plot-white-tower-deduction",
+        "name": "白塔半島生活需求與百工推導主線",
+        "summary": "從渡海開拓到生存需求推導出四方風物與百工生活器物，歷經開譜立契分家之爭，形成萬物其來有自的人間煙火舞臺。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "conflict": "借器物便民免除苦力 vs 煉自身強魄淬礪筋骨的手藝修行之爭",
+          "endpoint": "全島百工器物各正其位，老中青三代共築萬物其來有自的生活舞台",
+          "pressure": "山海拓墾之生存艱辛與百工發展之迫切需求",
+          "trigger": "先祖渡海登陸並依地形物產扎下五大據點"
+        },
+        "revision": 12,
+        "active": true
+      }
+    },
+    "chapters": {
+      "chapter-1": {
+        "id": "chapter-1",
+        "name": "第一章：坦頡起源傳說（第 1～7 段）",
+        "summary": "大洋故島海侵分頭遷徙，白神使引航見白塔神山，避風入灣、夜退萬獸、立定五大據點。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 13,
+        "active": true
+      },
+      "chapter-2": {
+        "id": "chapter-2",
+        "name": "第二章：數代拓墾與八大百工（第 8～9 段）",
+        "summary": "初代落腳水脈村落得名，由生存難題推導出水利、農牧、醫藥、礦冶、聯運、船塢與學院。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 14,
+        "active": true
+      },
+      "chapter-3": {
+        "id": "chapter-3",
+        "name": "第三章：四方風物與器物由來（第 10～11 段）",
+        "summary": "西海巨藻船纜夜光貝燈、北山雲杉松香寒水玉與冬衣、西南原鐵釜鮮肉湯與黑沼烏木水苔。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 15,
+        "active": true
+      },
+      "chapter-4": {
+        "id": "chapter-4",
+        "name": "第四章：開譜立契與器物革新（第 12～13 段）",
+        "summary": "推導新式導能器物引發東橋頭分家之爭，陸秉衡開譜立契奠定城鎮現代生活機能。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 16,
+        "active": true
+      },
+      "chapter-5": {
+        "id": "chapter-5",
+        "name": "第五章：今日半島日常煙火（第 14～15 段）",
+        "summary": "老中青三代當家人有序運轉，四方物產器物件件其來有自，構成生生不息的活世界舞台。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 17,
+        "active": true
+      }
+    },
+    "scenes": {
+      "scene-c1-s1": {
+        "id": "scene-c1-s1",
+        "name": "故島海侵分頭遷徙與白神使引航",
+        "summary": "先祖船隊因海水侵島分路遷徙，蒙白神使引航得見北方高聳白塔神山。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-1",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "坦頡人確定遷徙航線並抵達白塔半島外海",
+          "place": "大洋不知名故島至遠洋海域",
+          "time": "遠古千餘年前海侵之歲月",
+          "visible_state": "驚濤駭浪中白色似鼠長鼻海獸破浪領航，遠方海平線浮現高聳雪白山影"
+        },
+        "revision": 18,
+        "active": true
+      },
+      "scene-c1-s2": {
+        "id": "scene-c1-s2",
+        "name": "幽深水灣落腳與立定五大據點",
+        "summary": "狂風中避入風舶灣，暗夜地鳴驚退萬獸，族民大會定下五大據點開闢腹地。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-1",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "族人警醒不再依賴神示，立意築牆造器定下五大據點",
+          "place": "風舶港灣至文曜盆地一帶",
+          "time": "遠古渡海初登陸數日內",
+          "visible_state": "火把映照潮濕泥地獸足雜亂，群獸四散奔逃，天明晨光灑落幽深水灣"
+        },
+        "revision": 19,
+        "active": true
+      },
+      "scene-c2-s1": {
+        "id": "scene-c2-s1",
+        "name": "初代散居落腳與村落命名由來",
+        "summary": "順水脈海岸散居，由眼所見得名老堰頭、北嶺腳、風櫃尾與烏石鼻。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-2",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "初代坦頡人依自然形勝扎下生活聚落與地名",
+          "place": "老堰頭、北嶺腳、風櫃尾與烏石鼻",
+          "time": "渡海後初代落腳拓荒歲月",
+          "visible_state": "溪畔疊石築堰引水，海崖風洞呼嘯作響，漁舟泊於黑礁之側"
+        },
+        "revision": 20,
+        "active": true
+      },
+      "scene-c2-s2": {
+        "id": "scene-c2-s2",
+        "name": "生存難題推導出水利農礦百工",
+        "summary": "引溪鑿大圳、開採三號坑口、立岑家鐵爐、跑駝獸聯運、建船塢與學院。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-2",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "為解決洪災傷病鐵器損耗，八大百工因果鏈成型扎根",
+          "place": "大圳頭、牛埔、三號坑口至文曜東橋",
+          "time": "初代至第二代百工開拓期",
+          "visible_state": "水圳閘門初開良田鋪展，礦煙升騰鐵鎚鍛打，駝獸輦車絡繹不絕"
+        },
+        "revision": 21,
+        "active": true
+      },
+      "scene-c3-s1": {
+        "id": "scene-c3-s1",
+        "name": "西海北山物產化為船纜貝燈木石",
+        "summary": "討海人採巨藻絞纜、撿夜光貝作燈，北山伐雲杉為龍骨、取松香木製傢俱。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-3",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "摸透西海北山物產脾性，化為船纜貝燈與冬衣溫石",
+          "place": "風舶大船塢、文曜傢俱坊與泉香浴場",
+          "time": "數百年間物產摸索成熟期",
+          "visible_state": "船塢巨木雲杉散發松香，巨藻船纜堅韌耐磨，貝燈在木器上透出柔光"
+        },
+        "revision": 22,
+        "active": true
+      },
+      "scene-c3-s2": {
+        "id": "scene-c3-s2",
+        "name": "西南原農牧與黑沼烏木草藥進城",
+        "summary": "周家新米鮮肉配紅鐵釜慢燉熱湯，黑沼林打撈沉水烏木並製成水苔湯包。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-3",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "西南原與南境黑沼產物匯入城鎮起居飲食",
+          "place": "文曜三水食堂、泉香浴場與南哨水尾寮",
+          "time": "數百年間日常商貿成熟期",
+          "visible_state": "食堂厚鐵釜翻滾著濃白原牛鮮肉湯，烏木器皿堅硬防潮，水苔藥香瀰漫"
+        },
+        "revision": 23,
+        "active": true
+      },
+      "scene-c4-s1": {
+        "id": "scene-c4-s1",
+        "name": "新式導能器物研製與分家巷之爭",
+        "summary": "岑守岳研製省力導能器物，岑守淵怒砸試招石率眾上山擴建半嶺鎮。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-4",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "兄弟手藝之爭促成城內岑氏工坊與山上半嶺鎮雙軌並立",
+          "place": "文曜城東橋頭長街至半嶺鎮溪谷",
+          "time": "距今百餘年前壯年當家之時",
+          "visible_state": "長街東橋頭試招石斷裂兩半，岑守岳留守工坊，岑守淵負錘登山"
+        },
+        "revision": 24,
+        "active": true
+      },
+      "scene-c4-s2": {
+        "id": "scene-c4-s2",
+        "name": "開譜立契與城鎮現代生活機能成形",
+        "summary": "陸秉衡修總譜立三水商行與鐘樓，四達車船聯運讓居民生活無虞享受日常。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-4",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "確立白塔半島通行行規與現代生活起居機能",
+          "place": "文曜三水口鐘樓、講堂街與商行",
+          "time": "距今百餘年開譜立契之年",
+          "visible_state": "鐘樓巨鐘初次敲響傳遍城廂，商號契據齊備，市民安享食堂熱湯與浴場"
+        },
+        "revision": 25,
+        "active": true
+      },
+      "scene-c5-s1": {
+        "id": "scene-c5-s1",
+        "name": "三代當家人有序運轉城鄉日常",
+        "summary": "鐘響車動，新米重礦入城，岑拓打製器物，溫氏配藥，許林修船。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-5",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "老中青三代各司其職，半島商貿百工運轉井然有序",
+          "place": "文曜三水口、分家巷、船塢與南哨",
+          "time": "當今清晨三水口鐘聲響起之際",
+          "visible_state": "駝獸貨車滿載重礦晨曦入城，鍛爐火光與藥香交織，船塢鋸木鏗鏘"
+        },
+        "revision": 26,
+        "active": true
+      },
+      "scene-c5-s2": {
+        "id": "scene-c5-s2",
+        "name": "萬物其來有自之生動人間煙火",
+        "summary": "從白神使引航到百工沉澱，街巷熱湯、夜光貝燈、寒水玉池皆其來有自。",
+        "canon_status": "proposal",
+        "production_status": "outline",
+        "parent": "chapter:chapter-5",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "event_delta": "白塔半島生活世界底層推導完備，開啟萬人萬相活世界舞台",
+          "place": "文曜城廂、港灣碼頭至四方市集",
+          "time": "當今白塔半島世世代代的人間煙火",
+          "visible_state": "青石街巷炊煙裊裊，夜光貝燈映照萬家燈火，旅人食客歡聲笑語"
+        },
+        "revision": 27,
+        "active": true
+      }
+    },
+    "promises": {
+      "promise-ancient-routes": {
+        "id": "promise-ancient-routes",
+        "name": "遠古故島分頭遷徙航線之長線伏筆",
+        "summary": "先祖渡海分頭出發之其他船隊下落，成為老船長世代傳誦之未解懸念。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c1-s1",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 38,
+        "active": true
+      },
+      "promise-brothers-craft": {
+        "id": "promise-brothers-craft",
+        "name": "東橋頭分家巷兄弟手藝修行之爭",
+        "summary": "借器物便民與煉自身強魄互不服氣，手裡傢伙與礦石卻連著同道火候。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c4-s1",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 42,
+        "active": true
+      },
+      "promise-self-reliance": {
+        "id": "promise-self-reliance",
+        "name": "暗夜地鳴警醒全族自力拓荒之志",
+        "summary": "神山不替人夜夜敲鐘，唯有鍛造器物開闢腹地，全族方能真正立足。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c1-s2",
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 40,
+        "active": true
+      }
+    },
+    "questions": {},
+    "timeline": {
+      "time-10": {
+        "id": "time-10",
+        "name": "紀元前遷徙期：海侵啟程",
+        "summary": "坦頡先民船隊受白神使引導渡過遠洋凶險海域。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c1-s1",
+        "targets": [],
+        "ordinal": 10,
+        "amount": null,
+        "attributes": {},
+        "revision": 28,
+        "active": true
+      },
+      "time-100": {
+        "id": "time-100",
+        "name": "當代生息期：萬物其來有自之境",
+        "summary": "城鄉器用與人文制度因果完足，白塔半島步入活態生活世界。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c5-s2",
+        "targets": [],
+        "ordinal": 100,
+        "amount": null,
+        "attributes": {},
+        "revision": 37,
+        "active": true
+      },
+      "time-20": {
+        "id": "time-20",
+        "name": "紀元前奠基期：五大據點確立",
+        "summary": "夜宿風舶灣逢地鳴驚退獸群，次日公議確立半島五方基石。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c1-s2",
+        "targets": [],
+        "ordinal": 20,
+        "amount": null,
+        "attributes": {},
+        "revision": 29,
+        "active": true
+      },
+      "time-30": {
+        "id": "time-30",
+        "name": "拓荒初期：水土定居與地名緣起",
+        "summary": "依地貌水脈散居形成老堰頭、北嶺腳與海濱漁村。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c2-s1",
+        "targets": [],
+        "ordinal": 30,
+        "amount": null,
+        "attributes": {},
+        "revision": 30,
+        "active": true
+      },
+      "time-40": {
+        "id": "time-40",
+        "name": "拓荒成熟期：八大百工體系完備",
+        "summary": "為抗山洪強獸，周岑方韓各家先祖開創水利礦冶與聯運。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c2-s2",
+        "targets": [],
+        "ordinal": 40,
+        "amount": null,
+        "attributes": {},
+        "revision": 31,
+        "active": true
+      },
+      "time-50": {
+        "id": "time-50",
+        "name": "百工繁榮期：西海北山物產化用",
+        "summary": "風舶雙港與文曜工坊善用海藻貝母雲杉良木打磨日用器皿。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c3-s1",
+        "targets": [],
+        "ordinal": 50,
+        "amount": null,
+        "attributes": {},
+        "revision": 32,
+        "active": true
+      },
+      "time-60": {
+        "id": "time-60",
+        "name": "百工商貿期：平原與黑沼產物入饌",
+        "summary": "大角原牛鮮肉入鐵釜熬湯，黑沼沉水烏木與水苔草藥惠及民生。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c3-s2",
+        "targets": [],
+        "ordinal": 60,
+        "amount": null,
+        "attributes": {},
+        "revision": 33,
+        "active": true
+      },
+      "time-70": {
+        "id": "time-70",
+        "name": "器物革新期：東橋分家各立宗門",
+        "summary": "岑氏兄弟就導能器具便民與自身淬鍊各執己見，分立半嶺鎮。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c4-s1",
+        "targets": [],
+        "ordinal": 70,
+        "amount": null,
+        "attributes": {},
+        "revision": 34,
+        "active": true
+      },
+      "time-80": {
+        "id": "time-80",
+        "name": "法制確定期：開譜立契商盟成型",
+        "summary": "陸秉衡主導半島全戶總譜，三水商行與鐘樓統一度量衡與行規。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c4-s2",
+        "targets": [],
+        "ordinal": 80,
+        "amount": null,
+        "attributes": {},
+        "revision": 35,
+        "active": true
+      },
+      "time-90": {
+        "id": "time-90",
+        "name": "當代常態期：三代執掌山海井然",
+        "summary": "清晨鐘響駝車入城，老中青工匠醫者各安其位承續生活。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "scene:scene-c5-s1",
+        "targets": [],
+        "ordinal": 90,
+        "amount": null,
+        "attributes": {},
+        "revision": 36,
+        "active": true
+      }
+    },
+    "facts": {
+      "fact-energy-system": {
+        "id": "fact-energy-system",
+        "name": "世界公理：同源能量萬人萬相",
+        "summary": "全世界能量同源，個人理解修為不同而現萬人萬相",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "object": "全世界能量同源，個人理解運用不同而成萬人萬相",
+          "predicate": "rule",
+          "subject": "white_tower_energy"
+        },
+        "revision": 44,
+        "active": true
+      },
+      "fact-lifespan-scale": {
+        "id": "fact-lifespan-scale",
+        "name": "世界公理：平均壽命逾兩百壽",
+        "summary": "普通人平均壽命逾兩百壽，歷史跨越千餘年數代沉澱",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": null,
+        "targets": [],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {
+          "object": "無修行者平均壽命逾兩百壽，社會沉澱極厚",
+          "predicate": "scale",
+          "subject": "tanger_lifespan"
+        },
+        "revision": 45,
+        "active": true
+      }
+    },
+    "character_resources": {
+      "res-cold-jade-pool": {
+        "id": "res-cold-jade-pool",
+        "name": "岑拓引寒水玉鋪池",
+        "summary": "岑拓引寒水玉鋪池",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:cen_tuo",
+        "targets": [
+          "scene:scene-c3-s1"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "cold_water_jade_pool"
+        },
+        "revision": 50,
+        "active": true
+      },
+      "res-ebony-utensils": {
+        "id": "res-ebony-utensils",
+        "name": "羅烈採獲沉水烏木",
+        "summary": "羅烈採獲沉水烏木",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:luo_lie",
+        "targets": [
+          "scene:scene-c3-s2"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "ebony_utensils"
+        },
+        "revision": 52,
+        "active": true
+      },
+      "res-energy-appliance": {
+        "id": "res-energy-appliance",
+        "name": "岑守岳研製導能器物",
+        "summary": "岑守岳研製導能器物",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:cen_shouyue",
+        "targets": [
+          "scene:scene-c4-s1"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "energy_guided_appliances"
+        },
+        "revision": 54,
+        "active": true
+      },
+      "res-gazetteer": {
+        "id": "res-gazetteer",
+        "name": "陸知微編纂白塔風物誌",
+        "summary": "陸知微編纂白塔風物誌",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:lu_zhiwei",
+        "targets": [
+          "scene:scene-c5-s1"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "white_tower_gazetteer"
+        },
+        "revision": 56,
+        "active": true
+      },
+      "res-herbal-pack": {
+        "id": "res-herbal-pack",
+        "name": "溫晴調製草木湯包",
+        "summary": "溫晴調製草木湯包",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:wen_qing",
+        "targets": [
+          "scene:scene-c3-s2"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "mire_herbal_bath_pack"
+        },
+        "revision": 53,
+        "active": true
+      },
+      "res-household-reg": {
+        "id": "res-household-reg",
+        "name": "陸秉衡定立全戶總譜",
+        "summary": "陸秉衡定立全戶總譜",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:lu_bingheng",
+        "targets": [
+          "scene:scene-c4-s2"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "peninsula_household_register"
+        },
+        "revision": 55,
+        "active": true
+      },
+      "res-kelp-cable": {
+        "id": "res-kelp-cable",
+        "name": "許海音調用巨藻船纜",
+        "summary": "許海音調用巨藻船纜",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:xu_haiyin",
+        "targets": [
+          "scene:scene-c3-s1"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "kelp_ship_cable"
+        },
+        "revision": 46,
+        "active": true
+      },
+      "res-night-pearl": {
+        "id": "res-night-pearl",
+        "name": "許萬川取用夜光貝燈",
+        "summary": "許萬川取用夜光貝燈",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:xu_wanchuan",
+        "targets": [
+          "scene:scene-c3-s1"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "night_pearl_lamp"
+        },
+        "revision": 47,
+        "active": true
+      },
+      "res-pine-furniture": {
+        "id": "res-pine-furniture",
+        "name": "陸秉衡購置松香傢俱",
+        "summary": "陸秉衡購置松香傢俱",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:lu_bingheng",
+        "targets": [
+          "scene:scene-c3-s1"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "pine_furniture"
+        },
+        "revision": 49,
+        "active": true
+      },
+      "res-red-cauldron": {
+        "id": "res-red-cauldron",
+        "name": "方石鑄造厚底鐵釜",
+        "summary": "方石鑄造厚底鐵釜",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:fang_shi",
+        "targets": [
+          "scene:scene-c3-s2"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "red_iron_cauldron"
+        },
+        "revision": 51,
+        "active": true
+      },
+      "res-spruce-keel": {
+        "id": "res-spruce-keel",
+        "name": "許海音加固雲杉龍骨",
+        "summary": "許海音加固雲杉龍骨",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "character:xu_haiyin",
+        "targets": [
+          "scene:scene-c3-s1"
+        ],
+        "ordinal": null,
+        "amount": 1,
+        "attributes": {
+          "resource": "spruce_keel"
+        },
+        "revision": 48,
+        "active": true
+      }
+    },
+    "payoffs": {
+      "payoff-ancient-routes-patrol": {
+        "id": "payoff-ancient-routes-patrol",
+        "name": "北冕號巡檢外海航道傳承航海宿願",
+        "summary": "許海音與林正雄在大船塢整備北冕號，守望先祖航路並傳承探索精神。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "promise:promise-ancient-routes",
+        "targets": [
+          "scene:scene-c5-s1"
+        ],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 39,
+        "active": true
+      },
+      "payoff-brothers-craft-harmony": {
+        "id": "payoff-brothers-craft-harmony",
+        "name": "山上寒水玉下山入爐成就新工藝",
+        "summary": "岑守岳看著徒弟岑拓用山上岑守淵捎來的寒水玉打製新器物，兩代手藝互通相承。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "promise:promise-brothers-craft",
+        "targets": [
+          "scene:scene-c5-s1"
+        ],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 43,
+        "active": true
+      },
+      "payoff-self-reliance-industry": {
+        "id": "payoff-self-reliance-industry",
+        "name": "八大百工全面成型扎穩生存基石",
+        "summary": "水利、礦冶、鍛造、聯運全面建立，由生存需求推導出完備百工體系。",
+        "canon_status": "proposal",
+        "production_status": "seed",
+        "parent": "promise:promise-self-reliance",
+        "targets": [
+          "scene:scene-c2-s2"
+        ],
+        "ordinal": null,
+        "amount": null,
+        "attributes": {},
+        "revision": 41,
+        "active": true
+      }
+    },
+    "dependencies": [
+      {
+        "from": "scene:scene-c1-s1",
+        "to": "chapter:chapter-1",
+        "relation": "parent",
+        "active": true,
+        "revision": 18
+      },
+      {
+        "from": "scene:scene-c1-s2",
+        "to": "chapter:chapter-1",
+        "relation": "parent",
+        "active": true,
+        "revision": 19
+      },
+      {
+        "from": "scene:scene-c2-s1",
+        "to": "chapter:chapter-2",
+        "relation": "parent",
+        "active": true,
+        "revision": 20
+      },
+      {
+        "from": "scene:scene-c2-s2",
+        "to": "chapter:chapter-2",
+        "relation": "parent",
+        "active": true,
+        "revision": 21
+      },
+      {
+        "from": "scene:scene-c3-s1",
+        "to": "chapter:chapter-3",
+        "relation": "parent",
+        "active": true,
+        "revision": 22
+      },
+      {
+        "from": "scene:scene-c3-s2",
+        "to": "chapter:chapter-3",
+        "relation": "parent",
+        "active": true,
+        "revision": 23
+      },
+      {
+        "from": "scene:scene-c4-s1",
+        "to": "chapter:chapter-4",
+        "relation": "parent",
+        "active": true,
+        "revision": 24
+      },
+      {
+        "from": "scene:scene-c4-s2",
+        "to": "chapter:chapter-4",
+        "relation": "parent",
+        "active": true,
+        "revision": 25
+      },
+      {
+        "from": "scene:scene-c5-s1",
+        "to": "chapter:chapter-5",
+        "relation": "parent",
+        "active": true,
+        "revision": 26
+      },
+      {
+        "from": "scene:scene-c5-s2",
+        "to": "chapter:chapter-5",
+        "relation": "parent",
+        "active": true,
+        "revision": 27
+      },
+      {
+        "from": "timeline:time-10",
+        "to": "scene:scene-c1-s1",
+        "relation": "parent",
+        "active": true,
+        "revision": 28
+      },
+      {
+        "from": "timeline:time-20",
+        "to": "scene:scene-c1-s2",
+        "relation": "parent",
+        "active": true,
+        "revision": 29
+      },
+      {
+        "from": "timeline:time-30",
+        "to": "scene:scene-c2-s1",
+        "relation": "parent",
+        "active": true,
+        "revision": 30
+      },
+      {
+        "from": "timeline:time-40",
+        "to": "scene:scene-c2-s2",
+        "relation": "parent",
+        "active": true,
+        "revision": 31
+      },
+      {
+        "from": "timeline:time-50",
+        "to": "scene:scene-c3-s1",
+        "relation": "parent",
+        "active": true,
+        "revision": 32
+      },
+      {
+        "from": "timeline:time-60",
+        "to": "scene:scene-c3-s2",
+        "relation": "parent",
+        "active": true,
+        "revision": 33
+      },
+      {
+        "from": "timeline:time-70",
+        "to": "scene:scene-c4-s1",
+        "relation": "parent",
+        "active": true,
+        "revision": 34
+      },
+      {
+        "from": "timeline:time-80",
+        "to": "scene:scene-c4-s2",
+        "relation": "parent",
+        "active": true,
+        "revision": 35
+      },
+      {
+        "from": "timeline:time-90",
+        "to": "scene:scene-c5-s1",
+        "relation": "parent",
+        "active": true,
+        "revision": 36
+      },
+      {
+        "from": "timeline:time-100",
+        "to": "scene:scene-c5-s2",
+        "relation": "parent",
+        "active": true,
+        "revision": 37
+      },
+      {
+        "from": "promise:promise-ancient-routes",
+        "to": "scene:scene-c1-s1",
+        "relation": "parent",
+        "active": true,
+        "revision": 38
+      },
+      {
+        "from": "payoff:payoff-ancient-routes-patrol",
+        "to": "promise:promise-ancient-routes",
+        "relation": "parent",
+        "active": true,
+        "revision": 39
+      },
+      {
+        "from": "payoff:payoff-ancient-routes-patrol",
+        "to": "scene:scene-c5-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 39
+      },
+      {
+        "from": "promise:promise-self-reliance",
+        "to": "scene:scene-c1-s2",
+        "relation": "parent",
+        "active": true,
+        "revision": 40
+      },
+      {
+        "from": "payoff:payoff-self-reliance-industry",
+        "to": "promise:promise-self-reliance",
+        "relation": "parent",
+        "active": true,
+        "revision": 41
+      },
+      {
+        "from": "payoff:payoff-self-reliance-industry",
+        "to": "scene:scene-c2-s2",
+        "relation": "target",
+        "active": true,
+        "revision": 41
+      },
+      {
+        "from": "promise:promise-brothers-craft",
+        "to": "scene:scene-c4-s1",
+        "relation": "parent",
+        "active": true,
+        "revision": 42
+      },
+      {
+        "from": "payoff:payoff-brothers-craft-harmony",
+        "to": "promise:promise-brothers-craft",
+        "relation": "parent",
+        "active": true,
+        "revision": 43
+      },
+      {
+        "from": "payoff:payoff-brothers-craft-harmony",
+        "to": "scene:scene-c5-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 43
+      },
+      {
+        "from": "character_resource:res-kelp-cable",
+        "to": "character:xu_haiyin",
+        "relation": "parent",
+        "active": true,
+        "revision": 46
+      },
+      {
+        "from": "character_resource:res-kelp-cable",
+        "to": "scene:scene-c3-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 46
+      },
+      {
+        "from": "character_resource:res-night-pearl",
+        "to": "character:xu_wanchuan",
+        "relation": "parent",
+        "active": true,
+        "revision": 47
+      },
+      {
+        "from": "character_resource:res-night-pearl",
+        "to": "scene:scene-c3-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 47
+      },
+      {
+        "from": "character_resource:res-spruce-keel",
+        "to": "character:xu_haiyin",
+        "relation": "parent",
+        "active": true,
+        "revision": 48
+      },
+      {
+        "from": "character_resource:res-spruce-keel",
+        "to": "scene:scene-c3-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 48
+      },
+      {
+        "from": "character_resource:res-pine-furniture",
+        "to": "character:lu_bingheng",
+        "relation": "parent",
+        "active": true,
+        "revision": 49
+      },
+      {
+        "from": "character_resource:res-pine-furniture",
+        "to": "scene:scene-c3-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 49
+      },
+      {
+        "from": "character_resource:res-cold-jade-pool",
+        "to": "character:cen_tuo",
+        "relation": "parent",
+        "active": true,
+        "revision": 50
+      },
+      {
+        "from": "character_resource:res-cold-jade-pool",
+        "to": "scene:scene-c3-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 50
+      },
+      {
+        "from": "character_resource:res-red-cauldron",
+        "to": "character:fang_shi",
+        "relation": "parent",
+        "active": true,
+        "revision": 51
+      },
+      {
+        "from": "character_resource:res-red-cauldron",
+        "to": "scene:scene-c3-s2",
+        "relation": "target",
+        "active": true,
+        "revision": 51
+      },
+      {
+        "from": "character_resource:res-ebony-utensils",
+        "to": "character:luo_lie",
+        "relation": "parent",
+        "active": true,
+        "revision": 52
+      },
+      {
+        "from": "character_resource:res-ebony-utensils",
+        "to": "scene:scene-c3-s2",
+        "relation": "target",
+        "active": true,
+        "revision": 52
+      },
+      {
+        "from": "character_resource:res-herbal-pack",
+        "to": "character:wen_qing",
+        "relation": "parent",
+        "active": true,
+        "revision": 53
+      },
+      {
+        "from": "character_resource:res-herbal-pack",
+        "to": "scene:scene-c3-s2",
+        "relation": "target",
+        "active": true,
+        "revision": 53
+      },
+      {
+        "from": "character_resource:res-energy-appliance",
+        "to": "character:cen_shouyue",
+        "relation": "parent",
+        "active": true,
+        "revision": 54
+      },
+      {
+        "from": "character_resource:res-energy-appliance",
+        "to": "scene:scene-c4-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 54
+      },
+      {
+        "from": "character_resource:res-household-reg",
+        "to": "character:lu_bingheng",
+        "relation": "parent",
+        "active": true,
+        "revision": 55
+      },
+      {
+        "from": "character_resource:res-household-reg",
+        "to": "scene:scene-c4-s2",
+        "relation": "target",
+        "active": true,
+        "revision": 55
+      },
+      {
+        "from": "character_resource:res-gazetteer",
+        "to": "character:lu_zhiwei",
+        "relation": "parent",
+        "active": true,
+        "revision": 56
+      },
+      {
+        "from": "character_resource:res-gazetteer",
+        "to": "scene:scene-c5-s1",
+        "relation": "target",
+        "active": true,
+        "revision": 56
+      },
+      {
+        "from": "scene:scene-c1-s1",
+        "to": "scene:scene-c1-s2",
+        "relation": "navigates_to_bay",
+        "active": true,
+        "revision": 57
+      },
+      {
+        "from": "scene:scene-c1-s2",
+        "to": "scene:scene-c2-s1",
+        "relation": "settles_villages",
+        "active": true,
+        "revision": 58
+      },
+      {
+        "from": "scene:scene-c2-s1",
+        "to": "scene:scene-c2-s2",
+        "relation": "establishes_crafts",
+        "active": true,
+        "revision": 59
+      },
+      {
+        "from": "scene:scene-c2-s2",
+        "to": "scene:scene-c3-s1",
+        "relation": "develops_materials",
+        "active": true,
+        "revision": 60
+      },
+      {
+        "from": "scene:scene-c3-s1",
+        "to": "scene:scene-c3-s2",
+        "relation": "exchanges_products",
+        "active": true,
+        "revision": 61
+      },
+      {
+        "from": "scene:scene-c3-s2",
+        "to": "scene:scene-c4-s1",
+        "relation": "prompts_innovation",
+        "active": true,
+        "revision": 62
+      },
+      {
+        "from": "scene:scene-c4-s1",
+        "to": "scene:scene-c4-s2",
+        "relation": "founds_institutions",
+        "active": true,
+        "revision": 63
+      },
+      {
+        "from": "scene:scene-c4-s2",
+        "to": "scene:scene-c5-s1",
+        "relation": "sustains_daily_life",
+        "active": true,
+        "revision": 64
+      },
+      {
+        "from": "scene:scene-c5-s1",
+        "to": "scene:scene-c5-s2",
+        "relation": "creates_living_world",
+        "active": true,
+        "revision": 65
+      }
+    ],
+    "index": {
+      "name_to_ref": {
+        "三代當家人有序運轉城鄉日常": [
+          "scene:scene-c5-s1"
+        ],
+        "世界公理：同源能量萬人萬相": [
+          "fact:fact-energy-system"
+        ],
+        "世界公理：平均壽命逾兩百壽": [
+          "fact:fact-lifespan-scale"
+        ],
+        "八大百工全面成型扎穩生存基石": [
+          "payoff:payoff-self-reliance-industry"
+        ],
+        "初代散居落腳與村落命名由來": [
+          "scene:scene-c2-s1"
+        ],
+        "北冕號巡檢外海航道傳承航海宿願": [
+          "payoff:payoff-ancient-routes-patrol"
+        ],
+        "器物革新期：東橋分家各立宗門": [
+          "timeline:time-70"
+        ],
+        "山上寒水玉下山入爐成就新工藝": [
+          "payoff:payoff-brothers-craft-harmony"
+        ],
+        "岑守岳": [
+          "character:cen_shouyue"
+        ],
+        "岑守岳研製導能器物": [
+          "character_resource:res-energy-appliance"
+        ],
+        "岑守淵": [
+          "character:cen_shouyuan"
+        ],
+        "岑拓": [
+          "character:cen_tuo"
+        ],
+        "岑拓引寒水玉鋪池": [
+          "character_resource:res-cold-jade-pool"
+        ],
+        "幽深水灣落腳與立定五大據點": [
+          "scene:scene-c1-s2"
+        ],
+        "拓荒初期：水土定居與地名緣起": [
+          "timeline:time-30"
+        ],
+        "拓荒成熟期：八大百工體系完備": [
+          "timeline:time-40"
+        ],
+        "故島海侵分頭遷徙與白神使引航": [
+          "scene:scene-c1-s1"
+        ],
+        "新式導能器物研製與分家巷之爭": [
+          "scene:scene-c4-s1"
+        ],
+        "方石": [
+          "character:fang_shi"
+        ],
+        "方石鑄造厚底鐵釜": [
+          "character_resource:res-red-cauldron"
+        ],
+        "暗夜地鳴警醒全族自力拓荒之志": [
+          "promise:promise-self-reliance"
+        ],
+        "東橋頭分家巷兄弟手藝修行之爭": [
+          "promise:promise-brothers-craft"
+        ],
+        "法制確定期：開譜立契商盟成型": [
+          "timeline:time-80"
+        ],
+        "溫晴": [
+          "character:wen_qing"
+        ],
+        "溫晴調製草木湯包": [
+          "character_resource:res-herbal-pack"
+        ],
+        "生存難題推導出水利農礦百工": [
+          "scene:scene-c2-s2"
+        ],
+        "當代常態期：三代執掌山海井然": [
+          "timeline:time-90"
+        ],
+        "當代生息期：萬物其來有自之境": [
+          "timeline:time-100"
+        ],
+        "白塔半島": [
+          "world:white_tower_peninsula"
+        ],
+        "白塔半島生活需求與百工推導主線": [
+          "plot:plot-white-tower-deduction"
+        ],
+        "百工商貿期：平原與黑沼產物入饌": [
+          "timeline:time-60"
+        ],
+        "百工繁榮期：西海北山物產化用": [
+          "timeline:time-50"
+        ],
+        "第一章：坦頡起源傳說（第 1～7 段）": [
+          "chapter:chapter-1"
+        ],
+        "第三章：四方風物與器物由來（第 10～11 段）": [
+          "chapter:chapter-3"
+        ],
+        "第二章：數代拓墾與八大百工（第 8～9 段）": [
+          "chapter:chapter-2"
+        ],
+        "第五章：今日半島日常煙火（第 14～15 段）": [
+          "chapter:chapter-5"
+        ],
+        "第四章：開譜立契與器物革新（第 12～13 段）": [
+          "chapter:chapter-4"
+        ],
+        "紀元前奠基期：五大據點確立": [
+          "timeline:time-20"
+        ],
+        "紀元前遷徙期：海侵啟程": [
+          "timeline:time-10"
+        ],
+        "羅烈": [
+          "character:luo_lie"
+        ],
+        "羅烈採獲沉水烏木": [
+          "character_resource:res-ebony-utensils"
+        ],
+        "萬物其來有自之生動人間煙火": [
+          "scene:scene-c5-s2"
+        ],
+        "西南原農牧與黑沼烏木草藥進城": [
+          "scene:scene-c3-s2"
+        ],
+        "西海北山物產化為船纜貝燈木石": [
+          "scene:scene-c3-s1"
+        ],
+        "許海音": [
+          "character:xu_haiyin"
+        ],
+        "許海音加固雲杉龍骨": [
+          "character_resource:res-spruce-keel"
+        ],
+        "許海音調用巨藻船纜": [
+          "character_resource:res-kelp-cable"
+        ],
+        "許萬川": [
+          "character:xu_wanchuan"
+        ],
+        "許萬川取用夜光貝燈": [
+          "character_resource:res-night-pearl"
+        ],
+        "遠古故島分頭遷徙航線之長線伏筆": [
+          "promise:promise-ancient-routes"
+        ],
+        "開譜立契與城鎮現代生活機能成形": [
+          "scene:scene-c4-s2"
+        ],
+        "陸知微": [
+          "character:lu_zhiwei"
+        ],
+        "陸知微編纂白塔風物誌": [
+          "character_resource:res-gazetteer"
+        ],
+        "陸秉衡": [
+          "character:lu_bingheng"
+        ],
+        "陸秉衡定立全戶總譜": [
+          "character_resource:res-household-reg"
+        ],
+        "陸秉衡購置松香傢俱": [
+          "character_resource:res-pine-furniture"
+        ]
+      },
+      "reverse_dependencies": {
+        "chapter:chapter-1": [
+          "scene:scene-c1-s1",
+          "scene:scene-c1-s2"
+        ],
+        "chapter:chapter-2": [
+          "scene:scene-c2-s1",
+          "scene:scene-c2-s2"
+        ],
+        "chapter:chapter-3": [
+          "scene:scene-c3-s1",
+          "scene:scene-c3-s2"
+        ],
+        "chapter:chapter-4": [
+          "scene:scene-c4-s1",
+          "scene:scene-c4-s2"
+        ],
+        "chapter:chapter-5": [
+          "scene:scene-c5-s1",
+          "scene:scene-c5-s2"
+        ],
+        "character:cen_shouyue": [
+          "character_resource:res-energy-appliance"
+        ],
+        "character:cen_tuo": [
+          "character_resource:res-cold-jade-pool"
+        ],
+        "character:fang_shi": [
+          "character_resource:res-red-cauldron"
+        ],
+        "character:lu_bingheng": [
+          "character_resource:res-household-reg",
+          "character_resource:res-pine-furniture"
+        ],
+        "character:lu_zhiwei": [
+          "character_resource:res-gazetteer"
+        ],
+        "character:luo_lie": [
+          "character_resource:res-ebony-utensils"
+        ],
+        "character:wen_qing": [
+          "character_resource:res-herbal-pack"
+        ],
+        "character:xu_haiyin": [
+          "character_resource:res-kelp-cable",
+          "character_resource:res-spruce-keel"
+        ],
+        "character:xu_wanchuan": [
+          "character_resource:res-night-pearl"
+        ],
+        "promise:promise-ancient-routes": [
+          "payoff:payoff-ancient-routes-patrol"
+        ],
+        "promise:promise-brothers-craft": [
+          "payoff:payoff-brothers-craft-harmony"
+        ],
+        "promise:promise-self-reliance": [
+          "payoff:payoff-self-reliance-industry"
+        ],
+        "scene:scene-c1-s1": [
+          "promise:promise-ancient-routes",
+          "timeline:time-10"
+        ],
+        "scene:scene-c1-s2": [
+          "promise:promise-self-reliance",
+          "scene:scene-c1-s1",
+          "timeline:time-20"
+        ],
+        "scene:scene-c2-s1": [
+          "scene:scene-c1-s2",
+          "timeline:time-30"
+        ],
+        "scene:scene-c2-s2": [
+          "payoff:payoff-self-reliance-industry",
+          "scene:scene-c2-s1",
+          "timeline:time-40"
+        ],
+        "scene:scene-c3-s1": [
+          "character_resource:res-cold-jade-pool",
+          "character_resource:res-kelp-cable",
+          "character_resource:res-night-pearl",
+          "character_resource:res-pine-furniture",
+          "character_resource:res-spruce-keel",
+          "scene:scene-c2-s2",
+          "timeline:time-50"
+        ],
+        "scene:scene-c3-s2": [
+          "character_resource:res-ebony-utensils",
+          "character_resource:res-herbal-pack",
+          "character_resource:res-red-cauldron",
+          "scene:scene-c3-s1",
+          "timeline:time-60"
+        ],
+        "scene:scene-c4-s1": [
+          "character_resource:res-energy-appliance",
+          "promise:promise-brothers-craft",
+          "scene:scene-c3-s2",
+          "timeline:time-70"
+        ],
+        "scene:scene-c4-s2": [
+          "character_resource:res-household-reg",
+          "scene:scene-c4-s1",
+          "timeline:time-80"
+        ],
+        "scene:scene-c5-s1": [
+          "character_resource:res-gazetteer",
+          "payoff:payoff-ancient-routes-patrol",
+          "payoff:payoff-brothers-craft-harmony",
+          "scene:scene-c4-s2",
+          "timeline:time-90"
+        ],
+        "scene:scene-c5-s2": [
+          "scene:scene-c5-s1",
+          "timeline:time-100"
+        ]
+      },
+      "chapter_scenes": {
+        "chapter:chapter-1": [
+          "scene:scene-c1-s1",
+          "scene:scene-c1-s2"
+        ],
+        "chapter:chapter-2": [
+          "scene:scene-c2-s1",
+          "scene:scene-c2-s2"
+        ],
+        "chapter:chapter-3": [
+          "scene:scene-c3-s1",
+          "scene:scene-c3-s2"
+        ],
+        "chapter:chapter-4": [
+          "scene:scene-c4-s1",
+          "scene:scene-c4-s2"
+        ],
+        "chapter:chapter-5": [
+          "scene:scene-c5-s1",
+          "scene:scene-c5-s2"
+        ]
+      },
+      "character_scenes": {}
+    }
+  }
+}

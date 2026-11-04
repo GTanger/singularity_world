@@ -1,4 +1,4 @@
-// 背包 Modal + 角色 Modal 開關邏輯；自包含，依賴 window.gameState / window.gameSend / window.gameIsConnected。v0.20.44
+// 背包 Modal + 角色 Modal 啟閉邏輯；自包含，依賴 window.gameState / window.gameSend / window.gameIsConnected。v0.20.44
 (function () {
 	function initInventoryModal() {
 		var overlay = document.getElementById('inventory-modal-overlay');
@@ -55,7 +55,7 @@
 			currentIsSelf = !!(id && st.me && st.me.player_id && id === st.me.player_id);
 			var starplateWrap = document.getElementById('starplate-content');
 			if (starplateWrap && id && !currentIsSelf) {
-				starplateWrap.innerHTML = '<p class="text-muted">僅自己可觀看星盤。</p>';
+				starplateWrap.innerHTML = '<p class="text-muted">僅自己可查看自身技能與歷練。</p>';
 			}
 			var skillWrap = document.getElementById('skill-content');
 			if (skillWrap && !currentIsSelf) {

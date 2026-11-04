@@ -4,6 +4,50 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
+fn rumor_zone_matches(rumor_zone: &str, rumor_text: &str, query_zone: &str) -> bool {
+    let r_zone = rumor_zone.trim();
+    let q_zone = query_zone.trim();
+    if r_zone.is_empty() || q_zone.is_empty() {
+        return false;
+    }
+    if r_zone == q_zone {
+        return true;
+    }
+    if q_zone == "白塔半島" || r_zone == "白塔半島" {
+        return false;
+    }
+    let region_aliases: &[(&str, &[&str])] = &[
+        ("wt-c-wenyao", &["文曜", "三水外坊", "三水口", "老堰頭"]),
+        ("wt-c-sacred-tower", &["雲腰雪林", "白塔", "半嶺鎮", "半嶺"]),
+        ("wt-n-sacred-mountain", &["神山", "白塔雪巔", "雲腰雪林", "北坡雲杉林", "霜林口", "北嶺腳"]),
+        ("wt-n-north-crown-sea", &["北冕海"]),
+        ("wt-w-windship-island", &["風舶嶼"]),
+        ("wt-w-natural-harbor-channel", &["天然港灣道"]),
+        ("wt-w-windship-cape", &["風舶角", "三號坑口", "紅土崁"]),
+        ("wt-e-green-ridge", &["青脊山", "青竹坪", "風櫃尾", "烏石鼻"]),
+        ("wt-e-east-sea", &["東海"]),
+        ("wt-c-southwest-plain", &["大圳頭", "牛埔"]),
+        ("wt-s-south-sentinel", &["南哨", "白茫洲", "落日岬"]),
+        ("wt-s-black-marsh", &["水尾澤", "黑沼", "水尾寮"]),
+        ("wt-s-qinglong-pass", &["青籠關", "下營"]),
+    ];
+    for (zid, names) in region_aliases {
+        if r_zone == *zid {
+            return names.iter().any(|n| q_zone == *n || q_zone.starts_with(n));
+        }
+        if q_zone == *zid {
+            return names.iter().any(|n| r_zone == *n || r_zone.starts_with(n));
+        }
+        if names.iter().any(|n| r_zone == *n) && names.iter().any(|n| q_zone == *n) {
+            return true;
+        }
+    }
+    if !r_zone.starts_with("wt-") && !q_zone.starts_with("wt-") && !q_zone.starts_with("grid:") && rumor_text.contains(q_zone) {
+        return true;
+    }
+    false
+}
+
 use super::{NpcRumor, NpcRumorDigest, Store};
 
 impl Store {
@@ -13,6 +57,7 @@ impl Store {
             return Ok(());
         }
         if let Some(old) = self.npc_rumors.get_mut(&id) {
+            let text_changed = !r.text.trim().is_empty() && old.text != r.text;
             if !r.text.trim().is_empty() {
                 old.text.clone_from(&r.text);
             }
@@ -28,14 +73,18 @@ impl Store {
             if r.source_score > 0 {
                 old.source_score = r.source_score;
             }
-            old.weight += r.weight;
-            if old.weight < 1 {
-                old.weight = 1;
+            if text_changed {
+                old.weight = r.weight.max(1);
+                old.mention_count = 0;
+                old.last_used_at = 0;
+                old.blocked_until = 0;
+            } else {
+                old.weight = (old.weight + r.weight).clamp(1, 8);
             }
             if r.updated_at > 0 {
                 old.updated_at = r.updated_at;
             }
-            if r.expires_at > old.expires_at {
+            if text_changed || r.expires_at > old.expires_at {
                 old.expires_at = r.expires_at;
             }
         } else {
@@ -62,7 +111,12 @@ impl Store {
         let deleted_ids: Vec<String> = self
             .npc_rumors
             .iter()
-            .filter(|(_, r)| r.expires_at > 0 && now_unix > r.expires_at)
+            .filter(|(_, r)| {
+                (r.expires_at > 0 && now_unix > r.expires_at)
+                    || r.text.contains("npc_")
+                    || r.text.chars().any(|c| c.is_ascii_alphabetic())
+                    || r.text.contains("城外惡地")
+            })
             .map(|(id, _)| id.clone())
             .collect();
         for id in &deleted_ids {
@@ -97,12 +151,23 @@ impl Store {
             return Ok(());
         }
         let mut parts: Vec<String> = Vec::new();
-        for t in top.iter().take(3) {
-            let x = t.text.trim();
-            if x.is_empty() {
+        for t in top.iter() {
+            if parts.len() >= 3 {
+                break;
+            }
+            if t.source == "climate" || t.id.starts_with("weather|") {
                 continue;
             }
-            parts.push(Self::trunc_to_runes(x, 16));
+            let x = t.text.trim();
+            if x.is_empty()
+                || x.contains("npc_")
+                || x.chars().any(|c| c.is_ascii_alphabetic())
+                || x.contains("城外惡地")
+                || (t.source == "dialogue_anchor" && (x.contains('・') || x.chars().count() < 12))
+            {
+                continue;
+            }
+            parts.push(Self::trunc_to_runes(x, 90));
         }
         if parts.is_empty() {
             return Ok(());
@@ -147,6 +212,18 @@ impl Store {
             .npc_rumors
             .values()
             .filter(|r| !r.text.trim().is_empty())
+            .filter(|r| !r.text.contains("npc_") && !r.text.chars().any(|c| c.is_ascii_alphabetic()) && !r.text.contains("城外惡地"))
+            .filter(|r| !(r.source == "dialogue_anchor" && (r.text.contains('・') || r.text.chars().count() < 12)))
+            .filter(|r| r.last_used_at == 0 || now_unix - r.last_used_at >= 300)
+            .filter(|r| {
+                if r.source == "climate" || r.id.starts_with("weather|") {
+                    !zone.is_empty() && rumor_zone_matches(&r.zone, &r.text, zone)
+                } else if !r.zone.is_empty() && !zone.is_empty() {
+                    rumor_zone_matches(&r.zone, &r.text, zone)
+                } else {
+                    true
+                }
+            })
             .filter(|r| r.expires_at == 0 || now_unix <= r.expires_at)
             .filter(|r| r.blocked_until == 0 || now_unix > r.blocked_until)
             .cloned()
@@ -162,7 +239,7 @@ impl Store {
                 if !room_id.is_empty() && r.room_id == room_id {
                     score += 5;
                 }
-                if !zone.is_empty() && r.zone == zone {
+                if !zone.is_empty() && rumor_zone_matches(&r.zone, &r.text, zone) {
                     score += 2;
                 }
                 if r.last_used_at > 0 && now_unix - r.last_used_at < 240 {

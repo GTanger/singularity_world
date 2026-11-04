@@ -146,7 +146,7 @@ fn validate_metrics(geography: &PhysicalGeography) -> Result<()> {
         "routeCandidates 計數不符"
     );
     ensure!(metrics.rivers == geography.rivers.len(), "rivers 計數不符");
-    ensure!(metrics.lakes == 0, "黑沼林必須是濕地，不得生成成湖泊");
+    ensure!(metrics.lakes == 0, "水尾澤必須是濕地，不得生成成湖泊");
     ensure!(
         geography.areas.len() * 10 < metrics.aggregated_land_cells,
         "聚合失效：接近一 cell 一場所"
@@ -231,11 +231,11 @@ fn validate_invariants(geography: &PhysicalGeography) -> Result<()> {
         value.three_source_valleys_meet_near_wenyao,
         "三源谷未在文曜附近會流"
     );
-    ensure!(value.lower_river_reaches_black_marsh, "下游未抵達黑沼林");
-    ensure!(value.black_marsh_is_wetland_not_lake, "黑沼林被錯作湖泊");
+    ensure!(value.lower_river_reaches_black_marsh, "下游未抵達水尾澤");
+    ensure!(value.black_marsh_is_wetland_not_lake, "水尾澤被錯作湖泊");
     ensure!(
         value.central_forest_is_not_black_marsh,
-        "中央森林與黑沼林主次混淆"
+        "中央森林與水尾澤主次混淆"
     );
     Ok(())
 }

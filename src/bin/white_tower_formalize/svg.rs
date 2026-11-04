@@ -110,7 +110,7 @@ pub fn render(compiled: &CompiledFormalization) -> String {
 <circle cx="46" cy="108" r="5" fill="#7b1e1e"/><text x="59" y="113" font-size="12">區域核心種子</text>
 <circle cx="170" cy="108" r="4" fill="#d26024"/><text x="181" y="113" font-size="12">主要城市種子</text>
 <circle cx="300" cy="108" r="3" fill="#4e3f35"/><text x="310" y="113" font-size="12">城鎮／地方聚落</text>
-<line x1="46" y1="136" x2="80" y2="136" stroke="#7e1111" stroke-width="3" stroke-dasharray="7 5"/><text x="90" y="140" font-size="12">西南原直通青籠關衝突（8 條，不得升格）</text>
+<line x1="46" y1="136" x2="80" y2="136" stroke="#7e1111" stroke-width="3" stroke-dasharray="7 5"/><text x="90" y="140" font-size="12">大圳頭直通青籠關衝突（8 條，不得升格）</text>
 </g>
 "##,
     );

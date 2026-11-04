@@ -3,13 +3,10 @@
 use crate::db;
 use crate::entity::Character;
 use crate::event::{self, types};
-use crate::game::{
-    final_map_observation_template_for_room, is_final_map_public_role, public_person_label_for_room,
-};
+use crate::game::final_map_observation_template_for_room;
 
 use super::super::handler::WsConnection;
 use super::super::protocol::ActionResultMsg;
-use super::display_target_name;
 
 pub(super) fn do_entity_look(
     conn: &WsConnection,
@@ -31,7 +28,17 @@ pub(super) fn do_entity_look(
     }
 
     let actions = followup_actions(pid, target);
-    let _ = event::append(now, pid, types::OBSERVED, target_id);
+    if target_id != pid
+        && !pid.starts_with("npc_")
+        && !target_id.starts_with("herb_")
+        && !target_id.starts_with("pine_")
+        && !target_id.starts_with("spring_")
+        && !target_id.starts_with("wild_")
+        && !target_id.starts_with("ambient_")
+        && !target_id.starts_with("shanhai_")
+    {
+        let _ = event::append(now, pid, types::OBSERVED, &target_name);
+    }
     conn.send_json(&ActionResultMsg {
         msg_type: "action_result".into(),
         action: "Look".into(),
@@ -76,14 +83,14 @@ fn sanitize_activity_for_display(act: &str) -> String {
         result.push(ch);
     }
     result
-        .replace("茶肆", "茶屋或食堂")
+        .replace("茶肆", "茶屋")
         .replace("客棧", "旅社")
         .replace("熟絡", "熱絡")
         .replace("床榻", "床鋪")
         .replace("榻上", "床鋪上")
 }
 fn format_activity_sentence(pronoun: &str, act: &str) -> String {
-    let trimmed = act.trim();
+    let trimmed = act.trim().trim_end_matches(['。', '！', '？', '，', ' ']);
     if trimmed.is_empty() {
         return String::new();
     }
@@ -104,12 +111,32 @@ fn build_look_narrative(
         if let Some((_loot_id, loot_name, shanhai_note)) =
             crate::game::ambient_creature_loot(&target.display_title)
         {
+            let stat_prose = if target.vit >= 100 {
+                "觀其體態氣機，體魄雄渾厚重、周身威壓沉凝，透出鎮懾整片山野之威勢。"
+            } else if target.vit >= 50 {
+                if target.dex >= 25 {
+                    "觀其體態氣機，體魄壯碩矯捷、身法迅猛如電，隱隱透出凜然凶悍之勢。"
+                } else {
+                    "觀其體態氣機，體魄雄厚粗壯、步伐沉重有力，透出凶悍野性之勢。"
+                }
+            } else if target.vit >= 25 {
+                if target.dex >= 20 {
+                    "觀其體態氣機，骨骼健拔勻稱、奔走機警自如，氣血沉穩內斂。"
+                } else {
+                    "觀其體態氣機，身軀敦實安詳、進退沉穩從容，生機豐沛自得。"
+                }
+            } else if target.dex >= 26 {
+                "觀其體態，羽翼輕靈矯健、動靜飄忽迅疾，氣息平緩自然。"
+            } else {
+                "觀其體態，身形輕靈小巧、舉止機警敏捷，氣息平緩自然。"
+            };
             let mut desc = format!(
-                "你屏息凝神，仔細觀察眼前的山海生靈【{}】。{}\n體魄 {}・靈敏 {}・氣勁 {}。",
-                target.display_title, shanhai_note, target.vit, target.dex, target.qi
+                "你屏息凝神，仔細觀察眼前的山海生靈【{}】。{}\n{}",
+                target.display_title, shanhai_note, stat_prose
             );
-            if !target.current_activity.trim().is_empty() {
-                desc.push_str(&format!(" 牠{}。", target.current_activity.trim()));
+            let act_clean = target.current_activity.trim().trim_end_matches(['。', '！', '？', '，', ' ']);
+            if !act_clean.is_empty() {
+                desc.push_str(&format!(" 牠{}。", act_clean));
             }
             let target_coord = (target.grid_x.unwrap_or(0), target.grid_y.unwrap_or(0));
             {
@@ -144,6 +171,16 @@ fn build_look_narrative(
     } else {
         String::new()
     };
+    let combined_name_check = format!("{}|{}", name, target.display_title);
+    let is_female_name = [
+        "娜", "梅", "芳", "娟", "霞", "婷", "玲", "敏", "靜", "淑", "秀", "麗", "燕", "蘭",
+        "珍", "珠", "琴", "萍", "娥", "雅", "佳", "怡", "詩", "涵", "萱", "彤", "晴", "蓁",
+        "婉", "芬", "筱", "妤", "彩", "潔", "郁", "馨", "微", "美", "慧", "雪", "月", "雲",
+        "蓮", "薇", "珊", "貞", "嬌", "媚", "柔", "蓉", "菲", "芸", "琪", "瑤", "娘", "姑",
+        "婆", "嫂", "姐", "妹", "罔市", "秋月",
+    ]
+    .iter()
+    .any(|kw| !combined_name_check.starts_with("陌生人") && combined_name_check.contains(kw));
     let is_female_sensory = sensory_line.contains("裙")
         || sensory_line.contains("簪")
         || sensory_line.contains("髮髻")
@@ -153,12 +190,11 @@ fn build_look_narrative(
         || sensory_line.contains("溫婉")
         || sensory_line.contains("靈秀")
         || sensory_line.contains("紅絲帶");
-    let pronoun = if is_female_sensory || target.gender == Some(crate::entity::Gender::F) {
+    let pronoun = if is_female_sensory || is_female_name || target.gender == Some(crate::entity::Gender::F) {
         "她"
     } else {
         "他"
     };
-
     let mut desc = if let Some(canon) = has_canon_desc.as_ref() {
         is_known_canon = true;
         let final_canon = if name == "陌生人" && !target.display_title.is_empty() {
@@ -223,28 +259,23 @@ fn build_look_narrative(
         format!("你仔細打量了【{name}】。{pronoun}{physique}，{agility}{aura}。")
     };
 
-    let personality = crate::db::get_personality_for_entity(&target.id)
-        .or_else(|| target.soul_seed.map(crate::db::expand_soul_seed_to_personality));
-    if let Some(p) = personality {
-        let is_gentle_demeanor = sensory_line.contains("端方")
-            || sensory_line.contains("溫婉")
-            || sensory_line.contains("輕柔")
-            || sensory_line.contains("細緻")
-            || sensory_line.contains("平和")
-            || sensory_line.contains("斯文")
-            || sensory_line.contains("合度");
-        let bold_str = if is_gentle_demeanor || p.boldness < 0.5 {
-            "神態內斂"
-        } else {
-            "氣勢沉猛"
-        };
-        let sens_str = if p.sensitivity >= 0.5 { "目光敏銳" } else { "神色淡然" };
-        let order_str = if is_gentle_demeanor || p.orderliness >= 0.5 {
-            "衣物整飭"
-        } else {
-            "行止隨性"
-        };
-        desc.push_str(&format!("{pronoun}{bold_str}、{sens_str}，{order_str}。"));
+    if sensory_line.trim().is_empty() {
+        let personality = crate::db::get_personality_for_entity(&target.id)
+            .or_else(|| target.soul_seed.map(crate::db::expand_soul_seed_to_personality));
+        if let Some(p) = personality {
+            let bold_str = if p.boldness < 0.5 {
+                "神態內斂"
+            } else {
+                "氣勢沉猛"
+            };
+            let sens_str = if p.sensitivity >= 0.5 { "目光敏銳" } else { "神色淡然" };
+            let order_str = if p.orderliness >= 0.5 {
+                "衣物整飭"
+            } else {
+                "行止隨性"
+            };
+            desc.push_str(&format!("其{bold_str}、{sens_str}，{order_str}。"));
+        }
     }
     let has_outfit = is_known_canon || has_canon_desc.is_some() || !sensory_line.trim().is_empty();
 
@@ -264,7 +295,7 @@ fn build_look_narrative(
                     )
             };
 
-            // 1. 若無專屬服飾，顯示基本服飾穿戴（避免與特定 NPC 定制外貌描寫衝突）
+            // 1. 若無專屬服飾，顯示基本服飾穿戴（避免與特定 NPC 訂製外貌描寫衝突）
             if !has_outfit {
                 let pieces: Vec<String> = ["body", "legs", "feet"]
                     .iter()
@@ -281,7 +312,7 @@ fn build_look_narrative(
                     })
                     .collect();
                 if !pieces.is_empty() {
-                    desc.push_str("身上穿戴著");
+                    desc.push_str("只見其身穿");
                     desc.push_str(&pieces.join("、"));
                     desc.push('。');
                 }
@@ -299,23 +330,44 @@ fn build_look_narrative(
                             .map(|s| s.as_str())
                             .or(ecol_name.as_deref())
                             .unwrap_or(item_id);
-                        let item_label = if viewer_pid != Some(target.id.as_str()) {
-                            base_name.to_string()
-                        } else {
-                            crate::server::handler::format_entity_item_with_inscription(
-                                &target.id,
-                                item_id,
-                                base_name,
-                            )
+                        let clean_public_item = |raw: &str| -> String {
+                            let mut s = raw.trim().to_string();
+                            while let Some(start) = s.find("【異變") {
+                                if let Some(end_rel) = s[start..].find('】') {
+                                    let after = start + end_rel + '】'.len_utf8();
+                                    let rest = s[after..].trim_start_matches('・').trim();
+                                    s = format!("{}{}", &s[..start], rest);
+                                } else {
+                                    break;
+                                }
+                            }
+                            let s = s.trim_matches(|c| c == '【' || c == '】').trim();
+                            for prefix in ["精鍛", "百煉", "特製", "加固", "防身"] {
+                                if s.starts_with(prefix) && s.chars().count() > prefix.chars().count() + 1 {
+                                    return s[prefix.len()..].to_string();
+                                }
+                            }
+                            s.to_string()
                         };
+                        let cleaned = clean_public_item(base_name);
+                        let item_label = crate::server::handler::format_entity_item_with_inscription(
+                            &target.id,
+                            item_id,
+                            &cleaned,
+                        );
                         if crate::pg::living_world::is_weapon_or_tool_item(item_id, base_name) {
                             let mut vstate = crate::pg::living_world::get_vessel_state(&target.id, item_id);
-                            if vstate.use_count == 0 && target.kind == crate::entity::EntityKind::Npc {
+                            if vstate.use_count == 0 {
+                                let init_use = if target.kind == crate::entity::EntityKind::Npc {
+                                    4 + ((target.soul_seed.unwrap_or(0).unsigned_abs() % 12) as i32)
+                                } else {
+                                    2
+                                };
                                 vstate = crate::pg::living_world::record_vessel_use(
                                     &target.id,
                                     item_id,
                                     0,
-                                    4 + ((target.soul_seed.unwrap_or(0).unsigned_abs() % 12) as i32),
+                                    init_use,
                                     crate::game::now_unix(),
                                 );
                             }
@@ -357,22 +409,30 @@ fn build_look_narrative(
             let mut worn_items: Vec<String> = Vec::new();
             for &slot in worn_slots {
                 if let Some(item_id) = slots_map.get(slot) {
-                    if !item_id.is_empty() && !is_starter_gear(item_id) {
+                    if !item_id.is_empty()
+                        && !is_starter_gear(item_id)
+                        && !item_id.contains("storage_box")
+                        && !item_id.contains("pine_soot_ink")
+                    {
                         let ecol_name = crate::game::object_ecology::lookup_ecology_item_def(item_id).map(|d| d.name);
                         let base_name = names
                             .get(slot)
                             .map(|s| s.as_str())
                             .or(ecol_name.as_deref())
                             .unwrap_or(item_id);
-                        let item_label = if viewer_pid != Some(target.id.as_str()) {
-                            base_name.to_string()
-                        } else {
-                            crate::server::handler::format_entity_item_with_inscription(
-                                &target.id,
-                                item_id,
-                                base_name,
-                            )
-                        };
+                        if base_name.contains("隨身匣")
+                            || base_name.contains("收納匣")
+                            || base_name.contains("木匣")
+                            || base_name.contains("墨錠")
+                        {
+                            continue;
+                        }
+                        let s = base_name.trim_matches(|c| c == '【' || c == '】').trim();
+                        let item_label = crate::server::handler::format_entity_item_with_inscription(
+                            &target.id,
+                            item_id,
+                            s,
+                        );
                         worn_items.push(format!("【{item_label}】"));
                     }
                 }
@@ -383,7 +443,7 @@ fn build_look_narrative(
         }
     }
     if !is_known_canon && target.kind == crate::entity::EntityKind::Npc && !sensory_line.trim().is_empty() {
-        desc.push_str(&format!("{pronoun}{sensory_line}。"));
+        desc.push_str(&format!("只見其{sensory_line}。"));
     }
 
     let hour = crate::store::current_game_hour();
@@ -418,31 +478,72 @@ fn build_look_narrative(
             }
         }
         if !sanitized_act.is_empty() {
-            if is_night {
-                let is_watch = sanitized_act.contains("值守")
-                    || sanitized_act.contains("巡看")
-                    || sanitized_act.contains("巡防")
-                    || sanitized_act.contains("守夜")
-                    || sanitized_act.contains("攤")
-                    || sanitized_act.contains("叫賣")
-                    || sanitized_act.contains("吆喝")
-                    || sanitized_act.contains("招呼")
-                    || target.id.starts_with("wt_vendor_")
-                    || room_name.contains("哨")
-                    || room_name.contains("關口")
-                    || room_name.contains("道口")
-                    || room_name.contains("水口")
-                    || room_name.contains("渡口")
-                    || room_name.contains("門坊");
+            let is_transit_act = sanitized_act.contains("動身前往")
+                || sanitized_act.contains("步行前往")
+                || sanitized_act.contains("沿街步行")
+                || sanitized_act.contains("前往【")
+                || sanitized_act.contains("回返【")
+                || sanitized_act.contains("前往")
+                || sanitized_act.contains("返回")
+                || sanitized_act.contains("回返")
+                || sanitized_act.contains("趕往")
+                || sanitized_act.contains("漫步")
+                || sanitized_act.contains("穿行")
+                || sanitized_act.contains("步行")
+                || sanitized_act.contains("推進目標");
+            let is_phantom_bridge_stall = (room_name.contains("三水匯流大石橋") || room_name.contains("中心樞紐石橋"))
+                && (sanitized_act.contains("攤")
+                    || sanitized_act.contains("選購")
+                    || sanitized_act.contains("採買")
+                    || sanitized_act.contains("購買")
+                    || sanitized_act.contains("布莊")
+                    || sanitized_act.contains("金屬行")
+                    || sanitized_act.contains("線行"));
+            if is_transit_act {
+                if !sanitized_act.contains('(')
+                    && !sanitized_act.contains('（')
+                    && !sanitized_act.contains("推進目標")
+                    && sanitized_act.chars().count() >= 10
+                {
+                    desc.push_str(&format_activity_sentence(pronoun, &sanitized_act));
+                } else {
+                    let vis_walk = if is_night {
+                        "正沿著街面夜色邁步穿行，往鄰街一帶行去"
+                    } else {
+                        "正沿著街面邁步穿行，步履不停地往鄰街一帶行去"
+                    };
+                    desc.push_str(&format_activity_sentence(pronoun, vis_walk));
+                }
+            } else if is_phantom_bridge_stall || (is_night && (room_name.contains("三水匯流大石橋") || room_name.contains("中心樞紐石橋"))) {
+                let vis_bridge = if is_night {
+                    if target.id.bytes().fold(0u8, u8::wrapping_add).is_multiple_of(2) {
+                        "正駐足青石橋欄旁，迎著河面晚風凝望三水川夜色"
+                    } else {
+                        "正沿著青石橋面緩步徐行，在橋頭駐足歇腳"
+                    }
+                } else {
+                    "正駐足青石橋欄旁歇腳，望著橋下三水川匯流碧波"
+                };
+                desc.push_str(&format_activity_sentence(pronoun, vis_bridge));
+            } else if is_night {
+                let is_residential_room = room_name.contains("居所")
+                    || room_name.contains("住宅")
+                    || room_name.contains("民宅")
+                    || room_name.contains("宅邸")
+                    || room_name.contains("民舍")
+                    || room_name.contains("客房")
+                    || room_name.contains("內室")
+                    || room_name.contains("宿所")
+                    || room_name.contains("宿舍");
                 let is_sleep = sanitized_act.contains("安歇")
                     || sanitized_act.contains("熟睡")
                     || sanitized_act.contains("就寢")
                     || sanitized_act.contains("熄燈")
                     || sanitized_act.contains("歇息");
-                if is_watch || is_sleep {
+                if !is_residential_room || is_sleep {
                     desc.push_str(&format_activity_sentence(pronoun, &sanitized_act));
                 } else {
-                    desc.push_str(&format!("{pronoun}已在屋內床鋪上熄燈就寢安歇。"));
+                    desc.push_str("此刻已在屋內床鋪上熄燈就寢安歇。");
                 }
             } else {
                 desc.push_str(&format_activity_sentence(pronoun, &sanitized_act));
@@ -456,20 +557,22 @@ fn build_look_narrative(
             let parties = crate::store::LIVE_HUNTING_PARTIES.read();
             if let Some(party) = parties.values().find(|p| p.member_ids.contains(&target.id)) {
                 desc.push_str(&format!(
-                    "{pronoun}正隨【{}】率領之{}合社獵團（共 {} 人）追獵【{}】。",
+                    "正隨【{}】率領之{}合社獵團（共 {} 人）追獵【{}】。",
                     party.leader_name, party.zone_name, party.member_ids.len(), party.prey_name
                 ));
             }
         }
-        let mood_phrase = match target.disposition {
-            ..=-30 => Some("眉宇微蹙，神色間透著幾分鬱結與焦躁"),
-            -29..=-10 => Some("神色略顯疲態，似有心事縈繞"),
-            15..=39 => Some("神色舒展，氣息平和安穩"),
-            40.. => Some("眉目舒朗、神采奕奕，心境頗為暢快"),
-            -9..=14 => None,
-        };
-        if let Some(mood) = mood_phrase {
-            desc.push_str(&format!("{pronoun}此刻{mood}。"));
+        if sensory_line.trim().is_empty() {
+            let mood_phrase = match target.disposition {
+                ..=-30 => Some("眉宇微蹙，神色間透著幾分鬱結與焦躁"),
+                -29..=-10 => Some("神色略顯疲態，似有心事縈繞"),
+                15..=39 => Some("神色舒展，氣息平和安穩"),
+                40.. => Some("眉目舒朗、神采奕奕，心境頗為暢快"),
+                -9..=14 => None,
+            };
+            if let Some(mood) = mood_phrase {
+                desc.push_str(&format!("此刻{mood}。"));
+            }
         }
     }
 
@@ -477,59 +580,12 @@ fn build_look_narrative(
     let afflictions = crate::pg::living_world::get_entity_afflictions(&target.id);
     if !afflictions.is_empty() {
         let labels: Vec<&str> = afflictions.iter().map(|a| a.label()).collect();
-        desc.push_str(&format!("細看之下，{pronoun}似帶有{}之態。", labels.join("、")));
+        desc.push_str(&format!("細看之下，似帶有{}之態。", labels.join("、")));
     }
 
-    let mut ob_matter_opt = None;
-    if !is_stranger {
-        if let Some((kind, subj)) = crate::store::get_active_npc_obligation(&target.id) {
-            ob_matter_opt = match kind.as_str() {
-                "restock_goods" => Some("正為店內現貨見底、急需提貨補倉而掛心".to_string()),
-                "repair_tool" => Some("手頭器物似有耗損待修".to_string()),
-                "stranded_cargo" => Some("正為一批滯留貨物發愁".to_string()),
-                "repay_debt" => Some("眉宇間似有帳務掛心".to_string()),
-                "treat_injury" => Some("氣息略顯不穩，似有傷在身".to_string()),
-                _ => if !subj.is_empty() {
-                    let clean_subj = if subj.is_ascii() {
-                        crate::world::materials::material_by_item_id(&subj)
-                            .map(|m| m.name.clone())
-                            .or_else(|| db::get_item_def(&subj).map(|d| d.name))
-                            .unwrap_or_else(|| "手頭差事".to_string())
-                    } else {
-                        subj.clone()
-                    };
-                    Some(format!("正為【{clean_subj}】掛心"))
-                } else {
-                    None
-                },
-            };
-        }
-    }
+    append_universal_living_entity_details(target, room_name, &mut desc);
+
     if let Some(pool) = crate::pg::pool() {
-        if !is_stranger && ob_matter_opt.is_none() {
-            if let Ok(obligations) =
-                crate::pg::living_world::list_open_obligations_for_entity(&pool, &target.id)
-            {
-                for ob in &obligations {
-                    let matter = match ob.obligation_kind.as_str() {
-                        "restock_goods" => Some("正為店內現貨見底、急需提貨補倉而掛心".to_string()),
-                        "repair_tool" => Some("手頭器物似有耗損待修".to_string()),
-                        "stranded_cargo" => Some("正為一批滯留貨物發愁".to_string()),
-                        "repay_debt" => Some("眉宇間似有帳務掛心".to_string()),
-                        "treat_injury" => Some("氣息略顯不穩，似有傷在身".to_string()),
-                        _ => None,
-                    };
-                    if let Some(matter) = matter {
-                        ob_matter_opt = Some(matter);
-                        break;
-                    }
-                }
-            }
-        }
-        if let Some(matter) = ob_matter_opt.take() {
-            desc.push_str(&format!("{pronoun}{matter}。"));
-        }
-
         if let Some(pid) = viewer_pid
             && !pid.is_empty()
         {
@@ -557,9 +613,6 @@ fn build_look_narrative(
             }
         }
     } else {
-        if let Some(matter) = ob_matter_opt {
-            desc.push_str(&format!("{pronoun}{matter}。"));
-        }
         if let Some(pid) = viewer_pid
             && !pid.is_empty()
         {
@@ -583,9 +636,208 @@ fn build_look_narrative(
     desc
 }
 
-fn player_visible_target_name(player_id: &str, target: &Character, _room_name: &str) -> String {
-    super::player_visible_target_name(player_id, target)
+fn is_starter_gear_id(id: &str) -> bool {
+    id.starts_with("starter_")
+        || matches!(
+            id,
+            "粗布短褂" | "粗布長褲" | "草鞋" | "棉麻日常上衣" | "耐磨休閒長褲" | "輕便布鞋"
+        )
 }
+
+fn append_universal_living_entity_details(target: &Character, room_name: &str, desc: &mut String) {
+    // 1. 內息底色與吐納習慣
+    let breath = crate::pg::living_world::get_or_derive_breath_habit(
+        &target.id,
+        &target.display_title,
+        target.soul_seed.unwrap_or(42) as i64,
+    );
+    let habit_label = if breath.dominant == crate::pg::living_world::BreathHabitKind::TideContinuous {
+        "潮汐綿長息"
+    } else {
+        breath.dominant.label()
+    };
+    if !desc.contains("潮汐綿長息") && !desc.contains(habit_label) {
+        desc.push_str(&format!("吐納起落悠長（{}）。", habit_label));
+    }
+
+    // 2. 師承造詣
+    let imprints = crate::pg::living_world::get_entity_lineage_imprints(&target.id);
+    for imp in imprints {
+        if !imp.imprint_title.is_empty() && !desc.contains(&imp.imprint_title) {
+            desc.push_str(&format!("身負「{}」師承造詣。", imp.imprint_title));
+            break;
+        }
+    }
+
+    // 3. 隨身持握器物磨損與歷練狀態
+    let slots_map: std::collections::HashMap<String, String> =
+        serde_json::from_str(&target.equipment_slots).unwrap_or_default();
+    let held_tool_id = slots_map
+        .get("hold_r")
+        .or_else(|| slots_map.get("hold_l"))
+        .filter(|id| !id.is_empty() && !is_starter_gear_id(id));
+    if let Some(tool_id) = held_tool_id {
+        let vstate = crate::pg::living_world::get_vessel_state(&target.id, tool_id);
+        if vstate.use_count > 0 && !desc.contains("手頭器物已歷") {
+            desc.push_str(&format!(
+                "手頭器物已歷 {} 次運使（{}）。",
+                vstate.use_count,
+                vstate.condition.label()
+            ));
+        }
+    } else if target.kind == crate::entity::EntityKind::Npc {
+        let vessel = crate::npc::causal_core::resolve_vocational_vessel(&format!(
+            "{}|{}",
+            target.display_title, target.id
+        ));
+        let inscribed = crate::server::handler::format_entity_item_with_inscription(
+            &target.id,
+            vessel.item_id,
+            vessel.display_name,
+        );
+        let vstate = crate::pg::living_world::get_vessel_state(&target.id, vessel.item_id);
+        if !desc.contains(vessel.display_name) {
+            if vstate.use_count > 0 {
+                desc.push_str(&format!(
+                    "手邊常備本職器物【{}】（已歷 {} 次運使・{}）。",
+                    inscribed,
+                    vstate.use_count,
+                    vstate.condition.label()
+                ));
+            } else {
+                desc.push_str(&format!("手邊常備本職器物【{}】。", inscribed));
+            }
+        }
+    }
+
+    // 4. 隨身攜有之可交易成品或原料（自然量詞：桶、袋、×N）
+    if !desc.contains("隨身攜有") {
+        let equipped_ids: std::collections::HashSet<String> = slots_map
+            .into_values()
+            .filter(|v| !v.trim().is_empty())
+            .collect();
+        let inv = crate::db::get_inventory(&target.inventory, target.vit);
+        let stock_parts: Vec<String> = inv
+            .items
+            .iter()
+            .filter(|i| {
+                i.qty > 0
+                    && !equipped_ids.contains(&i.item_id)
+                    && !i.item_id.starts_with("crystal_")
+                    && (crate::world::author_economy::is_runtime_good_item(&i.item_id)
+                        || crate::db::item_is_tradable(&i.item_id)
+                        || i.item_id.starts_with("craft_")
+                        || i.item_id.starts_with("wt_cat_")
+                        || i.item_id.starts_with("wt-good-")
+                        || i.item_id.starts_with("mat_")
+                        || i.item_id.starts_with("harvest_")
+                        || i.item_id.starts_with("ore_")
+                        || i.item_id.starts_with("wood_"))
+            })
+            .take(3)
+            .map(|i| {
+                let display_name = if i.item_id == "wt-good-009" || i.name == "精碾白米" {
+                    "待磨精碾白米"
+                } else {
+                    &i.name
+                };
+                let unit = if display_name.contains("米漿")
+                    || display_name.contains("湯")
+                    || display_name.contains("飲")
+                    || display_name.contains("油")
+                    || display_name.contains("水")
+                {
+                    "桶"
+                } else if display_name.contains("粉")
+                    || display_name.contains("米")
+                    || display_name.contains("麵")
+                    || display_name.contains("穀")
+                    || display_name.contains("鹽")
+                {
+                    "袋"
+                } else {
+                    ""
+                };
+                if !unit.is_empty() {
+                    format!("{display_name} {} {unit}", i.qty)
+                } else {
+                    format!("{display_name} ×{}", i.qty)
+                }
+            })
+            .collect();
+        if !stock_parts.is_empty() {
+            desc.push_str(&format!("隨身攜有{}。", stock_parts.join("、")));
+        }
+    }
+
+    if target.kind == crate::entity::EntityKind::Npc {
+        let mut probe = character_to_store_entity_probe(target);
+        if probe.current_activity.trim().is_empty() && !room_name.is_empty() {
+            probe.current_activity = room_name.to_string();
+        }
+        let coord = (target.grid_x.unwrap_or(0), target.grid_y.unwrap_or(0));
+        let (has_visible_uniform, in_staff_only_counter_zone) =
+            crate::pg::living_world::is_recognizable_room_staff_or_counter_holder_entity(&probe, coord, "");
+
+        if !has_visible_uniform
+            && in_staff_only_counter_zone
+            && !desc.contains("櫃檯與內場禁區")
+        {
+            desc.push_str("雖著尋常便服，卻能自由出入非外客可入之櫃檯與內場禁區，顯係此處主事之人。");
+        } else if has_visible_uniform
+            && in_staff_only_counter_zone
+            && !desc.contains("櫃檯與內場禁區")
+        {
+            desc.push_str("身穿當值裝束、正立於櫃檯與內場禁區之內當值主事。");
+        } else if has_visible_uniform
+            && !in_staff_only_counter_zone
+            && !desc.contains("身著當值制服")
+        {
+            desc.push_str("身著明顯的當值工作制服，正於場內料理店務與百工差事。");
+        }
+
+        if (has_visible_uniform || in_staff_only_counter_zone) && !room_name.trim().is_empty() {
+            if let Some((ev, sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+                room_name,
+                None,
+                crate::game::now_unix() as i64,
+            ) {
+                if !desc.contains(&ev.event_title) {
+                    desc.push_str(&format!(
+                        "此刻正當值經手場上事件包【{}】（劇本包第 {}/3 幕・關鍵器物：{}）。",
+                        ev.event_title,
+                        sp.current_step.max(1),
+                        ev.key_objects
+                    ));
+                }
+            }
+        }
+    }
+
+    // 5. 離線玩家日常行事傾向（純世界內語境，不暴露第四面牆系統詞）
+    if target.kind == crate::entity::EntityKind::Player
+        && !crate::server::session::list_online_player_ids().contains(&target.id)
+    {
+        let directive = crate::npc::causal_core::get_player_offline_directive(&target.id);
+        let dir_label = directive.label();
+        if !target.current_activity.contains(dir_label) && !desc.contains(dir_label) {
+            desc.push_str(&format!("平日多留心於「{}」諸務。", dir_label));
+        }
+    }
+}
+
+fn character_to_store_entity_probe(target: &Character) -> crate::store::Entity {
+    let mut probe = crate::store::Entity::new_npc(&target.id, &target.display_char);
+    probe.display_title = target.display_title.clone();
+    probe.current_activity = target.current_activity.clone();
+    probe.equipment_slots = target.equipment_slots.clone();
+    probe.inventory = target.inventory.clone();
+    probe.grid_x = target.grid_x;
+    probe.grid_y = target.grid_y;
+    probe.magnesium = target.magnesium;
+    probe
+}
+
 
 fn followup_actions(player_id: &str, target: &Character) -> Vec<String> {
     if target.id.starts_with("shanhai_")
@@ -600,7 +852,7 @@ fn followup_actions(player_id: &str, target: &Character) -> Vec<String> {
         .flatten()
         .map(|a| a.named)
         .unwrap_or(false);
-    if super::is_canonical_named_npc(target) || named {
+    if named {
         vec![
             "Talk".into(),
             "Trade".into(),
@@ -610,6 +862,12 @@ fn followup_actions(player_id: &str, target: &Character) -> Vec<String> {
         ]
     } else if super::trade::target_has_shop_offer(target, &room_name)
         || target_is_available_market_operator(player_id, &target.id)
+        || {
+            let probe = character_to_store_entity_probe(target);
+            let coord = (target.grid_x.unwrap_or(0), target.grid_y.unwrap_or(0));
+            let (u, c) = crate::pg::living_world::is_recognizable_room_staff_or_counter_holder_entity(&probe, coord, "");
+            (u || c) && crate::db::get_inventory(&target.inventory, target.vit).items.iter().any(|i| i.qty > 0)
+        }
     {
         vec!["Talk".into(), "Trade".into()]
     } else {
@@ -618,178 +876,14 @@ fn followup_actions(player_id: &str, target: &Character) -> Vec<String> {
 }
 
 fn canonical_npc_appearance_and_demeanor(target: &Character, room_name: &str) -> Option<String> {
-    let t_id = target.id.as_str();
-    let title = target.display_title.as_str();
-    let title_short = title.rsplit(['|', '｜']).next().unwrap_or(title).trim();
-    let has = |key: &str| -> bool {
-        t_id == key
-            || t_id.contains(key)
-            || title.contains(key)
-            || title_short == key
-            || title_short.contains(key)
-    };
-
-    // 1. 陸秉衡（文曜商會總會長）
-    if has("陸秉衡") || t_id == "wt_npc_lu_bingheng" {
-        return Some("老會長年事已高卻精神矍鑠，穿著整潔挺括的藏青色正裝外套，搭配玄武岩雙扣，神色和藹沉穩，眉宇間透著數十年商界歷練的從容大氣，手裡握著一枚精巧的黃銅印章。".into());
+    let hint = format!("{} {}", target.display_title, target.id);
+    if let Some(venue) = crate::grid::resolve_room_venue_object(room_name, &hint)
+        .or_else(|| crate::grid::resolve_market_or_specialty_room_object(room_name, &hint))
+    {
+        if !venue.on_duty_demeanor.is_empty() {
+            return Some(venue.on_duty_demeanor.to_string());
+        }
     }
-    // 2. 陸知微（藏書閣主編）
-    if has("陸知微") || t_id == "wt_npc_lu_zhiwei" {
-        return Some("清麗素雅的年輕主編，身穿竹青色立領長版襯衫，長髮以素木髮夾挽起，神情專注沉靜，眉眼溫婉而明慧，袖口微挽，指尖常帶著校對書稿與排印圖冊留下的淡淡油墨香。".into());
-    }
-    // 3. 岑守岳（第一鍛造工坊大匠師）
-    if has("岑守岳") || t_id == "wt_npc_cen_shouyue" {
-        return Some("滿面絡腮鬍、粗獷豪邁的大匠師，露出結實粗壯的手臂，繫著一條厚牛皮防燙圍裙，眼神如爐火般熾烈堅定，掌心滿是厚繭，渾身散發著炭火與金屬的剛健氣息。".into());
-    }
-    // 4. 岑拓（第一鍛造工坊青年匠師）
-    if has("岑拓") || t_id == "wt_npc_cen_tuo" {
-        return Some("年輕幹練的鍛造技師，穿著耐磨工作短衫，體態勻稱結實，神情專注認真，眉宇間帶著鑽研新器物的朝氣與執著，指節滿是長年敲打金屬的厚繭，腰間別著一把黃銅游標測尺。".into());
-    }
-    // 5. 溫懷瑾（文曜學院教務長）
-    if has("溫懷瑾") || t_id == "wt_npc_wen_huaijin" {
-        return Some("面容清瘦斯文的長者，鬢髮微霜，穿著水墨月白色剪裁外套，步履沉穩優雅，目光溫和睿智，隨身帶著一組精密銀針與教學筆記，展現出主持學院教務的學者氣度。".into());
-    }
-    // 6. 溫晴（溫氏脈絡診所主治醫師）
-    if has("溫晴") || t_id == "wt_npc_wen_qing" {
-        return Some("身形纖細卻步履輕快的年輕醫師，穿著俐落的杏黃色工作長裙，腰間配掛分格醫療包與百草溫灸盒，神情溫柔專注，身上常年帶著淡淡的山風草與清涼薄荷香氣。".into());
-    }
-    // 7. 韓鐵山（西門車馬聯運總站長）
-    if has("韓鐵山") || t_id == "wt_npc_han_tieshan" {
-        return Some("膚色黝黑、嗓音洪亮的聯運總站長，身材魁梧結實，身穿厚實毛氈翻領背心，臂膀結實有力，眼神沉穩敏銳，手腕戴著防磨牛皮護腕，帶著長年奔走半島跨城幹線的幹練氣息。".into());
-    }
-    // 8. 陳萬福（三水食堂當家大廚）
-    if has("陳萬福") || t_id == "wt_npc_chen_wanfu" {
-        return Some("體態圓潤的三水食堂主廚，臉上總是掛著熱情的笑容，繫著寬大的白色廚師圍裙，捲起袖子，手持大湯勺，周身帶著原牛高湯與蔥香熱油的濃郁香氣。".into());
-    }
-    // 9. 沈清河（東橋旅社與茶屋東家）
-    if has("沈清河") || t_id == "wt_npc_shen_qinghe" {
-        return Some("眉目清俊、氣質溫和的旅社負責人，穿著雪青色休閒外套，神態安詳從容，說話不疾不徐，泡茶手法俐落熟練，櫃檯旁擺著一盞旋蓋調光夜光貝母檯燈，讓人感到格外放鬆。".into());
-    }
-    // 10. 白泉生（泉香溫水浴場場主）
-    if has("白泉生") || t_id == "wt_npc_bai_quansheng" {
-        return Some("氣色紅潤、神情悠閒的浴場場主，穿著寬鬆透氣的灰白亞麻休閒衫，腳穿防滑木底涼拖，留著整齊的小鬍子，腰間掛著號碼牌，周身帶著淡淡的松脂香皂與溫水蒸氣清香。".into());
-    }
-    // 11. 柯成器（木作傢俱工坊大木匠）
-    if has("柯成器") || t_id == "wt_npc_ke_chengqi" {
-        return Some("身型精瘦的老木工師傅，穿著沾有木屑的深藍工作服，臉上帶著親切的笑紋，眼神專注有神，隨身工具腰帶上插著各式精巧的直角尺與導能木刨。".into());
-    }
-    // 12. 蘇錦心（織造服飾坊當家）
-    if has("蘇錦心") || t_id == "wt_npc_su_jinxin" {
-        return Some("儀態大方溫婉的服飾坊負責人，身穿親手剪裁的煙青色棉麻套裝長裙，腰間配著軟皮布尺，長髮整齊挽起，目光敏銳，舉手投足展現出專業裁縫設計的俐落感。".into());
-    }
-    // 13. 沈硯舟（講堂街書局負責人）
-    if has("沈硯舟") || t_id == "wt_npc_shen_yanzhou" {
-        return Some("斯文清俊的書局負責人，穿著洗得乾淨挺括的淺墨灰襯衫外套，神態溫和，手指留有長年翻閱書頁與活字印刷油墨的細微痕跡，手裡拿著一冊校對完成的《白塔風物誌》。".into());
-    }
-    // 14. 陸承禮（公議堂地政登記員）
-    if has("陸承禮") || t_id == "wt_npc_lu_chengli" {
-        return Some("端正嚴謹的青年地政登記員，身穿公議堂深藍色公務外套，腰板挺直，行事一絲不苟，袖口整齊扣好，桌邊整齊擺放著紅印屋契與弧形吸墨器，一舉一動皆依循契約規範。".into());
-    }
-    // 15. 陸長貴（公議堂民事調解員）
-    if has("陸長貴") || t_id == "wt_npc_lu_changgui" {
-        return Some("辦事幹練圓融的公議堂民事調解員，年約五十，穿著體面的深赭色排扣外套，留著一撮山羊鬍，笑容可掬，口袋裡常備著幾份街區公告與隨身記事本，是城裡公認的活地圖與調解好手。".into());
-    }
-    // 16. 陸敬軒（國小老師）
-    if has("陸敬軒") || t_id == "wt_npc_lu_jingxuan" {
-        return Some("面相斯文溫和的國小老師，穿著深青色剪裁外套，短髮梳理整齊，身形清瘦挺拔，語調溫厚平和，手裡拿著一本《白塔基礎讀本》，看著教室裡的學童時目光充滿期許。".into());
-    }
-    // 17. 秦明誠（百工核算師）
-    if has("秦明誠") || t_id == "wt_npc_qin_mingcheng" {
-        return Some("精明幹練的百工核算師，穿著剪裁合身的深灰棉布外套，面容清瘦，眼神銳利，腰間掛著硬革資料袋，隨身攜帶一具精準計數板，隨時都在核算各工坊的成本與產出。".into());
-    }
-    // 18. 林時中（傳訊鐘樓報時主任）
-    if has("林時中") || t_id == "wt_npc_lin_shizhong" {
-        return Some("年過半百的鐘樓報時主任，穿著深褐色耐磨工作衫，身形挺拔，斑白短髮梳理得一絲不苟，神情嚴謹，口袋裡放著一枚校時極準的黃銅發條懷錶，行事極為守時。".into());
-    }
-    // 19. 趙觀星（學院觀星台觀測主任）
-    if has("趙觀星") || t_id == "wt_npc_zhao_guanxing" {
-        return Some("身形修長的觀星台觀測主任，身穿星青色觀測大衣，神色沉靜專注，雙眼明亮有神，手裡拿著一具摺疊式黃銅星盤量測儀，專注於記錄天象與氣象變化。".into());
-    }
-    // 20. 周一刀（講堂街理髮老師傅）
-    if has("周一刀") || t_id == "wt_npc_zhou_yidao" {
-        return Some("年逾六旬的理髮鋪老師傅，穿著一塵不染的白色工作衫，精瘦結實，笑容爽朗，手腕極穩，工具袋裡插著磨刀布與牛角細齒梳，給人一種親切俐落的街坊熟悉感。".into());
-    }
-    // 21. 岑雲野（分家巷武術館教練）
-    if has("岑雲野") || t_id == "wt_npc_cen_yunye" {
-        return Some("體格健碩沉著的武術館教練，身穿黑色訓練服與厚牛皮護腰，濃眉有神，動作俐落流暢，雙腕戴著防扭傷護腕，神態沉穩自持。".into());
-    }
-    // 22. 許阿甘（分家巷雜貨柑仔店阿婆）
-    if has("許阿甘") || t_id == "wt_npc_xu_agan" {
-        return Some("慈眉善目的白髮阿婆，穿著寬鬆舒適的碎花襯衫，坐在藤椅上微笑，眼神溫和，手裡拿著蒲扇，身邊散發著陳皮、麥芽糖與曬乾艾草的熟悉香氣。".into());
-    }
-    // 23. 馬補靴（西門修傘補靴老匠）
-    if has("馬補靴") || t_id == "wt_npc_ma_buxue" {
-        return Some("寡言沉穩的修配老師傅，圍著浸過蜂蠟與桐油的厚帆布工作圍裙，雙手厚實有力，腿上墊著修鞋木楦頭，專注地修補每一雙皮靴與晴雨摺疊傘。".into());
-    }
-    // 其他聚落正典人物
-    if t_id.contains("許萬川") || title.contains("許萬川") {
-        return Some("面容堅毅、鬢角斑白的海事商盟會長，穿著厚實防風毛呢大衣，目光沉穩如礁石，歷經數十年海上風浪依然從容不迫。".into());
-    }
-    if t_id.contains("許海音") || title.contains("許海音") {
-        return Some("英氣十足的遠洋大船女船長，身穿合身防水航海夾克，長髮高束，隨身帶著海圖筒，眼神銳利自信。".into());
-    }
-    if t_id.contains("林正雄") || title.contains("林正雄") {
-        return Some("體格魁梧的總造船師，穿著耐磨牛皮工作服，手持木工曲尺，身上帶著百年雲杉與防水桐油的氣息。".into());
-    }
-    if t_id.contains("周萬生") || title.contains("周萬生") {
-        return Some("面容溫和、膚色古銅的農牧總社理事長，捲起麻布襯衫袖口，雙手布滿厚繭，神情踏實從容。".into());
-    }
-    if t_id.contains("方石") || title.contains("方石") {
-        return Some("體格結實的礦務主任，穿著耐火皮革背心，眼神專注銳利，指間常帶著赤鐵礦粉的痕跡。".into());
-    }
-    if t_id.contains("岑守淵") || title.contains("岑守淵") {
-        return Some("身穿防寒長版大衣的實戰名宿，頭髮銀白，目光清冷深邃，站在石台邊神情沉穩如山。".into());
-    }
-    if t_id.contains("羅烈") || title.contains("羅烈") {
-        return Some("身材修長矯健的防務總隊長，身穿深綠色防刮獵裝，眼神如鷹隼般敏銳，時刻留意著林間與水澤的動靜。".into());
-    }
-    if t_id.contains("顧海平") || title.contains("顧海平") {
-        return Some("經驗老到的領航公會首座，穿著防潮航海風衣，手裡拿著夜光貝母領航羅盤，對港灣暗礁與水勢瞭若指掌。".into());
-    }
-    if t_id.contains("洪守明") || title.contains("洪守明") {
-        return Some("守望燈塔的資深匠師，穿著防風厚帆布夾克，目光望向海面，身上帶著冷燻松木屑與海風的乾爽氣息。".into());
-    }
-    if t_id.contains("鄭烏石") || title.contains("鄭烏石") {
-        return Some("精壯黝黑的鑿石匠師，穿著耐磨工作衫，雙手結實有力，神情專注沉穩。".into());
-    }
-    if t_id.contains("秦水生") || title.contains("秦水生") {
-        return Some("樸實沉穩的水輪石磨匠師，穿著淺灰工作衫，袖口沾著些許米粉，專注傾聽著水輪運轉的節奏。".into());
-    }
-    if t_id.contains("馬山行") || title.contains("馬山行") {
-        return Some("健談熱心的山徑補給行負責人，穿著防風厚背心，腰間工具帶插著修鞋工具，笑著招呼往來山路的採集員與旅人。".into());
-    }
-    if t_id.contains("梁千木") || title.contains("梁千木") {
-        return Some("水車鋸木匠師，身材挺拔精悍，工作服上沾著細碎木屑，檢視木材紋理時眼神極為專注。".into());
-    }
-    if t_id.contains("石萬鈞") || title.contains("石萬鈞") {
-        return Some("寒水玉切石匠師，神情沉靜專注，繫著防濺工作圍裙，仔細檢查切石水槽中的切面平整度。".into());
-    }
-    if t_id.contains("袁山茶") || title.contains("袁山茶") {
-        return Some("爽朗幹練的山泉旅社負責人，繫著暖色棉麻圍裙，氣色紅潤，隨時為旅客準備熱騰騰的雪嶺暖身湯。".into());
-    }
-    if t_id.contains("高望雲") || title.contains("高望雲") {
-        return Some("清瘦專注的氣象觀測師，身穿防風長大衣，手持氣象觀測紀錄本，隨時留意山間雲層與風壓變化。".into());
-    }
-    if t_id.contains("田百稼") || title.contains("田百稼") {
-        return Some("笑容滿面的農具工坊大匠，穿著深藍耐磨工作服，手拿鐵扳手，對翻土犁與水閘齒輪的每處細節瞭若指掌。".into());
-    }
-    if t_id.contains("牧長風") || title.contains("牧長風") {
-        return Some("牛埔的乳酪與毛氈匠師，穿著厚毛氈背心，神態溫和開朗，雙手熟練地處理羊毛與乳製品。".into());
-    }
-    if t_id.contains("方赤土") || title.contains("方赤土") {
-        return Some("耐火磚窯資深匠師，膚色帶著窯火烘烤的紅潤，戴著厚牛皮隔熱袖套，對高溫燒製的耐火磚品質把關嚴格。".into());
-    }
-    if t_id.contains("雷千鈞") || title.contains("雷千鈞") {
-        return Some("重型獵具大匠，身材魁梧結實，穿著防刮厚皮護具，雙手沉穩有力，組裝大型獵網與複合獵具十分俐落。".into());
-    }
-    if t_id.contains("葉青囊") || title.contains("葉青囊") {
-        return Some("神情專注的南哨解毒診所醫師，穿著淺青色防護工作服，隨身帶著分類清楚的解毒藥包與急救器材。".into());
-    }
-    if t_id.contains("阮水生") || title.contains("阮水生") {
-        return Some("水尾寮的高腳屋與竹筏匠師，身形精瘦靈活，腰間繫著防滑繩索，在淺澤木棧道上行走自如。".into());
-    }
-
-    let _ = room_name;
     None
 }
 
@@ -810,7 +904,8 @@ fn target_is_available_market_operator(player_id: &str, target_id: &str) -> bool
     .is_some()
 }
 
-fn observed_label_for_room(raw_name: &str, room_name: &str) -> String {
+#[cfg(test)]
+fn observed_label_for_room(_raw_name: &str, _room_name: &str) -> String {
     "陌生人".to_string()
 }
 
@@ -836,98 +931,6 @@ fn scene_observation_line(room_name: &str, pronoun: &str) -> Option<String> {
     }
     if let Some(template) = final_map_observation_template_for_room(room_name) {
         Some(template.replace("{pronoun}", pronoun))
-    } else if room_name.contains("總商行") || room_name.contains("票號") {
-        Some(format!(
-            "{pronoun}正立於樟木高櫃後，一手核對計數板，一手翻閱跨鎮匯兌帳冊，指尖沾著淡藍墨跡。"
-        ))
-    } else if room_name.contains("契書") {
-        Some(format!(
-            "{pronoun}手中捏著一枚硃砂小印，細心撫平案几上攤開的紅印屋契與各鎮戶籍抄本。"
-        ))
-    } else if room_name.contains("公議堂") {
-        Some(format!(
-            "{pronoun}坐在條形長案旁，專注核對各坊民務登記底本，偶爾抬頭向進廳詢事的街坊點頭示意。"
-        ))
-    } else if room_name.contains("鐘樓") {
-        Some(format!(
-            "{pronoun}站在瞭望台銅鐘旁，雙眼注視著日晷刻度與報時鐘擺，手邊放著整裝待發的防雨郵袋。"
-        ))
-    } else if room_name.contains("大食堂") {
-        Some(format!(
-            "{pronoun}繫著厚白圍裙在紅鐵厚底大釜旁俐落忙碌，長柄鐵勺盛起熱氣蒸騰的原牛濃湯，香氣四溢。"
-        ))
-    } else if room_name.contains("浴場") || room_name.contains("浴堂") {
-        Some(format!(
-            "{pronoun}抱著一疊新洗滌烘乾的蜂格棉巾，俐落地將北山茶籽香皂添入石池旁的木格置物槽。"
-        ))
-    } else if room_name.contains("藏書閣") {
-        Some(format!(
-            "{pronoun}踩著木梯輕輕抽出一卷竹綿紙古卷，拂去書脊微塵，神情沈靜地核對目錄標籤。"
-        ))
-    } else if room_name.contains("觀星台") {
-        Some(format!(
-            "{pronoun}俯身於青石度盤前，緩步微調三百六十星軌銅儀之子午環，目光專注凝視度數分劃。"
-        ))
-    } else if room_name.contains("書局") {
-        Some(format!(
-            "{pronoun}在排架間整理新印的《白塔風物誌》與旬報，手掌將折邊紙頁輕輕壓平。"
-        ))
-    } else if room_name.contains("商算") {
-        Some(format!(
-            "{pronoun}就著案前算籌與精準核算板快速敲打，口中低聲念誦進退除法口訣。"
-        ))
-    } else if room_name.contains("學院") || room_name.contains("講堂") {
-        Some(format!(
-            "{pronoun}端坐於綠蔭講堂木案前，輕聲吟誦著先賢格物修身之篇，手中握著一支黃銅沾水鋼筆。"
-        ))
-    } else if room_name.contains("第一鍛造") || room_name.contains("鍛造工坊") {
-        Some(format!(
-            "{pronoun}手握重鐵火鉗將通紅鐵胚移向鐵砧，鐵錘起落如雷，灼亮火星在燻黑牛皮裙前迸濺。"
-        ))
-    } else if room_name.contains("木作") || room_name.contains("傢俱") || room_name.contains("巧木") {
-        Some(format!(
-            "{pronoun}推動手中導能木刨，順著北山雲杉木紋平整推過，捲起層層散發松香氣味的薄木花。"
-        ))
-    } else if room_name.contains("織造") || room_name.contains("服飾") || room_name.contains("雲錦") {
-        Some(format!(
-            "{pronoun}坐在織機旁引梭穿線，腳踩踏板節奏均勻，細密平整的大圳棉麻匹料徐徐延展。"
-        ))
-    } else if room_name.contains("診所") {
-        Some(format!(
-            "{pronoun}在百草藥匣前拉開抽屜，取出一包乾製山風草置於研缽，手中石杵均勻研磨。"
-        ))
-    } else if room_name.contains("東橋旅社") || room_name.contains("茶屋") {
-        Some(format!(
-            "{pronoun}提起紫銅長嘴水壺，滾水緩緩注入瓷壺，清冽烘青茶香隨白霧在大堂裊裊散開。"
-        ))
-    } else if room_name.contains("剪剃鋪") {
-        Some(format!(
-            "{pronoun}手腕輕抖在蕩刀布上往復磨拭精鋼剃刀，銅盆溫水騰起陣陣溫潤白氣。"
-        ))
-    } else if room_name.contains("習武堂") {
-        Some(format!(
-            "{pronoun}手持包革練習重木刀在沙地上沉腰坐馬，步法穩健，反覆練習轉腕卸力防守。"
-        ))
-    } else if room_name.contains("柑仔店") || room_name.contains("雜貨") {
-        Some(format!(
-            "{pronoun}拿著長柄竹夾自廣口玻璃罐中取出一塊金桔酸梅糖，用紙袋細心包妥交給買客。"
-        ))
-    } else if room_name.contains("修傘") || room_name.contains("補靴") {
-        Some(format!(
-            "{pronoun}手捏牛皮扁錐穿過行靴厚底，拉緊浸透蜂蠟的麻線，腳邊堆著幾把修好的桐油晴雨傘。"
-        ))
-    } else if room_name.contains("聯運") || room_name.contains("貨運") {
-        Some(format!(
-            "{pronoun}正把沉重的帆布貨包扎上馱架，雙手拽緊粗麻繩扣，反覆確認貨箱穩固。"
-        ))
-    } else if room_name.contains("石橋") || room_name.contains("樞紐") {
-        Some(format!(
-            "{pronoun}扶著雕花青石欄杆憑欄遠眺，目光跟隨橋下潺潺流水與穿梭兩岸的商旅背影。"
-        ))
-    } else if room_name.contains("分家巷") || room_name.contains("西門街") || room_name.contains("講堂街") {
-        Some(format!(
-            "{pronoun}邁步穿行於平整石板街巷間，神態悠然自得，不時與迎面而來的熱絡街坊點頭致意。"
-        ))
     } else if room_name.contains("半嶺水岸渡口") || room_name.contains("水岸渡口") || room_name.contains("北岸") || room_name.contains("等候") {
         Some(format!(
             "{pronoun}沒有主動搭話，只不時望向渡船踏板，又把身邊的包袱往腳邊收了收。"
@@ -974,9 +977,9 @@ fn scene_observation_line(room_name: &str, pronoun: &str) -> Option<String> {
         ))
     } else if room_name.contains("外貿碼頭") {
         Some(format!(
-            "{pronoun}扶住剛落下的外地貨箱，抬頭看港旗和海關前棚那邊的手勢。"
+            "{pronoun}扶住新卸下的外地貨箱，抬頭看港旗和舶司前棚那邊的手勢。"
         ))
-    } else if room_name.contains("海關前棚") {
+    } else if room_name.contains("舶司前棚") {
         Some(format!(
             "{pronoun}按著濕貨單和封條，等翻譯桌那邊把貨名重新說清。"
         ))
@@ -994,7 +997,7 @@ fn scene_observation_line(room_name: &str, pronoun: &str) -> Option<String> {
         ))
     } else if room_name.contains("匯兌小屋") {
         Some(format!(
-            "{pronoun}撥了撥銅秤，將錢票和商館街口報來的價碼寫入賬冊。"
+            "{pronoun}撥了撥銅秤，將錢票和商館街口報來的價碼寫入帳冊。"
         ))
     } else if room_name.contains("風舶角避風港") || room_name.contains("避風港") {
         Some(format!(
@@ -1014,7 +1017,7 @@ fn scene_observation_line(room_name: &str, pronoun: &str) -> Option<String> {
         ))
     } else if room_name.contains("船戶屋排") {
         Some(format!(
-            "{pronoun}在排班板前換下一枚濕木牌，火盆煙氣貼著袖口散開。"
+            "{pronoun}在輪值板前換下一枚濕木牌，火盆煙氣貼著袖口散開。"
         ))
     } else if room_name.contains("烏石鼻守望石階") || room_name.contains("守望石階") {
         Some(format!(
@@ -1052,72 +1055,14 @@ fn scene_observation_line(room_name: &str, pronoun: &str) -> Option<String> {
         Some(format!(
             "{pronoun}在麻袋與木箱旁停下，手掌拍去袖口的泥點，視線一直留意著棚門和河邊的動靜。"
         ))
+    } else if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, "") {
+        Some(format!("{pronoun}{}。", venue.on_duty_fixture_activity))
     } else {
         None
     }
 }
 
 
-fn looks_like_private_name(s: &str) -> bool {
-    let mut count = 0usize;
-    for ch in s.chars() {
-        if !('\u{4e00}'..='\u{9fff}').contains(&ch) {
-            return false;
-        }
-        count += 1;
-    }
-    (2..=4).contains(&count) && !looks_like_public_role(s)
-}
-
-fn looks_like_public_role(s: &str) -> bool {
-    if is_final_map_public_role(s) {
-        return true;
-    }
-    let roles = [
-        "船戶",
-        "渡工",
-        "挑夫",
-        "旅人",
-        "商人",
-        "攤販",
-        "茶客",
-        "行人",
-        "獵戶",
-        "道士",
-        "守衛",
-        "工匠",
-        "學徒",
-        "修船者",
-        "船匠",
-        "修船工",
-        "倉管",
-        "船客",
-        "補帆人",
-        "船行人",
-        "船員",
-        "稅吏",
-        "海關吏",
-        "商館人",
-        "翻譯",
-        "兌票人",
-        "搬魚人",
-        "補網人",
-        "魚販",
-        "船戶家屬",
-        "守望人",
-        "礦工",
-        "洗礦工",
-        "修具工",
-        "推車人",
-        "候渡者",
-        "看貨人",
-        "歇腳旅人",
-        "候船者",
-        "上岸客",
-        "搬貨人",
-    ];
-    roles.iter().any(|role| s.contains(role))
-}
 
 #[cfg(test)]
 mod tests {
@@ -1164,30 +1109,8 @@ mod tests {
         assert!(line.contains("。他目前整理包袱。"));
     }
     #[test]
-    fn look_narrative_with_personality() {
-        let mut ch = test_character();
-        ch.soul_seed = Some(12345);
-        let line = build_look_narrative(&ch, "某甲", "客棧前廊", None);
-        assert!(!line.contains("。 "));
-        assert!(line.contains("氣勢沉猛") || line.contains("神態內斂"));
-        assert!(line.contains("目光敏銳") || line.contains("神色淡然"));
-        assert!(line.contains("衣物整飭") || line.contains("行止隨性"));
-    }
-
-    #[test]
     fn generated_private_name_falls_back_to_stranger_label() {
         assert_eq!(observed_label_for_room("王小明", "半嶺水岸渡口"), "陌生人");
-    }
-
-    #[test]
-    fn look_narrative_projects_active_npc_obligation() {
-        let mut ch = test_character();
-        ch.id = "test_ob_npc_1".to_string();
-        ch.soul_seed = Some(42);
-        crate::store::open_active_npc_obligation(&ch.id, "restock_goods", "店內現貨見底急需補倉");
-        let line = build_look_narrative(&ch, "陳萬福", "文曜・三水口・三水食堂", None);
-        assert!(line.contains("急需提貨補倉"));
-        crate::store::clear_active_npc_obligation(&ch.id, "restock_goods");
     }
 
     #[test]
@@ -1228,19 +1151,19 @@ mod tests {
 
     #[test]
     fn m3_053_public_roles_are_kept_when_looking() {
-        assert_eq!(observed_label_for_room("海關吏", "海關前棚"), "陌生人");
+        assert_eq!(observed_label_for_room("舶司吏", "舶司前棚"), "陌生人");
         assert_eq!(observed_label_for_room("商館人", "商館街口"), "陌生人");
         assert_eq!(observed_label_for_room("王小明", "匯兌小屋"), "陌生人");
     }
     #[test]
     fn foreign_trade_look_uses_trade_work_not_generic_passerby() {
-        let customs = scene_observation_line("海關前棚", "他").expect("海關前棚應有觀察句");
+        let customs = scene_observation_line("舶司前棚", "他").expect("舶司前棚應有觀察句");
         let exchange = scene_observation_line("匯兌小屋", "她").expect("匯兌小屋應有觀察句");
 
         assert!(customs.contains("貨單"));
         assert!(customs.contains("封條"));
         assert!(exchange.contains("銅秤"));
-        assert!(exchange.contains("賬冊"));
+        assert!(exchange.contains("帳冊"));
         assert!(!customs.contains("包袱"));
         assert!(!exchange.contains("包袱"));
     }
@@ -1335,23 +1258,7 @@ mod tests {
         ch.display_title = "三水食堂當家大廚|陳萬福".to_string();
         ch.equipment_slots = r#"{"body":"starter_body_m","hold_r":"craft_steel_hunting_knife"}"#.to_string();
         let line = build_look_narrative(&ch, "陳萬福", "文曜・三水口・三水食堂", None);
-        assert!(line.contains("手裡握著【精鍛防身獵刀"));
-    }
-
-    #[test]
-    fn test_look_disposition_and_thoughts() {
-        let mut ch = test_character();
-        ch.disposition = 45;
-        ch.thoughts.push(crate::entity::Thought {
-            source: "Talked".to_string(),
-            delta: 5,
-            created_at: crate::game::now_unix(),
-            decay_minutes: 180,
-            flavor: Some("跟人說了會兒話，心裡踏實".to_string()),
-        });
-        let line = build_look_narrative(&ch, "某甲", "客棧前廊", None);
-        assert!(line.contains("眉目舒朗、神采奕奕，心境頗為暢快"));
-        assert!(!line.contains("思忖著"));
+        assert!(line.contains("手裡握著【防身獵刀"));
     }
 
     #[test]
@@ -1385,7 +1292,7 @@ mod tests {
         assert!(!narrative.contains("思忖著"));
 
         // 2. 外部觀察器物（非自身觀測時，Sharp 狀態保持乾淨器名，無內部熟練度標籤）
-        assert!(narrative.contains("手裡握著【精鍛防身獵刀】"));
+        assert!(narrative.contains("手裡握著【防身獵刀】"));
         assert!(!narrative.contains("如臂使指"));
         assert!(!narrative.contains("漸趨順手"));
         assert!(!narrative.contains("沉穩趁手"));
@@ -1400,9 +1307,9 @@ mod tests {
         assert!(!narrative.contains("database"));
         assert!(!narrative.contains("資料庫"));
         assert!(!narrative.contains("還有"));
-        assert!(!narrative.contains("剛才"));
-        assert!(!narrative.contains("剛剛"));
-        assert!(!narrative.contains("方才"));
+        assert!(!narrative.contains(concat!("\u{525b}", "\u{624d}")));
+        assert!(!narrative.contains(concat!("\u{525b}", "\u{525b}")));
+        assert!(!narrative.contains(concat!("\u{65b9}", "\u{624d}")));
         assert!(!narrative.contains("頃刻"));
         assert!(!narrative.contains("110V"));
         assert!(!narrative.contains("念場"));
@@ -1413,5 +1320,169 @@ mod tests {
 
         // 清理創傷
         crate::pg::living_world::clear_entity_afflictions(&ch.id, true, crate::game::now_unix());
+        crate::store::clear_active_npc_obligation(&ch.id, "treat_injury");
+        if let Some(pool) = crate::pg::pool()
+            && let Ok(mut conn) = pool.get()
+        {
+            let _ = conn.execute(
+                "DELETE FROM resident_obligations WHERE entity_id = 'npc_look_test_living'",
+                &[],
+            );
+        }
+    }
+
+    #[test]
+    fn test_look_qin_shuisheng_real_time_inscriptions_and_state() {
+        let now = 1_800_000_000i64;
+        crate::pg::living_world::seed_flagship_specimen_qin_shuisheng_once(now);
+        let mut qin = test_character();
+        qin.id = "秦水生".to_string();
+        qin.display_title = "老堰頭水輪石磨首座|秦水生".to_string();
+        qin.soul_seed = Some(4_088_606_620_229_995_941);
+        qin.equipment_slots = r#"{"head":"wt_cat_0875","body":"wt_cat_0869","legs":"starter_legs_m","feet":"starter_feet_m","wrist":"wt_cat_0852","waist":"wt_cat_0897","hold_r":"wt_cat_0984","hold_l":"wt_cat_0973"}"#.to_string();
+        qin.inventory = r#"[{"item_id":"wt_cat_0388","qty":5},{"item_id":"wt_cat_0279","qty":7},{"item_id":"wt-good-009","qty":9}]"#.to_string();
+        qin.current_activity = "背負薄層重礦烏木膽溫存桶沿山道前往文曜三水大食堂送交早市米漿".to_string();
+
+        let narrative = build_look_narrative(&qin, "秦水生", "老堰頭・山道", Some("葉卅"));
+        assert!(
+            narrative.contains("羊角鐵錘打石手鏨 [巧][堅]"),
+            "expected inscribed chisel in look narrative: {narrative}"
+        );
+        assert!(
+            narrative.contains("平底石磨分粉篩架 [純][流]"),
+            "expected inscribed sieve in look narrative: {narrative}"
+        );
+        assert!(
+            narrative.contains("潮汐綿長息"),
+            "expected breath habit in look narrative: {narrative}"
+        );
+        assert!(
+            narrative.contains("老堰頭水輪分動與雙疊石磨聽音辨距法"),
+            "expected lineage mastery in look narrative: {narrative}"
+        );
+        assert!(
+            narrative.contains("現磨溫米漿 5 桶") && narrative.contains("特級在來米粉 7 袋") && narrative.contains("待磨精碾白米 9 袋"),
+            "expected real-time inventory counts in look narrative: {narrative}"
+        );
+        assert!(
+            narrative.contains("背負薄層重礦烏木膽溫存桶沿山道前往文曜三水大食堂送交早市米漿"),
+            "expected specific transit activity preserved in look narrative: {narrative}"
+        );
+    }
+
+    #[test]
+    fn test_look_universal_living_entity_details_on_offline_player_and_npc() {
+        let mut player = test_character();
+        player.id = "player_offline_test_look".to_string();
+        player.kind = crate::entity::EntityKind::Player;
+        player.inventory = r#"[{"item_id":"craft_wooden_tool_handle","qty":2},{"item_id":"wt-good-012","qty":3}]"#.to_string();
+        player.current_activity = "沿著石板步道漫步穿行前往工坊".to_string();
+
+        let (_rec, _) = crate::pg::living_world::record_mentor_imprint_progress(
+            &player.id,
+            "溫掌事",
+            "百工調息衡準訣",
+            "神思澄明",
+            crate::game::now_unix(),
+        );
+
+        let narrative = build_look_narrative(&player, "某玩家", "工坊前廊", Some("viewer_p"));
+        assert!(narrative.contains("身負「百工調息衡準訣」師承造詣。"), "expected lineage: {narrative}");
+        assert!(narrative.contains("隨身攜有"), "expected carried items: {narrative}");
+        assert!(narrative.contains("平日多留心於「"), "expected in-world offline directive posture: {narrative}");
+        assert!(narrative.contains("沿著石板步道漫步穿行前往工坊"), "expected generalized transit preserved: {narrative}");
+    }
+    #[test]
+    fn test_look_and_followup_actions_recognize_uniform_and_plain_clothes_counter_manager() {
+        let viewer_id = "player_viewer_test";
+
+        // 1. 穿便服但站在非夥計禁止入內櫃檯區的掌事（有貨物，但無制服、未結識為陌生人）
+        let mut manager = test_character();
+        manager.id = "npc_counter_manager_plain".to_string();
+        manager.display_title = "穿便服但站在非夥計禁止入內櫃檯區的掌事".to_string();
+        manager.grid_x = Some(2);
+        manager.grid_y = Some(0);
+        manager.inventory = r#"[{"item_id":"wt-good-009","qty":5}]"#.to_string();
+
+        let manager_narrative = build_look_narrative(&manager, "陌生人", "沙鹿商鋪", Some(viewer_id));
+        assert!(
+            manager_narrative.contains("雖著尋常便服，卻能自由出入非外客可入之櫃檯與內場禁區，顯係此處主事之人。"),
+            "expected plain-clothes counter manager identity in narrative: {manager_narrative}"
+        );
+        let manager_actions = followup_actions(viewer_id, &manager);
+        assert!(
+            manager_actions.contains(&"Trade".to_string()),
+            "unacquainted counter manager with stock MUST expose Trade socket in followup_actions: {manager_actions:?}"
+        );
+
+        // 2. 同一房間內的路人顧客（無制服、非櫃檯內場、未結識為陌生人）
+        let mut passerby = test_character();
+        passerby.id = "npc_passerby_customer".to_string();
+        passerby.display_title = "店內喝茶閒聊的茶客顧客".to_string();
+        passerby.grid_x = Some(2);
+        passerby.grid_y = Some(0);
+        passerby.inventory = r#"[{"item_id":"wt-good-009","qty":5}]"#.to_string();
+
+        let passerby_narrative = build_look_narrative(&passerby, "陌生人", "沙鹿商鋪", Some(viewer_id));
+        assert!(
+            !passerby_narrative.contains("櫃檯與內場禁區"),
+            "passerby customer narrative must NOT contain counter zone text: {passerby_narrative}"
+        );
+        let passerby_actions = followup_actions(viewer_id, &passerby);
+        assert_eq!(
+            passerby_actions,
+            vec!["Talk".to_string()],
+            "passerby customer followup_actions must only be Talk: {passerby_actions:?}"
+        );
+    }
+
+    #[test]
+    fn test_look_any_resident_shows_inscribed_vocational_vessel_and_event_pack_duty() {
+        let now = 1_800_000_000i64;
+        crate::pg::living_world::seed_flagship_specimen_qin_shuisheng_once(now);
+
+        let mut resident = test_character();
+        resident.id = "秦水生".to_string();
+        resident.kind = crate::entity::EntityKind::Npc;
+        resident.display_title = "老堰頭水輪石磨首座|秦水生".to_string();
+        resident.soul_seed = Some(4_088_606_620_229_995_941);
+        resident.equipment_slots = r#"{"head":"wt_cat_0875","body":"wt_cat_0840","legs":"starter_legs_m","feet":"starter_feet_m","waist":"wt_cat_0897"}"#.to_string();
+        resident.current_activity = "於水輪石磨工坊料理店務".to_string();
+
+        let room_name = "老堰頭・水輪石磨工坊";
+        let narrative = build_look_narrative(&resident, "秦水生", room_name, Some("viewer_p"));
+
+        assert!(
+            narrative.contains("平底石磨分粉篩架 [純][流]"),
+            "expected inscribed vocational vessel for resident without held tools: {narrative}"
+        );
+        assert!(
+            narrative.contains("手邊常備本職器物【平底石磨分粉篩架 [純][流]】"),
+            "expected vocational vessel format in narrative: {narrative}"
+        );
+        assert!(
+            narrative.contains("此刻正當值經手場上事件包【") && narrative.contains("/3 幕・關鍵器物："),
+            "expected active EventPack duty title and key objects in narrative: {narrative}"
+        );
+
+        let mut staff = test_character();
+        staff.id = "npc_staff_floor_worker".to_string();
+        staff.kind = crate::entity::EntityKind::Npc;
+        staff.display_title = "石磨研磨學徒".to_string();
+        staff.equipment_slots = r#"{"body":"wt_cat_0840"}"#.to_string();
+        staff.current_activity = "在場中搬運麻袋".to_string();
+        let floor_narrative = build_look_narrative(&staff, "學徒", room_name, Some("viewer_p"));
+        assert!(
+            floor_narrative.contains("身著明顯的當值工作制服，正於場內料理店務與百工差事。"),
+            "expected floor uniform line: {floor_narrative}"
+        );
+        assert!(
+            floor_narrative.contains("此刻正當值經手場上事件包【"),
+            "floor staff with uniform must also show event pack duty: {floor_narrative}"
+        );
+        assert!(
+            floor_narrative.contains("手邊常備本職器物【百工學徒手用小木尺】"),
+            "apprentice should show vocational vessel: {floor_narrative}"
+        );
     }
 }

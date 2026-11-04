@@ -1,5 +1,5 @@
 {
-  "_說明": "[旅人]行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。",
+  "_說明": "[旅人]行為模板。定義日程、巡邏偏好、交易定價規約、性情品性。",
   "schedule": {
     "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
     "entries": [
@@ -9,8 +9,8 @@
       {"hour_start": 10, "hour_end": 12, "activity": "travel", "location_pref": ["life_garden", "life_hall", "life_backyard"], "description": "【{name}】一路前行，步履不停。"},
       {"hour_start": 12, "hour_end": 14, "activity": "rest_noon", "location_pref": ["life_dining", "life_hall"], "description": "【{name}】日頭正毒，尋處歇腳用飯。"},
       {"hour_start": 14, "hour_end": 18, "activity": "travel", "location_pref": ["life_garden", "life_hall", "life_backyard"], "description": "【{name}】午後繼續趕路，行色匆匆。"},
-      {"hour_start": 18, "hour_end": 21, "activity": "arrive_inn", "location_pref": ["life_hall", "life_dining"], "description": "【{name}】黃昏時分尋得客棧落腳。"},
-      {"hour_start": 21, "hour_end": 24, "activity": "rest_evening", "location_pref": ["life_hall", "life_dining", "life_corridor_2f"], "description": "【{name}】在客棧中歇息，明日再上路。"}
+      {"hour_start": 18, "hour_end": 21, "activity": "arrive_inn", "location_pref": ["life_hall", "life_dining"], "description": "【{name}】黃昏時分尋得旅社落腳。"},
+      {"hour_start": 21, "hour_end": 24, "activity": "rest_evening", "location_pref": ["life_hall", "life_dining", "life_corridor_2f"], "description": "【{name}】在旅社中歇息，明日再上路。"}
     ]
   },
   "wander": {
@@ -37,23 +37,23 @@
   "trade": {
     "buy_markup": 1.1,
     "sell_markup": 0.9,
-    "preferred_goods": ["乾糧", "水囊", "地圖殘頁", "異地特產", "護身符"],
+    "preferred_goods": ["乾糧", "水囊", "地圖殘頁", "異地特產", "驅蟲香囊"],
     "refused_goods": [],
     "haggle_tolerance": 3,
     "haggle_texts": {
       "accept": [
-        "【{name}】點頭：「成交。走江湖的人，不計較這些。」",
+        "【{name}】點頭：「成交。走半島的人，不計較這些。」",
         "【{name}】微微一笑：「好說。就依你。」",
         "【{name}】抱拳：「爽快。這價錢公道。」"
       ],
       "reject": [
         "【{name}】搖頭：「這價太離譜，恕難從命。」",
-        "【{name}】皺眉：「少俠這是在消遣我？」",
-        "【{name}】擺手：「不成。我還有路要趕。」"
+        "【{name}】皺眉：「朋友這是在消遣我？」",
+        "【{name}】擺手：「不成。我尚有去路要趕。」"
       ],
       "counter": [
         "【{name}】沉吟：「這樣吧，各讓一步如何？」",
-        "【{name}】瞇眼：「少俠再想想？我這價已經很實在。」",
+        "【{name}】瞇眼：「朋友再想想？我這價已經很實在。」",
         "【{name}】嘆氣：「走南闖北的，誰都不容易。折中如何？」"
       ]
     }

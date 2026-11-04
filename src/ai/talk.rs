@@ -41,6 +41,41 @@ fn sprintf_one_percent_s(template: &str, value: &str) -> String {
     template.replacen("%s", value, 1)
 }
 
+/// 依據場所名稱組裝場域物件設定與活躍事件包／劇本包 prompt 上下文
+pub fn build_room_venue_and_event_pack_prompt_context(room_name: &str) -> String {
+    let clean_room = room_name.trim().split('（').next().unwrap_or(room_name.trim()).trim();
+    if clean_room.is_empty() {
+        return String::new();
+    }
+    let mut out = String::new();
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(clean_room, "") {
+        let zone_desc = if venue.has_counter_restricted_zone {
+            "設非本店人員禁止進入之當值櫃檯內側"
+        } else {
+            "開放當值作業區"
+        };
+        out.push_str(&format!(
+            "【場域物件設定】場所類型：{}｜當值職稱：{}｜區域分界：{}｜當值工序：{}｜當值氣韻：{}\n",
+            venue.venue_kind,
+            venue.default_host_title,
+            zone_desc,
+            venue.on_duty_fixture_activity,
+            venue.on_duty_demeanor
+        ));
+        let now_unix = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_secs() as i64;
+        if let Some((ev, sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(clean_room, None, now_unix) {
+            out.push_str(&format!(
+                "【現場活躍事件包與劇本包】事件包[{}]「{}」｜關鍵器物：{}｜劇本包[{}]起念：{}｜交涉：{}\n",
+                ev.id, ev.event_title, ev.key_objects, sp.id, ev.trigger_and_causal_chain, sp.player_actions
+            ));
+        }
+    }
+    out
+}
+
 /// 組出玩家↔NPC Talk 的 system 與 user（對齊既有 `PlayerNPCTalkBuildPrompts`）。
 pub fn player_npc_talk_build_prompts(
     player_input: &str,
@@ -73,6 +108,7 @@ pub fn player_npc_talk_build_prompts(
             }
             sb.push_str(&sc);
         }
+        sb.push_str(&build_room_venue_and_event_pack_prompt_context(room_display_name));
     }
     sb.push_str(&player_npc_behavior_rules());
     sb.push_str(&player_npc_traditional_rule());
@@ -613,6 +649,7 @@ pub fn call_ai_talk_npc_to_npc(
         room_name,
         time_label,
     ));
+    sb.push_str(&build_room_venue_and_event_pack_prompt_context(room_name));
     let mut room_description = room_description.trim().to_string();
     if !room_description.is_empty() {
         let runes: Vec<char> = room_description.chars().collect();
@@ -802,5 +839,32 @@ mod tests {
     fn is_meta_line_dash() {
         assert!(is_npc_npc_meta_or_assistant_line("---"));
         assert!(is_npc_npc_meta_or_assistant_line("——開頭"));
+    }
+
+    #[test]
+    fn test_build_room_venue_and_event_pack_prompt_context() {
+        let prompt = build_room_venue_and_event_pack_prompt_context("老堰頭・水輪石磨工坊");
+        assert!(prompt.contains("【場域物件設定】"));
+        assert!(prompt.contains("水輪石磨工坊"));
+        assert!(prompt.contains("當值石磨匠師"));
+        assert!(prompt.contains("設非本店人員禁止進入之當值櫃檯內側"));
+        assert!(prompt.contains("【現場活躍事件包與劇本包】"));
+
+        let empty_prompt = build_room_venue_and_event_pack_prompt_context("荒蕪礫石空地");
+        assert_eq!(empty_prompt, "");
+    }
+
+    #[test]
+    fn test_player_npc_talk_build_prompts_includes_venue_and_pack() {
+        let (system_prompt, _) = player_npc_talk_build_prompts(
+            "你好",
+            "石磨匠",
+            &[],
+            &[],
+            "",
+            "老堰頭・水輪石磨工坊",
+        );
+        assert!(system_prompt.contains("水輪石磨工坊"));
+        assert!(system_prompt.contains("當值石磨匠師"));
     }
 }

@@ -31,14 +31,15 @@ pub(super) fn synthesize_moving_activity(
         Some("repay_debt") => "設法籌措欠款，",
         Some("stranded_cargo") => "設法轉運滯留貨物，",
         Some("treat_injury") => "調息養傷，",
-        Some(_) => "",
-        None => "",
+        Some("craft_material") => "忙於籌備工坊料件，",
+        Some("fuel_shortage") | Some("supply_shortage") | Some("restock_goods") => "忙於採買添補物資，",
+        Some(_) | None => "",
     };
 
     let dest = if dest_name.trim().is_empty() {
         "目的地"
     } else {
-        dest_name
+        crate::pg::living_world::peninsula_market_settlement_name(dest_name.trim())
     };
 
     let base = match intent {
@@ -71,21 +72,22 @@ pub(super) fn synthesize_staying_activity(
         Some("repay_debt") => "設法籌措欠款，",
         Some("stranded_cargo") => "設法轉運滯留貨物，",
         Some("treat_injury") => "調息養傷，",
-        Some(_) => "",
-        None => "",
+        Some("craft_material") => "忙於籌備工坊料件，",
+        Some("fuel_shortage") | Some("supply_shortage") | Some("restock_goods") => "忙於採買添補物資，",
+        Some(_) | None => "",
     };
 
     let place = if place_name.trim().is_empty() {
         "此處"
     } else {
-        place_name
+        crate::pg::living_world::peninsula_market_settlement_name(place_name.trim())
     };
 
     let base = match intent {
         IntentType::Gather => format!("在{}採集", place),
         IntentType::Socialize => format!("在{}與身邊的人往來交談", place),
         IntentType::Work => {
-            if place.contains("講堂街") || place.contains("國小") || place.contains("書院") || place.contains("學院") {
+            if place.contains("講堂街") || place.contains("蒙學") || place.contains("書院") || place.contains("學院") {
                 format!("在{}翻閱新印的書冊與經卷", place)
             } else if place.contains("分家巷") || place.contains("百工") || place.contains("鍛造") || place.contains("鐵器") {
                 format!("在{}端詳新打好的鐵器與磨治刃口", place)
@@ -103,6 +105,10 @@ pub(super) fn synthesize_staying_activity(
                 format!("在{}推刨整木與試拼榫卯", place)
             } else if place.contains("雲錦") || place.contains("織造") || place.contains("服飾") {
                 format!("在{}理線穿梭與比對布料染色", place)
+            } else if let Some(v) = crate::grid::resolve_room_venue_object(place, "")
+                .or_else(|| crate::grid::resolve_market_or_specialty_room_object(place, ""))
+            {
+                format!("在{}（{}）", place, v.on_duty_fixture_activity)
             } else {
                 format!("在{}專注勞作", place)
             }
@@ -111,7 +117,7 @@ pub(super) fn synthesize_staying_activity(
         IntentType::Trade => format!("在{}盤點貨物並交易", place),
         IntentType::Beg => format!("在{}向過路人求助", place),
         IntentType::Wander => {
-            if place.contains("講堂街") || place.contains("國小") || place.contains("書院") || place.contains("學院") {
+            if place.contains("講堂街") || place.contains("蒙學") || place.contains("書院") || place.contains("學院") {
                 format!("在{}翻閱新印的書冊並信步漫步", place)
             } else if place.contains("分家巷") || place.contains("百工") || place.contains("鐵器") {
                 format!("在{}端詳新打好的鐵器並流連各家工坊", place)
@@ -129,6 +135,8 @@ pub(super) fn synthesize_staying_activity(
                 format!("在{}細閱告示欄所張貼的規章布告", place)
             } else if place.contains("石橋") || place.contains('橋') {
                 format!("在{}憑欄遠眺川流水色", place)
+            } else if let Some(ambient) = crate::grid::resolve_room_ambient_visitor_activity(place, 0) {
+                format!("在{}（{}）", place, ambient)
             } else {
                 format!("在{}漫步巡看四周市井", place)
             }
@@ -152,8 +160,41 @@ pub(super) fn action_delay_seconds(intent: IntentType) -> i64 {
 pub(super) fn place_name(graph: &PlaceGraph, place_id: &str) -> String {
     graph
         .place(place_id)
-        .map(|place| place.name.trim())
+        .map(|place| crate::pg::living_world::peninsula_market_settlement_name(place.player_title().trim()))
         .filter(|name| !name.is_empty())
         .unwrap_or("相鄰地點")
         .to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_obligation_prefixes_and_ambient_activity() {
+        let moving = synthesize_moving_activity(
+            IntentType::Work,
+            "大圳頭水輪石磨坊",
+            None,
+            Some("craft_material"),
+        );
+        assert!(moving.contains("忙於籌備工坊料件，"));
+
+        let moving_shortage = synthesize_moving_activity(
+            IntentType::Trade,
+            "三水口總商行",
+            None,
+            Some("fuel_shortage"),
+        );
+        assert!(moving_shortage.contains("忙於採買添補物資，"));
+
+        let staying_wander = synthesize_staying_activity(
+            IntentType::Wander,
+            "大圳頭水輪石磨坊",
+            None,
+            None,
+        );
+        assert!(staying_wander.contains("大圳頭水輪石磨坊"));
+        assert!(staying_wander.contains('（') || staying_wander.contains("漫步"));
+    }
 }

@@ -31,17 +31,17 @@ fn builtin_topology_contains_every_accepted_macro_anchor() -> Result<()> {
         "天然港灣道",
         "風舶角",
         "文曜",
-        "西南原",
+        "大圳頭",
         "青脊山",
         "東海",
-        "黑沼林",
+        "水尾澤",
         "南哨",
         "青籠關",
     ] {
         assert!(names.contains(expected), "缺少已接受大節點：{expected}");
     }
     assert!(
-        names.contains("白塔遺蹟") || names.contains("白塔山麓") || names.contains("白塔古蹟") || names.contains("白塔"),
+        names.contains("白塔遺蹟") || names.contains("雲腰雪林") || names.contains("白塔古蹟") || names.contains("白塔"),
         "缺少白塔大節點"
     );
     Ok(())

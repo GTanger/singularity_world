@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "id": "white_tower_peninsula",
+  "name": "白塔半島",
+  "status": "accepted",
+  "canon": true,
+  "sources": [
+    "wiki/05-專案/Singularity-World/10-正典與ADR/初始地圖.md",
+    "wiki/05-專案/Singularity-World/20-世界觀/白塔半島.md",
+    "wiki/05-專案/Singularity-World/20-世界觀/白塔半島地理節點.md"
+  ],
+  "nodes": [
+    {"id":"white_tower_peninsula","name":"白塔半島","display_name":"白塔半島","kind":"world_region","parent_ref":null,"summary":"西出海，中生活，東臨山海，南陷沼關，北仰神山。"},
+
+    {"id":"wt-n-sacred-mountain","name":"神山","display_name":"白塔","kind":"mountain_landmark","parent_ref":"white_tower_peninsula","summary":"青脊山北端頭嶺與半島最高地標，不是建築；地圖稱白塔，當地人稱神山。"},
+    {"id":"wt-n-sacred-mountain-peaks","name":"神山主峰群","display_name":"白塔群峰","kind":"mountain_system","parent_ref":"wt-n-sacred-mountain","summary":"主峰常年積雪，向下依序為裸岩坡、碎石帶與雲霧林。"},
+    {"id":"wt-n-sacred-mountain-west-long-valley","name":"神山西麓長谷","display_name":"白塔西谷","kind":"valley","parent_ref":"wt-n-sacred-mountain","summary":"主峰與西北低山間的南北長谷，包含高地湖、季節濕地與串聯水道。"},
+    {"id":"wt-n-north-crown-sea","name":"北冕海","display_name":"北冕海","kind":"sea","parent_ref":"white_tower_peninsula","summary":"白塔半島北側海域，與神山及北岸共同形成北端山海壓力。"},
+    {"id":"wt-n-north-crown-rock-coast","name":"北冕海岩岸","display_name":"北冕岩岸","kind":"coast","parent_ref":"white_tower_peninsula","summary":"岩岬、小海灣、河口與短石灘交錯，只有較大河口附近形成平地。"},
+
+    {"id":"wt-w-windship-island","name":"風舶嶼","display_name":"風舶嶼","kind":"island","parent_ref":"white_tower_peninsula","summary":"天然港灣道西側港島，承接過路修整、補給、等候與轉運。"},
+    {"id":"wt-w-windship-island-ridge","name":"風舶嶼山脊","display_name":"風舶嶺","kind":"island_ridge","parent_ref":"wt-w-windship-island","summary":"狹長岩島中央的連續低山脊；西側海崖，東側有小灣、階地與可用岸線。"},
+    {"id":"wt-w-natural-harbor-channel","name":"天然港灣道","display_name":"天然港灣道","kind":"marine_channel","parent_ref":"white_tower_peninsula","summary":"風舶嶼與風舶角之間的天然港灣地形與海事北上主通道。"},
+    {"id":"wt-w-harbor-channel-north","name":"天然港灣道北口","display_name":"港灣道北口","kind":"channel_segment","parent_ref":"wt-w-natural-harbor-channel","summary":"較寬且較深，直接承受北冕海風浪。"},
+    {"id":"wt-w-harbor-channel-middle","name":"天然港灣道中段","display_name":"港灣道狹門","kind":"channel_segment","parent_ref":"wt-w-natural-harbor-channel","summary":"全道最窄且水流最快，船隻交會與轉向最受限制。"},
+    {"id":"wt-w-harbor-channel-south","name":"天然港灣道南段","display_name":"港灣道南灣","kind":"channel_segment","parent_ref":"wt-w-natural-harbor-channel","summary":"重新展寬，岸邊出現沙洲、泥灘與平靜泊水區。"},
+    {"id":"wt-w-windship-cape","name":"風舶角","display_name":"風舶角","kind":"port_city_anchor","parent_ref":"white_tower_peninsula","summary":"天然港灣道東側港口城市，是海事與內陸人貨消息的主要交接面。"},
+    {"id":"wt-w-windship-cape-terrace","name":"風舶角海岸台地","display_name":"風舶台地","kind":"coastal_terrace","parent_ref":"wt-w-windship-cape","summary":"低岸港灣平地向東抬升為穩定台地，再接內陸低丘。"},
+
+    {"id":"wt-c-wenyao","name":"文曜","display_name":"文曜","kind":"city_anchor","parent_ref":"white_tower_peninsula","summary":"中部三河匯流附近的生活、知識、紀錄與跨區轉接大節點。"},
+    {"id":"wt-c-wenyao-confluence","name":"文曜三河匯流地","display_name":"文曜三河口","kind":"river_confluence","parent_ref":"wt-c-wenyao","summary":"文曜位於兩河之間較高古河階，三河在周圍會合後向南。"},
+    {"id":"wt-c-north-source-river","name":"中部三河北來源","display_name":"北源河","kind":"river","parent_ref":"white_tower_peninsula","summary":"來自神山西南源谷的中部大河；北源河是顯示用結構名，不是已定案河名。"},
+    {"id":"wt-c-west-source-river","name":"中部三河西來源","display_name":"西源河","kind":"river","parent_ref":"white_tower_peninsula","summary":"收集西北丘陵與森林水系的中部大河；西源河是顯示用結構名，不是已定案河名。"},
+    {"id":"wt-c-east-source-river","name":"中部三河東來源","display_name":"東源河","kind":"river","parent_ref":"white_tower_peninsula","summary":"來自青脊山西麓谷地的中部大河；東源河是顯示用結構名，不是已定案河名。"},
+    {"id":"wt-c-central-lower-river","name":"中部下游大河","display_name":"南流河","kind":"river","parent_ref":"white_tower_peninsula","summary":"三河匯流後向南流入水尾澤的半島中部最大河流；南流河是顯示用結構名，不是已定案河名。"},
+
+    {"id":"wt-c-southwest-plain","name":"大圳頭","display_name":"大圳頭","kind":"plain_system","parent_ref":"white_tower_peninsula","summary":"由穩定高河階、沖積平原、舊河道與南緣濕地構成的廣大生活面。"},
+    {"id":"wt-c-southwest-high-terrace","name":"大圳頭乾燥高河階","display_name":"西南上原","kind":"river_terrace","parent_ref":"wt-c-southwest-plain","summary":"位於大圳頭北部與西部，地面相對穩定。"},
+    {"id":"wt-c-southwest-alluvial","name":"大圳頭沖積平原","display_name":"西南河原","kind":"alluvial_plain","parent_ref":"wt-c-southwest-plain","summary":"靠中央河流，包含支流、堤岸與舊河道。"},
+    {"id":"wt-c-southwest-wet-edge","name":"大圳頭南緣濕地","display_name":"西南澤緣","kind":"wetland_edge","parent_ref":"wt-c-southwest-plain","summary":"接近水尾澤，分布牛軛湖、季節積水地與濕林。"},
+    {"id":"wt-c-sacred-tower","name":"雲腰雪林","display_name":"雲腰雪林","kind":"city_anchor","parent_ref":"white_tower_peninsula","summary":"文曜東北方、低丘與青脊山西麓之間的自由修行與生活大節點。"},
+    {"id":"wt-c-sacred-tower-hill-plain","name":"白塔丘原","display_name":"白塔丘原","kind":"hill_plain","parent_ref":"wt-c-sacred-tower","summary":"由林脊、淺谷、泉水與石質丘陵組成，向東逐漸抬升進入青脊山。"},
+
+    {"id":"wt-e-green-ridge","name":"青脊山","display_name":"青脊山","kind":"mountain_range","parent_ref":"white_tower_peninsula","summary":"半島東側單一主脊，北端為神山，東側直接臨東海。"},
+    {"id":"wt-e-green-ridge-west-valleys","name":"青脊山西谷群","display_name":"青脊西谷","kind":"valley_system","parent_ref":"wt-e-green-ridge","summary":"多條向西開口的長谷，各有溪流、沖積扇與谷底，谷間由支脈分隔。"},
+    {"id":"wt-e-green-ridge-east-coast","name":"青脊山東海蝕岸","display_name":"青脊東岸","kind":"erosional_coast","parent_ref":"wt-e-green-ridge","summary":"山體直接落海，以海崖、岩岬、崩塌坡與狹窄石灘為主，岸段不連續。"},
+    {"id":"wt-e-east-sea","name":"東海","display_name":"東海","kind":"sea","parent_ref":"white_tower_peninsula","summary":"持續沖刷青脊山東側的海域，不形成平順可開發海岸帶。"},
+
+    {"id":"wt-s-black-marsh","name":"水尾澤","display_name":"水尾澤","kind":"wetland_forest_system","parent_ref":"white_tower_peninsula","summary":"中央大河在此失去單一河槽，形成潮濕森林、林澤、淺湖、泥炭地與深沼。"},
+    {"id":"wt-s-black-marsh-north-wet-forest","name":"水尾澤北部潮濕森林","display_name":"水尾北林","kind":"wet_forest","parent_ref":"wt-s-black-marsh","summary":"中央大河進入後開始分裂為多條漫流水道，仍以潮濕森林為主。"},
+    {"id":"wt-s-black-marsh-central-fen","name":"水尾澤中部林澤","display_name":"水尾林澤","kind":"forest_fen","parent_ref":"wt-s-black-marsh","summary":"林澤、淺湖與泥炭地混合的中段。"},
+    {"id":"wt-s-black-marsh-south-network","name":"水尾澤南部深沼水網","display_name":"水尾南澤","kind":"deep_marsh_network","parent_ref":"wt-s-black-marsh","summary":"更深且更不穩定的南部沼澤水網。"},
+    {"id":"wt-s-south-sentinel","name":"南哨","display_name":"南哨","kind":"city_anchor","parent_ref":"white_tower_peninsula","summary":"水尾澤內最後一片長期穩定高地上的南向準備與回報節點。"},
+    {"id":"wt-s-south-sentinel-dryland","name":"南哨穩定乾地","display_name":"南哨高地","kind":"stable_high_ground","parent_ref":"wt-s-south-sentinel","summary":"不是漂在沼澤中央；南面開始進入會淹沒、改道的水網。"},
+    {"id":"wt-s-qinglong-pass","name":"青籠關","display_name":"青籠關","kind":"topographic_pass","parent_ref":"white_tower_peninsula","summary":"狹長高地與山麓通道收束出的南向出口，不預設為城牆關卡。"}
+  ],
+  "links": [
+    {"id":"wt-l01","from_ref":"wt-n-sacred-mountain","to_ref":"wt-e-green-ridge","relation":"is_head_of","direction":"north","summary":"神山是青脊山的北端頭嶺。"},
+    {"id":"wt-l02","from_ref":"wt-n-sacred-mountain-peaks","to_ref":"wt-n-north-crown-rock-coast","relation":"descends_to","direction":"north","summary":"神山北側迅速降向北冕海岩岸，不存在寬廣山前平原。"},
+    {"id":"wt-l03","from_ref":"wt-n-sacred-mountain-peaks","to_ref":"wt-n-sacred-mountain-west-long-valley","relation":"descends_to","direction":"southwest","summary":"主峰西南側源頭谷地進入神山西麓長谷。"},
+    {"id":"wt-l04","from_ref":"wt-n-sacred-mountain-west-long-valley","to_ref":"wt-c-north-source-river","relation":"drains_into","direction":"downstream","summary":"長谷水道匯成流向中部的北側來源河道。"},
+    {"id":"wt-l05","from_ref":"wt-c-north-source-river","to_ref":"wt-c-wenyao-confluence","relation":"drains_into","direction":"south","summary":"北側來源河道由神山源谷流至文曜三河匯流地。"},
+    {"id":"wt-l06","from_ref":"wt-c-west-source-river","to_ref":"wt-c-wenyao-confluence","relation":"drains_into","direction":"east","summary":"西側來源河道收集西北水系後流至文曜。"},
+    {"id":"wt-l07","from_ref":"wt-e-green-ridge-west-valleys","to_ref":"wt-c-east-source-river","relation":"drains_into","direction":"west","summary":"青脊山西谷群的水系形成東側來源河道。"},
+    {"id":"wt-l08","from_ref":"wt-c-east-source-river","to_ref":"wt-c-wenyao-confluence","relation":"drains_into","direction":"west","summary":"東側來源河道由青脊山西麓流至文曜。"},
+    {"id":"wt-l09","from_ref":"wt-c-wenyao-confluence","to_ref":"wt-c-central-lower-river","relation":"drains_into","direction":"south","summary":"三河匯流後形成向南的中部下游大河。"},
+    {"id":"wt-l10","from_ref":"wt-c-central-lower-river","to_ref":"wt-s-black-marsh-north-wet-forest","relation":"drains_into","direction":"south","summary":"中部大河進入水尾澤北緣後分裂成漫流水道。"},
+    {"id":"wt-l11","from_ref":"wt-s-black-marsh-north-wet-forest","to_ref":"wt-s-black-marsh-central-fen","relation":"transitions_to","direction":"south","summary":"潮濕森林向南逐漸成為林澤、淺湖與泥炭地。"},
+    {"id":"wt-l12","from_ref":"wt-s-black-marsh-central-fen","to_ref":"wt-s-black-marsh-south-network","relation":"transitions_to","direction":"south","summary":"中部林澤向南轉為更深、更不穩定的水網。"},
+
+    {"id":"wt-l13","from_ref":"wt-n-north-crown-sea","to_ref":"wt-n-north-crown-rock-coast","relation":"directly_meets","direction":"south","summary":"北冕海直接接觸半島北部岩岸。"},
+    {"id":"wt-l14","from_ref":"wt-n-north-crown-rock-coast","to_ref":"wt-w-harbor-channel-north","relation":"transitions_to","direction":"west","summary":"北岸岬角向西增多並進入天然港灣道北口。"},
+    {"id":"wt-l15","from_ref":"wt-w-windship-island-ridge","to_ref":"wt-w-natural-harbor-channel","relation":"bounds","direction":"east","summary":"風舶嶼東側構成天然港灣道西界。"},
+    {"id":"wt-l16","from_ref":"wt-w-windship-cape-terrace","to_ref":"wt-w-natural-harbor-channel","relation":"bounds","direction":"west","summary":"風舶角一側構成天然港灣道東界與主航道側。"},
+    {"id":"wt-l17","from_ref":"wt-w-harbor-channel-north","to_ref":"wt-w-harbor-channel-middle","relation":"continues_to","direction":"south","summary":"北口向南收窄進入中段。"},
+    {"id":"wt-l18","from_ref":"wt-w-harbor-channel-middle","to_ref":"wt-w-harbor-channel-south","relation":"continues_to","direction":"south","summary":"最窄中段向南重新展寬。"},
+
+    {"id":"wt-l19","from_ref":"wt-c-southwest-high-terrace","to_ref":"wt-c-southwest-alluvial","relation":"transitions_to","direction":"toward_river","summary":"穩定高河階向中央河流側轉為沖積平原。"},
+    {"id":"wt-l20","from_ref":"wt-c-southwest-alluvial","to_ref":"wt-c-southwest-wet-edge","relation":"transitions_to","direction":"south","summary":"沖積平原越往南越濕，進入季節積水與濕林邊緣。"},
+    {"id":"wt-l21","from_ref":"wt-c-southwest-wet-edge","to_ref":"wt-s-black-marsh-north-wet-forest","relation":"gradually_meets","direction":"south","summary":"大圳頭南緣濕地逐漸過渡進水尾澤。"},
+    {"id":"wt-l22","from_ref":"wt-c-wenyao","to_ref":"wt-c-sacred-tower-hill-plain","relation":"lies_relative_to","direction":"northeast","summary":"白塔丘原位於文曜東北方。"},
+    {"id":"wt-l23","from_ref":"wt-c-sacred-tower-hill-plain","to_ref":"wt-e-green-ridge-west-valleys","relation":"rises_into","direction":"east","summary":"丘原向東收窄並抬升進入青脊山西谷群。"},
+    {"id":"wt-l24","from_ref":"wt-e-green-ridge-east-coast","to_ref":"wt-e-east-sea","relation":"directly_meets","direction":"east","summary":"青脊山東側山體直接落入東海。"},
+    {"id":"wt-l25","from_ref":"wt-e-green-ridge","to_ref":"wt-s-black-marsh","relation":"bounds","direction":"east","summary":"青脊山南段從東側壓縮水尾澤水網。"},
+    {"id":"wt-l26","from_ref":"wt-s-south-sentinel-dryland","to_ref":"wt-s-black-marsh-south-network","relation":"borders","direction":"south","summary":"南哨穩定乾地以南開始進入會淹沒、改道的水網。"},
+    {"id":"wt-l27","from_ref":"wt-s-south-sentinel","to_ref":"wt-s-qinglong-pass","relation":"leads_toward","direction":"south","summary":"由南哨經狹長高地與山麓通道接近青籠關。"}
+  ]
+}

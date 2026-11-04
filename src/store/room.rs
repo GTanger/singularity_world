@@ -20,14 +20,75 @@ impl Store {
     }
 
     pub fn get_room(&self, id: &str) -> Option<model::Room> {
-        self.rooms.get(id).cloned()
+        if let Some(r) = self.rooms.get(id) {
+            return Some(r.clone());
+        }
+        if let Some(p) = self.place_graph.place(id) {
+            return Some(model::Room {
+                id: p.id.clone(),
+                name: p.player_title().to_string(),
+                description: p.description.clone(),
+                zone: p.zone.clone(),
+                tags: p.tags.clone(),
+                objects: Vec::new(),
+            });
+        }
+        if let Some(coord) = crate::grid::parse_grid_room_id(id)
+            && let Some(cell) = crate::server::grid_manager::get_runtime_grid_cell(coord)
+        {
+            let zone = if !cell.zone.trim().is_empty() {
+                cell.zone.trim().to_string()
+            } else if let Some((prefix, _)) = cell.name.split_once('・') {
+                prefix.trim().to_string()
+            } else {
+                String::new()
+            };
+            let tags = if !cell.tags.is_empty() {
+                cell.tags.clone()
+            } else {
+                let mut t = Vec::new();
+                let outdoor_keys = ["街", "橋", "道", "口", "林", "坡", "谷", "嶺", "灘", "岸", "碼頭", "廣場", "坪"];
+                if outdoor_keys.iter().any(|k| cell.name.contains(k)) {
+                    t.push("outdoor".to_string());
+                }
+                let social_keys = ["食堂", "茶", "旅社", "館", "酒", "浴", "集", "橋", "街"];
+                if social_keys.iter().any(|k| cell.name.contains(k)) {
+                    t.push("social".to_string());
+                }
+                t
+            };
+            return Some(model::Room {
+                id: id.to_string(),
+                name: cell.name,
+                description: cell.description,
+                zone,
+                tags,
+                objects: Vec::new(),
+            });
+        }
+        None
     }
 
     pub fn get_room_name(&self, id: &str) -> String {
-        self.rooms
-            .get(id)
-            .map(|r| r.name.clone())
-            .unwrap_or_default()
+        if let Some(r) = self.rooms.get(id)
+            && !r.name.trim().is_empty()
+        {
+            return r.name.clone();
+        }
+        if let Some(p) = self.place_graph.place(id)
+            && !p.name.trim().is_empty()
+        {
+            return p.player_title().to_string();
+        }
+        if let Some(coord) = crate::grid::parse_grid_room_id(id)
+            && let Some(cell) = crate::server::grid_manager::get_runtime_grid_cell(coord)
+        {
+            if !cell.name.trim().is_empty() {
+                return cell.name;
+            }
+            return crate::grid::terrain_name_zh(cell.terrain).to_string();
+        }
+        String::new()
     }
 
     pub fn get_room_id_by_name(&self, name: &str) -> String {

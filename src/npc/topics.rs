@@ -9,7 +9,7 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 /// 單一主題劇本（對齊既有 `NpcNpcTopic`）。
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct NpcNpcTopic {
     pub id: String,
     pub hint: String,
@@ -158,7 +158,11 @@ pub fn topic_mask_base_weight(mask: &NpcTopicMask, t: &NpcNpcTopic) -> i32 {
     if mask.is_night_time && t.night_only {
         w += 2;
     }
-    if room_has_tag(&mask.room_tags, "outdoor") {
+    let is_outdoor = room_has_tag(&mask.room_tags, "outdoor")
+        || ["石橋", "水井", "碼頭", "礦場", "林場", "農田"]
+            .iter()
+            .any(|k| room_has_tag(&mask.room_tags, k));
+    if is_outdoor {
         if t.id == "城外聞" {
             w += 5;
         }
@@ -166,7 +170,18 @@ pub fn topic_mask_base_weight(mask: &NpcTopicMask, t: &NpcNpcTopic) -> i32 {
             w += 3;
         }
     }
-    if room_has_tag(&mask.room_tags, "social") && t.id == "閒聊" {
+    let is_social = room_has_tag(&mask.room_tags, "social")
+        || ["茶屋", "浴場", "旅社", "廣場", "食堂", "市集"]
+            .iter()
+            .any(|k| room_has_tag(&mask.room_tags, k));
+    if is_social && t.id == "閒聊" {
+        w += 2;
+    }
+    if ["工坊", "鐵匠鋪", "磨石", "商鋪", "聯運", "藥材"]
+        .iter()
+        .any(|k| room_has_tag(&mask.room_tags, k))
+        && t.requires_work
+    {
         w += 2;
     }
     w.max(1)
@@ -372,7 +387,7 @@ mod tests {
         );
         assert_eq!(
             find_npc_npc_topic_id_by_hint(
-                "鎮上傳聞城外惡地、霜林、異常巨獸與過密植被（非荒蕪末世，而是生機過剩的危險）"
+                "鎮上傳聞山海古道、霜林口、山野異獸與豐茂林地動靜"
             ),
             "城外聞"
         );
@@ -386,5 +401,45 @@ mod tests {
             get_npc_npc_topic_by_id("閒聊").map(|t| t.hint.contains("隨口")),
             Some(true)
         );
+    }
+
+    #[test]
+    fn test_topic_mask_base_weight_chinese_semantic_tags() {
+        let mask_tea = NpcTopicMask {
+            room_tags: vec!["茶屋".to_string()],
+            ..Default::default()
+        };
+        let topic_chat = NpcNpcTopic {
+            id: "閒聊".to_string(),
+            ..Default::default()
+        };
+        assert_eq!(topic_mask_base_weight(&mask_tea, &topic_chat), 1 + 2);
+
+        let mask_bridge = NpcTopicMask {
+            room_tags: vec!["石橋".to_string()],
+            ..Default::default()
+        };
+        let topic_outside = NpcNpcTopic {
+            id: "城外聞".to_string(),
+            ..Default::default()
+        };
+        assert_eq!(topic_mask_base_weight(&mask_bridge, &topic_outside), 1 + 5);
+
+        let topic_weather = NpcNpcTopic {
+            id: "天候".to_string(),
+            ..Default::default()
+        };
+        assert_eq!(topic_mask_base_weight(&mask_bridge, &topic_weather), 1 + 3);
+
+        let mask_workshop = NpcTopicMask {
+            room_tags: vec!["工坊".to_string()],
+            ..Default::default()
+        };
+        let topic_work = NpcNpcTopic {
+            id: "交班".to_string(),
+            requires_work: true,
+            ..Default::default()
+        };
+        assert_eq!(topic_mask_base_weight(&mask_workshop, &topic_work), 1 + 2);
     }
 }

@@ -1,12 +1,12 @@
 {
-  "_說明": "探子/拾荒者行為模板。多出沒於邊緣地帶和人煙稀少的廢墟，生存能力極強。",
+  "_說明": "探子/拾荒者行為模板。多出沒於邊緣地帶和人煙稀少的荒野舊址，生存能力極強。",
   "schedule": {
     "entries": [
       {"hour_start": 4, "hour_end": 7, "activity": "work", "location_pref": ["outdoor", "gate"], "description": "趁著清晨的光線撿拾荒野裡的廢棄物"},
       {"hour_start": 7, "hour_end": 12, "activity": "work", "location_pref": ["outdoor", "gate"], "description": "在城市邊緣徘徊，尋找有價值的遺落物品或死人財"},
-      {"hour_start": 12, "hour_end": 15, "activity": "rest", "location_pref": ["outdoor", "indoor"], "description": "躲進極端隱蔽的地下廢墟或陰影中躲避中午的高溫"},
-      {"hour_start": 15, "hour_end": 19, "activity": "work", "location_pref": ["market", "tavern"], "description": "把一天的收穫拿去黑市或當舖換取劣質食物"},
-      {"hour_start": 19, "hour_end": 22, "activity": "socialize", "location_pref": ["outdoor", "tavern"], "description": "在難民營或便宜酒館角落與同行交換野外的生存情報"},
+      {"hour_start": 12, "hour_end": 15, "activity": "rest", "location_pref": ["outdoor", "indoor"], "description": "躲進極端隱蔽的石窟暗穴或陰影中躲避中午的高溫"},
+      {"hour_start": 15, "hour_end": 19, "activity": "work", "location_pref": ["market", "tavern"], "description": "把一天的收穫拿去舊貨市集或當舖換取劣質食物"},
+      {"hour_start": 19, "hour_end": 22, "activity": "socialize", "location_pref": ["outdoor", "tavern"], "description": "在荒野歇腳寮或小飯館角落與同行交換野外的生存情報"},
       {"hour_start": 22, "hour_end": 24, "activity": "sleep", "location_pref": ["outdoor", "home"], "description": "蜷縮在自己搭建的廢品堡壘中淺睡"},
       {"hour_start": 0, "hour_end": 4, "activity": "sleep", "location_pref": ["outdoor", "home"], "description": "與老鼠和蟲子為伴度過寒夜"}
     ]
@@ -33,26 +33,26 @@
   "trade": {
     "buy_markup": 0.3,
     "sell_markup": 3.0,
-    "preferred_goods": ["廢品", "異獸晶核", "奇怪的草藥", "地圖測繪本", "報廢陣盤", "毒蟲"],
-    "refused_goods": ["高級法寶", "華麗衣物", "任何太乾淨的東西"],
+    "preferred_goods": ["舊器物", "猛獸苦膽", "奇怪的草藥", "地圖測繪本", "報廢羅盤", "毒蟲"],
+    "refused_goods": ["名貴古玩", "華麗衣物", "任何太乾淨的東西"],
     "haggle_tolerance": 5,
     "haggle_texts": {
       "accept": [
-        "【{name}】一把搶過錢：「給老子，明天我還能活一天！」",
+        "【{name}】一把搶過錢：「拿來吧，明天我還能活一天！」",
         "【{name}】露出難看的笑容：「成交。希望你能用得上。」",
-        "【{name}】咬了咬銀幣確認真假：「好，東西歸你。」",
+        "【{name}】咬了咬鎂幣確認真假：「好，東西歸你。」",
         "【{name}】神經質地說：「賣了賣了，免得留在身上招來殺身之禍。」"
       ],
       "reject": [
         "【{name}】把東西死死抱在懷裡：「不賣！這點錢連個半個乾饅頭都買不到！」",
-        "【{name}】朝地上淬了一口：「想騙老子？門都沒有！」",
+        "【{name}】朝地上淬了一口：「想騙我？休想！」",
         "【{name}】像護食的野狗一樣怒吼：「滾！再說這個價我就咬你！」",
-        "【{name}】翻了個白眼，轉身就走：「買不起就別耽誤老子找活路。」"
+        "【{name}】翻了個白眼，轉身就走：「買不起就別耽誤我找活路。」"
       ],
       "counter": [
-        "【{name}】可憐巴巴地看著你：「大老爺，這是我拿命換來的，再加點吧……就一兩個子兒也行。」",
-        "【{name}】眼底閃過精光：「這可是古代遺跡裡刨出來的，再加三成不虧你！」",
-        "【{name}】咬牙切齒：「再添幾文銅板，不然我寧願把它砸了！」",
+        "【{name}】可憐巴巴地看著你：「大東家，這是我拿命換來的，再加點吧……就一兩枚鎂幣也行。」",
+        "【{name}】眼底閃過精光：「這可是古礦坑遺址裡刨出來的，再加三成不虧你！」",
+        "【{name}】咬牙切齒：「再添幾枚鎂幣，不然我寧願把它砸了！」",
         "【{name}】拉住你的衣角：「行行好，我三天沒吃飯了，這個價再抬一抬吧。」"
       ]
     }

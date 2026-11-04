@@ -62,14 +62,14 @@ pub(crate) fn shared_economy_echo(object_id: &str, states: &[String]) -> Option<
         && object_id == "m3_027_warehouse_tally_board"
     {
         return Some(
-            "搬貨人已把市集那只墊了蘆草的貨籃推到倉棚點貨牌旁，記牌人先把這行壓住；剩下的包貨需求仍要照市集包貨單補齊。"
+            "搬貨人已把市集那隻墊了蘆草的貨籃推到倉棚點貨牌旁，記牌人先把這行壓住；剩下的包貨需求仍要照市集包貨單補齊。"
                 .to_string(),
         );
     }
     if pack_runner_delivered_reeds(states) {
         match object_id {
             "m3_027_market_reed_buyer" => Some(
-                "搬貨人剛把一束蘆草交到包貨單旁，秤邊貨籃已先墊住一角；蘆草墊箱只差最後一束。"
+                "搬貨人已把一束蘆草交到包貨單旁，秤邊貨籃已先墊住一角；蘆草墊箱只差最後一束。"
                     .to_string(),
             ),
             "m3_027_warehouse_tally_board" => Some(
@@ -108,6 +108,7 @@ pub(crate) fn run_pack_runner_tick(now_unix: i64) -> Option<MarketRunnerTick> {
 fn ensure_pack_runner_entity(now_unix: i64) -> anyhow::Result<()> {
     if db::get_entity(PACK_RUNNER_ID)?.is_none() {
         db::insert_npc(PACK_RUNNER_ID, "搬", "M", "搬貨人")?;
+        let _ = event::append(now_unix, PACK_RUNNER_ID, types::OBSERVED, "m3_029_seeded");
     }
     if db::get_entity_room(PACK_RUNNER_ID)
         .unwrap_or_default()
@@ -115,7 +116,6 @@ fn ensure_pack_runner_entity(now_unix: i64) -> anyhow::Result<()> {
     {
         db::set_entity_grid(PACK_RUNNER_ID, 0, 0)?;
     }
-    let _ = event::append(now_unix, PACK_RUNNER_ID, types::OBSERVED, "m3_029_seeded");
     Ok(())
 }
 
@@ -177,7 +177,7 @@ fn deliver_reeds(now_unix: i64) -> Option<MarketRunnerTick> {
     let _ = db::set_entity_grid(PACK_RUNNER_ID, 1, 0);
     let _ = db::set_entity_activity(
         PACK_RUNNER_ID,
-        "剛把一束蘆草交到市集包貨單，手裡多了幾枚鎂，下一步等倉棚點貨",
+        "已把一束蘆草交到市集包貨單，手裡多了幾枚鎂，下一步等倉棚點貨",
     );
     let has_reeds = db::get_entity(PACK_RUNNER_ID)
         .ok()
@@ -247,7 +247,7 @@ fn move_trace_to_warehouse(now_unix: i64) -> Option<MarketRunnerTick> {
         room_id: WAREHOUSE_ROOM_ID,
         actor: "搬貨人",
         detail:
-            "把市集那只墊了蘆草的貨籃推到倉棚點貨牌旁，記牌人先把這行壓住，等剩下的包貨料補齊。"
+            "把市集那隻墊了蘆草的貨籃推到倉棚點貨牌旁，記牌人先把這行壓住，等剩下的包貨料補齊。"
                 .to_string(),
     })
 }

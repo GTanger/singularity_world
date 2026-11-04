@@ -31,24 +31,50 @@ pub fn pick_micro_interaction(room_id: &str, chance: i32, game_hour: i32) -> Str
     if lines.is_empty() {
         return String::new();
     }
-    let line = lines[rng.random_range(0..lines.len())].to_string();
+    let line = if lines.first().copied() == Some("近旁兩名行人低聲交談了幾句，很快又各自看向別處。") {
+        if let Some(venue_line) = synthesize_venue_micro_interaction(&room_name) {
+            venue_line
+        } else {
+            lines[rng.random_range(0..lines.len())].to_string()
+        }
+    } else {
+        lines[rng.random_range(0..lines.len())].to_string()
+    };
     line.replace("客棧打尖", "旅社歇腳用餐")
         .replace("客棧", "旅社")
         .replace("把酒言歡", "聚餐暢談")
         .replace("打尖", "歇腳用餐")
 }
 
+/// 依據房間之一等場域物件合成微互動文本（無模板符號與括號，純街坊日常舉止）
+pub fn synthesize_venue_micro_interaction(room_name: &str) -> Option<String> {
+    let venue = crate::grid::resolve_any_room_venue_object(room_name, "")?;
+    if venue.has_counter_restricted_zone {
+        Some(format!(
+            "{}站在{}當值櫃檯內側，一邊{}，一邊與身旁的街坊核對交割細節。",
+            venue.default_host_title, venue.venue_kind, venue.on_duty_fixture_activity
+        ))
+    } else {
+        Some(format!(
+            "{}在{}裡{}，身旁的同伴順手遞過器物默契配合。",
+            venue.default_host_title, venue.venue_kind, venue.on_duty_fixture_activity
+        ))
+    }
+}
+
 fn player_layer_room_name(room_id: &str) -> String {
-    if let Some(coord) = crate::grid::parse_grid_room_id(room_id)
-        && let Some(cell) = crate::server::grid_manager::get_runtime_square_grid()
-            .and_then(|g| g.get(coord).cloned())
+    let raw = if let Some(coord) = crate::grid::parse_grid_room_id(room_id)
+        && let Some(cell) = crate::server::grid_manager::get_runtime_grid_cell(coord)
     {
         if cell.name.trim().is_empty() {
-            return crate::grid::terrain_name_zh(cell.terrain).to_string();
+            crate::grid::terrain_name_zh(cell.terrain).to_string()
+        } else {
+            cell.name.clone()
         }
-        return cell.name;
-    }
-    get_room_name(room_id).unwrap_or_default()
+    } else {
+        get_room_name(room_id).unwrap_or_default()
+    };
+    crate::store::clean_wilderness_place_label(&raw)
 }
 
 #[cfg(test)]
@@ -62,5 +88,29 @@ mod tests {
             assert!(lines.iter().all(|line| !line.contains("%s")));
             assert!(lines.iter().all(|line| !line.contains('【')));
         }
+    }
+
+    #[test]
+    fn test_synthesize_venue_micro_interaction_uses_room_venue_object() {
+        let canteen_line = synthesize_venue_micro_interaction("三水大食堂");
+        assert!(canteen_line.is_some());
+        let c_text = canteen_line.unwrap();
+        assert!(c_text.contains("食堂主廚"));
+        assert!(c_text.contains("當值櫃檯內側"));
+        assert!(c_text.contains("街坊"));
+        assert!(!c_text.contains("%s"));
+        assert!(!c_text.contains('【'));
+        assert!(!c_text.contains('】'));
+
+        let mill_line = synthesize_venue_micro_interaction("老堰頭・水輪石磨工坊");
+        assert!(mill_line.is_some());
+        let m_text = mill_line.unwrap();
+        assert!(m_text.contains("當值石磨匠師"));
+        assert!(m_text.contains("水輪石磨工坊"));
+        assert!(m_text.contains("當值櫃檯內側"));
+        assert!(!m_text.contains('【'));
+        assert!(!m_text.contains('】'));
+
+        assert!(synthesize_venue_micro_interaction("荒蕪礫石空地").is_none());
     }
 }

@@ -16,6 +16,21 @@ use crate::db::{
 pub const SURVIVAL_LINE_MG: i32 = 50;
 /// 社交衰減週期秒（對齊既有 `socialDecaySec`）。
 const SOCIAL_DECAY_SEC: i64 = 7200;
+/// 社交或進出門戶語意標籤常數（涵蓋既有英文與半島中文房間標籤）。
+pub const SOCIAL_OR_GATE_TAGS: &[&str] = &[
+    "social", "gate", "廣場", "石橋", "市集", "茶屋", "食堂", "公議",
+];
+/// 野外戶外語意標籤常數（涵蓋既有英文與半島中文房間標籤）。
+pub const WILDERNESS_OUTDOOR_TAGS: &[&str] = &[
+    "wilderness", "outdoor", "林場", "礦場", "漁場", "獵場", "農田", "水井",
+];
+/// 茶屋客棧或休憩語意標籤常數（涵蓋既有英文與半島中文房間標籤）。
+pub const TAVERN_OR_REST_TAGS: &[&str] = &["tavern", "inn", "茶屋", "旅社", "浴場", "食堂"];
+/// 漫遊目標語意標籤常數（涵蓋既有英文與半島中文房間標籤）。
+pub const WANDER_TARGET_TAGS: &[&str] = &[
+    "social", "gate", "outdoor", "廣場", "石橋", "市集", "茶屋", "水井",
+];
+
 
 /// 意圖類型（對齊既有 `IntentType`）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -134,13 +149,13 @@ pub fn build_decision_context(
     DecisionContext {
         room_tags: g.room_tags(current_room_id),
         venue_room_ids_in_range: filter_rooms_within_dist(g, current_room_id, &venue_rooms, md),
-        social_or_gate_in_range: g.find_rooms_within_dist(current_room_id, &["social", "gate"], md),
+        social_or_gate_in_range: g.find_rooms_within_dist(current_room_id, SOCIAL_OR_GATE_TAGS, md),
         wilderness_outdoor_in_range: g.find_rooms_within_dist(
             current_room_id,
-            &["wilderness", "outdoor"],
+            WILDERNESS_OUTDOOR_TAGS,
             md,
         ),
-        tavern_in_range: g.find_rooms_within_dist(current_room_id, &["tavern", "inn"], md),
+        tavern_in_range: g.find_rooms_within_dist(current_room_id, TAVERN_OR_REST_TAGS, md),
     }
 }
 
@@ -266,13 +281,13 @@ pub fn decide_with_inertia(
         }
     }
 
-    if has_tag(&ctx.room_tags, &["gate", "social"]) || !ctx.social_or_gate_in_range.is_empty() {
+    if has_tag(&ctx.room_tags, SOCIAL_OR_GATE_TAGS) || !ctx.social_or_gate_in_range.is_empty() {
         let mut score = survival;
         if has_pers {
             score *= (1.0 - p.boldness * 0.5) * (0.5 + p.sensitivity * 0.5);
         }
         if score > 0.05 {
-            let target = if !has_tag(&ctx.room_tags, &["gate", "social"]) {
+            let target = if !has_tag(&ctx.room_tags, SOCIAL_OR_GATE_TAGS) {
                 pick_random(&ctx.social_or_gate_in_range)
             } else {
                 String::new()
@@ -305,14 +320,14 @@ pub fn decide_with_inertia(
 
     if state.inventory_total_qty > 0
         && survival > 0.05
-        && (!ctx.social_or_gate_in_range.is_empty() || has_tag(&ctx.room_tags, &["gate", "social"]))
+        && (!ctx.social_or_gate_in_range.is_empty() || has_tag(&ctx.room_tags, SOCIAL_OR_GATE_TAGS))
     {
         let mut score = survival * 0.45;
         if has_pers {
             score *= 0.5 + p.boldness * 0.5;
         }
         if score > 0.05 {
-            let target = if !has_tag(&ctx.room_tags, &["gate", "social"]) {
+            let target = if !has_tag(&ctx.room_tags, SOCIAL_OR_GATE_TAGS) {
                 pick_random(&ctx.social_or_gate_in_range)
             } else {
                 String::new()
@@ -333,7 +348,7 @@ pub fn decide_with_inertia(
             score *= 0.5 + p.sensitivity * 0.5;
         }
         if score > 0.05 {
-            let target = if !has_tag(&ctx.room_tags, &["tavern", "inn", "social"]) {
+            let target = if !has_tag(&ctx.room_tags, TAVERN_OR_REST_TAGS) {
                 pick_random(&ctx.tavern_in_range)
             } else {
                 String::new()
@@ -424,7 +439,10 @@ pub fn resolve_brain_path(
                     }
                 }
             }
-            if let Some((room, _)) = g.find_nearest_by_tag(current_room_id, "social", md) {
+            if let Some((room, _)) = SOCIAL_OR_GATE_TAGS
+                .iter()
+                .find_map(|tag| g.find_nearest_by_tag(current_room_id, tag, md))
+            {
                 if room != current_room_id {
                     if let Some(p) = g.find_path(current_room_id, &room) {
                         return p;
@@ -433,15 +451,11 @@ pub fn resolve_brain_path(
             }
         }
         IntentType::Beg => {
-            let room = g
-                .find_nearest_by_tag(current_room_id, "gate", md)
-                .map(|(r, _)| r)
-                .filter(|r| r != current_room_id)
-                .or_else(|| {
-                    g.find_nearest_by_tag(current_room_id, "social", md)
-                        .map(|(r, _)| r)
-                        .filter(|r| r != current_room_id)
-                });
+            let room = SOCIAL_OR_GATE_TAGS.iter().find_map(|tag| {
+                g.find_nearest_by_tag(current_room_id, tag, md)
+                    .map(|(r, _)| r)
+                    .filter(|r| r != current_room_id)
+            });
             if let Some(r) = room {
                 if let Some(p) = g.find_path(current_room_id, &r) {
                     return p;
@@ -449,15 +463,11 @@ pub fn resolve_brain_path(
             }
         }
         IntentType::Trade => {
-            let room = g
-                .find_nearest_by_tag(current_room_id, "social", md)
-                .map(|(r, _)| r)
-                .filter(|r| r != current_room_id)
-                .or_else(|| {
-                    g.find_nearest_by_tag(current_room_id, "gate", md)
-                        .map(|(r, _)| r)
-                        .filter(|r| r != current_room_id)
-                });
+            let room = SOCIAL_OR_GATE_TAGS.iter().find_map(|tag| {
+                g.find_nearest_by_tag(current_room_id, tag, md)
+                    .map(|(r, _)| r)
+                    .filter(|r| r != current_room_id)
+            });
             if let Some(r) = room {
                 if let Some(p) = g.find_path(current_room_id, &r) {
                     return p;
@@ -465,15 +475,11 @@ pub fn resolve_brain_path(
             }
         }
         IntentType::Gather => {
-            let room = g
-                .find_nearest_by_tag(current_room_id, "wilderness", md)
-                .map(|(r, _)| r)
-                .filter(|r| r != current_room_id)
-                .or_else(|| {
-                    g.find_nearest_by_tag(current_room_id, "outdoor", md)
-                        .map(|(r, _)| r)
-                        .filter(|r| r != current_room_id)
-                });
+            let room = WILDERNESS_OUTDOOR_TAGS.iter().find_map(|tag| {
+                g.find_nearest_by_tag(current_room_id, tag, md)
+                    .map(|(r, _)| r)
+                    .filter(|r| r != current_room_id)
+            });
             if let Some(r) = room {
                 if let Some(p) = g.find_path(current_room_id, &r) {
                     return p;
@@ -503,7 +509,7 @@ pub fn resolve_brain_path(
                     }
                 }
             }
-            for tag in ["tavern", "inn", "social"] {
+            for tag in TAVERN_OR_REST_TAGS {
                 if let Some((room, _)) = g.find_nearest_by_tag(current_room_id, tag, md) {
                     if room != current_room_id {
                         if let Some(p) = g.find_path(current_room_id, &room) {
@@ -515,7 +521,7 @@ pub fn resolve_brain_path(
         }
         IntentType::Wander => {
             let candidates =
-                g.find_rooms_within_dist(current_room_id, &["social", "gate", "outdoor"], md);
+                g.find_rooms_within_dist(current_room_id, WANDER_TARGET_TAGS, md);
             let filtered: Vec<String> = candidates
                 .into_iter()
                 .filter(|c| c != current_room_id)
@@ -530,4 +536,94 @@ pub fn resolve_brain_path(
         IntentType::Idle => {}
     }
     Vec::new()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::db::Personality;
+
+    #[test]
+    fn test_decide_with_chinese_semantic_room_tags() {
+        // 1. 測試在「廣場」房間且處於低鎂生存危機時，會生成乞討意圖 (IntentType::Beg)
+        let state_beg = DecisionState {
+            magnesium: 0,
+            has_assignment: true,
+            personality: Personality {
+                boldness: 0.0,
+                sensitivity: 1.0,
+                orderliness: 1.5,
+            },
+            has_personality: true,
+            last_talk_at: 0,
+            disposition: 0,
+            inventory_total_qty: 0,
+        };
+        let ctx_square = DecisionContext {
+            room_tags: vec!["廣場".to_string()],
+            venue_room_ids_in_range: vec![],
+            social_or_gate_in_range: vec![],
+            wilderness_outdoor_in_range: vec![],
+            tavern_in_range: vec![],
+        };
+        let intent_beg = decide_with_inertia(state_beg, &ctx_square, Some(IntentType::Beg));
+        assert_eq!(intent_beg.ty, IntentType::Beg);
+        assert!(intent_beg.target_room_id.is_empty());
+
+        // 2. 測試有庫存物資且在「市集」周邊時，生成交易意圖 (IntentType::Trade)
+        let state_trade = DecisionState {
+            magnesium: 0,
+            has_assignment: true,
+            personality: Personality {
+                boldness: 1.0,
+                sensitivity: 0.0,
+                orderliness: 1.5,
+            },
+            has_personality: true,
+            last_talk_at: 0,
+            disposition: 0,
+            inventory_total_qty: 5,
+        };
+        let ctx_market = DecisionContext {
+            room_tags: vec![],
+            venue_room_ids_in_range: vec![],
+            social_or_gate_in_range: vec!["水尾寮渡頭市集".to_string()],
+            wilderness_outdoor_in_range: vec![],
+            tavern_in_range: vec![],
+        };
+        let saw_trade = (0..32).any(|_| {
+            let it = decide_with_inertia(state_trade.clone(), &ctx_market, Some(IntentType::Trade));
+            it.ty == IntentType::Trade && it.target_room_id == "水尾寮渡頭市集"
+        });
+        assert!(saw_trade);
+
+        // 3. 測試長時間未交談且周邊有「茶屋」/「浴場」等休憩場所時，生成社交意圖 (IntentType::Socialize)
+        let state_social = DecisionState {
+            magnesium: 100,
+            has_assignment: true,
+            personality: Personality {
+                boldness: 0.5,
+                sensitivity: 1.0,
+                orderliness: 1.5,
+            },
+            has_personality: true,
+            last_talk_at: 1,
+            disposition: 100,
+            inventory_total_qty: 0,
+        };
+        let ctx_tea_bath = DecisionContext {
+            room_tags: vec![],
+            venue_room_ids_in_range: vec![],
+            social_or_gate_in_range: vec![],
+            wilderness_outdoor_in_range: vec![],
+            tavern_in_range: vec!["港邊茶屋".to_string(), "溫泉浴場".to_string()],
+        };
+        let intent_social =
+            decide_with_inertia(state_social, &ctx_tea_bath, Some(IntentType::Socialize));
+        assert_eq!(intent_social.ty, IntentType::Socialize);
+        assert!(
+            intent_social.target_room_id == "港邊茶屋"
+                || intent_social.target_room_id == "溫泉浴場"
+        );
+    }
 }

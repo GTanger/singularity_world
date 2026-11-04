@@ -373,44 +373,126 @@
 
     function facilityIcon(obj) {
         var n = String((obj && (obj.name || obj.label)) || '');
-        if (/[店鋪市集商行銀錢庫帳櫃銀票攤賈貿資]/.test(n)) return '$';
+        if (/[店鋪市集商行鎂幣庫帳櫃匯票攤賈貿資]/.test(n)) return '$';
         if (/[醫藥藥包湯包溫灸診草藥救傷回春]/.test(n)) return '+';
-        if (/[茶席臥榻浴池餐食客棧旅舍精舍房室舍榻椅茶食歇席眠床水盆浴盆洗漱]/.test(n)) return '⌂';
-        if (/[鐘樓星軌典籍契書官堂府衙館衛哨營譜冊牘卷碑標律法星盤星儀]/.test(n)) return '⚑';
+        if (/[茶席臥榻浴池餐食旅舍精舍房室舍榻椅茶食歇席眠床水盆浴盆洗漱]/.test(n)) return '⌂';
+        if (/[鐘樓星軌典籍契書官堂館衛哨營譜冊牘卷碑標律法星盤星儀]/.test(n)) return '⚑';
         if (/[鍛爐木作工具石柱機坊鐵匠器車井盤栓釜鍋窯柱板尺樁秤砧]/.test(n)) return '⚒︎';
         return '⚒︎';
     }
     function conciseObjectLabel(name) {
         var str = String(name || '').trim();
+        str = str.replace(/^WT-\d+\s*/i, '').trim();
         if (!str) return '';
         var knownMap = {
-            '貝母路燈與防雨竹編路標': '貝母路燈・竹編路標',
-            '文曜青石街燈與黃銅公佈欄': '青石街燈・黃銅公佈欄',
-            '三水川雕花青石欄杆與繫船環': '雕花石欄・繫船鐵環',
-            '自來活水黃銅水栓與溫石熱水槽': '黃銅水栓・溫石熱水槽',
-            '松香木彈力大床與保鮮石櫃': '彈力大床・保鮮石櫃',
-            '止血水苔與避瘴清心丸架': '止血水苔・清心丸架'
+            '黃銅告示欄': '告示欄',
+            '黃銅公佈欄': '告示欄',
+            '公佈欄': '告示欄',
+            '黃銅鑲邊告示欄': '告示欄',
+            '黃銅鑲邊公佈欄': '告示欄',
+            '雕花青石欄': '橋欄',
+            '雕花青石欄杆': '橋欄',
+            '雕花青石護欄': '橋欄',
+            '雕花石欄': '橋欄',
+            '青石欄杆': '橋欄',
+            '青石護欄': '橋欄',
+            '日晷指路柱': '日晷',
+            '報時日晷柱': '日晷',
+            '單筒望遠鏡': '望遠鏡',
+            '黃銅單筒鏡': '望遠鏡',
+            '瞭望單筒鏡': '望遠鏡',
+            '捲線釣竿': '釣竿',
+            '青竹釣竿': '釣竿',
+            '老青竹釣竿': '釣竿',
+            '老青竹黃銅輪捲線釣竿': '釣竿',
+            '石雕拴馬柱': '拴馬柱',
+            '青石拴馬柱': '拴馬柱',
+            '生鐵地秤': '地秤',
+            '青石大水槽': '水槽',
+            '活水石槽': '水槽',
+            '飲馬石槽': '水槽',
+            '溫石熱水槽': '水槽',
+            '家用蓄熱溫石熱水槽': '水槽',
+            '粗陶大水缸': '水缸',
+            '儲水大陶缸': '水缸',
+            '黃銅水栓': '水栓',
+            '活水銅栓': '水栓',
+            '岑氏合金黃銅自來水栓': '水栓',
+            '自來活水黃銅水栓': '水栓',
+            '松香木大床': '床榻',
+            '松木大床': '床榻',
+            '羽絨大床': '床榻',
+            '松香木彈力大床': '床榻',
+            '防蛀樟木衣箱': '衣箱',
+            '樟木衣箱': '衣箱',
+            '樟木衣櫥': '衣櫥',
+            '烘衣木櫥': '衣櫥',
+            '松炭溫風烘衣櫥': '衣櫥',
+            '夜光貝母檯燈': '檯燈',
+            '貝母檯燈': '檯燈',
+            '旋蓋夜光貝母檯燈': '檯燈',
+            '旋蓋夜光貝母台燈': '檯燈',
+            '貝母台燈': '檯燈',
+            '夜光貝母台燈': '檯燈',
+            '寒水玉保鮮石櫃': '冰鑑櫃',
+            '寒水玉雙層保鮮石櫃': '冰鑑櫃',
+            '雙層保鮮石櫃': '冰鑑櫃',
+            '保鮮石櫃': '冰鑑櫃',
+            '防雨竹筒信箱': '信箱',
+            '防雨竹編信箱': '信箱',
+            '竹筒信箱': '信箱',
+            '竹編信箱': '信箱',
+            '烏木教案': '教案',
+            '紅木書案': '書案',
+            '鑲貝書案': '書案',
+            '工匠工具架': '工具架',
+            '精鋼工具架': '工具架',
+            '通商貨架棚': '貨架棚',
+            '貝母路燈與防雨竹編路標': '路燈・路標',
+            '文曜青石街燈與黃銅公佈欄': '街燈・告示欄',
+            '三水川雕花青石欄杆與繫船環': '橋欄・繫船環',
+            '自來活水黃銅水栓與溫石熱水槽': '水栓・水槽',
+            '松香木彈力大床與儲食石櫃': '床榻・冰鑑櫃',
+            '止血水苔與避瘴清心丸架': '水苔・丸架',
+            '青鹽海貝薄荷潔牙粉': '海貝潔牙粉',
+            '煅燒海貝薄荷潔牙粉': '海貝潔牙粉'
         };
         if (knownMap[str]) {
             return knownMap[str];
         }
-        if (str.length > 8 && str.indexOf('與') !== -1) {
+        if (str.indexOf('與') !== -1) {
             var parts = str.split('與');
             if (parts.length === 2) {
-                var p1 = parts[0].trim();
-                var p2 = parts[1].trim();
+                var p1 = conciseObjectLabel(parts[0]);
+                var p2 = conciseObjectLabel(parts[1]);
                 var combined = p1 + '・' + p2;
                 if (combined.length <= 9) {
                     return combined;
                 }
-                var shortP1 = p1.replace(/^(三水川|文曜|自來活水)/, '');
-                var shortP2 = p2.replace(/^(防雨)/, '');
-                var refined = shortP1 + '・' + shortP2;
-                if (refined.length <= 9) {
-                    return refined;
-                }
-                return combined;
             }
+        }
+        var prefixRegex = /^(?:青鹽海貝|煅燒海貝|重礦包邊|薄層重礦|三號坑口|三號坑|老堰頭|霜林口|築港頭|文曜城|文曜|大圳頭|半嶺鎮|半嶺|風櫃尾|烏石鼻|水尾寮|紅土崁|黑沼|北嶺|南哨|外澳|牛埔|風舶角|風舶|黃銅鑲邊|雕花青石|防蛀樟木|夜光貝母|寒水玉雙層|寒水玉|松香木|老青竹黃銅輪|老青竹|紅土光學黃銅|紅土光學|自來活水黃銅|自來活水|三水川雕花|文曜青石|防雨竹筒|防雨竹編|黃銅|青石|石雕|雕花|生鐵|熟鐵|精鋼|樟木|松木|烏木|紅木|鐵木|楠木|粗陶|白磁|竹編|單筒|捲線|貝母)/;
+        for (var pi = 0; pi < 2; pi++) {
+            var stripped = str.replace(prefixRegex, '').trim();
+            if (stripped.length >= 2 && stripped !== str) {
+                str = stripped;
+                if (knownMap[str]) {
+                    return knownMap[str];
+                }
+            } else {
+                break;
+            }
+        }
+        if (/・當值櫃檯$/.test(str)) {
+            return '當值櫃檯';
+        }
+        var bookMatch = str.match(/《([^》]+)》/);
+        if (bookMatch && bookMatch[1]) {
+            return bookMatch[1];
+        }
+        str = str.replace(/[《》]/g, '');
+        if (str.length > 14 && str.indexOf('・') === -1) {
+            return str.slice(-8);
         }
         return str;
     }
@@ -558,7 +640,7 @@
             var isParty = !!(p.is_party_member || p.is_companion || p.party);
             list.push({
                 npc_id: p.id,
-                display_name: p.display_name || p.id || '旅人',
+                display_name: (p.display_name && !/^(npc_|wt_|wt-|ambient_|shanhai_|grid:)/.test(p.display_name)) ? p.display_name : ((p.id && !/^(npc_|wt_|wt-|ambient_|shanhai_|grid:)/.test(p.id)) ? p.id : '旅人'),
                 card_state: isParty ? 'companion' : 'stranger',
                 is_party_member: isParty,
                 kind: 'player',
@@ -628,6 +710,8 @@
     var _tokenPositionsByRoom = {};
     var _transitHints = {};
     var _activePopoverToken = null;
+    var _activeNpcCallouts = {};
+    var _activeNpcChats = {};
     function hashStr(str) {
         var h = 0x811c9dc5;
         var s = String(str || '');
@@ -661,9 +745,9 @@
         var len = Math.max(2, Number(labelLen) || 4);
         var charPx = isNarrow ? 14.5 : 15.5;
         var estWidthPx = Math.min(cw * 0.66, len * charPx + 26);
-        var estHeightPx = isNarrow ? 31 : 35;
-        var halfW = Math.min(34, Math.max(5.5, (estWidthPx / 2 / cw) * 100));
-        var halfH = Math.min(9.5, Math.max(4.2, (estHeightPx / 2 / ch) * 100));
+        var estHeightPx = isNarrow ? 44 : 48;
+        var halfW = Math.min(34, Math.max(6.0, (estWidthPx / 2 / cw) * 100));
+        var halfH = Math.min(12.5, Math.max(5.5, (estHeightPx / 2 / ch) * 100));
         return { halfW: halfW, halfH: halfH, bucket: isNarrow ? 'm' : 'd' };
     }
 
@@ -671,8 +755,8 @@
         var minClearance = 999;
         for (var k in placedPositions) {
             var p = placedPositions[k];
-            var reqDx = (box.halfW + (p.halfW || 8)) + 1.8;
-            var reqDy = (box.halfH + (p.halfH || 5)) + 1.8;
+            var reqDx = (box.halfW + (p.halfW || 8)) + 2.6;
+            var reqDy = (box.halfH + (p.halfH || 6)) + 2.6;
             var dx = Math.abs(x - p.x);
             var dy = Math.abs(y - p.y);
             if (dx < reqDx && dy < reqDy) {
@@ -683,24 +767,24 @@
         return minClearance;
     }
 
-    function computeStablePosition(roomId, tokenKey, labelLen, placedPositions) {
+    function computeStablePosition(roomId, tokenKey, labelLen, placedPositions, isAnchored) {
         var box = estimateTokenHalfBox(labelLen);
         var cacheRoomKey = roomId + ':' + box.bucket;
         if (!_tokenPositionsByRoom[cacheRoomKey]) {
             _tokenPositionsByRoom[cacheRoomKey] = {};
         }
-        var minX = Math.min(46, Math.ceil(box.halfW + 2.5));
-        var maxX = Math.max(54, Math.floor(97.5 - box.halfW));
+        var minX = Math.min(46, Math.ceil(box.halfW + 3));
+        var maxX = Math.max(54, Math.floor(97 - box.halfW));
         var spanX = Math.max(8, maxX - minX);
-        var minY = Math.ceil(box.halfH + 3);
-        var maxY = Math.floor(97 - box.halfH);
+        var minY = Math.ceil(box.halfH + 10);
+        var maxY = Math.floor(88 - box.halfH);
         var spanY = Math.max(10, maxY - minY);
 
         var cached = _tokenPositionsByRoom[cacheRoomKey][tokenKey];
         if (cached) {
             var cx = Math.max(minX, Math.min(maxX, cached.x));
             var cy = Math.max(minY, Math.min(maxY, cached.y));
-            if (checkCollisionWithPlaced(cx, cy, box, placedPositions) >= 0.98) {
+            if (isAnchored || checkCollisionWithPlaced(cx, cy, box, placedPositions) >= 0.85) {
                 var cPos = { x: cx, y: cy, halfW: box.halfW, halfH: box.halfH };
                 _tokenPositionsByRoom[cacheRoomKey][tokenKey] = cPos;
                 placedPositions[tokenKey] = cPos;
@@ -756,7 +840,7 @@
         }
         if (!placedPositions) return baseCoords;
 
-        var box = { halfW: 10, halfH: 6 };
+        var box = { halfW: 16, halfH: 9 };
         var testX = baseCoords.x;
         var testY = baseCoords.y;
         var bestX = testX;
@@ -764,16 +848,16 @@
         var bestClearance = -1;
 
         // 檢查邊緣位置是否與既有 token 重疊，若重疊則沿邊界向兩側微調推移，避免遮蔽日晷石柱或居民
-        for (var offset = 0; offset <= 36; offset += 6) {
+        for (var offset = 0; offset <= 42; offset += 6) {
             var signs = (offset === 0) ? [0] : [1, -1];
             for (var si = 0; si < signs.length; si++) {
                 var s = signs[si];
                 var curX = testX;
                 var curY = testY;
                 if (d === '北' || d === '南') {
-                    curX = Math.max(8, Math.min(92, testX + s * offset));
+                    curX = Math.max(16, Math.min(84, testX + s * offset));
                 } else {
-                    curY = Math.max(8, Math.min(92, testY + s * offset));
+                    curY = Math.max(12, Math.min(88, testY + s * offset));
                 }
                 var clr = checkCollisionWithPlaced(curX, curY, box, placedPositions);
                 if (clr >= 1.0) {
@@ -806,6 +890,278 @@
         return dirs[h % 4];
     }
 
+    var _tokenEnterTime = {};
+    var _strangerSlotById = {};
+
+    function conciseMicroState(rawAct, kind, label, isBeast, tokenKey) {
+        if (kind === 'npc') {
+            if (label && /櫃檯當值|當值|掌櫃|掌事|主廚|醫師|匠師|鐵匠|木匠|教席/.test(label)) {
+                return '櫃檯當值';
+            }
+            if (label && /（當值）/.test(label)) {
+                return '駐場當值';
+            }
+            if (tokenKey && _tokenEnterTime[tokenKey] && (Date.now() - _tokenEnterTime[tokenKey] < 9000)) {
+                return '邁步穿行';
+            }
+            var placeEl = document.getElementById('place-name') || document.querySelector('h1');
+            var roomName = placeEl ? String(placeEl.textContent || '') : '';
+            var isBridgeOrWater = /(橋|水岸|河|溪|渠|灣|潭|埠|碼頭|亭|觀星|瞭望)/.test(roomName) && !/(食堂|大食堂|旅社|茶屋|商行|工坊|鐵坊|診所|藥房|書閣|民宅|居|齋|鋪|店)/.test(roomName);
+            var isIndoorPublic = /(食堂|旅社|茶屋|茶樓|商行|工坊|鐵坊|木作|診所|藥房|書閣|講堂|蒙學|學院|鋪|店|堂|館|閣)/.test(roomName);
+            var isIndoorRoom = /客房|旅社|宅|院|居|舍|房|閣|樓|堂|館|鋪|室/.test(roomName);
+            var dayPool;
+            var nightOutdoorPool;
+            if (isIndoorPublic) {
+                dayPool = ['歇腳小坐', '駐足打量', '緩步穿行', '靜候片刻'];
+                nightOutdoorPool = ['歇腳小坐', '駐足打量', '緩步穿行', '靜候片刻'];
+            } else if (isBridgeOrWater) {
+                dayPool = ['駐足歇腳', '憑欄遠眺', '緩步徐行', '駐足四顧'];
+                nightOutdoorPool = ['夜立憑欄', '駐足歇腳', '凝望夜色', '緩步徐行'];
+            } else {
+                dayPool = ['駐足歇腳', '緩步徐行', '駐足四顧', '沿街穿行'];
+                nightOutdoorPool = ['駐足歇腳', '凝望夜色', '緩步徐行', '沿街夜行'];
+            }
+            var appEl = document.getElementById('app') || document.getElementById('app-grid');
+            var tide = appEl ? appEl.getAttribute('data-tide') : 'noon';
+            var isProceduralKey = /^npc:npc_/.test(String(tokenKey || ''));
+            if (rawAct) {
+                var s = String(rawAct);
+                if (/打盹|入睡|酣睡|熟睡|睡眠|歇息|養回一點體力|閉目|散步|閒逛|趕路|前往|走去|穿行|行色匆匆|邁步|動身|回返/.test(s)) {
+                    if (!isProceduralKey && /趕路|前往|走去|穿行|行色匆匆|邁步|動身|回返/.test(s)) return '邁步穿行';
+                    if (tide && tide !== 'night') {
+                        return dayPool[hashStr(label || tokenKey || 'npc') % dayPool.length];
+                    }
+                    if (!isIndoorRoom) {
+                        return nightOutdoorPool[hashStr(label || tokenKey || 'npc') % nightOutdoorPool.length];
+                    }
+                    return '閉目養神';
+                }
+                if (/指引|認路|解答|接待|迎客/.test(s)) return '指引商旅';
+                if ((isIndoorPublic || isIndoorRoom) && /講堂|讀譜|授課|教學/.test(s)) return '講學授課';
+                if (/巡邏|巡視|守衛|警戒|站崗|按刀/.test(s)) return '巡視戒備';
+                if (/叫賣|兜售|吆喝|擺攤|整理貨|清點|算帳|帳冊/.test(s)) return '理貨招呼';
+                if (/交談|閒聊|議論|搭話|寒暄|商議/.test(s)) return '低聲交談';
+                if (/飲茶|喝湯|用膳|進食|喝酒|品茗|買碗/.test(s)) return '歇腳飲饌';
+                if ((isIndoorPublic || isIndoorRoom) && /讀書|翻閱|誦讀|抄寫|批閱|研讀/.test(s)) return '凝神展卷';
+                if (/打鐵|鍛造|劈柴|生火|熬煮|烹煮|勞作|挑水|垂釣|釣魚|米漿|灶前/.test(s)) return '專注勞作';
+                if (/張望|四顧|駐足|遠眺|凝望|打量/.test(s)) return '駐足四顧';
+                var cleaned = s.replace(/^正在/, '').replace(/^在[^，,。]+[,，]/, '').replace(/[。！!？?，,、\s]/g, '').trim();
+                if (cleaned.length >= 2 && cleaned.length <= 5) return cleaned;
+            }
+            if (isBeast) return '山林游走';
+            if (tide === 'night' && !isIndoorRoom) {
+                return nightOutdoorPool[hashStr(label || tokenKey || 'npc') % nightOutdoorPool.length];
+            }
+            return dayPool[hashStr(label || tokenKey || 'npc') % dayPool.length];
+        }
+        if (kind === 'player') return '駐足同處';
+        return '';
+    }
+    var _inlineOpenTokenKey = null;
+
+    function closeAllInlineTokens(canvasEl) {
+        _inlineOpenTokenKey = null;
+        var root = canvasEl || document.getElementById('sw-room-canvas');
+        if (!root) return;
+        var openEls = root.querySelectorAll('.sw-canvas-token.is-inline-open');
+        for (var i = 0; i < openEls.length; i++) {
+            openEls[i].classList.remove('is-inline-open');
+        }
+    }
+
+    function populateInlineActionChips(chipsContainer, token) {
+        if (!chipsContainer || !token) return;
+        chipsContainer.innerHTML = '';
+        var targetId = token.id;
+        var targetName = token.label || token.name || targetId;
+
+        function addChip(label, onClickFn, titleText) {
+            var chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'sw-inline-act-chip';
+            chip.textContent = label;
+            if (titleText) chip.title = titleText;
+            chip.addEventListener('click', function (ev) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                onClickFn();
+            });
+            chipsContainer.appendChild(chip);
+        }
+
+        if (token.kind === 'npc' || token.kind === 'player') {
+            if (isWildBeastToken(targetId, targetName)) {
+                addChip('生擒制伏', function () {
+                    if (window.gameSend) window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Subdue' });
+                });
+                addChip('出手獵殺', function () {
+                    if (window.gameSend) window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Slay' });
+                });
+            } else {
+                addChip('寒暄', function () {
+                    closeAllInlineTokens(document.getElementById('sw-room-canvas'));
+                    var canvasRoot = document.getElementById('sw-room-canvas');
+                    var tokEl = canvasRoot ? canvasRoot.querySelector('.sw-canvas-token[data-token-key="' + token.key + '"]') : null;
+                    if (tokEl) {
+                        var microSpan = tokEl.querySelector('.sw-token-micro-state');
+                        if (microSpan) {
+                            microSpan.textContent = '駐足交談';
+                            microSpan.hidden = false;
+                            microSpan.style.display = '';
+                        }
+                    }
+                    token.microState = '駐足交談';
+                    if (window.gameSend) window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Talk', player_input: '寒暄問候' });
+                }, '直接搭話寒暄');
+                addChip('打聽', function () {
+                    closeAllInlineTokens(document.getElementById('sw-room-canvas'));
+                    var canvasRoot = document.getElementById('sw-room-canvas');
+                    var tokEl = canvasRoot ? canvasRoot.querySelector('.sw-canvas-token[data-token-key="' + token.key + '"]') : null;
+                    if (tokEl) {
+                        var microSpan = tokEl.querySelector('.sw-token-micro-state');
+                        if (microSpan) {
+                            microSpan.textContent = '駐足交談';
+                            microSpan.hidden = false;
+                            microSpan.style.display = '';
+                        }
+                    }
+                    token.microState = '駐足交談';
+                    if (window.gameSend) window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Talk', player_input: '打聽近況' });
+                }, '打聽當地近況');
+                addChip('交易', function () {
+                    if (window.gameSend) window.gameSend({ type: 'do_action', entity_id: targetId, action: 'Trade', player_input: '' });
+                }, '探詢交易');
+                addChip('詳談…', function () {
+                    SwOpenObjectPopover(token);
+                    if (window.SwInteractions && typeof window.SwInteractions.appendTalkInputRow === 'function') {
+                        window.SwInteractions.appendTalkInputRow(targetId, targetName);
+                    }
+                }, '展開自由對話與完整互動');
+            }
+        } else {
+            var rawActs = (token.data && (token.data.actions || token.data.sockets)) || [];
+            var nonLook = filterObjectSockets(rawActs);
+            var maxInline = Math.min(3, nonLook.length);
+            for (var i = 0; i < maxInline; i++) {
+                (function (actCode) {
+                    var actLabel = resolveActionLabelZh(actCode, targetName, targetId);
+                    addChip(actLabel, function () {
+                        if (window.gameSend) {
+                            var moveRoomId = token.data && token.data.move_to_room_id;
+                            var entId = (actCode === 'Move' && moveRoomId) ? moveRoomId : targetId;
+                            window.gameSend({ type: 'do_action', entity_id: entId, action: actCode });
+                        }
+                    });
+                })(nonLook[i]);
+            }
+            if (nonLook.length > 3) {
+                addChip('更多…', function () {
+                    SwOpenObjectPopover(token);
+                });
+            }
+        }
+    }
+
+    function syncTokenDomContent(tokenEl, token) {
+        tokenEl._swToken = token;
+        tokenEl.setAttribute('data-token-key', token.key);
+        tokenEl.setAttribute('data-obj-id', token.id);
+        tokenEl.setAttribute('data-entity-id', token.id);
+        var lblSpan = tokenEl.querySelector('.sw-token-label');
+        if (!lblSpan) {
+            lblSpan = document.createElement('span');
+            lblSpan.className = 'sw-token-label';
+            tokenEl.appendChild(lblSpan);
+        }
+        lblSpan.textContent = token.label;
+
+        var microSpan = tokenEl.querySelector('.sw-token-micro-state');
+        if (!microSpan) {
+            microSpan = document.createElement('span');
+            microSpan.className = 'sw-token-micro-state';
+            tokenEl.appendChild(microSpan);
+        }
+        microSpan.textContent = token.microState || '';
+        microSpan.hidden = !token.microState;
+        microSpan.style.display = token.microState ? '' : 'none';
+
+        var actsWrap = tokenEl.querySelector('.sw-token-inline-acts');
+        if (!actsWrap) {
+            actsWrap = document.createElement('div');
+            actsWrap.className = 'sw-token-inline-acts';
+            tokenEl.appendChild(actsWrap);
+        }
+        if (_inlineOpenTokenKey === token.key) {
+            tokenEl.classList.add('is-inline-open');
+            populateInlineActionChips(actsWrap, token);
+        } else {
+            tokenEl.classList.remove('is-inline-open');
+        }
+    }
+
+    function handleTokenPrimaryTap(tokenEl, token) {
+        if (!tokenEl || !token || tokenEl.classList.contains('is-leaving')) return;
+        var canvasEl = document.getElementById('sw-room-canvas');
+
+        // 清除該角色頭頂搭話氣泡（若有）
+        if (token.id && _activeNpcCallouts[token.id]) {
+            delete _activeNpcCallouts[token.id];
+            tokenEl.classList.remove('is-calling', 'is-calling-combat');
+            var p = tokenEl.querySelector('.sw-token-speech-pill');
+            if (p) p.remove();
+        }
+
+        if (token.kind === 'facility' || token.kind === 'item') {
+            // 點擊環境物件即為查看細閱：直接觸發後端 Look，回傳完整描寫至「當下二息」
+            if (token.id !== '__room_explore__' && window.gameSend) {
+                window.gameSend({ type: 'do_action', entity_id: token.id, action: 'Look' });
+            }
+            var rawActs = (token.data && (token.data.actions || token.data.sockets)) || [];
+            var extraActs = filterObjectSockets(rawActs);
+            if (extraActs.length === 0) {
+                closeAllInlineTokens(canvasEl);
+                return;
+            }
+            if (tokenEl.classList.contains('is-inline-open')) {
+                closeAllInlineTokens(canvasEl);
+                return;
+            }
+            closeAllInlineTokens(canvasEl);
+            _inlineOpenTokenKey = token.key;
+            tokenEl.classList.add('is-inline-open');
+            var actsWrap = tokenEl.querySelector('.sw-token-inline-acts');
+            if (actsWrap) {
+                populateInlineActionChips(actsWrap, token);
+            }
+            return;
+        }
+
+        // 若已經處於原位微綻狀態，再次點擊主標籤開啟完整詳情框
+        if (tokenEl.classList.contains('is-inline-open')) {
+            SwOpenObjectPopover(token);
+            return;
+        }
+
+        closeAllInlineTokens(canvasEl);
+        _inlineOpenTokenKey = token.key;
+        tokenEl.classList.add('is-inline-open');
+        var actsWrap = tokenEl.querySelector('.sw-token-inline-acts');
+        if (actsWrap) {
+            populateInlineActionChips(actsWrap, token);
+        }
+
+        // 一觸即感：觸發後端 Look 以直接回傳真實環境／人物感官描寫至「當下二息」，並立即使被點選人物短暫駐足
+        if (token.id !== '__room_explore__' && window.gameSend) {
+            if (token.kind === 'npc') {
+                window.gameSend({ type: 'focus_entity', entity_id: token.id });
+                _lastFocusSendTime = Date.now();
+            }
+            if (token.kind === 'npc' && token.data && (token.data.card_state === 'stranger' || token.data.card_state === 'observed')) {
+                window.gameSend({ type: 'observe', entity_id: token.id });
+            }
+            window.gameSend({ type: 'do_action', entity_id: token.id, action: 'Look' });
+        }
+    }
     function collectCurrentTokens() {
         var G = window.SwGrid;
         var mapData = (G && G.mapData) ? G.mapData : {};
@@ -829,27 +1185,68 @@
             npcLabelCounts[rawLabel] = (npcLabelCounts[rawLabel] || 0) + 1;
             validNpcs.push({ npc: rawNpc, id: rawId, key: rawKey, name: rawName, label: rawLabel });
         }
+        // 穩定維護陌生人編號槽位：入場初刻（500ms 內）依序排定 1..N，其後駐留期間絕不因他人離場而原位改號
+        var isInitialSettle = (_roomEnterTime > 0) && ((Date.now() - _roomEnterTime) < 500);
+        if (isInitialSettle) {
+            _strangerSlotById = {};
+        }
+        var presentNpcIds = {};
+        var usedStrangerSlots = {};
+        for (var vi = 0; vi < validNpcs.length; vi++) {
+            var vid = validNpcs[vi].id;
+            presentNpcIds[vid] = true;
+            var existingSlot = _strangerSlotById[vid];
+            if (existingSlot) {
+                if (usedStrangerSlots[existingSlot]) {
+                    delete _strangerSlotById[vid];
+                } else {
+                    usedStrangerSlots[existingSlot] = true;
+                }
+            }
+        }
+        for (var oldSid in _strangerSlotById) {
+            if (!presentNpcIds[oldSid]) {
+                delete _strangerSlotById[oldSid];
+            }
+        }
+
         var npcLabelSeen = {};
         for (var i = 0; i < validNpcs.length; i++) {
             var item = validNpcs[i];
             var nName = item.name;
             var nLabel = item.label;
             if (npcLabelCounts[nLabel] > 1) {
-                var seqIdx = npcLabelSeen[nLabel] || 0;
-                npcLabelSeen[nLabel] = seqIdx + 1;
-                nLabel = nLabel + ' ' + String(seqIdx + 1);
-                if (nName === '陌生人') {
-                    nName = nLabel;
+                if (nLabel === '陌生人') {
+                    var slotNum = _strangerSlotById[item.id];
+                    if (!slotNum) {
+                        slotNum = 1;
+                        while (usedStrangerSlots[slotNum]) {
+                            slotNum++;
+                        }
+                        _strangerSlotById[item.id] = slotNum;
+                        usedStrangerSlots[slotNum] = true;
+                    }
+                    nLabel = '陌生人 ' + String(slotNum);
+                    if (nName === '陌生人' || /^陌生人\d*$/.test(nName)) {
+                        nName = nLabel;
+                    }
+                } else {
+                    var seqIdx = npcLabelSeen[nLabel] || 0;
+                    npcLabelSeen[nLabel] = seqIdx + 1;
+                    nLabel = nLabel + ' ' + String(seqIdx + 1);
                 }
             }
             var act = visibleActivity(item.npc.current_activity);
-            var sub = act ? ('在場人物 · ' + act) : '在場人物';
+            var isBeast = isWildBeastToken(item.id, nName);
+            var sub = act || '';
+            var micro = conciseMicroState(act, 'npc', nLabel, isBeast, item.key);
             tokens.push({
                 key: item.key,
                 id: item.id,
                 name: nName,
                 label: nLabel,
                 subtitle: sub,
+                microState: micro,
                 kind: 'npc',
                 tokenClass: 'sw-token-npc',
                 data: item.npc
@@ -871,7 +1268,8 @@
                 id: pId,
                 name: pName,
                 label: pName,
-                subtitle: '在場玩家',
+                subtitle: '',
+                microState: '駐足同處',
                 kind: 'player',
                 tokenClass: 'sw-token-npc sw-token-player',
                 data: p
@@ -894,7 +1292,7 @@
             var oLabel = conciseObjectLabel(rawLabel);
             var fac = isFacility(obj);
             var kind = fac ? 'facility' : 'item';
-            var sub = fac ? '場景器物' : '可攜物品';
+            var sub = '';
             var tokClass = fac ? 'sw-token-facility' : 'sw-token-item';
 
             tokens.push({
@@ -903,6 +1301,7 @@
                 name: rawLabel,
                 label: oLabel,
                 subtitle: sub,
+                microState: conciseMicroState('', kind, oLabel, false),
                 kind: kind,
                 tokenClass: tokClass,
                 data: obj
@@ -917,18 +1316,27 @@
             if (seenKeys[hKey]) continue;
             seenKeys[hKey] = true;
             var hName = hObj.name || hObj.label || '可採集物';
+            var hLabel = conciseObjectLabel(hName);
             tokens.push({
                 key: hKey,
                 id: hId,
                 name: hName,
-                label: conciseObjectLabel(hName),
-                subtitle: '環境資源',
+                label: hLabel,
+                subtitle: '',
+                microState: conciseMicroState('', 'facility', hLabel, false),
                 kind: 'facility',
                 tokenClass: 'sw-token-item',
                 data: { id: hId, name: hName, actions: ['Look', 'Gather'] }
             });
         }
-
+        tokens.sort(function (a, b) {
+            var aM = String(a.label || a.name || '').match(/^陌生人\s*(\d+)$/);
+            var bM = String(b.label || b.name || '').match(/^陌生人\s*(\d+)$/);
+            if (aM && bM) {
+                return parseInt(aM[1], 10) - parseInt(bM[1], 10);
+            }
+            return 0;
+        });
         return tokens;
     }
 
@@ -939,30 +1347,51 @@
 
         var G = window.SwGrid;
         var mapData = (G && G.mapData) ? G.mapData : {};
-        var currentRoomId = mapData.currentRoomId || 'default_room';
+        var coordKey = (typeof mapData.playerX === 'number' && typeof mapData.playerY === 'number')
+            ? (mapData.playerX + ',' + mapData.playerY)
+            : ((mapData.player && typeof mapData.player.x === 'number')
+                ? (mapData.player.x + ',' + mapData.player.y)
+                : (mapData.currentRoomId || _roomId || 'default_room'));
         var inPrivate = !!mapData.in_private_room;
-        var rName = mapData.currentRoomName || '';
-        // 包含 in_private_room 與 roomName，避免進出客房時座標相同但場景更換卻誤判為同一房間
-        var currentRoomKey = currentRoomId + '|' + (inPrivate ? 'private' : 'public') + '|' + rName;
-
-        var tokens = collectCurrentTokens();
+        var rName = mapData.currentRoomName || (document.getElementById('sw-place-name') ? document.getElementById('sw-place-name').textContent.trim() : '');
+        var currentRoomId = coordKey;
+        var hasNumericCoord = (typeof mapData.playerX === 'number' && typeof mapData.playerY === 'number')
+            || (mapData.player && typeof mapData.player.x === 'number');
+        var currentRoomKey = hasNumericCoord
+            ? (coordKey + '|' + (inPrivate ? 'private' : 'public'))
+            : (coordKey + '|' + (inPrivate ? 'private' : 'public') + '|' + rName);
         var isSameRoom = (_prevRoomId === currentRoomKey);
         if (!isSameRoom) {
             _roomEnterTime = Date.now();
+            _activeNpcCallouts = {};
+            _activeNpcChats = {};
+            _strangerSlotById = {};
         }
         var allowTransitAnim = isSameRoom && ((Date.now() - _roomEnterTime) > 1200);
         _roomId = currentRoomId;
-
+        var tokens = collectCurrentTokens();
         if (emptyEl) {
             emptyEl.hidden = (tokens.length > 0);
         }
 
+        if (!canvasEl._bgDismissBound) {
+            canvasEl._bgDismissBound = true;
+            canvasEl.addEventListener('click', function (ev) {
+                if (ev.target === canvasEl || (ev.target && ev.target.id === 'sw-room-canvas-empty')) {
+                    closeAllInlineTokens(canvasEl);
+                }
+            });
+        }
         if (!isSameRoom) {
+            _inlineOpenTokenKey = null;
             var oldNodes = canvasEl.querySelectorAll('.sw-canvas-token');
             for (var oi = 0; oi < oldNodes.length; oi++) {
                 oldNodes[oi].remove();
             }
             _prevTokensMap = {};
+            _tokenEnterTime = {};
+            _strangerSlotById = {};
+            _lastPasserbyTransitTime = Date.now();
         }
 
         var placedPositions = {};
@@ -975,15 +1404,19 @@
             var t = tokens[i];
             newTokensMap[t.key] = t;
         }
+        // 排序優先級：1. 固定景物／器物 (facility/item) 永遠最優先錨定；2. 原本已在場的人物；3. 本 Tick 新步入的人物
         var placementOrder = tokens.slice().sort(function (a, b) {
+            var aStatic = (a.kind === 'facility' || a.kind === 'item') ? 2 : (isSameRoom && _prevTokensMap[a.key] ? 1 : 0);
+            var bStatic = (b.kind === 'facility' || b.kind === 'item') ? 2 : (isSameRoom && _prevTokensMap[b.key] ? 1 : 0);
+            if (aStatic !== bStatic) return bStatic - aStatic;
             return ((b.label || '').length - (a.label || '').length);
         });
         var posByKey = {};
         for (var pi = 0; pi < placementOrder.length; pi++) {
             var pTok = placementOrder[pi];
-            posByKey[pTok.key] = computeStablePosition(currentRoomId, pTok.key, (pTok.label || '').length, placedPositions);
+            var isAnchoredTok = (pTok.kind === 'facility' || pTok.kind === 'item') || (isSameRoom && !!_prevTokensMap[pTok.key]);
+            posByKey[pTok.key] = computeStablePosition(currentRoomId, pTok.key, (pTok.label || '').length, placedPositions, isAnchoredTok);
         }
-
         if (isSameRoom) {
             for (var oldKey in _prevTokensMap) {
                 if (!newTokensMap[oldKey]) {
@@ -994,14 +1427,15 @@
                         var leaveDir = resolveTransitDirection(leavingToken, 'leave');
                         var oldPos = _tokenPositionsByRoom[currentRoomId][leavingToken.key] || { x: 50, y: 50 };
                         var departPos = getEdgeCoords(leaveDir, oldPos, placedPositions, leavingToken.key);
-                        var cue = existingEl.querySelector('.sw-token-dir-cue');
-                        if (!cue) {
-                            cue = document.createElement('span');
-                            cue.className = 'sw-token-dir-cue';
-                            existingEl.appendChild(cue);
+                        placedPositions['leave:' + leavingToken.key] = { x: departPos.x, y: departPos.y, halfW: 10, halfH: 6 };
+                        var leaveMicro = existingEl.querySelector('.sw-token-micro-state');
+                        if (leaveMicro) {
+                            leaveMicro.textContent = '往' + leaveDir + '離去';
                         }
-                        cue.textContent = '往' + leaveDir + '離去';
-
+                        var isNamedDeparture = (leavingToken.kind === 'player') || (leavingToken.data && leavingToken.data.card_state === 'named');
+                        if (isNamedDeparture && window.SwPushBreath) {
+                            window.SwPushBreath(leavingToken.label + '邁步往' + leaveDir + '離去。', { byPlayer: false });
+                        }
                         existingEl.classList.add('is-leaving');
                         (function (node, dx, dy) {
                             requestAnimationFrame(function () {
@@ -1027,45 +1461,60 @@
             var isMovableKind = (token.kind === 'npc' || token.kind === 'player');
             var isNewToken = !tokenEl && allowTransitAnim && !_prevTokensMap[token.key] && isMovableKind;
             if (!tokenEl) {
-                tokenEl = document.createElement('button');
-                tokenEl.type = 'button';
+                tokenEl = document.createElement('div');
+                tokenEl.setAttribute('role', 'button');
+                tokenEl.setAttribute('tabindex', '0');
                 tokenEl.className = 'sw-canvas-token ' + token.tokenClass;
                 tokenEl.setAttribute('data-token-key', token.key);
                 tokenEl.setAttribute('data-obj-id', token.id);
                 tokenEl.setAttribute('data-entity-id', token.id);
                 tokenEl.setAttribute('data-token-kind', token.kind);
-                tokenEl.textContent = token.label;
-                tokenEl._swToken = token;
+                syncTokenDomContent(tokenEl, token);
                 tokenEl.addEventListener('click', function (e) {
+                    if (e.target && e.target.closest && e.target.closest('.sw-inline-act-chip, .sw-token-speech-pill')) return;
                     e.preventDefault();
-                    SwOpenObjectPopover(this._swToken || token);
+                    e.stopPropagation();
+                    handleTokenPrimaryTap(this, this._swToken || token);
+                });
+                tokenEl.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        if (e.target && e.target.closest && e.target.closest('.sw-inline-act-chip, .sw-token-speech-pill')) return;
+                        e.preventDefault();
+                        handleTokenPrimaryTap(this, this._swToken || token);
+                    }
                 });
                 if (isNewToken) {
+                    _tokenEnterTime[token.key] = Date.now();
                     var enterDir = resolveTransitDirection(token, 'enter');
+                    token.microState = '自' + enterDir + '走入';
+                    syncTokenDomContent(tokenEl, token);
                     var startPos = getEdgeCoords(enterDir, pos, placedPositions, token.key);
+                    placedPositions['enter:' + token.key] = { x: startPos.x, y: startPos.y, halfW: 10, halfH: 6 };
                     tokenEl.classList.add('is-entering');
                     tokenEl.style.left = startPos.x + '%';
                     tokenEl.style.top = startPos.y + '%';
                     tokenEl.style.opacity = '0';
 
-                    var enterCue = document.createElement('span');
-                    enterCue.className = 'sw-token-dir-cue';
-                    enterCue.textContent = '自' + enterDir + '走入';
-                    tokenEl.appendChild(enterCue);
-
                     canvasEl.appendChild(tokenEl);
-
-                    (function (node, targetX, targetY, cueSpan) {
+                    var isNamedArrival = (token.kind === 'player') || (token.data && token.data.card_state === 'named');
+                    if (isNamedArrival && window.SwPushBreath) {
+                        window.SwPushBreath(token.label + '自' + enterDir + '走入此處。', { byPlayer: false });
+                    }
+                    (function (node, posRef, tokRef) {
                         requestAnimationFrame(function () {
                             node.classList.remove('is-entering');
-                            node.style.left = targetX + '%';
-                            node.style.top = targetY + '%';
+                            node.style.left = posRef.x + '%';
+                            node.style.top = posRef.y + '%';
                             node.style.opacity = '1';
                         });
                         setTimeout(function () {
-                            if (cueSpan && cueSpan.parentNode) cueSpan.remove();
-                        }, 1600);
-                    })(tokenEl, pos.x, pos.y, enterCue);
+                            if (!node || !node.parentNode) return;
+                            var mSpan = node.querySelector('.sw-token-micro-state');
+                            if (mSpan && /^自.+走入$/.test(mSpan.textContent || '')) {
+                                mSpan.textContent = '邁步穿行';
+                            }
+                        }, 2200);
+                    })(tokenEl, pos, token);
                 } else {
                     tokenEl.style.left = pos.x + '%';
                     tokenEl.style.top = pos.y + '%';
@@ -1073,13 +1522,49 @@
                     canvasEl.appendChild(tokenEl);
                 }
             } else {
-                tokenEl._swToken = token;
                 tokenEl.style.left = pos.x + '%';
                 tokenEl.style.top = pos.y + '%';
-                if (tokenEl.firstChild && tokenEl.firstChild.nodeType === Node.TEXT_NODE) {
-                    tokenEl.firstChild.textContent = token.label;
+                syncTokenDomContent(tokenEl, token);
+            }
+            var oldOverlays = tokenEl.querySelectorAll('.sw-token-speech-pill, .sw-token-chat-dot');
+            for (var oi = 0; oi < oldOverlays.length; oi++) {
+                oldOverlays[oi].remove();
+            }
+            tokenEl.classList.remove('is-calling', 'is-calling-combat', 'is-chatting', 'is-priority-host');
+
+            if (token.kind === 'npc') {
+                var callout = _activeNpcCallouts[token.id];
+                var microNode = tokenEl.querySelector('.sw-token-micro-state');
+                if (callout && (Date.now() - callout.time <= 45000)) {
+                    tokenEl.classList.add('is-calling');
+                    if (callout.intent === 'combat') {
+                        tokenEl.classList.add('is-calling-combat');
+                    }
+                    if (microNode) {
+                        microNode.textContent = '💬 欲言搭話';
+                        microNode.style.color = '#9e2a2b';
+                        microNode.style.fontWeight = '600';
+                    }
                 } else {
-                    tokenEl.textContent = token.label;
+                    if (microNode) {
+                        microNode.style.color = '';
+                        microNode.style.fontWeight = '';
+                    }
+                    if (callout) delete _activeNpcCallouts[token.id];
+                    var chatTime = _activeNpcChats[token.id];
+                    if (chatTime && (Date.now() - chatTime <= 12000)) {
+                        tokenEl.classList.add('is-chatting');
+                        var chatDot = document.createElement('span');
+                        chatDot.className = 'sw-token-chat-dot' + ((pos && pos.y < 24) ? ' is-pill-below' : '');
+                        chatDot.textContent = '「…」';
+                        tokenEl.appendChild(chatDot);
+                    } else if (chatTime) {
+                        delete _activeNpcChats[token.id];
+                    }
+                }
+
+                if (token.data && token.data.interaction_priority) {
+                    tokenEl.classList.add('is-priority-host');
                 }
             }
             if (_activePopoverToken && _activePopoverToken.key === token.key) {
@@ -1088,6 +1573,27 @@
                 var activeTitleEl = document.getElementById('sw-popover-title');
                 if (activeTitleEl && token.label) activeTitleEl.textContent = token.label;
                 renderPopoverActions(token);
+            }
+        }
+        // 保持 DOM 順序與排序後之 tokens 一致（已識姓名 -> 陌生人 1 -> 陌生人 2...）
+        for (var rj = 0; rj < tokens.length; rj++) {
+            var rNode = canvasEl.querySelector('[data-token-key="' + tokens[rj].key + '"]:not(.is-leaving)');
+            if (rNode && rNode.parentNode === canvasEl) {
+                canvasEl.appendChild(rNode);
+            }
+        }
+
+        // 清除任何不在 newTokensMap 內或重複 key 的殘留 DOM 節點（正在離場漸隱者除外）
+        var allDomTokens = canvasEl.querySelectorAll('.sw-canvas-token');
+        var seenDomKeys = {};
+        for (var di = 0; di < allDomTokens.length; di++) {
+            var dNode = allDomTokens[di];
+            if (dNode.classList.contains('is-leaving')) continue;
+            var dk = dNode.getAttribute('data-token-key') || '';
+            if (!dk || !newTokensMap[dk] || seenDomKeys[dk]) {
+                dNode.remove();
+            } else {
+                seenDomKeys[dk] = true;
             }
         }
 
@@ -1105,22 +1611,26 @@
                 var tk = tokens[ti];
                 var el = canvasEl.querySelector('[data-token-key="' + tk.key + '"]');
                 var p = posByKey[tk.key];
-                if (!el || !p || el.classList.contains('is-entering') || el.classList.contains('is-leaving')) continue;
-                var hw = Math.min(44, Math.max(5, ((el.offsetWidth || 64) / 2 / cw) * 100));
-                var hh = Math.min(18, Math.max(4, ((el.offsetHeight || 32) / 2 / ch) * 100));
-                items.push({ key: tk.key, el: el, x: p.x, y: p.y, hw: hw, hh: hh });
+                if (!el || !p || el.classList.contains('is-leaving')) continue;
+                var hw = Math.min(44, Math.max(5.5, ((el.offsetWidth || 72) / 2 / cw) * 100));
+                var hh = Math.min(18, Math.max(5.0, ((el.offsetHeight || 42) / 2 / ch) * 100));
+                var isAnchored = isSameRoom && allowTransitAnim && ((tk.kind === 'facility' || tk.kind === 'item') || !!_prevTokensMap[tk.key]);
+                items.push({ key: tk.key, el: el, pRef: p, x: p.x, y: p.y, hw: hw, hh: hh, anchored: isAnchored });
             }
             var moved = false;
-            for (var iter = 0; iter < 24; iter++) {
+            for (var iter = 0; iter < 48; iter++) {
                 var anyOverlap = false;
                 for (var a = 0; a < items.length; a++) {
                     var ia = items[a];
-                    ia.x = Math.max(ia.hw + 2, Math.min(98 - ia.hw, ia.x));
-                    ia.y = Math.max(ia.hh + 2.5, Math.min(97.5 - ia.hh, ia.y));
+                    if (!ia.anchored) {
+                        ia.x = Math.max(ia.hw + 2, Math.min(98 - ia.hw, ia.x));
+                        ia.y = Math.max(ia.hh + 9, Math.min(89 - ia.hh, ia.y));
+                    }
                     for (var b = a + 1; b < items.length; b++) {
                         var ib = items[b];
-                        var reqX = ia.hw + ib.hw + 1.6;
-                        var reqY = ia.hh + ib.hh + 1.6;
+                        if (ia.anchored && ib.anchored) continue;
+                        var reqX = ia.hw + ib.hw + 2.2;
+                        var reqY = ia.hh + ib.hh + 2.2;
                         var dx = ia.x - ib.x;
                         var dy = ia.y - ib.y;
                         var adx = Math.abs(dx);
@@ -1130,14 +1640,20 @@
                             moved = true;
                             var penX = reqX - adx;
                             var penY = reqY - ady;
+                            var wA = ia.anchored ? 0 : (ib.anchored ? 1.08 : 0.58);
+                            var wB = ib.anchored ? 0 : (ia.anchored ? 1.08 : 0.58);
                             if (penY <= penX) {
-                                var sy = (dy >= 0) ? 1 : -1;
-                                ia.y += sy * (penY * 0.55);
-                                ib.y -= sy * (penY * 0.55);
+                                var sy = (dy > 0.1) ? 1 : ((dy < -0.1) ? -1 : ((a % 2 === 0) ? 1 : -1));
+                                ia.y += sy * (penY * wA);
+                                ib.y -= sy * (penY * wB);
+                                if (!ia.anchored) ia.x += ((b % 2 === 0) ? 0.6 : -0.6);
+                                if (!ib.anchored) ib.x -= ((b % 2 === 0) ? 0.6 : -0.6);
                             } else {
-                                var sx = (dx >= 0) ? 1 : -1;
-                                ia.x += sx * (penX * 0.55);
-                                ib.x -= sx * (penX * 0.55);
+                                var sx = (dx > 0.1) ? 1 : ((dx < -0.1) ? -1 : ((a % 2 === 0) ? 1 : -1));
+                                ia.x += sx * (penX * wA);
+                                ib.x -= sx * (penX * wB);
+                                if (!ia.anchored) ia.y += ((b % 2 === 0) ? 0.6 : -0.6);
+                                if (!ib.anchored) ib.y -= ((b % 2 === 0) ? 0.6 : -0.6);
                             }
                         }
                     }
@@ -1147,10 +1663,17 @@
             if (moved) {
                 for (var mi = 0; mi < items.length; mi++) {
                     var it = items[mi];
+                    if (it.anchored) continue;
                     it.x = Math.round(Math.max(it.hw + 2, Math.min(98 - it.hw, it.x)) * 10) / 10;
-                    it.y = Math.round(Math.max(it.hh + 2.5, Math.min(97.5 - it.hh, it.y)) * 10) / 10;
-                    it.el.style.left = it.x + '%';
-                    it.el.style.top = it.y + '%';
+                    it.y = Math.round(Math.max(it.hh + 9, Math.min(89 - it.hh, it.y)) * 10) / 10;
+                    if (it.pRef) {
+                        it.pRef.x = it.x;
+                        it.pRef.y = it.y;
+                    }
+                    if (!it.el.classList.contains('is-entering')) {
+                        it.el.style.left = it.x + '%';
+                        it.el.style.top = it.y + '%';
+                    }
                     _tokenPositionsByRoom[cacheRoomKey][it.key] = { x: it.x, y: it.y, halfW: it.hw, halfH: it.hh };
                 }
             }
@@ -1162,20 +1685,22 @@
     var SW_ACTION_LABELS = {
         // Core
         'Look': '觀察', 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟',
-        'Queue': '候號', 'AcceptJob': '應工', 'Rest': '歇腳', 'BuySoup': '買滿碗熱湯',
+        'Queue': '候號', 'AcceptJob': '應工', 'Rest': '歇腳', 'BuySoup': '買滿碗熱湯', 'Work': '差事',
         'Gather': '採集', 'Acquire': '採買入袋', 'Wash': '洗漱淨手', 'Sit': '坐下',
         'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作',
         'Move': '前往', 'Talk': '對話', 'Trade': '交易', 'Borrow': '偷竊',
         'Subdue': '攻擊', 'Slay': '致死', 'Attack': '攻擊',
         // Wood / Fire / Camp
         'MakeFire': '生火', 'AddFuel': '添柴', 'SplitWood': '劈柴', 'RefinePlank': '裁鋸木板',
-        'BurnCharcoal': '悶燒木炭', 'CraftTorch': '扎製火把', 'CraftHandle': '車削木柄',
+        'BurnCharcoal': '悶燒木炭', 'CraftTorch': '紮製火把', 'CraftHandle': '車削木柄',
         'CollectCharcoal': '收取木炭', 'RoastFood': '炙烤食物', 'RepairStructure': '修繕加固',
         // Ore / Smithing
         'WashOre': '淘洗礦砂', 'CrushOre': '粉碎礦石', 'SmeltIngot': '熔煉金屬',
-        'ForgeTool': '鍛打器具', 'CastHardware': '澆鑄五金', 'SharpenBlade': '砥石磨刃',
+        'SmeltBloom': '悶燒成塊', 'BuildFieldAnvil': '架設石砧',
+        'ForgeTool': '鍛打器具', 'CastHardware': '澆鑄器用', 'SharpenBlade': '砥石磨刃',
         'Quench': '淬火', 'ForgeRepairStrip': '鍛修鐵條',
         // Herbs / Alchemy
+        'SetupHerbStove': '架設陶銚',
         'SortHerbs': '分揀藥草', 'DryHerbs': '曝曬藥材', 'GrindPowder': '研製藥粉',
         'DecoctPotion': '煎煮湯劑', 'MakePoultice': '調製敷料', 'DistillEssence': '萃煉純露',
         'WashHerb': '淘洗藥草', 'DryHerb': '曝曬藥材', 'CrushHerb': '研碎藥草', 'BoilDecoction': '煎煮湯劑',
@@ -1196,9 +1721,104 @@
         'Measure': '丈量', 'Calculate': '推算', 'Observe': '觀測', 'TestBrush': '試筆',
         'GrindInk': '研墨', 'Weigh': '秤量', 'Sharpen': '磨利', 'Feed': '餵食',
         'Shake': '搖動', 'Ring': '叩鐘', 'Caulking': '捻縫', 'Pound': '舂搗',
-        'PickType': '揀字', 'RollInk': '滾墨', 'Explore': '深入探索'
+        'PickType': '揀字', 'RollInk': '滾墨', 'Explore': '深入探索',
+        // Extended Sockets & Interactions
+        'Check': '檢視', 'Climb': '登臨', 'Inspect': '審視', 'Knock': '叩門',
+        'Listen': '諦聽', 'LookShip': '眺望舟楫', 'Tap': '輕叩', 'TestEdge': '試刃',
+        'Tie': '繫縛', 'Touch': '撫觸', 'Turn': '旋動', 'Watch': '守望',
+        'WeaveSackcloth': '織造麻袋布', 'Meditate': '調息',
+        'Harvest': '採收', 'Deliver': '交割物資', 'ClaimStrandedCargo': '揭榜管運',
+        'DeliverStrandedCargo': '交割銷單', 'Sow': '整壟播種', 'Board': '登船啟航', 'Buy': '投保立契',
+        'DepositBank': '存入票號', 'WithdrawBank': '憑摺支取',
+        'StoreStash': '存入石櫃', 'RetrieveStash': '取出物資',
+        'DispatchCourier': '快騎託運', 'AngleFish': '甩竿垂釣', 'Cook': '野炊烹煮',
+        'MillGrain': '水磨碾米', 'PressCheese': '壓製乳酪', 'SmokeFish': '慢火冷燻',
+        'CutJade': '切磨寒玉', 'HaulMineCart': '滑車運礦', 'BurnLime': '入窯煅灰',
+        'RowSwampRaft': '撐筏入澤', 'PrepareMiasmaGear': '備妥避瘴', 'PlayChess': '對弈手談',
+        'SeasonalBanquet': '歲時圍爐',
+        'ChartAstrolabe': '拓印星盤',
+        'TestEngraving': '測紋校準',
+        'SparPillar': '試勁拆招',
+        'SoakHotSpring': '祛寒湯浴',
+        'GroomAppearance': '修面整容',
+        'MendTravelGear': '補綴行裝',
+        'ReadWindVane': '觀測風候',
+        'ApplyMoxibustion': '百草溫灸',
+        'HangVotivePlaque': '懸掛銘牌',
+        'TranscribeRareTome': '鈔錄孤本',
+        'AttendLecture': '旁聽策論',
+        'CalibrateClock': '校時報刻',
+        'FitMortiseTenon': '榫卯校修',
+        'QuenchBlade': '精鋼回火',
+        'DyeIndigoCloth': '藍染浸布',
+        'FeedDraftBeast': '飼餵草獸',
+        'BoardCoastalShip': '登船遠航',
+        'InspectLandRegistry': '查閱地籍',
+        'AssistKitchen': '幫廚備膳',
+        'RoastMountainTea': '焙茶品茗',
+        'SunBooks': '曝書防蠹',
+        'RoastHerbs': '炮製藥材',
+        'CollateInscriptions': '校勘碑帖',
+        'GrindOpticLens': '研磨鏡片',
+        'SelectDriedSeafood': '揀選海味',
+        'DeliberateCivicPact': '參議鄉約',
+        'DrawSpringWell': '汲水潤嗓'
     };
     window.SwActionLabels = SW_ACTION_LABELS;
+    function filterObjectSockets(rawActs) {
+        if (!Array.isArray(rawActs)) return [];
+        var filtered = [];
+        var seen = {};
+        for (var i = 0; i < rawActs.length; i++) {
+            var a = rawActs[i];
+            if (!a || seen[a]) continue;
+            // 排除單純查看、細閱、使用、操作等被動審視 socket
+            if (a === 'Look' || a === 'Read' || a === 'Use' || a === 'Operate') continue;
+            seen[a] = true;
+            filtered.push(a);
+        }
+        return filtered;
+    }
+
+    function resolveActionLabelZh(act, targetName, targetId) {
+        var nameStr = String(targetName || '');
+        var idStr = String(targetId || '');
+        if (act === 'Read') {
+            if (/日晷|指路/.test(nameStr) || /sundial/.test(idStr)) return '觀晷認路';
+            return '細閱';
+        }
+        if (act === 'Rest' || act === 'Sit') {
+            if (/欄|橋|廊|亭/.test(nameStr)) return '憑欄小憩';
+            if (/椅|凳|榻|席|床/.test(nameStr)) return '落座歇腳';
+            return '小憩歇腳';
+        }
+        if (act === 'Use' || act === 'Operate' || !act) {
+            if (/望遠鏡|瞭望|觀測/.test(nameStr) || /telescope/.test(idStr)) return '極目遠眺';
+            if (/釣竿|釣/.test(nameStr) || /angling/.test(idStr)) return '甩竿垂釣';
+            if (/告示|公佈|榜|碑|牌|帖|書|卷|冊|曆|誌/.test(nameStr)) return '細閱';
+            if (/日晷|晷|星盤|羅盤|風向|更漏/.test(nameStr)) return '觀測校刻';
+            if (/欄|亭|椅|凳|榻|席/.test(nameStr)) return '憑欄小憩';
+            if (/井|泉|水|茶|湯|飲/.test(nameStr)) return '掬水飲用';
+            if (/燈|燭|火把/.test(nameStr)) return '撥亮燈火';
+            if (/爐|灶|炭|鍋/.test(nameStr)) return '添火溫煦';
+            if (/鐘|鈴|鼓|鑼|磬/.test(nameStr)) return '輕叩聽音';
+            if (/琴|笛|瑟|琵琶/.test(nameStr)) return '撫弄試音';
+            if (/藥|臼|碾|篩/.test(nameStr)) return '分揀炮製';
+            if (/砧|錘|鍛|磨|刀|劍/.test(nameStr)) return '試手錘鍊';
+            if (/車|筏|船|舟|索|纜/.test(nameStr)) return '檢視舟車';
+            return '觸探端詳';
+        }
+        if (SW_ACTION_LABELS[act]) return SW_ACTION_LABELS[act];
+        if (/^[A-Za-z_]+$/.test(act)) return '觸探端詳';
+        return act;
+    }
+    window.SwResolveActionLabelZh = resolveActionLabelZh;
+
+    function isWildBeastToken(id, name) {
+        var sid = String(id || '');
+        if (sid.indexOf('shanhai_') === 0 || sid.indexOf('ambient_') === 0) return true;
+        return false;
+    }
 
     function renderPopoverActions(token) {
         var actionsEl = document.getElementById('sw-popover-actions');
@@ -1224,35 +1844,54 @@
         var targetName = token.label;
 
         if (token.kind === 'npc' || token.kind === 'player') {
-            var peaceActions = [
-                { act: 'Talk', label: '對話' },
-                { act: 'Trade', label: '交易' }
-            ];
-            for (var pi = 0; pi < peaceActions.length; pi++) {
-                var pa = peaceActions[pi];
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'sw-popover-act-btn log-object-action';
-                btn.setAttribute('data-entity-id', targetId);
-                btn.setAttribute('data-action', pa.act);
-                btn.setAttribute('data-target-name', targetName);
-                btn.setAttribute('data-target-type', 'entity');
-                btn.textContent = pa.label;
-                actionsEl.appendChild(btn);
+            if (isWildBeastToken(targetId, targetName)) {
+                var beastActs = [
+                    { act: 'Subdue', label: '生擒制伏', cls: 'log-action-subdue' },
+                    { act: 'Slay', label: '出手獵殺', cls: 'log-action-slay' }
+                ];
+                for (var bai = 0; bai < beastActs.length; bai++) {
+                    var ba = beastActs[bai];
+                    var bBtn = document.createElement('button');
+                    bBtn.type = 'button';
+                    bBtn.className = 'sw-popover-act-btn log-object-action ' + ba.cls;
+                    bBtn.setAttribute('data-entity-id', targetId);
+                    bBtn.setAttribute('data-action', ba.act);
+                    bBtn.setAttribute('data-target-name', targetName);
+                    bBtn.setAttribute('data-target-type', 'entity');
+                    bBtn.textContent = ba.label;
+                    actionsEl.appendChild(bBtn);
+                }
+            } else {
+                var peaceActions = [
+                    { act: 'Talk', label: '對話' },
+                    { act: 'Trade', label: '交易' }
+                ];
+                for (var pi = 0; pi < peaceActions.length; pi++) {
+                    var pa = peaceActions[pi];
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'sw-popover-act-btn log-object-action';
+                    btn.setAttribute('data-entity-id', targetId);
+                    btn.setAttribute('data-action', pa.act);
+                    btn.setAttribute('data-target-name', targetName);
+                    btn.setAttribute('data-target-type', 'entity');
+                    btn.textContent = pa.label;
+                    actionsEl.appendChild(btn);
+                }
+                var confWrap = document.createElement('span');
+                confWrap.className = 'log-conflict-container';
+                confWrap.innerHTML = '<button type="button" class="sw-popover-act-btn log-conflict-toggle" title="展開偷竊／攻擊／致死選項">衝突 ▾</button>' +
+                    '<span class="log-conflict-group" style="display:none;" hidden>' +
+                    '<button type="button" class="sw-popover-act-btn log-object-action log-action-steal" data-entity-id="' + _esc(targetId) + '" data-action="Borrow" data-target-name="' + _esc(targetName) + '" data-target-type="entity">偷竊</button>' +
+                    '<button type="button" class="sw-popover-act-btn log-object-action log-action-subdue" data-entity-id="' + _esc(targetId) + '" data-action="Subdue" data-target-name="' + _esc(targetName) + '" data-target-type="entity">攻擊</button>' +
+                    '<button type="button" class="sw-popover-act-btn log-object-action log-action-slay" data-entity-id="' + _esc(targetId) + '" data-action="Slay" data-target-name="' + _esc(targetName) + '" data-target-type="entity">致死</button>' +
+                    '</span>';
+                actionsEl.appendChild(confWrap);
             }
-            var confWrap = document.createElement('span');
-            confWrap.className = 'log-conflict-container';
-            confWrap.innerHTML = '<button type="button" class="sw-popover-act-btn log-conflict-toggle" title="展開偷竊／攻擊／致死選項">衝突 ▾</button>' +
-                '<span class="log-conflict-group" style="display:none;" hidden>' +
-                '<button type="button" class="sw-popover-act-btn log-object-action log-action-steal" data-entity-id="' + _esc(targetId) + '" data-action="Borrow" data-target-name="' + _esc(targetName) + '" data-target-type="entity">偷竊</button>' +
-                '<button type="button" class="sw-popover-act-btn log-object-action log-action-subdue" data-entity-id="' + _esc(targetId) + '" data-action="Subdue" data-target-name="' + _esc(targetName) + '" data-target-type="entity">攻擊</button>' +
-                '<button type="button" class="sw-popover-act-btn log-object-action log-action-slay" data-entity-id="' + _esc(targetId) + '" data-action="Slay" data-target-name="' + _esc(targetName) + '" data-target-type="entity">致死</button>' +
-                '</span>';
-            actionsEl.appendChild(confWrap);
         } else {
             var actionLabels = SW_ACTION_LABELS;
             var acts = (token.data && (token.data.actions || token.data.sockets)) || [];
-            var nonLookActs = Array.isArray(acts) ? acts.filter(function (a) { return a && a !== 'Look'; }) : [];
+            var nonLookActs = filterObjectSockets(acts);
             if (nonLookActs.length === 0) {
                 actionsEl.innerHTML = '';
                 actionsEl.hidden = true;
@@ -1268,7 +1907,7 @@
                 oBtn.setAttribute('data-action', act);
                 oBtn.setAttribute('data-target-name', targetName);
                 oBtn.setAttribute('data-target-type', 'object');
-                oBtn.textContent = actionLabels[act] || act;
+                oBtn.textContent = resolveActionLabelZh(act, targetName, targetId);
                 actionsEl.appendChild(oBtn);
             }
         }
@@ -1295,33 +1934,52 @@
         }
         if (kind === 'person') {
             actionsEl.hidden = false;
-            var peaceActions = [
-                { act: 'Talk', label: '對話' },
-                { act: 'Trade', label: '交易' }
-            ];
-            for (var pi = 0; pi < peaceActions.length; pi++) {
-                var pa = peaceActions[pi];
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'sw-popover-act-btn log-object-action';
-                btn.setAttribute('data-entity-id', targetId);
-                btn.setAttribute('data-action', pa.act);
-                btn.setAttribute('data-target-name', targetName);
-                btn.setAttribute('data-target-type', 'entity');
-                btn.textContent = pa.label;
-                actionsEl.appendChild(btn);
+            if (isWildBeastToken(targetId, targetName)) {
+                var beastActions = [
+                    { act: 'Subdue', label: '生擒制伏', cls: 'log-action-subdue' },
+                    { act: 'Slay', label: '出手獵殺', cls: 'log-action-slay' }
+                ];
+                for (var bi2 = 0; bi2 < beastActions.length; bi2++) {
+                    var ba2 = beastActions[bi2];
+                    var bBtn2 = document.createElement('button');
+                    bBtn2.type = 'button';
+                    bBtn2.className = 'sw-popover-act-btn log-object-action ' + ba2.cls;
+                    bBtn2.setAttribute('data-entity-id', targetId);
+                    bBtn2.setAttribute('data-action', ba2.act);
+                    bBtn2.setAttribute('data-target-name', targetName);
+                    bBtn2.setAttribute('data-target-type', 'entity');
+                    bBtn2.textContent = ba2.label;
+                    actionsEl.appendChild(bBtn2);
+                }
+            } else {
+                var peaceActions = [
+                    { act: 'Talk', label: '對話' },
+                    { act: 'Trade', label: '交易' }
+                ];
+                for (var pi = 0; pi < peaceActions.length; pi++) {
+                    var pa = peaceActions[pi];
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'sw-popover-act-btn log-object-action';
+                    btn.setAttribute('data-entity-id', targetId);
+                    btn.setAttribute('data-action', pa.act);
+                    btn.setAttribute('data-target-name', targetName);
+                    btn.setAttribute('data-target-type', 'entity');
+                    btn.textContent = pa.label;
+                    actionsEl.appendChild(btn);
+                }
+                var confWrap = document.createElement('span');
+                confWrap.className = 'log-conflict-container';
+                confWrap.innerHTML = '<button type="button" class="sw-popover-act-btn log-conflict-toggle" title="展開偷竊／攻擊／致死選項">衝突 ▾</button>' +
+                    '<span class="log-conflict-group" style="display:none;" hidden>' +
+                    '<button type="button" class="sw-popover-act-btn log-object-action log-action-steal" data-entity-id="' + _esc(targetId) + '" data-action="Borrow" data-target-name="' + _esc(targetName) + '" data-target-type="entity">偷竊</button>' +
+                    '<button type="button" class="sw-popover-act-btn log-object-action log-action-subdue" data-entity-id="' + _esc(targetId) + '" data-action="Subdue" data-target-name="' + _esc(targetName) + '" data-target-type="entity">攻擊</button>' +
+                    '<button type="button" class="sw-popover-act-btn log-object-action log-action-slay" data-entity-id="' + _esc(targetId) + '" data-action="Slay" data-target-name="' + _esc(targetName) + '" data-target-type="entity">致死</button>' +
+                    '</span>';
+                actionsEl.appendChild(confWrap);
             }
-            var confWrap = document.createElement('span');
-            confWrap.className = 'log-conflict-container';
-            confWrap.innerHTML = '<button type="button" class="sw-popover-act-btn log-conflict-toggle" title="展開偷竊／攻擊／致死選項">衝突 ▾</button>' +
-                '<span class="log-conflict-group" style="display:none;" hidden>' +
-                '<button type="button" class="sw-popover-act-btn log-object-action log-action-steal" data-entity-id="' + _esc(targetId) + '" data-action="Borrow" data-target-name="' + _esc(targetName) + '" data-target-type="entity">偷竊</button>' +
-                '<button type="button" class="sw-popover-act-btn log-object-action log-action-subdue" data-entity-id="' + _esc(targetId) + '" data-action="Subdue" data-target-name="' + _esc(targetName) + '" data-target-type="entity">攻擊</button>' +
-                '<button type="button" class="sw-popover-act-btn log-object-action log-action-slay" data-entity-id="' + _esc(targetId) + '" data-action="Slay" data-target-name="' + _esc(targetName) + '" data-target-type="entity">致死</button>' +
-                '</span>';
-            actionsEl.appendChild(confWrap);
         } else if (kind === 'object') {
-            var nonLook = Array.isArray(actions) ? actions.filter(function (a) { return a && a !== 'Look'; }) : [];
+            var nonLook = filterObjectSockets(actions);
             if (!Array.isArray(actions) || nonLook.length === 0) {
                 actionsEl.innerHTML = '';
                 actionsEl.hidden = true;
@@ -1330,7 +1988,7 @@
             actionsEl.hidden = false;
             for (var i = 0; i < nonLook.length; i++) {
                 var act = nonLook[i];
-                var label = actionLabels[act] || act;
+                var label = resolveActionLabelZh(act, targetName, targetId);
                 var idForAct = (act === 'Move' && moveTargetId) ? moveTargetId : targetId;
                 var oBtn = document.createElement('button');
                 oBtn.type = 'button';
@@ -1365,6 +2023,16 @@
 
     function SwOpenObjectPopover(token) {
         if (!token) return;
+        if (token && token.id && _activeNpcCallouts[token.id]) {
+            delete _activeNpcCallouts[token.id];
+            var cEl = document.getElementById('sw-room-canvas');
+            var tEl = cEl && cEl.querySelector('[data-token-key="' + token.key + '"]');
+            if (tEl) {
+                tEl.classList.remove('is-calling', 'is-calling-combat');
+                var p = tEl.querySelector('.sw-token-speech-pill');
+                if (p) p.remove();
+            }
+        }
         if (_activePopoverToken && _activePopoverToken.kind === 'npc' && _activePopoverToken.id !== token.id && typeof window.gameSend === 'function') {
             window.gameSend({ type: 'unfocus_entity', entity_id: _activePopoverToken.id });
         }
@@ -1381,13 +2049,13 @@
             backdrop.style.display = 'flex';
         }
         if (titleEl) titleEl.textContent = token.label;
-        if (subtitleEl) subtitleEl.textContent = token.subtitle || '';
+        if (subtitleEl) subtitleEl.textContent = '';
 
         renderPopoverActions(token);
 
         var G = window.SwGrid;
         var currentRoomId = (G && G.mapData && G.mapData.currentRoomId) || _roomId || '';
-        var cacheKey = currentRoomId + '|' + token.id;
+        var cacheKey = currentRoomId + '|' + token.id + (String(token.id || '').indexOf('ambient_') === 0 ? ('|' + (token.label || '')) : '');
         window.__currentPopoverCacheKey = cacheKey;
 
         if (logEl) {
@@ -1399,6 +2067,9 @@
                 var seenLook = false;
                 var seenNpcDialogue = false;
                 for (var ei = 0; ei < entries.length; ei++) {
+                    if (entries[ei].classList && (entries[ei].classList.contains('log-talk-input') || entries[ei].classList.contains('log-trade-input'))) {
+                        continue;
+                    }
                     var isLookEntry = entries[ei].classList && entries[ei].classList.contains('log-look');
                     if (isLookEntry) {
                         if (seenLook) continue;
@@ -1570,6 +2241,171 @@
 
         if (npcA) storeForNpc(npcA);
         if (npcB && npcB !== npcA) storeForNpc(npcB);
+        if (npcA) _activeNpcChats[npcA] = Date.now();
+        if (npcB) _activeNpcChats[npcB] = Date.now();
+        renderRoomCanvas();
+        if (window.SwPushBreath) {
+            window.SwPushBreath(rawText, { byPlayer: false });
+        }
+        setTimeout(function () {
+            renderRoomCanvas();
+        }, 12100);
+    }
+
+    function recordNpcAddress(msg) {
+        if (!msg || !msg.npc_id) return;
+        var npcId = msg.npc_id;
+        var rawText = String(msg.text || '').trim();
+        if (rawText.indexOf('「') === 0 && rawText.lastIndexOf('」') === rawText.length - 1) {
+            var innerRaw = rawText.slice(1, -1).trim();
+            if (innerRaw.indexOf('『') !== -1 && innerRaw.indexOf('』') !== -1) {
+                rawText = innerRaw.replace(/『/g, '「').replace(/』/g, '」');
+            } else if (
+                innerRaw.indexOf('見你') !== -1 ||
+                innerRaw.indexOf('抬眼') !== -1 ||
+                innerRaw.indexOf('朝你') !== -1 ||
+                innerRaw.indexOf('傳來細碎動靜') !== -1
+            ) {
+                rawText = innerRaw;
+            }
+        }
+        var plain = rawText.replace(/<[^>]*>/g, '').trim();
+        var quoteCore = '';
+        var mFq = plain.match(/『([^』]+)』/);
+        if (mFq && mFq[1]) {
+            quoteCore = mFq[1].trim();
+        } else {
+            var mColonQuote = plain.match(/[：:]\s*「([^」]+)」/);
+            if (mColonQuote && mColonQuote[1]) {
+                quoteCore = mColonQuote[1].trim();
+            } else if (plain.indexOf('「') === 0 && plain.lastIndexOf('」') === plain.length - 1) {
+                var unwrap = plain.slice(1, -1).trim();
+                var colonIdx = unwrap.indexOf('：');
+                if (colonIdx === -1) colonIdx = unwrap.indexOf(':');
+                quoteCore = (colonIdx !== -1) ? unwrap.slice(colonIdx + 1).trim() : unwrap;
+            } else {
+                quoteCore = plain;
+            }
+        }
+        quoteCore = quoteCore.replace(/^[「『，。！？、：；\s]+|[」』，。！？、：；\s]+$/g, '').trim();
+        var snippet = quoteCore.length > 10 ? (quoteCore.slice(0, 10) + '…') : quoteCore;
+        _activeNpcCallouts[npcId] = {
+            text: rawText,
+            snippet: snippet,
+            intent: msg.intent || 'talk',
+            npcName: msg.npc_name || '人物',
+            time: Date.now()
+        };
+
+        var G = window.SwGrid;
+        var currentRoomId = (G && G.mapData && G.mapData.currentRoomId) || _roomId || '';
+        var cacheKey = currentRoomId + '|' + npcId;
+        if (!window.__popoverLogCache) window.__popoverLogCache = {};
+        if (!window.__popoverLogCache[cacheKey]) window.__popoverLogCache[cacheKey] = [];
+
+        var cacheList = window.__popoverLogCache[cacheKey];
+        // 確保 cacheList 最多僅保留一筆最新 active address（移除既有的 .log-npc-address 節點）
+        window.__popoverLogCache[cacheKey] = cacheList.filter(function (entry) {
+            return !(entry.classList && entry.classList.contains('log-npc-address'));
+        });
+        cacheList = window.__popoverLogCache[cacheKey];
+
+        var formatted = (window.SwNarrative && typeof window.SwNarrative.format === 'function')
+            ? window.SwNarrative.format(rawText)
+            : rawText.replace(/\n/g, '<br>');
+
+        var spkName = String(msg.npc_name || '人物').trim();
+        var plainNoBrackets = plain.replace(/[【】]/g, '');
+        var alreadyHasSpeakerAttribution = (spkName && plainNoBrackets.indexOf(spkName) === 0) ||
+            plainNoBrackets.indexOf('見你') !== -1 ||
+            plainNoBrackets.indexOf('抬眼') !== -1 ||
+            plainNoBrackets.indexOf('朝你') !== -1;
+
+        var addressNode = document.createElement('div');
+        addressNode.className = 'sw-log-entry log-entry log-narrative log-npc-address';
+        addressNode.innerHTML = alreadyHasSpeakerAttribution
+            ? formatted
+            : ('<span class="log-speaker">' + _esc(spkName) + '：</span>' + formatted);
+        var lookIdx = -1;
+        for (var ci = 0; ci < cacheList.length; ci++) {
+            if (cacheList[ci].classList && cacheList[ci].classList.contains('log-look')) {
+                lookIdx = ci;
+                break;
+            }
+        }
+        if (lookIdx !== -1) {
+            cacheList.splice(lookIdx + 1, 0, addressNode);
+        } else {
+            cacheList.unshift(addressNode);
+        }
+
+        var backdrop = document.getElementById('sw-object-popover-backdrop');
+        var isVisible = backdrop && !backdrop.hidden && backdrop.style.display !== 'none';
+        if (isVisible && window.__currentPopoverTarget && window.__currentPopoverTarget.id === npcId) {
+            var popLog = document.getElementById('sw-popover-log');
+            if (popLog) {
+                var existingAddresses = popLog.querySelectorAll('.log-npc-address');
+                if (existingAddresses.length > 0) {
+                    popLog.replaceChild(addressNode.cloneNode(true), existingAddresses[0]);
+                    for (var ai = 1; ai < existingAddresses.length; ai++) {
+                        popLog.removeChild(existingAddresses[ai]);
+                    }
+                } else {
+                    var looks = popLog.querySelectorAll('.log-look');
+                    if (looks.length > 0 && looks[0].nextSibling) {
+                        popLog.insertBefore(addressNode.cloneNode(true), looks[0].nextSibling);
+                    } else if (looks.length > 0) {
+                        popLog.appendChild(addressNode.cloneNode(true));
+                    } else if (popLog.firstChild) {
+                        popLog.insertBefore(addressNode.cloneNode(true), popLog.firstChild);
+                    } else {
+                        popLog.appendChild(addressNode.cloneNode(true));
+                    }
+                }
+                popLog.scrollTop = popLog.scrollHeight;
+            }
+        }
+
+        renderRoomCanvas();
+        setTimeout(function () {
+            renderRoomCanvas();
+        }, 45100);
+    }
+
+    function openPopoverByEntityId(npcId, fallbackName) {
+        if (!npcId) return;
+        if (_activeNpcCallouts[npcId]) {
+            delete _activeNpcCallouts[npcId];
+        }
+        var tokens = collectCurrentTokens();
+        var found = null;
+        for (var i = 0; i < tokens.length; i++) {
+            if (tokens[i].id === npcId || tokens[i].key === npcId) {
+                found = tokens[i];
+                break;
+            }
+        }
+        if (found) {
+            SwOpenObjectPopover(found);
+            return;
+        }
+
+        var G = window.SwGrid;
+        var mapData = (G && G.mapData) ? G.mapData : {};
+        var entity = (mapData.entities || []).concat(mapData.npcs || []).find(function (e) {
+            return e && (e.id === npcId || e.npc_id === npcId);
+        });
+        var name = (entity && (entity.name || entity.display_name)) || fallbackName || getKnownNpcName(npcId) || '人物';
+        var syntheticToken = {
+            id: npcId,
+            key: 'npc_' + npcId,
+            kind: 'npc',
+            name: name,
+            label: name,
+            tokenClass: 'sw-token-npc',
+            data: entity || {}
+        };
+        SwOpenObjectPopover(syntheticToken);
     }
     window.SwRecordNpcDialogue = SwRecordNpcDialogue;
     // ── 分區直列欄四區同步渲染 ────────────────────────────────────────
@@ -1739,36 +2575,7 @@
         var myId = window.myPlayerId || '';
         var html = '<div class="sw-contact-column">';
 
-        // 在場實體（NPC + 其他玩家）
-        // L4 只顯示 NPC，排除自己與其他玩家（玩家 id 污染不進 NPC 卡）
-        var others = (mapData.entities || []).filter(function (e) {
-            return e.id !== myId && e.kind !== 'player' && e.kind !== 'Player';
-        });
-        var convertedNpcs = [];
-        for (var ei = 0; ei < others.length; ei++) {
-            var ent = others[ei];
-            var knownName = _knownNpcNames[ent.id] || '';
-            var rawDisp = knownName || displayNameOf(ent);
-            var cState = knownName ? 'named' : 'stranger';
-            html += '<button type="button" class="sw-obj-card sw-person-row card-' + cState + '" data-entity-id="' + escFn(ent.id) + '" data-obj-id="' + escFn(ent.id) + '" data-card-state="' + cState + '">';
-            html += '<span class="sw-person-name">' + escFn(rawDisp) + '</span>';
-            html += '</button>';
-            convertedNpcs.push({
-                npc_id: ent.id,
-                display_name: rawDisp,
-                card_state: cState,
-                current_activity: ent.current_activity || ''
-            });
-        }
-        html += '</div>' + exitCardsHtml(escFn);
-        if (G.objectListEl) {
-            G.objectListEl.innerHTML = html;
-        }
-        var l4El = document.getElementById('sw-l4-objects');
-        if (l4El && l4El !== G.objectListEl) {
-            l4El.innerHTML = html;
-        }
-        renderCategorizedPanels(convertedNpcs, mapData.objects || []);
+        syncNpcEntities(mapData.entities || [], mapData.objects || []);
     }
 
     function _esc(s) {
@@ -1839,10 +2646,20 @@
 
     // ── renderV5NpcCards（後端已算好安全顯示名、觀察態與真實活動）─────
     function renderV5NpcCards(npcs, objects) {
-        _currentNpcs = (npcs || []).map(function (npc) {
+        _strangerSlotById = {};
+        var prevVisible = {};
+        for (var pvi = 0; pvi < _currentNpcs.length; pvi++) {
+            if (_currentNpcs[pvi] && _currentNpcs[pvi].npc_id) {
+                prevVisible[_currentNpcs[pvi].npc_id] = pvi + 1;
+            }
+        }
+        var normalized = (npcs || []).map(function (npc) {
             var copy = Object.assign({}, npc);
             if (copy.npc_id) {
-                if (copy.card_state === 'named' && copy.display_name && !isPlaceholderName(copy.display_name)) {
+                var isBeastOrAmbient = String(copy.npc_id).indexOf('shanhai_') === 0 || String(copy.npc_id).indexOf('ambient_') === 0;
+                if (isBeastOrAmbient && copy.display_name && !/^陌生人/.test(copy.display_name)) {
+                    copy.card_state = copy.card_state === 'stranger' ? 'observed' : (copy.card_state || 'observed');
+                } else if (copy.card_state === 'named' && copy.display_name && !isPlaceholderName(copy.display_name)) {
                     var clean = concisePersonLabel(copy.display_name, 'named');
                     _knownNpcNames[copy.npc_id] = clean;
                     copy.display_name = clean;
@@ -1853,6 +2670,37 @@
             }
             return copy;
         });
+        var crowdCard = null;
+        var nonCrowd = [];
+        for (var ni = 0; ni < normalized.length; ni++) {
+            if (normalized[ni].kind === 'crowd') {
+                crowdCard = normalized[ni];
+            } else {
+                nonCrowd.push(normalized[ni]);
+            }
+        }
+        var VISIBLE_LIMIT = 5;
+        if (nonCrowd.length > VISIBLE_LIMIT) {
+            nonCrowd.sort(function (a, b) {
+                var aCall = (_activeNpcCallouts && a.npc_id && _activeNpcCallouts[a.npc_id]) ? 1 : 0;
+                var bCall = (_activeNpcCallouts && b.npc_id && _activeNpcCallouts[b.npc_id]) ? 1 : 0;
+                if (aCall !== bCall) return bCall - aCall;
+                var aPri = a.interaction_priority ? 1 : 0;
+                var bPri = b.interaction_priority ? 1 : 0;
+                if (aPri !== bPri) return bPri - aPri;
+                var aPrev = (a.npc_id && prevVisible[a.npc_id]) ? prevVisible[a.npc_id] : 9999;
+                var bPrev = (b.npc_id && prevVisible[b.npc_id]) ? prevVisible[b.npc_id] : 9999;
+                if (aPrev !== bPrev) return aPrev - bPrev;
+                var aNamed = (a.card_state === 'named') ? 1 : 0;
+                var bNamed = (b.card_state === 'named') ? 1 : 0;
+                return bNamed - aNamed;
+            });
+            nonCrowd = nonCrowd.slice(0, VISIBLE_LIMIT);
+            if (!crowdCard) {
+                crowdCard = { kind: 'crowd', display_name: '其餘人影', card_state: 'crowd' };
+            }
+        }
+        _currentNpcs = crowdCard ? nonCrowd.concat([crowdCard]) : nonCrowd;
         var strangerCards = _currentNpcs.filter(function (c) {
             return c.kind !== 'crowd' && c.card_state !== 'named' && /^陌生人/.test(c.display_name || '');
         });
@@ -1871,10 +2719,62 @@
         renderCategorizedPanels(_currentNpcs, _currentObjects);
     }
     // RoomView 是世界 tick 的即時真相；保留觀察態名稱，補進／移除實際在場人物。
+    var _lastPasserbyTransitTime = Date.now();
+
+    function transferProceduralSlotInPlace(oldId, newId) {
+        if (!oldId || !newId || oldId === newId) return;
+        var oldKey = 'npc:' + oldId;
+        var newKey = 'npc:' + newId;
+        if (_strangerSlotById[oldId]) {
+            _strangerSlotById[newId] = _strangerSlotById[oldId];
+            delete _strangerSlotById[oldId];
+        }
+        for (var rk in _tokenPositionsByRoom) {
+            if (_tokenPositionsByRoom[rk] && _tokenPositionsByRoom[rk][oldKey]) {
+                _tokenPositionsByRoom[rk][newKey] = _tokenPositionsByRoom[rk][oldKey];
+                delete _tokenPositionsByRoom[rk][oldKey];
+            }
+        }
+        if (_prevTokensMap[oldKey]) {
+            _prevTokensMap[newKey] = _prevTokensMap[oldKey];
+            _prevTokensMap[newKey].key = newKey;
+            _prevTokensMap[newKey].id = newId;
+            delete _prevTokensMap[oldKey];
+        }
+        if (_inlineOpenTokenKey === oldKey) {
+            _inlineOpenTokenKey = newKey;
+        }
+        if (_activePopoverToken && _activePopoverToken.key === oldKey) {
+            _activePopoverToken.key = newKey;
+            _activePopoverToken.id = newId;
+        }
+        var canvasEl = document.getElementById('sw-room-canvas');
+        if (canvasEl) {
+            var domNode = canvasEl.querySelector('[data-token-key="' + oldKey + '"]');
+            if (domNode) {
+                domNode.setAttribute('data-token-key', newKey);
+                domNode.setAttribute('data-obj-id', newId);
+                domNode.setAttribute('data-entity-id', newId);
+            }
+        }
+    }
+
     function syncNpcEntities(entities, objects) {
         var previous = {};
         var previousOrder = [];
         var crowd = null;
+        var GMap = (window.SwGrid && window.SwGrid.mapData) ? window.SwGrid.mapData : null;
+        if (GMap && Array.isArray(GMap.npcs)) {
+            for (var gi = 0; gi < GMap.npcs.length; gi++) {
+                var gNpc = GMap.npcs[gi];
+                if (!gNpc) continue;
+                if (gNpc.kind === 'crowd') {
+                    crowd = gNpc;
+                } else if (gNpc.npc_id) {
+                    previous[gNpc.npc_id] = gNpc;
+                }
+            }
+        }
         for (var i = 0; i < _currentNpcs.length; i++) {
             if (_currentNpcs[i].kind === 'crowd') {
                 crowd = _currentNpcs[i];
@@ -1888,22 +2788,32 @@
         for (var ei = 0; ei < source.length; ei++) {
             var ent = source[ei];
             if (ent.kind !== 'npc' && ent.kind !== 'Npc') continue;
-            if (ent.id && String(ent.id).indexOf('ambient_') === 0) continue;
             live[ent.id] = ent;
         }
 
         var next = [];
         var selected = {};
         var VISIBLE_LIMIT = 5;
+        function isWildOrAmbient(eid, entity) {
+            if (!eid) return false;
+            var s = String(eid);
+            if (s.indexOf('shanhai_') === 0 || s.indexOf('ambient_') === 0) return true;
+            return false;
+        }
         function resolveDisplayName(entity, safeRecord) {
             var eid = entity && entity.id;
             if (eid && _knownNpcNames[eid]) {
                 return _knownNpcNames[eid];
             }
+            if (isWildOrAmbient(eid, entity)) {
+                return (safeRecord && safeRecord.display_name && !/^陌生人/.test(safeRecord.display_name))
+                    ? safeRecord.display_name
+                    : (entity.display_title || entity.display_name || '生靈');
+            }
             if (safeRecord && safeRecord.card_state === 'named' && safeRecord.display_name && !isPlaceholderName(safeRecord.display_name)) {
                 return safeRecord.display_name;
             }
-            if (safeRecord && safeRecord.display_name) {
+            if (safeRecord && safeRecord.display_name && !/^陌生人/.test(safeRecord.display_name)) {
                 return safeRecord.display_name;
             }
             return '陌生人';
@@ -1913,12 +2823,35 @@
             if (eid && _knownNpcNames[eid]) {
                 return 'named';
             }
+            if (isWildOrAmbient(eid, entity)) {
+                return (safeRecord && safeRecord.card_state && safeRecord.card_state !== 'stranger')
+                    ? safeRecord.card_state
+                    : 'observed';
+            }
             return safeRecord ? safeRecord.card_state : 'stranger';
         }
+        function npcSelectionRank(ent) {
+            var idStr = String((ent && ent.id) || '');
+            var actStr = String((ent && ent.current_activity) || '');
+            var isProcedural = /^npc_/.test(idStr);
+            var isInTransit = /^正(動身|步行)前往/.test(actStr);
+            if (!isProcedural && !isInTransit) return 4;
+            if (!isProcedural && isInTransit) return 3;
+            if (isProcedural && !isInTransit) return 2;
+            return 1;
+        }
+        var sortedCandidates = source.slice().sort(function (a, b) {
+            return npcSelectionRank(b) - npcSelectionRank(a);
+        });
 
-        for (var pri = 0; pri < source.length; pri++) {
+        // 1. 優先放入主動搭話／互動焦點／玩家正展開內聯晶片或詳情框的人物
+        for (var pri = 0; pri < source.length && next.length < VISIBLE_LIMIT; pri++) {
             var priorityEntity = source[pri];
-            if ((priorityEntity.kind !== 'npc' && priorityEntity.kind !== 'Npc') || !priorityEntity.interaction_priority || (priorityEntity.id && String(priorityEntity.id).indexOf('ambient_') === 0)) continue;
+            if (priorityEntity.kind !== 'npc' && priorityEntity.kind !== 'Npc') continue;
+            var isCalling = !!(_activeNpcCallouts && _activeNpcCallouts[priorityEntity.id]);
+            var isInlineOpen = (_inlineOpenTokenKey === 'npc:' + priorityEntity.id);
+            var isPopoverOpen = !!(_activePopoverToken && _activePopoverToken.id === priorityEntity.id);
+            if (!priorityEntity.interaction_priority && !isCalling && !isInlineOpen && !isPopoverOpen) continue;
             var prioritySafe = previous[priorityEntity.id];
             var priName = resolveDisplayName(priorityEntity, prioritySafe);
             next.push({
@@ -1927,16 +2860,55 @@
                 display_name: priName,
                 card_state: resolveCardState(priorityEntity, prioritySafe),
                 current_activity: priorityEntity.current_activity || '',
-                interaction_priority: true
+                interaction_priority: !!priorityEntity.interaction_priority
             });
             selected[priorityEntity.id] = true;
         }
-        // 先保留玩家原本正在辨認的人；有人離開後，才讓新到者補進視野。
+
+        var nowMs = Date.now();
+        var isRoomJustEntered = (previousOrder.length === 0) || ((_roomEnterTime > 0) && ((nowMs - _roomEnterTime) < 1500));
+
+        // 2. 入場初刻優先錨定本場所駐場核心人物（rank 4，如樞紐石橋旁指引商旅之陸常貴）；駐留期間則先保留已在畫面中之人物，不因路過角色而硬擠換位
+        if (isRoomJustEntered) {
+            for (var ci = 0; ci < sortedCandidates.length && next.length < VISIBLE_LIMIT; ci++) {
+                var curatedEnt = sortedCandidates[ci];
+                if ((curatedEnt.kind !== 'npc' && curatedEnt.kind !== 'Npc') || selected[curatedEnt.id]) continue;
+                if (npcSelectionRank(curatedEnt) < 4) break;
+                var curatedSafe = previous[curatedEnt.id];
+                next.push({
+                    kind: 'npc',
+                    npc_id: curatedEnt.id,
+                    display_name: resolveDisplayName(curatedEnt, curatedSafe),
+                    card_state: resolveCardState(curatedEnt, curatedSafe),
+                    current_activity: curatedEnt.current_activity || '',
+                    interaction_priority: !!curatedEnt.interaction_priority
+                });
+                selected[curatedEnt.id] = true;
+            }
+        }
+
+        // 3. 保留玩家視野中原本在場的人；對背景隨機路人施加 15 秒從容節流，避免每 3 秒集體洗牌進出
+        var st = (typeof window.gameState === 'function') ? window.gameState() : null;
+        var px = (st && typeof st.x === 'number') ? st.x : ((GMap && typeof GMap.playerX === 'number') ? GMap.playerX : ((GMap && GMap.player && typeof GMap.player.x === 'number') ? GMap.player.x : null));
+        var py = (st && typeof st.y === 'number') ? st.y : ((GMap && typeof GMap.playerY === 'number') ? GMap.playerY : ((GMap && GMap.player && typeof GMap.player.y === 'number') ? GMap.player.y : null));
+        var curCoordSuffix = (px !== null && py !== null) ? ('_' + px + '_' + py) : '';
+        var passerbyTransitUsedThisTick = false;
+
+        // 3A. 先保留仍在場（live）之既有視野人物，確保其 selected 標記完整
         for (var pi = 0; pi < previousOrder.length && next.length < VISIBLE_LIMIT; pi++) {
             var priorId = previousOrder[pi];
+            if (selected[priorId]) continue;
             var priorEntity = live[priorId];
-            if (!priorEntity || selected[priorId]) continue;
             var priorSafe = previous[priorId];
+            if (!priorEntity) {
+                var sid = String(priorId);
+                var coordMatches = !curCoordSuffix || sid.slice(-curCoordSuffix.length) === curCoordSuffix;
+                if (priorSafe && coordMatches && (sid.indexOf('shanhai_') === 0 || sid.indexOf('ambient_') === 0)) {
+                    next.push(priorSafe);
+                    selected[priorId] = true;
+                }
+                continue;
+            }
             next.push({
                 kind: 'npc',
                 npc_id: priorId,
@@ -1947,9 +2919,53 @@
             });
             selected[priorId] = true;
         }
-        for (var li = 0; li < source.length && next.length < VISIBLE_LIMIT; li++) {
-            var ent = source[li];
-            if ((ent.kind !== 'npc' && ent.kind !== 'Npc') || selected[ent.id] || (ent.id && String(ent.id).indexOf('ambient_') === 0)) continue;
+
+        // 3B. 處理本 Tick 離開之既有視野人物：15 秒內原位平順交接予未在場上之駐留街坊，每 15 秒最多允許 1 人滑出滑入
+        for (var dpi = 0; dpi < previousOrder.length && next.length < VISIBLE_LIMIT; dpi++) {
+            var depId = previousOrder[dpi];
+            if (selected[depId] || live[depId]) continue;
+            var depSafe = previous[depId];
+            var depSid = String(depId);
+            var isProceduralStranger = /^npc_/.test(depSid) && (!depSafe || depSafe.card_state === 'stranger');
+            if (!isProceduralStranger) {
+                passerbyTransitUsedThisTick = true;
+                _lastPasserbyTransitTime = nowMs;
+                continue;
+            }
+            var canAnimatePasserby = !passerbyTransitUsedThisTick && ((nowMs - _lastPasserbyTransitTime) >= 15000);
+            if (canAnimatePasserby) {
+                passerbyTransitUsedThisTick = true;
+                _lastPasserbyTransitTime = nowMs;
+                continue;
+            }
+            var replacementEnt = null;
+            for (var ri = 0; ri < sortedCandidates.length; ri++) {
+                var cand = sortedCandidates[ri];
+                if ((cand.kind !== 'npc' && cand.kind !== 'Npc') || selected[cand.id] || previous[cand.id]) continue;
+                if (/^npc_/.test(String(cand.id || ''))) {
+                    replacementEnt = cand;
+                    break;
+                }
+            }
+            if (replacementEnt) {
+                transferProceduralSlotInPlace(depId, replacementEnt.id);
+                var repSafe = previous[replacementEnt.id] || depSafe;
+                next.push({
+                    kind: 'npc',
+                    npc_id: replacementEnt.id,
+                    display_name: resolveDisplayName(replacementEnt, repSafe),
+                    card_state: resolveCardState(replacementEnt, repSafe),
+                    current_activity: replacementEnt.current_activity || '',
+                    interaction_priority: !!replacementEnt.interaction_priority
+                });
+                selected[replacementEnt.id] = true;
+            }
+        }
+
+        // 4. 補齊剩餘空缺槽位
+        for (var li = 0; li < sortedCandidates.length && next.length < VISIBLE_LIMIT; li++) {
+            var ent = sortedCandidates[li];
+            if ((ent.kind !== 'npc' && ent.kind !== 'Npc') || selected[ent.id]) continue;
             var safe = previous[ent.id];
             var entName = resolveDisplayName(ent, safe);
             next.push({
@@ -1964,7 +2980,7 @@
         }
         var strangers = next.filter(function (npc) { return npc.card_state === 'stranger' && (npc.display_name === '行人' || /^陌生人/.test(npc.display_name || '')); });
         for (var si = 0; si < strangers.length; si++) {
-            strangers[si].display_name = '陌生人' + (strangers.length > 1 ? String(si + 1) : '');
+            strangers[si].display_name = '陌生人';
         }
         if (Object.keys(live).length > next.length) {
             next.push(crowd || { kind: 'crowd', display_name: '其餘人影', card_state: 'crowd' });
@@ -1987,8 +3003,53 @@
         openPopover: SwOpenObjectPopover,
         closePopover: SwCloseObjectPopover,
         resetIdleTimer: SwResetPopoverIdleTimer,
-        recordNpcDialogue: SwRecordNpcDialogue
+        recordNpcDialogue: SwRecordNpcDialogue,
+        recordNpcAddress: recordNpcAddress,
+        openPopoverByEntityId: openPopoverByEntityId
     };
+    function cleanPlaceDisplayName(name) {
+        var s = String(name || '').trim();
+        if (!s) return '';
+        if (s.indexOf('文曜・中心樞紐石橋') !== -1 || s.indexOf('中心樞紐石橋') !== -1) {
+            s = s.replace('文曜・中心樞紐石橋', '三水匯流大石橋').replace('中心樞紐石橋', '三水匯流大石橋');
+        }
+        if (s.indexOf('文曜・') === 0) {
+            s = s.slice(3).trim();
+        }
+        return s;
+    }
+    window.cleanPlaceDisplayName = window.cleanPlaceDisplayName || cleanPlaceDisplayName;
+
+    function shouldFilterFromRecap(text) {
+        var s = String(text || '').trim();
+        if (/^你仔細打量了/.test(s)) return true;
+        if (/^你對【[^】]+】說：「(寒暄|寒暄問候|打聽|打聽近況|請教差事)」$/.test(s)) return true;
+        return false;
+    }
+
+    function installRecapFilter() {
+        if (window.SwNotify && window.SwNotify.recordRecap && !window.SwNotify.recordRecap._filtered) {
+            var origRecordRecap = window.SwNotify.recordRecap;
+            var filteredWrapper = function (entry) {
+                if (!entry) return origRecordRecap(entry);
+                var plain = entry.plain || (entry.html ? entry.html.replace(/<[^>]*>/g, '').trim() : '');
+                if (shouldFilterFromRecap(plain)) {
+                    return null;
+                }
+                return origRecordRecap(entry);
+            };
+            filteredWrapper._filtered = true;
+            window.SwNotify.recordRecap = filteredWrapper;
+        }
+    }
+    installRecapFilter();
+    if (typeof document !== 'undefined') {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', installRecapFilter);
+        } else {
+            setTimeout(installRecapFilter, 0);
+        }
+    }
     if (typeof window !== 'undefined') {
         var _resizeTimer = null;
         window.addEventListener('resize', function () {
@@ -1998,5 +3059,4 @@
             }, 80);
         });
     }
-    console.log('[sw-object-list] v0.37.1 loaded');
 })();

@@ -5,10 +5,35 @@ use rand::Rng;
 use crate::db::{expand_soul_seed_to_personality, get_entity, get_npc_person_display_name};
 use crate::entity::EntityKind;
 
+/// 依據場所物件化資訊與可觀測特徵（制服／櫃檯管制區）解析陌生人的客觀稱謂。
+pub fn resolve_reaction_stranger_label(
+    room_name: &str,
+    display_title: &str,
+    has_uniform: bool,
+    in_counter_zone: bool,
+) -> String {
+    if !has_uniform && !in_counter_zone {
+        return "陌生人".to_string();
+    }
+    let host_title = crate::grid::resolve_any_room_venue_object(room_name.trim(), display_title.trim())
+        .map(|v| v.default_host_title)
+        .unwrap_or("當值主事");
+    if in_counter_zone && has_uniform {
+        format!("櫃檯內場身著工作服的{host_title}")
+    } else if in_counter_zone {
+        format!("櫃檯內場的{host_title}")
+    } else {
+        format!("身著工作服的{host_title}")
+    }
+}
+
 /// 依情境回傳一句 NPC 視角敘事尾綴；無則空字串。
 /// `kind`：subdue_victim、slay_victim、lost_subdue、borrow_ok、borrow_caught。
 #[must_use]
 pub fn npc_behavior_reaction_line(npc_id: &str, player_id: &str, kind: &str) -> String {
+    if npc_id.starts_with("shanhai_") || npc_id.starts_with("ambient_flock_") {
+        return String::new();
+    }
     let mut bold = 0.5_f64;
     let mut sens = 0.5_f64;
     let mut ord = 0.5_f64;
@@ -47,7 +72,7 @@ pub fn npc_behavior_reaction_line(npc_id: &str, player_id: &str, kind: &str) -> 
         }
         "borrow_ok" => {
             if ord > 0.55 && r < 0.4 {
-                format!("【{short}】專注看著前方，並未察覺身上的物件被收進隨身包袋。")
+                format!("【{short}】專注看著眼前，並未察覺身上的物件被收進隨身包袋。")
             } else {
                 String::new()
             }
@@ -82,7 +107,25 @@ fn viewer_visible_name(entity_id: &str, player_id: &str) -> String {
         return "陌生人".to_string();
     };
     if e.kind == EntityKind::Npc {
+        if (e.id.starts_with("ambient_") || e.id.starts_with("shanhai_"))
+            && !e.display_title.trim().is_empty()
+        {
+            return e.display_title.trim().to_string();
+        }
         if !player_id.is_empty() && !crate::store::player_knows_npc(player_id, entity_id) {
+            let room_id = crate::db::get_entity_room(entity_id).unwrap_or_default();
+            let room_name = crate::db::get_room_name(&room_id).unwrap_or_default();
+            let (is_staff, has_uniform, in_counter_zone) =
+                crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+                    &room_name,
+                    &e.id,
+                    &e.display_title,
+                    &e.current_activity,
+                    &e.equipment_slots,
+                );
+            if is_staff {
+                return resolve_reaction_stranger_label(&room_name, &e.display_title, has_uniform, in_counter_zone);
+            }
             return "陌生人".to_string();
         }
         let name = get_npc_person_display_name(entity_id).unwrap_or_default();
@@ -95,4 +138,31 @@ fn viewer_visible_name(entity_id: &str, player_id: &str) -> String {
         return e.display_title;
     }
     "陌生人".to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_resolve_reaction_stranger_label_all_cases() {
+        let room = "老堰頭・水輪石磨工坊";
+        let title = "司秤掌事";
+
+        // Case 1: (true, true) -> 櫃檯內場身著工作服的...
+        let both = resolve_reaction_stranger_label(room, title, true, true);
+        assert_eq!(both, "櫃檯內場身著工作服的當值石磨匠師");
+
+        // Case 2: (false, true) -> 櫃檯內場的...
+        let counter_only = resolve_reaction_stranger_label(room, title, false, true);
+        assert_eq!(counter_only, "櫃檯內場的當值石磨匠師");
+
+        // Case 3: (true, false) -> 身著工作服的...
+        let uniform_only = resolve_reaction_stranger_label(room, title, true, false);
+        assert_eq!(uniform_only, "身著工作服的當值石磨匠師");
+
+        // Case 4: (false, false) -> 陌生人
+        let neither = resolve_reaction_stranger_label(room, title, false, false);
+        assert_eq!(neither, "陌生人");
+    }
 }

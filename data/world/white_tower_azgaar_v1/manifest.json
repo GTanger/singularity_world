@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "id": "white_tower_peninsula_azgaar_package_v1",
+  "name": "白塔半島 Azgaar 完整作者資料包 v1",
+  "status": "working_proposal",
+  "canon": false,
+  "runtimeAuthority": false,
+  "playerFacingMap": false,
+  "source": {
+    "project": "Azgaar/Fantasy-Map-Generator",
+    "seed": "white-tower-peninsula-v1",
+    "heightmap": "whiteTowerConstrained",
+    "gridCells": 100000,
+    "packedCells": 57623,
+    "landCells": 54966,
+    "commit": "73e43d2b44b9b85b42c5394a0476d90bb22d688e"
+  },
+  "generated": {
+    "features": 5,
+    "landFeatures": [
+      {
+        "id": 2,
+        "type": "island",
+        "group": "continent",
+        "cells": 52492,
+        "area": 831990
+      },
+      {
+        "id": 4,
+        "type": "island",
+        "group": "island",
+        "cells": 2419,
+        "area": 36684
+      },
+      {
+        "id": 3,
+        "type": "island",
+        "group": "isle",
+        "cells": 36,
+        "area": 362
+      },
+      {
+        "id": 5,
+        "type": "island",
+        "group": "isle",
+        "cells": 19,
+        "area": 141
+      }
+    ],
+    "rivers": 1129,
+    "lakes": 0,
+    "biomes": 8,
+    "burgCandidates": 1666,
+    "routeCandidates": 1244,
+    "stateCandidates": 23,
+    "provinceCandidates": 487,
+    "cultureCandidates": 9,
+    "religionCandidates": 14,
+    "markerCandidates": 456,
+    "zoneCandidates": 15,
+    "goods": 71,
+    "markets": 54,
+    "deals": 25808
+  },
+  "canonAuthority": "../white_tower_topology_v1.json",
+  "physicalGeography": {
+    "path": "../white_tower_physical_geography_v1.json",
+    "bytes": 1137485,
+    "sha256": "8972b1cd0353539be8f3fbb19ae5e63ddc162d1c471634273766caf81b774af6"
+  },
+  "dispositions": {
+    "nativeAzgaarData": "retained_as_non_canon_candidates",
+    "acceptedWhiteTowerFacts": "overlay_and_validation_authority",
+    "generatedNamesPoliticsCultures": "candidate_not_canon"
+  },
+  "files": [
+    {
+      "path": "white_tower_peninsula_v1.map",
+      "bytes": 13681002,
+      "sha256": "e589faac37bb840b37a7d01b6a4c7e0b6dfd3fe256789fa0980cc8402fbb957d"
+    },
+    {
+      "path": "white_tower_peninsula_v1_full.json",
+      "bytes": 63353912,
+      "sha256": "e7bb992e818e901f443b7f9c9fe74792f4353fd2c8cbeb3c3d75b024ef95441c"
+    },
+    {
+      "path": "white_tower_peninsula_v1_political.svg",
+      "bytes": 2558496,
+      "sha256": "a784458616574f57ee633e8bed4d146d6e47932f4f58df6d280adf0aad5a4fb0"
+    },
+    {
+      "path": "white_tower_peninsula_v1_political.png",
+      "bytes": 1190950,
+      "sha256": "580e38f7b29a76da47c4cfc92d61cb8227de7d594e86fe91bf3905019d9a36a5"
+    },
+    {
+      "path": "white_tower_peninsula_v1_biomes.svg",
+      "bytes": 1918264,
+      "sha256": "9c07813b5a307e6944be1de1ec2c3a321662c0222c9a8ce36d11bf1b283dbba6"
+    },
+    {
+      "path": "white_tower_peninsula_v1_biomes.png",
+      "bytes": 604721,
+      "sha256": "e21b69f5fb6434f77ec0e9abe478747d4ebaae0841b980a5e7215ef96a29d7f1"
+    },
+    {
+      "path": "white_tower_peninsula_v1_heightmap.svg",
+      "bytes": 1679868,
+      "sha256": "284e80c1e1e98c98192bf6de78c1424afb5587ef2f4528578b624e231a492cea"
+    },
+    {
+      "path": "white_tower_peninsula_v1_heightmap.png",
+      "bytes": 536786,
+      "sha256": "4d0def3b566aa8337a095379e14e2f4c1d65539e85c262b4ac5e917517d1f204"
+    },
+    {
+      "path": "white_tower_peninsula_v1_canon_overlay.svg",
+      "bytes": 1691748,
+      "sha256": "c19164f0c2541d97f33ac6ed1c2c504c573fbb9ef47978fbd1b9b6acac82398f"
+    },
+    {
+      "path": "white_tower_peninsula_v1_canon_overlay.png",
+      "bytes": 569174,
+      "sha256": "c71840cb867443673521329e4b27e9f2b2e9ce425c7d553e1325bee55b188192"
+    },
+    {
+      "path": "white_tower_peninsula_v1_cells.geojson",
+      "bytes": 21270593,
+      "sha256": "0b47551923596e21799f38c07dab7270009fde711d5c1a6e20e6a6872e6ac6ec"
+    },
+    {
+      "path": "white_tower_peninsula_v1_routes.geojson",
+      "bytes": 390654,
+      "sha256": "03502fde294d92a5e4544513c1bd1b232317c7daca30b5948bc4110dc54848f5"
+    },
+    {
+      "path": "white_tower_peninsula_v1_rivers.geojson",
+      "bytes": 521888,
+      "sha256": "2a1840f4df3344d9c740979181bf2bf92bdb5756f16a41e63da356fd99ff9681"
+    },
+    {
+      "path": "white_tower_peninsula_v1_markers.geojson",
+      "bytes": 72145,
+      "sha256": "b10aa2913b6fc7a7674b9469f59dfe46d71289407e3b935026a177de894f40ac"
+    },
+    {
+      "path": "white_tower_peninsula_v1_zones.geojson",
+      "bytes": 109630,
+      "sha256": "d7822dcb0c9c9247d724582142ef770de9beef4d4c132c204dc8e4110f2e2b1c"
+    }
+  ]
+}

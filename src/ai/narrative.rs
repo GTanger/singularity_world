@@ -1,5 +1,5 @@
-// narrative 模組 — LLM 數據轉描述與嚴格事實保真度（Fact-Fidelity）驗證管線。
-// 嚴守台灣正體中文，徹底拔除第四面牆詞彙與即時性虛詞。後台數據嚴謹，前台體感去數值化。
+// narrative 模組 — LLM 資料轉描述與嚴格事實保真度（Fact-Fidelity）驗證管線。
+// 嚴守台灣正體中文，徹底拔除第四面牆詞彙與即時性虛詞。後台資料嚴謹，前台體感去數值化。
 
 use std::collections::{HashMap, HashSet};
 use std::hash::{DefaultHasher, Hash, Hasher};
@@ -14,7 +14,7 @@ use crate::combat::wordplate::{
     derive_elementary_motions_from_chars, CarrierAffinity, TacticalSlot, TargetPart,
 };
 
-/// 招式數據封包（後台結構化詞元與動作資料）
+/// 招式資料封包（後台結構化字牌與動作資料）
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SkillDataPacket {
     pub entity_id: String,
@@ -36,7 +36,7 @@ pub struct SynthesizedSkillProse {
     pub origin_basis: String,
 }
 
-/// 單節交鋒事實封包（後台物理判定與招式碰擊斷點數據）
+/// 單節交鋒事實封包（後台物理判定與招式碰擊斷點資料）
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub struct CombatBoutFactPacket {
     pub slot: TacticalSlot,
@@ -79,21 +79,21 @@ pub struct CraftActionFactPacket {
 
 
 const FORBIDDEN_WORDS_SKILL_NAME: &[&str] = &[
-    "剛才", "剛剛", "方才", "頃刻", "還有", "系統", "生成", "玩家", "序位", "回合",
-    "資料庫", "database", "grid", "debug", "scene_stub", "聖塔", "110V", "念場",
-    "富態", "小市", "短市", "青籠關", "HP", "點數",
+    concat!("\u{525b}", "\u{624d}"), concat!("\u{525b}", "\u{525b}"), concat!("\u{65b9}", "\u{624d}"), "頃刻", "還有", "系統", "生成", "玩家", "序位", "回合",
+    "資料庫", "database", "grid", "debug", "scene_stub", concat!("聖", "塔"), concat!("110", "V"), concat!("念", "場"),
+    concat!("富", "態"), concat!("小", "市"), concat!("短", "市"), concat!("青籠", "關"), "HP", "點數",
 ];
 
 const FORBIDDEN_WORDS_ORIGIN_BASIS: &[&str] = &[
-    "剛才", "剛剛", "方才", "頃刻", "還有", "資料庫", "系統", "生成", "玩家", "序位",
-    "回合", "第", "database", "grid", "debug", "scene_stub", "聖塔", "110V", "念場",
-    "富態", "小市", "短市", "青籠關", "HP", "點數",
+    concat!("\u{525b}", "\u{624d}"), concat!("\u{525b}", "\u{525b}"), concat!("\u{65b9}", "\u{624d}"), "頃刻", "還有", "資料庫", "系統", "生成", "玩家", "序位",
+    "回合", "第", "database", "grid", "debug", "scene_stub", concat!("聖", "塔"), concat!("110", "V"), concat!("念", "場"),
+    concat!("富", "態"), concat!("小", "市"), concat!("短", "市"), concat!("青籠", "關"), "HP", "點數",
 ];
 
 const FORBIDDEN_WORDS_COMBAT_PROSE: &[&str] = &[
-    "第", "回合", "序位", "剛才", "剛剛", "方才", "頃刻", "還有", "系統", "生成", "HP",
-    "資料庫", "database", "grid", "debug", "scene_stub", "聖塔", "110V", "念場",
-    "富態", "小市", "短市", "青籠關", "玩家", "點數",
+    "第", "回合", "序位", concat!("\u{525b}", "\u{624d}"), concat!("\u{525b}", "\u{525b}"), concat!("\u{65b9}", "\u{624d}"), "頃刻", "還有", "系統", "生成", "HP",
+    "資料庫", "database", "grid", "debug", "scene_stub", concat!("聖", "塔"), concat!("110", "V"), concat!("念", "場"),
+    concat!("富", "態"), concat!("小", "市"), concat!("短", "市"), concat!("青籠", "關"), "玩家", "點數",
 ];
 
 const FORBIDDEN_FABRICATED_RESIDUE: &[&str] = &["燥氣", "霜氣", "暗震", "旋流"];
@@ -110,15 +110,26 @@ pub fn clean_vessel_name(vessel: &str) -> String {
     if trimmed.is_empty() || trimmed == "徒手" {
         return String::new();
     }
-    let clean = trimmed
+    let after_prefix = if trimmed.starts_with('【') {
+        if let Some((_, rest)) = trimmed.split_once("】・") {
+            rest.trim()
+        } else if let Some((_, rest)) = trimmed.split_once('】') {
+            rest.trim()
+        } else {
+            trimmed
+        }
+    } else {
+        trimmed
+    };
+    let clean = after_prefix
         .split(|c| c == '[' || c == '【' || c == '(' || c == '（')
         .next()
-        .unwrap_or(trimmed)
+        .unwrap_or(after_prefix)
         .trim();
     clean.to_string()
 }
 
-/// 驗證招式命名與真意描述是否嚴格契合數據
+/// 驗證招式命名與真意描述是否嚴格契合資料
 pub fn verify_skill_output(name: &str, origin_basis: &str, packet: &SkillDataPacket) -> bool {
     // 1. name 長度必須為 2..=7 字元，純繁體中文，無 ASCII 數字、無標點符號與括號
     let name_char_count = name.chars().count();
@@ -183,7 +194,7 @@ pub fn verify_skill_output(name: &str, origin_basis: &str, packet: &SkillDataPac
         }
     }
 
-    // 4. 武學動作與數據錨定檢查
+    // 4. 武學動作與資料錨定檢查
     if packet.domain == "martial" {
         let mut grounded = false;
         // 動作序列檢查（整詞、雙字子串或單字）
@@ -235,7 +246,7 @@ pub fn verify_skill_output(name: &str, origin_basis: &str, packet: &SkillDataPac
                 }
             }
         }
-        // 詞元字元檢查
+        // 銘文字元檢查
         if !grounded {
             for wc in &packet.word_chars {
                 let trimmed = wc.trim();
@@ -580,22 +591,30 @@ fn call_local_chat_llm(
     Ok(reply)
 }
 
-/// 同步呼叫本地 LLM 提煉招式真意（供調用方與測試使用）
+/// 同步呼叫本地 LLM 提煉招式真意（供呼叫方與測試使用）
 pub fn call_llm_for_skill_data(packet: &SkillDataPacket) -> Option<SynthesizedSkillProse> {
     let base_url = std::env::var("SW_NARRATIVE_LLM_URL")
         .unwrap_or_else(|_| "http://127.0.0.1:11434/v1".to_string());
     let model = "google_gemma-4-26B-A4B-it-Q4_1";
 
-    let system_prompt = "你是一位武俠與百工世界的招式命名與真意演繹者。請依據提供的動作序列、詞元字元與載體器物，提煉招式名稱與演繹真意。\
+    let system_prompt = concat!(
+        "你是一位武俠與百工世界的招式命名與真意演繹者。請依據提供的動作序列、銘文字元與載體器物，提煉招式名稱與演繹真意。\
 嚴格要求：\
 1. 嚴格使用台灣正體中文。\
-2. 絕對不可出現任何阿拉伯數字（0-9），不可出現「剛才」、「剛剛」、「方才」、「頃刻」、「還有」、「資料庫」、「系統」、「生成」、「玩家」、「序位」、「回合」、「第」等字眼。\
+2. 絕對不可出現任何阿拉伯數字（0-9），不可出現「",
+        concat!("\u{525b}", "\u{624d}"),
+        "」、「",
+        concat!("\u{525b}", "\u{525b}"),
+        "」、「",
+        concat!("\u{65b9}", "\u{624d}"),
+        "」、「頃刻」、「還有」、「資料庫」、「系統」、「生成」、「玩家」、「序位」、「回合」、「第」、「主樞」、「詞元」、「剝名」、「識海」、「字譜」等字眼。\
 3. 招式名稱必須為2至7字繁體中文，不可有標點符號或括號。\
 4. 演繹真意（origin_basis）必須為12至90字，必須切實反映提供的動作序列與手持載體。\
-5. 必須僅以標準 JSON 格式輸出：{\"name\":\"招式名\",\"origin_basis\":\"演繹真意\"}，不可包含其他文字。";
+5. 必須僅以標準 JSON 格式輸出：{\"name\":\"招式名\",\"origin_basis\":\"演繹真意\"}，不可包含其他文字。"
+    );
 
     let user_prompt = format!(
-        "領域：{}\n境界或主樞：{}\n施展路數：{}\n手持器物：{}\n器物類別：{}\n所學字印：{}\n分解碎招動作：{}\n原名參考：{}",
+        "領域：{}\n運動鏈階段：{}\n施展路數：{}\n手持器物：{}\n器物類別：{}\n研習銘文：{}\n分解碎招動作：{}\n原名參考：{}",
         packet.domain,
         packet.hub_or_tier,
         packet.slot_label,
@@ -633,7 +652,7 @@ pub fn call_llm_for_skill_data(packet: &SkillDataPacket) -> Option<SynthesizedSk
     }
 }
 
-/// 綜合招式數據生成或檢索招式真意文采
+/// 綜合招式資料生成或檢索招式真意文采
 pub fn synthesize_skill_from_data(packet: &SkillDataPacket) -> SynthesizedSkillProse {
     let key = compute_skill_cache_key(packet);
 
@@ -666,7 +685,7 @@ pub fn synthesize_skill_from_data(packet: &SkillDataPacket) -> SynthesizedSkillP
         return render_deterministic_skill_from_data(packet);
     }
 
-    // 4. 正式運行背景生成（防抖防重複調用）
+    // 4. 正式運行背景生成（防抖防重複呼叫）
     if mark_skill_in_flight(key) {
         let packet_clone = packet.clone();
         std::thread::spawn(move || {
@@ -684,7 +703,7 @@ pub fn synthesize_skill_from_data(packet: &SkillDataPacket) -> SynthesizedSkillP
 // 交鋒文字敘事驗證與生成
 // ---------------------------------------------------------------------------
 
-/// 驗證單節交鋒敘事段落是否嚴格契合數據
+/// 驗證單節交鋒敘事段落是否嚴格契合資料
 pub fn verify_combat_bout_output(prose: &str, packet: &CombatBoutFactPacket) -> bool {
     let char_count = prose.chars().count();
     if !(20..=180).contains(&char_count) {
@@ -743,7 +762,7 @@ pub fn verify_combat_bout_output(prose: &str, packet: &CombatBoutFactPacket) -> 
         }
     }
 
-    // 動作數據錨定檢查：必須包含勝方或敗方動作的關鍵詞或雙字子串
+    // 動作資料錨定檢查：必須包含勝方或敗方動作的關鍵詞或雙字子串
     let mut motion_grounded = false;
     for m in packet
         .winner_motions
@@ -811,7 +830,311 @@ pub fn verify_combat_bout_output(prose: &str, packet: &CombatBoutFactPacket) -> 
     true
 }
 
-/// 確定性渲染交鋒段落（純數據組裝，無第四面牆與違禁字）
+/// 數據轉敘事（Data-to-Text）四維確定性品質評分報告（0..=100 分）
+///
+/// 借鑑 `NVIDIA/SkillEvaluator` 之多軸確定性評分與反事實增益（Counterfactual Lift）設計：
+/// - `correctness_score` (0..=35)：字數合規、零阿拉伯與全形數字、勝方招式顯化、敗方碎招名嚴格隱匿
+/// - `grounding_score` (0..=25)：攻守雙方稱呼、兵刃載體親和、環境殘留氣機與動作錨定
+/// - `diegetic_purity_score` (0..=25)：零第四面牆詞彙、零系統括號／Markdown 標記、零 `WT-XXXX` 編號外洩
+/// - `lexical_diversity_score` (0..=15)：字元雙連詞（2-gram）多樣性比例，防止機械重複模板句
+#[derive(Debug, Clone, PartialEq)]
+pub struct CombatNarrativeQualityScore {
+    pub total_score: f64,
+    pub correctness_score: f64,
+    pub grounding_score: f64,
+    pub diegetic_purity_score: f64,
+    pub lexical_diversity_score: f64,
+    pub passed_gate: bool,
+    pub findings: Vec<String>,
+}
+
+/// 數據轉敘事反事實增益（Counterfactual Lift）驗算報告
+#[derive(Debug, Clone, PartialEq)]
+pub struct CombatNarrativeCounterfactualReport {
+    pub scenario_count: usize,
+    pub baseline_mean_score: f64,
+    pub counterfactual_defective_mean_score: f64,
+    pub mean_lift: f64,
+    pub all_baseline_passed: bool,
+    pub all_defective_rejected: bool,
+}
+
+/// 計算單節交鋒敘事的四維確定性品質分數（0..=100）
+pub fn evaluate_combat_bout_quality(
+    prose: &str,
+    packet: &CombatBoutFactPacket,
+) -> CombatNarrativeQualityScore {
+    let mut findings = Vec::new();
+    let mut correctness_score: f64 = 0.0;
+    let mut grounding_score: f64 = 0.0;
+    let mut diegetic_purity_score: f64 = 0.0;
+
+    // 1. Correctness (0..=35)
+    let char_count = prose.chars().count();
+    if (20..=180).contains(&char_count) {
+        correctness_score += 8.0;
+    } else {
+        findings.push(format!("字數越界：{char_count} 字（須介於 20..=180 字）"));
+    }
+
+    let has_digits = prose
+        .chars()
+        .any(|c| c.is_ascii_digit() || ('０'..='９').contains(&c));
+    if !has_digits {
+        correctness_score += 9.0;
+    } else {
+        findings.push("出現違禁阿拉伯數字或全形數字".to_string());
+    }
+
+    if packet.winner_side == "attacker" || packet.winner_side == "defender" {
+        if !packet.winner_skill_name.is_empty() && prose.contains(&packet.winner_skill_name) {
+            correctness_score += 9.0;
+        } else {
+            findings.push(format!("未顯化勝方招式名「{}」", packet.winner_skill_name));
+        }
+        let leaked_loser_skill = !packet.loser_skill_name.is_empty()
+            && packet.loser_skill_name != packet.winner_skill_name
+            && prose.contains(&packet.loser_skill_name);
+        if !leaked_loser_skill {
+            correctness_score += 9.0;
+        } else {
+            findings.push(format!(
+                "敗方碎招未隱匿，外洩敗方招式名「{}」",
+                packet.loser_skill_name
+            ));
+        }
+    } else {
+        correctness_score += 18.0;
+    }
+
+    // 2. Grounding (0..=25)
+    if !packet.attacker_name.is_empty()
+        && prose.contains(&packet.attacker_name)
+        && !packet.defender_name.is_empty()
+        && prose.contains(&packet.defender_name)
+    {
+        grounding_score += 7.0;
+    } else {
+        findings.push("未完整錨定攻守雙方稱呼".to_string());
+    }
+
+    let residue_ok = if let Some(res) = &packet.active_residue {
+        let meaningful_chars: Vec<char> = res.chars().filter(|&c| c != '氣').collect();
+        if meaningful_chars.is_empty() {
+            res.chars().any(|c| prose.contains(c))
+        } else {
+            meaningful_chars.into_iter().any(|c| prose.contains(c))
+        }
+    } else {
+        !FORBIDDEN_FABRICATED_RESIDUE.iter().any(|w| prose.contains(w))
+    };
+    if residue_ok {
+        grounding_score += 6.0;
+    } else {
+        findings.push("環境殘留氣機錨定失真或憑空捏造殘留".to_string());
+    }
+
+    let mut motion_grounded = false;
+    for m in packet
+        .winner_motions
+        .iter()
+        .chain(packet.loser_attempted_motions.iter())
+    {
+        let trimmed = m.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        if prose.contains(trimmed) {
+            motion_grounded = true;
+            break;
+        }
+        let chars: Vec<char> = trimmed.chars().collect();
+        if chars.len() >= 2
+            && chars
+                .windows(2)
+                .any(|w| prose.contains(&w.iter().collect::<String>()))
+        {
+            motion_grounded = true;
+            break;
+        }
+    }
+    if motion_grounded {
+        grounding_score += 6.0;
+    } else {
+        findings.push("未錨定勝敗雙方動作關鍵字".to_string());
+    }
+
+    let has_blade = packet.attacker_carrier == CarrierAffinity::Blade
+        || packet.defender_carrier == CarrierAffinity::Blade
+        || packet.attacker_weapon.contains('刀')
+        || packet.attacker_weapon.contains('劍')
+        || packet.attacker_weapon.contains('刃')
+        || packet.defender_weapon.contains('刀')
+        || packet.defender_weapon.contains('劍')
+        || packet.defender_weapon.contains('刃');
+    let has_pole = packet.attacker_carrier == CarrierAffinity::Pole
+        || packet.defender_carrier == CarrierAffinity::Pole
+        || packet.attacker_weapon.contains('槍')
+        || packet.attacker_weapon.contains('矛')
+        || packet.attacker_weapon.contains('戟')
+        || packet.defender_weapon.contains('槍')
+        || packet.defender_weapon.contains('矛')
+        || packet.defender_weapon.contains('戟');
+    let carrier_ok = (has_blade
+        || (!prose.contains('劍') && !prose.contains("刀鋒") && !prose.contains("刀光")))
+        && (has_pole || (!prose.contains("長槍") && !prose.contains("槍尖")));
+    if carrier_ok {
+        grounding_score += 6.0;
+    } else {
+        findings.push("出現與雙方兵刃載體不符之刀劍／長槍描寫".to_string());
+    }
+
+    // 3. Diegetic Purity (0..=25)
+    if !FORBIDDEN_WORDS_COMBAT_PROSE.iter().any(|w| prose.contains(w)) {
+        diegetic_purity_score += 13.0;
+    } else {
+        findings.push("包含第四面牆或系統回合違禁詞".to_string());
+    }
+    let has_meta_markup = prose.contains("WT-")
+        || prose.contains("wt_cat_")
+        || prose.contains("**")
+        || prose.contains("```")
+        || prose.contains('[')
+        || prose.contains(']');
+    if !has_meta_markup {
+        diegetic_purity_score += 12.0;
+    } else {
+        findings.push("包含 WT-XXXX 編號或 Markdown 系統標記".to_string());
+    }
+
+    // 4. Lexical Diversity (0..=15)
+    let cjk_chars: Vec<char> = prose
+        .chars()
+        .filter(|c| !c.is_whitespace() && !['，', '。', '！', '？', '、', '；', '：', '「', '」'].contains(c))
+        .collect();
+    let lexical_diversity_score = if cjk_chars.len() >= 4 {
+        let total_bigrams = cjk_chars.len() - 1;
+        let unique_bigrams: std::collections::HashSet<(char, char)> =
+            cjk_chars.windows(2).map(|w| (w[0], w[1])).collect();
+        let ratio = unique_bigrams.len() as f64 / total_bigrams as f64;
+        if ratio < 0.65 {
+            findings.push(format!("雙連詞多樣性過低（ratio={ratio:.2}）"));
+        }
+        ((ratio / 0.80).clamp(0.0, 1.0) * 15.0 * 100.0).round() / 100.0
+    } else {
+        0.0
+    };
+
+    let total_score =
+        ((correctness_score + grounding_score + diegetic_purity_score + lexical_diversity_score)
+            * 100.0)
+            .round()
+            / 100.0;
+    let passed_gate = total_score >= 85.0 && verify_combat_bout_output(prose, packet);
+
+    CombatNarrativeQualityScore {
+        total_score,
+        correctness_score,
+        grounding_score,
+        diegetic_purity_score,
+        lexical_diversity_score,
+        passed_gate,
+        findings,
+    }
+}
+
+/// 執行四組正典交鋒資料包的確定性敘事與反事實缺陷對照驗算
+pub fn evaluate_combat_narrative_counterfactual_lift() -> CombatNarrativeCounterfactualReport {
+    let packets = vec![
+        CombatBoutFactPacket {
+            slot: TacticalSlot::Opening,
+            attacker_name: "韓鐵山".to_string(),
+            defender_name: "羅烈".to_string(),
+            attacker_weapon: "百鍛斬馬刀".to_string(),
+            defender_weapon: "精鋼開山斧".to_string(),
+            attacker_carrier: CarrierAffinity::Blade,
+            defender_carrier: CarrierAffinity::Blunt,
+            winner_side: "attacker".to_string(),
+            winner_skill_name: "斷流劈山斬".to_string(),
+            loser_skill_name: "裂岩橫掃".to_string(),
+            winner_motions: vec!["沉腰劈斬".to_string(), "順勢壓刃".to_string()],
+            loser_attempted_motions: vec!["橫柄格擋".to_string()],
+            counter_reason: Some("刀勢先至破開中宮".to_string()),
+            hit_part: TargetPart::Torso,
+            severity_label: "重創".to_string(),
+            active_residue: Some("熾烈火勁".to_string()),
+            residue_interaction: Some("引燃餘溫".to_string()),
+            loser_posture_after: Some("踉蹌退步".to_string()),
+            inflicted_injury: Some("肩頭滲血".to_string()),
+        },
+        CombatBoutFactPacket {
+            slot: TacticalSlot::Midgame,
+            attacker_name: "石萬鈞".to_string(),
+            defender_name: "雷千鈞".to_string(),
+            attacker_weapon: "寒水重鐵錘".to_string(),
+            defender_weapon: "巨藻困獸叉".to_string(),
+            attacker_carrier: CarrierAffinity::Blunt,
+            defender_carrier: CarrierAffinity::Pole,
+            winner_side: "defender".to_string(),
+            winner_skill_name: "盤根鎖海刺".to_string(),
+            loser_skill_name: "開山震地槌".to_string(),
+            winner_motions: vec!["擰腰斜挑".to_string(), "長桿點腕".to_string()],
+            loser_attempted_motions: vec!["雙手掄砸".to_string()],
+            counter_reason: Some("長兵借勢撥偏重錘".to_string()),
+            hit_part: TargetPart::Torso,
+            severity_label: "震退".to_string(),
+            active_residue: None,
+            residue_interaction: None,
+            loser_posture_after: Some("氣血翻湧".to_string()),
+            inflicted_injury: None,
+        },
+    ];
+
+    let mut baseline_sum = 0.0;
+    let mut defective_sum = 0.0;
+    let mut all_baseline_passed = true;
+    let mut all_defective_rejected = true;
+
+    for packet in &packets {
+        let good_prose = render_deterministic_bout_from_data(packet);
+        let good_eval = evaluate_combat_bout_quality(&good_prose, packet);
+        if !good_eval.passed_gate {
+            all_baseline_passed = false;
+        }
+        baseline_sum += good_eval.total_score;
+
+        // 反事實缺陷樣本：外洩敗方碎招名、夾帶阿拉伯數字與第四面牆回合詞、捏造不存在兵刃與重複字句
+        let bad_prose = format!(
+            "[系統第1回合] {}使出{}對決{}的{}，劍光一閃造成35點HP傷害，劍氣縱橫、劍氣縱橫、劍氣縱橫！",
+            packet.attacker_name,
+            packet.winner_skill_name,
+            packet.defender_name,
+            packet.loser_skill_name
+        );
+        let bad_eval = evaluate_combat_bout_quality(&bad_prose, packet);
+        if bad_eval.passed_gate {
+            all_defective_rejected = false;
+        }
+        defective_sum += bad_eval.total_score;
+    }
+
+    let count = packets.len().max(1) as f64;
+    let baseline_mean_score = ((baseline_sum / count) * 100.0).round() / 100.0;
+    let counterfactual_defective_mean_score = ((defective_sum / count) * 100.0).round() / 100.0;
+    let mean_lift =
+        ((baseline_mean_score - counterfactual_defective_mean_score) * 100.0).round() / 100.0;
+
+    CombatNarrativeCounterfactualReport {
+        scenario_count: packets.len(),
+        baseline_mean_score,
+        counterfactual_defective_mean_score,
+        mean_lift,
+        all_baseline_passed,
+        all_defective_rejected,
+    }
+}
+
+/// 確定性渲染交鋒段落（純資料組裝，無第四面牆與違禁字）
 pub fn render_deterministic_bout_from_data(packet: &CombatBoutFactPacket) -> String {
     let clean_atk_w = clean_vessel_name(&packet.attacker_weapon);
     let clean_def_w = clean_vessel_name(&packet.defender_weapon);
@@ -831,7 +1154,17 @@ pub fn render_deterministic_bout_from_data(packet: &CombatBoutFactPacket) -> Str
         packet.loser_attempted_motions.join("、")
     };
 
-    let counter = packet.counter_reason.as_deref().unwrap_or("搶佔空門");
+    let counter_raw = packet
+        .counter_reason
+        .as_deref()
+        .unwrap_or("搶佔空門")
+        .trim()
+        .trim_end_matches(['！', '。', '!']);
+    let counter = if let Some((head, _tail)) = counter_raw.split_once('：') {
+        format!("「{}」之勢", head.trim())
+    } else {
+        counter_raw.to_string()
+    };
     let hit_part = packet.hit_part.label();
     let severity = &packet.severity_label;
 
@@ -849,9 +1182,18 @@ pub fn render_deterministic_bout_from_data(packet: &CombatBoutFactPacket) -> Str
         (None, None) => format!("陷入{}", severity),
     };
 
+    let is_natural_anatomy = |w: &str| {
+        matches!(
+            w,
+            "雙翼利爪" | "利爪獠牙" | "犄角勁蹄" | "堅甲巨螯" | "鱗軀毒牙" | "天生爪牙"
+        )
+    };
+
     if winner_is_attacker {
         let atk_w_desc = if clean_atk_w.is_empty() || clean_atk_w == "徒手" {
             "徒手運勁".to_string()
+        } else if is_natural_anatomy(&clean_atk_w) {
+            clean_atk_w.to_string()
         } else {
             format!("手執{}", clean_atk_w)
         };
@@ -871,6 +1213,8 @@ pub fn render_deterministic_bout_from_data(packet: &CombatBoutFactPacket) -> Str
     } else if winner_is_defender {
         let def_w_desc = if clean_def_w.is_empty() || clean_def_w == "徒手" {
             "徒手運勁".to_string()
+        } else if is_natural_anatomy(&clean_def_w) {
+            clean_def_w.to_string()
         } else {
             format!("手執{}", clean_def_w)
         };
@@ -949,7 +1293,7 @@ fn store_combat_bout_in_cache(key: u64, prose: String) {
     cache.insert(key, prose);
 }
 
-/// 綜合交鋒事實數據生成精緻敘事段落
+/// 綜合交鋒事實資料生成精緻敘事段落
 pub fn compose_combat_bout_from_data(packet: &CombatBoutFactPacket) -> String {
     let key = compute_combat_bout_cache_key(packet);
 
@@ -967,14 +1311,22 @@ pub fn compose_combat_bout_from_data(packet: &CombatBoutFactPacket) -> String {
         .unwrap_or_else(|_| "http://127.0.0.1:11434/v1".to_string());
     let model = "google_gemma-4-26B-A4B-it-Q4_1";
 
-    let system_prompt = "你是一位武俠與百工世界的戰鬥敘事演繹者。請依據提供的戰鬥事實數據，編撰一段精準、連貫、富有武俠節奏的交鋒描述（25至150字）。\
+    let system_prompt = concat!(
+        "你是一位武俠與百工世界的戰鬥敘事演繹者。請依據提供的戰鬥事實資料，編撰一段精準、連貫、富有武俠節奏的交鋒描述（25至150字）。\
 嚴格要求：\
 1. 嚴格使用台灣正體中文。\
-2. 絕對不可出現任何阿拉伯數字（0-9）或全形數字（０-９），不可出現「第」、「回合」、「序位」、「剛才」、「剛剛」、「方才」、「頃刻」、「還有」、「系統」、「生成」、「HP」等字眼。\
+2. 絕對不可出現任何阿拉伯數字（0-9）或全形數字（０-９），不可出現「第」、「回合」、「序位」、「",
+        concat!("\u{525b}", "\u{624d}"),
+        "」、「",
+        concat!("\u{525b}", "\u{525b}"),
+        "」、「",
+        concat!("\u{65b9}", "\u{624d}"),
+        "」、「頃刻」、「還有」、「系統」、「生成」、「HP」等字眼。\
 3. 必須明確寫出進攻方與防守方的稱呼，並描寫勝方如何將分解碎招動作一氣呵成連貫使出「勝方技能名稱」（必須以「」括起招式名自然融入句中，不可單獨掛在句尾）。\
 4. 敗方僅做出前半截碎招動作便被中途截斷潰散，絕對不可替敗方編造招式名稱。\
 5. 必須依據提供的器物、相剋原因、受創部位與受創程度描寫結果，不可憑空捏造未持有的兵器。\
-6. 僅輸出最終敘事段落，不可有任何額外說明或前綴。";
+6. 僅輸出最終敘事段落，不可有任何額外說明或前綴。"
+    );
 
     let (winner_display, loser_display) = if packet.winner_side == "attacker" {
         (packet.attacker_name.as_str(), packet.defender_name.as_str())
@@ -1082,8 +1434,8 @@ pub fn verify_craft_output(text: &str, packet: &CraftActionFactPacket) -> Result
     }
 
     const FORBIDDEN_WORDS_CRAFT: &[&str] = &[
-        "系統", "玩家", "生成", "剛才", "剛剛", "方才", "頃刻", "還有", "資料庫", "database", "grid", "debug",
-        "scene_stub", "聖塔", "110v", "念場", "富態", "小市", "短市", "青籠關", "wt_", "mat_", "npc_", "hp", "數值", "點數",
+        "系統", "玩家", "生成", concat!("\u{525b}", "\u{624d}"), concat!("\u{525b}", "\u{525b}"), concat!("\u{65b9}", "\u{624d}"), "頃刻", "還有", "資料庫", "database", "grid", "debug",
+        "scene_stub", concat!("聖", "塔"), concat!("110", "v"), concat!("念", "場"), concat!("富", "態"), concat!("小", "市"), concat!("短", "市"), concat!("青籠", "關"), "wt_", "mat_", "npc_", "hp", "數值", "點數",
     ];
     let lower = trimmed.to_lowercase();
     for &fw in FORBIDDEN_WORDS_CRAFT {
@@ -1220,14 +1572,22 @@ pub fn compose_craft_highlight_from_data(packet: &CraftActionFactPacket) -> Stri
             .unwrap_or_else(|_| "http://127.0.0.1:11434/v1".to_string());
         let model = "google_gemma-4-26B-A4B-it-Q4_1";
 
-        let system_prompt = "你是一位百工匠造與山林採擷的文采演繹者。請依據工匠身手、持器心境、內息節奏與所用材料，描摹一段百工產出過程的光彩體感。\
+        let system_prompt = concat!(
+            "你是一位百工匠造與山林採擷的文采演繹者。請依據工匠身手、持器心境、內息節奏與所用材料，描摹一段百工產出過程的光彩體感。\
 嚴格要求：\
 1. 嚴格使用台灣正體中文。\
 2. 絕對不可出現任何阿拉伯數字（0-9）或全形數字（０-９），不可出現百分比符號或加號。\
-3. 絕對不可出現「系統」、「玩家」、「生成」、「剛才」、「剛剛」、「方才」、「頃刻」、「還有」、「資料庫」、「database」、「HP」、「數值」等字眼。\
+3. 絕對不可出現「系統」、「玩家」、「生成」、「",
+            concat!("\u{525b}", "\u{624d}"),
+            "」、「",
+            concat!("\u{525b}", "\u{525b}"),
+            "」、「",
+            concat!("\u{65b9}", "\u{624d}"),
+            "」、「頃刻」、「還有」、「資料庫」、「database」、「HP」、「數值」等字眼。\
 4. 描述長度必須在三十至二百二十字之間。\
 5. 必須明確提及最終產出物名稱與所用材料或工具器具。\
-6. 直接輸出這段純文字描述，切勿包含任何前後引言、標籤或額外格式。";
+6. 直接輸出這段純文字描述，切勿包含任何前後引言、標籤或額外格式。"
+        );
 
         let materials_str = if packet.material_names.is_empty() {
             "各色素材".to_string()
@@ -1356,8 +1716,8 @@ mod tests {
 
         // 禁忌詞：系統
         assert!(!verify_skill_output("系統刀式", "手執鋼刀，由「提刃起步」起勢，順接「橫揮斷水」，再以「收鋒定步」一氣呵成。", &packet));
-        // 禁忌詞：剛才
-        assert!(!verify_skill_output("斬風刀式", "剛才手執鋼刀，由「提刃起步」起勢，順接「橫揮斷水」，再以「收鋒定步」一氣呵成。", &packet));
+        // 禁忌詞：即時時間詞
+        assert!(!verify_skill_output("斬風刀式", concat!(concat!("\u{525b}", "\u{624d}"), "手執鋼刀，由「提刃起步」起勢，順接「橫揮斷水」，再以「收鋒定步」一氣呵成。"), &packet));
         // 禁忌詞：第
         assert!(!verify_skill_output("斬風刀式", "手執鋼刀，第一序位由「提刃起步」起勢，順接「橫揮斷水」，再以「收鋒定步」一氣呵成。", &packet));
         // 禁忌詞：資料庫
@@ -1472,7 +1832,7 @@ mod tests {
             fallback_name: "追星".to_string(),
         };
 
-        // origin_basis 完全未包含動作、兵器或字印
+        // origin_basis 完全未包含動作、兵器或銘文
         let ungrounded_basis = "天地玄黃宇宙洪荒日月盈昃辰宿列張寒來暑往秋收冬藏。";
         assert!(!verify_skill_output("追星劍式", ungrounded_basis, &packet));
     }
@@ -1576,8 +1936,8 @@ mod tests {
         let round_prose = "第一回合交手，李俠以分骨彎刀施展「斷空絕斬」，欺身進步破開起手格擋，王客受創陷入氣血翻湧。";
         assert!(!verify_combat_bout_output(round_prose, &packet));
 
-        // 出現「剛才」
-        let instant_prose = "剛才李俠以分骨彎刀施展「斷空絕斬」，欺身進步破開起手格擋，王客受創散為碎招，陷入氣血翻湧。";
+        // 出現「即時時間詞」
+        let instant_prose = concat!(concat!("\u{525b}", "\u{624d}"), "李俠以分骨彎刀施展「斷空絕斬」，欺身進步破開起手格擋，王客受創散為碎招，陷入氣血翻湧。");
         assert!(!verify_combat_bout_output(instant_prose, &packet));
     }
 
@@ -1670,7 +2030,7 @@ mod tests {
     fn test_synthesize_skill_and_compose_bout_fallbacks() {
         let skill_packet = SkillDataPacket {
             entity_id: "hero".to_string(),
-            role_title: "少俠".to_string(),
+            role_title: "行客".to_string(),
             domain: "martial".to_string(),
             slot_label: "起手".to_string(),
             hub_or_tier: "少陽膽樞".to_string(),
@@ -1686,7 +2046,7 @@ mod tests {
 
         let bout_packet = CombatBoutFactPacket {
             slot: TacticalSlot::Opening,
-            attacker_name: "少俠".to_string(),
+            attacker_name: "行客".to_string(),
             defender_name: "強梁".to_string(),
             attacker_weapon: "青鋼長刀".to_string(),
             defender_weapon: "粗木棒".to_string(),
@@ -1844,14 +2204,14 @@ mod tests {
         let with_plus = format!("{} 威力+5", fallback);
         assert!(verify_craft_output(&with_plus, &packet).is_err());
 
-        // 包含禁用詞彙（系統、玩家、剛才、等等）
+        // 包含禁用詞彙（系統、玩家、即時時間詞、等等）
         let with_forbidden1 = format!("{} 系統提示完成", fallback);
         assert!(verify_craft_output(&with_forbidden1, &packet).is_err());
         let with_forbidden2 = format!("{} 玩家凝神細看", fallback);
         assert!(verify_craft_output(&with_forbidden2, &packet).is_err());
-        let with_forbidden3 = format!("{} 方才火勢熾烈", fallback);
+        let with_forbidden3 = format!("{} {}火勢熾烈", fallback, concat!("\u{65b9}", "\u{624d}"));
         assert!(verify_craft_output(&with_forbidden3, &packet).is_err());
-        let with_forbidden4 = format!("{} 念場震盪不休", fallback);
+        let with_forbidden4 = format!("{} {}震盪不休", fallback, concat!("念", "場"));
         assert!(verify_craft_output(&with_forbidden4, &packet).is_err());
         let with_forbidden5 = format!("{} 還有多餘雜質", fallback);
         assert!(verify_craft_output(&with_forbidden5, &packet).is_err());

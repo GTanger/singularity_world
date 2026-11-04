@@ -61,6 +61,8 @@ pub fn get_item_names(equipment_slots: &str) -> HashMap<String, String> {
             result.insert(slot, name.to_string());
         } else if let Some(ecol) = crate::game::object_ecology::lookup_ecology_item_def(item_id) {
             result.insert(slot, ecol.name);
+        } else if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
+            result.insert(slot, cat.name.to_string());
         } else {
             let norm_name = match item_id {
                 "粗布短褂" | "starter_body_m" | "starter_body_f" => "棉麻日常上衣",
@@ -95,6 +97,14 @@ pub fn get_item_descs(equipment_slots: &str) -> HashMap<String, String> {
             result.insert(slot, it.description.clone());
         } else if let Some(mat) = crate::world::materials::material_by_item_id(item_id) {
             result.insert(slot, mat.description.clone());
+        } else if let Some(ecol) = crate::game::object_ecology::lookup_ecology_item_def(item_id) {
+            if !ecol.description.is_empty() {
+                result.insert(slot, ecol.description);
+            }
+        } else if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
+            if !cat.look_text.is_empty() {
+                result.insert(slot, cat.look_text.to_string());
+            }
         } else if let Some(_name) = crate::db::inventory::fallback_item_name(item_id) {
             let desc = match item_id {
                 "starter_body_m" | "starter_body_f" | "粗布短褂" => "質樸舒適的棉麻日常上衣。",

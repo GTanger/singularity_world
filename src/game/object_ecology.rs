@@ -37,7 +37,7 @@ pub struct FieldFacilityState {
 }
 
 pub const CANONICAL_SETTLEMENTS: [&str; 9] = [
-    "文曜", "風舶角", "水尾寮", "半嶺", "紅土崁", "霜林口", "黑沼關隘", "南哨", "鹽田澳",
+    "文曜", "風舶角", "水尾寮", "半嶺鎮", "紅土崁", "霜林口", "下營", "南哨", "烏石鼻",
 ];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -113,22 +113,22 @@ pub struct SettlementMarketQuote {
 }
 
 pub fn normalize_canonical_settlement(raw_settlement: &str) -> &'static str {
-    if raw_settlement.contains("風舶") || raw_settlement.contains("黑石灣") || raw_settlement.contains("烏石鼻") {
+    if raw_settlement.contains("烏石鼻") || raw_settlement.contains("鹽田澳") || raw_settlement.contains("黑石灣") {
+        "烏石鼻"
+    } else if raw_settlement.contains("風舶") || raw_settlement.contains("巨藻淺灣") || raw_settlement.contains("驚濤岩岸") {
         "風舶角"
-    } else if raw_settlement.contains("水尾寮") {
+    } else if raw_settlement.contains("水尾寮") || raw_settlement.contains("淺澤泥口") || raw_settlement.contains("水尾澤") || raw_settlement.contains("黑沼林") || raw_settlement.contains("黑沼林澤") || raw_settlement.contains("黑沼") {
         "水尾寮"
-    } else if raw_settlement.contains("半嶺") || raw_settlement.contains("牛埔") {
-        "半嶺"
-    } else if raw_settlement.contains("紅土崁") {
+    } else if raw_settlement.contains("半嶺") || raw_settlement.contains("牛埔") || raw_settlement.contains("白塔") {
+        "半嶺鎮"
+    } else if raw_settlement.contains("紅土崁") || raw_settlement.contains("大圳頭") || raw_settlement.contains("老堰頭") || raw_settlement.contains("西南原") || raw_settlement.contains("赤石坡") {
         "紅土崁"
-    } else if raw_settlement.contains("霜林口") || raw_settlement.contains("翠冠林") {
+    } else if raw_settlement.contains("霜林口") || raw_settlement.contains("翠冠") || raw_settlement.contains("北嶺腳") {
         "霜林口"
-    } else if raw_settlement.contains("黑沼關隘") || raw_settlement.contains("青籠關") || raw_settlement.contains("赤石坡") || raw_settlement.contains("三號坑") {
-        "黑沼關隘"
-    } else if raw_settlement.contains("南哨") || raw_settlement.contains("風櫃尾") {
+    } else if raw_settlement.contains("下營") || raw_settlement.contains("黑沼關隘") || raw_settlement.contains("青籠") || raw_settlement.contains("三號坑") {
+        "下營"
+    } else if raw_settlement.contains("南哨") || raw_settlement.contains("風櫃尾") || raw_settlement.contains("白茫洲") || raw_settlement.contains("貼山深潭") {
         "南哨"
-    } else if raw_settlement.contains("鹽田澳") {
-        "鹽田澳"
     } else {
         "文曜"
     }
@@ -164,7 +164,7 @@ pub fn is_high_demand_in_settlement(settlement: &str, item_id: &str) -> bool {
                 || item_id == "craft_caulking_sealant"
                 || item_id == "mat_cedar_plank"
         }
-        "黑沼關隘" | "南哨" => {
+        "下營" | "南哨" => {
             item_id.starts_with("mat_repair_strip")
                 || item_id.starts_with("mat_metal_rim")
                 || item_id.starts_with("mat_iron")
@@ -178,7 +178,7 @@ pub fn is_high_demand_in_settlement(settlement: &str, item_id: &str) -> bool {
                 || item_id == "craft_patched_work_boots"
                 || item_id == "mat_salted_fish"
         }
-        "紅土崁" | "霜林口" | "半嶺" | "鹽田澳" => {
+        "紅土崁" | "霜林口" | "半嶺鎮" | "烏石鼻" => {
             item_id == "craft_steel_hunting_knife"
                 || item_id == "craft_iron_pickaxe"
                 || item_id == "craft_heavy_leather_boots"
@@ -195,13 +195,27 @@ pub fn is_high_demand_in_settlement(settlement: &str, item_id: &str) -> bool {
     }
 }
 
+pub fn item_base_price_mg(item_id: &str) -> i32 {
+    crate::world::materials::trade_price_anchor_mg(item_id)
+        .or_else(|| {
+            for fg in &STANDARD_FINISHED_GOODS {
+                if fg.id == item_id {
+                    return Some(fg.base_price);
+                }
+            }
+            None
+        })
+        .unwrap_or(8)
+        .max(2)
+}
+
 pub fn init_settlement_market_cell(settlement: &str, item_id: &str) -> SettlementMarketCell {
     let origin_str = lookup_item_origin(item_id);
     let raw_origin = crate::world::materials::infer_origin_settlement(&origin_str);
     let origin_settlement = normalize_canonical_settlement(raw_origin);
 
     let is_origin = settlement == origin_settlement
-        || (item_id == "mat_rough_ore" && (settlement == "紅土崁" || settlement == "黑沼關隘"))
+        || (item_id == "mat_rough_ore" && (settlement == "紅土崁" || settlement == "下營"))
         || (item_id == "mat_iron_scrap" && (settlement == "文曜" || settlement == "紅土崁"))
         || (item_id == "mat_charcoal_sack" && settlement == "霜林口")
         || (item_id == "mat_timber_log" && settlement == "霜林口")
@@ -209,18 +223,18 @@ pub fn init_settlement_market_cell(settlement: &str, item_id: &str) -> Settlemen
         || (item_id == "mat_reed_bundle" && settlement == "水尾寮")
         || (item_id == "mat_hemp_rope_roll" && settlement == "水尾寮")
         || (item_id == "mat_sackcloth_bolt" && settlement == "水尾寮")
-        || (item_id == "mat_foraged_herb" && settlement == "半嶺")
-        || (item_id == "mat_washed_ore" && settlement == "半嶺")
-        || (item_id == "mat_coarse_salt_pack" && settlement == "鹽田澳")
-        || (item_id == "mat_shell_sack" && settlement == "鹽田澳")
+        || (item_id == "mat_foraged_herb" && settlement == "半嶺鎮")
+        || (item_id == "mat_washed_ore" && settlement == "半嶺鎮")
+        || (item_id == "mat_coarse_salt_pack" && settlement == "烏石鼻")
+        || (item_id == "mat_shell_sack" && settlement == "烏石鼻")
         || (item_id == "mat_hardtack_sack" && settlement == "南哨")
         || (item_id == "mat_fish_scale_sack" && settlement == "風舶角")
         || (item_id == "mat_canvas_roll" && settlement == "風舶角")
         || (item_id == "mat_salted_fish" && settlement == "水尾寮")
         || (item_id == "mat_cedar_plank" && settlement == "霜林口")
         || (item_id == "craft_tool_repair_strip" && settlement == "文曜")
-        || (item_id == "craft_herbal_tea_pack" && settlement == "半嶺")
-        || (item_id == "craft_patched_work_boots" && settlement == "半嶺")
+        || (item_id == "craft_herbal_tea_pack" && settlement == "半嶺鎮")
+        || (item_id == "craft_patched_work_boots" && settlement == "半嶺鎮")
         || (item_id == "craft_tarred_hemp_rope" && settlement == "風舶角")
         || (item_id == "craft_caulking_sealant" && settlement == "風舶角");
 
@@ -232,18 +246,7 @@ pub fn init_settlement_market_cell(settlement: &str, item_id: &str) -> Settlemen
         (8, 5, 0, 1, 1.05)
     };
 
-    let base_price = crate::world::materials::trade_price_anchor_mg(item_id)
-        .or_else(|| {
-            for fg in &STANDARD_FINISHED_GOODS {
-                if fg.id == item_id {
-                    return Some(fg.base_price);
-                }
-            }
-            None
-        })
-        .unwrap_or(8)
-        .max(2);
-
+    let base_price = item_base_price_mg(item_id);
     let ratio = ((target_stock.max(1) as f32 + 2.0) / (stock.max(0) as f32 + 2.0)).powf(0.68) * demand_ema.clamp(0.75, 1.45);
     let ratio = ratio.clamp(0.45, 2.60);
     let last_price_mg = (((base_price as f32) * ratio).round() as i32).max(1);
@@ -390,7 +393,9 @@ impl EconomyLedger {
         if path.exists() {
             if let Ok(content) = std::fs::read_to_string(&path) {
                 if let Ok(snapshot) = serde_json::from_str::<PersistedEconomySnapshot>(&content) {
-                    for cell in snapshot.settlement_cells {
+                    for mut cell in snapshot.settlement_cells {
+                        cell.settlement = normalize_canonical_settlement(&cell.settlement).to_string();
+                        cell.stock = cell.stock.clamp(0, (cell.target_stock * 4).max(1));
                         let key = (cell.settlement.clone(), cell.item_id.clone());
                         if let Some(existing) = settlement_markets.get_mut(&key) {
                             existing.stock = cell.stock;
@@ -401,7 +406,8 @@ impl EconomyLedger {
                             settlement_markets.insert(key, cell);
                         }
                     }
-                    for (id, it_st) in snapshot.items {
+                    for (id, mut it_st) in snapshot.items {
+                        it_st.stock = it_st.stock.clamp(0, (it_st.target_stock * 4).max(1));
                         if let Some(existing) = items.get_mut(&id) {
                             existing.stock = it_st.stock;
                             existing.target_stock = it_st.target_stock;
@@ -413,7 +419,8 @@ impl EconomyLedger {
                     if !snapshot.recent_events.is_empty() {
                         recent_events.clear();
                         for ev in snapshot.recent_events {
-                            recent_events.push_back(ev);
+                            let clean_ev = ev.replace(['|', '｜'], "・");
+                            recent_events.push_back(clean_ev);
                         }
                     }
                 }
@@ -523,7 +530,7 @@ pub struct FinishedGoodDef {
     pub origin: &'static str,
 }
 
-pub const STANDARD_FINISHED_GOODS: [FinishedGoodDef; 12] = [
+pub const STANDARD_FINISHED_GOODS: [FinishedGoodDef; 16] = [
     FinishedGoodDef {
         id: "craft_steel_hunting_knife",
         name: "精鍛防身獵刀",
@@ -566,8 +573,8 @@ pub const STANDARD_FINISHED_GOODS: [FinishedGoodDef; 12] = [
     FinishedGoodDef {
         id: "craft_camphor_storage_box",
         name: "防潮樟木隨身匣",
-        slot: "accessory",
-        item_type: "equipment",
+        slot: "",
+        item_type: "utility",
         weight: 0.8,
         atk_bonus: 0,
         vit_bonus: 0,
@@ -586,8 +593,8 @@ pub const STANDARD_FINISHED_GOODS: [FinishedGoodDef; 12] = [
         vit_bonus: 0,
         dex_bonus: 0,
         base_price: 18,
-        description: "以十二味深山藥草慢火熬製提純的濃縮油膏，塗抹經穴溫熱滲透，能快速舒緩筋骨疲憊（使用後恢復體魄與元氣）。",
-        origin: "半嶺",
+        description: "以十二味深山藥草慢火熬製提純的濃縮油膏，塗抹經穴溫熱滲透，能快速舒緩筋骨疲憊，恢復體魄與元氣。",
+        origin: "半嶺鎮",
     },
     FinishedGoodDef {
         id: "craft_calming_tea_pack",
@@ -599,14 +606,14 @@ pub const STANDARD_FINISHED_GOODS: [FinishedGoodDef; 12] = [
         vit_bonus: 0,
         dex_bonus: 0,
         base_price: 16,
-        description: "採集水畔仙草與山茶幼芽曬製而成的秘製茶包，沖泡後香氣澄淨甘潤，令人心神大定（使用後深幅恢復元氣）。",
-        origin: "半嶺",
+        description: "採集水畔仙草與山茶幼芽曬製而成的秘製茶包，沖泡後香氣澄淨甘潤，令人心神大定、深幅恢復元氣。",
+        origin: "半嶺鎮",
     },
     FinishedGoodDef {
         id: "craft_pine_soot_ink",
         name: "松煙紫光精墨錠",
-        slot: "accessory",
-        item_type: "equipment",
+        slot: "",
+        item_type: "utility",
         weight: 0.4,
         atk_bonus: 0,
         vit_bonus: 0,
@@ -670,15 +677,67 @@ pub const STANDARD_FINISHED_GOODS: [FinishedGoodDef; 12] = [
     FinishedGoodDef {
         id: "craft_wooden_tool_handle",
         name: "堅韌硬木工具長柄",
-        slot: "hold_r",
-        item_type: "equipment",
+        slot: "",
+        item_type: "material",
         weight: 1.0,
-        atk_bonus: 3,
-        vit_bonus: 4,
-        dex_bonus: 3,
+        atk_bonus: 0,
+        vit_bonus: 0,
+        dex_bonus: 0,
         base_price: 15,
         description: "經導能木作刨削打磨的堅韌硬木長柄，既可組裝開山鎬與獵刀，亦可作為修補渡船踏板與漁網架的關鍵構件。",
         origin: "霜林口",
+    },
+    FinishedGoodDef {
+        id: "craft_roasted_shrimp_skewer",
+        name: "炭炙水尾鮮蝦串",
+        slot: "",
+        item_type: "consumable",
+        weight: 0.2,
+        atk_bonus: 0,
+        vit_bonus: 0,
+        dex_bonus: 0,
+        base_price: 18,
+        description: "以水尾寮鮮活河蝦或礁岸鮮蝦佐以粗鹽、山胡椒馬告穿竹籤文火炭炙而成，蝦殼酥脆焦香、蝦肉彈牙甘鮮，食之立添氣力與元氣。",
+        origin: "水尾寮",
+    },
+    FinishedGoodDef {
+        id: "craft_smoked_fish_fillet",
+        name: "相思木燻鮮魚乾",
+        slot: "",
+        item_type: "consumable",
+        weight: 0.3,
+        atk_bonus: 0,
+        vit_bonus: 0,
+        dex_bonus: 0,
+        base_price: 20,
+        description: "嚴選肥美鮮魚剖洗去骨，抹上海鹽與壺底蔭油，以相思木慢火冷燻收乾，魚肉緊實鹹香，耐儲易攜、開胃益氣。",
+        origin: "風舶角",
+    },
+    FinishedGoodDef {
+        id: "craft_spiced_beast_jerky",
+        name: "馬告炭炙獸肉脯",
+        slot: "",
+        item_type: "consumable",
+        weight: 0.3,
+        atk_bonus: 0,
+        vit_bonus: 0,
+        dex_bonus: 0,
+        base_price: 22,
+        description: "取山海精實獸肉切為厚片，揉入山胡椒馬告與老薑黑糖慢火烘炙成脯，嚼勁十足、肉香醇厚，遠行狩獵最能補益氣血。",
+        origin: "牛埔",
+    },
+    FinishedGoodDef {
+        id: "craft_ration_grain_cake",
+        name: "行旅耐儲米糧餅",
+        slot: "",
+        item_type: "consumable",
+        weight: 0.4,
+        atk_bonus: 0,
+        vit_bonus: 0,
+        dex_bonus: 0,
+        base_price: 16,
+        description: "以大圳頭精選稻穀與雜糧磨粉烙製而成的厚實米糧餅，外皮微焦酥香、內裡綿密耐飢，為半島行旅常備乾糧。",
+        origin: "大圳頭",
     },
 ];
 
@@ -702,12 +761,15 @@ pub fn classify_item_stage(item_id: &str) -> &'static str {
 }
 
 fn is_raw_material(item_id: &str) -> bool {
+    if item_id == "wt_beast_bone" || item_id == "wt_down_feather" {
+        return true;
+    }
     if item_id.starts_with("mat_") || item_id.starts_with("harvest_") {
         return true;
     }
     if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
         if let Ok(num) = num_str.parse::<u32>() {
-            if (81..=120).contains(&num) {
+            if (1..=387).contains(&num) {
                 return true;
             }
         }
@@ -715,6 +777,7 @@ fn is_raw_material(item_id: &str) -> bool {
     let raw_keywords = [
         "礦", "砂", "原木", "蘆草", "竹竿", "草藥", "水苔", "紙刀", "墨坯",
         "麻繩", "袋布", "原牛皮", "鮮河蝦", "水芹菜", "黏土", "石料", "粗麻", "桐油", "松煙", "骨膠",
+        "絨羽", "獸骨", "老鱉", "毛皮", "鱗片", "獠牙", "彩羽", "尾翎", "香皮", "鹿茸", "山茶籽", "白鮮草", "藥草", "漿果", "獸皮", "獸筋",
     ];
     if raw_keywords.iter().any(|k| item_id.contains(k)) {
         return true;
@@ -747,7 +810,7 @@ pub fn dynamic_settlement_market_quote(
 ) -> SettlementMarketQuote {
     let raw_settlement = crate::world::materials::infer_origin_settlement(settlement_or_room);
     let settlement = if raw_settlement.is_empty() {
-        "文曜"
+        normalize_canonical_settlement(settlement_or_room)
     } else {
         normalize_canonical_settlement(raw_settlement)
     };
@@ -798,13 +861,11 @@ pub fn dynamic_settlement_market_quote(
     };
 
     let market_narrative = if !origin_settlement.is_empty() && origin_settlement == settlement {
-        format!("【{settlement}】為此物產地，本地市集現貨 {}/{}（{}）", cell.stock, cell.target_stock, status_label)
+        format!("【{settlement}】為此物產地，本地市集{}", status_label)
     } else {
         format!(
-            "此物產自【{}】，【{settlement}】本地市集庫存 {}/{}（{}）",
+            "此物產自【{}】，【{settlement}】本地市集{}",
             if origin_settlement.is_empty() { "外地" } else { &origin_settlement },
-            cell.stock,
-            cell.target_stock,
             status_label
         )
     };
@@ -831,7 +892,7 @@ pub fn record_settlement_market_trade(
 ) -> SettlementMarketQuote {
     let raw_settlement = crate::world::materials::infer_origin_settlement(settlement_or_room);
     let settlement = if raw_settlement.is_empty() {
-        "文曜"
+        normalize_canonical_settlement(settlement_or_room)
     } else {
         normalize_canonical_settlement(raw_settlement)
     };
@@ -883,8 +944,584 @@ pub fn record_settlement_market_trade(
         }
         save_economy_ledger_snapshot(&ledger);
     }
+    if quote.local_stock <= (quote.target_stock / 3).max(1) {
+        let now_unix = crate::game::now_unix();
+        let item_name = get_clean_item_name(item_id);
+        let fact = crate::npc::causal_core::WorldRippleFact {
+            fact_id: format!("mkt_scarcity_{}_{}_{}", settlement, item_id, now_unix / 300),
+            kind: crate::npc::causal_core::RippleFactKind::MarketScarcity,
+            subject_zone_or_settlement: settlement.to_string(),
+            item_or_actor: item_name.clone(),
+            order_id: None,
+            severity: 1.0,
+            origin_tick: now_unix,
+            hop_count: 0,
+            max_hops: 4,
+            prose_summary: format!("{}市集上的「{}」現貨幾近見底，坊間行情正節節看漲", settlement, item_name),
+        };
+        let is_valid_id = actor_label.starts_with("npc_")
+            || crate::npc::causal_core::LIVE_NPC_CAUSAL_STATES
+                .read()
+                .unwrap_or_else(|e| e.into_inner())
+                .contains_key(actor_label);
+        let injected = if is_valid_id {
+            crate::npc::causal_core::inject_ripple_fact_into_npc(actor_label, fact.clone(), now_unix)
+        } else {
+            false
+        };
+        if !injected {
+            if let Some(arc) = crate::store::get_store() {
+                if let Some(s) = arc.try_read() {
+                    if let Some(witness) = s.entities.values().find(|e| e.kind == "npc" && e.vit > 0 && e.display_title.contains(&settlement)) {
+                        crate::npc::causal_core::inject_ripple_fact_into_npc(&witness.id, fact, now_unix);
+                    }
+                }
+            }
+        }
+    }
 
     quote
+}
+
+static SCARCITY_CATEGORY_CACHE: std::sync::LazyLock<
+    parking_lot::RwLock<
+        std::collections::HashMap<
+            (String, String),
+            (std::time::Instant, (f32, &'static str, String)),
+        >,
+    >,
+> = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
+
+/// 查詢指定聚落與行為類別（"food" | "drink" | "clinic" | "mend" | "forage" | "craft" | "arbitrage"）之即時供需價格倍率 (0.65..=2.20)、代表物資 ID 與中文名稱。
+pub fn settlement_scarcity_multiplier_for_category(
+    settlement_or_room: &str,
+    category: &str,
+) -> (f32, &'static str, String) {
+    let raw_settlement = crate::world::materials::infer_origin_settlement(settlement_or_room);
+    let settlement = if raw_settlement.is_empty() {
+        normalize_canonical_settlement(settlement_or_room)
+    } else {
+        normalize_canonical_settlement(raw_settlement)
+    };
+
+    let cache_key = (settlement.to_string(), category.to_string());
+    #[cfg(not(test))]
+    {
+        if let Some(c) = SCARCITY_CATEGORY_CACHE.try_read()
+            && let Some((ts, cached)) = c.get(&cache_key)
+            && ts.elapsed() < std::time::Duration::from_millis(1500)
+        {
+            return cached.clone();
+        }
+    }
+
+    let candidates: &'static [&'static str] = match category {
+        "food" => &["mat_salted_fish", "mat_coarse_salt_pack", "mat_charcoal_sack"],
+        "drink" => &["craft_herbal_tea_pack", "craft_calming_tea_pack"],
+        "clinic" => &["craft_meridian_salve", "mat_foraged_herb"],
+        "mend" => &["craft_tool_repair_strip", "mat_iron_scrap", "mat_plank_board", "craft_tarred_hemp_rope"],
+        "forage" => &["mat_kindling_bundle", "mat_foraged_herb", "mat_reed_bundle", "mat_rough_ore"],
+        "craft" => &["craft_tool_repair_strip", "craft_meridian_salve", "craft_herbal_tea_pack", "mat_plank_board"],
+        _ => &["mat_rough_ore", "mat_charcoal_sack", "mat_timber_log", "mat_foraged_herb", "craft_meridian_salve", "craft_tool_repair_strip"],
+    };
+
+    // 確保候選單元格存在於市集帳本
+    {
+        let missing: Vec<&'static str> = {
+            let ledger = LIVE_ECONOMY_LEDGER.read().unwrap_or_else(|e| e.into_inner());
+            candidates
+                .iter()
+                .copied()
+                .filter(|&item_id| !ledger.settlement_markets.contains_key(&(settlement.to_string(), item_id.to_string())))
+                .collect()
+        };
+        if !missing.is_empty() {
+            let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
+            for &item_id in &missing {
+                let key = (settlement.to_string(), item_id.to_string());
+                if !ledger.settlement_markets.contains_key(&key) {
+                    let cell = init_settlement_market_cell(settlement, item_id);
+                    ledger.settlement_markets.insert(key, cell);
+                }
+            }
+        }
+    }
+
+    let ledger = LIVE_ECONOMY_LEDGER.read().unwrap_or_else(|e| e.into_inner());
+
+    let result = if category == "forage" || category == "craft" || category == "arbitrage" {
+        let mut best_ratio = -1.0f32;
+        let mut best_item = candidates[0];
+        for &item_id in candidates {
+            let ratio = if let Some(cell) = ledger.settlement_markets.get(&(settlement.to_string(), item_id.to_string())) {
+                ((cell.target_stock.max(1) as f32 + 2.0) / (cell.stock.max(0) as f32 + 2.0)).powf(0.68)
+                    * cell.demand_ema.clamp(0.75, 1.45)
+            } else {
+                1.0
+            };
+            if ratio > best_ratio {
+                best_ratio = ratio;
+                best_item = item_id;
+            }
+        }
+        let clean_name = get_clean_item_name(best_item);
+        (best_ratio.clamp(0.65, 2.20), best_item, clean_name)
+    } else {
+        let mut sum_ratio = 0.0f32;
+        let mut count = 0usize;
+        for &item_id in candidates {
+            let ratio = if let Some(cell) = ledger.settlement_markets.get(&(settlement.to_string(), item_id.to_string())) {
+                ((cell.target_stock.max(1) as f32 + 2.0) / (cell.stock.max(0) as f32 + 2.0)).powf(0.68)
+                    * cell.demand_ema.clamp(0.75, 1.45)
+            } else {
+                1.0
+            };
+            sum_ratio += ratio;
+            count += 1;
+        }
+        let avg_ratio = if count > 0 { sum_ratio / (count as f32) } else { 1.0 };
+        let primary_item = candidates[0];
+        let clean_name = get_clean_item_name(primary_item);
+        (avg_ratio.clamp(0.65, 2.20), primary_item, clean_name)
+    };
+    drop(ledger);
+
+    if let Some(mut c) = SCARCITY_CATEGORY_CACHE.try_write() {
+        c.insert(cache_key, (std::time::Instant::now(), result.clone()));
+    }
+    result
+}
+#[cfg(not(test))]
+static SCARCITY_SIGNAL_CACHE: std::sync::LazyLock<
+    parking_lot::RwLock<
+        std::collections::HashMap<
+            String,
+            (std::time::Instant, Option<(String, String, f32)>),
+        >,
+    >,
+> = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
+
+/// 查詢指定聚落當前最緊缺物資信號（若最高價格倍率 >= 1.18 則回傳 Some((item_id, clean_name, ratio))）。
+pub fn settlement_scarcity_signal(
+    settlement_or_room: &str,
+) -> Option<(String, String, f32)> {
+    let raw_settlement = crate::world::materials::infer_origin_settlement(settlement_or_room);
+    let settlement = if raw_settlement.is_empty() {
+        normalize_canonical_settlement(settlement_or_room)
+    } else {
+        normalize_canonical_settlement(raw_settlement)
+    };
+
+    #[cfg(not(test))]
+    {
+        if let Some((ts, cached)) = SCARCITY_SIGNAL_CACHE.read().get(settlement) {
+            if ts.elapsed() < std::time::Duration::from_millis(1500) {
+                return cached.clone();
+            }
+        }
+    }
+
+    let (highest_ratio, scarcest_item) = {
+        let ledger = LIVE_ECONOMY_LEDGER.read().unwrap_or_else(|e| e.into_inner());
+        let mut highest_ratio = 0.0f32;
+        let mut scarcest_item: Option<String> = None;
+
+        for ((s, item_id), cell) in &ledger.settlement_markets {
+            if s == settlement {
+                let ratio = ((cell.target_stock.max(1) as f32 + 2.0) / (cell.stock.max(0) as f32 + 2.0)).powf(0.68)
+                    * cell.demand_ema.clamp(0.75, 1.45);
+                if ratio > highest_ratio {
+                    highest_ratio = ratio;
+                    scarcest_item = Some(item_id.clone());
+                }
+            }
+        }
+        (highest_ratio, scarcest_item)
+    };
+
+    let res = if highest_ratio >= 1.18 {
+        if let Some(item_id) = scarcest_item {
+            let clean_name = get_clean_item_name(&item_id);
+            Some((item_id, clean_name, highest_ratio.clamp(0.65, 2.20)))
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+
+    #[cfg(not(test))]
+    {
+        SCARCITY_SIGNAL_CACHE
+            .write()
+            .insert(settlement.to_string(), (std::time::Instant::now(), res.clone()));
+    }
+
+    res
+}
+
+/// 住民執行消費行動（飲食、飲茶、看診、修器）時，真實扣減聚落市集對應物資庫存並推升需求 EMA。
+pub fn consume_settlement_commodity_for_action(
+    settlement_or_room: &str,
+    category: &str,
+    actor_name: &str,
+) -> Option<(String, i32, f32)> {
+    let raw_settlement = crate::world::materials::infer_origin_settlement(settlement_or_room);
+    let settlement = if raw_settlement.is_empty() {
+        normalize_canonical_settlement(settlement_or_room)
+    } else {
+        normalize_canonical_settlement(raw_settlement)
+    };
+
+    let candidates: &'static [&'static str] = match category {
+        "food" => &["mat_salted_fish", "mat_coarse_salt_pack", "mat_charcoal_sack"],
+        "drink" => &["craft_herbal_tea_pack", "craft_calming_tea_pack"],
+        "clinic" => &["craft_meridian_salve", "mat_foraged_herb"],
+        "mend" => &["craft_tool_repair_strip", "mat_iron_scrap", "mat_plank_board", "craft_tarred_hemp_rope"],
+        "forage" => &["mat_kindling_bundle", "mat_foraged_herb", "mat_reed_bundle", "mat_rough_ore"],
+        "craft" => &["craft_tool_repair_strip", "craft_meridian_salve", "craft_herbal_tea_pack", "mat_plank_board"],
+        _ => &["mat_rough_ore", "mat_charcoal_sack", "mat_timber_log", "mat_foraged_herb", "craft_meridian_salve", "craft_tool_repair_strip"],
+    };
+
+    let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
+
+    for &item_id in candidates {
+        let key = (settlement.to_string(), item_id.to_string());
+        if !ledger.settlement_markets.contains_key(&key) {
+            let cell = init_settlement_market_cell(settlement, item_id);
+            ledger.settlement_markets.insert(key, cell);
+        }
+    }
+
+    let rot = settlement
+        .bytes()
+        .chain(actor_name.bytes())
+        .fold(0usize, |acc, b| acc.wrapping_mul(31).wrapping_add(b as usize));
+    let n_cand = candidates.len().max(1);
+    let mut chosen_item = candidates[rot % n_cand];
+    let mut max_stock = -1;
+    for i in 0..n_cand {
+        let item_id = candidates[(rot + i) % n_cand];
+        let key = (settlement.to_string(), item_id.to_string());
+        if let Some(cell) = ledger.settlement_markets.get(&key)
+            && cell.stock > max_stock
+        {
+            max_stock = cell.stock;
+            chosen_item = item_id;
+        }
+    }
+
+    let key = (settlement.to_string(), chosen_item.to_string());
+    let (prev_stock, rem_stock, target_stock, ratio) = if let Some(cell) = ledger.settlement_markets.get_mut(&key) {
+        let prev_stock = cell.stock;
+        if cell.stock > 0 {
+            cell.stock -= 1;
+        }
+        cell.demand_ema = (cell.demand_ema * 1.04).clamp(0.75, 1.45);
+        let ratio = ((cell.target_stock.max(1) as f32 + 2.0) / (cell.stock.max(0) as f32 + 2.0)).powf(0.68) * cell.demand_ema;
+        let base_p = item_base_price_mg(chosen_item) as f32;
+        cell.last_price_mg = ((base_p * ratio.clamp(0.45, 2.60)).round() as i32).max(1);
+        (prev_stock, cell.stock, cell.target_stock, ratio)
+    } else {
+        (0, 0, 10, 1.0)
+    };
+
+    if let Some(entry) = ledger.items.get_mut(chosen_item) {
+        if entry.stock > 0 {
+            entry.stock -= 1;
+        }
+    }
+
+    let clean_name = get_clean_item_name(chosen_item);
+    if prev_stock > 0 && !actor_name.is_empty() && rem_stock <= 2 {
+        let clean_actor = actor_name.trim().replace(['|', '｜'], "・");
+        let event = format!(
+            "{clean_actor}在{settlement}市集買走「{clean_name}」，攤上現貨所剩無幾，價錢隨之看漲。"
+        );
+        ledger.recent_events.push_back(event);
+        if ledger.recent_events.len() > 30 {
+            ledger.recent_events.pop_front();
+        }
+    }
+    let emit_scarcity_ripple = prev_stock > 0 && rem_stock <= (target_stock / 3).max(1);
+    drop(ledger);
+
+    if emit_scarcity_ripple {
+        let now_unix = crate::game::now_unix();
+        let fact = crate::npc::causal_core::WorldRippleFact {
+            fact_id: format!("mkt_scarcity_{}_{}_{}", settlement, chosen_item, now_unix / 300),
+            kind: crate::npc::causal_core::RippleFactKind::MarketScarcity,
+            subject_zone_or_settlement: settlement.to_string(),
+            item_or_actor: clean_name.clone(),
+            order_id: None,
+            severity: 1.0,
+            origin_tick: now_unix,
+            hop_count: 0,
+            max_hops: 4,
+            prose_summary: format!("{}市集上的「{}」現貨幾近見底，坊間行情正節節看漲", settlement, clean_name),
+        };
+        let is_valid_id = actor_name.starts_with("npc_")
+            || crate::npc::causal_core::LIVE_NPC_CAUSAL_STATES
+                .read()
+                .unwrap_or_else(|e| e.into_inner())
+                .contains_key(actor_name);
+        let injected = if is_valid_id {
+            crate::npc::causal_core::inject_ripple_fact_into_npc(actor_name, fact.clone(), now_unix)
+        } else {
+            false
+        };
+        if !injected {
+            if let Some(arc) = crate::store::get_store() {
+                if let Some(s) = arc.try_read() {
+                    if let Some(witness) = s.entities.values().find(|e| e.kind == "npc" && e.vit > 0 && e.display_title.contains(&settlement)) {
+                        crate::npc::causal_core::inject_ripple_fact_into_npc(&witness.id, fact, now_unix);
+                    }
+                }
+            }
+        }
+    }
+
+    Some((clean_name, rem_stock, ratio.clamp(0.65, 2.20)))
+}
+
+/// 住民執行勞作、採集、市集交割、工坊打造或跨區調撥時，真實增加聚落物資庫存（或自過剩聚落調撥）並平抑需求 EMA。
+pub fn supply_settlement_commodity_from_work(
+    settlement_or_room: &str,
+    work_kind: &str,
+    actor_name: &str,
+) -> (String, i32, f32) {
+    let raw_settlement = crate::world::materials::infer_origin_settlement(settlement_or_room);
+    let settlement = if raw_settlement.is_empty() {
+        normalize_canonical_settlement(settlement_or_room)
+    } else {
+        normalize_canonical_settlement(raw_settlement)
+    };
+
+    let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
+
+    if work_kind == "arbitrage" {
+        let candidate_arbitrage_items: [&'static str; 10] = [
+            "mat_rough_ore",
+            "mat_iron_scrap",
+            "mat_charcoal_sack",
+            "mat_timber_log",
+            "mat_plank_board",
+            "mat_reed_bundle",
+            "mat_foraged_herb",
+            "mat_coarse_salt_pack",
+            "craft_meridian_salve",
+            "craft_tool_repair_strip",
+        ];
+
+        for &item_id in &candidate_arbitrage_items {
+            let key = (settlement.to_string(), item_id.to_string());
+            if !ledger.settlement_markets.contains_key(&key) {
+                let cell = init_settlement_market_cell(settlement, item_id);
+                ledger.settlement_markets.insert(key, cell);
+            }
+        }
+
+        let mut chosen_item = candidate_arbitrage_items[0];
+        let mut min_diff = i32::MAX;
+        for &item_id in &candidate_arbitrage_items {
+            let key = (settlement.to_string(), item_id.to_string());
+            if let Some(cell) = ledger.settlement_markets.get(&key) {
+                let diff = cell.stock - cell.target_stock;
+                if diff < min_diff {
+                    min_diff = diff;
+                    chosen_item = item_id;
+                }
+            }
+        }
+
+        let mut from_s = "文曜";
+        let mut best_from_surplus = i32::MIN;
+        for &s in &CANONICAL_SETTLEMENTS {
+            if s == settlement {
+                continue;
+            }
+            let from_key = (s.to_string(), chosen_item.to_string());
+            if !ledger.settlement_markets.contains_key(&from_key) {
+                let cell = init_settlement_market_cell(s, chosen_item);
+                ledger.settlement_markets.insert(from_key.clone(), cell);
+            }
+            if let Some(cell) = ledger.settlement_markets.get(&from_key) {
+                let surplus = cell.stock - cell.target_stock;
+                if surplus > best_from_surplus {
+                    best_from_surplus = surplus;
+                    from_s = s;
+                }
+            }
+        }
+
+        let dest_key = (settlement.to_string(), chosen_item.to_string());
+        let ratio_before = if let Some(cell) = ledger.settlement_markets.get(&dest_key) {
+            ((cell.target_stock.max(1) as f32 + 2.0) / (cell.stock.max(0) as f32 + 2.0)).powf(0.68)
+                * cell.demand_ema.clamp(0.75, 1.45)
+        } else {
+            1.0
+        };
+
+        let from_key = (from_s.to_string(), chosen_item.to_string());
+        let mut transferred = 2;
+        if let Some(from_cell) = ledger.settlement_markets.get_mut(&from_key) {
+            transferred = from_cell.stock.min(2).max(0);
+            from_cell.stock -= transferred;
+            from_cell.demand_ema = (from_cell.demand_ema * 1.03).clamp(0.75, 1.45);
+        }
+
+        let add_qty = if transferred > 0 { transferred } else { 1 };
+        let mut new_stock = 0;
+        if let Some(to_cell) = ledger.settlement_markets.get_mut(&dest_key) {
+            to_cell.stock = (to_cell.stock + add_qty).min(to_cell.target_stock * 4);
+            to_cell.demand_ema = (to_cell.demand_ema * 0.94).clamp(0.75, 1.45);
+            let ratio_after = ((to_cell.target_stock.max(1) as f32 + 2.0) / (to_cell.stock.max(0) as f32 + 2.0)).powf(0.68) * to_cell.demand_ema;
+            let base_p = item_base_price_mg(chosen_item) as f32;
+            to_cell.last_price_mg = ((base_p * ratio_after.clamp(0.45, 2.60)).round() as i32).max(1);
+            new_stock = to_cell.stock;
+        }
+
+        let clean_name = get_clean_item_name(chosen_item);
+        let clean_actor = actor_name.trim().replace(['|', '｜'], "・");
+        let actor_label = if clean_actor.is_empty() { "行商" } else { clean_actor.as_str() };
+        let event = format!(
+            "{actor_label}將一批「{clean_name}」自{from_s}運抵{settlement}市集交割，稍解坊間燃眉之急。"
+        );
+        ledger.recent_events.push_back(event);
+        if ledger.recent_events.len() > 30 {
+            ledger.recent_events.pop_front();
+        }
+        // 由模擬迴圈背景統一持久化帳本快照
+
+        (clean_name, new_stock, ratio_before.clamp(0.65, 2.20))
+    } else {
+        let candidates: &'static [&'static str] = if work_kind == "forage" || work_kind == "peddle" {
+            &["mat_kindling_bundle", "mat_foraged_herb", "mat_reed_bundle", "mat_rough_ore"]
+        } else {
+            &["craft_tool_repair_strip", "craft_meridian_salve", "craft_herbal_tea_pack", "mat_plank_board"]
+        };
+
+        for &item_id in candidates {
+            let key = (settlement.to_string(), item_id.to_string());
+            if !ledger.settlement_markets.contains_key(&key) {
+                let cell = init_settlement_market_cell(settlement, item_id);
+                ledger.settlement_markets.insert(key, cell);
+            }
+        }
+
+        let mut chosen_item = candidates[0];
+        let mut highest_scarcity = -1.0f32;
+        for &item_id in candidates {
+            let key = (settlement.to_string(), item_id.to_string());
+            if let Some(cell) = ledger.settlement_markets.get(&key) {
+                let r = ((cell.target_stock.max(1) as f32 + 2.0) / (cell.stock.max(0) as f32 + 2.0)).powf(0.68)
+                    * cell.demand_ema.clamp(0.75, 1.45);
+                if r > highest_scarcity {
+                    highest_scarcity = r;
+                    chosen_item = item_id;
+                }
+            }
+        }
+
+        let key = (settlement.to_string(), chosen_item.to_string());
+        let ratio_before = if let Some(cell) = ledger.settlement_markets.get(&key) {
+            ((cell.target_stock.max(1) as f32 + 2.0) / (cell.stock.max(0) as f32 + 2.0)).powf(0.68)
+                * cell.demand_ema.clamp(0.75, 1.45)
+        } else {
+            1.0
+        };
+
+        if work_kind == "craft" || work_kind == "restock" {
+            let raw_inputs = ["mat_rough_ore", "mat_timber_log", "mat_foraged_herb"];
+            for &raw_id in &raw_inputs {
+                let raw_key = (settlement.to_string(), raw_id.to_string());
+                if let Some(raw_cell) = ledger.settlement_markets.get_mut(&raw_key) {
+                    if raw_cell.stock > 1 {
+                        raw_cell.stock -= 1;
+                        if let Some(entry) = ledger.items.get_mut(raw_id) {
+                            if entry.stock > 0 {
+                                entry.stock -= 1;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        let clean_name = get_clean_item_name(chosen_item);
+        let res_kind = if ["木", "樟", "杉", "柴", "炭", "竹", "藤"]
+            .iter()
+            .any(|&k| chosen_item.contains(k) || clean_name.contains(k))
+        {
+            "timber"
+        } else if ["礦", "鐵", "銅", "煤", "石", "晶", "砂", "鹽", "土"]
+            .iter()
+            .any(|&k| chosen_item.contains(k) || clean_name.contains(k))
+        {
+            "mineral"
+        } else if ["魚", "蝦", "蟹", "貝", "鱟", "藻", "蘆", "水"]
+            .iter()
+            .any(|&k| chosen_item.contains(k) || clean_name.contains(k))
+        {
+            "fishery"
+        } else {
+            "flora"
+        };
+
+        let mut add_qty = if work_kind == "peddle" || work_kind == "craft" { 2 } else { 1 };
+        let mut is_fallow_active = false;
+        if work_kind == "forage" || work_kind == "peddle" {
+            let (harvested, is_abundant, is_fallow) =
+                crate::game::harvest_zone_natural_resource(settlement, res_kind, 3.5);
+            if res_kind == "flora" {
+                let _ = crate::game::harvest_hunting_zone_flora(settlement, 2.0);
+            }
+            if is_fallow {
+                is_fallow_active = true;
+                add_qty = 1;
+            } else if is_abundant || harvested >= 3.0 {
+                add_qty += 1;
+            }
+        }
+        let mut new_stock = 0;
+        if let Some(cell) = ledger.settlement_markets.get_mut(&key) {
+            cell.stock = (cell.stock + add_qty).min(cell.target_stock * 4);
+            cell.demand_ema = (cell.demand_ema * 0.95).clamp(0.75, 1.45);
+            let ratio_after = ((cell.target_stock.max(1) as f32 + 2.0) / (cell.stock.max(0) as f32 + 2.0)).powf(0.68) * cell.demand_ema;
+            let base_p = item_base_price_mg(chosen_item) as f32;
+            cell.last_price_mg = ((base_p * ratio_after.clamp(0.45, 2.60)).round() as i32).max(1);
+            new_stock = cell.stock;
+        }
+
+        if let Some(entry) = ledger.items.get_mut(chosen_item) {
+            entry.stock = (entry.stock + add_qty).min(entry.target_stock * 4);
+        }
+
+        let action_verb = match work_kind {
+            "forage" => "採獲",
+            "peddle" => "行商運來",
+            "craft" => "於工坊打造",
+            "restock" => "批發補貨",
+            _ => "物資產出",
+        };
+        let clean_actor = actor_name.trim().replace(['|', '｜'], "・");
+        let actor_label = if clean_actor.is_empty() { "工匠" } else { clean_actor.as_str() };
+        let event = if is_fallow_active {
+            format!("{actor_label}見山林水土微乏，先於郊野護林育苗、修整採場，順道將整理所得的「{clean_name}」{add_qty} 份送入{settlement}市集交割。")
+        } else {
+            format!(
+                "{actor_label}{action_verb}「{clean_name}」{add_qty} 份並送入{settlement}市集交割，攤頭貨源漸豐，行情趨於平穩。"
+            )
+        };
+        ledger.recent_events.push_back(event);
+        if ledger.recent_events.len() > 30 {
+            ledger.recent_events.pop_front();
+        }
+        // 由模擬迴圈背景統一持久化帳本快照
+
+        (clean_name, new_stock, ratio_before.clamp(0.65, 2.20))
+    }
 }
 
 /// 匯總當前市場脈動摘要，供對話生成與世界觀引導。
@@ -925,6 +1562,13 @@ pub fn format_settlement_supply_demand_report(settlement_or_room: &str) -> Strin
     } else {
         normalize_canonical_settlement(raw_s)
     };
+    let trimmed = settlement_or_room.trim();
+    let display_s = match trimmed {
+        "文曜" | "風舶角" | "風舶嶼" | "大圳頭" | "半嶺鎮" | "南哨" | "老堰頭"
+        | "北嶺腳" | "霜林口" | "風櫃尾" | "烏石鼻" | "牛埔" | "紅土崁" | "三號坑口"
+        | "水尾寮" | "下營" => trimmed,
+        _ => s,
+    };
 
     let ledger = LIVE_ECONOMY_LEDGER.read().unwrap_or_else(|e| e.into_inner());
 
@@ -945,12 +1589,12 @@ pub fn format_settlement_supply_demand_report(settlement_or_room: &str) -> Strin
         .take(3)
         .map(|c| {
             let name = get_clean_item_name(&c.item_id);
-            format!("「{name}」（供應充裕）")
+            format!("「{name}」")
         })
         .collect();
 
     let surplus_str = if surplus_list.is_empty() {
-        "坊間平穩無過剩".to_string()
+        "各色常備物料".to_string()
     } else {
         surplus_list.join("、")
     };
@@ -975,20 +1619,29 @@ pub fn format_settlement_supply_demand_report(settlement_or_room: &str) -> Strin
         .take(3)
         .map(|c| {
             let name = get_clean_item_name(&c.item_id);
-            format!("「{name}」（坊間奇缺）")
+            format!("「{name}」")
         })
         .collect();
 
-    let shortage_str = if shortage_list.is_empty() {
-        "市集儲備充足無缺".to_string()
+    if shortage_list.is_empty() {
+        format!("{display_s}市集攤頭目下以{surplus_str}較為充裕，坊間百工儲備充足、交割平穩。")
     } else {
-        shortage_list.join("、")
-    };
-
-    format!("【{s}市集供需實況】充裕供給：{surplus_str} ｜ 緊缺急需：{shortage_str}")
+        let shortage_str = shortage_list.join("、");
+        format!("{display_s}市集攤頭目下以{surplus_str}較為充裕，而{shortage_str}則頗為緊俏。")
+    }
 }
 
-/// 查詢指定聚落最緊缺的物料（庫存低於目標且缺口比例最大者），供委託榜與 NPC 收購對話調用。
+#[cfg(not(test))]
+static SCARCEST_ITEM_CACHE: std::sync::LazyLock<
+    parking_lot::RwLock<
+        std::collections::HashMap<
+            String,
+            (std::time::Instant, Option<(String, String, i32, i32, i32)>),
+        >,
+    >,
+> = std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashMap::new()));
+
+/// 查詢指定聚落最緊缺的物料（庫存低於目標且缺口比例最大者），供委託榜與 NPC 收購對話呼叫。
 pub fn scarcest_item_for_settlement(
     settlement_or_room: &str,
 ) -> Option<(String, String, i32, i32, i32)> {
@@ -999,106 +1652,101 @@ pub fn scarcest_item_for_settlement(
         normalize_canonical_settlement(raw_s)
     };
 
-    let ledger = LIVE_ECONOMY_LEDGER.read().unwrap_or_else(|e| e.into_inner());
-
-    let mut cells: Vec<&SettlementMarketCell> = ledger
-        .settlement_markets
-        .values()
-        .filter(|c| c.settlement == s)
-        .collect();
-
-    if cells.is_empty() {
-        return None;
+    #[cfg(not(test))]
+    {
+        if let Some((ts, cached)) = SCARCEST_ITEM_CACHE.read().get(s) {
+            if ts.elapsed() < std::time::Duration::from_millis(1500) {
+                return cached.clone();
+            }
+        }
     }
 
-    cells.sort_by(|a, b| {
-        let ratio_a = a.stock as f32 / a.target_stock.max(1) as f32;
-        let ratio_b = b.stock as f32 / b.target_stock.max(1) as f32;
-        ratio_a
-            .partial_cmp(&ratio_b)
-            .unwrap_or(std::cmp::Ordering::Equal)
-            .then_with(|| (b.target_stock - b.stock).cmp(&(a.target_stock - a.stock)))
+    let top_tuple = {
+        let ledger = LIVE_ECONOMY_LEDGER.read().unwrap_or_else(|e| e.into_inner());
+        let top = ledger
+            .settlement_markets
+            .values()
+            .filter(|c| c.settlement == s)
+            .min_by(|a, b| {
+                let ratio_a = a.stock as f32 / a.target_stock.max(1) as f32;
+                let ratio_b = b.stock as f32 / b.target_stock.max(1) as f32;
+                ratio_a
+                    .partial_cmp(&ratio_b)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+                    .then_with(|| (b.target_stock - b.stock).cmp(&(a.target_stock - a.stock)))
+            });
+        top.map(|t| (t.item_id.clone(), t.stock, t.target_stock, t.last_price_mg))
+    };
+
+    let res = top_tuple.map(|(item_id, stock, target_stock, last_price_mg)| {
+        let name = get_clean_item_name(&item_id);
+        (item_id, name, stock, target_stock, last_price_mg)
     });
 
-    let top = cells.first()?;
-    let name = get_clean_item_name(&top.item_id);
-    Some((
-        top.item_id.clone(),
-        name,
-        top.stock,
-        top.target_stock,
-        top.last_price_mg,
-    ))
+    #[cfg(not(test))]
+    {
+        SCARCEST_ITEM_CACHE
+            .write()
+            .insert(s.to_string(), (std::time::Instant::now(), res.clone()));
+    }
+
+    res
 }
 
 /// 原料映射至成品規格。
 pub fn map_raw_to_finished(raw_id: &str) -> &'static FinishedGoodDef {
-    if raw_id.contains("iron")
-        || raw_id.contains("scrap")
-        || raw_id.contains("metal")
-        || raw_id.contains("鐵")
-        || raw_id.contains("礦")
-        || raw_id.contains("鋼")
-    {
-        if raw_id.contains("pick") || raw_id.contains("鎬") || raw_id.contains("礦") {
+    let clean_name = get_clean_item_name(raw_id);
+    let has = |kw: &str| raw_id.contains(kw) || clean_name.contains(kw);
+
+    // 1. 水產蝦蟹與甲殼貝類（但排除純工藝用的貝殼袋）
+    if !has("貝殼") && !has("shell_sack") && (has("shrimp") || has("蝦") || has("蟹") || has("鮑") || has("九孔") || has("蛤") || has("蜆") || has("螺") || has("海膽")) {
+        &STANDARD_FINISHED_GOODS[12] // craft_roasted_shrimp_skewer
+    } else if !has("魚骨") && !has("魚鱗") && !has("fish_bone") && !has("fish_scale") && !has("魚皮") && !has("fishing_line") && !has("漁線") && !has("魚線") && (has("fish") || has("魚") || has("鰻") || has("鯇") || has("苦花") || has("鬼頭刀") || has("土魠") || has("花枝") || has("烏賊")) {
+        &STANDARD_FINISHED_GOODS[13] // craft_smoked_fish_fillet
+    } else if has("charcoal") || has("白炭") || has("炭") {
+        &STANDARD_FINISHED_GOODS[10] // craft_pine_torch
+    } else if has("sealing_pitch") || has("松脂") || has("桐油") || has("樹脂") || has("漆") || has("蠟") {
+        &STANDARD_FINISHED_GOODS[2] // craft_bamboo_oil_umbrella
+    } else if has("stone_powder") || has("shell_sack") || has("貝殼") || has("石粉") || has("石") || has("砂") || has("岩") || has("土") || has("泥") || has("晶") || has("玉") || has("灰") {
+        &STANDARD_FINISHED_GOODS[1] // craft_iron_pickaxe
+    } else if has("moss") || has("青苔") || has("苔") || has("芝") || has("菌") || has("菇") || has("蓮") || has("參") || has("葛") || has("艾") || has("藻") || has("poultice") || has("敷料") {
+        &STANDARD_FINISHED_GOODS[4] // craft_meridian_salve
+    } else if has("meat") || has("肉") || has("熊掌") || has("鹿腱") || has("牛蛙") || has("老鱉") {
+        &STANDARD_FINISHED_GOODS[14] // craft_spiced_beast_jerky
+    } else if has("grain") || has("hardtack") || has("seed") || has("salt") || has("稻穀") || has("穀糧") || has("米") || has("麥") || has("麵") || has("乾餅") || has("草籽") || has("草料") || has("粗鹽") || has("黑糖") || has("蔭油") || has("菜脯") || has("漿果") || has("鮮果") || has("水芹") || has("醬") || has("醋") || has("椒") || has("薑") || has("蒜") || has("蔥") || has("蜜") {
+        &STANDARD_FINISHED_GOODS[15] // craft_ration_grain_cake
+    } else if has("leather") || has("hide") || has("pelt") || has("feather") || has("bone") || has("scale") || has("claw") || has("皮") || has("毛") || has("絨") || has("羽") || has("翎") || has("骨") || has("鱗") || has("麟") || has("角") || has("牙") || has("爪") {
+        &STANDARD_FINISHED_GOODS[9] // craft_heavy_leather_boots
+    } else if has("iron") || has("scrap") || has("metal") || has("鐵") || has("礦") || has("鋼") {
+        if has("pick") || has("鎬") || has("礦") {
             &STANDARD_FINISHED_GOODS[1] // craft_iron_pickaxe
         } else {
             &STANDARD_FINISHED_GOODS[0] // craft_steel_hunting_knife
         }
-    } else if raw_id.contains("timber")
-        || raw_id.contains("reed")
-        || raw_id.contains("wood")
-        || raw_id.contains("竹")
-        || raw_id.contains("木")
-        || raw_id.contains("蘆")
-        || raw_id.contains("柴")
-        || raw_id.contains("板")
-        || raw_id.contains("柄")
-    {
-        if raw_id.contains("kindling") || raw_id.contains("torch") || raw_id.contains("柴") {
+    } else if has("timber") || has("reed") || has("wood") || has("竹") || has("木") || has("蘆") || has("柴") || has("板") || has("柄") {
+        if has("kindling") || has("torch") || has("柴") {
             &STANDARD_FINISHED_GOODS[10] // craft_pine_torch
-        } else if raw_id.contains("plank") || raw_id.contains("handle") || raw_id.contains("板") || raw_id.contains("柄") {
+        } else if has("plank") || has("handle") || has("板") || has("柄") {
             &STANDARD_FINISHED_GOODS[11] // craft_wooden_tool_handle
-        } else if raw_id.contains("box") || raw_id.contains("匣") || raw_id.contains("樟") {
+        } else if has("box") || has("匣") || has("樟") {
             &STANDARD_FINISHED_GOODS[3] // craft_camphor_storage_box
         } else {
             &STANDARD_FINISHED_GOODS[2] // craft_bamboo_oil_umbrella
         }
-    } else if raw_id.contains("herb")
-        || raw_id.contains("草")
-        || raw_id.contains("藥")
-        || raw_id.contains("花")
-        || raw_id.contains("茶")
-    {
-        if raw_id.contains("tea") || raw_id.contains("茶") {
+    } else if has("herb") || has("草") || has("藥") || has("花") || has("茶") {
+        if has("tea") || has("茶") {
             &STANDARD_FINISHED_GOODS[5] // craft_calming_tea_pack
         } else {
             &STANDARD_FINISHED_GOODS[4] // craft_meridian_salve
         }
-    } else if raw_id.contains("paper")
-        || raw_id.contains("ink")
-        || raw_id.contains("紙")
-        || raw_id.contains("墨")
-        || raw_id.contains("筆")
-    {
-        if raw_id.contains("almanac") || raw_id.contains("書") || raw_id.contains("手札") {
+    } else if has("paper") || has("ink") || has("紙") || has("墨") || has("筆") {
+        if has("almanac") || has("書") || has("手札") {
             &STANDARD_FINISHED_GOODS[7] // craft_peninsula_almanac
         } else {
             &STANDARD_FINISHED_GOODS[6] // craft_pine_soot_ink
         }
-    } else if raw_id.contains("rope")
-        || raw_id.contains("sackcloth")
-        || raw_id.contains("leather")
-        || raw_id.contains("繩")
-        || raw_id.contains("布")
-        || raw_id.contains("皮")
-        || raw_id.contains("帆")
-    {
-        if raw_id.contains("boot") || raw_id.contains("靴") || raw_id.contains("皮") {
-            &STANDARD_FINISHED_GOODS[9] // craft_heavy_leather_boots
-        } else {
-            &STANDARD_FINISHED_GOODS[8] // craft_storm_canvas_cloak
-        }
+    } else if has("rope") || has("sackcloth") || has("fishing_line") || has("繩") || has("布") || has("帆") || has("線") {
+        &STANDARD_FINISHED_GOODS[8] // craft_storm_canvas_cloak
     } else {
         use std::hash::{Hash, Hasher};
         let mut hasher = std::hash::DefaultHasher::new();
@@ -1127,6 +1775,8 @@ pub fn lookup_item_origin(item_id: &str) -> String {
         }
     }
     match item_id {
+        "wt_beast_bone" => "白塔半島・山海獵場".to_string(),
+        "wt_down_feather" => "白塔半島・水尾澤岸".to_string(),
         "mat_iron_scrap" => "文曜萬爐鐵坊棚".to_string(),
         "mat_repair_strip" => "分家巷機巧修車棚".to_string(),
         "mat_timber_log" => "霜林口林場木棧".to_string(),
@@ -1139,7 +1789,7 @@ pub fn lookup_item_origin(item_id: &str) -> String {
         "mat_charcoal_sack" => "霜林口相思木悶炭窯".to_string(),
         "mat_sackcloth_bolt" => "水尾寮渡頭市集與倉棚".to_string(),
         "mat_wood_offcut_bundle" => "霜林口梁氏鋸木坊".to_string(),
-        "mat_rough_ore" => "西南原三號坑口".to_string(),
+        "mat_rough_ore" => "三號坑口".to_string(),
         "mat_washed_ore" => "半嶺溪谷洗礦溝".to_string(),
         "mat_stone_powder_sack" => "紅土崁高嶺土倉".to_string(),
         "mat_wet_grass_bundle" => "牛埔長風草甸".to_string(),
@@ -1161,7 +1811,7 @@ pub fn lookup_item_origin(item_id: &str) -> String {
         "mat_feed_mix_sack" => "牛埔草料棚".to_string(),
         "mat_leather_strip" => "牛埔鞣皮修棚".to_string(),
         "mat_canvas_roll" => "風舶角車隊場".to_string(),
-        "mat_shell_sack" => "鹽田澳潮泥碼頭".to_string(),
+        "mat_shell_sack" => "烏石鼻潮泥碼頭".to_string(),
         "mat_hardtack_sack" => "南哨高棧補給市".to_string(),
         "mat_sealing_pitch" => "霜林口松脂作業點".to_string(),
         "mat_salted_fish" => "水尾寮魚乾架".to_string(),
@@ -1173,7 +1823,7 @@ pub fn lookup_item_origin(item_id: &str) -> String {
         "mat_cedar_plank" => "霜林口林場木棧".to_string(),
         _ => {
             if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
-                return format!("{}・{}", cat.origin_material, cat.workshop);
+                return format!("白塔半島・{}", cat.workshop);
             }
             if let Some(lbl) = crate::world::materials::material_origin_label(item_id) {
                 return lbl.to_string();
@@ -1196,7 +1846,7 @@ pub fn ensure_ecology_items_in_store() {
         ("mat_timber_log", "伐採原木", "紋理細密堅實的乾燥良木，可於木作台或百工面板車製行旅長杖與木器。", 2.0),
         ("mat_reed_bundle", "水澤老蘆草綑", "自河岸水澤收割晾乾的柔韌蘆草與青竹篾，可編織提籃或防風雨披。", 0.8),
         ("mat_foraged_herb", "山野鮮藥草", "帶著晨露清香的鮮嫩草藥，可焙製清心安神藥茶包或熬煉生肌膏。", 0.3),
-        ("mat_coarse_paper_ream", "原漿宣紙刀", "青竹抄紙槽濾出的純淨宣紙原漿紙刀，可裝訂采風手札或拓印長卷。", 0.5),
+        ("mat_coarse_paper_ream", "原漿宣紙刀", "青竹抄紙槽濾出的純淨宣紙原漿紙刀，可裝訂採風手札或拓印長卷。", 0.5),
         ("mat_hemp_rope_roll", "浸油粗麻繩卷", "經桐油浸泡絞合的強韌苧麻繩卷，可編製攀岩繩或加固遠行麻布囊。", 1.0),
         ("mat_sackcloth_bolt", "粗織麻袋布匹", "粗織結實的麻布匹料，可用於縫製耐磨行囊與防風遮棚。", 1.2),
         ("mat_kindling_bundle", "乾燥柴枝束", "自山林拾撿劈鋸而成的乾燥細柴枝束，引火極佳，為野地生火、工爐添薪與營火保溫之良材。", 0.5),
@@ -1210,18 +1860,8 @@ pub fn ensure_ecology_items_in_store() {
         // 1. 33 P0 來源材料
         for item in crate::world::materials::material_item_defs() {
             if let Some(existing) = s.items.get_mut(&item.id) {
-                if existing.origin.is_empty()
-                    || existing.origin.contains("北岸")
-                    || existing.origin.contains("中鎮")
-                    || existing.origin.contains("短市")
-                    || existing.origin.contains("小市")
-                    || existing.origin.contains("水尾寮渡頭小市")
-                    || existing.origin.contains("補給小市")
-                    || existing.origin.contains("邊市")
-                {
-                    existing.origin = item.origin;
-                    existing.description = item.description;
-                }
+                existing.origin = item.origin;
+                existing.description = item.description;
             } else {
                 s.items.insert(item.id.clone(), item);
             }
@@ -1229,7 +1869,11 @@ pub fn ensure_ecology_items_in_store() {
 
         // raw_defs 補缺
         for (id, name, desc, weight) in raw_defs {
-            if !s.items.contains_key(id) {
+            if let Some(existing) = s.items.get_mut(id) {
+                existing.name = name.to_string();
+                existing.description = desc.to_string();
+                existing.origin = lookup_item_origin(id);
+            } else {
                 let it = Item {
                     id: id.to_string(),
                     name: name.to_string(),
@@ -1270,39 +1914,50 @@ pub fn ensure_ecology_items_in_store() {
         }
 
         // 3. 1,120 件千物總典物品
+        let valid_wt_ids: std::collections::HashSet<&str> = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
+            .iter()
+            .map(|e| e.id)
+            .collect();
+        s.items.retain(|id, _| !id.starts_with("wt_cat_") || valid_wt_ids.contains(id.as_str()));
         for entry in crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS {
-            if !s.items.contains_key(entry.id) {
-                let (item_type, slot) = match entry.category_num {
-                    "08" | "09" | "10" | "11" | "8" | "9" => ("consumable", ""),
-                    "12" | "13" => ("armor", "body"),
-                    "18" | "19" => ("weapon", "hand"),
-                    _ => ("material", ""),
-                };
-                let base_price = crate::game::peninsula_catalog::catalog_entry_price_mg(entry);
-                let weight = crate::game::peninsula_catalog::catalog_entry_weight_kg(entry);
-                let origin = format!("{}・{}", entry.origin_material, entry.workshop);
-                let stackable = if slot.is_empty() {
-                    if item_type == "material" { 99 } else { 20 }
+            let (item_type, slot, vit_bonus, dex_bonus, atk_bonus) =
+                if let Some((wear_type, wear_slot, v, d, a)) =
+                    classify_catalog_wearable_slot(entry.name, entry.category_num, entry.daily_function)
+                {
+                    (wear_type, wear_slot, v, d, a)
+                } else if matches!(entry.category_num, "08" | "09" | "10" | "8" | "9")
+                    || entry.socket == "Taste"
+                {
+                    ("consumable", "", 0, 0, 0)
                 } else {
-                    1
+                    ("material", "", 0, 0, 0)
                 };
-                let it = Item {
-                    id: entry.id.to_string(),
-                    name: entry.name.to_string(),
-                    slot: slot.to_string(),
-                    item_type: item_type.to_string(),
-                    weight,
-                    stackable,
-                    denomination: base_price,
-                    description: entry.look_text.to_string(),
-                    vit_bonus: 0,
-                    dex_bonus: 0,
-                    atk_bonus: 0,
-                    origin,
-                };
-                s.items.insert(entry.id.to_string(), it);
-            }
+            let base_price = crate::game::peninsula_catalog::catalog_entry_price_mg(entry);
+            let weight = crate::game::peninsula_catalog::catalog_entry_weight_kg(entry);
+            let origin = format!("白塔半島・{}", entry.workshop);
+            let description = entry.look_text.replace("，主要用於", "；");
+            let stackable = if slot.is_empty() {
+                if item_type == "material" { 99 } else { 20 }
+            } else {
+                1
+            };
+            let it = Item {
+                id: entry.id.to_string(),
+                name: entry.name.to_string(),
+                slot: slot.to_string(),
+                item_type: item_type.to_string(),
+                weight,
+                stackable,
+                denomination: base_price,
+                description,
+                vit_bonus,
+                dex_bonus,
+                atk_bonus,
+                origin,
+            };
+            s.items.insert(entry.id.to_string(), it);
         }
+        let _ = s.persist_items();
     }
 }
 
@@ -1315,11 +1970,11 @@ pub fn classify_catalog_wearable_slot(
 ) -> Option<(&'static str, &'static str, i32, i32, i32)> {
     const REJECT_KEYWORDS: &[&str] = &[
         "爐", "磨", "大鋸", "滑道", "切石機", "翻土犁", "榨油車", "槽軌", "台車", "工作台",
-        "龍骨車", "防撞砧", "翻砂箱", "葫蘆吊", "篩架", "砂帶機", "剪板機", "灰窯", "活塞泵", "虎鉗",
+        "龍骨車", "防撞砧", "翻砂箱", "葫蘆吊", "篩架", "砂帶機", "裁板機", "灰窯", "活塞泵", "虎鉗",
         "火烘槽", "軋花機", "千斤頂", "水石輪", "轉盤", "配重模具", "地鑽", "石槽", "大龍骨", "船纜",
         "重錨", "灰膏", "竹筏", "大貨車", "渡船", "划艇", "壓捆機", "推車", "馬鞍架", "吊架",
         "大釜", "砂鍋", "石櫃", "大蒸籠", "重石罐", "醬菜罈", "絞肉機", "飯桶", "銅桶", "豆腐框",
-        "座鐘", "巨鐘", "壁鐘", "路燈", "壁燈", "吊燈", "檢查台", "壓床", "水缸", "輪椅", "擔架",
+        "座鐘", "巨鐘", "壁鐘", "路燈", "壁燈", "吊燈", "檢查台", "壓床", "水缸", "輪椅", "抬架",
     ];
 
     let is_rejected = REJECT_KEYWORDS.iter().any(|&k| {
@@ -1357,7 +2012,7 @@ pub fn classify_catalog_wearable_slot(
     // Blunt/axes/picks/hammers/bars/clubs
     const BLUNT_AXES: &[&str] = &[
         "重斧", "大斧", "開山鎬", "手鎬", "破冰鎬", "鍛錘", "羊角錘", "手鏨", "撬棍", "打蹄鉗",
-        "木刀", "手杖", "打鳥叉", "起子",
+        "木刀", "手杖", "打鳥叉", "旋鑿",
     ];
     if BLUNT_AXES.iter().any(|&k| name.contains(k)) {
         return Some(("equipment", "hold_r", 2, 0, 4));
@@ -1374,7 +2029,7 @@ pub fn classify_catalog_wearable_slot(
     // Left-hand / utility / shields / umbrellas / lamps / instruments / books
     const LEFT_HAND_UTILITY: &[&str] = &[
         "摺疊傘", "晴雨傘", "摺扇", "火把", "信號筒", "煤油燈", "手提燈", "馬燈", "暗訪燈", "電筒",
-        "小夜燈", "羅盤", "羅經", "六分儀", "望遠鏡", "觀海雙鏡", "放大鏡", "星軌銅儀", "水平尺", "卡尺",
+        "小夜燈", "羅盤", "羅經", "六分儀", "望遠鏡", "觀海雙鏡", "助視鏡", "星軌銅儀", "水平尺", "卡尺",
         "懷錶", "秒錶", "手札", "課本", "風物誌", "航海錄", "通典", "地圖扇", "算籌", "計數板",
         "銀針囊", "握石", "刮痧板",
     ];
@@ -1402,7 +2057,7 @@ pub fn classify_catalog_wearable_slot(
     }
 
     // Cloak
-    const CLOAK: &[&str] = &["大氅", "風衣", "雨披", "斗篷"];
+    const CLOAK: &[&str] = &["大氅", "防雨長衫", "雨披", "斗篷"];
     if CLOAK.iter().any(|&k| name.contains(k)) {
         return Some(("equipment", "cloak", 4, 2, 0));
     }
@@ -1438,7 +2093,7 @@ pub fn classify_catalog_wearable_slot(
     }
 
     // Feet
-    const FEET: &[&str] = &["短靴", "長統皮靴", "馬伕靴", "釘鞋", "木屐", "拖鞋", "涼拖", "睡靴", "鞋套"];
+    const FEET: &[&str] = &["短靴", "長統皮靴", "馬伕靴", "釘鞋", "木屐", "便鞋", "軟鞋", "睡靴", "鞋套"];
     if FEET.iter().any(|&k| name.contains(k)) {
         return Some(("equipment", "feet", 2, 3, 0));
     }
@@ -1458,10 +2113,10 @@ pub fn classify_catalog_wearable_slot(
 pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief> {
     if let Some((source, quality)) = crate::combat::wordplate::parse_crystal_item_id(item_id) {
         return Some(crate::db::ItemDefBrief {
-            name: format!("{}・{}詞元結晶", quality.label_zh(), source.label_zh()),
+            name: format!("{}・{}晶石", quality.label_zh(), source.label_zh()),
             item_type: "word_crystal".to_string(),
             slot: String::new(),
-            description: format!("自白塔半島{}物產剝名凝結而成的舍利子態結晶（{}）。外顯品階與天地來源，內蘊未顯之真名；運功【碎晶提出】可析出對應來源之裸詞元入【未定字譜（識海試排槽）】，亦可於市集公開交易流通。", source.label_zh(), quality.label_zh()),
+            description: format!("自白塔半島{}地脈凝結而成的天然晶石（{}），質地溫潤。", source.label_zh(), quality.label_zh()),
             weight: 0.1,
             vit_bonus: 0,
             dex_bonus: 0,
@@ -1479,7 +2134,33 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
             vit_bonus: 0,
             dex_bonus: 0,
             atk_bonus: 0,
-            origin: "白塔半島・天機院".to_string(),
+            origin: "白塔半島・文曜印行書閣".to_string(),
+        });
+    }
+    if item_id == "wt_beast_bone" {
+        return Some(crate::db::ItemDefBrief {
+            name: "堅實獸骨".to_string(),
+            item_type: "material".to_string(),
+            slot: String::new(),
+            description: "自山海異獸殘軀分理出的堅實獸骨，質地細密堅韌，可作為百工骨器、骨針或熬湯之材。".to_string(),
+            weight: 0.5,
+            vit_bonus: 0,
+            dex_bonus: 0,
+            atk_bonus: 0,
+            origin: "白塔半島・山海獵場".to_string(),
+        });
+    }
+    if item_id == "wt_down_feather" {
+        return Some(crate::db::ItemDefBrief {
+            name: "水鳥蓬鬆絨羽".to_string(),
+            item_type: "material".to_string(),
+            slot: String::new(),
+            description: "採集自澤岸水鳥棲息處的細密絨羽，輕盈保暖，可用於縫製防寒襯衣或精細百工箭羽。".to_string(),
+            weight: 0.1,
+            vit_bonus: 0,
+            dex_bonus: 0,
+            atk_bonus: 0,
+            origin: "白塔半島・水尾澤岸".to_string(),
         });
     }
     if item_id.starts_with("manual_") {
@@ -1489,7 +2170,7 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
                 item_type: "manual".to_string(),
                 slot: String::new(),
                 description: format!(
-                    "由【{}】親手著譜之傳世手札（路數：{}｜字印：{}）。{}",
+                    "由【{}】親手著譜之傳世手札（路數：{}・要訣：{}）。{}",
                     rec.author_name,
                     rec.slot_label,
                     rec.word_chars.join("・"),
@@ -1521,7 +2202,7 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
                 item_type: "corpse".to_string(),
                 slot: String::new(),
                 description: format!(
-                    "尚留餘溫的山海異獸殘軀（{}）。可趁靈韻未散【整軀剝名】一搏高品階結晶，或【肢體分解】取下「{}」等部位。",
+                    "尚留餘溫的山海異獸殘軀（{}）。可執行【肢體分解】取下「{}」等部位材料，或攜往百工坊與庖廚入饌成器。",
                     rec.shanhai_note,
                     rec.primary_loot_name
                 ),
@@ -1536,7 +2217,7 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
             name: "異獸殘軀".to_string(),
             item_type: "corpse".to_string(),
             slot: String::new(),
-            description: "尚留餘溫的山海異獸殘軀。可趁靈韻未散【整軀剝名】一搏高品階結晶，或【肢體分解】取下「獸皮」等部位。".to_string(),
+            description: "尚留餘溫的山海異獸殘軀。可執行【肢體分解】取下「獸皮」等部位材料，或攜往百工坊與庖廚入饌成器。".to_string(),
             weight: 15.0,
             vit_bonus: 0,
             dex_bonus: 0,
@@ -1628,7 +2309,7 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
                 name: "原漿宣紙刀".to_string(),
                 item_type: "material".to_string(),
                 slot: String::new(),
-                description: "青竹抄紙槽濾出的純淨宣紙原漿紙刀，可裝訂采風手札或拓印長卷。".to_string(),
+                description: "青竹抄紙槽濾出的純淨宣紙原漿紙刀，可裝訂採風手札或拓印長卷。".to_string(),
                 weight: 0.5,
                 vit_bonus: 0,
                 dex_bonus: 0,
@@ -1714,6 +2395,461 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
                 origin: "水尾寮渡頭市集與倉棚".to_string(),
             });
         }
+        "mat_fresh_shrimp" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "水尾寮鮮沼蝦".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "自水尾寮清澈河口與溪流捕撈起的鮮活沼蝦，殼薄肉彈、滋味清甜，可炭炙成鮮蝦串或入鍋熬煮鮮湯。".to_string(),
+                weight: 0.3,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "水尾寮河口與老蘆叢".to_string(),
+            });
+        }
+        "shanhai_fresh_fish" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "深海鮮魚".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "自外海與港灣釣獲的肥美鮮魚，魚鱗銀亮、肉質緊實，可相思木冷燻成魚乾或下鍋煨煮魚湯。".to_string(),
+                weight: 0.8,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "風舶角避風港".to_string(),
+            });
+        }
+        "shanhai_beast_meat" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "山海鮮獸肉".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "自山海獵場取得的精實鮮獸肉，肌理分明、富含氣血，可揉入馬告炭炙成獸肉脯或慢火燉湯。".to_string(),
+                weight: 1.0,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "牛埔獵場".to_string(),
+            });
+        }
+        "mat_salted_fish" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "海鹽醃魚乾".to_string(),
+                item_type: "consumable".to_string(),
+                slot: String::new(),
+                description: "以日曬粗鹽醃漬風乾的海魚乾，鹹鮮耐儲，行旅途中食用可迅速補充體力。".to_string(),
+                weight: 0.4,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "烏石鼻".to_string(),
+            });
+        }
+        "mat_grain_sack" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "農家精選穀糧袋".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "大圳頭良田收成並精篩飽滿的稻穀糧袋，可磨粉烙製行旅耐儲米糧餅或入釜熬粥。".to_string(),
+                weight: 1.4,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "大圳頭".to_string(),
+            });
+        }
+        "mat_pasture_seed_sack" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "優質牧草種籽袋".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "牛埔草甸篩選收存的飽滿牧草種籽袋，可播種育草或焙炒成雜糧乾糧。".to_string(),
+                weight: 0.55,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "牛埔".to_string(),
+            });
+        }
+        "harvest_fish" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "鮮活河魚".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "自清澈溪澗捕獲的鮮活河魚，肉質細嫩無腥，適宜炭烤或慢火煨湯。".to_string(),
+                weight: 0.6,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "水尾寮".to_string(),
+            });
+        }
+        "harvest_herb" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "野地草藥".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "採自山野林間的天然草藥，帶有清冽草木氣息，可熬製活血膏或焙製百草茶包。".to_string(),
+                weight: 0.3,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "harvest_wood" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "北坡雲杉原木".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "採自北坡雲杉林的堅實原木，木質細密挺直，適合車製木柄或百工器具。".to_string(),
+                weight: 2.0,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "霜林口".to_string(),
+            });
+        }
+        "harvest_ore" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "赤紋鐵礦".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "採自赤石坡與礦坑的含鐵原礦，夾雜赤紅礦紋，可淘洗冶煉鍛打成器。".to_string(),
+                weight: 1.8,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "下營".to_string(),
+            });
+        }
+        "harvest_berries" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "原野漿果".to_string(),
+                item_type: "consumable".to_string(),
+                slot: String::new(),
+                description: "採自林緣灌叢的飽滿野漿果，酸甜多汁，生食可解渴生津，亦可入饌熬醬。".to_string(),
+                weight: 0.2,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "霜林口".to_string(),
+            });
+        }
+        "harvest_vine" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "深海巨藻藤".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "採自巨藻淺灣的強韌海藻藤，富含膠質且纖維堅韌，可編繩或入藥。".to_string(),
+                weight: 0.5,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "烏石鼻".to_string(),
+            });
+        }
+        "harvest_hardstone" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "緻密硬石".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "質地堅硬細密的天然石料，可用於打造石砧、修補工事或鍛造開山重具。".to_string(),
+                weight: 1.6,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "harvest_rare_wood" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "溫木心材".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "取自百年老樟與溫木的核心良材，散發天然幽香，防潮防蛀，最適合雕琢隨身木匣。".to_string(),
+                weight: 1.5,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "霜林口".to_string(),
+            });
+        }
+        "harvest_deadwood" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "乾燥枯枝".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "山林間自然風乾的枯樹枝，極易引火，可紮製松明火把或添入營火。".to_string(),
+                weight: 0.5,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "霜林口".to_string(),
+            });
+        }
+        "harvest_crystal" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "寒水玉原石".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "蘊含清冽寒氣的天然玉石原礦，質地澄澈溫潤。".to_string(),
+                weight: 0.8,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "mat_herb_poultice" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "百草外敷藥膏".to_string(),
+                item_type: "consumable".to_string(),
+                slot: String::new(),
+                description: "採集百草與藥泥精煉熬製的溫經外敷藥膏，清涼透肌，善消紅腫暗傷。".to_string(),
+                weight: 0.4,
+                vit_bonus: 2,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "mat_beast_hide" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "粗製獸皮".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "經初步鞣製刮脂的粗韌獸皮，質厚耐磨，為裁縫防風斗篷與工靴的紮實皮料。".to_string(),
+                weight: 1.2,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "霜林口".to_string(),
+            });
+        }
+        "beast_scale" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "山海獸鱗".to_string(),
+                item_type: "material".to_string(),
+                slot: String::new(),
+                description: "山林巨獸或水裔大妖身上蛻落的堅厚鱗片，質地堅若精鋼，可用於編綴護甲或入藥。".to_string(),
+                weight: 0.6,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "下營".to_string(),
+            });
+        }
+        "key_brass_home_lock" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "黃銅家宅門鎖鑰匙".to_string(),
+                item_type: "tool".to_string(),
+                slot: String::new(),
+                description: "公議堂配發的黃銅家宅門鎖鑰匙，匙齒精準咬合，為安居私宅的憑信之物。".to_string(),
+                weight: 0.1,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "文曜".to_string(),
+            });
+        }
+        "item_coastal_sea_chart" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "黑潮順時針海圖摺頁".to_string(),
+                item_type: "misc".to_string(),
+                slot: String::new(),
+                description: "以油布皮紙精細繪製的沿岸潮汐與暗礁海圖，標註黑潮迴流與淺灣錨地。".to_string(),
+                weight: 0.3,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "風舶角".to_string(),
+            });
+        }
+        "item_personal_astrolabe_scroll" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "周天命格星盤拓卷".to_string(),
+                item_type: "misc".to_string(),
+                slot: String::new(),
+                description: "觀星台依星軌儀推步校準的個人先天星盤拓本，墨色深邃，周天星斗分野明晰。".to_string(),
+                weight: 0.3,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "item_oiled_bamboo_umbrella" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "雙層桐油防雨竹傘".to_string(),
+                item_type: "equipment".to_string(),
+                slot: "hold_l".to_string(),
+                description: "三年生重竹骨架，傘面覆以七層熟桐油浸染皮紙，風雨不侵，收展清脆沉著。".to_string(),
+                weight: 0.9,
+                vit_bonus: 3,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "水尾寮".to_string(),
+            });
+        }
+        "item_spruce_votive_plaque" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "北嶺雲杉祈福木牌".to_string(),
+                item_type: "misc".to_string(),
+                slot: String::new(),
+                description: "採北嶺古雲杉心材雕琢的祈福木牌，質地細密且帶松木清香，寄託行者安寧心願。".to_string(),
+                weight: 0.2,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "霜林口".to_string(),
+            });
+        }
+        "item_white_tower_gazetteer_scroll" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "白塔風物孤本鈔卷".to_string(),
+                item_type: "misc".to_string(),
+                slot: String::new(),
+                description: "墨香猶存的孤本手鈔手卷，詳載白塔半島地理水文、礦脈動植與九大聚落風俗。".to_string(),
+                weight: 0.4,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "item_ebony_mortise_tea_tray" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "沉水烏木榫卯茶盤".to_string(),
+                item_type: "misc".to_string(),
+                slot: String::new(),
+                description: "珍貴沉水烏木全榫卯咬合製成的茶盤，質地沉凝溫潤，水潑不漬，古雅厚重。".to_string(),
+                weight: 1.1,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "item_quenched_steel_whetstone" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "雙面精鋼油石".to_string(),
+                item_type: "tool".to_string(),
+                slot: String::new(),
+                description: "粗細雙面金剛淬刃磨石，專為推平捲刃崩口、砥礪百煉刀劍鋒芒而造。".to_string(),
+                weight: 0.8,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "文曜".to_string(),
+            });
+        }
+        "item_indigo_rain_cloak" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "山藍防雨斗篷".to_string(),
+                item_type: "equipment".to_string(),
+                slot: "body".to_string(),
+                description: "天然木藍浸染、過油密織帆布縫製的寬大斗篷，遮風禦寒，能抵禦嶺上暴雨狂風。".to_string(),
+                weight: 1.4,
+                vit_bonus: 3,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "風舶角".to_string(),
+            });
+        }
+        "item_wenyao_cadastral_rubbing" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "文曜四坊地籍圖鈔頁".to_string(),
+                item_type: "misc".to_string(),
+                slot: String::new(),
+                description: "文曜城四坊街巷與公私宅舍地籍拓本，字跡嚴整分明，為勘定產業之官方憑證。".to_string(),
+                weight: 0.2,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "文曜".to_string(),
+            });
+        }
+        "item_braised_beef_broth_jar" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "慢燉原牛肉湯陶盅".to_string(),
+                item_type: "consumable".to_string(),
+                slot: String::new(),
+                description: "三水大食堂紅鐵大釜慢火細燉的大角原牛肉與甜白蘿蔔濃湯，封於保溫粗陶盅內，香氣四溢。".to_string(),
+                weight: 0.6,
+                vit_bonus: 5,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "item_roasted_frost_tea_tin" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "炭焙霜林烘青茶罐".to_string(),
+                item_type: "consumable".to_string(),
+                slot: String::new(),
+                description: "東橋山風茶屋以相思木炭文火慢焙的霜林高地烘青茶葉，錫罐密封，茶湯清冽回甘。".to_string(),
+                weight: 0.3,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "霜林口".to_string(),
+            });
+        }
+        "item_seven_star_moxa_pack" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "九蒸七星艾絨藥包".to_string(),
+                item_type: "consumable".to_string(),
+                slot: String::new(),
+                description: "溫氏百草烘藥房以紅泥焙爐九蒸九曝精製的陳年七星艾絨與當歸藥包，溫經通絡、芳香避穢。".to_string(),
+                weight: 0.3,
+                vit_bonus: 4,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "item_collated_stele_rubbing" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "精校金石碑帖拓本".to_string(),
+                item_type: "misc".to_string(),
+                slot: String::new(),
+                description: "講堂街校勘齋與藏書閣東巷逐字比勘摹拓的白塔古碑金石拓本，墨色烏金、字口鋒稜畢現。".to_string(),
+                weight: 0.2,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "半嶺鎮".to_string(),
+            });
+        }
+        "item_polished_quartz_lens" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "精磨紅土水晶鏡片".to_string(),
+                item_type: "misc".to_string(),
+                slot: String::new(),
+                description: "觀星台以紅土崁天然白水晶與細金剛砂精磨校準的雙凸光學鏡片，澄澈無瑕、聚光精準。".to_string(),
+                weight: 0.2,
+                vit_bonus: 0,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "紅土崁".to_string(),
+            });
+        }
+        "item_smoked_mullet_roe_pack" => {
+            return Some(crate::db::ItemDefBrief {
+                name: "風櫃尾冷燻烏魚子禮包".to_string(),
+                item_type: "consumable".to_string(),
+                slot: String::new(),
+                description: "三水口乾貨海味行嚴選的風櫃尾海鹽壓製、相思木冷燻烏魚子，色澤金珀、鹹鮮綿密。".to_string(),
+                weight: 0.5,
+                vit_bonus: 4,
+                dex_bonus: 0,
+                atk_bonus: 0,
+                origin: "南哨".to_string(),
+            });
+        }
         _ => {}
     }
     for g in STANDARD_FINISHED_GOODS {
@@ -1744,13 +2880,9 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
                     item_type: base_good.item_type.to_string(),
                     slot: base_good.slot.to_string(),
                     description: format!(
-                        "{}（{}。氣脈異變加成：體魄+{}、身法+{}、攻勢+{}、氣脈+{}）",
+                        "{}（{}，器物成色與質理俱臻上乘。）",
                         base_good.description,
-                        arch.desc_note,
-                        arch.vit_bonus,
-                        arch.dex_bonus,
-                        arch.atk_bonus,
-                        arch.qi_bonus
+                        arch.desc_note
                     ),
                     weight: base_good.weight,
                     vit_bonus: base_good.vit_bonus + arch.vit_bonus,
@@ -1774,23 +2906,30 @@ pub fn lookup_ecology_item_def(item_id: &str) -> Option<crate::db::ItemDefBrief>
                 vit_bonus,
                 dex_bonus,
                 atk_bonus,
-                origin: format!("{}・{}", cat.origin_material, cat.workshop),
+                origin: format!("白塔半島・{}", cat.workshop),
             });
         }
-        let (item_type, slot) = match cat.category_num {
-            "08" | "09" | "10" | "11" | "8" | "9" => ("consumable", ""),
-            _ => ("material", ""),
+        let (item_type, slot) = if matches!(cat.category_num, "08" | "09" | "10" | "8" | "9")
+            || cat.socket == "Taste"
+        {
+            ("consumable", "")
+        } else {
+            ("material", "")
         };
         return Some(crate::db::ItemDefBrief {
             name: cat.name.to_string(),
             item_type: item_type.to_string(),
             slot: slot.to_string(),
-            description: cat.look_text.to_string(),
+            description: if item_type == "consumable" {
+                cat.look_text.replace("，主要用於", "；")
+            } else {
+                cat.look_text.to_string()
+            },
             weight: crate::game::peninsula_catalog::catalog_entry_weight_kg(cat),
             vit_bonus: 0,
             dex_bonus: 0,
             atk_bonus: 0,
-            origin: format!("{}・{}", cat.origin_material, cat.workshop),
+            origin: format!("白塔半島・{}", cat.workshop),
         });
     }
     None
@@ -1810,7 +2949,17 @@ pub fn craft_from_raw_material(
     let chosen_raw_id = if raw_item_id == "auto" || raw_item_id.trim().is_empty() {
         inv.items
             .iter()
-            .find(|it| classify_item_stage(&it.item_id) == "raw")
+            .find(|it| {
+                classify_item_stage(&it.item_id) == "raw"
+                    && !matches!(
+                        map_raw_to_finished(&it.item_id).id,
+                        "craft_roasted_shrimp_skewer"
+                            | "craft_smoked_fish_fillet"
+                            | "craft_spiced_beast_jerky"
+                            | "craft_ration_grain_cake"
+                    )
+            })
+            .or_else(|| inv.items.iter().find(|it| classify_item_stage(&it.item_id) == "raw"))
             .map(|it| it.item_id.clone())
             .ok_or_else(|| {
                 "行囊中尚無可用於煉製的原料（可前往河岸、藥圃、碼頭採集，或向攤商收購原料）。".to_string()
@@ -1827,9 +2976,9 @@ pub fn craft_from_raw_material(
         raw_name = crate::world::materials::material_by_item_id(&chosen_raw_id)
             .map(|m| m.name.clone())
             .or_else(|| crate::game::peninsula_catalog::find_catalog_entry(&chosen_raw_id).map(|c| c.name.to_string()))
-            .unwrap_or_else(|| "隨身原料".to_string());
+            .unwrap_or_else(|| "行囊物產".to_string());
         if raw_name.is_ascii() {
-            raw_name = "隨身原料".to_string();
+            raw_name = "行囊物產".to_string();
         }
     }
 
@@ -1854,20 +3003,33 @@ pub fn craft_from_raw_material(
         || room_name.contains("觀星")
         || room_name.contains("工坊")
         || room_name.contains("作坊");
-    let threshold = if has_furnace_heat || has_charcoal { 78 } else if is_workshop || ent.qi >= 75 { 55 } else { 35 };
+    let threshold = if has_furnace_heat || has_charcoal { 14 } else if is_workshop { 10 } else { 4 };
 
     let craft_dims = crate::server::handler::entity_total_craft_dims(actor_id);
     let is_culinary_craft = finished_def.item_type == "food"
+        || matches!(
+            finished_def.id,
+            "craft_roasted_shrimp_skewer"
+                | "craft_smoked_fish_fillet"
+                | "craft_spiced_beast_jerky"
+                | "craft_ration_grain_cake"
+                | "craft_calming_tea_pack"
+        )
         || finished_def.id.contains("tea")
         || finished_def.id.contains("fish")
+        || finished_def.id.contains("shrimp")
+        || finished_def.id.contains("jerky")
+        || finished_def.id.contains("grain")
         || finished_def.id.contains("dish")
         || finished_def.id.contains("soup")
         || room_name.contains("廚")
         || room_name.contains("灶")
         || room_name.contains("食")
-        || chosen_raw_id.contains("herb")
-        || chosen_raw_id.contains("tea")
-        || chosen_raw_id.contains("fish");
+        || chosen_raw_id.contains("shrimp")
+        || chosen_raw_id.contains("fish")
+        || chosen_raw_id.contains("meat")
+        || chosen_raw_id.contains("grain")
+        || chosen_raw_id.contains("tea");
 
     let relevant_craft = if is_culinary_craft {
         craft_dims.culinary
@@ -1875,8 +3037,14 @@ pub fn craft_from_raw_material(
         craft_dims.forge
     };
 
+    let venue_for_mentor = if !room_name.is_empty() {
+        crate::grid::resolve_any_room_venue_object(room_name, "")
+    } else {
+        None
+    };
+
     // 預先研判工藝分類以記錄吐納動態並取得內息加成
-    let (habit_kind, mentor_name, imprint_title, imprint_prose, slot_label, carrier_code, formula_word_ids, formula_word_chars, station_tool_name) = if finished_def.id.contains("steel")
+    let (habit_kind, mentor_name, imprint_title, imprint_prose, slot_label, carrier_code, formula_word_ids, formula_word_chars, station_tool_name) = if !is_culinary_craft && (finished_def.id.contains("steel")
         || finished_def.id.contains("iron")
         || finished_def.id.contains("metal")
         || finished_def.id.contains("pick")
@@ -1886,49 +3054,107 @@ pub fn craft_from_raw_material(
         || chosen_raw_id.contains("iron")
         || chosen_raw_id.contains("metal")
         || chosen_raw_id.contains("stone")
-        || chosen_raw_id.contains("礦")
+        || chosen_raw_id.contains("礦"))
     {
+        let mentor_name = if room_name.contains("岑") || room_name.is_empty() {
+            "岑鐵匠"
+        } else if let Some(v) = &venue_for_mentor {
+            v.default_host_title
+        } else {
+            "岑鐵匠"
+        };
         (
             crate::pg::living_world::BreathHabitKind::ForgeHeavy,
-            "岑鐵匠",
+            mentor_name,
             "岑氏沉腕落錘法",
             "鐵砧火花明滅間沉腕落錘，將剛猛勁力勻入器胚，剛柔兼濟",
             "重手",
             "blunt",
             vec!["gang".to_string(), "chen_tai".to_string(), "zhong".to_string()],
-            vec!["剛".to_string(), "沉".to_string(), "重".to_string()],
+            vec!["\u{525b}".to_string(), "沉".to_string(), "重".to_string()],
             "鍛鐵重錘",
         )
     } else if finished_def.item_type == "food"
+        || matches!(
+            finished_def.id,
+            "craft_roasted_shrimp_skewer"
+                | "craft_smoked_fish_fillet"
+                | "craft_spiced_beast_jerky"
+                | "craft_ration_grain_cake"
+                | "craft_calming_tea_pack"
+        )
         || finished_def.id.contains("tea")
         || finished_def.id.contains("fish")
+        || finished_def.id.contains("shrimp")
+        || finished_def.id.contains("jerky")
+        || finished_def.id.contains("grain")
         || finished_def.id.contains("dish")
         || finished_def.id.contains("soup")
         || room_name.contains("廚")
         || room_name.contains("灶")
         || room_name.contains("食")
-        || chosen_raw_id.contains("herb")
-        || chosen_raw_id.contains("tea")
+        || chosen_raw_id.contains("shrimp")
         || chosen_raw_id.contains("fish")
+        || chosen_raw_id.contains("meat")
+        || chosen_raw_id.contains("grain")
+        || chosen_raw_id.contains("tea")
     {
+        let mentor_name = if room_name.contains("三水") || room_name.contains("溫") || room_name.is_empty() {
+            "溫大娘"
+        } else if let Some(v) = &venue_for_mentor {
+            v.default_host_title
+        } else {
+            "溫大娘"
+        };
         (
             crate::pg::living_world::BreathHabitKind::TideContinuous,
-            "溫大娘",
+            mentor_name,
             "三水火候收汁訣",
             "三水調和火候收汁，氣脈如潮汐連綿不絕，滋養臟腑",
-            "連攜",
+            "庖廚百工",
             "tool",
             vec!["shui".to_string(), "huo_shou".to_string(), "he_tai".to_string()],
             vec!["水".to_string(), "火".to_string(), "合".to_string()],
             "庖廚湯杓",
         )
-    } else {
+    } else if finished_def.id == "craft_meridian_salve"
+        || finished_def.id.contains("salve")
+        || chosen_raw_id.contains("herb")
+        || raw_name.contains("草藥")
+        || raw_name.contains("藥草")
+    {
+        let mentor_name = if room_name.contains("脈絡") || room_name.contains("溫") || room_name.is_empty() {
+            "溫藥師"
+        } else if let Some(v) = &venue_for_mentor {
+            v.default_host_title
+        } else {
+            "溫藥師"
+        };
         (
             crate::pg::living_world::BreathHabitKind::ChamberClear,
-            "柯木匠",
+            mentor_name,
+            "百草九蒸提純訣",
+            "文火慢熬百草、凝神提純藥力，使草木菁華溫潤入脈",
+            "藥理百工",
+            "tool",
+            vec!["shui".to_string(), "huo_shou".to_string(), "he_tai".to_string()],
+            vec!["水".to_string(), "火".to_string(), "合".to_string()],
+            "紫銅藥碾",
+        )
+    } else {
+        let mentor_name = if room_name.contains("柯") || room_name.is_empty() {
+            "柯木匠"
+        } else if let Some(v) = &venue_for_mentor {
+            v.default_host_title
+        } else {
+            "柯木匠"
+        };
+        (
+            crate::pg::living_world::BreathHabitKind::ChamberClear,
+            mentor_name,
             "柯氏順紋卯合訣",
             "順應木石竹絲紋理卯榫相合，意守方寸凝神聚氣，分毫不差",
-            "起手",
+            "木作百工",
             "tool",
             vec!["qiao_shu".to_string(), "mu".to_string(), "he_tai".to_string()],
             vec!["巧".to_string(), "木".to_string(), "合".to_string()],
@@ -1937,20 +3163,45 @@ pub fn craft_from_raw_material(
     };
 
     let habit_rec = crate::pg::living_world::record_breath_activity(actor_id, habit_kind, 2, now_unix);
-    let breath_mut_bonus = (habit_rec.dominant.craft_mutation_bonus() * 100.0).round() as i32;
-    let craft_mutation_bonus = ((relevant_craft * 0.04).min(0.18) * 100.0).round() as i32;
-    let threshold = (threshold + craft_mutation_bonus + breath_mut_bonus).min(98);
+    let breath_mut_bonus = ((habit_rec.dominant.craft_mutation_bonus() * 40.0).round() as i32).min(4);
+    let craft_mutation_bonus = ((relevant_craft * 0.02).min(0.06) * 100.0).round() as i32;
+    let is_utility_or_doc = finished_def.id.contains("torch")
+        || finished_def.id.contains("umbrella")
+        || finished_def.id.contains("ink")
+        || finished_def.id.contains("manual")
+        || finished_def.id.contains("almanac")
+        || finished_def.id.contains("storage_box")
+        || finished_def.id.contains("tool_handle")
+        || finished_def.name.contains("火把")
+        || finished_def.name.contains("晴雨傘")
+        || finished_def.name.contains("墨錠")
+        || finished_def.name.contains("手札")
+        || finished_def.name.contains("曆書")
+        || finished_def.name.contains("屋契")
+        || finished_def.name.contains("租約")
+        || finished_def.name.contains("隨身匣")
+        || finished_def.name.contains("收納匣")
+        || finished_def.name.contains("工具長柄");
+    let can_mutate_def = finished_def.item_type != "consumable"
+        && finished_def.item_type != "food"
+        && !finished_def.slot.is_empty()
+        && !is_utility_or_doc;
+    let threshold = if can_mutate_def {
+        (threshold + craft_mutation_bonus + breath_mut_bonus).min(22)
+    } else {
+        0
+    };
 
     let roll = ((now_unix.wrapping_mul(1103515245).wrapping_add(12345) / 65536) % 100).abs() as i32;
-    let is_mutated = roll < threshold;
+    let is_mutated = can_mutate_def && roll < threshold;
     let (prod_id, prod_name, mut narrative) = if is_mutated {
         let arch_idx = ((now_unix as usize) ^ (chosen_raw_id.len())) % MUTATION_ARCHETYPES.len();
         let arch = &MUTATION_ARCHETYPES[arch_idx];
         let mut_id = format!("mut_{}_{}", finished_def.id, arch.key);
         let mut_name = format!("{}・{}", arch.name_prefix, finished_def.name);
         let desc = format!(
-            "{}（{}。靈效加成：體魄+{}、身法+{}、攻勢+{}、氣脈+{}）",
-            finished_def.description, arch.desc_note, arch.vit_bonus, arch.dex_bonus, arch.atk_bonus, arch.qi_bonus
+            "{}（{}，器物成色與質理俱臻上乘。）",
+            finished_def.description, arch.desc_note
         );
 
         let item = Item {
@@ -2014,19 +3265,46 @@ pub fn craft_from_raw_material(
         {
             let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
             if let Some(entry) = ledger.items.get_mut(finished_def.id) {
-                entry.stock += 1;
+                entry.stock = (entry.stock + 1).min((entry.target_stock * 4).max(1));
             }
         }
 
-        let narr = format!(
-            "你細心運轉工藝，將【{raw_name}】細細切磋打磨淬火，成功煉製出一件質地純良厚重的【{}】收入行囊。",
-            finished_def.name
-        );
+        let narr = if is_culinary_craft {
+            format!(
+                "你起火架起炙架與鐵釜，將新鮮的【{raw_name}】佐以海鹽與山胡椒馬告細心翻炙收汁，陣陣鮮香撲鼻而來，成功烹製出一份香氣四溢的【{}】收入行囊。",
+                finished_def.name
+            )
+        } else if finished_def.id.contains("salve") || finished_def.name.contains("膏") || finished_def.name.contains("藥") {
+            format!(
+                "你引火溫爐、細研百草，將【{raw_name}】慢火熬製提純收膏，藥香清幽沁脾，成功煉製出一份成色溫潤的【{}】收入行囊。",
+                finished_def.name
+            )
+        } else if finished_def.id.contains("cloak") || finished_def.id.contains("boots") || finished_def.name.contains("斗篷") || finished_def.name.contains("皮靴") {
+            format!(
+                "你操持骨針與浸油麻線，將【{raw_name}】順著紋理裁切縫合、浸油加固，針腳緊密勻稱，成功縫製出一件結實耐用的【{}】收入行囊。",
+                finished_def.name
+            )
+        } else if finished_def.id.contains("ink") || finished_def.id.contains("almanac") || finished_def.name.contains("墨") || finished_def.name.contains("手札") {
+            format!(
+                "你在案前凝神運杵、細心裁整【{raw_name}】，墨韻與紙理相得益彰，成功製成一件雅致精良的【{}】收入行囊。",
+                finished_def.name
+            )
+        } else if finished_def.id.contains("umbrella") || finished_def.id.contains("box") || finished_def.id.contains("torch") || finished_def.id.contains("handle") {
+            format!(
+                "你順應木竹肌理運使刨刀，將【{raw_name}】細心裁切打磨、卯合上油，成功製成一件做工講究的【{}】收入行囊。",
+                finished_def.name
+            )
+        } else {
+            format!(
+                "你細心運轉工藝，將【{raw_name}】反覆鍛打成型、細細打磨淬火，成功鍛造出一件質地純良厚重的【{}】收入行囊。",
+                finished_def.name
+            )
+        };
         (finished_def.id.to_string(), finished_def.name.to_string(), narr)
     };
 
     if craft_dims.forge >= 0.8 || craft_dims.culinary >= 0.8 {
-        narrative.push_str(" 【百工藝相共鳴】你周天字印所蘊的藝境氣機自然流轉至指掌，火候與力道拿捏得恰到好處。");
+        narrative.push_str(" 【百工熟稔】你呼吸沉穩、指掌施力勻稱，火候與力道拿捏得恰到好處。");
     }
 
     let vstate = if crate::pg::living_world::is_weapon_or_tool_item(&prod_id, &prod_name) {
@@ -2035,47 +3313,54 @@ pub fn craft_from_raw_material(
         None
     };
 
-    let (_imprint_rec, newly_gifted) = crate::pg::living_world::record_mentor_imprint_progress(
-        actor_id,
-        mentor_name,
-        imprint_title,
-        imprint_prose,
-        now_unix,
-    );
-
-    if newly_gifted {
-        let _ = db::add_to_inventory(actor_id, "blank_manual", 1);
-        let mut hasher = 0xcbf29ce484222325u64;
-        for b in format!("{}_{}", mentor_name, imprint_title).bytes() {
-            hasher ^= b as u64;
-            hasher = hasher.wrapping_mul(0x100000001b3);
-        }
-        let manual_hash = format!("{:016x}", hasher);
-        let manual_rec = crate::pg::living_world::TranscribedManualRecord {
-            manual_hash: manual_hash.clone(),
-            author_id: mentor_name.to_string(),
-            author_name: mentor_name.to_string(),
-            formal_name: imprint_title.to_string(),
-            slot_label: slot_label.to_string(),
-            carrier_code: carrier_code.to_string(),
-            word_ids: formula_word_ids.clone(),
-            word_chars: formula_word_chars.clone(),
-            origin_basis: imprint_prose.to_string(),
-            created_at: now_unix,
-        };
-        crate::pg::living_world::save_transcribed_manual(&manual_rec);
-        let manual_item_id = format!("manual_{manual_hash}");
-        let _ = db::add_to_inventory(actor_id, &manual_item_id, 1);
-
-        let word_id_refs: Vec<&str> = formula_word_ids.iter().map(|s| s.as_str()).collect();
-        crate::server::handler::inventory::grant_words_to_player_casket(actor_id, &word_id_refs);
-
-        narrative.push_str(&format!(
-            " {}見你手法沉穩老練，眼中滿是讚許之色，微微頷首道：「此道你已深得精髓。」說罷贈予你一卷親筆手書的《{}》手札與空白手札，並傳下「{}」字印真意，以供日後參悟傳承。",
+    let mentor_present = is_workshop
+        || room_name.contains("廚")
+        || room_name.contains("灶")
+        || room_name.contains("食堂")
+        || room_name.contains(mentor_name);
+    if mentor_present {
+        let (_imprint_rec, newly_gifted) = crate::pg::living_world::record_mentor_imprint_progress(
+            actor_id,
             mentor_name,
             imprint_title,
-            formula_word_chars.join("・")
-        ));
+            imprint_prose,
+            now_unix,
+        );
+
+        if newly_gifted {
+            let _ = db::add_to_inventory(actor_id, "blank_manual", 1);
+            let mut hasher = 0xcbf29ce484222325u64;
+            for b in format!("{}_{}", mentor_name, imprint_title).bytes() {
+                hasher ^= b as u64;
+                hasher = hasher.wrapping_mul(0x100000001b3);
+            }
+            let manual_hash = format!("{:016x}", hasher);
+            let manual_rec = crate::pg::living_world::TranscribedManualRecord {
+                manual_hash: manual_hash.clone(),
+                author_id: mentor_name.to_string(),
+                author_name: mentor_name.to_string(),
+                formal_name: imprint_title.to_string(),
+                slot_label: slot_label.to_string(),
+                carrier_code: carrier_code.to_string(),
+                word_ids: formula_word_ids.clone(),
+                word_chars: formula_word_chars.clone(),
+                origin_basis: imprint_prose.to_string(),
+                created_at: now_unix,
+            };
+            crate::pg::living_world::save_transcribed_manual(&manual_rec);
+            let manual_item_id = format!("manual_{manual_hash}");
+            let _ = db::add_to_inventory(actor_id, &manual_item_id, 1);
+
+            let word_id_refs: Vec<&str> = formula_word_ids.iter().map(|s| s.as_str()).collect();
+            crate::server::handler::inventory::grant_words_to_player_casket(actor_id, &word_id_refs);
+
+            narrative.push_str(&format!(
+                " {}見你手法沉穩老練，眼中滿是讚許之色，微微頷首道：「此道你已深得精髓。」說罷贈予你一卷親筆手書的《{}》手札與空白手札，並傳下「{}」諸字真意，以供日後參悟傳承。",
+                mentor_name,
+                imprint_title,
+                formula_word_chars.join("・")
+            ));
+        }
     }
 
     let is_high_tier = is_mutated || finished_def.base_price >= 100 || !finished_def.slot.is_empty();
@@ -2103,6 +3388,15 @@ pub fn craft_from_raw_material(
         }
     }
 
+    if !room_name.trim().is_empty() {
+        if let Some((_pack_id, _step, ep_line)) = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, &prod_name)
+            .or_else(|| crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, &raw_name))
+        {
+            narrative.push('\n');
+            narrative.push_str(&ep_line);
+        }
+    }
+
     Ok((prod_id, prod_name, is_mutated, narrative))
 }
 
@@ -2117,21 +3411,62 @@ pub fn mutate_finished_item(
         return Err("角色不存在".to_string());
     };
     if ent.qi < 10 {
-        return Err("元氣不足（至少需要 10 點元氣方能催動氣脈共鳴進行異變）。".to_string());
+        return Err("元氣不足（需內息充沛才能催動器物淬鍊共鳴）。".to_string());
     }
 
     let inv = db::get_inventory(&ent.inventory, ent.vit);
 
+    let can_mutate_item = |id: &str| -> bool {
+        if id == "blank_manual"
+            || id == "wt_blank_manual"
+            || id.starts_with("manual_")
+            || id.starts_with("corpse_")
+            || id.starts_with("crystal_")
+            || id.contains("torch")
+            || id.contains("umbrella")
+            || id.contains("ink")
+            || id.contains("almanac")
+            || id.contains("storage_box")
+            || id.contains("tool_handle")
+        {
+            return false;
+        }
+        if is_raw_material(id) || id.starts_with("mut_") || classify_item_stage(id) == "mutated" {
+            return false;
+        }
+        if id.contains("salve") || id.contains("tea") || id.contains("decoction") {
+            return false;
+        }
+        if let Some(def) = db::get_item_def(id) {
+            let non_gear_types = ["equipment", "weapon", "armor", "tool"];
+            if def.slot.is_empty() || !non_gear_types.contains(&def.item_type.as_str()) {
+                return false;
+            }
+            let rejected_names = [
+                "手札", "課本", "殘軀", "活血膏", "茶包", "仙草凍", "豆花", "胡椒餅", "切仔麵",
+                "牛肉", "番薯", "飯糰", "炊飯", "米漿", "油條", "火把", "晴雨傘", "墨錠", "曆書",
+                "屋契", "租約", "隨身匣", "收納匣", "木匣", "工具箱", "工具長柄", "長柄",
+            ];
+            if rejected_names.iter().any(|k| def.name.contains(k)) {
+                return false;
+            }
+        }
+        true
+    };
+
     let chosen_item_id = if item_id == "auto" || item_id.trim().is_empty() {
         inv.items
             .iter()
+            .filter(|it| can_mutate_item(&it.item_id))
             .find(|it| classify_item_stage(&it.item_id) == "finished")
-            .or_else(|| inv.items.iter().find(|it| classify_item_stage(&it.item_id) == "mutated"))
             .map(|it| it.item_id.clone())
             .ok_or_else(|| "行囊中尚無可用於氣脈異變的工造成品。".to_string())?
     } else {
         if !db::inventory_has_item(&ent.inventory, item_id) {
             return Err("行囊中未持有指定的成品物件。".to_string());
+        }
+        if !can_mutate_item(item_id) {
+            return Err("此類器物非百工器具或防身兵甲，無法引導氣脈共鳴淬鍊。".to_string());
         }
         item_id.to_string()
     };
@@ -2150,7 +3485,7 @@ pub fn mutate_finished_item(
         || _room_name.contains("觀星")
         || _room_name.contains("工坊")
         || _room_name.contains("作坊");
-    let threshold = if has_furnace_heat || has_charcoal { 78 } else if is_workshop || ent.qi >= 75 { 55 } else { 35 };
+    let threshold = if has_furnace_heat || has_charcoal { 35 } else if is_workshop { 24 } else { 12 };
 
     let roll = ((now_unix.wrapping_mul(1103515245).wrapping_add(12345) / 65536) % 100).abs() as i32;
     if roll >= threshold {
@@ -2219,10 +3554,9 @@ pub fn mutate_finished_item(
 
     let base_desc = base_def.as_ref().map(|d| d.description.as_str()).unwrap_or("做工精湛的工造之物。");
     let desc = format!(
-        "{}（{}。氣脈異變加成：體魄+{}、身法+{}、攻勢+{}、氣脈+{}）",
-        base_desc, arch.desc_note, arch.vit_bonus, arch.dex_bonus, arch.atk_bonus, arch.qi_bonus
+        "{}（{}，器物成色與質理俱臻上乘。）",
+        base_desc, arch.desc_note
     );
-
     let (slot, item_type, weight, base_price, base_vit, base_dex, base_atk) = if let Some(d) = &base_def {
         (d.slot.clone(), d.item_type.clone(), d.weight, 25, d.vit_bonus, d.dex_bonus, d.atk_bonus)
     } else {
@@ -2260,9 +3594,17 @@ pub fn mutate_finished_item(
     }
     db::log_npc_event(now_unix, actor_id, "item_mutation", &mut_name);
 
-    let narrative = format!(
-        "你凝神調息，將十點元氣徐徐注入【{base_clean_name}】中。隨行氣勢激盪，天地與器物深層質理產生極強共振，微芒自器表寸寸漫溢，赫然蛻變為神異斐然的{mut_name}！"
+    let mut narrative = format!(
+        "你凝神調息，將沛然內息徐徐注入【{base_clean_name}】中。隨行氣勢激盪，天地與器物深層質理產生極強共振，微芒自器表寸寸漫溢，赫然蛻變為神異斐然的{mut_name}！"
     );
+    if !_room_name.trim().is_empty() {
+        if let Some((_pack_id, _step, ep_line)) = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(_room_name, &mut_name)
+            .or_else(|| crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(_room_name, &base_clean_name))
+        {
+            narrative.push('\n');
+            narrative.push_str(&ep_line);
+        }
+    }
     Ok((mut_id, mut_name, narrative))
 }
 
@@ -2363,7 +3705,47 @@ pub fn harvest_from_world_object(
     } else if craft_dims.harvest >= 1.0 || is_familiar {
         let _ = db::add_to_inventory(actor_id, mat_id, 1);
         extra_granted = 1;
-        note.push_str("手頭器物趁手加上【採集剝名】藝相純熟，順著紋理多採得一份完好物材。");
+        note.push_str("手頭器物趁手加上【山林採獵】手藝純熟，順著紋理多採得一份完好物材。");
+    }
+
+    let res_kind = if is_ore {
+        "mineral"
+    } else if is_tide {
+        "fishery"
+    } else if target_name.contains("木")
+        || target_name.contains("樹")
+        || target_name.contains("樟")
+        || target_name.contains("林")
+    {
+        "timber"
+    } else {
+        "flora"
+    };
+
+    let (_h, is_abundant, is_fallow) =
+        crate::game::harvest_zone_natural_resource(target_name, res_kind, 2.5);
+    if is_fallow {
+        note.push_str("（周遭山林水土新近採擷頗繁，順手培土護根以待來日生機）");
+    } else if is_abundant && extra_granted == 0 {
+        let _ = db::add_to_inventory(actor_id, mat_id, 1);
+        extra_granted = 1;
+        note.push_str("山林水土豐美、物產充盈，順手多採得一份上好物材。");
+    }
+
+    if let Some(ent) = db::get_entity(actor_id).ok().flatten() {
+        if let (Some(gx), Some(gy)) = (ent.grid_x, ent.grid_y) {
+            let room_name = crate::server::grid_manager::get_square_grid()
+                .and_then(|g| g.get(crate::grid::SquareCoord::new(gx, gy)).map(|c| c.name.clone()))
+                .unwrap_or_default();
+            if !room_name.is_empty() {
+                if let Some((_pack_id, _step, ep_line)) =
+                    crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(&room_name, target_name)
+                {
+                    note.push(' ');
+                    note.push_str(&ep_line);
+                }
+            }
+        }
     }
 
     (extra_granted, note)
@@ -2379,23 +3761,34 @@ pub fn run_npc_autonomous_production_step(
     if npc_ids.is_empty() {
         return None;
     }
-    let npc_id = &npc_ids[((now_unix as usize) % npc_ids.len())];
-    let (npc_name, ent_inventory) = if let Some(ent) = db::get_entity(npc_id).ok().flatten() {
-        let name = if npc_id.starts_with("wt_vendor_") {
-            ent.display_title
-                .split(['|', '｜'])
-                .next()
-                .unwrap_or(&ent.display_title)
-                .trim()
-                .to_string()
+    let npc_id = &npc_ids[(now_unix as usize) % npc_ids.len()];
+    let (npc_name, ent_inventory, venue_opt) = if let Some(ent) = db::get_entity(npc_id).ok().flatten() {
+        let tag = crate::store::npc_brief_appearance_tag(npc_id, &ent.display_title);
+        let (is_staff, has_uniform, in_counter_zone) =
+            crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+                room_name,
+                npc_id,
+                &ent.display_title,
+                &ent.current_activity,
+                &ent.equipment_slots,
+            );
+        let venue_opt = crate::grid::resolve_any_room_venue_object(room_name, &ent.display_title);
+        let name = if is_staff {
+            let host_title = venue_opt.as_ref().map(|v| v.default_host_title).unwrap_or("當值主事");
+            if in_counter_zone {
+                format!("站在櫃檯內側的{}（{}）", host_title, tag)
+            } else if has_uniform {
+                format!("身著工作制服的{}（{}）", host_title, tag)
+            } else {
+                format!("那名{}的街坊", tag)
+            }
         } else {
-            let tag = crate::store::npc_brief_appearance_tag(npc_id, &ent.display_title);
-            let role = crate::store::npc_persistent_role_label(npc_id, &ent.display_title);
-            format!("那名{}的{}", tag, role)
+            format!("那名{}的街坊", tag)
         };
-        (name, ent.inventory)
+        (name, ent.inventory, venue_opt)
     } else {
-        (format!("工坊匠師【{npc_id}】"), "[]".to_string())
+        let venue_opt = crate::grid::resolve_any_room_venue_object(room_name, "");
+        ("一名街坊匠人".to_string(), "[]".to_string(), venue_opt)
     };
 
     // Step A: 原料採集 (渡口/水岸/河/碼頭/藥圃/竹林/山道/埠階/海/林)
@@ -2427,7 +3820,7 @@ pub fn run_npc_autonomous_production_step(
         .replace("百工外坊", "")
         .replace("西門外坊", "");
 
-    let is_workshop_site = !is_non_workshop_facility
+    let is_workshop_site = (!is_non_workshop_facility
         && (clean_workshop_site_name.contains("鐵坊")
             || clean_workshop_site_name.contains("鍛造")
             || clean_workshop_site_name.contains("木作")
@@ -2453,7 +3846,10 @@ pub fn run_npc_autonomous_production_step(
             || clean_workshop_site_name.contains("織")
             || clean_workshop_site_name.contains("造")
             || clean_workshop_site_name.contains("院")
-            || clean_workshop_site_name.contains("館"));
+            || clean_workshop_site_name.contains("館")))
+        || venue_opt.as_ref().is_some_and(|v| {
+            v.semantic_tags().iter().any(|t| matches!(*t, "工坊" | "鐵匠鋪" | "染坊" | "磨石" | "礦場" | "林場") || t.contains("織"))
+        });
     if is_gathering_site && !is_workshop_site {
         let (raw_id, raw_name) = if room_name.contains("藥") || room_name.contains("圃") || room_name.contains("田") {
             ("mat_foraged_herb", "野生採集草藥")
@@ -2462,17 +3858,38 @@ pub fn run_npc_autonomous_production_step(
         } else if room_name.contains("渡") || room_name.contains("岸") || room_name.contains("葦") {
             ("mat_reed_bundle", "水澤老蘆草綑")
         } else if room_name.contains("紙") {
-            ("mat_coarse_paper_ream", "粗制竹麻紙料")
+            ("mat_coarse_paper_ream", "粗製竹麻紙料")
         } else {
             ("mat_iron_scrap", "回收熟鐵料塊")
         };
 
+        let raw_s = crate::world::materials::infer_origin_settlement(room_name);
+        let cur_settlement = normalize_canonical_settlement(if raw_s.is_empty() { room_name } else { raw_s });
+
+        // 檢查 NPC 背包已持有 raw_id 數量；若 >= 4，轉為就地深加工交付市集，防止原料過度囤積
+        let held_raw_qty = db::get_inventory(&ent_inventory, 10)
+            .items
+            .iter()
+            .find(|it| it.item_id == raw_id)
+            .map(|it| it.qty)
+            .unwrap_or(0);
+
+        if held_raw_qty >= 4 {
+            let _ = db::remove_from_inventory(npc_id, raw_id, 2);
+            let finished_def = map_raw_to_finished(raw_id);
+            crate::npc::causal_core::record_settlement_market_production(cur_settlement, finished_def.id, 1);
+            let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, finished_def.name);
+            return Some(format!(
+                "{npc_name}見行囊中所收【{raw_name}】堆疊已滿，索性就地取材修整編整，俐落打製出一件【{}】交付當地市集鋪肆。",
+                finished_def.name
+            ));
+        }
+
         let _ = db::add_to_inventory(npc_id, raw_id, 1);
-        let cur_settlement = normalize_canonical_settlement(crate::world::materials::infer_origin_settlement(room_name));
         {
             let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
             if let Some(entry) = ledger.items.get_mut(raw_id) {
-                entry.stock += 1;
+                entry.stock = (entry.stock + 1).min((entry.target_stock * 4).max(1));
             }
             let key = (cur_settlement.to_string(), raw_id.to_string());
             if let Some(cell) = ledger.settlement_markets.get_mut(&key) {
@@ -2486,8 +3903,22 @@ pub fn run_npc_autonomous_production_step(
             format!("{npc_name}彎腰檢視埠頭旁的物料堆，將幾包質地齊整的【{raw_name}】清點分裝，額角微汗，動作甚是熟練。"),
             format!("{npc_name}在晨光水氣中採集整理【{raw_name}】，抖落泥水細心收納，準備稍後送往集市與工坊。"),
         ];
-        let narr = lines[((now_unix as usize) % lines.len())].clone();
+        let narr = lines[(now_unix as usize) % lines.len()].clone();
         return Some(narr);
+    }
+
+    if is_workshop_site && (room_name.contains("石磨") || room_name.contains("水輪") || room_name.contains("磨坊") || room_name.contains("碾")) {
+        let (prod_id, prod_name) = if now_unix % 2 == 0 {
+            ("wt_cat_0388", "現磨溫米漿")
+        } else {
+            ("wt_cat_0279", "特級在來米粉")
+        };
+        let _ = db::add_to_inventory(npc_id, prod_id, 1);
+        crate::npc::causal_core::record_settlement_market_production("老堰頭", prod_id, 1);
+        let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, prod_name);
+        return Some(format!(
+            "{npc_name}撥開老堰頭引水木閘，湍急溪水帶動重礦包邊大石磨勻速旋轉，將大圳頭新穀細碾分篩、慢熬成一份溫潤細膩的【{prod_name}】。"
+        ));
     }
 
     if is_workshop_site {
@@ -2498,14 +3929,38 @@ pub fn run_npc_autonomous_production_step(
         } else if room_name.contains("藥") {
             ("mat_foraged_herb", "野生採集草藥", &STANDARD_FINISHED_GOODS[4])
         } else if room_name.contains("印") || room_name.contains("紙") || room_name.contains("墨") {
-            ("mat_coarse_paper_ream", "粗制竹麻紙料", &STANDARD_FINISHED_GOODS[6])
+            ("mat_coarse_paper_ream", "粗製竹麻紙料", &STANDARD_FINISHED_GOODS[6])
         } else {
             ("mat_hemp_rope_roll", "熟桐浸油麻繩圈", &STANDARD_FINISHED_GOODS[8])
         };
 
-        let cur_settlement = normalize_canonical_settlement(crate::world::materials::infer_origin_settlement(room_name));
-        let npc_has_raw = db::inventory_has_item(&ent_inventory, raw_id) || db::inventory_has_item(npc_id, raw_id);
+        let raw_s = crate::world::materials::infer_origin_settlement(room_name);
+        let cur_settlement = normalize_canonical_settlement(if raw_s.is_empty() { room_name } else { raw_s });
+        let npc_inv = db::get_inventory(&ent_inventory, 10);
+        let held_finished_qty = npc_inv
+            .items
+            .iter()
+            .find(|it| it.item_id == finished_def.id)
+            .map(|it| it.qty)
+            .unwrap_or(0);
+        let holds_bulk_materials = npc_inv.items.iter().any(|it| {
+            it.item_id == "mat_reed_bundle"
+                || it.item_id == "mat_wood_offcut_bundle"
+                || it.item_id == "mat_iron_scrap_box"
+        });
 
+        if held_finished_qty >= 3 || (holds_bulk_materials && held_finished_qty >= 2) {
+            let deliver_qty = 2.min(held_finished_qty);
+            let _ = db::remove_from_inventory(npc_id, finished_def.id, deliver_qty);
+            crate::npc::causal_core::record_settlement_market_production(cur_settlement, finished_def.id, deliver_qty);
+            let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, finished_def.name);
+            return Some(format!(
+                "{npc_name}盤點工坊案頭，見製成的【{}】已有積存，便分裝清點後挑運送往當地市集鋪肆行銷。",
+                finished_def.name
+            ));
+        }
+
+        let npc_has_raw = db::inventory_has_item(&ent_inventory, raw_id) || db::inventory_has_item(npc_id, raw_id);
         let raw_stock = {
             let ledger = LIVE_ECONOMY_LEDGER.read().unwrap_or_else(|e| e.into_inner());
             let cons_key = (cur_settlement.to_string(), raw_id.to_string());
@@ -2519,9 +3974,11 @@ pub fn run_npc_autonomous_production_step(
                 cell.demand_ema = (cell.demand_ema * 1.12).min(1.65);
             }
             let shortage_ev = format!("【工坊待料】{cur_settlement}工坊因缺乏「{raw_name}」暫緩開爐，當地收購行情急升！");
-            ledger.recent_events.push_back(shortage_ev);
-            if ledger.recent_events.len() > 30 {
-                ledger.recent_events.pop_front();
+            if !ledger.recent_events.iter().any(|e| e == &shortage_ev) {
+                ledger.recent_events.push_back(shortage_ev);
+                if ledger.recent_events.len() > 30 {
+                    ledger.recent_events.pop_front();
+                }
             }
             save_economy_ledger_snapshot(&ledger);
             return Some(format!("{npc_name}檢視工坊料架，發現【{raw_name}】已經見底，只得暫停手頭工序，向門外張望是否有行商或旅人運料前來。"));
@@ -2532,7 +3989,26 @@ pub fn run_npc_autonomous_production_step(
         }
         // 異變檢驗：NPC 工坊製作 25% 異變機率
         let roll = ((now_unix.wrapping_mul(1664525).wrapping_add(1013904223) / 65536) % 100).abs() as i32;
-        let is_mut = roll < 25;
+        let is_utility_or_doc = finished_def.id.contains("torch")
+            || finished_def.id.contains("umbrella")
+            || finished_def.id.contains("ink")
+            || finished_def.id.contains("manual")
+            || finished_def.id.contains("almanac")
+            || finished_def.id.contains("storage_box")
+            || finished_def.id.contains("tool_handle")
+            || finished_def.name.contains("火把")
+            || finished_def.name.contains("紙傘")
+            || finished_def.name.contains("晴雨傘")
+            || finished_def.name.contains("松煙墨")
+            || finished_def.name.contains("墨錠")
+            || finished_def.name.contains("隨身匣")
+            || finished_def.name.contains("收納匣")
+            || finished_def.name.contains("工具長柄")
+            || finished_def.name.contains("手札");
+        let is_mut = roll < 8
+            && finished_def.item_type != "consumable"
+            && !finished_def.slot.is_empty()
+            && !is_utility_or_doc;
 
         if is_mut {
             let arch_idx = ((now_unix as usize) + npc_name.len()) % MUTATION_ARCHETYPES.len();
@@ -2541,8 +4017,8 @@ pub fn run_npc_autonomous_production_step(
             let mut_name = format!("{}・{}", arch.name_prefix, finished_def.name);
 
             let desc = format!(
-                "{}（{}。靈效加成：體魄+{}、身法+{}、攻勢+{}、氣脈+{}）",
-                finished_def.description, arch.desc_note, arch.vit_bonus, arch.dex_bonus, arch.atk_bonus, arch.qi_bonus
+                "{}（{}，器物成色與質理俱臻上乘。）",
+                finished_def.description, arch.desc_note
             );
 
             let item = Item {
@@ -2583,7 +4059,7 @@ pub fn run_npc_autonomous_production_step(
                     cell.stock = (cell.stock + 1).min(cell.target_stock * 4);
                 }
                 if let Some(entry) = ledger.items.get_mut(finished_def.id) {
-                    entry.stock += 1;
+                    entry.stock = (entry.stock + 1).min((entry.target_stock * 4).max(1));
                 }
                 let ev = if mut_name.starts_with('【') {
                     format!("{npc_name}於工坊開爐煉製，引發氣脈異變造就{mut_name}！")
@@ -2596,17 +4072,18 @@ pub fn run_npc_autonomous_production_step(
                 }
                 save_economy_ledger_snapshot(&ledger);
             }
-            db::log_npc_event(now_unix, npc_id, "npc_workshop_mutation", &mut_name);
             let formatted_mut = if mut_name.starts_with('【') {
                 mut_name.clone()
             } else {
                 format!("【{mut_name}】")
             };
-            let lines = [
-                format!("{npc_name}專注拉動風箱、揮動鐵錘捶打器坯；只見火星迸散之際，氣脈流轉激盪，方成型的【{}】竟凝出奇異神彩，化為{formatted_mut}！", finished_def.name),
-                format!("{npc_name}守在焙藥爐前細心掌控火候，藥膏收汁成形時，濃郁藥香伴隨冰晶霧氣凝結，蛻變出罕見的{formatted_mut}！"),
-            ];
-            return Some(lines.join(" "));
+            let line = if room_name.contains("藥") {
+                format!("{npc_name}守在焙藥爐前細心掌控火候，器物成形之際，濃郁靈香伴隨寒芒凝結，蛻變出罕見的{formatted_mut}！")
+            } else {
+                format!("{npc_name}專注拉動風箱、揮動鐵錘捶打器坯；只見火星迸散之際，氣脈流轉激盪，初成型的【{}】竟凝出奇異神彩，化為{formatted_mut}！", finished_def.name)
+            };
+            let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, finished_def.name);
+            return Some(line);
         } else {
             let item = Item {
                 id: finished_def.id.to_string(),
@@ -2632,7 +4109,7 @@ pub fn run_npc_autonomous_production_step(
                     cell.stock = (cell.stock + 1).min(cell.target_stock * 4);
                 }
                 if let Some(entry) = ledger.items.get_mut(finished_def.id) {
-                    entry.stock += 1;
+                    entry.stock = (entry.stock + 1).min((entry.target_stock * 4).max(1));
                 }
                 let cons_key = (cur_settlement.to_string(), raw_id.to_string());
                 if let Some(cell) = ledger.settlement_markets.get_mut(&cons_key) {
@@ -2644,7 +4121,6 @@ pub fn run_npc_autonomous_production_step(
                 }
                 save_economy_ledger_snapshot(&ledger);
             }
-            db::log_npc_event(now_unix, npc_id, "npc_workshop_craft", finished_def.name);
             let craft_narrative = if raw_id == "mat_iron_scrap"
                 || finished_def.name.contains('刀')
                 || finished_def.name.contains('錘')
@@ -2693,6 +4169,7 @@ pub fn run_npc_autonomous_production_step(
                 msg.push(' ');
                 msg.push_str(&note);
             }
+            let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, finished_def.name);
             return Some(msg);
         }
     }
@@ -2700,7 +4177,8 @@ pub fn run_npc_autonomous_production_step(
     // Step C: 商市交易與動態調價 (市/街/鋪/行/商/棧/堂/口/場)
     // Step C: 自主行商跨區調撥與商市交易
     {
-        let cur_settlement = normalize_canonical_settlement(crate::world::materials::infer_origin_settlement(room_name));
+        let raw_s = crate::world::materials::infer_origin_settlement(room_name);
+        let cur_settlement = normalize_canonical_settlement(if raw_s.is_empty() { room_name } else { raw_s });
         let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
         execute_settlement_sinks_and_arbitrage(cur_settlement, now_unix, &mut ledger);
         save_economy_ledger_snapshot(&ledger);
@@ -2712,23 +4190,97 @@ pub fn run_npc_autonomous_production_step(
             || ledger.settlement_markets.values().any(|cell| cell.stock < (cell.target_stock * 7 / 10))
     };
 
-    if is_low_stock {
+    let is_shopkeeper = npc_id.starts_with("wt_vendor_")
+        || (!npc_name.contains("獵")
+            && !npc_name.contains("銃手")
+            && !npc_name.contains("伙夫")
+            && !npc_name.contains("鏢客")
+            && !npc_name.contains("刀手")
+            && !npc_name.contains("巡隘")
+            && !npc_name.contains("苦力")
+            && !npc_name.contains("採藥")
+            && !npc_name.contains("淘砂")
+            && !npc_name.contains("抽藤")
+            && (npc_name.contains("商")
+                || npc_name.contains("鋪")
+                || npc_name.contains("行")
+                || npc_name.contains("店")
+                || npc_name.contains("販")
+                || npc_name.contains("東家")
+                || npc_name.contains("司庫")
+                || room_name.contains("鋪")
+                || room_name.contains("市")
+                || room_name.contains("行")
+                || room_name.contains("店")
+                || room_name.contains("堂")
+                || room_name.contains("棧")))
+        || venue_opt.as_ref().is_some_and(|v| {
+            v.has_counter_restricted_zone
+                || v.semantic_tags().iter().any(|t| matches!(*t, "商鋪" | "市集" | "食堂" | "茶屋" | "旅社" | "浴場"))
+        });
+
+    if is_low_stock && is_shopkeeper {
         crate::store::open_active_npc_obligation(npc_id, "restock_goods", "鋪內庫存見底急需提貨補倉");
         let lines = [
-            format!("{npc_name}翻閱案頭的進出貨簿子，發覺幾樣要緊物料庫存吃緊，隨即在簿上記下一筆補貨清單。"),
+            format!("{npc_name}翻閱案頭的進出貨簿子，發覺幾樣要緊物料庫存吃緊，提筆在簿上記下一筆補貨清單。"),
             format!("{npc_name}在店鋪架前來回巡視，核對今日市價行情，低聲向身旁學徒交代稍後前往工坊再添一批現貨。"),
+        ];
+        Some(lines[(now_unix as usize) % lines.len()].clone())
+    } else if is_shopkeeper {
+        let line_duty = if let Some(v) = &venue_opt {
+            format!("{npc_name}（{}）熟練地核對市秤與貨品成色，當場點清貨款收妥，彼此言談爽利，交易順遂。", v.on_duty_fixture_activity)
+        } else {
+            format!("{npc_name}熟練地核對市秤與貨品成色，當場點清貨款收妥，彼此言談爽利，交易順遂。")
+        };
+        let lines = [
+            line_duty,
+            format!("{npc_name}向來往鄉鄰展示新到的工造物件，雙方爽朗核對價錢，乾脆俐落地結清貨款。"),
         ];
         Some(lines[(now_unix as usize) % lines.len()].clone())
     } else {
         let lines = [
-            format!("{npc_name}熟練地核對市秤與貨品成色，當場點清貨款收妥，彼此言談爽利，交易順遂。"),
-            format!("{npc_name}向來往鄉鄰展示新到的工造物件，雙方爽朗核對價錢，乾脆俐落地結清貨款。"),
+            format!("{npc_name}步履從容地順著街巷前行，打量著四下往來動靜。"),
+            format!("{npc_name}在街旁稍作歇步，檢視隨身攜帶的行囊與器物。"),
         ];
         Some(lines[(now_unix as usize) % lines.len()].clone())
     }
 }
 
-fn get_clean_item_name(item_id: &str) -> String {
+pub fn get_clean_item_name(item_id: &str) -> String {
+    match item_id {
+        "mat_rough_ore" => return "粗生礦石".to_string(),
+        "mat_iron_scrap" => return "熟鐵料塊".to_string(),
+        "mat_repair_strip" => return "修補鐵片".to_string(),
+        "mat_timber_log" => return "伐採原木".to_string(),
+        "mat_reed_bundle" => return "老蘆草綑".to_string(),
+        "mat_foraged_herb" => return "野生草藥".to_string(),
+        "mat_coarse_paper_ream" => return "粗竹麻紙".to_string(),
+        "mat_hemp_rope_roll" => return "浸油麻繩".to_string(),
+        "mat_sackcloth_bolt" => return "舊麻袋布".to_string(),
+        "mat_kindling_bundle" => return "柴枝束".to_string(),
+        "mat_plank_board" => return "木板料".to_string(),
+        "mat_charcoal_sack" => return "白炭袋".to_string(),
+        "mat_salted_fish" => return "鹽漬鹹魚".to_string(),
+        "mat_coarse_salt_pack" => return "粗鹽包".to_string(),
+        "craft_herbal_tea_pack" => return "百草煎茶包".to_string(),
+        "craft_calming_tea_pack" => return "安神香茶包".to_string(),
+        "craft_meridian_salve" => return "活血通絡膏".to_string(),
+        "craft_tool_repair_strip" => return "工具修補條".to_string(),
+        "craft_patched_work_boots" => return "補綴工靴".to_string(),
+        "craft_tarred_hemp_rope" => return "塗焦麻繩".to_string(),
+        "craft_caulking_sealant" => return "嵌縫膠泥".to_string(),
+        "mat_cedar_plank" => return "杉木厚板".to_string(),
+        "craft_pine_torch" => return "松明火把".to_string(),
+        "craft_wooden_tool_handle" => return "工具木柄".to_string(),
+        "mat_fresh_shrimp" => return "水尾寮鮮沼蝦".to_string(),
+        "shanhai_fresh_fish" => return "深海鮮魚".to_string(),
+        "shanhai_beast_meat" => return "山海鮮獸肉".to_string(),
+        "mat_grain_sack" => return "農家精選穀糧袋".to_string(),
+        "mat_pasture_seed_sack" => return "優質牧草種籽袋".to_string(),
+        "wt_beast_bone" => return "堅實獸骨".to_string(),
+        "wt_down_feather" => return "水鳥蓬鬆絨羽".to_string(),
+        _ => {}
+    }
     if let Some(mat) = crate::world::materials::material_by_item_id(item_id) {
         if !mat.name.is_empty() {
             return mat.name.clone();
@@ -2747,177 +4299,29 @@ fn get_clean_item_name(item_id: &str) -> String {
             return eco.name;
         }
     }
-    match item_id {
-        "mat_iron_scrap" => "熟鐵料塊".to_string(),
-        "mat_repair_strip" => "修補鐵片".to_string(),
-        "mat_timber_log" => "伐採原木".to_string(),
-        "mat_reed_bundle" => "老蘆草綑".to_string(),
-        "mat_foraged_herb" => "野生草藥".to_string(),
-        "mat_coarse_paper_ream" => "粗竹麻紙".to_string(),
-        "mat_hemp_rope_roll" => "浸油麻繩".to_string(),
-        "mat_sackcloth_bolt" => "舊麻袋布".to_string(),
-        "mat_kindling_bundle" => "柴枝束".to_string(),
-        "mat_plank_board" => "木板料".to_string(),
-        "mat_charcoal_sack" => "白炭袋".to_string(),
-        "mat_salted_fish" => "鹽漬鹹魚".to_string(),
-        "craft_herbal_tea_pack" => "百草煎茶包".to_string(),
-        "craft_tool_repair_strip" => "工具修補條".to_string(),
-        "craft_patched_work_boots" => "補綴工靴".to_string(),
-        "craft_tarred_hemp_rope" => "塗焦麻繩".to_string(),
-        "craft_caulking_sealant" => "嵌縫膠泥".to_string(),
-        "mat_cedar_plank" => "杉木厚板".to_string(),
-        "craft_pine_torch" => "松明火把".to_string(),
-        "craft_wooden_tool_handle" => "工具木柄".to_string(),
-        other => {
-            if other.is_ascii() {
-                "隨身原料".to_string()
-            } else {
-                other.to_string()
-            }
-        }
+    if let Some(fb) = crate::db::fallback_item_name(item_id) {
+        return fb.to_string();
+    }
+    if item_id.is_ascii() {
+        "行囊物產".to_string()
+    } else {
+        item_id.to_string()
     }
 }
 
-/// 執行 4 大消耗迴路（民生口糧、百工原料、工具磨損、邊關基建）與自主行商跨區調撥。
+/// 聚落市場需求 EMA 溫和均值回歸衰減。
+///
+/// 排除無買家背景吞吐與無人瞬移調撥：真實庫存消耗、產出與跨區調撥全數交由住民因果行動驅動，
+/// 此處僅保留需求 EMA 朝向 1.0 的漸進回歸衰減，維持市場信號生命力而不引發幽靈庫存異動。
 pub fn execute_settlement_sinks_and_arbitrage(
     cur_settlement: &str,
-    now_unix: i64,
+    _now_unix: i64,
     ledger: &mut EconomyLedger,
 ) {
-    // Sink #1 (民生口糧柴炭剛需): Residents consume 1 unit of local food/fuel/tea
-    let sink1_items = [
-        "mat_salted_fish",
-        "mat_coarse_salt_pack",
-        "mat_kindling_bundle",
-        "mat_charcoal_sack",
-        "craft_herbal_tea_pack",
-    ];
-    let s1_item = sink1_items[((now_unix as usize) + cur_settlement.len()) % sink1_items.len()];
-    let k1 = (cur_settlement.to_string(), s1_item.to_string());
-    if let Some(cell) = ledger.settlement_markets.get_mut(&k1) {
-        if cell.stock > 0 {
-            cell.stock -= 1;
-            cell.demand_ema = (cell.demand_ema * 1.02).min(1.45);
-        }
-    }
-    if let Some(entry) = ledger.items.get_mut(s1_item) {
-        if entry.stock > 0 {
-            entry.stock -= 1;
-        }
-    }
-
-    // Sink #3 (工具衣靴磨損汰換): Workers consume/wear 1 unit of tools/boots/rope
-    let sink3_items = [
-        "craft_iron_pickaxe",
-        "craft_tool_repair_strip",
-        "craft_patched_work_boots",
-        "craft_storm_canvas_cloak",
-        "craft_tarred_hemp_rope",
-    ];
-    let s3_item = sink3_items[((now_unix as usize / 3) + cur_settlement.len()) % sink3_items.len()];
-    let k3 = (cur_settlement.to_string(), s3_item.to_string());
-    if let Some(cell) = ledger.settlement_markets.get_mut(&k3) {
-        if cell.stock > 0 {
-            cell.stock -= 1;
-            cell.demand_ema = (cell.demand_ema * 1.02).min(1.45);
-        }
-    }
-    if let Some(entry) = ledger.items.get_mut(s3_item) {
-        if entry.stock > 0 {
-            entry.stock -= 1;
-        }
-    }
-
-    // Sink #4 (邊關船塢基建耗損): In 黑沼關隘/南哨/風舶角/水尾寮
-    if cur_settlement == "黑沼關隘"
-        || cur_settlement == "南哨"
-        || cur_settlement == "風舶角"
-        || cur_settlement == "水尾寮"
-    {
-        let sink4_items = [
-            "craft_caulking_sealant",
-            "mat_cedar_plank",
-            "craft_meridian_salve",
-            "craft_pine_torch",
-        ];
-        let s4_item =
-            sink4_items[((now_unix as usize / 5) + cur_settlement.len()) % sink4_items.len()];
-        let k4 = (cur_settlement.to_string(), s4_item.to_string());
-        if let Some(cell) = ledger.settlement_markets.get_mut(&k4) {
-            if cell.stock > 0 {
-                cell.stock -= 1;
-                cell.demand_ema = (cell.demand_ema * 1.02).min(1.45);
-            }
-        }
-        if let Some(entry) = ledger.items.get_mut(s4_item) {
-            if entry.stock > 0 {
-                entry.stock -= 1;
-            }
-        }
-    }
-
-    // Source #3 (行商跨區套利調撥): When stock > target_stock + 2 and another stock < target_stock - 1, move 1 unit
-    let candidate_arbitrage_items = [
-        "mat_rough_ore",
-        "mat_iron_scrap",
-        "mat_charcoal_sack",
-        "mat_timber_log",
-        "mat_plank_board",
-        "mat_reed_bundle",
-        "mat_hemp_rope_roll",
-        "mat_foraged_herb",
-        "mat_coarse_salt_pack",
-        "craft_meridian_salve",
-        "craft_calming_tea_pack",
-        "craft_steel_hunting_knife",
-        "craft_heavy_leather_boots",
-    ];
-    let mut arbitrage = None;
-    for &item_id in &candidate_arbitrage_items {
-        let mut surplus_s = None;
-        let mut shortage_s = None;
-        for &s in &CANONICAL_SETTLEMENTS {
-            if let Some(cell) =
-                ledger.settlement_markets.get(&(s.to_string(), item_id.to_string()))
-            {
-                if cell.stock > cell.target_stock + 2 && surplus_s.is_none() {
-                    surplus_s = Some(s);
-                } else if cell.stock < cell.target_stock - 1 && shortage_s.is_none() {
-                    shortage_s = Some(s);
-                }
-            }
-            if surplus_s.is_some() && shortage_s.is_some() {
-                break;
-            }
-        }
-        if let (Some(from_s), Some(to_s)) = (surplus_s, shortage_s) {
-            if from_s != to_s {
-                arbitrage = Some((item_id, from_s, to_s));
-                break;
-            }
-        }
-    }
-    if let Some((item_id, from_s, to_s)) = arbitrage {
-        let transfer_qty = 1;
-        if let Some(from_cell) =
-            ledger.settlement_markets.get_mut(&(from_s.to_string(), item_id.to_string()))
-        {
-            from_cell.stock = (from_cell.stock - transfer_qty).max(0);
-            from_cell.demand_ema = (from_cell.demand_ema * 1.03).min(1.45);
-        }
-        if let Some(to_cell) =
-            ledger.settlement_markets.get_mut(&(to_s.to_string(), item_id.to_string()))
-        {
-            to_cell.stock = (to_cell.stock + transfer_qty).min(to_cell.target_stock * 4);
-            to_cell.demand_ema = (to_cell.demand_ema * 0.95).max(0.75);
-        }
-        let item_name = get_clean_item_name(item_id);
-        let event = format!(
-            "【自主行商調撥】行商將 {transfer_qty} 份「{item_name}」自產地【{from_s}】運抵【{to_s}】市集，稍解當地缺料之急。"
-        );
-        ledger.recent_events.push_back(event);
-        if ledger.recent_events.len() > 30 {
-            ledger.recent_events.pop_front();
+    let settlement = normalize_canonical_settlement(cur_settlement);
+    for ((s, _item), cell) in ledger.settlement_markets.iter_mut() {
+        if s == settlement || s == cur_settlement {
+            cell.demand_ema = (cell.demand_ema * 0.99 + 0.01).clamp(0.75, 1.45);
         }
     }
 }
@@ -2932,14 +4336,12 @@ pub fn is_wood_or_firewood_item(item_id: &str) -> bool {
             | "mat_wood_offcut_bundle"
             | "mat_repair_strip"
             | "wt-good-001"
-            | "wt_cat_0706"
-            | "wt_cat_0899"
     ) {
         return true;
     }
     if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
         if let Ok(num) = num_str.parse::<u32>() {
-            if (57..=112).contains(&num) {
+            if (56..=110).contains(&num) {
                 return true;
             }
         }
@@ -3062,14 +4464,14 @@ pub fn ignite_or_stoke_campfire(
         )
     } else {
         format!(
-            "你將【{fuel_name}】添入營火核心，原本微暗的炭火頓時騰躍起金紅火舌，熱浪撲面而來，火勢更為旺盛（營火柴薪充沛，體魄與元氣獲得溫養）。"
+            "你將【{fuel_name}】添入營火核心，原本微暗的炭火騰躍起金紅火舌，熱浪撲面而來，火勢更為旺盛，體魄與心神元氣大受溫養。"
         )
     };
 
     Ok((narrative, is_new_fire))
 }
 
-/// 嘗試烹調《白塔山海志》獵獲與特產名物之合味珍餚：
+/// 嘗試烹調《白塔山海誌》獵獲與特產名物之合味珍餚：
 /// 檢測玩家行囊是否持有山海食材與半島特色佐料，若有則進行料理並恢復體魄元氣。
 /// 回傳 `Some((narrative, total_vit, total_qi))`。
 pub fn try_camp_shanhai_cooking(
@@ -3081,14 +4483,14 @@ pub fn try_camp_shanhai_cooking(
 
     // (ingredient_id, dish_name, condiment_id, condiment_name, base_vit, base_qi)
     const SHANHAI_RECIPES: &[(&str, &str, &str, &str, i32, i32)] = &[
-        ("wt_cat_0205", "老薑黑糖麻油炙月熊掌", "wt_cat_0305", "老薑黑糖磚", 30, 24),
-        ("wt_cat_0224", "壺底蔭油紅燒銀鱗土魠", "wt_cat_0311", "陶缸日曬黑豆壺底蔭油", 26, 20),
-        ("wt_cat_0223", "馬告清燉野生九孔鮑湯", "wt_cat_0270", "山胡椒馬告粒", 26, 22),
-        ("wt_cat_0236", "甘醇蔭油膏爆炒墨玉花枝", "wt_cat_0312", "手工甘醇蔭油膏", 24, 20),
-        ("wt_cat_0203", "馬告炭炙高地水鹿腱", "wt_cat_0270", "山胡椒馬告粒", 26, 18),
-        ("wt_cat_0209", "陳年老菜脯慢燉山羌盅", "wt_cat_0319", "甕藏陳年老菜脯", 25, 20),
-        ("wt_cat_0240", "清溪活水黃金蜆", "wt_cat_0311", "陶缸日曬黑豆壺底蔭油", 22, 18),
-        ("wt_cat_0239", "老薑麻油烏魚米粉鍋", "wt_cat_0305", "老薑黑糖磚", 24, 18),
+        ("wt_cat_0205", "老薑黑糖麻油炙月熊掌", "wt_cat_0364", "熬製古法黑糖塊", 30, 24),
+        ("wt_cat_0224", "壺底蔭油紅燒銀鱗土魠", "wt_cat_0341", "陶缸日曬黑豆壺底蔭油", 26, 20),
+        ("wt_cat_0223", "馬告清燉野生九孔鮑湯", "wt_cat_0118", "山胡椒馬告粒", 26, 22),
+        ("wt_cat_0236", "甘醇蔭油膏爆炒墨玉花枝", "wt_cat_0342", "手工甘醇蔭油膏", 24, 20),
+        ("wt_cat_0203", "馬告炭炙高地水鹿腱", "wt_cat_0118", "山胡椒馬告粒", 26, 18),
+        ("wt_cat_0209", "陳年老菜脯慢燉山羌盅", "wt_cat_0370", "甕藏陳年老菜脯", 25, 20),
+        ("wt_cat_0269", "清溪活水黃金蜆", "wt_cat_0341", "陶缸日曬黑豆壺底蔭油", 22, 18),
+        ("wt_cat_0270", "老薑麻油烏魚米粉鍋", "wt_cat_0364", "熬製古法黑糖塊", 24, 18),
     ];
 
     for &(ing_id, dish_name, cond_id, cond_name, base_vit, base_qi) in SHANHAI_RECIPES {
@@ -3157,20 +4559,20 @@ pub fn try_camp_shanhai_cooking(
             let highlight_prose = crate::ai::compose_craft_highlight_from_data(&packet);
 
             let resonance_note = if craft_dims.culinary >= 0.6 {
-                " 【百工藝相・庖廚調味】你周天字印所蘊的調和氣機暗合潮汐水火，火候與收汁拿捏得恰到好處。"
+                " 【庖廚火候】你刀工與火候拿捏得宜，收汁與調味恰到好處。"
             } else {
                 ""
             };
 
             let narrative = if highlight_prose.is_empty() {
                 format!(
-                    "【山海合味・{}】你在「{}」旁支起鍋鑊，取出獵獲名物【{}】細心炙烹，{}，精心料理成一道香氣撲鼻的盛宴名饌「{}」！熱氣騰騰中大快朵頤，濃郁滋味透徹肺腑，渾身百骸如沐暖陽（體魄提升 +{}，元氣充盈 +{}）。{}",
-                    dish_name, venue_label, ing_name, cond_narrative, dish_name, total_vit, total_qi, resonance_note
+                    "【山海合味・{}】你在「{}」旁支起鍋鑊，取出獵獲名物【{}】細心炙烹，{}，精心料理成一道香氣撲鼻的盛宴名饌「{}」！熱氣騰騰中大快朵頤，濃郁滋味透徹肺腑，渾身百骸如沐暖陽，體魄大受滋養、心神元氣充盈。{}",
+                    dish_name, venue_label, ing_name, cond_narrative, dish_name, resonance_note
                 )
             } else {
                 format!(
-                    "【山海合味・{}】你在「{}」旁支起鍋鑊，取出獵獲名物【{}】細心炙烹，{}，精心料理成一道香氣撲鼻的盛宴名饌「{}」！熱氣騰騰中大快朵頤，濃郁滋味透徹肺腑，渾身百骸如沐暖陽（體魄提升 +{}，元氣充盈 +{}）。{}\n\n{}",
-                    dish_name, venue_label, ing_name, cond_narrative, dish_name, total_vit, total_qi, resonance_note, highlight_prose
+                    "【山海合味・{}】你在「{}」旁支起鍋鑊，取出獵獲名物【{}】細心炙烹，{}，精心料理成一道香氣撲鼻的盛宴名饌「{}」！熱氣騰騰中大快朵頤，濃郁滋味透徹肺腑，渾身百骸如沐暖陽，體魄大受滋養、心神元氣充盈。{}\n\n{}",
+                    dish_name, venue_label, ing_name, cond_narrative, dish_name, resonance_note, highlight_prose
                 )
             };
             return Some((narrative, total_vit, total_qi));
@@ -3180,7 +4582,7 @@ pub fn try_camp_shanhai_cooking(
     None
 }
 
-/// 保持相容：嘗試烹調《白塔山海志》獵獲與特產名物之合味珍餚。
+/// 保持相容：嘗試烹調《白塔山海誌》獵獲與特產名物之合味珍餚。
 pub fn try_cook_shanhai_delicacy(pid: &str, venue_label: &str) -> Option<(String, i32, i32)> {
     try_camp_shanhai_cooking(pid, venue_label, crate::game::now_unix())
 }
@@ -3200,7 +4602,7 @@ pub fn interact_with_campfire(
                     e.qi = (e.qi + 12).min(100);
                 });
             }
-            Ok("你湊近營火伸出雙手，融融暖流自掌心順著經絡徐徐流轉周身，荒野長途奔波的疲憊寒濕頓時消散大半，整個人神清氣爽（體魄與元氣獲得恢復）。".to_string())
+            Ok("你湊近營火伸出雙手，融融暖流自掌心順著經絡徐徐流轉周身，荒野長途奔波的疲憊寒濕隨之消散大半，整個人神清氣爽。".to_string())
         }
         "RoastFood" => {
             if let Some((shanhai_narr, _v, _q)) = try_camp_shanhai_cooking(pid, "野地營火堆", now_unix) {
@@ -3212,7 +4614,7 @@ pub fn interact_with_campfire(
                     e.qi = (e.qi + 10).min(100);
                 });
             }
-            Ok("你取出行囊中的乾糧肉脯架在營火紅炭上方細心炙烤，外焦裡嫩、油脂滋滋作響，趁熱食用後腹中溫熱充實，精氣神大振（深幅恢復體魄與元氣）。".to_string())
+            Ok("你取出行囊中的乾糧肉脯架在營火紅炭上方細心炙烤，外焦裡嫩、油脂滋滋作響，趁熱食用後腹中溫熱充實，精氣神大振。".to_string())
         }
         "CraftTorch" => {
             let Ok(Some(ent)) = db::get_entity(pid) else {
@@ -3259,19 +4661,32 @@ pub fn refine_wood_multi_socket(
         return Err("角色不存在".to_string());
     };
 
+    let inv = db::get_inventory(&ent.inventory, ent.vit);
     let wood_candidates = [
         "mat_timber_log",
         "mat_kindling_bundle",
         "mat_plank_board",
         "mat_wood_offcut_bundle",
         "mat_repair_strip",
+        "harvest_wood",
         "wt-good-001",
     ];
+    let mut consumed = false;
     for w in wood_candidates {
         if db::inventory_has_item(&ent.inventory, w) {
             let _ = db::remove_from_inventory(pid, w, 1);
+            consumed = true;
             break;
         }
+    }
+    if !consumed {
+        if let Some(it) = inv.items.iter().find(|it| is_wood_or_firewood_item(&it.item_id)) {
+            let _ = db::remove_from_inventory(pid, &it.item_id, 1);
+            consumed = true;
+        }
+    }
+    if !consumed {
+        return Err("行囊中尚無可供加工的木竹原材。".to_string());
     }
 
     let (prod_id, prod_name, qty, narrative) = match mode {
@@ -3339,10 +4754,16 @@ pub fn stoke_workshop_furnace(
     {
         let mut ledger = LIVE_ECONOMY_LEDGER.write().unwrap_or_else(|e| e.into_inner());
         ledger.room_furnace_heat.insert(room_id.to_string(), heat_level);
-        let ev = format!("【{room_id}】添柴入爐，爐溫飆升至白熾狀態，百工造物異變機率大幅提升。");
-        ledger.recent_events.push_back(ev);
-        if ledger.recent_events.len() > 30 {
-            ledger.recent_events.pop_front();
+        let rname = db::get_room_name(room_id)
+            .ok()
+            .filter(|n| !n.is_empty())
+            .unwrap_or_else(|| "當地工坊".to_string());
+        let ev = format!("【{rname}】添柴入爐，爐溫飆升至白熾狀態，百工造物異變機率大幅提升。");
+        if !ledger.recent_events.iter().any(|e| e == &ev) {
+            ledger.recent_events.push_back(ev);
+            if ledger.recent_events.len() > 30 {
+                ledger.recent_events.pop_front();
+            }
         }
     }
     db::log_npc_event(now_unix, pid, "stoke_furnace", room_id);
@@ -3417,11 +4838,12 @@ pub fn is_mineral_item(item_id: &str) -> bool {
     ) {
         return true;
     }
+    if item_id.starts_with("craft_") || item_id.starts_with("mut_") {
+        return false;
+    }
     if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
         if let Ok(num) = num_str.parse::<u32>() {
-            if (1..=56).contains(&num) || (337..=392).contains(&num) {
-                return true;
-            }
+            return (1..=55).contains(&num);
         }
     }
     item_id.contains("ore")
@@ -3447,7 +4869,7 @@ pub fn is_clay_brick_item(item_id: &str) -> bool {
         || item_id.contains("ceramic")
 }
 
-/// 將物品分類為五源詞元產出來源與素材品階 (WordSource, tier 2..=4)。
+/// 將物品分類為五源字牌產出來源與素材品階 (WordSource, tier 2..=4)。
 pub fn classify_material_word_source(
     item_id: &str,
     item_name: &str,
@@ -3468,7 +4890,7 @@ pub fn classify_material_word_source(
     // 1. 獸源 (Beast)
     let is_beast_cat = if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
         if let Ok(num) = num_str.parse::<u32>() {
-            (171..=217).contains(&num)
+            (166..=220).contains(&num)
         } else {
             false
         }
@@ -3519,7 +4941,7 @@ pub fn classify_material_word_source(
     // 2. 水源 (Water)
     let is_water_cat = if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
         if let Ok(num) = num_str.parse::<u32>() {
-            (220..=236).contains(&num)
+            (221..=276).contains(&num)
         } else {
             false
         }
@@ -3601,31 +5023,35 @@ pub fn classify_material_word_source(
 
 /// 判斷物品是否屬於草藥、煎膏或茶包。
 pub fn is_herb_item(item_id: &str) -> bool {
+    if item_id.starts_with("craft_") || item_id.starts_with("mut_") {
+        return false;
+    }
     if matches!(
         item_id,
         "mat_foraged_herb"
-            | "craft_meridian_salve"
-            | "craft_calming_tea_pack"
+            | "harvest_herb"
+            | "mat_wet_grass_bundle"
+            | "mat_water_moss_sheet"
             | "mat_sealing_pitch"
     ) {
         return true;
     }
     if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
         if let Ok(num) = num_str.parse::<u32>() {
-            if (393..=448).contains(&num) || (1009..=1064).contains(&num) {
-                return true;
-            }
+            return (111..=165).contains(&num);
         }
     }
     item_id.contains("herb")
-        || item_id.contains("salve")
-        || item_id.contains("tea")
+        || item_id.contains("moss")
+        || item_id.contains("cress")
         || item_id.contains("root")
-        || item_id.contains("decoction")
 }
 
 /// 判斷物品是否屬於纖維、麻繩、紙張或布料。
 pub fn is_fiber_item(item_id: &str) -> bool {
+    if item_id.starts_with("craft_") || item_id.starts_with("mut_") {
+        return false;
+    }
     if matches!(
         item_id,
         "mat_reed_bundle"
@@ -3637,16 +5063,24 @@ pub fn is_fiber_item(item_id: &str) -> bool {
             | "mat_wrapping_paper_pack"
             | "mat_fishing_line_bundle"
             | "mat_rice_straw_bundle"
-            | "craft_storm_canvas_cloak"
-            | "craft_peninsula_almanac"
-            | "craft_bamboo_oil_umbrella"
     ) {
         return true;
     }
     if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
         if let Ok(num) = num_str.parse::<u32>() {
-            if (505..=560).contains(&num) {
-                return true;
+            if (56..=110).contains(&num) {
+                let name = crate::game::peninsula_catalog::find_catalog_entry(item_id)
+                    .map(|e| e.name)
+                    .unwrap_or("");
+                return name.contains("麻")
+                    || name.contains("藤")
+                    || name.contains("竹")
+                    || name.contains("蘆")
+                    || name.contains("草")
+                    || name.contains("蒲")
+                    || name.contains("棕")
+                    || name.contains("樹皮")
+                    || matches!(num, 58 | 59 | 64 | 66 | 68 | 69 | 74 | 75 | 78 | 81 | 83 | 85 | 87 | 88 | 91 | 94 | 96 | 99 | 104);
             }
         }
     }
@@ -3662,10 +5096,12 @@ pub fn is_fiber_item(item_id: &str) -> bool {
 
 /// 判斷物品是否屬於生皮、水產、魚骨或貝類。
 pub fn is_hide_fish_item(item_id: &str) -> bool {
+    if item_id.starts_with("craft_") || item_id.starts_with("mut_") {
+        return false;
+    }
     if matches!(
         item_id,
         "mat_leather_strip"
-            | "craft_heavy_leather_boots"
             | "mat_fish_bone_sack"
             | "mat_fish_scale_sack"
             | "mat_shell_sack"
@@ -3675,9 +5111,7 @@ pub fn is_hide_fish_item(item_id: &str) -> bool {
     }
     if let Some(num_str) = item_id.strip_prefix("wt_cat_") {
         if let Ok(num) = num_str.parse::<u32>() {
-            if (113..=168).contains(&num) || (169..=224).contains(&num) {
-                return true;
-            }
+            return (166..=276).contains(&num);
         }
     }
     item_id.contains("leather")
@@ -3686,7 +5120,6 @@ pub fn is_hide_fish_item(item_id: &str) -> bool {
         || item_id.contains("pelt")
         || item_id.contains("hide")
         || item_id.contains("bone")
-        || item_id.contains("boot")
 }
 
 /// 礦鐵金石多插座精煉派發：支援 WashOre, SmeltBloom, ForgeRepairStrip, SharpenBlade, BuildFieldAnvil
@@ -3700,14 +5133,25 @@ pub fn refine_mineral_multi_socket(
         return Err("角色不存在".to_string());
     };
 
+    let inv = db::get_inventory(&ent.inventory, ent.vit);
+    let consume_mineral = |candidates: &[&str]| -> bool {
+        for &c in candidates {
+            if db::inventory_has_item(&ent.inventory, c) {
+                let _ = db::remove_from_inventory(pid, c, 1);
+                return true;
+            }
+        }
+        if let Some(it) = inv.items.iter().find(|it| is_mineral_item(&it.item_id)) {
+            let _ = db::remove_from_inventory(pid, &it.item_id, 1);
+            return true;
+        }
+        false
+    };
+
     match mode {
         "WashOre" => {
-            let candidates = ["mat_rough_ore", "mat_iron_scrap", "mat_stone_powder_sack", "mat_washed_ore"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_mineral(&["mat_rough_ore", "mat_iron_scrap", "mat_stone_powder_sack", "mat_washed_ore"]) {
+                return Err("行囊中尚無可供淘洗的礦石料件。".to_string());
             }
             let prod_id = "mat_washed_ore".to_string();
             let prod_name = "洗選精礦石".to_string();
@@ -3716,12 +5160,8 @@ pub fn refine_mineral_multi_socket(
             Ok((prod_id, prod_name, "你將礦料置入澄淨流水竹籃中反覆淘洗，洗去表層頑泥雜質與黏土，篩濾出一籃晶芒隱現的【洗選精礦石】收入行囊。".to_string()))
         }
         "SmeltBloom" => {
-            let candidates = ["mat_washed_ore", "mat_rough_ore", "mat_iron_scrap", "mat_repair_strip"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_mineral(&["mat_washed_ore", "mat_rough_ore", "mat_iron_scrap", "mat_repair_strip"]) {
+                return Err("行囊中尚無可供悶燒冶煉的礦鐵料件。".to_string());
             }
             let prod_id = "mat_iron_scrap".to_string();
             let prod_name = "回收熟鐵料塊".to_string();
@@ -3730,12 +5170,8 @@ pub fn refine_mineral_multi_socket(
             Ok((prod_id, prod_name, "你引燃爐炭鼓風增溫，將選洗後的礦石高溫悶燒還原為海綿鐵團，趁熱重錘鍛打擠出爐渣，製成兩塊成色均勻的【回收熟鐵料塊】收入行囊。".to_string()))
         }
         "ForgeRepairStrip" => {
-            let candidates = ["mat_iron_scrap", "mat_metal_rim_strip", "mat_rough_ore"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_mineral(&["mat_iron_scrap", "mat_metal_rim_strip", "mat_rough_ore"]) {
+                return Err("行囊中尚無可供延展鍛打的熟鐵料件。".to_string());
             }
             let prod_id = "mat_repair_strip".to_string();
             let prod_name = "修補熟鐵薄片".to_string();
@@ -3751,20 +5187,20 @@ pub fn refine_mineral_multi_socket(
                 return Ok(("craft_steel_hunting_knife".to_string(), "精鍛防身獵刀".to_string(), "你將熟鐵料塊反覆鍛打成型、蘸水在青石上細心推磨開鋒，寒芒畢露，鍛出一柄【精鍛防身獵刀】收進行囊！".to_string()));
             }
             let candidates = ["craft_steel_hunting_knife", "craft_iron_pickaxe", "mat_repair_strip", "mat_flint_stone"];
+            let mut sharpened_id = String::new();
             let mut sharpened = "隨身刃具".to_string();
             for c in candidates {
                 if db::inventory_has_item(&ent.inventory, c) {
+                    sharpened_id = c.to_string();
                     sharpened = get_clean_item_name(c);
                     break;
                 }
             }
-            if let Some(arc) = store::get_store() {
-                let _ = arc.write().update_entity(pid, |e| {
-                    e.dex = (e.dex + 2).min(100);
-                });
+            if !sharpened_id.is_empty() && crate::pg::living_world::is_bladed_vessel_item(&sharpened_id, &sharpened) {
+                let _ = crate::pg::living_world::sharpen_vessel_at_grindstone(pid, &sharpened_id, now);
             }
             db::log_npc_event(now, pid, "refine_mineral", "磨礪刃具");
-            Ok(("mat_repair_strip".to_string(), "刃面鋒芒".to_string(), format!("你蘸水在油石上細心推磨【{sharpened}】，砂痕層層推勻，刃線寒芒畢露、鋒利無匹（身手敏銳度獲得淬礪提升）！")))
+            Ok(("mat_repair_strip".to_string(), "刃面鋒芒".to_string(), format!("你蘸水在油石上細心推磨【{sharpened}】，砂痕層層推勻，刃線重煥清冽寒芒，握持手感愈發沉穩順手。")))
         }
         "BuildFieldAnvil" => {
             let norm_room = normalize_room_key(room);
@@ -3780,10 +5216,16 @@ pub fn refine_mineral_multi_socket(
                 if norm_room != room {
                     ledger.active_field_facilities.entry(room.to_string()).or_default().push(state);
                 }
-                let ev = format!("【{room}】有人就地架設了一座平整沉重的【野地修具石砧】，可供往來行者鍛打修治鐵件。");
-                ledger.recent_events.push_back(ev);
-                if ledger.recent_events.len() > 30 {
-                    ledger.recent_events.pop_front();
+                let rname = db::get_room_name(room)
+                    .ok()
+                    .filter(|n| !n.is_empty())
+                    .unwrap_or_else(|| "郊野地界".to_string());
+                let ev = format!("【{rname}】有人就地架設了一座平整沉重的【野地修具石砧】，可供往來行者鍛打修治鐵件。");
+                if !ledger.recent_events.iter().any(|e| e == &ev) {
+                    ledger.recent_events.push_back(ev);
+                    if ledger.recent_events.len() > 30 {
+                        ledger.recent_events.pop_front();
+                    }
                 }
             }
             db::log_npc_event(now, pid, "build_field_anvil", room);
@@ -3804,14 +5246,25 @@ pub fn refine_herb_multi_socket(
         return Err("角色不存在".to_string());
     };
 
+    let inv = db::get_inventory(&ent.inventory, ent.vit);
+    let consume_herb = |candidates: &[&str]| -> bool {
+        for &c in candidates {
+            if db::inventory_has_item(&ent.inventory, c) {
+                let _ = db::remove_from_inventory(pid, c, 1);
+                return true;
+            }
+        }
+        if let Some(it) = inv.items.iter().find(|it| is_herb_item(&it.item_id)) {
+            let _ = db::remove_from_inventory(pid, &it.item_id, 1);
+            return true;
+        }
+        false
+    };
+
     match mode {
         "WashHerb" => {
-            let candidates = ["mat_foraged_herb", "mat_wet_grass_bundle", "mat_water_moss_sheet"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_herb(&["mat_foraged_herb", "harvest_herb", "mat_wet_grass_bundle", "mat_water_moss_sheet"]) {
+                return Err("行囊中尚無可供濯洗的山野草藥。".to_string());
             }
             let prod_id = "mat_foraged_herb".to_string();
             let prod_name = "山野鮮藥草".to_string();
@@ -3820,12 +5273,8 @@ pub fn refine_herb_multi_socket(
             Ok((prod_id, prod_name, "你引清泉細心濯洗藥草根葉，洗淨泥沙雜屑，鮮嫩莖葉翠綠如洗、散發清幽草木芬芳。".to_string()))
         }
         "DryHerb" => {
-            let candidates = ["mat_foraged_herb", "mat_wet_grass_bundle"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_herb(&["mat_foraged_herb", "harvest_herb", "mat_wet_grass_bundle"]) {
+                return Err("行囊中尚無可供烘焙陰乾的藥草。".to_string());
             }
             let prod_id = "craft_calming_tea_pack".to_string();
             let prod_name = "清心安神百草茶包".to_string();
@@ -3834,12 +5283,8 @@ pub fn refine_herb_multi_socket(
             Ok((prod_id, prod_name, "你將洗淨的藥草薄攤在竹簾上慢火烘焙陰乾，鎖住草木菁華，揉捻分裝成一包芳香澄澈的【清心安神百草茶包】收入行囊。".to_string()))
         }
         "CrushHerb" => {
-            let candidates = ["mat_foraged_herb", "craft_calming_tea_pack"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_herb(&["mat_foraged_herb", "harvest_herb", "craft_calming_tea_pack"]) {
+                return Err("行囊中尚無可供研磨的乾燥草藥。".to_string());
             }
             let prod_id = "mat_foraged_herb".to_string();
             let prod_name = "百草細研藥末".to_string();
@@ -3848,12 +5293,8 @@ pub fn refine_herb_multi_socket(
             Ok((prod_id, prod_name, "你取出石臼研杵，將乾燥草藥細細研磨成細膩墨綠粉末，藥香濃郁撲鼻，適宜調和脂膏敷裹。".to_string()))
         }
         "BoilDecoction" => {
-            let candidates = ["mat_foraged_herb", "mat_sealing_pitch", "craft_calming_tea_pack"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_herb(&["mat_foraged_herb", "harvest_herb", "mat_sealing_pitch", "craft_calming_tea_pack"]) {
+                return Err("行囊中尚無可供煎熬收膏的藥草料件。".to_string());
             }
             let prod_id = "craft_meridian_salve".to_string();
             let prod_name = "溫脈舒筋活血膏".to_string();
@@ -3875,10 +5316,16 @@ pub fn refine_herb_multi_socket(
                 if norm_room != room {
                     ledger.active_field_facilities.entry(room.to_string()).or_default().push(state);
                 }
-                let ev = format!("【{room}】架起了一具溫火慢煨的【野地煎藥陶銚】，徐徐散發著舒心藥香。");
-                ledger.recent_events.push_back(ev);
-                if ledger.recent_events.len() > 30 {
-                    ledger.recent_events.pop_front();
+                let rname = db::get_room_name(room)
+                    .ok()
+                    .filter(|n| !n.is_empty())
+                    .unwrap_or_else(|| "郊野地界".to_string());
+                let ev = format!("【{rname}】架起了一具溫火慢煨的【野地煎藥陶銚】，徐徐散發著舒心藥香。");
+                if !ledger.recent_events.iter().any(|e| e == &ev) {
+                    ledger.recent_events.push_back(ev);
+                    if ledger.recent_events.len() > 30 {
+                        ledger.recent_events.pop_front();
+                    }
                 }
             }
             db::log_npc_event(now, pid, "setup_herb_stove", room);
@@ -3899,14 +5346,25 @@ pub fn refine_fiber_multi_socket(
         return Err("角色不存在".to_string());
     };
 
-     match mode {
+    let inv = db::get_inventory(&ent.inventory, ent.vit);
+    let consume_fiber = |candidates: &[&str]| -> bool {
+        for &c in candidates {
+            if db::inventory_has_item(&ent.inventory, c) {
+                let _ = db::remove_from_inventory(pid, c, 1);
+                return true;
+            }
+        }
+        if let Some(it) = inv.items.iter().find(|it| is_fiber_item(&it.item_id)) {
+            let _ = db::remove_from_inventory(pid, &it.item_id, 1);
+            return true;
+        }
+        false
+    };
+
+    match mode {
         "TwistRope" => {
-            let candidates = ["mat_reed_bundle", "mat_sackcloth_bolt", "mat_fishing_line_bundle"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_fiber(&["mat_reed_bundle", "mat_sackcloth_bolt", "mat_fishing_line_bundle"]) {
+                return Err("行囊中尚無可供搓捻的草麻纖維。".to_string());
             }
             let prod_id = "mat_hemp_rope_roll".to_string();
             let prod_name = "浸油粗麻繩卷".to_string();
@@ -3915,12 +5373,8 @@ pub fn refine_fiber_multi_socket(
             Ok((prod_id, prod_name, "你手掌合搓順紋牽引，將柔韌草麻纖維緊密絞成股線，盤捲成一卷結實牢靠的【浸油粗麻繩卷】收入行囊。".to_string()))
         }
         "WeaveSackcloth" => {
-            let candidates = ["mat_hemp_rope_roll", "mat_reed_bundle"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_fiber(&["mat_hemp_rope_roll", "mat_reed_bundle"]) {
+                return Err("行囊中尚無可供編織的麻繩或蘆葦纖維。".to_string());
             }
             let prod_id = "mat_sackcloth_bolt".to_string();
             let prod_name = "粗織麻袋布匹".to_string();
@@ -3929,12 +5383,8 @@ pub fn refine_fiber_multi_socket(
             Ok((prod_id, prod_name, "你以經緯穿梭之法牽引麻絲密密交織，編排平整，織成一匹厚密結實的【粗織麻袋布匹】收入行囊。".to_string()))
         }
         "OilCanvas" => {
-            let candidates = ["mat_sackcloth_bolt", "mat_canvas_roll", "mat_oilcloth_roll"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_fiber(&["mat_sackcloth_bolt", "mat_canvas_roll", "mat_oilcloth_roll"]) {
+                return Err("行囊中尚無可供浸油烘製的粗麻帆布。".to_string());
             }
             let prod_id = "craft_storm_canvas_cloak".to_string();
             let prod_name = "防風浸油帆布行旅斗篷".to_string();
@@ -3943,12 +5393,8 @@ pub fn refine_fiber_multi_socket(
             Ok((prod_id, prod_name, "你將密織帆布均勻塗刷熟桐油與天然膠脂，文火烘透，製成一領抗寒防浪的【防風浸油帆布行旅斗篷】收入行囊。".to_string()))
         }
         "PressPaper" => {
-            let candidates = ["mat_reed_bundle", "mat_coarse_paper_ream", "mat_wrapping_paper_pack"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_fiber(&["mat_reed_bundle", "mat_coarse_paper_ream", "mat_wrapping_paper_pack"]) {
+                return Err("行囊中尚無可供抄紙壓製的植物纖維。".to_string());
             }
             let prod_id = "craft_peninsula_almanac".to_string();
             let prod_name = "白塔風物考工手札".to_string();
@@ -3970,15 +5416,25 @@ pub fn refine_hide_fish_multi_socket(
     let Ok(Some(ent)) = db::get_entity(pid) else {
         return Err("角色不存在".to_string());
     };
+    let inv = db::get_inventory(&ent.inventory, ent.vit);
+    let consume_hide_fish = |candidates: &[&str]| -> bool {
+        for &c in candidates {
+            if db::inventory_has_item(&ent.inventory, c) {
+                let _ = db::remove_from_inventory(pid, c, 1);
+                return true;
+            }
+        }
+        if let Some(it) = inv.items.iter().find(|it| is_hide_fish_item(&it.item_id)) {
+            let _ = db::remove_from_inventory(pid, &it.item_id, 1);
+            return true;
+        }
+        false
+    };
 
     match mode {
         "ScrapeHide" => {
-            let candidates = ["mat_leather_strip", "mat_mane_hair_bundle"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_hide_fish(&["mat_leather_strip", "mat_mane_hair_bundle"]) {
+                return Err("行囊中尚無可供刮脂鞣製的生皮獸毛。".to_string());
             }
             let prod_id = "mat_leather_strip".to_string();
             let prod_name = "修整牛皮帶料".to_string();
@@ -3987,12 +5443,8 @@ pub fn refine_hide_fish_multi_socket(
             Ok((prod_id, prod_name, "你將生皮平鋪板上，以弧刃刮刀細細削去殘留油脂與雜質，反覆揉搓軟化，鞣製成兩條柔軟堅韌的【修整牛皮帶料】收入行囊。".to_string()))
         }
         "BoilFishGlue" => {
-            let candidates = ["mat_fish_bone_sack", "mat_fish_scale_sack", "mat_sealing_pitch"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_hide_fish(&["mat_fish_bone_sack", "mat_fish_scale_sack", "mat_sealing_pitch"]) {
+                return Err("行囊中尚無可供熬膠的魚骨魚鱗。".to_string());
             }
             let prod_id = "mat_sealing_pitch".to_string();
             let prod_name = "熬煉濃魚膠盒".to_string();
@@ -4001,12 +5453,8 @@ pub fn refine_hide_fish_multi_socket(
             Ok((prod_id, prod_name, "你將鮮魚皮骨下鍋文火慢熬，濾去骨渣濃縮收汁，凝煉出一盒黏合性極高、遇熱化開的【熬煉濃魚膠盒】收入行囊。".to_string()))
         }
         "CalcifyShell" => {
-            let candidates = ["mat_shell_sack", "mat_stone_powder_sack"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_hide_fish(&["mat_shell_sack", "mat_stone_powder_sack"]) {
+                return Err("行囊中尚無可供煅燒的海貝殼料。".to_string());
             }
             let prod_id = "mat_stone_powder_sack".to_string();
             let prod_name = "煅燒貝灰粉袋".to_string();
@@ -4015,12 +5463,8 @@ pub fn refine_hide_fish_multi_socket(
             Ok((prod_id, prod_name, "你將厚實海貝投入熾熱火堆高溫煅燒，出爐後研碎成白淨細膩的【煅燒貝灰粉袋】，防潮密封極佳，收入行囊。".to_string()))
         }
         "CobbleBoots" => {
-            let candidates = ["mat_leather_strip", "craft_heavy_leather_boots"];
-            for c in candidates {
-                if db::inventory_has_item(&ent.inventory, c) {
-                    let _ = db::remove_from_inventory(pid, c, 1);
-                    break;
-                }
+            if !consume_hide_fish(&["mat_leather_strip", "craft_heavy_leather_boots"]) {
+                return Err("行囊中尚無可供縫製行旅靴的熟牛皮帶。".to_string());
             }
             let prod_id = "craft_heavy_leather_boots".to_string();
             let prod_name = "厚底防滑行旅皮靴".to_string();
@@ -4344,9 +5788,9 @@ mod tests {
         assert!(after_ema > initial_ema);
 
         let report = format_settlement_supply_demand_report("文曜");
-        assert!(report.contains("【文曜市集供需實況】"));
-        assert!(report.contains("充裕供給：") && !report.contains("充裕供給：尚無顯著過剩物資"));
-        assert!(report.contains("緊缺急需：") && !report.contains("緊缺急需：市集百工儲備充裕"));
+        assert!(report.contains("文曜市集"));
+        assert!(report.contains("較為充裕"));
+        assert!(report.contains("頗為緊俏"));
 
         let scarcest = scarcest_item_for_settlement("文曜");
         assert!(scarcest.is_some());
@@ -4356,7 +5800,7 @@ mod tests {
     fn test_crystal_items_lookup_and_material_classification() {
         use crate::combat::wordplate::{WordQuality, WordSource};
 
-        // 1. 驗證 15 款詞元結晶之 lookup_ecology_item_def 與 lookup_item_origin
+        // 1. 驗證 15 款晶石之 lookup_ecology_item_def 與 lookup_item_origin
         let sources = [
             WordSource::Beast,
             WordSource::Plant,
@@ -4379,12 +5823,12 @@ mod tests {
                 assert_eq!(d.weight, 0.1);
                 assert!(d.name.contains(src.label_zh()));
                 assert!(d.name.contains(qual.label_zh()));
-                assert!(d.description.contains("舍利子態結晶"));
+                assert!(d.description.contains("天然晶石"));
             }
         }
 
         // 2. 驗證 classify_material_word_source 排除與分類規則
-        assert!(classify_material_word_source("crystal_beast_jia", "甲品・獸源詞元結晶").is_none());
+        assert!(classify_material_word_source("crystal_beast_jia", "甲品・獸源晶石").is_none());
         assert!(classify_material_word_source("starter_blade", "初心者長刀").is_none());
         assert!(classify_material_word_source("key_iron", "鐵鑰匙").is_none());
 
@@ -4420,7 +5864,7 @@ mod tests {
         assert_eq!(src, WordSource::Plant);
         assert_eq!(tier, 2);
 
-        let (src, tier) = classify_material_word_source("wt_cat_0319", "甕藏陳年老菜脯").unwrap();
+        let (src, tier) = classify_material_word_source("wt_cat_0370", "甕藏陳年老菜脯").unwrap();
         assert_eq!(src, WordSource::Plant);
         assert_eq!(tier, 3);
 
@@ -4517,7 +5961,71 @@ mod tests {
         let (extra, note) = harvest_from_world_object("unit_test_actor", "obj_wild_ore", "露天鐵礦石", "harvest_ore", 1_700_000_000);
         assert!(extra >= 0);
         if extra > 0 {
-            assert!(note.contains("【採集剝名】藝相純熟") || note.contains("趁手"));
+            assert!(note.contains("手藝純熟") || note.contains("趁手"));
         }
+    }
+
+    #[test]
+    fn test_shrimp_and_food_raw_materials_never_become_storage_box() {
+        assert_eq!(get_clean_item_name("mat_fresh_shrimp"), "水尾寮鮮沼蝦");
+        assert_ne!(get_clean_item_name("mat_fresh_shrimp"), "行囊物產");
+        assert_eq!(get_clean_item_name("shanhai_fresh_fish"), "深海鮮魚");
+        assert_eq!(get_clean_item_name("shanhai_beast_meat"), "山海鮮獸肉");
+        assert_eq!(map_raw_to_finished("mat_fresh_shrimp").id, "craft_roasted_shrimp_skewer");
+        assert_eq!(map_raw_to_finished("mat_fresh_shrimp").name, "炭炙水尾鮮蝦串");
+        assert_eq!(map_raw_to_finished("wt_cat_0225").id, "craft_roasted_shrimp_skewer");
+        assert_eq!(map_raw_to_finished("shanhai_fresh_fish").id, "craft_smoked_fish_fillet");
+        assert_eq!(map_raw_to_finished("shanhai_fresh_fish").name, "相思木燻鮮魚乾");
+        assert_eq!(map_raw_to_finished("harvest_fish").id, "craft_smoked_fish_fillet");
+        assert_eq!(map_raw_to_finished("shanhai_beast_meat").id, "craft_spiced_beast_jerky");
+        assert_eq!(map_raw_to_finished("shanhai_beast_meat").name, "馬告炭炙獸肉脯");
+        assert_eq!(map_raw_to_finished("mat_grain_sack").id, "craft_ration_grain_cake");
+        assert_eq!(map_raw_to_finished("mat_grain_sack").name, "行旅耐儲米糧餅");
+        assert_eq!(map_raw_to_finished("mat_fishing_line_bundle").id, "craft_storm_canvas_cloak");
+        assert_eq!(map_raw_to_finished("mat_charcoal_sack").id, "craft_pine_torch");
+        assert_eq!(map_raw_to_finished("mat_sealing_pitch").id, "craft_bamboo_oil_umbrella");
+        assert_eq!(map_raw_to_finished("mat_water_moss_sheet").id, "craft_meridian_salve");
+        assert_eq!(map_raw_to_finished("mat_stone_powder_sack").id, "craft_iron_pickaxe");
+        assert_eq!(map_raw_to_finished("mat_shell_sack").id, "craft_iron_pickaxe");
+    }
+
+    #[test]
+    fn test_run_npc_autonomous_production_step_venue_staff_and_event_pack() {
+        // 1. 驗證 RoomVenueObject 語意標籤
+        let mill_venue = crate::grid::resolve_any_room_venue_object("老堰頭・水輪石磨工坊", "").expect("mill venue");
+        assert_eq!(mill_venue.default_host_title, "當值石磨匠師");
+        let tags = mill_venue.semantic_tags();
+        assert!(tags.contains(&"工坊") || tags.contains(&"磨石"));
+
+        // 2. 測試當值人員辨識與物件化標題解析
+        let (is_staff, has_uniform, in_counter) = crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+            "老堰頭・水輪石磨工坊",
+            "ambient_mill_staff_01",
+            "身穿制服當值司秤掌事",
+            "正於石磨櫃檯盤點貨單",
+            r#"{"body":"wt_cat_0840"}"#,
+        );
+        assert!(is_staff);
+        assert!(has_uniform);
+        assert!(in_counter);
+
+        // 3. 測試 run_npc_autonomous_production_step
+        let room = "老堰頭・水輪石磨工坊";
+        let step_res = run_npc_autonomous_production_step("room_mill_01", room, &["ambient_mill_worker".to_string()], 1_700_000_000);
+        assert!(step_res.is_some());
+        let narr = step_res.unwrap();
+        assert!(narr.contains("老堰頭"));
+        assert!(narr.contains("大石磨") || narr.contains("現磨溫米漿"));
+
+        // 4. 驗證器物推進事件包與劇本包
+        let advance_res = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            room,
+            "現磨溫米漿",
+        );
+        assert!(advance_res.is_some(), "finished good must advance room event pack");
+        let (ev, sp, note) = advance_res.unwrap();
+        assert_eq!(ev.pack_id, "WS-001");
+        assert_eq!(sp.pack_id, "WS-001");
+        assert!(!note.is_empty());
     }
 }

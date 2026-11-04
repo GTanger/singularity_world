@@ -90,8 +90,39 @@ pub(super) fn run_game_day_economy(
     }
 }
 
+/// 依場域名稱與時間嘗試合成當前活躍事件包之世界傳聞
+pub(crate) fn synthesize_active_event_pack_world_rumor(
+    room_name: &str,
+    now_unix: i64,
+) -> Option<(String, String)> {
+    let (ev, sp) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(
+        room_name.trim(),
+        None,
+        now_unix,
+    )?;
+    let host_title = crate::grid::resolve_any_room_venue_object(room_name.trim(), "")
+        .map(|v| v.default_host_title)
+        .unwrap_or("當值主事");
+    let first_key = ev
+        .key_objects
+        .split('、')
+        .next()
+        .unwrap_or(ev.key_objects)
+        .trim();
+    let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+        room_name.trim(),
+        first_key,
+    );
+    let text = format!(
+        "聽聞{}的{}正圍繞【{}】忙著{}，往來街坊議論紛紛。",
+        room_name.trim(), host_title, first_key, sp.title
+    );
+    Some((format!("event_pack|{}", ev.id), text))
+}
+
 /// 事件種子注入：結合區域氣候與居民義務，合成活體世界傳聞，防止語義坍縮。
 pub(super) fn inject_event_seed(now_unix: i64) {
+    let mut seed_rumor_id: Option<String> = None;
     let mut rumor_text = String::new();
     let mut rumor_zone = String::new();
 
@@ -99,12 +130,52 @@ pub(super) fn inject_event_seed(now_unix: i64) {
     if let Some(pool) = crate::pg::pool()
         && let Ok(mut conn) = pool.get()
     {
-            let ob_row = conn.query_opt(
+        if let Ok(expired_rows) = conn.query(
+            "UPDATE resident_obligations
+             SET status = 'failed', updated_at = $1
+             WHERE status IN ('active', 'open')
+               AND obligation_kind != 'employment'
+               AND (entity_id LIKE 'npc_%' OR entity_id LIKE 'wt_npc_%')
+               AND ((due_at IS NOT NULL AND due_at < $1) OR (due_at IS NULL AND updated_at < $1 - 14400))
+             RETURNING entity_id, obligation_kind",
+            &[&now_unix],
+        ) {
+            if !expired_rows.is_empty() {
+                let mut map = crate::store::LIVE_NPC_OBLIGATIONS.write();
+                for r in expired_rows {
+                    let eid: String = r.get(0);
+                    let okind: String = r.get(1);
+                    if map.get(&eid).map_or(false, |(k, _)| k == &okind) {
+                        map.remove(&eid);
+                    }
+                }
+            }
+        }
+        let _ = conn.execute(
+            "DELETE FROM resident_obligations WHERE entity_id LIKE '%test%'",
+            &[],
+        );
+        let stale_cutoff = now_unix - 300;
+        let _ = conn.execute(
+            "DELETE FROM resident_obligations WHERE status IN ('completed', 'failed') AND obligation_kind != 'employment' AND updated_at < $1",
+            &[&stale_cutoff],
+        );
+        let _ = conn.execute(
+            "DELETE FROM resident_obligations WHERE obligation_id ~ '^ob:[^:]+:[^:]+:[0-9]+$'",
+            &[],
+        );
+        let ob_row = conn.query_opt(
                 "SELECT entity_id, obligation_kind, subject_ref, source_ref
-                 FROM resident_obligations
-                 WHERE status IN ('active', 'open')
-                   AND obligation_kind IN ('repair_tool', 'stranded_cargo', 'repay_debt', 'treat_injury')
-                 ORDER BY updated_at DESC LIMIT 1",
+                 FROM (
+                     SELECT DISTINCT ON (obligation_kind) entity_id, obligation_kind, subject_ref, source_ref
+                     FROM resident_obligations
+                    WHERE status IN ('active', 'open')
+                      AND entity_id NOT LIKE '%test%'
+                      AND EXISTS (SELECT 1 FROM entities e WHERE e.id = resident_obligations.entity_id)
+                      AND obligation_kind IN ('repair_tool', 'stranded_cargo', 'repay_debt', 'treat_injury', 'restock_goods', 'market_delivery', 'supply_shortage')
+                    ORDER BY obligation_kind, RANDOM()
+                 ) sub
+                 ORDER BY RANDOM() LIMIT 1",
                 &[],
             ).unwrap_or(None);
             if let Some(row) = ob_row {
@@ -113,52 +184,250 @@ pub(super) fn inject_event_seed(now_unix: i64) {
                 let subject: String = row.get(2);
 
                 let fallback_room = crate::db::get_entity_room(&entity_id).unwrap_or_default();
-                let (place_name, resolved_zone) = crate::store::get_store()
+                let extracted_subj_place = subject
+                    .strip_prefix("受阻於")
+                    .and_then(|s| {
+                        s.strip_suffix("的急貨待援")
+                            .or_else(|| s.strip_suffix("的隨行貨擔"))
+                    })
+                    .map(|s| s.trim().to_string())
+                    .filter(|s| !s.is_empty());
+                let fallback_room_name = crate::db::get_room_name(&fallback_room)
+                    .ok()
+                    .filter(|n| !n.is_empty() && !n.starts_with("grid:") && !n.starts_with("wt-physical-"));
+                let (mut place_name, mut resolved_zone) = crate::store::get_store()
                     .map(|s| {
                         let st = s.read();
                         if let Some(p) = st.get_place(&subject) {
-                            (p.name.clone(), p.id.clone())
+                            (p.player_title().to_string(), p.zone.clone())
                         } else if let Some(p) = st.get_place(&fallback_room) {
-                            (p.name.clone(), p.id.clone())
+                            (p.player_title().to_string(), p.zone.clone())
+                        } else if let Some(sp) = extracted_subj_place.clone() {
+                            (sp, fallback_room.clone())
+                        } else if let Some(rn) = fallback_room_name.clone() {
+                            (rn, fallback_room.clone())
                         } else {
-                            ("附近聚落".to_string(), fallback_room.clone())
+                            ("白塔驛道".to_string(), fallback_room.clone())
                         }
                     })
-                    .unwrap_or_else(|| ("附近聚落".to_string(), fallback_room));
-
+                    .unwrap_or_else(|| {
+                        (
+                            extracted_subj_place
+                                .or(fallback_room_name)
+                                .unwrap_or_else(|| "白塔驛道".to_string()),
+                            fallback_room,
+                        )
+                    });
                 let entity_name = crate::store::get_store()
                     .and_then(|s| {
-                        s.read().entities.get(&entity_id).map(|e| {
-                            let name = crate::store::resolve_npc_person_name(&e.id, &e.display_title, None);
-                            if !name.is_empty() && name != "陌生人" {
-                                name
-                            } else if !e.display_title.trim().is_empty() {
-                                e.display_title.rsplit(['|', '｜']).next().unwrap_or(&e.display_title).trim().to_string()
-                            } else {
-                                e.display_char.clone()
-                            }
+                        let guard = s.read();
+                        guard.entities.get(&entity_id).map(|e| {
+                            crate::store::resolve_npc_person_name(&e.id, &e.display_title, Some(&e.gender))
                         })
                     })
-                    .unwrap_or_else(|| entity_id.clone());
+                    .unwrap_or_default();
+                if entity_name.is_empty()
+                    || entity_name == "陌生人"
+                    || entity_name.chars().any(|c| c.is_ascii_alphabetic())
+                {
+                    return;
+                }
+                if resolved_zone.starts_with("grid:") || resolved_zone.is_empty() {
+                    if let Some((prefix, _)) = place_name.split_once('・') {
+                        resolved_zone = prefix.trim().to_string();
+                    } else {
+                        resolved_zone = "wt-c-wenyao".to_string();
+                    }
+                }
 
-                rumor_text = match kind.as_str() {
-                    "repair_tool" => format!("聽聞{}在{}忙於整修受損器物，正尋求可用資材。", entity_name, place_name),
-                    "stranded_cargo" => format!("聽說{}的貨物因路況受阻滯留在{}，急需設法轉運。", entity_name, place_name),
-                    "repay_debt" => format!("聽聞{}正在{}四處張羅，設法籌措欠款。", entity_name, place_name),
-                    "treat_injury" => format!("據說{}在{}休養療傷，暫緩了手頭事務。", entity_name, place_name),
-                    _ => format!("有人看見{}在{}為手頭事務奔波探詢。", entity_name, place_name),
+                place_name = crate::store::clean_wilderness_place_label(&place_name);
+                for road_suffix in &["・道路", "・山道", "・林道", "・石徑", "・步道"] {
+                    if place_name.ends_with(road_suffix) {
+                        place_name = place_name.strip_suffix(road_suffix).unwrap_or(&place_name).to_string();
+                        break;
+                    }
+                }
+
+                let raw_settlement = place_name.split('・').next().unwrap_or("文曜").trim().to_string();
+                let settlement = crate::pg::living_world::peninsula_market_settlement_name(&raw_settlement).to_string();
+                let canonical_settlements = [
+                    "文曜", "半嶺鎮", "風舶角", "南哨", "大圳頭", "紅土崁", "北嶺腳", "風櫃尾",
+                    "下營", "青竹坪", "牛埔", "烏石鼻", "霜林口", "三號坑口", "水尾寮", "老堰頭",
+                    "三水口", "風舶嶼",
+                ];
+                let canonical_settlement = if canonical_settlements.contains(&settlement.as_str()) {
+                    settlement.as_str()
+                } else {
+                    "文曜"
                 };
+                if place_name == raw_settlement && settlement != raw_settlement {
+                    place_name = format!("{settlement}外道");
+                } else if settlement != raw_settlement
+                    && let Some(rest) = place_name.strip_prefix(&format!("{raw_settlement}・"))
+                {
+                    place_name = format!("{settlement}・{rest}");
+                }
+                let venue_leaf = place_name.rsplit('・').next().unwrap_or(&place_name).trim();
+                let is_settlement_or_venue = canonical_settlements.contains(&raw_settlement.as_str())
+                    || [
+                        "工坊", "鐵器", "船塢", "商行", "鋪", "店", "館", "堂", "市集", "居",
+                        "宅", "舍", "齋", "院", "閣", "所", "屋", "寮", "房", "棚",
+                    ]
+                    .iter()
+                    .any(|k| place_name.contains(k));
+                let is_wilderness_or_road = !is_settlement_or_venue
+                    && [
+                        "林", "谷", "嶺", "山", "溪", "澤", "沼", "灘", "坡", "道", "徑", "橋",
+                        "路", "草甸", "岩岸", "峭壁", "原", "岬", "灣", "關", "麓", "洲", "嶼",
+                        "坑",
+                    ]
+                    .iter()
+                    .any(|k| place_name.contains(k));
+                let has_indoor_suffix = [
+                    "鋪", "店", "工坊", "商行", "食堂", "茶屋", "酒坊", "醫館", "藥鋪", "診所", "書閣", "印行", "船塢", "灰窯", "鹽場", "市集",
+                ]
+                .iter()
+                .any(|s| venue_leaf.ends_with(s));
+                let is_outdoor_street_or_square = !has_indoor_suffix
+                    && [
+                        "街", "巷", "弄", "道", "路", "段", "口", "橋", "門", "坪", "廣場", "岸", "階", "亭", "井", "哨",
+                    ]
+                    .iter()
+                    .any(|k| venue_leaf.contains(k));
+                let venue_opt = crate::grid::resolve_any_room_venue_object(&place_name, "");
+                let mut is_workshop = !is_outdoor_street_or_square
+                    && [
+                        "工坊", "鐵器", "鍛", "木工", "石工", "船塢", "窯", "廠", "匠", "工具", "農具",
+                    ]
+                    .iter()
+                    .any(|k| venue_leaf.contains(k));
+                let mut is_shop_or_commercial = !is_outdoor_street_or_square
+                    && [
+                        "鋪", "店", "行", "坊", "館", "堂", "閣", "市集", "塢", "倉", "庫", "局", "社", "攤", "窯", "廠",
+                    ]
+                    .iter()
+                    .any(|k| venue_leaf.contains(k));
+                if let Some(v) = &venue_opt {
+                    let tags = v.semantic_tags();
+                    is_workshop = is_workshop || tags.contains(&"工坊") || tags.contains(&"鐵匠鋪");
+                    is_shop_or_commercial = is_shop_or_commercial
+                        || v.has_counter_restricted_zone
+                        || tags.contains(&"市集")
+                        || tags.contains(&"商鋪");
+                }
+                let is_residential = [
+                    "居", "宅", "舍", "宿", "值房", "別院", "內室", "客房",
+                ]
+                .iter()
+                .any(|k| venue_leaf.contains(k));
+                let has_building_noun = has_indoor_suffix
+                    || is_residential
+                    || is_workshop
+                    || is_shop_or_commercial
+                    || ["屋", "居", "宅", "舍", "齋", "院", "閣", "所", "寮", "房", "棚", "亭", "哨"]
+                        .iter()
+                        .any(|k| venue_leaf.contains(k));
+                let is_pure_water_or_mud = !has_building_noun
+                    && ["海灣", "泥口", "海面", "水道", "淺灘", "外海", "河口", "潮池", "潮間帶", "淺灣", "礫灣", "岩岸", "海蝕", "泥澤", "深潭", "沙洲", "白茫洲"]
+                        .iter()
+                        .any(|k| venue_leaf.contains(k));
+                let is_wilderness_or_road = is_wilderness_or_road || is_pure_water_or_mud;
+                let sanitized_place = if is_pure_water_or_mud && matches!(kind.as_str(), "repair_tool" | "stranded_cargo" | "restock_goods" | "supply_shortage" | "repay_debt" | "market_delivery") {
+                    format!("{canonical_settlement}外山道")
+                } else if kind == "repair_tool" && !is_wilderness_or_road && !is_workshop {
+                    format!("{canonical_settlement}・街坊工坊")
+                } else if kind == "supply_shortage" && !is_wilderness_or_road && (!is_shop_or_commercial || is_residential) {
+                    format!("{canonical_settlement}・市集鋪面")
+                } else if kind == "restock_goods" && !is_wilderness_or_road && (!is_shop_or_commercial || is_residential) {
+                    format!("{canonical_settlement}・城內鋪面")
+                } else if kind == "stranded_cargo" && is_settlement_or_venue {
+                    format!("{canonical_settlement}外山道")
+                } else if kind == "treat_injury" && (is_wilderness_or_road || is_outdoor_street_or_square || is_residential) {
+                    format!("{canonical_settlement}・街坊醫館")
+                } else if kind == "market_delivery" && (is_residential || is_outdoor_street_or_square) {
+                    format!("{canonical_settlement}・市集鋪面")
+                } else {
+                    place_name.clone()
+                };
+                rumor_text = match kind.as_str() {
+                    "repair_tool" => {
+                        if is_wilderness_or_road {
+                            format!("聽聞{}行經{}時隨身器物受損，正尋求可用資材修整。", entity_name, sanitized_place)
+                        } else {
+                            format!("聽聞{}在{}忙於整修受損器物，正尋求可用資材。", entity_name, sanitized_place)
+                        }
+                    }
+                    "stranded_cargo" => format!("聽說{}的貨物因路況受阻滯留在{}，急需設法轉運。", entity_name, sanitized_place),
+                    "repay_debt" => {
+                        if is_wilderness_or_road {
+                            format!("有人瞧見{entity_name}行經{sanitized_place}奔波趕路，說是正設法張羅籌措欠款。")
+                        } else {
+                            format!("聽聞{entity_name}正在{sanitized_place}四處張羅，設法籌措欠款。")
+                        }
+                    }
+                    "treat_injury" => format!("據說{}在{}休養療傷，暫緩了手頭事務。", entity_name, sanitized_place),
+                    "restock_goods" => {
+                        if is_wilderness_or_road {
+                            format!("有人瞧見{entity_name}行經{sanitized_place}趕路，說是鋪內存貨見底，正趕往鄰鎮市集採辦補倉。")
+                        } else {
+                            format!("聽聞{entity_name}在{sanitized_place}盤點鋪內存貨，正四處打聽補倉的貨源。")
+                        }
+                    }
+                    "market_delivery" => {
+                        if is_wilderness_or_road {
+                            let market_settlement =
+                                crate::game::object_ecology::normalize_canonical_settlement(canonical_settlement);
+                            format!("有人瞧見{entity_name}押著貨擔行經{sanitized_place}趕路，說是正趕往{market_settlement}市集交割物產。")
+                        } else {
+                            format!("有人瞧見{entity_name}押著貨擔往{sanitized_place}一帶趕路，說是趕著交割物產。")
+                        }
+                    }
+                    "supply_shortage" => {
+                        if is_wilderness_or_road {
+                            format!("有人瞧見{entity_name}行經{sanitized_place}趕路，說是為調度緊缺物資正趕往鄰鎮市集。")
+                        } else {
+                            format!("聽聞{entity_name}在{sanitized_place}四處調度緊缺物資，市集上往來詢問的人不少。")
+                        }
+                    }
+                    _ => format!("有人看見{}在{}為手頭事務奔波探詢。", entity_name, sanitized_place),
+                };
+
                 rumor_zone = resolved_zone;
+                seed_rumor_id = Some(format!("world_seed|{}", kind));
             }
     }
+    if rumor_text.is_empty() {
+        let candidate_rooms = [
+            "老堰頭・水輪石磨工坊",
+            "三水大食堂",
+            "文曜百鍛鐵坊",
+            "公議堂房地契書局",
+            "泉香溫水浴場",
+            "東橋旅社茶屋",
+            "半島百草診所",
+            "風舶早市鮮魚拍賣場",
+        ];
+        let candidate_room = candidate_rooms[(now_unix.unsigned_abs() as usize / 600) % 8];
+        if now_unix.rem_euclid(2) == 0 {
+            if let Some((rid, rtext)) = synthesize_active_event_pack_world_rumor(candidate_room, now_unix) {
+                seed_rumor_id = Some(rid);
+                rumor_text = rtext;
+            }
+        }
+    }
+
 
     // 2. 若無義務，則檢視區域氣候合成路況/天候傳聞
+    let mut is_weather_seed = false;
     if rumor_text.is_empty()
         && let Ok(climates) = crate::db::list_region_climates()
-        && let Some(c) = climates
-            .iter()
-            .find(|c| matches!(c.event_type.as_str(), "rain" | "plum_rain" | "snow" | "wind"))
     {
+        let active_climates: Vec<_> = climates
+            .iter()
+            .filter(|c| matches!(c.event_type.as_str(), "rain" | "plum_rain" | "snow" | "wind"))
+            .collect();
+        if !active_climates.is_empty() {
+            let c = active_climates[(now_unix.unsigned_abs() as usize / 600) % active_climates.len()];
                 let weather_desc = match c.event_type.as_str() {
                     "rain" => "連綿陰雨、路面泥濘濕滑",
                     "plum_rain" => "梅雨連日不歇、行路受阻",
@@ -166,7 +435,7 @@ pub(super) fn inject_event_seed(now_unix: i64) {
                     "wind" => "狂風肆虐、途經者皆需謹慎",
                     _ => "天候有變",
                 };
-                let region_label = crate::store::get_store()
+                let raw_region_label = crate::store::get_store()
                     .and_then(|s| {
                         let st = s.read();
                         st.place_graph
@@ -175,8 +444,11 @@ pub(super) fn inject_event_seed(now_unix: i64) {
                             .map(|p| p.player_title().to_string())
                     })
                     .unwrap_or_else(|| c.region_id.clone());
-                rumor_text = format!("往來旅人回報，{}周邊{}，行商車隊宜多加留意。", region_label, weather_desc);
+                let region_label = crate::pg::living_world::peninsula_market_settlement_name(&raw_region_label);
+                rumor_text = format!("往來行旅傳言，{}周邊{}，過路商隊多半放慢了腳程。", region_label, weather_desc);
                 rumor_zone = c.region_id.clone();
+                is_weather_seed = true;
+        }
     }
 
     if rumor_text.is_empty() {
@@ -184,7 +456,13 @@ pub(super) fn inject_event_seed(now_unix: i64) {
     }
 
     let rumor = NpcRumor {
-        id: format!("world_seed|{}", now_unix / 600),
+        id: if let Some(id) = seed_rumor_id {
+            id
+        } else if is_weather_seed {
+            format!("weather|{}", rumor_zone)
+        } else {
+            format!("world_seed|{}", now_unix / 600)
+        },
         text: rumor_text.clone(),
         room_id: String::new(),
         zone: rumor_zone,
@@ -292,7 +570,7 @@ pub(super) fn run_npc_pool_tick(
 
 /// 荒野自然資源回復與野地營火衰減
 pub(super) fn run_wilderness_ecology_and_campfire_tick(now_unix: i64) {
-    let modified_cells = crate::server::grid_manager::with_square_grid_mut(|g| {
+    let modified_cells = crate::server::grid_manager::with_square_grid_mut_in_memory(|g| {
         let mut modified = Vec::new();
         for cell in g.cells_mut() {
             let mut changed = false;
@@ -392,9 +670,27 @@ pub(super) fn run_climate_tick(now_unix: i64) -> Vec<(String, String, i64)> {
     let mut changed = Vec::new();
     let mut rng = rand::rng();
     for climate in climates {
+        if now_unix.saturating_sub(climate.started_at_unix) < 1200 {
+            continue;
+        }
         let roll: f64 = rng.random();
         if roll < CHANGE_PROB {
-            let new_event = CLIMATE_EVENTS[rng.random_range(0..CLIMATE_EVENTS.len())];
+            let can_snow = matches!(
+                climate.region_id.as_str(),
+                "wt-n-sacred-mountain"
+                    | "wt-n-north-crown-sea"
+                    | "wt-c-sacred-tower"
+                    | "wt-e-green-ridge"
+            );
+            let allowed_events: &[&str] = if can_snow {
+                CLIMATE_EVENTS
+            } else {
+                &["clear", "rain", "wind", "plum_rain"]
+            };
+            let new_event = allowed_events[rng.random_range(0..allowed_events.len())];
+            if new_event == climate.event_type {
+                continue;
+            }
             let prose_seed: i64 = rng.random();
             let updated = RegionClimate {
                 region_id: climate.region_id.clone(),
@@ -412,32 +708,57 @@ pub(super) fn run_climate_tick(now_unix: i64) -> Vec<(String, String, i64)> {
                     new_event
                 );
                 changed.push((climate.region_id.clone(), new_event.to_string(), prose_seed));
-                if matches!(new_event, "rain" | "plum_rain" | "snow") {
-                    let weather_desc = match new_event {
-                        "rain" => "開始降下陣雨，道路變得濕滑泥濘",
-                        "plum_rain" => "連綿梅雨籠罩，天候潮濕低迷",
-                        "snow" => "飄起陣陣飛雪，寒氣侵襲路途",
-                        _ => "天候生變",
-                    };
-                    let region_label = match climate.region_id.as_str() {
+                if matches!(new_event, "clear" | "wind" | "rain" | "plum_rain" | "snow") {
+                    let raw_region_label = match climate.region_id.as_str() {
                         "wt-n-sacred-mountain" => "神山",
                         "wt-n-north-crown-sea" => "北冕海",
                         "wt-w-windship-island" => "風舶嶼",
                         "wt-w-natural-harbor-channel" => "天然港灣道",
                         "wt-w-windship-cape" => "風舶角",
                         "wt-c-wenyao" => "文曜",
-                        "wt-c-sacred-tower" => "白塔山麓",
+                        "wt-c-sacred-tower" => "半嶺鎮",
                         "wt-e-green-ridge" => "青脊山",
                         "wt-e-east-sea" => "東海",
-                        "wt-c-southwest-plain" => "西南原",
+                        "wt-c-southwest-plain" => "大圳頭",
                         "wt-s-south-sentinel" => "南哨",
-                        "wt-s-black-marsh" => "黑沼林",
+                        "wt-s-black-marsh" => "水尾寮",
                         "wt-s-qinglong-pass" => "青籠關",
                         other => other,
                     };
+                    let region_label = crate::pg::living_world::peninsula_market_settlement_name(raw_region_label);
+                    let rumor_text = match new_event {
+                        "clear" => {
+                            let clear_lead = match climate.event_type.as_str() {
+                                "snow" => "風雪漸歇、天色放晴",
+                                "wind" => "強風漸息、天光開朗",
+                                _ => "雨勢漸歇、天色放晴",
+                            };
+                            format!(
+                                "聽聞{}一帶{}，道路已好走許多，往來商旅也跟著加快了腳程。",
+                                region_label, clear_lead
+                            )
+                        }
+                        "wind" => format!(
+                            "聽聞{}一帶風勢轉勁，過路行旅多半收緊了行裝、留神腳下。",
+                            region_label
+                        ),
+                        "rain" => format!(
+                            "聽聞{}一帶開始降下陣雨，道路變得濕滑泥濘，往來行旅得多留神腳下。",
+                            region_label
+                        ),
+                        "plum_rain" => format!(
+                            "聽聞{}一帶連綿梅雨籠罩，天候潮濕低迷，往來行旅得多留神腳下。",
+                            region_label
+                        ),
+                        "snow" => format!(
+                            "聽聞{}一帶飄起陣陣飛雪，寒氣侵襲路途，往來行旅得多留神腳下。",
+                            region_label
+                        ),
+                        _ => format!("聽聞{}一帶天候生變，往來行旅得多留神腳下。", region_label),
+                    };
                     let rumor = NpcRumor {
-                        id: format!("weather|{}|{}", climate.region_id, now_unix / 300),
-                        text: format!("{}一帶{}，提醒行經該處者提早因應。", region_label, weather_desc),
+                        id: format!("weather|{}", climate.region_id),
+                        text: rumor_text,
                         room_id: String::new(),
                         zone: climate.region_id.clone(),
                         source: "climate".into(),
@@ -460,4 +781,18 @@ pub(super) fn run_climate_tick(now_unix: i64) -> Vec<(String, String, i64)> {
         }
     }
     changed
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_synthesize_active_event_pack_world_rumor() {
+        let res = synthesize_active_event_pack_world_rumor("老堰頭・水輪石磨工坊", 1_700_000_000);
+        assert!(res.is_some());
+        let (rid, text) = res.unwrap();
+        assert!(rid.starts_with("event_pack|"));
+        assert!(text.contains("老堰頭・水輪石磨工坊"));
+        assert!(text.contains("街坊議論紛紛"));
+    }
 }

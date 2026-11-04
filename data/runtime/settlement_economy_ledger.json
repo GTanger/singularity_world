@@ -1,0 +1,6348 @@
+{
+  "settlement_cells": [
+    {
+      "settlement": "文曜",
+      "item_id": "mat_cedar_plank",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.3849319,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft",
+      "stock": 19,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 1
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_patched_work_boots",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_bamboo_slats",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_charcoal_sack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.2269647,
+      "last_price_mg": 23
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_sealing_pitch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 14
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 29
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0277",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "wt_cat_0387",
+      "stock": 9,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.96171945,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_charcoal_sack",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.2897687,
+      "last_price_mg": 23
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0179",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9978642,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_caulking_sealant",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.65,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_meridian_salve",
+      "stock": 26,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 38
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_caulking_sealant",
+      "stock": 4,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0216",
+      "stock": 13,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 10
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_grain_sack",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 28
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0293",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9993711,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_bamboo_slats",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_reed_bundle",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.83760405,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 64
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0766616,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.441045,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 33
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_iron_scrap",
+      "stock": 2,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.3059037,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 35
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_bamboo_slats",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_grain_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_hay_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_reed_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.75742525,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 35
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 35
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_leather_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 19
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 15
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 17,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0224",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.88550454,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_foraged_herb",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8457153,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_timber_log",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_canvas_roll",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_timber_log",
+      "stock": 2,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.0180439,
+      "last_price_mg": 14
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_washed_ore",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.0039436,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_sealing_pitch",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 6
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0612881,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0877",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "harvest_berries",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 33
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_patched_work_boots",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_rough_ore",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8986585,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0252",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.78776735,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_sealing_pitch",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.0530516,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0275",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 35
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_repair_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.9972384,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_hardtack_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.9747602,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_pine_torch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "corpse_cat_0173_2711",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0185",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_canvas_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_meridian_salve",
+      "stock": 24,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.999997,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_washed_ore",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_cedar_plank",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_canvas_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_patched_work_boots",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_canvas_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 19
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0216",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_timber_log",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.1168132,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.7525,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_rough_ore",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.77075416,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0242549,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_iron_scrap",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0203124,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 2
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_cedar_plank",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.1974645,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.9971501,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_charcoal_sack",
+      "stock": 2,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.9589529,
+      "last_price_mg": 20
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.021607,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 2,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 14
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_hardtack_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 6
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 15
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_kindling_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.83180565,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0185",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "下營",
+      "item_id": "wt_cat_0001",
+      "stock": 18,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0211",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.76225245,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_hardtack_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0382907,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_leather_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0198741,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0877",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9995001,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_hay_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_caulking_sealant",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_leather_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_iron_scrap",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0729197,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.1802524,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 6
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 15
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_grain_sack",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 28
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_grain_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.4110827,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0197",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8563149,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.8696496,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0179",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 29
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_rough_ore",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8208507,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 51
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 64
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 19,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 6
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_foraged_herb",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.81751335,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0209",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_hardtack_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_rough_ore",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.759851,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 15
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0171",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9482682,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "blank_manual",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0877",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "harvest_herb",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 20
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_pine_torch",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0388",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9995737,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 64
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_meridian_salve",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_cedar_plank",
+      "stock": 3,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_hay_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0725043,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_washed_ore",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_cedar_plank",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_washed_ore",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_shell_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0279",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.7849854,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 26,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_washed_ore",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.99991155,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_pine_torch",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_plank_board",
+      "stock": 4,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0223",
+      "stock": 13,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 14
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_bamboo_slats",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.0236182,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.3578016,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_washed_ore",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0790",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_iron_scrap",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.1312777,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0786",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.83456224,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0183",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8325371,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0173",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.95352894,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0254",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9974636,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_sealing_pitch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_hardtack_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0002413,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_patched_work_boots",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_hardtack_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_plank_board",
+      "stock": 1,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.0193352,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 64
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_patched_work_boots",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0211",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_leather_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_foraged_herb",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.75742525,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0214",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9696446,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_shell_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_hay_bundle",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_cedar_plank",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_meridian_salve",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.75742525,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0275",
+      "stock": 27,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.441045,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_repair_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 35
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.1166267,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_hardtack_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_caulking_sealant",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9991134,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0387",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.99895835,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0185",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.93445563,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.36643,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_rough_ore",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.84024256,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_caulking_sealant",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_reed_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.7736801,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.78915876,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0233",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_bamboo_slats",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0293",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_plank_board",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0064944,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 15
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.1026922,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 15
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0179",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 32
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 8,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.999997,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.754975,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_sealing_pitch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9673523,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "corpse_cat_0173_2151",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 13,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.999997,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_iron_scrap",
+      "stock": 46,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.0517546,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_caulking_sealant",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_pine_torch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_pine_torch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.65,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_grain_sack",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 28
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_sealing_pitch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_plank_board",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0430896,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.1087326,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_iron_scrap",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0002358,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0124602,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "corpse_cat_0252_2538",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_meridian_salve",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9187282,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 2
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0395",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 2
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0179",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_patched_work_boots",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9052121,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 24,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_bamboo_slats",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_charcoal_sack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0158756,
+      "last_price_mg": 23
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 32
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 6
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 35
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0192",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0209",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.87779933,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_plank_board",
+      "stock": 6,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.0197505,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0173",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_charcoal_sack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.1341926,
+      "last_price_mg": 23
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_foraged_herb",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.92942005,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 35
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 7,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 37
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_pine_soot_ink",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 35
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0189",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0173",
+      "stock": 9,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 14
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.085669,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_hay_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_timber_log",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.423666,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_rough_ore",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.76251155,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_plank_board",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0086839,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 12,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 19
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_sealing_pitch",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0387",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9993521,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_leather_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0275",
+      "stock": 27,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_grain_sack",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 28
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0045198,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.2203422,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0189",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mut_craft_wooden_tool_handle_thunder_quenched",
+      "stock": 17,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.599299,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_grain_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_reed_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8434952,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_iron_scrap",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.45,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 24,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.999997,
+      "last_price_mg": 6
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0203",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_meridian_salve",
+      "stock": 17,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 6
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.76851815,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 33
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0233",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.94793993,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0183",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9469851,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_meridian_salve",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.88235337,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_cedar_plank",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0223",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_timber_log",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.4279455,
+      "last_price_mg": 18
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0341108,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0188",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.3523875,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0254",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9998357,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_washed_ore",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0172",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.020616,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_canvas_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.261906,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_shell_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_cedar_plank",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.65,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_shell_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 19
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_kindling_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.0116462,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 47
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0188",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_shell_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0277",
+      "stock": 14,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 11,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.999997,
+      "last_price_mg": 60
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0173",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8778228,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_timber_log",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.3988732,
+      "last_price_mg": 15
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0001",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0008783,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 32
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_kindling_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8598815,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0129",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_repair_strip",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "harvest_deadwood",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 6,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_kindling_bundle",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.78566295,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0387",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9990267,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 27
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0203",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_shell_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_repair_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_shell_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_cedar_plank",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0203",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_foraged_herb",
+      "stock": 1,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.89941895,
+      "last_price_mg": 14
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.1345482,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0171",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9543852,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_foraged_herb",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.7669836,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 14,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 43
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 7,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 40
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.61896,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_hay_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.85637474,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.4279455,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_repair_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0214",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.92251956,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_kindling_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.78281355,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_timber_log",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.3831561,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_calming_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.3551196,
+      "last_price_mg": 42
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0183",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.997304,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_timber_log",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.45,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_leather_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_pasture_seed_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 9,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 26
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_plank_board",
+      "stock": 21,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 19
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_foraged_herb",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8288735,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_sealing_pitch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0220",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 2
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0094831,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.997874,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0185",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.99981785,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 32
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0171",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9162914,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.4366345,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_plank_board",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.754975,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.6139704,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_bamboo_slats",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_iron_scrap_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 33
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_meridian_salve",
+      "stock": 19,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.999997,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_repair_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0209",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_grain_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 29
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9991675,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_rough_ore",
+      "stock": 1,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.86100864,
+      "last_price_mg": 18
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_pine_torch",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 10
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0233",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_tool_repair_strip",
+      "stock": 4,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_pine_torch",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_timber_log",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.45,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_meridian_salve",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.97855175,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 47
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0192",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_repair_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_plank_board",
+      "stock": 2,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 14
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_caulking_sealant",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_steel_hunting_knife",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.99940175,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_reed_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.78061974,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0387",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9996603,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_kindling_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8994135,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_canvas_roll",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 51
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_iron_scrap",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.024602,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_washed_ore",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0192",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9319336,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_oilcloth_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_grain_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 32
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_fishing_line_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.1792288,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_charcoal_sack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.3255152,
+      "last_price_mg": 23
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0252",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_washed_ore",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 26
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_foraged_herb",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.93616295,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_pine_torch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_canvas_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "wt_cat_0388",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9299797,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 33
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0185",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.79227906,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "wt_cat_0197",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0203",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 64
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_canvas_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "starter_feet_m",
+      "stock": 17,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_hay_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_reed_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.88244754,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_hardtack_sack",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_caulking_sealant",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 33
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.45,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_shell_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_leather_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 29
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_patched_work_boots",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_sackcloth_bolt",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_coarse_paper_ream",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_patched_work_boots",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_caulking_sealant",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_hardtack_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 29
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "craft_storm_canvas_cloak",
+      "stock": 24,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_kindling_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.75742525,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_metal_rim_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_rough_ore",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9227362,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0179",
+      "stock": 13,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 10
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0388",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mut_craft_pine_torch_frost_condensed",
+      "stock": 18,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_repair_strip",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_leather_strip",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_coarse_salt_pack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0770234,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_pine_torch",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_charcoal_sack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.069713,
+      "last_price_mg": 23
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 4,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.000009,
+      "last_price_mg": 51
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_wet_grass_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0504",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "craft_bamboo_oil_umbrella",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9872477,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_patched_work_boots",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "craft_camphor_storage_box",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 29
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_bamboo_slats",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_bamboo_slats",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_tarred_hemp_rope",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_heavy_leather_boots",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 40
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_fish_bone_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_hemp_rope_roll",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.4110827,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 33
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_water_moss_sheet",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0197",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_iron_pickaxe",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 15
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_charcoal_sack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.0267704,
+      "last_price_mg": 23
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0183",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.92991346,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "wt_cat_0188",
+      "stock": 13,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 10
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_reed_bundle",
+      "stock": 48,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 0.999997,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_herbal_tea_pack",
+      "stock": 0,
+      "target_stock": 12,
+      "local_prod_rate": 0,
+      "local_cons_rate": 2,
+      "demand_ema": 1.2356716,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9983412,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0252",
+      "stock": 24,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "wt_cat_0172",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 16
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_repair_strip",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_rice_husk_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_wood_offcut_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0388",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.78281355,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_hay_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_canvas_roll",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0182",
+      "stock": 31,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_rough_ore",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8299392,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_shell_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "craft_roasted_shrimp_skewer",
+      "stock": 7,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 17
+    },
+    {
+      "settlement": "下營",
+      "item_id": "wt_cat_0388",
+      "stock": 12,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_leather_strip",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 6
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_feed_mix_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 12
+    },
+    {
+      "settlement": "烏石鼻",
+      "item_id": "mat_reed_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9054018,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "mat_mane_hair_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "文曜",
+      "item_id": "key_brass_home_lock",
+      "stock": 16,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.999997,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_kindling_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9154945,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_reed_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.84761924,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "wt_cat_0171",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.9567618,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "下營",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8202592,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_kindling_bundle",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.8155488,
+      "last_price_mg": 3
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_foraged_herb",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.797568,
+      "last_price_mg": 4
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "craft_peninsula_almanac",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 33
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "wt_cat_0205",
+      "stock": 32,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 0.90728354,
+      "last_price_mg": 11
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_stone_powder_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 9
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "craft_wooden_tool_handle",
+      "stock": 40,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 0.99655586,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_fish_scale_sack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 5
+    },
+    {
+      "settlement": "紅土崁",
+      "item_id": "mat_sealing_pitch",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 13
+    },
+    {
+      "settlement": "霜林口",
+      "item_id": "mat_iron_scrap",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.1535251,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "水尾寮",
+      "item_id": "mat_salted_fish",
+      "stock": 0,
+      "target_stock": 10,
+      "local_prod_rate": 3,
+      "local_cons_rate": 1,
+      "demand_ema": 1.2262186,
+      "last_price_mg": 21
+    },
+    {
+      "settlement": "風舶角",
+      "item_id": "mat_hay_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "半嶺鎮",
+      "item_id": "mat_rice_straw_bundle",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 7
+    },
+    {
+      "settlement": "南哨",
+      "item_id": "mat_wrapping_paper_pack",
+      "stock": 5,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.000009,
+      "last_price_mg": 8
+    },
+    {
+      "settlement": "下營",
+      "item_id": "mat_charcoal_sack",
+      "stock": 0,
+      "target_stock": 8,
+      "local_prod_rate": 0,
+      "local_cons_rate": 1,
+      "demand_ema": 1.4366345,
+      "last_price_mg": 23
+    }
+  ],
+  "items": {
+    "craft_meridian_salve": {
+      "stock": 60,
+      "target_stock": 15,
+      "demand_pressure": 22
+    },
+    "mat_sackcloth_bolt": {
+      "stock": 14,
+      "target_stock": 20,
+      "demand_pressure": 19
+    },
+    "mat_cedar_plank": {
+      "stock": 0,
+      "target_stock": 20,
+      "demand_pressure": 18
+    },
+    "mat_reed_bundle": {
+      "stock": 100,
+      "target_stock": 25,
+      "demand_pressure": 20
+    },
+    "mat_charcoal_sack": {
+      "stock": 0,
+      "target_stock": 20,
+      "demand_pressure": 28
+    },
+    "mat_timber_log": {
+      "stock": 0,
+      "target_stock": 30,
+      "demand_pressure": 28
+    },
+    "mat_foraged_herb": {
+      "stock": 80,
+      "target_stock": 20,
+      "demand_pressure": 32
+    },
+    "craft_iron_pickaxe": {
+      "stock": 0,
+      "target_stock": 8,
+      "demand_pressure": 10
+    },
+    "mat_plank_board": {
+      "stock": 100,
+      "target_stock": 25,
+      "demand_pressure": 25
+    },
+    "craft_heavy_leather_boots": {
+      "stock": 9,
+      "target_stock": 8,
+      "demand_pressure": 10
+    },
+    "mat_iron_scrap": {
+      "stock": 100,
+      "target_stock": 25,
+      "demand_pressure": 30
+    },
+    "craft_wooden_tool_handle": {
+      "stock": 40,
+      "target_stock": 10,
+      "demand_pressure": 12
+    },
+    "craft_camphor_storage_box": {
+      "stock": 5,
+      "target_stock": 6,
+      "demand_pressure": 8
+    },
+    "craft_herbal_tea_pack": {
+      "stock": 39,
+      "target_stock": 14,
+      "demand_pressure": 16
+    },
+    "craft_patched_work_boots": {
+      "stock": 0,
+      "target_stock": 8,
+      "demand_pressure": 12
+    },
+    "craft_tarred_hemp_rope": {
+      "stock": 0,
+      "target_stock": 10,
+      "demand_pressure": 13
+    },
+    "mat_coarse_paper_ream": {
+      "stock": 0,
+      "target_stock": 20,
+      "demand_pressure": 18
+    },
+    "craft_peninsula_almanac": {
+      "stock": 5,
+      "target_stock": 8,
+      "demand_pressure": 9
+    },
+    "craft_storm_canvas_cloak": {
+      "stock": 32,
+      "target_stock": 8,
+      "demand_pressure": 11
+    },
+    "craft_steel_hunting_knife": {
+      "stock": 40,
+      "target_stock": 10,
+      "demand_pressure": 14
+    },
+    "craft_bamboo_oil_umbrella": {
+      "stock": 48,
+      "target_stock": 12,
+      "demand_pressure": 12
+    },
+    "craft_pine_torch": {
+      "stock": 0,
+      "target_stock": 12,
+      "demand_pressure": 15
+    },
+    "craft_caulking_sealant": {
+      "stock": 0,
+      "target_stock": 10,
+      "demand_pressure": 15
+    },
+    "mat_kindling_bundle": {
+      "stock": 160,
+      "target_stock": 40,
+      "demand_pressure": 30
+    },
+    "craft_pine_soot_ink": {
+      "stock": 33,
+      "target_stock": 10,
+      "demand_pressure": 12
+    },
+    "craft_tool_repair_strip": {
+      "stock": 48,
+      "target_stock": 12,
+      "demand_pressure": 14
+    },
+    "mat_repair_strip": {
+      "stock": 12,
+      "target_stock": 20,
+      "demand_pressure": 25
+    },
+    "mat_salted_fish": {
+      "stock": 0,
+      "target_stock": 24,
+      "demand_pressure": 20
+    },
+    "craft_calming_tea_pack": {
+      "stock": 0,
+      "target_stock": 15,
+      "demand_pressure": 18
+    },
+    "mat_hemp_rope_roll": {
+      "stock": 0,
+      "target_stock": 22,
+      "demand_pressure": 24
+    }
+  },
+  "recent_events": [
+    "【工坊待料】紅土崁工坊因缺乏「熟桐浸油麻繩圈」暫緩開爐，當地收購行情急升！",
+    "【工坊待料】下營工坊因缺乏「熟桐浸油麻繩圈」暫緩開爐，當地收購行情急升！",
+    "邱佳欣見山林水土微乏，先於郊野護林育苗、修整採場，順道將整理所得的「野生草藥」1 份送入紅土崁市集交割。",
+    "陳庭瑄採獲「野生草藥」2 份並送入半嶺鎮市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "【市集調控】【岑秀娟】合社獵團於【紅土崁】交易「灰野兔整張絨皮」，現貨調整為 32/8，行情每份 11 鎂（產地充裕・現貨讓利）。",
+    "【工坊待料】南哨工坊因缺乏「伐採原木」暫緩開爐，當地收購行情急升！",
+    "【工坊待料】半嶺鎮工坊因缺乏「熟桐浸油麻繩圈」暫緩開爐，當地收購行情急升！",
+    "【工坊待料】文曜工坊因缺乏「粗製竹麻紙料」暫緩開爐，當地收購行情急升！",
+    "紅土崁選礦與耐火磚匠師・方赤土批發補貨「工具修補條」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "紅土崁選礦與耐火磚匠師・方赤土批發補貨「百草煎茶包」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "紅土崁選礦與耐火磚匠師・方赤土批發補貨「木板料」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "岑秀娟批發補貨「活血通絡膏」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "莊美玲批發補貨「百草煎茶包」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "曹筱涵批發補貨「百草煎茶包」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "張碧雲採獲「老蘆草綑」2 份並送入半嶺鎮市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "陸婉清見山林水土微乏，先於郊野護林育苗、修整採場，順道將整理所得的「老蘆草綑」1 份送入水尾寮市集交割。",
+    "【市集調控】聚落代表工坊產出於【風舶角】交易「精鍛防身獵刀」，現貨調整為 32/8，行情每份 5 鎂（產地充裕・現貨讓利）。",
+    "【市集調控】聚落代表工坊產出於【半嶺鎮】交易「精鍛防身獵刀」，現貨調整為 48/12，行情每份 5 鎂（產地充裕・現貨讓利）。",
+    "【工坊待料】霜林口工坊因缺乏「熟桐浸油麻繩圈」暫緩開爐，當地收購行情急升！",
+    "【工坊待料】文曜工坊因缺乏「熟桐浸油麻繩圈」暫緩開爐，當地收購行情急升！",
+    "寒水玉切石工坊大匠・石萬鈞批發補貨「百草煎茶包」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "寒水玉切石工坊大匠・石萬鈞批發補貨「木板料」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "【市集調控】【楊佳欣】合社獵團於【風舶角】交易「白鼻心烏腳香皮」，現貨調整為 32/8，行情每份 11 鎂（產地充裕・現貨讓利）。",
+    "【工坊待料】紅土崁工坊因缺乏「回收熟鐵料塊」暫緩開爐，當地收購行情急升！",
+    "【市集調控】聚落代表工坊產出於【風舶角】交易「精鍛防身獵刀」，現貨調整為 32/8，行情每份 5 鎂（產地充裕・現貨讓利）。",
+    "寒水玉切石工坊大匠・石萬鈞批發補貨「百草煎茶包」1 份並送入文曜市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "蔡筱涵採獲「粗生礦石」2 份並送入風舶角市集交割，攤頭貨源漸豐，行情趨於平穩。",
+    "【工坊待料】風舶角工坊因缺乏「熟桐浸油麻繩圈」暫緩開爐，當地收購行情急升！",
+    "【工坊待料】水尾寮工坊因缺乏「熟桐浸油麻繩圈」暫緩開爐，當地收購行情急升！",
+    "【工坊待料】南哨工坊因缺乏「熟桐浸油麻繩圈」暫緩開爐，當地收購行情急升！"
+  ]
+}

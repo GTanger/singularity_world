@@ -1,4 +1,4 @@
-// WebSocket 連線與遊戲主邏輯；把後端世界狀態投射成可操作文字表面。v0.26.0
+// WebSocket 連線與遊戲主邏輯；把後端世界狀態投射成可操作文字表面。v0.39.67
 (function () {
 	const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const wsUrl = wsScheme + '//' + window.location.host + '/ws';
@@ -59,6 +59,16 @@
 
 	function renderEntityActionButtonsHtml(targetId, targetName) {
 		var cleanName = resolveEntityDisplayName(targetId, targetName);
+		var sTargetId = String(targetId || '');
+		if (sTargetId.indexOf('ambient_') === 0 || sTargetId.indexOf('shanhai_') === 0) {
+			var beastActs = [
+				{ act: 'Subdue', label: '生擒制伏', cls: 'log-action-subdue' },
+				{ act: 'Slay', label: '出手獵殺', cls: 'log-action-slay' }
+			];
+			return beastActs.map(function (item) {
+				return '【<span class="log-object-action ' + item.cls + '" role="button" tabindex="0" data-entity-id="' + escapeHtml(targetId) + '" data-action="' + escapeHtml(item.act) + '" data-target-name="' + escapeHtml(cleanName) + '">' + escapeHtml(item.label) + '</span>】';
+			}).join('');
+		}
 		var peaceActions = [
 			{ act: 'Talk', label: '對話' },
 			{ act: 'Trade', label: '交易' }
@@ -194,6 +204,26 @@
 			}
 		});
 	}
+	function updateStatusBars(hpCur, hpMax, innerCur, innerMax, spiritCur, spiritMax, staminaCur, staminaMax) {
+		if (window.SwClock && window.SwClock.updateStatusBars) {
+			window.SwClock.updateStatusBars(hpCur, hpMax, innerCur, innerMax, spiritCur, spiritMax, staminaCur, staminaMax);
+		}
+		var sealsEl = document.getElementById('sw-status-seals');
+		if (sealsEl) {
+			var html = '';
+			if (hpMax != null && hpMax > 0 && hpCur != null && Number(hpCur) < Number(hpMax) * 0.45) {
+				html += '<span class="sw-seal-chip is-danger">【傷】</span>';
+			}
+			if (staminaMax != null && staminaMax > 0 && staminaCur != null && Number(staminaCur) < Number(staminaMax) * 0.3) {
+				html += '<span class="sw-seal-chip is-warn">【乏】</span>';
+			}
+			if (spiritMax != null && spiritMax > 0 && spiritCur != null && Number(spiritCur) < Number(spiritMax) * 0.3) {
+				html += '<span class="sw-seal-chip is-warn">【倦】</span>';
+			}
+			sealsEl.innerHTML = html;
+		}
+	}
+	window.updateStatusBars = updateStatusBars;
 	function isConnected() {
 		return socket && socket.readyState === WebSocket.OPEN;
 	}
@@ -324,7 +354,7 @@
 						// myPlayerId 到齊後，重新渲染 grid 物件欄/描述欄以過濾自己
 						if (window.refreshGridView) window.refreshGridView();
 						window.SwAuth.showGame();
-						window.SwClock.updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
+						updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
 						window.SwClock.draw();
 						renderStarplatePane(state.me);
 						startHeartbeat();
@@ -351,7 +381,7 @@
 						renderSkillPane(msg);
 						if (msg.is_self) {
 							if (msg.hp_max != null) {
-								window.SwClock.updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
+								updateStatusBars(msg.hp_cur, msg.hp_max, msg.inner_cur, msg.inner_max, msg.spirit_cur, msg.spirit_max, msg.stamina_cur, msg.stamina_max);
 								if (state.me) {
 									state.me.vit = msg.vit;
 									state.me.qi = msg.qi;
@@ -379,13 +409,46 @@
 						}
 						break;
 				case 'action_result':
+					var departedId = msg.target_id || (window.__currentPopoverTarget && window.__currentPopoverTarget.id);
+					if (departedId && msg.narrative && (msg.narrative.indexOf('對方卻已邁步離開此處') !== -1 || msg.narrative.indexOf('已不在此處') !== -1)) {
+						var canvasEl = document.getElementById('sw-room-canvas');
+						if (canvasEl) {
+							var staleTokens = canvasEl.querySelectorAll('.sw-canvas-token[data-entity-id="' + departedId + '"], .sw-canvas-token[data-obj-id="' + departedId + '"]');
+							for (var sti = 0; sti < staleTokens.length; sti++) {
+								staleTokens[sti].remove();
+							}
+						}
+						if (state.entities && state.entities.length) {
+							state.entities = state.entities.filter(function (e) { return e && e.id !== departedId; });
+						}
+						var curPop = window.__currentPopoverTarget;
+						if (curPop && (curPop.id === departedId || curPop.key === departedId)) {
+							if (window.SwCloseObjectPopover) window.SwCloseObjectPopover();
+						}
+					}
 					if (msg.action === 'Talk') {
 						if (window.SwInteractions) window.SwInteractions.removeLogPendingTalk();
+						var activePop = window.__currentPopoverTarget;
+						var isMismatchedPopover = !!(activePop && activePop.id && msg.target_id && activePop.id !== msg.target_id);
 						var narrative = msg.narrative;
 						if (!narrative) narrative = '（NPC 無回應）';
 						var narrativeHtml = window.SwNarrative.format(narrative);
 						narrativeHtml = window.SwNarrative.formatWithClickable(narrativeHtml, state.objects);
-						appendNarrative(narrativeHtml, 'Talk');
+						if (isMismatchedPopover) {
+							var swLogEl = document.getElementById('sw-log') || document.getElementById('log');
+							if (swLogEl) {
+								var div = document.createElement('div');
+								div.className = 'sw-log-entry log-entry log-narrative log-talk';
+								div.innerHTML = narrativeHtml;
+								swLogEl.appendChild(div);
+								swLogEl.scrollTop = swLogEl.scrollHeight;
+							}
+							if (window.SwNotify && window.SwNotify.toast) {
+								window.SwNotify.toast(narrativeHtml, { kind: 'talk', isHtml: true });
+							}
+						} else {
+							appendNarrative(narrativeHtml, 'Talk');
+						}
 						// 對話回覆後直接顯示【對話】【攻擊】【交易】，不用再點一次角色
 						var talkTargetId = msg.target_id || '';
 						var talkTargetName = msg.target_name || talkTargetId;
@@ -398,28 +461,53 @@
 								});
 							}
 						}
-						if (talkTargetId && msg.open_trade && msg.suggested_action === 'Trade') {
-							if (window.gameSend) {
-								window.gameSend({ type: 'do_action', entity_id: talkTargetId, action: 'Trade', player_input: '' });
-								if (window.SwInteractions) window.SwInteractions.appendLogPendingTrade();
-							} else if (window.SwInteractions && window.SwInteractions.appendTradeInputRow) {
-								window.SwInteractions.appendTradeInputRow(talkTargetId, talkTargetName);
+						if (!isMismatchedPopover) {
+							if (talkTargetId && msg.open_trade && msg.suggested_action === 'Trade') {
+								if (window.gameSend) {
+									window.gameSend({ type: 'do_action', entity_id: talkTargetId, action: 'Trade', player_input: '' });
+									if (window.SwInteractions) window.SwInteractions.appendLogPendingTrade();
+								} else if (window.SwInteractions && window.SwInteractions.appendTradeInputRow) {
+									window.SwInteractions.appendTradeInputRow(talkTargetId, talkTargetName);
+								}
+							} else if (talkTargetId) {
+								appendObjectActionsLine(renderEntityActionButtonsHtml(talkTargetId, talkTargetName));
 							}
-						} else if (talkTargetId) {
-							appendObjectActionsLine(renderEntityActionButtonsHtml(talkTargetId, talkTargetName));
 						}
 					} else if (msg.action === 'Trade') {
 						if (window.SwInteractions) window.SwInteractions.removeLogPendingTrade();
+						var activeTradePop = window.__currentPopoverTarget;
+						var isMismatchedTradePopover = !!(activeTradePop && activeTradePop.id && msg.target_id && activeTradePop.id !== msg.target_id);
 						var tNarrative = msg.narrative;
 						if (!tNarrative) tNarrative = '（交易無回應）';
 						var tHtml = window.SwNarrative.format(tNarrative);
 						tHtml = window.SwNarrative.formatWithClickable(tHtml, state.objects);
-						appendNarrative(tHtml, 'Trade');
+						if (isMismatchedTradePopover) {
+							var swTradeLogEl = document.getElementById('sw-log') || document.getElementById('log');
+							if (swTradeLogEl) {
+								var tDiv = document.createElement('div');
+								tDiv.className = 'sw-log-entry log-entry log-narrative log-trade';
+								tDiv.innerHTML = tHtml;
+								swTradeLogEl.appendChild(tDiv);
+								swTradeLogEl.scrollTop = swTradeLogEl.scrollHeight;
+							}
+							if (window.SwNotify && window.SwNotify.toast) {
+								window.SwNotify.toast(tHtml, { kind: 'trade', isHtml: true });
+							}
+						} else {
+							appendNarrative(tHtml, 'Trade');
+						}
 						var tradeTargetId = msg.target_id || '';
 						var tradeTargetName = msg.target_name || tradeTargetId;
-						if (tradeTargetId) {
+						if (tradeTargetId && !isMismatchedTradePopover) {
 							var shouldOpenTradeInput = /願意向你賣出|願意交付|請輸入你願付的鎂數|至少要\s*\d+\s*鎂才肯點頭|請輸入有效的鎂數/.test(tNarrative);
 							if (shouldOpenTradeInput && window.SwInteractions && window.SwInteractions.appendTradeInputRow) {
+								if (!window.__currentPopoverTarget && window.SwOpenObjectPopover) {
+									var cTokenEl = document.querySelector('#sw-room-canvas [data-entity-id="' + tradeTargetId + '"]');
+									if (cTokenEl && cTokenEl._swToken) {
+										window.SwOpenObjectPopover(cTokenEl._swToken);
+										appendNarrative(tHtml, 'Trade');
+									}
+								}
 								window.SwInteractions.appendTradeInputRow(tradeTargetId, tradeTargetName);
 							} else {
 								appendObjectActionsLine(renderEntityActionButtonsHtml(tradeTargetId, tradeTargetName));
@@ -446,7 +534,10 @@
 						}
 						var backdrop = document.getElementById('sw-object-popover-backdrop');
 						var popLog = document.getElementById('sw-popover-log');
-						if (msg.action === 'Look' && backdrop && !backdrop.hidden && backdrop.style.display !== 'none' && popLog) {
+						var activePop = window.__currentPopoverTarget;
+						var isMismatchedPopover = !!(activePop && activePop.id && msg.target_id && activePop.id !== msg.target_id);
+
+						if (msg.action === 'Look' && !isMismatchedPopover && backdrop && !backdrop.hidden && backdrop.style.display !== 'none' && popLog) {
 							var existingDialogues = popLog.querySelectorAll('.log-npc-dialogue');
 							for (var di = 0; di < existingDialogues.length; di++) {
 								var dText = (existingDialogues[di].textContent || '').replace(/^【正在交談】\s*/, '').trim();
@@ -472,26 +563,49 @@
 						}
 						var narrativeHtml = window.SwNarrative.format(narrativeText);
 						narrativeHtml = window.SwNarrative.formatWithClickable(narrativeHtml, state.objects);
-						appendNarrative(narrativeHtml, msg.action);
+						if (isMismatchedPopover && backdrop && !backdrop.hidden && backdrop.style.display !== 'none') {
+							var prevDisplay = backdrop.style.display;
+							backdrop.style.display = 'none';
+							appendNarrative(narrativeHtml, msg.action);
+							backdrop.style.display = prevDisplay;
+						} else {
+							appendNarrative(narrativeHtml, msg.action);
+						}
+						if (msg.action === 'Look' && msg.target_id && (!backdrop || backdrop.hidden || backdrop.style.display === 'none')) {
+							var G2 = window.SwGrid;
+							var cRoom2 = (G2 && G2.mapData && G2.mapData.currentRoomId) || '';
+							var lookCacheKey = cRoom2 + '|' + msg.target_id;
+							if (!window.__popoverLogCache) window.__popoverLogCache = {};
+							if (!window.__popoverLogCache[lookCacheKey]) window.__popoverLogCache[lookCacheKey] = [];
+							var lookNode = document.createElement('div');
+							lookNode.className = 'sw-log-entry log-entry log-narrative log-look';
+							lookNode.innerHTML = narrativeHtml;
+							window.__popoverLogCache[lookCacheKey] = window.__popoverLogCache[lookCacheKey].filter(function (entry) {
+								return !(entry.classList && entry.classList.contains('log-look'));
+							});
+							window.__popoverLogCache[lookCacheKey].unshift(lookNode);
+						}
 						// 觀看後下一行顯示可執行的其他動作（物件：移動/閱讀…；人物：對話/攻擊）
 						if (msg.action === 'Look') {
 							var actionLabels = window.SwActionLabels || {
 								// Core
 								'Look': '觀察', 'Read': '閱讀', 'Smell': '嗅聞', 'Use': '使用', 'Open': '開啟',
-								'Queue': '候號', 'AcceptJob': '應工', 'Rest': '歇腳', 'BuySoup': '買滿碗熱湯',
+								'Queue': '候號', 'AcceptJob': '應工', 'Rest': '歇腳', 'BuySoup': '買滿碗熱湯', 'Work': '差事',
 								'Gather': '採集', 'Acquire': '採買入袋', 'Wash': '洗漱淨手', 'Sit': '坐下',
 								'Taste': '品嚐', 'Take': '拾取', 'Chop': '砍伐', 'Operate': '操作',
 								'Move': '前往', 'Talk': '對話', 'Trade': '交易', 'Borrow': '偷竊',
 								'Subdue': '攻擊', 'Slay': '致死', 'Attack': '攻擊',
 								// Wood / Fire / Camp
 								'MakeFire': '生火', 'AddFuel': '添柴', 'SplitWood': '劈柴', 'RefinePlank': '裁鋸木板',
-								'BurnCharcoal': '悶燒木炭', 'CraftTorch': '扎製火把', 'CraftHandle': '車削木柄',
+								'BurnCharcoal': '悶燒木炭', 'CraftTorch': '紮製火把', 'CraftHandle': '車削木柄',
 								'CollectCharcoal': '收取木炭', 'RoastFood': '炙烤食物', 'RepairStructure': '修繕加固',
 								// Ore / Smithing
 								'WashOre': '淘洗礦砂', 'CrushOre': '粉碎礦石', 'SmeltIngot': '熔煉金屬',
-								'ForgeTool': '鍛打器具', 'CastHardware': '澆鑄五金', 'SharpenBlade': '砥石磨刃',
+								'SmeltBloom': '悶燒成塊', 'BuildFieldAnvil': '架設石砧',
+								'ForgeTool': '鍛打器具', 'CastHardware': '澆鑄器用', 'SharpenBlade': '砥石磨刃',
 								'Quench': '淬火', 'ForgeRepairStrip': '鍛修鐵條',
 								// Herbs / Alchemy
+								'SetupHerbStove': '架設陶銚',
 								'SortHerbs': '分揀藥草', 'DryHerbs': '曝曬藥材', 'GrindPowder': '研製藥粉',
 								'DecoctPotion': '煎煮湯劑', 'MakePoultice': '調製敷料', 'DistillEssence': '萃煉純露',
 								'WashHerb': '淘洗藥草', 'DryHerb': '曝曬藥材', 'CrushHerb': '研碎藥草', 'BoilDecoction': '煎煮湯劑',
@@ -512,7 +626,55 @@
 								'Measure': '丈量', 'Calculate': '推算', 'Observe': '觀測', 'TestBrush': '試筆',
 								'GrindInk': '研墨', 'Weigh': '秤量', 'Sharpen': '磨利', 'Feed': '餵食',
 								'Shake': '搖動', 'Ring': '叩鐘', 'Caulking': '捻縫', 'Pound': '舂搗',
-								'PickType': '揀字', 'RollInk': '滾墨', 'Explore': '深入探索'
+								'PickType': '揀字', 'RollInk': '滾墨', 'Explore': '深入探索',
+								// Extended Sockets & Interactions
+								'Check': '檢視', 'Climb': '登臨', 'Inspect': '審視', 'Knock': '叩門',
+								'Listen': '諦聽', 'LookShip': '眺望舟楫', 'Tap': '輕叩', 'TestEdge': '試刃',
+								'Tie': '繫縛', 'Touch': '撫觸', 'Turn': '旋動', 'Watch': '守望',
+								'WeaveSackcloth': '織造麻袋布', 'Meditate': '調息',
+								'Harvest': '採收', 'Deliver': '交割物資', 'ClaimStrandedCargo': '揭榜管運',
+								'DeliverStrandedCargo': '交割銷單', 'Sow': '整壟播種', 'Board': '登船啟航', 'Buy': '投保立契',
+								'DepositBank': '存入票號', 'WithdrawBank': '憑摺支取',
+								'StoreStash': '存入石櫃', 'RetrieveStash': '取出物資',
+								'DispatchCourier': '快騎託運', 'AngleFish': '甩竿垂釣', 'Cook': '野炊烹煮',
+								'MillGrain': '水磨碾米', 'PressCheese': '壓製乳酪', 'SmokeFish': '慢火冷燻',
+								'CutJade': '切磨寒玉', 'HaulMineCart': '滑車運礦', 'BurnLime': '入窯煅灰',
+								'RowSwampRaft': '撐筏入澤', 'PrepareMiasmaGear': '備妥避瘴', 'PlayChess': '對弈手談',
+								'SeasonalBanquet': '歲時圍爐',
+								'ChartAstrolabe': '拓印星盤',
+								'TestEngraving': '測紋校準',
+								'SparPillar': '試勁拆招',
+								'SoakHotSpring': '祛寒湯浴',
+								'GroomAppearance': '修面整容',
+								'MendTravelGear': '補綴行裝',
+								'ReadWindVane': '觀測風候',
+								'ApplyMoxibustion': '百草溫灸',
+								'HangVotivePlaque': '懸掛銘牌',
+								'TranscribeRareTome': '鈔錄孤本',
+								'AttendLecture': '旁聽策論',
+								'CalibrateClock': '校時報刻',
+								'FitMortiseTenon': '榫卯校修',
+								'QuenchBlade': '精鋼回火',
+								'DyeIndigoCloth': '藍染浸布',
+								'FeedDraftBeast': '飼餵草獸',
+								'BoardCoastalShip': '登船遠航',
+								'InspectLandRegistry': '查閱地籍',
+								'AssistKitchen': '幫廚備膳',
+								'RoastMountainTea': '焙茶品茗',
+								'SunBooks': '曝書防蠹',
+								'RoastHerbs': '炮製藥材',
+								'CollateInscriptions': '校勘碑帖',
+								'GrindOpticLens': '研磨鏡片',
+								'SelectDriedSeafood': '揀選海味',
+								'DeliberateCivicPact': '參議鄉約',
+								'DrawSpringWell': '汲水潤嗓'
+							};
+							var resolveActionLabelZh = function (act) {
+								if (!act) return '操作';
+								if (actionLabels && actionLabels[act]) return actionLabels[act];
+								if (window.SwResolveActionLabelZh) return window.SwResolveActionLabelZh(act);
+								if (/^[A-Za-z_]+$/.test(act)) return '操作';
+								return act;
 							};
 							var others = [];
 							var targetId = msg.target_id || '';
@@ -561,26 +723,32 @@
 							if (!isPerson && others.some(function (a) { return a === 'Subdue' || a === 'Slay' || a === 'Talk'; })) {
 								isPerson = true;
 							}
+							var sTargetId = String(targetId || '');
+							if (!isPerson && (sTargetId.indexOf('ambient_') === 0 || sTargetId.indexOf('shanhai_') === 0)) {
+								isPerson = true;
+							}
 							var popoverBackdrop = document.getElementById('sw-object-popover-backdrop');
 							var isPopoverOpen = popoverBackdrop && !popoverBackdrop.hidden && popoverBackdrop.style.display !== 'none';
-							if (isPerson) {
-								if (window.SwUpdatePopoverActions) {
-									window.SwUpdatePopoverActions('person', targetId, targetName);
-								}
-								if (!isPopoverOpen) {
-									appendObjectActionsLine(renderEntityActionButtonsHtml(targetId, targetName));
-								}
-							} else {
-								if (window.SwUpdatePopoverActions) {
-									window.SwUpdatePopoverActions('object', targetId, targetName, others, msg.move_target_id);
-								}
-								if (!isPopoverOpen && others.length) {
-									var parts = others.map(function (act) {
-										var label = actionLabels[act] || act;
-										var idForAction = (act === 'Move' && msg.move_target_id) ? msg.move_target_id : targetId;
-										return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(idForAction) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(targetName) + '">' + escapeHtml(label) + '</span>】';
-									});
-									appendObjectActionsLine(parts.join(''));
+							if (!isMismatchedPopover) {
+								if (isPerson) {
+									if (window.SwUpdatePopoverActions) {
+										window.SwUpdatePopoverActions('person', targetId, targetName);
+									}
+									if (!isPopoverOpen) {
+										appendObjectActionsLine(renderEntityActionButtonsHtml(targetId, targetName));
+									}
+								} else {
+									if (window.SwUpdatePopoverActions) {
+										window.SwUpdatePopoverActions('object', targetId, targetName, others, msg.move_target_id);
+									}
+									if (!isPopoverOpen && others.length) {
+										var parts = others.map(function (act) {
+											var label = resolveActionLabelZh(act);
+											var idForAction = (act === 'Move' && msg.move_target_id) ? msg.move_target_id : targetId;
+											return '【<span class="log-object-action" role="button" tabindex="0" data-entity-id="' + escapeHtml(idForAction) + '" data-action="' + escapeHtml(act) + '" data-target-name="' + escapeHtml(targetName) + '">' + escapeHtml(label) + '</span>】';
+										});
+										appendObjectActionsLine(parts.join(''));
+									}
 								}
 							}
 							if (extractedDialogue && typeof window.SwRecordNpcDialogue === 'function') {
@@ -601,7 +769,7 @@
 									window.SwUpdatePopoverActions('object', msg.target_id || '', msg.target_name || '', postActs, msg.move_target_id);
 								}
 							}
-							if (msg.action === 'Subdue' || msg.action === 'Slay') {
+							if (!isMismatchedPopover && (msg.action === 'Subdue' || msg.action === 'Slay')) {
 								var combatTid = msg.target_id || '';
 								var combatTname = msg.target_name || combatTid;
 								if (combatTid) {
@@ -650,13 +818,14 @@
 							'harvest_ore': '百工礦石',
 							'harvest_fish': '鮮活河魚',
 							'harvest_crystal': '溫潤碎晶',
-							'herb_lingzhi': '靈芝仙草',
-							'ore_black_iron': '玄鐵重礦',
-							'wood_iron_oak': '鐵櫟木材',
-							'ore_copper': '黃銅原礦',
-							'ore_silver': '秘銀精礦',
+							'herb_lingzhi': '光葉藥草',
+							'wood_iron_oak': '沼生烏木',
+							'harvest_rare_wood': '溫木心材',
+							'ore_black_iron': '青脊重礦',
+							'ore_silver': '銀紋輝石',
+							'ore_copper': '紅土銅原礦',
+							'wild_fruit': '山野漿果',
 							'tea_leaf': '翠嶺嫩茶',
-							'wild_fruit': '山野靈果',
 							'spring_water': '清冽泉露'
 						};
 						for (var rawId in harvestMap) {
@@ -705,6 +874,24 @@
 						// 探路結果：更新方向路口顯示，不推 log
 						if (window.onScoutResult) window.onScoutResult(msg);
 						break;
+				case 'npc_address':
+					if (window.SwNotify && window.SwNotify.handleNpcAddress) {
+						window.SwNotify.handleNpcAddress(msg);
+					}
+					break;
+				case 'recap_item':
+					if (window.SwNotify && window.SwNotify.recordRecap) {
+						var rTitle = String(msg.title || '離線行旅回顧');
+						var rBody = String(msg.body || '');
+						window.SwNotify.recordRecap({
+							category: msg.category || 'social',
+							speaker: rTitle,
+							html: '<strong>' + escapeHtml(rTitle) + '</strong><br>' + escapeHtml(rBody),
+							plain: rTitle + '：' + rBody,
+							unread: true
+						});
+					}
+					break;
 				case 'npc_dialogue':
 					if (window.SwRecordNpcDialogue) {
 						window.SwRecordNpcDialogue(msg.npc_a, msg.npc_b, msg.text);
@@ -714,7 +901,7 @@
 					if (msg.text) {
 						var t = String(msg.text);
 						if (window.SwRecordTransitHint) {
-							var enterMatch = t.match(/^(.+?)(?:自|方自)([北南東西東北東南西北西南]+)(?:面)?(?:【[^】]*】)?(?:方向)?(?:邁步走來|邁步走入|行至此處|走來)/);
+							var enterMatch = t.match(/^(.+?)(?:自)([北南東西東北東南西北西南]+)(?:面)?(?:【[^】]*】)?(?:方向)?(?:邁步走來|邁步走入|行至此處|走來)/);
 							if (enterMatch) {
 								var eDir = enterMatch[2].replace(/面$/, '');
 								var eCard = (eDir.indexOf('北') !== -1) ? '北' : (eDir.indexOf('南') !== -1) ? '南' : (eDir.indexOf('東') !== -1) ? '東' : '西';
@@ -727,7 +914,8 @@
 								window.SwRecordTransitHint(leaveMatch[1], 'leave', lCard);
 							}
 						}
-						appendNarrative(window.SwNarrative.format(msg.text), 'ambient');
+						var isRoomStep = /^你(?:(?:往[東南西北])?(?:步入|踏入)【|(?:推開|拉開|穿過門廊步入))/.test(t);
+						appendNarrative(window.SwNarrative.format(msg.text), isRoomStep ? 'Move' : 'ambient');
 					}
 					break;
 				case 'inventory':
@@ -833,7 +1021,6 @@
 	window.gameSendMoveDirection = sendMoveByDirection;
 	window.gameStartTimeTicker = function () { window.SwClock.startTicker(); };
 	window.gameUpdateTime = function () { window.SwClock.updateDisplay(); };
-	console.log('[main.js] v0.24.5 loaded');
 })();
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -141,7 +141,7 @@ fn push_rumor_from_room_event(room_id: &str, kind: &str, subject: &str, detail: 
     let id = format!("evt|{}|{}|{}", room_id, kind, trunc_rune(&text, 24));
     let rumor = NpcRumor {
         id,
-        text: trunc_rune(&text, 28),
+        text: trunc_rune(&text, 100),
         room_id: room_id.to_string(),
         zone,
         source: "room_event".to_string(),

@@ -353,9 +353,9 @@ body {
   font-size: 13px;
   font-weight: 600;
   border-radius: 6px;
-  border: 1px solid rgba(49, 85, 116, 0.35);
-  background: rgba(255, 255, 255, 0.85);
-  color: var(--blue-ink, #2a4a6b);
+  border: 1px solid var(--sw-btn-border, rgba(49, 85, 116, 0.35));
+  background: var(--sw-btn-bg, rgba(255, 255, 255, 0.85));
+  color: var(--ink, #2a4a6b);
   touch-action: manipulation;
   cursor: pointer;
   font-family: inherit;
@@ -366,13 +366,14 @@ body {
   transition: all 0.15s ease;
 }
 .inv-action-btn:hover {
-  background: #ffffff;
-  border-color: var(--blue-ink, #2a4a6b);
+  background: var(--sw-token-bg, #ffffff);
+  border-color: var(--gold, #2a4a6b);
+  color: var(--gold, #2a4a6b);
 }
 .inv-action-btn:active {
   border-color: var(--gold);
   color: var(--gold);
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--sw-token-bg, rgba(255, 255, 255, 0.95));
 }
 
 /* 人物狀態 */

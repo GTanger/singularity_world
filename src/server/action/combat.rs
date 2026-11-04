@@ -5,7 +5,7 @@ use std::sync::{LazyLock, RwLock};
 
 use crate::ai::narrative::{CombatBoutFactPacket, compose_combat_bouts_concurrent};
 use crate::combat::wordplate::{
-    derive_elementary_motions_from_chars, infer_item_carrier_affinity, resolve_tianji_matchup,
+    derive_elementary_motions_from_chars, infer_item_carrier_affinity,
     resolve_tianji_matchup_with_weights, CarrierAffinity, PostureState, StarInlay, StarSentence,
     TacticalLoadout, TacticalSlot, TargetPart, WordCasket, WordRegistry,
 };
@@ -25,7 +25,6 @@ use super::super::broadcast::send_narrate_to_room;
 use super::super::handler::WsConnection;
 use super::super::protocol::ActionResultMsg;
 use super::super::session::SessionStore;
-use super::display_target_name;
 
 pub static ACTIVE_ENGAGEMENTS: LazyLock<RwLock<HashMap<String, (String, i64)>>> =
     LazyLock::new(|| RwLock::new(HashMap::new()));
@@ -63,12 +62,12 @@ pub fn handle_tactical_choice(conn: &WsConnection, msg: &crate::server::protocol
             1,
         ),
         "專攻部位" => (
-            "【戰勢後續・專攻部位】你凝神沈氣鎖定對方防守薄弱之處，拳掌暗勁透勁而入，準確截斷對手發力節點，使其關節發麻攻勢受挫！",
+            "【戰勢後續・專攻部位】你凝神沉氣鎖定對方防守薄弱之處，拳掌暗勁透勁而入，準確截斷對手發力節點，使其關節發麻攻勢受挫！",
             0,
             2,
         ),
         "守勢游鬥" => (
-            "【戰勢後續・守勢游鬥】你氣沈丹田步法空靈，以柔化剛卸開對手剛猛勁力，借力打力周旋游走，體內真氣反倒漸次平順充盈。",
+            "【戰勢後續・守勢游鬥】你氣沉氣海步法空靈，以柔化剛卸開對手剛猛勁力，借力打力周旋游走，體內真氣反倒漸次平順充盈。",
             1,
             0,
         ),
@@ -83,7 +82,7 @@ pub fn handle_tactical_choice(conn: &WsConnection, msg: &crate::server::protocol
             3,
         ),
         _ => (
-            "【戰勢後續・斂氣凝神】你順應招式餘勢調勻內息，氣勁沉降丹田，對峙之勢隨之淡去。",
+            "【戰勢後續・斂氣凝神】你順應招式餘勢調勻內息，氣勁沉降氣海，對峙之勢隨之淡去。",
             0,
             0,
         ),
@@ -200,7 +199,8 @@ pub(super) fn do_entity_combat(
             talisman_name, bonus_desc
         ));
     }
-    if target.kind == EntityKind::Npc {
+    let target_is_beast = is_wild_creature_entity(target);
+    if target.kind == EntityKind::Npc && !target_is_beast {
         let extra = if subdue {
             match fight_winner.as_str() {
                 "attacker" => npc_behavior_reaction_line(target_id, pid, "subdue_victim"),
@@ -232,7 +232,7 @@ pub(super) fn do_entity_combat(
         if let Some(party) = assisting_party {
             attacker_hp = (attacker_hp + 12).min(100);
             narrative.push_str(&format!(
-                "\n【合社獵團協同助陣】領隊【{}】率領之{}合社獵團（共 {} 人）自側翼吹響山豬牙號角、刀盾齊進封死「{}」退路，助你穩住陣腳（體魄回護 +12）！",
+                "\n【合社獵團協同助陣】領隊【{}】率領之{}合社獵團（共 {} 人）自側翼吹響山豬牙號角、刀盾齊進封死「{}」退路，助你穩住陣腳、氣息大振！",
                 party.leader_name,
                 party.zone_name,
                 party.member_ids.len(),
@@ -254,37 +254,67 @@ pub(super) fn do_entity_combat(
                         }
                     }
                     narrative.push_str(&format!(
-                        "\n【見者有份・合社分鹿】領隊【{}】率眾上前擊掌喝采，依半島合社古規與你當場分鹿割皮——你額外分得一份「{}」與合圍紅利 36 枚鎂幣，獵團隨即滿載獵獲啟程趕往【{}】交割！",
+                        "\n【見者有份・合社分鹿】領隊【{}】率眾上前擊掌喝彩，依半島合社古規與你當場分鹿割皮——你額外分得一份「{}」與合圍紅利 36 枚鎂幣，獵團隨即滿載獵獲啟程趕往【{}】交割！",
                         party.leader_name, loot_name, party.market_name
                     ));
                 }
             }
         }
     }
-    if (target_id.starts_with("ambient_") || target_id.starts_with("shanhai_")) && fight_winner == "attacker" {
+    if target_is_beast && fight_winner == "attacker" {
         if let Some((loot_id, loot_name, shanhai_note)) = crate::game::ambient_creature_loot(&target.display_title) {
-            if let Some(rest) = target_id.strip_prefix("shanhai_") {
+            let (gx, gy) = if let Some(rest) = target_id.strip_prefix("shanhai_") {
                 let parts: Vec<&str> = rest.split('_').collect();
                 if parts.len() == 4
-                    && let (Ok(z_idx), Ok(slot_idx), Ok(x), Ok(y)) = (
-                        parts[0].parse::<usize>(),
-                        parts[1].parse::<usize>(),
-                        parts[2].parse::<i32>(),
-                        parts[3].parse::<i32>(),
-                    )
+                    && let (Ok(x), Ok(y)) = (parts[2].parse::<i32>(), parts[3].parse::<i32>())
                 {
-                    crate::game::record_shanhai_slot_hunted(
-                        z_idx,
-                        slot_idx,
-                        (x, y),
-                        &target.display_title,
-                        loot_id,
-                        loot_name,
-                        &attacker.display_title,
-                        now,
-                    );
+                    (x, y)
+                } else {
+                    (target.x, target.y)
                 }
-            }
+            } else if let Some(rest) = target_id.strip_prefix("apex_") {
+                let parts: Vec<&str> = rest.split('_').collect();
+                if parts.len() == 3
+                    && let (Ok(x), Ok(y)) = (parts[1].parse::<i32>(), parts[2].parse::<i32>())
+                {
+                    (x, y)
+                } else {
+                    (target.x, target.y)
+                }
+            } else if let Some(rest) = target_id.strip_prefix("ambient_flock_") {
+                let parts: Vec<&str> = rest.split('_').collect();
+                if parts.len() == 2
+                    && let (Ok(x), Ok(y)) = (parts[0].parse::<i32>(), parts[1].parse::<i32>())
+                {
+                    (x, y)
+                } else {
+                    (target.x, target.y)
+                }
+            } else if let Some(rest) = target_id.strip_prefix("ambient_") {
+                let parts: Vec<&str> = rest.split('_').collect();
+                if parts.len() == 2
+                    && let (Ok(x), Ok(y)) = (parts[0].parse::<i32>(), parts[1].parse::<i32>())
+                {
+                    (x, y)
+                } else {
+                    (target.x, target.y)
+                }
+            } else if target.x != 0 || target.y != 0 {
+                (target.x, target.y)
+            } else {
+                (attacker.x, attacker.y)
+            };
+
+            crate::game::record_wilderness_kill_at_coord(
+                gx,
+                gy,
+                target_id,
+                &target.display_title,
+                loot_id,
+                loot_name,
+                &attacker.display_title,
+                now,
+            );
             let corpse = crate::pg::living_world::register_beast_corpse(
                 &target.display_title,
                 loot_id,
@@ -294,12 +324,30 @@ pub(super) fn do_entity_combat(
                 now,
             );
             let _ = db::add_to_inventory(pid, &corpse.corpse_item_id, 1);
-            narrative.push_str(&format!(
-                "\n【山海獵獲】「{}」轟然倒地，你將溫熱的【{}殘軀】收入行囊——可趁靈韻未散嘗試【整軀剝名】一搏高階結晶，或穩妥執行【肢體分解】取下「{}」等部位材料。",
-                target.display_title, target.display_title, loot_name
-            ));
+            if subdue {
+                narrative.push_str(&format!(
+                    "\n【山海生擒】你收住最後一分勁道將「{}」生擒制伏，隨手收妥【{}殘軀】——可執行【肢體分解】取下「{}」等部位材料，或攜往百工坊與庖廚入饌成器。",
+                    target.display_title, target.display_title, loot_name
+                ));
+            } else {
+                narrative.push_str(&format!(
+                    "\n【山海獵獲】「{}」轟然倒地，你將尚留餘溫的【{}殘軀】收入行囊——可執行【肢體分解】取下「{}」等部位材料，或攜往百工坊與庖廚入饌成器。",
+                    target.display_title, target.display_title, loot_name
+                ));
+            }
         }
     }
+    let room_name = super::target_grid_room_name(target);
+    let effective_room_name = if !room_name.is_empty() {
+        room_name
+    } else {
+        db::get_room_name(player_room).unwrap_or_default()
+    };
+    let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+        &effective_room_name,
+        &target.display_title,
+    );
+
     let out_action = if subdue { "Subdue" } else { "Slay" };
     conn.send_json(&ActionResultMsg {
         msg_type: "action_result".into(),
@@ -312,42 +360,57 @@ pub(super) fn do_entity_combat(
         move_target_id: String::new(),
         open_trade: false,
         suggested_action: String::new(),
-        tactical_choices: vec![
-            "趁勢搶攻".into(),
-            "專攻部位".into(),
-            "守勢游鬥".into(),
-            "搏命硬撼".into(),
-            "抽身脫離".into(),
-        ],
+        tactical_choices: if (target_is_beast || !subdue) && fight_winner == "attacker" {
+            vec![]
+        } else {
+            vec![
+                "趁勢搶攻".into(),
+                "專攻部位".into(),
+                "守勢游鬥".into(),
+                "搏命硬撼".into(),
+                "抽身脫離".into(),
+            ]
+        },
     });
     ACTIVE_ENGAGEMENTS
         .write()
         .unwrap()
         .insert(pid.to_string(), (target.id.clone(), now + 300));
-    let _ = event::append(now, pid, types::COMBAT, target_id);
+    let clean_target_title = target
+        .display_title
+        .rsplit(['|', '｜'])
+        .next()
+        .unwrap_or("")
+        .trim();
+    let combat_log_target = if !clean_target_title.is_empty() {
+        clean_target_title.to_string()
+    } else {
+        super::player_visible_target_name(pid, &target)
+    };
+    let _ = event::append(now, pid, types::COMBAT, &format!("與{}交手", combat_log_target));
     let _ = update_vit(pid, attacker_hp);
     let _ = update_vit(target_id, defender_hp);
-    let _ = event::append(now, pid, types::VIT, &attacker_hp.to_string());
-    let _ = event::append(now, target_id, types::VIT, &defender_hp.to_string());
     if let Some(pool) = &crate::pg::pool() {
-        let _ = crate::pg::living_world::record_relationship_delta(
-            pool,
-            target_id,
-            pid,
-            "grudge",
-            2,
-            action,
-            now,
-        );
-        let _ = crate::pg::living_world::open_obligation(
-            pool,
-            target_id,
-            "treat_injury",
-            player_room,
-            Some(now + 3600),
-            action,
-            now,
-        );
+        if !target_is_beast {
+            let _ = crate::pg::living_world::record_relationship_delta(
+                pool,
+                target_id,
+                pid,
+                "grudge",
+                2,
+                action,
+                now,
+            );
+            let _ = crate::pg::living_world::open_obligation(
+                pool,
+                target_id,
+                "treat_injury",
+                player_room,
+                Some(now + 3600),
+                action,
+                now,
+            );
+        }
         let action_key = if subdue { "subdue" } else { "slay" };
         let _ = crate::pg::living_world::record_player_world_action(
             pool,
@@ -365,7 +428,22 @@ pub(super) fn do_entity_combat(
             now,
         );
     }
-    if target.kind == EntityKind::Npc {
+    if target.kind == EntityKind::Npc && !target_is_beast {
+        let player_name = db::get_entity(pid)
+            .ok()
+            .flatten()
+            .map(|e| e.display_title)
+            .unwrap_or_else(|| "遊歷客友".to_string());
+        crate::npc::causal_core::mutate_npc_from_player_action(
+            target_id,
+            pid,
+            &player_name,
+            player_room,
+            if subdue { "combat_subdue" } else { "combat_slay" },
+            &target.display_title,
+            0,
+            now,
+        );
         if subdue {
             let _ = adjust_favorability(target_id, pid, FAV_SUBDUE);
             if fight_winner == "attacker" {
@@ -400,6 +478,107 @@ pub(super) fn do_entity_combat(
         let _ = remove_schedule_for_entity(target_id);
     }
 }
+pub fn resolve_entity_signature_vessel(
+    entity_id: &str,
+    display_title: &str,
+) -> Option<(&'static str, &'static str)> {
+    let clue = if !display_title.trim().is_empty() {
+        display_title
+    } else if !entity_id.trim().is_empty() {
+        entity_id
+    } else {
+        return None;
+    };
+    let vessel = crate::npc::causal_core::resolve_vocational_vessel(clue);
+    Some((vessel.item_id, vessel.display_name))
+}
+
+pub fn get_or_init_entity_combat_word_casket(entity_id: &str, display_title: &str) -> WordCasket {
+    crate::server::handler::inventory::ensure_player_initialized(entity_id);
+    let mut casket = get_player_word_casket(entity_id);
+    if casket.item_inscriptions.is_empty() {
+        if let Some((vessel_id, _vessel_name)) = resolve_entity_signature_vessel(entity_id, display_title) {
+            let registry = WordRegistry::global();
+            crate::server::handler::inventory::populate_resident_vocational_casket(entity_id, &mut casket, registry);
+            if !display_title.trim().is_empty() {
+                crate::server::handler::inventory::populate_resident_vocational_casket(display_title, &mut casket, registry);
+            }
+            if casket.inscribed_words_of(vessel_id).is_empty() {
+                for ch in ["巧", "堅"] {
+                    if let Some(wids) = registry.get_by_char(ch) {
+                        if let Some(wid) = wids.first() {
+                            casket.add(wid.as_str(), 1);
+                            let _ = casket.inscribe_item(vessel_id, wid.as_str());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    casket
+}
+
+pub fn calculate_entity_inscribed_combat_bonus(
+    entity_id: &str,
+    display_title: &str,
+    equipment_slots: &str,
+    casket: &WordCasket,
+    registry: &WordRegistry,
+) -> (f64, f64, f64) {
+    let (atk, pen, def) = calculate_inscribed_combat_bonus(equipment_slots, casket, registry);
+    if atk > 0.0 || pen > 0.0 || def > 0.0 {
+        return (atk, pen, def);
+    }
+    if let Some((vessel_id, _)) = resolve_entity_signature_vessel(entity_id, display_title) {
+        return casket.inscribed_combat_bonus(vessel_id, registry);
+    }
+    (0.0, 0.0, 0.0)
+}
+
+pub fn resolve_entity_weapon_affinity_with_inscriptions(
+    entity_id: &str,
+    display_title: &str,
+    equipment_slots: &str,
+    casket: &WordCasket,
+    registry: &WordRegistry,
+) -> (CarrierAffinity, Option<String>) {
+    let (aff, name_opt) = resolve_equipped_weapon_affinity_with_inscriptions(equipment_slots, casket, registry);
+    if name_opt.is_some() {
+        return (aff, name_opt);
+    }
+    if let Some((vessel_id, vessel_name)) = resolve_entity_signature_vessel(entity_id, display_title) {
+        let suffix = casket.format_inscribed_suffix(vessel_id, registry);
+        let full_name = if suffix.is_empty() {
+            format!("{vessel_name} [巧][堅]")
+        } else {
+            format!("{vessel_name}{suffix}")
+        };
+        let mut affinity = infer_item_carrier_affinity(vessel_id, vessel_name)
+            .unwrap_or_else(|| classify_weapon_affinity(vessel_name, "", ""));
+        if affinity == CarrierAffinity::Unarmed {
+            let clue = if !display_title.trim().is_empty() {
+                display_title
+            } else {
+                entity_id
+            };
+            let vessel = crate::npc::causal_core::resolve_vocational_vessel(clue);
+            affinity = if vessel.is_bladed {
+                CarrierAffinity::Blade
+            } else if vessel_name.contains('竿')
+                || vessel_name.contains('篙')
+                || vessel_name.contains('杖')
+                || vessel_name.contains("扁擔")
+            {
+                CarrierAffinity::Pole
+            } else {
+                CarrierAffinity::Blunt
+            };
+        }
+        return (affinity, Some(full_name));
+    }
+    (CarrierAffinity::Unarmed, None)
+}
+
 fn calculate_inscribed_combat_bonus(
     equipment_slots: &str,
     casket: &WordCasket,
@@ -447,6 +626,9 @@ fn resolve_equipped_weapon_affinity_with_inscriptions(
                     item_id.clone()
                 }
             });
+            if !crate::pg::living_world::is_weapon_or_tool_item(item_id, &raw_name) {
+                continue;
+            }
             let suffix = casket.format_inscribed_suffix(item_id, registry);
             let full_item_name = format!("{}{}", raw_name, suffix);
 
@@ -457,7 +639,6 @@ fn resolve_equipped_weapon_affinity_with_inscriptions(
     }
     (CarrierAffinity::Unarmed, None)
 }
-
 fn execute_tianji_wordplate_combat_internal(
     pid: &str,
     attacker: &Character,
@@ -467,29 +648,36 @@ fn execute_tianji_wordplate_combat_internal(
     let registry = WordRegistry::global();
 
     // 1. 取得攻方戰術配置，若有缺漏自動補齊
+    let a_seed = resolve_character_seed(attacker);
     let mut a_loadout = get_player_tactical_loadout(pid);
-    ensure_loadout_complete(&mut a_loadout, registry, true);
+    ensure_loadout_complete(&mut a_loadout, registry, true, a_seed);
 
     // 2. 構建守方適配戰術配置（真正萬人萬相：soul_seed + 760 條拓撲星軌阻力）
-    let d_loadout = build_defender_tactical_loadout(defender, registry);
-
+    let d_seed = resolve_character_seed(defender);
+    let mut d_loadout = build_defender_tactical_loadout(defender, registry);
+    inject_real_entity_postnatal_experience(pid, &mut a_loadout);
+    inject_real_entity_postnatal_experience(&defender.id, &mut d_loadout);
     // 3. 取得攻守雙方詞匣以查詢外盤器物銘文刻字
-    let a_casket = get_player_word_casket(pid);
-    let d_casket = get_player_word_casket(&defender.id);
+    let a_casket = get_or_init_entity_combat_word_casket(pid, &attacker.display_title);
+    let d_casket = get_or_init_entity_combat_word_casket(&defender.id, &defender.display_title);
 
     // 4. 計算持物裝備之銘文戰鬥加成
     let (extra_a_atk, extra_a_pen, extra_a_def) =
-        calculate_inscribed_combat_bonus(&attacker.equipment_slots, &a_casket, registry);
+        calculate_entity_inscribed_combat_bonus(pid, &attacker.display_title, &attacker.equipment_slots, &a_casket, registry);
     let (extra_d_atk, extra_d_pen, extra_d_def) =
-        calculate_inscribed_combat_bonus(&defender.equipment_slots, &d_casket, registry);
+        calculate_entity_inscribed_combat_bonus(&defender.id, &defender.display_title, &defender.equipment_slots, &d_casket, registry);
 
-    // 5. 檢查攻方裝備載體親和度共鳴（器物無分工具與武器：手持即載體），並在名稱顯化刻字後綴
-    let (a_weapon_carrier, a_weapon_name) = resolve_equipped_weapon_affinity_with_inscriptions(
+    // 5. 檢查攻守裝備載體親和度共鳴（器物無分工具與武器：手持即載體），並在名稱顯化刻字後綴
+    let (a_weapon_carrier, a_weapon_name) = resolve_entity_weapon_affinity_with_inscriptions(
+        pid,
+        &attacker.display_title,
         &attacker.equipment_slots,
         &a_casket,
         registry,
     );
-    let (d_weapon_carrier, d_weapon_name) = resolve_equipped_weapon_affinity_with_inscriptions(
+    let (d_weapon_carrier, d_weapon_name) = resolve_entity_weapon_affinity_with_inscriptions(
+        &defender.id,
+        &defender.display_title,
         &defender.equipment_slots,
         &d_casket,
         registry,
@@ -500,26 +688,52 @@ fn execute_tianji_wordplate_combat_internal(
         a_weapon_name.as_deref(),
         registry,
     );
+    let d_resonance_note = inspect_carrier_resonance(
+        &d_loadout,
+        d_weapon_carrier,
+        d_weapon_name.as_deref(),
+        registry,
+    );
     // 6. 計算有效體魄與攻擊屬性（結合 a_dex, a_atk, d_dex, d_atk 與載體共鳴增益）
-    let (a_vit, _a_qi, a_dex, a_atk) = db::effective_stats(attacker);
-    let (d_vit, _d_qi, d_dex, d_atk) = db::effective_stats(defender);
-
+    let (raw_a_vit, _a_qi, raw_a_dex, a_atk) = db::effective_stats(attacker);
+    let (raw_d_vit, _d_qi, raw_d_dex, d_atk) = db::effective_stats(defender);
+    let a_vit = if attacker.kind == EntityKind::Player && raw_a_vit <= 30 {
+        raw_a_vit * 10
+    } else {
+        raw_a_vit
+    };
+    let a_dex = if attacker.kind == EntityKind::Player && raw_a_dex <= 30 {
+        raw_a_dex * 5
+    } else {
+        raw_a_dex
+    };
+    let d_vit = if defender.kind == EntityKind::Player && raw_d_vit <= 30 {
+        raw_d_vit * 10
+    } else {
+        raw_d_vit
+    };
+    let d_dex = if defender.kind == EntityKind::Player && raw_d_dex <= 30 {
+        raw_d_dex * 5
+    } else {
+        raw_d_dex
+    };
     let a_res_bonus = if resonance_note.is_some() { 1.15 } else { 1.0 };
+    let d_res_bonus = if d_resonance_note.is_some() { 1.15 } else { 1.0 };
     let a_breath = crate::pg::living_world::get_or_derive_breath_habit(
         pid,
         &attacker.display_title,
-        attacker.soul_seed.unwrap_or(0),
+        a_seed,
     );
     let d_breath = crate::pg::living_world::get_or_derive_breath_habit(
         &defender.id,
         &defender.display_title,
-        defender.soul_seed.unwrap_or(0),
+        d_seed,
     );
     let (a_b_atk, a_b_def, a_b_pen, a_b_line) = a_breath.dominant.combat_modifiers();
     let (d_b_atk, d_b_def, d_b_pen, _) = d_breath.dominant.combat_modifiers();
 
-    let effective_a_atk = ((a_atk as f64) + extra_a_atk + (a_dex as f64 * 0.25)) * a_res_bonus * a_b_atk;
-    let effective_d_atk = ((d_atk as f64) + extra_d_atk + (d_dex as f64 * 0.25)) * d_b_atk;
+    let _effective_a_atk = ((a_atk as f64) + extra_a_atk + (a_dex as f64 * 0.25)) * a_res_bonus * a_b_atk;
+    let _effective_d_atk = ((d_atk as f64) + extra_d_atk + (d_dex as f64 * 0.25)) * d_res_bonus * d_b_atk;
     let effective_a_pen = extra_a_pen + a_b_pen;
     let effective_d_pen = extra_d_pen + d_b_pen;
 
@@ -557,12 +771,11 @@ fn execute_tianji_wordplate_combat_internal(
     let penalty_a = calc_affliction_penalty(&a_afflictions);
     let penalty_d = calc_affliction_penalty(&d_afflictions);
 
-    // 7. 調用田忌賽馬時序對決結算（融入量級權重與專克／一力降十會裁決）
+    // 7. 呼叫田忌賽馬時序對決結算（融入量級權重與專克／一力降十會裁決）
     let weight_a =
-        (effective_a_atk * 0.65 + (cur_a_hp as f64) * 0.35 + effective_a_pen * 0.5) * penalty_a;
+        (((a_atk as f64 + extra_a_atk) * 0.55) + (cur_a_hp as f64) * 0.45 + effective_a_pen * 0.35) * penalty_a;
     let weight_b =
-        (effective_d_atk * 0.65 + (cur_d_hp as f64) * 0.35 + effective_d_pen * 0.5) * penalty_d;
-
+        (((d_atk as f64 + extra_d_atk) * 0.55) + (cur_d_hp as f64) * 0.45 + effective_d_pen * 0.35) * penalty_d;
     let matchup_result = resolve_tianji_matchup_with_weights(
         &a_loadout,
         cur_a_hp,
@@ -573,7 +786,7 @@ fn execute_tianji_wordplate_combat_internal(
         registry,
     );
 
-    let (raw_winner, rounds, side_a_final, side_b_final) = match matchup_result {
+    let (raw_winner, mut rounds, side_a_final, side_b_final) = match matchup_result {
         Ok(report) => (
             report.winner,
             report.rounds,
@@ -620,11 +833,14 @@ fn execute_tianji_wordplate_combat_internal(
     let final_d_hp = raw_final_d.min(defender.vit);
 
     // 9. 生成 100% 完全去數值化武俠感官散文
-    let a_name = if !attacker.display_title.is_empty() {
-        attacker.display_title.clone()
-    } else {
-        "你".to_string()
-    };
+    let a_name = attacker
+        .display_title
+        .rsplit(['|', '｜'])
+        .next()
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .unwrap_or("你")
+        .to_string();
     let mut d_name = super::player_visible_target_name(pid, defender);
     if d_name.is_empty() || d_name.is_ascii() {
         d_name = if defender.id.is_ascii() || defender.id.trim().is_empty() {
@@ -633,6 +849,22 @@ fn execute_tianji_wordplate_combat_internal(
             defender.id.clone()
         };
     }
+    let d_is_beast = is_wild_creature_entity(defender);
+    let effective_d_weapon_label = if d_is_beast {
+        let anatomy = crate::combat::human_phase::BeastAnatomy::from_species_title(&defender.display_title);
+        for r in &mut rounds {
+            let (beast_skill, beast_motions) =
+                crate::combat::human_phase::natural_beast_moves(anatomy, r.slot, (d_seed.unsigned_abs()).wrapping_add(r.phase as u64));
+            r.b_technique_name = beast_skill.to_string();
+            r.b_motions = beast_motions;
+            if matches!(r.a_target_part, TargetPart::Weapon | TargetPart::Arm) {
+                r.a_target_part = TargetPart::Torso;
+            }
+        }
+        anatomy.carrier_label()
+    } else {
+        d_weapon_name.as_deref().unwrap_or("徒手")
+    };
 
     let mut prose_log = render_dequantified_combat_prose(
         pid,
@@ -646,7 +878,7 @@ fn execute_tianji_wordplate_combat_internal(
         resonance_note.as_deref(),
         defender.soul_seed,
         a_weapon_name.as_deref().unwrap_or("徒手"),
-        d_weapon_name.as_deref().unwrap_or("徒手"),
+        effective_d_weapon_label,
         a_weapon_carrier,
         d_weapon_carrier,
     );
@@ -671,22 +903,25 @@ fn execute_tianji_wordplate_combat_internal(
     };
 
     if let Some(weapon_id) = weapon_id_opt {
-        let mut vstate = crate::pg::living_world::record_vessel_use(pid, &weapon_id, 1, 1, now);
-        let weapon_clashed = rounds.iter().any(|r| {
-            r.b_target_part == TargetPart::Weapon
-                || (matches!(r.a_carrier, CarrierAffinity::Blade | CarrierAffinity::Pole) && matches!(r.b_carrier, CarrierAffinity::Blunt | CarrierAffinity::Shield | CarrierAffinity::Pole))
-        });
-        if weapon_clashed {
-            vstate = crate::pg::living_world::record_vessel_use(pid, &weapon_id, 2, 1, now);
-        }
-        match vstate.condition {
-            crate::pg::living_world::VesselCondition::SlightlyDull => {
-                prose_log.push_str("\n【器況體察】連番交鋒硬撼，手中兵刃已顯「刃口微鈍」，戰後宜尋街邊青石磨刀槽推磨開鋒。");
+        let w_name = a_weapon_name.as_deref().unwrap_or("");
+        if crate::pg::living_world::is_bladed_vessel_item(&weapon_id, w_name) {
+            let mut vstate = crate::pg::living_world::record_vessel_use(pid, &weapon_id, 1, 1, now);
+            let weapon_clashed = rounds.iter().any(|r| {
+                r.b_target_part == TargetPart::Weapon
+                    || (matches!(r.a_carrier, CarrierAffinity::Blade | CarrierAffinity::Pole) && matches!(r.b_carrier, CarrierAffinity::Blunt | CarrierAffinity::Shield | CarrierAffinity::Pole))
+            });
+            if weapon_clashed {
+                vstate = crate::pg::living_world::record_vessel_use(pid, &weapon_id, 2, 1, now);
             }
-            crate::pg::living_world::VesselCondition::RolledEdge => {
-                prose_log.push_str("\n【器況體察】連番交鋒硬撼，手中兵刃已現「捲刃待修」，宜赴鍛造工坊回火修整。");
+            match vstate.condition {
+                crate::pg::living_world::VesselCondition::SlightlyDull => {
+                    prose_log.push_str("\n【器況體察】連番交鋒硬撼，手中兵刃已顯「刃口微鈍」，戰後宜尋街邊青石磨刀槽推磨開鋒。");
+                }
+                crate::pg::living_world::VesselCondition::RolledEdge => {
+                    prose_log.push_str("\n【器況體察】連番交鋒硬撼，手中兵刃已現「捲刃待修」，宜赴鍛造工坊回火修整。");
+                }
+                crate::pg::living_world::VesselCondition::Sharp => {}
             }
-            crate::pg::living_world::VesselCondition::Sharp => {}
         }
     }
     let a_posture_broken = rounds
@@ -697,6 +932,7 @@ fn execute_tianji_wordplate_combat_internal(
     (prose_log, fight_winner, final_a_hp, final_d_hp, a_posture_broken)
 }
 
+#[cfg(test)]
 pub fn execute_tianji_wordplate_combat(
     pid: &str,
     attacker: &Character,
@@ -708,14 +944,6 @@ pub fn execute_tianji_wordplate_combat(
     (prose, winner, a_hp, d_hp)
 }
 
-fn build_attack_narrative(
-    pid: &str,
-    attacker: &Character,
-    defender: &Character,
-    subdue: bool,
-) -> (String, String, i32, i32) {
-    execute_tianji_wordplate_combat(pid, attacker, defender, subdue)
-}
 
 fn build_attack_narrative_with_broken(
     pid: &str,
@@ -726,6 +954,24 @@ fn build_attack_narrative_with_broken(
     execute_tianji_wordplate_combat_internal(pid, attacker, defender, subdue)
 }
 
+fn resolve_character_seed(c: &Character) -> i64 {
+    crate::combat::human_phase::resolve_entity_soul_seed(&c.id, c.soul_seed)
+}
+
+fn is_wild_creature_id_and_title(id: &str, title: &str) -> bool {
+    if id.starts_with("shanhai_") || id.starts_with("ambient_flock_") {
+        return true;
+    }
+    if id.starts_with("ambient_") {
+        return crate::game::ambient_creature_loot(title).is_some();
+    }
+    false
+}
+
+fn is_wild_creature_entity(c: &Character) -> bool {
+    is_wild_creature_id_and_title(&c.id, &c.display_title)
+}
+
 fn build_defender_tactical_loadout(
     defender: &Character,
     registry: &WordRegistry,
@@ -733,35 +979,41 @@ fn build_defender_tactical_loadout(
     // 1. 若守方已有自訂／持久化之戰術配置，優先使用
     let existing_loadout = get_player_tactical_loadout(&defender.id);
     let casket = get_player_word_casket(&defender.id);
+    let d_seed = resolve_character_seed(defender);
 
     if existing_loadout.opening.is_some()
         || existing_loadout.midgame.is_some()
         || existing_loadout.finisher.is_some()
     {
         let mut loadout = existing_loadout;
-        ensure_loadout_complete(&mut loadout, registry, false);
+        ensure_loadout_complete(&mut loadout, registry, false, d_seed);
         return loadout;
     }
 
     // 2. 徹底移除舊版硬編碼模板，依據生命種子（soul_seed）＋ 760 條星軌拓撲展開真正的萬人萬相
-    if let Some(seed) = defender.soul_seed.filter(|&s| s != 0) {
-        crate::combat::wordplate::build_loadout_from_soul_seed(seed, Some(&casket), registry)
-    } else {
-        let synthetic_seed = (defender.vit as i64)
-            .wrapping_mul(31)
-            .wrapping_add(defender.dex as i64)
-            .wrapping_mul(31)
-            .wrapping_add(defender.qi as i64)
-            .wrapping_mul(1000003)
-            .wrapping_add(
-                defender
-                    .id
-                    .bytes()
-                    .fold(0i64, |acc, b| acc.wrapping_mul(31).wrapping_add(b as i64)),
-            );
-        let actual_seed = if synthetic_seed == 0 { 42 } else { synthetic_seed };
-        crate::combat::wordplate::build_loadout_from_soul_seed(actual_seed, Some(&casket), registry)
-    }
+    crate::combat::wordplate::build_loadout_from_soul_seed(d_seed, Some(&casket), registry)
+}
+
+fn inject_real_entity_postnatal_experience(entity_id: &str, loadout: &mut TacticalLoadout) {
+    let studied_manuals = crate::pg::living_world::get_entity_studied_manuals(entity_id);
+    let learned_delta = (studied_manuals.len() as f64 * 0.25).min(1.0);
+    let anatomy_fam = crate::pg::living_world::get_entity_anatomy_familiarity_total(entity_id);
+
+    let max_vessel_use = crate::pg::living_world::get_entity_max_vessel_use_count(entity_id);
+    let practice_count = max_vessel_use.max(25);
+
+    let apply_to_sentence = |sentence_opt: &mut Option<StarSentence>| {
+        if let Some(s) = sentence_opt.as_mut() {
+            s.learned_delta = Some(learned_delta);
+            s.anatomy_familiarity = Some(anatomy_fam);
+            s.practice_count = Some(practice_count);
+        }
+    };
+
+    apply_to_sentence(&mut loadout.opening);
+    apply_to_sentence(&mut loadout.midgame);
+    apply_to_sentence(&mut loadout.finisher);
+    apply_to_sentence(&mut loadout.defense);
 }
 
 fn make_3word_sentence(
@@ -808,73 +1060,82 @@ fn ensure_loadout_complete(
     loadout: &mut TacticalLoadout,
     registry: &WordRegistry,
     is_attacker: bool,
+    seed: i64,
 ) {
+    let seed_loadout = crate::combat::wordplate::build_loadout_from_soul_seed(seed, None, registry);
     let offset_base = if is_attacker { 1 } else { 13 };
-    if loadout.opening.is_none() {
-        let n1 = format!("N{:03}", offset_base);
-        let n2 = format!("N{:03}", offset_base + 1);
-        let n3 = format!("N{:03}", offset_base + 2);
-        loadout.set_slot(
-            TacticalSlot::Opening,
-            make_3word_sentence([&n1, &n2, &n3], ["疾", "刺", "斬"], "疾刺斬", registry, 0),
-        );
+    let is_legacy_template = |s: &Option<StarSentence>| -> bool {
+        match s.as_ref().and_then(|st| st.custom_name.as_deref()) {
+            Some("疾刺斬" | "流破斬" | "吾震破" | "凝流步") => true,
+            _ => false,
+        }
+    };
+    if loadout.opening.is_none() || is_legacy_template(&loadout.opening) {
+        if let Some(s) = seed_loadout.opening {
+            loadout.set_slot(TacticalSlot::Opening, s);
+        } else {
+            let n1 = format!("N{:03}", offset_base);
+            let n2 = format!("N{:03}", offset_base + 1);
+            let n3 = format!("N{:03}", offset_base + 2);
+            let mut sentence = make_3word_sentence([&n1, &n2, &n3], ["疾", "刺", "斬"], "迎風破隙勢", registry, 0);
+            sentence.set_soul_seed(seed);
+            loadout.set_slot(TacticalSlot::Opening, sentence);
+        }
+    } else if let Some(s) = loadout.opening.as_mut() {
+        if s.soul_seed.is_none() {
+            s.set_soul_seed(seed);
+        }
     }
-    if loadout.midgame.is_none() {
-        let n4 = format!("N{:03}", offset_base + 3);
-        let n5 = format!("N{:03}", offset_base + 4);
-        let n6 = format!("N{:03}", offset_base + 5);
-        loadout.set_slot(
-            TacticalSlot::Midgame,
-            make_3word_sentence([&n4, &n5, &n6], ["流", "破", "斬"], "流破斬", registry, 3),
-        );
+    if loadout.midgame.is_none() || is_legacy_template(&loadout.midgame) {
+        if let Some(s) = seed_loadout.midgame {
+            loadout.set_slot(TacticalSlot::Midgame, s);
+        } else {
+            let n4 = format!("N{:03}", offset_base + 3);
+            let n5 = format!("N{:03}", offset_base + 4);
+            let n6 = format!("N{:03}", offset_base + 5);
+            let mut sentence = make_3word_sentence([&n4, &n5, &n6], ["流", "破", "斬"], "行雲連環擊", registry, 3);
+            sentence.set_soul_seed(seed);
+            loadout.set_slot(TacticalSlot::Midgame, sentence);
+        }
+    } else if let Some(s) = loadout.midgame.as_mut() {
+        if s.soul_seed.is_none() {
+            s.set_soul_seed(seed);
+        }
     }
-    if loadout.finisher.is_none() {
-        let n7 = format!("N{:03}", offset_base + 6);
-        let n8 = format!("N{:03}", offset_base + 7);
-        let n9 = format!("N{:03}", offset_base + 8);
-        loadout.set_slot(
-            TacticalSlot::Finisher,
-            make_3word_sentence([&n7, &n8, &n9], ["吾", "震", "破"], "吾震破", registry, 6),
-        );
+    if loadout.finisher.is_none() || is_legacy_template(&loadout.finisher) {
+        if let Some(s) = seed_loadout.finisher {
+            loadout.set_slot(TacticalSlot::Finisher, s);
+        } else {
+            let n7 = format!("N{:03}", offset_base + 6);
+            let n8 = format!("N{:03}", offset_base + 7);
+            let n9 = format!("N{:03}", offset_base + 8);
+            let mut sentence = make_3word_sentence([&n7, &n8, &n9], ["吾", "震", "破"], "雷霆貫骨破", registry, 6);
+            sentence.set_soul_seed(seed);
+            loadout.set_slot(TacticalSlot::Finisher, sentence);
+        }
+    } else if let Some(s) = loadout.finisher.as_mut() {
+        if s.soul_seed.is_none() {
+            s.set_soul_seed(seed);
+        }
     }
-    if loadout.defense.is_none() {
-        let n10 = format!("N{:03}", offset_base + 9);
-        let n11 = format!("N{:03}", offset_base + 10);
-        let n12 = format!("N{:03}", offset_base + 11);
-        loadout.set_slot(
-            TacticalSlot::Defense,
-            make_3word_sentence([&n10, &n11, &n12], ["凝", "流", "步"], "凝流步", registry, 9),
-        );
+    if loadout.defense.is_none() || is_legacy_template(&loadout.defense) {
+        if let Some(s) = seed_loadout.defense {
+            loadout.set_slot(TacticalSlot::Defense, s);
+        } else {
+            let n10 = format!("N{:03}", offset_base + 9);
+            let n11 = format!("N{:03}", offset_base + 10);
+            let n12 = format!("N{:03}", offset_base + 11);
+            let mut sentence = make_3word_sentence([&n10, &n11, &n12], ["凝", "流", "步"], "沉步卸勁身", registry, 9);
+            sentence.set_soul_seed(seed);
+            loadout.set_slot(TacticalSlot::Defense, sentence);
+        }
+    } else if let Some(s) = loadout.defense.as_mut() {
+        if s.soul_seed.is_none() {
+            s.set_soul_seed(seed);
+        }
     }
 }
 
-fn resolve_equipped_weapon_affinity(equipment_slots: &str) -> (CarrierAffinity, Option<String>) {
-    if equipment_slots.is_empty() {
-        return (CarrierAffinity::Unarmed, None);
-    }
-    let Ok(slots) = serde_json::from_str::<HashMap<String, String>>(equipment_slots) else {
-        return (CarrierAffinity::Unarmed, None);
-    };
-    let check_slots = ["hold_r", "weapon", "main_hand", "hold", "hold_l"];
-    for slot in check_slots {
-        if let Some(item_id) = slots.get(slot).filter(|id| !id.is_empty()) {
-            if let Some(def) = db::get_item_def(item_id) {
-                let affinity =
-                    classify_weapon_affinity(&def.name, &def.description, &def.item_type);
-                return (affinity, Some(def.name));
-            } else {
-                let affinity = classify_weapon_affinity(item_id, "", "");
-                let weapon_name = if item_id.is_ascii() || item_id.trim().is_empty() {
-                    Some("隨身兵刃".to_string())
-                } else {
-                    Some(item_id.clone())
-                };
-                return (affinity, weapon_name);
-            }
-        }
-    }
-    (CarrierAffinity::Unarmed, None)
-}
 
 fn classify_weapon_affinity(name: &str, desc: &str, item_type: &str) -> CarrierAffinity {
     let lower = format!("{name} {desc} {item_type}").to_lowercase();
@@ -937,9 +1198,11 @@ fn inspect_carrier_resonance(
     }
 
     if resonates {
+        let clean_w = weapon_name.map(crate::ai::narrative::clean_vessel_name);
+        let w_ref = clean_w.as_deref().filter(|s| !s.is_empty()).or(weapon_name);
         match weapon_affinity {
             CarrierAffinity::Blade => {
-                if let Some(w) = weapon_name {
+                if let Some(w) = w_ref {
                     Some(format!(
                         "手握【{w}】，刀劍鋒芒與招式吞吐相通，森寒劍意直逼肺腑！"
                     ))
@@ -948,7 +1211,7 @@ fn inspect_carrier_resonance(
                 }
             }
             CarrierAffinity::Pole => {
-                if let Some(w) = weapon_name {
+                if let Some(w) = w_ref {
                     Some(format!(
                         "緊握【{w}】，長兵揮灑生風，槍勢勢大力沉貫穿長空！"
                     ))
@@ -957,7 +1220,7 @@ fn inspect_carrier_resonance(
                 }
             }
             CarrierAffinity::Blunt => {
-                if let Some(w) = weapon_name {
+                if let Some(w) = w_ref {
                     Some(format!(
                         "揮舞【{w}】，重錘剛猛無匹，威沉如泰山崩岳！"
                     ))
@@ -966,7 +1229,7 @@ fn inspect_carrier_resonance(
                 }
             }
             CarrierAffinity::Shield => {
-                if let Some(w) = weapon_name {
+                if let Some(w) = w_ref {
                     Some(format!(
                         "挽起【{w}】，盾隨身轉，攻守圓融固若金湯！"
                     ))
@@ -1017,8 +1280,14 @@ fn render_dequantified_combat_prose(
         lines.push(format!("（{res}）"));
     }
 
+    let d_is_beast = is_wild_creature_id_and_title(d_id, d_name);
+
     // 身形感知
-    if let Some(seed) = defender_seed.filter(|&s| s != 0) {
+    if d_is_beast {
+        lines.push(format!(
+            "（【{d_name}】雙目機警、野性勃發，周身繃緊蓄勢待撲）"
+        ));
+    } else if let Some(seed) = defender_seed.filter(|&s| s != 0) {
         let style = combat_style_flavor(seed);
         lines.push(format!("（【{d_name}】氣息沉凝，身法動靜間盡顯{style}之象）"));
     }
@@ -1037,7 +1306,14 @@ fn render_dequantified_combat_prose(
             record.a_motions.clone()
         };
 
-        let b_motions = if record.b_motions.is_empty() || record.b_carrier != d_weapon_carrier {
+        let b_motions = if d_is_beast {
+            if record.b_motions.is_empty() {
+                let anatomy = crate::combat::human_phase::BeastAnatomy::from_species_title(d_name);
+                crate::combat::human_phase::natural_beast_moves(anatomy, record.slot, record.phase as u64).1
+            } else {
+                record.b_motions.clone()
+            }
+        } else if record.b_motions.is_empty() || record.b_carrier != d_weapon_carrier {
             derive_elementary_motions_from_chars(&[], d_weapon_carrier, record.b_target_part)
         } else {
             record.b_motions.clone()
@@ -1211,19 +1487,30 @@ fn render_dequantified_combat_prose(
 
     lines.push(String::new());
 
-    let summary = match (subdue, fight_winner) {
-        (true, "attacker") => {
-            "雙方身形驟分。你收住最後一分力道，將對方徹底制伏。"
+    let summary = if d_is_beast {
+        match (subdue, fight_winner) {
+            (true, "attacker") => format!("雙方身形驟分。你收住最後一分勁道，看準破綻將【{d_name}】生擒制伏！"),
+            (true, "defender") => format!("【{d_name}】振身掙脫束縛、借勢竄入林隙草叢，你未能將其制伏。"),
+            (true, _) => format!("數合追逐交鋒，【{d_name}】警覺退入暗影與你拉開距離，暫時僵持。"),
+            (false, "attacker") => format!("塵埃落定。你一鼓作氣瓦解【{d_name}】凶勢，奪下勝局！"),
+            (false, "defender") => format!("狂瀾散去。【{d_name}】兇性大發反撲得手，你力有不逮，暫退避其鋒芒。"),
+            (false, _) => format!("漫天塵土消散，你與【{d_name}】隔空對峙，彼此伺機而動。"),
         }
-        (true, "defender") => {
-            "雙方收招罷手。對方身法沉穩老練，你未能破開其守勢，暫落下風。"
+    } else {
+        match (subdue, fight_winner) {
+            (true, "attacker") => {
+                "雙方身形驟分。你收住最後一分力道，將對方徹底制伏。".to_string()
+            }
+            (true, "defender") => {
+                "雙方收招罷手。對方身法沉穩老練，你未能破開其守勢，暫落下風。".to_string()
+            }
+            (true, _) => "數合交手告終，兩人氣息相若，各自點頭收勢。".to_string(),
+            (false, "attacker") => "塵埃落定。你一鼓作氣瓦解敵勢，奪下勝局！".to_string(),
+            (false, "defender") => "狂瀾散去。對方招式老辣，你力有不逮，敗下陣來。".to_string(),
+            (false, _) => "漫天塵土消散，雙方互不相讓，戰局陷入對峙。".to_string(),
         }
-        (true, _) => "數合交手告終，兩人氣息相若，各自點頭收勢。",
-        (false, "attacker") => "塵埃落定。你一鼓作氣瓦解敵勢，奪下勝局！",
-        (false, "defender") => "狂瀾散去。對方招式老辣，你力有不逮，敗下陣來。",
-        (false, _) => "漫天塵土消散，雙方互不相讓，戰局陷入對峙。",
     };
-    lines.push(summary.to_string());
+    lines.push(summary);
 
     lines.join("\n")
 }
@@ -1417,5 +1704,99 @@ mod tests {
             assert!(!ch.is_ascii_digit(), "Prose must not contain digits: {ch}");
         }
         assert!(prose.contains("「"));
+    }
+
+    #[test]
+    fn test_wild_beast_shanhai_bamboo_partridge_anatomy_and_mass_physics() {
+        let attacker: Character = serde_json::from_str(
+            r#"{"id":"test_player_blackbone","kind":"player","display_title":"黑骨","vit":10,"dex":10,"qi":10,"equipment_slots":"{}"}"#,
+        )
+        .unwrap();
+
+        let defender: Character = serde_json::from_str(
+            r#"{"id":"shanhai_10_40_-35_12","kind":"npc","display_title":"山林竹雞","vit":18,"dex":28,"qi":12}"#,
+        )
+        .unwrap();
+
+        let (prose, winner, _final_a, _final_d) =
+            execute_tianji_wordplate_combat("test_player_blackbone", &attacker, &defender, true);
+
+        assert_eq!(winner, "attacker", "成人武者(BASE_STAT=10)對決山林竹雞應憑量級與氣血勝出，戰報：\n{prose}");
+
+        let muntjac: Character = serde_json::from_str(
+            r#"{"id":"ambient_-24_1","kind":"npc","display_title":"林道山羌","vit":30,"dex":20,"qi":15}"#,
+        )
+        .unwrap();
+        let (prose_m, winner_m, _, _) =
+            execute_tianji_wordplate_combat("test_player_blackbone", &attacker, &muntjac, true);
+        assert_eq!(winner_m, "attacker", "成人武者(BASE_STAT=10)對決林道山羌應憑量級與氣血勝出，戰報：\n{prose_m}");
+        assert!(
+            !prose.contains("山林竹雞以徒手運勁"),
+            "野禽不得出現『以徒手運勁』：\n{prose}"
+        );
+        assert!(
+            !prose.contains("流破斬") && !prose.contains("疾刺斬") && !prose.contains("吾震破"),
+            "不得出現露西時代三字硬編碼招式名：\n{prose}"
+        );
+        assert!(
+            !prose.contains("對方身法沉穩老練") && !prose.contains("點頭致意收手"),
+            "野獸對決不得出現武林同道切磋客套話：\n{prose}"
+        );
+        assert!(
+            prose.contains("振翅") || prose.contains("撲") || prose.contains("啄") || prose.contains("生擒制伏"),
+            "野禽戰報應呈現飛禽解剖動作或生擒敘事：\n{prose}"
+        );
+    }
+
+    #[test]
+    fn test_universal_resident_signature_vessel_and_inscribed_combat_bonus() {
+        let registry = WordRegistry::global();
+        let entity_id = "outer_household_0001";
+        let display_title = "當值石磨匠師";
+        let equipment_slots = "";
+
+        let casket = get_or_init_entity_combat_word_casket(entity_id, display_title);
+        assert!(
+            !casket.item_inscriptions.is_empty(),
+            "住戶匠人詞匣初始化後應具備器物銘文刻印"
+        );
+
+        let (bonus_atk, bonus_pen, bonus_def) = calculate_entity_inscribed_combat_bonus(
+            entity_id,
+            display_title,
+            equipment_slots,
+            &casket,
+            registry,
+        );
+        assert!(
+            bonus_atk > 0.0 || bonus_pen > 0.0 || bonus_def > 0.0,
+            "住戶即便未穿戴外部裝備，其隨身器物銘文亦應提供正值戰鬥加成：({bonus_atk}, {bonus_pen}, {bonus_def})"
+        );
+
+        let (affinity, weapon_name_opt) = resolve_entity_weapon_affinity_with_inscriptions(
+            entity_id,
+            display_title,
+            equipment_slots,
+            &casket,
+            registry,
+        );
+        assert_ne!(
+            affinity,
+            CarrierAffinity::Unarmed,
+            "當值石磨匠師隨身器物（篩架/石磨工具）應具備專屬載體親和度"
+        );
+        assert!(
+            weapon_name_opt.is_some(),
+            "住戶應成功顯化其專屬隨身器物名稱"
+        );
+        let weapon_name = weapon_name_opt.unwrap();
+        assert!(
+            weapon_name.contains("石磨") || weapon_name.contains("篩架"),
+            "隨身器物名稱應相符，實際為：{weapon_name}"
+        );
+        assert!(
+            weapon_name.contains('[') && weapon_name.contains(']'),
+            "隨身器物應具備銘文刻字後綴，實際為：{weapon_name}"
+        );
     }
 }

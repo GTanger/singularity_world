@@ -45,7 +45,7 @@ impl Store {
         Ok(())
     }
 
-    /// 將目前內存中所有資料同步到 PostgreSQL（全量 upsert）。
+    /// 將目前記憶體中所有資料同步到 PostgreSQL（全量 upsert）。
     /// 用途：啟動時把 JSON 種子灌入 DB（如果 DB 是空的或有差異）。
     pub fn sync_all_to_postgresql(&self) -> anyhow::Result<()> {
         let Some(pool) = &self.db_pool else {
@@ -305,15 +305,20 @@ impl Store {
         };
 
         self.entities.clear();
+        let mut raw_meta: std::collections::HashMap<String, (String, String)> =
+            std::collections::HashMap::with_capacity(rows.len());
         for row in &rows {
+            let id: String = row.get(0);
+            let raw_gender: String = row.get(16);
             let raw_title: String = row.get(18);
             let display_title = super::entity::normalize_archaic_title(&raw_title);
+            raw_meta.insert(id.clone(), (raw_gender.clone(), raw_title));
             let raw_eq: String = row.get(20);
             let equipment_slots = super::entity::normalize_archaic_clothing(&raw_eq);
             let raw_inv: String = row.get(21);
             let inventory = super::entity::normalize_archaic_clothing(&raw_inv);
             let e = Entity {
-                id: row.get(0),
+                id,
                 kind: row.get(1),
                 display_char: row.get(2),
                 x: row.get(3),
@@ -329,7 +334,7 @@ impl Store {
                 magnesium: row.get(13),
                 last_observed_at: row.get(14),
                 created_at: row.get(15),
-                gender: row.get(16),
+                gender: raw_gender,
                 soul_seed: row.get(17),
                 display_title,
                 activated_nodes: row.get(19),
@@ -346,6 +351,39 @@ impl Store {
                 .unwrap_or_default(),
             };
             self.entities.insert(e.id.clone(), e);
+        }
+        self.ensure_household_assignments();
+        let mut npc_ids: Vec<String> = self
+            .entities
+            .keys()
+            .filter(|id| id.starts_with("npc_"))
+            .cloned()
+            .collect();
+        npc_ids.sort();
+        let mut used_names: std::collections::HashSet<String> =
+            std::collections::HashSet::with_capacity(npc_ids.len());
+        for id in npc_ids {
+            if let Some(e) = self.entities.get_mut(&id) {
+                let is_female = super::entity::npc_effective_is_female(&id, Some(&e.gender));
+                let g = if is_female { "F".to_string() } else { "M".to_string() };
+                let mut resolved = super::entity::resolve_npc_person_name(&id, &e.display_title, Some(&g));
+                if !used_names.insert(resolved.clone()) {
+                    for salt in 1..2080 {
+                        let cand = super::entity::deterministic_wenyao_full_name_salted(&id, Some(&g), salt);
+                        if used_names.insert(cand.clone()) {
+                            resolved = cand;
+                            break;
+                        }
+                    }
+                }
+                e.gender = g;
+                e.display_title = resolved;
+                if let Some((raw_g, raw_t)) = raw_meta.get(&e.id)
+                    && (&e.gender != raw_g || &e.display_title != raw_t)
+                {
+                    crate::pg::entity::upsert_async(e.clone());
+                }
+            }
         }
         tracing::info!(
             "[store] Loaded {} entities from PostgreSQL",
@@ -444,12 +482,24 @@ impl Store {
             if !rows.is_empty() {
                 self.items.clear();
                 for row in &rows {
+                    let id: String = row.get(0);
                     let raw_name: String = row.get(1);
-                    let name = super::entity::normalize_archaic_clothing(&raw_name);
                     let raw_desc: String = row.get(7);
-                    let description = super::entity::normalize_archaic_clothing(&raw_desc);
+                    let (name, description) = if let Some(entry) =
+                        crate::game::peninsula_catalog::find_catalog_entry(&id)
+                    {
+                        (
+                            entry.name.to_string(),
+                            entry.look_text.replace("，主要用於", "；"),
+                        )
+                    } else {
+                        (
+                            super::entity::normalize_archaic_clothing(&raw_name),
+                            super::entity::normalize_archaic_clothing(&raw_desc),
+                        )
+                    };
                     let it = Item {
-                        id: row.get(0),
+                        id,
                         name,
                         slot: row.get(2),
                         item_type: row.get(3),
@@ -477,9 +527,29 @@ impl Store {
                 for row in &rows {
                     let anchors_raw: String = row.get(3);
                     let anchors: Vec<String> = serde_json::from_str(&anchors_raw).unwrap_or_default();
+                    let thread_key: String = row.get(0);
+                    let sanitized_anchors: Vec<String> = anchors
+                        .iter()
+                        .map(|a| crate::npcnpc::helpers::clean_npc_line(&crate::ai::sanitize_npc_dialogue_line(a)))
+                        .filter(|a| !a.is_empty())
+                        .collect();
+                    if sanitized_anchors != anchors {
+                        if let Ok(new_json) = serde_json::to_string(&sanitized_anchors) {
+                            let _ = conn.execute("UPDATE npc_threads SET anchors = $1 WHERE thread_key = $2", &[&new_json, &thread_key]);
+                        }
+                    }
+                    let anchors = sanitized_anchors;
+                    let mut topic_type: String = row.get(1);
+                    if topic_type.contains("低飽和微光") || topic_type.contains("沃土風") || topic_type.contains("非核冬天") {
+                        topic_type = "天候與環境：海霧、陣雨、山風微寒或晴暖水氣等半島日常天氣變化".to_string();
+                        let _ = conn.execute("UPDATE npc_threads SET topic_type = $1 WHERE thread_key = $2", &[&topic_type, &thread_key]);
+                    } else if topic_type.contains("城外惡地") || topic_type.contains("非荒蕪末世") {
+                        topic_type = "鎮上傳聞山海古道、霜林口、山野異獸與豐茂林地動靜".to_string();
+                        let _ = conn.execute("UPDATE npc_threads SET topic_type = $1 WHERE thread_key = $2", &[&topic_type, &thread_key]);
+                    }
                     let t = NpcThread {
                         thread_key: row.get(0),
-                        topic_type: row.get(1),
+                        topic_type,
                         phase: row.get(2),
                         anchors,
                         turn_count: row.get(4),
@@ -521,6 +591,18 @@ impl Store {
         }
 
         // 針對歷史已發生雙人對話（存在於 npc_npc_summaries 或 npc_threads）但舊版漏寫 npc_dyads 的組合自動補建
+        let _ = conn.execute(
+            "DELETE FROM npc_npc_summaries s
+             USING entities ea, entities eb
+             WHERE ea.id = split_part(s.dyad_key, '|', 1)
+               AND eb.id = split_part(s.dyad_key, '|', 2)
+               AND (
+                 position((CASE WHEN position('|' in replace(ea.display_title, '｜', '|')) > 0 THEN split_part(replace(ea.display_title, '｜', '|'), '|', 2) ELSE replace(ea.display_title, '｜', '|') END) in s.summary) = 0
+                 OR position((CASE WHEN position('|' in replace(eb.display_title, '｜', '|')) > 0 THEN split_part(replace(eb.display_title, '｜', '|'), '|', 2) ELSE replace(eb.display_title, '｜', '|') END) in s.summary) = 0
+               )",
+            &[],
+        );
+
         if let Ok(rows) = conn.query(
             "SELECT dyad_key FROM npc_npc_summaries",
             &[],

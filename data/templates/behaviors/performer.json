@@ -1,13 +1,13 @@
 {
-  "_說明": "賣藝人行為模板。定義日程、巡邏偏好、交易邏輯、性格參數。晚起，午後至傍晚於市集酒肆賣藝，四處尋觀眾，性格戲劇化。",
+  "_說明": "賣藝人行為模板。定義日程、巡邏偏好、交易定價規約、性情品性。晚起，午後至傍晚於市集茶寮賣藝，四處尋觀眾，性格戲劇化。",
   "schedule": {
     "_說明": "日程模板：hour_start~hour_end 為活動時段，activity 為該時段行為類型",
     "entries": [
       {"hour_start": 0, "hour_end": 10, "activity": "sleep", "location_pref": ["inn", "tavern_back", "cheap_lodging"], "description": "酣睡至日上三竿"},
       {"hour_start": 10, "hour_end": 12, "activity": "prepare", "location_pref": ["inn", "tavern"], "description": "起身梳洗，整理行頭"},
       {"hour_start": 12, "hour_end": 15, "activity": "perform", "location_pref": ["market", "street_main"], "description": "午後至市集開場"},
-      {"hour_start": 15, "hour_end": 18, "activity": "perform", "location_pref": ["market", "tavern", "plaza"], "description": "市集與酒肆間流轉賣藝"},
-      {"hour_start": 18, "hour_end": 21, "activity": "perform", "location_pref": ["tavern", "plaza", "street_main"], "description": "傍晚酒肆人潮高峰賣藝"},
+      {"hour_start": 15, "hour_end": 18, "activity": "perform", "location_pref": ["market", "tavern", "plaza"], "description": "市集與茶寮間流轉賣藝"},
+      {"hour_start": 18, "hour_end": 21, "activity": "perform", "location_pref": ["tavern", "plaza", "street_main"], "description": "傍晚茶寮人潮高峰賣藝"},
       {"hour_start": 21, "hour_end": 23, "activity": "wander", "location_pref": ["tavern", "inn", "street_main"], "description": "收攤後四處閒逛尋觀眾"},
       {"hour_start": 23, "hour_end": 24, "activity": "rest", "location_pref": ["inn", "tavern_back"], "description": "回棲身處歇息"}
     ]
@@ -33,7 +33,7 @@
     "buy_markup": 1.2,
     "sell_markup": 1.3,
     "preferred_goods": ["胡琴", "竹笛", "面具", "彩帶", "銅鑼", "打賞"],
-    "refused_goods": ["贓物", "違禁品"],
+    "refused_goods": ["贓物", "私貨"],
     "haggle_tolerance": 3,
     "haggle_texts": {
       "accept": [

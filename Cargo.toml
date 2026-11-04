@@ -21,6 +21,7 @@ bcrypt = "0.17"
 reqwest = { version = "0.12", features = ["json", "blocking"] }
 # 錯誤處理
 anyhow = "1"
+sha2 = "0.10"
 thiserror = "2"
 # 日誌
 tracing = "0.1"
@@ -94,6 +95,50 @@ path = "src/bin/earth_import_sql.rs"
 [[bin]]
 name = "earth-places-preview"
 path = "src/bin/earth_places_preview.rs"
+
+[[bin]]
+name = "white-tower-world-check"
+path = "src/bin/white_tower_world_check.rs"
+
+[[bin]]
+name = "white-tower-experience-check"
+path = "src/bin/white_tower_experience_check.rs"
+
+[[bin]]
+name = "white-tower-geography-check"
+path = "src/bin/white_tower_geography_check.rs"
+
+[[bin]]
+name = "white-tower-package-check"
+path = "src/bin/white_tower_package_check.rs"
+
+[[bin]]
+name = "white-tower-map-generate"
+path = "src/bin/white_tower_map_generate.rs"
+
+[[bin]]
+name = "white-tower-runtime-compile"
+path = "src/bin/white_tower_runtime_compile.rs"
+
+[[bin]]
+name = "white-tower-runtime-check"
+path = "src/bin/white_tower_runtime_check.rs"
+
+[[bin]]
+name = "white-tower-runtime-db"
+path = "src/bin/white_tower_runtime_db.rs"
+
+[[bin]]
+name = "white-tower-formalize"
+path = "src/bin/white_tower_formalize.rs"
+
+[[bin]]
+name = "white-tower-living-world-check"
+path = "src/bin/white_tower_living_world_check.rs"
+
+[[bin]]
+name = "white-tower-economy-compile"
+path = "src/bin/white_tower_economy_compile.rs"
 
 [dev-dependencies]
 tempfile = "3"

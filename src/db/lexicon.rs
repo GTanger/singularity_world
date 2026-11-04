@@ -3,9 +3,17 @@
 use crate::store;
 
 /// 新增或更新詞典詞條。pair_key 格式為 `{a_id}|{b_id}`。
-pub fn upsert_lexicon_term(term: &str, room_id: &str, pair_key: &str) {
-    let term = term.trim();
-    if term.is_empty() || term.chars().count() < 2 {
+pub fn upsert_lexicon_term(term: &str, room_id: &str, _pair_key: &str) {
+    let cleaned = crate::npcnpc::helpers::clean_npc_line(&crate::ai::sanitize_npc_dialogue_line(term));
+    let term = cleaned.trim();
+    if term.is_empty()
+        || term.chars().count() < 2
+        || term.contains('・')
+        || term.starts_with("wt-")
+        || term.starts_with("grid:")
+        || term.starts_with("npc_")
+        || matches!(term, "清晨" | "正午" | "傍晚" | "夜裡" | "深夜" | "正晝")
+    {
         return;
     }
     let now = now_unix();
@@ -25,14 +33,13 @@ pub fn upsert_lexicon_term(term: &str, room_id: &str, pair_key: &str) {
                 ELSE world_lexicon.source_rooms || ',' || $3
             END,
             unique_pairs = CASE
-                WHEN world_lexicon.source_rooms LIKE '%' || $4 || '%' THEN world_lexicon.unique_pairs
+                WHEN world_lexicon.source_rooms LIKE '%' || $3 || '%' THEN world_lexicon.unique_pairs
                 ELSE world_lexicon.unique_pairs + 1
             END",
         &[
             &term,
             &now,
             &room_id,
-            &pair_key,
         ],
     );
 }

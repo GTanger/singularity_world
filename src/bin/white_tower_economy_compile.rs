@@ -4,7 +4,7 @@
 //! 本工具不生成經濟，也不把候選升格成正典；只把 71 / 54 / 25,808 筆既有
 //! 作者資料編成可查詢、可驗證的 runtime evidence。
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
 
@@ -409,16 +409,16 @@ fn display_name(id: u32, fallback: &str) -> &str {
         59 => "武器",
         60 => "火藥",
         61 => "火砲",
-        62 => "錢幣",
+        62 => "鎂幣",
         63 => "珠寶",
         64 => "保存食品",
         65 => "醋",
         66 => "乳酪",
-        67 => "啤酒",
+        67 => "大麥酵飲",
         68 => "烈酒",
         69 => "蠟燭",
-        70 => "肥皂",
-        71 => "香水",
+        70 => "茶籽香胰",
+        71 => "草本香露",
         _ => fallback,
     }
 }
@@ -474,10 +474,3 @@ fn sha256(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
 }
 
-#[allow(dead_code)]
-fn ensure_unique(values: impl IntoIterator<Item = u32>) -> Result<()> {
-    let values = values.into_iter().collect::<Vec<_>>();
-    let unique = values.iter().copied().collect::<BTreeSet<_>>();
-    ensure!(values.len() == unique.len(), "來源 id 重複");
-    Ok(())
-}

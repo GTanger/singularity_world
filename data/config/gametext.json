@@ -67,7 +67,7 @@
     "socialize": "【%s】找了個角落坐下，悠閒地打量著來往的人。"
   },
   "dyad_relation": {
-    "nil_dyad": "兩人剛認識，語氣保守、客套",
+    "nil_dyad": "兩人初識，語氣保守、客套",
     "sentiment_low": "兩人關係緊張，語氣克制但帶刺，避免過分友善",
     "sentiment_high": "兩人互相欣賞，語氣可更親切自然",
     "familiarity_high": "兩人是熟人，語氣自然、可簡短接話",
@@ -127,7 +127,7 @@
   "runtime_fmt": {
     "shift_leave_fmt": "【%s】出門去了。",
     "shift_leave_to_shop_fmt": "【%s】出門往店裡去了。",
-    "shift_arrive": "排班抵達",
+    "shift_arrive": "輪值抵達",
     "travel_leave_fmt": "【%s】收拾行裝，往%s方向離去。",
     "travel_arrive_fmt": "【%s】從%s方向走了過來。",
     "push_leave_fmt": "離開往%s",
@@ -213,7 +213,7 @@
       "陌生",
       "距離",
       "保守",
-      "剛認識"
+      "初識"
     ],
     "relation_warm_markers": [
       "熟人",
@@ -267,7 +267,9 @@
     ],
     "pry_substring": "打聽",
     "outside_wild_substrings": [
-      "城外惡地",
+      "山海古道",
+      "山野異獸",
+      "山野古道",
       "異常巨獸"
     ],
     "weather_substring": "天候與環境",
@@ -300,5 +302,5 @@
   "admin_wipe_entities_response": "{\"ok\":true,\"message\":\"已刪除所有角色\"}",
   "default_manager_title": "經理",
   "debug_pair_tag_same_venue": "tag:同職場 => +2",
-  "dialogue_markers": "你我他她它們咱妳您嗎吧呢喔嘛哦欸嘖哼喂呐呀"
+  "dialogue_markers": "你我他她它們咱妳您嗎吧呢喔嘛哦欸嘖哼喂吶呀"
 }

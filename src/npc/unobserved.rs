@@ -17,6 +17,15 @@ pub const UNOBSERVED_MAX_NPCS_PER_TICK: usize = 50;
 const UNOBSERVED_EFFECT_DENOM: i32 = 4;
 const DEFAULT_OCC_FOR_UNOBSERVED_HIRE: &str = "服務生";
 
+/// 依據房間名稱解析未觀測雇傭時的預設職業稱謂（優先使用場館物件預設稱謂）。
+pub fn resolve_unobserved_hire_occupation_for_room(room_name: &str) -> &'static str {
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name.trim(), "") {
+        venue.default_host_title
+    } else {
+        DEFAULT_OCC_FOR_UNOBSERVED_HIRE
+    }
+}
+
 /// Fisher–Yates 洗牌。
 fn shuffle_vec<T>(v: &mut [T], rng: &mut impl Rng) {
     for i in (1..v.len()).rev() {
@@ -79,6 +88,12 @@ pub fn run_unobserved_world_tick(
                     materials::try_gather_material_for_room_preserving(&current_room, now_unix, 1)
             {
                 let _ = add_to_inventory(&entity_id, &gathered.item_id, 1);
+                let room_name = crate::db::get_room_name(&current_room)
+                    .unwrap_or_else(|_| current_room.clone());
+                let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+                    &room_name,
+                    &gathered.name,
+                );
             }
         } else if effect == 2 {
             let Ok(list) = get_assignments_for_entity(&entity_id) else {
@@ -94,8 +109,14 @@ pub fn run_unobserved_world_tick(
                     continue;
                 };
                 if n < 2 {
-                    let _ =
-                        insert_assignment(&entity_id, DEFAULT_OCC_FOR_UNOBSERVED_HIRE, &vid, "");
+                    let venue_room_name = crate::db::get_room_ids_for_venue(&vid)
+                        .ok()
+                        .flatten()
+                        .and_then(|rids| rids.into_iter().next())
+                        .and_then(|rid| crate::db::get_room_name(&rid).ok())
+                        .unwrap_or_default();
+                    let occ = resolve_unobserved_hire_occupation_for_room(&venue_room_name);
+                    let _ = insert_assignment(&entity_id, occ, &vid, "");
                     break;
                 }
             }
@@ -114,5 +135,25 @@ pub fn run_unobserved_world_tick(
             let next = neighbors[idx].clone();
             let _ = set_entity_room(&entity_id, &next);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_resolve_unobserved_hire_occupation_for_room() {
+        // 1. 水輪石磨工坊 -> 當值石磨匠師
+        let mill_occ = resolve_unobserved_hire_occupation_for_room("老堰頭・水輪石磨工坊");
+        assert_eq!(mill_occ, "當值石磨匠師");
+
+        // 2. 三水大食堂 -> 食堂主廚
+        let canteen_occ = resolve_unobserved_hire_occupation_for_room("三水大食堂");
+        assert_eq!(canteen_occ, "食堂主廚");
+
+        // 3. 無特定場館物件的普通地界 -> 服務生
+        let default_occ = resolve_unobserved_hire_occupation_for_room("荒蕪礫石空地");
+        assert_eq!(default_occ, "服務生");
     }
 }

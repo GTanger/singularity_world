@@ -105,9 +105,12 @@ pub async fn run(cfg: Server) -> anyhow::Result<()> {
         .route("/star_chart", get(serve_star_chart))
         .route("/dashboard", get(serve_dashboard))
         .route("/admin", get(serve_admin))
+        .route("/behavior_mindmap", get(serve_behavior_mindmap))
+        .route("/behavior_mindmap.html", get(serve_behavior_mindmap))
         // 生態 API
         .route("/api/eco/map", get(http_api::eco_map))
         .route("/api/eco/entities", get(http_api::eco_entities))
+        .route("/api/eco/npc-thoughts", get(http_api::handle_eco_npc_thoughts))
         .route("/api/eco/pulse", get(http_api::eco_pulse))
         // 靜態設定 JSON（terrain_ambience 等）
         .nest_service("/data/config", ServeDir::new("data/config"))
@@ -168,6 +171,9 @@ async fn serve_dashboard() -> impl IntoResponse {
 }
 async fn serve_admin() -> impl IntoResponse {
     serve_html_page("admin.html").await
+}
+async fn serve_behavior_mindmap() -> impl IntoResponse {
+    serve_html_page("behavior_mindmap.html").await
 }
 
 async fn handle_socket(mut socket: WebSocket, st: AppState) {

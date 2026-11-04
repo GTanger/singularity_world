@@ -17,6 +17,12 @@
 |------|------|
 | [decisions/008_架構整頓規劃.md](./decisions/008_架構整頓規劃.md) | 架構整頓主文件（含執行進度） |
 | [decisions/009_觀測分級與行程約束.md](./decisions/009_觀測分級與行程約束.md) | **觀測分級**、行程優先於擲骰、在崗決定性、LLM／雲端定位（由討論 005 升格） |
+| [decisions/011_世界場所與居民位置單一真相.md](./decisions/011_世界場所與居民位置單一真相.md) | 多尺度場所、八方向路線、玩家／NPC 共用位置真相、旅程續行與舊方格素材遷移 |
+| [decisions/012_Azgaar白塔半島物理地理橋接.md](./decisions/012_Azgaar白塔半島物理地理橋接.md) | 完整 Azgaar 作者資料、固定來源與白塔物理地理橋接邊界 |
+| [decisions/013_白塔半島正式活世界啟用.md](./decisions/013_白塔半島正式活世界啟用.md) | 正式白塔 runtime、舊格退役、全人物遷移、居民生活、資源守衡與文字 GUI 驗收 |
+| [decisions/014_Azgaar白塔半島經濟橋接.md](./decisions/014_Azgaar白塔半島經濟橋接.md) | 完整作者經濟來源、人物工作／交易帳本、有限市場閉環的前置分層 |
+| [decisions/015_白塔半島有限市場閉環.md](./decisions/015_白塔半島有限市場閉環.md) | 3,780 筆有限庫存、來源供需、居民消費與承運、玩家實際市場成交 |
+| [decisions/016_Azgaar上游供應場所實體化.md](./decisions/016_Azgaar上游供應場所實體化.md) | 4,976 筆 Burg→Market 輪廓、277 個來源供應站、真人工作與來源到市場的實體物流 |
 | [decisions/](./decisions/) | 其餘 ADR |
 | [implementation/](./implementation/) | 實作規劃、遷移說明 |
 | [dev/](./dev/) | 開發入口（品質閘門；含連結至 implementation） |

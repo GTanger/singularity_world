@@ -283,24 +283,23 @@ observation_state === "identified" → 顯示 tag
 observation_state === "named" → 顯示「tag + name」（如「獵戶<npc-name>」）
 ```
 
-### 甲乙編號規則（**純前端渲染，不持久化**）
+### 數字編號規則（**純前端渲染，不持久化**）
 
 每次渲染 L4 時，對當格在場物件列表執行：
 
 1. 對每個物件取其「顯示標籤字串」（依上面邏輯算出）
 2. 按顯示標籤分桶
-3. 同桶 ≥ 2 個物件 → 按列表順序編甲乙丙丁（不夠的循環用天干）
+3. 同桶 ≥ 2 個物件 → 按列表順序編 `1, 2, 3...`（如 `【陌生人1】`、`【陌生人2】`）
 4. 同桶只有 1 個 → 不加編號
 
 範例：
 
 | 當格物件 | observation_state | 顯示 |
 |---|---|---|
-| npc-A（tag=行人）stranger | stranger | 【行人甲】 |
-| npc-B（tag=行人）stranger | stranger | 【行人乙】 |
+| npc-A（tag=行人/陌生人）stranger | stranger | 【陌生人1】 |
+| npc-B（tag=行人/陌生人）stranger | stranger | 【陌生人2】 |
 | npc-C（tag=獵戶）identified | identified | 【獵戶】 |
 | item-柴刀 | — | 【柴刀】 |
-
 ### 點擊卡片
 
 點擊任意物件卡片 → 彈出互動選單（現行 modal 機制保留）。選單選項由後端依物件類型與觀察態決定，前端只負責渲染選單項並發送對應動作。

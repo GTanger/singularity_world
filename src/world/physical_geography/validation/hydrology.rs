@@ -1,4 +1,4 @@
-//! 三源匯流與黑沼林下游主幹的作者映射契約驗證。
+//! 三源匯流與水尾澤下游主幹的作者映射契約驗證。
 
 mod geometry;
 mod relationships;
@@ -100,7 +100,7 @@ fn validate_course(
     );
     ensure!(
         course.black_marsh_fit_distance.is_none_or(valid_distance),
-        "黑沼林貼合距離無效"
+        "水尾澤貼合距離無效"
     );
     Ok(())
 }

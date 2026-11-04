@@ -59,7 +59,7 @@ pub fn handle_do_action(conn: &WsConnection, msg: &ClientMsg) {
         return;
     };
     let target_id = msg.entity_id.clone();
-    let mut action = msg.action.clone();
+    let mut action = normalize_action_key(&msg.action).to_string();
     if action == "Attack" {
         action = "Slay".into();
     }
@@ -122,7 +122,7 @@ fn do_player_work(conn: &WsConnection, pid: &str, target_id: &str) {
                         target_id.to_string()
                     },
                     target_name: result.occupation_id.clone(),
-                    narrative: "工坊目前暫時無法結算本班次工資，請稍後再試。".into(),
+                    narrative: "工坊目前暫時無法結算本班次工錢，請稍後再試。".into(),
                     success: false,
                     actions: vec!["Look".into()],
                     move_target_id: String::new(),
@@ -142,21 +142,26 @@ fn do_player_work(conn: &WsConnection, pid: &str, target_id: &str) {
             {
                 tracing::warn!("player work cache mirror: {e}");
             }
-            let narrative = if let Some(supply) = &result.supply {
-                format!(
-                    "你接過班牌投入「{}」，順著工序一氣呵成完成整輪勞作；盤點封裝好的 {} 份「{}」隨即由專人起運。管事核對名冊後當面點清發放了 {} 鎂工資，沉甸甸落入你的囊中。",
-                    result.occupation_id,
-                    supply.quantity,
-                    supply.display_name,
-                    result.wage_mg
-                )
-            } else {
-                format!(
-                    "你挽起衣袖投入「{}」，專注而連貫地完成了整整一班的勞作。隨著當值鐘聲敲響，管事核對工冊無誤，當面點清並如數發放了 {} 鎂工資，整輪差事順利結清。",
-                    result.occupation_id,
-                    result.wage_mg
-                )
-            };
+            let room_name = db::get_entity(pid)
+                .ok()
+                .flatten()
+                .map(|ch| target_grid_room_name(&ch))
+                .filter(|s| !s.is_empty())
+                .or_else(|| {
+                    db::get_entity_room(pid)
+                        .ok()
+                        .and_then(|rid| db::get_room_name(&rid).ok())
+                })
+                .unwrap_or_default();
+            let narrative = format_player_work_shift_narrative_and_advance_pack(
+                &room_name,
+                &result.occupation_id,
+                result.wage_mg,
+                result
+                    .supply
+                    .as_ref()
+                    .map(|s| (s.quantity, s.display_name.as_str())),
+            );
             conn.send_json(&ActionResultMsg {
                 msg_type: "action_result".into(),
                 action: "Work".into(),
@@ -183,7 +188,7 @@ fn do_player_work(conn: &WsConnection, pid: &str, target_id: &str) {
                 target_id: target_id.to_string(),
                 target_name: "工作差事".into(),
                 narrative:
-                    "此處暫無你可以參與的排班工序，或是本班次的定額勞作已經結清；請稍候下一班次或確認派工紀錄。"
+                    "此處暫無你可以參與的輪值工序，或是本班次的定額勞作已經結清；請稍候下一班次或確認派工紀錄。"
                         .into(),
                 success: false,
                 actions: vec!["Look".into()],
@@ -243,7 +248,7 @@ fn try_entity_branch(
             msg_type: "action_result".into(),
             action: action.to_string(),
             target_id: target_id.to_string(),
-            target_name: "陌生人".into(),
+            target_name: player_visible_target_name(pid, &target),
             narrative: "你欲上前，對方卻已邁步離開此處，朝鄰街走遠了。".into(),
             success: false,
             actions: vec![],
@@ -255,7 +260,7 @@ fn try_entity_branch(
         push_refresh(conn, pid);
         return true;
     }
-    crate::store::pause_npc_for_interaction(target_id, 25);
+    crate::store::pause_npc_for_interaction(target_id, 45);
     if !entity_socket_ok(conn, pid, &target, target_id, player_room, action) {
         return true;
     }
@@ -296,7 +301,8 @@ pub fn action_label_zh(action: &str) -> &str {
         "Read" => "閱讀",
         "Rest" => "歇息",
         "Sleep" => "入眠",
-        "Bath" | "Wash" => "沐浴",
+        "Bath" => "沐浴",
+        "Wash" => "洗漱淨手",
         "Drink" => "飲用",
         "Taste" => "品嚐",
         "Smell" => "聞香",
@@ -310,8 +316,211 @@ pub fn action_label_zh(action: &str) -> &str {
         "CraftTorch" => "紮製火把",
         "RepairStructure" => "修繕加固",
         "CollectCharcoal" => "取炭",
-        "Work" => "差事",
+        "Work" | "差事" => "差事",
         "Move" => "移動",
+        "Check" => "檢視",
+        "Climb" => "登臨",
+        "Inspect" => "審視",
+        "Knock" => "叩門",
+        "Listen" => "諦聽",
+        "LookShip" => "眺望舟楫",
+        "Tap" => "輕叩",
+        "TestEdge" => "試刃",
+        "Tie" => "繫縛",
+        "Touch" => "撫觸",
+        "Turn" => "旋動",
+        "Watch" => "守望",
+        "WeaveSackcloth" => "織造麻袋布",
+        "Meditate" => "調息",
+        "Water" => "澆灌",
+        "Calculate" => "推算",
+        "Sit" => "坐下",
+        "Ring" => "叩鐘",
+        "Weigh" => "秤量",
+        "Caulking" => "捻縫",
+        "Open" => "開啟",
+        "Pound" => "舂搗",
+        "PickType" => "揀字",
+        "RollInk" => "滾墨",
+        "Stitch" => "縫紉",
+        "Measure" => "丈量",
+        "Observe" => "觀測",
+        "TestBrush" => "試筆",
+        "GrindInk" => "研墨",
+        "Quench" => "淬火",
+        "Feed" => "餵食",
+        "Shake" => "搖動",
+        "Sharpen" => "磨利",
+        "DryOff" => "避風晾衣",
+        "Acquire" => "採買入袋",
+        "Deliver" => "交割物資",
+        "ClaimStrandedCargo" => "揭榜管運",
+        "DeliverStrandedCargo" => "交割銷單",
+        "Sow" => "整壟播種",
+        "Board" => "登船啟航",
+        "Buy" => "投保立契",
+        "DepositBank" => "存入票號",
+        "WithdrawBank" => "憑摺支取",
+        "StoreStash" => "存入石櫃",
+        "RetrieveStash" => "取出物資",
+        "DispatchCourier" => "快騎託運",
+        "AngleFish" => "甩竿垂釣",
+        "Cook" => "野炊烹煮",
+        "MillGrain" => "水磨碾米",
+        "PressCheese" => "壓製乳酪",
+        "SmokeFish" => "慢火冷燻",
+        "CutJade" => "切磨寒玉",
+        "HaulMineCart" => "滑車運礦",
+        "BurnLime" => "入窯煅灰",
+        "RowSwampRaft" => "撐筏入澤",
+        "PrepareMiasmaGear" => "備妥避瘴",
+        "PlayChess" => "對弈手談",
+        "SeasonalBanquet" => "歲時圍爐",
+        "ChartAstrolabe" => "拓印星盤",
+        "TestEngraving" => "測紋校準",
+        "SparPillar" => "試勁拆招",
+        "SoakHotSpring" => "祛寒湯浴",
+        "GroomAppearance" => "修面整容",
+        "MendTravelGear" => "補綴行裝",
+        "ReadWindVane" => "觀測風候",
+        "ApplyMoxibustion" => "百草溫灸",
+        "HangVotivePlaque" => "懸掛銘牌",
+        "TranscribeRareTome" | "鈔錄孤本" => "鈔錄孤本",
+        "AttendLecture" | "旁聽策論" => "旁聽策論",
+        "CalibrateClock" | "校時報刻" => "校時報刻",
+        "FitMortiseTenon" | "榫卯校修" => "榫卯校修",
+        "QuenchBlade" | "精鋼回火" => "精鋼回火",
+        "DyeIndigoCloth" | "藍染浸布" => "藍染浸布",
+        "FeedDraftBeast" | "飼餵草獸" | "飼喂草獸" => "飼餵草獸",
+        "BoardCoastalShip" | "登船遠航" => "登船遠航",
+        "InspectLandRegistry" | "查閱地籍" => "查閱地籍",
+        "AssistKitchen" | "幫廚備膳" => "幫廚備膳",
+        "RoastMountainTea" | "焙茶品茗" => "焙茶品茗",
+        "SunBooks" | "曝書防蠹" => "曝書防蠹",
+        "RoastHerbs" | "炮製藥材" => "炮製藥材",
+        "CollateInscriptions" | "校勘碑帖" => "校勘碑帖",
+        "GrindOpticLens" | "研磨鏡片" => "研磨鏡片",
+        "SelectDriedSeafood" | "揀選海味" => "揀選海味",
+        "DeliberateCivicPact" | "參議鄉約" => "參議鄉約",
+        "DrawSpringWell" | "汲水潤嗓" => "汲水潤嗓",
+        "SmeltBloom" | "悶燒成塊" => "悶燒成塊",
+        "BuildFieldAnvil" | "架設石砧" => "架設石砧",
+        "SetupHerbStove" | "架設陶銚" => "架設陶銚",
+        "WashOre" | "淘洗礦砂" => "淘洗礦砂",
+        "ForgeRepairStrip" | "鍛修鐵條" => "鍛修鐵條",
+        "SharpenBlade" | "砥石磨刃" => "砥石磨刃",
+        "WashHerb" | "淘洗藥草" => "淘洗藥草",
+        "DryHerb" | "DryHerbs" | "曝曬藥材" => "曝曬藥材",
+        "CrushHerb" | "研碎藥草" => "研碎藥草",
+        "BoilDecoction" | "DecoctPotion" | "煎煮湯劑" => "煎煮湯劑",
+        "Queue" | "候號" => "候號",
+        "AcceptJob" | "應工" => "應工",
+        "BuySoup" | "買滿碗熱湯" => "買滿碗熱湯",
+        "CarryCargo" | "搬貨收鎂" => "搬貨收鎂",
+        "HelpRope" | "搭手拉繩" => "搭手拉繩",
+        "TalkQueue" | "攀談船期" => "攀談船期",
+        "QueueFerry" | "排隊候船" => "排隊候船",
+        "SellReeds" | "賣蘆草" => "賣蘆草",
+        "SellSackcloth" | "交麻袋布" => "交麻袋布",
+        "SellRope" | "交麻繩卷" => "交麻繩卷",
+        "BoardFerry" | "憑隊上船" => "憑隊上船",
+        "StepAshore" | "踩泥上岸" => "踩泥上岸",
+        "CheckCargo" | "對貨領尾款" => "對貨領尾款",
+        "JoinCheck" | "候檢" => "候檢",
+        "RegisterComplaint" | "押名" => "押名",
+        "QueueBroth" | "等分湯" => "等分湯",
+        "Explore" | "深入探索" => "深入探索",
+        "CrushOre" | "粉碎礦石" => "粉碎礦石",
+        "SmeltIngot" | "熔煉金屬" => "熔煉金屬",
+        "ForgeTool" | "鍛打器具" => "鍛打器具",
+        "CastHardware" | "澆鑄五金" => "澆鑄五金",
+        "SortHerbs" | "分揀藥草" => "分揀藥草",
+        "GrindPowder" | "研製藥粉" => "研製藥粉",
+        "MakePoultice" | "調製敷料" => "調製敷料",
+        "DistillEssence" | "萃煉純露" => "萃煉純露",
+        "SoakFiber" | "漚浸纖維" => "漚浸纖維",
+        "TwistCord" | "TwistRope" | "搓捻麻繩" => "搓捻麻繩",
+        "WeaveCloth" | "紡織布匹" => "紡織布匹",
+        "OilCanvas" | "桐油浸布" => "桐油浸布",
+        "PressPaper" | "抄造紙張" => "抄造紙張",
+        "ScrapeHide" | "刮治生皮" => "刮治生皮",
+        "BoilFishGlue" | "熬製魚膠" => "熬製魚膠",
+        "CalcifyShell" | "煅燒貝灰" => "煅燒貝灰",
+        "CobbleBoots" | "縫製行靴" => "縫製行靴",
+        "CraftHandle" | "車削木柄" => "車削木柄",
+        "Chop" | "砍伐" => "砍伐",
+        _ => action,
+    }
+}
+
+/// 將前端或指令傳入之動作名標準化為 Canonical 英文鍵名
+pub fn normalize_action_key(action: &str) -> &str {
+    match action {
+        "TranscribeRareTome" | "鈔錄孤本" => "TranscribeRareTome",
+        "AttendLecture" | "旁聽策論" => "AttendLecture",
+        "CalibrateClock" | "校時報刻" => "CalibrateClock",
+        "FitMortiseTenon" | "榫卯校修" => "FitMortiseTenon",
+        "QuenchBlade" | "精鋼回火" => "QuenchBlade",
+        "DyeIndigoCloth" | "藍染浸布" => "DyeIndigoCloth",
+        "FeedDraftBeast" | "飼餵草獸" | "飼喂草獸" => "FeedDraftBeast",
+        "BoardCoastalShip" | "登船遠航" => "BoardCoastalShip",
+        "InspectLandRegistry" | "查閱地籍" => "InspectLandRegistry",
+        "AssistKitchen" | "幫廚備膳" => "AssistKitchen",
+        "RoastMountainTea" | "焙茶品茗" => "RoastMountainTea",
+        "SunBooks" | "曝書防蠹" => "SunBooks",
+        "RoastHerbs" | "炮製藥材" => "RoastHerbs",
+        "CollateInscriptions" | "校勘碑帖" => "CollateInscriptions",
+        "GrindOpticLens" | "研磨鏡片" => "GrindOpticLens",
+        "SelectDriedSeafood" | "揀選海味" => "SelectDriedSeafood",
+        "DeliberateCivicPact" | "參議鄉約" => "DeliberateCivicPact",
+        "DrawSpringWell" | "汲水潤嗓" => "DrawSpringWell",
+        "SmeltBloom" | "悶燒成塊" => "SmeltBloom",
+        "BuildFieldAnvil" | "架設石砧" => "BuildFieldAnvil",
+        "SetupHerbStove" | "架設陶銚" => "SetupHerbStove",
+        "WashOre" | "淘洗礦砂" => "WashOre",
+        "ForgeRepairStrip" | "鍛修鐵條" => "ForgeRepairStrip",
+        "SharpenBlade" | "砥石磨刃" => "SharpenBlade",
+        "WashHerb" | "淘洗藥草" => "WashHerb",
+        "DryHerb" | "DryHerbs" | "曝曬藥材" => "DryHerb",
+        "CrushHerb" | "研碎藥草" => "CrushHerb",
+        "BoilDecoction" | "DecoctPotion" | "煎煮湯劑" => "BoilDecoction",
+        "Queue" | "候號" => "Queue",
+        "AcceptJob" | "應工" => "AcceptJob",
+        "BuySoup" | "買滿碗熱湯" => "BuySoup",
+        "CarryCargo" | "搬貨收鎂" => "CarryCargo",
+        "HelpRope" | "搭手拉繩" => "HelpRope",
+        "TalkQueue" | "攀談船期" => "TalkQueue",
+        "QueueFerry" | "排隊候船" => "QueueFerry",
+        "SellReeds" | "賣蘆草" => "SellReeds",
+        "SellSackcloth" | "交麻袋布" => "SellSackcloth",
+        "SellRope" | "交麻繩卷" => "SellRope",
+        "BoardFerry" | "憑隊上船" => "BoardFerry",
+        "StepAshore" | "踩泥上岸" => "StepAshore",
+        "CheckCargo" | "對貨領尾款" => "CheckCargo",
+        "JoinCheck" | "候檢" => "JoinCheck",
+        "RegisterComplaint" | "押名" => "RegisterComplaint",
+        "QueueBroth" | "等分湯" => "QueueBroth",
+        "Explore" | "深入探索" => "Explore",
+        "CrushOre" | "粉碎礦石" => "CrushOre",
+        "SmeltIngot" | "熔煉金屬" => "SmeltIngot",
+        "ForgeTool" | "鍛打器具" => "ForgeTool",
+        "CastHardware" | "澆鑄五金" => "CastHardware",
+        "SortHerbs" | "分揀藥草" => "SortHerbs",
+        "GrindPowder" | "研製藥粉" => "GrindPowder",
+        "MakePoultice" | "調製敷料" => "MakePoultice",
+        "DistillEssence" | "萃煉純露" => "DistillEssence",
+        "SoakFiber" | "漚浸纖維" => "SoakFiber",
+        "TwistCord" | "TwistRope" | "搓捻麻繩" => "TwistRope",
+        "WeaveCloth" | "紡織布匹" => "WeaveCloth",
+        "OilCanvas" | "桐油浸布" => "OilCanvas",
+        "PressPaper" | "抄造紙張" => "PressPaper",
+        "ScrapeHide" | "刮治生皮" => "ScrapeHide",
+        "BoilFishGlue" | "熬製魚膠" => "BoilFishGlue",
+        "CalcifyShell" | "煅燒貝灰" => "CalcifyShell",
+        "CobbleBoots" | "縫製行靴" => "CobbleBoots",
+        "CraftHandle" | "車削木柄" => "CraftHandle",
+        "Chop" | "砍伐" => "Chop",
+        "Work" | "差事" => "Work",
         _ => action,
     }
 }
@@ -330,7 +539,13 @@ fn entity_socket_ok(
     action: &str,
 ) -> bool {
     let room_name = resolve_action_room_name(pid, target);
-    if (is_canonical_named_npc(target) || trade::target_has_shop_offer(target, &room_name))
+    let has_live_stock = crate::db::get_inventory(&target.inventory, target.vit)
+        .items
+        .iter()
+        .any(|i| i.qty > 0);
+    if (trade::target_has_shop_offer(target, &room_name)
+        || has_live_stock
+        || target.kind == EntityKind::Npc)
         && matches!(action, "Look" | "Talk" | "Trade" | "Borrow" | "Subdue" | "Slay")
     {
         return true;
@@ -361,26 +576,6 @@ fn entity_socket_ok(
     true
 }
 
-pub(super) fn is_canonical_named_npc(target: &Character) -> bool {
-    if target.id.starts_with("wt_npc_")
-        || target.id.starts_with("wt_vendor_")
-        || target.display_title.contains('｜')
-        || target.display_title.contains('|')
-    {
-        return true;
-    }
-    const CANONICAL_NAMES: &[&str] = &[
-        "陸秉衡", "陸知微", "岑守岳", "岑拓", "溫懷瑾", "溫晴", "韓鐵山", "許萬川",
-        "許海音", "林正雄", "周萬生", "方石", "岑守淵", "羅烈", "陳萬福", "沈清河",
-        "白泉生", "柯成器", "蘇錦心", "顧海平", "洪守明", "鄭烏石", "秦水生", "馬山行",
-        "梁千木", "石萬鈞", "袁山茶", "高望雲", "田百稼", "牧長風", "方赤土", "雷千鈞",
-        "葉青囊", "阮水生", "陸承禮", "陸長貴", "陸敬軒", "秦明誠", "林時中", "趙觀星",
-        "周一刀", "岑雲野", "許阿甘", "馬補靴", "沈硯舟",
-    ];
-    CANONICAL_NAMES.iter().any(|name| {
-        target.id.contains(name) || target.display_title.contains(name)
-    })
-}
 
 pub(super) fn target_grid_room_name(target: &Character) -> String {
     if let (Some(x), Some(y)) = (target.grid_x, target.grid_y) {
@@ -407,15 +602,96 @@ pub(super) fn resolve_action_room_name(player_id: &str, target: &Character) -> S
 }
 
 fn grid_room_name_at(x: i32, y: i32) -> Option<String> {
-    crate::server::grid_manager::get_runtime_square_grid().and_then(|g| {
-        g.get(crate::grid::SquareCoord::new(x, y)).map(|c| {
-            if c.name.trim().is_empty() {
-                crate::grid::terrain_name_zh(c.terrain).to_string()
-            } else {
-                c.name.clone()
-            }
-        })
+    crate::server::grid_manager::get_runtime_grid_cell(crate::grid::SquareCoord::new(x, y)).map(|c| {
+        if c.name.trim().is_empty() {
+            crate::grid::terrain_name_zh(c.terrain).to_string()
+        } else {
+            c.name.clone()
+        }
     })
+}
+
+pub fn format_unacquainted_target_label(
+    room_name: &str,
+    display_title: &str,
+    is_staff: bool,
+    has_uniform: bool,
+    in_counter_zone: bool,
+) -> String {
+    if !is_staff || (!has_uniform && !in_counter_zone) {
+        return "陌生人".to_string();
+    }
+    let host_title = crate::grid::resolve_any_room_venue_object(room_name.trim(), display_title.trim())
+        .map(|v| v.default_host_title)
+        .unwrap_or("當值主事");
+    if in_counter_zone && has_uniform {
+        format!("櫃檯內場身著工作服的{host_title}")
+    } else if in_counter_zone {
+        format!("櫃檯內場的{host_title}")
+    } else {
+        format!("身著工作服的{host_title}")
+    }
+}
+
+pub fn format_player_work_shift_narrative_and_advance_pack(
+    room_name: &str,
+    occupation_id: &str,
+    wage_mg: i32,
+    supply_opt: Option<(i32, &str)>,
+) -> String {
+    let object_hint = supply_opt.map(|(_, d)| d).unwrap_or(occupation_id);
+    if !room_name.trim().is_empty() {
+        let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(
+            room_name.trim(),
+            object_hint.trim(),
+        );
+    }
+    if let Some(venue) =
+        crate::grid::resolve_any_room_venue_object(room_name.trim(), occupation_id.trim())
+    {
+        let zone_tag = if venue.has_counter_restricted_zone {
+            "當值櫃檯內側"
+        } else {
+            "當值作業區"
+        };
+        if let Some((qty, disp)) = supply_opt {
+            format!(
+                "你在{}{}接過班牌投入「{}」（{}），順著工序一氣呵成完成整輪勞作；盤點封裝好的 {} 份「{}」隨即由專人起運。{}核對名冊後當面點清發放了 {} 鎂工錢，沉甸甸落入你的囊中。",
+                venue.venue_kind,
+                zone_tag,
+                occupation_id,
+                venue.on_duty_fixture_activity,
+                qty,
+                disp,
+                venue.default_host_title,
+                wage_mg
+            )
+        } else {
+            format!(
+                "你在{}{}挽起衣袖投入「{}」（{}），專注而連貫地完成了整整一班的勞作。隨著當值鐘聲敲響，{}核對工冊無誤，當面點清並如數發放了 {} 鎂工錢，整輪差事順利結清。",
+                venue.venue_kind,
+                zone_tag,
+                occupation_id,
+                venue.on_duty_fixture_activity,
+                venue.default_host_title,
+                wage_mg
+            )
+        }
+    } else if let Some((qty, disp)) = supply_opt {
+        format!(
+            "你接過班牌投入「{}」，順著工序一氣呵成完成整輪勞作；盤點封裝好的 {} 份「{}」隨即由專人起運。管事核對名冊後當面點清發放了 {} 鎂工錢，沉甸甸落入你的囊中。",
+            occupation_id,
+            qty,
+            disp,
+            wage_mg
+        )
+    } else {
+        format!(
+            "你挽起衣袖投入「{}」，專注而連貫地完成了整整一班的勞作。隨著當值鐘聲敲響，管事核對工冊無誤，當面點清並如數發放了 {} 鎂工錢，整輪差事順利結清。",
+            occupation_id,
+            wage_mg
+        )
+    }
 }
 
 pub(super) fn player_visible_target_name(player_id: &str, target: &Character) -> String {
@@ -430,7 +706,16 @@ pub(super) fn player_visible_target_name(player_id: &str, target: &Character) ->
             return display_target_name(target);
         }
     }
-    "陌生人".to_string()
+    let room_name = resolve_action_room_name(player_id, target);
+    let (is_staff, has_uniform, in_counter_zone) =
+        crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+            &room_name,
+            &target.id,
+            &target.display_title,
+            &target.current_activity,
+            &target.equipment_slots,
+        );
+    format_unacquainted_target_label(&room_name, &target.display_title, is_staff, has_uniform, in_counter_zone)
 }
 
 fn verb_from_action(action: &str) -> Option<Verb> {
@@ -476,4 +761,155 @@ pub(super) fn current_game_hour(cfg: &Server) -> i32 {
         cfg.game_time_scale,
     );
     h
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_all_object_and_scene_sockets_have_chinese_action_labels() {
+        let sockets = [
+            "SmeltBloom",
+            "BuildFieldAnvil",
+            "SetupHerbStove",
+            "WashOre",
+            "ForgeRepairStrip",
+            "SharpenBlade",
+            "WashHerb",
+            "DryHerb",
+            "DryHerbs",
+            "CrushHerb",
+            "BoilDecoction",
+            "DecoctPotion",
+            "Queue",
+            "AcceptJob",
+            "BuySoup",
+            "CarryCargo",
+            "HelpRope",
+            "TalkQueue",
+            "QueueFerry",
+            "SellReeds",
+            "SellSackcloth",
+            "SellRope",
+            "BoardFerry",
+            "StepAshore",
+            "CheckCargo",
+            "JoinCheck",
+            "RegisterComplaint",
+            "QueueBroth",
+            "Explore",
+            "CrushOre",
+            "SmeltIngot",
+            "ForgeTool",
+            "CastHardware",
+            "SortHerbs",
+            "GrindPowder",
+            "MakePoultice",
+            "DistillEssence",
+            "SoakFiber",
+            "TwistCord",
+            "TwistRope",
+            "WeaveCloth",
+            "OilCanvas",
+            "PressPaper",
+            "ScrapeHide",
+            "BoilFishGlue",
+            "CalcifyShell",
+            "CobbleBoots",
+            "CraftHandle",
+            "Chop",
+            "QuenchBlade",
+            "Work",
+        ];
+        for &sock in &sockets {
+            let zh = action_label_zh(sock);
+            assert_ne!(zh, sock, "Socket {} should have a Chinese label", sock);
+            assert!(
+                !zh.chars().any(|c| c.is_ascii_alphabetic()),
+                "Chinese label '{}' for socket {} must not contain ASCII letters",
+                zh,
+                sock
+            );
+            let norm = normalize_action_key(zh);
+            assert!(
+                norm.chars().all(|c| c.is_ascii_alphanumeric()),
+                "Normalized key '{}' for label '{}' should be canonical ASCII socket key",
+                norm,
+                zh
+            );
+        }
+    }
+
+    #[test]
+    fn test_format_unacquainted_target_label_rules() {
+        assert_eq!(
+            format_unacquainted_target_label("老堰頭・水輪石磨工坊", "石磨工", false, true, true),
+            "陌生人"
+        );
+        assert_eq!(
+            format_unacquainted_target_label("老堰頭・水輪石磨工坊", "石磨工", true, false, false),
+            "陌生人"
+        );
+        assert_eq!(
+            format_unacquainted_target_label("老堰頭・水輪石磨工坊", "石磨匠師", true, true, true),
+            "櫃檯內場身著工作服的當值石磨匠師"
+        );
+        assert_eq!(
+            format_unacquainted_target_label("老堰頭・水輪石磨工坊", "石磨匠師", true, false, true),
+            "櫃檯內場的當值石磨匠師"
+        );
+        assert_eq!(
+            format_unacquainted_target_label("老堰頭・水輪石磨工坊", "石磨匠師", true, true, false),
+            "身著工作服的當值石磨匠師"
+        );
+        assert_eq!(
+            format_unacquainted_target_label("荒蕪礫石空地", "巡山者", true, true, false),
+            "身著工作服的當值主事"
+        );
+    }
+
+    #[test]
+    fn test_format_player_work_shift_narrative_venue_and_fallback() {
+        let venue_with_supply = format_player_work_shift_narrative_and_advance_pack(
+            "老堰頭・水輪石磨工坊",
+            "水輪石磨工",
+            120,
+            Some((5, "細磨小麥麵粉")),
+        );
+        assert!(venue_with_supply.contains("水輪石磨工坊"));
+        assert!(venue_with_supply.contains("當值櫃檯內側"));
+        assert!(venue_with_supply.contains("當值石磨匠師"));
+        assert!(venue_with_supply.contains("120 鎂工錢"));
+        assert!(venue_with_supply.contains("5 份「細磨小麥麵粉」"));
+
+        let venue_no_supply = format_player_work_shift_narrative_and_advance_pack(
+            "三水大食堂",
+            "大食堂洗切工",
+            80,
+            None,
+        );
+        assert!(venue_no_supply.contains("大食堂"));
+        assert!(venue_no_supply.contains("當值櫃檯內側"));
+        assert!(venue_no_supply.contains("食堂主廚"));
+        assert!(venue_no_supply.contains("80 鎂工錢"));
+
+        let fallback_with_supply = format_player_work_shift_narrative_and_advance_pack(
+            "荒蕪礫石空地",
+            "採石搬運",
+            60,
+            Some((2, "粗礪碎石")),
+        );
+        assert!(fallback_with_supply.contains("你接過班牌投入「採石搬運」"));
+        assert!(fallback_with_supply.contains("管事核對名冊後當面點清發放了 60 鎂工錢"));
+
+        let fallback_no_supply = format_player_work_shift_narrative_and_advance_pack(
+            "荒蕪礫石空地",
+            "採石搬運",
+            60,
+            None,
+        );
+        assert!(fallback_no_supply.contains("你挽起衣袖投入「採石搬運」"));
+        assert!(fallback_no_supply.contains("管事核對工冊無誤"));
+    }
 }

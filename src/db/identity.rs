@@ -35,11 +35,18 @@ pub fn build_identity(entity_id: &str) -> String {
         (None, None, String::new(), String::new())
     };
 
+    let mut soul_seed_val = None;
+    let mut effective_occupation = if !occ.is_empty() {
+        occ.clone()
+    } else {
+        "居民".to_string()
+    };
+
     if let Some(ent) = ent_opt {
-        let gender = match ent.gender.as_str() {
-            "F" | "female" | "女" | "女性" => "女性",
-            _ => "男性",
-        };
+        soul_seed_val = ent.soul_seed;
+        let is_female = crate::store::npc_effective_is_female(entity_id, Some(&ent.gender));
+        let gender = if is_female { "女性" } else { "男性" };
+        person = crate::store::resolve_npc_person_name(entity_id, &ent.display_title, Some(&ent.gender));
         let role_label = crate::store::npc_persistent_role_label(entity_id, &ent.display_title);
         let role = if !role_label.is_empty() {
             role_label
@@ -48,7 +55,7 @@ pub fn build_identity(entity_id: &str) -> String {
         } else {
             "居民".to_string()
         };
-
+        effective_occupation = role.clone();
         if let Some(v_name) = venue_name_opt {
             result = format!("你是{person}，{gender}，職稱為{role}，在{v_name}工作。");
         } else {
@@ -121,7 +128,23 @@ pub fn build_identity(entity_id: &str) -> String {
         });
 
         if let Some((ob_kind, ob_subject)) = crate::store::get_active_npc_obligation(entity_id) {
-            result.push_str(&format!("你當前手頭有待辦的義務或牽掛：{}（{}）。", ob_kind, ob_subject));
+            let ob_label = match ob_kind.as_str() {
+                "restock_goods" => "鋪子補貨",
+                "repair_tool" | "maintenance_recovery" | "tool_repair" => "器物修整",
+                "stranded_cargo" | "market_delivery" | "delivery" => "貨件調度",
+                "craft_material" | "material_shortage" | "MaterialShortage" | "supply_shortage" => {
+                    "資材補備"
+                }
+                "fuel_shortage" => "爐灶柴炭添補",
+                "treat_injury" | "medical_help" | "MedicalHelp" => "傷病調理",
+                "repay_debt" | "debt_settlement" => "帳目結清",
+                "rest_recovery" => "歇息養神",
+                _ => "手頭差事",
+            };
+            result.push_str(&format!(
+                "你當前手頭有待辦的義務或牽掛：{}（{}）。",
+                ob_label, ob_subject
+            ));
         }
     } else if let Some(v_name) = venue_name_opt {
         if !occ.is_empty() {
@@ -131,11 +154,23 @@ pub fn build_identity(entity_id: &str) -> String {
         }
     }
 
+    let seed = crate::npc::causal_core::deterministic_resident_seed(
+        entity_id,
+        soul_seed_val,
+    );
     if personality_opt.is_none() {
         personality_opt = get_personality_for_entity(entity_id);
     }
     if let Some(p) = personality_opt {
         result.push_str(&personality_to_sentence(&p));
+    }
+    let myriad_phase = crate::npc::causal_core::describe_npc_myriad_personality_phase(
+        entity_id,
+        &effective_occupation,
+        seed,
+    );
+    if !myriad_phase.is_empty() {
+        result.push_str(&myriad_phase);
     }
     let thoughts = get_active_thoughts(entity_id, 5);
     if !thoughts.is_empty() {
@@ -153,12 +188,29 @@ pub fn build_identity(entity_id: &str) -> String {
     }
     let evts = get_recent_events(entity_id, 5);
     if !evts.is_empty() {
+        let mark = result.len();
         result.push_str("你最近的經歷動向：");
+        let header_len = result.len();
         for e in evts {
-            if !e.payload.contains("青籠關") && !e.payload.contains("林緣聚地") {
-                result.push_str(&e.payload);
-                result.push('；');
+            if e.payload.is_empty()
+                || e.payload.chars().all(|c| c.is_ascii_digit() || c == '-')
+                || e.payload.contains("npc_")
+                || e.payload.contains("wt-")
+                || e.payload.contains("wt_")
+                || e.payload.contains("grid:")
+                || e.payload.contains("ambient_")
+                || e.payload.contains("shanhai_")
+                || e.payload.contains("青籠關")
+                || e.payload.contains("林緣聚地")
+            {
+                continue;
             }
+            let sanitized = e.payload.replace(['|', '｜'], "・");
+            result.push_str(&sanitized);
+            result.push('；');
+        }
+        if result.len() == header_len {
+            result.truncate(mark);
         }
     }
     let pulse = crate::game::object_ecology::market_pulse_summary_for_prompt();
@@ -172,38 +224,64 @@ pub fn build_identity(entity_id: &str) -> String {
     result
 }
 
-fn append_tail(mut result: String, entity_id: &str) -> String {
-    if let Some(p) = get_personality_for_entity(entity_id) {
-        result.push_str(&personality_to_sentence(&p));
-    }
-    result
-}
 
 fn personality_to_sentence(p: &super::Personality) -> String {
-    let mut parts = Vec::new();
-    if p.boldness > 0.6 {
-        parts.push("性格大膽豪爽敢衝");
-    } else if p.boldness < 0.3 {
-        parts.push("行事慎重戒備");
+    let bold_desc = if p.boldness < 0.28 {
+        "行事極度沉斂慎重、戒備心重"
+    } else if p.boldness < 0.42 {
+        "行事謹慎戒備、不輕易涉險"
+    } else if p.boldness < 0.58 {
+        "作風沉著穩妥、不溫不火"
+    } else if p.boldness < 0.72 {
+        "性格爽朗果斷、勇於任事"
     } else {
-        parts.push("作風沉著隨和");
-    }
-    if p.orderliness > 0.6 {
-        parts.push("做事一絲不苟講究規矩");
-    } else if p.orderliness < 0.3 {
-        parts.push("性情隨性不喜條規約束");
+        "氣魄大膽豪邁、敢衝敢闖"
+    };
+
+    let ord_desc = if p.orderliness < 0.28 {
+        "天性不拘小節、隨遇而安不喜拘束"
+    } else if p.orderliness < 0.42 {
+        "處世率性自然、靈活變通不受條規約束"
+    } else if p.orderliness < 0.58 {
+        "進退知曉分寸、圓融通達"
+    } else if p.orderliness < 0.72 {
+        "辦事一絲不苟、遵循章法規矩"
     } else {
-        parts.push("進退知曉分寸靈活應對");
-    }
-    if p.sensitivity > 0.6 {
-        parts.push("心思細膩善於察言觀色、口吻熱絡");
-    } else if p.sensitivity < 0.3 {
-        parts.push("言語務實精簡、情緒內斂");
+        "恪守綱紀度數、言行嚴謹端方"
+    };
+
+    let sens_desc = if p.sensitivity < 0.28 {
+        "情緒極度內斂深沉、言語精簡冷靜"
+    } else if p.sensitivity < 0.42 {
+        "待人言辭務實簡明、情緒內斂少語"
+    } else if p.sensitivity < 0.58 {
+        "待人客氣得體、應對合宜"
+    } else if p.sensitivity < 0.72 {
+        "心思敏銳細膩、善於察言觀色"
     } else {
-        parts.push("待人客氣得體");
-    }
-    if parts.is_empty() {
-        return String::new();
-    }
-    format!("你的性格秉性為：{}。", parts.join("，"))
+        "心神極其敏銳洞察、口吻溫暖熱絡"
+    };
+
+    // 主次張力平衡描述
+    let tension = if p.boldness >= p.sensitivity && p.boldness >= p.orderliness {
+        if p.sensitivity >= p.orderliness {
+            "在勇毅任事與敏銳體察間相輔相成，不拘泥於死板條規"
+        } else {
+            "敢作敢當而綱紀嚴明，剛直中見方圓"
+        }
+    } else if p.sensitivity >= p.boldness && p.sensitivity >= p.orderliness {
+        if p.boldness >= p.orderliness {
+            "心性洞察入微且不乏果敢斷腕之氣，重情亦重義"
+        } else {
+            "心思極其細密周延，謹言慎行、顧全大局"
+        }
+    } else {
+        if p.boldness >= p.sensitivity {
+            "恪守規矩綱紀之餘兼具魄力，行止有節、雷厲風行"
+        } else {
+            "條理井然且體恤人微，方正不阿中懷有一份溫柔"
+        }
+    };
+
+    format!("你的性格秉性為：{}，{}，{}。心性維度守衡，{}。", bold_desc, ord_desc, sens_desc, tension)
 }

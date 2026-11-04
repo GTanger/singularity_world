@@ -1,0 +1,3211 @@
+{
+  "caskets": {
+    "葉卅": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "feng_shou": 3,
+        "hua_dong": 5,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_wooden_tool_handle": [
+          "qiao_shu",
+          "jian"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "outer_household_0001": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_steel_scissors": [
+          "qiao_shu",
+          "jian"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "陳萬福": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "huo_shou": 3,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wen": 3,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_kitchen_cleaver": [
+          "qiao_shu",
+          "jian"
+        ],
+        "craft_steel_hunting_knife": [
+          "xu_xuan"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "驗收行客三": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "岑拓": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_steel_hunting_knife": [
+          "yu_zhu",
+          "shen_bu"
+        ],
+        "mut_craft_steel_hunting_knife_frost_condensed": [
+          "di_shou"
+        ]
+      }
+    },
+    "岑守岳": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_bamboo_basket": [
+          "chun",
+          "liu"
+        ],
+        "craft_bamboo_oil_umbrella": [
+          "ci_dong"
+        ],
+        "craft_steel_hunting_knife": [
+          "jing_gou",
+          "yuan_bu"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "沈清河": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_steel_hunting_knife": [
+          "mao"
+        ]
+      }
+    },
+    "溫懷瑾": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_steel_hunting_knife": [
+          "lian_gou"
+        ]
+      }
+    },
+    "test_hero_combat": {
+      "inventory": {
+        "chen_tai": 3,
+        "chun": 3,
+        "ding": 3,
+        "jian": 3,
+        "liu": 3,
+        "mo": 3,
+        "qiao_shu": 3,
+        "shui": 3,
+        "wo": 4,
+        "wu": 4
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_bamboo_basket": [
+          "chun",
+          "liu"
+        ],
+        "curved_peeling_knife": [
+          "wu",
+          "wo"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "驗收行客二": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "顧海平": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "he_tai": 3,
+        "hua_dong": 5,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5,
+        "zheng": 3
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_wooden_tool_handle": [
+          "qiao_shu",
+          "jian"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "行旅驗收客": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "p_test_baton_1793667778298471265": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 1,
+        "ci": 5,
+        "dun_dong": 5,
+        "gang": 1,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5,
+        "zhong": 1
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "p_test_baton_1793694181893011872": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 1,
+        "ci": 5,
+        "dun_dong": 5,
+        "gang": 1,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5,
+        "zhong": 1
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "巡檢行客": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "林山": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "he_tai": 3,
+        "hua_dong": 5,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5,
+        "zheng": 3
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_bamboo_oil_umbrella": [
+          "du"
+        ],
+        "craft_wooden_tool_handle": [
+          "qiao_shu",
+          "jian"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "蘇錦心": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_bamboo_oil_umbrella": [
+          "gu_shu",
+          "shu"
+        ],
+        "craft_steel_hunting_knife": [
+          "jie_shou",
+          "gang2"
+        ]
+      }
+    },
+    "p_test_1": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 1,
+        "ci": 5,
+        "dun_dong": 5,
+        "gang": 1,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5,
+        "zhong": 1
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "短衫船匠": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "feng_shou": 3,
+        "hua_dong": 5,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_wooden_tool_handle": [
+          "qiao_shu",
+          "jian"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "unit_test_actor": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "test_player_blackbone": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_bamboo_basket": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "秦水生": {
+      "inventory": {
+        "bi": 5,
+        "chen_tai": 3,
+        "chun": 3,
+        "ci": 5,
+        "ding": 3,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "jian": 3,
+        "liu": 5,
+        "mo": 3,
+        "ning": 5,
+        "po_dong": 5,
+        "qiao_shu": 3,
+        "shou": 5,
+        "shui": 3,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "wt_cat_0973": [
+          "chun",
+          "liu"
+        ],
+        "wt_cat_0984": [
+          "qiao_shu",
+          "jian"
+        ]
+      }
+    },
+    "高望雲": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "wu_fou2": 1,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {}
+    },
+    "陸秉衡": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_steel_hunting_knife": [
+          "yi"
+        ]
+      }
+    },
+    "溫晴": {
+      "inventory": {
+        "bi": 5,
+        "ci": 5,
+        "dun_dong": 5,
+        "hua_dong": 5,
+        "liu": 5,
+        "ning": 5,
+        "po_dong": 5,
+        "shou": 5,
+        "su": 5,
+        "wu": 5,
+        "zhan": 5,
+        "zhen_dong": 5
+      },
+      "qualities": {},
+      "charges": {},
+      "extraction_ratios": {},
+      "item_inscriptions": {
+        "craft_steel_hunting_knife": [
+          "ling_gou2"
+        ]
+      }
+    }
+  },
+  "loadouts": {
+    "驗收行客三": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N020",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N119",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N350",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾截脈式",
+        "soul_seed": -4784680760464034430,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N010",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N068",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N235",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝碎骨連",
+        "soul_seed": -4784680760464034430,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N004",
+            "word_id": "po_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N037",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N163",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速穿隙破",
+        "soul_seed": -4784680760464034430,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N006",
+            "word_id": "wu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N050",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N185",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震無轉身",
+        "soul_seed": -4784680760464034430,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "巡檢行客": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N019",
+            "word_id": "bi",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N114",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N344",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾探隙勢",
+        "soul_seed": 4110704599407531161,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N001",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N024",
+            "word_id": "liu",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N123",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝奔湧連",
+        "soul_seed": 4110704599407531161,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N020",
+            "word_id": "po_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N117",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N359",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速雷霆破",
+        "soul_seed": 4110704599407531161,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N014",
+            "word_id": "wu",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N087",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N278",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震避實身",
+        "soul_seed": 4110704599407531161,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "陸秉衡": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N016",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N099",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N305",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾・靈猿破虛式",
+        "soul_seed": 709981228250634255,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N014",
+            "word_id": "hua_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N088",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N279",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝・連環截江連",
+        "soul_seed": 709981228250634255,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N020",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N117",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N351",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速・乾坤一擲破",
+        "soul_seed": 709981228250634255,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "wu",
+            "fluency": "PingWen"
+          },
+          {
+            "node_id": "N106",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N335",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震・移星換斗步",
+        "soul_seed": 709981228250634255,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "顧海平": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N012",
+            "word_id": "bi",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N076",
+            "word_id": "chen_tai",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N257",
+            "word_id": "chun",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避純掠影勢",
+        "soul_seed": -3586328290083070639,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N008",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N057",
+            "word_id": "ding",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N211",
+            "word_id": "dun_dong",
+            "fluency": "ShunTong"
+          }
+        ],
+        "custom_name": "刺盾妙手連",
+        "soul_seed": -3586328290083070639,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N015",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N092",
+            "word_id": "jian",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N296",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化流透骨殺",
+        "soul_seed": -3586328290083070639,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N005",
+            "word_id": "mo",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N043",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N176",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "磨破潛水步",
+        "soul_seed": -3586328290083070639,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "unit_test_actor": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N004",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N037",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N161",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾穿雲勢",
+        "soul_seed": 158060491498475093,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N002",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N027",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N142",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝崩濤連",
+        "soul_seed": 158060491498475093,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N013",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N084",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N272",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速裂骨擊",
+        "soul_seed": 158060491498475093,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N006",
+            "word_id": "wu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N049",
+            "word_id": "zhan",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N185",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震卸勁步",
+        "soul_seed": 158060491498475093,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "p_test_baton_1793667778298471265": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N106",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N325",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾破空式",
+        "soul_seed": 5171295770252924178,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N010",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N069",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N229",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝拂柳連",
+        "soul_seed": 5171295770252924178,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N017",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N103",
+            "word_id": "shou",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N315",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速開天轟",
+        "soul_seed": 5171295770252924178,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N002",
+            "word_id": "wu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N027",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N140",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震抱一身",
+        "soul_seed": 5171295770252924178,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "p_test_1": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N001",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N023",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N128",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾探隙勢",
+        "soul_seed": -5245613543287795161,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N013",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N085",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N270",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝奔湧連",
+        "soul_seed": -5245613543287795161,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N009",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N064",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N218",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速雷霆破",
+        "soul_seed": -5245613543287795161,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N006",
+            "word_id": "wu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N047",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N192",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震避實身",
+        "soul_seed": -5245613543287795161,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "短衫船匠": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N005",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N042",
+            "word_id": "chen_tai",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N171",
+            "word_id": "chun",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避純探隙勢",
+        "soul_seed": 4541319621189822074,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N014",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N086",
+            "word_id": "ding",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N288",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "刺盾奔湧連",
+        "soul_seed": 4541319621189822074,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N003",
+            "word_id": "feng_shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N033",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N148",
+            "word_id": "jian",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "風堅雷霆破",
+        "soul_seed": 4541319621189822074,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N008",
+            "word_id": "liu",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N059",
+            "word_id": "mo",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N216",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "流凝避實身",
+        "soul_seed": 4541319621189822074,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "溫懷瑾": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N016",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N096",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N305",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾・拔刀破空式",
+        "soul_seed": -6040467482263597294,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N015",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N094",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N294",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝・隨風拂柳連",
+        "soul_seed": -6040467482263597294,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N012",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N079",
+            "word_id": "shou",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N261",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速・破極開天轟",
+        "soul_seed": -6040467482263597294,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N004",
+            "word_id": "wu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N036",
+            "word_id": "zhan",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N163",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震・凝虛抱一身",
+        "soul_seed": -6040467482263597294,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "test_hero_combat": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N019",
+            "word_id": "bi",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N115",
+            "word_id": "chen_tai",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N339",
+            "word_id": "chun",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避純破空式",
+        "soul_seed": 6349904190316908232,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N017",
+            "word_id": "ci",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N105",
+            "word_id": "ding",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N316",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "刺盾拂柳連",
+        "soul_seed": 6349904190316908232,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N014",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N089",
+            "word_id": "jian",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N288",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化流開天轟",
+        "soul_seed": 6349904190316908232,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N008",
+            "word_id": "mo",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N057",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N206",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "磨破抱一身",
+        "soul_seed": 6349904190316908232,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "陳萬福": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N010",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N070",
+            "word_id": "chen_tai",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N235",
+            "word_id": "chun",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避純掣電勢",
+        "soul_seed": -8715491649627215135,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N014",
+            "word_id": "ci",
+            "fluency": "PingWen"
+          },
+          {
+            "node_id": "N087",
+            "word_id": "ding",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N287",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "刺盾驟雨連",
+        "soul_seed": -8715491649627215135,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N013",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N085",
+            "word_id": "jian",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N273",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化流崩解殺",
+        "soul_seed": -8715491649627215135,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "mo",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N110",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N330",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "磨破金湯身",
+        "soul_seed": -8715491649627215135,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "p_test_baton_1793694181893011872": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N011",
+            "word_id": "bi",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N071",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N250",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾探隙勢",
+        "soul_seed": -2144142566046859841,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N001",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N022",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N124",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝奔湧連",
+        "soul_seed": -2144142566046859841,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N107",
+            "word_id": "shou",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N334",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速雷霆破",
+        "soul_seed": -2144142566046859841,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N010",
+            "word_id": "wu",
+            "fluency": "PingWen"
+          },
+          {
+            "node_id": "N068",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N237",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震避實身",
+        "soul_seed": -2144142566046859841,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "秦水生": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N010",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N066",
+            "word_id": "chen_tai",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N231",
+            "word_id": "chun",
+            "fluency": "ShunTong"
+          }
+        ],
+        "custom_name": "避純探隙勢",
+        "soul_seed": -4187286803829167981,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N109",
+            "word_id": "ding",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N326",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "刺盾奔湧連",
+        "soul_seed": -4187286803829167981,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N008",
+            "word_id": "hua_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N060",
+            "word_id": "jian",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N216",
+            "word_id": "liu",
+            "fluency": "ShunTong"
+          }
+        ],
+        "custom_name": "化流雷霆破",
+        "soul_seed": -4187286803829167981,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N007",
+            "word_id": "mo",
+            "fluency": "PingWen"
+          },
+          {
+            "node_id": "N051",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N194",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "磨破避實身",
+        "soul_seed": -4187286803829167981,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "驗收行客二": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N019",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N115",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N348",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾破空式",
+        "soul_seed": 3144840161485413361,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N002",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N029",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N135",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝拂柳連",
+        "soul_seed": 3144840161485413361,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N008",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N059",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N206",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速開天轟",
+        "soul_seed": 3144840161485413361,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N011",
+            "word_id": "wu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N075",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N244",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震抱一身",
+        "soul_seed": 3144840161485413361,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "沈清河": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N017",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N102",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N314",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾掠影勢",
+        "soul_seed": -923956544734349919,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N011",
+            "word_id": "hua_dong",
+            "fluency": "PingWen"
+          },
+          {
+            "node_id": "N073",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N247",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝妙手連",
+        "soul_seed": -923956544734349919,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N001",
+            "word_id": "po_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N023",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N122",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速透骨殺",
+        "soul_seed": -923956544734349919,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N005",
+            "word_id": "wu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N042",
+            "word_id": "zhan",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N171",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震潛水步",
+        "soul_seed": -923956544734349919,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "outer_household_0001": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N002",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N027",
+            "word_id": "chen_tai",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N143",
+            "word_id": "chun",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避純穿雲勢",
+        "soul_seed": 6868589761120658080,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N008",
+            "word_id": "ci",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N057",
+            "word_id": "ding",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N212",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "刺盾崩濤連",
+        "soul_seed": 6868589761120658080,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N001",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N024",
+            "word_id": "jian",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N121",
+            "word_id": "liu",
+            "fluency": "ShunTong"
+          }
+        ],
+        "custom_name": "化流裂骨擊",
+        "soul_seed": 6868589761120658080,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N020",
+            "word_id": "mo",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N120",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N353",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "磨破卸勁步",
+        "soul_seed": 6868589761120658080,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "蘇錦心": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N019",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N111",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N337",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾破空式",
+        "soul_seed": 7197251100789439904,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N012",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N077",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N257",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝拂柳連",
+        "soul_seed": 7197251100789439904,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N005",
+            "word_id": "po_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N045",
+            "word_id": "shou",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N169",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速開天轟",
+        "soul_seed": 7197251100789439904,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N017",
+            "word_id": "wu",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N103",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N314",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震抱一身",
+        "soul_seed": 7197251100789439904,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "岑守岳": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N108",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N327",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾破空式",
+        "soul_seed": 6436151820587749490,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N004",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N038",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N160",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝拂柳連",
+        "soul_seed": 6436151820587749490,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N016",
+            "word_id": "po_dong",
+            "fluency": "PingWen"
+          },
+          {
+            "node_id": "N096",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N309",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速開天轟",
+        "soul_seed": 6436151820587749490,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N019",
+            "word_id": "wu",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N112",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N341",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震抱一身",
+        "soul_seed": 6436151820587749490,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "林山": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N011",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N071",
+            "word_id": "chen_tai",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N249",
+            "word_id": "chun",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避純破空式",
+        "soul_seed": 6471789443291245781,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N014",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N089",
+            "word_id": "ding",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N277",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "刺盾拂柳連",
+        "soul_seed": 6471789443291245781,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N004",
+            "word_id": "hua_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N037",
+            "word_id": "jian",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N159",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化流開天轟",
+        "soul_seed": 6471789443291245781,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N006",
+            "word_id": "mo",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N046",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N191",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "磨破抱一身",
+        "soul_seed": 6471789443291245781,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "葉卅": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N013",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N085",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N275",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾掣電勢",
+        "soul_seed": 5644210104510896729,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N019",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N111",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N341",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝驟雨連",
+        "soul_seed": 5644210104510896729,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N106",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N333",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速崩解殺",
+        "soul_seed": 5644210104510896729,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N017",
+            "word_id": "wu",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N104",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N316",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震金湯身",
+        "soul_seed": 5644210104510896729,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "高望雲": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N014",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N086",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N280",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾・浮光掠影勢",
+        "soul_seed": 8135397706005115079,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N010",
+            "word_id": "hua_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N070",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N232",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝・百工妙手連",
+        "soul_seed": 8135397706005115079,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N012",
+            "word_id": "po_dong",
+            "fluency": "PingWen"
+          },
+          {
+            "node_id": "N076",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N253",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速・絕命透骨殺",
+        "soul_seed": 8135397706005115079,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N011",
+            "word_id": "wu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N074",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N245",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震・游龍潛水步",
+        "soul_seed": 8135397706005115079,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "岑拓": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N006",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N050",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N192",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾・神探巧解勢",
+        "soul_seed": 5983178607596502313,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N107",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N334",
+            "word_id": "ning",
+            "fluency": "ShunTong"
+          }
+        ],
+        "custom_name": "化凝・萬流奔湧連",
+        "soul_seed": 5983178607596502313,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N001",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N023",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N130",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速・九霄雷霆破",
+        "soul_seed": 5983178607596502313,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N007",
+            "word_id": "wu",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N051",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N201",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震・旋空避實身",
+        "soul_seed": 5983178607596502313,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "溫晴": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N018",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N107",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N333",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾・驚弦掣電勢",
+        "soul_seed": -1929666960122201811,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N001",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N022",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N122",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝・狂嵐驟雨連",
+        "soul_seed": -1929666960122201811,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N012",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N077",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N262",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速・逆鱗崩解殺",
+        "soul_seed": -1929666960122201811,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N017",
+            "word_id": "wu",
+            "fluency": "PingWen"
+          },
+          {
+            "node_id": "N104",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N320",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震・固若金湯身",
+        "soul_seed": -1929666960122201811,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "行旅驗收客": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N013",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N082",
+            "word_id": "ci",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N273",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避盾截脈式",
+        "soul_seed": 8765104317471573694,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N011",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N075",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N248",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化凝碎骨連",
+        "soul_seed": 8765104317471573694,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N017",
+            "word_id": "po_dong",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N104",
+            "word_id": "shou",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N313",
+            "word_id": "su",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "破速穿隙破",
+        "soul_seed": 8765104317471573694,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N019",
+            "word_id": "wu",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N113",
+            "word_id": "zhan",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N344",
+            "word_id": "zhen_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "吾震無轉身",
+        "soul_seed": 8765104317471573694,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    },
+    "test_player_blackbone": {
+      "opening": {
+        "inlays": [
+          {
+            "node_id": "N006",
+            "word_id": "bi",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N047",
+            "word_id": "chen_tai",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N187",
+            "word_id": "chun",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "避純掠影勢",
+        "soul_seed": -7679031956122800475,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "midgame": {
+        "inlays": [
+          {
+            "node_id": "N019",
+            "word_id": "ci",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N113",
+            "word_id": "ding",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N347",
+            "word_id": "dun_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "刺盾妙手連",
+        "soul_seed": -7679031956122800475,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "finisher": {
+        "inlays": [
+          {
+            "node_id": "N013",
+            "word_id": "hua_dong",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N081",
+            "word_id": "jian",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N266",
+            "word_id": "liu",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "化流透骨殺",
+        "soul_seed": -7679031956122800475,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      },
+      "defense": {
+        "inlays": [
+          {
+            "node_id": "N007",
+            "word_id": "mo",
+            "fluency": "ShunTong"
+          },
+          {
+            "node_id": "N053",
+            "word_id": "ning",
+            "fluency": "ChangLiu"
+          },
+          {
+            "node_id": "N198",
+            "word_id": "po_dong",
+            "fluency": "ChangLiu"
+          }
+        ],
+        "custom_name": "磨破潛水步",
+        "soul_seed": -7679031956122800475,
+        "practice_count": null,
+        "anatomy_familiarity": null,
+        "learned_delta": null
+      }
+    }
+  }
+}

@@ -5,7 +5,7 @@ use crate::store;
 use super::disposition::{add_thought_to_entity, add_thought_to_entity_with_flavor};
 use super::{ErrNoStore, ThoughtSource};
 
-pub const DAILY_EXPENSE_BASE: i32 = 8;
+pub const DAILY_EXPENSE_BASE: i32 = 2;
 
 pub fn deduct_daily_expense(game_day: i32, now_unix: i64) -> anyhow::Result<i32> {
     let pool = crate::pg::pool().ok_or_else(|| anyhow::anyhow!("PostgreSQL 不可用"))?;
@@ -48,7 +48,7 @@ pub fn deduct_daily_expense(game_day: i32, now_unix: i64) -> anyhow::Result<i32>
                     entity,
                     ThoughtSource::WorkDone,
                     now_unix,
-                    "手頭銀錢充裕、食宿安穩，心裡頗為踏實",
+                    "手頭鎂幣充裕、食宿安穩，心裡頗為踏實",
                 );
             }
             snapshots.push(entity.clone());

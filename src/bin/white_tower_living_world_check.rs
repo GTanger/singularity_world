@@ -3,6 +3,7 @@
 
 use anyhow::{Result, ensure};
 use singularity_world::living_world::{ActorKind, builtin_contract, shared_policy_key};
+use singularity_world::living_world_evaluator::evaluate_singularity_world_quality_suite;
 
 fn main() -> Result<()> {
     let live = parse_args()?;
@@ -23,6 +24,28 @@ fn main() -> Result<()> {
         contract.person_fact_groups.len(),
         contract.shared_action_slices.len(),
         contract.source_records.len()
+    );
+    let eval_suite = evaluate_singularity_world_quality_suite()?;
+    println!(
+        "evaluators: wenyao_slots={} outer_slots={} wenyao_landmarks={}+{} max_resident_jaccard={:.2} max_landmark_jaccard={:.2} talk_lines={} unique_talk_ratio={:.3} routing_pos={}/{} routing_neg_fp={}/{} routing_acc={:.4} narrative_score={:.2} counterfactual_lift=+{:.2} anti_loop_surfaces={} core_modules={} violations={}",
+        eval_suite.overlap_report.wenyao_slot_count,
+        eval_suite.overlap_report.outer_slot_count,
+        eval_suite.overlap_report.wenyao_commercial_landmark_count,
+        eval_suite.overlap_report.wenyao_residential_landmark_count,
+        eval_suite.overlap_report.max_wenyao_resident_jaccard,
+        eval_suite.overlap_report.max_landmark_desc_jaccard,
+        eval_suite.overlap_report.venue_talk_line_count,
+        eval_suite.overlap_report.unique_talk_line_ratio,
+        eval_suite.routing_report.positive_pass_count,
+        eval_suite.routing_report.positive_total,
+        eval_suite.routing_report.negative_false_positive_count,
+        eval_suite.routing_report.negative_total,
+        eval_suite.routing_report.routing_accuracy,
+        eval_suite.narrative_report.baseline_mean_score,
+        eval_suite.narrative_report.mean_lift,
+        eval_suite.anti_looping_report.audited_text_surfaces,
+        eval_suite.anti_looping_report.audited_core_modules,
+        eval_suite.anti_looping_report.violations.len(),
     );
     if live {
         check_live(&contract)?;

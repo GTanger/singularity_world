@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "id": "white_tower_living_world_v1",
+  "status": "working_premise",
+  "canon": false,
+  "design_scope": "白塔半島缺口 10 至 12：活人、玩家與世界接縫、正典候選與 runtime 映射",
+  "chosen_architecture": "C",
+  "architecture_options": [
+    {
+      "id": "A",
+      "label": "把活動文案與隨機行為打散",
+      "verdict": "rejected",
+      "reason": "只能製造表面多樣；重啟後沒有同一意圖，行動也無法倒查依據與後果。"
+    },
+    {
+      "id": "B",
+      "label": "照搬 Usurper Reborn 的完整 NPC dispatcher",
+      "verdict": "rejected",
+      "reason": "可參考能力鏈，但其內容、C# 架構、NPC 專用分派器與模擬尺度不能直接成為白塔世界骨架。"
+    },
+    {
+      "id": "C",
+      "label": "人物連續狀態加事件到期推進與共同行動收據",
+      "verdict": "selected",
+      "reason": "每個人物保留同一身分與未完意圖；離場後按 next_wake_at 推進，玩家與居民使用相同世界動作，所有結果可由正式資料回讀。"
+    }
+  ],
+  "person_fact_groups": [
+    "identity_and_body",
+    "place_and_route",
+    "knowledge_and_belief",
+    "possessions_and_responsibilities",
+    "relationships_and_commitments",
+    "current_intent",
+    "feasible_options",
+    "consequences_and_next_wake"
+  ],
+  "shared_action_slices": [
+    {
+      "action_key": "move",
+      "authority": "entities.place_id + entity_rooms + world_routes",
+      "player_entry": "pg::world_place::move_entity_place",
+      "npc_entry": "pg::world_place::move_entity_place",
+      "receipt_table": "world_action_receipts"
+    },
+    {
+      "action_key": "gather",
+      "authority": "world_resource_sources + entities.inventory + world_resource_ledger",
+      "player_entry": "pg::world_resource::gather",
+      "npc_entry": "pg::world_resource::gather",
+      "receipt_table": "world_action_receipts"
+    },
+    {
+      "action_key": "trade",
+      "authority": "entities.magnesium + entities.inventory + world_trade_ledger",
+      "player_entry": "pg::world_trade::settle",
+      "npc_entry": "pg::world_trade::settle",
+      "receipt_table": "world_action_receipts"
+    },
+    {
+      "action_key": "work",
+      "authority": "assignments + world_work_sites + entities.magnesium + world_work_ledger",
+      "player_entry": "pg::world_work::perform_shift",
+      "npc_entry": "pg::world_work::perform_shift",
+      "receipt_table": "world_action_receipts"
+    }
+  ],
+  "source_records": [
+    {
+      "fact_id": "principle.world_without_player",
+      "subject_ref": "singularity_world",
+      "fact_key": "world_exists_without_player",
+      "fact_value": "true",
+      "source_tier": "U",
+      "source_ref": "wiki:10-正典與ADR/玩家是自己故事的主角",
+      "status": "accepted",
+      "canon": true,
+      "runtime_authority": true,
+      "runtime_projection": "resident_continuity.control_mode"
+    },
+    {
+      "fact_id": "principle.every_character_is_alive",
+      "subject_ref": "singularity_world",
+      "fact_key": "every_game_character_has_continuity",
+      "fact_value": "true",
+      "source_tier": "U",
+      "source_ref": "wiki:40-系統設計/npc-system/每個人物都是活人—居民生活連續性v1",
+      "status": "accepted",
+      "canon": true,
+      "runtime_authority": true,
+      "runtime_projection": "resident_continuity"
+    },
+    {
+      "fact_id": "design.white_tower_formalization_v1",
+      "subject_ref": "white_tower_peninsula",
+      "fact_key": "formalization_package",
+      "fact_value": "data/world/white_tower_formalization_v1.json",
+      "source_tier": "W",
+      "source_ref": "wiki:20-世界觀/白塔半島正式化提案v1—尺度、場所、聚落與路網",
+      "status": "working_premise",
+      "canon": false,
+      "runtime_authority": false,
+      "runtime_projection": ""
+    },
+    {
+      "fact_id": "design.white_tower_living_world_v1",
+      "subject_ref": "white_tower_peninsula",
+      "fact_key": "living_world_contract",
+      "fact_value": "data/world/white_tower_living_world_v1.json",
+      "source_tier": "W",
+      "source_ref": "wiki:40-系統設計/活世界與玩家接縫v1",
+      "status": "working_premise",
+      "canon": false,
+      "runtime_authority": true,
+      "runtime_projection": "resident_continuity + world_action_receipts"
+    },
+    {
+      "fact_id": "runtime.white_tower_runtime_v1",
+      "subject_ref": "white_tower_peninsula",
+      "fact_key": "operational_projection",
+      "fact_value": "data/world/white_tower_runtime_v1.json",
+      "source_tier": "G",
+      "source_ref": "db:world_runtime_versions/white_tower_runtime_v1",
+      "status": "runtime_projection",
+      "canon": false,
+      "runtime_authority": true,
+      "runtime_projection": "world_places + world_routes + world_source_layers"
+    },
+    {
+      "fact_id": "runtime.white_tower_author_economy_v1",
+      "subject_ref": "white_tower_peninsula",
+      "fact_key": "author_economy_projection",
+      "fact_value": "data/world/white_tower_author_economy_v1.json",
+      "source_tier": "G",
+      "source_ref": "azgaar:goods+markets+deals",
+      "status": "runtime_evidence",
+      "canon": false,
+      "runtime_authority": true,
+      "runtime_projection": "world_goods + world_markets + world_market_goods + world_trade_evidence + world_work_sites"
+    },
+    {
+      "fact_id": "retired.surface_inside_world_split",
+      "subject_ref": "singularity_world",
+      "fact_key": "surface_inside_world_split",
+      "fact_value": "cancelled",
+      "source_tier": "R",
+      "source_ref": "wiki:20-世界觀/表世界與裡世界",
+      "status": "retired",
+      "canon": false,
+      "runtime_authority": false,
+      "runtime_projection": ""
+    }
+  ],
+  "falsifiers": [
+    "服務重啟後 current_intent、目的地或 next_wake_at 被重設，表示人物不是同一個人。",
+    "同一個 move、gather、trade 或 work 因 actor 是 player 或 npc 而走不同權威寫入，表示玩家與居民不是同一世界規則。",
+    "玩家離開後的行動沒有 world_action_receipts，或回來時只能靠即席敘事猜結果，表示世界沒有持續。",
+    "任一 runtime 事實無法指出 U/A/W/G/R、source_ref 與 projection，表示正典映射沒有閉合。"
+  ],
+  "known_debts": [
+    "目前共同行動垂直切片覆蓋 move、gather、trade 與 work；修理、贈與、衝突仍須逐項收斂到同一收據入口。",
+    "既有 1,553 名 NPC 缺少家庭、正式職務與承諾資料；不得為填滿資料表而虛構。",
+    "既有背包含遷移前累積的異常大數量；本輪只阻止決策繼續無視庫存，不做不可逆清洗。",
+    "現行 P0 物資名稱與奇幻現代背景仍不相稱；它們只保留為守衡與共同行動驗證資料。"
+  ]
+}

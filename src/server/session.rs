@@ -77,6 +77,20 @@ pub(crate) fn player_location_key(player_id: &str) -> String {
 }
 
 /// 以 `PlayerID` 為 key 的線上 session（對齊既有 `SessionStore`）。
+/// 全域在線玩家 ID 集合（葉節點，無鎖競爭與反向依賴，供活世界模擬與因果步進高頻查詢）。
+pub static ONLINE_PLAYER_IDS: std::sync::LazyLock<parking_lot::RwLock<std::collections::HashSet<String>>> =
+    std::sync::LazyLock::new(|| parking_lot::RwLock::new(std::collections::HashSet::new()));
+
+/// 查詢指定實體是否在線
+pub fn is_entity_online(entity_id: &str) -> bool {
+    ONLINE_PLAYER_IDS.read().contains(entity_id)
+}
+
+/// 列出所有當前在線玩家 ID
+pub fn list_online_player_ids() -> std::collections::HashSet<String> {
+    ONLINE_PLAYER_IDS.read().clone()
+}
+
 pub struct SessionStore {
     inner: RwLock<HashMap<String, Session>>,
 }
@@ -95,8 +109,11 @@ impl SessionStore {
     }
 
     pub fn set(&self, player_id: &str, session: Session) {
-        let mut g = self.inner.write().expect("session store poisoned");
-        g.insert(player_id.to_string(), session);
+        {
+            let mut g = self.inner.write().expect("session store poisoned");
+            g.insert(player_id.to_string(), session);
+        }
+        ONLINE_PLAYER_IDS.write().insert(player_id.to_string());
     }
 
     pub fn get(&self, player_id: &str) -> Option<Session> {
@@ -105,17 +122,28 @@ impl SessionStore {
     }
 
     pub fn remove(&self, player_id: &str) {
-        let mut g = self.inner.write().expect("session store poisoned");
-        g.remove(player_id);
+        {
+            let mut g = self.inner.write().expect("session store poisoned");
+            g.remove(player_id);
+        }
+        ONLINE_PLAYER_IDS.write().remove(player_id);
     }
 
     /// 若目前綁定的連線 id 相符才移除（對齊既有 斷線比對 `Client`）。
     pub fn remove_if_connection(&self, player_id: &str, connection_id: Uuid) {
-        let mut g = self.inner.write().expect("session store poisoned");
-        if let Some(s) = g.get(player_id)
-            && s.connection_id == connection_id
-        {
-            g.remove(player_id);
+        let removed = {
+            let mut g = self.inner.write().expect("session store poisoned");
+            if let Some(s) = g.get(player_id)
+                && s.connection_id == connection_id
+            {
+                g.remove(player_id);
+                true
+            } else {
+                false
+            }
+        };
+        if removed {
+            ONLINE_PLAYER_IDS.write().remove(player_id);
         }
     }
 
@@ -279,7 +307,10 @@ mod tests {
         let st = SessionStore::new();
         st.set("p1", Session::new_disconnected("p1"));
         assert!(st.get("p1").is_some());
+        assert!(is_entity_online("p1"));
+        assert!(list_online_player_ids().contains("p1"));
         st.remove("p1");
         assert!(st.get("p1").is_none());
+        assert!(!is_entity_online("p1"));
     }
 }

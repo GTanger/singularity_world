@@ -212,8 +212,8 @@ mod tests {
     #[test]
     fn split_label() {
         assert_eq!(
-            split_npc_list_display_label(" 店長|張三 "),
-            ("店長".to_string(), "張三".to_string())
+            split_npc_list_display_label(" 掌事|張三 "),
+            ("掌事".to_string(), "張三".to_string())
         );
         assert_eq!(
             split_npc_list_display_label("李四"),

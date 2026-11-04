@@ -15,11 +15,6 @@ use super::super::session::Session;
 use super::{WsConnection, current_game_hour, parse_activated_nodes};
 
 pub(super) fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
-    tracing::info!(
-        "[handle_login] start pid={} conn={}",
-        msg.player_id,
-        conn.conn_id
-    );
     if msg.player_id.is_empty() {
         conn.send_error(gametext::client("login_need_id"));
         return;
@@ -28,18 +23,10 @@ pub(super) fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("login_need_password"));
         return;
     }
-    tracing::info!(
-        "[handle_login] a before db::get_entity pid={}",
-        msg.player_id
-    );
     let Ok(ent) = db::get_entity(&msg.player_id) else {
         conn.send_error(gametext::client("login_not_found"));
         return;
     };
-    tracing::info!(
-        "[handle_login] b after db::get_entity pid={}",
-        msg.player_id
-    );
     let Some(ent) = ent else {
         conn.send_error(gametext::client("login_not_found"));
         return;
@@ -48,23 +35,14 @@ pub(super) fn handle_login(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("login_not_player"));
         return;
     }
-    tracing::info!("[handle_login] c before has_password pid={}", msg.player_id);
     if !db::has_password_for_entity(&msg.player_id) {
         conn.send_error(gametext::client("login_no_password"));
         return;
     }
-    tracing::info!(
-        "[handle_login] d before verify_password pid={}",
-        msg.player_id
-    );
     let Ok(ok) = db::verify_password(&msg.player_id, &msg.password) else {
         conn.send_error(gametext::client("login_verify_failed"));
         return;
     };
-    tracing::info!(
-        "[handle_login] e after verify_password pid={} ok={ok}",
-        msg.player_id
-    );
     if !ok {
         conn.send_error(gametext::client("login_wrong_password"));
         return;
@@ -181,19 +159,43 @@ fn login_success(conn: &WsConnection, player_id: &str) {
 
     super::movement::send_grid_view(conn, player_id, gx, gy, gh);
     super::inventory::handle_get_tactical_state(conn);
-    // 異步登記格內 NPC 相遇與房間觀測
+    let recaps = crate::npc::causal_core::drain_player_offline_recap(player_id, game::now_unix());
+    for (cat, title, body) in recaps {
+        conn.send_json(&serde_json::json!({
+            "type": "recap_item",
+            "category": cat,
+            "title": title,
+            "body": body,
+        }));
+    }
+    // 異步登記房間觀測（不再於每次登入自動累加全房 NPC meet_count）與切換為玩家親自控制
     let observed_player_id = player_id.to_string();
     let observed_room_id = grid_room_id;
     let observed_at = game::now_unix();
     drop(tokio::task::spawn_blocking(move || {
-        if let Ok(ents) = db::get_entities_at_grid(gx, gy, -1) {
-            for npc in ents {
-                if matches!(npc.kind, crate::entity::EntityKind::Npc) && npc.id != observed_player_id {
-                    let _ = db::record_meet(&npc.id, &observed_player_id);
-                }
-            }
-        }
         game::observe_room(&observed_room_id, &observed_player_id, observed_at);
+        if let Some(pool) = crate::pg::pool()
+            && let Ok(mut client) = pool.get()
+        {
+            let _ = client.execute(
+                "INSERT INTO resident_continuity (
+                    entity_id, control_mode, life_status, current_intent,
+                    intent_reason, destination_place_id, intent_started_at,
+                    next_wake_at, updated_at, source_kind, source_ref
+                ) VALUES (
+                    $1, 'player', 'alive', 'player_directed',
+                    '人物本人親自行動', NULL, $2,
+                    NULL, $2, 'player_auth', 'login_success'
+                )
+                ON CONFLICT (entity_id) DO UPDATE SET
+                    control_mode = 'player',
+                    current_intent = 'player_directed',
+                    intent_reason = '人物本人親自行動',
+                    next_wake_at = NULL,
+                    updated_at = EXCLUDED.updated_at",
+                &[&observed_player_id, &observed_at],
+            );
+        }
         tracing::info!("[login_success] post-login observations done pid={observed_player_id}");
     }));
     tracing::info!("[login_success] 5 post-login observations scheduled pid={player_id}");
@@ -234,6 +236,18 @@ fn send_me_with_status(
         topology_costs: vec![],
         equipment_slots: HashMap::new(),
         equipment_names: HashMap::new(),
+        offline_directive: {
+            let dir = crate::npc::causal_core::get_player_offline_directive(player_id);
+            dir.code().to_string()
+        },
+        offline_directive_label: {
+            let dir = crate::npc::causal_core::get_player_offline_directive(player_id);
+            dir.label().to_string()
+        },
+        offline_directive_desc: {
+            let dir = crate::npc::causal_core::get_player_offline_directive(player_id);
+            dir.desc().to_string()
+        },
     };
     if let Some(ent) = ent {
         if !ent.display_title.is_empty() {

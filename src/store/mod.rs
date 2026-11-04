@@ -20,16 +20,20 @@ mod archival;
 mod auth;
 pub mod households;
 pub mod outer_households;
+pub use outer_households::OUTER_HOUSEHOLD_SLOTS;
 mod entity;
 pub use entity::{
+    canonical_npc_macro_settlement, clean_wilderness_place_label,
     clear_active_npc_obligation, current_game_hour, find_bfs_next_step,
     get_active_npc_dialogue, get_active_npc_obligation, is_npc_paused_for_interaction,
     is_role_or_placeholder_label, mark_player_knows_npc, mark_player_observed_npc,
-    npc_brief_appearance_tag, npc_persistent_role_label, npc_sensory_appearance_line,
-    open_active_npc_obligation, pause_npc_for_interaction, player_knows_npc,
-    player_observed_npc, player_pledged_hunting_zone, pledge_player_to_hunting_party,
-    record_active_npc_dialogue, resolve_npc_full_label, resolve_npc_person_name,
-    resolve_wenyao_npc_schedule, unpause_npc_for_interaction, wenyao_household_slot_for,
+    normalize_household_home_settlement,
+    npc_brief_appearance_tag, npc_effective_is_female, npc_persistent_role_label,
+    npc_sensory_appearance_line, open_active_npc_obligation, pause_npc_for_interaction,
+    player_knows_npc, player_observed_npc, player_pledged_hunting_zone,
+    pledge_player_to_hunting_party, record_active_npc_dialogue, resolve_npc_full_label,
+    resolve_npc_person_name, resolve_wenyao_npc_schedule, unpause_npc_for_interaction,
+    wenyao_household_slot_for,
     ActiveNpcDialogue, HuntingPartyPhase, HuntingPartyState, NpcGridState, WenyaoHouseholdSlot,
     KNOWN_NPC_NAMES, LIVE_HUNTING_PARTIES, LIVE_NPC_GRID_STATES, LIVE_NPC_OBLIGATIONS,
     OBSERVED_NPCS, PLAYER_HUNTING_PARTY_PLEDGES, WENYAO_HOUSEHOLD_SLOTS,
@@ -327,6 +331,7 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
     }
 
     set_store(s);
+    crate::game::object_ecology::ensure_ecology_items_in_store();
     Ok(())
 }
 
@@ -335,6 +340,38 @@ pub fn init(rooms_path: &str, runtime_dir: &str, data_dir: &str) -> anyhow::Resu
 // ══════════════════════════════════════
 
 impl Store {
+    pub fn new_in_memory() -> Self {
+        let tmp = std::env::temp_dir().join("singularity_test_store");
+        Self {
+            rooms: HashMap::new(),
+            exits: HashMap::new(),
+            entity_rooms: HashMap::new(),
+            venues: HashMap::new(),
+            assignments: HashMap::new(),
+            schedules: HashMap::new(),
+            entities: HashMap::new(),
+            place_graph: crate::world::place::PlaceGraph::default(),
+            items: HashMap::new(),
+            npc_threads: HashMap::new(),
+            npc_dyads: HashMap::new(),
+            npc_rumors: HashMap::new(),
+            npc_rumor_digest: None,
+            db_pool: None,
+            rooms_path: String::new(),
+            runtime_dir: String::new(),
+            entity_rooms_path: tmp.join("entity_rooms.json"),
+            venues_path: tmp.join("venues.json"),
+            assignments_path: tmp.join("assignments.json"),
+            schedules_path: tmp.join("schedules.json"),
+            entities_path: tmp.join("entities.json"),
+            items_path: tmp.join("items.json"),
+            npc_thread_path: tmp.join("npc_thread.json"),
+            npc_dyad_path: tmp.join("npc_dyad.json"),
+            npc_rumor_path: tmp.join("npc_rumors.json"),
+            npc_rumor_digest_path: tmp.join("npc_rumor_digest.json"),
+        }
+    }
+
     pub fn adjacency(&self) -> HashMap<String, Vec<String>> {
         self.exits
             .iter()
