@@ -4,6 +4,7 @@
 
 set -e
 cd "$(dirname "$0")"
+unset CARGO_TARGET_DIR
 SW_DIR="$(pwd)"
 PORT=1721
 DATABASE_URL="${DATABASE_URL:-postgres://postgres:singularity@localhost:5432/singularity}"
@@ -78,4 +79,9 @@ else
   nohup env PORT=$PORT DATABASE_URL="$DATABASE_URL" ./bin/server-rust >> sw.log 2>&1 &
   sleep 2
   echo "已啟動。log：$SW_DIR/sw.log"
+fi
+
+# 5) 執行本機六道防鬼打牆與線上端點驗收閘門
+if [[ -x "/home/tanger/.local/bin/tra-sw-gate" ]]; then
+  /home/tanger/.local/bin/tra-sw-gate
 fi
