@@ -41,13 +41,20 @@ fn resolve_caller_name(player_id: &str, npc_id: &str, ent: &crate::store::Entity
             }
         }
         let tag = crate::store::npc_brief_appearance_tag(npc_id, &ent.display_title);
-        let role = if ent.display_title.contains("鐵") || ent.display_title.contains("鍛造") || ent.display_title.contains("木作") || ent.display_title.contains("工坊") {
+        let slot = crate::store::wenyao_household_slot_for(npc_id);
+        let role_src = format!(
+            "{} {} {}",
+            crate::npc::causal_core::strip_trailing_person_name_from_role(&ent.display_title),
+            slot.brief_tag,
+            slot.work_name
+        );
+        let role = if role_src.contains("鐵") || role_src.contains("鍛造") || role_src.contains("木作") || role_src.contains("工坊") {
             "匠人"
-        } else if ent.display_title.contains("商") || ent.display_title.contains("鋪") || ent.display_title.contains("市集") || ent.display_title.contains("行") {
+        } else if role_src.contains("商") || role_src.contains("鋪") || role_src.contains("市集") || role_src.contains("行") {
             "行商"
-        } else if ent.display_title.contains("醫") || ent.display_title.contains("藥") || ent.display_title.contains("診") {
+        } else if role_src.contains("醫") || role_src.contains("藥") || role_src.contains("診") {
             "醫工"
-        } else if ent.display_title.contains("書") || ent.display_title.contains("學") || ent.display_title.contains("講堂") || ent.display_title.contains("觀星") {
+        } else if role_src.contains("書") || role_src.contains("學") || role_src.contains("講堂") || role_src.contains("觀星") {
             "學者"
         } else {
             "街坊"
@@ -429,13 +436,20 @@ fn resolve_ambient_caller_label(player_id: &str, npc_id: &str) -> String {
         }
     }
 
-    let role = if title.contains("鐵") || title.contains("鍛造") || title.contains("木作") || title.contains("工坊") {
+    let slot = crate::store::wenyao_household_slot_for(npc_id);
+    let role_src = format!(
+        "{} {} {}",
+        crate::npc::causal_core::strip_trailing_person_name_from_role(&title),
+        slot.brief_tag,
+        slot.work_name
+    );
+    let role = if role_src.contains("鐵") || role_src.contains("鍛造") || role_src.contains("木作") || role_src.contains("工坊") {
         "匠人"
-    } else if title.contains("商") || title.contains("鋪") || title.contains("市集") || title.contains("行") {
+    } else if role_src.contains("商") || role_src.contains("鋪") || role_src.contains("市集") || role_src.contains("行") {
         "行商"
-    } else if title.contains("醫") || title.contains("藥") || title.contains("診") {
+    } else if role_src.contains("醫") || role_src.contains("藥") || role_src.contains("診") {
         "醫工"
-    } else if title.contains("書") || title.contains("學") || title.contains("講堂") || title.contains("觀星") {
+    } else if role_src.contains("書") || role_src.contains("學") || role_src.contains("講堂") || role_src.contains("觀星") {
         "學者"
     } else {
         "街坊"

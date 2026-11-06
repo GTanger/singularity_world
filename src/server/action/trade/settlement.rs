@@ -625,12 +625,10 @@ pub(super) fn is_eligible_shop_staff(target: &Character, room_name: &str) -> boo
 
         let is_on_duty_or_active = has_uniform
             || in_counter_zone
-            || target.current_activity.is_empty()
             || target.current_activity.contains("當值")
             || target.current_activity.contains("櫃檯")
             || target.current_activity.contains("看顧")
             || target.current_activity.contains("掌");
-
         if is_commercial_venue && !is_passerby && is_on_duty_or_active {
             return true;
         }

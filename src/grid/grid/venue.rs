@@ -285,8 +285,8 @@ pub fn resolve_room_ambient_visitor_activity(room_name: &str, seed_idx: usize) -
         ]
     } else {
         &[
-            "提著竹編提籃在三水口商號間採辦日用雜貨",
-            "沿著平整的青石板街與相熟的街坊點頭寒暄",
+            "背著隨身行囊在附近駐足歇腳，打量四周風物",
+            "沿著平整的路道與相熟的街坊點頭寒暄",
         ]
     };
     Some(variants[seed_idx % variants.len()])

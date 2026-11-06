@@ -249,7 +249,16 @@ pub(super) fn run_idle_wander_section(
                                     id.starts_with("wt_vendor_")
                                         || id.contains("smith")
                                         || id.contains("carpenter")
-                                        || crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(&room_name, id, "", "", "").0
+                                        || npc_snapshots.get(id.as_str()).is_some_and(|(e, act)| {
+                                            crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+                                                &room_name,
+                                                id,
+                                                &e.display_title,
+                                                act,
+                                                &e.equipment_slots,
+                                            )
+                                            .0
+                                        })
                                 }) {
                                     if let Some((ea, _)) = npc_snapshots.get(artisan_id.as_str()) {
                                         let caller = resolve_caller_name(&s.player_id, artisan_id, ea);
@@ -662,6 +671,7 @@ pub(super) fn run_idle_wander_section(
                                     } else if let Some((ep, _sp)) = crate::game::peninsula_scripts::active_event_and_script_pack_for_room(&room_name, Some(&caller), now_ts) {
                                         format!("{caller}一邊忙碌一邊低聲道：「{}」", ep.trigger_and_causal_chain.replace("{當值主事}", &caller).replace("{協力對口}", "同僚"))
                                     } else if let Some(venue) = crate::grid::resolve_any_room_venue_object(&room_name, "")
+                                        && crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(&room_name, npc_id, &ent.display_title, &activity, &ent.equipment_slots).0
                                         && !venue.on_duty_talk_lines.is_empty() {
                                         let line = venue.on_duty_talk_lines[(ecology_tick as usize) % venue.on_duty_talk_lines.len()];
                                         format!("{caller}（{}）隨口道：「{line}」", venue.on_duty_fixture_activity)

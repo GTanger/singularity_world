@@ -137,9 +137,22 @@ pub fn is_recognizable_room_staff_or_counter_holder(
             has_visible_uniform = true;
         }
     }
-    if !has_visible_uniform && !npc_id.is_empty() {
+    if !has_visible_uniform
+        && equipment_slots.trim().is_empty()
+        && !npc_id.is_empty()
+        && !display_title.contains("便服")
+    {
         let slot = crate::store::wenyao_household_slot_for(npc_id);
-        if crate::game::peninsula_catalog::is_work_uniform_item_id_or_name(slot.attire_line) {
+        let is_matched_slot = npc_id == slot.name()
+            || display_title.contains(slot.name())
+            || (!slot.work_name.is_empty() && current_activity.contains(slot.work_name));
+        let work_matches_room = room_name.trim().is_empty()
+            || (!slot.work_name.is_empty()
+                && (room_name.contains(slot.work_name) || slot.work_name.contains(room_name)));
+        if is_matched_slot
+            && work_matches_room
+            && crate::game::peninsula_catalog::is_work_uniform_item_id_or_name(slot.attire_line)
+        {
             has_visible_uniform = true;
         }
     }
@@ -164,19 +177,30 @@ pub fn is_recognizable_room_staff_or_counter_holder(
         || display_title.contains("首座");
 
     if !has_counter_zone_marker {
-        if let Some(v) = crate::grid::resolve_any_room_venue_object(room_name, display_title) {
+        let mut eff_title = display_title.to_string();
+        let mut eff_act = current_activity.to_string();
+        if eff_title.is_empty() && eff_act.is_empty() && equipment_slots.is_empty() && !npc_id.is_empty() {
+            if let Some(arc) = crate::store::get_store() {
+                let s = arc.read();
+                if let Some(e) = s.entities.get(npc_id) {
+                    eff_title = e.display_title.clone();
+                    eff_act = e.current_activity.clone();
+                }
+            }
+        }
+
+        if let Some(v) = crate::grid::resolve_any_room_venue_object(room_name, &eff_title) {
             if v.has_counter_restricted_zone
                 && v.venue_kind != "街巷橋樑公共空地"
-                && ((display_title.is_empty() && current_activity.is_empty() && equipment_slots.is_empty())
-                    || current_activity.contains("櫃")
-                    || current_activity.contains("爐")
-                    || current_activity.contains("釜")
-                    || current_activity.contains("砧")
-                    || current_activity.contains("磨")
-                    || current_activity.contains("藥")
-                    || current_activity.contains("算")
-                    || current_activity.contains("帳")
-                    || current_activity.contains("攤"))
+                && (eff_act.contains("櫃")
+                    || eff_act.contains("爐")
+                    || eff_act.contains("釜")
+                    || eff_act.contains("砧")
+                    || eff_act.contains("磨")
+                    || eff_act.contains("藥")
+                    || eff_act.contains("算")
+                    || eff_act.contains("帳")
+                    || eff_act.contains("攤"))
             {
                 has_counter_zone_marker = true;
             }

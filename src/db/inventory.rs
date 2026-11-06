@@ -657,22 +657,23 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
         });
     }
     if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
-        let eco = crate::game::object_ecology::lookup_ecology_item_def(item_id);
-        let (item_type, slot, vit_bonus, dex_bonus, atk_bonus) = if let Some(eco_def) = eco {
-            let itype = if !eco_def.item_type.is_empty() {
-                eco_def.item_type
+        let (item_type, slot, vit_bonus, dex_bonus, atk_bonus) =
+            if let Some(eco) = crate::game::object_ecology::lookup_ecology_item_def(item_id) {
+                (
+                    eco.item_type,
+                    eco.slot,
+                    eco.vit_bonus,
+                    eco.dex_bonus,
+                    eco.atk_bonus,
+                )
             } else {
-                cat.category_tag.to_string()
+                derive_catalog_item_equip_profile(cat)
             };
-            (itype, eco_def.slot, eco_def.vit_bonus, eco_def.dex_bonus, eco_def.atk_bonus)
-        } else {
-            (cat.category_tag.to_string(), String::new(), 0, 0, 0)
-        };
         return Some(ItemDefBrief {
             name: cat.name.to_string(),
             item_type,
             slot,
-            description: cat.look_text.replace("，主要用於", "；"),
+            description: format!("{}（{}・{}）", cat.look_text, cat.workshop, cat.daily_function),
             weight: crate::game::peninsula_catalog::catalog_entry_weight_kg(cat),
             vit_bonus,
             dex_bonus,
@@ -743,6 +744,80 @@ pub fn get_item_def(item_id: &str) -> Option<ItemDefBrief> {
         });
     }
     None
+}
+fn derive_catalog_item_equip_profile(
+    cat: &crate::game::peninsula_catalog::PeninsulaCatalogEntry,
+) -> (String, String, i32, i32, i32) {
+    let cat_num = cat.category_num.trim();
+    if cat_num == "14" || cat.category_tag == "clothing_textiles_footwear" {
+        let is_raw_bolt = [
+            "布匹", "布料", "綢", "緞", "紗", "麻布", "棉布", "線軸", "繡線", "絲線",
+        ]
+        .iter()
+        .any(|k| cat.name.contains(k));
+        if is_raw_bolt {
+            return (cat.category_tag.to_string(), String::new(), 0, 0, 0);
+        }
+        if ["鞋", "靴", "履", "屐"].iter().any(|k| cat.name.contains(k)) {
+            return ("equipment".to_string(), "feet".to_string(), 2, 3, 0);
+        }
+        if ["帽", "冠", "笠", "頭巾", "風帽", "髮簪", "木簪"]
+            .iter()
+            .any(|k| cat.name.contains(k))
+        {
+            return ("equipment".to_string(), "head".to_string(), 2, 1, 0);
+        }
+        if ["褲", "裙", "綁腿", "護腿"].iter().any(|k| cat.name.contains(k)) {
+            return ("equipment".to_string(), "legs".to_string(), 3, 2, 0);
+        }
+        if ["護腕", "袖套", "手套"].iter().any(|k| cat.name.contains(k)) {
+            return ("equipment".to_string(), "wrist".to_string(), 1, 3, 0);
+        }
+        if ["腰帶", "束帶", "圍裙", "皮帶", "腰封"]
+            .iter()
+            .any(|k| cat.name.contains(k))
+        {
+            return ("equipment".to_string(), "waist".to_string(), 2, 2, 0);
+        }
+        if ["內衫", "汗衫", "中衣", "褻衣"]
+            .iter()
+            .any(|k| cat.name.contains(k))
+        {
+            return ("equipment".to_string(), "undershirt".to_string(), 2, 1, 0);
+        }
+        if [
+            "衫", "衣", "袍", "襖", "褂", "外套", "背心", "斗篷", "蓑衣", "服",
+        ]
+        .iter()
+        .any(|k| cat.name.contains(k))
+        {
+            return ("equipment".to_string(), "body".to_string(), 4, 2, 0);
+        }
+        return (cat.category_tag.to_string(), String::new(), 0, 0, 0);
+    }
+    if cat_num == "18" || cat.category_tag == "weapons_armor_patrol" {
+        if ["甲", "冑", "護心"].iter().any(|k| cat.name.contains(k)) {
+            return ("armor".to_string(), "inner_armor".to_string(), 6, 1, 0);
+        }
+        if ["盾", "牌"].iter().any(|k| cat.name.contains(k)) {
+            return ("equipment".to_string(), "hold_l".to_string(), 4, 1, 2);
+        }
+        return ("weapon".to_string(), "hold_r".to_string(), 1, 3, 6);
+    }
+    if cat_num == "17"
+        || cat.category_tag == "craft_machinery_tools"
+        || cat.socket == "Equip"
+    {
+        let is_heavy_fixture = [
+            "箱", "櫃", "架", "車", "台", "檯", "爐", "砧", "磨", "機", "桶", "缸",
+        ]
+        .iter()
+        .any(|k| cat.name.contains(k));
+        if crate::game::peninsula_catalog::catalog_entry_weight_kg(cat) <= 15.0 && !is_heavy_fixture {
+            return ("tool".to_string(), "hold_r".to_string(), 1, 3, 2);
+        }
+    }
+    (cat.category_tag.to_string(), String::new(), 0, 0, 0)
 }
 
 /// 查詢單一物品名稱（若查無則回退為 item_id）
@@ -1153,5 +1228,16 @@ mod tests {
         for it in &entries {
             assert!(it.qty <= MAX_NPC_ITEM_STACK_QTY);
         }
+    }
+
+    #[test]
+    fn test_peninsula_catalog_wt_cat_equipment_and_tool_slots_derived() {
+        let knife = get_item_def("wt_cat_1021").expect("wt_cat_1021 should exist");
+        assert_eq!(knife.slot, "hold_r");
+        assert!(knife.atk_bonus > 0);
+
+        let plane = get_item_def("wt_cat_0954").expect("wt_cat_0954 should exist");
+        assert_eq!(plane.slot, "hold_r");
+        assert!(plane.dex_bonus > 0);
     }
 }

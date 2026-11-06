@@ -219,7 +219,7 @@ pub(super) fn do_entity_borrow(
     // 熟識明借分支：若玩家已識名或關係良好且心緒不差，直接明借
     let is_acquainted_or_friendly = crate::store::player_knows_npc(pid, target_id)
         || rel.familiarity_score >= 1
-        || rel.balance_score >= 0;
+        || rel.balance_score >= 1;
     if let Some((c_id, c_name, borrow_quote)) = canon_item {
         if is_acquainted_or_friendly && disp >= -35 && rel.balance_score >= -1 {
             let _ = remove_from_inventory(target_id, c_id, 1);

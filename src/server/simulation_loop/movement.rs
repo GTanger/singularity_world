@@ -86,13 +86,20 @@ fn resolve_npc_name_for_viewer(viewer_pid: &str, npc_id: &str, display_title: &s
         crate::store::resolve_npc_person_name(npc_id, display_title, None)
     } else {
         let brief = crate::store::npc_brief_appearance_tag(npc_id, display_title);
-        let role = if display_title.contains("鐵") || display_title.contains("鍛造") || display_title.contains("木作") || display_title.contains("工坊") {
+        let slot = crate::store::wenyao_household_slot_for(npc_id);
+        let role_src = format!(
+            "{} {} {}",
+            crate::npc::causal_core::strip_trailing_person_name_from_role(display_title),
+            slot.brief_tag,
+            slot.work_name
+        );
+        let role = if role_src.contains("鐵") || role_src.contains("鍛造") || role_src.contains("木作") || role_src.contains("工坊") {
             "匠人"
-        } else if display_title.contains("商") || display_title.contains("鋪") || display_title.contains("市集") || display_title.contains("行") {
+        } else if role_src.contains("商") || role_src.contains("鋪") || role_src.contains("市集") || role_src.contains("行") {
             "行商"
-        } else if display_title.contains("醫") || display_title.contains("藥") || display_title.contains("診") {
+        } else if role_src.contains("醫") || role_src.contains("藥") || role_src.contains("診") {
             "醫工"
-        } else if display_title.contains("學") || display_title.contains("書") || display_title.contains("講堂") || display_title.contains("觀星") {
+        } else if role_src.contains("學") || role_src.contains("書") || role_src.contains("講堂") || role_src.contains("觀星") {
             "學者"
         } else {
             "街坊"
@@ -170,7 +177,7 @@ pub(crate) fn resolve_unnamed_arrival_action_detail(
         );
     if is_staff {
         if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, display_title) {
-            if in_counter_zone || venue.has_counter_restricted_zone {
+            if in_counter_zone {
                 return format!(
                     "邁步進入{}當值櫃檯內側，{}",
                     venue.venue_kind, venue.on_duty_fixture_activity
@@ -182,7 +189,10 @@ pub(crate) fn resolve_unnamed_arrival_action_detail(
                 );
             }
         }
-    } else if let Some(ambient) = crate::grid::resolve_room_ambient_visitor_activity(room_name, 0) {
+    } else if let Some(ambient) = crate::grid::resolve_room_ambient_visitor_activity(
+        room_name,
+        npc_id.bytes().fold(0usize, |acc, b| acc.wrapping_add(b as usize)),
+    ) {
         return format!("步入此處，{}", ambient);
     }
     "步履從容地沿街前行".to_string()

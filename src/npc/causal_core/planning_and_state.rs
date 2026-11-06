@@ -696,10 +696,10 @@ pub fn derive_default_3step_plan(
     cornerstone: Cornerstone,
     belief_item: &str,
 ) -> [String; 3] {
+    let role_hint = crate::npc::causal_core::strip_trailing_person_name_from_role(role_hint);
     let s = clean_settlement_name(settlement);
     let item = if belief_item.trim().is_empty() { "山海常備物料" } else { belief_item.trim() };
     let is_blade = vessel_name.contains('刀') || vessel_name.contains('鎬') || vessel_name.contains('剪');
-
     if role_hint.contains("獵") || role_hint.contains("採") || role_hint.contains("樵") {
         let prep = if is_blade {
             format!("先檢視「{vessel_name}」刃口與行囊繩索")

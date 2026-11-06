@@ -309,10 +309,12 @@ pub fn run_npc_autonomous_production_step(
             ("wt_cat_0279", "特級在來米粉")
         };
         let _ = db::add_to_inventory(npc_id, prod_id, 1);
-        crate::npc::causal_core::record_settlement_market_production("老堰頭", prod_id, 1);
+        let mill_s = crate::world::materials::infer_origin_settlement(room_name);
+        let mill_settlement = if mill_s.is_empty() { "老堰頭" } else { mill_s };
+        crate::npc::causal_core::record_settlement_market_production(mill_settlement, prod_id, 1);
         let _ = crate::game::peninsula_scripts::try_advance_room_event_and_script_pack_via_object(room_name, prod_name);
         return Some(format!(
-            "{npc_name}撥開老堰頭引水木閘，湍急溪水帶動重礦包邊大石磨勻速旋轉，將大圳頭新穀細碾分篩、慢熬成一份溫潤細膩的【{prod_name}】。"
+            "{npc_name}撥開{mill_settlement}引水木閘，湍急溪水帶動重礦包邊大石磨勻速旋轉，將新穀細碾分篩、慢熬成一份溫潤細膩的【{prod_name}】。"
         ));
     }
 

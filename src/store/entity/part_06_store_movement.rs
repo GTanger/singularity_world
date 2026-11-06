@@ -81,7 +81,7 @@ impl Store {
             let is_expedition_role = slot.brief_tag.starts_with("合社獵團・")
                 || slot.brief_tag.starts_with("入山百工・")
                 || slot.brief_tag.starts_with("古道行旅・");
-            let role_hint = format!("{} {} {}", e.display_title, slot.brief_tag, slot.work_name);
+            let role_hint = format!("{} {} {}", slot.brief_tag, slot.work_name, crate::npc::causal_core::strip_trailing_person_name_from_role(&e.display_title));
             let vessel_spec = crate::npc::causal_core::resolve_vocational_vessel(&role_hint);
             let matched_opt = crate::npc::causal_core::find_predefined_action_by_title(&purpose_appraisal);
             let is_bath = matched_opt
@@ -469,7 +469,8 @@ impl Store {
                             let mut treasuries = crate::npc::causal_core::SETTLEMENT_TREASURIES
                                 .write()
                                 .unwrap_or_else(|e| e.into_inner());
-                            *treasuries.entry("文曜".to_string()).or_insert(2400) += bounty;
+                            let target_s = if !order.origin_settlement.is_empty() { order.origin_settlement.clone() } else { "文曜".to_string() };
+                            *treasuries.entry(target_s).or_insert(2400) += bounty;
                             drop(treasuries);
                             crate::npc::causal_core::enqueue_arrival_effect(
                                 crate::npc::causal_core::ArrivalEffect::CustomThoughtAndMg {

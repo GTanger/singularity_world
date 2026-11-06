@@ -53,6 +53,21 @@ fn resident_appearance_and_demeanor(target: &Character, room_name: &str) -> Opti
     {
         return None;
     }
+    let probe = character_to_store_entity_probe(target);
+    let coord = (target.grid_x.unwrap_or(0), target.grid_y.unwrap_or(0));
+    let (has_uniform, in_counter) =
+        crate::pg::living_world::is_recognizable_room_staff_or_counter_holder_entity(&probe, coord, "");
+    let (is_staff_by_title, _, _) =
+        crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+            room_name,
+            &target.id,
+            &target.display_title,
+            &target.current_activity,
+            &target.equipment_slots,
+        );
+    if !(has_uniform || in_counter || is_staff_by_title) {
+        return None;
+    }
     let hint = format!("{} {}", target.display_title, target.id);
     if let Some(venue) = crate::grid::resolve_room_venue_object(room_name, &hint)
         .or_else(|| crate::grid::resolve_market_or_specialty_room_object(room_name, &hint))
@@ -663,6 +678,18 @@ mod tests {
         assert!(
             floor_narrative.contains("手邊常備本職器物【百工學徒手用小木尺】"),
             "apprentice should show vocational vessel: {floor_narrative}"
+        );
+
+        let mut visitor = test_character();
+        visitor.id = "npc_visiting_hunter".to_string();
+        visitor.kind = crate::entity::EntityKind::Npc;
+        visitor.display_title = "合社獵手・林山海".to_string();
+        visitor.equipment_slots = r#"{"body":"starter_body_m"}"#.to_string();
+        visitor.current_activity = "入內歇腳避風".to_string();
+        let visitor_narrative = build_look_narrative(&visitor, "林山海", "文曜・百草診所", Some("viewer_p"));
+        assert!(
+            !visitor_narrative.contains("百草溫灸盒") && !visitor_narrative.contains("分格藥囊"),
+            "visiting hunter in clinic must NOT be described with the clinic doctor's on_duty_demeanor: {visitor_narrative}"
         );
     }
 }

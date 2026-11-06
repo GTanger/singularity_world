@@ -106,7 +106,14 @@ fn apply_catalog_effects_part3(
             let nearby_resident = {
                 let gh = current_game_hour(&conn.cfg);
                 let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-                ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+                ents.into_iter().find(|e| {
+                    e.id != pid
+                        && e.kind == crate::entity::EntityKind::Npc
+                        && e.vit > 0
+                        && !e.id.starts_with("shanhai_")
+                        && !(e.id.starts_with("ambient_")
+                            && crate::game::ambient_creature_loot(&e.display_title).is_some())
+                })
             };
 
             if let Some(npc) = nearby_resident {
@@ -143,7 +150,14 @@ fn apply_catalog_effects_part3(
         let nearby_resident = {
             let gh = current_game_hour(&conn.cfg);
             let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-            ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+            ents.into_iter().find(|e| {
+                e.id != pid
+                    && e.kind == crate::entity::EntityKind::Npc
+                    && e.vit > 0
+                    && !e.id.starts_with("shanhai_")
+                    && !(e.id.starts_with("ambient_")
+                        && crate::game::ambient_creature_loot(&e.display_title).is_some())
+            })
         };
 
         if let Some(npc) = nearby_resident {
@@ -237,7 +251,14 @@ fn apply_catalog_effects_part3(
         let nearby_resident = {
             let gh = current_game_hour(&conn.cfg);
             let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-            ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+            ents.into_iter().find(|e| {
+                e.id != pid
+                    && e.kind == crate::entity::EntityKind::Npc
+                    && e.vit > 0
+                    && !e.id.starts_with("shanhai_")
+                    && !(e.id.starts_with("ambient_")
+                        && crate::game::ambient_creature_loot(&e.display_title).is_some())
+            })
         };
         if let Some(npc) = nearby_resident {
             let npc_label = if crate::store::player_knows_npc(pid, &npc.id) && !npc.display_title.trim().is_empty() {
@@ -299,7 +320,14 @@ fn apply_catalog_effects_part3(
             let nearby_resident = {
                 let gh = current_game_hour(&conn.cfg);
                 let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-                ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+                ents.into_iter().find(|e| {
+                    e.id != pid
+                        && e.kind == crate::entity::EntityKind::Npc
+                        && e.vit > 0
+                        && !e.id.starts_with("shanhai_")
+                        && !(e.id.starts_with("ambient_")
+                            && crate::game::ambient_creature_loot(&e.display_title).is_some())
+                })
             };
             if let Some(npc) = nearby_resident {
                 let npc_label = if crate::store::player_knows_npc(pid, &npc.id) && !npc.display_title.trim().is_empty() {
@@ -408,7 +436,14 @@ fn apply_catalog_effects_part3(
         let nearby_resident = {
             let gh = current_game_hour(&conn.cfg);
             let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-            ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+            ents.into_iter().find(|e| {
+                e.id != pid
+                    && e.kind == crate::entity::EntityKind::Npc
+                    && e.vit > 0
+                    && !e.id.starts_with("shanhai_")
+                    && !(e.id.starts_with("ambient_")
+                        && crate::game::ambient_creature_loot(&e.display_title).is_some())
+            })
         };
         if let Some(npc) = nearby_resident {
             let npc_label = if crate::store::player_knows_npc(pid, &npc.id) && !npc.display_title.trim().is_empty() {
@@ -495,7 +530,14 @@ fn apply_catalog_effects_part3(
         let nearby_resident = {
             let gh = current_game_hour(&conn.cfg);
             let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-            ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+            ents.into_iter().find(|e| {
+                e.id != pid
+                    && e.kind == crate::entity::EntityKind::Npc
+                    && e.vit > 0
+                    && !e.id.starts_with("shanhai_")
+                    && !(e.id.starts_with("ambient_")
+                        && crate::game::ambient_creature_loot(&e.display_title).is_some())
+            })
         };
         if let Some(npc) = nearby_resident {
             let npc_label = if crate::store::player_knows_npc(pid, &npc.id) && !npc.display_title.trim().is_empty() {
@@ -707,7 +749,14 @@ fn apply_catalog_effects_part3(
         let nearby_resident = {
             let gh = current_game_hour(&conn.cfg);
             let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-            ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+            ents.into_iter().find(|e| {
+                e.id != pid
+                    && e.kind == crate::entity::EntityKind::Npc
+                    && e.vit > 0
+                    && !e.id.starts_with("shanhai_")
+                    && !(e.id.starts_with("ambient_")
+                        && crate::game::ambient_creature_loot(&e.display_title).is_some())
+            })
         };
         if let Some(npc) = nearby_resident {
             let npc_label = if crate::store::player_knows_npc(pid, &npc.id) && !npc.display_title.trim().is_empty() {

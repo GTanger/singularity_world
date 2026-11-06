@@ -132,11 +132,7 @@ pub fn derive_room_tags(terrain: Terrain, name: &str, zone: &str) -> Vec<String>
     }
 
     let n = name;
-    let zone_without_person = if zone.contains('・') {
-        zone.split('・').next().unwrap_or(zone)
-    } else {
-        zone
-    };
+    let zone_without_person = crate::npc::causal_core::strip_trailing_person_name_from_role(zone);
     let z_clean = strip_settlement_zone_names(zone_without_person);
     let z = z_clean.as_str();
     // 糧倉、穀物、糧食、米、大圳、農田

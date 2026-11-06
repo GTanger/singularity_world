@@ -247,9 +247,16 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                     && (e.current_activity.contains("櫃檯")
                         || e.current_activity.contains("櫃台")
                         || e.current_activity.contains("當值")
+                        || crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+                            &base.room_name,
+                            &e.id,
+                            &e.display_name,
+                            &e.current_activity,
+                            "",
+                        )
+                        .0
                         || room_venue_opt.as_ref().is_some_and(|v| {
                             e.current_activity == v.on_duty_fixture_activity
-                                || (npc_idx == 0 && !e.current_activity.contains("安歇"))
                         }));
                 let (label, card_state) = if e.id.starts_with("ambient_") || e.id.starts_with("shanhai_") {
                     let clean_name = e.display_name.rsplit(['｜', '|']).next().unwrap_or(&e.display_name).trim().to_string();
@@ -283,9 +290,11 @@ pub(super) fn send_grid_view(conn: &WsConnection, player_id: &str, x: i32, y: i3
                         Some("正提著防風燈在廊下巡看門戶")
                     }
                 } else if is_scheduled_leader || named {
-                    crate::grid::resolve_any_room_venue_object(&base.room_name, &e.display_name)
-                        .map(|v| v.on_duty_fixture_activity)
-                        .or_else(|| crate::grid::resolve_room_ambient_visitor_activity(&base.room_name, npc_idx))
+                    crate::grid::resolve_room_ambient_visitor_activity(&base.room_name, npc_idx)
+                        .or_else(|| {
+                            crate::grid::resolve_any_room_venue_object(&base.room_name, &e.display_name)
+                                .map(|v| v.on_duty_fixture_activity)
+                        })
                 } else {
                     crate::grid::resolve_room_ambient_visitor_activity(&base.room_name, npc_idx)
                         .or_else(|| {

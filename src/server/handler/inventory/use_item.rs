@@ -192,6 +192,19 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     }
     let item_def = get_item_def(&msg.item_id);
     let item_name = format_entity_item_with_inscription(&pid, &msg.item_id, &resolve_inv_item_name(&msg.item_id));
+    let is_meridian_salve = msg.item_id == "craft_meridian_salve" || item_name.contains("活血膏");
+    let is_calming_tea = msg.item_id == "craft_calming_tea" || item_name.contains("凝神茶包");
+    let is_culinary = matches!(
+        msg.item_id.as_str(),
+        "craft_river_fish_jerky"
+            | "craft_spiced_shrimp_skewer"
+            | "craft_watercress_broth"
+            | "craft_toasted_grain_cake"
+            | "craft_berry_jam_jar"
+            | "item_braised_beef_broth_jar"
+            | "item_smoked_mullet_roe_pack"
+    );
+    let is_mutated = msg.item_id.starts_with("mut_") || item_name.contains("【異變");
     let is_non_edible_gear_or_mat = item_def
         .as_ref()
         .is_some_and(|d| !d.slot.is_empty() || d.item_type == "equipment" || d.item_type == "misc" || d.item_type == "tool")
@@ -211,25 +224,26 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         .iter()
         .any(|kw| item_name.contains(kw));
     let is_edible = !is_non_edible_gear_or_mat
-        && (item_def.as_ref().is_some_and(|d| d.item_type == "consumable" || d.item_type == "food")
-            || matches!(
-                msg.item_id.as_str(),
-                "mat_fresh_shrimp"
-                    | "shanhai_fresh_fish"
-                    | "shanhai_beast_meat"
-                    | "mat_salted_fish"
-                    | "harvest_fish"
-                    | "harvest_berries"
-                    | "craft_roasted_shrimp_skewer"
-                    | "craft_smoked_fish_fillet"
-                    | "craft_spiced_beast_jerky"
-                    | "craft_ration_grain_cake"
-                    | "craft_meridian_salve"
-                    | "craft_calming_tea_pack"
+        && (is_meridian_salve
+            || is_calming_tea
+            || is_culinary
+            || is_item_edible(
+                &msg.item_id,
+                &item_name,
+                item_def.as_ref().map(|d| d.item_type.as_str()).unwrap_or(""),
             )
-            || ["蝦", "魚", "肉", "蟹", "鮑", "蛤", "蜆", "螺", "果", "茶", "餅", "脯", "串", "湯", "粥", "飲", "露", "膏", "散", "丹", "丸", "水芹", "芝"]
-                .iter()
-                .any(|kw| item_name.contains(kw)));
+            || item_def.as_ref().is_some_and(|d| {
+                d.item_type == "food"
+                    || d.item_type == "consumable"
+                    || d.item_type == "drink"
+                    || d.item_type == "medicine"
+            })
+            || [
+                "蝦", "魚", "肉", "果", "水芹", "湯", "茶", "餅", "飯", "麵", "羹", "酒",
+                "飲", "膏", "丸", "散", "丹", "蜜", "糖", "鹽", "醬", "脯",
+            ]
+            .iter()
+            .any(|k| item_name.contains(k)));
     if !is_edible {
         conn.send_json(&ActionResultMsg {
             msg_type: "action_result".into(),
@@ -250,37 +264,31 @@ pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
         conn.send_error(gametext::client("inv_bag_fail"));
         return;
     }
-    let is_meridian_salve = msg.item_id == "craft_meridian_salve" || msg.item_id.contains("meridian_salve");
-    let is_calming_tea = msg.item_id == "craft_calming_tea_pack" || msg.item_id.contains("calming_tea");
-    let is_culinary = matches!(
-        msg.item_id.as_str(),
-        "craft_roasted_shrimp_skewer"
-            | "craft_smoked_fish_fillet"
-            | "craft_spiced_beast_jerky"
-            | "craft_ration_grain_cake"
-            | "mat_salted_fish"
-    );
-    let is_mutated = msg.item_id.starts_with("mut_") || crate::game::object_ecology::classify_item_stage(&msg.item_id) == "mutated";
+    let cat_entry = crate::game::peninsula_catalog::find_catalog_entry(&msg.item_id);
+    let is_cat_med = cat_entry.is_some_and(|c| matches!(c.category_num.trim(), "10"));
+    let is_cat_tea_or_drink = cat_entry.is_some_and(|c| matches!(c.category_num.trim(), "09" | "9"));
+    let is_cat_cooked = cat_entry.is_some_and(|c| matches!(c.category_num.trim(), "08" | "8"));
+
     if let Some(arc) = crate::store::get_store() {
         let _ = arc.write().update_entity(&pid, |e| {
-            if is_meridian_salve {
+            if is_meridian_salve || is_cat_med {
                 e.vit = (e.vit + 25).min(100);
                 e.qi = (e.qi + 20).min(100);
-            } else if is_calming_tea {
+            } else if is_calming_tea || is_cat_tea_or_drink {
                 e.qi = (e.qi + 30).min(100);
-            } else if is_culinary {
+            } else if is_culinary || is_cat_cooked {
                 e.vit = (e.vit + 20).min(100);
                 e.qi = (e.qi + 18).min(100);
             } else if is_mutated {
                 e.vit = (e.vit + 15).min(100);
-                e.qi = (e.qi + 20).min(100);
+                e.qi = (e.qi + 25).min(100);
             } else {
                 e.vit = (e.vit + 8).min(100);
                 e.qi = (e.qi + 10).min(100);
             }
         });
     }
-    if is_meridian_salve || is_calming_tea || is_mutated {
+    if is_meridian_salve || is_cat_med || is_calming_tea || is_cat_tea_or_drink || is_mutated {
         crate::pg::living_world::clear_entity_afflictions(&pid, true, crate::game::now_unix());
     }
     push_refresh(conn, &pid);

@@ -14,16 +14,27 @@ pub struct VocationalVesselSpec {
 /// 避免姓名中的「林、木、石、海、鐵、墨」字元誤觸其他職司分支。
 pub fn strip_trailing_person_name_from_role(role_hint: &str) -> &str {
     if let Some((prefix, tail)) = role_hint.rsplit_once('・') {
+        let p_trim = prefix.trim();
+        let t_trim = tail.trim();
+        let tail_len = t_trim.chars().count();
+        let prefix_is_settlement = [
+            "文曜", "水尾寮", "樟木驛", "風櫃尾", "烏石鼻", "老堰頭", "大圳頭", "半嶺鎮", "半嶺",
+            "風舶嶼", "風舶角", "南哨", "三號坑", "鋸木溪", "竹林寨", "分家巷", "白塔",
+        ]
+        .iter()
+        .any(|s| p_trim == *s || p_trim.ends_with(s));
         let tail_is_role = [
             "匠", "師", "夫", "手", "戶", "工", "主", "長", "事", "員", "生", "徒", "頭",
             "家", "商", "販", "醫", "廚", "衛", "哨", "卒", "客", "人", "官", "老", "婆",
             "嬸", "伯", "叔", "姑", "娘", "坊", "館", "行", "局", "堂", "所", "店", "攤",
-            "站", "舍", "屋", "社", "隊",
+            "站", "舍", "屋", "社", "隊", "者", "院", "書", "講", "席", "學", "閣", "齋",
+            "樓", "鋪", "台", "廠", "場", "窯", "磨", "塢", "關", "港", "渡", "橋", "街",
+            "巷", "司", "役", "丁", "農", "樵", "漁", "獵",
         ]
         .iter()
-        .any(|kw| tail.contains(kw));
-        if !tail_is_role && !prefix.trim().is_empty() {
-            return prefix.trim();
+        .any(|kw| t_trim.contains(kw));
+        if (2..=4).contains(&tail_len) && !prefix_is_settlement && !tail_is_role && !p_trim.is_empty() {
+            return p_trim;
         }
     }
     role_hint

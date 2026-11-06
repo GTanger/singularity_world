@@ -267,8 +267,8 @@ impl Cornerstone {
     }
 
     pub fn from_role_and_seed(role_hint: &str, seed: u64) -> Self {
+        let role_hint = crate::npc::causal_core::strip_trailing_person_name_from_role(role_hint);
         let mut b = innate_personality_simplex(seed);
-        // 溫和的職業性向引導（<= 8 分，絕非鎖死宿命論，重義之商與嗜利之衛皆能自然湧現）
         if role_hint.contains("家眷") || role_hint.contains("內當家") || role_hint.contains("持家") {
             b[1] += 8; // Care
             b[5] += 4; // Order
@@ -404,6 +404,7 @@ pub fn compute_plural_personality_weights_with_experience(
     let exp = compute_experiential_personality_shift(settlement, same_task_repetitions, hooks, seed);
 
     // 溫和的職業性向引導（<= 8 分）
+    let role_hint = crate::npc::causal_core::strip_trailing_person_name_from_role(role_hint);
     let mut role_nudge = [0i32; 6];
     if role_hint.contains("家眷") || role_hint.contains("內當家") || role_hint.contains("持家") {
         role_nudge[1] += 8; // Care

@@ -504,7 +504,15 @@ pub fn mutate_finished_item(
             return false;
         }
         if let Some(def) = db::get_item_def(id) {
-            let non_gear_types = ["equipment", "weapon", "armor", "tool"];
+            let non_gear_types = [
+                "equipment",
+                "weapon",
+                "armor",
+                "tool",
+                "clothing_textiles_footwear",
+                "weapons_armor_patrol",
+                "craft_machinery_tools",
+            ];
             if def.slot.is_empty() || !non_gear_types.contains(&def.item_type.as_str()) {
                 return false;
             }

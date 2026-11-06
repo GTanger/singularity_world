@@ -390,9 +390,18 @@ pub fn is_recognizable_room_staff_or_counter_holder_entity(
             has_visible_uniform = true;
         }
     }
-    if !has_visible_uniform && !ent.id.is_empty() {
+    if !has_visible_uniform
+        && ent.equipment_slots.trim().is_empty()
+        && !ent.id.is_empty()
+        && !ent.display_title.contains("便服")
+    {
         let slot = crate::store::wenyao_household_slot_for(&ent.id);
-        if crate::game::peninsula_catalog::is_work_uniform_item_id_or_name(slot.attire_line) {
+        let is_matched_slot = ent.id == slot.name()
+            || ent.display_title.contains(slot.name())
+            || (!slot.work_name.is_empty() && ent.current_activity.contains(slot.work_name));
+        if is_matched_slot
+            && crate::game::peninsula_catalog::is_work_uniform_item_id_or_name(slot.attire_line)
+        {
             has_visible_uniform = true;
         }
     }
@@ -442,16 +451,25 @@ pub fn is_recognizable_room_staff_or_counter_holder_entity(
         0
     };
 
-    let in_staff_only_counter_zone = if is_passerby_customer && stock_count <= 0 && !has_counter_zone_marker {
-        false
-    } else if has_counter_zone_marker {
-        true
-    } else if (stock_count > 0 || ent.magnesium >= 8) && !is_passerby_customer {
-        // 持有該店庫存或商業結算能力且非路人顧客，視為在場值守人員
-        true
-    } else {
-        false
-    };
+    let is_visiting_or_resting = ent.current_activity.contains("歇腳")
+        || ent.current_activity.contains("避風")
+        || ent.current_activity.contains("造訪")
+        || ent.current_activity.contains("作客");
+
+    let in_staff_only_counter_zone =
+        if (is_passerby_customer || is_visiting_or_resting) && stock_count <= 0 && !has_counter_zone_marker {
+            false
+        } else if has_counter_zone_marker {
+            true
+        } else if (stock_count > 0 || (!needed_item_id.is_empty() && ent.magnesium >= 8))
+            && !is_passerby_customer
+            && !is_visiting_or_resting
+        {
+            // 持有該店庫存或商業結算能力且非路人顧客，視為在場值守人員
+            true
+        } else {
+            false
+        };
 
     (has_visible_uniform, in_staff_only_counter_zone)
 }

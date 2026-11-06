@@ -609,23 +609,42 @@ fn extract_venue_and_role_talk_context(target: &Character, room_name: &str) -> S
             item_name, quote.unit_price, quote.status_label, stock_qual, target.current_activity
         ));
     } else if let Some(v) = crate::grid::resolve_any_room_venue_object(room_name, &target.display_title) {
-        let mut venue_line = format!(
-            "此處為【{}】，設有{}，主事為【{}】。你此刻手頭職司為【{}】。",
-            v.venue_kind,
-            if v.has_counter_restricted_zone { "常備看顧櫃檯與受限作業區" } else { "開敞迎客空間" },
-            v.default_host_title,
-            v.on_duty_fixture_activity
+        let (is_staff, _, _) = crate::pg::living_world::is_recognizable_room_staff_or_counter_holder(
+            room_name,
+            &target.id,
+            &target.display_title,
+            &target.current_activity,
+            &target.equipment_slots,
         );
-        if let Some((_tool_id, tool_name, _desc)) = v.lendable_tool {
-            venue_line.push_str(&format!(" 案頭常備出借器具【{tool_name}】。"));
-        }
-        if !v.counter_trade_offers.is_empty() {
-            let offers_summary: Vec<String> = v.counter_trade_offers
-                .iter()
-                .take(3)
-                .map(|(_id, name, price)| format!("【{name}】（約{price}鎂）"))
-                .collect();
-            venue_line.push_str(&format!(" 櫃檯常備交割名物包含{}。", offers_summary.join("、")));
+        let mut venue_line = if is_staff {
+            format!(
+                "此處為【{}】，設有{}，主事為【{}】。你此刻手頭職司為【{}】。",
+                v.venue_kind,
+                if v.has_counter_restricted_zone { "常備看顧櫃檯與受限作業區" } else { "開敞迎客空間" },
+                v.default_host_title,
+                v.on_duty_fixture_activity
+            )
+        } else {
+            format!(
+                "此處為【{}】（主事為【{}】），你並非此處當值夥計，而是前來造訪或辦事的街坊（你的身分為【{}】，當前動靜：{}）。",
+                v.venue_kind,
+                v.default_host_title,
+                target.display_title,
+                target.current_activity
+            )
+        };
+        if is_staff {
+            if let Some((_tool_id, tool_name, _desc)) = v.lendable_tool {
+                venue_line.push_str(&format!(" 案頭常備出借器具【{tool_name}】。"));
+            }
+            if !v.counter_trade_offers.is_empty() {
+                let offers_summary: Vec<String> = v.counter_trade_offers
+                    .iter()
+                    .take(3)
+                    .map(|(_id, name, price)| format!("【{name}】（約{price}鎂）"))
+                    .collect();
+                venue_line.push_str(&format!(" 櫃檯常備交割名物包含{}。", offers_summary.join("、")));
+            }
         }
         let market_summary = crate::game::object_ecology::get_settlement_market_summary(room_name);
         if !market_summary.trim().is_empty() {

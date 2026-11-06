@@ -27,7 +27,10 @@ fn apply_catalog_effects_part4(
             2,
             now,
         );
-        let treasury = crate::npc::causal_core::settlement_treasury_balance("文曜");
+        let room_name = db::get_room_name(player_room).unwrap_or_default();
+        let inferred = crate::world::materials::infer_origin_settlement(&room_name);
+        let settlement = if inferred.is_empty() { "文曜" } else { inferred };
+        let treasury = crate::npc::causal_core::settlement_treasury_balance(settlement);
         let prosperity_desc = if treasury >= 2800 {
             "城坊倉廩充盈，四民熙攘安居，公產界石井然有序"
         } else if treasury >= 1800 {
@@ -37,8 +40,8 @@ fn apply_catalog_effects_part4(
         };
         let _ = event::append(now, pid, types::SCENE_OBJECT_ACTION, "cadastral_registry_inspected");
         narrative.push_str(&format!(
-            "【四坊地籍・民生疆界】你端凝撫按長案上的四坊地籍總圖與樟木戶籍檔案，朱砂經緯與戶號界石標註井然。當前聚落風貌正逢「{}」。你細閱文曜坊巷格局與公產脈絡，拓印下一頁「文曜四坊地籍圖鈔頁」留念，靜室清息隨之凝練。",
-            prosperity_desc
+            "【四坊地籍・民生疆界】你端凝撫按長案上的地籍總圖與樟木戶籍檔案，朱砂經緯與戶號界石標註井然。當前聚落風貌正逢「{}」。你細閱{}坊巷格局與公產脈絡，拓印下一頁「{}地籍圖鈔頁」留念，靜室清息隨之凝練。",
+            prosperity_desc, settlement, settlement
         ));
         push_refresh(conn, pid);
         return true;
@@ -97,7 +100,14 @@ fn apply_catalog_effects_part4(
             let nearby_resident = {
                 let gh = current_game_hour(&conn.cfg);
                 let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-                ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+                ents.into_iter().find(|e| {
+                    e.id != pid
+                        && e.kind == crate::entity::EntityKind::Npc
+                        && e.vit > 0
+                        && !e.id.starts_with("shanhai_")
+                        && !(e.id.starts_with("ambient_")
+                            && crate::game::ambient_creature_loot(&e.display_title).is_some())
+                })
             };
             if let Some(npc) = nearby_resident {
                 let npc_label = if crate::store::player_knows_npc(pid, &npc.id) && !npc.display_title.trim().is_empty() {
@@ -297,7 +307,14 @@ fn apply_catalog_effects_part4(
         let nearby_resident = {
             let gh = current_game_hour(&conn.cfg);
             let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-            ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+            ents.into_iter().find(|e| {
+                e.id != pid
+                    && e.kind == crate::entity::EntityKind::Npc
+                    && e.vit > 0
+                    && !e.id.starts_with("shanhai_")
+                    && !(e.id.starts_with("ambient_")
+                        && crate::game::ambient_creature_loot(&e.display_title).is_some())
+            })
         };
         if let Some(npc) = nearby_resident {
             let npc_label = if crate::store::player_knows_npc(pid, &npc.id) && !npc.display_title.trim().is_empty() {
@@ -342,7 +359,14 @@ fn apply_catalog_effects_part4(
         let nearby_resident = {
             let gh = current_game_hour(&conn.cfg);
             let ents = db::get_entities_in_room(player_room, gh).unwrap_or_default();
-            ents.into_iter().find(|e| e.id != pid && e.kind == crate::entity::EntityKind::Npc && e.vit > 0)
+            ents.into_iter().find(|e| {
+                e.id != pid
+                    && e.kind == crate::entity::EntityKind::Npc
+                    && e.vit > 0
+                    && !e.id.starts_with("shanhai_")
+                    && !(e.id.starts_with("ambient_")
+                        && crate::game::ambient_creature_loot(&e.display_title).is_some())
+            })
         };
         if let Some(npc) = nearby_resident {
             let npc_label = if crate::store::player_knows_npc(pid, &npc.id) && !npc.display_title.trim().is_empty() {

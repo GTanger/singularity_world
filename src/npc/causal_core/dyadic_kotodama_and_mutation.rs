@@ -705,8 +705,11 @@ pub fn credit_magnesium_bounty(store: &mut crate::store::Store, entity_id: &str,
             ent.magnesium = ent.magnesium.saturating_add(bounty_mg);
         });
     } else {
+        let slot = crate::store::wenyao_household_slot_for(entity_id);
+        let inferred = crate::world::materials::infer_origin_settlement(slot.work_name);
+        let target_s = if !inferred.is_empty() { inferred } else { "文曜" };
         let mut treasuries = SETTLEMENT_TREASURIES.write().unwrap_or_else(|e| e.into_inner());
-        *treasuries.entry("文曜".to_string()).or_insert(2400) += bounty_mg;
+        *treasuries.entry(target_s.to_string()).or_insert(2400) += bounty_mg;
     }
 }
 

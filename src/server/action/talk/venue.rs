@@ -254,7 +254,9 @@ fn canonical_or_venue_talk_reply(
         } else {
             None
         }
-    } else if let Some(venue) = crate::grid::resolve_market_or_specialty_room_object(&room_name, &talk_name) {
+    } else if super::trade::is_eligible_shop_staff(target, &room_name)
+        && let Some(venue) = crate::grid::resolve_market_or_specialty_room_object(&room_name, &talk_name)
+    {
         if !venue.on_duty_talk_lines.is_empty() {
             Some(venue.on_duty_talk_lines[now_idx % venue.on_duty_talk_lines.len()])
         } else {
@@ -417,7 +419,8 @@ pub fn is_accept_comfort_utterance(input: &str) -> bool {
 
 /// 根據對象稱謂與當前活動推論 NPC 待辦義務
 pub fn infer_npc_obligation(talk_name: &str, current_activity: &str) -> (&'static str, &'static str) {
-    let combined = format!("{talk_name}:{current_activity}");
+    let clean_role = crate::npc::causal_core::strip_trailing_person_name_from_role(talk_name);
+    let combined = format!("{clean_role}:{current_activity}");
     if combined.contains('鍛')
         || combined.contains('鐵')
         || combined.contains('爐')

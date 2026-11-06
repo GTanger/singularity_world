@@ -57,6 +57,18 @@ pub fn ignite_or_stoke_campfire(
             }
         }
     }
+    if consumed_item.is_none() {
+        let parsed_inv = db::get_inventory(&ent.inventory, ent.vit);
+        for it in &parsed_inv.items {
+            if it.qty > 0
+                && let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(&it.item_id)
+                && matches!(cat.category_num.trim(), "02" | "2")
+            {
+                consumed_item = Some(it.item_id.clone());
+                break;
+            }
+        }
+    }
 
     let is_charcoal = consumed_item.as_deref() == Some("mat_charcoal_sack");
     let fuel_name = if let Some(it) = &consumed_item {
@@ -843,6 +855,17 @@ pub fn refine_mineral_multi_socket(
                     sharpened_id = c.to_string();
                     sharpened = get_clean_item_name(c);
                     break;
+                }
+            }
+            if sharpened_id.is_empty() {
+                let parsed_inv = db::get_inventory(&ent.inventory, ent.vit);
+                for it in &parsed_inv.items {
+                    let cname = get_clean_item_name(&it.item_id);
+                    if it.qty > 0 && crate::pg::living_world::is_bladed_vessel_item(&it.item_id, &cname) {
+                        sharpened_id = it.item_id.clone();
+                        sharpened = cname;
+                        break;
+                    }
                 }
             }
             if !sharpened_id.is_empty() && crate::pg::living_world::is_bladed_vessel_item(&sharpened_id, &sharpened) {
