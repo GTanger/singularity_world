@@ -5,7 +5,7 @@ mod borrow;
 pub(crate) mod combat;
 mod look;
 mod object;
-mod talk;
+pub(crate) mod talk;
 pub(crate) mod trade;
 
 use crate::config::Server;

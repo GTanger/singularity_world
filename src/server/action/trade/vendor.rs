@@ -150,11 +150,44 @@ pub fn vendor_stall_offer_for_npc(
     }
 }
 
-/// 依攤販或攤位識別碼解析其正典招牌特色物品（物品 ID、物品名稱、基準價、正典販者 ID）
+/// 依攤販或攤位識別碼與職銜解析其正典招牌特色物品（物品 ID、物品名稱、基準價、正典販者 ID）
 pub fn resolve_vendor_specialty(
     vendor_or_stall_id: &str,
 ) -> Option<(&'static str, &'static str, i32, &'static str)> {
     vendor_stall_offer_for_npc(vendor_or_stall_id)
+}
+
+/// 結合識別碼與職銜解析攤販招牌特色（優先比對識別碼，若無則依職銜特徵推導正典特色物）
+pub fn resolve_vendor_specialty_with_title(
+    vendor_or_stall_id: &str,
+    display_title: &str,
+) -> Option<(&'static str, &'static str, i32, &'static str)> {
+    if let Some(offer) = vendor_stall_offer_for_npc(vendor_or_stall_id) {
+        return Some(offer);
+    }
+    if display_title.contains("牛肉") || display_title.contains("烤肉") {
+        vendor_stall_offer_for_npc("wt_vendor_roast_beef")
+    } else if display_title.contains("麵") || display_title.contains("湯麵") {
+        vendor_stall_offer_for_npc("wt_vendor_noodle_soup")
+    } else if display_title.contains("胡椒餅") || display_title.contains("餅") {
+        vendor_stall_offer_for_npc("wt_vendor_pepper_bun")
+    } else if display_title.contains("茶") || display_title.contains("仙草") {
+        vendor_stall_offer_for_npc("wt_vendor_herbal_tea")
+    } else if display_title.contains("豆花") {
+        vendor_stall_offer_for_npc("wt_vendor_tofu_pudding")
+    } else if display_title.contains("飯糰") || display_title.contains("糯米") {
+        vendor_stall_offer_for_npc("wt_vendor_rice_roll")
+    } else if display_title.contains("米漿") || display_title.contains("豆漿") {
+        vendor_stall_offer_for_npc("wt_vendor_soy_milk")
+    } else if display_title.contains("菜") || display_title.contains("蔬") {
+        vendor_stall_offer_for_npc("wt_vendor_morning_produce")
+    } else if display_title.contains("魚") || display_title.contains("蝦") || display_title.contains("水產") {
+        vendor_stall_offer_for_npc("wt_vendor_morning_fish")
+    } else if display_title.contains("傘") || display_title.contains("靴") || display_title.contains("修補") {
+        vendor_stall_offer_for_npc("wt_npc_ma_buxue")
+    } else {
+        None
+    }
 }
 
 /// 依總典（`PENINSULA_WORLD_OBJECTS`）外鍵與場域物件合成攤販／鋪主叫賣語，取代按特定 ID 硬編碼之罐頭台詞。

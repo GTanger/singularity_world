@@ -21,7 +21,7 @@ mod auth;
 pub mod households;
 pub mod outer_households;
 pub use outer_households::OUTER_HOUSEHOLD_SLOTS;
-mod entity;
+pub mod entity;
 pub use entity::{
     clean_wilderness_place_label, clear_active_npc_obligation, current_game_clock_full,
     current_game_hour, current_game_hour_and_min, current_game_time_prompt_context,
@@ -42,7 +42,7 @@ pub use entity::{
     unpause_npc_for_interaction, wenyao_household_slot_for,
     ActiveNpcDialogue, HuntingPartyPhase, HuntingPartyState, NpcGridState, WenyaoHouseholdSlot,
     KNOWN_NPC_NAMES, LIVE_HUNTING_PARTIES, LIVE_NPC_GRID_STATES, LIVE_NPC_OBLIGATIONS,
-    OBSERVED_NPCS, PLAYER_HUNTING_PARTY_PLEDGES, WENYAO_HOUSEHOLD_SLOTS,
+    OBSERVED_NPCS, PLAYER_HUNTING_PARTY_PLEDGES, WENYAO_HOUSEHOLD_SLOTS, WENYAO_TARGETS,
 };
 mod event;
 mod init_load;

@@ -828,6 +828,61 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
             }
         }
     }
+    for target in crate::store::entity::WENYAO_TARGETS {
+        match grid.get(SquareCoord::new(target.x, target.y)) {
+            None => {
+                violations.push(format!(
+                    "文曜目標地點「{}」（{}, {}）不存在於大地圖網格中",
+                    target.name, target.x, target.y
+                ));
+            }
+            Some(cell) => {
+                if matches!(
+                    cell.terrain,
+                    Terrain::Wall | Terrain::Mountain | Terrain::Water
+                ) {
+                    violations.push(format!(
+                        "文曜目標地點「{}」（{}, {}）位於不可通行地形 {:?}",
+                        target.name, target.x, target.y, cell.terrain
+                    ));
+                }
+            }
+        }
+    }
+
+    for def in crate::server::grid_manager::schedule::iter_resident_schedules() {
+        for hour in 0..=23 {
+            let (bldg_name, _act) = (def.resolve)(hour);
+            match crate::server::grid_manager::resolve_settlement_room_coord(&grid, bldg_name) {
+                None => {
+                    violations.push(format!(
+                        "居民行程「{}」於 {} 點之建築「{}」無法解析地圖座標",
+                        def.id, hour, bldg_name
+                    ));
+                }
+                Some(cell) => {
+                    if matches!(
+                        cell.terrain,
+                        Terrain::Wall | Terrain::Mountain | Terrain::Water
+                    ) {
+                        violations.push(format!(
+                            "居民行程「{}」於 {} 點之建築「{}」（{}, {}）位於不可通行地形 {:?}",
+                            def.id, hour, bldg_name, cell.coord.x, cell.coord.y, cell.terrain
+                        ));
+                    }
+                }
+            }
+        }
+    }
+
+    for (item_id, item_name, _) in crate::server::action::talk::DELIVERABLE_ITEMS {
+        let cat_id = crate::server::action::talk::resolve_deliverable_catalog_foreign_key(item_id);
+        if cat_id.is_empty() || !valid_item_ids.contains(cat_id) {
+            violations.push(format!(
+                "可交割物資「{item_name}」({item_id}) 映射之總典外鍵不存在於 PENINSULA_WORLD_OBJECTS: {cat_id}"
+            ));
+        }
+    }
     CodebaseAntiLoopingAuditReport {
         audited_text_surfaces,
         audited_core_modules: module_contracts.len(),

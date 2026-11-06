@@ -608,31 +608,30 @@ fn extract_venue_and_role_talk_context(target: &Character, room_name: &str) -> S
             "你是市井攤商，當前攤頭主要販售【{}】（標價每份 {} 鎂幣，行情為{}，攤上{}）。你當前的攤位動態為：{}。",
             item_name, quote.unit_price, quote.status_label, stock_qual, target.current_activity
         ));
-    } else if room_name.contains("工坊")
-        || room_name.contains("鐵坊")
-        || room_name.contains("木坊")
-        || target.display_title.contains("工匠")
-        || target.display_title.contains("鐵匠")
-    {
-        parts.push("工坊內爐火常明，日常急需礦砂、熟鐵與木料等原料以備煉製加工，並對外出售各類防護行裝與農工器物。".to_string());
-    } else if room_name.contains("藥房")
-        || room_name.contains("醫")
-        || target.display_title.contains("藥師")
-    {
-        parts.push("藥房長年熬煮溫脈舒筋油膏與百草清心茶包，常年收購各類山澤草藥，對外供應行旅急救與調養之物。".to_string());
-    } else if room_name.contains("藏書")
-        || room_name.contains("學院")
-        || room_name.contains("印行")
-        || target.display_title.contains("書生")
-        || target.display_title.contains("學士")
-    {
-        parts.push("館內典藏半島山川水文誌與考工手札，常年收購精製竹麻紙與松煙墨，並供往來學者查考地誌。".to_string());
-    } else if room_name.contains("商行")
-        || room_name.contains("商會")
-        || target.display_title.contains("掌事")
-        || target.display_title.contains("管事")
-    {
-        parts.push("商行綜理半島各埠貨物流通與鎂幣兌換，時刻關注各類原料缺貨與市集價格浮動動向。".to_string());
+    } else if let Some(v) = crate::grid::resolve_any_room_venue_object(room_name, &target.display_title) {
+        let mut venue_line = format!(
+            "此處為【{}】，設有{}，主事為【{}】。你此刻手頭職司為【{}】。",
+            v.venue_kind,
+            if v.has_counter_restricted_zone { "常備看顧櫃檯與受限作業區" } else { "開敞迎客空間" },
+            v.default_host_title,
+            v.on_duty_fixture_activity
+        );
+        if let Some((_tool_id, tool_name, _desc)) = v.lendable_tool {
+            venue_line.push_str(&format!(" 案頭常備出借器具【{tool_name}】。"));
+        }
+        if !v.counter_trade_offers.is_empty() {
+            let offers_summary: Vec<String> = v.counter_trade_offers
+                .iter()
+                .take(3)
+                .map(|(_id, name, price)| format!("【{name}】（約{price}鎂）"))
+                .collect();
+            venue_line.push_str(&format!(" 櫃檯常備交割名物包含{}。", offers_summary.join("、")));
+        }
+        let market_summary = crate::game::object_ecology::get_settlement_market_summary(room_name);
+        if !market_summary.trim().is_empty() {
+            venue_line.push_str(&format!(" 當前周邊市集脈動：{}。", market_summary.trim()));
+        }
+        parts.push(venue_line);
     } else {
         let work_place = crate::store::wenyao_household_slot_for(&target.id).work_name;
         parts.push(format!(

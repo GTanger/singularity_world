@@ -346,6 +346,30 @@ pub const DELIVERABLE_ITEMS: [(&str, &str, &[&str]); 17] = [
     ("mat_reed_bundle", "水澤老蘆草綑", &["水澤老蘆草綑", "老蘆草綑", "老蘆草", "老蘆", "蘆草", "蘆"]),
 ];
 
+/// 將 17 種常用可交割物資的生態縮寫 ID 映射至白塔半島全總典（PENINSULA_WORLD_OBJECTS）之標準 wt_cat_* 外鍵。
+pub fn resolve_deliverable_catalog_foreign_key(item_id: &str) -> &'static str {
+    match item_id {
+        "craft_wooden_tool_handle" => "wt_cat_0094",
+        "mat_plank_board" => "wt_cat_0057",
+        "mat_charcoal_sack" => "wt_cat_0097",
+        "mat_kindling_bundle" => "wt_cat_0095",
+        "mat_timber_log" => "wt_cat_0056",
+        "craft_pine_torch" => "wt_cat_1019",
+        "mat_iron_scrap" => "wt_cat_0008",
+        "mat_repair_strip" => "wt_cat_0009",
+        "craft_meridian_salve" => "wt_cat_1065",
+        "craft_calming_tea_pack" => "wt_cat_0500",
+        "mat_foraged_herb" => "wt_cat_0111",
+        "mat_hemp_rope_roll" => "wt_cat_1036",
+        "mat_canvas_roll" => "wt_cat_0908",
+        "mat_coarse_paper_ream" => "wt_cat_0779",
+        "mat_sealing_pitch" => "wt_cat_0062",
+        "mat_leather_strip" => "wt_cat_0877",
+        "mat_reed_bundle" => "wt_cat_0060",
+        _ => "",
+    }
+}
+
 /// 玩家表達交付、協助、修繕或補給意圖之關鍵詞
 pub const DELIVERY_INTENT_KEYWORDS: &[&str] = &[
     "交付", "交割", "交差", "帶了", "帶來", "送來", "給你", "幫你", "修好", "補齊",
@@ -433,15 +457,33 @@ pub fn select_deliverable_item(
 ) -> Option<(&'static str, &'static str)> {
     // 1. 若玩家語句直接提及特定器物/原料，且身上持有，優先交割該物件
     for (item_id, item_name, keywords) in DELIVERABLE_ITEMS {
-        if keywords.iter().any(|k| player_input.contains(k)) && has_item(item_id) {
-            return Some((item_id, item_name));
+        if keywords.iter().any(|k| player_input.contains(k)) {
+            if has_item(item_id) {
+                return Some((item_id, item_name));
+            }
+            let cat_id = resolve_deliverable_catalog_foreign_key(item_id);
+            if !cat_id.is_empty() && has_item(cat_id) {
+                let resolved_name = crate::game::peninsula_catalog::find_catalog_entry(cat_id)
+                    .map(|e| e.name)
+                    .unwrap_or(item_name);
+                return Some((cat_id, resolved_name));
+            }
         }
     }
     // 2. 若待辦事項提示中提及特定原料/器物，且身上持有，優先交割能解困者
     if let Some(hint) = obligation_hint {
         for (item_id, item_name, keywords) in DELIVERABLE_ITEMS {
-            if keywords.iter().any(|k| hint.contains(k)) && has_item(item_id) {
-                return Some((item_id, item_name));
+            if keywords.iter().any(|k| hint.contains(k)) {
+                if has_item(item_id) {
+                    return Some((item_id, item_name));
+                }
+                let cat_id = resolve_deliverable_catalog_foreign_key(item_id);
+                if !cat_id.is_empty() && has_item(cat_id) {
+                    let resolved_name = crate::game::peninsula_catalog::find_catalog_entry(cat_id)
+                        .map(|e| e.name)
+                        .unwrap_or(item_name);
+                    return Some((cat_id, resolved_name));
+                }
             }
         }
     }
@@ -491,6 +533,13 @@ pub fn select_deliverable_item(
         if has_item(item_id) {
             return Some((item_id, item_name));
         }
+        let cat_id = resolve_deliverable_catalog_foreign_key(item_id);
+        if !cat_id.is_empty() && has_item(cat_id) {
+            let resolved_name = crate::game::peninsula_catalog::find_catalog_entry(cat_id)
+                .map(|e| e.name)
+                .unwrap_or(item_name);
+            return Some((cat_id, resolved_name));
+        }
     }
     None
 }
@@ -506,3 +555,54 @@ pub fn find_deliverable_item(
     })
 }
 
+
+#[cfg(test)]
+mod deliverable_catalog_foreign_key_tests {
+    use super::*;
+
+    #[test]
+    fn test_all_deliverable_foreign_keys_exist_in_catalog() {
+        for (item_id, _, _) in DELIVERABLE_ITEMS {
+            let cat_id = resolve_deliverable_catalog_foreign_key(item_id);
+            assert!(
+                !cat_id.is_empty(),
+                "可交割物資必須具備有效映射：{item_id}"
+            );
+            assert!(
+                cat_id.starts_with("wt_cat_"),
+                "外鍵格式必須為 wt_cat_*：{cat_id}"
+            );
+            assert!(
+                crate::game::peninsula_catalog::find_catalog_entry(cat_id).is_some(),
+                "外鍵必須實體存在於千物總典中：{cat_id}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_select_deliverable_item_with_catalog_foreign_keys() {
+        // 1. 玩家未持有生態縮寫 ID，但持有對應的總典外鍵 ID（如 wt_cat_0057 防蟲松香木板）
+        let item1 = select_deliverable_item(
+            "這塊木板給你",
+            None,
+            |id| id == "wt_cat_0057",
+        );
+        assert_eq!(item1, Some(("wt_cat_0057", "防蟲松香木板")));
+
+        // 2. 待辦提示急需硬木白炭，玩家持有 wt_cat_0097（相思木硬炭）
+        let item2 = select_deliverable_item(
+            "我來幫手",
+            Some("急需硬木白炭袋添爐"),
+            |id| id == "wt_cat_0097",
+        );
+        assert_eq!(item2, Some(("wt_cat_0097", "相思木硬炭")));
+
+        // 3. 語意與待辦皆無，兜底依優先序返回持有的總典外鍵物品
+        let item3 = select_deliverable_item(
+            "收下吧",
+            None,
+            |id| id == "wt_cat_1065",
+        );
+        assert_eq!(item3, Some(("wt_cat_1065", "雪蓮活絡跌打膏")));
+    }
+}

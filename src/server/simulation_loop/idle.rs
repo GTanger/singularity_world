@@ -340,37 +340,8 @@ pub(super) fn run_idle_wander_section(
                     let pair_entities = npc_snapshots.get(id_a.as_str()).zip(npc_snapshots.get(id_b.as_str()));
                     if let Some(((ea, _), (eb, _))) = pair_entities {
                         let ecology_tick = ((now_ts as usize) / 45) + id_a.len();
-                        let mut exchange_action: Option<String> = None;
-                        if ecology_tick % 2 == 0 {
-                            if room_name.contains("石磨") || room_name.contains("水輪") || room_name.contains("磨坊") {
-                                let (item_id, item_name) = match ecology_tick % 3 {
-                                    0 => ("wt_cat_0388", "現磨溫米漿"),
-                                    1 => ("wt_cat_0279", "特級在來米粉"),
-                                    _ => ("wt-good-009", "精碾白米"),
-                                };
-                                let _ = crate::db::add_to_inventory(id_b, item_id, 1);
-                                exchange_action = Some(format!("遞過一袋新過篩封妥的{}", item_name));
-                            } else if room_name.contains("鐵坊") || room_name.contains("鍛造") || room_name.contains("木作") || room_name.contains("工坊") {
-                                let (item_id, item_name) = match ecology_tick % 3 {
-                                    0 => ("mat_repair_strip", "鉚補鐵皮"),
-                                    1 => ("mat_hemp_rope_roll", "麻繩卷"),
-                                    _ => ("mat_iron_scrap", "碎鐵片"),
-                                };
-                                let _ = crate::db::add_to_inventory(id_b, item_id, 1);
-                                exchange_action = Some(format!("遞過一包清點妥當的{}", item_name));
-                            } else if room_name.contains("診所") || room_name.contains("藥房") || room_name.contains("烘藥") || room_name.contains("脈絡") {
-                                let _ = crate::db::add_to_inventory(id_b, "craft_meridian_salve", 1);
-                                exchange_action = Some("將一罐封好的百草敷料交到對方手裡".to_string());
-                            } else if room_name.contains("蒙學") || room_name.contains("學院") || room_name.contains("書局") || room_name.contains("講堂") || room_name.contains("藏書") || room_name.contains("印行") {
-                                let _ = crate::db::add_to_inventory(id_b, "mat_coarse_paper_ream", 1);
-                                exchange_action = Some("將一刀裁好的粗棉紙交給對方收納".to_string());
-                            } else if room_name.contains("商行") || room_name.contains("市集") || room_name.contains("鋪") || room_name.contains("店") || room_name.contains("帳房") {
-                                let _ = crate::db::add_to_inventory(id_b, "mat_sackcloth_bolt", 1);
-                                crate::server::action::trade::restock_shop_items_for_seller(id_a);
-                                crate::server::action::trade::restock_shop_items_for_seller(id_b);
-                                exchange_action = Some("核對完貨架並整齊補充了一批新到商品".to_string());
-                            }
-                        }
+                        let _ = crate::game::object_ecology::run_npc_autonomous_production_step(room_id, &room_name, &awake_npcs, now_ts);
+                        let exchange_action: Option<String> = None;
 
                         for s in sessions.all_sessions() {
                             if crate::server::session::player_location_key(&s.player_id) == want {

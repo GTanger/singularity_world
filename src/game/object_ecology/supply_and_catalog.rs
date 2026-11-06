@@ -345,6 +345,11 @@ pub fn format_settlement_supply_demand_report(settlement_or_room: &str) -> Strin
     }
 }
 
+/// 取得指定聚落之即時市場供需概況摘要（即 format_settlement_supply_demand_report 之簡約別名）
+pub fn get_settlement_market_summary(settlement_or_room: &str) -> String {
+    format_settlement_supply_demand_report(settlement_or_room)
+}
+
 #[cfg(not(test))]
 static SCARCEST_ITEM_CACHE: std::sync::LazyLock<
     parking_lot::RwLock<

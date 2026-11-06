@@ -377,14 +377,14 @@ pub const WENYAO_TARGETS: &[NpcDestinationTarget] = &[
     NpcDestinationTarget { x: -1, y: 1, name: "三水總商行", purpose: "交割貨單", stay_activity: "正在櫃檯前核對山海貨單與鎂幣帳目" },
     NpcDestinationTarget { x: 1, y: 3, name: "印行書局", purpose: "採買書冊", stay_activity: "正在翻閱新印好的竹綿紙書冊與旬報" },
     NpcDestinationTarget { x: 1, y: -1, name: "第一鐵坊", purpose: "修整器物", stay_activity: "正在爐火旁查看鍛鐵器物與工具刃口" },
-    NpcDestinationTarget { x: 2, y: 2, name: "溫家藥居", purpose: "抓藥調理", stay_activity: "正在藥櫃前等候秤量草藥" },
+    NpcDestinationTarget { x: 2, y: 3, name: "溫氏百草診所", purpose: "抓藥調理", stay_activity: "正在藥櫃前等候秤量草藥" },
     NpcDestinationTarget { x: 1, y: 1, name: "文曜學院", purpose: "旁聽課程", stay_activity: "正在講堂廊下研討數學與會計與專業教材" },
     NpcDestinationTarget { x: -1, y: -1, name: "公議堂", purpose: "查閱告示", stay_activity: "正在公議堂前核對近期政令與委託" },
     NpcDestinationTarget { x: -2, y: 0, name: "三水渡埠街", purpose: "探問船期", stay_activity: "正在渡埠街邊打聽往來貨船班次" },
-    NpcDestinationTarget { x: -1, y: 3, name: "乾貨海味鋪", purpose: "挑選乾貨", stay_activity: "正在挑選風乾海味與遠行乾糧" },
+    NpcDestinationTarget { x: -1, y: 3, name: "三水口乾貨海味行", purpose: "挑選乾貨", stay_activity: "正在挑選風乾海味與遠行乾糧" },
     NpcDestinationTarget { x: 2, y: 0, name: "茶屋巷口", purpose: "喝茶聊天", stay_activity: "正在茶屋竹椅上啜飲熱茶歇息" },
-    NpcDestinationTarget { x: -2, y: 2, name: "老水夫舍", purpose: "返家歇息", stay_activity: "正在屋內整理隨身行囊與衣物" },
-    NpcDestinationTarget { x: 2, y: 4, name: "研墨小齋", purpose: "閱讀資料", stay_activity: "正在案前整理筆記" },
+    NpcDestinationTarget { x: -1, y: 6, name: "三水口・老水夫舍", purpose: "返家歇息", stay_activity: "正在屋內整理隨身行囊與衣物" },
+    NpcDestinationTarget { x: 1, y: 7, name: "講堂街・研墨小齋", purpose: "閱讀資料", stay_activity: "正在案前整理筆記" },
 ];
 
 pub use super::households::{WenyaoHouseholdSlot, WENYAO_HOUSEHOLD_SLOTS};
@@ -675,51 +675,53 @@ pub fn resolve_wenyao_npc_schedule(
             10,
         );
     }
-    if is_wenyao_slot && (18..=21).contains(&hour) && work_errand_toggle && ((h.wrapping_add(hour as u64)) % 3 == 0) {
+    if (18..=21).contains(&hour)
+        && hour >= slot.evening_hour
+        && work_errand_toggle
+        && ((h.wrapping_add(hour as u64)) % 3 == 0)
+    {
+        let home_coord = resolve_bldg_coord_or_fallback(slot.home_name, (slot.home_x, slot.home_y));
         let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
-        let fallback_venues = [
-            ((2, -1), "東橋旅社與山風茶屋"),
-            ((-1, 2), "三水大食堂"),
-            ((-2, 1), "泉香溫水浴場"),
-        ];
-        let fallback_choice = fallback_venues[(h as usize) % fallback_venues.len()];
-        let (dest_coord, dest_name) = if let Some(g) = &grid_opt
-            && let Some((c, n)) = g.find_nearest_room_by_tags((slot.home_x, slot.home_y), 18, &["teahouse", "canteen", "bathhouse", "market"], h)
-        {
-            (c, n)
+        let target_tags = &["teahouse", "canteen", "bathhouse", "market"];
+        let found_venue = grid_opt
+            .as_ref()
+            .and_then(|g| g.find_nearest_room_by_tags(home_coord, 16, target_tags, h));
+
+        let (dest_coord, dest_name, stay_act) = if let Some((c, n)) = found_venue {
+            let act = synthesize_grounded_venue_activity(
+                &n,
+                "",
+                held_vessel(slot).1,
+                h.wrapping_add(hour as u64),
+            );
+            (c, n, act)
+        } else if is_wenyao_slot {
+            let fallback_venues = [
+                ((2, -1), "東橋旅社與山風茶屋"),
+                ((-1, 2), "三水大食堂"),
+                ((-2, 1), "泉香溫水浴場"),
+            ];
+            let fallback_choice = fallback_venues[(h as usize) % fallback_venues.len()];
+            let n = fallback_choice.1.to_string();
+            let act = synthesize_grounded_venue_activity(
+                &n,
+                "",
+                held_vessel(slot).1,
+                h.wrapping_add(hour as u64),
+            );
+            (fallback_choice.0, n, act)
         } else {
-            (fallback_choice.0, fallback_choice.1.to_string())
+            let errand_coord = resolve_bldg_coord_or_fallback(slot.errand_name, (slot.errand_x, slot.errand_y));
+            let n = slot.errand_name.to_string();
+            let act = synthesize_grounded_venue_activity(
+                &n,
+                &slot.errand_stay_activity,
+                held_vessel(slot).1,
+                h.wrapping_add(hour as u64),
+            );
+            (errand_coord, n, act)
         };
 
-        let venue_fixture = match crate::grid::resolve_any_room_venue_object(&dest_name, "") {
-            Some(v) => {
-                let k = v.venue_kind;
-                if k.contains("茶") {
-                    "老茶壺與臨窗茶案"
-                } else if k.contains("食") || k.contains("飯") || k.contains("食堂") {
-                    "大骨湯鍋與白案蒸籠"
-                } else if k.contains("浴") || k.contains("溫水") || k.contains("溫泉") {
-                    "溫熱石砌泉池"
-                } else if k.contains("鍛造") || k.contains("鐵") {
-                    "紅鐵高爐與砧台"
-                } else {
-                    "臨街長凳"
-                }
-            }
-            None => {
-                if dest_name.contains("茶") {
-                    "老茶壺與臨窗茶案"
-                } else if dest_name.contains("食") || dest_name.contains("飯") {
-                    "大骨湯鍋與白案蒸籠"
-                } else if dest_name.contains("浴") {
-                    "溫熱石砌泉池"
-                } else {
-                    "臨街長凳"
-                }
-            }
-        };
-
-        let stay_act = format!("正在{}的{}旁歇腳用茶，與鄰座街坊閒話家常", dest_name, venue_fixture);
         let ticks = 18 + (((h.wrapping_add(hour as u64)) % 11) as u8);
         return (dest_coord, dest_name, "晚間休歇".to_string(), stay_act, ticks);
     }
@@ -746,35 +748,10 @@ pub fn resolve_wenyao_npc_schedule(
     if hour == 12 {
         let work_coord = resolve_bldg_coord_or_fallback(slot.work_name, (slot.work_x, slot.work_y));
         let home_coord = resolve_bldg_coord_or_fallback(slot.home_name, (slot.home_x, slot.home_y));
-        if !is_wenyao_slot {
-            let errand_coord = resolve_bldg_coord_or_fallback(slot.errand_name, (slot.errand_x, slot.errand_y));
-            return match h % 3 {
-                0 => (
-                    errand_coord,
-                    slot.errand_name.to_string(),
-                    "午間用膳與採買".to_string(),
-                    slot.errand_stay_activity.to_string(),
-                    20 + ((h % 8) as u8),
-                ),
-                1 => (
-                    work_coord,
-                    slot.work_name.to_string(),
-                    "午間便當小憩".to_string(),
-                    format!("正在{}工位旁打開木製便當盒享用熱飯菜，順道歇口氣", slot.work_name),
-                    20 + ((h % 8) as u8),
-                ),
-                _ => (
-                    home_coord,
-                    slot.home_name.to_string(),
-                    "返家午膳".to_string(),
-                    format!("正在{}自家飯桌旁與家人享用熱騰騰的午飯", slot.home_name),
-                    20 + ((h % 8) as u8),
-                ),
-            };
-        }
+        let errand_coord = resolve_bldg_coord_or_fallback(slot.errand_name, (slot.errand_x, slot.errand_y));
         if h % 5 == 0 {
             return (
-                (slot.errand_x, slot.errand_y),
+                errand_coord,
                 slot.errand_name.to_string(),
                 "午間跑腿採買".to_string(),
                 slot.errand_stay_activity.to_string(),
@@ -783,37 +760,49 @@ pub fn resolve_wenyao_npc_schedule(
         }
 
         let grid_opt = crate::server::grid_manager::get_runtime_square_grid();
-        let (dest_coord, dest_name) = if let Some(g) = &grid_opt
-            && let Some((c, n)) = g.find_nearest_room_by_tags((slot.work_x, slot.work_y), 16, &["canteen", "hot_food", "teahouse"], h)
-        {
-            (c, n)
+        let found_venue = grid_opt
+            .as_ref()
+            .and_then(|g| g.find_nearest_room_by_tags(work_coord, 16, &["canteen", "hot_food", "teahouse"], h));
+
+        let (dest_coord, dest_name, stay_act) = if let Some((c, n)) = found_venue {
+            let venue_fixture = match crate::grid::resolve_any_room_venue_object(&n, "") {
+                Some(v) => {
+                    let k = v.venue_kind;
+                    if k.contains("食") || k.contains("飯") || k.contains("食堂") {
+                        "大骨湯鍋與白案蒸籠"
+                    } else if k.contains("茶") {
+                        "老茶壺與臨窗茶案"
+                    } else {
+                        "木製餐桌與長凳"
+                    }
+                }
+                None => {
+                    if n.contains("食") || n.contains("飯") {
+                        "大骨湯鍋與白案蒸籠"
+                    } else if n.contains("茶") {
+                        "老茶壺與臨窗茶案"
+                    } else {
+                        "木製餐桌與長凳"
+                    }
+                }
+            };
+            let act = format!("正在{}的{}旁享用熱騰騰的現煮飯食與湯水，歇腳小憩", n, venue_fixture);
+            (c, n, act)
+        } else if is_wenyao_slot {
+            let n = "三水大食堂".to_string();
+            let venue_fixture = "大骨湯鍋與白案蒸籠";
+            let act = format!("正在{}的{}旁享用熱騰騰的現煮飯食與湯水，歇腳小憩", n, venue_fixture);
+            ((-1, 2), n, act)
         } else {
-            ((-1, 2), "三水大食堂".to_string())
+            let act = synthesize_grounded_venue_activity(
+                slot.home_name,
+                &slot.home_stay_activity,
+                held_vessel(slot).1,
+                h.wrapping_add(hour as u64),
+            );
+            (home_coord, slot.home_name.to_string(), act)
         };
 
-        let venue_fixture = match crate::grid::resolve_any_room_venue_object(&dest_name, "") {
-            Some(v) => {
-                let k = v.venue_kind;
-                if k.contains("食") || k.contains("飯") || k.contains("食堂") {
-                    "大骨湯鍋與白案蒸籠"
-                } else if k.contains("茶") {
-                    "老茶壺與臨窗茶案"
-                } else {
-                    "木製餐桌與長凳"
-                }
-            }
-            None => {
-                if dest_name.contains("食") || dest_name.contains("飯") {
-                    "大骨湯鍋與白案蒸籠"
-                } else if dest_name.contains("茶") {
-                    "老茶壺與臨窗茶案"
-                } else {
-                    "木製餐桌與長凳"
-                }
-            }
-        };
-
-        let stay_act = format!("正在{}的{}旁享用熱騰騰的現煮飯食與湯水，歇腳小憩", dest_name, venue_fixture);
         return (
             dest_coord,
             dest_name,

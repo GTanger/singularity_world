@@ -144,16 +144,33 @@ fn apply_accept_world_effect(
     pid: &str,
     player_input: &str,
     _familiarity_score: i32,
+    target: Option<&Character>,
 ) -> Option<TalkWorldEffectOutcome> {
     if is_accept_material_utterance(player_input) {
-        let _ = db::add_to_inventory(pid, "mat_kindling_bundle", 1);
+        let (item_id, item_name, usage_desc) = if player_input.contains("木") || player_input.contains("板") {
+            ("mat_plank_board", "【樟松木板料】", "可供工坊修造、案台搭設或木器雕琢")
+        } else if player_input.contains("柴") || player_input.contains("火") {
+            ("mat_kindling_bundle", "【乾燥柴枝束】", "可供野外生火、添柴入爐或劈削精製")
+        } else if let Some(t) = target {
+            let vessel = crate::npc::causal_core::resolve_vocational_vessel(&t.display_title);
+            if vessel.item_id.starts_with("mat_") {
+                (vessel.item_id, "【工造物料】", "符合當前百工所需之常備物料")
+            } else if t.display_title.contains("木") || t.display_title.contains("林") {
+                ("mat_plank_board", "【樟松木板料】", "可供工坊修造、案台搭設或木器雕琢")
+            } else {
+                ("mat_kindling_bundle", "【乾燥柴枝束】", "可供野外生火、添柴入爐或劈削精製")
+            }
+        } else {
+            ("mat_kindling_bundle", "【乾燥柴枝束】", "可供野外生火、添柴入爐或劈削精製")
+        };
+        let _ = db::add_to_inventory(pid, item_id, 1);
         push_refresh(conn, pid);
         Some(TalkWorldEffectOutcome {
             narrative_suffix: Some(
-                "\n【同道相助・物資支援】對方欣然應允，隨手從身側取出一束乾燥耐燃的【乾燥柴枝束】遞進你手裡，可供野外生火、添柴入爐或劈削精製。".to_string(),
+                format!("\n【同道相助・物資支援】對方欣然應允，隨手從身側取出{item_name}遞進你手裡，{usage_desc}。"),
             ),
             prompt_hint: Some(
-                "【物資支援】你見來客有所需求，便欣然應允並從身側取出一束【乾燥柴枝束】相贈。請在回話中展現友善並提及交付柴枝。".to_string(),
+                format!("【物資支援】你見來客有所需求，便欣然應允並從身側取出{item_name}相贈。請在回話中展現友善並提及交付物料。"),
             ),
         })
     } else if is_accept_comfort_utterance(player_input) {
@@ -213,7 +230,7 @@ fn apply_talk_world_effects(
             }
         }
         NpcStanceChoice::Accept => {
-            apply_accept_world_effect(conn, pid, player_input, familiarity_score)
+            apply_accept_world_effect(conn, pid, player_input, familiarity_score, None)
                 .unwrap_or_default()
         }
         _ => TalkWorldEffectOutcome::default(),
@@ -425,15 +442,112 @@ pub fn handle_three_baton_mentorship_and_obligation(
             &["疾", "刺", "穿"],
         )
     } else {
-        (
-            "半島百工衡準".to_string(),
-            "百工調息衡準訣".to_string(),
-            "神思澄明、呼吸勻淨，於分寸之間拿捏器物重心".to_string(),
-            crate::pg::living_world::BreathHabitKind::ChamberClear,
-            "百工衡準",
-            &["zhun", "ding", "he_tai"],
-            &["準", "定", "合"],
-        )
+        let venue_opt = crate::grid::resolve_any_room_venue_object(&target.display_title, &target.display_title);
+        let vessel = crate::npc::causal_core::resolve_vocational_vessel(&target.display_title);
+        let vessel_name = vessel.display_name;
+
+        let is_wood = target.display_title.contains("木")
+            || target.display_title.contains("竹")
+            || target.display_title.contains("船")
+            || target.display_title.contains("刨")
+            || vessel_name.contains("木")
+            || vessel_name.contains("刨")
+            || venue_opt.as_ref().map(|v| v.venue_kind.contains("木") || v.venue_kind.contains("船")).unwrap_or(false);
+
+        let is_medicine = target.display_title.contains("醫")
+            || target.display_title.contains("藥")
+            || target.display_title.contains("草")
+            || target.display_title.contains("診")
+            || vessel_name.contains("藥")
+            || venue_opt.as_ref().map(|v| v.venue_kind.contains("醫") || v.venue_kind.contains("藥")).unwrap_or(false);
+
+        let is_textile = target.display_title.contains("織")
+            || target.display_title.contains("布")
+            || target.display_title.contains("縫")
+            || target.display_title.contains("染")
+            || target.display_title.contains("裁")
+            || vessel_name.contains("剪")
+            || venue_opt.as_ref().map(|v| v.venue_kind.contains("織") || v.venue_kind.contains("染")).unwrap_or(false);
+
+        let is_scholar = target.display_title.contains("書")
+            || target.display_title.contains("學")
+            || target.display_title.contains("印")
+            || target.display_title.contains("算")
+            || vessel_name.contains("手札")
+            || vessel_name.contains("算盤")
+            || venue_opt.as_ref().map(|v| v.venue_kind.contains("書") || v.venue_kind.contains("學院")).unwrap_or(false);
+
+        if is_wood {
+            (
+                if !real_name.is_empty() && real_name != "陌生人" {
+                    format!("{real_name}・巧木造器真傳")
+                } else {
+                    "巧木造器真傳".to_string()
+                },
+                "巧木推刨順紋定榫訣".to_string(),
+                format!("手持【{vessel_name}】審視木理紋脈，順纖維之勢推刨定榫，器身自無裂隙偏差"),
+                crate::pg::living_world::BreathHabitKind::ChamberClear,
+                "巧木百工",
+                &["zhun", "ding", "he_tai"],
+                &["準", "定", "合"],
+            )
+        } else if is_medicine {
+            (
+                if !real_name.is_empty() && real_name != "陌生人" {
+                    format!("{real_name}・本草經脈真傳")
+                } else {
+                    "本草經脈真傳".to_string()
+                },
+                "百草分劑辨氣引脈訣".to_string(),
+                format!("就著【{vessel_name}】之溫潤分寸，細辨山澤草木甘辛寒熱，以導引生息"),
+                crate::pg::living_world::BreathHabitKind::TideContinuous,
+                "本草百工",
+                &["shui", "huo_shou", "chun"],
+                &["水", "火", "純"],
+            )
+        } else if is_textile {
+            (
+                if !real_name.is_empty() && real_name != "陌生人" {
+                    format!("{real_name}・織造經緯真傳")
+                } else {
+                    "織造經緯真傳".to_string()
+                },
+                "經緯穿梭均勻固密訣".to_string(),
+                format!("揮運【{vessel_name}】隨吐納起落，牽引棉麻絲縷密實相扣，風雨不透"),
+                crate::pg::living_world::BreathHabitKind::ChamberClear,
+                "織造百工",
+                &["ding", "he_tai", "chun"],
+                &["定", "合", "純"],
+            )
+        } else if is_scholar {
+            (
+                if !real_name.is_empty() && real_name != "陌生人" {
+                    format!("{real_name}・考工格物真傳")
+                } else {
+                    "考工格物真傳".to_string()
+                },
+                "格物考工澄心墨韻訣".to_string(),
+                format!("凝神於【{vessel_name}】之上，心澄如鏡，落筆分寸洞察造化源流"),
+                crate::pg::living_world::BreathHabitKind::ChamberClear,
+                "考工文治",
+                &["zhun", "ding", "he_tai"],
+                &["準", "定", "合"],
+            )
+        } else {
+            (
+                if !real_name.is_empty() && real_name != "陌生人" {
+                    format!("{real_name}・百工衡準真傳")
+                } else {
+                    "半島百工衡準".to_string()
+                },
+                "百工調息衡準訣".to_string(),
+                format!("握持【{vessel_name}】神思澄明、呼吸勻淨，於分寸之間拿捏器物重心"),
+                crate::pg::living_world::BreathHabitKind::ChamberClear,
+                "百工衡準",
+                &["zhun", "ding", "he_tai"],
+                &["準", "定", "合"],
+            )
+        }
     };
     let mentor_label = mentor_label_str.as_str();
     let imprint_title = imprint_title_str.as_str();

@@ -61,22 +61,77 @@ fn resolve_caller_name(player_id: &str, npc_id: &str, ent: &crate::store::Entity
 }
 
 fn generate_vendor_banter(caller_a: &str, caller_b: &str, id_a: &str, id_b: &str, hour: i32) -> String {
-    if (id_a.contains("roast_beef") && id_b.contains("noodle_soup")) || (id_b.contains("roast_beef") && id_a.contains("noodle_soup")) {
-        format!("{caller_a}抽空朝隔壁攤招呼道：「掌麵大姊，待會幫我留碗大骨湯切仔麵，加顆滷蛋！」 {caller_b}笑著應道：「好咧掌爐師傅，等這陣烤肉香氣散了，我親自端過去給你！」")
-    } else if (id_a.contains("pepper_bun") && id_b.contains("tofu_pudding")) || (id_b.contains("pepper_bun") && id_a.contains("tofu_pudding")) {
-        format!("{caller_a}抽空朝隔壁攤笑道：「老伯，待會留碗黑糖薑汁豆花，吃完現烤出爐的胡椒餅配碗熱甜湯最舒坦！」 {caller_b}樂呵呵應道：「好咧掌攤大哥！我給你多舀一勺黑糖粉圓，趁熱吃啊！」")
-    } else if (id_a.contains("herbal_tea") && id_b.contains("roast_beef")) || (id_b.contains("herbal_tea") && id_a.contains("roast_beef")) {
-        format!("{caller_a}朝隔壁笑道：「掌爐師傅，烤肉串火氣大，待會過來喝盞寒水玉仙草凍降降火！」 {caller_b}爽朗應道：「鄰攤掌事想得周到！等我烤完這爐牛肉番薯，馬上過去盛一盞！」")
-    } else if (id_a.contains("herbal_tea") && id_b.contains("pepper_bun")) || (id_b.contains("herbal_tea") && id_a.contains("pepper_bun")) {
-        format!("{caller_a}笑著朝隔壁打趣道：「掌攤大哥，胡椒餅現烤出爐辛香撲鼻，配我這冰鎮仙草凍正是絕配呢！」 {caller_b}哈哈笑道：「鄰攤掌事說得對，一個燙口酥脆一個沁涼消暑，稍後我也來一盞！」")
-    } else if (id_a.contains("tofu_pudding") && id_b.contains("herbal_tea")) || (id_b.contains("tofu_pudding") && id_a.contains("herbal_tea")) {
-        format!("{caller_a}笑著打招呼道：「鄰攤掌事，今天仙草凍備得足呀，井泉鎮得真透涼！」 {caller_b}點頭應道：「老伯，您的黑糖薑汁豆花也是香飄整條街呢，大家今晚生意都旺！」")
-    } else if (id_a.contains("rice_roll") && id_b.contains("soy_milk")) || (id_b.contains("rice_roll") && id_a.contains("soy_milk")) {
-        format!("{caller_a}隔空喊道：「掌攤大哥，現磨熱米漿幫我盛一碗，搭我親手捏好的紫米飯糰正合適！」 {caller_b}朗聲回道：「沒問題大姨，我再給你挑根最酥脆的現炸油條！」")
-    } else if (id_a.contains("morning_produce") && id_b.contains("morning_fish")) || (id_b.contains("morning_produce") && id_a.contains("morning_fish")) {
-        format!("{caller_a}朝隔壁笑喊：「掌攤大哥，今天這河蝦個個活蹦亂跳啊，搭我的鮮嫩水芹菜下鍋清炒最甜了！」 {caller_b}高聲笑應：「對攤老弟眼光好！稍後收市，我們換點菜蝦回家下酒！」")
+    let specialty_a = crate::server::action::trade::resolve_vendor_specialty_with_title(id_a, caller_a);
+    let specialty_b = crate::server::action::trade::resolve_vendor_specialty_with_title(id_b, caller_b);
+
+    let resolve_offer_details = |spec: Option<(&'static str, &'static str, i32, &'static str)>| {
+        spec.map(|(item_id, item_name, base_price, _)| {
+            let quote = crate::game::object_ecology::dynamic_settlement_market_quote("文曜", item_id, base_price);
+            let cat_obj = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
+                .iter()
+                .find(|o| o.id == item_id);
+            let look_clause = cat_obj
+                .map(|o| {
+                    let raw = o.look_text.trim();
+                    let after_quote = if let Some(stripped) = raw.strip_prefix('「') {
+                        if let Some((_, rest)) = stripped.split_once('」') {
+                            rest.trim()
+                        } else {
+                            raw
+                        }
+                    } else {
+                        raw
+                    };
+                    after_quote
+                        .split(['，', '。', '；'])
+                        .find(|s| !s.trim().is_empty())
+                        .unwrap_or("真材實料")
+                        .trim()
+                })
+                .unwrap_or("真材實料");
+            let action_clause = cat_obj
+                .map(|o| {
+                    o.action_text
+                        .trim()
+                        .split(['，', '。', '；'])
+                        .find(|s| !s.trim().is_empty())
+                        .unwrap_or("滋味道地")
+                        .trim()
+                })
+                .unwrap_or("滋味道地");
+            (item_name, quote.unit_price, look_clause, action_clause)
+        })
+    };
+
+    let details_a = resolve_offer_details(specialty_a);
+    let details_b = resolve_offer_details(specialty_b);
+
+    if let (Some((name_a, price_a, look_a, _)), Some((name_b, price_b, look_b, _))) = (details_a, details_b) {
+        format!(
+            "{caller_a}抽空朝隔壁攤招呼道：「鄰攤掌事，你這【{name_b}】（每份約{price_b}鎂）{look_b}，待會替我留一份！」 {caller_b}笑著應道：「好說！你那【{name_a}】（每份約{price_a}鎂）也是{look_a}，等這陣忙完，我們換著嚐嚐！」"
+        )
+    } else if let Some((name_a, price_a, _, act_a)) = details_a {
+        if hour >= 18 || hour < 6 {
+            format!(
+                "{caller_a}望向隔壁攤笑道：「今晚市面熱鬧，我這招牌【{name_a}】（每份約{price_a}鎂）備料快見底啦，{act_a}正好趁熱！」 {caller_b}點頭應道：「夜風涼爽，大夥手腳麻利些，生意正旺！」"
+            )
+        } else {
+            format!(
+                "{caller_a}望向隔壁攤笑道：「今日日頭好，這招牌【{name_a}】（每份約{price_a}鎂）{act_a}，往來行旅不斷！」 {caller_b}點頭應道：「是啊，市面興旺，大家手頭活計都俐落！」"
+            )
+        }
+    } else if let Some((name_b, price_b, _, act_b)) = details_b {
+        if hour >= 18 || hour < 6 {
+            format!(
+                "{caller_a}朝隔壁攤打趣道：「夜市人潮真盛，你那【{name_b}】（每份約{price_b}鎂）{act_b}，聞著就叫人嘴饞！」 {caller_b}爽朗笑應：「好說好說！趁著夜色街燈亮堂，大夥一塊把市面做旺！」"
+            )
+        } else {
+            format!(
+                "{caller_a}朝隔壁攤招呼道：「市集買賣興旺，你攤上這【{name_b}】（每份約{price_b}鎂）{act_b}，引來不少行客！」 {caller_b}點頭笑道：「鄰攤掌事客氣了，街坊鄰里互相關照，市面才熱鬧！」"
+            )
+        }
     } else if hour >= 18 || hour < 6 {
-        format!("{caller_a}望向隔壁攤笑道：「今晚夜市人潮真旺，我這鍋備料都快見底啦！」 {caller_b}點頭應道：「是啊，趁著夜風涼爽、街燈亮堂，大夥手腳都俐落些！」")
+        format!("{caller_a}望向隔壁攤笑道：「今晚夜市人潮真旺，手頭各色活計都快忙不過來了！」 {caller_b}點頭應道：「是啊，趁著夜風涼爽、街燈亮堂，大夥手腳都俐落些！」")
     } else {
         format!("{caller_a}望向隔壁攤笑道：「今天生意不錯呀，街上往來買賣的人潮挺旺！」 {caller_b}點頭應道：「是啊，趁著日頭正好、市面熱鬧，大夥都精神！」")
     }
