@@ -166,26 +166,17 @@ fn extract_primary_slot_id(equipment_slots: &str) -> Option<String> {
 }
 
 fn infer_vocational_vessel(role_hint: &str) -> Option<(&'static str, &'static str)> {
-    if role_hint.contains("鐵") || role_hint.contains("鍛") || role_hint.contains("爐") || role_hint.contains("鑄") {
-        Some(("craft_iron_pickaxe", "百鍛長柄鐵錘"))
-    } else if role_hint.contains("木") || role_hint.contains("竹") || role_hint.contains("鋸") || role_hint.contains("船") {
-        Some(("craft_wooden_tool_handle", "魯班平推刨刀"))
-    } else if role_hint.contains("藥") || role_hint.contains("醫") || role_hint.contains("草") || role_hint.contains("丹") {
-        Some(("craft_meridian_salve", "青銅搗藥杵"))
-    } else if role_hint.contains("巡") || role_hint.contains("衛") || role_hint.contains("哨") || role_hint.contains("獵") || role_hint.contains("武") {
-        Some(("craft_steel_hunting_knife", "精鍛防身獵刀"))
-    } else if role_hint.contains("礦") || role_hint.contains("石") || role_hint.contains("坑") {
-        Some(("craft_iron_pickaxe", "雙刃碎石手鎬"))
-    } else if role_hint.contains("織") || role_hint.contains("布") || role_hint.contains("服") || role_hint.contains("染") {
-        Some(("craft_steel_hunting_knife", "熟鐵裁布大剪刀"))
-    } else if role_hint.contains("廚") || role_hint.contains("茶") || role_hint.contains("膳") || role_hint.contains("食") || role_hint.contains("攤") {
-        Some(("craft_steel_hunting_knife", "厚背熟鐵廚刀"))
-    } else if role_hint.contains("書") || role_hint.contains("院") || role_hint.contains("講") || role_hint.contains("印") || role_hint.contains("記") {
-        Some(("craft_peninsula_almanac", "白塔風物考工手札"))
-    } else if role_hint.contains("漁") || role_hint.contains("港") || role_hint.contains("渡") || role_hint.contains("海") {
-        Some(("craft_pine_torch", "浸油麻編海釣竿"))
+    if role_hint.trim().is_empty() {
+        return None;
+    }
+    let spec = crate::npc::causal_core::resolve_vocational_vessel(role_hint);
+    if let Some(cat) = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
+        .iter()
+        .find(|o| o.id == spec.catalog_id)
+    {
+        Some((cat.id, cat.name))
     } else {
-        None
+        Some((spec.catalog_id, spec.display_name))
     }
 }
 

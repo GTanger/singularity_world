@@ -883,6 +883,19 @@ pub fn audit_codebase_anti_looping_invariants() -> CodebaseAntiLoopingAuditRepor
             ));
         }
     }
+
+    for role_hint in [
+        "學徒", "家眷", "帳房", "食堂", "書院", "藥鋪", "水輪", "鐵匠", "礦工",
+        "木匠", "織布", "皮靴", "理髮", "漁夫", "巡衛", "獵戶", "挑夫", "街坊",
+    ] {
+        let spec = crate::npc::causal_core::resolve_vocational_vessel(role_hint);
+        if spec.catalog_id.is_empty() || !valid_item_ids.contains(spec.catalog_id) {
+            violations.push(format!(
+                "職司「{role_hint}」之 VocationalVesselSpec.catalog_id 不存在於 PENINSULA_WORLD_OBJECTS: {}",
+                spec.catalog_id
+            ));
+        }
+    }
     CodebaseAntiLoopingAuditReport {
         audited_text_surfaces,
         audited_core_modules: module_contracts.len(),

@@ -170,6 +170,12 @@ pub struct RoomViewMsg {
     pub game_time_sec_since_midnight: i32,
     #[serde(rename = "game_days_since_epoch")]
     pub game_days_since_epoch: i32,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub terrain: String,
+    #[serde(default, skip_serializing_if = "String::is_empty", rename = "venue_kind")]
+    pub venue_kind: String,
+    #[serde(default, rename = "is_indoor")]
+    pub is_indoor: bool,
 }
 
 /// 登入成功後玩家狀態（對齊 `MeMsg`）。
@@ -347,6 +353,8 @@ pub struct InventoryItemView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub attribute_tags: Vec<String>,
     pub tags: Vec<String>,
+    #[serde(default, rename = "is_edible")]
+    pub is_edible: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -675,6 +683,9 @@ mod tests {
             server_unix: 1700000000,
             game_time_sec_since_midnight: 3600,
             game_days_since_epoch: 1,
+            terrain: String::new(),
+            venue_kind: String::new(),
+            is_indoor: false,
         };
         let s = serde_json::to_string(&v).unwrap();
         let v2: RoomViewMsg = serde_json::from_str(&s).unwrap();

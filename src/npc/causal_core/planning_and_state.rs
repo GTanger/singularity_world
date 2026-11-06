@@ -320,6 +320,20 @@ pub fn lookup_action_option(code: &str) -> Option<&'static ActionOptionDef> {
     PREDEFINED_ACTION_CATALOG.iter().find(|opt| opt.code == code)
 }
 
+fn find_real_settlement_venue(settlement: &str, keywords: &[char]) -> Option<String> {
+    for slot in crate::store::OUTER_HOUSEHOLD_SLOTS {
+        for candidate in [slot.work_name, slot.errand_name] {
+            if candidate.starts_with(settlement)
+                && let Some((_, leaf)) = candidate.split_once('・')
+                && keywords.iter().any(|&kw| leaf.contains(kw))
+            {
+                return Some(leaf.to_string());
+            }
+        }
+    }
+    None
+}
+
 pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str) -> String {
     let settlement = clean_settlement_name(dest_name);
     let dest_leaf = dest_name.rsplit('・').next().unwrap_or(dest_name).trim();
@@ -391,7 +405,8 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             } else if settlement == "文曜" {
                 "東橋旅社與山風茶屋".to_string()
             } else {
-                format!("{settlement}路邊茶寮")
+                find_real_settlement_venue(settlement, &['茶', '食', '飯', '湯', '旅'])
+                    .unwrap_or_else(|| format!("{settlement}路邊茶寮"))
             }
         }
         VenueRequirement::WellOrStream => {
@@ -402,8 +417,11 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
                 || dest_leaf.contains('圳')
             {
                 dest_leaf.to_string()
+            } else if settlement == "文曜" {
+                "三水口橋頭".to_string()
             } else {
-                format!("{settlement}街角山泉公井")
+                find_real_settlement_venue(settlement, &['井', '泉', '溪', '水', '圳', '渡'])
+                    .unwrap_or_else(|| format!("{settlement}街角山泉公井"))
             }
         }
         VenueRequirement::Bathhouse => {
@@ -412,7 +430,8 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             } else if settlement == "文曜" {
                 "泉香溫水浴場".to_string()
             } else {
-                format!("{settlement}溫水石湯屋")
+                find_real_settlement_venue(settlement, &['浴', '湯', '泉', '旅'])
+                    .unwrap_or_else(|| format!("{settlement}溫水石湯屋"))
             }
         }
         VenueRequirement::InnOrHome => {
@@ -424,16 +443,18 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             } else if settlement == "文曜" {
                 "東橋旅社".to_string()
             } else {
-                format!("{settlement}旅社通鋪")
+                find_real_settlement_venue(settlement, &['旅', '宿', '棧', '寮', '居'])
+                    .unwrap_or_else(|| format!("{settlement}旅社通鋪"))
             }
         }
         VenueRequirement::Clinic => {
             if dest_leaf.contains('診') || dest_leaf.contains('醫') || dest_leaf.contains('藥') {
                 dest_leaf.to_string()
             } else if settlement == "文曜" {
-                "溫氏脈絡診所".to_string()
+                "溫氏百草診所".to_string()
             } else {
-                format!("{settlement}草木藥鋪診所")
+                find_real_settlement_venue(settlement, &['診', '醫', '藥', '堂'])
+                    .unwrap_or_else(|| format!("{settlement}草木藥鋪診所"))
             }
         }
         VenueRequirement::ForgeOrWorkshop => {
@@ -449,7 +470,8 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             } else if settlement == "文曜" {
                 "岑氏第一鍛造工坊".to_string()
             } else {
-                format!("{settlement}百工修繕坊")
+                find_real_settlement_venue(settlement, &['坊', '鍛', '鐵', '木', '窯', '作', '鋪'])
+                    .unwrap_or_else(|| format!("{settlement}百工修繕坊"))
             }
         }
         VenueRequirement::DockOrStation => {
@@ -463,7 +485,8 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             } else if settlement == "文曜" {
                 "西門車馬聯運總站".to_string()
             } else {
-                format!("{settlement}車馬聯運貨站")
+                find_real_settlement_venue(settlement, &['站', '運', '碼', '港', '埠', '渡'])
+                    .unwrap_or_else(|| format!("{settlement}車馬聯運貨站"))
             }
         }
         VenueRequirement::Market => {
@@ -479,7 +502,8 @@ pub fn coherent_place_for_venue_req(venue_req: VenueRequirement, dest_name: &str
             } else if settlement == "文曜" {
                 "三水總商行市集".to_string()
             } else {
-                format!("{settlement}街心市集攤區")
+                find_real_settlement_venue(settlement, &['市', '商', '集', '攤', '店', '行', '鋪'])
+                    .unwrap_or_else(|| format!("{settlement}街心市集攤區"))
             }
         }
         VenueRequirement::BridgeOrPlaza => {
@@ -709,7 +733,7 @@ pub fn derive_default_3step_plan(
         [
             format!("開啟{s}引水閘門，以「{vessel_name}」校準上下磨盤齒距與銅網篩眼"),
             format!("藉湍急水輪分動大磨，將大圳頭新穀與「{item}」細碾分篩並熬製溫米漿"),
-            format!("封妥米漿保溫桶發往文曜早市，晚間赴{s}堰渠水畔食堂與北郊農戶核對明日水門時刻"),
+            format!("封妥米漿保溫桶發往{s}早市，晚間赴{s}堰渠水畔食堂與鄰近農戶核對明日水門時刻"),
         ]
     } else if role_hint.contains("鐵") || role_hint.contains("鍛") || role_hint.contains("木工") || role_hint.contains("木匠") || role_hint.contains("木器") || role_hint.contains("竹") || role_hint.contains("工坊") {
         [

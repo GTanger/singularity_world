@@ -184,6 +184,16 @@ fn conduct_npc_dialogue(
         } else {
             format!("雙方正分別忙於「{}」與「{}」，就手頭差事、器物成色或半島民生自然寒暄交流", act_a, act_b)
         };
+        let vessel_spec_a = crate::npc::causal_core::resolve_vocational_vessel(&a.display_title);
+        if let Some(cat_a) = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
+            .iter()
+            .find(|o| o.id == vessel_spec_a.catalog_id)
+        {
+            dialogue_anchor.push_str(&format!(
+                "；主講隨身器物：【{}】［{}］（{}）",
+                cat_a.name, cat_a.id, cat_a.daily_function
+            ));
+        }
         if let Some(venue) = crate::grid::resolve_any_room_venue_object(&room_name, "")
             .filter(|v| v.venue_kind != "街巷橋樑公共空地" && v.default_host_title != "街坊居民")
         {
@@ -192,19 +202,17 @@ fn conduct_npc_dialogue(
                 venue.venue_kind, venue.default_host_title, venue.on_duty_fixture_activity
             ));
         }
-        if (a.id.len() + b.id.len()) % 4 == 0 {
-            if let Some((ev, _sp)) = crate::game::peninsula_scripts::active_dyadic_event_and_script_pack_for_room(
-                &room_name,
-                Some(&name_a),
-                Some(&name_b),
-                now_unix.unsigned_abs() as i64,
-            ) {
-                dialogue_anchor.push_str(&format!(
-                    "；現場當務背景：【{}】{}",
-                    ev.pack_id,
-                    ev.event_title,
-                ));
-            }
+        if let Some((ev, _sp)) = crate::game::peninsula_scripts::active_dyadic_event_and_script_pack_for_room(
+            &room_name,
+            Some(&name_a),
+            Some(&name_b),
+            now_unix.unsigned_abs() as i64,
+        ) {
+            dialogue_anchor.push_str(&format!(
+                "；現場當務背景：【{}】{}",
+                ev.pack_id,
+                ev.event_title,
+            ));
         }
         let (ax, ay) = (a.x, a.y);
         let place_label = &room_name;
@@ -334,7 +342,7 @@ fn conduct_npc_dialogue(
             obligations_b.push(format!("{}:{}", kind_label, subj));
         }
     }
-    let mut decision_b = crate::ai::decision_scorer::score_npc_interaction_stance(
+    let decision_b = crate::ai::decision_scorer::score_npc_interaction_stance(
         &crate::ai::decision_scorer::NpcDecisionInput {
             npc_name: &name_b,
             boldness: soul_b.boldness,
@@ -349,19 +357,8 @@ fn conduct_npc_dialogue(
         },
     );
 
-    let fam = dyad.as_ref().map(|d| d.familiarity).unwrap_or(0);
-    if decision_b.choice == crate::ai::decision_scorer::NpcStanceChoice::Accept
-        && fam < 30
-    {
-        let hash_val = (now_unix.unsigned_abs() ^ (a.id.len() as u64) ^ ((b.id.len() as u64) << 8)) % 100;
-        if hash_val < 45 {
-            decision_b.choice = match hash_val % 3 {
-                0 => crate::ai::decision_scorer::NpcStanceChoice::Bargain,
-                1 => crate::ai::decision_scorer::NpcStanceChoice::Deflect,
-                _ => crate::ai::decision_scorer::NpcStanceChoice::Refuse,
-            };
-        }
-    }
+    // 尊重 System 1 基於真實好感、信任與個人狀態算出的互動姿態，不再以雜湊亂數強行竄改
+    let _ = &dyad;
 
     let role_a = crate::store::npc_persistent_role_label(&a.id, &a.display_title);
     let role_b = crate::store::npc_persistent_role_label(&b.id, &b.display_title);

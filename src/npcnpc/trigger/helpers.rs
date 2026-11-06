@@ -95,6 +95,17 @@ pub fn resolve_viewer_npc_label(player_id: &str, c: &crate::entity::Character, r
         return role_title.to_string();
     }
     let tag = crate::store::npc_brief_appearance_tag(&c.id, &c.display_title);
+    if let Some(venue) = crate::grid::resolve_any_room_venue_object(room_name, &c.display_title)
+        && !venue.default_host_title.is_empty()
+        && venue.default_host_title != "街坊居民"
+    {
+        let role = venue.default_host_title;
+        return if !tag.is_empty() {
+            format!("{tag}的{role}")
+        } else {
+            format!("一名{role}")
+        };
+    }
     let role = if room_name.contains("工坊") || room_name.contains("鍛造") || room_name.contains("木作") || room_name.contains("鐵坊") {
         "匠人"
     } else if room_name.contains("藥") || room_name.contains("診") || room_name.contains("脈") {

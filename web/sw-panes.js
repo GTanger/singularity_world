@@ -868,7 +868,7 @@
 					} else if (isManual) {
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="study-manual">研讀參悟</button>';
 					} else if (!isRaw) {
-						var isFoodOrDrink = it.item_type === 'food' || /蝦串|魚乾|肉脯|糧餅|茶磚|魚湯|肉湯|鮮湯|米粥|湯麵|飯糰|滷肉|煎魚|烤魚|烤蝦/.test(it.name || '') || (!/[羽皮骨甲鱗角牙爪殼毛絲麻布線繩木竹石礦砂泥炭灰油蠟漆紙冊燈桶竿網錘刀劍甲衣衫褲鞋帽鐲環戒佩印契鑰]/.test(it.name || '') && /[餅麵飯肉薯凍花菜蝦蛤魚丸糖湯茶漿飲水酒粥粿包蛋羹膏丸散丹串脯]/.test(it.name || ''));
+						var isFoodOrDrink = Boolean(it.is_edible) || it.item_type === 'food' || it.item_type === 'consumable';
 						var useLabel = isFoodOrDrink ? '食用' : '使用';
 						actionsHtml += '<button type="button" class="inv-action-btn" data-action="use">' + useLabel + '</button>';
 					}

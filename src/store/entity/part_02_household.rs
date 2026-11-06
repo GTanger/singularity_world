@@ -206,44 +206,13 @@ pub fn held_vessel(slot: &WenyaoHouseholdSlot) -> (&'static str, &'static str) {
         slot.work_name
     };
     let spec = crate::npc::causal_core::resolve_vocational_vessel(role_hint);
-    match spec.item_id {
-        "craft_wooden_tool_handle" => ("wt_cat_0954", "省力導能刨刀"),
-        "craft_bamboo_basket" => {
-            if role_hint.contains("行旅") || role_hint.contains("押貨") || role_hint.contains("挑夫") || role_hint.contains("採") {
-                ("wt_cat_0894", "內襯寒水玉保鮮採集背簍")
-            } else {
-                ("wt_cat_0895", "雙層竹編提籃")
-            }
-        }
-        "craft_copper_abacus" => ("wt_cat_0834", "漆金花梨木算籌組"),
-        "craft_kitchen_cleaver" => ("wt_cat_0564", "岑氏精鋼切片廚刀"),
-        "craft_peninsula_almanac" => ("wt_cat_0781", "竹綿紙牛皮記事手札"),
-        "craft_meridian_salve" => ("wt_cat_1057", "溫氏導能溫石百草溫灸盒"),
-        "wt_cat_0973" => ("wt_cat_0973", "平底石磨分粉篩架"),
-        "craft_iron_pickaxe" => {
-            if role_hint.contains("礦") || role_hint.contains("石") || role_hint.contains("坑") || role_hint.contains("鑿") {
-                ("wt_cat_0964", "雙刃碎石手鎬")
-            } else {
-                ("wt_cat_0945", "岑氏省力導能鍛錘")
-            }
-        }
-        "craft_steel_scissors" => {
-            if role_hint.contains("理髮") || role_hint.contains("剪剃") || role_hint.contains("剃") {
-                ("wt_cat_0642", "夾耳防脫修面剪刀")
-            } else {
-                ("wt_cat_0890", "熟鐵裁布大剪刀")
-            }
-        }
-        "wt_cat_1021" => ("wt_cat_1021", "岩羊角手柄折疊獵刀"),
-        "craft_pine_torch" => ("wt_cat_1006", "老青竹黃銅輪捲線釣竿"),
-        "craft_steel_hunting_knife" => ("wt_cat_1021", "岩羊角手柄折疊獵刀"),
-        other => {
-            if let Some(cat) = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS.iter().find(|o| o.id == other) {
-                (cat.id, cat.name)
-            } else {
-                ("wt_cat_0895", "雙層竹編提籃")
-            }
-        }
+    if let Some(cat) = crate::game::peninsula_catalog::PENINSULA_WORLD_OBJECTS
+        .iter()
+        .find(|o| o.id == spec.catalog_id)
+    {
+        (cat.id, cat.name)
+    } else {
+        (spec.catalog_id, spec.display_name)
     }
 }
 

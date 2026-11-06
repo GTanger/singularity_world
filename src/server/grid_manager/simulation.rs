@@ -176,7 +176,9 @@ fn step_resident_idles(grid: &crate::grid::SquareGrid) {
 
             {
                 let mut s = store_arc.write();
-                crate::npc::causal_core::pay_from_settlement_treasury(&mut s, id, "文曜", 12);
+                let (prim_bldg_for_pay, _) = (def.resolve)(hour);
+                let pay_settlement = extract_settlement_name(prim_bldg_for_pay);
+                crate::npc::causal_core::pay_from_settlement_treasury(&mut s, id, pay_settlement, 12);
                 if let Some(mut ent) = s.get_entity(id) {
                     crate::db::add_thought_to_entity_with_delta(
                         &mut ent,
@@ -247,7 +249,8 @@ fn step_resident_idles(grid: &crate::grid::SquareGrid) {
             // 目前正在次級目標或義務場所，停留結束後結清義務並走回原駐點
             {
                 let mut s = store_arc.write();
-                crate::npc::causal_core::pay_from_settlement_treasury(&mut s, id, "文曜", 12);
+                let pay_settlement = extract_settlement_name(prim_bldg);
+                crate::npc::causal_core::pay_from_settlement_treasury(&mut s, id, pay_settlement, 12);
                 if let Some(mut ent) = s.get_entity(id) {
                     crate::db::clean_and_recalc_entity_disposition(&mut ent, crate::game::now_unix());
                     let ent_sync = ent.clone();
@@ -609,8 +612,47 @@ pub fn advance_scheduled_residents_one_step() -> Vec<(String, String, String)> {
     moves
 }
 
-/// 依建築名稱或關鍵字在正方格地圖上查找最匹配的房間格（優先精確匹配，次選子字串匹配）。
+static BLDG_COORD_CACHE: std::sync::LazyLock<
+    std::sync::RwLock<std::collections::HashMap<String, crate::grid::SquareCoord>>,
+> = std::sync::LazyLock::new(|| std::sync::RwLock::new(std::collections::HashMap::new()));
+
+fn extract_settlement_name(bldg_name: &str) -> &'static str {
+    const SETTLEMENTS: &[&str] = &[
+        "文曜", "風舶角", "紅土崁", "霜林口", "半嶺鎮", "烏石鼻", "水尾寮", "老堰頭",
+        "大圳頭", "北嶺腳", "三號坑口", "牛埔", "下營", "南哨", "分家巷",
+    ];
+    let prefix = bldg_name.split('・').next().unwrap_or("").trim();
+    for &s in SETTLEMENTS {
+        if prefix == s || bldg_name.starts_with(s) {
+            return s;
+        }
+    }
+    "文曜"
+}
+
+/// 依建築名稱或關鍵字在正方格地圖上查找最匹配的房間格（優先 O(1) 預編譯索引快取，次選精確與別名匹配）。
 pub fn resolve_settlement_room_coord<'a>(
+    grid: &'a crate::grid::SquareGrid,
+    bldg_query: &str,
+) -> Option<&'a crate::grid::GridCell> {
+    let use_cache = grid.len() > 2000;
+    if use_cache
+        && let Ok(guard) = BLDG_COORD_CACHE.read()
+        && let Some(&coord) = guard.get(bldg_query)
+    {
+        return grid.get(coord);
+    }
+    let found = resolve_settlement_room_coord_uncached(grid, bldg_query);
+    if use_cache
+        && let Some(cell) = found
+        && let Ok(mut guard) = BLDG_COORD_CACHE.write()
+    {
+        guard.insert(bldg_query.to_string(), cell.coord);
+    }
+    found
+}
+
+fn resolve_settlement_room_coord_uncached<'a>(
     grid: &'a crate::grid::SquareGrid,
     bldg_query: &str,
 ) -> Option<&'a crate::grid::GridCell> {

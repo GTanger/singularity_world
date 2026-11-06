@@ -1,3 +1,34 @@
+pub fn is_item_edible(item_id: &str, item_name: &str, item_type: &str) -> bool {
+    if let Some(cat) = crate::game::peninsula_catalog::find_catalog_entry(item_id) {
+        if cat.socket == "Taste"
+            || cat.attribute_tags.contains(&"food")
+            || cat.attribute_tags.contains(&"drink")
+            || cat.attribute_tags.contains(&"edible")
+            || cat.category_name.contains('食')
+            || cat.category_name.contains('飲')
+            || cat.category_name.contains('茶')
+            || cat.category_name.contains('膳')
+        {
+            return true;
+        }
+    }
+    item_type == "food"
+        || item_type == "consumable"
+        || item_id.starts_with("food_")
+        || item_id.starts_with("meal_")
+        || item_id.starts_with("tea_")
+        || item_id.starts_with("drink_")
+        || item_name.contains("茶")
+        || item_name.contains("湯")
+        || item_name.contains("麵")
+        || item_name.contains("飯")
+        || item_name.contains("餅")
+        || item_name.contains("粥")
+        || item_name.contains("肉脯")
+        || item_name.contains("魚乾")
+        || item_name.contains("蝦串")
+}
+
 pub(super) fn handle_use_item(conn: &WsConnection, msg: &ClientMsg) {
     let Some(pid) = player_id(conn) else {
         conn.send_error(gametext::client("need_login"));

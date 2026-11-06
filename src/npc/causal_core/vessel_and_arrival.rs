@@ -2,6 +2,7 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct VocationalVesselSpec {
     pub item_id: &'static str,
+    pub catalog_id: &'static str,
     pub display_name: &'static str,
     pub is_bladed: bool,
     pub maintenance_venue_keyword: &'static str,
@@ -9,11 +10,12 @@ pub struct VocationalVesselSpec {
     pub maintenance_stay_verb: &'static str,
 }
 
-/// 依住民職銜與身分解析其真實隨身器物與保養場所（涵蓋全島 18 類職司）
+/// 依住民職銜與身分解析其真實隨身器物與保養場所（涵蓋全島 18 類職司，直接錨定 PENINSULA_WORLD_OBJECTS 總典外鍵）
 pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     if role_hint.contains("學徒") {
         VocationalVesselSpec {
             item_id: "craft_wooden_tool_handle",
+            catalog_id: "wt_cat_0954",
             display_name: "百工學徒手用小木尺",
             is_bladed: false,
             maintenance_venue_keyword: "工坊",
@@ -27,6 +29,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_bamboo_basket",
+            catalog_id: "wt_cat_0895",
             display_name: "紫竹家常提籃",
             is_bladed: false,
             maintenance_venue_keyword: "市集",
@@ -43,6 +46,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_copper_abacus",
+            catalog_id: "wt_cat_0834",
             display_name: "紫銅商簿算盤",
             is_bladed: false,
             maintenance_venue_keyword: "商行",
@@ -60,6 +64,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_kitchen_cleaver",
+            catalog_id: "wt_cat_0564",
             display_name: "厚背熟鐵廚刀",
             is_bladed: true,
             maintenance_venue_keyword: "鐵",
@@ -80,6 +85,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_peninsula_almanac",
+            catalog_id: "wt_cat_0781",
             display_name: "白塔風物考工手札",
             is_bladed: false,
             maintenance_venue_keyword: "書",
@@ -94,10 +100,11 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_meridian_salve",
-            display_name: "青銅搗藥杵",
+            catalog_id: "wt_cat_1057",
+            display_name: "溫氏導能溫石百草溫灸盒",
             is_bladed: false,
             maintenance_venue_keyword: "診",
-            maintenance_purpose_prefix: "入堂拭淨搗藥銅杵",
+            maintenance_purpose_prefix: "入堂拭淨溫灸銅盒",
             maintenance_stay_verb: "正以山泉洗淨藥漬並擦亮手中",
         }
     } else if role_hint.contains("水輪")
@@ -107,6 +114,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "wt_cat_0973",
+            catalog_id: "wt_cat_0973",
             display_name: "平底石磨分粉篩架",
             is_bladed: false,
             maintenance_venue_keyword: "石磨",
@@ -120,7 +128,8 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_iron_pickaxe",
-            display_name: "百鍛長柄鐵錘",
+            catalog_id: "wt_cat_0945",
+            display_name: "岑氏省力導能鍛錘",
             is_bladed: false,
             maintenance_venue_keyword: "鐵",
             maintenance_purpose_prefix: "入坊重楔鐵錘木柄",
@@ -133,6 +142,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_iron_pickaxe",
+            catalog_id: "wt_cat_0964",
             display_name: "雙刃碎石手鎬",
             is_bladed: true,
             maintenance_venue_keyword: "鐵",
@@ -147,6 +157,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_wooden_tool_handle",
+            catalog_id: "wt_cat_0954",
             display_name: "魯班平推刨刀",
             is_bladed: true,
             maintenance_venue_keyword: "木",
@@ -161,6 +172,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_steel_scissors",
+            catalog_id: "wt_cat_0890",
             display_name: "熟鐵裁布大剪刀",
             is_bladed: true,
             maintenance_venue_keyword: "鐵",
@@ -175,6 +187,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "wt_cat_1021",
+            catalog_id: "wt_cat_1021",
             display_name: "彎頭修靴裁皮刀",
             is_bladed: true,
             maintenance_venue_keyword: "鐵",
@@ -187,7 +200,8 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_steel_scissors",
-            display_name: "講堂街精鋼剃刀與剪子",
+            catalog_id: "wt_cat_0642",
+            display_name: "夾耳防脫修面剪刀",
             is_bladed: true,
             maintenance_venue_keyword: "鐵",
             maintenance_purpose_prefix: "入坊細磨剃刀鋒口",
@@ -201,7 +215,8 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_pine_torch",
-            display_name: "浸油麻編海釣竿",
+            catalog_id: "wt_cat_1006",
+            display_name: "老青竹黃銅輪捲線釣竿",
             is_bladed: false,
             maintenance_venue_keyword: "渡",
             maintenance_purpose_prefix: "入埠重編浸油釣線",
@@ -215,6 +230,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_steel_hunting_knife",
+            catalog_id: "wt_cat_1021",
             display_name: "精鍛步巡短刀",
             is_bladed: true,
             maintenance_venue_keyword: "鐵",
@@ -227,6 +243,7 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_steel_hunting_knife",
+            catalog_id: "wt_cat_1021",
             display_name: "精鍛防身獵刀",
             is_bladed: true,
             maintenance_venue_keyword: "鐵",
@@ -239,7 +256,8 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     {
         VocationalVesselSpec {
             item_id: "craft_bamboo_basket",
-            display_name: "浸油防雨行商背簍",
+            catalog_id: "wt_cat_0894",
+            display_name: "內襯寒水玉保鮮採集背簍",
             is_bladed: false,
             maintenance_venue_keyword: "驛",
             maintenance_purpose_prefix: "入站綁固行商背簍",
@@ -248,7 +266,8 @@ pub fn resolve_vocational_vessel(role_hint: &str) -> VocationalVesselSpec {
     } else {
         VocationalVesselSpec {
             item_id: "craft_bamboo_basket",
-            display_name: "紫竹日常提籃",
+            catalog_id: "wt_cat_0895",
+            display_name: "雙層竹編提籃",
             is_bladed: false,
             maintenance_venue_keyword: "市集",
             maintenance_purpose_prefix: "整理隨身提籃",

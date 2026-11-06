@@ -159,6 +159,27 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
     let now = game::now_unix();
     let (sec_midnight, _, _, days) =
         game::game_time_now(now, cfg.game_time_epoch_unix, cfg.game_time_scale);
+    let runtime_cell = crate::grid::parse_grid_room_id(&view.room.id)
+        .and_then(crate::server::grid_manager::get_runtime_grid_cell);
+    let terrain_str = runtime_cell
+        .as_ref()
+        .map(|c| format!("{:?}", c.terrain))
+        .unwrap_or_default();
+    let venue_obj = crate::grid::resolve_any_room_venue_object(&view.room.name, &view.room.zone);
+    let venue_kind_str = venue_obj
+        .as_ref()
+        .map(|v| v.venue_kind.to_string())
+        .unwrap_or_default();
+    let is_indoor = runtime_cell
+        .as_ref()
+        .is_some_and(|c| matches!(c.terrain, crate::grid::Terrain::House))
+        || (venue_obj.is_some()
+            && !view.room.name.contains('街')
+            && !view.room.name.contains('橋')
+            && !view.room.name.contains('路')
+            && !view.room.name.contains('道')
+            && !view.room.name.contains('埠')
+            && !view.room.name.contains("碼頭"));
     RoomViewMsg {
         msg_type: "view".into(),
         room_id: view.room.id.clone(),
@@ -170,6 +191,9 @@ pub fn build_room_view_msg(view: &RoomView, viewer_player_id: &str, cfg: &Server
         server_unix: now,
         game_time_sec_since_midnight: sec_midnight,
         game_days_since_epoch: days,
+        terrain: terrain_str,
+        venue_kind: venue_kind_str,
+        is_indoor,
     }
 }
 

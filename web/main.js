@@ -282,6 +282,12 @@
 						state.room_id = msg.room_id || '';
 						state.room_name = msg.room_name || '';
 						state.description = msg.description || '';
+						state.room_terrain = msg.terrain || '';
+						state.room_venue_kind = msg.venue_kind || '';
+						state.room_is_indoor = Boolean(msg.is_indoor);
+						window.__swRoomIsIndoor = state.room_is_indoor;
+						window.__swRoomTerrain = state.room_terrain;
+						window.__swRoomVenueKind = state.room_venue_kind;
 						state.exits = Array.isArray(msg.exits) ? msg.exits : [];
 						state.entities = Array.isArray(msg.entities) ? msg.entities : [];
 						window.SwNarrative.indexNames(state.entities);
@@ -515,9 +521,9 @@
 						}
 						var tradeTargetId = msg.target_id || '';
 						var tradeTargetName = msg.target_name || tradeTargetId;
-						if (tradeTargetId && !isMismatchedTradePopover) {
-							var shouldOpenTradeInput = /願意向你賣出|願意交付|請輸入你願付的鎂數|至少要\s*\d+\s*鎂才肯點頭|請輸入有效的鎂數/.test(tNarrative);
-							if (shouldOpenTradeInput && window.SwInteractions && window.SwInteractions.appendTradeInputRow) {
+						if (!isMismatchedTradePopover && tradeTargetId && tradeTargetName) {
+							var shouldOpenTradeInput = Boolean(msg.open_trade) || /請輸入你願付的鎂數|至少要\s*\d+\s*鎂才肯點頭|請輸入有效的鎂數/.test(tNarrative);
+							if (shouldOpenTradeInput) {
 								if (!window.__currentPopoverTarget && window.SwOpenObjectPopover) {
 									var cTokenEl = document.querySelector('#sw-room-canvas [data-entity-id="' + tradeTargetId + '"]');
 									if (cTokenEl && cTokenEl._swToken) {

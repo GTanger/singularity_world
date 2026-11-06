@@ -219,10 +219,10 @@ pub fn fallback_item_name(item_id: &str) -> Option<&'static str> {
         "craft_copper_abacus" => Some("紫銅商簿算盤"),
         "craft_kitchen_cleaver" => Some("厚背熟鐵廚刀"),
         "craft_peninsula_almanac" => Some("白塔風物考工手札"),
-        "craft_meridian_salve" => Some("青銅搗藥杵"),
+        "craft_meridian_salve" => Some("溫脈舒筋活血膏"),
         "craft_iron_pickaxe" => Some("百鍛長柄鐵錘"),
         "craft_steel_scissors" => Some("熟鐵裁布大剪刀"),
-        "craft_pine_torch" => Some("浸油麻編海釣竿"),
+        "craft_pine_torch" => Some("浸脂松明火把"),
         "craft_steel_hunting_knife" => Some("精鍛防身獵刀"),
         _ => crate::world::author_economy::runtime_good_display_name(item_id),
     }

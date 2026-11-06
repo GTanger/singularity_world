@@ -2,29 +2,36 @@
     fn vocational_vessel_maps_distinct_occupations_not_only_hunting_knife() {
         let scholar = resolve_vocational_vessel("文曜・書院講席學者");
         assert_eq!(scholar.item_id, "craft_peninsula_almanac");
+        assert_eq!(scholar.catalog_id, "wt_cat_0781");
         assert!(!scholar.is_bladed);
 
         let cook = resolve_vocational_vessel("南哨・街角食堂掌事");
         assert_eq!(cook.item_id, "craft_kitchen_cleaver");
+        assert_eq!(cook.catalog_id, "wt_cat_0564");
         assert!(cook.is_bladed);
 
         let merchant = resolve_vocational_vessel("風舶角・商行帳房管事");
         assert_eq!(merchant.item_id, "craft_copper_abacus");
+        assert_eq!(merchant.catalog_id, "wt_cat_0834");
 
         let hunter = resolve_vocational_vessel("紅土崁・山林獵戶");
         assert_eq!(hunter.item_id, "craft_steel_hunting_knife");
+        assert_eq!(hunter.catalog_id, "wt_cat_1021");
         assert!(hunter.is_bladed);
 
         let apprentice = resolve_vocational_vessel("風舶角・船塢年輕學徒");
         assert_eq!(apprentice.item_id, "craft_wooden_tool_handle");
+        assert_eq!(apprentice.catalog_id, "wt_cat_0954");
         assert_eq!(apprentice.display_name, "百工學徒手用小木尺");
 
         let bamboo_weaver = resolve_vocational_vessel("分家巷・竹器巧編院匠人");
         assert_eq!(bamboo_weaver.item_id, "craft_wooden_tool_handle");
+        assert_eq!(bamboo_weaver.catalog_id, "wt_cat_0954");
         assert_eq!(bamboo_weaver.display_name, "魯班平推刨刀");
 
         let stone_miller = resolve_vocational_vessel("老堰頭水輪石磨首座|秦水生");
         assert_eq!(stone_miller.item_id, "wt_cat_0973");
+        assert_eq!(stone_miller.catalog_id, "wt_cat_0973");
         assert_eq!(stone_miller.display_name, "平底石磨分粉篩架");
         assert!(!stone_miller.is_bladed);
     }
